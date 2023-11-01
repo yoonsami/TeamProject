@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="98. Default">
+      <UniqueIdentifier>{69a83716-205f-4b92-89a2-289ca955821f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. Headers">
+      <UniqueIdentifier>{d893eb66-2dbd-4d6f-aee0-5b6bfc416a43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Main">
+      <UniqueIdentifier>{760c5dca-d8fe-4ead-837c-68494c8fb8e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utils">
+      <UniqueIdentifier>{c3ccbb8c-a452-4cdf-884c-da204c551cfe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utils\Converter">
+      <UniqueIdentifier>{b61d756c-5eb0-4f60-995e-d21ae8f66e1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utils\AsType">
+      <UniqueIdentifier>{f21b36cd-093f-4ae6-a9ee-0d9c367f9063}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AssimpTool.h">
+      <Filter>98. Default</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>98. Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>98. Default</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>98. Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Assimp_Tool_Define.h">
+      <Filter>99. Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MainApp.h">
+      <Filter>00. Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Converter.h">
+      <Filter>01. Utils\Converter</Filter>
+    </ClInclude>
+    <ClInclude Include="AsType.h">
+      <Filter>01. Utils\AsType</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AssimpTool.cpp">
+      <Filter>98. Default</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>98. Default</Filter>
+    </ClCompile>
+    <ClCompile Include="MainApp.cpp">
+      <Filter>00. Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Converter.cpp">
+      <Filter>01. Utils\Converter</Filter>
+    </ClCompile>
+    <ClCompile Include="AsType.cpp">
+      <Filter>01. Utils\AsType</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="AssimpTool.ico">
+      <Filter>98. Default</Filter>
+    </Image>
+    <Image Include="small.ico">
+      <Filter>98. Default</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="AssimpTool.rc">
+      <Filter>98. Default</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,30 @@
+#pragma once
+
+enum class TextureMapType : _uchar
+{
+	DIFFUSE,
+	NORMAL,
+	SPECULAR,
+	OPACITY,
+	EMISSIVE,
+	DISSOLVE,
+	DISTORTION,
+	TEXTURE7,
+	TEXTURE8,
+	TEXTURE9,
+	TEXTURE10,
+	TEXTURE11,
+	TEXTURE12,
+	TEXTURE13,
+	TEXTURE14,
+	TEXTURE15,
+
+
+
+	END = 16
+};
+
+enum
+{
+	MAX_TEXTURE_MAP_COUONT = static_cast<_uint>(TextureMapType::END)
+};
