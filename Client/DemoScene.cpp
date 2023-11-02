@@ -8,7 +8,7 @@
 #include "DemoCameraScript1.h"
 #include "DemoCameraScript2.h"
 #include "DemoAnimationController1.h"
-#include "DemoFSM.h"
+#include "SpearAce_FSM.h"
 DemoScene::DemoScene()
 {
 }
@@ -66,17 +66,17 @@ void DemoScene::Load_DemoModel()
 
 			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
 			{
-				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Bow_Ace");
+				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Spear_Ace");
 				animator->Set_Model(model);
 			}
 			//�ִϸ����� ������Ʈ
 			testObj->Add_Component(animator);
 		}
 
-		testObj->Add_Component(make_shared<DemoAnimationController1>());
+		//testObj->Add_Component(make_shared<DemoAnimationController1>());
 
 		{
-			shared_ptr<DemoFSM> fsm = make_shared<DemoFSM>();
+			shared_ptr<SpearAce_FSM> fsm = make_shared<SpearAce_FSM>();
 			testObj->Add_Component(fsm);
 		}
 		testObj->Set_Name(L"Player");

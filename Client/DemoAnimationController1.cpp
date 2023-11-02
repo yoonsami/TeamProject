@@ -44,6 +44,6 @@ void DemoAnimationController1::Tick()
 		model->Get_AnimationByIndex(m_iCurAnimIndex)->loop = true;
 	}
 
-	if (KEYPUSH(KEY_TYPE::UP))
-		Get_Transform()->Go_Straight();
+	//if (KEYPUSH(KEY_TYPE::UP))
+	//	Get_Transform()->Go_Straight();
 }
