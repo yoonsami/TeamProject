@@ -135,6 +135,9 @@ void DemoFSM::b_run()
 
 void DemoFSM::b_run_Init()
 {
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_NextTweenAnim(L"b_run", 0.2f, true, 1.f);
 }
 
 void DemoFSM::b_run_end_r()
@@ -143,6 +146,9 @@ void DemoFSM::b_run_end_r()
 
 void DemoFSM::b_run_end_r_Init()
 {
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_NextTweenAnim(L"b_run_end_r", 0.2f, false, 1.f);
 }
 
 void DemoFSM::b_run_end_l()
@@ -151,4 +157,7 @@ void DemoFSM::b_run_end_l()
 
 void DemoFSM::b_run_end_l_Init()
 {
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_NextTweenAnim(L"b_run_end_l", 0.2f, false, 1.f);
 }

@@ -8,6 +8,7 @@
 #include "DemoCameraScript1.h"
 #include "DemoCameraScript2.h"
 #include "DemoAnimationController1.h"
+#include "DemoFSM.h"
 DemoScene::DemoScene()
 {
 }
@@ -73,6 +74,11 @@ void DemoScene::Load_DemoModel()
 		}
 
 		testObj->Add_Component(make_shared<DemoAnimationController1>());
+
+		{
+			shared_ptr<DemoFSM> fsm = make_shared<DemoFSM>();
+			testObj->Add_Component(fsm);
+		}
 
 		Add_GameObject(testObj);
 	}

@@ -78,8 +78,12 @@
     <ClInclude Include="DemoCameraScript2.h">
       <Filter>02.Component\00.MonoBehaviour\99.DemoCameraScript</Filter>
     </ClInclude>
-    <ClInclude Include="DemoAnimationController1.h" />
-    <ClInclude Include="DemoFSM.h" />
+    <ClInclude Include="DemoFSM.h">
+      <Filter>02.Component\01.FSM\00.DemoFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoAnimationController1.h">
+      <Filter>02.Component\00.MonoBehaviour\98.DemoAnimationController</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -106,8 +110,12 @@
     <ClCompile Include="DemoCameraScript2.cpp">
       <Filter>02.Component\00.MonoBehaviour\99.DemoCameraScript</Filter>
     </ClCompile>
-    <ClCompile Include="DemoAnimationController1.cpp" />
-    <ClCompile Include="DemoFSM.cpp" />
+    <ClCompile Include="DemoFSM.cpp">
+      <Filter>02.Component\01.FSM\00.DemoFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="DemoAnimationController1.cpp">
+      <Filter>02.Component\00.MonoBehaviour\98.DemoAnimationController</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
