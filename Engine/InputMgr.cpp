@@ -92,7 +92,7 @@ void InputMgr::Tick()
 		m_vMouseDir = { 0.f,0.f };
 		::ShowCursor(true);
 	}
-	else
+	else if (GetButtonHold(KEY_TYPE::LCTRL) == true) // MEMO : 마우스 커서를 중앙에 묶는 코드 (TOOL 사용을 위해 L_Ctrl눌러야 동작하도록 묶어둠)
 	{
 		RECT tmp{};
 		GetClientRect(hWnd, &tmp);
@@ -106,4 +106,6 @@ void InputMgr::Tick()
 		SetCursorPos(center.x, center.y);
 		::ShowCursor(false);
 	}
+	else 
+		::ShowCursor(true);
 }

@@ -5,6 +5,8 @@
 #include "LoadingScene.h"
 #include "DemoScene.h"
 
+#include "ImGuiToolMgr.h"
+
 MainApp::MainApp()
 {
 }
@@ -32,6 +34,9 @@ HRESULT MainApp::Init()
 		}
 	}
 
+	// For. Initialize ImGui Tool mgr
+	IMGUITOOL_MGR.Init(DEVICE.Get(), CONTEXT.Get());
+
 	// For. ¾À ¿­±â 
 	Open_Scene();
 
@@ -41,11 +46,17 @@ HRESULT MainApp::Init()
 void MainApp::Tick()
 {
 	GAMEINSTANCE.Tick_Engine();
+
+	IMGUITOOL_MGR.Tick();
 }
 
 HRESULT MainApp::Render()
 {
-	GAMEINSTANCE.Render();
+	GAMEINSTANCE.Render_Begin();
+	SCENE.Render();
+	IMGUITOOL_MGR.Render();
+	GAMEINSTANCE.Render_End();
+
 	return S_OK;
 }
 

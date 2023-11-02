@@ -1,17 +1,18 @@
 #include "pch.h"
 #include "DemoScene.h"
 
-// For. 
-#include "Model.h"
-
 // For. Components
 #include "Light.h"
 #include "Camera.h"
 #include "ModelAnimator.h"
 #include "ModelRenderer.h"
 
-// For. Monobehavior Script
+// For. Script
 #include "FreeCameraScript.h"
+
+// For. Etc
+#include "Model.h"
+#include "ImGuiToolMgr.h"
 
 DemoScene::DemoScene()
 {
@@ -22,11 +23,15 @@ void DemoScene::Init()
 	__super::Init();
 
 	COLLISION.Check_Group(_int(CollisionGroup::Player), _int(CollisionGroup::Monster));
+
+	//IMGUITOOL_MGR.Init(DEVICE.Get(), CONTEXT.Get());
 }
 
 void DemoScene::Tick()
 {
 	__super::Tick();
+
+	//IMGUITOOL_MGR.Tick();
 }
 
 void DemoScene::Late_Tick()
@@ -37,6 +42,13 @@ void DemoScene::Late_Tick()
 void DemoScene::Final_Tick()
 {
 	__super::Final_Tick();
+}
+
+void DemoScene::Render()
+{
+	__super::Render();
+
+	// IMGUITOOL_MGR.Render();
 }
 
 HRESULT DemoScene::Load_Scene()

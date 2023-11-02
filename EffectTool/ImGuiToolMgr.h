@@ -10,7 +10,7 @@ public:
 	~ImGuiToolMgr();
 
 public:
-	void	Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	void	Init(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	void	Tick();
 	void	Render();
 	

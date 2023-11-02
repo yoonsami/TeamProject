@@ -14,8 +14,7 @@ enum class CollisionGroup
 
 	Script,
 
-
-
-
 	END = MAX_COLLIDER_GROUP
 };
+
+#define IMGUITOOL_MGR GET_SINGLE(ImGuiToolMgr)

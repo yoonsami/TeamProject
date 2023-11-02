@@ -1,7 +1,7 @@
 #include "ImGuiToolMgr.h"
 
 /* Widgets */
-#include "Widget_ParticleEffectTool.h";
+#include "Widget_ParticleEffectTool.h"
 
 ImGuiToolMgr::~ImGuiToolMgr()
 {
@@ -10,7 +10,7 @@ ImGuiToolMgr::~ImGuiToolMgr()
     ImGui::DestroyContext();
 }
 
-void ImGuiToolMgr::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+void ImGuiToolMgr::Init(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -31,15 +31,17 @@ void ImGuiToolMgr::Tick()
     ImGui_ImplDX11_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
+    ImGuizmo::BeginFrame();
 
     // For. Basic Widget
+    //ImGui::ShowDemoWindow();
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::Begin("Basic Widget");
     ImGui_BasicWidget();
     ImGui::End();
-
-    if (m_bIsParticleEffectTool_On)
-        m_pWidget_ParticleEffectTool->Tick();
+    
+    //if (m_bIsParticleEffectTool_On)
+    //    m_pWidget_ParticleEffectTool->Tick();
 }
 
 void ImGuiToolMgr::Render()

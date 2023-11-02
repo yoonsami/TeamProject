@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 
+class ImGuiToolMgr;
 class DemoScene final : public Scene
 {
 public:
@@ -12,6 +13,7 @@ public:
 	virtual void	Tick() override;
 	virtual void	Late_Tick() override;
 	virtual void	Final_Tick() override;
+	virtual void	Render() override;
 
 	virtual HRESULT Load_Scene() override;
 
