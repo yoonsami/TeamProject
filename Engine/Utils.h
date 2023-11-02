@@ -22,6 +22,12 @@ public:
 
 	static _float4x4 m_matPivot;
 
+	static void ToUpperString(OUT string& str);
+	static void ToUpperString(OUT wstring& str);
+
+	static void ToLowerString(OUT string& str);
+	static void ToLowerString(OUT wstring& str);
+
 	const static wstring m_strModelPath			   ;
 	const static wstring m_strTexturePath 	   ;
 	const static wstring m_strSceneDataPath	   ;

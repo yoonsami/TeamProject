@@ -541,9 +541,11 @@ _int Model::Get_BoneIndexByName(const wstring& boneName)
 
 shared_ptr<ModelAnimation> Model::Get_AnimationByName(const wstring& animName, _int* pIndex)
 {
+	wstring name = animName;
+	Utils::ToUpperString(name);
 	for (_int i = 0; i < _int(m_Animations.size()); ++i)
 	{
-		if (m_Animations[i]->name == animName)
+		if (m_Animations[i]->name == name)
 		{
 			if (pIndex)
 				*pIndex = i;
@@ -647,6 +649,7 @@ void Model::Create_AnimationTransform(_uint index)
 		{
 			shared_ptr<ModelBone> bone = Get_BoneByIndex(boneIndex);
 
+			
 			_float4x4 matAnimation;
 
 			shared_ptr<ModelKeyFrame> keyFrame = animation->Get_KeyFrame(bone->name);
@@ -657,8 +660,15 @@ void Model::Create_AnimationTransform(_uint index)
 				_float4x4 S, R, T;
 				S = _float4x4::CreateScale(data.scale);
 				R = _float4x4::CreateFromQuaternion(data.rotation);
-				T = _float4x4::CreateTranslation(data.translation);
-				DirectX::XMStoreFloat4x4(&matAnimation, XMMatrixAffineTransformation(XMLoadFloat3(&(data.scale)), XMVectorSet(0.f, 0.f, 0.f, 1.f), XMLoadFloat4(&data.rotation), XMLoadFloat3(&data.translation)));
+				if (bone->name == L"Dummy_CP")
+				{
+					T = _float4x4::Identity;
+				}
+				else
+					T = _float4x4::CreateTranslation(data.translation);
+				
+				matAnimation = S * R * T;
+				//DirectX::XMStoreFloat4x4(&matAnimation, XMMatrixAffineTransformation(XMLoadFloat3(&(data.scale)), XMVectorSet(0.f, 0.f, 0.f, 1.f), XMLoadFloat4(&data.rotation), XMLoadFloat3(&data.translation)));
 			}
 			else
 			{

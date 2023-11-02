@@ -781,7 +781,7 @@ void Converter::WriteAnimationData(const wstring& finalPath)
 	for (_uint i =0; i< AnimationCount;++i)
 	{
 		auto& animation = m_Animations[i];
-		
+		Utils::ToUpperString(animation->name);
 		file->Write<_uint>(i);
 		file->Write<string>(animation->name);
 		file->Write<_float>(animation->duration);
