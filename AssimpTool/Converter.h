@@ -10,9 +10,12 @@ public:
 public:
 	void ReadAssetFile(const wstring& fileName);
 	void ExportModelData(const wstring& savePath);
-	void ExportEffectModelData(const wstring& savePath);
 	void ExportMaterialData(const wstring& savePath);
 	void ExportAnimationData(const wstring& savePath);
+
+	void ExportEffectModelData(const wstring& savePath);
+	void ExportEffectAnimationData(const wstring& savePath);
+	
 	//void ReadPartsAnimationData(const wstring& savePath);
 
 	//void ExportPartsAnimationData();

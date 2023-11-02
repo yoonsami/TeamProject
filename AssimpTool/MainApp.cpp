@@ -70,8 +70,8 @@ HRESULT MainApp::Init()
 		converter->WriteAnimationData(animPath);
 	}*/
 
-	ExportAssets();				// MEMO: 기본적인 모델 로드시 활성화 
-	//ExportMeshEffectAssets();	// MEMO: 메쉬이팩트를 위한 모델 로드시 활성화 
+	//ExportAssets();				// MEMO: 기본적인 모델 로드시 활성화 
+	ExportMeshEffectAssets();	// MEMO: 메쉬이팩트를 위한 모델 로드시 활성화 
 	//ExportParts();
 	//ExportWeapon();
 
@@ -134,6 +134,7 @@ void MainApp::ExportMeshEffectAssets()
 		tag = entry.path().filename().wstring();
 		Utils::DetachExt(tag);
 		converter->ExportEffectModelData(tag);
+		converter->ExportEffectAnimationData(tag);
 	}
 }
 

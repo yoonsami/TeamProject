@@ -77,7 +77,24 @@ void Converter::ExportAnimationData(const wstring& savePath)
 
 	wstring finalPath = m_strModelPath + savePath + L"\\" + savePath + L".clip";
 	WriteAnimationData(finalPath);
+}
 
+void Converter::ExportEffectAnimationData(const wstring& savePath)
+{
+	const _uint count = m_pScene->mNumAnimations;
+
+	for (_uint i = 0; i < count; ++i)
+	{
+		shared_ptr<asAnimation> animation = ReadAnimationData(m_pScene->mAnimations[i]);
+
+		if (animation->name == "Take 001")
+			continue;
+
+		m_Animations.push_back(animation);
+	}
+
+	wstring finalPath = m_strMeshEffectModelPath + savePath + L"\\" + savePath + L".clip";
+	WriteAnimationData(finalPath);
 }
 
 //void Converter::ReadPartsAnimationData(const wstring& savePath)
