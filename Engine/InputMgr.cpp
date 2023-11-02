@@ -96,15 +96,14 @@ void InputMgr::Tick()
 	{
 		RECT tmp{};
 		GetClientRect(hWnd, &tmp);
-
+	
 		POINT center = { (tmp.right - tmp.left) / 2, (tmp.bottom - tmp.top) / 2 };
-
+	
 		m_vMouseDir.x = _float(m_ptMousePos.x - center.x);
 		m_vMouseDir.y = _float(m_ptMousePos.y - center.y);
-
+	
 		ClientToScreen(hWnd, &center);
 		SetCursorPos(center.x, center.y);
 		::ShowCursor(false);
 	}
-
 }
