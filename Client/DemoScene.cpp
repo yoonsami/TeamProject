@@ -65,7 +65,7 @@ void DemoScene::Load_DemoModel()
 
 			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
 			{
-				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Ace2");
+				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Bow_Ace");
 				animator->Set_Model(model);
 			}
 			//애니메이터 컴포넌트
@@ -73,6 +73,8 @@ void DemoScene::Load_DemoModel()
 		}
 
 		testObj->Add_Component(make_shared<DemoAnimationController1>());
+
+		testObj->Set_Name(L"Player");
 
 		Add_GameObject(testObj);
 	}
