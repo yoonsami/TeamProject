@@ -41,8 +41,11 @@
     <Filter Include="97.ImGui\99.Sources">
       <UniqueIdentifier>{48e57931-a88e-456e-847c-652ea11be2ee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="97.ImGui\00.ImGuiMgr">
+    <Filter Include="97.ImGui\00.ImGuiToolMgr">
       <UniqueIdentifier>{ef7a6799-21f1-473c-ad82-b41e9281d4e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.ImGui\01.Widget_ParticleEffectTool">
+      <UniqueIdentifier>{7b8e8f0f-fcb3-4e24-88b5-df19f32d9ef3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -73,32 +76,38 @@
     <ClInclude Include="FreeCameraScript.h">
       <Filter>02.Component\00.MonoBehavior\FreeCameraScript</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\imconfig.h">
+    <ClInclude Include="ImGuiToolMgr.h">
+      <Filter>97.ImGui\00.ImGuiToolMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGui\imconfig.h">
       <Filter>97.ImGui\99.Sources</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\imgui.h">
+    <ClInclude Include="..\ImGui\imgui.h">
       <Filter>97.ImGui\99.Sources</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\imgui_impl_dx11.h">
+    <ClInclude Include="..\ImGui\imgui_impl_dx11.h">
       <Filter>97.ImGui\99.Sources</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\imgui_impl_win32.h">
+    <ClInclude Include="..\ImGui\imgui_impl_win32.h">
       <Filter>97.ImGui\99.Sources</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\imgui_internal.h">
+    <ClInclude Include="..\ImGui\imgui_internal.h">
       <Filter>97.ImGui\99.Sources</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\ImGuizmo.h">
+    <ClInclude Include="..\ImGui\ImGuizmo.h">
       <Filter>97.ImGui\99.Sources</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\imstb_rectpack.h">
+    <ClInclude Include="..\ImGui\imstb_rectpack.h">
       <Filter>97.ImGui\99.Sources</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\imstb_textedit.h">
+    <ClInclude Include="..\ImGui\imstb_textedit.h">
       <Filter>97.ImGui\99.Sources</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\imstb_truetype.h">
+    <ClInclude Include="..\ImGui\imstb_truetype.h">
       <Filter>97.ImGui\99.Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget_ParticleEffectTool.h">
+      <Filter>97.ImGui\01.Widget_ParticleEffectTool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -123,29 +132,35 @@
     <ClCompile Include="FreeCameraScript.cpp">
       <Filter>02.Component\00.MonoBehavior\FreeCameraScript</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui.cpp">
+    <ClCompile Include="ImGuiToolMgr.cpp">
+      <Filter>97.ImGui\00.ImGuiToolMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\imgui.cpp">
       <Filter>97.ImGui\99.Sources</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui_demo.cpp">
+    <ClCompile Include="..\ImGui\imgui_demo.cpp">
       <Filter>97.ImGui\99.Sources</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui_draw.cpp">
+    <ClCompile Include="..\ImGui\imgui_draw.cpp">
       <Filter>97.ImGui\99.Sources</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui_impl_dx11.cpp">
+    <ClCompile Include="..\ImGui\imgui_impl_dx11.cpp">
       <Filter>97.ImGui\99.Sources</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui_impl_win32.cpp">
+    <ClCompile Include="..\ImGui\imgui_impl_win32.cpp">
       <Filter>97.ImGui\99.Sources</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui_tables.cpp">
+    <ClCompile Include="..\ImGui\imgui_tables.cpp">
       <Filter>97.ImGui\99.Sources</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui_widgets.cpp">
+    <ClCompile Include="..\ImGui\imgui_widgets.cpp">
       <Filter>97.ImGui\99.Sources</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\ImGuizmo.cpp">
+    <ClCompile Include="..\ImGui\ImGuizmo.cpp">
       <Filter>97.ImGui\99.Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget_ParticleEffectTool.cpp">
+      <Filter>97.ImGui\01.Widget_ParticleEffectTool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -162,12 +177,12 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ImGui\imgui.natstepfilter">
+    <None Include="..\ImGui\imgui.natstepfilter">
       <Filter>97.ImGui\99.Sources</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Natvis Include="ImGui\imgui.natvis">
+    <Natvis Include="..\ImGui\imgui.natvis">
       <Filter>97.ImGui\99.Sources</Filter>
     </Natvis>
   </ItemGroup>

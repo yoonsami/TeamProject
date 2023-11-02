@@ -9,13 +9,13 @@ public:
 	virtual ~LoadingScene() = default;
 
 public:
-	virtual void Init() override;
-	virtual void Tick() override;
-	virtual void Late_Tick() override;
-	virtual void Final_Tick() override;
+	virtual void	Init() override;
+	virtual void	Tick() override;
+	virtual void	Late_Tick() override;
+	virtual void	Final_Tick() override;
 
 private:
-	void Create_LoadingBG();
+	void			Create_LoadingBG();
 
 private:
 	shared_ptr<Scene> m_pNextScene = nullptr;
