@@ -59,7 +59,8 @@ void Converter::ExportAnimationData(const wstring& savePath)
 	{
 		shared_ptr<asAnimation> animation = ReadAnimationData(m_pScene->mAnimations[i]);
 		
-	
+		if (animation->name == "Take 001")
+			continue;
 
 		m_Animations.push_back(animation);
 	}
@@ -621,7 +622,9 @@ void Converter::WriteTexture(const wstring& assetName)
 		if (entry.path().extension().wstring() != L".DDS" 
 			&& entry.path().extension().wstring() != L".dds" 
 			&& entry.path().extension().wstring() != L".png"
-			&& entry.path().extension().wstring() != L".PNG")
+			&& entry.path().extension().wstring() != L".PNG"
+			&& entry.path().extension().wstring() != L".tga"
+			&& entry.path().extension().wstring() != L".TGA")
 			continue;
 
 		fs::create_directories(fs::path(m_strTexturePath + assetName));
@@ -639,8 +642,8 @@ shared_ptr<asAnimation> Converter::ReadAnimationData(aiAnimation* srcAnimation)
 
 	animation->name = srcAnimation->mName.C_Str();
 
-	//if (animation->name == "Take 001")
-	//	return animation;
+	if (animation->name == "Take 001")
+		return animation;
 
 	animation->frameRate = _float(srcAnimation->mTicksPerSecond);
 	animation->frameCount = _uint(srcAnimation->mDuration + 1);

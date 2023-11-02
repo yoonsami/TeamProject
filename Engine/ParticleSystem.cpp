@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "Model.h"
 #include "ModelMesh.h"
+#include "Utils.h"
 
 
 ParticleSystem::ParticleSystem(shared_ptr<Shader> shader)
@@ -148,7 +149,7 @@ void ParticleSystem::Render()
 		for (_uint i = 0; i < boneCount; ++i)
 		{
 			shared_ptr<ModelBone> bone = m_pModel->Get_BoneByIndex(i);
-			boneDesc->transform[i] = (bone->transform) * _float4x4::CreateRotationY(XM_PI);
+			boneDesc->transform[i] = (bone->transform) * Utils::Get_PivotMatrix();
 		}
 		m_pShader->Push_BoneData(*boneDesc);
 

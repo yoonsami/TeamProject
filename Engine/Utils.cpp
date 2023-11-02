@@ -104,6 +104,13 @@ void Utils::Replace(OUT wstring& str, wstring comp, wstring rep)
 	str = temp;
 }
 
+const _float4x4& Utils::Get_PivotMatrix()
+{
+	return m_matPivot;
+}
+
+_float4x4 Utils::m_matPivot = _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI);
+
 const wstring Utils::m_strModelPath =  L"../Resources/Models/";;
 
 const wstring Utils::m_strTexturePath = L"../Resources/Textures/";

@@ -18,6 +18,10 @@ public:
 	static void Replace(OUT string& str, string comp, string rep);
 	static void Replace(OUT wstring& str, wstring comp, wstring rep);
 
+	static const _float4x4& Get_PivotMatrix();
+
+	static _float4x4 m_matPivot;
+
 	const static wstring m_strModelPath			   ;
 	const static wstring m_strTexturePath 	   ;
 	const static wstring m_strSceneDataPath	   ;

@@ -4,6 +4,7 @@
 #include "ModelMesh.h"
 #include "Geometry.h"
 #include "Camera.h"
+#include "Utils.h"
 
 MeshCollider::MeshCollider(wstring modelTag, _float4x4 MatWorld)
     :BaseCollider(ColliderType::Mesh)
@@ -14,7 +15,7 @@ MeshCollider::MeshCollider(wstring modelTag, _float4x4 MatWorld)
         assert(false);
 
     m_pModel = model;
-    auto meshes = model->Get_Meshes();
+    auto& meshes = model->Get_Meshes();
 	auto world = MatWorld;
 
 	shared_ptr<BoneDesc> boneDesc = make_shared<BoneDesc>();
@@ -24,7 +25,7 @@ MeshCollider::MeshCollider(wstring modelTag, _float4x4 MatWorld)
 	for (_uint i = 0; i < boneCount; ++i)
 	{
 		shared_ptr<ModelBone> bone = model->Get_BoneByIndex(i);
-		boneDesc->transform[i] = bone->transform  * _float4x4::CreateRotationY(XM_PI);
+		boneDesc->transform[i] = bone->transform * Utils::Get_PivotMatrix();
 	}
 
 	for (auto& mesh : meshes)

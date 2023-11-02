@@ -1,8 +1,8 @@
 #pragma once
 //#include "ConstantBuffer.h"
 
-#define MAX_MODEL_TRANSFORMS 320
-#define MAX_MODEL_KEYFRAMES 300
+#define MAX_MODEL_TRANSFORMS 400
+#define MAX_MODEL_KEYFRAMES 400
 #define MAX_MODEL_INSTANCE 200
 
 class Shader;
@@ -100,7 +100,7 @@ struct BoneDesc
 struct AnimAddonDesc
 {
 	_float4x4 transform[MAX_MODEL_TRANSFORMS];
-	_float4x4 m_matPivot = _float4x4::CreateRotationY(XM_PI);
+	_float4x4 m_matPivot = _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI);
 };
 
 struct EffectDesc

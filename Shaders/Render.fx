@@ -3,7 +3,7 @@
 
 #include "Global.fx"
 
-#define MAX_MODEL_TRANSFORM 320
+#define MAX_MODEL_TRANSFORM 400
 #define MAX_MODEL_INSTANCE 100
 #define MAX_SRV_MAP_COUNT 16
 
