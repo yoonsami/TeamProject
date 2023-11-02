@@ -7,7 +7,7 @@ class DemoFSM :
 public:
 	enum class STATE
 	{
-		b_Idle,
+		b_idle,
 		b_run_start,
 		b_run,
 		b_run_end_r,
@@ -27,8 +27,8 @@ private:
 	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 
-	void b_Idle();
-	void b_Idle_Init();
+	void b_idle();
+	void b_idle_Init();
 	void b_run_start();
 	void b_run_start_Init();
 	void b_run();
@@ -39,7 +39,7 @@ private:
 	void b_run_end_l_Init();
 
 private:
-	STATE m_eCurState = STATE::b_Idle;
+	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;
 };
 

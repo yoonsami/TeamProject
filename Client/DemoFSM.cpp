@@ -8,8 +8,8 @@ HRESULT DemoFSM::Init()
     if (animator)
     {
         // 다음 애니메이션 세팅해주는데, 보간할 예정
-        animator->Set_NextTweenAnim(L"b_Idle"/*애니메이션 이름*/, 0.2f/*보간 시간*/, true/*반복 애니메이션*/, 1.f/*애니메이션 속도*/);
-        m_eCurState = STATE::b_Idle;
+        animator->Set_NextTweenAnim(L"b_idle"/*애니메이션 이름*/, 0.2f/*보간 시간*/, true/*반복 애니메이션*/, 1.f/*애니메이션 속도*/);
+        m_eCurState = STATE::b_idle;
     }
     return S_OK;
 }
@@ -25,8 +25,8 @@ void DemoFSM::State_Tick()
 
 	switch (m_eCurState)
 	{
-	case STATE::b_Idle:
-		b_Idle();
+	case STATE::b_idle:
+		b_idle();
 		break;
 	case STATE::b_run_start:
 		b_run_start();
@@ -49,8 +49,8 @@ void DemoFSM::State_Init()
 	{
 		switch (m_eCurState)
 		{
-		case STATE::b_Idle:
-			b_Idle_Init();
+		case STATE::b_idle:
+			b_idle_Init();
 			break;
 		case STATE::b_run_start:
 			b_run_start_Init();
@@ -81,18 +81,18 @@ void DemoFSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
 }
 
-void DemoFSM::b_Idle()
+void DemoFSM::b_idle()
 {
 	
 }
 
-void DemoFSM::b_Idle_Init()
+void DemoFSM::b_idle_Init()
 {
 	
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	
-	animator->Set_NextTweenAnim(L"b_Idle", 0.2f, true, 1.f);
+	animator->Set_NextTweenAnim(L"b_idle", 0.2f, true, 1.f);
 }
 
 void DemoFSM::b_run_start()
@@ -101,7 +101,7 @@ void DemoFSM::b_run_start()
 
 	// 방향키를 아무것도 누르지 않으면 상태를 변경
 	if (vInputVector == _float3(0.f))
-		m_eCurState = STATE::b_Idle;
+		m_eCurState = STATE::b_idle;
 	else
 	{	
 		// 애니메이션이 끝나면 인데, 보간 시간때문에 어색할 때가 있어서,
@@ -114,6 +114,8 @@ void DemoFSM::b_run_start()
 
 		if (Get_FinalFrame() - Get_CurFrame() < 5)
 			m_eCurState = STATE::b_run;
+
+		Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 	}
 }
 
