@@ -70,7 +70,8 @@ HRESULT MainApp::Init()
 		converter->WriteAnimationData(animPath);
 	}*/
 
-	ExportAssets();
+	ExportAssets();				// MEMO: 기본적인 모델 로드시 활성화 
+	//ExportMeshEffectAssets();	// MEMO: 메쉬이팩트를 위한 모델 로드시 활성화 
 	//ExportParts();
 	//ExportWeapon();
 
@@ -92,7 +93,7 @@ HRESULT MainApp::Render()
 
 void MainApp::ExportAssets()
 {
-	wstring assetPath = L"..\\Resources\\Assets\\";
+	wstring assetPath = L"..\\Resources\\Assets\\"; 	
 
 	for (auto& entry : fs::recursive_directory_iterator(assetPath))
 	{
@@ -108,11 +109,31 @@ void MainApp::ExportAssets()
 		converter->ReadAssetFile(tag);
 		tag = entry.path().filename().wstring();
 		Utils::DetachExt(tag);
-		converter->ExportModelData(tag);
+		converter->ExportModelData(tag);	
 		converter->ExportMaterialData(tag);
 		converter->ExportAnimationData(tag);
-		
+	}
+}
 
+void MainApp::ExportMeshEffectAssets()
+{
+	wstring assetPath = L"..\\Resources\\MeshEffectAssets\\";	
+
+	for (auto& entry : fs::recursive_directory_iterator(assetPath))
+	{
+		if (entry.is_directory())
+			continue;
+
+		if (entry.path().extension().wstring() != L".FBX" && entry.path().extension().wstring() != L".fbx")
+			continue;
+
+		wstring tag = entry.path().wstring();
+
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		converter->ReadAssetFile(tag);
+		tag = entry.path().filename().wstring();
+		Utils::DetachExt(tag);
+		converter->ExportEffectModelData(tag);
 	}
 }
 

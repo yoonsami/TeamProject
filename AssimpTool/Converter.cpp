@@ -37,7 +37,17 @@ void Converter::ExportModelData(const wstring& savePath)
 
 	WriteCSVFile();
 
+	WriteModelFile(finalPath);
+}
 
+void Converter::ExportEffectModelData(const wstring& savePath)
+{
+	fs::create_directories(fs::path(m_strMeshEffectModelPath + savePath));
+	wstring finalPath = m_strMeshEffectModelPath + savePath + L"\\" + savePath + L".Model";
+	ReadModelData(m_pScene->mRootNode, -1, -1);
+	ReadSkinData();
+
+	WriteCSVFile();
 
 	WriteModelFile(finalPath);
 }
