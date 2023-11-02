@@ -40,18 +40,6 @@ void Converter::ExportModelData(const wstring& savePath)
 	WriteModelFile(finalPath);
 }
 
-void Converter::ExportEffectModelData(const wstring& savePath)
-{
-	fs::create_directories(fs::path(m_strMeshEffectModelPath + savePath));
-	wstring finalPath = m_strMeshEffectModelPath + savePath + L"\\" + savePath + L".Model";
-	ReadModelData(m_pScene->mRootNode, -1, -1);
-	ReadSkinData();
-
-	WriteCSVFile();
-
-	WriteModelFile(finalPath);
-}
-
 void Converter::ExportMaterialData(const wstring& savePath)
 {
 	fs::create_directories(fs::path(m_strModelPath + savePath));
@@ -79,23 +67,6 @@ void Converter::ExportAnimationData(const wstring& savePath)
 	WriteAnimationData(finalPath);
 }
 
-void Converter::ExportEffectAnimationData(const wstring& savePath)
-{
-	const _uint count = m_pScene->mNumAnimations;
-
-	for (_uint i = 0; i < count; ++i)
-	{
-		shared_ptr<asAnimation> animation = ReadAnimationData(m_pScene->mAnimations[i]);
-
-		if (animation->name == "Take 001")
-			continue;
-
-		m_Animations.push_back(animation);
-	}
-
-	wstring finalPath = m_strMeshEffectModelPath + savePath + L"\\" + savePath + L".clip";
-	WriteAnimationData(finalPath);
-}
 
 //void Converter::ReadPartsAnimationData(const wstring& savePath)
 //{
@@ -640,7 +611,7 @@ void Converter::WriteMaterialData(const wstring& finalPath)
 void Converter::WriteTexture(const wstring& assetName)
 {
 	wstring assetTexturePath = m_strAssetPath + assetName + L"\\";
-
+	fs::create_directories(fs::path(assetTexturePath));
 	for (auto& entry : fs::recursive_directory_iterator(assetTexturePath))
 	{
 		if (entry.is_directory())

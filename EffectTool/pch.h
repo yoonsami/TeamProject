@@ -20,6 +20,6 @@
 #include <process.h>
 #pragma comment(lib,"Engine/Engine.lib")
 #include "EnginePch.h"
-#include "Client_Define.h"
+#include "EffectTool_Define.h"
 
 #endif //PCH_H

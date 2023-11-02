@@ -12,6 +12,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client", "Client\Client.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AssimpTool", "AssimpTool\AssimpTool.vcxproj", "{B48E0CEE-361F-4D1F-ABC4-03B4B8699E38}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EffectTool", "EffectTool\EffectTool.vcxproj", "{4C6C60F1-4884-45C3-8A55-26BA28941817}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A983E283-F3C7-4D68-8A2B-793D69A4BB26} = {A983E283-F3C7-4D68-8A2B-793D69A4BB26}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -44,6 +49,14 @@ Global
 		{B48E0CEE-361F-4D1F-ABC4-03B4B8699E38}.Release|x64.Build.0 = Release|x64
 		{B48E0CEE-361F-4D1F-ABC4-03B4B8699E38}.Release|x86.ActiveCfg = Release|Win32
 		{B48E0CEE-361F-4D1F-ABC4-03B4B8699E38}.Release|x86.Build.0 = Release|Win32
+		{4C6C60F1-4884-45C3-8A55-26BA28941817}.Debug|x64.ActiveCfg = Debug|x64
+		{4C6C60F1-4884-45C3-8A55-26BA28941817}.Debug|x64.Build.0 = Debug|x64
+		{4C6C60F1-4884-45C3-8A55-26BA28941817}.Debug|x86.ActiveCfg = Debug|Win32
+		{4C6C60F1-4884-45C3-8A55-26BA28941817}.Debug|x86.Build.0 = Debug|Win32
+		{4C6C60F1-4884-45C3-8A55-26BA28941817}.Release|x64.ActiveCfg = Release|x64
+		{4C6C60F1-4884-45C3-8A55-26BA28941817}.Release|x64.Build.0 = Release|x64
+		{4C6C60F1-4884-45C3-8A55-26BA28941817}.Release|x86.ActiveCfg = Release|Win32
+		{4C6C60F1-4884-45C3-8A55-26BA28941817}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

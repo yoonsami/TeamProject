@@ -15,8 +15,6 @@ public:
 
 private:
 	void ExportAssets();			// MEMO: 기본적인 모델 로드시 활성화 
-	void ExportMeshEffectAssets();	// MEMO: 메쉬이팩트를 위한 모델 로드시 활성화 
-
 
 	void ExportWeapon();
 };
