@@ -40,6 +40,12 @@
     <Filter Include="02.Component\00.MonoBehaviour\98.DemoAnimationController">
       <UniqueIdentifier>{4e20d96b-da76-43f6-a3f0-f2eb67c11347}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\01.FSM">
+      <UniqueIdentifier>{5106d280-65b5-4a05-b449-e52004caa4f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\00.DemoFSM">
+      <UniqueIdentifier>{8a982ce2-f0b2-4b7a-800d-dfeff839ac2b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -73,6 +79,7 @@
       <Filter>02.Component\00.MonoBehaviour\99.DemoCameraScript</Filter>
     </ClInclude>
     <ClInclude Include="DemoAnimationController1.h" />
+    <ClInclude Include="DemoFSM.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -100,6 +107,7 @@
       <Filter>02.Component\00.MonoBehaviour\99.DemoCameraScript</Filter>
     </ClCompile>
     <ClCompile Include="DemoAnimationController1.cpp" />
+    <ClCompile Include="DemoFSM.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">

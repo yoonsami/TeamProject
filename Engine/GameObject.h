@@ -71,7 +71,7 @@ public:
 	shared_ptr<Light> Get_Light();
 	shared_ptr<ModelRenderer> Get_ModelRenderer();
 	shared_ptr<BaseCollider> Get_Collider();
-	//shared_ptr<FSM> Get_FSM();
+	shared_ptr<FSM> Get_FSM();
 	//shared_ptr<Physics> Get_Physics();
 	shared_ptr<BaseUI> Get_Button();
 	shared_ptr<Transform> GetOrAddTransform();

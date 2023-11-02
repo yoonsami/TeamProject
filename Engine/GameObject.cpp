@@ -10,7 +10,7 @@
 #include "Light.h"
 #include "ModelRenderer.h"
 #include "BaseCollider.h"
-//#include "FSM.h"
+#include "FSM.h"
 //#include "Physics.h"
 #include "BaseUI.h"
 #include "CharacterController.h"
@@ -183,11 +183,11 @@ shared_ptr<BaseCollider> GameObject::Get_Collider()
 	return static_pointer_cast<BaseCollider>(Get_FixedComponent(COMPONENT_TYPE::Collider));
 }
 
-//shared_ptr<FSM> GameObject::Get_FSM()
-//{
-//	return static_pointer_cast<FSM>(Get_FixedComponent(COMPONENT_TYPE::FSM));
-//}
-//
+shared_ptr<FSM> GameObject::Get_FSM()
+{
+	return static_pointer_cast<FSM>(Get_FixedComponent(COMPONENT_TYPE::FSM));
+}
+
 //shared_ptr<Physics> GameObject::Get_Physics()
 //{
 //	return static_pointer_cast<Physics>(Get_FixedComponent(COMPONENT_TYPE::Physics));

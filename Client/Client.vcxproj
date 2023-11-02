@@ -172,6 +172,7 @@
     <ClInclude Include="DemoAnimationController1.h" />
     <ClInclude Include="DemoCameraScript1.h" />
     <ClInclude Include="DemoCameraScript2.h" />
+    <ClInclude Include="DemoFSM.h" />
     <ClInclude Include="DemoScene.h" />
     <ClInclude Include="Loader.h" />
     <ClInclude Include="LoadingScene.h" />
@@ -184,6 +185,7 @@
     <ClCompile Include="DemoAnimationController1.cpp" />
     <ClCompile Include="DemoCameraScript1.cpp" />
     <ClCompile Include="DemoCameraScript2.cpp" />
+    <ClCompile Include="DemoFSM.cpp" />
     <ClCompile Include="DemoScene.cpp" />
     <ClCompile Include="Loader.cpp" />
     <ClCompile Include="LoadingScene.cpp" />
