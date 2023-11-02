@@ -52,11 +52,11 @@ HRESULT DemoScene::Load_Scene()
 void DemoScene::Load_DemoModel()
 {
 	{
-		// GameObject µ¿ÀûÇÒ´ç
+		// GameObject ï¿½ï¿½ï¿½ï¿½ï¿½Ò´ï¿½
 		shared_ptr<GameObject> testObj = make_shared<GameObject>();
 
-		// Transform Component Ãß°¡
-		// µÑÁß ÇÏ³ª »ç¿ë. AddComponent ¶Ç´Â GetOrAddTransform(ÀÖÀ¸¸é ¹ÝÈ¯ ¾øÀ¸¸é »ý¼ºÈÄ ¹ÝÈ¯)
+		// Transform Component ï¿½ß°ï¿½
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ ï¿½ï¿½ï¿½. AddComponent ï¿½Ç´ï¿½ GetOrAddTransform(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯)
 		testObj->Add_Component(make_shared<Transform>());
 		//testObj->GetOrAddTransform();
 
@@ -66,10 +66,10 @@ void DemoScene::Load_DemoModel()
 
 			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
 			{
-				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Kyle");
+				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Bow_Ace");
 				animator->Set_Model(model);
 			}
-			//¾Ö´Ï¸ÞÀÌÅÍ ÄÄÆ÷³ÍÆ®
+			//ï¿½Ö´Ï¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 			testObj->Add_Component(animator);
 		}
 
@@ -79,15 +79,16 @@ void DemoScene::Load_DemoModel()
 			shared_ptr<DemoFSM> fsm = make_shared<DemoFSM>();
 			testObj->Add_Component(fsm);
 		}
+		testObj->Set_Name(L"Player");
 
 		Add_GameObject(testObj);
 	}
 	//{
-	//	// GameObject µ¿ÀûÇÒ´ç
+	//	// GameObject ï¿½ï¿½ï¿½ï¿½ï¿½Ò´ï¿½
 	//	shared_ptr<GameObject> testObj = make_shared<GameObject>();
 
-	//	// Transform Component Ãß°¡
-	//	// µÑÁß ÇÏ³ª »ç¿ë. AddComponent ¶Ç´Â GetOrAddTransform(ÀÖÀ¸¸é ¹ÝÈ¯ ¾øÀ¸¸é »ý¼ºÈÄ ¹ÝÈ¯)
+	//	// Transform Component ï¿½ß°ï¿½
+	//	// ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ ï¿½ï¿½ï¿½. AddComponent ï¿½Ç´ï¿½ GetOrAddTransform(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯)
 	//	testObj->Add_Component(make_shared<Transform>());
 	//	//testObj->GetOrAddTransform();
 
@@ -100,7 +101,7 @@ void DemoScene::Load_DemoModel()
 	//			shared_ptr<Model> model = RESOURCES.Get<Model>(L"1058_cooperateuniqueskilltimeline");
 	//			animator->Set_Model(model);
 	//		}
-	//		//¾Ö´Ï¸ÞÀÌÅÍ ÄÄÆ÷³ÍÆ®
+	//		//ï¿½Ö´Ï¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 	//		testObj->Add_Component(animator);
 	//	}
 
@@ -113,15 +114,15 @@ void DemoScene::Load_DemoModel()
 void DemoScene::Load_Camera()
 {
 	{
-		//Ä«¸Þ¶ó·Î »ç¿ëÇÒ GameObject »ý¼º
+		//Ä«ï¿½Þ¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ GameObject ï¿½ï¿½ï¿½ï¿½
 		shared_ptr<GameObject> camera = make_shared<GameObject>();
 
-		// Transform Component Ãß°¡
+		// Transform Component ï¿½ß°ï¿½
 		camera->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
 
 		camera->GetOrAddTransform()->Set_Speed(5.f);
 
-		// Ä«¸Þ¶ó Component »ý¼º 
+		// Ä«ï¿½Þ¶ï¿½ Component ï¿½ï¿½ï¿½ï¿½ 
 		CameraDesc desc;
 		desc.fFOV = XM_PI / 3.f;
 		desc.strName = L"Default";
@@ -135,11 +136,11 @@ void DemoScene::Load_Camera()
 
 
 		camera->Get_Camera()->Set_ProjType(ProjectionType::Perspective);
-		//Layer_UI¿¡ ÀÖ´Â ¿ÀºêÁ§Æ®¸¦ ÄÃ¸µÇÏ°Ú´Ù.
+		//Layer_UIï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ã¸ï¿½ï¿½Ï°Ú´ï¿½.
 		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, true);
 
-		// MonoBehaviour(Component Áß °íÁ¤ÀÌ ¾Æ´Ñ°Íµé) Ãß°¡
-		// ÀÏºÎ·¯ ±â´É ³ª´²³ùÀ½
+		// MonoBehaviour(Component ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ñ°Íµï¿½) ï¿½ß°ï¿½
+		// ï¿½ÏºÎ·ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		camera->Add_Component(make_shared<DemoCameraScript1>());
 		camera->Add_Component(make_shared<DemoCameraScript2>());
 
@@ -153,7 +154,7 @@ void DemoScene::Load_Light()
 	lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 25.f, 0.f, 1.f));
 	lightObj->GetOrAddTransform()->Set_LookDir(_float3(-1.f,-1.f,-1.f));
 	{
-		// LightComponent »ý¼º ÈÄ ¼¼ÆÃ
+		// LightComponent ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		shared_ptr<Light> lightCom = make_shared<Light>();
 		lightCom->Set_Diffuse(Color(1.f));
 		lightCom->Set_Ambient(Color(0.8f));
