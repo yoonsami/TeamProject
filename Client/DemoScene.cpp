@@ -66,7 +66,7 @@ void DemoScene::Load_DemoModel()
 
 			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
 			{
-				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Kyle");
+				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Ace2");
 				animator->Set_Model(model);
 			}
 			//애니메이터 컴포넌트
