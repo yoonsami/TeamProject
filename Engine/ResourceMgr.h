@@ -35,10 +35,11 @@ public:
 	//shared_ptr<Parts> Get_Part(const wstring& key);
 	//map<wstring, shared_ptr<Parts>>& Get_Parts(PARTS_INFO type) { return m_PrototypeParts[(_uint)type]; }
 	auto& Get_Resources(_uint index) { return m_Resources[index]; }
-//	void LoadBase();
+    //void LoadBase();
 	//void LoadParts();
 	void CreateDefaultMesh();
 	void CreateDefaultShader();
+	void CreateDefaultShader_EffectTool();	// MEMO : EffectTool에서 사용하는 Default Shader만 로드하는 함수 
 	void CreateModel(const wstring& path);
 
 	void CreateDefaultMaterial();

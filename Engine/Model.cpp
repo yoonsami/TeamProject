@@ -245,11 +245,8 @@ void Model::ReadAnimation(const wstring& strPath)
 		m_Animations.push_back(animation);
 	}
 
-
-
 	if (!m_pTexture)
 		Create_Texture();
-
 }
 
 //void Model::ReadBase()

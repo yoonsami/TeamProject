@@ -40,6 +40,8 @@ public:
     void Go_Backward();
     void Go_Left();
     void Go_Right();
+    void Go_Horizontally_Up();      // MEMO : Tool에서 Freecam을 위해 추가 (q,e key)
+    void Go_Horizontally_Down();    // MEMO : Tool에서 Freecam을 위해 추가 (q,e key)
     void Rotation(const _float3& vAxis, _float fRadian);
     void Turn(const _float3& vAxis, _float fRadianPerSec);
     void Scaled(const _float3& vScale);

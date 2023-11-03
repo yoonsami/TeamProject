@@ -204,6 +204,50 @@ void Transform::Go_Right()
 		Set_State(Transform_State::POS, Get_State(Transform_State::POS) + vDir * m_fMoveSpeed * fDT);
 }
 
+void Transform::Go_Horizontally_Up()
+{
+	_float4 vDir = Get_State(Transform_State::UP);
+	vDir.Normalize();
+
+	auto controller = Get_CharacterController();
+	if (controller)
+	{
+		auto actor = Get_CharacterController()->Get_Actor();
+
+
+
+
+		auto result = actor->move({ vDir.x * m_fMoveSpeed * fDT,vDir.y * m_fMoveSpeed * fDT ,vDir.z * m_fMoveSpeed * fDT }, 0.0f, fDT, PxControllerFilters());
+		auto controllerPos = actor->getFootPosition();
+
+		Set_State(Transform_State::POS, _float4(_float(controllerPos.x), _float(controllerPos.y), _float(controllerPos.z), 1.f));
+	}
+	else
+		Set_State(Transform_State::POS, Get_State(Transform_State::POS) + vDir * m_fMoveSpeed * fDT);
+}
+
+void Transform::Go_Horizontally_Down()
+{
+	_float4 vDir = -Get_State(Transform_State::UP);
+	vDir.Normalize();
+
+	auto controller = Get_CharacterController();
+	if (controller)
+	{
+		auto actor = Get_CharacterController()->Get_Actor();
+
+
+
+
+		auto result = actor->move({ vDir.x * m_fMoveSpeed * fDT,vDir.y * m_fMoveSpeed * fDT ,vDir.z * m_fMoveSpeed * fDT }, 0.0f, fDT, PxControllerFilters());
+		auto controllerPos = actor->getFootPosition();
+
+		Set_State(Transform_State::POS, _float4(_float(controllerPos.x), _float(controllerPos.y), _float(controllerPos.z), 1.f));
+	}
+	else
+		Set_State(Transform_State::POS, Get_State(Transform_State::POS) + vDir * m_fMoveSpeed * fDT);
+}
+
 void Transform::Rotation(const _float3& vAxis, _float fRadian)
 {
 	_float4x4 matScale = _float4x4::CreateScale(Get_Scale());

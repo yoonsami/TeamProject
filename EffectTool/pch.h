@@ -20,6 +20,21 @@
 #include <process.h>
 #pragma comment(lib,"Engine/Engine.lib")
 #include "EnginePch.h"
-#include "Client_Define.h"
+
+#include "EffectTool_Define.h"
+
+/* For. ImGui*/
+#include "imgui.h"
+#include "imgui_impl_dx11.h"
+#include "imgui_impl_win32.h"
+
+/* For. Guizmo */
+#include "ImGuizmo.h"
+
+/* For. Utils */
+#include <filesystem>
+#include "Utils.h"
+#include "FileUtils.h"
+namespace fs = std::filesystem;
 
 #endif //PCH_H

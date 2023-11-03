@@ -10,13 +10,11 @@ public:
 
 public:
 	HRESULT Init();
-	void Tick();
+	void	Tick();
 	HRESULT Render();
 
 private:
-	void ExportAssets();
-
-
-	void ExportWeapon();
+	void	ExportAssets();			// MEMO: 기본적인 모델 로드시 활성화 
+	void	ExportWeapon();
 };
 
