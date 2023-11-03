@@ -52,8 +52,14 @@
     <Filter Include="02.Component\00.MonoBehaviour\00.MainCameraScript">
       <UniqueIdentifier>{c016c014-a8d2-4a1c-a3ab-e1eca59afce4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.WeaponScript">
+      <UniqueIdentifier>{8e9ac3e6-7447-4afd-b6b3-9747031d4444}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\97.DebugScript">
-      <UniqueIdentifier>{271c1e61-0aea-4da0-a48f-6ed80f12d5c4}</UniqueIdentifier>
+      <UniqueIdentifier>{39f38c1f-1b1c-4e97-888e-63a2fbea9895}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\02.Kyle_FSM">
+      <UniqueIdentifier>{57514bda-c448-45d2-88e9-465f7dcc2fdc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -99,8 +105,14 @@
     <ClInclude Include="MainCameraScript.h">
       <Filter>02.Component\00.MonoBehaviour\00.MainCameraScript</Filter>
     </ClInclude>
+    <ClInclude Include="WeaponScript.h">
+      <Filter>02.Component\00.MonoBehaviour\01.WeaponScript</Filter>
+    </ClInclude>
     <ClInclude Include="ObjectTransformDebug.h">
       <Filter>02.Component\00.MonoBehaviour\97.DebugScript</Filter>
+    </ClInclude>
+    <ClInclude Include="Kyle_FSM.h">
+      <Filter>02.Component\01.FSM\02.Kyle_FSM</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -140,8 +152,14 @@
     <ClCompile Include="MainCameraScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\00.MainCameraScript</Filter>
     </ClCompile>
+    <ClCompile Include="WeaponScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.WeaponScript</Filter>
+    </ClCompile>
     <ClCompile Include="ObjectTransformDebug.cpp">
       <Filter>02.Component\00.MonoBehaviour\97.DebugScript</Filter>
+    </ClCompile>
+    <ClCompile Include="Kyle_FSM.cpp">
+      <Filter>02.Component\01.FSM\02.Kyle_FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
