@@ -90,5 +90,6 @@ private:
 	_float3 m_vInputTurnVector = _float3(0.f);
 	_bool m_bIsSprint = false; // IsSprint
 	_bool m_bCanCombo = false;
+	COOLTIMEINFO m_tRunEndDelay = { 0.2f,0.f };
 };
 

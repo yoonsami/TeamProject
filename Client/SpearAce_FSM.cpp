@@ -167,6 +167,9 @@ void SpearAce_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fG
 
 void SpearAce_FSM::b_idle()
 {
+	_float3 vInputVector = Get_InputDirVector();
+
+
 	if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
 		KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
 		m_eCurState = STATE::b_run_start;
@@ -184,7 +187,12 @@ void SpearAce_FSM::b_idle()
 	else if (KEYPUSH(KEY_TYPE::KEY_5))
 		m_eCurState = STATE::skill_500100;
 	else if (KEYPUSH(KEY_TYPE::SPACE))
-		m_eCurState = STATE::skill_93100;
+	{
+		if (vInputVector == _float3(0.f))
+			m_eCurState = STATE::skill_93100;
+		else
+			m_eCurState = STATE::skill_91100;
+	}
 }
 
 void SpearAce_FSM::b_idle_Init()
@@ -192,15 +200,25 @@ void SpearAce_FSM::b_idle_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"b_idle", 0.1f, true, 1.f);
+
+	Get_Transform()->Set_Speed(1.f);
+	m_tRunEndDelay.fAccTime = 0.f;
 }
 
 void SpearAce_FSM::b_run_start()
 {
+	Get_Transform()->Go_Straight();
+
 	_float3 vInputVector = Get_InputDirVector();
 
 	// 방향키를 아무것도 누르지 않으면 상태를 변경
 	if (vInputVector == _float3(0.f))
-		m_eCurState = STATE::b_idle;
+	{
+		m_tRunEndDelay.fAccTime += fDT;
+
+		if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
+			m_eCurState = STATE::b_idle;
+	}
 	else
 	{
 		// 애니메이션이 끝나면 인데, 보간 시간때문에 어색할 때가 있어서,
@@ -238,10 +256,15 @@ void SpearAce_FSM::b_run_start_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"b_run_start", 0.1f, false, 1.5f);
+
+	Get_Transform()->Set_Speed(1.f);
+	m_tRunEndDelay.fAccTime = 0.f;
 }
 
 void SpearAce_FSM::b_run()
 {
+	Get_Transform()->Go_Straight();
+
 	if (KEYPUSH(KEY_TYPE::LSHIFT))
 		m_bIsSprint = true;
 	else
@@ -252,10 +275,15 @@ void SpearAce_FSM::b_run()
 	// 방향키를 아무것도 누르지 않으면 상태를 변경
 	if (vInputVector == _float3(0.f))
 	{
-		if (Get_CurFrame() % 2 == 0)
-			m_eCurState = STATE::b_run_end_r;
-		else
-			m_eCurState = STATE::b_run_end_l;
+		m_tRunEndDelay.fAccTime += fDT;
+		
+		if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
+		{
+			if (Get_CurFrame() % 2 == 0)
+				m_eCurState = STATE::b_run_end_r;
+			else
+				m_eCurState = STATE::b_run_end_l;
+		}
 	}
 	else
 		Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
@@ -284,6 +312,8 @@ void SpearAce_FSM::b_run_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"b_run", 0.1f, true, 1.f);
+
+	Get_Transform()->Set_Speed(1.f);
 }
 
 void SpearAce_FSM::b_run_end_r()
@@ -319,6 +349,9 @@ void SpearAce_FSM::b_run_end_r_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"b_run_end_r", 0.1f, false, 1.5f);
+
+	Get_Transform()->Set_Speed(1.f);
+	m_tRunEndDelay.fAccTime = 0.f;
 }
 
 void SpearAce_FSM::b_run_end_l()
@@ -352,10 +385,15 @@ void SpearAce_FSM::b_run_end_l_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"b_run_end_l", 0.1f, false, 1.5f);
+
+	Get_Transform()->Set_Speed(1.f);
+	m_tRunEndDelay.fAccTime = 0.f;
 }
 
 void SpearAce_FSM::b_sprint()
 {
+	Get_Transform()->Go_Straight();
+
 	if (KEYPUSH(KEY_TYPE::LSHIFT))
 		m_bIsSprint = true;
 	else
@@ -366,10 +404,15 @@ void SpearAce_FSM::b_sprint()
 	// 방향키를 아무것도 누르지 않으면 상태를 변경
 	if (vInputVector == _float3(0.f))
 	{
-		if (Get_CurFrame() % 2 == 0)
-			m_eCurState = STATE::b_run_end_r;
-		else
-			m_eCurState = STATE::b_run_end_l;
+		m_tRunEndDelay.fAccTime += fDT;
+
+		if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
+		{
+			if (Get_CurFrame() % 2 == 0)
+				m_eCurState = STATE::b_run_end_r;
+			else
+				m_eCurState = STATE::b_run_end_l;
+		}
 	}
 	else
 		Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
@@ -391,7 +434,6 @@ void SpearAce_FSM::b_sprint()
 		m_eCurState = STATE::skill_500100;
 	else if (KEYPUSH(KEY_TYPE::SPACE))
 		m_eCurState = STATE::skill_91100;
-
 }
 
 void SpearAce_FSM::b_sprint_Init()
@@ -399,6 +441,8 @@ void SpearAce_FSM::b_sprint_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_CurrentAnim(L"b_sprint", true, 1.f);
+
+	Get_Transform()->Set_Speed(1.5f);
 }
 
 void SpearAce_FSM::b_walk()

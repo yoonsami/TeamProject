@@ -106,11 +106,11 @@ void MainCameraScript::Cal_OffsetDir()
     _float2 mouseDir = INPUT.GetMouseDir();
 
     
-    //auto playerController = m_pPlayer.lock()->Get_CharacterController()->Get_Actor();
-    //
-    //_float4 vPlayerPos = { _float(playerController->getPosition().x), _float(playerController->getPosition().y), _float(playerController->getPosition().z), 1.f };
+    auto playerController = m_pPlayer.lock()->Get_CharacterController()->Get_Actor();
+    
+    _float4 vPlayerPos = { _float(playerController->getPosition().x), _float(playerController->getPosition().y), _float(playerController->getPosition().z), 1.f };
    
-    _float4 vPlayerPos = m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS);
+    //_float4 vPlayerPos = m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS);
 
     _float3 vDir = (vPlayerPos - Get_Transform()->Get_State(Transform_State::POS)).xyz();
 
@@ -127,7 +127,7 @@ void MainCameraScript::Cal_OffsetDir()
     }
     _float3 vRight = _float3::Up.Cross(vDir);
     vRight.Normalize();
-    m_vOffset += vRight * -mouseDir.x * m_fRotationSpeed * fDT;
+    m_vOffset += vRight * mouseDir.x * m_fRotationSpeed * fDT;
     m_vOffset += _float3::Up * mouseDir.y * m_fRotationSpeed * fDT;
 
     m_vOffset.Normalize();
@@ -151,10 +151,10 @@ void MainCameraScript::Restrict_Offset()
 
 void MainCameraScript::Update_Transform()
 {
- /*   auto playerController = m_pPlayer.lock()->Get_CharacterController()->Get_Actor();
-    auto playerPos = playerController->getFootPosition();*/
-    //_float4 vPlayerPos = { _float(playerPos.x), _float(playerPos.y), _float(playerPos.z), 1.f };
-    _float4 vPlayerPos = m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS);
+    auto playerController = m_pPlayer.lock()->Get_CharacterController()->Get_Actor();
+    auto playerPos = playerController->getFootPosition();
+    _float4 vPlayerPos = { _float(playerPos.x), _float(playerPos.y), _float(playerPos.z), 1.f };
+    //_float4 vPlayerPos = m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS);
 
     vPlayerPos += _float4(0.f, 1.f, 0.f, 0.f);
     _float4 vCenterPos = _float4(0.f);
@@ -164,45 +164,19 @@ void MainCameraScript::Update_Transform()
         vCenterPos = vPlayerPos;
 
 
-    _float fMinDist = 5.f; //FLT_MAX;
-    //Ray ray;
-    //ray.position = vCenterPos.xyz();
-    //ray.direction = m_vOffset;
-    //physx::PxRaycastBuffer hit{};
-    //physx::PxQueryFilterData filterData;
-    //filterData.flags = physx::PxQueryFlag::eSTATIC;
-    //if (PHYSX.Get_PxScene()->raycast({ vCenterPos.x,vCenterPos.y,vCenterPos.z }, { m_vOffset.x,m_vOffset.y,m_vOffset.z }, 5.f, hit, PxHitFlags(physx::PxHitFlag::eDEFAULT), filterData))
-    //{
-    //    _float3 vHitPoint = { hit.getAnyHit(0).position.x, hit.getAnyHit(0).position.y, hit.getAnyHit(0).position.z };
-    //    fMinDist = hit.getAnyHit(0).distance;
-    //}
-    /*auto& objects = CUR_SCENE->Get_Objects();
-    for (auto& object : objects)
+    _float fMinDist = FLT_MAX;
+    Ray ray;
+    ray.position = vCenterPos.xyz();
+    ray.direction = m_vOffset;
+    physx::PxRaycastBuffer hit{};
+    physx::PxQueryFilterData filterData;
+    filterData.flags = physx::PxQueryFlag::eSTATIC;
+    if (PHYSX.Get_PxScene()->raycast({ vCenterPos.x,vCenterPos.y,vCenterPos.z }, { m_vOffset.x,m_vOffset.y,m_vOffset.z }, 5.f, hit, PxHitFlags(physx::PxHitFlag::eDEFAULT), filterData))
     {
-       if(!object->Get_Collider())
-          continue;
-
-       if(object->Get_Collider()->Get_ColliderType() != ColliderType::Mesh)
-          continue;
-
-       if (!object->Get_RigidBody())
-          continue;
-       if(object->Get_RigidBody()->Get_RigidBody()->getActorFlags() & PxActorFlag::eDISABLE_SIMULATION)
-          continue;
-
-       _float fDist = 0.f;
-       if (object->Get_Collider()->Intersects(ray, fDist))
-       {
-          if(fDist<0)
-             continue;
-          if (fMinDist > fDist)
-          {
-             fMinDist = fDist;
-          }
-       }
-    }*/
-
-
+        _float3 vHitPoint = { hit.getAnyHit(0).position.x, hit.getAnyHit(0).position.y, hit.getAnyHit(0).position.z };
+        fMinDist = hit.getAnyHit(0).distance;
+    }
+   
     // Set Position
     if (m_fFixedTime > 0.f)
     {
