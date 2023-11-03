@@ -91,6 +91,8 @@ void ParticleSystem::Final_Tick()
 
 	vector<ParticleInfo> tmp(m_ParticleSystemDesc.m_iMaxParticle);
 	m_pParticleBuffer->Copy_FromOutput(tmp.data());
+
+
 	m_pParticleBuffer->Copy_ToInput(tmp.data());
 }
 

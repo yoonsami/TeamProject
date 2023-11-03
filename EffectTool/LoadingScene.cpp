@@ -7,7 +7,6 @@
 #include "GameObject.h"
 #include "MeshRenderer.h"
 
-
 LoadingScene::LoadingScene(shared_ptr<Scene> nextScene)
 	:m_pNextScene(nextScene)
 {
@@ -37,7 +36,7 @@ void LoadingScene::Init()
 	}
 
 	// For. Create Background
-	Create_LoadingBG();
+	// Create_LoadingBG();
 
 	// For. Create Loader 
 	m_pLoader = make_shared<Loader>(m_pNextScene);

@@ -1,6 +1,7 @@
 #include "ImGuiToolMgr.h"
 
 /* Widgets */
+#include "Widget_MeshEffectTool.h"
 #include "Widget_ParticleEffectTool.h"
 
 ImGuiToolMgr::~ImGuiToolMgr()
@@ -34,14 +35,15 @@ void ImGuiToolMgr::Tick()
     ImGuizmo::BeginFrame();
 
     // For. Basic Widget
-    //ImGui::ShowDemoWindow();
-    ImGui::SetNextWindowPos(ImVec2(0, 0));
+    ImGui::SetNextWindowPos(ImVec2(0, g_iWinSizeY - 50.f));
     ImGui::Begin("Basic Widget");
     ImGui_BasicWidget();
     ImGui::End();
     
-    //if (m_bIsParticleEffectTool_On)
-    //    m_pWidget_ParticleEffectTool->Tick();
+    if (m_bIsParticleEffectTool_On)
+        m_pWidget_ParticleEffectTool->Tick();
+    if (m_bIsMeshEffectTool_On)
+        m_pWidget_MeshEffectTool->Tick();
 }
 
 void ImGuiToolMgr::Render()
@@ -52,6 +54,8 @@ void ImGuiToolMgr::Render()
 
 void ImGuiToolMgr::ImGui_BasicWidget()
 {
+    ImGui::Checkbox("MeshEffect Tool", &m_bIsMeshEffectTool_On);
+    ImGui::SameLine();
     ImGui::Checkbox("Particle Tool", &m_bIsParticleEffectTool_On);
 }
 

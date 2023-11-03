@@ -28,5 +28,5 @@ void Widget_ParticleEffectTool::Set_Texture_List()
 
 void Widget_ParticleEffectTool::ImGui_ParticleMaker()
 {
-	ImGui::Text("Test");
+	ImGui::Text("Particle Maker");
 }

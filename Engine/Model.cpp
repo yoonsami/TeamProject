@@ -241,11 +241,8 @@ void Model::ReadAnimation(const wstring& fileName)
 		m_Animations.push_back(animation);
 	}
 
-
-
 	if (!m_pTexture)
 		Create_Texture();
-
 }
 
 //void Model::ReadBase()

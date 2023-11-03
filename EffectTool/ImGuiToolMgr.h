@@ -2,6 +2,7 @@
 #include "pch.h"
 
 class Widget_ParticleEffectTool;
+class Widget_MeshEffectTool;
 class ImGuiToolMgr
 {
 	DECLARE_SINGLETON(ImGuiToolMgr)
@@ -30,5 +31,6 @@ private:
 
 	/* Widgets */
 	shared_ptr<Widget_ParticleEffectTool>	m_pWidget_ParticleEffectTool = { nullptr };
+	shared_ptr<Widget_MeshEffectTool>		m_pWidget_MeshEffectTool = { nullptr };
 };
 

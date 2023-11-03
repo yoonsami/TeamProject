@@ -18,7 +18,8 @@ ResourceMgr::~ResourceMgr()
 void ResourceMgr::Initialize()
 {
 	CreateDefaultMesh();
-	CreateDefaultShader();
+	//CreateDefaultShader();
+	CreateDefaultShader_EffectTool(); // MEMO : Effect Tool에서 사용하는 Shader Create 함수 
 	CreateDefaultMaterial();
 	CreateDefaultFont();
 }
@@ -377,7 +378,44 @@ void ResourceMgr::CreateDefaultShader()
 		auto shader = Get<Shader>(ShaderTag);
 		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
 	}
+}
 
+void ResourceMgr::CreateDefaultShader_EffectTool()
+{
+	{ // MEMO : must
+		wstring ShaderTag = L"Lighting.fx";
+		Load<Shader>(ShaderTag, ShaderTag);
+		auto shader = Get<Shader>(ShaderTag);
+		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
+	}
+	
+	{ // MEMO : must
+		wstring ShaderTag = L"Shader_Deferred.fx";
+		Load<Shader>(ShaderTag, ShaderTag);
+		auto shader = Get<Shader>(ShaderTag);
+		shader->Set_ShaderType(SHADER_TYPE::DEFERRED);
+	}
+
+	{ // MEMO : must
+		wstring ShaderTag = L"Shader_Mesh.fx";
+		Load<Shader>(ShaderTag, ShaderTag);
+		auto shader = Get<Shader>(ShaderTag);
+		shader->Set_ShaderType(SHADER_TYPE::FORWARD);
+	}
+
+	{ // MEMO : must
+		wstring ShaderTag = L"Blur.fx";
+		Load<Shader>(ShaderTag, ShaderTag);
+		auto shader = Get<Shader>(ShaderTag);
+		shader->Set_ShaderType(SHADER_TYPE::DEFERRED);
+	}
+
+	{ // MEMO : must
+		wstring ShaderTag = L"Distorted_Final.fx";
+		Load<Shader>(ShaderTag, ShaderTag);
+		auto shader = Get<Shader>(ShaderTag);
+		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
+	}
 }
 
 void ResourceMgr::CreateModel(const wstring& path)
