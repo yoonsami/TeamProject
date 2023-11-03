@@ -36,7 +36,7 @@ void LoadingScene::Init()
 	}
 
 	// For. Create Background
-	// Create_LoadingBG();
+	Create_LoadingBG();
 
 	// For. Create Loader 
 	m_pLoader = make_shared<Loader>(m_pNextScene);

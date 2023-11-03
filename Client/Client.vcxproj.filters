@@ -200,5 +200,8 @@
     <FxCompile Include="..\Shaders\Render.fx">
       <Filter>Shader\Common</Filter>
     </FxCompile>
+    <FxCompile Include="..\Shaders\Shader_Particle2.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

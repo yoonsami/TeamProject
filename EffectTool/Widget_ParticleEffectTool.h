@@ -22,9 +22,13 @@ private:
 	void					Option_Color();
 	void					Option_LifeTime();
 	void					Option_Speed();
-	
+	void					Option_Billbord();
+	void					Create();
+	void					Delete();
 
 private:
+	shared_ptr<GameObject>	m_pTargetParticle = { nullptr };
+
 	/* For. Particle Texture list */
 	_uint					m_iNumUniversalTextures = { 0 };
 	vector<string>			m_vecUniversalTextures;
@@ -56,5 +60,8 @@ private:
 	/* For. Speed */
 	_uint					m_iSelected_SpeedOption = { 0 };
 	_float					m_iSpeed[2] = { 1.f, 5.f };
+
+	/* For. Billbord */
+	_uint					m_iSelected_BillbordOption = { 0 };
 };
 

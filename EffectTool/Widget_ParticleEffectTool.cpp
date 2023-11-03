@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Widget_ParticleEffectTool.h"
 
+// For. Components
+#include "ParticleSystem.h"
 
 Widget_ParticleEffectTool::Widget_ParticleEffectTool()
 {
@@ -64,8 +66,12 @@ void Widget_ParticleEffectTool::Set_Texture_List()
 
 void Widget_ParticleEffectTool::ImGui_ParticleMaker()
 {
-	ImGui::SeparatorText("Basic Information");
+	ImGui::SeparatorText("Particle Setting");
 	ImGui::InputText("Tag", m_pszParticleTag, MAX_PATH);
+	ImGui::Text("");
+
+	/* For. Billbord */
+	Option_Billbord();
 
 	/* For. Texture */
 	Option_Textures();
@@ -78,6 +84,15 @@ void Widget_ParticleEffectTool::ImGui_ParticleMaker()
 
 	/* For. Speed */
 	Option_Speed();
+
+	/* For. Create, Delete Particle */
+	ImGui::Text("");
+	ImGui::SeparatorText(" Create/Delete ");
+	if (ImGui::Button("Create"))
+		Create();
+	ImGui::SameLine();
+	if (ImGui::Button("Delete"))
+		Delete();
 }
 
 void Widget_ParticleEffectTool::Option_Textures()
@@ -172,6 +187,7 @@ void Widget_ParticleEffectTool::Option_Textures()
 void Widget_ParticleEffectTool::Option_Color()
 {
 	ImGui::SeparatorText("Color");
+
 	const char* pszItems[] = { "Use Shape Texture Color", "Constant", "Gradation"};
 	if (ImGui::BeginCombo("Options##Color", pszItems[m_iSelected_ColorOption], 0))
 	{
@@ -218,7 +234,6 @@ void Widget_ParticleEffectTool::Option_LifeTime()
 		}
 		ImGui::EndCombo();
 	}
-
 	switch (m_iSelected_LifeTimeOption)
 	{
 	case 0: // Constant
@@ -264,4 +279,75 @@ void Widget_ParticleEffectTool::Option_Speed()
 
 		break;
 	}
+}
+
+void Widget_ParticleEffectTool::Option_Billbord()
+{
+	ImGui::SeparatorText("Billbord");
+
+	//const char* pszItems[] = { "Off", "All", "Horizontal Only", "Vertical Only" };
+	const char* pszItems[] = { "Default" };
+	if (ImGui::BeginCombo("Options##Speed", pszItems[m_iSelected_BillbordOption], 0))
+	{
+		for (_uint n = 0; n < IM_ARRAYSIZE(pszItems); n++)
+		{
+			const bool is_selected = (m_iSelected_BillbordOption == n);
+			if (ImGui::Selectable(pszItems[n], is_selected))
+				m_iSelected_BillbordOption = n;
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+}
+
+void Widget_ParticleEffectTool::Create()
+{
+	// For. Particle이 될 게임오브젝트 생성
+	shared_ptr<GameObject> ParticleObj = make_shared<GameObject>();
+
+	// For. Setting GameObject 
+	ParticleObj->Set_Name(Utils::ToWString(m_pszParticleTag));
+	
+	// For. GameObject에 transform component 붙이기 + 세팅하기 
+	ParticleObj->GetOrAddTransform();	// Add Transform component
+	ParticleObj->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
+
+	// For. GameObject에 Particle component 붙이기 
+	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Particle2.fx");
+	shared_ptr<ParticleSystem> particleSys =  make_shared<ParticleSystem>(shader);
+	ParticleObj->Add_Component(particleSys);	// Add Particle System Component
+	ParticleObj->Get_ParticleSystem()->Set_Mesh(RESOURCES.Get<Mesh>(L"Point"));
+		
+	shared_ptr<Material> material = make_shared<Material>();
+	//material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"UniverImg", L"../Resources/Textures/Universal/T_LifeForceOut_Mask_001.png"), TextureMapType::DIFFUSE);
+	material->Get_MaterialDesc().ambient = Color(1.f, 1.f, 1.f, 1.f);
+	material->Get_MaterialDesc().diffuse = Color(1.f, 1.f, 1.f, 1.f);
+	material->Get_MaterialDesc().specular = Color(1.f, 1.f, 1.f, 1.f);
+	material->Get_MaterialDesc().emissive = Color(1.f, 1.f, 1.f, 1.f);
+	ParticleObj->Get_ParticleSystem()->Set_Material(material);
+	ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_fDuration = 999.f;
+	ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_fCreatingTime = 999.f;
+	ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_fStartScale = 15.f;
+	ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_fEndScale = 15.f;
+	ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_fMinLifeTime = 10.f;
+	ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_fMaxLifeTime = 10.f;
+	ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_iMaxParticle = 30.f;
+	ParticleObj->Get_ParticleSystem()->Get_ComputeParamDesc().SetFloat(0, 1.f);
+	ParticleObj->Get_ParticleSystem()->Get_ComputeParamDesc().SetFloat(1, 1.f);
+	ParticleObj->Get_ParticleSystem()->Get_RenderParamDesc().SetFloat(1, 0.1f);
+	ParticleObj->Get_ParticleSystem()->Get_RenderParamDesc().SetFloat(2, 0.1f);
+
+	ParticleObj->Get_ParticleSystem()->Init();
+	// For. 위젯의 Target Object에 바인딩해두기 
+	m_pTargetParticle = ParticleObj;
+
+	// For. 씬에 GameObject 추가 
+	CUR_SCENE->Add_GameObject(ParticleObj);
+}
+
+void Widget_ParticleEffectTool::Delete()
+{
+	// TODO : m_pTargetParticle에 바인딩 된 GameObject 삭제하기 
 }

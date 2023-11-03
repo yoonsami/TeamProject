@@ -25,7 +25,6 @@ struct Particle
     float padding;
     float4 randTheta;
     float4 nowMovingVel;
-
 };
 
 struct ComputeShared

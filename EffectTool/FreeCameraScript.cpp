@@ -21,22 +21,19 @@ void FreeCameraScript::Tick()
 		Get_Transform()->Go_Horizontally_Down();
 
 	// For. Roataion 
-	if (KEYPUSH(KEY_TYPE::LSHIFT))
+	if (KEYHOLD(KEY_TYPE::LCTRL))
 	{
-		if (KEYPUSH(KEY_TYPE::LBUTTON))
+		_float2 vMouseDir = INPUT.GetMouseDir();
+
 		{
-			_float2 vMouseDir = INPUT.GetMouseDir();
+			_float3 axis = _float3::Up;
 
-			{
-				_float3 axis = _float3::Up;
+			Get_Transform()->Turn(axis, vMouseDir.x * m_fRotationSpeed);
+		}
+		{
+			_float3 axis = Get_Transform()->Get_State(Transform_State::RIGHT).xyz();
 
-				Get_Transform()->Turn(axis, vMouseDir.x * m_fRotationSpeed);
-			}
-			{
-				_float3 axis = Get_Transform()->Get_State(Transform_State::RIGHT).xyz();
-
-				Get_Transform()->Turn(axis, vMouseDir.y * m_fRotationSpeed);
-			}
+			Get_Transform()->Turn(axis, vMouseDir.y * m_fRotationSpeed);
 		}
 	}
 }

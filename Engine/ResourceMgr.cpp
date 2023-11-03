@@ -306,6 +306,14 @@ void ResourceMgr::CreateDefaultMesh()
 
 void ResourceMgr::CreateDefaultShader()
 {
+	{ // MEMO : 2가 그냥 Shader_Particle.fx를 복사, 수정해서 사용하고 있는 것. 
+		wstring ShaderTag = L"Shader_Particle2.fx";
+		Load<Shader>(ShaderTag, ShaderTag);
+		auto shader = Get<Shader>(ShaderTag);
+		shader->Set_ShaderType(SHADER_TYPE::PARTICLE);
+	}
+
+
 	{
 		wstring ShaderTag = L"Shader_Mesh.fx";
 		Load<Shader>(ShaderTag, ShaderTag);
@@ -382,6 +390,13 @@ void ResourceMgr::CreateDefaultShader()
 
 void ResourceMgr::CreateDefaultShader_EffectTool()
 {
+	{ // MEMO : 2가 그냥 Shader_Particle.fx를 복사, 수정해서 사용하고 있는 것. 
+		wstring ShaderTag = L"Shader_Particle2.fx";
+		Load<Shader>(ShaderTag, ShaderTag);
+		auto shader = Get<Shader>(ShaderTag);
+		shader->Set_ShaderType(SHADER_TYPE::PARTICLE);
+	}
+
 	{ // MEMO : must
 		wstring ShaderTag = L"Lighting.fx";
 		Load<Shader>(ShaderTag, ShaderTag);
