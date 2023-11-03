@@ -112,8 +112,7 @@ void InputMgr::Tick()
 		m_vMouseDir.y = _float(m_ptMousePos.y - center.y);
 
 		ClientToScreen(hWnd, &center);
-		SetCursorPos(center.x, center.y);
-		::ShowCursor(false);
+		//::ShowCursor(false);
 	}
 
 }

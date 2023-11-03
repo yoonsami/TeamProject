@@ -1,0 +1,190 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="98.Default">
+      <UniqueIdentifier>{1416d258-c22e-43be-a507-5d8b90f21cef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Header">
+      <UniqueIdentifier>{3eae259d-6692-4755-9e22-e4c6daecabae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.MainApp">
+      <UniqueIdentifier>{e274b223-5662-4b74-8a7e-4b61c0fdc44e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Scene">
+      <UniqueIdentifier>{2bcfffec-11fd-40c3-acd5-ace3fb2236a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Scene\00.DemoScene">
+      <UniqueIdentifier>{13315f5f-4c38-4adc-b0a3-367ada70f7cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Scene\01.LoadingScene">
+      <UniqueIdentifier>{06c79e5e-d8ca-4693-9154-eedfc3cb082a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Scene\01.LoadingScene\Loader">
+      <UniqueIdentifier>{d65c794f-be39-4eaa-844a-ccf9babac16e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component">
+      <UniqueIdentifier>{6977fc82-f1d7-4874-9763-e3be3397e979}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour">
+      <UniqueIdentifier>{94e855a8-49bd-46da-868f-e6cfd65dd3e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\99.DemoCameraScript">
+      <UniqueIdentifier>{442112a9-56ae-4aee-a560-ea16ac42e440}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\98.DemoAnimationController">
+      <UniqueIdentifier>{4e20d96b-da76-43f6-a3f0-f2eb67c11347}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM">
+      <UniqueIdentifier>{5106d280-65b5-4a05-b449-e52004caa4f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\00.DemoFSM">
+      <UniqueIdentifier>{8a982ce2-f0b2-4b7a-800d-dfeff839ac2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.IMGUI">
+      <UniqueIdentifier>{70102184-1efa-4c08-a535-182e88a4fa9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.IMGUI\Manager">
+      <UniqueIdentifier>{acee1967-1ca5-4398-be77-730d5d04a619}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Resource.h">
+      <Filter>98.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="MainApp.h">
+      <Filter>00.MainApp</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadingScene.h">
+      <Filter>01.Scene\01.LoadingScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Loader.h">
+      <Filter>01.Scene\01.LoadingScene\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoScene.h">
+      <Filter>01.Scene\00.DemoScene</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoCameraScript1.h">
+      <Filter>02.Component\00.MonoBehaviour\99.DemoCameraScript</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoCameraScript2.h">
+      <Filter>02.Component\00.MonoBehaviour\99.DemoCameraScript</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoFSM.h">
+      <Filter>02.Component\01.FSM\00.DemoFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoAnimationController1.h">
+      <Filter>02.Component\00.MonoBehaviour\98.DemoAnimationController</Filter>
+    </ClInclude>
+    <ClInclude Include="MapTool.h">
+      <Filter>98.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="MapTool_Define.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="imconfig.h">
+      <Filter>97.IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui.h">
+      <Filter>97.IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_dx11.h">
+      <Filter>97.IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_win32.h">
+      <Filter>97.IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_internal.h">
+      <Filter>97.IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuizmo.h">
+      <Filter>97.IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_rectpack.h">
+      <Filter>97.IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_textedit.h">
+      <Filter>97.IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_truetype.h">
+      <Filter>97.IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui_Manager.h">
+      <Filter>97.IMGUI\Manager</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>99.Header</Filter>
+    </ClCompile>
+    <ClCompile Include="MainApp.cpp">
+      <Filter>00.MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadingScene.cpp">
+      <Filter>01.Scene\01.LoadingScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Loader.cpp">
+      <Filter>01.Scene\01.LoadingScene\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="DemoScene.cpp">
+      <Filter>01.Scene\00.DemoScene</Filter>
+    </ClCompile>
+    <ClCompile Include="DemoCameraScript1.cpp">
+      <Filter>02.Component\00.MonoBehaviour\99.DemoCameraScript</Filter>
+    </ClCompile>
+    <ClCompile Include="DemoCameraScript2.cpp">
+      <Filter>02.Component\00.MonoBehaviour\99.DemoCameraScript</Filter>
+    </ClCompile>
+    <ClCompile Include="DemoFSM.cpp">
+      <Filter>02.Component\01.FSM\00.DemoFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="DemoAnimationController1.cpp">
+      <Filter>02.Component\00.MonoBehaviour\98.DemoAnimationController</Filter>
+    </ClCompile>
+    <ClCompile Include="MapTool.cpp">
+      <Filter>98.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui.cpp">
+      <Filter>97.IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_demo.cpp">
+      <Filter>97.IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_draw.cpp">
+      <Filter>97.IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_dx11.cpp">
+      <Filter>97.IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_win32.cpp">
+      <Filter>97.IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_tables.cpp">
+      <Filter>97.IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_widgets.cpp">
+      <Filter>97.IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuizmo.cpp">
+      <Filter>97.IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Imgui_Manager.cpp">
+      <Filter>97.IMGUI\Manager</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>98.Default</Filter>
+    </Image>
+    <Image Include="MapTool.ico">
+      <Filter>98.Default</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MapTool.rc">
+      <Filter>98.Default</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
