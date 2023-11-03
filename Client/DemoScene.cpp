@@ -1,10 +1,11 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "DemoScene.h"
 #include "ModelAnimator.h"
 #include "ModelRenderer.h"
 #include "Camera.h"
 #include "Light.h"
 #include "Model.h"
+#include "MainCameraScript.h"
 #include "DemoCameraScript1.h"
 #include "DemoCameraScript2.h"
 #include "DemoAnimationController1.h"
@@ -60,7 +61,7 @@ void DemoScene::Load_DemoModel()
 		testObj->Add_Component(make_shared<Transform>());
 		//testObj->GetOrAddTransform();
 
-		testObj->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
+		testObj->Get_Transform()->Set_State(Transform_State::POS, _float4(3.f, 0.f, 3.f, 1.f));
 		{
 			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
@@ -73,8 +74,6 @@ void DemoScene::Load_DemoModel()
 			testObj->Add_Component(animator);
 		}
 
-		//testObj->Add_Component(make_shared<DemoAnimationController1>());
-
 		{
 			shared_ptr<SpearAce_FSM> fsm = make_shared<SpearAce_FSM>();
 			testObj->Add_Component(fsm);
@@ -83,32 +82,7 @@ void DemoScene::Load_DemoModel()
 
 		Add_GameObject(testObj);
 	}
-	//{
-	//	// GameObject �����Ҵ�
-	//	shared_ptr<GameObject> testObj = make_shared<GameObject>();
 
-	//	// Transform Component �߰�
-	//	// ���� �ϳ� ���. AddComponent �Ǵ� GetOrAddTransform(������ ��ȯ ������ ������ ��ȯ)
-	//	testObj->Add_Component(make_shared<Transform>());
-	//	//testObj->GetOrAddTransform();
-
-	//	testObj->Get_Transform()->Set_State(Transform_State::POS, _float4(5.f, 0.f, 0.f, 1.f));
-	//	{
-	//		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-
-	//		shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
-	//		{
-	//			shared_ptr<Model> model = RESOURCES.Get<Model>(L"1058_cooperateuniqueskilltimeline");
-	//			animator->Set_Model(model);
-	//		}
-	//		//�ִϸ����� ������Ʈ
-	//		testObj->Add_Component(animator);
-	//	}
-
-	//	testObj->Add_Component(make_shared<DemoAnimationController1>());
-
-	//	Add_GameObject(testObj);
-	//}
 }
 
 void DemoScene::Load_Camera()
@@ -125,7 +99,7 @@ void DemoScene::Load_Camera()
 		// ī�޶� Component ���� 
 		CameraDesc desc;
 		desc.fFOV = XM_PI / 3.f;
-		desc.strName = L"Default";
+		desc.strName = L"Player_Cam";
 		desc.fSizeX = _float(g_iWinSizeX);
 		desc.fSizeY = _float(g_iWinSizeY);
 		desc.fNear = 0.1f;
@@ -134,15 +108,39 @@ void DemoScene::Load_Camera()
 		
 		camera->Add_Component(cameraComponent);
 
-
+	
 		camera->Get_Camera()->Set_ProjType(ProjectionType::Perspective);
 		//Layer_UI�� �ִ� ������Ʈ�� �ø��ϰڴ�.
 		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, true);
 
 		// MonoBehaviour(Component �� ������ �ƴѰ͵�) �߰�
 		// �Ϻη� ��� ��������
-		camera->Add_Component(make_shared<DemoCameraScript1>());
-		camera->Add_Component(make_shared<DemoCameraScript2>());
+		auto pPlayer = Get_GameObject(L"Player");
+		camera->Add_Component(make_shared<MainCameraScript>(pPlayer));
+	
+		Add_GameObject(camera);
+	}
+	{
+		shared_ptr<GameObject> camera = make_shared<GameObject>();
+
+		// Transform Component �߰�
+		camera->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
+
+		// ī�޶� Component ���� 
+		CameraDesc desc;
+		desc.fFOV = XM_PI / 3.f;
+		desc.strName = L"UI_Cam";
+		desc.fSizeX = _float(g_iWinSizeX);
+		desc.fSizeY = _float(g_iWinSizeY);
+		desc.fNear = 0.1f;
+		desc.fFar = 1000.f;
+		shared_ptr<Camera> cameraComponent = make_shared<Camera>(desc);
+
+		camera->Add_Component(cameraComponent);
+
+		camera->Get_Camera()->Set_ProjType(ProjectionType::Orthographic);
+		//Layer_UI�� �ִ� ������Ʈ�� �ø��ϰڴ�.
+		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, false);
 
 		Add_GameObject(camera);
 	}

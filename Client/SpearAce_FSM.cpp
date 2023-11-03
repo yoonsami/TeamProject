@@ -421,11 +421,8 @@ void SpearAce_FSM::skill_1100()
 {
 	_float3 vInputVector = Get_InputDirVector();
 
-	if (_float(Get_CurFrame()) / _float(Get_FinalFrame()) < 0.1f)
-	{
-		if (vInputVector != _float3(0.f))
-			Soft_Turn_ToInputDir(vInputVector, XM_PI * 10.f);
-	}
+	if (m_vInputTurnVector != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
 
 	if (_float(Get_CurFrame()) / _float(Get_FinalFrame()) >= 0.25f)
 		m_bCanCombo = true;
@@ -466,17 +463,18 @@ void SpearAce_FSM::skill_1100_Init()
 
 	m_bIsSprint = false;
 	m_bCanCombo = false;
+
+	m_vInputTurnVector = _float3(0.f);
+	m_vInputTurnVector = Get_InputDirVector();
 }
 
 void SpearAce_FSM::skill_1200()
 {
 	_float3 vInputVector = Get_InputDirVector();
-	
-	if (_float(Get_CurFrame()) / _float(Get_FinalFrame()) < 0.1f)
-	{
-		if (vInputVector != _float3(0.f))
-			Soft_Turn_ToInputDir(vInputVector, XM_PI * 10.f);
-	}
+
+	if (m_vInputTurnVector != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
+
 
 	if (_float(Get_CurFrame()) / _float(Get_FinalFrame()) >= 0.25f)
 		m_bCanCombo = true;
@@ -519,17 +517,17 @@ void SpearAce_FSM::skill_1200_Init()
 	animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, 1.f);
 
 	m_bCanCombo = false;
+
+	m_vInputTurnVector = _float3(0.f);
+	m_vInputTurnVector = Get_InputDirVector();
 }
 
 void SpearAce_FSM::skill_1300()
 {
 	_float3 vInputVector = Get_InputDirVector();
-	
-	if (_float(Get_CurFrame()) / _float(Get_FinalFrame()) < 0.1f)
-	{
-		if (vInputVector != _float3(0.f))
-			Soft_Turn_ToInputDir(vInputVector, XM_PI * 10.f);
-	}
+
+	if (m_vInputTurnVector != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
 
 	if (Is_AnimFinished())
 	{
@@ -563,10 +561,16 @@ void SpearAce_FSM::skill_1300_Init()
 	animator->Set_NextTweenAnim(L"skill_1300", 0.15f, false, 1.f);
 
 	m_bCanCombo = false;
+
+	m_vInputTurnVector = _float3(0.f);
+	m_vInputTurnVector = Get_InputDirVector();
 }
 
 void SpearAce_FSM::skill_91100()
 {
+	if (m_vInputTurnVector != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
+
 	if (Is_AnimFinished())
 		m_eCurState = STATE::b_idle;
 }
@@ -579,6 +583,9 @@ void SpearAce_FSM::skill_91100_Init()
 
 	m_bCanCombo = false;
 	m_bIsSprint = false;
+
+	m_vInputTurnVector = _float3(0.f);
+	m_vInputTurnVector = Get_InputDirVector();
 }
 
 void SpearAce_FSM::skill_93100()
@@ -600,12 +607,9 @@ void SpearAce_FSM::skill_93100_Init()
 void SpearAce_FSM::skill_100100()
 {
 	_float3 vInputVector = Get_InputDirVector();
-	
-	if (_float(Get_CurFrame()) / _float(Get_FinalFrame()) < 0.1f)
-	{
-		if (vInputVector != _float3(0.f))
-			Soft_Turn_ToInputDir(vInputVector, XM_PI * 10.f);
-	}
+
+	if (m_vInputTurnVector != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
 
 	if (Is_AnimFinished())
 		m_eCurState = STATE::b_idle;
@@ -627,17 +631,17 @@ void SpearAce_FSM::skill_100100_Init()
 
 	m_bCanCombo = false;
 	m_bIsSprint = false;
+
+	m_vInputTurnVector = _float3(0.f);
+	m_vInputTurnVector = Get_InputDirVector();
 }
 
 void SpearAce_FSM::skill_200100()
 {
 	_float3 vInputVector = Get_InputDirVector();
-	
-	if (_float(Get_CurFrame()) / _float(Get_FinalFrame()) < 0.1f)
-	{
-		if (vInputVector != _float3(0.f))
-			Soft_Turn_ToInputDir(vInputVector, XM_PI * 10.f);
-	}
+
+	if (m_vInputTurnVector != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
 
 	if (_float(Get_CurFrame()) / _float(Get_FinalFrame()) >= 0.25f)
 		m_bCanCombo = true;
@@ -668,17 +672,17 @@ void SpearAce_FSM::skill_200100_Init()
 
 	m_bCanCombo = false;
 	m_bIsSprint = false;
+
+	m_vInputTurnVector = _float3(0.f);
+	m_vInputTurnVector = Get_InputDirVector();
 }
 
 void SpearAce_FSM::skill_200200()
 {
 	_float3 vInputVector = Get_InputDirVector();
-	
-	if (_float(Get_CurFrame()) / _float(Get_FinalFrame()) < 0.1f)
-	{
-		if (vInputVector != _float3(0.f))
-			Soft_Turn_ToInputDir(vInputVector, XM_PI * 10.f);
-	}
+
+	if (m_vInputTurnVector != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
 
 	if (Is_AnimFinished())
 		m_eCurState = STATE::b_idle;
@@ -699,17 +703,17 @@ void SpearAce_FSM::skill_200200_Init()
 	animator->Set_NextTweenAnim(L"skill_200200", 0.15f, false, 1.f);
 
 	m_bCanCombo = false;
+
+	m_vInputTurnVector = _float3(0.f);
+	m_vInputTurnVector = Get_InputDirVector();
 }
 
 void SpearAce_FSM::skill_300100()
 {
 	_float3 vInputVector = Get_InputDirVector();
-	
-	if (_float(Get_CurFrame()) / _float(Get_FinalFrame()) < 0.1f)
-	{
-		if (vInputVector != _float3(0.f))
-			Soft_Turn_ToInputDir(vInputVector, XM_PI * 10.f);
-	}
+
+	if (m_vInputTurnVector != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
 
 	if (Is_AnimFinished())
 		m_eCurState = STATE::b_idle;
@@ -731,17 +735,17 @@ void SpearAce_FSM::skill_300100_Init()
 
 	m_bCanCombo = false;
 	m_bIsSprint = false;
+
+	m_vInputTurnVector = _float3(0.f);
+	m_vInputTurnVector = Get_InputDirVector();
 }
 
 void SpearAce_FSM::skill_502100()
 {
 	_float3 vInputVector = Get_InputDirVector();
-	
-	if (_float(Get_CurFrame()) / _float(Get_FinalFrame()) < 0.1f)
-	{
-		if (vInputVector != _float3(0.f))
-			Soft_Turn_ToInputDir(vInputVector, XM_PI * 10.f);
-	}
+
+	if (m_vInputTurnVector != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
 
 	if (Is_AnimFinished())
 		m_eCurState = STATE::b_idle;
@@ -763,17 +767,17 @@ void SpearAce_FSM::skill_502100_Init()
 
 	m_bCanCombo = false;
 	m_bIsSprint = false;
+
+	m_vInputTurnVector = _float3(0.f);
+	m_vInputTurnVector = Get_InputDirVector();
 }
 
 void SpearAce_FSM::skill_500100()
 {
 	_float3 vInputVector = Get_InputDirVector();
-	
-	if (_float(Get_CurFrame()) / _float(Get_FinalFrame()) < 0.1f)
-	{
-		if (vInputVector != _float3(0.f))
-			Soft_Turn_ToInputDir(vInputVector, XM_PI * 10.f);
-	}
+
+	if (m_vInputTurnVector != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
 
 	if (Is_AnimFinished())
 		m_eCurState = STATE::b_idle;
@@ -795,4 +799,7 @@ void SpearAce_FSM::skill_500100_Init()
 
 	m_bCanCombo = false;
 	m_bIsSprint = false;
+
+	m_vInputTurnVector = _float3(0.f);
+	m_vInputTurnVector = Get_InputDirVector();
 }

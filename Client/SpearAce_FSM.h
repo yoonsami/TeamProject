@@ -87,6 +87,7 @@ private:
 	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;
 
+	_float3 m_vInputTurnVector = _float3(0.f);
 	_bool m_bIsSprint = false; // IsSprint
 	_bool m_bCanCombo = false;
 };
