@@ -44,7 +44,7 @@ void ModelRenderer::Render()
 	for (_uint i = 0; i < boneCount; ++i)
 	{
 		shared_ptr<ModelBone> bone = m_pModel->Get_BoneByIndex(i);
-		boneDesc->transform[i] = bone->transform * Utils::Get_PivotMatrix();
+		boneDesc->transform[i] = bone->transform * Utils::m_matNonAnimPivot;
 	}
 	m_pShader->Push_BoneData(*boneDesc);
 
@@ -98,7 +98,7 @@ void ModelRenderer::Render_Skybox()
 	for (_uint i = 0; i < boneCount; ++i)
 	{
 		shared_ptr<ModelBone> bone = m_pModel->Get_BoneByIndex(i);
-		boneDesc->transform[i] = bone->transform * _float4x4::CreateScale(0.01f) * Utils::Get_PivotMatrix();
+		boneDesc->transform[i] = bone->transform * _float4x4::CreateScale(0.01f) * Utils::m_matNonAnimPivot;
 	}
 	m_pShader->Push_BoneData(*boneDesc);
 
@@ -140,7 +140,7 @@ void ModelRenderer::Render_Shadow()
 	for (_uint i = 0; i < boneCount; ++i)
 	{
 		shared_ptr<ModelBone> bone = m_pModel->Get_BoneByIndex(i);
-		boneDesc->transform[i] = bone->transform * Utils::Get_PivotMatrix();
+		boneDesc->transform[i] = bone->transform * Utils::m_matNonAnimPivot;
 	}
 	m_pShader->Push_BoneData(*boneDesc);
 
@@ -181,7 +181,7 @@ void ModelRenderer::Render_Shadow_Instancing(shared_ptr<InstancingBuffer>& buffe
 	for (_uint i = 0; i < boneCount; ++i)
 	{
 		shared_ptr<ModelBone> bone = m_pModel->Get_BoneByIndex(i);
-		boneDesc->transform[i] = (bone->transform) * Utils::Get_PivotMatrix();
+		boneDesc->transform[i] = (bone->transform) * Utils::m_matNonAnimPivot;
 	}
 	m_pShader->Push_BoneData(*boneDesc);
 
@@ -234,7 +234,7 @@ void ModelRenderer::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 	for (_uint i = 0; i < boneCount; ++i)
 	{
 		shared_ptr<ModelBone> bone = m_pModel->Get_BoneByIndex(i);
-		boneDesc->transform[i] = (bone->transform)  * Utils::Get_PivotMatrix();
+		boneDesc->transform[i] = (bone->transform)  * Utils::m_matNonAnimPivot;
 	}
 	m_pShader->Push_BoneData(*boneDesc);
 	m_pShader->GetVector("g_UVSliding")->SetFloatVector((_float*)(&m_vUvSilding));

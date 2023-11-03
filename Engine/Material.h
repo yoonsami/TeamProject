@@ -45,7 +45,7 @@ public:
 private:
     friend class MeshRenderer;
 
-    _bool m_bOutline = false;
+    _bool m_bOutline = true;
     MaterialDesc m_Desc;
   
     shared_ptr<Shader>  m_pShader               = nullptr;

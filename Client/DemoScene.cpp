@@ -13,6 +13,14 @@
 #include "FileUtils.h"
 #include <Utils.h>
 #include "SpearAce_FSM.h"
+#include "FontRenderer.h"
+#include "CustomFont.h"
+#include "MeshCollider.h"
+#include "RigidBody.h"
+#include "ObjectTransformDebug.h"
+#include "CharacterController.h"
+
+
 DemoScene::DemoScene()
 {
 }
@@ -40,14 +48,17 @@ void DemoScene::Late_Tick()
 void DemoScene::Final_Tick()
 {
 	__super::Final_Tick();
+	PHYSX.Tick();
 }
 
 HRESULT DemoScene::Load_Scene()
 {
+	PHYSX.Init();
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\");
 	Load_DemoModel();
 	Load_Light();
 	Load_Camera();
+	Load_DemoMap();
 
 
 	return S_OK;
@@ -55,26 +66,7 @@ HRESULT DemoScene::Load_Scene()
 
 void DemoScene::Load_DemoModel()
 {
-	/*{
-		shared_ptr<FileUtils> file = make_shared<FileUtils>();
-		file->Open(L"", FileMode::Write);
-
-		file->Write<_uint>(3);
-		file->Write<string>(Utils::ToString(L"AWSDF"));
-	}
 	{
-		shared_ptr<FileUtils> file = make_shared<FileUtils>();
-		file->Open(L"", FileMode::Read);
-
-		_uint a = file->Read<_uint>();
-		wstring name = Utils::ToWString(file->Read<string>());
-	}*/
-
-
-
-
-	{
-
 		shared_ptr<GameObject> testObj = make_shared<GameObject>();
 		// Transform Component
 
@@ -93,7 +85,15 @@ void DemoScene::Load_DemoModel()
 
 			testObj->Add_Component(animator);
 		}
-
+		{
+			auto controller = make_shared<CharacterController>();
+			testObj->Add_Component(controller);
+			auto& desc = controller->Get_ControllerDesc();
+			desc.radius = 0.5f;
+			desc.height = 5.f;
+			desc.position = { 3.f, 0.f, 3.f };
+			controller->Create_Controller();
+		}
 		{
 			shared_ptr<SpearAce_FSM> fsm = make_shared<SpearAce_FSM>();
 			testObj->Add_Component(fsm);
@@ -103,6 +103,60 @@ void DemoScene::Load_DemoModel()
 		Add_GameObject(testObj);
 	}
 
+	{
+		shared_ptr<GameObject> debugText = make_shared<GameObject>();
+		debugText->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-300.f, 400.f, 5.f, 1.f));
+		debugText->Add_Component(make_shared<FontRenderer>(L""));
+		debugText->Get_FontRenderer()->Set_Font(RESOURCES.Get<CustomFont>(L"136ex"), Color(0.5f,0.5f,0.5f,1.f), 1.f);
+		debugText->Set_LayerIndex(Layer_UI);
+		debugText->Add_Component(make_shared<ObjectTransformDebug>());
+		debugText->Get_Script<ObjectTransformDebug>()->Set_Target(Get_GameObject(L"Player"));
+		Add_GameObject(debugText);
+	}
+}
+
+void DemoScene::Load_DemoMap()
+{
+	auto shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+	vector<wstring> modelName;
+	modelName.push_back(L"BG_Wall_1");
+	modelName.push_back(L"BG_Wall_2");
+	modelName.push_back(L"BG_Wall_3");
+	modelName.push_back(L"BG_Wall_4");
+	modelName.push_back(L"Building_A");
+	modelName.push_back(L"Building_B");
+	modelName.push_back(L"Building_C");
+	modelName.push_back(L"Ground");
+	modelName.push_back(L"Wall");
+
+	for(auto& modelTag: modelName)
+	{
+		shared_ptr<GameObject> obj = make_shared<GameObject>();
+		obj->GetOrAddTransform();
+		obj->Add_Component(make_shared<ModelRenderer>(shader));
+		obj->Get_ModelRenderer()->Set_Model(RESOURCES.Get<Model>(modelTag));
+		obj->Set_Name(modelTag);
+		Add_GameObject(obj);
+	}
+	
+	{
+		auto gameObject = Get_GameObject(L"Wall");
+		
+		shared_ptr<MeshCollider> collider = make_shared<MeshCollider>(L"Wall_Collider");
+		gameObject->Add_Component(collider);
+		auto rigidBody = make_shared<RigidBody>();
+		rigidBody->Create_RigidBody(collider);
+		gameObject->Add_Component(rigidBody);
+	}
+	{
+		auto gameObject = Get_GameObject(L"Ground");
+
+		shared_ptr<MeshCollider> collider = make_shared<MeshCollider>(L"Ground_Collider");
+		gameObject->Add_Component(collider);
+		auto rigidBody = make_shared<RigidBody>();
+		rigidBody->Create_RigidBody(collider);
+		gameObject->Add_Component(rigidBody);
+	}
 }
 
 void DemoScene::Load_Camera()
@@ -136,8 +190,7 @@ void DemoScene::Load_Camera()
 		// MonoBehaviour(Component �� ������ �ƴѰ͵�) �߰�
 		// �Ϻη� ��� ��������
 		auto pPlayer = Get_GameObject(L"Player");
-		camera->Add_Component(make_shared<DemoCameraScript1>());
-		camera->Add_Component(make_shared<DemoCameraScript2>());
+		camera->Add_Component(make_shared<MainCameraScript>(pPlayer));
 	
 		Add_GameObject(camera);
 	}

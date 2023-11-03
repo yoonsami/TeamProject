@@ -110,7 +110,7 @@ void Transform::Go_Dir(const _float3& vVel)
 		Set_State(Transform_State::POS, _float4(_float(controllerPos.x), _float(controllerPos.y), _float(controllerPos.z), 1.f));
 	}
 	else
-		Set_State(Transform_State::POS,Get_State(Transform_State::POS) + vVel * fDT);
+		Set_State(Transform_State::POS,Get_State(Transform_State::POS) + vVel);
 
 }
 
