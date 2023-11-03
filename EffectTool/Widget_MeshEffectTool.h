@@ -1,7 +1,7 @@
 #pragma once
 class Widget_MeshEffectTool
 {
-private:
+public:
 	Widget_MeshEffectTool();
 	~Widget_MeshEffectTool();
 

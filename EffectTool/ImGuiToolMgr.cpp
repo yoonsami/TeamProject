@@ -24,6 +24,12 @@ void ImGuiToolMgr::Init(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
     ImGuizmo::Enable(true);
     ImGuizmo::SetRect(0.f, 0.f, g_iWinSizeX, g_iWinSizeY);
+
+    // For. Setting Widgets
+    m_pWidget_ParticleEffectTool = make_shared<Widget_ParticleEffectTool>();
+    m_pWidget_MeshEffectTool = make_shared<Widget_MeshEffectTool>();
+    m_pWidget_ParticleEffectTool->Initialize();
+    m_pWidget_MeshEffectTool->Initialize();
 }
 
 void ImGuiToolMgr::Tick()
