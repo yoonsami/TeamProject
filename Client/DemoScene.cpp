@@ -6,6 +6,7 @@
 #include "Light.h"
 #include "Model.h"
 #include "MainCameraScript.h"
+#include "WeaponScript.h"
 #include "DemoCameraScript1.h"
 #include "DemoCameraScript2.h"
 #include "DemoAnimationController1.h"
@@ -45,7 +46,7 @@ void DemoScene::Final_Tick()
 HRESULT DemoScene::Load_Scene()
 {
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\");
-	Load_DemoModel();
+	Load_Spear_Ace();
 	Load_Light();
 	Load_Camera();
 
@@ -53,35 +54,15 @@ HRESULT DemoScene::Load_Scene()
 	return S_OK;
 }
 
-void DemoScene::Load_DemoModel()
+void DemoScene::Load_Spear_Ace()
 {
-	/*{
-		shared_ptr<FileUtils> file = make_shared<FileUtils>();
-		file->Open(L"", FileMode::Write);
-
-		file->Write<_uint>(3);
-		file->Write<string>(Utils::ToString(L"AWSDF"));
-	}
 	{
-		shared_ptr<FileUtils> file = make_shared<FileUtils>();
-		file->Open(L"", FileMode::Read);
-
-		_uint a = file->Read<_uint>();
-		wstring name = Utils::ToWString(file->Read<string>());
-	}*/
-
-
-
-
-	{
-
-		shared_ptr<GameObject> testObj = make_shared<GameObject>();
-		// Transform Component
-
-		testObj->Add_Component(make_shared<Transform>());
-		//testObj->GetOrAddTransform();
-
-		testObj->Get_Transform()->Set_State(Transform_State::POS, _float4(3.f, 0.f, 3.f, 1.f));
+		// Add. Player
+		shared_ptr<GameObject> ObjPlayer = make_shared<GameObject>();
+		
+		ObjPlayer->Add_Component(make_shared<Transform>());
+	
+		ObjPlayer->Get_Transform()->Set_State(Transform_State::POS, _float4(3.f, 0.f, 3.f, 1.f));
 		{
 			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
@@ -91,18 +72,44 @@ void DemoScene::Load_DemoModel()
 				animator->Set_Model(model);
 			}
 
-			testObj->Add_Component(animator);
+			ObjPlayer->Add_Component(animator);
+			ObjPlayer->Add_Component(make_shared<SpearAce_FSM>());
 		}
+		ObjPlayer->Set_Name(L"Player");
 
+		Add_GameObject(ObjPlayer);
+
+		//Add. Player's Weapon
+		shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
+
+		ObjWeapon->Add_Component(make_shared<Transform>());
 		{
-			shared_ptr<SpearAce_FSM> fsm = make_shared<SpearAce_FSM>();
-			testObj->Add_Component(fsm);
-		}
-		testObj->Set_Name(L"Player");
+			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
-		Add_GameObject(testObj);
+			shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+			{
+				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Weapon_Spear_Ace");
+				renderer->Set_Model(model);
+			}
+
+			ObjWeapon->Add_Component(renderer);
+
+			WeaponScript::WEAPONDESC desc;
+			desc.strBoneName = L"Bip001-Prop1";
+			desc.matPivot = _float4x4::CreateRotationX(-XM_PI / 2.f) * _float4x4::CreateRotationZ(XM_PI);
+			desc.pWeaponOwner = ObjPlayer;
+
+			ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
+		}
+		
+		ObjWeapon->Set_Name(L"Weapon_Spear_Ace");
+		Add_GameObject(ObjWeapon);
 	}
 
+}
+
+void DemoScene::Load_Kyle()
+{
 }
 
 void DemoScene::Load_Camera()
@@ -136,8 +143,10 @@ void DemoScene::Load_Camera()
 		// MonoBehaviour(Component �� ������ �ƴѰ͵�) �߰�
 		// �Ϻη� ��� ��������
 		auto pPlayer = Get_GameObject(L"Player");
-		camera->Add_Component(make_shared<DemoCameraScript1>());
-		camera->Add_Component(make_shared<DemoCameraScript2>());
+		camera->Add_Component(make_shared<MainCameraScript>(pPlayer));
+	
+	//	camera->Add_Component(make_shared<DemoCameraScript1>());
+	//	camera->Add_Component(make_shared<DemoCameraScript2>());
 	
 		Add_GameObject(camera);
 	}
