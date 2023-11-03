@@ -118,7 +118,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\Include\;$(SolutionDir)Libraries\Include\Engine\;../ImGui/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\Include\;$(SolutionDir)Libraries\Include\Engine\;$(SolutionDir)Libraries\Include\IMGUI\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -137,7 +137,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\Include\;$(SolutionDir)Libraries\Include\Engine\;../ImGui/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\Include\;$(SolutionDir)Libraries\Include\Engine\;$(SolutionDir)Libraries\Include\IMGUI\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -149,15 +149,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\ImGui\imconfig.h" />
-    <ClInclude Include="..\ImGui\imgui.h" />
-    <ClInclude Include="..\ImGui\ImGuizmo.h" />
-    <ClInclude Include="..\ImGui\imgui_impl_dx11.h" />
-    <ClInclude Include="..\ImGui\imgui_impl_win32.h" />
-    <ClInclude Include="..\ImGui\imgui_internal.h" />
-    <ClInclude Include="..\ImGui\imstb_rectpack.h" />
-    <ClInclude Include="..\ImGui\imstb_textedit.h" />
-    <ClInclude Include="..\ImGui\imstb_truetype.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\dirent\dirent.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\imconfig.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImCurveEdit.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImGradient.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuiFileDialog.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuiFileDialogConfig.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuizmo.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_impl_dx11.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_impl_win32.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_internal.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_stdlib.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImSequencer.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\imstb_rectpack.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\imstb_textedit.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\imstb_truetype.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImZoomSlider.h" />
     <ClInclude Include="DemoScene.h" />
     <ClInclude Include="EffectTool.h" />
     <ClInclude Include="EffectTool_Define.h" />
@@ -172,14 +180,19 @@
     <ClInclude Include="Widget_ParticleEffectTool.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\ImGui\imgui.cpp" />
-    <ClCompile Include="..\ImGui\ImGuizmo.cpp" />
-    <ClCompile Include="..\ImGui\imgui_demo.cpp" />
-    <ClCompile Include="..\ImGui\imgui_draw.cpp" />
-    <ClCompile Include="..\ImGui\imgui_impl_dx11.cpp" />
-    <ClCompile Include="..\ImGui\imgui_impl_win32.cpp" />
-    <ClCompile Include="..\ImGui\imgui_tables.cpp" />
-    <ClCompile Include="..\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImCurveEdit.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImGradient.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImGuiFileDialog.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImGuizmo.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_demo.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_draw.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_impl_dx11.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_stdlib.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_tables.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_widgets.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImSequencer.cpp" />
     <ClCompile Include="DemoScene.cpp" />
     <ClCompile Include="EffectTool.cpp" />
     <ClCompile Include="FreeCameraScript.cpp" />
@@ -202,12 +215,6 @@
   <ItemGroup>
     <Image Include="EffectTool.ico" />
     <Image Include="small.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\ImGui\imgui.natstepfilter" />
-  </ItemGroup>
-  <ItemGroup>
-    <Natvis Include="..\ImGui\imgui.natvis" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

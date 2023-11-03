@@ -119,7 +119,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\Include\;$(SolutionDir)Libraries\Include\Engine\;$(SolutionDir)Tool_Ui\Imgui\;$(SolutionDir)Tool_Ui\Zmo\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\Include\;$(SolutionDir)Libraries\Include\Engine\;$(SolutionDir)Tool_Ui\Imgui\;$(SolutionDir)Tool_Ui\Zmo\;$(SolutionDir)Libraries\Include\IMGUI\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -138,7 +138,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\Include\;$(SolutionDir)Libraries\Include\Engine\;$(SolutionDir)Tool_Ui\Imgui\;$(SolutionDir)Tool_Ui\Zmo\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\Include\;$(SolutionDir)Libraries\Include\Engine\;$(SolutionDir)Tool_Ui\Imgui\;$(SolutionDir)Tool_Ui\Zmo\;$(SolutionDir)Libraries\Include\IMGUI\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -149,27 +149,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Libraries\Include\IMGUI\dirent\dirent.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\imconfig.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImCurveEdit.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImGradient.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuiFileDialog.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuiFileDialogConfig.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuizmo.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_impl_dx11.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_impl_win32.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_internal.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_stdlib.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImSequencer.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\imstb_rectpack.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\imstb_textedit.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\imstb_truetype.h" />
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImZoomSlider.h" />
     <ClInclude Include="CameraScript1.h" />
     <ClInclude Include="CameraScript2.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="GraphEditor.h" />
-    <ClInclude Include="imconfig.h" />
-    <ClInclude Include="ImCurveEdit.h" />
-    <ClInclude Include="ImGradient.h" />
-    <ClInclude Include="imgui.h" />
-    <ClInclude Include="ImGuiFileDialog.h" />
-    <ClInclude Include="ImGuiFileDialogConfig.h" />
     <ClInclude Include="ImguiMgr.h" />
-    <ClInclude Include="ImGuizmo.h" />
-    <ClInclude Include="imgui_impl_dx11.h" />
-    <ClInclude Include="imgui_impl_win32.h" />
-    <ClInclude Include="imgui_internal.h" />
-    <ClInclude Include="imgui_stdlib.h" />
-    <ClInclude Include="ImSequencer.h" />
-    <ClInclude Include="imstb_rectpack.h" />
-    <ClInclude Include="imstb_textedit.h" />
-    <ClInclude Include="imstb_truetype.h" />
-    <ClInclude Include="ImZoomSlider.h" />
     <ClInclude Include="Loader.h" />
     <ClInclude Include="LoadingScene.h" />
     <ClInclude Include="MainApp.h" />
@@ -181,23 +181,22 @@
     <ClInclude Include="Tool_Ui_Define.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImCurveEdit.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImGradient.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImGuiFileDialog.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImGuizmo.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_demo.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_draw.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_impl_dx11.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_stdlib.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_tables.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_widgets.cpp" />
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImSequencer.cpp" />
     <ClCompile Include="CameraScript1.cpp" />
     <ClCompile Include="CameraScript2.cpp" />
-    <ClCompile Include="GraphEditor.cpp" />
-    <ClCompile Include="ImCurveEdit.cpp" />
-    <ClCompile Include="ImGradient.cpp" />
-    <ClCompile Include="imgui.cpp" />
-    <ClCompile Include="ImGuiFileDialog.cpp" />
     <ClCompile Include="ImguiMgr.cpp" />
-    <ClCompile Include="ImGuizmo.cpp" />
-    <ClCompile Include="imgui_demo.cpp" />
-    <ClCompile Include="imgui_draw.cpp" />
-    <ClCompile Include="imgui_impl_dx11.cpp" />
-    <ClCompile Include="imgui_impl_win32.cpp" />
-    <ClCompile Include="imgui_stdlib.cpp" />
-    <ClCompile Include="imgui_tables.cpp" />
-    <ClCompile Include="imgui_widgets.cpp" />
-    <ClCompile Include="ImSequencer.cpp" />
     <ClCompile Include="Loader.cpp" />
     <ClCompile Include="LoadingScene.cpp" />
     <ClCompile Include="MainApp.cpp" />
@@ -216,6 +215,16 @@
   <ItemGroup>
     <Image Include="small.ico" />
     <Image Include="Tool_Ui.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Libraries\Include\IMGUI\imgui.ini" />
+    <None Include="..\Libraries\Include\IMGUI\imgui.natstepfilter" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="..\Libraries\Include\IMGUI\imgui.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\Libraries\Include\IMGUI\imgui_log.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

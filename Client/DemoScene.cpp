@@ -136,7 +136,8 @@ void DemoScene::Load_Camera()
 		// MonoBehaviour(Component �� ������ �ƴѰ͵�) �߰�
 		// �Ϻη� ��� ��������
 		auto pPlayer = Get_GameObject(L"Player");
-		camera->Add_Component(make_shared<MainCameraScript>(pPlayer));
+		camera->Add_Component(make_shared<DemoCameraScript1>());
+		camera->Add_Component(make_shared<DemoCameraScript2>());
 	
 		Add_GameObject(camera);
 	}

@@ -31,65 +31,65 @@
     <ClInclude Include="MainScene.h">
       <Filter>01.Scene\00.MainScene</Filter>
     </ClInclude>
-    <ClInclude Include="ImGuizmo.h">
-      <Filter>96.Zmo</Filter>
-    </ClInclude>
-    <ClInclude Include="ImSequencer.h">
-      <Filter>96.Zmo</Filter>
-    </ClInclude>
-    <ClInclude Include="ImZoomSlider.h">
-      <Filter>96.Zmo</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphEditor.h">
-      <Filter>96.Zmo</Filter>
-    </ClInclude>
-    <ClInclude Include="ImCurveEdit.h">
-      <Filter>96.Zmo</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGradient.h">
-      <Filter>96.Zmo</Filter>
-    </ClInclude>
     <ClInclude Include="CameraScript1.h">
       <Filter>02.Component\00.MonoBehaviour\00.CameraScript</Filter>
     </ClInclude>
     <ClInclude Include="CameraScript2.h">
       <Filter>02.Component\00.MonoBehaviour\00.CameraScript</Filter>
     </ClInclude>
-    <ClInclude Include="imconfig.h">
-      <Filter>97.Imgui\01.Etc</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui.h">
-      <Filter>97.Imgui\01.Etc</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui_impl_dx11.h">
-      <Filter>97.Imgui\01.Etc</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui_impl_win32.h">
-      <Filter>97.Imgui\01.Etc</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui_internal.h">
-      <Filter>97.Imgui\01.Etc</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui_stdlib.h">
-      <Filter>97.Imgui\01.Etc</Filter>
-    </ClInclude>
-    <ClInclude Include="imstb_rectpack.h">
-      <Filter>97.Imgui\01.Etc</Filter>
-    </ClInclude>
-    <ClInclude Include="imstb_textedit.h">
-      <Filter>97.Imgui\01.Etc</Filter>
-    </ClInclude>
-    <ClInclude Include="imstb_truetype.h">
-      <Filter>97.Imgui\01.Etc</Filter>
-    </ClInclude>
     <ClInclude Include="ImguiMgr.h">
       <Filter>97.Imgui\00.ImguiMgr</Filter>
     </ClInclude>
-    <ClInclude Include="ImGuiFileDialog.h">
-      <Filter>95.FileDialog</Filter>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imconfig.h">
+      <Filter>IMGUI</Filter>
     </ClInclude>
-    <ClInclude Include="ImGuiFileDialogConfig.h">
-      <Filter>95.FileDialog</Filter>
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImCurveEdit.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImGradient.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_impl_dx11.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_impl_win32.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_internal.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_stdlib.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuiFileDialog.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuiFileDialogConfig.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuizmo.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImSequencer.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imstb_rectpack.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imstb_textedit.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imstb_truetype.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImZoomSlider.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\dirent\dirent.h">
+      <Filter>IMGUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -111,56 +111,53 @@
     <ClCompile Include="MainScene.cpp">
       <Filter>01.Scene\00.MainScene</Filter>
     </ClCompile>
-    <ClCompile Include="ImGuizmo.cpp">
-      <Filter>96.Zmo</Filter>
-    </ClCompile>
-    <ClCompile Include="ImSequencer.cpp">
-      <Filter>96.Zmo</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphEditor.cpp">
-      <Filter>96.Zmo</Filter>
-    </ClCompile>
-    <ClCompile Include="ImCurveEdit.cpp">
-      <Filter>96.Zmo</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGradient.cpp">
-      <Filter>96.Zmo</Filter>
-    </ClCompile>
     <ClCompile Include="CameraScript1.cpp">
       <Filter>02.Component\00.MonoBehaviour\00.CameraScript</Filter>
     </ClCompile>
     <ClCompile Include="CameraScript2.cpp">
       <Filter>02.Component\00.MonoBehaviour\00.CameraScript</Filter>
     </ClCompile>
-    <ClCompile Include="imgui.cpp">
-      <Filter>97.Imgui\01.Etc</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui_demo.cpp">
-      <Filter>97.Imgui\01.Etc</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui_draw.cpp">
-      <Filter>97.Imgui\01.Etc</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui_impl_dx11.cpp">
-      <Filter>97.Imgui\01.Etc</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui_impl_win32.cpp">
-      <Filter>97.Imgui\01.Etc</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui_stdlib.cpp">
-      <Filter>97.Imgui\01.Etc</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui_tables.cpp">
-      <Filter>97.Imgui\01.Etc</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui_widgets.cpp">
-      <Filter>97.Imgui\01.Etc</Filter>
-    </ClCompile>
     <ClCompile Include="ImguiMgr.cpp">
       <Filter>97.Imgui\00.ImguiMgr</Filter>
     </ClCompile>
-    <ClCompile Include="ImGuiFileDialog.cpp">
-      <Filter>95.FileDialog</Filter>
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImCurveEdit.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImGradient.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_demo.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_draw.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_impl_dx11.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_impl_win32.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_stdlib.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_tables.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_widgets.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImGuiFileDialog.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImGuizmo.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImSequencer.cpp">
+      <Filter>IMGUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -217,10 +214,31 @@
     <Filter Include="95.FileDialog">
       <UniqueIdentifier>{c3143266-fe3f-4e1e-b62d-b225ab3368ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="IMGUI">
+      <UniqueIdentifier>{eb44d2f5-a0ee-421a-8702-a49440966d40}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Tool_Ui.rc">
       <Filter>98.Default</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Libraries\Include\IMGUI\imgui.ini">
+      <Filter>IMGUI</Filter>
+    </None>
+    <None Include="..\Libraries\Include\IMGUI\imgui.natstepfilter">
+      <Filter>IMGUI</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="..\Libraries\Include\IMGUI\imgui.natvis">
+      <Filter>IMGUI</Filter>
+    </Natvis>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\Libraries\Include\IMGUI\imgui_log.txt">
+      <Filter>IMGUI</Filter>
+    </Text>
   </ItemGroup>
 </Project>
