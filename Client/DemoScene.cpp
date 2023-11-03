@@ -1,4 +1,4 @@
-#include "pch.h"
+癤�#include "pch.h"
 #include "DemoScene.h"
 #include "ModelAnimator.h"
 #include "ModelRenderer.h"
@@ -8,6 +8,9 @@
 #include "DemoCameraScript1.h"
 #include "DemoCameraScript2.h"
 #include "DemoAnimationController1.h"
+#include "DemoFSM.h"
+#include "FileUtils.h"
+#include <Utils.h>
 DemoScene::DemoScene()
 {
 }
@@ -50,12 +53,29 @@ HRESULT DemoScene::Load_Scene()
 
 void DemoScene::Load_DemoModel()
 {
-	{
-		// GameObject 동적할당
-		shared_ptr<GameObject> testObj = make_shared<GameObject>();
+	/*{
+		shared_ptr<FileUtils> file = make_shared<FileUtils>();
+		file->Open(L"", FileMode::Write);
 
-		// Transform Component 추가
-		// 둘중 하나 사용. AddComponent 또는 GetOrAddTransform(있으면 반환 없으면 생성후 반환)
+		file->Write<_uint>(3);
+		file->Write<string>(Utils::ToString(L"AWSDF"));
+	}
+	{
+		shared_ptr<FileUtils> file = make_shared<FileUtils>();
+		file->Open(L"", FileMode::Read);
+
+		_uint a = file->Read<_uint>();
+		wstring name = Utils::ToWString(file->Read<string>());
+	}*/
+
+
+
+
+	{
+
+		shared_ptr<GameObject> testObj = make_shared<GameObject>();
+		// Transform Component
+
 		testObj->Add_Component(make_shared<Transform>());
 		//testObj->GetOrAddTransform();
 
@@ -66,56 +86,38 @@ void DemoScene::Load_DemoModel()
 			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
 			{
 				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Kyle");
+
 				animator->Set_Model(model);
 			}
-			//애니메이터 컴포넌트
+
 			testObj->Add_Component(animator);
 		}
 
 		testObj->Add_Component(make_shared<DemoAnimationController1>());
 
+		{
+			shared_ptr<DemoFSM> fsm = make_shared<DemoFSM>();
+			testObj->Add_Component(fsm);
+		}
+		testObj->Set_Name(L"Player");
+
 		Add_GameObject(testObj);
 	}
-	//{
-	//	// GameObject 동적할당
-	//	shared_ptr<GameObject> testObj = make_shared<GameObject>();
-
-	//	// Transform Component 추가
-	//	// 둘중 하나 사용. AddComponent 또는 GetOrAddTransform(있으면 반환 없으면 생성후 반환)
-	//	testObj->Add_Component(make_shared<Transform>());
-	//	//testObj->GetOrAddTransform();
-
-	//	testObj->Get_Transform()->Set_State(Transform_State::POS, _float4(5.f, 0.f, 0.f, 1.f));
-	//	{
-	//		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-
-	//		shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
-	//		{
-	//			shared_ptr<Model> model = RESOURCES.Get<Model>(L"1058_cooperateuniqueskilltimeline");
-	//			animator->Set_Model(model);
-	//		}
-	//		//애니메이터 컴포넌트
-	//		testObj->Add_Component(animator);
-	//	}
-
-	//	testObj->Add_Component(make_shared<DemoAnimationController1>());
-
-	//	Add_GameObject(testObj);
-	//}
+	
 }
 
 void DemoScene::Load_Camera()
 {
 	{
-		//카메라로 사용할 GameObject 생성
+		//GameObj for Camera Create
 		shared_ptr<GameObject> camera = make_shared<GameObject>();
 
-		// Transform Component 추가
+		// Transform Component 
 		camera->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
 
 		camera->GetOrAddTransform()->Set_Speed(5.f);
 
-		// 카메라 Component 생성 
+		// Camera Component Add
 		CameraDesc desc;
 		desc.fFOV = XM_PI / 3.f;
 		desc.strName = L"Default";
@@ -129,11 +131,9 @@ void DemoScene::Load_Camera()
 
 
 		camera->Get_Camera()->Set_ProjType(ProjectionType::Perspective);
-		//Layer_UI에 있는 오브젝트를 컬링하겠다.
+		//Layer_UI culling true
 		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, true);
 
-		// MonoBehaviour(Component 중 고정이 아닌것들) 추가
-		// 일부러 기능 나눠놨음
 		camera->Add_Component(make_shared<DemoCameraScript1>());
 		camera->Add_Component(make_shared<DemoCameraScript2>());
 
@@ -147,7 +147,6 @@ void DemoScene::Load_Light()
 	lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 25.f, 0.f, 1.f));
 	lightObj->GetOrAddTransform()->Set_LookDir(_float3(-1.f,-1.f,-1.f));
 	{
-		// LightComponent 생성 후 세팅
 		shared_ptr<Light> lightCom = make_shared<Light>();
 		lightCom->Set_Diffuse(Color(1.f));
 		lightCom->Set_Ambient(Color(0.8f));

@@ -132,7 +132,55 @@ void ModelAnimator::Tick()
 	if (m_pModel->Get_AnimationCount() > 0)
 		m_TweenDesc.curr.animIndex %= m_pModel->Get_AnimationCount();
 
+	_float3 vDistToMove;
 
+	auto& preAnimRootPositions = m_pModel->Get_RootBonePosition()[m_preTweenDesc.curr.animIndex];
+	auto& curAnimRootPositions = m_pModel->Get_RootBonePosition()[m_TweenDesc.curr.animIndex];
+	{
+		if(m_TweenDesc.curr.currentFrame <= m_TweenDesc.curr.nextFrame)
+		{
+			_float3 vPrePosition = _float3::Lerp(preAnimRootPositions[m_preTweenDesc.curr.currentFrame], preAnimRootPositions[m_preTweenDesc.curr.nextFrame], m_preTweenDesc.curr.ratio);
+			_float3 vCurPosition = _float3::Lerp(curAnimRootPositions[m_TweenDesc.curr.currentFrame], curAnimRootPositions[m_TweenDesc.curr.nextFrame], m_TweenDesc.curr.ratio);
+			vDistToMove = vCurPosition - vPrePosition;
+		}
+		else
+			vDistToMove = _float3(0.f);
+		
+
+	}
+	
+
+	if (m_TweenDesc.next.animIndex >= 0)
+	{
+		auto& nextAnimRootPositions = m_pModel->Get_RootBonePosition()[m_TweenDesc.next.animIndex];
+
+		if(m_preTweenDesc.next.animIndex >=0)
+		{
+			auto& preNextAnimRootPositions = m_pModel->Get_RootBonePosition()[m_preTweenDesc.next.animIndex];
+
+			_float3 vPrePosition = _float3::Lerp(preAnimRootPositions[m_preTweenDesc.next.currentFrame], preAnimRootPositions[m_preTweenDesc.next.nextFrame], m_preTweenDesc.next.ratio);
+			_float3 vCurPosition = _float3::Lerp(curAnimRootPositions[m_TweenDesc.next.currentFrame], curAnimRootPositions[m_TweenDesc.next.nextFrame], m_TweenDesc.next.ratio);
+		
+			vDistToMove = _float3::Lerp(vDistToMove, vCurPosition - vPrePosition, m_TweenDesc.tweenRatio);
+					
+		}
+		else
+		{
+			auto& preNextAnimRootPositions = m_pModel->Get_RootBonePosition()[m_TweenDesc.next.animIndex];
+
+			_float3 vPrePosition = _float3::Lerp(preAnimRootPositions[m_preTweenDesc.next.currentFrame], preAnimRootPositions[m_preTweenDesc.next.nextFrame], m_preTweenDesc.next.ratio);
+			_float3 vCurPosition = _float3::Lerp(curAnimRootPositions[m_TweenDesc.next.currentFrame], curAnimRootPositions[m_TweenDesc.next.nextFrame], m_TweenDesc.next.ratio);
+
+			vDistToMove = _float3::Lerp(vDistToMove, vCurPosition - vPrePosition, m_TweenDesc.tweenRatio);
+
+
+		}
+	}
+
+
+	Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + (vDistToMove));
+
+	m_preTweenDesc = m_TweenDesc;
 	//Cal_AnimTransform();
 }
 

@@ -109,6 +109,42 @@ const _float4x4& Utils::Get_PivotMatrix()
 	return m_matPivot;
 }
 
+void Utils::ToUpperString(OUT string& str)
+{
+	for (char& c : str) {
+		if (std::isalpha(c)) { // 알파벳 문자인 경우에만 변환
+			c = std::toupper(c);
+		}
+	}
+}
+
+void Utils::ToUpperString(OUT wstring& str)
+{
+	for (wchar_t& c : str) {
+		if (std::isalpha(c)) { // 알파벳 문자인 경우에만 변환
+			c = std::toupper(c);
+		}
+	}
+}
+
+void Utils::ToLowerString(OUT string& str)
+{
+	for (char& c : str) {
+		if (std::isalpha(c)) { // 알파벳 문자인 경우에만 변환
+			c = std::tolower(c);
+		}
+	}
+}
+
+void Utils::ToLowerString(OUT wstring& str)
+{
+	for (wchar_t& c : str) {
+		if (std::isalpha(c)) { // 알파벳 문자인 경우에만 변환
+			c = std::tolower(c);
+		}
+	}
+}
+
 _float4x4 Utils::m_matPivot = _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI);
 
 const wstring Utils::m_strModelPath =  L"../Resources/Models/";;

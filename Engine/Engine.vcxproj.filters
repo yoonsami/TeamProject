@@ -187,6 +187,9 @@
     <Filter Include="02.Manager\08.PickingMgr">
       <UniqueIdentifier>{cafb0d5d-56cb-49a1-8e0b-6b2a79438b89}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04.Component\07.FSM">
+      <UniqueIdentifier>{d8ad09ab-a535-4404-91b9-e888c1e858eb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -383,6 +386,9 @@
     </ClCompile>
     <ClCompile Include="CustomSound.cpp">
       <Filter>02.Manager\02.SoundMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="FSM.cpp">
+      <Filter>04.Component\07.FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -595,6 +601,9 @@
     </ClInclude>
     <ClInclude Include="CustomSound.h">
       <Filter>02.Manager\02.SoundMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="FSM.h">
+      <Filter>04.Component\07.FSM</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

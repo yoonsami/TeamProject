@@ -71,7 +71,7 @@ void Scene::Render()
 	Sort_GameObjects();
 	Render_Shadow();
 	Render_Deferred();
-	Render_Blur();
+	Render_DefferedBlur();
 	Render_Lights();
 	//Render_BlurEffect();
 	Render_Final();
@@ -473,7 +473,7 @@ void Scene::Render_Deferred()
 	//GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->UnBindSRV();
 }
 
-void Scene::Render_Blur()
+void Scene::Render_DefferedBlur()
 {
 	for (_uchar i = 0; i < 2; ++i)
 	{

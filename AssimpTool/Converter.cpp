@@ -30,8 +30,9 @@ void Converter::ReadAssetFile(const wstring& file)
 
 void Converter::ExportModelData(const wstring& savePath)
 {
-	fs::create_directories(fs::path(m_strModelPath + savePath));
-	wstring finalPath = m_strModelPath + savePath + L"\\" + savePath + L".Model";
+	fs::create_directories(fs::path(savePath).parent_path());
+	wstring fileName = fs::path(savePath).filename();
+	wstring finalPath = savePath + L".Model";
 	ReadModelData(m_pScene->mRootNode, -1, -1);
 	ReadSkinData();
 
@@ -44,11 +45,12 @@ void Converter::ExportModelData(const wstring& savePath)
 
 void Converter::ExportMaterialData(const wstring& savePath)
 {
-	fs::create_directories(fs::path(m_strModelPath + savePath));
-	wstring finalPath = m_strModelPath + savePath + L"\\" + savePath + L".Material";
+	fs::create_directories(fs::path(savePath).parent_path());
+	wstring fileName = fs::path(savePath).filename();
+	wstring finalPath = savePath + L".Material";
 	ReadMaterialData();
 	WriteMaterialData(finalPath);
-	WriteTexture(savePath);
+	WriteTexture(finalPath);
 }
 
 void Converter::ExportAnimationData(const wstring& savePath)
@@ -65,7 +67,9 @@ void Converter::ExportAnimationData(const wstring& savePath)
 		m_Animations.push_back(animation);
 	}
 
-	wstring finalPath = m_strModelPath + savePath + L"\\" + savePath + L".clip";
+	fs::create_directories(fs::path(savePath).parent_path());
+	wstring fileName = fs::path(savePath).filename();
+	wstring finalPath = savePath  + L".clip";
 	WriteAnimationData(finalPath);
 
 }
@@ -610,11 +614,13 @@ void Converter::WriteMaterialData(const wstring& finalPath)
 	}
 }
 
-void Converter::WriteTexture(const wstring& assetName)
+void Converter::WriteTexture(const wstring& savePath)
 {
-	wstring assetTexturePath = m_strAssetPath + assetName + L"\\";
+	wstring assetTexturePath = savePath;
+	Utils::Replace(assetTexturePath, L"Models", L"Assets");
 
-	for (auto& entry : fs::recursive_directory_iterator(assetTexturePath))
+	wstring parentPath = fs::path(assetTexturePath).parent_path().wstring();
+	for (auto& entry : fs::recursive_directory_iterator(parentPath))
 	{
 		if (entry.is_directory())
 			continue;
@@ -627,10 +633,14 @@ void Converter::WriteTexture(const wstring& assetName)
 			&& entry.path().extension().wstring() != L".TGA")
 			continue;
 
-		fs::create_directories(fs::path(m_strTexturePath + assetName));
 		string fileName = entry.path().filename().string();
-		string targetPath = (fs::path(m_strTexturePath + assetName) / fileName).string();
+		wstring tmppath = parentPath;
+		Utils::Replace(tmppath, L"Assets", L"Textures");
+		fs::create_directories(fs::path(tmppath));
+
+		string targetPath = (fs::path(tmppath) / fileName).string();
 		Utils::Replace(targetPath, "\\", "/");
+
 		::CopyFileA(entry.path().string().c_str(), targetPath.c_str(), false);
 
 	}
@@ -781,7 +791,7 @@ void Converter::WriteAnimationData(const wstring& finalPath)
 	for (_uint i =0; i< AnimationCount;++i)
 	{
 		auto& animation = m_Animations[i];
-		
+		Utils::ToUpperString(animation->name);
 		file->Write<_uint>(i);
 		file->Write<string>(animation->name);
 		file->Write<_float>(animation->duration);

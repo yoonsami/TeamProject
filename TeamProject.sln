@@ -11,6 +11,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client", "Client\Client.vcx
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AssimpTool", "AssimpTool\AssimpTool.vcxproj", "{B48E0CEE-361F-4D1F-ABC4-03B4B8699E38}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A983E283-F3C7-4D68-8A2B-793D69A4BB26} = {A983E283-F3C7-4D68-8A2B-793D69A4BB26}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tool_Ui", "Tool_Ui\Tool_Ui.vcxproj", "{491A54B4-BBC4-4161-99C8-DBADEE02B84F}"
 EndProject

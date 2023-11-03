@@ -179,6 +179,7 @@
     <ClInclude Include="FileUtils.h" />
     <ClInclude Include="FontRenderer.h" />
     <ClInclude Include="Frustum.h" />
+    <ClInclude Include="FSM.h" />
     <ClInclude Include="GameInstance.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Geometry.h" />
@@ -248,6 +249,7 @@
     <ClCompile Include="FileUtils.cpp" />
     <ClCompile Include="FontRenderer.cpp" />
     <ClCompile Include="Frustum.cpp" />
+    <ClCompile Include="FSM.cpp" />
     <ClCompile Include="GameInstance.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Geometry.cpp" />

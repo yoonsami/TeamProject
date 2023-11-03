@@ -55,7 +55,7 @@ protected:
 	void Sort_GameObjects();
 	void Render_Shadow();
 	void Render_Deferred();
-	void Render_Blur();
+	void Render_DefferedBlur();
 	void Render_Lights();
 	void Render_Final();
 	void Render_Forward();

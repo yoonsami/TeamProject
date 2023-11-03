@@ -74,6 +74,10 @@ HRESULT MainApp::Init()
 	//ExportParts();
 	//ExportWeapon();
 
+	
+
+
+
 	return S_OK;
 }
 
@@ -106,8 +110,8 @@ void MainApp::ExportAssets()
 
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		converter->ReadAssetFile(tag);
-		tag = entry.path().filename().wstring();
 		Utils::DetachExt(tag);
+		Utils::Replace(tag, L"Assets", L"Models");
 		converter->ExportModelData(tag);
 		converter->ExportMaterialData(tag);
 		converter->ExportAnimationData(tag);
