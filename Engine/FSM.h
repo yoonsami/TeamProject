@@ -20,5 +20,12 @@ protected:
 	void Soft_Turn_ToInputDir(const _float3& vInputDir, _float turnSpeed);
 	_float3 Soft_Turn_ToTarget(const _float3& vTargetPos, _float turnSpeed);
 	_float3 Soft_Turn_ToTarget(const _float4& vTargetPos, _float turnSpeed);
+
+public:
+	void Set_Target(shared_ptr<GameObject> pTarget);
+	void Reset_Target();
+
+protected:
+	weak_ptr<GameObject> m_pTarget;
 };
 

@@ -7,15 +7,15 @@ void DemoCameraScript1::Tick()
 	if (m_pOwner.expired())
 		return;
 
-	if (KEYPUSH(KEY_TYPE::W))
+	if (KEYPUSH(KEY_TYPE::UP))
 		Get_Transform()->Go_Straight();
 
-	if (KEYPUSH(KEY_TYPE::S))
+	if (KEYPUSH(KEY_TYPE::DOWN))
 		Get_Transform()->Go_Backward();
 
-	if(KEYPUSH(KEY_TYPE::A))
+	if(KEYPUSH(KEY_TYPE::LEFT))
 		Get_Transform()->Go_Left();
 
-	if(KEYPUSH(KEY_TYPE::D))
+	if(KEYPUSH(KEY_TYPE::RIGHT))
 		Get_Transform()->Go_Right();
 }

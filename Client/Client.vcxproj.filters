@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="98.Default">
-      <UniqueIdentifier>{1416d258-c22e-43be-a507-5d8b90f21cef}</UniqueIdentifier>
-    </Filter>
     <Filter Include="99.Header">
       <UniqueIdentifier>{3eae259d-6692-4755-9e22-e4c6daecabae}</UniqueIdentifier>
     </Filter>
@@ -46,13 +43,22 @@
     <Filter Include="02.Component\01.FSM\00.DemoFSM">
       <UniqueIdentifier>{8a982ce2-f0b2-4b7a-800d-dfeff839ac2b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\01.FSM\01.SpearAce_FSM">
+      <UniqueIdentifier>{8f3e1798-25d3-4565-9312-f2cdbe87d1b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Header\98.Default">
+      <UniqueIdentifier>{1416d258-c22e-43be-a507-5d8b90f21cef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\00.MainCameraScript">
+      <UniqueIdentifier>{c016c014-a8d2-4a1c-a3ab-e1eca59afce4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
-      <Filter>98.Default</Filter>
+      <Filter>99.Header\98.Default</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>98.Default</Filter>
+      <Filter>99.Header\98.Default</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>99.Header</Filter>
@@ -84,10 +90,16 @@
     <ClInclude Include="DemoAnimationController1.h">
       <Filter>02.Component\00.MonoBehaviour\98.DemoAnimationController</Filter>
     </ClInclude>
+    <ClInclude Include="SpearAce_FSM.h">
+      <Filter>02.Component\01.FSM\01.SpearAce_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="MainCameraScript.h">
+      <Filter>02.Component\00.MonoBehaviour\00.MainCameraScript</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
-      <Filter>98.Default</Filter>
+      <Filter>99.Header\98.Default</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>99.Header</Filter>
@@ -116,18 +128,24 @@
     <ClCompile Include="DemoAnimationController1.cpp">
       <Filter>02.Component\00.MonoBehaviour\98.DemoAnimationController</Filter>
     </ClCompile>
+    <ClCompile Include="SpearAce_FSM.cpp">
+      <Filter>02.Component\01.FSM\01.SpearAce_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="MainCameraScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\00.MainCameraScript</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
-      <Filter>98.Default</Filter>
+      <Filter>99.Header\98.Default</Filter>
     </Image>
     <Image Include="Client.ico">
-      <Filter>98.Default</Filter>
+      <Filter>99.Header\98.Default</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
-      <Filter>98.Default</Filter>
+      <Filter>99.Header\98.Default</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>

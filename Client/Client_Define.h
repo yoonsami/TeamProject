@@ -7,6 +7,17 @@ const unsigned int	g_iWinSizeY = 1080;
 
 extern HWND		g_hWnd;
 
+
+enum ObjectType
+{
+	OBJ_PLAYER,
+	OBJ_MONSTER,
+	OBJ_NPC,
+	OBJ_END
+};
+
+
+
 enum class CollisionGroup
 {
 	Player,

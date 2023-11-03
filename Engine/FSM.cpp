@@ -112,3 +112,13 @@ _float3 FSM::Soft_Turn_ToTarget(const _float4& vTargetPos, _float turnSpeed)
 
 	return vDir;
 }
+
+void FSM::Set_Target(shared_ptr<GameObject> pTarget)
+{
+	m_pTarget = pTarget;
+}
+
+void FSM::Reset_Target()
+{
+	m_pTarget.reset();
+}
