@@ -135,7 +135,6 @@ shared_ptr<GameObject> Scene::Get_Camera(const wstring& cameraName)
 	{
 		if (camera->Get_Camera()->Get_CameraName() == cameraName)
 			return camera;
-
 	}
 	return nullptr;
 }
@@ -146,7 +145,6 @@ shared_ptr<GameObject> Scene::Get_MainCamera()
 	{
 		if (camera->Get_Camera()->Get_ProjType() == ProjectionType::Perspective)
 			return camera;
-
 	}
 	return nullptr;
 }
@@ -168,7 +166,6 @@ shared_ptr<GameObject> Scene::Get_GameObject(const wstring& name)
 		if (gameObject->Get_Name() == name)
 			return gameObject;
 	}
-
 	return nullptr;
 }
 
@@ -179,7 +176,6 @@ shared_ptr<GameObject> Scene::Get_UI(const wstring& strName)
 		if (gameObject->Get_Name() == strName)
 			return gameObject;
 	}
-
 	return nullptr;
 }
 
@@ -727,7 +723,6 @@ void Scene::Render_UI()
 		shared_ptr<Camera> uiCamera = Get_UICamera()->Get_Camera();
 		Camera::S_View = uiCamera->Get_ViewMat();
 		Camera::S_Proj = uiCamera->Get_ProjMat();
-
 
 		uiCamera->Render_Forward();
 	}

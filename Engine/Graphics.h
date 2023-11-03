@@ -1,17 +1,19 @@
 #pragma once
 #include "Viewport.h"
 #include "RenderTargetGroup.h"
+
 enum
 {
 	SWAP_CHAIN_BUFFER_COUNT = 1
 };
+
 class Graphics
 {
 	DECLARE_SINGLETON(Graphics)
 
 public:
-	ComPtr<ID3D11Device> Get_Device() { return m_pDevice; }
-	ComPtr<ID3D11DeviceContext> Get_Context() { return m_pContext; }
+	ComPtr<ID3D11Device>		Get_Device()	{ return m_pDevice; }
+	ComPtr<ID3D11DeviceContext> Get_Context()	{ return m_pContext; }
 
 public:
 	HRESULT Initialize(GRAPHICDESC desc);
@@ -19,6 +21,7 @@ public:
 	HRESULT Render_End();
 
 	Viewport& Get_ViewPort() { return m_Viewport; }
+
 private:
 
 private:
@@ -27,8 +30,7 @@ private:
 	ComPtr<ID3D11DeviceContext>		m_pContext = nullptr;
 	ComPtr<IDXGISwapChain>			m_pSwapChain = nullptr;
 
-	Viewport m_Viewport = {};
-
+	Viewport						m_Viewport = {};
 
 private:
 	HRESULT Ready_DeviceAndSwapChain(HWND hWnd, GRAPHICDESC::WINMODE eWinmode, _uint iWinCX, _uint iWinCY);
@@ -45,4 +47,3 @@ private:
 	void Create_RTGroup();
 	array<shared_ptr<RenderTargetGroup>, RENDER_TARGET_GROUP_COUNT> m_RTGroup;
 };
-

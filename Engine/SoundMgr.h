@@ -30,12 +30,9 @@ public:
 	FMOD::System* Get_System() { return m_pSystem; }
 
 private:
-
 	array<FMOD::Channel*, MAXCHANNEL> m_pChannelArr{};
 
-	FMOD::System* m_pSystem = nullptr;
-	FMOD::ChannelGroup* m_pSoundGroup = nullptr;
-	FMOD::ChannelGroup* m_pListenerGroup = nullptr;
-	
-
+	FMOD::System*		m_pSystem		 = { nullptr };
+	FMOD::ChannelGroup* m_pSoundGroup	 = { nullptr };
+	FMOD::ChannelGroup* m_pListenerGroup = { nullptr };
 };

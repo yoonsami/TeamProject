@@ -3,6 +3,9 @@
 
 void DemoCameraScript2::Tick()
 {
+	if (!KEYPUSH(KEY_TYPE::LCTRL))
+		return;
+		
 	_float2 vMouseDir = INPUT.GetMouseDir();
 
 	{

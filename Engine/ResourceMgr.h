@@ -10,6 +10,7 @@ class CustomFont;
 class ResourceMgr
 {
 	DECLARE_SINGLETON(ResourceMgr)
+
 public:
 	~ResourceMgr();
 
@@ -62,7 +63,6 @@ private:
 
 	//map<wstring, shared_ptr<Parts>> m_PrototypeParts[PARTS_MAX_COUNT];
 };
-
 
 
 template<typename T>

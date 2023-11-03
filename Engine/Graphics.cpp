@@ -41,6 +41,7 @@ HRESULT Graphics::Render_End()
 
 	HRESULT hr = m_pSwapChain->Present(1, 0);
 	m_pContext->ClearState();
+
 	return hr;
 }
 
@@ -172,6 +173,7 @@ void Graphics::Create_RTGroup()
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLURSMALLER0)] = make_shared<RenderTargetGroup>();
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLURSMALLER0)]->Create(RENDER_TARGET_GROUP_TYPE::BLURSMALLER0, rtVec, dsTexture0);
 	}
+
 	//BLURSMALLER1
 	{
 		_float ratio = 0.25f;
@@ -197,6 +199,7 @@ void Graphics::Create_RTGroup()
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLURBIGGER0)] = make_shared<RenderTargetGroup>();
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLURBIGGER0)]->Create(RENDER_TARGET_GROUP_TYPE::BLURBIGGER0, rtVec, dsTexture0);
 	}
+
 	//BLURBIGGER1
 	{
 		_float ratio = 1.f;
@@ -234,7 +237,6 @@ void Graphics::Create_RTGroup()
 
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::FINAL)] = make_shared<RenderTargetGroup>();
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::FINAL)]->Create(RENDER_TARGET_GROUP_TYPE::FINAL, rtVec, dsTexture);
-
 	}
 
 	//Distortion
@@ -246,7 +248,6 @@ void Graphics::Create_RTGroup()
 		rtVec[1].clearColor = _float4(0.f);
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DISTORTION)] = make_shared<RenderTargetGroup>();
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DISTORTION)]->Create(RENDER_TARGET_GROUP_TYPE::DISTORTION, rtVec, dsTexture);
-
 	}
 
 }

@@ -18,7 +18,6 @@ void GeometryHelper::CreateQuad(shared_ptr<Geometry<VTXCOLORDATA>> geometry, _fl
 
 	vector<_uint> idx = { 0,1,2,0,2,3 };
 	geometry->Set_Indices(idx);
-
 }
 
 void GeometryHelper::CreateQuad(shared_ptr<Geometry<VTXTEXDATA>> geometry)

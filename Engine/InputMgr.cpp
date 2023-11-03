@@ -10,17 +10,17 @@ int g_arrVK[static_cast<int>(KEY_TYPE::LAST)] =
 
 	'W',	'A',	'S',	'D',	'Q',	'E',	'Z',	'C',	'R',
 	'1',	'2',	'3',	'4',	'5',
+	VK_F1, VK_F2, VK_F3, VK_F4,
 
 	VK_SPACE,
 	VK_ESCAPE,
 	VK_RETURN,
 	VK_LCONTROL,
-	VK_LSHIFT,
+	VK_SHIFT,
 	VK_MENU,
 	VK_LBUTTON,
 	VK_RBUTTON
 };
-
 
 void InputMgr::Initialize(HWND hWnd)
 {
@@ -91,8 +91,14 @@ void InputMgr::Tick()
 	{
 		m_vMouseDir = { 0.f,0.f };
 		::ShowCursor(true);
+
+		RECT tmp{};
+		GetClientRect(hWnd, &tmp);
+		POINT center = { (tmp.right - tmp.left) / 2, (tmp.bottom - tmp.top) / 2 };
+
+		SetCursorPos(center.x, center.y);
 	}
-	else
+	else if(true == GetButtonHold(KEY_TYPE::LCTRL))
 	{
 		RECT tmp{};
 		GetClientRect(hWnd, &tmp);
@@ -106,5 +112,8 @@ void InputMgr::Tick()
 		SetCursorPos(center.x, center.y);
 		::ShowCursor(false);
 	}
-
+	else
+	{
+		::ShowCursor(true);
+	}
 }

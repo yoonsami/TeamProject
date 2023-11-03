@@ -1,0 +1,226 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>98.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>98.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>98.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Tool_Ui.h">
+      <Filter>98.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Tool_Ui_Define.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="MainApp.h">
+      <Filter>00.MainApp</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadingScene.h">
+      <Filter>01.Scene\01.LoadingScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Loader.h">
+      <Filter>01.Scene\01.LoadingScene\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="MainScene.h">
+      <Filter>01.Scene\00.MainScene</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuizmo.h">
+      <Filter>96.Zmo</Filter>
+    </ClInclude>
+    <ClInclude Include="ImSequencer.h">
+      <Filter>96.Zmo</Filter>
+    </ClInclude>
+    <ClInclude Include="ImZoomSlider.h">
+      <Filter>96.Zmo</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphEditor.h">
+      <Filter>96.Zmo</Filter>
+    </ClInclude>
+    <ClInclude Include="ImCurveEdit.h">
+      <Filter>96.Zmo</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGradient.h">
+      <Filter>96.Zmo</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraScript1.h">
+      <Filter>02.Component\00.MonoBehaviour\00.CameraScript</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraScript2.h">
+      <Filter>02.Component\00.MonoBehaviour\00.CameraScript</Filter>
+    </ClInclude>
+    <ClInclude Include="imconfig.h">
+      <Filter>97.Imgui\01.Etc</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui.h">
+      <Filter>97.Imgui\01.Etc</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_dx11.h">
+      <Filter>97.Imgui\01.Etc</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_win32.h">
+      <Filter>97.Imgui\01.Etc</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_internal.h">
+      <Filter>97.Imgui\01.Etc</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_stdlib.h">
+      <Filter>97.Imgui\01.Etc</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_rectpack.h">
+      <Filter>97.Imgui\01.Etc</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_textedit.h">
+      <Filter>97.Imgui\01.Etc</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_truetype.h">
+      <Filter>97.Imgui\01.Etc</Filter>
+    </ClInclude>
+    <ClInclude Include="ImguiMgr.h">
+      <Filter>97.Imgui\00.ImguiMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiFileDialog.h">
+      <Filter>95.FileDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiFileDialogConfig.h">
+      <Filter>95.FileDialog</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Tool_Ui.cpp">
+      <Filter>98.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>99.Header</Filter>
+    </ClCompile>
+    <ClCompile Include="MainApp.cpp">
+      <Filter>00.MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadingScene.cpp">
+      <Filter>01.Scene\01.LoadingScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Loader.cpp">
+      <Filter>01.Scene\01.LoadingScene\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="MainScene.cpp">
+      <Filter>01.Scene\00.MainScene</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuizmo.cpp">
+      <Filter>96.Zmo</Filter>
+    </ClCompile>
+    <ClCompile Include="ImSequencer.cpp">
+      <Filter>96.Zmo</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphEditor.cpp">
+      <Filter>96.Zmo</Filter>
+    </ClCompile>
+    <ClCompile Include="ImCurveEdit.cpp">
+      <Filter>96.Zmo</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGradient.cpp">
+      <Filter>96.Zmo</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraScript1.cpp">
+      <Filter>02.Component\00.MonoBehaviour\00.CameraScript</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraScript2.cpp">
+      <Filter>02.Component\00.MonoBehaviour\00.CameraScript</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui.cpp">
+      <Filter>97.Imgui\01.Etc</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_demo.cpp">
+      <Filter>97.Imgui\01.Etc</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_draw.cpp">
+      <Filter>97.Imgui\01.Etc</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_dx11.cpp">
+      <Filter>97.Imgui\01.Etc</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_win32.cpp">
+      <Filter>97.Imgui\01.Etc</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_stdlib.cpp">
+      <Filter>97.Imgui\01.Etc</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_tables.cpp">
+      <Filter>97.Imgui\01.Etc</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_widgets.cpp">
+      <Filter>97.Imgui\01.Etc</Filter>
+    </ClCompile>
+    <ClCompile Include="ImguiMgr.cpp">
+      <Filter>97.Imgui\00.ImguiMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiFileDialog.cpp">
+      <Filter>95.FileDialog</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>98.Default</Filter>
+    </Image>
+    <Image Include="Tool_Ui.ico">
+      <Filter>98.Default</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="99.Header">
+      <UniqueIdentifier>{d0351989-93a6-450d-b82b-28d5f5930924}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98.Default">
+      <UniqueIdentifier>{88767828-5b4b-40a1-89b1-bccb0f68204d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.MainApp">
+      <UniqueIdentifier>{a3772781-9e8c-4b99-bb80-d966760d9a3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Scene">
+      <UniqueIdentifier>{3dabfc8f-67ab-472e-8bc7-a53d0e5a0639}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component">
+      <UniqueIdentifier>{8a44dbeb-da83-4d91-a41b-b37b6dcac31d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Scene\00.MainScene">
+      <UniqueIdentifier>{d5c04d97-2e1e-4801-b6a5-00e0b98fc6c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Scene\01.LoadingScene">
+      <UniqueIdentifier>{abe85f86-7574-4f99-9ab8-a2b5c025b049}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Scene\01.LoadingScene\Loader">
+      <UniqueIdentifier>{26cba1e9-12a9-432f-9748-2ef8fbc1f047}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour">
+      <UniqueIdentifier>{d610e2f3-e149-4e0c-a679-dffbca5e821d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\00.CameraScript">
+      <UniqueIdentifier>{f95d81b6-7b07-4ede-a466-0df7a326a195}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.Imgui">
+      <UniqueIdentifier>{6f8908e4-8f81-4313-9891-678c45e76298}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="96.Zmo">
+      <UniqueIdentifier>{17212f78-9381-4663-b4f5-7263c14b5b36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.Imgui\00.ImguiMgr">
+      <UniqueIdentifier>{8536d8e5-0bf2-40e1-92a9-7a475965965d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.Imgui\01.Etc">
+      <UniqueIdentifier>{4aa21666-20dc-4e7e-804d-bb65a2b077f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.FileDialog">
+      <UniqueIdentifier>{c3143266-fe3f-4e1e-b62d-b225ab3368ab}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Tool_Ui.rc">
+      <Filter>98.Default</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

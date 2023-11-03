@@ -3,10 +3,9 @@
 
 HRESULT GameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHICDESC& GraphicDesc)
 {
-
 	m_iWINCX = GraphicDesc.iSizeX;
 	m_iWINCY = GraphicDesc.iSizeY;
-	m_vClearColor = GraphicDesc.vClearColor;	
+	m_vClearColor = GraphicDesc.vClearColor;
 	GRAPHICS.Initialize(GraphicDesc);
 
 	TIME.Initialize();
@@ -37,6 +36,7 @@ void GameInstance::Tick_Engine()
 HRESULT GameInstance::Render_Begin()
 {
 	GRAPHICS.Render_Begin();
+
 	return S_OK;
 }
 
@@ -46,12 +46,13 @@ HRESULT GameInstance::Render()
 
 	SCENE.Render();
 	Render_End();
+
 	return S_OK;
 }
 
 HRESULT GameInstance::Render_End()
 {
 	GRAPHICS.Render_End();
+
 	return S_OK;
 }
-

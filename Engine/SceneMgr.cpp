@@ -7,9 +7,6 @@ void SceneMgr::Tick()
 		return;
 
 	m_pCurrScene->Tick();
-	
-
-
 }
 
 void SceneMgr::Late_Tick()
