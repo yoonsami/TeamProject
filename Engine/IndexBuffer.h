@@ -7,10 +7,11 @@ public:
 	~IndexBuffer();
 
 public:
-	ComPtr<ID3D11Buffer> Get_ComPtr() { return m_IndexBuffer; }
-	_uint Get_Stride() { return m_iIndexStride; }
-	_uint Get_IndicesNum() { return m_iNumIndices; }
-	_uint Get_Offset() { return m_iOffset; }
+	ComPtr<ID3D11Buffer>	Get_ComPtr()		{ return m_IndexBuffer; }
+	_uint					Get_Stride()		{ return m_iIndexStride; }
+	_uint					Get_IndicesNum()	{ return m_iNumIndices; }
+	_uint					Get_Offset()		{ return m_iOffset; }
+
 public:
 	HRESULT Create(const vector<_uint>& indices, _uint iOffset = 0);
 
@@ -20,7 +21,6 @@ public:
 	}
 
 private:
-
 	ComPtr<ID3D11Buffer> m_IndexBuffer;
 
 	_uint m_iIndexStride = 0;

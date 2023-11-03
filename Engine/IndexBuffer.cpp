@@ -2,13 +2,11 @@
 #include "IndexBuffer.h"
 
 IndexBuffer::IndexBuffer()
-
 {
 }
 
 IndexBuffer::~IndexBuffer()
 {
-
 }
 
 HRESULT IndexBuffer::Create(const vector<_uint>& indices, _uint iOffset)

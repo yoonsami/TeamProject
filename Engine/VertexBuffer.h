@@ -7,14 +7,15 @@ public:
 	~VertexBuffer();
 
 public:
-	ComPtr<ID3D11Buffer> Get_ComPtr() { return m_VertexBuffer; }
-	_uint Get_Stride() { return m_VertexStride; }
-	_uint Get_Offset() { return m_Offset; }
-	_uint Get_VerticesNum() { return m_NumVertices; }
-	_uint Get_Slot() { return m_iSlot; }
+	ComPtr<ID3D11Buffer>	Get_ComPtr() { return m_VertexBuffer; }
+	_uint					Get_Stride() { return m_VertexStride; }
+	_uint					Get_Offset() { return m_Offset; }
+	_uint					Get_VerticesNum() { return m_NumVertices; }
+	_uint					Get_Slot() { return m_iSlot; }
+
 public:
 	template<typename T>
-	HRESULT Create(const vector<T>& vertices,_uint slot =0, bool cpuWrite = false,bool gpuWrite = false)
+	HRESULT Create(const vector<T>& vertices, _uint slot = 0, bool cpuWrite = false, bool gpuWrite = false)
 	{
 		m_VertexStride = sizeof(T);
 		m_NumVertices = static_cast<_uint>(vertices.size());
@@ -72,5 +73,4 @@ private:
 	_uint m_iSlot = 0;
 	_bool m_bCpuWrite = false;
 	_bool m_bGpuWrite = false;
-
 };

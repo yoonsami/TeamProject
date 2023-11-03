@@ -1,5 +1,5 @@
 #pragma once
-#define DECLARE_SINGLETON(classname)			\
+#define DECLARE_SINGLETON(classname)		\
 private:									\
 	classname() { }							\
 public:										\
@@ -13,29 +13,29 @@ public:										\
 #define MSG_BOX(MESSAGE)		MessageBox(0, TEXT(MESSAGE), TEXT("System Error"), MB_OK)
 #define VK_MAX 0xff
 
-#define GAMEINSTANCE GET_SINGLE(GameInstance)
-#define GRAPHICS GET_SINGLE(Graphics)
-#define DEVICE GRAPHICS.Get_Device()
-#define CONTEXT GRAPHICS.Get_Context()
+#define DEVICE					GRAPHICS.Get_Device()
+#define CONTEXT					GRAPHICS.Get_Context()
 
-#define INPUT GET_SINGLE(InputMgr)
-#define SOUND GET_SINGLE(SoundMgr)
-#define TIME GET_SINGLE(TimeMgr)
-#define COLLISION GET_SINGLE(CollisionMgr)
-#define PHYSX GET_SINGLE(PhysxMgr)
-#define RESOURCES GET_SINGLE(ResourceMgr)
-#define SCENE GET_SINGLE(SceneMgr)
-#define INSTANCING GET_SINGLE(InstancingMgr)
-#define CUR_SCENE SCENE.Get_CurScene()
+#define GAMEINSTANCE			GET_SINGLE(GameInstance)
+#define GRAPHICS				GET_SINGLE(Graphics)
 
+#define INPUT					GET_SINGLE(InputMgr)
+#define SOUND					GET_SINGLE(SoundMgr)
+#define TIME					GET_SINGLE(TimeMgr)
+#define COLLISION				GET_SINGLE(CollisionMgr)
+#define PHYSX					GET_SINGLE(PhysxMgr)
+#define RESOURCES				GET_SINGLE(ResourceMgr)
+#define INSTANCING				GET_SINGLE(InstancingMgr)
+#define SCENE					GET_SINGLE(SceneMgr)
+#define CUR_SCENE				SCENE.Get_CurScene()
 
-#define fDT TIME.GetfloatDeltaTime()
-#define dDT	TIME.GetdoubleDeltaTime()
+#define fDT						TIME.GetfloatDeltaTime()
+#define dDT						TIME.GetdoubleDeltaTime()
 
-#define KEYHOLD(keyType) INPUT.GetButtonHold(keyType)
-#define KEYTAP(keyType) INPUT.GetButtonTap(keyType)
-#define KEYAWAY(keyType) INPUT.GetButtonAway(keyType)
-#define KEYPUSH(keyType) (KEYHOLD(keyType) || KEYTAP(keyType) )
+#define KEYHOLD(keyType)		INPUT.GetButtonHold(keyType)
+#define KEYTAP(keyType)			INPUT.GetButtonTap(keyType)
+#define KEYAWAY(keyType)		INPUT.GetButtonAway(keyType)
+#define KEYPUSH(keyType)		(KEYHOLD(keyType) || KEYTAP(keyType) )
 
 #define SRV_MAP_COUNT 16
 

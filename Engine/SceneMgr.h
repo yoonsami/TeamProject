@@ -1,7 +1,6 @@
 #pragma once 
 #include "Scene.h"
 
-
 class SceneMgr
 {
 	DECLARE_SINGLETON(SceneMgr)
@@ -21,6 +20,4 @@ public:
 
 private:
 	shared_ptr<Scene> m_pCurrScene = nullptr;
-
 };
-

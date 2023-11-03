@@ -1,6 +1,8 @@
 #pragma once
 #include "BindShaderDesc.h"
+
 class GameObject;
+
 class Scene
 {
 public:
@@ -11,6 +13,7 @@ public:
 		SCENE_DISAPPEAR,
 		SCENE_NONE,
 	};
+
 public:
 	Scene();
 	~Scene();
@@ -24,7 +27,6 @@ public:
 	virtual HRESULT Load_Scene();
 	virtual void Add_GameObject(shared_ptr<GameObject> object);
 	virtual void Remove_GameObject(shared_ptr<GameObject> object);
-
 
 public:
 	_float Get_LoaingPercent() { return m_fLoadPercent; }

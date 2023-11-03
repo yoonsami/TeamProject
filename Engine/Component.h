@@ -39,11 +39,11 @@ public:
 	virtual ~Component();
 
 public:
-	virtual HRESULT Init() { return S_OK; };
-	virtual void Tick() {};
-	virtual void Late_Tick() {};
-	virtual void Final_Tick() {};
-	virtual void Fixed_Tick() {  };
+	virtual HRESULT Init()		{ return S_OK; };
+	virtual void Tick()			{};
+	virtual void Late_Tick()	{};
+	virtual void Final_Tick()	{};
+	virtual void Fixed_Tick()	{};
 
 public:
 	COMPONENT_TYPE Get_Type() { return m_eType; }

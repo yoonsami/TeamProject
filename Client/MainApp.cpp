@@ -43,6 +43,7 @@ void MainApp::Tick()
 HRESULT MainApp::Render()
 {
 	GAMEINSTANCE.Render();
+
 	return S_OK;
 }
 

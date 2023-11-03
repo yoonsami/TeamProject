@@ -2,5 +2,7 @@
 Binaries
 Intermediate
 Libraries
-Resources/Assets
-Resources/Textures
+*.fbx
+*.tga
+*.png
+*.dds

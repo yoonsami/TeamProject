@@ -112,9 +112,6 @@
     <Filter Include="01.Graphics\00.Buffer\03.InstancingBuffer">
       <UniqueIdentifier>{2f389d04-76db-411a-b851-6159d553eb07}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Graphics\00.Buffer\NewFilter1">
-      <UniqueIdentifier>{1b6ae994-522d-465c-8719-511182d7e0d8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Graphics\00.Buffer\02.Vertex &amp; IndexBuffer">
       <UniqueIdentifier>{87d328e1-1992-4184-8c96-ca93f79374b7}</UniqueIdentifier>
     </Filter>

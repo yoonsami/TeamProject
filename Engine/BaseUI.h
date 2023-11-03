@@ -1,6 +1,8 @@
 #pragma once
 #include "Component.h"
+
 class Material;
+
 class BaseUI :
     public Component
 {

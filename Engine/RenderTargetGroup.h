@@ -53,10 +53,10 @@ public:
 	shared_ptr<Texture> GetDepthStencilTexture() { return m_pDepthStencilTexture; }
 	
 private:
-	RENDER_TARGET_GROUP_TYPE m_eGroupType{};
-	vector<RenderTarget> m_RenderTargets;
-	_uint				m_iRenderTargetCount{};
-	shared_ptr<Texture>		m_pDepthStencilTexture;
+	RENDER_TARGET_GROUP_TYPE		m_eGroupType{};
+	vector<RenderTarget>			m_RenderTargets;
+	_uint							m_iRenderTargetCount{};
+	shared_ptr<Texture>				m_pDepthStencilTexture;
 	ComPtr< ID3D11RenderTargetView> m_pRTV;
 };
 

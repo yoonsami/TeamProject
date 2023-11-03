@@ -7,7 +7,7 @@ public:
 
 public:
 	HRESULT Init();
-	void Tick();
+	void	Tick();
 	HRESULT Render();
 
 private:

@@ -1,4 +1,5 @@
 #pragma once
+
 class GameInstance
 {
 	DECLARE_SINGLETON(GameInstance)
@@ -8,8 +9,7 @@ public: //Getter. Setter
 
 public: // for Engine
 	HRESULT Initialize_Engine(_uint iNumLevels, const GRAPHICDESC& GraphicDesc);
-
-	void Tick_Engine();
+	void	Tick_Engine();
 
 public: // for Graphics
 	HRESULT Render_Begin();
@@ -17,11 +17,11 @@ public: // for Graphics
 	HRESULT Render_End();
 
 private:
-	_uint				m_iWINCX = 0;
-	_uint				m_iWINCY = 0;
-	Color				m_vClearColor = { 0.5f,0.5f,0.5f,1.f };
-public:
+	_uint	m_iWINCX		= { 0 };
+	_uint	m_iWINCY		= { 0 };
+	Color	m_vClearColor	= { 0.5f,0.5f,0.5f,1.f };
 
+public:
 
 };
 

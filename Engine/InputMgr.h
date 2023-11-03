@@ -9,6 +9,7 @@ enum class KEY_TYPE
 
 	W,	A,	S,	D,	Q,	E,	Z,	C,	R,
 	KEY_1,	KEY_2,	KEY_3,	KEY_4,	KEY_5,
+	F1, F2, F3, F4,
 
 	SPACE,
 	ESC,
@@ -20,7 +21,6 @@ enum class KEY_TYPE
 	RBUTTON,
 	LAST
 };
-
 
 enum class KEY_STATE
 {
@@ -38,7 +38,6 @@ enum
 
 };
 
-
 class InputMgr 
 {
 	DECLARE_SINGLETON(InputMgr)
@@ -49,20 +48,19 @@ public:
 
 public:
 	bool GetButtonHold(KEY_TYPE key) { return GetState(key) == KEY_STATE::HOLD; }
-	bool GetButtonTap(KEY_TYPE key) { return GetState(key) == KEY_STATE::TAP; }
+	bool GetButtonTap(KEY_TYPE key)  { return GetState(key) == KEY_STATE::TAP; }
 	bool GetButtonAway(KEY_TYPE key) { return GetState(key) == KEY_STATE::AWAY; }
 
-	const _float2& GetMousePos() { return m_ptMousePos; }
-	const _float2& GetMouseDir() { return m_vMouseDir; }
+	const _float2& GetMousePos()	 { return m_ptMousePos; }
+	const _float2& GetMouseDir()	 { return m_vMouseDir; }
 
 private:
 	inline KEY_STATE GetState(KEY_TYPE key) { return m_vecKeyStates[static_cast<_uchar>(key)]; }
 
 private:
-	HWND				m_hWnd = nullptr;
+	HWND				m_hWnd = { nullptr };
 	vector<KEY_STATE>	m_vecKeyStates;
 	_float2				m_ptMousePos{};
-
 	_float2				m_vMouseDir{};
 };
 
