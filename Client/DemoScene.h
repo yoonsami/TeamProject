@@ -16,7 +16,10 @@ public:
 	virtual HRESULT Load_Scene() override;
 
 private:
+	void Load_Spear_Ace();
+	void Load_Kyle();
 	void Load_DemoModel();
+	void Load_DemoMap();
 	void Load_Camera();
 	void Load_Light();
 };

@@ -17,6 +17,7 @@ void Material::Set_Shader(shared_ptr<Shader> shader)
 	m_pTextureMapEffectBuffers[static_cast<_uint>(TextureMapType::DIFFUSE)] = m_pShader->GetSRV("DiffuseMap");
 	m_pTextureMapEffectBuffers[static_cast<_uint>(TextureMapType::NORMAL)] = m_pShader->GetSRV("NormalMap");
 	m_pTextureMapEffectBuffers[static_cast<_uint>(TextureMapType::SPECULAR)] = m_pShader->GetSRV("SpecularMap");
+	m_pTextureMapEffectBuffers[static_cast<_uint>(TextureMapType::OPACITY)] = m_pShader->GetSRV("OpacityMap");
 	m_pTextureMapEffectBuffers[static_cast<_uint>(TextureMapType::EMISSIVE)] = m_pShader->GetSRV("EmissiveMap");
 	m_pTextureMapEffectBuffers[static_cast<_uint>(TextureMapType::DISSOLVE)] = m_pShader->GetSRV("DissolveMap");
 	m_pTextureMapEffectBuffers[static_cast<_uint>(TextureMapType::DISTORTION)] = m_pShader->GetSRV("DistortionMap");

@@ -7,6 +7,7 @@
 #include "InputMgr.h"
 #include "Camera.h"
 #include "Light.h"
+#include "CharacterController.h"
 
 ModelAnimator::ModelAnimator(shared_ptr<Shader> shader)
 	:Component(COMPONENT_TYPE::Animator)
@@ -137,7 +138,9 @@ void ModelAnimator::Tick()
 	auto& preAnimRootPositions = m_pModel->Get_RootBonePosition()[m_preTweenDesc.curr.animIndex];
 	auto& curAnimRootPositions = m_pModel->Get_RootBonePosition()[m_TweenDesc.curr.animIndex];
 	{
-		if(m_TweenDesc.curr.currentFrame <= m_TweenDesc.curr.nextFrame)
+		if(m_TweenDesc.curr.currentFrame == 0 && m_TweenDesc.curr.nextFrame == 0)
+			vDistToMove = _float3(0.f);
+		else if(m_TweenDesc.curr.currentFrame <= m_TweenDesc.curr.nextFrame )
 		{
 			_float3 vPrePosition = _float3::Lerp(preAnimRootPositions[m_preTweenDesc.curr.currentFrame], preAnimRootPositions[m_preTweenDesc.curr.nextFrame], m_preTweenDesc.curr.ratio);
 			_float3 vCurPosition = _float3::Lerp(curAnimRootPositions[m_TweenDesc.curr.currentFrame], curAnimRootPositions[m_TweenDesc.curr.nextFrame], m_TweenDesc.curr.ratio);
@@ -150,7 +153,7 @@ void ModelAnimator::Tick()
 	}
 	
 
-	if (m_TweenDesc.next.animIndex >= 0)
+	/*if (m_TweenDesc.next.animIndex >= 0)
 	{
 		auto& nextAnimRootPositions = m_pModel->Get_RootBonePosition()[m_TweenDesc.next.animIndex];
 
@@ -160,9 +163,9 @@ void ModelAnimator::Tick()
 
 			_float3 vPrePosition = _float3::Lerp(preAnimRootPositions[m_preTweenDesc.next.currentFrame], preAnimRootPositions[m_preTweenDesc.next.nextFrame], m_preTweenDesc.next.ratio);
 			_float3 vCurPosition = _float3::Lerp(curAnimRootPositions[m_TweenDesc.next.currentFrame], curAnimRootPositions[m_TweenDesc.next.nextFrame], m_TweenDesc.next.ratio);
-		
+
 			vDistToMove = _float3::Lerp(vDistToMove, vCurPosition - vPrePosition, m_TweenDesc.tweenRatio);
-					
+
 		}
 		else
 		{
@@ -175,10 +178,11 @@ void ModelAnimator::Tick()
 
 
 		}
-	}
+	}*/
 
+	vDistToMove = _float3::TransformNormal(vDistToMove, Get_Transform()->Get_WorldMatrix());
 
-	Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + (vDistToMove));
+	Get_Transform()->Go_Dir(vDistToMove);
 
 	m_preTweenDesc = m_TweenDesc;
 	//Cal_AnimTransform();

@@ -25,7 +25,7 @@ MeshCollider::MeshCollider(wstring modelTag, _float4x4 MatWorld)
 	for (_uint i = 0; i < boneCount; ++i)
 	{
 		shared_ptr<ModelBone> bone = model->Get_BoneByIndex(i);
-		boneDesc->transform[i] = bone->transform * Utils::Get_PivotMatrix();
+		boneDesc->transform[i] = bone->transform * Utils::m_matNonAnimPivot;
 	}
 
 	for (auto& mesh : meshes)
