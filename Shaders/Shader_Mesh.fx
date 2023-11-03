@@ -237,12 +237,13 @@ float4 PS_UI(UIOutput input) : SV_TARGET
         float gauge_Color = SubMap0.Sample(LinearSampler, rotatedUV).x;
         diffuseColor.xyz += gauge_Color;
 
-
     }
-    else if(g_int_0 == 2 && g_float_0>=100.f)
+
+    else if (g_int_0 == 2 && g_float_0 >= 100.f)
     {
         diffuseColor.xyz = DiffuseMap.Sample(LinearSamplerMirror, input.uv) * g_vec4_0;
     }
+
     else if (g_int_0 == 3 && g_float_0 < 100.f)
     {
         float2 newUV;

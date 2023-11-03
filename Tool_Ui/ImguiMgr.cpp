@@ -4,6 +4,7 @@
 #include "MeshRenderer.h"
 #include "Material.h"
 #include "Utils.h"
+#include "BaseUI.h"
 
 ImguiMgr::~ImguiMgr()
 {
@@ -96,7 +97,8 @@ void ImguiMgr::Manapulate_Ui()
 
    Select_Object();
    Change_Value_Object();
-
+   Change_ParamDesc();
+   Add_Picking_Zone();
 
    Delete_Object();
 
@@ -170,6 +172,7 @@ void ImguiMgr::Select_Texture()
          {
             m_iTextureCursor = iIndex;
             m_strKeyTexture = pair.first;
+            m_strSearchTexture = L"";
          }
 
          ++iIndex;
@@ -184,7 +187,8 @@ void ImguiMgr::Decide_Transform_Value()
    ImGuiInputTextFlags_ eFlag = ImGuiInputTextFlags_CharsDecimal;
 
    ImGui::NewLine();
-   ImGui::Text("Texture", IMGUI_VERSION, IMGUI_VERSION_NUM);
+   //ImGui::Text("Texture", IMGUI_VERSION, IMGUI_VERSION_NUM);
+   ImGui::SeparatorText("Texture");
 
    string strName = Utils::ToString(m_strKeyTexture);
    ImGui::SetNextItemWidth(200);
@@ -192,7 +196,8 @@ void ImguiMgr::Decide_Transform_Value()
    }
 
    ImGui::NewLine();
-   ImGui::Text("Position", IMGUI_VERSION, IMGUI_VERSION_NUM);
+   //ImGui::Text("Position", IMGUI_VERSION, IMGUI_VERSION_NUM);
+   ImGui::SeparatorText("Position");
 
    ImGui::SetNextItemWidth(200);
    ImGui::InputFloat("X##PosX", &m_vecPos.x, 0.01f, 1.0f, "%.3f", eFlag);
@@ -204,7 +209,8 @@ void ImguiMgr::Decide_Transform_Value()
    ImGui::InputFloat("Z##PosZ", &m_vecPos.z, 0.01f, 1.0f, "%.3f", eFlag);
 
    ImGui::NewLine();
-   ImGui::Text("Scale", IMGUI_VERSION, IMGUI_VERSION_NUM);
+   //ImGui::Text("Scale", IMGUI_VERSION, IMGUI_VERSION_NUM);
+   ImGui::SeparatorText("Scale");
 
    ImGui::SetNextItemWidth(200);
    ImGui::InputFloat("X##ScaleX", &m_vecScale.x, 0.01f, 1.0f, "%.3f", eFlag);
@@ -312,6 +318,9 @@ void ImguiMgr::Change_Value_Object()
 {
    ImGuiInputTextFlags_ eFlag = ImGuiInputTextFlags_CharsDecimal;
 
+   ImGui::NewLine();
+   ImGui::SeparatorText("Position");
+
    ImGui::SetNextItemWidth(200);
    ImGui::InputFloat("X##PosX2", &m_vecPos.x, 0.01f, 1.0f, "%.3f", eFlag);
 
@@ -322,7 +331,8 @@ void ImguiMgr::Change_Value_Object()
    ImGui::InputFloat("Z##PosZ2", &m_vecPos.z, 0.01f, 1.0f, "%.3f", eFlag);
 
    ImGui::NewLine();
-   ImGui::Text("Scale", IMGUI_VERSION, IMGUI_VERSION_NUM);
+   //ImGui::Text("Scale", IMGUI_VERSION, IMGUI_VERSION_NUM);
+   ImGui::SeparatorText("Scale");
 
    ImGui::SetNextItemWidth(200);
    ImGui::InputFloat("X##ScaleX2", &m_vecScale.x, 0.01f, 1.0f, "%.3f", eFlag);
@@ -330,7 +340,7 @@ void ImguiMgr::Change_Value_Object()
    ImGui::SetNextItemWidth(200);
    ImGui::InputFloat("Y##ScaleY2", &m_vecScale.y, 0.01f, 1.0f, "%.3f", eFlag);
 
-   if (ImGui::Button("Change", ImVec2(80.f, 20.f)) || m_bIsChangeCheck)
+   if (ImGui::Button("Change##Pos_Scale", ImVec2(80.f, 20.f)) || m_bIsChangeCheck)
    {
       if (!ImGui::IsItemActive() || m_bIsChangeCheck)
       {
@@ -349,4 +359,97 @@ void ImguiMgr::Change_Value_Object()
 
    ImGui::SameLine();
    ImGui::Checkbox("Immediately", &m_bIsChangeCheck);
+}
+
+void ImguiMgr::Change_ParamDesc()
+{
+   /*
+
+   g_int_0
+      0 : 기본
+      1 : UV 비율로 색 차이
+            -> g_float_0 사용
+      2 : 원형 100이상일때 기본동작, 100 미만일 때
+            -> g_float_0 사용
+      3 : 100 미만 일때
+            -> g_float_0 사용
+      4 : g_float_0 / 100 값이 uv.x 작을때 렌더
+            -> g_float_0 사용
+
+   */
+
+   // renderer->Get_RenderParamDesc().SetVec4(0, _float4(1));
+
+   ImGuiInputTextFlags_ eFlag = ImGuiInputTextFlags_CharsDecimal;
+
+   ImGui::NewLine();
+   ImGui::SeparatorText("Change Param");
+   ImGui::SetNextItemWidth(200);
+   ImGui::InputInt("Int##pass_o", &m_iPass_0, 1, 1, eFlag);
+
+   ImGui::SetNextItemWidth(200);
+   ImGui::InputFloat("float##g_float_o", &m_float_0, 0.01f, 1.0f, "%.3f", eFlag);
+   ImGui::SliderFloat("slider float", &m_float_0, 0.0f, 100.0f, "ratio = %.3f");
+
+   if (0 == m_strSelectObjName.length())
+   {
+      return;
+   }
+
+   auto pGameobject = CUR_SCENE->Get_GameObject(m_strSelectObjName);
+   if (nullptr == pGameobject)
+   {
+      return;
+   }
+
+   auto pRenderer = pGameobject->Get_MeshRenderer();
+   pRenderer->Get_RenderParamDesc().SetInt(0, m_iPass_0);
+   pRenderer->Get_RenderParamDesc().SetFloat(0, m_float_0);
+}
+
+void ImguiMgr::Add_Picking_Zone()
+{
+    // 두 점 저장, 라디오버튼으로 타입지정
+    // 버튼 누르면 create
+
+    ImGui::NewLine();
+    ImGui::SeparatorText("Add Picking Zone");
+    ImGuiInputTextFlags_ eFlag = ImGuiInputTextFlags_CharsDecimal;
+
+    // 피킹한 두점 위치 보여주기 
+
+
+
+    ImGui::RadioButton("Rect", &m_iPickTypeIndex, 0);
+    ImGui::SameLine();
+    ImGui::RadioButton("Circle", &m_iPickTypeIndex, 1);
+
+
+    if (ImGui::Button("Add_Picking##Pos_Scale", ImVec2(80.f, 20.f)))
+    {
+        if (!ImGui::IsItemActive())
+        {
+            auto pGameobject = CUR_SCENE->Get_GameObject(m_strSelectObjName);
+            if (nullptr == pGameobject)
+            {
+                return;
+            }
+            auto pTransform = pGameobject->GetOrAddTransform();
+            
+            auto BaseUi = make_shared<BaseUI>();
+            
+
+
+        }
+    }
+
+
+}
+
+void ImguiMgr::Save_Ui_Desc()
+{
+}
+
+void ImguiMgr::Load_Ui_Desc()
+{
 }

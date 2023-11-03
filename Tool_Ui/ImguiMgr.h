@@ -28,6 +28,11 @@ private:
    void        Delete_Object();           // 선택한 오브젝트 삭제
    void        Change_Value_Object();     // 선택한 오브젝트 값 변경
 
+   void        Change_ParamDesc();        // 선택한 오브젝트 파라메터 값 변경
+   void        Add_Picking_Zone();
+
+   void        Save_Ui_Desc();            // 
+   void        Load_Ui_Desc();            // 
 
 
 
@@ -48,7 +53,13 @@ private:
    wstring           m_strSelectObjName;                    // 선택한 오브젝트 이름
    _uint             m_iObjNameCursor        = { 0 };       // list box 선택 인덱스
 
-   _bool             m_bIsChangeCheck        = { false };
+   _bool             m_bIsChangeCheck        = { false };   // 값 변경 즉시 적용
 
+   _int              m_iPass_0               = { 0 };       // 
+   _float            m_float_0               = { 0.f };     // 
+
+   _int              m_iPickTypeIndex        = { 0 };       // 
+   POINT             m_ptPos1                = {};
+   POINT             m_ptPos2                = {};
 };
 
