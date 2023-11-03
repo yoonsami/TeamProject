@@ -92,6 +92,15 @@ void InputMgr::Tick()
 		m_vMouseDir = { 0.f,0.f };
 		::ShowCursor(true);
 	}
+	else if (GetButtonAway(KEY_TYPE::LALT))
+	{
+		RECT tmp{};
+		GetClientRect(hWnd, &tmp);
+		POINT center = { (tmp.right - tmp.left) / 2, (tmp.bottom - tmp.top) / 2 };
+
+		m_vMouseDir = { 0.f,0.f };
+		SetCursorPos(center.x, center.y);
+	}
 	else
 	{
 		RECT tmp{};

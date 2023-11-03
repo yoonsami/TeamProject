@@ -36,7 +36,7 @@ private:
 private:
 	void ReadMaterialData();
 	void WriteMaterialData(const wstring& finalPath);
-	void WriteTexture(const wstring& assetName);
+	void WriteTexture(const wstring& savePath);
 
 private:
 	shared_ptr<asAnimation> ReadAnimationData(aiAnimation* srcAnimation);

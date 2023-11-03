@@ -22,10 +22,13 @@ Model::~Model()
 {
 }
 
-void Model::ReadMaterial(const wstring& fileName)
+void Model::ReadMaterial(const wstring& strPath)
 {
-	m_MaterialTag = fileName;
-	wstring fullPath = m_strModelPath + fileName + L"\\" + fileName + L".Material";
+	m_MaterialTag = fs::path(strPath).filename().wstring();
+	wstring fullPath = strPath + L".Material";
+
+	wstring texturePath = fs::path(strPath).parent_path();
+	Utils::Replace(texturePath, L"Models", L"Textures");
 
 	shared_ptr<FileUtils> file = make_shared<FileUtils>();
 
@@ -43,19 +46,19 @@ void Model::ReadMaterial(const wstring& fileName)
 			if (textureStr.length() > 0)
 			{
 				textureStr += L".dds";
-				auto texture = RESOURCES.GetOrAddTexture(fileName + L"\\" + textureStr, m_strTexturePath + fileName + L"\\" + textureStr);
+				auto texture = RESOURCES.GetOrAddTexture(m_MaterialTag+ L"_" + textureStr, texturePath + L"\\" + textureStr);
 				if (!texture)
 				{
 					Utils::ChangeExt(textureStr, L".DDS");
-					texture = RESOURCES.GetOrAddTexture(fileName + L"\\" + textureStr, m_strTexturePath + fileName + L"\\" + textureStr);
+					texture = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
 					if (!texture)
 					{
 						Utils::ChangeExt(textureStr, L".tga");
-						texture = RESOURCES.GetOrAddTexture(fileName + L"\\" + textureStr, m_strTexturePath + fileName + L"\\" + textureStr);
+						texture = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
 						if (!texture)
 						{
 							Utils::ChangeExt(textureStr, L".png");
-							texture = RESOURCES.GetOrAddTexture(fileName + L"\\" + textureStr, m_strTexturePath + fileName + L"\\" + textureStr);
+							texture = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
 
 						}
 					}
@@ -71,19 +74,19 @@ void Model::ReadMaterial(const wstring& fileName)
 			if (textureStr.length() > 0)
 			{
 				textureStr += L".dds";
-				auto texture = RESOURCES.GetOrAddTexture(fileName + L"\\" + textureStr, m_strTexturePath + fileName + L"\\" + textureStr);
+				auto texture = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
 				if (!texture)
 				{
 					Utils::ChangeExt(textureStr, L".DDS");
-					texture = RESOURCES.GetOrAddTexture(fileName + L"\\" + textureStr, m_strTexturePath + fileName + L"\\" + textureStr);
+					texture = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
 					if (!texture)
 					{
 						Utils::ChangeExt(textureStr, L".tga");
-						texture = RESOURCES.GetOrAddTexture(fileName + L"\\" + textureStr, m_strTexturePath + fileName + L"\\" + textureStr);
+						texture = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
 						if (!texture)
 						{
 							Utils::ChangeExt(textureStr, L".png");
-							texture = RESOURCES.GetOrAddTexture(fileName + L"\\" + textureStr, m_strTexturePath + fileName + L"\\" + textureStr);
+							texture = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
 
 						}
 					}
@@ -99,11 +102,12 @@ void Model::ReadMaterial(const wstring& fileName)
 			if (textureStr.length() > 0)
 			{
 				textureStr += L".tga";
-				auto texture = RESOURCES.GetOrAddTexture(fileName + L"\\" + textureStr, m_strTexturePath + fileName + L"\\" + textureStr);
+				auto texture = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
+
 				if (!texture)
 				{
 					Utils::ChangeExt(textureStr, L".png");
-					texture = RESOURCES.GetOrAddTexture(fileName + L"\\" + textureStr, m_strTexturePath + fileName + L"\\" + textureStr);
+					texture = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
 
 				}
 				material->Set_TextureMap(texture, TextureMapType::NORMAL);
@@ -133,10 +137,10 @@ void Model::ReadMaterial(const wstring& fileName)
 	}
 }
 
-void Model::ReadModel(const wstring& fileName)
+void Model::ReadModel(const wstring& strPath)
 {
-	m_ModelTag = fileName;
-	wstring fullPath = m_strModelPath + fileName + L"\\" + fileName + L".Model";
+	m_ModelTag = fs::path(strPath).filename().wstring();
+	wstring fullPath = strPath + L".Model";
 
 	shared_ptr<FileUtils> file = make_shared<FileUtils>();
 	file->Open(fullPath, FileMode::Read);
@@ -202,10 +206,10 @@ void Model::ReadModel(const wstring& fileName)
 	Bind_CacheInfo();
 }
 
-void Model::ReadAnimation(const wstring& fileName)
+void Model::ReadAnimation(const wstring& strPath)
 {
-	m_AnimationTag = fileName;
-	wstring fullPath = m_strModelPath + fileName + L"\\" + fileName + L".clip";
+	m_AnimationTag = fs::path(strPath).filename().wstring();
+	wstring fullPath = strPath + L".clip";
 
 	shared_ptr<FileUtils> file = make_shared<FileUtils>();
 	file->Open(fullPath, FileMode::Read);
@@ -565,6 +569,7 @@ void Model::Create_Texture()
 		return;
 
 	m_AnimTransforms.resize(Get_AnimationCount());
+	m_RootBonePosition.resize(Get_AnimationCount());
 	Create_BoneData();
 
 	for (_uint i = 0; i < Get_AnimationCount(); ++i)
@@ -643,6 +648,7 @@ void Model::Create_AnimationTransform(_uint index)
 	vector<_float4x4> tmpAnimBoneTransforms(MAX_MODEL_TRANSFORMS, _float4x4::Identity);
 
 	shared_ptr<ModelAnimation> animation = Get_AnimationByIndex(index);
+	m_RootBonePosition[index].resize(animation->frameCount);
 	for (_uint frame = 0; frame < animation->frameCount; ++frame)
 	{
 		for (_uint boneIndex = 0; boneIndex < Get_BoneCount(); ++boneIndex)
@@ -662,6 +668,8 @@ void Model::Create_AnimationTransform(_uint index)
 				R = _float4x4::CreateFromQuaternion(data.rotation);
 				if (bone->name == L"Dummy_CP")
 				{
+					
+					m_RootBonePosition[index][frame] = _float3::Transform(data.translation, _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY( XM_PI * -0.5f)) ;
 					T = _float4x4::Identity;
 				}
 				else

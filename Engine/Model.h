@@ -20,9 +20,9 @@ public:
 	~Model();
 
 public:
-	void ReadMaterial(const wstring& fileName);
-	void ReadModel(const wstring& fileName);
-	void ReadAnimation(const wstring& filename);
+	void ReadMaterial(const wstring& strPath);
+	void ReadModel(const wstring& strPath);
+	void ReadAnimation(const wstring& strPath);
 	
 	//void ReadBase();
 	//void AddParts(const wstring& partName, PARTS_INFO partType);
@@ -67,6 +67,7 @@ public:
 		return m_AnimTransforms[animIndex].transforms[frame][boneIndex];
 
 	}
+	vector<vector<_float3>>& Get_RootBonePosition() { return m_RootBonePosition; }
 
 private:
 	void Create_Texture();
@@ -84,6 +85,7 @@ private:
 
 private:
 	vector<AnimTransform> m_AnimTransforms;
+	vector<vector<_float3>> m_RootBonePosition;
 	ComPtr<ID3D11Texture2D> m_pTexture;
 	ComPtr<ID3D11ShaderResourceView> m_pSRV;
 

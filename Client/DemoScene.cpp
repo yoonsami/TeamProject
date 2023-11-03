@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "DemoScene.h"
 #include "ModelAnimator.h"
 #include "ModelRenderer.h"
@@ -9,6 +9,8 @@
 #include "DemoCameraScript2.h"
 #include "DemoAnimationController1.h"
 #include "DemoFSM.h"
+#include "FileUtils.h"
+#include <Utils.h>
 DemoScene::DemoScene()
 {
 }
@@ -51,12 +53,29 @@ HRESULT DemoScene::Load_Scene()
 
 void DemoScene::Load_DemoModel()
 {
-	{
-		// GameObject �����Ҵ�
-		shared_ptr<GameObject> testObj = make_shared<GameObject>();
+	/*{
+		shared_ptr<FileUtils> file = make_shared<FileUtils>();
+		file->Open(L"", FileMode::Write);
 
-		// Transform Component �߰�
-		// ���� �ϳ� ���. AddComponent �Ǵ� GetOrAddTransform(������ ��ȯ ������ ������ ��ȯ)
+		file->Write<_uint>(3);
+		file->Write<string>(Utils::ToString(L"AWSDF"));
+	}
+	{
+		shared_ptr<FileUtils> file = make_shared<FileUtils>();
+		file->Open(L"", FileMode::Read);
+
+		_uint a = file->Read<_uint>();
+		wstring name = Utils::ToWString(file->Read<string>());
+	}*/
+
+
+
+
+	{
+
+		shared_ptr<GameObject> testObj = make_shared<GameObject>();
+		// Transform Component
+
 		testObj->Add_Component(make_shared<Transform>());
 		//testObj->GetOrAddTransform();
 
@@ -66,10 +85,11 @@ void DemoScene::Load_DemoModel()
 
 			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
 			{
-				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Bow_Ace");
+				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Kyle");
+
 				animator->Set_Model(model);
 			}
-			//�ִϸ����� ������Ʈ
+
 			testObj->Add_Component(animator);
 		}
 
@@ -83,46 +103,21 @@ void DemoScene::Load_DemoModel()
 
 		Add_GameObject(testObj);
 	}
-	//{
-	//	// GameObject �����Ҵ�
-	//	shared_ptr<GameObject> testObj = make_shared<GameObject>();
-
-	//	// Transform Component �߰�
-	//	// ���� �ϳ� ���. AddComponent �Ǵ� GetOrAddTransform(������ ��ȯ ������ ������ ��ȯ)
-	//	testObj->Add_Component(make_shared<Transform>());
-	//	//testObj->GetOrAddTransform();
-
-	//	testObj->Get_Transform()->Set_State(Transform_State::POS, _float4(5.f, 0.f, 0.f, 1.f));
-	//	{
-	//		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-
-	//		shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
-	//		{
-	//			shared_ptr<Model> model = RESOURCES.Get<Model>(L"1058_cooperateuniqueskilltimeline");
-	//			animator->Set_Model(model);
-	//		}
-	//		//�ִϸ����� ������Ʈ
-	//		testObj->Add_Component(animator);
-	//	}
-
-	//	testObj->Add_Component(make_shared<DemoAnimationController1>());
-
-	//	Add_GameObject(testObj);
-	//}
+	
 }
 
 void DemoScene::Load_Camera()
 {
 	{
-		//ī�޶�� ����� GameObject ����
+		//GameObj for Camera Create
 		shared_ptr<GameObject> camera = make_shared<GameObject>();
 
-		// Transform Component �߰�
+		// Transform Component 
 		camera->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
 
 		camera->GetOrAddTransform()->Set_Speed(5.f);
 
-		// ī�޶� Component ���� 
+		// Camera Component Add
 		CameraDesc desc;
 		desc.fFOV = XM_PI / 3.f;
 		desc.strName = L"Default";
@@ -136,11 +131,9 @@ void DemoScene::Load_Camera()
 
 
 		camera->Get_Camera()->Set_ProjType(ProjectionType::Perspective);
-		//Layer_UI�� �ִ� ������Ʈ�� �ø��ϰڴ�.
+		//Layer_UI culling true
 		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, true);
 
-		// MonoBehaviour(Component �� ������ �ƴѰ͵�) �߰�
-		// �Ϻη� ��� ��������
 		camera->Add_Component(make_shared<DemoCameraScript1>());
 		camera->Add_Component(make_shared<DemoCameraScript2>());
 
@@ -154,7 +147,6 @@ void DemoScene::Load_Light()
 	lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 25.f, 0.f, 1.f));
 	lightObj->GetOrAddTransform()->Set_LookDir(_float3(-1.f,-1.f,-1.f));
 	{
-		// LightComponent ���� �� ����
 		shared_ptr<Light> lightCom = make_shared<Light>();
 		lightCom->Set_Diffuse(Color(1.f));
 		lightCom->Set_Ambient(Color(0.8f));

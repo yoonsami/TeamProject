@@ -393,7 +393,7 @@ void ResourceMgr::CreateModel(const wstring& path)
 			if (entry.path().extension().wstring() != L".Model" && entry.path().extension().wstring() != L".model")
 				continue;
 
-			wstring tag = entry.path().filename().wstring();
+			wstring tag = entry.path();
 			Utils::DetachExt(tag);
 
 			shared_ptr<Model> model = make_shared<Model>();
@@ -401,7 +401,8 @@ void ResourceMgr::CreateModel(const wstring& path)
 			model->ReadMaterial(tag);
 			model->ReadAnimation(tag);
 
-			Add(tag, model);
+			wstring key = fs::path(tag).filename();
+			Add(key, model);
 		}
 	}
 }

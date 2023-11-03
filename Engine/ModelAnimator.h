@@ -58,6 +58,7 @@ public:
 
 private:
     TweenDesc   m_TweenDesc;
+    TweenDesc   m_preTweenDesc;
     _int m_iNextAnimation =-1;
 
 private:
