@@ -6,19 +6,23 @@ bool isModel;
 
 struct ParticleInfo_UAV  // 주의: 16byte씩 맞추기
 {
-    /* 매 프레임마다 변할 수 있는 값들 */
-    float3  vWorldPos;      // 입자의 현재 World pos 
-    float   fCurrTime;      // 입자가 생성되고나서부터 얼마나 시간이 흘렀는지
-    float3  vWorldDir;      // 입자의 현재 방향 
-    int     iAlive;         // 입자가 현재 살아있는가. 
-    float4  vColor;         // 입자의 color 
-    float   fSpeed;         // 입자의 speed
-    float   fSpeeeExponent; // 입자의 speed Exponent
-    
+   /* 매 프레임마다 변할 수 있는 값들 */
+    float   fCurrCurrTime;        // Current 생성되고나서부터 얼마나 시간이 흘렀는지
+    float3  vCurrWorldPos;      // Current World pos 
+    float   fCurrSpeed;         // Current speed
+    float3  vCurrRotationSpeed; // Current 회전속도 
+    float   fCurrSpeedExponent; // Current speed Exponent
+    float3  vCurrWorldDir;      // Current 현재 방향 
+    float4  vCurrColor;         // Current color 
+    float2  vCurrSize;          // Current size 
+    int     iAlive;             // Is Alive
+
     /* 입자가 처음 생성될 때 고정되는 값들 */
-    float2  vSize;          // 입자의 size 
-    float   fLifeTime;      // 입자의 LifeTime 
-    float3  vOffsets;       // 16 byte맞추기 위해 넣음. 쓸일있으면 알아서 맞춰서 쓰면됨. 
+    float   fLifeTime; // 입자의 LifeTime 
+    float3  vRotationAngle; // 입자의 회전각도  
+
+    /* 자유롭게 사용한 데이터 공간 */
+    float vOffsets; // 16 byte맞추기 위해 넣음. 쓸일있으면 알아서 맞춰서 쓰면됨. 
 };
 
 struct ComputeShared_UAV
@@ -174,6 +178,17 @@ void CS_Main(int3 threadIndex : SV_DispatchThreadID)
     }
 }
 
+[numthreads(1024, 1, 1)]
+void CS_Movement_Non(int3 threadIndex : SV_DispatchThreadID)
+{
+    /* Movement : 없음. */
+    
+    if (threadIndex.x >= maxCount)
+        return;
+    
+    
+}
+
 /* [Vertex Shader]------------------------------ */
 
 struct VS_OUTPUT
@@ -232,66 +247,201 @@ struct GS_OUTPUT
 };
 
 [maxvertexcount(6)]
-void GS_Main(point VS_OUTPUT input[1], inout TriangleStream<GS_OUTPUT> outputStream)
+void GS_Default(point VS_OUTPUT input[1], inout TriangleStream<GS_OUTPUT> outputStream)
 {
-    GS_OUTPUT output[4] =
-    {
-        (GS_OUTPUT) 0.f, (GS_OUTPUT) 0.f, (GS_OUTPUT) 0.f, (GS_OUTPUT) 0.f
-    };
+    // TODO: 지금은  full billbord 코드 넣어놨음. 나중에 로테이션 먹는걸로 수정하기 
     
-    float StartScale = StartEndScale.x;
-    float EndScale = StartEndScale.y;
-    
+    GS_OUTPUT output[4];
+
     VS_OUTPUT vtx = input[0];
     uint id = (uint) vtx.id;
-    if (0 >= g_Data[id].alive)
+    if (0 >= g_Data[id].iAlive)
         return;
     
-    float ratio = g_Data[id].curTime / g_Data[id].lifeTime;
-    float2 scale = float2(((EndScale - StartScale) * ratio + StartScale) / 2.f, ((EndScale - StartScale) * ratio + StartScale) / 2.f);
+    float4 vLook = input[0].viewPos - input[0].worldPos;
+    float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * g_Data[id].vCurrSize.x;
+    float3 vUp = normalize(cross(vLook.xyz, vRight)) * g_Data[id].vCurrSize.y;
     
-    if(g_Data[id].size.x >=0.f)
-        scale = g_Data[id].size * (1.f - ratio);
+    // For. world space
+    output[0].position = float4(input[0].worldPos.xyz + vRight + vUp, 1.f);
+    output[1].position = float4(input[0].worldPos.xyz - vRight + vUp, 1.f);
+    output[2].position = float4(input[0].worldPos.xyz - vRight - vUp, 1.f);
+    output[3].position = float4(input[0].worldPos.xyz + vRight - vUp, 1.f);
     
-    float3 velocity = (g_Data[id].nowMovingVel.xyz) * scale.y;
-    float3 viewVel = mul(float4(velocity, 0.f), V).xyz * g_float_1;
-    
-    // view space
-    output[0].position = vtx.viewPos + float4(-g_float_2, 0.f, 0.f, 0.f);
-    output[1].position = vtx.viewPos + float4(g_float_2 ,0.f, 0.f, 0.f);
-    output[2].position = vtx.viewPos + float4(g_float_2, 0.f, 0.f, 0.f) - float4(viewVel, 0.f);
-    output[3].position = vtx.viewPos + float4(-g_float_2, 0.f, 0.f, 0.f) - float4(viewVel, 0.f);
-
+    // For. view space
     output[0].viewPos = output[0].position.xyz;
     output[1].viewPos = output[1].position.xyz;
     output[2].viewPos = output[2].position.xyz;
     output[3].viewPos = output[3].position.xyz;
-    // proj space
-    for (int i = 0; i < 4;++i)
+    
+    // For. proj space
+    for (int i = 0; i < 4; ++i)
         output[i].position = mul(output[i].position, P);
     
+    // For. Texcoord 
+        // TODO : sprite animation가능하도록 수정해야함.
+    output[0].uv = float2(0.f, 0.f);
+    output[1].uv = float2(1.f, 0.f);
+    output[2].uv = float2(1.f, 1.f);
+    output[3].uv = float2(0.f, 1.f);
+    
+    // For. Append 
+    outputStream.Append(output[0]);
+    outputStream.Append(output[1]);
+    outputStream.Append(output[2]);
+    outputStream.RestartStrip();
+    
+    outputStream.Append(output[0]);
+    outputStream.Append(output[2]);
+    outputStream.Append(output[3]);
+    outputStream.RestartStrip();
+}
 
-    output[0].uv = float2(0.f,0.f);
-    output[1].uv = float2(1.f,0.f);
-    output[2].uv = float2(1.f,1.f);
-    output[3].uv = float2(0.f,1.f); 
+[maxvertexcount(6)]
+void GS_Billbord(point VS_OUTPUT input[1], inout TriangleStream<GS_OUTPUT> outputStream)
+{
+    GS_OUTPUT output[4];
+
+    VS_OUTPUT vtx = input[0];
+    uint id = (uint) vtx.id;
+    if (0 >= g_Data[id].iAlive)
+        return;
     
-     for (int j = 0; j < 4; ++j)
-    {
-        output[j].viewNormal = float3(0.f, 0.f, -1.f);
-        output[j].viewTangent = float3(1.f, 0.f, 0.f);
-        output[j].id = id;
-    }
+    float4 vLook = input[0].viewPos - input[0].worldPos;
+    float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * g_Data[id].vCurrSize.x;
+    float3 vUp = normalize(cross(vLook.xyz, vRight)) * g_Data[id].vCurrSize.y;
     
-     outputStream.Append(output[0]);
-     outputStream.Append(output[1]);
-     outputStream.Append(output[2]);
-     outputStream.RestartStrip();
+    // For. world space
+    output[0].position = float4(input[0].worldPos.xyz + vRight + vUp, 1.f);
+    output[1].position = float4(input[0].worldPos.xyz - vRight + vUp, 1.f);
+    output[2].position = float4(input[0].worldPos.xyz - vRight - vUp, 1.f);
+    output[3].position = float4(input[0].worldPos.xyz + vRight - vUp, 1.f);
     
-     outputStream.Append(output[0]);
-     outputStream.Append(output[2]);
-     outputStream.Append(output[3]);
-     outputStream.RestartStrip();
+    // For. view space
+    output[0].viewPos = output[0].position.xyz;
+    output[1].viewPos = output[1].position.xyz;
+    output[2].viewPos = output[2].position.xyz;
+    output[3].viewPos = output[3].position.xyz;
+    
+    // For. proj space
+    for (int i = 0; i < 4; ++i)
+        output[i].position = mul(output[i].position, P);
+    
+    // For. Texcoord 
+        // TODO : sprite animation가능하도록 수정해야함.
+    output[0].uv = float2(0.f, 0.f);
+    output[1].uv = float2(1.f, 0.f);
+    output[2].uv = float2(1.f, 1.f);
+    output[3].uv = float2(0.f, 1.f);
+    
+    // For. Append 
+    outputStream.Append(output[0]);
+    outputStream.Append(output[1]);
+    outputStream.Append(output[2]);
+    outputStream.RestartStrip();
+    
+    outputStream.Append(output[0]);
+    outputStream.Append(output[2]);
+    outputStream.Append(output[3]);
+    outputStream.RestartStrip();
+}
+
+[maxvertexcount(6)]
+void GS_Billbord_LockY(point VS_OUTPUT input[1], inout TriangleStream<GS_OUTPUT> outputStream)
+{
+    GS_OUTPUT output[4];
+
+    VS_OUTPUT vtx = input[0];
+    uint id = (uint) vtx.id;
+    if (0 >= g_Data[id].iAlive)
+        return;
+    
+    float4 vLook = input[0].viewPos - input[0].worldPos;
+    float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * g_Data[id].vCurrSize.x;
+    float3 vUp = normalize(cross(vLook.xyz, vRight)) * g_Data[id].vCurrSize.y;
+    
+    // For. world space
+    output[0].position = float4(input[0].worldPos.xyz + vRight + vUp, 1.f);
+    output[1].position = float4(input[0].worldPos.xyz - vRight + vUp, 1.f);
+    output[2].position = float4(input[0].worldPos.xyz - vRight - vUp, 1.f);
+    output[3].position = float4(input[0].worldPos.xyz + vRight - vUp, 1.f);
+    
+    // For. view space
+    output[0].viewPos = output[0].position.xyz;
+    output[1].viewPos = output[1].position.xyz;
+    output[2].viewPos = output[2].position.xyz;
+    output[3].viewPos = output[3].position.xyz;
+    
+    // For. proj space
+    for (int i = 0; i < 4; ++i)
+        output[i].position = mul(output[i].position, P);
+    
+    // For. Texcoord 
+        // TODO : sprite animation가능하도록 수정해야함.
+    output[0].uv = float2(0.f, 0.f);
+    output[1].uv = float2(1.f, 0.f);
+    output[2].uv = float2(1.f, 1.f);
+    output[3].uv = float2(0.f, 1.f);
+    
+    // For. Append 
+    outputStream.Append(output[0]);
+    outputStream.Append(output[1]);
+    outputStream.Append(output[2]);
+    outputStream.RestartStrip();
+    
+    outputStream.Append(output[0]);
+    outputStream.Append(output[2]);
+    outputStream.Append(output[3]);
+    outputStream.RestartStrip();
+}
+
+[maxvertexcount(6)]
+void GS_Billbord_LockX(point VS_OUTPUT input[1], inout TriangleStream<GS_OUTPUT> outputStream)
+{
+    GS_OUTPUT output[4];
+
+    VS_OUTPUT vtx = input[0];
+    uint id = (uint) vtx.id;
+    if (0 >= g_Data[id].iAlive)
+        return;
+    
+    float4 vLook = input[0].viewPos - input[0].worldPos;
+    float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * g_Data[id].vCurrSize.x;
+    float3 vUp = normalize(cross(vLook.xyz, vRight)) * g_Data[id].vCurrSize.y;
+    
+    // For. world space
+    output[0].position = float4(input[0].worldPos.xyz + vRight + vUp, 1.f);
+    output[1].position = float4(input[0].worldPos.xyz - vRight + vUp, 1.f);
+    output[2].position = float4(input[0].worldPos.xyz - vRight - vUp, 1.f);
+    output[3].position = float4(input[0].worldPos.xyz + vRight - vUp, 1.f);
+    
+    // For. view space
+    output[0].viewPos = output[0].position.xyz;
+    output[1].viewPos = output[1].position.xyz;
+    output[2].viewPos = output[2].position.xyz;
+    output[3].viewPos = output[3].position.xyz;
+    
+    // For. proj space
+    for (int i = 0; i < 4; ++i)
+        output[i].position = mul(output[i].position, P);
+    
+    // For. Texcoord 
+        // TODO : sprite animation가능하도록 수정해야함.
+    output[0].uv = float2(0.f, 0.f);
+    output[1].uv = float2(1.f, 0.f);
+    output[2].uv = float2(1.f, 1.f);
+    output[3].uv = float2(0.f, 1.f);
+    
+    // For. Append 
+    outputStream.Append(output[0]);
+    outputStream.Append(output[1]);
+    outputStream.Append(output[2]);
+    outputStream.RestartStrip();
+    
+    outputStream.Append(output[0]);
+    outputStream.Append(output[2]);
+    outputStream.Append(output[3]);
+    outputStream.RestartStrip();
 }
 
 /* [Pixel Shader]------------------------------ */
@@ -327,27 +477,60 @@ float4 PS_Main(GS_OUTPUT input) : SV_Target
     return color;
 }
 
+float4 PS_Default(GS_OUTPUT input)
+{
+    float4 color = float4(1.f, 1.f, 1.f, 1.f);
+    return color;
+}
+
 /* [Techniques]------------------------------ */
 
 technique11 T_Compute // 0
 {
-    pass p0
+    pass pass_Default // 0
     {
         SetVertexShader(NULL);
         SetGeometryShader(NULL);
         SetPixelShader(NULL);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetComputeShader(CompileShader(cs_5_0, CS_Main()));
+        SetComputeShader(CompileShader(cs_5_0, CS_Movement_Non()));
     }
 };
 
 technique11 T_MeshRender // 1
 {
-    pass pass_Geomatry
+    pass pass_Default  // 0 (No billbord)
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Main()));
-        SetGeometryShader(CompileShader(gs_5_0, GS_Main()));
-        SetPixelShader(CompileShader(ps_5_0, PS_Main()));
+        SetGeometryShader(CompileShader(gs_5_0, GS_Default()));
+        SetPixelShader(CompileShader(ps_5_0, PS_Default()));
+        SetRasterizerState(RS_CullNone);
+        SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetComputeShader(NULL);
+    }
+    pass pass_Billbord // 1
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Main()));
+        SetGeometryShader(CompileShader(gs_5_0, GS_Billbord()));
+        SetPixelShader(CompileShader(ps_5_0, PS_Default()));
+        SetRasterizerState(RS_CullNone);
+        SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetComputeShader(NULL);
+    }
+    pass pass_Billbord_LockY // 2
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Main()));
+        SetGeometryShader(CompileShader(gs_5_0, GS_Billbord_LockY()));
+        SetPixelShader(CompileShader(ps_5_0, PS_Default()));
+        SetRasterizerState(RS_CullNone);
+        SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetComputeShader(NULL);
+    }
+    pass pass_Billbord_LockX // 3
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Main()));
+        SetGeometryShader(CompileShader(gs_5_0, GS_Billbord_LockX()));
+        SetPixelShader(CompileShader(ps_5_0, PS_Default()));
         SetRasterizerState(RS_CullNone);
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetComputeShader(NULL);

@@ -27,6 +27,10 @@ HRESULT Particle::Init(void* tDesc)
 	m_eComputePass = (COMPUTE_PASS)m_tDesc.iMovementOption;
 	m_eRenderPass = (RENDERMESH_PASS)m_tDesc.iBillbordOption;
 
+	// For. Initialize Shader Params
+	Init_ComputeParams();
+	Init_RenderParams();
+
 	// For. Create ParticleInfo UAV Buffers  
 	vector<ParticleInfo_UAV> tmp(m_tDesc.iMaxParticleNum);
 	if (!m_pParticleInfo_UAVBuffer)
@@ -69,7 +73,7 @@ void Particle::Final_Tick()
 	auto& world = Get_Transform()->Get_WorldMatrix();
 	m_pShader->Push_TransformData(TransformDesc{ world });
 
-	Bind_ComputeShaderData_ToShader();
+	Bind_ComputeParams_ToShader();
 
 	// For. Bind UAV Buffer in shader ( 쉐이더가 값을 보관할 수 없기 때문에 매 프레임마다 넘겨줘야한다.)
 	m_pShader->GetUAV("g_ParticleInfo_UAVBuffer")->SetUnorderedAccessView(m_pParticleInfo_UAVBuffer->Get_UAV().Get());
@@ -89,7 +93,7 @@ void Particle::Render()
 
 		// For. Bind data to shader
 		Bind_BasicData_ToShader();
-		Bind_RenderShaderData_ToShader();
+		Bind_RenderParams_ToShader();
 		
 		m_pMesh->Get_VertexBuffer()->Push_Data();
 		m_pMesh->Get_IndexBuffer()->Push_Data();
@@ -107,12 +111,57 @@ void Particle::Render()
 		
 		// For. Bind data to shader
 		Bind_BasicData_ToShader();
-		Bind_RenderShaderData_ToShader();
+		Bind_RenderParams_ToShader();
 
 		// TODO 
 
 		break;
 	}
+}
+
+void Particle::Init_RenderParams()
+{
+	/* GS, VS, PS에서 사용할 값들 세팅 */
+	
+    // For. Alpha Gradation 
+	m_RenderParams.SetFloat(0, m_tDesc.fGradationByAlpha_Brighter);
+	m_RenderParams.SetFloat(1, m_tDesc.fGradationByAlpha_Darker);
+}
+
+void Particle::Init_ComputeParams()
+{
+	/* CS에서 사용할 값들 세팅하기. 모션에 따라 params에 맵핑하는 값들의 의미가 달라질 수 있다. */
+
+    // For. Diffuse Color 
+	m_RenderParams.SetVec4(0, m_tDesc.vStartColor);
+	m_RenderParams.SetVec4(1, m_tDesc.vEndColor);
+
+	// For. Dissolve
+	m_RenderParams.SetInt(0, m_tDesc.iDissolveOption);
+	m_RenderParams.SetVec2(0, m_tDesc.fDissolveCurveSpeed);
+
+	// For. Create Position 
+	m_RenderParams.SetVec4(2, _float4(m_tDesc.fCenterPosition, 0.f));
+	m_RenderParams.SetVec4(3, _float4(m_tDesc.fCreateRange, 0.f));
+
+	// For. LifeTime
+	m_RenderParams.SetInt(0, m_tDesc.iLifeTimeOption);
+	m_RenderParams.SetVec2(0, m_tDesc.vLifeTime);
+	
+	// For. Speed
+	m_RenderParams.SetInt(0, m_tDesc.iSpeedOption);
+	m_RenderParams.SetVec2(0, m_tDesc.vSpeed);
+
+	// For. Movement 
+	m_RenderParams.SetVec4(0, m_tDesc.vMovementOffsets);
+
+	// For. Rotation Speed
+	m_RenderParams.SetInt(0, m_tDesc.iRotationSpeedOption);
+	m_RenderParams.SetVec2(0, m_tDesc.vRotationSpeed);
+
+	// For. Rotation Angle
+	m_RenderParams.SetInt(0, m_tDesc.iRotationAngleOption);
+	m_RenderParams.SetVec2(0, m_tDesc.vRotationAngle);
 }
 
 void Particle::Bind_BasicData_ToShader()
@@ -127,12 +176,16 @@ void Particle::Bind_BasicData_ToShader()
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 }
 
-void Particle::Bind_ComputeShaderData_ToShader()
+void Particle::Bind_ComputeParams_ToShader()
 {
-
+	// param중에 tick마다 Particle.cpp에서 변경해야하는 값이 있다면 여기서 바꿔주고나서 쉐이더에 바인딩하면됨. 
+	
+	m_pShader->Push_RenderParamData(m_ComputeParams);
 }
 
-void Particle::Bind_RenderShaderData_ToShader()
+void Particle::Bind_RenderParams_ToShader()
 {
+	// TODO: 혹시 param중에 tick마다 Particle.cpp에서 변경해야하는 값이 있다면 여기서 바꿔주고나서 쉐이더에 바인딩하면됨. 
 
+	m_pShader->Push_RenderParamData(m_RenderParams);
 }
