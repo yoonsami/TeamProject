@@ -32,13 +32,13 @@ void ModelAnimator::Tick()
 			if (m_TweenDesc.curr.sumTime >= timePerFrame)
 			{
 				m_TweenDesc.curr.sumTime = 0;
-				
-				if(!m_bFinished)
+
+				if (!m_bFinished)
 				{
 					m_TweenDesc.curr.currentFrame = (m_TweenDesc.curr.currentFrame + 1) % currentAnim->frameCount;
 					m_TweenDesc.curr.nextFrame = (m_TweenDesc.curr.currentFrame + 1);
 				}
-				else if(m_bFinished && m_TweenDesc.curr.nextFrame == currentAnim->frameCount -1)
+				else if (m_bFinished && m_TweenDesc.curr.nextFrame == currentAnim->frameCount - 1)
 				{
 					if (m_iNextAnimation > 0)
 					{
@@ -55,7 +55,7 @@ void ModelAnimator::Tick()
 				if (m_TweenDesc.curr.nextFrame == currentAnim->frameCount)
 				{
 					// 다음 애니메이션이 없을 때
-					if(m_iNextAnimation<0 && m_TweenDesc.next.animIndex <0)
+					if (m_iNextAnimation < 0 && m_TweenDesc.next.animIndex < 0)
 					{
 						// 루프 애니메이션이면
 						if (currentAnim->loop)
@@ -75,7 +75,7 @@ void ModelAnimator::Tick()
 					// 다음 애니메이션 있을 때,
 					else
 					{
-						if(m_iNextAnimation <0)
+						if (m_iNextAnimation < 0)
 						{
 							m_TweenDesc.curr.animIndex = m_iNextAnimation;
 							m_iNextAnimation = -1;
@@ -89,7 +89,7 @@ void ModelAnimator::Tick()
 							m_TweenDesc.ClearNextAnim();
 							m_bFinished = false;
 						}
-						
+
 					}
 				}
 			}
@@ -138,9 +138,11 @@ void ModelAnimator::Tick()
 	auto& preAnimRootPositions = m_pModel->Get_RootBonePosition()[m_preTweenDesc.curr.animIndex];
 	auto& curAnimRootPositions = m_pModel->Get_RootBonePosition()[m_TweenDesc.curr.animIndex];
 	{
-		if(m_TweenDesc.curr.currentFrame == 0 && m_TweenDesc.curr.nextFrame == 0)
+		if (m_preTweenDesc.curr.animIndex != m_TweenDesc.curr.animIndex)
 			vDistToMove = _float3(0.f);
-		else if(m_TweenDesc.curr.currentFrame <= m_TweenDesc.curr.nextFrame )
+		else if (m_TweenDesc.curr.currentFrame == 0 && m_TweenDesc.curr.nextFrame == 0)
+			vDistToMove = _float3(0.f);
+		else if (m_TweenDesc.curr.currentFrame <= m_TweenDesc.curr.nextFrame)
 		{
 			_float3 vPrePosition = _float3::Lerp(preAnimRootPositions[m_preTweenDesc.curr.currentFrame], preAnimRootPositions[m_preTweenDesc.curr.nextFrame], m_preTweenDesc.curr.ratio);
 			_float3 vCurPosition = _float3::Lerp(curAnimRootPositions[m_TweenDesc.curr.currentFrame], curAnimRootPositions[m_TweenDesc.curr.nextFrame], m_TweenDesc.curr.ratio);
@@ -148,41 +150,17 @@ void ModelAnimator::Tick()
 		}
 		else
 			vDistToMove = _float3(0.f);
-		
+
 
 	}
-	
 
-	/*if (m_TweenDesc.next.animIndex >= 0)
+	if (vDistToMove != _float3(0.f))
 	{
-		auto& nextAnimRootPositions = m_pModel->Get_RootBonePosition()[m_TweenDesc.next.animIndex];
 
-		if(m_preTweenDesc.next.animIndex >=0)
-		{
-			auto& preNextAnimRootPositions = m_pModel->Get_RootBonePosition()[m_preTweenDesc.next.animIndex];
+		vDistToMove = _float3::TransformNormal(vDistToMove, Get_Transform()->Get_WorldMatrix());
 
-			_float3 vPrePosition = _float3::Lerp(preAnimRootPositions[m_preTweenDesc.next.currentFrame], preAnimRootPositions[m_preTweenDesc.next.nextFrame], m_preTweenDesc.next.ratio);
-			_float3 vCurPosition = _float3::Lerp(curAnimRootPositions[m_TweenDesc.next.currentFrame], curAnimRootPositions[m_TweenDesc.next.nextFrame], m_TweenDesc.next.ratio);
-
-			vDistToMove = _float3::Lerp(vDistToMove, vCurPosition - vPrePosition, m_TweenDesc.tweenRatio);
-
-		}
-		else
-		{
-			auto& preNextAnimRootPositions = m_pModel->Get_RootBonePosition()[m_TweenDesc.next.animIndex];
-
-			_float3 vPrePosition = _float3::Lerp(preAnimRootPositions[m_preTweenDesc.next.currentFrame], preAnimRootPositions[m_preTweenDesc.next.nextFrame], m_preTweenDesc.next.ratio);
-			_float3 vCurPosition = _float3::Lerp(curAnimRootPositions[m_TweenDesc.next.currentFrame], curAnimRootPositions[m_TweenDesc.next.nextFrame], m_TweenDesc.next.ratio);
-
-			vDistToMove = _float3::Lerp(vDistToMove, vCurPosition - vPrePosition, m_TweenDesc.tweenRatio);
-
-
-		}
-	}*/
-
-	vDistToMove = _float3::TransformNormal(vDistToMove, Get_Transform()->Get_WorldMatrix());
-
-	Get_Transform()->Go_Dir(vDistToMove);
+		Get_Transform()->Go_Dir(vDistToMove);
+	}
 
 	m_preTweenDesc = m_TweenDesc;
 	//Cal_AnimTransform();
@@ -200,10 +178,10 @@ void ModelAnimator::Set_NextAnim(_int index)
 	}
 	else
 	{
-		m_iNextAnimation = index; 
+		m_iNextAnimation = index;
 		m_bFinished = false;
 	}
-	
+
 }
 
 void ModelAnimator::Set_Model(shared_ptr<Model> model)
@@ -296,7 +274,7 @@ void ModelAnimator::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 		_float4 lineColor = _float4(0.f, 0.f, 0.f, 1.f);
 		m_pShader->GetVector("g_LineColor")->SetFloatVector((_float*)(&lineColor));
 		m_pShader->GetScalar("g_LineThickness")->SetFloat(Model::m_fOutlineThickness);
-		
+
 		m_pShader->DrawIndexedInstanced(1, PS_ANIMINSTANCING, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
 
 		m_pShader->DrawIndexedInstanced(0, PS_ANIMINSTANCING, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
@@ -381,7 +359,7 @@ void ModelAnimator::Render_Shadow_Instancing(shared_ptr<InstancingBuffer>& buffe
 
 InstanceID ModelAnimator::Get_InstanceID()
 {
-	return make_pair(_ulonglong(m_pModel.get()),_ulonglong(m_pShader.get()));
+	return make_pair(_ulonglong(m_pModel.get()), _ulonglong(m_pShader.get()));
 }
 
 void ModelAnimator::Cal_AnimTransform()
