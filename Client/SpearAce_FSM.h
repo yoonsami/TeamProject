@@ -83,6 +83,7 @@ private:
 	void skill_500100();
 	void skill_500100_Init();
 
+
 private:
 	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;
@@ -90,5 +91,13 @@ private:
 	_float3 m_vInputTurnVector = _float3(0.f);
 	_bool m_bIsSprint = false; // IsSprint
 	_bool m_bCanCombo = false;
-};
+	COOLTIMEINFO m_tRunEndDelay = { 0.2f,0.f };
 
+	_float m_fRunSpeed = 2.5f;
+	_float m_fSprintSpeed = 3.5f;
+	_float m_fNormalAttack_AnimationSpeed = 2.f;
+	_float m_fSkillAttack_AnimationSpeed = 2.f;
+	_float m_fEvade_AnimationSpeed = 1.5f;
+
+
+};

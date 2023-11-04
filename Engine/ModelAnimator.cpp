@@ -138,7 +138,9 @@ void ModelAnimator::Tick()
 	auto& preAnimRootPositions = m_pModel->Get_RootBonePosition()[m_preTweenDesc.curr.animIndex];
 	auto& curAnimRootPositions = m_pModel->Get_RootBonePosition()[m_TweenDesc.curr.animIndex];
 	{
-		if(m_TweenDesc.curr.currentFrame == 0 && m_TweenDesc.curr.nextFrame == 0)
+		if(m_preTweenDesc.curr.animIndex != m_TweenDesc.curr.animIndex)
+			vDistToMove = _float3(0.f);
+		else if(m_TweenDesc.curr.currentFrame == 0 && m_TweenDesc.curr.nextFrame == 0)
 			vDistToMove = _float3(0.f);
 		else if(m_TweenDesc.curr.currentFrame <= m_TweenDesc.curr.nextFrame )
 		{
@@ -151,38 +153,14 @@ void ModelAnimator::Tick()
 		
 
 	}
-	
 
-	/*if (m_TweenDesc.next.animIndex >= 0)
+	if(vDistToMove != _float3(0.f))
 	{
-		auto& nextAnimRootPositions = m_pModel->Get_RootBonePosition()[m_TweenDesc.next.animIndex];
 
-		if(m_preTweenDesc.next.animIndex >=0)
-		{
-			auto& preNextAnimRootPositions = m_pModel->Get_RootBonePosition()[m_preTweenDesc.next.animIndex];
+		vDistToMove = _float3::TransformNormal(vDistToMove, Get_Transform()->Get_WorldMatrix());
 
-			_float3 vPrePosition = _float3::Lerp(preAnimRootPositions[m_preTweenDesc.next.currentFrame], preAnimRootPositions[m_preTweenDesc.next.nextFrame], m_preTweenDesc.next.ratio);
-			_float3 vCurPosition = _float3::Lerp(curAnimRootPositions[m_TweenDesc.next.currentFrame], curAnimRootPositions[m_TweenDesc.next.nextFrame], m_TweenDesc.next.ratio);
-
-			vDistToMove = _float3::Lerp(vDistToMove, vCurPosition - vPrePosition, m_TweenDesc.tweenRatio);
-
-		}
-		else
-		{
-			auto& preNextAnimRootPositions = m_pModel->Get_RootBonePosition()[m_TweenDesc.next.animIndex];
-
-			_float3 vPrePosition = _float3::Lerp(preAnimRootPositions[m_preTweenDesc.next.currentFrame], preAnimRootPositions[m_preTweenDesc.next.nextFrame], m_preTweenDesc.next.ratio);
-			_float3 vCurPosition = _float3::Lerp(curAnimRootPositions[m_TweenDesc.next.currentFrame], curAnimRootPositions[m_TweenDesc.next.nextFrame], m_TweenDesc.next.ratio);
-
-			vDistToMove = _float3::Lerp(vDistToMove, vCurPosition - vPrePosition, m_TweenDesc.tweenRatio);
-
-
-		}
-	}*/
-
-	vDistToMove = _float3::TransformNormal(vDistToMove, Get_Transform()->Get_WorldMatrix());
-
-	Get_Transform()->Go_Dir(vDistToMove);
+		Get_Transform()->Go_Dir(vDistToMove);
+	}
 
 	m_preTweenDesc = m_TweenDesc;
 	//Cal_AnimTransform();
