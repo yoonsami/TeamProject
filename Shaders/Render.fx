@@ -95,7 +95,7 @@ cbuffer RenderParamBuffer   // 전역변수라고 생각하면됨.
     float2 g_vec2_2;
     float2 g_vec2_3;
     float4 g_vec4_0;
-    float4 g_vec4_1;
+    float4 g_vec4_1; 
     float4 g_vec4_2;
     float4 g_vec4_3;
     row_major float4x4 g_mat_0;

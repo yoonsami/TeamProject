@@ -129,7 +129,7 @@ void Particle::Init_RenderParams()
 	m_RenderParams.SetFloat(0, m_tDesc.fGradationByAlpha_Brighter);
 	m_RenderParams.SetFloat(1, m_tDesc.fGradationByAlpha_Darker);
 
-	// For. Particle's Dest color
+	// For. Diffuse Color
 	m_ComputeParams.SetVec4(0, m_tDesc.vDestColor);
 }
 
@@ -160,6 +160,10 @@ void Particle::Init_ComputeParams()
 {
 	/* CS에서 사용할 값들 세팅하기. 모션에 따라 params에 맵핑하는 값들의 의미가 달라질 수 있다. */
 
+	// For. Particle Object's Duration, LifeTime
+	m_ComputeParams.SetFloat(0, m_tDesc.fDuration);
+	m_ComputeParams.SetFloat(1, m_fCurrLifeTime);
+
 	// For. Center Position
 	m_ComputeParams.SetVec4(0, _float4(m_tDesc.vCenterPosition, 0.f));
 
@@ -168,16 +172,16 @@ void Particle::Init_ComputeParams()
 	m_ComputeParams.SetVec2(0, m_tDesc.fDissolveCurveSpeed);
 
 	// For. Update Scale
-	m_ComputeParams.SetInt(0, m_tDesc.iScaleOption);
-	m_ComputeParams.SetVec2(0, m_tDesc.vScaleSpeed);
+	m_ComputeParams.SetInt(1, m_tDesc.iScaleOption);
+	m_ComputeParams.SetVec2(1, m_tDesc.vScaleSpeed);
 
 	// For. Update Speed
-	m_ComputeParams.SetInt(1, m_tDesc.iSpeedOption);
-	m_ComputeParams.SetVec2(1, m_tDesc.vSpeed);
+	m_ComputeParams.SetInt(2, m_tDesc.iSpeedOption);
+	m_ComputeParams.SetVec2(2, m_tDesc.vSpeed);
 
 	// For. Rotation Speed
-	m_ComputeParams.SetInt(2, m_tDesc.iRotationSpeedOption);
-	m_ComputeParams.SetVec2(2, m_tDesc.vRotationSpeed);
+	m_ComputeParams.SetInt(3, m_tDesc.iRotationSpeedOption);
+	m_ComputeParams.SetVec2(3, m_tDesc.vRotationSpeed);
 
 	// For. Movement 
 	m_ComputeParams.SetVec4(1, m_tDesc.vMovementOffsets);
@@ -198,6 +202,8 @@ void Particle::Bind_BasicData_ToShader()
 	m_pShader->Push_TransformData(TransformDesc{ world });
 
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
+
+	m_pShader->GetScalar("g_fTimeDelta")->SetFloat(fDT);
 }
 
 void Particle::Bind_ComputeParams_ToShader()

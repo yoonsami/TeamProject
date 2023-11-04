@@ -1,12 +1,14 @@
 #include "Render.fx"
 #include "Light.fx"
 
-bool    isModel;
+bool    g_isModel;
+float   g_fTimeDelta;
+
 
 struct ParticleInfo_UAV  // 주의: 16byte씩 맞추기
 {
    /* 매 프레임마다 변할 수 있는 값들 */
-    float   fCurrCurrTime;        // Current 생성되고나서부터 얼마나 시간이 흘렀는지
+    float   fCurrTime;          // Current 생성되고나서부터 얼마나 시간이 흘렀는지
     float3  vCurrWorldPos;      // Current World pos 
     float   fCurrSpeed;         // Current speed
     float3  vCurrRotationSpeed; // Current 회전속도 
@@ -46,6 +48,7 @@ void CS_Movement_Non(int3 threadIndex : SV_DispatchThreadID)
     g_ComputeShared_UAVBuffer[0].addCount = g_NewlyAddCnt;
     GroupMemoryBarrierWithGroupSync();
     
+    // For. Create New Particle
     if (g_ParticleInfo_UAVBuffer[threadIndex.x].iAlive == 0)
     {
         while (true)
@@ -69,28 +72,68 @@ void CS_Movement_Non(int3 threadIndex : SV_DispatchThreadID)
         // For. 새로 생성이 되었다면 기본 값 채워주기 
         if (g_ParticleInfo_UAVBuffer[threadIndex.x].iAlive == 1)
         {
+            float x = ((float) threadIndex.x / (float) maxCount) + accTime;
+            float r1 = Rand(float2(x, accTime));
+            float r2 = Rand(float2(x * accTime, accTime));
+            float r3 = Rand(float2(x * accTime * accTime, accTime * accTime));
+            float3 noise = { 2 * r1 - 1, 2 * r2 - 1, 2 * r3 - 1 }; // [0.5~1] -> [0~1]
+            
+            float fParticleObjectsLifeTimeRatio = g_float_1 / g_float_0;
+            
+            g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrTime = 0.f;
+            
             // Diffuse Color
+            g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrColor = g_startColor.rgb + g_endColor.rgb * fParticleObjectsLifeTimeRatio;
             
             // Dissolve Speed
-            
+                // TODO 나중에 바꿔야함. 
+            g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrSpeed = 0.f; 
+
             // Create Position
+            g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrWorldPos = g_vec4_0.xyz + (noise.xyz - 0.5f) * g_createRange.xyz;
             
-            // LifeTime
+            // LifeTime (if you need option, use g_lifeTimeOption)
+            g_ParticleInfo_UAVBuffer[threadIndex.x].fLifeTime = ((g_MinMaxLifeTime.y - g_MinMaxLifeTime.x) * noise.x) + g_MinMaxLifeTime.x;
+            
+             // Scale 
+            if (0 == g_int_1)       // constant
+                g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrSize.xyz = ((g_vec2_1.y - g_vec2_1.x) * noise.x) + g_vec2_1.x;
+            else if (1 == g_int_1)  // curve
+                g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrSize.xyz = pow(g_vec2_1.x, g_vec2_1.y);
             
             // Speed
+            if (0 == g_int_2)       // constant
+                g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrSpeed = ((g_vec2_2.y - g_vec2_2.x) * noise.x) + g_vec2_2.x;
+            else if (1 == g_int_2)  // curve
+                g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrSpeed = pow(g_vec2_2.x, g_vec2_2.y);
             
             // Rotation Speed
+            if (0 == g_int_3)       // constant
+            {
+                g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrRotationSpeed.x = ((g_vec2_3.y - g_vec2_3.x) * noise.x) + g_vec2_3.x;
+                g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrRotationSpeed.y = ((g_vec2_3.y - g_vec2_3.x) * noise.y) + g_vec2_3.x;
+                g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrRotationSpeed.z = ((g_vec2_3.y - g_vec2_3.x) * noise.z) + g_vec2_3.x;
+            }
+            else if (1 == g_int_3)  // curve
+                g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrRotationSpeed.xyz = pow(g_vec2_3.x, g_vec2_3.y);
             
-            // Rotation Angle
-            
-            // Size 
+            // Rotation Angle (if you need option, use g_vec4_2.x )
+            g_ParticleInfo_UAVBuffer[threadIndex.x].vRotationAngle.x = ((g_vec4_2.z - g_vec4_2.y) * noise.x) + g_vec4_2.y;
+            g_ParticleInfo_UAVBuffer[threadIndex.x].vRotationAngle.y = ((g_vec4_2.z - g_vec4_2.y) * noise.y) + g_vec4_2.y;
+            g_ParticleInfo_UAVBuffer[threadIndex.x].vRotationAngle.z = ((g_vec4_2.z - g_vec4_2.y) * noise.z) + g_vec4_2.y;
         }
     }
     
     // For. Update particle UAV data which previouslly alived
     else
     {
-        
+        // For. Check end lifetime 
+        g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrTime += g_fTimeDelta;
+        if (g_ParticleInfo_UAVBuffer[threadIndex.x].fLifeTime < g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrTime)
+        {
+            g_ParticleInfo_UAVBuffer[threadIndex.x].iAlive = 0;
+            return;
+        }
     }
 }
 
