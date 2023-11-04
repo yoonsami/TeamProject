@@ -186,6 +186,8 @@ void Kyle_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
 
 void Kyle_FSM::b_idle()
 {
+	EvadeCoolCheck();
+
 	_float3 vInputVector = Get_InputDirVector();
 
 	if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
@@ -206,10 +208,13 @@ void Kyle_FSM::b_idle()
 		m_eCurState = STATE::skill_500100;
 	else if (KEYPUSH(KEY_TYPE::SPACE))
 	{
-		if (vInputVector == _float3(0.f))
-			m_eCurState = STATE::skill_93100;
-		else
-			m_eCurState = STATE::skill_91100;
+		if (!m_bEvadeCoolCheck)
+		{
+			if (vInputVector == _float3(0.f))
+				m_eCurState = STATE::skill_93100;
+			else
+				m_eCurState = STATE::skill_91100;
+		}
 	}
 }
 
@@ -225,6 +230,8 @@ void Kyle_FSM::b_idle_Init()
 
 void Kyle_FSM::b_run_start()
 {
+	EvadeCoolCheck();
+
 	Get_Transform()->Go_Straight();
 
 	_float3 vInputVector = Get_InputDirVector();
@@ -262,7 +269,10 @@ void Kyle_FSM::b_run_start()
 		else if (KEYPUSH(KEY_TYPE::KEY_5))
 			m_eCurState = STATE::skill_500100;
 		else if (KEYPUSH(KEY_TYPE::SPACE))
-			m_eCurState = STATE::skill_91100;
+		{
+			if (!m_bEvadeCoolCheck)
+				m_eCurState = STATE::skill_91100;
+		}
 	}
 }
 
@@ -278,6 +288,8 @@ void Kyle_FSM::b_run_start_Init()
 
 void Kyle_FSM::b_run()
 {
+	EvadeCoolCheck();
+
 	Get_Transform()->Go_Straight();
 
 	_float3 vInputVector = Get_InputDirVector();
@@ -300,7 +312,7 @@ void Kyle_FSM::b_run()
 
 	if (KEYPUSH(KEY_TYPE::LSHIFT))
 	{
-		if ((Get_CurFrame() == 1) || Get_CurFrame() >= 19)
+		if ((Get_CurFrame() == 1))
 			m_eCurState = STATE::b_sprint;
 	}
 
@@ -317,7 +329,10 @@ void Kyle_FSM::b_run()
 	else if (KEYPUSH(KEY_TYPE::KEY_5))
 		m_eCurState = STATE::skill_500100;
 	else if (KEYPUSH(KEY_TYPE::SPACE))
-		m_eCurState = STATE::skill_91100;
+	{
+		if (!m_bEvadeCoolCheck)
+			m_eCurState = STATE::skill_91100;
+	}
 }
 
 void Kyle_FSM::b_run_Init()
@@ -331,6 +346,8 @@ void Kyle_FSM::b_run_Init()
 
 void Kyle_FSM::b_run_end_r()
 {
+	EvadeCoolCheck();
+
 	_float3 vInputVector = Get_InputDirVector();
 
 	// 방향키를 아무것도 누르지 않으면 상태를 변경
@@ -353,7 +370,10 @@ void Kyle_FSM::b_run_end_r()
 	else if (KEYPUSH(KEY_TYPE::KEY_5))
 		m_eCurState = STATE::skill_500100;
 	else if (KEYPUSH(KEY_TYPE::SPACE))
-		m_eCurState = STATE::skill_93100;
+	{
+		if (!m_bEvadeCoolCheck)
+			m_eCurState = STATE::skill_93100;
+	}
 
 }
 
@@ -369,6 +389,8 @@ void Kyle_FSM::b_run_end_r_Init()
 
 void Kyle_FSM::b_run_end_l()
 {
+	EvadeCoolCheck();
+
 	_float3 vInputVector = Get_InputDirVector();
 
 	if (vInputVector != _float3(0.f))
@@ -390,7 +412,10 @@ void Kyle_FSM::b_run_end_l()
 	else if (KEYPUSH(KEY_TYPE::KEY_5))
 		m_eCurState = STATE::skill_500100;
 	else if (KEYPUSH(KEY_TYPE::SPACE))
-		m_eCurState = STATE::skill_93100;
+	{
+		if (!m_bEvadeCoolCheck)
+			m_eCurState = STATE::skill_93100;
+	}
 }
 
 void Kyle_FSM::b_run_end_l_Init()
@@ -405,6 +430,8 @@ void Kyle_FSM::b_run_end_l_Init()
 
 void Kyle_FSM::b_sprint()
 {
+	EvadeCoolCheck();
+
 	Get_Transform()->Go_Straight();
 
 	_float3 vInputVector = Get_InputDirVector();
@@ -444,14 +471,17 @@ void Kyle_FSM::b_sprint()
 	else if (KEYPUSH(KEY_TYPE::KEY_5))
 		m_eCurState = STATE::skill_500100;
 	else if (KEYPUSH(KEY_TYPE::SPACE))
-		m_eCurState = STATE::skill_91100;
+	{
+		if (!m_bEvadeCoolCheck)
+			m_eCurState = STATE::skill_91100;
+	}
 }
 
 void Kyle_FSM::b_sprint_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"b_sprint", 0.2f, true, 1.f);
+	animator->Set_NextTweenAnim(L"b_sprint", 0.1f, true, 1.f);
 
 	Get_Transform()->Set_Speed(m_fSprintSpeed);
 }
@@ -474,6 +504,8 @@ void Kyle_FSM::die_Init()
 
 void Kyle_FSM::skill_1100()
 {
+	EvadeCoolCheck();
+
 	_float3 vInputVector = Get_InputDirVector();
 
 	if (m_vInputTurnVector != _float3(0.f))
@@ -503,10 +535,13 @@ void Kyle_FSM::skill_1100()
 		m_eCurState = STATE::skill_500100;
 	else if (KEYPUSH(KEY_TYPE::SPACE))
 	{
-		if (vInputVector != _float3(0.f))
-			m_eCurState = STATE::skill_91100;
-		else
-			m_eCurState = STATE::skill_93100;
+		if (!m_bEvadeCoolCheck)
+		{
+			if (vInputVector != _float3(0.f))
+				m_eCurState = STATE::skill_91100;
+			else
+				m_eCurState = STATE::skill_93100;
+		}
 	}
 }
 
@@ -524,6 +559,8 @@ void Kyle_FSM::skill_1100_Init()
 
 void Kyle_FSM::skill_1200()
 {
+	EvadeCoolCheck();
+
 	_float3 vInputVector = Get_InputDirVector();
 
 	if (m_vInputTurnVector != _float3(0.f))
@@ -556,10 +593,13 @@ void Kyle_FSM::skill_1200()
 		m_eCurState = STATE::skill_500100;
 	else if (KEYPUSH(KEY_TYPE::SPACE))
 	{
-		if (vInputVector != _float3(0.f))
-			m_eCurState = STATE::skill_91100;
-		else
-			m_eCurState = STATE::skill_93100;
+		if (!m_bEvadeCoolCheck)
+		{
+			if (vInputVector != _float3(0.f))
+				m_eCurState = STATE::skill_91100;
+			else
+				m_eCurState = STATE::skill_93100;
+		}
 	}
 }
 
@@ -577,6 +617,8 @@ void Kyle_FSM::skill_1200_Init()
 
 void Kyle_FSM::skill_1300()
 {
+	EvadeCoolCheck();
+
 	_float3 vInputVector = Get_InputDirVector();
 
 	if (m_vInputTurnVector != _float3(0.f))
@@ -608,10 +650,13 @@ void Kyle_FSM::skill_1300()
 		m_eCurState = STATE::skill_500100;
 	else if (KEYPUSH(KEY_TYPE::SPACE))
 	{
-		if (vInputVector != _float3(0.f))
-			m_eCurState = STATE::skill_91100;
-		else
-			m_eCurState = STATE::skill_93100;
+		if (!m_bEvadeCoolCheck)
+		{
+			if (vInputVector != _float3(0.f))
+				m_eCurState = STATE::skill_91100;
+			else
+				m_eCurState = STATE::skill_93100;
+		}
 	}
 }
 
@@ -629,6 +674,8 @@ void Kyle_FSM::skill_1300_Init()
 
 void Kyle_FSM::skill_1400()
 {
+	EvadeCoolCheck();
+
 	_float3 vInputVector = Get_InputDirVector();
 
 	if (m_vInputTurnVector != _float3(0.f))
@@ -652,10 +699,13 @@ void Kyle_FSM::skill_1400()
 		m_eCurState = STATE::skill_500100;
 	else if (KEYPUSH(KEY_TYPE::SPACE))
 	{
-		if (vInputVector != _float3(0.f))
-			m_eCurState = STATE::skill_91100;
-		else
-			m_eCurState = STATE::skill_93100;
+		if (!m_bEvadeCoolCheck)
+		{
+			if (vInputVector != _float3(0.f))
+				m_eCurState = STATE::skill_91100;
+			else
+				m_eCurState = STATE::skill_93100;
+		}
 	}
 }
 
@@ -673,6 +723,8 @@ void Kyle_FSM::skill_1400_Init()
 
 void Kyle_FSM::skill_91100()
 {
+	m_bEvadeCoolCheck = true;
+
 	_float3 vInputVector = Get_InputDirVector();
 
 	if (m_vInputTurnVector != _float3(0.f))
@@ -681,7 +733,7 @@ void Kyle_FSM::skill_91100()
 	if (Is_AnimFinished())
 		m_eCurState = STATE::b_idle;
 
-	if (Get_CurFrame() >= 9)
+	if (Get_CurFrame() >= 22)
 	{
 		if (vInputVector != _float3(0.f))
 			m_eCurState = STATE::b_run;
@@ -702,12 +754,14 @@ void Kyle_FSM::skill_91100_Init()
 
 void Kyle_FSM::skill_93100()
 {
+	m_bEvadeCoolCheck = true;
+
 	_float3 vInputVector = Get_InputDirVector();
 
 	if (Is_AnimFinished())
 		m_eCurState = STATE::b_idle;
 
-	if (Get_CurFrame() >= 18)
+	if (Get_CurFrame() >= 22)
 	{
 		if (vInputVector != _float3(0.f))
 			m_eCurState = STATE::b_run;
@@ -725,12 +779,14 @@ void Kyle_FSM::skill_93100_Init()
 
 void Kyle_FSM::skill_100100()
 {
+	EvadeCoolCheck();
+
 	_float3 vInputVector = Get_InputDirVector();
 
 	if (m_vInputTurnVector != _float3(0.f))
 		Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
 
-	if (Get_CurFrame() >= 24)
+	if (Get_CurFrame() >= 24 && Get_CurFrame() < 34)
 		m_bCanCombo = true;
 
 	if (m_bCanCombo)
@@ -744,10 +800,13 @@ void Kyle_FSM::skill_100100()
 
 	if (KEYPUSH(KEY_TYPE::SPACE))
 	{
-		if (vInputVector != _float3(0.f))
-			m_eCurState = STATE::skill_91100;
-		else
-			m_eCurState = STATE::skill_93100;
+		if (!m_bEvadeCoolCheck)
+		{
+			if (vInputVector != _float3(0.f))
+				m_eCurState = STATE::skill_91100;
+			else
+				m_eCurState = STATE::skill_93100;
+		}
 	}
 }
 
@@ -765,6 +824,8 @@ void Kyle_FSM::skill_100100_Init()
 
 void Kyle_FSM::skill_100200()
 {
+	EvadeCoolCheck();
+
 	_float3 vInputVector = Get_InputDirVector();
 
 	if (m_vInputTurnVector != _float3(0.f))
@@ -775,10 +836,13 @@ void Kyle_FSM::skill_100200()
 
 	if (KEYPUSH(KEY_TYPE::SPACE))
 	{
-		if (vInputVector != _float3(0.f))
-			m_eCurState = STATE::skill_91100;
-		else
-			m_eCurState = STATE::skill_93100;
+		if (!m_bEvadeCoolCheck)
+		{
+			if (vInputVector != _float3(0.f))
+				m_eCurState = STATE::skill_91100;
+			else
+				m_eCurState = STATE::skill_93100;
+		}
 	}
 }
 
@@ -796,6 +860,8 @@ void Kyle_FSM::skill_100200_Init()
 
 void Kyle_FSM::skill_200100()
 {
+	EvadeCoolCheck();
+
 	_float3 vInputVector = Get_InputDirVector();
 
 	if (m_vInputTurnVector != _float3(0.f))
@@ -815,10 +881,13 @@ void Kyle_FSM::skill_200100()
 
 	if (KEYPUSH(KEY_TYPE::SPACE))
 	{
-		if (vInputVector != _float3(0.f))
-			m_eCurState = STATE::skill_91100;
-		else
-			m_eCurState = STATE::skill_93100;
+		if (!m_bEvadeCoolCheck)
+		{
+			if (vInputVector != _float3(0.f))
+				m_eCurState = STATE::skill_91100;
+			else
+				m_eCurState = STATE::skill_93100;
+		}
 	}
 }
 
@@ -836,6 +905,8 @@ void Kyle_FSM::skill_200100_Init()
 
 void Kyle_FSM::skill_200200()
 {
+	EvadeCoolCheck();
+
 	_float3 vInputVector = Get_InputDirVector();
 
 	if (m_vInputTurnVector != _float3(0.f))
@@ -855,10 +926,13 @@ void Kyle_FSM::skill_200200()
 
 	if (KEYPUSH(KEY_TYPE::SPACE))
 	{
-		if (vInputVector != _float3(0.f))
-			m_eCurState = STATE::skill_91100;
-		else
-			m_eCurState = STATE::skill_93100;
+		if (!m_bEvadeCoolCheck)
+		{
+			if (vInputVector != _float3(0.f))
+				m_eCurState = STATE::skill_91100;
+			else
+				m_eCurState = STATE::skill_93100;
+		}
 	}
 }
 
@@ -876,6 +950,8 @@ void Kyle_FSM::skill_200200_Init()
 
 void Kyle_FSM::skill_200300()
 {
+	EvadeCoolCheck();
+
 	_float3 vInputVector = Get_InputDirVector();
 
 	if (m_vInputTurnVector != _float3(0.f))
@@ -886,10 +962,13 @@ void Kyle_FSM::skill_200300()
 
 	if (KEYPUSH(KEY_TYPE::SPACE))
 	{
-		if (vInputVector != _float3(0.f))
-			m_eCurState = STATE::skill_91100;
-		else
-			m_eCurState = STATE::skill_93100;
+		if (!m_bEvadeCoolCheck)
+		{
+			if (vInputVector != _float3(0.f))
+				m_eCurState = STATE::skill_91100;
+			else
+				m_eCurState = STATE::skill_93100;
+		}
 	}
 }
 
@@ -907,6 +986,8 @@ void Kyle_FSM::skill_200300_Init()
 
 void Kyle_FSM::skill_300100()
 {
+	EvadeCoolCheck();
+
 	_float3 vInputVector = Get_InputDirVector();
 
 	if (m_vInputTurnVector != _float3(0.f))
@@ -917,10 +998,13 @@ void Kyle_FSM::skill_300100()
 
 	if (KEYPUSH(KEY_TYPE::SPACE))
 	{
-		if (vInputVector != _float3(0.f))
-			m_eCurState = STATE::skill_91100;
-		else
-			m_eCurState = STATE::skill_93100;
+		if (!m_bEvadeCoolCheck)
+		{
+			if (vInputVector != _float3(0.f))
+				m_eCurState = STATE::skill_91100;
+			else
+				m_eCurState = STATE::skill_93100;
+		}
 	}
 }
 
@@ -938,6 +1022,8 @@ void Kyle_FSM::skill_300100_Init()
 
 void Kyle_FSM::skill_502100()
 {
+	EvadeCoolCheck();
+
 	_float3 vInputVector = Get_InputDirVector();
 
 	if (m_vInputTurnVector != _float3(0.f))
@@ -948,10 +1034,13 @@ void Kyle_FSM::skill_502100()
 
 	if (KEYPUSH(KEY_TYPE::SPACE))
 	{
-		if (vInputVector != _float3(0.f))
-			m_eCurState = STATE::skill_91100;
-		else
-			m_eCurState = STATE::skill_93100;
+		if (!m_bEvadeCoolCheck)
+		{
+			if (vInputVector != _float3(0.f))
+				m_eCurState = STATE::skill_91100;
+			else
+				m_eCurState = STATE::skill_93100;
+		}
 	}
 }
 
@@ -969,6 +1058,8 @@ void Kyle_FSM::skill_502100_Init()
 
 void Kyle_FSM::skill_500100()
 {
+	EvadeCoolCheck();
+
 	_float3 vInputVector = Get_InputDirVector();
 
 	if (m_vInputTurnVector != _float3(0.f))
@@ -979,10 +1070,13 @@ void Kyle_FSM::skill_500100()
 
 	if (KEYPUSH(KEY_TYPE::SPACE))
 	{
-		if (vInputVector != _float3(0.f))
-			m_eCurState = STATE::skill_91100;
-		else
-			m_eCurState = STATE::skill_93100;
+		if (!m_bEvadeCoolCheck)
+		{
+			if (vInputVector != _float3(0.f))
+				m_eCurState = STATE::skill_91100;
+			else
+				m_eCurState = STATE::skill_93100;
+		}
 	}
 }
 
@@ -997,4 +1091,18 @@ void Kyle_FSM::skill_500100_Init()
 
 	m_vInputTurnVector = _float3(0.f);
 	m_vInputTurnVector = Get_InputDirVector();
+}
+
+void Kyle_FSM::EvadeCoolCheck()
+{
+	if (m_bEvadeCoolCheck)
+	{
+		m_tEvadeDelay.fAccTime += fDT;
+
+		if (m_tEvadeDelay.fAccTime >= m_tEvadeDelay.fCoolTime)
+		{
+			m_bEvadeCoolCheck = false;
+			m_tEvadeDelay.fAccTime = 0.f;
+		}
+	}
 }

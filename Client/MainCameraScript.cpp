@@ -1,4 +1,4 @@
-
+ï»¿
 #include "pch.h"
 #include "Camera.h"
 #include "BaseCollider.h"
@@ -34,7 +34,7 @@ void MainCameraScript::Tick()
 {
     if (m_fFixedTime <= 0.f)
         Cal_OffsetDir();
- 
+
     Restrict_Offset();
     Update_Transform();
 }
@@ -104,11 +104,11 @@ void MainCameraScript::Cal_OffsetDir()
     m_fFollowSpeed = 5.f;
     _float2 mouseDir = INPUT.GetMouseDir();
 
-    
+
     auto playerController = m_pPlayer.lock()->Get_CharacterController()->Get_Actor();
-    
+
     _float4 vPlayerPos = { _float(playerController->getPosition().x), _float(playerController->getPosition().y), _float(playerController->getPosition().z), 1.f };
-   
+
     //_float4 vPlayerPos = m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS);
 
     _float3 vDir = (vPlayerPos - Get_Transform()->Get_State(Transform_State::POS)).xyz();
@@ -122,11 +122,11 @@ void MainCameraScript::Cal_OffsetDir()
         vNewOffset.y = m_vOffset.y;
 
         m_vOffset = vNewOffset;
-        // normalize y°ª º¸Á¸ÇÏ±â
+        // normalize y        Ï± 
     }
     _float3 vRight = _float3::Up.Cross(vDir);
     vRight.Normalize();
-    m_vOffset += vRight * mouseDir.x * m_fRotationSpeed * fDT;
+    m_vOffset += vRight * -mouseDir.x * m_fRotationSpeed * fDT;
     m_vOffset += _float3::Up * mouseDir.y * m_fRotationSpeed * fDT;
 
     m_vOffset.Normalize();
@@ -175,7 +175,7 @@ void MainCameraScript::Update_Transform()
         _float3 vHitPoint = { hit.getAnyHit(0).position.x, hit.getAnyHit(0).position.y, hit.getAnyHit(0).position.z };
         fMinDist = hit.getAnyHit(0).distance;
     }
-   
+
     // Set Position
     if (m_fFixedTime > 0.f)
     {
@@ -191,12 +191,21 @@ void MainCameraScript::Update_Transform()
     }
     else
     {
-        if ((fMinDist -= 0.5f) >= m_fMaxDistance)
-            fMinDist = m_fMaxDistance;
+        _float3 vCurDir = -Get_Transform()->Get_State(Transform_State::LOOK).xyz();
 
-        _float4 pos = _float4::Lerp(Get_Transform()->Get_State(Transform_State::POS),
-            vPlayerPos + _float4(m_vOffset, 0.f) * fMinDist,
-            fDT * m_fFollowSpeed);
+        _float4x4 matCurDir = Transform::Get_WorldFromLook(vCurDir, _float3(0.f));
+        _float4x4 matNextDir = Transform::Get_WorldFromLook(m_vOffset, _float3(0.f));
+
+        ;
+
+        if ((fMinDist) >= m_fMaxDistance)
+        {
+            fMinDist = m_fMaxDistance - 0.2f * fDT;
+            if (fMinDist <= m_fMaxDistance)
+                fMinDist = m_fMaxDistance;
+        }
+
+        _float4 pos = vPlayerPos + Transform::SLerpMatrix(matCurDir, matNextDir, fDT * m_fFollowSpeed).Backward() * fMinDist;
 
         Get_Transform()->Set_State(Transform_State::POS, pos);
     }
