@@ -20,6 +20,7 @@
 #include "RigidBody.h"
 #include "ObjectTransformDebug.h"
 #include "CharacterController.h"
+#include "HeroChangeScript.h"
 
 
 DemoScene::DemoScene()
@@ -90,7 +91,7 @@ HRESULT DemoScene::Load_Scene()
 {
 	PHYSX.Init();
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\");
-	Load_Spear_Ace();
+	Load_Player();
 	Load_Light();
 	Load_Camera();
 	Load_DemoMap();
@@ -99,7 +100,7 @@ HRESULT DemoScene::Load_Scene()
 	return S_OK;
 }
 
-void DemoScene::Load_Spear_Ace()
+void DemoScene::Load_Player()
 {
 	{
 		// Add. Player
@@ -133,6 +134,7 @@ void DemoScene::Load_Spear_Ace()
 		ObjPlayer->Set_DrawShadow(true);
 		Add_GameObject(ObjPlayer);
 
+	
 		//Add. Player's Weapon
 		shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
 
@@ -158,6 +160,8 @@ void DemoScene::Load_Spear_Ace()
 		ObjWeapon->Set_DrawShadow(true);
 		ObjWeapon->Set_Name(L"Weapon_Spear_Ace");
 		Add_GameObject(ObjWeapon);
+
+		ObjPlayer->Add_Component(make_shared<HeroChangeScript>(ObjPlayer));
 	}
 
 	{
@@ -215,10 +219,6 @@ void DemoScene::Load_DemoMap()
 		rigidBody->Create_RigidBody(collider);
 		gameObject->Add_Component(rigidBody);
 	}
-}
-
-void DemoScene::Load_Kyle()
-{
 }
 
 void DemoScene::Load_Camera()

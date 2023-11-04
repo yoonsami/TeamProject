@@ -51,7 +51,6 @@ void MainCameraScript::Late_Tick()
         else
             Find_Target();
     }
-
 }
 
 void MainCameraScript::Set_PosDirectly(const _float3& vCenterpos, const _float3& vDir)
@@ -107,7 +106,7 @@ void MainCameraScript::Cal_OffsetDir()
 
     
     auto playerController = m_pPlayer.lock()->Get_CharacterController()->Get_Actor();
-    //
+    
     _float4 vPlayerPos = { _float(playerController->getPosition().x), _float(playerController->getPosition().y), _float(playerController->getPosition().z), 1.f };
    
     //_float4 vPlayerPos = m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS);
@@ -123,7 +122,7 @@ void MainCameraScript::Cal_OffsetDir()
         vNewOffset.y = m_vOffset.y;
 
         m_vOffset = vNewOffset;
-        // normalize y°ª º¸Á¸ÇÏ±â
+        // normalize yï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½
     }
     _float3 vRight = _float3::Up.Cross(vDir);
     vRight.Normalize();
@@ -165,44 +164,18 @@ void MainCameraScript::Update_Transform()
 
 
     _float fMinDist = FLT_MAX;
-	Ray ray;
-	ray.position = vCenterPos.xyz();
-	ray.direction = m_vOffset;
-	physx::PxRaycastBuffer hit{};
-	physx::PxQueryFilterData filterData;
-	filterData.flags = physx::PxQueryFlag::eSTATIC;
-	if (PHYSX.Get_PxScene()->raycast({ vCenterPos.x,vCenterPos.y,vCenterPos.z }, { m_vOffset.x,m_vOffset.y,m_vOffset.z }, 5.f, hit, PxHitFlags(physx::PxHitFlag::eDEFAULT), filterData))
-	{
-		_float3 vHitPoint = { hit.getAnyHit(0).position.x, hit.getAnyHit(0).position.y, hit.getAnyHit(0).position.z };
-		fMinDist = hit.getAnyHit(0).distance;
-	}
-    /*auto& objects = CUR_SCENE->Get_Objects();
-    for (auto& object : objects)
+    Ray ray;
+    ray.position = vCenterPos.xyz();
+    ray.direction = m_vOffset;
+    physx::PxRaycastBuffer hit{};
+    physx::PxQueryFilterData filterData;
+    filterData.flags = physx::PxQueryFlag::eSTATIC;
+    if (PHYSX.Get_PxScene()->raycast({ vCenterPos.x,vCenterPos.y,vCenterPos.z }, { m_vOffset.x,m_vOffset.y,m_vOffset.z }, 5.f, hit, PxHitFlags(physx::PxHitFlag::eDEFAULT), filterData))
     {
-       if(!object->Get_Collider())
-          continue;
-
-       if(object->Get_Collider()->Get_ColliderType() != ColliderType::Mesh)
-          continue;
-
-       if (!object->Get_RigidBody())
-          continue;
-       if(object->Get_RigidBody()->Get_RigidBody()->getActorFlags() & PxActorFlag::eDISABLE_SIMULATION)
-          continue;
-
-       _float fDist = 0.f;
-       if (object->Get_Collider()->Intersects(ray, fDist))
-       {
-          if(fDist<0)
-             continue;
-          if (fMinDist > fDist)
-          {
-             fMinDist = fDist;
-          }
-       }
-    }*/
-
-
+        _float3 vHitPoint = { hit.getAnyHit(0).position.x, hit.getAnyHit(0).position.y, hit.getAnyHit(0).position.z };
+        fMinDist = hit.getAnyHit(0).distance;
+    }
+   
     // Set Position
     if (m_fFixedTime > 0.f)
     {

@@ -2,6 +2,9 @@
 #include "ObjectTransformDebug.h"
 #include "FontRenderer.h"
 #include "MainCameraScript.h"
+#include "Model.h"
+#include "ModelAnimator.h"
+#include "FSM.h"
 
 void ObjectTransformDebug::Tick()
 {

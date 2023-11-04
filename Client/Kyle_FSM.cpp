@@ -8,7 +8,8 @@ HRESULT Kyle_FSM::Init()
 	if (animator)
 	{
 		// 다음 애니메이션 세팅해주는데, 보간할 예정
-		animator->Set_NextTweenAnim(L"b_idle"/*애니메이션 이름*/, 0.2f/*보간 시간*/, true/*반복 애니메이션*/, 1.f/*애니메이션 속도*/);
+		//animator->Set_NextTweenAnim(L"b_idle"/*애니메이션 이름*/, 0.2f/*보간 시간*/, true/*반복 애니메이션*/, 1.f/*애니메이션 속도*/);
+		animator->Set_CurrentAnim(L"b_idle"/*애니메이션 이름*/, true/*반복 애니메이션*/, 1.f/*애니메이션 속도*/);
 		m_eCurState = STATE::b_idle;
 	}
 	return S_OK;
@@ -58,6 +59,9 @@ void Kyle_FSM::State_Tick()
 	case STATE::skill_1300:
 		skill_1300();
 		break;
+	case STATE::skill_1400:
+		skill_1400();
+		break;
 	case STATE::skill_91100:
 		skill_91100();
 		break;
@@ -67,11 +71,17 @@ void Kyle_FSM::State_Tick()
 	case STATE::skill_100100:
 		skill_100100();
 		break;
+	case STATE::skill_100200:
+		skill_100200();
+		break;
 	case STATE::skill_200100:
 		skill_200100();
 		break;
 	case STATE::skill_200200:
 		skill_200200();
+		break;
+	case STATE::skill_200300:
+		skill_200300();
 		break;
 	case STATE::skill_300100:
 		skill_300100();
@@ -124,6 +134,9 @@ void Kyle_FSM::State_Init()
 		case STATE::skill_1300:
 			skill_1300_Init();
 			break;
+		case STATE::skill_1400:
+			skill_1400_Init();
+			break;
 		case STATE::skill_91100:
 			skill_91100_Init();
 			break;
@@ -133,11 +146,17 @@ void Kyle_FSM::State_Init()
 		case STATE::skill_100100:
 			skill_100100_Init();
 			break;
+		case STATE::skill_100200:
+			skill_100200_Init();
+			break;
 		case STATE::skill_200100:
 			skill_200100_Init();
 			break;
 		case STATE::skill_200200:
 			skill_200200_Init();
+			break;
+		case STATE::skill_200300:
+			skill_200300_Init();
 			break;
 		case STATE::skill_300100:
 			skill_300100_Init();
@@ -167,6 +186,8 @@ void Kyle_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
 
 void Kyle_FSM::b_idle()
 {
+	_float3 vInputVector = Get_InputDirVector();
+
 	if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
 		KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
 		m_eCurState = STATE::b_run_start;
@@ -184,7 +205,12 @@ void Kyle_FSM::b_idle()
 	else if (KEYPUSH(KEY_TYPE::KEY_5))
 		m_eCurState = STATE::skill_500100;
 	else if (KEYPUSH(KEY_TYPE::SPACE))
-		m_eCurState = STATE::skill_93100;
+	{
+		if (vInputVector == _float3(0.f))
+			m_eCurState = STATE::skill_93100;
+		else
+			m_eCurState = STATE::skill_91100;
+	}
 }
 
 void Kyle_FSM::b_idle_Init()
@@ -192,15 +218,25 @@ void Kyle_FSM::b_idle_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"b_idle", 0.1f, true, 1.f);
+
+	Get_Transform()->Set_Speed(m_fRunSpeed);
+	m_tRunEndDelay.fAccTime = 0.f;
 }
 
 void Kyle_FSM::b_run_start()
 {
+	Get_Transform()->Go_Straight();
+
 	_float3 vInputVector = Get_InputDirVector();
 
 	// 방향키를 아무것도 누르지 않으면 상태를 변경
 	if (vInputVector == _float3(0.f))
-		m_eCurState = STATE::b_idle;
+	{
+		m_tRunEndDelay.fAccTime += fDT;
+
+		if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
+			m_eCurState = STATE::b_idle;
+	}
 	else
 	{
 		// 애니메이션이 끝나면 인데, 보간 시간때문에 어색할 때가 있어서,
@@ -210,9 +246,6 @@ void Kyle_FSM::b_run_start()
 		// 둘 중 선택
 		if (Is_AnimFinished())
 			m_eCurState = STATE::b_run;
-
-		//if (Get_FinalFrame() - Get_CurFrame() < 5)
-		//	m_eCurState = STATE::b_run;
 
 		Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
@@ -238,30 +271,38 @@ void Kyle_FSM::b_run_start_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"b_run_start", 0.1f, false, 1.5f);
+
+	Get_Transform()->Set_Speed(m_fRunSpeed);
+	m_tRunEndDelay.fAccTime = 0.f;
 }
 
 void Kyle_FSM::b_run()
 {
-	if (KEYPUSH(KEY_TYPE::LSHIFT))
-		m_bIsSprint = true;
-	else
-		m_bIsSprint = false;
+	Get_Transform()->Go_Straight();
 
 	_float3 vInputVector = Get_InputDirVector();
 
 	// 방향키를 아무것도 누르지 않으면 상태를 변경
 	if (vInputVector == _float3(0.f))
 	{
-		if (Get_CurFrame() % 2 == 0)
-			m_eCurState = STATE::b_run_end_r;
-		else
-			m_eCurState = STATE::b_run_end_l;
+		m_tRunEndDelay.fAccTime += fDT;
+
+		if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
+		{
+			if (Get_CurFrame() % 2 == 0)
+				m_eCurState = STATE::b_run_end_r;
+			else
+				m_eCurState = STATE::b_run_end_l;
+		}
 	}
 	else
 		Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
-	if (m_bIsSprint)
-		m_eCurState = STATE::b_sprint;
+	if (KEYPUSH(KEY_TYPE::LSHIFT))
+	{
+		if ((Get_CurFrame() == 1) || Get_CurFrame() >= 19)
+			m_eCurState = STATE::b_sprint;
+	}
 
 	if (KEYPUSH(KEY_TYPE::LBUTTON))
 		m_eCurState = STATE::skill_1100;
@@ -283,7 +324,9 @@ void Kyle_FSM::b_run_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"b_run", 0.1f, true, 1.f);
+	animator->Set_NextTweenAnim(L"b_run", 0.2f, true, 1.f);
+
+	Get_Transform()->Set_Speed(m_fRunSpeed);
 }
 
 void Kyle_FSM::b_run_end_r()
@@ -319,6 +362,9 @@ void Kyle_FSM::b_run_end_r_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"b_run_end_r", 0.1f, false, 1.5f);
+
+	Get_Transform()->Set_Speed(m_fRunSpeed);
+	m_tRunEndDelay.fAccTime = 0.f;
 }
 
 void Kyle_FSM::b_run_end_l()
@@ -352,30 +398,38 @@ void Kyle_FSM::b_run_end_l_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"b_run_end_l", 0.1f, false, 1.5f);
+
+	Get_Transform()->Set_Speed(m_fRunSpeed);
+	m_tRunEndDelay.fAccTime = 0.f;
 }
 
 void Kyle_FSM::b_sprint()
 {
-	if (KEYPUSH(KEY_TYPE::LSHIFT))
-		m_bIsSprint = true;
-	else
-		m_bIsSprint = false;
+	Get_Transform()->Go_Straight();
 
 	_float3 vInputVector = Get_InputDirVector();
 
 	// 방향키를 아무것도 누르지 않으면 상태를 변경
 	if (vInputVector == _float3(0.f))
 	{
-		if (Get_CurFrame() % 2 == 0)
-			m_eCurState = STATE::b_run_end_r;
-		else
-			m_eCurState = STATE::b_run_end_l;
+		m_tRunEndDelay.fAccTime += fDT;
+
+		if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
+		{
+			if (Get_CurFrame() % 2 == 0)
+				m_eCurState = STATE::b_run_end_r;
+			else
+				m_eCurState = STATE::b_run_end_l;
+		}
 	}
 	else
 		Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
-	if (!m_bIsSprint)
-		m_eCurState = STATE::b_run;
+	if (!KEYPUSH(KEY_TYPE::LSHIFT))
+	{
+		if (Get_CurFrame() < 1 || Get_CurFrame() > 13)
+			m_eCurState = STATE::b_run;
+	}
 
 	if (KEYPUSH(KEY_TYPE::LBUTTON))
 		m_eCurState = STATE::skill_1100;
@@ -391,14 +445,15 @@ void Kyle_FSM::b_sprint()
 		m_eCurState = STATE::skill_500100;
 	else if (KEYPUSH(KEY_TYPE::SPACE))
 		m_eCurState = STATE::skill_91100;
-
 }
 
 void Kyle_FSM::b_sprint_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_CurrentAnim(L"b_sprint", true, 1.f);
+	animator->Set_NextTweenAnim(L"b_sprint", 0.2f, true, 1.f);
+
+	Get_Transform()->Set_Speed(m_fSprintSpeed);
 }
 
 void Kyle_FSM::b_walk()
@@ -459,9 +514,8 @@ void Kyle_FSM::skill_1100_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, 1.f);
+	animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
-	m_bIsSprint = false;
 	m_bCanCombo = false;
 
 	m_vInputTurnVector = _float3(0.f);
@@ -474,7 +528,6 @@ void Kyle_FSM::skill_1200()
 
 	if (m_vInputTurnVector != _float3(0.f))
 		Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
-
 
 	if (_float(Get_CurFrame()) / _float(Get_FinalFrame()) >= 0.25f)
 		m_bCanCombo = true;
@@ -514,7 +567,7 @@ void Kyle_FSM::skill_1200_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, 1.f);
+	animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
 	m_bCanCombo = false;
 
@@ -523,6 +576,58 @@ void Kyle_FSM::skill_1200_Init()
 }
 
 void Kyle_FSM::skill_1300()
+{
+	_float3 vInputVector = Get_InputDirVector();
+
+	if (m_vInputTurnVector != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
+
+	if (_float(Get_CurFrame()) / _float(Get_FinalFrame()) >= 0.25f)
+		m_bCanCombo = true;
+
+	if (m_bCanCombo)
+	{
+		if (KEYTAP(KEY_TYPE::LBUTTON))
+			m_eCurState = STATE::skill_1400;
+	}
+	if (Is_AnimFinished())
+	{
+		m_bCanCombo = false;
+		m_eCurState = STATE::b_idle;
+	}
+
+	if (KEYPUSH(KEY_TYPE::KEY_1))
+		m_eCurState = STATE::skill_100100;
+	else if (KEYPUSH(KEY_TYPE::KEY_2))
+		m_eCurState = STATE::skill_200100;
+	else if (KEYPUSH(KEY_TYPE::KEY_3))
+		m_eCurState = STATE::skill_300100;
+	else if (KEYPUSH(KEY_TYPE::KEY_4))
+		m_eCurState = STATE::skill_502100;
+	else if (KEYPUSH(KEY_TYPE::KEY_5))
+		m_eCurState = STATE::skill_500100;
+	else if (KEYPUSH(KEY_TYPE::SPACE))
+	{
+		if (vInputVector != _float3(0.f))
+			m_eCurState = STATE::skill_91100;
+		else
+			m_eCurState = STATE::skill_93100;
+	}
+}
+
+void Kyle_FSM::skill_1300_Init()
+{
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_NextTweenAnim(L"skill_1300", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+
+	m_bCanCombo = false;
+
+	m_vInputTurnVector = _float3(0.f);
+	m_vInputTurnVector = Get_InputDirVector();
+}
+
+void Kyle_FSM::skill_1400()
 {
 	_float3 vInputVector = Get_InputDirVector();
 
@@ -554,11 +659,11 @@ void Kyle_FSM::skill_1300()
 	}
 }
 
-void Kyle_FSM::skill_1300_Init()
+void Kyle_FSM::skill_1400_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"skill_1300", 0.15f, false, 1.f);
+	animator->Set_NextTweenAnim(L"skill_1400", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
 	m_bCanCombo = false;
 
@@ -568,21 +673,28 @@ void Kyle_FSM::skill_1300_Init()
 
 void Kyle_FSM::skill_91100()
 {
+	_float3 vInputVector = Get_InputDirVector();
+
 	if (m_vInputTurnVector != _float3(0.f))
 		Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
 
 	if (Is_AnimFinished())
 		m_eCurState = STATE::b_idle;
+
+	if (Get_CurFrame() >= 9)
+	{
+		if (vInputVector != _float3(0.f))
+			m_eCurState = STATE::b_run;
+	}
 }
 
 void Kyle_FSM::skill_91100_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"skill_91100", 0.15f, false, 1.f);
+	animator->Set_NextTweenAnim(L"skill_91100", 0.15f, false, m_fEvade_AnimationSpeed);
 
 	m_bCanCombo = false;
-	m_bIsSprint = false;
 
 	m_vInputTurnVector = _float3(0.f);
 	m_vInputTurnVector = Get_InputDirVector();
@@ -590,21 +702,68 @@ void Kyle_FSM::skill_91100_Init()
 
 void Kyle_FSM::skill_93100()
 {
+	_float3 vInputVector = Get_InputDirVector();
+
 	if (Is_AnimFinished())
 		m_eCurState = STATE::b_idle;
+
+	if (Get_CurFrame() >= 18)
+	{
+		if (vInputVector != _float3(0.f))
+			m_eCurState = STATE::b_run;
+	}
 }
 
 void Kyle_FSM::skill_93100_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"skill_93100", 0.15f, false, 1.f);
+	animator->Set_NextTweenAnim(L"skill_93100", 0.15f, false, m_fEvade_AnimationSpeed);
 
 	m_bCanCombo = false;
-	m_bIsSprint = false;
 }
 
 void Kyle_FSM::skill_100100()
+{
+	_float3 vInputVector = Get_InputDirVector();
+
+	if (m_vInputTurnVector != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
+
+	if (Get_CurFrame() >= 24)
+		m_bCanCombo = true;
+
+	if (m_bCanCombo)
+	{
+		if (KEYTAP(KEY_TYPE::KEY_1))
+			m_eCurState = STATE::skill_100200;
+	}
+
+	if (Is_AnimFinished())
+		m_eCurState = STATE::b_idle;
+
+	if (KEYPUSH(KEY_TYPE::SPACE))
+	{
+		if (vInputVector != _float3(0.f))
+			m_eCurState = STATE::skill_91100;
+		else
+			m_eCurState = STATE::skill_93100;
+	}
+}
+
+void Kyle_FSM::skill_100100_Init()
+{
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_NextTweenAnim(L"skill_100100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
+
+	m_bCanCombo = false;
+
+	m_vInputTurnVector = _float3(0.f);
+	m_vInputTurnVector = Get_InputDirVector();
+}
+
+void Kyle_FSM::skill_100200()
 {
 	_float3 vInputVector = Get_InputDirVector();
 
@@ -623,14 +782,13 @@ void Kyle_FSM::skill_100100()
 	}
 }
 
-void Kyle_FSM::skill_100100_Init()
+void Kyle_FSM::skill_100200_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"skill_100100", 0.15f, false, 1.f);
+	animator->Set_NextTweenAnim(L"skill_100200", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
 	m_bCanCombo = false;
-	m_bIsSprint = false;
 
 	m_vInputTurnVector = _float3(0.f);
 	m_vInputTurnVector = Get_InputDirVector();
@@ -643,7 +801,7 @@ void Kyle_FSM::skill_200100()
 	if (m_vInputTurnVector != _float3(0.f))
 		Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
 
-	if (_float(Get_CurFrame()) / _float(Get_FinalFrame()) >= 0.25f)
+	if (Get_CurFrame() >= 14)
 		m_bCanCombo = true;
 
 	if (m_bCanCombo)
@@ -668,16 +826,55 @@ void Kyle_FSM::skill_200100_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"skill_200100", 0.15f, false, 1.f);
+	animator->Set_NextTweenAnim(L"skill_200100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
 	m_bCanCombo = false;
-	m_bIsSprint = false;
 
 	m_vInputTurnVector = _float3(0.f);
 	m_vInputTurnVector = Get_InputDirVector();
 }
 
 void Kyle_FSM::skill_200200()
+{
+	_float3 vInputVector = Get_InputDirVector();
+
+	if (m_vInputTurnVector != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
+
+	if (Get_CurFrame() >= 24)
+		m_bCanCombo = true;
+
+	if (m_bCanCombo)
+	{
+		if (KEYTAP(KEY_TYPE::KEY_2))
+			m_eCurState = STATE::skill_200300;
+	}
+
+	if (Is_AnimFinished())
+		m_eCurState = STATE::b_idle;
+
+	if (KEYPUSH(KEY_TYPE::SPACE))
+	{
+		if (vInputVector != _float3(0.f))
+			m_eCurState = STATE::skill_91100;
+		else
+			m_eCurState = STATE::skill_93100;
+	}
+}
+
+void Kyle_FSM::skill_200200_Init()
+{
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_NextTweenAnim(L"skill_200200", 0.15f, false, m_fSkillAttack_AnimationSpeed);
+
+	m_bCanCombo = false;
+
+	m_vInputTurnVector = _float3(0.f);
+	m_vInputTurnVector = Get_InputDirVector();
+}
+
+void Kyle_FSM::skill_200300()
 {
 	_float3 vInputVector = Get_InputDirVector();
 
@@ -696,11 +893,11 @@ void Kyle_FSM::skill_200200()
 	}
 }
 
-void Kyle_FSM::skill_200200_Init()
+void Kyle_FSM::skill_200300_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"skill_200200", 0.15f, false, 1.f);
+	animator->Set_NextTweenAnim(L"skill_200300", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
 	m_bCanCombo = false;
 
@@ -731,10 +928,9 @@ void Kyle_FSM::skill_300100_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"skill_300100", 0.15f, false, 1.f);
+	animator->Set_NextTweenAnim(L"skill_300100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
 	m_bCanCombo = false;
-	m_bIsSprint = false;
 
 	m_vInputTurnVector = _float3(0.f);
 	m_vInputTurnVector = Get_InputDirVector();
@@ -763,10 +959,9 @@ void Kyle_FSM::skill_502100_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"skill_502100", 0.15f, false, 1.f);
+	animator->Set_NextTweenAnim(L"skill_502100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
 	m_bCanCombo = false;
-	m_bIsSprint = false;
 
 	m_vInputTurnVector = _float3(0.f);
 	m_vInputTurnVector = Get_InputDirVector();
@@ -795,10 +990,10 @@ void Kyle_FSM::skill_500100_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"skill_500100", 0.15f, false, 1.f);
+	animator->Set_NextTweenAnim(L"skill_500100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
 	m_bCanCombo = false;
-	m_bIsSprint = false;
+
 
 	m_vInputTurnVector = _float3(0.f);
 	m_vInputTurnVector = Get_InputDirVector();

@@ -44,6 +44,7 @@ public:
 
 public:
 	virtual HRESULT Add_Component(shared_ptr<Component> component) final;
+	virtual HRESULT Change_Component(shared_ptr<Component> component) final;
 
 public:
 	const wstring& Get_Name() { return m_strName; }

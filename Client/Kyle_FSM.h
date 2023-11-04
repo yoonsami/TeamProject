@@ -18,16 +18,20 @@ public:
 		skill_1100, //normal attack1
 		skill_1200, //normal attack2
 		skill_1300, //normal attack3
+		skill_1400, //normal attack4
 		skill_91100, //Evade
 		skill_93100, //Backward_Evade
-		skill_100100, // Skill 1
+		skill_100100, // Skill 1-1
+		skill_100200, // Skill 1-2
 		skill_200100, // Skill 2-1
 		skill_200200, // Skill 2-2
+		skill_200300, // Skill 2-3
 		skill_300100, // Skill 3
 		skill_502100, // Skill 4
 		skill_500100, // Skill 5
 		NONE
 	};
+
 
 public:
 	virtual HRESULT Init() override;
@@ -64,6 +68,8 @@ private:
 	void skill_1200_Init();
 	void skill_1300();
 	void skill_1300_Init();
+	void skill_1400();
+	void skill_1400_Init();
 
 	void skill_91100();
 	void skill_91100_Init();
@@ -71,10 +77,16 @@ private:
 	void skill_93100_Init();
 	void skill_100100();
 	void skill_100100_Init();
+	void skill_100200();
+	void skill_100200_Init();
 	void skill_200100();
 	void skill_200100_Init();
 	void skill_200200();
 	void skill_200200_Init();
+	void skill_200300();
+	void skill_200300_Init();
+
+
 	void skill_300100();
 	void skill_300100_Init();
 
@@ -88,7 +100,15 @@ private:
 	STATE m_ePreState = STATE::NONE;
 
 	_float3 m_vInputTurnVector = _float3(0.f);
-	_bool m_bIsSprint = false; // IsSprint
 	_bool m_bCanCombo = false;
+	COOLTIMEINFO m_tRunEndDelay = { 0.2f,0.f };
+
+	_float m_fRunSpeed = 6.f;
+	_float m_fSprintSpeed = 8.f;
+	_float m_fNormalAttack_AnimationSpeed = 2.f;
+	_float m_fSkillAttack_AnimationSpeed = 2.f;
+	_float m_fEvade_AnimationSpeed = 1.5f;
+
+
 };
 

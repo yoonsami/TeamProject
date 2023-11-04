@@ -8,6 +8,12 @@ const unsigned int	g_iWinSizeY = 1080;
 extern HWND		g_hWnd;
 
 
+typedef struct tagCoolTimeInfo
+{
+	_float fCoolTime;
+	_float fAccTime = 0.f;
+}COOLTIMEINFO;
+
 enum ObjectType
 {
 	OBJ_PLAYER,
