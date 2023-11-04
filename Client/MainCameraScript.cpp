@@ -51,7 +51,6 @@ void MainCameraScript::Late_Tick()
         else
             Find_Target();
     }
-
 }
 
 void MainCameraScript::Set_PosDirectly(const _float3& vCenterpos, const _float3& vDir)

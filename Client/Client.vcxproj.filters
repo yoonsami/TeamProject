@@ -61,6 +61,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\97.DebugScript">
       <UniqueIdentifier>{308378ec-739c-4087-8d4f-fdec1ef5243b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\02.HeroChangeScript">
+      <UniqueIdentifier>{bb2d52fc-f7e9-4e90-8a3c-e7669ddef7c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -114,6 +117,9 @@
     <ClInclude Include="ObjectTransformDebug.h">
       <Filter>02.Component\00.MonoBehaviour\97.DebugScript</Filter>
     </ClInclude>
+    <ClInclude Include="HeroChangeScript.h">
+      <Filter>02.Component\00.MonoBehaviour\02.HeroChangeScript</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -160,6 +166,9 @@
     </ClCompile>
     <ClCompile Include="ObjectTransformDebug.cpp">
       <Filter>02.Component\00.MonoBehaviour\97.DebugScript</Filter>
+    </ClCompile>
+    <ClCompile Include="HeroChangeScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\02.HeroChangeScript</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -118,6 +118,18 @@ HRESULT GameObject::Add_Component(shared_ptr<Component> component)
 	return S_OK;
 }
 
+HRESULT GameObject::Change_Component(shared_ptr<Component> component)
+{
+	component->Set_Owner(shared_from_this());
+	_uchar iIndex = static_cast<_uchar>(component->Get_Type());
+	if (iIndex < FIXED_COMPONENT_COUNT)
+	{
+		m_Components[iIndex] = component;
+	}
+	
+	return S_OK;
+}
+
 SHADER_TYPE GameObject::Get_ShaderType()
 {
 	if (Get_MeshRenderer() && Get_MeshRenderer()->Get_Shader())
