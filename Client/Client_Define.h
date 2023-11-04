@@ -24,16 +24,17 @@ enum ObjectType
 
 
 
-enum class CollisionGroup
+enum CollisionGroup
 {
-	Player,
+	Player_Body,
+	Player_Attack,
+	Player_Skill,
 
-	Monster,
+	Monster_Body,
+	Monster_Attack,
+	Monster_Skill,
 
 	Script,
-
-
-
 
 	END = MAX_COLLIDER_GROUP
 };

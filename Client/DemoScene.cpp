@@ -2,6 +2,7 @@
 #include "DemoScene.h"
 #include "ModelAnimator.h"
 #include "ModelRenderer.h"
+#include "BaseCollider.h"
 #include "Camera.h"
 #include "Light.h"
 #include "Model.h"
@@ -21,6 +22,8 @@
 #include "ObjectTransformDebug.h"
 #include "CharacterController.h"
 #include "HeroChangeScript.h"
+#include "Silversword_Soldier_FSM.h"
+#include "OBBBoxCollider.h"
 
 
 DemoScene::DemoScene()
@@ -34,7 +37,11 @@ DemoScene::~DemoScene()
 void DemoScene::Init()
 {
 	__super::Init();
-	COLLISION.Check_Group(_int(CollisionGroup::Player), _int(CollisionGroup::Monster));
+	COLLISION.Check_Group(_int(CollisionGroup::Player_Body), _int(CollisionGroup::Monster_Body));
+	COLLISION.Check_Group(_int(CollisionGroup::Player_Attack), _int(CollisionGroup::Monster_Body));
+	COLLISION.Check_Group(_int(CollisionGroup::Player_Skill), _int(CollisionGroup::Monster_Body));
+	COLLISION.Check_Group(_int(CollisionGroup::Monster_Attack), _int(CollisionGroup::Player_Body));
+	COLLISION.Check_Group(_int(CollisionGroup::Monster_Skill), _int(CollisionGroup::Player_Body));
 }
 
 void DemoScene::Tick()
@@ -60,6 +67,7 @@ HRESULT DemoScene::Load_Scene()
 	Load_Player();
 	Load_Light();
 	Load_Camera();
+	Load_Monster();
 	Load_DemoMap();
 
 
@@ -88,13 +96,18 @@ void DemoScene::Load_Player()
 			ObjPlayer->Add_Component(make_shared<SpearAce_FSM>());
 		}
 		ObjPlayer->Set_Name(L"Player");
+		ObjPlayer->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.7f, 0.5f })); //obbcollider
+		ObjPlayer->Get_Collider()->Set_CollisionGroup(Player_Body);
+		ObjPlayer->Get_Collider()->Set_Activate(true);
+			
 		{
 			auto controller = make_shared<CharacterController>();
 			ObjPlayer->Add_Component(controller);
 			auto& desc = controller->Get_ControllerDesc();
 			desc.radius = 0.5f;
 			desc.height = 5.f;
-			desc.position = { 3.f, 0.f, 3.f };
+			_float3 vPos = ObjPlayer->Get_Transform()->Get_State(Transform_State::POS).xyz();
+			desc.position = { vPos.x, vPos.y, vPos.z };
 			controller->Create_Controller();
 		}
 		Add_GameObject(ObjPlayer);
@@ -199,7 +212,7 @@ void DemoScene::Load_Camera()
 		// Camera Component Add
 		CameraDesc desc;
 		desc.fFOV = XM_PI / 3.f;
-		desc.strName = L"Player_Cam";
+		desc.strName = L"Default";
 		desc.fSizeX = _float(g_iWinSizeX);
 		desc.fSizeY = _float(g_iWinSizeY);
 		desc.fNear = 0.1f;
@@ -243,6 +256,49 @@ void DemoScene::Load_Camera()
 		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, false);
 
 		Add_GameObject(camera);
+	}
+}
+
+void DemoScene::Load_Monster()
+{
+	{
+		// Add. Player
+		shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
+
+		ObjMonster->Add_Component(make_shared<Transform>());
+
+		ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(6.f, 0.f, 6.f, 1.f));
+		{
+			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+
+			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+			{
+				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Silversword_Soldier");
+				animator->Set_Model(model);
+			}
+
+			ObjMonster->Add_Component(animator);
+			ObjMonster->Add_Component(make_shared<Silversword_Soldier_FSM>());
+			auto pPlayer = Get_GameObject(L"Player");
+			ObjMonster->Get_FSM()->Set_Target(pPlayer);
+		}
+		ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.7f, 0.5f })); //obbcollider
+		ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
+		ObjMonster->Get_Collider()->Set_Activate(true);
+
+		ObjMonster->Set_Name(L"Monster1");
+		{
+			auto controller = make_shared<CharacterController>();
+			ObjMonster->Add_Component(controller);
+			auto& desc = controller->Get_ControllerDesc();
+			desc.radius = 0.5f;
+			desc.height = 5.f;
+			_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz();
+			desc.position = { vPos.x, vPos.y, vPos.z };
+			controller->Create_Controller();
+		}
+
+		Add_GameObject(ObjMonster);
 	}
 }
 

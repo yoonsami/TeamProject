@@ -17,9 +17,9 @@ public:
 
 private:
 	void Load_Player();
-	void Load_DemoModel();
 	void Load_DemoMap();
 	void Load_Camera();
+	void Load_Monster();
 	void Load_Light();
 };
 

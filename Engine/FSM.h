@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+
 class FSM abstract : public Component
 {
 public:
@@ -27,5 +28,6 @@ public:
 
 protected:
 	weak_ptr<GameObject> m_pTarget;
+	weak_ptr<GameObject> m_pAttackCollider;
 };
 

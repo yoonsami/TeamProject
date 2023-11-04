@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "SpearAce_FSM.h"
 #include "ModelAnimator.h"
+#include "SphereCollider.h"
 
 HRESULT SpearAce_FSM::Init()
 {
@@ -8,16 +9,31 @@ HRESULT SpearAce_FSM::Init()
     if (animator)
     {
         // 다음 애니메이션 세팅해주는데, 보간할 예정
-        //animator->Set_NextTweenAnim(L"b_idle"/*애니메이션 이름*/, 0.2f/*보간 시간*/, true/*반복 애니메이션*/, 1.f/*애니메이션 속도*/);
         animator->Set_CurrentAnim(L"b_idle"/*애니메이션 이름*/, true/*반복 애니메이션*/, 1.f/*애니메이션 속도*/);
         m_eCurState = STATE::b_idle;
     }
+    shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
+    attackCollider->GetOrAddTransform();
+    attackCollider->Add_Component(make_shared<SphereCollider>(1.f));
+    attackCollider->Get_Collider()->Set_CollisionGroup(Player_Attack);
+
+    m_pAttackCollider = attackCollider;
+
+    CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
+    m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
+    
     return S_OK;
 }
 
 void SpearAce_FSM::Tick()
 {
     State_Tick();
+
+    if (!m_pAttackCollider.expired())
+    {
+        //m_pAttack transform set forward
+        m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up);
+    }
 }
 
 void SpearAce_FSM::State_Tick()

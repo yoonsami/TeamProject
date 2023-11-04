@@ -1,10 +1,11 @@
 #include "pch.h"
 #include "BaseCollider.h"
+#include "Camera.h"
 
 BaseCollider::BaseCollider(ColliderType colliderType)
 	:Component(COMPONENT_TYPE::Collider), m_eColliderType(colliderType)
 {
-	//DebugShader =  RESOURCES.Get<Shader>(L"Shader_Mesh.fx");
+	DebugShader =  RESOURCES.Get<Shader>(L"Shader_Mesh.fx");
 	m_iID = g_iNextID++;
 }
 
@@ -14,7 +15,7 @@ BaseCollider::~BaseCollider()
 
 void BaseCollider::Render()
 {
-	/*auto pCamera = CUR_SCENE->Get_Camera(L"Default")->Get_Camera();
+	auto pCamera = CUR_SCENE->Get_Camera(L"Default")->Get_Camera();
 
 	if (!pCamera)
 		return;
@@ -39,7 +40,7 @@ void BaseCollider::Render()
 
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		DebugShader->DrawIndexed(1, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
-	}*/
+	}
 }
 
 void BaseCollider::Render_Instancing(shared_ptr<InstancingBuffer>& buffer)

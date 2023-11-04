@@ -107,8 +107,7 @@ private:
 
 	_bool m_bCanCombo = false;
 	_bool m_bEvadeCoolCheck = false;
-	// EvadeCoolCheck();
-	//     if (!m_bEvadeCoolCheck)
+
 	_float m_fRunSpeed = 6.f;
 	_float m_fSprintSpeed = 8.f;
 	_float m_fNormalAttack_AnimationSpeed = 2.f;
