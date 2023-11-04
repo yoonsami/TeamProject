@@ -747,7 +747,7 @@ VTXParticleModelOutput VS_NonAnim(VTXParticleModel input)
     
     float3 particlePos = (g_Data[input.instanceID].worldPos);
     float3 particleLook = normalize(g_Data[input.instanceID].worldDir);
-    float3 particleRight = normalize(g_Data[input.instanceID].randTheta);
+    float3 particleRight = normalize(g_Data[input.instanceID].randTheta).xyz;
     float3 particleUp = normalize(cross(particleLook, particleRight));
     particleRight = normalize(cross(particleUp, particleLook));
     if(g_int_3 == 0)

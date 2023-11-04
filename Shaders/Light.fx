@@ -174,7 +174,7 @@ LightColor CalculateLightColor(int lightIndex, float3 normal, float3 worldPositi
     
     specularRatio = pow(saturate(dot(-eyeDir, reflectionDir)),10);
     
-    emissiveRatio =0/* pow(smoothstep(0.f, 1.f, 1.f - saturate(dot(-eyeDir, normal))), 2)*/;
+    emissiveRatio =pow(smoothstep(0.f, 1.f, 1.f - saturate(dot(-eyeDir, normal))), 2);
     
     
     color.diffuse = lights[lightIndex].color.diffuse * diffuseRatio * distanceRatio;
@@ -255,7 +255,7 @@ LightColor CalculateLightColor_ViewSpace(int lightIndex, float3 viewNormal, floa
     
     specularRatio = pow(saturate(dot(-eyeDir, reflectionDir)), 10);
     
-    emissiveRatio = 1.f /* pow(smoothstep(0.f, 1.f, 1.f - saturate(dot(-eyeDir, normal))), 2)*/;
+    emissiveRatio = pow(smoothstep(0.f, 1.f, 1.f - saturate(dot(-eyeDir, viewNormal))), 2);
     
     
     color.diffuse = lights[lightIndex].color.diffuse * diffuseRatio * distanceRatio;

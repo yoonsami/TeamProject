@@ -30,13 +30,13 @@ VS_OUT VS_Default(VTXMesh input)
     return output;
 }
 
-UIOutput VS_Instancing(VTXMeshInstancing input)
+UIInstancingOutput VS_Instancing(VTXMeshInstancing input)
 {
-    UIOutput output;
+    UIInstancingOutput output;
     output.position = mul(float4(input.position, 1.f), input.world);
     output.position = mul(output.position, VP);
     output.uv = input.uv;
-    
+    output.id = input.instanceID;
     return output;
 }
 
@@ -219,7 +219,7 @@ float4 PS_UI(UIOutput input) : SV_TARGET
         }
         else
         {
-            diffuseColor.xyz = DiffuseMap.Sample(LinearSamplerMirror, input.uv) * g_vec4_0;
+            diffuseColor.xyz = (DiffuseMap.Sample(LinearSamplerMirror, input.uv) * g_vec4_0).xyz;
         }
         
 
@@ -241,7 +241,7 @@ float4 PS_UI(UIOutput input) : SV_TARGET
     }
     else if(g_int_0 == 2 && g_float_0>=100.f)
     {
-        diffuseColor.xyz = DiffuseMap.Sample(LinearSamplerMirror, input.uv) * g_vec4_0;
+        diffuseColor.xyz = (DiffuseMap.Sample(LinearSamplerMirror, input.uv) * g_vec4_0).xyz;
     }
     else if (g_int_0 == 3 && g_float_0 < 100.f)
     {
@@ -263,6 +263,91 @@ float4 PS_UI(UIOutput input) : SV_TARGET
     
     return diffuseColor;
 }
+
+float4 PS_UIInstancing(UIInstancingOutput input) : SV_TARGET
+{
+
+    float4 diffuseColor = InstanceRenderParams[input.id].g_vec4_0;
+    if (bHasDiffuseMap)
+        diffuseColor = DiffuseMap.Sample(LinearSamplerMirror, input.uv) * InstanceRenderParams[input.id].g_vec4_0;
+    
+    if (bHasOpacityMap)
+    {
+        diffuseColor.a = OpacityMap.Sample(LinearSamplerMirror, input.uv).x * InstanceRenderParams[input.id].g_vec4_0.w;
+        if (diffuseColor.a <= 0.01f)
+            discard;
+    }
+    
+    if (InstanceRenderParams[input.id].g_int_0 == 1 && InstanceRenderParams[input.id].g_float_0 < 100.f)
+    {
+        if (1.f - input.uv.y >= InstanceRenderParams[input.id].g_float_0 / 100.f)
+            diffuseColor.xyz *= 0.2f;
+        
+        float gauge_Color = SubMap0.Sample(LinearSampler, input.uv + float2(0.f, 0.5f + InstanceRenderParams[input.id].g_float_0 / 100.f)).x;
+        diffuseColor.xyz += gauge_Color;
+
+    }
+    else if (InstanceRenderParams[input.id].g_int_0 == 2 && InstanceRenderParams[input.id].g_float_0 < 100.f)
+    {
+        //[-0.5f,0.5f]
+        float2 uvPos = float2(input.uv.x - 0.5f, 0.5f - input.uv.y);
+        // X가 0에 가까울 때
+        float theta = atan2(uvPos.x, uvPos.y);
+        
+        if (theta <= 0.f)
+            theta += 2.f * PI;
+
+        if (theta >= 2.f * PI * InstanceRenderParams[input.id].g_float_0 / 100.f)
+        {
+            diffuseColor.xyz *= 0.2f;
+        }
+        else
+        {
+            diffuseColor.xyz = (DiffuseMap.Sample(LinearSamplerMirror, input.uv) * InstanceRenderParams[input.id].g_vec4_0).xyz;
+        }
+        
+
+        
+        float c = cos(2.f * PI * InstanceRenderParams[input.id].g_float_0 / 100.f);
+        float s = sin(2.f * PI * InstanceRenderParams[input.id].g_float_0 / 100.f);
+        
+        float2 rotatedUV;
+        rotatedUV.x = uvPos.x * c - uvPos.y * s;
+        rotatedUV.y = uvPos.y * c + uvPos.x * s;
+        
+        rotatedUV.x += 0.5f;
+        rotatedUV.y = (rotatedUV.y - 0.5f) * -1.f;
+
+        float gauge_Color = SubMap0.Sample(LinearSampler, rotatedUV).x;
+        diffuseColor.xyz += gauge_Color;
+
+
+    }
+    else if (InstanceRenderParams[input.id].g_int_0 == 2 && InstanceRenderParams[input.id].g_float_0 >= 100.f)
+    {
+        diffuseColor.xyz = (DiffuseMap.Sample(LinearSamplerMirror, input.uv) * InstanceRenderParams[input.id].g_vec4_0).xyz;
+    }
+    else if (InstanceRenderParams[input.id].g_int_0 == 3 && InstanceRenderParams[input.id].g_float_0 < 100.f)
+    {
+        float2 newUV;
+        float ratio = (InstanceRenderParams[input.id].g_float_0 / 100.f) * InstanceRenderParams[input.id].g_vec2_0.x + InstanceRenderParams[input.id].g_vec2_0.y;
+        newUV.x = input.uv.x + (ratio - 0.5f) * -1.f;
+        newUV.y = input.uv.y;
+        float3 submap = SubMap0.Sample(LinearSamplerClamp, newUV).xyz;
+        diffuseColor.xyz *= submap.xyz;
+        diffuseColor.a *= submap.x;
+        
+    }
+    else if (InstanceRenderParams[input.id].g_int_0 == 4)
+    {
+        if (input.uv.x >= InstanceRenderParams[input.id].g_float_0 / 100.f)
+            diffuseColor = float4(0.3f, 0.3f, 0.3f, 1.f);
+    }
+    
+    
+    return diffuseColor;
+}
+
 
 float4 PS_UIBAR(UIOutput input) : SV_TARGET
 {
@@ -519,7 +604,7 @@ technique11 T0
         SetGeometryShader(NULL);
 
     }
-    PASS_VP(p1_instancing, VS_Instancing, PS_UI)
+    PASS_VP(p1_instancing, VS_Instancing, PS_UIInstancing)
     PASS_VP_BLEND(P2, VS_UI, PS_UIBAR)
 
     pass p3

@@ -36,8 +36,7 @@ MeshOutput VS(VTXModel input)
     output.viewTangent = mul(input.tangent, (float3x3) BoneTransform[BoneIndex]);
    // output.viewTangent = mul(output.viewTangent, (float3x3) world);
     output.viewTangent = mul(output.viewTangent, (float3x3) V);
-    output.newUV.x = (output.worldPosition.x + 256.f) / 512.f;
-    output.newUV.y = (256.f - output.worldPosition.z) / 512.f;
+
     return output;
 
 

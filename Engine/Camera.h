@@ -64,7 +64,7 @@ public:
     void Set_CullingMask(_uint mask) { m_iCullingMask = mask; }
     _bool IsCulled(_uchar layerIndex) { return (m_iCullingMask & (1 << layerIndex)) != 0; }
 
-    const Frustum& Get_Frustum() { return frustum; }
+    Frustum& Get_Frustum() { return frustum; }
     template<typename T>
     shared_ptr<T> Get_MainScript();
 

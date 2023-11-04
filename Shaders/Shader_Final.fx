@@ -18,7 +18,7 @@ float4 PS_UI(UIOutput input) : SV_TARGET
     float4 diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
     
     if(input.uv.x > 0.5f)
-        diffuseColor.ra = (1.f, 0.5f);
+        diffuseColor.ra = float2(1.f, 0.5f);
     
     
     return diffuseColor;

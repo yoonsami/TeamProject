@@ -7,7 +7,7 @@ enum class KEY_TYPE
 	LEFT,
 	RIGHT,
 
-	W,	A,	S,	D,	Q,	E,	Z,	C,	R,
+	W,	A,	S,	D,	Q,	E,	Z,	C,	R, X ,V,
 	KEY_1,	KEY_2,	KEY_3,	KEY_4,	KEY_5,
 	F1, F2, F3, F4,
 

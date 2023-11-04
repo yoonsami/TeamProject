@@ -8,7 +8,7 @@ int g_arrVK[static_cast<int>(KEY_TYPE::LAST)] =
 	VK_LEFT,
 	VK_RIGHT,
 
-	'W',	'A',	'S',	'D',	'Q',	'E',	'Z',	'C',	'R',
+	'W',	'A',	'S',	'D',	'Q',	'E',	'Z',	'C',	'R', 'X','V',
 	'1',	'2',	'3',	'4',	'5',
 	VK_F1, VK_F2, VK_F3, VK_F4,
 

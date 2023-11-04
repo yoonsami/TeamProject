@@ -44,6 +44,40 @@ void DemoScene::Tick()
 void DemoScene::Late_Tick()
 {
 	__super::Late_Tick();
+
+	// Test
+	{
+		shared_ptr<GameObject> player = Get_GameObject(L"Player");
+		auto animator = player->Get_Animator();
+		/*{
+			auto model = animator->Get_Model();
+
+			if (KEYPUSH(KEY_TYPE::Q))
+			{
+				for (auto& material : model->Get_Materials())
+					material->Get_MaterialDesc().emissive.x += fDT;
+			}
+
+			if (KEYPUSH(KEY_TYPE::E))
+			{
+				for (auto& material : model->Get_Materials())
+					material->Get_MaterialDesc().emissive.x -= fDT;
+			}
+		}*/
+		{
+			if (KEYPUSH(KEY_TYPE::Q))
+			{
+				animator->Get_RenderParamDesc().vec4Params[0].x += fDT;
+			}
+
+			if (KEYPUSH(KEY_TYPE::E))
+			{
+				animator->Get_RenderParamDesc().vec4Params[0].x -= fDT;
+			}
+
+
+		}
+	}
 }
 
 void DemoScene::Final_Tick()
@@ -96,6 +130,7 @@ void DemoScene::Load_Spear_Ace()
 			desc.position = { 3.f, 0.f, 3.f };
 			controller->Create_Controller();
 		}
+		ObjPlayer->Set_DrawShadow(true);
 		Add_GameObject(ObjPlayer);
 
 		//Add. Player's Weapon
@@ -120,7 +155,7 @@ void DemoScene::Load_Spear_Ace()
 
 			ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
 		}
-		
+		ObjWeapon->Set_DrawShadow(true);
 		ObjWeapon->Set_Name(L"Weapon_Spear_Ace");
 		Add_GameObject(ObjWeapon);
 	}
@@ -158,6 +193,7 @@ void DemoScene::Load_DemoMap()
 		obj->Add_Component(make_shared<ModelRenderer>(shader));
 		obj->Get_ModelRenderer()->Set_Model(RESOURCES.Get<Model>(modelTag));
 		obj->Set_Name(modelTag);
+		obj->Set_DrawShadow(true);
 		Add_GameObject(obj);
 	}
 	
@@ -249,14 +285,14 @@ void DemoScene::Load_Camera()
 void DemoScene::Load_Light()
 {
 	shared_ptr<GameObject> lightObj = make_shared<GameObject>();
-	lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 25.f, 0.f, 1.f));
-	lightObj->GetOrAddTransform()->Set_LookDir(_float3(-1.f,-1.f,-1.f));
+	lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(10.f, 100.f, 10.f, 1.f));
+	lightObj->GetOrAddTransform()->LookAt(_float4(0.f,0.f,0.f,1.f));
 	{
 		shared_ptr<Light> lightCom = make_shared<Light>();
 		lightCom->Set_Diffuse(Color(1.f));
 		lightCom->Set_Ambient(Color(0.8f));
 		lightCom->Set_Specular(Color(0.f));
-		lightCom->Set_Emissive(Color(0.f));
+		lightCom->Set_Emissive(Color(1.f));
 		lightCom->Set_LightType(LIGHT_TYPE::DIRECTIONAL_LIGHT);
 		lightObj->Add_Component(lightCom);
 		

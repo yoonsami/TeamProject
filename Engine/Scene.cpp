@@ -475,13 +475,21 @@ void Scene::Render_Deferred()
 
 void Scene::Render_DefferedBlur()
 {
+	float a[25] = {
+	1.0f / 273.0f,  4.0f / 273.0f,  7.0f / 273.0f,  4.0f / 273.0f,  1.0f / 273.0f,
+	4.0f / 273.0f,  16.0f / 273.0f, 26.0f / 273.0f, 16.0f / 273.0f, 4.0f / 273.0f,
+	7.0f / 273.0f,  26.0f / 273.0f, 41.0f / 273.0f, 26.0f / 273.0f, 7.0f / 273.0f,
+	4.0f / 273.0f,  16.0f / 273.0f, 26.0f / 273.0f, 16.0f / 273.0f, 4.0f / 273.0f,
+	1.0f / 273.0f,  4.0f / 273.0f,  7.0f / 273.0f,  4.0f / 273.0f,  1.0f / 273.0f
+	};
 	for (_uchar i = 0; i < 2; ++i)
 	{
 		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLURSMALLER0) + i);
 		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
 		auto material = RESOURCES.Get<Material>(L"BlurSmaller" + to_wstring(i));
 		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
-
+		material->Get_Shader()->GetScalar("GaussianWeight")->SetFloatArray(a, 0, 25);
+		material->Get_Shader()->GetScalar("DownScalePower")->SetFloat(m_fDownScalePower);
 		material->Push_SubMapData();
 
 		mesh->Get_VertexBuffer()->Push_Data();
@@ -498,6 +506,7 @@ void Scene::Render_DefferedBlur()
 		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
 		auto material = RESOURCES.Get<Material>(L"BlurBigger" + to_wstring(i));
 		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+		material->Get_Shader()->GetScalar("UpScalePower")->SetFloat(m_fUpScalePower);
 
 		material->Push_SubMapData();
 
@@ -509,7 +518,24 @@ void Scene::Render_DefferedBlur()
 		material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 	}
 
+	if (KEYPUSH(KEY_TYPE::Z))
+	{
+		m_fUpScalePower += 0.1f * fDT;
+	}
 
+	if (KEYPUSH(KEY_TYPE::X))
+	{
+		m_fUpScalePower -= 0.1f * fDT;
+	}
+	if (KEYPUSH(KEY_TYPE::C))
+	{
+		m_fDownScalePower += 0.1f * fDT;
+	}
+
+	if (KEYPUSH(KEY_TYPE::V))
+	{
+		m_fDownScalePower -= 0.1f * fDT;
+	}
 	/*{
 		GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::BLURSMALLER0)->OMSetRenderTargets();
 		auto material = RESOURCES.Get<Material>(L"BlurSmaller0");

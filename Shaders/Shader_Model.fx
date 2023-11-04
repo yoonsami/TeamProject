@@ -17,8 +17,6 @@ MeshOutput VS_NonAnim(VTXModel input)
     output.viewTangent = mul(output.viewTangent, (float3x3) W);
     output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
     
-    output.newUV.x = (output.worldPosition.x + 256.f)/512.f;
-    output.newUV.y = (256.f - output.worldPosition.z) / 512.f;
 
     return output;
 }
@@ -43,14 +41,13 @@ MeshOutput VS_Anim(VTXModel input)
     output.viewTangent = mul(input.tangent, (float3x3) m);
     output.viewTangent = mul(output.viewTangent, (float3x3) W);
     output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
-    output.newUV.x = (output.worldPosition.x + 256.f) / 512.f;
-    output.newUV.y = (256.f - output.worldPosition.z) / 512.f;
+
     return output;
 }
 
-MeshOutput VS_NonAnimInstancing(VTXModelInstancing input)
+MeshInstancingOutput VS_NonAnimInstancing(VTXModelInstancing input)
 {
-    MeshOutput output;
+    MeshInstancingOutput output;
     
     output.position = mul(float4(input.position, 1.f), BoneTransform[BoneIndex]);
     output.position = mul(output.position, input.world);
@@ -65,14 +62,15 @@ MeshOutput VS_NonAnimInstancing(VTXModelInstancing input)
     output.viewTangent = mul(input.tangent, (float3x3) BoneTransform[BoneIndex]);
     output.viewTangent = mul(output.viewTangent, (float3x3) input.world);
     output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
-    output.newUV.x = (output.worldPosition.x + 256.f) / 512.f;
-    output.newUV.y = (256.f - output.worldPosition.z) / 512.f;
+    
+    output.id = input.instanceID;
+    
     return output;
 }
 
-MeshOutput VS_AnimInstancing(VTXModelInstancing input)
+MeshInstancingOutput VS_AnimInstancing(VTXModelInstancing input)
 {
-    MeshOutput output;
+    MeshInstancingOutput output;
 
     matrix m = GetAnimationMatrix_Instance(input);
     
@@ -89,8 +87,9 @@ MeshOutput VS_AnimInstancing(VTXModelInstancing input)
     output.viewTangent = mul(input.tangent, (float3x3) m);
     output.viewTangent = mul(output.viewTangent, (float3x3) input.world);
     output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
-    output.newUV.x = (output.worldPosition.x + 256.f) / 512.f;
-    output.newUV.y = (256.f - output.worldPosition.z) / 512.f;
+    
+    output.id = input.instanceID;
+    
     return output;
 }
 
@@ -119,9 +118,6 @@ MeshOutput VS_NonAnimOutline(VTXModel input)
     output.position = mul(output.position, P);
     
     output.uv = input.uv;
-    
-    output.newUV.x = (output.worldPosition.x + 256.f) / 512.f;
-    output.newUV.y = (256.f - output.worldPosition.z) / 512.f;
     
    // output.viewPosition = output.viewPosition + output.viewNormal * g_LineThickness;
 
@@ -152,17 +148,15 @@ MeshOutput VS_AnimOutline(VTXModel input)
     output.position = mul(output.position, P);
 
     output.uv = input.uv;
-    output.newUV.x = (output.worldPosition.x + 256.f) / 512.f;
-    output.newUV.y = (256.f - output.worldPosition.z) / 512.f;
     
    // output.viewPosition = output.viewPosition + output.viewNormal * g_LineThickness;
     
     return output;
 }
 
-MeshOutput VS_NonAnimInstancingOutline(VTXModelInstancing input)
+MeshInstancingOutput VS_NonAnimInstancingOutline(VTXModelInstancing input)
 {
-    MeshOutput output;
+    MeshInstancingOutput output;
     
     output.position = mul(float4(input.position, 1.f), BoneTransform[BoneIndex]);
     output.position = mul(output.position, input.world);
@@ -182,16 +176,14 @@ MeshOutput VS_NonAnimInstancingOutline(VTXModelInstancing input)
     output.position = mul(output.position, P);
 
     output.uv = input.uv;
-    output.newUV.x = (output.worldPosition.x + 256.f) / 512.f;
-    output.newUV.y = (256.f - output.worldPosition.z) / 512.f;
-    
+    output.id = input.instanceID;
   //  output.viewPosition = output.viewPosition + output.viewNormal * g_LineThickness;
     return output;
 }
 
-MeshOutput VS_AnimInstancingOutline(VTXModelInstancing input)
+MeshInstancingOutput VS_AnimInstancingOutline(VTXModelInstancing input)
 {
-    MeshOutput output;
+    MeshInstancingOutput output;
 
     matrix m = GetAnimationMatrix_Instance(input);
     
@@ -213,9 +205,9 @@ MeshOutput VS_AnimInstancingOutline(VTXModelInstancing input)
     output.position += float4(normalize(output.viewNormal) * g_LineThickness * output.viewPosition.z, 0.f);
     output.position = mul(output.position, P);
     output.uv = input.uv;
-    output.newUV.x = (output.worldPosition.x + 256.f) / 512.f;
-    output.newUV.y = (256.f - output.worldPosition.z) / 512.f;
    // output.viewPosition = output.viewPosition + output.viewNormal * g_LineThickness;
+    output.id = input.instanceID;
+    
     return output;
 }
 
@@ -240,29 +232,12 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
     
     if (bHasNormalMap)
         ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
-    
-    
-    
-    
+
     if (bHasDiffuseMap)
         diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
     else
         diffuseColor = Material.diffuse;
-    
 
-    
-    //if (g_bHasFileterMap)
-    //{
-    //    if (g_bHasMaskMap)
-    //    {
-    //        float4 maskColor = MaskMap.Sample(LinearSampler, input.newUV);
-            
-    //        float4 filterColor = FilterMap.Sample(LinearSampler, input.uv);
-            
-    //        diffuseColor = diffuseColor * maskColor + filterColor * (1.f - maskColor);
-    //    }
-    //}
-    
     if (bHasSpecularMap)
         specularColor = SpecularMap.Sample(LinearSampler, input.uv);
     else
@@ -282,7 +257,54 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
     output.diffuseColor = diffuseColor;
     output.specularColor = specularColor;
     output.emissiveColor = emissiveColor;
-    output.blurColor = (float4) 0.f;
+    return output;
+}
+
+PS_OUT_Deferred PS_Deferred_Instancing(MeshInstancingOutput input)
+{
+    PS_OUT_Deferred output = (PS_OUT_Deferred) 0.f;
+    float4 ambientColor;
+    float4 diffuseColor;
+    float4 specularColor;
+    float4 emissiveColor;
+    
+    float2 distortedUV = input.uv;
+    
+    if (bHasDissolveMap != 0)
+    {
+        float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
+        if (dissolve < InstanceRenderParams[input.id].g_float_0)
+            discard;
+    }
+    
+    
+    if (bHasNormalMap)
+        ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
+
+    if (bHasDiffuseMap)
+        diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
+    else
+        diffuseColor = Material.diffuse;
+
+    if (bHasSpecularMap)
+        specularColor = SpecularMap.Sample(LinearSampler, input.uv);
+    else
+        specularColor = Material.specular;
+    
+    if (bHasEmissiveMap)
+        emissiveColor = EmissiveMap.Sample(LinearSampler, input.uv);
+    else
+        emissiveColor = Material.emissive;
+
+    ambientColor = diffuseColor;
+    diffuseColor = diffuseColor;
+    
+    output.position = float4(input.viewPosition.xyz, 0.f);
+    output.normal = float4(input.viewNormal.xyz, 0.f);
+    output.ambientColor = ambientColor;
+    output.diffuseColor = diffuseColor;
+    output.specularColor = specularColor;
+    output.emissiveColor = emissiveColor;
     return output;
 }
 
@@ -292,6 +314,7 @@ struct OutlineOutput
     float4 diffuseColor : SV_Target3;
     float4 specularColor : SV_Target4;
     float4 emissiveColor : SV_Target5;
+    float4 blurColor : SV_Target6;
 };
 
 OutlineOutput PS_Deferred_Outline(MeshOutput input)
@@ -307,7 +330,25 @@ OutlineOutput PS_Deferred_Outline(MeshOutput input)
     output.diffuseColor = g_LineColor;
     output.specularColor = g_LineColor;
     output.emissiveColor = g_LineColor;
+    output.blurColor = g_vec4_0;
     
+    return output;
+}
+
+OutlineOutput PS_Deferred_Outline_Instancing(MeshInstancingOutput input)
+{
+    OutlineOutput output = (OutlineOutput) 0.f;
+    if (bHasDissolveMap != 0)
+    {
+        float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
+        if (dissolve < InstanceRenderParams[input.id].g_float_0)
+            discard;
+    }
+    output.ambientColor = g_LineColor;
+    output.diffuseColor = g_LineColor;
+    output.specularColor = g_LineColor;
+    output.emissiveColor = g_LineColor;
+    output.blurColor = InstanceRenderParams[input.id].g_vec4_0;
     return output;
 }
 
@@ -317,17 +358,11 @@ float4 PS_FRAME(VertexOutput input) : SV_TARGET
     return color;
 }
 
-struct VS_OUT
-{
-    float4 pos : SV_POSITION;
-    float4 clipPos : POSITION1;
-    float4 worldPos : POSITION2;
-    float2 uv : TEXCOORD;
-};
 
-VS_OUT VS_Shadow_NonAnim(VTXModel input)
+
+ShadowOutput VS_Shadow_NonAnim(VTXModel input)
 {
-    VS_OUT output = (VS_OUT) 0.f;
+    ShadowOutput output = (ShadowOutput) 0.f;
     
     output.pos = mul(float4(input.position, 1.f), BoneTransform[BoneIndex]);
     output.pos = mul(output.pos, W);
@@ -338,9 +373,9 @@ VS_OUT VS_Shadow_NonAnim(VTXModel input)
     return output;
 }
 
-VS_OUT VS_Shadow_NonAnim_Instancing(VTXModelInstancing input)
+ShadowInstanceOutput VS_Shadow_NonAnim_Instancing(VTXModelInstancing input)
 {
-    VS_OUT output = (VS_OUT) 0.f;
+    ShadowInstanceOutput output = (ShadowInstanceOutput) 0.f;
     
     output.pos = mul(float4(input.position, 1.f), BoneTransform[BoneIndex]);
     output.pos = mul(output.pos, input.world);
@@ -348,12 +383,13 @@ VS_OUT VS_Shadow_NonAnim_Instancing(VTXModelInstancing input)
     output.pos = mul(output.pos, VP);
     output.clipPos = output.pos;
     output.uv = input.uv;
+    output.id = input.instanceID;
     return output;
 }
 
-VS_OUT VS_Shadow_Anim(VTXModel input)
+ShadowOutput VS_Shadow_Anim(VTXModel input)
 {
-    VS_OUT output = (VS_OUT) 0.f;
+    ShadowOutput output = (ShadowOutput) 0.f;
     
     matrix m = GetAnimationMatrix(input);
     
@@ -367,9 +403,9 @@ VS_OUT VS_Shadow_Anim(VTXModel input)
     return output;
 }
 
-VS_OUT VS_Shadow_Anim_Instancing(VTXModelInstancing input)
+ShadowInstanceOutput VS_Shadow_Anim_Instancing(VTXModelInstancing input)
 {
-    VS_OUT output = (VS_OUT) 0.f;
+    ShadowInstanceOutput output = (ShadowInstanceOutput) 0.f;
     
     matrix m = GetAnimationMatrix_Instance(input);
     
@@ -380,15 +416,27 @@ VS_OUT VS_Shadow_Anim_Instancing(VTXModelInstancing input)
     output.pos = mul(output.pos, VP);
     output.clipPos = output.pos;
     output.uv = input.uv;
+    output.id = input.instanceID;
     return output;
 }
 
-float4 PS_Shadow(VS_OUT input) : SV_Target
+float4 PS_Shadow(ShadowOutput input) : SV_Target
 {
     if (bHasDissolveMap != 0)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
         if (dissolve < g_float_0)
+            discard;
+    }
+    return float4(input.clipPos.z / input.clipPos.w, 0.f, 0.f, 0.f);
+}
+
+float4 PS_ShadowInstancing(ShadowInstanceOutput input) : SV_Target
+{
+    if (bHasDissolveMap != 0)
+    {
+        float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
+        if (dissolve < InstanceRenderParams[input.id].g_float_0)
             discard;
     }
     return float4(input.clipPos.z / input.clipPos.w, 0.f, 0.f, 0.f);
@@ -412,7 +460,7 @@ technique11 T0
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetPixelShader(CompileShader(ps_5_0, PS_Deferred()));
+        SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Instancing()));
     }
     pass Anim_NonInstancing
     {
@@ -430,7 +478,7 @@ technique11 T0
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetPixelShader(CompileShader(ps_5_0, PS_Deferred()));
+        SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Instancing()));
     }
     pass NonAnim_NonInstancing_CullNone
     {
@@ -448,7 +496,7 @@ technique11 T0
         SetRasterizerState(RS_CullNone);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetPixelShader(CompileShader(ps_5_0, PS_Deferred()));
+        SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Instancing()));
     }
     pass NonAnimShadow
     {
@@ -466,7 +514,7 @@ technique11 T0
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_LESS, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetPixelShader(CompileShader(ps_5_0, PS_Shadow()));
+        SetPixelShader(CompileShader(ps_5_0, PS_ShadowInstancing()));
     }
     pass AnimShadow
     {
@@ -484,7 +532,7 @@ technique11 T0
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_LESS, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetPixelShader(CompileShader(ps_5_0, PS_Shadow()));
+        SetPixelShader(CompileShader(ps_5_0, PS_ShadowInstancing()));
     }
 
     PASS_RS_VP(P4_WIREFRAME, FillModeWireFrame, VS_NonAnim, PS_FRAME)
@@ -509,7 +557,7 @@ technique11 t1
         SetRasterizerState(RS_CW);
         SetDepthStencilState(DSS_LESS, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Outline()));
+        SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Outline_Instancing()));
     }
     pass Anim_NonInstancing
     {
@@ -527,7 +575,7 @@ technique11 t1
         SetRasterizerState(RS_CW);
         SetDepthStencilState(DSS_LESS, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Outline()));
+        SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Outline_Instancing()));
     }
 };
 

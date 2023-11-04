@@ -82,5 +82,8 @@ protected:
 	_bool m_bSceneFinished = false;
 
 	_uint m_iLevelIndex = 0;
+
+	_float m_fDownScalePower = 1.f;
+	_float m_fUpScalePower = 1.f;
 };
 

@@ -75,7 +75,13 @@ struct UIOutput
 {
     float4 position : SV_POSITION;
     float2 uv : TEXCOORD;
+};
 
+struct UIInstancingOutput
+{
+    float4 position : SV_POSITION;
+    float2 uv : TEXCOORD;
+    uint id : ID;
 };
 
 struct VertexOutput
@@ -96,7 +102,18 @@ struct MeshOutput
     float2 uv : TEXCOORD;
     float3 viewNormal : NORMAL;
     float3 viewTangent : TANGENT;
-    float2 newUV : TEXCOORD1;
+};
+
+
+struct MeshInstancingOutput
+{
+    float4 position : SV_POSITION;
+    float3 worldPosition : POSITION1;
+    float3 viewPosition : POSITION2;
+    float2 uv : TEXCOORD;
+    float3 viewNormal : NORMAL;
+    float3 viewTangent : TANGENT;
+    uint id : SV_InstanceID;
 };
 
 struct PS_OUT
@@ -114,7 +131,23 @@ struct PS_OUT_Deferred
     float4 diffuseColor : SV_Target3;
     float4 specularColor : SV_Target4;
     float4 emissiveColor : SV_Target5;
-    float4 blurColor : SV_Target6;
+};
+
+struct ShadowOutput
+{
+    float4 pos : SV_POSITION;
+    float4 clipPos : POSITION1;
+    float4 worldPos : POSITION2;
+    float2 uv : TEXCOORD;
+};
+
+struct ShadowInstanceOutput
+{
+    float4 pos : SV_POSITION;
+    float4 clipPos : POSITION1;
+    float4 worldPos : POSITION2;
+    float2 uv : TEXCOORD;
+    uint id : SV_InstanceID;
 };
 
 //////////////////
@@ -669,26 +702,33 @@ float4x4 extract_rotation_matrix(float4x4 m)
 #define QUATERNION_IDENTITY float4(0, 0, 0, 1)
 float4 q_slerp(in float4 a, in float4 b, float t)
 {
-    float4 Identity = QUATERNION_IDENTITY;
+    float4 src = (float4)0.f;
+    float4 dest = (float4) 0.f;
+    
+    
+    src = a;
+    dest = b;
+    float4 Identity = 0;
+    Identity = QUATERNION_IDENTITY;
     // if either input is zero, return the other.
-    if (length(a) == 0.0)
+    if (length(src) == 0.0)
     {
-        if (length(b) == 0.0)
+        if (length(dest) == 0.0)
         {
             return Identity;
         }
-        return b;
+        return dest;
     }
-    else if (length(b) == 0.0)
+    else if (length(dest) == 0.0)
     {
-        return a;
+        return src;
     }
 
-    float cosHalfAngle = a.w * b.w + dot(a.xyz, b.xyz);
+    float cosHalfAngle = src.w * dest.w + dot(src.xyz, dest.xyz);
 
     if (cosHalfAngle >= 1.0 || cosHalfAngle <= -1.0)
     {
-        return a;
+        return src;
     }
     else if (cosHalfAngle < 0.0)
     {

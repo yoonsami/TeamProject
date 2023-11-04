@@ -1,6 +1,9 @@
 #include "Render.fx"
 #include "Light.fx"
 
+float DownScalePower;
+float UpScalePower;
+
 struct VS_IN
 {
     float3 pos : POSITION;
@@ -19,6 +22,8 @@ static const float Weight[9] =
   0.125, 0.200, 0.125,
   0.075, 0.125, 0.075,
 };
+
+float GaussianWeight[25];
 
 static const float Total = 1.;
 
@@ -43,27 +48,47 @@ float4 PS_DOWN(VS_OUT input) : SV_Target0
     float tu = 1.f / m_TexW;
     float tv = 1.f / m_TexH;
 
-    float3 a = SubMap0.Sample(LinearSampler, input.uv + float2(-2.f * tu, 2.f * tv)).rgb;
-    float3 b = SubMap0.Sample(LinearSampler, input.uv + float2(0.f, 2 * tv)).rgb;
-    float3 c = SubMap0.Sample(LinearSampler, input.uv + float2(2.f * tu, 2.f * tv)).rgb;
+    float2 offset[25] =
+    {
+         float2(-2.0f * tu, 2.0f * tv), float2(-1.0f * tu, 2.0f * tv), float2(0.0f * tu, 2.0f * tv), float2(1.0f * tu, 2.0f * tv), float2(2.0f * tu, 2.0f * tv) ,
+         float2(-2.0f * tu, 1.0f * tv), float2(-1.0f * tu, 1.0f * tv), float2(0.0f * tu, 1.0f * tv), float2(1.0f * tu, 1.0f * tv), float2(2.0f * tu, 1.0f * tv) ,
+         float2(-2.0f * tu, 0.0f * tv), float2(-1.0f * tu, 0.0f * tv), float2(0.0f * tu, 0.0f * tv), float2(1.0f * tu, 0.0f * tv), float2(2.0f * tu, 0.0f * tv) ,
+         float2(-2.0f * tu, -1.0f * tv), float2(-1.0f * tu, -1.0f * tv), float2(0.0f * tu, -1.0f * tv), float2(1.0f * tu, -1.0f * tv), float2(2.0f * tu, -1.0f * tv) ,
+         float2(-2.0f * tu, -2.0f * tv), float2(-1.0f * tu, -2.0f * tv), float2(0.0f * tu, -2.0f * tv), float2(1.0f * tu, -2.0f * tv), float2(2.0f * tu, -2.0f * tv) 
+    };
     
-    float3 d = SubMap0.Sample(LinearSampler, input.uv + float2(-2.f * tu, 0.f)).rgb;
-    float3 e = SubMap0.Sample(LinearSampler, input.uv + float2(0.f, 0.f)).rgb;
-    float3 f = SubMap0.Sample(LinearSampler, input.uv + float2(2.f * tu, 0.f)).rgb;
     
-    float3 g = SubMap0.Sample(LinearSampler, input.uv + float2(-2.f * tu, -2.f * tv)).rgb;
-    float3 h = SubMap0.Sample(LinearSampler, input.uv + float2(0.f, -2.f * tv)).rgb;
-    float3 i = SubMap0.Sample(LinearSampler, input.uv + float2(2.f * tu, -2.f * tv)).rgb;
+    
+    //float3 a = SubMap0.Sample(LinearSampler, input.uv + float2(-2.f * tu, 2.f * tv)).rgb;
+    //float3 b = SubMap0.Sample(LinearSampler, input.uv + float2(0.f, 2 * tv)).rgb;
+    //float3 c = SubMap0.Sample(LinearSampler, input.uv + float2(2.f * tu, 2.f * tv)).rgb;
+    
+    //float3 d = SubMap0.Sample(LinearSampler, input.uv + float2(-2.f * tu, 0.f)).rgb;
+    //float3 e = SubMap0.Sample(LinearSampler, input.uv + float2(0.f, 0.f)).rgb;
+    //float3 f = SubMap0.Sample(LinearSampler, input.uv + float2(2.f * tu, 0.f)).rgb;
+    
+    //float3 g = SubMap0.Sample(LinearSampler, input.uv + float2(-2.f * tu, -2.f * tv)).rgb;
+    //float3 h = SubMap0.Sample(LinearSampler, input.uv + float2(0.f, -2.f * tv)).rgb;
+    //float3 i = SubMap0.Sample(LinearSampler, input.uv + float2(2.f * tu, -2.f * tv)).rgb;
 
-    float3 j = SubMap0.Sample(LinearSampler, input.uv + float2(-tu,+tv)).rgb;
-    float3 k = SubMap0.Sample(LinearSampler, input.uv + float2(+tu,+tv)).rgb;
-    float3 l = SubMap0.Sample(LinearSampler, input.uv + float2(-tu,-tv)).rgb;
-    float3 m = SubMap0.Sample(LinearSampler, input.uv + float2(+tu,-tv)).rgb;
+    //float3 j = SubMap0.Sample(LinearSampler, input.uv + float2(-tu,+tv)).rgb;
+    //float3 k = SubMap0.Sample(LinearSampler, input.uv + float2(+tu,+tv)).rgb;
+    //float3 l = SubMap0.Sample(LinearSampler, input.uv + float2(-tu,-tv)).rgb;
+    //float3 m = SubMap0.Sample(LinearSampler, input.uv + float2(+tu,-tv)).rgb;
+    float3 vDownSample = 0;
+    for (int i = 0; i < 5; ++i)
+    {
+        for (int j = 0; j < 5; ++j)
+        {
+            int index = i * 5 + j;
+            vDownSample += SubMap0.Sample(LinearSampler, input.uv + offset[index]).rgb * GaussianWeight[index];
+        }
+    }
     
-    float3 vDownSample = e * 0.125;
-    vDownSample += (a + c + g + i) * 0.03125;
-    vDownSample += (b + d + f + h) * 0.0625;
-    vDownSample += (j + k + l + m) * 0.125;
+    //float3 vDownSample = e * 0.125;
+    //vDownSample += (a + c + g + i) * 0.03125;
+    //vDownSample += (b + d + f + h) * 0.0625;
+    //vDownSample += (j + k + l + m) * 0.125;
     
     Out = float4(vDownSample, 1.f);
 

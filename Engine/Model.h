@@ -68,7 +68,6 @@ public:
 
 	}
 	vector<vector<_float3>>& Get_RootBonePosition() { return m_RootBonePosition; }
-
 private:
 	void Create_Texture();
 	void Create_BoneData();
