@@ -203,6 +203,7 @@
     <ClInclude Include="ModelRenderer.h" />
     <ClInclude Include="MonoBehaviour.h" />
     <ClInclude Include="OBBBoxCollider.h" />
+    <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Pass.h" />
     <ClInclude Include="pch.h" />
@@ -273,6 +274,7 @@
     <ClCompile Include="ModelRenderer.cpp" />
     <ClCompile Include="MonoBehaviour.cpp" />
     <ClCompile Include="OBBBoxCollider.cpp" />
+    <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Pass.cpp" />
     <ClCompile Include="pch.cpp">

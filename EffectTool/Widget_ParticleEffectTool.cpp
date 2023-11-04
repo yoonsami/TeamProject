@@ -28,6 +28,8 @@ void Widget_ParticleEffectTool::Tick()
 void Widget_ParticleEffectTool::Set_Texture_List()
 {
 	/* ../Resources/Universal/ 폴더 내의 택스처들의 이름을 리스트로 만들어 저장하기 */ \
+	
+	m_vecUniversalTextures.push_back("None");
 
 	wstring assetPath = L"..\\Resources\\Textures\\Universal\\";
 	for (auto& entry : fs::recursive_directory_iterator(assetPath))
@@ -52,16 +54,6 @@ void Widget_ParticleEffectTool::Set_Texture_List()
 		m_pszUniversalTextures[iIndex] = m_vecUniversalTextures[iIndex].c_str();
 		iIndex++;
 	}
-
-	// For. Setting inputs
-	m_iSelected_Texture_Shape = 0;
-	m_iSelected_Texture_Option1 = 0;
-	m_iSelected_Texture_Option2 = 0;
-	m_iSelected_Texture_Option3 = 0;
-	m_wstrSelected_Texture_Shape = TEXT("None");
-	m_wstrSelected_Texture_Option1 = TEXT("None");
-	m_wstrSelected_Texture_Option2 = TEXT("None");
-	m_wstrSelected_Texture_Option3 = TEXT("None");
 }
 
 void Widget_ParticleEffectTool::ImGui_ParticleMaker()
@@ -311,33 +303,33 @@ void Widget_ParticleEffectTool::Create()
 	ParticleObj->Set_Name(Utils::ToWString(m_pszParticleTag));
 	
 	// For. GameObject에 transform component 붙이기 + 세팅하기 
-	ParticleObj->GetOrAddTransform();	// Add Transform component
+	ParticleObj->GetOrAddTransform();
 	ParticleObj->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
 
 	// For. GameObject에 Particle component 붙이기 
 	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Particle2.fx");
 	shared_ptr<ParticleSystem> particleSys =  make_shared<ParticleSystem>(shader);
-	ParticleObj->Add_Component(particleSys);	// Add Particle System Component
+	ParticleObj->Add_Component(particleSys);	
 	ParticleObj->Get_ParticleSystem()->Set_Mesh(RESOURCES.Get<Mesh>(L"Point"));
 		
 	shared_ptr<Material> material = make_shared<Material>();
 	//material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"UniverImg", L"../Resources/Textures/Universal/T_LifeForceOut_Mask_001.png"), TextureMapType::DIFFUSE);
-	material->Get_MaterialDesc().ambient = Color(1.f, 1.f, 1.f, 1.f);
-	material->Get_MaterialDesc().diffuse = Color(1.f, 1.f, 1.f, 1.f);
-	material->Get_MaterialDesc().specular = Color(1.f, 1.f, 1.f, 1.f);
-	material->Get_MaterialDesc().emissive = Color(1.f, 1.f, 1.f, 1.f);
+	//material->Get_MaterialDesc().ambient = Color(1.f, 1.f, 1.f, 1.f);
+	//material->Get_MaterialDesc().diffuse = Color(1.f, 1.f, 1.f, 1.f);
+	//material->Get_MaterialDesc().specular = Color(1.f, 1.f, 1.f, 1.f);
+	//material->Get_MaterialDesc().emissive = Color(1.f, 1.f, 1.f, 1.f);
 	ParticleObj->Get_ParticleSystem()->Set_Material(material);
-	ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_fDuration = 999.f;
-	ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_fCreatingTime = 999.f;
-	ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_fStartScale = 15.f;
-	ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_fEndScale = 15.f;
-	ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_fMinLifeTime = 10.f;
-	ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_fMaxLifeTime = 10.f;
-	ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_iMaxParticle = 30.f;
-	ParticleObj->Get_ParticleSystem()->Get_ComputeParamDesc().SetFloat(0, 1.f);
-	ParticleObj->Get_ParticleSystem()->Get_ComputeParamDesc().SetFloat(1, 1.f);
-	ParticleObj->Get_ParticleSystem()->Get_RenderParamDesc().SetFloat(1, 0.1f);
-	ParticleObj->Get_ParticleSystem()->Get_RenderParamDesc().SetFloat(2, 0.1f);
+	//ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_fDuration = 999.f;
+	//ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_fCreatingTime = 999.f;
+	//ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_fStartScale = 15.f;
+	//ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_fEndScale = 15.f;
+	//ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_fMinLifeTime = 10.f;
+	//ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_fMaxLifeTime = 10.f;
+	//ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_iMaxParticle = 30.f;
+	//ParticleObj->Get_ParticleSystem()->Get_ComputeParamDesc().SetFloat(0, 1.f);
+	//ParticleObj->Get_ParticleSystem()->Get_ComputeParamDesc().SetFloat(1, 1.f);
+	//ParticleObj->Get_ParticleSystem()->Get_RenderParamDesc().SetFloat(1, 0.1f);
+	//ParticleObj->Get_ParticleSystem()->Get_RenderParamDesc().SetFloat(2, 0.1f);
 
 	ParticleObj->Get_ParticleSystem()->Init();
 	// For. 위젯의 Target Object에 바인딩해두기 

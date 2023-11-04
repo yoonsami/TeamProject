@@ -55,6 +55,7 @@ struct TweenFrameDesc
     KeyFrameDesc curr;
     KeyFrameDesc next;
 };
+
 struct RenderParamDesc
 {
     int g_int_0;
@@ -79,7 +80,7 @@ struct RenderParamDesc
     row_major float4x4 g_mat_3;
 };
 
-cbuffer RenderParamBuffer
+cbuffer RenderParamBuffer   // 전역변수라고 생각하면됨. 
 {
     int g_int_0;
     int g_int_1;
@@ -197,8 +198,6 @@ cbuffer SubMapBuffer
     int bHasSubmap14;
     int bHasSubmap15;
 };
-
-
 
 Texture2DArray TransformMap;
 

@@ -190,6 +190,9 @@
     <Filter Include="04.Component\07.FSM">
       <UniqueIdentifier>{d8ad09ab-a535-4404-91b9-e888c1e858eb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04.Component\05.UI &amp; Effect\Renderer\Particle">
+      <UniqueIdentifier>{db946ed8-388f-4310-bc95-7683aa178bf3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -389,6 +392,9 @@
     </ClCompile>
     <ClCompile Include="FSM.cpp">
       <Filter>04.Component\07.FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>04.Component\05.UI &amp; Effect\Renderer\Particle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -604,6 +610,9 @@
     </ClInclude>
     <ClInclude Include="FSM.h">
       <Filter>04.Component\07.FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>04.Component\05.UI &amp; Effect\Renderer\Particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
