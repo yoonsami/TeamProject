@@ -128,6 +128,29 @@ struct ParticleDesc
 	_float2 padding1;
 };
 
+struct CreateParticleDesc
+{
+	int iNewlyAddCnt = 0;
+
+	// LifeTime 
+	int    iLifeTimeOption;
+	_float2 vMinMaxLifeTime;
+	
+	// Diffuse Color
+	_float4   vStartColor;
+	_float4   vEndColor;
+
+	// Start Scale
+	_float2   vMinMaxScale;
+	
+	// Start Rotation 
+	_float2   vMinMaxRotationAngle;
+
+	// Start Position 
+	_float4 vCreateRange;
+	_float4 vCreateOffsets;
+};
+
 struct TextureMapDesc
 {
 	int bHasTextureMap[MAX_TEXTURE_MAP_COUONT];

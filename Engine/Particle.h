@@ -47,9 +47,9 @@ public:
         string  strSelected_Texture_Option2 = { "None" };
 
         // Diffuse Color 
-        Color   vConstantColor;
         Color   vStartColor;
         Color   vEndColor;
+        Color   vDestColor;         
 
         // Alpha gradation
         _float	fGradationByAlpha_Brighter = { false };
@@ -89,13 +89,17 @@ public:
         _bool   bIsLoop;
 
         // Create Particle Position 
-        _float3	fCenterPosition = { 0.f, 0.f, 0.f };
-        _float3	fCreateRange = { 1.f, 1.f, 1.f };
+        _float3	vCenterPosition = { 0.f, 0.f, 0.f };
+        _float3	vCreateRange = { 1.f, 1.f, 1.f };
+        _float4 vCreateOffsets = { 0.f, 0.f, 0.f, 0.f };   // 범위 내 랜덤 그 외의 방법으로 생성 위치를 설정할 경우 사용할 값들. (ex.반지름, 각도 등)
 
         // Scale
-        _float2 vScale = { 1.f, 5.f };
+        _float2 vStartScale = { 1.f, 5.f };     // min, max
+        _int    iScaleOption;                   // constant, curve
+        _float2 vScaleSpeed;                    // (if option is constant) speed, no use / (if option is curve)  base, exponent
 
         // Rotation Speed, Angle 
+        _float2 vStartRotation = { 0.f, 0.f };
         _int    iRotationSpeedOption;   // rand, curve
         _float2 vRotationSpeed;         // (if option is rand) min, max / (if option is curve) base, exponent  
         _int    iRotationAngleOption;   // rand, curve
@@ -113,20 +117,15 @@ public:
     virtual void    Final_Tick() override;  // CS
     void            Render();               // VS, PS
 
-    /* Setter */
-    
-
-    /* Getter */
-    auto&           Get_ComputeParamDesc() { return m_ComputeParams; }
-    auto&           Get_RenderParamDesc() { return m_RenderParams; }
-
 private:
     void            Init_ComputeParams();
     void            Init_RenderParams();
+    void            Init_CreateParticleParams();
 
     void            Bind_BasicData_ToShader();
     void            Bind_ComputeParams_ToShader();
     void            Bind_RenderParams_ToShader();
+    void            Bind_CreateParticleParams_ToShader();
 
 private:
     DESC                    m_tDesc;
@@ -141,9 +140,9 @@ private:
     
     shared_ptr<Material>    m_pMaterial = { nullptr };   // 본 Particle이 사용하는 Textures, Colors를 Tick에서 shader로 바인드함. 
 
-
-    RenderParams            m_ComputeParams{};      // Computer shader에서 사용하는 정보들을 담은 구조체 (Bind_ComputeShaderData_ToShader()에서 쉐이더로 넘기기)
-    RenderParams            m_RenderParams{};       // GS, VS, PS에서 사용하는 정보들을 담은 구조체 (Bind_RenderShaderData_ToShader()에서 쉐이더로 넘기기)
+    RenderParams            m_ComputeParams{};           // Computer shader에서 사용하는 정보들을 담은 구조체 (Bind_ComputeShaderData_ToShader()에서 쉐이더로 넘기기)
+    RenderParams            m_RenderParams{};            // GS, VS, PS에서 사용하는 정보들을 담은 구조체 (Bind_RenderShaderData_ToShader()에서 쉐이더로 넘기기)
+    CreateParticleDesc      m_CreateParticleParams;     
 
     shared_ptr<StructuredBuffer> m_pParticleInfo_UAVBuffer = nullptr;   // 쉐이더와 데이터를 주고받는 UAV (입자 하나하나에 대한 정보)
     shared_ptr<StructuredBuffer> m_pComputeShared_UAVBuffer = nullptr;  // 쉐이더와 데이터를 주고받는 UAV

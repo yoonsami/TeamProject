@@ -103,6 +103,7 @@ cbuffer RenderParamBuffer   // 전역변수라고 생각하면됨.
     row_major float4x4 g_mat_2;
     row_major float4x4 g_mat_3;
 };
+
 cbuffer KeyFrameBuffer
 {
     KeyFrameDesc keyframes;
@@ -157,6 +158,23 @@ cbuffer ParticleBuffer
     
     float2 MinMaxSpeed;
     float2 padding1;
+};
+
+cbuffer CreateParticleBuffer
+{
+    int    g_NewlyAddCnt;
+    
+    int    g_lifeTimeOption;
+    float2 g_MinMaxLifeTime;
+    
+    float4 g_startColor;
+    float4 g_endColor;
+    
+    float2 g_MinMaxScale;
+    float2 g_MinMaxRotationAngle;
+    
+    float4 g_createRange;
+    float4 g_createOffsets;
 };
 
 cbuffer TextureMapBuffer

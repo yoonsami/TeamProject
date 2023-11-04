@@ -86,6 +86,7 @@ public:
 	void Push_AnimAddonData(const AnimAddonDesc& desc);
 	void Push_EffectData(const EffectDesc& desc);
 	void Push_ParticleData(const ParticleDesc& desc);
+	void Push_CreateParticleData(const CreateParticleDesc& desc);
 	void Push_TextureMapData(const TextureMapDesc& boolArray);
 	void Push_SubmapData(const SubMapDesc& boolArray);
 	void Push_RenderParamData(const RenderParams& params);
@@ -138,6 +139,10 @@ private:
 	ParticleDesc m_ParticleDesc;
 	shared_ptr<ConstantBuffer> m_pParticleBuffer;
 	ComPtr<ID3DX11EffectConstantBuffer> m_pParticleEffectBuffer;
+
+	CreateParticleDesc m_CreateParticleDesc;
+	shared_ptr<ConstantBuffer> m_pCreateParticleBuffer;
+	ComPtr<ID3DX11EffectConstantBuffer> m_pCreateParticleEffectBuffer;
 
 	shared_ptr<ConstantBuffer> m_pTextureMapBuffer;
 	ComPtr<ID3DX11EffectConstantBuffer> m_pTextureMapEffectBuffer;

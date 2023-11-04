@@ -1,8 +1,7 @@
 #include "Render.fx"
 #include "Light.fx"
 
-float2 StartEndScale;
-bool isModel;
+bool    isModel;
 
 struct ParticleInfo_UAV  // 주의: 16byte씩 맞추기
 {
@@ -22,7 +21,7 @@ struct ParticleInfo_UAV  // 주의: 16byte씩 맞추기
     float3  vRotationAngle; // 입자의 회전각도  
 
     /* 자유롭게 사용한 데이터 공간 */
-    float vOffsets; // 16 byte맞추기 위해 넣음. 쓸일있으면 알아서 맞춰서 쓰면됨. 
+    float   vOffsets; // 16 byte맞추기 위해 넣음. 쓸일있으면 알아서 맞춰서 쓰면됨. 
 };
 
 struct ComputeShared_UAV
@@ -37,148 +36,6 @@ RWStructuredBuffer<ComputeShared_UAV> g_ComputeShared_UAVBuffer;
 /* [Compute Shader]------------------------------ */
 
 [numthreads(1024, 1, 1)]
-void CS_Main(int3 threadIndex : SV_DispatchThreadID)
-{
-    if(threadIndex.x>= maxCount)
-        return;
-        
-    float deltaTime = DeltaAccTime.x;
-    float accTime = DeltaAccTime.y;
-    float minLifeTime = MinMaxLifeTime.x;
-    float maxLifeTime = MinMaxLifeTime.y;
-    float minSpeed = MinMaxSpeed.x;
-    float maxSpeed = MinMaxSpeed.y;
-    
-    float3 additionalVel = g_vec4_0.xyz;
-    
-    g_Shared[0].addCount = addCount;
-    GroupMemoryBarrierWithGroupSync();
-    
-    if(g_Particle[threadIndex.x].alive ==0)
-    {
-        while (true)
-        {
-            int remaining = g_Shared[0].addCount;
-            if(remaining <= 0)
-                break;
-            
-            int expected = remaining;
-            int desired = remaining - 1;
-            int originalValue;
-            InterlockedCompareExchange(g_Shared[0].addCount, expected, desired, originalValue);
-
-            if (originalValue == expected)
-            {
-                g_Particle[threadIndex.x].alive = 1;
-                break;
-            }
-        }
-        if (g_Particle[threadIndex.x].alive == 1)
-        {
-            float x = ((float) threadIndex.x / (float) maxCount) + accTime;
-
-            float r1 = Rand(float2(x, accTime));
-            float r2 = Rand(float2(x * accTime, accTime));
-            float r3 = Rand(float2(x * accTime * accTime, accTime * accTime));
-
-            // [0.5~1] -> [0~1]
-            float3 noise =
-            {
-                2 * r1 - 1,
-                2 * r2 - 1,
-                2 * r3 - 1
-            };
-
-            // [0~1] -> [-1~1]
-            float3 dir = (noise - 0.5f) * 2.f;
-
-            float3 centerPos = (float3) 0.f;
-            
-            if(g_int_3 == 1)
-                centerPos = float3(W._41_42_43);
-            
-            g_Particle[threadIndex.x].worldDir = normalize(dir) * g_float_1;
-            g_Particle[threadIndex.x].worldPos = centerPos + (noise.xyz - 0.5f) * g_float_0;
-            g_Particle[threadIndex.x].lifeTime = ((maxLifeTime - minLifeTime) * noise.x) + minLifeTime;
-            g_Particle[threadIndex.x].curTime = 0.f;
-            g_Particle[threadIndex.x].randTheta = float4(dir.x,dir.y,dir.z,dir.x * dir.y);
-            if (g_int_2 == 1)
-            {
-                g_Particle[threadIndex.x].size.x = noise.x * max(StartEndScale.x, StartEndScale.y);
-                if (g_Particle[threadIndex.x].size.x < min(StartEndScale.x, StartEndScale.y))
-                {
-                    g_Particle[threadIndex.x].size.x = min(StartEndScale.x, StartEndScale.y);
-
-                }
-                g_Particle[threadIndex.x].size.y = noise.y * max(StartEndScale.x, StartEndScale.y);
-                if (g_Particle[threadIndex.x].size.y < min(StartEndScale.x, StartEndScale.y))
-                {
-                    g_Particle[threadIndex.x].size.y = min(StartEndScale.x, StartEndScale.y);
-
-                }
-
-            }
-            else
-                g_Particle[threadIndex.x].size.x = -1.f;
-            
-            if(isModel)
-            {
-                float3 randVec =
-                {
-                    2 * Rand(float2(x * accTime * threadIndex.x, accTime * accTime)) - 1,
-                2 * Rand(float2(x * threadIndex.x, accTime * accTime * accTime)) - 1,
-                2 * Rand(float2(x * threadIndex.x * accTime * accTime, accTime * accTime * accTime)) - 1
-                };
-            
-                float c = -(dir.x * randVec.x + dir.y * randVec.y) / dir.z;
-                float3 rotateAxis = { randVec.x, randVec.y, c };
-                
-                //right
-                g_Particle[threadIndex.x].randTheta = float4(rotateAxis, 0.f);
-                g_Particle[threadIndex.x].size.x = noise.x * max(StartEndScale.x, StartEndScale.y);
-                if (g_Particle[threadIndex.x].size.x < min(StartEndScale.x, StartEndScale.y))
-                {
-                    g_Particle[threadIndex.x].size.x = min(StartEndScale.x, StartEndScale.y);
-
-                }
-            }
-            
-            g_Particle[threadIndex.x].nowMovingVel = 0;
-
-        }
-    }
-    else
-    {
-        g_Particle[threadIndex.x].curTime += deltaTime;
-        if (g_Particle[threadIndex.x].lifeTime < g_Particle[threadIndex.x].curTime)
-        {
-            g_Particle[threadIndex.x].alive = 0;
-            return;
-        }
-        
-        float ratio = g_Particle[threadIndex.x].curTime / g_Particle[threadIndex.x].lifeTime;
-        float speed = (maxSpeed - minSpeed) * ratio + minSpeed;
-        
-        if ((g_int_0 != 0 || g_int_1 != 0) && !isModel)
-        {
-            g_Particle[threadIndex.x].worldDir =
-            float3(cos(g_Particle[threadIndex.x].randTheta.x * g_Particle[threadIndex.x].curTime * g_float_2) * g_int_0 * sign(g_Particle[threadIndex.x].randTheta.y),
-            0,
-            sin(g_Particle[threadIndex.x].randTheta.x * g_Particle[threadIndex.x].curTime * g_float_2) * g_int_1 * sign(g_Particle[threadIndex.x].randTheta.z)) * g_float_1;
-            
-        }
-       
-
-            g_Particle[threadIndex.x].worldDir += additionalVel * deltaTime;
-            g_Particle[threadIndex.x].worldPos += g_Particle[threadIndex.x].worldDir * speed * deltaTime;
-
-        
-        g_Particle[threadIndex.x].nowMovingVel = float4(g_Particle[threadIndex.x].worldDir * speed + additionalVel, 0.f);
-
-    }
-}
-
-[numthreads(1024, 1, 1)]
 void CS_Movement_Non(int3 threadIndex : SV_DispatchThreadID)
 {
     /* Movement : 없음. */
@@ -186,11 +43,58 @@ void CS_Movement_Non(int3 threadIndex : SV_DispatchThreadID)
     if (threadIndex.x >= maxCount)
         return;
     
+    g_ComputeShared_UAVBuffer[0].addCount = g_NewlyAddCnt;
+    GroupMemoryBarrierWithGroupSync();
     
+    if (g_ParticleInfo_UAVBuffer[threadIndex.x].iAlive == 0)
+    {
+        while (true)
+        {
+            int remaining = g_ComputeShared_UAVBuffer[0].addCount;
+            if (remaining <= 0)
+                break;
+            
+            int expected = remaining;
+            int desired = remaining - 1;
+            int originalValue;
+            InterlockedCompareExchange(g_ComputeShared_UAVBuffer[0].addCount, expected, desired, originalValue);
+
+            if (originalValue == expected)
+            {
+                g_ParticleInfo_UAVBuffer[threadIndex.x].iAlive = 1;
+                break;
+            }
+        }
+        
+        // For. 새로 생성이 되었다면 기본 값 채워주기 
+        if (g_ParticleInfo_UAVBuffer[threadIndex.x].iAlive == 1)
+        {
+            // Diffuse Color
+            
+            // Dissolve Speed
+            
+            // Create Position
+            
+            // LifeTime
+            
+            // Speed
+            
+            // Rotation Speed
+            
+            // Rotation Angle
+            
+            // Size 
+        }
+    }
+    
+    // For. Update particle UAV data which previouslly alived
+    else
+    {
+        
+    }
 }
 
 /* [Vertex Shader]------------------------------ */
-
 struct VS_OUTPUT
 {
     float4 viewPos :POSITION;
