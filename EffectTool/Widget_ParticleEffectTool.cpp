@@ -71,6 +71,9 @@ void Widget_ParticleEffectTool::ImGui_ParticleMaker()
 	/* For. Color */
 	Option_Color();
 
+	/* For. Transform */
+	Option_Transform();
+
 	/* For. LifeTime */
 	Option_LifeTime();
 
@@ -99,10 +102,25 @@ void Widget_ParticleEffectTool::Option_Textures()
 			if (ImGui::Selectable(m_pszUniversalTextures[n], is_selected))
 			{
 				m_iSelected_Texture_Shape = n;
-
-				string strSelected;
-				strSelected = m_pszUniversalTextures[m_iSelected_Texture_Shape];
-				m_wstrSelected_Texture_Shape.assign(strSelected.begin(), strSelected.end());
+				m_strSelected_Texture_Shape = m_pszUniversalTextures[m_iSelected_Texture_Shape];
+			}
+			if (is_selected)
+			{
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
+	
+	if (ImGui::BeginCombo("Dissolve##Texture", m_pszUniversalTextures[m_iSelected_Texture_Dissolve], 0))
+	{
+		for (_uint n = 0; n < m_iNumUniversalTextures; n++)
+		{
+			const bool is_selected = (m_iSelected_Texture_Dissolve == n);
+			if (ImGui::Selectable(m_pszUniversalTextures[n], is_selected))
+			{
+				m_iSelected_Texture_Dissolve = n;
+				m_strSelected_Texture_Dissolve = m_pszUniversalTextures[m_iSelected_Texture_Dissolve];
 			}
 			if (is_selected)
 			{
@@ -120,10 +138,7 @@ void Widget_ParticleEffectTool::Option_Textures()
 			if (ImGui::Selectable(m_pszUniversalTextures[n], is_selected))
 			{
 				m_iSelected_Texture_Option1 = n;
-
-				string strSelected;
-				strSelected = m_pszUniversalTextures[m_iSelected_Texture_Option1];
-				m_wstrSelected_Texture_Option1.assign(strSelected.begin(), strSelected.end());
+				m_strSelected_Texture_Option1 = m_pszUniversalTextures[m_iSelected_Texture_Option1];
 			}
 			if (is_selected)
 			{
@@ -133,7 +148,7 @@ void Widget_ParticleEffectTool::Option_Textures()
 		ImGui::EndCombo();
 	}
 
-	if(ImGui::BeginCombo("Option2##Texture", m_pszUniversalTextures[m_iSelected_Texture_Option2], 0))
+	if (ImGui::BeginCombo("Option2##Texture", m_pszUniversalTextures[m_iSelected_Texture_Option2], 0))
 	{
 		for (_uint n = 0; n < m_iNumUniversalTextures; n++)
 		{
@@ -141,31 +156,7 @@ void Widget_ParticleEffectTool::Option_Textures()
 			if (ImGui::Selectable(m_pszUniversalTextures[n], is_selected))
 			{
 				m_iSelected_Texture_Option2 = n;
-
-				string strSelected;
-				strSelected = m_pszUniversalTextures[m_iSelected_Texture_Option2];
-				m_wstrSelected_Texture_Option2.assign(strSelected.begin(), strSelected.end());
-			}
-			if (is_selected)
-			{
-				ImGui::SetItemDefaultFocus();
-			}
-		}
-		ImGui::EndCombo();
-	}
-
-	if (ImGui::BeginCombo("Option3##Texture", m_pszUniversalTextures[m_iSelected_Texture_Option3], 0))
-	{
-		for (_uint n = 0; n < m_iNumUniversalTextures; n++)
-		{
-			const bool is_selected = (m_iSelected_Texture_Option3 == n);
-			if (ImGui::Selectable(m_pszUniversalTextures[n], is_selected))
-			{
-				m_iSelected_Texture_Option3 = n;
-
-				string strSelected;
-				strSelected = m_pszUniversalTextures[m_iSelected_Texture_Option3];
-				m_wstrSelected_Texture_Option3.assign(strSelected.begin(), strSelected.end());
+				m_strSelected_Texture_Option2 = m_pszUniversalTextures[m_iSelected_Texture_Option2];
 			}
 			if (is_selected)
 			{
@@ -199,11 +190,103 @@ void Widget_ParticleEffectTool::Option_Color()
 	switch (m_iSelected_ColorOption)
 	{
 	case 1: // Constant
-		ImGui::ColorEdit4("Selected Color", (float*)&m_vColor, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+		ImGui::ColorEdit4("Selected Color", (float*)&m_vStartColor, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+		m_vEndColor = m_vStartColor;
 		break;
 	case 2: // Gradation
 		ImGui::ColorEdit4("Start Color", (float*)&m_vStartColor, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
 		ImGui::ColorEdit4("End Color", (float*)&m_vEndColor, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+		break;
+	}
+
+	const char* pszItems2[] = { "No Change", "Change" };
+	_int iSelected_ChangingColorOption = 0;
+	if (ImGui::BeginCombo("Changing Options##Color", pszItems2[iSelected_ChangingColorOption], 0))
+	{
+		for (_uint n = 0; n < IM_ARRAYSIZE(pszItems); n++)
+		{
+			const bool is_selected = (iSelected_ChangingColorOption == n);
+			if (ImGui::Selectable(pszItems[n], is_selected))
+				iSelected_ChangingColorOption = n;
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+	ImGuiColorEditFlags ColorEdit_flags = 0 | ImGuiColorEditFlags_AlphaBar;	// RGB, Alpha Bar
+	switch (iSelected_ChangingColorOption)
+	{
+	case 0: // No Change
+		m_vDestColor = m_vStartColor;
+		break;
+	case 1: // Change
+		ImGui::ColorEdit4("Dest Color", (float*)&m_vDestColor, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+		break;
+	}
+
+}
+
+void Widget_ParticleEffectTool::Option_Transform()
+{
+	ImGui::SeparatorText("Create Position");
+	ImGui::InputFloat3("Center Position", m_fCenterPosition);
+	ImGui::InputFloat3("Range", m_fCreateRange);
+
+	ImGui::SeparatorText("Scale");
+	const char* pszItems[] = { "Constant", "Random", "Curve" };
+	if (ImGui::BeginCombo("Options##Scale", pszItems[m_iSelected_ScaleOption], 0))
+	{
+		for (_uint n = 0; n < IM_ARRAYSIZE(pszItems); n++)
+		{
+			const bool is_selected = (m_iSelected_ScaleOption == n);
+			if (ImGui::Selectable(pszItems[n], is_selected))
+				m_iSelected_ScaleOption = n;
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+	switch (m_iSelected_ScaleOption)
+	{
+	case 0: // Constant
+		ImGui::InputFloat("Scale", &m_iScale[0]);
+		m_iScale[1] = m_iScale[0];
+		break;
+	case 1: // Random
+		ImGui::InputFloat2("Min, Max Scale", m_iScale);
+		break;
+	case 2: // Curve
+		ImGui::InputFloat2("Base, Exponent Scale", m_iScale);
+		break;
+	}
+	
+	ImGui::SeparatorText("Rotation");
+	ImGui::InputFloat3("Range", m_fRotationSpeed);
+	
+	const char* pszItems2[] = { "Constant", "Random" };
+	if (ImGui::BeginCombo("Options##RotateAngle", pszItems2[m_iSelected_RotationAngleOption], 0))
+	{
+		for (_uint n = 0; n < IM_ARRAYSIZE(pszItems2); n++)
+		{
+			const bool is_selected = (m_iSelected_RotationAngleOption == n);
+			if (ImGui::Selectable(pszItems2[n], is_selected))
+				m_iSelected_RotationAngleOption = n;
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+	switch (m_iSelected_RotationAngleOption)
+	{
+	case 0: // Constant
+		ImGui::InputFloat3("x,y,z Angle", m_fRotationAngle);
+		break;
+	case 1: // Random
+		ImGui::InputFloat2("Min, Max Angle", m_fRotationAngle);
 		break;
 	}
 }
@@ -212,7 +295,7 @@ void Widget_ParticleEffectTool::Option_LifeTime()
 {
 	ImGui::SeparatorText("LifeTime");
 
-	const char* pszItems[] = { "Constant", "Random", "Curve"};
+	const char* pszItems[] = { "Constant", "Random" };
 	if (ImGui::BeginCombo("Options##LifeTime", pszItems[m_iSelected_LifeTimeOption], 0))
 	{
 		for (_uint n = 0; n < IM_ARRAYSIZE(pszItems); n++)
@@ -230,13 +313,29 @@ void Widget_ParticleEffectTool::Option_LifeTime()
 	{
 	case 0: // Constant
 		ImGui::InputFloat("LifeTime(sec)", &m_iLifeTime[0]);
+		m_iLifeTime[1] = m_iLifeTime[0];
 		break;
 	case 1: // Random
 		ImGui::InputFloat2("Min, Max LifeTime(sec)", m_iLifeTime);
 		break;
-	case 2: // Curve
-		
-		break;
+	}
+}
+
+void Widget_ParticleEffectTool::Option_Movement()
+{
+	const char* pszItems[] = { "Default" };
+	if (ImGui::BeginCombo("Options##Movement", pszItems[m_iSelected_MovementOption], 0))
+	{
+		for (_uint n = 0; n < IM_ARRAYSIZE(pszItems); n++)
+		{
+			const bool is_selected = (m_iSelected_MovementOption == n);
+			if (ImGui::Selectable(pszItems[n], is_selected))
+				m_iSelected_MovementOption = n;
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
 	}
 }
 
@@ -263,12 +362,13 @@ void Widget_ParticleEffectTool::Option_Speed()
 	{
 	case 0: // Constant
 		ImGui::InputFloat("Speed", &m_iSpeed[0]);
+		m_iSpeed[1] = m_iSpeed[0];
 		break;
 	case 1: // Random
 		ImGui::InputFloat2("Min, Max Speed", m_iSpeed);
 		break;
 	case 2: // Curve
-
+		ImGui::InputFloat2("Base, Exponent Speed", m_iSpeed);
 		break;
 	}
 }
@@ -277,9 +377,8 @@ void Widget_ParticleEffectTool::Option_Billbord()
 {
 	ImGui::SeparatorText("Billbord");
 
-	//const char* pszItems[] = { "Off", "All", "Horizontal Only", "Vertical Only" };
-	const char* pszItems[] = { "Default" };
-	if (ImGui::BeginCombo("Options##Speed", pszItems[m_iSelected_BillbordOption], 0))
+	const char* pszItems[] = { "Off", "All", "Horizontal Only", "Vertical Only" };
+	if (ImGui::BeginCombo("Options##Billbord", pszItems[m_iSelected_BillbordOption], 0))
 	{
 		for (_uint n = 0; n < IM_ARRAYSIZE(pszItems); n++)
 		{
@@ -313,23 +412,10 @@ void Widget_ParticleEffectTool::Create()
 	ParticleObj->Get_ParticleSystem()->Set_Mesh(RESOURCES.Get<Mesh>(L"Point"));
 		
 	shared_ptr<Material> material = make_shared<Material>();
-	//material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"UniverImg", L"../Resources/Textures/Universal/T_LifeForceOut_Mask_001.png"), TextureMapType::DIFFUSE);
-	//material->Get_MaterialDesc().ambient = Color(1.f, 1.f, 1.f, 1.f);
-	//material->Get_MaterialDesc().diffuse = Color(1.f, 1.f, 1.f, 1.f);
-	//material->Get_MaterialDesc().specular = Color(1.f, 1.f, 1.f, 1.f);
-	//material->Get_MaterialDesc().emissive = Color(1.f, 1.f, 1.f, 1.f);
+	
 	ParticleObj->Get_ParticleSystem()->Set_Material(material);
-	//ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_fDuration = 999.f;
-	//ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_fCreatingTime = 999.f;
-	//ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_fStartScale = 15.f;
-	//ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_fEndScale = 15.f;
-	//ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_fMinLifeTime = 10.f;
-	//ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_fMaxLifeTime = 10.f;
-	//ParticleObj->Get_ParticleSystem()->Get_ParticleSystemDesc().m_iMaxParticle = 30.f;
-	//ParticleObj->Get_ParticleSystem()->Get_ComputeParamDesc().SetFloat(0, 1.f);
-	//ParticleObj->Get_ParticleSystem()->Get_ComputeParamDesc().SetFloat(1, 1.f);
-	//ParticleObj->Get_ParticleSystem()->Get_RenderParamDesc().SetFloat(1, 0.1f);
-	//ParticleObj->Get_ParticleSystem()->Get_RenderParamDesc().SetFloat(2, 0.1f);
+	
+	// TODO 
 
 	ParticleObj->Get_ParticleSystem()->Init();
 	// For. 위젯의 Target Object에 바인딩해두기 

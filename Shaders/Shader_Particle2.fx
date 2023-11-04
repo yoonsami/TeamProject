@@ -107,20 +107,18 @@ void CS_Movement_Non(int3 threadIndex : SV_DispatchThreadID)
             else if (1 == g_int_2)  // curve
                 g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrSpeed = pow(g_vec2_2.x, g_vec2_2.y);
             
-            // Rotation Speed
-            if (0 == g_int_3)       // constant
+            // Rotation Angle 
+            if (0 == g_vec4_2)       // constant
+                g_ParticleInfo_UAVBuffer[threadIndex.x].vRotationAngle.xyz = g_vec4_2.xyz;
+            if (1 == g_vec4_2)       // random
             {
-                g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrRotationSpeed.x = ((g_vec2_3.y - g_vec2_3.x) * noise.x) + g_vec2_3.x;
-                g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrRotationSpeed.y = ((g_vec2_3.y - g_vec2_3.x) * noise.y) + g_vec2_3.x;
-                g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrRotationSpeed.z = ((g_vec2_3.y - g_vec2_3.x) * noise.z) + g_vec2_3.x;
+                g_ParticleInfo_UAVBuffer[threadIndex.x].vRotationAngle.x = ((g_vec4_2.z - g_vec4_2.y) * noise.x) + g_vec4_2.y;
+                g_ParticleInfo_UAVBuffer[threadIndex.x].vRotationAngle.y = ((g_vec4_2.z - g_vec4_2.y) * noise.y) + g_vec4_2.y;
+                g_ParticleInfo_UAVBuffer[threadIndex.x].vRotationAngle.z = ((g_vec4_2.z - g_vec4_2.y) * noise.z) + g_vec4_2.y;
             }
-            else if (1 == g_int_3)  // curve
-                g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrRotationSpeed.xyz = pow(g_vec2_3.x, g_vec2_3.y);
             
-            // Rotation Angle (if you need option, use g_vec4_2.x )
-            g_ParticleInfo_UAVBuffer[threadIndex.x].vRotationAngle.x = ((g_vec4_2.z - g_vec4_2.y) * noise.x) + g_vec4_2.y;
-            g_ParticleInfo_UAVBuffer[threadIndex.x].vRotationAngle.y = ((g_vec4_2.z - g_vec4_2.y) * noise.y) + g_vec4_2.y;
-            g_ParticleInfo_UAVBuffer[threadIndex.x].vRotationAngle.z = ((g_vec4_2.z - g_vec4_2.y) * noise.z) + g_vec4_2.y;
+            // Rotation Speed
+            g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrRotationSpeed.xyz = g_vec4_3.xyz;
         }
     }
     

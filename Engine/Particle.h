@@ -99,11 +99,9 @@ public:
         _float2 vScaleSpeed;                    // (if option is constant) speed, no use / (if option is curve)  base, exponent
 
         // Rotation Speed, Angle 
-        _float2 vStartRotation = { 0.f, 0.f };
-        _int    iRotationSpeedOption;   // rand, curve
-        _float2 vRotationSpeed;         // (if option is rand) min, max / (if option is curve) base, exponent  
-        _int    iRotationAngleOption;   // rand, curve
-        _float2 vRotationAngle;         // (if option is rand) min, max / (if option is curve) base, exponent  
+        _float3 vRotationSpeed;         // x,y,z  
+        _int    iRotationAngleOption;   // const, rand
+        _float3 vRotationAngle;         // (if option is const) x,y,z/ (if option is rand) min, max  
     
     }DESC;
 

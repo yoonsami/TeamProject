@@ -143,8 +143,8 @@ struct CreateParticleDesc
 	// Start Scale
 	_float2   vMinMaxScale;
 	
-	// Start Rotation 
-	_float2   vMinMaxRotationAngle;
+	// Offset
+	_float2   Offset;	// to make 16byte (no use)
 
 	// Start Position 
 	_float4 vCreateRange;

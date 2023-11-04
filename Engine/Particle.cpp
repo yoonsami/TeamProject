@@ -147,9 +147,6 @@ void Particle::Init_CreateParticleParams()
 
 	// For. Start Scale
 	m_CreateParticleParams.vMinMaxScale = m_tDesc.vStartScale;
-
-	// For. Start Rotation
-	m_CreateParticleParams.vMinMaxRotationAngle = m_tDesc.vStartRotation;
 	
 	// For. Create Position 
 	m_CreateParticleParams.vCreateRange = _float4(m_tDesc.vCreateRange, 0.f);
@@ -179,17 +176,14 @@ void Particle::Init_ComputeParams()
 	m_ComputeParams.SetInt(2, m_tDesc.iSpeedOption);
 	m_ComputeParams.SetVec2(2, m_tDesc.vSpeed);
 
-	// For. Rotation Speed
-	m_ComputeParams.SetInt(3, m_tDesc.iRotationSpeedOption);
-	m_ComputeParams.SetVec2(3, m_tDesc.vRotationSpeed);
-
 	// For. Movement 
 	m_ComputeParams.SetVec4(1, m_tDesc.vMovementOffsets);
 
-	// For. Rotation Angle ( 자리 부족해서 vec4에 넣음 )
-	m_ComputeParams.SetVec4(2, _float4((_float)m_tDesc.iRotationAngleOption, m_tDesc.vRotationAngle.x, m_tDesc.vRotationAngle.y, 0.f));
-		//m_ComputeParams.SetInt(3, m_tDesc.iRotationAngleOption);
-		//m_ComputeParams.SetVec2(3, m_tDesc.vRotationAngle);
+	// For. Rotation Angle 
+	m_ComputeParams.SetVec4(2, _float4(m_tDesc.iRotationAngleOption, m_tDesc.vRotationAngle.x, m_tDesc.vRotationAngle.y, m_tDesc.vRotationAngle.z));
+
+	// For. Rotation Speed
+	m_ComputeParams.SetVec4(3, _float4(m_tDesc.vRotationSpeed, 0.f));
 }
 
 void Particle::Bind_BasicData_ToShader()
