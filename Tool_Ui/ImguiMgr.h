@@ -31,10 +31,11 @@ private:
    void        Change_ParamDesc();        // 선택한 오브젝트 파라메터 값 변경
    void        Add_Picking_Zone();
 
+   void        Decide_FilePath();         // 저장 경로 불러오기
    void        Save_Ui_Desc();            // 
    void        Load_Ui_Desc();            // 
 
-
+   void        Record_Two_Point();
 
 
 
@@ -53,6 +54,9 @@ private:
    wstring           m_strSelectObjName;                    // 선택한 오브젝트 이름
    _uint             m_iObjNameCursor        = { 0 };       // list box 선택 인덱스
 
+   _float3           m_vecPos2 = {};                        // 선택한 오브젝트 조작 위치
+   _float2           m_vecScale2 = {};                      // 선택한 오브젝트 조작 크기
+
    _bool             m_bIsChangeCheck        = { false };   // 값 변경 즉시 적용
 
    _int              m_iPass_0               = { 0 };       // 
@@ -61,5 +65,11 @@ private:
    _int              m_iPickTypeIndex        = { 0 };       // 
    POINT             m_ptPos1                = {};
    POINT             m_ptPos2                = {};
+
+   _bool             m_bIsRecordStart        = { false };
+   _uint             m_iRecordOrder          = { 0 };
+
+   wstring           m_strSaveLoadPath;
+
 };
 

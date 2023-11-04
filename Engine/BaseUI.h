@@ -14,6 +14,13 @@ public:
         MAX
     };
 
+    typedef struct tagBaseUiDesc {
+        _float      fValue;
+        POINT       ptCenter;
+        RECT        rect;
+        PICK_TYPE   eType;
+    }BASEUIDESC;
+
 public:
     BaseUI();
     virtual ~BaseUI();
@@ -26,15 +33,14 @@ public:
     void AddOnClickedEvent(function<void(void)> func);
     void InvokeOnClicked();
 
+    BASEUIDESC& Get_Desc() { return m_tagDesc; }
+
 private:
     _bool PtInCircle(POINT screenPos);
 
 private:
     function<void(void)> _onClicked;
 
-    PICK_TYPE   m_eType         = PICK_TYPE::MAX;
-    RECT        m_rect          = RECT();
-    POINT       m_ptCenter      = {};
-    _float      m_fValue        = { 0.f };
+    BASEUIDESC  m_tagDesc = {};
 };
 

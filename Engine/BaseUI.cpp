@@ -14,9 +14,9 @@ BaseUI::~BaseUI()
 
 _bool BaseUI::Picked(POINT screenPos)
 {
-	if (PICK_TYPE::RECT == m_eType)
-		return ::PtInRect(&m_rect, screenPos);
-	else if (PICK_TYPE::CIRCLE == m_eType)
+	if (PICK_TYPE::RECT == m_tagDesc.eType)
+		return ::PtInRect(&m_tagDesc.rect, screenPos);
+	else if (PICK_TYPE::CIRCLE == m_tagDesc.eType)
 		return PtInCircle(screenPos);
 
 	return false;
@@ -48,10 +48,10 @@ void BaseUI::Create(_float2 screenPos, _float2 size, shared_ptr<Material> materi
 	Owner->Get_MeshRenderer()->Set_Mesh(mesh);
 	Owner->Get_MeshRenderer()->Set_Pass(MeshRenderer::PASS_INFO::Default_UI);
 
-	m_rect.left = LONG(screenPos.x - size.x / 2.f);
-	m_rect.right = LONG(screenPos.x + size.x / 2.f);
-	m_rect.top = LONG(screenPos.y - size.y / 2.f);
-	m_rect.bottom = LONG(screenPos.y + size.y / 2.f);
+	m_tagDesc.rect.left = LONG(screenPos.x - size.x / 2.f);
+	m_tagDesc.rect.right = LONG(screenPos.x + size.x / 2.f);
+	m_tagDesc.rect.top = LONG(screenPos.y - size.y / 2.f);
+	m_tagDesc.rect.bottom = LONG(screenPos.y + size.y / 2.f);
 
 }
 
@@ -60,21 +60,22 @@ void BaseUI::Create(PICK_TYPE eType, POINT ptPos1, POINT ptPos2)
 	// Rect의 경우 두 점을 좌상, 우하로 사용해 저장
 	// Circle의 경우 중점, 반지름을 구하는 다른 점으로 이용해서 센터와 반지름 저장
 
-	m_eType = eType;
+	m_tagDesc.eType = eType;
 
-	if (PICK_TYPE::RECT == m_eType)
+	if (PICK_TYPE::RECT == m_tagDesc.eType)
 	{
-		m_rect.left		= ptPos1.x;
-		m_rect.top		= ptPos1.y;
-		m_rect.right	= ptPos2.x;
-		m_rect.bottom	= ptPos2.y;
+		m_tagDesc.rect.left		= ptPos1.x;
+		m_tagDesc.rect.top		= ptPos1.y;
+		m_tagDesc.rect.right	= ptPos2.x;
+		m_tagDesc.rect.bottom	= ptPos2.y;
 	}
-	else if (PICK_TYPE::CIRCLE == m_eType)
+	else if (PICK_TYPE::CIRCLE == m_tagDesc.eType)
 	{
 		// 연산을 감안해서 루트는 생략
 		// 후 거리 연산에서도 두점사이 계산시 마지막 루트 생략
-		m_fValue = pow(ptPos1.x - ptPos2.x, 2) + pow(ptPos1.y - ptPos2.y, 2);
-		m_ptCenter = ptPos1;
+		m_tagDesc.fValue = powf(static_cast<_float>(ptPos1.x) - static_cast<_float>(ptPos2.x), 2)
+			+ powf(static_cast<_float>(ptPos1.y) - static_cast<_float>(ptPos2.y), 2);
+		m_tagDesc.ptCenter = ptPos1;
 	}
 
 }
@@ -92,7 +93,9 @@ void BaseUI::InvokeOnClicked()
 
 _bool BaseUI::PtInCircle(POINT screenPos)
 {
-	if (m_fValue > pow(m_ptCenter.x - screenPos.x, 2) + pow(m_ptCenter.y - screenPos.y, 2))
+	if (m_tagDesc.fValue > 
+		powf(static_cast<_float>(m_tagDesc.ptCenter.x) - static_cast<_float>(screenPos.x), 2)
+		+ powf(static_cast<_float>(m_tagDesc.ptCenter.y) - static_cast<_float>(screenPos.y), 2))
 		return true;
 
 	return false;

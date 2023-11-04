@@ -18,8 +18,8 @@ ResourceMgr::~ResourceMgr()
 void ResourceMgr::Initialize()
 {
 	CreateDefaultMesh();
-	CreateDefaultShader();
-	//CreateDefaultShader_EffectTool(); // MEMO : Effect Tool에서 사용하는 Shader Create 함수 
+	// CreateDefaultShader();
+	CreateDefaultShader_EffectTool(); // MEMO : Effect Tool에서 사용하는 Shader Create 함수 
 	CreateDefaultMaterial();
 	CreateDefaultFont();
 }

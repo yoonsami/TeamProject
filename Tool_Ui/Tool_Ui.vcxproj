@@ -24,6 +24,7 @@
     <ProjectGuid>{491a54b4-bbc4-4161-99c8-dbadee02b84f}</ProjectGuid>
     <RootNamespace>ToolUi</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>UiTool</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
