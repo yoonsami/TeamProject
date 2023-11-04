@@ -171,7 +171,7 @@ void Graphics::Create_RTGroup()
 		rtVec[0].clearColor = _float4(0.f);
 
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLURSMALLER0)] = make_shared<RenderTargetGroup>();
-		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLURSMALLER0)]->Create(RENDER_TARGET_GROUP_TYPE::BLURSMALLER0, rtVec, dsTexture0);
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLURSMALLER0)]->Create(RENDER_TARGET_GROUP_TYPE::BLURSMALLER0, rtVec, dsTexture);
 	}
 
 	//BLURSMALLER1
@@ -184,7 +184,7 @@ void Graphics::Create_RTGroup()
 		rtVec[0].clearColor = _float4(0.f);
 
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLURSMALLER1)] = make_shared<RenderTargetGroup>();
-		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLURSMALLER1)]->Create(RENDER_TARGET_GROUP_TYPE::BLURSMALLER1, rtVec, dsTexture1);
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLURSMALLER1)]->Create(RENDER_TARGET_GROUP_TYPE::BLURSMALLER1, rtVec, dsTexture);
 	}
 
 	//BLURBIGGER0
@@ -197,7 +197,7 @@ void Graphics::Create_RTGroup()
 		rtVec[0].clearColor = _float4(0.f);
 
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLURBIGGER0)] = make_shared<RenderTargetGroup>();
-		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLURBIGGER0)]->Create(RENDER_TARGET_GROUP_TYPE::BLURBIGGER0, rtVec, dsTexture0);
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLURBIGGER0)]->Create(RENDER_TARGET_GROUP_TYPE::BLURBIGGER0, rtVec, dsTexture);
 	}
 
 	//BLURBIGGER1
@@ -210,7 +210,7 @@ void Graphics::Create_RTGroup()
 		rtVec[0].clearColor = _float4(0.f);
 
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLURBIGGER1)] = make_shared<RenderTargetGroup>();
-		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLURBIGGER1)]->Create(RENDER_TARGET_GROUP_TYPE::BLURBIGGER1, rtVec, dsTexture1);
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLURBIGGER1)]->Create(RENDER_TARGET_GROUP_TYPE::BLURBIGGER1, rtVec, dsTexture);
 	}
 
 	//Light
