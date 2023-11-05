@@ -3,7 +3,6 @@
 
 struct ParticleInfo_UAV // ÁÖÀÇ: Shader_Particle2ÀÇ ParticleInfo_UAV¿Í ´ëÀÀÇØ¾ßÇÔ.
 {
-    /* ¸Å ÇÁ·¹ÀÓ¸¶´Ù º¯ÇÒ ¼ö ÀÖ´Â °ªµé */
     _float   fCurrCurrTime;      
     _float3  vCurrWorldPos;       
     _float   fCurrSpeed;         
@@ -13,13 +12,11 @@ struct ParticleInfo_UAV // ÁÖÀÇ: Shader_Particle2ÀÇ ParticleInfo_UAV¿Í ´ëÀÀÇØ¾ßÇ
     _float2  vCurrSize;          
     _int     iAlive;             
 
-    /* ÀÔÀÚ°¡ Ã³À½ »ý¼ºµÉ ¶§ °íÁ¤µÇ´Â °ªµé */
     _float   fLifeTime;          
     _float4  vDiffuseColor;         
     _float3  vRotationAngle;     
 
-    /* ÀÚÀ¯·Ó°Ô »ç¿ëÇÑ µ¥ÀÌÅÍ °ø°£ */
-    _float   vOffsets;           // 16 byte¸ÂÃß±â À§ÇØ ³ÖÀ½. ¾µÀÏÀÖÀ¸¸é ¾Ë¾Æ¼­ ¸ÂÃç¼­ ¾²¸éµÊ. 
+    _float   vOffsets;           
 };  
 
 struct ComputeShared_UAV // ÁÖÀÇ: Shader_Particle2ÀÇ ComputeShared_UAV¿Í ´ëÀÀÇØ¾ßÇÔ.
@@ -101,9 +98,9 @@ public:
         _float2 vScaleSpeed;                    // (if option is constant) speed, no use / (if option is curve)  base, exponent
 
         // Rotation Speed, Angle 
-        _float3 vRotationSpeed;         // x,y,z  
-        _int    iRotationAngleOption;   // const, rand
-        _float3 vRotationAngle;         // (if option is const) x,y,z/ (if option is rand) min, max  
+        _float3 vRotationSpeed;                 // x,y,z  
+        _int    iRotationAngleOption;           // const, rand
+        _float3 vRotationAngle;                 // (if option is const) x,y,z/ (if option is rand) min, max  
     
     }DESC;
 

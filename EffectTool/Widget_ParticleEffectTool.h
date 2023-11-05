@@ -55,8 +55,8 @@ private:
 	/* For. Diffuse Color */
 	_uint					m_iSelected_ColorOption = { 0 };
 	ImVec4					m_vStartColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f); // For. Gradation start color
-	ImVec4					m_vEndColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);// For. Gradation end color
-	_uint					m_iSelected_ChangingColorOption = { 0 };
+	ImVec4					m_vEndColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);	// For. Gradation end color
+	_int					m_iSelected_ChangingColorOption = { 0 };
 	ImVec4					m_vDestColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 	/* For. Coloring Option */
@@ -76,10 +76,10 @@ private:
 	_float					m_fSpeed[2] = { 1.f, 5.f };
 
 	/* For. Billbord */
-	_uint					m_iSelected_BillbordOption = { 0 };
+	_int					m_iSelected_BillbordOption = { 0 };
 
 	/* For. Movement */
-	_uint					m_iSelected_MovementOption = { 0 };
+	_int					m_iSelected_MovementOption = { 0 };
 	_float					m_vMovementOffsets[4] = {0.f, 0.f, 0.f, 0.f};
 
 	/* For. Implicit Options */
@@ -97,12 +97,12 @@ private:
 
 	/* For. Scale */
 	_float					m_fStartScale[2] = { 1.f, 1.f };	// min, max
-	_uint					m_iSelected_ScaleOption = { 0 };
+	_int					m_iSelected_ScaleOption = { 0 };
 	_float					m_fScaleSpeed[2] = { 1.f, 5.f };
 
 	/* For. Rotation (Billbord option에 따라 선택할 수 있는 옵션이 달라진다.) */
 	_float					m_fRotationSpeed[3] = { 0.f, 0.f, 0.f };
-	_uint					m_iSelected_RotationAngleOption = { 0 };
+	_int					m_iSelected_RotationAngleOption = { 0 };
 	_float					m_fRotationAngle[3] = { 1.f, 1.f, 1.f };
 };
 

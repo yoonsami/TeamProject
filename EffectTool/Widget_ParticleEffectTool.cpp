@@ -207,33 +207,34 @@ void Widget_ParticleEffectTool::Option_Color()
 		break;
 	}
 
-	const char* pszItems2[] = { "No Change", "Change" };
-	if (ImGui::BeginCombo("Changing Options##Color", pszItems2[m_iSelected_ChangingColorOption], 0))
+	if (0 != m_iSelected_ColorOption)
 	{
-		for (_uint n = 0; n < IM_ARRAYSIZE(pszItems2); n++)
+		ImGui::Text("Coloring Options");
+		const char* pszItems2[] = { "No Change", "Change" };
+		if (ImGui::BeginCombo("Changing Options##Color", pszItems2[m_iSelected_ChangingColorOption], 0))
 		{
-			const bool is_selected = (m_iSelected_ChangingColorOption == n);
-			if (ImGui::Selectable(pszItems2[n], is_selected))
-				m_iSelected_ChangingColorOption = n;
+			for (_uint n = 0; n < IM_ARRAYSIZE(pszItems2); n++)
+			{
+				const bool is_selected = (m_iSelected_ChangingColorOption == n);
+				if (ImGui::Selectable(pszItems2[n], is_selected))
+					m_iSelected_ChangingColorOption = n;
 
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
 		}
-		ImGui::EndCombo();
+		switch (m_iSelected_ChangingColorOption)
+		{
+		case 0: // No Change
+			m_vDestColor = m_vStartColor;
+			break;
+		case 1: // Change
+			ImGui::ColorEdit4("Dest Color", (float*)&m_vDestColor, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+			break;
+		}
 	}
-	switch (m_iSelected_ChangingColorOption)
-	{
-	case 0: // No Change
-		m_vDestColor = m_vStartColor;
-		break;
-	case 1: // Change
-		ImGui::ColorEdit4("Dest Color", (float*)&m_vDestColor, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-		break;
-	}
-
-	ImGui::Text("Coloring Options");
 	ImGui::InputFloat("Gradation Brigher", &m_fGradationByAlpha_Brighter);
-	//ImGui::InputFloat("Gradation Darker", &m_fGradationByAlpha_Darker);
 	ImGui::Checkbox("FadeOut by Duration", &m_bIsAlphaFollowDuration);
 }
 
@@ -448,15 +449,15 @@ void Widget_ParticleEffectTool::Create()
 		m_iParticleCnt[1],
 		m_iMaxParticle,
 
-		(_int)m_iSelected_LifeTimeOption,
+		m_iSelected_LifeTimeOption,
 		_float2(m_fLifeTime),
 
-		(_int)m_iSelected_SpeedOption,
+		m_iSelected_SpeedOption,
 		_float2(m_fSpeed),
 
-		(_int)m_iSelected_BillbordOption,
+		m_iSelected_BillbordOption,
 
-		(_int)m_iSelected_MovementOption,
+		m_iSelected_MovementOption,
 		_float4(m_vMovementOffsets),
 
 		m_bIsLoop,
@@ -466,11 +467,11 @@ void Widget_ParticleEffectTool::Create()
 		_float4(m_fCreateOffset),
 
 		_float2(m_fStartScale),
-		(_int)m_iSelected_ScaleOption,
+		m_iSelected_ScaleOption,
 		_float2(m_fScaleSpeed),
 
 		_float3(m_fRotationSpeed),
-		(_int)m_iSelected_RotationAngleOption,
+		m_iSelected_RotationAngleOption,
 		_float3(m_fRotationAngle)
 	};
 	ParticleObj->Get_Particle()->Init(&tParticleDesc);

@@ -245,28 +245,30 @@ float4 PS_Default(GS_OUTPUT input) : SV_Target
     if (0 >= g_Data[input.id].iAlive)
         discard;
     
-    // For. Diffuse Gradation 
     float4 fDiffuseMapColor = DiffuseMap.Sample(LinearSampler, input.uv);
     float4 diffuseColor = float4(0.f, 0.f, 0.f, 1.f);
     
+    // For. Changing Diffuse Color
     if (g_bUseShapeTextureColor)
-    {
         diffuseColor = fDiffuseMapColor;
-    }
     else
     {
         float ratio = g_Data[input.id].fCurrTime / g_Data[input.id].fLifeTime;
         diffuseColor = lerp(g_Data[input.id].vDiffuseColor, g_vec4_0, ratio);
-                
         diffuseColor.a = fDiffuseMapColor.r;
     }
     
-    // For. Alpha Gradation 
+    // For. Brightness
     if (diffuseColor.a > 1.f - g_float_0)
         diffuseColor = lerp(diffuseColor, float4(1.f, 1.f, 1.f, 1.f), diffuseColor.a);
 
-    output = diffuseColor;
+    // For. Alpha Gradation by Duration
+    if(1 == g_int_0)
+        diffuseColor.a = 1.f - (g_float_3 / g_float_2);
     
+    
+    // For. Alpah Test 
+    output = diffuseColor;
     if (output.a < 0.f)
         discard;
     

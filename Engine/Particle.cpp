@@ -170,6 +170,7 @@ void Particle::Init_RenderParams()
 
 	// For. Diffuse Color
 	m_RenderParams.SetVec4(0, m_tDesc.vDestColor);
+	m_RenderParams.SetInt(0, m_tDesc.bIsAlphaFollowDuration);
 
 	// Duration and Current time 
 	m_RenderParams.SetFloat(2, m_tDesc.fDuration);
