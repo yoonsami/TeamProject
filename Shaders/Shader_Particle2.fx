@@ -2,7 +2,9 @@
 #include "Light.fx"
 
 bool    g_isModel;
+bool    g_bUseShapeTextureColor;
 float   g_fTimeDelta;
+
 
 struct ParticleInfo_UAV  // 주의: 16byte씩 맞추기
 {
@@ -244,10 +246,30 @@ float4 PS_Default(GS_OUTPUT input) : SV_Target
         discard;
     
     // For. Diffuse Gradation 
-    float ratio = g_Data[input.id].fCurrTime / g_Data[input.id].fLifeTime;
-    float4 diffuseColor = lerp(g_Data[input.id].vDiffuseColor, g_vec4_0, ratio);
+    float4 fDiffuseMapColor = DiffuseMap.Sample(LinearSampler, input.uv);
+    float4 diffuseColor = float4(0.f, 0.f, 0.f, 1.f);
     
+    if (g_bUseShapeTextureColor)
+    {
+        diffuseColor = fDiffuseMapColor;
+    }
+    else
+    {
+        float ratio = g_Data[input.id].fCurrTime / g_Data[input.id].fLifeTime;
+        diffuseColor = lerp(g_Data[input.id].vDiffuseColor, g_vec4_0, ratio);
+                
+        diffuseColor.a = fDiffuseMapColor.r;
+    }
+    
+    // For. Alpha Gradation 
+    if (diffuseColor.a > 1.f - g_float_0)
+        diffuseColor = lerp(diffuseColor, float4(1.f, 1.f, 1.f, 1.f), diffuseColor.a);
+
     output = diffuseColor;
+    
+    if (output.a < 0.f)
+        discard;
+    
     return output;
 }
 
@@ -260,7 +282,7 @@ technique11 T_Compute // 0
         SetVertexShader(NULL);
         SetGeometryShader(NULL);
         SetPixelShader(NULL);
-        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetComputeShader(CompileShader(cs_5_0, CS_Movement_Non()));
     }
 };

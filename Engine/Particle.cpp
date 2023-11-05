@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Particle.h"
 
+#include "Utils.h"
 #include "Camera.h"
 #include "StructuredBuffer.h"
 
@@ -30,6 +31,12 @@ HRESULT Particle::Init(void* pArg)
 
 	m_eComputePass = (COMPUTE_PASS)m_tDesc.iMovementOption;
 	m_eRenderPass = (RENDERMESH_PASS)m_tDesc.iBillbordOption;
+
+	// For. Texture
+	m_pMaterial = make_shared<Material>();
+	m_pMaterial->Set_Shader(m_pShader);
+	m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(L"ParticleTexture_shape", Utils::ToWString(m_tDesc.strSelected_Texture_Shape)), TextureMapType::DIFFUSE);
+	m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(L"ParticleTexture_dissolve", Utils::ToWString(m_tDesc.strSelected_Texture_Dissolve)), TextureMapType::DISSOLVE);
 
 	// For. Initialize Shader Params
 	Init_ComputeParams();
@@ -74,6 +81,7 @@ void Particle::Final_Tick()
 			// min ~ max 사이의 랜덤한 수를 골라 그만큼 새로 생성한다. 
 			m_CreateParticleParams.iNewlyAddCnt = (rand() % (m_tDesc.iMaxCnt + 1 - m_tDesc.iMinCnt)) + m_tDesc.iMinCnt;
 			m_fTimeAcc_CreatCoolTime = 0.f;
+			m_bIsFirstCreateParticleDone = true;
 		}
 	}
 	else 
@@ -98,7 +106,7 @@ void Particle::Final_Tick()
 	m_pShader->GetUAV("g_ComputeShared_UAVBuffer")->SetUnorderedAccessView(m_pComputeShared_UAVBuffer->Get_UAV().Get());	 
 
 	// For. Dispatch
-	m_pShader->Dispatch(TECHNIQUE_Compute, 0, 1, 1, 1);
+	m_pShader->Dispatch(TECHNIQUE_Compute, m_eComputePass, 1, 1, 1);
 
 	vector<ParticleInfo_UAV> tmp(m_tDesc.iMaxParticleNum);
 	m_pParticleInfo_UAVBuffer->Copy_FromOutput(tmp.data());
@@ -116,9 +124,17 @@ void Particle::Render()
 		if (nullptr == m_pMesh || nullptr == m_pMaterial)
 			return;
 
+		// For. Material Tick ( for Bind Texture to Shader )
+		m_pMaterial->Tick();
+
 		// For. Bind data to shader
 		Bind_BasicData_ToShader();
-		Bind_RenderParams_ToShader();
+		Bind_RenderParams_ToShader(); 
+
+		if (0 == m_tDesc.iColorOption)
+			m_pShader->GetScalar("g_bUseShapeTextureColor")->SetBool(true);
+		else
+			m_pShader->GetScalar("g_bUseShapeTextureColor")->SetBool(false);
 		
 		m_pMesh->Get_VertexBuffer()->Push_Data();
 		m_pMesh->Get_IndexBuffer()->Push_Data();

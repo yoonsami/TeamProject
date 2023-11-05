@@ -45,7 +45,8 @@ public:
         string  strSelected_Texture_Option1 = { "None" };
         string  strSelected_Texture_Option2 = { "None" };
 
-        // Diffuse Color 
+        // Diffuse Color
+        _int    iColorOption = { 0 };
         Color   vStartColor;
         Color   vEndColor;
         Color   vDestColor;         

@@ -233,7 +233,7 @@ void Widget_ParticleEffectTool::Option_Color()
 
 	ImGui::Text("Coloring Options");
 	ImGui::InputFloat("Gradation Brigher", &m_fGradationByAlpha_Brighter);
-	ImGui::InputFloat("Gradation Darker", &m_fGradationByAlpha_Darker);
+	//ImGui::InputFloat("Gradation Darker", &m_fGradationByAlpha_Darker);
 	ImGui::Checkbox("FadeOut by Duration", &m_bIsAlphaFollowDuration);
 }
 
@@ -428,6 +428,7 @@ void Widget_ParticleEffectTool::Create()
 		"../Resources/Textures/Universal/" + m_strSelected_Texture_Option1,
 		"../Resources/Textures/Universal/" + m_strSelected_Texture_Option2,
 
+		m_iSelected_ColorOption,
 		Color(m_vStartColor.x, m_vStartColor.y, m_vStartColor.z, m_vStartColor.w),
 		Color(m_vEndColor.x, m_vEndColor.y, m_vEndColor.z, m_vEndColor.w),
 		Color(m_vDestColor.x, m_vDestColor.y, m_vDestColor.z, m_vDestColor.w),
@@ -473,10 +474,6 @@ void Widget_ParticleEffectTool::Create()
 		_float3(m_fRotationAngle)
 	};
 	ParticleObj->Get_Particle()->Init(&tParticleDesc);
-
-	// For. attach material component to GameObject 
-	shared_ptr<Material> material = make_shared<Material>();
-	ParticleObj->Get_Particle()->Set_Material(material);
 
 	// For. 위젯의 Target Object에 바인딩해두기 
 	m_pTargetParticle = ParticleObj;
