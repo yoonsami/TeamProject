@@ -5,7 +5,7 @@
 #include "StructuredBuffer.h"
 
 Particle::Particle(shared_ptr<Shader> shader)
-	: Component(COMPONENT_TYPE::ParticleSystem)
+	: Component(COMPONENT_TYPE::Particle)
 	, m_pShader(shader)
 {
 }
@@ -80,6 +80,13 @@ void Particle::Final_Tick()
 	// For. Bind UAV Buffer in shader ( 쉐이더가 값을 보관할 수 없기 때문에 매 프레임마다 넘겨줘야한다.)
 	m_pShader->GetUAV("g_ParticleInfo_UAVBuffer")->SetUnorderedAccessView(m_pParticleInfo_UAVBuffer->Get_UAV().Get());
 	m_pShader->GetUAV("g_ComputeShared_UAVBuffer")->SetUnorderedAccessView(m_pComputeShared_UAVBuffer->Get_UAV().Get());	 
+
+	// For. Dispatch
+	m_pShader->Dispatch(1, m_eComputePass, 1, 1, 1);
+
+	vector<ParticleInfo_UAV> tmp(m_tDesc.iMaxParticleNum);
+	m_pParticleInfo_UAVBuffer->Copy_FromOutput(tmp.data());
+	m_pParticleInfo_UAVBuffer->Copy_ToInput(tmp.data());
 }
 
 void Particle::Render()

@@ -4,19 +4,19 @@
 struct ParticleInfo_UAV // 주의: Shader_Particle2의 ParticleInfo_UAV와 대응해야함.
 {
     /* 매 프레임마다 변할 수 있는 값들 */
-    _float   fCurrCurrTime;      // 입자가 현재 생성되고나서부터 얼마나 시간이 흘렀는지
-    _float3  vCurrWorldPos;      // 입자의 현재 World pos 
-    _float   fCurrSpeed;         // 입자의 현재 speed
-    _float3  vCurrRotationSpeed; // 입자의 현재 회전속도 
-    _float   fCurrSpeedExponent; // 입자의 현재 speed Exponent
-    _float3  vCurrWorldDir;      // 입자의 현재 현재 방향 
-    _float4  vCurrColor;         // 입자의 현재 color 
-    _float2  vCurrSize;          // 입자의 현재 size 
-    _int     iCurrAlive;         // 입자가 현재 살아있는가. 
+    _float   fCurrCurrTime;      
+    _float3  vCurrWorldPos;       
+    _float   fCurrSpeed;         
+    _float3  vCurrRotationSpeed; 
+    _float   fCurrSpeedExponent; 
+    _float3  vCurrWorldDir;      
+    _float4  vCurrColor;         
+    _float2  vCurrSize;          
+    _int     iAlive;             
 
     /* 입자가 처음 생성될 때 고정되는 값들 */
-    _float   fLifeTime;          // 입자의 LifeTime 
-    _float3  vRotationAngle;     // 입자의 회전각도  
+    _float   fLifeTime;          
+    _float3  vRotationAngle;     
 
     /* 자유롭게 사용한 데이터 공간 */
     _float   vOffsets;           // 16 byte맞추기 위해 넣음. 쓸일있으면 알아서 맞춰서 쓰면됨. 

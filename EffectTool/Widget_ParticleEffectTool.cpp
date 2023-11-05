@@ -62,22 +62,12 @@ void Widget_ParticleEffectTool::ImGui_ParticleMaker()
 	ImGui::InputText("Tag", m_pszParticleTag, MAX_PATH);
 	ImGui::Text("");
 
-	/* For. Billbord */
-	Option_Billbord();
-
-	/* For. Texture */
+	Option_Etc();
+	Option_Billbord();	
 	Option_Textures();
-
-	/* For. Color */
 	Option_Color();
-
-	/* For. Transform */
 	Option_Transform();
-
-	/* For. LifeTime */
 	Option_LifeTime();
-
-	/* For. Speed */
 	Option_Speed();
 
 	/* For. Create, Delete Particle */
@@ -88,6 +78,25 @@ void Widget_ParticleEffectTool::ImGui_ParticleMaker()
 	ImGui::SameLine();
 	if (ImGui::Button("Delete"))
 		Delete();
+}
+
+void Widget_ParticleEffectTool::Option_Etc()
+{
+	ImGui::SeparatorText("Particle Object's Options");
+
+	ImGui::InputFloat("Duration", &m_fDuration);
+
+	_bool bCreateOnce = true;
+	ImGui::Checkbox("Play Once", &bCreateOnce);
+	if (bCreateOnce)
+	{
+		m_fCreateInterval = m_fDuration + 1.f;
+	}
+	else
+	{
+		ImGui::InputFloat("Create Interval", &m_fCreateInterval);
+	}
+	ImGui::Checkbox("Is Loop", &m_bIsLoop);
 }
 
 void Widget_ParticleEffectTool::Option_Textures()
@@ -409,7 +418,7 @@ void Widget_ParticleEffectTool::Create()
 	ParticleObj->GetOrAddTransform();
 	ParticleObj->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
 
-	// For. GameObject에 Particle component 붙이기 
+	// For. attach Particle component to GameObject
 	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Particle2.fx");
 	shared_ptr<Particle> particle =  make_shared<Particle>(shader);
 	ParticleObj->Add_Component(particle);
@@ -466,6 +475,7 @@ void Widget_ParticleEffectTool::Create()
 	};
 	ParticleObj->Get_Particle()->Init(&tParticleDesc);
 
+	// For. attach material component to GameObject 
 	shared_ptr<Material> material = make_shared<Material>();
 	ParticleObj->Get_Particle()->Set_Material(material);
 

@@ -68,8 +68,6 @@ void ParticleSystem::Final_Tick()
 	m_pShader->GetUAV("g_Particle")->SetUnorderedAccessView(m_pParticleBuffer->Get_UAV().Get());	// 쉐이
 	m_pShader->GetUAV("g_Shared")->SetUnorderedAccessView(m_pComputeSharedBuffer->Get_UAV().Get());
 
-	// --------- 여기까지 함 -------------
-
 	_float2 StartEndScale = { m_ParticleSystemDesc.m_fStartScale,m_ParticleSystemDesc.m_fEndScale };
 	m_pShader->GetVector("StartEndScale")->SetFloatVector((_float*)&StartEndScale);
 
@@ -92,7 +90,6 @@ void ParticleSystem::Final_Tick()
 
 	vector<ParticleInfo> tmp(m_ParticleSystemDesc.m_iMaxParticle);
 	m_pParticleBuffer->Copy_FromOutput(tmp.data());
-
 
 	m_pParticleBuffer->Copy_ToInput(tmp.data());
 }

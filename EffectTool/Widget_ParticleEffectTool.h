@@ -18,6 +18,7 @@ private:
 	void					ImGui_ParticleMaker();
 
 	/*  Funtions */
+	void					Option_Etc();
 	void					Option_Textures();
 	void					Option_Color();
 	void					Option_Transform();
