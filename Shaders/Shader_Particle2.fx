@@ -8,23 +8,19 @@ float   g_fTimeDelta;
 
 struct ParticleInfo_UAV  // 주의: 16byte씩 맞추기
 {
-   /* 매 프레임마다 변할 수 있는 값들 */
-    float   fCurrTime;          // Current 생성되고나서부터 얼마나 시간이 흘렀는지
+    float   fCurrTime;          // Current age
     float3  vCurrWorldPos;      // Current World pos 
     float   fCurrSpeed;         // Current speed
     float3  vCurrRotationSpeed; // Current 회전속도 
     float   fCurrSpeedExponent; // Current speed Exponent
     float3  vCurrWorldDir;      // Current 현재 방향 
     float2  vCurrSize;          // Current size 
+    float   fCurrSizeSpeed;        
     int     iAlive;             // Is Alive
 
-    /* 입자가 처음 생성될 때 고정되는 값들 */
-    float   fLifeTime; // 입자의 LifeTime 
     float4  vDiffuseColor;      // Current color 
-    float3  vRotationAngle; // 입자의 회전각도  
-
-    /* 자유롭게 사용한 데이터 공간 */
-    float   vOffsets; // 16 byte맞추기 위해 넣음. 쓸일있으면 알아서 맞춰서 쓰면됨. 
+    float3  vRotationAngle;     // 입자의 회전각도  
+    float   fLifeTime; 
 };
 
 struct ComputeShared_UAV
@@ -89,27 +85,28 @@ void CS_Movement_Non(int3 threadIndex : SV_DispatchThreadID)
             // Diffuse Color
             g_ParticleInfo_UAVBuffer[threadIndex.x].vDiffuseColor = lerp(g_startColor.rgba, g_endColor.rgba, fParticleObjectsLifeTimeRatio);
             
-            // Dissolve Speed
-            if (0.f == g_int_2.x)       // constant
-                g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrSpeed = ((g_vec2_1.y - g_vec2_1.x) * noise.x) + g_vec2_1.x;
-            if (1.f == g_int_2.x)       // curve
-                g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrSpeed = pow(abs(g_vec2_1.x), g_vec2_1.y);
-
             // Create Position
             g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrWorldPos = g_vec4_0.xyz + (noise.xyz - 0.5f) * g_createRange.xyz;
             
             // LifeTime (if you need option, use g_lifeTimeOption)
             g_ParticleInfo_UAVBuffer[threadIndex.x].fLifeTime = ((g_MinMaxLifeTime.y - g_MinMaxLifeTime.x) * noise.x) + g_MinMaxLifeTime.x;
             
-             // Scale 
+            // Scale 
             g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrSize.xy = ((g_MinMaxScale.y - g_MinMaxScale.x) * noise.x) + g_MinMaxScale.x;
+            // Scale Speed
+            if (2 == g_int_1)       // curve
+                g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrSizeSpeed = pow(abs(g_vec2_1.x), g_vec2_1.y);
+            else                    // constant
+                g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrSizeSpeed = ((g_vec2_1.y - g_vec2_1.x) * noise.x) + g_vec2_1.x;
             
             // Speed
-            if (0 == g_int_2)       // constant
-                g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrSpeed = ((g_vec2_2.y - g_vec2_2.x) * noise.x) + g_vec2_2.x;
-            else if (1 == g_int_2)  // curve
+            if (2 == g_int_2)       // curve
                 g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrSpeed = pow(abs(g_vec2_2.x), g_vec2_2.y);
+            else                    // constant
+                g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrSpeed = ((g_vec2_2.y - g_vec2_2.x) * noise.x) + g_vec2_2.x;
             
+            // Rotation Speed
+            g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrRotationSpeed.xyz = g_vec4_3.xyz;
             // Rotation Angle 
             if (0.f == g_vec4_2.x)       // constant
                 g_ParticleInfo_UAVBuffer[threadIndex.x].vRotationAngle.xyz = g_vec4_2.xyz;
@@ -119,9 +116,6 @@ void CS_Movement_Non(int3 threadIndex : SV_DispatchThreadID)
                 g_ParticleInfo_UAVBuffer[threadIndex.x].vRotationAngle.y = ((g_vec4_2.z - g_vec4_2.y) * noise.y) + g_vec4_2.y;
                 g_ParticleInfo_UAVBuffer[threadIndex.x].vRotationAngle.z = ((g_vec4_2.z - g_vec4_2.y) * noise.z) + g_vec4_2.y;
             }
-            
-            // Rotation Speed
-            g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrRotationSpeed.xyz = g_vec4_3.xyz;
         }
     }
     
@@ -136,7 +130,14 @@ void CS_Movement_Non(int3 threadIndex : SV_DispatchThreadID)
             return;
         }       
         
-        // 
+        // For. Change Scale 
+        g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrSize += g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrSizeSpeed * g_fTimeDelta;
+        if(2 == g_int_1)   // if. curve -> update sizespeed
+            g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrSizeSpeed = pow(abs(g_vec2_1.x), g_vec2_1.y + g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrTime);
+        
+        // For. Change Rotation 
+        
+        // For. Movement 
     }
 }
 
@@ -247,14 +248,15 @@ float4 PS_Default(GS_OUTPUT input) : SV_Target
     
     float4 fDiffuseMapColor = DiffuseMap.Sample(LinearSampler, input.uv);
     float4 diffuseColor = float4(0.f, 0.f, 0.f, 1.f);
+    float fLifeRatio = g_Data[input.id].fCurrTime / g_Data[input.id].fLifeTime;
+    
     
     // For. Changing Diffuse Color
     if (g_bUseShapeTextureColor)
         diffuseColor = fDiffuseMapColor;
     else
     {
-        float ratio = g_Data[input.id].fCurrTime / g_Data[input.id].fLifeTime;
-        diffuseColor = lerp(g_Data[input.id].vDiffuseColor, g_vec4_0, ratio);
+        diffuseColor = lerp(g_Data[input.id].vDiffuseColor, g_vec4_0, fLifeRatio);
         diffuseColor.a = fDiffuseMapColor.r;
     }
     
@@ -266,10 +268,21 @@ float4 PS_Default(GS_OUTPUT input) : SV_Target
     if(1 == g_int_0)
         diffuseColor.a = 1.f - (g_float_3 / g_float_2);
     
+    // For. Dissiolve
+    if (0 != bHasDissolveMap)
+    {
+        float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
+        float fDissolveOffset = fLifeRatio;
+        if (1 == g_int_1) // curve
+            fDissolveOffset = pow(fLifeRatio, g_vec2_0.x);
+        
+        if (dissolve < fDissolveOffset)
+            discard;
+    }
     
     // For. Alpah Test 
     output = diffuseColor;
-    if (output.a < 0.f)
+    if (output.a <= 0.f)
         discard;
     
     return output;

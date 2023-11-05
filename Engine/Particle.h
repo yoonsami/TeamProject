@@ -54,8 +54,8 @@ public:
         _bool   bIsAlphaFollowDuration = { false };
         
         // Dissolve
-        _int    iDissolveOption = { 0 };            // non, constant, curve
-        _float2 fDissolveCurveSpeed = { 0.f, 0.f }; // (if option is curve) speed base, speed exponent
+        _int    iDissolveOption = { 0 };            // constant, log, pow
+        _float  fDissolveSpeedOffset = { 0.f };     // (if option is log or pow) 
 
         // Duration ( Particle GameObject¿« lifetime )
         _float  fDuration;

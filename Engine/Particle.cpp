@@ -35,8 +35,10 @@ HRESULT Particle::Init(void* pArg)
 	// For. Texture
 	m_pMaterial = make_shared<Material>();
 	m_pMaterial->Set_Shader(m_pShader);
-	m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(L"ParticleTexture_shape", Utils::ToWString(m_tDesc.strSelected_Texture_Shape)), TextureMapType::DIFFUSE);
-	m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(L"ParticleTexture_dissolve", Utils::ToWString(m_tDesc.strSelected_Texture_Dissolve)), TextureMapType::DISSOLVE);
+	if ("../Resources/Textures/Universal/None" != m_tDesc.strSelected_Texture_Shape)
+		m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(L"ParticleTexture_shape", Utils::ToWString(m_tDesc.strSelected_Texture_Shape)), TextureMapType::DIFFUSE);
+	if("../Resources/Textures/Universal/None" != m_tDesc.strSelected_Texture_Dissolve)
+		m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(L"ParticleTexture_dissolve", Utils::ToWString(m_tDesc.strSelected_Texture_Dissolve)), TextureMapType::DISSOLVE);
 
 	// For. Initialize Shader Params
 	Init_ComputeParams();
@@ -172,6 +174,10 @@ void Particle::Init_RenderParams()
 	m_RenderParams.SetVec4(0, m_tDesc.vDestColor);
 	m_RenderParams.SetInt(0, m_tDesc.bIsAlphaFollowDuration);
 
+	// For. Dissolve
+	m_RenderParams.SetInt(1, m_tDesc.iDissolveOption);						// If. On => log, constant, pow
+	m_RenderParams.SetVec2(0, _float2(m_tDesc.fDissolveSpeedOffset, 0.f));	// if. On + log or pow => offset
+
 	// Duration and Current time 
 	m_RenderParams.SetFloat(2, m_tDesc.fDuration);
 	m_RenderParams.SetFloat(3, m_fCurrLifeTime);
@@ -207,10 +213,6 @@ void Particle::Init_ComputeParams()
 
 	// For. Center Position
 	m_ComputeParams.SetVec4(0, _float4(m_tDesc.vCenterPosition, 0.f));
-
-	// For. Dissolve
-	m_ComputeParams.SetInt(0, m_tDesc.iDissolveOption);
-	m_ComputeParams.SetVec2(0, m_tDesc.fDissolveCurveSpeed);
 
 	// For. Update Scale
 	m_ComputeParams.SetInt(1, m_tDesc.iScaleOption);

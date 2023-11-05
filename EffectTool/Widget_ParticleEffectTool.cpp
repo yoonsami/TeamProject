@@ -138,6 +138,30 @@ void Widget_ParticleEffectTool::Option_Textures()
 		ImGui::EndCombo();
 	}
 
+	if (0 != m_iSelected_Texture_Dissolve)
+	{
+		const char* pszItems[] = { "Constant", "curve" };
+		if (ImGui::BeginCombo("Scaling Options##Scale", pszItems[m_iSelected_DissolveOption], 0))
+		{
+			for (_uint n = 0; n < IM_ARRAYSIZE(pszItems); n++)
+			{
+				const bool is_selected = (m_iSelected_DissolveOption == n);
+				if (ImGui::Selectable(pszItems[n], is_selected))
+					m_iSelected_DissolveOption = n;
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+		switch (m_iSelected_DissolveOption)
+		{
+		case 1:
+			ImGui::InputFloat("Exponent", &m_fDissolveSpeedOffset);
+			break;
+		}
+	}
+
 	if (ImGui::BeginCombo("Option1##Texture", m_pszUniversalTextures[m_iSelected_Texture_Option1], 0))
 	{
 		for (_uint n = 0; n < m_iNumUniversalTextures; n++)
@@ -439,7 +463,7 @@ void Widget_ParticleEffectTool::Create()
 		m_bIsAlphaFollowDuration,
 
 		(_int)m_iSelected_DissolveOption,
-		_float2(m_fDissolveSpeed),
+		m_fDissolveSpeedOffset,
 
 		m_fDuration,
 		m_bIsbCreateOnce,

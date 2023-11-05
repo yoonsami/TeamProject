@@ -65,7 +65,7 @@ private:
 	_bool					m_bIsAlphaFollowDuration = { true };				// 듀레이션과 현재 시간의 비가 모든 파티클의 알파값에 영향을 준다.
 	
 	_int					m_iSelected_DissolveOption = { 0 };
-	_float					m_fDissolveSpeed[2] = {1.f, 1.f};
+	_float					m_fDissolveSpeedOffset = {3.f};
 	
 	/* For. LifeTime */
 	_uint					m_iSelected_LifeTimeOption = { 0 };
