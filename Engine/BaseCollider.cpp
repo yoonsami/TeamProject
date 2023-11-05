@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "BaseCollider.h"
 #include "Camera.h"
+#include "FSM.h"
+
 
 BaseCollider::BaseCollider(ColliderType colliderType)
 	:Component(COMPONENT_TYPE::Collider), m_eColliderType(colliderType)
@@ -68,22 +70,22 @@ void BaseCollider::OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
 	if (m_pOwner.expired())
 		return;
-	//auto myFSM = Get_Owner()->Get_FSM();
-	//if (myFSM)
-	//	myFSM->OnCollision(pCollider, fGap);
+	auto myFSM = Get_Owner()->Get_FSM();
+	if (myFSM)
+		myFSM->OnCollision(pCollider, fGap);
 }
 
 void BaseCollider::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
 	++m_iColCount;
-	//if (m_pOwner.expired())
-	//	return;
-	//auto myFSM = Get_Owner()->Get_FSM();
-	//if (myFSM)
-	//	myFSM->OnCollisionEnter(pCollider, fGap);
+	if (m_pOwner.expired())
+		return;
+	auto myFSM = Get_Owner()->Get_FSM();
+	if (myFSM)
+		myFSM->OnCollisionEnter(pCollider, fGap);
 
-	//if (m_pResultFunc)
-	//	m_pResultFunc();
+	if (m_pResultFunc)
+		m_pResultFunc();
 
 	
 }
@@ -93,11 +95,11 @@ void BaseCollider::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fG
 	--m_iColCount;
 	if (m_iColCount < 0)
 		m_iColCount = 0;
-	//if (m_pOwner.expired())
-	//	return;
-	//auto myFSM = Get_Owner()->Get_FSM();
-	//if (myFSM)
-	//	myFSM->OnCollisionExit(pCollider, fGap);
+	if (m_pOwner.expired())
+		return;
+	auto myFSM = Get_Owner()->Get_FSM();
+	if (myFSM)
+		myFSM->OnCollisionExit(pCollider, fGap);
 }
 
 void BaseCollider::Add_ColliderGroup()

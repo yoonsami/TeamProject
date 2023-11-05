@@ -2,6 +2,18 @@
 #include "SpearAce_FSM.h"
 #include "ModelAnimator.h"
 #include "SphereCollider.h"
+#include "AttackColliderInfoScript.h"
+#include "ForwardMovingSkillScript.h"
+
+
+
+SpearAce_FSM::SpearAce_FSM()
+{
+}
+
+SpearAce_FSM::~SpearAce_FSM()
+{
+}
 
 HRESULT SpearAce_FSM::Init()
 {
@@ -22,6 +34,11 @@ HRESULT SpearAce_FSM::Init()
     CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
     m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
     
+    m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
+    m_pAttackCollider.lock()->Set_Name(L"Player_AttackCollider");
+ 
+    m_pWeapon = CUR_SCENE->Get_GameObject(L"Weapon_Spear_Ace");
+
     return S_OK;
 }
 
@@ -182,6 +199,28 @@ void SpearAce_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fG
 {
 }
 
+void SpearAce_FSM::Get_Hit(const wstring& skillname, shared_ptr<BaseCollider> pOppositeCollider)
+{
+}
+
+void SpearAce_FSM::AttackCollider_On(const wstring& skillname)
+{
+    if (!m_pAttackCollider.expired())
+    {
+        m_pAttackCollider.lock()->Get_Collider()->Set_Activate(true);
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
+    }
+}
+
+void SpearAce_FSM::AttackCollider_Off()
+{
+    if (!m_pAttackCollider.expired())
+    {
+        m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+    }
+}
+
 void SpearAce_FSM::b_idle()
 {
     EvadeCoolCheck();
@@ -224,6 +263,11 @@ void SpearAce_FSM::b_idle_Init()
 
     Get_Transform()->Set_Speed(m_fRunSpeed);
     m_tRunEndDelay.fAccTime = 0.f;
+
+    m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
+    m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+
+    m_bInvincible = false;
 }
 
 void SpearAce_FSM::b_run_start()
@@ -282,6 +326,9 @@ void SpearAce_FSM::b_run_start_Init()
 
     Get_Transform()->Set_Speed(m_fRunSpeed);
     m_tRunEndDelay.fAccTime = 0.f;
+    m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
+    m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+    m_bInvincible = false;
 }
 
 void SpearAce_FSM::b_run()
@@ -341,6 +388,10 @@ void SpearAce_FSM::b_run_Init()
     animator->Set_NextTweenAnim(L"b_run", 0.2f, true, 1.f);
 
     Get_Transform()->Set_Speed(m_fRunSpeed);
+
+    m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
+    m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+    m_bInvincible = false;
 }
 
 void SpearAce_FSM::b_run_end_r()
@@ -384,6 +435,10 @@ void SpearAce_FSM::b_run_end_r_Init()
 
     Get_Transform()->Set_Speed(m_fRunSpeed);
     m_tRunEndDelay.fAccTime = 0.f;
+
+    m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
+    m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+    m_bInvincible = false;
 }
 
 void SpearAce_FSM::b_run_end_l()
@@ -425,6 +480,10 @@ void SpearAce_FSM::b_run_end_l_Init()
 
     Get_Transform()->Set_Speed(m_fRunSpeed);
     m_tRunEndDelay.fAccTime = 0.f;
+
+    m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
+    m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+    m_bInvincible = false;
 }
 
 void SpearAce_FSM::b_sprint()
@@ -483,6 +542,10 @@ void SpearAce_FSM::b_sprint_Init()
     animator->Set_NextTweenAnim(L"b_sprint", 0.2f, true, 1.f);
 
     Get_Transform()->Set_Speed(m_fSprintSpeed);
+
+    m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
+    m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+    m_bInvincible = false;
 }
 
 void SpearAce_FSM::b_walk()
@@ -504,6 +567,10 @@ void SpearAce_FSM::die_Init()
 void SpearAce_FSM::skill_1100()
 {
     EvadeCoolCheck();
+
+    if (Get_CurFrame() == 19)
+        AttackCollider_Off();
+    
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -554,12 +621,22 @@ void SpearAce_FSM::skill_1100_Init()
 
     m_vInputTurnVector = _float3(0.f);
     m_vInputTurnVector = Get_InputDirVector();
+
+    AttackCollider_On(NORMAL_SKILL);
+
+    m_bInvincible = false;
 }
 
 void SpearAce_FSM::skill_1200()
 {
     EvadeCoolCheck();
 
+
+    if (Get_CurFrame() == 1)
+        AttackCollider_On(NORMAL_SKILL);
+    else if (Get_CurFrame() == 33)
+        AttackCollider_Off();
+    
     _float3 vInputVector = Get_InputDirVector();
 
     if (m_vInputTurnVector != _float3(0.f))
@@ -613,11 +690,20 @@ void SpearAce_FSM::skill_1200_Init()
 
     m_vInputTurnVector = _float3(0.f);
     m_vInputTurnVector = Get_InputDirVector();
+
+    AttackCollider_Off();
+    
+    m_bInvincible = false;
 }
 
 void SpearAce_FSM::skill_1300()
 {
     EvadeCoolCheck();
+
+    if (Get_CurFrame() == 4)
+        AttackCollider_On(NORMAL_SKILL);
+    else if (Get_CurFrame() == 28)
+        AttackCollider_Off();
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -662,6 +748,10 @@ void SpearAce_FSM::skill_1300_Init()
 
     m_vInputTurnVector = _float3(0.f);
     m_vInputTurnVector = Get_InputDirVector();
+
+    AttackCollider_Off();
+
+    m_bInvincible = false;
 }
 
 void SpearAce_FSM::skill_91100()
@@ -693,6 +783,10 @@ void SpearAce_FSM::skill_91100_Init()
 
     m_vInputTurnVector = _float3(0.f);
     m_vInputTurnVector = Get_InputDirVector();
+
+    AttackCollider_Off();
+
+    m_bInvincible = true;
 }
 
 void SpearAce_FSM::skill_93100()
@@ -718,11 +812,35 @@ void SpearAce_FSM::skill_93100_Init()
     animator->Set_NextTweenAnim(L"skill_93100", 0.15f, false, m_fEvade_AnimationSpeed);
 
     m_bCanCombo = false;
+    
+    AttackCollider_Off();
+
+    m_bInvincible = true;
 }
 
 void SpearAce_FSM::skill_100100()
 {
     EvadeCoolCheck();
+
+    if (Get_CurFrame() == 11)
+    {
+        if (!m_bSkillCreate)
+        {
+            Create_ForwardMovingSkillCollider(Get_Transform()->Get_State(Transform_State::LOOK), 15.f, 6.f);
+        
+            m_bSkillCreate = true;
+        }
+    }
+    else if (Get_CurFrame() == 28)
+    {
+        AttackCollider_On(KNOCKDOWN_SKILL);
+    }
+    else if (Get_CurFrame() == 58)
+        AttackCollider_Off();
+    else
+    {
+        m_bSkillCreate = false;
+    }
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -754,11 +872,18 @@ void SpearAce_FSM::skill_100100_Init()
 
     m_vInputTurnVector = _float3(0.f);
     m_vInputTurnVector = Get_InputDirVector();
+
+    AttackCollider_Off();
+
+    m_bInvincible = false;
 }
 
 void SpearAce_FSM::skill_200100()
 {
     EvadeCoolCheck();
+
+    if (Get_CurFrame() == 61)
+        AttackCollider_Off();
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -799,11 +924,20 @@ void SpearAce_FSM::skill_200100_Init()
 
     m_vInputTurnVector = _float3(0.f);
     m_vInputTurnVector = Get_InputDirVector();
+
+    AttackCollider_On(NORMAL_SKILL);
+
+    m_bInvincible = false;
 }
 
 void SpearAce_FSM::skill_200200()
 {
     EvadeCoolCheck();
+
+    if (Get_CurFrame() == 22)
+        AttackCollider_On(KNOCKDOWN_SKILL);
+    else if (Get_CurFrame() == 45)
+        AttackCollider_Off();
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -835,11 +969,18 @@ void SpearAce_FSM::skill_200200_Init()
 
     m_vInputTurnVector = _float3(0.f);
     m_vInputTurnVector = Get_InputDirVector();
+
+    AttackCollider_Off();
+
+    m_bInvincible = false;
 }
 
 void SpearAce_FSM::skill_300100()
 {
     EvadeCoolCheck();
+
+    if (Get_CurFrame() == 110)
+        AttackCollider_On(AIRBORNE_SKILL);
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -871,11 +1012,33 @@ void SpearAce_FSM::skill_300100_Init()
 
     m_vInputTurnVector = _float3(0.f);
     m_vInputTurnVector = Get_InputDirVector();
+
+    AttackCollider_On(NORMAL_SKILL);
+
+    m_bInvincible = false;
 }
 
 void SpearAce_FSM::skill_502100()
 {
     EvadeCoolCheck();
+
+    if (Get_CurFrame() == 17)
+    {
+        if (!m_bSkillCreate)
+        {
+            Create_ForwardMovingSkillCollider(Get_Transform()->Get_State(Transform_State::LOOK), 20.f, 3.5f);
+
+            m_bSkillCreate = true;
+        }
+    }
+    else if (Get_CurFrame() == 44)
+        AttackCollider_On(KNOCKDOWN_SKILL);
+    else if (Get_CurFrame() == 62)
+        AttackCollider_Off();
+    else
+    {
+        m_bSkillCreate = false;
+    }
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -907,11 +1070,20 @@ void SpearAce_FSM::skill_502100_Init()
 
     m_vInputTurnVector = _float3(0.f);
     m_vInputTurnVector = Get_InputDirVector();
+
+    AttackCollider_Off();
+
+    m_bInvincible = false;
 }
 
 void SpearAce_FSM::skill_500100()
 {
     EvadeCoolCheck();
+
+    if (Get_CurFrame() == 15)
+        AttackCollider_On(KNOCKDOWN_SKILL);
+    else if (Get_CurFrame() == 33)
+        AttackCollider_Off();
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -943,6 +1115,10 @@ void SpearAce_FSM::skill_500100_Init()
 
     m_vInputTurnVector = _float3(0.f);
     m_vInputTurnVector = Get_InputDirVector();
+
+    AttackCollider_Off();
+
+    m_bInvincible = false;
 }
 
 void SpearAce_FSM::EvadeCoolCheck()
@@ -957,4 +1133,25 @@ void SpearAce_FSM::EvadeCoolCheck()
             m_tEvadeDelay.fAccTime = 0.f;
         }
     }
+}
+
+void SpearAce_FSM::Create_ForwardMovingSkillCollider(const _float4& vLook, _float fMoveSpeed, _float fLimitDistance)
+{
+    shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
+
+    m_pSkillCollider = SkillCollider;
+
+    m_pSkillCollider.lock()->GetOrAddTransform();
+    m_pSkillCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up);
+    m_pSkillCollider.lock()->Add_Component(make_shared<SphereCollider>(1.f));
+    m_pSkillCollider.lock()->Get_Collider()->Set_CollisionGroup(Player_Skill);
+
+    m_pSkillCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
+    m_pSkillCollider.lock()->Get_Collider()->Set_Activate(true);
+    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(NORMAL_SKILL);
+    m_pSkillCollider.lock()->Set_Name(L"Player_SkillCollider");
+    m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(vLook, fMoveSpeed, 2.f, fLimitDistance));
+    m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
+
+    CUR_SCENE->Add_GameObject(m_pSkillCollider.lock());
 }

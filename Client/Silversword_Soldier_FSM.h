@@ -9,10 +9,23 @@ public:
 	{
 		b_idle,
 		b_run,
+		n_run,
 		die,
-		skill_1100, //normal attack1
-		skill_1200, //normal attack2
-		skill_1300, //normal attack3
+		gaze_b,
+		gaze_f,
+		gaze_l,
+		gaze_r,
+		airborne_start, //airborne
+		airborne_end,
+		hit, //normal_hit
+		knock_start,
+		knock_end_start, // knockdown
+		knock_end, //knockdown
+		knock_end_hit, //knockdown
+		knock_end_up, //knockdown -> knock up
+		skill_1100, //SKILL 1
+		skill_2100, //SKILL 2
+		skill_3100, //SKILL 3
 		NONE
 	};
 
@@ -27,31 +40,74 @@ private:
 	virtual void OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) override;
+	virtual void Get_Hit(const wstring& skillname, shared_ptr<BaseCollider> pOppositeCollider) override;
+	virtual void AttackCollider_On(const wstring& skillname) override;
+	virtual void AttackCollider_Off() override;
 
 	void b_idle();
 	void b_idle_Init();
 	void b_run();
 	void b_run_Init();
+	void n_run();
+	void n_run_Init();
 
 	void die();
 	void die_Init();
 
+	void gaze_b();
+	void gaze_b_Init();
+	void gaze_f();
+	void gaze_f_Init();
+	void gaze_l();
+	void gaze_l_Init();
+	void gaze_r();
+	void gaze_r_Init();
+
+
+	void airborne_start();
+	void airborne_start_Init();
+	void airborne_end();
+	void airborne_end_Init();
+	void hit();
+	void hit_Init();
+	void knock_start();
+	void knock_start_Init();
+
+	void knock_end_start();
+	void knock_end_start_Init();
+	void knock_end();
+	void knock_end_Init();
+	void knock_end_hit();
+	void knock_end_hit_Init();
+	void knock_end_up();
+	void knock_end_up_Init();
+
 	void skill_1100();
 	void skill_1100_Init();
-	void skill_1200();
-	void skill_1200_Init();
-	void skill_1300();
-	void skill_1300_Init();
+	void skill_2100();
+	void skill_2100_Init();
+	void skill_3100();
+	void skill_3100_Init();
 
+	void CalCulate_PatrolTime();
 private:
 	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;
 
-	_float3 m_vInputTurnVector = _float3(0.f);
+	_float4 m_vPatrolFirstPos = { 0.f,0.f,0.f,1.f };
+	_float3 m_vTurnVector = _float3(0.f);
 
-	_float m_fRunSpeed = 6.f;
-	_float m_fSprintSpeed = 8.f;
+	_float m_fRunSpeed = 4.f;
 	_float m_fNormalAttack_AnimationSpeed = 2.f;
 	_float m_fSkillAttack_AnimationSpeed = 2.f;
+
+	COOLTIMEINFO m_tAttackCoolTime = { 3.f, 0.f };
+	_bool m_bDetected = false;
+	_bool m_bPatrolMove = false;
+	COOLTIMEINFO m_tDetectedResetCool = { 8.f,0.f };
+	COOLTIMEINFO m_tPatrolMoveCool = { 4.f,0.f };
+	_float m_fPatrolDistance = 1.f;
+
+
 };
 

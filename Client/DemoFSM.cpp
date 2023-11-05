@@ -19,6 +19,8 @@ void DemoFSM::Tick()
     State_Tick();
 }
 
+
+
 void DemoFSM::State_Tick()
 {
 	State_Init();
@@ -78,6 +80,18 @@ void DemoFSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
 }
 
 void DemoFSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
+{
+}
+
+void DemoFSM::Get_Hit(const wstring& skillname, shared_ptr<BaseCollider> pOppositeCollider)
+{
+}
+
+void DemoFSM::AttackCollider_On(const wstring& skillname)
+{
+}
+
+void DemoFSM::AttackCollider_Off()
 {
 }
 

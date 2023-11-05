@@ -22,6 +22,9 @@ HRESULT Kyle_FSM::Init()
 
 	CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
 	m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
+	m_pAttackCollider.lock()->Set_Name(L"Player_AttackCollider");
+
+
 	return S_OK;
 }
 
@@ -197,6 +200,18 @@ void Kyle_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
 }
 
 void Kyle_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
+{
+}
+
+void Kyle_FSM::Get_Hit(const wstring& skillname, shared_ptr<BaseCollider> pOppositeCollider)
+{
+}
+
+void Kyle_FSM::AttackCollider_On(const wstring& skillname)
+{
+}
+
+void Kyle_FSM::AttackCollider_Off()
 {
 }
 

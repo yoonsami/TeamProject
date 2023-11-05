@@ -28,6 +28,10 @@ public:
 		skill_500100, // Skill 5
 		NONE
 	};
+public:
+	SpearAce_FSM();
+	~SpearAce_FSM();
+
 
 public:
 	virtual HRESULT Init() override;
@@ -40,6 +44,9 @@ private:
 	virtual void OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) override;
+	virtual void Get_Hit(const wstring& skillname, shared_ptr<BaseCollider> pOppositeCollider) override;
+	virtual void AttackCollider_On(const wstring& skillname) override;
+	virtual void AttackCollider_Off() override;
 
 	void b_idle();
 	void b_idle_Init();
@@ -84,6 +91,7 @@ private:
 	void skill_500100_Init();
 
 	void EvadeCoolCheck();
+	void Create_ForwardMovingSkillCollider(const _float4& vLook, _float fMoveSpeed, _float fLimitDistance);
 
 private:
 	STATE m_eCurState = STATE::b_idle;
@@ -99,9 +107,12 @@ private:
 	_float m_fRunSpeed = 6.f;
 	_float m_fSprintSpeed = 8.f;
 	_float m_fNormalAttack_AnimationSpeed = 2.f;
-	_float m_fSkillAttack_AnimationSpeed = 2.f;
+	_float m_fSkillAttack_AnimationSpeed = 1.5f;
 	_float m_fEvade_AnimationSpeed = 1.5f;
 
+	_bool m_bSkillCreate = false;
+	weak_ptr<GameObject> m_pSkillCollider;
+	
 
 };
 

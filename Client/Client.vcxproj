@@ -167,6 +167,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AttackColliderInfoScript.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Client_Define.h" />
     <ClInclude Include="DemoAnimationController1.h" />
@@ -174,6 +175,7 @@
     <ClInclude Include="DemoCameraScript2.h" />
     <ClInclude Include="DemoFSM.h" />
     <ClInclude Include="DemoScene.h" />
+    <ClInclude Include="ForwardMovingSkillScript.h" />
     <ClInclude Include="HeroChangeScript.h" />
     <ClInclude Include="Kyle_FSM.h" />
     <ClInclude Include="Loader.h" />
@@ -188,12 +190,14 @@
     <ClInclude Include="WeaponScript.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AttackColliderInfoScript.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="DemoAnimationController1.cpp" />
     <ClCompile Include="DemoCameraScript1.cpp" />
     <ClCompile Include="DemoCameraScript2.cpp" />
     <ClCompile Include="DemoFSM.cpp" />
     <ClCompile Include="DemoScene.cpp" />
+    <ClCompile Include="ForwardMovingSkillScript.cpp" />
     <ClCompile Include="HeroChangeScript.cpp" />
     <ClCompile Include="Kyle_FSM.cpp" />
     <ClCompile Include="Loader.cpp" />

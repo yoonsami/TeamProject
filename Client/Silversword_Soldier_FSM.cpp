@@ -2,6 +2,7 @@
 #include "Silversword_Soldier_FSM.h"
 #include "ModelAnimator.h"
 #include "SphereCollider.h"
+#include "AttackColliderInfoScript.h"
 
 HRESULT Silversword_Soldier_FSM::Init()
 {
@@ -20,7 +21,10 @@ HRESULT Silversword_Soldier_FSM::Init()
     m_pAttackCollider = attackCollider;
 
     CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
-    m_pAttackCollider.lock()->Get_Collider()->Set_Activate(true);
+    m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
+
+    m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
+    m_pAttackCollider.lock()->Set_Name(L"SilverSword_Soldier_AttackCollider");
 
     return S_OK;
 }
@@ -48,17 +52,56 @@ void Silversword_Soldier_FSM::State_Tick()
     case STATE::b_run:
         b_run();
         break;
+    case STATE::n_run:
+        n_run();
+        break;
     case STATE::die:
         die();
+        break;
+    case STATE::gaze_b:
+        gaze_b();
+        break;
+    case STATE::gaze_f:
+        gaze_f();
+        break;
+    case STATE::gaze_l:
+        gaze_l();
+        break;
+    case STATE::gaze_r:
+        gaze_r();
+        break;
+    case STATE::airborne_start:
+        airborne_start();
+        break;
+    case STATE::airborne_end:
+        airborne_end();
+        break;
+    case STATE::hit:
+        hit();
+        break;
+    case STATE::knock_start:
+        knock_start();
+        break;
+    case STATE::knock_end_start:
+        knock_end_start();
+        break;
+    case STATE::knock_end:
+        knock_end();
+        break;
+    case STATE::knock_end_hit:
+        knock_end_hit();
+        break;
+    case STATE::knock_end_up:
+        knock_end_up();
         break;
     case STATE::skill_1100:
         skill_1100();
         break;
-    case STATE::skill_1200:
-        skill_1200();
+    case STATE::skill_2100:
+        skill_2100();
         break;
-    case STATE::skill_1300:
-        skill_1300();
+    case STATE::skill_3100:
+        skill_3100();
         break;
     }
 }
@@ -75,17 +118,56 @@ void Silversword_Soldier_FSM::State_Init()
         case STATE::b_run:
             b_run_Init();
             break;
+        case STATE::n_run:
+            n_run_Init();
+            break;
         case STATE::die:
             die_Init();
+            break;
+        case STATE::gaze_b:
+            gaze_b_Init();
+            break;
+        case STATE::gaze_f:
+            gaze_f_Init();
+            break;
+        case STATE::gaze_l:
+            gaze_l_Init();
+            break;
+        case STATE::gaze_r:
+            gaze_r_Init();
+            break;
+        case STATE::airborne_start:
+            airborne_start_Init();
+            break;
+        case STATE::airborne_end:
+            airborne_end_Init();
+            break;
+        case STATE::hit:
+            hit_Init();
+            break;
+        case STATE::knock_start:
+            knock_start_Init();
+            break;
+        case STATE::knock_end_start:
+            knock_end_start_Init();
+            break;
+        case STATE::knock_end:
+            knock_end_Init();
+            break;
+        case STATE::knock_end_hit:
+            knock_end_hit_Init();
+            break;
+        case STATE::knock_end_up:
+            knock_end_up_Init();
             break;
         case STATE::skill_1100:
             skill_1100_Init();
             break;
-        case STATE::skill_1200:
-            skill_1200_Init();
+        case STATE::skill_2100:
+            skill_2100_Init();
             break;
-        case STATE::skill_1300:
-            skill_1300_Init();
+        case STATE::skill_3100:
+            skill_3100_Init();
             break;
         }
         m_ePreState = m_eCurState;
@@ -98,15 +180,66 @@ void Silversword_Soldier_FSM::OnCollision(shared_ptr<BaseCollider> pCollider, _f
 
 void Silversword_Soldier_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
+    wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
+
+    Get_Hit(strSkillName, pCollider);
 }
 
 void Silversword_Soldier_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
 }
 
+void Silversword_Soldier_FSM::Get_Hit(const wstring& skillname, shared_ptr<BaseCollider> pOppositeCollider)
+{
+    m_bDetected = true;
+    m_tDetectedResetCool.fAccTime = 0.f;
+
+    if (skillname == NORMAL_SKILL)
+    {
+        if (m_eCurState == STATE::hit)
+            Reset_Frame();
+        else
+            m_eCurState = STATE::hit;
+    }
+    
+}
+
+void Silversword_Soldier_FSM::AttackCollider_On(const wstring& skillname)
+{
+    if (!m_pAttackCollider.expired())
+    {
+        m_pAttackCollider.lock()->Get_Collider()->Set_Activate(true);
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
+    }
+}
+
+void Silversword_Soldier_FSM::AttackCollider_Off()
+{
+    if (!m_pAttackCollider.expired())
+    {
+        m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+    }
+}
+
 void Silversword_Soldier_FSM::b_idle()
 {
- 
+    if (!m_bDetected)
+    {
+        CalCulate_PatrolTime();
+
+        if (m_bPatrolMove)
+        {
+            m_eCurState = STATE::n_run;
+        }
+    }
+    else
+    {
+        if (Target_In_AttackRange())
+            m_eCurState = STATE::skill_1100;
+        else
+            m_eCurState = STATE::b_run;
+    }
 }
 
 void Silversword_Soldier_FSM::b_idle_Init()
@@ -117,13 +250,20 @@ void Silversword_Soldier_FSM::b_idle_Init()
 
     Get_Transform()->Set_Speed(m_fRunSpeed);
 
+    m_tPatrolMoveCool.fAccTime = 0.f;
+    m_vTurnVector = _float3(0.f);
 }
 
 void Silversword_Soldier_FSM::b_run()
 {
+    if (!m_pTarget.expired())
+        Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
+
     Get_Transform()->Go_Straight();
 
- 
+    if (Target_In_AttackRange())
+        m_eCurState = STATE::skill_1100;
+   
 }
 
 void Silversword_Soldier_FSM::b_run_Init()
@@ -135,6 +275,44 @@ void Silversword_Soldier_FSM::b_run_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed);
 }
 
+void Silversword_Soldier_FSM::n_run()
+{
+    if (m_vTurnVector != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vTurnVector, XM_PI * 5.f);
+
+    Get_Transform()->Go_Straight();
+    
+    Ray ray;
+    ray.position = Get_Transform()->Get_State(Transform_State::POS).xyz();
+    ray.direction = m_vTurnVector;
+    physx::PxRaycastBuffer hit{};
+    physx::PxQueryFilterData filterData;
+    filterData.flags = physx::PxQueryFlag::eSTATIC;
+    if (PHYSX.Get_PxScene()->raycast({ ray.position.x,ray.position.y,ray.position.z }, { ray.direction.x,ray.direction.y,ray.direction.z }, 1.f, hit, PxHitFlags(physx::PxHitFlag::eDEFAULT), filterData))
+    {
+        m_vTurnVector.x = m_vTurnVector.x * -1.f;
+        m_vTurnVector.z = m_vTurnVector.z * -1.f;
+    }
+
+    if ((Get_Transform()->Get_State(Transform_State::POS) - m_vPatrolFirstPos).Length() >= m_fPatrolDistance)
+    {
+        m_bPatrolMove = false;
+        m_eCurState = STATE::b_idle;
+    }
+}
+
+void Silversword_Soldier_FSM::n_run_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"n_run", 0.2f, true, 1.f);
+
+    Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
+
+    m_vTurnVector = _float3{ (rand() * 2 / _float(RAND_MAX) - 1), 0.f, (rand() * 2 / _float(RAND_MAX) - 1) };
+    m_vTurnVector.Normalize();
+}
+
 void Silversword_Soldier_FSM::die()
 {
 }
@@ -143,45 +321,280 @@ void Silversword_Soldier_FSM::die_Init()
 {
 }
 
-void Silversword_Soldier_FSM::skill_1100()
+void Silversword_Soldier_FSM::gaze_b()
 {
- /*   _float3 vInputVector = Get_InputDirVector();
+    if (!m_pTarget.expired())
+        Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
+    
+    m_tAttackCoolTime.fAccTime += fDT;
 
-    if (m_vInputTurnVector != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
+    Get_Transform()->Go_Backward();
 
-    if (_float(Get_CurFrame()) / _float(Get_FinalFrame()) >= 0.25f)
-        m_bCanCombo = true;
-
-    if (m_bCanCombo)
+    if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
     {
-        if (KEYTAP(KEY_TYPE::LBUTTON))
-            m_eCurState = STATE::skill_1200;
-    }
+        if (Target_In_AttackRange())
+        {
+            _uint iRan = rand() % 3;
 
+            if (iRan == 0)
+                m_eCurState = STATE::skill_1100;
+            else if (iRan == 1)
+                m_eCurState = STATE::skill_2100;
+            else if (iRan == 2)
+                m_eCurState = STATE::skill_3100;
+        }
+        else
+            m_eCurState = STATE::b_run;
+    }
+}
+
+void Silversword_Soldier_FSM::gaze_b_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"gaze_b", 0.2f, true, 1.f);
+
+    Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
+}
+
+void Silversword_Soldier_FSM::gaze_f()
+{
+    if (!m_pTarget.expired())
+        Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
+
+    m_tAttackCoolTime.fAccTime += fDT;
+
+    Get_Transform()->Go_Straight();
+
+    if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
+    {
+        if (Target_In_AttackRange())
+        {
+            _uint iRan = rand() % 3;
+
+            if (iRan == 0)
+                m_eCurState = STATE::skill_1100;
+            else if (iRan == 1)
+                m_eCurState = STATE::skill_2100;
+            else if (iRan == 2)
+                m_eCurState = STATE::skill_3100;
+        }
+        else
+            m_eCurState = STATE::b_run;
+    }
+}
+
+void Silversword_Soldier_FSM::gaze_f_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"gaze_f", 0.2f, true, 1.f);
+   
+    Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
+}
+
+void Silversword_Soldier_FSM::gaze_l()
+{
+    if (!m_pTarget.expired())
+        Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
+
+    m_tAttackCoolTime.fAccTime += fDT;
+
+    Get_Transform()->Go_Left();
+
+    if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
+    {
+        if (Target_In_AttackRange())
+        {
+            _uint iRan = rand() % 3;
+
+            if (iRan == 0)
+                m_eCurState = STATE::skill_1100;
+            else if (iRan == 1)
+                m_eCurState = STATE::skill_2100;
+            else if (iRan == 2)
+                m_eCurState = STATE::skill_3100;
+        }
+        else
+            m_eCurState = STATE::b_run;
+    }
+}
+
+void Silversword_Soldier_FSM::gaze_l_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"gaze_l", 0.2f, true, 1.f);
+
+    Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
+}
+
+void Silversword_Soldier_FSM::gaze_r()
+{
+    if (!m_pTarget.expired())
+        Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
+
+    m_tAttackCoolTime.fAccTime += fDT;
+
+    Get_Transform()->Go_Right();
+
+    if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
+    {
+        if (Target_In_AttackRange())
+        {
+            _uint iRan = rand() % 3;
+
+            if (iRan == 0)
+                m_eCurState = STATE::skill_1100;
+            else if (iRan == 1)
+                m_eCurState = STATE::skill_2100;
+            else if (iRan == 2)
+                m_eCurState = STATE::skill_3100;
+        }
+        else
+            m_eCurState = STATE::b_run;
+    }
+}
+
+void Silversword_Soldier_FSM::gaze_r_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"gaze_r", 0.2f, true, 1.f);
+
+    Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
+}
+
+void Silversword_Soldier_FSM::airborne_start()
+{
+}
+
+void Silversword_Soldier_FSM::airborne_start_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"airborne_start", 0.2f, false, 1.f);
+
+}
+
+void Silversword_Soldier_FSM::airborne_end()
+{
+}
+
+void Silversword_Soldier_FSM::airborne_end_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"airborne_end", 0.2f, false, 1.f);
+
+}
+
+void Silversword_Soldier_FSM::hit()
+{
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
+}
 
-    if (KEYPUSH(KEY_TYPE::KEY_1))
-        m_eCurState = STATE::skill_100100;
-    else if (KEYPUSH(KEY_TYPE::KEY_2))
-        m_eCurState = STATE::skill_200100;
-    else if (KEYPUSH(KEY_TYPE::KEY_3))
-        m_eCurState = STATE::skill_300100;
-    else if (KEYPUSH(KEY_TYPE::KEY_4))
-        m_eCurState = STATE::skill_502100;
-    else if (KEYPUSH(KEY_TYPE::KEY_5))
-        m_eCurState = STATE::skill_500100;
-    else if (KEYPUSH(KEY_TYPE::SPACE))
+void Silversword_Soldier_FSM::hit_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"hit", 0.2f, false, 1.f);
+
+    if (!m_pTarget.expired())
+        Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 10.f);
+}
+
+void Silversword_Soldier_FSM::knock_start()
+{
+}
+
+void Silversword_Soldier_FSM::knock_start_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"knock_start", 0.2f, false, 1.f);
+
+}
+
+void Silversword_Soldier_FSM::knock_end_start()
+{
+}
+
+void Silversword_Soldier_FSM::knock_end_start_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"knock_end_start", 0.2f, false, 1.f);
+
+}
+
+void Silversword_Soldier_FSM::knock_end()
+{
+}
+
+void Silversword_Soldier_FSM::knock_end_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"knock_end", 0.2f, false, 1.f);
+
+}
+
+void Silversword_Soldier_FSM::knock_end_hit()
+{
+}
+
+void Silversword_Soldier_FSM::knock_end_hit_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"knock_end_hit", 0.2f, false, 1.f);
+
+}
+
+void Silversword_Soldier_FSM::knock_end_up()
+{
+}
+
+void Silversword_Soldier_FSM::knock_end_up_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"knock_end_up", 0.2f, false, 1.f);
+
+}
+
+void Silversword_Soldier_FSM::skill_1100()
+{
+    if (Get_CurFrame() < 17)
     {
-        if (!m_bEvadeCoolCheck)
-        {
-            if (vInputVector != _float3(0.f))
-                m_eCurState = STATE::skill_91100;
-            else
-                m_eCurState = STATE::skill_93100;
-        }
-    }*/
+        if (!m_pTarget.expired())
+            Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
+    }
+    else if (Get_CurFrame() == 22)
+        AttackCollider_On(NORMAL_SKILL);
+    else if (Get_CurFrame() == 26)
+        AttackCollider_Off();
+
+    if (Is_AnimFinished())
+    {
+        _uint iRan = 0;
+        
+        if (Target_In_AttackRange())
+            iRan = rand() % 3;
+        else
+            iRan = rand() % 4;
+
+        if (iRan == 0)
+            m_eCurState = STATE::gaze_b;
+        if (iRan == 1)
+            m_eCurState = STATE::gaze_l;
+        if (iRan == 2)
+            m_eCurState = STATE::gaze_r;
+        if (iRan == 3)
+            m_eCurState = STATE::gaze_f;
+    }
 }
 
 void Silversword_Soldier_FSM::skill_1100_Init()
@@ -189,86 +602,111 @@ void Silversword_Soldier_FSM::skill_1100_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
-
-    m_vInputTurnVector = _float3(0.f);
-    m_vInputTurnVector = Get_InputDirVector();
+    
+    m_tAttackCoolTime.fAccTime = 0.f;
 }
 
-void Silversword_Soldier_FSM::skill_1200()
+void Silversword_Soldier_FSM::skill_2100()
 {
-
-    //_float3 vInputVector = Get_InputDirVector();
-
-    //if (m_vInputTurnVector != _float3(0.f))
-    //    Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
-
-
-    //if (_float(Get_CurFrame()) / _float(Get_FinalFrame()) >= 0.25f)
-    //    m_bCanCombo = true;
-
-    //if (m_bCanCombo)
-    //{
-    //    if (KEYTAP(KEY_TYPE::LBUTTON))
-    //        m_eCurState = STATE::skill_1300;
-    //}
-
-    //if (Is_AnimFinished())
-    //{
-    //    m_bCanCombo = false;
-    //    m_eCurState = STATE::b_idle;
-    //}
-
-    //if (KEYPUSH(KEY_TYPE::KEY_1))
-    //    m_eCurState = STATE::skill_100100;
-    //else if (KEYPUSH(KEY_TYPE::KEY_2))
-    //    m_eCurState = STATE::skill_200100;
-    //else if (KEYPUSH(KEY_TYPE::KEY_3))
-    //    m_eCurState = STATE::skill_300100;
-    //else if (KEYPUSH(KEY_TYPE::KEY_4))
-    //    m_eCurState = STATE::skill_502100;
-    //else if (KEYPUSH(KEY_TYPE::KEY_5))
-    //    m_eCurState = STATE::skill_500100;
-    //else if (KEYPUSH(KEY_TYPE::SPACE))
-    //{
-    //    if (!m_bEvadeCoolCheck)
-    //    {
-    //        if (vInputVector != _float3(0.f))
-    //            m_eCurState = STATE::skill_91100;
-    //        else
-    //            m_eCurState = STATE::skill_93100;
-    //    }
-    //}
-}
-
-void Silversword_Soldier_FSM::skill_1200_Init()
-{
-    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
-
-    animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, m_fNormalAttack_AnimationSpeed);
-
-    m_vInputTurnVector = _float3(0.f);
-    m_vInputTurnVector = Get_InputDirVector();
-}
-
-void Silversword_Soldier_FSM::skill_1300()
-{
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vInputTurnVector != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
+    if (Get_CurFrame() < 11)
+    {
+        if (!m_pTarget.expired())
+            Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
+    }
+    else if (Get_CurFrame() == 17)
+        AttackCollider_On(NORMAL_SKILL);
+    else if (Get_CurFrame() == 20)
+        AttackCollider_Off();
+    else if (Get_CurFrame() == 33)
+        AttackCollider_On(NORMAL_SKILL);
+    else if (Get_CurFrame() == 38)
+        AttackCollider_Off();
 
     if (Is_AnimFinished())
     {
-        m_eCurState = STATE::b_idle;
+        _uint iRan = 0;
+
+        if (Target_In_AttackRange())
+            iRan = rand() % 3;
+        else
+            iRan = rand() % 4;
+
+        if (iRan == 0)
+            m_eCurState = STATE::gaze_b;
+        if (iRan == 1)
+            m_eCurState = STATE::gaze_l;
+        if (iRan == 2)
+            m_eCurState = STATE::gaze_r;
+        if (iRan == 3)
+            m_eCurState = STATE::gaze_f;
     }
 }
 
-void Silversword_Soldier_FSM::skill_1300_Init()
+void Silversword_Soldier_FSM::skill_2100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_1300", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+    animator->Set_NextTweenAnim(L"skill_2100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
-    m_vInputTurnVector = _float3(0.f);
-    m_vInputTurnVector = Get_InputDirVector();
+    m_tAttackCoolTime.fAccTime = 0.f;
+}
+
+void Silversword_Soldier_FSM::skill_3100()
+{
+    if (Get_CurFrame() < 11)
+    {
+        if (!m_pTarget.expired())
+            Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
+    }
+    else if (Get_CurFrame() == 28)
+        AttackCollider_On(NORMAL_SKILL);
+    else if (Get_CurFrame() == 34)
+        AttackCollider_Off();
+    else if (Get_CurFrame() == 60)
+        AttackCollider_On(KNOCKDOWN_SKILL);
+    else if (Get_CurFrame() == 67)
+        AttackCollider_Off();
+
+    if (Is_AnimFinished())
+    {
+        _uint iRan = 0;
+
+        if (Target_In_AttackRange())
+            iRan = rand() % 3;
+        else
+            iRan = rand() % 4;
+
+        if (iRan == 0)
+            m_eCurState = STATE::gaze_b;
+        if (iRan == 1)
+            m_eCurState = STATE::gaze_l;
+        if (iRan == 2)
+            m_eCurState = STATE::gaze_r;
+        if (iRan == 3)
+            m_eCurState = STATE::gaze_f;
+    }
+}
+
+void Silversword_Soldier_FSM::skill_3100_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"skill_3100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+
+    m_tAttackCoolTime.fAccTime = 0.f;
+}
+
+void Silversword_Soldier_FSM::CalCulate_PatrolTime()
+{
+    m_tPatrolMoveCool.fAccTime += fDT;
+
+    if (m_tPatrolMoveCool.fAccTime >= m_tPatrolMoveCool.fCoolTime)
+    {
+        m_tPatrolMoveCool.fAccTime = 0.f;
+        m_tPatrolMoveCool.fCoolTime = _float(rand() % 3) + 2.f;
+        m_fPatrolDistance = _float(rand() % 4) + 6.f;
+        m_vPatrolFirstPos = Get_Transform()->Get_State(Transform_State::POS);
+        
+        m_bPatrolMove = true;
+    }
 }

@@ -30,15 +30,19 @@ void HeroChangeScript::Tick()
             return;
         else
         {
+            m_pPlayer.lock()->Get_FSM()->Reset_Weapon();
+
+            //AnimIndex Reset
             m_pPlayer.lock()->Get_Animator()->Set_CurrentAnim(0);
-            //m_pPlayer.lock()->Get_Animator()->Set_CurrentAnim(L"b_idle", true/*반복 애니메이션*/, 1.f/*애니메이션 속도*/);
+     
+            //PlayerAttackCollider Remove
+            CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Player_AttackCollider"));
 
             shared_ptr<Model> model = RESOURCES.Get<Model>(L"Spear_Ace");
 
             m_pPlayer.lock()->Get_Animator()->Set_Model(model);
             m_pPlayer.lock()->Change_Component(make_shared<SpearAce_FSM>());
-            m_pPlayer.lock()->Get_FSM()->Init();
-
+         
             //Add. Player's Weapon
             shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
 
@@ -64,6 +68,8 @@ void HeroChangeScript::Tick()
 
             ObjWeapon->Set_Name(L"Weapon_Spear_Ace");
             CUR_SCENE->Add_GameObject(ObjWeapon);
+
+            m_pPlayer.lock()->Get_FSM()->Init();
         }
     }
     else if (KEYTAP(KEY_TYPE::F2))
@@ -72,11 +78,12 @@ void HeroChangeScript::Tick()
             return;
         else
         {
-            if (m_pPlayer.lock()->Get_Model()->Get_ModelTag() == (L"Spear_Ace"))
-                CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Weapon_Spear_Ace"));
-
+            m_pPlayer.lock()->Get_FSM()->Reset_Weapon();
+            //AnimIndex Reset
             m_pPlayer.lock()->Get_Animator()->Set_CurrentAnim(0);
-            //m_pPlayer.lock()->Get_Animator()->Set_CurrentAnim(L"b_idle", true/*반복 애니메이션*/, 1.f/*애니메이션 속도*/);
+
+            //PlayerAttackCollider Remove
+            CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Player_AttackCollider"));
 
             shared_ptr<Model> model = RESOURCES.Get<Model>(L"Kyle");
 

@@ -73,6 +73,15 @@
     <Filter Include="02.Component\01.FSM\02.Monster_FSM\00.Silversword_Soldier_FSM">
       <UniqueIdentifier>{2d025cc6-fb7d-439c-b7e9-79904de361be}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\03.ColliderInfoScript">
+      <UniqueIdentifier>{4f3b2b44-9774-4323-b110-9299fc60311e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\03.ColliderInfoScript\AttackCollider">
+      <UniqueIdentifier>{fc29a8dd-b20a-43e9-9bc9-f9e08b43daf6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\04.SkillScript">
+      <UniqueIdentifier>{a5b52b0c-57ba-4d33-9b3f-4dbcf057ce3c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -132,6 +141,12 @@
     <ClInclude Include="Silversword_Soldier_FSM.h">
       <Filter>02.Component\01.FSM\02.Monster_FSM\00.Silversword_Soldier_FSM</Filter>
     </ClInclude>
+    <ClInclude Include="AttackColliderInfoScript.h">
+      <Filter>02.Component\00.MonoBehaviour\03.ColliderInfoScript\AttackCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="ForwardMovingSkillScript.h">
+      <Filter>02.Component\00.MonoBehaviour\04.SkillScript</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -184,6 +199,12 @@
     </ClCompile>
     <ClCompile Include="Silversword_Soldier_FSM.cpp">
       <Filter>02.Component\01.FSM\02.Monster_FSM\00.Silversword_Soldier_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="AttackColliderInfoScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\03.ColliderInfoScript\AttackCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="ForwardMovingSkillScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\04.SkillScript</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

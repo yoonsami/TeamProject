@@ -37,6 +37,17 @@ _uint FSM::Get_FinalFrame()
 		return Get_Owner()->Get_Animator()->Get_FinalFrame(desc.curr.animIndex);
 }
 
+void FSM::Reset_Frame()
+{
+	if (m_pOwner.expired())
+		assert(false);
+
+	if (!Get_Owner()->Get_Animator())
+		assert(false);
+
+	Get_Owner()->Get_Animator()->Reset_Frame();
+}
+
 _bool FSM::Is_AnimFinished()
 {
 	if (m_pOwner.expired())
@@ -113,6 +124,23 @@ _float3 FSM::Soft_Turn_ToTarget(const _float4& vTargetPos, _float turnSpeed)
 	return vDir;
 }
 
+
+_bool FSM::Target_In_AttackRange()
+{
+	_bool bFlag = false;
+	
+	if (m_pTarget.expired())
+		return false;
+
+	_float fGap = (Get_Transform()->Get_State(Transform_State::POS).xyz() -
+		m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz()).Length();
+
+	if (fGap <= m_fAttackRange)
+		bFlag = true;
+
+	return bFlag;
+}
+
 void FSM::Set_Target(shared_ptr<GameObject> pTarget)
 {
 	m_pTarget = pTarget;
@@ -122,3 +150,10 @@ void FSM::Reset_Target()
 {
 	m_pTarget.reset();
 }
+
+void FSM::Reset_Weapon()
+{
+	if (!m_pWeapon.expired())
+		CUR_SCENE->Remove_GameObject(m_pWeapon.lock());
+}
+

@@ -26,18 +26,19 @@
 #include "OBBBoxCollider.h"
 
 
+
 DemoScene::DemoScene()
 {
 }
 
 DemoScene::~DemoScene()
 {
+	_uint i = 0;
 }
 
 void DemoScene::Init()
 {
 	__super::Init();
-	COLLISION.Check_Group(_int(CollisionGroup::Player_Body), _int(CollisionGroup::Monster_Body));
 	COLLISION.Check_Group(_int(CollisionGroup::Player_Attack), _int(CollisionGroup::Monster_Body));
 	COLLISION.Check_Group(_int(CollisionGroup::Player_Skill), _int(CollisionGroup::Monster_Body));
 	COLLISION.Check_Group(_int(CollisionGroup::Monster_Attack), _int(CollisionGroup::Player_Body));
@@ -96,10 +97,10 @@ void DemoScene::Load_Player()
 			ObjPlayer->Add_Component(make_shared<SpearAce_FSM>());
 		}
 		ObjPlayer->Set_Name(L"Player");
-		ObjPlayer->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.7f, 0.5f })); //obbcollider
+		ObjPlayer->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.8f, 0.5f })); //obbcollider
 		ObjPlayer->Get_Collider()->Set_CollisionGroup(Player_Body);
 		ObjPlayer->Get_Collider()->Set_Activate(true);
-			
+
 		{
 			auto controller = make_shared<CharacterController>();
 			ObjPlayer->Add_Component(controller);
@@ -253,6 +254,7 @@ void DemoScene::Load_Camera()
 
 		camera->Get_Camera()->Set_ProjType(ProjectionType::Orthographic);
 		//Layer_UI�� �ִ� ������Ʈ�� �ø��ϰڴ�.
+		camera->Get_Camera()->Set_CullingMaskAll();
 		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, false);
 
 		Add_GameObject(camera);
@@ -267,7 +269,7 @@ void DemoScene::Load_Monster()
 
 		ObjMonster->Add_Component(make_shared<Transform>());
 
-		ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(6.f, 0.f, 6.f, 1.f));
+		ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(1.f, 0.f, 1.f, 1.f));
 		{
 			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
