@@ -88,8 +88,10 @@ void CS_Movement_Non(int3 threadIndex : SV_DispatchThreadID)
             g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrColor = g_startColor.rgba + g_endColor.rgba * fParticleObjectsLifeTimeRatio;
             
             // Dissolve Speed
-                // TODO 나중에 바꿔야함. 
-            g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrSpeed = 0.f; 
+            if (0.f == g_int_2.x)       // constant
+                g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrSpeed = ((g_vec2_1.y - g_vec2_1.x) * noise.x) + g_vec2_1.x;
+            if (1.f == g_int_2.x)       // curve
+                g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrSpeed = pow(abs(g_vec2_1.x), g_vec2_1.y);
 
             // Create Position
             g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrWorldPos = g_vec4_0.xyz + (noise.xyz - 0.5f) * g_createRange.xyz;
@@ -196,15 +198,12 @@ void GS_Billbord(point VS_OUTPUT input[1], inout TriangleStream<GS_OUTPUT> outpu
     output[2].position = float4(input[0].worldPos.xyz - vRight - vUp, 1.f);
     output[3].position = float4(input[0].worldPos.xyz + vRight - vUp, 1.f);
     
-    // For. view space
-    output[0].viewPos = mul(output[0].position, V);
-    output[1].viewPos = mul(output[1].position, V);
-    output[2].viewPos = mul(output[2].position, V);
-    output[3].viewPos = mul(output[3].position, V);
-    
     // For. proj space
     for (int i = 0; i < 4; ++i)
-        output[i].position = mul(output[i].position, P);
+    {
+        output[i].viewPos = mul(output[i].position, V);
+        output[i].position = mul(output[i].position, VP);
+    }
     
     // For. Texcoord // TODO : sprite animation가능하도록 수정해야함.
     output[0].uv = float2(0.f, 0.f);
