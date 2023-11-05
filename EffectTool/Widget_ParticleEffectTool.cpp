@@ -208,21 +208,20 @@ void Widget_ParticleEffectTool::Option_Color()
 	}
 
 	const char* pszItems2[] = { "No Change", "Change" };
-	_int iSelected_ChangingColorOption = 0;
-	if (ImGui::BeginCombo("Changing Options##Color", pszItems2[iSelected_ChangingColorOption], 0))
+	if (ImGui::BeginCombo("Changing Options##Color", pszItems2[m_iSelected_ChangingColorOption], 0))
 	{
-		for (_uint n = 0; n < IM_ARRAYSIZE(pszItems); n++)
+		for (_uint n = 0; n < IM_ARRAYSIZE(pszItems2); n++)
 		{
-			const bool is_selected = (iSelected_ChangingColorOption == n);
-			if (ImGui::Selectable(pszItems[n], is_selected))
-				iSelected_ChangingColorOption = n;
+			const bool is_selected = (m_iSelected_ChangingColorOption == n);
+			if (ImGui::Selectable(pszItems2[n], is_selected))
+				m_iSelected_ChangingColorOption = n;
 
 			if (is_selected)
 				ImGui::SetItemDefaultFocus();
 		}
 		ImGui::EndCombo();
 	}
-	switch (iSelected_ChangingColorOption)
+	switch (m_iSelected_ChangingColorOption)
 	{
 	case 0: // No Change
 		m_vDestColor = m_vStartColor;

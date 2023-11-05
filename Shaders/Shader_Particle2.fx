@@ -13,12 +13,12 @@ struct ParticleInfo_UAV  // 주의: 16byte씩 맞추기
     float3  vCurrRotationSpeed; // Current 회전속도 
     float   fCurrSpeedExponent; // Current speed Exponent
     float3  vCurrWorldDir;      // Current 현재 방향 
-    float4  vCurrColor;         // Current color 
     float2  vCurrSize;          // Current size 
     int     iAlive;             // Is Alive
 
     /* 입자가 처음 생성될 때 고정되는 값들 */
     float   fLifeTime; // 입자의 LifeTime 
+    float4  vDiffuseColor;      // Current color 
     float3  vRotationAngle; // 입자의 회전각도  
 
     /* 자유롭게 사용한 데이터 공간 */
@@ -85,7 +85,7 @@ void CS_Movement_Non(int3 threadIndex : SV_DispatchThreadID)
             g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrTime = 0.f;
             
             // Diffuse Color
-            g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrColor = g_startColor.rgba + g_endColor.rgba * fParticleObjectsLifeTimeRatio;
+            g_ParticleInfo_UAVBuffer[threadIndex.x].vDiffuseColor = lerp(g_startColor.rgba, g_endColor.rgba, fParticleObjectsLifeTimeRatio);
             
             // Dissolve Speed
             if (0.f == g_int_2.x)       // constant
@@ -133,6 +133,8 @@ void CS_Movement_Non(int3 threadIndex : SV_DispatchThreadID)
             g_ParticleInfo_UAVBuffer[threadIndex.x].iAlive = 0;
             return;
         }       
+        
+        // 
     }
 }
 
@@ -189,8 +191,8 @@ void GS_Billbord(point VS_OUTPUT input[1], inout TriangleStream<GS_OUTPUT> outpu
         return;
     
     float4 vLook = float4(CameraPosition() - input[0].worldPos.xyz, 0.f);
-    float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * g_Data[id].vCurrSize.x;
-    float3 vUp = normalize(cross(vLook.xyz, vRight)) * g_Data[id].vCurrSize.y;
+    float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * g_Data[id].vCurrSize.x * 0.5f;
+    float3 vUp = normalize(cross(vLook.xyz, vRight)) * g_Data[id].vCurrSize.y * 0.5f;
     
     // For. world space
     output[0].position = float4(input[0].worldPos.xyz + vRight + vUp, 1.f);
@@ -234,8 +236,19 @@ void GS_Billbord(point VS_OUTPUT input[1], inout TriangleStream<GS_OUTPUT> outpu
 /* [Pixel Shader]------------------------------ */
 float4 PS_Default(GS_OUTPUT input) : SV_Target
 {
-    float4 color = float4(1.f, 1.f, 1.f, 1.f);
-    return color;
+    float4 output = float4(0.f, 0.f, 0.f, 1.f);
+    
+    // For. Check is exist
+    uint id = (uint) input.id;
+    if (0 >= g_Data[input.id].iAlive)
+        discard;
+    
+    // For. Diffuse Gradation 
+    float ratio = g_Data[input.id].fCurrTime / g_Data[input.id].fLifeTime;
+    float4 diffuseColor = lerp(g_Data[input.id].vDiffuseColor, g_vec4_0, ratio);
+    
+    output = diffuseColor;
+    return output;
 }
 
 /* [Techniques]------------------------------ */

@@ -56,6 +56,7 @@ private:
 	_uint					m_iSelected_ColorOption = { 0 };
 	ImVec4					m_vStartColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f); // For. Gradation start color
 	ImVec4					m_vEndColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);// For. Gradation end color
+	_uint					m_iSelected_ChangingColorOption = { 0 };
 	ImVec4					m_vDestColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 	/* For. Coloring Option */
@@ -66,9 +67,6 @@ private:
 	_int					m_iSelected_DissolveOption = { 0 };
 	_float					m_fDissolveSpeed[2] = {1.f, 1.f};
 	
-	/* Create Interval */
-
-
 	/* For. LifeTime */
 	_uint					m_iSelected_LifeTimeOption = { 0 };
 	_float					m_fLifeTime[2] = {1.f, 5.f};

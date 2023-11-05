@@ -10,12 +10,12 @@ struct ParticleInfo_UAV // ÁÖÀÇ: Shader_Particle2ÀÇ ParticleInfo_UAV¿Í ´ëÀÀÇØ¾ßÇ
     _float3  vCurrRotationSpeed; 
     _float   fCurrSpeedExponent; 
     _float3  vCurrWorldDir;      
-    _float4  vCurrColor;         
     _float2  vCurrSize;          
     _int     iAlive;             
 
     /* ÀÔÀÚ°¡ Ã³À½ »ı¼ºµÉ ¶§ °íÁ¤µÇ´Â °ªµé */
     _float   fLifeTime;          
+    _float4  vDiffuseColor;         
     _float3  vRotationAngle;     
 
     /* ÀÚÀ¯·Ó°Ô »ç¿ëÇÑ µ¥ÀÌÅÍ °ø°£ */

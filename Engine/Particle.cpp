@@ -153,7 +153,11 @@ void Particle::Init_RenderParams()
 	m_RenderParams.SetFloat(1, m_tDesc.fGradationByAlpha_Darker);
 
 	// For. Diffuse Color
-	m_ComputeParams.SetVec4(0, m_tDesc.vDestColor);
+	m_RenderParams.SetVec4(0, m_tDesc.vDestColor);
+
+	// Duration and Current time 
+	m_RenderParams.SetFloat(2, m_tDesc.fDuration);
+	m_RenderParams.SetFloat(3, m_fCurrLifeTime);
 }
 
 void Particle::Init_CreateParticleParams()
@@ -166,7 +170,7 @@ void Particle::Init_CreateParticleParams()
 
 	// For. Diffuse Color 
 	m_CreateParticleParams.vStartColor = m_tDesc.vStartColor;
-	m_CreateParticleParams.vStartColor = m_tDesc.vEndColor;
+	m_CreateParticleParams.vEndColor = m_tDesc.vEndColor;
 
 	// For. Start Scale
 	m_CreateParticleParams.vMinMaxScale = m_tDesc.vStartScale;
@@ -230,12 +234,16 @@ void Particle::Bind_ComputeParams_ToShader()
 {
 	// param중에 tick마다 Particle.cpp에서 변경해야하는 값이 있다면 여기서 바꿔주고나서 쉐이더에 바인딩하면됨. 
 	
+	m_ComputeParams.SetFloat(1, m_fCurrLifeTime);
+
 	m_pShader->Push_RenderParamData(m_ComputeParams);
 }
 
 void Particle::Bind_RenderParams_ToShader()
 {
 	// TODO: 혹시 param중에 tick마다 Particle.cpp에서 변경해야하는 값이 있다면 여기서 바꿔주고나서 쉐이더에 바인딩하면됨. 
+
+	m_RenderParams.SetFloat(3, m_fCurrLifeTime);
 
 	m_pShader->Push_RenderParamData(m_RenderParams);
 }
