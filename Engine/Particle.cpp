@@ -14,13 +14,17 @@ Particle::~Particle()
 {
 }
 
-HRESULT Particle::Init(void* tDesc)
+HRESULT Particle::Init(void* pArg)
 {
 	// For. Setting basic info  
-	memcpy(&m_tDesc, tDesc, sizeof(tDesc));
+	DESC* pDesc = (DESC*)pArg;
+	m_tDesc = *pDesc;
 
-	if (!m_pModel) 
+	if (!m_pModel)
+	{
 		m_eType = TYPE_Mesh;
+		m_pMesh = RESOURCES.Get<Mesh>(L"Point");
+	}
 	else 
 		m_eType = TYPE_Model;
 
@@ -96,7 +100,7 @@ void Particle::Render()
 	// For. Render Standard Mesh
 	switch (m_eType)
 	{
-	case TYPE_Mesh:
+	case TYPE_Mesh: 
 		if (nullptr == m_pMesh || nullptr == m_pMaterial)
 			return;
 

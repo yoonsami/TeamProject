@@ -110,7 +110,7 @@ public:
     virtual ~Particle();
 
 public:
-    virtual HRESULT Init(void* tDesc);      
+    virtual HRESULT Init(void* pArg);
     virtual void    Tick() override;
     virtual void    Final_Tick() override;  // CS
     void            Render();               // VS, PS

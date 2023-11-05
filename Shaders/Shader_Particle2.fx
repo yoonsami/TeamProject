@@ -158,22 +158,8 @@ VS_OUTPUT VS_Main(VTXParticle input)
 {
     VS_OUTPUT output = (VS_OUTPUT) 0.f;
     
-    if(g_int_3 == 1)
-    {
-        output.viewPos = mul(float4(g_Data[input.instanceID].vCurrWorldPos, 1.f), V);
-        output.worldPos = float4(g_Data[input.instanceID].vCurrWorldPos, 1.f);
-
-    }
-    else
-    {
-        float3 worldPos = mul(float4(input.position, 1.f), W).xyz;
-        worldPos += g_Data[input.instanceID].vCurrWorldPos;
-
-        output.worldPos = float4(worldPos, 1.f);
-        output.viewPos = mul(float4(worldPos, 1.f), V);
-    }
-    
-
+    output.viewPos = mul(float4(g_Data[input.instanceID].vCurrWorldPos, 1.f), V);
+    output.worldPos = float4(g_Data[input.instanceID].vCurrWorldPos, 1.f);
     output.uv = input.uv;
     output.id = input.instanceID;
     
