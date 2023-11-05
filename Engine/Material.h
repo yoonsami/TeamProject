@@ -48,7 +48,7 @@ private:
     _bool m_bOutline = false;
     MaterialDesc m_Desc;
   
-    shared_ptr<Shader>  m_pShader               = nullptr;
+    shared_ptr<Shader>  m_pShader = nullptr;
 
     array< shared_ptr<Texture>, MAX_TEXTURE_MAP_COUONT> m_TextureMaps;
     array< ComPtr<ID3DX11EffectShaderResourceVariable>, MAX_TEXTURE_MAP_COUONT> m_pTextureMapEffectBuffers;

@@ -24,7 +24,7 @@ VS_OUT VS_Default(VTXMesh input)
     VS_OUT output;
     float3 worldPos = mul(float4(input.position, 1.f), W).xyz;
     output.viewPos = mul(float4(worldPos, 1.f), V);
-    
+
     output.uv = input.uv;
 
     return output;
@@ -36,7 +36,7 @@ UIOutput VS_Instancing(VTXMeshInstancing input)
     output.position = mul(float4(input.position, 1.f), input.world);
     output.position = mul(output.position, VP);
     output.uv = input.uv;
-    
+
     return output;
 }
 
@@ -62,19 +62,19 @@ void GS_Main(point VS_OUT input[1], inout TriangleStream<GS_OUTPUT> outputStream
 {
     GS_OUTPUT output[4] =
     {
-        (GS_OUTPUT) 0.f, (GS_OUTPUT) 0.f, (GS_OUTPUT) 0.f, (GS_OUTPUT) 0.f
+        (GS_OUTPUT)0.f, (GS_OUTPUT)0.f, (GS_OUTPUT)0.f, (GS_OUTPUT)0.f
     };
-    
+
     float3 trans, mscale;
     float4 q;
     decompose(W, trans, q, mscale);
-    
-    
-    
-    
+
+
+
+
     VS_OUT vtx = input[0];
     float2 scale = mscale.xy * 0.5f;
-    
+
     output[0].position = vtx.viewPos + float4(-scale.x, scale.y, 0.f, 0.f);
     output[1].position = vtx.viewPos + float4(scale.x, scale.y, 0.f, 0.f);
     output[2].position = vtx.viewPos + float4(scale.x, -scale.y, 0.f, 0.f);
@@ -84,27 +84,27 @@ void GS_Main(point VS_OUT input[1], inout TriangleStream<GS_OUTPUT> outputStream
     output[1].viewPos = output[1].position.xyz;
     output[2].viewPos = output[2].position.xyz;
     output[3].viewPos = output[3].position.xyz;
-    
+
     // proj space
     for (int i = 0; i < 4; ++i)
         output[i].position = mul(output[i].position, P);
 
-    output[0].uv = float2(0.f,0.f);
-    output[1].uv = float2(1.f,0.f);
-    output[2].uv = float2(1.f,1.f);                          
-    output[3].uv = float2(0.f,1.f);
-   
+    output[0].uv = float2(0.f, 0.f);
+    output[1].uv = float2(1.f, 0.f);
+    output[2].uv = float2(1.f, 1.f);
+    output[3].uv = float2(0.f, 1.f);
+
     for (int j = 0; j < 4; ++j)
     {
         output[j].viewNormal = float3(0.f, 0.f, -1.f);
         output[j].viewTangent = float3(1.f, 0.f, 0.f);
     }
-    
+
     outputStream.Append(output[0]);
     outputStream.Append(output[1]);
     outputStream.Append(output[2]);
     outputStream.RestartStrip();
-    
+
     outputStream.Append(output[0]);
     outputStream.Append(output[2]);
     outputStream.Append(output[3]);
@@ -117,16 +117,16 @@ void GS_Sprite(point VS_OUT input[1], inout TriangleStream<GS_OUTPUT> outputStre
 {
     GS_OUTPUT output[4] =
     {
-        (GS_OUTPUT) 0.f, (GS_OUTPUT) 0.f, (GS_OUTPUT) 0.f, (GS_OUTPUT) 0.f
+        (GS_OUTPUT)0.f, (GS_OUTPUT)0.f, (GS_OUTPUT)0.f, (GS_OUTPUT)0.f
     };
-    
+
     float3 trans, mscale;
     float4 q;
     decompose(W, trans, q, mscale);
-        
+
     VS_OUT vtx = input[0];
     float2 scale = g_vec2_1 * mscale.x;
-    
+
     output[0].position = vtx.viewPos + float4(-scale.x, scale.y, 0.f, 0.f);
     output[1].position = vtx.viewPos + float4(scale.x, scale.y, 0.f, 0.f);
     output[2].position = vtx.viewPos + float4(scale.x, -scale.y, 0.f, 0.f);
@@ -136,7 +136,7 @@ void GS_Sprite(point VS_OUT input[1], inout TriangleStream<GS_OUTPUT> outputStre
     output[1].viewPos = output[1].position.xyz;
     output[2].viewPos = output[2].position.xyz;
     output[3].viewPos = output[3].position.xyz;
-                                          
+
     // proj space
     for (int i = 0; i < 4; ++i)
         output[i].position = mul(output[i].position, P);
@@ -149,7 +149,7 @@ void GS_Sprite(point VS_OUT input[1], inout TriangleStream<GS_OUTPUT> outputStre
 
     curFrame = uint(ratio * spriteCountX * spriteCountY);
 
-    
+
     int indexX = curFrame % spriteCountX;
     int indexY = curFrame / spriteCountX;
 
@@ -158,21 +158,21 @@ void GS_Sprite(point VS_OUT input[1], inout TriangleStream<GS_OUTPUT> outputStre
     output[1].uv = float2((indexX + 1) * 1.f / spriteCountX, indexY * 1.f / spriteCountY);
     output[2].uv = float2((indexX + 1) * 1.f / spriteCountX, (indexY + 1) * 1.f / spriteCountY);
     output[3].uv = float2(indexX * 1.f / spriteCountX, (indexY + 1) * 1.f / spriteCountY);
-   
-    
-    
-    
+
+
+
+
     for (int j = 0; j < 4; ++j)
     {
         output[j].viewNormal = float3(0.f, 0.f, -1.f);
         output[j].viewTangent = float3(1.f, 0.f, 0.f);
     }
-    
+
     outputStream.Append(output[0]);
     outputStream.Append(output[1]);
     outputStream.Append(output[2]);
     outputStream.RestartStrip();
-    
+
     outputStream.Append(output[0]);
     outputStream.Append(output[2]);
     outputStream.Append(output[3]);
@@ -181,36 +181,66 @@ void GS_Sprite(point VS_OUT input[1], inout TriangleStream<GS_OUTPUT> outputStre
 
 float4 PS_UI(UIOutput input) : SV_TARGET
 {
-
     float4 diffuseColor = g_vec4_0;
-    if(bHasDiffuseMap)
-        diffuseColor = DiffuseMap.Sample(LinearSamplerMirror, input.uv ) * g_vec4_0;
-    
+    if (bHasDiffuseMap)
+        diffuseColor = DiffuseMap.Sample(LinearSamplerMirror, input.uv) * g_vec4_0;
+
     if (bHasOpacityMap)
     {
         diffuseColor.a = OpacityMap.Sample(LinearSamplerMirror, input.uv).x * g_vec4_0.w;
-        if(diffuseColor.a <= 0.01f)
+        if (diffuseColor.a <= 0.01f)
             discard;
     }
-    
-    if(g_int_0 == 1 && g_float_0 < 100.f)
-    {
-        if(1.f - input.uv.y >= g_float_0 / 100.f)
-            diffuseColor.xyz *= 0.2f;
-        
-        float gauge_Color = SubMap0.Sample(LinearSampler, input.uv + float2(0.f, 0.5f+ g_float_0 / 100.f)).x;
-        diffuseColor.xyz += gauge_Color;
 
+    return diffuseColor;
+}
+
+float4 PS_UI1(UIOutput input) : SV_TARGET
+{
+    float4 diffuseColor = g_vec4_0;
+    if (bHasDiffuseMap)
+        diffuseColor = DiffuseMap.Sample(LinearSamplerMirror, input.uv) * g_vec4_0;
+
+    if (bHasOpacityMap)
+    {
+        diffuseColor.a = OpacityMap.Sample(LinearSamplerMirror, input.uv).x * g_vec4_0.w;
+        if (diffuseColor.a <= 0.01f)
+            discard;
     }
-    
-    else if(g_int_0 == 2 && g_float_0 < 100.f)
+
+    if (g_float_0 < 100.f)
+    {
+        if (1.f - input.uv.y >= g_float_0 / 100.f)
+            diffuseColor.xyz *= 0.2f;
+
+        float gauge_Color = SubMap0.Sample(LinearSampler, input.uv + float2(0.f, 0.5f + g_float_0 / 100.f)).x;
+        diffuseColor.xyz += gauge_Color;
+    }
+
+    return diffuseColor;
+}
+
+float4 PS_UI2(UIOutput input) : SV_TARGET
+{
+    float4 diffuseColor = g_vec4_0;
+    if (bHasDiffuseMap)
+        diffuseColor = DiffuseMap.Sample(LinearSamplerMirror, input.uv) * g_vec4_0;
+
+    if (bHasOpacityMap)
+    {
+        diffuseColor.a = OpacityMap.Sample(LinearSamplerMirror, input.uv).x * g_vec4_0.w;
+        if (diffuseColor.a <= 0.01f)
+            discard;
+    }
+
+    if (g_float_0 < 100.f)
     {
         //[-0.5f,0.5f]
         float2 uvPos = float2(input.uv.x - 0.5f, 0.5f - input.uv.y);
         // X가 0에 가까울 때
         float theta = atan2(uvPos.x, uvPos.y);
-        
-        if(theta <=0.f)
+
+        if (theta <= 0.f)
             theta += 2.f * PI;
 
         if (theta >= 2.f * PI * g_float_0 / 100.f)
@@ -221,16 +251,14 @@ float4 PS_UI(UIOutput input) : SV_TARGET
         {
             diffuseColor.xyz = DiffuseMap.Sample(LinearSamplerMirror, input.uv) * g_vec4_0;
         }
-        
 
-        
         float c = cos(2.f * PI * g_float_0 / 100.f);
         float s = sin(2.f * PI * g_float_0 / 100.f);
-        
+
         float2 rotatedUV;
         rotatedUV.x = uvPos.x * c - uvPos.y * s;
         rotatedUV.y = uvPos.y * c + uvPos.x * s;
-        
+
         rotatedUV.x += 0.5f;
         rotatedUV.y = (rotatedUV.y - 0.5f) * -1.f;
 
@@ -239,12 +267,28 @@ float4 PS_UI(UIOutput input) : SV_TARGET
 
     }
 
-    else if (g_int_0 == 2 && g_float_0 >= 100.f)
+    else if (g_float_0 >= 100.f)
     {
         diffuseColor.xyz = DiffuseMap.Sample(LinearSamplerMirror, input.uv) * g_vec4_0;
     }
 
-    else if (g_int_0 == 3 && g_float_0 < 100.f)
+    return diffuseColor;
+}
+
+float4 PS_UI3(UIOutput input) : SV_TARGET
+{
+    float4 diffuseColor = g_vec4_0;
+    if (bHasDiffuseMap)
+        diffuseColor = DiffuseMap.Sample(LinearSamplerMirror, input.uv) * g_vec4_0;
+
+    if (bHasOpacityMap)
+    {
+        diffuseColor.a = OpacityMap.Sample(LinearSamplerMirror, input.uv).x * g_vec4_0.w;
+        if (diffuseColor.a <= 0.01f)
+            discard;
+    }
+
+    if (g_float_0 < 100.f)
     {
         float2 newUV;
         float ratio = (g_float_0 / 100.f) * g_vec2_0.x + g_vec2_0.y;
@@ -253,25 +297,37 @@ float4 PS_UI(UIOutput input) : SV_TARGET
         float3 submap = SubMap0.Sample(LinearSamplerClamp, newUV).xyz;
         diffuseColor.xyz *= submap.xyz;
         diffuseColor.a *= submap.x;
-        
     }
-    else if (g_int_0 == 4 )
+
+    return diffuseColor;
+}
+
+float4 PS_UI4(UIOutput input) : SV_TARGET
+{
+    float4 diffuseColor = g_vec4_0;
+    if (bHasDiffuseMap)
+        diffuseColor = DiffuseMap.Sample(LinearSamplerMirror, input.uv) * g_vec4_0;
+
+    if (bHasOpacityMap)
     {
-        if (input.uv.x >= g_float_0 / 100.f)
-            diffuseColor = float4(0.3f, 0.3f, 0.3f, 1.f);
+        diffuseColor.a = OpacityMap.Sample(LinearSamplerMirror, input.uv).x * g_vec4_0.w;
+        if (diffuseColor.a <= 0.01f)
+            discard;
     }
-    
-    
+
+    if (input.uv.x >= g_float_0 / 100.f)
+        diffuseColor = float4(0.3f, 0.3f, 0.3f, 1.f);
+
     return diffuseColor;
 }
 
 float4 PS_UIBAR(UIOutput input) : SV_TARGET
 {
     float4 diffuseColor = DiffuseMap.Sample(LinearSamplerMirror, input.uv);
-    
-    if(input.uv.x >= g_BarPercent / 100.f)
+
+    if (input.uv.x >= g_BarPercent / 100.f)
         diffuseColor = diffuseColor * float4(0.1, 0.1, 0.1, 0.1);
-    
+
     return diffuseColor;
 }
 
@@ -282,21 +338,21 @@ float4 PS_CustomEffect1(GS_OUTPUT input) : SV_Target
     float4 color = (float4) 0.f;
     float2 distortionUV = (float2)0.f;
     float3 viewNormal = (float3) 0.f;
-    if(bHasDistortionMap != 0)
+    if (bHasDistortionMap != 0)
     {
         distortionUV = DistortionMap.Sample(LinearSampler, input.uv).xy * g_vec2_2;
     }
-    LightColor totalLightColor = (LightColor) 0.f;
-    float4 diffuseColor= Material.diffuse;
+    LightColor totalLightColor = (LightColor)0.f;
+    float4 diffuseColor = Material.diffuse;
     float4 emissiveColor = Material.emissive;
     float opacity = 1.f;
-    if(bHasDiffuseMap)
+    if (bHasDiffuseMap)
         diffuseColor.xyz *= DiffuseMap.Sample(LinearSampler, input.uv + distortionUV).xyz;
-    
+
     //if(g_bHasNormalMap)
     //{
     //    viewNormal = NormalMap.Sample(LinearSampler, input.uv + distortionUV).xyz;
-        
+
     //    for (uint i = 0; i < lightCount; ++i)
     //    {
     //        LightColor color = CalculateLightColor_ViewSpace(i, viewNormal, input.viewPos);
@@ -304,35 +360,35 @@ float4 PS_CustomEffect1(GS_OUTPUT input) : SV_Target
     //        totalLightColor.diffuse += color.diffuse;
     //        totalLightColor.specular += color.specular;
     //        totalLightColor.emissive += color.emissive;
-            
+
     //    }
 
     //}
     //else
     //    totalLightColor = (LightColor) 1.f;
-    
-    if(bHasOpacityMap)
+
+    if (bHasOpacityMap)
     {
         opacity = OpacityMap.Sample(LinearSampler, input.uv + distortionUV).x;
     }
-    
-    if(bHasEmissiveMap)
+
+    if (bHasEmissiveMap)
     {
         emissiveColor.xyz *= EmissiveMap.Sample(LinearSampler, input.uv + distortionUV).xyz;
     }
-   
-    color.xyz = diffuseColor.xyz 
+
+    color.xyz = diffuseColor.xyz
     + emissiveColor.xyz;
     color.w = opacity * diffuseColor.a;
-    
-    if(bHasDissolveMap != 0)
+
+    if (bHasDissolveMap != 0)
     {
         float dissolveColor = DissolveMap.Sample(LinearSampler, input.uv + distortionUV).x;
         if (dissolveColor < g_float_0)
             discard;
     }
-    
-    
+
+
     return color;
 }
 
@@ -342,77 +398,77 @@ float4 PS_FRAME(UIOutput input) : SV_TARGET
     return g_DrawColor;
 }
 
-float4 PS_Test(UIOutput input) :SV_TARGET
+float4 PS_Test(UIOutput input) : SV_TARGET
 {
     float2 uvSliding = g_vec2_0;
-    
+
     float4 color = (float4) 0.f;
     float2 distortionUV = (float2) 0.f;
     float3 viewNormal = (float3) 0.f;
-    
+
     if (bHasSubmap0 != 0)
     {
         distortionUV = SubMap0.Sample(LinearSampler, input.uv + uvSliding).xy * g_vec2_1;
     }
-    
+
     float4 diffuseColor = g_vec4_0;
     float4 emissiveColor = g_vec4_1;
     float opacity = 1.f;
-    
+
     if (bHasDiffuseMap)
         diffuseColor.xyz *= DiffuseMap.Sample(LinearSampler, input.uv + distortionUV).xyz;
-        
+
     if (bHasOpacityMap)
     {
         opacity = OpacityMap.Sample(LinearSampler, input.uv + distortionUV).x;
     }
-    
+
     if (bHasEmissiveMap)
     {
         emissiveColor.xyz *= EmissiveMap.Sample(LinearSampler, input.uv + distortionUV).xyz;
     }
-   
-    color.xyz = diffuseColor.xyz 
+
+    color.xyz = diffuseColor.xyz
     + emissiveColor.xyz;
     color.w = opacity * diffuseColor.a;
-    
+
     return color;
 }
 
 float4 PS_CustomEffect2(GS_OUTPUT input) : SV_TARGET
 {
     float2 uvSliding = g_vec2_0;
-    
+
     float4 color = (float4) 0.f;
     float2 distortionUV = (float2) 0.f;
     float3 viewNormal = (float3) 0.f;
-    
+
     if (bHasSubmap0 != 0)
     {
         distortionUV = SubMap0.Sample(LinearSampler, input.uv + uvSliding).xy * g_vec2_2;
     }
-    
+
     float4 diffuseColor = Material.diffuse;
     float4 emissiveColor = Material.emissive;
     float opacity = 1.f;
-    
+
     if (bHasDiffuseMap)
         diffuseColor.xyz *= DiffuseMap.Sample(LinearSampler, input.uv + distortionUV).xyz;
-        
+
     if (bHasOpacityMap)
     {
         opacity = OpacityMap.Sample(LinearSampler, input.uv + distortionUV).x;
     }
-    
+
     if (bHasEmissiveMap)
     {
         emissiveColor.xyz *= EmissiveMap.Sample(LinearSampler, input.uv + distortionUV).xyz;
     }
-   
-    color.xyz = diffuseColor.xyz 
+
+    color.xyz = diffuseColor.xyz
     + emissiveColor.xyz;
     color.w = opacity * diffuseColor.a;
-    
+
     return color;
 }
 
@@ -421,96 +477,97 @@ float4 PS_CustomEffect3(GS_OUTPUT input) : SV_TARGET
 
     float4 color = (float4) 0.f;
     float distortion = 0.f;
-    
+
     if (bHasDistortionMap != 0)
     {
         distortion = DistortionMap.Sample(LinearSampler, input.uv).x * g_vec2_2.x;
-        
-        
-        
+
+
+
     }
-    
+
     float2 centerUV = float2(0.5f, 0.5f);
     float2 dir = normalize(centerUV - input.uv);
     float dist = length(centerUV - input.uv);
     float f = exp(distortion * (dist - 0.5f)) - 1.f;
     if (dist > 0.5)
         f = 0.f;
-    
+
     float2 newUV = input.uv + f * dir;
-    
+
     float4 diffuseColor = Material.diffuse;
     float4 emissiveColor = Material.emissive;
     float opacity = 1.f;
-    
+
     if (bHasDiffuseMap)
         diffuseColor.xyz *= DiffuseMap.Sample(LinearSampler, newUV).xyz;
-        
+
     if (bHasOpacityMap)
     {
         opacity = OpacityMap.Sample(LinearSampler, newUV).x;
     }
-    
+
     if (bHasEmissiveMap)
     {
         emissiveColor.xyz *= EmissiveMap.Sample(LinearSampler, newUV).xyz;
     }
-   
-     color.xyz = diffuseColor.xyz 
+
+     color.xyz = diffuseColor.xyz
                  + emissiveColor.xyz;
                  color.w = opacity * diffuseColor.a;
-     
+
      return color;
 }
 float4 PS_CustomEffect4(GS_OUTPUT input) : SV_TARGET
 {
     float4 diffuseColor = DiffuseMap.Sample(LinearSampler,input.uv).aaaa * Material.diffuse;
 
-     
+
     return diffuseColor;
 }
 
 float4 PS_Test2(GS_OUTPUT input) : SV_TARGET
 {
     float2 uvSliding = g_vec2_0;
-    
+
     float4 color = (float4) 0.f;
     float2 distortionUV = (float2) 0.f;
     float3 viewNormal = (float3) 0.f;
-    
+
     if (bHasSubmap0 != 0)
     {
         distortionUV = SubMap0.Sample(LinearSampler, input.uv + uvSliding).xy * g_vec2_1;
     }
-    
+
     float4 diffuseColor = g_vec4_0;
     float4 emissiveColor = g_vec4_1;
     float opacity = 1.f;
-    
+
     if (bHasDiffuseMap)
         diffuseColor.xyz *= DiffuseMap.Sample(LinearSampler, input.uv + distortionUV).xyz;
-        
+
     if (bHasOpacityMap)
     {
         opacity = OpacityMap.Sample(LinearSampler, input.uv + distortionUV).x;
     }
-    
+
     if (bHasEmissiveMap)
     {
         emissiveColor.xyz *= EmissiveMap.Sample(LinearSampler, input.uv + distortionUV).xyz;
     }
-   
-    color.xyz = diffuseColor.xyz 
+
+    color.xyz = diffuseColor.xyz
     + emissiveColor.xyz;
     color.w = opacity * diffuseColor.a;
-    
+
     return color;
 }
 
 
 technique11 T0
 {
-    pass p0
+
+    pass DEFAULT_UI
     {
         SetVertexShader(CompileShader(vs_5_0, VS_UI()));
         SetRasterizerState(RS_CullNone);
@@ -518,12 +575,52 @@ technique11 T0
         SetPixelShader(CompileShader(ps_5_0, PS_UI()));
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetGeometryShader(NULL);
-
     }
-    PASS_VP(p1_instancing, VS_Instancing, PS_UI)
-    PASS_VP_BLEND(P2, VS_UI, PS_UIBAR)
 
-    pass p3
+    pass CURTAIN_UP_UI
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_UI()));
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetPixelShader(CompileShader(ps_5_0, PS_UI1()));
+        SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetGeometryShader(NULL);
+    }
+
+    pass CLOCK_UI
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_UI()));
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetPixelShader(CompileShader(ps_5_0, PS_UI2()));
+        SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetGeometryShader(NULL);
+    }
+
+    pass HPBAR_UI
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_UI()));
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetPixelShader(CompileShader(ps_5_0, PS_UI3()));
+        SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetGeometryShader(NULL);
+    }
+
+    pass SLIDE_RIGHT_UI
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_UI()));
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetPixelShader(CompileShader(ps_5_0, PS_UI4()));
+        SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetGeometryShader(NULL);
+    }
+
+    PASS_VP(p1_instancing, VS_Instancing, PS_UI)
+        PASS_VP_BLEND(P2, VS_UI, PS_UIBAR)
+
+        pass p7
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
         SetRasterizerState(RS_CullNone);
@@ -532,8 +629,8 @@ technique11 T0
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetGeometryShader(CompileShader(gs_5_0, GS_Sprite()));
 
-    }    
-    pass p4
+    }
+    pass p8
     {
         SetVertexShader(CompileShader(vs_5_0, VS_UI()));
         SetRasterizerState(RS_CullNone);
@@ -543,7 +640,7 @@ technique11 T0
         SetGeometryShader(NULL);
 
     }
-    pass p5
+    pass p9
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
         SetRasterizerState(RS_CullNone);
@@ -553,7 +650,7 @@ technique11 T0
         SetGeometryShader(CompileShader(gs_5_0, GS_Sprite()));
 
     }
-    pass p6
+    pass p10
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
         SetRasterizerState(RS_CullNone);
@@ -563,7 +660,7 @@ technique11 T0
         SetGeometryShader(CompileShader(gs_5_0, GS_Sprite()));
 
     }
-    pass p7
+    pass p11
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
         SetRasterizerState(RS_CullNone);
@@ -573,7 +670,7 @@ technique11 T0
         SetGeometryShader(CompileShader(gs_5_0, GS_Sprite()));
 
     }
-    pass p8
+    pass p12
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
         SetRasterizerState(RS_CullNone);

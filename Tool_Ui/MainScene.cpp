@@ -8,6 +8,11 @@
 #include "CameraScript1.h"
 #include "CameraScript2.h"
 
+#include "FileUtils.h"
+#include "Utils.h"
+#include "MeshRenderer.h"
+#include "BaseUI.h"
+
 MainScene::MainScene()
 {
 }
@@ -43,7 +48,6 @@ HRESULT MainScene::Load_Scene()
 	Load_DemoModel();
 	Load_Light();
 	Load_Camera();
-
 
 	return S_OK;
 }

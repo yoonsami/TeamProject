@@ -21,9 +21,8 @@ HRESULT ImguiMgr::Initialize(HWND& hWnd)
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
-    // Setup Platform/Renderer backends
     ImGui_ImplWin32_Init(hWnd);
     ImGui_ImplDX11_Init(DEVICE.Get(), CONTEXT.Get());
 
@@ -32,6 +31,8 @@ HRESULT ImguiMgr::Initialize(HWND& hWnd)
 
     m_pSampleObj = make_shared<GameObject>();
     m_pSampleObj->GetOrAddTransform();
+
+    m_tagParamDesc.vec4Params[0] = _float4(1.f, 1.f, 1.f, 1.f);
 
     return S_OK;
 }
@@ -43,7 +44,7 @@ void ImguiMgr::Tick()
     ImGui::NewFrame();
     ImGuizmo::BeginFrame();
 
-    //ImGui::ShowDemoWindow(); // Show demo window! :)
+    ImGui::ShowDemoWindow(); // Show demo window! :)
 
 
     Key_Input();
@@ -92,9 +93,10 @@ void ImguiMgr::Create_Ui()
 
     File_Dialog();
 
-    Select_Texture();
-    Decide_Transform_Value();
     Create_Object();
+    Select_Texture();
+    Add_Texture();
+    Decide_Transform_Value();
 
     // 경로 추출, 저장, 로드 다 포함
     Save_Ui_Desc();
@@ -141,7 +143,6 @@ void ImguiMgr::Parameter_Ui()
 
 void ImguiMgr::File_Dialog()
 {
-    // open Dialog Simple
     ImGui::SeparatorText("File Dialog");
 
     if (ImGui::Button("Open File Dialog"))
@@ -149,10 +150,8 @@ void ImguiMgr::File_Dialog()
 
     ImGui::BulletText("You can only add dds");
 
-    // display
     if (ImGuiFileDialog::Instance()->Display("ddsFileDlgKey"))
     {
-        // action if OK
         if (ImGuiFileDialog::Instance()->IsOk())
         {
             string strPath = ImGuiFileDialog::Instance()->GetFilePathName();
@@ -175,7 +174,6 @@ void ImguiMgr::File_Dialog()
             RESOURCES.Load<Texture>(FileName, path);
         }
 
-        // close
         ImGuiFileDialog::Instance()->Close();
     }
 }
@@ -222,7 +220,6 @@ void ImguiMgr::Select_Texture()
         ImGui::EndListBox();
     }
 
-    ImGui::SameLine();
     if (0 != m_strKeyTexture.length())
     {
        ImGui::Begin("Texture Ui");
@@ -232,22 +229,60 @@ void ImguiMgr::Select_Texture()
 
 }
 
+void ImguiMgr::Add_Texture()
+{
+   ImGui::NewLine();
+   ImGui::SeparatorText("Selected Texture Name");
+
+   string strName = Utils::ToString(m_strKeyTexture);
+   if (ImGui::InputText("##Selected Texture Name", strName.data(), 256, ImGuiInputTextFlags_ReadOnly)) {
+   }
+
+   ImGui::Combo("##Texture Type Combo", &m_iTextureType, m_arrItems, IM_ARRAYSIZE(m_arrItems));
+
+   if (ImGui::Button("Add Texture", ImVec2(80.f, 20.f)))
+   {
+      if (!ImGui::IsItemActive())
+      {
+         if (0 == m_strSelectObjName.length())
+         {
+            return;
+         }
+
+         auto pGameobject = CUR_SCENE->Get_GameObject(m_strSelectObjName);
+         pGameobject->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_strKeyTexture), static_cast<TextureMapType>(m_iTextureType));
+      }
+   }
+
+   ImGui::SameLine();
+   if (ImGui::Button("Add Submap", ImVec2(80.f, 20.f)))
+   {
+      if (!ImGui::IsItemActive())
+      {
+         if (0 == m_strSelectObjName.length())
+         {
+            return;
+         }
+
+         auto pGameobject = CUR_SCENE->Get_GameObject(m_strSelectObjName);
+
+         for (_uint i = 0; i < MAX_SUB_SRV_COUNT; ++i)
+         {
+            if (nullptr == pGameobject->Get_MeshRenderer()->Get_Material()->Get_SubMap(i))
+            {
+               pGameobject->Get_MeshRenderer()->Get_Material()->Set_SubMap(i, RESOURCES.Get<Texture>(m_strKeyTexture));
+            }
+         }
+
+      }
+   }
+}
+
 void ImguiMgr::Decide_Transform_Value()
 {
-    ImGuiInputTextFlags_ eFlag = ImGuiInputTextFlags_CharsDecimal;
-
-    ImGui::NewLine();
-    //ImGui::Text("Texture", IMGUI_VERSION, IMGUI_VERSION_NUM);
-    ImGui::SeparatorText("Selected Texture Name");
-
-    string strName = Utils::ToString(m_strKeyTexture);
-    //ImGui::SetNextItemWidth(200);
-    if (ImGui::InputText("##Selected Texture Name", strName.data(), 256, ImGuiInputTextFlags_ReadOnly)) {
-    }
-
     ImGui::NewLine();
     ImGui::SeparatorText("Position");
-
+    ImGuiInputTextFlags_ eFlag = ImGuiInputTextFlags_CharsDecimal;
 
     ImGui::Text("X");
     ImGui::SameLine();
@@ -265,7 +300,6 @@ void ImguiMgr::Decide_Transform_Value()
     ImGui::InputFloat("##PosZ1", &m_vecPos.z, 0.01f, 1.0f, "%.3f", eFlag);
 
     ImGui::NewLine();
-    //ImGui::Text("Scale", IMGUI_VERSION, IMGUI_VERSION_NUM);
     ImGui::SeparatorText("Scale");
 
     ImGui::Text("X");
@@ -283,28 +317,34 @@ void ImguiMgr::Decide_Transform_Value()
     ImGui::SetNextItemWidth(200);
     ImGui::InputFloat("##ScaleZ1", &m_vecScale.z, 0.01f, 1.0f, "%.3f", eFlag);
 
+    if (0.0001f > m_vecScale.x)
+       m_vecScale.x = 0.0001f;
+    if (0.0001f > m_vecScale.y)
+       m_vecScale.y = 0.0001f;
+    if (0.0001f > m_vecScale.z)
+       m_vecScale.z = 0.0001f;
+
     ImGui::NewLine();
     ImGui::SetNextItemWidth(200);
-
-    ImGui::NewLine();
-    ImGui::SeparatorText("Input Object Name");
-
-    char inputBuffer[256] = {};
-    if (ImGui::InputText("##Object Name", inputBuffer, sizeof(inputBuffer))) {
-        string str(inputBuffer);
-        m_strName = Utils::ToWString(str);
-    }
 }
 
 void ImguiMgr::Create_Object()
 {
+   ImGui::NewLine();
+   ImGui::SeparatorText("Input Object Name");
+
+   char inputBuffer[256] = {};
+   if (ImGui::InputText("##Object Name", inputBuffer, sizeof(inputBuffer))) {
+      string str(inputBuffer);
+      m_strName = Utils::ToWString(str);
+   }
+
     if (ImGui::Button("Create Ui", ImVec2(80.f, 20.f)))
     {
         if (!ImGui::IsItemActive())
         {
             auto UiObject = make_shared<GameObject>();
-            //_float4x4 matWorld = XMMatrixScaling(m_vecScale.x, m_vecScale.y, 1.f) * XMMatrixTranslation(m_vecPos.x, m_vecPos.y, m_vecPos.z);
-            //UiObject->GetOrAddTransform()->Set_WorldMat(matWorld);
+            UiObject->GetOrAddTransform();
             UiObject->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(m_vecPos.x, m_vecPos.y, m_vecPos.z, 1));
             UiObject->GetOrAddTransform()->Scaled(_float3(m_vecScale.x, m_vecScale.y, m_vecScale.z));
             shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
@@ -313,7 +353,6 @@ void ImguiMgr::Create_Object()
             renderer->Set_Mesh(mesh);
 
             auto material = make_shared<Material>();
-            material->Set_TextureMap(RESOURCES.Get<Texture>(m_strKeyTexture), TextureMapType::DIFFUSE);
             renderer->Get_RenderParamDesc().SetVec4(0, _float4(1));
             renderer->Set_Material(material);
             renderer->Set_Pass(MeshRenderer::PASS_INFO::Default_UI);
@@ -348,13 +387,57 @@ void ImguiMgr::Select_Object()
                 m_iObjNameCursor = iIndex;
                 m_strSelectObjName = Name;
 
-                m_pSampleObj->GetOrAddTransform()->Set_WorldMat(CUR_SCENE->Get_GameObject(m_strSelectObjName)->GetOrAddTransform()->Get_WorldMatrix());
+                auto pGameobject = CUR_SCENE->Get_GameObject(m_strSelectObjName);
+                m_iPass = pGameobject->Get_MeshRenderer()->Get_Pass();
+                m_tagParamDesc = pGameobject->Get_MeshRenderer()->Get_RenderParamDesc();
+                m_pSampleObj->GetOrAddTransform()->Set_WorldMat(pGameobject->GetOrAddTransform()->Get_WorldMatrix());
             }
 
             ++iIndex;
         }
 
         ImGui::EndListBox();
+    }
+
+    if (ImGui::TreeNode("Textures"))
+    {
+       if (0 != m_strSelectObjName.length())
+       {
+          auto pGameobject = CUR_SCENE->Get_GameObject(m_strSelectObjName);
+
+          for (_uint i = 0; i < MAX_TEXTURE_MAP_COUONT; ++i)
+          {
+             ImGui::BulletText("%s : ", m_arrItems[i]);
+             ImGui::SameLine();
+
+             if (nullptr != pGameobject->Get_MeshRenderer()->Get_Material()->Get_TextureMap(static_cast<TextureMapType>(i)))
+                ImGui::Text("%s", Utils::ToString(pGameobject->Get_MeshRenderer()->Get_Material()->Get_TextureMap(static_cast<TextureMapType>(i))->Get_Name()).c_str());
+             else
+                ImGui::Text("None");
+          }
+       }
+
+       ImGui::TreePop();
+    }
+
+    if (ImGui::TreeNode("Submaps"))
+    {
+       if (0 != m_strSelectObjName.length())
+       {
+          auto pGameobject = CUR_SCENE->Get_GameObject(m_strSelectObjName);
+
+          for (_uint i = 0; i < MAX_SUB_SRV_COUNT; ++i)
+          {
+             ImGui::BulletText("Submap%d : ", i);
+             ImGui::SameLine();
+
+             if (nullptr != pGameobject->Get_MeshRenderer()->Get_Material()->Get_SubMap(i))
+                ImGui::Text("%s", Utils::ToString(pGameobject->Get_MeshRenderer()->Get_Material()->Get_SubMap(i)->Get_Name()).c_str());
+             else
+                ImGui::Text("None");
+          }
+       }
+       ImGui::TreePop();
     }
 }
 
@@ -450,7 +533,6 @@ void ImguiMgr::Change_Object_Value()
     ImGui::InputFloat("##PosZ2", &vecPos.z, 0.01f, 1.0f, "%.3f", eFlag);
 
     ImGui::NewLine();
-    //ImGui::Text("Scale", IMGUI_VERSION, IMGUI_VERSION_NUM);
     ImGui::SeparatorText("Scale");
 
     ImGui::Text("X");
@@ -498,35 +580,233 @@ void ImguiMgr::Change_Object_Value()
 
 void ImguiMgr::Change_ParamDesc()
 {
-    /*
-
-    g_int_0
-       0 : 기본
-       1 : UV 비율로 색 차이
-             -> g_float_0 사용
-       2 : 원형 100이상일때 기본동작, 100 미만일 때
-             -> g_float_0 사용
-       3 : 100 미만 일때
-             -> g_float_0 사용
-       4 : g_float_0 / 100 값이 uv.x 작을때 렌더
-             -> g_float_0 사용
-
-    */
-
-    // renderer->Get_RenderParamDesc().SetVec4(0, _float4(1));
-
     ImGuiInputTextFlags_ eFlag = ImGuiInputTextFlags_CharsDecimal;
 
+    ImGui::SeparatorText("Pass Index");
+    ImGui::SetNextItemWidth(200);
+    ImGui::InputInt("##int pass", &m_iPass, 1, 1, eFlag);
+
     ImGui::NewLine();
-    ImGui::SeparatorText("Change Param");
-    ImGui::SetNextItemWidth(200);
-    ImGui::InputInt("##int pass_o", &m_iPass_0, 1, 1, eFlag);
+    ImGui::SeparatorText("Set Param");
 
-    ImGui::SetNextItemWidth(200);
-    ImGui::InputFloat("##float g_float_o", &m_float_0, 0.01f, 1.0f, "%.3f", eFlag);
+    ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
+    if (ImGui::BeginTabBar("##Set Param", tab_bar_flags))
+    {
+       if (ImGui::BeginTabItem("Param1"))
+       {
+          ImGui::BulletText("g_int_0");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputInt("##int param1", &m_iParam1, 1, 1, eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderInt("##int param1 slider", &m_iParam1, 0, 100, "Value = %d");
 
-    ImGui::SetNextItemWidth(200);
-    ImGui::SliderFloat("##float slider", &m_float_0, 0.0f, 100.0f, "Value = %.3f");
+          ImGui::BulletText("g_int_1");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputInt("##int param2", &m_iParam2, 1, 1, eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderInt("##int param2 slider", &m_iParam2, 0, 100, "Value = %d");
+
+          ImGui::BulletText("g_int_2");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputInt("##int param3", &m_iParam3, 1, 1, eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderInt("##int param3 slider", &m_iParam3, 0, 100, "Value = %d");
+
+          ImGui::BulletText("g_int_3");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputInt("##int param4", &m_iParam4, 1, 1, eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderInt("##int param4 slider", &m_iParam4, 0, 100, "Value = %d");
+
+          m_tagParamDesc.intParams[0] = m_iParam1;
+          m_tagParamDesc.intParams[1] = m_iParam2;
+          m_tagParamDesc.intParams[2] = m_iParam3;
+          m_tagParamDesc.intParams[3] = m_iParam4;
+
+          ImGui::BulletText("g_float_0");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##float param1", &m_tagParamDesc.floatParams[0], 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##float param1 slider", &m_tagParamDesc.floatParams[0], 0.0f, 100.0f, "Value = %.3f");
+          
+          ImGui::BulletText("g_float_1");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##float param2", &m_tagParamDesc.floatParams[1], 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##float param2 slider", &m_tagParamDesc.floatParams[1], 0.0f, 100.0f, "Value = %.3f");
+          
+          ImGui::BulletText("g_float_2");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##float param3", &m_tagParamDesc.floatParams[2], 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##float param3 slider", &m_tagParamDesc.floatParams[2], 0.0f, 100.0f, "Value = %.3f");
+          
+          ImGui::BulletText("g_float_3");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##float param4", &m_tagParamDesc.floatParams[3], 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##float param4 slider", &m_tagParamDesc.floatParams[3], 0.0f, 100.0f, "Value = %.3f");
+
+          ImGui::EndTabItem();
+       }
+       if (ImGui::BeginTabItem("Param2"))
+       {
+          ImGui::BulletText("g_vec2_0 x");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##g_vec2_0 x", &m_tagParamDesc.vec2Params[0].x, 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##g_vec2_0 x slider", &m_tagParamDesc.vec2Params[0].x, 0.0f, 100.0f, "Value = %.3f");
+
+          ImGui::BulletText("g_vec2_0 y");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##g_vec2_0 y", &m_tagParamDesc.vec2Params[0].y, 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##g_vec2_0 y slider", &m_tagParamDesc.vec2Params[0].y, 0.0f, 100.0f, "Value = %.3f");
+
+          ImGui::BulletText("g_vec2_1 x");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##g_vec2_1 x", &m_tagParamDesc.vec2Params[1].x, 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##g_vec2_1 x slider", &m_tagParamDesc.vec2Params[1].x, 0.0f, 100.0f, "Value = %.3f");
+
+          ImGui::BulletText("g_vec2_1 y");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##g_vec2_1 y", &m_tagParamDesc.vec2Params[1].y, 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##g_vec2_1 y slider", &m_tagParamDesc.vec2Params[1].y, 0.0f, 100.0f, "Value = %.3f");
+          
+          ImGui::BulletText("g_vec2_2 x");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##g_vec2_2 x", &m_tagParamDesc.vec2Params[2].x, 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##g_vec2_2 x slider", &m_tagParamDesc.vec2Params[2].x, 0.0f, 100.0f, "Value = %.3f");
+
+          ImGui::BulletText("g_vec2_2 y");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##g_vec2_2 y", &m_tagParamDesc.vec2Params[2].y, 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##g_vec2_2 y slider", &m_tagParamDesc.vec2Params[2].y, 0.0f, 100.0f, "Value = %.3f");
+
+          ImGui::BulletText("g_vec2_3 x");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##g_vec2_3 x", &m_tagParamDesc.vec2Params[3].x, 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##g_vec2_3 x slider", &m_tagParamDesc.vec2Params[3].x, 0.0f, 100.0f, "Value = %.3f");
+
+          ImGui::BulletText("g_vec2_3 y");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##g_vec2_3 y", &m_tagParamDesc.vec2Params[3].y, 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##g_vec2_3 y slider", &m_tagParamDesc.vec2Params[3].y, 0.0f, 100.0f, "Value = %.3f");
+
+          ImGui::EndTabItem();
+       }
+       if (ImGui::BeginTabItem("Param3"))
+       {
+          ImGui::BulletText("g_vec4_0 x");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##g_vec4_0 x", &m_tagParamDesc.vec4Params[0].x, 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##g_vec4_0 x slider", &m_tagParamDesc.vec4Params[0].x, 0.0f, 100.0f, "Value = %.3f");
+
+          ImGui::BulletText("g_vec4_0 y");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##g_vec4_0 y", &m_tagParamDesc.vec4Params[0].y, 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##g_vec4_0 y slider", &m_tagParamDesc.vec4Params[0].y, 0.0f, 100.0f, "Value = %.3f");
+
+          ImGui::BulletText("g_vec4_0 z");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##g_vec4_0 z", &m_tagParamDesc.vec4Params[0].z, 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##g_vec4_0 z slider", &m_tagParamDesc.vec4Params[0].z, 0.0f, 100.0f, "Value = %.3f");
+
+          ImGui::BulletText("g_vec4_0 w");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##g_vec4_0 w", &m_tagParamDesc.vec4Params[0].w, 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##g_vec4_0 w slider", &m_tagParamDesc.vec4Params[0].w, 0.0f, 100.0f, "Value = %.3f");
+          
+          ImGui::BulletText("g_vec4_1 x");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##g_vec4_1 x", &m_tagParamDesc.vec4Params[1].x, 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##g_vec4_1 x slider", &m_tagParamDesc.vec4Params[1].x, 0.0f, 100.0f, "Value = %.3f");
+
+          ImGui::BulletText("g_vec4_1 y");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##g_vec4_1 y", &m_tagParamDesc.vec4Params[1].y, 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##g_vec4_1 y slider", &m_tagParamDesc.vec4Params[1].y, 0.0f, 100.0f, "Value = %.3f");
+
+          ImGui::BulletText("g_vec4_1 z");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##g_vec4_1 z", &m_tagParamDesc.vec4Params[1].z, 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##g_vec4_1 z slider", &m_tagParamDesc.vec4Params[1].z, 0.0f, 100.0f, "Value = %.3f");
+
+          ImGui::BulletText("g_vec4_1 w");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##g_vec4_1 w", &m_tagParamDesc.vec4Params[1].w, 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##g_vec4_1 w slider", &m_tagParamDesc.vec4Params[1].w, 0.0f, 100.0f, "Value = %.3f");
+
+          ImGui::EndTabItem();
+       }
+       if (ImGui::BeginTabItem("Param4"))
+       {
+          ImGui::BulletText("g_vec4_3 x");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##g_vec4_3 x", &m_tagParamDesc.vec4Params[2].x, 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##g_vec4_3 x slider", &m_tagParamDesc.vec4Params[2].x, 0.0f, 100.0f, "Value = %.3f");
+
+          ImGui::BulletText("g_vec4_3 y");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##g_vec4_3 y", &m_tagParamDesc.vec4Params[2].y, 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##g_vec4_3 y slider", &m_tagParamDesc.vec4Params[2].y, 0.0f, 100.0f, "Value = %.3f");
+
+          ImGui::BulletText("g_vec4_3 z");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##g_vec4_3 z", &m_tagParamDesc.vec4Params[2].z, 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##g_vec4_3 z slider", &m_tagParamDesc.vec4Params[2].z, 0.0f, 100.0f, "Value = %.3f");
+
+          ImGui::BulletText("g_vec4_3 w");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##g_vec4_3 w", &m_tagParamDesc.vec4Params[2].w, 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##g_vec4_3 w slider", &m_tagParamDesc.vec4Params[2].w, 0.0f, 100.0f, "Value = %.3f");
+
+          ImGui::BulletText("g_vec4_4 x");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##g_vec4_4 x", &m_tagParamDesc.vec4Params[3].x, 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##g_vec4_4 x slider", &m_tagParamDesc.vec4Params[3].x, 0.0f, 100.0f, "Value = %.3f");
+
+          ImGui::BulletText("g_vec4_4 y");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##g_vec4_4 y", &m_tagParamDesc.vec4Params[3].y, 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##g_vec4_4 y slider", &m_tagParamDesc.vec4Params[3].y, 0.0f, 100.0f, "Value = %.3f");
+
+          ImGui::BulletText("g_vec4_4 z");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##g_vec4_4 z", &m_tagParamDesc.vec4Params[3].z, 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##g_vec4_4 z slider", &m_tagParamDesc.vec4Params[3].z, 0.0f, 100.0f, "Value = %.3f");
+
+          ImGui::BulletText("g_vec4_4 w");
+          ImGui::SetNextItemWidth(200);
+          ImGui::InputFloat("##g_vec4_4 w", &m_tagParamDesc.vec4Params[3].w, 0.01f, 1.0f, "%.3f", eFlag);
+          ImGui::SetNextItemWidth(200);
+          ImGui::SliderFloat("##g_vec4_4 w slider", &m_tagParamDesc.vec4Params[3].w, 0.0f, 100.0f, "Value = %.3f");
+
+          ImGui::EndTabItem();
+       }
+       ImGui::EndTabBar();
+    }
 
     if (0 == m_strSelectObjName.length())
     {
@@ -540,8 +820,8 @@ void ImguiMgr::Change_ParamDesc()
     }
 
     auto pRenderer = pGameobject->Get_MeshRenderer();
-    pRenderer->Get_RenderParamDesc().SetInt(0, m_iPass_0);
-    pRenderer->Get_RenderParamDesc().SetFloat(0, m_float_0);
+    pRenderer->Set_Pass(m_iPass);
+    pRenderer->Get_RenderParamDesc() = m_tagParamDesc;
 }
 
 void ImguiMgr::Add_Picking_Zone()
@@ -567,9 +847,6 @@ void ImguiMgr::Add_Picking_Zone()
             m_iRecordOrder = 0;
         }
     }
-
-    // 기록 버튼 누르면 다음 두번의 클릭은 피킹존 위치 생성
-    // begintabitem
 
     ImGui::BulletText("Press the record button and follow the instructions");
     ImGui::BulletText("Rect : Click on the top left corner first. \n\t   Then, click on the bottom right corner.");
@@ -632,10 +909,8 @@ void ImguiMgr::Decide_FilePath()
     if (ImGui::Button("File Path Dialog##save load file"))
         ImGuiFileDialog::Instance()->OpenDialog("File Path", "Get File", ".dat", ".");
 
-    // display
     if (ImGuiFileDialog::Instance()->Display("File Path"))
     {
-        // action if OK
         if (ImGuiFileDialog::Instance()->IsOk())
         {
             string strPath = ImGuiFileDialog::Instance()->GetFilePathName();
@@ -657,7 +932,6 @@ void ImguiMgr::Decide_FilePath()
 
         }
 
-        // close
         ImGuiFileDialog::Instance()->Close();
     }
 }
@@ -696,9 +970,15 @@ void ImguiMgr::Save_Ui_Desc()
 
                 // texture name
                 file->Write<string>(Utils::ToString(pGameobject->Get_MeshRenderer()->Get_Material()->Get_TextureMap(TextureMapType::DIFFUSE)->Get_Name()));
+                
+                // submap name
+                //file->Write<string>(Utils::ToString(pGameobject->Get_MeshRenderer()->Get_Material()->Get_TextureMap(TextureMapType::DIFFUSE)->Get_Name()));
 
                 // worldmatrix
                 file->Write<_float4x4>(pGameobject->GetOrAddTransform()->Get_WorldMatrix());
+
+                // pass index
+                file->Write<_uint>(pGameobject->Get_MeshRenderer()->Get_Pass());
 
                 // renderer param
                 file->Write<RenderParams>(pGameobject->Get_MeshRenderer()->Get_RenderParamDesc());
@@ -767,11 +1047,13 @@ void ImguiMgr::Load_Ui_Desc()
                 renderer->Set_Mesh(mesh);
                 auto material = make_shared<Material>();
                 material->Set_TextureMap(RESOURCES.Get<Texture>(Utils::ToWString(file->Read<string>())), TextureMapType::DIFFUSE);
+                //material->Set_TextureMap(RESOURCES.Get<Texture>(Utils::ToWString(file->Read<string>())), TextureMapType::DIFFUSE);
 
                 UiObject->GetOrAddTransform()->Set_WorldMat(file->Read<_float4x4>());
+                _uint iIndex = file->Read<_uint>();
+                renderer->Set_Pass(iIndex);
                 renderer->Get_RenderParamDesc() = file->Read<RenderParams>();
                 renderer->Set_Material(material);
-                renderer->Set_Pass(MeshRenderer::PASS_INFO::Default_UI);
                 UiObject->Add_Component(renderer);
 
                 _bool bIsUseBaseUi = file->Read<_bool>();
@@ -779,6 +1061,7 @@ void ImguiMgr::Load_Ui_Desc()
                 {
                     auto BaseUi = make_shared<BaseUI>();
                     BaseUi->Get_Desc() = file->Read<BaseUI::BASEUIDESC>();
+                    UiObject->Add_Component(BaseUi);
                 }
 
                 UiObject->Set_LayerIndex(Layer_UI);

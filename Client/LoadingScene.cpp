@@ -62,7 +62,7 @@ void LoadingScene::Late_Tick()
 void LoadingScene::Final_Tick()
 {
 	__super::Final_Tick();
-	//if (KEYTAP(KEY_TYPE::LBUTTON))
+	if (KEYTAP(KEY_TYPE::LBUTTON))
 	{
 		if (!m_pLoader->m_bLoadFinished)
 			return;

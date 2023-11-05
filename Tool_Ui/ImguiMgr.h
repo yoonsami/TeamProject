@@ -21,6 +21,7 @@ private:
 
    void        File_Dialog();             // 파일탐색기로 dds추가
    void        Select_Texture();          // 텍스처 선택
+   void        Add_Texture();
    void        Decide_Transform_Value();  // 사이즈, 위치 값 설정
    void        Create_Object();           // 
    
@@ -52,6 +53,7 @@ private:
    _float3           m_vecPos                = {};          // 생성할 위치
    _float3           m_vecScale              = {};          // 텍스처 크기
    _uint             m_iTextureCursor        = { 0 };       // list box 선택 인덱스
+   _int              m_iTextureType          = { 0 };
 
    wstring           m_strName;                             // 생성할 오브젝트 이름
    list<wstring>     m_GameobjectName;                      // 생성한 오브젝트들 이름
@@ -63,8 +65,13 @@ private:
    _int              m_iTypeZmoOper          = { 0 };       // OPERATION 값 변경 라디오 버튼
    OPERATION         m_eZmoOper              = { OPERATION::TRANSLATE };
 
-   _int              m_iPass_0               = { 0 };       // 파라메터 -> 패스
-   _float            m_float_0               = { 0.f };     // 파라메터 -> 세부 값
+   _int              m_iPass                 = { 0 };       // Pass Index
+   RenderParams      m_tagParamDesc          = {};          // Param Desc
+
+   _int              m_iParam1               = { 0 };
+   _int              m_iParam2               = { 0 };
+   _int              m_iParam3               = { 0 };
+   _int              m_iParam4               = { 0 };
 
    _int              m_iPickTypeIndex        = { 0 };       // add picking zone 라디오 버튼
    POINT             m_ptPos1                = {};          // 첫 피킹 마우스 좌표
@@ -75,5 +82,23 @@ private:
    wstring           m_strSaveLoadPath;                     // dat 파일 경로
    wstring           m_strSaveFileName;
 
+   const char* m_arrItems[16] = {
+      "DIFFUSE",
+      "NORMAL",
+      "SPECULAR",
+      "OPACITY",
+      "EMISSIVE",
+      "DISSOLVE",
+      "DISTORTION",
+      "TEXTURE7",
+      "TEXTURE8",
+      "TEXTURE9",
+      "TEXTURE10",
+      "TEXTURE11",
+      "TEXTURE12",
+      "TEXTURE13",
+      "TEXTURE14",
+      "TEXTURE15",
+   };
 };
 

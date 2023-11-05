@@ -55,6 +55,7 @@ struct TweenFrameDesc
     KeyFrameDesc curr;
     KeyFrameDesc next;
 };
+
 struct RenderParamDesc
 {
     int g_int_0;
