@@ -133,7 +133,7 @@ struct CreateParticleDesc
 	int iNewlyAddCnt = 0;
 
 	// LifeTime 
-	int    iLifeTimeOption;
+	int     iLifeTimeOption;
 	_float2 vMinMaxLifeTime;
 	
 	// Diffuse Color
@@ -147,8 +147,8 @@ struct CreateParticleDesc
 	_float2   Offset;	// to make 16byte (no use)
 
 	// Start Position 
-	_float4 vCreateRange;
-	_float4 vCreateOffsets;
+	_float4   vCreateRange;
+	_float4   vCreateOffsets;
 };
 
 struct TextureMapDesc

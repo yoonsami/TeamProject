@@ -41,7 +41,9 @@ void CS_Movement_Non(int3 threadIndex : SV_DispatchThreadID)
 {
     /* Movement : 없음. */
     
-    if (threadIndex.x >= maxCount)
+    int iMaxInstanceCnt = g_int_3;
+    
+    if (threadIndex.x >= iMaxInstanceCnt)
         return;
     
     g_ComputeShared_UAVBuffer[0].addCount = g_NewlyAddCnt;
@@ -72,7 +74,7 @@ void CS_Movement_Non(int3 threadIndex : SV_DispatchThreadID)
         // For. 새로 생성이 되었다면 기본 값 채워주기 
         if (g_ParticleInfo_UAVBuffer[threadIndex.x].iAlive == 1)
         {
-            float x = ((float) threadIndex.x / (float) maxCount) + g_fTimeDelta;
+            float x = ((float) threadIndex.x / (float) iMaxInstanceCnt) + g_fTimeDelta;
             float r1 = Rand(float2(x, g_fTimeDelta));
             float r2 = Rand(float2(x * g_fTimeDelta, g_fTimeDelta));
             float r3 = Rand(float2(x * g_fTimeDelta * g_fTimeDelta, g_fTimeDelta * g_fTimeDelta));
@@ -96,10 +98,7 @@ void CS_Movement_Non(int3 threadIndex : SV_DispatchThreadID)
             g_ParticleInfo_UAVBuffer[threadIndex.x].fLifeTime = ((g_MinMaxLifeTime.y - g_MinMaxLifeTime.x) * noise.x) + g_MinMaxLifeTime.x;
             
              // Scale 
-            if (0 == g_int_1)       // constant
-                g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrSize.xy = ((g_vec2_1.y - g_vec2_1.x) * noise.x) + g_vec2_1.x;
-            else if (1 == g_int_1)  // curve
-                g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrSize.x = pow(abs(g_vec2_1.x), g_vec2_1.y);
+            g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrSize.xy = ((g_MinMaxScale.y - g_MinMaxScale.x) * noise.x) + g_MinMaxScale.x;
             
             // Speed
             if (0 == g_int_2)       // constant
@@ -187,7 +186,7 @@ void GS_Billbord(point VS_OUTPUT input[1], inout TriangleStream<GS_OUTPUT> outpu
     if (0 >= g_Data[id].iAlive)
         return;
     
-    float4 vLook = input[0].viewPos - input[0].worldPos;
+    float4 vLook = float4(CameraPosition() - input[0].worldPos.xyz, 0.f);
     float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * g_Data[id].vCurrSize.x;
     float3 vUp = normalize(cross(vLook.xyz, vRight)) * g_Data[id].vCurrSize.y;
     
@@ -198,17 +197,16 @@ void GS_Billbord(point VS_OUTPUT input[1], inout TriangleStream<GS_OUTPUT> outpu
     output[3].position = float4(input[0].worldPos.xyz + vRight - vUp, 1.f);
     
     // For. view space
-    output[0].viewPos = output[0].position.xyz;
-    output[1].viewPos = output[1].position.xyz;
-    output[2].viewPos = output[2].position.xyz;
-    output[3].viewPos = output[3].position.xyz;
+    output[0].viewPos = mul(output[0].position, V);
+    output[1].viewPos = mul(output[1].position, V);
+    output[2].viewPos = mul(output[2].position, V);
+    output[3].viewPos = mul(output[3].position, V);
     
     // For. proj space
     for (int i = 0; i < 4; ++i)
         output[i].position = mul(output[i].position, P);
     
-    // For. Texcoord 
-        // TODO : sprite animation가능하도록 수정해야함.
+    // For. Texcoord // TODO : sprite animation가능하도록 수정해야함.
     output[0].uv = float2(0.f, 0.f);
     output[1].uv = float2(1.f, 0.f);
     output[2].uv = float2(1.f, 1.f);

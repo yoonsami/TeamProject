@@ -63,6 +63,7 @@ public:
         _float  fDuration;
 
         // Create Interval
+        _bool   bIsbCreateOnce;
         _float  fCreateInterval;
 
         // Particle Count
@@ -148,6 +149,8 @@ private:
 
     shared_ptr<StructuredBuffer> m_pParticleInfo_UAVBuffer = nullptr;   // 쉐이더와 데이터를 주고받는 UAV (입자 하나하나에 대한 정보)
     shared_ptr<StructuredBuffer> m_pComputeShared_UAVBuffer = nullptr;  // 쉐이더와 데이터를 주고받는 UAV
+
+    _bool                   m_bIsFirstCreateParticleDone = { false };
 
     /* Time Acc */
     _float                  m_fCurrLifeTime = { 0.f };   // 본 Particle이 생성된 후 흐른 시간 

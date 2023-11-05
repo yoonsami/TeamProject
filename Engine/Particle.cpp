@@ -67,11 +67,23 @@ void Particle::Final_Tick()
 
 	// For. Decide whether to create a new Particle and Cnt
 	m_CreateParticleParams.iNewlyAddCnt = 0;
-	if (m_fTimeAcc_CreatCoolTime > m_tDesc.fCreateInterval)
+	if (m_tDesc.bIsbCreateOnce)
 	{
-		// min ~ max 사이의 랜덤한 수를 골라 그만큼 새로 생성한다. 
-		m_CreateParticleParams.iNewlyAddCnt = (rand() % (m_tDesc.iMaxCnt + 1 - m_tDesc.iMinCnt)) + m_tDesc.iMinCnt;
-		m_fTimeAcc_CreatCoolTime = 0.f;
+		if (!m_bIsFirstCreateParticleDone)
+		{
+			// min ~ max 사이의 랜덤한 수를 골라 그만큼 새로 생성한다. 
+			m_CreateParticleParams.iNewlyAddCnt = (rand() % (m_tDesc.iMaxCnt + 1 - m_tDesc.iMinCnt)) + m_tDesc.iMinCnt;
+			m_fTimeAcc_CreatCoolTime = 0.f;
+		}
+	}
+	else 
+	{
+		if (m_fTimeAcc_CreatCoolTime > m_tDesc.fCreateInterval)
+		{
+			// min ~ max 사이의 랜덤한 수를 골라 그만큼 새로 생성한다. 
+			m_CreateParticleParams.iNewlyAddCnt = (rand() % (m_tDesc.iMaxCnt + 1 - m_tDesc.iMinCnt)) + m_tDesc.iMinCnt;
+			m_fTimeAcc_CreatCoolTime = 0.f;
+		}
 	}
 	
 	// For. Bind Params and data to Shader 
@@ -86,7 +98,7 @@ void Particle::Final_Tick()
 	m_pShader->GetUAV("g_ComputeShared_UAVBuffer")->SetUnorderedAccessView(m_pComputeShared_UAVBuffer->Get_UAV().Get());	 
 
 	// For. Dispatch
-	m_pShader->Dispatch(1, m_eComputePass, 1, 1, 1);
+	m_pShader->Dispatch(TECHNIQUE_Compute, 0, 1, 1, 1);
 
 	vector<ParticleInfo_UAV> tmp(m_tDesc.iMaxParticleNum);
 	m_pParticleInfo_UAVBuffer->Copy_FromOutput(tmp.data());
@@ -166,7 +178,7 @@ void Particle::Init_CreateParticleParams()
 
 void Particle::Init_ComputeParams()
 {
-	/* CS에서 사용할 값들 세팅하기. 모션에 따라 params에 맵핑하는 값들의 의미가 달라질 수 있다. */
+	/* CS에서 사용할 값들 세팅하기. 모션에 따라 params에 맵핑하는 값들의 의미가 달라질              수 있다. */
 
 	// For. Particle Object's Duration, LifeTime
 	m_ComputeParams.SetFloat(0, m_tDesc.fDuration);
@@ -186,6 +198,9 @@ void Particle::Init_ComputeParams()
 	// For. Update Speed
 	m_ComputeParams.SetInt(2, m_tDesc.iSpeedOption);
 	m_ComputeParams.SetVec2(2, m_tDesc.vSpeed);
+
+	// For. Max instance cnt
+	m_ComputeParams.SetInt(3, m_tDesc.iMaxParticleNum);
 
 	// For. Movement 
 	m_ComputeParams.SetVec4(1, m_tDesc.vMovementOffsets);

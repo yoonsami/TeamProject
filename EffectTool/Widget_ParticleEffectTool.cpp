@@ -86,17 +86,16 @@ void Widget_ParticleEffectTool::Option_Etc()
 
 	ImGui::InputFloat("Duration", &m_fDuration);
 
-	_bool bCreateOnce = true;
-	ImGui::Checkbox("Play Once", &bCreateOnce);
-	if (bCreateOnce)
-	{
-		m_fCreateInterval = m_fDuration + 1.f;
-	}
-	else
+	ImGui::Checkbox("Play Once", &m_bIsbCreateOnce);
+	if(!m_bIsbCreateOnce)
 	{
 		ImGui::InputFloat("Create Interval", &m_fCreateInterval);
 	}
 	ImGui::Checkbox("Is Loop", &m_bIsLoop);
+
+	ImGui::Text("Number fo Particles");
+	ImGui::InputInt2("Particle Count(min, max)", m_iParticleCnt);
+	ImGui::InputInt("Max Particle Count", &m_iMaxParticle);
 }
 
 void Widget_ParticleEffectTool::Option_Textures()
@@ -442,11 +441,12 @@ void Widget_ParticleEffectTool::Create()
 		_float2(m_fDissolveSpeed),
 
 		m_fDuration,
+		m_bIsbCreateOnce,
 		m_fCreateInterval,
 
-		(_int)m_iParticleCnt[0],
-		(_int)m_iParticleCnt[1],
-		(_int)m_iMaxParticle,
+		m_iParticleCnt[0],
+		m_iParticleCnt[1],
+		m_iMaxParticle,
 
 		(_int)m_iSelected_LifeTimeOption,
 		_float2(m_fLifeTime),

@@ -66,6 +66,9 @@ private:
 	_int					m_iSelected_DissolveOption = { 0 };
 	_float					m_fDissolveSpeed[2] = {1.f, 1.f};
 	
+	/* Create Interval */
+
+
 	/* For. LifeTime */
 	_uint					m_iSelected_LifeTimeOption = { 0 };
 	_float					m_fLifeTime[2] = {1.f, 5.f};
@@ -82,9 +85,10 @@ private:
 	_float					m_vMovementOffsets[4] = {0.f, 0.f, 0.f, 0.f};
 
 	/* For. Implicit Options */
-	_uint					m_iParticleCnt[2] = {1, 10};
-	_uint					m_iMaxParticle = { 1000 };
+	_int					m_iParticleCnt[2] = {1, 10};
+	_int					m_iMaxParticle = { 500 };
 	_float					m_fDuration = { 5.f };
+	_bool					m_bIsbCreateOnce = { false };
 	_float					m_fCreateInterval;
 	_bool					m_bIsLoop = { false };
 
