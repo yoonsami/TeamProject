@@ -58,31 +58,33 @@ private:
 	ImVec4					m_vDestColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 	/* For. Coloring Option */
-	_bool					m_bGradationByAlpha_Brighter = { false };
-	_bool					m_bGradationByAlpha_Darker = { false };
+	_float					m_fGradationByAlpha_Brighter = { false };
+	_float					m_fGradationByAlpha_Darker = { false };
 	_bool					m_bIsAlphaFollowDuration = { true };				// 듀레이션과 현재 시간의 비가 모든 파티클의 알파값에 영향을 준다.
-	_bool					m_bDissolveOn = { false };
-	_float					m_fDissolveSpeed = { 1.f };
-	_bool					m_bDistortionOn = { false };
-	_float					m_fDistortionOffset[2] = {0.5f, 0.5f};
-
+	
+	_int					m_iSelected_DissolveOption = { 0 };
+	_float					m_fDissolveSpeed[2] = {1.f, 1.f};
+	
 	/* For. LifeTime */
 	_uint					m_iSelected_LifeTimeOption = { 0 };
-	_float					m_iLifeTime[2] = {1.f, 5.f};
+	_float					m_fLifeTime[2] = {1.f, 5.f};
 
 	/* For. Speed */
 	_uint					m_iSelected_SpeedOption = { 0 };
-	_float					m_iSpeed[2] = { 1.f, 5.f };
+	_float					m_fSpeed[2] = { 1.f, 5.f };
 
 	/* For. Billbord */
 	_uint					m_iSelected_BillbordOption = { 0 };
 
 	/* For. Movement */
 	_uint					m_iSelected_MovementOption = { 0 };
-	_float4					m_vMovementOffsets = {0.f, 0.f, 0.f, 0.f};
+	_float					m_vMovementOffsets[4] = {0.f, 0.f, 0.f, 0.f};
 
 	/* For. Implicit Options */
+	_uint					m_iParticleCnt[2] = {1, 10};
+	_uint					m_iMaxParticle = { 1000 };
 	_float					m_fDuration = { 5.f };
+	_float					m_fCreateInterval;
 	_bool					m_bIsLoop = { false };
 
 	/* For. Create Particle position */
@@ -91,8 +93,9 @@ private:
 	_float4					m_fCreateOffset = { 0.f, 0.f, 0.f, 0.f };
 
 	/* For. Scale */
+	_float					m_fStartScale[2] = { 1.f, 1.f };	// min, max
 	_uint					m_iSelected_ScaleOption = { 0 };
-	_float					m_iScale[2] = { 1.f, 5.f };
+	_float					m_fScaleSpeed[2] = { 1.f, 5.f };
 
 	/* For. Rotation (Billbord option에 따라 선택할 수 있는 옵션이 달라진다.) */
 	_float					m_fRotationSpeed[3] = { 0.f, 0.f, 0.f };

@@ -2,7 +2,7 @@
 #include "Widget_ParticleEffectTool.h"
 
 // For. Components
-#include "ParticleSystem.h"
+#include "Particle.h"
 
 Widget_ParticleEffectTool::Widget_ParticleEffectTool()
 {
@@ -169,6 +169,8 @@ void Widget_ParticleEffectTool::Option_Textures()
 
 void Widget_ParticleEffectTool::Option_Color()
 {
+	ImGuiColorEditFlags ColorEdit_flags = 0 | ImGuiColorEditFlags_AlphaBar;	// RGB, Alpha Bar
+	
 	ImGui::SeparatorText("Color");
 
 	const char* pszItems[] = { "Use Shape Texture Color", "Constant", "Gradation"};
@@ -185,8 +187,6 @@ void Widget_ParticleEffectTool::Option_Color()
 		}
 		ImGui::EndCombo();
 	}
-
-	ImGuiColorEditFlags ColorEdit_flags = 0 | ImGuiColorEditFlags_AlphaBar;	// RGB, Alpha Bar
 	switch (m_iSelected_ColorOption)
 	{
 	case 1: // Constant
@@ -214,8 +214,6 @@ void Widget_ParticleEffectTool::Option_Color()
 		}
 		ImGui::EndCombo();
 	}
-
-	ImGuiColorEditFlags ColorEdit_flags = 0 | ImGuiColorEditFlags_AlphaBar;	// RGB, Alpha Bar
 	switch (iSelected_ChangingColorOption)
 	{
 	case 0: // No Change
@@ -226,17 +224,22 @@ void Widget_ParticleEffectTool::Option_Color()
 		break;
 	}
 
+	ImGui::Text("Coloring Options");
+	ImGui::InputFloat("Gradation Brigher", &m_fGradationByAlpha_Brighter);
+	ImGui::InputFloat("Gradation Darker", &m_fGradationByAlpha_Darker);
+	ImGui::Checkbox("FadeOut by Duration", &m_bIsAlphaFollowDuration);
 }
 
 void Widget_ParticleEffectTool::Option_Transform()
 {
 	ImGui::SeparatorText("Create Position");
 	ImGui::InputFloat3("Center Position", m_fCenterPosition);
-	ImGui::InputFloat3("Range", m_fCreateRange);
+	ImGui::InputFloat3("Range##CreatePosition", m_fCreateRange);
 
 	ImGui::SeparatorText("Scale");
+	ImGui::InputFloat2("Start Scale(min,max)", m_fStartScale);
 	const char* pszItems[] = { "Constant", "Random", "Curve" };
-	if (ImGui::BeginCombo("Options##Scale", pszItems[m_iSelected_ScaleOption], 0))
+	if (ImGui::BeginCombo("Scaling Options##Scale", pszItems[m_iSelected_ScaleOption], 0))
 	{
 		for (_uint n = 0; n < IM_ARRAYSIZE(pszItems); n++)
 		{
@@ -252,20 +255,21 @@ void Widget_ParticleEffectTool::Option_Transform()
 	switch (m_iSelected_ScaleOption)
 	{
 	case 0: // Constant
-		ImGui::InputFloat("Scale", &m_iScale[0]);
-		m_iScale[1] = m_iScale[0];
+		ImGui::InputFloat("Scale Speed", &m_fScaleSpeed[0]);
+		m_fScaleSpeed[1] = m_fScaleSpeed[0];
 		break;
 	case 1: // Random
-		ImGui::InputFloat2("Min, Max Scale", m_iScale);
+		ImGui::InputFloat2("Speed(Min, Max)##ScaleSpeed", m_fScaleSpeed);
 		break;
 	case 2: // Curve
-		ImGui::InputFloat2("Base, Exponent Scale", m_iScale);
+		ImGui::InputFloat2("Speed(Base, Exponent)##ScaleSpeed", m_fScaleSpeed);
 		break;
 	}
 	
 	ImGui::SeparatorText("Rotation");
-	ImGui::InputFloat3("Range", m_fRotationSpeed);
-	
+	ImGui::Text("Rotation Speed");
+	ImGui::InputFloat3("Speed(x,y,z)##RotationSpeed", m_fRotationSpeed);
+	ImGui::Text("Rotation Angle");
 	const char* pszItems2[] = { "Constant", "Random" };
 	if (ImGui::BeginCombo("Options##RotateAngle", pszItems2[m_iSelected_RotationAngleOption], 0))
 	{
@@ -283,10 +287,10 @@ void Widget_ParticleEffectTool::Option_Transform()
 	switch (m_iSelected_RotationAngleOption)
 	{
 	case 0: // Constant
-		ImGui::InputFloat3("x,y,z Angle", m_fRotationAngle);
+		ImGui::InputFloat3("Angle(x,y,z)##RotationAngle", m_fRotationAngle);
 		break;
 	case 1: // Random
-		ImGui::InputFloat2("Min, Max Angle", m_fRotationAngle);
+		ImGui::InputFloat2("Angle(Min, Max)##RotationAngle", m_fRotationAngle);
 		break;
 	}
 }
@@ -312,11 +316,11 @@ void Widget_ParticleEffectTool::Option_LifeTime()
 	switch (m_iSelected_LifeTimeOption)
 	{
 	case 0: // Constant
-		ImGui::InputFloat("LifeTime(sec)", &m_iLifeTime[0]);
-		m_iLifeTime[1] = m_iLifeTime[0];
+		ImGui::InputFloat("LifeTime", &m_fLifeTime[0]);
+		m_fLifeTime[1] = m_fLifeTime[0];
 		break;
 	case 1: // Random
-		ImGui::InputFloat2("Min, Max LifeTime(sec)", m_iLifeTime);
+		ImGui::InputFloat2("LifeTime(min, max)", m_fLifeTime);
 		break;
 	}
 }
@@ -361,14 +365,14 @@ void Widget_ParticleEffectTool::Option_Speed()
 	switch (m_iSelected_SpeedOption)
 	{
 	case 0: // Constant
-		ImGui::InputFloat("Speed", &m_iSpeed[0]);
-		m_iSpeed[1] = m_iSpeed[0];
+		ImGui::InputFloat("Speed", &m_fSpeed[0]);
+		m_fSpeed[1] = m_fSpeed[0];
 		break;
 	case 1: // Random
-		ImGui::InputFloat2("Min, Max Speed", m_iSpeed);
+		ImGui::InputFloat2("Speed(min, max)##Speed", m_fSpeed);
 		break;
 	case 2: // Curve
-		ImGui::InputFloat2("Base, Exponent Speed", m_iSpeed);
+		ImGui::InputFloat2("Speed(Base, Exponent)##Speed", m_fSpeed);
 		break;
 	}
 }
@@ -407,17 +411,64 @@ void Widget_ParticleEffectTool::Create()
 
 	// For. GameObject에 Particle component 붙이기 
 	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Particle2.fx");
-	shared_ptr<ParticleSystem> particleSys =  make_shared<ParticleSystem>(shader);
-	ParticleObj->Add_Component(particleSys);	
-	ParticleObj->Get_ParticleSystem()->Set_Mesh(RESOURCES.Get<Mesh>(L"Point"));
-		
-	shared_ptr<Material> material = make_shared<Material>();
-	
-	ParticleObj->Get_ParticleSystem()->Set_Material(material);
-	
-	// TODO 
+	shared_ptr<Particle> particle =  make_shared<Particle>(shader);
+	ParticleObj->Add_Component(particle);
 
-	ParticleObj->Get_ParticleSystem()->Init();
+	// For. Setting Particle component
+	Particle::DESC tParticleDesc{
+		"../Resources/Textures/Universal/" + m_strSelected_Texture_Shape,
+		"../Resources/Textures/Universal/" + m_strSelected_Texture_Dissolve,
+		"../Resources/Textures/Universal/" + m_strSelected_Texture_Option1,
+		"../Resources/Textures/Universal/" + m_strSelected_Texture_Option2,
+
+		Color(m_vStartColor.x, m_vStartColor.y, m_vStartColor.z, m_vStartColor.w),
+		Color(m_vEndColor.x, m_vEndColor.y, m_vEndColor.z, m_vEndColor.w),
+		Color(m_vDestColor.x, m_vDestColor.y, m_vDestColor.z, m_vDestColor.w),
+		
+		m_fGradationByAlpha_Brighter,
+		m_fGradationByAlpha_Darker,
+		m_bIsAlphaFollowDuration,
+
+		(_int)m_iSelected_DissolveOption,
+		_float2(m_fDissolveSpeed),
+
+		m_fDuration,
+		m_fCreateInterval,
+
+		(_int)m_iParticleCnt[0],
+		(_int)m_iParticleCnt[1],
+		(_int)m_iMaxParticle,
+
+		(_int)m_iSelected_LifeTimeOption,
+		_float2(m_fLifeTime),
+
+		(_int)m_iSelected_SpeedOption,
+		_float2(m_fSpeed),
+
+		(_int)m_iSelected_BillbordOption,
+
+		(_int)m_iSelected_MovementOption,
+		_float4(m_vMovementOffsets),
+
+		m_bIsLoop,
+
+		_float3(m_fCenterPosition),
+		_float3(m_fCreateRange),
+		_float4(m_fCreateOffset),
+
+		_float2(m_fStartScale),
+		(_int)m_iSelected_ScaleOption,
+		_float2(m_fScaleSpeed),
+
+		_float3(m_fRotationSpeed),
+		(_int)m_iSelected_RotationAngleOption,
+		_float3(m_fRotationAngle)
+	};
+	ParticleObj->Get_Particle()->Init(&tParticleDesc);
+
+	shared_ptr<Material> material = make_shared<Material>();
+	ParticleObj->Get_Particle()->Set_Material(material);
+
 	// For. 위젯의 Target Object에 바인딩해두기 
 	m_pTargetParticle = ParticleObj;
 

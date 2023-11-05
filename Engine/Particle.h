@@ -42,7 +42,6 @@ public:
         // Textures
         string  strSelected_Texture_Shape = { "None" };
         string  strSelected_Texture_Dissolve = { "None" };
-        string  strSelected_Texture_Distortion = { "None" };
         string  strSelected_Texture_Option1 = { "None" };
         string  strSelected_Texture_Option2 = { "None" };
 
@@ -52,8 +51,9 @@ public:
         Color   vDestColor;         
 
         // Alpha gradation
-        _float	fGradationByAlpha_Brighter = { false };
-        _float	fGradationByAlpha_Darker = { false };
+        _float	fGradationByAlpha_Brighter = { 0.f };
+        _float	fGradationByAlpha_Darker = { 0.f };
+        _bool   bIsAlphaFollowDuration = { false };
         
         // Dissolve
         _int    iDissolveOption = { 0 };            // non, constant, curve
@@ -69,7 +69,7 @@ public:
         _int    iMinCnt = { 1 };
         _int    iMaxCnt = { 10 };
         _int    iMaxParticleNum = { 10 };
-
+        
         // LifeTime ( Particle ÇÏ³ªÀÇ lifetime )
         _int    iLifeTimeOption;        // rand, curve
         _float2 vLifeTime;              // (if option is rand) min, max / (if option is curve) base, exponent  
@@ -114,6 +114,10 @@ public:
     virtual void    Tick() override;
     virtual void    Final_Tick() override;  // CS
     void            Render();               // VS, PS
+
+    /* Setter */
+    void            Set_Mesh(shared_ptr<Mesh> mesh) { m_pMesh = mesh; }
+    void            Set_Material(shared_ptr<Material> material) { m_pMaterial = material; }
 
 private:
     void            Init_ComputeParams();
