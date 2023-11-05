@@ -130,25 +130,34 @@ struct ParticleDesc
 
 struct CreateParticleDesc
 {
-	int iNewlyAddCnt = 0;
+	int			iEndScaleOption;
+	int			iEndSpeedOption;
 
-	// LifeTime 
-	int     iLifeTimeOption;
-	_float2 vMinMaxLifeTime;
+	_float2		vMinMaxLifeTime;
 	
-	// Diffuse Color
-	_float4   vStartColor;
-	_float4   vEndColor;
+	_float2		vMinMaxRotationSpeed_X;
+	_float2		vMinMaxRotationSpeed_Y;
+	_float2		vMinMaxRotationSpeed_Z;
 
-	// Start Scale
-	_float2   vMinMaxScale;
-	
-	// Offset
-	_float2   Offset;	// to make 16byte (no use)
+	_float2		vMinMaxRotationAngle_X;
+	_float2		vMinMaxRotationAngle_Y;
+	_float2		vMinMaxRotationAngle_Z;
 
-	// Start Position 
-	_float4   vCreateRange;
-	_float4   vCreateOffsets;
+	_float4		vStartColor;
+	_float4		vEndColor;
+
+	_float2		vMinMaxStartScale;
+	_float2		vMinMaxEndScale;
+
+	_float2		vMinMaxStartSpeed;
+	_float2		vMinMaxEndSpeed;
+
+	_float4		vCreateRange;
+	_float4		vCreateOffsets;
+
+	int			iNewlyAddCnt = 0;
+
+	_float3		Padding;
 };
 
 struct TextureMapDesc

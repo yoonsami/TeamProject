@@ -58,20 +58,15 @@ void Widget_ParticleEffectTool::Set_Texture_List()
 
 void Widget_ParticleEffectTool::ImGui_ParticleMaker()
 {
-	ImGui::SeparatorText("Particle Setting");
-	ImGui::InputText("Tag", m_pszParticleTag, MAX_PATH);
-	ImGui::Text("");
-
-	Option_Etc();
-	Option_Billbord();	
+	Option_ParticleObjectProperty();
+	Option_ParticleProperty();
 	Option_Textures();
 	Option_Color();
 	Option_Transform();
-	Option_LifeTime();
-	Option_Speed();
+	Option_Movement();
 
 	/* For. Create, Delete Particle */
-	ImGui::Text("");
+	ImGui::Spacing();
 	ImGui::SeparatorText(" Create/Delete ");
 	if (ImGui::Button("Create"))
 		Create();
@@ -80,22 +75,70 @@ void Widget_ParticleEffectTool::ImGui_ParticleMaker()
 		Delete();
 }
 
-void Widget_ParticleEffectTool::Option_Etc()
+void Widget_ParticleEffectTool::Option_ParticleObjectProperty()
 {
-	ImGui::SeparatorText("Particle Object's Options");
+	ImGui::SeparatorText("Particle Object's Property");
+
+	ImGui::InputText("Tag", m_pszParticleTag, MAX_PATH);
+	ImGui::Spacing();
 
 	ImGui::InputFloat("Duration", &m_fDuration);
+	ImGui::Spacing();
 
-	ImGui::Checkbox("Play Once", &m_bIsbCreateOnce);
-	if(!m_bIsbCreateOnce)
-	{
-		ImGui::InputFloat("Create Interval", &m_fCreateInterval);
-	}
-	ImGui::Checkbox("Is Loop", &m_bIsLoop);
-
-	ImGui::Text("Number fo Particles");
 	ImGui::InputInt2("Particle Count(min, max)", m_iParticleCnt);
-	ImGui::InputInt("Max Particle Count", &m_iMaxParticle);
+	ImGui::InputInt("Max Accumulated Count", &m_iMaxInstanceCnt);
+	ImGui::Spacing();
+
+	ImGui::Checkbox("Creaet Once", &m_bIsbCreateOnce);
+	if (!m_bIsbCreateOnce)
+		ImGui::InputFloat("Create Interval", &m_fCreateInterval);
+	ImGui::Spacing();
+}
+
+void Widget_ParticleEffectTool::Option_ParticleProperty()
+{
+	ImGui::SeparatorText("Particle's Property");
+
+	const char* pszItems_LifeTime[] = { "Static", "Random" };
+	if (ImGui::BeginCombo("LifeTime Options##LifeTime", pszItems_LifeTime[m_iSelected_LifeTimeOption], 0))
+	{
+		for (_uint n = 0; n < IM_ARRAYSIZE(pszItems_LifeTime); n++)
+		{
+			const bool is_selected = (m_iSelected_LifeTimeOption == n);
+			if (ImGui::Selectable(pszItems_LifeTime[n], is_selected))
+				m_iSelected_LifeTimeOption = n;
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+	switch (m_iSelected_LifeTimeOption)
+	{
+	case 0: // Constant
+		ImGui::InputFloat("LifeTime", &m_fLifeTime[0]);
+		m_fLifeTime[1] = m_fLifeTime[0];
+		break;
+	case 1: // Random
+		ImGui::InputFloat2("LifeTime(min, max)", m_fLifeTime);
+		break;
+	}
+	ImGui::Spacing();
+
+	const char* pszItems_Billbord[] = { "Off", "All", "Horizontal Only", "Vertical Only" };
+	if (ImGui::BeginCombo("Options##Billbord", pszItems_Billbord[m_iSelected_BillbordOption], 0))
+	{
+		for (_uint n = 0; n < IM_ARRAYSIZE(pszItems_Billbord); n++)
+		{
+			const bool is_selected = (m_iSelected_BillbordOption == n);
+			if (ImGui::Selectable(pszItems_Billbord[n], is_selected))
+				m_iSelected_BillbordOption = n;
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
 }
 
 void Widget_ParticleEffectTool::Option_Textures()
@@ -136,30 +179,6 @@ void Widget_ParticleEffectTool::Option_Textures()
 			}
 		}
 		ImGui::EndCombo();
-	}
-
-	if (0 != m_iSelected_Texture_Dissolve)
-	{
-		const char* pszItems[] = { "Constant", "curve" };
-		if (ImGui::BeginCombo("Scaling Options##Scale", pszItems[m_iSelected_DissolveOption], 0))
-		{
-			for (_uint n = 0; n < IM_ARRAYSIZE(pszItems); n++)
-			{
-				const bool is_selected = (m_iSelected_DissolveOption == n);
-				if (ImGui::Selectable(pszItems[n], is_selected))
-					m_iSelected_DissolveOption = n;
-
-				if (is_selected)
-					ImGui::SetItemDefaultFocus();
-			}
-			ImGui::EndCombo();
-		}
-		switch (m_iSelected_DissolveOption)
-		{
-		case 1:
-			ImGui::InputFloat("Exponent", &m_fDissolveSpeedOffset);
-			break;
-		}
 	}
 
 	if (ImGui::BeginCombo("Option1##Texture", m_pszUniversalTextures[m_iSelected_Texture_Option1], 0))
@@ -205,23 +224,24 @@ void Widget_ParticleEffectTool::Option_Color()
 	
 	ImGui::SeparatorText("Color");
 
-	const char* pszItems[] = { "Use Shape Texture Color", "Constant", "Gradation"};
-	if (ImGui::BeginCombo("Options##Color", pszItems[m_iSelected_ColorOption], 0))
+	ImGui::Text("Start Color");
+	const char* pszItems[] = { "Use Shape Texture Color", "Static", "Gradation"};
+	if (ImGui::BeginCombo("Options##Color", pszItems[m_iSelected_StartColorOption], 0))
 	{
 		for (_uint n = 0; n < IM_ARRAYSIZE(pszItems); n++)
 		{
-			const bool is_selected = (m_iSelected_ColorOption == n);
+			const bool is_selected = (m_iSelected_StartColorOption == n);
 			if (ImGui::Selectable(pszItems[n], is_selected))
-				m_iSelected_ColorOption = n;
+				m_iSelected_StartColorOption = n;
 
 			if (is_selected)
 				ImGui::SetItemDefaultFocus();
 		}
 		ImGui::EndCombo();
 	}
-	switch (m_iSelected_ColorOption)
+	switch (m_iSelected_StartColorOption)
 	{
-	case 1: // Constant
+	case 1: // Static
 		ImGui::ColorEdit4("Selected Color", (float*)&m_vStartColor, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
 		m_vEndColor = m_vStartColor;
 		break;
@@ -230,10 +250,11 @@ void Widget_ParticleEffectTool::Option_Color()
 		ImGui::ColorEdit4("End Color", (float*)&m_vEndColor, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
 		break;
 	}
+	ImGui::Spacing();
 
-	if (0 != m_iSelected_ColorOption)
+	if (0 != m_iSelected_StartColorOption)
 	{
-		ImGui::Text("Coloring Options");
+		ImGui::Text("Change Color while alive");
 		const char* pszItems2[] = { "No Change", "Change" };
 		if (ImGui::BeginCombo("Changing Options##Color", pszItems2[m_iSelected_ChangingColorOption], 0))
 		{
@@ -258,109 +279,81 @@ void Widget_ParticleEffectTool::Option_Color()
 			break;
 		}
 	}
-	ImGui::InputFloat("Gradation Brigher", &m_fGradationByAlpha_Brighter);
-	ImGui::Checkbox("FadeOut by Duration", &m_bIsAlphaFollowDuration);
+	ImGui::Spacing();
+
+	ImGui::Text("Etc Coloring Option");
+	ImGui::Checkbox("On Fade Out", &m_bUseFadeOut);
+	ImGui::SliderFloat("Brigher Offset", &m_fGradationByAlpha_Brighter, 0.f, 1.f);
+	ImGui::SliderFloat("Darker Offset", &m_fGradationByAlpha_Darker, 0.f, 1.f);
 }
 
 void Widget_ParticleEffectTool::Option_Transform()
 {
-	ImGui::SeparatorText("Create Position");
-	ImGui::InputFloat3("Center Position", m_fCenterPosition);
-	ImGui::InputFloat3("Range##CreatePosition", m_fCreateRange);
+	ImGui::SeparatorText("Transform");
 
-	ImGui::SeparatorText("Scale");
-	ImGui::InputFloat2("Start Scale(min,max)", m_fStartScale);
-	const char* pszItems[] = { "Constant", "Random", "Curve" };
-	if (ImGui::BeginCombo("Scaling Options##Scale", pszItems[m_iSelected_ScaleOption], 0))
+	if (ImGui::TreeNode("Create Position"))
 	{
-		for (_uint n = 0; n < IM_ARRAYSIZE(pszItems); n++)
+		ImGui::InputFloat3("Center Position", m_fCenterPosition);
+		ImGui::InputFloat3("Range##CreatePosition", m_fCreateRange);
+		ImGui::TreePop();
+	}
+	ImGui::Spacing();
+
+	if(ImGui::TreeNode("Scale"))
+	{
+		ImGui::InputFloat2("Start Scale(min,max)", m_fStartScale);
+		ImGui::Spacing();
+
+		const char* pszItems[] = { "Static value", "Add to StartScale" };
+		if (ImGui::BeginCombo("End Scale Options##Scale", pszItems[m_iSelected_EndScaleOption], 0))
 		{
-			const bool is_selected = (m_iSelected_ScaleOption == n);
-			if (ImGui::Selectable(pszItems[n], is_selected))
-				m_iSelected_ScaleOption = n;
+			for (_uint n = 0; n < IM_ARRAYSIZE(pszItems); n++)
+			{
+				const bool is_selected = (m_iSelected_EndScaleOption == n);
+				if (ImGui::Selectable(pszItems[n], is_selected))
+					m_iSelected_EndScaleOption = n;
 
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
 		}
-		ImGui::EndCombo();
-	}
-	switch (m_iSelected_ScaleOption)
-	{
-	case 0: // Constant
-		ImGui::InputFloat("Scale Speed", &m_fScaleSpeed[0]);
-		m_fScaleSpeed[1] = m_fScaleSpeed[0];
-		break;
-	case 1: // Random
-		ImGui::InputFloat2("Speed(Min, Max)##ScaleSpeed", m_fScaleSpeed);
-		break;
-	case 2: // Curve
-		ImGui::InputFloat2("Speed(Base, Exponent)##ScaleSpeed", m_fScaleSpeed);
-		break;
-	}
-	
-	ImGui::SeparatorText("Rotation");
-	ImGui::Text("Rotation Speed");
-	ImGui::InputFloat3("Speed(x,y,z)##RotationSpeed", m_fRotationSpeed);
-	ImGui::Text("Rotation Angle");
-	const char* pszItems2[] = { "Constant", "Random" };
-	if (ImGui::BeginCombo("Options##RotateAngle", pszItems2[m_iSelected_RotationAngleOption], 0))
-	{
-		for (_uint n = 0; n < IM_ARRAYSIZE(pszItems2); n++)
+		switch (m_iSelected_EndScaleOption)
 		{
-			const bool is_selected = (m_iSelected_RotationAngleOption == n);
-			if (ImGui::Selectable(pszItems2[n], is_selected))
-				m_iSelected_RotationAngleOption = n;
-
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();
+		case 0: // Constant
+			ImGui::InputFloat2("End Scale(min,max)##EndScale", m_fEndScale);
+			break;
+		case 1: // Offset
+			ImGui::InputFloat2("Offset to Add Start Scale(min,max)##EndScale", m_fEndScale);
+			break;
 		}
-		ImGui::EndCombo();
+		ImGui::TreePop();
 	}
-	switch (m_iSelected_RotationAngleOption)
-	{
-	case 0: // Constant
-		ImGui::InputFloat3("Angle(x,y,z)##RotationAngle", m_fRotationAngle);
-		break;
-	case 1: // Random
-		ImGui::InputFloat2("Angle(Min, Max)##RotationAngle", m_fRotationAngle);
-		break;
-	}
-}
+	ImGui::Spacing();
 
-void Widget_ParticleEffectTool::Option_LifeTime()
-{
-	ImGui::SeparatorText("LifeTime");
-
-	const char* pszItems[] = { "Constant", "Random" };
-	if (ImGui::BeginCombo("Options##LifeTime", pszItems[m_iSelected_LifeTimeOption], 0))
+	if(ImGui::TreeNode("Rotation"))
 	{
-		for (_uint n = 0; n < IM_ARRAYSIZE(pszItems); n++)
-		{
-			const bool is_selected = (m_iSelected_LifeTimeOption == n);
-			if (ImGui::Selectable(pszItems[n], is_selected))
-				m_iSelected_LifeTimeOption = n;
+		ImGui::Text("Rotation Speed");
+		ImGui::InputFloat2("X (min, max)##RotationSpeed", m_fRotationSpeed_X);
+		ImGui::InputFloat2("Y (min, max)##RotationSpeed", m_fRotationSpeed_Y);
+		ImGui::InputFloat2("Z (min, max)##RotationSpeed", m_fRotationSpeed_Z);
+		ImGui::Spacing();
 
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();
-		}
-		ImGui::EndCombo();
+		ImGui::Text("Rotation Angle");
+		ImGui::InputFloat2("X (min, max)##RotationAngle", m_fRotationAngle_X);
+		ImGui::InputFloat2("Y (min, max)##RotationAngle", m_fRotationAngle_Y);
+		ImGui::InputFloat2("Z (min, max)##RotationAngle", m_fRotationAngle_Z);
+		ImGui::TreePop();
 	}
-	switch (m_iSelected_LifeTimeOption)
-	{
-	case 0: // Constant
-		ImGui::InputFloat("LifeTime", &m_fLifeTime[0]);
-		m_fLifeTime[1] = m_fLifeTime[0];
-		break;
-	case 1: // Random
-		ImGui::InputFloat2("LifeTime(min, max)", m_fLifeTime);
-		break;
-	}
+	ImGui::Spacing();
 }
 
 void Widget_ParticleEffectTool::Option_Movement()
 {
-	const char* pszItems[] = { "Default" };
-	if (ImGui::BeginCombo("Options##Movement", pszItems[m_iSelected_MovementOption], 0))
+	ImGui::SeparatorText("Particle Object's Property");
+
+	const char* pszItems[] = { "No Move" };
+	if (ImGui::BeginCombo("Movement", pszItems[m_iSelected_MovementOption], 0))
 	{
 		for (_uint n = 0; n < IM_ARRAYSIZE(pszItems); n++)
 		{
@@ -373,60 +366,40 @@ void Widget_ParticleEffectTool::Option_Movement()
 		}
 		ImGui::EndCombo();
 	}
-}
+	ImGui::Spacing();
 
-void Widget_ParticleEffectTool::Option_Speed()
-{
-	ImGui::SeparatorText("Speed");
-
-	const char* pszItems[] = { "Constant", "Random", "Curve" };
-	if (ImGui::BeginCombo("Options##Speed", pszItems[m_iSelected_SpeedOption], 0))
+	if (ImGui::TreeNode("Speed"))
 	{
-		for (_uint n = 0; n < IM_ARRAYSIZE(pszItems); n++)
+		ImGui::InputFloat2("Start Speed(min,max)", m_fStartSpeed);
+		ImGui::Spacing();
+
+		const char* pszItems[] = { "Static value", "Add to StartScale" };
+		if (ImGui::BeginCombo("End Speed Options##Scale", pszItems[m_iSelected_EndSpeedOption], 0))
 		{
-			const bool is_selected = (m_iSelected_SpeedOption == n);
-			if (ImGui::Selectable(pszItems[n], is_selected))
-				m_iSelected_SpeedOption = n;
+			for (_uint n = 0; n < IM_ARRAYSIZE(pszItems); n++)
+			{
+				const bool is_selected = (m_iSelected_EndSpeedOption == n);
+				if (ImGui::Selectable(pszItems[n], is_selected))
+					m_iSelected_EndSpeedOption = n;
 
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
 		}
-		ImGui::EndCombo();
-	}
-
-	switch (m_iSelected_SpeedOption)
-	{
-	case 0: // Constant
-		ImGui::InputFloat("Speed", &m_fSpeed[0]);
-		m_fSpeed[1] = m_fSpeed[0];
-		break;
-	case 1: // Random
-		ImGui::InputFloat2("Speed(min, max)##Speed", m_fSpeed);
-		break;
-	case 2: // Curve
-		ImGui::InputFloat2("Speed(Base, Exponent)##Speed", m_fSpeed);
-		break;
-	}
-}
-
-void Widget_ParticleEffectTool::Option_Billbord()
-{
-	ImGui::SeparatorText("Billbord");
-
-	const char* pszItems[] = { "Off", "All", "Horizontal Only", "Vertical Only" };
-	if (ImGui::BeginCombo("Options##Billbord", pszItems[m_iSelected_BillbordOption], 0))
-	{
-		for (_uint n = 0; n < IM_ARRAYSIZE(pszItems); n++)
+		switch (m_iSelected_EndSpeedOption)
 		{
-			const bool is_selected = (m_iSelected_BillbordOption == n);
-			if (ImGui::Selectable(pszItems[n], is_selected))
-				m_iSelected_BillbordOption = n;
-
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();
+		case 0: // Static
+			ImGui::InputFloat2("End Speed(min,max)##EndSpeed", m_fEndSpeed);
+			break;
+		case 1: // Offset
+			ImGui::InputFloat2("Offset to Add Start Speed(min,max)##EndSpeed", m_fEndSpeed);
+			break;
 		}
-		ImGui::EndCombo();
+		ImGui::TreePop();
 	}
+	ImGui::Spacing();
+	
 }
 
 void Widget_ParticleEffectTool::Create()
@@ -453,50 +426,49 @@ void Widget_ParticleEffectTool::Create()
 		"../Resources/Textures/Universal/" + m_strSelected_Texture_Option1,
 		"../Resources/Textures/Universal/" + m_strSelected_Texture_Option2,
 
-		m_iSelected_ColorOption,
+		m_iSelected_StartColorOption,
 		Color(m_vStartColor.x, m_vStartColor.y, m_vStartColor.z, m_vStartColor.w),
 		Color(m_vEndColor.x, m_vEndColor.y, m_vEndColor.z, m_vEndColor.w),
 		Color(m_vDestColor.x, m_vDestColor.y, m_vDestColor.z, m_vDestColor.w),
 		
 		m_fGradationByAlpha_Brighter,
 		m_fGradationByAlpha_Darker,
-		m_bIsAlphaFollowDuration,
-
-		(_int)m_iSelected_DissolveOption,
-		m_fDissolveSpeedOffset,
+		m_bUseFadeOut,
 
 		m_fDuration,
+
 		m_bIsbCreateOnce,
 		m_fCreateInterval,
 
 		m_iParticleCnt[0],
 		m_iParticleCnt[1],
-		m_iMaxParticle,
+		m_iMaxInstanceCnt,
 
-		m_iSelected_LifeTimeOption,
 		_float2(m_fLifeTime),
-
-		m_iSelected_SpeedOption,
-		_float2(m_fSpeed),
 
 		m_iSelected_BillbordOption,
 
 		m_iSelected_MovementOption,
 		_float4(m_vMovementOffsets),
 
-		m_bIsLoop,
+		_float2(m_fStartSpeed),
+		_float2(m_fEndSpeed),
+		m_iSelected_EndSpeedOption,
+
+		_float2(m_fStartScale),
+		_float2(m_fEndScale),
+		m_iSelected_EndScaleOption,
 
 		_float3(m_fCenterPosition),
 		_float3(m_fCreateRange),
 		_float4(m_fCreateOffset),
 
-		_float2(m_fStartScale),
-		m_iSelected_ScaleOption,
-		_float2(m_fScaleSpeed),
-
-		_float3(m_fRotationSpeed),
-		m_iSelected_RotationAngleOption,
-		_float3(m_fRotationAngle)
+		_float2(m_fRotationSpeed_X),
+		_float2(m_fRotationSpeed_Y),
+		_float2(m_fRotationSpeed_Z),
+		_float2(m_fRotationAngle_X),
+		_float2(m_fRotationAngle_Y),
+		_float2(m_fRotationAngle_Z)
 	};
 	ParticleObj->Get_Particle()->Init(&tParticleDesc);
 

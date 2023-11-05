@@ -3,20 +3,22 @@
 
 struct ParticleInfo_UAV // 주의: Shader_Particle2의 ParticleInfo_UAV와 대응해야함.
 {
-    _float   fCurrCurrTime;      
-    _float3  vCurrWorldPos;       
-    _float   fCurrSpeed;         
-    _float3  vCurrRotationSpeed; 
-    _float   fCurrSpeedExponent; 
-    _float3  vCurrWorldDir;      
-    _float2  vCurrSize;          
-    _int     iAlive;             
+    _float fCurrAge;
+    _float3 vCurrWorldPos;
 
-    _float   fLifeTime;          
-    _float4  vDiffuseColor;         
-    _float3  vRotationAngle;     
-
-    _float   vOffsets;           
+    _float  fLifeTime;
+    _float3 vRotationAngle;
+    
+    _int iIsAlive;
+    _float3 vRotationSpeed;
+    
+    _float2 StartEndScale;
+    _float2 StartEndSpeed;
+    
+    _float4 vDiffuseColor;
+    
+    _float3 vCurrWorldDir;
+    _float  Padding;
 };  
 
 struct ComputeShared_UAV // 주의: Shader_Particle2의 ComputeShared_UAV와 대응해야함.
@@ -51,12 +53,8 @@ public:
         // Alpha gradation
         _float	fGradationByAlpha_Brighter = { 0.f };
         _float	fGradationByAlpha_Darker = { 0.f };
-        _bool   bIsAlphaFollowDuration = { false };
+        _bool   bUseFadeOut = { false };
         
-        // Dissolve
-        _int    iDissolveOption = { 0 };            // constant, log, pow
-        _float  fDissolveSpeedOffset = { 0.f };     // (if option is log or pow) 
-
         // Duration ( Particle GameObject의 lifetime )
         _float  fDuration;
 
@@ -67,15 +65,10 @@ public:
         // Particle Count
         _int    iMinCnt = { 1 };
         _int    iMaxCnt = { 10 };
-        _int    iMaxParticleNum = { 10 };
+        _int    iMaxInstanceCnt = { 10 };
         
-        // LifeTime ( Particle 하나의 lifetime )
-        _int    iLifeTimeOption;        // rand, curve
-        _float2 vLifeTime;              // (if option is rand) min, max / (if option is curve) base, exponent  
-
-        // Speed
-        _int    iSpeedOption;           // rand, curve
-        _float2 vSpeed;                 // (if option is rand) min, max / (if option is curve)  base, exponent
+        // LifeTime
+        _float2 vLifeTime;             
 
         // Billbord
         _int    iBillbordOption;
@@ -84,24 +77,28 @@ public:
         _int    iMovementOption;
         _float4 vMovementOffsets;
 
-        // IsLoop
-        _bool   bIsLoop;
+        // Speed
+        _float2 vStartSpeed;          
+        _float2 vEndSpeed;
+        _int    iEndSpeedOption;     
+
+        // Scale
+        _float2 vStartScale;
+        _float2 vEndScale;
+        _int    iEndScaleOption;
 
         // Create Particle Position 
         _float3	vCenterPosition = { 0.f, 0.f, 0.f };
         _float3	vCreateRange = { 1.f, 1.f, 1.f };
-        _float4 vCreateOffsets = { 0.f, 0.f, 0.f, 0.f };   // 범위 내 랜덤 그 외의 방법으로 생성 위치를 설정할 경우 사용할 값들. (ex.반지름, 각도 등)
-
-        // Scale
-        _float2 vStartScale = { 1.f, 5.f };     // min, max
-        _int    iScaleOption;                   // constant, curve
-        _float2 vScaleSpeed;                    // (if option is constant) speed, no use / (if option is curve)  base, exponent
+        _float4 vCreateOffsets = { 0.f, 0.f, 0.f, 0.f };  
 
         // Rotation Speed, Angle 
-        _float3 vRotationSpeed;                 // x,y,z  
-        _int    iRotationAngleOption;           // const, rand
-        _float3 vRotationAngle;                 // (if option is const) x,y,z/ (if option is rand) min, max  
-    
+        _float2 vRotationSpeed_X;
+        _float2 vRotationSpeed_Y;
+        _float2 vRotationSpeed_Z;
+        _float2 vRotationAngle_X;
+        _float2 vRotationAngle_Y;
+        _float2 vRotationAngle_Z;
     }DESC;
 
 public:
@@ -114,10 +111,6 @@ public:
     virtual void    Final_Tick() override;  // CS
     void            Render();               // VS, PS
 
-    /* Setter */
-    void            Set_Mesh(shared_ptr<Mesh> mesh) { m_pMesh = mesh; }
-    void            Set_Material(shared_ptr<Material> material) { m_pMaterial = material; }
-
 private:
     void            Init_ComputeParams();
     void            Init_RenderParams();
@@ -129,29 +122,28 @@ private:
     void            Bind_CreateParticleParams_ToShader();
 
 private:
+    /* Particle GameObject's Data */
     DESC                    m_tDesc;
     
-    TYPE                    m_eType = {TYPE_END};           // 본 Particle이 standard mesh인지, 모델인지
-    RENDERMESH_PASS         m_eRenderPass = { RP_Default }; // 본 Particl이 랜더할 때 사용할 pass (VS, PS)
-    COMPUTE_PASS            m_eComputePass = { CP_Default };// 본 Particl이 쉐이더에서 연산할 때 사용할 pass (CS)
+    _float                  m_fCurrAge = { 0.f };
+    _float                  m_fTimeAcc_CreatCoolTime = { 0.f };
+    _bool                   m_bIsFirstCreateParticleDone = { false };
+ 
+    TYPE                    m_eType = {TYPE_END};           
+    RENDERMESH_PASS         m_eRenderPass = { RP_Default }; 
+    COMPUTE_PASS            m_eComputePass = { CP_Default };
 
-    shared_ptr<Shader>      m_pShader = { nullptr };     // 본 Particle의 Render에서 사용할 shader
-    shared_ptr<Mesh>        m_pMesh = { nullptr };       // 본 Particle의 Render에서 그릴 Mesh
-    shared_ptr<Model>       m_pModel = { nullptr };      // 본 Particle의 Render에서 그릴 Model
-    
-    shared_ptr<Material>    m_pMaterial = { nullptr };   // 본 Particle이 사용하는 Textures, Colors를 Tick에서 shader로 바인드함. 
+    /* Data to bind or get Shader */
+    shared_ptr<Shader>      m_pShader = { nullptr };     
+    shared_ptr<Mesh>        m_pMesh = { nullptr };       
+    shared_ptr<Model>       m_pModel = { nullptr };      
+    shared_ptr<Material>    m_pMaterial = { nullptr };   // For. Bind texture 
 
-    RenderParams            m_ComputeParams{};           // Computer shader에서 사용하는 정보들을 담은 구조체 (Bind_ComputeShaderData_ToShader()에서 쉐이더로 넘기기)
-    RenderParams            m_RenderParams{};            // GS, VS, PS에서 사용하는 정보들을 담은 구조체 (Bind_RenderShaderData_ToShader()에서 쉐이더로 넘기기)
+    RenderParams            m_ComputeParams{};               
+    RenderParams            m_RenderParams{};            
     CreateParticleDesc      m_CreateParticleParams;     
 
-    shared_ptr<StructuredBuffer> m_pParticleInfo_UAVBuffer = nullptr;   // 쉐이더와 데이터를 주고받는 UAV (입자 하나하나에 대한 정보)
-    shared_ptr<StructuredBuffer> m_pComputeShared_UAVBuffer = nullptr;  // 쉐이더와 데이터를 주고받는 UAV
-
-    _bool                   m_bIsFirstCreateParticleDone = { false };
-
-    /* Time Acc */
-    _float                  m_fCurrLifeTime = { 0.f };   // 본 Particle이 생성된 후 흐른 시간 
-    _float                  m_fTimeAcc_CreatCoolTime = { 0.f };
+    shared_ptr<StructuredBuffer> m_pParticleInfo_UAVBuffer = nullptr;   
+    shared_ptr<StructuredBuffer> m_pComputeShared_UAVBuffer = nullptr;  
 };
 

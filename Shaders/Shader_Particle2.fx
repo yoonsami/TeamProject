@@ -8,19 +8,22 @@ float   g_fTimeDelta;
 
 struct ParticleInfo_UAV  // 주의: 16byte씩 맞추기
 {
-    float   fCurrTime;          // Current age
-    float3  vCurrWorldPos;      // Current World pos 
-    float   fCurrSpeed;         // Current speed
-    float3  vCurrRotationSpeed; // Current 회전속도 
-    float   fCurrSpeedExponent; // Current speed Exponent
-    float3  vCurrWorldDir;      // Current 현재 방향 
-    float2  vCurrSize;          // Current size 
-    float   fCurrSizeSpeed;        
-    int     iAlive;             // Is Alive
-
-    float4  vDiffuseColor;      // Current color 
-    float3  vRotationAngle;     // 입자의 회전각도  
-    float   fLifeTime; 
+    float fCurrAge;
+    float3 vCurrWorldPos;
+    
+    float  fLifeTime;
+    float3 vRotationAngle;
+    
+    int iIsAlive;
+    float3 vRotationSpeed;
+    
+    float2 StartEndScale;
+    float2 StartEndSpeed;
+    
+    float4 vDiffuseColor;
+    
+    float3 vCurrWorldDir;
+    float  Padding;
 };
 
 struct ComputeShared_UAV
@@ -39,17 +42,17 @@ void CS_Movement_Non(int3 threadIndex : SV_DispatchThreadID)
 {
     /* Movement : 없음. */
     
-    int iMaxInstanceCnt = g_int_3;
+    int iMaxInstanceCnt = g_int_0;
     
     if (threadIndex.x >= iMaxInstanceCnt)
         return;
     
-    g_ComputeShared_UAVBuffer[0].addCount = g_NewlyAddCnt;
+    g_ComputeShared_UAVBuffer[0].addCount = g_iNewlyAddCnt;
     g_ComputeShared_UAVBuffer[0].padding = float3(0.f, 0.f, 0.f);
     GroupMemoryBarrierWithGroupSync();
     
     // For. Create New Particle
-    if (g_ParticleInfo_UAVBuffer[threadIndex.x].iAlive == 0)
+    if (g_ParticleInfo_UAVBuffer[threadIndex.x].iIsAlive == 0)
     {
         while (true)
         {
@@ -64,80 +67,72 @@ void CS_Movement_Non(int3 threadIndex : SV_DispatchThreadID)
 
             if (originalValue == expected)
             {
-                g_ParticleInfo_UAVBuffer[threadIndex.x].iAlive = 1;
+                g_ParticleInfo_UAVBuffer[threadIndex.x].iIsAlive = 1;
                 break;
             }
         }
         
-        // For. 새로 생성이 되었다면 기본 값 채워주기 
-        if (g_ParticleInfo_UAVBuffer[threadIndex.x].iAlive == 1)
+        // For. New Particle  
+        if (g_ParticleInfo_UAVBuffer[threadIndex.x].iIsAlive == 1)
         {
             float x = ((float) threadIndex.x / (float) iMaxInstanceCnt) + g_fTimeDelta;
             float r1 = Rand(float2(x, g_fTimeDelta));
             float r2 = Rand(float2(x * g_fTimeDelta, g_fTimeDelta));
             float r3 = Rand(float2(x * g_fTimeDelta * g_fTimeDelta, g_fTimeDelta * g_fTimeDelta));
-            float3 noise = { 2 * r1 - 1, 2 * r2 - 1, 2 * r3 - 1 }; // [0.5~1] -> [0~1]
+            float3 noise = { 2 * r1 - 1, 2 * r2 - 1, 2 * r3 - 1 }; // 0 ~ 1
             
-            float fParticleObjectsLifeTimeRatio = g_float_1 / g_float_0;
+            float fLifeTimeRatio = g_float_1 / g_float_0;
             
-            g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrTime = 0.f;
+            /* Setting Particle's UAV */
             
-            // Diffuse Color
-            g_ParticleInfo_UAVBuffer[threadIndex.x].vDiffuseColor = lerp(g_startColor.rgba, g_endColor.rgba, fParticleObjectsLifeTimeRatio);
+            g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrAge = 0.f;
+
+            g_ParticleInfo_UAVBuffer[threadIndex.x].vDiffuseColor = lerp(g_vStartColor, g_vEndColor, fLifeTimeRatio);
             
-            // Create Position
-            g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrWorldPos = g_vec4_0.xyz + (noise.xyz - 0.5f) * g_createRange.xyz;
+            g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrWorldPos = g_vec4_0.xyz + (noise.xyz - 0.5f) * g_vCreateRange.xyz;
+
+            g_ParticleInfo_UAVBuffer[threadIndex.x].fLifeTime = ((g_vMinMaxLifeTime.y - g_vMinMaxLifeTime.x) * noise.x) + g_vMinMaxLifeTime.x;
+
+            g_ParticleInfo_UAVBuffer[threadIndex.x].StartEndScale.x = ((g_vMinMaxStartScale.y - g_vMinMaxStartScale.x) * noise.x) + g_vMinMaxStartScale.x;
+            float fRandomEndScale = ((g_vMinMaxEndScale.y - g_vMinMaxEndScale.x) * noise.x) + g_vMinMaxEndScale.x;
+            if (0 == g_iEndScaleOption)         // static
+                g_ParticleInfo_UAVBuffer[threadIndex.x].StartEndScale.y = fRandomEndScale;
+            else if (1 == g_iEndScaleOption)    // Offset to Add start scale
+                g_ParticleInfo_UAVBuffer[threadIndex.x].StartEndScale.y = g_ParticleInfo_UAVBuffer[threadIndex.x].StartEndScale.x + fRandomEndScale;
             
-            // LifeTime (if you need option, use g_lifeTimeOption)
-            g_ParticleInfo_UAVBuffer[threadIndex.x].fLifeTime = ((g_MinMaxLifeTime.y - g_MinMaxLifeTime.x) * noise.x) + g_MinMaxLifeTime.x;
+            g_ParticleInfo_UAVBuffer[threadIndex.x].StartEndSpeed.x = ((g_vMinMaxStartSpeed.y - g_vMinMaxStartSpeed.x) * noise.x) + g_vMinMaxStartSpeed.x;
+            float fRandomEndSpeed = ((g_vMinMaxEndSpeed.y - g_vMinMaxEndSpeed.x) * noise.x) + g_vMinMaxEndSpeed.x;
+            if (0 == g_iEndSpeedOption)         // static
+                g_ParticleInfo_UAVBuffer[threadIndex.x].StartEndSpeed.y = fRandomEndSpeed;
+            else if (1 == g_iEndSpeedOption)    // Offset to Add start scale
+                g_ParticleInfo_UAVBuffer[threadIndex.x].StartEndSpeed.y = g_ParticleInfo_UAVBuffer[threadIndex.x].StartEndSpeed.x + fRandomEndSpeed;
             
-            // Scale 
-            g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrSize.xy = ((g_MinMaxScale.y - g_MinMaxScale.x) * noise.x) + g_MinMaxScale.x;
-            // Scale Speed
-            if (2 == g_int_1)       // curve
-                g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrSizeSpeed = pow(abs(g_vec2_1.x), g_vec2_1.y);
-            else                    // constant
-                g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrSizeSpeed = ((g_vec2_1.y - g_vec2_1.x) * noise.x) + g_vec2_1.x;
-            
-            // Speed
-            if (2 == g_int_2)       // curve
-                g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrSpeed = pow(abs(g_vec2_2.x), g_vec2_2.y);
-            else                    // constant
-                g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrSpeed = ((g_vec2_2.y - g_vec2_2.x) * noise.x) + g_vec2_2.x;
-            
-            // Rotation Speed
-            g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrRotationSpeed.xyz = g_vec4_3.xyz;
-            // Rotation Angle 
-            if (0.f == g_vec4_2.x)       // constant
-                g_ParticleInfo_UAVBuffer[threadIndex.x].vRotationAngle.xyz = g_vec4_2.xyz;
-            if (1.f == g_vec4_2.x)       // random
-            {
-                g_ParticleInfo_UAVBuffer[threadIndex.x].vRotationAngle.x = ((g_vec4_2.z - g_vec4_2.y) * noise.x) + g_vec4_2.y;
-                g_ParticleInfo_UAVBuffer[threadIndex.x].vRotationAngle.y = ((g_vec4_2.z - g_vec4_2.y) * noise.y) + g_vec4_2.y;
-                g_ParticleInfo_UAVBuffer[threadIndex.x].vRotationAngle.z = ((g_vec4_2.z - g_vec4_2.y) * noise.z) + g_vec4_2.y;
-            }
+            g_ParticleInfo_UAVBuffer[threadIndex.x].vRotationSpeed.x = ((g_vMinMaxRotationSpeed_X.y - g_vMinMaxRotationSpeed_X.x) * noise.x) + g_vMinMaxRotationSpeed_X.x;
+            g_ParticleInfo_UAVBuffer[threadIndex.x].vRotationSpeed.y = ((g_vMinMaxRotationSpeed_Y.y - g_vMinMaxRotationSpeed_Y.x) * noise.x) + g_vMinMaxRotationSpeed_Y.x;
+            g_ParticleInfo_UAVBuffer[threadIndex.x].vRotationSpeed.z = ((g_vMinMaxRotationSpeed_Z.y - g_vMinMaxRotationSpeed_Z.x) * noise.x) + g_vMinMaxRotationSpeed_Z.x;
+           
+            g_ParticleInfo_UAVBuffer[threadIndex.x].vRotationAngle.x = ((g_vMinMaxRotationAngle_X.y - g_vMinMaxRotationAngle_X.x) * noise.x) + g_vMinMaxRotationAngle_X.x;
+            g_ParticleInfo_UAVBuffer[threadIndex.x].vRotationAngle.y = ((g_vMinMaxRotationAngle_Y.y - g_vMinMaxRotationAngle_Y.x) * noise.x) + g_vMinMaxRotationAngle_Y.x;
+            g_ParticleInfo_UAVBuffer[threadIndex.x].vRotationAngle.z = ((g_vMinMaxRotationAngle_Z.y - g_vMinMaxRotationAngle_Z.x) * noise.x) + g_vMinMaxRotationAngle_Z.x;
+            g_ParticleInfo_UAVBuffer[threadIndex.x].vRotationAngle *= (3.14159f / 180.f);
         }
     }
     
     // For. Update particle UAV data which previouslly alived
     else
     {
+        g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrAge += g_fTimeDelta;
+        float fLifeTimeRatio = g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrAge / g_ParticleInfo_UAVBuffer[threadIndex.x].fLifeTime;
+        
         // For. Check end lifetime 
-        g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrTime += g_fTimeDelta;
-        if (g_ParticleInfo_UAVBuffer[threadIndex.x].fLifeTime < g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrTime)
+        if (fLifeTimeRatio >= 1.f)
         {
-            g_ParticleInfo_UAVBuffer[threadIndex.x].iAlive = 0;
+            g_ParticleInfo_UAVBuffer[threadIndex.x].iIsAlive = 0;
             return;
         }       
-        
-        // For. Change Scale 
-        g_ParticleInfo_UAVBuffer[threadIndex.x].vCurrSize += g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrSizeSpeed * g_fTimeDelta;
-        if(2 == g_int_1)   // if. curve -> update sizespeed
-            g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrSizeSpeed = pow(abs(g_vec2_1.x), g_vec2_1.y + g_ParticleInfo_UAVBuffer[threadIndex.x].fCurrTime);
-        
-        // For. Change Rotation 
-        
+
         // For. Movement 
+        float fCurrSpeed = lerp(g_ParticleInfo_UAVBuffer[threadIndex.x].StartEndSpeed.x, g_ParticleInfo_UAVBuffer[threadIndex.x].StartEndSpeed.y, fLifeTimeRatio);
     }
 }
 
@@ -190,12 +185,14 @@ void GS_Billbord(point VS_OUTPUT input[1], inout TriangleStream<GS_OUTPUT> outpu
 
     VS_OUTPUT vtx = input[0];
     uint id = (uint) vtx.id;
-    if (0 >= g_Data[id].iAlive)
+    if (0 >= g_Data[id].iIsAlive)
         return;
     
+    float2 vCurrScale = lerp(g_Data[id].StartEndScale.x, g_Data[id].StartEndScale.y, g_Data[id].fCurrAge / g_Data[id].fLifeTime);
+    
     float4 vLook = float4(CameraPosition() - input[0].worldPos.xyz, 0.f);
-    float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * g_Data[id].vCurrSize.x * 0.5f;
-    float3 vUp = normalize(cross(vLook.xyz, vRight)) * g_Data[id].vCurrSize.y * 0.5f;
+    float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * vCurrScale.x * 0.5f;
+    float3 vUp = normalize(cross(vLook.xyz, vRight)) * vCurrScale.y * 0.5f;
     
     // For. world space
     output[0].position = float4(input[0].worldPos.xyz + vRight + vUp, 1.f);
@@ -243,45 +240,38 @@ float4 PS_Default(GS_OUTPUT input) : SV_Target
     
     // For. Check is exist
     uint id = (uint) input.id;
-    if (0 >= g_Data[input.id].iAlive)
+    if (0 >= g_Data[input.id].iIsAlive)
         discard;
     
     float4 fDiffuseMapColor = DiffuseMap.Sample(LinearSampler, input.uv);
-    float4 diffuseColor = float4(0.f, 0.f, 0.f, 1.f);
-    float fLifeRatio = g_Data[input.id].fCurrTime / g_Data[input.id].fLifeTime;
-    
+    float fLifeRatio = g_Data[input.id].fCurrAge / g_Data[input.id].fLifeTime;
     
     // For. Changing Diffuse Color
     if (g_bUseShapeTextureColor)
-        diffuseColor = fDiffuseMapColor;
+        output = fDiffuseMapColor;
     else
     {
-        diffuseColor = lerp(g_Data[input.id].vDiffuseColor, g_vec4_0, fLifeRatio);
-        diffuseColor.a = fDiffuseMapColor.r;
+        output = lerp(g_Data[input.id].vDiffuseColor, g_vec4_0, fLifeRatio);
+        output.a = fDiffuseMapColor.r;
     }
     
     // For. Brightness
-    if (diffuseColor.a > 1.f - g_float_0)
-        diffuseColor = lerp(diffuseColor, float4(1.f, 1.f, 1.f, 1.f), diffuseColor.a);
+    if (output.a > 1.f - g_float_0)
+        output = lerp(output, float4(1.f, 1.f, 1.f, 1.f), output.a);
 
     // For. Alpha Gradation by Duration
     if(1 == g_int_0)
-        diffuseColor.a = 1.f - (g_float_3 / g_float_2);
+        output.a = 1.f - (g_float_3 / g_float_2);
     
     // For. Dissiolve
     if (0 != bHasDissolveMap)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
-        float fDissolveOffset = fLifeRatio;
-        if (1 == g_int_1) // curve
-            fDissolveOffset = pow(fLifeRatio, g_vec2_0.x);
-        
-        if (dissolve < fDissolveOffset)
+        if (dissolve < fLifeRatio)
             discard;
     }
     
     // For. Alpah Test 
-    output = diffuseColor;
     if (output.a <= 0.f)
         discard;
     

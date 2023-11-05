@@ -162,19 +162,34 @@ cbuffer ParticleBuffer
 
 cbuffer CreateParticleBuffer
 {
-    int    g_NewlyAddCnt;
-    
-    int    g_lifeTimeOption;
-    float2 g_MinMaxLifeTime;
-    
-    float4 g_startColor;
-    float4 g_endColor;
-    
-    float2 g_MinMaxScale;
-    float2 g_MinMaxRotationAngle;
-    
-    float4 g_createRange;
-    float4 g_createOffsets;
+    int g_iEndScaleOption;
+    int g_iEndSpeedOption;
+
+    float2 g_vMinMaxLifeTime;
+	
+    float2 g_vMinMaxRotationSpeed_X;
+    float2 g_vMinMaxRotationSpeed_Y;
+    float2 g_vMinMaxRotationSpeed_Z;
+
+    float2 g_vMinMaxRotationAngle_X;
+    float2 g_vMinMaxRotationAngle_Y;
+    float2 g_vMinMaxRotationAngle_Z;
+
+    float4 g_vStartColor;
+    float4 g_vEndColor;
+           
+    float2 g_vMinMaxStartScale;
+    float2 g_vMinMaxEndScale;
+           
+    float2 g_vMinMaxStartSpeed;
+    float2 g_vMinMaxEndSpeed;
+           
+    float4 g_vCreateRange;
+    float4 g_vCreateOffsets;
+
+    int g_iNewlyAddCnt;
+
+    float3 padding_CreateParticleBuffer;
 };
 
 cbuffer TextureMapBuffer

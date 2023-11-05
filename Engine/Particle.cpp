@@ -46,9 +46,9 @@ HRESULT Particle::Init(void* pArg)
 	Init_CreateParticleParams();
 
 	// For. Create ParticleInfo UAV Buffers  
-	vector<ParticleInfo_UAV> tmp(m_tDesc.iMaxParticleNum);
+	vector<ParticleInfo_UAV> tmp(m_tDesc.iMaxInstanceCnt);
 	if (!m_pParticleInfo_UAVBuffer)
-		m_pParticleInfo_UAVBuffer = make_shared<StructuredBuffer>(tmp.data(), static_cast<_uint>(sizeof ParticleInfo_UAV), m_tDesc.iMaxParticleNum);
+		m_pParticleInfo_UAVBuffer = make_shared<StructuredBuffer>(tmp.data(), static_cast<_uint>(sizeof ParticleInfo_UAV), m_tDesc.iMaxInstanceCnt);
 
 	// For. Create ComputeShader UAV Buffers  
 	if (!m_pComputeShared_UAVBuffer)
@@ -64,11 +64,11 @@ void Particle::Tick()
 void Particle::Final_Tick()
 {
 	// For. Update TimeAcc 
-	m_fCurrLifeTime += fDT;
+	m_fCurrAge += fDT;
 	m_fTimeAcc_CreatCoolTime += fDT;
 
 	// For. Check End(Delete) this particle 
-	if (m_fCurrLifeTime >= m_tDesc.fDuration)
+	if (m_fCurrAge >= m_tDesc.fDuration)
 	{
 		CUR_SCENE->Remove_GameObject(Get_Owner());
 		return;
@@ -107,18 +107,15 @@ void Particle::Final_Tick()
 	m_pShader->GetUAV("g_ParticleInfo_UAVBuffer")->SetUnorderedAccessView(m_pParticleInfo_UAVBuffer->Get_UAV().Get());
 	m_pShader->GetUAV("g_ComputeShared_UAVBuffer")->SetUnorderedAccessView(m_pComputeShared_UAVBuffer->Get_UAV().Get());	 
 
-	// For. Dispatch
+	// For. Dispatch ( Get UAV data from shader )
 	m_pShader->Dispatch(TECHNIQUE_Compute, m_eComputePass, 1, 1, 1);
-
-	vector<ParticleInfo_UAV> tmp(m_tDesc.iMaxParticleNum);
+	vector<ParticleInfo_UAV> tmp(m_tDesc.iMaxInstanceCnt);
 	m_pParticleInfo_UAVBuffer->Copy_FromOutput(tmp.data());
 	m_pParticleInfo_UAVBuffer->Copy_ToInput(tmp.data());
 }
 
 void Particle::Render()
 {
-	/* 여기서 Shader에 바인딩하는 값들은 VS, PS를 돌리기 위해 사용되는 값들이다. */
-
 	// For. Render Standard Mesh
 	switch (m_eType)
 	{
@@ -145,7 +142,7 @@ void Particle::Render()
 		CONTEXT->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 		
 		// For. Draw call
-		m_pShader->DrawIndexedInstanced(TECHNIQUE_MeshRender, m_eRenderPass, m_pMesh->Get_IndexBuffer()->Get_IndicesNum(), m_tDesc.iMaxParticleNum);
+		m_pShader->DrawIndexedInstanced(TECHNIQUE_MeshRender, m_eRenderPass, m_pMesh->Get_IndexBuffer()->Get_IndicesNum(), m_tDesc.iMaxInstanceCnt);
 		break;
 
 	case TYPE_Model:
@@ -164,75 +161,65 @@ void Particle::Render()
 
 void Particle::Init_RenderParams()
 {
-	/* GS, VS, PS에서 사용할 값들 세팅 */
-	
     // For. Alpha Gradation 
-	m_RenderParams.SetFloat(0, m_tDesc.fGradationByAlpha_Brighter);
-	m_RenderParams.SetFloat(1, m_tDesc.fGradationByAlpha_Darker);
+	m_RenderParams.SetInt(0, m_tDesc.bUseFadeOut);
 
 	// For. Diffuse Color
+	m_RenderParams.SetFloat(0, m_tDesc.fGradationByAlpha_Brighter);
+	m_RenderParams.SetFloat(1, m_tDesc.fGradationByAlpha_Darker);
 	m_RenderParams.SetVec4(0, m_tDesc.vDestColor);
-	m_RenderParams.SetInt(0, m_tDesc.bIsAlphaFollowDuration);
 
-	// For. Dissolve
-	m_RenderParams.SetInt(1, m_tDesc.iDissolveOption);						// If. On => log, constant, pow
-	m_RenderParams.SetVec2(0, _float2(m_tDesc.fDissolveSpeedOffset, 0.f));	// if. On + log or pow => offset
-
-	// Duration and Current time 
+	// Duration and Current t7ime 
 	m_RenderParams.SetFloat(2, m_tDesc.fDuration);
-	m_RenderParams.SetFloat(3, m_fCurrLifeTime);
+	m_RenderParams.SetFloat(3, m_fCurrAge);
 }
 
 void Particle::Init_CreateParticleParams()
 {
-	/* CS에서 Particle을 새로 생성할 때만 필요한 값 */
+	// For. Scale 
+	m_CreateParticleParams.iEndScaleOption = m_tDesc.iEndScaleOption;
+	m_CreateParticleParams.vMinMaxStartScale = m_tDesc.vStartScale;
+	m_CreateParticleParams.vMinMaxEndScale = m_tDesc.vEndScale;
+
+	// For. Create Position 
+	m_CreateParticleParams.vCreateRange = _float4(m_tDesc.vCreateRange, 0.f);
+	m_CreateParticleParams.vCreateOffsets = m_tDesc.vCreateOffsets;
+
+	// For. Rotation 
+	m_CreateParticleParams.vMinMaxRotationSpeed_X = m_tDesc.vRotationSpeed_X;
+	m_CreateParticleParams.vMinMaxRotationSpeed_Y = m_tDesc.vRotationSpeed_Y;
+	m_CreateParticleParams.vMinMaxRotationSpeed_Z = m_tDesc.vRotationSpeed_Z;
+	m_CreateParticleParams.vMinMaxRotationAngle_X = m_tDesc.vRotationAngle_X;
+	m_CreateParticleParams.vMinMaxRotationAngle_Y = m_tDesc.vRotationAngle_Y;
+	m_CreateParticleParams.vMinMaxRotationAngle_Z = m_tDesc.vRotationAngle_Z;
+	
+	// For. Speed
+	m_CreateParticleParams.iEndSpeedOption = m_tDesc.iEndSpeedOption;
+	m_CreateParticleParams.vMinMaxStartSpeed = m_tDesc.vStartSpeed;
+	m_CreateParticleParams.vMinMaxEndSpeed = m_tDesc.vEndSpeed;
 
 	// For. LifeTime
-	m_CreateParticleParams.iLifeTimeOption = m_tDesc.iLifeTimeOption;
 	m_CreateParticleParams.vMinMaxLifeTime = m_tDesc.vLifeTime;
 
 	// For. Diffuse Color 
 	m_CreateParticleParams.vStartColor = m_tDesc.vStartColor;
 	m_CreateParticleParams.vEndColor = m_tDesc.vEndColor;
-
-	// For. Start Scale
-	m_CreateParticleParams.vMinMaxScale = m_tDesc.vStartScale;
-	
-	// For. Create Position 
-	m_CreateParticleParams.vCreateRange = _float4(m_tDesc.vCreateRange, 0.f);
-	m_CreateParticleParams.vCreateOffsets = m_tDesc.vCreateOffsets;
 }
 
 void Particle::Init_ComputeParams()
 {
-	/* CS에서 사용할 값들 세팅하기. 모션에 따라 params에 맵핑하는 값들의 의미가 달라질              수 있다. */
+	// For. Max instance cnt
+	m_ComputeParams.SetInt(0, m_tDesc.iMaxInstanceCnt);
 
-	// For. Particle Object's Duration, LifeTime
+	// For. Particle Object's Duration
 	m_ComputeParams.SetFloat(0, m_tDesc.fDuration);
-	m_ComputeParams.SetFloat(1, m_fCurrLifeTime);
+	m_ComputeParams.SetFloat(1, m_fCurrAge);
 
 	// For. Center Position
 	m_ComputeParams.SetVec4(0, _float4(m_tDesc.vCenterPosition, 0.f));
 
-	// For. Update Scale
-	m_ComputeParams.SetInt(1, m_tDesc.iScaleOption);
-	m_ComputeParams.SetVec2(1, m_tDesc.vScaleSpeed);
-
-	// For. Update Speed
-	m_ComputeParams.SetInt(2, m_tDesc.iSpeedOption);
-	m_ComputeParams.SetVec2(2, m_tDesc.vSpeed);
-
-	// For. Max instance cnt
-	m_ComputeParams.SetInt(3, m_tDesc.iMaxParticleNum);
-
 	// For. Movement 
 	m_ComputeParams.SetVec4(1, m_tDesc.vMovementOffsets);
-
-	// For. Rotation Angle 
-	m_ComputeParams.SetVec4(2, _float4(m_tDesc.iRotationAngleOption, m_tDesc.vRotationAngle.x, m_tDesc.vRotationAngle.y, m_tDesc.vRotationAngle.z));
-
-	// For. Rotation Speed
-	m_ComputeParams.SetVec4(3, _float4(m_tDesc.vRotationSpeed, 0.f));
 }
 
 void Particle::Bind_BasicData_ToShader()
@@ -251,18 +238,14 @@ void Particle::Bind_BasicData_ToShader()
 
 void Particle::Bind_ComputeParams_ToShader()
 {
-	// param중에 tick마다 Particle.cpp에서 변경해야하는 값이 있다면 여기서 바꿔주고나서 쉐이더에 바인딩하면됨. 
-	
-	m_ComputeParams.SetFloat(1, m_fCurrLifeTime);
+	m_ComputeParams.SetFloat(1, m_fCurrAge);
 
 	m_pShader->Push_RenderParamData(m_ComputeParams);
 }
 
 void Particle::Bind_RenderParams_ToShader()
 {
-	// TODO: 혹시 param중에 tick마다 Particle.cpp에서 변경해야하는 값이 있다면 여기서 바꿔주고나서 쉐이더에 바인딩하면됨. 
-
-	m_RenderParams.SetFloat(3, m_fCurrLifeTime);
+	m_RenderParams.SetFloat(3, m_fCurrAge);
 
 	m_pShader->Push_RenderParamData(m_RenderParams);
 }
