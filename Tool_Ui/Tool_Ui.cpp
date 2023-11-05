@@ -72,7 +72,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         pMainApp->Tick();
         pMainApp->Render();
 
-        if (KEYPUSH(KEY_TYPE::ESC) && KEYPUSH(KEY_TYPE::F1))
+        if (KEYPUSH(KEY_TYPE::ESC) && KEYPUSH(KEY_TYPE::F4))
             break;
     }
 

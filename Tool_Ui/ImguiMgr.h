@@ -16,6 +16,7 @@ private:
    void        Key_Input();
    void        Create_Ui();
    void        Manapulate_Ui();
+   void        Parameter_Ui();
 
 
    void        File_Dialog();             // 파일탐색기로 dds추가
@@ -26,27 +27,30 @@ private:
 
    void        Select_Object();           // 생성한 오브젝트 중 선택
    void        Delete_Object();           // 선택한 오브젝트 삭제
-   void        Change_Value_Object();     // 선택한 오브젝트 값 변경
+   void        Change_Object_Value();     // 선택한 오브젝트 값 변경
 
    void        Change_ParamDesc();        // 선택한 오브젝트 파라메터 값 변경
    void        Add_Picking_Zone();
 
+   void        Save_Ui_Desc();            // 함수 호출시 아래 두 함수도 같이 호출
    void        Decide_FilePath();         // 저장 경로 불러오기
-   void        Save_Ui_Desc();            // 
    void        Load_Ui_Desc();            // 
 
-   void        Record_Two_Point();
+   void        Record_Two_Point();        // 동작 시 이후 두번의 클릭 위치를 저장
+
+
 
 
 
 private:
-   _bool             m_bRender_Create_Ui     = { false };   // Create tool on/off
-   _bool             m_bRender_Manapulate_Ui = { false };   // Manapulate tool on/off
+   _bool             m_bRender_Create_Ui     = { true };    // Create tool on/off
+   _bool             m_bRender_Manapulate_Ui = { true };    // Manapulate tool on/off
+   _bool             m_bRender_Param_Ui      = { true };    // Parameter tool on/off
 
    wstring           m_strSearchTexture;                    // 검색
    wstring           m_strKeyTexture;                       // 선택한 텍스처 키값
    _float3           m_vecPos                = {};          // 생성할 위치
-   _float2           m_vecScale              = {};          // 텍스처 크기
+   _float3           m_vecScale              = {};          // 텍스처 크기
    _uint             m_iTextureCursor        = { 0 };       // list box 선택 인덱스
 
    wstring           m_strName;                             // 생성할 오브젝트 이름
@@ -54,22 +58,22 @@ private:
    wstring           m_strSelectObjName;                    // 선택한 오브젝트 이름
    _uint             m_iObjNameCursor        = { 0 };       // list box 선택 인덱스
 
-   _float3           m_vecPos2 = {};                        // 선택한 오브젝트 조작 위치
-   _float2           m_vecScale2 = {};                      // 선택한 오브젝트 조작 크기
-
+   shared_ptr<GameObject> m_pSampleObj;
    _bool             m_bIsChangeCheck        = { false };   // 값 변경 즉시 적용
+   _int              m_iTypeZmoOper          = { 0 };       // OPERATION 값 변경 라디오 버튼
+   OPERATION         m_eZmoOper              = { OPERATION::TRANSLATE };
 
-   _int              m_iPass_0               = { 0 };       // 
-   _float            m_float_0               = { 0.f };     // 
+   _int              m_iPass_0               = { 0 };       // 파라메터 -> 패스
+   _float            m_float_0               = { 0.f };     // 파라메터 -> 세부 값
 
-   _int              m_iPickTypeIndex        = { 0 };       // 
-   POINT             m_ptPos1                = {};
-   POINT             m_ptPos2                = {};
+   _int              m_iPickTypeIndex        = { 0 };       // add picking zone 라디오 버튼
+   POINT             m_ptPos1                = {};          // 첫 피킹 마우스 좌표
+   POINT             m_ptPos2                = {};          // 두번째 피킹 마우스 좌표
+   _bool             m_bIsRecordStart        = { false };   // record 버튼 작동확인
+   _uint             m_iRecordOrder          = { 0 };       // record 횟수 확인
 
-   _bool             m_bIsRecordStart        = { false };
-   _uint             m_iRecordOrder          = { 0 };
-
-   wstring           m_strSaveLoadPath;
+   wstring           m_strSaveLoadPath;                     // dat 파일 경로
+   wstring           m_strSaveFileName;
 
 };
 
