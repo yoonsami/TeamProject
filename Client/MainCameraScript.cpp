@@ -1,4 +1,4 @@
-
+﻿
 #include "pch.h"
 #include "Camera.h"
 #include "BaseCollider.h"
@@ -34,7 +34,7 @@ void MainCameraScript::Tick()
 {
     if (m_fFixedTime <= 0.f)
         Cal_OffsetDir();
- 
+
     Restrict_Offset();
     Update_Transform();
 }
@@ -51,6 +51,8 @@ void MainCameraScript::Late_Tick()
         else
             Find_Target();
     }
+
+
 }
 
 void MainCameraScript::Set_PosDirectly(const _float3& vCenterpos, const _float3& vDir)
@@ -104,11 +106,11 @@ void MainCameraScript::Cal_OffsetDir()
     m_fFollowSpeed = 5.f;
     _float2 mouseDir = INPUT.GetMouseDir();
 
-    
+
     auto playerController = m_pPlayer.lock()->Get_CharacterController()->Get_Actor();
-    
+
     _float4 vPlayerPos = { _float(playerController->getPosition().x), _float(playerController->getPosition().y), _float(playerController->getPosition().z), 1.f };
-   
+
     //_float4 vPlayerPos = m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS);
 
     _float3 vDir = (vPlayerPos - Get_Transform()->Get_State(Transform_State::POS)).xyz();
@@ -175,7 +177,7 @@ void MainCameraScript::Update_Transform()
         _float3 vHitPoint = { hit.getAnyHit(0).position.x, hit.getAnyHit(0).position.y, hit.getAnyHit(0).position.z };
         fMinDist = hit.getAnyHit(0).distance;
     }
-   
+
     // Set Position
     if (m_fFixedTime > 0.f)
     {

@@ -43,9 +43,6 @@
     <Filter Include="02.Component\01.FSM\00.DemoFSM">
       <UniqueIdentifier>{8a982ce2-f0b2-4b7a-800d-dfeff839ac2b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\01.FSM\01.SpearAce_FSM">
-      <UniqueIdentifier>{8f3e1798-25d3-4565-9312-f2cdbe87d1b2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="99.Header\98.Default">
       <UniqueIdentifier>{1416d258-c22e-43be-a507-5d8b90f21cef}</UniqueIdentifier>
     </Filter>
@@ -54,9 +51,6 @@
     </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\01.WeaponScript">
       <UniqueIdentifier>{b9bdbe99-4328-44ff-a881-4aa947da18c2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Component\01.FSM\02.Kyle_FSM">
-      <UniqueIdentifier>{9c458996-fc46-44b2-8422-08f71c7219c7}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\97.DebugScript">
       <UniqueIdentifier>{308378ec-739c-4087-8d4f-fdec1ef5243b}</UniqueIdentifier>
@@ -75,6 +69,30 @@
     </Filter>
     <Filter Include="02.Component\MapObject">
       <UniqueIdentifier>{eaa2751e-548a-4450-b36d-db18a2643371}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\01.Hero_FSM">
+      <UniqueIdentifier>{1db04cc3-20eb-4a9e-8fa2-ae1f2d2e778d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\01.Hero_FSM\01.SpearAce_FSM">
+      <UniqueIdentifier>{8f3e1798-25d3-4565-9312-f2cdbe87d1b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\01.Hero_FSM\02.Kyle_FSM">
+      <UniqueIdentifier>{9c458996-fc46-44b2-8422-08f71c7219c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM">
+      <UniqueIdentifier>{5c127847-43c6-4fd8-b217-fe6fded2aaa1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\00.Silversword_Soldier_FSM">
+      <UniqueIdentifier>{2d025cc6-fb7d-439c-b7e9-79904de361be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\03.ColliderInfoScript">
+      <UniqueIdentifier>{4f3b2b44-9774-4323-b110-9299fc60311e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\03.ColliderInfoScript\AttackCollider">
+      <UniqueIdentifier>{fc29a8dd-b20a-43e9-9bc9-f9e08b43daf6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\04.SkillScript">
+      <UniqueIdentifier>{a5b52b0c-57ba-4d33-9b3f-4dbcf057ce3c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -115,7 +133,7 @@
       <Filter>02.Component\00.MonoBehaviour\98.DemoAnimationController</Filter>
     </ClInclude>
     <ClInclude Include="SpearAce_FSM.h">
-      <Filter>02.Component\01.FSM\01.SpearAce_FSM</Filter>
+      <Filter>02.Component\01.FSM\01.Hero_FSM\01.SpearAce_FSM</Filter>
     </ClInclude>
     <ClInclude Include="MainCameraScript.h">
       <Filter>02.Component\00.MonoBehaviour\00.MainCameraScript</Filter>
@@ -124,7 +142,7 @@
       <Filter>02.Component\00.MonoBehaviour\01.WeaponScript</Filter>
     </ClInclude>
     <ClInclude Include="Kyle_FSM.h">
-      <Filter>02.Component\01.FSM\02.Kyle_FSM</Filter>
+      <Filter>02.Component\01.FSM\01.Hero_FSM\02.Kyle_FSM</Filter>
     </ClInclude>
     <ClInclude Include="ObjectTransformDebug.h">
       <Filter>02.Component\00.MonoBehaviour\97.DebugScript</Filter>
@@ -195,6 +213,15 @@
     <ClInclude Include="MapObjectScript.h">
       <Filter>02.Component\MapObject</Filter>
     </ClInclude>
+    <ClInclude Include="Silversword_Soldier_FSM.h">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\00.Silversword_Soldier_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="AttackColliderInfoScript.h">
+      <Filter>02.Component\00.MonoBehaviour\03.ColliderInfoScript\AttackCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="ForwardMovingSkillScript.h">
+      <Filter>02.Component\00.MonoBehaviour\04.SkillScript</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -228,7 +255,7 @@
       <Filter>02.Component\00.MonoBehaviour\98.DemoAnimationController</Filter>
     </ClCompile>
     <ClCompile Include="SpearAce_FSM.cpp">
-      <Filter>02.Component\01.FSM\01.SpearAce_FSM</Filter>
+      <Filter>02.Component\01.FSM\01.Hero_FSM\01.SpearAce_FSM</Filter>
     </ClCompile>
     <ClCompile Include="MainCameraScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\00.MainCameraScript</Filter>
@@ -237,7 +264,7 @@
       <Filter>02.Component\00.MonoBehaviour\01.WeaponScript</Filter>
     </ClCompile>
     <ClCompile Include="Kyle_FSM.cpp">
-      <Filter>02.Component\01.FSM\02.Kyle_FSM</Filter>
+      <Filter>02.Component\01.FSM\01.Hero_FSM\02.Kyle_FSM</Filter>
     </ClCompile>
     <ClCompile Include="ObjectTransformDebug.cpp">
       <Filter>02.Component\00.MonoBehaviour\97.DebugScript</Filter>
@@ -295,6 +322,15 @@
     </ClCompile>
     <ClCompile Include="MapObjectScript.cpp">
       <Filter>02.Component\MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Silversword_Soldier_FSM.cpp">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\00.Silversword_Soldier_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="AttackColliderInfoScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\03.ColliderInfoScript\AttackCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="ForwardMovingSkillScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\04.SkillScript</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -22,18 +22,24 @@ enum ObjectType
 	OBJ_END
 };
 
-enum class CollisionGroup
-{
-	Player,
 
-	Monster,
+
+enum CollisionGroup
+{
+	Player_Body,
+	Player_Attack,
+	Player_Skill,
+
+	Monster_Body,
+	Monster_Attack,
+	Monster_Skill,
 
 	Script,
-
-
-
 
 	END = MAX_COLLIDER_GROUP
 };
 
 #define DEBUGTOOL GET_SINGLE(DebugTool)
+#define NORMAL_SKILL    L"Normal_Skill"
+#define KNOCKDOWN_SKILL L"KnockDown_Skill"
+#define AIRBORNE_SKILL  L"Airborne_Skill"

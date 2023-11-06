@@ -1,0 +1,115 @@
+#pragma once
+#include "FSM.h"
+
+class Silversword_Soldier_FSM :
+	public FSM
+{
+public:
+	enum class STATE
+	{
+		b_idle,
+		b_run,
+		n_run,
+		die,
+		gaze_b,
+		gaze_f,
+		gaze_l,
+		gaze_r,
+		airborne_start, //airborne_start -> airborne_end -> airborne_up
+		airborne_end,
+		airborne_up, // airborne_end_up Animation = knock_end_up animation
+		hit, //normal_hit
+		knock_start, // knock_start -> knock_end -> knock_end_loop -> knock_up
+		knock_end, 
+		knock_end_loop, 
+		knock_end_hit, // hit on knock_state
+		knock_up,
+		skill_1100, //SKILL 1
+		skill_2100, //SKILL 2
+		skill_3100, //SKILL 3
+		NONE
+	};
+
+public:
+	virtual HRESULT Init() override;
+	virtual void Tick() override;
+
+
+private:
+	virtual void State_Tick() override; // 상태를 항상 업데이트해줌
+	virtual void State_Init() override; // 상태가 바뀔 때 한번 초기화 해줌
+	virtual void OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap) override;
+	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) override;
+	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) override;
+	virtual void Get_Hit(const wstring& skillname, shared_ptr<BaseCollider> pOppositeCollider) override;
+	virtual void AttackCollider_On(const wstring& skillname) override;
+	virtual void AttackCollider_Off() override;
+
+	void b_idle();
+	void b_idle_Init();
+	void b_run();
+	void b_run_Init();
+	void n_run();
+	void n_run_Init();
+
+	void die();
+	void die_Init();
+
+	void gaze_b();
+	void gaze_b_Init();
+	void gaze_f();
+	void gaze_f_Init();
+	void gaze_l();
+	void gaze_l_Init();
+	void gaze_r();
+	void gaze_r_Init();
+
+
+	void airborne_start();
+	void airborne_start_Init();
+	void airborne_end();
+	void airborne_end_Init();
+	void airborne_up();
+	void airborne_up_Init();
+	void hit();
+	void hit_Init();
+	void knock_start();
+	void knock_start_Init();
+
+	void knock_end();
+	void knock_end_Init();
+	void knock_end_loop();
+	void knock_end_loop_Init();
+	void knock_end_hit();
+	void knock_end_hit_Init();
+	void knock_up();
+	void knock_up_Init();
+
+	void skill_1100();
+	void skill_1100_Init();
+	void skill_2100();
+	void skill_2100_Init();
+	void skill_3100();
+	void skill_3100_Init();
+
+	void CalCulate_PatrolTime();
+private:
+	STATE m_eCurState = STATE::b_idle;
+	STATE m_ePreState = STATE::NONE;
+
+	_float4 m_vPatrolFirstPos = { 0.f,0.f,0.f,1.f };
+	_float3 m_vTurnVector = _float3(0.f);
+
+	_float m_fRunSpeed = 4.f;
+	_float m_fNormalAttack_AnimationSpeed = 2.f;
+	_float m_fSkillAttack_AnimationSpeed = 2.f;
+
+	COOLTIMEINFO m_tAttackCoolTime = { 3.f, 0.f };
+	_bool m_bDetected = false;
+	_bool m_bPatrolMove = false;
+	COOLTIMEINFO m_tPatrolMoveCool = { 4.f,0.f };
+	_float m_fPatrolDistance = 1.f;
+
+
+};
+

@@ -83,7 +83,7 @@ void Scene::Render()
 	Render_Distortion();
 	Render_Distortion_Final();
 
-	//Render_Debug();
+	Render_Debug();
 
 	Render_UI();
 

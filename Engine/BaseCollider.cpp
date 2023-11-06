@@ -1,10 +1,13 @@
 #include "pch.h"
 #include "BaseCollider.h"
+#include "Camera.h"
+#include "FSM.h"
+
 
 BaseCollider::BaseCollider(ColliderType colliderType)
 	:Component(COMPONENT_TYPE::Collider), m_eColliderType(colliderType)
 {
-	//DebugShader =  RESOURCES.Get<Shader>(L"Shader_Mesh.fx");
+	DebugShader =  RESOURCES.Get<Shader>(L"Shader_Mesh.fx");
 	m_iID = g_iNextID++;
 }
 
@@ -14,7 +17,7 @@ BaseCollider::~BaseCollider()
 
 void BaseCollider::Render()
 {
-	/*auto pCamera = CUR_SCENE->Get_Camera(L"Default")->Get_Camera();
+	auto pCamera = CUR_SCENE->Get_Camera(L"Default")->Get_Camera();
 
 	if (!pCamera)
 		return;
@@ -39,7 +42,7 @@ void BaseCollider::Render()
 
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		DebugShader->DrawIndexed(1, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
-	}*/
+	}
 }
 
 void BaseCollider::Render_Instancing(shared_ptr<InstancingBuffer>& buffer)
@@ -67,22 +70,22 @@ void BaseCollider::OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
 	if (m_pOwner.expired())
 		return;
-	//auto myFSM = Get_Owner()->Get_FSM();
-	//if (myFSM)
-	//	myFSM->OnCollision(pCollider, fGap);
+	auto myFSM = Get_Owner()->Get_FSM();
+	if (myFSM)
+		myFSM->OnCollision(pCollider, fGap);
 }
 
 void BaseCollider::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
 	++m_iColCount;
-	//if (m_pOwner.expired())
-	//	return;
-	//auto myFSM = Get_Owner()->Get_FSM();
-	//if (myFSM)
-	//	myFSM->OnCollisionEnter(pCollider, fGap);
+	if (m_pOwner.expired())
+		return;
+	auto myFSM = Get_Owner()->Get_FSM();
+	if (myFSM)
+		myFSM->OnCollisionEnter(pCollider, fGap);
 
-	//if (m_pResultFunc)
-	//	m_pResultFunc();
+	if (m_pResultFunc)
+		m_pResultFunc();
 
 	
 }
@@ -92,11 +95,11 @@ void BaseCollider::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fG
 	--m_iColCount;
 	if (m_iColCount < 0)
 		m_iColCount = 0;
-	//if (m_pOwner.expired())
-	//	return;
-	//auto myFSM = Get_Owner()->Get_FSM();
-	//if (myFSM)
-	//	myFSM->OnCollisionExit(pCollider, fGap);
+	if (m_pOwner.expired())
+		return;
+	auto myFSM = Get_Owner()->Get_FSM();
+	if (myFSM)
+		myFSM->OnCollisionExit(pCollider, fGap);
 }
 
 void BaseCollider::Add_ColliderGroup()
