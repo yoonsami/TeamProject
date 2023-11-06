@@ -904,7 +904,7 @@ technique11 T1_Outline
         SetVertexShader(CompileShader(vs_5_0, VS_NonAnimOutline()));
         SetGeometryShader(NULL);
         SetRasterizerState(RS_CW);
-        SetDepthStencilState(DSS_LESS_NO_WRITE, 0);
+        SetDepthStencilState(DSS_LESS, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Outline()));
     }
@@ -913,7 +913,7 @@ technique11 T1_Outline
         SetVertexShader(CompileShader(vs_5_0, VS_NonAnimInstancingOutline()));
         SetGeometryShader(NULL);
         SetRasterizerState(RS_CW);
-        SetDepthStencilState(DSS_LESS_NO_WRITE, 0);
+        SetDepthStencilState(DSS_LESS, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Outline_Instancing()));
     }
@@ -922,7 +922,7 @@ technique11 T1_Outline
         SetVertexShader(CompileShader(vs_5_0, VS_AnimOutline()));
         SetGeometryShader(NULL);
         SetRasterizerState(RS_CW);
-        SetDepthStencilState(DSS_LESS_NO_WRITE, 0);
+        SetDepthStencilState(DSS_LESS, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Outline()));
     }
@@ -931,7 +931,7 @@ technique11 T1_Outline
         SetVertexShader(CompileShader(vs_5_0, VS_AnimInstancingOutline()));
         SetGeometryShader(NULL);
         SetRasterizerState(RS_CW);
-        SetDepthStencilState(DSS_LESS_NO_WRITE, 0);
+        SetDepthStencilState(DSS_LESS, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Outline_Instancing()));
     }
