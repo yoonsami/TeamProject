@@ -237,20 +237,20 @@ float4 PS_Final(VS_OUT input) : SV_Target
     float4 output = (float4) 0.f;
     
     float4 diffuseColor = SubMap1.Sample(LinearSampler, input.uv);
-    diffuseColor = pow(diffuseColor, g_gamma);
+    //diffuseColor = pow(diffuseColor, g_gamma);
     float4 specularColor = SubMap2.Sample(LinearSampler, input.uv);
-    specularColor = pow(specularColor, g_gamma);
+    //specularColor = pow(specularColor, g_gamma);
     float4 emissiveColor = SubMap3.Sample(LinearSampler, input.uv);
-    emissiveColor = pow(emissiveColor, g_gamma);
+    //emissiveColor = pow(emissiveColor, g_gamma);
    
     float4 ambientLightColor = SubMap4.Sample(LinearSampler, input.uv);
-    ambientLightColor = pow(ambientLightColor, g_gamma);
+    //ambientLightColor = pow(ambientLightColor, g_gamma);
     float4 diffuseLightColor = SubMap5.Sample(LinearSampler, input.uv);
-    diffuseLightColor = pow(diffuseLightColor, g_gamma);
+    //diffuseLightColor = pow(diffuseLightColor, g_gamma);
     float4 specularLightColor = SubMap6.Sample(LinearSampler, input.uv);
-    specularLightColor = pow(specularLightColor, g_gamma);
+    //specularLightColor = pow(specularLightColor, g_gamma);
     float4 emissiveLightColor = SubMap7.Sample(LinearSampler, input.uv);
-    emissiveLightColor = pow(emissiveLightColor, g_gamma);
+   // emissiveLightColor = pow(emissiveLightColor, g_gamma);
     diffuseLightColor += ambientLightColor;
   //  float4 emissiveBlurColor = SubMap8.Sample(LinearSampler, input.uv);
    // diffuseLightColor = clamp(diffuseLightColor, 0.f, 1.f);

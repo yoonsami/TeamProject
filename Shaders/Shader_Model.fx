@@ -591,7 +591,10 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
         ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
 
     if (bHasDiffuseMap)
+    {
         diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
+        diffuseColor.rgb = pow(diffuseColor.rgb, GAMMA);
+    }
     else
         diffuseColor = Material.diffuse;
     
@@ -601,12 +604,18 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
     diffuseColor.a = 1.f;
     
     if (bHasSpecularMap)
+    {
         specularColor = SpecularMap.Sample(LinearSampler, input.uv);
+        specularColor.rgb = pow(specularColor.rgb, GAMMA);
+    }
     else
         specularColor = Material.specular;
    
     if (bHasEmissiveMap)
+    {
         emissiveColor = EmissiveMap.Sample(LinearSampler, input.uv);
+        emissiveColor.rgb = pow(emissiveColor.rgb, GAMMA);
+    }
     else
         emissiveColor = Material.emissive;
     
@@ -641,17 +650,31 @@ PS_OUT_Deferred PS_Deferred_Instancing(MeshInstancingOutput input)
         ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
 
     if (bHasDiffuseMap)
+    {
         diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
+        diffuseColor.rgb = pow(diffuseColor.rgb, GAMMA);
+    }
     else
         diffuseColor = Material.diffuse;
+    
+    if (diffuseColor.a <= 0.1f)
+        discard;
 
+    diffuseColor.a = 1.f;
+    
     if (bHasSpecularMap)
+    {
         specularColor = SpecularMap.Sample(LinearSampler, input.uv);
+        specularColor.rgb = pow(specularColor.rgb, GAMMA);
+    }
     else
         specularColor = Material.specular;
-    
+   
     if (bHasEmissiveMap)
+    {
         emissiveColor = EmissiveMap.Sample(LinearSampler, input.uv);
+        emissiveColor.rgb = pow(emissiveColor.rgb, GAMMA);
+    }
     else
         emissiveColor = Material.emissive;
 

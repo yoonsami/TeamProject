@@ -600,14 +600,6 @@ float3 aces_output_matrix[3] =
     float3(-0.00327f, -0.07276f, 1.07602f)
 };
 
-float3 mul(const float3 m[3], const float3 v)
-{
-    float x = dot(m[0], v);
-    float y = dot(m[1], v);
-    float z = dot(m[2], v);
-    return float3(x, y, z);
-}
-
 float3 rtt_and_odt_fit(float3 v)
 {
     float3 a = v * (v + 0.0245786f) - 0.000090537f;
@@ -617,9 +609,18 @@ float3 rtt_and_odt_fit(float3 v)
 
 float3 aces_fitted(float3 v)
 {
-    v = mul(aces_input_matrix, v);
+    float x, y, z;
+    x = dot(aces_input_matrix[0], v);
+    y = dot(aces_input_matrix[1], v);
+    z = dot(aces_input_matrix[2], v);
+    v = float3(x, y, z);
     v = rtt_and_odt_fit(v);
-    return mul(aces_output_matrix, v);
+    
+    x = dot(aces_output_matrix[0], v);
+    y = dot(aces_output_matrix[1], v);
+    z = dot(aces_output_matrix[2], v);
+    
+    return float3(x,y,z);
 }
 
 

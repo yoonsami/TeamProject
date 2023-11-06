@@ -22,7 +22,7 @@
 #include "Client_Define.h"
 
 
-//#define _DEBUGTOOL
+#define _DEBUGTOOL
 
 #ifdef _DEBUGTOOL
 
@@ -40,7 +40,9 @@ using namespace ImGui;
 
 
 
-#endif
+
+#else
+
 #ifdef _DEBUG
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -53,3 +55,4 @@ using namespace ImGui;
 #endif	// _DEBUG
 #endif
 #endif //PCH_H
+#endif

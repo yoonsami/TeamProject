@@ -46,13 +46,13 @@ float4 PS_LumainanceToneMap(VS_OUT input) : SV_Target0
     float4 output = (float4) 0.f;
 
     output = SubMap0.Sample(LinearSampler, input.uv);
-    output.rgb = pow(output.rgb, g_gamma);
+   // output.rgb = pow(output.rgb, g_gamma);
     output.rgb *= g_brightness;
     
     output.rgb = ((output.rgb - 0.5f) * g_contrast) + 0.5f;
     
+ //   output.rgb = pow(output.rgb, 1.f / g_gamma);
     output.rgb = reinhard_extended_luminance(output.rgb,g_max_white);
-    output.rgb = pow(output.rgb, 1.f / g_gamma);
     return output;
 }
 
@@ -62,14 +62,14 @@ float4 PS_Uncharted2TMO(VS_OUT input) : SV_Target0
     float4 output = (float4) 0.f;
 
     output = SubMap0.Sample(LinearSampler, input.uv);
-    output.rgb = pow(output.rgb, g_gamma);
+   // output.rgb = pow(output.rgb, g_gamma);
     output.rgb *= g_brightness;
     
     output.rgb = ((output.rgb - 0.5f) * g_contrast) + 0.5f;
     
-    output.rgb = uncharted2_filmic(output.rgb);
+   // output.rgb = pow(output.rgb, 1.f / g_gamma);
     
-    output.rgb = pow(output.rgb, 1.f / g_gamma);
+    output.rgb = uncharted2_filmic(output.rgb);
     
     return output;
 }
@@ -80,14 +80,14 @@ float4 PS_ACESTMO(VS_OUT input) : SV_Target0
     float4 output = (float4) 0.f;
 
     output = SubMap0.Sample(LinearSampler, input.uv);
-    output.rgb = pow(output.rgb, g_gamma);
+    //output.rgb = pow(output.rgb, g_gamma);
     output.rgb *= g_brightness;
     
     output.rgb = ((output.rgb - 0.5f) * g_contrast) + 0.5f;
     
-    output.rgb = aces_fitted(output.rgb);
+    //output.rgb = pow(output.rgb, 1.f / g_gamma);
     
-    output.rgb = pow(output.rgb, 1.f / g_gamma);
+    output.rgb = aces_fitted(output.rgb);
     return output;
 }
 

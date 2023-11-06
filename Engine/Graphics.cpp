@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Graphics.h"
-#define FORMATTYPE DXGI_FORMAT_R8G8B8A8_UNORM
+#define FORMATTYPE DXGI_FORMAT_R16G16B16A16_FLOAT
 HRESULT Graphics::Initialize(GRAPHICDESC desc)
 {
 	if (FAILED(Ready_DeviceAndSwapChain(desc.hWnd, desc.eWinMode, desc.iSizeX, desc.iSizeY)))

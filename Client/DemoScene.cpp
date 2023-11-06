@@ -106,7 +106,7 @@ HRESULT DemoScene::Load_Scene()
 	Load_Player();
 	Load_Light();
 	Load_Camera();
-	Load_MapFile(L"KRisMap18");
+	Load_MapFile(L"KrisMap20");
 	Load_Monster();
 	Load_DemoMap();
 
@@ -214,9 +214,7 @@ void DemoScene::Load_DemoMap()
 {
 	auto shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 	vector<wstring> modelName;
-	modelName.push_back(L"Building_A");
-	modelName.push_back(L"Building_B");
-	modelName.push_back(L"Building_C");
+
 	modelName.push_back(L"Ground");
 	modelName.push_back(L"Wall");
 
@@ -224,10 +222,7 @@ void DemoScene::Load_DemoMap()
 	{
 		shared_ptr<GameObject> obj = make_shared<GameObject>();
 		obj->GetOrAddTransform();
-		obj->Add_Component(make_shared<ModelRenderer>(shader));
-		obj->Get_ModelRenderer()->Set_Model(RESOURCES.Get<Model>(modelTag));
 		obj->Set_Name(modelTag);
-		obj->Set_DrawShadow(true);
 		Add_GameObject(obj);
 	}
 	
