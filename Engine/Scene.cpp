@@ -410,7 +410,7 @@ void Scene::PickUI()
 	if (!Get_UICamera())
 		return;
 
-	POINT screenPt = { LONG(INPUT.GetMousePos().x), LONG(INPUT.GetMousePos().y) };
+	POINT screenPt = INPUT.GetMousePosToPoint();
 
 	shared_ptr<Camera> camera = Get_UICamera()->Get_Camera();
 

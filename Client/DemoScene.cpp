@@ -12,8 +12,10 @@
 #include "DemoAnimationController1.h"
 #include "DemoFSM.h"
 #include "FileUtils.h"
-#include <Utils.h>
+#include "Utils.h"
 #include "SpearAce_FSM.h"
+#include "MeshRenderer.h"
+#include "BaseUI.h"
 #include "FontRenderer.h"
 #include "CustomFont.h"
 #include "MeshCollider.h"
@@ -97,6 +99,7 @@ HRESULT DemoScene::Load_Scene()
 	Load_Camera();
 	Load_DemoMap();
 
+	Load_Ui();
 
 	return S_OK;
 }
@@ -309,4 +312,45 @@ void DemoScene::Load_Light()
 	}
 
 	Add_GameObject(lightObj);
+}
+
+void DemoScene::Load_Ui()
+{
+	shared_ptr<FileUtils> file = make_shared<FileUtils>();
+	file->Open(L"..\\Resources\\UI\\asdfasdf.dat", FileMode::Read);
+
+	_uint iSize = file->Read<_uint>();
+
+	for (_uint i = 0; i < iSize; ++i)
+	{
+		auto UiObject = make_shared<GameObject>();
+
+		wstring strObjectName = Utils::ToWString(file->Read<string>());
+		UiObject->Set_Name(strObjectName);
+
+		shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+		renderer->Set_Mesh(mesh);
+		auto material = make_shared<Material>();
+		material->Set_TextureMap(RESOURCES.Get<Texture>(Utils::ToWString(file->Read<string>())), TextureMapType::DIFFUSE);
+		//material->Set_TextureMap(RESOURCES.Get<Texture>(Utils::ToWString(file->Read<string>())), TextureMapType::DIFFUSE);
+
+		UiObject->GetOrAddTransform()->Set_WorldMat(file->Read<_float4x4>());
+		_uint iIndex = file->Read<_uint>();
+		renderer->Set_Pass(iIndex);
+		renderer->Get_RenderParamDesc() = file->Read<RenderParams>();
+		renderer->Set_Material(material);
+		UiObject->Add_Component(renderer);
+
+		_bool bIsUseBaseUi = file->Read<_bool>();
+		if (true == bIsUseBaseUi)
+		{
+			auto BaseUi = make_shared<BaseUI>();
+			BaseUi->Get_Desc() = file->Read<BaseUI::BASEUIDESC>();
+		}
+
+		UiObject->Set_LayerIndex(Layer_UI);
+		UiObject->Set_Instancing(false);
+		Add_GameObject(UiObject);
+	}
 }

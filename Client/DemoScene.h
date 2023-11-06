@@ -22,5 +22,6 @@ private:
 	void Load_DemoMap();
 	void Load_Camera();
 	void Load_Light();
+	void Load_Ui();
 };
 

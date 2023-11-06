@@ -53,6 +53,7 @@ public:
 
 	const _float2& GetMousePos()	 { return m_ptMousePos; }
 	const _float2& GetMouseDir()	 { return m_vMouseDir; }
+	POINT GetMousePosToPoint()		 { return { LONG(m_ptMousePos.x), LONG(m_ptMousePos.y) }; }
 
 private:
 	inline KEY_STATE GetState(KEY_TYPE key) { return m_vecKeyStates[static_cast<_uchar>(key)]; }

@@ -8,6 +8,11 @@
 #include "CameraScript1.h"
 #include "CameraScript2.h"
 
+#include "FileUtils.h"
+#include "Utils.h"
+#include "MeshRenderer.h"
+#include "BaseUI.h"
+
 MainScene::MainScene()
 {
 }
@@ -44,38 +49,37 @@ HRESULT MainScene::Load_Scene()
 	Load_Light();
 	Load_Camera();
 
-
 	return S_OK;
 }
 
 void MainScene::Load_DemoModel()
 {
-	{
-		// GameObject 동적할당
-		shared_ptr<GameObject> testObj = make_shared<GameObject>();
+	//{
+	//	// GameObject 동적할당
+	//	shared_ptr<GameObject> testObj = make_shared<GameObject>();
 
-		// Transform Component 추가
-		// 둘중 하나 사용. AddComponent 또는 GetOrAddTransform(있으면 반환 없으면 생성후 반환)
-		testObj->Add_Component(make_shared<Transform>());
-		//testObj->GetOrAddTransform();
+	//	// Transform Component 추가
+	//	// 둘중 하나 사용. AddComponent 또는 GetOrAddTransform(있으면 반환 없으면 생성후 반환)
+	//	testObj->Add_Component(make_shared<Transform>());
+	//	//testObj->GetOrAddTransform();
 
-		testObj->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
-		{
-			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+	//	testObj->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
+	//	{
+	//		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
-			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
-			{
-				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Kyle");
-				animator->Set_Model(model);
-			}
-			//애니메이터 컴포넌트
-			testObj->Add_Component(animator);
-		}
+	//		shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+	//		{
+	//			shared_ptr<Model> model = RESOURCES.Get<Model>(L"Kyle");
+	//			animator->Set_Model(model);
+	//		}
+	//		//애니메이터 컴포넌트
+	//		testObj->Add_Component(animator);
+	//	}
 
-		//testObj->Add_Component(make_shared<DemoAnimationController1>());
+	//	//testObj->Add_Component(make_shared<DemoAnimationController1>());
 
-		Add_GameObject(testObj);
-	}
+	//	Add_GameObject(testObj);
+	//}
 	//{
 	//	// GameObject 동적할당
 	//	shared_ptr<GameObject> testObj = make_shared<GameObject>();
