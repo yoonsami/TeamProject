@@ -410,10 +410,28 @@ void ImguiMgr::Select_Object()
             ImGui::BulletText("%s : ", m_arrItems[i]);
             ImGui::SameLine();
 
+            ImVec2 CursorPos = ImGui::GetCursorPos();
+            CursorPos.x = 140.f;
+            ImGui::SetCursorPos(CursorPos);
+
             if (nullptr != pGameobject->Get_MeshRenderer()->Get_Material()->Get_TextureMap(static_cast<TextureMapType>(i)))
                ImGui::Text("%s", Utils::ToString(pGameobject->Get_MeshRenderer()->Get_Material()->Get_TextureMap(static_cast<TextureMapType>(i))->Get_Name()).c_str());
             else
                ImGui::Text("None");
+
+            string strButtonName = "Delete##" + to_string(i);
+
+            ImGui::SameLine();
+            CursorPos = ImGui::GetCursorPos();
+            CursorPos.x = 235.f;
+            ImGui::SetCursorPos(CursorPos);
+            if (ImGui::Button(strButtonName.c_str(), ImVec2(50.f, 16.f)))
+            {
+               if (!ImGui::IsItemActive())
+               {
+                  pGameobject->Get_MeshRenderer()->Get_Material()->Set_TextureMap(nullptr, static_cast<TextureMapType>(i));
+               }
+            }
          }
       }
 
@@ -431,10 +449,28 @@ void ImguiMgr::Select_Object()
             ImGui::BulletText("Submap%d : ", i);
             ImGui::SameLine();
 
+            ImVec2 CursorPos = ImGui::GetCursorPos();
+            CursorPos.x = 125.f;
+            ImGui::SetCursorPos(CursorPos);
+
             if (nullptr != pGameobject->Get_MeshRenderer()->Get_Material()->Get_SubMap(i))
                ImGui::Text("%s", Utils::ToString(pGameobject->Get_MeshRenderer()->Get_Material()->Get_SubMap(i)->Get_Name()).c_str());
             else
                ImGui::Text("None");
+
+            string strButtonName = "Delete##" + to_string(i);
+
+            ImGui::SameLine();
+            CursorPos = ImGui::GetCursorPos();
+            CursorPos.x = 235.f;
+            ImGui::SetCursorPos(CursorPos);
+            if (ImGui::Button(strButtonName.c_str(), ImVec2(50.f, 16.f)))
+            {
+               if (!ImGui::IsItemActive())
+               {
+                  pGameobject->Get_MeshRenderer()->Get_Material()->Set_SubMap(i, nullptr);
+               }
+            }
          }
       }
       ImGui::TreePop();
