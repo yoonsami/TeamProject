@@ -407,24 +407,7 @@ void ImguiMgr::Select_Object()
 
          for (_uint i = 0; i < MAX_TEXTURE_MAP_COUONT; ++i)
          {
-            ImGui::BulletText("%s : ", m_arrItems[i]);
-            ImGui::SameLine();
-
-            ImVec2 CursorPos = ImGui::GetCursorPos();
-            CursorPos.x = 140.f;
-            ImGui::SetCursorPos(CursorPos);
-
-            if (nullptr != pGameobject->Get_MeshRenderer()->Get_Material()->Get_TextureMap(static_cast<TextureMapType>(i)))
-               ImGui::Text("%s", Utils::ToString(pGameobject->Get_MeshRenderer()->Get_Material()->Get_TextureMap(static_cast<TextureMapType>(i))->Get_Name()).c_str());
-            else
-               ImGui::Text("None");
-
             string strButtonName = "Delete##" + to_string(i);
-
-            ImGui::SameLine();
-            CursorPos = ImGui::GetCursorPos();
-            CursorPos.x = 235.f;
-            ImGui::SetCursorPos(CursorPos);
             if (ImGui::Button(strButtonName.c_str(), ImVec2(50.f, 16.f)))
             {
                if (!ImGui::IsItemActive())
@@ -432,6 +415,19 @@ void ImguiMgr::Select_Object()
                   pGameobject->Get_MeshRenderer()->Get_Material()->Set_TextureMap(nullptr, static_cast<TextureMapType>(i));
                }
             }
+
+            ImGui::SameLine();
+            ImGui::BulletText("%s : ", m_arrItems[i]);
+
+            ImGui::SameLine();
+            ImVec2 CursorPos = ImGui::GetCursorPos();
+            CursorPos.x = 195.f;
+            ImGui::SetCursorPos(CursorPos);
+
+            if (nullptr != pGameobject->Get_MeshRenderer()->Get_Material()->Get_TextureMap(static_cast<TextureMapType>(i)))
+               ImGui::Text("%s", Utils::ToString(pGameobject->Get_MeshRenderer()->Get_Material()->Get_TextureMap(static_cast<TextureMapType>(i))->Get_Name()).c_str());
+            else
+               ImGui::Text("None");
          }
       }
 
@@ -446,24 +442,7 @@ void ImguiMgr::Select_Object()
 
          for (_uint i = 0; i < MAX_SUB_SRV_COUNT; ++i)
          {
-            ImGui::BulletText("Submap%d : ", i);
-            ImGui::SameLine();
-
-            ImVec2 CursorPos = ImGui::GetCursorPos();
-            CursorPos.x = 125.f;
-            ImGui::SetCursorPos(CursorPos);
-
-            if (nullptr != pGameobject->Get_MeshRenderer()->Get_Material()->Get_SubMap(i))
-               ImGui::Text("%s", Utils::ToString(pGameobject->Get_MeshRenderer()->Get_Material()->Get_SubMap(i)->Get_Name()).c_str());
-            else
-               ImGui::Text("None");
-
             string strButtonName = "Delete##" + to_string(i);
-
-            ImGui::SameLine();
-            CursorPos = ImGui::GetCursorPos();
-            CursorPos.x = 235.f;
-            ImGui::SetCursorPos(CursorPos);
             if (ImGui::Button(strButtonName.c_str(), ImVec2(50.f, 16.f)))
             {
                if (!ImGui::IsItemActive())
@@ -471,6 +450,19 @@ void ImguiMgr::Select_Object()
                   pGameobject->Get_MeshRenderer()->Get_Material()->Set_SubMap(i, nullptr);
                }
             }
+
+            ImGui::SameLine();
+            ImGui::BulletText("Submap%d : ", i);
+
+            ImGui::SameLine();
+            ImVec2 CursorPos = ImGui::GetCursorPos();
+            CursorPos.x = 180.f;
+            ImGui::SetCursorPos(CursorPos);
+
+            if (nullptr != pGameobject->Get_MeshRenderer()->Get_Material()->Get_SubMap(i))
+               ImGui::Text("%s", Utils::ToString(pGameobject->Get_MeshRenderer()->Get_Material()->Get_SubMap(i)->Get_Name()).c_str());
+            else
+               ImGui::Text("None");
          }
       }
       ImGui::TreePop();
