@@ -3,7 +3,7 @@
 int g_BlurCount;
 float DownScalePower;
 float UpScalePower;
-
+float g_BloomMin;
 struct VS_IN
 {
     float3 pos : POSITION;
@@ -32,7 +32,7 @@ float4 PS_ExtractBloom(VS_OUT input) : SV_Target0
     float4 output = (float4) 0.f;
     float3 color = SubMap0.Sample(LinearSampler, input.uv).rgb;
     float brightness = luminance(color);
-    if(brightness > 0.99)
+    if (brightness > g_BloomMin)
         output = float4(color.rgb, 1.f);
     
     return output;

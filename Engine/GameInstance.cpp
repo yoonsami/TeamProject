@@ -67,4 +67,6 @@ _float GameInstance::g_fMaxWhite = 1.f;
 
 _float GameInstance::g_fGamma = 2.2f;
 
+_float GameInstance::g_fBloomMin = 0.99f;
+
 _int GameInstance::g_iTMIndex = 1;

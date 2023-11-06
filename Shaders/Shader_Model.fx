@@ -676,6 +676,9 @@ OutlineOutput PS_Deferred_Outline(MeshOutput input)
         if (dissolve < g_float_0)
             discard;
     }
+    if (bHasDiffuseMap)
+        if (DiffuseMap.Sample(LinearSampler, input.uv).a < 0.1f)
+            discard;
     output.diffuseColor = g_LineColor;
     output.specularColor = g_LineColor;
     output.emissiveColor = g_LineColor;
@@ -693,7 +696,13 @@ OutlineOutput PS_Deferred_Outline_Instancing(MeshInstancingOutput input)
         if (dissolve < InstanceRenderParams[input.id].g_float_0)
             discard;
     }
-    output.diffuseColor = g_LineColor;
+    
+    if (bHasDiffuseMap)
+        if (DiffuseMap.Sample(LinearSampler, input.uv).a < 0.1f)
+            discard;
+
+    
+            output.diffuseColor = g_LineColor;
     output.specularColor = g_LineColor;
     output.emissiveColor = g_LineColor;
     output.blurColor = InstanceRenderParams[input.id].g_vec4_0;

@@ -732,7 +732,7 @@ void Scene::Render_BloomMap()
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 
 	material->Push_SubMapData();
-
+	material->Get_Shader()->GetScalar("g_BloomMin")->SetFloat(GAMEINSTANCE.g_fBloomMin);
 	mesh->Get_VertexBuffer()->Push_Data();
 	mesh->Get_IndexBuffer()->Push_Data();
 
@@ -761,7 +761,7 @@ void Scene::Render_BloomMapScaling()
 		material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 	}
 
-	for (_uchar i = 0; i < 2; ++i)
+	for (_uchar i = 0; i < 3; ++i)
 	{
 		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLOOMUPSCALE0) + i);
 		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
@@ -775,8 +775,12 @@ void Scene::Render_BloomMapScaling()
 		mesh->Get_IndexBuffer()->Push_Data();
 
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		
+		if(i != 2)
+			material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+		else
+			material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
-		material->Get_Shader()->DrawIndexed(0, 3, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 	}
 
 	{

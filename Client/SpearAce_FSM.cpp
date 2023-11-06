@@ -15,7 +15,7 @@ HRESULT SpearAce_FSM::Init()
         m_eCurState = STATE::b_idle;
     }
 
-    //Get_Owner()->Add_Component(make_shared<Debug_CreateMotionTrail>());
+    Get_Owner()->Add_Component(make_shared<Debug_CreateMotionTrail>());
 
     return S_OK;
 }

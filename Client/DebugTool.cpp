@@ -50,10 +50,11 @@ void DebugTool::RenderOptionTap()
 		_float& g_fMaxWhite = GAMEINSTANCE.g_fMaxWhite;
 		_int& g_iTMIndex = GAMEINSTANCE.g_iTMIndex;
 		_float& g_fGamma = GAMEINSTANCE.g_fGamma;
-
+		_float& g_fBloomMin = GAMEINSTANCE.g_fBloomMin;
 		DragFloat("Brightness", &g_fBrightness, 0.001f, 0.01f, 5.f);
 		DragFloat("Contrast", &g_fContrast, 0.001f, 0.01f, 5.f);
 		DragFloat("Gamma", &g_fGamma, 0.001f, 0.01f, 5.f);
+		DragFloat("Bloom Min Value", &g_fBloomMin, 0.001f, 0.01f, 1.f);
 		InputInt("ToneMapping Mod", &g_iTMIndex, 1, 1, 3);
 		if(g_iTMIndex == 1)
 			DragFloat("Max_White Value", &g_fMaxWhite, 0.1f, 0.01f, 5.f);
