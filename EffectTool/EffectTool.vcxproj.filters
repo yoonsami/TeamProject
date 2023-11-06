@@ -79,7 +79,7 @@
     <ClInclude Include="ImGuiToolMgr.h">
       <Filter>97.ImGui\00.ImGuiToolMgr</Filter>
     </ClInclude>
-    <ClInclude Include="Widget_ParticleEffectTool.h">
+    <ClInclude Include="Widget_InstanceParticleEffectTool.h">
       <Filter>97.ImGui\01.Widget_ParticleEffectTool</Filter>
     </ClInclude>
     <ClInclude Include="Widget_MeshEffectTool.h">
@@ -162,7 +162,7 @@
     <ClCompile Include="ImGuiToolMgr.cpp">
       <Filter>97.ImGui\00.ImGuiToolMgr</Filter>
     </ClCompile>
-    <ClCompile Include="Widget_ParticleEffectTool.cpp">
+    <ClCompile Include="Widget_InstanceParticleEffectTool.cpp">
       <Filter>97.ImGui\01.Widget_ParticleEffectTool</Filter>
     </ClCompile>
     <ClCompile Include="Widget_MeshEffectTool.cpp">

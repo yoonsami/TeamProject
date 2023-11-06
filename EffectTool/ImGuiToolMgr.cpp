@@ -2,7 +2,7 @@
 
 /* Widgets */
 #include "Widget_MeshEffectTool.h"
-#include "Widget_ParticleEffectTool.h"
+#include "Widget_InstanceParticleEffectTool.h"
 
 ImGuiToolMgr::~ImGuiToolMgr()
 {
@@ -26,9 +26,9 @@ void ImGuiToolMgr::Init(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     ImGuizmo::SetRect(0.f, 0.f, g_iWinSizeX, g_iWinSizeY);
 
     // For. Setting Widgets
-    m_pWidget_ParticleEffectTool = make_shared<Widget_ParticleEffectTool>();
+    m_pWidget_InstanceParticleEffectTool = make_shared<Widget_InstanceParticleEffectTool>();
     m_pWidget_MeshEffectTool = make_shared<Widget_MeshEffectTool>();
-    m_pWidget_ParticleEffectTool->Initialize();
+    m_pWidget_InstanceParticleEffectTool->Initialize();
     m_pWidget_MeshEffectTool->Initialize();
 }
 
@@ -47,7 +47,7 @@ void ImGuiToolMgr::Tick()
     ImGui::End();
     
     if (m_bIsParticleEffectTool_On)
-        m_pWidget_ParticleEffectTool->Tick();
+        m_pWidget_InstanceParticleEffectTool->Tick();
     if (m_bIsMeshEffectTool_On)
         m_pWidget_MeshEffectTool->Tick();
 }

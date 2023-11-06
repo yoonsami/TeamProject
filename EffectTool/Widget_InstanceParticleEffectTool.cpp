@@ -1,23 +1,23 @@
 #include "pch.h"
-#include "Widget_ParticleEffectTool.h"
+#include "Widget_InstanceParticleEffectTool.h"
 
 // For. Components
 #include "Particle.h"
 
-Widget_ParticleEffectTool::Widget_ParticleEffectTool()
+Widget_InstanceParticleEffectTool::Widget_InstanceParticleEffectTool()
 {
 }
 
-Widget_ParticleEffectTool::~Widget_ParticleEffectTool()
+Widget_InstanceParticleEffectTool::~Widget_InstanceParticleEffectTool()
 {
 }
 
-void Widget_ParticleEffectTool::Initialize()
+void Widget_InstanceParticleEffectTool::Initialize()
 {
 	Set_Texture_List();
 }
 
-void Widget_ParticleEffectTool::Tick()
+void Widget_InstanceParticleEffectTool::Tick()
 {
 	ImGui::SetNextWindowPos(ImVec2(g_iWinSizeX - 450, 0));
 	ImGui::Begin("Particle Maker");
@@ -25,7 +25,7 @@ void Widget_ParticleEffectTool::Tick()
 	ImGui::End();
 }
 
-void Widget_ParticleEffectTool::Set_Texture_List()
+void Widget_InstanceParticleEffectTool::Set_Texture_List()
 {
 	/* ../Resources/Universal/ 폴더 내의 택스처들의 이름을 리스트로 만들어 저장하기 */ \
 	
@@ -56,7 +56,7 @@ void Widget_ParticleEffectTool::Set_Texture_List()
 	}
 }
 
-void Widget_ParticleEffectTool::ImGui_ParticleMaker()
+void Widget_InstanceParticleEffectTool::ImGui_ParticleMaker()
 {
 	Option_ParticleObjectProperty();
 	Option_ParticleProperty();
@@ -75,7 +75,7 @@ void Widget_ParticleEffectTool::ImGui_ParticleMaker()
 		Delete();
 }
 
-void Widget_ParticleEffectTool::Option_ParticleObjectProperty()
+void Widget_InstanceParticleEffectTool::Option_ParticleObjectProperty()
 {
 	ImGui::SeparatorText("Particle Object's Property");
 
@@ -95,7 +95,7 @@ void Widget_ParticleEffectTool::Option_ParticleObjectProperty()
 	ImGui::Spacing();
 }
 
-void Widget_ParticleEffectTool::Option_ParticleProperty()
+void Widget_InstanceParticleEffectTool::Option_ParticleProperty()
 {
 	ImGui::SeparatorText("Particle's Property");
 
@@ -141,7 +141,7 @@ void Widget_ParticleEffectTool::Option_ParticleProperty()
 	}
 }
 
-void Widget_ParticleEffectTool::Option_Textures()
+void Widget_InstanceParticleEffectTool::Option_Textures()
 {
 	ImGui::SeparatorText("Textures");
 
@@ -218,7 +218,7 @@ void Widget_ParticleEffectTool::Option_Textures()
 	}
 }
 
-void Widget_ParticleEffectTool::Option_Color()
+void Widget_InstanceParticleEffectTool::Option_Color()
 {
 	ImGuiColorEditFlags ColorEdit_flags = 0 | ImGuiColorEditFlags_AlphaBar;	// RGB, Alpha Bar
 	
@@ -287,7 +287,7 @@ void Widget_ParticleEffectTool::Option_Color()
 	ImGui::SliderFloat("Darker Offset", &m_fGradationByAlpha_Darker, 0.f, 1.f);
 }
 
-void Widget_ParticleEffectTool::Option_Transform()
+void Widget_InstanceParticleEffectTool::Option_Transform()
 {
 	ImGui::SeparatorText("Transform");
 
@@ -370,7 +370,7 @@ void Widget_ParticleEffectTool::Option_Transform()
 	ImGui::Spacing();
 }
 
-void Widget_ParticleEffectTool::Option_Movement()
+void Widget_InstanceParticleEffectTool::Option_Movement()
 {
 	ImGui::SeparatorText("Particle Object's Property");
 
@@ -424,7 +424,7 @@ void Widget_ParticleEffectTool::Option_Movement()
 	
 }
 
-void Widget_ParticleEffectTool::Create()
+void Widget_InstanceParticleEffectTool::Create()
 {
 	// For. Particle이 될 게임오브젝트 생성
 	shared_ptr<GameObject> ParticleObj = make_shared<GameObject>();
@@ -501,7 +501,7 @@ void Widget_ParticleEffectTool::Create()
 	CUR_SCENE->Add_GameObject(ParticleObj);
 }
 
-void Widget_ParticleEffectTool::Delete()
+void Widget_InstanceParticleEffectTool::Delete()
 {
 	// TODO : m_pTargetParticle에 바인딩 된 GameObject 삭제하기 
 }

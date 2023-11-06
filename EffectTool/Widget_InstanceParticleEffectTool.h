@@ -1,10 +1,10 @@
 #pragma once
 
-class Widget_ParticleEffectTool 
+class Widget_InstanceParticleEffectTool
 {
 public:
-	Widget_ParticleEffectTool();
-	~Widget_ParticleEffectTool();
+	Widget_InstanceParticleEffectTool();
+	~Widget_InstanceParticleEffectTool();
 
 public:
 	void	Initialize();

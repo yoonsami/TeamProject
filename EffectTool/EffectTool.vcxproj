@@ -177,7 +177,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Widget_MeshEffectTool.h" />
-    <ClInclude Include="Widget_ParticleEffectTool.h" />
+    <ClInclude Include="Widget_InstanceParticleEffectTool.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Libraries\Include\IMGUI\ImCurveEdit.cpp" />
@@ -207,7 +207,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Widget_MeshEffectTool.cpp" />
-    <ClCompile Include="Widget_ParticleEffectTool.cpp" />
+    <ClCompile Include="Widget_InstanceParticleEffectTool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="EffectTool.rc" />

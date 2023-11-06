@@ -1,7 +1,7 @@
 #pragma once
 #include "pch.h"
 
-class Widget_ParticleEffectTool;
+class Widget_InstanceParticleEffectTool;
 class Widget_MeshEffectTool;
 class ImGuiToolMgr
 {
@@ -30,7 +30,7 @@ private:
 	_bool					m_bIsMeshEffectTool_On = { false };
 
 	/* Widgets */
-	shared_ptr<Widget_ParticleEffectTool>	m_pWidget_ParticleEffectTool = { nullptr };
+	shared_ptr<Widget_InstanceParticleEffectTool>	m_pWidget_InstanceParticleEffectTool = { nullptr };
 	shared_ptr<Widget_MeshEffectTool>		m_pWidget_MeshEffectTool = { nullptr };
 };
 
