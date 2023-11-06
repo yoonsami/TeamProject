@@ -22,7 +22,7 @@ public:
 	void Render_Shadow();
 
 public:
-	const LightInfo& Get_LightInfo() { return m_LightInfo; }
+	LightInfo& Get_LightInfo() { return m_LightInfo; }
 	void Set_Color(const LightColor& color) { m_LightInfo.color = color; }
 	void Set_Ambient(const Color& color) { m_LightInfo.color.ambient = color; }
 	void Set_Diffuse(const Color& color) { m_LightInfo.color.diffuse = color; }

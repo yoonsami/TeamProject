@@ -73,6 +73,9 @@
     <Filter Include="98.Debug\IMGUI">
       <UniqueIdentifier>{0aebcb07-5364-412e-ae11-7b7531b891a5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\MapObject">
+      <UniqueIdentifier>{eaa2751e-548a-4450-b36d-db18a2643371}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -189,6 +192,9 @@
     <ClInclude Include="..\Libraries\Include\IMGUI\ImCurveEdit.h">
       <Filter>98.Debug\IMGUI</Filter>
     </ClInclude>
+    <ClInclude Include="MapObjectScript.h">
+      <Filter>02.Component\MapObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -286,6 +292,9 @@
     </ClCompile>
     <ClCompile Include="..\Libraries\Include\IMGUI\ImGradient.cpp">
       <Filter>98.Debug\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="MapObjectScript.cpp">
+      <Filter>02.Component\MapObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

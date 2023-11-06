@@ -1,4 +1,4 @@
-#include "pch.h"
+癤�#include "pch.h"
 #include "Utils.h"
 #include <filesystem>
 
@@ -107,7 +107,7 @@ void Utils::Replace(OUT wstring& str, wstring comp, wstring rep)
 void Utils::ToUpperString(OUT string& str)
 {
 	for (char& c : str) {
-		if (std::isalpha(c)) { // 알파벳 문자인 경우에만 변환
+		if (std::isalpha(c)) { 
 			c = std::toupper(c);
 		}
 	}
@@ -116,7 +116,7 @@ void Utils::ToUpperString(OUT string& str)
 void Utils::ToUpperString(OUT wstring& str)
 {
 	for (wchar_t& c : str) {
-		if (std::isalpha(c)) { // 알파벳 문자인 경우에만 변환
+		if (std::isalpha(c)) {
 			c = std::toupper(c);
 		}
 	}
@@ -125,7 +125,7 @@ void Utils::ToUpperString(OUT wstring& str)
 void Utils::ToLowerString(OUT string& str)
 {
 	for (char& c : str) {
-		if (std::isalpha(c)) { // 알파벳 문자인 경우에만 변환
+		if (std::isalpha(c)) { 
 			c = std::tolower(c);
 		}
 	}
@@ -134,14 +134,13 @@ void Utils::ToLowerString(OUT string& str)
 void Utils::ToLowerString(OUT wstring& str)
 {
 	for (wchar_t& c : str) {
-		if (std::isalpha(c)) { // 알파벳 문자인 경우에만 변환
+		if (std::isalpha(c)) { 
 			c = std::tolower(c);
 		}
 	}
 }
 
-_float4x4 Utils::m_matPivot = _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI);
-_float4x4 Utils::m_matNonAnimPivot =_float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI);
+_float4x4 Utils::m_matPivot = _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI);
 
 const wstring Utils::m_strModelPath =  L"../Resources/Models/";;
 

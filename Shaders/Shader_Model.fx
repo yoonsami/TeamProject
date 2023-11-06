@@ -39,6 +39,26 @@ MeshOutput VS_NonAnim(VTXModel input)
     return output;
 }
 
+MeshOutput VS_MapObject(VTXModel input)
+{
+    MeshOutput output;
+    output.position = mul(float4(input.position, 1.f), BoneTransform[BoneIndex]);
+    output.position = mul(output.position, W);
+    output.worldPosition = output.position.xyz;
+    output.viewPosition = mul(float4(output.worldPosition, 1.f), V).xyz;
+    output.position = mul(output.position, VP);
+    output.uv = input.uv * g_float_3;
+    output.viewNormal = mul(input.normal, (float3x3) BoneTransform[BoneIndex]);
+    output.viewNormal = mul(output.viewNormal, (float3x3) W);
+    output.viewNormal = normalize(mul(output.viewNormal, (float3x3) V));
+    output.viewTangent = mul(input.tangent, (float3x3) BoneTransform[BoneIndex]);
+    output.viewTangent = mul(output.viewTangent, (float3x3) W);
+    output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
+    
+
+    return output;
+}
+
 MeshOutput VS_Anim(VTXModel input)
 {
     MeshOutput output;
@@ -83,6 +103,27 @@ MeshInstancingOutput VS_NonAnimInstancing(VTXModelInstancing input)
     
     output.id = input.instanceID;
     
+    return output;
+}
+
+MeshOutput VS_MapObject_Instancing(VTXModelInstancing input)
+{
+    MeshOutput output;
+    
+    output.position = mul(float4(input.position, 1.f), BoneTransform[BoneIndex]);
+    output.position = mul(output.position, input.world);
+    output.worldPosition = output.position.xyz;
+    output.viewPosition = mul(float4(output.worldPosition, 1.f), V).xyz;
+
+    output.position = mul(output.position, VP);
+    output.uv = input.uv * InstanceRenderParams[input.instanceID].g_float_3;
+    output.viewNormal = mul(input.normal, (float3x3) BoneTransform[BoneIndex]);
+    output.viewNormal = mul(output.viewNormal, (float3x3) input.world);
+    output.viewNormal = normalize(mul(output.viewNormal, (float3x3) V));
+    output.viewTangent = mul(input.tangent, (float3x3) BoneTransform[BoneIndex]);
+    output.viewTangent = mul(output.viewTangent, (float3x3) input.world);
+    output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
+
     return output;
 }
 
@@ -553,6 +594,9 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
         diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
     else
         diffuseColor = Material.diffuse;
+    
+    if(diffuseColor.a <= 0.1f)
+        discard;
 
     diffuseColor.a = 1.f;
     
@@ -827,6 +871,26 @@ technique11 T0_ModelRender
         SetDepthStencilState(DSS_LESS, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_ShadowInstancing()));
+    }
+// 10. �ʿ�����Ʈ UV����, �ù���NONE, �����׽�Ʈ
+    pass MapObject
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MapObject()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_Deferred()));
+    }
+// 11. �ʿ�����Ʈ UV����, �ù���NONE, �����׽�Ʈ + �ν��Ͻ�
+    pass MapObject_Instancing
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MapObject_Instancing()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_Deferred()));
     }
 
     PASS_RS_VP(P4_WIREFRAME, FillModeWireFrame, VS_NonAnim, PS_FRAME)

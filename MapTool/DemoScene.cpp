@@ -10,6 +10,7 @@
 #include "DemoAnimationController1.h"
 #include "DemoFSM.h"
 #include "Imgui_Manager.h"
+
 DemoScene::DemoScene()
 {
 }
@@ -54,7 +55,7 @@ void DemoScene::Render()
 HRESULT DemoScene::Load_Scene()
 {
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\");
-	//Load_DemoModel();
+	Load_DemoModel();
 	Load_Light();
 	Load_Camera();
 
@@ -64,11 +65,10 @@ HRESULT DemoScene::Load_Scene()
 void DemoScene::Load_DemoModel()
 {
 	{
-		// GameObject 동적할당
-		shared_ptr<GameObject> testObj = make_shared<GameObject>();
 
-		// Transform Component 추가
-		// 둘중 하나 사용. AddComponent 또는 GetOrAddTransform(있으면 반환 없으면 생성후 반환)
+		shared_ptr<GameObject> testObj = make_shared<GameObject>();
+		// Transform Component
+
 		testObj->Add_Component(make_shared<Transform>());
 		//testObj->GetOrAddTransform();
 
@@ -76,21 +76,20 @@ void DemoScene::Load_DemoModel()
 		{
 			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
-			shared_ptr<ModelRenderer> animator = make_shared<ModelRenderer>(shader);
+			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
 			{
-				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Catacomb");
+				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Spear_Ace");
 				animator->Set_Model(model);
 			}
-			//애니메이터 컴포넌트
+
 			testObj->Add_Component(animator);
 		}
 
-		//testObj->Add_Component(make_shared<DemoAnimationController1>());
-
-		//{
-		//	shared_ptr<DemoFSM> fsm = make_shared<DemoFSM>();
-		//	testObj->Add_Component(fsm);
-		//}
+		{
+			//shared_ptr<SpearAce_FSM> fsm = make_shared<SpearAce_FSM>();
+			//testObj->Add_Component(fsm);
+		}
+		testObj->Set_Name(L"Player");
 
 		Add_GameObject(testObj);
 	}
@@ -103,7 +102,7 @@ void DemoScene::Load_Camera()
 		shared_ptr<GameObject> camera = make_shared<GameObject>();
 
 		// Transform Component 추가
-		camera->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
+		camera->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 3.f, -3.f, 1.f));
 
 		camera->GetOrAddTransform()->Set_Speed(5.f);
 
@@ -136,13 +135,17 @@ void DemoScene::Load_Camera()
 void DemoScene::Load_Light()
 {
 	shared_ptr<GameObject> lightObj = make_shared<GameObject>();
-	lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 25.f, 0.f, 1.f));
-	lightObj->GetOrAddTransform()->Set_LookDir(_float3(-1.f,-1.f,-1.f));
+	lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-150.f, 25.f, -150.f, 1.f));
+	lightObj->GetOrAddTransform()->Set_LookDir(_float3(4.f,-4.f,3.f));
 	{
 		// LightComponent 생성 후 세팅
 		shared_ptr<Light> lightCom = make_shared<Light>();
-		lightCom->Set_Diffuse(Color(1.f));
-		lightCom->Set_Ambient(Color(0.8f));
+		//lightCom->Set_Diffuse(Color(1.f));
+		//lightCom->Set_Ambient(Color(0.8f));
+		//lightCom->Set_Specular(Color(0.f));
+		//lightCom->Set_Emissive(Color(0.f));
+		lightCom->Set_Diffuse(Color(0.11f, 0.11f, 0.75f, 1.f));
+		lightCom->Set_Ambient(Color(0.675f));
 		lightCom->Set_Specular(Color(0.f));
 		lightCom->Set_Emissive(Color(0.f));
 		lightCom->Set_LightType(LIGHT_TYPE::DIRECTIONAL_LIGHT);

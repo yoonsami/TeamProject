@@ -25,6 +25,7 @@
 #include "HeroChangeScript.h"
 
 
+#include "MapObjectScript.h"
 DemoScene::DemoScene()
 {
 }
@@ -97,7 +98,7 @@ HRESULT DemoScene::Load_Scene()
 	Load_Player();
 	Load_Light();
 	Load_Camera();
-	Load_DemoMap();
+	Load_MapFile(L"KRisMap18");
 
 	//Load_Ui();
 
@@ -353,4 +354,47 @@ void DemoScene::Load_Ui()
 		UiObject->Set_Instancing(false);
 		Add_GameObject(UiObject);
 	}
+}
+HRESULT DemoScene::Load_MapFile(const wstring& _mapFileName)
+{
+	wstring strFilePath = L"..\\Resources\\Data\\";
+	strFilePath += _mapFileName + L".dat";
+
+	// 1. 오브젝트 개수 불러오기
+	shared_ptr<FileUtils> file = make_shared<FileUtils>();
+	file->Open(strFilePath, FileMode::Read);
+	_int iNumObjects = file->Read<_int>();
+
+	for (_int i = 0; i < iNumObjects; ++i)
+	{
+		// 2. 이름, UV가중치, 월드매트릭스 저장
+		wstring strObjectName = Utils::ToWString(file->Read<string>());
+		_float fUVWeight = file->Read<_float>();
+		_float4x4 matWorld = file->Read<_float4x4>();
+
+		// 3. 가져온 정보를 바탕으로 맵오브젝트를 생성하여 현재씬에 추가
+		shared_ptr<GameObject> CreateObject = make_shared<GameObject>();
+		CreateObject->Add_Component(make_shared<Transform>());
+		CreateObject->Get_Transform()->Set_WorldMat(matWorld);
+		{
+			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+			shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+			{
+				// 맵오브젝트 패스변경 + UV가중치적용
+				shared_ptr<MapObjectScript> MapObjSc = make_shared<MapObjectScript>(renderer, ModelRenderer::PASS_MAPOBJECT, fUVWeight);
+				CreateObject->Add_Component(MapObjSc);
+			}
+			{
+				// 베이스 오브젝트의 이름을 사용하여 오브젝트 생성
+				shared_ptr<Model> model = RESOURCES.Get<Model>(strObjectName);
+				renderer->Set_Model(model);
+			}
+			//애니메이터 컴포넌트
+			CreateObject->Add_Component(renderer);
+		}
+		// 4. 현재씬에 추가
+		Add_GameObject(CreateObject);
+	}
+
+	return S_OK;
 }

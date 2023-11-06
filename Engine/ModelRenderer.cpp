@@ -11,7 +11,6 @@ ModelRenderer::ModelRenderer(shared_ptr<Shader> shader)
 	:Component(COMPONENT_TYPE::ModelRenderer)
 	, m_pShader(shader)
 {
-
 }
 
 ModelRenderer::~ModelRenderer()
@@ -22,7 +21,6 @@ void ModelRenderer::Render()
 {
 	if (m_pModel == nullptr)
 		return;
-
 	// Set VP
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 
@@ -44,7 +42,7 @@ void ModelRenderer::Render()
 	for (_uint i = 0; i < boneCount; ++i)
 	{
 		shared_ptr<ModelBone> bone = m_pModel->Get_BoneByIndex(i);
-		boneDesc->transform[i] = bone->transform * Utils::m_matNonAnimPivot;
+		boneDesc->transform[i] = bone->transform * Utils::m_matPivot;
 	}
 	m_pShader->Push_BoneData(*boneDesc);
 
@@ -71,7 +69,11 @@ void ModelRenderer::Render()
 			
 		}
 		
-		if (m_bCullNone)
+		if (m_ePassType == PASS_MAPOBJECT)
+		{
+			m_pShader->DrawIndexed(0, PS_MAPOBJECT, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
+		}
+		else if (m_bCullNone)
 		{
 			m_pShader->DrawIndexed(0, PS_NONANIM_CULLNONE, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
 		}
@@ -101,7 +103,7 @@ void ModelRenderer::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 	for (_uint i = 0; i < boneCount; ++i)
 	{
 		shared_ptr<ModelBone> bone = m_pModel->Get_BoneByIndex(i);
-		boneDesc->transform[i] = (bone->transform) * Utils::m_matNonAnimPivot;
+		boneDesc->transform[i] = (bone->transform) * Utils::m_matPivot;
 	}
 	m_pShader->Push_BoneData(*boneDesc);
 	m_pShader->GetVector("g_UVSliding")->SetFloatVector((_float*)(&m_vUvSilding));
@@ -131,8 +133,9 @@ void ModelRenderer::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 			m_pShader->DrawIndexedInstanced(1, PS_NONANIMINSTANCE, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
 		}
 
-
-		if (m_bCullNone)
+		if (m_ePassType == PASS_MAPOBJECT)
+			m_pShader->DrawIndexedInstanced(0, PS_MAPOBJECT_INSTANCE, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
+		else if (m_bCullNone)
 			m_pShader->DrawIndexedInstanced(0, PS_NONANIM_CULLNONE_INSTANCE, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
 		else
 			m_pShader->DrawIndexedInstanced(0, PS_NONANIMINSTANCE, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
@@ -155,7 +158,7 @@ void ModelRenderer::Render_Skybox()
 	for (_uint i = 0; i < boneCount; ++i)
 	{
 		shared_ptr<ModelBone> bone = m_pModel->Get_BoneByIndex(i);
-		boneDesc->transform[i] = bone->transform * _float4x4::CreateScale(0.01f) * Utils::m_matNonAnimPivot;
+		boneDesc->transform[i] = bone->transform * _float4x4::CreateScale(0.01f) * Utils::m_matPivot;
 	}
 	m_pShader->Push_BoneData(*boneDesc);
 
@@ -199,7 +202,7 @@ void ModelRenderer::Render_Shadow()
 	for (_uint i = 0; i < boneCount; ++i)
 	{
 		shared_ptr<ModelBone> bone = m_pModel->Get_BoneByIndex(i);
-		boneDesc->transform[i] = bone->transform * Utils::m_matNonAnimPivot;
+		boneDesc->transform[i] = bone->transform * Utils::m_matPivot;
 	}
 	m_pShader->Push_BoneData(*boneDesc);
 
@@ -241,7 +244,7 @@ void ModelRenderer::Render_Shadow_Instancing(shared_ptr<InstancingBuffer>& buffe
 	for (_uint i = 0; i < boneCount; ++i)
 	{
 		shared_ptr<ModelBone> bone = m_pModel->Get_BoneByIndex(i);
-		boneDesc->transform[i] = (bone->transform) * Utils::m_matNonAnimPivot;
+		boneDesc->transform[i] = (bone->transform) * Utils::m_matPivot;
 	}
 	m_pShader->Push_BoneData(*boneDesc);
 
@@ -290,7 +293,7 @@ void ModelRenderer::Render_MotionBlur()
 	for (_uint i = 0; i < boneCount; ++i)
 	{
 		shared_ptr<ModelBone> bone = m_pModel->Get_BoneByIndex(i);
-		boneDesc->transform[i] = bone->transform * Utils::m_matNonAnimPivot;
+		boneDesc->transform[i] = bone->transform * Utils::m_matPivot;
 	}
 	m_pShader->Push_BoneData(*boneDesc);
 
@@ -328,7 +331,7 @@ void ModelRenderer::Render_MotionBlur_Instancing(shared_ptr<InstancingBuffer>& b
 	for (_uint i = 0; i < boneCount; ++i)
 	{
 		shared_ptr<ModelBone> bone = m_pModel->Get_BoneByIndex(i);
-		boneDesc->transform[i] = (bone->transform) * Utils::m_matNonAnimPivot;
+		boneDesc->transform[i] = (bone->transform) * Utils::m_matPivot;
 	}
 	m_pShader->Push_BoneData(*boneDesc);
 	m_pShader->GetVector("g_UVSliding")->SetFloatVector((_float*)(&m_vUvSilding));

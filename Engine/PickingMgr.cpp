@@ -126,9 +126,9 @@ shared_ptr<GameObject> PickingMgr::Pick_Mesh(_float2 screenPos, shared_ptr<Camer
 				{
 					_float fDistance = 0.f;
 					_float3 vVtxPos[3] = {
-						_float3::Transform(vertices[indices[i++]].vPosition,boneDesc->transform[boneIndex] * matWorld),
-						_float3::Transform(vertices[indices[i++]].vPosition,boneDesc->transform[boneIndex] * matWorld),
-						_float3::Transform(vertices[indices[i++]].vPosition,boneDesc->transform[boneIndex] * matWorld)
+					   _float3::Transform(vertices[indices[i++]].vPosition,boneDesc->transform[boneIndex] * matWorld),
+					   _float3::Transform(vertices[indices[i++]].vPosition,boneDesc->transform[boneIndex] * matWorld),
+					   _float3::Transform(vertices[indices[i++]].vPosition,boneDesc->transform[boneIndex] * matWorld)
 					};
 
 					tmp++;

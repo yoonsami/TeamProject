@@ -24,6 +24,7 @@ public:
 
     const _float4x4& Get_WorldMatrix() { return m_matWorld; }
     const _float4x4& Get_preWorldMatrix() { return m_matPreWorld; }
+    _float3& Get_CurrentDir() { return m_CurrentDir; }
     _float Get_Speed() { return m_fMoveSpeed; }
     _float4 Get_State(Transform_State eState)
     {
@@ -41,8 +42,8 @@ public:
     void Go_Backward();
     void Go_Left();
     void Go_Right();
-    void Go_Horizontally_Up();      // MEMO : Tool¿¡¼­ FreecamÀ» À§ÇØ Ãß°¡ (q,e key)
-    void Go_Horizontally_Down();    // MEMO : Tool¿¡¼­ FreecamÀ» À§ÇØ Ãß°¡ (q,e key)
+    void Go_Horizontally_Up();      // MEMO : Toolï¿½ï¿½ï¿½ï¿½ Freecamï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ (q,e key)
+    void Go_Horizontally_Down();    // MEMO : Toolï¿½ï¿½ï¿½ï¿½ Freecamï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ (q,e key)
     void Rotation(const _float3& vAxis, _float fRadian);
     void Turn(const _float3& vAxis, _float fRadianPerSec);
     void Scaled(const _float3& vScale);
@@ -60,6 +61,7 @@ public:
 private:
     _float4x4 m_matWorld = _float4x4::Identity;
     _float m_fMoveSpeed = 1.f;
+    _float3 m_CurrentDir = _float3{ 0.f, 0.f, 0.f };
 
     _float4x4 m_matPreWorld = _float4x4::Identity;
 };

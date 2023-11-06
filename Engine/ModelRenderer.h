@@ -11,6 +11,11 @@ class ModelRenderer :
     public Component
 {
 public:
+	enum INSTANCE_PASSTYPE
+	{
+		PASS_MAPOBJECT,
+		PASS_DEFAULT,
+	};
 	enum PASS_INFO
 	{
 		PS_NONANIM =0,
@@ -22,6 +27,8 @@ public:
 		PS_NONANIM_SHADOW =6,
 		PS_NONANIM_SHADOW_INSTANCE =7,
 
+		PS_MAPOBJECT = 10,
+		PS_MAPOBJECT_INSTANCE = 11,
 	};
 public:
 	ModelRenderer(shared_ptr<Shader> shader);
@@ -49,7 +56,8 @@ public:
 	void Set_CullMode(_bool cullNone) { m_bCullNone = cullNone; }
 	_bool Is_CullNone() { return m_bCullNone; }
 	_float2& Get_UVSliding() { return m_vUvSilding; }
-
+	void Set_PassType(INSTANCE_PASSTYPE _ePassType) { m_ePassType = _ePassType; }
+	
 private:
 	_bool				m_bHasOutline = false;
 	shared_ptr<Shader>	m_pShader;
@@ -57,6 +65,7 @@ private:
 	shared_ptr<Model>	m_pModel;
 	_bool				m_bCullNone = false;
 	_float2				m_vUvSilding = { 0.f,0.f };
+	INSTANCE_PASSTYPE	m_ePassType = { PASS_DEFAULT };
 
 public:
 	auto& Get_RenderParamDesc() { return m_RenderParams; }

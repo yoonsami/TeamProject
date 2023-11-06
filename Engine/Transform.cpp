@@ -305,6 +305,8 @@ void Transform::Set_Rotation(const _float3& vRollPitchYaw)
 
 void Transform::Set_LookDir(const _float3& vDir)
 {
+	m_CurrentDir = vDir;
+
 	LookAt(Get_State(Transform_State::POS) + vDir);
 }
 

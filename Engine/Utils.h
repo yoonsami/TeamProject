@@ -19,7 +19,6 @@ public:
 	static void Replace(OUT wstring& str, wstring comp, wstring rep);
 
 	static _float4x4 m_matPivot;
-	static _float4x4 m_matNonAnimPivot;
 
 	static void ToUpperString(OUT string& str);
 	static void ToUpperString(OUT wstring& str);

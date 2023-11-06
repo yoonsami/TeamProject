@@ -75,7 +75,7 @@ void MotionTrailRenderer::Render()
 		for (_uint i = 0; i < boneCount; ++i)
 		{
 			shared_ptr<ModelBone> bone = m_pModel->Get_BoneByIndex(i);
-			boneDesc->transform[i] = bone->transform * Utils::m_matNonAnimPivot;
+			boneDesc->transform[i] = bone->transform * Utils::m_matPivot;
 		}
 		m_pShader->Push_BoneData(*boneDesc);
 	}
