@@ -554,11 +554,13 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
     else
         diffuseColor = Material.diffuse;
 
+    diffuseColor.a = 1.f;
+    
     if (bHasSpecularMap)
         specularColor = SpecularMap.Sample(LinearSampler, input.uv);
     else
         specularColor = Material.specular;
-    
+   
     if (bHasEmissiveMap)
         emissiveColor = EmissiveMap.Sample(LinearSampler, input.uv);
     else

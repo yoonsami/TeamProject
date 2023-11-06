@@ -29,8 +29,8 @@ HRESULT MainApp::Init()
 			return E_FAIL;
 		}
 	}
-
 	Open_Scene();
+	DEBUGTOOL.Init();
 
     return S_OK;
 }
@@ -38,12 +38,17 @@ HRESULT MainApp::Init()
 void MainApp::Tick()
 {
 	GAMEINSTANCE.Tick_Engine();
+	DEBUGTOOL.Tick();
 	Control_Option();
 }
 
 HRESULT MainApp::Render()
 {
-	GAMEINSTANCE.Render();
+	GAMEINSTANCE.Render_Begin();
+	SCENE.Render();
+	DEBUGTOOL.Render();
+
+	GAMEINSTANCE.Render_End();
 
 	return S_OK;
 }
@@ -72,22 +77,22 @@ void MainApp::Control_Option()
 	}*/
 	if (KEYPUSH(KEY_TYPE::Z))
 	{
-		GAMEINSTANCE.g_fShadowBias += 0.0001f * fDT;
-		if (GAMEINSTANCE.g_fShadowBias > 0.01f) GAMEINSTANCE.g_fShadowBias = 0.01f;
+		GAMEINSTANCE.g_fMaxWhite += 0.1f * fDT;
+		if (GAMEINSTANCE.g_fMaxWhite > 2.f) GAMEINSTANCE.g_fMaxWhite = 2.f;
 	}
 	if (KEYPUSH(KEY_TYPE::X))
 	{
-		GAMEINSTANCE.g_fShadowBias -= 0.0001f * fDT;
-		if (GAMEINSTANCE.g_fShadowBias < 0.f) GAMEINSTANCE.g_fShadowBias = 0.000001f;
+		GAMEINSTANCE.g_fMaxWhite -= 0.1f * fDT;
+		if (GAMEINSTANCE.g_fMaxWhite < 0.f) GAMEINSTANCE.g_fMaxWhite = 0.1f;
 	}
-	if (KEYPUSH(KEY_TYPE::C))
+	if (KEYTAP(KEY_TYPE::C))
 	{
-		GAMEINSTANCE.g_fContrast += 0.5f * fDT;
-		if (GAMEINSTANCE.g_fContrast > 2.f) GAMEINSTANCE.g_fContrast = 2.f;
+		GAMEINSTANCE.g_iTMIndex++;
+		if (GAMEINSTANCE.g_iTMIndex > 3) GAMEINSTANCE.g_iTMIndex %= 3;
 	}
-	if (KEYPUSH(KEY_TYPE::V))
+	if (KEYTAP(KEY_TYPE::V))
 	{
-		GAMEINSTANCE.g_fContrast -= 0.5f * fDT;
-		if (GAMEINSTANCE.g_fContrast < 0.1f) GAMEINSTANCE.g_fContrast = 0.1f;
+		GAMEINSTANCE.g_iTMIndex--;
+		if (GAMEINSTANCE.g_iTMIndex == 0) GAMEINSTANCE.g_iTMIndex = 3;
 	}
 }

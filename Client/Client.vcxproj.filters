@@ -67,6 +67,12 @@
     <Filter Include="02.Component\00.MonoBehaviour\00.Effect">
       <UniqueIdentifier>{f932d599-d9a4-43cf-bfbd-ccd8c7773062}</UniqueIdentifier>
     </Filter>
+    <Filter Include="98.Debug">
+      <UniqueIdentifier>{2c0559c7-c128-46e1-9d65-00203eecdd37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98.Debug\IMGUI">
+      <UniqueIdentifier>{0aebcb07-5364-412e-ae11-7b7531b891a5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -129,6 +135,60 @@
     <ClInclude Include="MotionTrailDisappear.h">
       <Filter>02.Component\00.MonoBehaviour\00.Effect</Filter>
     </ClInclude>
+    <ClInclude Include="DebugTool.h">
+      <Filter>98.Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImGradient.h">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui.h">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_impl_dx11.h">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_impl_win32.h">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_internal.h">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_stdlib.h">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuiFileDialog.h">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuiFileDialogConfig.h">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuizmo.h">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImSequencer.h">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imstb_rectpack.h">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imstb_textedit.h">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imstb_truetype.h">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImZoomSlider.h">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\dirent\dirent.h">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imconfig.h">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImCurveEdit.h">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -184,6 +244,48 @@
     </ClCompile>
     <ClCompile Include="MotionTrailDisappear.cpp">
       <Filter>02.Component\00.MonoBehaviour\00.Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugTool.cpp">
+      <Filter>98.Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui.cpp">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_demo.cpp">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_draw.cpp">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_impl_dx11.cpp">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_impl_win32.cpp">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_stdlib.cpp">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_tables.cpp">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_widgets.cpp">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImGuiFileDialog.cpp">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImGuizmo.cpp">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImSequencer.cpp">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImCurveEdit.cpp">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImGradient.cpp">
+      <Filter>98.Debug\IMGUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -251,5 +353,26 @@
     <FxCompile Include="..\Shaders\Render.fx">
       <Filter>Shader\Common</Filter>
     </FxCompile>
+    <FxCompile Include="..\Shaders\Shader_Bloom.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Libraries\Include\IMGUI\imgui.ini">
+      <Filter>98.Debug\IMGUI</Filter>
+    </None>
+    <None Include="..\Libraries\Include\IMGUI\imgui.natstepfilter">
+      <Filter>98.Debug\IMGUI</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="..\Libraries\Include\IMGUI\imgui.natvis">
+      <Filter>98.Debug\IMGUI</Filter>
+    </Natvis>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\Libraries\Include\IMGUI\imgui_log.txt">
+      <Filter>98.Debug\IMGUI</Filter>
+    </Text>
   </ItemGroup>
 </Project>

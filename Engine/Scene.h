@@ -63,6 +63,11 @@ protected:
 	void Render_MotionBlurFinal();
 
 	void Render_Forward();
+
+	void Render_BloomMap();
+	void Render_BloomMapScaling();
+
+
 	void Render_Distortion();
 	void Render_Distortion_Final();
 

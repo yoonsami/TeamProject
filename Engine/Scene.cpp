@@ -78,6 +78,8 @@ void Scene::Render()
 	Render_LightFinal();
 	Render_MotionBlurFinal();
 	Render_Forward();
+	Render_BloomMap();
+	Render_BloomMapScaling();
 	Render_Distortion();
 	Render_Distortion_Final();
 
@@ -676,6 +678,8 @@ void Scene::Render_LightFinal()
 	auto material = RESOURCES.Get<Material>(L"LightFinal");
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 
+	material->Get_Shader()->GetScalar("g_gamma")->SetFloat(GAMEINSTANCE.g_fGamma);
+
 	material->Push_SubMapData();
 
 	mesh->Get_VertexBuffer()->Push_Data();
@@ -718,6 +722,82 @@ void Scene::Render_Forward()
 		mainCamera->Render_Forward();
 	}
 	//GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->UnBindSRV();
+}
+
+void Scene::Render_BloomMap()
+{
+	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::BLOOMMAP)->OMSetRenderTargets();
+
+	auto material = RESOURCES.Get<Material>(L"BloomTarget");
+	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+
+	material->Push_SubMapData();
+
+	mesh->Get_VertexBuffer()->Push_Data();
+	mesh->Get_IndexBuffer()->Push_Data();
+
+	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	material->Get_Shader()->DrawIndexed(0, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+}
+
+void Scene::Render_BloomMapScaling()
+{
+	for (_uchar i = 0; i < 3; ++i)
+	{
+		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLOOMDOWNSCALE0) + i);
+		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
+		auto material = RESOURCES.Get<Material>(L"BloomDownScale" + to_wstring(i));
+		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+		//material->Get_Shader()->GetScalar("GaussianWeight")->SetFloatArray(a, 0, 25);
+		//material->Get_Shader()->GetScalar("DownScalePower")->SetFloat(m_fDownScalePower);
+		material->Push_SubMapData();
+
+		mesh->Get_VertexBuffer()->Push_Data();
+		mesh->Get_IndexBuffer()->Push_Data();
+
+		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	}
+
+	for (_uchar i = 0; i < 2; ++i)
+	{
+		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLOOMUPSCALE0) + i);
+		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
+		auto material = RESOURCES.Get<Material>(L"BloomUpScale" + to_wstring(i));
+		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+		//	material->Get_Shader()->GetScalar("UpScalePower")->SetFloat(m_fUpScalePower);
+
+		material->Push_SubMapData();
+
+		mesh->Get_VertexBuffer()->Push_Data();
+		mesh->Get_IndexBuffer()->Push_Data();
+
+		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		material->Get_Shader()->DrawIndexed(0, 3, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	}
+
+	{
+		GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::BLOOMFINAL)->OMSetRenderTargets();
+		
+		auto material = RESOURCES.Get<Material>(L"BloomFinal");
+		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+		//	material->Get_Shader()->GetScalar("UpScalePower")->SetFloat(m_fUpScalePower);
+
+		material->Push_SubMapData();
+
+		mesh->Get_VertexBuffer()->Push_Data();
+		mesh->Get_IndexBuffer()->Push_Data();
+
+		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+
+	}
+
+
 }
 
 void Scene::Render_Distortion()
@@ -784,6 +864,9 @@ void Scene::Render_BackBuffer()
 
 	material->Get_Shader()->GetScalar("g_brightness")->SetFloat(GAMEINSTANCE.g_fBrightness);
 	material->Get_Shader()->GetScalar("g_contrast")->SetFloat(GAMEINSTANCE.g_fContrast);
+	material->Get_Shader()->GetScalar("g_max_white")->SetFloat(GAMEINSTANCE.g_fMaxWhite);
+	material->Get_Shader()->GetScalar("g_gamma")->SetFloat(GAMEINSTANCE.g_fGamma);
+
 
 	material->Push_SubMapData();
 	mesh->Get_VertexBuffer()->Push_Data();
@@ -791,7 +874,7 @@ void Scene::Render_BackBuffer()
 
 	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	material->Get_Shader()->DrawIndexed(0, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	material->Get_Shader()->DrawIndexed(0, GAMEINSTANCE.g_iTMIndex, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
 
 }

@@ -22,4 +22,19 @@
 #include "EnginePch.h"
 #include "Client_Define.h"
 
+#ifdef _DEBUG
+
+/* For. ImGui*/
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include "IMGUI/imgui.h"
+#include "IMGUI/imgui_impl_dx11.h"
+#include "IMGUI/imgui_impl_win32.h"
+
+/* For. Guizmo */
+#include "IMGUI/ImGuizmo.h"
+
+using namespace ImGui;
+#endif
+
+#include "DebugTool.h"
 #endif //PCH_H

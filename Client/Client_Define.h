@@ -35,3 +35,5 @@ enum class CollisionGroup
 
 	END = MAX_COLLIDER_GROUP
 };
+
+#define DEBUGTOOL GET_SINGLE(DebugTool)

@@ -25,5 +25,8 @@ public:
 	static _float g_fBrightness;
 	static _float g_fContrast;
 	static _float g_fShadowBias;
+	static _float g_fMaxWhite;
+	static _float g_fGamma;
+	static _int g_iTMIndex;
 };
 

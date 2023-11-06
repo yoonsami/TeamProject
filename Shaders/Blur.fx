@@ -96,6 +96,14 @@ float4 PS_DOWN(VS_OUT input) : SV_Target0
     
     
 }
+float4 PS_JUSTDOWN(VS_OUT input) : SV_Target0
+{
+  
+
+    return SubMap0.Sample(LinearSampler, input.uv);
+    
+    
+}
 
 float4 PS_UP(VS_OUT input) : SV_Target0
 {
@@ -124,6 +132,41 @@ float4 PS_UP(VS_OUT input) : SV_Target0
     vUpSample += (b + d + f + h) * 2.f;
     vUpSample += (a + c + g + i);
     vUpSample *= 1.f / 16.f;
+    Out = float4(vUpSample, 1.f);
+
+    return Out;
+}
+
+float4 PS_UPGaussian(VS_OUT input) : SV_Target0
+{
+    float4 Out = 0;
+
+    uint m_TexW, m_TexH, numMips;
+    SubMap0.GetDimensions(0, m_TexW, m_TexH, numMips);
+    
+
+    float tu = 1.f / m_TexW;
+    float tv = 1.f / m_TexH;
+
+    float2 offset[25] =
+    {
+        float2(-2.0f * tu, 2.0f * tv), float2(-1.0f * tu, 2.0f * tv), float2(0.0f * tu, 2.0f * tv), float2(1.0f * tu, 2.0f * tv), float2(2.0f * tu, 2.0f * tv),
+         float2(-2.0f * tu, 1.0f * tv), float2(-1.0f * tu, 1.0f * tv), float2(0.0f * tu, 1.0f * tv), float2(1.0f * tu, 1.0f * tv), float2(2.0f * tu, 1.0f * tv),
+         float2(-2.0f * tu, 0.0f * tv), float2(-1.0f * tu, 0.0f * tv), float2(0.0f * tu, 0.0f * tv), float2(1.0f * tu, 0.0f * tv), float2(2.0f * tu, 0.0f * tv),
+         float2(-2.0f * tu, -1.0f * tv), float2(-1.0f * tu, -1.0f * tv), float2(0.0f * tu, -1.0f * tv), float2(1.0f * tu, -1.0f * tv), float2(2.0f * tu, -1.0f * tv),
+         float2(-2.0f * tu, -2.0f * tv), float2(-1.0f * tu, -2.0f * tv), float2(0.0f * tu, -2.0f * tv), float2(1.0f * tu, -2.0f * tv), float2(2.0f * tu, -2.0f * tv)
+    };
+    
+    float3 vUpSample = 0;
+    for (int i = 0; i < 5; ++i)
+    {
+        for (int j = 0; j < 5; ++j)
+        {
+            int index = i * 5 + j;
+            vUpSample += SubMap0.Sample(LinearSampler, input.uv + offset[index]).rgb * GaussianWeight[index];
+        }
+    }
+    
     Out = float4(vUpSample, 1.f);
 
     return Out;
@@ -193,6 +236,24 @@ technique11 t0
         SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_UP()));
+    }
+    pass justDown
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MAIN()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_DOWN()));
+    }
+    pass GaussianUp
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MAIN()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_UPGaussian()));
     }
 }
 

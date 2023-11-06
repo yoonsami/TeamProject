@@ -384,6 +384,12 @@ void ResourceMgr::CreateDefaultShader()
 		auto shader = Get<Shader>(ShaderTag);
 		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
 	}
+	{ // MEMO : must
+		wstring ShaderTag = L"Shader_Bloom.fx";
+		Load<Shader>(ShaderTag, ShaderTag);
+		auto shader = Get<Shader>(ShaderTag);
+		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
+	}
 }
 
 void ResourceMgr::CreateDefaultShader_EffectTool()
@@ -424,6 +430,12 @@ void ResourceMgr::CreateDefaultShader_EffectTool()
 	}
 	{ // MEMO : must
 		wstring ShaderTag = L"Shader_Final.fx";
+		Load<Shader>(ShaderTag, ShaderTag);
+		auto shader = Get<Shader>(ShaderTag);
+		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
+	}
+	{ // MEMO : must
+		wstring ShaderTag = L"Shader_Bloom.fx";
 		Load<Shader>(ShaderTag, ShaderTag);
 		auto shader = Get<Shader>(ShaderTag);
 		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
@@ -472,7 +484,7 @@ void ResourceMgr::CreateDefaultMaterial()
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Distorted_Final.fx");
 		shared_ptr<Material> material = make_shared<Material>();
 		material->Set_Shader(shader);
-		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"MotionBlurFinalTarget"));
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"BloomFinalTarget"));
 		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"DistortionTarget"));
 		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"DistortionTarget1"));
 		Add(L"Distorted_Final", material);
@@ -488,7 +500,7 @@ void ResourceMgr::CreateDefaultMaterial()
 		material->Set_SubMap(5, RESOURCES.Get<Texture>(L"DiffuseLightTarget"));
 		material->Set_SubMap(6, RESOURCES.Get<Texture>(L"SpecularLightTarget"));
 		material->Set_SubMap(7, RESOURCES.Get<Texture>(L"EmissiveLightTarget"));
-		material->Set_SubMap(8, RESOURCES.Get<Texture>(L"BLURBIGGER1"));
+		//material->Set_SubMap(8, RESOURCES.Get<Texture>(L"BlurTarget"));
 
 		Add(L"LightFinal", material);
 	}
@@ -529,9 +541,64 @@ void ResourceMgr::CreateDefaultMaterial()
 		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"G_DepthTarget"));
 		Add(L"MotionBlurFinal", material);
 	}
-
-
-
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Bloom.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"MotionBlurFinalTarget"));
+		Add(L"BloomTarget", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"BloomTarget"));
+		Add(L"BloomDownScale0", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"BLOOMDOWNSCALE0"));
+		Add(L"BloomDownScale1", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"BLOOMDOWNSCALE1"));
+		Add(L"BloomDownScale2", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"BLOOMDOWNSCALE2"));
+		Add(L"BloomUpScale0", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"BLOOMUPSCALE0"));
+		Add(L"BloomUpScale1", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"BLOOMUPSCALE1"));
+		Add(L"BloomUpScale2", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Bloom.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"MotionBlurFinalTarget"));
+		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"BLOOMUPSCALE2"));
+		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"BloomTarget"));
+		Add(L"BloomFinal", material);
+	}
 	{
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Final.fx");
 		shared_ptr<Material> material = make_shared<Material>();

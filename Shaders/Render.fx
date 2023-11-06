@@ -82,6 +82,10 @@ struct TweenFrameDesc
     KeyFrameDesc next;
 };
 
+float g_gamma;
+float g_brightness;
+float g_contrast;
+float g_max_white;
 
 cbuffer RenderParamBuffer
 {
@@ -508,6 +512,83 @@ matrix GetPreAnimationMatrix_Instance(VTXModelInstancing input)
     }
     
     return transform;
+}
+
+float luminance(float3 v)
+{
+    return dot(v, float3(0.2126f, 0.7152f, 0.0722f));
+}
+
+float3 change_luminance(float3 c_in, float l_out)
+{
+    float l_in = luminance(c_in);
+    return c_in * (l_out / l_in);
+}
+
+float3 reinhard_extended_luminance(float3 v, float max_white_l)
+{
+    float l_old = luminance(v);
+    float numerator = l_old * (1.f + (l_old / (max_white_l * max_white_l)));
+    float l_new = numerator / (1.f + l_old);
+    return change_luminance(v, l_new);
+}
+
+float3 uncharted2_tonemap_partial(float3 x)
+{
+    float A = 0.15f;
+    float B = 0.50f;
+    float C = 0.10f;
+    float D = 0.20f;
+    float E = 0.02f;
+    float F = 0.30f;
+    return ((x * (A * x + C * B) + D * E) / (x * (A * x + B) + D * F)) - E / F;
+}
+
+float3 uncharted2_filmic(float3 v)
+{
+    float exposure_bias = 2.0f;
+    float3 curr = uncharted2_tonemap_partial(v * exposure_bias);
+
+    float3 W = float3(11.2f, 11.2f, 11.2f);
+    float3 white_scale = float3(1.0f, 1.0f, 1.0f) / uncharted2_tonemap_partial(W);
+    return curr * white_scale;
+}
+
+static const float3 aces_input_matrix[3] =
+{
+    float3(0.59719f, 0.35458f, 0.04823f),
+    float3(0.07600f, 0.90834f, 0.01566f),
+    float3(0.02840f, 0.13383f, 0.83777f)
+};
+
+static const
+float3 aces_output_matrix[3] =
+{
+    float3(1.60475f, -0.53108f, -0.07367f),
+    float3(-0.10208f, 1.10813f, -0.00605f),
+    float3(-0.00327f, -0.07276f, 1.07602f)
+};
+
+float3 mul(const float3 m[3], const float3 v)
+{
+    float x = dot(m[0], v);
+    float y = dot(m[1], v);
+    float z = dot(m[2], v);
+    return float3(x, y, z);
+}
+
+float3 rtt_and_odt_fit(float3 v)
+{
+    float3 a = v * (v + 0.0245786f) - 0.000090537f;
+    float3 b = v * (0.983729f * v + 0.4329510f) + 0.238081f;
+    return a / b;
+}
+
+float3 aces_fitted(float3 v)
+{
+    v = mul(aces_input_matrix, v);
+    v = rtt_and_odt_fit(v);
+    return mul(aces_output_matrix, v);
 }
 
 
