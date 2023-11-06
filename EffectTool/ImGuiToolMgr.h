@@ -1,8 +1,8 @@
 #pragma once
 #include "pch.h"
 
-class Widget_InstanceParticleEffectTool;
-class Widget_MeshEffectTool;
+class Widget_EffectMaker_Mesh;
+class Widget_ParticleMaker_Instancing;
 class ImGuiToolMgr
 {
 	DECLARE_SINGLETON(ImGuiToolMgr)
@@ -26,11 +26,11 @@ private:
 	LEVEL					m_eCurrLevel = { LEVEL_END };
 
 	/* ImGui Variables */
-	_bool					m_bIsParticleEffectTool_On = { false };
-	_bool					m_bIsMeshEffectTool_On = { false };
+	_bool					m_bIsParticleMaker_Instancing_On = { false };
+	_bool					m_bIsEffectMaker_Mesh_On = { false };
 
 	/* Widgets */
-	shared_ptr<Widget_InstanceParticleEffectTool>	m_pWidget_InstanceParticleEffectTool = { nullptr };
-	shared_ptr<Widget_MeshEffectTool>		m_pWidget_MeshEffectTool = { nullptr };
+	shared_ptr<Widget_ParticleMaker_Instancing>	m_pWidget_ParticleMaker_Instancing = { nullptr };
+	shared_ptr<Widget_EffectMaker_Mesh>			m_pWidget_EffectMaker_Mesh = { nullptr };
 };
 

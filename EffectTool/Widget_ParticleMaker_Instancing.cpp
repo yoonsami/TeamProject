@@ -1,23 +1,23 @@
 #include "pch.h"
-#include "Widget_InstanceParticleEffectTool.h"
+#include "Widget_ParticleMaker_Instancing.h"
 
 // For. Components
 #include "Particle.h"
 
-Widget_InstanceParticleEffectTool::Widget_InstanceParticleEffectTool()
+Widget_ParticleMaker_Instancing::Widget_ParticleMaker_Instancing()
 {
 }
 
-Widget_InstanceParticleEffectTool::~Widget_InstanceParticleEffectTool()
+Widget_ParticleMaker_Instancing::~Widget_ParticleMaker_Instancing()
 {
 }
 
-void Widget_InstanceParticleEffectTool::Initialize()
+void Widget_ParticleMaker_Instancing::Initialize()
 {
 	Set_Texture_List();
 }
 
-void Widget_InstanceParticleEffectTool::Tick()
+void Widget_ParticleMaker_Instancing::Tick()
 {
 	ImGui::SetNextWindowPos(ImVec2(g_iWinSizeX - 450, 0));
 	ImGui::Begin("Particle Maker");
@@ -25,7 +25,7 @@ void Widget_InstanceParticleEffectTool::Tick()
 	ImGui::End();
 }
 
-void Widget_InstanceParticleEffectTool::Set_Texture_List()
+void Widget_ParticleMaker_Instancing::Set_Texture_List()
 {
 	/* ../Resources/Universal/ 폴더 내의 택스처들의 이름을 리스트로 만들어 저장하기 */ \
 	
@@ -56,7 +56,7 @@ void Widget_InstanceParticleEffectTool::Set_Texture_List()
 	}
 }
 
-void Widget_InstanceParticleEffectTool::ImGui_ParticleMaker()
+void Widget_ParticleMaker_Instancing::ImGui_ParticleMaker()
 {
 	Option_ParticleObjectProperty();
 	Option_ParticleProperty();
@@ -65,17 +65,21 @@ void Widget_InstanceParticleEffectTool::ImGui_ParticleMaker()
 	Option_Transform();
 	Option_Movement();
 
-	/* For. Create, Delete Particle */
+	/* For. Create, Save, Load Effect */
 	ImGui::Spacing();
 	ImGui::SeparatorText(" Create/Delete ");
 	if (ImGui::Button("Create"))
 		Create();
 	ImGui::SameLine();
-	if (ImGui::Button("Delete"))
-		Delete();
+	if (ImGui::Button("Save"))
+		Save();
+	ImGui::SameLine();
+	if (ImGui::Button("Load"))
+		Load();
+	ImGui::SameLine();
 }
 
-void Widget_InstanceParticleEffectTool::Option_ParticleObjectProperty()
+void Widget_ParticleMaker_Instancing::Option_ParticleObjectProperty()
 {
 	ImGui::SeparatorText("Particle Object's Property");
 
@@ -95,7 +99,7 @@ void Widget_InstanceParticleEffectTool::Option_ParticleObjectProperty()
 	ImGui::Spacing();
 }
 
-void Widget_InstanceParticleEffectTool::Option_ParticleProperty()
+void Widget_ParticleMaker_Instancing::Option_ParticleProperty()
 {
 	ImGui::SeparatorText("Particle's Property");
 
@@ -141,7 +145,7 @@ void Widget_InstanceParticleEffectTool::Option_ParticleProperty()
 	}
 }
 
-void Widget_InstanceParticleEffectTool::Option_Textures()
+void Widget_ParticleMaker_Instancing::Option_Textures()
 {
 	ImGui::SeparatorText("Textures");
 
@@ -218,7 +222,7 @@ void Widget_InstanceParticleEffectTool::Option_Textures()
 	}
 }
 
-void Widget_InstanceParticleEffectTool::Option_Color()
+void Widget_ParticleMaker_Instancing::Option_Color()
 {
 	ImGuiColorEditFlags ColorEdit_flags = 0 | ImGuiColorEditFlags_AlphaBar;	// RGB, Alpha Bar
 	
@@ -287,7 +291,7 @@ void Widget_InstanceParticleEffectTool::Option_Color()
 	ImGui::SliderFloat("Darker Offset", &m_fGradationByAlpha_Darker, 0.f, 1.f);
 }
 
-void Widget_InstanceParticleEffectTool::Option_Transform()
+void Widget_ParticleMaker_Instancing::Option_Transform()
 {
 	ImGui::SeparatorText("Transform");
 
@@ -370,7 +374,7 @@ void Widget_InstanceParticleEffectTool::Option_Transform()
 	ImGui::Spacing();
 }
 
-void Widget_InstanceParticleEffectTool::Option_Movement()
+void Widget_ParticleMaker_Instancing::Option_Movement()
 {
 	ImGui::SeparatorText("Particle Object's Property");
 
@@ -424,7 +428,7 @@ void Widget_InstanceParticleEffectTool::Option_Movement()
 	
 }
 
-void Widget_InstanceParticleEffectTool::Create()
+void Widget_ParticleMaker_Instancing::Create()
 {
 	// For. Particle이 될 게임오브젝트 생성
 	shared_ptr<GameObject> ParticleObj = make_shared<GameObject>();
@@ -501,7 +505,10 @@ void Widget_InstanceParticleEffectTool::Create()
 	CUR_SCENE->Add_GameObject(ParticleObj);
 }
 
-void Widget_InstanceParticleEffectTool::Delete()
+void Widget_ParticleMaker_Instancing::Load()
 {
-	// TODO : m_pTargetParticle에 바인딩 된 GameObject 삭제하기 
+}
+
+void Widget_ParticleMaker_Instancing::Save()
+{
 }

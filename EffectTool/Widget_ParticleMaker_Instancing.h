@@ -1,10 +1,9 @@
 #pragma once
-
-class Widget_InstanceParticleEffectTool
+class Widget_ParticleMaker_Instancing
 {
 public:
-	Widget_InstanceParticleEffectTool();
-	~Widget_InstanceParticleEffectTool();
+	Widget_ParticleMaker_Instancing();
+	~Widget_ParticleMaker_Instancing();
 
 public:
 	void	Initialize();
@@ -26,7 +25,8 @@ private:
 	void					Option_Movement();
 
 	void					Create();
-	void					Delete();
+	void					Load();
+	void					Save();
 
 private:
 	/* For. Target Particle Object */
