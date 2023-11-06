@@ -99,7 +99,7 @@ HRESULT DemoScene::Load_Scene()
 	Load_Camera();
 	Load_DemoMap();
 
-	Load_Ui();
+	//Load_Ui();
 
 	return S_OK;
 }
