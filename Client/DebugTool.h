@@ -1,4 +1,6 @@
 #pragma once
+
+#ifdef _DEBUGTOOL
 class DebugTool
 {
 	DECLARE_SINGLETON(DebugTool)
@@ -12,3 +14,4 @@ public:
 	void RenderOptionTap();
 };
 
+#endif

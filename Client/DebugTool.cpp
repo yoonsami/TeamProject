@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "DebugTool.h"
-
+#ifdef _DEBUGTOOL
 HRESULT DebugTool::Init()
 {
 
@@ -17,6 +17,7 @@ HRESULT DebugTool::Init()
 
 void DebugTool::Tick()
 {
+
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
@@ -33,10 +34,12 @@ void DebugTool::Tick()
 
 
 	End();
+
 }
 
 void DebugTool::Render()
 {
+
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
@@ -63,3 +66,4 @@ void DebugTool::RenderOptionTap()
 		EndTabItem();
 	}
 }
+#endif
