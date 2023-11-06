@@ -21,9 +21,9 @@ private:
 
    void        File_Dialog();             // 파일탐색기로 dds추가
    void        Select_Texture();          // 텍스처 선택
-   void        Add_Texture();
+   void        Add_Texture();             // 선택한 오브젝트에 texture 추가
    void        Decide_Transform_Value();  // 사이즈, 위치 값 설정
-   void        Create_Object();           // 
+   void        Create_Object();           // 오브젝트 생성
    
 
    void        Select_Object();           // 생성한 오브젝트 중 선택
@@ -31,10 +31,10 @@ private:
    void        Change_Object_Value();     // 선택한 오브젝트 값 변경
 
    void        Change_ParamDesc();        // 선택한 오브젝트 파라메터 값 변경
-   void        Add_Picking_Zone();
+   void        Add_Picking_Zone();        // 버튼 생성기능
 
    void        Save_Ui_Desc();            // 함수 호출시 아래 두 함수도 같이 호출
-   void        Decide_FilePath();         // 저장 경로 불러오기
+   void        Decide_FilePath();         // 
    void        Load_Ui_Desc();            // 
 
    void        Record_Two_Point();        // 동작 시 이후 두번의 클릭 위치를 저장
@@ -68,10 +68,10 @@ private:
    _int              m_iPass                 = { 0 };       // Pass Index
    RenderParams      m_tagParamDesc          = {};          // Param Desc
 
-   _int              m_iParam1               = { 0 };
-   _int              m_iParam2               = { 0 };
-   _int              m_iParam3               = { 0 };
-   _int              m_iParam4               = { 0 };
+   _int              m_iParam1               = { 0 };       // imgui에서 int사용해서 
+   _int              m_iParam2               = { 0 };       // 파라메터로 넘겨줄 값을
+   _int              m_iParam3               = { 0 };       // 저장할 공간
+   _int              m_iParam4               = { 0 };       //
 
    _int              m_iPickTypeIndex        = { 0 };       // add picking zone 라디오 버튼
    POINT             m_ptPos1                = {};          // 첫 피킹 마우스 좌표
@@ -80,7 +80,7 @@ private:
    _uint             m_iRecordOrder          = { 0 };       // record 횟수 확인
 
    wstring           m_strSaveLoadPath;                     // dat 파일 경로
-   wstring           m_strSaveFileName;
+   wstring           m_strSaveFileName;                     // dat 파일 이름
 
    const char* m_arrItems[16] = {
       "DIFFUSE",
