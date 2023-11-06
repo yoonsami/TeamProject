@@ -146,6 +146,11 @@ void FSM::Set_Target(shared_ptr<GameObject> pTarget)
 	m_pTarget = pTarget;
 }
 
+void FSM::Set_Camera(shared_ptr<GameObject> pCamera)
+{
+	m_pCamera = pCamera;
+}
+
 void FSM::Reset_Target()
 {
 	m_pTarget.reset();

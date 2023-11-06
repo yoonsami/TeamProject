@@ -1,9 +1,17 @@
 #pragma once
 #include "MonoBehaviour.h"
+typedef struct tagForwardMovingSkillDesc
+{
+    _float4 vSkillDir;
+    _float fMoveSpeed = 1.f;
+    _float fLifeTime = 2.f;
+    _float fLimitDistance = 0.f;
+}FORWARDMOVINGSKILLDESC;
+
 class ForwardMovingSkillScript : public MonoBehaviour
 {
 public:
-    ForwardMovingSkillScript(const _float4& vLook, _float fMoveSpeed, _float fLifeTime, _float fLimitDistance = 0.f);
+    ForwardMovingSkillScript(FORWARDMOVINGSKILLDESC desc);
     ~ForwardMovingSkillScript();
 
 public:

@@ -28,17 +28,25 @@ protected:
 	_bool Get_Invincible() { return m_bInvincible; }
 	void Set_Invincible(_bool bFlag) { m_bInvincible = bFlag; }
 
+	_bool Get_SuperArmor() { return m_bSuperArmor; }
+	void Set_SuperArmor(_bool bFlag) { m_bSuperArmor = bFlag; }
+
+
 	_bool Target_In_AttackRange();
 public:
 	void Set_Target(shared_ptr<GameObject> pTarget);
+	void Set_Camera(shared_ptr<GameObject> pCamera);
 	void Reset_Target();
 	void Reset_Weapon();
  protected:
 	weak_ptr<GameObject> m_pTarget;
 	weak_ptr<GameObject> m_pAttackCollider;
 	weak_ptr<GameObject> m_pWeapon;
-
+	weak_ptr<GameObject> m_pCamera;
+	
 	_bool m_bInvincible = false;
+	_bool m_bSuperArmor = false;
+
 
 	_float m_fAttackRange = 2.f;
 };

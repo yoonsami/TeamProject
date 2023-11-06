@@ -23,6 +23,8 @@ HRESULT Kyle_FSM::Init()
 	CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
 	m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
 	m_pAttackCollider.lock()->Set_Name(L"Player_AttackCollider");
+	
+	m_pCamera = CUR_SCENE->Get_GameObject(L"Default");
 
 
 	return S_OK;

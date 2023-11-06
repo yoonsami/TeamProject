@@ -20,6 +20,7 @@ public:
     void Set_FixedLookTarget(const _float3& vPos);
     void Set_FixedDir(const _float3& vDir) { m_vFixedDir = vDir; }
     void Set_FixedDist(_float fDist) { m_fFixedDist = fDist; }
+    void Set_FixedTime(_float fTime) { m_fFixedTime = fTime; }
     const _float3& Get_FixedDir() { return m_vFixedDir; }
     _float Get_FixedDist() { return m_fFixedDist; }
     const _float3& Get_Offset() { return m_vOffset; }

@@ -38,7 +38,7 @@ void WeaponScript::Tick()
 	_uint index = m_pWeaponOwner.lock()->Get_Model()->Get_BoneIndexByName(m_strBoneName);
 
 	_float4x4 matSetting = m_pWeaponOwner.lock()->Get_Animator()->Get_CurAnimTransform(index)
-		* Utils::m_matPivot * m_pWeaponOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+		* _float4x4::CreateRotationX(XM_PI * -0.5f) * Utils::m_matPivot * m_pWeaponOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
 
 	Get_Transform()->Set_WorldMat(m_matPivot * matSetting);
 	Get_Transform()->Scaled(_float3(1.f));

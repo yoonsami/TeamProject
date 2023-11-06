@@ -1,14 +1,14 @@
 #include "pch.h"
 #include "ForwardMovingSkillScript.h"
 
-ForwardMovingSkillScript::ForwardMovingSkillScript(const _float4& vLook, _float fMoveSpeed, _float fLifeTime, _float fLimitDistance)
+ForwardMovingSkillScript::ForwardMovingSkillScript(FORWARDMOVINGSKILLDESC desc)
 {
-	m_vLook = vLook;
-	m_fMoveSpeed = fMoveSpeed;
-	m_tLifeTime.fCoolTime = fLifeTime;
+	m_vLook = desc.vSkillDir;
+	m_fMoveSpeed = desc.fMoveSpeed;
+	m_tLifeTime.fCoolTime = desc.fLifeTime;
 
-	if (fLimitDistance > 0.f)
-		m_fLimitDistance = fLimitDistance;
+	if (desc.fLimitDistance > 0.f)
+		m_fLimitDistance = desc.fLimitDistance;
 }
 
 ForwardMovingSkillScript::~ForwardMovingSkillScript()

@@ -198,7 +198,7 @@ void MainCameraScript::Update_Transform()
         _float4x4 matCurDir = Transform::Get_WorldFromLook(vCurDir, _float3(0.f));
         _float4x4 matNextDir = Transform::Get_WorldFromLook(m_vOffset, _float3(0.f));
 
-        ;
+        
 
         if ((fMinDist) >= m_fMaxDistance)
         {

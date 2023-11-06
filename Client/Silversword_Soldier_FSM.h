@@ -15,14 +15,15 @@ public:
 		gaze_f,
 		gaze_l,
 		gaze_r,
-		airborne_start, //airborne
+		airborne_start, //airborne_start -> airborne_end -> airborne_up
 		airborne_end,
+		airborne_up, // airborne_end_up Animation = knock_end_up animation
 		hit, //normal_hit
-		knock_start,
-		knock_end_start, // knockdown
-		knock_end, //knockdown
-		knock_end_hit, //knockdown
-		knock_end_up, //knockdown -> knock up
+		knock_start, // knock_start -> knock_end -> knock_end_loop -> knock_up
+		knock_end, 
+		knock_end_loop, 
+		knock_end_hit, // hit on knock_state
+		knock_up,
 		skill_1100, //SKILL 1
 		skill_2100, //SKILL 2
 		skill_3100, //SKILL 3
@@ -68,19 +69,21 @@ private:
 	void airborne_start_Init();
 	void airborne_end();
 	void airborne_end_Init();
+	void airborne_up();
+	void airborne_up_Init();
 	void hit();
 	void hit_Init();
 	void knock_start();
 	void knock_start_Init();
 
-	void knock_end_start();
-	void knock_end_start_Init();
 	void knock_end();
 	void knock_end_Init();
+	void knock_end_loop();
+	void knock_end_loop_Init();
 	void knock_end_hit();
 	void knock_end_hit_Init();
-	void knock_end_up();
-	void knock_end_up_Init();
+	void knock_up();
+	void knock_up_Init();
 
 	void skill_1100();
 	void skill_1100_Init();
@@ -104,7 +107,6 @@ private:
 	COOLTIMEINFO m_tAttackCoolTime = { 3.f, 0.f };
 	_bool m_bDetected = false;
 	_bool m_bPatrolMove = false;
-	COOLTIMEINFO m_tDetectedResetCool = { 8.f,0.f };
 	COOLTIMEINFO m_tPatrolMoveCool = { 4.f,0.f };
 	_float m_fPatrolDistance = 1.f;
 

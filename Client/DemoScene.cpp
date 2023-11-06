@@ -111,6 +111,8 @@ void DemoScene::Load_Player()
 			desc.position = { vPos.x, vPos.y, vPos.z };
 			controller->Create_Controller();
 		}
+
+		ObjPlayer->Set_ObjectGroup(OBJ_PLAYER);
 		Add_GameObject(ObjPlayer);
 
 	
@@ -233,6 +235,9 @@ void DemoScene::Load_Camera()
 		camera->Add_Component(make_shared<MainCameraScript>(pPlayer));
 	
 		Add_GameObject(camera);
+		
+		//Setting Camera
+		pPlayer->Get_FSM()->Set_Camera(camera);
 	}
 	{
 		shared_ptr<GameObject> camera = make_shared<GameObject>();
@@ -299,6 +304,7 @@ void DemoScene::Load_Monster()
 			desc.position = { vPos.x, vPos.y, vPos.z };
 			controller->Create_Controller();
 		}
+		ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
 
 		Add_GameObject(ObjMonster);
 	}

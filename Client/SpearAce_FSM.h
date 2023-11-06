@@ -1,5 +1,6 @@
 #pragma once
 #include "FSM.h"
+#include "ForwardMovingSkillScript.h"
 
 class SpearAce_FSM :
 	public FSM
@@ -91,7 +92,7 @@ private:
 	void skill_500100_Init();
 
 	void EvadeCoolCheck();
-	void Create_ForwardMovingSkillCollider(const _float4& vLook, _float fMoveSpeed, _float fLimitDistance);
+	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
 
 private:
 	STATE m_eCurState = STATE::b_idle;
@@ -113,6 +114,7 @@ private:
 	_bool m_bSkillCreate = false;
 	weak_ptr<GameObject> m_pSkillCollider;
 	
-
+	_uint m_iSkillBoneIndex = 0;
+	_float4x4 matBoneMatrix = XMMatrixIdentity();
 };
 
