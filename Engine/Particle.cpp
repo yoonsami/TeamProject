@@ -23,14 +23,14 @@ HRESULT Particle::Init(void* pArg)
 
 	if (!m_pModel)
 	{
-		m_eType = TYPE_Mesh;
+		m_eType = TYPE_InstanceParticle;
 		m_pMesh = RESOURCES.Get<Mesh>(L"Point");
 	}
 	else 
-		m_eType = TYPE_Model;
+		m_eType = TYPE_RectParticle;
 
 	m_eComputePass = (COMPUTE_PASS)m_tDesc.iMovementOption;
-	m_eRenderPass = (RENDERMESH_PASS)m_tDesc.iBillbordOption;
+	m_eRenderPass = (RENDER_INSTANCEPARTICLE_PASS)m_tDesc.iBillbordOption;
 
 	// For. Texture
 	m_pMaterial = make_shared<Material>();
@@ -119,7 +119,7 @@ void Particle::Render()
 	// For. Render Standard Mesh
 	switch (m_eType)
 	{
-	case TYPE_Mesh: 
+	case TYPE_InstanceParticle:
 		if (nullptr == m_pMesh || nullptr == m_pMaterial)
 			return;
 
@@ -142,10 +142,10 @@ void Particle::Render()
 		CONTEXT->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 		
 		// For. Draw call
-		m_pShader->DrawIndexedInstanced(TECHNIQUE_MeshRender, m_eRenderPass, m_pMesh->Get_IndexBuffer()->Get_IndicesNum(), m_tDesc.iMaxInstanceCnt);
+		m_pShader->DrawIndexedInstanced(TECHNIQUE_InstanceParticle, m_eRenderPass, m_pMesh->Get_IndexBuffer()->Get_IndicesNum(), m_tDesc.iMaxInstanceCnt);
 		break;
 
-	case TYPE_Model:
+	case TYPE_RectParticle:
 		if (nullptr == m_pModel)
 			return;
 		
@@ -162,7 +162,7 @@ void Particle::Render()
 void Particle::Init_RenderParams()
 {
     // For. Alpha Gradation 
-	m_RenderParams.SetInt(0, m_tDesc.bUseFadeOut);
+	//m_RenderParams.SetInt(0, m_tDesc.bUseFadeOut); // ( does not works in Instance particle cause of blend off )
 
 	// For. Diffuse Color
 	m_RenderParams.SetFloat(0, m_tDesc.fGradationByAlpha_Brighter);
@@ -172,6 +172,7 @@ void Particle::Init_RenderParams()
 	// Duration and Current t7ime 
 	m_RenderParams.SetFloat(2, m_tDesc.fDuration);
 	m_RenderParams.SetFloat(3, m_fCurrAge);
+
 }
 
 void Particle::Init_CreateParticleParams()
@@ -192,6 +193,7 @@ void Particle::Init_CreateParticleParams()
 	m_CreateParticleParams.vMinMaxRotationAngle_X = m_tDesc.vRotationAngle_X;
 	m_CreateParticleParams.vMinMaxRotationAngle_Y = m_tDesc.vRotationAngle_Y;
 	m_CreateParticleParams.vMinMaxRotationAngle_Z = m_tDesc.vRotationAngle_Z;
+	m_CreateParticleParams.iRandomRotationOn = m_tDesc.bRandomRotationOn;
 	
 	// For. Speed
 	m_CreateParticleParams.iEndSpeedOption = m_tDesc.iEndSpeedOption;
@@ -220,6 +222,9 @@ void Particle::Init_ComputeParams()
 
 	// For. Movement 
 	m_ComputeParams.SetVec4(1, m_tDesc.vMovementOffsets);
+
+	// Random Rotation 
+	m_RenderParams.SetInt(1, m_tDesc.bRandomRotationOn);
 }
 
 void Particle::Bind_BasicData_ToShader()

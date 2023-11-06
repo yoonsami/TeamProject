@@ -188,8 +188,8 @@ cbuffer CreateParticleBuffer
     float4 g_vCreateOffsets;
 
     int g_iNewlyAddCnt;
-
-    float3 padding_CreateParticleBuffer;
+    int g_iRandomRotationOn;
+    float2 padding_CreateParticleBuffer;
 };
 
 cbuffer TextureMapBuffer

@@ -125,7 +125,7 @@ void Widget_ParticleEffectTool::Option_ParticleProperty()
 	}
 	ImGui::Spacing();
 
-	const char* pszItems_Billbord[] = { "Off", "All", "Horizontal Only", "Vertical Only" };
+	const char* pszItems_Billbord[] = { "No Billbord", "Bilbord" };
 	if (ImGui::BeginCombo("Options##Billbord", pszItems_Billbord[m_iSelected_BillbordOption], 0))
 	{
 		for (_uint n = 0; n < IM_ARRAYSIZE(pszItems_Billbord); n++)
@@ -282,7 +282,7 @@ void Widget_ParticleEffectTool::Option_Color()
 	ImGui::Spacing();
 
 	ImGui::Text("Etc Coloring Option");
-	ImGui::Checkbox("On Fade Out", &m_bUseFadeOut);
+	//ImGui::Checkbox("On Fade Out", &m_bUseFadeOut); // ( does not works on Instance particle cause of blend off )
 	ImGui::SliderFloat("Brigher Offset", &m_fGradationByAlpha_Brighter, 0.f, 1.f);
 	ImGui::SliderFloat("Darker Offset", &m_fGradationByAlpha_Darker, 0.f, 1.f);
 }
@@ -333,16 +333,38 @@ void Widget_ParticleEffectTool::Option_Transform()
 
 	if(ImGui::TreeNode("Rotation"))
 	{
-		ImGui::Text("Rotation Speed");
-		ImGui::InputFloat2("X (min, max)##RotationSpeed", m_fRotationSpeed_X);
-		ImGui::InputFloat2("Y (min, max)##RotationSpeed", m_fRotationSpeed_Y);
-		ImGui::InputFloat2("Z (min, max)##RotationSpeed", m_fRotationSpeed_Z);
-		ImGui::Spacing();
+		if (0 == m_iSelected_BillbordOption)
+		{
+			ImGui::Text("Rotation Speed");
+			ImGui::InputFloat2("Speed (min, max)##RotationSpeed", m_fRotationSpeed_X);
+			//ImGui::InputFloat2("Y (min, max)##RotationSpeed", m_fRotationSpeed_Y);
+			//ImGui::InputFloat2("Z (min, max)##RotationSpeed", m_fRotationSpeed_Z);
+			ImGui::Spacing();
 
-		ImGui::Text("Rotation Angle");
-		ImGui::InputFloat2("X (min, max)##RotationAngle", m_fRotationAngle_X);
-		ImGui::InputFloat2("Y (min, max)##RotationAngle", m_fRotationAngle_Y);
-		ImGui::InputFloat2("Z (min, max)##RotationAngle", m_fRotationAngle_Z);
+			ImGui::Text("Random Look (Rotates about the axis.)");
+			ImGui::InputFloat2("X (min, max)##RotationAngle", m_fRotationAngle_X);
+			ImGui::InputFloat2("Y (min, max)##RotationAngle", m_fRotationAngle_Y);
+			ImGui::InputFloat2("Z (min, max)##RotationAngle", m_fRotationAngle_Z);
+
+		}
+		else if (1 == m_iSelected_BillbordOption)
+		{
+			ImGui::Text(" ( Can't rotate rect while using Billbord) ");
+			m_fRotationSpeed_X[0] = 0.f;
+			m_fRotationSpeed_X[1] = 0.f;
+			m_fRotationSpeed_Y[0] = 0.f;
+			m_fRotationSpeed_Y[1] = 0.f;
+			m_fRotationSpeed_Z[0] = 0.f;
+			m_fRotationSpeed_Z[1] = 0.f;
+
+			m_fRotationAngle_X[0] = 0.f;
+			m_fRotationAngle_X[1] = 0.f;
+			m_fRotationAngle_Y[0] = 0.f;
+			m_fRotationAngle_Y[1] = 0.f;
+			m_fRotationAngle_Z[0] = 0.f;
+			m_fRotationAngle_Z[1] = 0.f;
+
+		}
 		ImGui::TreePop();
 	}
 	ImGui::Spacing();

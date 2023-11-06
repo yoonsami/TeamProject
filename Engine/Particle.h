@@ -7,7 +7,7 @@ struct ParticleInfo_UAV // ¡÷¿«: Shader_Particle2¿« ParticleInfo_UAVøÕ ¥Î¿¿«ÿæﬂ«
     _float3 vCurrWorldPos;
 
     _float  fLifeTime;
-    _float3 vRotationAngle;
+    _float3 vRotationAxis;
     
     _int iIsAlive;
     _float3 vRotationSpeed;
@@ -31,10 +31,10 @@ class StructuredBuffer;
 class Particle : public Component
 {
 public:
-    enum TYPE   {TYPE_Mesh, TYPE_Model, TYPE_END};
-    enum TECHNIQUE {TECHNIQUE_Compute, TECHNIQUE_MeshRender, TECHNIQUE_ModelRender};   // Shader_Particle2.fx¿« technique
+    enum TYPE   {TYPE_InstanceParticle, TYPE_RectParticle, TYPE_END};
+    enum TECHNIQUE {TECHNIQUE_Compute, TECHNIQUE_InstanceParticle};   // Shader_Particle2.fx¿« technique
     enum COMPUTE_PASS { CP_Default, CP_END };
-    enum RENDERMESH_PASS { RP_Default, RP_Full_Billbord, RP_Horizontal_Billbord, RP_Vertical_Billbord, RP_END };
+    enum RENDER_INSTANCEPARTICLE_PASS { RIP_NoBillbord, RIP_Full_Billbord, RIP_END };
 
     typedef struct tagParticle
     {
@@ -99,6 +99,9 @@ public:
         _float2 vRotationAngle_X;
         _float2 vRotationAngle_Y;
         _float2 vRotationAngle_Z;
+
+        _bool   bRandomRotationOn;
+        _float2 vRandomRotationSpeed;
     }DESC;
 
 public:
@@ -130,8 +133,8 @@ private:
     _bool                   m_bIsFirstCreateParticleDone = { false };
  
     TYPE                    m_eType = {TYPE_END};           
-    RENDERMESH_PASS         m_eRenderPass = { RP_Default }; 
     COMPUTE_PASS            m_eComputePass = { CP_Default };
+    RENDER_INSTANCEPARTICLE_PASS         m_eRenderPass = { RIP_END };
 
     /* Data to bind or get Shader */
     shared_ptr<Shader>      m_pShader = { nullptr };     

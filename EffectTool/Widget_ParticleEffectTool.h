@@ -84,12 +84,12 @@ private:
 	_int					m_iSelected_EndScaleOption = { 0 };
 
 	/* For. Rotation (Billbord option에 따라 선택할 수 있는 옵션이 달라진다.) */
-	_float					m_fRotationSpeed_X[2] = { 0.f, 0.f };
+	_float					m_fRotationSpeed_X[2] = { 0.f, 0.f };	// use 
 	_float					m_fRotationSpeed_Y[2] = { 0.f, 0.f };
 	_float					m_fRotationSpeed_Z[2] = { 0.f, 0.f };
-	_float					m_fRotationAngle_X[2] = { 1.f, 10.f };
-	_float					m_fRotationAngle_Y[2] = { 1.f, 10.f };
-	_float					m_fRotationAngle_Z[2] = { 1.f, 10.f };
+	_float					m_fRotationAngle_X[2] = { -1.f, 1.f };	// use 
+	_float					m_fRotationAngle_Y[2] = { -1.f, 1.f };	// use
+	_float					m_fRotationAngle_Z[2] = { -1.f, 1.f };	// use
 
 	/* For. Speed */
 	_float					m_fStartSpeed[2] = { 1.f, 1.f };

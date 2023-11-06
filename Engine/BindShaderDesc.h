@@ -156,8 +156,8 @@ struct CreateParticleDesc
 	_float4		vCreateOffsets;
 
 	int			iNewlyAddCnt = 0;
-
-	_float3		Padding;
+	int			iRandomRotationOn;
+	_float2		Padding;
 };
 
 struct TextureMapDesc
