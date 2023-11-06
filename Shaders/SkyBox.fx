@@ -87,7 +87,7 @@ technique11 T0
         SetBlendState(BlendDefault,float4( 0.0f, 0.0f, 0.0f, 0.0f ), 0xFFFFFFFF);						
       	SetDepthStencilState(DSS_Sky,0);	                   
         SetVertexShader(CompileShader(vs_5_0, VS()));
-        SetPixelShader(CompileShader(ps_5_0, PS_Masked()));
+        SetPixelShader(CompileShader(ps_5_0, PS()));
     }
     pass p1
     {

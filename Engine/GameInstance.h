@@ -22,6 +22,8 @@ private:
 	Color	m_vClearColor	= { 0.5f,0.5f,0.5f,1.f };
 
 public:
-
+	static _float g_fBrightness;
+	static _float g_fContrast;
+	static _float g_fShadowBias;
 };
 

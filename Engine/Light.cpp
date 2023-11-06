@@ -68,7 +68,7 @@ void Light::Render()
 	_float2 RTSize = { GRAPHICS.Get_ViewPort().Get_Width(), GRAPHICS.Get_ViewPort().Get_Height() };
 
 	pShader->GetVector("RenderTargetResolution")->SetFloatVector((_float*)&RTSize);
-
+	pShader->GetScalar("g_ShadowBias")->SetFloat(GAMEINSTANCE.g_fShadowBias);
 	m_pVolumeMesh->Get_VertexBuffer()->Push_Data();
 	m_pVolumeMesh->Get_IndexBuffer()->Push_Data();
 

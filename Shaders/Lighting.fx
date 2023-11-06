@@ -1,6 +1,7 @@
 #include "Render.fx"
 #include "Light.fx"
 
+float g_ShadowBias;
 
 float CalcShadowFactor(float4 shadowPosH)
 {
@@ -25,7 +26,7 @@ float CalcShadowFactor(float4 shadowPosH)
     float2(-dx, 0.0f), float2(0.0f, 0.0f), float2(dx, 0.0f),
     float2(-dx, dx), float2(0.0f, dx), float2(dx, dx)
     };
-    depth -= 2.40000008e-05;
+    depth -= g_ShadowBias;
   [unroll]
     for (int i = 0; i < 9; ++i)
     {  
@@ -100,9 +101,13 @@ PS_LIGHT_Deferred PS_DirLight(VS_OUT input)
 
 
     output.ambient = color.ambient;
+    output.ambient.a = 1.f;
     output.diffuse = color.diffuse;
+    output.diffuse.a = 1.f;
     output.specular = color.specular;
+    output.specular.a = 1.f;
     output.emissive = color.emissive;
+    output.emissive.a = 1.f;
     
     return output;
 }
@@ -140,9 +145,13 @@ PS_LIGHT_Deferred PS_PointLight(VS_OUT input)
     
     LightColor color = CalculateLightColor_ViewSpace(lightIndex, viewNormal, viewPos);
     output.ambient = color.ambient;
+    output.ambient.a = 1.f;
     output.diffuse = color.diffuse;
+    output.diffuse.a = 1.f;
     output.specular = color.specular;
+    output.specular.a = 1.f;
     output.emissive = color.emissive;
+    output.emissive.a = 1.f;
     
     return output;
 }
@@ -191,15 +200,19 @@ PS_LIGHT_Deferred PS_SpotLight(VS_OUT input)
     
     LightColor color = CalculateLightColor_ViewSpace(lightIndex, viewNormal, viewPos);
     output.ambient = color.ambient;
+    output.ambient.a = 1.f;
     output.diffuse = color.diffuse;
+    output.diffuse.a = 1.f;
     output.specular = color.specular;
+    output.specular.a = 1.f;
     output.emissive = color.emissive;
+    output.emissive.a = 1.f;
     
     return output;
 }
 
 //Final
-//SubMap0 : AmbientColor
+
 //SubMap1 : DiffuseColor
 //SubMap2 : SpecularColor
 //SubMap3 : EmissiveColor
@@ -218,26 +231,45 @@ VS_OUT VS_Final(VS_IN input)
     return output;
 }
 
+float g_gamma;
+
 float4 PS_Final(VS_OUT input) : SV_Target
 {
     float4 output = (float4) 0.f;
     
-    float4 ambientColor = SubMap0.Sample(LinearSampler, input.uv);
     float4 diffuseColor = SubMap1.Sample(LinearSampler, input.uv);
+   // diffuseColor = pow(diffuseColor, 2.2);
     float4 specularColor = SubMap2.Sample(LinearSampler, input.uv);
+    //specularColor = pow(specularColor, 2.2);
     float4 emissiveColor = SubMap3.Sample(LinearSampler, input.uv);
-    
+  //  emissiveColor = pow(emissiveColor, 2.2);
+   
     float4 ambientLightColor = SubMap4.Sample(LinearSampler, input.uv);
+  //  ambientLightColor = pow(ambientLightColor, 2.2);
     float4 diffuseLightColor = SubMap5.Sample(LinearSampler, input.uv);
+  //  diffuseLightColor = pow(diffuseLightColor, 2.2);
     float4 specularLightColor = SubMap6.Sample(LinearSampler, input.uv);
+ //   specularLightColor = pow(specularLightColor, 2.2);
     float4 emissiveLightColor = SubMap7.Sample(LinearSampler, input.uv);
-    float4 emissiveBlurColor = SubMap8.Sample(LinearSampler, input.uv);
-        
-    output = (ambientColor * ambientLightColor)
-    + diffuseColor * diffuseLightColor
-    + specularColor * specularLightColor
-    + emissiveColor * emissiveLightColor
-    +emissiveBlurColor * emissiveLightColor;
+  //  emissiveLightColor = pow(emissiveLightColor, 2.2);
+    diffuseLightColor += ambientLightColor;
+  //  float4 emissiveBlurColor = SubMap8.Sample(LinearSampler, input.uv);
+   // diffuseLightColor = clamp(diffuseLightColor, 0.f, 1.f);
+   
+    //diffuseColor = pow(diffuseColor, g_gamma);
+    
+    diffuseColor *= diffuseLightColor;
+    specularColor *= specularLightColor;
+    emissiveColor *= emissiveLightColor;
+    
+    output = diffuseColor //pow(diffuseColor, 1.f / g_gamma)
+    + specularColor
+    + emissiveColor;
+   // +emissiveBlurColor * emissiveLightColor;
+    
+  //  output = pow(output, 1.f/ 2.2f);
+    
+    output.a = 1.f;
     return output;
 }
 

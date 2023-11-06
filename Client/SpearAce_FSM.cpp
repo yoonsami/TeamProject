@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "SpearAce_FSM.h"
 #include "ModelAnimator.h"
+#include "MotionTrailRenderer.h"
+#include "Debug_CreateMotionTrail.h"
 
 HRESULT SpearAce_FSM::Init()
 {
@@ -12,6 +14,9 @@ HRESULT SpearAce_FSM::Init()
         animator->Set_CurrentAnim(L"b_idle"/*애니메이션 이름*/, true/*반복 애니메이션*/, 1.f/*애니메이션 속도*/);
         m_eCurState = STATE::b_idle;
     }
+
+    //Get_Owner()->Add_Component(make_shared<Debug_CreateMotionTrail>());
+
     return S_OK;
 }
 
@@ -557,6 +562,8 @@ void SpearAce_FSM::skill_1200_Init()
 
     m_vInputTurnVector = _float3(0.f);
     m_vInputTurnVector = Get_InputDirVector();
+
+   
 }
 
 void SpearAce_FSM::skill_1300()
@@ -684,6 +691,7 @@ void SpearAce_FSM::skill_100100_Init()
 
     m_vInputTurnVector = _float3(0.f);
     m_vInputTurnVector = Get_InputDirVector();
+
 }
 
 void SpearAce_FSM::skill_200100()

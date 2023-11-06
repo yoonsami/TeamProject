@@ -16,6 +16,7 @@ cbuffer GlobalBuffer
 cbuffer TransformBuffer
 {
     matrix W;
+    matrix preW;
 };
 
 ////////////////
@@ -127,7 +128,7 @@ struct PS_OUT_Deferred
 {
     float4 position : SV_Target0;
     float4 normal : SV_Target1;
-    float4 ambientColor : SV_Target2;
+    float4 depth : SV_Target2;
     float4 diffuseColor : SV_Target3;
     float4 specularColor : SV_Target4;
     float4 emissiveColor : SV_Target5;

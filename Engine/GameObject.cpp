@@ -21,6 +21,7 @@
 #include "TrailRenderer.h"
 //#include "EffectController.h"
 #include "FontRenderer.h"
+#include "MotionTrailRenderer.h"
 
 GameObject::GameObject()
 {
@@ -260,6 +261,11 @@ shared_ptr<TrailRenderer> GameObject::Get_TrailRenderer()
 shared_ptr<FontRenderer> GameObject::Get_FontRenderer()
 {
 	return static_pointer_cast<FontRenderer>(Get_FixedComponent(COMPONENT_TYPE::FontRenderer));
+}
+
+shared_ptr<MotionTrailRenderer> GameObject::Get_MotionTrailRenderer()
+{
+	return static_pointer_cast<MotionTrailRenderer>(Get_FixedComponent(COMPONENT_TYPE::MotionTrailRenderer));
 }
 
 shared_ptr<Model> GameObject::Get_Model()

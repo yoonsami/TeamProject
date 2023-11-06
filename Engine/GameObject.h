@@ -20,6 +20,7 @@ class ParticleSystem;
 class TrailRenderer;
 class EffectController;
 class FontRenderer;
+class MotionTrailRenderer;
 
 enum LayerMask
 {
@@ -61,6 +62,9 @@ public:
 	_bool Is_Blured() { return m_bIsBlur; }
 	void Set_Blur(_bool flag) { m_bIsBlur = flag; }
 
+	_bool Has_VelocityMap() { return m_bHasVelocityMap; }
+	void Set_VelocityMap(_bool flag) { m_bHasVelocityMap = flag; }
+
 	SHADER_TYPE Get_ShaderType();
 	vector<shared_ptr<MonoBehaviour>>& Get_Scripts() { return m_Scripts; }
 	shared_ptr<Component> Get_FixedComponent(COMPONENT_TYPE type);
@@ -83,6 +87,7 @@ public:
 	shared_ptr<TrailRenderer> Get_TrailRenderer();
 	//shared_ptr< EffectController> Get_EffectController();
 	shared_ptr<FontRenderer> Get_FontRenderer();
+	shared_ptr<MotionTrailRenderer> Get_MotionTrailRenderer();
 
 	shared_ptr<Model> Get_Model();
 	
@@ -133,6 +138,7 @@ private:
 	_float m_fHP = 0.f;
 	_float m_fMaxHP = 100.f;
 	_bool m_bIsBlur = false;
+	_bool m_bHasVelocityMap = false;
 };
 
 template<typename T>

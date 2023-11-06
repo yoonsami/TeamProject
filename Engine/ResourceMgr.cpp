@@ -378,6 +378,12 @@ void ResourceMgr::CreateDefaultShader()
 		auto shader = Get<Shader>(ShaderTag);
 		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
 	}
+	{ // MEMO : must
+		wstring ShaderTag = L"Shader_Final.fx";
+		Load<Shader>(ShaderTag, ShaderTag);
+		auto shader = Get<Shader>(ShaderTag);
+		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
+	}
 }
 
 void ResourceMgr::CreateDefaultShader_EffectTool()
@@ -416,6 +422,12 @@ void ResourceMgr::CreateDefaultShader_EffectTool()
 		auto shader = Get<Shader>(ShaderTag);
 		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
 	}
+	{ // MEMO : must
+		wstring ShaderTag = L"Shader_Final.fx";
+		Load<Shader>(ShaderTag, ShaderTag);
+		auto shader = Get<Shader>(ShaderTag);
+		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
+	}
 }
 
 void ResourceMgr::CreateModel(const wstring& path)
@@ -445,34 +457,6 @@ void ResourceMgr::CreateModel(const wstring& path)
 	}
 }
 
-//void ResourceMgr::CreateDefaultEffectModel()
-//{
-//	wstring assetPath = L"..\\Resources\\Models\\Normal\\Effect\\";
-//
-//	for (auto& entry : fs::recursive_directory_iterator(assetPath))
-//	{
-//		if (entry.is_directory())
-//			continue;
-//
-//		if (entry.path().extension().wstring() != L".Model" && entry.path().extension().wstring() != L".model")
-//			continue;
-//
-//		wstring tag = entry.path().wstring();
-//		Utils::DetachExt(tag);
-//
-//		int i = int(tag.rfind(L"Normal\\"));
-//
-//		tag = tag.substr(i, tag.size() - i);
-//
-//		shared_ptr<Model> model = make_shared<Model>();
-//		model->ReadModel(tag);
-//		model->ReadMaterial(tag);
-//		model->ReadAnimation(tag);
-//
-//		Add(tag, model);
-//	}
-//}
-
 void ResourceMgr::CreateDefaultMaterial()
 {
 	{
@@ -488,7 +472,7 @@ void ResourceMgr::CreateDefaultMaterial()
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Distorted_Final.fx");
 		shared_ptr<Material> material = make_shared<Material>();
 		material->Set_Shader(shader);
-		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"FinalTarget"));
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"MotionBlurFinalTarget"));
 		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"DistortionTarget"));
 		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"DistortionTarget1"));
 		Add(L"Distorted_Final", material);
@@ -497,7 +481,6 @@ void ResourceMgr::CreateDefaultMaterial()
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Lighting.fx");
 		shared_ptr<Material> material = make_shared<Material>();
 		material->Set_Shader(shader);
-		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"AmbientTarget"));
 		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"DiffuseTarget"));
 		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"SpecularTarget"));
 		material->Set_SubMap(3, RESOURCES.Get<Texture>(L"EmissiveTarget"));
@@ -507,7 +490,7 @@ void ResourceMgr::CreateDefaultMaterial()
 		material->Set_SubMap(7, RESOURCES.Get<Texture>(L"EmissiveLightTarget"));
 		material->Set_SubMap(8, RESOURCES.Get<Texture>(L"BLURBIGGER1"));
 
-		Add(L"Final", material);
+		Add(L"LightFinal", material);
 	}
 	{
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
@@ -537,7 +520,26 @@ void ResourceMgr::CreateDefaultMaterial()
 		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"BLURBIGGER0"));
 		Add(L"BlurBigger1", material);
 	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"VelocityMap"));
+		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"FinalTarget"));
+		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"G_DepthTarget"));
+		Add(L"MotionBlurFinal", material);
+	}
 
+
+
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Final.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"DistortionFinalTarget"));
+
+		Add(L"BackBufferRenderFinal", material);
+	}
 }
 
 void ResourceMgr::CreateMapModel(const wstring& mapName)

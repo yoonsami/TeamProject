@@ -11,17 +11,25 @@ public:
 
 	void Render_Shadow(vector<shared_ptr<GameObject>>& gameObjects);
 
+	void Render_VelocityMap(vector<shared_ptr<GameObject>>& gameObjects);
+
 	void Clear_Data();
 
 private:
+	//Render
 	void Render_MeshRenderer(vector<shared_ptr<GameObject>>& gameObjects);
 	void Render_ModelRenderer(vector<shared_ptr<GameObject>>& gameObjects);
 	void Render_Animator(vector<shared_ptr<GameObject>>& gameObjects);
 	void Render_Collider(vector<shared_ptr<GameObject>>& gameObjects);
-	//void Render_Effect(vector<shared_ptr<GameObject>>& gameObjects);
 
+	//RenderShadow
 	void Render_ModelRenderer_Shadow(vector<shared_ptr<GameObject>>& gameObjects);
 	void Render_Animator_Shadow(vector<shared_ptr<GameObject>>& gameObjects);
+	
+	//Render VelocityMap
+	void Render_ModelRenderer_VelocityMap(vector<shared_ptr<GameObject>>& gameObjects);
+	void Render_Animator_VelocityMap(vector<shared_ptr<GameObject>>& gameObjects);
+
 
 	void Add_Data(InstanceID instanceId, InstancingData& data);
 

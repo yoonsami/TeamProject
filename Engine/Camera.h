@@ -53,6 +53,7 @@ public:
     void Render_Deferred();
     void Render_Shadow();
 
+    void Render_MotionBlur();
     void Set_CullingMaskLayerOnOff(_uint layer, _bool on)
     {
         if (on)
@@ -82,6 +83,7 @@ private:
     _uint m_iCullingMask = 0;
     vector<shared_ptr<GameObject>> m_Sky;
     vector<shared_ptr<GameObject>> m_Forward;
+    vector<shared_ptr<GameObject>> m_VelocityMapObj;
     vector<shared_ptr<GameObject>> m_Deferred;
     vector<shared_ptr<GameObject>> m_Particle;
     vector<shared_ptr<GameObject>> m_Shadow;

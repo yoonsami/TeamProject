@@ -18,6 +18,7 @@ struct GlobalDesc
 struct TransformDesc
 {
 	_float4x4 W = _float4x4::Identity;
+	_float4x4 preW = _float4x4::Identity;
 };
 
 struct LightColor
@@ -86,9 +87,16 @@ struct TweenDesc
 	}
 };
 
+struct preTweenDesc
+{
+	TweenDesc curTween;
+	TweenDesc preTween;
+};
+
 struct InstanceTweenDesc
 {
 	TweenDesc tweens[MAX_MODEL_INSTANCE];
+	TweenDesc preTweens[MAX_MODEL_INSTANCE];
 };
 
 

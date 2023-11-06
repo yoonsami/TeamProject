@@ -20,6 +20,7 @@ HeroChangeScript::~HeroChangeScript()
 
 void HeroChangeScript::Tick()
 {
+    
     // weak_ptr expired() -> 이 포인터가 이미 소멸해서 사용할 수 없는 상태면 true 반환
     if (m_pPlayer.expired())
         return;

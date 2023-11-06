@@ -1,6 +1,6 @@
 #include "Render.fx"
 #include "Light.fx"
-
+int g_BlurCount;
 float DownScalePower;
 float UpScalePower;
 
@@ -127,8 +127,51 @@ float4 PS_UP(VS_OUT input) : SV_Target0
     Out = float4(vUpSample, 1.f);
 
     return Out;
+}
+
+float4 PS_MotionBlur(VS_OUT input) : SV_Target0
+{
+    float4 output = (float4) 0.f;
     
+    int NumBlurSample = g_BlurCount;
+    float4 velocity = SubMap0.Sample(PointSampler, input.uv);
+            
+    velocity.xy /= (float) NumBlurSample;
     
+    int iCnt = 1;
+    
+    float4 BColor;
+    
+    uint width, height, numMips;
+    SubMap1.GetDimensions(0, width, height, numMips);
+   
+    float2 texel = { 1.f / (float) width, 1.f / (float) height };
+    
+    for (int i = iCnt; i < NumBlurSample; ++i)
+    {
+        
+        BColor = SubMap1.Sample(PointSampler, input.uv + velocity.xy * (float) i);
+        float depth = SubMap2.Sample(PointSampler, input.uv).r;
+        if (velocity.a < depth - 0.0001f)
+        {
+           iCnt++;
+            output += BColor;
+        }
+
+
+      
+    }
+    output /= (float) iCnt;
+
+    if (velocity.z == 0.f)
+        output = SubMap1.Sample(LinearSampler, input.uv);
+
+    if (!all(output))
+        output = SubMap1.Sample(LinearSampler, input.uv);
+    
+    output.a = 1.f;
+    
+    return output;
 }
 
 technique11 t0
@@ -151,4 +194,18 @@ technique11 t0
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_UP()));
     }
+}
+
+technique11 t1
+{
+    pass motionBlur
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MAIN()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_LESS_NO_WRITE, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_MotionBlur()));
+    }
+
 }

@@ -218,7 +218,7 @@ void CS_Sphere(int3 threadIndex : SV_DispatchThreadID)
                 break;
             
             int expected = remaining;
-            int desired = remaining - 1;
+            int desired = remaining - 1; 
             int originalValue;
             InterlockedCompareExchange(g_Shared[0].addCount, expected, desired, originalValue);
 

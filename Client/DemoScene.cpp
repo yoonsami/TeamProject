@@ -66,7 +66,7 @@ void DemoScene::Late_Tick()
 			}
 		}*/
 		{
-			if (KEYPUSH(KEY_TYPE::Q))
+			/*if (KEYPUSH(KEY_TYPE::Q))
 			{
 				animator->Get_RenderParamDesc().vec4Params[0].x += fDT;
 			}
@@ -74,7 +74,7 @@ void DemoScene::Late_Tick()
 			if (KEYPUSH(KEY_TYPE::E))
 			{
 				animator->Get_RenderParamDesc().vec4Params[0].x -= fDT;
-			}
+			}*/
 
 
 		}
@@ -91,6 +91,7 @@ HRESULT DemoScene::Load_Scene()
 {
 	PHYSX.Init();
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\");
+	Load_SkyBox();
 	Load_Player();
 	Load_Light();
 	Load_Camera();
@@ -98,6 +99,16 @@ HRESULT DemoScene::Load_Scene()
 
 
 	return S_OK;
+}
+
+void DemoScene::Load_SkyBox()
+{
+	shared_ptr<GameObject> sky = make_shared<GameObject>();
+	sky->GetOrAddTransform();
+	sky->Add_Component(make_shared<ModelRenderer>(RESOURCES.Get<Shader>(L"SkyBox.fx")));
+	sky->Get_ModelRenderer()->Set_Model(RESOURCES.Get<Model>(L"SkyBoxTest"));
+	sky->Set_Name(L"SkyBase");
+	Add_GameObject(sky);
 }
 
 void DemoScene::Load_Player()
@@ -122,6 +133,7 @@ void DemoScene::Load_Player()
 			ObjPlayer->Add_Component(make_shared<SpearAce_FSM>());
 		}
 		ObjPlayer->Set_Name(L"Player");
+		ObjPlayer->Set_VelocityMap(true);
 		{
 			auto controller = make_shared<CharacterController>();
 			ObjPlayer->Add_Component(controller);
@@ -159,6 +171,7 @@ void DemoScene::Load_Player()
 		}
 		ObjWeapon->Set_DrawShadow(true);
 		ObjWeapon->Set_Name(L"Weapon_Spear_Ace");
+		ObjWeapon->Set_VelocityMap(true);
 		Add_GameObject(ObjWeapon);
 
 		ObjPlayer->Add_Component(make_shared<HeroChangeScript>(ObjPlayer));
@@ -180,10 +193,6 @@ void DemoScene::Load_DemoMap()
 {
 	auto shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 	vector<wstring> modelName;
-	modelName.push_back(L"BG_Wall_1");
-	modelName.push_back(L"BG_Wall_2");
-	modelName.push_back(L"BG_Wall_3");
-	modelName.push_back(L"BG_Wall_4");
 	modelName.push_back(L"Building_A");
 	modelName.push_back(L"Building_B");
 	modelName.push_back(L"Building_C");
@@ -276,6 +285,7 @@ void DemoScene::Load_Camera()
 
 		camera->Get_Camera()->Set_ProjType(ProjectionType::Orthographic);
 		//Layer_UI�� �ִ� ������Ʈ�� �ø��ϰڴ�.
+		camera->Get_Camera()->Set_CullingMaskAll();
 		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, false);
 
 		Add_GameObject(camera);
@@ -285,7 +295,7 @@ void DemoScene::Load_Camera()
 void DemoScene::Load_Light()
 {
 	shared_ptr<GameObject> lightObj = make_shared<GameObject>();
-	lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(10.f, 100.f, 10.f, 1.f));
+	lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(20.f, 100.f, 20.f, 1.f));
 	lightObj->GetOrAddTransform()->LookAt(_float4(0.f,0.f,0.f,1.f));
 	{
 		shared_ptr<Light> lightCom = make_shared<Light>();

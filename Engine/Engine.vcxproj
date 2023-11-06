@@ -202,6 +202,7 @@
     <ClInclude Include="ModelMesh.h" />
     <ClInclude Include="ModelRenderer.h" />
     <ClInclude Include="MonoBehaviour.h" />
+    <ClInclude Include="MotionTrailRenderer.h" />
     <ClInclude Include="OBBBoxCollider.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Pass.h" />
@@ -272,6 +273,7 @@
     <ClCompile Include="ModelMesh.cpp" />
     <ClCompile Include="ModelRenderer.cpp" />
     <ClCompile Include="MonoBehaviour.cpp" />
+    <ClCompile Include="MotionTrailRenderer.cpp" />
     <ClCompile Include="OBBBoxCollider.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Pass.cpp" />

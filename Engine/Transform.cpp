@@ -43,6 +43,7 @@ _float3 ToEulerAngles(Quaternion q)
 
 void Transform::Tick()
 {
+	m_matPreWorld = m_matWorld;
 }
 
 void Transform::Late_Tick()

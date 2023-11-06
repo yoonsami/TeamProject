@@ -22,12 +22,6 @@ enum ObjectType
 	OBJ_END
 };
 
-typedef struct tagCoolTimeInfo
-{
-	_float fCoolTime;
-	_float fAccTime = 0.f;
-}COOLTIMEINFO;
-
 enum class CollisionGroup
 {
 	Player,

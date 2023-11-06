@@ -7,6 +7,7 @@
 #include "MeshRenderer.h"
 #include "TrailRenderer.h"
 #include "FontRenderer.h"
+#include "MotionTrailRenderer.h"
 
 
 
@@ -66,6 +67,7 @@ void Camera::Sort_GameObject()
 	m_DistortionEffects.clear();
 	m_Trails.clear();
 	m_Fonts.clear();
+	m_VelocityMapObj.clear();
 	for (auto& gameObject : gameObjects)
 	{
 		if (gameObject->Get_MeshRenderer() == nullptr
@@ -75,9 +77,9 @@ void Camera::Sort_GameObject()
 			//&& gameObject->Get_EffectRenderer() == nullptr
 			&& gameObject->Get_ParticleSystem() == nullptr
 			&& gameObject->Get_TrailRenderer() == nullptr
+			&& gameObject->Get_MotionTrailRenderer() == nullptr
 			&& gameObject->Get_FontRenderer() ==nullptr)
 			continue;
-
 		if (IsCulled(gameObject->Get_LayerIndex()))
 			continue;
 
@@ -87,10 +89,14 @@ void Camera::Sort_GameObject()
 				continue;
 		}
 
+		if (gameObject->Has_VelocityMap())
+			m_VelocityMapObj.push_back(gameObject);
 		
 		if (gameObject->Get_Name() == L"SkyBase" || gameObject->Get_Name() == L"CloudPlate")
 			m_Sky.push_back(gameObject);
 		else if (gameObject->Get_TrailRenderer())
+			m_Trails.push_back(gameObject);
+		else if (gameObject->Get_MotionTrailRenderer())
 			m_Trails.push_back(gameObject);
 		else if (gameObject->Get_ShaderType() == SHADER_TYPE::DEFERRED)
 			m_Deferred.push_back(gameObject);
@@ -176,8 +182,11 @@ void Camera::Render_BlurForward()
 
 	for (auto& trail : m_Trails)
 	{
-		if(trail->Is_Blured())
+		if (trail->Is_Blured())
+		{
+			if(trail->Get_TrailRenderer())
 			trail->Get_TrailRenderer()->Render();
+		}
 	}
 
 	sort(m_Forward.begin(), m_Forward.end(), [this](shared_ptr<GameObject>& a, shared_ptr<GameObject>& b)
@@ -252,7 +261,12 @@ void Camera::Render_Forward()
 	
 
 	for (auto& trail : m_Trails)
-		trail->Get_TrailRenderer()->Render();
+	{
+		if (trail->Get_TrailRenderer())
+			trail->Get_TrailRenderer()->Render();
+		else if (trail->Get_MotionTrailRenderer())
+			trail->Get_MotionTrailRenderer()->Render();
+	}
 
 	sort(m_Forward.begin(), m_Forward.end(), [this](shared_ptr<GameObject>& a, shared_ptr<GameObject>& b)
 		{
@@ -329,6 +343,13 @@ void Camera::Render_Shadow()
 
 	INSTANCING.Render_Shadow(m_Shadow);
 
+}
+
+void Camera::Render_MotionBlur()
+{
+	S_View = m_matView;
+	S_Proj = m_matProj;
+	INSTANCING.Render_VelocityMap(m_VelocityMapObj);
 }
 
 vector<shared_ptr<MonoBehaviour>>& Camera::Get_Scripts()

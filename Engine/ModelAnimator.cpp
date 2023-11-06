@@ -22,6 +22,8 @@ ModelAnimator::~ModelAnimator()
 
 void ModelAnimator::Tick()
 {
+	m_preTweenDesc = m_TweenDesc;
+
 	m_TweenDesc.curr.sumTime += fDT;
 	//현재 애니메이션
 	{
@@ -162,7 +164,7 @@ void ModelAnimator::Tick()
 		Get_Transform()->Go_Dir(vDistToMove);
 	}
 
-	m_preTweenDesc = m_TweenDesc;
+
 	//Cal_AnimTransform();
 }
 
@@ -204,7 +206,7 @@ void ModelAnimator::Render()
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 
 	{
-		m_pShader->Push_TweenData(m_TweenDesc);
+		m_pShader->Push_TweenData({m_TweenDesc,m_preTweenDesc});
 
 		m_pShader->GetSRV("TransformMap")->SetResource(m_pModel->Get_TransformSRV().Get());
 
@@ -216,8 +218,9 @@ void ModelAnimator::Render()
 	m_pShader->Push_RenderParamData(m_RenderParams);
 
 
-	auto world = Get_Transform()->Get_WorldMatrix();
-	m_pShader->Push_TransformData(TransformDesc{ world });
+	auto& world = Get_Transform()->Get_WorldMatrix();
+	auto& preWorld = Get_Transform()->Get_preWorldMatrix();
+	m_pShader->Push_TransformData(TransformDesc{ world,preWorld });
 
 	const auto& meshes = m_pModel->Get_Meshes();
 
@@ -233,9 +236,13 @@ void ModelAnimator::Render()
 		m_pShader->GetVector("g_LineColor")->SetFloatVector((_float*)(&lineColor));
 		m_pShader->GetScalar("g_LineThickness")->SetFloat(Model::m_fOutlineThickness);
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		
+		
 		m_pShader->DrawIndexed(1, PS_ANIM, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
 		m_pShader->DrawIndexed(0, PS_ANIM, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
 	}
+
+
 }
 
 void ModelAnimator::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer, shared_ptr<InstanceTweenDesc> desc, shared_ptr<InstanceRenderParamDesc> renderParamDesc)
@@ -289,7 +296,7 @@ void ModelAnimator::Render_Shadow()
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 
 	{
-		m_pShader->Push_TweenData(m_TweenDesc);
+		m_pShader->Push_TweenData({m_TweenDesc,m_preTweenDesc});
 
 		m_pShader->GetSRV("TransformMap")->SetResource(m_pModel->Get_TransformSRV().Get());
 
@@ -298,8 +305,9 @@ void ModelAnimator::Render_Shadow()
 		m_pShader->Push_AnimAddonData(desc);
 	}
 
-	auto world = Get_Transform()->Get_WorldMatrix();
-	m_pShader->Push_TransformData(TransformDesc{ world });
+	auto& world = Get_Transform()->Get_WorldMatrix();
+	auto& preWorld = Get_Transform()->Get_preWorldMatrix();
+	m_pShader->Push_TransformData(TransformDesc{ world,preWorld });
 
 	const auto& meshes = m_pModel->Get_Meshes();
 
@@ -357,114 +365,85 @@ void ModelAnimator::Render_Shadow_Instancing(shared_ptr<InstancingBuffer>& buffe
 	}
 }
 
+void ModelAnimator::Render_MotionBlur()
+{
+	if (!m_pModel)
+		return;
+
+	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
+	auto preView = CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_preWorldMatrix().Invert();
+	m_pShader->GetMatrix("g_preView")->SetMatrix((_float*)&preView);
+
+	{
+		m_pShader->Push_TweenData({ m_TweenDesc,m_preTweenDesc });
+		m_pShader->GetSRV("TransformMap")->SetResource(m_pModel->Get_TransformSRV().Get());
+
+		auto& desc = m_pModel->Get_AnimAddonDesc();
+		m_pShader->Push_AnimAddonData(desc);
+	}
+	m_pShader->Push_RenderParamData(m_RenderParams);
+
+
+	auto& world = Get_Transform()->Get_WorldMatrix();
+	auto& preWorld = Get_Transform()->Get_preWorldMatrix();
+	m_pShader->Push_TransformData(TransformDesc{ world,preWorld });
+
+	const auto& meshes = m_pModel->Get_Meshes();
+
+	for (auto& mesh : meshes)
+	{
+		if (!mesh->material.expired())
+			mesh->material.lock()->Tick();
+
+		m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
+		mesh->vertexBuffer->Push_Data();
+		mesh->indexBuffer->Push_Data();
+
+		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		
+		m_pShader->DrawIndexed(2, PS_ANIM, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
+	}
+}
+
+void ModelAnimator::Render_MotionBlur_Instancing(shared_ptr<class InstancingBuffer>& buffer, shared_ptr<InstanceTweenDesc> tweenDesc, shared_ptr<InstanceRenderParamDesc> renderParamDesc)
+{
+	if (!m_pModel)
+		return;
+
+	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
+	auto preView = CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_preWorldMatrix().Invert();
+	m_pShader->GetMatrix("g_preView")->SetMatrix((_float*)&preView);
+
+	m_pShader->Push_InstanceTweenData(*tweenDesc);
+	m_pShader->Push_InstanceRenderParamData(*renderParamDesc);
+	m_pShader->GetSRV("TransformMap")->SetResource(m_pModel->Get_TransformSRV().Get());
+
+	auto& animAddonDesc = m_pModel->Get_AnimAddonDesc();
+	m_pShader->Push_AnimAddonData(animAddonDesc);
+
+	const auto& meshes = m_pModel->Get_Meshes();
+
+	for (auto& mesh : meshes)
+	{
+		if (!mesh->material.expired())
+			mesh->material.lock()->Tick();
+
+		m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
+
+		mesh->vertexBuffer->Push_Data();
+		mesh->indexBuffer->Push_Data();
+
+		buffer->Push_Data();
+
+		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		m_pShader->DrawIndexedInstanced(2, PS_ANIMINSTANCING, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
+	}
+}
+
 InstanceID ModelAnimator::Get_InstanceID()
 {
 	return make_pair(_ulonglong(m_pModel.get()),_ulonglong(m_pShader.get()));
-}
-
-void ModelAnimator::Cal_AnimTransform()
-{
-	//vector<_float4x4> tmpAnimBoneTransforms(MAX_MODEL_TRANSFORMS, _float4x4::Identity);
-
-	//shared_ptr<ModelAnimation> currAnim = m_pModel->Get_AnimationByIndex(m_TweenDesc.curr.animIndex);
-
-	////for (_uint frame = 0; frame < animation->frameCount; ++frame)
-	//{
-	//	for (_uint boneIndex = 0; boneIndex < m_pModel->Get_BoneCount(); ++boneIndex)
-	//	{
-	//		shared_ptr<ModelBone> bone = m_pModel->Get_BoneByIndex(boneIndex);
-
-	//		_float4x4 matAnimation;
-
-	//		shared_ptr<ModelKeyFrame> keyFrame = currAnim->Get_KeyFrame(bone->name);
-	//		if (keyFrame)
-	//		{
-	//			ModelKeyFrameData& currData = keyFrame->transforms[m_TweenDesc.curr.currentFrame];
-	//			ModelKeyFrameData& nextData = keyFrame->transforms[m_TweenDesc.curr.nextFrame];
-
-	//			_float3 vScale = _float3::Lerp(currData.scale,nextData.scale,m_TweenDesc.curr.ratio);
-	//			_float3 vTrans = _float3::Lerp(currData.translation,nextData.translation,m_TweenDesc.curr.ratio);
-	//			Quaternion vRot = Quaternion::Slerp(currData.rotation,nextData.rotation,m_TweenDesc.curr.ratio);
-
-	//			DirectX::XMStoreFloat4x4(&matAnimation, XMMatrixAffineTransformation(XMLoadFloat3(&(vScale)), XMVectorSet(0.f, 0.f, 0.f, 1.f), XMLoadFloat4(&vRot), XMLoadFloat3(&vTrans)));
-	//		}
-	//		else
-	//		{
-	//			matAnimation = _float4x4::Identity;
-	//		}
-
-	//		if (m_TweenDesc.next.animIndex >= 0)
-	//		{
-	//			shared_ptr<ModelAnimation> nextAnim = m_pModel->Get_AnimationByIndex(m_TweenDesc.next.animIndex);
-
-	//			shared_ptr<ModelKeyFrame> keyFrame = nextAnim->Get_KeyFrame(bone->name);
-	//			if (keyFrame)
-	//			{
-	//				ModelKeyFrameData& currData = keyFrame->transforms[m_TweenDesc.next.currentFrame];
-	//				ModelKeyFrameData& nextData = keyFrame->transforms[m_TweenDesc.next.nextFrame];
-
-	//				_float3 vScale = _float3::Lerp(currData.scale, nextData.scale, m_TweenDesc.next.ratio);
-	//				_float3 vTrans = _float3::Lerp(currData.translation, nextData.translation, m_TweenDesc.next.ratio);
-	//				Quaternion vRot = Quaternion::Slerp(currData.rotation, nextData.rotation, m_TweenDesc.next.ratio);
-
-
-	//				_float3 curScale, curTrans; Quaternion curRot;
-	//				matAnimation.Decompose(curScale, curRot, curTrans);
-
-	//				vScale = _float3::Lerp(curScale, vScale, m_TweenDesc.tweenRatio);
-	//				vTrans = _float3::Lerp(curTrans, vTrans, m_TweenDesc.tweenRatio);
-	//				vRot = Quaternion::Slerp(curRot, vRot, m_TweenDesc.tweenRatio);
-
-	//				DirectX::XMStoreFloat4x4(&matAnimation, XMMatrixAffineTransformation(XMLoadFloat3(&(vScale)), XMVectorSet(0.f, 0.f, 0.f, 1.f), XMLoadFloat4(&vRot), XMLoadFloat3(&vTrans)));
-	//			}
-	//			else 
-	//				matAnimation = _float4x4::Identity;
-	//		}
-
-	//		//_float4x4 toRootMat = bone->transform;
-	//		_float4x4 invGlobal = bone->offsetTransform;
-
-	//		_int parentIndex = bone->parentIndex;
-
-	//		_float4x4 matParent = _float4x4::Identity;
-	//		if (parentIndex >= 0)
-	//			matParent = tmpAnimBoneTransforms[parentIndex];
-
-	//		tmpAnimBoneTransforms[boneIndex] = matAnimation * matParent;
-
-	//		m_BoneTransformData[boneIndex] = invGlobal * tmpAnimBoneTransforms[boneIndex] * _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI);
-	//	}
-	//}
-
-	//shared_ptr<ModelAnimation> currAnim = m_pModel->Get_AnimationByIndex(m_TweenDesc.curr.animIndex);
-
-	//{
-	//	for (_uint boneIndex = 0; boneIndex < m_pModel->Get_BoneCount(); ++boneIndex)
-	//	{
-	//		
-	//		shared_ptr<ModelBone> bone = m_pModel->Get_BoneByIndex(boneIndex);
-
-	//		_float4x4 curMat = m_pModel->Get_AnimationTransform(m_TweenDesc.curr.animIndex,m_TweenDesc.curr.currentFrame,boneIndex);
-	//		_float4x4 nextMat = m_pModel->Get_AnimationTransform(m_TweenDesc.curr.animIndex,m_TweenDesc.curr.nextFrame,boneIndex);
-
-	//		_float4x4 matAnimation = Transform::SLerpMatrix(curMat, nextMat, m_TweenDesc.curr.ratio);
-
-	//		if (m_TweenDesc.next.animIndex >= 0)
-	//		{
-	//			curMat = m_pModel->Get_AnimationTransform(m_TweenDesc.next.animIndex, m_TweenDesc.next.currentFrame, boneIndex);
-	//			nextMat = m_pModel->Get_AnimationTransform(m_TweenDesc.next.animIndex, m_TweenDesc.next.nextFrame, boneIndex);
-
-	//			_float4x4 matNext = Transform::SLerpMatrix(curMat, nextMat, m_TweenDesc.next.ratio);
-
-	//			matAnimation = Transform::SLerpMatrix(matAnimation, matNext, m_TweenDesc.tweenRatio);
-	//		}
-
-	//		//_float4x4 toRootMat = bone->transform;
-	//		_float4x4 invGlobal = bone->offsetTransform;
-
-	//		m_BoneTransformData[boneIndex] = invGlobal * matAnimation * _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI);
-	//	}
-	//}
 }
 
 _float4x4 ModelAnimator::Get_CurAnimTransform(_int boneIndex)

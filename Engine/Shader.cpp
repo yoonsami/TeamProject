@@ -417,12 +417,12 @@ void Shader::Push_KeyframeData(const KeyFrameDesc& desc)
 
 }
 
-void Shader::Push_TweenData(const TweenDesc& desc)
+void Shader::Push_TweenData(const preTweenDesc& desc)
 {
 	if (!m_pTweenEffectBuffer)
 	{
 		m_pTweenBuffer = make_shared<ConstantBuffer>();
-		m_pTweenBuffer->Create<TweenDesc>();
+		m_pTweenBuffer->Create<preTweenDesc>();
 		m_pTweenEffectBuffer = GetConstantBuffer("TweenBuffer");
 	}
 	m_TweenDesc = desc;

@@ -23,6 +23,7 @@ public:
     virtual void Fixed_Tick() override;
 
     const _float4x4& Get_WorldMatrix() { return m_matWorld; }
+    const _float4x4& Get_preWorldMatrix() { return m_matPreWorld; }
     _float Get_Speed() { return m_fMoveSpeed; }
     _float4 Get_State(Transform_State eState)
     {
@@ -60,4 +61,5 @@ private:
     _float4x4 m_matWorld = _float4x4::Identity;
     _float m_fMoveSpeed = 1.f;
 
+    _float4x4 m_matPreWorld = _float4x4::Identity;
 };

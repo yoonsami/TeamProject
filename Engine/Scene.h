@@ -54,15 +54,25 @@ protected:
 	void Gather_LightData();
 	void Sort_GameObjects();
 	void Render_Shadow();
+	void Render_MotionBlur();
 	void Render_Deferred();
 	void Render_DefferedBlur();
 	void Render_Lights();
-	void Render_Final();
+	void Render_LightFinal();
+
+	void Render_MotionBlurFinal();
+
 	void Render_Forward();
 	void Render_Distortion();
 	void Render_Distortion_Final();
+
+	void Render_ToneMapping();
+
 	void Render_Debug();
 	void Render_UI();
+
+
+	void Render_BackBuffer();
 
 
 protected:
@@ -82,8 +92,5 @@ protected:
 	_bool m_bSceneFinished = false;
 
 	_uint m_iLevelIndex = 0;
-
-	_float m_fDownScalePower = 1.f;
-	_float m_fUpScalePower = 1.f;
 };
 

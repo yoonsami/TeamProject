@@ -1,6 +1,8 @@
 #include "Render.fx"
 #include "Light.fx"
 
+
+
 struct VS_IN
 {
     float3 pos : POSITION;
@@ -35,6 +37,10 @@ float4 PS_Final(VS_OUT input) : SV_Target0
     float2 newUV = input.uv + submap1.x;
     
     output = SubMap0.Sample(LinearSampler, newUV);
+    
+   // output = pow(output, 2.2);
+    
+    
     
     return output;
 }

@@ -70,11 +70,13 @@ void Scene::Render()
 	Gather_LightData();
 	Sort_GameObjects();
 	Render_Shadow();
+	Render_MotionBlur();
 	Render_Deferred();
 	Render_DefferedBlur();
 	Render_Lights();
 	//Render_BlurEffect();
-	Render_Final();
+	Render_LightFinal();
+	Render_MotionBlurFinal();
 	Render_Forward();
 	Render_Distortion();
 	Render_Distortion_Final();
@@ -83,6 +85,7 @@ void Scene::Render()
 
 	Render_UI();
 
+	Render_BackBuffer();
 }
 
 HRESULT Scene::Load_Scene()
@@ -461,6 +464,17 @@ void Scene::Render_Shadow()
 	//GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::SHADOW)->UnBindSRV();
 }
 
+void Scene::Render_MotionBlur()
+{
+	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::MOTIONBLUR)->OMSetRenderTargets();
+
+	if (Get_MainCamera())
+	{
+		shared_ptr<Camera> mainCamera = Get_MainCamera()->Get_Camera();
+		mainCamera->Render_MotionBlur();
+	}
+}
+
 void Scene::Render_Deferred()
 {
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->OMSetRenderTargets();
@@ -475,21 +489,21 @@ void Scene::Render_Deferred()
 
 void Scene::Render_DefferedBlur()
 {
-	float a[25] = {
+	/*float a[25] = {
 	1.0f / 273.0f,  4.0f / 273.0f,  7.0f / 273.0f,  4.0f / 273.0f,  1.0f / 273.0f,
 	4.0f / 273.0f,  16.0f / 273.0f, 26.0f / 273.0f, 16.0f / 273.0f, 4.0f / 273.0f,
 	7.0f / 273.0f,  26.0f / 273.0f, 41.0f / 273.0f, 26.0f / 273.0f, 7.0f / 273.0f,
 	4.0f / 273.0f,  16.0f / 273.0f, 26.0f / 273.0f, 16.0f / 273.0f, 4.0f / 273.0f,
 	1.0f / 273.0f,  4.0f / 273.0f,  7.0f / 273.0f,  4.0f / 273.0f,  1.0f / 273.0f
-	};
+	};*/
 	for (_uchar i = 0; i < 2; ++i)
 	{
 		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLURSMALLER0) + i);
 		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
 		auto material = RESOURCES.Get<Material>(L"BlurSmaller" + to_wstring(i));
 		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
-		material->Get_Shader()->GetScalar("GaussianWeight")->SetFloatArray(a, 0, 25);
-		material->Get_Shader()->GetScalar("DownScalePower")->SetFloat(m_fDownScalePower);
+		//material->Get_Shader()->GetScalar("GaussianWeight")->SetFloatArray(a, 0, 25);
+		//material->Get_Shader()->GetScalar("DownScalePower")->SetFloat(m_fDownScalePower);
 		material->Push_SubMapData();
 
 		mesh->Get_VertexBuffer()->Push_Data();
@@ -506,7 +520,7 @@ void Scene::Render_DefferedBlur()
 		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
 		auto material = RESOURCES.Get<Material>(L"BlurBigger" + to_wstring(i));
 		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
-		material->Get_Shader()->GetScalar("UpScalePower")->SetFloat(m_fUpScalePower);
+	//	material->Get_Shader()->GetScalar("UpScalePower")->SetFloat(m_fUpScalePower);
 
 		material->Push_SubMapData();
 
@@ -518,24 +532,7 @@ void Scene::Render_DefferedBlur()
 		material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 	}
 
-	if (KEYPUSH(KEY_TYPE::Z))
-	{
-		m_fUpScalePower += 0.1f * fDT;
-	}
-
-	if (KEYPUSH(KEY_TYPE::X))
-	{
-		m_fUpScalePower -= 0.1f * fDT;
-	}
-	if (KEYPUSH(KEY_TYPE::C))
-	{
-		m_fDownScalePower += 0.1f * fDT;
-	}
-
-	if (KEYPUSH(KEY_TYPE::V))
-	{
-		m_fDownScalePower -= 0.1f * fDT;
-	}
+	
 	/*{
 		GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::BLURSMALLER0)->OMSetRenderTargets();
 		auto material = RESOURCES.Get<Material>(L"BlurSmaller0");
@@ -672,11 +669,11 @@ void Scene::Render_Lights()
 	//GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::LIGHTING)->UnBindSRV();
 }
 
-void Scene::Render_Final()
+void Scene::Render_LightFinal()
 {
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::FINAL)->OMSetRenderTargets();
 
-	auto material = RESOURCES.Get<Material>(L"Final");
+	auto material = RESOURCES.Get<Material>(L"LightFinal");
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 
 	material->Push_SubMapData();
@@ -687,6 +684,26 @@ void Scene::Render_Final()
 	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	material->Get_Shader()->DrawIndexed(0,3, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+}
+
+void Scene::Render_MotionBlurFinal()
+{
+	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::MOTIONBLURFINAL)->OMSetRenderTargets();
+
+	auto material = RESOURCES.Get<Material>(L"MotionBlurFinal");
+	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+
+	material->Get_Shader()->GetScalar("g_BlurCount")->SetInt(50);
+
+	material->Push_SubMapData();
+
+	mesh->Get_VertexBuffer()->Push_Data();
+	mesh->Get_IndexBuffer()->Push_Data();
+
+	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	material->Get_Shader()->DrawIndexed(1, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+
 }
 
 void Scene::Render_Forward()
@@ -719,7 +736,7 @@ void Scene::Render_Distortion()
 
 void Scene::Render_Distortion_Final()
 {
-	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->OMSetRenderTargets();
+	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::DISTORTIONFINAL)->OMSetRenderTargets();
 	
 	auto material = RESOURCES.Get<Material>(L"Distorted_Final");
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
@@ -733,6 +750,10 @@ void Scene::Render_Distortion_Final()
 	material->Get_Shader()->DrawIndexed(0, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 	
 	
+}
+
+void Scene::Render_ToneMapping()
+{
 }
 
 void Scene::Render_Debug()
@@ -752,4 +773,25 @@ void Scene::Render_UI()
 
 		uiCamera->Render_Forward();
 	}
+}
+
+void Scene::Render_BackBuffer()
+{
+	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->OMSetRenderTargets();
+
+	auto material = RESOURCES.Get<Material>(L"BackBufferRenderFinal");
+	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+
+	material->Get_Shader()->GetScalar("g_brightness")->SetFloat(GAMEINSTANCE.g_fBrightness);
+	material->Get_Shader()->GetScalar("g_contrast")->SetFloat(GAMEINSTANCE.g_fContrast);
+
+	material->Push_SubMapData();
+	mesh->Get_VertexBuffer()->Push_Data();
+	mesh->Get_IndexBuffer()->Push_Data();
+
+	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	material->Get_Shader()->DrawIndexed(0, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+
+
 }

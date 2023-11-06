@@ -33,11 +33,17 @@ public:
 	void Set_Model(shared_ptr<Model> model);
 	void Set_Pass(_uint pass) { m_iPass = pass; }
 
-	void Render_Instancing(shared_ptr<class InstancingBuffer>& buffer, shared_ptr<InstanceRenderParamDesc> renderParamDesc);
 	void Render();
+	void Render_Instancing(shared_ptr<class InstancingBuffer>& buffer, shared_ptr<InstanceRenderParamDesc> renderParamDesc);
+	
 	void Render_Skybox();
+	
 	void Render_Shadow();
 	void Render_Shadow_Instancing(shared_ptr<InstancingBuffer>& buffer, shared_ptr<InstanceRenderParamDesc> renderParamDesc);
+	
+	void Render_MotionBlur();
+	void Render_MotionBlur_Instancing(shared_ptr<InstancingBuffer>& buffer, shared_ptr<InstanceRenderParamDesc> renderParamDesc);
+
 	void Set_Outline() { m_bHasOutline = true; }
 	InstanceID Get_InstanceID();
 	void Set_CullMode(_bool cullNone) { m_bCullNone = cullNone; }

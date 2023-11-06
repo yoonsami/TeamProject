@@ -5,6 +5,7 @@ class VertexBuffer;
 struct InstancingData
 {
 	_float4x4 world =_float4x4::Identity;
+	_float4x4 preWorld =_float4x4::Identity;
 };
 
 #define MAX_MESH_INSTANCE 500

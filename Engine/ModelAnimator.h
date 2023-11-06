@@ -34,12 +34,17 @@ public:
 
     void Render();
 	void Render_Instancing(shared_ptr<class InstancingBuffer>& buffer, shared_ptr<InstanceTweenDesc> desc, shared_ptr<InstanceRenderParamDesc> renderParamDesc);
+   
     void Render_Shadow();
 	void Render_Shadow_Instancing(shared_ptr<class InstancingBuffer>& buffer, shared_ptr<InstanceTweenDesc> tweenDesc, shared_ptr<InstanceRenderParamDesc> renderParamDesc );
 
-    
+	void Render_MotionBlur();
+	void Render_MotionBlur_Instancing(shared_ptr<class InstancingBuffer>& buffer, shared_ptr<InstanceTweenDesc> tweenDesc, shared_ptr<InstanceRenderParamDesc> renderParamDesc);
+
+
     InstanceID Get_InstanceID();
     TweenDesc& Get_TweenDesc() { return m_TweenDesc; }
+    TweenDesc& Get_preTweenDesc() { return m_preTweenDesc; }
 
     void Set_CurrentAnim(_int index) {
         m_TweenDesc.curr = KeyFrameDesc();
@@ -47,7 +52,7 @@ public:
         m_bFinished = false;
         m_TweenDesc.ClearNextAnim();
     }
-    void Cal_AnimTransform();
+
     _float4x4 Get_CurAnimTransform(_int boneIndex);
 
     void Set_NextTweenAnim(const wstring& animName, _float tweenDuration, _bool loop, _float animSpeed);

@@ -80,7 +80,7 @@ public:
 	void Push_MaterialData(const MaterialDesc& desc);
 	void Push_BoneData(const BoneDesc& desc);
 	void Push_KeyframeData(const KeyFrameDesc& desc);
-	void Push_TweenData(const TweenDesc& desc);
+	void Push_TweenData(const preTweenDesc& desc);
 	void Push_InstanceTweenData(const InstanceTweenDesc& desc);
 	void Push_InstanceRenderParamData(const InstanceRenderParamDesc& desc);
 	void Push_AnimAddonData(const AnimAddonDesc& desc);
@@ -115,7 +115,7 @@ private:
 	shared_ptr<ConstantBuffer> m_pKeyFrameBuffer;
 	ComPtr<ID3DX11EffectConstantBuffer> m_pKeyFrameEffectBuffer;
 
-	TweenDesc m_TweenDesc;
+	preTweenDesc m_TweenDesc;
 	shared_ptr<ConstantBuffer> m_pTweenBuffer;
 	ComPtr<ID3DX11EffectConstantBuffer> m_pTweenEffectBuffer;
 

@@ -190,6 +190,12 @@
     <Filter Include="04.Component\07.FSM">
       <UniqueIdentifier>{d8ad09ab-a535-4404-91b9-e888c1e858eb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04.Component\05.UI &amp; Effect\Renderer\03.MotionTrailRenderer">
+      <UniqueIdentifier>{6f75b1ee-ac69-4138-a4c2-c8e5be877ffe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Component\05.UI &amp; Effect\Renderer\04.MotionTrailRenderer">
+      <UniqueIdentifier>{5ade97b7-d3fd-483c-9c42-c2925271ad57}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -389,6 +395,9 @@
     </ClCompile>
     <ClCompile Include="FSM.cpp">
       <Filter>04.Component\07.FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="MotionTrailRenderer.cpp">
+      <Filter>04.Component\05.UI &amp; Effect\Renderer\04.MotionTrailRenderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -604,6 +613,9 @@
     </ClInclude>
     <ClInclude Include="FSM.h">
       <Filter>04.Component\07.FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="MotionTrailRenderer.h">
+      <Filter>04.Component\05.UI &amp; Effect\Renderer\04.MotionTrailRenderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

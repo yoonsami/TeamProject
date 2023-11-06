@@ -12,5 +12,6 @@ public:
 
 private:
 	HRESULT Open_Scene();
+	void Control_Option();
 };
 

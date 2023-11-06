@@ -38,6 +38,7 @@ HRESULT MainApp::Init()
 void MainApp::Tick()
 {
 	GAMEINSTANCE.Tick_Engine();
+	Control_Option();
 }
 
 HRESULT MainApp::Render()
@@ -55,4 +56,38 @@ HRESULT MainApp::Open_Scene()
 
 	return S_OK;
 
+}
+
+void MainApp::Control_Option()
+{
+	/*if (KEYPUSH(KEY_TYPE::Z))
+	{
+		GAMEINSTANCE.g_fBrightness += 0.5f * fDT;
+		if (GAMEINSTANCE.g_fBrightness > 2.f) GAMEINSTANCE.g_fBrightness = 2.f;
+	}
+	if (KEYPUSH(KEY_TYPE::X))
+	{
+		GAMEINSTANCE.g_fBrightness -= 0.5f * fDT;
+		if (GAMEINSTANCE.g_fBrightness < 0.1f) GAMEINSTANCE.g_fBrightness = 0.1f;
+	}*/
+	if (KEYPUSH(KEY_TYPE::Z))
+	{
+		GAMEINSTANCE.g_fShadowBias += 0.0001f * fDT;
+		if (GAMEINSTANCE.g_fShadowBias > 0.01f) GAMEINSTANCE.g_fShadowBias = 0.01f;
+	}
+	if (KEYPUSH(KEY_TYPE::X))
+	{
+		GAMEINSTANCE.g_fShadowBias -= 0.0001f * fDT;
+		if (GAMEINSTANCE.g_fShadowBias < 0.f) GAMEINSTANCE.g_fShadowBias = 0.000001f;
+	}
+	if (KEYPUSH(KEY_TYPE::C))
+	{
+		GAMEINSTANCE.g_fContrast += 0.5f * fDT;
+		if (GAMEINSTANCE.g_fContrast > 2.f) GAMEINSTANCE.g_fContrast = 2.f;
+	}
+	if (KEYPUSH(KEY_TYPE::V))
+	{
+		GAMEINSTANCE.g_fContrast -= 0.5f * fDT;
+		if (GAMEINSTANCE.g_fContrast < 0.1f) GAMEINSTANCE.g_fContrast = 0.1f;
+	}
 }

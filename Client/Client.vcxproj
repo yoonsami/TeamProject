@@ -169,6 +169,7 @@
   <ItemGroup>
     <ClInclude Include="Client.h" />
     <ClInclude Include="Client_Define.h" />
+    <ClInclude Include="Debug_CreateMotionTrail.h" />
     <ClInclude Include="DemoAnimationController1.h" />
     <ClInclude Include="DemoCameraScript1.h" />
     <ClInclude Include="DemoCameraScript2.h" />
@@ -180,6 +181,7 @@
     <ClInclude Include="LoadingScene.h" />
     <ClInclude Include="MainApp.h" />
     <ClInclude Include="MainCameraScript.h" />
+    <ClInclude Include="MotionTrailDisappear.h" />
     <ClInclude Include="ObjectTransformDebug.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
@@ -188,6 +190,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="Debug_CreateMotionTrail.cpp" />
     <ClCompile Include="DemoAnimationController1.cpp" />
     <ClCompile Include="DemoCameraScript1.cpp" />
     <ClCompile Include="DemoCameraScript2.cpp" />
@@ -199,6 +202,7 @@
     <ClCompile Include="LoadingScene.cpp" />
     <ClCompile Include="MainApp.cpp" />
     <ClCompile Include="MainCameraScript.cpp" />
+    <ClCompile Include="MotionTrailDisappear.cpp" />
     <ClCompile Include="ObjectTransformDebug.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
