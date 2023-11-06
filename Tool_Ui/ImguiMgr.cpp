@@ -95,7 +95,7 @@ void ImguiMgr::Create_Ui()
    File_Dialog();
    Select_Texture();
    Add_Texture();
-   Decide_Transform_Value();
+   // Decide_Transform_Value();
 
    // 경로 추출, 저장, 로드 다 포함
    Save_Ui_Desc();
@@ -345,8 +345,8 @@ void ImguiMgr::Create_Object()
       {
          auto UiObject = make_shared<GameObject>();
          UiObject->GetOrAddTransform();
-         UiObject->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(m_vecPos.x, m_vecPos.y, m_vecPos.z, 1));
-         UiObject->GetOrAddTransform()->Scaled(_float3(m_vecScale.x, m_vecScale.y, m_vecScale.z));
+         UiObject->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1));
+         UiObject->GetOrAddTransform()->Scaled(_float3(0.0001f, 0.0001f, 0.0001f));
          shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
 
          auto mesh = RESOURCES.Get<Mesh>(L"Quad");
@@ -487,6 +487,7 @@ void ImguiMgr::Change_Object_Value()
    ImGui::RadioButton("Trans", &m_iTypeZmoOper, 0);
    ImGui::RadioButton("Rotate", &m_iTypeZmoOper, 1);
    ImGui::RadioButton("Scale", &m_iTypeZmoOper, 2);
+   ImGui::RadioButton("Off", &m_iTypeZmoOper, 3);
 
    if (0 == m_iTypeZmoOper)
       m_eZmoOper = ImGuizmo::OPERATION::TRANSLATE;
@@ -568,7 +569,7 @@ void ImguiMgr::Change_Object_Value()
    ImGui::SameLine();
    ImGui::Checkbox("Immediately", &m_bIsChangeCheck);
 
-   if (true == bIsSelected)
+   if (true == bIsSelected && 3 != m_iTypeZmoOper)
    {
       _float4x4 matWorld = {};
       memcpy(&matWorld, &m_pSampleObj->GetOrAddTransform()->Get_WorldMatrix(), sizeof(_float4x4));
