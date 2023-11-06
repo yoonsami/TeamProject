@@ -52,6 +52,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\00.MainCameraScript">
       <UniqueIdentifier>{c016c014-a8d2-4a1c-a3ab-e1eca59afce4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\MapObject">
+      <UniqueIdentifier>{eaa2751e-548a-4450-b36d-db18a2643371}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -96,6 +99,9 @@
     <ClInclude Include="MainCameraScript.h">
       <Filter>02.Component\00.MonoBehaviour\00.MainCameraScript</Filter>
     </ClInclude>
+    <ClInclude Include="MapObjectScript.h">
+      <Filter>02.Component\MapObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -133,6 +139,9 @@
     </ClCompile>
     <ClCompile Include="MainCameraScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\00.MainCameraScript</Filter>
+    </ClCompile>
+    <ClCompile Include="MapObjectScript.cpp">
+      <Filter>02.Component\MapObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

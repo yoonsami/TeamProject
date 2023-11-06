@@ -380,7 +380,7 @@ HRESULT ImGui_Manager::Load_MapObject()
     m_strObjectNamePtr.clear();
     m_iObjects = 0;
 
-    // 세이브 파일 이름으로 저장하기
+    // 세이브 파일 이름으로 로드하기
     string strFileName = m_szSaveFileName;
     string strFilePath = "..\\Resources\\Data\\";
     strFilePath += strFileName + ".dat";
