@@ -123,55 +123,9 @@ void ImGui_Manager::Frame_Objects()
     ImGui::ListBox("##Objects", &m_iObjects, m_strObjectName.data(), (_int)m_strObjectName.size(), 10);
 
     if (m_strObjectName.size() > 0)
-    {
-        // 전체옵션 false로 초기화
-        for (size_t i = 0; i < GizmoEND; i++)
-        {
-            m_bGizmoOp[i] = false;
-            // 현재옵션이랑 같으면 true
-            if (m_eGizmoOp == i)
-                m_bGizmoOp[i] = true;
-        }
-        // 포지션, 회전, 스케일 선택
-        if (ImGui::RadioButton("Tr", m_bGizmoOp[GizmoTR]))
-            m_eGizmoOp = GizmoTR;
-        ImGui::SameLine();
-        if (ImGui::RadioButton("Rt", m_bGizmoOp[GizmoRT]))
-            m_eGizmoOp = GizmoRT;
-        ImGui::SameLine();
-        if (ImGui::RadioButton("Sc", m_bGizmoOp[GizmoSC]))
-            m_eGizmoOp = GizmoSC;
-        // 현재 기즈모 옵션 적용
-        switch (m_eGizmoOp)
-        {
-        case GizmoTR:
-            m_eGuizmoType = ImGuizmo::TRANSLATE;
-            break;
-        case GizmoRT:
-            m_eGuizmoType = ImGuizmo::ROTATE;
-            break;
-        case GizmoSC:
-            m_eGuizmoType = ImGuizmo::SCALE;
-            break;
-        default:
-            break;
-        }
-
-        // 포지션, 회전, 스케일 조정 및 출력
-        _float4x4 tempFloat4x4 = m_pMapObjects[m_iObjects].get()->Get_Transform()->Get_WorldMatrix();
-        _float4x4* pTempObj = &tempFloat4x4;
-        float matrixTranslation[3], matrixRotation[3], matrixScale[3];
-        ImGuizmo::DecomposeMatrixToComponents((float*)pTempObj, matrixTranslation, matrixRotation, matrixScale);
-        ImGui::InputFloat3("Tr", matrixTranslation);
-        ImGui::InputFloat3("Rt", matrixRotation);
-        ImGui::InputFloat3("Sc", matrixScale);
-        ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, (float*)pTempObj);
-        m_pMapObjects[m_iObjects]->Get_Transform()->Set_WorldMat(*(_float4x4*)pTempObj);
-
         if (ImGui::Button("Delete"))
             if (FAILED(Delete_MapObject()))
                 MSG_BOX("Fail : Delete_MapObject");
-    }
 
     // 세이브로드
     ImGui::NewLine();
@@ -189,6 +143,85 @@ void ImGui_Manager::Frame_Objects()
             MSG_BOX("Complete_Load");
 
     ImGui::End();
+}
+
+void ImGui_Manager::Frame_ObjectDesc()
+{
+    // 이름
+
+    if (m_strObjectName.size() > 0)
+    {
+        // 맵오브젝트 정보
+        MapObjectScript::MAPOBJDESC CurObjectDesc = m_pMapObjects[m_iObjects]->Get_Script<MapObjectScript>()->Get_DESC();
+        ImGui::Text(("Name - " + CurObjectDesc.Name).data());
+        // 컬링관련
+        ImGui::Text(("CullPos - X:" + to_string(CurObjectDesc.CullPos.x)
+            + " Y:" + to_string(CurObjectDesc.CullPos.y)
+            + " Z:" + to_string(CurObjectDesc.CullPos.z)).data());
+        ImGui::Text(("CullRadius - " + to_string(CurObjectDesc.CullRadius)).data());
+        ImGui::NewLine();
+        ImGui::Text("Options");
+        // 그림자
+        ImGui::Text("Shadow - ");
+        ImGui::SameLine();
+        ImGui::Checkbox("##bShadow", &CurObjectDesc.bShadow);
+        // 블러
+        ImGui::Text("Blur - ");
+        ImGui::Checkbox("##bBlur", &CurObjectDesc.bBlur);
+        ImGui::NewLine();
+        ImGui::Text("Components");
+        // 트랜스폼컴포넌트
+        ImGui::Text("Transform - ");
+        ImGui::Checkbox("##bTransform", &CurObjectDesc.bTransform);
+        if(CurObjectDesc.bTransform && m_pMapObjects[m_iObjects].get()->Get_Transform() != nullptr)
+        {
+            // 기즈모의 선택옵션(TR or RT or SC) 업데이트
+            // 전체옵션 false로 초기화
+            for (size_t i = 0; i < GizmoEND; i++)
+            {
+                m_bGizmoOp[i] = false;
+                // 현재옵션이랑 같으면 true
+                if (m_eGizmoOp == i)
+                    m_bGizmoOp[i] = true;
+            }
+            // 포지션, 회전, 스케일 선택
+            if (ImGui::RadioButton("Tr", m_bGizmoOp[GizmoTR]))
+                m_eGizmoOp = GizmoTR;
+            ImGui::SameLine();
+            if (ImGui::RadioButton("Rt", m_bGizmoOp[GizmoRT]))
+                m_eGizmoOp = GizmoRT;
+            ImGui::SameLine();
+            if (ImGui::RadioButton("Sc", m_bGizmoOp[GizmoSC]))
+                m_eGizmoOp = GizmoSC;
+            // 현재 기즈모 옵션 적용
+            switch (m_eGizmoOp)
+            {
+            case GizmoTR:
+                m_eGuizmoType = ImGuizmo::TRANSLATE;
+                break;
+            case GizmoRT:
+                m_eGuizmoType = ImGuizmo::ROTATE;
+                break;
+            case GizmoSC:
+                m_eGuizmoType = ImGuizmo::SCALE;
+                break;
+            default:
+                break;
+            }
+            // 포지션, 회전, 스케일 조정 및 출력
+            _float4x4 tempFloat4x4 = m_pMapObjects[m_iObjects].get()->Get_Transform()->Get_WorldMatrix();
+            _float4x4* pTempObj = &tempFloat4x4;
+            float matrixTranslation[3], matrixRotation[3], matrixScale[3];
+            ImGuizmo::DecomposeMatrixToComponents((float*)pTempObj, matrixTranslation, matrixRotation, matrixScale);
+            ImGui::InputFloat3("Tr", matrixTranslation);
+            ImGui::InputFloat3("Rt", matrixRotation);
+            ImGui::InputFloat3("Sc", matrixScale);
+            ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, (float*)pTempObj);
+            m_pMapObjects[m_iObjects]->Get_Transform()->Set_WorldMat(*(_float4x4*)pTempObj);
+        }
+        ImGui::Text("Collider - ");
+        ImGui::Checkbox("##bCollider", &CurObjectDesc.bCollider);
+    }
 }
 
 void ImGui_Manager::Frame_DirectionalLight()
@@ -258,6 +291,8 @@ HRESULT ImGui_Manager::Load_MapObjectBase()
         m_strObjectBaseNamePtr.push_back(pChar);
         // 베이스오브젝트 이름을 리스트UI에 추가
         m_strObjectBaseNameList.push_back(pChar.get());
+        // 베이스 오브젝트 중복개수 인덱스 추가
+        m_iObjectBaseIndexList.push_back(0);
     }
     return S_OK;
 }
