@@ -1,6 +1,8 @@
 #include "Render.fx"
 #include "Light.fx"
 
+// g_float_3 : MapObject UV Weight
+
 MeshOutput VS_NonAnim(VTXModel input)
 {
     MeshOutput output;
@@ -18,6 +20,28 @@ MeshOutput VS_NonAnim(VTXModel input)
     output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
     
     output.newUV.x = (output.worldPosition.x + 256.f)/512.f;
+    output.newUV.y = (256.f - output.worldPosition.z) / 512.f;
+
+    return output;
+}
+
+MeshOutput VS_MapObject(VTXModel input)
+{
+    MeshOutput output;
+    output.position = mul(float4(input.position, 1.f), BoneTransform[BoneIndex]);
+    output.position = mul(output.position, W);
+    output.worldPosition = output.position.xyz;
+    output.viewPosition = mul(float4(output.worldPosition, 1.f), V).xyz;
+    output.position = mul(output.position, VP);
+    output.uv = input.uv * g_float_3;
+    output.viewNormal = mul(input.normal, (float3x3) BoneTransform[BoneIndex]);
+    output.viewNormal = mul(output.viewNormal, (float3x3) W);
+    output.viewNormal = normalize(mul(output.viewNormal, (float3x3) V));
+    output.viewTangent = mul(input.tangent, (float3x3) BoneTransform[BoneIndex]);
+    output.viewTangent = mul(output.viewTangent, (float3x3) W);
+    output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
+    
+    output.newUV.x = (output.worldPosition.x + 256.f) / 512.f;
     output.newUV.y = (256.f - output.worldPosition.z) / 512.f;
 
     return output;
@@ -59,6 +83,28 @@ MeshOutput VS_NonAnimInstancing(VTXModelInstancing input)
 
     output.position = mul(output.position, VP);
     output.uv = input.uv;
+    output.viewNormal = mul(input.normal, (float3x3) BoneTransform[BoneIndex]);
+    output.viewNormal = mul(output.viewNormal, (float3x3) input.world);
+    output.viewNormal = normalize(mul(output.viewNormal, (float3x3) V));
+    output.viewTangent = mul(input.tangent, (float3x3) BoneTransform[BoneIndex]);
+    output.viewTangent = mul(output.viewTangent, (float3x3) input.world);
+    output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
+    output.newUV.x = (output.worldPosition.x + 256.f) / 512.f;
+    output.newUV.y = (256.f - output.worldPosition.z) / 512.f;
+    return output;
+}
+
+MeshOutput VS_MapObject_Instancing(VTXModelInstancing input)
+{
+    MeshOutput output;
+    
+    output.position = mul(float4(input.position, 1.f), BoneTransform[BoneIndex]);
+    output.position = mul(output.position, input.world);
+    output.worldPosition = output.position.xyz;
+    output.viewPosition = mul(float4(output.worldPosition, 1.f), V).xyz;
+
+    output.position = mul(output.position, VP);
+    output.uv = input.uv * InstanceRenderParams[input.instanceID].g_float_3;
     output.viewNormal = mul(input.normal, (float3x3) BoneTransform[BoneIndex]);
     output.viewNormal = mul(output.viewNormal, (float3x3) input.world);
     output.viewNormal = normalize(mul(output.viewNormal, (float3x3) V));
@@ -249,7 +295,8 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
     else
         diffuseColor = Material.diffuse;
     
-
+    if(diffuseColor.a <= 0.1f)
+        discard;
     
     //if (g_bHasFileterMap)
     //{
@@ -485,6 +532,26 @@ technique11 T0
         SetDepthStencilState(DSS_LESS, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Shadow()));
+    }
+// 10. 맵오브젝트 UV조정, 컬방향NONE, 알파테스트
+    pass MapObject
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MapObject()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_Deferred()));
+    }
+// 11. 맵오브젝트 UV조정, 컬방향NONE, 알파테스트 + 인스턴싱
+    pass MapObject_Instancing
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MapObject_Instancing()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_Deferred()));
     }
 
     PASS_RS_VP(P4_WIREFRAME, FillModeWireFrame, VS_NonAnim, PS_FRAME)

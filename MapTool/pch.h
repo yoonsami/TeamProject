@@ -22,5 +22,6 @@
 #include "EnginePch.h"
 #include "MapTool_Define.h"
 
+#include <filesystem>
 
 #endif //PCH_H

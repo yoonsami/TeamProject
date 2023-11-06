@@ -49,6 +49,9 @@
     <Filter Include="IMGUI">
       <UniqueIdentifier>{a7357d4e-d4af-4a88-af54-a742500b0baa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\00.MapObject">
+      <UniqueIdentifier>{a1cb13ea-80f9-4503-b57d-c660c7b73281}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -141,6 +144,9 @@
     <ClInclude Include="..\Libraries\Include\IMGUI\dirent\dirent.h">
       <Filter>IMGUI</Filter>
     </ClInclude>
+    <ClInclude Include="MapObjectScript.h">
+      <Filter>02.Component\00.MonoBehaviour\00.MapObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -214,6 +220,9 @@
     </ClCompile>
     <ClCompile Include="..\Libraries\Include\IMGUI\ImSequencer.cpp">
       <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="MapObjectScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\00.MapObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

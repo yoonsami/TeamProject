@@ -145,7 +145,7 @@ void Utils::ToLowerString(OUT wstring& str)
 	}
 }
 
-_float4x4 Utils::m_matPivot = _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI);
+_float4x4 Utils::m_matPivot = _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI);
 
 const wstring Utils::m_strModelPath =  L"../Resources/Models/";;
 

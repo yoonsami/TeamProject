@@ -11,7 +11,6 @@ ModelRenderer::ModelRenderer(shared_ptr<Shader> shader)
 	:Component(COMPONENT_TYPE::ModelRenderer)
 	, m_pShader(shader)
 {
-
 }
 
 ModelRenderer::~ModelRenderer()
@@ -22,7 +21,6 @@ void ModelRenderer::Render()
 {
 	if (m_pModel == nullptr)
 		return;
-
 	// Set VP
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 
@@ -71,7 +69,11 @@ void ModelRenderer::Render()
 			
 		}
 		
-		if (m_bCullNone)
+		if (m_ePassType == PASS_MAPOBJECT)
+		{
+			m_pShader->DrawIndexed(0, PS_MAPOBJECT, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
+		}
+		else if (m_bCullNone)
 		{
 			m_pShader->DrawIndexed(0, PS_NONANIM_CULLNONE, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
 		}
@@ -264,8 +266,9 @@ void ModelRenderer::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 			m_pShader->DrawIndexedInstanced(1, PS_NONANIMINSTANCE, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
 		}
 
-
-		if (m_bCullNone)
+		if (m_ePassType == PASS_MAPOBJECT)
+			m_pShader->DrawIndexedInstanced(0, PS_MAPOBJECT_INSTANCE, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
+		else if (m_bCullNone)
 			m_pShader->DrawIndexedInstanced(0, PS_NONANIM_CULLNONE_INSTANCE, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
 		else
 			m_pShader->DrawIndexedInstanced(0, PS_NONANIMINSTANCE, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
