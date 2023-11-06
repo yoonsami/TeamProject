@@ -189,7 +189,13 @@ void Silversword_Soldier_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollide
     wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
 
     if (!m_bInvincible)
+    {
+        m_vHitDir = pCollider->Get_CenterPos() - Get_Transform()->Get_State(Transform_State::POS);
+        m_vHitDir.y = 0.f;
+        m_vHitDir.Normalize();
+
         Get_Hit(strSkillName, pCollider);
+    }
 }
 
 void Silversword_Soldier_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
@@ -347,7 +353,7 @@ void Silversword_Soldier_FSM::n_run()
     physx::PxRaycastBuffer hit{};
     physx::PxQueryFilterData filterData;
     filterData.flags = physx::PxQueryFlag::eSTATIC;
-    if (PHYSX.Get_PxScene()->raycast({ ray.position.x,ray.position.y,ray.position.z }, { ray.direction.x,ray.direction.y,ray.direction.z }, 1.f, hit, PxHitFlags(physx::PxHitFlag::eDEFAULT), filterData))
+    if (PHYSX.Get_PxScene()->raycast({ ray.position.x,ray.position.y,ray.position.z }, { ray.direction.x,ray.direction.y,ray.direction.z }, 3.f, hit, PxHitFlags(physx::PxHitFlag::eDEFAULT), filterData))
     {
         m_vTurnVector.x = m_vTurnVector.x * -1.f;
         m_vTurnVector.z = m_vTurnVector.z * -1.f;
@@ -547,6 +553,8 @@ void Silversword_Soldier_FSM::airborne_start_Init()
     animator->Set_NextTweenAnim(L"airborne_start", 0.2f, false, 1.f);
 
     m_bSuperArmor = true;
+
+    Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 10.f);
 }
 
 void Silversword_Soldier_FSM::airborne_end()
@@ -591,8 +599,7 @@ void Silversword_Soldier_FSM::hit_Init()
 
     animator->Set_NextTweenAnim(L"hit", 0.1f, false, 1.f);
 
-    if (!m_pTarget.expired())
-        Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 10.f);
+    Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 10.f);
 }
 
 void Silversword_Soldier_FSM::knock_start()
@@ -609,8 +616,7 @@ void Silversword_Soldier_FSM::knock_start_Init()
 
     m_bSuperArmor = true;
 
-    if (!m_pTarget.expired())
-        Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 10.f);
+    Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 10.f);
 }
 
 void Silversword_Soldier_FSM::knock_end()
@@ -661,26 +667,7 @@ void Silversword_Soldier_FSM::knock_end_hit_Init()
 void Silversword_Soldier_FSM::knock_up()
 {
     if (Is_AnimFinished())
-    {
-        if (Is_AnimFinished())
-            m_eCurState = STATE::b_idle;
-
-        //_uint iRan = 0;
-        //
-        //if (Target_In_AttackRange())
-        //    iRan = rand() % 3;
-        //else
-        //    iRan = rand() % 4;
-        //
-        //if (iRan == 0)
-        //    m_eCurState = STATE::gaze_b;
-        //else if (iRan == 1)
-        //    m_eCurState = STATE::gaze_l;
-        //else if (iRan == 2)
-        //    m_eCurState = STATE::gaze_r;
-        //else if (iRan == 3)
-        //    m_eCurState = STATE::gaze_f;
-    }
+        m_eCurState = STATE::b_idle;
 }
 
 void Silversword_Soldier_FSM::knock_up_Init()

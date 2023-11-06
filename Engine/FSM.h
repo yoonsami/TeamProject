@@ -47,7 +47,7 @@ public:
 	_bool m_bInvincible = false;
 	_bool m_bSuperArmor = false;
 
-
+	_float3 m_vHitDir = _float3{ 0.f };
 	_float m_fAttackRange = 2.f;
 };
 

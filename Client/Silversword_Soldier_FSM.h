@@ -104,7 +104,7 @@ private:
 	_float m_fNormalAttack_AnimationSpeed = 2.f;
 	_float m_fSkillAttack_AnimationSpeed = 2.f;
 
-	COOLTIMEINFO m_tAttackCoolTime = { 3.f, 0.f };
+	COOLTIMEINFO m_tAttackCoolTime = { 2.f, 0.f };
 	_bool m_bDetected = false;
 	_bool m_bPatrolMove = false;
 	COOLTIMEINFO m_tPatrolMoveCool = { 4.f,0.f };
