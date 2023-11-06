@@ -8,7 +8,7 @@ struct ParticleInfo
 	_float	lifeTime= 0.f;
 	_int	alive =0;
 	_float2	size = _float2(0.f);
-	_float padding;
+	_float	padding;
 	_float4 randTheta = _float4(0.f);
 	_float4 nowMovingDir = _float4(0.f);
 };
@@ -58,7 +58,6 @@ public:
 public:
 	virtual HRESULT Init() override;
     virtual void Tick() override;
-
     virtual void Final_Tick() override;
 
     void Render();
@@ -71,7 +70,7 @@ public:
 	shared_ptr<Material> Get_Material() { return  m_pMaterial; }
 	shared_ptr<Material> Get_ComputeMaterial() { return  m_pComputeMaterial; }
 
-	void Set_Pass(_uint index) { m_iPass = index; }
+	void Set_Pass(_uint index) { m_iPass = index; } 
 	void Set_CSPass(_uint index) { m_iCSPass = index; }
 	_uint Get_Pass() { return m_iPass; }
 	_uint Get_CSPass() { return m_iCSPass; }
@@ -85,6 +84,7 @@ public:
 
 private:
 	EffectDesc			m_EffectDesc;
+
 private:
 
     shared_ptr<StructuredBuffer> m_pParticleBuffer = nullptr;

@@ -102,7 +102,7 @@ cbuffer RenderParamBuffer
     float2 g_vec2_2;
     float2 g_vec2_3;
     float4 g_vec4_0;
-    float4 g_vec4_1;
+    float4 g_vec4_1; 
     float4 g_vec4_2;
     float4 g_vec4_3;
     row_major float4x4 g_mat_0;
@@ -110,6 +110,7 @@ cbuffer RenderParamBuffer
     row_major float4x4 g_mat_2;
     row_major float4x4 g_mat_3;
 };
+
 cbuffer KeyFrameBuffer
 {
     KeyFrameDesc keyframes;
@@ -170,6 +171,38 @@ cbuffer ParticleBuffer
     float2 padding1;
 };
 
+cbuffer CreateParticleBuffer
+{
+    int g_iEndScaleOption;
+    int g_iEndSpeedOption;
+
+    float2 g_vMinMaxLifeTime;
+	
+    float2 g_vMinMaxRotationSpeed_X;
+    float2 g_vMinMaxRotationSpeed_Y;
+    float2 g_vMinMaxRotationSpeed_Z;
+
+    float2 g_vMinMaxRotationAngle_X;
+    float2 g_vMinMaxRotationAngle_Y;
+    float2 g_vMinMaxRotationAngle_Z;
+
+    float4 g_vStartColor;
+    float4 g_vEndColor;
+           
+    float2 g_vMinMaxStartScale;
+    float2 g_vMinMaxEndScale;
+           
+    float2 g_vMinMaxStartSpeed;
+    float2 g_vMinMaxEndSpeed;
+           
+    float4 g_vCreateRange;
+    float4 g_vCreateOffsets;
+
+    int g_iNewlyAddCnt;
+    int g_iRandomRotationOn;
+    float2 padding_CreateParticleBuffer;
+};
+
 cbuffer TextureMapBuffer
 {
     int bHasDiffuseMap;
@@ -209,8 +242,6 @@ cbuffer SubMapBuffer
     int bHasSubmap14;
     int bHasSubmap15;
 };
-
-
 
 Texture2DArray TransformMap;
 

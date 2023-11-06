@@ -276,6 +276,7 @@
     <FxCompile Include="..\Shaders\Shader_Mesh.fx" />
     <FxCompile Include="..\Shaders\Shader_Model.fx" />
     <FxCompile Include="..\Shaders\Shader_Particle.fx" />
+    <FxCompile Include="..\Shaders\Shader_Particle2.fx" />
     <FxCompile Include="..\Shaders\Shader_Trail.fx" />
     <FxCompile Include="..\Shaders\Shadow.fx" />
     <FxCompile Include="..\Shaders\SkyBox.fx" />

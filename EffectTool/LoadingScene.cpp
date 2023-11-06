@@ -36,7 +36,7 @@ void LoadingScene::Init()
 	}
 
 	// For. Create Background
-	// Create_LoadingBG();
+	Create_LoadingBG();
 
 	// For. Create Loader 
 	m_pLoader = make_shared<Loader>(m_pNextScene);
@@ -81,7 +81,6 @@ void LoadingScene::Create_LoadingBG()
 	// For. Renderer에 그리려고하는 Rect 메쉬 세팅해주기
 	renderer->Set_Mesh(mesh);					// 그릴 것을 렌더러에 추가하기 
 
-	// For. 
 	auto material = make_shared<Material>();
 	material->Set_TextureMap(RESOURCES.Load<Texture>(L"Test", L"../Resources/Textures/Test.dds"), TextureMapType::DIFFUSE);
 	renderer->Get_RenderParamDesc().SetVec4(0, _float4(1));
