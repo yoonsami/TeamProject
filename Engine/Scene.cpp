@@ -80,7 +80,7 @@ void Scene::Render()
 	if(GAMEINSTANCE.g_bSSAO_On)
 	{
 		Render_SSAO();
-		Render_SSAOBlur(2);
+		Render_SSAOBlur(1);
 	}
 	Render_Lights();
 	//Render_BlurEffect();

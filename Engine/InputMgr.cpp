@@ -103,7 +103,7 @@ void InputMgr::Tick()
 	}
 	else
 	{
-		//m_vMouseDir = { 0.f,0.f };
+		m_vMouseDir = { 0.f,0.f };
 		::ShowCursor(true);
 	}
 
