@@ -2,16 +2,17 @@
 #include "MonoBehaviour.h"
 #include "ModelRenderer.h"
 #include "BaseCollider.h"
+// 생성후 패스, float3 인자던지기 필수
+// _renderer->Set_PassType(_PassType);
+// _renderer->SetFloat(3, m_MapObjDesc.fUVWeight);
 class MapObjectScript :
     public MonoBehaviour
 {
 public:
     typedef struct MapObjectDesc
     {
-        string Name = "";
-        // 계산해서 넣기
-        _float3 CullPos = _float3{ 0.f, 0.f, 0.f };
-        _float CullRadius = { 0.f };
+        string strName = "";
+        _float fUVWeight = { 1.f }; // UV비율 : 기본1배
         _bool bShadow = false;
         _bool bBlur = false;
     // Component
@@ -21,27 +22,30 @@ public:
         // Collider
         _bool bCollider = false;
         //ColliderType ColliderType = ColliderType::OBB;
+        // 0:Sphere 1:AABB 2:OBB 3:Mesh
         _int ColliderType = static_cast<_int>(ColliderType::OBB);
-            // OBB Collider
+            // ColliderDesc
         _float3 ColliderOffset = _float3{ 0.f, 0.f, 0.f };
-        _float3 ColliderSize = _float3{ 0.f, 0.f, 0.f };
-            // Mesh Collider
-        string ModelName = "";
+        _float ColRadius = { 0.f };
+        _float3 ColBoundingSize = _float3{ 0.f, 0.f, 0.f };
+        string ColModelName = "";
+    // Culling
+        _float3 CullPos = _float3{ 0.f, 0.f, 0.f };
+        _float CullRadius = { 0.f };
     }MAPOBJDESC;
 
 public:
-    MapObjectScript(shared_ptr<ModelRenderer> _renderer, ModelRenderer::INSTANCE_PASSTYPE _PassType = ModelRenderer::PASS_MAPOBJECT, _float _fUVWeight = 1.f);
+    MapObjectScript(MAPOBJDESC _MapObjDesc);
 
 public:
-    _float Get_UVWeight() { return m_fUVWeight; }
-    MAPOBJDESC& Get_DESC() { return ; }
+    _float Get_UVWeight() { return m_MapObjDesc.fUVWeight; }
+    MAPOBJDESC& Get_DESC() { return m_MapObjDesc; }
 
 public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
 
-//private:
+private:
     MAPOBJDESC m_MapObjDesc;
-    _float m_fUVWeight = 1.f;
 };
 
