@@ -22,8 +22,9 @@ private:
 	void Load_DemoMap();
 	void Load_Camera();
 	void Load_Light();
-	// �� ������������ �̸��� ������ �ʿ�����Ʈ���� �����ϴ� �Լ�
 	HRESULT Load_MapFile(const wstring& _mapFileName);
-	void Load_Ui();
+	
+	void Load_UI_Texture();
+	void Add_UI();
 };
 
