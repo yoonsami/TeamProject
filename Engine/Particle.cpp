@@ -161,9 +161,6 @@ void Particle::Render()
 
 void Particle::Init_RenderParams()
 {
-    // For. Alpha Gradation 
-	//m_RenderParams.SetInt(0, m_tDesc.bUseFadeOut); // ( does not works in Instance particle cause of blend off )
-
 	// For. Diffuse Color
 	m_RenderParams.SetFloat(0, m_tDesc.fGradationByAlpha_Brighter);
 	m_RenderParams.SetFloat(1, m_tDesc.fGradationByAlpha_Darker);

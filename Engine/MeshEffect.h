@@ -15,22 +15,20 @@ public:
         string      strVfxMesh;
 
         // Textures
-        pair<_int, string>   pTexture[7] = { {(_int)TextureMapType::END, "None"} };
+        string      strTextures[8];
 
         // Color 
-        Color               vRangeStartColor;       // to deside start color
-        Color               vRangeEndColor;         // to deside start color
+        Color       vStartColor;       
 
-        _int                iChangingColorOption;   // No change, Linear, Curve
-        Color               vDestColor;             
+        _int        iChangingColorOption;   // No change, Linear, Curve
+        Color       vDestColor;             
 
-        _int                iGradationOption;       // custom, darker, brighter
-        _float              fGradationIntensity;    // The larger the value, the greater the percentage of GradationColor.
-        Color               vGradationColor;
-        Color               vDestGradationColor;
+        _int        iGradationOption;       // custom, darker, brighter
+        _float      fGradationIntensity;    // The larger the value, the greater the percentage of GradationColor.
+        Color       vGradationColor;
+        Color       vDestGradationColor;
 
-        _bool               bUseFadeOut;
-
+        _bool       bUseFadeOut;
     }DESC;
 
 public:
@@ -61,5 +59,6 @@ private:
 
     /* Data to bind Shader */
     RenderParams            m_RenderParams{};
+
 };
 

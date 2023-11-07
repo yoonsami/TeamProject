@@ -22,6 +22,7 @@ private:
 	void					ImGui_EffectMaker();
 
 	/* Funtions */
+	void					Option_Property();
 	void					Option_Mesh();
 	void					Option_Texture();
 	void					Option_Color();
@@ -46,11 +47,19 @@ private:
 	_uint					m_iMesh = { 0 };
 	string					m_strMesh = { "None" };
 
+	/* Texture type list */
+	_int					m_iNumTextureTypes = { 8 };
+	const char*				m_pszTextureTypes[8] = {
+		"Diffuse", "Normal", "Speculer", "Opacity", "Emissive", "Dissolve","Distortion", "Additional 1"
+	};
+	
 	/* Texture list */
 	_uint					m_iNumUniversalTextures = { 0 };
 	vector<string>			m_vecUniversalTextures;
 	const char**			m_pszUniversalTextures = { nullptr };
-	pair<_int, string>		m_pTexture[7] = { {(_int)TextureMapType::END, "None"} };
+	_int					m_iTexture[8];
+	string					m_strTexture[8];
+
 
 	/* Diffuse Color */
 	_int					m_iStartColorOption = { 0 };

@@ -29,13 +29,15 @@ HRESULT MeshEffect::Init(void* pArg)
 	// For. Material Components
 	m_pMaterial = make_shared<Material>();
 	m_pMaterial->Set_Shader(m_pShader);
-	for (_uint i = 0; i < 7; i++)
+	for (_uint i = 0; i < 8; i++)
 	{
-		wstring wstrTag = TEXT("EffectTexture_") + i;
-		if (TextureMapType::END != (TextureMapType)m_tDesc.pTexture[i].first)
-			m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrTag, Utils::ToWString(m_tDesc.pTexture[i].second)), (TextureMapType)m_tDesc.pTexture[i].first);
+		if ("None" != m_tDesc.strTextures[i])
+		{
+			wstring wstrTag = TEXT("EffectTexture_") + i;
+			m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrTag, Utils::ToWString(m_tDesc.strTextures[i])), (TextureMapType)i);
+		}
 	}
-	
+
     return S_OK;
 }
 
@@ -55,6 +57,9 @@ void MeshEffect::Init_RenderParams()
 {	
 	// Duration and Current time 
 	m_RenderParams.SetVec2(0, _float2(m_fCurrAge, m_tDesc.fDuration));
+
+	/* 바인딩 해야할 데이터들 
+	*/
 }
 
 void MeshEffect::Bind_RenderParams_ToShader()

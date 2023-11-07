@@ -21,7 +21,7 @@ void Widget_EffectMaker_Mesh::Initialize()
 void Widget_EffectMaker_Mesh::Tick()
 {
 	ImGui::SetNextWindowPos(ImVec2(0.f, 0.f));
-	ImGui::Begin("Particle Maker");
+	ImGui::Begin("Mesh Effect Maker");
 	ImGui_EffectMaker();
 	ImGui::End();
 }
@@ -57,8 +57,6 @@ void Widget_EffectMaker_Mesh::Set_Mesh_List()
 
 void Widget_EffectMaker_Mesh::Set_Texture_List()
 {
-	/* Make Texture list in ../Resources/Textures/Universal/ .png */
-
 	m_vecUniversalTextures.push_back("None");
 
 	wstring assetPath = L"..\\Resources\\Textures\\Universal\\";
@@ -84,10 +82,17 @@ void Widget_EffectMaker_Mesh::Set_Texture_List()
 		m_pszUniversalTextures[iIndex] = m_vecUniversalTextures[iIndex].c_str();
 		iIndex++;
 	}
+
+	for (_uint i = 0; i < 8; i++)
+	{
+		m_iTexture[i] = 0;
+		m_strTexture[i] = "None";
+	}
 }
 
 void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 {
+	Option_Property();
 	Option_Mesh();
 	Option_Texture();	
 	Option_Color();
@@ -106,19 +111,32 @@ void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 	ImGui::SameLine();
 }
 
+void Widget_EffectMaker_Mesh::Option_Property()
+{
+	ImGui::SeparatorText("Property");
+
+	ImGui::InputText("Tag", m_szTag, MAX_PATH);
+	ImGui::Spacing();
+
+	ImGui::InputFloat("Duration", &m_fDuration);
+	ImGui::Spacing();
+
+	ImGui::Checkbox("Blur On", &m_bBlurOn);
+}
+
 void Widget_EffectMaker_Mesh::Option_Mesh()
 {
 	ImGui::SeparatorText("Vfx Mesh");
 
-	if (ImGui::BeginCombo("VfxMesh", m_pszMeshes[m_iMeshOption], 0))
+	if (ImGui::BeginCombo("VfxMesh", m_pszMeshes[m_iMesh], 0))
 	{
 		for (_uint n = 0; n < m_iNumMeshes; n++)
 		{
-			const bool is_selected = (m_iMeshOption == n);
+			const bool is_selected = (m_iMesh == n);
 			if (ImGui::Selectable(m_pszMeshes[n], is_selected))
 			{
-				m_iMeshOption = n;
-				m_strMeshOption = m_pszMeshes[m_iMeshOption];
+				m_iMesh = n;
+				m_strMesh = m_pszMeshes[m_iMesh];
 			}
 			if (is_selected)
 			{
@@ -131,79 +149,27 @@ void Widget_EffectMaker_Mesh::Option_Mesh()
 
 void Widget_EffectMaker_Mesh::Option_Texture()
 {
-	ImGui::SeparatorText("Textures");
+	ImGui::SeparatorText("Texture");
 
-	if (ImGui::BeginCombo("Diffuse", m_pszUniversalTextures[m_iTextureOption_Diffuse], 0))
+ 	for (_int i = 0; i < m_iNumTextureTypes; i++)
 	{
-		for (_uint n = 0; n < m_iNumUniversalTextures; n++)
+		if (ImGui::BeginCombo(m_pszTextureTypes[i], m_pszUniversalTextures[m_iTexture[i]], 0))
 		{
-			const bool is_selected = (m_iTextureOption_Diffuse == n);
-			if (ImGui::Selectable(m_pszUniversalTextures[n], is_selected))
+			for (_uint n = 0; n < m_iNumUniversalTextures; n++)
 			{
-				m_iTextureOption_Diffuse = n;
-				m_strTextureOption_Diffuse = m_pszUniversalTextures[m_iTextureOption_Diffuse];
+				const bool is_selected = (m_iTexture[i] == n);
+				if (ImGui::Selectable(m_pszUniversalTextures[n], is_selected))
+				{
+					m_iTexture[i] = n;
+					m_strTexture[i] = m_pszUniversalTextures[m_iTexture[i]];
+				}
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
 			}
-			if (is_selected)
-			{
-				ImGui::SetItemDefaultFocus();
-			}
+			ImGui::EndCombo();
 		}
-		ImGui::EndCombo();
-	}
-
-	if (ImGui::BeginCombo("Dissolve", m_pszUniversalTextures[m_iTextureOption_Dissolve], 0))
-	{
-		for (_uint n = 0; n < m_iNumUniversalTextures; n++)
-		{
-			const bool is_selected = (m_iTextureOption_Dissolve == n);
-			if (ImGui::Selectable(m_pszUniversalTextures[n], is_selected))
-			{
-				m_iTextureOption_Dissolve = n;
-				m_strTextureOption_Dissolve = m_pszUniversalTextures[m_iTextureOption_Dissolve];
-			}
-			if (is_selected)
-			{
-				ImGui::SetItemDefaultFocus();
-			}
-		}
-		ImGui::EndCombo();
-	}
-
-	if (ImGui::BeginCombo("Distortion", m_pszUniversalTextures[m_iTextureOption_Distortion], 0))
-	{
-		for (_uint n = 0; n < m_iNumUniversalTextures; n++)
-		{
-			const bool is_selected = (m_iTextureOption_Distortion == n);
-			if (ImGui::Selectable(m_pszUniversalTextures[n], is_selected))
-			{
-				m_iTextureOption_Distortion = n;
-				m_strTextureOption_Distortion = m_pszUniversalTextures[m_iTextureOption_Distortion];
-			}
-			if (is_selected)
-			{
-				ImGui::SetItemDefaultFocus();
-			}
-		}
-		ImGui::EndCombo();
-	}
-
-	if (ImGui::BeginCombo("Option1", m_pszUniversalTextures[m_iTextureOption_Option1], 0))
-	{
-		for (_uint n = 0; n < m_iNumUniversalTextures; n++)
-		{
-			const bool is_selected = (m_iTextureOption_Option1 == n);
-			if (ImGui::Selectable(m_pszUniversalTextures[n], is_selected))
-			{
-				m_iTextureOption_Option1 = n;
-				m_strTextureOption_Option1 = m_pszUniversalTextures[m_iTextureOption_Option1];
-			}
-			if (is_selected)
-			{
-				ImGui::SetItemDefaultFocus();
-			}
-		}
-		ImGui::EndCombo();
-	}
+		ImGui::Spacing();
+ 	}
 }
 
 void Widget_EffectMaker_Mesh::Option_Color()
@@ -211,8 +177,8 @@ void Widget_EffectMaker_Mesh::Option_Color()
 	ImGuiColorEditFlags ColorEdit_flags = 0 | ImGuiColorEditFlags_AlphaBar;	// RGB, Alpha Bar
 
 	// Start Color 
-	ImGui::SeparatorText("Diffuse Color");
-	
+	ImGui::SeparatorText("Color");
+
 	const char* pszItems_StartColor[] = { "Custom Color", "Random Color in range"};
 	if (ImGui::BeginCombo("Option##StartColor", pszItems_StartColor[m_iStartColorOption], 0))
 	{
@@ -281,9 +247,9 @@ void Widget_EffectMaker_Mesh::Option_Color()
 	}
 	if (0 != m_iChangingColorOption)
 	{
-		ImGui::ColorEdit4("Color##ChangingColor", (float*)&m_vDestColor, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-		if (m_bGradationOn && 2 == m_iGradationOption)
-			ImGui::ColorEdit4("Color##ChangingColor", (float*)&m_vDestGradationColor, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+		ImGui::ColorEdit4("Dest Color##ChangingColor", (float*)&m_vDestColor, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+		if (m_bGradationOn && 0 == m_iGradationOption)
+			ImGui::ColorEdit4("Gradiant Dest Color##ChangingColor", (float*)&m_vDestGradationColor, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
 	}
 
 	ImGui::SeparatorText("ETC");
@@ -304,10 +270,33 @@ void Widget_EffectMaker_Mesh::Create()
 	shared_ptr<MeshEffect> meshEffect = make_shared<MeshEffect>(shader);
 	EffectObj->Add_Component(meshEffect);
 
+	_float fNoise = _float(rand() % 11) / 10.f;
+	Color vRangStartColor = Color(m_vRangeStartColor.x, m_vRangeStartColor.y, m_vRangeStartColor.z, m_vRangeStartColor.w);
+	Color vRangEndColor = Color(m_vRangeEndColor.x, m_vRangeEndColor.y, m_vRangeEndColor.z, m_vRangeEndColor.w);
+	Color vFinal_StartColor = vRangStartColor * fNoise + vRangEndColor * (1.f - fNoise);
+
 	MeshEffect::DESC tMeshEffectDesc
 	{
-		m_szTag
+		m_szTag,
+		m_fDuration,
+		m_bBlurOn,
 
+		m_strMesh,
+
+		m_strTexture[0], m_strTexture[1], m_strTexture[2], m_strTexture[3],
+		m_strTexture[4], m_strTexture[5], m_strTexture[6], m_strTexture[7],
+			
+		vFinal_StartColor,
+		
+		m_iChangingColorOption,
+		Color(m_vDestColor.x, m_vDestColor.y, m_vDestColor.z, m_vDestColor.w),
+
+		m_iGradationOption,
+		m_fGradationIntensity,
+		Color(m_vGradationColor.x, m_vGradationColor.y, m_vGradationColor.z, m_vGradationColor.w),
+		Color(m_vDestGradationColor.x, m_vDestGradationColor.y, m_vDestGradationColor.z, m_vDestGradationColor.w),
+
+		m_bUseFadeOut
 	};
 	EffectObj->Get_MeshEffect()->Init(&tMeshEffectDesc);
 
