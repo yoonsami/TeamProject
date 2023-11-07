@@ -59,6 +59,5 @@ private:
 
     /* Data to bind Shader */
     RenderParams            m_RenderParams{};
-
 };
 

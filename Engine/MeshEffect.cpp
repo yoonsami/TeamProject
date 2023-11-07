@@ -51,6 +51,9 @@ void MeshEffect::Final_Tick()
 
 void MeshEffect::Render()
 {
+
+	// For. Material Tick ( for Bind Texture to Shader )
+	m_pMaterial->Tick();
 }
 
 void MeshEffect::Init_RenderParams()
@@ -58,8 +61,10 @@ void MeshEffect::Init_RenderParams()
 	// Duration and Current time 
 	m_RenderParams.SetVec2(0, _float2(m_fCurrAge, m_tDesc.fDuration));
 
-	/* 바인딩 해야할 데이터들 
-	*/
+	m_RenderParams.SetVec4(0, m_tDesc.vStartColor);
+	m_RenderParams.SetVec4(1, m_tDesc.vDestColor);
+
+	m_RenderParams.SetFloat(0, m_tDesc.fGradationIntensity);
 }
 
 void MeshEffect::Bind_RenderParams_ToShader()

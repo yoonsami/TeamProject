@@ -151,7 +151,7 @@ void Widget_EffectMaker_Mesh::Option_Texture()
 {
 	ImGui::SeparatorText("Texture");
 
- 	for (_int i = 0; i < m_iNumTextureTypes; i++)
+ 	for (_int i = 1; i < m_iNumTextureTypes; i++)
 	{
 		if (ImGui::BeginCombo(m_pszTextureTypes[i], m_pszUniversalTextures[m_iTexture[i]], 0))
 		{
