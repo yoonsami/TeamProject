@@ -21,9 +21,10 @@ public:
         Color               vRangeStartColor;       // to deside start color
         Color               vRangeEndColor;         // to deside start color
 
-        _int                iChangingColorOption;   // linear, curve
+        _int                iChangingColorOption;   // No change, Linear, Curve
         Color               vDestColor;             
 
+        _int                iGradationOption;       // custom, darker, brighter
         _float              fGradationIntensity;    // The larger the value, the greater the percentage of GradationColor.
         Color               vGradationColor;
         Color               vDestGradationColor;

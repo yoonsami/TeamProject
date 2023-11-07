@@ -57,11 +57,12 @@ private:
 	ImVec4					m_vRangeStartColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 	ImVec4					m_vRangeEndColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-	_bool					bGradationOn = { true };
+	_bool					m_bGradationOn = { true };
+	_int					m_iGradationOption = { 0 };
 	_float					m_fGradationIntensity = { 0.f };
 	ImVec4					m_vGradationColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-	_bool					bChangingColorOn = { true };
+	_bool					m_bChangingColorOn = { true };
 	_int					m_iChangingColorOption = { 0 };
 	ImVec4					m_vDestColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 	ImVec4					m_vDestGradationColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
