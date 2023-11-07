@@ -18,6 +18,7 @@ class EffectRenderer;
 class CharacterController;
 class ParticleSystem;
 class Particle;
+class MeshEffect;
 class TrailRenderer;
 class EffectController;
 class FontRenderer;
@@ -86,6 +87,7 @@ public:
 	//shared_ptr<EffectRenderer> Get_EffectRenderer();
 	shared_ptr<ParticleSystem> Get_ParticleSystem();
 	shared_ptr<Particle> Get_Particle();
+	shared_ptr<MeshEffect> Get_Effect();
 	shared_ptr<TrailRenderer> Get_TrailRenderer();
 	//shared_ptr< EffectController> Get_EffectController();
 	shared_ptr<FontRenderer> Get_FontRenderer();

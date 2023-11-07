@@ -1,4 +1,6 @@
 #pragma once
+#include "ImGuiToolMgr.h"
+
 class Widget_ParticleMaker_Instancing
 {
 public:
@@ -8,6 +10,8 @@ public:
 public:
 	void	Initialize();
 	void	Tick();
+
+	void	Set_ImGuiStyle(ImGuiToolMgr::IMGUI_STYLE tDesc) { m_tImGuiStyle = tDesc; }
 
 private:
 	/* Initialize List */
@@ -29,11 +33,14 @@ private:
 	void					Save();
 
 private:
+	/* ImGui Window Option */
+	ImGuiToolMgr::IMGUI_STYLE		m_tImGuiStyle;
+	
 	/* For. Target Particle Object */
 	shared_ptr<GameObject>	m_pTargetParticle = { nullptr };
 
 	/* For. Particle GameObject Property */
-	char					m_pszParticleTag[MAX_PATH] = "-";
+	char					m_szTag[MAX_PATH] = "-";
 	_float					m_fDuration = { 5.f };
 	_int					m_iParticleCnt[2] = { 1, 10 };
 	_int					m_iMaxInstanceCnt = { 500 };

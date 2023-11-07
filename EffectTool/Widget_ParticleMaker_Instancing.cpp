@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Widget_ParticleMaker_Instancing.h"
 
-// For. Components
+/* Components */
 #include "Particle.h"
 
 Widget_ParticleMaker_Instancing::Widget_ParticleMaker_Instancing()
@@ -83,7 +83,7 @@ void Widget_ParticleMaker_Instancing::Option_ParticleObjectProperty()
 {
 	ImGui::SeparatorText("Particle Object's Property");
 
-	ImGui::InputText("Tag", m_pszParticleTag, MAX_PATH);
+	ImGui::InputText("Tag", m_szTag, MAX_PATH);
 	ImGui::Spacing();
 
 	ImGui::InputFloat("Duration", &m_fDuration);
@@ -219,6 +219,24 @@ void Widget_ParticleMaker_Instancing::Option_Textures()
 			}
 		}
 		ImGui::EndCombo();
+	}
+
+
+	ImGuiIO& io = ImGui::GetIO();
+	ImTextureID my_tex_id = io.Fonts->TexID;
+	float my_tex_w = (float)io.Fonts->TexWidth;
+	float my_tex_h = (float)io.Fonts->TexHeight;
+	ImVec2 pos = ImGui::GetCursorScreenPos();
+	ImVec2 uv_min = ImVec2(0.0f, 0.0f);	// Top-left
+	ImVec2 uv_max = ImVec2(1.0f, 1.0f);	// Lower-right
+	ImVec4 tint_col = ImGui::GetStyleColorVec4(ImGuiCol_Text);  
+	ImVec4 border_col = ImGui::GetStyleColorVec4(ImGuiCol_Border);
+	ImGui::Image(my_tex_id, ImVec2(my_tex_w, my_tex_h), uv_min, uv_max, tint_col, border_col);
+	if (ImGui::BeginItemTooltip())
+	{
+		float region_sz = 32.0f;
+		ImGui::Image(my_tex_id, ImVec2(region_sz , region_sz ), uv_min, uv_max, tint_col, border_col);
+		ImGui::EndTooltip();
 	}
 }
 
@@ -434,7 +452,7 @@ void Widget_ParticleMaker_Instancing::Create()
 	shared_ptr<GameObject> ParticleObj = make_shared<GameObject>();
 
 	// For. Setting GameObject 
-	ParticleObj->Set_Name(Utils::ToWString(m_pszParticleTag));
+	ParticleObj->Set_Name(Utils::ToWString(m_szTag));
 	
 	// For. GameObject에 transform component 붙이기 + 세팅하기 
 	ParticleObj->GetOrAddTransform();
@@ -447,6 +465,8 @@ void Widget_ParticleMaker_Instancing::Create()
 
 	// For. Setting Particle component
 	Particle::DESC tParticleDesc{
+		m_szTag,
+
 		"../Resources/Textures/Universal/" + m_strSelected_Texture_Shape,
 		"../Resources/Textures/Universal/" + m_strSelected_Texture_Dissolve,
 		"../Resources/Textures/Universal/" + m_strSelected_Texture_Option1,

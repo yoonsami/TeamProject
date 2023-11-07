@@ -254,6 +254,11 @@ shared_ptr<Particle> GameObject::Get_Particle()
 	return static_pointer_cast<Particle>(Get_FixedComponent(COMPONENT_TYPE::Particle));
 }
 
+shared_ptr<MeshEffect> GameObject::Get_MeshEffect()
+{
+	return static_pointer_cast<MeshEffect>(Get_FixedComponent(COMPONENT_TYPE::Effect));
+}
+
 shared_ptr<TrailRenderer> GameObject::Get_TrailRenderer()
 {
 	return static_pointer_cast<TrailRenderer>(Get_FixedComponent(COMPONENT_TYPE::TrailRenderer));

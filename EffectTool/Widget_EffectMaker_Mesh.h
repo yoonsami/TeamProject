@@ -1,4 +1,6 @@
 #pragma once
+#include "ImGuiToolMgr.h"
+
 class Widget_EffectMaker_Mesh
 {
 public:
@@ -8,6 +10,8 @@ public:
 public:
 	void	Initialize();
 	void	Tick();
+
+	void	Set_ImGuiStyle(ImGuiToolMgr::IMGUI_STYLE tDesc) { m_tImGuiStyle = tDesc; }
 
 private:
 	/* Initialize List */
@@ -27,6 +31,12 @@ private:
 	void					Load();
 
 private:
+	/* ImGui Window Option */
+	ImGuiToolMgr::IMGUI_STYLE		m_tImGuiStyle;
+
+	/* Property */
+	char					m_szTag[MAX_PATH] = "-";
+
 	/* Mesh list */
 	_uint					m_iNumMeshes = { 0 };
 	vector<string>			m_vecMeshes;

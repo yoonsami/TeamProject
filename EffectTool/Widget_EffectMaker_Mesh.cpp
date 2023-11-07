@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "Widget_EffectMaker_Mesh.h"
 
+/* Components */
+#include "Effect.h"
+
 Widget_EffectMaker_Mesh::Widget_EffectMaker_Mesh()
 {
 }
@@ -31,6 +34,9 @@ void Widget_EffectMaker_Mesh::Set_Mesh_List()
 	for (auto& entry : fs::recursive_directory_iterator(assetPath))
 	{
 		if (entry.is_directory())
+			continue;
+
+		if (entry.path().extension().wstring() != L".Model")
 			continue;
 
 		string tag = entry.path().string();
@@ -238,13 +244,30 @@ void Widget_EffectMaker_Mesh::Option_Color()
 	ImGui::Separator();
 	ImGui::SliderFloat("Brigher Offset", &m_fGradationByAlpha_Brighter, 0.f, 1.f);
 	ImGui::SliderFloat("Darker Offset", &m_fGradationByAlpha_Darker, 0.f, 1.f);
-
-
-
 }
 
 void Widget_EffectMaker_Mesh::Create()
 {
+	// For. Create GameObject 
+	shared_ptr<GameObject> EffectObj = make_shared<GameObject>();
+
+	// For. Add and Setting Transform Component
+	EffectObj->GetOrAddTransform();
+	EffectObj->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
+
+	// For. Add and Setting Effect Component to GameObject
+	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Effect.fx");
+	shared_ptr<Effect> effect = make_shared<Effect>(shader);
+	EffectObj->Add_Component(effect);
+
+	Effect::DESC tEffectDesc
+	{
+		m_szTag
+	};
+	EffectObj->Get_Effect()->Init(tEffectDesc);
+
+	// For. Add Effect GameObject to current scene
+	CUR_SCENE->Add_GameObject(EffectObj);
 }
 
 void Widget_EffectMaker_Mesh::Save()
