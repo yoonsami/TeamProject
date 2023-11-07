@@ -8,6 +8,8 @@
 #include "FileUtils.h"
 #include "Camera.h"
 #include "Texture.h"
+#include "FontRenderer.h"
+#include "CustomFont.h"
 
 ImguiMgr::~ImguiMgr()
 {
@@ -22,7 +24,8 @@ HRESULT ImguiMgr::Initialize(HWND& hWnd)
    ImGui::CreateContext();
    ImGuiIO& io = ImGui::GetIO();
    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-
+   io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\malgun.ttf", 15.0f, NULL, io.Fonts->GetGlyphRangesKorean());
+   
    ImGui_ImplWin32_Init(hWnd);
    ImGui_ImplDX11_Init(DEVICE.Get(), CONTEXT.Get());
 
@@ -33,6 +36,11 @@ HRESULT ImguiMgr::Initialize(HWND& hWnd)
    m_pSampleObj->GetOrAddTransform();
 
    m_tagParamDesc.vec4Params[0] = _float4(1.f, 1.f, 1.f, 1.f);
+
+   // 폰트 태그 wstring 추가
+   m_vecFontType.push_back(L"136ex");
+
+
 
    return S_OK;
 }
@@ -55,6 +63,8 @@ void ImguiMgr::Tick()
 
    Parameter_Ui();
 
+   Font_Ui();
+
 
 }
 
@@ -76,9 +86,13 @@ void ImguiMgr::Key_Input()
    if (KEYTAP(KEY_TYPE::F2))
       m_bRender_Manapulate_Ui = !m_bRender_Manapulate_Ui;
 
-   // F3 : on/off Manapulate Tool
+   // F3 : on/off Parameter Tool
    if (KEYTAP(KEY_TYPE::F3))
       m_bRender_Param_Ui = !m_bRender_Param_Ui;
+
+   // F4 : on/off Font Tool
+   if (KEYTAP(KEY_TYPE::F4))
+      m_bRender_Font_Ui = !m_bRender_Font_Ui;
 
 
 }
@@ -135,7 +149,19 @@ void ImguiMgr::Parameter_Ui()
    Change_ParamDesc();
 
 
+   ImGui::End();
+}
 
+void ImguiMgr::Font_Ui()
+{
+   if (false == m_bRender_Font_Ui)
+      return;
+
+   ImGui::Begin("Font Ui");
+
+   Input_Words();
+   Select_Font_Value();
+   Set_Font();
 
    ImGui::End();
 }
@@ -146,9 +172,9 @@ void ImguiMgr::File_Dialog()
    ImGui::SeparatorText("File Dialog");
 
    if (ImGui::Button("Open File Dialog"))
-      ImGuiFileDialog::Instance()->OpenDialog("ddsFileDlgKey", "dds File Dialog", ".dds", ".");
+      ImGuiFileDialog::Instance()->OpenDialog("ddsFileDlgKey", "Add File Dialog", ".dds,.tga,.png", ".");
 
-   ImGui::BulletText("You can only add dds");
+   ImGui::BulletText("You can add dds, tag, png");
 
    if (ImGuiFileDialog::Instance()->Display("ddsFileDlgKey"))
    {
@@ -238,7 +264,7 @@ void ImguiMgr::Add_Texture()
    if (ImGui::InputText("##Selected Texture Name", strName.data(), 256, ImGuiInputTextFlags_ReadOnly)) {
    }
 
-   ImGui::Combo("##Texture Type Combo", &m_iTextureType, m_arrItems, IM_ARRAYSIZE(m_arrItems));
+   ImGui::Combo("##Texture Type Combo", &m_iTextureType, m_arrTextureType, IM_ARRAYSIZE(m_arrTextureType));
 
    if (ImGui::Button("Add Texture", ImVec2(80.f, 20.f)))
    {
@@ -344,7 +370,6 @@ void ImguiMgr::Create_Object()
       if (!ImGui::IsItemActive())
       {
          auto UiObject = make_shared<GameObject>();
-         UiObject->GetOrAddTransform();
          UiObject->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1));
          UiObject->GetOrAddTransform()->Scaled(_float3(0.0001f, 0.0001f, 0.0001f));
          shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
@@ -417,7 +442,7 @@ void ImguiMgr::Select_Object()
             }
 
             ImGui::SameLine();
-            ImGui::BulletText("%s : ", m_arrItems[i]);
+            ImGui::BulletText("%s : ", m_arrTextureType[i]);
 
             ImGui::SameLine();
             ImVec2 CursorPos = ImGui::GetCursorPos();
@@ -483,7 +508,13 @@ void ImguiMgr::Delete_Object()
             return;
          }
 
-         CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(m_strSelectObjName));
+         auto pGameobject = CUR_SCENE->Get_GameObject(m_strSelectObjName);
+         if (nullptr == pGameobject)
+         {
+            return;
+         }
+
+         CUR_SCENE->Remove_GameObject(pGameobject);
 
          for (auto iter = m_GameobjectName.begin();
             iter != m_GameobjectName.end();
@@ -533,17 +564,17 @@ void ImguiMgr::Change_Object_Value()
    ImGui::Text("X");
    ImGui::SameLine();
    ImGui::SetNextItemWidth(200);
-   ImGui::InputFloat("##PosX2", &vecPos.x, 0.01f, 1.0f, "%.f", eFlag);
+   ImGui::InputFloat("##PosX2", &vecPos.x, 0.01f, 1.0f, "%.3f", eFlag);
 
    ImGui::Text("Y");
    ImGui::SameLine();
    ImGui::SetNextItemWidth(200);
-   ImGui::InputFloat("##PosY2", &vecPos.y, 0.01f, 1.0f, "%.f", eFlag);
+   ImGui::InputFloat("##PosY2", &vecPos.y, 0.01f, 1.0f, "%.3f", eFlag);
 
    ImGui::Text("Z");
    ImGui::SameLine();
    ImGui::SetNextItemWidth(200);
-   ImGui::InputFloat("##PosZ2", &vecPos.z, 0.01f, 1.0f, "%.f", eFlag);
+   ImGui::InputFloat("##PosZ2", &vecPos.z, 1.f, 1.0f, "%.3f", eFlag);
 
    ImGui::NewLine();
    ImGui::SeparatorText("Scale");
@@ -562,6 +593,13 @@ void ImguiMgr::Change_Object_Value()
    ImGui::SameLine();
    ImGui::SetNextItemWidth(200);
    ImGui::InputFloat("##ScaleZ2", &vecScale.z, 0.01f, 1.0f, "%.3f", eFlag);
+
+   if (0.0001f > m_vecScale.x)
+      m_vecScale.x = 0.0001f;
+   if (0.0001f > m_vecScale.y)
+      m_vecScale.y = 0.0001f;
+   if (0.0001f > m_vecScale.z)
+      m_vecScale.z = 0.0001f;
 
    m_pSampleObj->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
    m_pSampleObj->GetOrAddTransform()->Scaled(vecScale);
@@ -748,25 +786,25 @@ void ImguiMgr::Change_ParamDesc()
          ImGui::SetNextItemWidth(200);
          ImGui::InputFloat("##g_vec4_0 x", &m_tagParamDesc.vec4Params[0].x, 0.01f, 1.0f, "%.3f", eFlag);
          ImGui::SetNextItemWidth(200);
-         ImGui::SliderFloat("##g_vec4_0 x slider", &m_tagParamDesc.vec4Params[0].x, 0.0f, 100.0f, "Value = %.3f");
+         ImGui::SliderFloat("##g_vec4_0 x slider", &m_tagParamDesc.vec4Params[0].x, 0.0f, 1.f, "Value = %.3f");
 
          ImGui::BulletText("g_vec4_0 y");
          ImGui::SetNextItemWidth(200);
          ImGui::InputFloat("##g_vec4_0 y", &m_tagParamDesc.vec4Params[0].y, 0.01f, 1.0f, "%.3f", eFlag);
          ImGui::SetNextItemWidth(200);
-         ImGui::SliderFloat("##g_vec4_0 y slider", &m_tagParamDesc.vec4Params[0].y, 0.0f, 100.0f, "Value = %.3f");
+         ImGui::SliderFloat("##g_vec4_0 y slider", &m_tagParamDesc.vec4Params[0].y, 0.0f, 1.f, "Value = %.3f");
 
          ImGui::BulletText("g_vec4_0 z");
          ImGui::SetNextItemWidth(200);
          ImGui::InputFloat("##g_vec4_0 z", &m_tagParamDesc.vec4Params[0].z, 0.01f, 1.0f, "%.3f", eFlag);
          ImGui::SetNextItemWidth(200);
-         ImGui::SliderFloat("##g_vec4_0 z slider", &m_tagParamDesc.vec4Params[0].z, 0.0f, 100.0f, "Value = %.3f");
+         ImGui::SliderFloat("##g_vec4_0 z slider", &m_tagParamDesc.vec4Params[0].z, 0.0f, 1.f, "Value = %.3f");
 
          ImGui::BulletText("g_vec4_0 w");
          ImGui::SetNextItemWidth(200);
          ImGui::InputFloat("##g_vec4_0 w", &m_tagParamDesc.vec4Params[0].w, 0.01f, 1.0f, "%.3f", eFlag);
          ImGui::SetNextItemWidth(200);
-         ImGui::SliderFloat("##g_vec4_0 w slider", &m_tagParamDesc.vec4Params[0].w, 0.0f, 100.0f, "Value = %.3f");
+         ImGui::SliderFloat("##g_vec4_0 w slider", &m_tagParamDesc.vec4Params[0].w, 0.0f, 1.f, "Value = %.3f");
 
          ImGui::BulletText("g_vec4_1 x");
          ImGui::SetNextItemWidth(200);
@@ -890,8 +928,8 @@ void ImguiMgr::Add_Picking_Zone()
    }
 
    ImGui::BulletText("Press the record button and follow the instructions");
-   ImGui::BulletText("Rect : Click on the top left corner first. \n\t   Then, click on the bottom right corner.");
-   ImGui::BulletText("Circle : Click on the center first. \n\t\t Then, click on a point anywhere in the circle");
+   ImGui::BulletText("Rect : Click on the top left corner first. \n\t    Then, click on the bottom right corner.");
+   ImGui::BulletText("Circle : Click on the center first. \n\t\t  Then, click on a point anywhere in the circle");
 
    ImGui::NewLine();
    ImGui::SeparatorText("Mouse Position");
@@ -1066,7 +1104,26 @@ void ImguiMgr::Save_Ui_Desc()
             else
             {
                file->Write<_bool>(true);
-               file->Write<BaseUI::BASEUIDESC>(pGameobject->Get_Button()->Get_Desc());
+               BaseUI::BASEUIDESC tagDesc = pGameobject->Get_Button()->Get_Desc();
+               file->Write<BaseUI::BASEUIDESC>(tagDesc);
+            }
+
+            if (nullptr == pGameobject->Get_FontRenderer())
+            {
+               file->Write<_bool>(false);
+            }
+            else
+            {
+               file->Write<_bool>(true);
+
+               auto pFontRenderer = pGameobject->Get_FontRenderer();
+               file->Write<string>(Utils::TostringUtf8(pFontRenderer->Get_Text()));
+               string strTemp = Utils::ToString(pFontRenderer->Get_Font()->Get_Name());
+               file->Write<string>(strTemp);
+               Color vecColor = pFontRenderer->Get_Color();
+               file->Write<Color>(vecColor);
+               _float fSize = pFontRenderer->Get_Size();
+               file->Write<_float>(fSize);
             }
 
          }
@@ -1152,13 +1209,27 @@ void ImguiMgr::Load_Ui_Desc()
             if (true == bIsUseBaseUi)
             {
                auto BaseUi = make_shared<BaseUI>();
-               BaseUi->Get_Desc() = file->Read<BaseUI::BASEUIDESC>();
+               BaseUI::BASEUIDESC tagDesc = file->Read<BaseUI::BASEUIDESC>();
+               BaseUi->Get_Desc() = tagDesc;
                UiObject->Add_Component(BaseUi);
             }
 
             UiObject->Set_LayerIndex(Layer_UI);
             UiObject->Set_Instancing(false);
             CUR_SCENE->Add_GameObject(UiObject);
+
+            _bool bIsUseFont = file->Read<_bool>();
+            if (true == bIsUseFont)
+            {
+               UiObject->Add_Component(make_shared<FontRenderer>(Utils::ToWstringUtf8(file->Read<string>())));
+
+               auto pFontRenderer = UiObject->Get_FontRenderer();
+               wstring strTemp = Utils::ToWString(file->Read<string>());
+               Color vecColor = file->Read<Color>();
+               _float fSize = file->Read<_float>();
+               pFontRenderer->Set_Font(RESOURCES.Get<CustomFont>(strTemp), vecColor, fSize);
+            }
+
          }
       }
    }
@@ -1190,5 +1261,63 @@ void ImguiMgr::Record_Two_Point()
          m_ptPos2 = INPUT.GetMousePosToPoint();
       }
    }
+
+}
+
+void ImguiMgr::Input_Words()
+{
+    ImGui::SeparatorText("Input Words");
+
+   char inputBuffer[256] = u8"";
+   if (ImGui::InputText("##Input Words", inputBuffer, sizeof(inputBuffer))) {
+      string str(inputBuffer);
+      m_wstrFont = Utils::ToWstringUtf8(str);
+   }
+}
+
+void ImguiMgr::Select_Font_Value()
+{
+    ImGui::NewLine();
+    ImGui::SeparatorText("Font Type");
+    ImGui::Combo("##Font Type Combo", &m_iFontType, m_arrFontType, IM_ARRAYSIZE(m_arrFontType));
+
+    ImGui::NewLine();
+    ImGui::SeparatorText("Font Color");
+    ImGui::ColorEdit4("##Font Color", m_arrColors);
+
+    ImGui::NewLine();
+    ImGui::SeparatorText("Font Size");
+    ImGuiInputTextFlags_ eFlag = ImGuiInputTextFlags_CharsDecimal;
+    ImGui::Text("Size");
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(100);
+    ImGui::InputFloat("##PosX2", &m_fFontSize, 0.1f, 1.0f, "%.f", eFlag);
+}
+
+void ImguiMgr::Set_Font()
+{
+    ImGui::NewLine();
+    ImGui::SeparatorText("Set");
+
+    if (ImGui::Button("Set Font", ImVec2(80.f, 20.f)))
+    {
+        if (0 == m_strSelectObjName.length())
+        {
+            return;
+        }
+
+        auto pGameobject = CUR_SCENE->Get_GameObject(m_strSelectObjName);
+        auto pFontRenderer = pGameobject->Get_FontRenderer();
+
+        if (nullptr == pFontRenderer)
+        {
+            pGameobject->Add_Component(make_shared<FontRenderer>(L""));
+            pGameobject->Get_FontRenderer()->Set_Font(RESOURCES.Get<CustomFont>(L"136ex"), Color(1.f, 1.f, 1.f, 1.f), 1.f);
+            return;
+        }
+
+        pFontRenderer->Set_Font(RESOURCES.Get<CustomFont>(m_vecFontType[m_iFontType]), Color(m_arrColors[0], m_arrColors[1], m_arrColors[2], m_arrColors[3]), m_fFontSize);
+        pFontRenderer->Get_Text() = m_wstrFont;
+    }
 
 }

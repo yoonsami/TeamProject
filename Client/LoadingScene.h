@@ -17,9 +17,8 @@ public:
     virtual void Final_Tick() override;
 
 private:
-    void Create_LoadingBG();
-    void Create_LoadingBar();
-
+    void Load_UI_Texture();
+    void Add_UI();
 
 private:
     shared_ptr<Scene> m_pNextScene = nullptr;

@@ -300,16 +300,16 @@ float4 PS_UI3(UIOutput input) : SV_TARGET
             discard;
     }
 
-    if (g_float_0 < 100.f)
-    {
-        float2 newUV;
-        float ratio = (g_float_0 / 100.f) * g_vec2_0.x + g_vec2_0.y;
-        newUV.x = input.uv.x + (ratio - 0.5f) * -1.f;
-        newUV.y = input.uv.y;
-        float3 submap = SubMap0.Sample(LinearSamplerClamp, newUV).xyz;
-        diffuseColor.xyz *= submap.xyz;
-        diffuseColor.a *= submap.x;
-    }
+    if (input.uv.x > g_float_0)
+        discard;
+
+    float2 newUV;
+    newUV.x = input.uv.x - frac(g_float_1);
+    newUV.y = input.uv.y;
+
+    float falpha = SubMap0.Sample(LinearSampler, newUV).a + 0.3f;
+    
+    diffuseColor.xyz *= falpha;
 
     return diffuseColor;
 }
@@ -721,7 +721,7 @@ technique11 T0
     }
 
     PASS_VP(p1_instancing, VS_Instancing, PS_UI)
-        PASS_VP_BLEND(P2, VS_UI, PS_UIBAR)
+    PASS_VP_BLEND(P2, VS_UI, PS_UIBAR)
 
         pass p7
     {
