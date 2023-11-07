@@ -64,9 +64,6 @@
     <Filter Include="98.Debug">
       <UniqueIdentifier>{2c0559c7-c128-46e1-9d65-00203eecdd37}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\MapObject">
-      <UniqueIdentifier>{eaa2751e-548a-4450-b36d-db18a2643371}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Component\01.FSM\01.Hero_FSM">
       <UniqueIdentifier>{1db04cc3-20eb-4a9e-8fa2-ae1f2d2e778d}</UniqueIdentifier>
     </Filter>
@@ -90,6 +87,9 @@
     </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\04.SkillScript">
       <UniqueIdentifier>{a5b52b0c-57ba-4d33-9b3f-4dbcf057ce3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\02.MapObject">
+      <UniqueIdentifier>{eaa2751e-548a-4450-b36d-db18a2643371}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -157,7 +157,7 @@
       <Filter>98.Debug</Filter>
     </ClInclude>
     <ClInclude Include="MapObjectScript.h">
-      <Filter>02.Component\MapObject</Filter>
+      <Filter>02.Component\02.MapObject</Filter>
     </ClInclude>
     <ClInclude Include="Silversword_Soldier_FSM.h">
       <Filter>02.Component\01.FSM\02.Monster_FSM\00.Silversword_Soldier_FSM</Filter>
@@ -228,7 +228,7 @@
       <Filter>98.Debug</Filter>
     </ClCompile>
     <ClCompile Include="MapObjectScript.cpp">
-      <Filter>02.Component\MapObject</Filter>
+      <Filter>02.Component\02.MapObject</Filter>
     </ClCompile>
     <ClCompile Include="Silversword_Soldier_FSM.cpp">
       <Filter>02.Component\01.FSM\02.Monster_FSM\00.Silversword_Soldier_FSM</Filter>

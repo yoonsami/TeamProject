@@ -114,7 +114,7 @@ void ImGui_Manager::Frame_ObjectBase()
     ImVec4 YellowColor(1.f, 1.f, 0.f, 1.f);
     string strCreateObjectName = m_strObjectBaseNameList[m_iObjectBaseIndex];
     ImGui::Text(("Name - " + strCreateObjectName + "-" + to_string(m_iObjectBaseIndexList[m_iObjectBaseIndex])).data());
-    m_CreateObjectDesc.strName = strCreateObjectName + "-" + to_string(m_iObjectBaseIndexList[m_iObjectBaseIndex]);
+    m_CreateObjectDesc.strName = strCreateObjectName /*+ "-" + to_string(m_iObjectBaseIndexList[m_iObjectBaseIndex])*/;
     ImGui::InputFloat("UVWeight", &m_CreateObjectDesc.fUVWeight);
     ImGui::TextColored(YellowColor, "Options");
     // 그림자
@@ -567,6 +567,9 @@ HRESULT ImGui_Manager::Delete_MapObject()
 
 HRESULT ImGui_Manager::Save_MapObject()
 {
+    // 세이브전 컬링계산, 그림자, 블러 처리
+    BurnAll();
+
     // 세이브 파일 이름으로 저장하기
     string strFileName = m_szSaveFileName;
     string strFilePath = "..\\Resources\\Data\\";
@@ -639,28 +642,55 @@ HRESULT ImGui_Manager::Load_MapObject()
     string strFileName = m_szSaveFileName;
     string strFilePath = "..\\Resources\\Data\\";
     strFilePath += strFileName + ".dat";
-    // 2. 오브젝트 개수 불러오기
+    // 오브젝트 개수 불러오기
     shared_ptr<FileUtils> file = make_shared<FileUtils>();
     file->Open(Utils::ToWString(strFilePath), FileMode::Read);
     _int iNumObjects = file->Read<_int>();
     
     for (_int i = 0; i < iNumObjects; ++i)
     {
-        //1. 이름과 매트릭스를 읽어오기
+        MapObjectScript::MapObjectDesc MapDesc;
         wstring strObjectName = Utils::ToWString(file->Read<string>());
-        _float fUVWeight = file->Read<_float>();
-        _float4x4 matWorld = file->Read<_float4x4>();
+        MapDesc.strName = Utils::ToString(strObjectName);
+        file->Read<_float>(MapDesc.fUVWeight);
+        file->Read<_bool>(MapDesc.bShadow);
+        file->Read<_bool>(MapDesc.bBlur);
+        file->Read<_bool>(MapDesc.bTransform);
+        if (MapDesc.bTransform)
+            file->Read<_float4x4>(MapDesc.WorldMatrix);
+        file->Read<_bool>(MapDesc.bCollider);
+         if (MapDesc.bCollider)
+        {
+            file->Read<_int>(MapDesc.ColliderType);
+            file->Read<_float3>(MapDesc.ColliderOffset);
+            switch (static_cast<ColliderType>(MapDesc.ColliderType))
+            {
+            case ColliderType::Sphere:
+                file->Read<_float>(MapDesc.ColRadius);
+                break;
+            case ColliderType::AABB:
+                file->Read<_float3>(MapDesc.ColBoundingSize);
+                break;
+            case ColliderType::OBB:
+                file->Read<_float3>(MapDesc.ColBoundingSize);
+                break;
+            case ColliderType::Mesh:
+                file->Read<string>(MapDesc.ColModelName);
+                break;
+            default:
+                break;
+            }
+        }
+        file->Read<_float3>(MapDesc.CullPos);
+        file->Read<_float>(MapDesc.CullRadius);
 
-        MapObjectScript::MapObjectDesc _temp;
-        _temp.strName = Utils::ToString(strObjectName);
-        _temp.fUVWeight = fUVWeight;
-        _temp.WorldMatrix = matWorld;
-        shared_ptr<GameObject> CreateObject = Create_MapObject(_temp);
-
+        shared_ptr<GameObject> CreateObject = Create_MapObject(MapDesc);
+        
         m_pMapObjects.push_back(CreateObject);
-        // 4-2. 현재 설치된 오브젝트 이름 UI에 추가
+        // 현재 설치된 오브젝트 이름 UI에 추가
         WCHAR szTempName[MAX_PATH];
-        lstrcpy(szTempName, strObjectName.c_str());
+        //lstrcpy(szTempName, strObjectName.c_str());
+        lstrcpy(szTempName, Utils::ToWString(MapDesc.strName).c_str());
         // char 형식으로 변환
         shared_ptr<char[]> pChar = shared_ptr<char[]>(new char[MAX_PATH]);
         WideCharToMultiByte(CP_ACP, 0, szTempName, -1, pChar.get(), MAX_PATH, 0, 0);
