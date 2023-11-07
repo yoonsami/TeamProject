@@ -49,7 +49,10 @@ private:
 
 	// 오브젝트를 받아와서 컬링포지션과 길이를 계산하여 반영
 	void Compute_CullingData(shared_ptr<GameObject>& _pGameObject);
-	void Compute_CullingDataAll();
+	
+	// 그림자, 블러, 컬링계산
+	void Burn(shared_ptr<GameObject>& _pGameObject);
+	void BurnAll();
 
 private:
 // 설치 가능한 오브젝트 목록

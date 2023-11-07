@@ -126,18 +126,15 @@ void ImGui_Manager::Frame_ObjectBase()
     ImGui::SameLine();
     ImGui::Checkbox("##bBlur", &m_CreateObjectDesc.bBlur);
     ImGui::TextColored(YellowColor, "Components");
-    //// 오브젝트에 그림자와 블러 적용
-    //if (ImGui::Button("Burn"))
-    //    int a = 0; // 이 오브젝트만 적용
-    //ImGui::SameLine();
-    //if (ImGui::Button("Burn All"))
-    //    int a = 0; // 모든 오브젝트 적용
     // 트랜스폼컴포넌트
-    ImGui::Text("Transform - ");
-    ImGui::SameLine();
-    ImGui::Checkbox("##bTransform", &m_CreateObjectDesc.bTransform);
-    if (m_CreateObjectDesc.bTransform)
+    //ImGui::Text("Transform - ");
+    //ImGui::SameLine();
+    //ImGui::Checkbox("##bTransform", &m_CreateObjectDesc.bTransform);
+    //if (m_CreateObjectDesc.bTransform)
+    //{
         ImGui::InputFloat3("CreatePos", (_float*)&m_PickingPos);
+        memcpy(&m_CreateObjectDesc.WorldMatrix._41, &m_PickingPos, sizeof(_float3));
+    //}
     // 콜라이더 컴포넌트
     ImGui::Text("Collider - ");
     ImGui::SameLine();
@@ -215,10 +212,10 @@ void ImGui_Manager::Frame_Objects()
         ImGui::Checkbox("##bBlur", &CurObjectDesc.bBlur);
         // 오브젝트에 그림자와 블러 적용
         if (ImGui::Button("Burn"))
-            int a = 0; // 이 오브젝트만 적용
+            Burn(m_pMapObjects[m_iObjects]);
         ImGui::SameLine();
         if (ImGui::Button("Burn All"))
-            int a = 0; // 모든 오브젝트 적용
+            BurnAll();
         ImGui::TextColored(YellowColor, "Components");
         // 트랜스폼컴포넌트
         ImGui::Text("Transform - ");
@@ -273,7 +270,52 @@ void ImGui_Manager::Frame_Objects()
         // 콜라이더 컴포넌트
         ImGui::Text("Collider - ");
         ImGui::SameLine();
-        ImGui::Checkbox("##bCollider", &CurObjectDesc.bCollider);
+        if (ImGui::Checkbox("##bCollider", &CurObjectDesc.bCollider))
+        {
+            if (CurObjectDesc.bCollider)
+            {
+                // 콜라이더 타입에 따라 콜라이더 생성
+                switch (CurObjectDesc.ColliderType)
+                {
+                    case static_cast<_int>(ColliderType::Sphere):
+                    {
+                        shared_ptr<SphereCollider> pCollider = make_shared<SphereCollider>(CurObjectDesc.ColRadius);
+                        pCollider->Set_Offset(CurObjectDesc.ColliderOffset);
+                        m_pMapObjects[m_iObjects]->Add_Component(pCollider);
+                        pCollider->Set_Activate(true);
+                        break;
+                    }
+                    case static_cast<_int>(ColliderType::AABB):
+                    {
+                        shared_ptr<AABBBoxCollider> pCollider = make_shared<AABBBoxCollider>(CurObjectDesc.ColBoundingSize);
+                        pCollider->Set_Offset(CurObjectDesc.ColliderOffset);
+                        m_pMapObjects[m_iObjects]->Add_Component(pCollider);
+                        pCollider->Set_Activate(true);
+                        break;
+                    }
+                    case static_cast<_int>(ColliderType::OBB):
+                    {
+                        shared_ptr<OBBBoxCollider> pCollider = make_shared<OBBBoxCollider>(CurObjectDesc.ColBoundingSize);
+                        pCollider->Set_Offset(CurObjectDesc.ColliderOffset);
+                        m_pMapObjects[m_iObjects]->Add_Component(pCollider);
+                        pCollider->Set_Activate(true);
+                        break;
+                    }
+                    case static_cast<_int>(ColliderType::Mesh):
+                    {
+                        shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(Utils::ToWString(CurObjectDesc.ColModelName));
+                        pCollider->Set_Offset(CurObjectDesc.ColliderOffset);
+                        m_pMapObjects[m_iObjects]->Add_Component(pCollider);
+                        pCollider->Set_Activate(true);
+                        break;
+                    }
+                    default:
+                        break;
+                }
+            }
+            else
+                m_pMapObjects[m_iObjects]->DeleteComponent(COMPONENT_TYPE::Collider);
+        }
         if (CurObjectDesc.bCollider)
         {
             ImGui::Combo("ColliderType", &CurObjectDesc.ColliderType, m_szColliderTypes, IM_ARRAYSIZE(m_szColliderTypes));
@@ -414,14 +456,14 @@ shared_ptr<GameObject>& ImGui_Manager::Create_MapObject(MapObjectScript::MapObje
     shared_ptr<MapObjectScript> MapObjSc = make_shared<MapObjectScript>(_CreateDesc);
     CreateObject->Add_Component(MapObjSc);
     MapObjectScript::MapObjectDesc& CreateDesc = MapObjSc->Get_DESC();
-    // 그림자
-    CreateObject->Set_DrawShadow(CreateDesc.bShadow);
-    // 블러
-    CreateObject->Set_Blur(CreateDesc.bBlur);
+    //// 그림자
+    //CreateObject->Set_DrawShadow(CreateDesc.bShadow);
+    //// 블러
+    //CreateObject->Set_Blur(CreateDesc.bBlur);
     // 이름을 사용하여 모델생성
     // 고유번호를 제거하여 모델명을 얻어옴
     _int iPureNameSize = 0;
-    while (CreateDesc.strName[iPureNameSize] != '-')
+    while (CreateDesc.strName[iPureNameSize] != '-' && iPureNameSize < CreateDesc.strName.size())
     {
         ++iPureNameSize;
     }
@@ -479,8 +521,8 @@ shared_ptr<GameObject>& ImGui_Manager::Create_MapObject(MapObjectScript::MapObje
             break;
         }
     }
-    // 컬링정보계산
-    Compute_CullingData(CreateObject);
+    // 그림자, 블러, 컬링정보계산
+    Burn(CreateObject);
 
     CUR_SCENE->Add_GameObject(CreateObject);
 
@@ -536,86 +578,95 @@ HRESULT ImGui_Manager::Save_MapObject()
     // 1. 오브젝트 개수 저장
     file->Write<_int>((_int)m_pMapObjects.size());
     
-    // 2. 오브젝트의 이름과 UVWeight, 월드매트릭스 저장
+    // 2. 오브젝트의 MapObjectDesc 모든정보 저장
     for (_uint i = 0; i < m_pMapObjects.size(); ++i)
     {
-        // 이름저장
-        string ObjectName(m_strObjectName[i]);
-        file->Write<string>(ObjectName);
-        // UVWeight저장
-        file->Write<_float>(m_pMapObjects[i]->Get_Script<MapObjectScript>()->Get_UVWeight());
-        // 월드행렬 저장
-        file->Write<_float4x4>(m_pMapObjects[i].get()->Get_Transform()->Get_WorldMatrix());
+        MapObjectScript::MapObjectDesc MapDesc = m_pMapObjects[i]->Get_Script<MapObjectScript>()->Get_DESC();
+        file->Write<string>(MapDesc.strName);
+        file->Write<_float>(MapDesc.fUVWeight);
+        file->Write<_bool>(MapDesc.bShadow);
+        file->Write<_bool>(MapDesc.bBlur);
+        file->Write<_bool>(MapDesc.bTransform);
+        if (MapDesc.bTransform)
+            file->Write<_float4x4>(MapDesc.WorldMatrix);
+        file->Write<_bool>(MapDesc.bCollider);
+        if (MapDesc.bCollider)
+        {
+            file->Write<_int>(MapDesc.ColliderType);
+            file->Write<_float3>(MapDesc.ColliderOffset);
+            switch (MapDesc.ColliderType)
+            {
+            case static_cast<_uint>(ColliderType::Sphere):
+                file->Write<_float>(MapDesc.ColRadius);
+                break;
+            case static_cast<_uint>(ColliderType::AABB):
+                file->Write<_float3>(MapDesc.ColBoundingSize);
+                break;
+            case static_cast<_uint>(ColliderType::OBB):
+                file->Write<_float3>(MapDesc.ColBoundingSize);
+                break;
+            case static_cast<_uint>(ColliderType::Mesh):
+                file->Write<string>(MapDesc.ColModelName);
+                break;
+            default:
+                break;
+            }
+        }
+        file->Write<_float3>(MapDesc.CullPos);
+        file->Write<_float>(MapDesc.CullRadius);
     }
-
     return S_OK;
 }
 
 HRESULT ImGui_Manager::Load_MapObject()
 {
-    //// 현재갖고있는 오브젝트개수
-    //_uint iSize = (_int)m_pMapObjects.size();
-    //// 1. 기존의 모든오브젝트 삭제 및 Clear
-    //for (_uint i = 0; i< iSize; ++i)
-    //{
-    //    // 모든 오브젝트를 씬에서 삭제 ( 맨뒤부터 )
-    //    CUR_SCENE->Remove_GameObject(m_pMapObjects.back());
-    //    m_pMapObjects.pop_back();
-    //    m_strObjectName.pop_back();
-    //}
-    //m_pMapObjects.clear();
-    //m_strObjectName.clear();
-    //m_strObjectNamePtr.clear();
-    //m_iObjects = 0;
+    // 현재갖고있는 오브젝트개수
+    _uint iSize = (_int)m_pMapObjects.size();
+    // 1. 기존의 모든오브젝트 삭제 및 Clear
+    for (_uint i = 0; i< iSize; ++i)
+    {
+        // 모든 오브젝트를 씬에서 삭제 ( 맨뒤부터 )
+        CUR_SCENE->Remove_GameObject(m_pMapObjects.back());
+        m_pMapObjects.pop_back();
+        m_strObjectName.pop_back();
+    }
+    m_pMapObjects.clear();
+    m_strObjectName.clear();
+    m_strObjectNamePtr.clear();
+    m_iObjects = 0;
 
-    //// 세이브 파일 이름으로 로드하기
-    //string strFileName = m_szSaveFileName;
-    //string strFilePath = "..\\Resources\\Data\\";
-    //strFilePath += strFileName + ".dat";
-    //// 2. 오브젝트 개수 불러오기
-    //shared_ptr<FileUtils> file = make_shared<FileUtils>();
-    //file->Open(Utils::ToWString(strFilePath), FileMode::Read);
-    //_int iNumObjects = file->Read<_int>();
-    //
-    //for (_int i = 0; i < iNumObjects; ++i)
-    //{
-    //    // 3. 이름과 매트릭스를 읽어오기
-    //    wstring strObjectName = Utils::ToWString(file->Read<string>());
-    //    _float fUVWeight = file->Read<_float>();
-    //    _float4x4 matWorld = file->Read<_float4x4>();
+    // 세이브 파일 이름으로 로드하기
+    string strFileName = m_szSaveFileName;
+    string strFilePath = "..\\Resources\\Data\\";
+    strFilePath += strFileName + ".dat";
+    // 2. 오브젝트 개수 불러오기
+    shared_ptr<FileUtils> file = make_shared<FileUtils>();
+    file->Open(Utils::ToWString(strFilePath), FileMode::Read);
+    _int iNumObjects = file->Read<_int>();
+    
+    for (_int i = 0; i < iNumObjects; ++i)
+    {
+        //1. 이름과 매트릭스를 읽어오기
+        wstring strObjectName = Utils::ToWString(file->Read<string>());
+        _float fUVWeight = file->Read<_float>();
+        _float4x4 matWorld = file->Read<_float4x4>();
 
-    //    // 4. 가져온 정보를 바탕으로 맵오브젝트를 생성하여 현재씬에 추가
-    //    shared_ptr<GameObject> CreateObject = make_shared<GameObject>();
-    //    CreateObject->Add_Component(make_shared<Transform>());
-    //    CreateObject->Get_Transform()->Set_WorldMat(matWorld);
-    //    {
-    //        shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-    //        shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
-    //        {
-    //            // 맵오브젝트 패스변경 + UV가중치적용
-    //            shared_ptr<MapObjectScript> MapObjSc = make_shared<MapObjectScript>(renderer, ModelRenderer::PASS_MAPOBJECT, fUVWeight);
-    //            CreateObject->Add_Component(MapObjSc);
-    //        }
-    //        {
-    //            // 베이스 오브젝트의 이름을 사용하여 오브젝트 생성
-    //            shared_ptr<Model> model = RESOURCES.Get<Model>(strObjectName);
-    //            renderer->Set_Model(model);
-    //        }
-    //        //애니메이터 컴포넌트
-    //        CreateObject->Add_Component(renderer);
-    //    }
-    //    // 4-1 현재씬 + 오브젝트벡터에 추가
-    //    CUR_SCENE->Add_GameObject(CreateObject);
-    //    m_pMapObjects.push_back(CreateObject);
-    //    // 4-2. 현재 설치된 오브젝트 이름 UI에 추가
-    //    WCHAR szTempName[MAX_PATH];
-    //    lstrcpy(szTempName, strObjectName.c_str());
-    //    // char 형식으로 변환
-    //    shared_ptr<char[]> pChar = shared_ptr<char[]>(new char[MAX_PATH]);
-    //    WideCharToMultiByte(CP_ACP, 0, szTempName, -1, pChar.get(), MAX_PATH, 0, 0);
-    //    m_strObjectNamePtr.push_back(pChar);
-    //    m_strObjectName.push_back(pChar.get());
-    //}
+        MapObjectScript::MapObjectDesc _temp;
+        _temp.strName = Utils::ToString(strObjectName);
+        _temp.fUVWeight = fUVWeight;
+        _temp.WorldMatrix = matWorld;
+        shared_ptr<GameObject> CreateObject = Create_MapObject(_temp);
+
+        m_pMapObjects.push_back(CreateObject);
+        // 4-2. 현재 설치된 오브젝트 이름 UI에 추가
+        WCHAR szTempName[MAX_PATH];
+        lstrcpy(szTempName, strObjectName.c_str());
+        // char 형식으로 변환
+        shared_ptr<char[]> pChar = shared_ptr<char[]>(new char[MAX_PATH]);
+        WideCharToMultiByte(CP_ACP, 0, szTempName, -1, pChar.get(), MAX_PATH, 0, 0);
+        m_strObjectNamePtr.push_back(pChar);
+        m_strObjectName.push_back(pChar.get());
+    }
 
     return S_OK;
 }
@@ -624,13 +675,6 @@ void ImGui_Manager::Compute_CullingData(shared_ptr<GameObject>& _pGameObject)
 {
     // 모델을 받아와서 컬링포지션과 길이를 계산하여 반환 float4(_float(Pos), _float(Radius))
     // 모든 정점을 돌면서 XYZ각각의 min과 max를 찾아야함.
-
-        if (!_pGameObject->Get_Transform())
-            return;
-        if (!_pGameObject->Get_Script<MapObjectScript>())
-            return;
-        if (!_pGameObject->Get_Model())
-            return;
 
         _float3 vMaxPos = _float3(FLT_MIN);
         _float3 vMinPos = _float3(FLT_MAX);
@@ -662,12 +706,27 @@ void ImGui_Manager::Compute_CullingData(shared_ptr<GameObject>& _pGameObject)
         _pGameObject->Get_Script<MapObjectScript>()->Get_DESC().CullRadius = vCullRadius;
 }
 
-void ImGui_Manager::Compute_CullingDataAll()
+void ImGui_Manager::Burn(shared_ptr<GameObject>& _pGameObject)
+{
+    if (!_pGameObject->Get_Transform())
+        return;
+    if (!_pGameObject->Get_Script<MapObjectScript>())
+        return;
+    if (!_pGameObject->Get_Model())
+        return;
+
+    MapObjectScript::MapObjectDesc& MapObjDesc = _pGameObject->Get_Script<MapObjectScript>()->Get_DESC();
+
+    _pGameObject->Set_DrawShadow(MapObjDesc.bShadow);
+    _pGameObject->Set_Blur(MapObjDesc.bBlur);
+    Compute_CullingData(_pGameObject);
+}
+
+void ImGui_Manager::BurnAll()
 {
     const auto& gameObjects = CUR_SCENE->Get_Objects();
-
     for (auto gameObject : gameObjects)
     {
-        Compute_CullingData(gameObject);
+        Burn(gameObject);
     }
 }
