@@ -19,6 +19,7 @@
 //#include "EffectRenderer.h"
 #include "ParticleSystem.h"
 #include "Particle.h"
+#include "MeshEffect.h"
 #include "TrailRenderer.h"
 //#include "EffectController.h"
 #include "FontRenderer.h"
@@ -256,7 +257,7 @@ shared_ptr<Particle> GameObject::Get_Particle()
 
 shared_ptr<MeshEffect> GameObject::Get_MeshEffect()
 {
-	return static_pointer_cast<MeshEffect>(Get_FixedComponent(COMPONENT_TYPE::Effect));
+	return static_pointer_cast<MeshEffect>(Get_FixedComponent(COMPONENT_TYPE::MeshEffect));
 }
 
 shared_ptr<TrailRenderer> GameObject::Get_TrailRenderer()

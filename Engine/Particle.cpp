@@ -172,7 +172,6 @@ void Particle::Init_RenderParams()
 	// Duration and Current t7ime 
 	m_RenderParams.SetFloat(2, m_tDesc.fDuration);
 	m_RenderParams.SetFloat(3, m_fCurrAge);
-
 }
 
 void Particle::Init_CreateParticleParams()

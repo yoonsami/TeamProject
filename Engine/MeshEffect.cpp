@@ -1,24 +1,27 @@
 #include "pch.h"
-#include "Effect.h"
+#include "MeshEffect.h"
 
+#include "Model.h"
 #include "Utils.h"
 
-Effect::Effect(shared_ptr<Shader> shader)
-	: Component(COMPONENT_TYPE::Effect)
+MeshEffect::MeshEffect(shared_ptr<Shader> shader)
+	: Component(COMPONENT_TYPE::MeshEffect)
 	, m_pShader(shader)
 {
 
 }
 
-Effect::~Effect()
+MeshEffect::~MeshEffect()
 {
 }
 
-HRESULT Effect::Init(void* pArg)
+HRESULT MeshEffect::Init(void* pArg)
 {
 	// For. Setting basic info  
 	DESC* pDesc = (DESC*)pArg;
 	m_tDesc = *pDesc;
+
+	Init_RenderParams();
 
 	// For. Model Components
 	m_pModel = RESOURCES.Get<Model>(Utils::ToWString(m_tDesc.strVfxMesh));
@@ -36,14 +39,27 @@ HRESULT Effect::Init(void* pArg)
     return S_OK;
 }
 
-void Effect::Tick()
+void MeshEffect::Tick()
 {
 }
 
-void Effect::Final_Tick()
+void MeshEffect::Final_Tick()
 {
 }
 
-void Effect::Render()
+void MeshEffect::Render()
 {
+}
+
+void MeshEffect::Init_RenderParams()
+{	
+	// Duration and Current time 
+	m_RenderParams.SetVec2(0, _float2(m_fCurrAge, m_tDesc.fDuration));
+}
+
+void MeshEffect::Bind_RenderParams_ToShader()
+{
+	m_RenderParams.SetFloat(3, m_fCurrAge);
+
+	m_pShader->Push_RenderParamData(m_RenderParams);
 }

@@ -2,7 +2,7 @@
 #include "Widget_EffectMaker_Mesh.h"
 
 /* Components */
-#include "Effect.h"
+#include "MeshEffect.h"
 
 Widget_EffectMaker_Mesh::Widget_EffectMaker_Mesh()
 {
@@ -256,15 +256,16 @@ void Widget_EffectMaker_Mesh::Create()
 	EffectObj->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
 
 	// For. Add and Setting Effect Component to GameObject
-	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Effect.fx");
-	shared_ptr<Effect> effect = make_shared<Effect>(shader);
-	EffectObj->Add_Component(effect);
+	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
+	shared_ptr<MeshEffect> meshEffect = make_shared<MeshEffect>(shader);
+	EffectObj->Add_Component(meshEffect);
 
-	Effect::DESC tEffectDesc
+	MeshEffect::DESC tMeshEffectDesc
 	{
 		m_szTag
+
 	};
-	EffectObj->Get_Effect()->Init(tEffectDesc);
+	EffectObj->Get_MeshEffect()->Init(&tMeshEffectDesc);
 
 	// For. Add Effect GameObject to current scene
 	CUR_SCENE->Add_GameObject(EffectObj);

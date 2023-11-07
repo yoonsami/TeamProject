@@ -196,6 +196,9 @@
     <Filter Include="04.Component\05.UI &amp; Effect\Renderer\04.MotionTrailRenderer">
       <UniqueIdentifier>{5ade97b7-d3fd-483c-9c42-c2925271ad57}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04.Component\05.UI &amp; Effect\Renderer\05.MeshEffect">
+      <UniqueIdentifier>{91653204-5163-4165-85fe-cc9f5ca6cd88}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -401,6 +404,9 @@
     </ClCompile>
     <ClCompile Include="Particle.cpp">
       <Filter>04.Component\05.UI &amp; Effect\Renderer\01.ParticleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshEffect.cpp">
+      <Filter>04.Component\05.UI &amp; Effect\Renderer\05.MeshEffect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -622,6 +628,9 @@
     </ClInclude>
     <ClInclude Include="Particle.h">
       <Filter>04.Component\05.UI &amp; Effect\Renderer\01.ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshEffect.h">
+      <Filter>04.Component\05.UI &amp; Effect\Renderer\05.MeshEffect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

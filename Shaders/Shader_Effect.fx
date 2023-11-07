@@ -1,8 +1,6 @@
 #include "Render.fx"
 #include "Light.fx"
 
-
-
 struct EffectOut
 {
     float4 position : SV_POSITION;
