@@ -17,7 +17,7 @@ private:
    void        Create_Ui();
    void        Manapulate_Ui();
    void        Parameter_Ui();
-
+   void        Font_Ui();
 
    void        File_Dialog();             // 파일탐색기로 dds추가
    void        Select_Texture();          // 텍스처 선택
@@ -39,14 +39,15 @@ private:
 
    void        Record_Two_Point();        // 동작 시 이후 두번의 클릭 위치를 저장
 
-
-
-
+   void        Input_Words();             // 글자 입력
+   void        Select_Font_Value();       // 폰트 이름, 색, 사이즈 선택
+   void        Set_Font();                // 폰트 설정
 
 private:
    _bool             m_bRender_Create_Ui     = { true };    // Create tool on/off
    _bool             m_bRender_Manapulate_Ui = { true };    // Manapulate tool on/off
    _bool             m_bRender_Param_Ui      = { true };    // Parameter tool on/off
+   _bool             m_bRender_Font_Ui       = { true };    // Font Tool on/off
 
    wstring           m_strSearchTexture;                    // 검색
    wstring           m_strKeyTexture;                       // 선택한 텍스처 키값
@@ -82,7 +83,16 @@ private:
    wstring           m_strSaveLoadPath;                     // dat 파일 경로
    wstring           m_strSaveFileName;                     // dat 파일 이름
 
-   const char* m_arrItems[16] = {
+   string            m_strFont;
+   wstring           m_wstrFont;
+   _int              m_iFontType             = { 0 };       // Font Type
+   vector<wstring>   m_vecFontType;                         // 폰트 추가시 아래 배열과 init에서 추가해야함
+
+   _float            m_arrColors[4]          = { 0.f, 0.f, 0.f, 0.f };
+   _float            m_fFontSize             = { 0.f };
+
+
+   const char* m_arrTextureType[16] = {
       "DIFFUSE",
       "NORMAL",
       "SPECULAR",
@@ -100,5 +110,10 @@ private:
       "TEXTURE14",
       "TEXTURE15",
    };
+
+   const char* m_arrFontType[1] = {
+      "136ex"
+   };
+
 };
 

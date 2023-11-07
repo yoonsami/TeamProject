@@ -44,6 +44,32 @@ std::string Utils::ToString(wstring s)
 	return r;
 }
 
+std::wstring Utils::ToWstringUtf8(string value)
+{
+	_int wideStrSize = MultiByteToWideChar(CP_UTF8, 0, value.c_str(), -1, NULL, 0);
+	wstring wstr;
+	
+	if (wideStrSize > 0) {
+		wstr.resize(wideStrSize - 1);
+		MultiByteToWideChar(CP_UTF8, 0, value.c_str(), -1, &wstr[0], wideStrSize);
+	}
+
+	return wstr;
+}
+
+std::string Utils::TostringUtf8(wstring value)
+{
+	_int strSize = WideCharToMultiByte(CP_UTF8, 0, value.c_str(), -1, NULL, 0, NULL, NULL);
+	string str;
+
+	if (strSize > 0) {
+		str.resize(strSize - 1);
+		WideCharToMultiByte(CP_UTF8, 0, value.c_str(), -1, &str[0], strSize, NULL, NULL);
+	}
+
+	return str;
+}
+
 void Utils::ChangeExt(OUT string& srcPath, const string& ext)
 {
 	string preExt = fs::path(srcPath).extension().string();
