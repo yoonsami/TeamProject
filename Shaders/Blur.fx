@@ -244,7 +244,7 @@ technique11 t0
         SetRasterizerState(RS_CullNone);
         SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetPixelShader(CompileShader(ps_5_0, PS_DOWN()));
+        SetPixelShader(CompileShader(ps_5_0, PS_JUSTDOWN()));
     }
     pass GaussianUp
     {

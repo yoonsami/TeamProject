@@ -27,7 +27,7 @@ void Texture::Load(const wstring& path)
 	}
 	else if (false == lstrcmp(szExt, TEXT(".tga")) || false == lstrcmp(szExt, TEXT(".TGA")))
 	{
-		::LoadFromTGAFile(path.c_str(), &md, m_Img);
+		::LoadFromTGAFile(path.c_str(),TGA_FLAGS_FORCE_SRGB, &md, m_Img);
 		::CreateShaderResourceView(DEVICE.Get(), m_Img.GetImages(), m_Img.GetImageCount(), md, m_pShaderResourceView.GetAddressOf());
 
 	}

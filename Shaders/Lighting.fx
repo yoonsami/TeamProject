@@ -2,7 +2,7 @@
 #include "Light.fx"
 
 float g_ShadowBias;
-
+;
 
 float CalcShadowFactor(float4 shadowPosH)
 {
@@ -94,10 +94,16 @@ PS_LIGHT_Deferred PS_DirLight(VS_OUT input)
         float4 shadowClipPos = mul(worldPos, ShadowCameraVP);
         float shadowFactor = CalcShadowFactor(shadowClipPos);
 
-
         color.diffuse = color.diffuse * shadowFactor;
+        color.specular = color.specular * shadowFactor;
 
       
+    }
+    if(length(color.ambient) != 0 && g_SSAO_On)
+    {
+        float ssAO = SubMap3.Sample(LinearSampler, input.uv).r;
+        
+        color.ambient = color.ambient * ssAO;
     }
 
 
@@ -236,28 +242,30 @@ float4 PS_Final(VS_OUT input) : SV_Target
 {
     float4 output = (float4) 0.f;
     
+    //float4 ambientColor = SubMap0.Sample(LinearSampler, input.uv);
+    
     float4 diffuseColor = SubMap1.Sample(LinearSampler, input.uv);
-    diffuseColor = pow(diffuseColor, g_gamma);
+    //diffuseColor = pow(diffuseColor, g_gamma);
     float4 specularColor = SubMap2.Sample(LinearSampler, input.uv);
-    specularColor = pow(specularColor, g_gamma);
+    //specularColor = pow(specularColor, g_gamma);
     float4 emissiveColor = SubMap3.Sample(LinearSampler, input.uv);
-    emissiveColor = pow(emissiveColor, g_gamma);
+    //emissiveColor = pow(emissiveColor, g_gamma);
    
     float4 ambientLightColor = SubMap4.Sample(LinearSampler, input.uv);
-    ambientLightColor = pow(ambientLightColor, g_gamma);
+    //ambientLightColor = pow(ambientLightColor, g_gamma);
     float4 diffuseLightColor = SubMap5.Sample(LinearSampler, input.uv);
-    diffuseLightColor = pow(diffuseLightColor, g_gamma);
+    //diffuseLightColor = pow(diffuseLightColor, g_gamma);
     float4 specularLightColor = SubMap6.Sample(LinearSampler, input.uv);
-    specularLightColor = pow(specularLightColor, g_gamma);
+    //specularLightColor = pow(specularLightColor, g_gamma);
     float4 emissiveLightColor = SubMap7.Sample(LinearSampler, input.uv);
-    emissiveLightColor = pow(emissiveLightColor, g_gamma);
-    diffuseLightColor += ambientLightColor;
+   // emissiveLightColor = pow(emissiveLightColor, g_gamma);
+
   //  float4 emissiveBlurColor = SubMap8.Sample(LinearSampler, input.uv);
    // diffuseLightColor = clamp(diffuseLightColor, 0.f, 1.f);
    
     //diffuseColor = pow(diffuseColor, g_gamma);
-    
-    diffuseColor *= diffuseLightColor;
+   
+    diffuseColor = diffuseColor * saturate(diffuseLightColor + ambientLightColor);
     specularColor *= specularLightColor;
     emissiveColor *= emissiveLightColor;
     
@@ -266,7 +274,7 @@ float4 PS_Final(VS_OUT input) : SV_Target
     + emissiveColor;
    // +emissiveBlurColor * emissiveLightColor;
     
-    output = pow(output, 1.f / g_gamma);
+    //output = pow(output, 1.f / g_gamma);
     
     output.a = 1.f;
     return output;

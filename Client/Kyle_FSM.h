@@ -44,6 +44,9 @@ private:
 	virtual void OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) override;
+	virtual void Get_Hit(const wstring& skillname, shared_ptr<BaseCollider> pOppositeCollider) override;
+	virtual void AttackCollider_On(const wstring& skillname) override;
+	virtual void AttackCollider_Off() override;
 
 	void b_idle();
 	void b_idle_Init();
@@ -95,13 +98,18 @@ private:
 	void skill_500100();
 	void skill_500100_Init();
 
+	void EvadeCoolCheck();
+
 private:
 	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;
 
 	_float3 m_vInputTurnVector = _float3(0.f);
-	_bool m_bCanCombo = false;
 	COOLTIMEINFO m_tRunEndDelay = { 0.2f,0.f };
+	COOLTIMEINFO m_tEvadeDelay = { 1.f,0.f };
+
+	_bool m_bCanCombo = false;
+	_bool m_bEvadeCoolCheck = false;
 
 	_float m_fRunSpeed = 6.f;
 	_float m_fSprintSpeed = 8.f;

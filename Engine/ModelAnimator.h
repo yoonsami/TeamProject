@@ -59,7 +59,7 @@ public:
     void Set_CurrentAnim(const wstring& animName, _bool loop, _float animSpeed);
 
     _uint Get_FinalFrame(_int animIndex);
-
+    void Reset_Frame() { m_TweenDesc.curr.currentFrame = 0; }
 
 private:
     TweenDesc   m_TweenDesc;

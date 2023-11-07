@@ -18,6 +18,7 @@
 #include "RigidBody.h"
 //#include "EffectRenderer.h"
 #include "ParticleSystem.h"
+#include "Particle.h"
 #include "TrailRenderer.h"
 //#include "EffectController.h"
 #include "FontRenderer.h"
@@ -246,6 +247,11 @@ shared_ptr<RigidBody> GameObject::Get_RigidBody()
 shared_ptr<ParticleSystem> GameObject::Get_ParticleSystem()
 {
 	return static_pointer_cast<ParticleSystem>(Get_FixedComponent(COMPONENT_TYPE::ParticleSystem));
+}
+
+shared_ptr<Particle> GameObject::Get_Particle()
+{
+	return static_pointer_cast<Particle>(Get_FixedComponent(COMPONENT_TYPE::Particle));
 }
 
 shared_ptr<TrailRenderer> GameObject::Get_TrailRenderer()

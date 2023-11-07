@@ -1,6 +1,6 @@
 #ifndef _GLOBAL_FX_
 #define _GLOBAL_FX_
-
+#define GAMMA 2.2f
 /////////////////
 // ConstBuffer //
 /////////////////

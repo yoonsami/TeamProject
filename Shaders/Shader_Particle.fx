@@ -845,9 +845,6 @@ void GS_Main(point VS_OUTPUT input[1], inout TriangleStream<GS_OUTPUT> outputStr
     output[1].uv = float2(1.f,0.f);
     output[2].uv = float2(1.f,1.f);
     output[3].uv = float2(0.f,1.f); 
-   
-    
-    
     
      for (int j = 0; j < 4; ++j)
     {

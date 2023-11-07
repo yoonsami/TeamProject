@@ -24,14 +24,16 @@ void DemoScene::Init()
 
 	COLLISION.Check_Group(_int(CollisionGroup::Player), _int(CollisionGroup::Monster));
 
-	//IMGUITOOL_MGR.Init(DEVICE.Get(), CONTEXT.Get());
+	// For. Initialize ImGui Tool mgr
+	IMGUITOOL_MGR.Init(DEVICE.Get(), CONTEXT.Get());
+	IMGUITOOL_MGR.Tick();
 }
 
 void DemoScene::Tick()
 {
 	__super::Tick();
 
-	//IMGUITOOL_MGR.Tick();
+	IMGUITOOL_MGR.Tick();
 }
 
 void DemoScene::Late_Tick()
@@ -48,13 +50,13 @@ void DemoScene::Render()
 {
 	__super::Render();
 
-	// IMGUITOOL_MGR.Render();
+	IMGUITOOL_MGR.Render();
 }
 
 HRESULT DemoScene::Load_Scene()
 {
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\");
-	//Load_DemoModel();
+	Load_DemoModel();
 	Load_Light();
 	Load_Camera();
 

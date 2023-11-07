@@ -16,10 +16,12 @@
 #include "ModelAnimator.h"
 #include "RigidBody.h"
 #include "BaseUI.h"
+#include "MathUtils.h"
 
 namespace fs = std::filesystem;
 Scene::Scene()
 {
+
 }
 
 Scene::~Scene()
@@ -28,6 +30,10 @@ Scene::~Scene()
 
 void Scene::Init()
 {
+	SSAO_MakeOffsetVector();
+
+	SSAO_MakeFrustumFarCorners();
+
 	auto objects = m_GameObjects;
 	for (auto& object : objects)
 	{
@@ -61,8 +67,6 @@ void Scene::Final_Tick()
 	{
 		object->Final_Tick();
 	}
-
-
 }
 
 void Scene::Render()
@@ -73,9 +77,15 @@ void Scene::Render()
 	Render_MotionBlur();
 	Render_Deferred();
 	Render_DefferedBlur();
+	if(GAMEINSTANCE.g_bSSAO_On)
+	{
+		Render_SSAO();
+		Render_SSAOBlur(1);
+	}
 	Render_Lights();
 	//Render_BlurEffect();
 	Render_LightFinal();
+
 	Render_MotionBlurFinal();
 	Render_Forward();
 	Render_BloomMap();
@@ -86,6 +96,7 @@ void Scene::Render()
 	//Render_Debug();
 
 	Render_UI();
+	Render_ToneMapping();
 
 	Render_BackBuffer();
 }
@@ -650,6 +661,49 @@ void Scene::Render_DefferedBlur()
 
 }
 
+void Scene::Render_SSAO()
+{
+	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::SSAO)->OMSetRenderTargets();
+
+	auto material = RESOURCES.Get<Material>(L"SSAO");
+	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+
+	material->Push_SubMapData();
+	static const _float4x4 T(
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f);
+
+	_float4x4 matViewToTexSpace =  Camera::Get_Proj() * T;
+	material->Get_Shader()->GetMatrix("gViewToTexSpace")->SetMatrix((_float*)&matViewToTexSpace);
+	material->Get_Shader()->GetVector("gOffsetVectors")->SetFloatVectorArray((_float*)m_vOffsets, 0, 14);
+	material->Get_Shader()->GetVector("gFrustumCorners")->SetFloatVectorArray((_float*)m_vFrustumFarCorner, 0, 4);
+
+
+	mesh->Get_VertexBuffer()->Push_Data();
+	mesh->Get_IndexBuffer()->Push_Data();
+
+	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	material->Get_Shader()->DrawIndexed(0, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+
+
+}
+
+void Scene::Render_SSAOBlur(_uint blurCount)
+{
+	SSAO_MapBlur(RESOURCES.Get<Texture>(L"SSAOTarget"),RENDER_TARGET_GROUP_TYPE::SSAOBLUR0, true);
+
+	for (_uint i = 0; i < blurCount; ++i)
+	{
+		SSAO_MapBlur(RESOURCES.Get<Texture>(L"SSAOBlurTarget0"), RENDER_TARGET_GROUP_TYPE::SSAOBLUR1, false);
+		SSAO_MapBlur(RESOURCES.Get<Texture>(L"SSAOBlurTarget1"), RENDER_TARGET_GROUP_TYPE::SSAOBLUR0, true);
+
+	}
+	SSAO_MapBlur(RESOURCES.Get<Texture>(L"SSAOBlurTarget0"), RENDER_TARGET_GROUP_TYPE::SSAOBLUR1, false);
+}
+
 void Scene::Render_Lights()
 {
 	if (Get_MainCamera())
@@ -679,7 +733,7 @@ void Scene::Render_LightFinal()
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 
 	material->Get_Shader()->GetScalar("g_gamma")->SetFloat(GAMEINSTANCE.g_fGamma);
-
+	material->Get_Shader()->GetScalar("g_SSAO_On")->SetBool(GAMEINSTANCE.g_bSSAO_On);
 	material->Push_SubMapData();
 
 	mesh->Get_VertexBuffer()->Push_Data();
@@ -732,7 +786,7 @@ void Scene::Render_BloomMap()
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 
 	material->Push_SubMapData();
-
+	material->Get_Shader()->GetScalar("g_BloomMin")->SetFloat(GAMEINSTANCE.g_fBloomMin);
 	mesh->Get_VertexBuffer()->Push_Data();
 	mesh->Get_IndexBuffer()->Push_Data();
 
@@ -761,7 +815,7 @@ void Scene::Render_BloomMapScaling()
 		material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 	}
 
-	for (_uchar i = 0; i < 2; ++i)
+	for (_uchar i = 0; i < 3; ++i)
 	{
 		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLOOMUPSCALE0) + i);
 		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
@@ -775,8 +829,12 @@ void Scene::Render_BloomMapScaling()
 		mesh->Get_IndexBuffer()->Push_Data();
 
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		
+		if(i != 2)
+			material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+		else
+			material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
-		material->Get_Shader()->DrawIndexed(0, 3, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 	}
 
 	{
@@ -828,12 +886,6 @@ void Scene::Render_Distortion_Final()
 	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	
 	material->Get_Shader()->DrawIndexed(0, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
-	
-	
-}
-
-void Scene::Render_ToneMapping()
-{
 }
 
 void Scene::Render_Debug()
@@ -855,7 +907,7 @@ void Scene::Render_UI()
 	}
 }
 
-void Scene::Render_BackBuffer()
+void Scene::Render_ToneMapping()
 {
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->OMSetRenderTargets();
 
@@ -876,5 +928,89 @@ void Scene::Render_BackBuffer()
 
 	material->Get_Shader()->DrawIndexed(0, GAMEINSTANCE.g_iTMIndex, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
+
+}
+
+void Scene::Render_BackBuffer()
+{
+
+}
+
+void Scene::SSAO_MakeOffsetVector()
+{
+	m_vOffsets[0] = _float4(+1.0f, +1.0f, +1.0f, 0.0f);
+	m_vOffsets[1] = _float4(-1.0f, -1.0f, -1.0f, 0.0f);
+
+	m_vOffsets[2] = _float4(-1.0f, +1.0f, +1.0f, 0.0f);
+	m_vOffsets[3] = _float4(+1.0f, -1.0f, -1.0f, 0.0f);
+
+	m_vOffsets[4] = _float4(+1.0f, +1.0f, -1.0f, 0.0f);
+	m_vOffsets[5] = _float4(-1.0f, -1.0f, +1.0f, 0.0f);
+
+	m_vOffsets[6] = _float4(-1.0f, +1.0f, -1.0f, 0.0f);
+	m_vOffsets[7] = _float4(+1.0f, -1.0f, +1.0f, 0.0f);
+
+	// 6 centers of cube faces
+	m_vOffsets[8] = _float4(-1.0f, 0.0f, 0.0f, 0.0f);
+	m_vOffsets[9] = _float4(+1.0f, 0.0f, 0.0f, 0.0f);
+
+	m_vOffsets[10] = _float4(0.0f, -1.0f, 0.0f, 0.0f);
+	m_vOffsets[11] = _float4(0.0f, +1.0f, 0.0f, 0.0f);
+
+	m_vOffsets[12] = _float4(0.0f, 0.0f, -1.0f, 0.0f);
+	m_vOffsets[13] = _float4(0.0f, 0.0f, +1.0f, 0.0f);
+
+	for (_int i = 0; i < 14; ++i)
+	{
+		// Create random lengths in [0.25, 1.0].
+		_float s = MathUtils::Get_RandomFloat(0.25f, 1.0f);
+
+		XMVECTOR v = s * ::XMVector4Normalize(::XMLoadFloat4(&m_vOffsets[i]));
+
+		::XMStoreFloat4(&m_vOffsets[i], v);
+	}
+}
+
+void Scene::SSAO_MakeFrustumFarCorners()
+{
+	_float aspect = (_float)GRAPHICS.Get_ViewPort().Get_Width() / (_float)GRAPHICS.Get_ViewPort().Get_Height();
+
+	_float farZ = 1000.f;
+
+	_float halfHeight = farZ * tanf(0.5f * XM_PI / 3.f);
+	_float halfWidth = aspect * halfHeight;
+
+	if (Get_MainCamera())
+	{
+		farZ = Get_MainCamera()->Get_Camera()->Get_CameraDesc().fFar;
+		halfHeight = farZ * tanf(0.5f * Get_MainCamera()->Get_Camera()->Get_CameraDesc().fFOV);
+		halfWidth = aspect * halfHeight;
+	}
+
+	m_vFrustumFarCorner[0] = _float4(-halfWidth, +halfHeight, farZ, 0.0f);
+	m_vFrustumFarCorner[1] = _float4(+halfWidth, +halfHeight, farZ, 0.0f);
+	m_vFrustumFarCorner[2] = _float4(+halfWidth, -halfHeight, farZ, 0.0f);
+	m_vFrustumFarCorner[3] = _float4(-halfWidth, -halfHeight, farZ, 0.0f);
+}
+
+void Scene::SSAO_MapBlur(shared_ptr<Texture> input, RENDER_TARGET_GROUP_TYPE eType, _bool horzBlur)
+{
+	//GRAPHICS.Get_RTGroup(eType)->ClearRenderTargetView();
+	GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
+	auto material = make_shared<Material>();
+	material->Set_Shader(RESOURCES.Get<Shader>(L"Shader_SSAO.fx"));
+	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+
+	material->Set_SubMap(0, input);
+
+	material->Push_SubMapData();
+	mesh->Get_VertexBuffer()->Push_Data();
+	mesh->Get_IndexBuffer()->Push_Data();
+
+	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+
+	_int iPass = horzBlur ? 1 : 2;
+	material->Get_Shader()->DrawIndexed(0, iPass, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
 }

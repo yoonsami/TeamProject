@@ -1,5 +1,6 @@
 #pragma once
 
+
 class GameInstance
 {
 	DECLARE_SINGLETON(GameInstance)
@@ -27,6 +28,9 @@ public:
 	static _float g_fShadowBias;
 	static _float g_fMaxWhite;
 	static _float g_fGamma;
+	static _float g_fBloomMin;
 	static _int g_iTMIndex;
+
+	static _bool g_bSSAO_On;
 };
 

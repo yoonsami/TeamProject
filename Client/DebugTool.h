@@ -1,8 +1,9 @@
 #pragma once
+
+#ifdef _DEBUGTOOL
 class DebugTool
 {
 	DECLARE_SINGLETON(DebugTool)
-
 public:
 	~DebugTool();
 
@@ -18,3 +19,4 @@ private:
 	_bool m_bIsRender;
 };
 
+#endif

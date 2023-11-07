@@ -25,7 +25,7 @@ void ModelAnimator::Tick()
 	m_preTweenDesc = m_TweenDesc;
 
 	m_TweenDesc.curr.sumTime += fDT;
-	//현재 애니메이션
+
 	{
 		shared_ptr<ModelAnimation> currentAnim = m_pModel->Get_AnimationByIndex(m_TweenDesc.curr.animIndex);
 		if (currentAnim)
@@ -34,13 +34,13 @@ void ModelAnimator::Tick()
 			if (m_TweenDesc.curr.sumTime >= timePerFrame)
 			{
 				m_TweenDesc.curr.sumTime = 0;
-				
-				if(!m_bFinished)
+
+				if (!m_bFinished)
 				{
 					m_TweenDesc.curr.currentFrame = (m_TweenDesc.curr.currentFrame + 1) % currentAnim->frameCount;
 					m_TweenDesc.curr.nextFrame = (m_TweenDesc.curr.currentFrame + 1);
 				}
-				else if(m_bFinished && m_TweenDesc.curr.nextFrame == currentAnim->frameCount -1)
+				else if (m_bFinished && m_TweenDesc.curr.nextFrame == currentAnim->frameCount - 1)
 				{
 					if (m_iNextAnimation > 0)
 					{
@@ -51,33 +51,26 @@ void ModelAnimator::Tick()
 						m_bFinished = false;
 					}
 				}
-				// 다음 프레임이 끝프레임과 같을 때 ( 끝났을 때 )
 
 
 				if (m_TweenDesc.curr.nextFrame == currentAnim->frameCount)
 				{
-					// 다음 애니메이션이 없을 때
-					if(m_iNextAnimation<0 && m_TweenDesc.next.animIndex <0)
+					if (m_iNextAnimation < 0 && m_TweenDesc.next.animIndex < 0)
 					{
-						// 루프 애니메이션이면
 						if (currentAnim->loop)
 						{
-							// 그대로 진행
 							m_TweenDesc.curr.nextFrame %= currentAnim->frameCount;
 						}
-						// 루프 애니메이션 아니면
 						else
 						{
-							// 마지막프레임 -1 에 고정 후 m_bFinished true
 							m_TweenDesc.curr.currentFrame = currentAnim->frameCount - 1;
 							m_TweenDesc.curr.nextFrame = currentAnim->frameCount - 1;
 							m_bFinished = true;
 						}
 					}
-					// 다음 애니메이션 있을 때,
 					else
 					{
-						if(m_iNextAnimation <0)
+						if (m_iNextAnimation < 0)
 						{
 							m_TweenDesc.curr.animIndex = m_iNextAnimation;
 							m_iNextAnimation = -1;
@@ -91,7 +84,7 @@ void ModelAnimator::Tick()
 							m_TweenDesc.ClearNextAnim();
 							m_bFinished = false;
 						}
-						
+
 					}
 				}
 			}
@@ -101,7 +94,6 @@ void ModelAnimator::Tick()
 	}
 
 
-	//다음 애니메이션
 	if (m_TweenDesc.next.animIndex >= 0)
 	{
 		m_TweenDesc.tweenSumTime += fDT;
@@ -140,11 +132,11 @@ void ModelAnimator::Tick()
 	auto& preAnimRootPositions = m_pModel->Get_RootBonePosition()[m_preTweenDesc.curr.animIndex];
 	auto& curAnimRootPositions = m_pModel->Get_RootBonePosition()[m_TweenDesc.curr.animIndex];
 	{
-		if(m_preTweenDesc.curr.animIndex != m_TweenDesc.curr.animIndex)
+		if (m_preTweenDesc.curr.animIndex != m_TweenDesc.curr.animIndex)
 			vDistToMove = _float3(0.f);
-		else if(m_TweenDesc.curr.currentFrame == 0 && m_TweenDesc.curr.nextFrame == 0)
+		else if (m_TweenDesc.curr.currentFrame == 0 && m_TweenDesc.curr.nextFrame == 0)
 			vDistToMove = _float3(0.f);
-		else if(m_TweenDesc.curr.currentFrame <= m_TweenDesc.curr.nextFrame )
+		else if (m_TweenDesc.curr.currentFrame <= m_TweenDesc.curr.nextFrame)
 		{
 			_float3 vPrePosition = _float3::Lerp(preAnimRootPositions[m_preTweenDesc.curr.currentFrame], preAnimRootPositions[m_preTweenDesc.curr.nextFrame], m_preTweenDesc.curr.ratio);
 			_float3 vCurPosition = _float3::Lerp(curAnimRootPositions[m_TweenDesc.curr.currentFrame], curAnimRootPositions[m_TweenDesc.curr.nextFrame], m_TweenDesc.curr.ratio);
@@ -152,7 +144,7 @@ void ModelAnimator::Tick()
 		}
 		else
 			vDistToMove = _float3(0.f);
-		
+
 
 	}
 
@@ -180,10 +172,10 @@ void ModelAnimator::Set_NextAnim(_int index)
 	}
 	else
 	{
-		m_iNextAnimation = index; 
+		m_iNextAnimation = index;
 		m_bFinished = false;
 	}
-	
+
 }
 
 void ModelAnimator::Set_Model(shared_ptr<Model> model)
@@ -281,7 +273,7 @@ void ModelAnimator::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 		_float4 lineColor = _float4(0.f, 0.f, 0.f, 1.f);
 		m_pShader->GetVector("g_LineColor")->SetFloatVector((_float*)(&lineColor));
 		m_pShader->GetScalar("g_LineThickness")->SetFloat(Model::m_fOutlineThickness);
-		
+
 		m_pShader->DrawIndexedInstanced(1, PS_ANIMINSTANCING, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
 
 		m_pShader->DrawIndexedInstanced(0, PS_ANIMINSTANCING, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
@@ -443,7 +435,7 @@ void ModelAnimator::Render_MotionBlur_Instancing(shared_ptr<class InstancingBuff
 
 InstanceID ModelAnimator::Get_InstanceID()
 {
-	return make_pair(_ulonglong(m_pModel.get()),_ulonglong(m_pShader.get()));
+	return make_pair(_ulonglong(m_pModel.get()), _ulonglong(m_pShader.get()));
 }
 
 _float4x4 ModelAnimator::Get_CurAnimTransform(_int boneIndex)

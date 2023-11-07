@@ -30,15 +30,18 @@ HRESULT MainApp::Init()
 		}
 	}
 	Open_Scene();
+#ifdef _DEBUGTOOL
 	DEBUGTOOL.Init();
-
+#endif
     return S_OK;
 }
 
 void MainApp::Tick()
 {
 	GAMEINSTANCE.Tick_Engine();
-	DEBUGTOOL.Tick();
+#ifdef _DEBUGTOOL
+DEBUGTOOL.Tick();
+#endif // _DEBUGTOOL
 	Control_Option();
 }
 
@@ -46,7 +49,9 @@ HRESULT MainApp::Render()
 {
 	GAMEINSTANCE.Render_Begin();
 	SCENE.Render();
+#ifdef _DEBUGTOOL
 	DEBUGTOOL.Render();
+#endif // _DEBUGTOOL
 
 	GAMEINSTANCE.Render_End();
 

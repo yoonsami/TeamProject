@@ -184,6 +184,7 @@
     <ClInclude Include="..\Libraries\Include\IMGUI\imstb_textedit.h" />
     <ClInclude Include="..\Libraries\Include\IMGUI\imstb_truetype.h" />
     <ClInclude Include="..\Libraries\Include\IMGUI\ImZoomSlider.h" />
+    <ClInclude Include="AttackColliderInfoScript.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Client_Define.h" />
     <ClInclude Include="Client_Ui_Initializer.h" />
@@ -194,6 +195,7 @@
     <ClInclude Include="DemoCameraScript2.h" />
     <ClInclude Include="DemoFSM.h" />
     <ClInclude Include="DemoScene.h" />
+    <ClInclude Include="ForwardMovingSkillScript.h" />
     <ClInclude Include="HeroChangeScript.h" />
     <ClInclude Include="Kyle_FSM.h" />
     <ClInclude Include="Loader.h" />
@@ -205,6 +207,7 @@
     <ClInclude Include="MapObjectScript.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Silversword_Soldier_FSM.h" />
     <ClInclude Include="SpearAce_FSM.h" />
     <ClInclude Include="WeaponScript.h" />
   </ItemGroup>
@@ -222,6 +225,7 @@
     <ClCompile Include="..\Libraries\Include\IMGUI\imgui_tables.cpp" />
     <ClCompile Include="..\Libraries\Include\IMGUI\imgui_widgets.cpp" />
     <ClCompile Include="..\Libraries\Include\IMGUI\ImSequencer.cpp" />
+    <ClCompile Include="AttackColliderInfoScript.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Client_Ui_Initializer.cpp" />
     <ClCompile Include="DebugTool.cpp" />
@@ -231,6 +235,7 @@
     <ClCompile Include="DemoCameraScript2.cpp" />
     <ClCompile Include="DemoFSM.cpp" />
     <ClCompile Include="DemoScene.cpp" />
+    <ClCompile Include="ForwardMovingSkillScript.cpp" />
     <ClCompile Include="HeroChangeScript.cpp" />
     <ClCompile Include="Kyle_FSM.cpp" />
     <ClCompile Include="Loader.cpp" />
@@ -246,6 +251,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Silversword_Soldier_FSM.cpp" />
     <ClCompile Include="SpearAce_FSM.cpp" />
     <ClCompile Include="WeaponScript.cpp" />
   </ItemGroup>
@@ -272,19 +278,11 @@
     <FxCompile Include="..\Shaders\Shader_Mesh.fx" />
     <FxCompile Include="..\Shaders\Shader_Model.fx" />
     <FxCompile Include="..\Shaders\Shader_Particle.fx" />
+    <FxCompile Include="..\Shaders\Shader_Particle2.fx" />
+    <FxCompile Include="..\Shaders\Shader_SSAO.fx" />
     <FxCompile Include="..\Shaders\Shader_Trail.fx" />
     <FxCompile Include="..\Shaders\Shadow.fx" />
     <FxCompile Include="..\Shaders\SkyBox.fx" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Libraries\Include\IMGUI\imgui.ini" />
-    <None Include="..\Libraries\Include\IMGUI\imgui.natstepfilter" />
-  </ItemGroup>
-  <ItemGroup>
-    <Natvis Include="..\Libraries\Include\IMGUI\imgui.natvis" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="..\Libraries\Include\IMGUI\imgui_log.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

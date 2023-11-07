@@ -2,7 +2,8 @@
 #include "Camera.h"
 #include "Scene.h"
 #include "ModelRenderer.h"
-#include "ParticleSystem.h"
+//#include "ParticleSystem.h"
+#include "Particle.h"
 #include "ModelAnimator.h"
 #include "MeshRenderer.h"
 #include "TrailRenderer.h"
@@ -75,7 +76,8 @@ void Camera::Sort_GameObject()
 			&& gameObject->Get_Animator() == nullptr
 			&& gameObject->Get_Collider() == nullptr
 			//&& gameObject->Get_EffectRenderer() == nullptr
-			&& gameObject->Get_ParticleSystem() == nullptr
+			//&& gameObject->Get_ParticleSystem() == nullptr
+			&& gameObject->Get_Particle() == nullptr
 			&& gameObject->Get_TrailRenderer() == nullptr
 			&& gameObject->Get_MotionTrailRenderer() == nullptr
 			&& gameObject->Get_FontRenderer() ==nullptr)
@@ -107,8 +109,11 @@ void Camera::Sort_GameObject()
 
 		if (gameObject->Get_FontRenderer())
 			m_Fonts.push_back(gameObject);
-		if (gameObject->Get_ParticleSystem())
+		//if (gameObject->Get_ParticleSystem())
+		//	m_Particle.push_back(gameObject);
+		if (gameObject->Get_Particle())
 			m_Particle.push_back(gameObject);
+
 	}
 }
 
@@ -247,7 +252,7 @@ void Camera::Render_BlurForward()
 	for (auto& particle : m_Particle)
 	{
 		if(particle->Is_Blured())
-			particle->Get_ParticleSystem()->Render();
+			particle->Get_Particle()->Render();
 	}
 }
 
@@ -322,7 +327,7 @@ void Camera::Render_Forward()
 
 	for (auto& particle : m_Particle)
 	{
-		particle->Get_ParticleSystem()->Render();
+		particle->Get_Particle()->Render();
 	}
 
 	for (auto& font : m_Fonts)

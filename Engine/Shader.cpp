@@ -508,6 +508,20 @@ void Shader::Push_ParticleData(const ParticleDesc& desc)
 	m_pParticleEffectBuffer->SetConstantBuffer(m_pParticleBuffer->Get_ComPtr().Get());
 }
 
+void Shader::Push_CreateParticleData(const CreateParticleDesc& desc)
+{
+	if (!m_pCreateParticleEffectBuffer)
+	{
+		m_pCreateParticleBuffer = make_shared<ConstantBuffer>();
+		m_pCreateParticleBuffer->Create<CreateParticleDesc>();
+		m_pCreateParticleEffectBuffer = GetConstantBuffer("CreateParticleBuffer");
+	}
+
+	m_CreateParticleDesc = desc;
+	m_pCreateParticleBuffer->CopyData(m_CreateParticleDesc);
+	m_pCreateParticleEffectBuffer->SetConstantBuffer(m_pCreateParticleBuffer->Get_ComPtr().Get());
+}
+
 void Shader::Push_TextureMapData(const TextureMapDesc& boolArray)
 {
 	if (!m_pTextureMapEffectBuffer)

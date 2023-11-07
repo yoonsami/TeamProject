@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Graphics.h"
-#define FORMATTYPE DXGI_FORMAT_R8G8B8A8_UNORM
+#define FORMATTYPE DXGI_FORMAT_R16G16B16A16_FLOAT
 HRESULT Graphics::Initialize(GRAPHICDESC desc)
 {
 	if (FAILED(Ready_DeviceAndSwapChain(desc.hWnd, desc.eWinMode, desc.iSizeX, desc.iSizeY)))
@@ -250,6 +250,37 @@ void Graphics::Create_RTGroup()
 
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::FINAL)] = make_shared<RenderTargetGroup>();
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::FINAL)]->Create(RENDER_TARGET_GROUP_TYPE::FINAL, rtVec, dsTexture);
+	}
+
+	//SSAO
+	{
+		vector<RenderTarget> rtVec(RENDER_TARGET_SSAO_GROUP_MEMEBER_COUNT);
+		rtVec[0].target = RESOURCES.CreateTexture(L"SSAOTarget", DXGI_FORMAT_R16_FLOAT, _uint(m_Viewport.Get_Width()), _uint(m_Viewport.Get_Height()), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].clearColor = _float4(0.f);
+
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::SSAO)] = make_shared<RenderTargetGroup>();
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::SSAO)]->Create(RENDER_TARGET_GROUP_TYPE::SSAO, rtVec, dsTexture);
+	}
+
+	{
+		vector<RenderTarget> rtVec(RENDER_TARGET_SSAO_GROUP_MEMEBER_COUNT);
+		shared_ptr<Texture> dsTexture0 = RESOURCES.CreateTexture(L"SSAOBlurTarget0DS", DXGI_FORMAT_D24_UNORM_S8_UINT, _uint(m_Viewport.Get_Width()), _uint(m_Viewport.Get_Height()), D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL, _float4(0.f));
+
+		rtVec[0].target = RESOURCES.CreateTexture(L"SSAOBlurTarget0", DXGI_FORMAT_R16_FLOAT, _uint(m_Viewport.Get_Width()), _uint(m_Viewport.Get_Height()), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].clearColor = _float4(0.f);
+
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::SSAOBLUR0)] = make_shared<RenderTargetGroup>();
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::SSAOBLUR0)]->Create(RENDER_TARGET_GROUP_TYPE::SSAOBLUR0, rtVec, dsTexture0);
+	}
+	{
+		vector<RenderTarget> rtVec(RENDER_TARGET_SSAO_GROUP_MEMEBER_COUNT);
+		shared_ptr<Texture> dsTexture0 = RESOURCES.CreateTexture(L"SSAOBlurTarget1DS", DXGI_FORMAT_D24_UNORM_S8_UINT, _uint(m_Viewport.Get_Width()), _uint(m_Viewport.Get_Height()), D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL, _float4(0.f));
+
+		rtVec[0].target = RESOURCES.CreateTexture(L"SSAOBlurTarget1", DXGI_FORMAT_R16_FLOAT, _uint(m_Viewport.Get_Width()), _uint(m_Viewport.Get_Height()), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].clearColor = _float4(0.f);
+
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::SSAOBLUR1)] = make_shared<RenderTargetGroup>();
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::SSAOBLUR1)]->Create(RENDER_TARGET_GROUP_TYPE::SSAOBLUR1, rtVec, dsTexture0);
 	}
 
 	//MotionBlurFinal

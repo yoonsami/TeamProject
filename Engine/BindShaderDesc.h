@@ -136,6 +136,38 @@ struct ParticleDesc
 	_float2 padding1;
 };
 
+struct CreateParticleDesc
+{
+	int			iEndScaleOption;
+	int			iEndSpeedOption;
+
+	_float2		vMinMaxLifeTime;
+	
+	_float2		vMinMaxRotationSpeed_X;
+	_float2		vMinMaxRotationSpeed_Y;
+	_float2		vMinMaxRotationSpeed_Z;
+
+	_float2		vMinMaxRotationAngle_X;
+	_float2		vMinMaxRotationAngle_Y;
+	_float2		vMinMaxRotationAngle_Z;
+
+	_float4		vStartColor;
+	_float4		vEndColor;
+
+	_float2		vMinMaxStartScale;
+	_float2		vMinMaxEndScale;
+
+	_float2		vMinMaxStartSpeed;
+	_float2		vMinMaxEndSpeed;
+
+	_float4		vCreateRange;
+	_float4		vCreateOffsets;
+
+	int			iNewlyAddCnt = 0;
+	int			iRandomRotationOn;
+	_float2		Padding;
+};
+
 struct TextureMapDesc
 {
 	int bHasTextureMap[MAX_TEXTURE_MAP_COUONT];

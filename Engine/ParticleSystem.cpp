@@ -30,7 +30,6 @@ HRESULT ParticleSystem::Init()
 	if (!m_pComputeSharedBuffer)
 		m_pComputeSharedBuffer = make_shared<StructuredBuffer>(nullptr, static_cast <_uint>(sizeof ComputeSharedInfo), 1);
 
-
 	return S_OK;
 }
 
@@ -66,7 +65,7 @@ void ParticleSystem::Final_Tick()
 	auto& world = Get_Transform()->Get_WorldMatrix();
 	m_pShader->Push_TransformData(TransformDesc{ world });
 
-	m_pShader->GetUAV("g_Particle")->SetUnorderedAccessView(m_pParticleBuffer->Get_UAV().Get());
+	m_pShader->GetUAV("g_Particle")->SetUnorderedAccessView(m_pParticleBuffer->Get_UAV().Get());	// 쉐이
 	m_pShader->GetUAV("g_Shared")->SetUnorderedAccessView(m_pComputeSharedBuffer->Get_UAV().Get());
 
 	_float2 StartEndScale = { m_ParticleSystemDesc.m_fStartScale,m_ParticleSystemDesc.m_fEndScale };
@@ -92,7 +91,6 @@ void ParticleSystem::Final_Tick()
 	vector<ParticleInfo> tmp(m_ParticleSystemDesc.m_iMaxParticle);
 	m_pParticleBuffer->Copy_FromOutput(tmp.data());
 
-
 	m_pParticleBuffer->Copy_ToInput(tmp.data());
 }
 
@@ -103,17 +101,18 @@ void ParticleSystem::Render()
 		if (!m_pMesh || !m_pMaterial)
 			return;
 
-		m_pShader->GetScalar("isModel")->SetBool(false);
+		m_pShader->GetScalar("isModel")->SetBool(false);	// 보류
 
-		m_RenderParams.SetInt(3, m_ComputeParams.intParams[3]);
-		m_pMaterial->Tick();
+		m_RenderParams.SetInt(3, m_ComputeParams.intParams[3]);// 보류
+		m_pMaterial->Tick();// 보류
 
+		m_pShader->Push_RenderParamData(m_RenderParams);// 보류
 		m_pShader->GetSRV("g_Data")->SetResource(m_pParticleBuffer->Get_SRV().Get());
 
 		m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 
-		_float2 StartEndScale = { m_ParticleSystemDesc.m_fStartScale,m_ParticleSystemDesc.m_fEndScale };
-		m_pShader->GetVector("StartEndScale")->SetFloatVector((_float*)&StartEndScale);
+		_float2 StartEndScale = { m_ParticleSystemDesc.m_fStartScale,m_ParticleSystemDesc.m_fEndScale }; // 커스텀인듯 일단 제외
+		m_pShader->GetVector("StartEndScale")->SetFloatVector((_float*)&StartEndScale); // 커스텀인듯 일단 제외
 
 		auto LightParam = CUR_SCENE->Get_LightParams();
 		m_pShader->Push_LightData(LightParam);
@@ -121,7 +120,7 @@ void ParticleSystem::Render()
 		auto world = Get_Transform()->Get_WorldMatrix();
 		m_pShader->Push_TransformData(TransformDesc{ world });
 
-		m_pShader->Push_EffectData(m_EffectDesc);
+		m_pShader->Push_EffectData(m_EffectDesc);	// 보류
 
 		m_pMesh->Get_VertexBuffer()->Push_Data();
 		m_pMesh->Get_IndexBuffer()->Push_Data();
@@ -135,7 +134,7 @@ void ParticleSystem::Render()
 		m_pShader->GetScalar("isModel")->SetBool(true);
 
 		m_pShader->GetSRV("g_Data")->SetResource(m_pParticleBuffer->Get_SRV().Get());
-
+		m_pShader->Push_RenderParamData(m_RenderParams);
 		auto world = Get_Transform()->Get_WorldMatrix();
 		m_pShader->Push_TransformData(TransformDesc{ world });
 		m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
@@ -181,7 +180,6 @@ void ParticleSystem::Create_Buffer()
 
 	if (!m_pComputeSharedBuffer)
 		m_pComputeSharedBuffer = make_shared<StructuredBuffer>(nullptr, static_cast <_uint>(sizeof ComputeSharedInfo), 1);
-
 }
 
 void ParticleSystem::Set_Material(shared_ptr<Material> material)

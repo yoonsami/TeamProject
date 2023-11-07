@@ -8,6 +8,7 @@
 #include "ModelMesh.h"
 #include "Geometry.h"
 #include "CustomFont.h"
+#include "MathUtils.h"
 
 namespace fs = std::filesystem;
 
@@ -17,11 +18,54 @@ ResourceMgr::~ResourceMgr()
 }
 void ResourceMgr::Initialize()
 {
+	if (!RESOURCES.Get<Texture>(L"SSAO_RandomVectorTexture"))
+	{
+		D3D11_TEXTURE2D_DESC texDesc;
+		texDesc.Width = 256;
+		texDesc.Height = 256;
+		texDesc.MipLevels = 1;
+		texDesc.ArraySize = 1;
+		texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		texDesc.SampleDesc.Count = 1;
+		texDesc.SampleDesc.Quality = 0;
+		texDesc.Usage = D3D11_USAGE_IMMUTABLE;
+		texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		texDesc.CPUAccessFlags = 0;
+		texDesc.MiscFlags = 0;
+
+		D3D11_SUBRESOURCE_DATA initData = { 0 };
+		initData.SysMemPitch = 256 * sizeof(Color);
+
+		vector<Color> color(256 * 256);
+
+		for (_int i = 0; i < 256; ++i)
+		{
+			for (_int j = 0; j < 256; ++j)
+			{
+				XMFLOAT3 v(MathUtils::RandF(), MathUtils::RandF(), MathUtils::RandF());
+
+				color[i * 256 + j] = Color(v.x, v.y, v.z, 0.0f);
+			}
+		}
+
+		initData.pSysMem = color.data();
+
+		ComPtr<ID3D11Texture2D> tex;
+		(DEVICE->CreateTexture2D(&texDesc, &initData, tex.GetAddressOf()));
+
+		shared_ptr<Texture> texture = make_shared<Texture>();
+		texture->CreateFromResource(tex);
+
+		RESOURCES.Add<Texture>(L"SSAO_RandomVectorTexture", texture);
+
+	}
+
 	CreateDefaultMesh();
 	CreateDefaultShader();
 	//CreateDefaultShader_EffectTool(); // MEMO : Effect Tool에서 사용하는 Shader Create 함수 
 	CreateDefaultMaterial();
 	CreateDefaultFont();
+
 }
 
 
@@ -306,6 +350,14 @@ void ResourceMgr::CreateDefaultMesh()
 
 void ResourceMgr::CreateDefaultShader()
 {
+	{ // MEMO : 2가 그냥 Shader_Particle.fx를 복사, 수정해서 사용하고 있는 것. 
+		wstring ShaderTag = L"Shader_Particle2.fx";
+		Load<Shader>(ShaderTag, ShaderTag);
+		auto shader = Get<Shader>(ShaderTag);
+		shader->Set_ShaderType(SHADER_TYPE::PARTICLE);
+	}
+
+
 	{
 		wstring ShaderTag = L"Shader_Mesh.fx";
 		Load<Shader>(ShaderTag, ShaderTag);
@@ -390,10 +442,23 @@ void ResourceMgr::CreateDefaultShader()
 		auto shader = Get<Shader>(ShaderTag);
 		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
 	}
+	{ // MEMO : must
+		wstring ShaderTag = L"Shader_SSAO.fx";
+		Load<Shader>(ShaderTag, ShaderTag);
+		auto shader = Get<Shader>(ShaderTag);
+		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
+	}
 }
 
 void ResourceMgr::CreateDefaultShader_EffectTool()
 {
+	{ // MEMO : 2가 그냥 Shader_Particle.fx를 복사, 수정해서 사용하고 있는 것. 
+		wstring ShaderTag = L"Shader_Particle2.fx";
+		Load<Shader>(ShaderTag, ShaderTag);
+		auto shader = Get<Shader>(ShaderTag);
+		shader->Set_ShaderType(SHADER_TYPE::PARTICLE);
+	}
+
 	{ // MEMO : must
 		wstring ShaderTag = L"Lighting.fx";
 		Load<Shader>(ShaderTag, ShaderTag);
@@ -478,6 +543,7 @@ void ResourceMgr::CreateDefaultMaterial()
 		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"PositionTarget"));
 		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"NormalTarget"));
 		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"ShadowTarget"));
+		material->Set_SubMap(3, RESOURCES.Get<Texture>(L"SSAOBlurTarget1"));
 		Add(L"LightMaterial", material);
 	}
 	{
@@ -493,6 +559,7 @@ void ResourceMgr::CreateDefaultMaterial()
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Lighting.fx");
 		shared_ptr<Material> material = make_shared<Material>();
 		material->Set_Shader(shader);
+
 		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"DiffuseTarget"));
 		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"SpecularTarget"));
 		material->Set_SubMap(3, RESOURCES.Get<Texture>(L"EmissiveTarget"));
@@ -500,10 +567,20 @@ void ResourceMgr::CreateDefaultMaterial()
 		material->Set_SubMap(5, RESOURCES.Get<Texture>(L"DiffuseLightTarget"));
 		material->Set_SubMap(6, RESOURCES.Get<Texture>(L"SpecularLightTarget"));
 		material->Set_SubMap(7, RESOURCES.Get<Texture>(L"EmissiveLightTarget"));
-		//material->Set_SubMap(8, RESOURCES.Get<Texture>(L"BlurTarget"));
+
 
 		Add(L"LightFinal", material);
 	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_SSAO.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"NormalTarget"));
+		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"G_DepthTarget"));
+		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"SSAO_RandomVectorTexture"));
+		Add(L"SSAO", material);
+	}
+
 	{
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
 		shared_ptr<Material> material = make_shared<Material>();
@@ -598,6 +675,22 @@ void ResourceMgr::CreateDefaultMaterial()
 		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"BLOOMUPSCALE2"));
 		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"BloomTarget"));
 		Add(L"BloomFinal", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Final.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"DistortionFinalTarget"));
+
+		Add(L"BackBufferRenderFinal", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_SSAO.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"DistortionFinalTarget"));
+
+		Add(L"BackBufferRenderFinal", material);
 	}
 	{
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Final.fx");

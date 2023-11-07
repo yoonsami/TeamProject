@@ -56,7 +56,11 @@ void Pass::EndDraw()
 	if (stateblockMask.OMBlendState == 1)
 		CONTEXT->OMSetBlendState(stateBlock->OMBlendState.Get(), stateBlock->OMBlendFactor, stateBlock->OMSampleMask);
 
-
+	for (int i = 0; i < 32; ++i)
+	{
+		ID3D11ShaderResourceView* nullSRV = nullptr;
+		CONTEXT->PSSetShaderResources(i, 1, &nullSRV);
+	}
 
 	CONTEXT->HSSetShader(NULL, NULL, 0);
 	CONTEXT->DSSetShader(NULL, NULL, 0);

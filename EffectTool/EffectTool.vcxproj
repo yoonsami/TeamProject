@@ -216,6 +216,16 @@
     <Image Include="EffectTool.ico" />
     <Image Include="small.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Libraries\Include\IMGUI\imgui.ini" />
+    <None Include="..\Libraries\Include\IMGUI\imgui.natstepfilter" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="..\Libraries\Include\IMGUI\imgui.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\Libraries\Include\IMGUI\imgui_log.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

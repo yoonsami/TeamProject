@@ -88,7 +88,7 @@ void InputMgr::Tick()
 		ClientToScreen(hWnd, &center);
 		SetCursorPos(center.x, center.y);
 	}
-	else if(GetButtonHold(KEY_TYPE::LALT) == true)
+	else if(GetButtonHold(KEY_TYPE::LCTRL) == true)
 	{
 		RECT tmp{};
 		GetClientRect(hWnd, &tmp);
@@ -98,14 +98,13 @@ void InputMgr::Tick()
 		m_vMouseDir.x = _float(m_ptMousePos.x - center.x);
 		m_vMouseDir.y = _float(m_ptMousePos.y - center.y);
 		ClientToScreen(hWnd, &center);
-		//::ShowCursor(false);
+		::ShowCursor(true);
 		SetCursorPos(center.x, center.y);
 	}
 	else
 	{
 		m_vMouseDir = { 0.f,0.f };
 		::ShowCursor(true);
-
 	}
 
 }

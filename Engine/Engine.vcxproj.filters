@@ -399,6 +399,9 @@
     <ClCompile Include="MotionTrailRenderer.cpp">
       <Filter>04.Component\05.UI &amp; Effect\Renderer\04.MotionTrailRenderer</Filter>
     </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>04.Component\05.UI &amp; Effect\Renderer\01.ParticleSystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -616,6 +619,9 @@
     </ClInclude>
     <ClInclude Include="MotionTrailRenderer.h">
       <Filter>04.Component\05.UI &amp; Effect\Renderer\04.MotionTrailRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>04.Component\05.UI &amp; Effect\Renderer\01.ParticleSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

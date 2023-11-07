@@ -102,7 +102,7 @@ cbuffer RenderParamBuffer
     float2 g_vec2_2;
     float2 g_vec2_3;
     float4 g_vec4_0;
-    float4 g_vec4_1;
+    float4 g_vec4_1; 
     float4 g_vec4_2;
     float4 g_vec4_3;
     row_major float4x4 g_mat_0;
@@ -110,6 +110,7 @@ cbuffer RenderParamBuffer
     row_major float4x4 g_mat_2;
     row_major float4x4 g_mat_3;
 };
+
 cbuffer KeyFrameBuffer
 {
     KeyFrameDesc keyframes;
@@ -121,7 +122,7 @@ cbuffer TweenBuffer
     TweenFrameDesc preTweenFrames;
 };
 
-
+bool g_SSAO_On;
 
 cbuffer InstanceTweenBuffer
 {
@@ -170,6 +171,38 @@ cbuffer ParticleBuffer
     float2 padding1;
 };
 
+cbuffer CreateParticleBuffer
+{
+    int g_iEndScaleOption;
+    int g_iEndSpeedOption;
+
+    float2 g_vMinMaxLifeTime;
+	
+    float2 g_vMinMaxRotationSpeed_X;
+    float2 g_vMinMaxRotationSpeed_Y;
+    float2 g_vMinMaxRotationSpeed_Z;
+
+    float2 g_vMinMaxRotationAngle_X;
+    float2 g_vMinMaxRotationAngle_Y;
+    float2 g_vMinMaxRotationAngle_Z;
+
+    float4 g_vStartColor;
+    float4 g_vEndColor;
+           
+    float2 g_vMinMaxStartScale;
+    float2 g_vMinMaxEndScale;
+           
+    float2 g_vMinMaxStartSpeed;
+    float2 g_vMinMaxEndSpeed;
+           
+    float4 g_vCreateRange;
+    float4 g_vCreateOffsets;
+
+    int g_iNewlyAddCnt;
+    int g_iRandomRotationOn;
+    float2 padding_CreateParticleBuffer;
+};
+
 cbuffer TextureMapBuffer
 {
     int bHasDiffuseMap;
@@ -209,8 +242,6 @@ cbuffer SubMapBuffer
     int bHasSubmap14;
     int bHasSubmap15;
 };
-
-
 
 Texture2DArray TransformMap;
 
@@ -569,14 +600,6 @@ float3 aces_output_matrix[3] =
     float3(-0.00327f, -0.07276f, 1.07602f)
 };
 
-float3 mul(const float3 m[3], const float3 v)
-{
-    float x = dot(m[0], v);
-    float y = dot(m[1], v);
-    float z = dot(m[2], v);
-    return float3(x, y, z);
-}
-
 float3 rtt_and_odt_fit(float3 v)
 {
     float3 a = v * (v + 0.0245786f) - 0.000090537f;
@@ -586,10 +609,26 @@ float3 rtt_and_odt_fit(float3 v)
 
 float3 aces_fitted(float3 v)
 {
-    v = mul(aces_input_matrix, v);
+    float x, y, z;
+    x = dot(aces_input_matrix[0], v);
+    y = dot(aces_input_matrix[1], v);
+    z = dot(aces_input_matrix[2], v);
+    v = float3(x, y, z);
     v = rtt_and_odt_fit(v);
-    return mul(aces_output_matrix, v);
+    
+    x = dot(aces_output_matrix[0], v);
+    y = dot(aces_output_matrix[1], v);
+    z = dot(aces_output_matrix[2], v);
+    
+    return float3(x,y,z);
 }
 
+static const float4x4 T =
+{
+    0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f
+};
 
 #endif

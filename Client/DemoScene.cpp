@@ -2,6 +2,7 @@
 #include "DemoScene.h"
 #include "ModelAnimator.h"
 #include "ModelRenderer.h"
+#include "BaseCollider.h"
 #include "Camera.h"
 #include "Light.h"
 #include "Model.h"
@@ -23,24 +24,30 @@
 #include "ObjectTransformDebug.h"
 #include "CharacterController.h"
 #include "HeroChangeScript.h"
+#include "Silversword_Soldier_FSM.h"
+#include "OBBBoxCollider.h"
+
+
+
 #include <filesystem>
 namespace fs = std::filesystem;
 #include "MapObjectScript.h"
-#include "Utils.h"
-#include "Client_Ui_Initializer.h"
-
 DemoScene::DemoScene()
 {
 }
 
 DemoScene::~DemoScene()
 {
+	_uint i = 0;
 }
 
 void DemoScene::Init()
 {
 	__super::Init();
-	COLLISION.Check_Group(_int(CollisionGroup::Player), _int(CollisionGroup::Monster));
+	COLLISION.Check_Group(_int(CollisionGroup::Player_Attack), _int(CollisionGroup::Monster_Body));
+	COLLISION.Check_Group(_int(CollisionGroup::Player_Skill), _int(CollisionGroup::Monster_Body));
+	COLLISION.Check_Group(_int(CollisionGroup::Monster_Attack), _int(CollisionGroup::Player_Body));
+	COLLISION.Check_Group(_int(CollisionGroup::Monster_Skill), _int(CollisionGroup::Player_Body));
 }
 
 void DemoScene::Tick()
@@ -101,7 +108,9 @@ HRESULT DemoScene::Load_Scene()
 	Load_Player();
 	Load_Light();
 	Load_Camera();
-	Load_MapFile(L"KRisMap18");
+	Load_MapFile(L"KrisMap20");
+	Load_Monster();
+	Load_DemoMap();
 
 	Load_UI_Texture();
 	Add_UI();
@@ -142,16 +151,23 @@ void DemoScene::Load_Player()
 		}
 		ObjPlayer->Set_Name(L"Player");
 		ObjPlayer->Set_VelocityMap(true);
+		ObjPlayer->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.8f, 0.5f })); //obbcollider
+		ObjPlayer->Get_Collider()->Set_CollisionGroup(Player_Body);
+		ObjPlayer->Get_Collider()->Set_Activate(true);
+
 		{
 			auto controller = make_shared<CharacterController>();
 			ObjPlayer->Add_Component(controller);
 			auto& desc = controller->Get_ControllerDesc();
 			desc.radius = 0.5f;
 			desc.height = 5.f;
-			desc.position = { 3.f, 0.f, 3.f };
+			_float3 vPos = ObjPlayer->Get_Transform()->Get_State(Transform_State::POS).xyz();
+			desc.position = { vPos.x, vPos.y, vPos.z };
 			controller->Create_Controller();
 		}
 		ObjPlayer->Set_DrawShadow(true);
+
+		ObjPlayer->Set_ObjectGroup(OBJ_PLAYER);
 		Add_GameObject(ObjPlayer);
 
 	
@@ -201,9 +217,7 @@ void DemoScene::Load_DemoMap()
 {
 	auto shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 	vector<wstring> modelName;
-	modelName.push_back(L"Building_A");
-	modelName.push_back(L"Building_B");
-	modelName.push_back(L"Building_C");
+
 	modelName.push_back(L"Ground");
 	modelName.push_back(L"Wall");
 
@@ -211,10 +225,7 @@ void DemoScene::Load_DemoMap()
 	{
 		shared_ptr<GameObject> obj = make_shared<GameObject>();
 		obj->GetOrAddTransform();
-		obj->Add_Component(make_shared<ModelRenderer>(shader));
-		obj->Get_ModelRenderer()->Set_Model(RESOURCES.Get<Model>(modelTag));
 		obj->Set_Name(modelTag);
-		obj->Set_DrawShadow(true);
 		Add_GameObject(obj);
 	}
 	
@@ -252,7 +263,7 @@ void DemoScene::Load_Camera()
 		// Camera Component Add
 		CameraDesc desc;
 		desc.fFOV = XM_PI / 3.f;
-		desc.strName = L"Player_Cam";
+		desc.strName = L"Default";
 		desc.fSizeX = _float(g_iWinSizeX);
 		desc.fSizeY = _float(g_iWinSizeY);
 		desc.fNear = 0.1f;
@@ -272,6 +283,9 @@ void DemoScene::Load_Camera()
 		camera->Add_Component(make_shared<MainCameraScript>(pPlayer));
 	
 		Add_GameObject(camera);
+		
+		//Setting Camera
+		pPlayer->Get_FSM()->Set_Camera(camera);
 	}
 	{
 		shared_ptr<GameObject> camera = make_shared<GameObject>();
@@ -298,17 +312,63 @@ void DemoScene::Load_Camera()
 
 		Add_GameObject(camera);
 	}
+
+
+}
+
+void DemoScene::Load_Monster()
+{
+	{
+		// Add. Player
+		shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
+
+		ObjMonster->Add_Component(make_shared<Transform>());
+
+		ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(1.f, 0.f, 1.f, 1.f));
+		{
+			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+
+			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+			{
+				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Silversword_Soldier");
+				animator->Set_Model(model);
+			}
+
+			ObjMonster->Add_Component(animator);
+			ObjMonster->Add_Component(make_shared<Silversword_Soldier_FSM>());
+			auto pPlayer = Get_GameObject(L"Player");
+			ObjMonster->Get_FSM()->Set_Target(pPlayer);
+		}
+		ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.7f, 0.5f })); //obbcollider
+		ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
+		ObjMonster->Get_Collider()->Set_Activate(true);
+
+		ObjMonster->Set_Name(L"Monster1");
+		{
+			auto controller = make_shared<CharacterController>();
+			ObjMonster->Add_Component(controller);
+			auto& desc = controller->Get_ControllerDesc();
+			desc.radius = 0.5f;
+			desc.height = 5.f;
+			_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz();
+			desc.position = { vPos.x, vPos.y, vPos.z };
+			controller->Create_Controller();
+		}
+		ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
+
+		Add_GameObject(ObjMonster);
+	}
 }
 
 void DemoScene::Load_Light()
 {
 	shared_ptr<GameObject> lightObj = make_shared<GameObject>();
-	lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(20.f, 100.f, 20.f, 1.f));
+	lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(50.f, 100.f, 20.f, 1.f));
 	lightObj->GetOrAddTransform()->LookAt(_float4(0.f,0.f,0.f,1.f));
 	{
 		shared_ptr<Light> lightCom = make_shared<Light>();
-		lightCom->Set_Diffuse(Color(1.f));
-		lightCom->Set_Ambient(Color(0.8f));
+		lightCom->Set_Diffuse(Color(0.7f));
+		lightCom->Set_Ambient(Color(0.4f));
 		lightCom->Set_Specular(Color(0.f));
 		lightCom->Set_Emissive(Color(1.f));
 		lightCom->Set_LightType(LIGHT_TYPE::DIRECTIONAL_LIGHT);
