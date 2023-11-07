@@ -80,7 +80,7 @@ void Scene::Render()
 	if(GAMEINSTANCE.g_bSSAO_On)
 	{
 		Render_SSAO();
-		Render_SSAOBlur(4);
+		Render_SSAOBlur(2);
 	}
 	Render_Lights();
 	//Render_BlurEffect();
@@ -995,7 +995,7 @@ void Scene::SSAO_MakeFrustumFarCorners()
 
 void Scene::SSAO_MapBlur(shared_ptr<Texture> input, RENDER_TARGET_GROUP_TYPE eType, _bool horzBlur)
 {
-	GRAPHICS.Get_RTGroup(eType)->ClearRenderTargetView();
+	//GRAPHICS.Get_RTGroup(eType)->ClearRenderTargetView();
 	GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
 	auto material = make_shared<Material>();
 	material->Set_Shader(RESOURCES.Get<Shader>(L"Shader_SSAO.fx"));
