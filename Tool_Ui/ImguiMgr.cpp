@@ -508,7 +508,13 @@ void ImguiMgr::Delete_Object()
             return;
          }
 
-         CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(m_strSelectObjName));
+         auto pGameobject = CUR_SCENE->Get_GameObject(m_strSelectObjName);
+         if (nullptr == pGameobject)
+         {
+            return;
+         }
+
+         CUR_SCENE->Remove_GameObject(pGameobject);
 
          for (auto iter = m_GameobjectName.begin();
             iter != m_GameobjectName.end();
@@ -558,17 +564,17 @@ void ImguiMgr::Change_Object_Value()
    ImGui::Text("X");
    ImGui::SameLine();
    ImGui::SetNextItemWidth(200);
-   ImGui::InputFloat("##PosX2", &vecPos.x, 0.01f, 1.0f, "%.f", eFlag);
+   ImGui::InputFloat("##PosX2", &vecPos.x, 0.01f, 1.0f, "%.3f", eFlag);
 
    ImGui::Text("Y");
    ImGui::SameLine();
    ImGui::SetNextItemWidth(200);
-   ImGui::InputFloat("##PosY2", &vecPos.y, 0.01f, 1.0f, "%.f", eFlag);
+   ImGui::InputFloat("##PosY2", &vecPos.y, 0.01f, 1.0f, "%.3f", eFlag);
 
    ImGui::Text("Z");
    ImGui::SameLine();
    ImGui::SetNextItemWidth(200);
-   ImGui::InputFloat("##PosZ2", &vecPos.z, 1.f, 1.0f, "%.f", eFlag);
+   ImGui::InputFloat("##PosZ2", &vecPos.z, 1.f, 1.0f, "%.3f", eFlag);
 
    ImGui::NewLine();
    ImGui::SeparatorText("Scale");
@@ -587,6 +593,13 @@ void ImguiMgr::Change_Object_Value()
    ImGui::SameLine();
    ImGui::SetNextItemWidth(200);
    ImGui::InputFloat("##ScaleZ2", &vecScale.z, 0.01f, 1.0f, "%.3f", eFlag);
+
+   if (0.0001f > m_vecScale.x)
+      m_vecScale.x = 0.0001f;
+   if (0.0001f > m_vecScale.y)
+      m_vecScale.y = 0.0001f;
+   if (0.0001f > m_vecScale.z)
+      m_vecScale.z = 0.0001f;
 
    m_pSampleObj->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
    m_pSampleObj->GetOrAddTransform()->Scaled(vecScale);
@@ -773,25 +786,25 @@ void ImguiMgr::Change_ParamDesc()
          ImGui::SetNextItemWidth(200);
          ImGui::InputFloat("##g_vec4_0 x", &m_tagParamDesc.vec4Params[0].x, 0.01f, 1.0f, "%.3f", eFlag);
          ImGui::SetNextItemWidth(200);
-         ImGui::SliderFloat("##g_vec4_0 x slider", &m_tagParamDesc.vec4Params[0].x, 0.0f, 100.0f, "Value = %.3f");
+         ImGui::SliderFloat("##g_vec4_0 x slider", &m_tagParamDesc.vec4Params[0].x, 0.0f, 1.f, "Value = %.3f");
 
          ImGui::BulletText("g_vec4_0 y");
          ImGui::SetNextItemWidth(200);
          ImGui::InputFloat("##g_vec4_0 y", &m_tagParamDesc.vec4Params[0].y, 0.01f, 1.0f, "%.3f", eFlag);
          ImGui::SetNextItemWidth(200);
-         ImGui::SliderFloat("##g_vec4_0 y slider", &m_tagParamDesc.vec4Params[0].y, 0.0f, 100.0f, "Value = %.3f");
+         ImGui::SliderFloat("##g_vec4_0 y slider", &m_tagParamDesc.vec4Params[0].y, 0.0f, 1.f, "Value = %.3f");
 
          ImGui::BulletText("g_vec4_0 z");
          ImGui::SetNextItemWidth(200);
          ImGui::InputFloat("##g_vec4_0 z", &m_tagParamDesc.vec4Params[0].z, 0.01f, 1.0f, "%.3f", eFlag);
          ImGui::SetNextItemWidth(200);
-         ImGui::SliderFloat("##g_vec4_0 z slider", &m_tagParamDesc.vec4Params[0].z, 0.0f, 100.0f, "Value = %.3f");
+         ImGui::SliderFloat("##g_vec4_0 z slider", &m_tagParamDesc.vec4Params[0].z, 0.0f, 1.f, "Value = %.3f");
 
          ImGui::BulletText("g_vec4_0 w");
          ImGui::SetNextItemWidth(200);
          ImGui::InputFloat("##g_vec4_0 w", &m_tagParamDesc.vec4Params[0].w, 0.01f, 1.0f, "%.3f", eFlag);
          ImGui::SetNextItemWidth(200);
-         ImGui::SliderFloat("##g_vec4_0 w slider", &m_tagParamDesc.vec4Params[0].w, 0.0f, 100.0f, "Value = %.3f");
+         ImGui::SliderFloat("##g_vec4_0 w slider", &m_tagParamDesc.vec4Params[0].w, 0.0f, 1.f, "Value = %.3f");
 
          ImGui::BulletText("g_vec4_1 x");
          ImGui::SetNextItemWidth(200);

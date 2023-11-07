@@ -7,6 +7,9 @@
 #include "Camera.h"
 #include "FontRenderer.h"
 #include "CustomFont.h"
+#include"Utils.h"
+#include <filesystem>
+namespace fs = std::filesystem;
 
 LoadingScene::LoadingScene(shared_ptr<Scene> nextScene)
 	:m_pNextScene(nextScene)
@@ -39,6 +42,20 @@ void LoadingScene::Init()
 	Create_LoadingBG();
 
 	Create_LoadingBar();
+
+   wstring assetPath = L"..\\Resources\\Textures\\UITexture\\Main\\";
+
+   for (auto& entry : fs::recursive_directory_iterator(assetPath))
+   {
+      if (entry.is_directory())
+         continue;
+
+      wstring filePath = entry.path().wstring();
+      wstring fileName = entry.path().filename().wstring();
+      Utils::DetachExt(fileName);
+      RESOURCES.Load<Texture>(fileName, filePath);
+   }
+
 
 	m_pLoader = make_shared<Loader>(m_pNextScene);
 	(m_pLoader->Init());
