@@ -34,6 +34,8 @@ enum CollisionGroup
 	Monster_Attack,
 	Monster_Skill,
 
+	MAPObject,
+
 	Script,
 
 	END = MAX_COLLIDER_GROUP

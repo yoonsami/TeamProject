@@ -59,6 +59,10 @@ public:
 	_uint Get_ObjectGroup() { return m_eObjectGroup; }
 	void Set_ObjectGroup(_uint index) { m_eObjectGroup = index; }
 
+	void DeleteComponent(COMPONENT_TYPE type)
+	{
+		m_Components[static_cast<_uint>(type)] = nullptr;
+	}
 
 	_bool Is_Blured() { return m_bIsBlur; }
 	void Set_Blur(_bool flag) { m_bIsBlur = flag; }
