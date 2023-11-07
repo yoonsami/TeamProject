@@ -46,7 +46,6 @@ HRESULT SpearAce_FSM::Init()
     m_iSkillBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"B_nose");
 
 
-    Get_Owner()->Add_Component(make_shared<Debug_CreateMotionTrail>());
 
     return S_OK;
 }

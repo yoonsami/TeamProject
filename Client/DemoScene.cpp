@@ -30,6 +30,8 @@
 
 
 #include "MapObjectScript.h"
+#include "Loader.h"
+#include "LoadingScene.h"
 DemoScene::DemoScene()
 {
 }
@@ -309,6 +311,8 @@ void DemoScene::Load_Camera()
 
 		Add_GameObject(camera);
 	}
+
+
 }
 
 void DemoScene::Load_Monster()
@@ -358,12 +362,12 @@ void DemoScene::Load_Monster()
 void DemoScene::Load_Light()
 {
 	shared_ptr<GameObject> lightObj = make_shared<GameObject>();
-	lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(20.f, 100.f, 20.f, 1.f));
+	lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(50.f, 100.f, 20.f, 1.f));
 	lightObj->GetOrAddTransform()->LookAt(_float4(0.f,0.f,0.f,1.f));
 	{
 		shared_ptr<Light> lightCom = make_shared<Light>();
-		lightCom->Set_Diffuse(Color(1.f));
-		lightCom->Set_Ambient(Color(0.8f));
+		lightCom->Set_Diffuse(Color(0.7f));
+		lightCom->Set_Ambient(Color(0.4f));
 		lightCom->Set_Specular(Color(0.f));
 		lightCom->Set_Emissive(Color(1.f));
 		lightCom->Set_LightType(LIGHT_TYPE::DIRECTIONAL_LIGHT);

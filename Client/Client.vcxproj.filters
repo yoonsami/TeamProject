@@ -91,6 +91,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\04.SkillScript">
       <UniqueIdentifier>{a5b52b0c-57ba-4d33-9b3f-4dbcf057ce3c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="98.Debug\IMGUI">
+      <UniqueIdentifier>{f2665d11-bb97-4f08-a1af-aad681188898}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -169,55 +172,55 @@
       <Filter>02.Component\00.MonoBehaviour\04.SkillScript</Filter>
     </ClInclude>
     <ClInclude Include="..\Libraries\Include\IMGUI\dirent\dirent.h">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
     </ClInclude>
     <ClInclude Include="..\Libraries\Include\IMGUI\imconfig.h">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
     </ClInclude>
     <ClInclude Include="..\Libraries\Include\IMGUI\ImCurveEdit.h">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
     </ClInclude>
     <ClInclude Include="..\Libraries\Include\IMGUI\ImGradient.h">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
     </ClInclude>
     <ClInclude Include="..\Libraries\Include\IMGUI\imgui.h">
-      <Filter>98.Debug</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuiFileDialog.h">
-      <Filter>98.Debug</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuiFileDialogConfig.h">
-      <Filter>98.Debug</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuizmo.h">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
     </ClInclude>
     <ClInclude Include="..\Libraries\Include\IMGUI\imgui_impl_dx11.h">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
     </ClInclude>
     <ClInclude Include="..\Libraries\Include\IMGUI\imgui_impl_win32.h">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
     </ClInclude>
     <ClInclude Include="..\Libraries\Include\IMGUI\imgui_internal.h">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
     </ClInclude>
     <ClInclude Include="..\Libraries\Include\IMGUI\imgui_stdlib.h">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuiFileDialog.h">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuiFileDialogConfig.h">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuizmo.h">
+      <Filter>98.Debug\IMGUI</Filter>
     </ClInclude>
     <ClInclude Include="..\Libraries\Include\IMGUI\ImSequencer.h">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
     </ClInclude>
     <ClInclude Include="..\Libraries\Include\IMGUI\imstb_rectpack.h">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
     </ClInclude>
     <ClInclude Include="..\Libraries\Include\IMGUI\imstb_textedit.h">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
     </ClInclude>
     <ClInclude Include="..\Libraries\Include\IMGUI\imstb_truetype.h">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
     </ClInclude>
     <ClInclude Include="..\Libraries\Include\IMGUI\ImZoomSlider.h">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -291,43 +294,43 @@
       <Filter>02.Component\00.MonoBehaviour\04.SkillScript</Filter>
     </ClCompile>
     <ClCompile Include="..\Libraries\Include\IMGUI\ImCurveEdit.cpp">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
     </ClCompile>
     <ClCompile Include="..\Libraries\Include\IMGUI\ImGradient.cpp">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
     </ClCompile>
     <ClCompile Include="..\Libraries\Include\IMGUI\imgui.cpp">
-      <Filter>98.Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Libraries\Include\IMGUI\ImGuiFileDialog.cpp">
-      <Filter>98.Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Libraries\Include\IMGUI\ImGuizmo.cpp">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
     </ClCompile>
     <ClCompile Include="..\Libraries\Include\IMGUI\imgui_demo.cpp">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
     </ClCompile>
     <ClCompile Include="..\Libraries\Include\IMGUI\imgui_draw.cpp">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
     </ClCompile>
     <ClCompile Include="..\Libraries\Include\IMGUI\imgui_impl_dx11.cpp">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
     </ClCompile>
     <ClCompile Include="..\Libraries\Include\IMGUI\imgui_impl_win32.cpp">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
     </ClCompile>
     <ClCompile Include="..\Libraries\Include\IMGUI\imgui_stdlib.cpp">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
     </ClCompile>
     <ClCompile Include="..\Libraries\Include\IMGUI\imgui_tables.cpp">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
     </ClCompile>
     <ClCompile Include="..\Libraries\Include\IMGUI\imgui_widgets.cpp">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImGuiFileDialog.cpp">
+      <Filter>98.Debug\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImGuizmo.cpp">
+      <Filter>98.Debug\IMGUI</Filter>
     </ClCompile>
     <ClCompile Include="..\Libraries\Include\IMGUI\ImSequencer.cpp">
-      <Filter>98.Debug</Filter>
+      <Filter>98.Debug\IMGUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -399,6 +402,9 @@
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="..\Shaders\Shader_Particle2.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\Shader_SSAO.fx">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>

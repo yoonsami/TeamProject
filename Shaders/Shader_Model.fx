@@ -624,6 +624,7 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
     output.position = float4(input.viewPosition.xyz, 0.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
     output.depth = input.position.z;
+    output.depth.w = input.viewPosition.z;
     output.diffuseColor = diffuseColor;
     output.specularColor = specularColor;
     output.emissiveColor = emissiveColor;
@@ -682,7 +683,8 @@ PS_OUT_Deferred PS_Deferred_Instancing(MeshInstancingOutput input)
     
     output.position = float4(input.viewPosition.xyz, 0.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
-        output.depth = input.position.z;
+    output.depth = input.position.z;
+    output.depth.w = input.viewPosition.z;
     output.diffuseColor = diffuseColor;
     output.specularColor = specularColor;
     output.emissiveColor = emissiveColor;
@@ -725,7 +727,7 @@ OutlineOutput PS_Deferred_Outline_Instancing(MeshInstancingOutput input)
             discard;
 
     
-            output.diffuseColor = g_LineColor;
+    output.diffuseColor = g_LineColor;
     output.specularColor = g_LineColor;
     output.emissiveColor = g_LineColor;
     output.blurColor = InstanceRenderParams[input.id].g_vec4_0;

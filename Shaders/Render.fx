@@ -122,7 +122,7 @@ cbuffer TweenBuffer
     TweenFrameDesc preTweenFrames;
 };
 
-
+bool g_SSAO_On;
 
 cbuffer InstanceTweenBuffer
 {
@@ -623,5 +623,12 @@ float3 aces_fitted(float3 v)
     return float3(x,y,z);
 }
 
+static const float4x4 T =
+{
+    0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f
+};
 
 #endif

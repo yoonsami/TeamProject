@@ -107,29 +107,31 @@ void MainCameraScript::Cal_OffsetDir()
     _float2 mouseDir = INPUT.GetMouseDir();
 
 
-    auto playerController = m_pPlayer.lock()->Get_CharacterController()->Get_Actor();
+   // auto playerController = m_pPlayer.lock()->Get_CharacterController()->Get_Actor();
 
-    _float4 vPlayerPos = { _float(playerController->getPosition().x), _float(playerController->getPosition().y), _float(playerController->getPosition().z), 1.f };
+    //_float4 vPlayerPos = { _float(playerController->getPosition().x), _float(playerController->getPosition().y), _float(playerController->getPosition().z), 1.f };
 
-    //_float4 vPlayerPos = m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS);
+    _float3 vPlayerPos = m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
 
-    _float3 vDir = (vPlayerPos - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+	/*  _float3 vDir = (vPlayerPos + _float3::Up - Get_Transform()->Get_State(Transform_State::POS).xyz());
 
-    vDir.Normalize();
+	  vDir.Normalize();*/
 
     if (m_pTarget.lock())
     {
-        _float3 vNewOffset = m_vOffset - Get_Transform()->Get_State(Transform_State::LOOK);
+        _float3 vTargetDir = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz() - m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
+        vTargetDir.y = 0.f;
+        vTargetDir.Normalize();
+        _float3 vNewOffset = m_vOffset - vTargetDir;
         vNewOffset.Normalize();
-        vNewOffset.y = m_vOffset.y;
-
         m_vOffset = vNewOffset;
         // normalize y�� �����ϱ�
     }
-    _float3 vRight = _float3::Up.Cross(vDir);
+    _float3 vRight = Get_Transform()->Get_State(Transform_State::RIGHT).xyz();
     vRight.Normalize();
+    _float3 vUp = Get_Transform()->Get_State(Transform_State::UP).xyz();
     m_vOffset += vRight * -mouseDir.x * m_fRotationSpeed * fDT;
-    m_vOffset += _float3::Up * mouseDir.y * m_fRotationSpeed * fDT;
+    m_vOffset += vUp * mouseDir.y * m_fRotationSpeed * fDT;
 
     m_vOffset.Normalize();
 
@@ -152,10 +154,10 @@ void MainCameraScript::Restrict_Offset()
 
 void MainCameraScript::Update_Transform()
 {
-    auto playerController = m_pPlayer.lock()->Get_CharacterController()->Get_Actor();
-    auto playerPos = playerController->getFootPosition();
-    _float4 vPlayerPos = { _float(playerPos.x), _float(playerPos.y), _float(playerPos.z), 1.f };
-    //_float4 vPlayerPos = m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS);
+   //auto playerController = m_pPlayer.lock()->Get_CharacterController()->Get_Actor();
+   //auto playerPos = playerController->getFootPosition();
+   //_float4 vPlayerPos = { _float(playerPos.x), _float(playerPos.y), _float(playerPos.z), 1.f };
+    _float4 vPlayerPos = m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS);
 
     vPlayerPos += _float4(0.f, 1.f, 0.f, 0.f);
     _float4 vCenterPos = _float4(0.f);
@@ -206,7 +208,7 @@ void MainCameraScript::Update_Transform()
            if (fMinDist <= m_fMaxDistance)
                fMinDist = m_fMaxDistance;
         }
-
+       _float3 tmp = Transform::SLerpMatrix(matCurDir, matNextDir, fDT * m_fFollowSpeed).Backward();
         _float4 pos = vPlayerPos + Transform::SLerpMatrix(matCurDir, matNextDir, fDT * m_fFollowSpeed).Backward() * fMinDist;
 
         Get_Transform()->Set_State(Transform_State::POS, pos);
@@ -224,17 +226,10 @@ void MainCameraScript::Update_Transform()
             Get_Transform()->LookAt(vPlayerPos);
         else
         {
-            _float4 targetPos = _float4(0.f);
-            if (m_pTarget.lock()->Get_CharacterController())
-            {
-                auto targetControllerPos = m_pTarget.lock()->Get_CharacterController()->Get_Actor()->getPosition();
-                targetPos = { _float(targetControllerPos.x), _float(targetControllerPos.y), _float(targetControllerPos.z),1.f };
-            }
-            else
-                targetPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS);
+            _float4 targetPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS);
 
-            targetPos = (vPlayerPos + targetPos) / 2.f;
-            Get_Transform()->LookAt(targetPos);
+            targetPos = (vPlayerPos -_float4(0.f,1.f,0.f,0.f) + targetPos) / 2.f;
+            Get_Transform()->LookAt(targetPos );
         }
     }
 

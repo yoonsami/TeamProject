@@ -51,13 +51,22 @@ struct MathUtils
 	static _bool RayCast(const Triangle3D& t, const Ray3D& ray, OUT _float& distance);
 	static _float3 ProjectVecOnVec(_float3 a, _float3 b);
 
+	static float RandF()
+	{
+		return (float)(rand()) / (float)RAND_MAX;
+	}
+
+	static float RandF(float a, float b)
+	{
+		return a + RandF() * (b - a);
+	}
+
 	static float Get_RandomFloat(float min, float max)
 	{
 		if (min > max)
 			std::swap(min, max);
 
-		float f = (rand() % 10000) * 0.0001f;
-		return (f * (max - min) + min);
+		return min + RandF() * (max - min);
 	}
 
 	static _float3 Get_RandomVector(const _float3& min, const _float3& max)

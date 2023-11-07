@@ -4,7 +4,7 @@
 class DebugTool
 {
 	DECLARE_SINGLETON(DebugTool)
-
+	~DebugTool();
 public:
 	HRESULT Init();
 	void Tick();

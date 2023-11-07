@@ -57,8 +57,13 @@ protected:
 	void Render_MotionBlur();
 	void Render_Deferred();
 	void Render_DefferedBlur();
+	void Render_SSAO();
+
+	void Render_SSAOBlur(_uint blurCount);
+
 	void Render_Lights();
 	void Render_LightFinal();
+
 
 	void Render_MotionBlurFinal();
 
@@ -79,6 +84,10 @@ protected:
 
 	void Render_BackBuffer();
 
+private:
+	void SSAO_MakeOffsetVector();
+	void SSAO_MakeFrustumFarCorners();
+	void SSAO_MapBlur(shared_ptr<Texture> input, RENDER_TARGET_GROUP_TYPE eType,_bool horzBlur);
 
 protected:
 	_float m_fLoadPercent = 0.f;
@@ -97,5 +106,7 @@ protected:
 	_bool m_bSceneFinished = false;
 
 	_uint m_iLevelIndex = 0;
+	_float4 m_vFrustumFarCorner[4];
+	_float4 m_vOffsets[14];
 };
 
