@@ -61,20 +61,30 @@ private:
 	string					m_strTexture[8];
 
 
-	/* Diffuse Color */
-	_int					m_iStartColorOption = { 0 };
-	ImVec4					m_vRangeStartColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-	ImVec4					m_vRangeEndColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+	/* Color 
+		(Base, Gradation, OverlayStart, OverlayEnd
+		BaseDest, GradationDest, OverlayStartDest, OverlayEndDest)*/
+	_int					m_iBaseColorOption = { 0 }; 
+	ImVec4					m_vBaseColor_RangeStart = ImVec4(1.f, 1.f, 1.f, 1.f);
+	ImVec4					m_vBaseColor_RangeEnd = ImVec4(1.f, 1.f, 1.f, 1.f);
 
-	_bool					m_bGradationOn = { true };
-	_int					m_iGradationOption = { 0 };
+	_bool					m_bGradationOn = { false };
 	_float					m_fGradationIntensity = { 0.f };
-	ImVec4					m_vGradationColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+	ImVec4					m_vGradationColor = ImVec4(186.f / 255.f, 48.f / 255.f, 48.f / 255.f, 1.f);
 
-	_bool					m_bChangingColorOn = { true };
-	_int					m_iChangingColorOption = { 0 };
-	ImVec4					m_vDestColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-	ImVec4					m_vDestGradationColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+	_bool					m_bOverlayOn = { false };
+	_int					m_iOverlayOption = { 0 };
+	ImVec4					m_vOverlayColor_Start = ImVec4(1.f, 1.f, 5.f / 255.f, 1.f);
+	ImVec4					m_vOverlayColor_End = ImVec4(186.f / 255.f, 48.f / 255.f, 48.f / 255.f, 1.f);
+
+	_bool					m_bChangingColorOn = { false };
+
+	ImVec4					m_vDestBaseColor = ImVec4(86.f / 255.f, 130.f / 255.f, 184.f / 255.f, 1.f);
+	
+	ImVec4					m_vDestGradationColor = ImVec4(62.f / 255.f, 20.f / 255.f, 143.f / 255.f, 1.f);
+
+	ImVec4					m_vDestOverlayColor_Start = ImVec4(1.f, 1.f, 5.f / 255.f, 1.f);
+	ImVec4					m_vDestOverlayColor_End = ImVec4(186.f / 255.f, 48.f / 255.f, 48.f / 255.f, 1.f);
 
 	_bool					m_bUseFadeOut = { true };
 };

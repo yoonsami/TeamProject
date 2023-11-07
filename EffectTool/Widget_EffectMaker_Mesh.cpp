@@ -122,6 +122,9 @@ void Widget_EffectMaker_Mesh::Option_Property()
 	ImGui::Spacing();
 
 	ImGui::Checkbox("Blur On", &m_bBlurOn);
+	ImGui::Spacing();
+
+	ImGui::Checkbox("On Fade Out", &m_bUseFadeOut);
 }
 
 void Widget_EffectMaker_Mesh::Option_Mesh()
@@ -174,86 +177,108 @@ void Widget_EffectMaker_Mesh::Option_Texture()
 
 void Widget_EffectMaker_Mesh::Option_Color()
 {
-	ImGuiColorEditFlags ColorEdit_flags = 0 | ImGuiColorEditFlags_AlphaBar;	// RGB, Alpha Bar
+	ImGuiColorEditFlags ColorEdit_flags = 0 | ImGuiColorEditFlags_AlphaBar;
 
-	// Start Color 
-	ImGui::SeparatorText("Color");
-
-	const char* pszItems_StartColor[] = { "Custom Color", "Random Color in range"};
-	if (ImGui::BeginCombo("Option##StartColor", pszItems_StartColor[m_iStartColorOption], 0))
+	/* Base Color */
+	ImGui::SeparatorText("Base Color");
+	const char* pszItem_BaseColor[] = {"Static Color", "Random in range"};
+	if (ImGui::BeginCombo("Option##BaseColor", pszItem_BaseColor[m_iBaseColorOption], 0))
 	{
-		for (_uint n = 0; n < IM_ARRAYSIZE(pszItems_StartColor); n++)
+		for (_uint n = 0; n < IM_ARRAYSIZE(pszItem_BaseColor); n++)
 		{
-			const bool is_selected = (m_iStartColorOption == n);
-			if (ImGui::Selectable(pszItems_StartColor[n], is_selected))
-				m_iStartColorOption = n;
-
+			const bool is_selected = (m_iBaseColorOption == n);
+			if (ImGui::Selectable(pszItem_BaseColor[n], is_selected))
+				m_iBaseColorOption = n;
 			if (is_selected)
 				ImGui::SetItemDefaultFocus();
 		}
 		ImGui::EndCombo();
 	}
-	switch (m_iStartColorOption)
+	switch (m_iBaseColorOption)
 	{
-	case 0:
-		ImGui::ColorEdit4("Color##StartColor", (float*)&m_vRangeStartColor, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-		m_vRangeEndColor = m_vRangeStartColor;
+	case 0 : 
+		ImGui::ColorEdit4("Base Color", (float*)&m_vBaseColor_RangeStart, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+		m_vBaseColor_RangeEnd = m_vBaseColor_RangeStart;
 		break;
 	case 1:
-		ImGui::ColorEdit4("Range Color1##StartColor", (float*)&m_vRangeStartColor, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-		ImGui::ColorEdit4("Range Color2##StartColor", (float*)&m_vRangeEndColor, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+		ImGui::ColorEdit4("Range Start Color", (float*)&m_vBaseColor_RangeStart, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+		ImGui::ColorEdit4("Range End Color", (float*)&m_vBaseColor_RangeEnd, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
 		break;
 	}
-	
-	// Gradation 
-	ImGui::SeparatorText("Change Color by lifetime");
+	ImGui::Spacing();
+
+	/* Gradation */
+	ImGui::SeparatorText("Gradation");
 	ImGui::Checkbox("Gradation On", &m_bGradationOn);
 	if (m_bGradationOn)
 	{
-		const char* pszItems_GradationColor[] = { "Custom", "Darker", "Brighter"};
-		if (ImGui::BeginCombo("Option##GradationColor", pszItems_GradationColor[m_iGradationOption], 0))
-		{
-			for (_uint n = 0; n < IM_ARRAYSIZE(pszItems_GradationColor); n++)
-			{
-				const bool is_selected = (m_iGradationOption == n);
-				if (ImGui::Selectable(pszItems_GradationColor[n], is_selected))
-					m_iGradationOption = n;
+		ImGui::ColorEdit4("Gradation Color", (float*)&m_vGradationColor, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+		ImGui::SliderFloat("Intensity##Gradation", &m_fGradationIntensity, 0.1f, 0.9f);
+	}
+	ImGui::Spacing();
 
+	/* Overlay */
+	ImGui::SeparatorText("Overlay");
+	ImGui::Checkbox("Overlay On", &m_bOverlayOn);
+	if (m_bOverlayOn)
+	{
+		const char* pszItem_OverlayColor[] = { "One Color", "Gradation" };
+		if (ImGui::BeginCombo("Option##OverlayColor", pszItem_OverlayColor[m_iOverlayOption], 0))
+		{
+			for (_uint n = 0; n < IM_ARRAYSIZE(pszItem_OverlayColor); n++)
+			{
+				const bool is_selected = (m_iOverlayOption == n);
+				if (ImGui::Selectable(pszItem_OverlayColor[n], is_selected))
+					m_iOverlayOption = n;
 				if (is_selected)
 					ImGui::SetItemDefaultFocus();
 			}
 			ImGui::EndCombo();
 		}
-		if (0 == m_iGradationOption)
-			ImGui::ColorEdit4("Color##GradationColor", (float*)&m_vGradationColor, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-		ImGui::SliderFloat("Gradation Intencity", &m_fGradationIntensity, 0.1f, 0.9f);
-	}
-
-	// Changing Color
-	ImGui::SeparatorText("Change Color by lifetime");
-	const char* pszItems_ChangingColor[] = { "No Change", "Linear", "Curve"};
-	if (ImGui::BeginCombo("Option##ChangingColor", pszItems_ChangingColor[m_iChangingColorOption], 0))
-	{
-		for (_uint n = 0; n < IM_ARRAYSIZE(pszItems_ChangingColor); n++)
+		switch (m_iOverlayOption)
 		{
-			const bool is_selected = (m_iChangingColorOption == n);
-			if (ImGui::Selectable(pszItems_ChangingColor[n], is_selected))
-				m_iChangingColorOption = n;
-
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();
+		case 0:
+			ImGui::ColorEdit4("Overlay Color", (float*)&m_vOverlayColor_Start, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+			m_vOverlayColor_End = m_vOverlayColor_Start;
+			break;
+		case 1:
+			ImGui::ColorEdit4("Overlay Start Color##Overlay", (float*)&m_vOverlayColor_Start, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+			ImGui::ColorEdit4("Overlay End Color##Overlay", (float*)&m_vOverlayColor_End, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+			break;
 		}
-		ImGui::EndCombo();
 	}
-	if (0 != m_iChangingColorOption)
-	{
-		ImGui::ColorEdit4("Dest Color##ChangingColor", (float*)&m_vDestColor, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-		if (m_bGradationOn && 0 == m_iGradationOption)
-			ImGui::ColorEdit4("Gradiant Dest Color##ChangingColor", (float*)&m_vDestGradationColor, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-	}
+	ImGui::Spacing();
 
-	ImGui::SeparatorText("ETC");
-	ImGui::Checkbox("On Fade Out", &m_bUseFadeOut);
+	/* Changing Color */
+	ImGui::SeparatorText("Color Changing");
+	ImGui::Checkbox("Color Changing On", &m_bChangingColorOn);
+	ImGui::Spacing();
+	if (m_bChangingColorOn)
+	{
+		// Dest Base Color 
+		ImGui::ColorEdit4("Dest Base Color", (float*)&m_vDestBaseColor, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+
+		// Dest Gradation Color 
+		if (m_bGradationOn)
+			ImGui::ColorEdit4("Dest Gradation Color", (float*)&m_vDestGradationColor, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+
+		// Dest Overlay Color
+		if (m_bOverlayOn)
+		{
+			switch (m_iOverlayOption)
+			{
+			case 0:
+				ImGui::ColorEdit4("Dest Overlay Color", (float*)&m_vDestOverlayColor_Start, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+				m_vDestOverlayColor_End = m_vDestOverlayColor_Start;
+				break;
+			case 1:
+				ImGui::ColorEdit4("Dest Overlay Start Color##Overlay", (float*)&m_vDestOverlayColor_Start, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+				ImGui::ColorEdit4("Dest Overlay End Color##Overlay", (float*)&m_vDestOverlayColor_End, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+				break;
+			}
+		}
+	}
+	ImGui::Spacing();
 }
 
 void Widget_EffectMaker_Mesh::Create()
@@ -271,32 +296,36 @@ void Widget_EffectMaker_Mesh::Create()
 	EffectObj->Add_Component(meshEffect);
 
 	_float fNoise = _float(rand() % 11) / 10.f;
-	Color vRangStartColor = Color(m_vRangeStartColor.x, m_vRangeStartColor.y, m_vRangeStartColor.z, m_vRangeStartColor.w);
-	Color vRangEndColor = Color(m_vRangeEndColor.x, m_vRangeEndColor.y, m_vRangeEndColor.z, m_vRangeEndColor.w);
-	Color vFinal_StartColor = vRangStartColor * fNoise + vRangEndColor * (1.f - fNoise);
+	Color vRangStartColor = Color(m_vBaseColor_RangeStart.x, m_vBaseColor_RangeStart.y, m_vBaseColor_RangeStart.z, m_vBaseColor_RangeStart.w);
+	Color vRangEndColor = Color(m_vBaseColor_RangeEnd.x, m_vBaseColor_RangeEnd.y, m_vBaseColor_RangeEnd.z, m_vBaseColor_RangeEnd.w);
+	Color vBaseColor = vRangStartColor * fNoise + vRangEndColor * (1.f - fNoise);
 
 	MeshEffect::DESC tMeshEffectDesc
 	{
 		m_szTag,
 		m_fDuration,
 		m_bBlurOn,
+		m_bUseFadeOut,
 
 		m_strMesh,
 
 		m_strTexture[0], m_strTexture[1], m_strTexture[2], m_strTexture[3],
 		m_strTexture[4], m_strTexture[5], m_strTexture[6], m_strTexture[7],
 			
-		vFinal_StartColor,
-		
-		m_iChangingColorOption,
-		Color(m_vDestColor.x, m_vDestColor.y, m_vDestColor.z, m_vDestColor.w),
+		vBaseColor,
 
-		m_iGradationOption,
 		m_fGradationIntensity,
 		Color(m_vGradationColor.x, m_vGradationColor.y, m_vGradationColor.z, m_vGradationColor.w),
-		Color(m_vDestGradationColor.x, m_vDestGradationColor.y, m_vDestGradationColor.z, m_vDestGradationColor.w),
+	
+		m_bOverlayOn,
+		Color(m_vOverlayColor_Start.x, m_vOverlayColor_Start.y, m_vOverlayColor_Start.z, m_vOverlayColor_Start.w),
+		Color(m_vOverlayColor_End.x, m_vOverlayColor_End.y, m_vOverlayColor_End.z, m_vOverlayColor_End.w),
 
-		m_bUseFadeOut
+		m_bChangingColorOn,
+		Color(m_vDestBaseColor.x, m_vDestBaseColor.y, m_vDestBaseColor.z, m_vDestBaseColor.w),
+		Color(m_vDestGradationColor.x, m_vDestGradationColor.y, m_vDestGradationColor.z, m_vDestGradationColor.w),
+		Color(m_vOverlayColor_Start.x, m_vOverlayColor_Start.y, m_vOverlayColor_Start.z, m_vOverlayColor_Start.w),
+		Color(m_vOverlayColor_End.x, m_vOverlayColor_End.y, m_vOverlayColor_End.z, m_vOverlayColor_End.w)
 	};
 	EffectObj->Get_MeshEffect()->Init(&tMeshEffectDesc);
 

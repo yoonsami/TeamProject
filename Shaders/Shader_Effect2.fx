@@ -37,29 +37,33 @@ float4 PS_Main(EffectOut input) : SV_Target
 {
     float4 output = (float4) 0.f;
     float fLifeTimeRatio = g_vec2_0.x / g_vec2_0.y;
-    
     float4 vStartColor = g_vec4_0;
     float4 vDestColor = g_vec4_1;
-    if (bHasDiffuseMap)
-    {
-        vDiffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
-        vDestColor = vDiffuseColor;
-    }
+    float4 vGradationColor = g_vec4_2;
+    float fGradationIntensity = g_float_0;
     
-    // For. Get Dissolve
+    // For. Opacity Map
+    if(bHasOpacityMap)
+        output.a = OpacityMap.Sample(LinearSampler, input.uv).r;
+    
+    // For. Dissolve
     if(bHasDissolveMap)
     {
-        float fDissolve = DissolveMap.Sample(LinearSampler, input.uv);
-        if (fDissolve.r < fLifeTimeRatio)
+        float fDissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
+        if (fDissolve < fLifeTimeRatio)
             discard;
     }
         
-    // For. Gradation 
-    if()
+    // For. Gradation with Gradation color + GradationIntensity
     
-    // For. Changing Color
-        output = lerp(vStartColor, vDestColor, fLifeTimeRatio);
+    // For. Gradation with Bright Intensity 
     
+    // For. Gradation with Dark Intensity
+    
+    
+    // For. Changing Color to DestColor 
+    output = lerp(vStartColor, vDestColor, fLifeTimeRatio);
+       
     return output;
 }
 

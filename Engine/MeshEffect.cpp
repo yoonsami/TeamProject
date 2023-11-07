@@ -61,10 +61,7 @@ void MeshEffect::Init_RenderParams()
 	// Duration and Current time 
 	m_RenderParams.SetVec2(0, _float2(m_fCurrAge, m_tDesc.fDuration));
 
-	m_RenderParams.SetVec4(0, m_tDesc.vStartColor);
-	m_RenderParams.SetVec4(1, m_tDesc.vDestColor);
 
-	m_RenderParams.SetFloat(0, m_tDesc.fGradationIntensity);
 }
 
 void MeshEffect::Bind_RenderParams_ToShader()

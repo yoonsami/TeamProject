@@ -10,7 +10,8 @@ public:
         const char* pszTag;
         _float      fDuration;
         _bool       bBlurOn;
-        
+        _bool       bUseFadeOut;
+
         // Mesh 
         string      strVfxMesh;
 
@@ -18,17 +19,21 @@ public:
         string      strTextures[8];
 
         // Color 
-        Color       vStartColor;       
+        Color       vBaseColor;       
 
-        _int        iChangingColorOption;   // No change, Linear, Curve
-        Color       vDestColor;             
-
-        _int        iGradationOption;       // custom, darker, brighter
-        _float      fGradationIntensity;    // The larger the value, the greater the percentage of GradationColor.
+        _float      fGradationIntensity;
         Color       vGradationColor;
-        Color       vDestGradationColor;
 
-        _bool       bUseFadeOut;
+        _bool       bOverlayOn;
+        Color       vOverlayColor_Start;
+        Color       vOverlayColor_End;
+
+        // Changing Color
+        _bool       m_bChangingColorOn;
+        Color       vDestBaseColor;
+        Color       vDestGradationColor;
+        Color       vDestOverlayColor_Start;
+        Color       vDestOverlayColor_End;
     }DESC;
 
 public:
