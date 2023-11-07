@@ -29,7 +29,7 @@ public:
         Color       vOverlayColor_End;
 
         // Changing Color
-        _bool       m_bChangingColorOn;
+        _bool       bChangingColorOn;
         Color       vDestBaseColor;
         Color       vDestGradationColor;
         Color       vDestOverlayColor_Start;
