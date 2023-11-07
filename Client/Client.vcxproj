@@ -186,6 +186,7 @@
     <ClInclude Include="..\Libraries\Include\IMGUI\ImZoomSlider.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Client_Define.h" />
+    <ClInclude Include="Client_Ui_Initializer.h" />
     <ClInclude Include="DebugTool.h" />
     <ClInclude Include="Debug_CreateMotionTrail.h" />
     <ClInclude Include="DemoAnimationController1.h" />
@@ -222,6 +223,7 @@
     <ClCompile Include="..\Libraries\Include\IMGUI\imgui_widgets.cpp" />
     <ClCompile Include="..\Libraries\Include\IMGUI\ImSequencer.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="Client_Ui_Initializer.cpp" />
     <ClCompile Include="DebugTool.cpp" />
     <ClCompile Include="Debug_CreateMotionTrail.cpp" />
     <ClCompile Include="DemoAnimationController1.cpp" />

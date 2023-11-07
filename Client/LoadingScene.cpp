@@ -8,9 +8,15 @@
 #include "Camera.h"
 #include "FontRenderer.h"
 #include "CustomFont.h"
+#include "Client_Ui_Initializer.h"
+#include "BaseUI.h"
+#include"Utils.h"
+#include "DemoScene.h"
+#include <filesystem>
+namespace fs = std::filesystem;
 
 LoadingScene::LoadingScene(shared_ptr<Scene> nextScene)
-	:m_pNextScene(nextScene)
+    : m_pNextScene(nextScene)
 {
 }
 
@@ -20,83 +26,77 @@ LoadingScene::~LoadingScene()
 
 void LoadingScene::Init()
 {
-	{
-		shared_ptr<GameObject> camera = make_shared<GameObject>();
-		camera->GetOrAddTransform();
-		camera->GetOrAddTransform()->Set_Speed(5.f);
-		CameraDesc desc;
-		desc.fFOV = XM_PI / 3.f;
-		desc.strName = L"UI";
-		desc.fSizeX = _float(g_iWinSizeX);
-		desc.fSizeY = _float(g_iWinSizeY);
-		desc.fNear = 0.1f;
-		desc.fFar = 1000.f;
-		camera->Add_Component(make_shared<Camera>(desc));
-		camera->Get_Camera()->Set_ProjType(ProjectionType::Orthographic);
-		camera->Get_Camera()->Set_CullingMaskAll();
-		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, false);
-		Add_GameObject(camera);
-	}
-	Create_LoadingBG();
+    {
+        shared_ptr<GameObject> camera = make_shared<GameObject>();
+        camera->GetOrAddTransform();
+        camera->GetOrAddTransform()->Set_Speed(5.f);
+        CameraDesc desc;
+        desc.fFOV = XM_PI / 3.f;
+        desc.strName = L"UI";
+        desc.fSizeX = _float(g_iWinSizeX);
+        desc.fSizeY = _float(g_iWinSizeY);
+        desc.fNear = 0.1f;
+        desc.fFar = 1000.f;
+        camera->Add_Component(make_shared<Camera>(desc));
+        camera->Get_Camera()->Set_ProjType(ProjectionType::Orthographic);
+        camera->Get_Camera()->Set_CullingMaskAll();
+        camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, false);
+        Add_GameObject(camera);
+    }
 
-	Create_LoadingBar();
+    Load_UI_Texture();
+    Add_UI();
 
-	m_pLoader = make_shared<Loader>(m_pNextScene);
-	(m_pLoader->Init());
+    m_pLoader = make_shared<Loader>(m_pNextScene);
+    (m_pLoader->Init());
 
-	__super::Init();
+    __super::Init();
 }
 
 void LoadingScene::Tick()
 {
-	__super::Tick();
+    __super::Tick();
 }
 
 void LoadingScene::Late_Tick()
 {
-	__super::Late_Tick();
-	
+    __super::Late_Tick();
+
 
 }
 
 void LoadingScene::Final_Tick()
 {
-	__super::Final_Tick();
-	//if (KEYTAP(KEY_TYPE::LBUTTON))
-	{
-		if (!m_pLoader->m_bLoadFinished)
-			return;
-
-		SCENE.Change_Scene(m_pNextScene);
-	}
+    __super::Final_Tick();
 }
 
-void LoadingScene::Create_LoadingBG()
+void LoadingScene::Load_UI_Texture()
 {
-	auto LoadingBackGround = make_shared<GameObject>();
+    wstring assetPath = L"..\\Resources\\Textures\\UITexture\\Logo\\";
 
-	LoadingBackGround->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0, 0, 2, 1));
-	LoadingBackGround->GetOrAddTransform()->Scaled(_float3(g_iWinSizeX, g_iWinSizeY, 1.f));
-	shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));	// 랜더러를 생성할 때 가져올 때 랜더러가 어떤 쉐이더를 사용해서 그릴지 설정
-	
-	auto mesh = RESOURCES.Get<Mesh>(L"Quad");	// Resource manager는 기본적인 프로토타입들을 들고있다고 생각하면됨. Quad : Rect버퍼같은것.  Get으로 하나 클론해온다는 것. 
-	renderer->Set_Mesh(mesh);					// 그릴 것을 렌더러에 추가하기 
+    for (auto& entry : fs::recursive_directory_iterator(assetPath))
+    {
+        if (entry.is_directory())
+            continue;
 
-	auto material = make_shared<Material>();
-	material->Set_TextureMap(RESOURCES.Load<Texture>(L"Test", L"../Resources/Textures/Test.dds"),TextureMapType::DIFFUSE);
-	renderer->Get_RenderParamDesc().SetVec4(0, _float4(1));
-	renderer->Set_Material(material);
-	renderer->Set_Pass(MeshRenderer::PASS_INFO::Default_UI);
-	LoadingBackGround->Add_Component(renderer);
-
-	LoadingBackGround->Set_Name(L"LoadingBG");
-	LoadingBackGround->Set_LayerIndex(Layer_UI);
-	LoadingBackGround->Set_Instancing(false);
-	Add_GameObject(LoadingBackGround);
+        wstring filePath = entry.path().wstring();
+        wstring fileName = entry.path().filename().wstring();
+        Utils::DetachExt(fileName);
+        RESOURCES.Load<Texture>(fileName, filePath);
+    }
 }
 
-void LoadingScene::Create_LoadingBar()
+void LoadingScene::Add_UI()
 {
+    LOAD_UI_DATA(L"..\\Resources\\UIData\\UI_Logo.dat");
 
+    auto pGameobject = Get_GameObject(L"UI_Start_Button");
+    if (nullptr != pGameobject)
+    {
+        pGameobject->Get_Button()->AddOnClickedEvent([&]()
+            {
+                if (m_pLoader->m_bLoadFinished)
+                    SCENE.Change_Scene(m_pNextScene);
+            });
+    }
 }
-

@@ -1,6 +1,13 @@
 #include "pch.h"
 #include "DebugTool.h"
 
+DebugTool::~DebugTool()
+{
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
+}
+
 HRESULT DebugTool::Init()
 {
 
@@ -26,17 +33,20 @@ void DebugTool::Tick()
 	{
 		RenderOptionTap();
 
-
-
 		EndTabBar();
 	}
 
-
 	End();
+
+	if (KEYTAP(KEY_TYPE::ESC))
+		m_bIsRender = !m_bIsRender;
 }
 
 void DebugTool::Render()
 {
+	if (false == m_bIsRender)
+		return;
+
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }

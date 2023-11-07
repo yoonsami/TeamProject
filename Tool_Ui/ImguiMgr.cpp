@@ -25,7 +25,7 @@ HRESULT ImguiMgr::Initialize(HWND& hWnd)
    ImGuiIO& io = ImGui::GetIO();
    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
    io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\malgun.ttf", 15.0f, NULL, io.Fonts->GetGlyphRangesKorean());
-
+   
    ImGui_ImplWin32_Init(hWnd);
    ImGui_ImplDX11_Init(DEVICE.Get(), CONTEXT.Get());
 
@@ -1091,7 +1091,8 @@ void ImguiMgr::Save_Ui_Desc()
             else
             {
                file->Write<_bool>(true);
-               file->Write<BaseUI::BASEUIDESC>(pGameobject->Get_Button()->Get_Desc());
+               BaseUI::BASEUIDESC tagDesc = pGameobject->Get_Button()->Get_Desc();
+               file->Write<BaseUI::BASEUIDESC>(tagDesc);
             }
 
             if (nullptr == pGameobject->Get_FontRenderer())
@@ -1195,7 +1196,8 @@ void ImguiMgr::Load_Ui_Desc()
             if (true == bIsUseBaseUi)
             {
                auto BaseUi = make_shared<BaseUI>();
-               BaseUi->Get_Desc() = file->Read<BaseUI::BASEUIDESC>();
+               BaseUI::BASEUIDESC tagDesc = file->Read<BaseUI::BASEUIDESC>();
+               BaseUi->Get_Desc() = tagDesc;
                UiObject->Add_Component(BaseUi);
             }
 
@@ -1298,6 +1300,7 @@ void ImguiMgr::Set_Font()
         {
             pGameobject->Add_Component(make_shared<FontRenderer>(L""));
             pGameobject->Get_FontRenderer()->Set_Font(RESOURCES.Get<CustomFont>(L"136ex"), Color(1.f, 1.f, 1.f, 1.f), 1.f);
+            return;
         }
 
         pFontRenderer->Set_Font(RESOURCES.Get<CustomFont>(m_vecFontType[m_iFontType]), Color(m_arrColors[0], m_arrColors[1], m_arrColors[2], m_arrColors[3]), m_fFontSize);

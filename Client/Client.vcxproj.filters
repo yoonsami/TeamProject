@@ -195,6 +195,7 @@
     <ClInclude Include="MapObjectScript.h">
       <Filter>02.Component\MapObject</Filter>
     </ClInclude>
+    <ClInclude Include="Client_Ui_Initializer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -296,6 +297,7 @@
     <ClCompile Include="MapObjectScript.cpp">
       <Filter>02.Component\MapObject</Filter>
     </ClCompile>
+    <ClCompile Include="Client_Ui_Initializer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
