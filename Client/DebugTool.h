@@ -4,7 +4,6 @@
 class DebugTool
 {
 	DECLARE_SINGLETON(DebugTool)
-	~DebugTool();
 public:
 	~DebugTool();
 
