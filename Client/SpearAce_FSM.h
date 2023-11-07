@@ -25,6 +25,8 @@ public:
 		knock_end_loop,
 		knock_end_hit, // hit on knock_state
 		knock_up,
+		knockdown_start, //knockdown_start -> knockdown_end -> knock_up
+		knockdown_end,
 		skill_1100, //normal attack1
 		skill_1200, //normal attack2
 		skill_1300, //normal attack3
@@ -75,7 +77,6 @@ private:
 	void die();
 	void die_Init();
 
-
 	void airborne_start();
 	void airborne_start_Init();
 	void airborne_end();
@@ -86,7 +87,6 @@ private:
 	void hit_Init();
 	void knock_start();
 	void knock_start_Init();
-
 	void knock_end();
 	void knock_end_Init();
 	void knock_end_loop();
@@ -95,6 +95,11 @@ private:
 	void knock_end_hit_Init();
 	void knock_up();
 	void knock_up_Init();
+	void knockdown_start();
+	void knockdown_start_Init();
+	void knockdown_end();
+	void knockdown_end_Init();
+
 
 	void skill_1100();
 	void skill_1100_Init();

@@ -2,6 +2,9 @@
 #include "Kyle_FSM.h"
 #include "ModelAnimator.h"
 #include "SphereCollider.h"
+#include "AttackColliderInfoScript.h"
+#include "Model.h"
+
 
 HRESULT Kyle_FSM::Init()
 {
@@ -15,17 +18,17 @@ HRESULT Kyle_FSM::Init()
 
 	shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
 	attackCollider->GetOrAddTransform();
-	attackCollider->Add_Component(make_shared<SphereCollider>(1.f));
+	attackCollider->Add_Component(make_shared<SphereCollider>(1.5f));
 	attackCollider->Get_Collider()->Set_CollisionGroup(Player_Attack);
 
 	m_pAttackCollider = attackCollider;
 
 	CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
 	m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
+	m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
 	m_pAttackCollider.lock()->Set_Name(L"Player_AttackCollider");
 	
 	m_pCamera = CUR_SCENE->Get_GameObject(L"Default");
-
 
 	return S_OK;
 }
@@ -70,6 +73,39 @@ void Kyle_FSM::State_Tick()
 		break;
 	case STATE::die:
 		die();
+		break;
+	case STATE::airborne_start:
+		airborne_start();
+		break;
+	case STATE::airborne_end:
+		airborne_end();
+		break;
+	case STATE::airborne_up:
+		airborne_up();
+		break;
+	case STATE::hit:
+		hit();
+		break;
+	case STATE::knock_start:
+		knock_start();
+		break;
+	case STATE::knock_end:
+		knock_end();
+		break;
+	case STATE::knock_end_loop:
+		knock_end_loop();
+		break;
+	case STATE::knock_end_hit:
+		knock_end_hit();
+		break;
+	case STATE::knock_up:
+		knock_up();
+		break;
+	case STATE::knockdown_start:
+		knockdown_start();
+		break;
+	case STATE::knockdown_end:
+		knockdown_end();
 		break;
 	case STATE::skill_1100:
 		skill_1100();
@@ -146,6 +182,39 @@ void Kyle_FSM::State_Init()
 		case STATE::die:
 			die_Init();
 			break;
+		case STATE::airborne_start:
+			airborne_start_Init();
+			break;
+		case STATE::airborne_end:
+			airborne_end_Init();
+			break;
+		case STATE::airborne_up:
+			airborne_up_Init();
+			break;
+		case STATE::hit:
+			hit_Init();
+			break;
+		case STATE::knock_start:
+			knock_start_Init();
+			break;
+		case STATE::knock_end:
+			knock_end_Init();
+			break;
+		case STATE::knock_end_loop:
+			knock_end_loop_Init();
+			break;
+		case STATE::knock_end_hit:
+			knock_end_hit_Init();
+			break;
+		case STATE::knock_up:
+			knock_up_Init();
+			break;
+		case STATE::knockdown_start:
+			knockdown_start_Init();
+			break;
+		case STATE::knockdown_end:
+			knockdown_end_Init();
+			break;
 		case STATE::skill_1100:
 			skill_1100_Init();
 			break;
@@ -199,6 +268,12 @@ void Kyle_FSM::OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap)
 
 void Kyle_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
+	wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
+
+	if (!m_bInvincible)
+	{
+		Get_Hit(strSkillName, pCollider);
+	}
 }
 
 void Kyle_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
@@ -207,14 +282,88 @@ void Kyle_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
 
 void Kyle_FSM::Get_Hit(const wstring& skillname, shared_ptr<BaseCollider> pOppositeCollider)
 {
+	if (skillname == NORMAL_ATTACK || skillname == KNOCKBACK_ATTACK || skillname == KNOCKDOWN_ATTACK || skillname == AIRBORNE_ATTACK)
+	{
+		_float3 vAttackerPos = pOppositeCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner()->Get_Transform()->Get_State(Transform_State::POS).xyz();
+		m_vHitDir = vAttackerPos - Get_Transform()->Get_State(Transform_State::POS);
+		m_vHitDir.y = 0.f;
+		m_vHitDir.Normalize();
+	}
+	else if (skillname == NORMAL_SKILL || skillname == KNOCKBACK_SKILL || skillname == KNOCKDOWN_SKILL || skillname == AIRBORNE_SKILL)
+	{
+		m_vHitDir = pOppositeCollider->Get_CenterPos() - Get_Transform()->Get_State(Transform_State::POS);
+		m_vHitDir.y = 0.f;
+		m_vHitDir.Normalize();
+	}
+
+	if (skillname == NORMAL_ATTACK || skillname == NORMAL_SKILL)
+	{
+		if (!m_bSuperArmor)
+		{
+			if (m_eCurState == STATE::hit)
+				Reset_Frame();
+			else if (m_eCurState == STATE::knock_end_hit)
+				Reset_Frame();
+			else if (m_eCurState == STATE::knock_end_loop)
+				m_eCurState = STATE::knock_end_hit;
+			else
+				m_eCurState = STATE::hit;
+		}
+	}
+	else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
+	{
+		if (!m_bSuperArmor)
+		{
+			if (m_eCurState == STATE::knock_end_hit)
+				Reset_Frame();
+			else if (m_eCurState == STATE::knock_end_loop)
+				m_eCurState = STATE::knock_end_hit;
+			else
+				m_eCurState = STATE::knock_start;
+		}
+	}
+	else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
+	{
+		if (!m_bSuperArmor)
+		{
+			if (m_eCurState == STATE::knock_end_hit)
+				Reset_Frame();
+			else if (m_eCurState == STATE::knock_end_loop)
+				m_eCurState = STATE::knock_end_hit;
+			else
+				m_eCurState = STATE::knockdown_start;
+		}
+	}
+	else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
+	{
+		if (!m_bSuperArmor)
+		{
+			if (m_eCurState == STATE::knock_end_hit)
+				Reset_Frame();
+			else if (m_eCurState == STATE::knock_end_loop)
+				m_eCurState = STATE::knock_end_hit;
+			else
+				m_eCurState = STATE::airborne_start;
+		}
+	}
 }
 
 void Kyle_FSM::AttackCollider_On(const wstring& skillname)
 {
+	if (!m_pAttackCollider.expired())
+	{
+		m_pAttackCollider.lock()->Get_Collider()->Set_Activate(true);
+		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
+	}
 }
 
 void Kyle_FSM::AttackCollider_Off()
 {
+	if (!m_pAttackCollider.expired())
+	{
+		m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
+		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+	}
 }
 
 void Kyle_FSM::b_idle()
@@ -259,6 +408,11 @@ void Kyle_FSM::b_idle_Init()
 
 	Get_Transform()->Set_Speed(m_fRunSpeed);
 	m_tRunEndDelay.fAccTime = 0.f;
+
+	AttackCollider_Off();
+
+	m_bInvincible = false;
+	m_bSuperArmor = false;
 }
 
 void Kyle_FSM::b_run_start()
@@ -317,6 +471,11 @@ void Kyle_FSM::b_run_start_Init()
 
 	Get_Transform()->Set_Speed(m_fRunSpeed);
 	m_tRunEndDelay.fAccTime = 0.f;
+
+	AttackCollider_Off();
+	
+	m_bInvincible = false;
+	m_bSuperArmor = false;
 }
 
 void Kyle_FSM::b_run()
@@ -375,6 +534,11 @@ void Kyle_FSM::b_run_Init()
 	animator->Set_NextTweenAnim(L"b_run", 0.2f, true, 1.f);
 
 	Get_Transform()->Set_Speed(m_fRunSpeed);
+
+	AttackCollider_Off();
+
+	m_bInvincible = false;
+	m_bSuperArmor = false;
 }
 
 void Kyle_FSM::b_run_end_r()
@@ -418,6 +582,11 @@ void Kyle_FSM::b_run_end_r_Init()
 
 	Get_Transform()->Set_Speed(m_fRunSpeed);
 	m_tRunEndDelay.fAccTime = 0.f;
+
+	AttackCollider_Off();
+
+	m_bInvincible = false;
+	m_bSuperArmor = false;
 }
 
 void Kyle_FSM::b_run_end_l()
@@ -459,6 +628,11 @@ void Kyle_FSM::b_run_end_l_Init()
 
 	Get_Transform()->Set_Speed(m_fRunSpeed);
 	m_tRunEndDelay.fAccTime = 0.f;
+
+	AttackCollider_Off();
+
+	m_bInvincible = false;
+	m_bSuperArmor = false;
 }
 
 void Kyle_FSM::b_sprint()
@@ -517,6 +691,11 @@ void Kyle_FSM::b_sprint_Init()
 	animator->Set_NextTweenAnim(L"b_sprint", 0.1f, true, 1.f);
 
 	Get_Transform()->Set_Speed(m_fSprintSpeed);
+
+	AttackCollider_Off();
+
+	m_bInvincible = false;
+	m_bSuperArmor = false;
 }
 
 void Kyle_FSM::b_walk()
@@ -535,9 +714,218 @@ void Kyle_FSM::die_Init()
 {
 }
 
+void Kyle_FSM::airborne_start()
+{
+	Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
+
+	if (Is_AnimFinished())
+		m_eCurState = STATE::airborne_end;
+}
+
+void Kyle_FSM::airborne_start_Init()
+{
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_NextTweenAnim(L"airborne_start", 0.2f, false, 1.f);
+
+	AttackCollider_Off();
+
+	m_bInvincible = false;
+	m_bSuperArmor = true;
+}
+
+void Kyle_FSM::airborne_end()
+{
+	if (Is_AnimFinished())
+		m_eCurState = STATE::airborne_up;
+}
+
+void Kyle_FSM::airborne_end_Init()
+{
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_NextTweenAnim(L"airborne_end", 0.2f, false, 1.f);
+
+	m_bInvincible = false;
+	m_bSuperArmor = true;
+}
+
+void Kyle_FSM::airborne_up()
+{
+	if (Is_AnimFinished())
+		m_eCurState = STATE::b_idle;
+}
+
+void Kyle_FSM::airborne_up_Init()
+{
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_NextTweenAnim(L"knock_Up", 0.1f, false, 1.f);
+
+	m_bInvincible = false;
+	m_bSuperArmor = true;
+}
+
+void Kyle_FSM::hit()
+{
+	Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
+
+	if (Is_AnimFinished())
+		m_eCurState = STATE::b_idle;
+}
+
+void Kyle_FSM::hit_Init()
+{
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_NextTweenAnim(L"hit", 0.1f, false, 1.f);
+
+	AttackCollider_Off();
+
+	m_bInvincible = false;
+	m_bSuperArmor = false;
+}
+
+void Kyle_FSM::knock_start()
+{
+	Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
+
+	if (Is_AnimFinished())
+		m_eCurState = STATE::knock_end;
+}
+
+void Kyle_FSM::knock_start_Init()
+{
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_NextTweenAnim(L"knock_start", 0.1f, false, 1.f);
+
+	AttackCollider_Off();
+
+	m_bInvincible = false;
+	m_bSuperArmor = true;
+}
+
+void Kyle_FSM::knock_end()
+{
+	if (Is_AnimFinished())
+		m_eCurState = STATE::knock_end_loop;
+}
+
+void Kyle_FSM::knock_end_Init()
+{
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_NextTweenAnim(L"knock_end", 0.2f, false, 1.f);
+
+	m_bInvincible = false;
+	m_bSuperArmor = true;
+}
+
+void Kyle_FSM::knock_end_loop()
+{
+	m_tKnockDownEndCoolTime.fAccTime += fDT;
+
+	if (Get_CurFrame() > Get_FinalFrame() / 2)
+		m_eCurState = STATE::knock_up;
+}
+
+void Kyle_FSM::knock_end_loop_Init()
+{
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_NextTweenAnim(L"knock_end_loop", 0.2f, false, 1.f);
+
+	m_bInvincible = false;
+	m_bSuperArmor = false;
+}
+
+void Kyle_FSM::knock_end_hit()
+{
+	m_tKnockDownEndCoolTime.fAccTime += fDT;
+
+	if (Is_AnimFinished())
+	{
+		if (m_tKnockDownEndCoolTime.fAccTime >= m_tKnockDownEndCoolTime.fCoolTime)
+			m_eCurState = STATE::knock_up;
+		else
+			m_eCurState = STATE::knock_end_loop;
+	}
+}
+
+void Kyle_FSM::knock_end_hit_Init()
+{
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_NextTweenAnim(L"knock_end_hit", 0.2f, false, 1.f);
+
+	m_bInvincible = false;
+	m_bSuperArmor = false;
+}
+
+void Kyle_FSM::knock_up()
+{
+	if (Is_AnimFinished())
+		m_eCurState = STATE::b_idle;
+}
+
+void Kyle_FSM::knock_up_Init()
+{
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_NextTweenAnim(L"knock_Up", 0.2f, false, 1.f);
+
+	m_bInvincible = false;
+	m_bSuperArmor = true;
+
+	m_tKnockDownEndCoolTime.fAccTime = 0.f;
+}
+
+void Kyle_FSM::knockdown_start()
+{
+	Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
+
+	if (Is_AnimFinished())
+		m_eCurState = STATE::knockdown_end;
+}
+
+void Kyle_FSM::knockdown_start_Init()
+{
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_NextTweenAnim(L"knockdown_start", 0.1f, false, 2.f);
+
+	AttackCollider_Off();
+
+	m_bInvincible = false;
+	m_bSuperArmor = true;
+}
+
+void Kyle_FSM::knockdown_end()
+{
+	if (Is_AnimFinished())
+		m_eCurState = STATE::knock_up;
+}
+
+void Kyle_FSM::knockdown_end_Init()
+{
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_CurrentAnim(L"knockdown_end", false, 1.5f);
+
+	m_bInvincible = false;
+	m_bSuperArmor = true;
+}
+
 void Kyle_FSM::skill_1100()
 {
 	EvadeCoolCheck();
+
+	if (Get_CurFrame() == 9)
+		AttackCollider_On(NORMAL_ATTACK);
+	else if (Get_CurFrame() == 19)
+		AttackCollider_Off();
+
 
 	_float3 vInputVector = Get_InputDirVector();
 
@@ -588,11 +976,19 @@ void Kyle_FSM::skill_1100_Init()
 
 	m_vInputTurnVector = _float3(0.f);
 	m_vInputTurnVector = Get_InputDirVector();
+
+	m_bInvincible = false;
+	m_bSuperArmor = false;
 }
 
 void Kyle_FSM::skill_1200()
 {
 	EvadeCoolCheck();
+
+	if (Get_CurFrame() == 9)
+		AttackCollider_On(NORMAL_ATTACK);
+	else if (Get_CurFrame() == 20)
+		AttackCollider_Off();
 
 	_float3 vInputVector = Get_InputDirVector();
 
@@ -646,11 +1042,21 @@ void Kyle_FSM::skill_1200_Init()
 
 	m_vInputTurnVector = _float3(0.f);
 	m_vInputTurnVector = Get_InputDirVector();
+
+	AttackCollider_Off();
+
+	m_bInvincible = false;
+	m_bSuperArmor = false;
 }
 
 void Kyle_FSM::skill_1300()
 {
 	EvadeCoolCheck();
+
+	if (Get_CurFrame() == 8)
+		AttackCollider_On(NORMAL_ATTACK);
+	else if (Get_CurFrame() == 18)
+		AttackCollider_Off();
 
 	_float3 vInputVector = Get_InputDirVector();
 
@@ -703,11 +1109,36 @@ void Kyle_FSM::skill_1300_Init()
 
 	m_vInputTurnVector = _float3(0.f);
 	m_vInputTurnVector = Get_InputDirVector();
+
+	AttackCollider_Off();
+
+	m_bInvincible = false;
+	m_bSuperArmor = false;
 }
 
 void Kyle_FSM::skill_1400()
 {
 	EvadeCoolCheck();
+
+	if (Get_CurFrame() == 11)
+	{
+		if (!m_bSkillCreate)
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 1.5f;
+			desc.fLimitDistance = 0.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + 
+								Get_Transform()->Get_State(Transform_State::LOOK) * 3.f;
+			Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK);
+
+			m_bSkillCreate = true;
+		}
+	}
+	else
+		m_bSkillCreate = false;
 
 	_float3 vInputVector = Get_InputDirVector();
 
@@ -752,6 +1183,11 @@ void Kyle_FSM::skill_1400_Init()
 
 	m_vInputTurnVector = _float3(0.f);
 	m_vInputTurnVector = Get_InputDirVector();
+
+	AttackCollider_Off();
+
+	m_bInvincible = false;
+	m_bSuperArmor = false;
 }
 
 void Kyle_FSM::skill_91100()
@@ -783,6 +1219,11 @@ void Kyle_FSM::skill_91100_Init()
 
 	m_vInputTurnVector = _float3(0.f);
 	m_vInputTurnVector = Get_InputDirVector();
+
+	AttackCollider_Off();
+
+	m_bInvincible = true;
+	m_bSuperArmor = false;
 }
 
 void Kyle_FSM::skill_93100()
@@ -808,11 +1249,36 @@ void Kyle_FSM::skill_93100_Init()
 	animator->Set_NextTweenAnim(L"skill_93100", 0.15f, false, m_fEvade_AnimationSpeed);
 
 	m_bCanCombo = false;
+
+	AttackCollider_Off();
+
+	m_bInvincible = true;
+	m_bSuperArmor = false;
 }
 
 void Kyle_FSM::skill_100100()
 {
 	EvadeCoolCheck();
+
+	if (Get_CurFrame() == 5)
+	{
+		if (!m_bSkillCreate)
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 1.5f;
+			desc.fLimitDistance = 0.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+				Get_Transform()->Get_State(Transform_State::UP);
+			Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_ATTACK);
+
+			m_bSkillCreate = true;
+		}
+	}
+	else
+		m_bSkillCreate = false;
 
 	_float3 vInputVector = Get_InputDirVector();
 
@@ -855,11 +1321,36 @@ void Kyle_FSM::skill_100100_Init()
 
 	m_vInputTurnVector = _float3(0.f);
 	m_vInputTurnVector = Get_InputDirVector();
+
+	AttackCollider_Off();
+
+	m_bInvincible = false;
+	m_bSuperArmor = true;
 }
 
 void Kyle_FSM::skill_100200()
 {
 	EvadeCoolCheck();
+
+	if (Get_CurFrame() == 12)
+	{
+		if (!m_bSkillCreate)
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 1.5f;
+			desc.fLimitDistance = 0.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
+
+			Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK);
+
+			m_bSkillCreate = true;
+		}
+	}
+	else
+		m_bSkillCreate = false;
 
 	_float3 vInputVector = Get_InputDirVector();
 
@@ -891,11 +1382,22 @@ void Kyle_FSM::skill_100200_Init()
 
 	m_vInputTurnVector = _float3(0.f);
 	m_vInputTurnVector = Get_InputDirVector();
+
+	AttackCollider_Off();
+
+	m_bInvincible = false;
+	m_bSuperArmor = true;
 }
 
 void Kyle_FSM::skill_200100()
 {
 	EvadeCoolCheck();
+
+	if (Get_CurFrame() == 11)
+		AttackCollider_On(NORMAL_ATTACK);
+	else if (Get_CurFrame() == 23)
+		AttackCollider_Off();
+	
 
 	_float3 vInputVector = Get_InputDirVector();
 
@@ -936,11 +1438,25 @@ void Kyle_FSM::skill_200100_Init()
 
 	m_vInputTurnVector = _float3(0.f);
 	m_vInputTurnVector = Get_InputDirVector();
+
+	AttackCollider_Off();
+
+	m_bInvincible = false;
+	m_bSuperArmor = true;
 }
 
 void Kyle_FSM::skill_200200()
 {
 	EvadeCoolCheck();
+
+	if (Get_CurFrame() == 13)
+		AttackCollider_On(NORMAL_ATTACK);
+	else if (Get_CurFrame() == 18)
+		AttackCollider_Off();
+	else if (Get_CurFrame() == 21)
+		AttackCollider_On(NORMAL_ATTACK);
+	else if (Get_CurFrame() == 28)
+		AttackCollider_Off();
 
 	_float3 vInputVector = Get_InputDirVector();
 
@@ -981,12 +1497,37 @@ void Kyle_FSM::skill_200200_Init()
 
 	m_vInputTurnVector = _float3(0.f);
 	m_vInputTurnVector = Get_InputDirVector();
+
+	AttackCollider_Off();
+
+	m_bInvincible = false;
+	m_bSuperArmor = true;
 }
 
 void Kyle_FSM::skill_200300()
 {
 	EvadeCoolCheck();
 
+	if (Get_CurFrame() == 9)
+	{
+		if (!m_bSkillCreate)
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 1.5f;
+			desc.fLimitDistance = 0.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+				Get_Transform()->Get_State(Transform_State::LOOK) * 5.5f;
+			Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, AIRBORNE_ATTACK);
+
+			m_bSkillCreate = true;
+		}
+	}
+	else
+		m_bSkillCreate = false;
+	
 	_float3 vInputVector = Get_InputDirVector();
 
 	if (m_vInputTurnVector != _float3(0.f))
@@ -1017,11 +1558,77 @@ void Kyle_FSM::skill_200300_Init()
 
 	m_vInputTurnVector = _float3(0.f);
 	m_vInputTurnVector = Get_InputDirVector();
+
+	AttackCollider_Off();
+
+	m_bInvincible = false;
+	m_bSuperArmor = true;
 }
 
 void Kyle_FSM::skill_300100()
 {
 	EvadeCoolCheck();
+
+	if (Get_CurFrame() == 2)
+		AttackCollider_On(NORMAL_ATTACK);
+	else if (Get_CurFrame() == 5)
+		AttackCollider_Off();
+	else if (Get_CurFrame() == 10)
+	{
+		if (!m_bSkillCreate)
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 0.5f;
+			desc.fLimitDistance = 0.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+				Get_Transform()->Get_State(Transform_State::UP);
+
+			Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, NORMAL_ATTACK);
+
+			m_bSkillCreate = true;
+		}
+	}
+	else if (Get_CurFrame() == 28)
+	{
+		if (!m_bSkillCreate)
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 0.5f;
+			desc.fLimitDistance = 0.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+				Get_Transform()->Get_State(Transform_State::LOOK) * 4.f;
+
+			Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, NORMAL_ATTACK);
+
+			m_bSkillCreate = true;
+		}
+	}
+	else if (Get_CurFrame() == 36)
+	{
+		if (!m_bSkillCreate)
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 1.f;
+			desc.fLimitDistance = 0.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+				Get_Transform()->Get_State(Transform_State::LOOK) * 4.f;
+
+			Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, AIRBORNE_ATTACK);
+
+			m_bSkillCreate = true;
+		}
+	}
+	else
+		m_bSkillCreate = false;
 
 	_float3 vInputVector = Get_InputDirVector();
 
@@ -1047,17 +1654,83 @@ void Kyle_FSM::skill_300100_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"skill_300100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
+	animator->Set_NextTweenAnim(L"skill_300100", 0.15f, false, 1.f);
 
 	m_bCanCombo = false;
 
 	m_vInputTurnVector = _float3(0.f);
 	m_vInputTurnVector = Get_InputDirVector();
+
+	AttackCollider_Off();
+
+	m_bInvincible = false;
+	m_bSuperArmor = true;
 }
 
 void Kyle_FSM::skill_502100()
 {
 	EvadeCoolCheck();
+
+	if (Get_CurFrame() == 55)
+	{
+		if (!m_bSkillCreate)
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 1.f;
+			desc.fLimitDistance = 0.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+				Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
+				Get_Transform()->Get_State(Transform_State::UP);
+			Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK);
+
+			m_bSkillCreate = true;
+		}
+	}
+	else if (Get_CurFrame() == 78)
+	{
+		if (!m_bSkillCreate)
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 1.f;
+			desc.fLimitDistance = 0.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+				Get_Transform()->Get_State(Transform_State::LOOK) * 5.f +
+				Get_Transform()->Get_State(Transform_State::UP);
+			Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_ATTACK);
+
+			m_bSkillCreate = true;
+		}
+	}
+	else if (Get_CurFrame() == 106)
+	{
+		if (!m_bSkillCreate)
+		{
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+				Get_Transform()->Get_State(Transform_State::LOOK) * 5.f +
+				Get_Transform()->Get_State(Transform_State::UP);
+
+			_float4 vSkillDir = (Get_Transform()->Get_State(Transform_State::POS) - vSkillPos);
+			vSkillDir.y = 0.f;
+			
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = vSkillDir.Normalize();
+			desc.fMoveSpeed = 20.f;
+			desc.fLifeTime = 1.f;
+			desc.fLimitDistance = 4.f;
+
+			Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_SKILL);
+
+			m_bSkillCreate = true;
+		}
+	}
+	else
+		m_bSkillCreate = false;
 
 	_float3 vInputVector = Get_InputDirVector();
 
@@ -1089,11 +1762,88 @@ void Kyle_FSM::skill_502100_Init()
 
 	m_vInputTurnVector = _float3(0.f);
 	m_vInputTurnVector = Get_InputDirVector();
+
+	AttackCollider_Off();
+
+	m_bInvincible = false;
+	m_bSuperArmor = true;
 }
 
 void Kyle_FSM::skill_500100()
 {
 	EvadeCoolCheck();
+
+	if (Get_CurFrame() == 11)
+	{
+		if (!m_bSkillCreate)
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 0.5f;
+			desc.fLimitDistance = 0.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+				Get_Transform()->Get_State(Transform_State::UP);
+			Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, NORMAL_ATTACK);
+
+			m_bSkillCreate = true;
+		}
+	}
+	else if (Get_CurFrame() == 31)
+	{
+		if (!m_bSkillCreate)
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 0.5f;
+			desc.fLimitDistance = 0.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+				Get_Transform()->Get_State(Transform_State::UP);
+			Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, NORMAL_ATTACK);
+
+			m_bSkillCreate = true;
+		}
+	}
+	else if (Get_CurFrame() == 47)
+	{
+		if (!m_bSkillCreate)
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 0.5f;
+			desc.fLimitDistance = 0.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+				Get_Transform()->Get_State(Transform_State::UP);
+			Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, NORMAL_ATTACK);
+
+			m_bSkillCreate = true;
+		}
+	}
+	else if (Get_CurFrame() == 87)
+	{
+		if (!m_bSkillCreate)
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 0.5f;
+			desc.fLimitDistance = 0.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+				Get_Transform()->Get_State(Transform_State::LOOK) * 5.f;
+			Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, AIRBORNE_SKILL);
+
+			m_bSkillCreate = true;
+		}
+	}
+	else 
+		m_bSkillCreate = false;
+
 
 	_float3 vInputVector = Get_InputDirVector();
 
@@ -1123,9 +1873,13 @@ void Kyle_FSM::skill_500100_Init()
 
 	m_bCanCombo = false;
 
-
 	m_vInputTurnVector = _float3(0.f);
 	m_vInputTurnVector = Get_InputDirVector();
+
+	AttackCollider_Off();
+
+	m_bInvincible = false;
+	m_bSuperArmor = true;
 }
 
 void Kyle_FSM::EvadeCoolCheck()
@@ -1140,4 +1894,25 @@ void Kyle_FSM::EvadeCoolCheck()
 			m_tEvadeDelay.fAccTime = 0.f;
 		}
 	}
+}
+
+void Kyle_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType)
+{
+	shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
+
+	m_pSkillCollider = SkillCollider;
+
+	m_pSkillCollider.lock()->GetOrAddTransform();
+	m_pSkillCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, vPos);
+	m_pSkillCollider.lock()->Add_Component(make_shared<SphereCollider>(fSkillRange));
+	m_pSkillCollider.lock()->Get_Collider()->Set_CollisionGroup(Player_Skill);
+
+	m_pSkillCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
+	m_pSkillCollider.lock()->Get_Collider()->Set_Activate(true);
+	m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
+	m_pSkillCollider.lock()->Set_Name(L"Player_SkillCollider");
+	m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
+	m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
+
+	CUR_SCENE->Add_GameObject(m_pSkillCollider.lock());
 }

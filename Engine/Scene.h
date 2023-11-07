@@ -45,6 +45,7 @@ public:
 	void Swap_Object(const wstring& leftObjName, const wstring& rightObjName);
 	SCENE_STATE Get_SceneState() { return m_eSceneState; }
 	void Set_SceneState(SCENE_STATE state) { m_eSceneState = state; }
+	
 
 protected:
 	void Load_SceneFile(const wstring& sceneName);
@@ -97,5 +98,7 @@ protected:
 	_bool m_bSceneFinished = false;
 
 	_uint m_iLevelIndex = 0;
+
+	_bool m_bRenderDebug = false;
 };
 

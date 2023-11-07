@@ -1,5 +1,6 @@
 #pragma once
 #include "FSM.h"
+#include "ForwardMovingSkillScript.h"
 
 class Kyle_FSM :
 	public FSM
@@ -15,6 +16,17 @@ public:
 		b_sprint,
 		b_walk,
 		die,
+		airborne_start, //airborne_start -> airborne_end -> airborne_up
+		airborne_end,
+		airborne_up, // airborne_end_up Animation = knock_end_up animation
+		hit, //normal_hit
+		knock_start, // knock_start -> knock_end -> knock_end_loop -> knock_up
+		knock_end,
+		knock_end_loop,
+		knock_end_hit, // hit on knock_state
+		knock_up,
+		knockdown_start, //knockdown_start -> knockdown_end -> knock_up
+		knockdown_end,
 		skill_1100, //normal attack1
 		skill_1200, //normal attack2
 		skill_1300, //normal attack3
@@ -65,6 +77,29 @@ private:
 	void die();
 	void die_Init();
 
+	void airborne_start();
+	void airborne_start_Init();
+	void airborne_end();
+	void airborne_end_Init();
+	void airborne_up();
+	void airborne_up_Init();
+	void hit();
+	void hit_Init();
+	void knock_start();
+	void knock_start_Init();
+	void knock_end();
+	void knock_end_Init();
+	void knock_end_loop();
+	void knock_end_loop_Init();
+	void knock_end_hit();
+	void knock_end_hit_Init();
+	void knock_up();
+	void knock_up_Init();
+	void knockdown_start();
+	void knockdown_start_Init();
+	void knockdown_end();
+	void knockdown_end_Init();
+
 	void skill_1100();
 	void skill_1100_Init();
 	void skill_1200();
@@ -99,6 +134,7 @@ private:
 	void skill_500100_Init();
 
 	void EvadeCoolCheck();
+	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
 
 private:
 	STATE m_eCurState = STATE::b_idle;
@@ -117,6 +153,13 @@ private:
 	_float m_fSkillAttack_AnimationSpeed = 2.f;
 	_float m_fEvade_AnimationSpeed = 1.5f;
 
+	COOLTIMEINFO m_tKnockDownEndCoolTime = { 3.f, 0.f };
+
+	_bool m_bSkillCreate = false;
+	weak_ptr<GameObject> m_pSkillCollider;
+
+	_uint m_iSkillBoneIndex = 0;
+	_float4x4 matBoneMatrix = XMMatrixIdentity();
 
 };
 

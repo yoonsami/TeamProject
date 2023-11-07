@@ -91,6 +91,15 @@
     <Filter Include="02.Component\00.MonoBehaviour\04.SkillScript">
       <UniqueIdentifier>{a5b52b0c-57ba-4d33-9b3f-4dbcf057ce3c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\01.FSM\01.Hero_FSM\03.Yeopo_FSM">
+      <UniqueIdentifier>{001d0733-1550-4399-9898-c06b73f446c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\03.Special_FSM">
+      <UniqueIdentifier>{289be83f-a306-4891-b5d6-01b0e02ba418}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\03.Special_FSM\00.YeopoHorse_FSM">
+      <UniqueIdentifier>{3e6b1653-dc4a-4330-920b-ed15eecd6d5c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -168,6 +177,12 @@
     <ClInclude Include="ForwardMovingSkillScript.h">
       <Filter>02.Component\00.MonoBehaviour\04.SkillScript</Filter>
     </ClInclude>
+    <ClInclude Include="Yeopo_FSM.h">
+      <Filter>02.Component\01.FSM\01.Hero_FSM\03.Yeopo_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="YeopoHorse_FSM.h">
+      <Filter>02.Component\01.FSM\03.Special_FSM\00.YeopoHorse_FSM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -238,6 +253,12 @@
     </ClCompile>
     <ClCompile Include="ForwardMovingSkillScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\04.SkillScript</Filter>
+    </ClCompile>
+    <ClCompile Include="Yeopo_FSM.cpp">
+      <Filter>02.Component\01.FSM\01.Hero_FSM\03.Yeopo_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="YeopoHorse_FSM.cpp">
+      <Filter>02.Component\01.FSM\03.Special_FSM\00.YeopoHorse_FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -36,13 +36,16 @@ protected:
 public:
 	void Set_Target(shared_ptr<GameObject> pTarget);
 	void Set_Camera(shared_ptr<GameObject> pCamera);
+	void Set_Vehicle(shared_ptr<GameObject> pVehicle);
 	void Reset_Target();
 	void Reset_Weapon();
+	void Reset_Vehicle();
  protected:
 	weak_ptr<GameObject> m_pTarget;
 	weak_ptr<GameObject> m_pAttackCollider;
 	weak_ptr<GameObject> m_pWeapon;
 	weak_ptr<GameObject> m_pCamera;
+	weak_ptr<GameObject> m_pVehicle;
 	
 	_bool m_bInvincible = false;
 	_bool m_bSuperArmor = false;

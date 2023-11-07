@@ -192,6 +192,8 @@
     <ClInclude Include="Silversword_Soldier_FSM.h" />
     <ClInclude Include="SpearAce_FSM.h" />
     <ClInclude Include="WeaponScript.h" />
+    <ClInclude Include="YeopoHorse_FSM.h" />
+    <ClInclude Include="Yeopo_FSM.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AttackColliderInfoScript.cpp" />
@@ -222,6 +224,8 @@
     <ClCompile Include="Silversword_Soldier_FSM.cpp" />
     <ClCompile Include="SpearAce_FSM.cpp" />
     <ClCompile Include="WeaponScript.cpp" />
+    <ClCompile Include="YeopoHorse_FSM.cpp" />
+    <ClCompile Include="Yeopo_FSM.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc" />

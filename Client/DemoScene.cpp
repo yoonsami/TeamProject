@@ -26,6 +26,7 @@
 #include "HeroChangeScript.h"
 #include "Silversword_Soldier_FSM.h"
 #include "OBBBoxCollider.h"
+#include "Debug_CreateMotionTrail.h"
 
 
 
@@ -61,6 +62,14 @@ void DemoScene::Late_Tick()
 	{
 		shared_ptr<GameObject> player = Get_GameObject(L"Player");
 		auto animator = player->Get_Animator();
+
+		if (KEYTAP(KEY_TYPE::X))
+		{
+			if (m_bRenderDebug)
+				m_bRenderDebug = false;
+			else
+				m_bRenderDebug = true;
+		}
 		/*{
 			auto model = animator->Get_Model();
 
@@ -151,6 +160,8 @@ void DemoScene::Load_Player()
 		ObjPlayer->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.8f, 0.5f })); //obbcollider
 		ObjPlayer->Get_Collider()->Set_CollisionGroup(Player_Body);
 		ObjPlayer->Get_Collider()->Set_Activate(true);
+
+		ObjPlayer->Add_Component(make_shared<Debug_CreateMotionTrail>());
 
 		{
 			auto controller = make_shared<CharacterController>();
