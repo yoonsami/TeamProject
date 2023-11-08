@@ -418,5 +418,8 @@
     <FxCompile Include="..\Shaders\Shader_SSAO.fx">
       <Filter>Shader</Filter>
     </FxCompile>
+    <FxCompile Include="..\Shaders\Shader_Effect2.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

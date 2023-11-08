@@ -350,13 +350,19 @@ void ResourceMgr::CreateDefaultMesh()
 
 void ResourceMgr::CreateDefaultShader()
 {
-	{ // MEMO : 2가 그냥 Shader_Particle.fx를 복사, 수정해서 사용하고 있는 것. 
+	{ 
 		wstring ShaderTag = L"Shader_Particle2.fx";
 		Load<Shader>(ShaderTag, ShaderTag);
 		auto shader = Get<Shader>(ShaderTag);
 		shader->Set_ShaderType(SHADER_TYPE::PARTICLE);
 	}
 
+	{
+		wstring ShaderTag = L"Shader_Effect2.fx";
+		Load<Shader>(ShaderTag, ShaderTag);
+		auto shader = Get<Shader>(ShaderTag);
+		shader->Set_ShaderType(SHADER_TYPE::FORWARD);
+	}
 
 	{
 		wstring ShaderTag = L"Shader_Mesh.fx";
@@ -452,11 +458,18 @@ void ResourceMgr::CreateDefaultShader()
 
 void ResourceMgr::CreateDefaultShader_EffectTool()
 {
-	{ // MEMO : 2가 그냥 Shader_Particle.fx를 복사, 수정해서 사용하고 있는 것. 
+	{ 
 		wstring ShaderTag = L"Shader_Particle2.fx";
 		Load<Shader>(ShaderTag, ShaderTag);
 		auto shader = Get<Shader>(ShaderTag);
 		shader->Set_ShaderType(SHADER_TYPE::PARTICLE);
+	}
+
+	{
+		wstring ShaderTag = L"Shader_Effect2.fx";
+		Load<Shader>(ShaderTag, ShaderTag);
+		auto shader = Get<Shader>(ShaderTag);
+		shader->Set_ShaderType(SHADER_TYPE::FORWARD);
 	}
 
 	{ // MEMO : must

@@ -1,8 +1,8 @@
 #include "ImGuiToolMgr.h"
 
 /* Widgets */
-#include "Widget_MeshEffectTool.h"
-#include "Widget_ParticleEffectTool.h"
+#include "Widget_EffectMaker_Mesh.h"
+#include "Widget_ParticleMaker_Instancing.h"
 
 ImGuiToolMgr::~ImGuiToolMgr()
 {
@@ -26,10 +26,11 @@ void ImGuiToolMgr::Init(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     ImGuizmo::SetRect(0.f, 0.f, g_iWinSizeX, g_iWinSizeY);
 
     // For. Setting Widgets
-    m_pWidget_ParticleEffectTool = make_shared<Widget_ParticleEffectTool>();
-    m_pWidget_MeshEffectTool = make_shared<Widget_MeshEffectTool>();
-    m_pWidget_ParticleEffectTool->Initialize();
-    m_pWidget_MeshEffectTool->Initialize();
+    m_pWidget_ParticleMaker_Instancing = make_shared<Widget_ParticleMaker_Instancing>();
+    m_pWidget_EffectMaker_Mesh = make_shared<Widget_EffectMaker_Mesh>();
+
+    m_pWidget_ParticleMaker_Instancing->Initialize();
+    m_pWidget_EffectMaker_Mesh->Initialize();
 }
 
 void ImGuiToolMgr::Tick()
@@ -41,15 +42,23 @@ void ImGuiToolMgr::Tick()
     ImGuizmo::BeginFrame();
 
     // For. Basic Widget
-    ImGui::SetNextWindowPos(ImVec2(0, g_iWinSizeY - 50.f));
+    ImGui::SetNextWindowPos(ImVec2(0, g_iWinSizeY - 70.f));
     ImGui::Begin("Basic Widget");
     ImGui_BasicWidget();
     ImGui::End();
+
+    //ImGui::ShowDemoWindow();
     
-    if (m_bIsParticleEffectTool_On)
-        m_pWidget_ParticleEffectTool->Tick();
-    if (m_bIsMeshEffectTool_On)
-        m_pWidget_MeshEffectTool->Tick();
+    if (m_bIsParticleMaker_Instancing_On)
+    {
+        m_pWidget_ParticleMaker_Instancing->Set_ImGuiStyle(m_tImGuiStyle);
+        m_pWidget_ParticleMaker_Instancing->Tick();
+    }
+    if (m_bIsEffectMaker_Mesh_On)
+    {
+        m_pWidget_EffectMaker_Mesh->Set_ImGuiStyle(m_tImGuiStyle);
+        m_pWidget_EffectMaker_Mesh->Tick();
+    }
 }
 
 void ImGuiToolMgr::Render()
@@ -60,8 +69,36 @@ void ImGuiToolMgr::Render()
 
 void ImGuiToolMgr::ImGui_BasicWidget()
 {
-    ImGui::Checkbox("MeshEffect Tool", &m_bIsMeshEffectTool_On);
+    Option_ToolSelector();
+    Option_StyleEditor();
+}
+
+void ImGuiToolMgr::Option_ToolSelector()
+{
+    ImGui::SeparatorText("Tool");
+    ImGui::Checkbox("EffectMaker(Mesh)", &m_bIsEffectMaker_Mesh_On);
     ImGui::SameLine();
-    ImGui::Checkbox("Particle Tool", &m_bIsParticleEffectTool_On);
+    ImGui::Checkbox("ParticleMaker(Instancing)", &m_bIsParticleMaker_Instancing_On);
+
+}
+
+void ImGuiToolMgr::Option_StyleEditor()
+{
+    ImGui::SeparatorText("ImGui Window Style");
+
+    //ImGui::SliderFloat("WindowAlpha", &m_tImGuiStyle.fWindowBgAlpha, 0.f, 1.f);
+    //ImGui::SameLine();
+    //ImGui::SliderFloat("Font Size", &m_tImGuiStyle.fFontSize, 1.f, 2.f);
+    //ImGui::SameLine();
+
+    ImGui::RadioButton("Night Theme", &m_tImGuiStyle.iTheme, 0);
+    ImGui::SameLine();
+    ImGui::RadioButton("Day Theme", &m_tImGuiStyle.iTheme, 1);
+
+    switch (m_tImGuiStyle.iTheme)
+    {
+    case 0: ImGui::StyleColorsDark(); break;
+    case 1: ImGui::StyleColorsLight(); break;
+    }
 }
 

@@ -2,8 +2,8 @@
 #include "Camera.h"
 #include "Scene.h"
 #include "ModelRenderer.h"
-//#include "ParticleSystem.h"
 #include "Particle.h"
+#include "MeshEffect.h"
 #include "ModelAnimator.h"
 #include "MeshRenderer.h"
 #include "TrailRenderer.h"
@@ -78,6 +78,7 @@ void Camera::Sort_GameObject()
 			//&& gameObject->Get_EffectRenderer() == nullptr
 			//&& gameObject->Get_ParticleSystem() == nullptr
 			&& gameObject->Get_Particle() == nullptr
+			&& gameObject->Get_MeshEffect() == nullptr
 			&& gameObject->Get_TrailRenderer() == nullptr
 			&& gameObject->Get_MotionTrailRenderer() == nullptr
 			&& gameObject->Get_FontRenderer() ==nullptr)
@@ -264,7 +265,6 @@ void Camera::Render_Forward()
 	for(auto& obj : m_Sky)
 		obj->Get_ModelRenderer()->Render_Skybox();
 	
-
 	for (auto& trail : m_Trails)
 	{
 		if (trail->Get_TrailRenderer())
@@ -280,7 +280,6 @@ void Camera::Render_Forward()
 
 			if (m_eType == ProjectionType::Orthographic)
 			{
-
 				return zDepthA > zDepthB;
 			}
 
@@ -317,11 +316,10 @@ void Camera::Render_Forward()
 			obj->Get_MeshRenderer()->Render();
 		else if (obj->Get_ModelRenderer())
 			obj->Get_ModelRenderer()->Render();
-		//else if (obj->Get_EffectRenderer())
-		//	obj->Get_EffectRenderer()->Render();
+		else if (obj->Get_MeshEffect())
+			obj->Get_MeshEffect()->Render();
 		else if (obj->Get_Animator())
 			obj->Get_Animator()->Render();
-		
 	}
 
 

@@ -38,6 +38,8 @@ public:
 
     typedef struct tagParticle
     {
+        // Tag 
+        const char* pszTag;
         // Textures
         string  strSelected_Texture_Shape = { "None" };
         string  strSelected_Texture_Dissolve = { "None" };
@@ -134,14 +136,14 @@ private:
  
     TYPE                    m_eType = {TYPE_END};           
     COMPUTE_PASS            m_eComputePass = { CP_Default };
-    RENDER_INSTANCEPARTICLE_PASS         m_eRenderPass = { RIP_END };
+    RENDER_INSTANCEPARTICLE_PASS   m_eRenderPass = { RIP_END };
 
-    /* Data to bind or get Shader */
     shared_ptr<Shader>      m_pShader = { nullptr };     
     shared_ptr<Mesh>        m_pMesh = { nullptr };       
     shared_ptr<Model>       m_pModel = { nullptr };      
     shared_ptr<Material>    m_pMaterial = { nullptr };   // For. Bind texture 
 
+    /* Data to bind or get Shader */
     RenderParams            m_ComputeParams{};               
     RenderParams            m_RenderParams{};            
     CreateParticleDesc      m_CreateParticleParams;     

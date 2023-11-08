@@ -356,8 +356,6 @@ void ModelRenderer::Render_MotionBlur_Instancing(shared_ptr<InstancingBuffer>& b
 	}
 }
 
-
-
 void ModelRenderer::Set_Model(shared_ptr<Model> model)
 {
 	m_pModel = model;

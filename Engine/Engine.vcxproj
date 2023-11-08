@@ -195,6 +195,7 @@
     <ClInclude Include="MathUtils.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshCollider.h" />
+    <ClInclude Include="MeshEffect.h" />
     <ClInclude Include="MeshRenderer.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelAnimation.h" />
@@ -267,6 +268,7 @@
     <ClCompile Include="MathUtils.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshCollider.cpp" />
+    <ClCompile Include="MeshEffect.cpp" />
     <ClCompile Include="MeshRenderer.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelAnimation.cpp" />

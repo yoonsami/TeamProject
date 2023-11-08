@@ -19,6 +19,7 @@
 //#include "EffectRenderer.h"
 #include "ParticleSystem.h"
 #include "Particle.h"
+#include "MeshEffect.h"
 #include "TrailRenderer.h"
 //#include "EffectController.h"
 #include "FontRenderer.h"
@@ -146,8 +147,8 @@ SHADER_TYPE GameObject::Get_ShaderType()
 	if (Get_ParticleSystem() && Get_ParticleSystem()->Get_Shader())
 		return Get_ParticleSystem()->Get_Shader()->Get_ShaderType();
 
-	/*if (Get_EffectRenderer() && Get_EffectRenderer()->Get_Shader())
-		return Get_EffectRenderer()->Get_Shader()->Get_ShaderType();*/
+	if (Get_MeshEffect() && Get_MeshEffect()->Get_Shader())
+		return Get_MeshEffect()->Get_Shader()->Get_ShaderType();
 
 	if (Get_TrailRenderer() && Get_TrailRenderer()->Get_Shader())
 		return Get_TrailRenderer()->Get_Shader()->Get_ShaderType();
@@ -252,6 +253,11 @@ shared_ptr<ParticleSystem> GameObject::Get_ParticleSystem()
 shared_ptr<Particle> GameObject::Get_Particle()
 {
 	return static_pointer_cast<Particle>(Get_FixedComponent(COMPONENT_TYPE::Particle));
+}
+
+shared_ptr<MeshEffect> GameObject::Get_MeshEffect()
+{
+	return static_pointer_cast<MeshEffect>(Get_FixedComponent(COMPONENT_TYPE::MeshEffect));
 }
 
 shared_ptr<TrailRenderer> GameObject::Get_TrailRenderer()

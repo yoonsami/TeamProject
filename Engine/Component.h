@@ -18,6 +18,7 @@ enum class COMPONENT_TYPE : _uchar
 	Billboard,
 	ParticleSystem,
 	Particle,
+	MeshEffect,
 	TrailRenderer,
 	FontRenderer,
 	EffectController,

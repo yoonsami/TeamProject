@@ -276,6 +276,7 @@
     <FxCompile Include="..\Shaders\Shader_Bloom.fx" />
     <FxCompile Include="..\Shaders\Shader_Distortion.fx" />
     <FxCompile Include="..\Shaders\Shader_Effect.fx" />
+    <FxCompile Include="..\Shaders\Shader_Effect2.fx" />
     <FxCompile Include="..\Shaders\Shader_Final.fx" />
     <FxCompile Include="..\Shaders\Shader_Mesh.fx" />
     <FxCompile Include="..\Shaders\Shader_Model.fx" />
