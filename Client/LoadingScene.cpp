@@ -44,8 +44,6 @@ void LoadingScene::Init()
         Add_GameObject(camera);
     }
 
-    Load_UI_Texture();
-    Add_UI();
 
     m_pLoader = make_shared<Loader>(m_pNextScene);
     (m_pLoader->Init());
@@ -75,14 +73,4 @@ void LoadingScene::Final_Tick()
 
 		SCENE.Change_Scene(m_pNextScene);
 	}
-}
-
-void LoadingScene::Load_UI_Texture()
-{
-   
-}
-
-void LoadingScene::Add_UI()
-{
-	
 }

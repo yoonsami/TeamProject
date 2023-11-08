@@ -368,6 +368,7 @@ void ImguiMgr::Create_Object()
    ImGui::RadioButton("Static", &m_iSetStaticValue, 0);
    ImGui::SameLine();
    ImGui::RadioButton("None", &m_iSetStaticValue, 1);
+   ImGui::SameLine();
 
    if (ImGui::Button("Create Ui", ImVec2(80.f, 20.f)))
    {
@@ -420,7 +421,13 @@ void ImguiMgr::Select_Object()
             m_iObjNameCursor = iIndex;
             m_strSelectObjName = Name;
 
+            if (0 == m_strSelectObjName.length())
+               break;
+
             auto pGameobject = CUR_SCENE->Get_GameObject(m_strSelectObjName);
+            if (nullptr == pGameobject)
+               break;
+
             m_iPass = pGameobject->Get_MeshRenderer()->Get_Pass();
             m_tagParamDesc = pGameobject->Get_MeshRenderer()->Get_RenderParamDesc();
             m_pSampleObj->GetOrAddTransform()->Set_WorldMat(pGameobject->GetOrAddTransform()->Get_WorldMatrix());
@@ -1134,6 +1141,8 @@ void ImguiMgr::Save_Ui_Desc()
                file->Write<_float>(fSize);
             }
 
+            _bool bIsStatic = CUR_SCENE->Is_Static(pGameobject);
+            file->Write<_bool>(bIsStatic);
          }
       }
    }
@@ -1222,10 +1231,6 @@ void ImguiMgr::Load_Ui_Desc()
                UiObject->Add_Component(BaseUi);
             }
 
-            UiObject->Set_LayerIndex(Layer_UI);
-            UiObject->Set_Instancing(false);
-            CUR_SCENE->Add_GameObject(UiObject);
-
             _bool bIsUseFont = file->Read<_bool>();
             if (true == bIsUseFont)
             {
@@ -1237,6 +1242,11 @@ void ImguiMgr::Load_Ui_Desc()
                _float fSize = file->Read<_float>();
                pFontRenderer->Set_Font(RESOURCES.Get<CustomFont>(strTemp), vecColor, fSize);
             }
+
+            UiObject->Set_LayerIndex(Layer_UI);
+            UiObject->Set_Instancing(false);
+            _bool bIsStatic = file->Read<_bool>();
+            CUR_SCENE->Add_GameObject(UiObject, bIsStatic);
 
          }
       }
