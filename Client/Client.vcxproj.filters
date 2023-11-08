@@ -19,12 +19,6 @@
     <Filter Include="01.Scene\00.DemoScene">
       <UniqueIdentifier>{13315f5f-4c38-4adc-b0a3-367ada70f7cd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Scene\01.LoadingScene">
-      <UniqueIdentifier>{06c79e5e-d8ca-4693-9154-eedfc3cb082a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Scene\01.LoadingScene\Loader">
-      <UniqueIdentifier>{d65c794f-be39-4eaa-844a-ccf9babac16e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Component">
       <UniqueIdentifier>{6977fc82-f1d7-4874-9763-e3be3397e979}</UniqueIdentifier>
     </Filter>
@@ -94,6 +88,15 @@
     <Filter Include="98.Debug\IMGUI">
       <UniqueIdentifier>{f2665d11-bb97-4f08-a1af-aad681188898}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Scene\01.LogoScene">
+      <UniqueIdentifier>{d4df64fa-d4fe-4744-a668-ba7d939bcfbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Scene\00.LoadingScene">
+      <UniqueIdentifier>{06c79e5e-d8ca-4693-9154-eedfc3cb082a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Scene\00.LoadingScene\Loader">
+      <UniqueIdentifier>{d65c794f-be39-4eaa-844a-ccf9babac16e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -112,10 +115,10 @@
       <Filter>00.MainApp</Filter>
     </ClInclude>
     <ClInclude Include="LoadingScene.h">
-      <Filter>01.Scene\01.LoadingScene</Filter>
+      <Filter>01.Scene\00.LoadingScene</Filter>
     </ClInclude>
     <ClInclude Include="Loader.h">
-      <Filter>01.Scene\01.LoadingScene\Loader</Filter>
+      <Filter>01.Scene\00.LoadingScene\Loader</Filter>
     </ClInclude>
     <ClInclude Include="DemoScene.h">
       <Filter>01.Scene\00.DemoScene</Filter>
@@ -222,6 +225,10 @@
     <ClInclude Include="..\Libraries\Include\IMGUI\ImZoomSlider.h">
       <Filter>98.Debug\IMGUI</Filter>
     </ClInclude>
+    <ClInclude Include="Client_Ui_Initializer.h" />
+    <ClInclude Include="LogoScene.h">
+      <Filter>01.Scene\01.LogoScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -234,10 +241,10 @@
       <Filter>00.MainApp</Filter>
     </ClCompile>
     <ClCompile Include="LoadingScene.cpp">
-      <Filter>01.Scene\01.LoadingScene</Filter>
+      <Filter>01.Scene\00.LoadingScene</Filter>
     </ClCompile>
     <ClCompile Include="Loader.cpp">
-      <Filter>01.Scene\01.LoadingScene\Loader</Filter>
+      <Filter>01.Scene\00.LoadingScene\Loader</Filter>
     </ClCompile>
     <ClCompile Include="DemoScene.cpp">
       <Filter>01.Scene\00.DemoScene</Filter>
@@ -331,6 +338,10 @@
     </ClCompile>
     <ClCompile Include="..\Libraries\Include\IMGUI\ImSequencer.cpp">
       <Filter>98.Debug\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Client_Ui_Initializer.cpp" />
+    <ClCompile Include="LogoScene.cpp">
+      <Filter>01.Scene\01.LogoScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

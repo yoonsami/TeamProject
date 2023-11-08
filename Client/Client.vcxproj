@@ -200,6 +200,7 @@
     <ClInclude Include="Kyle_FSM.h" />
     <ClInclude Include="Loader.h" />
     <ClInclude Include="LoadingScene.h" />
+    <ClInclude Include="LogoScene.h" />
     <ClInclude Include="MainApp.h" />
     <ClInclude Include="MainCameraScript.h" />
     <ClInclude Include="MotionTrailDisappear.h" />
@@ -240,6 +241,7 @@
     <ClCompile Include="Kyle_FSM.cpp" />
     <ClCompile Include="Loader.cpp" />
     <ClCompile Include="LoadingScene.cpp" />
+    <ClCompile Include="LogoScene.cpp" />
     <ClCompile Include="MainApp.cpp" />
     <ClCompile Include="MainCameraScript.cpp" />
     <ClCompile Include="MotionTrailDisappear.cpp" />

@@ -1,7 +1,6 @@
 #pragma once
 #include "Component.h"
-
-class CustomFont;
+#include "CustomFont.h"
 
 class FontRenderer : public Component
 {

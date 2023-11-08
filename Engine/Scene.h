@@ -50,6 +50,7 @@ public:
 
 protected:
 	void Load_SceneFile(const wstring& sceneName);
+	void Load_UIFile(const wstring& path);
 	void PickUI();
 
 protected:

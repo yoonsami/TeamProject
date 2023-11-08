@@ -3,6 +3,7 @@
 
 #include "LoadingScene.h"
 #include "DemoScene.h"
+#include "LogoScene.h"
 
 MainApp::MainApp()
 {
@@ -60,7 +61,7 @@ HRESULT MainApp::Render()
 
 HRESULT MainApp::Open_Scene()
 {
-	shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<DemoScene>());
+	shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<LogoScene>());
 
 	SCENE.Change_Scene(scene);
 
