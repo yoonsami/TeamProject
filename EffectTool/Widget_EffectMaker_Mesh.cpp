@@ -187,7 +187,6 @@ void Widget_EffectMaker_Mesh::Option_Texture()
 
 	ImGui::SameLine();
 
-	// Child 2: rounded border
 	{
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
 		ImGui::BeginChild("##TextureChild2", ImVec2(0, 260), true, window_flags);
@@ -199,6 +198,22 @@ void Widget_EffectMaker_Mesh::Option_Texture()
 			ImGui::Image((pTexture->Get_SRV().Get()), ImVec2(120, 120));
 
 		ImGui::EndChild();
+	}
+	ImGui::Spacing();
+
+	// Sampler 
+	const char* pszItem_Sampler[] = { "Wrap", "Clamp", "Mirror", "Border"};
+	if (ImGui::BeginCombo("Option##BaseColor", pszItem_Sampler[m_iSamplerType], 0))
+	{
+		for (_uint n = 0; n < IM_ARRAYSIZE(pszItem_Sampler); n++)
+		{
+			const bool is_selected = (m_iSamplerType == n);
+			if (ImGui::Selectable(pszItem_Sampler[n], is_selected))
+				m_iSamplerType = n;
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
 	}
 }
 
@@ -372,8 +387,9 @@ void Widget_EffectMaker_Mesh::Create()
 		Color(m_vOverlayColor_Start.x, m_vOverlayColor_Start.y, m_vOverlayColor_Start.z, m_vOverlayColor_Start.w),
 		Color(m_vOverlayColor_End.x, m_vOverlayColor_End.y, m_vOverlayColor_End.z, m_vOverlayColor_End.w),
 
+		_float2(m_fTexcoordTiling[0], m_fTexcoordTiling[1]),
 		_float2(m_fTexcoordSpeed[0], m_fTexcoordSpeed[1]),
-		_float2(m_fTexcoordTiling[0], m_fTexcoordTiling[1])
+		m_iSamplerType
 	};
 	EffectObj->Get_MeshEffect()->Init(&tMeshEffectDesc);
 

@@ -40,6 +40,7 @@ float4 PS_Main(EffectOut input) : SV_Target
     int iOverlayOn = g_int_0;
     int iFadeOutOn = g_int_1;
     int iGradationOn = g_int_2;
+    int iSamplerType = g_int_3;
     
     float fLifeTimeRatio = g_float_0;
     float fGradationIntensity = g_float_1;
@@ -62,17 +63,47 @@ float4 PS_Main(EffectOut input) : SV_Target
         fDistortionWeight = vDistortion.r * 0.5f;
     }
     
+    
+
+    float fDissolve = 1.f;
+    
     // For. Opacity Map
     if (bHasOpacityMap)
     {
-        output.a = OpacityMap.Sample(LinearSampler, input.uv + fDistortionWeight).r;
-        vOverlay.a = OpacityMap.Sample(LinearSampler, input.uv + fDistortionWeight).r;
+        if (0 == iSamplerType)
+        {
+            output.a = OpacityMap.Sample(LinearSampler, input.uv + fDistortionWeight + fOpacityMap_TexUVOffset).r;
+            vOverlay.a = OpacityMap.Sample(LinearSampler, input.uv + fDistortionWeight + fOpacityMap_TexUVOffset).r;
+            if (bHasDissolveMap)
+                fDissolve = DissolveMap.Sample(LinearSampler, input.uv + fOpacityMap_TexUVOffset).r;
+        }
+        else if (1 == iSamplerType)
+        {
+            output.a = OpacityMap.Sample(LinearSamplerClamp, input.uv + fDistortionWeight + fOpacityMap_TexUVOffset).r;
+            vOverlay.a = OpacityMap.Sample(LinearSamplerClamp, input.uv + fDistortionWeight + fOpacityMap_TexUVOffset).r;
+            if (bHasDissolveMap)
+                fDissolve = DissolveMap.Sample(LinearSamplerClamp, input.uv + fOpacityMap_TexUVOffset).r;
+        }
+        else if (2 == iSamplerType)
+        {
+            output.a = OpacityMap.Sample(LinearSamplerMirror, input.uv + fDistortionWeight + fOpacityMap_TexUVOffset).r;
+            vOverlay.a = OpacityMap.Sample(LinearSamplerMirror, input.uv + fDistortionWeight + fOpacityMap_TexUVOffset).r;
+            if (bHasDissolveMap)
+                fDissolve = DissolveMap.Sample(LinearSamplerMirror, input.uv + fOpacityMap_TexUVOffset).r;  
+        }
+        else if (3 == iSamplerType)
+        {
+            output.a = OpacityMap.Sample(LinearSamplerBorder, input.uv + fDistortionWeight + fOpacityMap_TexUVOffset).r;
+            vOverlay.a = OpacityMap.Sample(LinearSamplerBorder, input.uv + fDistortionWeight + fOpacityMap_TexUVOffset).r;
+            if (bHasDissolveMap)
+                fDissolve = DissolveMap.Sample(LinearSamplerBorder, input.uv + fOpacityMap_TexUVOffset).r;
+        }
+        
     }
    
-     // For. Dissolve
+    // For. Dissolve
     if (bHasDissolveMap)
     {
-        float fDissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
         if (fDissolve < sin(fLifeTimeRatio))
             discard;
     }
@@ -99,7 +130,7 @@ float4 PS_Main(EffectOut input) : SV_Target
 
 technique11 T0 // 0
 {
-    pass pass_Default // 0
+    pass pass_Clamp // 0
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Main()));
         SetRasterizerState(RS_CullNone);

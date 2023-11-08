@@ -93,5 +93,7 @@ private:
 	/* Texcoord */
 	_float					m_fTexcoordSpeed[2] = { 0.f, 0.f }; 
 	_float					m_fTexcoordTiling[2] = { 0.f, 0.f };
+
+	_int					m_iSamplerType = { 0 };
 };
 

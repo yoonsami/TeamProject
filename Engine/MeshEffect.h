@@ -40,6 +40,8 @@ public:
         _float2     vTexTiling;
         _float2     vTexUVSpeed;
 
+        _int        iSamplerType;
+
     }DESC;
 
 public:
