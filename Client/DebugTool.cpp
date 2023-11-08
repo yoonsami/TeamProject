@@ -29,18 +29,19 @@ void DebugTool::Tick()
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	if (false == m_bIsRender)
-		return;
 
-	ImGui::Begin("Debug");
-	if (BeginTabBar("##a"))
+	if (m_bIsRender)
 	{
-		RenderOptionTap();
+		ImGui::Begin("Debug");
+		if (BeginTabBar("##a"))
+		{
+			RenderOptionTap();
 
-		EndTabBar();
+			EndTabBar();
+		}
+
+		End();
 	}
-
-	End();
 
 	if (KEYTAP(KEY_TYPE::ESC))
 		m_bIsRender = !m_bIsRender;
@@ -54,6 +55,8 @@ void DebugTool::Render()
 
 void DebugTool::RenderOptionTap()
 {
+	
+
 	if (BeginTabItem("Render Option"))
 	{
 		_float& g_fBrightness = GAMEINSTANCE.g_fBrightness;

@@ -1,22 +1,51 @@
 #pragma once
 #include "MonoBehaviour.h"
 #include "ModelRenderer.h"
+#include "BaseCollider.h"
+// 생성후 패스, float3 인자던지기 필수
+// _renderer->Set_PassType(_PassType);
+// _renderer->SetFloat(3, m_MapObjDesc.fUVWeight);
 class MapObjectScript :
     public MonoBehaviour
 {
 public:
-    MapObjectScript(shared_ptr<ModelRenderer> _renderer, ModelRenderer::INSTANCE_PASSTYPE _PassType = ModelRenderer::PASS_MAPOBJECT, _float _fUVWeight = 1.f);
+    typedef struct MapObjectDesc
+    {
+        string strName = "";
+        _float fUVWeight = { 1.f }; // UV비율 : 기본1배
+        _bool bShadow = false;
+        _bool bBlur = false;
+        // Component
+            // Transform
+        _bool bTransform = true;
+        _float4x4 WorldMatrix = XMMatrixIdentity();
+        // Collider
+        _bool bCollider = false;
+        //ColliderType ColliderType = ColliderType::OBB;
+        // 0:Sphere 1:AABB 2:OBB 3:Mesh
+        _int ColliderType = static_cast<_int>(ColliderType::OBB);
+        // ColliderDesc
+        _float3 ColliderOffset = _float3{ 0.f, 0.f, 0.f };
+        _float ColRadius = { 0.f };
+        _float3 ColBoundingSize = _float3{ 0.f, 0.f, 0.f };
+        string ColModelName = "";
+        // Culling
+        _float3 CullPos = _float3{ 0.f, 0.f, 0.f };
+        _float CullRadius = { 0.f };
+    }MAPOBJDESC;
 
 public:
-    _float Get_UVWeight() { return m_fUVWeight; }
+    MapObjectScript(MAPOBJDESC _MapObjDesc);
+
+public:
+    _float Get_UVWeight() { return m_MapObjDesc.fUVWeight; }
+    MAPOBJDESC& Get_DESC() { return m_MapObjDesc; }
 
 public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
 
-//private:
-//    weak_ptr<ModelRenderer> m_pRenderer;
-//    ModelRenderer::INSTANCE_PASSTYPE _PassType = ModelRenderer::PASS_MAPOBJECT;
-    _float m_fUVWeight = 1.f;
+private:
+    MAPOBJDESC m_MapObjDesc;
 };
 

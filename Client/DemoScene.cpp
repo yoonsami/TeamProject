@@ -19,19 +19,22 @@
 #include "BaseUI.h"
 #include "FontRenderer.h"
 #include "CustomFont.h"
-#include "MeshCollider.h"
 #include "RigidBody.h"
 #include "ObjectTransformDebug.h"
 #include "CharacterController.h"
 #include "HeroChangeScript.h"
 #include "Silversword_Soldier_FSM.h"
+
+#include "MeshCollider.h"
 #include "OBBBoxCollider.h"
-#include "Client_Ui_Initializer.h"
-
-
-#include <filesystem>
-namespace fs = std::filesystem;
+#include "AABBBoxCollider.h"
+#include "SphereCollider.h"
 #include "MapObjectScript.h"
+#include "Loader.h"
+#include "LoadingScene.h"
+#include "ModelMesh.h"
+#include "Geometry.h"
+
 DemoScene::DemoScene()
 {
 }
@@ -48,6 +51,7 @@ void DemoScene::Init()
 	COLLISION.Check_Group(_int(CollisionGroup::Player_Skill), _int(CollisionGroup::Monster_Body));
 	COLLISION.Check_Group(_int(CollisionGroup::Monster_Attack), _int(CollisionGroup::Player_Body));
 	COLLISION.Check_Group(_int(CollisionGroup::Monster_Skill), _int(CollisionGroup::Player_Body));
+	COLLISION.Check_Group(_int(CollisionGroup::Player_Body), _int(CollisionGroup::MAPObject));
 }
 
 void DemoScene::Tick()
@@ -108,7 +112,7 @@ HRESULT DemoScene::Load_Scene()
 	Load_Player();
 	Load_Light();
 	Load_Camera();
-	Load_MapFile(L"KrisMap20");
+	Load_MapFile(L"KrisMap22");
 	Load_Monster();
 	Load_DemoMap();
 
@@ -381,42 +385,169 @@ void DemoScene::Load_Light()
 
 HRESULT DemoScene::Load_MapFile(const wstring& _mapFileName)
 {
+	// 세이브 파일 이름으로 로드하기
 	wstring strFilePath = L"..\\Resources\\Data\\";
 	strFilePath += _mapFileName + L".dat";
-
-	// 1. 오브젝트 개수 불러오기
+	// 오브젝트 개수 불러오기
 	shared_ptr<FileUtils> file = make_shared<FileUtils>();
 	file->Open(strFilePath, FileMode::Read);
 	_int iNumObjects = file->Read<_int>();
 
 	for (_int i = 0; i < iNumObjects; ++i)
 	{
-		// 2. 이름, UV가중치, 월드매트릭스 저장
+		MapObjectScript::MapObjectDesc MapDesc;
 		wstring strObjectName = Utils::ToWString(file->Read<string>());
-		_float fUVWeight = file->Read<_float>();
-		_float4x4 matWorld = file->Read<_float4x4>();
-
-		// 3. 가져온 정보를 바탕으로 맵오브젝트를 생성하여 현재씬에 추가
-		shared_ptr<GameObject> CreateObject = make_shared<GameObject>();
-		CreateObject->Add_Component(make_shared<Transform>());
-		CreateObject->Get_Transform()->Set_WorldMat(matWorld);
+		MapDesc.strName = Utils::ToString(strObjectName);
+		file->Read<_float>(MapDesc.fUVWeight);
+		file->Read<_bool>(MapDesc.bShadow);
+		file->Read<_bool>(MapDesc.bBlur);
+		file->Read<_bool>(MapDesc.bTransform);
+		if (MapDesc.bTransform)
+			file->Read<_float4x4>(MapDesc.WorldMatrix);
+		file->Read<_bool>(MapDesc.bCollider);
+		if (MapDesc.bCollider)
 		{
-			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-			shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+			file->Read<_int>(MapDesc.ColliderType);
+			file->Read<_float3>(MapDesc.ColliderOffset);
+			switch (static_cast<ColliderType>(MapDesc.ColliderType))
 			{
-				// 맵오브젝트 패스변경 + UV가중치적용
-				shared_ptr<MapObjectScript> MapObjSc = make_shared<MapObjectScript>(renderer, ModelRenderer::PASS_MAPOBJECT, fUVWeight);
-				CreateObject->Add_Component(MapObjSc);
+			case ColliderType::Sphere:
+				file->Read<_float>(MapDesc.ColRadius);
+				break;
+			case ColliderType::AABB:
+				file->Read<_float3>(MapDesc.ColBoundingSize);
+				break;
+			case ColliderType::OBB:
+				file->Read<_float3>(MapDesc.ColBoundingSize);
+				break;
+			case ColliderType::Mesh:
+				file->Read<string>(MapDesc.ColModelName);
+				break;
+			default:
+				break;
 			}
-			{
-				// 베이스 오브젝트의 이름을 사용하여 오브젝트 생성
-				shared_ptr<Model> model = RESOURCES.Get<Model>(strObjectName);
-				renderer->Set_Model(model);
-			}
-			//애니메이터 컴포넌트
-			CreateObject->Add_Component(renderer);
 		}
-		// 4. 현재씬에 추가
+		file->Read<_float3>(MapDesc.CullPos);
+		file->Read<_float>(MapDesc.CullRadius);
+
+		// 오브젝트 틀 생성
+		shared_ptr<GameObject> CreateObject = make_shared<GameObject>();
+		// 맵오브젝트 정보 생성 및 반영
+		shared_ptr<MapObjectScript> MapObjSc = make_shared<MapObjectScript>(MapDesc);
+		CreateObject->Add_Component(MapObjSc);
+		MapObjectScript::MapObjectDesc& CreateDesc = MapObjSc->Get_DESC();
+		// 이름을 사용하여 모델생성
+		// 고유번호를 제거하여 모델명을 얻어옴
+		_int iPureNameSize = 0;
+		while (CreateDesc.strName[iPureNameSize] != '-' && iPureNameSize < CreateDesc.strName.size())
+		{
+			++iPureNameSize;
+		}
+		string strModelName = CreateDesc.strName.substr(0, iPureNameSize);
+		// 모델생성
+		shared_ptr<Model> model = RESOURCES.Get<Model>(Utils::ToWString(strModelName));
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+		shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+		CreateObject->Add_Component(renderer);
+		renderer->Set_Model(model);
+		renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT);
+		renderer->SetFloat(3, CreateDesc.fUVWeight);
+		// 트랜스폼 생성
+		if (CreateDesc.bTransform)
+		{
+			CreateObject->Add_Component(make_shared<Transform>());
+			CreateObject->Get_Transform()->Set_WorldMat(CreateDesc.WorldMatrix);
+		}
+		// 콜라이더 생성
+		if (CreateDesc.bCollider)
+		{
+			switch (CreateDesc.ColliderType)
+			{
+			case static_cast<_int>(ColliderType::Sphere):
+			{
+				shared_ptr<SphereCollider> pCollider = make_shared<SphereCollider>(CreateDesc.ColRadius);
+				pCollider->Set_Offset(CreateDesc.ColliderOffset);
+				CreateObject->Add_Component(pCollider);
+				pCollider->Set_CollisionGroup(MAPObject);
+				pCollider->Set_Activate(true);
+				break;
+			}
+			case static_cast<_int>(ColliderType::AABB):
+			{
+				shared_ptr<AABBBoxCollider> pCollider = make_shared<AABBBoxCollider>(CreateDesc.ColBoundingSize);
+				pCollider->Set_Offset(CreateDesc.ColliderOffset);
+				CreateObject->Add_Component(pCollider);
+				pCollider->Set_CollisionGroup(MAPObject);
+				pCollider->Set_Activate(true);
+				break;
+			}
+			case static_cast<_int>(ColliderType::OBB):
+			{
+				shared_ptr<OBBBoxCollider> pCollider = make_shared<OBBBoxCollider>(CreateDesc.ColBoundingSize);
+				pCollider->Set_Offset(CreateDesc.ColliderOffset);
+				CreateObject->Add_Component(pCollider);
+				pCollider->Set_CollisionGroup(MAPObject);
+				pCollider->Set_Activate(true);
+				break;
+			}
+			case static_cast<_int>(ColliderType::Mesh):
+			{
+				shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(Utils::ToWString(CreateDesc.ColModelName));
+				pCollider->Set_Offset(CreateDesc.ColliderOffset);
+				CreateObject->Add_Component(pCollider);
+				pCollider->Set_CollisionGroup(MAPObject);
+				pCollider->Set_Activate(true);
+				break;
+			}
+			default:
+				break;
+			}
+		}
+		// 그림자, 블러, 컬링정보계산
+		if (!CreateObject->Get_Transform())
+			return E_FAIL;
+		if (!CreateObject->Get_Script<MapObjectScript>())
+			return E_FAIL;
+		if (!CreateObject->Get_Model())
+			return E_FAIL;
+
+		MapObjectScript::MapObjectDesc& MapObjDesc = CreateObject->Get_Script<MapObjectScript>()->Get_DESC();
+
+		CreateObject->Set_DrawShadow(MapObjDesc.bShadow);
+		CreateObject->Set_Blur(MapObjDesc.bBlur);
+
+		// 모델을 받아와서 컬링포지션과 길이를 계산하여 반환 float4(_float(Pos), _float(Radius))
+		// 모든 정점을 돌면서 XYZ각각의 min과 max를 찾아야함.
+
+		_float3 vMaxPos = _float3(FLT_MIN);
+		_float3 vMinPos = _float3(FLT_MAX);
+
+		const vector<shared_ptr<ModelMesh>>& Meshs = CreateObject->Get_Model()->Get_Meshes();
+		for (auto& pMesh : Meshs)
+		{
+			const vector<ModelVertexType>& vertices = pMesh->geometry->Get_Vertices();
+			for (auto& VtxData : vertices)
+			{
+				// 월드행렬반영
+				_float3 vPos = _float3::Transform(VtxData.vPosition, Utils::m_matPivot * CreateObject->Get_Transform()->Get_WorldMatrix());
+
+				vMaxPos.x = max(vPos.x, vMaxPos.x);
+				vMaxPos.y = max(vPos.y, vMaxPos.y);
+				vMaxPos.z = max(vPos.z, vMaxPos.z);
+				vMinPos.x = min(vPos.x, vMinPos.x);
+				vMinPos.y = min(vPos.y, vMinPos.y);
+				vMinPos.z = min(vPos.z, vMinPos.z);
+			}
+		}
+
+		// Min과 Max를 더한 후 2로 나누기
+		_float3 vCullPos = XMVectorAdd(vMinPos, vMaxPos);
+		vCullPos *= 0.5f;
+		_float vCullRadius = max(max(vMaxPos.x - vMinPos.x, vMaxPos.y - vMinPos.y), vMaxPos.z - vMinPos.z);
+
+		CreateObject->Get_Script<MapObjectScript>()->Get_DESC().CullPos = vCullPos;
+		CreateObject->Get_Script<MapObjectScript>()->Get_DESC().CullRadius = vCullRadius;
+
 		Add_GameObject(CreateObject);
 	}
 

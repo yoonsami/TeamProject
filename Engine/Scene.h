@@ -25,7 +25,7 @@ public:
 	virtual void Final_Tick();
 	virtual void Render();
 	virtual HRESULT Load_Scene();
-	virtual void Add_GameObject(shared_ptr<GameObject> object);
+	virtual void Add_GameObject(shared_ptr<GameObject> object, _bool staticFlag = false);
 	virtual void Remove_GameObject(shared_ptr<GameObject> object);
 	void Render_ToneMapping();
 
@@ -34,6 +34,7 @@ public:
 	void Set_Name(const wstring& name) { m_strSceneName = name; }
 	wstring Get_Name() { return m_strSceneName; }
 	vector<shared_ptr<GameObject>>& Get_Objects() { return m_GameObjects; }
+	vector<shared_ptr<GameObject>>& Get_StaticObjects() { return m_StaticObject; }
 	shared_ptr<GameObject> Get_Camera(const wstring& cameraName);
 	shared_ptr<GameObject> Get_MainCamera();
 	shared_ptr<GameObject> Get_UICamera();
@@ -46,6 +47,7 @@ public:
 	void Swap_Object(const wstring& leftObjName, const wstring& rightObjName);
 	SCENE_STATE Get_SceneState() { return m_eSceneState; }
 	void Set_SceneState(SCENE_STATE state) { m_eSceneState = state; }
+	void Render_ToneMapping();
 
 protected:
 	void Load_SceneFile(const wstring& sceneName);
@@ -108,5 +110,8 @@ protected:
 	_uint m_iLevelIndex = 0;
 	_float4 m_vFrustumFarCorner[4];
 	_float4 m_vOffsets[14];
+
+protected:
+	vector<shared_ptr<GameObject>> m_StaticObject;
 };
 
