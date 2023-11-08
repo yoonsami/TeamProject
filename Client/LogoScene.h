@@ -16,8 +16,8 @@ public:
 	virtual HRESULT Load_Scene() override;
 
 private:
-
 	void Load_Camera();
 	void Load_Ui();
+
 };
 

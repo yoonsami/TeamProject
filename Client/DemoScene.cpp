@@ -1,41 +1,40 @@
 ﻿#include "pch.h"
 #include "DemoScene.h"
-#include "ModelAnimator.h"
-#include "ModelRenderer.h"
-#include "BaseCollider.h"
-#include "Camera.h"
-#include "Light.h"
-#include "Model.h"
-#include "MainCameraScript.h"
-#include "WeaponScript.h"
-#include "DemoCameraScript1.h"
-#include "DemoCameraScript2.h"
-#include "DemoAnimationController1.h"
-#include "DemoFSM.h"
-#include "FileUtils.h"
+
 #include "Utils.h"
+#include "Model.h"
+#include "Light.h"
+#include "Loader.h"
+#include "Camera.h"
+#include "BaseUI.h"
+#include "DemoFSM.h"
+#include "Geometry.h"
+#include "RigidBody.h"
+#include "FileUtils.h"
+#include "ModelMesh.h"
+#include "CustomFont.h"
+#include "LoadingScene.h"
+#include "BaseCollider.h"
+#include "WeaponScript.h"
 #include "SpearAce_FSM.h"
 #include "MeshRenderer.h"
-#include "BaseUI.h"
 #include "FontRenderer.h"
-#include "CustomFont.h"
-#include "RigidBody.h"
-#include "ObjectTransformDebug.h"
-#include "CharacterController.h"
-#include "HeroChangeScript.h"
-#include "Silversword_Soldier_FSM.h"
-
 #include "MeshCollider.h"
+#include "ModelAnimator.h"
+#include "ModelRenderer.h"
 #include "OBBBoxCollider.h"
-#include "AABBBoxCollider.h"
 #include "SphereCollider.h"
+#include "AABBBoxCollider.h"
 #include "MapObjectScript.h"
-#include "Loader.h"
-#include "LoadingScene.h"
-#include "ModelMesh.h"
-#include "Geometry.h"
+#include "MainCameraScript.h"
+#include "HeroChangeScript.h"
+#include "DemoCameraScript1.h"
+#include "DemoCameraScript2.h"
+#include "CharacterController.h"
+#include "ObjectTransformDebug.h"
+#include "Silversword_Soldier_FSM.h"
+#include "DemoAnimationController1.h"
 
-#include "Client_Ui_Initializer.h"
 #include <filesystem>
 namespace fs = std::filesystem;
 
@@ -119,9 +118,8 @@ HRESULT DemoScene::Load_Scene()
 	Load_MapFile(L"KrisMap22");
 	Load_Monster();
 	Load_DemoMap();
-
-	/*Load_UI_Texture();
-	Add_UI();*/
+	Load_Ui();
+	
 
 	return S_OK;
 }
@@ -558,7 +556,7 @@ HRESULT DemoScene::Load_MapFile(const wstring& _mapFileName)
 	return S_OK;
 }
 
-void DemoScene::Load_UI_Texture()
+void DemoScene::Load_Ui()
 {
 	wstring assetPath = L"..\\Resources\\Textures\\UITexture\\Main\\";
 
@@ -572,11 +570,6 @@ void DemoScene::Load_UI_Texture()
 		Utils::DetachExt(fileName);
 		RESOURCES.Load<Texture>(fileName, filePath);
 	}
-}
 
-void DemoScene::Add_UI()
-{
-	LOAD_UI_DATA(L"..\\Resources\\UIData\\UI_Main.dat");
-
-	
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Main.dat");
 }

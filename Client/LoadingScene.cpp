@@ -1,17 +1,18 @@
-#include "LoadingScene.h"
 #include "pch.h"
 #include "LoadingScene.h"
-#include "Loader.h"
-#include "Material.h"
-#include "MeshRenderer.h"
-#include "GameObject.h"
-#include "Camera.h"
-#include "FontRenderer.h"
-#include "CustomFont.h"
-#include "Client_Ui_Initializer.h"
-#include "BaseUI.h"
+
 #include "Utils.h"
+#include "Loader.h"
+#include "Camera.h"
+#include "BaseUI.h"
+#include "Material.h"
 #include "DemoScene.h"
+#include "GameObject.h"
+#include "CustomFont.h"
+#include "MeshRenderer.h"
+#include "FontRenderer.h"
+#include "UiLoadingScript.h"
+
 #include <filesystem>
 namespace fs = std::filesystem;
 
@@ -44,6 +45,7 @@ void LoadingScene::Init()
         Add_GameObject(camera);
     }
 
+    Load_Ui();
 
     m_pLoader = make_shared<Loader>(m_pNextScene);
     (m_pLoader->Init());
@@ -59,18 +61,28 @@ void LoadingScene::Tick()
 void LoadingScene::Late_Tick()
 {
     __super::Late_Tick();
-
-
 }
 
 void LoadingScene::Final_Tick()
 {
     __super::Final_Tick();
-	//if (KEYTAP(KEY_TYPE::LBUTTON))
+	
+    //if (KEYTAP(KEY_TYPE::LBUTTON))
 	{
 		if (!m_pLoader->m_bLoadFinished)
 			return;
 
 		SCENE.Change_Scene(m_pNextScene);
 	}
+}
+
+void LoadingScene::Load_Ui()
+{
+    Load_UIFile(L"..\\Resources\\UIData\\UI_Loading.dat");
+
+    auto pGameobject = Get_GameObject(L"UI_Loading_Even");
+    pGameobject->Add_Component(make_shared<UiLoadingScript>(true));
+
+    pGameobject = Get_GameObject(L"UI_Loading_Odd");
+    pGameobject->Add_Component(make_shared<UiLoadingScript>(false));
 }

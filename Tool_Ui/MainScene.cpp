@@ -12,6 +12,8 @@
 #include "Utils.h"
 #include "MeshRenderer.h"
 #include "BaseUI.h"
+#include <filesystem>
+namespace fs = std::filesystem;
 
 MainScene::MainScene()
 {
@@ -48,6 +50,7 @@ HRESULT MainScene::Load_Scene()
 	Load_DemoModel();
 	Load_Light();
 	Load_Camera();
+   Load_UI_Texture();
 
 	return S_OK;
 }
@@ -179,4 +182,20 @@ void MainScene::Load_Light()
 	}
 
 	Add_GameObject(lightObj);
+}
+
+void MainScene::Load_UI_Texture()
+{
+   wstring assetPath = L"..\\Resources\\Textures\\UITexture";
+
+   for (auto& entry : fs::recursive_directory_iterator(assetPath))
+   {
+      if (entry.is_directory())
+         continue;
+
+      wstring filePath = entry.path().wstring();
+      wstring fileName = entry.path().filename().wstring();
+      Utils::DetachExt(fileName);
+      RESOURCES.Load<Texture>(fileName, filePath);
+   }
 }

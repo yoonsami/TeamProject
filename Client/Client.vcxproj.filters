@@ -97,6 +97,12 @@
     <Filter Include="01.Scene\00.LoadingScene\Loader">
       <UniqueIdentifier>{d65c794f-be39-4eaa-844a-ccf9babac16e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\05.UiScript">
+      <UniqueIdentifier>{9d9554cd-b926-4887-8c1e-b2ffc8edad9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\05.UiScript\00.UiLoading">
+      <UniqueIdentifier>{ee74c7ca-4c45-4d2e-86e8-f1c9b2caab74}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -225,9 +231,14 @@
     <ClInclude Include="..\Libraries\Include\IMGUI\ImZoomSlider.h">
       <Filter>98.Debug\IMGUI</Filter>
     </ClInclude>
-    <ClInclude Include="Client_Ui_Initializer.h" />
     <ClInclude Include="LogoScene.h">
       <Filter>01.Scene\01.LogoScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Client_Ui_Initializer.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="UiLoadingScript.h">
+      <Filter>02.Component\00.MonoBehaviour\05.UiScript\00.UiLoading</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -339,9 +350,14 @@
     <ClCompile Include="..\Libraries\Include\IMGUI\ImSequencer.cpp">
       <Filter>98.Debug\IMGUI</Filter>
     </ClCompile>
-    <ClCompile Include="Client_Ui_Initializer.cpp" />
     <ClCompile Include="LogoScene.cpp">
       <Filter>01.Scene\01.LogoScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Client_Ui_Initializer.cpp">
+      <Filter>99.Header</Filter>
+    </ClCompile>
+    <ClCompile Include="UiLoadingScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\05.UiScript\00.UiLoading</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

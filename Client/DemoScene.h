@@ -23,8 +23,6 @@ private:
 	void Load_Monster();
 	void Load_Light();
 	HRESULT Load_MapFile(const wstring& _mapFileName);
-	
-	void Load_UI_Texture();
-	void Add_UI();
+	void Load_Ui();
 };
 

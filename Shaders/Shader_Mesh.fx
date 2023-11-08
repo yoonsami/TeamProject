@@ -336,6 +336,14 @@ float4 PS_UI4(UIOutput input) : SV_TARGET
     return diffuseColor;
 }
 
+float4 PS_UI5(UIOutput input) : SV_TARGET
+{
+    float4 diffuseColor = g_vec4_0;
+    diffuseColor = pow(DiffuseMap.Sample(LinearSamplerMirror, input.uv), GAMMA) * g_vec4_0;
+
+    return diffuseColor;
+}
+
 float4 PS_UIInstancing(UIInstancingOutput input) : SV_TARGET
 {
 
@@ -719,6 +727,17 @@ technique11 T0
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetGeometryShader(NULL);
     }
+
+    pass LOADING_UI
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_UI()));
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetPixelShader(CompileShader(ps_5_0, PS_UI5()));
+        SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetGeometryShader(NULL);
+    }
+
 
     PASS_VP(p1_instancing, VS_Instancing, PS_UI)
     PASS_VP_BLEND(P2, VS_UI, PS_UIBAR)

@@ -1,9 +1,13 @@
 #include "pch.h"
 #include "MainApp.h"
 
-#include "LoadingScene.h"
+#include "Utils.h"
 #include "DemoScene.h"
 #include "LogoScene.h"
+#include "LoadingScene.h"
+
+#include <filesystem>
+namespace fs = std::filesystem;
 
 MainApp::MainApp()
 {
@@ -30,6 +34,8 @@ HRESULT MainApp::Init()
 			return E_FAIL;
 		}
 	}
+
+	Load_Ui();
 	Open_Scene();
 #ifdef _DEBUGTOOL
 	DEBUGTOOL.Init();
@@ -100,5 +106,21 @@ void MainApp::Control_Option()
 	{
 		GAMEINSTANCE.g_iTMIndex--;
 		if (GAMEINSTANCE.g_iTMIndex == 0) GAMEINSTANCE.g_iTMIndex = 3;
+	}
+}
+
+void MainApp::Load_Ui()
+{
+	wstring assetPath = L"..\\Resources\\Textures\\UITexture\\Loading\\";
+
+	for (auto& entry : fs::recursive_directory_iterator(assetPath))
+	{
+		if (entry.is_directory())
+			continue;
+
+		wstring filePath = entry.path().wstring();
+		wstring fileName = entry.path().filename().wstring();
+		Utils::DetachExt(fileName);
+		RESOURCES.Load<Texture>(fileName, filePath);
 	}
 }
