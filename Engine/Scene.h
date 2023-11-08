@@ -40,6 +40,8 @@ public:
 
 	shared_ptr<GameObject> Get_Light() { return m_Lights.empty() ? nullptr : *m_Lights.begin(); }
 	shared_ptr<GameObject> Get_GameObject(const wstring& name);
+	_bool Is_Static(shared_ptr<GameObject> obj);
+
 	shared_ptr<GameObject> Get_UI(const wstring& strName);
 	LightParams& Get_LightParams() { return m_LightParams; }
 

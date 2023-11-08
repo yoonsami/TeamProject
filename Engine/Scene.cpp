@@ -193,6 +193,16 @@ shared_ptr<GameObject> Scene::Get_GameObject(const wstring& name)
 	return nullptr;
 }
 
+_bool Scene::Is_Static(shared_ptr<GameObject> obj)
+{
+	for (auto& staticObj : m_StaticObject)
+	{
+		if (staticObj == obj)
+			return true;
+	}
+	return false;
+}
+
 shared_ptr<GameObject> Scene::Get_UI(const wstring& strName)
 {
 	for (auto& gameObject : m_UI)
