@@ -27,7 +27,6 @@ public:
 	virtual HRESULT Load_Scene();
 	virtual void Add_GameObject(shared_ptr<GameObject> object, _bool staticFlag = false);
 	virtual void Remove_GameObject(shared_ptr<GameObject> object);
-	void Render_ToneMapping();
 
 public:
 	_float Get_LoaingPercent() { return m_fLoadPercent; }

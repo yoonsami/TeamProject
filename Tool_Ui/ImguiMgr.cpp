@@ -365,6 +365,10 @@ void ImguiMgr::Create_Object()
       m_strName = Utils::ToWString(str);
    }
 
+   ImGui::RadioButton("Static", &m_iSetStaticValue, 0);
+   ImGui::SameLine();
+   ImGui::RadioButton("None", &m_iSetStaticValue, 1);
+
    if (ImGui::Button("Create Ui", ImVec2(80.f, 20.f)))
    {
       if (!ImGui::IsItemActive())
@@ -388,7 +392,11 @@ void ImguiMgr::Create_Object()
 
          UiObject->Set_LayerIndex(Layer_UI);
          UiObject->Set_Instancing(false);
-         CUR_SCENE->Add_GameObject(UiObject);
+
+         if(0 == m_iSetStaticValue)
+            CUR_SCENE->Add_GameObject(UiObject, true);
+         else
+            CUR_SCENE->Add_GameObject(UiObject, false);
       }
    }
 }

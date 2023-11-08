@@ -35,6 +35,10 @@
 #include "ModelMesh.h"
 #include "Geometry.h"
 
+#include "Client_Ui_Initializer.h"
+#include <filesystem>
+namespace fs = std::filesystem;
+
 DemoScene::DemoScene()
 {
 }
