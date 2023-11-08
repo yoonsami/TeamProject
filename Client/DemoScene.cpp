@@ -26,7 +26,7 @@
 #include "HeroChangeScript.h"
 #include "Silversword_Soldier_FSM.h"
 #include "OBBBoxCollider.h"
-
+#include "Client_Ui_Initializer.h"
 
 
 #include <filesystem>
@@ -112,8 +112,8 @@ HRESULT DemoScene::Load_Scene()
 	Load_Monster();
 	Load_DemoMap();
 
-	Load_UI_Texture();
-	Add_UI();
+	/*Load_UI_Texture();
+	Add_UI();*/
 
 	return S_OK;
 }

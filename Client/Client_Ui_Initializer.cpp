@@ -66,10 +66,6 @@ void Load_From_UI_Data(const wstring& strDataFilePath)
             UiObject->Add_Component(BaseUi);
         }
 
-        UiObject->Set_LayerIndex(Layer_UI);
-        UiObject->Set_Instancing(false);
-        CUR_SCENE->Add_GameObject(UiObject);
-
         _bool bIsUseFont = file->Read<_bool>();
         if (true == bIsUseFont)
         {
@@ -82,6 +78,8 @@ void Load_From_UI_Data(const wstring& strDataFilePath)
             pFontRenderer->Set_Font(RESOURCES.Get<CustomFont>(strTemp), vecColor, fSize);
         }
 
+        UiObject->Set_LayerIndex(Layer_UI);
+        UiObject->Set_Instancing(false);
+        CUR_SCENE->Add_GameObject(UiObject);
     }
-
 }

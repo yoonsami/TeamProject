@@ -29,6 +29,9 @@ void DebugTool::Tick()
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
+	if (false == m_bIsRender)
+		return;
+
 	ImGui::Begin("Debug");
 	if (BeginTabBar("##a"))
 	{
@@ -45,9 +48,6 @@ void DebugTool::Tick()
 
 void DebugTool::Render()
 {
-	if (false == m_bIsRender)
-		return;
-
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }

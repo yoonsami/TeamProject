@@ -222,6 +222,9 @@
     <ClInclude Include="..\Libraries\Include\IMGUI\ImZoomSlider.h">
       <Filter>98.Debug\IMGUI</Filter>
     </ClInclude>
+    <ClInclude Include="Client_Ui_Initializer.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -331,6 +334,9 @@
     </ClCompile>
     <ClCompile Include="..\Libraries\Include\IMGUI\ImSequencer.cpp">
       <Filter>98.Debug\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Client_Ui_Initializer.cpp">
+      <Filter>99.Header</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
