@@ -30,10 +30,15 @@ HRESULT MainApp::Init()
 			return E_FAIL;
 		}
 	}
+
+
 	Open_Scene();
 #ifdef _DEBUGTOOL
 	DEBUGTOOL.Init();
 #endif
+
+
+
     return S_OK;
 }
 

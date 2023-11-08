@@ -74,4 +74,6 @@ _float GameInstance::g_fBloomMin = 0.99f;
 
 _int GameInstance::g_iTMIndex = 1;
 
-_bool GameInstance::g_bSSAO_On = true;
+GameInstance::FogData GameInstance::g_FogData{};
+
+GameInstance::SSAOData GameInstance::g_SSAOData{};

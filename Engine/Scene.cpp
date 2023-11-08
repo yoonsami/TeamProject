@@ -78,10 +78,10 @@ void Scene::Render()
 	Render_MotionBlur();
 	Render_Deferred();
 	Render_DefferedBlur();
-	if(GAMEINSTANCE.g_bSSAO_On)
+	if(GAMEINSTANCE.g_SSAOData.g_bSSAO_On)
 	{
 		Render_SSAO();
-		Render_SSAOBlur(1);
+		Render_SSAOBlur(3);
 	}
 	Render_Lights();
 	//Render_BlurEffect();
@@ -253,181 +253,181 @@ void Scene::Swap_Object(const wstring& leftObjName, const wstring& rightObjName)
 
 void Scene::Load_SceneFile(const wstring& sceneName)
 {
-	wstring finalPath = m_strSceneDataPath + sceneName + L".Scene";
+	//wstring finalPath = m_strSceneDataPath + sceneName + L".Scene";
 
-	shared_ptr<FileUtils> file = make_shared<FileUtils>();
-	file->Open(finalPath, FileMode::Read);
-
-
-	Set_Name(Utils::ToWString(file->Read<string>()));
-
-	auto& objects = Get_Objects();
-	_uint count = file->Read<_uint>();
-	
+	//shared_ptr<FileUtils> file = make_shared<FileUtils>();
+	//file->Open(finalPath, FileMode::Read);
 
 
-	for (_uint i = 0; i < count; ++i)
-	{
-		shared_ptr<GameObject> obj = make_shared<GameObject>();
-		obj->Set_Name(Utils::ToWString(file->Read<string>()));
+	//Set_Name(Utils::ToWString(file->Read<string>()));
 
-		obj->Set_LayerIndex(file->Read<_uchar>());
-		obj->Get_CullPos() = file->Read<_float3>();
-		obj->Set_CullRadius(file->Read<_float>());
-		obj->Set_FrustumCulled(file->Read<_bool>());
-		obj->Set_DrawShadow(file->Read<_bool>());
-		//Transform
-		if (file->Read<_bool>())
-		{
-			obj->GetOrAddTransform()->Set_WorldMat(file->Read<_float4x4>());
-			obj->GetOrAddTransform()->Set_Speed(file->Read<_float>());
-		}
-		//MeshRenderer
-		if (file->Read<_bool>())
-		{
-			shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
-			shared_ptr<Mesh> mesh = RESOURCES.Get<Mesh>(Utils::ToWString(file->Read<string>()));
+	//auto& objects = Get_Objects();
+	//_uint count = file->Read<_uint>();
+	//
 
-			renderer->Set_Mesh(mesh);
 
-			shared_ptr<Material> material = make_shared<Material>();
+	//for (_uint i = 0; i < count; ++i)
+	//{
+	//	shared_ptr<GameObject> obj = make_shared<GameObject>();
+	//	obj->Set_Name(Utils::ToWString(file->Read<string>()));
 
-			if (file->Read<_bool>())
-			{
-				wstring path = Utils::ToWString(file->Read<string>());
-				wstring key = fs::path(path).filename();
-				Utils::DetachExt(key);
-				material->Set_TextureMap(RESOURCES.GetOrAddTexture(key, path),TextureMapType::DIFFUSE);
-			}
-			if (file->Read<_bool>())
-			{
-				wstring path = Utils::ToWString(file->Read<string>());
-				wstring key = fs::path(path).filename();
-				Utils::DetachExt(key);
-				material->Set_TextureMap(RESOURCES.GetOrAddTexture(key, path), TextureMapType::NORMAL);
-			}
-			if (file->Read<_bool>())
-			{
-				wstring path = Utils::ToWString(file->Read<string>());
-				wstring key = fs::path(path).filename();
-				Utils::DetachExt(key);
-				material->Set_TextureMap(RESOURCES.GetOrAddTexture(key, path), TextureMapType::SPECULAR);
-			}
+	//	obj->Set_LayerIndex(file->Read<_uchar>());
+	//	obj->Get_CullPos() = file->Read<_float3>();
+	//	obj->Set_CullRadius(file->Read<_float>());
+	//	obj->Set_FrustumCulled(file->Read<_bool>());
+	//	obj->Set_DrawShadow(file->Read<_bool>());
+	//	//Transform
+	//	if (file->Read<_bool>())
+	//	{
+	//		obj->GetOrAddTransform()->Set_WorldMat(file->Read<_float4x4>());
+	//		obj->GetOrAddTransform()->Set_Speed(file->Read<_float>());
+	//	}
+	//	//MeshRenderer
+	//	if (file->Read<_bool>())
+	//	{
+	//		shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+	//		shared_ptr<Mesh> mesh = RESOURCES.Get<Mesh>(Utils::ToWString(file->Read<string>()));
 
-			material->Get_MaterialDesc() = file->Read<MaterialDesc>();
+	//		renderer->Set_Mesh(mesh);
 
-			renderer->Set_Material(material);
+	//		shared_ptr<Material> material = make_shared<Material>();
 
-			obj->Add_Component(renderer);
+	//		if (file->Read<_bool>())
+	//		{
+	//			wstring path = Utils::ToWString(file->Read<string>());
+	//			wstring key = fs::path(path).filename();
+	//			Utils::DetachExt(key);
+	//			material->Set_TextureMap(RESOURCES.GetOrAddTexture(key, path),TextureMapType::DIFFUSE);
+	//		}
+	//		if (file->Read<_bool>())
+	//		{
+	//			wstring path = Utils::ToWString(file->Read<string>());
+	//			wstring key = fs::path(path).filename();
+	//			Utils::DetachExt(key);
+	//			material->Set_TextureMap(RESOURCES.GetOrAddTexture(key, path), TextureMapType::NORMAL);
+	//		}
+	//		if (file->Read<_bool>())
+	//		{
+	//			wstring path = Utils::ToWString(file->Read<string>());
+	//			wstring key = fs::path(path).filename();
+	//			Utils::DetachExt(key);
+	//			material->Set_TextureMap(RESOURCES.GetOrAddTexture(key, path), TextureMapType::SPECULAR);
+	//		}
 
-		}
-		//ModelRenderer
-		if (file->Read<_bool>())
-		{
-			shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(RESOURCES.Get<Shader>(L"Shader_Model.fx"));
-			shared_ptr<Model> model = RESOURCES.Get<Model>(Utils::ToWString(file->Read<string>()));
-			assert(model != nullptr);
-			renderer->Set_Model(model);
+	//		material->Get_MaterialDesc() = file->Read<MaterialDesc>();
 
-			renderer->Set_CullMode(file->Read<_bool>());
+	//		renderer->Set_Material(material);
 
-			obj->Add_Component(renderer);
-		}
-		//Camera
-		if (file->Read<_bool>())
-		{
-			shared_ptr<Camera> camera = make_shared<Camera>();
-			CameraDesc desc;
+	//		obj->Add_Component(renderer);
 
-			desc.eType = file->Read<ProjectionType>();
-			desc.strName = Utils::ToWString(file->Read<string>());
-			desc.fFOV = file->Read<_float>();
-			desc.fNear = file->Read<_float>();
-			desc.fFar = file->Read<_float>();
-			camera->Get_CameraDesc() = desc;
-			obj->Add_Component(camera);
-		}
-		//Animator
-		if (file->Read<_bool>())
-		{
-			wstring modelTag = Utils::ToWString(file->Read<string>());
+	//	}
+	//	//ModelRenderer
+	//	if (file->Read<_bool>())
+	//	{
+	//		shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(RESOURCES.Get<Shader>(L"Shader_Model.fx"));
+	//		shared_ptr<Model> model = RESOURCES.Get<Model>(Utils::ToWString(file->Read<string>()));
+	//		assert(model != nullptr);
+	//		renderer->Set_Model(model);
 
-			shared_ptr<ModelAnimator> renderer = make_shared<ModelAnimator>(RESOURCES.Get<Shader>(L"Shader_Model.fx"));
-			shared_ptr<Model> model = RESOURCES.Get<Model>(Utils::ToWString(file->Read<string>()));
-			assert(model != nullptr);
-			renderer->Set_Model(model);
+	//		renderer->Set_CullMode(file->Read<_bool>());
 
-			obj->Add_Component(renderer);
-		}
-		//Light
-		if (file->Read<_bool>())
-		{
-			shared_ptr<Light> light = make_shared<Light>();
-			auto lightInfo = file->Read<LightInfo>();
-			lightInfo.color.specular = _float4(0.f);
-			light->Set_Color(lightInfo.color);
-			light->Set_LightRange(lightInfo.range);
-			light->Set_LightType(static_cast<LIGHT_TYPE>(lightInfo.lightType));
-			light->Set_LightAngle(lightInfo.angle);
-			
+	//		obj->Add_Component(renderer);
+	//	}
+	//	//Camera
+	//	if (file->Read<_bool>())
+	//	{
+	//		shared_ptr<Camera> camera = make_shared<Camera>();
+	//		CameraDesc desc;
 
-			obj->Add_Component(light);
-		}
-		//collider
-		if (file->Read<_bool>())
-		{
-			ColliderType eType = file->Read<ColliderType>();
-			_float3 offset = file->Read<_float3>();
-			switch (eType)
-			{
-			case ColliderType::Sphere:
-			{
-				shared_ptr<SphereCollider> collider = make_shared<SphereCollider>(file->Read<_float>());
-				obj->Add_Component(collider);
-			}
-			break;
-			case ColliderType::AABB:
-			{
-				shared_ptr<AABBBoxCollider> collider = make_shared<AABBBoxCollider>(file->Read<_float3>());
-				obj->Add_Component(collider);
-			}
-			break;
-			case ColliderType::OBB:
-			{
-				_float3 extend = file->Read<_float3>();
-				shared_ptr<OBBBoxCollider> collider = make_shared<OBBBoxCollider>(extend);
-				obj->Add_Component(collider);
-				_float3 colliderCenter = file->Read<_float3>();
-				if (file->Read<_bool>())
-				{
-					_float3 vObjPos = obj->Get_Transform()->Get_State(Transform_State::POS).xyz();
-					auto rigidBody = make_shared<RigidBody>();
-					obj->Add_Component(rigidBody);
-					rigidBody->Create_CapsuleRigidBody(colliderCenter, extend.x, (colliderCenter - vObjPos).y * 2.f);
-				}
-			}
-			break;
-			case ColliderType::Mesh:
-			{
-				shared_ptr<MeshCollider> collider = make_shared<MeshCollider>(Utils::ToWString(file->Read<string>()), obj->GetOrAddTransform()->Get_WorldMatrix());
-				obj->Add_Component(collider);
-				auto rigidBody = make_shared<RigidBody>();
-				rigidBody->Create_RigidBody(collider);
-				obj->Add_Component(rigidBody);
-			}
-			break;
-			default:
-				assert(false);
-				break;
-			}
-			obj->Get_Collider()->Set_Offset(offset);
-		}
+	//		desc.eType = file->Read<ProjectionType>();
+	//		desc.strName = Utils::ToWString(file->Read<string>());
+	//		desc.fFOV = file->Read<_float>();
+	//		desc.fNear = file->Read<_float>();
+	//		desc.fFar = file->Read<_float>();
+	//		camera->Get_CameraDesc() = desc;
+	//		obj->Add_Component(camera);
+	//	}
+	//	//Animator
+	//	if (file->Read<_bool>())
+	//	{
+	//		wstring modelTag = Utils::ToWString(file->Read<string>());
 
-		if (obj->Get_Name() == L"ToolCamera")
-			continue;
-		m_fLoadPercent = clamp(m_fLoadPercent += count / 50.f, 0.f, 100.f);
-		Add_GameObject(obj);
-	}
+	//		shared_ptr<ModelAnimator> renderer = make_shared<ModelAnimator>(RESOURCES.Get<Shader>(L"Shader_Model.fx"));
+	//		shared_ptr<Model> model = RESOURCES.Get<Model>(Utils::ToWString(file->Read<string>()));
+	//		assert(model != nullptr);
+	//		renderer->Set_Model(model);
+
+	//		obj->Add_Component(renderer);
+	//	}
+	//	//Light
+	//	if (file->Read<_bool>())
+	//	{
+	//		shared_ptr<Light> light = make_shared<Light>();
+	//		auto lightInfo = file->Read<LightInfo>();
+	//		lightInfo.color.specular = _float4(0.f);
+	//		light->Set_Color(lightInfo.color);
+	//		light->Set_LightRange(lightInfo.range);
+	//		light->Set_LightType(static_cast<LIGHT_TYPE>(lightInfo.lightType));
+	//		light->Set_LightAngle(lightInfo.angle);
+	//		
+
+	//		obj->Add_Component(light);
+	//	}
+	//	//collider
+	//	if (file->Read<_bool>())
+	//	{
+	//		ColliderType eType = file->Read<ColliderType>();
+	//		_float3 offset = file->Read<_float3>();
+	//		switch (eType)
+	//		{
+	//		case ColliderType::Sphere:
+	//		{
+	//			shared_ptr<SphereCollider> collider = make_shared<SphereCollider>(file->Read<_float>());
+	//			obj->Add_Component(collider);
+	//		}
+	//		break;
+	//		case ColliderType::AABB:
+	//		{
+	//			shared_ptr<AABBBoxCollider> collider = make_shared<AABBBoxCollider>(file->Read<_float3>());
+	//			obj->Add_Component(collider);
+	//		}
+	//		break;
+	//		case ColliderType::OBB:
+	//		{
+	//			_float3 extend = file->Read<_float3>();
+	//			shared_ptr<OBBBoxCollider> collider = make_shared<OBBBoxCollider>(extend);
+	//			obj->Add_Component(collider);
+	//			_float3 colliderCenter = file->Read<_float3>();
+	//			if (file->Read<_bool>())
+	//			{
+	//				_float3 vObjPos = obj->Get_Transform()->Get_State(Transform_State::POS).xyz();
+	//				auto rigidBody = make_shared<RigidBody>();
+	//				obj->Add_Component(rigidBody);
+	//				rigidBody->Create_CapsuleRigidBody(colliderCenter, extend.x, (colliderCenter - vObjPos).y * 2.f);
+	//			}
+	//		}
+	//		break;
+	//		case ColliderType::Mesh:
+	//		{
+	//			shared_ptr<MeshCollider> collider = make_shared<MeshCollider>(Utils::ToWString(file->Read<string>()), obj->GetOrAddTransform()->Get_WorldMatrix());
+	//			obj->Add_Component(collider);
+	//			auto rigidBody = make_shared<RigidBody>();
+	//			rigidBody->Create_RigidBody(collider);
+	//			obj->Add_Component(rigidBody);
+	//		}
+	//		break;
+	//		default:
+	//			assert(false);
+	//			break;
+	//		}
+	//		obj->Get_Collider()->Set_Offset(offset);
+	//	}
+
+	//	if (obj->Get_Name() == L"ToolCamera")
+	//		continue;
+	//	m_fLoadPercent = clamp(m_fLoadPercent += count / 50.f, 0.f, 100.f);
+	//	Add_GameObject(obj);
+	//}
 
 }
 
@@ -770,6 +770,9 @@ void Scene::Render_SSAO()
 	material->Get_Shader()->GetMatrix("gViewToTexSpace")->SetMatrix((_float*)&matViewToTexSpace);
 	material->Get_Shader()->GetVector("gOffsetVectors")->SetFloatVectorArray((_float*)m_vOffsets, 0, 14);
 	material->Get_Shader()->GetVector("gFrustumCorners")->SetFloatVectorArray((_float*)m_vFrustumFarCorner, 0, 4);
+	material->Get_Shader()->GetScalar("gOcclusionRadius")->SetFloat(GAMEINSTANCE.g_SSAOData.g_fOcclusionRadius);
+	material->Get_Shader()->GetScalar("gOcclusionFadeStart")->SetFloat(GAMEINSTANCE.g_SSAOData.g_OcclusionFadeStart);
+	material->Get_Shader()->GetScalar("gOcclusionFadeEnd")->SetFloat(GAMEINSTANCE.g_SSAOData.g_OcclusionFadeEnd);
 
 
 	mesh->Get_VertexBuffer()->Push_Data();
@@ -824,7 +827,14 @@ void Scene::Render_LightFinal()
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 
 	material->Get_Shader()->GetScalar("g_gamma")->SetFloat(GAMEINSTANCE.g_fGamma);
-	material->Get_Shader()->GetScalar("g_SSAO_On")->SetBool(GAMEINSTANCE.g_bSSAO_On);
+	material->Get_Shader()->GetScalar("g_SSAO_On")->SetBool(GAMEINSTANCE.g_SSAOData.g_bSSAO_On);
+	material->Get_Shader()->GetScalar("g_FogOn")->SetBool(GAMEINSTANCE.g_FogData.g_FogOn);
+	material->Get_Shader()->GetScalar("gFogStart")->SetFloat(GAMEINSTANCE.g_FogData.gFogStart);
+	material->Get_Shader()->GetScalar("gFogRange")->SetFloat(GAMEINSTANCE.g_FogData.gFogRange);
+	material->Get_Shader()->GetVector("gFogColor")->SetFloatVector((_float*)&GAMEINSTANCE.g_FogData.gFogColor);
+
+
+
 	material->Push_SubMapData();
 
 	mesh->Get_VertexBuffer()->Push_Data();
@@ -833,6 +843,8 @@ void Scene::Render_LightFinal()
 	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	material->Get_Shader()->DrawIndexed(0,3, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+
+
 }
 
 void Scene::Render_MotionBlurFinal()

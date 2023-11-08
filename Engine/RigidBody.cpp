@@ -31,7 +31,7 @@ void RigidBody::Late_Tick()
 		m_pRigidBody->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, false);
 }
 
-void RigidBody::Create_RigidBody(shared_ptr<MeshCollider> meshCollider)
+void RigidBody::Create_RigidBody(shared_ptr<MeshCollider> meshCollider, const _float4x4& matWorld)
 {
 	m_pMaterial = PHYSX.Get_PxPhysics()->createMaterial(0.5f, 0.5f, 1.f);
 	vector<PxVec3> vertices;
@@ -45,7 +45,8 @@ void RigidBody::Create_RigidBody(shared_ptr<MeshCollider> meshCollider)
 		_uint vertexCount = _uint(vertices.size());
 		for (auto& vertex : ver)
 		{
-			PxVec3 tmp = { vertex.vPosition.x,vertex.vPosition.y,vertex.vPosition.z };
+			_float3 vPos = _float3::Transform(vertex.vPosition, matWorld);
+			PxVec3 tmp = { vPos.x,vPos.y,vPos.z };
 			vertices.push_back(tmp);
 		}
 

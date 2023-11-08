@@ -560,6 +560,7 @@ void ResourceMgr::CreateDefaultMaterial()
 		shared_ptr<Material> material = make_shared<Material>();
 		material->Set_Shader(shader);
 
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"PositionTarget"));
 		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"DiffuseTarget"));
 		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"SpecularTarget"));
 		material->Set_SubMap(3, RESOURCES.Get<Texture>(L"EmissiveTarget"));

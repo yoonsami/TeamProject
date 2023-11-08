@@ -2,7 +2,10 @@
 #include "Light.fx"
 
 float g_ShadowBias;
-;
+float g_FogOn;
+float gFogStart;
+float gFogRange;
+float4 gFogColor;
 
 float CalcShadowFactor(float4 shadowPosH)
 {
@@ -242,7 +245,7 @@ float4 PS_Final(VS_OUT input) : SV_Target
 {
     float4 output = (float4) 0.f;
     
-    //float4 ambientColor = SubMap0.Sample(LinearSampler, input.uv);
+    float3 viewPos = SubMap0.Sample(LinearSampler, input.uv).xyz;
     
     float4 diffuseColor = SubMap1.Sample(LinearSampler, input.uv);
     //diffuseColor = pow(diffuseColor, g_gamma);
@@ -268,6 +271,17 @@ float4 PS_Final(VS_OUT input) : SV_Target
     diffuseColor = diffuseColor * saturate(diffuseLightColor + ambientLightColor);
     specularColor *= specularLightColor;
     emissiveColor *= emissiveLightColor;
+    
+    float vDistToEye = length(viewPos);
+    float3 vToEye = normalize(viewPos);
+    
+    if (g_FogOn)
+    {
+        float fogLerp = saturate((vDistToEye - gFogStart) / gFogRange);
+        
+        diffuseColor = lerp(diffuseColor, gFogColor, fogLerp);
+    }
+    
     
     output = diffuseColor //pow(diffuseColor, 1.f / g_gamma)
     + specularColor

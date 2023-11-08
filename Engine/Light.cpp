@@ -47,7 +47,7 @@ void Light::Render()
 {
 	assert(m_iLightIndex >= 0);
 	auto pShader = m_pLightMaterial->Get_Shader();
-	pShader->GetScalar("g_SSAO_On")->SetBool(GAMEINSTANCE.g_bSSAO_On);
+	pShader->GetScalar("g_SSAO_On")->SetBool(GAMEINSTANCE.g_SSAOData.g_bSSAO_On);
 
 	_float4x4 matScale = _float4x4::CreateScale(2.f);
 	

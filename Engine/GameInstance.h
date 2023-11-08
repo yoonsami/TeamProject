@@ -31,6 +31,23 @@ public:
 	static _float g_fBloomMin;
 	static _int g_iTMIndex;
 
-	static _bool g_bSSAO_On;
+	struct SSAOData
+	{
+		_bool g_bSSAO_On = true;
+		_float g_fOcclusionRadius = 0.5f;
+		_float g_OcclusionFadeStart = 0.2f;
+		_float g_OcclusionFadeEnd = 2.0f;
+
+	};
+	static SSAOData g_SSAOData;
+
+	struct FogData
+	{
+		_bool g_FogOn = false;
+		_float  gFogStart = 15.f;
+		_float  gFogRange = 150.f;
+		Color	gFogColor = Color(1.f);
+	};
+	static FogData g_FogData;
 };
 

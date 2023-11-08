@@ -14,9 +14,10 @@ public:
 
 public:
 	void RenderOptionTap();
+	void FogOptionTap();
 
 private:
-	_bool m_bIsRender;
+	_bool m_bIsRender = true;
 };
 
 #endif

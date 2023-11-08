@@ -238,7 +238,7 @@ void DemoScene::Load_DemoMap()
 		shared_ptr<MeshCollider> collider = make_shared<MeshCollider>(L"Wall_Collider");
 		gameObject->Add_Component(collider);
 		auto rigidBody = make_shared<RigidBody>();
-		rigidBody->Create_RigidBody(collider);
+		rigidBody->Create_RigidBody(collider,_float4x4::Identity);
 		gameObject->Add_Component(rigidBody);
 	}
 	{
@@ -247,7 +247,7 @@ void DemoScene::Load_DemoMap()
 		shared_ptr<MeshCollider> collider = make_shared<MeshCollider>(L"Ground_Collider");
 		gameObject->Add_Component(collider);
 		auto rigidBody = make_shared<RigidBody>();
-		rigidBody->Create_RigidBody(collider);
+		rigidBody->Create_RigidBody(collider, _float4x4::Identity);
 		gameObject->Add_Component(rigidBody);
 	}
 }

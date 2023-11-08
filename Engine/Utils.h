@@ -33,6 +33,7 @@ public:
 	const static wstring m_strTexturePath;
 	const static wstring m_strSceneDataPath;
 	const static wstring m_strSoundDataPath;
-
+	
 };
+
 
