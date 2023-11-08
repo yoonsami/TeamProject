@@ -1012,5 +1012,10 @@ void Scene::SSAO_MapBlur(shared_ptr<Texture> input, RENDER_TARGET_GROUP_TYPE eTy
 
 	_int iPass = horzBlur ? 1 : 2;
 	material->Get_Shader()->DrawIndexed(0, iPass, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
-
+	
+	for (int i = 0; i < 32; ++i)
+	{
+		ID3D11ShaderResourceView* nullSRV = nullptr;
+		CONTEXT->PSSetShaderResources(i, 1, &nullSRV);
+	}
 }

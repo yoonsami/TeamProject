@@ -33,6 +33,7 @@ public:
 	void Set_Name(const wstring& name) { m_strSceneName = name; }
 	wstring Get_Name() { return m_strSceneName; }
 	vector<shared_ptr<GameObject>>& Get_Objects() { return m_GameObjects; }
+	vector<shared_ptr<GameObject>>& Get_StaticObjects() { return m_StaticObject; }
 	shared_ptr<GameObject> Get_Camera(const wstring& cameraName);
 	shared_ptr<GameObject> Get_MainCamera();
 	shared_ptr<GameObject> Get_UICamera();
@@ -108,5 +109,8 @@ protected:
 	_uint m_iLevelIndex = 0;
 	_float4 m_vFrustumFarCorner[4];
 	_float4 m_vOffsets[14];
+
+protected:
+	vector<shared_ptr<GameObject>> m_StaticObject;
 };
 

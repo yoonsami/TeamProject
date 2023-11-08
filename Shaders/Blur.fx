@@ -81,7 +81,7 @@ float4 PS_DOWN(VS_OUT input) : SV_Target0
         for (int j = 0; j < 5; ++j)
         {
             int index = i * 5 + j;
-            vDownSample += SubMap0.Sample(LinearSampler, input.uv + offset[index]).rgb * GaussianWeight[index];
+            vDownSample += SubMap0.Sample(LinearSamplerMirror, input.uv + offset[index]).rgb * GaussianWeight[index];
         }
     }
     
@@ -100,7 +100,7 @@ float4 PS_JUSTDOWN(VS_OUT input) : SV_Target0
 {
   
 
-    return SubMap0.Sample(LinearSampler, input.uv);
+    return SubMap0.Sample(LinearSamplerMirror, input.uv);
     
     
 }
@@ -116,17 +116,17 @@ float4 PS_UP(VS_OUT input) : SV_Target0
     float tu = 1.f / m_TexW;
     float tv = 1.f / m_TexH;
 
-    float3 a = SubMap0.Sample(LinearSampler, clamp(float2(input.uv.x - tu, input.uv.y + tv), 0, 1)).rgb;
-    float3 b = SubMap0.Sample(LinearSampler, clamp(float2(input.uv.x,      input.uv.y + tv), 0, 1)).rgb;
-    float3 c = SubMap0.Sample(LinearSampler, clamp(float2(input.uv.x + tu, input.uv.y + tv), 0, 1)).rgb;
+    float3 a = SubMap0.Sample(LinearSamplerMirror, clamp(float2(input.uv.x - tu, input.uv.y + tv), 0, 1)).rgb;
+    float3 b = SubMap0.Sample(LinearSamplerMirror, clamp(float2(input.uv.x, input.uv.y + tv), 0, 1)).rgb;
+    float3 c = SubMap0.Sample(LinearSamplerMirror, clamp(float2(input.uv.x + tu, input.uv.y + tv), 0, 1)).rgb;
     
-    float3 d = SubMap0.Sample(LinearSampler, clamp(float2(input.uv.x - tu, input.uv.y), 0, 1)).rgb;
-    float3 e = SubMap0.Sample(LinearSampler, clamp(float2(input.uv.x,      input.uv.y), 0, 1)).rgb;
-    float3 f = SubMap0.Sample(LinearSampler, clamp(float2(input.uv.x + tu, input.uv.y), 0, 1)).rgb;
+    float3 d = SubMap0.Sample(LinearSamplerMirror, clamp(float2(input.uv.x - tu, input.uv.y), 0, 1)).rgb;
+    float3 e = SubMap0.Sample(LinearSamplerMirror, clamp(float2(input.uv.x, input.uv.y), 0, 1)).rgb;
+    float3 f = SubMap0.Sample(LinearSamplerMirror, clamp(float2(input.uv.x + tu, input.uv.y), 0, 1)).rgb;
     
-    float3 g = SubMap0.Sample(LinearSampler, clamp(float2(input.uv.x - tu, input.uv.y - tv), 0, 1)).rgb;
-    float3 h = SubMap0.Sample(LinearSampler, clamp(float2(input.uv.x,      input.uv.y - tv), 0, 1)).rgb;
-    float3 i = SubMap0.Sample(LinearSampler, clamp(float2(input.uv.x + tu, input.uv.y - tv), 0, 1)).rgb;
+    float3 g = SubMap0.Sample(LinearSamplerMirror, clamp(float2(input.uv.x - tu, input.uv.y - tv), 0, 1)).rgb;
+    float3 h = SubMap0.Sample(LinearSamplerMirror, clamp(float2(input.uv.x, input.uv.y - tv), 0, 1)).rgb;
+    float3 i = SubMap0.Sample(LinearSamplerMirror, clamp(float2(input.uv.x + tu, input.uv.y - tv), 0, 1)).rgb;
     
     float3 vUpSample = e * 4.f;
     vUpSample += (b + d + f + h) * 2.f;
@@ -163,7 +163,7 @@ float4 PS_UPGaussian(VS_OUT input) : SV_Target0
         for (int j = 0; j < 5; ++j)
         {
             int index = i * 5 + j;
-            vUpSample += SubMap0.Sample(LinearSampler, input.uv + offset[index]).rgb * GaussianWeight[index];
+            vUpSample += SubMap0.Sample(LinearSamplerMirror, input.uv + offset[index]).rgb * GaussianWeight[index];
         }
     }
     
@@ -177,7 +177,7 @@ float4 PS_MotionBlur(VS_OUT input) : SV_Target0
     float4 output = (float4) 0.f;
     
     int NumBlurSample = g_BlurCount;
-    float4 velocity = SubMap0.Sample(PointSampler, input.uv);
+    float4 velocity = SubMap0.Sample(PointSamplerMirror, input.uv);
             
     velocity.xy /= (float) NumBlurSample;
     
@@ -193,8 +193,8 @@ float4 PS_MotionBlur(VS_OUT input) : SV_Target0
     for (int i = iCnt; i < NumBlurSample; ++i)
     {
         
-        BColor = SubMap1.Sample(PointSampler, input.uv + velocity.xy * (float) i);
-        float depth = SubMap2.Sample(PointSampler, input.uv).r;
+        BColor = SubMap1.Sample(PointSamplerMirror, input.uv + velocity.xy * (float) i);
+        float depth = SubMap2.Sample(PointSamplerMirror, input.uv).r;
         if (velocity.a < depth - 0.0001f)
         {
            iCnt++;
@@ -207,10 +207,10 @@ float4 PS_MotionBlur(VS_OUT input) : SV_Target0
     output /= (float) iCnt;
 
     if (velocity.z == 0.f)
-        output = SubMap1.Sample(LinearSampler, input.uv);
+        output = SubMap1.Sample(LinearSamplerMirror, input.uv);
 
     if (!all(output))
-        output = SubMap1.Sample(LinearSampler, input.uv);
+        output = SubMap1.Sample(LinearSamplerMirror, input.uv);
     
     output.a = 1.f;
     
