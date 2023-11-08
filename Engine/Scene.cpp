@@ -457,8 +457,8 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 	// 색깔
 	LightColor DirLightColor;
 	file->Read<LightColor>(DirLightColor);
-	DirectionalLightObject->Get_Light()->Set_Diffuse(DirLightColor.diffuse);
 	DirectionalLightObject->Get_Light()->Set_Ambient(DirLightColor.ambient);
+	DirectionalLightObject->Get_Light()->Set_Diffuse(DirLightColor.diffuse);
 	DirectionalLightObject->Get_Light()->Set_Specular(DirLightColor.specular);
 	DirectionalLightObject->Get_Light()->Set_Emissive(DirLightColor.emissive);
 
@@ -527,6 +527,7 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 
 		// 오브젝트 틀 생성
 		shared_ptr<GameObject> CreateObject = make_shared<GameObject>();
+		CreateObject->Set_Name(strObjectName);
 		// 이름을 사용하여 모델생성
 		// 고유번호를 제거하여 모델명을 얻어옴
 		_int iPureNameSize = 0;

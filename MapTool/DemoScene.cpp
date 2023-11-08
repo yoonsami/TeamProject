@@ -152,14 +152,13 @@ void DemoScene::Load_Light()
 		//lightCom->Set_Ambient(Color(0.8f));
 		//lightCom->Set_Specular(Color(0.f));
 		//lightCom->Set_Emissive(Color(0.f));
-		lightCom->Set_Diffuse(Color(0.11f, 0.11f, 0.75f, 1.f));
 		lightCom->Set_Ambient(Color(0.675f));
+		lightCom->Set_Diffuse(Color(0.11f, 0.11f, 0.75f, 1.f));
 		lightCom->Set_Specular(Color(0.f));
 		lightCom->Set_Emissive(Color(0.f));
 		lightCom->Set_LightType(LIGHT_TYPE::DIRECTIONAL_LIGHT);
 		lightObj->Add_Component(lightCom);
 		
 	}
-
 	Add_GameObject(lightObj);
 }
