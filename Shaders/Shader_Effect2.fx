@@ -38,24 +38,27 @@ float4 PS_Main(EffectOut input) : SV_Target
     float4 output = (float4) 0.f;
     
     int iOverlayOn = g_int_0;
-    int iChangingColorOn = g_int_1;
-    int iFadeOutOn = g_int_2;
+    int iFadeOutOn = g_int_1;
+    int iGradationOn = g_int_2;
     
     float fLifeTimeRatio = g_float_0;
     float fGradationIntensity = g_float_1;
-    
-    float4 vDestBaseColor = float4(g_vec2_0.x, g_vec2_0.y, g_vec2_1.x, g_vec2_1.y );
-    float4 vDestGradationColor = float4(g_vec2_2.x, g_vec2_2.y, g_vec2_3.x, g_vec2_3.y);
     
     float4 vBaseColor = g_vec4_0;
     float4 vGradationColor = g_vec4_1;
     float4 vOverlayColor_Start = g_vec4_2;
     float4 vOverlayColor_End = g_vec4_3;
     
-    if (iChangingColorOn)
+     // For. Overlay
+    if (iOverlayOn)
     {
-        vBaseColor = lerp(vBaseColor, vDestBaseColor, fLifeTimeRatio);
-        vGradationColor = lerp(vGradationColor, vDestBaseColor, fLifeTimeRatio);
+        if (output.a < 0.5f)
+        {
+            float4 vOverlay = lerp(vOverlayColor_Start, vOverlayColor_End, output.a * 2.f);
+            output.rgb = 2.f * vBaseColor.rgb * vOverlay.rgb;
+        }
+        else
+            output.rgb = (1.0 - 2.0 * (1.0 - vBaseColor.rgb) * (1.0 - vOverlayColor_Start.rgb));
     }
     
      // For. Dissolve
@@ -75,24 +78,12 @@ float4 PS_Main(EffectOut input) : SV_Target
     
     // For. FadeOut
     if (iFadeOutOn)
-        output.a *= fLifeTimeRatio;
+        output.a *= (1.f - fLifeTimeRatio);
     
     // For. Gradation 
-    if (output.a <= fGradationIntensity)
-        output.rgb = output.rgb * output.a + vDestBaseColor.rgb * (1.f - output.a);
-    
-    // For. Overlay
-    if (iOverlayOn)
-    {
-        if (output.a < 0.5f)
-        {
-            float4 vOverlay = lerp(vOverlayColor_Start, vOverlayColor_End, output.a * 2.f);
-            output.rgb = 2.f * vBaseColor.rgb * vOverlay.rgb;
-        }
-        else
-            output.rgb = (1.0 - 2.0 * (1.0 - vBaseColor.rgb) * (1.0 - vOverlayColor_Start.rgb));
-    }
-       
+    if (1 == iGradationOn && output.a < fGradationIntensity)
+        output.rgb = (output.rgb * output.a) + (vGradationColor.rgb * (1.f - output.a));
+
     return output;
 }
 

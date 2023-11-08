@@ -85,6 +85,7 @@ private:
     vector<shared_ptr<GameObject>> m_Forward;
     vector<shared_ptr<GameObject>> m_VelocityMapObj;
     vector<shared_ptr<GameObject>> m_Deferred;
+    vector<shared_ptr<GameObject>> m_Effect;
     vector<shared_ptr<GameObject>> m_Particle;
     vector<shared_ptr<GameObject>> m_Shadow;
     vector<shared_ptr<GameObject>> m_DistortionEffects;

@@ -21,6 +21,7 @@ public:
         // Color 
         Color       vBaseColor;       
 
+        _bool       bGradationOn;
         _float      fGradationIntensity;
         Color       vGradationColor;
 
@@ -45,6 +46,10 @@ public:
     virtual void    Tick() override;
     virtual void    Final_Tick() override;  // CS
     void            Render();               // VS, PS
+
+    /* Getter */
+    shared_ptr<Material> Get_Material() { return  m_pMaterial; }
+    shared_ptr<Shader>  Get_Shader() { return m_pShader; }
 
 private:
     void            Init_RenderParams();

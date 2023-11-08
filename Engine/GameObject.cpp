@@ -147,8 +147,8 @@ SHADER_TYPE GameObject::Get_ShaderType()
 	if (Get_ParticleSystem() && Get_ParticleSystem()->Get_Shader())
 		return Get_ParticleSystem()->Get_Shader()->Get_ShaderType();
 
-	/*if (Get_EffectRenderer() && Get_EffectRenderer()->Get_Shader())
-		return Get_EffectRenderer()->Get_Shader()->Get_ShaderType();*/
+	if (Get_MeshEffect() && Get_MeshEffect()->Get_Shader())
+		return Get_MeshEffect()->Get_Shader()->Get_ShaderType();
 
 	if (Get_TrailRenderer() && Get_TrailRenderer()->Get_Shader())
 		return Get_TrailRenderer()->Get_Shader()->Get_ShaderType();

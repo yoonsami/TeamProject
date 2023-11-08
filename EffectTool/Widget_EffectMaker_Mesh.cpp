@@ -41,6 +41,7 @@ void Widget_EffectMaker_Mesh::Set_Mesh_List()
 
 		string tag = entry.path().string();
 		tag = entry.path().filename().string();
+		Utils::DetachExt(tag);
 		m_vecMeshes.push_back(tag);
 	}
 
@@ -289,6 +290,7 @@ void Widget_EffectMaker_Mesh::Create()
 	// For. Add and Setting Transform Component
 	EffectObj->GetOrAddTransform();
 	EffectObj->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
+	EffectObj->Get_Transform()->Scaled(_float3(5.f, 5.f, 5.f));
 
 	// For. Add and Setting Effect Component to GameObject
 	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
@@ -299,6 +301,14 @@ void Widget_EffectMaker_Mesh::Create()
 	Color vRangStartColor = Color(m_vBaseColor_RangeStart.x, m_vBaseColor_RangeStart.y, m_vBaseColor_RangeStart.z, m_vBaseColor_RangeStart.w);
 	Color vRangEndColor = Color(m_vBaseColor_RangeEnd.x, m_vBaseColor_RangeEnd.y, m_vBaseColor_RangeEnd.z, m_vBaseColor_RangeEnd.w);
 	Color vBaseColor = vRangStartColor * fNoise + vRangEndColor * (1.f - fNoise);
+	
+	if (!m_bChangingColorOn)
+	{
+		m_vDestBaseColor = ImVec4(vBaseColor.x, vBaseColor.y, vBaseColor.z, vBaseColor.w);
+		m_vDestGradationColor = m_vGradationColor;
+		m_vOverlayColor_Start = m_vDestOverlayColor_Start;
+		m_vOverlayColor_End = m_vDestOverlayColor_End;
+	}
 
 	MeshEffect::DESC tMeshEffectDesc
 	{
@@ -314,6 +324,7 @@ void Widget_EffectMaker_Mesh::Create()
 			
 		vBaseColor,
 
+		m_bGradationOn,
 		m_fGradationIntensity,
 		Color(m_vGradationColor.x, m_vGradationColor.y, m_vGradationColor.z, m_vGradationColor.w),
 	

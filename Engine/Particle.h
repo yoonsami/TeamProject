@@ -136,7 +136,7 @@ private:
  
     TYPE                    m_eType = {TYPE_END};           
     COMPUTE_PASS            m_eComputePass = { CP_Default };
-    RENDER_INSTANCEPARTICLE_PASS         m_eRenderPass = { RIP_END };
+    RENDER_INSTANCEPARTICLE_PASS   m_eRenderPass = { RIP_END };
 
     shared_ptr<Shader>      m_pShader = { nullptr };     
     shared_ptr<Mesh>        m_pMesh = { nullptr };       
