@@ -68,35 +68,21 @@ void LoadingScene::Late_Tick()
 void LoadingScene::Final_Tick()
 {
     __super::Final_Tick();
+	//if (KEYTAP(KEY_TYPE::LBUTTON))
+	{
+		if (!m_pLoader->m_bLoadFinished)
+			return;
+
+		SCENE.Change_Scene(m_pNextScene);
+	}
 }
 
 void LoadingScene::Load_UI_Texture()
 {
-    wstring assetPath = L"..\\Resources\\Textures\\UITexture\\Logo\\";
-
-    for (auto& entry : fs::recursive_directory_iterator(assetPath))
-    {
-        if (entry.is_directory())
-            continue;
-
-        wstring filePath = entry.path().wstring();
-        wstring fileName = entry.path().filename().wstring();
-        Utils::DetachExt(fileName);
-        RESOURCES.Load<Texture>(fileName, filePath);
-    }
+   
 }
 
 void LoadingScene::Add_UI()
 {
-    LOAD_UI_DATA(L"..\\Resources\\UIData\\UI_Logo.dat");
-
-    auto pGameobject = Get_GameObject(L"UI_Start_Button");
-    if (nullptr != pGameobject)
-    {
-        pGameobject->Get_Button()->AddOnClickedEvent([&]()
-            {
-                if (m_pLoader->m_bLoadFinished)
-                    SCENE.Change_Scene(m_pNextScene);
-            });
-    }
+	
 }
