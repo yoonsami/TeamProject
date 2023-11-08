@@ -52,6 +52,9 @@ HRESULT GameInstance::Render()
 
 HRESULT GameInstance::Render_End()
 {
+	if (CUR_SCENE)
+		CUR_SCENE->Render_ToneMapping();
+
 	GRAPHICS.Render_End();
 
 	return S_OK;

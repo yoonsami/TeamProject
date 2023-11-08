@@ -96,7 +96,7 @@ void Scene::Render()
 	//Render_Debug();
 
 	Render_UI();
-	Render_ToneMapping();
+	//Render_ToneMapping();
 
 	Render_BackBuffer();
 }
@@ -106,7 +106,7 @@ HRESULT Scene::Load_Scene()
 	return S_OK;
 }
 
-void Scene::Add_GameObject(shared_ptr<GameObject> object)
+void Scene::Add_GameObject(shared_ptr<GameObject> object, _bool staticFlag)
 {
 	m_GameObjects.push_back(object);
 
@@ -118,6 +118,9 @@ void Scene::Add_GameObject(shared_ptr<GameObject> object)
 
 	if (object->Get_LayerIndex() == Layer_UI)
 		m_UI.push_back(object);
+
+	if (staticFlag)
+		m_StaticObject.push_back(object);
 }
 
 void Scene::Remove_GameObject(shared_ptr<GameObject> object)
@@ -142,7 +145,11 @@ void Scene::Remove_GameObject(shared_ptr<GameObject> object)
 		if (findit != m_UI.end())
 			m_UI.erase(findit);
 	}
-
+	{
+		auto findit = find(m_StaticObject.begin(), m_StaticObject.end(), object);
+		if (findit != m_StaticObject.end())
+			m_StaticObject.erase(findit);
+	}
 }
 
 shared_ptr<GameObject> Scene::Get_Camera(const wstring& cameraName)

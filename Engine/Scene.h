@@ -25,7 +25,7 @@ public:
 	virtual void Final_Tick();
 	virtual void Render();
 	virtual HRESULT Load_Scene();
-	virtual void Add_GameObject(shared_ptr<GameObject> object);
+	virtual void Add_GameObject(shared_ptr<GameObject> object, _bool staticFlag = false);
 	virtual void Remove_GameObject(shared_ptr<GameObject> object);
 
 public:
@@ -46,6 +46,7 @@ public:
 	void Swap_Object(const wstring& leftObjName, const wstring& rightObjName);
 	SCENE_STATE Get_SceneState() { return m_eSceneState; }
 	void Set_SceneState(SCENE_STATE state) { m_eSceneState = state; }
+	void Render_ToneMapping();
 
 protected:
 	void Load_SceneFile(const wstring& sceneName);
@@ -77,7 +78,6 @@ protected:
 	void Render_Distortion();
 	void Render_Distortion_Final();
 
-	void Render_ToneMapping();
 
 	void Render_Debug();
 	void Render_UI();
