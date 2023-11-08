@@ -16,7 +16,7 @@ public:
         string      strVfxMesh;
 
         // Textures
-        string      strTextures[8];
+        string      strTextures[8];           
 
         // Color 
         Color       vBaseColor;       
@@ -35,6 +35,11 @@ public:
         Color       vDestGradationColor;
         Color       vDestOverlayColor_Start;
         Color       vDestOverlayColor_End;
+
+        // Texture UV
+        _float2     vTexTiling;
+        _float2     vTexUVSpeed;
+
     }DESC;
 
 public:
@@ -60,6 +65,7 @@ private:
     DESC                    m_tDesc;
 
     _float                  m_fCurrAge = { 0.f };
+    _float2                 m_vCurrTexUVOffset = { 0.f, 0.f };
 
     /* Component */
     shared_ptr<Shader>      m_pShader = { nullptr };

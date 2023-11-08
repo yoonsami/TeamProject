@@ -3,6 +3,7 @@
 
 /* Components */
 #include "MeshEffect.h"
+#include "Texture.h"
 
 Widget_EffectMaker_Mesh::Widget_EffectMaker_Mesh()
 {
@@ -97,6 +98,7 @@ void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 	Option_Mesh();
 	Option_Texture();	
 	Option_Color();
+	Option_TextureUV();
 
 	/* For. Create, Save, Load Effect */
 	ImGui::Spacing();
@@ -154,26 +156,50 @@ void Widget_EffectMaker_Mesh::Option_Mesh()
 void Widget_EffectMaker_Mesh::Option_Texture()
 {
 	ImGui::SeparatorText("Texture");
-
- 	for (_int i = 1; i < m_iNumTextureTypes; i++)
+	
 	{
-		if (ImGui::BeginCombo(m_pszTextureTypes[i], m_pszUniversalTextures[m_iTexture[i]], 0))
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
+		ImGui::BeginChild("##TextureChild1", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f, 260), false, window_flags);
+
+		for (_int i = 1; i < m_iNumTextureTypes; i++)
 		{
-			for (_uint n = 0; n < m_iNumUniversalTextures; n++)
+			if (ImGui::BeginCombo(m_pszTextureTypes[i], m_pszUniversalTextures[m_iTexture[i]], 0))
 			{
-				const bool is_selected = (m_iTexture[i] == n);
-				if (ImGui::Selectable(m_pszUniversalTextures[n], is_selected))
+				for (_uint n = 0; n < m_iNumUniversalTextures; n++)
 				{
-					m_iTexture[i] = n;
-					m_strTexture[i] = m_pszUniversalTextures[m_iTexture[i]];
+					const bool is_selected = (m_iTexture[i] == n);
+					if (ImGui::Selectable(m_pszUniversalTextures[n], is_selected))
+					{
+						m_iTexture[i] = n;
+						m_strTexture[i] = m_pszUniversalTextures[m_iTexture[i]];
+
+						m_iCurrEditingTextureType = i;
+					}
+					if (is_selected)
+						ImGui::SetItemDefaultFocus();
 				}
-				if (is_selected)
-					ImGui::SetItemDefaultFocus();
+				ImGui::EndCombo();
 			}
-			ImGui::EndCombo();
+			ImGui::Spacing();
 		}
-		ImGui::Spacing();
- 	}
+		ImGui::EndChild();
+	}
+
+	ImGui::SameLine();
+
+	// Child 2: rounded border
+	{
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
+		ImGui::BeginChild("##TextureChild2", ImVec2(0, 260), true, window_flags);
+		wstring wstrKey = Utils::ToWString(m_strTexture[m_iCurrEditingTextureType]);
+		wstring wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+		Utils::DetachExt(wstrKey);
+		auto pTexture = RESOURCES.GetOrAddTexture(wstrKey, wstrPath);
+		if (nullptr != pTexture)
+			ImGui::Image((pTexture->Get_SRV().Get()), ImVec2(120, 120));
+
+		ImGui::EndChild();
+	}
 }
 
 void Widget_EffectMaker_Mesh::Option_Color()
@@ -282,6 +308,14 @@ void Widget_EffectMaker_Mesh::Option_Color()
 	ImGui::Spacing();
 }
 
+void Widget_EffectMaker_Mesh::Option_TextureUV()
+{
+	ImGui::SeparatorText("Texture UV position");
+
+	ImGui::InputFloat2("Tiling##TextureUV", m_fTexcoordTiling);
+	ImGui::InputFloat2("Move Speed##TextureUV", m_fTexcoordSpeed);
+}
+
 void Widget_EffectMaker_Mesh::Create()
 {
 	// For. Create GameObject 
@@ -290,7 +324,7 @@ void Widget_EffectMaker_Mesh::Create()
 	// For. Add and Setting Transform Component
 	EffectObj->GetOrAddTransform();
 	EffectObj->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
-	EffectObj->Get_Transform()->Scaled(_float3(5.f, 5.f, 5.f));
+	EffectObj->Get_Transform()->Scaled(_float3(1.f));
 
 	// For. Add and Setting Effect Component to GameObject
 	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
@@ -306,8 +340,8 @@ void Widget_EffectMaker_Mesh::Create()
 	{
 		m_vDestBaseColor = ImVec4(vBaseColor.x, vBaseColor.y, vBaseColor.z, vBaseColor.w);
 		m_vDestGradationColor = m_vGradationColor;
-		m_vOverlayColor_Start = m_vDestOverlayColor_Start;
-		m_vOverlayColor_End = m_vDestOverlayColor_End;
+		m_vDestOverlayColor_Start = m_vOverlayColor_Start;
+		m_vDestOverlayColor_End = m_vOverlayColor_End;
 	}
 
 	MeshEffect::DESC tMeshEffectDesc
@@ -336,7 +370,10 @@ void Widget_EffectMaker_Mesh::Create()
 		Color(m_vDestBaseColor.x, m_vDestBaseColor.y, m_vDestBaseColor.z, m_vDestBaseColor.w),
 		Color(m_vDestGradationColor.x, m_vDestGradationColor.y, m_vDestGradationColor.z, m_vDestGradationColor.w),
 		Color(m_vOverlayColor_Start.x, m_vOverlayColor_Start.y, m_vOverlayColor_Start.z, m_vOverlayColor_Start.w),
-		Color(m_vOverlayColor_End.x, m_vOverlayColor_End.y, m_vOverlayColor_End.z, m_vOverlayColor_End.w)
+		Color(m_vOverlayColor_End.x, m_vOverlayColor_End.y, m_vOverlayColor_End.z, m_vOverlayColor_End.w),
+
+		_float2(m_fTexcoordSpeed[0], m_fTexcoordSpeed[1]),
+		_float2(m_fTexcoordTiling[0], m_fTexcoordTiling[1])
 	};
 	EffectObj->Get_MeshEffect()->Init(&tMeshEffectDesc);
 
