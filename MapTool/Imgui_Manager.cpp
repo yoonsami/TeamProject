@@ -50,6 +50,7 @@ void ImGui_Manager::ImGui_SetUp()
     ImGuizmo::Enable(true);
     ImGuizmo::SetRect(0.f, 0.f, g_iWinSizeX, g_iWinSizeY);
 
+    Load_SkyBox();
     Load_MapObjectBase();
 }
 
@@ -62,6 +63,7 @@ void ImGui_Manager::ImGui_Tick()
 
     ImGui::ShowDemoWindow();
 
+    Frame_SkyBox();
     Frame_DirectionalLight();
     Frame_ObjectBase();
     Frame_Objects();
@@ -102,6 +104,21 @@ void ImGui_Manager::Show_Gizmo()
     }
 }
 
+void ImGui_Manager::Frame_SkyBox()
+{
+    ImGui::Begin("Frame_SkyBox"); // 글자 맨윗줄
+
+    if (ImGui::ListBox("##SkyBoxName", &m_iCurrentSkyBoxIndex, m_strSkyboxList.data(), (int)m_strSkyboxList.size()))
+    {
+        string strCurSkybox = m_strSkyboxList[m_iCurrentSkyBoxIndex];
+        Utils::DetachExt(strCurSkybox);
+
+        vector<shared_ptr<Material>>& Mats = CUR_SCENE->Get_GameObject(L"SkyBase")->Get_ModelRenderer()->Get_Model()->Get_Materials();
+        Mats[0]->Set_TextureMap(RESOURCES.Get<Texture>(Utils::ToWString(strCurSkybox)), TextureMapType::DIFFUSE);
+    }
+    ImGui::End();
+}
+
 void ImGui_Manager::Frame_ObjectBase()
 {
     ImGui::Begin("Frame_ObjectBase"); // 글자 맨윗줄
@@ -139,11 +156,12 @@ void ImGui_Manager::Frame_ObjectBase()
     ImGui::Text("Collider - ");
     ImGui::SameLine();
     ImGui::Checkbox("##bCollider", &m_CreateObjectDesc.bCollider);
+    string ModelName = m_strObjectBaseNameList[m_iObjectBaseIndex];
+    m_CreateObjectDesc.ColModelName = ModelName;
     if (m_CreateObjectDesc.bCollider)
     {
         ImGui::Combo("ColliderType", &m_CreateObjectDesc.ColliderType, m_szColliderTypes, IM_ARRAYSIZE(m_szColliderTypes));
         ImGui::DragFloat3("ColliderOffset", (_float*)&m_CreateObjectDesc.ColliderOffset);
-        string ModelName = m_strObjectBaseNameList[m_iObjectBaseIndex];
         switch (m_CreateObjectDesc.ColliderType)
         {
         case 0: //Sphere
@@ -157,7 +175,6 @@ void ImGui_Manager::Frame_ObjectBase()
             break;
         case 3: // Mesh
             ImGui::Text(("ModelName : " + ModelName).data());
-            m_CreateObjectDesc.ColModelName = ModelName;
             break;
         default:
             break;
@@ -380,6 +397,10 @@ void ImGui_Manager::Frame_DirectionalLight()
     _float4& Emissive = DirectionalLightInfo.color.emissive;
     ImGui::ColorEdit4("Emissive", (_float*)&Emissive);
 
+    m_DirectionalLightPos = Pos;
+    m_DirectionalLightLookDir = LookDir;
+    m_DirectionalLightInfo = DirectionalLightInfo;
+
     ImGui::End();
 }
 
@@ -402,6 +423,33 @@ void ImGui_Manager::Picking_Object()
                 m_iObjects = i;
         }
     }
+}
+
+HRESULT ImGui_Manager::Load_SkyBoxTexture()
+{
+    wstring path = L"..\\Resources\\Textures\\MapObject\\SkyBox\\";
+
+    for (auto& entry : fs::recursive_directory_iterator(path))
+    {
+        // 파일의 이름을 가져옴
+        wstring fileName = entry.path().filename().wstring();
+        WCHAR szTempName[MAX_PATH];
+        lstrcpy(szTempName, fileName.c_str());
+
+        wstring noExtName = szTempName;
+        Utils::DetachExt(noExtName);
+        RESOURCES.Load<Texture>(noExtName, path+szTempName);
+
+        // char 형식으로 변환
+        shared_ptr<char[]> pChar = shared_ptr<char[]>(new char[MAX_PATH]);
+        WideCharToMultiByte(CP_ACP, 0, noExtName.c_str(), -1, pChar.get(), MAX_PATH, 0, 0);
+
+        // 스카이박스 이름을 포인터 벡터에 추가
+        m_strSkyBoxNamePtr.push_back(pChar);
+        // 스카이박스 이름을 리스트UI에 추가
+        m_strSkyboxList.push_back(pChar.get());
+    }
+    return S_OK;
 }
 
 HRESULT ImGui_Manager::Load_MapObjectBase()
@@ -468,6 +516,7 @@ shared_ptr<GameObject>& ImGui_Manager::Create_MapObject(MapObjectScript::MapObje
         ++iPureNameSize;
     }
     string strModelName = CreateDesc.strName.substr(0, iPureNameSize);
+    CreateDesc.ColModelName = strModelName;
     // 모델생성
     shared_ptr<Model> model = RESOURCES.Get<Model>(Utils::ToWString(strModelName));
     shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
@@ -578,6 +627,18 @@ HRESULT ImGui_Manager::Save_MapObject()
     shared_ptr<FileUtils> file = make_shared<FileUtils>();
     file->Open(Utils::ToWString(strFilePath), FileMode::Write);
 
+    // 스카이박스 정보 저장
+    string strSkyBoxTetureName = m_strSkyboxList[m_iCurrentSkyBoxIndex];
+    file->Write<string>(strSkyBoxTetureName);
+
+    // 방향성광원 정보 저장
+    file->Write<_float4>(m_DirectionalLightPos);
+    file->Write<_float3>(m_DirectionalLightLookDir);
+    file->Write<LightColor>(m_DirectionalLightInfo.color);
+    
+    // 점광원 정보 저장
+
+    // 맵오브젝트 정보 저장
     // 1. 오브젝트 개수 저장
     file->Write<_int>((_int)m_pMapObjects.size());
     
@@ -609,7 +670,7 @@ HRESULT ImGui_Manager::Save_MapObject()
                 file->Write<_float3>(MapDesc.ColBoundingSize);
                 break;
             case static_cast<_uint>(ColliderType::Mesh):
-                file->Write<string>(MapDesc.ColModelName);
+                //file->Write<string>(MapDesc.ColModelName);
                 break;
             default:
                 break;
@@ -642,9 +703,33 @@ HRESULT ImGui_Manager::Load_MapObject()
     string strFileName = m_szSaveFileName;
     string strFilePath = "..\\Resources\\Data\\";
     strFilePath += strFileName + ".dat";
-    // 오브젝트 개수 불러오기
     shared_ptr<FileUtils> file = make_shared<FileUtils>();
     file->Open(Utils::ToWString(strFilePath), FileMode::Read);
+
+    // 스카이박스 이름 가져오고 적용하기.
+    wstring strSkyBoxTextureName = Utils::ToWString(file->Read<string>());
+    vector<shared_ptr<Material>>& Mats = CUR_SCENE->Get_GameObject(L"SkyBase")->Get_ModelRenderer()->Get_Model()->Get_Materials();
+    Mats[0]->Set_TextureMap(RESOURCES.Get<Texture>(strSkyBoxTextureName), TextureMapType::DIFFUSE);
+
+    // 방향성광원정보 가져오고 적용하기
+    // 포지션
+    shared_ptr<GameObject> DirectionalLightObject = CUR_SCENE->Get_Light();
+    _float4 DirLightPos = _float4{ 0.f, 0.f, 0.f, 1.f };
+    file->Read<_float4>(DirLightPos);
+    DirectionalLightObject->Get_Transform()->Set_State(Transform_State::POS, DirLightPos);
+    // 보는방향
+    _float3 DirLightLookDir = _float3{ 0.f, 0.f, 0.f };
+    file->Read<_float3>(DirLightLookDir);
+    DirectionalLightObject->Get_Transform()->Set_LookDir(DirLightLookDir);
+    // 색깔
+    LightColor DirLightColor;
+    file->Read<LightColor>(DirLightColor);
+    DirectionalLightObject->Get_Light()->Set_Diffuse(DirLightColor.diffuse);
+    DirectionalLightObject->Get_Light()->Set_Ambient(DirLightColor.ambient);
+    DirectionalLightObject->Get_Light()->Set_Specular(DirLightColor.specular);
+    DirectionalLightObject->Get_Light()->Set_Emissive(DirLightColor.emissive);
+
+    // 오브젝트 개수 불러오기
     _int iNumObjects = file->Read<_int>();
     
     for (_int i = 0; i < iNumObjects; ++i)
@@ -675,7 +760,7 @@ HRESULT ImGui_Manager::Load_MapObject()
                 file->Read<_float3>(MapDesc.ColBoundingSize);
                 break;
             case ColliderType::Mesh:
-                file->Read<string>(MapDesc.ColModelName);
+                //file->Read<string>(MapDesc.ColModelName);
                 break;
             default:
                 break;

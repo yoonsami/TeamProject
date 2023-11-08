@@ -14,7 +14,7 @@ public:
 
 	_float3& Get_Dimension() { return m_vDimension; }
 	PxMaterial* Get_Material() { return m_pMaterial; }
-	void Create_RigidBody(shared_ptr<MeshCollider> meshCollider);
+	void Create_RigidBody(shared_ptr<MeshCollider> meshCollider, const _float4x4& matWorld);
 	PxRigidActor* Get_RigidBody() { return m_pRigidBody; }
 	void Create_CapsuleRigidBody(_float3 centerPos, _float radius, _float Height);
 

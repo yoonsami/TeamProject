@@ -98,6 +98,7 @@ public:
 	shared_ptr<Model> Get_Model();
 	
 	_float3& Get_CullPos() { return m_vCullPos; }
+	void Set_CullPos(_float3 _vCullPos) { m_vCullPos = _vCullPos; }
 	_float Get_CullRadius() { return m_fCullRaidus; }
 	void Set_CullRadius(_float radius) { m_fCullRaidus = radius; }
 	_bool Is_FrustumCulled() { return m_bFrustumCull; }

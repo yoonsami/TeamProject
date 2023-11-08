@@ -93,7 +93,7 @@ void Scene::Render()
 	Render_Distortion();
 	Render_Distortion_Final();
 
-	//Render_Debug();
+	Render_Debug();
 
 	Render_UI();
 	Render_ToneMapping();
@@ -235,182 +235,377 @@ void Scene::Swap_Object(const wstring& leftObjName, const wstring& rightObjName)
 
 void Scene::Load_SceneFile(const wstring& sceneName)
 {
-	wstring finalPath = m_strSceneDataPath + sceneName + L".Scene";
+	//wstring finalPath = m_strSceneDataPath + sceneName + L".Scene";
 
+	//shared_ptr<FileUtils> file = make_shared<FileUtils>();
+	//file->Open(finalPath, FileMode::Read);
+
+
+	//Set_Name(Utils::ToWString(file->Read<string>()));
+
+	//auto& objects = Get_Objects();
+	//_uint count = file->Read<_uint>();
+	//
+
+
+	//for (_uint i = 0; i < count; ++i)
+	//{
+	//	shared_ptr<GameObject> obj = make_shared<GameObject>();
+	//	obj->Set_Name(Utils::ToWString(file->Read<string>()));
+
+	//	obj->Set_LayerIndex(file->Read<_uchar>());
+	//	obj->Get_CullPos() = file->Read<_float3>();
+	//	obj->Set_CullRadius(file->Read<_float>());
+	//	obj->Set_FrustumCulled(file->Read<_bool>());
+	//	obj->Set_DrawShadow(file->Read<_bool>());
+	//	//Transform
+	//	if (file->Read<_bool>())
+	//	{
+	//		obj->GetOrAddTransform()->Set_WorldMat(file->Read<_float4x4>());
+	//		obj->GetOrAddTransform()->Set_Speed(file->Read<_float>());
+	//	}
+	//	//MeshRenderer
+	//	if (file->Read<_bool>())
+	//	{
+	//		shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+	//		shared_ptr<Mesh> mesh = RESOURCES.Get<Mesh>(Utils::ToWString(file->Read<string>()));
+
+	//		renderer->Set_Mesh(mesh);
+
+	//		shared_ptr<Material> material = make_shared<Material>();
+
+	//		if (file->Read<_bool>())
+	//		{
+	//			wstring path = Utils::ToWString(file->Read<string>());
+	//			wstring key = fs::path(path).filename();
+	//			Utils::DetachExt(key);
+	//			material->Set_TextureMap(RESOURCES.GetOrAddTexture(key, path),TextureMapType::DIFFUSE);
+	//		}
+	//		if (file->Read<_bool>())
+	//		{
+	//			wstring path = Utils::ToWString(file->Read<string>());
+	//			wstring key = fs::path(path).filename();
+	//			Utils::DetachExt(key);
+	//			material->Set_TextureMap(RESOURCES.GetOrAddTexture(key, path), TextureMapType::NORMAL);
+	//		}
+	//		if (file->Read<_bool>())
+	//		{
+	//			wstring path = Utils::ToWString(file->Read<string>());
+	//			wstring key = fs::path(path).filename();
+	//			Utils::DetachExt(key);
+	//			material->Set_TextureMap(RESOURCES.GetOrAddTexture(key, path), TextureMapType::SPECULAR);
+	//		}
+
+	//		material->Get_MaterialDesc() = file->Read<MaterialDesc>();
+
+	//		renderer->Set_Material(material);
+
+	//		obj->Add_Component(renderer);
+
+	//	}
+	//	//ModelRenderer
+	//	if (file->Read<_bool>())
+	//	{
+	//		shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(RESOURCES.Get<Shader>(L"Shader_Model.fx"));
+	//		shared_ptr<Model> model = RESOURCES.Get<Model>(Utils::ToWString(file->Read<string>()));
+	//		assert(model != nullptr);
+	//		renderer->Set_Model(model);
+
+	//		renderer->Set_CullMode(file->Read<_bool>());
+
+	//		obj->Add_Component(renderer);
+	//	}
+	//	//Camera
+	//	if (file->Read<_bool>())
+	//	{
+	//		shared_ptr<Camera> camera = make_shared<Camera>();
+	//		CameraDesc desc;
+
+	//		desc.eType = file->Read<ProjectionType>();
+	//		desc.strName = Utils::ToWString(file->Read<string>());
+	//		desc.fFOV = file->Read<_float>();
+	//		desc.fNear = file->Read<_float>();
+	//		desc.fFar = file->Read<_float>();
+	//		camera->Get_CameraDesc() = desc;
+	//		obj->Add_Component(camera);
+	//	}
+	//	//Animator
+	//	if (file->Read<_bool>())
+	//	{
+	//		wstring modelTag = Utils::ToWString(file->Read<string>());
+
+	//		shared_ptr<ModelAnimator> renderer = make_shared<ModelAnimator>(RESOURCES.Get<Shader>(L"Shader_Model.fx"));
+	//		shared_ptr<Model> model = RESOURCES.Get<Model>(Utils::ToWString(file->Read<string>()));
+	//		assert(model != nullptr);
+	//		renderer->Set_Model(model);
+
+	//		obj->Add_Component(renderer);
+	//	}
+	//	//Light
+	//	if (file->Read<_bool>())
+	//	{
+	//		shared_ptr<Light> light = make_shared<Light>();
+	//		auto lightInfo = file->Read<LightInfo>();
+	//		lightInfo.color.specular = _float4(0.f);
+	//		light->Set_Color(lightInfo.color);
+	//		light->Set_LightRange(lightInfo.range);
+	//		light->Set_LightType(static_cast<LIGHT_TYPE>(lightInfo.lightType));
+	//		light->Set_LightAngle(lightInfo.angle);
+	//		
+
+	//		obj->Add_Component(light);
+	//	}
+	//	//collider
+	//	if (file->Read<_bool>())
+	//	{
+	//		ColliderType eType = file->Read<ColliderType>();
+	//		_float3 offset = file->Read<_float3>();
+	//		switch (eType)
+	//		{
+	//		case ColliderType::Sphere:
+	//		{
+	//			shared_ptr<SphereCollider> collider = make_shared<SphereCollider>(file->Read<_float>());
+	//			obj->Add_Component(collider);
+	//		}
+	//		break;
+	//		case ColliderType::AABB:
+	//		{
+	//			shared_ptr<AABBBoxCollider> collider = make_shared<AABBBoxCollider>(file->Read<_float3>());
+	//			obj->Add_Component(collider);
+	//		}
+	//		break;
+	//		case ColliderType::OBB:
+	//		{
+	//			_float3 extend = file->Read<_float3>();
+	//			shared_ptr<OBBBoxCollider> collider = make_shared<OBBBoxCollider>(extend);
+	//			obj->Add_Component(collider);
+	//			_float3 colliderCenter = file->Read<_float3>();
+	//			if (file->Read<_bool>())
+	//			{
+	//				_float3 vObjPos = obj->Get_Transform()->Get_State(Transform_State::POS).xyz();
+	//				auto rigidBody = make_shared<RigidBody>();
+	//				obj->Add_Component(rigidBody);
+	//				rigidBody->Create_CapsuleRigidBody(colliderCenter, extend.x, (colliderCenter - vObjPos).y * 2.f);
+	//			}
+	//		}
+	//		break;
+	//		case ColliderType::Mesh:
+	//		{
+	//			shared_ptr<MeshCollider> collider = make_shared<MeshCollider>(Utils::ToWString(file->Read<string>()), obj->GetOrAddTransform()->Get_WorldMatrix());
+	//			obj->Add_Component(collider);
+	//			auto rigidBody = make_shared<RigidBody>();
+	//			rigidBody->Create_RigidBody(collider,);
+	//			obj->Add_Component(rigidBody);
+	//		}
+	//		break;
+	//		default:
+	//			assert(false);
+	//			break;
+	//		}
+	//		obj->Get_Collider()->Set_Offset(offset);
+	//	}
+
+	//	if (obj->Get_Name() == L"ToolCamera")
+	//		continue;
+	//	m_fLoadPercent = clamp(m_fLoadPercent += count / 50.f, 0.f, 100.f);
+	//	Add_GameObject(obj);
+	//}
+
+}
+
+void Scene::Load_MapFile(const wstring& _mapFileName)
+{
+	// 세이브 파일 이름으로 로드하기
+	wstring strFilePath = L"..\\Resources\\Data\\";
+	strFilePath += _mapFileName + L".dat";
 	shared_ptr<FileUtils> file = make_shared<FileUtils>();
-	file->Open(finalPath, FileMode::Read);
+	file->Open(strFilePath, FileMode::Read);
 
-
-	Set_Name(Utils::ToWString(file->Read<string>()));
-
-	auto& objects = Get_Objects();
-	_uint count = file->Read<_uint>();
-	
-
-
-	for (_uint i = 0; i < count; ++i)
+	// 스카이박스 텍스쳐 추가하기
 	{
-		shared_ptr<GameObject> obj = make_shared<GameObject>();
-		obj->Set_Name(Utils::ToWString(file->Read<string>()));
+		wstring path = L"..\\Resources\\Textures\\MapObject\\SkyBox\\";
 
-		obj->Set_LayerIndex(file->Read<_uchar>());
-		obj->Get_CullPos() = file->Read<_float3>();
-		obj->Set_CullRadius(file->Read<_float>());
-		obj->Set_FrustumCulled(file->Read<_bool>());
-		obj->Set_DrawShadow(file->Read<_bool>());
-		//Transform
-		if (file->Read<_bool>())
+		for (auto& entry : fs::recursive_directory_iterator(path))
 		{
-			obj->GetOrAddTransform()->Set_WorldMat(file->Read<_float4x4>());
-			obj->GetOrAddTransform()->Set_Speed(file->Read<_float>());
+			// 파일의 이름을 가져옴
+			wstring fileName = entry.path().filename().wstring();
+			WCHAR szTempName[MAX_PATH];
+			lstrcpy(szTempName, fileName.c_str());
+
+			wstring noExtName = szTempName;
+			Utils::DetachExt(noExtName);
+			RESOURCES.Load<Texture>(noExtName, path + szTempName);
 		}
-		//MeshRenderer
-		if (file->Read<_bool>())
+	}
+
+	// 스카이박스 텍스쳐 이름 가져와서 적용하기
+	wstring strSkyBoxTextureName = Utils::ToWString(file->Read<string>());
+	vector<shared_ptr<Material>>& Mats = Get_GameObject(L"SkyBase")->Get_ModelRenderer()->Get_Model()->Get_Materials();
+	Mats[0]->Set_TextureMap(RESOURCES.Get<Texture>(strSkyBoxTextureName), TextureMapType::DIFFUSE);
+
+	// 광원 정보 가져와서 방향성광원 적용 및 점광원 생성하기
+	// 방향성광원
+    // 포지션
+	shared_ptr<GameObject> DirectionalLightObject = Get_Light();
+	_float4 DirLightPos = _float4{ 0.f, 0.f, 0.f, 1.f };
+	file->Read<_float4>(DirLightPos);
+	DirectionalLightObject->Get_Transform()->Set_State(Transform_State::POS, DirLightPos);
+	// 보는방향
+	_float3 DirLightLookDir = _float3{ 0.f, 0.f, 0.f };
+	file->Read<_float3>(DirLightLookDir);
+	DirectionalLightObject->Get_Transform()->Set_LookDir(DirLightLookDir);
+	// 색깔
+	LightColor DirLightColor;
+	file->Read<LightColor>(DirLightColor);
+	DirectionalLightObject->Get_Light()->Set_Diffuse(DirLightColor.diffuse);
+	DirectionalLightObject->Get_Light()->Set_Ambient(DirLightColor.ambient);
+	DirectionalLightObject->Get_Light()->Set_Specular(DirLightColor.specular);
+	DirectionalLightObject->Get_Light()->Set_Emissive(DirLightColor.emissive);
+
+	// 오브젝트 개수 불러오기
+	_int iNumObjects = file->Read<_int>();
+
+	for (_int i = 0; i < iNumObjects; ++i)
+	{
+		// 맵오브젝트에 필요한 모든정보
+		string strName = "";
+		_float fUVWeight = { 1.f }; // UV비율 : 기본1배
+		_bool bShadow = false;
+		_bool bBlur = false;
+		// Component
+			// Transform
+		_bool bTransform = true;
+		_float4x4 WorldMatrix = XMMatrixIdentity();
+		// Collider
+		_bool bCollider = false;
+		//ColliderType ColliderType = ColliderType::OBB;
+		// 0:Sphere 1:AABB 2:OBB 3:Mesh
+		_int iColliderType = static_cast<_int>(ColliderType::OBB);
+		// ColliderDesc
+		_float3 ColliderOffset = _float3{ 0.f, 0.f, 0.f };
+		_float ColRadius = { 0.f };
+		_float3 ColBoundingSize = _float3{ 0.f, 0.f, 0.f };
+		string ColModelName = "";
+		// Culling
+		_float3 CullPos = _float3{ 0.f, 0.f, 0.f };
+		_float CullRadius = { 0.f };
+
+		wstring strObjectName = Utils::ToWString(file->Read<string>());
+		strName = Utils::ToString(strObjectName);
+
+		file->Read<_float>(fUVWeight);
+		file->Read<_bool>(bShadow);
+		file->Read<_bool>(bBlur);
+		file->Read<_bool>(bTransform);
+		if (bTransform)
+			file->Read<_float4x4>(WorldMatrix);
+		file->Read<_bool>(bCollider);
+		if (bCollider)
 		{
-			shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
-			shared_ptr<Mesh> mesh = RESOURCES.Get<Mesh>(Utils::ToWString(file->Read<string>()));
-
-			renderer->Set_Mesh(mesh);
-
-			shared_ptr<Material> material = make_shared<Material>();
-
-			if (file->Read<_bool>())
+			file->Read<_int>(iColliderType);
+			file->Read<_float3>(ColliderOffset);
+			switch (static_cast<ColliderType>(iColliderType))
 			{
-				wstring path = Utils::ToWString(file->Read<string>());
-				wstring key = fs::path(path).filename();
-				Utils::DetachExt(key);
-				material->Set_TextureMap(RESOURCES.GetOrAddTexture(key, path),TextureMapType::DIFFUSE);
+			case ColliderType::Sphere:
+				file->Read<_float>(ColRadius);
+				break;
+			case ColliderType::AABB:
+				file->Read<_float3>(ColBoundingSize);
+				break;
+			case ColliderType::OBB:
+				file->Read<_float3>(ColBoundingSize);
+				break;
+			case ColliderType::Mesh:
+				//file->Read<string>(ColModelName);
+				break;
+			default:
+				break;
 			}
-			if (file->Read<_bool>())
-			{
-				wstring path = Utils::ToWString(file->Read<string>());
-				wstring key = fs::path(path).filename();
-				Utils::DetachExt(key);
-				material->Set_TextureMap(RESOURCES.GetOrAddTexture(key, path), TextureMapType::NORMAL);
-			}
-			if (file->Read<_bool>())
-			{
-				wstring path = Utils::ToWString(file->Read<string>());
-				wstring key = fs::path(path).filename();
-				Utils::DetachExt(key);
-				material->Set_TextureMap(RESOURCES.GetOrAddTexture(key, path), TextureMapType::SPECULAR);
-			}
-
-			material->Get_MaterialDesc() = file->Read<MaterialDesc>();
-
-			renderer->Set_Material(material);
-
-			obj->Add_Component(renderer);
-
 		}
-		//ModelRenderer
-		if (file->Read<_bool>())
+		file->Read<_float3>(CullPos);
+		file->Read<_float>(CullRadius);
+
+		// 오브젝트 틀 생성
+		shared_ptr<GameObject> CreateObject = make_shared<GameObject>();
+		// 이름을 사용하여 모델생성
+		// 고유번호를 제거하여 모델명을 얻어옴
+		_int iPureNameSize = 0;
+		while (strName[iPureNameSize] != '-' && iPureNameSize < strName.size())
 		{
-			shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(RESOURCES.Get<Shader>(L"Shader_Model.fx"));
-			shared_ptr<Model> model = RESOURCES.Get<Model>(Utils::ToWString(file->Read<string>()));
-			assert(model != nullptr);
-			renderer->Set_Model(model);
-
-			renderer->Set_CullMode(file->Read<_bool>());
-
-			obj->Add_Component(renderer);
+			++iPureNameSize;
 		}
-		//Camera
-		if (file->Read<_bool>())
+		string strModelName = strName.substr(0, iPureNameSize);
+		// 콜라이더에서 사용하는 모델명도 저장
+		ColModelName = strModelName;
+		// 모델생성
+		shared_ptr<Model> model = RESOURCES.Get<Model>(Utils::ToWString(strModelName));
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+		shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+		CreateObject->Add_Component(renderer);
+		renderer->Set_Model(model);
+		renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT);
+		renderer->SetFloat(3, fUVWeight);
+		// 트랜스폼 생성
+		if (bTransform)
 		{
-			shared_ptr<Camera> camera = make_shared<Camera>();
-			CameraDesc desc;
-
-			desc.eType = file->Read<ProjectionType>();
-			desc.strName = Utils::ToWString(file->Read<string>());
-			desc.fFOV = file->Read<_float>();
-			desc.fNear = file->Read<_float>();
-			desc.fFar = file->Read<_float>();
-			camera->Get_CameraDesc() = desc;
-			obj->Add_Component(camera);
+			CreateObject->Add_Component(make_shared<Transform>());
+			CreateObject->Get_Transform()->Set_WorldMat(WorldMatrix);
 		}
-		//Animator
-		if (file->Read<_bool>())
+		// 콜라이더 생성
+		if (bCollider)
 		{
-			wstring modelTag = Utils::ToWString(file->Read<string>());
-
-			shared_ptr<ModelAnimator> renderer = make_shared<ModelAnimator>(RESOURCES.Get<Shader>(L"Shader_Model.fx"));
-			shared_ptr<Model> model = RESOURCES.Get<Model>(Utils::ToWString(file->Read<string>()));
-			assert(model != nullptr);
-			renderer->Set_Model(model);
-
-			obj->Add_Component(renderer);
-		}
-		//Light
-		if (file->Read<_bool>())
-		{
-			shared_ptr<Light> light = make_shared<Light>();
-			auto lightInfo = file->Read<LightInfo>();
-			lightInfo.color.specular = _float4(0.f);
-			light->Set_Color(lightInfo.color);
-			light->Set_LightRange(lightInfo.range);
-			light->Set_LightType(static_cast<LIGHT_TYPE>(lightInfo.lightType));
-			light->Set_LightAngle(lightInfo.angle);
-			
-
-			obj->Add_Component(light);
-		}
-		//collider
-		if (file->Read<_bool>())
-		{
-			ColliderType eType = file->Read<ColliderType>();
-			_float3 offset = file->Read<_float3>();
-			switch (eType)
+			switch (static_cast<ColliderType>(iColliderType))
 			{
 			case ColliderType::Sphere:
 			{
-				shared_ptr<SphereCollider> collider = make_shared<SphereCollider>(file->Read<_float>());
-				obj->Add_Component(collider);
-			}
-			break;
-			case ColliderType::AABB:
-			{
-				shared_ptr<AABBBoxCollider> collider = make_shared<AABBBoxCollider>(file->Read<_float3>());
-				obj->Add_Component(collider);
-			}
-			break;
-			case ColliderType::OBB:
-			{
-				_float3 extend = file->Read<_float3>();
-				shared_ptr<OBBBoxCollider> collider = make_shared<OBBBoxCollider>(extend);
-				obj->Add_Component(collider);
-				_float3 colliderCenter = file->Read<_float3>();
-				if (file->Read<_bool>())
-				{
-					_float3 vObjPos = obj->Get_Transform()->Get_State(Transform_State::POS).xyz();
-					auto rigidBody = make_shared<RigidBody>();
-					obj->Add_Component(rigidBody);
-					rigidBody->Create_CapsuleRigidBody(colliderCenter, extend.x, (colliderCenter - vObjPos).y * 2.f);
-				}
-			}
-			break;
-			case ColliderType::Mesh:
-			{
-				shared_ptr<MeshCollider> collider = make_shared<MeshCollider>(Utils::ToWString(file->Read<string>()), obj->GetOrAddTransform()->Get_WorldMatrix());
-				obj->Add_Component(collider);
-				auto rigidBody = make_shared<RigidBody>();
-				rigidBody->Create_RigidBody(collider);
-				obj->Add_Component(rigidBody);
-			}
-			break;
-			default:
-				assert(false);
+				shared_ptr<SphereCollider> pCollider = make_shared<SphereCollider>(ColRadius);
+				pCollider->Set_Offset(ColliderOffset);
+				CreateObject->Add_Component(pCollider);
+				//pCollider->Set_CollisionGroup(MAPObject);
+				pCollider->Set_Activate(true);
 				break;
 			}
-			obj->Get_Collider()->Set_Offset(offset);
+			case ColliderType::AABB:
+			{
+				shared_ptr<AABBBoxCollider> pCollider = make_shared<AABBBoxCollider>(ColBoundingSize);
+				pCollider->Set_Offset(ColliderOffset);
+				CreateObject->Add_Component(pCollider);
+				//pCollider->Set_CollisionGroup(MAPObject);
+				pCollider->Set_Activate(true);
+				break;
+			}
+			case ColliderType::OBB:
+			{
+				shared_ptr<OBBBoxCollider> pCollider = make_shared<OBBBoxCollider>(ColBoundingSize);
+				pCollider->Set_Offset(ColliderOffset);
+				CreateObject->Add_Component(pCollider);
+				//pCollider->Set_CollisionGroup(MAPObject);
+				pCollider->Set_Activate(true);
+				break;
+			}
+			case ColliderType::Mesh:
+			{
+				shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(Utils::ToWString(ColModelName));
+				pCollider->Set_Offset(ColliderOffset);
+				CreateObject->Add_Component(pCollider);
+				//pCollider->Set_CollisionGroup(MAPObject);
+				pCollider->Set_Activate(true);
+				auto rigidBody = make_shared<RigidBody>();
+				rigidBody->Create_RigidBody(pCollider, CreateObject->GetOrAddTransform()->Get_WorldMatrix());
+				CreateObject->Add_Component(rigidBody);
+				break;
+			}
+			default:
+				break;
+			}
 		}
+		CreateObject->Set_DrawShadow(bShadow);
+		CreateObject->Set_Blur(bBlur);
+		CreateObject->Set_CullPos(CullPos);
+		CreateObject->Set_CullRadius(CullRadius);
 
-		if (obj->Get_Name() == L"ToolCamera")
-			continue;
-		m_fLoadPercent = clamp(m_fLoadPercent += count / 50.f, 0.f, 100.f);
-		Add_GameObject(obj);
+		Add_GameObject(CreateObject);
 	}
-
 }
 
 void Scene::PickUI()
@@ -891,7 +1086,7 @@ void Scene::Render_Distortion_Final()
 void Scene::Render_Debug()
 {
 	for (auto& gameObject : m_GameObjects)
-		if (gameObject->Get_Collider() && gameObject->Get_Collider()->Get_ColliderType() != ColliderType::Mesh)
+		if (gameObject->Get_Collider())
 			gameObject->Get_Collider()->Render();
 }
 

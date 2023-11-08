@@ -49,6 +49,8 @@ public:
 
 protected:
 	void Load_SceneFile(const wstring& sceneName);
+	// 맵이름을 넣으면 현재씬에 맵을 로드하는 기능(스카이박스, 광원, 맵오브젝트)
+	void Load_MapFile(const wstring& _mapFileName);
 	void PickUI();
 
 protected:
