@@ -454,6 +454,18 @@ void ResourceMgr::CreateDefaultShader()
 		auto shader = Get<Shader>(ShaderTag);
 		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
 	}
+	{ // MEMO : must
+		wstring ShaderTag = L"Shader_FXAA.fx";
+		Load<Shader>(ShaderTag, ShaderTag);
+		auto shader = Get<Shader>(ShaderTag);
+		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
+	}
+	{ // MEMO : must
+		wstring ShaderTag = L"Shader_LensFlare.fx";
+		Load<Shader>(ShaderTag, ShaderTag);
+		auto shader = Get<Shader>(ShaderTag);
+		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
+	}
 }
 
 void ResourceMgr::CreateDefaultShader_EffectTool()
@@ -691,29 +703,40 @@ void ResourceMgr::CreateDefaultMaterial()
 		Add(L"BloomFinal", material);
 	}
 	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_FXAA.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"DistortionFinalTarget"));
+
+		Add(L"FXAARenderFinal", material);
+	}
+
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_LensFlare.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"DistortionFinalTarget"));
+
+		Add(L"LensFlareFinal", material);
+	}
+
+	{
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Final.fx");
 		shared_ptr<Material> material = make_shared<Material>();
 		material->Set_Shader(shader);
-		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"DistortionFinalTarget"));
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"FXAATarget"));
 
-		Add(L"BackBufferRenderFinal", material);
-	}
-	{
-		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_SSAO.fx");
-		shared_ptr<Material> material = make_shared<Material>();
-		material->Set_Shader(shader);
-		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"DistortionFinalTarget"));
-
-		Add(L"BackBufferRenderFinal", material);
+		Add(L"AberrationFinal", material);
 	}
 	{
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Final.fx");
 		shared_ptr<Material> material = make_shared<Material>();
 		material->Set_Shader(shader);
-		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"DistortionFinalTarget"));
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"AberrationTarget"));
 
 		Add(L"BackBufferRenderFinal", material);
 	}
+	
 }
 
 void ResourceMgr::CreateMapModel(const wstring& mapName)

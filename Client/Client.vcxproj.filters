@@ -229,6 +229,9 @@
     <ClInclude Include="LogoScene.h">
       <Filter>01.Scene\01.LogoScene</Filter>
     </ClInclude>
+    <ClInclude Include="..\Shaders\Fxaa3_11.h">
+      <Filter>Shader\Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -419,6 +422,12 @@
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="..\Shaders\Shader_Effect2.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\Shader_FXAA.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\Shader_LensFlare.fx">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>

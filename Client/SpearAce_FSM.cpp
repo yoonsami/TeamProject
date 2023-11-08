@@ -239,28 +239,28 @@ void SpearAce_FSM::b_idle()
         KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
         m_eCurState = STATE::b_run_start;
 
-    if (KEYPUSH(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
-    else if (KEYPUSH(KEY_TYPE::KEY_1))
-        m_eCurState = STATE::skill_100100;
-    else if (KEYPUSH(KEY_TYPE::KEY_2))
-        m_eCurState = STATE::skill_200100;
-    else if (KEYPUSH(KEY_TYPE::KEY_3))
-        m_eCurState = STATE::skill_300100;
-    else if (KEYPUSH(KEY_TYPE::KEY_4))
-        m_eCurState = STATE::skill_502100;
-    else if (KEYPUSH(KEY_TYPE::KEY_5))
-        m_eCurState = STATE::skill_500100;
-    else if (KEYPUSH(KEY_TYPE::SPACE))
-    {
-        if (!m_bEvadeCoolCheck)
-        {
-            if (vInputVector == _float3(0.f))
-                m_eCurState = STATE::skill_93100;
-            else
-                m_eCurState = STATE::skill_91100;
-        }
-    }
+	if (KEYPUSH(KEY_TYPE::LBUTTON))
+		m_eCurState = STATE::skill_1100;
+	else if (KEYPUSH(KEY_TYPE::KEY_1))
+		m_eCurState = STATE::skill_100100;
+	else if (KEYPUSH(KEY_TYPE::KEY_2))
+		m_eCurState = STATE::skill_200100;
+	else if (KEYPUSH(KEY_TYPE::KEY_3))
+		m_eCurState = STATE::skill_300100;
+	else if (KEYPUSH(KEY_TYPE::KEY_4))
+		m_eCurState = STATE::skill_502100;
+	else if (KEYPUSH(KEY_TYPE::KEY_5))
+		m_eCurState = STATE::skill_500100;
+	else if (KEYPUSH(KEY_TYPE::SPACE))
+	{
+		if (!m_bEvadeCoolCheck)
+		{
+			if (vInputVector == _float3(0.f))
+				m_eCurState = STATE::skill_93100;
+			else
+				m_eCurState = STATE::skill_91100;
+		}
+	}
 }
 
 void SpearAce_FSM::b_idle_Init()

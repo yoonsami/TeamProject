@@ -13,8 +13,9 @@ public:
 	void Render();
 
 public:
-	void RenderOptionTap();
-	void FogOptionTap();
+	void RenderOptionTab();
+	void FogOptionTab();
+	void LensFlareTab();
 
 private:
 	_bool m_bIsRender = true;

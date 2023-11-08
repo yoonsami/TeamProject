@@ -49,5 +49,10 @@ public:
 		Color	gFogColor = Color(1.f);
 	};
 	static FogData g_FogData;
+
+	static _bool g_bFXAAOn;
+	static _bool g_bAberrationOn;
+	static _float g_fAberrationPower;
+	static _bool g_bLensFlare;
 };
 

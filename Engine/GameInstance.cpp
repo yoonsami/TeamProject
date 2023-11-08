@@ -74,6 +74,14 @@ _float GameInstance::g_fBloomMin = 0.99f;
 
 _int GameInstance::g_iTMIndex = 1;
 
+_bool GameInstance::g_bFXAAOn = false;
+
+_bool GameInstance::g_bAberrationOn = false;
+
+_float GameInstance::g_fAberrationPower = 0.f;
+
+_bool GameInstance::g_bLensFlare = true;
+
 GameInstance::FogData GameInstance::g_FogData{};
 
 GameInstance::SSAOData GameInstance::g_SSAOData{};

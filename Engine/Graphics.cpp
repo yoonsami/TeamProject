@@ -413,4 +413,33 @@ void Graphics::Create_RTGroup()
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DISTORTIONFINAL)]->Create(RENDER_TARGET_GROUP_TYPE::DISTORTIONFINAL, rtVec, dsTexture);
 	}
 
+	//FXAA
+	{
+		vector<RenderTarget> rtVec(RENDER_TARGET_FXAA_GROUP_MEMBER_COUNT);
+		rtVec[0].target = RESOURCES.CreateTexture(L"FXAATarget", FORMATTYPE, _uint(m_Viewport.Get_Width()), _uint(m_Viewport.Get_Height()), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].clearColor = _float4(0.f);
+
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::FXAA)] = make_shared<RenderTargetGroup>();
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::FXAA)]->Create(RENDER_TARGET_GROUP_TYPE::FXAA, rtVec, dsTexture);
+	}
+	//Lens Flare
+	{
+		vector<RenderTarget> rtVec(RENDER_TARGET_LENSFLARE_GROUP_MEMBER_COUNT);
+		rtVec[0].target = RESOURCES.CreateTexture(L"LensFlareTarget", FORMATTYPE, _uint(m_Viewport.Get_Width()), _uint(m_Viewport.Get_Height()), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].clearColor = _float4(0.f);
+
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::LENSFLARE)] = make_shared<RenderTargetGroup>();
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::LENSFLARE)]->Create(RENDER_TARGET_GROUP_TYPE::LENSFLARE, rtVec, dsTexture);
+	}
+
+	//Aberration
+	{
+		vector<RenderTarget> rtVec(RENDER_TARGET_ABERAATION_GROUP_MEMBER_COUNT);
+		rtVec[0].target = RESOURCES.CreateTexture(L"AberrationTarget", FORMATTYPE, _uint(m_Viewport.Get_Width()), _uint(m_Viewport.Get_Height()), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].clearColor = _float4(0.f);
+
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::ABERRATION)] = make_shared<RenderTargetGroup>();
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::ABERRATION)]->Create(RENDER_TARGET_GROUP_TYPE::ABERRATION, rtVec, dsTexture);
+	}
+
 }

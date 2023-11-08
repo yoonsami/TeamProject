@@ -4,6 +4,7 @@ int g_BlurCount;
 float DownScalePower;
 float UpScalePower;
 
+
 struct VS_IN
 {
     float3 pos : POSITION;

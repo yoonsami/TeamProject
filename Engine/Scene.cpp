@@ -93,7 +93,9 @@ void Scene::Render()
 	Render_BloomMapScaling();
 	Render_Distortion();
 	Render_Distortion_Final();
-
+	Render_LensFlare();
+	Render_FXAA();
+	Render_Aberration();
 	//Render_Debug();
 
 	Render_UI();
@@ -844,7 +846,7 @@ void Scene::Render_LightFinal()
 
 	material->Get_Shader()->DrawIndexed(0,3, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
-
+	m_wstrFinalRenderTarget = L"FinalTarget";
 }
 
 void Scene::Render_MotionBlurFinal()
@@ -853,7 +855,7 @@ void Scene::Render_MotionBlurFinal()
 
 	auto material = RESOURCES.Get<Material>(L"MotionBlurFinal");
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
-
+	material->Set_SubMap(1, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
 	material->Get_Shader()->GetScalar("g_BlurCount")->SetInt(50);
 
 	material->Push_SubMapData();
@@ -864,7 +866,7 @@ void Scene::Render_MotionBlurFinal()
 	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	material->Get_Shader()->DrawIndexed(1, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
-
+	m_wstrFinalRenderTarget = L"MotionBlurFinalTarget";
 }
 
 void Scene::Render_Forward()
@@ -887,7 +889,7 @@ void Scene::Render_BloomMap()
 
 	auto material = RESOURCES.Get<Material>(L"BloomTarget");
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
-
+	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
 	material->Push_SubMapData();
 	material->Get_Shader()->GetScalar("g_BloomMin")->SetFloat(GAMEINSTANCE.g_fBloomMin);
 	mesh->Get_VertexBuffer()->Push_Data();
@@ -946,7 +948,7 @@ void Scene::Render_BloomMapScaling()
 		auto material = RESOURCES.Get<Material>(L"BloomFinal");
 		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 		//	material->Get_Shader()->GetScalar("UpScalePower")->SetFloat(m_fUpScalePower);
-
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
 		material->Push_SubMapData();
 
 		mesh->Get_VertexBuffer()->Push_Data();
@@ -956,6 +958,7 @@ void Scene::Render_BloomMapScaling()
 
 		material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
+		m_wstrFinalRenderTarget = L"BloomFinalTarget";
 	}
 
 
@@ -980,6 +983,7 @@ void Scene::Render_Distortion_Final()
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::DISTORTIONFINAL)->OMSetRenderTargets();
 	
 	auto material = RESOURCES.Get<Material>(L"Distorted_Final");
+	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 	
 	material->Push_SubMapData();
@@ -989,6 +993,97 @@ void Scene::Render_Distortion_Final()
 	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	
 	material->Get_Shader()->DrawIndexed(0, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	m_wstrFinalRenderTarget = L"DistortionFinalTarget";
+}
+
+void Scene::Render_FXAA()
+{
+	if (!GAMEINSTANCE.g_bFXAAOn)
+		return;
+	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::FXAA)->OMSetRenderTargets();
+	
+	auto material = RESOURCES.Get<Material>(L"FXAARenderFinal");
+	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
+	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+
+	material->Push_SubMapData();
+	mesh->Get_VertexBuffer()->Push_Data();
+	mesh->Get_IndexBuffer()->Push_Data();
+
+	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+
+
+	material->Get_Shader()->DrawIndexed(0, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	m_wstrFinalRenderTarget = L"FXAATarget";
+}
+
+void Scene::Render_LensFlare()
+{
+	if (!GAMEINSTANCE.g_bLensFlare)
+		return;
+
+	if (!CUR_SCENE->Get_Light())
+		return;
+	
+	_float3 viewLightPos = _float3::Transform(m_LightParams.lights[0].vPosition.xyz(), Camera::Get_View());
+	_float3 projLightPos = _float3::Transform(viewLightPos, Camera::Get_Proj());
+	//[-1,1] -> [0, 1920] //[1,-1] -> [0, 1080]
+	_float2 proj = { projLightPos.x,projLightPos.y };
+	if (!(projLightPos.z <=1.f))
+		return;
+	proj.x = (proj.x + 1.f) * GRAPHICS.Get_ViewPort().Get_Width() * 0.5f;
+	proj.y = (1.f - proj.y) * GRAPHICS.Get_ViewPort().Get_Height() * 0.5f;
+
+
+	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::LENSFLARE)->OMSetRenderTargets();
+
+	auto material = RESOURCES.Get<Material>(L"LensFlareFinal");
+	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
+
+
+	material->Get_Shader()->GetVector("g_LightPos")->SetFloatVector((_float*)&proj);
+	material->Get_Shader()->GetVector("g_TestPos1")->SetFloatVector((_float*)&testVector1);
+	material->Get_Shader()->GetVector("g_TestPos2")->SetFloatVector((_float*)&testVector2);
+	material->Push_SubMapData();
+	mesh->Get_VertexBuffer()->Push_Data();
+	mesh->Get_IndexBuffer()->Push_Data();
+
+
+
+	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+
+
+	material->Get_Shader()->DrawIndexed(0, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	m_wstrFinalRenderTarget = L"LensFlareTarget";
+}
+
+void Scene::Render_Aberration()
+{
+	if (!GAMEINSTANCE.g_bAberrationOn)
+		return;
+
+
+
+	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::ABERRATION)->OMSetRenderTargets();
+
+	auto material = RESOURCES.Get<Material>(L"AberrationFinal");
+	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
+
+	material->Get_Shader()->GetScalar("g_AberrationPower")->SetFloat(GAMEINSTANCE.g_fAberrationPower);
+
+	material->Push_SubMapData();
+	mesh->Get_VertexBuffer()->Push_Data();
+	mesh->Get_IndexBuffer()->Push_Data();
+
+	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+
+	material->Get_Shader()->DrawIndexed(1, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	m_wstrFinalRenderTarget = L"AberrationTarget";
 }
 
 void Scene::Render_Debug()
@@ -1016,6 +1111,10 @@ void Scene::Render_ToneMapping()
 
 	auto material = RESOURCES.Get<Material>(L"BackBufferRenderFinal");
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+
+	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
+
+
 
 	material->Get_Shader()->GetScalar("g_brightness")->SetFloat(GAMEINSTANCE.g_fBrightness);
 	material->Get_Shader()->GetScalar("g_contrast")->SetFloat(GAMEINSTANCE.g_fContrast);

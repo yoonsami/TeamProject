@@ -1,8 +1,7 @@
 #include "Render.fx"
 #include "Light.fx"
 
-
-
+float g_AberrationPower;
 
 struct VS_IN
 {
@@ -88,6 +87,36 @@ float4 PS_ACESTMO(VS_OUT input) : SV_Target0
     return output;
 }
 
+float4 PS_Aberration(VS_OUT input) : SV_Target
+{
+    uint width, height, numMips;
+    SubMap0.GetDimensions(0, width, height, numMips);
+    
+    float2 texel = float2(1.f / (float) width, 1.f / (float) height);
+   // float2 coords = (input.uv - 0.5f) * 2.f;
+    
+    float2 coords = abs(input.uv - 0.5f) * 2.f;
+    coords *= -1.f;
+    coords += 0.5f;
+    
+    float coordDot = dot(coords, coords);
+    
+    float2 preCompute = g_AberrationPower * coordDot * coords;
+    float2 uvR = input.uv - texel.xy * preCompute;
+    float2 uvB = input.uv + texel.xy * preCompute;
+    
+    float4 color;
+    color.r = SubMap0.Sample(LinearSamplerClamp, uvR).r;
+    color.g = SubMap0.Sample(LinearSamplerClamp, input.uv).g;
+    color.b = SubMap0.Sample(LinearSamplerClamp, uvB).b;
+    color.a = 1.f;
+    
+    return color;
+    
+}
+
+
+
 technique11 T0
 {
     Pass brightcontrast
@@ -126,4 +155,18 @@ technique11 T0
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_ACESTMO()));
     }
+};
+
+technique11 Aberration
+{
+    Pass pass_Aberration
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Final()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_Aberration()));
+    }
+  
 };

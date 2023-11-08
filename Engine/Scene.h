@@ -81,12 +81,19 @@ protected:
 	void Render_Distortion();
 	void Render_Distortion_Final();
 
+	void Render_FXAA();
+
+	void Render_LensFlare();
+
+	void Render_Aberration();
 
 	void Render_Debug();
 	void Render_UI();
 
 
 	void Render_BackBuffer();
+
+
 
 private:
 	void SSAO_MakeOffsetVector();
@@ -115,5 +122,12 @@ protected:
 
 protected:
 	vector<shared_ptr<GameObject>> m_StaticObject;
+
+	wstring m_wstrFinalRenderTarget = L"";
+
+
+	public:
+		_float2 testVector1 = _float2(0.f);
+		_float2 testVector2 = _float2(0.f);
 };
 

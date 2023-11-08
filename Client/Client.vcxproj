@@ -184,6 +184,7 @@
     <ClInclude Include="..\Libraries\Include\IMGUI\imstb_textedit.h" />
     <ClInclude Include="..\Libraries\Include\IMGUI\imstb_truetype.h" />
     <ClInclude Include="..\Libraries\Include\IMGUI\ImZoomSlider.h" />
+    <ClInclude Include="..\Shaders\Fxaa3_11.h" />
     <ClInclude Include="AttackColliderInfoScript.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Client_Define.h" />
@@ -278,6 +279,8 @@
     <FxCompile Include="..\Shaders\Shader_Effect.fx" />
     <FxCompile Include="..\Shaders\Shader_Effect2.fx" />
     <FxCompile Include="..\Shaders\Shader_Final.fx" />
+    <FxCompile Include="..\Shaders\Shader_FXAA.fx" />
+    <FxCompile Include="..\Shaders\Shader_LensFlare.fx" />
     <FxCompile Include="..\Shaders\Shader_Mesh.fx" />
     <FxCompile Include="..\Shaders\Shader_Model.fx" />
     <FxCompile Include="..\Shaders\Shader_Particle.fx" />
