@@ -42,6 +42,13 @@ public:
 		skill_300400, // Skill 3-4
 		skill_400100, // Skill 4 (Ride RedHorse)
 		skill_501100, // Skill 5
+
+		//Ride Horse
+		SQ_RideHorse_Idle,
+		SQ_RideHorse_Run,
+		SQ_RideHorse_Stop,
+		SQ_RideHorse_End,
+
 		NONE
 	};
 public:
@@ -63,6 +70,7 @@ private:
 	virtual void Get_Hit(const wstring& skillname, shared_ptr<BaseCollider> pOppositeCollider) override;
 	virtual void AttackCollider_On(const wstring& skillname) override;
 	virtual void AttackCollider_Off() override;
+	virtual void Set_State(_uint iIndex) override;
 
 	void b_idle();
 	void b_idle_Init();
@@ -135,29 +143,47 @@ private:
 	void skill_300400();
 	void skill_300400_Init();
 
-
 	void skill_400100();
 	void skill_400100_Init();
 
 	void skill_501100();
 	void skill_501100_Init();
 
+	void SQ_RideHorse_Idle();
+	void SQ_RideHorse_Idle_Init();
+	void SQ_RideHorse_Run();
+	void SQ_RideHorse_Run_Init();
+	void SQ_RideHorse_Stop();
+	void SQ_RideHorse_Stop_Init();
+	void SQ_RideHorse_End();
+	void SQ_RideHorse_End_Init();
+
+
+
 	void EvadeCoolCheck();
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
 	void Create_Vehicle();
+	void Set_VehicleState(_uint iAnimindex);
 private:
 	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;
 
 	_float3 m_vInputTurnVector = _float3(0.f);
 	COOLTIMEINFO m_tRunEndDelay = { 0.2f,0.f };
+	COOLTIMEINFO m_tRidingEndDelay = { 0.4f,0.f };
 	COOLTIMEINFO m_tEvadeDelay = { 1.f,0.f };
+	COOLTIMEINFO m_tRidingDelay = { 2.f,0.f };
 
 	_bool m_bCanCombo = false;
 	_bool m_bEvadeCoolCheck = false;
+	_bool m_bRidingCoolCheck = false;
 
 	_float m_fRunSpeed = 6.f;
 	_float m_fSprintSpeed = 8.f;
+	_float m_fRidingSpeed = 12.f;
+	_float m_fKnockBackSpeed = 6.f;
+	_float m_fKnockDownSpeed = 6.f;
+
 	_float m_fNormalAttack_AnimationSpeed = 2.f;
 	_float m_fSkillAttack_AnimationSpeed = 1.5f;
 	_float m_fEvade_AnimationSpeed = 1.5f;
@@ -169,5 +195,7 @@ private:
 
 	_uint m_iSkillBoneIndex = 0;
 	_float4x4 matBoneMatrix = XMMatrixIdentity();
+
+	_float4 m_vRidingEndPos = _float4(0.f);
 };
 

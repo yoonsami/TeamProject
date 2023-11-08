@@ -59,6 +59,7 @@ private:
 	virtual void Get_Hit(const wstring& skillname, shared_ptr<BaseCollider> pOppositeCollider) override;
 	virtual void AttackCollider_On(const wstring& skillname) override;
 	virtual void AttackCollider_Off() override;
+	virtual void Set_State(_uint iIndex) override;
 
 	void b_idle();
 	void b_idle_Init();
@@ -149,6 +150,9 @@ private:
 
 	_float m_fRunSpeed = 6.f;
 	_float m_fSprintSpeed = 8.f;
+	_float m_fKnockBackSpeed = 6.f;
+	_float m_fKnockDownSpeed = 6.f;
+
 	_float m_fNormalAttack_AnimationSpeed = 2.f;
 	_float m_fSkillAttack_AnimationSpeed = 2.f;
 	_float m_fEvade_AnimationSpeed = 1.5f;

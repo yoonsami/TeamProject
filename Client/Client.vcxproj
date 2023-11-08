@@ -172,6 +172,8 @@
     <ClInclude Include="Client_Define.h" />
     <ClInclude Include="DebugTool.h" />
     <ClInclude Include="Debug_CreateMotionTrail.h" />
+    <ClInclude Include="Dellons_FSM.h" />
+    <ClInclude Include="DellonsWraith_FSM.h" />
     <ClInclude Include="DemoAnimationController1.h" />
     <ClInclude Include="DemoCameraScript1.h" />
     <ClInclude Include="DemoCameraScript2.h" />
@@ -200,6 +202,8 @@
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="DebugTool.cpp" />
     <ClCompile Include="Debug_CreateMotionTrail.cpp" />
+    <ClCompile Include="Dellons_FSM.cpp" />
+    <ClCompile Include="DellonsWraith_FSM.cpp" />
     <ClCompile Include="DemoAnimationController1.cpp" />
     <ClCompile Include="DemoCameraScript1.cpp" />
     <ClCompile Include="DemoCameraScript2.cpp" />

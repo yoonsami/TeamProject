@@ -100,6 +100,12 @@
     <Filter Include="02.Component\01.FSM\03.Special_FSM\00.YeopoHorse_FSM">
       <UniqueIdentifier>{3e6b1653-dc4a-4330-920b-ed15eecd6d5c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\01.FSM\01.Hero_FSM\04.Dellons_FSM">
+      <UniqueIdentifier>{e470e116-50d2-4dd0-aaca-8c613479f232}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\03.Special_FSM\01.DellonsWraith_FSM">
+      <UniqueIdentifier>{c60660aa-503e-4bc2-9a71-97a14e94fcef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -183,6 +189,12 @@
     <ClInclude Include="YeopoHorse_FSM.h">
       <Filter>02.Component\01.FSM\03.Special_FSM\00.YeopoHorse_FSM</Filter>
     </ClInclude>
+    <ClInclude Include="Dellons_FSM.h">
+      <Filter>02.Component\01.FSM\01.Hero_FSM\04.Dellons_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="DellonsWraith_FSM.h">
+      <Filter>02.Component\01.FSM\03.Special_FSM\01.DellonsWraith_FSM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -259,6 +271,12 @@
     </ClCompile>
     <ClCompile Include="YeopoHorse_FSM.cpp">
       <Filter>02.Component\01.FSM\03.Special_FSM\00.YeopoHorse_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="Dellons_FSM.cpp">
+      <Filter>02.Component\01.FSM\01.Hero_FSM\04.Dellons_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="DellonsWraith_FSM.cpp">
+      <Filter>02.Component\01.FSM\03.Special_FSM\01.DellonsWraith_FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

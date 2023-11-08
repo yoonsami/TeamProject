@@ -43,11 +43,6 @@ HRESULT Yeopo_FSM::Init()
 
     m_pWeapon = CUR_SCENE->Get_GameObject(L"Weapon_Yeopo");
 
-    m_iSkillBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"B_nose");
-
-    //Create_Vehicle();
-
-
     return S_OK;
 }
 
@@ -170,6 +165,18 @@ void Yeopo_FSM::State_Tick()
     case STATE::skill_501100:
         skill_501100();
         break;
+    case STATE::SQ_RideHorse_Idle:
+        SQ_RideHorse_Idle();
+        break;
+    case STATE::SQ_RideHorse_Run:
+        SQ_RideHorse_Run();
+        break;
+    case STATE::SQ_RideHorse_Stop:
+        SQ_RideHorse_Stop();
+        break;
+    case STATE::SQ_RideHorse_End:
+        SQ_RideHorse_End();
+        break;
     }
 }
 
@@ -281,6 +288,18 @@ void Yeopo_FSM::State_Init()
         case STATE::skill_501100:
             skill_501100_Init();
             break;
+        case STATE::SQ_RideHorse_Idle:
+            SQ_RideHorse_Idle_Init();
+            break;
+        case STATE::SQ_RideHorse_Run:
+            SQ_RideHorse_Run_Init();
+            break;
+        case STATE::SQ_RideHorse_Stop:
+            SQ_RideHorse_Stop_Init();
+            break;
+        case STATE::SQ_RideHorse_End:
+            SQ_RideHorse_End_Init();
+            break;
         }
         m_ePreState = m_eCurState;
     }
@@ -292,6 +311,9 @@ void Yeopo_FSM::OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap)
 
 void Yeopo_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
+    if (pCollider->Get_Owner() == nullptr)
+        return;
+
     wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
 
     if (!m_bInvincible)
@@ -390,6 +412,10 @@ void Yeopo_FSM::AttackCollider_Off()
     }
 }
 
+void Yeopo_FSM::Set_State(_uint iIndex)
+{
+}
+
 void Yeopo_FSM::b_idle()
 {
     EvadeCoolCheck();
@@ -422,6 +448,14 @@ void Yeopo_FSM::b_idle()
                 m_eCurState = STATE::skill_91100;
         }
     }
+    else if (KEYPUSH(KEY_TYPE::V))
+    {
+        if (!m_bRidingCoolCheck)
+        {
+            Create_Vehicle();
+            m_eCurState = STATE::SQ_RideHorse_Idle;
+        }
+    }
 }
 
 void Yeopo_FSM::b_idle_Init()
@@ -437,6 +471,9 @@ void Yeopo_FSM::b_idle_Init()
 
     m_bInvincible = false;
     m_bSuperArmor = false;
+
+    if (m_ePreState == STATE::SQ_RideHorse_End)
+        Get_Transform()->Set_State(Transform_State::POS, m_vRidingEndPos);
 }
 
 void Yeopo_FSM::b_run_start()
@@ -806,6 +843,8 @@ void Yeopo_FSM::knock_start()
 {
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
+    Get_Transform()->Go_Backward();
+
     if (Is_AnimFinished())
         m_eCurState = STATE::knock_end;
 }
@@ -820,10 +859,15 @@ void Yeopo_FSM::knock_start_Init()
 
     m_bInvincible = false;
     m_bSuperArmor = true;
+
+    Get_Transform()->Set_Speed(m_fKnockBackSpeed * 0.8f);
 }
 
 void Yeopo_FSM::knock_end()
 {
+    if (Get_CurFrame() < 16)
+        Get_Transform()->Go_Backward();
+
     if (Is_AnimFinished())
         m_eCurState = STATE::knock_end_loop;
 }
@@ -836,6 +880,8 @@ void Yeopo_FSM::knock_end_Init()
 
     m_bInvincible = false;
     m_bSuperArmor = true;
+
+    Get_Transform()->Set_Speed(m_fKnockBackSpeed * 0.5f);
 }
 
 void Yeopo_FSM::knock_end_loop()
@@ -895,11 +941,15 @@ void Yeopo_FSM::knock_up_Init()
     m_bSuperArmor = true;
 
     m_tKnockDownEndCoolTime.fAccTime = 0.f;
+
+    Get_Transform()->Set_Speed(m_fRunSpeed);
 }
 
 void Yeopo_FSM::knockdown_start()
 {
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
+
+    Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
         m_eCurState = STATE::knockdown_end;
@@ -909,16 +959,21 @@ void Yeopo_FSM::knockdown_start_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"knockdown_start", 0.1f, false, 1.5f);
+    animator->Set_NextTweenAnim(L"knockdown_start", 0.1f, false, 2.f);
 
     AttackCollider_Off();
 
     m_bInvincible = false;
     m_bSuperArmor = true;
+
+    Get_Transform()->Set_Speed(m_fKnockDownSpeed);
 }
 
 void Yeopo_FSM::knockdown_end()
 {
+    if (Get_CurFrame() < 16)
+        Get_Transform()->Go_Backward();
+
     if (Is_AnimFinished())
         m_eCurState = STATE::knock_up;
 }
@@ -931,6 +986,8 @@ void Yeopo_FSM::knockdown_end_Init()
 
     m_bInvincible = false;
     m_bSuperArmor = true;
+
+    Get_Transform()->Set_Speed(m_fKnockDownSpeed * 0.5f);
 }
 
 void Yeopo_FSM::skill_1100()
@@ -1718,7 +1775,7 @@ void Yeopo_FSM::skill_300400_Init()
 
 void Yeopo_FSM::skill_400100()
 {
-    Create_Vehicle();
+    EvadeCoolCheck();
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
@@ -1739,6 +1796,10 @@ void Yeopo_FSM::skill_400100_Init()
 
     m_bInvincible = true;
     m_bSuperArmor = true;
+
+    Create_Vehicle();
+ 
+    Set_VehicleState((_uint)YeopoHorse_FSM::STATE::skill_400100_fx);
 }
 
 void Yeopo_FSM::skill_501100()
@@ -1808,6 +1869,118 @@ void Yeopo_FSM::skill_501100_Init()
     m_bSuperArmor = true;
 }
 
+
+void Yeopo_FSM::SQ_RideHorse_Idle()
+{
+    _float3 vInputVector = Get_InputDirVector();
+
+    if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
+        KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
+        m_eCurState = STATE::SQ_RideHorse_Run;
+
+    if (KEYTAP(KEY_TYPE::V))
+        m_eCurState = STATE::SQ_RideHorse_End;
+
+}
+
+void Yeopo_FSM::SQ_RideHorse_Idle_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    if (m_ePreState == STATE::b_idle)
+        animator->Set_CurrentAnim(L"SQ_RideHorse_Idle", true, 1.f);
+    else
+        animator->Set_NextTweenAnim(L"SQ_RideHorse_Idle", 0.15f, true, 1.f);
+
+    AttackCollider_Off();
+
+    m_bInvincible = true;
+    m_bSuperArmor = false;
+
+    Get_Transform()->Set_Speed(m_fRidingSpeed);
+
+    Set_VehicleState((_uint)YeopoHorse_FSM::STATE::SQ_RideHorse_Idle);
+}
+
+void Yeopo_FSM::SQ_RideHorse_Run()
+{
+    Get_Transform()->Go_Straight();
+
+    _float3 vInputVector = Get_InputDirVector();
+
+    if (vInputVector == _float3(0.f))
+    {
+        m_tRidingEndDelay.fAccTime += fDT;
+
+        if (m_tRidingEndDelay.fAccTime >= m_tRidingEndDelay.fCoolTime)
+            m_eCurState = STATE::SQ_RideHorse_Stop;
+    }
+    else
+        Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
+}
+
+void Yeopo_FSM::SQ_RideHorse_Run_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"SQ_RideHorse_Run", 0.1f, true, 1.f);
+
+    m_bInvincible = true;
+    m_bSuperArmor = false;
+
+    Get_Transform()->Set_Speed(m_fRidingSpeed);
+
+    Set_VehicleState((_uint)YeopoHorse_FSM::STATE::SQ_RideHorse_Run);
+}
+
+void Yeopo_FSM::SQ_RideHorse_Stop()
+{
+    if (Is_AnimFinished())
+        m_eCurState = STATE::SQ_RideHorse_Idle;
+}
+
+void Yeopo_FSM::SQ_RideHorse_Stop_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"SQ_RideHorse_Stop", 0.1f, false, 1.f);
+
+    m_vInputTurnVector = _float3(0.f);
+    m_vInputTurnVector = Get_InputDirVector();
+
+    AttackCollider_Off();
+
+    m_bInvincible = true;
+    m_bSuperArmor = false;
+
+    Get_Transform()->Set_Speed(m_fRidingSpeed * 0.8f);
+
+    m_tRidingEndDelay.fAccTime = 0.f;
+
+    Set_VehicleState((_uint)YeopoHorse_FSM::STATE::SQ_RideHorse_Stop);
+}
+
+void Yeopo_FSM::SQ_RideHorse_End()
+{
+    if (Is_AnimFinished())
+    {
+        m_vRidingEndPos = Get_Transform()->Get_State(Transform_State::POS);
+        m_eCurState = STATE::b_idle;
+    }
+}
+
+void Yeopo_FSM::SQ_RideHorse_End_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"SQ_RideHorse_End", 0.1f, false, 1.f);
+
+    Get_Transform()->Set_Speed(m_fRunSpeed);
+    m_tRunEndDelay.fAccTime = 0.f;
+
+    Set_VehicleState((_uint)YeopoHorse_FSM::STATE::SQ_RideHorse_End);
+}
+
 void Yeopo_FSM::EvadeCoolCheck()
 {
     if (m_bEvadeCoolCheck)
@@ -1818,6 +1991,17 @@ void Yeopo_FSM::EvadeCoolCheck()
         {
             m_bEvadeCoolCheck = false;
             m_tEvadeDelay.fAccTime = 0.f;
+        }
+    }
+
+    if (m_bRidingCoolCheck)
+    {
+        m_tRidingDelay.fAccTime += fDT;
+
+        if (m_tRidingDelay.fAccTime >= m_tRidingDelay.fCoolTime)
+        {
+            m_bRidingCoolCheck = false;
+            m_tRidingDelay.fAccTime = 0.f;
         }
     }
 }
@@ -1845,14 +2029,14 @@ void Yeopo_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fS
 
 void Yeopo_FSM::Create_Vehicle()
 {
-    //Add. Player's Weapon
+    //Add. Player's Vehicle
     shared_ptr<GameObject> ObjVehicle = make_shared<GameObject>();
 
     ObjVehicle->Add_Component(make_shared<Transform>());
     {
         shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
-        shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+        shared_ptr<ModelAnimator> renderer = make_shared<ModelAnimator>(shader);
         {
             shared_ptr<Model> model = RESOURCES.Get<Model>(L"Yeopo_Horse");
             renderer->Set_Model(model);
@@ -1867,4 +2051,14 @@ void Yeopo_FSM::Create_Vehicle()
     ObjVehicle->Set_Name(L"Yeopo_RedHorse");
     
     CUR_SCENE->Add_GameObject(ObjVehicle);
+
+    m_pVehicle = ObjVehicle;
 }
+
+void Yeopo_FSM::Set_VehicleState(_uint iAnimindex)
+{
+    if (!m_pVehicle.expired())
+        m_pVehicle.lock()->Get_FSM()->Set_State(iAnimindex);
+
+}
+

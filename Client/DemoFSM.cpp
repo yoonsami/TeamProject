@@ -95,6 +95,10 @@ void DemoFSM::AttackCollider_Off()
 {
 }
 
+void DemoFSM::Set_State(_uint iIndex)
+{
+}
+
 void DemoFSM::b_idle()
 {
 	

@@ -8,6 +8,7 @@ public:
 	virtual void OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap) = 0;
 	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) = 0;
 	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) = 0;
+	virtual void Set_State(_uint iIndex) = 0;
 
 protected:
 	virtual void State_Tick() = 0;

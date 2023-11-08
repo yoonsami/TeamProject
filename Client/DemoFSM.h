@@ -29,7 +29,7 @@ private:
 	virtual void Get_Hit(const wstring& skillname, shared_ptr<BaseCollider> pOppositeCollider) override;
 	virtual void AttackCollider_On(const wstring& skillname) override;
 	virtual void AttackCollider_Off() override;
-
+	virtual void Set_State(_uint iIndex) override;
 
 	void b_idle();
 	void b_idle_Init();

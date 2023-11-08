@@ -199,6 +199,9 @@ void Silversword_Soldier_FSM::OnCollision(shared_ptr<BaseCollider> pCollider, _f
 
 void Silversword_Soldier_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
+    if (pCollider->Get_Owner() == nullptr)
+        return;
+
     wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
 
     if (!m_bInvincible)
@@ -299,6 +302,10 @@ void Silversword_Soldier_FSM::AttackCollider_Off()
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
     }
+}
+
+void Silversword_Soldier_FSM::Set_State(_uint iIndex)
+{
 }
 
 void Silversword_Soldier_FSM::b_idle()
@@ -646,6 +653,8 @@ void Silversword_Soldier_FSM::knock_start()
 {
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 10.f);
 
+    Get_Transform()->Go_Backward();
+
     if (Is_AnimFinished())
         m_eCurState = STATE::knock_end;
 }
@@ -659,10 +668,15 @@ void Silversword_Soldier_FSM::knock_start_Init()
     AttackCollider_Off();
 
     m_bSuperArmor = true;
+
+    Get_Transform()->Set_Speed(m_fRunSpeed * 0.5f);
 }
 
 void Silversword_Soldier_FSM::knock_end()
 {
+    if (Get_CurFrame() < 13)
+        Get_Transform()->Go_Backward();
+
     if (Is_AnimFinished())
         m_eCurState = STATE::knock_end_loop;
 }
@@ -719,11 +733,15 @@ void Silversword_Soldier_FSM::knock_up_Init()
     animator->Set_NextTweenAnim(L"knock_Up", 0.2f, false, 1.f);
 
     m_bSuperArmor = true;
+
+    Get_Transform()->Set_Speed(m_fRunSpeed);
 }
 
 void Silversword_Soldier_FSM::knockdown_start()
 {
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
+
+    Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
         m_eCurState = STATE::knockdown_end;
@@ -733,15 +751,20 @@ void Silversword_Soldier_FSM::knockdown_start_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"knockdown_start", 0.2f, false, 1.5f);
+    animator->Set_NextTweenAnim(L"knockdown_start", 0.2f, false, 2.f);
 
     AttackCollider_Off();
 
     m_bSuperArmor = true;
+
+    Get_Transform()->Set_Speed(m_fKnockDownSpeed);
 }
 
 void Silversword_Soldier_FSM::knockdown_end()
 {
+    if (Get_CurFrame() < 16)
+        Get_Transform()->Go_Backward();
+
     if (Is_AnimFinished())
         m_eCurState = STATE::knock_up;
 }
@@ -753,6 +776,8 @@ void Silversword_Soldier_FSM::knockdown_end_Init()
     animator->Set_NextTweenAnim(L"knockdown_end", 0.2f, false, 1.5f);
 
     m_bSuperArmor = true;
+
+    Get_Transform()->Set_Speed(m_fKnockDownSpeed * 0.5f);
 }
 
 void Silversword_Soldier_FSM::skill_1100()
@@ -763,7 +788,7 @@ void Silversword_Soldier_FSM::skill_1100()
             Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
     }
     else if (Get_CurFrame() == 22)
-        AttackCollider_On(KNOCKDOWN_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK);
     else if (Get_CurFrame() == 26)
         AttackCollider_Off();
 
@@ -807,11 +832,11 @@ void Silversword_Soldier_FSM::skill_2100()
     }
     //NORMAL ATTACK
     else if (Get_CurFrame() == 17)
-        AttackCollider_On(KNOCKDOWN_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK);
     else if (Get_CurFrame() == 20)
         AttackCollider_Off();
     else if (Get_CurFrame() == 33)
-        AttackCollider_On(KNOCKDOWN_ATTACK);
+        AttackCollider_On(KNOCKBACK_ATTACK);
     else if (Get_CurFrame() == 38)
         AttackCollider_Off();
 

@@ -268,6 +268,9 @@ void Kyle_FSM::OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap)
 
 void Kyle_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
+	if (pCollider->Get_Owner() == nullptr)
+		return;
+
 	wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
 
 	if (!m_bInvincible)
@@ -364,6 +367,10 @@ void Kyle_FSM::AttackCollider_Off()
 		m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
 		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
 	}
+}
+
+void Kyle_FSM::Set_State(_uint iIndex)
+{
 }
 
 void Kyle_FSM::b_idle()
@@ -790,6 +797,8 @@ void Kyle_FSM::knock_start()
 {
 	Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
+	Get_Transform()->Go_Backward();
+
 	if (Is_AnimFinished())
 		m_eCurState = STATE::knock_end;
 }
@@ -804,10 +813,15 @@ void Kyle_FSM::knock_start_Init()
 
 	m_bInvincible = false;
 	m_bSuperArmor = true;
+
+	Get_Transform()->Set_Speed(m_fKnockBackSpeed * 0.8f);
 }
 
 void Kyle_FSM::knock_end()
 {
+	if (Get_CurFrame() < 16)
+		Get_Transform()->Go_Backward();
+
 	if (Is_AnimFinished())
 		m_eCurState = STATE::knock_end_loop;
 }
@@ -820,6 +834,8 @@ void Kyle_FSM::knock_end_Init()
 
 	m_bInvincible = false;
 	m_bSuperArmor = true;
+
+	Get_Transform()->Set_Speed(m_fKnockBackSpeed * 0.5f);
 }
 
 void Kyle_FSM::knock_end_loop()
@@ -879,11 +895,15 @@ void Kyle_FSM::knock_up_Init()
 	m_bSuperArmor = true;
 
 	m_tKnockDownEndCoolTime.fAccTime = 0.f;
+
+	Get_Transform()->Set_Speed(m_fRunSpeed);
 }
 
 void Kyle_FSM::knockdown_start()
 {
 	Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
+
+	Get_Transform()->Go_Backward();
 
 	if (Is_AnimFinished())
 		m_eCurState = STATE::knockdown_end;
@@ -899,10 +919,15 @@ void Kyle_FSM::knockdown_start_Init()
 
 	m_bInvincible = false;
 	m_bSuperArmor = true;
+
+	Get_Transform()->Set_Speed(m_fKnockDownSpeed);
 }
 
 void Kyle_FSM::knockdown_end()
 {
+	if (Get_CurFrame() < 16)
+		Get_Transform()->Go_Backward();
+
 	if (Is_AnimFinished())
 		m_eCurState = STATE::knock_up;
 }
@@ -915,6 +940,8 @@ void Kyle_FSM::knockdown_end_Init()
 
 	m_bInvincible = false;
 	m_bSuperArmor = true;
+
+	Get_Transform()->Set_Speed(m_fKnockDownSpeed * 0.5f);
 }
 
 void Kyle_FSM::skill_1100()

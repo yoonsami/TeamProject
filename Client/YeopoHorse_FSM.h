@@ -11,6 +11,13 @@ public:
 		n_idle,
 		skill_400100_fx,
 		skill_902100_fx,
+		
+		//Ride Horse
+		SQ_RideHorse_Idle,
+		SQ_RideHorse_Run,
+		SQ_RideHorse_Stop,
+		SQ_RideHorse_End,
+
 		NONE
 	};
 public:
@@ -32,6 +39,7 @@ private:
 	virtual void Get_Hit(const wstring& skillname, shared_ptr<BaseCollider> pOppositeCollider) override;
 	virtual void AttackCollider_On(const wstring& skillname) override;
 	virtual void AttackCollider_Off() override;
+	virtual void Set_State(_uint iIndex) override;
 
 	void n_idle();
 	void n_idle_Init();
@@ -39,12 +47,23 @@ private:
 	void skill_400100_fx_Init();
 	void skill_902100_fx();
 	void skill_902100_fx_Init();
+
+	void SQ_RideHorse_Idle();
+	void SQ_RideHorse_Idle_Init();
+	void SQ_RideHorse_Run();
+	void SQ_RideHorse_Run_Init();
+	void SQ_RideHorse_Stop();
+	void SQ_RideHorse_Stop_Init();
+	void SQ_RideHorse_End();
+	void SQ_RideHorse_End_Init();
 	
-public:
-	void Set_State(_uint iIndex) { m_eCurState = (STATE)iIndex; }
 
 private:
 	STATE m_eCurState = STATE::n_idle;
 	STATE m_ePreState = STATE::NONE;
+
+	_uint m_iSkillBoneIndex = 0;
+	_float4x4 matBoneMatrix = XMMatrixIdentity();
+
 };
 

@@ -9,6 +9,7 @@
 #include "Kyle_FSM.h"
 #include "SpearAce_FSM.h"
 #include "Yeopo_FSM.h"
+#include "Dellons_FSM.h"
 
 HeroChangeScript::HeroChangeScript(shared_ptr<GameObject> pPlayer)
 {
@@ -40,6 +41,7 @@ void HeroChangeScript::Tick()
      
             //PlayerAttackCollider Remove
             CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Player_AttackCollider"));
+            CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Vehicle_AttackCollider"));
 
             shared_ptr<Model> model = RESOURCES.Get<Model>(L"Spear_Ace");
 
@@ -64,6 +66,7 @@ void HeroChangeScript::Tick()
 
             //PlayerAttackCollider Remove
             CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Player_AttackCollider"));
+            CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Vehicle_AttackCollider"));
 
             shared_ptr<Model> model = RESOURCES.Get<Model>(L"Kyle");
 
@@ -85,6 +88,7 @@ void HeroChangeScript::Tick()
 
             //PlayerAttackCollider Remove
             CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Player_AttackCollider"));
+            CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Vehicle_AttackCollider"));
 
             shared_ptr<Model> model = RESOURCES.Get<Model>(L"Yeopo");
 
@@ -93,6 +97,32 @@ void HeroChangeScript::Tick()
 
             //Add. Player's Weapon
             Add_Character_Weapon(L"Weapon_Yeopo");
+
+            m_pPlayer.lock()->Get_FSM()->Init();
+        }
+    }
+    else if (KEYTAP(KEY_TYPE::F4))
+    {
+        if (m_pPlayer.lock()->Get_Model()->Get_ModelTag() == (L"Dellons"))
+            return;
+        else
+        {
+            m_pPlayer.lock()->Get_FSM()->Reset_Weapon();
+            m_pPlayer.lock()->Get_FSM()->Reset_Vehicle();
+            //AnimIndex Reset
+            m_pPlayer.lock()->Get_Animator()->Set_CurrentAnim(0);
+
+            //PlayerAttackCollider Remove
+            CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Player_AttackCollider"));
+            CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Vehicle_AttackCollider"));
+
+            shared_ptr<Model> model = RESOURCES.Get<Model>(L"Dellons");
+
+            m_pPlayer.lock()->Get_Animator()->Set_Model(model);
+            m_pPlayer.lock()->Change_Component(make_shared<Dellons_FSM>());
+
+            //Add. Player's Weapon
+            Add_Character_Weapon(L"Weapon_Dellons");
 
             m_pPlayer.lock()->Get_FSM()->Init();
         }
@@ -111,7 +141,7 @@ void HeroChangeScript::Add_Character_Weapon(const wstring& weaponname)
 
         shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
         {
-            shared_ptr<Model> model = RESOURCES.Get<Model>(L"Weapon_Spear_Ace");
+            shared_ptr<Model> model = RESOURCES.Get<Model>(weaponname);
             renderer->Set_Model(model);
         }
 
@@ -124,7 +154,7 @@ void HeroChangeScript::Add_Character_Weapon(const wstring& weaponname)
 
         ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
     }
-
+    ObjWeapon->Get_Transform()->Set_State(Transform_State::POS, _float4{ 0.f, -1000.f,0.f,1.f });
     ObjWeapon->Set_Name(weaponname);
     CUR_SCENE->Add_GameObject(ObjWeapon);
 }
