@@ -50,6 +50,7 @@ void ImGui_Manager::ImGui_SetUp()
     ImGuizmo::Enable(true);
     ImGuizmo::SetRect(0.f, 0.f, g_iWinSizeX, g_iWinSizeY);
 
+    Load_SkyBoxTexture();
     Load_MapObjectBase();
 }
 
@@ -62,7 +63,8 @@ void ImGui_Manager::ImGui_Tick()
 
     ImGui::ShowDemoWindow();
 
-    Frame_DirectionalLight();
+    Frame_SkyBox();
+    Frame_Light();
     Frame_ObjectBase();
     Frame_Objects();
 
@@ -82,7 +84,7 @@ void ImGui_Manager::Show_Gizmo()
 {
     // 기즈모 출력
     ImGuizmo::BeginFrame();
-    if (m_strObjectName.size() != 0)
+    if (m_strObjectName.size() != 0 && m_GizmoTarget == GizmoTMapObj)
     {
         // 기즈모를 위해 카메라의 뷰,투영을 가져옴.
         shared_ptr<Camera> CurCam = CUR_SCENE->Get_Camera(L"Default")->Get_Camera();
@@ -90,7 +92,7 @@ void ImGui_Manager::Show_Gizmo()
         _float4x4 matProj = CurCam->Get_ProjMat();
 
         // 기즈모 상태 적용
-        _float4x4 matGuizmo = m_pMapObjects[m_iObjects].get()->Get_Transform()->Get_WorldMatrix();
+        _float4x4 matGuizmo = m_pMapObjects[m_iObjects]->Get_Transform()->Get_WorldMatrix();
 
         ImGuizmo::Manipulate((float*)&matView,
             (float*)&matProj,
@@ -100,6 +102,39 @@ void ImGui_Manager::Show_Gizmo()
 
         m_pMapObjects[m_iObjects].get()->Get_Transform()->Set_WorldMat(matGuizmo);
     }
+    else if (m_strPointLightList.size() != 0 && m_GizmoTarget == GizmoTPointLight)
+    {
+        // 기즈모를 위해 카메라의 뷰,투영을 가져옴.
+        shared_ptr<Camera> CurCam = CUR_SCENE->Get_Camera(L"Default")->Get_Camera();
+        _float4x4 matView = CurCam->Get_ViewMat();
+        _float4x4 matProj = CurCam->Get_ProjMat();
+
+        // 기즈모 상태 적용
+        _float4x4 matGuizmo = m_pPointLightObjects[m_iPointLightIndex]->Get_Transform()->Get_WorldMatrix();
+
+        ImGuizmo::Manipulate((float*)&matView,
+            (float*)&matProj,
+            ImGuizmo::TRANSLATE,
+            ImGuizmo::LOCAL,
+            (float*)&matGuizmo);
+
+        m_pPointLightObjects[m_iPointLightIndex]->Get_Transform()->Set_WorldMat(matGuizmo);
+    }
+}
+
+void ImGui_Manager::Frame_SkyBox()
+{
+    ImGui::Begin("Frame_SkyBox"); // 글자 맨윗줄
+
+    if (ImGui::ListBox("##SkyBoxName", &m_iCurrentSkyBoxIndex, m_strSkyboxList.data(), (int)m_strSkyboxList.size()))
+    {
+        string strCurSkybox = m_strSkyboxList[m_iCurrentSkyBoxIndex];
+        Utils::DetachExt(strCurSkybox);
+
+        vector<shared_ptr<Material>>& Mats = CUR_SCENE->Get_GameObject(L"SkyBase")->Get_ModelRenderer()->Get_Model()->Get_Materials();
+        Mats[0]->Set_TextureMap(RESOURCES.Get<Texture>(Utils::ToWString(strCurSkybox)), TextureMapType::DIFFUSE);
+    }
+    ImGui::End();
 }
 
 void ImGui_Manager::Frame_ObjectBase()
@@ -139,11 +174,12 @@ void ImGui_Manager::Frame_ObjectBase()
     ImGui::Text("Collider - ");
     ImGui::SameLine();
     ImGui::Checkbox("##bCollider", &m_CreateObjectDesc.bCollider);
+    string ModelName = m_strObjectBaseNameList[m_iObjectBaseIndex];
+    m_CreateObjectDesc.ColModelName = ModelName;
     if (m_CreateObjectDesc.bCollider)
     {
         ImGui::Combo("ColliderType", &m_CreateObjectDesc.ColliderType, m_szColliderTypes, IM_ARRAYSIZE(m_szColliderTypes));
         ImGui::DragFloat3("ColliderOffset", (_float*)&m_CreateObjectDesc.ColliderOffset);
-        string ModelName = m_strObjectBaseNameList[m_iObjectBaseIndex];
         switch (m_CreateObjectDesc.ColliderType)
         {
         case 0: //Sphere
@@ -157,7 +193,6 @@ void ImGui_Manager::Frame_ObjectBase()
             break;
         case 3: // Mesh
             ImGui::Text(("ModelName : " + ModelName).data());
-            m_CreateObjectDesc.ColModelName = ModelName;
             break;
         default:
             break;
@@ -188,6 +223,9 @@ void ImGui_Manager::Frame_Objects()
     // 현재 오브젝트의 정보띄우기
     if (m_strObjectName.size() > 0)
     {
+        if (ImGui::Button("GizmoTargetChange"))
+            m_GizmoTarget = GizmoTMapObj;
+
         ImGui::SeparatorText("ObjectDesc");
         // 노란색 저장
         ImVec4 YellowColor(1.f, 1.f, 0.f, 1.f);
@@ -221,7 +259,7 @@ void ImGui_Manager::Frame_Objects()
         ImGui::Text("Transform - ");
         ImGui::SameLine();
         ImGui::Checkbox("##bTransform", &CurObjectDesc.bTransform);
-        if (CurObjectDesc.bTransform && m_pMapObjects[m_iObjects].get()->Get_Transform() != nullptr)
+        if (CurObjectDesc.bTransform && m_pMapObjects[m_iObjects].get()->Get_Transform() != nullptr && m_GizmoTarget == GizmoTMapObj)
         {
             // 기즈모의 선택옵션(TR or RT or SC) 업데이트
             // 전체옵션 false로 초기화
@@ -360,25 +398,74 @@ void ImGui_Manager::Frame_Objects()
 
     ImGui::End();
 }
-void ImGui_Manager::Frame_DirectionalLight()
+void ImGui_Manager::Frame_Light()
 {
-    ImGui::Begin("Frame_Directionalight"); // 글자 맨윗줄
-
+    ImGui::Begin("Frame_Light"); // 글자 맨윗줄
+    // 방향성광원 통제
+    ImGui::SeparatorText("DirectionalLight");
     // 포지션
     _float4& Pos = (_float4&)CUR_SCENE->Get_Light()->Get_Transform()->Get_WorldMatrix().m[3];
-    ImGui::DragFloat3("Position", (_float*)&Pos);
+    ImGui::DragFloat3("Position##DirLight", (_float*)&Pos);
     _float3& LookDir = CUR_SCENE->Get_Light()->Get_Transform()->Get_CurrentDir();
-    ImGui::DragFloat3("LookDir", (_float*)&LookDir);
+    ImGui::DragFloat3("LookDir##DirLight", (_float*)&LookDir);
     CUR_SCENE->Get_Light()->Get_Transform()->Set_LookDir(LookDir);
     LightInfo& DirectionalLightInfo = CUR_SCENE->Get_Light()->Get_Light()->Get_LightInfo();
-    _float4& Diffuse = DirectionalLightInfo.color.diffuse;
-    ImGui::ColorEdit4("Diffuse", (_float*)&Diffuse);
-    _float4& Ambient = DirectionalLightInfo.color.ambient;
-    ImGui::ColorEdit4("Ambient", (_float*)&Ambient);
-    _float4& Specular = DirectionalLightInfo.color.specular;
-    ImGui::ColorEdit4("Specular", (_float*)&Specular);
-    _float4& Emissive = DirectionalLightInfo.color.emissive;
-    ImGui::ColorEdit4("Emissive", (_float*)&Emissive);
+    Color& Ambient = DirectionalLightInfo.color.ambient;
+    ImGui::ColorEdit4("Ambient##DirLight", (_float*)&Ambient);
+    Color& Diffuse = DirectionalLightInfo.color.diffuse;
+    ImGui::ColorEdit4("Diffuse##DirLight", (_float*)&Diffuse);
+    Color& Specular = DirectionalLightInfo.color.specular;
+    ImGui::ColorEdit4("Specular##DirLight", (_float*)&Specular);
+    Color& Emissive = DirectionalLightInfo.color.emissive;
+    ImGui::ColorEdit4("Emissive##DirLight", (_float*)&Emissive);
+
+    m_DirectionalLightPos = Pos;
+    m_DirectionalLightLookDir = LookDir;
+    m_DirectionalLightInfo = DirectionalLightInfo;
+
+    // 점광원생성정보
+    ImGui::SeparatorText("CreatePointLight");
+    ImGui::DragFloat3("CreatePos##CreatePtLt", (_float*)&m_PickingPos, 0.1f);
+    ImGui::ColorEdit4("Ambient##CreatePtLt", (_float*)&m_CreatePointLightInfo.color.ambient);
+    ImGui::ColorEdit4("Diffuse##CreatePtLt", (_float*)&m_CreatePointLightInfo.color.diffuse);
+    ImGui::ColorEdit4("Specular##CreatePtLt", (_float*)&m_CreatePointLightInfo.color.specular);
+    ImGui::ColorEdit4("Emissive##CreatePtLt", (_float*)&m_CreatePointLightInfo.color.emissive);
+    ImGui::DragFloat("Range##CreatePtLt", &m_CreatePointLightInfo.range, 0.1f);
+    
+    if (ImGui::Button("Create##CreatePtLt"))
+        Create_SelectPointLight();
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("Delete##DeletePtLt"))
+        Delete_PointLight();
+
+    // 현재 점광원의 정보
+    if(m_strPointLightList.size() > 0)
+    {
+        ImGui::SeparatorText("PointLights");
+
+        if (ImGui::Button("GizmoTargetChange"))
+            m_GizmoTarget = GizmoTPointLight;
+
+        ImGui::ListBox("##PointLights", &m_iPointLightIndex, m_strPointLightList.data(), (_int)m_strPointLightList.size());
+
+        LightInfo& CurPtLightInfo = m_pPointLightObjects[m_iPointLightIndex]->Get_Light()->Get_LightInfo();
+        _float4 PtLightPos = m_pPointLightObjects[m_iPointLightIndex]->Get_Transform()->Get_State(Transform_State::POS);
+        ImGui::DragFloat3("PtLightPos##CurrentPtLt", (_float*)&PtLightPos, 0.1f);
+        m_pPointLightObjects[m_iPointLightIndex]->Get_Transform()->Set_State(Transform_State::POS, PtLightPos);
+        ImGui::ColorEdit4("PtLightAmbient##CurrentPtLt", (_float*)&CurPtLightInfo.color.ambient);
+        ImGui::ColorEdit4("PtLightDiffuse##CurrentPtLt", (_float*)&CurPtLightInfo.color.diffuse);
+        ImGui::ColorEdit4("PtLightSpecular##CurrentPtLt", (_float*)&CurPtLightInfo.color.specular);
+        ImGui::ColorEdit4("PtLightEmissive##CurrentPtLt", (_float*)&CurPtLightInfo.color.emissive);
+        ImGui::DragFloat("PtLightRange##CurrentPtLt", &CurPtLightInfo.range, 0.1f);
+
+        _float4 PointLightPosition = m_pPointLightObjects[m_iPointLightIndex]->Get_Transform()->Get_State(Transform_State::POS);
+        ImGui::DragFloat3("PointLightPosition", (_float*)&PointLightPosition, 0.1f);
+        m_pPointLightObjects[m_iPointLightIndex]->Get_Transform()->Set_State(Transform_State::POS, PointLightPosition);
+    }
+
+    ImGui::SeparatorText("##LightFrame");
 
     ImGui::End();
 }
@@ -394,14 +481,43 @@ void ImGui_Manager::Picking_Object()
         _float2 ScreenPos{ (_float)MousePos.x, (_float)MousePos.y };
 
         shared_ptr<GameObject> PickObject = PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), CUR_SCENE->Get_Objects(), m_PickingPos);
-
-        // 선택된 오브젝트 번호 바꾸기
-        for (_int i = 0; i < m_pMapObjects.size(); ++i)
+        if(m_GizmoTarget == GizmoTMapObj)
+            // 선택된 오브젝트 번호 바꾸기 현재기즈모타겟이 맵오브젝트일때만 사용.
         {
-            if (PickObject == m_pMapObjects[i])
-                m_iObjects = i;
+            for (_int i = 0; i < m_pMapObjects.size(); ++i)
+            {
+                if (PickObject == m_pMapObjects[i])
+                    m_iObjects = i;
+            }
         }
     }
+}
+
+HRESULT ImGui_Manager::Load_SkyBoxTexture()
+{
+    wstring path = L"..\\Resources\\Textures\\MapObject\\SkyBox\\";
+
+    for (auto& entry : fs::recursive_directory_iterator(path))
+    {
+        // 파일의 이름을 가져옴
+        wstring fileName = entry.path().filename().wstring();
+        WCHAR szTempName[MAX_PATH];
+        lstrcpy(szTempName, fileName.c_str());
+
+        wstring noExtName = szTempName;
+        Utils::DetachExt(noExtName);
+        RESOURCES.Load<Texture>(noExtName, path+szTempName);
+
+        // char 형식으로 변환
+        shared_ptr<char[]> pChar = shared_ptr<char[]>(new char[MAX_PATH]);
+        WideCharToMultiByte(CP_ACP, 0, noExtName.c_str(), -1, pChar.get(), MAX_PATH, 0, 0);
+
+        // 스카이박스 이름을 포인터 벡터에 추가
+        m_strSkyBoxNamePtr.push_back(pChar);
+        // 스카이박스 이름을 리스트UI에 추가
+        m_strSkyboxList.push_back(pChar.get());
+    }
+    return S_OK;
 }
 
 HRESULT ImGui_Manager::Load_MapObjectBase()
@@ -468,6 +584,7 @@ shared_ptr<GameObject>& ImGui_Manager::Create_MapObject(MapObjectScript::MapObje
         ++iPureNameSize;
     }
     string strModelName = CreateDesc.strName.substr(0, iPureNameSize);
+    CreateDesc.ColModelName = strModelName;
     // 모델생성
     shared_ptr<Model> model = RESOURCES.Get<Model>(Utils::ToWString(strModelName));
     shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
@@ -529,6 +646,77 @@ shared_ptr<GameObject>& ImGui_Manager::Create_MapObject(MapObjectScript::MapObje
     return CreateObject;
 }
 
+HRESULT ImGui_Manager::Create_SelectPointLight()
+{
+    // 선택한 점광원 생성
+    LightInfo CreateLightInfo;
+    m_CreatePointLightInfo.vPosition = XMVectorSetW(m_PickingPos, 1.f);
+    shared_ptr<GameObject>& LightObject = Create_PointLight(m_CreatePointLightInfo);
+    m_pPointLightObjects.push_back(LightObject);
+    m_strPointLightList.push_back("PointLight");
+    
+    return S_OK;
+}
+
+shared_ptr<GameObject>& ImGui_Manager::Create_PointLight(LightInfo _ptltInfo)
+{
+    shared_ptr<GameObject> PointLight = make_shared<GameObject>();
+    PointLight->Set_Name(L"PointLight");
+    // 포지션
+    PointLight->GetOrAddTransform()->Set_State(Transform_State::POS, _ptltInfo.vPosition);
+    {
+        // LightComponent 생성 후 세팅
+        shared_ptr<Light> lightCom = make_shared<Light>();
+        lightCom->Set_Ambient(_ptltInfo.color.ambient);
+        lightCom->Set_Diffuse(_ptltInfo.color.diffuse);
+        lightCom->Set_Specular(_ptltInfo.color.specular);
+        lightCom->Set_Emissive(_ptltInfo.color.emissive);
+        lightCom->Set_LightType(LIGHT_TYPE::POINT_LIGHT);
+        lightCom->Set_LightRange(_ptltInfo.range);
+
+        PointLight->Add_Component(lightCom);
+    }
+    CUR_SCENE->Add_GameObject(PointLight);
+
+    return PointLight;
+}
+
+HRESULT ImGui_Manager::Delete_PointLight()
+{
+    // 1. 현재씬에서 제거
+    CUR_SCENE->Remove_GameObject(m_pPointLightObjects[m_iPointLightIndex]);
+    // 2. 현재 선택된 오브젝트를 벡터에서 삭제
+    {
+        auto iter = m_pPointLightObjects.begin();
+        for (_int i = 0; i < m_iPointLightIndex; ++i)
+            ++iter;
+        // 리스트벡터에서 해당내용삭제
+        if (m_iPointLightIndex > 0)
+            iter = m_pPointLightObjects.erase(iter);
+        else
+            m_pPointLightObjects.erase(m_pPointLightObjects.begin());
+    }
+    // 3. 현재 배치된 오브젝트 List 이름 제거
+    {
+        auto iter = m_strPointLightList.begin();
+        for (_int i = 0; i < m_iPointLightIndex; ++i)
+            ++iter;
+        // 리스트벡터에서 해당내용삭제
+        if (m_iPointLightIndex > 0)
+        {
+            iter = m_strPointLightList.erase(iter);
+            // 리스트의 지정위치 변경
+            --m_iPointLightIndex;
+        }
+        else
+        {
+            m_strPointLightList.erase(m_strPointLightList.begin());
+        }
+    }
+
+    return S_OK;
+}
+
 HRESULT ImGui_Manager::Delete_MapObject()
 {
     // 1. 현재 선택된 오브젝트를 씬에서 삭제
@@ -578,6 +766,27 @@ HRESULT ImGui_Manager::Save_MapObject()
     shared_ptr<FileUtils> file = make_shared<FileUtils>();
     file->Open(Utils::ToWString(strFilePath), FileMode::Write);
 
+    // 스카이박스 정보 저장
+    string strSkyBoxTetureName = m_strSkyboxList[m_iCurrentSkyBoxIndex];
+    file->Write<string>(strSkyBoxTetureName);
+
+    // 방향성광원 정보 저장
+    file->Write<_float4>(m_DirectionalLightPos);
+    file->Write<_float3>(m_DirectionalLightLookDir);
+    file->Write<LightColor>(m_DirectionalLightInfo.color);
+
+    // 점광원 정보 저장
+    file->Write<_int>((_int)m_pPointLightObjects.size());
+    for (auto& PtLtObject : m_pPointLightObjects)
+    {
+        _float4 PtLtPosition = PtLtObject->Get_Transform()->Get_State(Transform_State::POS);
+        file->Write<_float4>(PtLtPosition);
+        LightInfo& ptltInfo = PtLtObject->Get_Light()->Get_LightInfo();
+        file->Write<LightColor>(ptltInfo.color);
+        file->Write<_float>(ptltInfo.range);
+    }
+
+    // 맵오브젝트 정보 저장
     // 1. 오브젝트 개수 저장
     file->Write<_int>((_int)m_pMapObjects.size());
     
@@ -609,7 +818,7 @@ HRESULT ImGui_Manager::Save_MapObject()
                 file->Write<_float3>(MapDesc.ColBoundingSize);
                 break;
             case static_cast<_uint>(ColliderType::Mesh):
-                file->Write<string>(MapDesc.ColModelName);
+                //file->Write<string>(MapDesc.ColModelName);
                 break;
             default:
                 break;
@@ -623,16 +832,19 @@ HRESULT ImGui_Manager::Save_MapObject()
 
 HRESULT ImGui_Manager::Load_MapObject()
 {
+    // 기존의 포인트라이트 모두삭제 및 클리어
+    _int iPtltSize = (_int)m_pPointLightObjects.size();
+    for (auto& ptltObj : m_pPointLightObjects)
+        CUR_SCENE->Remove_GameObject(ptltObj);
+    m_pPointLightObjects.clear();
+    m_strPointLightList.clear();
+    m_iPointLightIndex = 0;
+
     // 현재갖고있는 오브젝트개수
     _uint iSize = (_int)m_pMapObjects.size();
     // 1. 기존의 모든오브젝트 삭제 및 Clear
-    for (_uint i = 0; i< iSize; ++i)
-    {
-        // 모든 오브젝트를 씬에서 삭제 ( 맨뒤부터 )
-        CUR_SCENE->Remove_GameObject(m_pMapObjects.back());
-        m_pMapObjects.pop_back();
-        m_strObjectName.pop_back();
-    }
+    for (auto& mapObj : m_pMapObjects)
+        CUR_SCENE->Remove_GameObject(mapObj);
     m_pMapObjects.clear();
     m_strObjectName.clear();
     m_strObjectNamePtr.clear();
@@ -642,11 +854,47 @@ HRESULT ImGui_Manager::Load_MapObject()
     string strFileName = m_szSaveFileName;
     string strFilePath = "..\\Resources\\Data\\";
     strFilePath += strFileName + ".dat";
-    // 오브젝트 개수 불러오기
     shared_ptr<FileUtils> file = make_shared<FileUtils>();
     file->Open(Utils::ToWString(strFilePath), FileMode::Read);
+
+    // 스카이박스 이름 가져오고 적용하기.
+    wstring strSkyBoxTextureName = Utils::ToWString(file->Read<string>());
+    vector<shared_ptr<Material>>& Mats = CUR_SCENE->Get_GameObject(L"SkyBase")->Get_ModelRenderer()->Get_Model()->Get_Materials();
+    Mats[0]->Set_TextureMap(RESOURCES.Get<Texture>(strSkyBoxTextureName), TextureMapType::DIFFUSE);
+
+    // 방향성광원정보 가져오고 적용하기
+    // 포지션
+    shared_ptr<GameObject> DirectionalLightObject = CUR_SCENE->Get_Light();
+    _float4 DirLightPos = _float4{ 0.f, 0.f, 0.f, 1.f };
+    file->Read<_float4>(DirLightPos);
+    DirectionalLightObject->Get_Transform()->Set_State(Transform_State::POS, DirLightPos);
+    // 보는방향
+    _float3 DirLightLookDir = _float3{ 0.f, 0.f, 0.f };
+    file->Read<_float3>(DirLightLookDir);
+    DirectionalLightObject->Get_Transform()->Set_LookDir(DirLightLookDir);
+    // 색깔
+    LightColor DirLightColor;
+    file->Read<LightColor>(DirLightColor);
+    DirectionalLightObject->Get_Light()->Set_Ambient(DirLightColor.ambient);
+    DirectionalLightObject->Get_Light()->Set_Diffuse(DirLightColor.diffuse);
+    DirectionalLightObject->Get_Light()->Set_Specular(DirLightColor.specular);
+    DirectionalLightObject->Get_Light()->Set_Emissive(DirLightColor.emissive);
+
+    // 점광원정보 가져오고 불러오기
+    _int iNumPointLight = file->Read<_int>();
+    for (_int i = 0; i < iNumPointLight; ++i)
+    {
+        LightInfo loadPointLightInfo;
+        file->Read<_float4>(loadPointLightInfo.vPosition);
+        file->Read<LightColor>(loadPointLightInfo.color);
+        file->Read<_float>(loadPointLightInfo.range);
+        shared_ptr<GameObject>& CreatePtltObj = Create_PointLight(loadPointLightInfo);
+        m_pPointLightObjects.push_back(CreatePtltObj);
+        m_strPointLightList.push_back("PointLight");
+    }
+
+    // 오브젝트 개수 불러오기
     _int iNumObjects = file->Read<_int>();
-    
     for (_int i = 0; i < iNumObjects; ++i)
     {
         MapObjectScript::MapObjectDesc MapDesc;
@@ -675,7 +923,7 @@ HRESULT ImGui_Manager::Load_MapObject()
                 file->Read<_float3>(MapDesc.ColBoundingSize);
                 break;
             case ColliderType::Mesh:
-                file->Read<string>(MapDesc.ColModelName);
+                //file->Read<string>(MapDesc.ColModelName);
                 break;
             default:
                 break;

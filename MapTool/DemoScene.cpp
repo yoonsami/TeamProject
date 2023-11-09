@@ -65,6 +65,13 @@ HRESULT DemoScene::Load_Scene()
 
 void DemoScene::Load_DemoModel()
 {
+	shared_ptr<GameObject> sky = make_shared<GameObject>();
+	sky->GetOrAddTransform();
+	sky->Add_Component(make_shared<ModelRenderer>(RESOURCES.Get<Shader>(L"SkyBox.fx")));
+	sky->Get_ModelRenderer()->Set_Model(RESOURCES.Get<Model>(L"SkyBox"));
+	sky->Set_Name(L"SkyBase");
+	Add_GameObject(sky);
+
 	{
 
 		shared_ptr<GameObject> testObj = make_shared<GameObject>();
@@ -145,14 +152,13 @@ void DemoScene::Load_Light()
 		//lightCom->Set_Ambient(Color(0.8f));
 		//lightCom->Set_Specular(Color(0.f));
 		//lightCom->Set_Emissive(Color(0.f));
-		lightCom->Set_Diffuse(Color(0.11f, 0.11f, 0.75f, 1.f));
 		lightCom->Set_Ambient(Color(0.675f));
+		lightCom->Set_Diffuse(Color(0.11f, 0.11f, 0.75f, 1.f));
 		lightCom->Set_Specular(Color(0.f));
 		lightCom->Set_Emissive(Color(0.f));
 		lightCom->Set_LightType(LIGHT_TYPE::DIRECTIONAL_LIGHT);
 		lightObj->Add_Component(lightCom);
 		
 	}
-
 	Add_GameObject(lightObj);
 }

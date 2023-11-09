@@ -72,6 +72,7 @@ public:
 	void Set_Blur(_bool flag)				{ m_bIsBlur = flag; }
 	void Set_VelocityMap(_bool flag)		{ m_bHasVelocityMap = flag; }
 	void Set_CullRadius(_float radius)		{ m_fCullRaidus = radius; }
+	void Set_CullPos(const _float3& pos )	{ m_vCullPos = pos; }
 	void Set_FrustumCulled(_bool flag)		{ m_bFrustumCull = flag; }
 	void Set_DrawShadow(_bool flag)			{ m_bDrawShadow = flag; }
 	void Set_Hp(_float fHP)					{ m_fHP = fHP; }

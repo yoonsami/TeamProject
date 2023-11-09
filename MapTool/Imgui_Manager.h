@@ -9,6 +9,8 @@ class ImGui_Manager
 
 private:
 	enum GizmoOp { GizmoTR, GizmoRT, GizmoSC, GizmoEND };
+	// 기즈모를 띄울 대상 ( 맵오브젝트 or 점광원 )
+	enum GizmoTarget { GizmoTMapObj, GizmoTPointLight, GizmoTEnd };
 
 private:
 	virtual ~ImGui_Manager();
@@ -24,22 +26,32 @@ public:
 
 private:
 	void Show_Gizmo();
+	// 스카이박스 관리 프레임.
+	void Frame_SkyBox();
 	// 설치할 수 있는 오브젝트 목록과 모양을 보여주고 선택하는 프레임.
 	void Frame_ObjectBase();
 	// 현재 배치되어있는 오브젝트 목록 프레임.
 	void Frame_Objects();
-	// 방향성광원의 정보 관리.
-	void Frame_DirectionalLight();
+	// 광원의 정보 관리.
+	void Frame_Light();
 	// 피킹
 	void Picking_Object();
 
+	// 스카이박스목록 불러오기
+	HRESULT Load_SkyBoxTexture();
 	// 맵오브젝트베이스 목록 불러오기
 	HRESULT Load_MapObjectBase();
 	// 선택한 맵 오브젝트 생성
 	HRESULT Create_SelectObject();
 	// 맵 오브젝트 생성정보를 바탕으로 오브젝트를 생성하여 반환하는 함수
 	shared_ptr<GameObject>& Create_MapObject(MapObjectScript::MapObjectDesc _CreateDesc);
+	// 현재 정보로 점광원 생성
+	HRESULT Create_SelectPointLight();
+	// 빛정보를 바탕으로 생성 후 씬에 추가 후 포인터 반환
+	shared_ptr<GameObject>& Create_PointLight(LightInfo _ptltInfo);
 
+	// 점광원 제거
+	HRESULT Delete_PointLight();
 	// 맵오브젝트 제거
 	HRESULT Delete_MapObject();
 	// 맵오브젝트 저장
@@ -63,8 +75,6 @@ private:
 	vector<shared_ptr<char[]>> m_strObjectBaseNamePtr;
 	// 현재 선택된 베이스 오브젝트의 번호
 	_int m_iObjectBaseIndex = { 0 };
-	// 생성하는 오브젝트에 넣고싶은 UVWeight - UV에 곱해지는 숫자
-	//_float m_fUVWeight = { 1.f };
 	// 오브젝트 생성시 정보
 	MapObjectScript::MAPOBJDESC m_CreateObjectDesc;
 
@@ -85,4 +95,21 @@ private:
 // 기즈모관련
 	GizmoOp m_eGizmoOp = { GizmoTR };
 	_bool	m_bGizmoOp[GizmoEND] = { false, };
+	GizmoTarget m_GizmoTarget = GizmoTMapObj;
+
+// 스카이박스 관련
+	vector<const char*> m_strSkyboxList;
+	// 로드시 문자열 동적할당을 위한 공간
+	vector<shared_ptr<char[]>> m_strSkyBoxNamePtr;
+	_int m_iCurrentSkyBoxIndex = { 0 };
+
+// 빛관련
+	_float4 m_DirectionalLightPos = _float4{ 0.f, 0.f, 0.f, 1.f };
+	_float3 m_DirectionalLightLookDir = _float3{ 0.f, 0.f, 0.f};
+	LightInfo m_DirectionalLightInfo; // 빛 생성정보
+	vector<shared_ptr<GameObject>> m_pPointLightObjects;
+	vector<const char*> m_strPointLightList;
+	_int m_iPointLightIndex = { 0 };
+	// 점광원 생성정보
+	LightInfo m_CreatePointLightInfo;
 };

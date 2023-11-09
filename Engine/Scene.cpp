@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Scene.h"
 #include "Utils.h"
 #include "Model.h"
@@ -97,6 +97,8 @@ void Scene::Render()
 	Render_FXAA();
 	Render_Aberration();
 	//Render_Debug();
+
+	Render_Debug();
 
 	Render_UI();
 	//Render_ToneMapping();
@@ -507,6 +509,230 @@ void Scene::Load_UIFile(const wstring& strDataFilePath)
 		_bool bIsStatic = file->Read<_bool>();
 		Add_GameObject(UiObject, bIsStatic);
 	}
+}
+
+void Scene::Load_MapFile(const wstring& _mapFileName)
+{
+	// 세이브 파일 이름으로 로드하기
+	wstring strFilePath = L"..\\Resources\\Data\\";
+	strFilePath += _mapFileName + L".dat";
+	shared_ptr<FileUtils> file = make_shared<FileUtils>();
+	file->Open(strFilePath, FileMode::Read);
+
+	// 스카이박스 텍스쳐 추가하기
+	{
+		wstring path = L"..\\Resources\\Textures\\MapObject\\SkyBox\\";
+
+		for (auto& entry : fs::recursive_directory_iterator(path))
+		{
+			// 파일의 이름을 가져옴
+			wstring fileName = entry.path().filename().wstring();
+			WCHAR szTempName[MAX_PATH];
+			lstrcpy(szTempName, fileName.c_str());
+
+			wstring noExtName = szTempName;
+			Utils::DetachExt(noExtName);
+			RESOURCES.Load<Texture>(noExtName, path + szTempName);
+		}
+	}
+
+	// 스카이박스 텍스쳐 이름 가져와서 적용하기
+	wstring strSkyBoxTextureName = Utils::ToWString(file->Read<string>());
+	vector<shared_ptr<Material>>& Mats = Get_GameObject(L"SkyBase")->Get_ModelRenderer()->Get_Model()->Get_Materials();
+	Mats[0]->Set_TextureMap(RESOURCES.Get<Texture>(strSkyBoxTextureName), TextureMapType::DIFFUSE);
+
+	// 광원 정보 가져와서 방향성광원 적용 및 점광원 생성하기
+	// 방향성광원
+	 // 포지션
+	shared_ptr<GameObject> DirectionalLightObject = Get_Light();
+	_float4 DirLightPos = _float4{ 0.f, 0.f, 0.f, 1.f };
+	file->Read<_float4>(DirLightPos);
+	DirectionalLightObject->Get_Transform()->Set_State(Transform_State::POS, DirLightPos);
+	// 보는방향
+	_float3 DirLightLookDir = _float3{ 0.f, 0.f, 0.f };
+	file->Read<_float3>(DirLightLookDir);
+	DirectionalLightObject->Get_Transform()->Set_LookDir(DirLightLookDir);
+	// 색깔
+	LightColor DirLightColor;
+	file->Read<LightColor>(DirLightColor);
+	DirectionalLightObject->Get_Light()->Set_Ambient(DirLightColor.ambient);
+	DirectionalLightObject->Get_Light()->Set_Diffuse(DirLightColor.diffuse);
+	DirectionalLightObject->Get_Light()->Set_Specular(DirLightColor.specular);
+	DirectionalLightObject->Get_Light()->Set_Emissive(DirLightColor.emissive);
+
+	// 점광원정보 가져오고 불러오기
+	_int iNumPointLight = file->Read<_int>();
+	for (_int i = 0; i < iNumPointLight; ++i)
+	{
+		LightInfo loadPointLightInfo;
+		file->Read<_float4>(loadPointLightInfo.vPosition);
+		file->Read<LightColor>(loadPointLightInfo.color);
+		file->Read<_float>(loadPointLightInfo.range);
+
+		shared_ptr<GameObject> PointLight = make_shared<GameObject>();
+		PointLight->Set_Name(L"PointLight");
+		PointLight->GetOrAddTransform()->Set_State(Transform_State::POS, loadPointLightInfo.vPosition);
+		{
+			// LightComponent 생성 후 세팅
+			shared_ptr<Light> lightCom = make_shared<Light>();
+			lightCom->Set_Ambient(loadPointLightInfo.color.ambient);
+			lightCom->Set_Diffuse(loadPointLightInfo.color.diffuse);
+			lightCom->Set_Specular(loadPointLightInfo.color.specular);
+			lightCom->Set_Emissive(loadPointLightInfo.color.emissive);
+			lightCom->Set_LightType(LIGHT_TYPE::POINT_LIGHT);
+			lightCom->Set_LightRange(loadPointLightInfo.range);
+
+			PointLight->Add_Component(lightCom);
+		}
+		Add_GameObject(PointLight);
+	}
+
+	// 오브젝트 개수 불러오기
+	_int iNumObjects = file->Read<_int>();
+
+	for (_int i = 0; i < iNumObjects; ++i)
+	{
+		// 맵오브젝트에 필요한 모든정보
+		string strName = "";
+		_float fUVWeight = { 1.f }; // UV비율 : 기본1배
+		_bool bShadow = false;
+		_bool bBlur = false;
+		// Component
+		   // Transform
+		_bool bTransform = true;
+		_float4x4 WorldMatrix = XMMatrixIdentity();
+		// Collider
+		_bool bCollider = false;
+		//ColliderType ColliderType = ColliderType::OBB;
+		// 0:Sphere 1:AABB 2:OBB 3:Mesh
+		_int iColliderType = static_cast<_int>(ColliderType::OBB);
+		// ColliderDesc
+		_float3 ColliderOffset = _float3{ 0.f, 0.f, 0.f };
+		_float ColRadius = { 0.f };
+		_float3 ColBoundingSize = _float3{ 0.f, 0.f, 0.f };
+		string ColModelName = "";
+		// Culling
+		_float3 CullPos = _float3{ 0.f, 0.f, 0.f };
+		_float CullRadius = { 0.f };
+
+		wstring strObjectName = Utils::ToWString(file->Read<string>());
+		strName = Utils::ToString(strObjectName);
+
+		file->Read<_float>(fUVWeight);
+		file->Read<_bool>(bShadow);
+		file->Read<_bool>(bBlur);
+		file->Read<_bool>(bTransform);
+		if (bTransform)
+			file->Read<_float4x4>(WorldMatrix);
+		file->Read<_bool>(bCollider);
+		if (bCollider)
+		{
+			file->Read<_int>(iColliderType);
+			file->Read<_float3>(ColliderOffset);
+			switch (static_cast<ColliderType>(iColliderType))
+			{
+			case ColliderType::Sphere:
+				file->Read<_float>(ColRadius);
+				break;
+			case ColliderType::AABB:
+				file->Read<_float3>(ColBoundingSize);
+				break;
+			case ColliderType::OBB:
+				file->Read<_float3>(ColBoundingSize);
+				break;
+			case ColliderType::Mesh:
+				//file->Read<string>(ColModelName);
+				break;
+			default:
+				break;
+			}
+		}
+		file->Read<_float3>(CullPos);
+		file->Read<_float>(CullRadius);
+
+		// 오브젝트 틀 생성
+		shared_ptr<GameObject> CreateObject = make_shared<GameObject>();
+		CreateObject->Set_Name(strObjectName);
+		// 이름을 사용하여 모델생성
+		// 고유번호를 제거하여 모델명을 얻어옴
+		_int iPureNameSize = 0;
+		while (strName[iPureNameSize] != '-' && iPureNameSize < strName.size())
+		{
+			++iPureNameSize;
+		}
+		string strModelName = strName.substr(0, iPureNameSize);
+		// 콜라이더에서 사용하는 모델명도 저장
+		ColModelName = strModelName;
+		// 모델생성
+		shared_ptr<Model> model = RESOURCES.Get<Model>(Utils::ToWString(strModelName));
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+		shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+		CreateObject->Add_Component(renderer);
+		renderer->Set_Model(model);
+		renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT);
+		renderer->SetFloat(3, fUVWeight);
+		// 트랜스폼 생성
+		if (bTransform)
+		{
+			CreateObject->Add_Component(make_shared<Transform>());
+			CreateObject->Get_Transform()->Set_WorldMat(WorldMatrix);
+		}
+		// 콜라이더 생성
+		if (bCollider)
+		{
+			switch (static_cast<ColliderType>(iColliderType))
+			{
+			case ColliderType::Sphere:
+			{
+				shared_ptr<SphereCollider> pCollider = make_shared<SphereCollider>(ColRadius);
+				pCollider->Set_Offset(ColliderOffset);
+				CreateObject->Add_Component(pCollider);
+				//pCollider->Set_CollisionGroup(MAPObject);
+				pCollider->Set_Activate(true);
+				break;
+			}
+			case ColliderType::AABB:
+			{
+				shared_ptr<AABBBoxCollider> pCollider = make_shared<AABBBoxCollider>(ColBoundingSize);
+				pCollider->Set_Offset(ColliderOffset);
+				CreateObject->Add_Component(pCollider);
+				//pCollider->Set_CollisionGroup(MAPObject);
+				pCollider->Set_Activate(true);
+				break;
+			}
+			case ColliderType::OBB:
+			{
+				shared_ptr<OBBBoxCollider> pCollider = make_shared<OBBBoxCollider>(ColBoundingSize);
+				pCollider->Set_Offset(ColliderOffset);
+				CreateObject->Add_Component(pCollider);
+				//pCollider->Set_CollisionGroup(MAPObject);
+				pCollider->Set_Activate(true);
+				break;
+			}
+			case ColliderType::Mesh:
+			{
+				shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(Utils::ToWString(ColModelName));
+				pCollider->Set_Offset(ColliderOffset);
+				CreateObject->Add_Component(pCollider);
+				//pCollider->Set_CollisionGroup(MAPObject);
+				pCollider->Set_Activate(true);
+				auto rigidBody = make_shared<RigidBody>();
+				rigidBody->Create_RigidBody(pCollider, CreateObject->GetOrAddTransform()->Get_WorldMatrix());
+				CreateObject->Add_Component(rigidBody);
+				break;
+			}
+			default:
+				break;
+			}
+		}
+		CreateObject->Set_DrawShadow(bShadow);
+		CreateObject->Set_Blur(bBlur);
+		CreateObject->Set_CullPos(CullPos);
+		CreateObject->Set_CullRadius(CullRadius);
+
+		Add_GameObject(CreateObject);
+	}
+
 }
 
 void Scene::PickUI()
