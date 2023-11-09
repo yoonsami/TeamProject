@@ -80,36 +80,7 @@ HRESULT MainApp::Open_Scene()
 
 void MainApp::Control_Option()
 {
-	/*if (KEYPUSH(KEY_TYPE::Z))
-	{
-		GAMEINSTANCE.g_fBrightness += 0.5f * fDT;
-		if (GAMEINSTANCE.g_fBrightness > 2.f) GAMEINSTANCE.g_fBrightness = 2.f;
-	}
-	if (KEYPUSH(KEY_TYPE::X))
-	{
-		GAMEINSTANCE.g_fBrightness -= 0.5f * fDT;
-		if (GAMEINSTANCE.g_fBrightness < 0.1f) GAMEINSTANCE.g_fBrightness = 0.1f;
-	}*/
-	if (KEYPUSH(KEY_TYPE::Z))
-	{
-		GAMEINSTANCE.g_fMaxWhite += 0.1f * fDT;
-		if (GAMEINSTANCE.g_fMaxWhite > 2.f) GAMEINSTANCE.g_fMaxWhite = 2.f;
-	}
-	if (KEYPUSH(KEY_TYPE::X))
-	{
-		GAMEINSTANCE.g_fMaxWhite -= 0.1f * fDT;
-		if (GAMEINSTANCE.g_fMaxWhite < 0.f) GAMEINSTANCE.g_fMaxWhite = 0.1f;
-	}
-	if (KEYTAP(KEY_TYPE::C))
-	{
-		GAMEINSTANCE.g_iTMIndex++;
-		if (GAMEINSTANCE.g_iTMIndex > 3) GAMEINSTANCE.g_iTMIndex %= 3;
-	}
-	if (KEYTAP(KEY_TYPE::V))
-	{
-		GAMEINSTANCE.g_iTMIndex--;
-		if (GAMEINSTANCE.g_iTMIndex == 0) GAMEINSTANCE.g_iTMIndex = 3;
-	}
+
 }
 
 void MainApp::Load_Ui()

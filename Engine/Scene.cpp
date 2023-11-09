@@ -1134,6 +1134,8 @@ void Scene::Render_ToneMapping()
 
 	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+	if (GAMEINSTANCE.g_iTMIndex > 3) GAMEINSTANCE.g_iTMIndex = 3;
+
 	material->Get_Shader()->DrawIndexed(0, GAMEINSTANCE.g_iTMIndex, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
 
