@@ -63,7 +63,6 @@ void ImGui_Manager::ImGui_Tick()
 
     ImGui::ShowDemoWindow();
 
-    Frame_SkyBox();
     Frame_Light();
     Frame_ObjectBase();
     Frame_Objects();
@@ -120,21 +119,6 @@ void ImGui_Manager::Show_Gizmo()
 
         m_pPointLightObjects[m_iPointLightIndex]->Get_Transform()->Set_WorldMat(matGuizmo);
     }
-}
-
-void ImGui_Manager::Frame_SkyBox()
-{
-    ImGui::Begin("Frame_SkyBox"); // 글자 맨윗줄
-
-    if (ImGui::ListBox("##SkyBoxName", &m_iCurrentSkyBoxIndex, m_strSkyboxList.data(), (int)m_strSkyboxList.size()))
-    {
-        string strCurSkybox = m_strSkyboxList[m_iCurrentSkyBoxIndex];
-        Utils::DetachExt(strCurSkybox);
-
-        vector<shared_ptr<Material>>& Mats = CUR_SCENE->Get_GameObject(L"SkyBase")->Get_ModelRenderer()->Get_Model()->Get_Materials();
-        Mats[0]->Set_TextureMap(RESOURCES.Get<Texture>(Utils::ToWString(strCurSkybox)), TextureMapType::DIFFUSE);
-    }
-    ImGui::End();
 }
 
 void ImGui_Manager::Frame_ObjectBase()
@@ -400,7 +384,19 @@ void ImGui_Manager::Frame_Objects()
 }
 void ImGui_Manager::Frame_Light()
 {
-    ImGui::Begin("Frame_Light"); // 글자 맨윗줄
+    ImGui::Begin("SkyBox&Light"); // 글자 맨윗줄
+
+    // 스카이박스 변경
+    ImGui::SeparatorText("SkyBox##SkyBoxChange");
+    if (ImGui::ListBox("##SkyBoxName", &m_iCurrentSkyBoxIndex, m_strSkyboxList.data(), (int)m_strSkyboxList.size()))
+    {
+        string strCurSkybox = m_strSkyboxList[m_iCurrentSkyBoxIndex];
+        Utils::DetachExt(strCurSkybox);
+
+        vector<shared_ptr<Material>>& Mats = CUR_SCENE->Get_GameObject(L"SkyBase")->Get_ModelRenderer()->Get_Model()->Get_Materials();
+        Mats[0]->Set_TextureMap(RESOURCES.Get<Texture>(Utils::ToWString(strCurSkybox)), TextureMapType::DIFFUSE);
+    }
+
     // 방향성광원 통제
     ImGui::SeparatorText("DirectionalLight");
     // 포지션
@@ -452,13 +448,13 @@ void ImGui_Manager::Frame_Light()
 
         LightInfo& CurPtLightInfo = m_pPointLightObjects[m_iPointLightIndex]->Get_Light()->Get_LightInfo();
         _float4 PtLightPos = m_pPointLightObjects[m_iPointLightIndex]->Get_Transform()->Get_State(Transform_State::POS);
-        ImGui::DragFloat3("PtLightPos##CurrentPtLt", (_float*)&PtLightPos, 0.1f);
+        ImGui::DragFloat3("Pos##CurrentPtLt", (_float*)&PtLightPos, 0.1f);
         m_pPointLightObjects[m_iPointLightIndex]->Get_Transform()->Set_State(Transform_State::POS, PtLightPos);
-        ImGui::ColorEdit4("PtLightAmbient##CurrentPtLt", (_float*)&CurPtLightInfo.color.ambient);
-        ImGui::ColorEdit4("PtLightDiffuse##CurrentPtLt", (_float*)&CurPtLightInfo.color.diffuse);
-        ImGui::ColorEdit4("PtLightSpecular##CurrentPtLt", (_float*)&CurPtLightInfo.color.specular);
-        ImGui::ColorEdit4("PtLightEmissive##CurrentPtLt", (_float*)&CurPtLightInfo.color.emissive);
-        ImGui::DragFloat("PtLightRange##CurrentPtLt", &CurPtLightInfo.range, 0.1f);
+        ImGui::ColorEdit4("Ambient##CurrentPtLt", (_float*)&CurPtLightInfo.color.ambient);
+        ImGui::ColorEdit4("Diffuse##CurrentPtLt", (_float*)&CurPtLightInfo.color.diffuse);
+        ImGui::ColorEdit4("Specular##CurrentPtLt", (_float*)&CurPtLightInfo.color.specular);
+        ImGui::ColorEdit4("Emissive##CurrentPtLt", (_float*)&CurPtLightInfo.color.emissive);
+        ImGui::DragFloat("Range##CurrentPtLt", &CurPtLightInfo.range, 0.1f);
 
         _float4 PointLightPosition = m_pPointLightObjects[m_iPointLightIndex]->Get_Transform()->Get_State(Transform_State::POS);
         ImGui::DragFloat3("PointLightPosition", (_float*)&PointLightPosition, 0.1f);
@@ -793,14 +789,17 @@ HRESULT ImGui_Manager::Save_MapObject()
     // 2. 오브젝트의 MapObjectDesc 모든정보 저장
     for (_uint i = 0; i < m_pMapObjects.size(); ++i)
     {
-        MapObjectScript::MapObjectDesc MapDesc = m_pMapObjects[i]->Get_Script<MapObjectScript>()->Get_DESC();
+        MapObjectScript::MapObjectDesc& MapDesc = m_pMapObjects[i]->Get_Script<MapObjectScript>()->Get_DESC();
         file->Write<string>(MapDesc.strName);
         file->Write<_float>(MapDesc.fUVWeight);
         file->Write<_bool>(MapDesc.bShadow);
         file->Write<_bool>(MapDesc.bBlur);
         file->Write<_bool>(MapDesc.bTransform);
         if (MapDesc.bTransform)
+        {
+            MapDesc.WorldMatrix = m_pMapObjects[i]->Get_Transform()->Get_WorldMatrix();
             file->Write<_float4x4>(MapDesc.WorldMatrix);
+        }
         file->Write<_bool>(MapDesc.bCollider);
         if (MapDesc.bCollider)
         {

@@ -26,8 +26,6 @@ public:
 
 private:
 	void Show_Gizmo();
-	// 스카이박스 관리 프레임.
-	void Frame_SkyBox();
 	// 설치할 수 있는 오브젝트 목록과 모양을 보여주고 선택하는 프레임.
 	void Frame_ObjectBase();
 	// 현재 배치되어있는 오브젝트 목록 프레임.
