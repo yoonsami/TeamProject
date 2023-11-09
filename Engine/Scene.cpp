@@ -462,6 +462,33 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 	DirectionalLightObject->Get_Light()->Set_Specular(DirLightColor.specular);
 	DirectionalLightObject->Get_Light()->Set_Emissive(DirLightColor.emissive);
 
+	// 점광원정보 가져오고 불러오기
+	_int iNumPointLight = file->Read<_int>();
+	for (_int i = 0; i < iNumPointLight; ++i)
+	{
+		LightInfo loadPointLightInfo;
+		file->Read<_float4>(loadPointLightInfo.vPosition);
+		file->Read<LightColor>(loadPointLightInfo.color);
+		file->Read<_float>(loadPointLightInfo.range);
+
+		shared_ptr<GameObject> PointLight = make_shared<GameObject>();
+		PointLight->Set_Name(L"PointLight");
+		PointLight->GetOrAddTransform()->Set_State(Transform_State::POS, loadPointLightInfo.vPosition);
+		{
+			// LightComponent 생성 후 세팅
+			shared_ptr<Light> lightCom = make_shared<Light>();
+			lightCom->Set_Ambient(loadPointLightInfo.color.ambient);
+			lightCom->Set_Diffuse(loadPointLightInfo.color.diffuse);
+			lightCom->Set_Specular(loadPointLightInfo.color.specular);
+			lightCom->Set_Emissive(loadPointLightInfo.color.emissive);
+			lightCom->Set_LightType(LIGHT_TYPE::POINT_LIGHT);
+			lightCom->Set_LightRange(loadPointLightInfo.range);
+
+			PointLight->Add_Component(lightCom);
+		}
+		Add_GameObject(PointLight);
+	}
+
 	// 오브젝트 개수 불러오기
 	_int iNumObjects = file->Read<_int>();
 

@@ -433,7 +433,7 @@ void ImGui_Manager::Frame_Light()
     ImGui::DragFloat("Range##CreatePtLt", &m_CreatePointLightInfo.range, 0.1f);
     
     if (ImGui::Button("Create##CreatePtLt"))
-        Create_PointLight();
+        Create_SelectPointLight();
 
     ImGui::SameLine();
 
@@ -646,30 +646,39 @@ shared_ptr<GameObject>& ImGui_Manager::Create_MapObject(MapObjectScript::MapObje
     return CreateObject;
 }
 
-HRESULT ImGui_Manager::Create_PointLight()
+HRESULT ImGui_Manager::Create_SelectPointLight()
+{
+    // 선택한 점광원 생성
+    LightInfo CreateLightInfo;
+    m_CreatePointLightInfo.vPosition = XMVectorSetW(m_PickingPos, 1.f);
+    shared_ptr<GameObject>& LightObject = Create_PointLight(m_CreatePointLightInfo);
+    m_pPointLightObjects.push_back(LightObject);
+    m_strPointLightList.push_back("PointLight");
+    
+    return S_OK;
+}
+
+shared_ptr<GameObject>& ImGui_Manager::Create_PointLight(LightInfo _ptltInfo)
 {
     shared_ptr<GameObject> PointLight = make_shared<GameObject>();
     PointLight->Set_Name(L"PointLight");
     // 포지션
-    PointLight->GetOrAddTransform()->Set_State(Transform_State::POS, XMVectorSetW(m_PickingPos, 1.f));
+    PointLight->GetOrAddTransform()->Set_State(Transform_State::POS, _ptltInfo.vPosition);
     {
         // LightComponent 생성 후 세팅
         shared_ptr<Light> lightCom = make_shared<Light>();
-        lightCom->Set_Ambient(m_CreatePointLightInfo.color.ambient);
-        lightCom->Set_Diffuse(m_CreatePointLightInfo.color.diffuse);
-        lightCom->Set_Specular(m_CreatePointLightInfo.color.specular);
-        lightCom->Set_Emissive(m_CreatePointLightInfo.color.emissive);
+        lightCom->Set_Ambient(_ptltInfo.color.ambient);
+        lightCom->Set_Diffuse(_ptltInfo.color.diffuse);
+        lightCom->Set_Specular(_ptltInfo.color.specular);
+        lightCom->Set_Emissive(_ptltInfo.color.emissive);
         lightCom->Set_LightType(LIGHT_TYPE::POINT_LIGHT);
-        lightCom->Set_LightRange(m_CreatePointLightInfo.range);
+        lightCom->Set_LightRange(_ptltInfo.range);
 
         PointLight->Add_Component(lightCom);
     }
     CUR_SCENE->Add_GameObject(PointLight);
 
-    m_pPointLightObjects.push_back(PointLight);
-    m_strPointLightList.push_back("PointLight");
-    
-    return S_OK;
+    return PointLight;
 }
 
 HRESULT ImGui_Manager::Delete_PointLight()
@@ -770,8 +779,13 @@ HRESULT ImGui_Manager::Save_MapObject()
     file->Write<_int>((_int)m_pPointLightObjects.size());
     for (auto& PtLtObject : m_pPointLightObjects)
     {
-        //PtLtObject->Get_Transform()->Get_State();?.
-h    }
+        _float4 PtLtPosition = PtLtObject->Get_Transform()->Get_State(Transform_State::POS);
+        file->Write<_float4>(PtLtPosition);
+        LightInfo& ptltInfo = PtLtObject->Get_Light()->Get_LightInfo();
+        file->Write<LightColor>(ptltInfo.color);
+        file->Write<_float>(ptltInfo.range);
+    }
+
     // 맵오브젝트 정보 저장
     // 1. 오브젝트 개수 저장
     file->Write<_int>((_int)m_pMapObjects.size());
@@ -818,16 +832,19 @@ h    }
 
 HRESULT ImGui_Manager::Load_MapObject()
 {
+    // 기존의 포인트라이트 모두삭제 및 클리어
+    _int iPtltSize = (_int)m_pPointLightObjects.size();
+    for (auto& ptltObj : m_pPointLightObjects)
+        CUR_SCENE->Remove_GameObject(ptltObj);
+    m_pPointLightObjects.clear();
+    m_strPointLightList.clear();
+    m_iPointLightIndex = 0;
+
     // 현재갖고있는 오브젝트개수
     _uint iSize = (_int)m_pMapObjects.size();
     // 1. 기존의 모든오브젝트 삭제 및 Clear
-    for (_uint i = 0; i< iSize; ++i)
-    {
-        // 모든 오브젝트를 씬에서 삭제 ( 맨뒤부터 )
-        CUR_SCENE->Remove_GameObject(m_pMapObjects.back());
-        m_pMapObjects.pop_back();
-        m_strObjectName.pop_back();
-    }
+    for (auto& mapObj : m_pMapObjects)
+        CUR_SCENE->Remove_GameObject(mapObj);
     m_pMapObjects.clear();
     m_strObjectName.clear();
     m_strObjectNamePtr.clear();
@@ -863,9 +880,21 @@ HRESULT ImGui_Manager::Load_MapObject()
     DirectionalLightObject->Get_Light()->Set_Specular(DirLightColor.specular);
     DirectionalLightObject->Get_Light()->Set_Emissive(DirLightColor.emissive);
 
+    // 점광원정보 가져오고 불러오기
+    _int iNumPointLight = file->Read<_int>();
+    for (_int i = 0; i < iNumPointLight; ++i)
+    {
+        LightInfo loadPointLightInfo;
+        file->Read<_float4>(loadPointLightInfo.vPosition);
+        file->Read<LightColor>(loadPointLightInfo.color);
+        file->Read<_float>(loadPointLightInfo.range);
+        shared_ptr<GameObject>& CreatePtltObj = Create_PointLight(loadPointLightInfo);
+        m_pPointLightObjects.push_back(CreatePtltObj);
+        m_strPointLightList.push_back("PointLight");
+    }
+
     // 오브젝트 개수 불러오기
     _int iNumObjects = file->Read<_int>();
-    
     for (_int i = 0; i < iNumObjects; ++i)
     {
         MapObjectScript::MapObjectDesc MapDesc;

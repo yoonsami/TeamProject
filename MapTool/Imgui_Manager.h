@@ -46,7 +46,9 @@ private:
 	// 맵 오브젝트 생성정보를 바탕으로 오브젝트를 생성하여 반환하는 함수
 	shared_ptr<GameObject>& Create_MapObject(MapObjectScript::MapObjectDesc _CreateDesc);
 	// 현재 정보로 점광원 생성
-	HRESULT Create_PointLight();
+	HRESULT Create_SelectPointLight();
+	// 빛정보를 바탕으로 생성 후 씬에 추가 후 포인터 반환
+	shared_ptr<GameObject>& Create_PointLight(LightInfo _ptltInfo);
 
 	// 점광원 제거
 	HRESULT Delete_PointLight();
