@@ -35,98 +35,100 @@ EffectOut VS_Main(VTXModel input)
 
 float4 PS_Main(EffectOut input) : SV_Target
 {
-    float4 output = (float4) 0.f;
-    
-    int iOverlayOn = g_int_0;
-    int iFadeOutOn = g_int_1;
-    int iGradationOn = g_int_2;
-    int iSamplerType = g_int_3;
-    
-    float fLifeTimeRatio = g_float_0;
-    float fGradationIntensity = g_float_1;
-    
-    float fOpacityMap_TexUVOffset = g_vec2_0;
-    
-    float4 vBaseColor = g_vec4_0;
-    float4 vGradationColor = g_vec4_1;
-    float4 vOverlayColor_Start = g_vec4_2;
-    float4 vOverlayColor_End = g_vec4_3;
-    
-    float4 vOverlay = vOverlayColor_Start;
-    output = vBaseColor;
-    
-     // For. Distortion
+    float4 vOutColor = float4(0.f, 0.f, 0.f, 0.f);
     float fDistortionWeight = 0.f;
+    float fDissolveWeight = 1.f;
+    
+    // For. Get Data from ganeral
+    int iSamplerType = g_int_0;
+    int bUseFadeOut = g_int_1;
+    int bIsOverlayOn = g_int_2;
+    float fLifeRatio = g_float_0;
+    float fAlphaGraIntensity = g_float_1;
+    
+    float2 vTexUVOffset_Opacity = g_vec2_0;
+    float2 vTexUVOffset_Gra = { g_vec4_0.x, g_vec4_0.y };
+    float2 vTexUVOffset_Overlay = { g_vec4_0.z, g_vec4_0.w };
+    float2 vTexUVOffset_Dissolve = { g_vec4_1.x, g_vec4_1.y };
+    float2 vTexUVOffset_Distortion = { g_vec4_1.z, g_vec4_1.w };
+    
+    float4 vColor_Diffuse = g_mat_0._11_12_13_14;
+    float4 vColor_AlphaGra = g_mat_0._21_22_23_24;
+    float4 vColor_Gra = g_mat_0._31_32_33_34;
+    float4 vColor_Overlay = g_mat_0._41_42_43_44;
+    
+    // Get Distortion weight 
     if (bHasDistortionMap)
     {
-        float4 vDistortion = DistortionMap.Sample(LinearSampler, input.uv);
+        float4 vDistortion = DistortionMap.Sample(LinearSampler, input.uv + vTexUVOffset_Distortion);
         fDistortionWeight = vDistortion.r * 0.5f;
     }
     
+    // Get Diffuse Color if has Diffuse map 
+    if (bHasDiffuseMap)
+        vOutColor = DiffuseMap.Sample(LinearSampler, input.uv + fDistortionWeight);
+    else
+        vOutColor = vColor_Diffuse;
     
-
-    float fDissolve = 1.f;
-    
-    // For. Opacity Map
+    // Opacity + Get dissolve weight
     if (bHasOpacityMap)
     {
         if (0 == iSamplerType)
         {
-            output.a = OpacityMap.Sample(LinearSampler, input.uv + fDistortionWeight + fOpacityMap_TexUVOffset).r;
-            vOverlay.a = OpacityMap.Sample(LinearSampler, input.uv + fDistortionWeight + fOpacityMap_TexUVOffset).r;
+            vOutColor.a = OpacityMap.Sample(LinearSampler, input.uv + vTexUVOffset_Opacity + fDistortionWeight).r;
             if (bHasDissolveMap)
-                fDissolve = DissolveMap.Sample(LinearSampler, input.uv + fOpacityMap_TexUVOffset).r;
+                fDissolveWeight = DissolveMap.Sample(LinearSampler, input.uv + vTexUVOffset_Dissolve).r;
         }
         else if (1 == iSamplerType)
         {
-            output.a = OpacityMap.Sample(LinearSamplerClamp, input.uv + fDistortionWeight + fOpacityMap_TexUVOffset).r;
-            vOverlay.a = OpacityMap.Sample(LinearSamplerClamp, input.uv + fDistortionWeight + fOpacityMap_TexUVOffset).r;
+            vOutColor.a = OpacityMap.Sample(LinearSamplerClamp, input.uv + vTexUVOffset_Opacity + fDistortionWeight).r;
             if (bHasDissolveMap)
-                fDissolve = DissolveMap.Sample(LinearSamplerClamp, input.uv + fOpacityMap_TexUVOffset).r;
+                fDissolveWeight = DissolveMap.Sample(LinearSamplerClamp, input.uv + vTexUVOffset_Dissolve).r;
         }
         else if (2 == iSamplerType)
         {
-            output.a = OpacityMap.Sample(LinearSamplerMirror, input.uv + fDistortionWeight + fOpacityMap_TexUVOffset).r;
-            vOverlay.a = OpacityMap.Sample(LinearSamplerMirror, input.uv + fDistortionWeight + fOpacityMap_TexUVOffset).r;
+            vOutColor.a = OpacityMap.Sample(LinearSamplerMirror, input.uv + vTexUVOffset_Opacity + fDistortionWeight).r;
             if (bHasDissolveMap)
-                fDissolve = DissolveMap.Sample(LinearSamplerMirror, input.uv + fOpacityMap_TexUVOffset).r;  
+                fDissolveWeight = DissolveMap.Sample(LinearSamplerMirror, input.uv + vTexUVOffset_Dissolve).r;
         }
         else if (3 == iSamplerType)
         {
-            output.a = OpacityMap.Sample(LinearSamplerBorder, input.uv + fDistortionWeight + fOpacityMap_TexUVOffset).r;
-            vOverlay.a = OpacityMap.Sample(LinearSamplerBorder, input.uv + fDistortionWeight + fOpacityMap_TexUVOffset).r;
+            vOutColor.a = OpacityMap.Sample(LinearSamplerBorder, input.uv + vTexUVOffset_Opacity + fDistortionWeight).r;
             if (bHasDissolveMap)
-                fDissolve = DissolveMap.Sample(LinearSamplerBorder, input.uv + fOpacityMap_TexUVOffset).r;
+                fDissolveWeight = DissolveMap.Sample(LinearSamplerBorder, input.uv + vTexUVOffset_Dissolve).r;
         }
-        
     }
-   
+    
     // For. Dissolve
-    if (bHasDissolveMap)
-    {
-        if (fDissolve < sin(fLifeTimeRatio))
-            discard;
-    }
-    
+    if (bHasDissolveMap && fDissolveWeight < sin(fLifeRatio))
+        discard;
+   
     // For. FadeOut
-    if (iFadeOutOn)
-        output.a *= (1.f - fLifeTimeRatio);
+    if (bUseFadeOut)
+        vOutColor.a *= (1.f - fLifeRatio);
     
-    // For. Gradation 
-    if (1 == iGradationOn && output.a < fGradationIntensity)
-        output.rgb = (output.rgb * output.a) + (vGradationColor.rgb * (1.f - output.a));
-
+    // For. Alpha Gradation 
+    if (vOutColor.a < fAlphaGraIntensity)
+        vOutColor.rgb = (vOutColor.rgb * vOutColor.a) + (vColor_AlphaGra.rgb * (1.f - vOutColor.a));
+    
     // For. Overlay
-    if (iOverlayOn)
-    {
-        output.r = (output.r <= 0.5) ? 2 * output.r * vOverlay.r : 1 - 2 * (1 - output.r) * (1 - vOverlay.r);
-        output.g = (output.g <= 0.5) ? 2 * output.g * vOverlay.g : 1 - 2 * (1 - output.g) * (1 - vOverlay.g);
-        output.b = (output.b <= 0.5) ? 2 * output.b * vOverlay.b : 1 - 2 * (1 - output.b) * (1 - vOverlay.b);
+    if (bIsOverlayOn)
+    {       
+        float fOverlayWeight = 1.f;
+        float4 vFinalOverlayColor = float4(0.f, 0.f, 0.f, 0.f);
+        
+        if (bHasTexturemap8)
+            fOverlayWeight = DistortionMap.Sample(LinearSampler, input.uv + vTexUVOffset_Overlay);
+        
+        vFinalOverlayColor= (vOutColor.r <= 0.5) ? 2 * vOutColor.r * vColor_Overlay.r : 1 - 2 * (1 - vOutColor.r) * (1 - vColor_Overlay.r);
+        vFinalOverlayColor= (vOutColor.g <= 0.5) ? 2 * vOutColor.g * vColor_Overlay.g : 1 - 2 * (1 - vOutColor.g) * (1 - vColor_Overlay.g);
+        vFinalOverlayColor= (vOutColor.b <= 0.5) ? 2 * vOutColor.b * vColor_Overlay.b : 1 - 2 * (1 - vOutColor.b) * (1 - vColor_Overlay.b);
+        
+        vOutColor.rgb = vOutColor.rgb * (1.f - fOverlayWeight) + vFinalOverlayColor.rgb * fOverlayWeight;
     }
     
-    return output;
+    return vOutColor;
 }
-
 
 technique11 T0 // 0
 {

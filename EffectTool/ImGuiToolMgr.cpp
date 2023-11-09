@@ -47,16 +47,14 @@ void ImGuiToolMgr::Tick()
     ImGui_BasicWidget();
     ImGui::End();
 
-    //ImGui::ShowDemoWindow();
+    ImGui::ShowDemoWindow();
     
     if (m_bIsParticleMaker_Instancing_On)
     {
-        m_pWidget_ParticleMaker_Instancing->Set_ImGuiStyle(m_tImGuiStyle);
         m_pWidget_ParticleMaker_Instancing->Tick();
     }
     if (m_bIsEffectMaker_Mesh_On)
     {
-        m_pWidget_EffectMaker_Mesh->Set_ImGuiStyle(m_tImGuiStyle);
         m_pWidget_EffectMaker_Mesh->Tick();
     }
 }

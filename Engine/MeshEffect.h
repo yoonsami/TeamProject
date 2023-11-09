@@ -11,37 +11,55 @@ public:
         _float      fDuration;
         _bool       bBlurOn;
         _bool       bUseFadeOut;
-
+        
         // Mesh 
         string      strVfxMesh;
 
-        // Textures
-        string      strTextures[8];           
+        /* Coloring Options */
+        _bool       bColorChangingOn;
 
-        // Color 
-        Color       vBaseColor;       
+        // Diffuse
+        string      strDiffuseTexture;
+        Color       BaseColor_Diffuse;
+        Color       DestColor_Diffuse;
 
-        _bool       bGradationOn;
-        _float      fGradationIntensity;
-        Color       vGradationColor;
-
-        _bool       bOverlayOn;
-        Color       vOverlayColor_Start;
-        Color       vOverlayColor_End;
-
-        // Changing Color
-        _bool       bChangingColorOn;
-        Color       vDestBaseColor;
-        Color       vDestGradationColor;
-        Color       vDestOverlayColor_Start;
-        Color       vDestOverlayColor_End;
-
-        // Texture UV
-        _float2     vTexTiling;
-        _float2     vTexUVSpeed;
-
+        // Opacity
+        string      strOpacityTexture;
         _int        iSamplerType;
+        _float2     vTiling_Opacity;
+        _float2     vUVSpeed_Opacity;
 
+        // Alpha Gradation
+        _float      fAlphaGraIntensity;
+        Color       BaseColor_AlphaGra;
+        Color       DestColor_AlphaGra;
+
+        // Gradation
+        string      strGraTexture;
+        Color       BaseColor_Gra;
+        Color       DestColor_Gra;
+        _float2     vTiling_Gra;
+        _float2     vUVSpeed_Gra;
+
+        // Overlay
+        _bool       bIsOverlayOn;
+        string      strOverlayTexture;
+        Color       BaseColor_Overlay;
+        _float2     vTiling_Overlay;
+        _float2     vUVSpeed_Overlay;
+
+        // Normal 
+        string      strNormalTexture;
+
+        // Dissolve
+        string      strDissolveTexture;
+        _float2     vTiling_Dissolve;
+        _float2     vUVSpeed_Dissolve;
+
+        // Distortion
+        string      strDistortionTexture;
+        _float2     vTiling_Distortion;
+        _float2     vUVSpeed_Distortion;
     }DESC;
 
 public:
@@ -56,7 +74,7 @@ public:
 
     /* Getter */
     shared_ptr<Material> Get_Material() { return  m_pMaterial; }
-    shared_ptr<Shader>  Get_Shader() { return m_pShader; }
+    shared_ptr<Shader>   Get_Shader() { return m_pShader; }
 
 private:
     void            Init_RenderParams();
@@ -67,7 +85,12 @@ private:
     DESC                    m_tDesc;
 
     _float                  m_fCurrAge = { 0.f };
-    _float2                 m_vCurrTexUVOffset = { 0.f, 0.f };
+
+    _float2                 m_vCurrTexUVOffset_Opacity      = { 0.f, 0.f };
+    _float2                 m_vCurrTexUVOffset_Gra          = { 0.f, 0.f };
+    _float2                 m_vCurrTexUVOffset_Overlay      = { 0.f, 0.f };
+    _float2                 m_vCurrTexUVOffset_Dissolve     = { 0.f, 0.f };
+    _float2                 m_vCurrTexUVOffset_Distortion   = { 0.f, 0.f };
 
     /* Component */
     shared_ptr<Shader>      m_pShader = { nullptr };
