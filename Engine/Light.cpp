@@ -30,6 +30,8 @@ void Light::Final_Tick()
 	dir.Normalize();
 	m_LightInfo.vPosition = Get_Transform()->Get_State(Transform_State::POS);
 	m_LightInfo.vDirection = dir;
+	if (m_LightInfo.lightType == static_cast<_uint>(LIGHT_TYPE::POINT_LIGHT))
+		Get_Transform()->Scaled(_float3(m_LightInfo.range));
 
 	_float4x4 matWorld = Get_Transform()->Get_WorldMatrix();
 	_float3 trans, scale;

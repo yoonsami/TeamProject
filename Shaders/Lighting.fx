@@ -127,7 +127,8 @@ VS_OUT VS_PointLight(VS_IN input)
 {
     VS_OUT output = (VS_OUT) 0.f;
     
-    output.pos = mul(float4(input.pos, 1.f), W);
+    output.pos = mul(float4(input.pos * 0.5f, 1.f), W);
+
     output.pos = mul(output.pos, VP);
     output.uv = input.uv;
     
@@ -154,6 +155,13 @@ PS_LIGHT_Deferred PS_PointLight(VS_OUT input)
     float3 viewNormal = SubMap1.Sample(LinearSampler, uv).xyz;
     
     LightColor color = CalculateLightColor_ViewSpace(lightIndex, viewNormal, viewPos);
+    
+    if (length(color.ambient) != 0 && g_SSAO_On)
+    {
+        float ssAO = SubMap3.Sample(LinearSampler, input.uv).r;
+        
+        color.ambient = color.ambient * ssAO;
+    }
     output.ambient = color.ambient;
     output.ambient.a = 1.f;
     output.diffuse = color.diffuse;
@@ -209,6 +217,13 @@ PS_LIGHT_Deferred PS_SpotLight(VS_OUT input)
     float3 viewNormal = SubMap1.Sample(LinearSampler, input.uv).xyz;
     
     LightColor color = CalculateLightColor_ViewSpace(lightIndex, viewNormal, viewPos);
+    
+    if (length(color.ambient) != 0 && g_SSAO_On)
+    {
+        float ssAO = SubMap3.Sample(LinearSampler, input.uv).r;
+        
+        color.ambient = color.ambient * ssAO;
+    }
     output.ambient = color.ambient;
     output.ambient.a = 1.f;
     output.diffuse = color.diffuse;

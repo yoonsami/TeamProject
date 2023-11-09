@@ -215,7 +215,7 @@ LightColor CalculateLightColor_ViewSpace(int lightIndex, float3 viewNormal, floa
         if (lights[lightIndex].range == 0.f)
             distanceRatio = 0.f;
         else
-            distanceRatio = saturate(1.f - pow(dist / lights[lightIndex].range, 2));
+            distanceRatio = saturate(1.f - saturate(pow(dist / lights[lightIndex].range, 2)));
     }
     //SPOT_LIGHT
     else
