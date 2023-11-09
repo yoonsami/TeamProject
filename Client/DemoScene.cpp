@@ -131,7 +131,7 @@ HRESULT DemoScene::Load_Scene()
 	Load_Monster(5);
 	//Load_DemoMap();
 
-	//Load_Ui();
+	Load_Ui();
 
 	return S_OK;
 }
@@ -221,7 +221,7 @@ void DemoScene::Load_Player()
 		ObjWeapon->Set_VelocityMap(true);
 		Add_GameObject(ObjWeapon);
 
-		ObjPlayer->Add_Component(make_shared<HeroChangeScript>(ObjPlayer));
+		ObjPlayer->Add_Component(make_shared<HeroChangeScript>());
 	}
 
 	{
