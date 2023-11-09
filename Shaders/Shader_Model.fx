@@ -673,7 +673,7 @@ technique11 T0_ModelRender
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Anim()));
         SetGeometryShader(NULL);
-        SetRasterizerState(RS_Default);
+        SetRasterizerState(RS_CullNone);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Deferred()));

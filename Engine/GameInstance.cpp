@@ -78,6 +78,8 @@ _float3 GameInstance::g_testVec2 = _float3(0.9f, 1.f, 1.f);
 
 _bool GameInstance::g_bDrawOutline = false;
 
+GameInstance::MotionBlurData GameInstance::g_MotionBlurData{};
+
 GameInstance::FogData GameInstance::g_FogData{};
 
 GameInstance::SSAOData GameInstance::g_SSAOData{};

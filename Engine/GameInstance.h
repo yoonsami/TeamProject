@@ -58,5 +58,12 @@ public:
 	static _float3 g_testVec2;
 
 	static _bool g_bDrawOutline;
+
+	struct MotionBlurData
+	{
+		_bool g_bMotionBlurOn = false;
+		int g_iBlurCount = 0;
+	};
+	static MotionBlurData g_MotionBlurData;
 };
 

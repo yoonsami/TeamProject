@@ -279,7 +279,7 @@ void DemoScene::Load_Camera()
 		shared_ptr<GameObject> camera = make_shared<GameObject>();
 
 		// Transform Component 
-		camera->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
+		camera->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(1.f, 1.f, 1.f, 1.f));
 
 		camera->GetOrAddTransform()->Set_Speed(5.f);
 

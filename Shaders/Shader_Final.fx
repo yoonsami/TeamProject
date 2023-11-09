@@ -115,7 +115,10 @@ float4 PS_Aberration(VS_OUT input) : SV_Target
     
 }
 
-
+float4 PS_RenderFinal(VS_OUT input) : SV_Target
+{
+    return SubMap0.Sample(LinearSampler, input.uv);
+}
 
 technique11 T0
 {
@@ -167,6 +170,20 @@ technique11 Aberration
         SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Aberration()));
+    }
+  
+};
+
+technique11 RenderFinal
+{
+    Pass pass_Aberration
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Final()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_RenderFinal()));
     }
   
 };

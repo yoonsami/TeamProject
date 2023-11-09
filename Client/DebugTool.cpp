@@ -36,8 +36,6 @@ void DebugTool::Tick()
 		if (BeginTabBar("##a"))
 		{
 			RenderOptionTab();
-			FogOptionTab();
-			LensFlareTab();
 			EndTabBar();
 		}
 
@@ -56,36 +54,43 @@ void DebugTool::Render()
 
 void DebugTool::RenderOptionTab()
 {
-
-	if (BeginTabItem("Render Option"))
+	string fps = "FPS : " + to_string(TIME.GetFPS());
+	Text(fps.c_str());
+	if (CollapsingHeader("RenderOption"))
 	{
-		string fps  = to_string(TIME.GetFPS());
-		Text(fps.c_str());
+	
 		_float& g_fBrightness = GAMEINSTANCE.g_fBrightness;
 		_float& g_fContrast = GAMEINSTANCE.g_fContrast;
-		_float& g_fMaxWhite = GAMEINSTANCE.g_fMaxWhite;
-		_int& g_iTMIndex = GAMEINSTANCE.g_iTMIndex;
 		_float& g_fGamma = GAMEINSTANCE.g_fGamma;
-		_float& g_fBloomMin = GAMEINSTANCE.g_fBloomMin;
-		
+
+
 		DragFloat("Brightness", &g_fBrightness, 0.001f, 0.01f, 5.f);
 		DragFloat("Contrast", &g_fContrast, 0.001f, 0.01f, 5.f);
 		DragFloat("Gamma", &g_fGamma, 0.001f, 0.01f, 5.f);
-		SeparatorText("Bloom");
+
+	}
+	if (CollapsingHeader("Bloom"))
+	{
+		_float& g_fBloomMin = GAMEINSTANCE.g_fBloomMin;
 		DragFloat("Bloom Min Value", &g_fBloomMin, 0.001f, 0.01f, 1.f);
-		
+	}
+	if (CollapsingHeader("ToneMapping"))
+	{
+		_float& g_fMaxWhite = GAMEINSTANCE.g_fMaxWhite;
+		_int& g_iTMIndex = GAMEINSTANCE.g_iTMIndex;
+
 		static _int tmIndex = 0;
-		SeparatorText("Tone Mapping");
 		InputInt("ToneMapping Mod", &tmIndex);
 
 		if (tmIndex > 3) tmIndex %= 4;
 		else if (tmIndex < 0) tmIndex += 4;
 
 		g_iTMIndex = tmIndex;
-		if(g_iTMIndex == 1)
+		if (g_iTMIndex == 1)
 			DragFloat("Max_White Value", &g_fMaxWhite, 0.1f, 0.01f, 5.f);
-		
-		SeparatorText("SSAO");
+	}
+	if (CollapsingHeader("SSAO"))
+	{
 		_bool& g_bSSAO_On = GAMEINSTANCE.g_SSAOData.g_bSSAO_On;
 		Checkbox("SSAO On", &g_bSSAO_On);
 		if (g_bSSAO_On)
@@ -97,33 +102,17 @@ void DebugTool::RenderOptionTab()
 			DragFloat("SSAO Radius", &g_fOcclusionRadius, 0.01f, 0.0001f, 1.f);
 			DragFloat("SSAO FadeStart", &g_OcclusionFadeStart, 0.01f, 0.0001f, g_OcclusionFadeEnd);
 			DragFloat("SSAO FadeEnd", &g_OcclusionFadeEnd, 0.01f, g_OcclusionFadeStart, 1.f);
-
-
 		}
-		SeparatorText("Outline");
-		_bool& g_bOutline = GAMEINSTANCE.g_bDrawOutline;
-		Checkbox("Outline On", &g_bOutline);
-
-		SeparatorText("FXAA");
-		_bool& g_bFXAAOn = GAMEINSTANCE.g_bFXAAOn;
-		Checkbox("FXAA On", &g_bFXAAOn);
-
-		SeparatorText("Aberration");
-		_bool& g_bAberrationOn = GAMEINSTANCE.g_bAberrationOn;
-		Checkbox("Aberration On", &g_bAberrationOn);
-		if (g_bAberrationOn)
-		{
-			_float& g_fAberrationPower = GAMEINSTANCE.g_fAberrationPower;
-			DragFloat("Aberration Power", &g_fAberrationPower, 1.f,-300.f, 300.f);
-		}
-		EndTabItem();
 	}
-}
-void DebugTool::FogOptionTab()
-{
-	if (BeginTabItem("Fog Option"))
+	if (CollapsingHeader("Motion Blur"))
 	{
-		SeparatorText("Fog");
+		GameInstance::MotionBlurData& data = GAMEINSTANCE.g_MotionBlurData;
+		Checkbox("Motion Blur On", &data.g_bMotionBlurOn);
+		InputInt("Motion Blur Count", &data.g_iBlurCount);
+
+	}
+	if (CollapsingHeader("Fog Option"))
+	{
 		_bool& g_FogOn = GAMEINSTANCE.g_FogData.g_FogOn;
 		_float& g_FogRange = GAMEINSTANCE.g_FogData.gFogRange;
 		_float& gFogStart = GAMEINSTANCE.g_FogData.gFogStart;
@@ -141,21 +130,34 @@ void DebugTool::FogOptionTab()
 		ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
 		ImGui::ColorEdit4("FogColor", (float*)&gColorFog, ImGuiColorEditFlags_DisplayHSV | misc_flags);
 
-		EndTabItem();
 	}
-}
-void DebugTool::LensFlareTab()
-{
-	if (BeginTabItem("Flare Option"))
+	if (CollapsingHeader("Lens Flare Option"))
 	{
 		if (CUR_SCENE)
 		{
 			_bool& g_bLensFlare = GAMEINSTANCE.g_bLensFlare;
 			Checkbox("LensFlare On", &g_bLensFlare);
-			DragFloat3("Test1", (_float*)&GAMEINSTANCE.g_testVec1,0.01f);
+			DragFloat3("Test1", (_float*)&GAMEINSTANCE.g_testVec1, 0.01f);
 			DragFloat3("Test2", (_float*)&GAMEINSTANCE.g_testVec2, 0.01f);
 		}
-		EndTabItem();
 	}
+	SeparatorText("Outline");
+	_bool& g_bOutline = GAMEINSTANCE.g_bDrawOutline;
+	Checkbox("Outline On", &g_bOutline);
+
+	SeparatorText("FXAA");
+	_bool& g_bFXAAOn = GAMEINSTANCE.g_bFXAAOn;
+	Checkbox("FXAA On", &g_bFXAAOn);
+
+	SeparatorText("Aberration");
+	_bool& g_bAberrationOn = GAMEINSTANCE.g_bAberrationOn;
+	Checkbox("Aberration On", &g_bAberrationOn);
+	if (g_bAberrationOn)
+	{
+		_float& g_fAberrationPower = GAMEINSTANCE.g_fAberrationPower;
+		DragFloat("Aberration Power", &g_fAberrationPower, 1.f, -300.f, 300.f);
+	}
+
 }
+
 #endif

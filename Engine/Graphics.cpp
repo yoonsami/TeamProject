@@ -526,5 +526,13 @@ void Graphics::Create_RTGroup()
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::ABERRATION)] = make_shared<RenderTargetGroup>();
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::ABERRATION)]->Create(RENDER_TARGET_GROUP_TYPE::ABERRATION, rtVec, dsTexture);
 	}
+	//ToneMapping
+	{
+		vector<RenderTarget> rtVec(RENDER_TARGET_TONEMAPPING_GROUP_MEMBER_COUNT);
+		rtVec[0].target = RESOURCES.CreateTexture(L"ToneMappingTarget", FORMATTYPE, _uint(m_Viewport.Get_Width()), _uint(m_Viewport.Get_Height()), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].clearColor = _float4(0.f);
 
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::TONEMAPPING)] = make_shared<RenderTargetGroup>();
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::TONEMAPPING)]->Create(RENDER_TARGET_GROUP_TYPE::TONEMAPPING, rtVec, dsTexture);
+	}
 }

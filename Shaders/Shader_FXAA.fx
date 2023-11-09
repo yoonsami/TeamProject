@@ -3,16 +3,12 @@
 
 #define FXAA_PC 1
 #define FXAA_HLSL_5 1
-#define FXAA_QUALITY__PRESET 39
+#define FXAA_QUALITY__PRESET 12
 #define FXAA_GREEN_AS_LUMA 1
 #include "Fxaa3_11.h"
-float4 RCPFrame = {1920.f,1080.f,0.f,0.f };
+float4 RCPFrame = {1.f/1920.f,1.f/1080.f,0.f,0.f };
 bool Use;
-struct VS_IN
-{
-    float3 pos : POSITION;
-    float2 uv : TEXCOORD;
-};
+
 
 struct VS_OUT
 {
@@ -20,13 +16,13 @@ struct VS_OUT
     float2 uv : TEXCOORD;
 };
 
-VS_OUT VS(VS_IN input)
+VS_OUT VS(uint id : SV_VertexID)
 {
-    VS_OUT output = (VS_OUT) 0.f;
-    output.pos = float4(input.pos * 2.f, 1.f);
-    output.uv = input.uv;
-    
-    return output;
+    VS_OUT Output;
+    Output.uv = float2((id << 1) & 2, id & 2);
+    Output.pos = float4(Output.uv * float2(2.0f, -2.0f) +
+    float2(-1.0f, 1.0f), 0.0f, 1.0f);
+    return Output;
 }
 
 SamplerState InputSampler

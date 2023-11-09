@@ -1,8 +1,6 @@
 #include "Render.fx"
 #include "Light.fx"
 int g_BlurCount;
-float DownScalePower;
-float UpScalePower;
 
 
 struct VS_IN

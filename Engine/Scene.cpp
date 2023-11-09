@@ -94,15 +94,15 @@ void Scene::Render()
 	Render_Distortion();
 	Render_Distortion_Final();
 	Render_LensFlare();
-	Render_FXAA();
 	Render_Aberration();
 
 	Render_Debug();
 
+
 	Render_UI();
 	//Render_ToneMapping();
 
-	Render_BackBuffer();
+	//Render_BackBuffer();
 }
 
 HRESULT Scene::Load_Scene()
@@ -806,6 +806,7 @@ void Scene::Render_Shadow()
 
 void Scene::Render_MotionBlur()
 {
+	if (!GAMEINSTANCE.g_MotionBlurData.g_bMotionBlurOn) return;
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::MOTIONBLUR)->OMSetRenderTargets();
 
 	if (Get_MainCamera())
@@ -1154,12 +1155,13 @@ void Scene::Render_OutLine()
 
 void Scene::Render_MotionBlurFinal()
 {
+	if (!GAMEINSTANCE.g_MotionBlurData.g_bMotionBlurOn) return;
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::MOTIONBLURFINAL)->OMSetRenderTargets();
 
 	auto material = RESOURCES.Get<Material>(L"MotionBlurFinal");
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 	material->Set_SubMap(1, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
-	material->Get_Shader()->GetScalar("g_BlurCount")->SetInt(50);
+	material->Get_Shader()->GetScalar("g_BlurCount")->SetInt(GAMEINSTANCE.g_MotionBlurData.g_iBlurCount);
 
 	material->Push_SubMapData();
 
@@ -1475,7 +1477,7 @@ void Scene::Render_UI()
 
 void Scene::Render_ToneMapping()
 {
-	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->OMSetRenderTargets();
+	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::TONEMAPPING)->OMSetRenderTargets();
 
 	auto material = RESOURCES.Get<Material>(L"BackBufferRenderFinal");
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
@@ -1500,11 +1502,28 @@ void Scene::Render_ToneMapping()
 
 	material->Get_Shader()->DrawIndexed(0, GAMEINSTANCE.g_iTMIndex, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
+	m_wstrFinalRenderTarget = L"ToneMappingTarget";
 
+	Render_BackBuffer();
 }
 
 void Scene::Render_BackBuffer()
 {
+	Render_FXAA();
+	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->OMSetRenderTargets();
+
+	auto material = RESOURCES.Get<Material>(L"AberrationFinal");
+	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
+
+	material->Push_SubMapData();
+	mesh->Get_VertexBuffer()->Push_Data();
+	mesh->Get_IndexBuffer()->Push_Data();
+
+	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+
+	material->Get_Shader()->DrawIndexed(2, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
 }
 
