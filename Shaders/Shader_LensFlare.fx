@@ -109,18 +109,21 @@ float2 g_TestPos1;
 float2 g_TestPos2;
 float4 PS_Final(VS_OUT input) : SV_Target0
 {
-   // float4 output = SubMap0.Sample(LinearSampler, input.uv);
+  
     float4 output = (float4) 0.f;
 
     float3 col = (float3) 0.f;
     
-   // float3 viewLightPos = mul(float4(g_LightPos, 1.f), V).xyz;
-    float2 lightPos = float2(960.f,540.f);
-    float2 centerPos = g_LightPos;
-    //float2 centerPos = g_TestPos1;
-    //float2 lightPos = g_TestPos2;
     
-    float2 centerVec = (centerPos - lightPos);
+    
+    float2 vLightPos = g_LightPos;
+    
+    float2 vLightUV = 
+    
+    float2 centerPos = 2.f * g_LightPos - float2(960.f, 540.f);
+
+    
+    float2 centerVec = (vLightPos - centerPos);
     float centerVecLength = length(centerVec);
     
     float centerProximity = centerVecLength / 150.;
@@ -148,7 +151,7 @@ float4 PS_Final(VS_OUT input) : SV_Target0
         
         float baseRadius = (1. - circleOpacityMul) / 4. + 3. / 4.;
         float circleBoost = 1. + (1. - circleOpacityMul) * 0.1;
-        col = drawCircle(getFlarePoint(centerPos, centerVec, 0.), pixelPos, 1920.f / 1.5 * baseRadius, circleBoost, float3(0, 0, 0), float3(1, 1, 1));
+        col = drawCircle(getFlarePoint(vLightPos, centerVec, 0.), pixelPos, 1920.f / 1.5 * baseRadius, circleBoost, float3(0, 0, 0), float3(1, 1, 1));
     
         for (int i = 0; i < g_CirclesCount; i++)
         {
@@ -160,18 +163,31 @@ float4 PS_Final(VS_OUT input) : SV_Target0
             float opacity = (0.8 + random(newSeed * 4.) * 0.2) * opacityMul * overeallOpacity;
             opacity *= dist;
             
-            float2 flarePoint = getFlarePoint(centerPos, centerVec, pos);
+            float2 flarePoint = getFlarePoint(vLightPos, centerVec, pos);
             float2 pointToFlare = flarePoint - pixelPos;
             float angle = angleBetween(pointToFlare, centerVec) / PI;
             angle = easeOutQuad(angle);
             angle = clamp(angle, 0., 1.);
             opacity *= angle;
             opacity /= centerProximity;
-        
+            
+            if (vLightPos.x >= 1920.f)
+            {
+                opacity *= saturate(1.f - (vLightPos.x - 1920.f) / 120.f);
+
+            }
+            else if (vLightPos.x <= 0.f)
+            {
+                opacity *= saturate(1 + vLightPos.x / 120.f);
+            }
+            if (vLightPos.y <= 0.f)
+            {
+                opacity *= saturate(1 + vLightPos.y / 120.f);
+            }
             col += drawCircle(flarePoint, pixelPos, radius, falloff, col1, col2) * opacity;
         }
         
-        float2 flarePoint = getFlarePoint(centerPos, centerVec, 0.25);
+        float2 flarePoint = getFlarePoint(vLightPos, centerVec, 0.25);
         float2 pointToFlare = flarePoint - pixelPos;
         float angle = angleBetween(pointToFlare, centerVec) / PI;
         angle = easeOutQuad(easeOutQuad(angle));
@@ -179,9 +195,25 @@ float4 PS_Final(VS_OUT input) : SV_Target0
         angle = lerp(1., angle, opacityMul);
         float opacity = angle * 1.5;
         opacity /= centerProximity / 1.5;
+        
+        if (vLightPos.x >= 1920.f)
+        {
+            opacity *= saturate(1.f - (vLightPos.x - 1920.f) / 120.f);
+
+        }
+        else if (vLightPos.x <= 0.f)
+        {
+            opacity *= saturate(1 + vLightPos.x / 120.f);
+        }
+        if(vLightPos.y <= 0.f)
+        {
+            opacity *= saturate(1 + vLightPos.y / 120.f);
+        }
+        
+
         col += drawRainbowCircle(flarePoint, pixelPos, 1920.f / 5.) * opacity;
         
-        float2 distToCenter = pixelPos - centerPos;
+        float2 distToCenter = pixelPos - vLightPos;
         float res = 1920.f / 80.;
         opacity = (1. - opacityMul) * 0.9 + 0.1;
         
@@ -205,16 +237,20 @@ float4 PS_Final(VS_OUT input) : SV_Target0
         div += bokeh;
     }
     float power = 1.f;
-    if (centerPos.x >= 1920.f )
+    if (vLightPos.x >= 1920.f )
     {
-        power = saturate(1.f - (centerPos.x - 1920.f) / 1920.f);
+        power = saturate(1.f - (vLightPos.x - 1920.f) / 1920.f);
         
     }
-    else if(centerPos.x <= 0.f)
+    else if(vLightPos.x <= 0.f)
     {
-        power = saturate(1 + centerPos.x / 1920.f);
+        power = saturate(1 + vLightPos.x / 1920.f);
     }
-    
+    else if (vLightPos.y <= 0.f)
+    {
+        power *= saturate(1 + vLightPos.y / 120.f);
+    }
+        
     float4 color = SubMap0.Sample(LinearSampler, input.uv);
     
     if (length(div) != 0.f)
