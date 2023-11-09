@@ -35,7 +35,7 @@ private:
 	void					Save();
 	void					Load();
 
-	void					SubWidget_TextureCombo(_int* iSelected, string* strSelected, const char* pszWidgetKey);
+	void					SubWidget_TextureCombo(_int* iSelected, string* strSelected, string strFilePath, const char* pszWidgetKey);
 	void					SubWidget_ImageViewer(string strFileName, string strFilePath, const char* pszWidgetKey);
 	void					SubWidget_SettingTexUV(_float* arrTiling, _float* arrTexUVSpeed, const char* pszWidgetKey, const char* pszWidgetKey2);
 

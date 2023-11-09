@@ -52,11 +52,10 @@ float4 PS_Main(EffectOut input) : SV_Target
     float2 vTexUVOffset_Dissolve = { g_vec4_1.x, g_vec4_1.y };
     float2 vTexUVOffset_Distortion = { g_vec4_1.z, g_vec4_1.w };
     
-    float4 vColor_Diffuse = g_mat_0._11;
-    float4 vColor_AlphaGra = g_mat_0._11;
-    float4 vColor_Gra = g_mat_0._31;
-    float4 vColor_Overlay = g_mat_0._41;
-    
+    float4 vColor_Diffuse = g_mat_0._11_12_13_14;
+    float4 vColor_AlphaGra = g_mat_0._21_22_23_24;
+    float4 vColor_Gra = g_mat_0._31_32_33_34;
+    float4 vColor_Overlay = g_mat_0._41_42_43_44;
     
     // Get Distortion weight 
     if (bHasDistortionMap)
@@ -67,8 +66,10 @@ float4 PS_Main(EffectOut input) : SV_Target
     
     // Get Diffuse Color if has Diffuse map 
     if (bHasDiffuseMap)
-        vColor_Diffuse = DiffuseMap.Sample(LinearSampler, input.uv + fDistortionWeight).r;
-
+        vOutColor = DiffuseMap.Sample(LinearSampler, input.uv + fDistortionWeight);
+    else
+        vOutColor = vColor_Diffuse;
+    
     // Opacity + Get dissolve weight
     if (bHasOpacityMap)
     {
@@ -99,7 +100,7 @@ float4 PS_Main(EffectOut input) : SV_Target
     }
     
     // For. Dissolve
-    if (fDissolveWeight < sin(fLifeRatio))
+    if (bHasDissolveMap && fDissolveWeight < sin(fLifeRatio))
         discard;
    
     // For. FadeOut
@@ -110,7 +111,7 @@ float4 PS_Main(EffectOut input) : SV_Target
     if (vOutColor.a < fAlphaGraIntensity)
         vOutColor.rgb = (vOutColor.rgb * vOutColor.a) + (vColor_AlphaGra.rgb * (1.f - vOutColor.a));
     
-     // For. Overlay
+    // For. Overlay
     if (bIsOverlayOn)
     {       
         float fOverlayWeight = 1.f;
@@ -123,7 +124,7 @@ float4 PS_Main(EffectOut input) : SV_Target
         vFinalOverlayColor= (vOutColor.g <= 0.5) ? 2 * vOutColor.g * vColor_Overlay.g : 1 - 2 * (1 - vOutColor.g) * (1 - vColor_Overlay.g);
         vFinalOverlayColor= (vOutColor.b <= 0.5) ? 2 * vOutColor.b * vColor_Overlay.b : 1 - 2 * (1 - vOutColor.b) * (1 - vColor_Overlay.b);
         
-        vOutColor = vOutColor * (1.f - fOverlayWeight) + vFinalOverlayColor * fOverlayWeight;
+        vOutColor.rgb = vOutColor.rgb * (1.f - fOverlayWeight) + vFinalOverlayColor.rgb * fOverlayWeight;
     }
     
     return vOutColor;

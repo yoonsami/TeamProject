@@ -24,7 +24,7 @@ void FreeCameraScript::Tick()
 			Get_Transform()->Go_Horizontally_Down();
 
 		// For. Roataion 
-		if (KEYHOLD(KEY_TYPE::LCTRL))
+		if (KEYHOLD(KEY_TYPE::LALT))
 		{
 			_float2 vMouseDir = INPUT.GetMouseDir();
 
