@@ -33,7 +33,8 @@ HRESULT ImguiMgr::Initialize(HWND& hWnd)
    ImGuizmo::SetRect(0.f, 0.f, g_iWinSizeX, g_iWinSizeY);
 
    m_pSampleObj = make_shared<GameObject>();
-   m_pSampleObj->GetOrAddTransform();
+   m_pSampleObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(1.f, 1.f, 1.f, 1.f));
+   m_pSampleObj->GetOrAddTransform()->Scaled(_float3(1.f, 1.f, 1.f));
 
    m_tagParamDesc.vec4Params[0] = _float4(1.f, 1.f, 1.f, 1.f);
 
@@ -209,8 +210,8 @@ void ImguiMgr::Select_Texture()
    ImGui::NewLine();
    ImGui::SeparatorText("Select Texture");
 
-   auto textures = RESOURCES.Get_Resources(0);
-   auto texture = textures[static_cast<_uint>(ResourceType::Texture)];
+   auto& textures = RESOURCES.Get_Resources(0);
+   auto& texture = textures[static_cast<_uint>(ResourceType::Texture)];
 
    _uint iSize = static_cast<_uint>(texture.size());
    _uint iIndex = 0;
@@ -249,7 +250,9 @@ void ImguiMgr::Select_Texture()
    if (0 != m_strKeyTexture.length())
    {
       ImGui::Begin("Texture Ui");
-      ImGui::Image((static_pointer_cast<Texture>(texture.find(m_strKeyTexture)->second)->Get_SRV().Get()), ImVec2(300, 300));
+      auto pTexture = static_pointer_cast<Texture>(texture.find(m_strKeyTexture)->second);
+      ImGui::Text("Texture Size X : %0.f\t Texture Size Y : %0.f", pTexture->Get_Size().x, pTexture->Get_Size().y);
+      ImGui::Image((pTexture->Get_SRV().Get()), ImVec2(300, 300));
       ImGui::End();
    }
 
@@ -365,13 +368,34 @@ void ImguiMgr::Create_Object()
       m_strName = Utils::ToWString(str);
    }
 
+   if (0 != m_strSelectObjName.length())
+   {
+      auto pGameobject = CUR_SCENE->Get_GameObject(m_strSelectObjName);
+      if (nullptr != pGameobject)
+      {
+         if (true == CUR_SCENE->Is_Static(pGameobject))
+         {
+            m_iSetStaticValue = 0;
+         }
+         else
+         {
+            m_iSetStaticValue = 1;
+         }
+      }
+   }
+
+   ImGui::RadioButton("Static", &m_iSetStaticValue, 0);
+   ImGui::SameLine();
+   ImGui::RadioButton("None", &m_iSetStaticValue, 1);
+   ImGui::SameLine();
+
    if (ImGui::Button("Create Ui", ImVec2(80.f, 20.f)))
    {
       if (!ImGui::IsItemActive())
       {
          auto UiObject = make_shared<GameObject>();
          UiObject->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1));
-         UiObject->GetOrAddTransform()->Scaled(_float3(0.0001f, 0.0001f, 0.0001f));
+         UiObject->GetOrAddTransform()->Scaled(_float3(0.001f, 0.001f, 0.001f));
          shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
 
          auto mesh = RESOURCES.Get<Mesh>(L"Quad");
@@ -388,7 +412,11 @@ void ImguiMgr::Create_Object()
 
          UiObject->Set_LayerIndex(Layer_UI);
          UiObject->Set_Instancing(false);
-         CUR_SCENE->Add_GameObject(UiObject);
+
+         if(0 == m_iSetStaticValue)
+            CUR_SCENE->Add_GameObject(UiObject, true);
+         else
+            CUR_SCENE->Add_GameObject(UiObject, false);
       }
    }
 }
@@ -412,7 +440,13 @@ void ImguiMgr::Select_Object()
             m_iObjNameCursor = iIndex;
             m_strSelectObjName = Name;
 
+            if (0 == m_strSelectObjName.length())
+               break;
+
             auto pGameobject = CUR_SCENE->Get_GameObject(m_strSelectObjName);
+            if (nullptr == pGameobject)
+               break;
+
             m_iPass = pGameobject->Get_MeshRenderer()->Get_Pass();
             m_tagParamDesc = pGameobject->Get_MeshRenderer()->Get_RenderParamDesc();
             m_pSampleObj->GetOrAddTransform()->Set_WorldMat(pGameobject->GetOrAddTransform()->Get_WorldMatrix());
@@ -433,7 +467,7 @@ void ImguiMgr::Select_Object()
          for (_uint i = 0; i < MAX_TEXTURE_MAP_COUONT; ++i)
          {
             string strButtonName = "Delete##" + to_string(i);
-            if (ImGui::Button(strButtonName.c_str(), ImVec2(50.f, 16.f)))
+            if (ImGui::Button(strButtonName.c_str(), ImVec2(50.f, 20.f)))
             {
                if (!ImGui::IsItemActive())
                {
@@ -468,7 +502,7 @@ void ImguiMgr::Select_Object()
          for (_uint i = 0; i < MAX_SUB_SRV_COUNT; ++i)
          {
             string strButtonName = "Delete##" + to_string(i);
-            if (ImGui::Button(strButtonName.c_str(), ImVec2(50.f, 16.f)))
+            if (ImGui::Button(strButtonName.c_str(), ImVec2(50.f, 20.f)))
             {
                if (!ImGui::IsItemActive())
                {
@@ -594,12 +628,12 @@ void ImguiMgr::Change_Object_Value()
    ImGui::SetNextItemWidth(200);
    ImGui::InputFloat("##ScaleZ2", &vecScale.z, 0.01f, 1.0f, "%.3f", eFlag);
 
-   if (0.0001f > m_vecScale.x)
-      m_vecScale.x = 0.0001f;
-   if (0.0001f > m_vecScale.y)
-      m_vecScale.y = 0.0001f;
-   if (0.0001f > m_vecScale.z)
-      m_vecScale.z = 0.0001f;
+   if (0.001f > m_vecScale.x)
+      m_vecScale.x = 0.001f;
+   if (0.001f > m_vecScale.y)
+      m_vecScale.y = 0.001f;
+   if (0.001f > m_vecScale.z)
+      m_vecScale.z = 0.001f;
 
    m_pSampleObj->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
    m_pSampleObj->GetOrAddTransform()->Scaled(vecScale);
@@ -940,7 +974,7 @@ void ImguiMgr::Add_Picking_Zone()
    ImGui::Text("Second Pick Pos: (%d, %d)", m_ptPos2.x, m_ptPos2.y);
 
 
-   if (ImGui::Button("Add Picking Zone##add base ui", ImVec2(150.f, 20.f)))
+   if (ImGui::Button("Add Picking Zone##add base ui", ImVec2(100.f, 20.f)))
    {
       if (!ImGui::IsItemActive())
       {
@@ -1126,6 +1160,8 @@ void ImguiMgr::Save_Ui_Desc()
                file->Write<_float>(fSize);
             }
 
+            _bool bIsStatic = CUR_SCENE->Is_Static(pGameobject);
+            file->Write<_bool>(bIsStatic);
          }
       }
    }
@@ -1214,10 +1250,6 @@ void ImguiMgr::Load_Ui_Desc()
                UiObject->Add_Component(BaseUi);
             }
 
-            UiObject->Set_LayerIndex(Layer_UI);
-            UiObject->Set_Instancing(false);
-            CUR_SCENE->Add_GameObject(UiObject);
-
             _bool bIsUseFont = file->Read<_bool>();
             if (true == bIsUseFont)
             {
@@ -1229,6 +1261,11 @@ void ImguiMgr::Load_Ui_Desc()
                _float fSize = file->Read<_float>();
                pFontRenderer->Set_Font(RESOURCES.Get<CustomFont>(strTemp), vecColor, fSize);
             }
+
+            UiObject->Set_LayerIndex(Layer_UI);
+            UiObject->Set_Instancing(false);
+            _bool bIsStatic = file->Read<_bool>();
+            CUR_SCENE->Add_GameObject(UiObject, bIsStatic);
 
          }
       }

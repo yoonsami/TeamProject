@@ -91,6 +91,7 @@ private:
    _float            m_arrColors[4]          = { 0.f, 0.f, 0.f, 0.f };
    _float            m_fFontSize             = { 0.f };
 
+   _int              m_iSetStaticValue       = { 0 };
 
    const char* m_arrTextureType[16] = {
       "DIFFUSE",

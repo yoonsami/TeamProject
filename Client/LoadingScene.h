@@ -17,8 +17,7 @@ public:
     virtual void Final_Tick() override;
 
 private:
-    void Load_UI_Texture();
-    void Add_UI();
+    void Load_Ui();
 
 private:
     shared_ptr<Scene> m_pNextScene = nullptr;

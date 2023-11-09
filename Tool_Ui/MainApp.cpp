@@ -31,7 +31,7 @@ HRESULT MainApp::Init()
 	}
 
 	Open_Scene();
-
+   GAMEINSTANCE.g_bSSAO_On = false;
    GET_SINGLE(ImguiMgr).Initialize(g_hWnd);
 
     return S_OK;
@@ -50,7 +50,7 @@ HRESULT MainApp::Render()
    GET_SINGLE(ImguiMgr).Render();
 
    GAMEINSTANCE.Render_End();
-
+   
 	return S_OK;
 }
 

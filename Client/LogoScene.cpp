@@ -1,42 +1,42 @@
 ﻿#include "pch.h"
 #include "LogoScene.h"
-#include "ModelAnimator.h"
-#include "ModelRenderer.h"
-#include "BaseCollider.h"
-#include "Camera.h"
+
 #include "Light.h"
 #include "Model.h"
-#include "MainCameraScript.h"
-#include "WeaponScript.h"
-#include "DemoCameraScript1.h"
-#include "DemoCameraScript2.h"
-#include "DemoAnimationController1.h"
-#include "DemoFSM.h"
-#include "FileUtils.h"
 #include "Utils.h"
+#include "Camera.h"
+#include "BaseUI.h"
+#include "Loader.h"
+#include "DemoFSM.h"
+#include "Geometry.h"
+#include "FileUtils.h"
+#include "DemoScene.h"
+#include "ModelMesh.h"
+#include "RigidBody.h"
+#include "CustomFont.h"
+#include "LoadingScene.h"
+#include "MeshCollider.h"
+#include "BaseCollider.h"
+#include "WeaponScript.h"
 #include "SpearAce_FSM.h"
 #include "MeshRenderer.h"
-#include "BaseUI.h"
 #include "FontRenderer.h"
-#include "CustomFont.h"
-#include "RigidBody.h"
-#include "ObjectTransformDebug.h"
-#include "CharacterController.h"
-#include "HeroChangeScript.h"
-#include "Silversword_Soldier_FSM.h"
-
-#include "MeshCollider.h"
+#include "ModelAnimator.h"
+#include "ModelRenderer.h"
 #include "OBBBoxCollider.h"
-#include "AABBBoxCollider.h"
 #include "SphereCollider.h"
 #include "MapObjectScript.h"
-#include "Loader.h"
-#include "LoadingScene.h"
-#include "ModelMesh.h"
-#include "Geometry.h"
-#include "DemoScene.h"
-#include <filesystem>
+#include "AABBBoxCollider.h"
+#include "MainCameraScript.h"
+#include "HeroChangeScript.h"
+#include "DemoCameraScript1.h"
+#include "DemoCameraScript2.h"
+#include "CharacterController.h"
+#include "ObjectTransformDebug.h"
+#include "Silversword_Soldier_FSM.h"
+#include "DemoAnimationController1.h"
 
+#include <filesystem>
 namespace fs = std::filesystem;
 
 LogoScene::LogoScene()
@@ -119,7 +119,6 @@ void LogoScene::Load_Ui()
 		Utils::DetachExt(fileName);
 		RESOURCES.Load<Texture>(fileName, filePath);
 	}
-
 
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Logo.dat");
 

@@ -1,39 +1,43 @@
 ﻿#include "pch.h"
 #include "DemoScene.h"
-#include "ModelAnimator.h"
-#include "ModelRenderer.h"
-#include "BaseCollider.h"
-#include "Camera.h"
-#include "Light.h"
-#include "Model.h"
-#include "MainCameraScript.h"
-#include "WeaponScript.h"
-#include "DemoCameraScript1.h"
-#include "DemoCameraScript2.h"
-#include "DemoAnimationController1.h"
-#include "DemoFSM.h"
-#include "FileUtils.h"
+
 #include "Utils.h"
+#include "Model.h"
+#include "Light.h"
+#include "Loader.h"
+#include "Camera.h"
+#include "BaseUI.h"
+#include "DemoFSM.h"
+#include "Geometry.h"
+#include "RigidBody.h"
+#include "FileUtils.h"
+#include "ModelMesh.h"
+#include "CustomFont.h"
+#include "LoadingScene.h"
+#include "BaseCollider.h"
+#include "WeaponScript.h"
 #include "SpearAce_FSM.h"
 #include "MeshRenderer.h"
-#include "BaseUI.h"
 #include "FontRenderer.h"
-#include "CustomFont.h"
-#include "RigidBody.h"
-#include "ObjectTransformDebug.h"
-#include "CharacterController.h"
-#include "HeroChangeScript.h"
-#include "Silversword_Soldier_FSM.h"
-
 #include "MeshCollider.h"
+#include "ModelAnimator.h"
+#include "ModelRenderer.h"
 #include "OBBBoxCollider.h"
-#include "AABBBoxCollider.h"
 #include "SphereCollider.h"
+#include "AABBBoxCollider.h"
 #include "MapObjectScript.h"
-#include "Loader.h"
-#include "LoadingScene.h"
-#include "ModelMesh.h"
-#include "Geometry.h"
+#include "MainCameraScript.h"
+#include "HeroChangeScript.h"
+#include "DemoCameraScript1.h"
+#include "DemoCameraScript2.h"
+#include "CoolTimeCheckScript.h"
+#include "CharacterController.h"
+#include "ObjectTransformDebug.h"
+#include "Silversword_Soldier_FSM.h"
+#include "DemoAnimationController1.h"
+
+#include <filesystem>
+namespace fs = std::filesystem;
 
 DemoScene::DemoScene()
 {
@@ -115,8 +119,8 @@ HRESULT DemoScene::Load_Scene()
 	Load_MapFile(L"KrisMap22");
 	Load_Monster();
 	Load_DemoMap();
-
-	//Load_Ui();
+	Load_Ui();
+	
 
 	return S_OK;
 }
@@ -169,8 +173,9 @@ void DemoScene::Load_Player()
 			controller->Create_Controller();
 		}
 		ObjPlayer->Set_DrawShadow(true);
-
 		ObjPlayer->Set_ObjectGroup(OBJ_PLAYER);
+
+		ObjPlayer->Add_Component(make_shared<CoolTimeCheckScript>());
 		Add_GameObject(ObjPlayer);
 
 	
@@ -382,47 +387,6 @@ void DemoScene::Load_Light()
 	Add_GameObject(lightObj);
 }
 
-void DemoScene::Load_Ui()
-{
-	shared_ptr<FileUtils> file = make_shared<FileUtils>();
-	file->Open(L"..\\Resources\\UI\\asdfasdf.dat", FileMode::Read);
-
-	_uint iSize = file->Read<_uint>();
-
-	for (_uint i = 0; i < iSize; ++i)
-	{
-		auto UiObject = make_shared<GameObject>();
-
-		wstring strObjectName = Utils::ToWString(file->Read<string>());
-		UiObject->Set_Name(strObjectName);
-
-		shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
-		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
-		renderer->Set_Mesh(mesh);
-		auto material = make_shared<Material>();
-		material->Set_TextureMap(RESOURCES.Get<Texture>(Utils::ToWString(file->Read<string>())), TextureMapType::DIFFUSE);
-		//material->Set_TextureMap(RESOURCES.Get<Texture>(Utils::ToWString(file->Read<string>())), TextureMapType::DIFFUSE);
-
-		UiObject->GetOrAddTransform()->Set_WorldMat(file->Read<_float4x4>());
-		_uint iIndex = file->Read<_uint>();
-		renderer->Set_Pass(iIndex);
-		renderer->Get_RenderParamDesc() = file->Read<RenderParams>();
-		renderer->Set_Material(material);
-		UiObject->Add_Component(renderer);
-
-		_bool bIsUseBaseUi = file->Read<_bool>();
-		if (true == bIsUseBaseUi)
-		{
-			auto BaseUi = make_shared<BaseUI>();
-			BaseUi->Get_Desc() = file->Read<BaseUI::BASEUIDESC>();
-		}
-
-		UiObject->Set_LayerIndex(Layer_UI);
-		UiObject->Set_Instancing(false);
-		Add_GameObject(UiObject);
-	}
-}
-
 HRESULT DemoScene::Load_MapFile(const wstring& _mapFileName)
 {
 	// 세이브 파일 이름으로 로드하기
@@ -592,4 +556,26 @@ HRESULT DemoScene::Load_MapFile(const wstring& _mapFileName)
 	}
 
 	return S_OK;
+}
+
+void DemoScene::Load_Ui()
+{
+	wstring assetPath = L"..\\Resources\\Textures\\UITexture\\Main\\";
+
+	for (auto& entry : fs::recursive_directory_iterator(assetPath))
+	{
+		if (entry.is_directory())
+			continue;
+
+		wstring filePath = entry.path().wstring();
+		wstring fileName = entry.path().filename().wstring();
+		Utils::DetachExt(fileName);
+		RESOURCES.Load<Texture>(fileName, filePath);
+	}
+
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Main.dat");
+
+	/*auto pCoolTimeCheckScript = make_shared<CoolTimeCheckScript>();
+	pCoolTimeCheckScript->Set_Cur_Hero(CoolTimeCheckScript::HERO::ACE);
+	Get_GameObject(L"Player")->Add_Component(pCoolTimeCheckScript);*/
 }
