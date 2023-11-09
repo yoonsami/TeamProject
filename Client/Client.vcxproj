@@ -188,6 +188,7 @@
     <ClInclude Include="Client.h" />
     <ClInclude Include="Client_Define.h" />
     <ClInclude Include="Client_Ui_Initializer.h" />
+    <ClInclude Include="CoolTimeCheckScript.h" />
     <ClInclude Include="DebugTool.h" />
     <ClInclude Include="Debug_CreateMotionTrail.h" />
     <ClInclude Include="DemoAnimationController1.h" />
@@ -230,6 +231,7 @@
     <ClCompile Include="AttackColliderInfoScript.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Client_Ui_Initializer.cpp" />
+    <ClCompile Include="CoolTimeCheckScript.cpp" />
     <ClCompile Include="DebugTool.cpp" />
     <ClCompile Include="Debug_CreateMotionTrail.cpp" />
     <ClCompile Include="DemoAnimationController1.cpp" />

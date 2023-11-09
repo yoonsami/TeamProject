@@ -210,8 +210,8 @@ void ImguiMgr::Select_Texture()
    ImGui::NewLine();
    ImGui::SeparatorText("Select Texture");
 
-   auto textures = RESOURCES.Get_Resources(0);
-   auto texture = textures[static_cast<_uint>(ResourceType::Texture)];
+   auto& textures = RESOURCES.Get_Resources(0);
+   auto& texture = textures[static_cast<_uint>(ResourceType::Texture)];
 
    _uint iSize = static_cast<_uint>(texture.size());
    _uint iIndex = 0;

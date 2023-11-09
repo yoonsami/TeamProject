@@ -242,7 +242,7 @@ float4 PS_UI2(UIOutput input) : SV_TARGET
             discard;
     }
 
-    if (g_float_0 < 100.f)
+    if (g_float_0 < 1.f)
     {
         //[-0.5f,0.5f]
         float2 uvPos = float2(input.uv.x - 0.5f, 0.5f - input.uv.y);
@@ -252,17 +252,14 @@ float4 PS_UI2(UIOutput input) : SV_TARGET
         if (theta <= 0.f)
             theta += 2.f * PI;
 
-        if (theta >= 2.f * PI * g_float_0 / 100.f)
+        if (theta >= 2.f * PI * g_float_0)
         {
             diffuseColor.xyz *= 0.2f;
         }
-        else
-        {
-            diffuseColor.xyz = (pow(DiffuseMap.Sample(LinearSamplerMirror, input.uv), GAMMA) * g_vec4_0).xyz;
-        }
 
-        float c = cos(2.f * PI * g_float_0 / 100.f);
-        float s = sin(2.f * PI * g_float_0 / 100.f);
+
+        float c = cos(2.f * PI * g_float_0);
+        float s = sin(2.f * PI * g_float_0);
 
         float2 rotatedUV;
         rotatedUV.x = uvPos.x * c - uvPos.y * s;
@@ -271,12 +268,11 @@ float4 PS_UI2(UIOutput input) : SV_TARGET
         rotatedUV.x += 0.5f;
         rotatedUV.y = (rotatedUV.y - 0.5f) * -1.f;
 
-        float gauge_Color = SubMap0.Sample(LinearSampler, rotatedUV).x;
-        diffuseColor.xyz += gauge_Color;
+  
 
     }
 
-    else if (g_float_0 >= 100.f)
+    else
     {
         diffuseColor.xyz = (pow(DiffuseMap.Sample(LinearSamplerMirror, input.uv), GAMMA) * g_vec4_0).xyz;
     }

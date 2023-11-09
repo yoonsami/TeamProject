@@ -1,17 +1,17 @@
 #pragma once
-enum LEVEL { LEVEL_STATIC, LEVEL_LOADING, LEVEL_LOGO, LEVEL_GAMEPLAY, LEVEL_END };
 
+enum LEVEL { LEVEL_STATIC, LEVEL_LOADING, LEVEL_LOGO, LEVEL_GAMEPLAY, LEVEL_END };
 
 const unsigned int	g_iWinSizeX = 1920;
 const unsigned int	g_iWinSizeY = 1080;
 
 extern HWND		g_hWnd;
 
-
 typedef struct tagCoolTimeInfo
 {
-	_float fCoolTime;
-	_float fAccTime = 0.f;
+	_float fCoolTime;				// Max CoolTime
+	_float fAccTime		= 0.f;		// Check Time
+	_bool  bIsWork		= false;
 }COOLTIMEINFO;
 
 enum ObjectType
@@ -21,8 +21,6 @@ enum ObjectType
 	OBJ_NPC,
 	OBJ_END
 };
-
-
 
 enum CollisionGroup
 {
@@ -46,3 +44,4 @@ enum CollisionGroup
 #define KNOCKDOWN_SKILL L"KnockDown_Skill"
 #define AIRBORNE_SKILL  L"Airborne_Skill"
 
+#define IDX(VALUE) static_cast<_uint>(VALUE) // cast _uint

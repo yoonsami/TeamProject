@@ -1,13 +1,15 @@
 #include "pch.h"
 #include "HeroChangeScript.h"
-#include "FontRenderer.h"
+
+#include "FSM.h"
 #include "Model.h"
+#include "Kyle_FSM.h"
+#include "FontRenderer.h"
+#include "WeaponScript.h"
+#include "SpearAce_FSM.h"
 #include "ModelAnimator.h"
 #include "ModelRenderer.h"
-#include "FSM.h"
-#include "SpearAce_FSM.h"
-#include "Kyle_FSM.h"
-#include "WeaponScript.h"
+#include "CoolTimeCheckScript.h"
 
 HeroChangeScript::HeroChangeScript(shared_ptr<GameObject> pPlayer)
 {
@@ -71,6 +73,8 @@ void HeroChangeScript::Tick()
             CUR_SCENE->Add_GameObject(ObjWeapon);
 
             m_pPlayer.lock()->Get_FSM()->Init();
+
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(CoolTimeCheckScript::HERO::ACE);
         }
     }
     else if (KEYTAP(KEY_TYPE::F2))
@@ -91,6 +95,8 @@ void HeroChangeScript::Tick()
             m_pPlayer.lock()->Get_Animator()->Set_Model(model);
             m_pPlayer.lock()->Change_Component(make_shared<Kyle_FSM>());
             m_pPlayer.lock()->Get_FSM()->Init();
+
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(CoolTimeCheckScript::HERO::KYLE);
         }
     }
 

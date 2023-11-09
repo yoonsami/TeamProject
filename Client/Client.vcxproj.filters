@@ -103,6 +103,12 @@
     <Filter Include="02.Component\00.MonoBehaviour\05.UiScript\00.UiLoading">
       <UniqueIdentifier>{ee74c7ca-4c45-4d2e-86e8-f1c9b2caab74}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\05.UiScript\01.UiSkill">
+      <UniqueIdentifier>{68088a07-69b1-4fd5-8cad-e8d590cf2f21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\06.CoolTimeCheckScript">
+      <UniqueIdentifier>{9558027f-bba3-479a-bada-353db6f93b8d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -240,6 +246,9 @@
     <ClInclude Include="UiLoadingScript.h">
       <Filter>02.Component\00.MonoBehaviour\05.UiScript\00.UiLoading</Filter>
     </ClInclude>
+    <ClInclude Include="CoolTimeCheckScript.h">
+      <Filter>02.Component\00.MonoBehaviour\06.CoolTimeCheckScript</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -358,6 +367,9 @@
     </ClCompile>
     <ClCompile Include="UiLoadingScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\05.UiScript\00.UiLoading</Filter>
+    </ClCompile>
+    <ClCompile Include="CoolTimeCheckScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\06.CoolTimeCheckScript</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

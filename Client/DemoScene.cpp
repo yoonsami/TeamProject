@@ -30,6 +30,7 @@
 #include "HeroChangeScript.h"
 #include "DemoCameraScript1.h"
 #include "DemoCameraScript2.h"
+#include "CoolTimeCheckScript.h"
 #include "CharacterController.h"
 #include "ObjectTransformDebug.h"
 #include "Silversword_Soldier_FSM.h"
@@ -172,8 +173,9 @@ void DemoScene::Load_Player()
 			controller->Create_Controller();
 		}
 		ObjPlayer->Set_DrawShadow(true);
-
 		ObjPlayer->Set_ObjectGroup(OBJ_PLAYER);
+
+		ObjPlayer->Add_Component(make_shared<CoolTimeCheckScript>());
 		Add_GameObject(ObjPlayer);
 
 	
@@ -572,4 +574,8 @@ void DemoScene::Load_Ui()
 	}
 
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main.dat");
+
+	/*auto pCoolTimeCheckScript = make_shared<CoolTimeCheckScript>();
+	pCoolTimeCheckScript->Set_Cur_Hero(CoolTimeCheckScript::HERO::ACE);
+	Get_GameObject(L"Player")->Add_Component(pCoolTimeCheckScript);*/
 }
