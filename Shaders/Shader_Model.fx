@@ -593,7 +593,7 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
     if (bHasDiffuseMap)
     {
         diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
-        diffuseColor.rgb = pow(diffuseColor.rgb, GAMMA);
+        diffuseColor.rgb = pow(abs(diffuseColor.rgb), GAMMA);
     }
     else
         diffuseColor = Material.diffuse;
@@ -606,7 +606,7 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
     if (bHasSpecularMap)
     {
         specularColor = SpecularMap.Sample(LinearSampler, input.uv);
-        specularColor.rgb = pow(specularColor.rgb, GAMMA);
+        specularColor.rgb = pow(abs(specularColor.rgb), GAMMA);
     }
     else
         specularColor = Material.specular;
@@ -614,7 +614,7 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
     if (bHasEmissiveMap)
     {
         emissiveColor = EmissiveMap.Sample(LinearSampler, input.uv);
-        emissiveColor.rgb = pow(emissiveColor.rgb, GAMMA);
+        emissiveColor.rgb = pow(abs(emissiveColor.rgb), GAMMA);
     }
     else
         emissiveColor = Material.emissive;
@@ -653,7 +653,7 @@ PS_OUT_Deferred PS_Deferred_Instancing(MeshInstancingOutput input)
     if (bHasDiffuseMap)
     {
         diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
-        diffuseColor.rgb = pow(diffuseColor.rgb, GAMMA);
+        diffuseColor.rgb = pow(abs(diffuseColor.rgb), GAMMA);
     }
     else
         diffuseColor = Material.diffuse;
@@ -666,7 +666,7 @@ PS_OUT_Deferred PS_Deferred_Instancing(MeshInstancingOutput input)
     if (bHasSpecularMap)
     {
         specularColor = SpecularMap.Sample(LinearSampler, input.uv);
-        specularColor.rgb = pow(specularColor.rgb, GAMMA);
+        specularColor.rgb = pow(abs(specularColor.rgb), GAMMA);
     }
     else
         specularColor = Material.specular;
@@ -674,7 +674,7 @@ PS_OUT_Deferred PS_Deferred_Instancing(MeshInstancingOutput input)
     if (bHasEmissiveMap)
     {
         emissiveColor = EmissiveMap.Sample(LinearSampler, input.uv);
-        emissiveColor.rgb = pow(emissiveColor.rgb, GAMMA);
+        emissiveColor.rgb = pow(abs(emissiveColor.rgb), GAMMA);
     }
     else
         emissiveColor = Material.emissive;

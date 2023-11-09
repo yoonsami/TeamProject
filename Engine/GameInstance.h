@@ -14,7 +14,6 @@ public: // for Engine
 
 public: // for Graphics
 	HRESULT Render_Begin();
-	HRESULT Render();
 	HRESULT Render_End();
 
 private:

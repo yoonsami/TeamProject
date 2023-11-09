@@ -96,9 +96,8 @@ void Scene::Render()
 	Render_LensFlare();
 	Render_FXAA();
 	Render_Aberration();
-	//Render_Debug();
 
-	Render_Debug();
+	//Render_Debug();
 
 	Render_UI();
 	//Render_ToneMapping();
@@ -1282,9 +1281,12 @@ void Scene::Render_LensFlare()
 	if (!GAMEINSTANCE.g_bLensFlare)
 		return;
 
+	if (!CUR_SCENE->Get_MainCamera())
+		return;
+
 	if (!CUR_SCENE->Get_Light())
 		return;
-	
+
 	_float3 viewLightPos = _float3::Transform(m_LightParams.lights[0].vPosition.xyz(), Camera::Get_View());
 	_float3 projLightPos = _float3::Transform(viewLightPos, Camera::Get_Proj());
 	//[-1,1] -> [0, 1920] //[1,-1] -> [0, 1080]

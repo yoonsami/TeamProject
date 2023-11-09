@@ -40,16 +40,6 @@ HRESULT GameInstance::Render_Begin()
 	return S_OK;
 }
 
-HRESULT GameInstance::Render()
-{
-	Render_Begin();
-
-	SCENE.Render();
-	Render_End();
-
-	return S_OK;
-}
-
 HRESULT GameInstance::Render_End()
 {
 	if (CUR_SCENE)

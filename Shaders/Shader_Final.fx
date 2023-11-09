@@ -81,7 +81,7 @@ float4 PS_ACESTMO(VS_OUT input) : SV_Target0
     
     output.rgb = ((output.rgb - 0.5f) * g_contrast) + 0.5f;
     
-    output.rgb = pow(output.rgb, 1.f / GAMMA);
+    output.rgb = pow(abs(output.rgb), 1.f / GAMMA);
     
     output.rgb = aces_fitted(output.rgb);
     return output;

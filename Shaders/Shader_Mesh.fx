@@ -184,13 +184,13 @@ float4 PS_UI(UIOutput input) : SV_TARGET
     float4 diffuseColor = g_vec4_0;
     if (bHasDiffuseMap)
     {
-        diffuseColor = pow(DiffuseMap.Sample(LinearSamplerMirror, input.uv), GAMMA) * g_vec4_0;
+        diffuseColor = pow(abs(DiffuseMap.Sample(LinearSamplerMirror, input.uv)), GAMMA) * g_vec4_0;
         
     }
 
     if (bHasOpacityMap)
     {
-        diffuseColor.a = pow(OpacityMap.Sample(LinearSamplerMirror, input.uv), GAMMA).x * g_vec4_0.w;
+        diffuseColor.a = pow(abs(OpacityMap.Sample(LinearSamplerMirror, input.uv)), GAMMA).x * g_vec4_0.w;
         if (diffuseColor.a <= 0.01f)
             discard;
     }
@@ -203,13 +203,13 @@ float4 PS_UI1(UIOutput input) : SV_TARGET
     float4 diffuseColor = g_vec4_0;
     if (bHasDiffuseMap)
     {
-        diffuseColor = pow(DiffuseMap.Sample(LinearSamplerMirror, input.uv), GAMMA) * g_vec4_0;
+        diffuseColor = pow(abs(DiffuseMap.Sample(LinearSamplerMirror, input.uv)), GAMMA) * g_vec4_0;
         
     }
 
     if (bHasOpacityMap)
     {
-        diffuseColor.a = pow(OpacityMap.Sample(LinearSamplerMirror, input.uv), GAMMA).x * g_vec4_0.w;
+        diffuseColor.a = pow(abs(OpacityMap.Sample(LinearSamplerMirror, input.uv)), GAMMA).x * g_vec4_0.w;
         if (diffuseColor.a <= 0.01f)
             discard;
     }
@@ -231,13 +231,13 @@ float4 PS_UI2(UIOutput input) : SV_TARGET
     float4 diffuseColor = g_vec4_0;
     if (bHasDiffuseMap)
     {
-        diffuseColor = pow(DiffuseMap.Sample(LinearSamplerMirror, input.uv), GAMMA) * g_vec4_0;
+        diffuseColor = pow(abs(DiffuseMap.Sample(LinearSamplerMirror, input.uv)), GAMMA) * g_vec4_0;
         
     }
 
     if (bHasOpacityMap)
     {
-        diffuseColor.a = pow(OpacityMap.Sample(LinearSamplerMirror, input.uv), GAMMA).x * g_vec4_0.w;
+        diffuseColor.a = pow(abs(OpacityMap.Sample(LinearSamplerMirror, input.uv)), GAMMA).x * g_vec4_0.w;
         if (diffuseColor.a <= 0.01f)
             discard;
     }
@@ -274,7 +274,7 @@ float4 PS_UI2(UIOutput input) : SV_TARGET
 
     else
     {
-        diffuseColor.xyz = (pow(DiffuseMap.Sample(LinearSamplerMirror, input.uv), GAMMA) * g_vec4_0).xyz;
+        diffuseColor.xyz = (pow(abs(DiffuseMap.Sample(LinearSamplerMirror, input.uv)), GAMMA) * g_vec4_0).xyz;
     }
 
     return diffuseColor;
@@ -285,13 +285,13 @@ float4 PS_UI3(UIOutput input) : SV_TARGET
     float4 diffuseColor = g_vec4_0;
     if (bHasDiffuseMap)
     {
-        diffuseColor = pow(DiffuseMap.Sample(LinearSamplerMirror, input.uv), GAMMA) * g_vec4_0;
+        diffuseColor = pow(abs(DiffuseMap.Sample(LinearSamplerMirror, input.uv)), GAMMA) * g_vec4_0;
         
     }
 
     if (bHasOpacityMap)
     {
-        diffuseColor.a = pow(OpacityMap.Sample(LinearSamplerMirror, input.uv), GAMMA).x * g_vec4_0.w;
+        diffuseColor.a = pow(abs(OpacityMap.Sample(LinearSamplerMirror, input.uv)), GAMMA).x * g_vec4_0.w;
         if (diffuseColor.a <= 0.01f)
             discard;
     }
@@ -315,13 +315,13 @@ float4 PS_UI4(UIOutput input) : SV_TARGET
     float4 diffuseColor = g_vec4_0;
     if (bHasDiffuseMap)
     {
-        diffuseColor = pow(DiffuseMap.Sample(LinearSamplerMirror, input.uv), GAMMA) * g_vec4_0;
+        diffuseColor = pow(abs(DiffuseMap.Sample(LinearSamplerMirror, input.uv)), GAMMA) * g_vec4_0;
         
     }
 
     if (bHasOpacityMap)
     {
-        diffuseColor.a = pow(OpacityMap.Sample(LinearSamplerMirror, input.uv), GAMMA).x * g_vec4_0.w;
+        diffuseColor.a = pow(abs(OpacityMap.Sample(LinearSamplerMirror, input.uv)), GAMMA).x * g_vec4_0.w;
         if (diffuseColor.a <= 0.01f)
             discard;
     }
@@ -335,7 +335,7 @@ float4 PS_UI4(UIOutput input) : SV_TARGET
 float4 PS_UI5(UIOutput input) : SV_TARGET
 {
     float4 diffuseColor = g_vec4_0;
-    diffuseColor = pow(DiffuseMap.Sample(LinearSamplerMirror, input.uv), GAMMA) * g_vec4_0;
+    diffuseColor = pow(abs(DiffuseMap.Sample(LinearSamplerMirror, input.uv)), GAMMA) * g_vec4_0;
 
     return diffuseColor;
 }
@@ -346,13 +346,13 @@ float4 PS_UIInstancing(UIInstancingOutput input) : SV_TARGET
     float4 diffuseColor = InstanceRenderParams[input.id].g_vec4_0;
     if (bHasDiffuseMap)
     {
-        diffuseColor = pow(DiffuseMap.Sample(LinearSamplerMirror, input.uv), GAMMA) * g_vec4_0;
+        diffuseColor = pow(abs(DiffuseMap.Sample(LinearSamplerMirror, input.uv)), GAMMA) * g_vec4_0;
         
     }
 
     if (bHasOpacityMap)
     {
-        diffuseColor.a = pow(OpacityMap.Sample(LinearSamplerMirror, input.uv), GAMMA).x * g_vec4_0.w;
+        diffuseColor.a = pow(abs(OpacityMap.Sample(LinearSamplerMirror, input.uv)), GAMMA).x * g_vec4_0.w;
         if (diffuseColor.a <= 0.01f)
             discard;
     }
@@ -430,7 +430,7 @@ float4 PS_UIInstancing(UIInstancingOutput input) : SV_TARGET
 
 float4 PS_UIBAR(UIOutput input) : SV_TARGET
 {
-    float4 diffuseColor = pow(DiffuseMap.Sample(LinearSamplerMirror, input.uv), GAMMA);
+    float4 diffuseColor = pow(abs(DiffuseMap.Sample(LinearSamplerMirror, input.uv)), GAMMA);
 
     if (input.uv.x >= g_BarPercent / 100.f)
         diffuseColor = diffuseColor * float4(0.1, 0.1, 0.1, 0.1);
@@ -454,7 +454,7 @@ float4 PS_CustomEffect1(GS_OUTPUT input) : SV_Target
     float4 emissiveColor = Material.emissive;
     float opacity = 1.f;
     if (bHasDiffuseMap)
-        diffuseColor.xyz *= pow(DiffuseMap.Sample(LinearSamplerMirror, input.uv), GAMMA).xyz;
+        diffuseColor.xyz *= pow(abs(DiffuseMap.Sample(LinearSamplerMirror, input.uv)), GAMMA).xyz;
 
     //if(g_bHasNormalMap)
     //{

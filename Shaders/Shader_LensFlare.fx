@@ -280,12 +280,12 @@ float4 PS_Bloom(VS_OUT input) : SV_Target
     
     output = vHDRColor;
     
-    output = pow(output, 2.2f);
-    vBloom = pow(vBloom, 2.2f);
+    output = pow(abs(output), 2.2f);
+    vBloom = pow(abs(vBloom), 2.2f);
     
     output += vBloom;
     
-    return pow(output, 1 / 2.2f);
+    return pow(abs(output), 1 / 2.2f);
 }
 
 technique11 T0
