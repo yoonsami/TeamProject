@@ -38,6 +38,9 @@ void HeroChangeScript::Tick()
             return;
         else
         {
+            if (m_pOwner.expired())
+                return;
+         
             m_pPlayer.lock()->Get_FSM()->Reset_Weapon();
             m_pPlayer.lock()->Get_FSM()->Reset_Vehicle();
 
@@ -66,6 +69,9 @@ void HeroChangeScript::Tick()
             return;
         else
         {
+            if (m_pOwner.expired())
+                return;
+
             m_pPlayer.lock()->Get_FSM()->Reset_Weapon();
             m_pPlayer.lock()->Get_FSM()->Reset_Vehicle();
             //AnimIndex Reset
@@ -90,6 +96,9 @@ void HeroChangeScript::Tick()
             return;
         else
         {
+            if (m_pOwner.expired())
+                return;
+
             m_pPlayer.lock()->Get_FSM()->Reset_Weapon();
             m_pPlayer.lock()->Get_FSM()->Reset_Vehicle();
             //AnimIndex Reset
@@ -119,6 +128,9 @@ void HeroChangeScript::Tick()
             return;
         else
         {
+            if (m_pOwner.expired())
+                return;
+
             m_pPlayer.lock()->Get_FSM()->Reset_Weapon();
             m_pPlayer.lock()->Get_FSM()->Reset_Vehicle();
             //AnimIndex Reset

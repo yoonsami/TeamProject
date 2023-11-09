@@ -131,7 +131,7 @@ HRESULT DemoScene::Load_Scene()
 	Load_Monster(5);
 	//Load_DemoMap();
 
-	//Load_Ui();
+	Load_Ui();
 
 	return S_OK;
 }
