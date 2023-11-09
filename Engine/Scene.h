@@ -99,7 +99,6 @@ protected:
 private:
 	void SSAO_MakeOffsetVector();
 	void SSAO_MakeFrustumFarCorners();
-	void SSAO_MapBlur(shared_ptr<Texture> input, RENDER_TARGET_GROUP_TYPE eType,_bool horzBlur);
 
 protected:
 	_float m_fLoadPercent = 0.f;
@@ -127,9 +126,6 @@ protected:
 	wstring m_wstrFinalRenderTarget = L"";
 
 
-	public:
-		_float2 testVector1 = _float2(0.f);
-		_float2 testVector2 = _float2(0.f);
 
 	_bool m_bRenderDebug = false;
 };

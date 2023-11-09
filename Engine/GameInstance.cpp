@@ -70,7 +70,7 @@ _bool GameInstance::g_bAberrationOn = false;
 
 _float GameInstance::g_fAberrationPower = 0.f;
 
-_bool GameInstance::g_bLensFlare = true;
+_bool GameInstance::g_bLensFlare = false;
 
 GameInstance::FogData GameInstance::g_FogData{};
 
