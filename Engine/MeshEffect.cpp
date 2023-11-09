@@ -2,9 +2,9 @@
 #include "MeshEffect.h"
 
 #include "Model.h"
-#include "ModelMesh.h"
 #include "Utils.h"
 #include "Camera.h"
+#include "ModelMesh.h"
 
 MeshEffect::MeshEffect(shared_ptr<Shader> shader)
 	: Component(COMPONENT_TYPE::MeshEffect)

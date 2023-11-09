@@ -1,16 +1,15 @@
 #include "pch.h"
 #include "Camera.h"
+
 #include "Scene.h"
-#include "ModelRenderer.h"
 #include "Particle.h"
 #include "MeshEffect.h"
-#include "ModelAnimator.h"
 #include "MeshRenderer.h"
-#include "TrailRenderer.h"
 #include "FontRenderer.h"
+#include "ModelRenderer.h"
+#include "ModelAnimator.h"
+#include "TrailRenderer.h"
 #include "MotionTrailRenderer.h"
-
-
 
 Camera::Camera(CameraDesc desc)
 	:Component(COMPONENT_TYPE::Camera)

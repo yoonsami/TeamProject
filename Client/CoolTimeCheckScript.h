@@ -17,10 +17,12 @@ public:
     void Set_Skill_End();
     _bool IsAvailable(_uint iSkillIndex);
     _bool GetIsWork() { return m_bIsSkillWork; }
+    void Start_Attack_Button_Effect();
 
 private:
     void Check_Cool_Time();
     void Change_Skills_Value();
+    void Start_Effect(_uint iIndex);
 
 private:
     vector<vector<COOLTIMEINFO>>    m_CoolTime;

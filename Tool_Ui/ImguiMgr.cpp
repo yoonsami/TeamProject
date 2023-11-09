@@ -542,17 +542,10 @@ void ImguiMgr::Delete_Object()
             return;
          }
 
-         auto pGameobject = CUR_SCENE->Get_GameObject(m_strSelectObjName);
-         if (nullptr == pGameobject)
-         {
-            return;
-         }
-
-         CUR_SCENE->Remove_GameObject(pGameobject);
-
+         wstring strName = m_strSelectObjName;
          for (auto iter = m_GameobjectName.begin();
             iter != m_GameobjectName.end();
-            ++iter)
+            )
          {
             if (*iter == m_strSelectObjName)
             {
@@ -564,6 +557,14 @@ void ImguiMgr::Delete_Object()
                ++iter;
             }
          }
+
+         auto pGameobject = CUR_SCENE->Get_GameObject(strName);
+         if (nullptr == pGameobject)
+         {
+            return;
+         }
+
+         CUR_SCENE->Remove_GameObject(pGameobject);
 
          m_strSelectObjName = L"";
       }

@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "TrailRenderer.h"
+
 #include "Camera.h"
 #include "Material.h"
 

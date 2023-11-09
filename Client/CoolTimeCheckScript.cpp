@@ -3,6 +3,7 @@
 
 #include "Material.h"
 #include "MeshRenderer.h"
+#include "UiSkillButtonEffect.h"
 
 CoolTimeCheckScript::CoolTimeCheckScript()
 {
@@ -109,30 +110,44 @@ void CoolTimeCheckScript::Tick()
 
 void CoolTimeCheckScript::Set_Cur_Hero(HERO eType)
 {
-    if (HERO::MAX == eType)
+    if (m_pOwner.expired())
         return;
 
     m_eCurHero = eType;
     _uint iIndex = IDX(m_eCurHero);
 
-    CUR_SCENE->Get_GameObject(L"UI_Skill0")->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[iIndex][0]), TextureMapType::DIFFUSE);
-    CUR_SCENE->Get_GameObject(L"UI_Skill1")->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[iIndex][1]), TextureMapType::DIFFUSE);
-    CUR_SCENE->Get_GameObject(L"UI_Skill2")->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[iIndex][2]), TextureMapType::DIFFUSE);
-    CUR_SCENE->Get_GameObject(L"UI_Skill3")->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[iIndex][3]), TextureMapType::DIFFUSE);
-    CUR_SCENE->Get_GameObject(L"UI_Skill4")->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[iIndex][4]), TextureMapType::DIFFUSE);
-    CUR_SCENE->Get_GameObject(L"UI_Skill5")->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[iIndex][5]), TextureMapType::DIFFUSE);
-    CUR_SCENE->Get_GameObject(L"UI_Skill6")->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[iIndex][6]), TextureMapType::DIFFUSE);
+    auto pGameobject0 = CUR_SCENE->Get_GameObject(L"UI_Skill0");
+    auto pGameobject1 = CUR_SCENE->Get_GameObject(L"UI_Skill1");
+    auto pGameobject2 = CUR_SCENE->Get_GameObject(L"UI_Skill2");
+    auto pGameobject3 = CUR_SCENE->Get_GameObject(L"UI_Skill3");
+    auto pGameobject4 = CUR_SCENE->Get_GameObject(L"UI_Skill4");
+    auto pGameobject5 = CUR_SCENE->Get_GameObject(L"UI_Skill5");
+    auto pGameobject6 = CUR_SCENE->Get_GameObject(L"UI_Skill6");
+
+    if (nullptr == pGameobject0 || nullptr == pGameobject1 || nullptr == pGameobject2 || nullptr == pGameobject3 || nullptr == pGameobject4 || nullptr == pGameobject5 || nullptr == pGameobject6)
+        return;
+
+    pGameobject0->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[iIndex][0]), TextureMapType::DIFFUSE);
+    pGameobject1->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[iIndex][1]), TextureMapType::DIFFUSE);
+    pGameobject2->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[iIndex][2]), TextureMapType::DIFFUSE);
+    pGameobject3->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[iIndex][3]), TextureMapType::DIFFUSE);
+    pGameobject4->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[iIndex][4]), TextureMapType::DIFFUSE);
+    pGameobject5->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[iIndex][5]), TextureMapType::DIFFUSE);
+    pGameobject6->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[iIndex][6]), TextureMapType::DIFFUSE);
 }
 
 void CoolTimeCheckScript::Set_Skill_End()
 {
+    if (m_pOwner.expired() || HERO::MAX == m_eCurHero)
+        return;
+
     m_bIsSkillWork = false;
     m_CoolTime[IDX(m_eCurHero)][m_iWorkSkillIndex].bIsWork = false;
 }
 
 _bool CoolTimeCheckScript::IsAvailable(_uint iSkillIndex)
 {
-    if (5 < iSkillIndex)
+    if (m_pOwner.expired() || HERO::MAX == m_eCurHero || 5 < iSkillIndex)
         return false;
 
     // 5 : evade
@@ -159,10 +174,17 @@ _bool CoolTimeCheckScript::IsAvailable(_uint iSkillIndex)
         m_bIsSkillWork = true;
         m_iWorkSkillIndex = iSkillIndex;
 
+        Start_Effect(iSkillIndex);
+
         return true;
     }
 
     return false;
+}
+
+void CoolTimeCheckScript::Start_Attack_Button_Effect()
+{
+    Start_Effect(5);
 }
 
 void CoolTimeCheckScript::Check_Cool_Time()
@@ -173,7 +195,7 @@ void CoolTimeCheckScript::Check_Cool_Time()
         auto& vecCool = m_CoolTime[i];
         for (_uint j = 0; j < 5; ++j)
         {
-            if (false == vecCool[j].bIsWork && vecCool[j].fCoolTime > vecCool[j].fAccTime)
+            if (/*false == vecCool[j].bIsWork &&*/ vecCool[j].fCoolTime > vecCool[j].fAccTime)
                 vecCool[j].fAccTime += fDt;
         }
     }
@@ -184,17 +206,53 @@ void CoolTimeCheckScript::Check_Cool_Time()
 
 void CoolTimeCheckScript::Change_Skills_Value()
 {
-    if (HERO::MAX == m_eCurHero)
+    if (m_pOwner.expired() || HERO::MAX == m_eCurHero)
         return;
 
     auto& vecCool = m_CoolTime[IDX(m_eCurHero)];
 
-    CUR_SCENE->Get_GameObject(L"UI_Skill_Gauge")->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = m_tagEvade.fAccTime / m_tagEvade.fCoolTime;
-    //CUR_SCENE->Get_GameObject(L"UI_Skill1")->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = m_tagEvade.fAccTime / m_tagEvade.fCoolTime;
-    
-    CUR_SCENE->Get_GameObject(L"UI_Skill2")->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[0].fAccTime / vecCool[0].fCoolTime;
-    CUR_SCENE->Get_GameObject(L"UI_Skill3")->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[1].fAccTime / vecCool[1].fCoolTime;
-    CUR_SCENE->Get_GameObject(L"UI_Skill4")->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[2].fAccTime / vecCool[2].fCoolTime;
-    CUR_SCENE->Get_GameObject(L"UI_Skill5")->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[3].fAccTime / vecCool[3].fCoolTime;
-    CUR_SCENE->Get_GameObject(L"UI_Skill6")->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[4].fAccTime / vecCool[4].fCoolTime;
+    auto pGameobjectGauge = CUR_SCENE->Get_GameObject(L"UI_Skill_Gauge");
+    auto pGameobject2 = CUR_SCENE->Get_GameObject(L"UI_Skill2");
+    auto pGameobject3 = CUR_SCENE->Get_GameObject(L"UI_Skill3");
+    auto pGameobject4 = CUR_SCENE->Get_GameObject(L"UI_Skill4");
+    auto pGameobject5 = CUR_SCENE->Get_GameObject(L"UI_Skill5");
+    auto pGameobject6 = CUR_SCENE->Get_GameObject(L"UI_Skill6");
+
+    if (nullptr == pGameobjectGauge || nullptr == pGameobject2 || nullptr == pGameobject3 || nullptr == pGameobject4 || nullptr == pGameobject5 || nullptr == pGameobject6)
+        return;
+
+    pGameobjectGauge->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = m_tagEvade.fAccTime / m_tagEvade.fCoolTime;
+    pGameobject2->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[0].fAccTime / vecCool[0].fCoolTime;
+    pGameobject3->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[1].fAccTime / vecCool[1].fCoolTime;
+    pGameobject4->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[2].fAccTime / vecCool[2].fCoolTime;
+    pGameobject5->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[3].fAccTime / vecCool[3].fCoolTime;
+    pGameobject6->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[4].fAccTime / vecCool[4].fCoolTime;
+}
+
+void CoolTimeCheckScript::Start_Effect(_uint iIndex)
+{
+    wstring strName;
+    switch (iIndex)
+    {
+    case 0:
+        strName = L"UI_Skill2_Effect";
+        break;
+    case 1:
+        strName = L"UI_Skill3_Effect";
+        break;
+    case 2:
+        strName = L"UI_Skill4_Effect";
+        break;
+    case 3:
+        strName = L"UI_Skill5_Effect";
+        break;
+    case 4:
+        strName = L"UI_Skill6_Effect";
+        break;
+    case 5:
+        strName = L"UI_Skill0_Effect";
+        break;
+    }
+
+    CUR_SCENE->Get_GameObject(strName)->Get_Script<UiSkillButtonEffect>()->Start_Effect();
 }

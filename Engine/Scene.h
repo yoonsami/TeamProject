@@ -29,25 +29,25 @@ public:
 	virtual void Remove_GameObject(shared_ptr<GameObject> object);
 
 public:
-	_float Get_LoaingPercent() { return m_fLoadPercent; }
-	void Set_Name(const wstring& name) { m_strSceneName = name; }
-	wstring Get_Name() { return m_strSceneName; }
-	vector<shared_ptr<GameObject>>& Get_Objects() { return m_GameObjects; }
+	vector<shared_ptr<GameObject>>& Get_Objects()		{ return m_GameObjects; }
+	LightParams&					Get_LightParams()	{ return m_LightParams; }
+	SCENE_STATE						Get_SceneState()	{ return m_eSceneState; }
 	vector<shared_ptr<GameObject>>& Get_StaticObjects() { return m_StaticObject; }
-	shared_ptr<GameObject> Get_Camera(const wstring& cameraName);
-	shared_ptr<GameObject> Get_MainCamera();
-	shared_ptr<GameObject> Get_UICamera();
-
-	shared_ptr<GameObject> Get_Light() { return m_Lights.empty() ? nullptr : *m_Lights.begin(); }
-	shared_ptr<GameObject> Get_GameObject(const wstring& name);
-	_bool Is_Static(shared_ptr<GameObject> obj);
-
-	shared_ptr<GameObject> Get_UI(const wstring& strName);
-	LightParams& Get_LightParams() { return m_LightParams; }
+	_float							Get_LoaingPercent() { return m_fLoadPercent; }
+	wstring							Get_Name()			{ return m_strSceneName; }
+	shared_ptr<GameObject>			Get_Light()			{ return m_Lights.empty() ? nullptr : *m_Lights.begin(); }
+	shared_ptr<GameObject>			Get_UICamera();
+	shared_ptr<GameObject>			Get_MainCamera();
+	shared_ptr<GameObject>			Get_UI(const wstring& strName);
+	shared_ptr<GameObject>			Get_GameObject(const wstring& name);
+	shared_ptr<GameObject>			Get_Camera(const wstring& cameraName);
+	
+	_bool							Is_Static(shared_ptr<GameObject> obj);
+	
+	void							Set_Name(const wstring& name)		{ m_strSceneName = name; }
+	void							Set_SceneState(SCENE_STATE state)	{ m_eSceneState = state; }
 
 	void Swap_Object(const wstring& leftObjName, const wstring& rightObjName);
-	SCENE_STATE Get_SceneState() { return m_eSceneState; }
-	void Set_SceneState(SCENE_STATE state) { m_eSceneState = state; }
 	void Render_ToneMapping();
 
 protected:

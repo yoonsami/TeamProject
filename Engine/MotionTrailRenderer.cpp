@@ -1,10 +1,11 @@
 #include "pch.h"
 #include "MotionTrailRenderer.h"
-#include "Camera.h"
+
+#include "Utils.h"
 #include "Model.h"
+#include "Camera.h"
 #include "ModelMesh.h"
 #include "ModelAnimator.h"
-#include "Utils.h"
 
 MotionTrailRenderer::MotionTrailRenderer(shared_ptr<Shader> shader, shared_ptr<ModelAnimator> animtor)
     : Component(COMPONENT_TYPE::MotionTrailRenderer)

@@ -1,15 +1,16 @@
 #include "pch.h"
 #include "ResourceMgr.h"
+
 #include "Utils.h"
-#include <filesystem>
 #include "Model.h"
+#include "Geometry.h"
 #include "Material.h"
 #include "FileUtils.h"
 #include "ModelMesh.h"
-#include "Geometry.h"
-#include "CustomFont.h"
 #include "MathUtils.h"
+#include "CustomFont.h"
 
+#include <filesystem>
 namespace fs = std::filesystem;
 
 ResourceMgr::~ResourceMgr()

@@ -25,23 +25,18 @@
 #include "OBBBoxCollider.h"
 #include "SphereCollider.h"
 #include "AABBBoxCollider.h"
-#include "Debug_CreateMotionTrail.h"
-
-
-
 #include "MapObjectScript.h"
 #include "MainCameraScript.h"
 #include "HeroChangeScript.h"
 #include "DemoCameraScript1.h"
 #include "DemoCameraScript2.h"
 #include "CoolTimeCheckScript.h"
+#include "UiSkillButtonEffect.h"
 #include "CharacterController.h"
 #include "ObjectTransformDebug.h"
 #include "Silversword_Soldier_FSM.h"
+#include "Debug_CreateMotionTrail.h"
 #include "DemoAnimationController1.h"
-
-#include <filesystem>
-namespace fs = std::filesystem;
 
 DemoScene::DemoScene()
 {
@@ -131,7 +126,7 @@ HRESULT DemoScene::Load_Scene()
 	Load_Monster(5);
 	//Load_DemoMap();
 
-	//Load_Ui();
+	Load_Ui();
 
 	return S_OK;
 }
@@ -424,8 +419,33 @@ void DemoScene::Load_Ui()
 	}
 
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main.dat");
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Main_Button.dat");
 
-	/*auto pCoolTimeCheckScript = make_shared<CoolTimeCheckScript>();
+
+
+
+
+
+
+	auto pScript = make_shared<UiSkillButtonEffect>();
+	Get_GameObject(L"UI_Skill0_Effect")->Add_Component(pScript);
+
+	pScript = make_shared<UiSkillButtonEffect>();
+	Get_GameObject(L"UI_Skill2_Effect")->Add_Component(pScript);
+
+	pScript = make_shared<UiSkillButtonEffect>();
+	Get_GameObject(L"UI_Skill3_Effect")->Add_Component(pScript);
+
+	pScript = make_shared<UiSkillButtonEffect>();
+	Get_GameObject(L"UI_Skill4_Effect")->Add_Component(pScript);
+
+	pScript = make_shared<UiSkillButtonEffect>();
+	Get_GameObject(L"UI_Skill5_Effect")->Add_Component(pScript);
+
+	pScript = make_shared<UiSkillButtonEffect>();
+	Get_GameObject(L"UI_Skill6_Effect")->Add_Component(pScript);
+
+	auto pCoolTimeCheckScript = make_shared<CoolTimeCheckScript>();
 	pCoolTimeCheckScript->Set_Cur_Hero(CoolTimeCheckScript::HERO::ACE);
-	Get_GameObject(L"Player")->Add_Component(pCoolTimeCheckScript);*/
+	Get_GameObject(L"Player")->Add_Component(pCoolTimeCheckScript);
 }

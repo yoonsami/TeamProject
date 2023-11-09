@@ -1,12 +1,13 @@
 #include "pch.h"
 #include "ModelAnimator.h"
+
 #include "Model.h"
-#include "ModelMesh.h"
-#include "Material.h" 
-#include "ModelAnimation.h"
-#include "InputMgr.h"
-#include "Camera.h"
 #include "Light.h"
+#include "Camera.h"
+#include "InputMgr.h"
+#include "Material.h" 
+#include "ModelMesh.h"
+#include "ModelAnimation.h"
 #include "CharacterController.h"
 
 ModelAnimator::ModelAnimator(shared_ptr<Shader> shader)

@@ -9,7 +9,7 @@ extern HWND		g_hWnd;
 
 typedef struct tagCoolTimeInfo
 {
-	_float fCoolTime;				// Max CoolTime
+	_float fCoolTime	= 0.f;		// Max CoolTime
 	_float fAccTime		= 0.f;		// Check Time
 	_bool  bIsWork		= false;
 }COOLTIMEINFO;

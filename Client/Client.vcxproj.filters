@@ -124,6 +124,9 @@
     <Filter Include="02.Component\01.FSM\03.Special_FSM\01.DellonsWraith_FSM">
       <UniqueIdentifier>{ac3b214e-9091-4a89-aaaa-de5645f05306}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.UI\02.UISkillButtonEffect">
+      <UniqueIdentifier>{4476a55c-7cfb-4200-83bc-5912117f8f85}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -276,6 +279,9 @@
     <ClInclude Include="YeopoHorse_FSM.h">
       <Filter>02.Component\01.FSM\03.Special_FSM\00.YeopoHorse_FSM</Filter>
     </ClInclude>
+    <ClInclude Include="UiSkillButtonEffect.h">
+      <Filter>02.Component\00.MonoBehaviour\01.UI\02.UISkillButtonEffect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -406,6 +412,9 @@
     </ClCompile>
     <ClCompile Include="YeopoHorse_FSM.cpp">
       <Filter>02.Component\01.FSM\03.Special_FSM\00.YeopoHorse_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="UiSkillButtonEffect.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.UI\02.UISkillButtonEffect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

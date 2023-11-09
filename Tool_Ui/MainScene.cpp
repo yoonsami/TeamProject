@@ -113,38 +113,38 @@ void MainScene::Load_DemoModel()
 
 void MainScene::Load_Camera()
 {
-	{
-		//카메라로 사용할 GameObject 생성
-		shared_ptr<GameObject> camera = make_shared<GameObject>();
+	//{
+	//	//카메라로 사용할 GameObject 생성
+	//	shared_ptr<GameObject> camera = make_shared<GameObject>();
 
-		// Transform Component 추가
-		camera->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
-		camera->GetOrAddTransform()->Set_Speed(5.f);
+	//	// Transform Component 추가
+	//	camera->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
+	//	camera->GetOrAddTransform()->Set_Speed(5.f);
 
-		// 카메라 Component 생성 
-		CameraDesc desc;
-		desc.fFOV = XM_PI / 3.f;
-		desc.strName = L"Default";
-		desc.fSizeX = _float(g_iWinSizeX);
-		desc.fSizeY = _float(g_iWinSizeY);
-		desc.fNear = 0.1f;
-		desc.fFar = 1000.f;
-		shared_ptr<Camera> cameraComponent = make_shared<Camera>(desc);
-		
-		camera->Add_Component(cameraComponent);
+	//	// 카메라 Component 생성 
+	//	CameraDesc desc;
+	//	desc.fFOV = XM_PI / 3.f;
+	//	desc.strName = L"Default";
+	//	desc.fSizeX = _float(g_iWinSizeX);
+	//	desc.fSizeY = _float(g_iWinSizeY);
+	//	desc.fNear = 0.1f;
+	//	desc.fFar = 1000.f;
+	//	shared_ptr<Camera> cameraComponent = make_shared<Camera>(desc);
+	//	
+	//	camera->Add_Component(cameraComponent);
 
-      //camera->Get_Camera()->Set_ProjType(ProjectionType::Orthographic); 
-		camera->Get_Camera()->Set_ProjType(ProjectionType::Perspective);
-		//Layer_UI에 있는 오브젝트를 컬링하겠다.
-		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, true);
+ //     //camera->Get_Camera()->Set_ProjType(ProjectionType::Orthographic); 
+	//	camera->Get_Camera()->Set_ProjType(ProjectionType::Perspective);
+	//	//Layer_UI에 있는 오브젝트를 컬링하겠다.
+	//	camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, true);
 
-		// MonoBehaviour(Component 중 고정이 아닌것들) 추가
-		// 일부러 기능 나눠놨음
-		camera->Add_Component(make_shared<CameraScript1>());
-		camera->Add_Component(make_shared<CameraScript2>());
+	//	// MonoBehaviour(Component 중 고정이 아닌것들) 추가
+	//	// 일부러 기능 나눠놨음
+	//	camera->Add_Component(make_shared<CameraScript1>());
+	//	camera->Add_Component(make_shared<CameraScript2>());
 
-		Add_GameObject(camera);
-	}
+	//	Add_GameObject(camera);
+	//}
    {
       shared_ptr<GameObject> camera = make_shared<GameObject>();
       camera->GetOrAddTransform();

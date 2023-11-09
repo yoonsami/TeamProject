@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "FontRenderer.h"
-#include "CustomFont.h"
 
+#include "CustomFont.h"
 
 FontRenderer::FontRenderer(const wstring& text)
 	: Component(COMPONENT_TYPE::FontRenderer)

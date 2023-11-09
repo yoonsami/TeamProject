@@ -1,11 +1,12 @@
 #include "pch.h"
 #include "ModelRenderer.h"
+
 #include "Model.h"
-#include "Camera.h"
+#include "Utils.h"
 #include "Light.h"
+#include "Camera.h"
 #include "Material.h"
 #include "ModelMesh.h"
-#include "Utils.h"
 
 ModelRenderer::ModelRenderer(shared_ptr<Shader> shader)
 	:Component(COMPONENT_TYPE::ModelRenderer)

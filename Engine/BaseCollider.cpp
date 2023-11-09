@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "BaseCollider.h"
-#include "Camera.h"
-#include "FSM.h"
 
+#include "FSM.h"
+#include "Camera.h"
 
 BaseCollider::BaseCollider(ColliderType colliderType)
 	:Component(COMPONENT_TYPE::Collider), m_eColliderType(colliderType)

@@ -1,12 +1,12 @@
 #include "pch.h"
 #include "ParticleSystem.h"
-#include "StructuredBuffer.h"
-#include "Material.h"
-#include "Camera.h"
-#include "Model.h"
-#include "ModelMesh.h"
-#include "Utils.h"
 
+#include "Model.h"
+#include "Utils.h"
+#include "Camera.h"
+#include "Material.h"
+#include "ModelMesh.h"
+#include "StructuredBuffer.h"
 
 ParticleSystem::ParticleSystem(shared_ptr<Shader> shader)
 	: Component(COMPONENT_TYPE::ParticleSystem)

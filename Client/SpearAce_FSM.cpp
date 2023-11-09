@@ -8,7 +8,7 @@
 #include "AttackColliderInfoScript.h"
 #include "Model.h"
 
-
+#include "CoolTimeCheckScript.h"
 
 SpearAce_FSM::SpearAce_FSM()
 {
@@ -62,6 +62,9 @@ void SpearAce_FSM::Tick()
 void SpearAce_FSM::State_Tick()
 {
     State_Init();
+
+    if (KEYPUSH(KEY_TYPE::KEY_1))
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(0);
 
     switch (m_eCurState)
     {

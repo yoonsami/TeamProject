@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CollisionMgr.h"
-#include "BaseCollider.h"
 
+#include "BaseCollider.h"
 
 HRESULT CollisionMgr::Init()
 {

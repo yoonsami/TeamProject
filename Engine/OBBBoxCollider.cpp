@@ -1,12 +1,12 @@
 #include "pch.h"
 #include "OBBBoxCollider.h"
+
+#include "Camera.h"
+#include "MathUtils.h"
+#include "Primitive3D.h"
+#include "MeshCollider.h"
 #include "SphereCollider.h"
 #include "AABBBoxCollider.h"
-#include "Camera.h"
-#include "MeshCollider.h"
-#include "Primitive3D.h"
-#include "MathUtils.h"
-
 
 OBBBoxCollider::OBBBoxCollider(const _float3& boundingSize)
     : BaseCollider(ColliderType::OBB)

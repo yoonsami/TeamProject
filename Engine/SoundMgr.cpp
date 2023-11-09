@@ -1,8 +1,7 @@
 #include "pch.h"
 #include "SoundMgr.h"
+
 #include "Utils.h"
-#include <filesystem>
-namespace fs = std::filesystem;
 
 SoundMgr::~SoundMgr()
 {

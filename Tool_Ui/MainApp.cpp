@@ -31,7 +31,9 @@ HRESULT MainApp::Init()
 	}
 
 	Open_Scene();
-   GAMEINSTANCE.g_bSSAO_On = false;
+   GAMEINSTANCE.g_SSAOData.g_bSSAO_On = false;
+   GAMEINSTANCE.g_bLensFlare = false;
+
    GET_SINGLE(ImguiMgr).Initialize(g_hWnd);
 
     return S_OK;
