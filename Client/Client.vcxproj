@@ -191,6 +191,8 @@
     <ClInclude Include="CoolTimeCheckScript.h" />
     <ClInclude Include="DebugTool.h" />
     <ClInclude Include="Debug_CreateMotionTrail.h" />
+    <ClInclude Include="Dellons_FSM.h" />
+    <ClInclude Include="DellonsWraith_FSM.h" />
     <ClInclude Include="DemoAnimationController1.h" />
     <ClInclude Include="DemoCameraScript1.h" />
     <ClInclude Include="DemoCameraScript2.h" />
@@ -213,6 +215,8 @@
     <ClInclude Include="SpearAce_FSM.h" />
     <ClInclude Include="UiLoadingScript.h" />
     <ClInclude Include="WeaponScript.h" />
+    <ClInclude Include="YeopoHorse_FSM.h" />
+    <ClInclude Include="Yeopo_FSM.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Libraries\Include\IMGUI\ImCurveEdit.cpp" />
@@ -233,6 +237,8 @@
     <ClCompile Include="CoolTimeCheckScript.cpp" />
     <ClCompile Include="DebugTool.cpp" />
     <ClCompile Include="Debug_CreateMotionTrail.cpp" />
+    <ClCompile Include="Dellons_FSM.cpp" />
+    <ClCompile Include="DellonsWraith_FSM.cpp" />
     <ClCompile Include="DemoAnimationController1.cpp" />
     <ClCompile Include="DemoCameraScript1.cpp" />
     <ClCompile Include="DemoCameraScript2.cpp" />
@@ -259,6 +265,8 @@
     <ClCompile Include="SpearAce_FSM.cpp" />
     <ClCompile Include="UiLoadingScript.cpp" />
     <ClCompile Include="WeaponScript.cpp" />
+    <ClCompile Include="YeopoHorse_FSM.cpp" />
+    <ClCompile Include="Yeopo_FSM.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc" />

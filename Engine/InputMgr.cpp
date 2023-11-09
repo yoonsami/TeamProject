@@ -88,7 +88,7 @@ void InputMgr::Tick()
 		ClientToScreen(hWnd, &center);
 		SetCursorPos(center.x, center.y);
 	}
-	else if(GetButtonHold(KEY_TYPE::LCTRL) == true)
+	else if(GetButtonHold(KEY_TYPE::LALT) == true)
 	{
 		RECT tmp{};
 		GetClientRect(hWnd, &tmp);

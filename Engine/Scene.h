@@ -129,5 +129,7 @@ protected:
 	public:
 		_float2 testVector1 = _float2(0.f);
 		_float2 testVector2 = _float2(0.f);
+
+	_bool m_bRenderDebug = false;
 };
 

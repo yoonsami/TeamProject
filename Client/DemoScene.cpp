@@ -25,6 +25,10 @@
 #include "OBBBoxCollider.h"
 #include "SphereCollider.h"
 #include "AABBBoxCollider.h"
+#include "Debug_CreateMotionTrail.h"
+
+
+
 #include "MapObjectScript.h"
 #include "MainCameraScript.h"
 #include "HeroChangeScript.h"
@@ -45,7 +49,6 @@ DemoScene::DemoScene()
 
 DemoScene::~DemoScene()
 {
-	_uint i = 0;
 }
 
 void DemoScene::Init()
@@ -71,6 +74,14 @@ void DemoScene::Late_Tick()
 	{
 		shared_ptr<GameObject> player = Get_GameObject(L"Player");
 		auto animator = player->Get_Animator();
+
+		if (KEYTAP(KEY_TYPE::X))
+		{
+			if (m_bRenderDebug)
+				m_bRenderDebug = false;
+			else
+				m_bRenderDebug = true;
+		}
 		/*{
 			auto model = animator->Get_Model();
 
@@ -117,7 +128,7 @@ HRESULT DemoScene::Load_Scene()
 	Load_Light();
 	Load_Camera();
 	Load_MapFile(L"KrisMap22");
-	Load_Monster();
+	Load_Monster(5);
 	Load_DemoMap();
 	Load_Ui();
 	
@@ -161,6 +172,8 @@ void DemoScene::Load_Player()
 		ObjPlayer->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.8f, 0.5f })); //obbcollider
 		ObjPlayer->Get_Collider()->Set_CollisionGroup(Player_Body);
 		ObjPlayer->Get_Collider()->Set_Activate(true);
+
+		ObjPlayer->Add_Component(make_shared<Debug_CreateMotionTrail>());
 
 		{
 			auto controller = make_shared<CharacterController>();
@@ -324,47 +337,51 @@ void DemoScene::Load_Camera()
 
 }
 
-void DemoScene::Load_Monster()
+void DemoScene::Load_Monster(_uint iCnt)
 {
 	{
-		// Add. Player
-		shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
-
-		ObjMonster->Add_Component(make_shared<Transform>());
-
-		ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(1.f, 0.f, 1.f, 1.f));
+		for (_uint i = 0; i < iCnt; i++)
 		{
-			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+			// Add. Monster
+			shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
 
-			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+			ObjMonster->Add_Component(make_shared<Transform>());
+
+			ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(_float(rand() % 15), 0.f, _float(rand() % 15), 1.f));
 			{
-				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Silversword_Soldier");
-				animator->Set_Model(model);
+				shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+
+				shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+				{
+					shared_ptr<Model> model = RESOURCES.Get<Model>(L"Silversword_Soldier");
+					animator->Set_Model(model);
+				}
+
+				ObjMonster->Add_Component(animator);
+				ObjMonster->Add_Component(make_shared<Silversword_Soldier_FSM>());
+				auto pPlayer = Get_GameObject(L"Player");
+				ObjMonster->Get_FSM()->Set_Target(pPlayer);
 			}
+			ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.7f, 0.5f })); //obbcollider
+			ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
+			ObjMonster->Get_Collider()->Set_Activate(true);
 
-			ObjMonster->Add_Component(animator);
-			ObjMonster->Add_Component(make_shared<Silversword_Soldier_FSM>());
-			auto pPlayer = Get_GameObject(L"Player");
-			ObjMonster->Get_FSM()->Set_Target(pPlayer);
+			wstring strMonsterName = (L"Monster") + to_wstring(i);
+			ObjMonster->Set_Name(strMonsterName);
+			{
+				auto controller = make_shared<CharacterController>();
+				ObjMonster->Add_Component(controller);
+				auto& desc = controller->Get_ControllerDesc();
+				desc.radius = 0.5f;
+				desc.height = 5.f;
+				_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz();
+				desc.position = { vPos.x, vPos.y, vPos.z };
+				controller->Create_Controller();
+			}
+			ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
+
+			Add_GameObject(ObjMonster);
 		}
-		ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.7f, 0.5f })); //obbcollider
-		ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
-		ObjMonster->Get_Collider()->Set_Activate(true);
-
-		ObjMonster->Set_Name(L"Monster1");
-		{
-			auto controller = make_shared<CharacterController>();
-			ObjMonster->Add_Component(controller);
-			auto& desc = controller->Get_ControllerDesc();
-			desc.radius = 0.5f;
-			desc.height = 5.f;
-			_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz();
-			desc.position = { vPos.x, vPos.y, vPos.z };
-			controller->Create_Controller();
-		}
-		ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
-
-		Add_GameObject(ObjMonster);
 	}
 }
 

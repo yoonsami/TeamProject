@@ -8,6 +8,7 @@ public:
 	virtual void OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap) = 0;
 	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) = 0;
 	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) = 0;
+	virtual void Set_State(_uint iIndex) = 0;
 
 protected:
 	virtual void State_Tick() = 0;
@@ -36,18 +37,21 @@ protected:
 public:
 	void Set_Target(shared_ptr<GameObject> pTarget);
 	void Set_Camera(shared_ptr<GameObject> pCamera);
+	void Set_Vehicle(shared_ptr<GameObject> pVehicle);
 	void Reset_Target();
 	void Reset_Weapon();
+	void Reset_Vehicle();
  protected:
 	weak_ptr<GameObject> m_pTarget;
 	weak_ptr<GameObject> m_pAttackCollider;
 	weak_ptr<GameObject> m_pWeapon;
 	weak_ptr<GameObject> m_pCamera;
+	weak_ptr<GameObject> m_pVehicle;
 	
 	_bool m_bInvincible = false;
 	_bool m_bSuperArmor = false;
 
-
+	_float3 m_vHitDir = _float3{ 0.f };
 	_float m_fAttackRange = 2.f;
 };
 

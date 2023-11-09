@@ -1091,9 +1091,12 @@ void Scene::Render_Aberration()
 
 void Scene::Render_Debug()
 {
-	for (auto& gameObject : m_GameObjects)
-		if (gameObject->Get_Collider() && gameObject->Get_Collider()->Get_ColliderType() != ColliderType::Mesh)
-			gameObject->Get_Collider()->Render();
+	if (m_bRenderDebug)
+	{
+		for (auto& gameObject : m_GameObjects)
+			if (gameObject->Get_Collider() && gameObject->Get_Collider()->Get_ColliderType() != ColliderType::Mesh)
+				gameObject->Get_Collider()->Render();
+	}
 }
 
 void Scene::Render_UI()

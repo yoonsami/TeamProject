@@ -106,6 +106,24 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.UI\01.CoolTimeCheck">
       <UniqueIdentifier>{de0d89e0-2a9b-40d4-8788-a7d5e04a045e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\01.FSM\01.Hero_FSM\03.Yeopo_FSM">
+      <UniqueIdentifier>{adee62f6-760f-45e5-b909-0f43e4db384c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\01.Hero_FSM\04.Dellons_FSM">
+      <UniqueIdentifier>{6271cf5d-07bd-40b3-981c-e1ac33b0459d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\01.Hero_FSM\05.">
+      <UniqueIdentifier>{c430e1c9-328a-4db3-a452-923e9ba683ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\03.Special_FSM">
+      <UniqueIdentifier>{07de820b-d706-4b0a-a69a-dbc77ce8061d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\03.Special_FSM\00.YeopoHorse_FSM">
+      <UniqueIdentifier>{fa466479-4511-48b4-acab-3bc2b7806f28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\03.Special_FSM\01.DellonsWraith_FSM">
+      <UniqueIdentifier>{ac3b214e-9091-4a89-aaaa-de5645f05306}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -246,6 +264,18 @@
     <ClInclude Include="CoolTimeCheckScript.h">
       <Filter>02.Component\00.MonoBehaviour\01.UI\01.CoolTimeCheck</Filter>
     </ClInclude>
+    <ClInclude Include="Yeopo_FSM.h">
+      <Filter>02.Component\01.FSM\01.Hero_FSM\03.Yeopo_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Dellons_FSM.h">
+      <Filter>02.Component\01.FSM\01.Hero_FSM\04.Dellons_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="DellonsWraith_FSM.h">
+      <Filter>02.Component\01.FSM\03.Special_FSM\01.DellonsWraith_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="YeopoHorse_FSM.h">
+      <Filter>02.Component\01.FSM\03.Special_FSM\00.YeopoHorse_FSM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -364,6 +394,18 @@
     </ClCompile>
     <ClCompile Include="CoolTimeCheckScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.UI\01.CoolTimeCheck</Filter>
+    </ClCompile>
+    <ClCompile Include="Yeopo_FSM.cpp">
+      <Filter>02.Component\01.FSM\01.Hero_FSM\03.Yeopo_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="Dellons_FSM.cpp">
+      <Filter>02.Component\01.FSM\01.Hero_FSM\04.Dellons_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="DellonsWraith_FSM.cpp">
+      <Filter>02.Component\01.FSM\03.Special_FSM\01.DellonsWraith_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="YeopoHorse_FSM.cpp">
+      <Filter>02.Component\01.FSM\03.Special_FSM\00.YeopoHorse_FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

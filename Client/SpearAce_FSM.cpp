@@ -6,7 +6,6 @@
 #include "Debug_CreateMotionTrail.h"
 #include "SphereCollider.h"
 #include "AttackColliderInfoScript.h"
-#include "ForwardMovingSkillScript.h"
 #include "Model.h"
 
 
@@ -24,8 +23,7 @@ HRESULT SpearAce_FSM::Init()
     auto animator = Get_Owner()->Get_Animator();
     if (animator)
     {
-        // ���� �ִϸ��̼� �������ִµ�, ������ ����
-        animator->Set_CurrentAnim(L"b_idle"/*�ִϸ��̼� �̸�*/, true/*�ݺ� �ִϸ��̼�*/, 1.f/*�ִϸ��̼� �ӵ�*/);
+        animator->Set_CurrentAnim(L"b_idle", true, 1.f);
         m_eCurState = STATE::b_idle;
     }
     shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
@@ -90,6 +88,39 @@ void SpearAce_FSM::State_Tick()
         break;
     case STATE::die:
         die();
+        break;
+    case STATE::airborne_start:
+        airborne_start();
+        break;
+    case STATE::airborne_end:
+        airborne_end();
+        break;
+    case STATE::airborne_up:
+        airborne_up();
+        break;
+    case STATE::hit:
+        hit();
+        break;
+    case STATE::knock_start:
+        knock_start();
+        break;
+    case STATE::knock_end:
+        knock_end();
+        break;
+    case STATE::knock_end_loop:
+        knock_end_loop();
+        break;
+    case STATE::knock_end_hit:
+        knock_end_hit();
+        break;
+    case STATE::knock_up:
+        knock_up();
+        break;
+    case STATE::knockdown_start:
+        knockdown_start();
+        break;
+    case STATE::knockdown_end:
+        knockdown_end();
         break;
     case STATE::skill_1100:
         skill_1100();
@@ -157,6 +188,39 @@ void SpearAce_FSM::State_Init()
         case STATE::die:
             die_Init();
             break;
+        case STATE::airborne_start:
+            airborne_start_Init();
+            break;
+        case STATE::airborne_end:
+            airborne_end_Init();
+            break;
+        case STATE::airborne_up:
+            airborne_up_Init();
+            break;
+        case STATE::hit:
+            hit_Init();
+            break;
+        case STATE::knock_start:
+            knock_start_Init();
+            break;
+        case STATE::knock_end:
+            knock_end_Init();
+            break;
+        case STATE::knock_end_loop:
+            knock_end_loop_Init();
+            break;
+        case STATE::knock_end_hit:
+            knock_end_hit_Init();
+            break;
+        case STATE::knock_up:
+            knock_up_Init();
+            break;
+        case STATE::knockdown_start:
+            knockdown_start_Init();
+            break;
+        case STATE::knockdown_end:
+            knockdown_end_Init();
+            break;
         case STATE::skill_1100:
             skill_1100_Init();
             break;
@@ -201,6 +265,15 @@ void SpearAce_FSM::OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap)
 
 void SpearAce_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
+    if (pCollider->Get_Owner() == nullptr)
+        return;
+
+    wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
+
+    if (!m_bInvincible)
+    {
+        Get_Hit(strSkillName, pCollider);
+    }
 }
 
 void SpearAce_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
@@ -209,6 +282,70 @@ void SpearAce_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fG
 
 void SpearAce_FSM::Get_Hit(const wstring& skillname, shared_ptr<BaseCollider> pOppositeCollider)
 {
+    if (skillname == NORMAL_ATTACK || skillname == KNOCKBACK_ATTACK || skillname == KNOCKDOWN_ATTACK || skillname == AIRBORNE_ATTACK)
+    {
+        _float3 vAttackerPos = pOppositeCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner()->Get_Transform()->Get_State(Transform_State::POS).xyz();
+        m_vHitDir = vAttackerPos - Get_Transform()->Get_State(Transform_State::POS);
+        m_vHitDir.y = 0.f;
+        m_vHitDir.Normalize();
+    }
+    else if (skillname == NORMAL_SKILL || skillname == KNOCKBACK_SKILL || skillname == KNOCKDOWN_SKILL || skillname == AIRBORNE_SKILL)
+    {
+        m_vHitDir = pOppositeCollider->Get_CenterPos() - Get_Transform()->Get_State(Transform_State::POS);
+        m_vHitDir.y = 0.f;
+        m_vHitDir.Normalize();
+    }
+
+    if (skillname == NORMAL_ATTACK || skillname == NORMAL_SKILL)
+    {
+        if (!m_bSuperArmor)
+        {
+            if (m_eCurState == STATE::hit)
+                Reset_Frame();
+            else if (m_eCurState == STATE::knock_end_hit)
+                Reset_Frame();
+            else if (m_eCurState == STATE::knock_end_loop)
+                m_eCurState = STATE::knock_end_hit;
+            else
+                m_eCurState = STATE::hit;
+        }
+    }
+    else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
+    {
+        if (!m_bSuperArmor)
+        {
+            if (m_eCurState == STATE::knock_end_hit)
+                Reset_Frame();
+            else if (m_eCurState == STATE::knock_end_loop)
+                m_eCurState = STATE::knock_end_hit;
+            else
+                m_eCurState = STATE::knock_start;
+        }
+    }
+    else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
+    {
+        if (!m_bSuperArmor)
+        {
+            if (m_eCurState == STATE::knock_end_hit)
+                Reset_Frame();
+            else if (m_eCurState == STATE::knock_end_loop)
+                m_eCurState = STATE::knock_end_hit;
+            else
+                m_eCurState = STATE::knockdown_start;
+        }
+    }
+    else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
+    {
+        if (!m_bSuperArmor)
+        {
+            if (m_eCurState == STATE::knock_end_hit)
+                Reset_Frame();
+            else if (m_eCurState == STATE::knock_end_loop)
+                m_eCurState = STATE::knock_end_hit;
+            else
+                m_eCurState = STATE::airborne_start;
+        }
+    }
 }
 
 void SpearAce_FSM::AttackCollider_On(const wstring& skillname)
@@ -227,6 +364,10 @@ void SpearAce_FSM::AttackCollider_Off()
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
     }
+}
+
+void SpearAce_FSM::Set_State(_uint iIndex)
+{
 }
 
 void SpearAce_FSM::b_idle()
@@ -272,10 +413,10 @@ void SpearAce_FSM::b_idle_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed);
     m_tRunEndDelay.fAccTime = 0.f;
 
-    m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
-    m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+    AttackCollider_Off();
 
     m_bInvincible = false;
+    m_bSuperArmor = false;
 }
 
 void SpearAce_FSM::b_run_start()
@@ -286,7 +427,6 @@ void SpearAce_FSM::b_run_start()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    // ����Ű�� �ƹ��͵� ������ ������ ���¸� ����
     if (vInputVector == _float3(0.f))
     {
         m_tRunEndDelay.fAccTime += fDT;
@@ -296,11 +436,6 @@ void SpearAce_FSM::b_run_start()
     }
     else
     {
-        // �ִϸ��̼��� ������ �ε�, ���� �ð������� ����� ���� �־,
-        // �ٷ� �̾����� �ִϸ��̼��� ��쿡��
-        // ������ ���ϸ鼭 �ٲٰų�, 
-        // �Ʒ�ó�� ������ ���� ���� �̸� �ٲٸ� �ڿ������� ��ȯ��
-        // �� �� ����
         if (Is_AnimFinished())
             m_eCurState = STATE::b_run;
 
@@ -334,9 +469,11 @@ void SpearAce_FSM::b_run_start_Init()
 
     Get_Transform()->Set_Speed(m_fRunSpeed);
     m_tRunEndDelay.fAccTime = 0.f;
-    m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
-    m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+
+    AttackCollider_Off();
+    
     m_bInvincible = false;
+    m_bSuperArmor = false;
 }
 
 void SpearAce_FSM::b_run()
@@ -347,7 +484,6 @@ void SpearAce_FSM::b_run()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    // ����Ű�� �ƹ��͵� ������ ������ ���¸� ����
     if (vInputVector == _float3(0.f))
     {
         m_tRunEndDelay.fAccTime += fDT;
@@ -397,9 +533,10 @@ void SpearAce_FSM::b_run_Init()
 
     Get_Transform()->Set_Speed(m_fRunSpeed);
 
-    m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
-    m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+    AttackCollider_Off();
+
     m_bInvincible = false;
+    m_bSuperArmor = false;
 }
 
 void SpearAce_FSM::b_run_end_r()
@@ -408,7 +545,6 @@ void SpearAce_FSM::b_run_end_r()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    // ����Ű�� �ƹ��͵� ������ ������ ���¸� ����
     if (vInputVector != _float3(0.f))
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
@@ -444,9 +580,10 @@ void SpearAce_FSM::b_run_end_r_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed);
     m_tRunEndDelay.fAccTime = 0.f;
 
-    m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
-    m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+    AttackCollider_Off();
+
     m_bInvincible = false;
+    m_bSuperArmor = false;
 }
 
 void SpearAce_FSM::b_run_end_l()
@@ -489,9 +626,10 @@ void SpearAce_FSM::b_run_end_l_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed);
     m_tRunEndDelay.fAccTime = 0.f;
 
-    m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
-    m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+    AttackCollider_Off();
+
     m_bInvincible = false;
+    m_bSuperArmor = false;
 }
 
 void SpearAce_FSM::b_sprint()
@@ -502,7 +640,6 @@ void SpearAce_FSM::b_sprint()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    // ����Ű�� �ƹ��͵� ������ ������ ���¸� ����
     if (vInputVector == _float3(0.f))
     {
         m_tRunEndDelay.fAccTime += fDT;
@@ -551,9 +688,10 @@ void SpearAce_FSM::b_sprint_Init()
 
     Get_Transform()->Set_Speed(m_fSprintSpeed);
 
-    m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
-    m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+    AttackCollider_Off();
+
     m_bInvincible = false;
+    m_bSuperArmor = false;
 }
 
 void SpearAce_FSM::b_walk()
@@ -572,11 +710,236 @@ void SpearAce_FSM::die_Init()
 {
 }
 
+void SpearAce_FSM::airborne_start()
+{
+    Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
+
+    if (Is_AnimFinished())
+        m_eCurState = STATE::airborne_end;
+}
+
+void SpearAce_FSM::airborne_start_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"airborne_start", 0.2f, false, 1.f);
+
+    AttackCollider_Off();
+
+    m_bInvincible = false;
+    m_bSuperArmor = true;
+}
+
+void SpearAce_FSM::airborne_end()
+{
+    if (Is_AnimFinished())
+        m_eCurState = STATE::airborne_up;
+}
+
+void SpearAce_FSM::airborne_end_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"airborne_end", 0.2f, false, 1.f);
+
+    m_bInvincible = false;
+    m_bSuperArmor = true;
+}
+
+void SpearAce_FSM::airborne_up()
+{
+    if (Is_AnimFinished())
+        m_eCurState = STATE::b_idle;
+}
+
+void SpearAce_FSM::airborne_up_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"knock_Up", 0.1f, false, 1.f);
+
+    m_bInvincible = false;
+    m_bSuperArmor = true;
+}
+
+void SpearAce_FSM::hit()
+{
+    Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
+
+    if (Is_AnimFinished())
+        m_eCurState = STATE::b_idle;
+}
+
+void SpearAce_FSM::hit_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"hit", 0.1f, false, 1.f);
+
+    AttackCollider_Off();
+
+    m_bInvincible = false;
+    m_bSuperArmor = false;
+}
+
+void SpearAce_FSM::knock_start()
+{
+    Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
+
+    Get_Transform()->Go_Backward();
+
+    if (Is_AnimFinished())
+        m_eCurState = STATE::knock_end;
+}
+
+void SpearAce_FSM::knock_start_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"knock_start", 0.1f, false, 1.f);
+
+    AttackCollider_Off();
+
+    m_bInvincible = false;
+    m_bSuperArmor = true;
+
+    Get_Transform()->Set_Speed(m_fKnockBackSpeed * 0.8f);
+}
+
+void SpearAce_FSM::knock_end()
+{
+    if (Get_CurFrame() < 16)
+        Get_Transform()->Go_Backward();
+
+    if (Is_AnimFinished())
+        m_eCurState = STATE::knock_end_loop;
+}
+
+void SpearAce_FSM::knock_end_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"knock_end", 0.2f, false, 1.f);
+
+    m_bInvincible = false;
+    m_bSuperArmor = true;
+
+    Get_Transform()->Set_Speed(m_fKnockBackSpeed * 0.5f);
+}
+
+void SpearAce_FSM::knock_end_loop()
+{
+    m_tKnockDownEndCoolTime.fAccTime += fDT;
+    
+    if (Get_CurFrame() > Get_FinalFrame() / 2)
+        m_eCurState = STATE::knock_up;
+}
+
+void SpearAce_FSM::knock_end_loop_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"knock_end_loop", 0.2f, false, 1.f);
+
+    m_bInvincible = false;
+    m_bSuperArmor = false;
+}
+
+void SpearAce_FSM::knock_end_hit()
+{
+    m_tKnockDownEndCoolTime.fAccTime += fDT;
+
+    if (Is_AnimFinished())
+    {
+        if (m_tKnockDownEndCoolTime.fAccTime >= m_tKnockDownEndCoolTime.fCoolTime)
+            m_eCurState = STATE::knock_up;
+        else
+            m_eCurState = STATE::knock_end_loop;
+    }
+}
+
+void SpearAce_FSM::knock_end_hit_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"knock_end_hit", 0.2f, false, 1.f);
+
+    m_bInvincible = false;
+    m_bSuperArmor = false;
+}
+
+void SpearAce_FSM::knock_up()
+{
+    if (Is_AnimFinished())
+        m_eCurState = STATE::b_idle;
+}
+
+void SpearAce_FSM::knock_up_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"knock_Up", 0.2f, false, 1.f);
+
+    m_bInvincible = false;
+    m_bSuperArmor = true;
+
+    m_tKnockDownEndCoolTime.fAccTime = 0.f;
+
+    Get_Transform()->Set_Speed(m_fRunSpeed);
+}
+
+void SpearAce_FSM::knockdown_start()
+{
+    Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
+
+    Get_Transform()->Go_Backward();
+
+    if (Is_AnimFinished())
+        m_eCurState = STATE::knockdown_end;
+}
+
+void SpearAce_FSM::knockdown_start_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"knockdown_start", 0.1f, false, 2.f);
+
+    AttackCollider_Off();
+
+    m_bInvincible = false;
+    m_bSuperArmor = true;
+
+    Get_Transform()->Set_Speed(m_fKnockDownSpeed);
+}
+
+void SpearAce_FSM::knockdown_end()
+{
+    if (Get_CurFrame() < 16)
+        Get_Transform()->Go_Backward();
+
+    if (Is_AnimFinished())
+        m_eCurState = STATE::knock_up;
+}
+
+void SpearAce_FSM::knockdown_end_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_CurrentAnim(L"knockdown_end", false, 1.5f);
+
+    m_bInvincible = false;
+    m_bSuperArmor = true;
+
+    Get_Transform()->Set_Speed(m_fKnockDownSpeed * 0.5f);
+}
+
 void SpearAce_FSM::skill_1100()
 {
     EvadeCoolCheck();
 
-    if (Get_CurFrame() == 19)
+    if (Get_CurFrame() == 9)
+        AttackCollider_On(NORMAL_ATTACK);
+    else if (Get_CurFrame() == 19)
         AttackCollider_Off();
     
 
@@ -630,9 +993,8 @@ void SpearAce_FSM::skill_1100_Init()
     m_vInputTurnVector = _float3(0.f);
     m_vInputTurnVector = Get_InputDirVector();
 
-    AttackCollider_On(NORMAL_SKILL);
-
     m_bInvincible = false;
+    m_bSuperArmor = false;
 }
 
 void SpearAce_FSM::skill_1200()
@@ -641,7 +1003,7 @@ void SpearAce_FSM::skill_1200()
 
 
     if (Get_CurFrame() == 1)
-        AttackCollider_On(NORMAL_SKILL);
+        AttackCollider_On(NORMAL_ATTACK);
     else if (Get_CurFrame() == 33)
         AttackCollider_Off();
     
@@ -700,8 +1062,9 @@ void SpearAce_FSM::skill_1200_Init()
     m_vInputTurnVector = Get_InputDirVector();
 
     AttackCollider_Off();
-    
+
     m_bInvincible = false;
+    m_bSuperArmor = false;
 }
 
 void SpearAce_FSM::skill_1300()
@@ -709,7 +1072,7 @@ void SpearAce_FSM::skill_1300()
     EvadeCoolCheck();
 
     if (Get_CurFrame() == 4)
-        AttackCollider_On(NORMAL_SKILL);
+        AttackCollider_On(NORMAL_ATTACK);
     else if (Get_CurFrame() == 28)
         AttackCollider_Off();
 
@@ -760,6 +1123,7 @@ void SpearAce_FSM::skill_1300_Init()
     AttackCollider_Off();
 
     m_bInvincible = false;
+    m_bSuperArmor = false;
 }
 
 void SpearAce_FSM::skill_91100()
@@ -795,6 +1159,7 @@ void SpearAce_FSM::skill_91100_Init()
     AttackCollider_Off();
 
     m_bInvincible = true;
+    m_bSuperArmor = false;
 }
 
 void SpearAce_FSM::skill_93100()
@@ -824,6 +1189,7 @@ void SpearAce_FSM::skill_93100_Init()
     AttackCollider_Off();
 
     m_bInvincible = true;
+    m_bSuperArmor = false;
 }
 
 void SpearAce_FSM::skill_100100()
@@ -848,7 +1214,7 @@ void SpearAce_FSM::skill_100100()
     }
     else if (Get_CurFrame() == 28)
     {
-        AttackCollider_On(KNOCKDOWN_SKILL);
+        AttackCollider_On(KNOCKBACK_ATTACK);
     }
     else if (Get_CurFrame() == 58)
         AttackCollider_Off();
@@ -891,6 +1257,7 @@ void SpearAce_FSM::skill_100100_Init()
     AttackCollider_Off();
 
     m_bInvincible = false;
+    m_bSuperArmor = true;
 }
 
 void SpearAce_FSM::skill_200100()
@@ -900,11 +1267,11 @@ void SpearAce_FSM::skill_200100()
     if (Get_CurFrame() == 21)
         AttackCollider_Off();
     else if (Get_CurFrame() == 25)
-        AttackCollider_On(NORMAL_SKILL);
+        AttackCollider_On(NORMAL_ATTACK);
     else if (Get_CurFrame() == 35)
         AttackCollider_Off();
     else if (Get_CurFrame() == 38)
-        AttackCollider_On(NORMAL_SKILL);
+        AttackCollider_On(NORMAL_ATTACK);
     else if (Get_CurFrame() == 61)
         AttackCollider_Off();
 
@@ -948,9 +1315,10 @@ void SpearAce_FSM::skill_200100_Init()
     m_vInputTurnVector = _float3(0.f);
     m_vInputTurnVector = Get_InputDirVector();
 
-    AttackCollider_On(NORMAL_SKILL);
+    AttackCollider_On(NORMAL_ATTACK);
 
     m_bInvincible = false;
+    m_bSuperArmor = true;
 }
 
 void SpearAce_FSM::skill_200200()
@@ -968,7 +1336,7 @@ void SpearAce_FSM::skill_200200()
             desc.fLimitDistance = 12.f;
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKDOWN_SKILL);
+            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_SKILL);
 
             m_bSkillCreate = true;
         }
@@ -1010,6 +1378,7 @@ void SpearAce_FSM::skill_200200_Init()
     AttackCollider_Off();
 
     m_bInvincible = false;
+    m_bSuperArmor = true;
 }
 
 void SpearAce_FSM::skill_300100()
@@ -1019,14 +1388,18 @@ void SpearAce_FSM::skill_300100()
     
     if (Get_CurFrame() >= 78 && Get_CurFrame() <= 110)
     {
+        m_bInvincible = true;
+
         /*if (!m_pCamera.expired())
         {
-            matBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iSkillBoneIndex) * 
+            matBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iSkillBoneIndex) *
                 _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
-            
+
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(matBoneMatrix.Translation());
         }*/
     }
+    else
+        m_bInvincible = false;
 
     if (Get_CurFrame() == 78)
     {       
@@ -1163,7 +1536,7 @@ void SpearAce_FSM::skill_300100()
             desc.fLifeTime = 1.f;
             desc.fLimitDistance = 0.f;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, AIRBORNE_SKILL);
+            Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, AIRBORNE_ATTACK);
 
             m_bSkillCreate = true;
         }
@@ -1196,7 +1569,7 @@ void SpearAce_FSM::skill_300100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_300100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
+    animator->Set_NextTweenAnim(L"skill_300100", 0.15f, false, 1.3f);
 
     m_bCanCombo = false;
 
@@ -1218,6 +1591,7 @@ void SpearAce_FSM::skill_300100_Init()
     AttackCollider_Off();
 
     m_bInvincible = false;
+    m_bSuperArmor = true;
 }
 
 void SpearAce_FSM::skill_502100()
@@ -1240,8 +1614,16 @@ void SpearAce_FSM::skill_502100()
             m_bSkillCreate = true;
         }
     }
+    else if (Get_CurFrame() == 32)
+    {
+        //TelePort Motion Start = Invincible
+        m_bInvincible = true;
+    }
     else if (Get_CurFrame() == 44)
-        AttackCollider_On(KNOCKDOWN_SKILL);
+    {
+        m_bInvincible = false;
+        AttackCollider_On(KNOCKBACK_ATTACK);
+    }
     else if (Get_CurFrame() == 62)
         AttackCollider_Off();
     else
@@ -1249,6 +1631,7 @@ void SpearAce_FSM::skill_502100()
         m_bSkillCreate = false;
     }
 
+ 
     _float3 vInputVector = Get_InputDirVector();
 
     if (m_vInputTurnVector != _float3(0.f))
@@ -1283,6 +1666,7 @@ void SpearAce_FSM::skill_502100_Init()
     AttackCollider_Off();
 
     m_bInvincible = false;
+    m_bSuperArmor = true;
 }
 
 void SpearAce_FSM::skill_500100()
@@ -1290,7 +1674,7 @@ void SpearAce_FSM::skill_500100()
     EvadeCoolCheck();
 
     if (Get_CurFrame() == 15)
-        AttackCollider_On(KNOCKDOWN_SKILL);
+        AttackCollider_On(KNOCKBACK_ATTACK);
     else if (Get_CurFrame() == 33)
         AttackCollider_Off();
 
@@ -1328,6 +1712,7 @@ void SpearAce_FSM::skill_500100_Init()
     AttackCollider_Off();
 
     m_bInvincible = false;
+    m_bSuperArmor = true;
 }
 
 void SpearAce_FSM::EvadeCoolCheck()

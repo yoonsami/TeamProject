@@ -24,6 +24,8 @@ public:
 		knock_end_loop, 
 		knock_end_hit, // hit on knock_state
 		knock_up,
+		knockdown_start, //knockdown_start -> knockdown_end -> knock_up
+		knockdown_end,
 		skill_1100, //SKILL 1
 		skill_2100, //SKILL 2
 		skill_3100, //SKILL 3
@@ -44,6 +46,7 @@ private:
 	virtual void Get_Hit(const wstring& skillname, shared_ptr<BaseCollider> pOppositeCollider) override;
 	virtual void AttackCollider_On(const wstring& skillname) override;
 	virtual void AttackCollider_Off() override;
+	virtual void Set_State(_uint iIndex) override;
 
 	void b_idle();
 	void b_idle_Init();
@@ -84,6 +87,10 @@ private:
 	void knock_end_hit_Init();
 	void knock_up();
 	void knock_up_Init();
+	void knockdown_start();
+	void knockdown_start_Init();
+	void knockdown_end();
+	void knockdown_end_Init();
 
 	void skill_1100();
 	void skill_1100_Init();
@@ -101,10 +108,13 @@ private:
 	_float3 m_vTurnVector = _float3(0.f);
 
 	_float m_fRunSpeed = 4.f;
+	_float m_fKnockBackSpeed = 4.f;
+	_float m_fKnockDownSpeed = 4.f;
+
 	_float m_fNormalAttack_AnimationSpeed = 2.f;
 	_float m_fSkillAttack_AnimationSpeed = 2.f;
 
-	COOLTIMEINFO m_tAttackCoolTime = { 3.f, 0.f };
+	COOLTIMEINFO m_tAttackCoolTime = { 2.f, 0.f };
 	_bool m_bDetected = false;
 	_bool m_bPatrolMove = false;
 	COOLTIMEINFO m_tPatrolMoveCool = { 4.f,0.f };

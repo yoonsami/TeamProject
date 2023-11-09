@@ -10,6 +10,9 @@ public:
     virtual void Tick() override;
 
 private:
+    void Add_Character_Weapon(const wstring& weaponname);
+
+private:
     weak_ptr<GameObject> m_pPlayer;
 };
 

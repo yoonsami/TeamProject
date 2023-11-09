@@ -151,6 +151,11 @@ void FSM::Set_Camera(shared_ptr<GameObject> pCamera)
 	m_pCamera = pCamera;
 }
 
+void FSM::Set_Vehicle(shared_ptr<GameObject> pVehicle)
+{
+	m_pVehicle = pVehicle;
+}
+
 void FSM::Reset_Target()
 {
 	m_pTarget.reset();
@@ -160,5 +165,11 @@ void FSM::Reset_Weapon()
 {
 	if (!m_pWeapon.expired())
 		CUR_SCENE->Remove_GameObject(m_pWeapon.lock());
+}
+
+void FSM::Reset_Vehicle()
+{
+	if (!m_pVehicle.expired())
+		CUR_SCENE->Remove_GameObject(m_pVehicle.lock());
 }
 
