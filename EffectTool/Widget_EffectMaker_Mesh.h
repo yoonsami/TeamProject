@@ -26,6 +26,7 @@ private:
 	void					Option_Mesh();
 	void					Option_Texture();
 	void					Option_Color();
+	void					Option_TextureUV();
 
 	void					Create();
 	void					Save();
@@ -59,7 +60,8 @@ private:
 	const char**			m_pszUniversalTextures = { nullptr };
 	_int					m_iTexture[8];
 	string					m_strTexture[8];
-
+	shared_ptr<Texture>		m_pUniversalTexture = { nullptr };
+	_int					m_iCurrEditingTextureType = { 0 };
 
 	/* Color 
 		(Base, Gradation, OverlayStart, OverlayEnd
@@ -87,5 +89,11 @@ private:
 	ImVec4					m_vDestOverlayColor_End = ImVec4(186.f / 255.f, 48.f / 255.f, 48.f / 255.f, 1.f);
 
 	_bool					m_bUseFadeOut = { true };
+
+	/* Texcoord */
+	_float					m_fTexcoordSpeed[2] = { 0.f, 0.f }; 
+	_float					m_fTexcoordTiling[2] = { 0.f, 0.f };
+
+	_int					m_iSamplerType = { 0 };
 };
 

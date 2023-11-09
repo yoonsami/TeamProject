@@ -79,17 +79,11 @@ void ImGuiToolMgr::Option_ToolSelector()
     ImGui::Checkbox("EffectMaker(Mesh)", &m_bIsEffectMaker_Mesh_On);
     ImGui::SameLine();
     ImGui::Checkbox("ParticleMaker(Instancing)", &m_bIsParticleMaker_Instancing_On);
-
 }
 
 void ImGuiToolMgr::Option_StyleEditor()
 {
     ImGui::SeparatorText("ImGui Window Style");
-
-    //ImGui::SliderFloat("WindowAlpha", &m_tImGuiStyle.fWindowBgAlpha, 0.f, 1.f);
-    //ImGui::SameLine();
-    //ImGui::SliderFloat("Font Size", &m_tImGuiStyle.fFontSize, 1.f, 2.f);
-    //ImGui::SameLine();
 
     ImGui::RadioButton("Night Theme", &m_tImGuiStyle.iTheme, 0);
     ImGui::SameLine();

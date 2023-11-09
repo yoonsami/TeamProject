@@ -25,6 +25,8 @@ HRESULT MeshEffect::Init(void* pArg)
 
 	Init_RenderParams();
 
+	m_vCurrTexUVOffset = m_tDesc.vTexTiling;
+
 	// For. Model Components
 	m_pModel = RESOURCES.Get<Model>(Utils::ToWString(m_tDesc.strVfxMesh));
 
@@ -109,9 +111,12 @@ void MeshEffect::Init_RenderParams()
 	m_RenderParams.SetInt(0, m_tDesc.bOverlayOn);	
 	m_RenderParams.SetInt(1, m_tDesc.bUseFadeOut);
 	m_RenderParams.SetInt(2, m_tDesc.bGradationOn);
+	m_RenderParams.SetInt(3, m_tDesc.iSamplerType);
 
 	m_RenderParams.SetFloat(0, m_fCurrAge / m_tDesc.fDuration);
 	m_RenderParams.SetFloat(1, m_tDesc.fGradationIntensity);
+
+	m_RenderParams.SetVec2(0, m_vCurrTexUVOffset);
 
 	m_RenderParams.SetVec4(0, m_tDesc.vBaseColor);
 	m_RenderParams.SetVec4(1, m_tDesc.vGradationColor);
@@ -132,6 +137,9 @@ void MeshEffect::Bind_RenderParams_ToShader()
 	m_RenderParams.SetVec4(1, vFinalGradationColor);
 	m_RenderParams.SetVec4(2, vFinalOverlayColor_Start);
 	m_RenderParams.SetVec4(3, vFinalOverlayColor_End);
+
+	m_vCurrTexUVOffset += m_tDesc.vTexUVSpeed * fDT;
+	m_RenderParams.SetVec2(0, m_vCurrTexUVOffset);
 
 	m_pShader->Push_RenderParamData(m_RenderParams);
 }
