@@ -568,7 +568,7 @@ void ResourceMgr::CreateDefaultMaterial()
 		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"PositionTarget"));
 		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"NormalTarget"));
 		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"ShadowTarget"));
-		material->Set_SubMap(3, RESOURCES.Get<Texture>(L"SSAOBlurTarget1"));
+		material->Set_SubMap(3, RESOURCES.Get<Texture>(L"SSAOUPSCALE2"));
 		Add(L"LightMaterial", material);
 	}
 	{
@@ -606,7 +606,48 @@ void ResourceMgr::CreateDefaultMaterial()
 		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"SSAO_RandomVectorTexture"));
 		Add(L"SSAO", material);
 	}
-
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"SSAOTarget"));
+		Add(L"SSAODownScale0", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"SSAODOWNSCALE0"));
+		Add(L"SSAODownScale1", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"SSAODOWNSCALE1"));
+		Add(L"SSAODownScale2", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"SSAODOWNSCALE2"));
+		Add(L"SSAOUpScale0", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"SSAOUPSCALE0"));
+		Add(L"SSAOUpScale1", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"SSAOUPSCALE1"));
+		Add(L"SSAOUpScale2", material);
+	}
 	{
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
 		shared_ptr<Material> material = make_shared<Material>();
@@ -716,11 +757,18 @@ void ResourceMgr::CreateDefaultMaterial()
 		shared_ptr<Material> material = make_shared<Material>();
 		material->Set_Shader(shader);
 		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"DistortionFinalTarget"));
-		//material->Set_SubMap(1, RESOURCES.Get<Texture>(L"G_DepthTarget"));
+		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"G_DepthTarget"));
 
+		Add(L"LensFlare", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_LensFlare.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"DistortionFinalTarget"));
+		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"LensFlareTarget"));
 		Add(L"LensFlareFinal", material);
 	}
-
 	{
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Final.fx");
 		shared_ptr<Material> material = make_shared<Material>();

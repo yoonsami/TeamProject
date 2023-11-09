@@ -131,7 +131,7 @@ HRESULT DemoScene::Load_Scene()
 	Load_Monster(5);
 	//Load_DemoMap();
 
-	//Load_Ui();
+	Load_Ui();
 
 	return S_OK;
 }
@@ -175,7 +175,7 @@ void DemoScene::Load_Player()
 		ObjPlayer->Get_Collider()->Set_CollisionGroup(Player_Body);
 		ObjPlayer->Get_Collider()->Set_Activate(true);
 
-		ObjPlayer->Add_Component(make_shared<Debug_CreateMotionTrail>());
+		//ObjPlayer->Add_Component(make_shared<Debug_CreateMotionTrail>());
 
 		{
 			auto controller = make_shared<CharacterController>();

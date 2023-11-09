@@ -114,9 +114,17 @@ float4 PS_Final(VS_OUT input) : SV_Target0
 
     float3 col = (float3) 0.f;
     
-    
+    uint width, height, numMips;
+    SubMap1.GetDimensions(0, width, height, numMips);
     
     float2 vLightPos = g_LightPos;
+    
+    float2 vLightUV;
+    vLightUV.x = (vLightPos.x / (float)width);
+    vLightUV.y = (vLightPos.y / (float) height);
+    
+    float fLightDepth = SubMap1.Sample(PointSampler, vLightUV).r;
+    float fDepth = SubMap1.Sample(PointSampler, input.uv).r;
     
     float2 centerPos = 2.f * g_LightPos - float2(960.f, 540.f);
 
@@ -149,6 +157,7 @@ float4 PS_Final(VS_OUT input) : SV_Target0
         
         float baseRadius = (1. - circleOpacityMul) / 4. + 3. / 4.;
         float circleBoost = 1. + (1. - circleOpacityMul) * 0.1;
+        if (fDepth >= 1.f)
         col = drawCircle(getFlarePoint(vLightPos, centerVec, 0.), pixelPos, 1920.f / 1.5 * baseRadius, circleBoost, float3(0, 0, 0), float3(1, 1, 1));
     
         for (int i = 0; i < g_CirclesCount; i++)
@@ -182,6 +191,7 @@ float4 PS_Final(VS_OUT input) : SV_Target0
             {
                 opacity *= saturate(1 + vLightPos.y / 120.f);
             }
+            if (fLightDepth >= 0.999f)
             col += drawCircle(flarePoint, pixelPos, radius, falloff, col1, col2) * opacity;
         }
         
@@ -208,7 +218,7 @@ float4 PS_Final(VS_OUT input) : SV_Target0
             opacity *= saturate(1 + vLightPos.y / 120.f);
         }
         
-
+        if (fLightDepth >= 1.f)
         col += drawRainbowCircle(flarePoint, pixelPos, 1920.f / 5.) * opacity;
         
         float2 distToCenter = pixelPos - vLightPos;
@@ -216,17 +226,21 @@ float4 PS_Final(VS_OUT input) : SV_Target0
         opacity = (1. - opacityMul) * 0.9 + 0.1;
         
         float dist = 1. - (abs(distToCenter.x / 16.) + abs(distToCenter.y * 4.)) / res;
+        if (fDepth >= 1.f)
         col += max(dist, 0.) * 0.3 * opacity;
        
         dist = 1. - (abs(distToCenter.x * 4.) + abs(distToCenter.y / 16.)) / res;
+        if (fDepth >= 1.f)
         col += max(dist, 0.) * 0.3 * opacity;
         
         res = 1920.f / 80.;
         
         dist = 1. - (abs(distToCenter.x / 9.) + abs(distToCenter.y)) / res;
+        if (fDepth >= 1.f)
         col += max(dist, 0.) * 0.3 * opacity;
        
         dist = 1. - (abs(distToCenter.x) + abs(distToCenter.y / 9.)) / res;
+        if (fDepth >= 1.f)
         col += max(dist, 0.) * 0.3 * opacity;
         
         
@@ -249,12 +263,29 @@ float4 PS_Final(VS_OUT input) : SV_Target0
         power *= saturate(1 + vLightPos.y / 120.f);
     }
         
-    float4 color = SubMap0.Sample(LinearSampler, input.uv);
-    
     if (length(div) != 0.f)
-        color += float4(acc / div, 0.f) * power;
+        output += float4(acc / div, 0.f) * power;
+
   
-    return color;
+    return output;
+}
+
+float4 PS_Bloom(VS_OUT input) : SV_Target
+{
+    float4 output = (float4) 0.f;
+    float4 vHDRColor = SubMap0.Sample(LinearSampler, input.uv);
+    float4 vBloomOrigin = SubMap2.Sample(LinearSampler, input.uv);
+    
+    float4 vBloom =vBloomOrigin;
+    
+    output = vHDRColor;
+    
+    output = pow(output, 2.2f);
+    vBloom = pow(vBloom, 2.2f);
+    
+    output += vBloom;
+    
+    return pow(output, 1 / 2.2f);
 }
 
 technique11 T0
@@ -267,5 +298,14 @@ technique11 T0
         SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Final()));
+    }
+    Pass apply
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Final()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_Bloom()));
     }
 };

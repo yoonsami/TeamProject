@@ -1018,15 +1018,45 @@ void Scene::Render_SSAO()
 
 void Scene::Render_SSAOBlur(_uint blurCount)
 {
-	SSAO_MapBlur(RESOURCES.Get<Texture>(L"SSAOTarget"),RENDER_TARGET_GROUP_TYPE::SSAOBLUR0, true);
-
-	for (_uint i = 0; i < blurCount; ++i)
+	for (_uchar i = 0; i < 3; ++i)
 	{
-		SSAO_MapBlur(RESOURCES.Get<Texture>(L"SSAOBlurTarget0"), RENDER_TARGET_GROUP_TYPE::SSAOBLUR1, false);
-		SSAO_MapBlur(RESOURCES.Get<Texture>(L"SSAOBlurTarget1"), RENDER_TARGET_GROUP_TYPE::SSAOBLUR0, true);
+		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::SSAODOWNSCALE0) + i);
+		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
+		auto material = RESOURCES.Get<Material>(L"SSAODownScale" + to_wstring(i));
+		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+		//material->Get_Shader()->GetScalar("GaussianWeight")->SetFloatArray(a, 0, 25);
+		//material->Get_Shader()->GetScalar("DownScalePower")->SetFloat(m_fDownScalePower);
+		material->Push_SubMapData();
+
+		mesh->Get_VertexBuffer()->Push_Data();
+		mesh->Get_IndexBuffer()->Push_Data();
+
+		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	}
+
+	for (_uchar i = 0; i < 3; ++i)
+	{
+		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::SSAOUPSCALE0) + i);
+		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
+		auto material = RESOURCES.Get<Material>(L"SSAOUpScale" + to_wstring(i));
+		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+		//	material->Get_Shader()->GetScalar("UpScalePower")->SetFloat(m_fUpScalePower);
+
+		material->Push_SubMapData();
+
+		mesh->Get_VertexBuffer()->Push_Data();
+		mesh->Get_IndexBuffer()->Push_Data();
+
+		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		if (i != 2)
+			material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+		else
+			material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
 	}
-	SSAO_MapBlur(RESOURCES.Get<Texture>(L"SSAOBlurTarget0"), RENDER_TARGET_GROUP_TYPE::SSAOBLUR1, false);
 }
 
 void Scene::Render_Lights()
@@ -1267,14 +1297,12 @@ void Scene::Render_LensFlare()
 
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::LENSFLARE)->OMSetRenderTargets();
 
-	auto material = RESOURCES.Get<Material>(L"LensFlareFinal");
+	auto material = RESOURCES.Get<Material>(L"LensFlare");
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
 
 
 	material->Get_Shader()->GetVector("g_LightPos")->SetFloatVector((_float*)&proj);
-	material->Get_Shader()->GetVector("g_TestPos1")->SetFloatVector((_float*)&testVector1);
-	material->Get_Shader()->GetVector("g_TestPos2")->SetFloatVector((_float*)&testVector2);
 	material->Push_SubMapData();
 	mesh->Get_VertexBuffer()->Push_Data();
 	mesh->Get_IndexBuffer()->Push_Data();
@@ -1286,7 +1314,64 @@ void Scene::Render_LensFlare()
 
 
 	material->Get_Shader()->DrawIndexed(0, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
-	m_wstrFinalRenderTarget = L"LensFlareTarget";
+
+	//for (_uchar i = 0; i < 3; ++i)
+	//{
+	//	RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::LENSFLAREDOWNSCALE0) + i);
+	//	GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
+	//	auto material = RESOURCES.Get<Material>(L"LensFlareDownScale" + to_wstring(i));
+	//	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+	//	//material->Get_Shader()->GetScalar("GaussianWeight")->SetFloatArray(a, 0, 25);
+	//	//material->Get_Shader()->GetScalar("DownScalePower")->SetFloat(m_fDownScalePower);
+	//	material->Push_SubMapData();
+
+	//	mesh->Get_VertexBuffer()->Push_Data();
+	//	mesh->Get_IndexBuffer()->Push_Data();
+
+	//	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	//	material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	//}
+
+	//for (_uchar i = 0; i < 3; ++i)
+	//{
+	//	RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::LENSFLAREUPSCALE0) + i);
+	//	GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
+	//	auto material = RESOURCES.Get<Material>(L"LensFlareUpScale" + to_wstring(i));
+	//	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+	//	//	material->Get_Shader()->GetScalar("UpScalePower")->SetFloat(m_fUpScalePower);
+
+	//	material->Push_SubMapData();
+
+	//	mesh->Get_VertexBuffer()->Push_Data();
+	//	mesh->Get_IndexBuffer()->Push_Data();
+
+	//	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	//	if (i != 2)
+	//		material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	//	else
+	//		material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	//}
+	{
+		GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::LENSFLAREFINAL)->OMSetRenderTargets();
+
+		auto material = RESOURCES.Get<Material>(L"LensFlareFinal");
+		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+		//	material->Get_Shader()->GetScalar("UpScalePower")->SetFloat(m_fUpScalePower);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
+		material->Push_SubMapData();
+
+		mesh->Get_VertexBuffer()->Push_Data();
+		mesh->Get_IndexBuffer()->Push_Data();
+
+		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+
+		m_wstrFinalRenderTarget = L"LensFlareFinalTarget";
+	}
+
 }
 
 void Scene::Render_Aberration()
@@ -1427,31 +1512,4 @@ void Scene::SSAO_MakeFrustumFarCorners()
 	m_vFrustumFarCorner[1] = _float4(+halfWidth, +halfHeight, farZ, 0.0f);
 	m_vFrustumFarCorner[2] = _float4(+halfWidth, -halfHeight, farZ, 0.0f);
 	m_vFrustumFarCorner[3] = _float4(-halfWidth, -halfHeight, farZ, 0.0f);
-}
-
-void Scene::SSAO_MapBlur(shared_ptr<Texture> input, RENDER_TARGET_GROUP_TYPE eType, _bool horzBlur)
-{
-	//GRAPHICS.Get_RTGroup(eType)->ClearRenderTargetView();
-	GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
-	auto material = make_shared<Material>();
-	material->Set_Shader(RESOURCES.Get<Shader>(L"Shader_SSAO.fx"));
-	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
-
-	material->Set_SubMap(0, input);
-
-	material->Push_SubMapData();
-	mesh->Get_VertexBuffer()->Push_Data();
-	mesh->Get_IndexBuffer()->Push_Data();
-
-	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-
-	_int iPass = horzBlur ? 1 : 2;
-	material->Get_Shader()->DrawIndexed(0, iPass, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
-	
-	for (int i = 0; i < 32; ++i)
-	{
-		ID3D11ShaderResourceView* nullSRV = nullptr;
-		CONTEXT->PSSetShaderResources(i, 1, &nullSRV);
-	}
 }

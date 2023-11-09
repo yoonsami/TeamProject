@@ -59,6 +59,8 @@ void DebugTool::RenderOptionTab()
 
 	if (BeginTabItem("Render Option"))
 	{
+		string fps  = to_string(TIME.GetFPS());
+		Text(fps.c_str());
 		_float& g_fBrightness = GAMEINSTANCE.g_fBrightness;
 		_float& g_fContrast = GAMEINSTANCE.g_fContrast;
 		_float& g_fMaxWhite = GAMEINSTANCE.g_fMaxWhite;
