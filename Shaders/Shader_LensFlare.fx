@@ -118,8 +118,6 @@ float4 PS_Final(VS_OUT input) : SV_Target0
     
     float2 vLightPos = g_LightPos;
     
-    float2 vLightUV = 
-    
     float2 centerPos = 2.f * g_LightPos - float2(960.f, 540.f);
 
     

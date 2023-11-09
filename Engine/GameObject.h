@@ -11,6 +11,7 @@ class Particle;
 class RigidBody;
 class Transform;
 class Billboard;
+class MeshEffect;
 class BaseCollider;
 class MeshRenderer;
 class FontRenderer;
@@ -88,6 +89,7 @@ public:
 	shared_ptr<Particle> Get_Particle();
 	shared_ptr<RigidBody> Get_RigidBody();
 	shared_ptr<Transform> Get_Transform();
+	shared_ptr<MeshEffect> Get_MeshEffect();
 	shared_ptr<BaseCollider> Get_Collider();
 	//shared_ptr<Billboard> Get_Billboard();
 	shared_ptr<ModelAnimator> Get_Animator();
