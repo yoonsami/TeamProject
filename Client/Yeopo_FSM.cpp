@@ -558,7 +558,7 @@ void Yeopo_FSM::b_run()
 
     if (KEYPUSH(KEY_TYPE::LSHIFT))
     {
-        if ((Get_CurFrame() == 1) || Get_CurFrame() >= 19)
+        if ((Get_CurFrame() == 1))
             m_eCurState = STATE::b_sprint;
 
     }

@@ -7,7 +7,6 @@
 #include "Loader.h"
 #include "Camera.h"
 #include "BaseUI.h"
-#include "DemoFSM.h"
 #include "Geometry.h"
 #include "RigidBody.h"
 #include "FileUtils.h"
@@ -38,6 +37,7 @@
 #include "CharacterController.h"
 #include "ObjectTransformDebug.h"
 #include "Silversword_Soldier_FSM.h"
+#include "Boss_Mir_FSM.h"
 #include "DemoAnimationController1.h"
 
 #include <filesystem>
@@ -129,6 +129,7 @@ HRESULT DemoScene::Load_Scene()
 	Load_Camera();
 	Load_MapFile(L"KrisMap29");
 	Load_Monster(5);
+	Load_Boss_Mir();
 	//Load_DemoMap();
 
 	Load_Ui();
@@ -156,7 +157,7 @@ void DemoScene::Load_Player()
 		
 		ObjPlayer->Add_Component(make_shared<Transform>());
 	
-		ObjPlayer->Get_Transform()->Set_State(Transform_State::POS, _float4(3.f, 0.f, 3.f, 1.f));
+		ObjPlayer->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 1.5f, 1.f));
 		{
 			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
@@ -385,6 +386,50 @@ void DemoScene::Load_Monster(_uint iCnt)
 			Add_GameObject(ObjMonster);
 		}
 	}
+}
+
+void DemoScene::Load_Boss_Mir()
+{
+	// Add. Monster
+	shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
+
+	ObjMonster->Add_Component(make_shared<Transform>());
+
+	ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 30.f, 1.f));
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+
+		shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+		{
+			shared_ptr<Model> model = RESOURCES.Get<Model>(L"Boss_Mir");
+			animator->Set_Model(model);
+		}
+
+		ObjMonster->Add_Component(animator);
+		ObjMonster->Add_Component(make_shared<Boss_Mir_FSM>());
+		auto pPlayer = Get_GameObject(L"Player");
+		ObjMonster->Get_FSM()->Set_Target(pPlayer);
+	}
+	ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 2.f, 3.f, 5.f })); //obbcollider
+	ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
+	ObjMonster->Get_Collider()->Set_Activate(true);
+
+	wstring strMonsterName = (L"Boss_Mir");
+	ObjMonster->Set_Name(strMonsterName);
+	{
+		auto controller = make_shared<CharacterController>();
+		ObjMonster->Add_Component(controller);
+		auto& desc = controller->Get_ControllerDesc();
+		desc.radius = 4.f;
+		desc.height = 5.f;
+		_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz() +
+					   ObjMonster->Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.position = { vPos.x, vPos.y, vPos.z };
+		controller->Create_Controller();
+	}
+	ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
+
+	Add_GameObject(ObjMonster);
 }
 
 void DemoScene::Load_Light()

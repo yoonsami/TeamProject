@@ -388,6 +388,7 @@ void Silversword_Soldier_FSM::n_run()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, XM_PI * 5.f);
 
+    //IF straight true ¹Ý´ë·Î 
     Get_Transform()->Go_Straight();
     
     Ray ray;
