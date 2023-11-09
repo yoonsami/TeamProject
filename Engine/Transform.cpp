@@ -95,8 +95,10 @@ void Transform::Set_State(Transform_State eState, const _float4& vState)
 	}
 }
 
-void Transform::Go_Dir(const _float3& vVel)
+_bool Transform::Go_Dir(const _float3& vVel)
 {
+	_bool bResult = false;
+
 	auto controller = Get_CharacterController();
 	if(controller)
 	{
@@ -109,14 +111,19 @@ void Transform::Go_Dir(const _float3& vVel)
 
 		auto controllerPos = actor->getFootPosition();
 		Set_State(Transform_State::POS, _float4(_float(controllerPos.x), _float(controllerPos.y), _float(controllerPos.z), 1.f));
+		if (result == PxControllerCollisionFlag::eCOLLISION_SIDES)
+			bResult = true;
 	}
 	else
 		Set_State(Transform_State::POS,Get_State(Transform_State::POS) + vVel);
 
+	return bResult;
+
 }
 
-void Transform::Go_Straight()
+_bool Transform::Go_Straight()
 {
+	_bool bResult = false;
 	_float4 vDir = Get_State(Transform_State::LOOK);
 	vDir.Normalize();
 
@@ -132,13 +139,18 @@ void Transform::Go_Straight()
 		auto controllerPos = actor->getFootPosition();
 
 		Set_State(Transform_State::POS, _float4(_float(controllerPos.x), _float(controllerPos.y), _float(controllerPos.z), 1.f));
+		if (result == PxControllerCollisionFlag::eCOLLISION_SIDES)
+			bResult = true;
 	}
 	else
 		Set_State(Transform_State::POS, Get_State(Transform_State::POS) + vDir * m_fMoveSpeed * fDT);
+
+	return bResult;
 }
 
-void Transform::Go_Backward()
+_bool Transform::Go_Backward()
 {
+	_bool bResult = false;
 	_float4 vDir = -Get_State(Transform_State::LOOK);
 	vDir.Normalize();
 
@@ -147,21 +159,22 @@ void Transform::Go_Backward()
 	{
 		auto actor = Get_CharacterController()->Get_Actor();
 
-
-
-
 		auto result = actor->move({ vDir.x * m_fMoveSpeed * fDT,vDir.y * m_fMoveSpeed * fDT ,vDir.z * m_fMoveSpeed * fDT }, 0.0f, fDT, PxControllerFilters());
 		auto controllerPos = actor->getFootPosition();
 
 		Set_State(Transform_State::POS, _float4(_float(controllerPos.x), _float(controllerPos.y), _float(controllerPos.z), 1.f));
+		if (result == PxControllerCollisionFlag::eCOLLISION_SIDES)
+			bResult = true;
 	}
 	else
 		Set_State(Transform_State::POS, Get_State(Transform_State::POS) + vDir * m_fMoveSpeed * fDT);
 
+	return bResult;
 }
 
-void Transform::Go_Left()
+_bool Transform::Go_Left()
 {
+	_bool bResult = false;
 	_float4 vDir = -Get_State(Transform_State::RIGHT);
 	vDir.Normalize();
 
@@ -177,14 +190,17 @@ void Transform::Go_Left()
 		auto controllerPos = actor->getFootPosition();
 
 		Set_State(Transform_State::POS, _float4(_float(controllerPos.x), _float(controllerPos.y), _float(controllerPos.z), 1.f));
+		if (result == PxControllerCollisionFlag::eCOLLISION_SIDES)
+			bResult = true;
 	}
 	else
 		Set_State(Transform_State::POS, Get_State(Transform_State::POS) + vDir * m_fMoveSpeed * fDT);
-
+	return bResult;
 }
 
-void Transform::Go_Right()
+_bool Transform::Go_Right()
 {
+	_bool bResult = false;
 	_float4 vDir = Get_State(Transform_State::RIGHT);
 	vDir.Normalize();
 
@@ -200,9 +216,15 @@ void Transform::Go_Right()
 		auto controllerPos = actor->getFootPosition();
 
 		Set_State(Transform_State::POS, _float4(_float(controllerPos.x), _float(controllerPos.y), _float(controllerPos.z), 1.f));
+		if (result == PxControllerCollisionFlag::eCOLLISION_SIDES)
+			bResult = true;
+
 	}
 	else
 		Set_State(Transform_State::POS, Get_State(Transform_State::POS) + vDir * m_fMoveSpeed * fDT);
+	
+	return bResult;
+
 }
 
 void Transform::Go_Horizontally_Up()

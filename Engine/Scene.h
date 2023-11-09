@@ -70,6 +70,7 @@ protected:
 	void Render_Lights();
 	void Render_LightFinal();
 
+	void Render_OutLine();
 
 	void Render_MotionBlurFinal();
 

@@ -42,7 +42,6 @@ shared_ptr<ResourceBase> Material::Clone()
 	material->m_TextureMaps = m_TextureMaps;
 
 	material->m_pSubMaps = m_pSubMaps;
-	material->m_bOutline = m_bOutline;
 
 	return material;
 }

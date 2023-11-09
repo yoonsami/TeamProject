@@ -170,6 +170,7 @@ void MainCameraScript::Update_Transform()
     _float fMinDist = FLT_MAX;
     Ray ray;
     ray.position = vCenterPos.xyz();
+    m_vOffset.Normalize();
     ray.direction = m_vOffset;
     physx::PxRaycastBuffer hit{};
     physx::PxQueryFilterData filterData;

@@ -37,11 +37,11 @@ public:
 
     void Set_State(Transform_State eState, const _float4& vState);
     void Set_Speed(_float speed) { m_fMoveSpeed = speed; }
-    void Go_Dir(const _float3& vVel);
-    void Go_Straight();
-    void Go_Backward();
-    void Go_Left();
-    void Go_Right();
+    _bool Go_Dir(const _float3& vVel);
+    _bool Go_Straight();
+    _bool Go_Backward();
+    _bool Go_Left();
+    _bool Go_Right();
     void Go_Horizontally_Up();      // MEMO : Tool���� Freecam�� ���� �߰� (q,e key)
     void Go_Horizontally_Down();    // MEMO : Tool���� Freecam�� ���� �߰� (q,e key)
     void Rotation(const _float3& vAxis, _float fRadian);

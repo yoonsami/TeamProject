@@ -156,12 +156,12 @@ PS_LIGHT_Deferred PS_PointLight(VS_OUT input)
     
     LightColor color = CalculateLightColor_ViewSpace(lightIndex, viewNormal, viewPos);
     
-    if (length(color.ambient) != 0 && g_SSAO_On)
-    {
-        float ssAO = SubMap3.Sample(LinearSampler, input.uv).r;
+    //if (length(color.ambient) != 0 && g_SSAO_On)
+    //{
+    //    float ssAO = SubMap3.Sample(LinearSampler, input.uv).r;
         
-        color.ambient = color.ambient * ssAO;
-    }
+    //    color.ambient = color.ambient * ssAO;
+    //}
     output.ambient = color.ambient;
     output.ambient.a = 1.f;
     output.diffuse = color.diffuse;

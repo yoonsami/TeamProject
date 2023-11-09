@@ -127,7 +127,7 @@ HRESULT DemoScene::Load_Scene()
 	Load_Player();
 	Load_Light();
 	Load_Camera();
-	Load_MapFile(L"KriKri");
+	Load_MapFile(L"KrisMap11");
 	Load_Monster(5);
 	//Load_DemoMap();
 
@@ -156,7 +156,7 @@ void DemoScene::Load_Player()
 		
 		ObjPlayer->Add_Component(make_shared<Transform>());
 	
-		ObjPlayer->Get_Transform()->Set_State(Transform_State::POS, _float4(3.f, 0.f, 3.f, 1.f));
+		ObjPlayer->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
 		{
 			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
@@ -180,7 +180,7 @@ void DemoScene::Load_Player()
 		{
 			auto controller = make_shared<CharacterController>();
 			ObjPlayer->Add_Component(controller);
-			auto& desc = controller->Get_ControllerDesc();
+			auto& desc = controller->Get_CapsuleControllerDesc();
 			desc.radius = 0.5f;
 			desc.height = 5.f;
 			_float3 vPos = ObjPlayer->Get_Transform()->Get_State(Transform_State::POS).xyz();
@@ -349,7 +349,7 @@ void DemoScene::Load_Monster(_uint iCnt)
 
 			ObjMonster->Add_Component(make_shared<Transform>());
 
-			ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(_float(rand() % 15), 0.f, _float(rand() % 15), 1.f));
+			ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(_float(rand() % 15) + 5, 0.f, _float(rand() % 15) + 5, 1.f));
 			{
 				shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
@@ -373,7 +373,7 @@ void DemoScene::Load_Monster(_uint iCnt)
 			{
 				auto controller = make_shared<CharacterController>();
 				ObjMonster->Add_Component(controller);
-				auto& desc = controller->Get_ControllerDesc();
+				auto& desc = controller->Get_CapsuleControllerDesc();
 				desc.radius = 0.5f;
 				desc.height = 5.f;
 				_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz();

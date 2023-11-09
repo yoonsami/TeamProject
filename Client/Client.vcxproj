@@ -293,6 +293,7 @@
     <FxCompile Include="..\Shaders\Shader_LensFlare.fx" />
     <FxCompile Include="..\Shaders\Shader_Mesh.fx" />
     <FxCompile Include="..\Shaders\Shader_Model.fx" />
+    <FxCompile Include="..\Shaders\Shader_Outline.fx" />
     <FxCompile Include="..\Shaders\Shader_Particle.fx" />
     <FxCompile Include="..\Shaders\Shader_Particle2.fx" />
     <FxCompile Include="..\Shaders\Shader_SSAO.fx" />

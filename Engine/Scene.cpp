@@ -86,18 +86,18 @@ void Scene::Render()
 	Render_Lights();
 	//Render_BlurEffect();
 	Render_LightFinal();
-
 	Render_MotionBlurFinal();
 	Render_Forward();
 	Render_BloomMap();
 	Render_BloomMapScaling();
+	Render_OutLine();
 	Render_Distortion();
 	Render_Distortion_Final();
 	Render_LensFlare();
 	Render_FXAA();
 	Render_Aberration();
 
-	//Render_Debug();
+	Render_Debug();
 
 	Render_UI();
 	//Render_ToneMapping();
@@ -652,6 +652,10 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 		// 오브젝트 틀 생성
 		shared_ptr<GameObject> CreateObject = make_shared<GameObject>();
 		CreateObject->Set_Name(strObjectName);
+		CreateObject->Set_DrawShadow(bShadow);
+		CreateObject->Set_Blur(bBlur);
+		CreateObject->Set_CullPos(CullPos);
+		CreateObject->Set_CullRadius(CullRadius);
 		// 이름을 사용하여 모델생성
 		// 고유번호를 제거하여 모델명을 얻어옴
 		_int iPureNameSize = 0;
@@ -706,6 +710,11 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 				CreateObject->Add_Component(pCollider);
 				//pCollider->Set_CollisionGroup(MAPObject);
 				pCollider->Set_Activate(true);
+				_float3 vObjPos = CreateObject->Get_Transform()->Get_State(Transform_State::POS).xyz();
+				auto rigidBody = make_shared<RigidBody>();
+				CreateObject->Add_Component(rigidBody);
+				rigidBody->Create_CapsuleRigidBody(CreateObject->Get_CullPos() + _float3::Up * CreateObject->Get_CullRadius(), CreateObject->Get_CullRadius(), CreateObject->Get_CullRadius() * 2.f);
+
 				break;
 			}
 			case ColliderType::Mesh:
@@ -724,10 +733,7 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 				break;
 			}
 		}
-		CreateObject->Set_DrawShadow(bShadow);
-		CreateObject->Set_Blur(bBlur);
-		CreateObject->Set_CullPos(CullPos);
-		CreateObject->Set_CullRadius(CullRadius);
+		
 
 		Add_GameObject(CreateObject);
 	}
@@ -1107,6 +1113,45 @@ void Scene::Render_LightFinal()
 	m_wstrFinalRenderTarget = L"FinalTarget";
 }
 
+void Scene::Render_OutLine()
+{
+	if (!GAMEINSTANCE.g_bDrawOutline)
+		return;
+
+	{
+		GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::OUTLINE)->OMSetRenderTargets();
+
+		auto material = RESOURCES.Get<Material>(L"Outline");
+		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+
+		material->Push_SubMapData();
+
+		mesh->Get_VertexBuffer()->Push_Data();
+		mesh->Get_IndexBuffer()->Push_Data();
+
+		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		material->Get_Shader()->DrawIndexed(0, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	}
+	{
+		GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::OUTLINEFINAL)->OMSetRenderTargets();
+
+		auto material = RESOURCES.Get<Material>(L"OutlineFinal");
+		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+
+		material->Push_SubMapData();
+		material->Set_SubMap(1, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
+		mesh->Get_VertexBuffer()->Push_Data();
+		mesh->Get_IndexBuffer()->Push_Data();
+
+		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+
+		m_wstrFinalRenderTarget = L"OutLineFinalTarget";
+	}
+}
+
 void Scene::Render_MotionBlurFinal()
 {
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::MOTIONBLURFINAL)->OMSetRenderTargets();
@@ -1263,7 +1308,8 @@ void Scene::Render_FXAA()
 	auto material = RESOURCES.Get<Material>(L"FXAARenderFinal");
 	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
-
+	
+	material->Get_Shader()->GetScalar("Use")->SetBool(GAMEINSTANCE.g_bFXAAOn);
 	material->Push_SubMapData();
 	mesh->Get_VertexBuffer()->Push_Data();
 	mesh->Get_IndexBuffer()->Push_Data();
@@ -1304,7 +1350,10 @@ void Scene::Render_LensFlare()
 	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
 
 
+
 	material->Get_Shader()->GetVector("g_LightPos")->SetFloatVector((_float*)&proj);
+	material->Get_Shader()->GetVector("col1")->SetFloatVector((_float*)&GAMEINSTANCE.g_testVec1);
+	material->Get_Shader()->GetVector("col2")->SetFloatVector((_float*)&GAMEINSTANCE.g_testVec2);
 	material->Push_SubMapData();
 	mesh->Get_VertexBuffer()->Push_Data();
 	mesh->Get_IndexBuffer()->Push_Data();

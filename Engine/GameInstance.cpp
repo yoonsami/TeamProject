@@ -72,6 +72,12 @@ _float GameInstance::g_fAberrationPower = 0.f;
 
 _bool GameInstance::g_bLensFlare = false;
 
+_float3 GameInstance::g_testVec1 = _float3(0.2f, 0.1f, 0.f);
+
+_float3 GameInstance::g_testVec2 = _float3(0.9f, 1.f, 1.f);
+
+_bool GameInstance::g_bDrawOutline = false;
+
 GameInstance::FogData GameInstance::g_FogData{};
 
 GameInstance::SSAOData GameInstance::g_SSAOData{};

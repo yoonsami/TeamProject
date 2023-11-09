@@ -491,5 +491,8 @@
     <FxCompile Include="..\Shaders\Shader_LensFlare.fx">
       <Filter>Shader</Filter>
     </FxCompile>
+    <FxCompile Include="..\Shaders\Shader_Outline.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

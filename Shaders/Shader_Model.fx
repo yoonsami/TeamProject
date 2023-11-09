@@ -1,8 +1,6 @@
 #include "Render.fx"
 #include "Light.fx"
-// OutLine
-float4 g_LineColor;
-float g_LineThickness;
+
 float4x4 g_preView;
 
 struct MotionBlurOutput
@@ -10,13 +8,7 @@ struct MotionBlurOutput
     float4 position : SV_Position;
     float4 vDir : Position1;
 };
-struct OutlineOutput
-{
-    float4 diffuseColor : SV_Target3;
-    float4 specularColor : SV_Target4;
-    float4 emissiveColor : SV_Target5;
-    float4 blurColor : SV_Target6;
-};
+
 
 // VS_Model
 MeshOutput VS_NonAnim(VTXModel input)
@@ -152,120 +144,6 @@ MeshInstancingOutput VS_AnimInstancing(VTXModelInstancing input)
     return output;
 }
 
-// VS_OutLine
-MeshOutput VS_NonAnimOutline(VTXModel input)
-{
-    MeshOutput output;
-    output.position = mul(float4(input.position, 1.f), BoneTransform[BoneIndex]);
-    output.position = mul(output.position, W);
-    output.viewNormal = mul(input.normal, (float3x3) BoneTransform[BoneIndex]);
-    output.viewNormal = normalize(mul(output.viewNormal, (float3x3) W));
-    output.viewNormal = normalize(mul(output.viewNormal, (float3x3) V));
-    output.viewTangent = mul(input.tangent, (float3x3) BoneTransform[BoneIndex]);
-    output.viewTangent = mul(output.viewTangent, (float3x3) W);
-    output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
-    
-   // output.position += float4(normalize(output.viewNormal) * g_LineThickness, 0.f);
-    
-    output.worldPosition = output.position.xyz;
-    output.viewPosition = mul(float4(output.worldPosition, 1.f), V).xyz;
-    output.position = mul(output.position, V);
-    output.position += float4(normalize(output.viewNormal) * g_LineThickness * output.viewPosition.z, 0.f);
-    output.position = mul(output.position, P);
-    
-    output.uv = input.uv;
-    
-   // output.viewPosition = output.viewPosition + output.viewNormal * g_LineThickness;
-
-    return output;
-}
-
-MeshOutput VS_AnimOutline(VTXModel input)
-{
-    MeshOutput output;
-    
-    matrix m = GetAnimationMatrix(input);
-
-    output.position = mul(float4(input.position, 1.f), m);
-    output.position = mul(output.position, W);
-    output.viewNormal = normalize(mul(input.normal, (float3x3) m));
-    output.viewNormal = normalize(mul(output.viewNormal, (float3x3) W));
-    output.viewTangent = mul(input.tangent, (float3x3) m);
-    output.viewTangent = mul(output.viewTangent, (float3x3) W);
-    output.viewNormal = normalize(mul(output.viewNormal, (float3x3) V));
-    output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
-
-   // output.position += float4(normalize(output.viewNormal) * g_LineThickness, 0.f);
-
-    output.worldPosition = output.position.xyz;
-    output.viewPosition = mul(float4(output.worldPosition, 1.f), V).xyz;
-    output.position = mul(output.position, V);
-    output.position += float4(normalize(output.viewNormal) * g_LineThickness * output.viewPosition.z, 0.f);
-    output.position = mul(output.position, P);
-
-    output.uv = input.uv;
-    
-   // output.viewPosition = output.viewPosition + output.viewNormal * g_LineThickness;
-    
-    return output;
-}
-
-MeshInstancingOutput VS_NonAnimInstancingOutline(VTXModelInstancing input)
-{
-    MeshInstancingOutput output;
-    
-    output.position = mul(float4(input.position, 1.f), BoneTransform[BoneIndex]);
-    output.position = mul(output.position, input.world);
-    output.viewNormal = mul(input.normal, (float3x3) BoneTransform[BoneIndex]);
-    output.viewNormal = mul(output.viewNormal, (float3x3) input.world);
-    output.viewTangent = mul(input.tangent, (float3x3) BoneTransform[BoneIndex]);
-    output.viewTangent = mul(output.viewTangent, (float3x3) input.world);
-    output.viewNormal = normalize(mul(output.viewNormal, (float3x3) V));
-    output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
-    
-    //output.position += float4(output.viewNormal * g_LineThickness, 0.f);
-    
-    output.worldPosition = output.position.xyz;
-    output.viewPosition = mul(float4(output.worldPosition, 1.f), V).xyz;
-    output.position = mul(output.position, V);
-    output.position += float4(normalize(output.viewNormal) * g_LineThickness * output.viewPosition.z, 0.f);
-    output.position = mul(output.position, P);
-
-    output.uv = input.uv;
-    output.id = input.instanceID;
-  //  output.viewPosition = output.viewPosition + output.viewNormal * g_LineThickness;
-    return output;
-}
-
-MeshInstancingOutput VS_AnimInstancingOutline(VTXModelInstancing input)
-{
-    MeshInstancingOutput output;
-
-    matrix m = GetAnimationMatrix_Instance(input);
-    
-    output.position = mul(float4(input.position, 1.f), m);
-    output.position = mul(output.position, input.world);
-    output.viewNormal = mul(input.normal, (float3x3) m);
-    output.viewNormal = mul(output.viewNormal, (float3x3) input.world);
-    output.viewTangent = mul(input.tangent, (float3x3) m);
-    output.viewTangent = mul(output.viewTangent, (float3x3) input.world);
-    output.viewNormal = normalize(mul(output.viewNormal, (float3x3) V));
-    output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
-    
-    //output.position += float4(output.viewNormal * g_LineThickness, 0.f);
-
-    output.worldPosition = output.position.xyz;
-    output.viewPosition = mul(float4(output.worldPosition, 1.f), V).xyz;
-
-        output.position = mul(output.position, V);
-    output.position += float4(normalize(output.viewNormal) * g_LineThickness * output.viewPosition.z, 0.f);
-    output.position = mul(output.position, P);
-    output.uv = input.uv;
-   // output.viewPosition = output.viewPosition + output.viewNormal * g_LineThickness;
-    output.id = input.instanceID;
-    
-    return output;
-}
 
 // VS_Shadow
 ShadowOutput VS_Shadow_NonAnim(VTXModel input)
@@ -691,49 +569,6 @@ PS_OUT_Deferred PS_Deferred_Instancing(MeshInstancingOutput input)
     return output;
 }
 
-// PS_OutLine
-OutlineOutput PS_Deferred_Outline(MeshOutput input)
-{
-    OutlineOutput output = (OutlineOutput) 0.f;
-    if (bHasDissolveMap != 0)
-    {
-        float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
-        if (dissolve < g_float_0)
-            discard;
-    }
-    if (bHasDiffuseMap)
-        if (DiffuseMap.Sample(LinearSampler, input.uv).a < 0.1f)
-            discard;
-    output.diffuseColor = g_LineColor;
-    output.specularColor = g_LineColor;
-    output.emissiveColor = g_LineColor;
-    output.blurColor = g_vec4_0;
-    
-    return output;
-}
-
-OutlineOutput PS_Deferred_Outline_Instancing(MeshInstancingOutput input)
-{
-    OutlineOutput output = (OutlineOutput) 0.f;
-    if (bHasDissolveMap != 0)
-    {
-        float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
-        if (dissolve < InstanceRenderParams[input.id].g_float_0)
-            discard;
-    }
-    
-    if (bHasDiffuseMap)
-        if (DiffuseMap.Sample(LinearSampler, input.uv).a < 0.1f)
-            discard;
-
-    
-    output.diffuseColor = g_LineColor;
-    output.specularColor = g_LineColor;
-    output.emissiveColor = g_LineColor;
-    output.blurColor = InstanceRenderParams[input.id].g_vec4_0;
-    return output;
-}
-
 // PS_Shadow
 float4 PS_Shadow(ShadowOutput input) : SV_Target
 {
@@ -931,44 +766,9 @@ technique11 T0_ModelRender
     PASS_RS_VP(P6_WIREFRAME, FillModeWireFrame, VS_NonAnimInstancing, PS_FRAME)
 };
 
-technique11 T1_Outline
+technique11 T1
 {
-    pass NonAnim_NonInstancing
-    {
-        SetVertexShader(CompileShader(vs_5_0, VS_NonAnimOutline()));
-        SetGeometryShader(NULL);
-        SetRasterizerState(RS_CW);
-        SetDepthStencilState(DSS_LESS, 0);
-        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Outline()));
-    }
-    pass NonAnim_Instancing
-    {
-        SetVertexShader(CompileShader(vs_5_0, VS_NonAnimInstancingOutline()));
-        SetGeometryShader(NULL);
-        SetRasterizerState(RS_CW);
-        SetDepthStencilState(DSS_LESS, 0);
-        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Outline_Instancing()));
-    }
-    pass Anim_NonInstancing
-    {
-        SetVertexShader(CompileShader(vs_5_0, VS_AnimOutline()));
-        SetGeometryShader(NULL);
-        SetRasterizerState(RS_CW);
-        SetDepthStencilState(DSS_LESS, 0);
-        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Outline()));
-    }
-    pass Anim_Instancing
-    {
-        SetVertexShader(CompileShader(vs_5_0, VS_AnimInstancingOutline()));
-        SetGeometryShader(NULL);
-        SetRasterizerState(RS_CW);
-        SetDepthStencilState(DSS_LESS, 0);
-        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Outline_Instancing()));
-    }
+ 
 };
 
 technique11 T2_MotionBlur

@@ -100,11 +100,13 @@ void DebugTool::RenderOptionTab()
 
 
 		}
+		SeparatorText("Outline");
+		_bool& g_bOutline = GAMEINSTANCE.g_bDrawOutline;
+		Checkbox("Outline On", &g_bOutline);
 
 		SeparatorText("FXAA");
 		_bool& g_bFXAAOn = GAMEINSTANCE.g_bFXAAOn;
 		Checkbox("FXAA On", &g_bFXAAOn);
-		EndTabItem();
 
 		SeparatorText("Aberration");
 		_bool& g_bAberrationOn = GAMEINSTANCE.g_bAberrationOn;
@@ -114,6 +116,7 @@ void DebugTool::RenderOptionTab()
 			_float& g_fAberrationPower = GAMEINSTANCE.g_fAberrationPower;
 			DragFloat("Aberration Power", &g_fAberrationPower, 1.f,-300.f, 300.f);
 		}
+		EndTabItem();
 	}
 }
 void DebugTool::FogOptionTab()
@@ -149,7 +152,8 @@ void DebugTool::LensFlareTab()
 		{
 			_bool& g_bLensFlare = GAMEINSTANCE.g_bLensFlare;
 			Checkbox("LensFlare On", &g_bLensFlare);
-			DragFloat2("Test", (_float*)&CUR_SCENE->testVector1);
+			DragFloat3("Test1", (_float*)&GAMEINSTANCE.g_testVec1,0.01f);
+			DragFloat3("Test2", (_float*)&GAMEINSTANCE.g_testVec2, 0.01f);
 		}
 		EndTabItem();
 	}

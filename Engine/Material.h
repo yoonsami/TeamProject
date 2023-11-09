@@ -39,13 +39,10 @@ public:
 	void Set_SubMap(int index, shared_ptr<Texture> pTexture) {
         if (index < MAX_SUB_SRV_COUNT && index >= 0) m_pSubMaps[index] = pTexture;	}
 
-    _bool Has_Outline() { return m_bOutline; }
-    void Set_Outline(_bool bOutline) { m_bOutline = bOutline; }
 
 private:
     friend class MeshRenderer;
 
-    _bool m_bOutline = true;
     MaterialDesc m_Desc;
   
     shared_ptr<Shader>  m_pShader = nullptr;

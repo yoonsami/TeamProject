@@ -3,7 +3,7 @@
 
 int g_SeedCount = 7;
 int g_CirclesCount = 20;
-float g_fCircleSize = 1.f / 10.f;
+float g_fCircleSize = 1.f / 20.f;
 float3 col1 = float3(0.2f, 0.1f, 0.f);
 float3 col2 = float3(0.9f,1.f,1.f);
 float fadeRadius = 0.7f;

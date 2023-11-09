@@ -692,5 +692,3 @@ void Model::Create_AnimationTransform(_uint index)
 	}
 }
 
-_float Model::m_fOutlineThickness = 0.001f;
-
