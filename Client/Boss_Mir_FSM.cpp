@@ -5,6 +5,7 @@
 #include "AttackColliderInfoScript.h"
 #include "Model.h"
 #include "CharacterController.h"
+#include "CounterMotionTrailScript.h"
 
 HRESULT Boss_Mir_FSM::Init()
 {
@@ -29,7 +30,7 @@ void Boss_Mir_FSM::Tick()
     if (!m_pAttackCollider.expired())
     {
         //m_pAttack transform set forward
-        m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f + _float3::Up);
+        m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 6.f + _float3::Up);
     }
 
     if (!m_pTailCollider.expired())
@@ -120,9 +121,6 @@ void Boss_Mir_FSM::State_Tick()
     case STATE::skill_100100:
         skill_100100();
         break;
-    case STATE::skill_101100:
-        skill_101100();
-        break;
     case STATE::skill_100200:
         skill_100200();
         break;
@@ -204,9 +202,6 @@ void Boss_Mir_FSM::State_Init()
         case STATE::skill_100100:
             skill_100100_Init();
             break;
-        case STATE::skill_101100:
-            skill_101100_Init();
-            break;
         case STATE::skill_100200:
             skill_100200_Init();
             break;
@@ -254,27 +249,34 @@ void Boss_Mir_FSM::Get_Hit(const wstring& skillname, shared_ptr<BaseCollider> pO
 
     if (skillname == NORMAL_ATTACK || skillname == NORMAL_SKILL)
     {
-        if (!m_bSuperArmor)
+        if (m_bCounter)
         {
-
+            if (CounterAttackCheck())
+                m_eCurState = STATE::groggy_start;
         }
     }
     else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
     {
-        if (!m_bSuperArmor)
+        if (m_bCounter)
         {
-           
+            if (CounterAttackCheck())
+                m_eCurState = STATE::groggy_start;
         }
     }
     else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
     {
-       
+        if (m_bCounter)
+        {
+            if (CounterAttackCheck())
+                m_eCurState = STATE::groggy_start;
+        }
     }
     else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
     {
-        if (!m_bSuperArmor)
+        if (m_bCounter)
         {
-           
+            if (CounterAttackCheck())
+                m_eCurState = STATE::groggy_start;
         }
     }
 
@@ -318,7 +320,7 @@ void Boss_Mir_FSM::First_Meet_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"3D_ui_start", 0.1f, false, 2.f);
+    animator->Set_NextTweenAnim(L"3D_ui_start", 0.1f, false, 1.f);
 
     m_bInvincible = true;
 }
@@ -333,7 +335,7 @@ void Boss_Mir_FSM::sq_Intro_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"sq_Intro", 0.1f, false, 1.f);
+    animator->Set_NextTweenAnim(L"sq_Intro", 0.1f, false, 1.5f);
 
     m_bInvincible = true;
 }
@@ -348,7 +350,7 @@ void Boss_Mir_FSM::sq_Intro2_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"sq_Intro2", 0.1f, false, 1.f);
+    animator->Set_NextTweenAnim(L"sq_Intro2", 0.1f, false, 1.5f);
 
     m_bInvincible = true;
 }
@@ -356,57 +358,120 @@ void Boss_Mir_FSM::sq_Intro2_Init()
 void Boss_Mir_FSM::b_idle()
 {
     if (!m_pTarget.expired())
-        Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
+        Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 2.f);
 
+    m_tAttackCoolTime.fAccTime += fDT;
 
-    _uint iRan = rand() % 3;
-
-    if (iRan == 0)
-        m_eCurState = STATE::skill_1100;
-    else if (iRan == 1)
+    if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
+    {
         m_eCurState = STATE::skill_2100;
-    else if (iRan == 2)
-        m_eCurState = STATE::skill_3100;
-    else if (iRan == 3)
-        m_eCurState = STATE::skill_4100;
-    else if (iRan == 4)
-        m_eCurState = STATE::skill_11100;
+        /*_uint iRan = rand() % 9;
 
+        while (true)
+        {
+            if (iRan == m_iPreAttack)
+                iRan = rand() % 9;
+            else
+                break;
+        }*/
+
+
+       /* if (iRan == 0)
+        {
+            m_eCurState = STATE::SQ_SBRin_Roar;
+            m_iPreAttack = 0;
+        }
+        else if (iRan == 1)
+        {
+            m_eCurState = STATE::skill_1100;
+            m_iPreAttack = 1;
+        }
+        else if (iRan == 2)
+        {
+            m_eCurState = STATE::skill_2100;
+            m_iPreAttack = 2;
+        }
+        else if (iRan == 3)
+        {
+            m_eCurState = STATE::skill_9100;
+            m_iPreAttack = 3;
+        }
+        else if (iRan == 4)
+        {
+            m_eCurState = STATE::skill_11100;
+            m_iPreAttack = 4;
+        }
+        else if (iRan == 5)
+        {
+            m_eCurState = STATE::skill_12100;
+            m_iPreAttack = 5;
+        }
+        else if (iRan == 6)
+        {
+            m_eCurState = STATE::skill_13100;
+            m_iPreAttack = 6;
+        }
+        else if (iRan == 7)
+        {
+            m_eCurState = STATE::skill_14100;
+            m_iPreAttack = 7;
+        }
+        else if (iRan == 8)
+        {
+            m_eCurState = STATE::skill_100000;
+            m_iPreAttack = 8;
+        }*/
+    }
 }
 
 void Boss_Mir_FSM::b_idle_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"b_idle", 0.1f, true, 1.f);
+    animator->Set_NextTweenAnim(L"b_idle", 0.3f, true, 1.f);
 
     Get_Transform()->Set_Speed(m_fRunSpeed);
 
     m_vTurnVector = _float3(0.f);
 
     m_bInvincible = false;
+
+    m_tAttackCoolTime.fAccTime = 0.f;
+    m_tBreathCoolTime.fAccTime = 0.f;
+
+    AttackCollider_Off();
+    TailAttackCollider_Off();
 }
 
 void Boss_Mir_FSM::turn_l()
 {
+    if (Is_AnimFinished())
+        m_eCurState = STATE::b_idle;
 }
 
 void Boss_Mir_FSM::turn_l_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"turn_l", 0.1f, false, 1.f);
+    animator->Set_NextTweenAnim(L"turn_l", 0.2f, false, 1.f);
+    
+    m_bTurnMotion = false;
 }
 
 void Boss_Mir_FSM::turn_r()
 {
+    if (Is_AnimFinished())
+        m_eCurState = STATE::b_idle;
+
 }
 
 void Boss_Mir_FSM::turn_r_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"turn_l", 0.1f, false, 1.f);
+    animator->Set_NextTweenAnim(L"turn_l", 0.2f, false, 1.f);
+
+    m_bTurnMotion = false;
 }
 
 void Boss_Mir_FSM::die()
@@ -418,6 +483,9 @@ void Boss_Mir_FSM::die_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"SQ_Dead", 0.1f, false, 1.f);
+
+    AttackCollider_Off();
+    TailAttackCollider_Off();
 }
 
 void Boss_Mir_FSM::groggy_start()
@@ -431,6 +499,14 @@ void Boss_Mir_FSM::groggy_start_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"groggy_start", 0.1f, false, 1.f);
+
+    AttackCollider_Off();
+    TailAttackCollider_Off();
+
+    m_tAttackCoolTime.fAccTime = 0.f;
+    m_tBreathCoolTime.fAccTime = 0.f;
+    m_bCounter = false;
+    m_bSkillCreate = false;
 }
 
 void Boss_Mir_FSM::groggy_loop()
@@ -497,7 +573,21 @@ void Boss_Mir_FSM::SQ_SBRin_Roar()
         m_bSkillCreate = false;
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
+    {
+        _uint iRan = rand() % 3;
+
+        if (iRan == 0)
+        {
+            if (CalCulate_PlayerDir() == DIR::BACKWARD_LEFT)
+                m_eCurState = STATE::skill_4100;
+            else if (CalCulate_PlayerDir() == DIR::BACKWARD_RIGHT)
+                m_eCurState = STATE::skill_3100;
+            else
+                m_eCurState = STATE::b_idle;
+        }
+        else
+            m_eCurState = STATE::b_idle;
+    }
 }
 
 void Boss_Mir_FSM::SQ_SBRin_Roar_Init()
@@ -505,6 +595,8 @@ void Boss_Mir_FSM::SQ_SBRin_Roar_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"SQ_SBRin_Roar", 0.1f, false, 1.f);
+
+    m_tAttackCoolTime.fAccTime = 0.f;
 }
 
 void Boss_Mir_FSM::skill_1100()
@@ -543,7 +635,21 @@ void Boss_Mir_FSM::skill_1100()
         m_bSkillCreate = false;
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
+    {
+        _uint iRan = rand() % 3;
+        
+        if (iRan == 0)
+        {
+            if (CalCulate_PlayerDir() == DIR::BACKWARD_LEFT)
+                m_eCurState = STATE::skill_4100;
+            else if (CalCulate_PlayerDir() == DIR::BACKWARD_RIGHT)
+                m_eCurState = STATE::skill_3100;
+            else
+                m_eCurState = STATE::b_idle;
+        }
+        else
+            m_eCurState = STATE::b_idle;
+    }
     
 }
 
@@ -554,17 +660,37 @@ void Boss_Mir_FSM::skill_1100_Init()
     animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_tAttackCoolTime.fAccTime = 0.f;
+
 }
 
 void Boss_Mir_FSM::skill_2100()
 {
-    if (Get_CurFrame() == 70)
+    if (Get_CurFrame() == 55)
+        m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed / 2.f);
+    else if (Get_CurFrame() == 60)
+    {
+        if (!m_bSkillCreate)
+        {
+            Create_CounterMotionTrail();
+            m_bSkillCreate = true;
+            m_bCounter = true;
+        }
+    }
+    else if (Get_CurFrame() == 68)
+    {
+        m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed);
+        m_bCounter = false;
+    }
+    else if (Get_CurFrame() == 70)
         AttackCollider_On(KNOCKBACK_ATTACK);
     else if (Get_CurFrame() == 93)
         AttackCollider_Off();
+    else
+        m_bSkillCreate = false;
 
-    if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
+
+    if (Is_AnimFinished()) 
+        m_eCurState = STATE::skill_5100;
 }
 
 void Boss_Mir_FSM::skill_2100_Init()
@@ -575,14 +701,15 @@ void Boss_Mir_FSM::skill_2100_Init()
 
     m_tAttackCoolTime.fAccTime = 0.f;
 
+    m_bCounter = false;
 }
 
 void Boss_Mir_FSM::skill_3100()
 {
     if (Get_CurFrame() == 80)
-        AttackCollider_On(KNOCKBACK_ATTACK);
+        TailAttackCollider_On(KNOCKBACK_ATTACK);
     else if (Get_CurFrame() == 98)
-        AttackCollider_Off();
+        TailAttackCollider_Off();
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
@@ -600,9 +727,9 @@ void Boss_Mir_FSM::skill_3100_Init()
 void Boss_Mir_FSM::skill_4100()
 {
     if (Get_CurFrame() == 86)
-        AttackCollider_On(KNOCKBACK_ATTACK);
+        TailAttackCollider_On(KNOCKBACK_ATTACK);
     else if (Get_CurFrame() == 108)
-        AttackCollider_Off();
+        TailAttackCollider_Off();
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
@@ -635,32 +762,27 @@ void Boss_Mir_FSM::skill_5100_Init()
 void Boss_Mir_FSM::skill_9100()
 {
     if (Get_CurFrame() == 66 ||
-        Get_CurFrame() == 76 ||
         Get_CurFrame() == 86 ||
-        Get_CurFrame() == 96 ||
         Get_CurFrame() == 106)
     {
         if (!m_bSkillCreate)
         {
-            MouseBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iMouseBoneIndex) *
-                _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
-
-            _float4 vBonePos = _float4{ MouseBoneMatrix.Translation().x, MouseBoneMatrix.Translation().y, MouseBoneMatrix.Translation().z , 1.f };
+            _float4 vPlayerPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS);
 
             FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::UP) * -1.f;
+            desc.vSkillDir = _float3{ 0.f,-1.f,0.f };
             desc.fMoveSpeed = 20.f;
             desc.fLifeTime = 1.f;
             desc.fLimitDistance = 10.f;
 
             for (_uint i = 0; i < 4; i++)
             {
-                _float fOffSetX = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 5 + 1));
-                _float fOffSetZ = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 5 + 1));
+                _float fOffSetX = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
+                _float fOffSetZ = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
 
-                _float4 vSkillPos = vBonePos + _float4{ fOffSetX, 0.f, fOffSetZ, 1.f };
+                _float4 vSkillPos = vPlayerPos + _float4{ fOffSetX, 5.f, fOffSetZ, 0.f };
 
-                Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKBACK_ATTACK);
+                Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, AIRBORNE_ATTACK);
             }
 
             m_bSkillCreate = true;
@@ -696,7 +818,7 @@ void Boss_Mir_FSM::skill_11100()
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 5.f, desc, KNOCKDOWN_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 15.f, desc, KNOCKDOWN_ATTACK);
 
             m_bSkillCreate = true;
         }
@@ -704,7 +826,12 @@ void Boss_Mir_FSM::skill_11100()
     else
         m_bSkillCreate = false;
 
-    if (Is_AnimFinished())
+
+    if (CalCulate_PlayerDir() == DIR::BACKWARD_LEFT)
+        m_eCurState = STATE::skill_4100;
+    else if (CalCulate_PlayerDir() == DIR::BACKWARD_RIGHT)
+        m_eCurState = STATE::skill_3100;
+    else
         m_eCurState = STATE::b_idle;
 }
 
@@ -737,7 +864,7 @@ void Boss_Mir_FSM::skill_12100()
             wstring strAttackType = NORMAL_ATTACK;
 
             if (Get_CurFrame() == 58)
-                strAttackType = KNOCKDOWN_ATTACK;
+                strAttackType = KNOCKBACK_ATTACK;
 
             Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, strAttackType);
 
@@ -757,7 +884,21 @@ void Boss_Mir_FSM::skill_12100()
         m_bSkillCreate = false;
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
+    {
+        _uint iRan = rand() % 2;
+
+        if (iRan == 0)
+        {
+            if (CalCulate_PlayerDir() == DIR::BACKWARD_LEFT)
+                m_eCurState = STATE::skill_4100;
+            else if (CalCulate_PlayerDir() == DIR::BACKWARD_RIGHT)
+                m_eCurState = STATE::skill_3100;
+            else
+                m_eCurState = STATE::b_idle;
+        }
+        else
+            m_eCurState = STATE::b_idle;
+    }
 }
 
 void Boss_Mir_FSM::skill_12100_Init()
@@ -788,7 +929,7 @@ void Boss_Mir_FSM::skill_13100()
 
             for (_uint i = 0; i < 3; i++)
             {
-                Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKDOWN_ATTACK);
+                Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK);
 
                 desc.vSkillDir = desc.vSkillDir + Get_Transform()->Get_State(Transform_State::RIGHT);
             }
@@ -800,7 +941,21 @@ void Boss_Mir_FSM::skill_13100()
         m_bSkillCreate = false;
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
+    {
+        _uint iRan = rand() % 2;
+
+        if (iRan == 0)
+        {
+            if (CalCulate_PlayerDir() == DIR::BACKWARD_LEFT)
+                m_eCurState = STATE::skill_4100;
+            else if (CalCulate_PlayerDir() == DIR::BACKWARD_RIGHT)
+                m_eCurState = STATE::skill_3100;
+            else
+                m_eCurState = STATE::b_idle;
+        }
+        else
+            m_eCurState = STATE::b_idle;
+    }
 }
 
 void Boss_Mir_FSM::skill_13100_Init()
@@ -855,7 +1010,7 @@ void Boss_Mir_FSM::skill_14100()
             wstring strAttackType = NORMAL_ATTACK;
 
             if (Get_CurFrame() == 58)
-                strAttackType = KNOCKDOWN_ATTACK;
+                strAttackType = KNOCKBACK_ATTACK;
 
             Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, strAttackType);
 
@@ -875,7 +1030,21 @@ void Boss_Mir_FSM::skill_14100()
         m_bSkillCreate = false;
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
+    {
+        _uint iRan = rand() % 2;
+
+        if (iRan == 0)
+        {
+            if (CalCulate_PlayerDir() == DIR::BACKWARD_LEFT)
+                m_eCurState = STATE::skill_4100;
+            else if (CalCulate_PlayerDir() == DIR::BACKWARD_RIGHT)
+                m_eCurState = STATE::skill_3100;
+            else
+                m_eCurState = STATE::b_idle;
+        }
+        else
+            m_eCurState = STATE::b_idle;
+    }
 }
 
 void Boss_Mir_FSM::skill_14100_Init()
@@ -889,37 +1058,121 @@ void Boss_Mir_FSM::skill_14100_Init()
 
 void Boss_Mir_FSM::skill_100000()
 {
+    if (Is_AnimFinished())
+    {
+        if (m_iBreathType < 7)
+            m_eCurState = STATE::skill_100100;
+        else 
+            m_eCurState = STATE::skill_100200;
+    }
 }
 
 void Boss_Mir_FSM::skill_100000_Init()
 {
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"skill_100000", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+
+    m_tAttackCoolTime.fAccTime = 0.f;
+
+    m_iBreathType = rand() % 10;
 }
 
 void Boss_Mir_FSM::skill_100100()
 {
+    if (Get_CurFrame() == 19 ||
+        Get_CurFrame() == 29 ||
+        Get_CurFrame() == 39 ||
+        Get_CurFrame() == 49 ||
+        Get_CurFrame() == 59 ||
+        Get_CurFrame() == 69 ||
+        Get_CurFrame() == 79 ||
+        Get_CurFrame() == 84)
+    {
+        if (!m_bSkillCreate)
+        {
+            MouseBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iMouseBoneIndex) *
+                _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+            _float4 vBonePos = _float4{ MouseBoneMatrix.Translation().x, MouseBoneMatrix.Translation().y, MouseBoneMatrix.Translation().z , 1.f };
+
+            vBonePos = vBonePos + Get_Transform()->Get_State(Transform_State::LOOK);
+
+            FORWARDMOVINGSKILLDESC desc;
+            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+            desc.fMoveSpeed = 20.f;
+            desc.fLifeTime = 0.5f;
+            desc.fLimitDistance = 10.f;
+
+            _float4 vSkillPos = vBonePos;
+
+            if (Get_CurFrame() != 84)
+                Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, NORMAL_ATTACK);
+            else
+                Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK);
+
+            m_bSkillCreate = true;
+        }
+    }
+    else
+        m_bSkillCreate = false;
+
+    if (Is_AnimFinished())
+        m_eCurState = STATE::b_idle;
 }
 
 void Boss_Mir_FSM::skill_100100_Init()
 {
-}
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-void Boss_Mir_FSM::skill_101100()
-{
-}
+    animator->Set_NextTweenAnim(L"skill_100100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
-void Boss_Mir_FSM::skill_101100_Init()
-{
+    m_tAttackCoolTime.fAccTime = 0.f;
 }
 
 void Boss_Mir_FSM::skill_100200()
 {
+    m_tBreathCoolTime.fAccTime += fDT;
+
+    if (Get_CurFrame() < 33)
+    {
+        if (m_tBreathCoolTime.fAccTime >= m_tBreathCoolTime.fCoolTime)
+        {
+            m_tBreathCoolTime.fAccTime = 0.f;
+        
+            MouseBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iMouseBoneIndex) *
+                _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+        
+            _float4 vBonePos = _float4{ MouseBoneMatrix.Translation().x, MouseBoneMatrix.Translation().y, MouseBoneMatrix.Translation().z , 1.f };
+        
+            vBonePos = vBonePos + Get_Transform()->Get_State(Transform_State::LOOK);
+        
+            FORWARDMOVINGSKILLDESC desc;
+            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+            desc.fMoveSpeed = 20.f;
+            desc.fLifeTime = 0.5f;
+            desc.fLimitDistance = 10.f;
+        
+            _float4 vSkillPos = vBonePos;
+        
+            Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_ATTACK);
+        }
+    }
+    
+    if (Is_AnimFinished())
+        m_eCurState = STATE::b_idle;
 }
 
 void Boss_Mir_FSM::skill_100200_Init()
 {
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"skill_100200", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+
+    m_tAttackCoolTime.fAccTime = 0.f;
 }
 
-void Boss_Mir_FSM::CalCulate_PlayerDir()
+Boss_Mir_FSM::DIR Boss_Mir_FSM::CalCulate_PlayerDir()
 {
     //몬스터가 플레이어바라보는방향
     _float4 vDir = _float4(0.f);
@@ -939,10 +1192,16 @@ void Boss_Mir_FSM::CalCulate_PlayerDir()
         if (XMVectorGetY(vCross) < 0.f) //왼쪽 외적이 음수면 왼쪽 
         {
             m_eAttackDir = DIR::FORWARD_LEFT;
+
+            if (XMVectorGetX(vDot) < cosf(XMConvertToRadians(45.f)))//왼쪽 45도 외 앞
+                m_bTurnMotion = true; 
         }
         else //오른쪽  정면오른쪽
         {
             m_eAttackDir = DIR::FORWARD_RIGHT;
+
+            if (XMVectorGetX(vDot) < cosf(XMConvertToRadians(45.f)))//오른쪽 45도 이내까지 앞
+                m_bTurnMotion = true;
         }
     }
     else //뒤 내적음수면 뒤
@@ -956,13 +1215,52 @@ void Boss_Mir_FSM::CalCulate_PlayerDir()
             m_eAttackDir = DIR::BACKWARD_RIGHT;
         }
     }
+
+    return m_eAttackDir;
+}
+
+_bool Boss_Mir_FSM::CounterAttackCheck()
+{
+    // Monster to player 
+    _float4 vDir = _float4(0.f);
+    vDir = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS);
+    vDir.y = 0.f; 
+    vDir.Normalize();
+
+    _float4 vDot = _float4(0.f);
+    _float4 vCross = _float4(0.f);
+
+    vDot = XMVector3Dot(Get_Transform()->Get_State(Transform_State::LOOK), vDir);
+    vCross = XMVector3Cross(Get_Transform()->Get_State(Transform_State::LOOK), vDir);
+
+    if (XMVectorGetX(vDot) >= 0.f) //forward = dot is bigger 0  
+    {
+        if (XMVectorGetY(vCross) < 0.f) //왼쪽 외적이 음수면 왼쪽 
+        {
+            if (XMVectorGetX(vDot) >= cosf(XMConvertToRadians(45.f)))//왼쪽 45도 내 앞
+                return true;
+            else
+                return false;
+        }
+        else //오른쪽  정면오른쪽
+        {
+            if (XMVectorGetX(vDot) >= cosf(XMConvertToRadians(45.f)))//오른쪽 45도 이내까지 앞
+                return true;
+            else
+                return false;
+        }
+    }
+    else //뒤 내적음수면 뒤
+    {
+        return false;
+    }
 }
 
 void Boss_Mir_FSM::Add_Boss_Mir_Collider()
 {
     shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
     attackCollider->GetOrAddTransform();
-    attackCollider->Add_Component(make_shared<SphereCollider>(1.f));
+    attackCollider->Add_Component(make_shared<SphereCollider>(3.f));
     attackCollider->Get_Collider()->Set_CollisionGroup(Monster_Attack);
 
     m_pAttackCollider = attackCollider;
@@ -976,7 +1274,7 @@ void Boss_Mir_FSM::Add_Boss_Mir_Collider()
 
     shared_ptr<GameObject> tailCollider = make_shared<GameObject>();
     tailCollider->GetOrAddTransform();
-    tailCollider->Add_Component(make_shared<SphereCollider>(3.f));
+    tailCollider->Add_Component(make_shared<SphereCollider>(6.f));
     tailCollider->Get_Collider()->Set_CollisionGroup(Monster_Attack);
 
     CUR_SCENE->Add_GameObject(tailCollider);
@@ -987,7 +1285,7 @@ void Boss_Mir_FSM::Add_Boss_Mir_Collider()
     tailCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
 
     m_pTailCollider = tailCollider;
-
+    
     m_iMouseBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bone057");
     m_iTailBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bone040");
 }
@@ -998,15 +1296,39 @@ void Boss_Mir_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float
 
     SkillCollider->GetOrAddTransform();
     SkillCollider->Get_Transform()->Set_State(Transform_State::POS, vPos);
-    SkillCollider->Add_Component(make_shared<SphereCollider>(fSkillRange));
-    SkillCollider->Get_Collider()->Set_CollisionGroup(Player_Skill);
+    
+    auto pSphereCollider = make_shared<SphereCollider>(fSkillRange);
+    pSphereCollider->Set_CenterPos(_float3{ vPos.x,vPos.y, vPos.z });
+    SkillCollider->Add_Component(pSphereCollider);
+
+
+    SkillCollider->Get_Collider()->Set_CollisionGroup(Monster_Skill);
 
     SkillCollider->Add_Component(make_shared<AttackColliderInfoScript>());
     SkillCollider->Get_Collider()->Set_Activate(true);
     SkillCollider->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
+    SkillCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
     SkillCollider->Set_Name(L"Boss_Mir_SkillCollider");
     SkillCollider->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
     SkillCollider->Get_Script<ForwardMovingSkillScript>()->Init();
 
     CUR_SCENE->Add_GameObject(SkillCollider);
 }
+
+void Boss_Mir_FSM::Create_CounterMotionTrail()
+{
+    m_pOwner.lock()->Get_Script<CounterMotionTrailScript>()->Init();
+}
+
+void Boss_Mir_FSM::TailAttackCollider_On(const wstring& skillname)
+{
+    m_pTailCollider.lock()->Get_Collider()->Set_Activate(true);
+    m_pTailCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
+}
+
+void Boss_Mir_FSM::TailAttackCollider_Off()
+{
+    m_pTailCollider.lock()->Get_Collider()->Set_Activate(false);
+    m_pTailCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+}
+

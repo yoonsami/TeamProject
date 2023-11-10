@@ -38,6 +38,8 @@ private:
 	shared_ptr<Shader> m_pShader;
 	shared_ptr<Model> m_pModel;
 
+	_float m_fTrailScale = { 1.f };
+
 public:
 	auto& Get_RenderParamDesc() { return m_RenderParams; }
 	void SetInt(_uchar index, _int value) { m_RenderParams.SetInt(index, value); }
@@ -45,7 +47,7 @@ public:
 	void SetVec2(_uchar index, _float2 value) { m_RenderParams.SetVec2(index, value); }
 	void SetVec4(_uchar index, _float4 value) { m_RenderParams.SetVec4(index, value); }
 	void SetMatrix(_uchar index, _float4x4& value) { m_RenderParams.SetMatrix(index, value); }
-
+	void Set_Scale(_float fScale);
 private:
 	RenderParams m_RenderParams{};
 

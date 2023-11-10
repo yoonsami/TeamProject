@@ -100,6 +100,7 @@ private:
 	void skill_3100_Init();
 
 	void CalCulate_PatrolTime();
+	void Execute_AttackSkill();
 private:
 	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;
@@ -120,6 +121,6 @@ private:
 	COOLTIMEINFO m_tPatrolMoveCool = { 4.f,0.f };
 	_float m_fPatrolDistance = 1.f;
 
-
+	_uint m_iPreAttack = 100;
 };
 

@@ -58,6 +58,8 @@ public:
     void Set_NextTweenAnim(const wstring& animName, _float tweenDuration, _bool loop, _float animSpeed);
     void Set_CurrentAnim(const wstring& animName, _bool loop, _float animSpeed);
 
+    void Set_AnimationSpeed(_float animSpeed);
+
     _uint Get_FinalFrame(_int animIndex);
     void Reset_Frame() { m_TweenDesc.curr.currentFrame = 0; }
 

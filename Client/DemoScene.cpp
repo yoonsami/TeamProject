@@ -25,6 +25,7 @@
 #include "SphereCollider.h"
 #include "AABBBoxCollider.h"
 #include "Debug_CreateMotionTrail.h"
+#include "CounterMotionTrailScript.h"
 
 
 
@@ -176,7 +177,7 @@ void DemoScene::Load_Player()
 		ObjPlayer->Get_Collider()->Set_CollisionGroup(Player_Body);
 		ObjPlayer->Get_Collider()->Set_Activate(true);
 
-		ObjPlayer->Add_Component(make_shared<Debug_CreateMotionTrail>());
+		//ObjPlayer->Add_Component(make_shared<Debug_CreateMotionTrail>());
 
 		{
 			auto controller = make_shared<CharacterController>();
@@ -330,7 +331,7 @@ void DemoScene::Load_Camera()
 		camera->Add_Component(cameraComponent);
 
 		camera->Get_Camera()->Set_ProjType(ProjectionType::Orthographic);
-		//Layer_UI�� �ִ� ������Ʈ�� �ø��ϰڴ�.
+
 		camera->Get_Camera()->Set_CullingMaskAll();
 		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, false);
 
@@ -414,13 +415,15 @@ void DemoScene::Load_Boss_Mir()
 	ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
 	ObjMonster->Get_Collider()->Set_Activate(true);
 
+	ObjMonster->Add_Component(make_shared<CounterMotionTrailScript>());
+
 	wstring strMonsterName = (L"Boss_Mir");
 	ObjMonster->Set_Name(strMonsterName);
 	{
 		auto controller = make_shared<CharacterController>();
 		ObjMonster->Add_Component(controller);
 		auto& desc = controller->Get_ControllerDesc();
-		desc.radius = 4.f;
+		desc.radius = 4.5f;
 		desc.height = 5.f;
 		_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz() +
 					   ObjMonster->Get_Transform()->Get_State(Transform_State::LOOK);

@@ -34,8 +34,6 @@ public:
 		
 		skill_100000, //SKILL 11  Ready to PowerBreath
 		skill_100100, //SKILL 11 - 1-  Shoot PowerBreath (Short)- end
-
-		skill_101100, //SKILL 11 - 2-  Shoot PowerBreath (Long)
 		skill_100200, //SKILL 11 - 3-  Shoot PowerBreath (Long)- end
 		
 		NONE
@@ -115,14 +113,18 @@ private:
 	void skill_100000_Init();
 	void skill_100100();
 	void skill_100100_Init();
-	void skill_101100();
-	void skill_101100_Init();
 	void skill_100200();
 	void skill_100200_Init();
 
-	void CalCulate_PlayerDir();
+	DIR CalCulate_PlayerDir();
+	_bool CounterAttackCheck();
 	void Add_Boss_Mir_Collider();
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
+	void Create_CounterMotionTrail();
+
+	void TailAttackCollider_On(const wstring& skillname);
+	void TailAttackCollider_Off();
+
 
 
 private:
@@ -139,9 +141,15 @@ private:
 	_float m_fNormalAttack_AnimationSpeed = 2.f;
 
 	COOLTIMEINFO m_tAttackCoolTime = { 2.f, 0.f };
+	COOLTIMEINFO m_tBreathCoolTime = { 0.15f, 0.f };
 	
 	_bool m_bDetected = false;
 	_bool m_bSkillCreate = false;
+	_bool m_bTurnMotion = false;
+	_bool m_bCounter = false;
+
+	_uint m_iPreAttack = 100;
+	_uint m_iBreathType = 0;
 
 	_uint m_iMouseBoneIndex = 0;
 	_uint m_iTailBoneIndex = 0;

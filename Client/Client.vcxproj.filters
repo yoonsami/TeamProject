@@ -124,6 +124,9 @@
     <Filter Include="02.Component\01.FSM\02.Monster_FSM\01.Boss_Mir_FSM">
       <UniqueIdentifier>{d4e80f64-1b0a-46b9-805f-e088a44bd55f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\00.Effect\00.CounterMotionTrailScript">
+      <UniqueIdentifier>{8488e19a-7f84-4002-9311-474fb39e75d7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -276,6 +279,9 @@
     <ClInclude Include="Boss_Mir_FSM.h">
       <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Mir_FSM</Filter>
     </ClInclude>
+    <ClInclude Include="CounterMotionTrailScript.h">
+      <Filter>02.Component\00.MonoBehaviour\00.Effect\00.CounterMotionTrailScript</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -406,6 +412,9 @@
     </ClCompile>
     <ClCompile Include="Boss_Mir_FSM.cpp">
       <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Mir_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CounterMotionTrailScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\00.Effect\00.CounterMotionTrailScript</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

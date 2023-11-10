@@ -18,6 +18,8 @@ public:
 	virtual _bool Intersects_With_Bottom(shared_ptr<MeshCollider>& others, OUT _float3& collidePos, OUT _float& dist) override;
     virtual _float3 Get_ClosestPoint(shared_ptr<BaseCollider> pCollider) override;
     virtual _float3 Get_CenterPos() override { return m_BoundingSphere.Center; }
+
+    void Set_CenterPos(_float3 vPos) { m_BoundingSphere.Center = vPos; }
 private:
     BoundingSphere m_BoundingSphere;
     _float m_fRadius = 1.f;
