@@ -51,6 +51,8 @@ private:
 	shared_ptr<GameObject>& Create_PointLight(LightInfo _ptltInfo);
 	// 벽 메시 생성 후 멤버변수에 적용
 	void Create_WallMesh();
+	// 벽메시 정보배열 초기화
+	void Clear_WallMesh();
 
 	// 점광원 제거
 	HRESULT Delete_PointLight();
@@ -70,6 +72,8 @@ private:
 	
 	// 베이스오브젝트이름을 가지고 샘플 오브젝트 생성
 	void Create_SampleObjects();
+	// 현재 선택한 베이스오브젝트로 샘플 맵오브젝트 모델변경 및 카메라 조정
+	void Set_SampleObject();
 
 private:
 // 설치 가능한 오브젝트 목록
@@ -82,6 +86,8 @@ private:
 	_int m_iObjectBaseIndex = { 0 };
 	// 오브젝트 생성시 정보
 	MapObjectScript::MAPOBJDESC m_CreateObjectDesc;
+	// 샘플오브젝트
+	shared_ptr<GameObject> m_SampleObject;
 
 // 설치된 오브젝트 목록
 	vector<const char*> m_strObjectName;

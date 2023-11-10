@@ -57,6 +57,8 @@ void ImGui_Manager::ImGui_SetUp()
 
     Load_SkyBoxTexture();
     Load_MapObjectBase();
+
+    Create_SampleObjects();
 }
 
 void ImGui_Manager::ImGui_Tick()
@@ -131,7 +133,8 @@ void ImGui_Manager::Frame_ObjectBase()
 {
     ImGui::Begin("Frame_ObjectBase"); // 글자 맨윗줄
 
-    ImGui::ListBox("##ObjectBase", &m_iObjectBaseIndex, m_strObjectBaseNameList.data(), (int)m_strObjectBaseNameList.size(), 10);
+    if (ImGui::ListBox("##ObjectBase", &m_iObjectBaseIndex, m_strObjectBaseNameList.data(), (int)m_strObjectBaseNameList.size(), 10))
+        Set_SampleObject(); // 리스트박스 선택대상이 달라지면 샘플모델변경
 
     // 맵오브젝트 정보
     ImGui::SeparatorText("BaseObjectDesc");
@@ -335,6 +338,9 @@ void ImGui_Manager::Frame_Objects()
                         pCollider->Set_Offset(CurObjectDesc.ColliderOffset);
                         m_pMapObjects[m_iObjects]->Add_Component(pCollider);
                         pCollider->Set_Activate(true);
+                        //auto rigidBody = make_shared<RigidBody>();
+                        //rigidBody->Create_RigidBody(pCollider, m_pMapObjects[m_iObjects]->GetOrAddTransform()->Get_WorldMatrix());
+                        //m_pMapObjects[m_iObjects]->Add_Component(rigidBody);
                         break;
                     }
                     default:
@@ -480,6 +486,10 @@ void ImGui_Manager::Frame_Wall()
     {
         Create_WallMesh();
     }
+    if (ImGui::Button("Clear"))
+    {
+        Clear_WallMesh();
+    }
 
     ImGui::End();
 }
@@ -501,7 +511,9 @@ void ImGui_Manager::Picking_Object()
             for (_int i = 0; i < m_pMapObjects.size(); ++i)
             {
                 if (PickObject == m_pMapObjects[i])
+                {
                     m_iObjects = i;
+                }
             }
         }
     }
@@ -746,6 +758,12 @@ void ImGui_Manager::Create_WallMesh()
     CUR_SCENE->Add_GameObject(WallObject);
 }
 
+void ImGui_Manager::Clear_WallMesh()
+{
+    m_WallRectPosLDRU.clear();
+    m_bFirstWallPick = true;
+}
+
 HRESULT ImGui_Manager::Delete_PointLight()
 {
     // 1. 현재씬에서 제거
@@ -849,6 +867,13 @@ HRESULT ImGui_Manager::Save_MapObject()
         LightInfo& ptltInfo = PtLtObject->Get_Light()->Get_LightInfo();
         file->Write<LightColor>(ptltInfo.color);
         file->Write<_float>(ptltInfo.range);
+    }
+
+    // 벽메시콜라이더에 필요한 정보 저장
+    file->Write<_int>((_int)m_WallRectPosLDRU.size());
+    for (_int i = 0; i < m_WallRectPosLDRU.size(); ++i)
+    {
+        file->Write<pair<_float3, _float3>>(m_WallRectPosLDRU[i]);
     }
 
     // 맵오브젝트 정보 저장
@@ -960,6 +985,15 @@ HRESULT ImGui_Manager::Load_MapObject()
         m_pPointLightObjects.push_back(CreatePtltObj);
         m_strPointLightList.push_back("PointLight");
     }
+
+    // 벽정보 불러오기 및 벽생성
+    m_WallRectPosLDRU.clear();
+    _int iNumWall = 0;
+    file->Read<_int>(iNumWall);
+    m_WallRectPosLDRU.resize(iNumWall);
+    for (_int i = 0; i < iNumWall; ++i)
+        file->Read<pair<_float3, _float3>>(m_WallRectPosLDRU[i]);
+    Create_WallMesh();
 
     // 오브젝트 개수 불러오기
     _int iNumObjects = file->Read<_int>();
@@ -1090,18 +1124,33 @@ void ImGui_Manager::BurnAll()
 
 void ImGui_Manager::Create_SampleObjects()
 {
-    //for(size_t i=0; i < m_strObjectBaseNameList.size(); ++i)
-    //shared_ptr<GameObject> SampleObject = make_shared<GameObject>();
-    //SampleObject->GetOrAddTransform()->Set_State(Transform_State::POS, _float4{ 0.f, 10.f, 0.f, 1.f });
-    //SampleObject->Set_Name(L"Sample_" + _strModelName);
+        m_SampleObject = make_shared<GameObject>();
+        m_SampleObject->GetOrAddTransform()->Set_State(Transform_State::POS, _float4{ 0.f, -100.f, 0.f, 1.f });
+        string modelName = m_strObjectBaseNameList[m_iObjectBaseIndex];
+        wstring strModelName = Utils::ToWString(modelName);
+        m_SampleObject->Set_Name(L"Sample_" + strModelName);
 
-    //shared_ptr<Model> model = RESOURCES.Get<Model>(_strModelName);
-    //shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-    //shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
-    //SampleObject->Add_Component(renderer);
-    //renderer->Set_Model(model);
-    //renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT);
-    //renderer->SetFloat(3, 1.f);
+        shared_ptr<Model> model = RESOURCES.Get<Model>(strModelName);
+        if (model == nullptr)
+            return;
+        shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+        shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+        m_SampleObject->Add_Component(renderer);
+        renderer->Set_Model(model);
+        renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT);
+        renderer->SetFloat(3, 1.f);
 
-    //Add_GameObject(SampleObject);
+        CUR_SCENE->Add_GameObject(m_SampleObject);
+}
+
+void ImGui_Manager::Set_SampleObject()
+{
+    string modelName = m_strObjectBaseNameList[m_iObjectBaseIndex];
+    wstring strModelName = Utils::ToWString(modelName);
+    shared_ptr<Model> model = RESOURCES.Get<Model>(strModelName);
+    if (model == nullptr)
+        return;
+    m_SampleObject->Set_Name(L"Sample_" + strModelName);
+
+    m_SampleObject->Get_ModelRenderer()->Set_Model(model);
 }

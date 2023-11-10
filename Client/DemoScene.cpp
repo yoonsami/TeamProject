@@ -127,7 +127,7 @@ HRESULT DemoScene::Load_Scene()
 	Load_Player();
 	Load_Light();
 	Load_Camera();
-	Load_MapFile(L"KriKri");
+	Load_MapFile(L"KrisMap15");
 	Load_Monster(5);
 	//Load_DemoMap();
 

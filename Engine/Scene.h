@@ -91,7 +91,6 @@ protected:
 	void Render_Debug();
 	void Render_UI();
 
-
 	void Render_BackBuffer();
 
 

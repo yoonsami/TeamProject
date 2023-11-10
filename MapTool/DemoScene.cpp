@@ -56,9 +56,52 @@ void DemoScene::Final_Tick()
 
 void DemoScene::Render()
 {
-	__super::Render();
+	Gather_LightData();
+	Sort_GameObjects();
+	Render_Shadow();
+	Render_MotionBlur();
+	Render_Deferred();
+	Render_DefferedBlur();
+	if (GAMEINSTANCE.g_SSAOData.g_bSSAO_On)
+	{
+		Render_SSAO();
+		Render_SSAOBlur(3);
+	}
+	Render_Lights();
+	//Render_BlurEffect();
+	Render_LightFinal();
+
+	Render_MotionBlurFinal();
+	Render_Forward();
+	Render_BloomMap();
+	Render_BloomMapScaling();
+	Render_Distortion();
+	Render_Distortion_Final();
+	Render_LensFlare();
+	Render_FXAA();
+	Render_Aberration();
+
+	Render_Debug();
+
+	Render_UI();
+	//Render_ToneMapping();
+	//Render_SampleMapObject();
+
+	Render_BackBuffer();
 
 	GET_SINGLE(ImGui_Manager).ImGui_Render();
+}
+
+void DemoScene::Render_SampleMapObject()
+{
+	if (Get_Camera(L"SampleCamera"))
+	{
+		shared_ptr<Camera> sampleCamera = Get_Camera(L"SampleCamera")->Get_Camera();
+		Camera::S_View = sampleCamera->Get_ViewMat();
+		Camera::S_Proj = sampleCamera->Get_ProjMat();
+
+		sampleCamera->Render_Forward();
+	}
 }
 
 HRESULT DemoScene::Load_Scene()
@@ -143,6 +186,31 @@ void DemoScene::Load_Camera()
 		// 일부러 기능 나눠놨음
 		camera->Add_Component(make_shared<DemoCameraScript1>());
 		camera->Add_Component(make_shared<DemoCameraScript2>());
+
+		Add_GameObject(camera);
+	}
+	// 샘플오브젝트카메라
+	{
+		//카메라로 사용할 GameObject 생성
+		shared_ptr<GameObject> camera = make_shared<GameObject>();
+
+		// Transform Component 추가
+		camera->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, -100.f + 3.f, -3.f, 1.f));
+
+		// 카메라 Component 생성 
+		CameraDesc desc;
+		desc.fFOV = XM_PI / 3.f;
+		desc.strName = L"SampleCamera";
+		desc.fSizeX = _float(g_iWinSizeX * 0.2f);
+		desc.fSizeY = _float(g_iWinSizeY * 0.2f);
+		desc.fNear = 0.1f;
+		desc.fFar = 1000.f;
+		shared_ptr<Camera> cameraComponent = make_shared<Camera>(desc);
+		camera->Add_Component(cameraComponent);
+
+		camera->Get_Camera()->Set_ProjType(ProjectionType::Perspective);
+		//스카이박스 컬링.
+		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_Skybox, true);
 
 		Add_GameObject(camera);
 	}

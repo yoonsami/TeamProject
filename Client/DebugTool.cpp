@@ -149,7 +149,6 @@ void DebugTool::LensFlareTab()
 		{
 			_bool& g_bLensFlare = GAMEINSTANCE.g_bLensFlare;
 			Checkbox("LensFlare On", &g_bLensFlare);
-			DragFloat2("Test", (_float*)&CUR_SCENE->testVector1);
 		}
 		EndTabItem();
 	}

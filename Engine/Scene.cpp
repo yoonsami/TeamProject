@@ -586,6 +586,35 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 		Add_GameObject(PointLight);
 	}
 
+	// 벽정보 불러오기 및 벽생성
+	vector<pair<_float3, _float3>> WallRectPosLDRU;
+	WallRectPosLDRU.clear();
+	_int iNumWall = 0;
+	file->Read<_int>(iNumWall);
+	WallRectPosLDRU.resize(iNumWall);
+	// 벽정보 읽어오기
+	for (_int i = 0; i < iNumWall; ++i)
+		file->Read<pair<_float3, _float3>>(WallRectPosLDRU[i]);
+	// 벽정보를 기반으로 벽메시 생성
+	shared_ptr<Mesh> WallMesh = make_shared<Mesh>();
+	WallMesh->Create3DRect(WallRectPosLDRU);
+	// 메시를 기반으로 벽오브젝트 생성
+	shared_ptr<GameObject> WallObject = make_shared<GameObject>();
+	WallObject->Set_Name(L"MapWall");
+	WallObject->GetOrAddTransform();
+	// 메시렌더러
+	shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+	renderer->Set_Mesh(WallMesh);
+	// 메시를 통해 메시콜라이더 생성
+	shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(*WallMesh.get());
+	WallObject->Add_Component(pCollider);
+	pCollider->Set_Activate(true);
+	// 리지드바디 생성
+	auto rigidBody = make_shared<RigidBody>();
+	rigidBody->Create_RigidBody(pCollider, WallObject->GetOrAddTransform()->Get_WorldMatrix());
+	WallObject->Add_Component(rigidBody);
+	Add_GameObject(WallObject);
+
 	// 오브젝트 개수 불러오기
 	_int iNumObjects = file->Read<_int>();
 
@@ -602,7 +631,6 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 		_float4x4 WorldMatrix = XMMatrixIdentity();
 		// Collider
 		_bool bCollider = false;
-		//ColliderType ColliderType = ColliderType::OBB;
 		// 0:Sphere 1:AABB 2:OBB 3:Mesh
 		_int iColliderType = static_cast<_int>(ColliderType::OBB);
 		// ColliderDesc
