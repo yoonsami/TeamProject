@@ -50,7 +50,7 @@ void ImGuiToolMgr::Tick()
     ImGui_BasicWidget();
     ImGui::End();
 
-    ImGui::ShowDemoWindow();
+    //ImGui::ShowDemoWindow();
     
     if (m_bIsParticleMaker_Instancing_On)
     {

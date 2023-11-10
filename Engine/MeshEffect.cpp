@@ -138,6 +138,7 @@ void MeshEffect::Init_RenderParams()
 
 	m_RenderParams.SetFloat(0, m_fCurrAge / m_tDesc.fDuration);
 	m_RenderParams.SetFloat(1, m_tDesc.fAlphaGraIntensity);
+	m_RenderParams.SetFloat(2, m_tDesc.fContrast);
 	
 	m_RenderParams.SetVec2(0, m_vCurrTexUVOffset_Opacity);
 
