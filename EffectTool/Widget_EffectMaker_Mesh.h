@@ -30,6 +30,7 @@ private:
 	void					Option_Overlay();
 	void					Option_Dissolve();
 	void					Option_Distortion();
+	void					Option_ColorEdit();
 
 	void					Create();
 	void					Save();
@@ -126,6 +127,9 @@ private:
 	_bool					m_bUVOptionSameWithOpacity_Distortion = { true };
 	_float					m_fTiling_Distortion[2] = { 0.f, 0.f };
 	_float					m_fUVSpeed_Distortion[2] = { 0.f, 0.f };
+
+	/* Color Edit */
+	_float					m_fContrast = { 0.f };
 
 	/* const */
 	const string			m_strTexturePath = "../Resources/Textures/Universal/";

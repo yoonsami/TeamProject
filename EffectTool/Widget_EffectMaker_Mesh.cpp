@@ -99,6 +99,7 @@ void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 	Option_Overlay();
 	Option_Dissolve();
 	Option_Distortion();
+	Option_ColorEdit();
 
 	/* For. Create, Save, Load Effect */
 	ImGui::Spacing();
@@ -532,6 +533,15 @@ void Widget_EffectMaker_Mesh::Option_Distortion()
 	ImGui::Spacing();
 }
 
+void Widget_EffectMaker_Mesh::Option_ColorEdit()
+{
+	ImGui::SeparatorText("Final Color Editor");
+
+	ImGui::SliderFloat("Contrast", &m_fContrast, -1.00f, 1.00f);
+	
+	ImGui::Spacing();
+}
+
 void Widget_EffectMaker_Mesh::Create()
 {
 	// For. Create GameObject 
@@ -604,6 +614,8 @@ void Widget_EffectMaker_Mesh::Create()
 		m_DistortionTexture.second,
 		_float2(m_fTiling_Distortion[0], m_fTiling_Distortion[1]),
 		_float2(m_fUVSpeed_Distortion[0], m_fUVSpeed_Distortion[1]),
+
+		m_fContrast
 
 	};
 	EffectObj->Get_MeshEffect()->Init(&tMeshEffectDesc);

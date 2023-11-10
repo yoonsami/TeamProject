@@ -60,6 +60,9 @@ public:
         string      strDistortionTexture;
         _float2     vTiling_Distortion;
         _float2     vUVSpeed_Distortion;
+
+        // Color Editor
+        _float      fContrast;
     }DESC;
 
 public:
