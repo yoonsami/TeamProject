@@ -17,11 +17,16 @@
 #include "Geometry.h"
 
 #include "Camera.h"
+#include "DemoScene.h"
 
 #include "SphereCollider.h"
 #include "AABBBoxCollider.h"
 #include "OBBBoxCollider.h"
 #include "MeshCollider.h"
+
+#include "GeometryHelper.h"
+#include "MeshRenderer.h"
+#include "RigidBody.h"
 
 ImGuizmo::OPERATION m_eGuizmoType = { ImGuizmo::TRANSLATE };
 namespace fs = std::filesystem;
@@ -66,6 +71,7 @@ void ImGui_Manager::ImGui_Tick()
     Frame_Light();
     Frame_ObjectBase();
     Frame_Objects();
+    Frame_Wall();
 
     Picking_Object();
 
@@ -466,6 +472,18 @@ void ImGui_Manager::Frame_Light()
     ImGui::End();
 }
 
+void ImGui_Manager::Frame_Wall()
+{
+    ImGui::Begin("Frame_Wall"); // 글자 맨윗줄
+
+    if (ImGui::Button("Create"))
+    {
+        Create_WallMesh();
+    }
+
+    ImGui::End();
+}
+
 void ImGui_Manager::Picking_Object()
 {
     // 마우스 우클릭 시 메시피킹
@@ -485,6 +503,28 @@ void ImGui_Manager::Picking_Object()
                 if (PickObject == m_pMapObjects[i])
                     m_iObjects = i;
             }
+        }
+    }
+    // 마우스 휠클릭 시 WallPickingPoint 저장
+    if (KEYTAP(KEY_TYPE::MBUTTON))
+    {
+        POINT MousePos;
+        ::GetCursorPos(&MousePos);
+        ::ScreenToClient(g_hWnd, &MousePos);
+        _float2 ScreenPos{ (_float)MousePos.x, (_float)MousePos.y };
+
+        if (m_bFirstWallPick)
+        {
+            m_bFirstWallPick = false;
+            shared_ptr<GameObject> PickObject = PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), CUR_SCENE->Get_Objects(), m_WallPickingPos[0]);
+        }
+        else
+        {
+            shared_ptr<GameObject> PickObject = PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), CUR_SCENE->Get_Objects(), m_WallPickingPos[1]);
+            // 사각형 하나 추가
+            m_WallRectPosLDRU.push_back(pair<_float3, _float3>(m_WallPickingPos[0], _float3{ m_WallPickingPos[1].x, m_fWallHeight, m_WallPickingPos[1].z }));
+            // 좌하단 점을 우하단 점으로 변경
+            m_WallPickingPos[0] = m_WallPickingPos[1];
         }
     }
 }
@@ -675,6 +715,35 @@ shared_ptr<GameObject>& ImGui_Manager::Create_PointLight(LightInfo _ptltInfo)
     CUR_SCENE->Add_GameObject(PointLight);
 
     return PointLight;
+}
+
+void ImGui_Manager::Create_WallMesh()
+{
+    // 벽정보를 기반으로 벽메시 생성
+    shared_ptr<Mesh> WallMesh = make_shared<Mesh>();
+    WallMesh->Create3DRect(m_WallRectPosLDRU);
+
+    // 메시를 기반으로 벽오브젝트 생성
+    shared_ptr<GameObject> WallObject = make_shared<GameObject>();
+    WallObject->Set_Name(L"Wall");
+    WallObject->GetOrAddTransform();
+
+    // 메시렌더러
+    shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+    renderer->Set_Mesh(WallMesh);
+
+    // 메시를 통해 메시콜라이더 생성
+    shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(*WallMesh.get());
+    WallObject->Add_Component(pCollider);
+    pCollider->Set_Activate(true);
+    //auto rigidBody = make_shared<RigidBody>();
+    //rigidBody->Create_RigidBody(pCollider, WallObject->GetOrAddTransform()->Get_WorldMatrix());
+    //WallObject->Add_Component(rigidBody);
+
+    shared_ptr<GameObject> PreWall = CUR_SCENE->Get_GameObject(L"Wall");
+    if (PreWall != nullptr)
+        CUR_SCENE->Remove_GameObject(PreWall);
+    CUR_SCENE->Add_GameObject(WallObject);
 }
 
 HRESULT ImGui_Manager::Delete_PointLight()
@@ -953,17 +1022,27 @@ void ImGui_Manager::Compute_CullingData(shared_ptr<GameObject>& _pGameObject)
     // 모델을 받아와서 컬링포지션과 길이를 계산하여 반환 float4(_float(Pos), _float(Radius))
     // 모든 정점을 돌면서 XYZ각각의 min과 max를 찾아야함.
 
-        _float3 vMaxPos = _float3(FLT_MIN);
+        _float3 vMaxPos = _float3(-FLT_MAX);
         _float3 vMinPos = _float3(FLT_MAX);
+
+        shared_ptr<BoneDesc> boneDesc = make_shared<BoneDesc>();
+        const _uint boneCount = _pGameObject->Get_Model()->Get_BoneCount();
+
+        for (_uint i = 0; i < boneCount; ++i)
+        {
+            shared_ptr<ModelBone> bone = _pGameObject->Get_Model()->Get_BoneByIndex(i);
+            boneDesc->transform[i] = (bone->transform) * Utils::m_matPivot;
+        }
 
         const vector<shared_ptr<ModelMesh>>& Meshs = _pGameObject->Get_Model()->Get_Meshes();
         for (auto& pMesh : Meshs)
         {
+            _uint boneIndex = pMesh->boneIndex;
             const vector<ModelVertexType>& vertices = pMesh->geometry->Get_Vertices();
             for (auto& VtxData : vertices)
             {
                 // 월드행렬반영
-                _float3 vPos = _float3::Transform(VtxData.vPosition, Utils::m_matPivot * _pGameObject->Get_Transform()->Get_WorldMatrix());
+                _float3 vPos = _float3::Transform(VtxData.vPosition, boneDesc->transform[boneIndex] * _pGameObject->Get_Transform()->Get_WorldMatrix());
 
                 vMaxPos.x = max(vPos.x, vMaxPos.x);
                 vMaxPos.y = max(vPos.y, vMaxPos.y);
@@ -975,9 +1054,10 @@ void ImGui_Manager::Compute_CullingData(shared_ptr<GameObject>& _pGameObject)
         }
 
         // Min과 Max를 더한 후 2로 나누기
-        _float3 vCullPos = XMVectorAdd(vMinPos, vMaxPos);
+        _float3 vCullPos = vMaxPos + vMinPos;
         vCullPos *= 0.5f;
-        _float vCullRadius = max(max(vMaxPos.x - vMinPos.x, vMaxPos.y - vMinPos.y), vMaxPos.z - vMinPos.z);
+        _float3 tempVector = vCullPos - vMinPos;
+        _float vCullRadius = tempVector.Length();
 
         _pGameObject->Get_Script<MapObjectScript>()->Get_DESC().CullPos = vCullPos;
         _pGameObject->Get_Script<MapObjectScript>()->Get_DESC().CullRadius = vCullRadius;
@@ -1006,4 +1086,22 @@ void ImGui_Manager::BurnAll()
     {
         Burn(gameObject);
     }
+}
+
+void ImGui_Manager::Create_SampleObjects()
+{
+    //for(size_t i=0; i < m_strObjectBaseNameList.size(); ++i)
+    //shared_ptr<GameObject> SampleObject = make_shared<GameObject>();
+    //SampleObject->GetOrAddTransform()->Set_State(Transform_State::POS, _float4{ 0.f, 10.f, 0.f, 1.f });
+    //SampleObject->Set_Name(L"Sample_" + _strModelName);
+
+    //shared_ptr<Model> model = RESOURCES.Get<Model>(_strModelName);
+    //shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+    //shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+    //SampleObject->Add_Component(renderer);
+    //renderer->Set_Model(model);
+    //renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT);
+    //renderer->SetFloat(3, 1.f);
+
+    //Add_GameObject(SampleObject);
 }

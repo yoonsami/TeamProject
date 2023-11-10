@@ -38,6 +38,14 @@ void DemoScene::Tick()
 
 void DemoScene::Late_Tick()
 {
+	if (KEYTAP(KEY_TYPE::X))
+	{
+		if (m_bRenderDebug)
+			m_bRenderDebug = false;
+		else
+			m_bRenderDebug = true;
+	}
+
 	__super::Late_Tick();
 }
 

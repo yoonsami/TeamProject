@@ -42,8 +42,9 @@ void MainApp::Tick()
 
 HRESULT MainApp::Render()
 {
-	GAMEINSTANCE.Render();
-
+	GAMEINSTANCE.Render_Begin();
+	SCENE.Render();
+	GAMEINSTANCE.Render_End();
 	return S_OK;
 }
 

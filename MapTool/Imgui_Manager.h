@@ -32,6 +32,8 @@ private:
 	void Frame_Objects();
 	// 광원의 정보 관리.
 	void Frame_Light();
+	// 벽의 정보 관리
+	void Frame_Wall();
 	// 피킹
 	void Picking_Object();
 
@@ -47,6 +49,8 @@ private:
 	HRESULT Create_SelectPointLight();
 	// 빛정보를 바탕으로 생성 후 씬에 추가 후 포인터 반환
 	shared_ptr<GameObject>& Create_PointLight(LightInfo _ptltInfo);
+	// 벽 메시 생성 후 멤버변수에 적용
+	void Create_WallMesh();
 
 	// 점광원 제거
 	HRESULT Delete_PointLight();
@@ -63,6 +67,9 @@ private:
 	// 그림자, 블러, 컬링계산
 	void Burn(shared_ptr<GameObject>& _pGameObject);
 	void BurnAll();
+	
+	// 베이스오브젝트이름을 가지고 샘플 오브젝트 생성
+	void Create_SampleObjects();
 
 private:
 // 설치 가능한 오브젝트 목록
@@ -110,4 +117,10 @@ private:
 	_int m_iPointLightIndex = { 0 };
 	// 점광원 생성정보
 	LightInfo m_CreatePointLightInfo;
+
+	// 벽을위한피킹정보
+	_float3 m_WallPickingPos[2] = { _float3{0.f, 0.f, 0.f}, _float3{0.f, 0.f, 0.f} };
+	_bool m_bFirstWallPick = { true };
+	_float m_fWallHeight = { 10.f };
+	vector<pair<_float3, _float3>> m_WallRectPosLDRU;
 };

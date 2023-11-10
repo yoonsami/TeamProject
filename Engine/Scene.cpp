@@ -97,7 +97,7 @@ void Scene::Render()
 	Render_FXAA();
 	Render_Aberration();
 
-	//Render_Debug();
+	Render_Debug();
 
 	Render_UI();
 	//Render_ToneMapping();
@@ -1407,7 +1407,7 @@ void Scene::Render_Debug()
 	if (m_bRenderDebug)
 	{
 		for (auto& gameObject : m_GameObjects)
-			if (gameObject->Get_Collider() && gameObject->Get_Collider()->Get_ColliderType() != ColliderType::Mesh)
+			if (gameObject->Get_Collider())
 				gameObject->Get_Collider()->Render();
 	}
 }

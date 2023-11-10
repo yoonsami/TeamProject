@@ -19,7 +19,8 @@ enum class KEY_TYPE
 	LALT,
 	LBUTTON,
 	RBUTTON,
-	LAST
+	MBUTTON,
+	LAST,
 };
 
 enum class KEY_STATE
