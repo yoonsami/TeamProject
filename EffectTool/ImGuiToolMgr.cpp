@@ -1,6 +1,7 @@
 #include "ImGuiToolMgr.h"
 
 /* Widgets */
+#include "Widget_Model_Controller.h"
 #include "Widget_EffectMaker_Mesh.h"
 #include "Widget_ParticleMaker_Instancing.h"
 
@@ -28,9 +29,11 @@ void ImGuiToolMgr::Init(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     // For. Setting Widgets
     m_pWidget_ParticleMaker_Instancing = make_shared<Widget_ParticleMaker_Instancing>();
     m_pWidget_EffectMaker_Mesh = make_shared<Widget_EffectMaker_Mesh>();
+    m_pWidget_Model_Controller = make_shared<Widget_Model_Controller>();
 
     m_pWidget_ParticleMaker_Instancing->Initialize();
     m_pWidget_EffectMaker_Mesh->Initialize();
+    m_pWidget_Model_Controller->Initialize();
 }
 
 void ImGuiToolMgr::Tick()
@@ -57,6 +60,8 @@ void ImGuiToolMgr::Tick()
     {
         m_pWidget_EffectMaker_Mesh->Tick();
     }
+
+    m_pWidget_Model_Controller->Tick();
 }
 
 void ImGuiToolMgr::Render()

@@ -99,25 +99,25 @@ void DemoScene::Load_DemoModel()
 void DemoScene::Load_Light()
 {
 	// For. 씬에 추가할 빛 역할을 할 GameObject생성 
-	//shared_ptr<GameObject> lightObj = make_shared<GameObject>();
+	shared_ptr<GameObject> lightObj = make_shared<GameObject>();
 
 	//// For. GameObject의 Transform 설정 
-	//lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 25.f, 0.f, 1.f));
-	//lightObj->GetOrAddTransform()->Set_LookDir(_float3(-1.f, -1.f, -1.f));
+	lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 25.f, 0.f, 1.f));
+	lightObj->GetOrAddTransform()->Set_LookDir(_float3(-1.f, -1.f, -1.f));
 
 	//// For. GameObject에 붙일 LightComponent 생성
-	//shared_ptr<Light> lightCom = make_shared<Light>();
-	//lightCom->Set_Diffuse(Color(1.f));
-	//lightCom->Set_Ambient(Color(0.8f));
-	//lightCom->Set_Specular(Color(0.f));
-	//lightCom->Set_Emissive(Color(0.f));
-	//lightCom->Set_LightType(LIGHT_TYPE::DIRECTIONAL_LIGHT);
+	shared_ptr<Light> lightCom = make_shared<Light>();
+	lightCom->Set_Diffuse(Color(1.f));
+	lightCom->Set_Ambient(Color(0.8f));
+	lightCom->Set_Specular(Color(0.f));
+	lightCom->Set_Emissive(Color(0.f));
+	lightCom->Set_LightType(LIGHT_TYPE::DIRECTIONAL_LIGHT);
 
 	//// For. GameObject에 Light Component 붙이기 
-	//lightObj->Add_Component(lightCom);
+	lightObj->Add_Component(lightCom);
 
 	//// For. 씬에 빛 역할을 하는 GameObject 추가 
-	//Add_GameObject(lightObj);
+	Add_GameObject(lightObj);
 }
 
 void DemoScene::Load_Camera()

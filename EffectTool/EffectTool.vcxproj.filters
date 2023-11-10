@@ -47,6 +47,12 @@
     <Filter Include="97.ImGui\Widget_ParticleMaker_Instancing">
       <UniqueIdentifier>{7b8e8f0f-fcb3-4e24-88b5-df19f32d9ef3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97.ImGui\Widget_Model_Controller">
+      <UniqueIdentifier>{8efe5830-b487-4cba-adde-9140bc8bca8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehavior\00.ForcePosition">
+      <UniqueIdentifier>{e927f83d-1705-419b-be3f-fbf9f5fbff19}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -136,6 +142,15 @@
     <ClInclude Include="Widget_EffectMaker_Mesh.h">
       <Filter>97.ImGui\Widget_EffectMaker_Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="Widget_Model_Controller.h">
+      <Filter>97.ImGui\Widget_Model_Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="ForcePosition.h">
+      <Filter>02.Component\00.MonoBehavior\00.ForcePosition</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponScript.h">
+      <Filter>02.Component\00.MonoBehavior</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EffectTool.cpp">
@@ -206,6 +221,15 @@
     </ClCompile>
     <ClCompile Include="..\Libraries\Include\IMGUI\ImSequencer.cpp">
       <Filter>99.Header\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget_Model_Controller.cpp">
+      <Filter>97.ImGui\Widget_Model_Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="ForcePosition.cpp">
+      <Filter>02.Component\00.MonoBehavior\00.ForcePosition</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponScript.cpp">
+      <Filter>02.Component\00.MonoBehavior</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

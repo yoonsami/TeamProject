@@ -22,6 +22,9 @@ ModelAnimator::~ModelAnimator()
 
 void ModelAnimator::Tick()
 {
+	if (m_bAnimStop)
+		return;
+
 	m_preTweenDesc = m_TweenDesc;
 
 	m_TweenDesc.curr.sumTime += fDT;
