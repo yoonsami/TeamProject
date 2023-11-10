@@ -29,7 +29,6 @@ private:
 	void	ImGui_BasicWidget();
 
 	void	Option_ToolSelector();
-	void	Option_StyleEditor();
 
 private:
 	/* Basic Variables */
@@ -46,8 +45,5 @@ private:
 	shared_ptr<Widget_ParticleMaker_Instancing>	m_pWidget_ParticleMaker_Instancing = { nullptr };
 	shared_ptr<Widget_EffectMaker_Mesh>			m_pWidget_EffectMaker_Mesh = { nullptr };
 	shared_ptr<Widget_Model_Controller>			m_pWidget_Model_Controller = { nullptr };
-
-	/* ImGui Window Option */
-	IMGUI_STYLE				m_tImGuiStyle;
 };
 

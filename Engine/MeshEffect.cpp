@@ -17,73 +17,45 @@ MeshEffect::~MeshEffect()
 {
 }
 
-HRESULT MeshEffect::Init(void* pArg)
+void MeshEffect::Init(void* pArg)
 {
 	// For. Setting basic info  
 	DESC* pDesc = (DESC*)pArg;
 	m_tDesc = *pDesc;
 
-	Init_RenderParams();
-
-	m_vCurrTexUVOffset_Opacity = m_tDesc.vTiling_Opacity;
-	m_vCurrTexUVOffset_Gra = m_tDesc.vTiling_Gra;
-	m_vCurrTexUVOffset_Overlay = m_tDesc.vTiling_Overlay;
-	m_vCurrTexUVOffset_Dissolve = m_tDesc.vTiling_Dissolve;
-	m_vCurrTexUVOffset_Distortion = m_tDesc.vTiling_Distortion;
-
-	// For. Model Components
-	m_pModel = RESOURCES.Get<Model>(Utils::ToWString(m_tDesc.strVfxMesh));
-
-	// For. Material Components
-	m_pMaterial = make_shared<Material>();
-	m_pMaterial->Set_Shader(m_pShader);
-	wstring wstrKey = Utils::ToWString(m_tDesc.strDiffuseTexture);
-	wstring wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
-	if (TEXT("None") != wstrKey)
-		m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::DIFFUSE);
-	wstrKey = Utils::ToWString(m_tDesc.strOpacityTexture);
-	wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
-	if (TEXT("None") != wstrKey)
-		m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::OPACITY);
-	wstrKey = Utils::ToWString(m_tDesc.strNormalTexture);
-	wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
-	if (TEXT("None") != wstrKey)
-		m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::NORMAL);
-	wstrKey = Utils::ToWString(m_tDesc.strDissolveTexture);
-	wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
-	if (TEXT("None") != wstrKey)
-		m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::DISSOLVE);
-	wstrKey = Utils::ToWString(m_tDesc.strDistortionTexture);
-	wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
-	if (TEXT("None") != wstrKey)
-		m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::DISTORTION);
-	wstrKey = Utils::ToWString(m_tDesc.strGraTexture);
-	wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
-	if (TEXT("None") != wstrKey)
-		m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE7);	// Gradation
-	wstrKey = Utils::ToWString(m_tDesc.strOverlayTexture);
-	wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
-	if (TEXT("None") != wstrKey)
-		m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE8);	// Overlay
-	wstrKey = Utils::ToWString(m_tDesc.strBlendTexture);
-	wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
-	if (TEXT("None") != wstrKey)
-		m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE9);	// Blend
-    return S_OK;
+	Update_Desc();
 }
 
 void MeshEffect::Tick()
 {
+	if (m_bIsPlayFinished)
+		return;
 }
 
 void MeshEffect::Final_Tick()
 {
+	if (m_bIsPlayFinished && m_bIsAlwaysShowFirstTick)
+		return;
+
 	m_fCurrAge += fDT;
 
 	if (m_fCurrAge >= m_tDesc.fDuration)
 	{
-		CUR_SCENE->Remove_GameObject(Get_Owner());
-		return;
+		if (!m_bIsImmortal)
+		{
+			CUR_SCENE->Remove_GameObject(Get_Owner());
+			return;
+		}
+		else
+			m_bIsPlayFinished = true;
+
+		if (m_bIsPlayLoop)
+		{
+			Update_Desc();
+			m_fCurrAge = 0.f;
+
+			m_bIsPlayFinished = true;
+		}
 	}
 }
 
@@ -131,6 +103,59 @@ void MeshEffect::Render()
 		// For. Draw call
 		m_pShader->DrawIndexed(0, 0, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
 	}
+}
+
+void MeshEffect::Update_Desc()
+{
+	if (m_bIsAlwaysShowFirstTick)
+		m_bIsPlayFinished = true;
+
+	Init_RenderParams();
+
+	m_vCurrTexUVOffset_Opacity = m_tDesc.vTiling_Opacity;
+	m_vCurrTexUVOffset_Gra = m_tDesc.vTiling_Gra;
+	m_vCurrTexUVOffset_Overlay = m_tDesc.vTiling_Overlay;
+	m_vCurrTexUVOffset_Dissolve = m_tDesc.vTiling_Dissolve;
+	m_vCurrTexUVOffset_Distortion = m_tDesc.vTiling_Distortion;
+
+	// For. Model Components
+	m_pModel = RESOURCES.Get<Model>(Utils::ToWString(m_tDesc.strVfxMesh));
+
+	// For. Material Components
+	m_pMaterial = make_shared<Material>();
+	m_pMaterial->Set_Shader(m_pShader);
+	wstring wstrKey = Utils::ToWString(m_tDesc.strDiffuseTexture);
+	wstring wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+	if (TEXT("None") != wstrKey)
+		m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::DIFFUSE);
+	wstrKey = Utils::ToWString(m_tDesc.strOpacityTexture);
+	wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+	if (TEXT("None") != wstrKey)
+		m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::OPACITY);
+	wstrKey = Utils::ToWString(m_tDesc.strNormalTexture);
+	wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+	if (TEXT("None") != wstrKey)
+		m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::NORMAL);
+	wstrKey = Utils::ToWString(m_tDesc.strDissolveTexture);
+	wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+	if (TEXT("None") != wstrKey)
+		m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::DISSOLVE);
+	wstrKey = Utils::ToWString(m_tDesc.strDistortionTexture);
+	wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+	if (TEXT("None") != wstrKey)
+		m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::DISTORTION);
+	wstrKey = Utils::ToWString(m_tDesc.strGraTexture);
+	wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+	if (TEXT("None") != wstrKey)
+		m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE7);	// Gradation
+	wstrKey = Utils::ToWString(m_tDesc.strOverlayTexture);
+	wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+	if (TEXT("None") != wstrKey)
+		m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE8);	// Overlay
+	wstrKey = Utils::ToWString(m_tDesc.strBlendTexture);
+	wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+	if (TEXT("None") != wstrKey)
+		m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE9);	// Blend
 }
 
 void MeshEffect::Init_RenderParams()

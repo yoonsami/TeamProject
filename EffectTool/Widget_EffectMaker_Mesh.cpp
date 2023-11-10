@@ -17,6 +17,7 @@ void Widget_EffectMaker_Mesh::Initialize()
 {
 	Set_Mesh_List();
 	Set_Texture_List();
+	Set_FinishedEffect_List();
 }
 
 void Widget_EffectMaker_Mesh::Tick()
@@ -24,6 +25,10 @@ void Widget_EffectMaker_Mesh::Tick()
 	ImGui::SetNextWindowPos(ImVec2(0.f, 0.f));
 	ImGui::Begin("Mesh Effect Maker");
 	ImGui_EffectMaker();
+	ImGui::End();
+
+	ImGui::Begin("Finished Effect");
+	ImGui_FinishedEffect();
 	ImGui::End();
 }
 
@@ -86,6 +91,39 @@ void Widget_EffectMaker_Mesh::Set_Texture_List()
 	}
 }
 
+void Widget_EffectMaker_Mesh::Set_FinishedEffect_List()
+{
+	// For. Clear list
+	m_iNumFinishedEffects = 0 ;
+	m_vecFinishedEffects.clear();
+	delete(m_pszFinishedEffects);
+
+	// For. add effect to list 
+	wstring assetPath = L"..\\Resources\\EffectData\\";
+	for (auto& entry : fs::recursive_directory_iterator(assetPath))
+	{
+		if (entry.is_directory())
+			continue;
+
+		if (entry.path().extension().wstring() != L".dat")
+			continue;
+
+		string tag = entry.path().string();
+		tag = entry.path().filename().string();
+		m_vecFinishedEffects.push_back(tag);
+	}
+
+	m_iNumFinishedEffects = (_uint)m_vecFinishedEffects.size();
+	m_pszFinishedEffects = new const char* [m_iNumFinishedEffects];
+
+	int iIndex = 0;
+	for (auto iter : m_vecFinishedEffects)
+	{
+		m_pszFinishedEffects[iIndex] = m_vecFinishedEffects[iIndex].c_str();
+		iIndex++;
+	}
+}
+
 void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 {
 	Option_Property();
@@ -104,16 +142,26 @@ void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 
 	/* For. Create, Save, Load Effect */
 	ImGui::Spacing();
-	ImGui::SeparatorText(" Create/Delete ");
+	ImGui::SeparatorText("Create / Load");
 	if (ImGui::Button("Create"))
 		Create();
 	ImGui::SameLine();
 	if (ImGui::Button("Save"))
 		Save();	
-	ImGui::SameLine();
+	ImGui::Spacing();
+}
+
+void Widget_EffectMaker_Mesh::ImGui_FinishedEffect()
+{
+	ImGui::SeparatorText("Effect List");
+	ImGui::ListBox("##FinishedEffect", &m_iFinishedObject, m_pszFinishedEffects, m_iNumFinishedEffects, 10);
+	ImGui::Spacing();
+
 	if (ImGui::Button("Load"))
 		Load();
 	ImGui::SameLine();
+	if (ImGui::Button("Add in Group"))
+		AddInGroup();
 }
 
 void Widget_EffectMaker_Mesh::Option_Property()
@@ -660,16 +708,237 @@ void Widget_EffectMaker_Mesh::Create()
 	};
 	EffectObj->Get_MeshEffect()->Init(&tMeshEffectDesc);
 
+	EffectObj->Get_MeshEffect()->Set_IsImmortal(false);
+
 	// For. Add Effect GameObject to current scene
 	CUR_SCENE->Add_GameObject(EffectObj);
 }
 
 void Widget_EffectMaker_Mesh::Save()
 {
+	string strFileName = m_szTag;
+	string strFilePath = "..\\Resources\\EffectData\\";
+	strFilePath += strFileName + ".dat";
+
+	shared_ptr<FileUtils> file = make_shared<FileUtils>();
+	file->Open(Utils::ToWString(strFilePath), FileMode::Write);
+
+	/* Property */
+	file->Write<string>(m_szTag);
+	file->Write<_float>(m_fDuration);
+	file->Write<_bool>(m_bBlurOn);
+	file->Write<_bool>(m_bUseFadeOut);
+
+	/* Mesh */
+	// file->Write<_bool>(m_iMesh); 
+	file->Write<string>(m_strMesh);
+
+	/* Coloring Option */
+	file->Write<_bool>(m_bColorChangingOn);
+
+	/* Diffuse */
+	file->Write<_int>(m_iDiffuseOption);
+	// file->Write<_int>(m_DiffuseTexture.first);
+	file->Write<string>(m_DiffuseTexture.second);
+	file->Write<_float4>(ImVec4toColor(m_vDiffuseColor_BaseStart));
+	file->Write<_float4>(ImVec4toColor(m_vDiffuseColor_BaseEnd));
+	file->Write<_float4>(ImVec4toColor(m_vDiffuseColor_Dest));
+
+	/* Alpha Gradation */
+	file->Write<_float>(m_fAlphaGraIntensity);
+	file->Write<_float4>(ImVec4toColor(m_vAlphaGraColor_Base));
+	// file->Write<_bool>(m_bDestSameWithBase_AlphaGra);
+	file->Write<_float4>(ImVec4toColor(m_vAlphaGraColor_Dest));
+
+	/* Opacity */
+	// file->Write<_int>(m_OpacityTexture.first);
+	file->Write<string>(m_OpacityTexture.second);
+	// file->Write<_bool>(m_bUVOptionSameWithOpacity_Opacity);
+	file->Write<_int>(m_iSamplerType);
+	file->Write<_float2>(_float2(m_fTiling_Opacity[0], m_fTiling_Opacity[1]));
+	file->Write<_float2>(_float2(m_fUVSpeed_Opacity[0], m_fUVSpeed_Opacity[1]));
+
+	/* Gradation by Texture */
+	// file->Write<_bool>(m_bGra_On);
+	// file->Write<_int>(m_GraTexture.first);
+	file->Write<string>(m_GraTexture.second);
+	file->Write<_float4>(ImVec4toColor(m_vGraColor_Base));
+	// file->Write<_bool>(m_bUVOptionSameWithOpacity_Gra);
+	file->Write<_float2>(_float2(m_fTiling_Gra[0], m_fTiling_Gra[1]));
+	file->Write<_float2>(_float2(m_fUVSpeed_Gra[0], m_fUVSpeed_Gra[1]));
+	// file->Write<_bool>(m_bDestSameWithBase_Gra);
+	file->Write<_float4>(ImVec4toColor(m_vGraColor_Dest));
+
+	/* Overlay */
+	file->Write<_bool>(m_bOverlay_On);
+	// file->Write<_int>(m_OverlayTexture.first);
+	file->Write<string>(m_OverlayTexture.second);
+	file->Write<_float4>(ImVec4toColor(m_vOverlayColor_Base));
+	// file->Write<_bool>(m_bUVOptionSameWithOpacity_Overlay);
+	file->Write<_float2>(_float2(m_fTiling_Overlay[0], m_fTiling_Overlay[1]));
+	file->Write<_float2>(_float2(m_fUVSpeed_Overlay[0], m_fUVSpeed_Overlay[1]));
+
+	/* Normal */
+	// file->Write<_int>(m_NormalTexture.first);
+	file->Write<string>(m_NormalTexture.second);
+
+	/* Dissolve */
+	// file->Write<_int>(m_DissolveTexture.first);
+	file->Write<string>(m_DissolveTexture.second);
+	// file->Write<_bool>(m_bUVOptionSameWithOpacity_Dissolve);
+	file->Write<_float2>(_float2(m_fTiling_Dissolve[0], m_fTiling_Dissolve[1]));
+	file->Write<_float2>(_float2(m_fUVSpeed_Dissolve[0], m_fUVSpeed_Dissolve[1]));
+
+	/* Distortion */
+	// file->Write<_bool>(m_bDistortion_On);
+	// file->Write<_int>(m_DistortionTexture.first);
+	file->Write<string>(m_DistortionTexture.second);
+	// file->Write<_bool>(m_bUVOptionSameWithOpacity_Distortion);
+	file->Write<_float2>(_float2(m_fTiling_Distortion[0], m_fTiling_Distortion[1]));
+	file->Write<_float2>(_float2(m_fUVSpeed_Distortion[0], m_fUVSpeed_Distortion[1]));
+
+	/* Blend */
+	// file->Write<_bool>(m_bBlend_On);
+	// file->Write<_int>(m_BlendTexture.first);
+	file->Write<string>(m_BlendTexture.second);
+
+	/* Color Edit */
+	file->Write<_float>(m_fContrast);
+
+	// For. Update Finished Effect List 
+	Set_FinishedEffect_List();
 }
 
 void Widget_EffectMaker_Mesh::Load()
 {
+	_float2 tiling = {0.f, 0.f};
+	_float2 UVSpeed = { 0.f, 0.f };
+	
+	// For. load file and fill imgui 
+	string strFilePath = "..\\Resources\\EffectData\\";
+	string strFileName = m_pszFinishedEffects[m_iFinishedObject];
+	strFilePath += strFileName;
+	shared_ptr<FileUtils> file = make_shared<FileUtils>();
+	file->Open(Utils::ToWString(strFilePath), FileMode::Read);
+
+	/* Property */
+	string strTag = file->Read<string>();
+	strcpy_s(m_szTag, MAX_PATH, strTag.c_str());
+	m_fDuration = file->Read<_float>();
+	m_bBlurOn = file->Read<_bool>();
+	m_bUseFadeOut = file->Read<_bool>();
+
+	/* Mesh */
+	m_strMesh = file->Read<string>();
+	m_iMesh = GetIndex_FromMeshList(m_strMesh);
+
+	/* Coloring Option */
+	m_bColorChangingOn = file->Read<_bool>();
+
+	/* Diffuse */
+	m_iDiffuseOption = file->Read<_int>();
+	m_DiffuseTexture.second = file->Read<string>();
+	m_vDiffuseColor_BaseStart = ColorToImVec4(file->Read<_float4>());
+	m_vDiffuseColor_BaseEnd = ColorToImVec4(file->Read<_float4>());
+	m_vDiffuseColor_Dest = ColorToImVec4(file->Read<_float4>());
+	m_DiffuseTexture.first = GetIndex_FromTexList(m_DiffuseTexture.second);
+
+	/* Alpha Gradation */
+	m_fAlphaGraIntensity = file->Read<_float>();
+	m_vAlphaGraColor_Base = ColorToImVec4(file->Read<_float4>());
+	m_vAlphaGraColor_Dest = ColorToImVec4(file->Read<_float4>());
+	m_bDestSameWithBase_AlphaGra = Compare_IsSameColor(m_vAlphaGraColor_Base, m_vAlphaGraColor_Dest);
+	if (0 == m_fAlphaGraIntensity) m_bAlphaGra_On = false;
+	else m_bAlphaGra_On = true;
+
+	/* Opacity */
+	m_OpacityTexture.second = file->Read<string>();
+	m_iSamplerType = file->Read<_int>();
+	tiling = file->Read<_float2>();
+	m_fTiling_Opacity[0] = tiling.x;
+	m_fTiling_Opacity[1] = tiling.y;
+	UVSpeed = file->Read<_float2>();
+	m_fUVSpeed_Opacity[0] = UVSpeed.x;
+	m_fUVSpeed_Opacity[1] = UVSpeed.y;
+	m_OpacityTexture.first = GetIndex_FromTexList(m_OpacityTexture.second);
+	
+	/* Gradation by Texture */
+	m_GraTexture.second = file->Read<string>();
+	m_vGraColor_Base = ColorToImVec4(file->Read<_float4>());
+	tiling = file->Read<_float2>();
+	m_fTiling_Gra[0] = tiling.x;
+	m_fTiling_Gra[1] = tiling.y;
+	UVSpeed = file->Read<_float2>();
+	m_fUVSpeed_Gra[0] = UVSpeed.x;
+	m_fUVSpeed_Gra[1] = UVSpeed.y;
+	m_vGraColor_Dest = ColorToImVec4(file->Read<_float4>());
+	m_GraTexture.first = GetIndex_FromTexList(m_GraTexture.second);
+	if (0 == m_GraTexture.first) m_bGra_On = false;
+	else m_bGra_On = true;
+	m_bUVOptionSameWithOpacity_Gra = Compare_IsSameUVOptionsWithOpacity(tiling, UVSpeed);
+	m_bDestSameWithBase_Gra = Compare_IsSameColor(m_vGraColor_Base, m_vGraColor_Dest);
+
+	/* Overlay */
+	m_bOverlay_On = file->Read<_bool>();
+	m_OverlayTexture.second = file->Read<string>();
+	m_vOverlayColor_Base = ColorToImVec4(file->Read<_float4>());
+	tiling = file->Read<_float2>();
+	m_fTiling_Overlay[0] = tiling.x;
+	m_fTiling_Overlay[1] = tiling.y;
+	UVSpeed = file->Read<_float2>();
+	m_fUVSpeed_Overlay[0] = UVSpeed.x;
+	m_fUVSpeed_Overlay[1] = UVSpeed.y;
+	m_OverlayTexture.first = GetIndex_FromTexList(m_OverlayTexture.second);
+	m_bUVOptionSameWithOpacity_Overlay = Compare_IsSameUVOptionsWithOpacity(tiling, UVSpeed);
+
+	/* Normal */
+	m_NormalTexture.second = file->Read<string>();
+	m_NormalTexture.first = GetIndex_FromTexList(m_NormalTexture.second);
+	if (0 == m_NormalTexture.first) m_bNormal_On = false;
+	else m_bNormal_On = true;
+
+	/* Dissolve */
+	m_DissolveTexture.second = file->Read<string>();
+	tiling = file->Read<_float2>();
+	m_fTiling_Dissolve[0] = tiling.x;
+	m_fTiling_Dissolve[1] = tiling.y;
+	UVSpeed = file->Read<_float2>();
+	m_fTiling_Dissolve[0] = UVSpeed.x;
+	m_fTiling_Dissolve[1] = UVSpeed.y;
+	m_DissolveTexture.first = GetIndex_FromTexList(m_DissolveTexture.second);
+	m_bUVOptionSameWithOpacity_Dissolve = Compare_IsSameUVOptionsWithOpacity(tiling, UVSpeed);
+	if (0 == m_DissolveTexture.first) m_bDissolve_On = false;
+	else m_bDissolve_On = true;
+
+	/* Distortion */
+	m_DistortionTexture.second = file->Read<string>();
+	tiling = file->Read<_float2>();
+	m_fTiling_Distortion[0] = tiling.x;
+	m_fTiling_Distortion[1] = tiling.y;
+	UVSpeed = file->Read<_float2>();
+	m_fUVSpeed_Distortion[0] = UVSpeed.x;
+	m_fUVSpeed_Distortion[1] = UVSpeed.y;
+	m_DistortionTexture.first = GetIndex_FromTexList(m_DistortionTexture.second);
+	m_bUVOptionSameWithOpacity_Distortion = Compare_IsSameUVOptionsWithOpacity(tiling, UVSpeed);
+	if (0 == m_DistortionTexture.first) m_bDistortion_On = false;
+	else m_bDistortion_On = true;
+
+	/* Blend */
+	m_BlendTexture.second = file->Read<string>();
+	m_BlendTexture.first = GetIndex_FromTexList(m_BlendTexture.second);
+	if (0 == m_BlendTexture.first) m_bBlend_On = false;
+	else m_bBlend_On = true;
+
+	/* Color Edit */
+	m_fContrast = file->Read<_float>();
+
+	// For. Create Effect GameObjects
+	Create();
+}
+
+void Widget_EffectMaker_Mesh::AddInGroup()
+{
+
 }
 
 void Widget_EffectMaker_Mesh::SubWidget_TextureCombo(_int* iSelected, string* strSelected, string strFilePath, const char* pszWidgetKey)
@@ -752,4 +1021,55 @@ void Widget_EffectMaker_Mesh::SubWidget_SettingTexUV(_float* arrTiling, _float* 
 Color Widget_EffectMaker_Mesh::ImVec4toColor(ImVec4 imvec)
 {
 	return Color(imvec.x, imvec.y, imvec.z, imvec.w);
+}
+
+ImVec4 Widget_EffectMaker_Mesh::ColorToImVec4(Color color)
+{
+	return ImVec4(color.x, color.y, color.z, color.w);
+}
+
+_int Widget_EffectMaker_Mesh::GetIndex_FromTexList(string strValue)
+{
+	_int iIndex = 0;
+	for (auto iter : m_vecUniversalTextures)
+	{
+		if (strValue == iter)
+			return iIndex;
+		iIndex++;
+	}
+	return -1;
+}
+
+_int Widget_EffectMaker_Mesh::GetIndex_FromMeshList(string strValue)
+{
+	_int iIndex = 0;
+	for (auto iter : m_vecMeshes)
+	{
+		if (strValue == iter)
+			return iIndex;
+		iIndex++;
+	}
+	return -1;
+}
+
+_bool Widget_EffectMaker_Mesh::Compare_IsSameColor(ImVec4 color1, ImVec4 color2)
+{
+	if (color1.x == color2.x &&
+		color1.y == color2.y &&
+		color1.z == color2.z &&
+		color1.w == color2.w)
+		return true;
+	else
+		return false;
+}
+
+_bool Widget_EffectMaker_Mesh::Compare_IsSameUVOptionsWithOpacity(_float2 tiling, _float2 UVSpeed)
+{
+	if(tiling.x == m_fTiling_Opacity[0] &&
+		tiling.y == m_fTiling_Opacity[1] &&
+		UVSpeed.x == m_fUVSpeed_Overlay[0] &&
+		UVSpeed.y == m_fUVSpeed_Overlay[1] )
+		return true;
+	else
+		return false;
 }

@@ -72,8 +72,7 @@ void ImGuiToolMgr::Render()
 
 void ImGuiToolMgr::ImGui_BasicWidget()
 {
-    Option_ToolSelector();
-    Option_StyleEditor();
+    Option_ToolSelector();    
 }
 
 void ImGuiToolMgr::Option_ToolSelector()
@@ -83,19 +82,3 @@ void ImGuiToolMgr::Option_ToolSelector()
     ImGui::SameLine();
     ImGui::Checkbox("ParticleMaker(Instancing)", &m_bIsParticleMaker_Instancing_On);
 }
-
-void ImGuiToolMgr::Option_StyleEditor()
-{
-    ImGui::SeparatorText("ImGui Window Style");
-
-    ImGui::RadioButton("Night Theme", &m_tImGuiStyle.iTheme, 0);
-    ImGui::SameLine();
-    ImGui::RadioButton("Day Theme", &m_tImGuiStyle.iTheme, 1);
-
-    switch (m_tImGuiStyle.iTheme)
-    {
-    case 0: ImGui::StyleColorsDark(); break;
-    case 1: ImGui::StyleColorsLight(); break;
-    }
-}
-
