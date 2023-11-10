@@ -46,7 +46,6 @@ private:
 
 	Color					ImVec4toColor(ImVec4 imvec);
 	ImVec4					ColorToImVec4(Color color);
-
 	_int					GetIndex_FromTexList(string strValue);
 	_int					GetIndex_FromMeshList(string strValue);
 	_bool					Compare_IsSameColor(ImVec4 color1, ImVec4 color2);

@@ -110,6 +110,11 @@ void MeshEffect::Update_Desc()
 	if (m_bIsAlwaysShowFirstTick)
 		m_bIsPlayFinished = true;
 
+	_float fNoise = _float(rand() % 11) / 10.f;
+	Color vRangStartColor = Color(m_tDesc.vDiffuseColor_BaseStart.x, m_tDesc.vDiffuseColor_BaseStart.y, m_tDesc.vDiffuseColor_BaseStart.z, m_tDesc.vDiffuseColor_BaseStart.w);
+	Color vRangEndColor = Color(m_tDesc.vDiffuseColor_BaseEnd.x, m_tDesc.vDiffuseColor_BaseEnd.y, m_tDesc.vDiffuseColor_BaseEnd.z, m_tDesc.vDiffuseColor_BaseEnd.w);
+	m_vDiffuseColor_Base = vRangStartColor * fNoise + vRangEndColor * (1.f - fNoise);
+
 	Init_RenderParams();
 
 	m_vCurrTexUVOffset_Opacity = m_tDesc.vTiling_Opacity;
@@ -175,10 +180,10 @@ void MeshEffect::Init_RenderParams()
 	vUVOffset = _float4(m_vCurrTexUVOffset_Dissolve.x, m_vCurrTexUVOffset_Dissolve.y, m_vCurrTexUVOffset_Distortion.x, m_vCurrTexUVOffset_Distortion.y);
 	m_RenderParams.SetVec4(1, vUVOffset);
 
-	_float4x4 mColor = _float4x4(m_tDesc.BaseColor_Diffuse,
-							     m_tDesc.BaseColor_AlphaGra,
-							     m_tDesc.BaseColor_Gra,
-							     m_tDesc.BaseColor_Overlay);
+	_float4x4 mColor = _float4x4(m_vDiffuseColor_Base,
+							     m_tDesc.vBaseColor_AlphaGra,
+							     m_tDesc.vBaseColor_Gra,
+							     m_tDesc.vBaseColor_Overlay);
 	m_RenderParams.SetMatrix(0, mColor);
 }
 
@@ -189,13 +194,13 @@ void MeshEffect::Bind_RenderParams_ToShader()
 	m_RenderParams.SetFloat(0, fLifeTimeRatio);
 
 	// For. Update ChangingColor
-	Color vFinalDiffuseColor = XMVectorLerp(m_tDesc.BaseColor_Diffuse, m_tDesc.DestColor_Diffuse, fLifeTimeRatio);
-	Color vFinalAlphaGraColor = XMVectorLerp(m_tDesc.BaseColor_AlphaGra, m_tDesc.DestColor_AlphaGra, fLifeTimeRatio);
-	Color vFinalGraColor = XMVectorLerp(m_tDesc.BaseColor_Gra, m_tDesc.DestColor_Gra, fLifeTimeRatio);
+	Color vFinalDiffuseColor = XMVectorLerp(m_vDiffuseColor_Base, m_tDesc.vDestColor_Diffuse, fLifeTimeRatio);
+	Color vFinalAlphaGraColor = XMVectorLerp(m_tDesc.vBaseColor_AlphaGra, m_tDesc.vDestColor_AlphaGra, fLifeTimeRatio);
+	Color vFinalGraColor = XMVectorLerp(m_tDesc.vBaseColor_Gra, m_tDesc.vDestColor_Gra, fLifeTimeRatio);
 	_float4x4 mColor = _float4x4(vFinalDiffuseColor,
 								 vFinalAlphaGraColor,
 								 vFinalGraColor,
-								 m_tDesc.BaseColor_Overlay);
+								 m_tDesc.vBaseColor_Overlay);
 	m_RenderParams.SetMatrix(0, mColor);
 
 	// For. Update UV Offset

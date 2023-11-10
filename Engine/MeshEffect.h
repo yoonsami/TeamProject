@@ -11,7 +11,7 @@ public:
         _float      fDuration;
         _bool       bBlurOn;
         _bool       bUseFadeOut;
-        
+
         // Mesh 
         string      strVfxMesh;
 
@@ -20,8 +20,9 @@ public:
 
         // Diffuse
         string      strDiffuseTexture;
-        Color       BaseColor_Diffuse;
-        Color       DestColor_Diffuse;
+        Color       vDiffuseColor_BaseStart;
+        Color       vDiffuseColor_BaseEnd;
+        Color       vDestColor_Diffuse;
 
         // Opacity
         string      strOpacityTexture;
@@ -31,20 +32,20 @@ public:
 
         // Alpha Gradation
         _float      fAlphaGraIntensity;
-        Color       BaseColor_AlphaGra;
-        Color       DestColor_AlphaGra;
+        Color       vBaseColor_AlphaGra;
+        Color       vDestColor_AlphaGra;
 
         // Gradation
         string      strGraTexture;
-        Color       BaseColor_Gra;
-        Color       DestColor_Gra;
+        Color       vBaseColor_Gra;
+        Color       vDestColor_Gra;
         _float2     vTiling_Gra;
         _float2     vUVSpeed_Gra;
 
         // Overlay
         _bool       bIsOverlayOn;
         string      strOverlayTexture;
-        Color       BaseColor_Overlay;
+        Color       vBaseColor_Overlay;
         _float2     vTiling_Overlay;
         _float2     vUVSpeed_Overlay;
 
@@ -99,6 +100,7 @@ private:
     void            Bind_RenderParams_ToShader();
 
 private:
+    Color                   m_vDiffuseColor_Base;
 
     _float                  m_fCurrAge = { 0.f };
 

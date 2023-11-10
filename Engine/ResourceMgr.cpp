@@ -9,6 +9,9 @@
 #include "Geometry.h"
 #include "CustomFont.h"
 #include "MathUtils.h"
+#include "MeshEffectData.h"
+#include "ParticleData.h"
+#include "GroupEffectData.h"
 
 namespace fs = std::filesystem;
 
@@ -66,6 +69,9 @@ void ResourceMgr::Initialize()
 	CreateDefaultMaterial();
 	CreateDefaultFont();
 
+	CreateMeshEffectData();
+	CreateParticleData();
+	CreateGroupEffectData();
 }
 
 
@@ -474,70 +480,6 @@ void ResourceMgr::CreateDefaultShader()
 	}
 }
 
-void ResourceMgr::CreateDefaultShader_EffectTool()
-{
-	{ 
-		wstring ShaderTag = L"Shader_Particle2.fx";
-		Load<Shader>(ShaderTag, ShaderTag);
-		auto shader = Get<Shader>(ShaderTag);
-		shader->Set_ShaderType(SHADER_TYPE::PARTICLE);
-	}
-
-	{
-		wstring ShaderTag = L"Shader_Effect2.fx";
-		Load<Shader>(ShaderTag, ShaderTag);
-		auto shader = Get<Shader>(ShaderTag);
-		shader->Set_ShaderType(SHADER_TYPE::FORWARD);
-	}
-
-	{ // MEMO : must
-		wstring ShaderTag = L"Lighting.fx";
-		Load<Shader>(ShaderTag, ShaderTag);
-		auto shader = Get<Shader>(ShaderTag);
-		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
-	}
-	
-	{ // MEMO : must
-		wstring ShaderTag = L"Shader_Deferred.fx";
-		Load<Shader>(ShaderTag, ShaderTag);
-		auto shader = Get<Shader>(ShaderTag);
-		shader->Set_ShaderType(SHADER_TYPE::DEFERRED);
-	}
-
-	{ // MEMO : must
-		wstring ShaderTag = L"Shader_Mesh.fx";
-		Load<Shader>(ShaderTag, ShaderTag);
-		auto shader = Get<Shader>(ShaderTag);
-		shader->Set_ShaderType(SHADER_TYPE::FORWARD);
-	}
-
-	{ // MEMO : must
-		wstring ShaderTag = L"Blur.fx";
-		Load<Shader>(ShaderTag, ShaderTag);
-		auto shader = Get<Shader>(ShaderTag);
-		shader->Set_ShaderType(SHADER_TYPE::DEFERRED);
-	}
-
-	{ // MEMO : must
-		wstring ShaderTag = L"Distorted_Final.fx";
-		Load<Shader>(ShaderTag, ShaderTag);
-		auto shader = Get<Shader>(ShaderTag);
-		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
-	}
-	{ // MEMO : must
-		wstring ShaderTag = L"Shader_Final.fx";
-		Load<Shader>(ShaderTag, ShaderTag);
-		auto shader = Get<Shader>(ShaderTag);
-		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
-	}
-	{ // MEMO : must
-		wstring ShaderTag = L"Shader_Bloom.fx";
-		Load<Shader>(ShaderTag, ShaderTag);
-		auto shader = Get<Shader>(ShaderTag);
-		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
-	}
-}
-
 void ResourceMgr::CreateModel(const wstring& path)
 {
 	{
@@ -854,6 +796,107 @@ void ResourceMgr::CreateDefaultFont()
 
 		Add(L"Dream", font);
 	}
+}
+
+void ResourceMgr::CreateMeshEffectData()
+{
+	wstring assetPath = L"..\\Resources\\EffectData\\MeshEffectData\\";
+
+	for (auto& entry : fs::recursive_directory_iterator(assetPath))
+	{
+		if (entry.is_directory())
+			continue;
+
+		if (entry.path().extension().wstring() != L".dat")
+			continue;
+
+		MeshEffectData::DESC tDesc;
+
+		// For. load file and fill imgui 
+		string strFilePath = Utils::ToString(assetPath);
+		string strFileName = entry.path().string();
+		strFileName = entry.path().filename().string();
+		strFilePath += strFileName;
+		shared_ptr<FileUtils> file = make_shared<FileUtils>();
+		file->Open(Utils::ToWString(strFilePath), FileMode::Read);
+
+		/* Property */
+		string strTag = file->Read<string>();
+		tDesc.pszTag = strTag.c_str();
+		tDesc.fDuration = file->Read<_float>();
+		tDesc.bBlurOn = file->Read<_bool>();
+		tDesc.bUseFadeOut = file->Read<_bool>();
+
+		/* Mesh */
+		tDesc.strVfxMesh = file->Read<string>();
+
+		/* Coloring Option */
+		tDesc.bColorChangingOn = file->Read<_bool>();
+
+		/* Diffuse */
+		tDesc.strDiffuseTexture = file->Read<string>();
+		tDesc.vDiffuseColor_BaseStart = file->Read<_float4>();
+		tDesc.vDiffuseColor_BaseEnd = file->Read<_float4>();
+		tDesc.DestColor_Diffuse = file->Read<_float4>();
+
+		/* Alpha Gradation */
+		tDesc.fAlphaGraIntensity = file->Read<_float>();
+		tDesc.BaseColor_AlphaGra = file->Read<_float4>();
+		tDesc.DestColor_AlphaGra = file->Read<_float4>();
+
+		/* Opacity */
+		tDesc.strOpacityTexture = file->Read<string>();
+		tDesc.iSamplerType = file->Read<_int>();
+		tDesc.vTiling_Opacity = file->Read<_float2>();
+		tDesc.vUVSpeed_Opacity = file->Read<_float2>();
+		
+		/* Gradation by Texture */
+		tDesc.strGraTexture = file->Read<string>();
+		tDesc.BaseColor_Gra = file->Read<_float4>();
+		tDesc.vTiling_Gra = file->Read<_float2>();
+		tDesc.vUVSpeed_Gra = file->Read<_float2>();
+		tDesc.DestColor_Gra = file->Read<_float4>();
+		
+		/* Overlay */
+		tDesc.bIsOverlayOn = file->Read<_bool>();
+		tDesc.strOverlayTexture = file->Read<string>();
+		tDesc.BaseColor_Overlay = file->Read<_float4>();
+		tDesc.vTiling_Overlay = file->Read<_float2>();
+		tDesc.vUVSpeed_Overlay = file->Read<_float2>();
+		
+		/* Normal */
+		tDesc.strNormalTexture = file->Read<string>();
+
+		/* Dissolve */
+		tDesc.strDissolveTexture = file->Read<string>();
+		tDesc.vTiling_Dissolve = file->Read<_float2>();
+		tDesc.vUVSpeed_Dissolve = file->Read<_float2>();
+		
+		/* Distortion */
+		tDesc.strDistortionTexture = file->Read<string>();
+		tDesc.vTiling_Distortion = file->Read<_float2>();
+		tDesc.vUVSpeed_Distortion = file->Read<_float2>();
+
+		/* Blend */
+		tDesc.strBlendTexture = file->Read<string>();
+		
+		/* Color Edit */
+		tDesc.fContrast = file->Read<_float>();
+
+		shared_ptr<MeshEffectData> meshEffectData = make_shared<MeshEffectData>();
+		meshEffectData->Set_Desc(tDesc);
+
+		wstring key = Utils::ToWString(tDesc.pszTag);
+		Add(key, meshEffectData);
+	}
+}
+
+void ResourceMgr::CreateParticleData()
+{
+}
+
+void ResourceMgr::CreateGroupEffectData()
+{
 }
 
 void ResourceMgr::Reset_LevelModel(_uint iLevelIndex)

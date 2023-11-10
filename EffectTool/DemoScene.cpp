@@ -83,7 +83,7 @@ void DemoScene::Load_DemoModel()
 	//shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
 	//
 	//// For. Animator component에 붙일 Model 생성하기 
-	//shared_ptr<Model> model = RESOURCES.Get<Model>(L"Kyle");
+	shared_ptr<Model> model = RESOURCES.Get<Model>(L"Kyle");
 
 	//// For. Animator에 Model 붙이기
 	//animator->Set_Model(model);

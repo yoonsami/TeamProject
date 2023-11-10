@@ -99,7 +99,7 @@ void Widget_EffectMaker_Mesh::Set_FinishedEffect_List()
 	delete(m_pszFinishedEffects);
 
 	// For. add effect to list 
-	wstring assetPath = L"..\\Resources\\EffectData\\";
+	wstring assetPath = L"..\\Resources\\EffectData\\MeshEffectData\\";
 	for (auto& entry : fs::recursive_directory_iterator(assetPath))
 	{
 		if (entry.is_directory())
@@ -643,14 +643,9 @@ void Widget_EffectMaker_Mesh::Create()
 	shared_ptr<MeshEffect> meshEffect = make_shared<MeshEffect>(shader);
 	EffectObj->Add_Component(meshEffect);
 
-	_float fNoise = _float(rand() % 11) / 10.f;
-	Color vRangStartColor = Color(m_vDiffuseColor_BaseStart.x, m_vDiffuseColor_BaseStart.y, m_vDiffuseColor_BaseStart.z, m_vDiffuseColor_BaseStart.w);
-	Color vRangEndColor = Color(m_vDiffuseColor_BaseEnd.x, m_vDiffuseColor_BaseEnd.y, m_vDiffuseColor_BaseEnd.z, m_vDiffuseColor_BaseEnd.w);
-	Color vDiffuseColor_Base = vRangStartColor * fNoise + vRangEndColor * (1.f - fNoise);
-	
 	if (!m_bColorChangingOn)
 	{
-		m_vDiffuseColor_Dest = ImVec4(vDiffuseColor_Base.x, vDiffuseColor_Base.y, vDiffuseColor_Base.z, vDiffuseColor_Base.w);
+		m_vDiffuseColor_Dest = m_vDiffuseColor_BaseStart;
 		m_vAlphaGraColor_Dest = m_vAlphaGraColor_Base;
 		m_vGraColor_Dest = m_vGraColor_Base;
 	}
@@ -667,7 +662,8 @@ void Widget_EffectMaker_Mesh::Create()
 		m_bColorChangingOn,
 
 		m_DiffuseTexture.second,
-		vDiffuseColor_Base,
+		ImVec4toColor(vDiffuseColor_BaseStart),
+		ImVec4toColor(vDiffuseColor_BaseEnd),
 		ImVec4toColor(m_vDiffuseColor_Dest),
 
 		m_OpacityTexture.second,
@@ -717,7 +713,7 @@ void Widget_EffectMaker_Mesh::Create()
 void Widget_EffectMaker_Mesh::Save()
 {
 	string strFileName = m_szTag;
-	string strFilePath = "..\\Resources\\EffectData\\";
+	string strFilePath = "..\\Resources\\EffectData\\MeshEffectData\\";
 	strFilePath += strFileName + ".dat";
 
 	shared_ptr<FileUtils> file = make_shared<FileUtils>();
@@ -737,7 +733,6 @@ void Widget_EffectMaker_Mesh::Save()
 	file->Write<_bool>(m_bColorChangingOn);
 
 	/* Diffuse */
-	file->Write<_int>(m_iDiffuseOption);
 	// file->Write<_int>(m_DiffuseTexture.first);
 	file->Write<string>(m_DiffuseTexture.second);
 	file->Write<_float4>(ImVec4toColor(m_vDiffuseColor_BaseStart));
@@ -815,7 +810,7 @@ void Widget_EffectMaker_Mesh::Load()
 	_float2 UVSpeed = { 0.f, 0.f };
 	
 	// For. load file and fill imgui 
-	string strFilePath = "..\\Resources\\EffectData\\";
+	string strFilePath = "..\\Resources\\EffectData\\MeshEffectData\\";
 	string strFileName = m_pszFinishedEffects[m_iFinishedObject];
 	strFilePath += strFileName;
 	shared_ptr<FileUtils> file = make_shared<FileUtils>();
@@ -836,7 +831,6 @@ void Widget_EffectMaker_Mesh::Load()
 	m_bColorChangingOn = file->Read<_bool>();
 
 	/* Diffuse */
-	m_iDiffuseOption = file->Read<_int>();
 	m_DiffuseTexture.second = file->Read<string>();
 	m_vDiffuseColor_BaseStart = ColorToImVec4(file->Read<_float4>());
 	m_vDiffuseColor_BaseEnd = ColorToImVec4(file->Read<_float4>());

@@ -7,6 +7,9 @@ class Mesh;
 class Material;
 class Model;
 class CustomFont;
+class MeshEffectData;
+class ParticleData;
+class GroupEffectData;
 class ResourceMgr
 {
 	DECLARE_SINGLETON(ResourceMgr)
@@ -40,12 +43,16 @@ public:
 	//void LoadParts();
 	void CreateDefaultMesh();
 	void CreateDefaultShader();
-	void CreateDefaultShader_EffectTool();	// MEMO : EffectTool에서 사용하는 Default Shader만 로드하는 함수 
 	void CreateModel(const wstring& path);
 
 	void CreateDefaultMaterial();
 	void CreateMapModel(const wstring& mapName);
 	void CreateDefaultFont();
+
+	void CreateParticleData();
+	void CreateMeshEffectData();
+	void CreateGroupEffectData();
+
 
 	void Reset_LevelModel(_uint iLevelIndex);
 	
@@ -151,6 +158,17 @@ inline ResourceType ResourceMgr::Get_ResourceType()
 
 	if (is_same_v<T, CustomFont>)
 		return ResourceType::Font;
+
+	if (is_same_v<T, MeshEffectData>)
+		return ResourceType::MeshEffectData;
+
+	if (is_same_v<T, ParticleData>)
+		return ResourceType::ParticleData;
+
+	if (is_same_v<T, GroupEffectData>)
+		return ResourceType::GroupEffectData;
+
+
 
 	assert(false);
 	return ResourceType::None;
