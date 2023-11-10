@@ -101,7 +101,7 @@ float4 PS_Main(EffectOut input) : SV_Target
     
     // For. Dissolve
     if (bHasDissolveMap && fDissolveWeight < sin(fLifeRatio))
-        discard;
+        vOutColor.a = 0.f;
    
     // For. FadeOut
     if (bUseFadeOut)
@@ -111,20 +111,29 @@ float4 PS_Main(EffectOut input) : SV_Target
     if (vOutColor.a < fAlphaGraIntensity)
         vOutColor.rgb = (vOutColor.rgb * vOutColor.a) + (vColor_AlphaGra.rgb * (1.f - vOutColor.a));
     
+    // For. Gradation by texture
+    if (bHasTexturemap7)
+    {                                                                               
+        vColor_Gra.a = TextureMap7.Sample(LinearSamplerClamp, input.uv + vTexUVOffset_Gra + fDistortionWeight).r;
+        vOutColor = lerp(vOutColor, vColor_Gra, vColor_Gra.a);
+    }
+    
     // For. Overlay
     if (bIsOverlayOn)
     {       
-        float fOverlayWeight = 1.f;
+        float fOverlayIntensity = 1.f;
         float4 vFinalOverlayColor = float4(0.f, 0.f, 0.f, 0.f);
         
         if (bHasTexturemap8)
-            fOverlayWeight = DistortionMap.Sample(LinearSampler, input.uv + vTexUVOffset_Overlay);
+            fOverlayIntensity = TextureMap8.Sample(LinearSamplerClamp, input.uv + vTexUVOffset_Overlay).r;
         
-        vFinalOverlayColor= (vOutColor.r <= 0.5) ? 2 * vOutColor.r * vColor_Overlay.r : 1 - 2 * (1 - vOutColor.r) * (1 - vColor_Overlay.r);
-        vFinalOverlayColor= (vOutColor.g <= 0.5) ? 2 * vOutColor.g * vColor_Overlay.g : 1 - 2 * (1 - vOutColor.g) * (1 - vColor_Overlay.g);
-        vFinalOverlayColor= (vOutColor.b <= 0.5) ? 2 * vOutColor.b * vColor_Overlay.b : 1 - 2 * (1 - vOutColor.b) * (1 - vColor_Overlay.b);
+        vFinalOverlayColor.r = (vOutColor.r <= 0.5) ? 2 * vOutColor.r * vColor_Overlay.r : 1 - 2 * (1 - vOutColor.r) * (1 - vColor_Overlay.r);
+        vFinalOverlayColor.g = (vOutColor.g <= 0.5) ? 2 * vOutColor.g * vColor_Overlay.g : 1 - 2 * (1 - vOutColor.g) * (1 - vColor_Overlay.g);
+        vFinalOverlayColor.b = (vOutColor.b <= 0.5) ? 2 * vOutColor.b * vColor_Overlay.b : 1 - 2 * (1 - vOutColor.b) * (1 - vColor_Overlay.b);
         
-        vOutColor.rgb = vOutColor.rgb * (1.f - fOverlayWeight) + vFinalOverlayColor.rgb * fOverlayWeight;
+        vOutColor.rgb = lerp(vOutColor.rgb, vFinalOverlayColor.rgb, fOverlayIntensity);
+        //vOutColor.rgb = vFinalOverlayColor.rgb;
+
     }
     
     return vOutColor;

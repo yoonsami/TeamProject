@@ -110,15 +110,18 @@ private:
 	_float					m_fUVSpeed_Overlay[2] = { 0.f, 0.f };
 
 	/* Normal */
+	_bool					m_bNormal_On = { false };
 	pair<_int, string>		m_NormalTexture = { 0, "None" };
 
 	/* Dissolve */
+	_bool					m_bDissolve_On = { true };
 	pair<_int, string>		m_DissolveTexture = { 0, "None" };
 	_bool					m_bUVOptionSameWithOpacity_Dissolve = { true };
 	_float					m_fTiling_Dissolve[2] = { 0.f, 0.f };
 	_float					m_fUVSpeed_Dissolve[2] = { 0.f, 0.f };
 
 	/* Distortion */
+	_bool					m_bDistortion_On = { true };
 	pair<_int, string>		m_DistortionTexture = { 0, "None" };
 	_bool					m_bUVOptionSameWithOpacity_Distortion = { true };
 	_float					m_fTiling_Distortion[2] = { 0.f, 0.f };
