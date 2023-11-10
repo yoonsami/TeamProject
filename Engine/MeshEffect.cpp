@@ -65,7 +65,10 @@ HRESULT MeshEffect::Init(void* pArg)
 	wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
 	if (TEXT("None") != wstrKey)
 		m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE8);	// Overlay
-
+	wstrKey = Utils::ToWString(m_tDesc.strBlendTexture);
+	wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+	if (TEXT("None") != wstrKey)
+		m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE9);	// Blend
     return S_OK;
 }
 

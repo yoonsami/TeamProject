@@ -23,6 +23,7 @@ private:
 	void					Option_Property();
 	void					Option_Mesh();
 	void					Option_Opacity();
+	void					Option_Blend();
 	void					Option_Diffuse();
 	void					Option_Normal();
 	void					Option_AlphaGradation();
@@ -31,6 +32,7 @@ private:
 	void					Option_Dissolve();
 	void					Option_Distortion();
 	void					Option_ColorEdit();
+
 
 	void					Create();
 	void					Save();
@@ -127,6 +129,10 @@ private:
 	_bool					m_bUVOptionSameWithOpacity_Distortion = { true };
 	_float					m_fTiling_Distortion[2] = { 0.f, 0.f };
 	_float					m_fUVSpeed_Distortion[2] = { 0.f, 0.f };
+
+	/* Blend */
+	_bool					m_bBlend_On = { true };
+	pair<_int, string>		m_BlendTexture = { 0, "None" };
 
 	/* Color Edit */
 	_float					m_fContrast = { 0.f };

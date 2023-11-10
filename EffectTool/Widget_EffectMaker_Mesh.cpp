@@ -92,6 +92,7 @@ void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 	Option_Mesh();
 
 	Option_Opacity();
+	Option_Blend();
 	Option_Diffuse();
 	Option_Normal();
 	Option_AlphaGradation();
@@ -264,6 +265,43 @@ void Widget_EffectMaker_Mesh::Option_Opacity()
 
 	// For. Tiling, move Texture UV Speed 
 	SubWidget_SettingTexUV(m_fTiling_Opacity, m_fUVSpeed_Opacity, "Tiling(x,y)##Opacity", "Move TexUV Speed(x,y)##Opacity");
+
+	ImGui::Spacing();
+}
+
+void Widget_EffectMaker_Mesh::Option_Blend()
+{
+	ImGui::SeparatorText("Blend");
+
+	ImGui::Checkbox("Blend On", &m_bBlend_On);
+
+	if (m_bBlend_On)
+	{
+		{
+			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
+			ImGui::BeginChild("##Child1_Blend", ImVec2(ImGui::GetContentRegionAvail().x - 100, 180), false, window_flags);
+
+			// For. Texture 
+			SubWidget_TextureCombo(&m_BlendTexture.first, &m_BlendTexture.second, m_strTexturePath, "Texture##Blend");
+
+			ImGui::EndChild();
+		}
+
+		ImGui::SameLine();
+
+		{
+			ImGui::BeginChild("##Child2_Blend", ImVec2(80, 100), false);
+
+			SubWidget_ImageViewer(m_BlendTexture.second, m_strTexturePath, "##Img_Blend");
+
+			ImGui::EndChild();
+		}
+	}
+	else
+	{
+		m_BlendTexture.first = 0;
+		m_BlendTexture.second = "None";
+	}
 
 	ImGui::Spacing();
 }
@@ -537,7 +575,7 @@ void Widget_EffectMaker_Mesh::Option_ColorEdit()
 {
 	ImGui::SeparatorText("Final Color Editor");
 
-	ImGui::SliderFloat("Contrast", &m_fContrast, -1.00f, 1.00f);
+	ImGui::InputFloat("Contrast", &m_fContrast);
 	
 	ImGui::Spacing();
 }
@@ -614,6 +652,8 @@ void Widget_EffectMaker_Mesh::Create()
 		m_DistortionTexture.second,
 		_float2(m_fTiling_Distortion[0], m_fTiling_Distortion[1]),
 		_float2(m_fUVSpeed_Distortion[0], m_fUVSpeed_Distortion[1]),
+
+		m_BlendTexture.second,
 
 		m_fContrast
 

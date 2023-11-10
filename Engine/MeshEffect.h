@@ -61,6 +61,9 @@ public:
         _float2     vTiling_Distortion;
         _float2     vUVSpeed_Distortion;
 
+        // Blend 
+        string      strBlendTexture;
+
         // Color Editor
         _float      fContrast;
     }DESC;
