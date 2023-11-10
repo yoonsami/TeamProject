@@ -27,7 +27,6 @@ public:
 	static _float g_fShadowBias;
 	static _float g_fMaxWhite;
 	static _float g_fGamma;
-	static _float g_fBloomMin;
 	static _int g_iTMIndex;
 
 	struct SSAOData
@@ -65,5 +64,12 @@ public:
 		int g_iBlurCount = 0;
 	};
 	static MotionBlurData g_MotionBlurData;
+
+	struct BloomData
+	{
+		_bool g_BloomOn = false;
+		_float g_BloomMin = 0.99f;
+	};
+	static BloomData g_BloomData;
 };
 

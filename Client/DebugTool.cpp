@@ -71,7 +71,8 @@ void DebugTool::RenderOptionTab()
 	}
 	if (CollapsingHeader("Bloom"))
 	{
-		_float& g_fBloomMin = GAMEINSTANCE.g_fBloomMin;
+		Checkbox("Bloom On", &GAMEINSTANCE.g_BloomData.g_BloomOn);
+		_float& g_fBloomMin = GAMEINSTANCE.g_BloomData.g_BloomMin;
 		DragFloat("Bloom Min Value", &g_fBloomMin, 0.001f, 0.01f, 1.f);
 	}
 	if (CollapsingHeader("ToneMapping"))

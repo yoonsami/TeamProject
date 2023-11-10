@@ -1190,13 +1190,15 @@ void Scene::Render_Forward()
 
 void Scene::Render_BloomMap()
 {
+	if (!GAMEINSTANCE.g_BloomData.g_BloomOn)
+		return;
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::BLOOMMAP)->OMSetRenderTargets();
 
 	auto material = RESOURCES.Get<Material>(L"BloomTarget");
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
 	material->Push_SubMapData();
-	material->Get_Shader()->GetScalar("g_BloomMin")->SetFloat(GAMEINSTANCE.g_fBloomMin);
+	material->Get_Shader()->GetScalar("g_BloomMin")->SetFloat(GAMEINSTANCE.g_BloomData.g_BloomMin);
 	mesh->Get_VertexBuffer()->Push_Data();
 	mesh->Get_IndexBuffer()->Push_Data();
 
@@ -1207,6 +1209,9 @@ void Scene::Render_BloomMap()
 
 void Scene::Render_BloomMapScaling()
 {
+	if (!GAMEINSTANCE.g_BloomData.g_BloomOn)
+		return;
+
 	for (_uchar i = 0; i < 3; ++i)
 	{
 		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLOOMDOWNSCALE0) + i);
