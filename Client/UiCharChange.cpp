@@ -14,13 +14,13 @@ HRESULT UiCharChange::Init()
         return E_FAIL;
 
     m_vecDesc.resize(3);
-    m_vecDesc[0].fCoolTime = 1.f;
-    m_vecDesc[1].fCoolTime = 1.f;
-    m_vecDesc[2].fCoolTime = 1.f;
+    m_vecDesc[0].fCoolTime = 10.f;
+    m_vecDesc[1].fCoolTime = 10.f;
+    m_vecDesc[2].fCoolTime = 10.f;
 
-    m_vecDesc[0].fAccTime = m_vecDesc[0].fCoolTime;
+    /*m_vecDesc[0].fAccTime = m_vecDesc[0].fCoolTime;
     m_vecDesc[1].fAccTime = m_vecDesc[1].fCoolTime;
-    m_vecDesc[2].fAccTime = m_vecDesc[2].fCoolTime;
+    m_vecDesc[2].fAccTime = m_vecDesc[2].fCoolTime;*/
 
     m_pObj.resize(3);
     m_pObj[0] = CUR_SCENE->Get_GameObject(L"UI_Char_Change0");
@@ -58,6 +58,9 @@ void UiCharChange::Set_Hero(_uint iIndex, HERO eHero)
     if (m_pOwner.expired() || 2 < iIndex)
         return;
     
+    if (true == m_pObj[iIndex].expired() || true == m_pElement[iIndex].expired())
+        return;
+
     // UI의 Index 위치에 업데이트할 영웅 사진 껴주기
     if (HERO::MAX == eHero)
     {
@@ -85,9 +88,12 @@ _bool UiCharChange::IsChangePossible(_uint iIndex)
     if (Desc.fCoolTime < Desc.fAccTime)
     {
         // Hreo Change Script 호출
+        // Desc.eHero의 영웅 값을 따라서 호출
 
+        return true;
     }
 
+    return false;
 }
 
 void UiCharChange::Check_Change_Cool()

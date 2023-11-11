@@ -53,7 +53,7 @@ void ImguiMgr::Tick()
    ImGui::NewFrame();
    ImGuizmo::BeginFrame();
 
-   ImGui::ShowDemoWindow(); // Show demo window! :)
+   //ImGui::ShowDemoWindow(); // Show demo window! :)
 
 
    Key_Input();

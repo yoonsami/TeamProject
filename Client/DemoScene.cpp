@@ -21,6 +21,7 @@
 #include "MeshRenderer.h"
 #include "FontRenderer.h"
 #include "MeshCollider.h"
+#include "UiCharChange.h"
 #include "ModelAnimator.h"
 #include "ModelRenderer.h"
 #include "OBBBoxCollider.h"
@@ -39,6 +40,7 @@
 #include "Silversword_Soldier_FSM.h"
 #include "Debug_CreateMotionTrail.h"
 #include "DemoAnimationController1.h"
+
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -477,4 +479,16 @@ void DemoScene::Load_Ui()
 		auto pScript = make_shared<UiHpBarFlow>();
 		Get_GameObject(L"UI_HpBar")->Add_Component(pScript);
 	}
+
+	{
+		auto pScript = make_shared<UiCharChange>();
+		Get_GameObject(L"UI_Char_Change0")->Add_Component(pScript);
+
+		pScript = make_shared<UiCharChange>();
+		Get_GameObject(L"UI_Char_Change1")->Add_Component(pScript);
+
+		pScript = make_shared<UiCharChange>();
+		Get_GameObject(L"UI_Char_Change2")->Add_Component(pScript);
+	}
+
 }
