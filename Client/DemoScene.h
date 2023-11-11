@@ -15,8 +15,6 @@ public:
 
 	virtual HRESULT Load_Scene() override;
 
-	virtual void Render() override;
-
 private:
 	void Load_SkyBox();
 	void Load_Player();

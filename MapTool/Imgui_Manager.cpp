@@ -137,7 +137,44 @@ void ImGui_Manager::Frame_ObjectBase()
     if (ImGui::ListBox("##ObjectBase", &m_iObjectBaseIndex, m_strObjectBaseNameList.data(), (int)m_strObjectBaseNameList.size(), 10))
         Set_SampleObject(); // 리스트박스 선택대상이 달라지면 샘플모델변경
 
-    
+    if (ImGui::InputText("Filter##ObjectBase", m_szBaseObjectFilter, sizeof(m_szBaseObjectFilter)))
+    {
+        // 필터내용 string화
+        string strFilter = m_szBaseObjectFilter;
+        m_FilteredBaseObjectNames.clear();
+        for (size_t i = 0; i < m_strObjectBaseNameList.size(); ++i)
+        {
+            // 검사당할 대상 텍스트
+            string strFilterTarget = m_strObjectBaseNameList[i];
+            if (strFilterTarget.find(strFilter) != std::string::npos)
+            {
+                // 동적생성
+                shared_ptr<char[]> pChar = shared_ptr<char[]>(new char[MAX_PATH]);
+                strncpy_s(pChar.get(), MAX_PATH, strFilterTarget.c_str(), _TRUNCATE);
+
+                // 필터된 이름을 포인터 벡터에 추가
+                m_strFilteredNamePtr.push_back(pChar);
+                // 필터된 이름을 리스트UI에 추가
+                m_FilteredBaseObjectNames.push_back(pChar.get());
+            }
+        }
+    }
+
+    if (ImGui::ListBox("FilteredObjectBases##ObjectBase", &m_iFilteredBaseObjectsIndex, m_FilteredBaseObjectNames.data(), (_int)m_FilteredBaseObjectNames.size()))
+    {
+        for (size_t i = 0; i < m_strObjectBaseNameList.size(); ++i)
+        {
+            string strBaseObjName = m_strObjectBaseNameList[i];
+            string strFilteredObjName = m_FilteredBaseObjectNames[m_iFilteredBaseObjectsIndex];
+            if (strBaseObjName == strFilteredObjName)
+            {
+                m_iObjectBaseIndex = (_int)i;
+                break;
+            }
+        }
+    }
+
+
 
     // 맵오브젝트 정보
     ImGui::SeparatorText("BaseObjectDesc");
@@ -643,6 +680,7 @@ shared_ptr<GameObject>& ImGui_Manager::Create_MapObject(MapObjectScript::MapObje
     }
     string strModelName = CreateDesc.strName.substr(0, iPureNameSize);
     CreateDesc.ColModelName = strModelName;
+    CreateObject->Set_Name(Utils::ToWString(strModelName));
     // 모델생성
     shared_ptr<Model> model = RESOURCES.Get<Model>(Utils::ToWString(strModelName));
     shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
@@ -1043,7 +1081,7 @@ HRESULT ImGui_Manager::Load_MapObject()
         }
         file->Read<_float3>(MapDesc.CullPos);
         file->Read<_float>(MapDesc.CullRadius);
-
+        
         shared_ptr<GameObject> CreateObject = Create_MapObject(MapDesc);
         
         m_pMapObjects.push_back(CreateObject);

@@ -90,6 +90,13 @@ private:
 	MapObjectScript::MAPOBJDESC m_CreateObjectDesc;
 	// 샘플오브젝트
 	shared_ptr<GameObject> m_SampleObject;
+	// 베이스오브젝트 필터
+	char m_szBaseObjectFilter[MAX_PATH] = "";
+	_int m_iFilteredBaseObjectsIndex = { 0 };
+	// 필터링이 완료된 이름모음
+	vector<const char*> m_FilteredBaseObjectNames;
+	// 필터링이 완료된 이름모음주소공간
+	vector<shared_ptr<char[]>> m_strFilteredNamePtr;
 
 // 설치된 오브젝트 목록
 	vector<const char*> m_strObjectName;
