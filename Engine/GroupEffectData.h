@@ -10,13 +10,13 @@ public:
 	{
 		wstring		wstrEffectTag;
 		EFFECT_TYPE	eType;
-		_float		fCreateTime;
+		_float		fCreateTime = 0.f;
 
 		_bool		bIsActive = false;
 
-		_float3		vPivot_Pos;
-		_float3		vPivot_Scale;
-		_float3		vPivot_Rotation;
+		_float3		vPivot_Pos = {0.f, 0.f, 0.f};
+		_float3		vPivot_Scale = { 1.f, 1.f, 1.f };
+		_float3		vPivot_Rotation = { 0.f, 0.f, 0.f };
 
 	}MemberEffect_Desc;
 

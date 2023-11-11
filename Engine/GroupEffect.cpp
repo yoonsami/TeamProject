@@ -24,7 +24,7 @@ void GroupEffect::Tick()
 	_int iIndex = 0;
 	for(auto& iter : m_vMemberEffectData)
 	{
-		if ( !iter.bIsActive && iter.fCreateTime > m_fCurrAge)
+		if ( !iter.bIsActive && iter.fCreateTime < m_fCurrAge)
 		{
 			if (GroupEffectData::TYPE_MESHEFFECT == iter.eType)
 				Create_MeshEffect(iIndex);
@@ -116,7 +116,9 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
 	// For.  Mesh Effect  
 	shared_ptr<MeshEffect> meshEffect = make_shared<MeshEffect>(shader);
 	EffectObj->Add_Component(meshEffect);
-	shared_ptr<MeshEffectData> meshEffectData = RESOURCES.Get<MeshEffectData>(iter.wstrEffectTag);
+	wstring wstrMeshEffectDataKey = iter.wstrEffectTag;
+	Utils::DetachExt(wstrMeshEffectDataKey);
+	shared_ptr<MeshEffectData> meshEffectData = RESOURCES.Get<MeshEffectData>(wstrMeshEffectDataKey);
 	MeshEffectData::DESC tDesc = meshEffectData->Get_Desc();
 	EffectObj->Get_MeshEffect()->Init(&tDesc);
 	EffectObj->Get_MeshEffect()->Set_IsImmortal(false);
