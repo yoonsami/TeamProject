@@ -22,14 +22,8 @@ void CounterMotionTrailScript::Tick()
 {
 	if (!m_pMotionTrail.expired())
 	{
-		m_tTrailBiggerCool.fAccTime += fDT;
-
-		//if (m_tTrailBiggerCool.fAccTime >= m_tTrailBiggerCool.fCoolTime)
-		{
-			m_fTrailScale += 0.05f * fDT;
-			m_pMotionTrail.lock()->Get_MotionTrailRenderer()->Set_Scale(m_fTrailScale);
-			m_tTrailBiggerCool.fAccTime = 0.f;
-		}
+		m_fTrailScale += 0.05f * fDT;
+		m_pMotionTrail.lock()->Get_MotionTrailRenderer()->Set_Scale(m_fTrailScale);
 	}
 	else
 	{

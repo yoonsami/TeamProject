@@ -10,9 +10,6 @@ public:
 
 private:
     weak_ptr<GameObject> m_pMotionTrail;
-    COOLTIMEINFO m_tTrailBiggerCool = { 0.1f, 0.f };
-    _float3 m_vTrailScale = _float3(1.f);
     _float m_fTrailScale = 1.f;
-
 };
 

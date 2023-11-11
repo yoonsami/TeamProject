@@ -135,6 +135,8 @@ private:
 
 	_float3 m_vTurnVector = _float3(0.f);
 
+	_float3 m_vFirstPos = _float3(0.f);
+
 	_float m_fRunSpeed = 4.f;
 	_float m_fKnockDownSpeed = 4.f;
 

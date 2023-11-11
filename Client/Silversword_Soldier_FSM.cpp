@@ -371,20 +371,12 @@ void Silversword_Soldier_FSM::n_run()
         Soft_Turn_ToInputDir(m_vTurnVector, XM_PI * 5.f);
 
     //IF straight true ¹Ý´ë·Î 
-    Get_Transform()->Go_Straight();
-    
-    Ray ray;
-    ray.position = Get_Transform()->Get_State(Transform_State::POS).xyz();
-    ray.direction = m_vTurnVector;
-    physx::PxRaycastBuffer hit{};
-    physx::PxQueryFilterData filterData;
-    filterData.flags = physx::PxQueryFlag::eSTATIC;
-    if (PHYSX.Get_PxScene()->raycast({ ray.position.x,ray.position.y,ray.position.z }, { ray.direction.x,ray.direction.y,ray.direction.z }, 3.f, hit, PxHitFlags(physx::PxHitFlag::eDEFAULT), filterData))
+    if (Get_Transform()->Go_Straight())
     {
         m_vTurnVector.x = m_vTurnVector.x * -1.f;
         m_vTurnVector.z = m_vTurnVector.z * -1.f;
     }
-
+    
     if ((Get_Transform()->Get_State(Transform_State::POS) - m_vPatrolFirstPos).Length() >= m_fPatrolDistance)
     {
         m_bPatrolMove = false;

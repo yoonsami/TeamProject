@@ -129,7 +129,7 @@ HRESULT DemoScene::Load_Scene()
 	Load_Light();
 	Load_Camera();
 	Load_MapFile(L"KrisMap11");
-	Load_Monster(5);
+	//Load_Monster(5);
 	Load_Boss_Mir();
 	//Load_DemoMap();
 
@@ -411,7 +411,7 @@ void DemoScene::Load_Boss_Mir()
 		auto pPlayer = Get_GameObject(L"Player");
 		ObjMonster->Get_FSM()->Set_Target(pPlayer);
 	}
-	ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 2.f, 3.f, 5.f })); //obbcollider
+	ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 2.f, 4.f, 6.f })); //obbcollider
 	ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
 	ObjMonster->Get_Collider()->Set_Activate(true);
 
@@ -422,13 +422,15 @@ void DemoScene::Load_Boss_Mir()
 	{
 		auto controller = make_shared<CharacterController>();
 		ObjMonster->Add_Component(controller);
-		auto& desc = controller->Get_CapsuleControllerDesc();
-		desc.radius = 4.5f;
-		desc.height = 5.f;
+
+		auto& desc = controller->Get_BoxControllerDesc();
+		desc.halfHeight = 4.f;
+		desc.halfSideExtent = 2.f;
+		desc.halfForwardExtent = 6.f;
 		_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz() +
 					   ObjMonster->Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.position = { vPos.x, vPos.y, vPos.z };
-		controller->Create_Controller();
+		controller->Create_Controller(true);
 	}
 	ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
 
