@@ -101,7 +101,11 @@ void MainCameraScript::Set_PosDirectly(const _float3& vCenterpos, const _float3&
 
 void MainCameraScript::Cal_OffsetDir()
 {
-    m_fFollowSpeed = 5.f;
+    if (m_fFollowSpeed < 5.f)
+        m_fFollowSpeed += fDT;
+    else 
+        m_fFollowSpeed = 5.f;
+
     _float2 mouseDir = INPUT.GetMouseDir();
 
 

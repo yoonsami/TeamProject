@@ -42,6 +42,8 @@ HRESULT Dellons_FSM::Init()
 
     m_pWeapon = CUR_SCENE->Get_GameObject(L"Weapon_Dellons");
 
+    m_pCamera = CUR_SCENE->Get_MainCamera();
+
     return S_OK;
 }
 

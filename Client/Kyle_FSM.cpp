@@ -4,6 +4,8 @@
 #include "SphereCollider.h"
 #include "AttackColliderInfoScript.h"
 #include "Model.h"
+#include "MainCameraScript.h"
+#include "Camera.h"
 
 
 HRESULT Kyle_FSM::Init()
@@ -27,8 +29,10 @@ HRESULT Kyle_FSM::Init()
 	m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
 	m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
 	m_pAttackCollider.lock()->Set_Name(L"Player_AttackCollider");
-	
-	m_pCamera = CUR_SCENE->Get_GameObject(L"Default");
+
+	m_iSkillBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"B_Hair_B_01");
+
+	m_pCamera = CUR_SCENE->Get_MainCamera();
 
 	return S_OK;
 }
@@ -42,6 +46,11 @@ void Kyle_FSM::Tick()
 		//m_pAttack transform set forward
 		m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up);
 	}
+
+	//Head_Bone_Pos
+	   //(AnimationModel BonePos)
+	matBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iSkillBoneIndex) *
+		_float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
 }
 
 void Kyle_FSM::State_Tick()
@@ -1334,6 +1343,26 @@ void Kyle_FSM::skill_100100()
 	if (m_vInputTurnVector != _float3(0.f))
 		Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
 
+	if (Get_CurFrame() == 17)
+	{
+		if (!m_pCamera.expired())
+		{
+			_float4 vDir = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS) - (Get_Transform()->Get_State(Transform_State::POS));
+			vDir.Normalize();
+
+			_float4 vBonePos = _float4{ matBoneMatrix.Translation().x, matBoneMatrix.Translation().y, matBoneMatrix.Translation().z , 1.f };
+
+			m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+			m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(Get_Transform()->Get_State(Transform_State::POS).xyz());
+			m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.5f, vDir.xyz(), 18.f);
+		}
+	}
+
+	if (Get_CurFrame() >= 17)
+	{
+		m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(Get_Transform()->Get_State(Transform_State::POS).xyz());
+	}
+
 	if (Get_CurFrame() >= 24 && Get_CurFrame() < 34)
 		m_bCanCombo = true;
 	else
@@ -1720,6 +1749,32 @@ void Kyle_FSM::skill_502100()
 {
 	EvadeCoolCheck();
 
+
+	if (Get_CurFrame() == 17)
+	{
+		if (!m_pCamera.expired())
+		{
+			_float4 vBonePos = _float4{ matBoneMatrix.Translation().x, matBoneMatrix.Translation().y, matBoneMatrix.Translation().z , 1.f };
+			_float4 vDestinationPos = (Get_Transform()->Get_State(Transform_State::POS)) + (Get_Transform()->Get_State(Transform_State::LOOK) * -5.f) + _float3::Up * 4.f;
+			//vDestinationPos = vDestinationPos + _float4{ 0.f,2.f,0.f,0.f };
+			_float4 vDir = vDestinationPos - (Get_Transform()->Get_State(Transform_State::POS));
+			vDir.Normalize();
+
+		
+			m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+			m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(vBonePos.xyz());
+			m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(4.f, vDir.xyz(), 10.f);
+		}
+	}
+
+	if (Get_CurFrame() > 17)
+	{
+		_float4 vBonePos = _float4{ matBoneMatrix.Translation().x, matBoneMatrix.Translation().y, matBoneMatrix.Translation().z , 1.f };
+		m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(vBonePos.xyz());
+	}
+
+
+
 	if (Get_CurFrame() == 55)
 	{
 		if (!m_bSkillCreate)
@@ -1789,7 +1844,7 @@ void Kyle_FSM::skill_502100()
 	if (Is_AnimFinished())
 		m_eCurState = STATE::b_idle;
 
-	if (KEYPUSH(KEY_TYPE::SPACE))
+	/*if (KEYPUSH(KEY_TYPE::SPACE))
 	{
 		if (!m_bEvadeCoolCheck)
 		{
@@ -1798,7 +1853,7 @@ void Kyle_FSM::skill_502100()
 			else
 				m_eCurState = STATE::skill_93100;
 		}
-	}
+	}*/
 }
 
 void Kyle_FSM::skill_502100_Init()

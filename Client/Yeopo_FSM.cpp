@@ -43,6 +43,8 @@ HRESULT Yeopo_FSM::Init()
 
     m_pWeapon = CUR_SCENE->Get_GameObject(L"Weapon_Yeopo");
 
+    m_pCamera = CUR_SCENE->Get_MainCamera();
+
     return S_OK;
 }
 

@@ -383,6 +383,7 @@ void Boss_Mir_FSM::b_idle()
 
     if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
     {
+        //m_eCurState = STATE::skill_2100;
         _uint iRan = rand() % 10;
         
         while (true)

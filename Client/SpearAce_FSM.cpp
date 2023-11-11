@@ -7,7 +7,6 @@
 #include "SphereCollider.h"
 #include "AttackColliderInfoScript.h"
 #include "Model.h"
-
 #include "CoolTimeCheckScript.h"
 
 SpearAce_FSM::SpearAce_FSM()
@@ -43,7 +42,7 @@ HRESULT SpearAce_FSM::Init()
 
     m_iSkillBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"B_nose");
 
-
+    m_pCamera = CUR_SCENE->Get_MainCamera();
 
     return S_OK;
 }
@@ -1410,35 +1409,32 @@ void SpearAce_FSM::skill_300100()
 {
     EvadeCoolCheck();
 
+    if (Get_CurFrame() == 60)
+    {
+        if (!m_pCamera.expired())
+        {
+            _float4 vDestinationCamPos = Get_Transform()->Get_State(Transform_State::POS) + (Get_Transform()->Get_State(Transform_State::LOOK) * -3.f) + (Get_Transform()->Get_State(Transform_State::UP) * 3.f);
+            _float4 vDestinationCamDir = _float4(0.f);
+
+            vDestinationCamDir = Get_Transform()->Get_State(Transform_State::POS) - vDestinationCamPos;
+            vDestinationCamDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(Get_Transform()->Get_State(Transform_State::POS).xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.5f, vDestinationCamDir.xyz() * -1.f, 10.f);
+        }
+    }
+
     
     if (Get_CurFrame() >= 78 && Get_CurFrame() <= 110)
-    {
         m_bInvincible = true;
-
-        /*if (!m_pCamera.expired())
-        {
-            matBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iSkillBoneIndex) *
-                _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
-
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(matBoneMatrix.Translation());
-        }*/
-    }
     else
         m_bInvincible = false;
 
     if (Get_CurFrame() == 78)
     {       
         if (!m_bSkillCreate)
-        {
-            //if (!m_pCamera.expired())
-            //{
-            //    _float3 vDir = matBoneMatrix.Translation() - (CUR_SCENE->Get_Camera(L"Default")->Get_Transform()->Get_State(Transform_State::POS).xyz() + _float3{ 0.f,5.f,0.f });
-            //    //vDir = vDir /2.f;
-            //    vDir.Normalize();
-
-            //    m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.5f, vDir * -1.f, 5.f);
-            //}
-            
+        {   
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
                 Get_Transform()->Get_State(Transform_State::LOOK) * 5.f +
                 Get_Transform()->Get_State(Transform_State::RIGHT) * -5.f +
