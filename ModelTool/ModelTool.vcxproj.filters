@@ -1,0 +1,210 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Default">
+      <UniqueIdentifier>{cb581da6-53f8-4b64-83f6-80293b0453fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Header">
+      <UniqueIdentifier>{a32aca99-546e-4508-80e9-c1aa850682cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Default\NewFilter1">
+      <UniqueIdentifier>{54625f4b-5b01-48dc-99aa-59f4ecbdcc8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.MainApp">
+      <UniqueIdentifier>{364df002-6b15-414c-9fff-f4b291945ca7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{45bf76c0-a23f-4816-98dc-85dcdfe23550}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script">
+      <UniqueIdentifier>{5501f893-3a4a-4985-a38f-ada3c5333a78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.MainApp\Widget">
+      <UniqueIdentifier>{86c15520-3532-400b-9802-608a4a3ee9cf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>Default</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectTool_Define.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\dirent\dirent.h">
+      <Filter>Default\NewFilter1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imconfig.h">
+      <Filter>Default\NewFilter1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImCurveEdit.h">
+      <Filter>Default\NewFilter1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImGradient.h">
+      <Filter>Default\NewFilter1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui.h">
+      <Filter>Default\NewFilter1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_impl_dx11.h">
+      <Filter>Default\NewFilter1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_impl_win32.h">
+      <Filter>Default\NewFilter1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_internal.h">
+      <Filter>Default\NewFilter1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_stdlib.h">
+      <Filter>Default\NewFilter1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuiFileDialog.h">
+      <Filter>Default\NewFilter1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuiFileDialogConfig.h">
+      <Filter>Default\NewFilter1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuizmo.h">
+      <Filter>Default\NewFilter1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImSequencer.h">
+      <Filter>Default\NewFilter1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imstb_rectpack.h">
+      <Filter>Default\NewFilter1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imstb_textedit.h">
+      <Filter>Default\NewFilter1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\imstb_truetype.h">
+      <Filter>Default\NewFilter1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\Include\IMGUI\ImZoomSlider.h">
+      <Filter>Default\NewFilter1</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelTool.h">
+      <Filter>Default\NewFilter1</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Default\NewFilter1</Filter>
+    </ClInclude>
+    <ClInclude Include="MainApp.h">
+      <Filter>00.MainApp</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadingScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Loader.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="FreeCameraScript.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponScript.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget_Model_Controller.h">
+      <Filter>00.MainApp\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="ForcePosition.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiToolMgr.h">
+      <Filter>00.MainApp</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ModelTool.cpp">
+      <Filter>Default</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Default</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImCurveEdit.cpp">
+      <Filter>Default\NewFilter1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImGradient.cpp">
+      <Filter>Default\NewFilter1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui.cpp">
+      <Filter>Default\NewFilter1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_demo.cpp">
+      <Filter>Default\NewFilter1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_draw.cpp">
+      <Filter>Default\NewFilter1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_impl_dx11.cpp">
+      <Filter>Default\NewFilter1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_impl_win32.cpp">
+      <Filter>Default\NewFilter1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_stdlib.cpp">
+      <Filter>Default\NewFilter1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_tables.cpp">
+      <Filter>Default\NewFilter1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_widgets.cpp">
+      <Filter>Default\NewFilter1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImGuiFileDialog.cpp">
+      <Filter>Default\NewFilter1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImGuizmo.cpp">
+      <Filter>Default\NewFilter1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\Include\IMGUI\ImSequencer.cpp">
+      <Filter>Default\NewFilter1</Filter>
+    </ClCompile>
+    <ClCompile Include="MainApp.cpp">
+      <Filter>00.MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="DemoScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Loader.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadingScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="FreeCameraScript.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponScript.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget_Model_Controller.cpp">
+      <Filter>00.MainApp\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="ForcePosition.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiToolMgr.cpp">
+      <Filter>00.MainApp</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="ModelTool.ico">
+      <Filter>Default\NewFilter1</Filter>
+    </Image>
+    <Image Include="small.ico">
+      <Filter>Default\NewFilter1</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgui.ini">
+      <Filter>99.Header</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ModelTool.rc">
+      <Filter>Default\NewFilter1</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
