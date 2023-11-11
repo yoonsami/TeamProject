@@ -80,10 +80,6 @@ void Widget_Model_Controller::Model_Controller()
 				m_pControlObject.lock()->Get_Animator()->Set_AnimState(false);
 				Show_AnimationList();
 				Apply_Anim();
-
-
-
-
 				EndTabItem();
 			}
 			if (BeginTabItem("Animation Control"))
@@ -93,12 +89,7 @@ void Widget_Model_Controller::Model_Controller()
 
 				EndTabItem();
 			}
-
 		}
-
-
-
-
 		EndTabBar();
 	}
 }

@@ -15,14 +15,17 @@ private:
 	/* Initialize List */
 	void					Set_Mesh_List();
 	void					Set_Texture_List();
+	void					Set_FinishedEffect_List();
 
 	/* ImGui Windows */
 	void					ImGui_EffectMaker();
+	void					ImGui_FinishedEffect();
 
 	/* Funtions */
 	void					Option_Property();
 	void					Option_Mesh();
 	void					Option_Opacity();
+	void					Option_Blend();
 	void					Option_Diffuse();
 	void					Option_Normal();
 	void					Option_AlphaGradation();
@@ -41,7 +44,19 @@ private:
 	void					SubWidget_SettingTexUV(_float* arrTiling, _float* arrTexUVSpeed, const char* pszWidgetKey, const char* pszWidgetKey2);
 
 	Color					ImVec4toColor(ImVec4 imvec);
+	ImVec4					ColorToImVec4(Color color);
+	_int					GetIndex_FromTexList(string strValue);
+	_int					GetIndex_FromMeshList(string strValue);
+	_bool					Compare_IsSameColor(ImVec4 color1, ImVec4 color2);
+	_bool					Compare_IsSameUVOptionsWithOpacity(_float2 tiling, _float2 UVSpeed);
 private:
+	/* Effect List */
+	_uint					m_iNumFinishedEffects = { 0 };
+	vector<string>			m_vecFinishedEffects;
+	const char**			m_pszFinishedEffects = { nullptr };
+	_int					m_iFinishedObject = { 0 };
+	string					m_strFinishedObject = {"None"};
+
 	/* Property */
 	char					m_szTag[MAX_PATH] = "-";
 	_float					m_fDuration = { 3.f };
@@ -56,17 +71,15 @@ private:
 	string					m_strMesh = { "None" };
 
 	/* Texture type list */
-	_int					m_iNumTextureTypes = { 8 };
-	const char*				m_pszTextureTypes[8] = {
-		"Diffuse", "Normal", "Speculer", "Opacity", "Emissive", "Dissolve","Distortion", "Gradation (tex 7)"
+	_int					m_iNumTextureTypes = { 9 };
+	const char*				m_pszTextureTypes[9] = {
+		"Diffuse", "Normal", "Speculer", "Opacity", "Emissive", "Dissolve","Distortion", "Gradation (tex 7)", "Blend (tex 9)"
 	};
 	
 	/* Texture list */
 	_uint					m_iNumUniversalTextures = { 0 };
 	vector<string>			m_vecUniversalTextures;
 	const char**			m_pszUniversalTextures = { nullptr };
-	shared_ptr<Texture>		m_pUniversalTexture = { nullptr };
-	_int					m_iCurrEditingTextureType = { 0 };
 
 	/* Coloring Options */
 	_bool					m_bColorChangingOn = { false };
@@ -87,7 +100,6 @@ private:
 
 	/* Opacity */
 	pair<_int, string>		m_OpacityTexture = { 0, "None" };
-	_bool					m_bUVOptionSameWithOpacity_Opacity = { true };
 	_int					m_iSamplerType = { 1 };
 	_float					m_fTiling_Opacity[2] = {0.f, 0.f};
 	_float					m_fUVSpeed_Opacity[2] = { 0.f, 0.f };
@@ -127,6 +139,10 @@ private:
 	_bool					m_bUVOptionSameWithOpacity_Distortion = { true };
 	_float					m_fTiling_Distortion[2] = { 0.f, 0.f };
 	_float					m_fUVSpeed_Distortion[2] = { 0.f, 0.f };
+
+	/* Blend */
+	_bool					m_bBlend_On = { true };
+	pair<_int, string>		m_BlendTexture = { 0, "None" };
 
 	/* Color Edit */
 	_float					m_fContrast = { 0.f };

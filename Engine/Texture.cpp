@@ -38,8 +38,6 @@ void Texture::Load(const wstring& path)
 	}
 
 
-
-
 	m_Size.x = static_cast<_float>(md.width);
 	m_Size.y = static_cast<_float>(md.height);
 }

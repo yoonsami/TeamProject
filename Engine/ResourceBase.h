@@ -12,6 +12,9 @@ enum class ResourceType : _char
 	Animation,
 	Font,
 	Sound,
+	GroupEffectData,
+	MeshEffectData,
+	ParticleData,
 	End,
 };
 

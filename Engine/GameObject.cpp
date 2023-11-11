@@ -9,6 +9,7 @@
 #include "Transform.h"
 #include "RigidBody.h"
 #include "MeshEffect.h"
+#include "GroupEffect.h"
 #include "BaseCollider.h"
 #include "MeshRenderer.h"
 #include "FontRenderer.h"
@@ -227,6 +228,11 @@ shared_ptr<Transform> GameObject::GetOrAddTransform()
 	}
 
 	return Get_Transform();
+}
+
+shared_ptr<GroupEffect> GameObject::Get_GroupEffect()
+{
+	return static_pointer_cast<GroupEffect>(Get_FixedComponent(COMPONENT_TYPE::GroupEffect));
 }
 
 //shared_ptr<Billboard> GameObject::Get_Billboard()

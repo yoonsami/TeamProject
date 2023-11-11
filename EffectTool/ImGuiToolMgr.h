@@ -4,6 +4,7 @@
 class Widget_Model_Controller;
 class Widget_EffectMaker_Mesh;
 class Widget_ParticleMaker_Instancing;
+class Widget_GroupEffectMaker;
 class ImGuiToolMgr
 {
 	DECLARE_SINGLETON(ImGuiToolMgr)
@@ -29,7 +30,6 @@ private:
 	void	ImGui_BasicWidget();
 
 	void	Option_ToolSelector();
-	void	Option_StyleEditor();
 
 private:
 	/* Basic Variables */
@@ -41,13 +41,12 @@ private:
 	/* ImGui Variables */
 	_bool					m_bIsParticleMaker_Instancing_On = { false };
 	_bool					m_bIsEffectMaker_Mesh_On = { false };
+	_bool					m_bIsGroupEffectMaker_On = { false };
 
 	/* Widgets */
 	shared_ptr<Widget_ParticleMaker_Instancing>	m_pWidget_ParticleMaker_Instancing = { nullptr };
 	shared_ptr<Widget_EffectMaker_Mesh>			m_pWidget_EffectMaker_Mesh = { nullptr };
 	shared_ptr<Widget_Model_Controller>			m_pWidget_Model_Controller = { nullptr };
-
-	/* ImGui Window Option */
-	IMGUI_STYLE				m_tImGuiStyle;
+	shared_ptr<Widget_GroupEffectMaker>			m_pWidget_GroupEffectMaker = { nullptr };
 };
 

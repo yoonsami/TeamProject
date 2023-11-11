@@ -53,6 +53,9 @@
     <Filter Include="02.Component\00.MonoBehavior\00.ForcePosition">
       <UniqueIdentifier>{e927f83d-1705-419b-be3f-fbf9f5fbff19}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97.ImGui\Widget_GroupEffectMaker">
+      <UniqueIdentifier>{89240255-8e98-4e8c-9e37-dae141f7e0c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -151,6 +154,9 @@
     <ClInclude Include="WeaponScript.h">
       <Filter>02.Component\00.MonoBehavior</Filter>
     </ClInclude>
+    <ClInclude Include="Widget_GroupEffectMaker.h">
+      <Filter>97.ImGui\Widget_GroupEffectMaker</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EffectTool.cpp">
@@ -230,6 +236,9 @@
     </ClCompile>
     <ClCompile Include="WeaponScript.cpp">
       <Filter>02.Component\00.MonoBehavior</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget_GroupEffectMaker.cpp">
+      <Filter>97.ImGui\Widget_GroupEffectMaker</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

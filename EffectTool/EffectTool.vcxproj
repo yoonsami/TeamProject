@@ -179,6 +179,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="WeaponScript.h" />
     <ClInclude Include="Widget_EffectMaker_Mesh.h" />
+    <ClInclude Include="Widget_GroupEffectMaker.h" />
     <ClInclude Include="Widget_Model_Controller.h" />
     <ClInclude Include="Widget_ParticleMaker_Instancing.h" />
   </ItemGroup>
@@ -212,6 +213,7 @@
     </ClCompile>
     <ClCompile Include="WeaponScript.cpp" />
     <ClCompile Include="Widget_EffectMaker_Mesh.cpp" />
+    <ClCompile Include="Widget_GroupEffectMaker.cpp" />
     <ClCompile Include="Widget_Model_Controller.cpp" />
     <ClCompile Include="Widget_ParticleMaker_Instancing.cpp" />
   </ItemGroup>

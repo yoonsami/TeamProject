@@ -43,8 +43,10 @@ float4 PS_Main(EffectOut input) : SV_Target
     int iSamplerType = g_int_0;
     int bUseFadeOut = g_int_1;
     int bIsOverlayOn = g_int_2;
+    
     float fLifeRatio = g_float_0;
     float fAlphaGraIntensity = g_float_1;
+    float fContrast = g_float_2;
     
     float2 vTexUVOffset_Opacity = g_vec2_0;
     float2 vTexUVOffset_Gra = { g_vec4_0.x, g_vec4_0.y };
@@ -70,30 +72,38 @@ float4 PS_Main(EffectOut input) : SV_Target
     else
         vOutColor = vColor_Diffuse;
     
-    // Opacity + Get dissolve weight
+    // Opacity * Blend + Get dissolve weight
     if (bHasOpacityMap)
     {
         if (0 == iSamplerType)
         {
             vOutColor.a = OpacityMap.Sample(LinearSampler, input.uv + vTexUVOffset_Opacity + fDistortionWeight).r;
+            if (bHasTexturemap9)
+                vOutColor.a *= TextureMap9.Sample(LinearSampler, input.uv + vTexUVOffset_Opacity + fDistortionWeight).r;
             if (bHasDissolveMap)
                 fDissolveWeight = DissolveMap.Sample(LinearSampler, input.uv + vTexUVOffset_Dissolve).r;
         }
         else if (1 == iSamplerType)
         {
             vOutColor.a = OpacityMap.Sample(LinearSamplerClamp, input.uv + vTexUVOffset_Opacity + fDistortionWeight).r;
+            if (bHasTexturemap9)
+                vOutColor.a *= TextureMap9.Sample(LinearSampler, input.uv + vTexUVOffset_Opacity + fDistortionWeight).r;
             if (bHasDissolveMap)
                 fDissolveWeight = DissolveMap.Sample(LinearSamplerClamp, input.uv + vTexUVOffset_Dissolve).r;
         }
         else if (2 == iSamplerType)
         {
             vOutColor.a = OpacityMap.Sample(LinearSamplerMirror, input.uv + vTexUVOffset_Opacity + fDistortionWeight).r;
+            if (bHasTexturemap9)
+                vOutColor.a *= TextureMap9.Sample(LinearSampler, input.uv + vTexUVOffset_Opacity + fDistortionWeight).r;
             if (bHasDissolveMap)
                 fDissolveWeight = DissolveMap.Sample(LinearSamplerMirror, input.uv + vTexUVOffset_Dissolve).r;
         }
         else if (3 == iSamplerType)
         {
             vOutColor.a = OpacityMap.Sample(LinearSamplerBorder, input.uv + vTexUVOffset_Opacity + fDistortionWeight).r;
+            if (bHasTexturemap9)
+                vOutColor.a *= TextureMap9.Sample(LinearSamplerBorder, input.uv + vTexUVOffset_Opacity + fDistortionWeight).r;
             if (bHasDissolveMap)
                 fDissolveWeight = DissolveMap.Sample(LinearSamplerBorder, input.uv + vTexUVOffset_Dissolve).r;
         }
@@ -132,9 +142,11 @@ float4 PS_Main(EffectOut input) : SV_Target
         vFinalOverlayColor.b = (vOutColor.b <= 0.5) ? 2 * vOutColor.b * vColor_Overlay.b : 1 - 2 * (1 - vOutColor.b) * (1 - vColor_Overlay.b);
         
         vOutColor.rgb = lerp(vOutColor.rgb, vFinalOverlayColor.rgb, fOverlayIntensity);
-        //vOutColor.rgb = vFinalOverlayColor.rgb;
-
     }
+    
+    // Color Edit 
+    float luminance = dot(vOutColor.rgb, float3(0.299, 0.587, 0.114));
+    vOutColor.rgb = lerp(vOutColor.rgb, vOutColor.rgb * fContrast, saturate(luminance));
     
     return vOutColor;
 }

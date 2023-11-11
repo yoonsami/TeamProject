@@ -4,6 +4,7 @@
 #include "Widget_Model_Controller.h"
 #include "Widget_EffectMaker_Mesh.h"
 #include "Widget_ParticleMaker_Instancing.h"
+#include "Widget_GroupEffectMaker.h"
 
 ImGuiToolMgr::~ImGuiToolMgr()
 {
@@ -30,10 +31,12 @@ void ImGuiToolMgr::Init(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     m_pWidget_ParticleMaker_Instancing = make_shared<Widget_ParticleMaker_Instancing>();
     m_pWidget_EffectMaker_Mesh = make_shared<Widget_EffectMaker_Mesh>();
     m_pWidget_Model_Controller = make_shared<Widget_Model_Controller>();
+    m_pWidget_GroupEffectMaker = make_shared<Widget_GroupEffectMaker>();
 
     m_pWidget_ParticleMaker_Instancing->Initialize();
     m_pWidget_EffectMaker_Mesh->Initialize();
     m_pWidget_Model_Controller->Initialize();
+    m_pWidget_GroupEffectMaker->Initialize();
 }
 
 void ImGuiToolMgr::Tick()
@@ -46,6 +49,7 @@ void ImGuiToolMgr::Tick()
 
     // For. Basic Widget
     ImGui::SetNextWindowPos(ImVec2(0, g_iWinSizeY - 70.f));
+    ImGui::SetNextWindowSize(ImVec2(400.f, 70.f));
     ImGui::Begin("Basic Widget");
     ImGui_BasicWidget();
     ImGui::End();
@@ -53,13 +57,11 @@ void ImGuiToolMgr::Tick()
     //ImGui::ShowDemoWindow();
     
     if (m_bIsParticleMaker_Instancing_On)
-    {
         m_pWidget_ParticleMaker_Instancing->Tick();
-    }
     if (m_bIsEffectMaker_Mesh_On)
-    {
         m_pWidget_EffectMaker_Mesh->Tick();
-    }
+    if (m_bIsGroupEffectMaker_On)
+        m_pWidget_GroupEffectMaker->Tick();
 
     m_pWidget_Model_Controller->Tick();
 }
@@ -72,8 +74,7 @@ void ImGuiToolMgr::Render()
 
 void ImGuiToolMgr::ImGui_BasicWidget()
 {
-    Option_ToolSelector();
-    Option_StyleEditor();
+    Option_ToolSelector();    
 }
 
 void ImGuiToolMgr::Option_ToolSelector()
@@ -82,20 +83,6 @@ void ImGuiToolMgr::Option_ToolSelector()
     ImGui::Checkbox("EffectMaker(Mesh)", &m_bIsEffectMaker_Mesh_On);
     ImGui::SameLine();
     ImGui::Checkbox("ParticleMaker(Instancing)", &m_bIsParticleMaker_Instancing_On);
-}
-
-void ImGuiToolMgr::Option_StyleEditor()
-{
-    ImGui::SeparatorText("ImGui Window Style");
-
-    ImGui::RadioButton("Night Theme", &m_tImGuiStyle.iTheme, 0);
     ImGui::SameLine();
-    ImGui::RadioButton("Day Theme", &m_tImGuiStyle.iTheme, 1);
-
-    switch (m_tImGuiStyle.iTheme)
-    {
-    case 0: ImGui::StyleColorsDark(); break;
-    case 1: ImGui::StyleColorsLight(); break;
-    }
+    ImGui::Checkbox("GroupEffectMaker", &m_bIsGroupEffectMaker_On);
 }
-
