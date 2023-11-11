@@ -375,13 +375,13 @@ void SpearAce_FSM::Set_State(_uint iIndex)
 
 void SpearAce_FSM::b_idle()
 {
-    EvadeCoolCheck();
+	EvadeCoolCheck();
 
-    _float3 vInputVector = Get_InputDirVector();
+	_float3 vInputVector = Get_InputDirVector();
 
-    if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
-        KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
-        m_eCurState = STATE::b_run_start;
+	if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
+		KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
+		m_eCurState = STATE::b_run_start;
 
 	if (KEYPUSH(KEY_TYPE::LBUTTON))
 		m_eCurState = STATE::skill_1100;
@@ -1740,12 +1740,17 @@ void SpearAce_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float
 
     m_pSkillCollider.lock()->GetOrAddTransform();
     m_pSkillCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, vPos);
-    m_pSkillCollider.lock()->Add_Component(make_shared<SphereCollider>(fSkillRange));
+
+    auto pSphereCollider = make_shared<SphereCollider>(fSkillRange);
+    pSphereCollider->Set_CenterPos(_float3{ vPos.x,vPos.y, vPos.z });
+    m_pSkillCollider.lock()->Add_Component(pSphereCollider);
+
     m_pSkillCollider.lock()->Get_Collider()->Set_CollisionGroup(Player_Skill);
 
     m_pSkillCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
     m_pSkillCollider.lock()->Get_Collider()->Set_Activate(true);
     m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
+    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
     m_pSkillCollider.lock()->Set_Name(L"Player_SkillCollider");
     m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
     m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();

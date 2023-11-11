@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "ResourceMgr.h"
 
 #include "Utils.h"
@@ -8,6 +8,9 @@
 #include "FileUtils.h"
 #include "ModelMesh.h"
 #include "MathUtils.h"
+#include "MeshEffectData.h"
+#include "ParticleData.h"
+#include "GroupEffectData.h"
 #include "CustomFont.h"
 
 #include <filesystem>
@@ -63,10 +66,13 @@ void ResourceMgr::Initialize()
 
 	CreateDefaultMesh();
 	CreateDefaultShader();
-	//CreateDefaultShader_EffectTool(); // MEMO : Effect Tool¿¡¼­ »ç¿ëÇÏ´Â Shader Create ÇÔ¼ö 
+	//CreateDefaultShader_EffectTool(); // MEMO : Effect Toolï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ Shader Create ï¿½Ô¼ï¿½ 
 	CreateDefaultMaterial();
 	CreateDefaultFont();
 
+	CreateMeshEffectData();
+	CreateParticleData();
+	CreateGroupEffectData();
 }
 
 
@@ -92,6 +98,30 @@ shared_ptr<Texture> ResourceMgr::GetOrAddTexture(const wstring& key, const wstri
 	}
 
 	return texture;
+}
+
+shared_ptr<GroupEffectData> ResourceMgr::GetOrAddGroupEffectData(const wstring& key, const wstring& path)
+{
+	auto groupEffectData = Get<GroupEffectData>(key);
+	if (key == L"")
+		return nullptr;
+	if (fs::exists(fs::path(path)) == false)
+		return nullptr;
+
+	groupEffectData = Load<GroupEffectData>(key, path);
+
+	if (groupEffectData == nullptr)
+	{
+		groupEffectData = make_shared<GroupEffectData>();
+		groupEffectData->Load(path);
+
+		wstring name = key;
+		Utils::DetachExt(name);
+		groupEffectData->Set_Name(name);
+		Add(key, groupEffectData);
+	}
+
+	return groupEffectData;
 }
 
 //shared_ptr<Parts> ResourceMgr::Get_Part(const wstring& key)
@@ -467,66 +497,8 @@ void ResourceMgr::CreateDefaultShader()
 		auto shader = Get<Shader>(ShaderTag);
 		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
 	}
-}
-
-void ResourceMgr::CreateDefaultShader_EffectTool()
-{
-	{ 
-		wstring ShaderTag = L"Shader_Particle2.fx";
-		Load<Shader>(ShaderTag, ShaderTag);
-		auto shader = Get<Shader>(ShaderTag);
-		shader->Set_ShaderType(SHADER_TYPE::PARTICLE);
-	}
-
-	{
-		wstring ShaderTag = L"Shader_Effect2.fx";
-		Load<Shader>(ShaderTag, ShaderTag);
-		auto shader = Get<Shader>(ShaderTag);
-		shader->Set_ShaderType(SHADER_TYPE::FORWARD);
-	}
-
 	{ // MEMO : must
-		wstring ShaderTag = L"Lighting.fx";
-		Load<Shader>(ShaderTag, ShaderTag);
-		auto shader = Get<Shader>(ShaderTag);
-		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
-	}
-	
-	{ // MEMO : must
-		wstring ShaderTag = L"Shader_Deferred.fx";
-		Load<Shader>(ShaderTag, ShaderTag);
-		auto shader = Get<Shader>(ShaderTag);
-		shader->Set_ShaderType(SHADER_TYPE::DEFERRED);
-	}
-
-	{ // MEMO : must
-		wstring ShaderTag = L"Shader_Mesh.fx";
-		Load<Shader>(ShaderTag, ShaderTag);
-		auto shader = Get<Shader>(ShaderTag);
-		shader->Set_ShaderType(SHADER_TYPE::FORWARD);
-	}
-
-	{ // MEMO : must
-		wstring ShaderTag = L"Blur.fx";
-		Load<Shader>(ShaderTag, ShaderTag);
-		auto shader = Get<Shader>(ShaderTag);
-		shader->Set_ShaderType(SHADER_TYPE::DEFERRED);
-	}
-
-	{ // MEMO : must
-		wstring ShaderTag = L"Distorted_Final.fx";
-		Load<Shader>(ShaderTag, ShaderTag);
-		auto shader = Get<Shader>(ShaderTag);
-		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
-	}
-	{ // MEMO : must
-		wstring ShaderTag = L"Shader_Final.fx";
-		Load<Shader>(ShaderTag, ShaderTag);
-		auto shader = Get<Shader>(ShaderTag);
-		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
-	}
-	{ // MEMO : must
-		wstring ShaderTag = L"Shader_Bloom.fx";
+		wstring ShaderTag = L"Shader_Outline.fx";
 		Load<Shader>(ShaderTag, ShaderTag);
 		auto shader = Get<Shader>(ShaderTag);
 		shader->Set_ShaderType(SHADER_TYPE::LIGHTING);
@@ -569,7 +541,7 @@ void ResourceMgr::CreateDefaultMaterial()
 		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"PositionTarget"));
 		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"NormalTarget"));
 		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"ShadowTarget"));
-		material->Set_SubMap(3, RESOURCES.Get<Texture>(L"SSAOBlurTarget1"));
+		material->Set_SubMap(3, RESOURCES.Get<Texture>(L"SSAOUPSCALE2"));
 		Add(L"LightMaterial", material);
 	}
 	{
@@ -599,6 +571,21 @@ void ResourceMgr::CreateDefaultMaterial()
 		Add(L"LightFinal", material);
 	}
 	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Outline.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"NormalTarget"));
+		Add(L"Outline", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Outline.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"OutLineTarget"));
+		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"FinalTarget"));
+		Add(L"OutlineFinal", material);
+	}
+	{
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_SSAO.fx");
 		shared_ptr<Material> material = make_shared<Material>();
 		material->Set_Shader(shader);
@@ -607,7 +594,48 @@ void ResourceMgr::CreateDefaultMaterial()
 		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"SSAO_RandomVectorTexture"));
 		Add(L"SSAO", material);
 	}
-
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"SSAOTarget"));
+		Add(L"SSAODownScale0", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"SSAODOWNSCALE0"));
+		Add(L"SSAODownScale1", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"SSAODOWNSCALE1"));
+		Add(L"SSAODownScale2", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"SSAODOWNSCALE2"));
+		Add(L"SSAOUpScale0", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"SSAOUPSCALE0"));
+		Add(L"SSAOUpScale1", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"SSAOUPSCALE1"));
+		Add(L"SSAOUpScale2", material);
+	}
 	{
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
 		shared_ptr<Material> material = make_shared<Material>();
@@ -717,16 +745,21 @@ void ResourceMgr::CreateDefaultMaterial()
 		shared_ptr<Material> material = make_shared<Material>();
 		material->Set_Shader(shader);
 		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"DistortionFinalTarget"));
-		//material->Set_SubMap(1, RESOURCES.Get<Texture>(L"G_DepthTarget"));
+		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"G_DepthTarget"));
 
+		Add(L"LensFlare", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_LensFlare.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"LensFlareTarget"));
 		Add(L"LensFlareFinal", material);
 	}
-
 	{
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Final.fx");
 		shared_ptr<Material> material = make_shared<Material>();
 		material->Set_Shader(shader);
-		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"FXAATarget"));
 
 		Add(L"AberrationFinal", material);
 	}
@@ -734,7 +767,13 @@ void ResourceMgr::CreateDefaultMaterial()
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Final.fx");
 		shared_ptr<Material> material = make_shared<Material>();
 		material->Set_Shader(shader);
-		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"AberrationTarget"));
+		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"G_DepthTarget"));
+		Add(L"FogFinal", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Final.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
 
 		Add(L"BackBufferRenderFinal", material);
 	}
@@ -788,6 +827,154 @@ void ResourceMgr::CreateDefaultFont()
 		font->Load(L"..\\Resources\\Font\\Dream.spritefont");
 
 		Add(L"Dream", font);
+	}
+}
+
+void ResourceMgr::CreateMeshEffectData()
+{
+	wstring assetPath = L"..\\Resources\\EffectData\\MeshEffectData\\";
+
+	for (auto& entry : fs::recursive_directory_iterator(assetPath))
+	{
+		if (entry.is_directory())
+			continue;
+
+		if (entry.path().extension().wstring() != L".dat")
+			continue;
+
+		MeshEffectData::DESC tDesc;
+
+		// For. load file and fill imgui 
+		string strFilePath = entry.path().string();
+		string strFileName = entry.path().filename().string();
+		shared_ptr<FileUtils> file = make_shared<FileUtils>();
+		file->Open(Utils::ToWString(strFilePath), FileMode::Read);
+
+		/* Property */
+		string strTag = file->Read<string>();
+		tDesc.pszTag = strTag.c_str();
+
+		tDesc.fDuration = file->Read<_float>();
+		tDesc.bBlurOn = file->Read<_bool>();
+		tDesc.bUseFadeOut = file->Read<_bool>();
+
+		/* Mesh */
+		tDesc.strVfxMesh = file->Read<string>();
+
+		/* Coloring Option */
+		tDesc.bColorChangingOn = file->Read<_bool>();
+
+		/* Diffuse */
+		tDesc.strDiffuseTexture = file->Read<string>();
+		tDesc.vDiffuseColor_BaseStart = file->Read<_float4>();
+		tDesc.vDiffuseColor_BaseEnd = file->Read<_float4>();
+		tDesc.vDestColor_Diffuse = file->Read<_float4>();
+
+		/* Alpha Gradation */
+		tDesc.fAlphaGraIntensity = file->Read<_float>();
+		tDesc.vBaseColor_AlphaGra = file->Read<_float4>();
+		tDesc.vDestColor_AlphaGra = file->Read<_float4>();
+
+		/* Opacity */
+		tDesc.strOpacityTexture = file->Read<string>();
+		tDesc.iSamplerType = file->Read<_int>();
+		tDesc.vTiling_Opacity = file->Read<_float2>();
+		tDesc.vUVSpeed_Opacity = file->Read<_float2>();
+		
+		/* Gradation by Texture */
+		tDesc.strGraTexture = file->Read<string>();
+		tDesc.vBaseColor_Gra = file->Read<_float4>();
+		tDesc.vTiling_Gra = file->Read<_float2>();
+		tDesc.vUVSpeed_Gra = file->Read<_float2>();
+		tDesc.vDestColor_Gra = file->Read<_float4>();
+		
+		/* Overlay */
+		tDesc.bIsOverlayOn = file->Read<_bool>();
+		tDesc.strOverlayTexture = file->Read<string>();
+		tDesc.vBaseColor_Overlay = file->Read<_float4>();
+		tDesc.vTiling_Overlay = file->Read<_float2>();
+		tDesc.vUVSpeed_Overlay = file->Read<_float2>();
+		
+		/* Normal */
+		tDesc.strNormalTexture = file->Read<string>();
+
+		/* Dissolve */
+		tDesc.strDissolveTexture = file->Read<string>();
+		tDesc.vTiling_Dissolve = file->Read<_float2>();
+		tDesc.vUVSpeed_Dissolve = file->Read<_float2>();
+		
+		/* Distortion */
+		tDesc.strDistortionTexture = file->Read<string>();
+		tDesc.vTiling_Distortion = file->Read<_float2>();
+		tDesc.vUVSpeed_Distortion = file->Read<_float2>();
+
+		/* Blend */
+		tDesc.strBlendTexture = file->Read<string>();
+		
+		/* Color Edit */
+		tDesc.fContrast = file->Read<_float>();
+
+		shared_ptr<MeshEffectData> meshEffectData = make_shared<MeshEffectData>();
+		meshEffectData->Set_Desc(tDesc);
+
+		wstring key = Utils::ToWString(tDesc.pszTag);
+		Add(key, meshEffectData);
+	}
+}
+
+void ResourceMgr::CreateParticleData()
+{
+}
+
+void ResourceMgr::CreateGroupEffectData()
+{
+	wstring assetPath = L"..\\Resources\\EffectData\\GroupEffectData\\";
+
+	for (auto& entry : fs::recursive_directory_iterator(assetPath))
+	{
+		if (entry.is_directory())
+			continue;
+
+		if (entry.path().extension().wstring() != L".dat")
+			continue;
+
+		// For. load file and fill imgui 
+		string strFilePath = entry.path().string();
+		string strFileName = entry.path().filename().string();
+		shared_ptr<FileUtils> file = make_shared<FileUtils>();
+		file->Open(Utils::ToWString(strFilePath), FileMode::Read);
+
+
+		vector<GroupEffectData::MemberEffect_Desc> vMemberEffect;
+
+		/* Tag */
+		wstring wstrTag = Utils::ToWString(file->Read<string>());
+		_int iNumMembers = file->Read<_int>();
+
+		/* Member Effects */
+		for (_int i = 0; i < iNumMembers; i++)
+		{
+			GroupEffectData::MemberEffect_Desc tDesc;
+
+			tDesc.wstrEffectTag = Utils::ToWString(file->Read<string>());
+			tDesc.eType = GroupEffectData::EFFECT_TYPE(file->Read<_int>());
+			tDesc.fCreateTime = file->Read<_float>();
+
+			tDesc.bIsActive = file->Read<_bool>();
+
+			tDesc.vPivot_Pos = file->Read<_float3>();
+			tDesc.vPivot_Scale = file->Read<_float3>();
+			tDesc.vPivot_Rotation = file->Read<_float3>();
+
+			vMemberEffect.push_back(tDesc);
+		}
+
+		// For. Add ResourceBase to Resource Manager 
+		shared_ptr<GroupEffectData> groupEffectData = make_shared<GroupEffectData>();
+		groupEffectData->Set_Tag(wstrTag);
+		groupEffectData->Set_MemberEffectData(vMemberEffect);
+
+		Add(wstrTag, groupEffectData);
 	}
 }
 

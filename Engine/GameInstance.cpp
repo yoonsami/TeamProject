@@ -40,16 +40,6 @@ HRESULT GameInstance::Render_Begin()
 	return S_OK;
 }
 
-HRESULT GameInstance::Render()
-{
-	Render_Begin();
-
-	SCENE.Render();
-	Render_End();
-
-	return S_OK;
-}
-
 HRESULT GameInstance::Render_End()
 {
 	if (CUR_SCENE)
@@ -70,8 +60,6 @@ _float GameInstance::g_fMaxWhite = 1.f;
 
 _float GameInstance::g_fGamma = 2.2f;
 
-_float GameInstance::g_fBloomMin = 0.99f;
-
 _int GameInstance::g_iTMIndex = 1;
 
 _bool GameInstance::g_bFXAAOn = false;
@@ -80,7 +68,17 @@ _bool GameInstance::g_bAberrationOn = false;
 
 _float GameInstance::g_fAberrationPower = 0.f;
 
-_bool GameInstance::g_bLensFlare = true;
+_bool GameInstance::g_bLensFlare = false;
+
+_float3 GameInstance::g_testVec1 = _float3(0.2f, 0.1f, 0.f);
+
+_float3 GameInstance::g_testVec2 = _float3(0.9f, 1.f, 1.f);
+
+_bool GameInstance::g_bDrawOutline = false;
+
+GameInstance::BloomData GameInstance::g_BloomData{};
+
+GameInstance::MotionBlurData GameInstance::g_MotionBlurData{};
 
 GameInstance::FogData GameInstance::g_FogData{};
 

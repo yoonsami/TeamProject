@@ -26,14 +26,16 @@ public:
 
 private:
 	void Show_Gizmo();
-	// 스카이박스 관리 프레임.
-	void Frame_SkyBox();
 	// 설치할 수 있는 오브젝트 목록과 모양을 보여주고 선택하는 프레임.
 	void Frame_ObjectBase();
 	// 현재 배치되어있는 오브젝트 목록 프레임.
 	void Frame_Objects();
+	// 현재 배치되어있는 오브젝트 정보 프레임
+	void Frame_SelcetObjectManager();
 	// 광원의 정보 관리.
 	void Frame_Light();
+	// 벽의 정보 관리
+	void Frame_Wall();
 	// 피킹
 	void Picking_Object();
 
@@ -49,6 +51,10 @@ private:
 	HRESULT Create_SelectPointLight();
 	// 빛정보를 바탕으로 생성 후 씬에 추가 후 포인터 반환
 	shared_ptr<GameObject>& Create_PointLight(LightInfo _ptltInfo);
+	// 벽 메시 생성 후 멤버변수에 적용
+	void Create_WallMesh();
+	// 벽메시 정보배열 초기화
+	void Clear_WallMesh();
 
 	// 점광원 제거
 	HRESULT Delete_PointLight();
@@ -63,8 +69,13 @@ private:
 	void Compute_CullingData(shared_ptr<GameObject>& _pGameObject);
 	
 	// 그림자, 블러, 컬링계산
-	void Burn(shared_ptr<GameObject>& _pGameObject);
-	void BurnAll();
+	void Bake(shared_ptr<GameObject>& _pGameObject);
+	void BakeAll();
+	
+	// 베이스오브젝트이름을 가지고 샘플 오브젝트 생성
+	void Create_SampleObjects();
+	// 현재 선택한 베이스오브젝트로 샘플 맵오브젝트 모델변경 및 카메라 조정
+	void Set_SampleObject();
 
 private:
 // 설치 가능한 오브젝트 목록
@@ -77,6 +88,15 @@ private:
 	_int m_iObjectBaseIndex = { 0 };
 	// 오브젝트 생성시 정보
 	MapObjectScript::MAPOBJDESC m_CreateObjectDesc;
+	// 샘플오브젝트
+	shared_ptr<GameObject> m_SampleObject;
+	// 베이스오브젝트 필터
+	char m_szBaseObjectFilter[MAX_PATH] = "";
+	_int m_iFilteredBaseObjectsIndex = { 0 };
+	// 필터링이 완료된 이름모음
+	vector<const char*> m_FilteredBaseObjectNames;
+	// 필터링이 완료된 이름모음주소공간
+	vector<shared_ptr<char[]>> m_strFilteredNamePtr;
 
 // 설치된 오브젝트 목록
 	vector<const char*> m_strObjectName;
@@ -112,4 +132,10 @@ private:
 	_int m_iPointLightIndex = { 0 };
 	// 점광원 생성정보
 	LightInfo m_CreatePointLightInfo;
+
+	// 벽을위한피킹정보
+	_float3 m_WallPickingPos[2] = { _float3{0.f, 0.f, 0.f}, _float3{0.f, 0.f, 0.f} };
+	_bool m_bFirstWallPick = { true };
+	_float m_fWallHeight = { 10.f };
+	vector<pair<_float3, _float3>> m_WallRectPosLDRU;
 };

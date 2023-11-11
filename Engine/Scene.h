@@ -70,6 +70,7 @@ protected:
 	void Render_Lights();
 	void Render_LightFinal();
 
+	void Render_OutLine();
 
 	void Render_MotionBlurFinal();
 
@@ -82,15 +83,18 @@ protected:
 	void Render_Distortion();
 	void Render_Distortion_Final();
 
-	void Render_FXAA();
 
 	void Render_LensFlare();
 
+	void Render_Fog();
 	void Render_Aberration();
 
 	void Render_Debug();
+
+
 	void Render_UI();
 
+	void Render_FXAA();
 
 	void Render_BackBuffer();
 
@@ -99,7 +103,6 @@ protected:
 private:
 	void SSAO_MakeOffsetVector();
 	void SSAO_MakeFrustumFarCorners();
-	void SSAO_MapBlur(shared_ptr<Texture> input, RENDER_TARGET_GROUP_TYPE eType,_bool horzBlur);
 
 protected:
 	_float m_fLoadPercent = 0.f;
@@ -127,9 +130,6 @@ protected:
 	wstring m_wstrFinalRenderTarget = L"";
 
 
-	public:
-		_float2 testVector1 = _float2(0.f);
-		_float2 testVector2 = _float2(0.f);
 
 	_bool m_bRenderDebug = false;
 };

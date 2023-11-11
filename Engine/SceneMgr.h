@@ -21,7 +21,7 @@ public:
 			scene->Init();
 			for (auto& staticObject : staticObjects)
 			{
-				scene->Add_GameObject(staticObject, true);
+				scene->Add_GameObject(staticObject,true);
 			}
 			
 

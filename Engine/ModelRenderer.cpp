@@ -58,17 +58,7 @@ void ModelRenderer::Render()
 		m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 		mesh->vertexBuffer->Push_Data();
 		mesh->indexBuffer->Push_Data();
-		_float4 lineColor = _float4(0.f, 0.f, 0.f, 1.f);
-		m_pShader->GetVector("g_LineColor")->SetFloatVector((_float*)(&lineColor));
-		m_pShader->GetScalar("g_LineThickness")->SetFloat(Model::m_fOutlineThickness);
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		if (mesh->material.lock()->Has_Outline())
-		{
-			
-			m_pShader->DrawIndexed(1, PS_NONANIM, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
-			
-		}
 		
 		if (m_ePassType == PASS_MAPOBJECT)
 		{
@@ -124,15 +114,6 @@ void ModelRenderer::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 
 
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		_float4 lineColor = _float4(0.f, 0.f, 0.f, 1.f);
-		m_pShader->GetVector("g_LineColor")->SetFloatVector((_float*)(&lineColor));
-		m_pShader->GetScalar("g_LineThickness")->SetFloat(m_pModel->m_fOutlineThickness);
-
-		if (mesh->material.lock()->Has_Outline())
-		{
-			m_pShader->DrawIndexedInstanced(1, PS_NONANIMINSTANCE, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
-		}
 
 		if (m_ePassType == PASS_MAPOBJECT)
 			m_pShader->DrawIndexedInstanced(0, PS_MAPOBJECT_INSTANCE, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());

@@ -169,6 +169,7 @@
     <ClInclude Include="DemoScene.h" />
     <ClInclude Include="EffectTool.h" />
     <ClInclude Include="EffectTool_Define.h" />
+    <ClInclude Include="ForcePosition.h" />
     <ClInclude Include="FreeCameraScript.h" />
     <ClInclude Include="ImGuiToolMgr.h" />
     <ClInclude Include="Loader.h" />
@@ -176,7 +177,10 @@
     <ClInclude Include="MainApp.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="WeaponScript.h" />
     <ClInclude Include="Widget_EffectMaker_Mesh.h" />
+    <ClInclude Include="Widget_GroupEffectMaker.h" />
+    <ClInclude Include="Widget_Model_Controller.h" />
     <ClInclude Include="Widget_ParticleMaker_Instancing.h" />
   </ItemGroup>
   <ItemGroup>
@@ -195,6 +199,7 @@
     <ClCompile Include="..\Libraries\Include\IMGUI\ImSequencer.cpp" />
     <ClCompile Include="DemoScene.cpp" />
     <ClCompile Include="EffectTool.cpp" />
+    <ClCompile Include="ForcePosition.cpp" />
     <ClCompile Include="FreeCameraScript.cpp" />
     <ClCompile Include="ImGuiToolMgr.cpp" />
     <ClCompile Include="Loader.cpp" />
@@ -206,7 +211,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="WeaponScript.cpp" />
     <ClCompile Include="Widget_EffectMaker_Mesh.cpp" />
+    <ClCompile Include="Widget_GroupEffectMaker.cpp" />
+    <ClCompile Include="Widget_Model_Controller.cpp" />
     <ClCompile Include="Widget_ParticleMaker_Instancing.cpp" />
   </ItemGroup>
   <ItemGroup>

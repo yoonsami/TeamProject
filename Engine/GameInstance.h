@@ -14,7 +14,6 @@ public: // for Engine
 
 public: // for Graphics
 	HRESULT Render_Begin();
-	HRESULT Render();
 	HRESULT Render_End();
 
 private:
@@ -28,7 +27,6 @@ public:
 	static _float g_fShadowBias;
 	static _float g_fMaxWhite;
 	static _float g_fGamma;
-	static _float g_fBloomMin;
 	static _int g_iTMIndex;
 
 	struct SSAOData
@@ -44,9 +42,11 @@ public:
 	struct FogData
 	{
 		_bool g_FogOn = false;
-		_float  gFogStart = 15.f;
-		_float  gFogRange = 150.f;
-		Color	gFogColor = Color(1.f);
+		_float g_fogStart = 15.f;
+		_float g_fogEnd = 150.f;
+		_int g_fogMode = 0;
+		_float g_fogDensity = 1.f;
+		Color g_fogColor = Color(1.f);
 	};
 	static FogData g_FogData;
 
@@ -54,5 +54,24 @@ public:
 	static _bool g_bAberrationOn;
 	static _float g_fAberrationPower;
 	static _bool g_bLensFlare;
+
+	static _float3 g_testVec1;
+	static _float3 g_testVec2;
+
+	static _bool g_bDrawOutline;
+
+	struct MotionBlurData
+	{
+		_bool g_bMotionBlurOn = false;
+		int g_iBlurCount = 0;
+	};
+	static MotionBlurData g_MotionBlurData;
+
+	struct BloomData
+	{
+		_bool g_BloomOn = false;
+		_float g_BloomMin = 0.99f;
+	};
+	static BloomData g_BloomData;
 };
 

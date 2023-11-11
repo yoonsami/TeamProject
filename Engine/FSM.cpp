@@ -142,6 +142,22 @@ _bool FSM::Target_In_AttackRange()
 	return bFlag;
 }
 
+_bool FSM::Target_In_DetectRange()
+{
+	_bool bFlag = false;
+
+	if (m_pTarget.expired())
+		return false;
+
+	_float fGap = (Get_Transform()->Get_State(Transform_State::POS).xyz() -
+		m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz()).Length();
+
+	if (fGap <= m_fDetectRange)
+		bFlag = true;
+
+	return bFlag;
+}
+
 void FSM::Set_Target(shared_ptr<GameObject> pTarget)
 {
 	m_pTarget = pTarget;

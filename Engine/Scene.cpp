@@ -88,24 +88,24 @@ void Scene::Render()
 	Render_Lights();
 	//Render_BlurEffect();
 	Render_LightFinal();
-
 	Render_MotionBlurFinal();
 	Render_Forward();
 	Render_BloomMap();
 	Render_BloomMapScaling();
+	Render_OutLine();
 	Render_Distortion();
 	Render_Distortion_Final();
 	Render_LensFlare();
-	Render_FXAA();
+	Render_Fog();
 	Render_Aberration();
-	//Render_Debug();
 
 	Render_Debug();
+
 
 	Render_UI();
 	//Render_ToneMapping();
 
-	Render_BackBuffer();
+	//Render_BackBuffer();
 }
 
 HRESULT Scene::Load_Scene()
@@ -560,7 +560,7 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 	DirectionalLightObject->Get_Light()->Set_Ambient(DirLightColor.ambient);
 	DirectionalLightObject->Get_Light()->Set_Diffuse(DirLightColor.diffuse);
 	DirectionalLightObject->Get_Light()->Set_Specular(DirLightColor.specular);
-	DirectionalLightObject->Get_Light()->Set_Emissive(DirLightColor.emissive);
+	DirectionalLightObject->Get_Light()->Set_Emissive(_float4(1.f));
 
 	// 점광원정보 가져오고 불러오기
 	_int iNumPointLight = file->Read<_int>();
@@ -589,6 +589,35 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 		Add_GameObject(PointLight);
 	}
 
+	// 벽정보 불러오기 및 벽생성
+	vector<pair<_float3, _float3>> WallRectPosLDRU;
+	WallRectPosLDRU.clear();
+	_int iNumWall = 0;
+	file->Read<_int>(iNumWall);
+	WallRectPosLDRU.resize(iNumWall);
+	// 벽정보 읽어오기
+	for (_int i = 0; i < iNumWall; ++i)
+		file->Read<pair<_float3, _float3>>(WallRectPosLDRU[i]);
+	// 벽정보를 기반으로 벽메시 생성
+	shared_ptr<Mesh> WallMesh = make_shared<Mesh>();
+	WallMesh->Create3DRect(WallRectPosLDRU);
+	// 메시를 기반으로 벽오브젝트 생성
+	shared_ptr<GameObject> WallObject = make_shared<GameObject>();
+	WallObject->Set_Name(L"MapWall");
+	WallObject->GetOrAddTransform();
+	// 메시렌더러
+	shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+	renderer->Set_Mesh(WallMesh);
+	// 메시를 통해 메시콜라이더 생성
+	shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(*WallMesh.get());
+	WallObject->Add_Component(pCollider);
+	pCollider->Set_Activate(true);
+	// 리지드바디 생성
+	auto rigidBody = make_shared<RigidBody>();
+	rigidBody->Create_RigidBody(pCollider, WallObject->GetOrAddTransform()->Get_WorldMatrix());
+	WallObject->Add_Component(rigidBody);
+	Add_GameObject(WallObject);
+
 	// 오브젝트 개수 불러오기
 	_int iNumObjects = file->Read<_int>();
 
@@ -605,7 +634,6 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 		_float4x4 WorldMatrix = XMMatrixIdentity();
 		// Collider
 		_bool bCollider = false;
-		//ColliderType ColliderType = ColliderType::OBB;
 		// 0:Sphere 1:AABB 2:OBB 3:Mesh
 		_int iColliderType = static_cast<_int>(ColliderType::OBB);
 		// ColliderDesc
@@ -655,6 +683,10 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 		// 오브젝트 틀 생성
 		shared_ptr<GameObject> CreateObject = make_shared<GameObject>();
 		CreateObject->Set_Name(strObjectName);
+		CreateObject->Set_DrawShadow(bShadow);
+		CreateObject->Set_Blur(bBlur);
+		CreateObject->Set_CullPos(CullPos);
+		CreateObject->Set_CullRadius(CullRadius);
 		// 이름을 사용하여 모델생성
 		// 고유번호를 제거하여 모델명을 얻어옴
 		_int iPureNameSize = 0;
@@ -709,6 +741,11 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 				CreateObject->Add_Component(pCollider);
 				//pCollider->Set_CollisionGroup(MAPObject);
 				pCollider->Set_Activate(true);
+				_float3 vObjPos = CreateObject->Get_Transform()->Get_State(Transform_State::POS).xyz();
+				auto rigidBody = make_shared<RigidBody>();
+				CreateObject->Add_Component(rigidBody);
+				rigidBody->Create_CapsuleRigidBody(CreateObject->Get_CullPos() + _float3::Up * 3.f * CreateObject->Get_CullRadius(), CreateObject->Get_CullRadius(), CreateObject->Get_CullRadius() * 5.f);
+
 				break;
 			}
 			case ColliderType::Mesh:
@@ -727,10 +764,7 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 				break;
 			}
 		}
-		CreateObject->Set_DrawShadow(bShadow);
-		CreateObject->Set_Blur(bBlur);
-		CreateObject->Set_CullPos(CullPos);
-		CreateObject->Set_CullRadius(CullRadius);
+		
 
 		Add_GameObject(CreateObject);
 	}
@@ -803,6 +837,7 @@ void Scene::Render_Shadow()
 
 void Scene::Render_MotionBlur()
 {
+	if (!GAMEINSTANCE.g_MotionBlurData.g_bMotionBlurOn) return;
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::MOTIONBLUR)->OMSetRenderTargets();
 
 	if (Get_MainCamera())
@@ -1020,15 +1055,45 @@ void Scene::Render_SSAO()
 
 void Scene::Render_SSAOBlur(_uint blurCount)
 {
-	SSAO_MapBlur(RESOURCES.Get<Texture>(L"SSAOTarget"),RENDER_TARGET_GROUP_TYPE::SSAOBLUR0, true);
-
-	for (_uint i = 0; i < blurCount; ++i)
+	for (_uchar i = 0; i < 3; ++i)
 	{
-		SSAO_MapBlur(RESOURCES.Get<Texture>(L"SSAOBlurTarget0"), RENDER_TARGET_GROUP_TYPE::SSAOBLUR1, false);
-		SSAO_MapBlur(RESOURCES.Get<Texture>(L"SSAOBlurTarget1"), RENDER_TARGET_GROUP_TYPE::SSAOBLUR0, true);
+		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::SSAODOWNSCALE0) + i);
+		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
+		auto material = RESOURCES.Get<Material>(L"SSAODownScale" + to_wstring(i));
+		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+		//material->Get_Shader()->GetScalar("GaussianWeight")->SetFloatArray(a, 0, 25);
+		//material->Get_Shader()->GetScalar("DownScalePower")->SetFloat(m_fDownScalePower);
+		material->Push_SubMapData();
+
+		mesh->Get_VertexBuffer()->Push_Data();
+		mesh->Get_IndexBuffer()->Push_Data();
+
+		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	}
+
+	for (_uchar i = 0; i < 3; ++i)
+	{
+		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::SSAOUPSCALE0) + i);
+		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
+		auto material = RESOURCES.Get<Material>(L"SSAOUpScale" + to_wstring(i));
+		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+		//	material->Get_Shader()->GetScalar("UpScalePower")->SetFloat(m_fUpScalePower);
+
+		material->Push_SubMapData();
+
+		mesh->Get_VertexBuffer()->Push_Data();
+		mesh->Get_IndexBuffer()->Push_Data();
+
+		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		if (i != 2)
+			material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+		else
+			material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
 	}
-	SSAO_MapBlur(RESOURCES.Get<Texture>(L"SSAOBlurTarget0"), RENDER_TARGET_GROUP_TYPE::SSAOBLUR1, false);
 }
 
 void Scene::Render_Lights()
@@ -1061,12 +1126,6 @@ void Scene::Render_LightFinal()
 
 	material->Get_Shader()->GetScalar("g_gamma")->SetFloat(GAMEINSTANCE.g_fGamma);
 	material->Get_Shader()->GetScalar("g_SSAO_On")->SetBool(GAMEINSTANCE.g_SSAOData.g_bSSAO_On);
-	material->Get_Shader()->GetScalar("g_FogOn")->SetBool(GAMEINSTANCE.g_FogData.g_FogOn);
-	material->Get_Shader()->GetScalar("gFogStart")->SetFloat(GAMEINSTANCE.g_FogData.gFogStart);
-	material->Get_Shader()->GetScalar("gFogRange")->SetFloat(GAMEINSTANCE.g_FogData.gFogRange);
-	material->Get_Shader()->GetVector("gFogColor")->SetFloatVector((_float*)&GAMEINSTANCE.g_FogData.gFogColor);
-
-
 
 	material->Push_SubMapData();
 
@@ -1080,14 +1139,54 @@ void Scene::Render_LightFinal()
 	m_wstrFinalRenderTarget = L"FinalTarget";
 }
 
+void Scene::Render_OutLine()
+{
+	if (!GAMEINSTANCE.g_bDrawOutline)
+		return;
+
+	{
+		GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::OUTLINE)->OMSetRenderTargets();
+
+		auto material = RESOURCES.Get<Material>(L"Outline");
+		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+
+		material->Push_SubMapData();
+
+		mesh->Get_VertexBuffer()->Push_Data();
+		mesh->Get_IndexBuffer()->Push_Data();
+
+		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		material->Get_Shader()->DrawIndexed(0, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	}
+	{
+		GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::OUTLINEFINAL)->OMSetRenderTargets();
+
+		auto material = RESOURCES.Get<Material>(L"OutlineFinal");
+		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+
+		material->Push_SubMapData();
+		material->Set_SubMap(1, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
+		mesh->Get_VertexBuffer()->Push_Data();
+		mesh->Get_IndexBuffer()->Push_Data();
+
+		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+
+		m_wstrFinalRenderTarget = L"OutLineFinalTarget";
+	}
+}
+
 void Scene::Render_MotionBlurFinal()
 {
+	if (!GAMEINSTANCE.g_MotionBlurData.g_bMotionBlurOn) return;
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::MOTIONBLURFINAL)->OMSetRenderTargets();
 
 	auto material = RESOURCES.Get<Material>(L"MotionBlurFinal");
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 	material->Set_SubMap(1, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
-	material->Get_Shader()->GetScalar("g_BlurCount")->SetInt(50);
+	material->Get_Shader()->GetScalar("g_BlurCount")->SetInt(GAMEINSTANCE.g_MotionBlurData.g_iBlurCount);
 
 	material->Push_SubMapData();
 
@@ -1116,13 +1215,15 @@ void Scene::Render_Forward()
 
 void Scene::Render_BloomMap()
 {
+	if (!GAMEINSTANCE.g_BloomData.g_BloomOn)
+		return;
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::BLOOMMAP)->OMSetRenderTargets();
 
 	auto material = RESOURCES.Get<Material>(L"BloomTarget");
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
 	material->Push_SubMapData();
-	material->Get_Shader()->GetScalar("g_BloomMin")->SetFloat(GAMEINSTANCE.g_fBloomMin);
+	material->Get_Shader()->GetScalar("g_BloomMin")->SetFloat(GAMEINSTANCE.g_BloomData.g_BloomMin);
 	mesh->Get_VertexBuffer()->Push_Data();
 	mesh->Get_IndexBuffer()->Push_Data();
 
@@ -1133,6 +1234,9 @@ void Scene::Render_BloomMap()
 
 void Scene::Render_BloomMapScaling()
 {
+	if (!GAMEINSTANCE.g_BloomData.g_BloomOn)
+		return;
+
 	for (_uchar i = 0; i < 3; ++i)
 	{
 		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLOOMDOWNSCALE0) + i);
@@ -1227,28 +1331,6 @@ void Scene::Render_Distortion_Final()
 	m_wstrFinalRenderTarget = L"DistortionFinalTarget";
 }
 
-void Scene::Render_FXAA()
-{
-	if (!GAMEINSTANCE.g_bFXAAOn)
-		return;
-	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::FXAA)->OMSetRenderTargets();
-	
-	auto material = RESOURCES.Get<Material>(L"FXAARenderFinal");
-	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
-	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
-
-	material->Push_SubMapData();
-	mesh->Get_VertexBuffer()->Push_Data();
-	mesh->Get_IndexBuffer()->Push_Data();
-
-	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-
-
-	material->Get_Shader()->DrawIndexed(0, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
-	m_wstrFinalRenderTarget = L"FXAATarget";
-}
-
 void Scene::Render_LensFlare()
 {
 	if (!GAMEINSTANCE.g_bLensFlare)
@@ -1259,27 +1341,29 @@ void Scene::Render_LensFlare()
 
 	if (!CUR_SCENE->Get_Light())
 		return;
-	
+
 	_float3 viewLightPos = _float3::Transform(m_LightParams.lights[0].vPosition.xyz(), Camera::Get_View());
 	_float3 projLightPos = _float3::Transform(viewLightPos, Camera::Get_Proj());
-	//[-1,1] -> [0, 1920] //[1,-1] -> [0, 1080]
+	//[-1,1] -> [-.5, .5] //[1,-1] -> [-.5, .5]
 	_float2 proj = { projLightPos.x,projLightPos.y };
 	if (!(projLightPos.z <=1.f))
 		return;
-	proj.x = (proj.x + 1.f) * GRAPHICS.Get_ViewPort().Get_Width() * 0.5f;
-	proj.y = (1.f - proj.y) * GRAPHICS.Get_ViewPort().Get_Height() * 0.5f;
-
+	proj.x = (proj.x) * 1.8f;
+	proj.y = (proj.y) * -1.f;
+	_float2 lightUV = { (projLightPos.x + 1.f) * 0.5f,(1.f - projLightPos.y) * 0.5f };
 
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::LENSFLARE)->OMSetRenderTargets();
 
-	auto material = RESOURCES.Get<Material>(L"LensFlareFinal");
+	auto material = RESOURCES.Get<Material>(L"LensFlare");
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
 
 
+
 	material->Get_Shader()->GetVector("g_LightPos")->SetFloatVector((_float*)&proj);
-	material->Get_Shader()->GetVector("g_TestPos1")->SetFloatVector((_float*)&testVector1);
-	material->Get_Shader()->GetVector("g_TestPos2")->SetFloatVector((_float*)&testVector2);
+	material->Get_Shader()->GetVector("g_LightUV")->SetFloatVector((_float*)&lightUV);
+	material->Get_Shader()->GetVector("col1")->SetFloatVector((_float*)&GAMEINSTANCE.g_testVec1);
+	material->Get_Shader()->GetVector("col2")->SetFloatVector((_float*)&GAMEINSTANCE.g_testVec2);
 	material->Push_SubMapData();
 	mesh->Get_VertexBuffer()->Push_Data();
 	mesh->Get_IndexBuffer()->Push_Data();
@@ -1291,7 +1375,94 @@ void Scene::Render_LensFlare()
 
 
 	material->Get_Shader()->DrawIndexed(0, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
-	m_wstrFinalRenderTarget = L"LensFlareTarget";
+
+	//for (_uchar i = 0; i < 3; ++i)
+	//{
+	//	RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::LENSFLAREDOWNSCALE0) + i);
+	//	GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
+	//	auto material = RESOURCES.Get<Material>(L"LensFlareDownScale" + to_wstring(i));
+	//	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+	//	//material->Get_Shader()->GetScalar("GaussianWeight")->SetFloatArray(a, 0, 25);
+	//	//material->Get_Shader()->GetScalar("DownScalePower")->SetFloat(m_fDownScalePower);
+	//	material->Push_SubMapData();
+
+	//	mesh->Get_VertexBuffer()->Push_Data();
+	//	mesh->Get_IndexBuffer()->Push_Data();
+
+	//	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	//	material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	//}
+
+	//for (_uchar i = 0; i < 3; ++i)
+	//{
+	//	RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::LENSFLAREUPSCALE0) + i);
+	//	GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
+	//	auto material = RESOURCES.Get<Material>(L"LensFlareUpScale" + to_wstring(i));
+	//	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+	//	//	material->Get_Shader()->GetScalar("UpScalePower")->SetFloat(m_fUpScalePower);
+
+	//	material->Push_SubMapData();
+
+	//	mesh->Get_VertexBuffer()->Push_Data();
+	//	mesh->Get_IndexBuffer()->Push_Data();
+
+	//	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	//	if (i != 2)
+	//		material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	//	else
+	//		material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	//}
+	{
+		GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::LENSFLAREFINAL)->OMSetRenderTargets();
+
+		auto material = RESOURCES.Get<Material>(L"LensFlareFinal");
+		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+		//	material->Get_Shader()->GetScalar("UpScalePower")->SetFloat(m_fUpScalePower);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
+		material->Push_SubMapData();
+
+		mesh->Get_VertexBuffer()->Push_Data();
+		mesh->Get_IndexBuffer()->Push_Data();
+
+		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+
+		m_wstrFinalRenderTarget = L"LensFlareFinalTarget";
+	}
+
+}
+
+void Scene::Render_Fog()
+{
+	if (!GAMEINSTANCE.g_FogData.g_FogOn)
+		return;
+
+
+
+	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::FOG)->OMSetRenderTargets();
+
+	auto material = RESOURCES.Get<Material>(L"FogFinal");
+	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
+
+	material->Get_Shader()->GetScalar("fogStart")->SetFloat(GAMEINSTANCE.g_FogData.g_fogStart);
+	material->Get_Shader()->GetScalar("fogEnd")->SetFloat(GAMEINSTANCE.g_FogData.g_fogEnd);
+	material->Get_Shader()->GetScalar("fogDensity")->SetFloat(GAMEINSTANCE.g_FogData.g_fogDensity);
+	material->Get_Shader()->GetScalar("fogMode")->SetInt(GAMEINSTANCE.g_FogData.g_fogMode);
+	material->Get_Shader()->GetVector("fogColor")->SetFloatVector((_float*)&GAMEINSTANCE.g_FogData.g_fogColor);
+
+	material->Push_SubMapData();
+	mesh->Get_VertexBuffer()->Push_Data();
+	mesh->Get_IndexBuffer()->Push_Data();
+
+	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+
+	material->Get_Shader()->DrawIndexed(3, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	m_wstrFinalRenderTarget = L"FogTarget";
 }
 
 void Scene::Render_Aberration()
@@ -1325,7 +1496,7 @@ void Scene::Render_Debug()
 	if (m_bRenderDebug)
 	{
 		for (auto& gameObject : m_GameObjects)
-			if (gameObject->Get_Collider() && gameObject->Get_Collider()->Get_ColliderType() != ColliderType::Mesh)
+			if (gameObject->Get_Collider())
 				gameObject->Get_Collider()->Render();
 	}
 }
@@ -1342,9 +1513,10 @@ void Scene::Render_UI()
 	}
 }
 
+
 void Scene::Render_ToneMapping()
 {
-	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->OMSetRenderTargets();
+	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::TONEMAPPING)->OMSetRenderTargets();
 
 	auto material = RESOURCES.Get<Material>(L"BackBufferRenderFinal");
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
@@ -1369,11 +1541,51 @@ void Scene::Render_ToneMapping()
 
 	material->Get_Shader()->DrawIndexed(0, GAMEINSTANCE.g_iTMIndex, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
+	m_wstrFinalRenderTarget = L"ToneMappingTarget";
 
+	Render_BackBuffer();
+}
+
+void Scene::Render_FXAA()
+{
+	if (!GAMEINSTANCE.g_bFXAAOn)
+		return;
+	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::FXAA)->OMSetRenderTargets();
+
+	auto material = RESOURCES.Get<Material>(L"FXAARenderFinal");
+	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
+	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+
+	material->Get_Shader()->GetScalar("Use")->SetBool(GAMEINSTANCE.g_bFXAAOn);
+	material->Push_SubMapData();
+	mesh->Get_VertexBuffer()->Push_Data();
+	mesh->Get_IndexBuffer()->Push_Data();
+
+	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+
+
+	material->Get_Shader()->DrawIndexed(0, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	m_wstrFinalRenderTarget = L"FXAATarget";
 }
 
 void Scene::Render_BackBuffer()
 {
+	Render_FXAA();
+	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->OMSetRenderTargets();
+
+	auto material = RESOURCES.Get<Material>(L"BackBufferRenderFinal");
+	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
+
+	material->Push_SubMapData();
+	mesh->Get_VertexBuffer()->Push_Data();
+	mesh->Get_IndexBuffer()->Push_Data();
+
+	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+
+	material->Get_Shader()->DrawIndexed(2, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
 }
 
@@ -1432,31 +1644,4 @@ void Scene::SSAO_MakeFrustumFarCorners()
 	m_vFrustumFarCorner[1] = _float4(+halfWidth, +halfHeight, farZ, 0.0f);
 	m_vFrustumFarCorner[2] = _float4(+halfWidth, -halfHeight, farZ, 0.0f);
 	m_vFrustumFarCorner[3] = _float4(-halfWidth, -halfHeight, farZ, 0.0f);
-}
-
-void Scene::SSAO_MapBlur(shared_ptr<Texture> input, RENDER_TARGET_GROUP_TYPE eType, _bool horzBlur)
-{
-	//GRAPHICS.Get_RTGroup(eType)->ClearRenderTargetView();
-	GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
-	auto material = make_shared<Material>();
-	material->Set_Shader(RESOURCES.Get<Shader>(L"Shader_SSAO.fx"));
-	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
-
-	material->Set_SubMap(0, input);
-
-	material->Push_SubMapData();
-	mesh->Get_VertexBuffer()->Push_Data();
-	mesh->Get_IndexBuffer()->Push_Data();
-
-	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-
-	_int iPass = horzBlur ? 1 : 2;
-	material->Get_Shader()->DrawIndexed(0, iPass, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
-	
-	for (int i = 0; i < 32; ++i)
-	{
-		ID3D11ShaderResourceView* nullSRV = nullptr;
-		CONTEXT->PSSetShaderResources(i, 1, &nullSRV);
-	}
 }

@@ -23,6 +23,9 @@ ModelAnimator::~ModelAnimator()
 
 void ModelAnimator::Tick()
 {
+	if (m_bAnimStop)
+		return;
+
 	m_preTweenDesc = m_TweenDesc;
 
 	m_TweenDesc.curr.sumTime += fDT;
@@ -225,13 +228,8 @@ void ModelAnimator::Render()
 		m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 		mesh->vertexBuffer->Push_Data();
 		mesh->indexBuffer->Push_Data();
-		_float4 lineColor = _float4(0.f, 0.f, 0.f, 1.f);
-		m_pShader->GetVector("g_LineColor")->SetFloatVector((_float*)(&lineColor));
-		m_pShader->GetScalar("g_LineThickness")->SetFloat(Model::m_fOutlineThickness);
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		
-		
-		m_pShader->DrawIndexed(1, PS_ANIM, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
 		m_pShader->DrawIndexed(0, PS_ANIM, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
 	}
 
@@ -270,12 +268,6 @@ void ModelAnimator::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 		buffer->Push_Data();
 
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		_float4 lineColor = _float4(0.f, 0.f, 0.f, 1.f);
-		m_pShader->GetVector("g_LineColor")->SetFloatVector((_float*)(&lineColor));
-		m_pShader->GetScalar("g_LineThickness")->SetFloat(Model::m_fOutlineThickness);
-
-		m_pShader->DrawIndexedInstanced(1, PS_ANIMINSTANCING, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
 
 		m_pShader->DrawIndexedInstanced(0, PS_ANIMINSTANCING, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
 	}
@@ -488,6 +480,15 @@ void ModelAnimator::Set_CurrentAnim(const wstring& animName, _bool loop, _float 
 	Set_CurrentAnim(animIndex);
 
 	anim->loop = loop;
+	anim->speed = animSpeed;
+}
+
+void ModelAnimator::Set_AnimationSpeed(_float animSpeed)
+{
+	_int animIndex = m_TweenDesc.curr.animIndex;
+	auto anim = Get_Model()->Get_AnimationByIndex(animIndex);
+	assert(animIndex >= 0);
+
 	anim->speed = animSpeed;
 }
 

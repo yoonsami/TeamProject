@@ -199,6 +199,18 @@
     <Filter Include="04.Component\05.UI &amp; Effect\Renderer\05.MeshEffect">
       <UniqueIdentifier>{91653204-5163-4165-85fe-cc9f5ca6cd88}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04.Component\05.UI &amp; Effect\Renderer\06.GroupEffect">
+      <UniqueIdentifier>{30349403-3380-404e-8c9e-85f3af609027}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Manager\01.ResourceMgr\Resources\MeshEffectData">
+      <UniqueIdentifier>{efd276ef-2cc6-474b-b9c5-1eee05b5a822}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Manager\01.ResourceMgr\Resources\GroupEffectData">
+      <UniqueIdentifier>{244ea0fd-53e6-49ae-9fc6-176c11c9aa1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Manager\01.ResourceMgr\Resources\ParticleData">
+      <UniqueIdentifier>{cd6760d9-ba73-42d1-983b-5273ca1ca635}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -407,6 +419,18 @@
     </ClCompile>
     <ClCompile Include="MeshEffect.cpp">
       <Filter>04.Component\05.UI &amp; Effect\Renderer\05.MeshEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="GroupEffect.cpp">
+      <Filter>04.Component\05.UI &amp; Effect\Renderer\06.GroupEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshEffectData.cpp">
+      <Filter>02.Manager\01.ResourceMgr\Resources\MeshEffectData</Filter>
+    </ClCompile>
+    <ClCompile Include="GroupEffectData.cpp">
+      <Filter>02.Manager\01.ResourceMgr\Resources\GroupEffectData</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleData.cpp">
+      <Filter>02.Manager\01.ResourceMgr\Resources\ParticleData</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -631,6 +655,18 @@
     </ClInclude>
     <ClInclude Include="MeshEffect.h">
       <Filter>04.Component\05.UI &amp; Effect\Renderer\05.MeshEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="GroupEffect.h">
+      <Filter>04.Component\05.UI &amp; Effect\Renderer\06.GroupEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshEffectData.h">
+      <Filter>02.Manager\01.ResourceMgr\Resources\MeshEffectData</Filter>
+    </ClInclude>
+    <ClInclude Include="GroupEffectData.h">
+      <Filter>02.Manager\01.ResourceMgr\Resources\GroupEffectData</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleData.h">
+      <Filter>02.Manager\01.ResourceMgr\Resources\ParticleData</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

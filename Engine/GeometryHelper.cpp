@@ -1,6 +1,61 @@
 #include "pch.h"
 #include "GeometryHelper.h"
 
+void GeometryHelper::Create3DRect(shared_ptr<Geometry<VTXTEXNORTANDATA>> _geometry, vector<pair<_float3, _float3>> _LDURPairVector)
+{
+	vector<VTXTEXNORTANDATA> vtx;
+	vtx.resize(_LDURPairVector.size() * 2 + 2 /*페어 두점추가 + 최초4점*/);
+	
+	for (_uint i = 0; i < _LDURPairVector.size(); ++i)
+	{
+		_float3 LDPos = _LDURPairVector[i].first;
+		_float3 RUPos = _LDURPairVector[i].second;
+
+		if(i==0)
+		{
+			vtx[0].vPosition = _float3{ LDPos.x, RUPos.y, LDPos.z };
+			vtx[1].vPosition = LDPos;
+			vtx[2].vPosition = RUPos;
+			vtx[3].vPosition = _float3{ RUPos.x, LDPos.y, RUPos.z };
+		}
+		else
+		{
+			// 사각형의 우상, 우하 정점
+			vtx[i * 2 + 2].vPosition = RUPos;
+			vtx[i * 2 + 3].vPosition = _float3{ RUPos.x, LDPos.y, RUPos.z };
+		}
+	}
+
+	_geometry->Set_Vertices(vtx);
+
+	vector<_uint> idx;
+	idx.resize(_LDURPairVector.size() * 6);
+
+	for (_uint i = 0; i < _LDURPairVector.size(); ++i)
+	{
+		if(i == 0)
+		{
+			// 첫사각형
+			idx[0] = 0;
+			idx[1] = 2;
+			idx[2] = 3;
+			idx[3] = 0;
+			idx[4] = 3;
+			idx[5] = 1;
+		}
+		else
+		{
+			idx[i * 6] = i * 2;
+			idx[i * 6 + 1] = i * 2 + 2;
+			idx[i * 6 + 2] = i * 2 + 3;
+			idx[i * 6 + 3] = i * 2;
+			idx[i * 6 + 4] = i * 2 + 3;
+			idx[i * 6 + 5] = i * 2 + 1;
+		}
+	}
+	_geometry->Set_Indices(idx);
+}
+
 void GeometryHelper::CreateQuad(shared_ptr<Geometry<VTXCOLORDATA>> geometry, _float4 color)
 {
 	vector<VTXCOLORDATA> vtx;

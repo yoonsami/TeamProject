@@ -15,6 +15,8 @@ public:
 
 	virtual void Render() override;
 
+	void Render_SampleMapObject();
+
 	virtual HRESULT Load_Scene() override;
 
 private:

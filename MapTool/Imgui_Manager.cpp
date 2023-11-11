@@ -17,11 +17,16 @@
 #include "Geometry.h"
 
 #include "Camera.h"
+#include "DemoScene.h"
 
 #include "SphereCollider.h"
 #include "AABBBoxCollider.h"
 #include "OBBBoxCollider.h"
 #include "MeshCollider.h"
+
+#include "GeometryHelper.h"
+#include "MeshRenderer.h"
+#include "RigidBody.h"
 
 ImGuizmo::OPERATION m_eGuizmoType = { ImGuizmo::TRANSLATE };
 namespace fs = std::filesystem;
@@ -52,6 +57,8 @@ void ImGui_Manager::ImGui_SetUp()
 
     Load_SkyBoxTexture();
     Load_MapObjectBase();
+
+    Create_SampleObjects();
 }
 
 void ImGui_Manager::ImGui_Tick()
@@ -63,10 +70,11 @@ void ImGui_Manager::ImGui_Tick()
 
     ImGui::ShowDemoWindow();
 
-    Frame_SkyBox();
     Frame_Light();
     Frame_ObjectBase();
     Frame_Objects();
+    Frame_SelcetObjectManager();
+    Frame_Wall();
 
     Picking_Object();
 
@@ -122,26 +130,51 @@ void ImGui_Manager::Show_Gizmo()
     }
 }
 
-void ImGui_Manager::Frame_SkyBox()
-{
-    ImGui::Begin("Frame_SkyBox"); // 글자 맨윗줄
-
-    if (ImGui::ListBox("##SkyBoxName", &m_iCurrentSkyBoxIndex, m_strSkyboxList.data(), (int)m_strSkyboxList.size()))
-    {
-        string strCurSkybox = m_strSkyboxList[m_iCurrentSkyBoxIndex];
-        Utils::DetachExt(strCurSkybox);
-
-        vector<shared_ptr<Material>>& Mats = CUR_SCENE->Get_GameObject(L"SkyBase")->Get_ModelRenderer()->Get_Model()->Get_Materials();
-        Mats[0]->Set_TextureMap(RESOURCES.Get<Texture>(Utils::ToWString(strCurSkybox)), TextureMapType::DIFFUSE);
-    }
-    ImGui::End();
-}
-
 void ImGui_Manager::Frame_ObjectBase()
 {
     ImGui::Begin("Frame_ObjectBase"); // 글자 맨윗줄
 
-    ImGui::ListBox("##ObjectBase", &m_iObjectBaseIndex, m_strObjectBaseNameList.data(), (int)m_strObjectBaseNameList.size(), 10);
+    if (ImGui::ListBox("##ObjectBase", &m_iObjectBaseIndex, m_strObjectBaseNameList.data(), (int)m_strObjectBaseNameList.size(), 10))
+        Set_SampleObject(); // 리스트박스 선택대상이 달라지면 샘플모델변경
+
+    if (ImGui::InputText("Filter##ObjectBase", m_szBaseObjectFilter, sizeof(m_szBaseObjectFilter)))
+    {
+        // 필터내용 string화
+        string strFilter = m_szBaseObjectFilter;
+        m_FilteredBaseObjectNames.clear();
+        for (size_t i = 0; i < m_strObjectBaseNameList.size(); ++i)
+        {
+            // 검사당할 대상 텍스트
+            string strFilterTarget = m_strObjectBaseNameList[i];
+            if (strFilterTarget.find(strFilter) != std::string::npos)
+            {
+                // 동적생성
+                shared_ptr<char[]> pChar = shared_ptr<char[]>(new char[MAX_PATH]);
+                strncpy_s(pChar.get(), MAX_PATH, strFilterTarget.c_str(), _TRUNCATE);
+
+                // 필터된 이름을 포인터 벡터에 추가
+                m_strFilteredNamePtr.push_back(pChar);
+                // 필터된 이름을 리스트UI에 추가
+                m_FilteredBaseObjectNames.push_back(pChar.get());
+            }
+        }
+    }
+
+    if (ImGui::ListBox("FilteredObjectBases##ObjectBase", &m_iFilteredBaseObjectsIndex, m_FilteredBaseObjectNames.data(), (_int)m_FilteredBaseObjectNames.size()))
+    {
+        for (size_t i = 0; i < m_strObjectBaseNameList.size(); ++i)
+        {
+            string strBaseObjName = m_strObjectBaseNameList[i];
+            string strFilteredObjName = m_FilteredBaseObjectNames[m_iFilteredBaseObjectsIndex];
+            if (strBaseObjName == strFilteredObjName)
+            {
+                m_iObjectBaseIndex = (_int)i;
+                break;
+            }
+        }
+    }
+
+
 
     // 맵오브젝트 정보
     ImGui::SeparatorText("BaseObjectDesc");
@@ -211,9 +244,16 @@ void ImGui_Manager::Frame_ObjectBase()
 
 void ImGui_Manager::Frame_Objects()
 {
-    ImGui::Begin("Frame_Objects"); // 글자 맨윗줄
+    ImGui::Begin("Frame_SelectObjects"); // 글자 맨윗줄
 
-    ImGui::ListBox("##Objects", &m_iObjects, m_strObjectName.data(), (_int)m_strObjectName.size(), 10);
+    ImGui::ListBox("##Objects", &m_iObjects, m_strObjectName.data(), (_int)m_strObjectName.size(), (_int)m_strObjectName.size());
+    ImGui::SetScrollY(m_iObjects * ImGui::GetTextLineHeightWithSpacing());
+
+    ImGui::End();
+}
+void ImGui_Manager::Frame_SelcetObjectManager()
+{
+    ImGui::Begin("Frame_SelectObjectManager"); // 글자 맨윗줄
 
     if (m_strObjectName.size() > 0)
         if (ImGui::Button("Delete"))
@@ -249,11 +289,11 @@ void ImGui_Manager::Frame_Objects()
         ImGui::SameLine();
         ImGui::Checkbox("##bBlur", &CurObjectDesc.bBlur);
         // 오브젝트에 그림자와 블러 적용
-        if (ImGui::Button("Burn"))
-            Burn(m_pMapObjects[m_iObjects]);
+        if (ImGui::Button("Bake"))
+            Bake(m_pMapObjects[m_iObjects]);
         ImGui::SameLine();
-        if (ImGui::Button("Burn All"))
-            BurnAll();
+        if (ImGui::Button("Bake All"))
+            BakeAll();
         ImGui::TextColored(YellowColor, "Components");
         // 트랜스폼컴포넌트
         ImGui::Text("Transform - ");
@@ -315,40 +355,43 @@ void ImGui_Manager::Frame_Objects()
                 // 콜라이더 타입에 따라 콜라이더 생성
                 switch (CurObjectDesc.ColliderType)
                 {
-                    case static_cast<_int>(ColliderType::Sphere):
-                    {
-                        shared_ptr<SphereCollider> pCollider = make_shared<SphereCollider>(CurObjectDesc.ColRadius);
-                        pCollider->Set_Offset(CurObjectDesc.ColliderOffset);
-                        m_pMapObjects[m_iObjects]->Add_Component(pCollider);
-                        pCollider->Set_Activate(true);
-                        break;
-                    }
-                    case static_cast<_int>(ColliderType::AABB):
-                    {
-                        shared_ptr<AABBBoxCollider> pCollider = make_shared<AABBBoxCollider>(CurObjectDesc.ColBoundingSize);
-                        pCollider->Set_Offset(CurObjectDesc.ColliderOffset);
-                        m_pMapObjects[m_iObjects]->Add_Component(pCollider);
-                        pCollider->Set_Activate(true);
-                        break;
-                    }
-                    case static_cast<_int>(ColliderType::OBB):
-                    {
-                        shared_ptr<OBBBoxCollider> pCollider = make_shared<OBBBoxCollider>(CurObjectDesc.ColBoundingSize);
-                        pCollider->Set_Offset(CurObjectDesc.ColliderOffset);
-                        m_pMapObjects[m_iObjects]->Add_Component(pCollider);
-                        pCollider->Set_Activate(true);
-                        break;
-                    }
-                    case static_cast<_int>(ColliderType::Mesh):
-                    {
-                        shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(Utils::ToWString(CurObjectDesc.ColModelName));
-                        pCollider->Set_Offset(CurObjectDesc.ColliderOffset);
-                        m_pMapObjects[m_iObjects]->Add_Component(pCollider);
-                        pCollider->Set_Activate(true);
-                        break;
-                    }
-                    default:
-                        break;
+                case static_cast<_int>(ColliderType::Sphere):
+                {
+                    shared_ptr<SphereCollider> pCollider = make_shared<SphereCollider>(CurObjectDesc.ColRadius);
+                    pCollider->Set_Offset(CurObjectDesc.ColliderOffset);
+                    m_pMapObjects[m_iObjects]->Add_Component(pCollider);
+                    pCollider->Set_Activate(true);
+                    break;
+                }
+                case static_cast<_int>(ColliderType::AABB):
+                {
+                    shared_ptr<AABBBoxCollider> pCollider = make_shared<AABBBoxCollider>(CurObjectDesc.ColBoundingSize);
+                    pCollider->Set_Offset(CurObjectDesc.ColliderOffset);
+                    m_pMapObjects[m_iObjects]->Add_Component(pCollider);
+                    pCollider->Set_Activate(true);
+                    break;
+                }
+                case static_cast<_int>(ColliderType::OBB):
+                {
+                    shared_ptr<OBBBoxCollider> pCollider = make_shared<OBBBoxCollider>(CurObjectDesc.ColBoundingSize);
+                    pCollider->Set_Offset(CurObjectDesc.ColliderOffset);
+                    m_pMapObjects[m_iObjects]->Add_Component(pCollider);
+                    pCollider->Set_Activate(true);
+                    break;
+                }
+                case static_cast<_int>(ColliderType::Mesh):
+                {
+                    shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(Utils::ToWString(CurObjectDesc.ColModelName));
+                    pCollider->Set_Offset(CurObjectDesc.ColliderOffset);
+                    m_pMapObjects[m_iObjects]->Add_Component(pCollider);
+                    pCollider->Set_Activate(true);
+                    //auto rigidBody = make_shared<RigidBody>();
+                    //rigidBody->Create_RigidBody(pCollider, m_pMapObjects[m_iObjects]->GetOrAddTransform()->Get_WorldMatrix());
+                    //m_pMapObjects[m_iObjects]->Add_Component(rigidBody);
+                    break;
+                }
+                default:
+                    break;
                 }
             }
             else
@@ -400,7 +443,19 @@ void ImGui_Manager::Frame_Objects()
 }
 void ImGui_Manager::Frame_Light()
 {
-    ImGui::Begin("Frame_Light"); // 글자 맨윗줄
+    ImGui::Begin("SkyBox&Light"); // 글자 맨윗줄
+
+    // 스카이박스 변경
+    ImGui::SeparatorText("SkyBox##SkyBoxChange");
+    if (ImGui::ListBox("##SkyBoxName", &m_iCurrentSkyBoxIndex, m_strSkyboxList.data(), (int)m_strSkyboxList.size()))
+    {
+        string strCurSkybox = m_strSkyboxList[m_iCurrentSkyBoxIndex];
+        Utils::DetachExt(strCurSkybox);
+
+        vector<shared_ptr<Material>>& Mats = CUR_SCENE->Get_GameObject(L"SkyBase")->Get_ModelRenderer()->Get_Model()->Get_Materials();
+        Mats[0]->Set_TextureMap(RESOURCES.Get<Texture>(Utils::ToWString(strCurSkybox)), TextureMapType::DIFFUSE);
+    }
+
     // 방향성광원 통제
     ImGui::SeparatorText("DirectionalLight");
     // 포지션
@@ -452,13 +507,13 @@ void ImGui_Manager::Frame_Light()
 
         LightInfo& CurPtLightInfo = m_pPointLightObjects[m_iPointLightIndex]->Get_Light()->Get_LightInfo();
         _float4 PtLightPos = m_pPointLightObjects[m_iPointLightIndex]->Get_Transform()->Get_State(Transform_State::POS);
-        ImGui::DragFloat3("PtLightPos##CurrentPtLt", (_float*)&PtLightPos, 0.1f);
+        ImGui::DragFloat3("Pos##CurrentPtLt", (_float*)&PtLightPos, 0.1f);
         m_pPointLightObjects[m_iPointLightIndex]->Get_Transform()->Set_State(Transform_State::POS, PtLightPos);
-        ImGui::ColorEdit4("PtLightAmbient##CurrentPtLt", (_float*)&CurPtLightInfo.color.ambient);
-        ImGui::ColorEdit4("PtLightDiffuse##CurrentPtLt", (_float*)&CurPtLightInfo.color.diffuse);
-        ImGui::ColorEdit4("PtLightSpecular##CurrentPtLt", (_float*)&CurPtLightInfo.color.specular);
-        ImGui::ColorEdit4("PtLightEmissive##CurrentPtLt", (_float*)&CurPtLightInfo.color.emissive);
-        ImGui::DragFloat("PtLightRange##CurrentPtLt", &CurPtLightInfo.range, 0.1f);
+        ImGui::ColorEdit4("Ambient##CurrentPtLt", (_float*)&CurPtLightInfo.color.ambient);
+        ImGui::ColorEdit4("Diffuse##CurrentPtLt", (_float*)&CurPtLightInfo.color.diffuse);
+        ImGui::ColorEdit4("Specular##CurrentPtLt", (_float*)&CurPtLightInfo.color.specular);
+        ImGui::ColorEdit4("Emissive##CurrentPtLt", (_float*)&CurPtLightInfo.color.emissive);
+        ImGui::DragFloat("Range##CurrentPtLt", &CurPtLightInfo.range, 0.1f);
 
         _float4 PointLightPosition = m_pPointLightObjects[m_iPointLightIndex]->Get_Transform()->Get_State(Transform_State::POS);
         ImGui::DragFloat3("PointLightPosition", (_float*)&PointLightPosition, 0.1f);
@@ -466,6 +521,22 @@ void ImGui_Manager::Frame_Light()
     }
 
     ImGui::SeparatorText("##LightFrame");
+
+    ImGui::End();
+}
+
+void ImGui_Manager::Frame_Wall()
+{
+    ImGui::Begin("Frame_Wall"); // 글자 맨윗줄
+
+    if (ImGui::Button("Create"))
+    {
+        Create_WallMesh();
+    }
+    if (ImGui::Button("Clear"))
+    {
+        Clear_WallMesh();
+    }
 
     ImGui::End();
 }
@@ -487,8 +558,32 @@ void ImGui_Manager::Picking_Object()
             for (_int i = 0; i < m_pMapObjects.size(); ++i)
             {
                 if (PickObject == m_pMapObjects[i])
+                {
                     m_iObjects = i;
+                }
             }
+        }
+    }
+    // 마우스 휠클릭 시 WallPickingPoint 저장
+    if (KEYTAP(KEY_TYPE::MBUTTON))
+    {
+        POINT MousePos;
+        ::GetCursorPos(&MousePos);
+        ::ScreenToClient(g_hWnd, &MousePos);
+        _float2 ScreenPos{ (_float)MousePos.x, (_float)MousePos.y };
+
+        if (m_bFirstWallPick)
+        {
+            m_bFirstWallPick = false;
+            shared_ptr<GameObject> PickObject = PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), CUR_SCENE->Get_Objects(), m_WallPickingPos[0]);
+        }
+        else
+        {
+            shared_ptr<GameObject> PickObject = PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), CUR_SCENE->Get_Objects(), m_WallPickingPos[1]);
+            // 사각형 하나 추가
+            m_WallRectPosLDRU.push_back(pair<_float3, _float3>(m_WallPickingPos[0], _float3{ m_WallPickingPos[1].x, m_fWallHeight, m_WallPickingPos[1].z }));
+            // 좌하단 점을 우하단 점으로 변경
+            m_WallPickingPos[0] = m_WallPickingPos[1];
         }
     }
 }
@@ -585,6 +680,7 @@ shared_ptr<GameObject>& ImGui_Manager::Create_MapObject(MapObjectScript::MapObje
     }
     string strModelName = CreateDesc.strName.substr(0, iPureNameSize);
     CreateDesc.ColModelName = strModelName;
+    CreateObject->Set_Name(Utils::ToWString(strModelName));
     // 모델생성
     shared_ptr<Model> model = RESOURCES.Get<Model>(Utils::ToWString(strModelName));
     shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
@@ -639,7 +735,7 @@ shared_ptr<GameObject>& ImGui_Manager::Create_MapObject(MapObjectScript::MapObje
         }
     }
     // 그림자, 블러, 컬링정보계산
-    Burn(CreateObject);
+    Bake(CreateObject);
 
     CUR_SCENE->Add_GameObject(CreateObject);
 
@@ -679,6 +775,41 @@ shared_ptr<GameObject>& ImGui_Manager::Create_PointLight(LightInfo _ptltInfo)
     CUR_SCENE->Add_GameObject(PointLight);
 
     return PointLight;
+}
+
+void ImGui_Manager::Create_WallMesh()
+{
+    // 벽정보를 기반으로 벽메시 생성
+    shared_ptr<Mesh> WallMesh = make_shared<Mesh>();
+    WallMesh->Create3DRect(m_WallRectPosLDRU);
+
+    // 메시를 기반으로 벽오브젝트 생성
+    shared_ptr<GameObject> WallObject = make_shared<GameObject>();
+    WallObject->Set_Name(L"Wall");
+    WallObject->GetOrAddTransform();
+
+    // 메시렌더러
+    shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+    renderer->Set_Mesh(WallMesh);
+
+    // 메시를 통해 메시콜라이더 생성
+    shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(*WallMesh.get());
+    WallObject->Add_Component(pCollider);
+    pCollider->Set_Activate(true);
+    //auto rigidBody = make_shared<RigidBody>();
+    //rigidBody->Create_RigidBody(pCollider, WallObject->GetOrAddTransform()->Get_WorldMatrix());
+    //WallObject->Add_Component(rigidBody);
+
+    shared_ptr<GameObject> PreWall = CUR_SCENE->Get_GameObject(L"Wall");
+    if (PreWall != nullptr)
+        CUR_SCENE->Remove_GameObject(PreWall);
+    CUR_SCENE->Add_GameObject(WallObject);
+}
+
+void ImGui_Manager::Clear_WallMesh()
+{
+    m_WallRectPosLDRU.clear();
+    m_bFirstWallPick = true;
 }
 
 HRESULT ImGui_Manager::Delete_PointLight()
@@ -721,6 +852,7 @@ HRESULT ImGui_Manager::Delete_MapObject()
 {
     // 1. 현재 선택된 오브젝트를 씬에서 삭제
     CUR_SCENE->Remove_GameObject(m_pMapObjects[m_iObjects]);
+
     // 2. 현재 선택된 오브젝트를 벡터에서 삭제
     {
         auto iter = m_pMapObjects.begin();
@@ -732,6 +864,7 @@ HRESULT ImGui_Manager::Delete_MapObject()
         else
             m_pMapObjects.erase(m_pMapObjects.begin());
     }
+
     // 3. 현재 배치된 오브젝트 List 이름 제거
     {
         auto iter = m_strObjectName.begin();
@@ -756,7 +889,7 @@ HRESULT ImGui_Manager::Delete_MapObject()
 HRESULT ImGui_Manager::Save_MapObject()
 {
     // 세이브전 컬링계산, 그림자, 블러 처리
-    BurnAll();
+    BakeAll();
 
     // 세이브 파일 이름으로 저장하기
     string strFileName = m_szSaveFileName;
@@ -786,6 +919,13 @@ HRESULT ImGui_Manager::Save_MapObject()
         file->Write<_float>(ptltInfo.range);
     }
 
+    // 벽메시콜라이더에 필요한 정보 저장
+    file->Write<_int>((_int)m_WallRectPosLDRU.size());
+    for (_int i = 0; i < m_WallRectPosLDRU.size(); ++i)
+    {
+        file->Write<pair<_float3, _float3>>(m_WallRectPosLDRU[i]);
+    }
+
     // 맵오브젝트 정보 저장
     // 1. 오브젝트 개수 저장
     file->Write<_int>((_int)m_pMapObjects.size());
@@ -793,14 +933,17 @@ HRESULT ImGui_Manager::Save_MapObject()
     // 2. 오브젝트의 MapObjectDesc 모든정보 저장
     for (_uint i = 0; i < m_pMapObjects.size(); ++i)
     {
-        MapObjectScript::MapObjectDesc MapDesc = m_pMapObjects[i]->Get_Script<MapObjectScript>()->Get_DESC();
+        MapObjectScript::MapObjectDesc& MapDesc = m_pMapObjects[i]->Get_Script<MapObjectScript>()->Get_DESC();
         file->Write<string>(MapDesc.strName);
         file->Write<_float>(MapDesc.fUVWeight);
         file->Write<_bool>(MapDesc.bShadow);
         file->Write<_bool>(MapDesc.bBlur);
         file->Write<_bool>(MapDesc.bTransform);
         if (MapDesc.bTransform)
+        {
+            MapDesc.WorldMatrix = m_pMapObjects[i]->Get_Transform()->Get_WorldMatrix();
             file->Write<_float4x4>(MapDesc.WorldMatrix);
+        }
         file->Write<_bool>(MapDesc.bCollider);
         if (MapDesc.bCollider)
         {
@@ -893,6 +1036,15 @@ HRESULT ImGui_Manager::Load_MapObject()
         m_strPointLightList.push_back("PointLight");
     }
 
+    // 벽정보 불러오기 및 벽생성
+    m_WallRectPosLDRU.clear();
+    _int iNumWall = 0;
+    file->Read<_int>(iNumWall);
+    m_WallRectPosLDRU.resize(iNumWall);
+    for (_int i = 0; i < iNumWall; ++i)
+        file->Read<pair<_float3, _float3>>(m_WallRectPosLDRU[i]);
+    Create_WallMesh();
+
     // 오브젝트 개수 불러오기
     _int iNumObjects = file->Read<_int>();
     for (_int i = 0; i < iNumObjects; ++i)
@@ -931,7 +1083,7 @@ HRESULT ImGui_Manager::Load_MapObject()
         }
         file->Read<_float3>(MapDesc.CullPos);
         file->Read<_float>(MapDesc.CullRadius);
-
+        
         shared_ptr<GameObject> CreateObject = Create_MapObject(MapDesc);
         
         m_pMapObjects.push_back(CreateObject);
@@ -954,17 +1106,27 @@ void ImGui_Manager::Compute_CullingData(shared_ptr<GameObject>& _pGameObject)
     // 모델을 받아와서 컬링포지션과 길이를 계산하여 반환 float4(_float(Pos), _float(Radius))
     // 모든 정점을 돌면서 XYZ각각의 min과 max를 찾아야함.
 
-        _float3 vMaxPos = _float3(FLT_MIN);
+        _float3 vMaxPos = _float3(-FLT_MAX);
         _float3 vMinPos = _float3(FLT_MAX);
+
+        shared_ptr<BoneDesc> boneDesc = make_shared<BoneDesc>();
+        const _uint boneCount = _pGameObject->Get_Model()->Get_BoneCount();
+
+        for (_uint i = 0; i < boneCount; ++i)
+        {
+            shared_ptr<ModelBone> bone = _pGameObject->Get_Model()->Get_BoneByIndex(i);
+            boneDesc->transform[i] = (bone->transform) * Utils::m_matPivot;
+        }
 
         const vector<shared_ptr<ModelMesh>>& Meshs = _pGameObject->Get_Model()->Get_Meshes();
         for (auto& pMesh : Meshs)
         {
+            _uint boneIndex = pMesh->boneIndex;
             const vector<ModelVertexType>& vertices = pMesh->geometry->Get_Vertices();
             for (auto& VtxData : vertices)
             {
                 // 월드행렬반영
-                _float3 vPos = _float3::Transform(VtxData.vPosition, Utils::m_matPivot * _pGameObject->Get_Transform()->Get_WorldMatrix());
+                _float3 vPos = _float3::Transform(VtxData.vPosition, boneDesc->transform[boneIndex] * _pGameObject->Get_Transform()->Get_WorldMatrix());
 
                 vMaxPos.x = max(vPos.x, vMaxPos.x);
                 vMaxPos.y = max(vPos.y, vMaxPos.y);
@@ -976,15 +1138,16 @@ void ImGui_Manager::Compute_CullingData(shared_ptr<GameObject>& _pGameObject)
         }
 
         // Min과 Max를 더한 후 2로 나누기
-        _float3 vCullPos = XMVectorAdd(vMinPos, vMaxPos);
+        _float3 vCullPos = vMaxPos + vMinPos;
         vCullPos *= 0.5f;
-        _float vCullRadius = max(max(vMaxPos.x - vMinPos.x, vMaxPos.y - vMinPos.y), vMaxPos.z - vMinPos.z);
+        _float3 tempVector = vCullPos - vMinPos;
+        _float vCullRadius = tempVector.Length();
 
         _pGameObject->Get_Script<MapObjectScript>()->Get_DESC().CullPos = vCullPos;
         _pGameObject->Get_Script<MapObjectScript>()->Get_DESC().CullRadius = vCullRadius;
 }
 
-void ImGui_Manager::Burn(shared_ptr<GameObject>& _pGameObject)
+void ImGui_Manager::Bake(shared_ptr<GameObject>& _pGameObject)
 {
     if (!_pGameObject->Get_Transform())
         return;
@@ -1000,11 +1163,44 @@ void ImGui_Manager::Burn(shared_ptr<GameObject>& _pGameObject)
     Compute_CullingData(_pGameObject);
 }
 
-void ImGui_Manager::BurnAll()
+void ImGui_Manager::BakeAll()
 {
     const auto& gameObjects = CUR_SCENE->Get_Objects();
     for (auto gameObject : gameObjects)
     {
-        Burn(gameObject);
+        Bake(gameObject);
     }
+}
+
+void ImGui_Manager::Create_SampleObjects()
+{
+        m_SampleObject = make_shared<GameObject>();
+        m_SampleObject->GetOrAddTransform()->Set_State(Transform_State::POS, _float4{ 0.f, -100.f, 0.f, 1.f });
+        string modelName = m_strObjectBaseNameList[m_iObjectBaseIndex];
+        wstring strModelName = Utils::ToWString(modelName);
+        m_SampleObject->Set_Name(L"Sample_" + strModelName);
+
+        shared_ptr<Model> model = RESOURCES.Get<Model>(strModelName);
+        if (model == nullptr)
+            return;
+        shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+        shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+        m_SampleObject->Add_Component(renderer);
+        renderer->Set_Model(model);
+        renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT);
+        renderer->SetFloat(3, 1.f);
+
+        CUR_SCENE->Add_GameObject(m_SampleObject);
+}
+
+void ImGui_Manager::Set_SampleObject()
+{
+    string modelName = m_strObjectBaseNameList[m_iObjectBaseIndex];
+    wstring strModelName = Utils::ToWString(modelName);
+    shared_ptr<Model> model = RESOURCES.Get<Model>(strModelName);
+    if (model == nullptr)
+        return;
+    m_SampleObject->Set_Name(L"Sample_" + strModelName);
+
+    m_SampleObject->Get_ModelRenderer()->Set_Model(model);
 }

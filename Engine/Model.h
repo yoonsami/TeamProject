@@ -98,7 +98,5 @@ private:
 	vector<shared_ptr<ModelAnimation>> m_Animations;
 	//array<shared_ptr<Parts>, PARTS_MAX_COUNT> m_Parts;
 
-public:
-	static _float m_fOutlineThickness;
 };
 

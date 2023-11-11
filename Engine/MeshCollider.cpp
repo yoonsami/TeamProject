@@ -60,6 +60,30 @@ MeshCollider::MeshCollider(wstring modelTag, _float4x4 MatWorld)
 
 }
 
+MeshCollider::MeshCollider(Mesh& _Mesh)
+    :BaseCollider(ColliderType::Mesh)
+{
+    auto& vertices = _Mesh.Get_Geometry()->Get_Vertices();
+    auto& indices = _Mesh.Get_Geometry()->Get_Indices();
+
+    shared_ptr<Mesh> colliderMesh = make_shared<Mesh>();
+    auto geometry = colliderMesh->Get_Geometry();
+
+    for (auto& vertex : vertices)
+    {
+        _float3 vertexPos = vertex.vPosition;
+
+        VTXTEXNORTANDATA vtx;
+        vtx.vPosition = vertexPos;
+
+        geometry->Add_Vertex(vtx);
+    }
+    geometry->Add_Indices(indices);
+    colliderMesh->Create_Buffer();
+
+    m_Meshes.push_back(colliderMesh);
+}
+
 MeshCollider::~MeshCollider()
 {
 }

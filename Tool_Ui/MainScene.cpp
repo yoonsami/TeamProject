@@ -58,11 +58,11 @@ HRESULT MainScene::Load_Scene()
 void MainScene::Load_DemoModel()
 {
 	//{
-	//	// GameObject µ¿ÀûÇÒ´ç
+	//	// GameObject ï¿½ï¿½ï¿½ï¿½ï¿½Ò´ï¿½
 	//	shared_ptr<GameObject> testObj = make_shared<GameObject>();
 
-	//	// Transform Component Ãß°¡
-	//	// µÑÁß ÇÏ³ª »ç¿ë. AddComponent ¶Ç´Â GetOrAddTransform(ÀÖÀ¸¸é ¹ÝÈ¯ ¾øÀ¸¸é »ý¼ºÈÄ ¹ÝÈ¯)
+	//	// Transform Component ï¿½ß°ï¿½
+	//	// ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ ï¿½ï¿½ï¿½. AddComponent ï¿½Ç´ï¿½ GetOrAddTransform(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯)
 	//	testObj->Add_Component(make_shared<Transform>());
 	//	//testObj->GetOrAddTransform();
 
@@ -75,7 +75,7 @@ void MainScene::Load_DemoModel()
 	//			shared_ptr<Model> model = RESOURCES.Get<Model>(L"Kyle");
 	//			animator->Set_Model(model);
 	//		}
-	//		//¾Ö´Ï¸ÞÀÌÅÍ ÄÄÆ÷³ÍÆ®
+	//		//ï¿½Ö´Ï¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 	//		testObj->Add_Component(animator);
 	//	}
 
@@ -84,11 +84,11 @@ void MainScene::Load_DemoModel()
 	//	Add_GameObject(testObj);
 	//}
 	//{
-	//	// GameObject µ¿ÀûÇÒ´ç
+	//	// GameObject ï¿½ï¿½ï¿½ï¿½ï¿½Ò´ï¿½
 	//	shared_ptr<GameObject> testObj = make_shared<GameObject>();
 
-	//	// Transform Component Ãß°¡
-	//	// µÑÁß ÇÏ³ª »ç¿ë. AddComponent ¶Ç´Â GetOrAddTransform(ÀÖÀ¸¸é ¹ÝÈ¯ ¾øÀ¸¸é »ý¼ºÈÄ ¹ÝÈ¯)
+	//	// Transform Component ï¿½ß°ï¿½
+	//	// ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ ï¿½ï¿½ï¿½. AddComponent ï¿½Ç´ï¿½ GetOrAddTransform(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯)
 	//	testObj->Add_Component(make_shared<Transform>());
 	//	//testObj->GetOrAddTransform();
 
@@ -101,7 +101,7 @@ void MainScene::Load_DemoModel()
 	//			shared_ptr<Model> model = RESOURCES.Get<Model>(L"1058_cooperateuniqueskilltimeline");
 	//			animator->Set_Model(model);
 	//		}
-	//		//¾Ö´Ï¸ÞÀÌÅÍ ÄÄÆ÷³ÍÆ®
+	//		//ï¿½Ö´Ï¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 	//		testObj->Add_Component(animator);
 	//	}
 
@@ -113,38 +113,6 @@ void MainScene::Load_DemoModel()
 
 void MainScene::Load_Camera()
 {
-	//{
-	//	//Ä«¸Þ¶ó·Î »ç¿ëÇÒ GameObject »ý¼º
-	//	shared_ptr<GameObject> camera = make_shared<GameObject>();
-
-	//	// Transform Component Ãß°¡
-	//	camera->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
-	//	camera->GetOrAddTransform()->Set_Speed(5.f);
-
-	//	// Ä«¸Þ¶ó Component »ý¼º 
-	//	CameraDesc desc;
-	//	desc.fFOV = XM_PI / 3.f;
-	//	desc.strName = L"Default";
-	//	desc.fSizeX = _float(g_iWinSizeX);
-	//	desc.fSizeY = _float(g_iWinSizeY);
-	//	desc.fNear = 0.1f;
-	//	desc.fFar = 1000.f;
-	//	shared_ptr<Camera> cameraComponent = make_shared<Camera>(desc);
-	//	
-	//	camera->Add_Component(cameraComponent);
-
- //     //camera->Get_Camera()->Set_ProjType(ProjectionType::Orthographic); 
-	//	camera->Get_Camera()->Set_ProjType(ProjectionType::Perspective);
-	//	//Layer_UI¿¡ ÀÖ´Â ¿ÀºêÁ§Æ®¸¦ ÄÃ¸µÇÏ°Ú´Ù.
-	//	camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, true);
-
-	//	// MonoBehaviour(Component Áß °íÁ¤ÀÌ ¾Æ´Ñ°Íµé) Ãß°¡
-	//	// ÀÏºÎ·¯ ±â´É ³ª´²³ùÀ½
-	//	camera->Add_Component(make_shared<CameraScript1>());
-	//	camera->Add_Component(make_shared<CameraScript2>());
-
-	//	Add_GameObject(camera);
-	//}
    {
       shared_ptr<GameObject> camera = make_shared<GameObject>();
       camera->GetOrAddTransform();
@@ -170,7 +138,7 @@ void MainScene::Load_Light()
 	lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 25.f, 0.f, 1.f));
 	lightObj->GetOrAddTransform()->Set_LookDir(_float3(-1.f,-1.f,-1.f));
 	{
-		// LightComponent »ý¼º ÈÄ ¼¼ÆÃ
+		// LightComponent ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		shared_ptr<Light> lightCom = make_shared<Light>();
 		lightCom->Set_Diffuse(Color(1.f));
 		lightCom->Set_Ambient(Color(0.8f));

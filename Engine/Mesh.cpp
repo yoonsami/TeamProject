@@ -13,6 +13,12 @@ Mesh::~Mesh()
 {
 }
 
+void Mesh::Create3DRect(vector<pair<_float3, _float3>> _LDURPairVector)
+{
+	GeometryHelper::Create3DRect(m_pGeometry, _LDURPairVector);
+	Create_Buffer();
+}
+
 void Mesh::CreateQuad()
 {
 	

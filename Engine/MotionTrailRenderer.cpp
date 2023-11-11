@@ -41,7 +41,6 @@ MotionTrailRenderer::~MotionTrailRenderer()
 
 void MotionTrailRenderer::Tick()
 {
-
 }
 
 void MotionTrailRenderer::Render()
@@ -52,9 +51,20 @@ void MotionTrailRenderer::Render()
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 	m_pShader->Push_RenderParamData(m_RenderParams);
 
-	auto& world = Get_Transform()->Get_WorldMatrix();
-	auto& preWorld = Get_Transform()->Get_preWorldMatrix();
-	m_pShader->Push_TransformData(TransformDesc{ world,preWorld });
+	
+	if (m_fTrailScale == 1.f)
+	{
+		auto& world = Get_Transform()->Get_WorldMatrix();
+		auto& preWorld = Get_Transform()->Get_preWorldMatrix();
+		m_pShader->Push_TransformData(TransformDesc{ world,preWorld });
+	}
+	else
+	{
+		Get_Transform()->Scaled(_float3(m_fTrailScale));
+		_float4x4 matWorld = Get_Transform()->Get_WorldMatrix();
+		Get_Transform()->Scaled(_float3(1.f, 1.f, 1.f));
+		m_pShader->Push_TransformData(TransformDesc{ matWorld, matWorld });
+	}
 
 	if(m_iPass == PS_ANIM)
 	{
@@ -94,6 +104,11 @@ void MotionTrailRenderer::Render()
 
 		m_pShader->DrawIndexed(3, m_iPass, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
 	}
+}
+
+void MotionTrailRenderer::Set_Scale(_float fScale)
+{
+	m_fTrailScale = fScale;
 }
 
 /*void MotionTrailRenderer::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer, shared_ptr<InstanceTweenDesc> desc, shared_ptr<InstanceRenderParamDesc> renderParamDesc)

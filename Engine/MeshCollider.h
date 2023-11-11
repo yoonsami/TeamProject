@@ -10,6 +10,7 @@ class MeshCollider :
 {
 public:
     MeshCollider(wstring modelTag ,_float4x4 MatWorld = _float4x4::Identity);
+    MeshCollider(Mesh& _Mesh);
     ~MeshCollider();
 
 public:

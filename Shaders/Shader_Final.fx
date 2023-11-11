@@ -81,7 +81,7 @@ float4 PS_ACESTMO(VS_OUT input) : SV_Target0
     
     output.rgb = ((output.rgb - 0.5f) * g_contrast) + 0.5f;
     
-    output.rgb = pow(output.rgb, 1.f / GAMMA);
+    output.rgb = pow(abs(output.rgb), 1.f / GAMMA);
     
     output.rgb = aces_fitted(output.rgb);
     return output;
@@ -115,7 +115,37 @@ float4 PS_Aberration(VS_OUT input) : SV_Target
     
 }
 
+cbuffer FogBuffer
+{
+    float fogStart;
+    float fogEnd;
+    float fogDensity;
+    int fogMode;
+    float4 fogColor;
+};
 
+float4 PS_Fog(VS_OUT input) : SV_Target
+{
+    float4 color = SubMap0.Sample(LinearSampler, input.uv);
+    float viewZ = SubMap1.Sample(LinearSampler, input.uv).w;
+    float fogFactor = 1.f;
+    
+    if(fogMode == 0)//Linear
+        fogFactor = saturate((fogEnd - viewZ) / (fogEnd - fogStart));
+    else if(fogMode == 1)
+        fogFactor = 1.f / (pow(2.71828, viewZ * fogDensity));
+    else if(fogMode == 2)
+        fogFactor = 1.f / (pow(2.71828, viewZ * fogDensity * viewZ * fogDensity));
+    
+    color = fogFactor * color + (1.f - fogFactor) * fogColor;
+    
+    return float4(color.rgb, 1.f);
+}
+
+float4 PS_RenderFinal(VS_OUT input) : SV_Target
+{
+    return SubMap0.Sample(LinearSampler, input.uv);
+}
 
 technique11 T0
 {
@@ -157,7 +187,7 @@ technique11 T0
     }
 };
 
-technique11 Aberration
+technique11 AfterEffect
 {
     Pass pass_Aberration
     {
@@ -169,4 +199,32 @@ technique11 Aberration
         SetPixelShader(CompileShader(ps_5_0, PS_Aberration()));
     }
   
+};
+
+technique11 RenderFinal
+{
+    Pass pass_Aberration
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Final()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_RenderFinal()));
+    }
+  
+};
+
+technique11 Fog
+{
+    Pass pass_LinearFog
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Final()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_Fog()));
+    }
+
 };

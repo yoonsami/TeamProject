@@ -3,31 +3,26 @@
 
 #define FXAA_PC 1
 #define FXAA_HLSL_5 1
-#define FXAA_QUALITY__PRESET 39
+#define FXAA_QUALITY__PRESET 12
 #define FXAA_GREEN_AS_LUMA 1
 #include "Fxaa3_11.h"
-float4 RCPFrame;
+float4 RCPFrame = {1.f/1920.f,1.f/1080.f,0.f,0.f };
 bool Use;
 
-struct VS_Output
+
+struct VS_OUT
 {
-    float4 Position : SV_POSITION;
-    float2 Uv : UV0;
+    float4 pos : SV_Position;
+    float2 uv : TEXCOORD;
 };
 
-VS_Output VS(uint id : SV_VertexID)
+VS_OUT VS(uint id : SV_VertexID)
 {
-    //  W : 동촤 -> 0 : 방향 , 1 : 위치
-    VS_Output output;
-
-    output.Uv = float2((id << 1) & 2, id & 2);
-    
-    output.Position.x = output.Uv.x * 2 - 1;
-    output.Position.y = output.Uv.y * -2 + 1;
-    output.Position.z = 0.0f;
-    output.Position.w = 1.0f;
-
-    return output; // 반환값이 픽셀의 위치
+    VS_OUT Output;
+    Output.uv = float2((id << 1) & 2, id & 2);
+    Output.pos = float4(Output.uv * float2(2.0f, -2.0f) +
+    float2(-1.0f, 1.0f), 0.0f, 1.0f);
+    return Output;
 }
 
 SamplerState InputSampler
@@ -41,7 +36,7 @@ SamplerState InputSampler
     ComparisonFunc = ALWAYS;
 };
 
-float4 PS(VS_Output input) : SV_TARGET
+float4 PS(VS_OUT input) : SV_TARGET
 {
     float4 color = 1;
     if (Use == true)
@@ -49,7 +44,7 @@ float4 PS(VS_Output input) : SV_TARGET
         FxaaTex InputFXAATex = { InputSampler, SubMap0 };
         
         color = FxaaPixelShader(
-        input.Uv.xy, // FxaaFloat2 pos,
+        input.uv, // FxaaFloat2 pos,
         FxaaFloat4(0.0f, 0.0f, 0.0f, 0.0f), // FxaaFloat4 fxaaConsolePosPos,
         InputFXAATex, // FxaaTex tex,
         InputFXAATex, // FxaaTex Luma,
@@ -70,7 +65,7 @@ float4 PS(VS_Output input) : SV_TARGET
     }
     else
     {
-        int3 sampleIndices = int3(input.Position.xy, 0);
+        int3 sampleIndices = int3(input.pos.xy, 0);
         color = SubMap0.Load(sampleIndices);
     }
 

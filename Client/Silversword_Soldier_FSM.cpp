@@ -322,16 +322,7 @@ void Silversword_Soldier_FSM::b_idle()
     else
     {
         if (Target_In_AttackRange())
-        {
-            _uint iRan = rand() % 3;
-
-            if (iRan == 0)
-                m_eCurState = STATE::skill_1100;
-            else if (iRan == 1)
-                m_eCurState = STATE::skill_2100;
-            else if (iRan == 2)
-                m_eCurState = STATE::skill_3100;
-        }
+            Execute_AttackSkill();
         else
             m_eCurState = STATE::b_run;
     }
@@ -360,16 +351,7 @@ void Silversword_Soldier_FSM::b_run()
     Get_Transform()->Go_Straight();
 
     if (Target_In_AttackRange())
-    {
-        _uint iRan = rand() % 3;
-
-        if (iRan == 0)
-            m_eCurState = STATE::skill_1100;
-        else if (iRan == 1)
-            m_eCurState = STATE::skill_2100;
-        else if (iRan == 2)
-            m_eCurState = STATE::skill_3100;
-    }
+        Execute_AttackSkill();
 }
 
 void Silversword_Soldier_FSM::b_run_Init()
@@ -388,20 +370,13 @@ void Silversword_Soldier_FSM::n_run()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, XM_PI * 5.f);
 
-    Get_Transform()->Go_Straight();
-    
-    Ray ray;
-    ray.position = Get_Transform()->Get_State(Transform_State::POS).xyz();
-    ray.direction = m_vTurnVector;
-    physx::PxRaycastBuffer hit{};
-    physx::PxQueryFilterData filterData;
-    filterData.flags = physx::PxQueryFlag::eSTATIC;
-    if (PHYSX.Get_PxScene()->raycast({ ray.position.x,ray.position.y,ray.position.z }, { ray.direction.x,ray.direction.y,ray.direction.z }, 3.f, hit, PxHitFlags(physx::PxHitFlag::eDEFAULT), filterData))
+    //IF straight true ¹Ý´ë·Î 
+    if (Get_Transform()->Go_Straight())
     {
         m_vTurnVector.x = m_vTurnVector.x * -1.f;
         m_vTurnVector.z = m_vTurnVector.z * -1.f;
     }
-
+    
     if ((Get_Transform()->Get_State(Transform_State::POS) - m_vPatrolFirstPos).Length() >= m_fPatrolDistance)
     {
         m_bPatrolMove = false;
@@ -443,16 +418,7 @@ void Silversword_Soldier_FSM::gaze_b()
     if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
     {
         if (Target_In_AttackRange())
-        {
-            _uint iRan = rand() % 3;
-
-            if (iRan == 0)
-                m_eCurState = STATE::skill_1100;
-            else if (iRan == 1)
-                m_eCurState = STATE::skill_2100;
-            else if (iRan == 2)
-                m_eCurState = STATE::skill_3100;
-        }
+            Execute_AttackSkill();
         else
             m_eCurState = STATE::b_run;
     }
@@ -481,16 +447,7 @@ void Silversword_Soldier_FSM::gaze_f()
     if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
     {
         if (Target_In_AttackRange())
-        {
-            _uint iRan = rand() % 3;
-
-            if (iRan == 0)
-                m_eCurState = STATE::skill_1100;
-            else if (iRan == 1)
-                m_eCurState = STATE::skill_2100;
-            else if (iRan == 2)
-                m_eCurState = STATE::skill_3100;
-        }
+            Execute_AttackSkill();
         else
             m_eCurState = STATE::b_run;
     }
@@ -519,16 +476,7 @@ void Silversword_Soldier_FSM::gaze_l()
     if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
     {
         if (Target_In_AttackRange())
-        {
-            _uint iRan = rand() % 3;
-
-            if (iRan == 0)
-                m_eCurState = STATE::skill_1100;
-            else if (iRan == 1)
-                m_eCurState = STATE::skill_2100;
-            else if (iRan == 2)
-                m_eCurState = STATE::skill_3100;
-        }
+            Execute_AttackSkill();
         else
             m_eCurState = STATE::b_run;
     }
@@ -557,16 +505,7 @@ void Silversword_Soldier_FSM::gaze_r()
     if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
     {
         if (Target_In_AttackRange())
-        {
-            _uint iRan = rand() % 3;
-
-            if (iRan == 0)
-                m_eCurState = STATE::skill_1100;
-            else if (iRan == 1)
-                m_eCurState = STATE::skill_2100;
-            else if (iRan == 2)
-                m_eCurState = STATE::skill_3100;
-        }
+            Execute_AttackSkill();
         else
             m_eCurState = STATE::b_run;
     }
@@ -935,5 +874,34 @@ void Silversword_Soldier_FSM::CalCulate_PatrolTime()
         m_vPatrolFirstPos = Get_Transform()->Get_State(Transform_State::POS);
         
         m_bPatrolMove = true;
+    }
+}
+
+void Silversword_Soldier_FSM::Execute_AttackSkill()
+{
+    _uint iRan = rand() % 3;
+
+    while (true)
+    {
+        if (iRan == m_iPreAttack)
+            iRan = rand() % 3;
+        else
+            break;
+    }
+
+    if (iRan == 0)
+    {
+        m_eCurState = STATE::skill_1100;
+        m_iPreAttack = 0;
+    }
+    else if (iRan == 1)
+    {
+        m_eCurState = STATE::skill_2100;
+        m_iPreAttack = 1;
+    }
+    else if (iRan == 2)
+    {
+        m_eCurState = STATE::skill_3100;
+        m_iPreAttack = 2;
     }
 }

@@ -58,9 +58,13 @@ public:
     void Set_NextTweenAnim(const wstring& animName, _float tweenDuration, _bool loop, _float animSpeed);
     void Set_CurrentAnim(const wstring& animName, _bool loop, _float animSpeed);
 
+    void Set_AnimationSpeed(_float animSpeed);
+
     _uint Get_FinalFrame(_int animIndex);
     void Reset_Frame() { m_TweenDesc.curr.currentFrame = 0; }
 
+    void Set_AnimState(_bool bStop) { m_bAnimStop = bStop; }
+    _bool Is_AnimStop() { return m_bAnimStop; }
 private:
     TweenDesc   m_TweenDesc;
     TweenDesc   m_preTweenDesc;
@@ -83,6 +87,8 @@ public:
 
 private:
 	RenderParams m_RenderParams{};
+
+    _bool m_bAnimStop = false;
 };
 
 
