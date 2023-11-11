@@ -134,8 +134,8 @@ HRESULT DemoScene::Load_Scene()
 	Load_Light();
 	Load_Camera();
 	Load_MapFile(L"KrisMap6");
-	//Load_Monster(5);
-	Load_Boss_Mir();
+	Load_Monster(1);
+	//Load_Boss_Mir();
 	//Load_DemoMap();
 
 	Load_Ui();
@@ -356,7 +356,7 @@ void DemoScene::Load_Monster(_uint iCnt)
 
 			ObjMonster->Add_Component(make_shared<Transform>());
 
-			ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(_float(rand() % 15) + 5, 0.f, _float(rand() % 15) + 5, 1.f));
+			ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, (rand() % 5) + 30.f, 1.f));
 			{
 				shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
