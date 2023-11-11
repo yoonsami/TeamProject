@@ -30,6 +30,8 @@ private:
 	void Frame_ObjectBase();
 	// 현재 배치되어있는 오브젝트 목록 프레임.
 	void Frame_Objects();
+	// 현재 배치되어있는 오브젝트 정보 프레임
+	void Frame_SelcetObjectManager();
 	// 광원의 정보 관리.
 	void Frame_Light();
 	// 벽의 정보 관리
@@ -67,8 +69,8 @@ private:
 	void Compute_CullingData(shared_ptr<GameObject>& _pGameObject);
 	
 	// 그림자, 블러, 컬링계산
-	void Burn(shared_ptr<GameObject>& _pGameObject);
-	void BurnAll();
+	void Bake(shared_ptr<GameObject>& _pGameObject);
+	void BakeAll();
 	
 	// 베이스오브젝트이름을 가지고 샘플 오브젝트 생성
 	void Create_SampleObjects();

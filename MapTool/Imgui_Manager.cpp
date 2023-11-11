@@ -73,6 +73,7 @@ void ImGui_Manager::ImGui_Tick()
     Frame_Light();
     Frame_ObjectBase();
     Frame_Objects();
+    Frame_SelcetObjectManager();
     Frame_Wall();
 
     Picking_Object();
@@ -135,6 +136,8 @@ void ImGui_Manager::Frame_ObjectBase()
 
     if (ImGui::ListBox("##ObjectBase", &m_iObjectBaseIndex, m_strObjectBaseNameList.data(), (int)m_strObjectBaseNameList.size(), 10))
         Set_SampleObject(); // 리스트박스 선택대상이 달라지면 샘플모델변경
+
+    
 
     // 맵오브젝트 정보
     ImGui::SeparatorText("BaseObjectDesc");
@@ -204,9 +207,16 @@ void ImGui_Manager::Frame_ObjectBase()
 
 void ImGui_Manager::Frame_Objects()
 {
-    ImGui::Begin("Frame_Objects"); // 글자 맨윗줄
+    ImGui::Begin("Frame_SelectObjects"); // 글자 맨윗줄
 
-    ImGui::ListBox("##Objects", &m_iObjects, m_strObjectName.data(), (_int)m_strObjectName.size(), 10);
+    ImGui::ListBox("##Objects", &m_iObjects, m_strObjectName.data(), (_int)m_strObjectName.size(), (_int)m_strObjectName.size());
+    ImGui::SetScrollY(m_iObjects * ImGui::GetTextLineHeightWithSpacing());
+
+    ImGui::End();
+}
+void ImGui_Manager::Frame_SelcetObjectManager()
+{
+    ImGui::Begin("Frame_SelectObjectManager"); // 글자 맨윗줄
 
     if (m_strObjectName.size() > 0)
         if (ImGui::Button("Delete"))
@@ -242,11 +252,11 @@ void ImGui_Manager::Frame_Objects()
         ImGui::SameLine();
         ImGui::Checkbox("##bBlur", &CurObjectDesc.bBlur);
         // 오브젝트에 그림자와 블러 적용
-        if (ImGui::Button("Burn"))
-            Burn(m_pMapObjects[m_iObjects]);
+        if (ImGui::Button("Bake"))
+            Bake(m_pMapObjects[m_iObjects]);
         ImGui::SameLine();
-        if (ImGui::Button("Burn All"))
-            BurnAll();
+        if (ImGui::Button("Bake All"))
+            BakeAll();
         ImGui::TextColored(YellowColor, "Components");
         // 트랜스폼컴포넌트
         ImGui::Text("Transform - ");
@@ -308,43 +318,43 @@ void ImGui_Manager::Frame_Objects()
                 // 콜라이더 타입에 따라 콜라이더 생성
                 switch (CurObjectDesc.ColliderType)
                 {
-                    case static_cast<_int>(ColliderType::Sphere):
-                    {
-                        shared_ptr<SphereCollider> pCollider = make_shared<SphereCollider>(CurObjectDesc.ColRadius);
-                        pCollider->Set_Offset(CurObjectDesc.ColliderOffset);
-                        m_pMapObjects[m_iObjects]->Add_Component(pCollider);
-                        pCollider->Set_Activate(true);
-                        break;
-                    }
-                    case static_cast<_int>(ColliderType::AABB):
-                    {
-                        shared_ptr<AABBBoxCollider> pCollider = make_shared<AABBBoxCollider>(CurObjectDesc.ColBoundingSize);
-                        pCollider->Set_Offset(CurObjectDesc.ColliderOffset);
-                        m_pMapObjects[m_iObjects]->Add_Component(pCollider);
-                        pCollider->Set_Activate(true);
-                        break;
-                    }
-                    case static_cast<_int>(ColliderType::OBB):
-                    {
-                        shared_ptr<OBBBoxCollider> pCollider = make_shared<OBBBoxCollider>(CurObjectDesc.ColBoundingSize);
-                        pCollider->Set_Offset(CurObjectDesc.ColliderOffset);
-                        m_pMapObjects[m_iObjects]->Add_Component(pCollider);
-                        pCollider->Set_Activate(true);
-                        break;
-                    }
-                    case static_cast<_int>(ColliderType::Mesh):
-                    {
-                        shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(Utils::ToWString(CurObjectDesc.ColModelName));
-                        pCollider->Set_Offset(CurObjectDesc.ColliderOffset);
-                        m_pMapObjects[m_iObjects]->Add_Component(pCollider);
-                        pCollider->Set_Activate(true);
-                        //auto rigidBody = make_shared<RigidBody>();
-                        //rigidBody->Create_RigidBody(pCollider, m_pMapObjects[m_iObjects]->GetOrAddTransform()->Get_WorldMatrix());
-                        //m_pMapObjects[m_iObjects]->Add_Component(rigidBody);
-                        break;
-                    }
-                    default:
-                        break;
+                case static_cast<_int>(ColliderType::Sphere):
+                {
+                    shared_ptr<SphereCollider> pCollider = make_shared<SphereCollider>(CurObjectDesc.ColRadius);
+                    pCollider->Set_Offset(CurObjectDesc.ColliderOffset);
+                    m_pMapObjects[m_iObjects]->Add_Component(pCollider);
+                    pCollider->Set_Activate(true);
+                    break;
+                }
+                case static_cast<_int>(ColliderType::AABB):
+                {
+                    shared_ptr<AABBBoxCollider> pCollider = make_shared<AABBBoxCollider>(CurObjectDesc.ColBoundingSize);
+                    pCollider->Set_Offset(CurObjectDesc.ColliderOffset);
+                    m_pMapObjects[m_iObjects]->Add_Component(pCollider);
+                    pCollider->Set_Activate(true);
+                    break;
+                }
+                case static_cast<_int>(ColliderType::OBB):
+                {
+                    shared_ptr<OBBBoxCollider> pCollider = make_shared<OBBBoxCollider>(CurObjectDesc.ColBoundingSize);
+                    pCollider->Set_Offset(CurObjectDesc.ColliderOffset);
+                    m_pMapObjects[m_iObjects]->Add_Component(pCollider);
+                    pCollider->Set_Activate(true);
+                    break;
+                }
+                case static_cast<_int>(ColliderType::Mesh):
+                {
+                    shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(Utils::ToWString(CurObjectDesc.ColModelName));
+                    pCollider->Set_Offset(CurObjectDesc.ColliderOffset);
+                    m_pMapObjects[m_iObjects]->Add_Component(pCollider);
+                    pCollider->Set_Activate(true);
+                    //auto rigidBody = make_shared<RigidBody>();
+                    //rigidBody->Create_RigidBody(pCollider, m_pMapObjects[m_iObjects]->GetOrAddTransform()->Get_WorldMatrix());
+                    //m_pMapObjects[m_iObjects]->Add_Component(rigidBody);
+                    break;
+                }
+                default:
+                    break;
                 }
             }
             else
@@ -687,7 +697,7 @@ shared_ptr<GameObject>& ImGui_Manager::Create_MapObject(MapObjectScript::MapObje
         }
     }
     // 그림자, 블러, 컬링정보계산
-    Burn(CreateObject);
+    Bake(CreateObject);
 
     CUR_SCENE->Add_GameObject(CreateObject);
 
@@ -839,7 +849,7 @@ HRESULT ImGui_Manager::Delete_MapObject()
 HRESULT ImGui_Manager::Save_MapObject()
 {
     // 세이브전 컬링계산, 그림자, 블러 처리
-    BurnAll();
+    BakeAll();
 
     // 세이브 파일 이름으로 저장하기
     string strFileName = m_szSaveFileName;
@@ -1097,7 +1107,7 @@ void ImGui_Manager::Compute_CullingData(shared_ptr<GameObject>& _pGameObject)
         _pGameObject->Get_Script<MapObjectScript>()->Get_DESC().CullRadius = vCullRadius;
 }
 
-void ImGui_Manager::Burn(shared_ptr<GameObject>& _pGameObject)
+void ImGui_Manager::Bake(shared_ptr<GameObject>& _pGameObject)
 {
     if (!_pGameObject->Get_Transform())
         return;
@@ -1113,12 +1123,12 @@ void ImGui_Manager::Burn(shared_ptr<GameObject>& _pGameObject)
     Compute_CullingData(_pGameObject);
 }
 
-void ImGui_Manager::BurnAll()
+void ImGui_Manager::BakeAll()
 {
     const auto& gameObjects = CUR_SCENE->Get_Objects();
     for (auto gameObject : gameObjects)
     {
-        Burn(gameObject);
+        Bake(gameObject);
     }
 }
 

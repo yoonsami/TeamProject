@@ -29,7 +29,7 @@ void ModelRenderer::Render()
 	auto& preWorld = Get_Transform()->Get_preWorldMatrix();
 	m_pShader->Push_TransformData(TransformDesc{ world,preWorld });
 
-	auto preView = CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_preWorldMatrix().Invert();
+	auto preView = CUR_SCENE->Get_Camera(L"SampleCamera")->Get_Transform()->Get_preWorldMatrix().Invert();
 	m_pShader->GetMatrix("g_preView")->SetMatrix((_float*)&preView);
 
 	m_pShader->Push_RenderParamData(m_RenderParams);
@@ -94,7 +94,7 @@ void ModelRenderer::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 
 	m_pShader->Push_InstanceRenderParamData(*renderParamDesc);
 	// Bones
-	auto preView = CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_preWorldMatrix().Invert();
+	auto preView = CUR_SCENE->Get_Camera(L"SampleCamera")->Get_Transform()->Get_preWorldMatrix().Invert();
 	m_pShader->GetMatrix("g_preView")->SetMatrix((_float*)&preView);
 
 	shared_ptr<BoneDesc> boneDesc = make_shared<BoneDesc>();
