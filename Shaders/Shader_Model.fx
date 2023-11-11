@@ -39,8 +39,7 @@ MeshOutput VS_MapObject(VTXModel input)
     output.worldPosition = output.position.xyz;
     output.viewPosition = mul(float4(output.worldPosition, 1.f), V).xyz;
     output.position = mul(output.position, VP);
-    if (g_float_3 == 0.f)
-        g_float_3 = 1.f;
+
     output.uv = input.uv * g_float_3;
     output.viewNormal = mul(input.normal, (float3x3) BoneTransform[BoneIndex]);
     output.viewNormal = mul(output.viewNormal, (float3x3) W);
@@ -692,49 +691,6 @@ diffuse;
     output.emissiveColor = emissiveColor;
     return
 output;
-}
-
-// PS_OutLine
-OutlineOutput PS_Deferred_Outline(MeshOutput input)
-{
-    OutlineOutput output = (OutlineOutput) 0.f;
-    if (bHasDissolveMap != 0)
-    {
-        float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
-        if (dissolve < g_float_0)
-            discard;
-    }
-    if (bHasDiffuseMap)
-        if (DiffuseMap.Sample(LinearSampler, input.uv).a < 0.1f)
-            discard;
-    output.diffuseColor = g_LineColor;
-    output.specularColor = g_LineColor;
-    output.emissiveColor = g_LineColor;
-    output.blurColor = g_vec4_0;
-    
-    return output;
-}
-
-OutlineOutput PS_Deferred_Outline_Instancing(MeshInstancingOutput input)
-{
-    OutlineOutput output = (OutlineOutput) 0.f;
-    if (bHasDissolveMap != 0)
-    {
-        float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
-        if (dissolve < InstanceRenderParams[input.id].g_float_0)
-            discard;
-    }
-    
-    if (bHasDiffuseMap)
-        if (DiffuseMap.Sample(LinearSampler, input.uv).a < 0.1f)
-            discard;
-
-    
-    output.diffuseColor = g_LineColor;
-    output.specularColor = g_LineColor;
-    output.emissiveColor = g_LineColor;
-    output.blurColor = InstanceRenderParams[input.id].g_vec4_0;
-    return output;
 }
 
 // PS_Shadow
