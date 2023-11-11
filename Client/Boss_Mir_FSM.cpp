@@ -666,7 +666,14 @@ void Boss_Mir_FSM::skill_1100_Init()
 void Boss_Mir_FSM::skill_2100()
 {
     if (Get_CurFrame() == 55)
-        m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed / 2.f);
+    {
+        m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed / 4.f);
+
+        for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
+        {
+            material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 1.f, 1.f);
+        }
+    }
     else if (Get_CurFrame() == 60)
     {
         if (!m_bSkillCreate)
@@ -680,6 +687,10 @@ void Boss_Mir_FSM::skill_2100()
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed);
         m_bCounter = false;
+		for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
+		{
+			material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
+		}
     }
     else if (Get_CurFrame() == 70)
         AttackCollider_On(KNOCKBACK_ATTACK);
@@ -1317,7 +1328,7 @@ void Boss_Mir_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float
 
 void Boss_Mir_FSM::Create_CounterMotionTrail()
 {
-    m_pOwner.lock()->Get_Script<CounterMotionTrailScript>()->Init();
+   // m_pOwner.lock()->Get_Script<CounterMotionTrailScript>()->Init();
 }
 
 void Boss_Mir_FSM::TailAttackCollider_On(const wstring& skillname)

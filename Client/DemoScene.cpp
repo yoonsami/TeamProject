@@ -422,7 +422,7 @@ void DemoScene::Load_Boss_Mir()
 	{
 		auto controller = make_shared<CharacterController>();
 		ObjMonster->Add_Component(controller);
-		auto& desc = controller->Get_ControllerDesc();
+		auto& desc = controller->Get_CapsuleControllerDesc();
 		desc.radius = 4.5f;
 		desc.height = 5.f;
 		_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz() +
