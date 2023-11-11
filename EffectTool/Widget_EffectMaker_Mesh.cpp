@@ -650,7 +650,7 @@ void Widget_EffectMaker_Mesh::Create()
 		m_vGraColor_Dest = m_vGraColor_Base;
 	}
 
-	MeshEffect::DESC tMeshEffectDesc
+	MeshEffectData::DESC tMeshEffectDesc
 	{
 		m_szTag,
 		m_fDuration,
@@ -662,8 +662,8 @@ void Widget_EffectMaker_Mesh::Create()
 		m_bColorChangingOn,
 
 		m_DiffuseTexture.second,
-		ImVec4toColor(vDiffuseColor_BaseStart),
-		ImVec4toColor(vDiffuseColor_BaseEnd),
+		ImVec4toColor(m_vDiffuseColor_BaseStart),
+		ImVec4toColor(m_vDiffuseColor_BaseEnd),
 		ImVec4toColor(m_vDiffuseColor_Dest),
 
 		m_OpacityTexture.second,
@@ -704,7 +704,7 @@ void Widget_EffectMaker_Mesh::Create()
 	};
 	EffectObj->Get_MeshEffect()->Init(&tMeshEffectDesc);
 
-	EffectObj->Get_MeshEffect()->Set_IsImmortal(false);
+	EffectObj->Get_MeshEffect()->Set_IsImmortal(true);
 
 	// For. Add Effect GameObject to current scene
 	CUR_SCENE->Add_GameObject(EffectObj);

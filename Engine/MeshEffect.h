@@ -1,74 +1,9 @@
 #pragma once
 #include "Component.h"
+#include "MeshEffectData.h"
 
 class MeshEffect : public Component 
 { 
-public:
-    typedef struct tagEffect
-    {
-        // Property
-        const char* pszTag;
-        _float      fDuration;
-        _bool       bBlurOn;
-        _bool       bUseFadeOut;
-
-        // Mesh 
-        string      strVfxMesh;
-
-        /* Coloring Options */
-        _bool       bColorChangingOn;
-
-        // Diffuse
-        string      strDiffuseTexture;
-        Color       vDiffuseColor_BaseStart;
-        Color       vDiffuseColor_BaseEnd;
-        Color       vDestColor_Diffuse;
-
-        // Opacity
-        string      strOpacityTexture;
-        _int        iSamplerType;
-        _float2     vTiling_Opacity;
-        _float2     vUVSpeed_Opacity;
-
-        // Alpha Gradation
-        _float      fAlphaGraIntensity;
-        Color       vBaseColor_AlphaGra;
-        Color       vDestColor_AlphaGra;
-
-        // Gradation
-        string      strGraTexture;
-        Color       vBaseColor_Gra;
-        Color       vDestColor_Gra;
-        _float2     vTiling_Gra;
-        _float2     vUVSpeed_Gra;
-
-        // Overlay
-        _bool       bIsOverlayOn;
-        string      strOverlayTexture;
-        Color       vBaseColor_Overlay;
-        _float2     vTiling_Overlay;
-        _float2     vUVSpeed_Overlay;
-
-        // Normal 
-        string      strNormalTexture;
-
-        // Dissolve
-        string      strDissolveTexture;
-        _float2     vTiling_Dissolve;
-        _float2     vUVSpeed_Dissolve;
-
-        // Distortion
-        string      strDistortionTexture;
-        _float2     vTiling_Distortion;
-        _float2     vUVSpeed_Distortion;
-
-        // Blend 
-        string      strBlendTexture;
-
-        // Color Editor
-        _float      fContrast;
-    }DESC;
-
 public:
     MeshEffect(shared_ptr<Shader> shader);
     virtual ~MeshEffect();
@@ -90,14 +25,15 @@ public:
     void            Set_IsPlayOnce(_bool bState) { m_bIsPlayOnce = bState; }
     void            Set_IsPlayLoop(_bool bState) { m_bIsPlayLoop = bState; }
     void            Set_IsAlwaysShowFirstTick(_bool bState) { m_bIsAlwaysShowFirstTick = bState; }
-    
+    void            Set_Desc(MeshEffectData::DESC tDesc) { m_tDesc = tDesc; }
+
 public:
-    DESC            m_tDesc;    // use in tool to fix 
+    MeshEffectData::DESC    m_tDesc;    // use in tool to fix 
 
 private:
-    void            Init_RenderParams();
+    void                    Init_RenderParams();
 
-    void            Bind_RenderParams_ToShader();
+    void                    Bind_RenderParams_ToShader();
 
 private:
     Color                   m_vDiffuseColor_Base;

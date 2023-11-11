@@ -717,6 +717,7 @@ HRESULT ImGui_Manager::Delete_MapObject()
 {
     // 1. 현재 선택된 오브젝트를 씬에서 삭제
     CUR_SCENE->Remove_GameObject(m_pMapObjects[m_iObjects]);
+
     // 2. 현재 선택된 오브젝트를 벡터에서 삭제
     {
         auto iter = m_pMapObjects.begin();
@@ -728,6 +729,7 @@ HRESULT ImGui_Manager::Delete_MapObject()
         else
             m_pMapObjects.erase(m_pMapObjects.begin());
     }
+
     // 3. 현재 배치된 오브젝트 List 이름 제거
     {
         auto iter = m_strObjectName.begin();

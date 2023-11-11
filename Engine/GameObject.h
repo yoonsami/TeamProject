@@ -7,11 +7,9 @@ class Light;
 class BaseUI;
 class Camera;
 class Physics;
-class Particle;
 class RigidBody;
 class Transform;
 class Billboard;
-class MeshEffect;
 class BaseCollider;
 class MeshRenderer;
 class FontRenderer;
@@ -24,6 +22,11 @@ class ParticleSystem;
 class EffectController;
 class CharacterController;
 class MotionTrailRenderer;
+
+/* Effect */
+class GroupEffect;
+class MeshEffect;
+class Particle;
 
 enum LayerMask
 {
@@ -95,6 +98,7 @@ public:
 	//shared_ptr<Billboard> Get_Billboard();
 	shared_ptr<ModelAnimator> Get_Animator();
 	shared_ptr<Transform> GetOrAddTransform();
+	shared_ptr<GroupEffect> Get_GroupEffect();
 	shared_ptr<MeshRenderer> Get_MeshRenderer();
 	shared_ptr<FontRenderer> Get_FontRenderer();
 	shared_ptr<ModelRenderer> Get_ModelRenderer();

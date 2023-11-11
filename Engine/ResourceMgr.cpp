@@ -99,6 +99,30 @@ shared_ptr<Texture> ResourceMgr::GetOrAddTexture(const wstring& key, const wstri
 	return texture;
 }
 
+shared_ptr<GroupEffectData> ResourceMgr::GetOrAddGroupEffectData(const wstring& key, const wstring& path)
+{
+	auto groupEffectData = Get<GroupEffectData>(key);
+	if (key == L"")
+		return nullptr;
+	if (fs::exists(fs::path(path)) == false)
+		return nullptr;
+
+	groupEffectData = Load<GroupEffectData>(key, path);
+
+	if (groupEffectData == nullptr)
+	{
+		groupEffectData = make_shared<GroupEffectData>();
+		groupEffectData->Load(path);
+
+		wstring name = key;
+		Utils::DetachExt(name);
+		groupEffectData->Set_Name(name);
+		Add(key, groupEffectData);
+	}
+
+	return groupEffectData;
+}
+
 //shared_ptr<Parts> ResourceMgr::Get_Part(const wstring& key)
 //{
 //	_uint type;
@@ -813,10 +837,8 @@ void ResourceMgr::CreateMeshEffectData()
 		MeshEffectData::DESC tDesc;
 
 		// For. load file and fill imgui 
-		string strFilePath = Utils::ToString(assetPath);
-		string strFileName = entry.path().string();
-		strFileName = entry.path().filename().string();
-		strFilePath += strFileName;
+		string strFilePath = entry.path().string();
+		string strFileName = entry.path().filename().string();
 		shared_ptr<FileUtils> file = make_shared<FileUtils>();
 		file->Open(Utils::ToWString(strFilePath), FileMode::Read);
 
@@ -837,12 +859,12 @@ void ResourceMgr::CreateMeshEffectData()
 		tDesc.strDiffuseTexture = file->Read<string>();
 		tDesc.vDiffuseColor_BaseStart = file->Read<_float4>();
 		tDesc.vDiffuseColor_BaseEnd = file->Read<_float4>();
-		tDesc.DestColor_Diffuse = file->Read<_float4>();
+		tDesc.vDestColor_Diffuse = file->Read<_float4>();
 
 		/* Alpha Gradation */
 		tDesc.fAlphaGraIntensity = file->Read<_float>();
-		tDesc.BaseColor_AlphaGra = file->Read<_float4>();
-		tDesc.DestColor_AlphaGra = file->Read<_float4>();
+		tDesc.vBaseColor_AlphaGra = file->Read<_float4>();
+		tDesc.vDestColor_AlphaGra = file->Read<_float4>();
 
 		/* Opacity */
 		tDesc.strOpacityTexture = file->Read<string>();
@@ -852,15 +874,15 @@ void ResourceMgr::CreateMeshEffectData()
 		
 		/* Gradation by Texture */
 		tDesc.strGraTexture = file->Read<string>();
-		tDesc.BaseColor_Gra = file->Read<_float4>();
+		tDesc.vBaseColor_Gra = file->Read<_float4>();
 		tDesc.vTiling_Gra = file->Read<_float2>();
 		tDesc.vUVSpeed_Gra = file->Read<_float2>();
-		tDesc.DestColor_Gra = file->Read<_float4>();
+		tDesc.vDestColor_Gra = file->Read<_float4>();
 		
 		/* Overlay */
 		tDesc.bIsOverlayOn = file->Read<_bool>();
 		tDesc.strOverlayTexture = file->Read<string>();
-		tDesc.BaseColor_Overlay = file->Read<_float4>();
+		tDesc.vBaseColor_Overlay = file->Read<_float4>();
 		tDesc.vTiling_Overlay = file->Read<_float2>();
 		tDesc.vUVSpeed_Overlay = file->Read<_float2>();
 		
@@ -897,6 +919,55 @@ void ResourceMgr::CreateParticleData()
 
 void ResourceMgr::CreateGroupEffectData()
 {
+	wstring assetPath = L"..\\Resources\\EffectData\\GroupEffectData\\";
+
+	for (auto& entry : fs::recursive_directory_iterator(assetPath))
+	{
+		if (entry.is_directory())
+			continue;
+
+		if (entry.path().extension().wstring() != L".dat")
+			continue;
+
+		// For. load file and fill imgui 
+		string strFilePath = Utils::ToString(assetPath);
+		string strFileName = entry.path().string();
+		strFileName = entry.path().filename().string();
+		strFilePath += strFileName;
+		shared_ptr<FileUtils> file = make_shared<FileUtils>();
+		file->Open(Utils::ToWString(strFilePath), FileMode::Read);
+
+		vector<GroupEffectData::MemberEffect_Desc> vMemberEffect;
+
+		/* Tag */
+		wstring wstrTag = Utils::ToWString(file->Read<string>());
+		_int iNumMembers = file->Read<_int>();
+
+		/* Member Effects */
+		for (_int i = 0; i < iNumMembers; i++)
+		{
+			GroupEffectData::MemberEffect_Desc tDesc;
+
+			tDesc.wstrEffectTag = Utils::ToWString(file->Read<string>());
+			tDesc.eType = GroupEffectData::EFFECT_TYPE(file->Read<_int>());
+			tDesc.fCreateTime = file->Read<_float>();
+
+			tDesc.fCreateTime = file->Read<_bool>();
+
+			tDesc.vPivot_Pos = file->Read<_float3>();
+			tDesc.vPivot_Scale = file->Read<_float3>();
+			tDesc.vPivot_Rotation = file->Read<_float3>();
+
+			vMemberEffect.push_back(tDesc);
+		}
+
+		// For. Add ResourceBase to Resource Manager 
+		shared_ptr<GroupEffectData> groupEffectData = make_shared<GroupEffectData>();
+		groupEffectData->Set_Tag(wstrTag);
+		groupEffectData->Set_MemberEffectData(vMemberEffect);
+
+		Add(wstrTag, groupEffectData);
+	}
 }
 
 void ResourceMgr::Reset_LevelModel(_uint iLevelIndex)

@@ -20,7 +20,7 @@ MeshEffect::~MeshEffect()
 void MeshEffect::Init(void* pArg)
 {
 	// For. Setting basic info  
-	DESC* pDesc = (DESC*)pArg;
+	MeshEffectData::DESC* pDesc = (MeshEffectData::DESC*)pArg;
 	m_tDesc = *pDesc;
 
 	Update_Desc();

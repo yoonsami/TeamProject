@@ -56,8 +56,5 @@ public:
 
 private:
 	HANDLE m_Handle = INVALID_HANDLE_VALUE;
-
-
-
 };
 

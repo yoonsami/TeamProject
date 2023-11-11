@@ -36,6 +36,8 @@ public:
 	ResourceType Get_ResourceType();
 	shared_ptr<Texture> GetOrAddTexture(const wstring& key, const wstring& path);
 
+	shared_ptr<GroupEffectData> GetOrAddGroupEffectData(const wstring& key, const wstring& path);
+
 	//shared_ptr<Parts> Get_Part(const wstring& key);
 	//map<wstring, shared_ptr<Parts>>& Get_Parts(PARTS_INFO type) { return m_PrototypeParts[(_uint)type]; }
 	auto& Get_Resources(_uint index) { return m_Resources[index]; }
