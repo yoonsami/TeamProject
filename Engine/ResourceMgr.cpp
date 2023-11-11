@@ -845,6 +845,7 @@ void ResourceMgr::CreateMeshEffectData()
 		/* Property */
 		string strTag = file->Read<string>();
 		tDesc.pszTag = strTag.c_str();
+
 		tDesc.fDuration = file->Read<_float>();
 		tDesc.bBlurOn = file->Read<_bool>();
 		tDesc.bUseFadeOut = file->Read<_bool>();

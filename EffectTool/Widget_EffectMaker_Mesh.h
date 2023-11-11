@@ -38,7 +38,6 @@ private:
 	void					Create();
 	void					Save();
 	void					Load();
-	void					AddInGroup();
 
 	void					SubWidget_TextureCombo(_int* iSelected, string* strSelected, string strFilePath, const char* pszWidgetKey);
 	void					SubWidget_ImageViewer(string strFileName, string strFilePath, const char* pszWidgetKey);

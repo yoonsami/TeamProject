@@ -160,8 +160,6 @@ void Widget_EffectMaker_Mesh::ImGui_FinishedEffect()
 	if (ImGui::Button("Load"))
 		Load();
 	ImGui::SameLine();
-	if (ImGui::Button("Add in Group"))
-		AddInGroup();
 }
 
 void Widget_EffectMaker_Mesh::Option_Property()
@@ -704,7 +702,7 @@ void Widget_EffectMaker_Mesh::Create()
 	};
 	EffectObj->Get_MeshEffect()->Init(&tMeshEffectDesc);
 
-	EffectObj->Get_MeshEffect()->Set_IsImmortal(true);
+	//EffectObj->Get_MeshEffect()->Set_IsImmortal(true);
 
 	// For. Add Effect GameObject to current scene
 	CUR_SCENE->Add_GameObject(EffectObj);
@@ -928,11 +926,6 @@ void Widget_EffectMaker_Mesh::Load()
 
 	// For. Create Effect GameObjects
 	Create();
-}
-
-void Widget_EffectMaker_Mesh::AddInGroup()
-{
-
 }
 
 void Widget_EffectMaker_Mesh::SubWidget_TextureCombo(_int* iSelected, string* strSelected, string strFilePath, const char* pszWidgetKey)

@@ -23,6 +23,32 @@ void Widget_GroupEffectMaker::Initialize()
 
 void Widget_GroupEffectMaker::Tick()
 {
+	ImGui::Begin("Group Effect Maker");
+	Widget_GroupMaker();
+	ImGui::End();
+
+
+	if (m_bWidgetOn_GetTag)
+	{
+		ImGui::SetNextWindowPos(ImVec2(g_iWinSizeX/2.f, g_iWinSizeY/2.f));
+		ImGui::Begin("Create New Group");
+		Widget_GetTag();
+		ImGui::End();
+	}
+	if (m_bWidgetOn_AddMeshEffect)
+	{
+		ImGui::SetNextWindowPos(ImVec2(g_iWinSizeX / 2.f, g_iWinSizeY / 2.f));
+		ImGui::Begin("Add member mesh Effect ");
+		Widget_AddMeshEffect();
+		ImGui::End();
+	}
+	if (m_bWidgetOn_AddParticle)
+	{
+		ImGui::SetNextWindowPos(ImVec2(g_iWinSizeX / 2.f, g_iWinSizeY / 2.f));
+		ImGui::Begin("Add member particle");
+		Widget_AddParticle();
+		ImGui::End();
+	}
 }
 
 void Widget_GroupEffectMaker::Set_GroupList()
@@ -108,8 +134,8 @@ void Widget_GroupEffectMaker::Set_MeshEffectList()
 		iIndex++;
 	}
 
-	m_strMeshEffect = m_pszMeshEffects[m_iMeshEffect];
-
+	if (0 != m_vecMeshEffects.size())
+		m_strMeshEffect = m_pszMeshEffects[m_iMeshEffect];
 }
 
 void Widget_GroupEffectMaker::Set_ParticleList()
@@ -149,7 +175,8 @@ void Widget_GroupEffectMaker::Set_ParticleList()
 		iIndex++;
 	}
 
-	m_strParticle = m_pszParticles[m_iParticle];
+	if(0 != m_vecParticles.size())
+		m_strParticle = m_pszParticles[m_iParticle];
 }
 
 void Widget_GroupEffectMaker::Widget_GroupMaker()
@@ -251,8 +278,11 @@ void Widget_GroupEffectMaker::Widget_AddMeshEffect()
 	// Add, Exit Button 
 	if (ImGui::Button("Add"))
 	{
-		AddMemberEffect(Utils::ToWString(m_strMeshEffect), GroupEffectData::TYPE_MESHEFFECT);
-		m_bWidgetOn_AddMeshEffect = false;
+		if ("None" != m_strMeshEffect)
+		{
+			AddMemberEffect(Utils::ToWString(m_strMeshEffect), GroupEffectData::TYPE_MESHEFFECT);
+			m_bWidgetOn_AddMeshEffect = false;
+		}
 	}
 	if (ImGui::Button("Exit"))
 		m_bWidgetOn_AddMeshEffect = false;
@@ -282,8 +312,12 @@ void Widget_GroupEffectMaker::Widget_AddParticle()
 	// Add, Exit Button 
 	if (ImGui::Button("Add"))
 	{
-		AddMemberEffect(Utils::ToWString(m_strParticle), GroupEffectData::TYPE_PARTICLE);
-		m_bWidgetOn_AddParticle = false;
+		if ("None" != m_strParticle)
+		{
+			AddMemberEffect(Utils::ToWString(m_strParticle), GroupEffectData::TYPE_PARTICLE);
+			m_bWidgetOn_AddParticle = false;
+		}
+
 	}
 	if (ImGui::Button("Exit"))
 		m_bWidgetOn_AddParticle = false;
