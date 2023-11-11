@@ -3,7 +3,6 @@
 
 #include "GameObject.h"
 #include "GroupEffect.h"
-#include "GroupEffectData.h"
 
 bool VectorOfStringGetter2(void* data, int n, const char** out_text)
 {
@@ -97,10 +96,16 @@ void Widget_GroupEffectMaker::Set_GroupList()
 }
 
 void Widget_GroupEffectMaker::Set_MemberEffectList()
-{
+{	
 	if (nullptr == m_pCurrentGroup)
 		return;
 
+	// For. Clear Prev List 
+	m_vecMemberEffects.clear();
+	if (nullptr != m_pszMemberEffects)
+		delete[] m_pszMemberEffects;
+
+	// For. Fill List 
 	vector<GroupEffectData::MemberEffect_Desc> vMembers = m_pCurrentGroup->Get_GroupEffect()->Get_MemberEffectData();
 
 	m_iNumMemberEffects = (_uint)vMembers.size();
@@ -110,6 +115,32 @@ void Widget_GroupEffectMaker::Set_MemberEffectList()
 	for (auto& iter : vMembers)
 	{
 		m_vecMemberEffects.push_back(Utils::ToString(iter.wstrEffectTag));
+		iIndex++;
+	}
+
+	// For. Clear Member Effect Property 
+	if (nullptr != m_tCurrMemberProperty)
+	{
+		delete m_tCurrMemberProperty;
+	}
+
+	// For. Fill Member Effect Property
+	m_tCurrMemberProperty = new MemberEffectProperty_DESC[m_iNumMemberEffects];
+	vector <GroupEffectData::MemberEffect_Desc> vMemberEffectData = m_pCurrentGroup->Get_GroupEffect()->Get_MemberEffectData();
+	
+	_int iIndex2 = 0;
+	for (auto& iter : vMemberEffectData)
+	{
+		m_tCurrMemberProperty[iIndex2].m_fStartTime = iter.fCreateTime;
+		m_tCurrMemberProperty[iIndex2].m_fPos[0] = iter.vPivot_Pos.x;
+		m_tCurrMemberProperty[iIndex2].m_fPos[1] = iter.vPivot_Pos.y;
+		m_tCurrMemberProperty[iIndex2].m_fPos[2] = iter.vPivot_Pos.z;
+		m_tCurrMemberProperty[iIndex2].m_fScale[0] = iter.vPivot_Scale.x;
+		m_tCurrMemberProperty[iIndex2].m_fScale[1] = iter.vPivot_Scale.y;
+		m_tCurrMemberProperty[iIndex2].m_fScale[2] = iter.vPivot_Scale.z;
+		m_tCurrMemberProperty[iIndex2].m_fRotation[0] = iter.vPivot_Rotation.x;
+		m_tCurrMemberProperty[iIndex2].m_fRotation[1] = iter.vPivot_Rotation.y;
+		m_tCurrMemberProperty[iIndex2].m_fRotation[2] = iter.vPivot_Rotation.z;
 		iIndex++;
 	}
 }
@@ -370,7 +401,45 @@ void Widget_GroupEffectMaker::Option_GroupList()
 
 void Widget_GroupEffectMaker::Option_MemberEffectList()
 {
-	ImGui::ListBox("##MemberEffect_GroupMaker", &m_iMemberEffect, VectorOfStringGetter2, &m_vecMemberEffects, m_iNumMemberEffects, 10);
+	// ImGui::ListBox("##MemberEffect_GroupMaker", &m_iMemberEffect, VectorOfStringGetter2, &m_vecMemberEffects, m_iNumMemberEffects, 10);
+	
+	_int iIndex = 0;
+	for (auto& iter : m_vecMemberEffects)
+	{
+		string strKey = iter;
+		Utils::DetachExt(strKey);
+		string strIndex = to_string(iIndex);
+		string strTreeNodeKey = strKey + "##TreeNodeKey" + strIndex;
+		string strFloatKey = "Start time##" + iter + strIndex;
+		string strFloat3Key1 = "Translation##" + iter + strIndex;
+		string strFloat3Key2 = "Scale##" + iter + strIndex;
+		string strFloat3Key3 = "Rotation##" + iter + strIndex;
+
+		if(ImGui::TreeNode(strTreeNodeKey.c_str()))
+		{
+			if (ImGui::InputFloat(strFloatKey.c_str(), &m_tCurrMemberProperty[iIndex].m_fStartTime))
+			{
+				m_pCurrentGroup->Get_GroupEffect()->Set_Member_StartTime(iIndex, m_tCurrMemberProperty[iIndex].m_fStartTime);
+			}
+			if (ImGui::InputFloat3(strFloat3Key1.c_str(), m_tCurrMemberProperty[iIndex].m_fPos))
+			{
+				_float3 vPos = { m_tCurrMemberProperty[iIndex].m_fPos[0], m_tCurrMemberProperty[iIndex].m_fPos[1], m_tCurrMemberProperty[iIndex].m_fPos[2] };
+				m_pCurrentGroup->Get_GroupEffect()->Set_Member_PivotPos(iIndex, vPos);
+			}
+			if(ImGui::InputFloat3(strFloat3Key2.c_str(), m_tCurrMemberProperty[iIndex].m_fScale))
+			{
+				_float3 vScale = { m_tCurrMemberProperty[iIndex].m_fScale[0], m_tCurrMemberProperty[iIndex].m_fScale[1], m_tCurrMemberProperty[iIndex].m_fScale[2] };
+				m_pCurrentGroup->Get_GroupEffect()->Set_Member_PivotScale(iIndex, vScale);
+			}
+			if (ImGui::InputFloat3(strFloat3Key3.c_str(), m_tCurrMemberProperty[iIndex].m_fRotation))
+			{
+				_float3 vRotation = { m_tCurrMemberProperty[iIndex].m_fRotation[0], m_tCurrMemberProperty[iIndex].m_fRotation[1], m_tCurrMemberProperty[iIndex].m_fRotation[2] };
+				m_pCurrentGroup->Get_GroupEffect()->Set_Member_PivotRotation(iIndex, vRotation);
+			}
+			ImGui::TreePop();
+		}
+		iIndex++;
+	}
 }
 
 void Widget_GroupEffectMaker::Option_Effect(string strEffectTag, _int iIndex)
@@ -424,14 +493,13 @@ void Widget_GroupEffectMaker::Create()
 	  if it does not, add new GroupEffectData to resource manager and get */
 
 	if ("None" == m_strGroup)
-		return;
+		return;	
 
 	shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();
 	
 	// For. Transform 
 	pGroupEffectObj->GetOrAddTransform();
 	pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
-	pGroupEffectObj->Get_Transform()->Scaled(_float3(1.f));
 	
 	// For. GroupEffectData 
 	wstring wstrFileName = Utils::ToWString(m_strGroup);
@@ -462,8 +530,7 @@ void Widget_GroupEffectMaker::Delete()
 
 void Widget_GroupEffectMaker::Save(const string& wstrNewGroupTag)
 {
-
-	if (nullptr == m_pCurrentGroup)
+	if ("." != wstrNewGroupTag)
 	{
 		string strNewFilePath = "..\\Resources\\EffectData\\GroupEffectData\\";
 		strNewFilePath += wstrNewGroupTag + ".dat";
@@ -476,7 +543,7 @@ void Widget_GroupEffectMaker::Save(const string& wstrNewGroupTag)
 
 		tGroupEffect->Save(Utils::ToWString(strNewFilePath));
 	}
-	else
+	else if(nullptr != m_pCurrentGroup)
 	{
 		string strFilePath = "..\\Resources\\EffectData\\GroupEffectData\\";
 		strFilePath += m_strGroup;

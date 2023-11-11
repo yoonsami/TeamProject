@@ -5,6 +5,16 @@
 class Widget_GroupEffectMaker 
 {
 public:
+	typedef struct tagMemberEffectProperty
+	{
+		_float		m_fStartTime;
+
+		_float		m_fPos[3];
+		_float		m_fScale[3];
+		_float		m_fRotation[3];
+	}MemberEffectProperty_DESC;
+
+public:
 	Widget_GroupEffectMaker();
 	~Widget_GroupEffectMaker();
 
@@ -72,6 +82,7 @@ private:
 	_bool					m_bWidgetOn_AddParticle = { false };
 
 	/* Save something in current */
-	shared_ptr<GameObject>	m_pCurrentGroup = { nullptr };
+	shared_ptr<GameObject>		m_pCurrentGroup = { nullptr };
+	MemberEffectProperty_DESC*	m_tCurrMemberProperty = { nullptr };
 };
 
