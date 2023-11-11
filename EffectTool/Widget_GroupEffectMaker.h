@@ -55,7 +55,10 @@ private:
 	string					m_strParticle = { "None" };
 
 	/* Member Effect List */
-		// YIJIN TODO 
+	_uint					m_iNumMemberEffects = { 0 };
+	vector<string>			m_vecMemberEffects;
+	const char**			m_pszMemberEffects = { nullptr };
+	_int					m_iMemberEffect = { 0 };
 
 	/* new */
 	char					m_szNewGroupEffectTag[MAX_PATH] = { "-" };

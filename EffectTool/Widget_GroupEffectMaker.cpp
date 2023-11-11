@@ -5,6 +5,13 @@
 #include "GroupEffect.h"
 #include "GroupEffectData.h"
 
+bool VectorOfStringGetter2(void* data, int n, const char** out_text)
+{
+	const vector<string>* v = (vector<string>*)data;
+	*out_text = (v[0][n]).c_str();
+	return true;
+}
+
 Widget_GroupEffectMaker::Widget_GroupEffectMaker()
 {
 }
@@ -91,7 +98,20 @@ void Widget_GroupEffectMaker::Set_GroupList()
 
 void Widget_GroupEffectMaker::Set_MemberEffectList()
 {
+	if (nullptr == m_pCurrentGroup)
+		return;
 
+	vector<GroupEffectData::MemberEffect_Desc> vMembers = m_pCurrentGroup->Get_GroupEffect()->Get_MemberEffectData();
+
+	m_iNumMemberEffects = (_uint)vMembers.size();
+	m_pszMemberEffects = new const char* [m_iNumMemberEffects];
+
+	_int iIndex = 0;
+	for (auto& iter : vMembers)
+	{
+		m_vecMemberEffects.push_back(Utils::ToString(iter.wstrEffectTag));
+		iIndex++;
+	}
 }
 
 void Widget_GroupEffectMaker::Set_MeshEffectList()
@@ -335,6 +355,9 @@ void Widget_GroupEffectMaker::Option_GroupList()
 				m_iGroup = n;
 				m_strGroup = m_pszGroups[m_iGroup];
 				Create();
+
+				// 3. Update MemberEffect list
+				Set_MemberEffectList();
 			}
 			if (is_selected)
 			{
@@ -347,7 +370,7 @@ void Widget_GroupEffectMaker::Option_GroupList()
 
 void Widget_GroupEffectMaker::Option_MemberEffectList()
 {
-
+	ImGui::ListBox("##MemberEffect_GroupMaker", &m_iMemberEffect, VectorOfStringGetter2, &m_vecMemberEffects, m_iNumMemberEffects, 10);
 }
 
 void Widget_GroupEffectMaker::Option_Effect(string strEffectTag, _int iIndex)
@@ -392,6 +415,7 @@ void Widget_GroupEffectMaker::AddMemberEffect(const wstring& wstrTag, GroupEffec
 	// For. Delete current GroupEffect GameObject and recreate updated GroupEffect GameObject
 	Delete();
 	Create();
+	Set_MemberEffectList(); 
 }
 
 void Widget_GroupEffectMaker::Create()

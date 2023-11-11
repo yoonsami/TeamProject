@@ -19,6 +19,8 @@ public:
 	void					Set_Tag(wstring wstrTag) { m_wstrTag = wstrTag; }
 	void					Set_MemberEffectData(vector <GroupEffectData::MemberEffect_Desc> vData) { m_vMemberEffectData = vData; }	
 
+	/* Getter */
+	vector <GroupEffectData::MemberEffect_Desc> Get_MemberEffectData() { return m_vMemberEffectData; }
 private:
 	void					Create_MeshEffect(_int iIndex);
 	void					Create_Particle(_int iIndex);
