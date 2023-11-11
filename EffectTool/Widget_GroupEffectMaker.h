@@ -30,7 +30,7 @@ private:
 	void	AddMemberEffect(const wstring& wstrTag, GroupEffectData::EFFECT_TYPE eType);
 	void	Create();
 	void	Delete();	// Delete GroupEffect GameObject in m_pCurrentGroup
-	void	Save();	
+	void	Save(const string& wstrNewGroupTag = ".");
 
 private:
 	/* Group List */

@@ -931,12 +931,11 @@ void ResourceMgr::CreateGroupEffectData()
 			continue;
 
 		// For. load file and fill imgui 
-		string strFilePath = Utils::ToString(assetPath);
-		string strFileName = entry.path().string();
-		strFileName = entry.path().filename().string();
-		strFilePath += strFileName;
+		string strFilePath = entry.path().string();
+		string strFileName = entry.path().filename().string();
 		shared_ptr<FileUtils> file = make_shared<FileUtils>();
 		file->Open(Utils::ToWString(strFilePath), FileMode::Read);
+
 
 		vector<GroupEffectData::MemberEffect_Desc> vMemberEffect;
 
@@ -953,7 +952,7 @@ void ResourceMgr::CreateGroupEffectData()
 			tDesc.eType = GroupEffectData::EFFECT_TYPE(file->Read<_int>());
 			tDesc.fCreateTime = file->Read<_float>();
 
-			tDesc.fCreateTime = file->Read<_bool>();
+			tDesc.bIsActive = file->Read<_bool>();
 
 			tDesc.vPivot_Pos = file->Read<_float3>();
 			tDesc.vPivot_Scale = file->Read<_float3>();
