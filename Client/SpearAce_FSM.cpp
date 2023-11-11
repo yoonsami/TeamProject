@@ -712,6 +712,8 @@ void SpearAce_FSM::die_Init()
 
 void SpearAce_FSM::airborne_start()
 {
+    EvadeCoolCheck();
+
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
     if (Is_AnimFinished())
@@ -732,6 +734,8 @@ void SpearAce_FSM::airborne_start_Init()
 
 void SpearAce_FSM::airborne_end()
 {
+    EvadeCoolCheck();
+
     if (Is_AnimFinished())
         m_eCurState = STATE::airborne_up;
 }
@@ -748,6 +752,8 @@ void SpearAce_FSM::airborne_end_Init()
 
 void SpearAce_FSM::airborne_up()
 {
+    EvadeCoolCheck();
+
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 }
@@ -764,6 +770,8 @@ void SpearAce_FSM::airborne_up_Init()
 
 void SpearAce_FSM::hit()
 {
+    EvadeCoolCheck();
+
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
     if (Is_AnimFinished())
@@ -784,6 +792,8 @@ void SpearAce_FSM::hit_Init()
 
 void SpearAce_FSM::knock_start()
 {
+    EvadeCoolCheck();
+
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
     Get_Transform()->Go_Backward();
@@ -808,6 +818,8 @@ void SpearAce_FSM::knock_start_Init()
 
 void SpearAce_FSM::knock_end()
 {
+    EvadeCoolCheck();
+
     if (Get_CurFrame() < 16)
         Get_Transform()->Go_Backward();
 
@@ -829,6 +841,8 @@ void SpearAce_FSM::knock_end_Init()
 
 void SpearAce_FSM::knock_end_loop()
 {
+    EvadeCoolCheck();
+
     m_tKnockDownEndCoolTime.fAccTime += fDT;
     
     if (Get_CurFrame() > Get_FinalFrame() / 2)
@@ -847,6 +861,8 @@ void SpearAce_FSM::knock_end_loop_Init()
 
 void SpearAce_FSM::knock_end_hit()
 {
+    EvadeCoolCheck();
+
     m_tKnockDownEndCoolTime.fAccTime += fDT;
 
     if (Is_AnimFinished())
@@ -870,6 +886,8 @@ void SpearAce_FSM::knock_end_hit_Init()
 
 void SpearAce_FSM::knock_up()
 {
+    EvadeCoolCheck();
+
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 }
@@ -890,6 +908,8 @@ void SpearAce_FSM::knock_up_Init()
 
 void SpearAce_FSM::knockdown_start()
 {
+    EvadeCoolCheck();
+
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
     Get_Transform()->Go_Backward();
@@ -914,6 +934,8 @@ void SpearAce_FSM::knockdown_start_Init()
 
 void SpearAce_FSM::knockdown_end()
 {
+    EvadeCoolCheck();
+
     if (Get_CurFrame() < 16)
         Get_Transform()->Go_Backward();
 
