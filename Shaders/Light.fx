@@ -248,7 +248,7 @@ LightColor CalculateLightColor_ViewSpace(int lightIndex, float3 viewNormal, floa
         }
     }
     
-    float3 reflectionDir = normalize(viewLightDir + 2 * normalize(viewNormal) * (saturate(dot(-viewLightDir, normalize(viewNormal)))));
+    float3 reflectionDir = normalize(viewLightDir + 2 * dot(-viewLightDir, normalize(viewNormal)) * normalize(viewNormal));
     float3 cameraPosition = float3(0.f, 0.f, 0.f);
     float3 eyeDir = normalize(viewPosition - cameraPosition);
     
