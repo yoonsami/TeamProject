@@ -57,7 +57,7 @@ void HeroChangeScript::Tick()
 
             m_pPlayer.lock()->Get_FSM()->Init();
 
-            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(CoolTimeCheckScript::HERO::ACE);
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::ACE);
         }
     }
     else if (KEYTAP(KEY_TYPE::F2))
@@ -81,7 +81,7 @@ void HeroChangeScript::Tick()
             m_pPlayer.lock()->Change_Component(make_shared<Kyle_FSM>());
             m_pPlayer.lock()->Get_FSM()->Init();
 
-            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(CoolTimeCheckScript::HERO::KYLE);
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::KYLE);
         }
     }
     else if (KEYTAP(KEY_TYPE::F3))
@@ -109,7 +109,7 @@ void HeroChangeScript::Tick()
 
             m_pPlayer.lock()->Get_FSM()->Init();
 
-			m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(CoolTimeCheckScript::HERO::YEOPO);
+			m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::YEOPO);
 
         }
     }
@@ -137,7 +137,7 @@ void HeroChangeScript::Tick()
             Add_Character_Weapon(L"Weapon_Dellons");
 
             m_pPlayer.lock()->Get_FSM()->Init();
-			m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(CoolTimeCheckScript::HERO::DELLONS);
+			m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::DELLONS);
 
         }
     }

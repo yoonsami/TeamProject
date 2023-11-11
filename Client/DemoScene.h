@@ -24,4 +24,3 @@ private:
 	void Load_Light();
 	void Load_Ui();
 };
-

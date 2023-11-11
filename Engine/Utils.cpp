@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "Utils.h"
 
+#include <random>
 #include <filesystem>
 namespace fs = std::filesystem;
 
@@ -164,6 +165,16 @@ void Utils::ToLowerString(OUT wstring& str)
 			c = std::tolower(c);
 		}
 	}
+}
+
+float Utils::Random_In_Range(float fMin, float fMax)
+{
+	random_device rd;
+	mt19937_64 dre = mt19937_64(rd());
+
+	uniform_real_distribution<float> random = uniform_real_distribution<float>(fMin, fMax);
+
+	return random(rd);
 }
 
 _float4x4 Utils::m_matPivot = _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI);

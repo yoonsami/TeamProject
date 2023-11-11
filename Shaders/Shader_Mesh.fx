@@ -256,20 +256,6 @@ float4 PS_UI2(UIOutput input) : SV_TARGET
         {
             diffuseColor.xyz *= 0.2f;
         }
-
-
-        float c = cos(2.f * PI * g_float_0);
-        float s = sin(2.f * PI * g_float_0);
-
-        float2 rotatedUV;
-        rotatedUV.x = uvPos.x * c - uvPos.y * s;
-        rotatedUV.y = uvPos.y * c + uvPos.x * s;
-
-        rotatedUV.x += 0.5f;
-        rotatedUV.y = (rotatedUV.y - 0.5f) * -1.f;
-
-  
-
     }
 
     else
@@ -336,6 +322,56 @@ float4 PS_UI5(UIOutput input) : SV_TARGET
 {
     float4 diffuseColor = g_vec4_0;
     diffuseColor = pow(DiffuseMap.Sample(LinearSamplerMirror, input.uv), GAMMA) * g_vec4_0;
+
+    return diffuseColor;
+}
+
+float4 PS_UI6(UIOutput input) : SV_TARGET
+{
+        float4 diffuseColor = g_vec4_0;
+    if (bHasDiffuseMap)
+    {
+        diffuseColor = pow(DiffuseMap.Sample(LinearSamplerMirror, input.uv), GAMMA) * g_vec4_0;
+
+    }
+
+    if (bHasOpacityMap)
+    {
+        diffuseColor.a = pow(OpacityMap.Sample(LinearSamplerMirror, input.uv), GAMMA).x * g_vec4_0.w;
+        if (diffuseColor.a <= 0.01f)
+            discard;
+    }
+
+    if (g_float_0 <= 1.f)
+    {
+        float2 uvPos = float2(input.uv.x - 0.5f, 0.5f - input.uv.y);
+        float theta = atan2(uvPos.x, uvPos.y);
+
+        if (theta <= 0.f)
+            theta += 2.f * PI;
+
+        if (theta >= 2.f * PI * g_float_0)
+        {
+            discard;
+        }
+
+        uvPos = float2(input.uv.x - 0.5f, 0.5f - input.uv.y);
+        theta = atan2(uvPos.x, uvPos.y);
+
+        if (theta <= 0.f)
+            theta += 2.f * PI;
+
+        if (theta < 2.f * PI * g_float_1)
+        {
+            discard;
+        }
+       
+    }
+
+    else
+    {
+        discard;
+    }
 
     return diffuseColor;
 }
@@ -730,6 +766,16 @@ technique11 T0
         SetRasterizerState(RS_CullNone);
         SetDepthStencilState(DSS_Default, 0);
         SetPixelShader(CompileShader(ps_5_0, PS_UI5()));
+        SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetGeometryShader(NULL);
+    }
+    
+    pass SKILL_COOL_END
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_UI()));
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetPixelShader(CompileShader(ps_5_0, PS_UI6()));
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetGeometryShader(NULL);
     }

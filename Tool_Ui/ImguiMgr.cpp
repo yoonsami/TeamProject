@@ -569,6 +569,42 @@ void ImguiMgr::Delete_Object()
          m_strSelectObjName = L"";
       }
    }
+
+   ImGui::SameLine();
+   if (ImGui::Button("Delete All", ImVec2(80.f, 20.f)))
+   {
+      if (!ImGui::IsItemActive())
+      {
+         if (0 == m_GameobjectName.size())
+            return;
+
+         wstring strName = m_strSelectObjName;
+         for (auto iter = m_GameobjectName.begin();
+            iter != m_GameobjectName.end();
+            )
+         {
+            wstring strTemp = *iter;
+            if (0 == strTemp.length())
+            {
+               ++iter;
+               continue;
+            }
+               
+            iter = m_GameobjectName.erase(iter);
+            auto pGameobject = CUR_SCENE->Get_GameObject(strTemp);
+            if (nullptr == pGameobject)
+            {
+               return;
+            }
+
+            CUR_SCENE->Remove_GameObject(pGameobject);
+         }
+
+         
+
+         m_strSelectObjName = L"";
+      }
+   }
 }
 
 void ImguiMgr::Change_Object_Value()
@@ -1143,6 +1179,7 @@ void ImguiMgr::Save_Ui_Desc()
                file->Write<BaseUI::BASEUIDESC>(tagDesc);
             }
 
+            // Font Renderer
             if (nullptr == pGameobject->Get_FontRenderer())
             {
                file->Write<_bool>(false);
@@ -1161,6 +1198,7 @@ void ImguiMgr::Save_Ui_Desc()
                file->Write<_float>(fSize);
             }
 
+            // is static
             _bool bIsStatic = CUR_SCENE->Is_Static(pGameobject);
             file->Write<_bool>(bIsStatic);
          }

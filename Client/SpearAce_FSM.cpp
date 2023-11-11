@@ -64,7 +64,7 @@ void SpearAce_FSM::State_Tick()
     State_Init();
 
     if (KEYPUSH(KEY_TYPE::KEY_1))
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(0);
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1);
 
     switch (m_eCurState)
     {

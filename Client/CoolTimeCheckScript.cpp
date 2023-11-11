@@ -3,6 +3,7 @@
 
 #include "Material.h"
 #include "MeshRenderer.h"
+#include "UiCoolEndEffect.h"
 #include "UiSkillButtonEffect.h"
 
 CoolTimeCheckScript::CoolTimeCheckScript()
@@ -23,6 +24,32 @@ HRESULT CoolTimeCheckScript::Init()
     }
 
     m_tagEvade.fCoolTime = 3.f;
+
+    m_pUiSkill.resize(7);
+    m_pUiSkill[0] = CUR_SCENE->Get_GameObject(L"UI_Skill0");
+    m_pUiSkill[1] = CUR_SCENE->Get_GameObject(L"UI_Skill1");
+    m_pUiSkill[2] = CUR_SCENE->Get_GameObject(L"UI_Skill2");
+    m_pUiSkill[3] = CUR_SCENE->Get_GameObject(L"UI_Skill3");
+    m_pUiSkill[4] = CUR_SCENE->Get_GameObject(L"UI_Skill4");
+    m_pUiSkill[5] = CUR_SCENE->Get_GameObject(L"UI_Skill5");
+    m_pUiSkill[6] = CUR_SCENE->Get_GameObject(L"UI_Skill6");
+
+    m_pUiSkill_Effect.resize(7);
+    m_pUiSkill_Effect [0] = CUR_SCENE->Get_GameObject(L"UI_Skill2_Effect");
+    m_pUiSkill_Effect [1] = CUR_SCENE->Get_GameObject(L"UI_Skill3_Effect");
+    m_pUiSkill_Effect [2] = CUR_SCENE->Get_GameObject(L"UI_Skill4_Effect");
+    m_pUiSkill_Effect [3] = CUR_SCENE->Get_GameObject(L"UI_Skill5_Effect");
+    m_pUiSkill_Effect [4] = CUR_SCENE->Get_GameObject(L"UI_Skill6_Effect");
+    m_pUiSkill_Effect [5] = CUR_SCENE->Get_GameObject(L"UI_Skill1_Effect");
+    m_pUiSkill_Effect [6] = CUR_SCENE->Get_GameObject(L"UI_Skill0_Effect");
+
+    m_pUi_Cool_End.resize(5);
+    m_pUi_Cool_End[0] = CUR_SCENE->Get_GameObject(L"UI_Cool_End2");
+    m_pUi_Cool_End[1] = CUR_SCENE->Get_GameObject(L"UI_Cool_End3");
+    m_pUi_Cool_End[2] = CUR_SCENE->Get_GameObject(L"UI_Cool_End4");
+    m_pUi_Cool_End[3] = CUR_SCENE->Get_GameObject(L"UI_Cool_End5");
+    m_pUi_Cool_End[4] = CUR_SCENE->Get_GameObject(L"UI_Cool_End6");
+        
 
     // Set Max Cool Time
     // 5 skill
@@ -116,24 +143,13 @@ void CoolTimeCheckScript::Set_Cur_Hero(HERO eType)
     m_eCurHero = eType;
     _uint iIndex = IDX(m_eCurHero);
 
-    auto pGameobject0 = CUR_SCENE->Get_GameObject(L"UI_Skill0");
-    auto pGameobject1 = CUR_SCENE->Get_GameObject(L"UI_Skill1");
-    auto pGameobject2 = CUR_SCENE->Get_GameObject(L"UI_Skill2");
-    auto pGameobject3 = CUR_SCENE->Get_GameObject(L"UI_Skill3");
-    auto pGameobject4 = CUR_SCENE->Get_GameObject(L"UI_Skill4");
-    auto pGameobject5 = CUR_SCENE->Get_GameObject(L"UI_Skill5");
-    auto pGameobject6 = CUR_SCENE->Get_GameObject(L"UI_Skill6");
+    _uint iSize = IDX(m_pUiSkill.size());
+    for (_uint i = 0; i < iSize; ++i)
+        if (true == m_pUiSkill[i].expired())
+            return;
 
-    if (nullptr == pGameobject0 || nullptr == pGameobject1 || nullptr == pGameobject2 || nullptr == pGameobject3 || nullptr == pGameobject4 || nullptr == pGameobject5 || nullptr == pGameobject6)
-        return;
-
-    pGameobject0->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[iIndex][0]), TextureMapType::DIFFUSE);
-    pGameobject1->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[iIndex][1]), TextureMapType::DIFFUSE);
-    pGameobject2->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[iIndex][2]), TextureMapType::DIFFUSE);
-    pGameobject3->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[iIndex][3]), TextureMapType::DIFFUSE);
-    pGameobject4->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[iIndex][4]), TextureMapType::DIFFUSE);
-    pGameobject5->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[iIndex][5]), TextureMapType::DIFFUSE);
-    pGameobject6->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[iIndex][6]), TextureMapType::DIFFUSE);
+    for(_uint i = 0 ; i < iSize; ++i)
+        m_pUiSkill[i].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[iIndex][i]), TextureMapType::DIFFUSE);
 }
 
 void CoolTimeCheckScript::Set_Skill_End()
@@ -145,13 +161,13 @@ void CoolTimeCheckScript::Set_Skill_End()
     m_CoolTime[IDX(m_eCurHero)][m_iWorkSkillIndex].bIsWork = false;
 }
 
-_bool CoolTimeCheckScript::IsAvailable(_uint iSkillIndex)
+_bool CoolTimeCheckScript::IsAvailable(SkillType eSkillType)
 {
-    if (m_pOwner.expired() || HERO::MAX == m_eCurHero || 5 < iSkillIndex)
+    if (m_pOwner.expired() || HERO::MAX == m_eCurHero || 5 < eSkillType)
         return false;
 
     // 5 : evade
-    else if (5 == iSkillIndex)
+    else if (5 == eSkillType)
     {
         if (m_tagEvade.fCoolTime < m_tagEvade.fAccTime)
         {
@@ -166,15 +182,16 @@ _bool CoolTimeCheckScript::IsAvailable(_uint iSkillIndex)
     }
 
     // 0 ~ 4 : skill 
-    auto& CoolInfo = m_CoolTime[IDX(m_eCurHero)][iSkillIndex];
+    auto& CoolInfo = m_CoolTime[IDX(m_eCurHero)][eSkillType];
     if (CoolInfo.fCoolTime < CoolInfo.fAccTime)
     {
+        CoolInfo.bIsEnd = false;
         CoolInfo.bIsWork = true;
         CoolInfo.fAccTime = 0.f;
         m_bIsSkillWork = true;
-        m_iWorkSkillIndex = iSkillIndex;
+        m_iWorkSkillIndex = eSkillType;
 
-        Start_Effect(iSkillIndex);
+        Start_Effect(eSkillType);
 
         return true;
     }
@@ -184,7 +201,7 @@ _bool CoolTimeCheckScript::IsAvailable(_uint iSkillIndex)
 
 void CoolTimeCheckScript::Start_Attack_Button_Effect()
 {
-    Start_Effect(5);
+    Start_Effect(DEFAULT);
 }
 
 void CoolTimeCheckScript::Check_Cool_Time()
@@ -196,7 +213,14 @@ void CoolTimeCheckScript::Check_Cool_Time()
         for (_uint j = 0; j < 5; ++j)
         {
             if (/*false == vecCool[j].bIsWork &&*/ vecCool[j].fCoolTime > vecCool[j].fAccTime)
+            {
+                if (false == vecCool[j].bIsEnd)
+                {
+                    vecCool[j].bIsEnd = true;
+                    Start_ButtonEndEffect(j);
+                }
                 vecCool[j].fAccTime += fDt;
+            }
         }
     }
 
@@ -212,47 +236,34 @@ void CoolTimeCheckScript::Change_Skills_Value()
     auto& vecCool = m_CoolTime[IDX(m_eCurHero)];
 
     auto pGameobjectGauge = CUR_SCENE->Get_GameObject(L"UI_Skill_Gauge");
-    auto pGameobject2 = CUR_SCENE->Get_GameObject(L"UI_Skill2");
-    auto pGameobject3 = CUR_SCENE->Get_GameObject(L"UI_Skill3");
-    auto pGameobject4 = CUR_SCENE->Get_GameObject(L"UI_Skill4");
-    auto pGameobject5 = CUR_SCENE->Get_GameObject(L"UI_Skill5");
-    auto pGameobject6 = CUR_SCENE->Get_GameObject(L"UI_Skill6");
 
-    if (nullptr == pGameobjectGauge || nullptr == pGameobject2 || nullptr == pGameobject3 || nullptr == pGameobject4 || nullptr == pGameobject5 || nullptr == pGameobject6)
+    if (nullptr == pGameobjectGauge)
         return;
 
+    for (_uint i = 0; i < IDX(m_pUiSkill.size()); ++i)
+        if (true == m_pUiSkill[i].expired())
+            return;
+
     pGameobjectGauge->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = m_tagEvade.fAccTime / m_tagEvade.fCoolTime;
-    pGameobject2->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[0].fAccTime / vecCool[0].fCoolTime;
-    pGameobject3->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[1].fAccTime / vecCool[1].fCoolTime;
-    pGameobject4->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[2].fAccTime / vecCool[2].fCoolTime;
-    pGameobject5->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[3].fAccTime / vecCool[3].fCoolTime;
-    pGameobject6->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[4].fAccTime / vecCool[4].fCoolTime;
+    m_pUiSkill[2].lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[0].fAccTime / vecCool[0].fCoolTime;
+    m_pUiSkill[3].lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[1].fAccTime / vecCool[1].fCoolTime;
+    m_pUiSkill[4].lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[2].fAccTime / vecCool[2].fCoolTime;
+    m_pUiSkill[5].lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[3].fAccTime / vecCool[3].fCoolTime;
+    m_pUiSkill[6].lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[4].fAccTime / vecCool[4].fCoolTime;
 }
 
-void CoolTimeCheckScript::Start_Effect(_uint iIndex)
+void CoolTimeCheckScript::Start_Effect(SkillType eSkillType)
 {
-    wstring strName;
-    switch (iIndex)
-    {
-    case 0:
-        strName = L"UI_Skill2_Effect";
-        break;
-    case 1:
-        strName = L"UI_Skill3_Effect";
-        break;
-    case 2:
-        strName = L"UI_Skill4_Effect";
-        break;
-    case 3:
-        strName = L"UI_Skill5_Effect";
-        break;
-    case 4:
-        strName = L"UI_Skill6_Effect";
-        break;
-    case 5:
-        strName = L"UI_Skill0_Effect";
-        break;
-    }
+    if (true == m_pUiSkill_Effect[eSkillType].expired())
+        return;
 
-    CUR_SCENE->Get_GameObject(strName)->Get_Script<UiSkillButtonEffect>()->Start_Effect();
+    m_pUiSkill_Effect[eSkillType].lock()->Get_Script<UiSkillButtonEffect>()->Start_Effect();
+}
+
+void CoolTimeCheckScript::Start_ButtonEndEffect(_uint iIndex)
+{
+    if (true == m_pUi_Cool_End[iIndex].expired())
+        return;
+
+    m_pUi_Cool_End[iIndex].lock()->Get_Script<UiCoolEndEffect>()->Start_Effect();
 }

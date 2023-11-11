@@ -188,6 +188,9 @@
     <ClInclude Include="AttackColliderInfoScript.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Client_Define.h" />
+    <ClInclude Include="Client_Enum.h" />
+    <ClInclude Include="Client_Macro.h" />
+    <ClInclude Include="Client_Struct.h" />
     <ClInclude Include="CoolTimeCheckScript.h" />
     <ClInclude Include="DebugTool.h" />
     <ClInclude Include="Debug_CreateMotionTrail.h" />
@@ -213,6 +216,9 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Silversword_Soldier_FSM.h" />
     <ClInclude Include="SpearAce_FSM.h" />
+    <ClInclude Include="UiCharChange.h" />
+    <ClInclude Include="UiCoolEndEffect.h" />
+    <ClInclude Include="UiHpBarFlow.h" />
     <ClInclude Include="UiLoadingScript.h" />
     <ClInclude Include="UiSkillButtonEffect.h" />
     <ClInclude Include="WeaponScript.h" />
@@ -264,6 +270,9 @@
     </ClCompile>
     <ClCompile Include="Silversword_Soldier_FSM.cpp" />
     <ClCompile Include="SpearAce_FSM.cpp" />
+    <ClCompile Include="UiCharChange.cpp" />
+    <ClCompile Include="UiCoolEndEffect.cpp" />
+    <ClCompile Include="UiHpBarFlow.cpp" />
     <ClCompile Include="UiLoadingScript.cpp" />
     <ClCompile Include="UiSkillButtonEffect.cpp" />
     <ClCompile Include="WeaponScript.cpp" />

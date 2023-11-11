@@ -97,15 +97,6 @@
     <Filter Include="01.Scene\00.LoadingScene\Loader">
       <UniqueIdentifier>{d65c794f-be39-4eaa-844a-ccf9babac16e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.UI">
-      <UniqueIdentifier>{d01967dc-87d0-4b9b-8bcd-142b7976af16}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.UI\00.UILoading">
-      <UniqueIdentifier>{168effa2-6af2-44a5-92c5-5a653c5ee4fd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.UI\01.CoolTimeCheck">
-      <UniqueIdentifier>{de0d89e0-2a9b-40d4-8788-a7d5e04a045e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Component\01.FSM\01.Hero_FSM\03.Yeopo_FSM">
       <UniqueIdentifier>{adee62f6-760f-45e5-b909-0f43e4db384c}</UniqueIdentifier>
     </Filter>
@@ -124,8 +115,26 @@
     <Filter Include="02.Component\01.FSM\03.Special_FSM\01.DellonsWraith_FSM">
       <UniqueIdentifier>{ac3b214e-9091-4a89-aaaa-de5645f05306}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.UI\02.UISkillButtonEffect">
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui">
+      <UniqueIdentifier>{d01967dc-87d0-4b9b-8bcd-142b7976af16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\00.UiLoading">
+      <UniqueIdentifier>{168effa2-6af2-44a5-92c5-5a653c5ee4fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\01.CoolTimeCheck">
+      <UniqueIdentifier>{de0d89e0-2a9b-40d4-8788-a7d5e04a045e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\02.UiISkillButtonEffect">
       <UniqueIdentifier>{4476a55c-7cfb-4200-83bc-5912117f8f85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\03.UiCoolEndEffect">
+      <UniqueIdentifier>{daa764ce-e6bf-4aca-a3a8-8c9cf07a828a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\04.UIHpBar">
+      <UniqueIdentifier>{734e3cf4-a36d-49de-bfc2-84758c06732c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\05.UiCharChange">
+      <UniqueIdentifier>{8ce4546e-8ee2-4cf8-adc6-e9ff34d47449}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -262,10 +271,10 @@
       <Filter>Shader\Common</Filter>
     </ClInclude>
     <ClInclude Include="UiLoadingScript.h">
-      <Filter>02.Component\00.MonoBehaviour\01.UI\00.UILoading</Filter>
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\00.UiLoading</Filter>
     </ClInclude>
     <ClInclude Include="CoolTimeCheckScript.h">
-      <Filter>02.Component\00.MonoBehaviour\01.UI\01.CoolTimeCheck</Filter>
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\01.CoolTimeCheck</Filter>
     </ClInclude>
     <ClInclude Include="Yeopo_FSM.h">
       <Filter>02.Component\01.FSM\01.Hero_FSM\03.Yeopo_FSM</Filter>
@@ -280,7 +289,25 @@
       <Filter>02.Component\01.FSM\03.Special_FSM\00.YeopoHorse_FSM</Filter>
     </ClInclude>
     <ClInclude Include="UiSkillButtonEffect.h">
-      <Filter>02.Component\00.MonoBehaviour\01.UI\02.UISkillButtonEffect</Filter>
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\02.UiISkillButtonEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="UiHpBarFlow.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\04.UIHpBar</Filter>
+    </ClInclude>
+    <ClInclude Include="UiCoolEndEffect.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\03.UiCoolEndEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="UiCharChange.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\05.UiCharChange</Filter>
+    </ClInclude>
+    <ClInclude Include="Client_Macro.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Client_Enum.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Client_Struct.h">
+      <Filter>99.Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -396,10 +423,10 @@
       <Filter>01.Scene\01.LogoScene</Filter>
     </ClCompile>
     <ClCompile Include="UiLoadingScript.cpp">
-      <Filter>02.Component\00.MonoBehaviour\01.UI\00.UILoading</Filter>
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\00.UiLoading</Filter>
     </ClCompile>
     <ClCompile Include="CoolTimeCheckScript.cpp">
-      <Filter>02.Component\00.MonoBehaviour\01.UI\01.CoolTimeCheck</Filter>
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\01.CoolTimeCheck</Filter>
     </ClCompile>
     <ClCompile Include="Yeopo_FSM.cpp">
       <Filter>02.Component\01.FSM\01.Hero_FSM\03.Yeopo_FSM</Filter>
@@ -414,7 +441,16 @@
       <Filter>02.Component\01.FSM\03.Special_FSM\00.YeopoHorse_FSM</Filter>
     </ClCompile>
     <ClCompile Include="UiSkillButtonEffect.cpp">
-      <Filter>02.Component\00.MonoBehaviour\01.UI\02.UISkillButtonEffect</Filter>
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\02.UiISkillButtonEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="UiHpBarFlow.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\04.UIHpBar</Filter>
+    </ClCompile>
+    <ClCompile Include="UiCoolEndEffect.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\03.UiCoolEndEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="UiCharChange.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\05.UiCharChange</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

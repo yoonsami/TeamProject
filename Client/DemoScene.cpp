@@ -13,6 +13,7 @@
 #include "FileUtils.h"
 #include "ModelMesh.h"
 #include "CustomFont.h"
+#include "UiHpBarFlow.h"
 #include "LoadingScene.h"
 #include "BaseCollider.h"
 #include "WeaponScript.h"
@@ -26,6 +27,7 @@
 #include "SphereCollider.h"
 #include "AABBBoxCollider.h"
 #include "MapObjectScript.h"
+#include "UiCoolEndEffect.h"
 #include "MainCameraScript.h"
 #include "HeroChangeScript.h"
 #include "DemoCameraScript1.h"
@@ -37,6 +39,9 @@
 #include "Silversword_Soldier_FSM.h"
 #include "Debug_CreateMotionTrail.h"
 #include "DemoAnimationController1.h"
+
+#include <filesystem>
+namespace fs = std::filesystem;
 
 DemoScene::DemoScene()
 {
@@ -420,32 +425,56 @@ void DemoScene::Load_Ui()
 
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main.dat");
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main_Button.dat");
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Char_Change.dat");
 
 
 
 
+	{
+		auto pScript = make_shared<UiSkillButtonEffect>();
+		Get_GameObject(L"UI_Skill0_Effect")->Add_Component(pScript);
 
+		pScript = make_shared<UiSkillButtonEffect>();
+		Get_GameObject(L"UI_Skill2_Effect")->Add_Component(pScript);
 
+		pScript = make_shared<UiSkillButtonEffect>();
+		Get_GameObject(L"UI_Skill3_Effect")->Add_Component(pScript);
 
-	auto pScript = make_shared<UiSkillButtonEffect>();
-	Get_GameObject(L"UI_Skill0_Effect")->Add_Component(pScript);
+		pScript = make_shared<UiSkillButtonEffect>();
+		Get_GameObject(L"UI_Skill4_Effect")->Add_Component(pScript);
 
-	pScript = make_shared<UiSkillButtonEffect>();
-	Get_GameObject(L"UI_Skill2_Effect")->Add_Component(pScript);
+		pScript = make_shared<UiSkillButtonEffect>();
+		Get_GameObject(L"UI_Skill5_Effect")->Add_Component(pScript);
 
-	pScript = make_shared<UiSkillButtonEffect>();
-	Get_GameObject(L"UI_Skill3_Effect")->Add_Component(pScript);
+		pScript = make_shared<UiSkillButtonEffect>();
+		Get_GameObject(L"UI_Skill6_Effect")->Add_Component(pScript);
+	}
 
-	pScript = make_shared<UiSkillButtonEffect>();
-	Get_GameObject(L"UI_Skill4_Effect")->Add_Component(pScript);
+	{
+		auto pScript = make_shared<UiCoolEndEffect>();
+		Get_GameObject(L"UI_Cool_End2")->Add_Component(pScript);
 
-	pScript = make_shared<UiSkillButtonEffect>();
-	Get_GameObject(L"UI_Skill5_Effect")->Add_Component(pScript);
+		pScript = make_shared<UiCoolEndEffect>();
+		Get_GameObject(L"UI_Cool_End3")->Add_Component(pScript);
 
-	pScript = make_shared<UiSkillButtonEffect>();
-	Get_GameObject(L"UI_Skill6_Effect")->Add_Component(pScript);
+		pScript = make_shared<UiCoolEndEffect>();
+		Get_GameObject(L"UI_Cool_End4")->Add_Component(pScript);
 
-	auto pCoolTimeCheckScript = make_shared<CoolTimeCheckScript>();
-	pCoolTimeCheckScript->Set_Cur_Hero(CoolTimeCheckScript::HERO::ACE);
-	Get_GameObject(L"Player")->Add_Component(pCoolTimeCheckScript);
+		pScript = make_shared<UiCoolEndEffect>();
+		Get_GameObject(L"UI_Cool_End5")->Add_Component(pScript);
+
+		pScript = make_shared<UiCoolEndEffect>();
+		Get_GameObject(L"UI_Cool_End6")->Add_Component(pScript);
+	}
+
+	{
+		auto pScript = make_shared<CoolTimeCheckScript>();
+		pScript->Set_Cur_Hero(HERO::ACE);
+		Get_GameObject(L"Player")->Add_Component(pScript);
+	}
+
+	{
+		auto pScript = make_shared<UiHpBarFlow>();
+		Get_GameObject(L"UI_HpBar")->Add_Component(pScript);
+	}
 }

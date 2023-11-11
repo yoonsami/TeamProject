@@ -12,7 +12,7 @@ public:
 	template<typename T>
 	void Change_Scene(shared_ptr<T> scene)
 	{
-		shared_ptr<Scene> preScene = scene;
+		shared_ptr<Scene> preScene = m_pCurrScene;
 
 		if (preScene)
 		{
@@ -21,7 +21,7 @@ public:
 			scene->Init();
 			for (auto& staticObject : staticObjects)
 			{
-				scene->Add_GameObject(staticObject);
+				scene->Add_GameObject(staticObject, true);
 			}
 			
 
