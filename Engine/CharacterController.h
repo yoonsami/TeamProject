@@ -8,7 +8,7 @@ public:
     virtual ~CharacterController();
 
     PxCapsuleControllerDesc& Get_CapsuleControllerDesc() { return m_CapsuleControllerDesc; }
-    PxCapsuleControllerDesc& Get_BoxControllerDesc() { return m_CapsuleControllerDesc; }
+    PxBoxControllerDesc& Get_BoxControllerDesc() { return m_BoxControllerDesc; }
 
     PxController* Get_Actor() { return m_pController; }
     void Create_Controller(_bool IsBoxCollider = false);
