@@ -284,7 +284,6 @@ MotionBlurOutput VS_AnimMotionBlur(VTXModel input)
    //[-1~1]
     velocity.xy *= 0.5f;
     velocity.y *= -1.f;
-   // output.vDir.xy = (velocity + 2.f) * 0.25f;
     output.vDir.xy = velocity;
     output.vDir.z = output.position.z;
     output.vDir.w = output.position.w;

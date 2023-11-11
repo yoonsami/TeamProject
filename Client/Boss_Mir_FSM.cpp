@@ -252,7 +252,10 @@ void Boss_Mir_FSM::Get_Hit(const wstring& skillname, shared_ptr<BaseCollider> pO
         if (m_bCounter)
         {
             if (CounterAttackCheck())
+            {
+                Create_CounterMotionTrail();
                 m_eCurState = STATE::groggy_start;
+            }
         }
     }
     else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
@@ -260,23 +263,32 @@ void Boss_Mir_FSM::Get_Hit(const wstring& skillname, shared_ptr<BaseCollider> pO
         if (m_bCounter)
         {
             if (CounterAttackCheck())
+            {
+                Create_CounterMotionTrail();
                 m_eCurState = STATE::groggy_start;
+            }
         }
     }
     else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
     {
         if (m_bCounter)
         {
-            if (CounterAttackCheck())
-                m_eCurState = STATE::groggy_start;
+			if (CounterAttackCheck())
+			{
+				Create_CounterMotionTrail();
+				m_eCurState = STATE::groggy_start;
+			}
         }
     }
     else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
     {
         if (m_bCounter)
         {
-            if (CounterAttackCheck())
-                m_eCurState = STATE::groggy_start;
+			if (CounterAttackCheck())
+			{
+				Create_CounterMotionTrail();
+				m_eCurState = STATE::groggy_start;
+			}
         }
     }
 
@@ -671,14 +683,13 @@ void Boss_Mir_FSM::skill_2100()
 
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
         {
-            material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 1.f, 1.f);
+            material->Get_MaterialDesc().emissive = Color(0.3f, 0.3f, 1.f, 1.f);
         }
     }
     else if (Get_CurFrame() == 60)
     {
         if (!m_bSkillCreate)
         {
-            Create_CounterMotionTrail();
             m_bSkillCreate = true;
             m_bCounter = true;
         }
@@ -1328,7 +1339,11 @@ void Boss_Mir_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float
 
 void Boss_Mir_FSM::Create_CounterMotionTrail()
 {
-   // m_pOwner.lock()->Get_Script<CounterMotionTrailScript>()->Init();
+	for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
+	{
+		material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
+	}
+    m_pOwner.lock()->Get_Script<CounterMotionTrailScript>()->Init();
 }
 
 void Boss_Mir_FSM::TailAttackCollider_On(const wstring& skillname)

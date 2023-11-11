@@ -557,7 +557,7 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 	DirectionalLightObject->Get_Light()->Set_Ambient(DirLightColor.ambient);
 	DirectionalLightObject->Get_Light()->Set_Diffuse(DirLightColor.diffuse);
 	DirectionalLightObject->Get_Light()->Set_Specular(DirLightColor.specular);
-	DirectionalLightObject->Get_Light()->Set_Emissive(DirLightColor.emissive);
+	DirectionalLightObject->Get_Light()->Set_Emissive(_float4(1.f));
 
 	// 점광원정보 가져오고 불러오기
 	_int iNumPointLight = file->Read<_int>();

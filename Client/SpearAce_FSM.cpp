@@ -372,7 +372,7 @@ void SpearAce_FSM::Set_State(_uint iIndex)
 
 void SpearAce_FSM::b_idle()
 {
-   /* EvadeCoolCheck();
+    EvadeCoolCheck();
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -401,7 +401,7 @@ void SpearAce_FSM::b_idle()
 			else
 				m_eCurState = STATE::skill_91100;
 		}
-	}*/
+	}
 }
 
 void SpearAce_FSM::b_idle_Init()
