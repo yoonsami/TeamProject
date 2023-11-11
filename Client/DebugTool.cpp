@@ -138,7 +138,7 @@ void DebugTool::RenderOptionTab()
 		{
 			_bool& g_bLensFlare = GAMEINSTANCE.g_bLensFlare;
 			Checkbox("LensFlare On", &g_bLensFlare);
-			DragFloat3("Test1", (_float*)&GAMEINSTANCE.g_testVec1, 0.01f);
+			DragFloat2("Test1", (_float*)&GAMEINSTANCE.g_testVec1, 0.01f);
 			DragFloat3("Test2", (_float*)&GAMEINSTANCE.g_testVec2, 0.01f);
 		}
 	}

@@ -1342,13 +1342,13 @@ void Scene::Render_LensFlare()
 
 	_float3 viewLightPos = _float3::Transform(m_LightParams.lights[0].vPosition.xyz(), Camera::Get_View());
 	_float3 projLightPos = _float3::Transform(viewLightPos, Camera::Get_Proj());
-	//[-1,1] -> [0, 1920] //[1,-1] -> [0, 1080]
+	//[-1,1] -> [-.5, .5] //[1,-1] -> [-.5, .5]
 	_float2 proj = { projLightPos.x,projLightPos.y };
 	if (!(projLightPos.z <=1.f))
 		return;
-	proj.x = (proj.x + 1.f) * GRAPHICS.Get_ViewPort().Get_Width() * 0.5f;
-	proj.y = (1.f - proj.y) * GRAPHICS.Get_ViewPort().Get_Height() * 0.5f;
-
+	proj.x = (proj.x) * 1.8f;
+	proj.y = (proj.y) * -1.f;
+	_float2 lightUV = { (projLightPos.x + 1.f) * 0.5f,(1.f - projLightPos.y) * 0.5f };
 
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::LENSFLARE)->OMSetRenderTargets();
 
@@ -1359,6 +1359,7 @@ void Scene::Render_LensFlare()
 
 
 	material->Get_Shader()->GetVector("g_LightPos")->SetFloatVector((_float*)&proj);
+	material->Get_Shader()->GetVector("g_LightUV")->SetFloatVector((_float*)&lightUV);
 	material->Get_Shader()->GetVector("col1")->SetFloatVector((_float*)&GAMEINSTANCE.g_testVec1);
 	material->Get_Shader()->GetVector("col2")->SetFloatVector((_float*)&GAMEINSTANCE.g_testVec2);
 	material->Push_SubMapData();

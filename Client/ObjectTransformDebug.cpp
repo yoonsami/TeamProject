@@ -4,6 +4,7 @@
 #include "MainCameraScript.h"
 #include "Model.h"
 #include "ModelAnimator.h"
+#include "Camera.h"
 #include "FSM.h"
 
 void ObjectTransformDebug::Tick()
@@ -15,14 +16,13 @@ void ObjectTransformDebug::Tick()
 	}
 
 	auto fontRenderer = Get_Owner()->Get_FontRenderer();
+	_float3 viewLightPos = _float3::Transform(CUR_SCENE->Get_LightParams().lights[0].vPosition.xyz(), CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_ViewMat());
+	_float3 projLightPos = _float3::Transform(viewLightPos, CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_ProjMat());
+	//[-1,1] -> [0, .5] //[1,-1] -> [0, .5]
+	_float2 proj = { projLightPos.x,projLightPos.y };
 
-	_float3 vPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
-	vPos += _float3::Up;
-	_float3 vCameraPos = CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_State(Transform_State::POS).xyz();
 	
-	_float3 vOffset = CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->Get_Offset();
-	
-	fontRenderer->Get_Text() = L"Length : " + to_wstring((vPos - vCameraPos).Length()) + L"/ OffsetLength : " + to_wstring(vOffset.Length());
+	fontRenderer->Get_Text() = L"x : " + to_wstring(proj.x) + L"/ y : " + to_wstring(proj.y);
 
 	//fontRenderer->Get_Text() = L"X : " + to_wstring(vPos.x) + L"/ Y : " + to_wstring(vPos.y) + L"/ Z : " + to_wstring(vPos.z);
 
