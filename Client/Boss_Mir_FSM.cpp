@@ -121,8 +121,11 @@ void Boss_Mir_FSM::State_Tick()
     case STATE::skill_100100:
         skill_100100();
         break;
-    case STATE::skill_100200:
-        skill_100200();
+    case STATE::skill_200000:
+        skill_200000();
+        break;
+    case STATE::skill_200100:
+        skill_200100();
         break;
     }
 }
@@ -202,8 +205,11 @@ void Boss_Mir_FSM::State_Init()
         case STATE::skill_100100:
             skill_100100_Init();
             break;
-        case STATE::skill_100200:
-            skill_100200_Init();
+        case STATE::skill_200000:
+            skill_200000_Init();
+            break;
+        case STATE::skill_200100:
+            skill_200100_Init();
             break;
         }
         m_ePreState = m_eCurState;
@@ -369,6 +375,7 @@ void Boss_Mir_FSM::sq_Intro2_Init()
 
 void Boss_Mir_FSM::b_idle()
 {
+
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 0.5f);
 
@@ -376,63 +383,67 @@ void Boss_Mir_FSM::b_idle()
 
     if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
     {
-        m_eCurState = STATE::skill_2100;
-        //_uint iRan = rand() % 9;
-        //
-        //while (true)
-        //{
-        //    if (iRan == m_iPreAttack)
-        //        iRan = rand() % 9;
-        //    else
-        //        break;
-        //}
-        //
-        //
-        //if (iRan == 0)
-        //{
-        //    m_eCurState = STATE::SQ_SBRin_Roar;
-        //    m_iPreAttack = 0;
-        //}
-        //else if (iRan == 1)
-        //{
-        //    m_eCurState = STATE::skill_1100;
-        //    m_iPreAttack = 1;
-        //}
-        //else if (iRan == 2)
-        //{
-        //    m_eCurState = STATE::skill_2100;
-        //    m_iPreAttack = 2;
-        //}
-        //else if (iRan == 3)
-        //{
-        //    m_eCurState = STATE::skill_9100;
-        //    m_iPreAttack = 3;
-        //}
-        //else if (iRan == 4)
-        //{
-        //    m_eCurState = STATE::skill_11100;
-        //    m_iPreAttack = 4;
-        //}
-        //else if (iRan == 5)
-        //{
-        //    m_eCurState = STATE::skill_12100;
-        //    m_iPreAttack = 5;
-        //}
-        //else if (iRan == 6)
-        //{
-        //    m_eCurState = STATE::skill_13100;
-        //    m_iPreAttack = 6;
-        //}
-        //else if (iRan == 7)
-        //{
-        //    m_eCurState = STATE::skill_14100;
-        //    m_iPreAttack = 7;
-        //}
-        //else if (iRan == 8)
-        //{
-        //    m_eCurState = STATE::skill_100000;
-        //    m_iPreAttack = 8;
-        //}
+        _uint iRan = rand() % 10;
+        
+        while (true)
+        {
+            if (iRan == m_iPreAttack)
+                iRan = rand() % 10;
+            else
+                break;
+        }
+        
+        
+        if (iRan == 0)
+        {
+            m_eCurState = STATE::SQ_SBRin_Roar;
+            m_iPreAttack = 0;
+        }
+        else if (iRan == 1)
+        {
+            m_eCurState = STATE::skill_1100;
+            m_iPreAttack = 1;
+        }
+        else if (iRan == 2)
+        {
+            m_eCurState = STATE::skill_2100;
+            m_iPreAttack = 2;
+        }
+        else if (iRan == 3)
+        {
+            m_eCurState = STATE::skill_9100;
+            m_iPreAttack = 3;
+        }
+        else if (iRan == 4)
+        {
+            m_eCurState = STATE::skill_11100;
+            m_iPreAttack = 4;
+        }
+        else if (iRan == 5)
+        {
+            m_eCurState = STATE::skill_12100;
+            m_iPreAttack = 5;
+        }
+        else if (iRan == 6)
+        {
+            m_eCurState = STATE::skill_13100;
+            m_iPreAttack = 6;
+        }
+        else if (iRan == 7)
+        {
+            m_eCurState = STATE::skill_14100;
+            m_iPreAttack = 7;
+        }
+        else if (iRan == 8)
+        {
+            m_eCurState = STATE::skill_100000;
+            m_iPreAttack = 8;
+        }
+        else if (iRan == 9)
+        {
+            m_eCurState = STATE::skill_200000;
+            m_iPreAttack = 9;
+        }
     }
 }
 
@@ -460,11 +471,14 @@ void Boss_Mir_FSM::turn_l()
     if (Get_CurFrame() > 9 && Get_CurFrame() < 28)
     {
         if (!m_pTarget.expired())
-            Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 0.5f);
+            Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
     }
 
     if (Is_AnimFinished())
+    {
+        m_fTurnSpeed = XM_PI * 0.5f;
         m_eCurState = STATE::b_idle;
+    }
 }
 
 void Boss_Mir_FSM::turn_l_Init()
@@ -481,11 +495,14 @@ void Boss_Mir_FSM::turn_r()
     if (Get_CurFrame() > 9 && Get_CurFrame() < 28)
     {
         if (!m_pTarget.expired())
-            Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 0.5f);
+            Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
     }
 
     if (Is_AnimFinished())
+    {
+        m_fTurnSpeed = XM_PI * 0.5f;
         m_eCurState = STATE::b_idle;
+    }
 
 }
 
@@ -549,7 +566,34 @@ void Boss_Mir_FSM::groggy_loop_Init()
 void Boss_Mir_FSM::groggy_end()
 {
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
+    {
+        CalCulate_PlayerDir();
+
+        if (!m_bTurnMotion)
+            m_eCurState = STATE::b_idle;
+        else
+        {
+            if (m_eAttackDir == DIR::FORWARD_LEFT)
+            {
+                m_eCurState = STATE::turn_l;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_LEFT)
+            {
+                m_eCurState = STATE::turn_l;
+                m_fTurnSpeed = XM_PI * 1.f;
+            }
+            else if (m_eAttackDir == DIR::FORWARD_RIGHT)
+            {
+                m_eCurState = STATE::turn_r;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_RIGHT)
+            {
+                m_eCurState = STATE::turn_r;
+                m_fTurnSpeed = XM_PI * 1.f;
+            }
+        }
+    }
+
 }
 
 void Boss_Mir_FSM::groggy_end_Init()
@@ -598,39 +642,41 @@ void Boss_Mir_FSM::SQ_SBRin_Roar()
 
     if (Is_AnimFinished())
     {
-        _uint iRan = rand() % 3;
+        _uint iRan = rand() % 2;
 
         CalCulate_PlayerDir();
 
-        if (iRan == 0)
-        {
-            if (m_eAttackDir == DIR::BACKWARD_LEFT)
-                m_eCurState = STATE::skill_4100;
-            else if (m_eAttackDir == DIR::BACKWARD_RIGHT)
-                m_eCurState = STATE::skill_3100;
-            else
-            {
-                if (!m_bTurnMotion)
-                    m_eCurState = STATE::b_idle;
-                else
-                {
-                    if (m_eAttackDir == DIR::FORWARD_LEFT)
-                        m_eCurState = STATE::turn_l;
-                    else if (m_eAttackDir == DIR::FORWARD_RIGHT)
-                        m_eCurState = STATE::turn_r;
-                }
-            }
-        }
+        if (!m_bTurnMotion)
+            m_eCurState = STATE::b_idle;
         else
         {
-            if (!m_bTurnMotion)
-                m_eCurState = STATE::b_idle;
-            else
+            if (m_eAttackDir == DIR::FORWARD_LEFT)
             {
-                if (m_eAttackDir == DIR::FORWARD_LEFT)
+                m_eCurState = STATE::turn_l;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_LEFT)
+            {
+                if (iRan == 0)
+                    m_eCurState = STATE::skill_4100;
+                else
+                {
                     m_eCurState = STATE::turn_l;
-                else if (m_eAttackDir == DIR::FORWARD_RIGHT)
-                    m_eCurState = STATE::turn_r;
+                    m_fTurnSpeed = XM_PI * 0.7f;
+                }
+            }
+            else if (m_eAttackDir == DIR::FORWARD_RIGHT)
+            {
+                m_eCurState = STATE::turn_r;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_RIGHT)
+            {
+                if (iRan == 0)
+                    m_eCurState = STATE::skill_3100;
+                else
+                {
+                    m_eCurState = STATE::turn_l;
+                    m_fTurnSpeed = XM_PI * 0.7f;
+                }
             }
         }
     }
@@ -684,39 +730,41 @@ void Boss_Mir_FSM::skill_1100()
 
     if (Is_AnimFinished())
     {
-        _uint iRan = rand() % 3;
+        _uint iRan = rand() % 2;
         
         CalCulate_PlayerDir();
 
-        if (iRan == 0)
-        {
-            if (m_eAttackDir == DIR::BACKWARD_LEFT)
-                m_eCurState = STATE::skill_4100;
-            else if (m_eAttackDir == DIR::BACKWARD_RIGHT)
-                m_eCurState = STATE::skill_3100;
-            else
-            {
-                if (!m_bTurnMotion)
-                    m_eCurState = STATE::b_idle;
-                else
-                {
-                    if (m_eAttackDir == DIR::FORWARD_LEFT)
-                        m_eCurState = STATE::turn_l;
-                    else if (m_eAttackDir == DIR::FORWARD_RIGHT)
-                        m_eCurState = STATE::turn_r;
-                }
-            }
-        }
+        if (!m_bTurnMotion)
+            m_eCurState = STATE::b_idle;
         else
         {
-            if (!m_bTurnMotion)
-                m_eCurState = STATE::b_idle;
-            else
+            if (m_eAttackDir == DIR::FORWARD_LEFT)
             {
-                if (m_eAttackDir == DIR::FORWARD_LEFT)
+                m_eCurState = STATE::turn_l;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_LEFT)
+            {
+                if (iRan == 0)
+                    m_eCurState = STATE::skill_4100;
+                else
+                {
                     m_eCurState = STATE::turn_l;
-                else if (m_eAttackDir == DIR::FORWARD_RIGHT)
-                    m_eCurState = STATE::turn_r;
+                    m_fTurnSpeed = XM_PI * 0.7f;
+                }
+            }
+            else if (m_eAttackDir == DIR::FORWARD_RIGHT)
+            {
+                m_eCurState = STATE::turn_r;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_RIGHT)
+            {
+                if (iRan == 0)
+                    m_eCurState = STATE::skill_3100;
+                else
+                {
+                    m_eCurState = STATE::turn_l;
+                    m_fTurnSpeed = XM_PI * 0.7f;
+                }
             }
         }
     }
@@ -765,8 +813,41 @@ void Boss_Mir_FSM::skill_2100()
         m_bSkillCreate = false;
 
 
-    if (Is_AnimFinished()) 
-        m_eCurState = STATE::skill_5100;
+    if (Is_AnimFinished())
+    {
+        _uint iRan = rand() % 2;
+
+        CalCulate_PlayerDir();
+
+        if (iRan == 0)
+        {
+            if (!m_bTurnMotion)
+                m_eCurState = STATE::b_idle;
+            else
+            {
+                if (m_eAttackDir == DIR::FORWARD_LEFT)
+                {
+                    m_eCurState = STATE::turn_l;
+                }
+                else if (m_eAttackDir == DIR::BACKWARD_LEFT)
+                {
+                    m_eCurState = STATE::skill_4100;
+                }
+                else if (m_eAttackDir == DIR::FORWARD_RIGHT)
+                {
+                    m_eCurState = STATE::turn_r;
+                }
+                else if (m_eAttackDir == DIR::BACKWARD_RIGHT)
+                {
+                    m_eCurState = STATE::skill_3100;
+                }
+            }
+        }
+        else
+        {
+            m_eCurState = STATE::skill_5100;
+        }
+    }
 }
 
 void Boss_Mir_FSM::skill_2100_Init()
@@ -788,7 +869,34 @@ void Boss_Mir_FSM::skill_3100()
         TailAttackCollider_Off();
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
+    {
+        CalCulate_PlayerDir();
+
+        if (!m_bTurnMotion)
+            m_eCurState = STATE::b_idle;
+        else
+        {
+            if (m_eAttackDir == DIR::FORWARD_LEFT)
+            {
+                m_eCurState = STATE::turn_l;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_LEFT)
+            {
+                m_eCurState = STATE::turn_l;
+                m_fTurnSpeed = XM_PI * 0.7f;
+            }
+            else if (m_eAttackDir == DIR::FORWARD_RIGHT)
+            {
+                m_eCurState = STATE::turn_r;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_RIGHT)
+            {
+                m_eCurState = STATE::turn_r;
+                m_fTurnSpeed = XM_PI * 0.7f;
+            }
+        }
+    }
+   
 }
 
 void Boss_Mir_FSM::skill_3100_Init()
@@ -808,7 +916,33 @@ void Boss_Mir_FSM::skill_4100()
         TailAttackCollider_Off();
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
+    {
+        CalCulate_PlayerDir();
+
+        if (!m_bTurnMotion)
+            m_eCurState = STATE::b_idle;
+        else
+        {
+            if (m_eAttackDir == DIR::FORWARD_LEFT)
+            {
+                m_eCurState = STATE::turn_l;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_LEFT)
+            {
+                m_eCurState = STATE::turn_l;
+                m_fTurnSpeed = XM_PI * 0.7f;
+            }
+            else if (m_eAttackDir == DIR::FORWARD_RIGHT)
+            {
+                m_eCurState = STATE::turn_r;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_RIGHT)
+            {
+                m_eCurState = STATE::turn_r;
+                m_fTurnSpeed = XM_PI * 0.7f;
+            }
+        }
+    }
 }
 
 void Boss_Mir_FSM::skill_4100_Init()
@@ -823,7 +957,33 @@ void Boss_Mir_FSM::skill_4100_Init()
 void Boss_Mir_FSM::skill_5100()
 {
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
+    {
+        CalCulate_PlayerDir();
+
+        if (!m_bTurnMotion)
+            m_eCurState = STATE::b_idle;
+        else
+        {
+            if (m_eAttackDir == DIR::FORWARD_LEFT)
+            {
+                m_eCurState = STATE::turn_l;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_LEFT)
+            {
+                m_eCurState = STATE::turn_l;
+                m_fTurnSpeed = XM_PI * 1.f;
+            }
+            else if (m_eAttackDir == DIR::FORWARD_RIGHT)
+            {
+                m_eCurState = STATE::turn_r;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_RIGHT)
+            {
+                m_eCurState = STATE::turn_r;
+                m_fTurnSpeed = XM_PI * 1.f;
+            }
+        }
+    }
 }
 
 void Boss_Mir_FSM::skill_5100_Init()
@@ -849,16 +1009,16 @@ void Boss_Mir_FSM::skill_9100()
 
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = _float3{ 0.f,-1.f,0.f };
-            desc.fMoveSpeed = 20.f;
+            desc.fMoveSpeed = 10.f;
             desc.fLifeTime = 1.f;
-            desc.fLimitDistance = 10.f;
+            desc.fLimitDistance = 20.f;
 
             for (_uint i = 0; i < 4; i++)
             {
                 _float fOffSetX = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
                 _float fOffSetZ = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
 
-                _float4 vSkillPos = vPlayerPos + _float4{ fOffSetX, 5.f, fOffSetZ, 0.f };
+                _float4 vSkillPos = vPlayerPos + _float4{ fOffSetX, 10.f, fOffSetZ, 0.f };
 
                 Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, AIRBORNE_ATTACK);
             }
@@ -870,7 +1030,33 @@ void Boss_Mir_FSM::skill_9100()
         m_bSkillCreate = false;
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
+    {
+        CalCulate_PlayerDir();
+
+        if (!m_bTurnMotion)
+            m_eCurState = STATE::b_idle;
+        else
+        {
+            if (m_eAttackDir == DIR::FORWARD_LEFT)
+            {
+                m_eCurState = STATE::turn_l;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_LEFT)
+            {
+                m_eCurState = STATE::turn_l;
+                m_fTurnSpeed = XM_PI * 0.7f;
+            }
+            else if (m_eAttackDir == DIR::FORWARD_RIGHT)
+            {
+                m_eCurState = STATE::turn_r;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_RIGHT)
+            {
+                m_eCurState = STATE::turn_r;
+                m_fTurnSpeed = XM_PI * 0.7f;
+            }
+        }
+    }
 }
 
 void Boss_Mir_FSM::skill_9100_Init()
@@ -896,7 +1082,7 @@ void Boss_Mir_FSM::skill_11100()
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 15.f, desc, KNOCKDOWN_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 8.f, desc, KNOCKDOWN_ATTACK);
 
             m_bSkillCreate = true;
         }
@@ -905,12 +1091,46 @@ void Boss_Mir_FSM::skill_11100()
         m_bSkillCreate = false;
 
 
-    if (CalCulate_PlayerDir() == DIR::BACKWARD_LEFT)
-        m_eCurState = STATE::skill_4100;
-    else if (CalCulate_PlayerDir() == DIR::BACKWARD_RIGHT)
-        m_eCurState = STATE::skill_3100;
-    else
-        m_eCurState = STATE::b_idle;
+    if (Is_AnimFinished())
+    {
+        _uint iRan = rand() % 2;
+
+        CalCulate_PlayerDir();
+
+        if (!m_bTurnMotion)
+            m_eCurState = STATE::b_idle;
+        else
+        {
+            if (m_eAttackDir == DIR::FORWARD_LEFT)
+            {
+                m_eCurState = STATE::turn_l;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_LEFT)
+            {
+                if (iRan == 0)
+                    m_eCurState = STATE::skill_4100;
+                else
+                {
+                    m_eCurState = STATE::turn_l;
+                    m_fTurnSpeed = XM_PI * 0.7f;
+                }
+            }
+            else if (m_eAttackDir == DIR::FORWARD_RIGHT)
+            {
+                m_eCurState = STATE::turn_r;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_RIGHT)
+            {
+                if (iRan == 0)
+                    m_eCurState = STATE::skill_3100;
+                else
+                {
+                    m_eCurState = STATE::turn_l;
+                    m_fTurnSpeed = XM_PI * 0.7f;
+                }
+            }
+        }
+    }
 }
 
 void Boss_Mir_FSM::skill_11100_Init()
@@ -965,17 +1185,41 @@ void Boss_Mir_FSM::skill_12100()
     {
         _uint iRan = rand() % 2;
 
-        if (iRan == 0)
-        {
-            if (CalCulate_PlayerDir() == DIR::BACKWARD_LEFT)
-                m_eCurState = STATE::skill_4100;
-            else if (CalCulate_PlayerDir() == DIR::BACKWARD_RIGHT)
-                m_eCurState = STATE::skill_3100;
-            else
-                m_eCurState = STATE::b_idle;
-        }
-        else
+        CalCulate_PlayerDir();
+
+        if (!m_bTurnMotion)
             m_eCurState = STATE::b_idle;
+        else
+        {
+            if (m_eAttackDir == DIR::FORWARD_LEFT)
+            {
+                m_eCurState = STATE::turn_l;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_LEFT)
+            {
+                if (iRan == 0)
+                    m_eCurState = STATE::skill_4100;
+                else
+                {
+                    m_eCurState = STATE::turn_l;
+                    m_fTurnSpeed = XM_PI * 0.7f;
+                }
+            }
+            else if (m_eAttackDir == DIR::FORWARD_RIGHT)
+            {
+                m_eCurState = STATE::turn_r;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_RIGHT)
+            {
+                if (iRan == 0)
+                    m_eCurState = STATE::skill_3100;
+                else
+                {
+                    m_eCurState = STATE::turn_l;
+                    m_fTurnSpeed = XM_PI * 0.7f;
+                }
+            }
+        }
     }
 }
 
@@ -1022,17 +1266,41 @@ void Boss_Mir_FSM::skill_13100()
     {
         _uint iRan = rand() % 2;
 
-        if (iRan == 0)
-        {
-            if (CalCulate_PlayerDir() == DIR::BACKWARD_LEFT)
-                m_eCurState = STATE::skill_4100;
-            else if (CalCulate_PlayerDir() == DIR::BACKWARD_RIGHT)
-                m_eCurState = STATE::skill_3100;
-            else
-                m_eCurState = STATE::b_idle;
-        }
-        else
+        CalCulate_PlayerDir();
+
+        if (!m_bTurnMotion)
             m_eCurState = STATE::b_idle;
+        else
+        {
+            if (m_eAttackDir == DIR::FORWARD_LEFT)
+            {
+                m_eCurState = STATE::turn_l;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_LEFT)
+            {
+                if (iRan == 0)
+                    m_eCurState = STATE::skill_4100;
+                else
+                {
+                    m_eCurState = STATE::turn_l;
+                    m_fTurnSpeed = XM_PI * 0.7f;
+                }
+            }
+            else if (m_eAttackDir == DIR::FORWARD_RIGHT)
+            {
+                m_eCurState = STATE::turn_r;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_RIGHT)
+            {
+                if (iRan == 0)
+                    m_eCurState = STATE::skill_3100;
+                else
+                {
+                    m_eCurState = STATE::turn_l;
+                    m_fTurnSpeed = XM_PI * 0.7f;
+                }
+            }
+        }
     }
 }
 
@@ -1111,17 +1379,41 @@ void Boss_Mir_FSM::skill_14100()
     {
         _uint iRan = rand() % 2;
 
-        if (iRan == 0)
-        {
-            if (CalCulate_PlayerDir() == DIR::BACKWARD_LEFT)
-                m_eCurState = STATE::skill_4100;
-            else if (CalCulate_PlayerDir() == DIR::BACKWARD_RIGHT)
-                m_eCurState = STATE::skill_3100;
-            else
-                m_eCurState = STATE::b_idle;
-        }
-        else
+        CalCulate_PlayerDir();
+
+        if (!m_bTurnMotion)
             m_eCurState = STATE::b_idle;
+        else
+        {
+            if (m_eAttackDir == DIR::FORWARD_LEFT)
+            {
+                m_eCurState = STATE::turn_l;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_LEFT)
+            {
+                if (iRan == 0)
+                    m_eCurState = STATE::skill_4100;
+                else
+                {
+                    m_eCurState = STATE::turn_l;
+                    m_fTurnSpeed = XM_PI * 0.7f;
+                }
+            }
+            else if (m_eAttackDir == DIR::FORWARD_RIGHT)
+            {
+                m_eCurState = STATE::turn_r;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_RIGHT)
+            {
+                if (iRan == 0)
+                    m_eCurState = STATE::skill_3100;
+                else
+                {
+                    m_eCurState = STATE::turn_l;
+                    m_fTurnSpeed = XM_PI * 0.7f;
+                }
+            }
+        }
     }
 }
 
@@ -1136,13 +1428,14 @@ void Boss_Mir_FSM::skill_14100_Init()
 
 void Boss_Mir_FSM::skill_100000()
 {
-    if (Is_AnimFinished())
+    if (Get_CurFrame() > 90)
     {
-        if (m_iBreathType < 7)
-            m_eCurState = STATE::skill_100100;
-        else 
-            m_eCurState = STATE::skill_100200;
+        if (!m_pTarget.expired())
+            Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 2.5f);
     }
+
+    if (Is_AnimFinished())
+        m_eCurState = STATE::skill_100100;
 }
 
 void Boss_Mir_FSM::skill_100000_Init()
@@ -1152,20 +1445,41 @@ void Boss_Mir_FSM::skill_100000_Init()
     animator->Set_NextTweenAnim(L"skill_100000", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_tAttackCoolTime.fAccTime = 0.f;
-
-    m_iBreathType = rand() % 10;
 }
 
 void Boss_Mir_FSM::skill_100100()
 {
-    if (Get_CurFrame() == 19 ||
-        Get_CurFrame() == 29 ||
-        Get_CurFrame() == 39 ||
-        Get_CurFrame() == 49 ||
-        Get_CurFrame() == 59 ||
-        Get_CurFrame() == 69 ||
-        Get_CurFrame() == 79 ||
-        Get_CurFrame() == 84)
+    if (Get_CurFrame() == 1)
+    {
+        m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed / 4.f);
+
+        for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
+        {
+            material->Get_MaterialDesc().emissive = Color(0.3f, 0.3f, 1.f, 1.f);
+        }
+    }
+    else if (Get_CurFrame() == 4)
+    {
+        m_bCounter = true;
+    }
+    else if (Get_CurFrame() == 9)
+    {
+        m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed * 2.f);
+        m_bCounter = false;
+        
+        for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
+        {
+            material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
+        }
+    }
+    else if (Get_CurFrame() == 19 ||
+             Get_CurFrame() == 29 ||
+             Get_CurFrame() == 39 ||
+             Get_CurFrame() == 49 ||
+             Get_CurFrame() == 59 ||
+             Get_CurFrame() == 69 ||
+             Get_CurFrame() == 79 ||
+             Get_CurFrame() == 84)
     {
         if (!m_bSkillCreate)
         {
@@ -1192,11 +1506,41 @@ void Boss_Mir_FSM::skill_100100()
             m_bSkillCreate = true;
         }
     }
+    else if (Get_CurFrame() == 90)
+    {
+        m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed);
+    }
     else
         m_bSkillCreate = false;
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
+    {
+        CalCulate_PlayerDir();
+
+        if (!m_bTurnMotion)
+            m_eCurState = STATE::b_idle;
+        else
+        {
+            if (m_eAttackDir == DIR::FORWARD_LEFT)
+            {
+                m_eCurState = STATE::turn_l;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_LEFT)
+            {
+                m_eCurState = STATE::turn_l;
+                m_fTurnSpeed = XM_PI * 0.7f;
+            }
+            else if (m_eAttackDir == DIR::FORWARD_RIGHT)
+            {
+                m_eCurState = STATE::turn_r;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_RIGHT)
+            {
+                m_eCurState = STATE::turn_l;
+                m_fTurnSpeed = XM_PI * 0.7f;   
+            }
+        }
+    }
 }
 
 void Boss_Mir_FSM::skill_100100_Init()
@@ -1208,11 +1552,55 @@ void Boss_Mir_FSM::skill_100100_Init()
     m_tAttackCoolTime.fAccTime = 0.f;
 }
 
-void Boss_Mir_FSM::skill_100200()
+void Boss_Mir_FSM::skill_200000()
+{
+    if (Get_CurFrame() > 15)
+    {
+        if (!m_pTarget.expired())
+            Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 2.f);
+    }
+
+    if (Is_AnimFinished())
+        m_eCurState = STATE::skill_200100;
+}
+
+void Boss_Mir_FSM::skill_200000_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"skill_200000", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+
+    m_tAttackCoolTime.fAccTime = 0.f;
+}
+
+void Boss_Mir_FSM::skill_200100()
 {
     m_tBreathCoolTime.fAccTime += fDT;
 
-    if (Get_CurFrame() < 33)
+    if (Get_CurFrame() == 10)
+    {
+        m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed / 4.f);
+
+        for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
+        {
+            material->Get_MaterialDesc().emissive = Color(0.3f, 0.3f, 1.f, 1.f);
+        }
+    }
+    else if (Get_CurFrame() == 15)
+    {
+        m_bCounter = true;
+    }
+    else if (Get_CurFrame() == 20)
+    {
+        m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed / 2.f);
+        m_bCounter = false;
+
+        for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
+        {
+            material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
+        }
+    }
+    else if (Get_CurFrame() > 33 && Get_CurFrame() < 100)
     {
         if (m_tBreathCoolTime.fAccTime >= m_tBreathCoolTime.fCoolTime)
         {
@@ -1238,14 +1626,40 @@ void Boss_Mir_FSM::skill_100200()
     }
     
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
+    {
+        CalCulate_PlayerDir();
+
+        if (!m_bTurnMotion)
+            m_eCurState = STATE::b_idle;
+        else
+        {
+            if (m_eAttackDir == DIR::FORWARD_LEFT)
+            {
+                m_eCurState = STATE::turn_l;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_LEFT)
+            {
+                m_eCurState = STATE::turn_l;
+                m_fTurnSpeed = XM_PI * 0.7f;   
+            }
+            else if (m_eAttackDir == DIR::FORWARD_RIGHT)
+            {
+                m_eCurState = STATE::turn_r;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_RIGHT)
+            {
+                m_eCurState = STATE::turn_l;
+                m_fTurnSpeed = XM_PI * 0.7f;   
+            }
+        }
+    }
 }
 
-void Boss_Mir_FSM::skill_100200_Init()
+void Boss_Mir_FSM::skill_200100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_100200", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+    animator->Set_NextTweenAnim(L"skill_200100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_tAttackCoolTime.fAccTime = 0.f;
 }
@@ -1284,7 +1698,7 @@ Boss_Mir_FSM::DIR Boss_Mir_FSM::CalCulate_PlayerDir()
     }
     else //뒤 내적음수면 뒤
     {
-        m_bTurnMotion = false;
+        m_bTurnMotion = true;
 
         if (XMVectorGetY(vCross) < 0.f) // 외적 음수면 왼쪽
         {

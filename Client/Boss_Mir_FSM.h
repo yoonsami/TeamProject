@@ -34,8 +34,10 @@ public:
 		
 		skill_100000, //SKILL 11  Ready to PowerBreath
 		skill_100100, //SKILL 11 - 1-  Shoot PowerBreath (Short)- end
-		skill_100200, //SKILL 11 - 3-  Shoot PowerBreath (Long)- end
-		
+
+		skill_200000, //SKILL 12  Ready to PowerBreath
+		skill_200100, //SKILL 12  Ready to PowerBreath
+
 		NONE
 	};
 
@@ -113,8 +115,10 @@ private:
 	void skill_100000_Init();
 	void skill_100100();
 	void skill_100100_Init();
-	void skill_100200();
-	void skill_100200_Init();
+	void skill_200000();
+	void skill_200000_Init();
+	void skill_200100();
+	void skill_200100_Init();
 
 	DIR CalCulate_PlayerDir();
 	_bool CounterAttackCheck();
@@ -139,6 +143,7 @@ private:
 
 	_float m_fRunSpeed = 4.f;
 	_float m_fKnockDownSpeed = 4.f;
+	_float m_fTurnSpeed = XM_PI * 0.5f;
 
 	_float m_fNormalAttack_AnimationSpeed = 2.f;
 

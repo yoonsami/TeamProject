@@ -123,13 +123,13 @@ void DemoScene::Final_Tick()
 HRESULT DemoScene::Load_Scene()
 {
 	PHYSX.Init();
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\");
+	RESOURCES.CreateModel(L"..\\Resources\\`Models\\");
 	Load_SkyBox();
 	Load_Player();
 	Load_Light();
 	Load_Camera();
 	Load_MapFile(L"KrisMap11");
-	//Load_Monster(5);
+	Load_Monster(1);
 	Load_Boss_Mir();
 	//Load_DemoMap();
 
