@@ -34,6 +34,7 @@ protected:
 
 
 	_bool Target_In_AttackRange();
+	_bool Target_In_DetectRange();
 public:
 	void Set_Target(shared_ptr<GameObject> pTarget);
 	void Set_Camera(shared_ptr<GameObject> pCamera);
@@ -53,5 +54,6 @@ public:
 
 	_float3 m_vHitDir = _float3{ 0.f };
 	_float m_fAttackRange = 2.f;
+	_float m_fDetectRange = 2.f;
 };
 

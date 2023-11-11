@@ -3,7 +3,7 @@
 class HeroChangeScript : public MonoBehaviour
 {
 public:
-    HeroChangeScript(shared_ptr<GameObject> pPlayer);
+    HeroChangeScript();
     ~HeroChangeScript();
 
 public:
@@ -12,7 +12,6 @@ public:
 private:
     void Add_Character_Weapon(const wstring& weaponname);
 
-private:
-    weak_ptr<GameObject> m_pPlayer;
+
 };
 

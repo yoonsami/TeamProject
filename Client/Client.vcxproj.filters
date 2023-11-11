@@ -34,9 +34,6 @@
     <Filter Include="02.Component\01.FSM">
       <UniqueIdentifier>{5106d280-65b5-4a05-b449-e52004caa4f6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\01.FSM\00.DemoFSM">
-      <UniqueIdentifier>{8a982ce2-f0b2-4b7a-800d-dfeff839ac2b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="99.Header\98.Default">
       <UniqueIdentifier>{1416d258-c22e-43be-a507-5d8b90f21cef}</UniqueIdentifier>
     </Filter>
@@ -124,6 +121,12 @@
     <Filter Include="02.Component\01.FSM\03.Special_FSM\01.DellonsWraith_FSM">
       <UniqueIdentifier>{ac3b214e-9091-4a89-aaaa-de5645f05306}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\01.Boss_Mir_FSM">
+      <UniqueIdentifier>{d4e80f64-1b0a-46b9-805f-e088a44bd55f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\00.Effect\00.CounterMotionTrailScript">
+      <UniqueIdentifier>{8488e19a-7f84-4002-9311-474fb39e75d7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -155,9 +158,6 @@
     </ClInclude>
     <ClInclude Include="DemoCameraScript2.h">
       <Filter>02.Component\00.MonoBehaviour\99.DemoCameraScript</Filter>
-    </ClInclude>
-    <ClInclude Include="DemoFSM.h">
-      <Filter>02.Component\01.FSM\00.DemoFSM</Filter>
     </ClInclude>
     <ClInclude Include="DemoAnimationController1.h">
       <Filter>02.Component\00.MonoBehaviour\98.DemoAnimationController</Filter>
@@ -276,6 +276,12 @@
     <ClInclude Include="YeopoHorse_FSM.h">
       <Filter>02.Component\01.FSM\03.Special_FSM\00.YeopoHorse_FSM</Filter>
     </ClInclude>
+    <ClInclude Include="Boss_Mir_FSM.h">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Mir_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CounterMotionTrailScript.h">
+      <Filter>02.Component\00.MonoBehaviour\00.Effect\00.CounterMotionTrailScript</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -301,9 +307,6 @@
     </ClCompile>
     <ClCompile Include="DemoCameraScript2.cpp">
       <Filter>02.Component\00.MonoBehaviour\99.DemoCameraScript</Filter>
-    </ClCompile>
-    <ClCompile Include="DemoFSM.cpp">
-      <Filter>02.Component\01.FSM\00.DemoFSM</Filter>
     </ClCompile>
     <ClCompile Include="DemoAnimationController1.cpp">
       <Filter>02.Component\00.MonoBehaviour\98.DemoAnimationController</Filter>
@@ -406,6 +409,12 @@
     </ClCompile>
     <ClCompile Include="YeopoHorse_FSM.cpp">
       <Filter>02.Component\01.FSM\03.Special_FSM\00.YeopoHorse_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="Boss_Mir_FSM.cpp">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Mir_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CounterMotionTrailScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\00.Effect\00.CounterMotionTrailScript</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

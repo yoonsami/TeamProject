@@ -21,6 +21,7 @@ private:
 	void Load_DemoMap();
 	void Load_Camera();
 	void Load_Monster(_uint iCnt);
+	void Load_Boss_Mir();
 	void Load_Light();
 	void Load_Ui();
 };

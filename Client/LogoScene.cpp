@@ -7,7 +7,6 @@
 #include "Camera.h"
 #include "BaseUI.h"
 #include "Loader.h"
-#include "DemoFSM.h"
 #include "Geometry.h"
 #include "FileUtils.h"
 #include "DemoScene.h"

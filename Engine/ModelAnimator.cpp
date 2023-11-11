@@ -482,6 +482,15 @@ void ModelAnimator::Set_CurrentAnim(const wstring& animName, _bool loop, _float 
 	anim->speed = animSpeed;
 }
 
+void ModelAnimator::Set_AnimationSpeed(_float animSpeed)
+{
+	_int animIndex = m_TweenDesc.curr.animIndex;
+	auto anim = Get_Model()->Get_AnimationByIndex(animIndex);
+	assert(animIndex >= 0);
+
+	anim->speed = animSpeed;
+}
+
 _uint ModelAnimator::Get_FinalFrame(_int animIndex)
 {
 	return m_pModel->Get_AnimationByIndex(animIndex)->frameCount;

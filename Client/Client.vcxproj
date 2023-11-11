@@ -186,9 +186,11 @@
     <ClInclude Include="..\Libraries\Include\IMGUI\ImZoomSlider.h" />
     <ClInclude Include="..\Shaders\Fxaa3_11.h" />
     <ClInclude Include="AttackColliderInfoScript.h" />
+    <ClInclude Include="Boss_Mir_FSM.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Client_Define.h" />
     <ClInclude Include="CoolTimeCheckScript.h" />
+    <ClInclude Include="CounterMotionTrailScript.h" />
     <ClInclude Include="DebugTool.h" />
     <ClInclude Include="Debug_CreateMotionTrail.h" />
     <ClInclude Include="Dellons_FSM.h" />
@@ -196,7 +198,6 @@
     <ClInclude Include="DemoAnimationController1.h" />
     <ClInclude Include="DemoCameraScript1.h" />
     <ClInclude Include="DemoCameraScript2.h" />
-    <ClInclude Include="DemoFSM.h" />
     <ClInclude Include="DemoScene.h" />
     <ClInclude Include="ForwardMovingSkillScript.h" />
     <ClInclude Include="HeroChangeScript.h" />
@@ -233,8 +234,10 @@
     <ClCompile Include="..\Libraries\Include\IMGUI\imgui_widgets.cpp" />
     <ClCompile Include="..\Libraries\Include\IMGUI\ImSequencer.cpp" />
     <ClCompile Include="AttackColliderInfoScript.cpp" />
+    <ClCompile Include="Boss_Mir_FSM.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="CoolTimeCheckScript.cpp" />
+    <ClCompile Include="CounterMotionTrailScript.cpp" />
     <ClCompile Include="DebugTool.cpp" />
     <ClCompile Include="Debug_CreateMotionTrail.cpp" />
     <ClCompile Include="Dellons_FSM.cpp" />
@@ -242,7 +245,6 @@
     <ClCompile Include="DemoAnimationController1.cpp" />
     <ClCompile Include="DemoCameraScript1.cpp" />
     <ClCompile Include="DemoCameraScript2.cpp" />
-    <ClCompile Include="DemoFSM.cpp" />
     <ClCompile Include="DemoScene.cpp" />
     <ClCompile Include="ForwardMovingSkillScript.cpp" />
     <ClCompile Include="HeroChangeScript.cpp" />
