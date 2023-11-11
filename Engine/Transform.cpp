@@ -48,10 +48,10 @@ void Transform::Tick()
 
 void Transform::Late_Tick()
 {
-	//if (!Get_Owner()->Get_Physics())
+	//if (!Get_Owner()->Get_CharacterController())
 	//	return;
-	//PxTransform transform = Get_Owner()->Get_Physics()->Get_RigidBody()->getGlobalPose();
-	//Set_State(Transform_State::POS,_float4(transform.p.x, transform.p.y, transform.p.z,1.f));
+	//PxTransform transform = Get_Owner()->Get_CharacterController()->Get_Actor()->get();
+	//Set_State(Transform_State::POS, _float4(transform.p.x, transform.p.y, transform.p.z, 1.f));
 	//Set_Quaternion(Quaternion(transform.q.x, transform.q.y, transform.q.z, transform.q.w));
 }
 

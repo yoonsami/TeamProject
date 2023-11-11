@@ -83,15 +83,18 @@ protected:
 	void Render_Distortion();
 	void Render_Distortion_Final();
 
-	void Render_FXAA();
 
 	void Render_LensFlare();
 
+	void Render_Fog();
 	void Render_Aberration();
 
 	void Render_Debug();
+
+
 	void Render_UI();
 
+	void Render_FXAA();
 
 	void Render_BackBuffer();
 

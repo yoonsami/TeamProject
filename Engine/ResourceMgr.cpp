@@ -800,6 +800,13 @@ void ResourceMgr::CreateDefaultMaterial()
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Final.fx");
 		shared_ptr<Material> material = make_shared<Material>();
 		material->Set_Shader(shader);
+		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"G_DepthTarget"));
+		Add(L"FogFinal", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Final.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
 
 		Add(L"BackBufferRenderFinal", material);
 	}

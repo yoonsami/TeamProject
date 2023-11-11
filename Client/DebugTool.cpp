@@ -115,13 +115,19 @@ void DebugTool::RenderOptionTab()
 	if (CollapsingHeader("Fog Option"))
 	{
 		_bool& g_FogOn = GAMEINSTANCE.g_FogData.g_FogOn;
-		_float& g_FogRange = GAMEINSTANCE.g_FogData.gFogRange;
-		_float& gFogStart = GAMEINSTANCE.g_FogData.gFogStart;
-		Color& gColorFog = GAMEINSTANCE.g_FogData.gFogColor;
+		_float& gFogStart = GAMEINSTANCE.g_FogData.g_fogStart;
+		_float& g_FogEnd = GAMEINSTANCE.g_FogData.g_fogEnd;
+		_float& g_fogDensity = GAMEINSTANCE.g_FogData.g_fogDensity;
+		_int& g_fogMode = GAMEINSTANCE.g_FogData.g_fogMode;
+		Color& gColorFog = GAMEINSTANCE.g_FogData.g_fogColor;
 
 		Checkbox("Fog On", &g_FogOn);
-		DragFloat("Fog Range", &g_FogRange, 1.f, gFogStart, 2000.f);
-		DragFloat("Fog Start Range", &gFogStart, 1.f, 0.0001f, g_FogRange);
+		DragFloat("Fog Start Range", &gFogStart, 1.f, 0.0001f, g_FogEnd);
+		DragFloat("Fog End", &g_FogEnd, 1.f, gFogStart, 2000.f);
+		DragFloat("Fog Density", &g_fogDensity, 0.001f, 0.001f, 1.f);
+		InputInt("Fog Mod", &g_fogMode);
+		if (g_fogMode < 0) g_fogMode = 0;
+		if (g_fogMode > 2) g_fogMode = 2;
 		static bool alpha_preview = true;
 		static bool alpha_half_preview = false;
 		static bool drag_and_drop = true;

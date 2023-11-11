@@ -423,14 +423,17 @@ void DemoScene::Load_Boss_Mir()
 		auto controller = make_shared<CharacterController>();
 		ObjMonster->Add_Component(controller);
 
-		auto& desc = controller->Get_BoxControllerDesc();
-		desc.halfHeight = 4.f;
-		desc.halfSideExtent = 2.f;
-		desc.halfForwardExtent = 6.f;
+		auto& desc = controller->Get_CapsuleControllerDesc();
+		desc.radius = 4.5f;
+		desc.height = 5.f;
+		desc.climbingMode = PxCapsuleClimbingMode::eCONSTRAINED;
+		
 		_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz() +
 					   ObjMonster->Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.position = { vPos.x, vPos.y, vPos.z };
-		controller->Create_Controller(true);
+		controller->Create_Controller();
+		controller->Get_Actor()->setStepOffset(0.1f);
+
 	}
 	ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
 

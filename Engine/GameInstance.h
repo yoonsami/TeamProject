@@ -42,9 +42,11 @@ public:
 	struct FogData
 	{
 		_bool g_FogOn = false;
-		_float  gFogStart = 15.f;
-		_float  gFogRange = 150.f;
-		Color	gFogColor = Color(1.f);
+		_float g_fogStart = 15.f;
+		_float g_fogEnd = 150.f;
+		_int g_fogMode = 0;
+		_float g_fogDensity = 1.f;
+		Color g_fogColor = Color(1.f);
 	};
 	static FogData g_FogData;
 

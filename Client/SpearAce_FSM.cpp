@@ -372,13 +372,13 @@ void SpearAce_FSM::Set_State(_uint iIndex)
 
 void SpearAce_FSM::b_idle()
 {
-   /* EvadeCoolCheck();
+	EvadeCoolCheck();
 
-    _float3 vInputVector = Get_InputDirVector();
+	_float3 vInputVector = Get_InputDirVector();
 
-    if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
-        KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
-        m_eCurState = STATE::b_run_start;
+	if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
+		KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
+		m_eCurState = STATE::b_run_start;
 
 	if (KEYPUSH(KEY_TYPE::LBUTTON))
 		m_eCurState = STATE::skill_1100;
@@ -401,7 +401,7 @@ void SpearAce_FSM::b_idle()
 			else
 				m_eCurState = STATE::skill_91100;
 		}
-	}*/
+	}
 }
 
 void SpearAce_FSM::b_idle_Init()

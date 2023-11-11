@@ -94,6 +94,7 @@ void Scene::Render()
 	Render_Distortion();
 	Render_Distortion_Final();
 	Render_LensFlare();
+	Render_Fog();
 	Render_Aberration();
 
 	Render_Debug();
@@ -713,7 +714,7 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 				_float3 vObjPos = CreateObject->Get_Transform()->Get_State(Transform_State::POS).xyz();
 				auto rigidBody = make_shared<RigidBody>();
 				CreateObject->Add_Component(rigidBody);
-				rigidBody->Create_CapsuleRigidBody(CreateObject->Get_CullPos() + _float3::Up * CreateObject->Get_CullRadius(), CreateObject->Get_CullRadius(), CreateObject->Get_CullRadius() * 2.f);
+				rigidBody->Create_CapsuleRigidBody(CreateObject->Get_CullPos() + _float3::Up * 3.f * CreateObject->Get_CullRadius(), CreateObject->Get_CullRadius(), CreateObject->Get_CullRadius() * 5.f);
 
 				break;
 			}
@@ -1095,12 +1096,6 @@ void Scene::Render_LightFinal()
 
 	material->Get_Shader()->GetScalar("g_gamma")->SetFloat(GAMEINSTANCE.g_fGamma);
 	material->Get_Shader()->GetScalar("g_SSAO_On")->SetBool(GAMEINSTANCE.g_SSAOData.g_bSSAO_On);
-	material->Get_Shader()->GetScalar("g_FogOn")->SetBool(GAMEINSTANCE.g_FogData.g_FogOn);
-	material->Get_Shader()->GetScalar("gFogStart")->SetFloat(GAMEINSTANCE.g_FogData.gFogStart);
-	material->Get_Shader()->GetScalar("gFogRange")->SetFloat(GAMEINSTANCE.g_FogData.gFogRange);
-	material->Get_Shader()->GetVector("gFogColor")->SetFloatVector((_float*)&GAMEINSTANCE.g_FogData.gFogColor);
-
-
 
 	material->Push_SubMapData();
 
@@ -1306,29 +1301,6 @@ void Scene::Render_Distortion_Final()
 	m_wstrFinalRenderTarget = L"DistortionFinalTarget";
 }
 
-void Scene::Render_FXAA()
-{
-	if (!GAMEINSTANCE.g_bFXAAOn)
-		return;
-	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::FXAA)->OMSetRenderTargets();
-	
-	auto material = RESOURCES.Get<Material>(L"FXAARenderFinal");
-	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
-	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
-	
-	material->Get_Shader()->GetScalar("Use")->SetBool(GAMEINSTANCE.g_bFXAAOn);
-	material->Push_SubMapData();
-	mesh->Get_VertexBuffer()->Push_Data();
-	mesh->Get_IndexBuffer()->Push_Data();
-
-	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-
-
-	material->Get_Shader()->DrawIndexed(0, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
-	m_wstrFinalRenderTarget = L"FXAATarget";
-}
-
 void Scene::Render_LensFlare()
 {
 	if (!GAMEINSTANCE.g_bLensFlare)
@@ -1433,6 +1405,36 @@ void Scene::Render_LensFlare()
 
 }
 
+void Scene::Render_Fog()
+{
+	if (!GAMEINSTANCE.g_FogData.g_FogOn)
+		return;
+
+
+
+	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::FOG)->OMSetRenderTargets();
+
+	auto material = RESOURCES.Get<Material>(L"FogFinal");
+	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
+
+	material->Get_Shader()->GetScalar("fogStart")->SetFloat(GAMEINSTANCE.g_FogData.g_fogStart);
+	material->Get_Shader()->GetScalar("fogEnd")->SetFloat(GAMEINSTANCE.g_FogData.g_fogEnd);
+	material->Get_Shader()->GetScalar("fogDensity")->SetFloat(GAMEINSTANCE.g_FogData.g_fogDensity);
+	material->Get_Shader()->GetScalar("fogMode")->SetInt(GAMEINSTANCE.g_FogData.g_fogMode);
+	material->Get_Shader()->GetVector("fogColor")->SetFloatVector((_float*)&GAMEINSTANCE.g_FogData.g_fogColor);
+
+	material->Push_SubMapData();
+	mesh->Get_VertexBuffer()->Push_Data();
+	mesh->Get_IndexBuffer()->Push_Data();
+
+	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+
+	material->Get_Shader()->DrawIndexed(3, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	m_wstrFinalRenderTarget = L"FogTarget";
+}
+
 void Scene::Render_Aberration()
 {
 	if (!GAMEINSTANCE.g_bAberrationOn)
@@ -1481,6 +1483,7 @@ void Scene::Render_UI()
 	}
 }
 
+
 void Scene::Render_ToneMapping()
 {
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::TONEMAPPING)->OMSetRenderTargets();
@@ -1513,12 +1516,35 @@ void Scene::Render_ToneMapping()
 	Render_BackBuffer();
 }
 
+void Scene::Render_FXAA()
+{
+	if (!GAMEINSTANCE.g_bFXAAOn)
+		return;
+	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::FXAA)->OMSetRenderTargets();
+
+	auto material = RESOURCES.Get<Material>(L"FXAARenderFinal");
+	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
+	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+
+	material->Get_Shader()->GetScalar("Use")->SetBool(GAMEINSTANCE.g_bFXAAOn);
+	material->Push_SubMapData();
+	mesh->Get_VertexBuffer()->Push_Data();
+	mesh->Get_IndexBuffer()->Push_Data();
+
+	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+
+
+	material->Get_Shader()->DrawIndexed(0, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	m_wstrFinalRenderTarget = L"FXAATarget";
+}
+
 void Scene::Render_BackBuffer()
 {
 	Render_FXAA();
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->OMSetRenderTargets();
 
-	auto material = RESOURCES.Get<Material>(L"AberrationFinal");
+	auto material = RESOURCES.Get<Material>(L"BackBufferRenderFinal");
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
 

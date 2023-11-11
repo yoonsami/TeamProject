@@ -51,4 +51,5 @@ void CharacterController::Tick()
 
 		auto result = m_pController->move({ vDir.x ,vDir.y  ,vDir.z }, 0.0f, fDT, PxControllerFilters());
 	}
+
 }
