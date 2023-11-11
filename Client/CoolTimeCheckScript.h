@@ -4,28 +4,33 @@
 class CoolTimeCheckScript : public MonoBehaviour
 {
 public:
-    enum class HERO { ACE, KYLE, YEOPO, DELLONS, MAX};
-
-public:
     CoolTimeCheckScript();
 
 public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
+    
+    void Start_Attack_Button_Effect();
 
-    void Set_Cur_Hero(HERO eType);
-    void Set_Skill_End();
-    _bool IsAvailable(_uint iSkillIndex);
     _bool GetIsWork() { return m_bIsSkillWork; }
+    _bool IsAvailable(SkillType eSkillType);
+
+    void Set_Skill_End();
+    void Set_Cur_Hero(HERO eType);
 
 private:
     void Check_Cool_Time();
     void Change_Skills_Value();
+    void Start_Effect(SkillType eSkillType);
+    void Start_ButtonEndEffect(_uint iIndex);
 
 private:
     vector<vector<COOLTIMEINFO>>    m_CoolTime;
     vector<vector<wstring>>         m_TextureKey;
-    
+    vector<weak_ptr<GameObject>>    m_pUiSkill;
+    vector<weak_ptr<GameObject>>    m_pUiSkill_Effect;
+    vector<weak_ptr<GameObject>>    m_pUi_Cool_End;
+
     COOLTIMEINFO m_tagEvade     = {};
 
     HERO    m_eCurHero          = { HERO::MAX };

@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Texture.h"
 
-
 Texture::Texture()
 	:ResourceBase(ResourceType::Texture)
 {

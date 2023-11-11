@@ -282,6 +282,27 @@
     <ClInclude Include="CounterMotionTrailScript.h">
       <Filter>02.Component\00.MonoBehaviour\00.Effect\00.CounterMotionTrailScript</Filter>
     </ClInclude>
+    <ClInclude Include="Client_Struct.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Client_Enum.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Client_Macro.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="UiSkillButtonEffect.h">
+      <Filter>02.Component\00.MonoBehaviour\01.UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UiCharChange.h">
+      <Filter>02.Component\00.MonoBehaviour\01.UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UiCoolEndEffect.h">
+      <Filter>02.Component\00.MonoBehaviour\01.UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UiHpBarFlow.h">
+      <Filter>02.Component\00.MonoBehaviour\01.UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -415,6 +436,18 @@
     </ClCompile>
     <ClCompile Include="CounterMotionTrailScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\00.Effect\00.CounterMotionTrailScript</Filter>
+    </ClCompile>
+    <ClCompile Include="UiCharChange.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UiCoolEndEffect.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UiHpBarFlow.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UiSkillButtonEffect.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

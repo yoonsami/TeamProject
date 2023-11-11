@@ -1,10 +1,11 @@
 #include "pch.h"
 #include "Transform.h"
-//#include "Physics.h"
+
 #include "BaseCollider.h"
-//#include "MeshCollider.h"
 #include "CharacterController.h"
 
+//#include "Physics.h"
+//#include "MeshCollider.h"
 
 Transform::Transform()
 	:Component(COMPONENT_TYPE::Transform)

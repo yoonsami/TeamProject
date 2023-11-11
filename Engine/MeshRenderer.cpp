@@ -1,10 +1,11 @@
 #include "pch.h"
 #include "MeshRenderer.h"
+
 #include "Model.h"
-#include "Material.h"
-#include "Camera.h"
-#include "ModelMesh.h"
 #include "Light.h"
+#include "Camera.h"
+#include "Material.h"
+#include "ModelMesh.h"
 #include "InstancingBuffer.h"
 
 MeshRenderer::MeshRenderer(shared_ptr<Shader> shader)

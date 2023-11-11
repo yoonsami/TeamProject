@@ -1,18 +1,19 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "ResourceMgr.h"
+
 #include "Utils.h"
-#include <filesystem>
 #include "Model.h"
+#include "Geometry.h"
 #include "Material.h"
 #include "FileUtils.h"
 #include "ModelMesh.h"
-#include "Geometry.h"
-#include "CustomFont.h"
 #include "MathUtils.h"
 #include "MeshEffectData.h"
 #include "ParticleData.h"
 #include "GroupEffectData.h"
+#include "CustomFont.h"
 
+#include <filesystem>
 namespace fs = std::filesystem;
 
 ResourceMgr::~ResourceMgr()
@@ -65,7 +66,7 @@ void ResourceMgr::Initialize()
 
 	CreateDefaultMesh();
 	CreateDefaultShader();
-	//CreateDefaultShader_EffectTool(); // MEMO : Effect Tool¿¡¼­ »ç¿ëÇÏ´Â Shader Create ÇÔ¼ö 
+	//CreateDefaultShader_EffectTool(); // MEMO : Effect Toolï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ Shader Create ï¿½Ô¼ï¿½ 
 	CreateDefaultMaterial();
 	CreateDefaultFont();
 

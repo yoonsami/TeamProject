@@ -1,13 +1,12 @@
 #include "pch.h"
 #include "InstancingMgr.h"
+
 #include "GameObject.h"
 #include "MeshRenderer.h"
+#include "BaseCollider.h"
 #include "ModelRenderer.h"
 #include "ModelAnimator.h"
-#include "BaseCollider.h"
 #include "ParticleSystem.h"
-
-
 
 void InstancingMgr::Render(vector<shared_ptr<GameObject>>& gameObjects)
 {

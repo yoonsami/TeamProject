@@ -34,6 +34,7 @@ public:
 	const static wstring m_strSceneDataPath;
 	const static wstring m_strSoundDataPath;
 	
+	static float Random_In_Range(float fMin, float fMax);
 };
 
 

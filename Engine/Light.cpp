@@ -1,8 +1,9 @@
 #include "pch.h"
 #include "Light.h"
-#include "Transform.h"
-#include "Material.h"
+
 #include "Camera.h"
+#include "Material.h"
+#include "Transform.h"
 
 Light::Light()
 	: Component(COMPONENT_TYPE::Light)

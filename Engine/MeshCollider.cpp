@@ -1,10 +1,11 @@
 #include "pch.h"
 #include "MeshCollider.h"
+
 #include "Model.h"
-#include "ModelMesh.h"
-#include "Geometry.h"
-#include "Camera.h"
 #include "Utils.h"
+#include "Camera.h"
+#include "Geometry.h"
+#include "ModelMesh.h"
 
 MeshCollider::MeshCollider(wstring modelTag, _float4x4 MatWorld)
     :BaseCollider(ColliderType::Mesh)

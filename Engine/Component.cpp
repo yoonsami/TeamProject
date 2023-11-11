@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Component.h"
-#include "GameObject.h"
 
+#include "GameObject.h"
 
 Component::Component(COMPONENT_TYPE eType)
 	: m_eType(eType)
