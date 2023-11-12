@@ -46,6 +46,7 @@
 #include "UiGachaController.h"
 #include "Boss_Mir_FSM.h"
 #include "DemoAnimationController1.h"
+#include "UiCardDeckController.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -486,6 +487,7 @@ void DemoScene::Load_Ui()
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main_Button.dat");
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Char_Change.dat");
 	//Load_UIFile(L"..\\Resources\\UIData\\UI_Gacha.dat");
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck.dat", false);
 
 	{
 		auto pObj = make_shared<GameObject>();
@@ -496,6 +498,25 @@ void DemoScene::Load_Ui()
 
 		Add_GameObject(pObj, true);
 	}
+
+	{
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_Name(L"UI_Card_Deck_Controller");
+
+		auto pScript = make_shared<UiCardDeckController>();
+		pObj->Add_Component(pScript);
+
+		Add_GameObject(pObj, true);
+	}
+
+	{
+		auto pObj = Get_GameObject(L"UI_Main_Button2");
+		pObj->Get_Button()->AddOnClickedEvent([]()
+			{
+				CUR_SCENE->Get_GameObject(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Render_On();
+			});
+	}
+
 
 
 

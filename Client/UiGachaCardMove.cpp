@@ -14,7 +14,6 @@ HRESULT UiGachaCardMove::Init()
     if (m_pOwner.expired())
         return E_FAIL;
 
-	// m_pOwner.lock()->Set_Render(false);
 	m_fMaxTime = 0.5f;
 	m_fCheckTime = 0.f;
 
@@ -107,63 +106,15 @@ void UiGachaCardMove::Tick()
 	case STATE::IDLE:
 		Idle();
 		break;
-	case STATE::OFF:
-		RenderOff();
-		break;
 	case STATE::OPEN:
 		Open();
 		break;
 	}
 }
 
-void UiGachaCardMove::Rendom_Card_Hero_Set()
-{
-	if (m_pOwner.expired())
-		return;
-
-	m_pOwner.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, m_vecFirstPos);
-	
-	// 랜더 키는 기능
-	m_pOwner.lock()->Set_Render(true);
-	
-	// 초기화
-	m_eState = STATE::START;
-	m_pOwner.lock()->GetOrAddTransform()->Scaled(m_fOriginScale);
-	m_fCurScale = m_fOriginScale;
-	m_fCheckTime = 0.f;
-
-	// 영웅 정하는 기능
-	_float fRand = Utils::Random_In_Range(0.f, 1.f);
-	if (0.01f > fRand)
-		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back0"), TextureMapType::DIFFUSE);
-	else if (0.02f > fRand)
-		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back1"), TextureMapType::DIFFUSE);
-	else if (0.03f > fRand)
-		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back3"), TextureMapType::DIFFUSE);
-	else if (0.04f > fRand)
-		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back4"), TextureMapType::DIFFUSE);
-	else if (0.4f > fRand)
-		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back2"), TextureMapType::DIFFUSE);
-	else
-		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back5"), TextureMapType::DIFFUSE);
-
-}
-
 void UiGachaCardMove::Card_Open()
 {
-	
-}
-
-void UiGachaCardMove::Change_State(_uint iIndex)
-{
-	switch (iIndex)
-	{
-	case 0:
-		Rendom_Card_Hero_Set();
-		break;
-	case 1:
-		m_eState = STATE::OFF;
-	}
+	m_eState = STATE::OPEN;
 }
 
 void UiGachaCardMove::Move()
@@ -215,15 +166,28 @@ void UiGachaCardMove::Idle()
 
 }
 
-void UiGachaCardMove::RenderOff()
-{
-	if (true == m_pOwner.expired())
-		return;
-
-	// 렌더 끄는기능
-	m_pOwner.lock()->Set_Render(false);
-}
-
 void UiGachaCardMove::Open()
 {
+	switch (m_eOpenType)
+	{
+	case UiGachaCardMove::CHANGE_TYPE::DOWN:
+		m_fCurScale.x -= m_fScaleChangeValue * fDT * m_fTrunPerTime / m_fMaxTime;
+		break;
+	case UiGachaCardMove::CHANGE_TYPE::UP:
+		m_fCurScale.x += m_fScaleChangeValue * fDT * m_fTrunPerTime / m_fMaxTime;
+		break;
+	}
+
+	if (0.01f > m_fCurScale.x)
+	{
+		m_fCurScale.x = 0.01f;
+		m_eChangeType = CHANGE_TYPE::UP;
+	}
+	else if (272.f < m_fCurScale.x)
+	{
+		m_fCurScale.x = 272.f;
+		m_eChangeType = CHANGE_TYPE::DOWN;
+	}
+
+	m_pOwner.lock()->GetOrAddTransform()->Scaled(m_fCurScale);
 }

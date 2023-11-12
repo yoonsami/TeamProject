@@ -151,6 +151,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCardMove\02.UiGachaEffectController">
       <UniqueIdentifier>{82ec2157-d9a5-4909-b39f-d09e7c92c4a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\07.UiCardDeckController">
+      <UniqueIdentifier>{df3fd50c-985b-4249-80f7-4903d25499ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -339,6 +342,9 @@
     <ClInclude Include="Hero_Data.h">
       <Filter>99.Header</Filter>
     </ClInclude>
+    <ClInclude Include="UiCardDeckController.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\07.UiCardDeckController</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -493,6 +499,9 @@
     </ClCompile>
     <ClCompile Include="UiGachaEffectController.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCardMove\02.UiGachaEffectController</Filter>
+    </ClCompile>
+    <ClCompile Include="UiCardDeckController.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\07.UiCardDeckController</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

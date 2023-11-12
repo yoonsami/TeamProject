@@ -10,21 +10,15 @@ public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
 
-    void Rendom_Card_Hero_Set();
     void Card_Open();
-
-
-    // test code
-    void Change_State(_uint iIndex);
 
 private:
     void Move();
     void Idle();
-    void RenderOff();
     void Open();
 
 private:
-   enum class STATE { START, IDLE, OFF, OPEN };
+   enum class STATE { START, IDLE, OPEN };
    STATE    m_eState            = { STATE::START };
 
    _uint    m_iIndex            = { 0 };
@@ -45,6 +39,8 @@ private:
    _float4  m_vecFirstPos       = {};
    _float4  m_vecArrivalPos     = {};
 
-   
+   // open 관련 변수
+   CHANGE_TYPE m_eOpenType      = { CHANGE_TYPE::DOWN };
+
 };
 

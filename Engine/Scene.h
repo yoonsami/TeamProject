@@ -50,7 +50,7 @@ public:
 	void Swap_Object(const wstring& leftObjName, const wstring& rightObjName);
 	void Render_ToneMapping();
 	
-	void Load_UIFile(const wstring& path);
+	void Load_UIFile(const wstring& path, _bool bRender = true);
 
 protected:
 	void Load_SceneFile(const wstring& sceneName);

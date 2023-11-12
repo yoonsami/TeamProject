@@ -218,6 +218,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Silversword_Soldier_FSM.h" />
     <ClInclude Include="SpearAce_FSM.h" />
+    <ClInclude Include="UiCardDeckController.h" />
     <ClInclude Include="UiCharChange.h" />
     <ClInclude Include="UiCoolEndEffect.h" />
     <ClInclude Include="UiGachaCardMove.h" />
@@ -276,6 +277,7 @@
     </ClCompile>
     <ClCompile Include="Silversword_Soldier_FSM.cpp" />
     <ClCompile Include="SpearAce_FSM.cpp" />
+    <ClCompile Include="UiCardDeckController.cpp" />
     <ClCompile Include="UiCharChange.cpp" />
     <ClCompile Include="UiCoolEndEffect.cpp" />
     <ClCompile Include="UiGachaCardMove.cpp" />
