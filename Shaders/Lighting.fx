@@ -358,7 +358,7 @@ float3 PBRShade(
         specular = saturate(specular * shadowAmount);
     }
     float NdotL = max(dot(normal, pointToLights), 0.0);
-    color += (kD * diffuse + specular) * lightColor * lightAttenuation * NdotL;
+    color += (kD * diffuse + specular) * lightColor * g_lightAttenuation * NdotL;
 
     color += ambient;
 
@@ -454,7 +454,7 @@ float3 PBRShadePointLightRange(
 // 거리가 lightRange와 같아질 때, 감쇠가 0이 되도록 보정
     attenuation *= saturate(1.f - saturate(pow(distance / lightRange, 2)));;
     {
-        color += (kD * diffuse + specular) * lightColor * g_lightAttenuation * attenuation * NdotL;
+        color += (kD * diffuse + specular) * lightColor * 50.f * attenuation * NdotL;
 
         color += ambient * attenuation;
     }
