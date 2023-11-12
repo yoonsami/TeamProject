@@ -40,15 +40,18 @@ private:
 
 private:
     _bool m_bOn = true;
+    _bool m_bCalculateOffSet = false;
     _float m_fFollowSpeed = 1.f;
     _float m_fMaxDistance = 5.f;
     _float3 m_vOffset = { 1.f,1.f,1.f };
     _float m_fRotationSpeed = 1.f;
 
+    _bool m_bFixedCheck = false;
+    _float3 m_vFixedLastPos = _float3(0.f);
     weak_ptr<GameObject> m_pPlayer;
     weak_ptr<GameObject> m_pTarget;
 
-
+    
     _float m_fMaxHeightRadian = XM_PI / 3.f;
     _float3 m_vFixedPos = _float3(0.f);
     _float3 m_vFixedDir = _float3(0.f);

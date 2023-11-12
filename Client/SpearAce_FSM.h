@@ -127,7 +127,6 @@ private:
 	void skill_500100();
 	void skill_500100_Init();
 
-	void EvadeCoolCheck();
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
 
 private:
@@ -136,10 +135,9 @@ private:
 
 	_float3 m_vInputTurnVector = _float3(0.f);
 	COOLTIMEINFO m_tRunEndDelay = { 0.2f,0.f };
-	COOLTIMEINFO m_tEvadeDelay = { 1.f,0.f };
 
 	_bool m_bCanCombo = false;
-	_bool m_bEvadeCoolCheck = false;
+
 
 	_float m_fRunSpeed = 6.f;
 	_float m_fSprintSpeed = 8.f;

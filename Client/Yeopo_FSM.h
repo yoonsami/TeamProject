@@ -160,7 +160,7 @@ private:
 
 
 
-	void EvadeCoolCheck();
+	void RidingCoolCheck();
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
 	void Create_Vehicle();
 	void Set_VehicleState(_uint iAnimindex);
@@ -175,7 +175,7 @@ private:
 	COOLTIMEINFO m_tRidingDelay = { 2.f,0.f };
 
 	_bool m_bCanCombo = false;
-	_bool m_bEvadeCoolCheck = false;
+
 	_bool m_bRidingCoolCheck = false;
 
 	_float m_fRunSpeed = 6.f;
