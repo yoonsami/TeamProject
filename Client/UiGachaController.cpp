@@ -30,10 +30,11 @@ HRESULT UiGachaController::Init()
     m_vecObjEffectTag[1] = L"UI_Gacha_Effect1";
     m_vecObjEffectTag[2] = L"UI_Gacha_Effect2";
 
-    m_vecObjBgTag.resize(3);
+    m_vecObjBgTag.resize(4);
     m_vecObjBgTag[0] = L"UI_Gacha_Bg0";
     m_vecObjBgTag[1] = L"UI_Gacha_Bg1";
     m_vecObjBgTag[2] = L"UI_Gacha_Bg2";
+    m_vecObjBgTag[3] = L"UI_Gacha_Bg3";
 
     return S_OK;
 }

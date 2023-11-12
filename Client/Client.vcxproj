@@ -204,6 +204,7 @@
     <ClInclude Include="DemoScene.h" />
     <ClInclude Include="ForwardMovingSkillScript.h" />
     <ClInclude Include="HeroChangeScript.h" />
+    <ClInclude Include="Hero_Data.h" />
     <ClInclude Include="Kyle_FSM.h" />
     <ClInclude Include="Loader.h" />
     <ClInclude Include="LoadingScene.h" />

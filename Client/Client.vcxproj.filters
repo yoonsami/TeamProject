@@ -336,6 +336,9 @@
     <ClInclude Include="UiGachaEffectController.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCardMove\02.UiGachaEffectController</Filter>
     </ClInclude>
+    <ClInclude Include="Hero_Data.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
