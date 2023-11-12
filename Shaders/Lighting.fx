@@ -1,7 +1,10 @@
 #include "Render.fx"
 #include "Light.fx"
+#include "PBR.fx"
 
 float g_ShadowBias;
+float g_lightAttenuation = 1.f;
+float g_ambientRatio = 0.5f;
 
 float CalcShadowFactor(float4 shadowPosH)
 {
@@ -297,6 +300,376 @@ float4 PS_Final(VS_OUT input) : SV_Target
     return output;
 }
 
+// Diffuse
+float3 CalculateCookTorranceBRDF(
+        in float3 normal,
+        in float3 pointToCamera,
+        in float3 halfVector,
+        in float3 pointToLight,
+        in float roughness,
+        in float3 F
+    )
+{
+    float D = NormalDistributionGGXTR(normal, halfVector, roughness); //미세면 분포도 NDF계산
+    float G = GeometrySmith(normal, pointToCamera, pointToLight, roughness); //미세면 그림자 계산
+                
+    float3 numerator = D * G * F;
+    float denominator = 4.0 * saturate(dot(normal, pointToCamera)) * saturate(dot(normal, pointToLight)) + 0.0001f;
+    float3 specular = numerator / denominator;
+                
+    return specular;
+}
+
+float3 PBRShade(
+    in float3 ambientMap,
+    in float3 albedoMap,
+    in float roughnessMap,
+    in float metallicMap,
+    in float3 normal,
+    in float3 pointToLights,
+    in float3 pointToCamera,
+    in float3 lightColor,
+    in float lightAttenuation,
+    in float shadowAmount
+)
+{
+    float3 ambient = ambientMap * albedoMap * 0.2f;
+    float3 color = float3(0.f, 0.f, 0.f);
+
+
+    float3 halfVector = normalize(pointToLights + pointToCamera);
+    
+    float3 diffuse = CalculateLambertianBRDF(albedoMap);
+    
+    float3 F0 = float3(0.04f, 0.04f, 0.04f); //일반적인 프레넬 상수수치를 0.04로 정의
+    F0 = lerp(F0, albedoMap, metallicMap);
+    float3 F = FresnelSchlick(max(dot(halfVector, pointToCamera), 0.0), F0); //반사정도 정의
+    
+    float3 kS = F; //Specular상수
+    float3 kD = float3(1.f, 1.f, 1.f) - kS; //Diffuse 상수
+    kD = kD * float3(1.f - metallicMap, 1.f - metallicMap, 1.f - metallicMap); //Diffuse에 metallic반영
+    
+    float3 specular = CalculateCookTorranceBRDF(normal, pointToCamera, halfVector, pointToLights, roughnessMap, F);
+   
+    //rad = (((kD * albedo / PI) + specular) * radiance * WiDotN);
+
+    { //그림자 효과 반영
+        diffuse = saturate(diffuse * shadowAmount);
+        specular = saturate(specular * shadowAmount);
+    }
+    float NdotL = max(dot(normal, pointToLights), 0.0);
+    color += (kD * diffuse + specular) * lightColor * lightAttenuation * NdotL;
+
+    color += ambient;
+
+    return color;
+        
+}
+
+//float3 PBRShadePointLight(
+//    in float3 ambientMap,
+//    in float3 albedoMap,
+//    in float roughnessMap,
+//    in float metallicMap,
+//    in float3 normal,
+//    in float3 lightPosition,
+//    in float3 pointToCamera,
+//    in float3 lightColor,
+//    in float lightRange
+//)
+//{
+//    float3 ambient = ambientMap * albedoMap * g_ambientRatio;
+//    float3 color = float3(0.f, 0.f, 0.f);
+
+//    float3 pointToLights = lightPosition - worldPosition; // Assuming worldPosition is available
+    
+//    float distanceToLight = length(pointToLights);
+
+//    if (distanceToLight > lightRange)
+//    {
+//        // Light is outside its range, no contribution
+//        return ambient;
+//    }
+
+//    pointToLights /= distanceToLight; // Normalize the direction
+
+//    float3 halfVector = normalize(pointToLights + pointToCamera);
+
+//    float3 diffuse = CalculateLambertianBRDF(albedoMap);
+
+//    float3 F0 = float3(0.04f, 0.04f, 0.04f);
+//    F0 = lerp(F0, albedoMap, metallicMap);
+//    float3 F = FresnelSchlick(max(dot(halfVector, pointToCamera), 0.0), F0);
+
+//    float3 kS = F;
+//    float3 kD = float3(1.f, 1.f, 1.f) - kS;
+//    kD = kD * float3(1.f - metallicMap, 1.f - metallicMap, 1.f - metallicMap);
+
+//    float3 specular = CalculateCookTorranceBRDF(normal, pointToCamera, halfVector, pointToLights, roughnessMap, F);
+
+//    float NdotL = max(dot(normal, pointToLights), 0.0);
+//    float attenuation = 1.0 - saturate(distanceToLight / lightRange); // Attenuation based on distance
+//    color += (kD * diffuse + specular) * lightColor * attenuation * NdotL;
+
+//    color += ambient;
+
+//    return color;
+//}
+
+float3 PBRShadePointLightRange(
+    in float3 ambientMap,
+    in float3 albedoMap,
+    in float roughnessMap,
+    in float metallicMap,
+    in float3 normal,
+    in float3 pointToLight,
+    in float3 pointToCamera,
+    in float3 lightColor,
+    in float lightRange,
+    in float distance
+)
+{
+    float3 ambient = ambientMap * albedoMap * 0.2f;
+    float3 color = float3(0.f, 0.f, 0.f);
+
+    float3 halfVector = normalize(pointToLight + pointToCamera);
+
+    float3 diffuse = CalculateLambertianBRDF(albedoMap);
+
+    float3 F0 = float3(0.04f, 0.04f, 0.04f);
+    F0 = lerp(F0, albedoMap, metallicMap);
+    float3 F = FresnelSchlick(max(dot(halfVector, pointToCamera), 0.0), F0);
+
+    float3 kS = F;
+    float3 kD = float3(1.f, 1.f, 1.f) - kS;
+    kD = kD * float3(1.f - metallicMap, 1.f - metallicMap, 1.f - metallicMap);
+
+    float3 specular = CalculateCookTorranceBRDF(normal, pointToCamera, halfVector, pointToLight, roughnessMap, F);
+
+    float NdotL = max(dot(normal, pointToLight), 0.0);
+
+    // Distance attenuation
+    float attenuation = 1.0 / (1.0 + 0.1 * distance);
+
+// 거리가 lightRange와 같아질 때, 감쇠가 0이 되도록 보정
+    attenuation *= saturate(1.f - saturate(pow(distance / lightRange, 2)));;
+    {
+        color += (kD * diffuse + specular) * lightColor * attenuation * NdotL;
+
+        color += ambient * attenuation;
+    }
+    
+    
+
+    return color;
+}
+
+float3 PBRShadeSpotLight(
+    in float3 ambientMap,
+    in float3 albedoMap,
+    in float roughnessMap,
+    in float metallicMap,
+    in float3 normal,
+    in float3 pointToLight,
+    in float3 pointToCamera,
+    in float3 lightColor,
+    in float lightAttenuation,
+    in float3 lightDirection,
+    in float spotAngle,
+    in float spotExponent
+)
+{
+    float3 ambient = ambientMap * albedoMap * g_ambientRatio;
+    float3 color = float3(0.f, 0.f, 0.f);
+
+    float3 halfVector = normalize(pointToLight + pointToCamera);
+
+    float3 diffuse = CalculateLambertianBRDF(albedoMap);
+
+    float3 F0 = float3(0.04f, 0.04f, 0.04f);
+    F0 = lerp(F0, albedoMap, metallicMap);
+    float3 F = FresnelSchlick(max(dot(halfVector, pointToCamera), 0.0), F0);
+
+    float3 kS = F;
+    float3 kD = float3(1.f, 1.f, 1.f) - kS;
+    kD = kD * float3(1.f - metallicMap, 1.f - metallicMap, 1.f - metallicMap);
+
+    float3 specular = CalculateCookTorranceBRDF(normal, pointToCamera, halfVector, pointToLight, roughnessMap, F);
+
+    float NdotL = max(dot(normal, pointToLight), 0.0);
+    
+    // Spotlight cone calculations
+    float spotlightEffect = 0.0;
+    float3 lightDir = normalize(-lightDirection);
+    float spotCos = dot(lightDir, normalize(-pointToLight));
+    
+    if (spotCos > cos(spotAngle))
+    {
+        // Inside the spotlight cone
+        spotlightEffect = pow(spotCos, spotExponent);
+    }
+
+    color += (kD * diffuse + specular) * lightColor * lightAttenuation * NdotL * spotlightEffect;
+
+    color += ambient;
+
+    return color;
+}
+
+//SubMap0 -> viewPos
+//SubMap1 -> viewNormal
+//SubMap2 -> Shadow
+//SubMap3 -> SSAO
+//SubMap4 -> diffuse
+//SubMap5 -> ARM
+
+
+
+float4 PS_PBR_DirLight(VS_OUT input) :SV_Target
+{
+    float4 output = (float4) 0.f;
+    
+    float3 viewPos = SubMap0.Sample(LinearSampler, input.uv).xyz;
+    if(viewPos.z <= 0.f)
+        clip(-1);
+    
+    float3 viewNormal = SubMap1.Sample(LinearSampler, input.uv).xyz;
+    
+    float3 diffuseColor = SubMap4.Sample(LinearSampler, input.uv).xyz;
+    
+    float3 ambientColor = SubMap5.Sample(LinearSampler, input.uv).xxx;
+    float roughness = SubMap5.Sample(LinearSampler, input.uv).y;
+    float metalic = SubMap5.Sample(LinearSampler, input.uv).z;
+    if (g_SSAO_On)
+        ambientColor = SubMap3.Sample(LinearSampler, input.uv).x;
+   
+    float3 viewLightPos = mul(float4(lights[lightIndex].vPosition.xyz, 1.f), V).xyz;
+    float3 pointToLight = normalize(viewLightPos - viewPos);
+    float3 cameraPosition = float3(0.f, 0.f, 0.f);
+    float3 pointToCamera = normalize(cameraPosition - viewPos);
+    
+    float4 worldPos = mul(float4(viewPos.xyz, 1.f), VInv);
+    float4 shadowClipPos = mul(worldPos, ShadowCameraVP);
+    float shadowFactor = CalcShadowFactor(shadowClipPos);
+    
+    float3 color = PBRShade(
+    ambientColor,
+    diffuseColor,
+    roughness,
+    metalic,
+    viewNormal,
+    pointToLight,
+    pointToCamera,
+    lights[lightIndex].color.diffuse.xyz,
+    g_lightAttenuation,
+   shadowFactor
+    );
+  
+    return float4(color, 1.f);
+}
+//SubMap0 -> viewPos
+//SubMap1 -> viewNormal
+//SubMap2 -> Shadow
+//SubMap3 -> SSAO
+//SubMap4 -> diffuse
+//SubMap5 -> ARM
+float4 PS_PBR_PointLight(VS_OUT input) : SV_Target
+{
+    float4 output = (float4) 0.f;
+    
+    float3 viewPos = SubMap0.Sample(LinearSampler, input.uv).xyz;
+    if (viewPos.z <= 0.f)
+        clip(-1);
+    
+    float3 viewNormal = SubMap1.Sample(LinearSampler, input.uv).xyz;
+    
+    float3 diffuseColor = SubMap4.Sample(LinearSampler, input.uv).xyz;
+    
+    float ambientColor = SubMap5.Sample(LinearSampler, input.uv).x;
+    float roughness = SubMap5.Sample(LinearSampler, input.uv).y;
+    float metalic = SubMap5.Sample(LinearSampler, input.uv).z;
+    if (g_SSAO_On)
+        ambientColor = SubMap3.Sample(LinearSampler, input.uv).x;
+    float3 viewLightPos = mul(float4(lights[lightIndex].vPosition.xyz, 1.f), V).xyz;
+    float3 pointToLight = normalize(viewLightPos - viewPos);
+    float3 cameraPosition = float3(0.f, 0.f, 0.f);
+    float3 pointToCamera = normalize(cameraPosition - viewPos);
+    
+    float4 worldPos = mul(float4(viewPos.xyz, 1.f), VInv);
+    float4 shadowClipPos = mul(worldPos, ShadowCameraVP);
+    float shadowFactor = CalcShadowFactor(shadowClipPos);
+    
+    float3 color = PBRShadePointLightRange(
+    ambientColor,
+    diffuseColor,
+    roughness,
+    metalic,
+    viewNormal,
+    pointToLight,
+    pointToCamera,
+    lights[lightIndex].color.diffuse.xyz,
+    lights[lightIndex].range,
+    length(viewLightPos - viewPos)
+    );
+  
+    return float4(color, 1.f);
+}
+
+float4 PS_PBR_SpotLight(VS_OUT input) : SV_Target
+{
+    float4 output = (float4) 0.f;
+    
+    float3 viewPos = SubMap0.Sample(LinearSampler, input.uv).xyz;
+    if (viewPos.z <= 0.f)
+        clip(-1);
+    
+    float3 viewNormal = SubMap1.Sample(LinearSampler, input.uv).xyz;
+    
+    float3 diffuseColor = SubMap2.Sample(LinearSampler, input.uv).xyz;
+    
+    float3 ambientColor = SubMap3.Sample(LinearSampler, input.uv).xxx;
+    if (g_SSAO_On)
+        ambientColor = saturate(ambientColor + SubMap3.Sample(LinearSampler, input.uv).r);
+    float roughness = SubMap3.Sample(LinearSampler, input.uv).y;
+    float metalic = SubMap3.Sample(LinearSampler, input.uv).z;
+    
+    float3 viewLightPos = mul(float4(lights[lightIndex].vPosition.xyz, 1.f), V).xyz;
+    float3 pointToLight = normalize(viewLightPos - viewPos);
+    float3 cameraPosition = float3(0.f, 0.f, 0.f);
+    float3 pointToCamera = normalize(cameraPosition - viewPos);
+    
+    float4 worldPos = mul(float4(viewPos.xyz, 1.f), VInv);
+    float4 shadowClipPos = mul(worldPos, ShadowCameraVP);
+    float shadowFactor = CalcShadowFactor(shadowClipPos);
+    
+    float3 color = PBRShadeSpotLight(
+    ambientColor,
+    diffuseColor,
+    roughness,
+    metalic,
+    viewNormal,
+    pointToLight,
+    pointToCamera,
+    lights[lightIndex].color.diffuse.xyz,
+    g_lightAttenuation,
+    lights[lightIndex].vDirection.xyz,
+    lights[lightIndex].angle,
+    1.f
+    );
+  
+    return float4(color, 1.f);
+}
+
+float4 PS_PBR_Final(VS_OUT input) : SV_Target
+{
+    float4 ambientLightColor = SubMap4.Sample(LinearSampler, input.uv);
+    ambientLightColor = pow(ambientLightColor, 1.f/2.2f);
+
+
+    return float4(ambientLightColor.rbg,1.f);
+}
+
+
 technique11 t0
 {
     pass dirLight
@@ -325,6 +698,46 @@ technique11 t0
         SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
         SetBlendState(AdditiveBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_SpotLight()));
+    }
+    pass Final
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Final()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_Final()));
+    }
+}
+
+technique11 t1
+{
+    pass dirLight
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_DirLight()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetBlendState(AdditiveBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_DirLight()));
+    }
+    pass pointLight
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_DirLight()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetBlendState(AdditiveBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_PointLight()));
+    }
+    pass spotLight
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_DirLight()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetBlendState(AdditiveBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_SpotLight()));
     }
     pass Final
     {

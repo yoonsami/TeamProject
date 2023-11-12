@@ -1136,8 +1136,8 @@ void Scene::Render_LightFinal()
 	mesh->Get_IndexBuffer()->Push_Data();
 
 	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	material->Get_Shader()->DrawIndexed(0,3, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	int techniqueIndex = GAMEINSTANCE.g_bPBR_On ? 1 : 0;
+	material->Get_Shader()->DrawIndexed(techniqueIndex,3, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
 	m_wstrFinalRenderTarget = L"FinalTarget";
 }

@@ -81,5 +81,10 @@ public:
 		_float g_rimPower = 10.f;
 	};
 	static LIGHTPowerData g_LightPowerData;
+
+
+	static _bool g_bPBR_On;
+	static _float g_lightAttenuation;
+	static _float g_ambientRatio;
 };
 

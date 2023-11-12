@@ -296,6 +296,7 @@
     <FxCompile Include="..\Shaders\Global.fx" />
     <FxCompile Include="..\Shaders\Light.fx" />
     <FxCompile Include="..\Shaders\Lighting.fx" />
+    <FxCompile Include="..\Shaders\PBR.fx" />
     <FxCompile Include="..\Shaders\Render.fx" />
     <FxCompile Include="..\Shaders\Shader_Bloom.fx" />
     <FxCompile Include="..\Shaders\Shader_Distortion.fx" />

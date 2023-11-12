@@ -511,68 +511,6 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
     return output;
 }
 
-// PS_Model
-PS_OUT_Deferred PS_Deferred_MapObject(MeshOutput input)
-{
-    PS_OUT_Deferred output = (PS_OUT_Deferred) 0.f;
-    float4 diffuseColor;
-    float4 specularColor = vector(0.f, 0.f, 0.f, 0.f);
-    float4 emissiveColor;
-    
-    float2 distortedUV = input.uv;
-    
-    if (bHasDissolveMap != 0)
-    {
-        float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
-        if (dissolve < g_float_0)
-            discard;
-    }
-    
-    
-    if (bHasNormalMap)
-        ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
-
-    if (bHasDiffuseMap)
-    {
-        diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
-        diffuseColor.rgb = pow(abs(diffuseColor.rgb), GAMMA);
-    }
-    else
-        diffuseColor = Material.diffuse;
-    
-    if (diffuseColor.a <= 0.1f)
-        discard;
-
-    diffuseColor.a = 1.f;
-    
-    if (bHasSpecularMap)
-    {
-        specularColor = SpecularMap.Sample(LinearSampler, input.uv);
-        specularColor.rgb = pow(abs(specularColor.rgb), GAMMA);
-    }
-//  else
-//      specularColor = Material.specular;
-   
-    if (bHasEmissiveMap)
-    {
-        emissiveColor = EmissiveMap.Sample(LinearSampler, input.uv);
-        emissiveColor.rgb = pow(abs(emissiveColor.rgb), GAMMA);
-    }
-    else
-        emissiveColor = Material.emissive;
-    
-    diffuseColor = diffuseColor;
-    
-    output.position = float4(input.viewPosition.xyz, 0.f);
-    output.normal = float4(input.viewNormal.xyz, 0.f);
-    output.depth = input.position.z;
-    output.depth.w = input.viewPosition.z;
-    output.diffuseColor = diffuseColor;
-    output.specularColor = specularColor;
-    output.emissiveColor = emissiveColor;
-    return output;
-}
-
 PS_OUT_Deferred PS_Deferred_Instancing(MeshInstancingOutput input)
 {
     PS_OUT_Deferred output = (PS_OUT_Deferred) 0.f;
@@ -633,65 +571,6 @@ PS_OUT_Deferred PS_Deferred_Instancing(MeshInstancingOutput input)
     return output;
 }
 
-PS_OUT_Deferred PS_Deferred_MapObjectInstancing(MeshInstancingOutput input)
-{
-PS_OUT_Deferred output = (PS_OUT_Deferred) 0.f;
-float4 diffuseColor;
-float4 specularColor = vector(0.f, 0.f, 0.f, 0.f);
-float4 emissiveColor;
-    
-float2 distortedUV = input.uv;
-    
-    if (bHasDissolveMap != 0)
-    {
-float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
-        if (dissolve < InstanceRenderParams[input.id].g_float_0)
-            discard;
-    }
-    
-    if (bHasNormalMap)
-        ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
-
-    if (bHasDiffuseMap)
-    {
-        diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
-        diffuseColor.rgb = pow(abs(diffuseColor.rgb), GAMMA);
-    }
-    else
-        diffuseColor = Material.
-diffuse;
-    
-    if (diffuseColor.a <= 0.1f)
-        discard;
-
-    diffuseColor.a = 1.f;
-    
-    if (bHasSpecularMap)
-    {
-        specularColor = SpecularMap.Sample(LinearSampler, input.uv);
-        specularColor.rgb = pow(abs(specularColor.rgb), GAMMA);
-    }
-   
-    if (bHasEmissiveMap)
-    {
-        emissiveColor = EmissiveMap.Sample(LinearSampler, input.uv);
-        emissiveColor.rgb = pow(abs(emissiveColor.rgb), GAMMA);
-    }
-    else
-        emissiveColor = Material.emissive;
-
-    diffuseColor = diffuseColor;
-    
-    output.position = float4(input.viewPosition.xyz, 0.f);
-    output.normal = float4(input.viewNormal.xyz, 0.f);
-    output.depth = input.position.z;
-    output.depth.w = input.viewPosition.z;
-    output.diffuseColor = diffuseColor;
-    output.specularColor = specularColor;
-    output.emissiveColor = emissiveColor;
-    return
-output;
-}
 
 // PS_Shadow
 float4 PS_Shadow(ShadowOutput input) : SV_Target
@@ -771,6 +650,211 @@ float4 PS_FRAME(VertexOutput input) : SV_TARGET
 {
     float4 color = float4(1.f, 1.f, 1.f, 1.f);
     return color;
+}
+
+struct PBR_OUTPUT
+{
+    float4 position : SV_Target0;
+    float4 normal : SV_Target1;
+    float4 depth : SV_Target2;
+    float4 diffuseColor : SV_Target3;
+    float4 arm : SV_Target4;
+    float4 emissive : SV_Target5;
+    float4 blur : SV_Target6;
+};
+// PBR
+PBR_OUTPUT PS_PBR_Deferred(MeshOutput input)
+{
+    PBR_OUTPUT output = (PBR_OUTPUT) 0.f;
+    float4 diffuseColor;
+    float4 specularColor;
+    float4 emissiveColor;
+    float4 ARM_Map;
+
+    if (bHasDissolveMap != 0)
+    {
+        float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
+        if (dissolve < g_float_0)
+            discard;
+    }
+    
+    ARM_Map = float4(1.f, 1.f, 0.1f, 1.f);
+    
+    if(bHasSubmap0)
+    {
+        ARM_Map = SubMap0.Sample(LinearSampler, input.uv);
+        ARM_Map = pow(abs(ARM_Map), GAMMA);
+    }
+
+
+    if (bHasNormalMap)
+        ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
+
+    if (bHasDiffuseMap)
+    {
+        diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
+        diffuseColor.rgb = pow(abs(diffuseColor.rgb), GAMMA);
+    }
+    else
+        diffuseColor = Material.diffuse;
+    
+    if (diffuseColor.a <= 0.1f)
+        discard;
+
+    diffuseColor.a = 1.f;
+       
+    if (bHasEmissiveMap)
+    {
+        emissiveColor = EmissiveMap.Sample(LinearSampler, input.uv);
+        emissiveColor.rgb = pow(abs(emissiveColor.rgb), GAMMA);
+    }
+    else
+        emissiveColor = Material.emissive;
+
+    output.position = float4(input.viewPosition.xyz, 0.f);
+    output.normal = float4(input.viewNormal.xyz, 0.f);
+    output.depth = input.position.z;
+    output.depth.w = input.viewPosition.z;
+    output.arm = ARM_Map;
+    output.diffuseColor = diffuseColor;
+    output.emissive = emissiveColor;
+    output.blur = 0;
+    return output;
+}
+
+PBR_OUTPUT PS_PBR_Deferred_Instancing(MeshInstancingOutput input)
+{
+    PBR_OUTPUT output = (PBR_OUTPUT) 0.f;
+    float4 diffuseColor;
+    float4 specularColor;
+    float4 emissiveColor;
+    float4 ARM_Map;
+
+    if (bHasDissolveMap != 0)
+    {
+        float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
+        if (dissolve < InstanceRenderParams[input.id].g_float_0)
+            discard;
+    }
+    
+    ARM_Map = float4(1.f, 1.f, 0.0f, 1.f);
+    
+    if (bHasSubmap0)
+    {
+        ARM_Map = SubMap0.Sample(LinearSampler, input.uv);
+        ARM_Map = pow(abs(ARM_Map), GAMMA);
+    }
+
+    if (bHasNormalMap)
+        ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
+
+    if (bHasDiffuseMap)
+    {
+        diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
+        diffuseColor.rgb = pow(abs(diffuseColor.rgb), GAMMA);
+    }
+    else
+        diffuseColor = Material.diffuse;
+    
+    if (diffuseColor.a <= 0.1f)
+        discard;
+
+    diffuseColor.a = 1.f;
+    
+    if (bHasSpecularMap)
+    {
+        specularColor = SpecularMap.Sample(LinearSampler, input.uv);
+        specularColor.rgb = pow(abs(specularColor.rgb), GAMMA);
+    }
+    else
+        specularColor = Material.specular;
+   
+    if (bHasEmissiveMap)
+    {
+        emissiveColor = EmissiveMap.Sample(LinearSampler, input.uv);
+        emissiveColor.rgb = pow(abs(emissiveColor.rgb), GAMMA);
+    }
+    else
+        emissiveColor = Material.emissive;
+    
+    output.position = float4(input.viewPosition.xyz, 0.f);
+    output.normal = float4(input.viewNormal.xyz, 0.f);
+    output.depth = input.position.z;
+    output.depth.w = input.viewPosition.z;
+    output.arm = ARM_Map;
+    output.diffuseColor = diffuseColor;
+    output.emissive = emissiveColor;
+    output.blur = 0;
+    return output;
+}
+
+PBR_OUTPUT PS_PBR_Deferred_MapObject(MeshOutput input)
+{
+    PBR_OUTPUT output = (PBR_OUTPUT) 0.f;
+    float4 diffuseColor;
+    float4 specularColor = vector(0.f, 0.f, 0.f, 0.f);
+    float4 emissiveColor;
+    float4 ARM_Map;
+    float2 distortedUV = input.uv;
+    
+    if (bHasDissolveMap != 0)
+    {
+        float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
+        if (dissolve < g_float_0)
+            discard;
+    }
+    
+    ARM_Map = float4(1.f, 0.f, 0.f, 1.f);
+    
+    if (bHasSubmap0)
+    {
+        ARM_Map = SubMap0.Sample(LinearSampler, input.uv);
+        ARM_Map = pow(abs(ARM_Map), GAMMA);
+    }
+    
+    if (bHasNormalMap)
+        ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
+
+    if (bHasDiffuseMap)
+    {
+        diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
+        diffuseColor.rgb = pow(abs(diffuseColor.rgb), GAMMA);
+    }
+    else
+        diffuseColor = Material.diffuse;
+    
+    if (diffuseColor.a <= 0.1f)
+        discard;
+
+    diffuseColor.a = 1.f;
+    
+    if (bHasSpecularMap)
+    {
+        specularColor = SpecularMap.Sample(LinearSampler, input.uv);
+        specularColor.rgb = pow(abs(specularColor.rgb), GAMMA);
+    }
+//  else
+//      specularColor = Material.specular;
+   
+    if (bHasEmissiveMap)
+    {
+        emissiveColor = EmissiveMap.Sample(LinearSampler, input.uv);
+        emissiveColor.rgb = pow(abs(emissiveColor.rgb), GAMMA);
+    }
+    else
+        emissiveColor = Material.emissive;
+    
+    diffuseColor = diffuseColor;
+    
+    output.position = float4(input.viewPosition.xyz, 0.f);
+    output.normal = float4(input.viewNormal.xyz, 0.f);
+    output.depth = input.position.z;
+    output.depth.w = input.viewPosition.z;
+    output.arm = ARM_Map;
+    output.diffuseColor = diffuseColor;
+    output.emissive = emissiveColor;
+    output.blur = 0;
+    return output;
 }
 
 technique11 T0_ModelRender
@@ -865,7 +949,7 @@ technique11 T0_ModelRender
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_ShadowInstancing()));
     }
-// 10. �ʿ�����Ʈ UV����, �ù���NONE, �����׽�Ʈ
+
     pass MapObject
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject()));
@@ -873,9 +957,9 @@ technique11 T0_ModelRender
         SetRasterizerState(RS_CullNone);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetPixelShader(CompileShader(ps_5_0, PS_Deferred_MapObject()));
+        SetPixelShader(CompileShader(ps_5_0, PS_Deferred()));
     }
-// 11. �ʿ�����Ʈ UV����, �ù���NONE, �����׽�Ʈ + �ν��Ͻ�
+
     pass MapObject_Instancing
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject_Instancing()));
@@ -883,7 +967,7 @@ technique11 T0_ModelRender
         SetRasterizerState(RS_CullNone);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetPixelShader(CompileShader(ps_5_0, PS_Deferred_MapObjectInstancing()));
+        SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Instancing()));
     }
 
     PASS_RS_VP(P4_WIREFRAME, FillModeWireFrame, VS_NonAnim, PS_FRAME)
@@ -955,5 +1039,119 @@ technique11 T3_MotionTrail
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_MotionTrail()));
+    }
+};
+
+technique11 T4_PBR
+{
+    pass NonAnim_NonInstancing
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_NonAnim()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred()));
+    }
+    pass NonAnim_Instancing
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_NonAnimInstancing()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_Instancing()));
+    }
+    pass Anim_NonInstancing
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Anim()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred()));
+    }
+    pass Anim_Instancing
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_AnimInstancing()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_Instancing()));
+    }
+    pass NonAnim_NonInstancing_CullNone
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_NonAnim()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred()));
+    }
+    pass NonAnim_Instancing_CullNone
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_NonAnimInstancing()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_Instancing()));
+    }
+    pass NonAnimShadow
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Shadow_NonAnim()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_LESS, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_Shadow()));
+    }
+    pass NonAnimShadowInstancing
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Shadow_NonAnim_Instancing()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_LESS, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_ShadowInstancing()));
+    }
+    pass AnimShadow
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Shadow_Anim()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_LESS, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_Shadow()));
+    }
+    pass AnimShadowInstancing
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Shadow_Anim_Instancing()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_LESS, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_ShadowInstancing()));
+    }
+
+    pass MapObject
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MapObject()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred()));
+    }
+
+    pass MapObject_Instancing
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MapObject_Instancing()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_Instancing()));
     }
 };

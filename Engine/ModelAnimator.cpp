@@ -230,7 +230,8 @@ void ModelAnimator::Render()
 		mesh->indexBuffer->Push_Data();
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		
-		m_pShader->DrawIndexed(0, PS_ANIM, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
+		int techniqueIndex = GAMEINSTANCE.g_bPBR_On ? 4 : 0;
+		m_pShader->DrawIndexed(techniqueIndex, PS_ANIM, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
 	}
 
 

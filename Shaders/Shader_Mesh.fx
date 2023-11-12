@@ -1,6 +1,5 @@
 #include "Render.fx"
 #include "Light.fx"
-#define PI 3.141592f
 float g_BarPercent;
 float4 g_DrawColor;
 struct VS_OUT

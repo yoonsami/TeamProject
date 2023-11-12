@@ -65,6 +65,56 @@ void Model::ReadMaterial(const wstring& strPath)
 					}
 				}
 				material->Set_TextureMap(texture, TextureMapType::DIFFUSE);
+				wstring textureR = textureStr;
+
+				Utils::Replace(textureR, L"_D", L"_R");
+				Utils::DetachExt(textureR);
+
+				{
+					textureR += L".dds";
+					auto texture = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+					if (!texture)
+					{
+						Utils::ChangeExt(textureR, L".DDS");
+						texture = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+						if (!texture)
+						{
+							Utils::ChangeExt(textureR, L".tga");
+							texture = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+							if (!texture)
+							{
+								Utils::ChangeExt(textureR, L".png");
+								texture = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+
+							}
+						}
+					}
+				}
+				if (!texture)
+				{
+					Utils::Replace(textureR, L"_R", L"_M");
+					auto texture = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+					if (!texture)
+					{
+						Utils::ChangeExt(textureR, L".DDS");
+						texture = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+						if (!texture)
+						{
+							Utils::ChangeExt(textureR, L".tga");
+							texture = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+							if (!texture)
+							{
+								Utils::ChangeExt(textureR, L".png");
+								texture = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+
+							}
+						}
+					}
+				}
+				material->Set_SubMap(0,texture);
+
+				
+
 			}
 		}
 
@@ -126,7 +176,7 @@ void Model::ReadMaterial(const wstring& strPath)
 		// Specular
 		material->Get_MaterialDesc().specular = file->Read<Color>();
 
-
+		material->Get_MaterialDesc().specular = Color(0.f);
 
 		// Emissive
 		material->Get_MaterialDesc().emissive = file->Read<Color>();

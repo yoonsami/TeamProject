@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "DebugTool.h"
+#include "Light.h"
 #ifdef _DEBUGTOOL
 DebugTool::~DebugTool()
 {
@@ -154,6 +155,19 @@ void DebugTool::RenderOptionTab()
 		_float& g_fRimPower = GAMEINSTANCE.g_LightPowerData.g_rimPower;
 		DragFloat("Specular", &g_fSpecularPower, 0.1f, 0.01f);
 		DragFloat("RimPower", &g_fRimPower, 0.1f, 0.01f);
+		if (CUR_SCENE->Get_Light())
+		{
+			Color& g_lightDiffuse = CUR_SCENE->Get_Light()->Get_Light()->Get_LightInfo().color.diffuse;
+			static bool alpha_preview = true;
+			static bool alpha_half_preview = false;
+			static bool drag_and_drop = true;
+			static bool options_menu = true;
+			static bool hdr = true;
+
+			ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
+			DragFloat4("color", (_float*)&g_lightDiffuse);
+
+		}
 	}
 	SeparatorText("Outline");
 	_bool& g_bOutline = GAMEINSTANCE.g_bDrawOutline;
@@ -171,7 +185,12 @@ void DebugTool::RenderOptionTab()
 		_float& g_fAberrationPower = GAMEINSTANCE.g_fAberrationPower;
 		DragFloat("Aberration Power", &g_fAberrationPower, 1.f, -300.f, 300.f);
 	}
-
+	_bool& g_bPBR_On = GAMEINSTANCE.g_bPBR_On;
+	Checkbox("PBR", &g_bPBR_On);
+	_float& g_lightAttenuation = GAMEINSTANCE.g_lightAttenuation;
+	_float& g_ambientRatio = GAMEINSTANCE.g_ambientRatio;
+	DragFloat("g_lightAttenuation", &g_lightAttenuation);
+	DragFloat("g_ambientRatio", &g_ambientRatio,0.1f,0.1f,1.5f);
 }
 
 #endif

@@ -76,6 +76,12 @@ _float3 GameInstance::g_testVec2 = _float3(0.9f, 1.f, 1.f);
 
 _bool GameInstance::g_bDrawOutline = false;
 
+_bool GameInstance::g_bPBR_On = true;
+
+_float GameInstance::g_lightAttenuation = 100.f;
+
+_float GameInstance::g_ambientRatio = 0.5f;
+
 GameInstance::LIGHTPowerData GameInstance::g_LightPowerData{};
 
 GameInstance::BloomData GameInstance::g_BloomData{};
