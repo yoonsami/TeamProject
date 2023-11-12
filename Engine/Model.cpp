@@ -43,22 +43,23 @@ void Model::ReadMaterial(const wstring& strPath)
 		if (file->Read<_bool>())
 		{
 			wstring textureStr = Utils::ToWString(file->Read<string>());
+			Utils::DetachExt(textureStr);
 			if (textureStr.length() > 0)
 			{
 				textureStr += L".dds";
-				auto texture = RESOURCES.GetOrAddTexture(m_MaterialTag+ L"_" + textureStr, texturePath + L"\\" + textureStr);
+				auto texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
 				if (!texture)
 				{
 					Utils::ChangeExt(textureStr, L".DDS");
-					texture = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
+					texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
 					if (!texture)
 					{
 						Utils::ChangeExt(textureStr, L".tga");
-						texture = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
+						texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
 						if (!texture)
 						{
 							Utils::ChangeExt(textureStr, L".png");
-							texture = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
+							texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
 
 						}
 					}
@@ -71,22 +72,23 @@ void Model::ReadMaterial(const wstring& strPath)
 		if (file->Read<_bool>())
 		{
 			wstring textureStr = Utils::ToWString(file->Read<string>());
+			Utils::DetachExt(textureStr);
 			if (textureStr.length() > 0)
 			{
 				textureStr += L".dds";
-				auto texture = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
+				auto texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
 				if (!texture)
 				{
 					Utils::ChangeExt(textureStr, L".DDS");
-					texture = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
+					texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
 					if (!texture)
 					{
 						Utils::ChangeExt(textureStr, L".tga");
-						texture = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
+						texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
 						if (!texture)
 						{
 							Utils::ChangeExt(textureStr, L".png");
-							texture = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
+							texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
 
 						}
 					}
@@ -99,15 +101,16 @@ void Model::ReadMaterial(const wstring& strPath)
 		if (file->Read<_bool>())
 		{
 			wstring textureStr = Utils::ToWString(file->Read<string>());
+			Utils::DetachExt(textureStr);
 			if (textureStr.length() > 0)
 			{
 				textureStr += L".tga";
-				auto texture = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
+				auto texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
 
 				if (!texture)
 				{
 					Utils::ChangeExt(textureStr, L".png");
-					texture = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
+					texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
 
 				}
 				material->Set_TextureMap(texture, TextureMapType::NORMAL);

@@ -54,12 +54,17 @@ cbuffer LightBuffer
     uint lightCount;
     float3 padding;
     LightInfo lights[50];
+    float specularPower;
+    float rimPower;
+    float2 padding2;
 };
 
 cbuffer MaterialBuffer
 {
     MaterialDesc Material;
 };
+
+
 
 /////////
 // SRV //
@@ -253,9 +258,11 @@ LightColor CalculateLightColor_ViewSpace(int lightIndex, float3 viewNormal, floa
     float3 eyeDir = normalize(viewPosition - cameraPosition);
     
     
-    specularRatio = pow(saturate(dot(-eyeDir, reflectionDir)), 10);
+    specularRatio = pow(saturate(dot(-eyeDir, reflectionDir)), specularPower) +
+    saturate(dot(viewNormal, -viewLightDir)) * pow(smoothstep(0.f, 1.f, 1.f - saturate(dot(-eyeDir, viewNormal))), rimPower);
     
-    emissiveRatio = pow(smoothstep(0.f, 1.f, 1.f - saturate(dot(-eyeDir, viewNormal))), 2);
+    emissiveRatio = saturate(dot(viewNormal, -viewLightDir))
+     * pow(smoothstep(0.f, 1.f, 1.f - saturate(dot(-eyeDir, viewNormal))), 2);
     
     
     color.diffuse = lights[lightIndex].color.diffuse * diffuseRatio * distanceRatio;

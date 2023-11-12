@@ -148,6 +148,13 @@ void DebugTool::RenderOptionTab()
 			DragFloat3("Test2", (_float*)&GAMEINSTANCE.g_testVec2, 0.01f);
 		}
 	}
+	if (CollapsingHeader("Light Option"))
+	{
+		_float& g_fSpecularPower = GAMEINSTANCE.g_LightPowerData.g_specularPower;
+		_float& g_fRimPower = GAMEINSTANCE.g_LightPowerData.g_rimPower;
+		DragFloat("Specular", &g_fSpecularPower, 0.1f, 0.01f);
+		DragFloat("RimPower", &g_fRimPower, 0.1f, 0.01f);
+	}
 	SeparatorText("Outline");
 	_bool& g_bOutline = GAMEINSTANCE.g_bDrawOutline;
 	Checkbox("Outline On", &g_bOutline);

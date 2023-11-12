@@ -1105,6 +1105,9 @@ void Scene::Render_Lights()
 		Camera::S_Proj = mainCamera->Get_ProjMat();
 	}
 
+	m_LightParams.specularPower = GAMEINSTANCE.g_LightPowerData.g_specularPower;
+	m_LightParams.rimPower = GAMEINSTANCE.g_LightPowerData.g_rimPower;
+
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::LIGHTING)->OMSetRenderTargets();
 
 	

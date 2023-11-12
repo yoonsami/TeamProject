@@ -76,6 +76,8 @@ _float3 GameInstance::g_testVec2 = _float3(0.9f, 1.f, 1.f);
 
 _bool GameInstance::g_bDrawOutline = false;
 
+GameInstance::LIGHTPowerData GameInstance::g_LightPowerData{};
+
 GameInstance::BloomData GameInstance::g_BloomData{};
 
 GameInstance::MotionBlurData GameInstance::g_MotionBlurData{};

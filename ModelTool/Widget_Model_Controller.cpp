@@ -232,6 +232,127 @@ void Widget_Model_Controller::Apply_Model()
 		}
 		m_pControlObject = obj;
 	}
+	if (Button("Specular Zero & Save"))
+	{
+		auto model = m_pControlObject.lock()->Get_Model();
+
+
+
+		wstring assetPath = L"..\\Resources\\Models";
+		for (auto& entry : fs::recursive_directory_iterator(assetPath))
+		{
+			if (entry.is_directory())
+				continue;
+
+			if (entry.path().extension().wstring() != L".Material")
+				continue;
+
+			wstring tag = entry.path().filename().wstring();
+			Utils::DetachExt(tag);
+
+			if (tag == model->Get_Name())
+			{
+				wstring finalPath = entry.path().wstring();
+
+				shared_ptr<FileUtils> file = make_shared<FileUtils>();
+				file->Open(finalPath, FileMode::Write);
+
+				file->Write<_uint>(static_cast<_uint>(model->Get_Materials().size()));
+				for (auto& material : model->Get_Materials())
+				{
+					material->Get_MaterialDesc().specular = _float4(0.f);
+					file->Write<string>(Utils::ToString(material->Get_Name()));
+
+					_bool flag = material->Get_TextureMap(TextureMapType::DIFFUSE) != nullptr;
+					file->Write<_bool>(flag);
+					if (flag)
+					{
+						file->Write<string>(Utils::ToString(material->Get_TextureMap(TextureMapType::DIFFUSE)->Get_Name()));
+					}
+
+					flag = material->Get_TextureMap(TextureMapType::SPECULAR) != nullptr;
+					file->Write<_bool>(flag);
+					if (flag)
+					{
+						file->Write<string>(Utils::ToString(material->Get_TextureMap(TextureMapType::SPECULAR)->Get_Name()));
+					}
+
+					flag = material->Get_TextureMap(TextureMapType::NORMAL) != nullptr;
+					file->Write<_bool>(flag);
+					if (flag)
+					{
+						file->Write<string>(Utils::ToString(material->Get_TextureMap(TextureMapType::NORMAL)->Get_Name()));
+					}
+
+					file->Write<Color>(material->Get_MaterialDesc().ambient);
+					file->Write<Color>(material->Get_MaterialDesc().diffuse);
+					file->Write<Color>(material->Get_MaterialDesc().specular);
+					file->Write<Color>(material->Get_MaterialDesc().emissive);
+				}
+			}
+		}
+	}
+
+	if (Button("Weak Specular & Save"))
+	{
+		auto model = m_pControlObject.lock()->Get_Model();
+
+
+
+		wstring assetPath = L"..\\Resources\\Models";
+		for (auto& entry : fs::recursive_directory_iterator(assetPath))
+		{
+			if (entry.is_directory())
+				continue;
+
+			if (entry.path().extension().wstring() != L".Material")
+				continue;
+
+			wstring tag = entry.path().filename().wstring();
+			Utils::DetachExt(tag);
+
+			if (tag == model->Get_Name())
+			{
+				wstring finalPath = entry.path().wstring();
+
+				shared_ptr<FileUtils> file = make_shared<FileUtils>();
+				file->Open(finalPath, FileMode::Write);
+
+				file->Write<_uint>(static_cast<_uint>(model->Get_Materials().size()));
+				for (auto& material : model->Get_Materials())
+				{
+					material->Get_MaterialDesc().specular = _float4(0.1f);
+					file->Write<string>(Utils::ToString(material->Get_Name()));
+
+					_bool flag = material->Get_TextureMap(TextureMapType::DIFFUSE) != nullptr;
+					file->Write<_bool>(flag);
+					if (flag)
+					{
+						file->Write<string>(Utils::ToString(material->Get_TextureMap(TextureMapType::DIFFUSE)->Get_Name()));
+					}
+
+					flag = material->Get_TextureMap(TextureMapType::SPECULAR) != nullptr;
+					file->Write<_bool>(flag);
+					if (flag)
+					{
+						file->Write<string>(Utils::ToString(material->Get_TextureMap(TextureMapType::SPECULAR)->Get_Name()));
+					}
+
+					flag = material->Get_TextureMap(TextureMapType::NORMAL) != nullptr;
+					file->Write<_bool>(flag);
+					if (flag)
+					{
+						file->Write<string>(Utils::ToString(material->Get_TextureMap(TextureMapType::NORMAL)->Get_Name()));
+					}
+
+					file->Write<Color>(material->Get_MaterialDesc().ambient);
+					file->Write<Color>(material->Get_MaterialDesc().diffuse);
+					file->Write<Color>(material->Get_MaterialDesc().specular);
+					file->Write<Color>(material->Get_MaterialDesc().emissive);
+				}
+			}
+		}
+	}
 }
 
 void Widget_Model_Controller::Model_Info()

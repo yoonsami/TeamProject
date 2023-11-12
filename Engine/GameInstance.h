@@ -73,5 +73,13 @@ public:
 		_float g_BloomMin = 0.99f;
 	};
 	static BloomData g_BloomData;
+
+
+	struct LIGHTPowerData
+	{
+		_float g_specularPower = 10.f;
+		_float g_rimPower = 10.f;
+	};
+	static LIGHTPowerData g_LightPowerData;
 };
 

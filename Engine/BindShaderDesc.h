@@ -45,6 +45,9 @@ struct LightParams
 	_uint lightCount;
 	_float3 padding;
 	LightInfo lights[50];
+	_float specularPower = 10.f;
+	_float rimPower = 10.f;
+	_float2 dpadding;
 };
 
 struct MaterialDesc
