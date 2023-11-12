@@ -168,6 +168,7 @@ void MeshEffect::Init_RenderParams()
 	m_RenderParams.SetInt(0, m_tDesc.iSamplerType);
 	m_RenderParams.SetInt(1, m_tDesc.bUseFadeOut);
 	m_RenderParams.SetInt(2, m_tDesc.bIsOverlayOn);
+	m_RenderParams.SetInt(3, m_tDesc.bInverseDissolve);
 
 	m_RenderParams.SetFloat(0, m_fCurrAge / m_tDesc.fDuration);
 	m_RenderParams.SetFloat(1, m_tDesc.fAlphaGraIntensity);

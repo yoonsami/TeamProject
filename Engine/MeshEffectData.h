@@ -56,6 +56,7 @@ public:
         string      strDissolveTexture;
         _float2     vTiling_Dissolve;
         _float2     vUVSpeed_Dissolve;
+        _bool       bInverseDissolve;
 
         // Distortion
         string      strDistortionTexture;
@@ -74,13 +75,17 @@ public:
 	~MeshEffectData();
 
 public:
-    void    Set_Desc(DESC tDesc);
+    virtual void	Load(const wstring& path) override;
 
-	DESC	Get_Desc() { return m_tDesc; }
-    wstring Get_MeshEffectDataTag() { return wstrTag; }
+    /* Setter */
+    void            Set_Desc(DESC tDesc);
+
+    /* Getter */
+	DESC	        Get_Desc() { return m_tDesc; }
+    wstring         Get_MeshEffectDataTag() { return m_wstrTag; }
 
 private:
-    wstring wstrTag;
+    wstring m_wstrTag;
 	DESC	m_tDesc;
 };
 

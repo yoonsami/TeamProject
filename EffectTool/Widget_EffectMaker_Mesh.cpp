@@ -147,7 +147,10 @@ void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 		Create();
 	ImGui::SameLine();
 	if (ImGui::Button("Save"))
+	{
+		// For. Update file data 
 		Save();	
+	}
 	ImGui::Spacing();
 }
 
@@ -533,6 +536,9 @@ void Widget_EffectMaker_Mesh::Option_Dissolve()
 			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
 			ImGui::BeginChild("##Child1_Dissolve", ImVec2(ImGui::GetContentRegionAvail().x - 100, 250), false, window_flags);
 
+			// For. Inverse 
+			ImGui::Checkbox("Inverse##Dissolve", &m_bDissolveInverse);
+
 			// For. Texture 
 			SubWidget_TextureCombo(&m_DissolveTexture.first, &m_DissolveTexture.second, m_strTexturePath, "Texture##Dissolve");
 
@@ -690,6 +696,7 @@ void Widget_EffectMaker_Mesh::Create()
 		m_DissolveTexture.second,
 		_float2(m_fTiling_Overlay[0], m_fTiling_Overlay[1]),
 		_float2(m_fUVSpeed_Overlay[0], m_fUVSpeed_Overlay[1]),
+		m_bDissolveInverse,
 
 		m_DistortionTexture.second,
 		_float2(m_fTiling_Distortion[0], m_fTiling_Distortion[1]),
@@ -779,6 +786,7 @@ void Widget_EffectMaker_Mesh::Save()
 	// file->Write<_bool>(m_bUVOptionSameWithOpacity_Dissolve);
 	file->Write<_float2>(_float2(m_fTiling_Dissolve[0], m_fTiling_Dissolve[1]));
 	file->Write<_float2>(_float2(m_fUVSpeed_Dissolve[0], m_fUVSpeed_Dissolve[1]));
+	file->Write<_bool>(m_bDissolveInverse);
 
 	/* Distortion */
 	// file->Write<_bool>(m_bDistortion_On);
@@ -796,8 +804,11 @@ void Widget_EffectMaker_Mesh::Save()
 	/* Color Edit */
 	file->Write<_float>(m_fContrast);
 
+	RESOURCES.ReloadOrAddMeshEffectData(Utils::ToWString(strFileName), Utils::ToWString(strFilePath));
+	
 	// For. Update Finished Effect List 
 	Set_FinishedEffect_List();
+
 }
 
 void Widget_EffectMaker_Mesh::Load()
@@ -895,6 +906,7 @@ void Widget_EffectMaker_Mesh::Load()
 	UVSpeed = file->Read<_float2>();
 	m_fTiling_Dissolve[0] = UVSpeed.x;
 	m_fTiling_Dissolve[1] = UVSpeed.y;
+	m_bDissolveInverse = file->Read<_bool>();
 	m_DissolveTexture.first = GetIndex_FromTexList(m_DissolveTexture.second);
 	m_bUVOptionSameWithOpacity_Dissolve = Compare_IsSameUVOptionsWithOpacity(tiling, UVSpeed);
 	if (0 == m_DissolveTexture.first) m_bDissolve_On = false;

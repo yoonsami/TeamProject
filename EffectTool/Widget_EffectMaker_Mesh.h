@@ -132,6 +132,7 @@ private:
 	_bool					m_bUVOptionSameWithOpacity_Dissolve = { true };
 	_float					m_fTiling_Dissolve[2] = { 0.f, 0.f };
 	_float					m_fUVSpeed_Dissolve[2] = { 0.f, 0.f };
+	_bool					m_bDissolveInverse = { false };
 
 	/* Distortion */
 	_bool					m_bDistortion_On = { true };

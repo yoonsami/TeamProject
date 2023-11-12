@@ -147,6 +147,33 @@ shared_ptr<GroupEffectData> ResourceMgr::ReloadGroupEffectData(const wstring& ke
 	return reloadedGroupEffectData;
 }
 
+shared_ptr<MeshEffectData> ResourceMgr::ReloadOrAddMeshEffectData(const wstring& key, const wstring& path)
+{
+	wstring name = key;
+	Utils::DetachExt(name);
+	if (key == L"")
+		return nullptr;
+
+	auto meshEffectData = Get<MeshEffectData>(name);
+	
+	auto newMeshEffectData = make_shared<MeshEffectData>();
+	newMeshEffectData->Load(path);
+	newMeshEffectData->Set_Name(name);
+
+	// For. Add New Mesh Effect Data 
+	if (nullptr == meshEffectData)
+		Add(name, newMeshEffectData);
+
+	// For. Delete prev Mesh Effect Data and Add new Mesh Effect Data
+	else
+	{
+		Delete<GroupEffectData>(name);	// For. Delete prev 
+		Add(name, newMeshEffectData);	// For. Add new 
+	}
+	return newMeshEffectData;
+}
+
+
 //shared_ptr<Parts> ResourceMgr::Get_Part(const wstring& key)
 //{
 //	_uint type;
@@ -925,6 +952,7 @@ void ResourceMgr::CreateMeshEffectData()
 		tDesc.strDissolveTexture = file->Read<string>();
 		tDesc.vTiling_Dissolve = file->Read<_float2>();
 		tDesc.vUVSpeed_Dissolve = file->Read<_float2>();
+		tDesc.bInverseDissolve = file->Read<_bool>();
 		
 		/* Distortion */
 		tDesc.strDistortionTexture = file->Read<string>();

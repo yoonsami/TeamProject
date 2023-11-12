@@ -13,9 +13,6 @@
     <Filter Include="03.GameObject">
       <UniqueIdentifier>{ee773b00-535e-4007-8d6d-5b8a2b86c906}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04.Component">
-      <UniqueIdentifier>{26def114-1c9f-4216-9190-464b8bec2c69}</UniqueIdentifier>
-    </Filter>
     <Filter Include="05.ComputeShader">
       <UniqueIdentifier>{0ad0e316-7f40-4089-bf88-047b583ee35a}</UniqueIdentifier>
     </Filter>
@@ -76,30 +73,6 @@
     <Filter Include="01.Graphics\01.RenderTargetGroup">
       <UniqueIdentifier>{87d4de40-0bc1-4a01-9b6c-ebb69e63a7fb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04.Component\00.Transform">
-      <UniqueIdentifier>{90bd05a2-5e0e-4471-9a4d-faf918e06e8c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.Component\01.Renderer">
-      <UniqueIdentifier>{19b5844d-7a85-458e-b918-de05adbfce46}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.Component\02.Light">
-      <UniqueIdentifier>{92ceb689-3c12-4162-a37e-fddd90e1d051}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.Component\03.Camera">
-      <UniqueIdentifier>{a8a083a3-c81d-404a-8489-39744bb2ad39}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.Component\04.Collider">
-      <UniqueIdentifier>{682b656d-5374-4675-9283-604a606618f6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.Component\05.UI &amp; Effect">
-      <UniqueIdentifier>{12669ecb-cf3a-4602-8e62-7f04357d6aac}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.Component\06.Physics">
-      <UniqueIdentifier>{f5320ee3-6080-4152-a2b2-0214ff200612}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.Component\99.MonoBehaviour">
-      <UniqueIdentifier>{be5a6373-0f12-4c17-b924-73a61646bc9a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="98.Utils\MathUtils">
       <UniqueIdentifier>{0d9eaf83-09c1-47ff-8024-568cfcfd74c2}</UniqueIdentifier>
     </Filter>
@@ -139,8 +112,38 @@
     <Filter Include="02.Manager\07.SceneMgr">
       <UniqueIdentifier>{2600eb6f-4e1d-4048-a762-6b5002ebbb4f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04.Component\03.Camera\Frustum">
-      <UniqueIdentifier>{c5a9c261-b507-4315-a709-3997cd60fc82}</UniqueIdentifier>
+    <Filter Include="05.ComputeShader\Buffer">
+      <UniqueIdentifier>{9c36b88d-9932-4aff-ad50-4479ca471ec9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05.ComputeShader\Buffer\00.RawBuffer">
+      <UniqueIdentifier>{c20e31c3-882c-4813-95b9-fbc3b41a1ded}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05.ComputeShader\Buffer\01.StructuredBuffer">
+      <UniqueIdentifier>{58620912-ec41-445a-b68b-50c3fc705417}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05.ComputeShader\Buffer\02.TextureBuffer">
+      <UniqueIdentifier>{fd03e601-7140-4d0b-b80f-840c98a8efed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Manager\08.PickingMgr">
+      <UniqueIdentifier>{cafb0d5d-56cb-49a1-8e0b-6b2a79438b89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Manager\01.ResourceMgr\Resources\MeshEffectData">
+      <UniqueIdentifier>{efd276ef-2cc6-474b-b9c5-1eee05b5a822}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Manager\01.ResourceMgr\Resources\GroupEffectData">
+      <UniqueIdentifier>{244ea0fd-53e6-49ae-9fc6-176c11c9aa1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Manager\01.ResourceMgr\Resources\ParticleData">
+      <UniqueIdentifier>{cd6760d9-ba73-42d1-983b-5273ca1ca635}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Component">
+      <UniqueIdentifier>{26def114-1c9f-4216-9190-464b8bec2c69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Component\00.Transform">
+      <UniqueIdentifier>{90bd05a2-5e0e-4471-9a4d-faf918e06e8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Component\01.Renderer">
+      <UniqueIdentifier>{19b5844d-7a85-458e-b918-de05adbfce46}</UniqueIdentifier>
     </Filter>
     <Filter Include="04.Component\01.Renderer\00.MeshRenderer">
       <UniqueIdentifier>{1cff1684-fe50-4ee6-8e75-890d174c7ad7}</UniqueIdentifier>
@@ -150,6 +153,21 @@
     </Filter>
     <Filter Include="04.Component\01.Renderer\02.ModelAnimator">
       <UniqueIdentifier>{00089fc3-f608-4a03-af56-b8b565416c88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Component\02.Light">
+      <UniqueIdentifier>{92ceb689-3c12-4162-a37e-fddd90e1d051}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Component\03.Camera">
+      <UniqueIdentifier>{a8a083a3-c81d-404a-8489-39744bb2ad39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Component\03.Camera\Frustum">
+      <UniqueIdentifier>{c5a9c261-b507-4315-a709-3997cd60fc82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Component\04.Collider">
+      <UniqueIdentifier>{682b656d-5374-4675-9283-604a606618f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Component\05.UI &amp; Effect">
+      <UniqueIdentifier>{12669ecb-cf3a-4602-8e62-7f04357d6aac}</UniqueIdentifier>
     </Filter>
     <Filter Include="04.Component\05.UI &amp; Effect\Renderer">
       <UniqueIdentifier>{374f31d2-49c8-4ee8-a101-bdb936bd286c}</UniqueIdentifier>
@@ -163,33 +181,6 @@
     <Filter Include="04.Component\05.UI &amp; Effect\Renderer\02.TrailRenderer">
       <UniqueIdentifier>{91028780-6559-4d73-8752-0adeb3d4b440}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05.ComputeShader\Buffer">
-      <UniqueIdentifier>{9c36b88d-9932-4aff-ad50-4479ca471ec9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05.ComputeShader\Buffer\00.RawBuffer">
-      <UniqueIdentifier>{c20e31c3-882c-4813-95b9-fbc3b41a1ded}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05.ComputeShader\Buffer\01.StructuredBuffer">
-      <UniqueIdentifier>{58620912-ec41-445a-b68b-50c3fc705417}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05.ComputeShader\Buffer\02.TextureBuffer">
-      <UniqueIdentifier>{fd03e601-7140-4d0b-b80f-840c98a8efed}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.Component\06.Physics\CharacterController">
-      <UniqueIdentifier>{2902a53f-06db-4eee-b5f6-88171d3472a3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.Component\06.Physics\RigidBody">
-      <UniqueIdentifier>{143553ec-2bc3-48dc-bfe2-c071dd206415}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.Component\05.UI &amp; Effect\BaseUI">
-      <UniqueIdentifier>{e14ec4b2-39d7-4f79-8807-1d532279e51b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Manager\08.PickingMgr">
-      <UniqueIdentifier>{cafb0d5d-56cb-49a1-8e0b-6b2a79438b89}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.Component\07.FSM">
-      <UniqueIdentifier>{d8ad09ab-a535-4404-91b9-e888c1e858eb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="04.Component\05.UI &amp; Effect\Renderer\03.MotionTrailRenderer">
       <UniqueIdentifier>{6f75b1ee-ac69-4138-a4c2-c8e5be877ffe}</UniqueIdentifier>
     </Filter>
@@ -202,14 +193,23 @@
     <Filter Include="04.Component\05.UI &amp; Effect\Renderer\06.GroupEffect">
       <UniqueIdentifier>{30349403-3380-404e-8c9e-85f3af609027}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Manager\01.ResourceMgr\Resources\MeshEffectData">
-      <UniqueIdentifier>{efd276ef-2cc6-474b-b9c5-1eee05b5a822}</UniqueIdentifier>
+    <Filter Include="04.Component\05.UI &amp; Effect\BaseUI">
+      <UniqueIdentifier>{e14ec4b2-39d7-4f79-8807-1d532279e51b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Manager\01.ResourceMgr\Resources\GroupEffectData">
-      <UniqueIdentifier>{244ea0fd-53e6-49ae-9fc6-176c11c9aa1e}</UniqueIdentifier>
+    <Filter Include="04.Component\06.Physics">
+      <UniqueIdentifier>{f5320ee3-6080-4152-a2b2-0214ff200612}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Manager\01.ResourceMgr\Resources\ParticleData">
-      <UniqueIdentifier>{cd6760d9-ba73-42d1-983b-5273ca1ca635}</UniqueIdentifier>
+    <Filter Include="04.Component\06.Physics\CharacterController">
+      <UniqueIdentifier>{2902a53f-06db-4eee-b5f6-88171d3472a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Component\06.Physics\RigidBody">
+      <UniqueIdentifier>{143553ec-2bc3-48dc-bfe2-c071dd206415}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Component\99.MonoBehaviour">
+      <UniqueIdentifier>{be5a6373-0f12-4c17-b924-73a61646bc9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Component\07.FSM">
+      <UniqueIdentifier>{d8ad09ab-a535-4404-91b9-e888c1e858eb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
