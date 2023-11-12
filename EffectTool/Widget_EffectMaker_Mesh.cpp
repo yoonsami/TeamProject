@@ -167,9 +167,23 @@ void Widget_EffectMaker_Mesh::ImGui_FinishedEffect()
 
 void Widget_EffectMaker_Mesh::Option_Property()
 {
-	ImGui::SeparatorText("Property");
+	ImGui::SeparatorText("Property");	
 
 	ImGui::InputText("Tag", m_szTag, MAX_PATH);
+	ImGui::Spacing();
+
+	ImGui::RadioButton("Static##Property", &m_iMeshCntOption, 0);
+	ImGui::RadioButton("Random in range##Property", &m_iMeshCntOption, 1);
+	switch (m_iMeshCntOption)
+	{
+	case 0:
+		ImGui::InputInt("Num of Mesh##Property", &m_iMeshCnt[0]);
+		m_iMeshCnt[1] = m_iMeshCnt[0];
+		break;
+	case 1:
+		ImGui::InputInt2("Num of Mesh(min, max)##Property", m_iMeshCnt); 
+		break;
+	}
 	ImGui::Spacing();
 
 	ImGui::InputFloat("Duration", &m_fDuration);
@@ -234,12 +248,17 @@ void Widget_EffectMaker_Mesh::Option_Diffuse()
 	{
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
 		ImGui::BeginChild("##Child1_Diffuse", ImVec2(ImGui::GetContentRegionAvail().x - 100, 150), false, window_flags);
-
 		switch (m_iDiffuseOption)
 		{
 		case 0: 
 			// For. Texture 
-			SubWidget_TextureCombo(&m_DiffuseTexture.first, &m_DiffuseTexture.second, m_strTexturePath,"Texture##Diffuse");
+			if(!m_bIsTextureSameWithOpacity)
+				SubWidget_TextureCombo(&m_DiffuseTexture.first, &m_DiffuseTexture.second, m_strTexturePath,"Texture##Diffuse");
+			if (ImGui::Checkbox("Use same texture with Opacity##DIffuse", &m_bIsTextureSameWithOpacity))
+			{
+				m_DiffuseTexture.first = m_OpacityTexture.first;
+				m_DiffuseTexture.second = m_OpacityTexture.second;
+			}
 			break;
 		case 1:
 			ImGui::ColorEdit4("Color##Diffuse", (float*)&m_vDiffuseColor_BaseStart, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
@@ -630,6 +649,14 @@ void Widget_EffectMaker_Mesh::Option_ColorEdit()
 	ImGui::InputFloat("Contrast", &m_fContrast);
 	
 	ImGui::Spacing();
+}
+
+void Widget_EffectMaker_Mesh::Option_ParticleProperty()
+{
+}
+
+void Widget_EffectMaker_Mesh::Option_ParticleMoveing()
+{
 }
 
 void Widget_EffectMaker_Mesh::Create()

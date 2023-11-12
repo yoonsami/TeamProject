@@ -4,6 +4,10 @@
 class Widget_EffectMaker_Mesh
 {
 public:
+	enum MeshEffectType {MT_PARTICLE, MT_EFFECT, MT_END};
+	enum ParticleMovement {PM_END};
+
+public:
 	Widget_EffectMaker_Mesh();
 	~Widget_EffectMaker_Mesh();
 
@@ -34,6 +38,8 @@ private:
 	void					Option_Dissolve();
 	void					Option_Distortion();
 	void					Option_ColorEdit();
+	void					Option_ParticleProperty();
+	void					Option_ParticleMoveing();
 
 	void					Create();
 	void					Save();
@@ -51,7 +57,7 @@ private:
 	_bool					Compare_IsSameUVOptionsWithOpacity(_float2 tiling, _float2 UVSpeed);
 private:
 	/* Effect List */
-	_uint					m_iNumFinishedEffects = { 0 };
+	_uint					m_iNumFinishedEffects = { MT_PARTICLE };
 	vector<string>			m_vecFinishedEffects;
 	const char**			m_pszFinishedEffects = { nullptr };
 	_int					m_iFinishedObject = { 0 };
@@ -62,6 +68,10 @@ private:
 	_float					m_fDuration = { 3.f };
 	_bool					m_bBlurOn = { false };
 	_bool					m_bUseFadeOut = { true };
+
+	/* Mesh Count */
+	_int					m_iMeshCntOption = { 0 };
+	_int					m_iMeshCnt[2];	// min, max					// NEW 
 
 	/* Mesh list */
 	_uint					m_iNumMeshes = { 0 };
@@ -85,11 +95,12 @@ private:
 	_bool					m_bColorChangingOn = { false };
 
 	/* Diffuse */
-	_int					m_iDiffuseOption = { 0 };	// Texture, Custom, Random
+	_int					m_iDiffuseOption = { 1 };	// Texture, Custom, Random
 	pair<_int, string>		m_DiffuseTexture = { 0, "None" };
 	ImVec4					m_vDiffuseColor_BaseStart = ImVec4(1.f, 1.f, 1.f, 1.f);
 	ImVec4					m_vDiffuseColor_BaseEnd = ImVec4(1.f, 1.f, 1.f, 1.f);
 	ImVec4					m_vDiffuseColor_Dest = ImVec4(1.f, 1.f, 1.f, 1.f);
+	_bool					m_bIsTextureSameWithOpacity = { false };
 
 	/* Alpha Gradation */
 	_bool					m_bAlphaGra_On = { false };
@@ -147,6 +158,9 @@ private:
 
 	/* Color Edit */
 	_float					m_fContrast = { 0.f };
+
+	// (if m_iMeshCnt is bigger then 1) 
+		// TODO 
 
 	/* const */
 	const string			m_strTexturePath = "../Resources/Textures/Universal/";
