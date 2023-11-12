@@ -39,9 +39,6 @@ void GroupEffect::Tick()
 
 void GroupEffect::Final_Tick()
 {
-	if (m_bIsStop)
-		return;
-
 	m_fCurrAge += fDT;
 
 	// For. Check all effect finished
@@ -63,16 +60,8 @@ void GroupEffect::Final_Tick()
 
 		if (bIsAllNullptr)
 		{
-			if (m_bIsLoop)
-			{
-				m_vMemberEffects.clear();
-				m_fCurrAge = 0.f;
-			}
-			else
-			{
-				CUR_SCENE->Remove_GameObject(Get_Owner());
-				return;
-			}
+			CUR_SCENE->Remove_GameObject(Get_Owner());
+			return;
 		}
 	}
 }
@@ -101,14 +90,6 @@ void GroupEffect::Save(const wstring& path)
 	}
 }
 
-void GroupEffect::Set_Stop(_bool bIsStop)
-{
-	//m_bIsStop = bIsStop;
-
-	//for (auto& iter : m_vMemberEffects)
-	//	iter->Get_MeshEffect()->Set_IsAlwaysShowFirstTick(bIsStop);
-}
-
 void GroupEffect::Create_MeshEffect(_int iIndex)
 {
 	auto iter = m_vMemberEffectData[iIndex];
@@ -133,7 +114,6 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
 	MeshEffectData::DESC tDesc = meshEffectData->Get_Desc();
 	EffectObj->Get_MeshEffect()->Init(&tDesc);
 	EffectObj->Get_MeshEffect()->Set_IsImmortal(false);
-	EffectObj->Get_MeshEffect()->Set_IsAlwaysShowFirstTick(m_bIsStop);
 
 	// For. Add to vector 
 	m_vMemberEffects.push_back(EffectObj);

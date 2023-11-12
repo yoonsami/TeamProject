@@ -73,10 +73,6 @@ private:
 	/* new */
 	char					m_szNewGroupEffectTag[MAX_PATH] = { "-" };
 
-	/* Group Effect Options */
-	_bool					m_bIsLoopOn = { true };
-	_bool					m_bIsStopOn = { true };
-
 	/* Widget On Options */
 	_bool					m_bWidgetOn_GetTag = { false };
 	_bool					m_bWidgetOn_AddMeshEffect = { false };
