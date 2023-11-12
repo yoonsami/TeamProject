@@ -79,8 +79,8 @@ void Widget_GroupEffectMaker::Set_GroupList()
 		if (entry.path().extension().wstring() != L".dat")
 			continue;
 
-		string tag = entry.path().string();
-		tag = entry.path().filename().string();
+		string tag = entry.path().filename().string();
+		Utils::DetachExt(tag);
 		m_vecGroups.push_back(tag);
 	}
 
@@ -141,7 +141,7 @@ void Widget_GroupEffectMaker::Set_MemberEffectList()
 		m_tCurrMemberProperty[iIndex2].m_fRotation[0] = iter.vPivot_Rotation.x;
 		m_tCurrMemberProperty[iIndex2].m_fRotation[1] = iter.vPivot_Rotation.y;
 		m_tCurrMemberProperty[iIndex2].m_fRotation[2] = iter.vPivot_Rotation.z;
-		iIndex++;
+		iIndex2++;
 	}
 }
 
@@ -164,8 +164,8 @@ void Widget_GroupEffectMaker::Set_MeshEffectList()
 		if (entry.path().extension().wstring() != L".dat")
 			continue;
 
-		string tag = entry.path().string();
-		tag = entry.path().filename().string();
+		string tag = entry.path().filename().string();
+		Utils::DetachExt(tag);
 		m_vecMeshEffects.push_back(tag);
 	}
 
@@ -259,13 +259,30 @@ void Widget_GroupEffectMaker::Widget_GroupMaker()
 		ImGui::Spacing();
 		
 		if (ImGui::Button("Save"))
+		{
 			Save();
+		}
 		ImGui::Spacing();
 
 		ImGui::SameLine();
 
-		ImGui::Checkbox("Loop On##GroupEffect", &m_bIsLoopOn);
+		if(ImGui::Checkbox("Loop On##GroupEffect", &m_bIsLoopOn))
+		{
+			if (nullptr == m_pCurrentGroup)
+				m_bIsLoopOn = false;
+			else
+				m_pCurrentGroup->Get_GroupEffect()->Set_Loop(m_bIsLoopOn);
+		}
 		ImGui::SameLine();
+		if (ImGui::Checkbox("Stop##GroupEffect", &m_bIsStopOn))
+		{
+			if (nullptr == m_pCurrentGroup)
+				m_bIsStopOn = true;
+			else
+				m_pCurrentGroup->Get_GroupEffect()->Set_Stop(m_bIsStopOn);
+		}
+		ImGui::Spacing();
+
 		if (ImGui::Button("Play##GroupEffect"))
 			Create();
 		ImGui::Spacing();
@@ -289,6 +306,8 @@ void Widget_GroupEffectMaker::Widget_GetTag()
 	{
 		Save(m_szNewGroupEffectTag);
 		Set_GroupList();
+		m_bIsStopOn = true;
+		m_bIsLoopOn = false;
 		Create();
 		m_bWidgetOn_GetTag = false;
 	}
@@ -385,6 +404,8 @@ void Widget_GroupEffectMaker::Option_GroupList()
 				// 2. Add GroupEffect to Current Scene  
 				m_iGroup = n;
 				m_strGroup = m_pszGroups[m_iGroup];
+				m_bIsStopOn = true;
+				m_bIsLoopOn = false;
 				Create();
 
 				// 3. Update MemberEffect list
@@ -483,6 +504,8 @@ void Widget_GroupEffectMaker::AddMemberEffect(const wstring& wstrTag, GroupEffec
 
 	// For. Delete current GroupEffect GameObject and recreate updated GroupEffect GameObject
 	Delete();
+	m_bIsStopOn = true;
+	m_bIsLoopOn = false;
 	Create();
 	Set_MemberEffectList(); 
 }
@@ -502,15 +525,17 @@ void Widget_GroupEffectMaker::Create()
 	pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
 	
 	// For. GroupEffectData 
-	wstring wstrFileName = Utils::ToWString(m_strGroup);
+	wstring wstrFileName = Utils::ToWString(m_strGroup) + L".dat";
 	wstring wtsrFilePath = TEXT("..\\Resources\\EffectData\\GroupEffectData\\") + wstrFileName;
-	shared_ptr<GroupEffectData> pGroupEffectData = RESOURCES.GetOrAddGroupEffectData(wstrFileName, wtsrFilePath);
+	shared_ptr<GroupEffectData> pGroupEffectData = RESOURCES.GetOrAddGroupEffectData(Utils::ToWString(m_strGroup), wtsrFilePath);
 
 	// For. GroupEffect component 
 	shared_ptr<GroupEffect> pGroupEffect = make_shared<GroupEffect>();
 	pGroupEffectObj->Add_Component(pGroupEffect);
 	pGroupEffectObj->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
 	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
+	pGroupEffectObj->Get_GroupEffect()->Set_Stop(m_bIsStopOn);
+	pGroupEffectObj->Get_GroupEffect()->Set_Loop(m_bIsLoopOn);
 
 	// For. bind to member 
 	m_pCurrentGroup = pGroupEffectObj;
@@ -530,6 +555,7 @@ void Widget_GroupEffectMaker::Delete()
 
 void Widget_GroupEffectMaker::Save(const string& wstrNewGroupTag)
 {
+	// For. Save New Group Effect 
 	if ("." != wstrNewGroupTag)
 	{
 		string strNewFilePath = "..\\Resources\\EffectData\\GroupEffectData\\";
@@ -543,10 +569,15 @@ void Widget_GroupEffectMaker::Save(const string& wstrNewGroupTag)
 
 		tGroupEffect->Save(Utils::ToWString(strNewFilePath));
 	}
+
+	// For. Update Exist Group Effect 
 	else if(nullptr != m_pCurrentGroup)
 	{
 		string strFilePath = "..\\Resources\\EffectData\\GroupEffectData\\";
-		strFilePath += m_strGroup;
+		strFilePath += (m_strGroup + ".dat");
 		m_pCurrentGroup->Get_GroupEffect()->Save(Utils::ToWString(strFilePath));
+		RESOURCES.ReloadGroupEffectData(Utils::ToWString(m_strGroup), Utils::ToWString(strFilePath));
+
+		Set_MemberEffectList();
 	}
 }

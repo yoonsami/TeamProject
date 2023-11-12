@@ -702,8 +702,6 @@ void Widget_EffectMaker_Mesh::Create()
 	};
 	EffectObj->Get_MeshEffect()->Init(&tMeshEffectDesc);
 
-	//EffectObj->Get_MeshEffect()->Set_IsImmortal(true);
-
 	// For. Add Effect GameObject to current scene
 	CUR_SCENE->Add_GameObject(EffectObj);
 }

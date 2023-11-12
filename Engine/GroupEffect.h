@@ -15,6 +15,7 @@ public:
 	void					Save(const wstring& path);
 	
 	/* Setter */
+	void					Set_Stop(_bool bIsStop);
 	void					Set_Loop(_bool bIsLoop) { m_bIsLoop = bIsLoop; }
 	void					Set_Tag(wstring wstrTag) { m_wstrTag = wstrTag; }
 	void					Set_MemberEffectData(vector <GroupEffectData::MemberEffect_Desc> vData) { m_vMemberEffectData = vData; }	
@@ -35,6 +36,7 @@ private:
 	vector <GroupEffectData::MemberEffect_Desc> m_vMemberEffectData;
 
 	_float										m_fCurrAge = { 0.f };
+	_bool										m_bIsStop = { false };
 	_bool										m_bIsLoop = { false };
 	vector<shared_ptr<GameObject>>				m_vMemberEffects;
 };

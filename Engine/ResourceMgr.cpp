@@ -93,7 +93,7 @@ shared_ptr<Texture> ResourceMgr::GetOrAddTexture(const wstring& key, const wstri
 		wstring name = key;
 		Utils::DetachExt(name);
 		texture->Set_Name(name);
-		Add(key, texture);
+		Add(name, texture);
 	}
 
 	return texture;
@@ -117,10 +117,34 @@ shared_ptr<GroupEffectData> ResourceMgr::GetOrAddGroupEffectData(const wstring& 
 		wstring name = key;
 		Utils::DetachExt(name);
 		groupEffectData->Set_Name(name);
-		Add(key, groupEffectData);
+		Add(name, groupEffectData);
 	}
 
 	return groupEffectData;
+}
+
+shared_ptr<GroupEffectData> ResourceMgr::ReloadGroupEffectData(const wstring& key, const wstring& path)
+{
+	wstring name = key;
+	Utils::DetachExt(name);
+	auto groupEffectData = Get<GroupEffectData>(name);
+	if (key == L"" || nullptr == groupEffectData)
+		return nullptr;
+
+	// For. Create Reloaded 
+	auto reloadedGroupEffectData = make_shared<GroupEffectData>();
+	reloadedGroupEffectData->Load(path);
+	
+	reloadedGroupEffectData->Set_Name(name);
+
+	// For. Erase prev 
+	Delete<GroupEffectData>(name);
+
+	// For. Add reloaded 
+	//Add(key, reloadedGroupEffectData);
+	Add(name, reloadedGroupEffectData);
+
+	return reloadedGroupEffectData;
 }
 
 //shared_ptr<Parts> ResourceMgr::Get_Part(const wstring& key)
@@ -943,7 +967,6 @@ void ResourceMgr::CreateGroupEffectData()
 		shared_ptr<FileUtils> file = make_shared<FileUtils>();
 		file->Open(Utils::ToWString(strFilePath), FileMode::Read);
 
-
 		vector<GroupEffectData::MemberEffect_Desc> vMemberEffect;
 
 		/* Tag */
@@ -970,6 +993,7 @@ void ResourceMgr::CreateGroupEffectData()
 
 		// For. Add ResourceBase to Resource Manager 
 		shared_ptr<GroupEffectData> groupEffectData = make_shared<GroupEffectData>();
+		groupEffectData->Set_Name(wstrTag);
 		groupEffectData->Set_Tag(wstrTag);
 		groupEffectData->Set_MemberEffectData(vMemberEffect);
 
