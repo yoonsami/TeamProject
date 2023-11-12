@@ -53,7 +53,10 @@ private:
 	ImVec4					ColorToImVec4(Color color);
 	_int					GetIndex_FromTexList(string strValue);
 	_int					GetIndex_FromMeshList(string strValue);
-	_bool					Compare_IsSameColor(ImVec4 color1, ImVec4 color2);
+	_bool					Equal(_float2 vSrc, _float2 vDest);
+	_bool					Equal(_float3 vSrc, _float3 vDest);
+	_bool					Equal(ImVec4 vSrc, ImVec4 vDest);
+	_bool					Equal(_float* arrSrc, _float* arrDest, _int iSize);
 	_bool					Compare_IsSameUVOptionsWithOpacity(_float2 tiling, _float2 UVSpeed);
 private:
 	/* Effect List */

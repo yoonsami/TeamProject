@@ -779,7 +779,10 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 
 	if (ImGui::TreeNode("Translate##Movement"))
 	{
-		const char* pszItem_TranslateOption[] = { "No change", "Move to target position", "Move to random target position", "Go Straight", "Go Back", "Go Lift", "Go Right"};
+		const char* pszItem_TranslateOption[] = { "No change", "Move to target position", "Move to random target position", // 2
+			"Go Straight", "Go Back", "Go Lift", "Go Right", // 6
+			"Spreading dust", "Scattered embers" // 8
+		};
 		if (ImGui::BeginCombo("Translate option##Movement", pszItem_TranslateOption[m_iTranslateOption], 0))
 		{
 			for (_uint n = 0; n < IM_ARRAYSIZE(pszItem_TranslateOption); n++)
@@ -1092,6 +1095,7 @@ void Widget_EffectMaker_Mesh::Save()
 	/* Color Edit */
 	file->Write<_float>(m_fContrast);
 
+	// For. Transform Desc 
 	/* Init position */
 	//file->Write<_int>(m_iInitPosOption);
 	file->Write<_float3>(_float3(m_fPosRange));
@@ -1107,7 +1111,7 @@ void Widget_EffectMaker_Mesh::Save()
 	file->Write<_float3>(_float3(m_fInitRotation_Max));
 
 	/* Translate */
-	//file->Write<_int>(m_iTranslateOption);
+	file->Write<_int>(m_iTranslateOption);
 	file->Write<_float>(m_fTranslateSpeed);
 	file->Write<_float3>(_float3(m_fEndPositionOffset_Min));
 	file->Write<_float3>(_float3(m_fEndPositionOffset_Max));
@@ -1165,7 +1169,7 @@ void Widget_EffectMaker_Mesh::Load()
 	m_fAlphaGraIntensity = file->Read<_float>();
 	m_vAlphaGraColor_Base = ColorToImVec4(file->Read<_float4>());
 	m_vAlphaGraColor_Dest = ColorToImVec4(file->Read<_float4>());
-	m_bDestSameWithBase_AlphaGra = Compare_IsSameColor(m_vAlphaGraColor_Base, m_vAlphaGraColor_Dest);
+	m_bDestSameWithBase_AlphaGra = Equal(m_vAlphaGraColor_Base, m_vAlphaGraColor_Dest);
 	if (0 == m_fAlphaGraIntensity) m_bAlphaGra_On = false;
 	else m_bAlphaGra_On = true;
 
@@ -1194,7 +1198,7 @@ void Widget_EffectMaker_Mesh::Load()
 	if (0 == m_GraTexture.first) m_bGra_On = false;
 	else m_bGra_On = true;
 	m_bUVOptionSameWithOpacity_Gra = Compare_IsSameUVOptionsWithOpacity(tiling, UVSpeed);
-	m_bDestSameWithBase_Gra = Compare_IsSameColor(m_vGraColor_Base, m_vGraColor_Dest);
+	m_bDestSameWithBase_Gra = Equal(m_vGraColor_Base, m_vGraColor_Dest);
 
 	/* Overlay */
 	m_bOverlay_On = file->Read<_bool>();
@@ -1250,6 +1254,58 @@ void Widget_EffectMaker_Mesh::Load()
 
 	/* Color Edit */
 	m_fContrast = file->Read<_float>();
+
+	// For. Transform Desc
+	/* Init Pos */
+	_float3 vTemp1 = file->Read<_float3>();
+	memcpy(m_fPosRange, &vTemp1, sizeof(m_fPosRange));
+	if (Equal(_float3(m_fPosRange), _float3(0.f, 0.f, 0.f)))
+		m_iInitPosOption = 0;
+	else 
+		m_iInitPosOption = 1;
+
+	/* Init Scale */
+	memcpy(m_fInitScale_Min, &file->Read<_float3>(), sizeof(m_fInitScale_Min));
+	memcpy(m_fInitScale_Max, &file->Read<_float3>(), sizeof(m_fInitScale_Max));
+	if (Equal(m_fInitScale_Min, m_fInitScale_Max, 3))
+		m_iInitScaleOption = 0;
+	else
+		m_iInitScaleOption = 1;
+
+	/* Init Rotation */
+	memcpy(m_fInitRotation_Min, &file->Read<_float3>(), sizeof(m_fInitRotation_Min));
+	memcpy(m_fInitRotation_Max, &file->Read<_float3>(), sizeof(m_fInitRotation_Max));
+	if (Equal(m_fInitRotation_Min, m_fInitRotation_Max, 3))
+		m_iInitRotationOption = 0;
+	else
+		m_iInitRotationOption = 1;
+
+	/* Translate */
+	m_iTranslateOption = file->Read<_int>();
+	m_fTranslateSpeed = file->Read<_float>();
+	memcpy(m_fEndPositionOffset_Min, &file->Read<_float3>(), sizeof(m_fEndPositionOffset_Min));
+	memcpy(m_fEndPositionOffset_Max, &file->Read<_float3>(), sizeof(m_fEndPositionOffset_Max));
+
+	/* Scaling */
+	memcpy(m_fEndScaleOffset, &file->Read<_float3>(), sizeof(m_fEndScaleOffset));
+	if (Equal(_float3(m_fEndScaleOffset), _float3(0.f, 0.f, 0.f)))
+		m_iScalingOption = 0;
+	else
+		m_iScalingOption = 1;
+
+	/* Turn */
+	m_fTurnSpeed = file->Read<_float>();
+	memcpy(m_fRandomAxis_Min, &file->Read<_float3>(), sizeof(m_fRandomAxis_Min));
+	memcpy(m_fRandomAxis_Max, &file->Read<_float3>(), sizeof(m_fRandomAxis_Max));
+	if (Equal(_float3(m_fRandomAxis_Min), _float3(0.f, 0.f, 0.f)))
+		m_iTurnOption = 0;
+	else
+	{
+		if (Equal(m_fRandomAxis_Min, m_fRandomAxis_Max, 3))
+			m_iTurnOption = 1;
+		else
+			m_iTurnOption = 2;
+	}
 
 	// For. Create Effect GameObjects
 	Create();
@@ -1366,15 +1422,46 @@ _int Widget_EffectMaker_Mesh::GetIndex_FromMeshList(string strValue)
 	return -1;
 }
 
-_bool Widget_EffectMaker_Mesh::Compare_IsSameColor(ImVec4 color1, ImVec4 color2)
+_bool Widget_EffectMaker_Mesh::Equal(_float2 vSrc, _float2 vDest)
 {
-	if (color1.x == color2.x &&
-		color1.y == color2.y &&
-		color1.z == color2.z &&
-		color1.w == color2.w)
+	if (vSrc.x == vDest.x &&
+		vSrc.y == vDest.y)
 		return true;
-	else
-		return false;
+	
+	return false;
+}
+
+_bool Widget_EffectMaker_Mesh::Equal(_float3 vSrc, _float3 vDest)
+{
+	if (vSrc.x == vDest.x &&
+		vSrc.y == vDest.y && 
+		vSrc.z == vDest.z )
+		return true;
+
+	return false;
+}
+
+_bool Widget_EffectMaker_Mesh::Equal(ImVec4 vSrc, ImVec4 vDest)
+{
+	if (vSrc.x == vDest.x &&
+		vSrc.y == vDest.y &&
+		vSrc.z == vDest.z && 
+		vSrc.w == vDest.w )
+		return true;
+
+	return false;
+}
+
+_bool Widget_EffectMaker_Mesh::Equal(_float* arrSrc, _float* arrDest, _int iSize)
+{
+	_bool bIsSame = true;
+	for (_int i = 0; i < iSize; i++)
+	{
+		if (arrSrc[i] != arrDest[i])
+			bIsSame = false;
+	}
+
+	return bIsSame;
 }
 
 _bool Widget_EffectMaker_Mesh::Compare_IsSameUVOptionsWithOpacity(_float2 tiling, _float2 UVSpeed)
