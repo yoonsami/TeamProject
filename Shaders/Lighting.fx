@@ -454,7 +454,7 @@ float3 PBRShadePointLightRange(
 // 거리가 lightRange와 같아질 때, 감쇠가 0이 되도록 보정
     attenuation *= saturate(1.f - saturate(pow(distance / lightRange, 2)));;
     {
-        color += (kD * diffuse + specular) * lightColor * attenuation * NdotL;
+        color += (kD * diffuse + specular) * lightColor * g_lightAttenuation * attenuation * NdotL;
 
         color += ambient * attenuation;
     }
@@ -561,7 +561,7 @@ float4 PS_PBR_DirLight(VS_OUT input) :SV_Target
     pointToLight,
     pointToCamera,
     lights[lightIndex].color.diffuse.xyz,
-    g_lightAttenuation,
+    20,
    shadowFactor
     );
   
@@ -576,20 +576,21 @@ float4 PS_PBR_DirLight(VS_OUT input) :SV_Target
 float4 PS_PBR_PointLight(VS_OUT input) : SV_Target
 {
     float4 output = (float4) 0.f;
-    
-    float3 viewPos = SubMap0.Sample(LinearSampler, input.uv).xyz;
+    float2 uv = float2(input.pos.x / RenderTargetResolution.x, input.pos.y / RenderTargetResolution.y);
+
+    float3 viewPos = SubMap0.Sample(LinearSampler, uv).xyz;
     if (viewPos.z <= 0.f)
         clip(-1);
     
-    float3 viewNormal = SubMap1.Sample(LinearSampler, input.uv).xyz;
+    float3 viewNormal = SubMap1.Sample(LinearSampler, uv).xyz;
     
-    float3 diffuseColor = SubMap4.Sample(LinearSampler, input.uv).xyz;
+    float3 diffuseColor = SubMap4.Sample(LinearSampler, uv).xyz;
     
-    float ambientColor = SubMap5.Sample(LinearSampler, input.uv).x;
-    float roughness = SubMap5.Sample(LinearSampler, input.uv).y;
-    float metalic = SubMap5.Sample(LinearSampler, input.uv).z;
+    float ambientColor = SubMap5.Sample(LinearSampler, uv).x;
+    float roughness = SubMap5.Sample(LinearSampler, uv).y;
+    float metalic = SubMap5.Sample(LinearSampler, uv).z;
     if (g_SSAO_On)
-        ambientColor = SubMap3.Sample(LinearSampler, input.uv).x;
+        ambientColor = SubMap3.Sample(LinearSampler, uv).x;
     float3 viewLightPos = mul(float4(lights[lightIndex].vPosition.xyz, 1.f), V).xyz;
     float3 pointToLight = normalize(viewLightPos - viewPos);
     float3 cameraPosition = float3(0.f, 0.f, 0.f);
@@ -618,20 +619,22 @@ float4 PS_PBR_PointLight(VS_OUT input) : SV_Target
 float4 PS_PBR_SpotLight(VS_OUT input) : SV_Target
 {
     float4 output = (float4) 0.f;
-    
-    float3 viewPos = SubMap0.Sample(LinearSampler, input.uv).xyz;
+    float2 uv = float2(input.pos.x / RenderTargetResolution.x, input.pos.y / RenderTargetResolution.y);
+
+    float3 viewPos = SubMap0.Sample(LinearSampler, uv).xyz;
     if (viewPos.z <= 0.f)
         clip(-1);
     
-    float3 viewNormal = SubMap1.Sample(LinearSampler, input.uv).xyz;
+    float3 viewNormal = SubMap1.Sample(LinearSampler, uv).xyz;
     
-    float3 diffuseColor = SubMap2.Sample(LinearSampler, input.uv).xyz;
+    float3 diffuseColor = SubMap4.Sample(LinearSampler, uv).xyz;
     
-    float3 ambientColor = SubMap3.Sample(LinearSampler, input.uv).xxx;
+    float ambientColor = SubMap5.Sample(LinearSampler, uv).x;
+    float roughness = SubMap5.Sample(LinearSampler, uv).y;
+    float metalic = SubMap5.Sample(LinearSampler, uv).z;
     if (g_SSAO_On)
-        ambientColor = saturate(ambientColor + SubMap3.Sample(LinearSampler, input.uv).r);
-    float roughness = SubMap3.Sample(LinearSampler, input.uv).y;
-    float metalic = SubMap3.Sample(LinearSampler, input.uv).z;
+        ambientColor = SubMap3.Sample(LinearSampler, uv).x;
+
     
     float3 viewLightPos = mul(float4(lights[lightIndex].vPosition.xyz, 1.f), V).xyz;
     float3 pointToLight = normalize(viewLightPos - viewPos);
@@ -651,7 +654,7 @@ float4 PS_PBR_SpotLight(VS_OUT input) : SV_Target
     pointToLight,
     pointToCamera,
     lights[lightIndex].color.diffuse.xyz,
-    g_lightAttenuation,
+    20,
     lights[lightIndex].vDirection.xyz,
     lights[lightIndex].angle,
     1.f
@@ -723,7 +726,7 @@ technique11 t1
     }
     pass pointLight
     {
-        SetVertexShader(CompileShader(vs_5_0, VS_DirLight()));
+        SetVertexShader(CompileShader(vs_5_0, VS_PointLight()));
         SetGeometryShader(NULL);
         SetRasterizerState(RS_CullNone);
         SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
@@ -732,7 +735,7 @@ technique11 t1
     }
     pass spotLight
     {
-        SetVertexShader(CompileShader(vs_5_0, VS_DirLight()));
+        SetVertexShader(CompileShader(vs_5_0, VS_SpotLight()));
         SetGeometryShader(NULL);
         SetRasterizerState(RS_CullNone);
         SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);

@@ -74,30 +74,7 @@ void Light::Render()
 	pShader->GetVector("RenderTargetResolution")->SetFloatVector((_float*)&RTSize);
 	pShader->GetScalar("g_ShadowBias")->SetFloat(GAMEINSTANCE.g_fShadowBias);
 	pShader->GetScalar("g_lightAttenuation")->SetFloat(GAMEINSTANCE.g_lightAttenuation);
-	pShader->GetScalar("g_ambientRatio")->SetFloat(GAMEINSTANCE.g_ambientRatio);
 
-	if (GAMEINSTANCE.g_bPBR_On)
-	{
-		m_pVolumeMesh = RESOURCES.Get<Mesh>(L"Quad");
-	}
-	else
-	{
-		LIGHT_TYPE eType = static_cast<LIGHT_TYPE>(m_LightInfo.lightType);
-		switch (eType)
-		{
-		case LIGHT_TYPE::DIRECTIONAL_LIGHT:
-			m_pVolumeMesh = RESOURCES.Get<Mesh>(L"Quad");
-			break;
-		case LIGHT_TYPE::POINT_LIGHT:
-			m_pVolumeMesh = RESOURCES.Get<Mesh>(L"Sphere");
-			break;
-		case LIGHT_TYPE::SPOT_LIGHT:
-			m_pVolumeMesh = RESOURCES.Get<Mesh>(L"Sphere");
-			break;
-		default:
-			break;
-		}
-	}
 
 	m_pVolumeMesh->Get_VertexBuffer()->Push_Data();
 	m_pVolumeMesh->Get_IndexBuffer()->Push_Data();
