@@ -622,11 +622,17 @@ HRESULT ImGui_Manager::Load_MapObjectBase()
     for (auto& entry : fs::recursive_directory_iterator(path))
     {
         // 맵오브젝트 폴더내부의 폴더이름들을 순회하며 베이스오브젝트 리스트를 만듦.
-        if (!entry.is_directory())
+        if (entry.is_directory())
+            continue;
+
+        // 확장자가 모델이 아니면 컨티뉴우우우
+        wstring Ext = entry.path().extension().wstring();
+        if (Ext != L".Model")
             continue;
 
         // 파일의 이름을 가져옴
         wstring fileName = entry.path().filename().wstring();
+        Utils::DetachExt(fileName);
         WCHAR szTempName[MAX_PATH];
         lstrcpy(szTempName, fileName.c_str());
 

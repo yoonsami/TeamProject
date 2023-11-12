@@ -56,38 +56,7 @@ void DemoScene::Final_Tick()
 
 void DemoScene::Render()
 {
-	Gather_LightData();
-	Sort_GameObjects();
-	Render_Shadow();
-	Render_MotionBlur();
-	Render_Deferred();
-	Render_DefferedBlur();
-	if (GAMEINSTANCE.g_SSAOData.g_bSSAO_On)
-	{
-		Render_SSAO();
-		Render_SSAOBlur(3);
-	}
-	Render_Lights();
-	//Render_BlurEffect();
-	Render_LightFinal();
-
-	Render_MotionBlurFinal();
-	Render_Forward();
-	Render_BloomMap();
-	Render_BloomMapScaling();
-	Render_Distortion();
-	Render_Distortion_Final();
-	Render_LensFlare();
-	Render_FXAA();
-	Render_Aberration();
-
-	Render_Debug();
-
-	Render_UI();
-	//Render_ToneMapping();
-	//Render_SampleMapObject();
-
-	Render_BackBuffer();
+	__super::Render();
 
 	GET_SINGLE(ImGui_Manager).ImGui_Render();
 }
