@@ -94,15 +94,6 @@
     <Filter Include="01.Scene\00.LoadingScene\Loader">
       <UniqueIdentifier>{d65c794f-be39-4eaa-844a-ccf9babac16e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.UI">
-      <UniqueIdentifier>{d01967dc-87d0-4b9b-8bcd-142b7976af16}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.UI\00.UILoading">
-      <UniqueIdentifier>{168effa2-6af2-44a5-92c5-5a653c5ee4fd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.UI\01.CoolTimeCheck">
-      <UniqueIdentifier>{de0d89e0-2a9b-40d4-8788-a7d5e04a045e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Component\01.FSM\01.Hero_FSM\03.Yeopo_FSM">
       <UniqueIdentifier>{adee62f6-760f-45e5-b909-0f43e4db384c}</UniqueIdentifier>
     </Filter>
@@ -126,6 +117,39 @@
     </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\00.Effect\00.CounterMotionTrailScript">
       <UniqueIdentifier>{8488e19a-7f84-4002-9311-474fb39e75d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui">
+      <UniqueIdentifier>{d01967dc-87d0-4b9b-8bcd-142b7976af16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\01.CoolTimeCheck">
+      <UniqueIdentifier>{de0d89e0-2a9b-40d4-8788-a7d5e04a045e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\00.UiLoading">
+      <UniqueIdentifier>{168effa2-6af2-44a5-92c5-5a653c5ee4fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\02.UiHpBarFlow">
+      <UniqueIdentifier>{ddb62fe5-0028-482f-a21c-728ae38e9433}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\03.UiSkillButtonEffect">
+      <UniqueIdentifier>{7e37de1a-2080-4f1e-af15-9e960e8ce733}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\04.UiCoolEndEffect">
+      <UniqueIdentifier>{548c5d6c-3aea-45d8-a8a7-2e8a56b0ab2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\05.UiCharChange">
+      <UniqueIdentifier>{d7ec9187-4810-4eb3-99f4-b8ac7467bb1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCardMove">
+      <UniqueIdentifier>{102f1145-f71e-42d9-9844-068bc263bbaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCardMove\01.UiGachaCardMove">
+      <UniqueIdentifier>{3027831e-95ce-4d09-be27-03c52c94d2c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCardMove\00.UiGachaController">
+      <UniqueIdentifier>{59555707-6b8d-4053-8196-de99405ea5f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCardMove\02.UiGachaEffectController">
+      <UniqueIdentifier>{82ec2157-d9a5-4909-b39f-d09e7c92c4a0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -259,10 +283,10 @@
       <Filter>Shader\Common</Filter>
     </ClInclude>
     <ClInclude Include="UiLoadingScript.h">
-      <Filter>02.Component\00.MonoBehaviour\01.UI\00.UILoading</Filter>
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\00.UiLoading</Filter>
     </ClInclude>
     <ClInclude Include="CoolTimeCheckScript.h">
-      <Filter>02.Component\00.MonoBehaviour\01.UI\01.CoolTimeCheck</Filter>
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\01.CoolTimeCheck</Filter>
     </ClInclude>
     <ClInclude Include="Yeopo_FSM.h">
       <Filter>02.Component\01.FSM\01.Hero_FSM\03.Yeopo_FSM</Filter>
@@ -291,17 +315,26 @@
     <ClInclude Include="Client_Macro.h">
       <Filter>99.Header</Filter>
     </ClInclude>
-    <ClInclude Include="UiSkillButtonEffect.h">
-      <Filter>02.Component\00.MonoBehaviour\01.UI</Filter>
+    <ClInclude Include="UiHpBarFlow.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\02.UiHpBarFlow</Filter>
     </ClInclude>
-    <ClInclude Include="UiCharChange.h">
-      <Filter>02.Component\00.MonoBehaviour\01.UI</Filter>
+    <ClInclude Include="UiSkillButtonEffect.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\03.UiSkillButtonEffect</Filter>
     </ClInclude>
     <ClInclude Include="UiCoolEndEffect.h">
-      <Filter>02.Component\00.MonoBehaviour\01.UI</Filter>
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\04.UiCoolEndEffect</Filter>
     </ClInclude>
-    <ClInclude Include="UiHpBarFlow.h">
-      <Filter>02.Component\00.MonoBehaviour\01.UI</Filter>
+    <ClInclude Include="UiCharChange.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\05.UiCharChange</Filter>
+    </ClInclude>
+    <ClInclude Include="UiGachaCardMove.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCardMove\01.UiGachaCardMove</Filter>
+    </ClInclude>
+    <ClInclude Include="UiGachaController.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCardMove\00.UiGachaController</Filter>
+    </ClInclude>
+    <ClInclude Include="UiGachaEffectController.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCardMove\02.UiGachaEffectController</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -414,10 +447,10 @@
       <Filter>01.Scene\01.LogoScene</Filter>
     </ClCompile>
     <ClCompile Include="UiLoadingScript.cpp">
-      <Filter>02.Component\00.MonoBehaviour\01.UI\00.UILoading</Filter>
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\00.UiLoading</Filter>
     </ClCompile>
     <ClCompile Include="CoolTimeCheckScript.cpp">
-      <Filter>02.Component\00.MonoBehaviour\01.UI\01.CoolTimeCheck</Filter>
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\01.CoolTimeCheck</Filter>
     </ClCompile>
     <ClCompile Include="Yeopo_FSM.cpp">
       <Filter>02.Component\01.FSM\01.Hero_FSM\03.Yeopo_FSM</Filter>
@@ -437,17 +470,26 @@
     <ClCompile Include="CounterMotionTrailScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\00.Effect\00.CounterMotionTrailScript</Filter>
     </ClCompile>
-    <ClCompile Include="UiCharChange.cpp">
-      <Filter>02.Component\00.MonoBehaviour\01.UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UiCoolEndEffect.cpp">
-      <Filter>02.Component\00.MonoBehaviour\01.UI</Filter>
-    </ClCompile>
     <ClCompile Include="UiHpBarFlow.cpp">
-      <Filter>02.Component\00.MonoBehaviour\01.UI</Filter>
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\02.UiHpBarFlow</Filter>
     </ClCompile>
     <ClCompile Include="UiSkillButtonEffect.cpp">
-      <Filter>02.Component\00.MonoBehaviour\01.UI</Filter>
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\03.UiSkillButtonEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="UiCoolEndEffect.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\04.UiCoolEndEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="UiCharChange.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\05.UiCharChange</Filter>
+    </ClCompile>
+    <ClCompile Include="UiGachaCardMove.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCardMove\01.UiGachaCardMove</Filter>
+    </ClCompile>
+    <ClCompile Include="UiGachaController.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCardMove\00.UiGachaController</Filter>
+    </ClCompile>
+    <ClCompile Include="UiGachaEffectController.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCardMove\02.UiGachaEffectController</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

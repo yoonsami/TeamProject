@@ -54,32 +54,34 @@ public:
 	virtual HRESULT Change_Component(shared_ptr<Component> component)	final;
 
 public:
-	_uchar Get_LayerIndex()					{ return m_iLayerIndex; }
+	_float& Get_CurHp()						{ return m_fHP; }
+	_float Get_HpRatio()					{ return m_fHP / m_fMaxHP; }
+	_float3& Get_CullPos()					{ return m_vCullPos; }
 	_bool Get_Instancing()					{ return m_bInstancing; }
 	_uint Get_ObjectGroup()					{ return m_eObjectGroup; }
 	_float Get_CullRadius()					{ return m_fCullRaidus; }
-	_float Get_HpRatio()					{ return m_fHP / m_fMaxHP; }
-	_float& Get_CurHp()						{ return m_fHP; }
-	_float3& Get_CullPos()					{ return m_vCullPos; }
+	_uchar Get_LayerIndex()					{ return m_iLayerIndex; }
 	const wstring& Get_Name()				{ return m_strName; }
 
 	_bool Is_Blured()						{ return m_bIsBlur; }
-	_bool Is_FrustumCulled()				{ return m_bFrustumCull; }
+	_bool Is_Render()						{ return m_bIsRender; }
 	_bool Is_DrawShadow()					{ return m_bDrawShadow; }
 	_bool Has_VelocityMap()					{ return m_bHasVelocityMap; }
+	_bool Is_FrustumCulled()				{ return m_bFrustumCull; }
 	
+	void Set_Hp(_float fHP)					{ m_fHP = fHP; }
+	void Set_Blur(_bool flag)				{ m_bIsBlur = flag; }
 	void Set_Name(const wstring& name)		{ m_strName = name; }
+	void Set_MaxHp(_float fHP)				{ m_fMaxHP = fHP; m_fHP = fHP; }
+	void Set_Render(_bool Value)			{ m_bIsRender = Value; }
+	void Set_CullPos(const _float3& pos )	{ m_vCullPos = pos; }
+	void Set_CullRadius(_float radius)		{ m_fCullRaidus = radius; }
 	void Set_LayerIndex(_uchar layerIndex)	{ m_iLayerIndex = layerIndex; }
 	void Set_Instancing(_bool flag)			{ m_bInstancing = flag; }
-	void Set_ObjectGroup(_uint index)		{ m_eObjectGroup = index; }
-	void Set_Blur(_bool flag)				{ m_bIsBlur = flag; }
-	void Set_VelocityMap(_bool flag)		{ m_bHasVelocityMap = flag; }
-	void Set_CullRadius(_float radius)		{ m_fCullRaidus = radius; }
-	void Set_CullPos(const _float3& pos )	{ m_vCullPos = pos; }
-	void Set_FrustumCulled(_bool flag)		{ m_bFrustumCull = flag; }
 	void Set_DrawShadow(_bool flag)			{ m_bDrawShadow = flag; }
-	void Set_Hp(_float fHP)					{ m_fHP = fHP; }
-	void Set_MaxHp(_float fHP)				{ m_fMaxHP = fHP; m_fHP = fHP; }
+	void Set_ObjectGroup(_uint index)		{ m_eObjectGroup = index; }
+	void Set_VelocityMap(_bool flag)		{ m_bHasVelocityMap = flag; }
+	void Set_FrustumCulled(_bool flag)		{ m_bFrustumCull = flag; }
 
 	void DeleteComponent(COMPONENT_TYPE type) { m_Components[static_cast<_uint>(type)] = nullptr; }
 
@@ -131,20 +133,22 @@ private:
 	array<shared_ptr<Component>, FIXED_COMPONENT_COUNT> m_Components;
 	vector<shared_ptr<MonoBehaviour>> m_Scripts;
 
-	_bool m_bInstancing		= true;
-	_bool m_bIsBlur			= false;
-	_bool m_bHasVelocityMap = false;
-	_bool m_bFrustumCull	= false;
-	_bool m_bDrawShadow		= false;
+	_bool		m_bInstancing		= true;
+	_bool		m_bIsBlur			= false;
+	_bool		m_bHasVelocityMap	= false;
+	_bool		m_bFrustumCull		= false;
+	_bool		m_bDrawShadow		= false;
 	
-	_uchar m_iLayerIndex	= Layer_Default;
-	_uint m_eObjectGroup	= 0;
+	_uchar		m_iLayerIndex		= Layer_Default;
+	_uint		m_eObjectGroup		= 0;
 
-	_float m_fCullRaidus	= 1.f;
-	_float3 m_vCullPos		= { 0,0,0 };
+	_float		m_fCullRaidus		= 1.f;
+	_float3		m_vCullPos			= { 0,0,0 };
 
-	_float m_fHP			= 0.f;
-	_float m_fMaxHP			= 100.f;
+	_float		m_fHP				= 0.f;
+	_float		m_fMaxHP			= 100.f;
+
+	_bool		m_bIsRender			= { true };
 };
 
 template<typename T>
