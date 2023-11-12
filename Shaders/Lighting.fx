@@ -358,7 +358,7 @@ float3 PBRShade(
         specular = saturate(specular * shadowAmount);
     }
     float NdotL = max(dot(normal, pointToLights), 0.0);
-    color += (kD * diffuse + specular) * lightColor * g_lightAttenuation * NdotL;
+    color += (kD * diffuse + specular) * lightColor * 50.f * NdotL;
 
     color += ambient;
 

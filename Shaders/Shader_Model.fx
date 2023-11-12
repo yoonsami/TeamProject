@@ -678,7 +678,7 @@ PBR_OUTPUT PS_PBR_Deferred(MeshOutput input)
             discard;
     }
     
-    ARM_Map = float4(1.f, 1.f, 0.1f, 1.f);
+    ARM_Map = float4(1.f, 0.4f, 0.1f, 1.f);
     
     if(bHasSubmap0)
     {
@@ -737,7 +737,7 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(MeshInstancingOutput input)
             discard;
     }
     
-    ARM_Map = float4(1.f, 1.f, 0.0f, 1.f);
+    ARM_Map = float4(1.f, 0.4f, 0.0f, 1.f);
     
     if (bHasSubmap0)
     {
