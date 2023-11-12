@@ -3,6 +3,7 @@
 
 /* Components */
 #include "MeshEffect.h"
+#include "EffectMovementScript.h"
 #include "Texture.h"
 
 Widget_EffectMaker_Mesh::Widget_EffectMaker_Mesh()
@@ -126,32 +127,52 @@ void Widget_EffectMaker_Mesh::Set_FinishedEffect_List()
 
 void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 {
-	Option_Property();
-	Option_Mesh();
-
-	Option_Opacity();
-	Option_Blend();
-	Option_Diffuse();
-	Option_Normal();
-	Option_AlphaGradation();
-	Option_Gradation();
-	Option_Overlay();
-	Option_Dissolve();
-	Option_Distortion();
-	Option_ColorEdit();
-
-	/* For. Create, Save, Load Effect */
-	ImGui::Spacing();
-	ImGui::SeparatorText("Create / Load");
-	if (ImGui::Button("Create"))
-		Create();
-	ImGui::SameLine();
-	if (ImGui::Button("Save"))
+	if (ImGui::BeginTabBar("##Tab1"))
 	{
-		// For. Update file data 
-		Save();	
+
+		if (ImGui::BeginTabItem("Visual"))
+		{
+			Option_Property();
+			Option_Mesh();
+
+			Option_Opacity();
+			Option_Blend();
+			Option_Diffuse();
+			Option_Normal();
+			Option_AlphaGradation();
+			Option_Gradation();
+			Option_Overlay();
+			Option_Dissolve();
+			Option_Distortion();
+			Option_ColorEdit();
+
+			/* For. Create, Save, Load Effect */
+			ImGui::Spacing();
+			ImGui::SeparatorText("Create / Load");
+			if (ImGui::Button("Create"))
+				Create();
+			ImGui::SameLine();
+			if (ImGui::Button("Save"))
+			{
+				// For. Update file data 
+				Save();
+			}
+			ImGui::Spacing();
+
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Transform"))
+		{
+			Option_InitTransform();
+			Option_Movement();
+			ImGui::Spacing();
+
+			ImGui::EndTabItem();
+		}
+		
+		ImGui::EndTabBar();
 	}
-	ImGui::Spacing();
+
 }
 
 void Widget_EffectMaker_Mesh::ImGui_FinishedEffect()
@@ -651,12 +672,225 @@ void Widget_EffectMaker_Mesh::Option_ColorEdit()
 	ImGui::Spacing();
 }
 
-void Widget_EffectMaker_Mesh::Option_ParticleProperty()
+void Widget_EffectMaker_Mesh::Option_InitTransform()
 {
+	ImGui::SeparatorText("Initial Transform");
+
+	if(ImGui::TreeNode("Init Position##InitTransform"))
+	{
+		const char* pszItem_InitPosOption[] = { "Fixed in center", "Random in range" };
+		if (ImGui::BeginCombo("Decide init position option##InitTransform", pszItem_InitPosOption[m_iInitPosOption], 0))
+		{
+			for (_uint n = 0; n < IM_ARRAYSIZE(pszItem_InitPosOption); n++)
+			{
+				const bool is_selected = (m_iInitPosOption == n);
+				if (ImGui::Selectable(pszItem_InitPosOption[n], is_selected))
+					m_iInitPosOption = n;
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+
+		switch (m_iInitPosOption)
+		{
+		case 0:
+			m_fPosRange[0] = 0.f;
+			m_fPosRange[1] = 0.f;
+			m_fPosRange[2] = 0.f;
+			break;
+		case 1:
+			ImGui::InputFloat3("Range(x,y,z)##InitTransform", m_fPosRange);
+			break;
+		}
+
+		ImGui::TreePop();
+	}
+	ImGui::Spacing();
+
+	if (ImGui::TreeNode("Init Scale##EffectMesh"))
+	{
+		const char* pszItem_InitScaleOption[] = { "Static", "Random in range" };
+		if (ImGui::BeginCombo("Decide init scale option##InitScale", pszItem_InitScaleOption[m_iInitScaleOption], 0))
+		{
+			for (_uint n = 0; n < IM_ARRAYSIZE(pszItem_InitScaleOption); n++)
+			{
+				const bool is_selected = (m_iInitScaleOption == n);
+				if (ImGui::Selectable(pszItem_InitScaleOption[n], is_selected))
+					m_iInitScaleOption = n;
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+
+		switch (m_iInitScaleOption)
+		{
+		case 0:
+			ImGui::InputFloat3("Range(x,y,z)##InitScale", m_fInitScale_Min);
+			memcpy(m_fInitScale_Max, m_fInitScale_Min, sizeof(m_fInitScale_Min));
+			break;
+		case 1:
+			ImGui::InputFloat3("Range min(x,y,z)##InitScale", m_fInitScale_Min);
+			ImGui::InputFloat3("Range max(x,y,z)##InitScale", m_fInitScale_Max);
+			break;
+		}
+
+		ImGui::TreePop();
+	}
+	ImGui::Spacing();
+
+	if (ImGui::TreeNode("Init Rotation##EffectMesh"))
+	{
+		const char* pszItem_InitRotationOption[] = { "Static", "Random in range" };
+		if (ImGui::BeginCombo("Decide init rotation option##InitRotation", pszItem_InitRotationOption[m_iInitRotationOption], 0))
+		{
+			for (_uint n = 0; n < IM_ARRAYSIZE(pszItem_InitRotationOption); n++)
+			{
+				const bool is_selected = (m_iInitRotationOption == n);
+				if (ImGui::Selectable(pszItem_InitRotationOption[n], is_selected))
+					m_iInitRotationOption = n;
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+
+		switch (m_iInitRotationOption)
+		{
+		case 0:
+			ImGui::InputFloat3("Angle##InitRotation", m_fInitRotation_Min);
+			memcpy(m_fInitRotation_Max, m_fInitRotation_Min, sizeof(m_fInitRotation_Min));
+			break;
+		case 1:
+			ImGui::InputFloat3("Range min(x,y,z)##InitRotation", m_fInitRotation_Min);
+			ImGui::InputFloat3("Range max(x,y,z)##InitRotation", m_fInitRotation_Max);
+			break;
+		}
+
+		ImGui::TreePop();
+	}
+	ImGui::Spacing();
 }
 
-void Widget_EffectMaker_Mesh::Option_ParticleMoveing()
+void Widget_EffectMaker_Mesh::Option_Movement()
 {
+	ImGui::SeparatorText("Movement");
+
+	if (ImGui::TreeNode("Translate##Movement"))
+	{
+		const char* pszItem_TranslateOption[] = { "No change", "Move to target position", "Move to random target position", "Go Straight", "Go Back", "Go Lift", "Go Right"};
+		if (ImGui::BeginCombo("Translate option##Movement", pszItem_TranslateOption[m_iTranslateOption], 0))
+		{
+			for (_uint n = 0; n < IM_ARRAYSIZE(pszItem_TranslateOption); n++)
+			{
+				const bool is_selected = (m_iTranslateOption == n);
+				if (ImGui::Selectable(pszItem_TranslateOption[n], is_selected))
+					m_iTranslateOption = n;
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+
+		switch (m_iTranslateOption)
+		{
+		case 0:	// No change
+			m_fTranslateSpeed = 0.f;
+			ZeroMemory(m_fEndPositionOffset_Min, sizeof(m_fEndPositionOffset_Min));
+			ZeroMemory(m_fEndPositionOffset_Max, sizeof(m_fEndPositionOffset_Max));
+			break;
+		case 1:	// Move to target
+			m_iTranslateOption = 0;
+			ImGui::InputFloat3("Target Position##Movement", m_fEndPositionOffset_Min);
+			memcpy(m_fEndPositionOffset_Max, m_fEndPositionOffset_Min, sizeof(m_fEndPositionOffset_Min));
+			break;
+		case 2: // Move to random target
+			m_iTranslateOption = 0;
+			ImGui::InputFloat3("Target Position (min)##Movement", m_fEndPositionOffset_Min);
+			ImGui::InputFloat3("Target Position (max)##Movement", m_fEndPositionOffset_Max);
+			break;
+		case 3:	// Go straight
+		case 4:	// Go back
+		case 5:	// Go left
+		case 6:	// Go right
+			ImGui::InputFloat3("Target Scale##Movement", m_fEndScaleOffset);
+			ZeroMemory(m_fEndPositionOffset_Min, sizeof(m_fEndPositionOffset_Min));
+			ZeroMemory(m_fEndPositionOffset_Max, sizeof(m_fEndPositionOffset_Max));
+			break;
+		}
+
+		ImGui::TreePop();
+	}
+	ImGui::Spacing();
+
+	if (ImGui::TreeNode("Scaling##Movement"))
+	{
+		const char* pszItem_ScaleOption[] = { "No change", "Change to target scale" };
+		if (ImGui::BeginCombo("Scaling option##Movement", pszItem_ScaleOption[m_iScalingOption], 0))
+		{
+			for (_uint n = 0; n < IM_ARRAYSIZE(pszItem_ScaleOption); n++)
+			{
+				const bool is_selected = (m_iScalingOption == n);
+				if (ImGui::Selectable(pszItem_ScaleOption[n], is_selected))
+					m_iScalingOption = n;
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+		
+		switch (m_iScalingOption)
+		{
+		case 0:
+			ZeroMemory(m_fEndScaleOffset, sizeof(m_fEndScaleOffset));
+			break;
+		case 1:
+			ImGui::InputFloat3("Target Scale##Movement", m_fEndScaleOffset);
+			break;
+		}
+		
+		ImGui::TreePop();
+	}
+	ImGui::Spacing();
+
+	if (ImGui::TreeNode("Turn##Movement"))
+	{
+		const char* pszItem_TurnOption[] = { "No change", "Turn static", "Turn random"};
+		if (ImGui::BeginCombo("Turn option##Movement", pszItem_TurnOption[m_iTurnOption], 0))
+		{
+			for (_uint n = 0; n < IM_ARRAYSIZE(pszItem_TurnOption); n++)
+			{
+				const bool is_selected = (m_iTurnOption == n);
+				if (ImGui::Selectable(pszItem_TurnOption[n], is_selected))
+					m_iTurnOption = n;
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+
+		switch (m_iTurnOption)
+		{
+		case 0:
+			m_fTurnSpeed = 0.f;
+			ZeroMemory(m_fRandomAxis_Min, sizeof(m_fRandomAxis_Min));
+			ZeroMemory(m_fRandomAxis_Max, sizeof(m_fRandomAxis_Max));
+			break;
+		case 1:
+			ImGui::InputFloat("Turn Speed##Movemenet1", &m_fTurnSpeed);
+			ImGui::InputFloat3("Axis##Movement1", m_fRandomAxis_Min);
+			memcpy(m_fRandomAxis_Max, m_fRandomAxis_Min, sizeof(m_fRandomAxis_Min));
+			break;
+		case 2:
+			ImGui::InputFloat("Turn Speed##Movemenet2", &m_fTurnSpeed);
+			ImGui::InputFloat3("Axis Range (min)##Movement", m_fRandomAxis_Min);
+			ImGui::InputFloat3("Axis Range (max)##Movement", m_fRandomAxis_Max);
+			break;
+		}
+		ImGui::TreePop();
+	}
+	ImGui::Spacing();
 }
 
 void Widget_EffectMaker_Mesh::Create()
@@ -699,8 +933,8 @@ void Widget_EffectMaker_Mesh::Create()
 
 		m_OpacityTexture.second,
 		m_iSamplerType,
-		_float2(m_fTiling_Opacity[0], m_fTiling_Opacity[1]),
-		_float2(m_fUVSpeed_Opacity[0], m_fUVSpeed_Opacity[1]),
+		_float2(m_fTiling_Opacity),
+		_float2(m_fUVSpeed_Opacity),
 
 		m_fAlphaGraIntensity,
 		ImVec4toColor(m_vAlphaGraColor_Base),
@@ -709,25 +943,25 @@ void Widget_EffectMaker_Mesh::Create()
 		m_GraTexture.second,
 		ImVec4toColor(m_vGraColor_Base),
 		ImVec4toColor(m_vGraColor_Dest),
-		_float2(m_fTiling_Gra[0], m_fTiling_Gra[1]),
-		_float2(m_fUVSpeed_Gra[0], m_fUVSpeed_Gra[1]),
+		_float2(m_fTiling_Gra),
+		_float2(m_fUVSpeed_Gra),
 
 		m_bOverlay_On,
 		m_OverlayTexture.second,
 		ImVec4toColor(m_vOverlayColor_Base),
-		_float2(m_fTiling_Overlay[0], m_fTiling_Overlay[1]),
-		_float2(m_fUVSpeed_Overlay[0], m_fUVSpeed_Overlay[1]),
+		_float2(m_fTiling_Overlay),
+		_float2(m_fUVSpeed_Overlay),
 
 		m_NormalTexture.second,
 
 		m_DissolveTexture.second,
-		_float2(m_fTiling_Overlay[0], m_fTiling_Overlay[1]),
-		_float2(m_fUVSpeed_Overlay[0], m_fUVSpeed_Overlay[1]),
+		_float2(m_fTiling_Overlay),
+		_float2(m_fUVSpeed_Overlay),
 		m_bDissolveInverse,
 
 		m_DistortionTexture.second,
-		_float2(m_fTiling_Distortion[0], m_fTiling_Distortion[1]),
-		_float2(m_fUVSpeed_Distortion[0], m_fUVSpeed_Distortion[1]),
+		_float2(m_fTiling_Distortion),
+		_float2(m_fUVSpeed_Distortion),
 
 		m_BlendTexture.second,
 
@@ -735,6 +969,33 @@ void Widget_EffectMaker_Mesh::Create()
 
 	};
 	EffectObj->Get_MeshEffect()->Init(&tMeshEffectDesc);
+
+	// For. Add and Setting EffectMovement Script to GameObject
+	shared_ptr<EffectMovementScript> pEffectMovementScript = make_shared<EffectMovementScript>();
+	MeshEffectData::Transform_Desc tTransform_Desc
+	{
+		_float3(m_fPosRange),
+
+		_float3(m_fInitScale_Min),
+		_float3(m_fInitScale_Max),
+
+		_float3(m_fInitRotation_Min),
+		_float3(m_fInitRotation_Max),
+
+		m_iTranslateOption,
+		m_fTranslateSpeed,
+		_float3(m_fEndPositionOffset_Min),
+		_float3(m_fEndPositionOffset_Max),
+
+		_float3(m_fEndScaleOffset),
+
+		m_iTurnOption,
+		m_fTurnSpeed,
+		_float3(m_fRandomAxis_Min),
+		_float3(m_fRandomAxis_Max),
+	};
+	EffectObj->Add_Component(pEffectMovementScript);
+	EffectObj->Get_Script<EffectMovementScript>()->Init(&tTransform_Desc);
 
 	// For. Add Effect GameObject to current scene
 	CUR_SCENE->Add_GameObject(EffectObj);
@@ -780,8 +1041,8 @@ void Widget_EffectMaker_Mesh::Save()
 	file->Write<string>(m_OpacityTexture.second);
 	// file->Write<_bool>(m_bUVOptionSameWithOpacity_Opacity);
 	file->Write<_int>(m_iSamplerType);
-	file->Write<_float2>(_float2(m_fTiling_Opacity[0], m_fTiling_Opacity[1]));
-	file->Write<_float2>(_float2(m_fUVSpeed_Opacity[0], m_fUVSpeed_Opacity[1]));
+	file->Write<_float2>(_float2(m_fTiling_Opacity));
+	file->Write<_float2>(_float2(m_fUVSpeed_Opacity));
 
 	/* Gradation by Texture */
 	// file->Write<_bool>(m_bGra_On);
@@ -789,8 +1050,8 @@ void Widget_EffectMaker_Mesh::Save()
 	file->Write<string>(m_GraTexture.second);
 	file->Write<_float4>(ImVec4toColor(m_vGraColor_Base));
 	// file->Write<_bool>(m_bUVOptionSameWithOpacity_Gra);
-	file->Write<_float2>(_float2(m_fTiling_Gra[0], m_fTiling_Gra[1]));
-	file->Write<_float2>(_float2(m_fUVSpeed_Gra[0], m_fUVSpeed_Gra[1]));
+	file->Write<_float2>(_float2(m_fTiling_Gra));
+	file->Write<_float2>(_float2(m_fUVSpeed_Gra));
 	// file->Write<_bool>(m_bDestSameWithBase_Gra);
 	file->Write<_float4>(ImVec4toColor(m_vGraColor_Dest));
 
@@ -800,8 +1061,8 @@ void Widget_EffectMaker_Mesh::Save()
 	file->Write<string>(m_OverlayTexture.second);
 	file->Write<_float4>(ImVec4toColor(m_vOverlayColor_Base));
 	// file->Write<_bool>(m_bUVOptionSameWithOpacity_Overlay);
-	file->Write<_float2>(_float2(m_fTiling_Overlay[0], m_fTiling_Overlay[1]));
-	file->Write<_float2>(_float2(m_fUVSpeed_Overlay[0], m_fUVSpeed_Overlay[1]));
+	file->Write<_float2>(_float2(m_fTiling_Overlay));
+	file->Write<_float2>(_float2(m_fUVSpeed_Overlay));
 
 	/* Normal */
 	// file->Write<_int>(m_NormalTexture.first);
@@ -811,8 +1072,8 @@ void Widget_EffectMaker_Mesh::Save()
 	// file->Write<_int>(m_DissolveTexture.first);
 	file->Write<string>(m_DissolveTexture.second);
 	// file->Write<_bool>(m_bUVOptionSameWithOpacity_Dissolve);
-	file->Write<_float2>(_float2(m_fTiling_Dissolve[0], m_fTiling_Dissolve[1]));
-	file->Write<_float2>(_float2(m_fUVSpeed_Dissolve[0], m_fUVSpeed_Dissolve[1]));
+	file->Write<_float2>(_float2(m_fTiling_Dissolve));
+	file->Write<_float2>(_float2(m_fUVSpeed_Dissolve));
 	file->Write<_bool>(m_bDissolveInverse);
 
 	/* Distortion */
@@ -820,8 +1081,8 @@ void Widget_EffectMaker_Mesh::Save()
 	// file->Write<_int>(m_DistortionTexture.first);
 	file->Write<string>(m_DistortionTexture.second);
 	// file->Write<_bool>(m_bUVOptionSameWithOpacity_Distortion);
-	file->Write<_float2>(_float2(m_fTiling_Distortion[0], m_fTiling_Distortion[1]));
-	file->Write<_float2>(_float2(m_fUVSpeed_Distortion[0], m_fUVSpeed_Distortion[1]));
+	file->Write<_float2>(_float2(m_fTiling_Distortion));
+	file->Write<_float2>(_float2(m_fUVSpeed_Distortion));
 
 	/* Blend */
 	// file->Write<_bool>(m_bBlend_On);
@@ -831,11 +1092,40 @@ void Widget_EffectMaker_Mesh::Save()
 	/* Color Edit */
 	file->Write<_float>(m_fContrast);
 
+	/* Init position */
+	//file->Write<_int>(m_iInitPosOption);
+	file->Write<_float3>(_float3(m_fPosRange));
+
+	/* Init Scale */
+	//file->Write<_int>(m_iInitScaleOption);
+	file->Write<_float3>(_float3(m_fInitScale_Min));
+	file->Write<_float3>(_float3(m_fInitScale_Max));
+
+	/* Init Rotation */
+	//file->Write<_int>(m_iInitRotationOption);
+	file->Write<_float3>(_float3(m_fInitRotation_Min));
+	file->Write<_float3>(_float3(m_fInitRotation_Max));
+
+	/* Translate */
+	//file->Write<_int>(m_iTranslateOption);
+	file->Write<_float>(m_fTranslateSpeed);
+	file->Write<_float3>(_float3(m_fEndPositionOffset_Min));
+	file->Write<_float3>(_float3(m_fEndPositionOffset_Max));
+
+	/* Scaling */
+	//file->Write<_int>(m_iScalingOption);
+	file->Write<_float3>(_float3(m_fEndScaleOffset));
+
+	/* Turn */
+	//file->Write<_int>(m_iTurnOption);
+	file->Write<_float>(m_fTurnSpeed);
+	file->Write<_float3>(_float3(m_fRandomAxis_Min));
+	file->Write<_float3>(_float3(m_fRandomAxis_Max));
+
 	RESOURCES.ReloadOrAddMeshEffectData(Utils::ToWString(strFileName), Utils::ToWString(strFilePath));
 	
 	// For. Update Finished Effect List 
 	Set_FinishedEffect_List();
-
 }
 
 void Widget_EffectMaker_Mesh::Load()

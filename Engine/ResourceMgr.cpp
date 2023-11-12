@@ -893,10 +893,10 @@ void ResourceMgr::CreateMeshEffectData()
 			continue;
 
 		MeshEffectData::DESC tDesc;
+		MeshEffectData::Transform_Desc tTransformDesc;
 
 		// For. load file and fill imgui 
 		string strFilePath = entry.path().string();
-		string strFileName = entry.path().filename().string();
 		shared_ptr<FileUtils> file = make_shared<FileUtils>();
 		file->Open(Utils::ToWString(strFilePath), FileMode::Read);
 
@@ -965,8 +965,36 @@ void ResourceMgr::CreateMeshEffectData()
 		/* Color Edit */
 		tDesc.fContrast = file->Read<_float>();
 
+		// For. Load Transform_Desc 
+		/* Init Position */
+		tTransformDesc.vPosRange = file->Read<_float3>();
+
+		/* Init scale */
+		tTransformDesc.vInitScale_Min = file->Read<_float3>();
+		tTransformDesc.vInitScale_Max = file->Read<_float3>();
+
+		/* Init Rotation */
+		tTransformDesc.vInitRotation_Min = file->Read<_float3>();
+		tTransformDesc.vInitRotation_Max = file->Read<_float3>();
+
+		/* Translate */
+		tTransformDesc.iTranslateOption = file->Read<_int>();
+		tTransformDesc.fTranslateSpeed = file->Read<_float>();
+		tTransformDesc.vEndPosOffset_Min = file->Read<_float3>();
+		tTransformDesc.vEndPosOffset_Max = file->Read<_float3>();
+
+		/* Scaling */
+		tTransformDesc.vEndScale = file->Read<_float3>();
+
+		/* Turn */
+		tTransformDesc.iTurnOption = file->Read<_int>();
+		tTransformDesc.fTurnSpeed = file->Read<_float>();
+		tTransformDesc.vRandomAxis_Min = file->Read<_float3>();
+		tTransformDesc.vRandomAxis_Max = file->Read<_float3>();
+
 		shared_ptr<MeshEffectData> meshEffectData = make_shared<MeshEffectData>();
 		meshEffectData->Set_Desc(tDesc);
+		meshEffectData->Set_TransformDesc(tTransformDesc);
 
 		wstring key = Utils::ToWString(tDesc.pszTag);
 		Add(key, meshEffectData);

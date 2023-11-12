@@ -38,8 +38,8 @@ private:
 	void					Option_Dissolve();
 	void					Option_Distortion();
 	void					Option_ColorEdit();
-	void					Option_ParticleProperty();
-	void					Option_ParticleMoveing();
+	void					Option_InitTransform();
+	void					Option_Movement();
 
 	void					Create();
 	void					Save();
@@ -48,7 +48,7 @@ private:
 	void					SubWidget_TextureCombo(_int* iSelected, string* strSelected, string strFilePath, const char* pszWidgetKey);
 	void					SubWidget_ImageViewer(string strFileName, string strFilePath, const char* pszWidgetKey);
 	void					SubWidget_SettingTexUV(_float* arrTiling, _float* arrTexUVSpeed, const char* pszWidgetKey, const char* pszWidgetKey2);
-
+	
 	Color					ImVec4toColor(ImVec4 imvec);
 	ImVec4					ColorToImVec4(Color color);
 	_int					GetIndex_FromTexList(string strValue);
@@ -159,9 +159,34 @@ private:
 	/* Color Edit */
 	_float					m_fContrast = { 0.f };
 
-	// (if m_iMeshCnt is bigger then 1) 
-		// TODO 
+	/* Initliaze Transform */
+	_int					m_iInitPosOption = { 0 };					// static, random in range 
+	_float					m_fPosRange[3] = { 0.f, 0.f, 0.f };		
+		
+	_int					m_iInitScaleOption = { 0 };					// static, random in range 
+	_float					m_fInitScale_Min[3] = { 1.f, 1.f, 1.f };		
+	_float					m_fInitScale_Max[3] = { 1.f, 1.f, 1.f };		
 
+	_int					m_iInitRotationOption = { 0 };				// static, random in range 
+	_float					m_fInitRotation_Min[3] = { -1.f, -1.f, -1.f };
+	_float					m_fInitRotation_Max[3] = { 1.f, 1.f, 1.f };
+	 
+	/* Movement */
+	_int					m_iTranslateOption = { 0 };			// no change, Go stright, Go back, Go left, Go right, Go to TargetPos, Go to Random TargetPos
+	_float					m_fTranslateSpeed = { 0.f };                               
+	_float					m_fEndPositionOffset_Min[3] = { 0.f, 0.f, 0.f };	
+	_float					m_fEndPositionOffset_Max[3] = { 0.f, 0.f, 0.f };
+		// TODO : add bezier
+	
+	_int					m_iScalingOption = { 0 };				// no change, change to endscale
+	_float					m_fEndScaleOffset[3] = { 0.f, 0.f, 0.f };
+		// TODO : add bezier
+	
+	_int					m_iTurnOption = { 0 };			// no change, turn with static, turn with random 
+	_float					m_fTurnSpeed = { 0.f };
+	_float					m_fRandomAxis_Min[3] = { 0.f, 0.f, 0.f };		
+	_float					m_fRandomAxis_Max[3] = { 0.f, 0.f, 0.f };
+	
 	/* const */
 	const string			m_strTexturePath = "../Resources/Textures/Universal/";
 	const string			m_strNormalTexturePath = "../Resources/Textures/Universal/Normal/";

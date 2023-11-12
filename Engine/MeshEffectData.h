@@ -4,7 +4,7 @@
 class MeshEffectData : public ResourceBase
 {
 public:
-	typedef struct tagMeshEffectData
+	typedef struct tagMeshEffectVData
 	{
         // Property
         const char* pszTag;
@@ -70,6 +70,35 @@ public:
         _float      fContrast;
 	}DESC;
 
+    typedef struct tagMeshEffectTransformData
+    {
+        // Init position
+        _float3     vPosRange;
+
+        // Init scale
+        _float3     vInitScale_Min;
+        _float3     vInitScale_Max;
+
+        // Init rotation
+        _float3     vInitRotation_Min;
+        _float3     vInitRotation_Max;
+
+        // Translate
+        _int        iTranslateOption;
+        _float      fTranslateSpeed;
+        _float3     vEndPosOffset_Min;
+        _float3     vEndPosOffset_Max;
+
+        // Scaling 
+        _float3     vEndScale;
+
+        // Turn 
+        _int        iTurnOption;
+        _float      fTurnSpeed;
+        _float3     vRandomAxis_Min;
+        _float3     vRandomAxis_Max;
+
+    }Transform_Desc;
 public:
 	MeshEffectData();
 	~MeshEffectData();
@@ -79,13 +108,16 @@ public:
 
     /* Setter */
     void            Set_Desc(DESC tDesc);
+    void            Set_TransformDesc(Transform_Desc tDesc) { m_tTransformDesc = tDesc; }
 
     /* Getter */
-	DESC	        Get_Desc() { return m_tDesc; }
     wstring         Get_MeshEffectDataTag() { return m_wstrTag; }
+	DESC	        Get_Desc() { return m_tDesc; }
+    Transform_Desc  Get_TransformDesc() { return m_tTransformDesc; }
 
 private:
-    wstring m_wstrTag;
-	DESC	m_tDesc;
+    wstring         m_wstrTag;
+	DESC	        m_tDesc;
+    Transform_Desc  m_tTransformDesc;
 };
 

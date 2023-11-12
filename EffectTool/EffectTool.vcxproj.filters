@@ -56,6 +56,9 @@
     <Filter Include="97.ImGui\Widget_GroupEffectMaker">
       <UniqueIdentifier>{89240255-8e98-4e8c-9e37-dae141f7e0c6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehavior\MeshEffectMovement">
+      <UniqueIdentifier>{c279911e-1e51-4e08-8c41-3dfa21294b0e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -157,6 +160,9 @@
     <ClInclude Include="Widget_GroupEffectMaker.h">
       <Filter>97.ImGui\Widget_GroupEffectMaker</Filter>
     </ClInclude>
+    <ClInclude Include="MeshEffectMovement.h">
+      <Filter>02.Component\00.MonoBehavior\MeshEffectMovement</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EffectTool.cpp">
@@ -239,6 +245,9 @@
     </ClCompile>
     <ClCompile Include="Widget_GroupEffectMaker.cpp">
       <Filter>97.ImGui\Widget_GroupEffectMaker</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshEffectMovement.cpp">
+      <Filter>02.Component\00.MonoBehavior\MeshEffectMovement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -21,6 +21,7 @@ void MeshEffectData::Load(const wstring& path)
 	shared_ptr<FileUtils> file = make_shared<FileUtils>();
 	file->Open(path, FileMode::Read);
 
+	// For. Load Desc 
 	/* Property */
 	string strTag = file->Read<string>();
 	m_tDesc.pszTag = strTag.c_str();
@@ -85,6 +86,33 @@ void MeshEffectData::Load(const wstring& path)
 
 	/* Color Edit */
 	m_tDesc.fContrast = file->Read<_float>();
+
+	// For. Load Transform_Desc 
+	/* Init Position */
+	m_tTransformDesc.vPosRange = file->Read<_float3>();
+
+	/* Init scale */
+	m_tTransformDesc.vInitScale_Min = file->Read<_float3>();
+	m_tTransformDesc.vInitScale_Max = file->Read<_float3>();
+
+	/* Init Rotation */
+	m_tTransformDesc.vInitRotation_Min = file->Read<_float3>();
+	m_tTransformDesc.vInitRotation_Max = file->Read<_float3>();
+
+	/* Translate */
+	m_tTransformDesc.iTranslateOption = file->Read<_int>();
+	m_tTransformDesc.fTranslateSpeed = file->Read<_float>();
+	m_tTransformDesc.vEndPosOffset_Min = file->Read<_float3>();
+	m_tTransformDesc.vEndPosOffset_Max = file->Read<_float3>();
+
+	/* Scaling */
+	m_tTransformDesc.vEndScale = file->Read<_float3>();
+
+	/* Turn */
+	m_tTransformDesc.iTurnOption = file->Read<_int>();
+	m_tTransformDesc.fTurnSpeed = file->Read<_float>();
+	m_tTransformDesc.vRandomAxis_Min = file->Read<_float3>();
+	m_tTransformDesc.vRandomAxis_Max = file->Read<_float3>();
 }
 
 void MeshEffectData::Set_Desc(DESC tDesc)
