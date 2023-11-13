@@ -28,6 +28,8 @@ private:
 	void Show_Gizmo();
 	// 설치할 수 있는 오브젝트 목록과 모양을 보여주고 선택하는 프레임.
 	void Frame_ObjectBase();
+	// 설치할 수 있는 오브젝트 목록과 모양을 보여주고 선택하는 프레임.
+	void Frame_ObjectBaseManager();
 	// 현재 배치되어있는 오브젝트 목록 프레임.
 	void Frame_Objects();
 	// 현재 배치되어있는 오브젝트 정보 프레임
@@ -38,6 +40,8 @@ private:
 	void Frame_Wall();
 	// 피킹
 	void Picking_Object();
+	// 샘플오브젝트로 시야이동
+	void LookAtSampleObject();
 
 	// 스카이박스목록 불러오기
 	HRESULT Load_SkyBoxTexture();
@@ -65,8 +69,8 @@ private:
 	// 맵오브젝트 불러오기
 	HRESULT Load_MapObject();
 
-	// 오브젝트를 받아와서 컬링포지션과 길이를 계산하여 반영
-	void Compute_CullingData(shared_ptr<GameObject>& _pGameObject);
+	// 오브젝트를 받아와서 컬링포지션과 길이를 계산하여 반영, 컬링포지션과 길이를 float4로 반환
+	_float4 Compute_CullingData(shared_ptr<GameObject>& _pGameObject);
 	
 	// 그림자, 블러, 컬링계산
 	void Bake(shared_ptr<GameObject>& _pGameObject);
@@ -88,8 +92,6 @@ private:
 	_int m_iObjectBaseIndex = { 0 };
 	// 오브젝트 생성시 정보
 	MapObjectScript::MAPOBJDESC m_CreateObjectDesc;
-	// 샘플오브젝트
-	shared_ptr<GameObject> m_SampleObject;
 	// 베이스오브젝트 필터
 	char m_szBaseObjectFilter[MAX_PATH] = "";
 	_int m_iFilteredBaseObjectsIndex = { 0 };
@@ -97,6 +99,14 @@ private:
 	vector<const char*> m_FilteredBaseObjectNames;
 	// 필터링이 완료된 이름모음주소공간
 	vector<shared_ptr<char[]>> m_strFilteredNamePtr;
+	// 베이스오브젝트리스트가 바뀌었을때 높이를 찾아가도록 변경, true면 틱에서 1회변경후 false로 다시바꿈
+	_bool m_bBaseObjectListResetHeight = { false };
+
+// 샘플오브젝트
+	shared_ptr<GameObject> m_SampleObject;
+	// 샘플이동전 카메라의 상태
+	_float4x4 m_matPreCamera = { XMMatrixIdentity() };
+	_float m_fSampleModelCullSize = { 0.f };
 
 // 설치된 오브젝트 목록
 	vector<const char*> m_strObjectName;
@@ -111,6 +121,8 @@ private:
 	char m_szSaveFileName[MAX_PATH] = "";
 	// 콜라이더목록
 	const char* m_szColliderTypes[4] = { "Sphere","AABB", "OBB", "Mesh" };
+	// 설치된 오브젝트리스트가 바뀌었을때 높이를 찾아가도록 변경, true면 틱에서 1회변경후 false로 다시바꿈
+	_bool m_bObjectListResetHeight = { false };
 
 // 기즈모관련
 	GizmoOp m_eGizmoOp = { GizmoTR };
@@ -133,7 +145,7 @@ private:
 	// 점광원 생성정보
 	LightInfo m_CreatePointLightInfo;
 
-	// 벽을위한피킹정보
+// 벽을위한피킹정보
 	_float3 m_WallPickingPos[2] = { _float3{0.f, 0.f, 0.f}, _float3{0.f, 0.f, 0.f} };
 	_bool m_bFirstWallPick = { true };
 	_float m_fWallHeight = { 10.f };

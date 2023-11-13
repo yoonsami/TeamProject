@@ -72,11 +72,13 @@ void ImGui_Manager::ImGui_Tick()
 
     Frame_Light();
     Frame_ObjectBase();
+    Frame_ObjectBaseManager();
     Frame_Objects();
     Frame_SelcetObjectManager();
     Frame_Wall();
 
     Picking_Object();
+    LookAtSampleObject();
 
     Show_Gizmo();
 }
@@ -134,8 +136,21 @@ void ImGui_Manager::Frame_ObjectBase()
 {
     ImGui::Begin("Frame_ObjectBase"); // 글자 맨윗줄
 
-    if (ImGui::ListBox("##ObjectBase", &m_iObjectBaseIndex, m_strObjectBaseNameList.data(), (int)m_strObjectBaseNameList.size(), 10))
+    if (ImGui::ListBox("##ObjectBase", &m_iObjectBaseIndex, m_strObjectBaseNameList.data(), (int)m_strObjectBaseNameList.size(), (_int)m_strObjectBaseNameList.size()))
         Set_SampleObject(); // 리스트박스 선택대상이 달라지면 샘플모델변경
+    // 높이 재설정
+    if (m_bBaseObjectListResetHeight)
+    {
+        m_bBaseObjectListResetHeight = false;
+        ImGui::SetScrollY(m_iObjectBaseIndex * ImGui::GetTextLineHeightWithSpacing());
+    }
+
+    ImGui::End();
+}
+
+void ImGui_Manager::Frame_ObjectBaseManager()
+{
+    ImGui::Begin("Frame_ObjectBaseManager"); // 글자 맨윗줄
 
     if (ImGui::InputText("Filter##ObjectBase", m_szBaseObjectFilter, sizeof(m_szBaseObjectFilter)))
     {
@@ -172,6 +187,8 @@ void ImGui_Manager::Frame_ObjectBase()
                 break;
             }
         }
+        Set_SampleObject(); // 리스트박스 선택대상이 달라지면 샘플모델변경
+        m_bBaseObjectListResetHeight = true; // 베이스오브젝트리스트를 해당 높이에 맞게 변경
     }
 
 
@@ -200,8 +217,8 @@ void ImGui_Manager::Frame_ObjectBase()
     //ImGui::Checkbox("##bTransform", &m_CreateObjectDesc.bTransform);
     //if (m_CreateObjectDesc.bTransform)
     //{
-        ImGui::InputFloat3("CreatePos", (_float*)&m_PickingPos);
-        memcpy(&m_CreateObjectDesc.WorldMatrix._41, &m_PickingPos, sizeof(_float3));
+    ImGui::InputFloat3("CreatePos", (_float*)&m_PickingPos);
+    memcpy(&m_CreateObjectDesc.WorldMatrix._41, &m_PickingPos, sizeof(_float3));
     //}
     // 콜라이더 컴포넌트
     ImGui::Text("Collider - ");
@@ -247,7 +264,12 @@ void ImGui_Manager::Frame_Objects()
     ImGui::Begin("Frame_SelectObjects"); // 글자 맨윗줄
 
     ImGui::ListBox("##Objects", &m_iObjects, m_strObjectName.data(), (_int)m_strObjectName.size(), (_int)m_strObjectName.size());
-    ImGui::SetScrollY(m_iObjects * ImGui::GetTextLineHeightWithSpacing());
+    // 높이재설정
+    if(m_bObjectListResetHeight)
+    {
+        m_bObjectListResetHeight = false;
+        ImGui::SetScrollY(m_iObjects * ImGui::GetTextLineHeightWithSpacing());
+    }
 
     ImGui::End();
 }
@@ -521,7 +543,7 @@ void ImGui_Manager::Frame_Light()
     }
 
     ImGui::SeparatorText("##LightFrame");
-
+    
     ImGui::End();
 }
 
@@ -560,6 +582,8 @@ void ImGui_Manager::Picking_Object()
                 if (PickObject == m_pMapObjects[i])
                 {
                     m_iObjects = i;
+                    // 오브젝트 리스트에서 선택한 높이로 변경
+                    m_bObjectListResetHeight = true;
                 }
             }
         }
@@ -585,6 +609,29 @@ void ImGui_Manager::Picking_Object()
             // 좌하단 점을 우하단 점으로 변경
             m_WallPickingPos[0] = m_WallPickingPos[1];
         }
+    }
+}
+
+void ImGui_Manager::LookAtSampleObject()
+{
+    if (KEYTAP(KEY_TYPE::TAB))
+    {
+        // 현재 카메라 위치저장
+        m_matPreCamera = CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_WorldMatrix();
+    }
+    if (KEYHOLD(KEY_TYPE::TAB))
+    {
+        // 카메라 이동
+        _float4 SampleObjPos = m_SampleObject->Get_Transform()->Get_State(Transform_State::POS);
+        shared_ptr<Transform> pMainCameraTransform = CUR_SCENE->Get_MainCamera()->Get_Transform();
+        pMainCameraTransform->Set_State(Transform_State::POS, XMVectorAdd(SampleObjPos, _float4{1.f, 1.f, 1.f, 0.f}));
+        pMainCameraTransform->LookAt(SampleObjPos);
+        pMainCameraTransform->Set_State(Transform_State::POS, pMainCameraTransform->Get_State(Transform_State::POS) - pMainCameraTransform->Get_State(Transform_State::LOOK) * m_fSampleModelCullSize * 2.f);
+    }
+    if (KEYAWAY(KEY_TYPE::TAB))
+    {
+        // 카메라 원래대로 돌아가기
+        CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_WorldMat(m_matPreCamera);
     }
 }
 
@@ -622,11 +669,17 @@ HRESULT ImGui_Manager::Load_MapObjectBase()
     for (auto& entry : fs::recursive_directory_iterator(path))
     {
         // 맵오브젝트 폴더내부의 폴더이름들을 순회하며 베이스오브젝트 리스트를 만듦.
-        if (!entry.is_directory())
+        if (entry.is_directory())
+            continue;
+
+        // 확장자가 모델이 아니면 컨티뉴우우우
+        wstring Ext = entry.path().extension().wstring();
+        if (Ext != L".Model")
             continue;
 
         // 파일의 이름을 가져옴
         wstring fileName = entry.path().filename().wstring();
+        Utils::DetachExt(fileName);
         WCHAR szTempName[MAX_PATH];
         lstrcpy(szTempName, fileName.c_str());
 
@@ -1004,6 +1057,16 @@ HRESULT ImGui_Manager::Load_MapObject()
     wstring strSkyBoxTextureName = Utils::ToWString(file->Read<string>());
     vector<shared_ptr<Material>>& Mats = CUR_SCENE->Get_GameObject(L"SkyBase")->Get_ModelRenderer()->Get_Model()->Get_Materials();
     Mats[0]->Set_TextureMap(RESOURCES.Get<Texture>(strSkyBoxTextureName), TextureMapType::DIFFUSE);
+    for (size_t i = 0; i < m_strSkyboxList.size(); ++i)
+    {
+        string strSkyBoxName = m_strSkyboxList[i];
+        wstring wstrSkyBoxName = Utils::ToWString(strSkyBoxName);
+        if (strSkyBoxTextureName == wstrSkyBoxName)
+        {
+            m_iCurrentSkyBoxIndex = (_int)i;
+            break;
+        }
+    }
 
     // 방향성광원정보 가져오고 적용하기
     // 포지션
@@ -1101,50 +1164,54 @@ HRESULT ImGui_Manager::Load_MapObject()
     return S_OK;
 }
 
-void ImGui_Manager::Compute_CullingData(shared_ptr<GameObject>& _pGameObject)
+_float4 ImGui_Manager::Compute_CullingData(shared_ptr<GameObject>& _pGameObject)
 {
     // 모델을 받아와서 컬링포지션과 길이를 계산하여 반환 float4(_float(Pos), _float(Radius))
     // 모든 정점을 돌면서 XYZ각각의 min과 max를 찾아야함.
+    _float3 vMaxPos = _float3(-FLT_MAX);
+    _float3 vMinPos = _float3(FLT_MAX);
 
-        _float3 vMaxPos = _float3(-FLT_MAX);
-        _float3 vMinPos = _float3(FLT_MAX);
+    shared_ptr<BoneDesc> boneDesc = make_shared<BoneDesc>();
+    const _uint boneCount = _pGameObject->Get_Model()->Get_BoneCount();
 
-        shared_ptr<BoneDesc> boneDesc = make_shared<BoneDesc>();
-        const _uint boneCount = _pGameObject->Get_Model()->Get_BoneCount();
+    for (_uint i = 0; i < boneCount; ++i)
+    {
+        shared_ptr<ModelBone> bone = _pGameObject->Get_Model()->Get_BoneByIndex(i);
+        boneDesc->transform[i] = (bone->transform) * Utils::m_matPivot;
+    }
 
-        for (_uint i = 0; i < boneCount; ++i)
+    const vector<shared_ptr<ModelMesh>>& Meshs = _pGameObject->Get_Model()->Get_Meshes();
+    for (auto& pMesh : Meshs)
+    {
+        _uint boneIndex = pMesh->boneIndex;
+        const vector<ModelVertexType>& vertices = pMesh->geometry->Get_Vertices();
+        for (auto& VtxData : vertices)
         {
-            shared_ptr<ModelBone> bone = _pGameObject->Get_Model()->Get_BoneByIndex(i);
-            boneDesc->transform[i] = (bone->transform) * Utils::m_matPivot;
+            // 월드행렬반영
+            _float3 vPos = _float3::Transform(VtxData.vPosition, boneDesc->transform[boneIndex] * _pGameObject->Get_Transform()->Get_WorldMatrix());
+
+            vMaxPos.x = max(vPos.x, vMaxPos.x);
+            vMaxPos.y = max(vPos.y, vMaxPos.y);
+            vMaxPos.z = max(vPos.z, vMaxPos.z);
+            vMinPos.x = min(vPos.x, vMinPos.x);
+            vMinPos.y = min(vPos.y, vMinPos.y);
+            vMinPos.z = min(vPos.z, vMinPos.z);
         }
+    }
 
-        const vector<shared_ptr<ModelMesh>>& Meshs = _pGameObject->Get_Model()->Get_Meshes();
-        for (auto& pMesh : Meshs)
-        {
-            _uint boneIndex = pMesh->boneIndex;
-            const vector<ModelVertexType>& vertices = pMesh->geometry->Get_Vertices();
-            for (auto& VtxData : vertices)
-            {
-                // 월드행렬반영
-                _float3 vPos = _float3::Transform(VtxData.vPosition, boneDesc->transform[boneIndex] * _pGameObject->Get_Transform()->Get_WorldMatrix());
+    // Min과 Max를 더한 후 2로 나누기
+    _float3 vCullPos = vMaxPos + vMinPos;
+    vCullPos *= 0.5f;
+    _float3 tempVector = vCullPos - vMinPos;
+    _float vCullRadius = tempVector.Length();
 
-                vMaxPos.x = max(vPos.x, vMaxPos.x);
-                vMaxPos.y = max(vPos.y, vMaxPos.y);
-                vMaxPos.z = max(vPos.z, vMaxPos.z);
-                vMinPos.x = min(vPos.x, vMinPos.x);
-                vMinPos.y = min(vPos.y, vMinPos.y);
-                vMinPos.z = min(vPos.z, vMinPos.z);
-            }
-        }
-
-        // Min과 Max를 더한 후 2로 나누기
-        _float3 vCullPos = vMaxPos + vMinPos;
-        vCullPos *= 0.5f;
-        _float3 tempVector = vCullPos - vMinPos;
-        _float vCullRadius = tempVector.Length();
-
+    if(_pGameObject->Get_Script<MapObjectScript>() != nullptr)
+    {
         _pGameObject->Get_Script<MapObjectScript>()->Get_DESC().CullPos = vCullPos;
         _pGameObject->Get_Script<MapObjectScript>()->Get_DESC().CullRadius = vCullRadius;
+    }
+
+    return XMVectorSetW(vCullPos, vCullRadius);
 }
 
 void ImGui_Manager::Bake(shared_ptr<GameObject>& _pGameObject)
@@ -1191,6 +1258,8 @@ void ImGui_Manager::Create_SampleObjects()
         renderer->SetFloat(3, 1.f);
 
         CUR_SCENE->Add_GameObject(m_SampleObject);
+
+        m_fSampleModelCullSize = Compute_CullingData(m_SampleObject).w;
 }
 
 void ImGui_Manager::Set_SampleObject()
@@ -1203,4 +1272,6 @@ void ImGui_Manager::Set_SampleObject()
     m_SampleObject->Set_Name(L"Sample_" + strModelName);
 
     m_SampleObject->Get_ModelRenderer()->Set_Model(model);
+
+    m_fSampleModelCullSize = Compute_CullingData(m_SampleObject).w;
 }

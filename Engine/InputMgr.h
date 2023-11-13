@@ -20,6 +20,7 @@ enum class KEY_TYPE
 	LBUTTON,
 	RBUTTON,
 	MBUTTON,
+	TAB,
 	LAST,
 };
 
