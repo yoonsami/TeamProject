@@ -1057,6 +1057,16 @@ HRESULT ImGui_Manager::Load_MapObject()
     wstring strSkyBoxTextureName = Utils::ToWString(file->Read<string>());
     vector<shared_ptr<Material>>& Mats = CUR_SCENE->Get_GameObject(L"SkyBase")->Get_ModelRenderer()->Get_Model()->Get_Materials();
     Mats[0]->Set_TextureMap(RESOURCES.Get<Texture>(strSkyBoxTextureName), TextureMapType::DIFFUSE);
+    for (size_t i = 0; i < m_strSkyboxList.size(); ++i)
+    {
+        string strSkyBoxName = m_strSkyboxList[i];
+        wstring wstrSkyBoxName = Utils::ToWString(strSkyBoxName);
+        if (strSkyBoxTextureName == wstrSkyBoxName)
+        {
+            m_iCurrentSkyBoxIndex = (_int)i;
+            break;
+        }
+    }
 
     // 방향성광원정보 가져오고 적용하기
     // 포지션

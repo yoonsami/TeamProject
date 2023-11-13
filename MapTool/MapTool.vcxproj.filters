@@ -52,6 +52,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\00.MapObject">
       <UniqueIdentifier>{a1cb13ea-80f9-4503-b57d-c660c7b73281}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.PointLightWave">
+      <UniqueIdentifier>{b99a1cd9-eb7a-4252-b263-5bf8dcb6c15f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
