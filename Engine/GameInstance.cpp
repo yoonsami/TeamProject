@@ -58,8 +58,6 @@ _float GameInstance::g_fShadowBias = _float(6.67628628e-05);
 
 _float GameInstance::g_fMaxWhite = 1.f;
 
-_float GameInstance::g_fGamma = 2.2f;
-
 _int GameInstance::g_iTMIndex = 1;
 
 _bool GameInstance::g_bFXAAOn = false;

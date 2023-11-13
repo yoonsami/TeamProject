@@ -62,12 +62,12 @@ void DebugTool::RenderOptionTab()
 	
 		_float& g_fBrightness = GAMEINSTANCE.g_fBrightness;
 		_float& g_fContrast = GAMEINSTANCE.g_fContrast;
-		_float& g_fGamma = GAMEINSTANCE.g_fGamma;
+
 
 
 		DragFloat("Brightness", &g_fBrightness, 0.001f, 0.01f, 5.f);
 		DragFloat("Contrast", &g_fContrast, 0.001f, 0.01f, 5.f);
-		DragFloat("Gamma", &g_fGamma, 0.001f, 0.01f, 5.f);
+
 
 	}
 	if (CollapsingHeader("Bloom"))

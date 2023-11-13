@@ -2,6 +2,7 @@
 #define _PBR_FX_
 
 #include "Global.fx"
+#include "Light.fx"
 
 float3 fresnelSchlick(float cosTheta, float3 F0)
 {
@@ -79,4 +80,126 @@ float3 FresnelSchlick(float cosTheta, float3 F0)
 {
     return (F0 + (1.0f - F0) * pow(1.0 - cosTheta, 5.0f));
 }
+
+float3 CalculateCookTorranceBRDF(
+        in float3 normal,
+        in float3 pointToCamera,
+        in float3 halfVector,
+        in float3 pointToLight,
+        in float roughness,
+        in float3 F
+    )
+{
+    float D = NormalDistributionGGXTR(normal, halfVector, roughness); //미세면 분포도 NDF계산
+    float G = GeometrySmith(normal, pointToCamera, pointToLight, roughness); //미세면 그림자 계산
+                
+    float3 numerator = D * G * F;
+    float denominator = 4.0 * saturate(dot(normal, pointToCamera)) * saturate(dot(normal, pointToLight)) + 0.0001f;
+    float3 specular = numerator / denominator;
+                
+    return specular;
+}
+
+struct PBR_OUT
+{
+    float4 outColor : SV_Target0;
+    float4 emissiveColor : SV_Target3;
+};
+
+int lightIndex;
+
+float3 CalculateRimLight(in float3 normal, in float3 pointToCamera)
+{
+
+    float rimThreshold = 0.5f;
+    float rimIntensity = 1.0f;
+    float rimAttenuation = 4.f;
+
+    float rim = saturate(dot(normal, pointToCamera) - rimThreshold);
+    rim = pow(rim, rimAttenuation);
+
+    return rim * rimIntensity;
+}
+
+PBR_OUT PBRShade(
+    in float3 ambientMap,
+    in float3 albedoMap,
+    in float roughnessMap,
+    in float metallicMap,
+    in float3 viewNormal,
+    in float3 viewPosition,
+    in float3 lightColor,
+    in float shadowAmount
+)
+{
+    float3 viewLightPos = mul(float4(lights[lightIndex].vPosition.xyz, 1.f), V).xyz;
+    float3 pointToLight = normalize(viewLightPos - viewPosition);
+    float3 cameraPosition = 0.f;
+    float3 pointToCamera = normalize(cameraPosition - viewPosition);
+    float3 viewLightDir = 0.f;
+    
+    float3 ambient = ambientMap * albedoMap * 0.2f;
+    float3 color = 0.f;
+    float3 eyeDir = normalize(viewPosition - cameraPosition);
+    float3 halfVector = normalize(pointToLight + pointToCamera);
+    
+    float3 diffuse = CalculateLambertianBRDF(albedoMap);
+    
+    float3 F0 = float3(0.04f, 0.04f, 0.04f); 
+    F0 = lerp(F0, albedoMap, metallicMap);
+    float3 F = FresnelSchlick(max(dot(halfVector, pointToCamera), 0.0), F0);
+    
+    float3 kS = F; 
+    float3 kD = float3(1.f, 1.f, 1.f) - kS; 
+    kD = kD * float3(1.f - metallicMap, 1.f - metallicMap, 1.f - metallicMap);
+    
+    float3 specular = CalculateCookTorranceBRDF(viewNormal, pointToCamera, halfVector, pointToLight, roughnessMap, F);
+   
+    float NdotL = max(dot(viewNormal, pointToLight), 0.0);
+    float attenuation = 1.f;
+       //DIRECTIONAL_LIGHT
+    if (lights[lightIndex].lightType == 0)
+    {
+        viewLightDir = normalize(mul(float4(lights[lightIndex].vDirection.xyz, 0.f), V).xyz);
+        diffuse = saturate(diffuse * shadowAmount);
+        specular = saturate(specular * shadowAmount);
+    }
+    //POINT_LIGHT
+    else if (lights[lightIndex].lightType == 1)
+    {
+        viewLightDir = normalize(viewPosition - viewLightPos);
+        float distance = length(viewLightPos - viewPosition);
+        attenuation = 1.0 / (1.0 + 0.1 * distance);
+        attenuation *= saturate(1.f - saturate(pow(distance / lights[lightIndex].range, 2)));;
+        
+    }
+        //SPOT_LIGHT
+    else
+    {
+        float spotlightEffect = 0.0;
+        float3 lightDir = normalize(-lights[lightIndex].vDirection.xyz);
+        float spotCos = dot(lightDir, normalize(-pointToLight));
+        viewLightDir = normalize(viewPosition - viewLightPos);
+        if (spotCos > cos(lights[lightIndex].angle))
+        {
+        // Inside the spotlight cone
+            attenuation *= pow(spotCos, 2);
+        }
+        else
+            attenuation = 0.f;
+
+    }
+    color += (kD * diffuse + specular) * lightColor * 50.f * attenuation * NdotL;
+    color += ambient * attenuation;
+
+    PBR_OUT output = (PBR_OUT) 0.f;
+    output.outColor = float4(color, 1.f);
+    
+    output.emissiveColor = lights[lightIndex].color.emissive * saturate(dot(viewNormal, -viewLightDir))
+     * pow(smoothstep(0.f, 1.f, 1.f - saturate(dot(-eyeDir, viewNormal))), 2) * attenuation;
+    
+    return output;
+        
+}
+
 #endif

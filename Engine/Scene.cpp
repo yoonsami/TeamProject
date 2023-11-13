@@ -1127,7 +1127,7 @@ void Scene::Render_LightFinal()
 	auto material = RESOURCES.Get<Material>(L"LightFinal");
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 
-	material->Get_Shader()->GetScalar("g_gamma")->SetFloat(GAMEINSTANCE.g_fGamma);
+
 	material->Get_Shader()->GetScalar("g_SSAO_On")->SetBool(GAMEINSTANCE.g_SSAOData.g_bSSAO_On);
 
 	material->Push_SubMapData();
@@ -1531,7 +1531,7 @@ void Scene::Render_ToneMapping()
 	material->Get_Shader()->GetScalar("g_brightness")->SetFloat(GAMEINSTANCE.g_fBrightness);
 	material->Get_Shader()->GetScalar("g_contrast")->SetFloat(GAMEINSTANCE.g_fContrast);
 	material->Get_Shader()->GetScalar("g_max_white")->SetFloat(GAMEINSTANCE.g_fMaxWhite);
-	material->Get_Shader()->GetScalar("g_gamma")->SetFloat(GAMEINSTANCE.g_fGamma);
+
 
 
 	material->Push_SubMapData();

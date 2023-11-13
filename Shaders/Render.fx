@@ -82,7 +82,6 @@ struct TweenFrameDesc
     KeyFrameDesc next;
 };
 
-float g_gamma;
 float g_brightness;
 float g_contrast;
 float g_max_white;

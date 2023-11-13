@@ -153,7 +153,6 @@ float angleBetween(float2 v1, float2 v2)
 
 #define GOLDEN_ANGLE 2.3999632
 #define BLUR 1.
-#define PI 3.14159265359 
 
 float2x2 rot = float2x2(cos(GOLDEN_ANGLE), sin(GOLDEN_ANGLE), -sin(GOLDEN_ANGLE), cos(GOLDEN_ANGLE));
 
