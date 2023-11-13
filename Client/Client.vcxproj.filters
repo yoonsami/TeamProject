@@ -154,6 +154,15 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\07.UiCardDeckController">
       <UniqueIdentifier>{df3fd50c-985b-4249-80f7-4903d25499ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97.DataMgr">
+      <UniqueIdentifier>{72d2435c-32f1-442b-999e-d9ff2dceb36b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\08.MainUiController">
+      <UniqueIdentifier>{3e0b7a5a-5334-43b8-aa07-fa716f097068}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\09.UiCardDeckInvenChange">
+      <UniqueIdentifier>{78ff8143-f9f6-4766-bc6f-2aa0de400616}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -339,11 +348,17 @@
     <ClInclude Include="UiGachaEffectController.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCardMove\02.UiGachaEffectController</Filter>
     </ClInclude>
-    <ClInclude Include="Hero_Data.h">
-      <Filter>99.Header</Filter>
-    </ClInclude>
     <ClInclude Include="UiCardDeckController.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\07.UiCardDeckController</Filter>
+    </ClInclude>
+    <ClInclude Include="DataMgr.h">
+      <Filter>97.DataMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="MainUiController.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\08.MainUiController</Filter>
+    </ClInclude>
+    <ClInclude Include="UiCardDeckInvenChange.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\09.UiCardDeckInvenChange</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -502,6 +517,15 @@
     </ClCompile>
     <ClCompile Include="UiCardDeckController.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\07.UiCardDeckController</Filter>
+    </ClCompile>
+    <ClCompile Include="DataMgr.cpp">
+      <Filter>97.DataMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="MainUiController.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\08.MainUiController</Filter>
+    </ClCompile>
+    <ClCompile Include="UiCardDeckInvenChange.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\09.UiCardDeckInvenChange</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

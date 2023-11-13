@@ -9,3 +9,4 @@ const unsigned int	g_iWinSizeY = 1080;
 
 extern HWND		g_hWnd;
 
+#define GET_DATA(VALUE)     GET_SINGLE(DataMgr).Get_Data(VALUE)

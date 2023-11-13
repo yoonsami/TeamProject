@@ -52,7 +52,8 @@ enum SkillType
 	SKILL4,		// 4번 스킬
 	SKILL5,		// 시너지 스킬
 	EVADE,		// 회피
-	DEFAULT		// 기본 공격
+	DEFAULT,	// 기본 공격
+	SkillEnd
 };
 
 
@@ -63,5 +64,6 @@ enum ElementType
 	FIRE,
 	LIGHT,
 	WATER,
-	WIND
+	WIND,
+	ElementEnd
 };

@@ -1,19 +1,23 @@
 #pragma once
 #include "MonoBehaviour.h"
 
-class UiHpBarFlow : public MonoBehaviour
+class UiCardDeckInvenChange : public MonoBehaviour
 {
 public:
-    UiHpBarFlow();
+    UiCardDeckInvenChange();
 
 public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
 
-private:
-    
+    void Set_Hero(HERO eHero);
+    void Set_Empty();
 
 private:
-    _float m_fValue = { 0.f };
+
+
+private:
+   
+
 };
 

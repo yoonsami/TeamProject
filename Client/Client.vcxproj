@@ -194,6 +194,7 @@
     <ClInclude Include="Client_Struct.h" />
     <ClInclude Include="CoolTimeCheckScript.h" />
     <ClInclude Include="CounterMotionTrailScript.h" />
+    <ClInclude Include="DataMgr.h" />
     <ClInclude Include="DebugTool.h" />
     <ClInclude Include="Debug_CreateMotionTrail.h" />
     <ClInclude Include="Dellons_FSM.h" />
@@ -204,13 +205,13 @@
     <ClInclude Include="DemoScene.h" />
     <ClInclude Include="ForwardMovingSkillScript.h" />
     <ClInclude Include="HeroChangeScript.h" />
-    <ClInclude Include="Hero_Data.h" />
     <ClInclude Include="Kyle_FSM.h" />
     <ClInclude Include="Loader.h" />
     <ClInclude Include="LoadingScene.h" />
     <ClInclude Include="LogoScene.h" />
     <ClInclude Include="MainApp.h" />
     <ClInclude Include="MainCameraScript.h" />
+    <ClInclude Include="MainUiController.h" />
     <ClInclude Include="MotionTrailDisappear.h" />
     <ClInclude Include="ObjectTransformDebug.h" />
     <ClInclude Include="MapObjectScript.h" />
@@ -219,6 +220,7 @@
     <ClInclude Include="Silversword_Soldier_FSM.h" />
     <ClInclude Include="SpearAce_FSM.h" />
     <ClInclude Include="UiCardDeckController.h" />
+    <ClInclude Include="UiCardDeckInvenChange.h" />
     <ClInclude Include="UiCharChange.h" />
     <ClInclude Include="UiCoolEndEffect.h" />
     <ClInclude Include="UiGachaCardMove.h" />
@@ -250,6 +252,7 @@
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="CoolTimeCheckScript.cpp" />
     <ClCompile Include="CounterMotionTrailScript.cpp" />
+    <ClCompile Include="DataMgr.cpp" />
     <ClCompile Include="DebugTool.cpp" />
     <ClCompile Include="Debug_CreateMotionTrail.cpp" />
     <ClCompile Include="Dellons_FSM.cpp" />
@@ -266,6 +269,7 @@
     <ClCompile Include="LogoScene.cpp" />
     <ClCompile Include="MainApp.cpp" />
     <ClCompile Include="MainCameraScript.cpp" />
+    <ClCompile Include="MainUiController.cpp" />
     <ClCompile Include="MotionTrailDisappear.cpp" />
     <ClCompile Include="ObjectTransformDebug.cpp" />
     <ClCompile Include="MapObjectScript.cpp" />
@@ -278,6 +282,7 @@
     <ClCompile Include="Silversword_Soldier_FSM.cpp" />
     <ClCompile Include="SpearAce_FSM.cpp" />
     <ClCompile Include="UiCardDeckController.cpp" />
+    <ClCompile Include="UiCardDeckInvenChange.cpp" />
     <ClCompile Include="UiCharChange.cpp" />
     <ClCompile Include="UiCoolEndEffect.cpp" />
     <ClCompile Include="UiGachaCardMove.cpp" />

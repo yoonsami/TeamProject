@@ -243,9 +243,7 @@ float4 PS_UI2(UIOutput input) : SV_TARGET
 
     if (g_float_0 < 1.f)
     {
-        //[-0.5f,0.5f]
         float2 uvPos = float2(input.uv.x - 0.5f, 0.5f - input.uv.y);
-        // X�� 0�� ����� ��
         float theta = atan2(uvPos.x, uvPos.y);
 
         if (theta <= 0.f)

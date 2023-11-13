@@ -16,7 +16,8 @@ private:
     void Render_Off();
 
 private:
-    vector<wstring>     m_vecObjTag;
+    vector<weak_ptr<GameObject>> m_vecInvenObj;
+    vector<weak_ptr<GameObject>> m_vecCardDeckObj;
     _bool               m_bIsRender = { false };
 };
 

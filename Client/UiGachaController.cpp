@@ -65,7 +65,7 @@ void UiGachaController::Create_Gacha_Card()
     _uint iSize = IDX(m_vecObjTag.size());
     for (_uint i = 0; i < iSize; ++i)
     {
-        weak_ptr<GameObject> pObj = pScene->Get_GameObject(m_vecObjTag[i]);
+        weak_ptr<GameObject> pObj = pScene->Get_UI(m_vecObjTag[i]);
         auto pScript = make_shared<UiGachaCardMove>(i);
         pObj.lock()->Add_Component(pScript);
         pObj.lock()->Init();
@@ -79,7 +79,7 @@ void UiGachaController::Create_Gacha_Card()
     iSize = IDX(m_vecObjEffectTag.size());
     for (_uint i = 0; i < iSize; ++i)
     {
-        auto pObj = pScene->Get_GameObject(m_vecObjEffectTag[i]);
+        auto pObj = pScene->Get_UI(m_vecObjEffectTag[i]);
         auto pScript = make_shared<UiGachaEffectController>();
         pObj->Add_Component(pScript);
         pObj->Init();
@@ -93,7 +93,7 @@ void UiGachaController::Delete_Gacha_Card()
     _uint iSize = IDX(m_vecObjTag.size());
     for (_uint i = 0; i < iSize; ++i)
     {
-        pScene->Remove_GameObject(pScene->Get_GameObject(m_vecObjTag[i]));
+        pScene->Remove_GameObject(pScene->Get_UI(m_vecObjTag[i]));
     }
 }
 
@@ -104,6 +104,6 @@ void UiGachaController::Delete_Gacha_Bg()
     _uint iSize = IDX(m_vecObjBgTag.size());
     for (_uint i = 0; i < iSize; ++i)
     {
-        pScene->Remove_GameObject(pScene->Get_GameObject(m_vecObjBgTag[i]));
+        pScene->Remove_GameObject(pScene->Get_UI(m_vecObjBgTag[i]));
     }
 }

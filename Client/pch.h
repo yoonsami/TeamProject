@@ -17,10 +17,12 @@
 #include <memory.h>
 #include <tchar.h>
 #include <process.h>
+
 #pragma comment(lib,"Engine/Engine.lib")
 #include "EnginePch.h"
 #include "Client_Define.h"
 
+#include "DataMgr.h"
 
 #define _DEBUGTOOL
 
