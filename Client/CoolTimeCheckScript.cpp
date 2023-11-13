@@ -15,6 +15,8 @@ HRESULT CoolTimeCheckScript::Init()
     if (m_pOwner.expired())
         return E_FAIL;
 
+    m_eCurHero = HERO::ACE;
+
     m_CoolTime.resize(IDX(HERO::MAX));
     m_TextureKey.resize(IDX(HERO::MAX));
     for (_uint i = 0; i < IDX(HERO::MAX); ++i)
@@ -157,8 +159,14 @@ void CoolTimeCheckScript::Set_Skill_End()
     if (m_pOwner.expired() || HERO::MAX == m_eCurHero)
         return;
 
+    if (SkillType::DEFAULT == m_iWorkSkillIndex)
+        return;
+
     m_bIsSkillWork = false;
     m_CoolTime[IDX(m_eCurHero)][m_iWorkSkillIndex].bIsWork = false;
+    m_CoolTime[IDX(m_eCurHero)][m_iWorkSkillIndex].fAccTime = 0.f;
+
+    m_iWorkSkillIndex = SkillType::DEFAULT;
 }
 
 _bool CoolTimeCheckScript::IsAvailable(SkillType eSkillType)
@@ -187,7 +195,6 @@ _bool CoolTimeCheckScript::IsAvailable(SkillType eSkillType)
     {
         CoolInfo.bIsEnd = false;
         CoolInfo.bIsWork = true;
-        CoolInfo.fAccTime = 0.f;
         m_bIsSkillWork = true;
         m_iWorkSkillIndex = eSkillType;
 
@@ -212,14 +219,14 @@ void CoolTimeCheckScript::Check_Cool_Time()
         auto& vecCool = m_CoolTime[i];
         for (_uint j = 0; j < 5; ++j)
         {
-            if (/*false == vecCool[j].bIsWork &&*/ vecCool[j].fCoolTime > vecCool[j].fAccTime)
+            if (false == vecCool[j].bIsWork && vecCool[j].fCoolTime > vecCool[j].fAccTime)
             {
-                if (false == vecCool[j].bIsEnd)
+                vecCool[j].fAccTime += fDt;
+                if (false == vecCool[j].bIsEnd && vecCool[j].fCoolTime < vecCool[j].fAccTime)
                 {
                     vecCool[j].bIsEnd = true;
                     Start_ButtonEndEffect(j);
                 }
-                vecCool[j].fAccTime += fDt;
             }
         }
     }

@@ -70,19 +70,12 @@ void UiGachaController::Create_Gacha_Card()
         pObj.lock()->Add_Component(pScript);
         pObj.lock()->Init();
 
-        /*pObj.lock()->Get_Button()->AddOnClickedEvent([&]()
+        pObj.lock()->Get_Button()->AddOnClickedEvent([pObj]()
             {
-                if(false == pObj.expired())
-                    pObj.lock()->Get_Script<UiGachaCardMove>()->Card_Open();
-            });*/
+                pObj.lock()->Get_Script<UiGachaCardMove>()->Card_Open();
+            });
     }
 
-    auto pObj = pScene->Get_GameObject(m_vecObjTag[0]);
-    pObj->Get_Button()->AddOnClickedEvent([&]() 
-        {
-            Get_Owner()->Get_Script<UiGachaCardMove>()->Card_Open();
-        });
-    
     iSize = IDX(m_vecObjEffectTag.size());
     for (_uint i = 0; i < iSize; ++i)
     {
@@ -91,13 +84,12 @@ void UiGachaController::Create_Gacha_Card()
         pObj->Add_Component(pScript);
         pObj->Init();
     }
-
 }
 
 void UiGachaController::Delete_Gacha_Card()
 {
     auto pScene = CUR_SCENE;
-
+    
     _uint iSize = IDX(m_vecObjTag.size());
     for (_uint i = 0; i < iSize; ++i)
     {
@@ -108,6 +100,7 @@ void UiGachaController::Delete_Gacha_Card()
 void UiGachaController::Delete_Gacha_Bg()
 {
     auto pScene = CUR_SCENE;
+    
     _uint iSize = IDX(m_vecObjBgTag.size());
     for (_uint i = 0; i < iSize; ++i)
     {

@@ -77,17 +77,36 @@ HRESULT UiGachaCardMove::Init()
 
 	_float fRand = Utils::Random_In_Range(0.f, 1.f);
 	if (0.01f > fRand)
+	{
 		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back0"), TextureMapType::DIFFUSE);
+		m_strTextureTag = L"Big_Card_Ace_Line";
+	}
 	else if (0.02f > fRand)
+	{
 		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back1"), TextureMapType::DIFFUSE);
+		m_strTextureTag = L"Big_Card_Dellons_Line";
+	}
 	else if (0.03f > fRand)
+	{
 		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back3"), TextureMapType::DIFFUSE);
+		m_strTextureTag = L"Big_Card_Kyle_Line";
+	}
 	else if (0.04f > fRand)
+	{
 		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back4"), TextureMapType::DIFFUSE);
+		m_strTextureTag = L"Big_Card_Yeopo_Line";
+	}
 	else if (0.4f > fRand)
+	{
 		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back2"), TextureMapType::DIFFUSE);
+	}
 	else
+	{
 		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back5"), TextureMapType::DIFFUSE);
+	}
+
+	// 오픈할 카드 정해야함
+	// 우선 test code
 
 
     return S_OK;
@@ -115,6 +134,7 @@ void UiGachaCardMove::Tick()
 void UiGachaCardMove::Card_Open()
 {
 	m_eState = STATE::OPEN;
+	m_fCheckTime = 0.f;
 }
 
 void UiGachaCardMove::Move()
@@ -168,7 +188,7 @@ void UiGachaCardMove::Idle()
 
 void UiGachaCardMove::Open()
 {
-	switch (m_eOpenType)
+	switch (m_eChangeType)
 	{
 	case UiGachaCardMove::CHANGE_TYPE::DOWN:
 		m_fCurScale.x -= m_fScaleChangeValue * fDT * m_fTrunPerTime / m_fMaxTime;
@@ -182,11 +202,13 @@ void UiGachaCardMove::Open()
 	{
 		m_fCurScale.x = 0.01f;
 		m_eChangeType = CHANGE_TYPE::UP;
+		if(0 != m_strTextureTag.length())
+			m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_strTextureTag), TextureMapType::DIFFUSE);
 	}
 	else if (272.f < m_fCurScale.x)
 	{
 		m_fCurScale.x = 272.f;
-		m_eChangeType = CHANGE_TYPE::DOWN;
+		m_eState = STATE::IDLE;
 	}
 
 	m_pOwner.lock()->GetOrAddTransform()->Scaled(m_fCurScale);
