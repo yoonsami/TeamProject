@@ -29,7 +29,7 @@ void MeshEffectData::Load(const wstring& path)
 	m_tDesc.fDuration = file->Read<_float>();
 	m_tDesc.bBlurOn = file->Read<_bool>();
 	m_tDesc.bUseFadeOut = file->Read<_bool>();
-	m_tDesc.iMeshCnt = file->Read<_float>();
+	m_tDesc.iMeshCnt = file->Read<_int>();
 	m_tDesc.fCreateInterval = file->Read<_float>();
 	m_tDesc.vParticleDuration = file->Read<_float2>();
 

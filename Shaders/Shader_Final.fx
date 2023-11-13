@@ -139,7 +139,7 @@ float4 PS_DOF(VS_OUT input) : SV_Target
     float3 originalColor = SubMap0.Sample(PointSampler, input.uv).rgb;
     float3 blurColor = SubMap1.Sample(PointSampler, input.uv).rgb;
     
-    float3 outColor = lerp(originalColor, blurColor, saturate(g_DOFRange * abs(g_FocusDepth - depth)));
+    float3 outColor = lerp(originalColor, blurColor, saturate( 1.f/g_DOFRange * abs(g_FocusDepth - depth)));
     
     return float4(outColor, 1.f);
 }
