@@ -543,7 +543,7 @@ void ImGui_Manager::Frame_Light()
     }
 
     ImGui::SeparatorText("##LightFrame");
-
+    
     ImGui::End();
 }
 
