@@ -62,11 +62,13 @@ void DebugTool::RenderOptionTab()
 	
 		_float& g_fBrightness = GAMEINSTANCE.g_fBrightness;
 		_float& g_fContrast = GAMEINSTANCE.g_fContrast;
+		_float& g_Saturation = GAMEINSTANCE.g_Saturation;
 
 
 
-		DragFloat("Brightness", &g_fBrightness, 0.001f, 0.01f, 5.f);
-		DragFloat("Contrast", &g_fContrast, 0.001f, 0.01f, 5.f);
+		DragFloat("Brightness", &g_fBrightness, 0.01f, 0.f, 5.f);
+		DragFloat("Contrast", &g_fContrast, 0.01f, 0.01f, 5.f);
+		DragFloat("Saturation", &g_Saturation, 0.01f, 0.01f, 5.f);
 
 
 	}
@@ -169,28 +171,34 @@ void DebugTool::RenderOptionTab()
 
 		}
 	}
-	SeparatorText("Outline");
-	_bool& g_bOutline = GAMEINSTANCE.g_bDrawOutline;
-	Checkbox("Outline On", &g_bOutline);
-
-	SeparatorText("FXAA");
-	_bool& g_bFXAAOn = GAMEINSTANCE.g_bFXAAOn;
-	Checkbox("FXAA On", &g_bFXAAOn);
-
-	SeparatorText("Aberration");
-	_bool& g_bAberrationOn = GAMEINSTANCE.g_bAberrationOn;
-	Checkbox("Aberration On", &g_bAberrationOn);
-	if (g_bAberrationOn)
+	if (CollapsingHeader("Other Option"))
 	{
-		_float& g_fAberrationPower = GAMEINSTANCE.g_fAberrationPower;
-		DragFloat("Aberration Power", &g_fAberrationPower, 1.f, -300.f, 300.f);
+		SeparatorText("Outline");
+		_bool& g_bOutline = GAMEINSTANCE.g_bDrawOutline;
+		Checkbox("Outline On", &g_bOutline);
+
+		SeparatorText("FXAA");
+		_bool& g_bFXAAOn = GAMEINSTANCE.g_bFXAAOn;
+		Checkbox("FXAA On", &g_bFXAAOn);
+
+		SeparatorText("Aberration");
+		_bool& g_bAberrationOn = GAMEINSTANCE.g_bAberrationOn;
+		Checkbox("Aberration On", &g_bAberrationOn);
+		if (g_bAberrationOn)
+		{
+			_float& g_fAberrationPower = GAMEINSTANCE.g_fAberrationPower;
+			DragFloat("Aberration Power", &g_fAberrationPower, 1.f, -300.f, 300.f);
+		}
+		SeparatorText("PBR");
+		_bool& g_bPBR_On = GAMEINSTANCE.g_bPBR_On;
+		Checkbox("PBR On", &g_bPBR_On);
+		_float& g_lightAttenuation = GAMEINSTANCE.g_lightAttenuation;
+		_float& g_ambientRatio = GAMEINSTANCE.g_ambientRatio;
+		DragFloat("g_lightAttenuation", &g_lightAttenuation);
+		DragFloat("g_ambientRatio", &g_ambientRatio, 0.1f, 0.1f, 1.5f);
 	}
-	_bool& g_bPBR_On = GAMEINSTANCE.g_bPBR_On;
-	Checkbox("PBR", &g_bPBR_On);
-	_float& g_lightAttenuation = GAMEINSTANCE.g_lightAttenuation;
-	_float& g_ambientRatio = GAMEINSTANCE.g_ambientRatio;
-	DragFloat("g_lightAttenuation", &g_lightAttenuation);
-	DragFloat("g_ambientRatio", &g_ambientRatio,0.1f,0.1f,1.5f);
+	
+	
 }
 
 #endif

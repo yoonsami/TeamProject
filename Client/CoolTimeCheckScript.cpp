@@ -214,12 +214,12 @@ void CoolTimeCheckScript::Check_Cool_Time()
         {
             if (false == vecCool[j].bIsWork && vecCool[j].fCoolTime > vecCool[j].fAccTime)
             {
-                if (false == vecCool[j].bIsEnd)
-                {
-                    vecCool[j].bIsEnd = true;
-                    Start_ButtonEndEffect(j);
-                }
-                vecCool[j].fAccTime += fDt;
+				vecCool[j].fAccTime += fDt;
+				if (false == vecCool[j].bIsEnd && vecCool[j].fCoolTime < vecCool[j].fAccTime)
+				{
+					vecCool[j].bIsEnd = true;
+					Start_ButtonEndEffect(j);
+				}
             }
         }
     }

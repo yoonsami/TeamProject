@@ -211,6 +211,9 @@
     <Filter Include="02.Manager\01.ResourceMgr\Resources\ParticleData">
       <UniqueIdentifier>{cd6760d9-ba73-42d1-983b-5273ca1ca635}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04.Component\01.Renderer\03.ReflectionRenderer">
+      <UniqueIdentifier>{1401b384-815f-44e2-9733-efa669691635}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -432,6 +435,7 @@
     <ClCompile Include="ParticleData.cpp">
       <Filter>02.Manager\01.ResourceMgr\Resources\ParticleData</Filter>
     </ClCompile>
+    <ClCompile Include="ReflectionRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -668,6 +672,7 @@
     <ClInclude Include="ParticleData.h">
       <Filter>02.Manager\01.ResourceMgr\Resources\ParticleData</Filter>
     </ClInclude>
+    <ClInclude Include="ReflectionRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">

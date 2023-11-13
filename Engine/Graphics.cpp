@@ -543,5 +543,6 @@ void Graphics::Create_RTGroup()
 
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::TONEMAPPING)] = make_shared<RenderTargetGroup>();
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::TONEMAPPING)]->Create(RENDER_TARGET_GROUP_TYPE::TONEMAPPING, rtVec, dsTexture);
-	}
+	}  
+
 }

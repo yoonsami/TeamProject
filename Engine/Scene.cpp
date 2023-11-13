@@ -245,16 +245,6 @@ void Scene::Swap_Object(const wstring& leftObjName, const wstring& rightObjName)
 		*rightIter = temp;
 
 	}
-
-	//auto LeftObj = Get_GameObject(leftObjName);
-	//if (!LeftObj)
-	//	return;
-	//auto RightObj = Get_GameObject(rightObjName);
-	//if (!RightObj)
-	//	return;
-	//auto temp = LeftObj;
-	//LeftObj = RightObj;
-	//RightObj = temp;
 }
 
 void Scene::Load_SceneFile(const wstring& sceneName)
@@ -1113,7 +1103,15 @@ void Scene::Render_Lights()
 	
 
 	for (auto& light : m_Lights)
+	{
+		if (light->Get_Light()->Get_LightInfo().lightType == static_cast<_int>(LIGHT_TYPE::POINT_LIGHT))
+		{
+			auto& frustum = Get_MainCamera()->Get_Camera()->Get_Frustum();
+			if (frustum.Contain_Sphere(light->Get_Light()->Get_LightInfo().vPosition.xyz(), light->Get_Light()->Get_LightInfo().range) == false)
+				continue;
+		}
 		light->Get_Light()->Render();
+	}
 
 
 
@@ -1530,6 +1528,7 @@ void Scene::Render_ToneMapping()
 
 	material->Get_Shader()->GetScalar("g_brightness")->SetFloat(GAMEINSTANCE.g_fBrightness);
 	material->Get_Shader()->GetScalar("g_contrast")->SetFloat(GAMEINSTANCE.g_fContrast);
+	material->Get_Shader()->GetScalar("g_saturation")->SetFloat(GAMEINSTANCE.g_Saturation);
 	material->Get_Shader()->GetScalar("g_max_white")->SetFloat(GAMEINSTANCE.g_fMaxWhite);
 
 

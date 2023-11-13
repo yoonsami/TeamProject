@@ -84,6 +84,8 @@ struct TweenFrameDesc
 
 float g_brightness;
 float g_contrast;
+float g_saturation;
+
 float g_max_white;
 
 cbuffer RenderParamBuffer
@@ -629,5 +631,6 @@ static const float4x4 T =
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.5f, 0.5f, 0.0f, 1.0f
 };
+
 
 #endif

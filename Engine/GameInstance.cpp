@@ -50,9 +50,11 @@ HRESULT GameInstance::Render_End()
 	return S_OK;
 }
 
-_float GameInstance::g_fBrightness = 1.f;
+_float GameInstance::g_fBrightness = 0.f;
 
 _float GameInstance::g_fContrast = 1.f;
+
+_float GameInstance::g_Saturation = 1.f;
 
 _float GameInstance::g_fShadowBias = _float(6.67628628e-05);
 
