@@ -118,7 +118,7 @@ void MainCameraScript::Cal_OffsetDir()
 
     if (m_pTarget.lock())
     {
-        _float3 vTargetDir = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz() - m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
+        _float3 vTargetDir = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz() - (m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz() + (_float3::Up * 2.f));
         vTargetDir.y = 0.f;
         vTargetDir.Normalize();
         _float3 vNewOffset = m_vOffset - vTargetDir;

@@ -3,6 +3,7 @@
 #include "ModelAnimator.h"
 #include "SphereCollider.h"
 #include "AttackColliderInfoScript.h"
+#include "MainCameraScript.h"
 
 HRESULT Silversword_Soldier_FSM::Init()
 {
@@ -26,6 +27,8 @@ HRESULT Silversword_Soldier_FSM::Init()
     m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
     m_pAttackCollider.lock()->Set_Name(L"SilverSword_Soldier_AttackCollider");
     m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
+
+    m_pCamera = CUR_SCENE->Get_MainCamera();
 
     return S_OK;
 }
@@ -218,6 +221,8 @@ void Silversword_Soldier_FSM::Get_Hit(const wstring& skillname, shared_ptr<BaseC
 {
     m_bDetected = true;
 
+    m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.05f);
+
     
     if (skillname == NORMAL_ATTACK || skillname == KNOCKBACK_ATTACK || skillname == KNOCKDOWN_ATTACK || skillname == AIRBORNE_ATTACK)
     {
@@ -375,6 +380,8 @@ void Silversword_Soldier_FSM::n_run()
     {
         m_vTurnVector.x = m_vTurnVector.x * -1.f;
         m_vTurnVector.z = m_vTurnVector.z * -1.f;
+
+        Soft_Turn_ToInputDir(m_vTurnVector, XM_PI * 10.f);
     }
     
     if ((Get_Transform()->Get_State(Transform_State::POS) - m_vPatrolFirstPos).Length() >= m_fPatrolDistance)

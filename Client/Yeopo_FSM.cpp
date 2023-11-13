@@ -779,6 +779,8 @@ void Yeopo_FSM::die_Init()
 
 void Yeopo_FSM::airborne_start()
 {
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
     if (Is_AnimFinished())
@@ -831,6 +833,8 @@ void Yeopo_FSM::airborne_up_Init()
 
 void Yeopo_FSM::hit()
 {
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
     if (Is_AnimFinished())
@@ -851,6 +855,8 @@ void Yeopo_FSM::hit_Init()
 
 void Yeopo_FSM::knock_start()
 {
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
     Get_Transform()->Go_Backward();
@@ -957,6 +963,8 @@ void Yeopo_FSM::knock_up_Init()
 
 void Yeopo_FSM::knockdown_start()
 {
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
     Get_Transform()->Go_Backward();
@@ -1797,7 +1805,6 @@ void Yeopo_FSM::skill_400100()
     {
         if (!m_pCamera.expired())
         {
-            _float4 vDestinationPos = (Get_Transform()->Get_State(Transform_State::POS)) + (Get_Transform()->Get_State(Transform_State::LOOK) * -5.f) + _float3::Up * 4.f;
             _float4 vSkillCamPos = m_vSkillCamBonePos;
             vSkillCamPos.y = 2.f;
             _float4 vDir = m_vCamBonePos - vSkillCamPos;
@@ -1805,22 +1812,21 @@ void Yeopo_FSM::skill_400100()
 
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(vSkillCamPos.xyz());
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, vDir.xyz() * -1.f, 10.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.5f, vDir.xyz() * -1.f, 10.f);
         }
     }
     else
     {
         if (!m_pCamera.expired())
         {
-            _float4 vDestinationPos = (Get_Transform()->Get_State(Transform_State::POS)) + (Get_Transform()->Get_State(Transform_State::LOOK) * -5.f) + _float3::Up * 4.f;
             _float4 vSkillCamPos = m_vSkillCamBonePos;
             vSkillCamPos.y = 2.f;
             _float4 vDir = m_vCamBonePos - vSkillCamPos;
             vDir.Normalize();
 
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+            //m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(vSkillCamPos.xyz());
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, vDir.xyz() * -1.f, 12.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.5f, vDir.xyz() * -1.f, 12.f);
         }
     }
 

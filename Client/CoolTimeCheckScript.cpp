@@ -154,11 +154,24 @@ void CoolTimeCheckScript::Set_Cur_Hero(HERO eType)
 
 void CoolTimeCheckScript::Set_Skill_End()
 {
+    //if (m_pOwner.expired() || HERO::MAX == m_eCurHero)
+    //    return;
+
+    //m_bIsSkillWork = false;2
+    //m_CoolTime[IDX(m_eCurHero)][m_iWorkSkillIndex].bIsWork = false;
+    //m_CoolTime[IDX(m_eCurHero)][m_iWorkSkillIndex].fAccTime = 0.f;
+
+
     if (m_pOwner.expired() || HERO::MAX == m_eCurHero)
+        return;
+
+    if (SkillType::DEFAULT == m_iWorkSkillIndex)
         return;
 
     m_bIsSkillWork = false;
     m_CoolTime[IDX(m_eCurHero)][m_iWorkSkillIndex].bIsWork = false;
+    m_CoolTime[IDX(m_eCurHero)][m_iWorkSkillIndex].fAccTime = 0.f;
+    m_iWorkSkillIndex = SkillType::DEFAULT;
 }
 
 _bool CoolTimeCheckScript::IsAvailable(SkillType eSkillType)
@@ -187,7 +200,7 @@ _bool CoolTimeCheckScript::IsAvailable(SkillType eSkillType)
     {
         CoolInfo.bIsEnd = false;
         CoolInfo.bIsWork = true;
-        CoolInfo.fAccTime = 0.f;
+        //CoolInfo.fAccTime = 0.f;
         m_bIsSkillWork = true;
         m_iWorkSkillIndex = eSkillType;
 

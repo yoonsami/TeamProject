@@ -66,6 +66,21 @@ void DellonsWraith_FSM::State_Tick()
     case STATE::FX_DellonsWraith_skill_30010:
         FX_DellonsWraith_skill_30010();
         break;
+    case STATE::FX_DellonsWraith_skill_400100:
+        FX_DellonsWraith_skill_400100();
+        break;
+    case STATE::FX_DellonsWraith_skill_600100:
+        FX_DellonsWraith_skill_600100();
+        break;
+    case STATE::FX_DellonsWraith_skill_900300:
+        FX_DellonsWraith_skill_900300();
+        break;
+    case STATE::FX_DellonsWraith01_Special_01:
+        FX_DellonsWraith01_Special_01();
+        break;
+    case STATE::FX_SQ_Dellons_QuestEnd_2:
+        FX_SQ_Dellons_QuestEnd_2();
+        break;
     case STATE::FX_Mn_Dellons_skill_5100:
         FX_Mn_Dellons_skill_5100();
         break;
@@ -90,6 +105,21 @@ void DellonsWraith_FSM::State_Init()
         {
         case STATE::FX_DellonsWraith_skill_30010:
             FX_DellonsWraith_skill_30010_Init();
+            break;
+        case STATE::FX_DellonsWraith_skill_400100:
+            FX_DellonsWraith_skill_400100_Init();
+            break;
+        case STATE::FX_DellonsWraith_skill_600100:
+            FX_DellonsWraith_skill_600100_Init();
+            break;
+        case STATE::FX_DellonsWraith_skill_900300:
+            FX_DellonsWraith_skill_900300_Init();
+            break;
+        case STATE::FX_DellonsWraith01_Special_01:
+            FX_DellonsWraith01_Special_01_Init();
+            break;
+        case STATE::FX_SQ_Dellons_QuestEnd_2:
+            FX_SQ_Dellons_QuestEnd_2_Init();
             break;
         case STATE::FX_Mn_Dellons_skill_5100:
             FX_Mn_Dellons_skill_5100_Init();
@@ -212,7 +242,133 @@ void DellonsWraith_FSM::FX_DellonsWraith_skill_30010_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"FX_DellonsWraith_skill_30010", 0.15f, false, 1.5f);
+    animator->Set_NextTweenAnim(L"FX_DellonsWraith_skill_30010", 0.15f, false, 1.f);
+
+    if (!m_pTarget.expired())
+        Get_Transform()->Set_WorldMat(m_pTarget.lock()->Get_Transform()->Get_WorldMatrix());
+}
+
+void DellonsWraith_FSM::FX_DellonsWraith_skill_400100()
+{
+    if (Get_CurFrame() == 12)
+        AttackCollider_On(KNOCKBACK_ATTACK);
+    else if (Get_CurFrame() == 20)
+        AttackCollider_Off();
+
+
+    if (Is_AnimFinished())
+    {
+        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+    }
+}
+
+void DellonsWraith_FSM::FX_DellonsWraith_skill_400100_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"FX_DellonsWraith_skill_400100", 0.15f, false, 1.5f);
+
+    if (!m_pTarget.expired())
+        Get_Transform()->Set_WorldMat(m_pTarget.lock()->Get_Transform()->Get_WorldMatrix());
+}
+
+void DellonsWraith_FSM::FX_DellonsWraith_skill_600100()
+{
+    if (Get_CurFrame() == 126)
+        AttackCollider_On(KNOCKBACK_ATTACK);
+    else if (Get_CurFrame() == 140)
+        AttackCollider_Off();
+
+
+    if (Is_AnimFinished())
+    {
+        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+    }
+}
+
+void DellonsWraith_FSM::FX_DellonsWraith_skill_600100_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"FX_DellonsWraith_skill_400100", 0.15f, false, 1.f);
+
+    if (!m_pTarget.expired())
+        Get_Transform()->Set_WorldMat(m_pTarget.lock()->Get_Transform()->Get_WorldMatrix());
+}
+
+void DellonsWraith_FSM::FX_DellonsWraith_skill_900300()
+{
+    if (Get_CurFrame() == 65)
+        AttackCollider_On(NORMAL_ATTACK);
+    else if (Get_CurFrame() == 72)
+        AttackCollider_Off();
+    else if (Get_CurFrame() == 77)
+        AttackCollider_On(NORMAL_ATTACK);
+    else if (Get_CurFrame() == 82)
+        AttackCollider_Off();
+    else if (Get_CurFrame() == 109)
+        AttackCollider_On(KNOCKBACK_ATTACK);
+    else if (Get_CurFrame() == 116)
+        AttackCollider_Off();
+
+    if (Is_AnimFinished())
+    {
+        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+    }
+}
+
+void DellonsWraith_FSM::FX_DellonsWraith_skill_900300_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"FX_DellonsWraith_skill_900300", 0.15f, false, 1.f);
+
+    if (!m_pTarget.expired())
+        Get_Transform()->Set_WorldMat(m_pTarget.lock()->Get_Transform()->Get_WorldMatrix());
+}
+
+void DellonsWraith_FSM::FX_DellonsWraith01_Special_01()
+{
+    if (Is_AnimFinished())
+    {
+        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+    }
+}
+
+void DellonsWraith_FSM::FX_DellonsWraith01_Special_01_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"FX_DellonsWraith01_Special_01", 0.15f, false, 1.f);
+
+    if (!m_pTarget.expired())
+        Get_Transform()->Set_WorldMat(m_pTarget.lock()->Get_Transform()->Get_WorldMatrix());
+}
+
+
+void DellonsWraith_FSM::FX_SQ_Dellons_QuestEnd_2()
+{
+    if (Get_CurFrame() == 85)
+        AttackCollider_On(KNOCKDOWN_ATTACK);
+    else if (Get_CurFrame() == 100)
+        AttackCollider_Off();
+
+    if (Is_AnimFinished())
+    {
+        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+    }
+}
+
+void DellonsWraith_FSM::FX_SQ_Dellons_QuestEnd_2_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"FX_SQ_Dellons_QuestEnd_2", 0.15f, false, 1.f);
 
     if (!m_pTarget.expired())
         Get_Transform()->Set_WorldMat(m_pTarget.lock()->Get_Transform()->Get_WorldMatrix());

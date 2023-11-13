@@ -136,6 +136,7 @@ private:
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
 	void Summon_Wraith();
 	void Set_WraithState(_uint iAnimindex);
+	void Calculate_SkillCamRight();
 
 private:
 	STATE m_eCurState = STATE::b_idle;
@@ -162,6 +163,8 @@ private:
 	weak_ptr<GameObject> m_pSkillCollider;
 
 	weak_ptr<GameObject> m_pDellonsWraith;
+
+	_float4 m_vSkillCamRight = _float4(0.f);
 
 	_uint m_iSkillBoneIndex = 0;
 	_float4x4 matBoneMatrix = XMMatrixIdentity();

@@ -9,10 +9,16 @@ public:
 	enum class STATE
 	{
 		FX_DellonsWraith_skill_30010, //Dellons Skill (300100)
+		FX_DellonsWraith_skill_400100, //Dellons Skill 4 (400100)
+		FX_DellonsWraith_skill_600100,
+		FX_DellonsWraith_skill_900300,
+		FX_DellonsWraith01_Special_01,
+		FX_SQ_Dellons_QuestEnd_2,
 		FX_Mn_Dellons_skill_5100, // Dellons Skill 4 (400100)
 		FX_Mn_Dellons_skill_500200, // Dellons Skill 5 (501100)
 		FX_Mn_Dellons_skill_5200,
 		FX_Mn_Dellons_skill_6100,
+
 		
 		NONE
 	};
@@ -39,6 +45,19 @@ private:
 
 	void FX_DellonsWraith_skill_30010();
 	void FX_DellonsWraith_skill_30010_Init();
+	void FX_DellonsWraith_skill_400100();
+	void FX_DellonsWraith_skill_400100_Init();
+	void FX_DellonsWraith_skill_600100();
+	void FX_DellonsWraith_skill_600100_Init();
+	void FX_DellonsWraith_skill_900300();
+	void FX_DellonsWraith_skill_900300_Init();
+	void FX_DellonsWraith01_Special_01();
+	void FX_DellonsWraith01_Special_01_Init();
+	void FX_SQ_Dellons_QuestEnd_2();
+	void FX_SQ_Dellons_QuestEnd_2_Init();
+
+
+
 	void FX_Mn_Dellons_skill_500200();
 	void FX_Mn_Dellons_skill_500200_Init();
 	void FX_Mn_Dellons_skill_5100();

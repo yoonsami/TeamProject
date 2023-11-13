@@ -135,14 +135,13 @@ private:
 	void skill_500100_Init();
 
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
-
+	void Calculate_SkillCamRight();
 private:
 	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;
 
 	_float3 m_vInputTurnVector = _float3(0.f);
 	COOLTIMEINFO m_tRunEndDelay = { 0.2f,0.f };
-	COOLTIMEINFO m_tEvadeDelay = { 1.f,0.f };
 
 	_bool m_bCanCombo = false;
 
@@ -161,6 +160,7 @@ private:
 	weak_ptr<GameObject> m_pSkillCollider;
 	
 	_float4 m_vCamStopPos = _float4(0.f);
+	_float4 m_vSkillCamRight = _float4(0.f);
 
 	_uint m_iSkillBoneIndex = 0;
 	_float4x4 matBoneMatrix = XMMatrixIdentity();

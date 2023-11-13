@@ -171,7 +171,6 @@ private:
 	_float3 m_vInputTurnVector = _float3(0.f);
 	COOLTIMEINFO m_tRunEndDelay = { 0.2f,0.f };
 	COOLTIMEINFO m_tRidingEndDelay = { 0.4f,0.f };
-	COOLTIMEINFO m_tEvadeDelay = { 1.f,0.f };
 	COOLTIMEINFO m_tRidingDelay = { 2.f,0.f };
 
 	_bool m_bCanCombo = false;
