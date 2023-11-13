@@ -468,6 +468,93 @@ void Graphics::Create_RTGroup()
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLOOMFINAL)]->Create(RENDER_TARGET_GROUP_TYPE::BLOOMFINAL, rtVec, dsTexture);
 	}
 
+	//DOFDOWNSCALE0
+	{
+		_float ratio = 0.5f;
+		vector<RenderTarget> rtVec(RENDER_TARGET_DOFSCALE_GROUP_MEMBER_COUNT);
+		shared_ptr<Texture> dsTexture0 = RESOURCES.CreateTexture(L"DOFDOWNSCALE0DS", DXGI_FORMAT_D24_UNORM_S8_UINT, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL, _float4(0.f));
+
+		rtVec[0].target = RESOURCES.CreateTexture(L"DOFDOWNSCALE0", FORMATTYPE, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].clearColor = _float4(0.f);
+
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOFDOWNSCALE0)] = make_shared<RenderTargetGroup>();
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOFDOWNSCALE0)]->Create(RENDER_TARGET_GROUP_TYPE::DOFDOWNSCALE0, rtVec, dsTexture0);
+	}
+
+	//DOFDOWNSCALE1
+	{
+		_float ratio = 0.5f * 0.5f;
+		vector<RenderTarget> rtVec(RENDER_TARGET_DOFSCALE_GROUP_MEMBER_COUNT);
+		shared_ptr<Texture> dsTexture0 = RESOURCES.CreateTexture(L"DOFDOWNSCALE1DS", DXGI_FORMAT_D24_UNORM_S8_UINT, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL, _float4(0.f));
+
+		rtVec[0].target = RESOURCES.CreateTexture(L"DOFDOWNSCALE1", FORMATTYPE, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].clearColor = _float4(0.f);
+
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOFDOWNSCALE1)] = make_shared<RenderTargetGroup>();
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOFDOWNSCALE1)]->Create(RENDER_TARGET_GROUP_TYPE::DOFDOWNSCALE1, rtVec, dsTexture0);
+	}
+
+	//DOFDOWNSCALE2
+	{
+		_float ratio = 0.5f * 0.5f * 0.5f;
+		vector<RenderTarget> rtVec(RENDER_TARGET_DOFSCALE_GROUP_MEMBER_COUNT);
+		shared_ptr<Texture> dsTexture0 = RESOURCES.CreateTexture(L"DOFDOWNSCALE2DS", DXGI_FORMAT_D24_UNORM_S8_UINT, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL, _float4(0.f));
+
+		rtVec[0].target = RESOURCES.CreateTexture(L"DOFDOWNSCALE2", FORMATTYPE, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].clearColor = _float4(0.f);
+
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOFDOWNSCALE2)] = make_shared<RenderTargetGroup>();
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOFDOWNSCALE2)]->Create(RENDER_TARGET_GROUP_TYPE::DOFDOWNSCALE2, rtVec, dsTexture0);
+	}
+
+	//DOFUPSCALE0
+	{
+		_float ratio = 0.5f * 0.5f;
+		vector<RenderTarget> rtVec(RENDER_TARGET_DOFSCALE_GROUP_MEMBER_COUNT);
+		shared_ptr<Texture> dsTexture0 = RESOURCES.CreateTexture(L"DOFUPSCALE0DS", DXGI_FORMAT_D24_UNORM_S8_UINT, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL, _float4(0.f));
+
+		rtVec[0].target = RESOURCES.CreateTexture(L"DOFUPSCALE0", FORMATTYPE, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].clearColor = _float4(0.f);
+
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOFUPSCALE0)] = make_shared<RenderTargetGroup>();
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOFUPSCALE0)]->Create(RENDER_TARGET_GROUP_TYPE::DOFUPSCALE0, rtVec, dsTexture0);
+	}
+
+	//DOFUPSCALE1
+	{
+		_float ratio = 0.5f;
+		vector<RenderTarget> rtVec(RENDER_TARGET_DOFSCALE_GROUP_MEMBER_COUNT);
+		shared_ptr<Texture> dsTexture0 = RESOURCES.CreateTexture(L"DOFUPSCALE1DS", DXGI_FORMAT_D24_UNORM_S8_UINT, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL, _float4(0.f));
+
+		rtVec[0].target = RESOURCES.CreateTexture(L"DOFUPSCALE1", FORMATTYPE, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].clearColor = _float4(0.f);
+
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOFUPSCALE1)] = make_shared<RenderTargetGroup>();
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOFUPSCALE1)]->Create(RENDER_TARGET_GROUP_TYPE::DOFUPSCALE1, rtVec, dsTexture0);
+	}
+	//DOFUPSCALE2
+	{
+
+		vector<RenderTarget> rtVec(RENDER_TARGET_DOFSCALE_GROUP_MEMBER_COUNT);
+		shared_ptr<Texture> dsTexture0 = RESOURCES.CreateTexture(L"DOFUPSCALE2DS", DXGI_FORMAT_D24_UNORM_S8_UINT, _uint(m_Viewport.Get_Width()), _uint(m_Viewport.Get_Height()), D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL, _float4(0.f));
+
+		rtVec[0].target = RESOURCES.CreateTexture(L"DOFUPSCALE2", FORMATTYPE, _uint(m_Viewport.Get_Width()), _uint(m_Viewport.Get_Height()), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].clearColor = _float4(0.f);
+
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOFUPSCALE2)] = make_shared<RenderTargetGroup>();
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOFUPSCALE2)]->Create(RENDER_TARGET_GROUP_TYPE::DOFUPSCALE2, rtVec, dsTexture0);
+	}
+
+	//DOFFINAL
+	{
+		vector<RenderTarget> rtVec(RENDER_TARGET_DOFFINAL_GROUP_MEMBER_COUNT);
+		rtVec[0].target = RESOURCES.CreateTexture(L"DOFFinalTarget", FORMATTYPE, _uint(m_Viewport.Get_Width()), _uint(m_Viewport.Get_Height()), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].clearColor = _float4(0.f);
+
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOFFINAL)] = make_shared<RenderTargetGroup>();
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOFFINAL)]->Create(RENDER_TARGET_GROUP_TYPE::DOFFINAL, rtVec, dsTexture);
+	}
+
 	//Distortion
 	{
 		vector<RenderTarget> rtVec(RENDER_TARGET_DISTORTION_GROUP_MEMBER_COUNT);

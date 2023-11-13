@@ -82,6 +82,8 @@ _float GameInstance::g_lightAttenuation = 100.f;
 
 _float GameInstance::g_ambientRatio = 0.5f;
 
+GameInstance::DOFData GameInstance::g_DOFData{};
+
 GameInstance::LIGHTPowerData GameInstance::g_LightPowerData{};
 
 GameInstance::BloomData GameInstance::g_BloomData{};

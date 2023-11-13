@@ -151,6 +151,14 @@ void DebugTool::RenderOptionTab()
 			DragFloat3("Test2", (_float*)&GAMEINSTANCE.g_testVec2, 0.01f);
 		}
 	}
+	if (CollapsingHeader("DOF"))
+	{
+		Checkbox("DOF On", &GAMEINSTANCE.g_DOFData.g_bDOF_On);
+		_float& g_FocusDepth = GAMEINSTANCE.g_DOFData.g_FocusDepth;
+		_float& g_DOFRange = GAMEINSTANCE.g_DOFData.g_DOFRange;
+		DragFloat("Focus Depth", &g_FocusDepth,1.f,0.1f,1000.f);
+		DragFloat("g_DOFRange", &g_DOFRange,0.001f,0.0001f,1.f);
+	}
 	if (CollapsingHeader("Light Option"))
 	{
 		_float& g_fSpecularPower = GAMEINSTANCE.g_LightPowerData.g_specularPower;

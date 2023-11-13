@@ -129,6 +129,21 @@ float4 PS_Aberration(VS_OUT input) : SV_Target
     
 }
 
+float g_FocusDepth;
+float g_DOFRange;
+
+float4 PS_DOF(VS_OUT input) : SV_Target
+{
+    float depth = SubMap2.Sample(PointSampler, input.uv).w;
+    
+    float3 originalColor = SubMap0.Sample(PointSampler, input.uv).rgb;
+    float3 blurColor = SubMap1.Sample(PointSampler, input.uv).rgb;
+    
+    float3 outColor = lerp(originalColor, blurColor, saturate(g_DOFRange * abs(g_FocusDepth - depth)));
+    
+    return float4(outColor, 1.f);
+}
+
 cbuffer FogBuffer
 {
     float fogStart;
@@ -201,7 +216,7 @@ technique11 T0
     }
 };
 
-technique11 AfterEffect
+technique11 T1_AfterEffect
 {
     Pass pass_Aberration
     {
@@ -212,12 +227,21 @@ technique11 AfterEffect
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Aberration()));
     }
+    Pass pass_DOF
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Final()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_DOF()));
+    }
   
 };
 
-technique11 RenderFinal
+technique11 T2_RenderFinal
 {
-    Pass pass_Aberration
+    Pass pass_RenderFinal
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Final()));
         SetGeometryShader(NULL);
@@ -229,7 +253,7 @@ technique11 RenderFinal
   
 };
 
-technique11 Fog
+technique11 T3_Fog
 {
     Pass pass_LinearFog
     {

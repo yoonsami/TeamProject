@@ -77,8 +77,12 @@ protected:
 
 	void Render_Forward();
 
+
 	void Render_BloomMap();
 	void Render_BloomMapScaling();
+	void Render_BloomFinal();
+	void Render_DOFMapScaling();
+	void Render_DOFFinal();
 
 
 	void Render_Distortion();

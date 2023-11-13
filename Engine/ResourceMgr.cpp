@@ -734,6 +734,59 @@ void ResourceMgr::CreateDefaultMaterial()
 		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"BloomTarget"));
 		Add(L"BloomFinal", material);
 	}
+
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"DOFTarget"));
+		Add(L"DOFDownScale0", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"DOFDOWNSCALE0"));
+		Add(L"DOFDownScale1", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"DOFDOWNSCALE1"));
+		Add(L"DOFDownScale2", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"DOFDOWNSCALE2"));
+		Add(L"DOFUpScale0", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"DOFUPSCALE0"));
+		Add(L"DOFUpScale1", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"DOFUPSCALE1"));
+		Add(L"DOFUpScale2", material);
+	}
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Final.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"MotionBlurFinalTarget"));
+		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"DOFUPSCALE2"));
+		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"G_DepthTarget"));
+		Add(L"DOFFinal", material);
+	}
+
 	{
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_FXAA.fx");
 		shared_ptr<Material> material = make_shared<Material>();

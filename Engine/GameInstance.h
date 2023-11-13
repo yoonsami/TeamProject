@@ -86,5 +86,13 @@ public:
 	static _bool g_bPBR_On;
 	static _float g_lightAttenuation;
 	static _float g_ambientRatio;
+
+	struct DOFData
+	{
+		_bool g_bDOF_On = false;
+		_float g_FocusDepth = 1.f;
+		_float g_DOFRange = 5.f;
+	};
+	static DOFData g_DOFData;
 };
 

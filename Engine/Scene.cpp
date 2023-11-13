@@ -89,9 +89,15 @@ void Scene::Render()
 	//Render_BlurEffect();
 	Render_LightFinal();
 	Render_MotionBlurFinal();
+
+
+
 	Render_Forward();
+	Render_DOFMapScaling();
+	Render_DOFFinal();
 	Render_BloomMap();
 	Render_BloomMapScaling();
+	Render_BloomFinal();
 	Render_OutLine();
 	Render_Distortion();
 	Render_Distortion_Final();
@@ -1279,9 +1285,16 @@ void Scene::Render_BloomMapScaling()
 
 	}
 
+}
+
+void Scene::Render_BloomFinal()
+{
+	if (!GAMEINSTANCE.g_BloomData.g_BloomOn)
+		return;
+
 	{
 		GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::BLOOMFINAL)->OMSetRenderTargets();
-		
+
 		auto material = RESOURCES.Get<Material>(L"BloomFinal");
 		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 		//	material->Get_Shader()->GetScalar("UpScalePower")->SetFloat(m_fUpScalePower);
@@ -1297,8 +1310,83 @@ void Scene::Render_BloomMapScaling()
 
 		m_wstrFinalRenderTarget = L"BloomFinalTarget";
 	}
+}
+
+void Scene::Render_DOFMapScaling()
+{
+	if (!GAMEINSTANCE.g_DOFData.g_bDOF_On)
+		return;
+
+	{
+		auto material = RESOURCES.Get<Material>(L"DOFDownScale0");
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
+	}
+
+	for (_uchar i = 0; i < 3; ++i)
+	{
+		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOFDOWNSCALE0) + i);
+		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
+		auto material = RESOURCES.Get<Material>(L"DOFDownScale" + to_wstring(i));
+		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+
+		material->Push_SubMapData();
+
+		mesh->Get_VertexBuffer()->Push_Data();
+		mesh->Get_IndexBuffer()->Push_Data();
+
+		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	}
+
+	for (_uchar i = 0; i < 3; ++i)
+	{
+		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOFUPSCALE0) + i);
+		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
+		auto material = RESOURCES.Get<Material>(L"DOFUpScale" + to_wstring(i));
+		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+
+		material->Push_SubMapData();
+
+		mesh->Get_VertexBuffer()->Push_Data();
+		mesh->Get_IndexBuffer()->Push_Data();
+
+		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		if (i != 2)
+			material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+		else
+			material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+
+	}
+}
+
+void Scene::Render_DOFFinal()
+{
+	if (!GAMEINSTANCE.g_DOFData.g_bDOF_On)
+		return;
+
+	{
+		GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::DOFFINAL)->OMSetRenderTargets();
+
+		auto material = RESOURCES.Get<Material>(L"DOFFinal");
+		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+		//	material->Get_Shader()->GetScalar("UpScalePower")->SetFloat(m_fUpScalePower);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
+		material->Push_SubMapData();
+		material->Get_Shader()->GetScalar("g_FocusDepth")->SetFloat(GAMEINSTANCE.g_DOFData.g_FocusDepth);
+		material->Get_Shader()->GetScalar("g_DOFRange")->SetFloat(GAMEINSTANCE.g_DOFData.g_DOFRange);
 
 
+		mesh->Get_VertexBuffer()->Push_Data();
+		mesh->Get_IndexBuffer()->Push_Data();
+
+		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		material->Get_Shader()->DrawIndexed(1, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+
+		m_wstrFinalRenderTarget = L"DOFFinalTarget";
+	}
 }
 
 void Scene::Render_Distortion()
