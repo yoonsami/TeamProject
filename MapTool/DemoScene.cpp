@@ -188,8 +188,8 @@ void DemoScene::Load_Camera()
 void DemoScene::Load_Light()
 {
 	shared_ptr<GameObject> lightObj = make_shared<GameObject>();
-	lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-150.f, 25.f, -150.f, 1.f));
-	lightObj->GetOrAddTransform()->Set_LookDir(_float3(4.f,-4.f,3.f));
+	lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-10.f, 25.f, -10.f, 1.f));
+	lightObj->GetOrAddTransform()->Set_LookDir(_float3(2.f,-4.f,3.f));
 	{
 		// LightComponent 생성 후 세팅
 		shared_ptr<Light> lightCom = make_shared<Light>();
@@ -197,10 +197,10 @@ void DemoScene::Load_Light()
 		//lightCom->Set_Ambient(Color(0.8f));
 		//lightCom->Set_Specular(Color(0.f));
 		//lightCom->Set_Emissive(Color(0.f));
-		lightCom->Set_Ambient(Color(0.675f));
-		lightCom->Set_Diffuse(Color(0.11f, 0.11f, 0.75f, 1.f));
-		lightCom->Set_Specular(Color(0.f));
-		lightCom->Set_Emissive(Color(0.f));
+		lightCom->Set_Ambient(Color(0.33f));
+		lightCom->Set_Diffuse(Color(0.22f, 0.28f, 0.82f, 1.f));
+		lightCom->Set_Specular(Color(1.f));
+		lightCom->Set_Emissive(Color(1.f));
 		lightCom->Set_LightType(LIGHT_TYPE::DIRECTIONAL_LIGHT);
 		lightObj->Add_Component(lightCom);
 		

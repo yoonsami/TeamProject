@@ -22,6 +22,7 @@ int g_arrVK[static_cast<int>(KEY_TYPE::LAST)] =
 	VK_LBUTTON,
 	VK_RBUTTON,
 	VK_MBUTTON,
+	VK_TAB,
 };
 
 
