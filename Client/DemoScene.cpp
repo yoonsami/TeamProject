@@ -26,6 +26,7 @@
 #include "OBBBoxCollider.h"
 #include "SphereCollider.h"
 #include "AABBBoxCollider.h"
+#include "UiGachaCardMove.h"
 #include "Debug_CreateMotionTrail.h"
 #include "CounterMotionTrailScript.h"
 
@@ -42,9 +43,10 @@
 #include "CharacterController.h"
 #include "ObjectTransformDebug.h"
 #include "Silversword_Soldier_FSM.h"
+#include "UiGachaController.h"
 #include "Boss_Mir_FSM.h"
 #include "DemoAnimationController1.h"
-
+#include "UiCardDeckController.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -484,6 +486,37 @@ void DemoScene::Load_Ui()
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main.dat");
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main_Button.dat");
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Char_Change.dat");
+	//Load_UIFile(L"..\\Resources\\UIData\\UI_Gacha.dat");
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck.dat", false);
+
+	{
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_Name(L"UI_Gacha_Controller");
+
+		auto pScript = make_shared<UiGachaController>();
+		pObj->Add_Component(pScript);
+
+		Add_GameObject(pObj, true);
+	}
+
+	{
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_Name(L"UI_Card_Deck_Controller");
+
+		auto pScript = make_shared<UiCardDeckController>();
+		pObj->Add_Component(pScript);
+
+		Add_GameObject(pObj, true);
+	}
+
+	{
+		auto pObj = Get_GameObject(L"UI_Main_Button2");
+		pObj->Get_Button()->AddOnClickedEvent([]()
+			{
+				CUR_SCENE->Get_GameObject(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Render_On();
+			});
+	}
+
 
 
 
@@ -547,4 +580,38 @@ void DemoScene::Load_Ui()
 		Get_GameObject(L"UI_Char_Change2")->Add_Component(pScript);
 	}
 
+
+
+	{
+		/*auto pScript = make_shared<UiGachaCardMove>(0);
+		Get_GameObject(L"UI_Gacha_Card0")->Add_Component(pScript);
+
+		pScript = make_shared<UiGachaCardMove>(1);
+		Get_GameObject(L"UI_Gacha_Card1")->Add_Component(pScript);
+
+		pScript = make_shared<UiGachaCardMove>(2);
+		Get_GameObject(L"UI_Gacha_Card2")->Add_Component(pScript);
+
+		pScript = make_shared<UiGachaCardMove>(3);
+		Get_GameObject(L"UI_Gacha_Card3")->Add_Component(pScript);
+
+		pScript = make_shared<UiGachaCardMove>(4);
+		Get_GameObject(L"UI_Gacha_Card4")->Add_Component(pScript);
+
+		pScript = make_shared<UiGachaCardMove>(5);
+		Get_GameObject(L"UI_Gacha_Card5")->Add_Component(pScript);
+
+		pScript = make_shared<UiGachaCardMove>(6);
+		Get_GameObject(L"UI_Gacha_Card6")->Add_Component(pScript);
+
+		pScript = make_shared<UiGachaCardMove>(7);
+		Get_GameObject(L"UI_Gacha_Card7")->Add_Component(pScript);
+
+		pScript = make_shared<UiGachaCardMove>(8);
+		Get_GameObject(L"UI_Gacha_Card8")->Add_Component(pScript);
+		
+		pScript = make_shared<UiGachaCardMove>(9);
+		Get_GameObject(L"UI_Gacha_Card9")->Add_Component(pScript);*/
+
+	}
 }

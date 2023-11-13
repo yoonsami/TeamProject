@@ -87,9 +87,9 @@ _bool UiCharChange::IsChangePossible(_uint iIndex)
 
     if (Desc.fCoolTime < Desc.fAccTime)
     {
-        // Hreo Change Script 호출
+        // Hero Change Script 호출
         // Desc.eHero의 영웅 값을 따라서 호출
-
+        
         return true;
     }
 

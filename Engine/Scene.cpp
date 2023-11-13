@@ -427,7 +427,7 @@ void Scene::Load_SceneFile(const wstring& sceneName)
 
 }
 
-void Scene::Load_UIFile(const wstring& strDataFilePath)
+void Scene::Load_UIFile(const wstring& strDataFilePath, _bool bRender)
 {
 	shared_ptr<FileUtils> file = make_shared<FileUtils>();
 	file->Open(strDataFilePath, FileMode::Read);
@@ -497,6 +497,7 @@ void Scene::Load_UIFile(const wstring& strDataFilePath)
 
 		UiObject->Set_LayerIndex(Layer_UI);
 		UiObject->Set_Instancing(false);
+		UiObject->Set_Render(bRender);
 
 		_bool bIsStatic = file->Read<_bool>();
 		Add_GameObject(UiObject, bIsStatic);

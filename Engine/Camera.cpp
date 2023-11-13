@@ -70,6 +70,9 @@ void Camera::Sort_GameObject()
 	m_VelocityMapObj.clear();
 	for (auto& gameObject : gameObjects)
 	{
+		if (false == gameObject->Is_Render())
+			continue;
+
 		if (gameObject->Get_MeshRenderer() == nullptr
 			&& gameObject->Get_ModelRenderer() == nullptr
 			&& gameObject->Get_Animator() == nullptr

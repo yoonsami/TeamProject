@@ -204,6 +204,7 @@
     <ClInclude Include="DemoScene.h" />
     <ClInclude Include="ForwardMovingSkillScript.h" />
     <ClInclude Include="HeroChangeScript.h" />
+    <ClInclude Include="Hero_Data.h" />
     <ClInclude Include="Kyle_FSM.h" />
     <ClInclude Include="Loader.h" />
     <ClInclude Include="LoadingScene.h" />
@@ -217,8 +218,12 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Silversword_Soldier_FSM.h" />
     <ClInclude Include="SpearAce_FSM.h" />
+    <ClInclude Include="UiCardDeckController.h" />
     <ClInclude Include="UiCharChange.h" />
     <ClInclude Include="UiCoolEndEffect.h" />
+    <ClInclude Include="UiGachaCardMove.h" />
+    <ClInclude Include="UiGachaController.h" />
+    <ClInclude Include="UiGachaEffectController.h" />
     <ClInclude Include="UiHpBarFlow.h" />
     <ClInclude Include="UiLoadingScript.h" />
     <ClInclude Include="UiSkillButtonEffect.h" />
@@ -272,8 +277,12 @@
     </ClCompile>
     <ClCompile Include="Silversword_Soldier_FSM.cpp" />
     <ClCompile Include="SpearAce_FSM.cpp" />
+    <ClCompile Include="UiCardDeckController.cpp" />
     <ClCompile Include="UiCharChange.cpp" />
     <ClCompile Include="UiCoolEndEffect.cpp" />
+    <ClCompile Include="UiGachaCardMove.cpp" />
+    <ClCompile Include="UiGachaController.cpp" />
+    <ClCompile Include="UiGachaEffectController.cpp" />
     <ClCompile Include="UiHpBarFlow.cpp" />
     <ClCompile Include="UiLoadingScript.cpp" />
     <ClCompile Include="UiSkillButtonEffect.cpp" />
