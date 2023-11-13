@@ -175,232 +175,252 @@ shared_ptr<MeshEffectData> ResourceMgr::ReloadOrAddMeshEffectData(const wstring&
 }
 
 
-//shared_ptr<Parts> ResourceMgr::Get_Part(const wstring& key)
-//{
-//	_uint type;
-//	if (key.find(L"BodyUpper") != wstring::npos)
-//		type = _uint(PARTS_INFO::BodyUpper);
-//
-//	else if (key.find(L"BodyLower") != wstring::npos)
-//		type = _uint(PARTS_INFO::BodyLower);
-//
-//	else if (key.find(L"Face") != wstring::npos)
-//		type = _uint(PARTS_INFO::Face);
-//
-//	else if (key.find(L"HeadGear") != wstring::npos)
-//		type = _uint(PARTS_INFO::Hair);
-//
-//	else if (key.find(L"OnePiece") != wstring::npos)
-//		type = _uint(PARTS_INFO::OnePiece);
-//
-//	else
-//		type = _uint(PARTS_INFO::NonParts);
-//
-//	return m_PrototypeParts[type][key];
-//}
+shared_ptr<Parts> ResourceMgr::Get_Part(const wstring& key, PARTS_INFO type)
+{
+	return m_PrototypeParts[static_cast<_int>(type)][key];
+}
 
-//void ResourceMgr::LoadBase()
-//{
-//	shared_ptr<Model> m1 = make_shared<Model>();
-//	m1->ReadBase();
-//	m1->ReadAnimation(L"Custom/Base");
-//
-//	Add(L"Base_Model", m1);
-//}
+void ResourceMgr::LoadParts()
+{
+	wstring assetPath = L"..\\Resources\\Parts\\";
 
-//void ResourceMgr::LoadParts()
-//{
-//	wstring assetPath = L"..\\Resources\\Models\\Custom\\Parts\\";
-//
-//	for (auto& entry : fs::recursive_directory_iterator(assetPath))
-//	{
-//		if (entry.is_directory())
-//			continue;
-//
-//		if (entry.path().extension().wstring() != L".Parts" && entry.path().extension().wstring() != L".parts")
-//			continue;
-//
-//		// ..\\Resources\\Models\\Custom\\Parts\\BodyLower\\Anbu1.Parts
-//
-//		wstring tag = entry.path().wstring();
-//		//..\\Resources\\Models\\Custom\\Parts\\BodyLower\\Anbu1
-//		Utils::DetachExt(tag);
-//
-//		int i = int(tag.rfind(L"Parts\\"));
-//
-//		//Parts\\BodyLower\\Anbu1
-//		tag = tag.substr(i, tag.size() - i);
-//
-//		wstring materialPath = m_strTexturePath+L"Custom/" + tag + L".Material";
-//		wstring modelPath = m_strModelPath + L"Custom/" + tag + L".Parts";
-//
-//		{
-//			shared_ptr<FileUtils> file = make_shared<FileUtils>();
-//
-//			file->Open(materialPath, FileMode::Read);
-//
-//			while (true)
-//			{
-//				shared_ptr<Material> material = make_shared<Material>();
-//
-//				material->Set_Name(Utils::ToWString(file->Read<string>()));
-//
-//				if (file->Read<_bool>())
-//				{
-//					wstring textureStr = Utils::ToWString(file->Read<string>());
-//					if (textureStr.length() > 0)
-//					{
-//						textureStr += L".dds";
-//						auto texture = RESOURCES.GetOrAddTexture(textureStr, m_strTexturePath + textureStr);
-//						if (!texture)
-//						{
-//							Utils::ChangeExt(textureStr, L".tga");
-//							texture = RESOURCES.GetOrAddTexture(textureStr, m_strTexturePath + textureStr);
-//						}
-//						material->Set_DiffuseMap(texture);
-//					}
-//				}
-//
-//				// Specular Texture
-//				if (file->Read<_bool>())
-//				{
-//					wstring textureStr = Utils::ToWString(file->Read<string>());
-//					if (textureStr.length() > 0)
-//					{
-//						textureStr += L".dds";
-//						auto texture = RESOURCES.GetOrAddTexture(textureStr, m_strTexturePath + textureStr);
-//						if (!texture)
-//						{
-//							Utils::ChangeExt(textureStr, L".tga");
-//							texture = RESOURCES.GetOrAddTexture(textureStr, m_strTexturePath + textureStr);
-//						}
-//						material->Set_SpecularMap(texture);
-//					}
-//				}
-//
-//				// Normal Texture
-//				if (file->Read<_bool>())
-//				{
-//					wstring textureStr = Utils::ToWString(file->Read<string>());
-//					if (textureStr.length() > 0)
-//					{
-//						textureStr += L".tga";
-//						auto texture = RESOURCES.GetOrAddTexture(textureStr, m_strTexturePath + textureStr);
-//						material->Set_NormalMap(texture);
-//					}
-//				}
-//
-//				if (file->Read<_bool>())
-//				{
-//					wstring textureStr = Utils::ToWString(file->Read<string>());
-//					if (textureStr.length() > 0)
-//					{
-//						textureStr += L".dds";
-//						auto texture = RESOURCES.GetOrAddTexture(textureStr, m_strTexturePath + textureStr);
-//						material->Set_FilterMap(texture);
-//					}
-//				}
-//
-//				if (file->Read<_bool>())
-//				{
-//					wstring textureStr = Utils::ToWString(file->Read<string>());
-//					if (textureStr.length() > 0)
-//					{
-//						textureStr += L".tga";
-//						auto texture = RESOURCES.GetOrAddTexture(textureStr, m_strTexturePath + textureStr);
-//						material->Set_FilterNormalMap(texture);
-//					}
-//				}
-//
-//				if (file->Read<_bool>())
-//				{
-//					wstring textureStr = Utils::ToWString(file->Read<string>());
-//					if (textureStr.length() > 0)
-//					{
-//						textureStr += L".dds";
-//						auto texture = RESOURCES.GetOrAddTexture(textureStr, m_strTexturePath + textureStr);
-//						material->Set_MaskMap(texture);
-//					}
-//				}
-//
-//
-//
-//				// Ambient
-//				material->Get_MaterialDesc().ambient = file->Read<Color>();
-//
-//				// Diffuse
-//				material->Get_MaterialDesc().diffuse = file->Read<Color>();
-//
-//				// Specular
-//				material->Get_MaterialDesc().specular = file->Read<Color>();
-//
-//				// Emissive
-//				material->Get_MaterialDesc().emissive = file->Read<Color>();
-//
-//
-//				if (!Get<Material>(material->Get_Name()))
-//				{
-//					Add<Material>(material->Get_Name(), material);
-//					Get<Model>(L"Base_Model")->Get_Materials().push_back(material);
-//				}
-//
-//				if (!file->Read<_bool>())
-//					break;
-//			}
-//
-//		}
-//		{
-//			shared_ptr<Parts> parts = make_shared<Parts>();
-//
-//			shared_ptr<FileUtils> file = make_shared<FileUtils>();
-//			file->Open(modelPath, FileMode::Read);
-//
-//			PARTS_INFO partsType = PARTS_INFO(file->Read<_uint>());
-//			m_PrototypeParts[(_uint)partsType][tag] = parts;
-//
-//			{
-//				const _uint meshCount = file->Read<_uint>();
-//				for (_uint i = 0; i < meshCount; ++i)
-//				{
-//					shared_ptr<ModelMesh> mesh = make_shared<ModelMesh>();
-//
-//					mesh->name = Utils::ToWString(file->Read<string>());
-//					mesh->boneIndex = file->Read<_int>();
-//					mesh->materialName = Utils::ToWString(file->Read<string>());
-//
-//					// VertexData
-//					{
-//						const _uint verticesCount = file->Read<_uint>();
-//						vector<ModelVertexType> vertices;
-//						vertices.resize(verticesCount);
-//
-//						void* data = vertices.data();
-//
-//						file->Read(&data, sizeof(ModelVertexType) * verticesCount);
-//						mesh->geometry->Add_Vertices(vertices);
-//					}
-//
-//					//IndexData
-//					{
-//						const _uint indicesCount = file->Read<_uint>();
-//
-//						vector<_uint> indices;
-//						indices.resize(indicesCount);
-//
-//						void* data = indices.data();
-//
-//						file->Read(&data, sizeof(_uint) * indicesCount);
-//						mesh->geometry->Add_Indices(indices);
-//					}
-//
-//					mesh->Create_Buffer();
-//
-//					m_PrototypeParts[(_uint)partsType][tag]->m_Meshes.push_back(mesh);
-//				}
-//			}
-//				}
-//	}
-//}
+	for (auto& entry : fs::recursive_directory_iterator(assetPath))
+	{
+		if (entry.is_directory())
+			continue;
+
+		if (entry.path().extension().wstring() != L".Parts" && entry.path().extension().wstring() != L".parts")
+			continue;
+
+		//..\\Resources\\Parts\\Head\\Anbu1.Parts
+		wstring tag = entry.path().wstring();
+		//..\\Resources\\Parts\\Head\\Anbu1.Parts
+		wstring partsPath = entry.path().wstring();
+
+		
+		Utils::DetachExt(tag);
+		//..\\Resources\\Parts\\Head\\Anbu1.Material
+		wstring materialPath = tag + L".Material";
+
+		wstring texturePath = fs::path(tag).parent_path();
+
+		//..\\Resources\\Textures\\Parts\\Head
+		Utils::Replace(texturePath, L"Resources\\", L"Resources\\Textures\\");
+
+		//material
+		{
+			shared_ptr<FileUtils> file = make_shared<FileUtils>();
+
+			file->Open(materialPath, FileMode::Read);
+
+			_uint iCount = file->Read<_uint>();
+			for (_uint i = 0; i < iCount; ++i)
+			{
+				shared_ptr<Material> material = make_shared<Material>();
+
+				material->Set_Name(Utils::ToWString(file->Read<string>()));
+
+				if (file->Read<_bool>())
+				{
+					wstring textureStr = Utils::ToWString(file->Read<string>());
+					Utils::DetachExt(textureStr);
+					if (textureStr.length() > 0)
+					{
+						textureStr += L".dds";
+						auto texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
+						if (!texture)
+						{
+							Utils::ChangeExt(textureStr, L".DDS");
+							texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
+							if (!texture)
+							{
+								Utils::ChangeExt(textureStr, L".tga");
+								texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
+								if (!texture)
+								{
+									Utils::ChangeExt(textureStr, L".png");
+									texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
+
+								}
+							}
+						}
+						material->Set_TextureMap(texture, TextureMapType::DIFFUSE);
+						wstring textureR = textureStr;
+
+						Utils::Replace(textureR, L"_D", L"_R");
+						Utils::DetachExt(textureR);
+
+						{
+							textureR += L".dds";
+							auto texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+							if (!texture_R)
+							{
+								Utils::ChangeExt(textureR, L".DDS");
+								texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+								if (!texture_R)
+								{
+									Utils::ChangeExt(textureR, L".tga");
+									texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+									if (!texture_R)
+									{
+										Utils::ChangeExt(textureR, L".png");
+										texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+
+									}
+								}
+							}
+							if (!texture_R)
+							{
+								Utils::Replace(textureR, L"_R", L"_M");
+								auto texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+								if (!texture_R)
+								{
+									Utils::ChangeExt(textureR, L".DDS");
+									texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+									if (!texture_R)
+									{
+										Utils::ChangeExt(textureR, L".tga");
+										texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+										if (!texture_R)
+										{
+											Utils::ChangeExt(textureR, L".png");
+											texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+
+										}
+									}
+								}
+							}
+							material->Set_SubMap(0, texture_R);
+						}
+					}
+				}
+
+				// Specular Texture
+				if (file->Read<_bool>())
+				{
+					wstring textureStr = Utils::ToWString(file->Read<string>());
+					Utils::DetachExt(textureStr);
+					if (textureStr.length() > 0)
+					{
+						textureStr += L".dds";
+						auto texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
+						if (!texture)
+						{
+							Utils::ChangeExt(textureStr, L".DDS");
+							texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
+							if (!texture)
+							{
+								Utils::ChangeExt(textureStr, L".tga");
+								texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
+								if (!texture)
+								{
+									Utils::ChangeExt(textureStr, L".png");
+									texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
+
+								}
+							}
+						}
+						material->Set_TextureMap(texture, TextureMapType::SPECULAR);
+					}
+				}
+
+				// Normal Texture
+				if (file->Read<_bool>())
+				{
+					wstring textureStr = Utils::ToWString(file->Read<string>());
+					Utils::DetachExt(textureStr);
+					if (textureStr.length() > 0)
+					{
+						textureStr += L".tga";
+						auto texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
+
+						if (!texture)
+						{
+							Utils::ChangeExt(textureStr, L".png");
+							texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
+
+						}
+						material->Set_TextureMap(texture, TextureMapType::NORMAL);
+					}
+				}
+
+				// Ambient
+				material->Get_MaterialDesc().ambient = file->Read<Color>();
+
+				// Diffuse
+				material->Get_MaterialDesc().diffuse = file->Read<Color>();
+
+				// Specular
+				material->Get_MaterialDesc().specular = file->Read<Color>();
+
+				// Emissive
+				material->Get_MaterialDesc().emissive = file->Read<Color>();
+
+
+				if (!Get<Material>(material->Get_Name()))
+				{
+					Add<Material>(material->Get_Name(), material);
+					Get<Model>(L"Player")->Get_Materials().push_back(material);
+				}
+			}
+
+		}
+
+		//parts
+		{
+			wstring fileName = fs::path(tag).filename();
+			Utils::DetachExt(fileName);
+			shared_ptr<Parts> parts = make_shared<Parts>();
+
+			shared_ptr<FileUtils> file = make_shared<FileUtils>();
+			file->Open(partsPath, FileMode::Read);
+
+			PARTS_INFO partsType = PARTS_INFO(file->Read<_uint>());
+			m_PrototypeParts[(_uint)partsType][fileName] = parts;
+
+			{
+				const _uint meshCount = file->Read<_uint>();
+				for (_uint i = 0; i < meshCount; ++i)
+				{
+					shared_ptr<ModelMesh> mesh = make_shared<ModelMesh>();
+
+					mesh->name = Utils::ToWString(file->Read<string>());
+					mesh->boneIndex = file->Read<_int>();
+					mesh->materialName = Utils::ToWString(file->Read<string>());
+
+					// VertexData
+					{
+						const _uint verticesCount = file->Read<_uint>();
+						vector<ModelVertexType> vertices;
+						vertices.resize(verticesCount);
+
+						void* data = vertices.data();
+
+						file->Read(&data, sizeof(ModelVertexType) * verticesCount);
+						mesh->geometry->Add_Vertices(vertices);
+					}
+
+					//IndexData
+					{
+						const _uint indicesCount = file->Read<_uint>();
+
+						vector<_uint> indices;
+						indices.resize(indicesCount);
+
+						void* data = indices.data();
+
+						file->Read(&data, sizeof(_uint) * indicesCount);
+						mesh->geometry->Add_Indices(indices);
+					}
+
+					mesh->Create_Buffer();
+
+					m_PrototypeParts[(_uint)partsType][fileName]->m_Meshes.push_back(mesh);
+				}
+			}
+		}
+	}
+}
 
 void ResourceMgr::CreateDefaultMesh()
 {
@@ -786,6 +806,13 @@ void ResourceMgr::CreateDefaultMaterial()
 		Add(L"BloomFinal", material);
 	}
 
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Final.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"G_DepthTarget"));
+		material->Set_Shader(shader);
+		Add(L"DOFTarget", material);
+	}
 	{
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
 		shared_ptr<Material> material = make_shared<Material>();

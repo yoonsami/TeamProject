@@ -157,7 +157,7 @@ void DebugTool::RenderOptionTab()
 		_float& g_FocusDepth = GAMEINSTANCE.g_DOFData.g_FocusDepth;
 		_float& g_DOFRange = GAMEINSTANCE.g_DOFData.g_DOFRange;
 		DragFloat("Focus Depth", &g_FocusDepth,1.f,0.1f,1000.f);
-		DragFloat("g_DOFRange", &g_DOFRange,0.001f,0.0001f,1.f);
+		DragFloat("g_DOFRange", &g_DOFRange,0.1f,0.0001f,1000.f);
 	}
 	if (CollapsingHeader("Light Option"))
 	{

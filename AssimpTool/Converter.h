@@ -1,5 +1,6 @@
 #pragma once
 #include "AsType.h"
+#include "Parts.h"
 class Converter
 {
 	friend class MainApp;
@@ -16,8 +17,8 @@ public:
 
 	//void ExportPartsAnimationData();
 
-	//void ExportBaseData(const wstring& savePath);
-	//void ExportPartsData(const wstring& savePath);
+	void ExportBaseData(const wstring& savePath);
+	void ExportPartsData(const wstring& savePath, PARTS_INFO eType);
 
 private:
 	void ReadModelData(aiNode* node, _int index, _int parent);
@@ -27,11 +28,11 @@ private:
 
 	void WriteCSVFile();
 	void WriteModelFile(const wstring& finalPath);
-	//void WriteBaseFile(const wstring& finalPath);
-	//void WritePartsFile(const wstring& finalPath);
+	void WriteBaseFile(const wstring& finalPath);
+	void WritePartsFile(const wstring& finalPath, PARTS_INFO eType);
 
-	//void ReadPartsModelData();
-	//void ReadPartsSkinData();
+	void ReadPartsModelData();
+	void ReadPartsSkinData();
 
 private:
 	void ReadMaterialData();

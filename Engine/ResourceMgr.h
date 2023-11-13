@@ -1,5 +1,6 @@
 #pragma once
 #include "ResourceBase.h"
+#include "Parts.h"
 
 class Shader;
 class Texture;
@@ -43,11 +44,11 @@ public:
 
 	shared_ptr<GroupEffectData> ReloadGroupEffectData(const wstring& key, const wstring& path);
 	shared_ptr<MeshEffectData>	ReloadOrAddMeshEffectData(const wstring& key, const wstring& path);
-	//shared_ptr<Parts> Get_Part(const wstring& key);
-	//map<wstring, shared_ptr<Parts>>& Get_Parts(PARTS_INFO type) { return m_PrototypeParts[(_uint)type]; }
+	shared_ptr<Parts> Get_Part(const wstring& key, PARTS_INFO type);
+	map<wstring, shared_ptr<Parts>>& Get_Parts(PARTS_INFO type) { return m_PrototypeParts[(_uint)type]; }
 	auto& Get_Resources(_uint index) { return m_Resources[index]; }
-    //void LoadBase();
-	//void LoadParts();
+
+	void LoadParts();
 	void CreateDefaultMesh();
 	void CreateDefaultShader();
 	void CreateModel(const wstring& path);
@@ -73,7 +74,7 @@ private:
 	using KeyResouceMap = map<wstring, shared_ptr<ResourceBase>>;
 	array<array<KeyResouceMap, RESOURCE_TYPE_COUNT>,MAX_LEVEL_COUNT> m_Resources;
 
-	//map<wstring, shared_ptr<Parts>> m_PrototypeParts[PARTS_MAX_COUNT];
+	map<wstring, shared_ptr<Parts>> m_PrototypeParts[PARTS_MAX_COUNT];
 };
 
 

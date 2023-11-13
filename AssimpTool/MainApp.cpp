@@ -27,51 +27,8 @@ HRESULT MainApp::Init()
 		}
 	}
 
-	/*{
-		wstring tag = L"Normal\\Character\\Gamabunta.fbx";
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		converter->ReadAssetFile(tag);
-		Utils::DetachExt(tag);
-		converter->ExportModelData(tag);
-		converter->ExportMaterialData(tag);
-		converter->ReadPartsAnimationData(tag);
-
-		tag = L"Normal\\Character\\Gamabunta_etc_Appearance.fbx";
-		converter->ReadAssetFile(tag);
-		Utils::DetachExt(tag);
-		converter->ReadPartsAnimationData(tag);
-
-		tag = L"Normal\\Character\\Gamabunta_Attack_JumpCrush.fbx";
-		converter->ReadAssetFile(tag);
-		Utils::DetachExt(tag);
-		converter->ReadPartsAnimationData(tag);
-
-		tag = L"Normal\\Character\\Gamabunta_JumpMove.fbx";
-		converter->ReadAssetFile(tag);
-		Utils::DetachExt(tag);
-		converter->ReadPartsAnimationData(tag);
-
-		tag = L"Normal\\Character\\Gamabunta_etc_Suggest_Large.fbx";
-		converter->ReadAssetFile(tag);
-		Utils::DetachExt(tag);
-		converter->ReadPartsAnimationData(tag);
-
-		tag = L"Normal\\Character\\Gamabunta_Ninjutsu_ConsecutiveGunshot.fbx";
-		converter->ReadAssetFile(tag);
-		Utils::DetachExt(tag);
-		converter->ReadPartsAnimationData(tag);
-
-		tag = L"Normal\\Character\\Gamabunta_Ninjutsu_Gunshot.fbx";
-		converter->ReadAssetFile(tag);
-		Utils::DetachExt(tag);
-		converter->ReadPartsAnimationData(tag);
-
-		wstring animPath = L"../Resources/Models/Normal\\Character\\Gamabunta.clip";
-		converter->WriteAnimationData(animPath);
-	}*/
-
-	ExportAssets();
-	//ExportParts();
+	//ExportAssets();
+	ExportParts();
 	//ExportWeapon();
 
 	
@@ -115,20 +72,35 @@ void MainApp::ExportAssets()
 		converter->ExportModelData(tag);
 		converter->ExportMaterialData(tag);
 		converter->ExportAnimationData(tag);
-		
-
 	}
 }
 
-void MainApp::ExportWeapon()
+void MainApp::ExportParts()
 {
-	wstring assetPath = L"..\\Resources\\Assets\\Custom\\";
+	wstring tag = L"..\\Resources\\Assets\\Character\\Player\\Player.fbx";
 
 	shared_ptr<Converter> converter = make_shared<Converter>();
+	converter->ReadAssetFile(tag);
+	Utils::DetachExt(tag);
+	Utils::Replace(tag, L"Assets", L"Models");
+	converter->ExportBaseData(tag);
 
-	wstring WeaponPath = assetPath + L"Weapon\\";
+	{
+		fs::create_directories(fs::path(tag).parent_path());
+		wstring fileName = fs::path(tag).filename();
+		wstring finalPath = tag + L".Material";
 
-	for (auto& entry : fs::recursive_directory_iterator(WeaponPath))
+		shared_ptr<FileUtils> file = make_shared<FileUtils>();
+		file->Open(finalPath, FileMode::Write);
+
+		file->Write<_uint>(0);
+		
+	}
+	converter->ExportAnimationData(tag);
+
+	wstring partsPath = L"..\\Resources\\Assets\\Parts\\";
+
+	for (auto& entry : fs::recursive_directory_iterator(partsPath))
 	{
 		if (entry.is_directory())
 			continue;
@@ -137,17 +109,23 @@ void MainApp::ExportWeapon()
 			continue;
 
 		wstring tag = entry.path().wstring();
+		//wstring typeName = entry.path().parent_path().parent_path().filename().wstring();
 
-		int i = int(tag.rfind(L"Custom\\"));
-
-		tag = tag.substr(i, tag.size() - i);
+		PARTS_INFO eType = PARTS_INFO::END;
+		if (tag.find(L"Hair") != wstring::npos)
+			eType = PARTS_INFO::Hair;
+		else if (tag.find(L"Head") != wstring::npos)
+			eType = PARTS_INFO::Head;
+		else if (tag.find(L"Uniform") != wstring::npos)
+			eType = PARTS_INFO::Uniform;
+		else if (tag.find(L"BackParts") != wstring::npos)
+			eType = PARTS_INFO::BackParts;
+		else
+			eType = PARTS_INFO::NonParts;
 
 		converter->ReadAssetFile(tag);
 		Utils::DetachExt(tag);
-		converter->ExportModelData(tag);
-		converter->ExportMaterialData(tag);
-		converter->ExportAnimationData(tag);
+		Utils::Replace(tag, L"Assets\\", L"");
+		converter->ExportPartsData(tag, eType);
 	}
-
-
 }

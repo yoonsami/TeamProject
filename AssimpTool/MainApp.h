@@ -14,7 +14,7 @@ public:
 	HRESULT Render();
 
 private:
-	void	ExportAssets();			// MEMO: 기본적인 모델 로드시 활성화 
-	void	ExportWeapon();
+	void	ExportAssets();			// MEMO: 기본적인 모델 로드시 활성화
+	void	ExportParts();
 };
 

@@ -53,7 +53,6 @@ public:
 	void Load_UIFile(const wstring& path, _bool bRender = true);
 
 protected:
-	void Load_SceneFile(const wstring& sceneName);
 	void Load_MapFile(const wstring& _mapFileName);
 	void PickUI();
 
@@ -81,6 +80,7 @@ protected:
 	void Render_BloomMap();
 	void Render_BloomMapScaling();
 	void Render_BloomFinal();
+	void Render_DOFMap();
 	void Render_DOFMapScaling();
 	void Render_DOFFinal();
 

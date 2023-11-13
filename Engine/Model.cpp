@@ -302,90 +302,28 @@ void Model::ReadAnimation(const wstring& strPath)
 		Create_Texture();
 }
 
-//void Model::ReadBase()
-//{
-//	wstring fullPath = m_strModelPath + L"Custom/Base.Base";
-//	m_ModelTag = L"Base";
-//	shared_ptr<FileUtils> file = make_shared<FileUtils>();
-//	file->Open(fullPath, FileMode::Read);
-//
-//	// Bones
-//	{
-//		const _uint boneCount = file->Read<_uint>();
-//		for (_uint i = 0; i < boneCount; ++i)
-//		{
-//			shared_ptr<ModelBone> bone = make_shared<ModelBone>();
-//			bone->index = file->Read<_int>();
-//			bone->name = Utils::ToWString(file->Read<string>());
-//			bone->parentIndex = file->Read<_int>();
-//			bone->transform = file->Read<_float4x4>();
-//			bone->offsetTransform = file->Read<_float4x4>();
-//			m_Bones.push_back(bone);
-//		}
-//	}
-//	Bind_CacheInfo();
-//}
-//
-//void Model::AddParts(const wstring& partName, PARTS_INFO partType)
-//{
-//	shared_ptr<Parts> part = RESOURCES.Get_Part(partName);
-//	if (!part)
-//	{
-//		assert(false);
-//		MSG_BOX("WrongParts");
-//	}
-//
-//	if ((_uint)partType < 0 || (_uint)partType >= PARTS_MAX_COUNT)
-//	{
-//		assert(false);
-//		MSG_BOX("WrongParts");
-//		
-//	}
-//
-//	switch (partType)
-//	{
-//	case PARTS_INFO::Hair:
-//		break;
-//	case PARTS_INFO::Face:
-//		break;
-//	case PARTS_INFO::BodyUpper:
-//	{
-//		if (m_Parts[(_uint)PARTS_INFO::OnePiece])
-//		{
-//			m_Parts[(_uint)PARTS_INFO::OnePiece] = nullptr;
-//			m_Parts[(_uint)PARTS_INFO::BodyLower] = RESOURCES.Get_Part(L"Parts\\BodyLower\\LeafPants0");
-//		}
-//	}
-//		break;
-//	case PARTS_INFO::BodyLower:
-//	{
-//		if (m_Parts[(_uint)PARTS_INFO::OnePiece])
-//		{
-//			m_Parts[(_uint)PARTS_INFO::OnePiece] = nullptr;
-//			m_Parts[(_uint)PARTS_INFO::BodyUpper] = RESOURCES.Get_Part(L"Parts\\BodyUpper\\LeafVest0");
-//		}
-//	}
-//		break;
-//	case PARTS_INFO::OnePiece:
-//	{
-//		if (m_Parts[(_uint)PARTS_INFO::BodyLower] || m_Parts[(_uint)PARTS_INFO::BodyUpper])
-//		{
-//			m_Parts[(_uint)PARTS_INFO::BodyLower] = nullptr;
-//			m_Parts[(_uint)PARTS_INFO::BodyUpper] = nullptr;
-//		}
-//	}
-//		break;
-//	case PARTS_INFO::NonParts:
-//		break;
-//	case PARTS_INFO::END:
-//		break;
-//	default:
-//		break;
-//	}
-//	m_Parts[(_uint)partType] = part;
-//
-//	Bind_CacheInfo();
-//}
+void Model::AddParts(const wstring& partName, PARTS_INFO partType)
+{
+	
+	shared_ptr<Parts> part = RESOURCES.Get_Part(partName, partType);
+	if (!part)
+	{
+		assert(false);
+		MSG_BOX("WrongParts");
+	}
+
+	if ((_uint)partType < 0 || (_uint)partType >= PARTS_MAX_COUNT)
+	{
+		assert(false);
+		MSG_BOX("WrongParts");
+		
+	}
+	m_bHasParts = true;
+
+	m_Parts[(_uint)partType] = part;
+
+	Bind_CacheInfo();
+}
 
 shared_ptr<ResourceBase> Model::Clone()
 {
@@ -479,7 +417,8 @@ shared_ptr<ResourceBase> Model::Clone()
 void Model::Bind_CacheInfo()
 {
 	vector<shared_ptr<ModelMesh>> meshes = Get_Meshes();
-	
+	if (m_bHasParts)
+ 		meshes = Get_PartsMeshes();
 	for (const auto& mesh : meshes)
 	{
 		if(!mesh->material.expired())
@@ -567,6 +506,48 @@ shared_ptr<ModelMesh> Model::Get_MeshByName(const wstring& meshName)
 	for (auto& mesh : m_Meshes)
 	{
 		if (mesh->name == meshName)
+			return mesh;
+	}
+	return nullptr;
+}
+
+_uint Model::Get_PartsMeshCount()
+{
+	_uint iMeshCount = 0;
+	for (auto& part : m_Parts)
+	{
+		if (!part)
+			continue;
+		iMeshCount += _uint(part->m_Meshes.size());
+	}
+
+	return iMeshCount;
+}
+
+vector<shared_ptr<ModelMesh>> Model::Get_PartsMeshes()
+{
+	vector<shared_ptr<ModelMesh>> meshes;
+	for (auto& part : m_Parts)
+	{
+		if (!part)
+			continue;
+
+		meshes.insert(meshes.end(), part->m_Meshes.begin(), part->m_Meshes.end());
+
+	}
+	return meshes;
+}
+
+shared_ptr<ModelMesh> Model::Get_PartsMeshByName(const wstring& meshName)
+{
+	for (auto& part : m_Parts)
+	{
+		if (!part)
+			continue;
+
+		auto mesh = part->Get_MeshByName(meshName);
+
+		if (mesh)
 			return mesh;
 	}
 	return nullptr;

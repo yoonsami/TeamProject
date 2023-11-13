@@ -468,6 +468,17 @@ void Graphics::Create_RTGroup()
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLOOMFINAL)]->Create(RENDER_TARGET_GROUP_TYPE::BLOOMFINAL, rtVec, dsTexture);
 	}
 
+	//DOFMAP
+	{
+		vector<RenderTarget> rtVec(RENDER_TARGET_DOFSCALE_GROUP_MEMBER_COUNT);
+
+		rtVec[0].target = RESOURCES.CreateTexture(L"DOFTarget", FORMATTYPE, _uint(m_Viewport.Get_Width()), _uint(m_Viewport.Get_Height()), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].clearColor = _float4(0.f);
+
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOFMAP)] = make_shared<RenderTargetGroup>();
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOFMAP)]->Create(RENDER_TARGET_GROUP_TYPE::DOFMAP, rtVec, dsTexture);
+	}
+
 	//DOFDOWNSCALE0
 	{
 		_float ratio = 0.5f;

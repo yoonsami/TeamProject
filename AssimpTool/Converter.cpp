@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Utils.h"
 #include "Converter.h"
 
 Converter::Converter()
@@ -74,6 +75,38 @@ void Converter::ExportAnimationData(const wstring& savePath)
 
 }
 
+void Converter::ExportBaseData(const wstring& savePath)
+{
+	fs::create_directories(fs::path(savePath).parent_path());
+	wstring fileName = fs::path(savePath).filename();
+	wstring finalPath = savePath + L".Model";
+
+	ReadBaseData(m_pScene->mRootNode, -1, -1);
+
+
+	for (_uint i = 0; i < m_pScene->mNumMeshes; ++i)
+	{
+		aiMesh* srcMesh = m_pScene->mMeshes[i];
+		if (!srcMesh->HasBones())
+			continue;
+
+		shared_ptr<asMesh> mesh = m_Mesh[i];
+
+		// Bone 순회 -> 연관된 vertexindex, weight 구함
+		for (_uint b = 0; b < srcMesh->mNumBones; ++b)
+		{
+			aiBone* srcMeshBone = srcMesh->mBones[b];
+			_uint boneIndex = Get_BoneIndex(srcMeshBone->mName.C_Str());
+
+			_float4x4 offsetMatrix = _float4x4(srcMeshBone->mOffsetMatrix[0]);
+			m_Bone[boneIndex]->offsetTransform = offsetMatrix.Transpose();
+
+		}
+	}
+
+	WriteBaseFile(finalPath);
+}
+
 //void Converter::ReadPartsAnimationData(const wstring& savePath)
 //{
 //	const _uint count = m_pScene->mNumAnimations;
@@ -124,18 +157,56 @@ void Converter::ExportAnimationData(const wstring& savePath)
 //	WriteBaseFile(finalPath);
 //}
 //
-//void Converter::ExportPartsData(const wstring& savePath)
-//{
-//	wstring finalPath = m_strModelPath + savePath + L".Parts";
-//
-//	m_Mesh.clear();
-//	m_Material.clear();
-//	ReadPartsModelData();
-//	ReadPartsSkinData();
-//	ExportMaterialData(savePath);
-//
-//	WritePartsFile(finalPath);
-//}
+void Converter::ExportPartsData(const wstring& savePath, PARTS_INFO eType)
+{
+	fs::create_directories(fs::path(savePath).parent_path());
+	wstring fileName = fs::path(savePath).filename();
+	wstring finalPath = savePath + L".Parts";
+
+	m_Mesh.clear();
+	m_Material.clear();
+
+	ReadPartsModelData();
+	ReadPartsSkinData();
+	//ExportMaterialData(savePath);
+
+	wstring matPath = savePath + L".Material";
+	ReadMaterialData();
+	WriteMaterialData(matPath);
+	
+	{
+		wstring assetTexturePath = matPath;
+		Utils::Replace(assetTexturePath, L"Resources\\", L"Resources\\Assets\\");
+		fs::create_directories(fs::path(assetTexturePath).parent_path());
+		wstring parentPath = fs::path(assetTexturePath).parent_path().wstring() + L"\\";
+		for (auto& entry : fs::recursive_directory_iterator(parentPath))
+		{
+			if (entry.is_directory())
+				continue;
+
+			if (entry.path().extension().wstring() != L".DDS"
+				&& entry.path().extension().wstring() != L".dds"
+				&& entry.path().extension().wstring() != L".png"
+				&& entry.path().extension().wstring() != L".PNG"
+				&& entry.path().extension().wstring() != L".tga"
+				&& entry.path().extension().wstring() != L".TGA")
+				continue;
+
+			string fileName = entry.path().filename().string();
+			wstring tmppath = parentPath;
+			Utils::Replace(tmppath, L"Assets", L"Textures");
+			fs::create_directories(fs::path(tmppath));
+
+			string targetPath = (fs::path(tmppath) / fileName).string();
+			Utils::Replace(targetPath, "\\", "/");
+
+			::CopyFileA(entry.path().string().c_str(), targetPath.c_str(), false);
+
+		}
+	}
+
+	WritePartsFile(finalPath, eType);
+}
 
 // aiNode : 상속관계 표현
 //
@@ -365,6 +436,26 @@ void Converter::WriteModelFile(const wstring& finalPath)
 	}
 }
 
+void Converter::WriteBaseFile(const wstring& finalPath)
+{
+	auto path = fs::path(finalPath);
+	fs::create_directory(path.parent_path());
+
+	shared_ptr<FileUtils> file = make_shared<FileUtils>();
+	file->Open(finalPath, FileMode::Write);
+
+	file->Write<_uint>(_uint(m_Bone.size()));
+	for (auto& bone : m_Bone)
+	{
+		file->Write<_int>(bone->index);
+		file->Write<string>(bone->name);
+		file->Write<_int>(bone->parent);
+		file->Write<_float4x4>(bone->transform);
+		file->Write<_float4x4>(bone->offsetTransform);
+	}
+	file->Write<_uint>(0);
+}
+
 //void Converter::WriteBaseFile(const wstring& finalPath)
 //{
 //	auto path = fs::path(finalPath);
@@ -384,143 +475,123 @@ void Converter::WriteModelFile(const wstring& finalPath)
 //	}
 //}
 
-//void Converter::WritePartsFile(const wstring& finalPath)
-//{
-//	auto path = fs::path(finalPath);
-//	fs::create_directory(path.parent_path());
-//
-//	shared_ptr<FileUtils> file = make_shared<FileUtils>();
-//	file->Open(finalPath, FileMode::Write);
-//
-//	_uint partsType = 0;
-//	if (finalPath.find(L"BodyUpper") != wstring::npos)
-//		partsType = _uint(PARTS_INFO::BodyUpper);
-//
-//	else if (finalPath.find(L"BodyLower") != wstring::npos)
-//		partsType = _uint(PARTS_INFO::BodyLower);
-//
-//	else if (finalPath.find(L"Face") != wstring::npos)
-//		partsType = _uint(PARTS_INFO::Face);
-//
-//	else if (finalPath.find(L"HeadGear") != wstring::npos)
-//		partsType = _uint(PARTS_INFO::Hair);
-//
-//	else if (finalPath.find(L"OnePiece") != wstring::npos)
-//		partsType = _uint(PARTS_INFO::OnePiece);
-//
-//	else
-//		partsType = _uint(PARTS_INFO::NonParts);
-//
-//	file->Write<_uint>(partsType);
-//
-//	file->Write<_uint>(_uint(m_Mesh.size()));
-//	for (auto& mesh : m_Mesh)
-//	{
-//		file->Write<string>(mesh->name);
-//		file->Write<_int>(mesh->boneIndex);
-//		file->Write<string>(mesh->materialName);
-//
-//		file->Write<_uint>(_uint(mesh->vertices.size()));
-//		file->Write(&mesh->vertices[0], _uint((sizeof(VertexType) * mesh->vertices.size())));
-//
-//		file->Write<_uint>(_uint(mesh->indices.size()));
-//		file->Write(&mesh->indices[0], _uint(sizeof(_uint) * mesh->indices.size()));
-//		
-//	}
-//
-//}
-//
-//void Converter::ReadPartsModelData()
-//{
-//	for (_uint i = 0; i < m_pScene->mNumMeshes; ++i)
-//	{
-//		shared_ptr<asMesh> mesh = make_shared<asMesh>();
-//		mesh->name = m_pScene->mMeshes[i]->mName.C_Str();
-//		mesh->boneIndex = 0;
-//		const aiMesh* srcMesh = m_pScene->mMeshes[i];
-//
-//		const aiMaterial* material = m_pScene->mMaterials[srcMesh->mMaterialIndex];
-//		mesh->materialName = material->GetName().C_Str();
-//
-//		for (_uint v = 0; v < srcMesh->mNumVertices; ++v)
-//		{
-//			VertexType vertex;
-//			memcpy(&vertex.vPosition, &(srcMesh->mVertices[v]), sizeof(_float3));
-//
-//			if (srcMesh->HasTextureCoords(0))
-//				memcpy(&vertex.vTexCoord, &srcMesh->mTextureCoords[0][v], sizeof(_float2));
-//
-//			if (srcMesh->HasNormals())
-//			{
-//				memcpy(&vertex.vNormal, &srcMesh->mNormals[v], sizeof(_float3));
-//			}
-//
-//			if (srcMesh->HasTangentsAndBitangents())
-//				memcpy(&vertex.vTangent, &srcMesh->mTangents[v], sizeof(_float3));
-//
-//
-//			mesh->vertices.push_back(vertex);
-//		}
-//
-//		for (_uint f = 0; f < srcMesh->mNumFaces; ++f)
-//		{
-//			aiFace& face = srcMesh->mFaces[f];
-//
-//			for (_uint k = 0; k < face.mNumIndices; ++k)
-//				mesh->indices.push_back(face.mIndices[k]);
-//		}
-//		m_Mesh.push_back(mesh);
-//	}
-//}
-//
-//void Converter::ReadPartsSkinData()
-//{
-//	for (_uint i = 0; i < m_pScene->mNumMeshes; ++i)
-//	{
-//		aiMesh* srcMesh = m_pScene->mMeshes[i];
-//		if (!srcMesh->HasBones())
-//			continue;
-//
-//		shared_ptr<asMesh> mesh = m_Mesh[i];
-//
-//		vector<asBoneWeight> VertexBoneWeights;
-//		VertexBoneWeights.resize(mesh->vertices.size());
-//
-//		// Bone 순회 -> 연관된 vertexindex, weight 구함
-//		for (_uint b = 0; b < srcMesh->mNumBones; ++b)
-//		{
-//			aiBone* srcMeshBone = srcMesh->mBones[b];
-//			_uint boneIndex = Get_BoneIndex(srcMeshBone->mName.C_Str());
-//
-//			_float4x4 offsetMatrix = _float4x4(srcMeshBone->mOffsetMatrix[0]);
-//			m_Bone[boneIndex]->offsetTransform = offsetMatrix.Transpose();
-//
-//			for (_uint w = 0; w < srcMeshBone->mNumWeights; ++w)
-//			{
-//				_uint index = srcMeshBone->mWeights[w].mVertexId;
-//				_float weight = srcMeshBone->mWeights[w].mWeight;
-//
-//				VertexBoneWeights[index].Add_Weights(boneIndex, weight);
-//			}
-//		}
-//
-//		for (_uint v = 0; v < _uint(VertexBoneWeights.size()); ++v)
-//		{
-//			VertexBoneWeights[v].Normalize();
-//
-//			asBlendWeight blendWeight = VertexBoneWeights[v].Get_BlendWeight();
-//			mesh->vertices[v].vBlendIndices = blendWeight.indices;
-//			mesh->vertices[v].vBlendWeights = blendWeight.weights;
-//		}
-//
-//		if (srcMesh->mNumBones == 0)
-//		{
-//			mesh->boneIndex = Get_BoneIndex(mesh->name);
-//
-//
-//		}
-//	}
-//}
+void Converter::WritePartsFile(const wstring& finalPath, PARTS_INFO eType)
+{
+	auto path = fs::path(finalPath);
+	fs::create_directory(path.parent_path());
+	shared_ptr<FileUtils> file = make_shared<FileUtils>();
+	file->Open(finalPath, FileMode::Write);
+	_uint partsType = static_cast<_uint>(eType);
+	file->Write<_uint>(partsType);
+
+	file->Write<_uint>(_uint(m_Mesh.size()));
+	for (auto& mesh : m_Mesh)
+	{
+		file->Write<string>(mesh->name);
+		file->Write<_int>(mesh->boneIndex);
+		file->Write<string>(mesh->materialName);
+
+		file->Write<_uint>(_uint(mesh->vertices.size()));
+		file->Write(&mesh->vertices[0], _uint((sizeof(VertexType) * mesh->vertices.size())));
+
+		file->Write<_uint>(_uint(mesh->indices.size()));
+		file->Write(&mesh->indices[0], _uint(sizeof(_uint) * mesh->indices.size()));
+		
+	}
+
+}
+
+void Converter::ReadPartsModelData()
+{
+	for (_uint i = 0; i < m_pScene->mNumMeshes; ++i)
+	{
+		shared_ptr<asMesh> mesh = make_shared<asMesh>();
+		mesh->name = m_pScene->mMeshes[i]->mName.C_Str();
+		mesh->boneIndex = 0;
+		const aiMesh* srcMesh = m_pScene->mMeshes[i];
+
+		const aiMaterial* material = m_pScene->mMaterials[srcMesh->mMaterialIndex];
+		mesh->materialName = material->GetName().C_Str();
+
+		for (_uint v = 0; v < srcMesh->mNumVertices; ++v)
+		{
+			VertexType vertex;
+			memcpy(&vertex.vPosition, &(srcMesh->mVertices[v]), sizeof(_float3));
+
+			if (srcMesh->HasTextureCoords(0))
+				memcpy(&vertex.vTexCoord, &srcMesh->mTextureCoords[0][v], sizeof(_float2));
+
+			if (srcMesh->HasNormals())
+			{
+				memcpy(&vertex.vNormal, &srcMesh->mNormals[v], sizeof(_float3));
+			}
+
+			if (srcMesh->HasTangentsAndBitangents())
+				memcpy(&vertex.vTangent, &srcMesh->mTangents[v], sizeof(_float3));
+
+
+			mesh->vertices.push_back(vertex);
+		}
+
+		for (_uint f = 0; f < srcMesh->mNumFaces; ++f)
+		{
+			aiFace& face = srcMesh->mFaces[f];
+
+			for (_uint k = 0; k < face.mNumIndices; ++k)
+				mesh->indices.push_back(face.mIndices[k]);
+		}
+		m_Mesh.push_back(mesh);
+	}
+}
+
+void Converter::ReadPartsSkinData()
+{
+	for (_uint i = 0; i < m_pScene->mNumMeshes; ++i)
+	{
+		aiMesh* srcMesh = m_pScene->mMeshes[i];
+		if (!srcMesh->HasBones())
+			continue;
+
+		shared_ptr<asMesh> mesh = m_Mesh[i];
+
+		vector<asBoneWeight> VertexBoneWeights;
+		VertexBoneWeights.resize(mesh->vertices.size());
+
+		// Bone 순회 -> 연관된 vertexindex, weight 구함
+		for (_uint b = 0; b < srcMesh->mNumBones; ++b)
+		{
+			aiBone* srcMeshBone = srcMesh->mBones[b];
+			_uint boneIndex = Get_BoneIndex(srcMeshBone->mName.C_Str());
+
+			_float4x4 offsetMatrix = _float4x4(srcMeshBone->mOffsetMatrix[0]);
+			m_Bone[boneIndex]->offsetTransform = offsetMatrix.Transpose();
+
+			for (_uint w = 0; w < srcMeshBone->mNumWeights; ++w)
+			{
+				_uint index = srcMeshBone->mWeights[w].mVertexId;
+				_float weight = srcMeshBone->mWeights[w].mWeight;
+
+				VertexBoneWeights[index].Add_Weights(boneIndex, weight);
+			}
+		}
+
+		for (_uint v = 0; v < _uint(VertexBoneWeights.size()); ++v)
+		{
+			VertexBoneWeights[v].Normalize();
+
+			asBlendWeight blendWeight = VertexBoneWeights[v].Get_BlendWeight();
+			mesh->vertices[v].vBlendIndices = blendWeight.indices;
+			mesh->vertices[v].vBlendWeights = blendWeight.weights;
+		}
+
+		if (srcMesh->mNumBones == 0)
+		{
+			mesh->boneIndex = Get_BoneIndex(mesh->name);
+
+
+		}
+	}
+}
 
 
 void Converter::ReadMaterialData()
@@ -551,6 +622,7 @@ void Converter::ReadMaterialData()
 
 			srcMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &file);
 			material->diffuseFile = file.C_Str();
+
 			Utils::DetachExt(material->diffuseFile);
 			fs::path ps = fs::path(material->diffuseFile);
 			material->diffuseFile = ps.filename().string();

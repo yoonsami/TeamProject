@@ -1,9 +1,6 @@
 #pragma once
+#include "Parts.h"
 #include "ResourceBase.h"
-//#include "Parts.h"
-
-
-
 
 struct ModelBone;
 struct ModelMesh;
@@ -24,11 +21,11 @@ public:
 	void ReadModel(const wstring& strPath);
 	void ReadAnimation(const wstring& strPath);
 	
-	//void ReadBase();
-	//void AddParts(const wstring& partName, PARTS_INFO partType);
+
+	void AddParts(const wstring& partName, PARTS_INFO partType);
 
 	shared_ptr<ResourceBase> Clone() override;
-	//array<shared_ptr<Parts>, PARTS_MAX_COUNT>& Get_Parts() { return m_Parts; }
+	array<shared_ptr<Parts>, PARTS_MAX_COUNT>& Get_Parts() { return m_Parts; }
 private:
 	void Bind_CacheInfo();
 	
@@ -50,6 +47,10 @@ public:
 	shared_ptr<ModelMesh> Get_MeshByIndex(_int index) { return(index < 0 || index >= m_Meshes.size() ? nullptr : m_Meshes[index]); }
 	shared_ptr<ModelMesh> Get_MeshByName(const wstring& meshName);
 
+	_uint Get_PartsMeshCount();
+	vector<shared_ptr<ModelMesh>> Get_PartsMeshes();
+	shared_ptr<ModelMesh> Get_PartsMeshByName(const wstring& meshName);
+
 	_uint Get_BoneCount() { return static_cast<_uint>(m_Bones.size()); }
 	vector<shared_ptr<ModelBone>>& Get_Bones() { return m_Bones; }
 	shared_ptr<ModelBone> Get_BoneByIndex(_int index) { return (index < 0 || index >= m_Bones.size() ? nullptr : m_Bones[index]); }
@@ -68,6 +69,8 @@ public:
 
 	}
 	vector<vector<_float3>>& Get_RootBonePosition() { return m_RootBonePosition; }
+	_bool Has_Parts() { return m_bHasParts; }
+
 private:
 	void Create_Texture();
 	void Create_BoneData();
@@ -91,12 +94,13 @@ private:
 	AnimAddonDesc m_BoneIndexDesc;
 	
 private:
+	_bool m_bHasParts = false;
 	shared_ptr<ModelBone> m_pRootBone;
 	vector<shared_ptr<Material>> m_Materials;
 	vector<shared_ptr<ModelBone>> m_Bones;
 	vector<shared_ptr<ModelMesh>> m_Meshes;
 	vector<shared_ptr<ModelAnimation>> m_Animations;
-	//array<shared_ptr<Parts>, PARTS_MAX_COUNT> m_Parts;
+	array<shared_ptr<Parts>, PARTS_MAX_COUNT> m_Parts;
 
 };
 

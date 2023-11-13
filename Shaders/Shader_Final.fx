@@ -132,6 +132,20 @@ float4 PS_Aberration(VS_OUT input) : SV_Target
 float g_FocusDepth;
 float g_DOFRange;
 
+float4 PS_ExtractDOF(VS_OUT input) : SV_Target
+{
+    float depth = SubMap2.Sample(PointSampler, input.uv).w;
+    float3 originalColor = SubMap0.Sample(PointSampler, input.uv).rgb;
+    if ((1.f / g_DOFRange * abs(g_FocusDepth - depth)) >= 1.f)
+    {
+        return float4(originalColor, 1.f);
+    }
+    else
+        discard;
+    return 0.f;
+    
+}
+
 float4 PS_DOF(VS_OUT input) : SV_Target
 {
     float depth = SubMap2.Sample(PointSampler, input.uv).w;
@@ -139,7 +153,18 @@ float4 PS_DOF(VS_OUT input) : SV_Target
     float3 originalColor = SubMap0.Sample(PointSampler, input.uv).rgb;
     float3 blurColor = SubMap1.Sample(PointSampler, input.uv).rgb;
     
-    float3 outColor = lerp(originalColor, blurColor, saturate( 1.f/g_DOFRange * abs(g_FocusDepth - depth)));
+    float3 outColor = 0.f;
+    
+    //if ((1.f / g_DOFRange * abs(g_FocusDepth - depth)) >= 1.f)
+    //    outColor = blurColor;
+    //else
+    //    outColor = originalColor;
+    
+    float blendFactor = saturate(1.f / g_DOFRange * abs(g_FocusDepth - depth));
+    if (1.f / g_DOFRange * abs(g_FocusDepth - depth) < 1.f)
+        outColor = originalColor;
+    else
+        outColor = lerp(originalColor, blurColor, blendFactor);
     
     return float4(outColor, 1.f);
 }
@@ -235,6 +260,15 @@ technique11 T1_AfterEffect
         SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_DOF()));
+    }
+    Pass pass_ExtractDOF
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Final()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_ExtractDOF()));
     }
   
 };

@@ -90,8 +90,8 @@ public:
 	struct DOFData
 	{
 		_bool g_bDOF_On = false;
-		_float g_FocusDepth = 1.f;
-		_float g_DOFRange = 5.f;
+		_float g_FocusDepth = 7.f;
+		_float g_DOFRange = 100.f;
 	};
 	static DOFData g_DOFData;
 };
