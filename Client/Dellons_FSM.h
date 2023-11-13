@@ -133,7 +133,6 @@ private:
 	void skill_501100();
 	void skill_501100_Init();
 
-	void EvadeCoolCheck();
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
 	void Summon_Wraith();
 	void Set_WraithState(_uint iAnimindex);
@@ -147,7 +146,6 @@ private:
 	COOLTIMEINFO m_tEvadeDelay = { 1.f,0.f };
 
 	_bool m_bCanCombo = false;
-	_bool m_bEvadeCoolCheck = false;
 
 	_float m_fRunSpeed = 6.f;
 	_float m_fSprintSpeed = 8.f;

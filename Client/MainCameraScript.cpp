@@ -32,6 +32,7 @@ void MainCameraScript::Tick()
 {
     if (m_fFixedTime <= 0.f)
         Cal_OffsetDir();
+ 
 
     Restrict_Offset();
     Update_Transform();
@@ -102,8 +103,8 @@ void MainCameraScript::Set_PosDirectly(const _float3& vCenterpos, const _float3&
 void MainCameraScript::Cal_OffsetDir()
 {
     m_fFollowSpeed = 5.f;
+    
     _float2 mouseDir = INPUT.GetMouseDir();
-
 
    // auto playerController = m_pPlayer.lock()->Get_CharacterController()->Get_Actor();
 
@@ -123,8 +124,8 @@ void MainCameraScript::Cal_OffsetDir()
         _float3 vNewOffset = m_vOffset - vTargetDir;
         vNewOffset.Normalize();
         m_vOffset = vNewOffset;
-        // normalize y�� �����ϱ�
     }
+
     _float3 vRight = Get_Transform()->Get_State(Transform_State::RIGHT).xyz();
     vRight.Normalize();
     _float3 vUp = Get_Transform()->Get_State(Transform_State::UP).xyz();
@@ -186,6 +187,8 @@ void MainCameraScript::Update_Transform()
         if ((fMinDist -= 0.5f) >= m_fFixedDist)
             fMinDist = m_fFixedDist;
 
+        _float4 vPrePos = Get_Transform()->Get_State(Transform_State::POS);
+
         _float4 pos = _float4::Lerp(Get_Transform()->Get_State(Transform_State::POS),
             vCenterPos + _float4(m_vFixedDir, 0.f) * fMinDist,
             fDT * m_fFollowSpeed);
@@ -199,15 +202,13 @@ void MainCameraScript::Update_Transform()
         _float4x4 matCurDir = Transform::Get_WorldFromLook(vCurDir, _float3(0.f));
         _float4x4 matNextDir = Transform::Get_WorldFromLook(m_vOffset, _float3(0.f));
 
-       ;
-
-       if ((fMinDist) >= m_fMaxDistance)
-       {
+        if ((fMinDist) >= m_fMaxDistance)
+        {
            fMinDist = m_fMaxDistance - 0.2f * fDT;
            if (fMinDist <= m_fMaxDistance)
                fMinDist = m_fMaxDistance;
         }
-       _float3 tmp = Transform::SLerpMatrix(matCurDir, matNextDir, fDT * m_fFollowSpeed).Backward();
+        _float3 tmp = Transform::SLerpMatrix(matCurDir, matNextDir, fDT * m_fFollowSpeed).Backward();
         _float4 pos = vPlayerPos + Transform::SLerpMatrix(matCurDir, matNextDir, fDT * m_fFollowSpeed).Backward() * fMinDist;
 
         Get_Transform()->Set_State(Transform_State::POS, pos);

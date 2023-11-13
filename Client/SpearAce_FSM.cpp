@@ -7,7 +7,6 @@
 #include "SphereCollider.h"
 #include "AttackColliderInfoScript.h"
 #include "Model.h"
-
 #include "CoolTimeCheckScript.h"
 
 SpearAce_FSM::SpearAce_FSM()
@@ -43,7 +42,7 @@ HRESULT SpearAce_FSM::Init()
 
     m_iSkillBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"B_nose");
 
-
+    m_pCamera = CUR_SCENE->Get_MainCamera();
 
     return S_OK;
 }
@@ -62,9 +61,6 @@ void SpearAce_FSM::Tick()
 void SpearAce_FSM::State_Tick()
 {
     State_Init();
-
-    if (KEYPUSH(KEY_TYPE::KEY_1))
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1);
 
     switch (m_eCurState)
     {
@@ -375,36 +371,34 @@ void SpearAce_FSM::Set_State(_uint iIndex)
 
 void SpearAce_FSM::b_idle()
 {
-	/*EvadeCoolCheck();
-
 	_float3 vInputVector = Get_InputDirVector();
 
 	if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
 		KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
 		m_eCurState = STATE::b_run_start;
 
-	if (KEYPUSH(KEY_TYPE::LBUTTON))
+	if (KEYTAP(KEY_TYPE::LBUTTON))
 		m_eCurState = STATE::skill_1100;
-	else if (KEYPUSH(KEY_TYPE::KEY_1))
-		m_eCurState = STATE::skill_100100;
-	else if (KEYPUSH(KEY_TYPE::KEY_2))
-		m_eCurState = STATE::skill_200100;
-	else if (KEYPUSH(KEY_TYPE::KEY_3))
-		m_eCurState = STATE::skill_300100;
-	else if (KEYPUSH(KEY_TYPE::KEY_4))
-		m_eCurState = STATE::skill_502100;
-	else if (KEYPUSH(KEY_TYPE::KEY_5))
-		m_eCurState = STATE::skill_500100;
-	else if (KEYPUSH(KEY_TYPE::SPACE))
-	{
-		if (!m_bEvadeCoolCheck)
-		{
-			if (vInputVector == _float3(0.f))
-				m_eCurState = STATE::skill_93100;
-			else
-				m_eCurState = STATE::skill_91100;
-		}
-	}*/
+    else if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
+        m_eCurState = STATE::skill_100100;
+    else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
+        m_eCurState = STATE::skill_200100;
+    else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
+        m_eCurState = STATE::skill_300100;
+    else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
+        m_eCurState = STATE::skill_502100;
+    else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
+        m_eCurState = STATE::skill_500100;
+    else if (KEYTAP(KEY_TYPE::SPACE))
+    {
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
+        {
+            if (vInputVector != _float3(0.f))
+                m_eCurState = STATE::skill_91100;
+            else
+                m_eCurState = STATE::skill_93100;
+        }
+    }
 }
 
 void SpearAce_FSM::b_idle_Init()
@@ -424,8 +418,6 @@ void SpearAce_FSM::b_idle_Init()
 
 void SpearAce_FSM::b_run_start()
 {
-    EvadeCoolCheck();
-
     Get_Transform()->Go_Straight();
 
     _float3 vInputVector = Get_InputDirVector();
@@ -444,21 +436,22 @@ void SpearAce_FSM::b_run_start()
 
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
-        if (KEYPUSH(KEY_TYPE::LBUTTON))
+
+        if (KEYTAP(KEY_TYPE::LBUTTON))
             m_eCurState = STATE::skill_1100;
-        else if (KEYPUSH(KEY_TYPE::KEY_1))
+        else if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
             m_eCurState = STATE::skill_100100;
-        else if (KEYPUSH(KEY_TYPE::KEY_2))
+        else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
             m_eCurState = STATE::skill_200100;
-        else if (KEYPUSH(KEY_TYPE::KEY_3))
+        else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
             m_eCurState = STATE::skill_300100;
-        else if (KEYPUSH(KEY_TYPE::KEY_4))
+        else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
             m_eCurState = STATE::skill_502100;
-        else if (KEYPUSH(KEY_TYPE::KEY_5))
+        else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
             m_eCurState = STATE::skill_500100;
-        else if (KEYPUSH(KEY_TYPE::SPACE))
+        else if (KEYTAP(KEY_TYPE::SPACE))
         {
-            if (!m_bEvadeCoolCheck)
+            if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
                 m_eCurState = STATE::skill_91100;
         }
     }
@@ -481,8 +474,6 @@ void SpearAce_FSM::b_run_start_Init()
 
 void SpearAce_FSM::b_run()
 {
-    EvadeCoolCheck();
-
     Get_Transform()->Go_Straight();
 
     _float3 vInputVector = Get_InputDirVector();
@@ -509,21 +500,21 @@ void SpearAce_FSM::b_run()
 
     }
 
-    if (KEYPUSH(KEY_TYPE::LBUTTON))
+    if (KEYTAP(KEY_TYPE::LBUTTON))
         m_eCurState = STATE::skill_1100;
-    else if (KEYPUSH(KEY_TYPE::KEY_1))
+    else if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
         m_eCurState = STATE::skill_100100;
-    else if (KEYPUSH(KEY_TYPE::KEY_2))
+    else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
         m_eCurState = STATE::skill_200100;
-    else if (KEYPUSH(KEY_TYPE::KEY_3))
+    else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
         m_eCurState = STATE::skill_300100;
-    else if (KEYPUSH(KEY_TYPE::KEY_4))
+    else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
         m_eCurState = STATE::skill_502100;
-    else if (KEYPUSH(KEY_TYPE::KEY_5))
+    else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
         m_eCurState = STATE::skill_500100;
-    else if (KEYPUSH(KEY_TYPE::SPACE))
+    else if (KEYTAP(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
             m_eCurState = STATE::skill_91100;
     }
 }
@@ -544,7 +535,7 @@ void SpearAce_FSM::b_run_Init()
 
 void SpearAce_FSM::b_run_end_r()
 {
-    EvadeCoolCheck();
+     
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -554,21 +545,22 @@ void SpearAce_FSM::b_run_end_r()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    if (KEYPUSH(KEY_TYPE::LBUTTON))
+
+    if (KEYTAP(KEY_TYPE::LBUTTON))
         m_eCurState = STATE::skill_1100;
-    else if (KEYPUSH(KEY_TYPE::KEY_1))
+    else if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
         m_eCurState = STATE::skill_100100;
-    else if (KEYPUSH(KEY_TYPE::KEY_2))
+    else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
         m_eCurState = STATE::skill_200100;
-    else if (KEYPUSH(KEY_TYPE::KEY_3))
+    else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
         m_eCurState = STATE::skill_300100;
-    else if (KEYPUSH(KEY_TYPE::KEY_4))
+    else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
         m_eCurState = STATE::skill_502100;
-    else if (KEYPUSH(KEY_TYPE::KEY_5))
+    else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
         m_eCurState = STATE::skill_500100;
-    else if (KEYPUSH(KEY_TYPE::SPACE))
+    else if (KEYTAP(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
             m_eCurState = STATE::skill_93100;
     }
 
@@ -591,7 +583,7 @@ void SpearAce_FSM::b_run_end_r_Init()
 
 void SpearAce_FSM::b_run_end_l()
 {
-    EvadeCoolCheck();
+     
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -601,21 +593,22 @@ void SpearAce_FSM::b_run_end_l()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    if (KEYPUSH(KEY_TYPE::LBUTTON))
+
+    if (KEYTAP(KEY_TYPE::LBUTTON))
         m_eCurState = STATE::skill_1100;
-    else if (KEYPUSH(KEY_TYPE::KEY_1))
+    else if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
         m_eCurState = STATE::skill_100100;
-    else if (KEYPUSH(KEY_TYPE::KEY_2))
+    else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
         m_eCurState = STATE::skill_200100;
-    else if (KEYPUSH(KEY_TYPE::KEY_3))
+    else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
         m_eCurState = STATE::skill_300100;
-    else if (KEYPUSH(KEY_TYPE::KEY_4))
+    else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
         m_eCurState = STATE::skill_502100;
-    else if (KEYPUSH(KEY_TYPE::KEY_5))
+    else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
         m_eCurState = STATE::skill_500100;
-    else if (KEYPUSH(KEY_TYPE::SPACE))
+    else if (KEYTAP(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
             m_eCurState = STATE::skill_93100;
     }
 }
@@ -637,7 +630,7 @@ void SpearAce_FSM::b_run_end_l_Init()
 
 void SpearAce_FSM::b_sprint()
 {
-    EvadeCoolCheck();
+     
 
     Get_Transform()->Go_Straight();
 
@@ -664,21 +657,21 @@ void SpearAce_FSM::b_sprint()
             m_eCurState = STATE::b_run;
     }
 
-    if (KEYPUSH(KEY_TYPE::LBUTTON))
+    if (KEYTAP(KEY_TYPE::LBUTTON))
         m_eCurState = STATE::skill_1100;
-    else if (KEYPUSH(KEY_TYPE::KEY_1))
+    else if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
         m_eCurState = STATE::skill_100100;
-    else if (KEYPUSH(KEY_TYPE::KEY_2))
+    else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
         m_eCurState = STATE::skill_200100;
-    else if (KEYPUSH(KEY_TYPE::KEY_3))
+    else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
         m_eCurState = STATE::skill_300100;
-    else if (KEYPUSH(KEY_TYPE::KEY_4))
+    else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
         m_eCurState = STATE::skill_502100;
-    else if (KEYPUSH(KEY_TYPE::KEY_5))
+    else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
         m_eCurState = STATE::skill_500100;
-    else if (KEYPUSH(KEY_TYPE::SPACE))
+    else if (KEYTAP(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
             m_eCurState = STATE::skill_91100;
     }
 }
@@ -715,7 +708,7 @@ void SpearAce_FSM::die_Init()
 
 void SpearAce_FSM::airborne_start()
 {
-    EvadeCoolCheck();
+     
 
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
@@ -737,7 +730,7 @@ void SpearAce_FSM::airborne_start_Init()
 
 void SpearAce_FSM::airborne_end()
 {
-    EvadeCoolCheck();
+     
 
     if (Is_AnimFinished())
         m_eCurState = STATE::airborne_up;
@@ -755,7 +748,7 @@ void SpearAce_FSM::airborne_end_Init()
 
 void SpearAce_FSM::airborne_up()
 {
-    EvadeCoolCheck();
+     
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
@@ -773,7 +766,7 @@ void SpearAce_FSM::airborne_up_Init()
 
 void SpearAce_FSM::hit()
 {
-    EvadeCoolCheck();
+     
 
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
@@ -795,7 +788,7 @@ void SpearAce_FSM::hit_Init()
 
 void SpearAce_FSM::knock_start()
 {
-    EvadeCoolCheck();
+     
 
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
@@ -821,7 +814,7 @@ void SpearAce_FSM::knock_start_Init()
 
 void SpearAce_FSM::knock_end()
 {
-    EvadeCoolCheck();
+     
 
     if (Get_CurFrame() < 16)
         Get_Transform()->Go_Backward();
@@ -844,7 +837,7 @@ void SpearAce_FSM::knock_end_Init()
 
 void SpearAce_FSM::knock_end_loop()
 {
-    EvadeCoolCheck();
+     
 
     m_tKnockDownEndCoolTime.fAccTime += fDT;
     
@@ -864,7 +857,7 @@ void SpearAce_FSM::knock_end_loop_Init()
 
 void SpearAce_FSM::knock_end_hit()
 {
-    EvadeCoolCheck();
+     
 
     m_tKnockDownEndCoolTime.fAccTime += fDT;
 
@@ -889,7 +882,7 @@ void SpearAce_FSM::knock_end_hit_Init()
 
 void SpearAce_FSM::knock_up()
 {
-    EvadeCoolCheck();
+     
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
@@ -911,7 +904,7 @@ void SpearAce_FSM::knock_up_Init()
 
 void SpearAce_FSM::knockdown_start()
 {
-    EvadeCoolCheck();
+     
 
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
@@ -937,7 +930,7 @@ void SpearAce_FSM::knockdown_start_Init()
 
 void SpearAce_FSM::knockdown_end()
 {
-    EvadeCoolCheck();
+     
 
     if (Get_CurFrame() < 16)
         Get_Transform()->Go_Backward();
@@ -960,8 +953,6 @@ void SpearAce_FSM::knockdown_end_Init()
 
 void SpearAce_FSM::skill_1100()
 {
-    EvadeCoolCheck();
-
     if (Get_CurFrame() == 9)
         AttackCollider_On(NORMAL_ATTACK);
     else if (Get_CurFrame() == 19)
@@ -985,19 +976,19 @@ void SpearAce_FSM::skill_1100()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    if (KEYPUSH(KEY_TYPE::KEY_1))
+    if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
         m_eCurState = STATE::skill_100100;
-    else if (KEYPUSH(KEY_TYPE::KEY_2))
+    else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
         m_eCurState = STATE::skill_200100;
-    else if (KEYPUSH(KEY_TYPE::KEY_3))
+    else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
         m_eCurState = STATE::skill_300100;
-    else if (KEYPUSH(KEY_TYPE::KEY_4))
+    else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
         m_eCurState = STATE::skill_502100;
-    else if (KEYPUSH(KEY_TYPE::KEY_5))
+    else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
         m_eCurState = STATE::skill_500100;
-    else if (KEYPUSH(KEY_TYPE::SPACE))
+    else if (KEYTAP(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
         {
             if (vInputVector != _float3(0.f))
                 m_eCurState = STATE::skill_91100;
@@ -1024,9 +1015,6 @@ void SpearAce_FSM::skill_1100_Init()
 
 void SpearAce_FSM::skill_1200()
 {
-    EvadeCoolCheck();
-
-
     if (Get_CurFrame() == 1)
         AttackCollider_On(NORMAL_ATTACK);
     else if (Get_CurFrame() == 33)
@@ -1053,19 +1041,19 @@ void SpearAce_FSM::skill_1200()
         m_eCurState = STATE::b_idle;
     }
 
-    if (KEYPUSH(KEY_TYPE::KEY_1))
+    if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
         m_eCurState = STATE::skill_100100;
-    else if (KEYPUSH(KEY_TYPE::KEY_2))
+    else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
         m_eCurState = STATE::skill_200100;
-    else if (KEYPUSH(KEY_TYPE::KEY_3))
+    else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
         m_eCurState = STATE::skill_300100;
-    else if (KEYPUSH(KEY_TYPE::KEY_4))
+    else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
         m_eCurState = STATE::skill_502100;
-    else if (KEYPUSH(KEY_TYPE::KEY_5))
+    else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
         m_eCurState = STATE::skill_500100;
-    else if (KEYPUSH(KEY_TYPE::SPACE))
+    else if (KEYTAP(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
         {
             if (vInputVector != _float3(0.f))
                 m_eCurState = STATE::skill_91100;
@@ -1094,8 +1082,6 @@ void SpearAce_FSM::skill_1200_Init()
 
 void SpearAce_FSM::skill_1300()
 {
-    EvadeCoolCheck();
-
     if (Get_CurFrame() == 4)
         AttackCollider_On(NORMAL_ATTACK);
     else if (Get_CurFrame() == 28)
@@ -1112,19 +1098,19 @@ void SpearAce_FSM::skill_1300()
         m_eCurState = STATE::b_idle;
     }
 
-    if (KEYPUSH(KEY_TYPE::KEY_1))
+    if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
         m_eCurState = STATE::skill_100100;
-    else if (KEYPUSH(KEY_TYPE::KEY_2))
+    else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
         m_eCurState = STATE::skill_200100;
-    else if (KEYPUSH(KEY_TYPE::KEY_3))
+    else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
         m_eCurState = STATE::skill_300100;
-    else if (KEYPUSH(KEY_TYPE::KEY_4))
+    else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
         m_eCurState = STATE::skill_502100;
-    else if (KEYPUSH(KEY_TYPE::KEY_5))
+    else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
         m_eCurState = STATE::skill_500100;
-    else if (KEYPUSH(KEY_TYPE::SPACE))
+    else if (KEYTAP(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
         {
             if (vInputVector != _float3(0.f))
                 m_eCurState = STATE::skill_91100;
@@ -1153,8 +1139,6 @@ void SpearAce_FSM::skill_1300_Init()
 
 void SpearAce_FSM::skill_91100()
 {
-    m_bEvadeCoolCheck = true;
-
     _float3 vInputVector = Get_InputDirVector();
 
     if (m_vInputTurnVector != _float3(0.f))
@@ -1162,6 +1146,7 @@ void SpearAce_FSM::skill_91100()
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
+    
 
     if (Get_CurFrame() >= 9)
     {
@@ -1189,8 +1174,6 @@ void SpearAce_FSM::skill_91100_Init()
 
 void SpearAce_FSM::skill_93100()
 {
-    m_bEvadeCoolCheck = true;
-
     _float3 vInputVector = Get_InputDirVector();
 
     if (Is_AnimFinished())
@@ -1219,8 +1202,6 @@ void SpearAce_FSM::skill_93100_Init()
 
 void SpearAce_FSM::skill_100100()
 {
-    EvadeCoolCheck();
-
     if (Get_CurFrame() == 11)
     {
         if (!m_bSkillCreate)
@@ -1254,12 +1235,17 @@ void SpearAce_FSM::skill_100100()
         Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
-
-    if (KEYPUSH(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        m_eCurState = STATE::b_idle;
+    }
+
+    if (KEYTAP(KEY_TYPE::SPACE))
+    {
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
         {
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
             if (vInputVector != _float3(0.f))
                 m_eCurState = STATE::skill_91100;
             else
@@ -1287,7 +1273,7 @@ void SpearAce_FSM::skill_100100_Init()
 
 void SpearAce_FSM::skill_200100()
 {
-    EvadeCoolCheck();
+     
 
     if (Get_CurFrame() == 21)
         AttackCollider_Off();
@@ -1315,12 +1301,17 @@ void SpearAce_FSM::skill_200100()
     }
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
-
-    if (KEYPUSH(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        m_eCurState = STATE::b_idle;
+    }
+
+    if (KEYTAP(KEY_TYPE::SPACE))
+    {
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
         {
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
             if (vInputVector != _float3(0.f))
                 m_eCurState = STATE::skill_91100;
             else
@@ -1348,7 +1339,7 @@ void SpearAce_FSM::skill_200100_Init()
 
 void SpearAce_FSM::skill_200200()
 {
-    EvadeCoolCheck();
+     
 
     if (Get_CurFrame() == 22)
     {
@@ -1375,12 +1366,17 @@ void SpearAce_FSM::skill_200200()
         Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
-
-    if (KEYPUSH(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        m_eCurState = STATE::b_idle;
+    }
+
+    if (KEYTAP(KEY_TYPE::SPACE))
+    {
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
         {
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
             if (vInputVector != _float3(0.f))
                 m_eCurState = STATE::skill_91100;
             else
@@ -1408,37 +1404,34 @@ void SpearAce_FSM::skill_200200_Init()
 
 void SpearAce_FSM::skill_300100()
 {
-    EvadeCoolCheck();
+     
+
+    if (Get_CurFrame() == 60)
+    {
+        if (!m_pCamera.expired())
+        {
+            _float4 vDestinationCamPos = Get_Transform()->Get_State(Transform_State::POS) + (Get_Transform()->Get_State(Transform_State::LOOK) * -3.f) + (Get_Transform()->Get_State(Transform_State::UP) * 3.f);
+            _float4 vDestinationCamDir = _float4(0.f);
+
+            vDestinationCamDir = Get_Transform()->Get_State(Transform_State::POS) - vDestinationCamPos;
+            vDestinationCamDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(Get_Transform()->Get_State(Transform_State::POS).xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.5f, vDestinationCamDir.xyz() * -1.f, 10.f);
+        }
+    }
 
     
     if (Get_CurFrame() >= 78 && Get_CurFrame() <= 110)
-    {
         m_bInvincible = true;
-
-        /*if (!m_pCamera.expired())
-        {
-            matBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iSkillBoneIndex) *
-                _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
-
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(matBoneMatrix.Translation());
-        }*/
-    }
     else
         m_bInvincible = false;
 
     if (Get_CurFrame() == 78)
     {       
         if (!m_bSkillCreate)
-        {
-            //if (!m_pCamera.expired())
-            //{
-            //    _float3 vDir = matBoneMatrix.Translation() - (CUR_SCENE->Get_Camera(L"Default")->Get_Transform()->Get_State(Transform_State::POS).xyz() + _float3{ 0.f,5.f,0.f });
-            //    //vDir = vDir /2.f;
-            //    vDir.Normalize();
-
-            //    m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.5f, vDir * -1.f, 5.f);
-            //}
-            
+        {   
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
                 Get_Transform()->Get_State(Transform_State::LOOK) * 5.f +
                 Get_Transform()->Get_State(Transform_State::RIGHT) * -5.f +
@@ -1576,12 +1569,17 @@ void SpearAce_FSM::skill_300100()
         Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
-
-    if (KEYPUSH(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        m_eCurState = STATE::b_idle;
+    }
+
+    if (KEYTAP(KEY_TYPE::SPACE))
+    {
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
         {
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
             if (vInputVector != _float3(0.f))
                 m_eCurState = STATE::skill_91100;
             else
@@ -1621,7 +1619,7 @@ void SpearAce_FSM::skill_300100_Init()
 
 void SpearAce_FSM::skill_502100()
 {
-    EvadeCoolCheck();
+     
 
     if (Get_CurFrame() == 17)
     {
@@ -1663,12 +1661,17 @@ void SpearAce_FSM::skill_502100()
         Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
-
-    if (KEYPUSH(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        m_eCurState = STATE::b_idle;
+    }
+
+    if (KEYTAP(KEY_TYPE::SPACE))
+    {
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
         {
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
             if (vInputVector != _float3(0.f))
                 m_eCurState = STATE::skill_91100;
             else
@@ -1696,7 +1699,7 @@ void SpearAce_FSM::skill_502100_Init()
 
 void SpearAce_FSM::skill_500100()
 {
-    EvadeCoolCheck();
+     
 
     if (Get_CurFrame() == 15)
         AttackCollider_On(KNOCKBACK_ATTACK);
@@ -1709,12 +1712,17 @@ void SpearAce_FSM::skill_500100()
         Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
-
-    if (KEYPUSH(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        m_eCurState = STATE::b_idle;
+    }
+
+    if (KEYTAP(KEY_TYPE::SPACE))
+    {
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
         {
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
             if (vInputVector != _float3(0.f))
                 m_eCurState = STATE::skill_91100;
             else
@@ -1738,20 +1746,6 @@ void SpearAce_FSM::skill_500100_Init()
 
     m_bInvincible = false;
     m_bSuperArmor = true;
-}
-
-void SpearAce_FSM::EvadeCoolCheck()
-{
-    if (m_bEvadeCoolCheck)
-    {
-        m_tEvadeDelay.fAccTime += fDT;
-
-        if (m_tEvadeDelay.fAccTime >= m_tEvadeDelay.fCoolTime)
-        {
-            m_bEvadeCoolCheck = false;
-            m_tEvadeDelay.fAccTime = 0.f;
-        }
-    }
 }
 
 void SpearAce_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType)

@@ -9,7 +9,7 @@
 #include "AttackColliderInfoScript.h"
 #include "Model.h"
 #include "YeopoHorse_FSM.h"
-
+#include "CoolTimeCheckScript.h"
 
 
 Yeopo_FSM::Yeopo_FSM()
@@ -43,6 +43,13 @@ HRESULT Yeopo_FSM::Init()
 
     m_pWeapon = CUR_SCENE->Get_GameObject(L"Weapon_Yeopo");
 
+    m_pCamera = CUR_SCENE->Get_MainCamera();
+
+    m_iCenterBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Center");
+    m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
+    m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
+    m_iSkillBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"D_Eye_Target");
+
     return S_OK;
 }
 
@@ -55,6 +62,8 @@ void Yeopo_FSM::Tick()
         //m_pAttack transform set forward
         m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up);
     }
+
+    Calculate_CamBoneMatrix();
 }
 
 void Yeopo_FSM::State_Tick()
@@ -418,7 +427,7 @@ void Yeopo_FSM::Set_State(_uint iIndex)
 
 void Yeopo_FSM::b_idle()
 {
-    EvadeCoolCheck();
+    RidingCoolCheck();
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -426,26 +435,26 @@ void Yeopo_FSM::b_idle()
         KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
         m_eCurState = STATE::b_run_start;
 
-    if (KEYPUSH(KEY_TYPE::LBUTTON))
+    if (KEYTAP(KEY_TYPE::LBUTTON))
         m_eCurState = STATE::skill_1100;
-    else if (KEYPUSH(KEY_TYPE::KEY_1))
+    else if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
         m_eCurState = STATE::skill_100200;
-    else if (KEYPUSH(KEY_TYPE::KEY_2))
+    else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
         m_eCurState = STATE::skill_200100;
-    else if (KEYPUSH(KEY_TYPE::KEY_3))
+    else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
         m_eCurState = STATE::skill_300100;
-    else if (KEYPUSH(KEY_TYPE::KEY_4))
+    else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
         m_eCurState = STATE::skill_400100;
-    else if (KEYPUSH(KEY_TYPE::KEY_5))
+    else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
         m_eCurState = STATE::skill_501100;
-    else if (KEYPUSH(KEY_TYPE::SPACE))
+    else if (KEYTAP(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
         {
-            if (vInputVector == _float3(0.f))
-                m_eCurState = STATE::skill_93100;
-            else
+            if (vInputVector != _float3(0.f))
                 m_eCurState = STATE::skill_91100;
+            else
+                m_eCurState = STATE::skill_93100;
         }
     }
     else if (KEYPUSH(KEY_TYPE::V))
@@ -462,7 +471,10 @@ void Yeopo_FSM::b_idle_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"b_idle", 0.1f, true, 1.f);
+    if (m_ePreState == STATE::skill_400100)
+        animator->Set_NextTweenAnim(L"b_idle", 0.3f, true, 1.f);
+    else
+        animator->Set_NextTweenAnim(L"b_idle", 0.1f, true, 1.f);
 
     Get_Transform()->Set_Speed(m_fRunSpeed);
     m_tRunEndDelay.fAccTime = 0.f;
@@ -478,7 +490,7 @@ void Yeopo_FSM::b_idle_Init()
 
 void Yeopo_FSM::b_run_start()
 {
-    EvadeCoolCheck();
+    RidingCoolCheck();
 
     Get_Transform()->Go_Straight();
 
@@ -498,21 +510,21 @@ void Yeopo_FSM::b_run_start()
 
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
-        if (KEYPUSH(KEY_TYPE::LBUTTON))
+        if (KEYTAP(KEY_TYPE::LBUTTON))
             m_eCurState = STATE::skill_1100;
-        else if (KEYPUSH(KEY_TYPE::KEY_1))
+        else if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
             m_eCurState = STATE::skill_100200;
-        else if (KEYPUSH(KEY_TYPE::KEY_2))
+        else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
             m_eCurState = STATE::skill_200100;
-        else if (KEYPUSH(KEY_TYPE::KEY_3))
+        else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
             m_eCurState = STATE::skill_300100;
-        else if (KEYPUSH(KEY_TYPE::KEY_4))
+        else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
             m_eCurState = STATE::skill_400100;
-        else if (KEYPUSH(KEY_TYPE::KEY_5))
+        else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
             m_eCurState = STATE::skill_501100;
-        else if (KEYPUSH(KEY_TYPE::SPACE))
+        else if (KEYTAP(KEY_TYPE::SPACE))
         {
-            if (!m_bEvadeCoolCheck)
+            if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
                 m_eCurState = STATE::skill_91100;
         }
     }
@@ -535,7 +547,7 @@ void Yeopo_FSM::b_run_start_Init()
 
 void Yeopo_FSM::b_run()
 {
-    EvadeCoolCheck();
+    RidingCoolCheck();
 
     Get_Transform()->Go_Straight();
 
@@ -560,24 +572,23 @@ void Yeopo_FSM::b_run()
     {
         if ((Get_CurFrame() == 1))
             m_eCurState = STATE::b_sprint;
-
     }
 
-    if (KEYPUSH(KEY_TYPE::LBUTTON))
+    if (KEYTAP(KEY_TYPE::LBUTTON))
         m_eCurState = STATE::skill_1100;
-    else if (KEYPUSH(KEY_TYPE::KEY_1))
+    else if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
         m_eCurState = STATE::skill_100200;
-    else if (KEYPUSH(KEY_TYPE::KEY_2))
+    else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
         m_eCurState = STATE::skill_200100;
-    else if (KEYPUSH(KEY_TYPE::KEY_3))
+    else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
         m_eCurState = STATE::skill_300100;
-    else if (KEYPUSH(KEY_TYPE::KEY_4))
+    else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
         m_eCurState = STATE::skill_400100;
-    else if (KEYPUSH(KEY_TYPE::KEY_5))
+    else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
         m_eCurState = STATE::skill_501100;
-    else if (KEYPUSH(KEY_TYPE::SPACE))
+    else if (KEYTAP(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
             m_eCurState = STATE::skill_91100;
     }
 }
@@ -598,7 +609,7 @@ void Yeopo_FSM::b_run_Init()
 
 void Yeopo_FSM::b_run_end_r()
 {
-    EvadeCoolCheck();
+    RidingCoolCheck();
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -608,24 +619,23 @@ void Yeopo_FSM::b_run_end_r()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    if (KEYPUSH(KEY_TYPE::LBUTTON))
+    if (KEYTAP(KEY_TYPE::LBUTTON))
         m_eCurState = STATE::skill_1100;
-    else if (KEYPUSH(KEY_TYPE::KEY_1))
+    else if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
         m_eCurState = STATE::skill_100200;
-    else if (KEYPUSH(KEY_TYPE::KEY_2))
+    else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
         m_eCurState = STATE::skill_200100;
-    else if (KEYPUSH(KEY_TYPE::KEY_3))
+    else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
         m_eCurState = STATE::skill_300100;
-    else if (KEYPUSH(KEY_TYPE::KEY_4))
+    else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
         m_eCurState = STATE::skill_400100;
-    else if (KEYPUSH(KEY_TYPE::KEY_5))
+    else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
         m_eCurState = STATE::skill_501100;
-    else if (KEYPUSH(KEY_TYPE::SPACE))
+    else if (KEYTAP(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
             m_eCurState = STATE::skill_93100;
     }
-
 }
 
 void Yeopo_FSM::b_run_end_r_Init()
@@ -645,7 +655,7 @@ void Yeopo_FSM::b_run_end_r_Init()
 
 void Yeopo_FSM::b_run_end_l()
 {
-    EvadeCoolCheck();
+    RidingCoolCheck();
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -655,21 +665,21 @@ void Yeopo_FSM::b_run_end_l()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    if (KEYPUSH(KEY_TYPE::LBUTTON))
+    if (KEYTAP(KEY_TYPE::LBUTTON))
         m_eCurState = STATE::skill_1100;
-    else if (KEYPUSH(KEY_TYPE::KEY_1))
+    else if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
         m_eCurState = STATE::skill_100200;
-    else if (KEYPUSH(KEY_TYPE::KEY_2))
+    else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
         m_eCurState = STATE::skill_200100;
-    else if (KEYPUSH(KEY_TYPE::KEY_3))
+    else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
         m_eCurState = STATE::skill_300100;
-    else if (KEYPUSH(KEY_TYPE::KEY_4))
+    else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
         m_eCurState = STATE::skill_400100;
-    else if (KEYPUSH(KEY_TYPE::KEY_5))
+    else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
         m_eCurState = STATE::skill_501100;
-    else if (KEYPUSH(KEY_TYPE::SPACE))
+    else if (KEYTAP(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
             m_eCurState = STATE::skill_93100;
     }
 }
@@ -691,7 +701,7 @@ void Yeopo_FSM::b_run_end_l_Init()
 
 void Yeopo_FSM::b_sprint()
 {
-    EvadeCoolCheck();
+    RidingCoolCheck();
 
     Get_Transform()->Go_Straight();
 
@@ -718,21 +728,21 @@ void Yeopo_FSM::b_sprint()
             m_eCurState = STATE::b_run;
     }
 
-    if (KEYPUSH(KEY_TYPE::LBUTTON))
+    if (KEYTAP(KEY_TYPE::LBUTTON))
         m_eCurState = STATE::skill_1100;
-    else if (KEYPUSH(KEY_TYPE::KEY_1))
+    else if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
         m_eCurState = STATE::skill_100200;
-    else if (KEYPUSH(KEY_TYPE::KEY_2))
+    else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
         m_eCurState = STATE::skill_200100;
-    else if (KEYPUSH(KEY_TYPE::KEY_3))
+    else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
         m_eCurState = STATE::skill_300100;
-    else if (KEYPUSH(KEY_TYPE::KEY_4))
+    else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
         m_eCurState = STATE::skill_400100;
-    else if (KEYPUSH(KEY_TYPE::KEY_5))
+    else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
         m_eCurState = STATE::skill_501100;
-    else if (KEYPUSH(KEY_TYPE::SPACE))
+    else if (KEYTAP(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
             m_eCurState = STATE::skill_91100;
     }
 }
@@ -769,8 +779,6 @@ void Yeopo_FSM::die_Init()
 
 void Yeopo_FSM::airborne_start()
 {
-    EvadeCoolCheck();
-
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
     if (Is_AnimFinished())
@@ -791,8 +799,6 @@ void Yeopo_FSM::airborne_start_Init()
 
 void Yeopo_FSM::airborne_end()
 {
-    EvadeCoolCheck();
-
     if (Is_AnimFinished())
         m_eCurState = STATE::airborne_up;
 }
@@ -809,8 +815,6 @@ void Yeopo_FSM::airborne_end_Init()
 
 void Yeopo_FSM::airborne_up()
 {
-    EvadeCoolCheck();
-
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 }
@@ -827,8 +831,6 @@ void Yeopo_FSM::airborne_up_Init()
 
 void Yeopo_FSM::hit()
 {
-    EvadeCoolCheck();
-
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
     if (Is_AnimFinished())
@@ -849,8 +851,6 @@ void Yeopo_FSM::hit_Init()
 
 void Yeopo_FSM::knock_start()
 {
-    EvadeCoolCheck();
-
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
     Get_Transform()->Go_Backward();
@@ -875,8 +875,6 @@ void Yeopo_FSM::knock_start_Init()
 
 void Yeopo_FSM::knock_end()
 {
-    EvadeCoolCheck();
-
     if (Get_CurFrame() < 16)
         Get_Transform()->Go_Backward();
 
@@ -898,8 +896,6 @@ void Yeopo_FSM::knock_end_Init()
 
 void Yeopo_FSM::knock_end_loop()
 {
-    EvadeCoolCheck();
-
     m_tKnockDownEndCoolTime.fAccTime += fDT;
 
     if (Get_CurFrame() > Get_FinalFrame() / 2)
@@ -918,8 +914,6 @@ void Yeopo_FSM::knock_end_loop_Init()
 
 void Yeopo_FSM::knock_end_hit()
 {
-    EvadeCoolCheck();
-
     m_tKnockDownEndCoolTime.fAccTime += fDT;
 
     if (Is_AnimFinished())
@@ -943,8 +937,6 @@ void Yeopo_FSM::knock_end_hit_Init()
 
 void Yeopo_FSM::knock_up()
 {
-    EvadeCoolCheck();
-
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 }
@@ -965,8 +957,6 @@ void Yeopo_FSM::knock_up_Init()
 
 void Yeopo_FSM::knockdown_start()
 {
-    EvadeCoolCheck();
-
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
     Get_Transform()->Go_Backward();
@@ -991,8 +981,6 @@ void Yeopo_FSM::knockdown_start_Init()
 
 void Yeopo_FSM::knockdown_end()
 {
-    EvadeCoolCheck();
-
     if (Get_CurFrame() < 16)
         Get_Transform()->Go_Backward();
 
@@ -1014,8 +1002,6 @@ void Yeopo_FSM::knockdown_end_Init()
 
 void Yeopo_FSM::skill_1100()
 {
-    EvadeCoolCheck();
-
     if (Get_CurFrame() == 9)
         AttackCollider_On(NORMAL_ATTACK);
     else if (Get_CurFrame() == 19)
@@ -1039,19 +1025,19 @@ void Yeopo_FSM::skill_1100()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    if (KEYPUSH(KEY_TYPE::KEY_1))
+    if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
         m_eCurState = STATE::skill_100200;
-    else if (KEYPUSH(KEY_TYPE::KEY_2))
+    else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
         m_eCurState = STATE::skill_200100;
-    else if (KEYPUSH(KEY_TYPE::KEY_3))
+    else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
         m_eCurState = STATE::skill_300100;
-    else if (KEYPUSH(KEY_TYPE::KEY_4))
+    else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
         m_eCurState = STATE::skill_400100;
-    else if (KEYPUSH(KEY_TYPE::KEY_5))
+    else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
         m_eCurState = STATE::skill_501100;
-    else if (KEYPUSH(KEY_TYPE::SPACE))
+    else if (KEYTAP(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
         {
             if (vInputVector != _float3(0.f))
                 m_eCurState = STATE::skill_91100;
@@ -1078,8 +1064,6 @@ void Yeopo_FSM::skill_1100_Init()
 
 void Yeopo_FSM::skill_1200()
 {
-    EvadeCoolCheck();
-
     if (Get_CurFrame() == 10)
         AttackCollider_On(NORMAL_ATTACK);
     else if (Get_CurFrame() == 17)
@@ -1106,19 +1090,19 @@ void Yeopo_FSM::skill_1200()
         m_eCurState = STATE::b_idle;
     }
 
-    if (KEYPUSH(KEY_TYPE::KEY_1))
+    if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
         m_eCurState = STATE::skill_100200;
-    else if (KEYPUSH(KEY_TYPE::KEY_2))
+    else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
         m_eCurState = STATE::skill_200100;
-    else if (KEYPUSH(KEY_TYPE::KEY_3))
+    else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
         m_eCurState = STATE::skill_300100;
-    else if (KEYPUSH(KEY_TYPE::KEY_4))
+    else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
         m_eCurState = STATE::skill_400100;
-    else if (KEYPUSH(KEY_TYPE::KEY_5))
+    else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
         m_eCurState = STATE::skill_501100;
-    else if (KEYPUSH(KEY_TYPE::SPACE))
+    else if (KEYTAP(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
         {
             if (vInputVector != _float3(0.f))
                 m_eCurState = STATE::skill_91100;
@@ -1147,8 +1131,6 @@ void Yeopo_FSM::skill_1200_Init()
 
 void Yeopo_FSM::skill_1300()
 {
-    EvadeCoolCheck();
-
     if (Get_CurFrame() == 8)
         AttackCollider_On(NORMAL_ATTACK);
     else if (Get_CurFrame() == 13)
@@ -1186,19 +1168,19 @@ void Yeopo_FSM::skill_1300()
         m_eCurState = STATE::b_idle;
     }
 
-    if (KEYPUSH(KEY_TYPE::KEY_1))
+    if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
         m_eCurState = STATE::skill_100200;
-    else if (KEYPUSH(KEY_TYPE::KEY_2))
+    else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
         m_eCurState = STATE::skill_200100;
-    else if (KEYPUSH(KEY_TYPE::KEY_3))
+    else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
         m_eCurState = STATE::skill_300100;
-    else if (KEYPUSH(KEY_TYPE::KEY_4))
+    else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
         m_eCurState = STATE::skill_400100;
-    else if (KEYPUSH(KEY_TYPE::KEY_5))
+    else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
         m_eCurState = STATE::skill_501100;
-    else if (KEYPUSH(KEY_TYPE::SPACE))
+    else if (KEYTAP(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
         {
             if (vInputVector != _float3(0.f))
                 m_eCurState = STATE::skill_91100;
@@ -1227,8 +1209,6 @@ void Yeopo_FSM::skill_1300_Init()
 
 void Yeopo_FSM::skill_1400()
 {
-    EvadeCoolCheck();
-
     if (Get_CurFrame() == 7)
         AttackCollider_On(KNOCKBACK_ATTACK);
     else if (Get_CurFrame() == 14)
@@ -1250,19 +1230,19 @@ void Yeopo_FSM::skill_1400()
         m_eCurState = STATE::b_idle;
     }
 
-    if (KEYPUSH(KEY_TYPE::KEY_1))
+    if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
         m_eCurState = STATE::skill_100200;
-    else if (KEYPUSH(KEY_TYPE::KEY_2))
+    else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
         m_eCurState = STATE::skill_200100;
-    else if (KEYPUSH(KEY_TYPE::KEY_3))
+    else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
         m_eCurState = STATE::skill_300100;
-    else if (KEYPUSH(KEY_TYPE::KEY_4))
+    else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
         m_eCurState = STATE::skill_400100;
-    else if (KEYPUSH(KEY_TYPE::KEY_5))
+    else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
         m_eCurState = STATE::skill_501100;
-    else if (KEYPUSH(KEY_TYPE::SPACE))
+    else if (KEYTAP(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
         {
             if (vInputVector != _float3(0.f))
                 m_eCurState = STATE::skill_91100;
@@ -1291,8 +1271,6 @@ void Yeopo_FSM::skill_1400_Init()
 
 void Yeopo_FSM::skill_91100()
 {
-    m_bEvadeCoolCheck = true;
-
     _float3 vInputVector = Get_InputDirVector();
 
     if (m_vInputTurnVector != _float3(0.f))
@@ -1327,8 +1305,6 @@ void Yeopo_FSM::skill_91100_Init()
 
 void Yeopo_FSM::skill_93100()
 {
-    m_bEvadeCoolCheck = true;
-
     _float3 vInputVector = Get_InputDirVector();
 
     if (Is_AnimFinished())
@@ -1357,8 +1333,6 @@ void Yeopo_FSM::skill_93100_Init()
 
 void Yeopo_FSM::skill_100200()
 {
-    EvadeCoolCheck();
-
     if (Get_CurFrame() == 18)
     {
         if (!m_bSkillCreate)
@@ -1417,12 +1391,17 @@ void Yeopo_FSM::skill_100200()
     }
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
-
-    if (KEYPUSH(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        m_eCurState = STATE::b_idle;
+    }
+
+    if (KEYTAP(KEY_TYPE::SPACE))
+    {
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
         {
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
             if (vInputVector != _float3(0.f))
                 m_eCurState = STATE::skill_91100;
             else
@@ -1450,8 +1429,6 @@ void Yeopo_FSM::skill_100200_Init()
 
 void Yeopo_FSM::skill_100300()
 {
-    EvadeCoolCheck();
-
     if (Get_CurFrame() == 24)
     {
         if (!m_bSkillCreate)
@@ -1477,12 +1454,17 @@ void Yeopo_FSM::skill_100300()
         Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
-
-    if (KEYPUSH(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        m_eCurState = STATE::b_idle;
+    }
+
+    if (KEYTAP(KEY_TYPE::SPACE))
+    {
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
         {
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
             if (vInputVector != _float3(0.f))
                 m_eCurState = STATE::skill_91100;
             else
@@ -1510,8 +1492,6 @@ void Yeopo_FSM::skill_100300_Init()
 
 void Yeopo_FSM::skill_200100()
 {
-    EvadeCoolCheck();
-
     if (Get_CurFrame() == 10)
     {
         if (!m_bSkillCreate)
@@ -1538,12 +1518,17 @@ void Yeopo_FSM::skill_200100()
         Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
-
-    if (KEYPUSH(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        m_eCurState = STATE::b_idle;
+    }
+
+    if (KEYTAP(KEY_TYPE::SPACE))
+    {
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
         {
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
             if (vInputVector != _float3(0.f))
                 m_eCurState = STATE::skill_91100;
             else
@@ -1569,9 +1554,6 @@ void Yeopo_FSM::skill_200100_Init()
 
 void Yeopo_FSM::skill_300100()
 {
-    EvadeCoolCheck();
-
-
     if (Get_CurFrame() == 25)
         AttackCollider_On(NORMAL_ATTACK);
     else if (Get_CurFrame() == 30)
@@ -1600,12 +1582,17 @@ void Yeopo_FSM::skill_300100()
     }
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
-
-    if (KEYPUSH(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        m_eCurState = STATE::b_idle;
+    }
+
+    if (KEYTAP(KEY_TYPE::SPACE))
+    {
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
         {
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
             if (vInputVector != _float3(0.f))
                 m_eCurState = STATE::skill_91100;
             else
@@ -1633,8 +1620,6 @@ void Yeopo_FSM::skill_300100_Init()
 
 void Yeopo_FSM::skill_300200()
 {
-    EvadeCoolCheck();
-
     if (Get_CurFrame() == 9)
         AttackCollider_On(NORMAL_ATTACK);
     else if (Get_CurFrame() == 12)
@@ -1659,18 +1644,23 @@ void Yeopo_FSM::skill_300200()
     }
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
-
-    if (KEYPUSH(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        m_eCurState = STATE::b_idle;
+    }
+
+    if (KEYTAP(KEY_TYPE::SPACE))
+    {
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
         {
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
             if (vInputVector != _float3(0.f))
                 m_eCurState = STATE::skill_91100;
             else
                 m_eCurState = STATE::skill_93100;
         }
-    }   
+    }
 }
 
 void Yeopo_FSM::skill_300200_Init()
@@ -1692,8 +1682,6 @@ void Yeopo_FSM::skill_300200_Init()
 
 void Yeopo_FSM::skill_300300()
 {
-    EvadeCoolCheck();
-
     if (Get_CurFrame() == 13)
         AttackCollider_On(NORMAL_ATTACK);
     else if (Get_CurFrame() == 18)
@@ -1718,12 +1706,17 @@ void Yeopo_FSM::skill_300300()
     }
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
-
-    if (KEYPUSH(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        m_eCurState = STATE::b_idle;
+    }
+
+    if (KEYTAP(KEY_TYPE::SPACE))
+    {
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
         {
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
             if (vInputVector != _float3(0.f))
                 m_eCurState = STATE::skill_91100;
             else
@@ -1751,8 +1744,6 @@ void Yeopo_FSM::skill_300300_Init()
 
 void Yeopo_FSM::skill_300400()
 {
-    EvadeCoolCheck();
-
     if (Get_CurFrame() == 31)
         AttackCollider_On(KNOCKBACK_ATTACK);
     else if (Get_CurFrame() == 36)
@@ -1764,12 +1755,17 @@ void Yeopo_FSM::skill_300400()
         Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
-
-    if (KEYPUSH(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        m_eCurState = STATE::b_idle;
+    }
+
+    if (KEYTAP(KEY_TYPE::SPACE))
+    {
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
         {
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
             if (vInputVector != _float3(0.f))
                 m_eCurState = STATE::skill_91100;
             else
@@ -1797,10 +1793,43 @@ void Yeopo_FSM::skill_300400_Init()
 
 void Yeopo_FSM::skill_400100()
 {
-    EvadeCoolCheck();
+    if (Get_CurFrame() < 84)
+    {
+        if (!m_pCamera.expired())
+        {
+            _float4 vDestinationPos = (Get_Transform()->Get_State(Transform_State::POS)) + (Get_Transform()->Get_State(Transform_State::LOOK) * -5.f) + _float3::Up * 4.f;
+            _float4 vSkillCamPos = m_vSkillCamBonePos;
+            vSkillCamPos.y = 2.f;
+            _float4 vDir = m_vCamBonePos - vSkillCamPos;
+            vDir.Normalize();
 
-    if (Is_AnimFinished())
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(vSkillCamPos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, vDir.xyz() * -1.f, 10.f);
+        }
+    }
+    else
+    {
+        if (!m_pCamera.expired())
+        {
+            _float4 vDestinationPos = (Get_Transform()->Get_State(Transform_State::POS)) + (Get_Transform()->Get_State(Transform_State::LOOK) * -5.f) + _float3::Up * 4.f;
+            _float4 vSkillCamPos = m_vSkillCamBonePos;
+            vSkillCamPos.y = 2.f;
+            _float4 vDir = m_vCamBonePos - vSkillCamPos;
+            vDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(vSkillCamPos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, vDir.xyz() * -1.f, 12.f);
+        }
+    }
+
+    //Skill End
+    if (Get_CurFrame() == 135)
+    {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
+    }
 }
 
 void Yeopo_FSM::skill_400100_Init()
@@ -1826,8 +1855,6 @@ void Yeopo_FSM::skill_400100_Init()
 
 void Yeopo_FSM::skill_501100()
 {
-    EvadeCoolCheck();
-
     if (Get_CurFrame() == 12)
         AttackCollider_On(NORMAL_ATTACK);
     else if (Get_CurFrame() == 16)
@@ -1860,12 +1887,17 @@ void Yeopo_FSM::skill_501100()
         Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
-
-    if (KEYPUSH(KEY_TYPE::SPACE))
     {
-        if (!m_bEvadeCoolCheck)
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        m_eCurState = STATE::b_idle;
+    }
+
+    if (KEYTAP(KEY_TYPE::SPACE))
+    {
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
         {
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
             if (vInputVector != _float3(0.f))
                 m_eCurState = STATE::skill_91100;
             else
@@ -1902,7 +1934,6 @@ void Yeopo_FSM::SQ_RideHorse_Idle()
 
     if (KEYTAP(KEY_TYPE::V))
         m_eCurState = STATE::SQ_RideHorse_End;
-
 }
 
 void Yeopo_FSM::SQ_RideHorse_Idle_Init()
@@ -1986,7 +2017,12 @@ void Yeopo_FSM::SQ_RideHorse_End()
 {
     if (Is_AnimFinished())
     {
-        m_vRidingEndPos = Get_Transform()->Get_State(Transform_State::POS);
+        matBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iSkillBoneIndex) *
+            _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+        m_vRidingEndPos = _float4{ matBoneMatrix.Translation().x, matBoneMatrix.Translation().y, matBoneMatrix.Translation().z , 1.f };
+        m_vRidingEndPos.y = Get_Transform()->Get_State(Transform_State::POS).y;
+        Get_Transform()->Set_State(Transform_State::POS, m_vRidingEndPos);
         m_eCurState = STATE::b_idle;
     }
 }
@@ -2003,19 +2039,8 @@ void Yeopo_FSM::SQ_RideHorse_End_Init()
     Set_VehicleState((_uint)YeopoHorse_FSM::STATE::SQ_RideHorse_End);
 }
 
-void Yeopo_FSM::EvadeCoolCheck()
+void Yeopo_FSM::RidingCoolCheck()
 {
-    if (m_bEvadeCoolCheck)
-    {
-        m_tEvadeDelay.fAccTime += fDT;
-
-        if (m_tEvadeDelay.fAccTime >= m_tEvadeDelay.fCoolTime)
-        {
-            m_bEvadeCoolCheck = false;
-            m_tEvadeDelay.fAccTime = 0.f;
-        }
-    }
-
     if (m_bRidingCoolCheck)
     {
         m_tRidingDelay.fAccTime += fDT;

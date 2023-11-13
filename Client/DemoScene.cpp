@@ -134,7 +134,7 @@ HRESULT DemoScene::Load_Scene()
 	Load_Light();
 	Load_Camera();
 	Load_MapFile(L"KrisMap6");
-	Load_Monster(1);
+	//Load_Monster(1);
 	Load_Boss_Mir();
 	//Load_DemoMap();
 
@@ -311,9 +311,9 @@ void DemoScene::Load_Camera()
 		// �Ϻη� ��� ��������
 		auto pPlayer = Get_GameObject(L"Player");
 		camera->Add_Component(make_shared<MainCameraScript>(pPlayer));
-	
+
 		Add_GameObject(camera);
-		
+	
 		//Setting Camera
 		pPlayer->Get_FSM()->Set_Camera(camera);
 	}

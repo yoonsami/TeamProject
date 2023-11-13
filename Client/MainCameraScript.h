@@ -21,6 +21,7 @@ public:
     void Set_FixedDir(const _float3& vDir) { m_vFixedDir = vDir; }
     void Set_FixedDist(_float fDist) { m_fFixedDist = fDist; }
     void Set_FixedTime(_float fTime) { m_fFixedTime = fTime; }
+    void Set_FollowSpeed(_float fFollowSpeed) { m_fFollowSpeed = fFollowSpeed; }
     const _float3& Get_FixedDir() { return m_vFixedDir; }
     _float Get_FixedDist() { return m_fFixedDist; }
     const _float3& Get_Offset() { return m_vOffset; }
@@ -39,15 +40,18 @@ private:
 
 private:
     _bool m_bOn = true;
+    _bool m_bCalculateOffSet = false;
     _float m_fFollowSpeed = 1.f;
     _float m_fMaxDistance = 5.f;
     _float3 m_vOffset = { 1.f,1.f,1.f };
     _float m_fRotationSpeed = 1.f;
 
+    _bool m_bFixedCheck = false;
+    _float3 m_vFixedLastPos = _float3(0.f);
     weak_ptr<GameObject> m_pPlayer;
     weak_ptr<GameObject> m_pTarget;
 
-
+    
     _float m_fMaxHeightRadian = XM_PI / 3.f;
     _float3 m_vFixedPos = _float3(0.f);
     _float3 m_vFixedDir = _float3(0.f);

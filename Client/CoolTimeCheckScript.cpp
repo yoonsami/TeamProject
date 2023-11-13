@@ -212,7 +212,7 @@ void CoolTimeCheckScript::Check_Cool_Time()
         auto& vecCool = m_CoolTime[i];
         for (_uint j = 0; j < 5; ++j)
         {
-            if (/*false == vecCool[j].bIsWork &&*/ vecCool[j].fCoolTime > vecCool[j].fAccTime)
+            if (false == vecCool[j].bIsWork && vecCool[j].fCoolTime > vecCool[j].fAccTime)
             {
                 if (false == vecCool[j].bIsEnd)
                 {

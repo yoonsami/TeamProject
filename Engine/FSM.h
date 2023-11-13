@@ -17,6 +17,8 @@ protected:
 	virtual void AttackCollider_On(const wstring& skillname) = 0;
 	virtual void AttackCollider_Off() = 0;
 
+	void Calculate_CamBoneMatrix();
+
 	_uint Get_CurFrame();
 	_uint Get_FinalFrame();
 	void Reset_Frame();
@@ -55,5 +57,20 @@ public:
 	_float3 m_vHitDir = _float3{ 0.f };
 	_float m_fAttackRange = 2.f;
 	_float m_fDetectRange = 2.f;
+
+	_uint m_iCenterBoneIndex = 0;
+	_uint m_iDummy_CP_BoneIndex = 0;
+	_uint m_iCamBoneIndex = 0;
+	_uint m_iSkillCamBoneIndex = 0;
+
+	_float4 m_vCenterBonePos = _float4(0.f);
+	_float4 m_vDummy_CP_BonePos = _float4(0.f);
+	_float4 m_vCamBonePos = _float4(0.f);
+	_float4 m_vSkillCamBonePos = _float4(0.f);
+
+	_float4x4 m_CenterBoneMatrix = XMMatrixIdentity();
+	_float4x4 m_Dummy_CP_BoneMatrix = XMMatrixIdentity();
+	_float4x4 m_CamBoneMatrix = XMMatrixIdentity();
+	_float4x4 m_SkillCamBoneMatrix = XMMatrixIdentity();
 };
 

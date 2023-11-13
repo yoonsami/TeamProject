@@ -134,7 +134,6 @@ private:
 	void skill_500100();
 	void skill_500100_Init();
 
-	void EvadeCoolCheck();
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
 
 private:
@@ -146,7 +145,6 @@ private:
 	COOLTIMEINFO m_tEvadeDelay = { 1.f,0.f };
 
 	_bool m_bCanCombo = false;
-	_bool m_bEvadeCoolCheck = false;
 
 	_float m_fRunSpeed = 6.f;
 	_float m_fSprintSpeed = 8.f;
@@ -161,6 +159,8 @@ private:
 
 	_bool m_bSkillCreate = false;
 	weak_ptr<GameObject> m_pSkillCollider;
+	
+	_float4 m_vCamStopPos = _float4(0.f);
 
 	_uint m_iSkillBoneIndex = 0;
 	_float4x4 matBoneMatrix = XMMatrixIdentity();
