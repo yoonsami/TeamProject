@@ -3,7 +3,6 @@
 
 /* Components */
 #include "MeshEffect.h"
-#include "EffectMovementScript.h"
 #include "Texture.h"
 
 Widget_EffectMaker_Mesh::Widget_EffectMaker_Mesh()
@@ -192,18 +191,40 @@ void Widget_EffectMaker_Mesh::Option_Property()
 
 	ImGui::InputText("Tag", m_szTag, MAX_PATH);
 	ImGui::Spacing();
-
-	ImGui::RadioButton("Static##Property", &m_iMeshCntOption, 0);
-	ImGui::RadioButton("Random in range##Property", &m_iMeshCntOption, 1);
-	switch (m_iMeshCntOption)
+	
+	ImGui::InputInt("Number of Mesh##Property", &m_iMeshCnt);
+	if (m_iMeshCnt > 1)
 	{
-	case 0:
-		ImGui::InputInt("Num of Mesh##Property", &m_iMeshCnt[0]);
-		m_iMeshCnt[1] = m_iMeshCnt[0];
-		break;
-	case 1:
-		ImGui::InputInt2("Num of Mesh(min, max)##Property", m_iMeshCnt); 
-		break;
+		ImGui::InputFloat("Create Interval##", &m_fCreateInterval);
+		const char* pszItem_ParticleDuration[] = { "Static", "Random in rang" };
+		if (ImGui::BeginCombo("Particle Duration##Opacity", pszItem_ParticleDuration[m_iParticleDurationOption], 0))
+		{
+			for (_uint n = 0; n < IM_ARRAYSIZE(pszItem_ParticleDuration); n++)
+			{
+				const bool is_selected = (m_iParticleDurationOption == n);
+				if (ImGui::Selectable(pszItem_ParticleDuration[n], is_selected))
+					m_iParticleDurationOption = n;
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+
+		switch (m_iParticleDurationOption)
+		{
+		case 0:
+			ImGui::InputFloat("Particle Duration##Property", &m_fParticleDuration[0]);
+			m_fParticleDuration[1] = m_fParticleDuration[0];
+			break;
+		case 1:
+			ImGui::InputFloat2("Particle Duration (min, max)##Property", m_fParticleDuration);
+			break;
+		}
+	}
+	else
+	{
+		m_fParticleDuration[0] = m_fDuration;
+		m_fParticleDuration[1] = m_fDuration;
 	}
 	ImGui::Spacing();
 
@@ -214,6 +235,7 @@ void Widget_EffectMaker_Mesh::Option_Property()
 	ImGui::Spacing();
 
 	ImGui::Checkbox("On Fade Out", &m_bUseFadeOut);
+	ImGui::Spacing();
 }
 
 void Widget_EffectMaker_Mesh::Option_Mesh()
@@ -804,12 +826,12 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 			ZeroMemory(m_fEndPositionOffset_Max, sizeof(m_fEndPositionOffset_Max));
 			break;
 		case 1:	// Move to target
-			m_iTranslateOption = 0;
+			m_fTranslateSpeed = 0;
 			ImGui::InputFloat3("Target Position##Movement", m_fEndPositionOffset_Min);
 			memcpy(m_fEndPositionOffset_Max, m_fEndPositionOffset_Min, sizeof(m_fEndPositionOffset_Min));
 			break;
 		case 2: // Move to random target
-			m_iTranslateOption = 0;
+			m_fTranslateSpeed = 0;
 			ImGui::InputFloat3("Target Position (min)##Movement", m_fEndPositionOffset_Min);
 			ImGui::InputFloat3("Target Position (max)##Movement", m_fEndPositionOffset_Max);
 			break;
@@ -817,7 +839,7 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 		case 4:	// Go back
 		case 5:	// Go left
 		case 6:	// Go right
-			ImGui::InputFloat3("Target Scale##Movement", m_fEndScaleOffset);
+			ImGui::InputFloat("Translate Speed##Movement", &m_fTranslateSpeed);
 			ZeroMemory(m_fEndPositionOffset_Min, sizeof(m_fEndPositionOffset_Min));
 			ZeroMemory(m_fEndPositionOffset_Max, sizeof(m_fEndPositionOffset_Max));
 			break;
@@ -924,6 +946,9 @@ void Widget_EffectMaker_Mesh::Create()
 		m_fDuration,
 		m_bBlurOn,
 		m_bUseFadeOut,
+		m_iMeshCnt,
+		m_fCreateInterval,
+		_float2(m_fParticleDuration),
 
 		m_strMesh,
 
@@ -974,7 +999,6 @@ void Widget_EffectMaker_Mesh::Create()
 	EffectObj->Get_MeshEffect()->Init(&tMeshEffectDesc);
 
 	// For. Add and Setting EffectMovement Script to GameObject
-	shared_ptr<EffectMovementScript> pEffectMovementScript = make_shared<EffectMovementScript>();
 	MeshEffectData::Transform_Desc tTransform_Desc
 	{
 		_float3(m_fPosRange),
@@ -990,6 +1014,7 @@ void Widget_EffectMaker_Mesh::Create()
 		_float3(m_fEndPositionOffset_Min),
 		_float3(m_fEndPositionOffset_Max),
 
+		m_iScalingOption,
 		_float3(m_fEndScaleOffset),
 
 		m_iTurnOption,
@@ -997,8 +1022,8 @@ void Widget_EffectMaker_Mesh::Create()
 		_float3(m_fRandomAxis_Min),
 		_float3(m_fRandomAxis_Max),
 	};
-	EffectObj->Add_Component(pEffectMovementScript);
-	EffectObj->Get_Script<EffectMovementScript>()->Init(&tTransform_Desc);
+	EffectObj->Get_MeshEffect()->Set_TransformDesc(&tTransform_Desc);
+	EffectObj->Get_MeshEffect()->InitialTransform(_float3(0.f, 0.f, 0.f), _float3(1.f, 1.f, 1.f), _float3(0.f, 0.f, 0.f));
 
 	// For. Add Effect GameObject to current scene
 	CUR_SCENE->Add_GameObject(EffectObj);
@@ -1010,122 +1035,127 @@ void Widget_EffectMaker_Mesh::Save()
 	string strFilePath = "..\\Resources\\EffectData\\MeshEffectData\\";
 	strFilePath += strFileName + ".dat";
 
-	shared_ptr<FileUtils> file = make_shared<FileUtils>();
-	file->Open(Utils::ToWString(strFilePath), FileMode::Write);
+	{	
+		shared_ptr<FileUtils> file = make_shared<FileUtils>();
+		file->Open(Utils::ToWString(strFilePath), FileMode::Write);
 
-	/* Property */
-	file->Write<string>(m_szTag);
-	file->Write<_float>(m_fDuration);
-	file->Write<_bool>(m_bBlurOn);
-	file->Write<_bool>(m_bUseFadeOut);
+		/* Property */
+		file->Write<string>(m_szTag);
+		file->Write<_float>(m_fDuration);
+		file->Write<_bool>(m_bBlurOn);
+		file->Write<_bool>(m_bUseFadeOut);
+		file->Write<_int>(m_iMeshCnt);
+		file->Write<_float>(m_fCreateInterval);
+		file->Write<_float2>(_float2(m_fParticleDuration));
 
-	/* Mesh */
-	// file->Write<_bool>(m_iMesh); 
-	file->Write<string>(m_strMesh);
+		/* Mesh */
+		// file->Write<_bool>(m_iMesh); 
+		file->Write<string>(m_strMesh);
 
-	/* Coloring Option */
-	file->Write<_bool>(m_bColorChangingOn);
+		/* Coloring Option */
+		file->Write<_bool>(m_bColorChangingOn);
 
-	/* Diffuse */
-	// file->Write<_int>(m_DiffuseTexture.first);
-	file->Write<string>(m_DiffuseTexture.second);
-	file->Write<_float4>(ImVec4toColor(m_vDiffuseColor_BaseStart));
-	file->Write<_float4>(ImVec4toColor(m_vDiffuseColor_BaseEnd));
-	file->Write<_float4>(ImVec4toColor(m_vDiffuseColor_Dest));
+		/* Diffuse */
+		// file->Write<_int>(m_DiffuseTexture.first);
+		file->Write<string>(m_DiffuseTexture.second);
+		file->Write<_float4>(ImVec4toColor(m_vDiffuseColor_BaseStart));
+		file->Write<_float4>(ImVec4toColor(m_vDiffuseColor_BaseEnd));
+		file->Write<_float4>(ImVec4toColor(m_vDiffuseColor_Dest));
 
-	/* Alpha Gradation */
-	file->Write<_float>(m_fAlphaGraIntensity);
-	file->Write<_float4>(ImVec4toColor(m_vAlphaGraColor_Base));
-	// file->Write<_bool>(m_bDestSameWithBase_AlphaGra);
-	file->Write<_float4>(ImVec4toColor(m_vAlphaGraColor_Dest));
+		/* Alpha Gradation */
+		file->Write<_float>(m_fAlphaGraIntensity);
+		file->Write<_float4>(ImVec4toColor(m_vAlphaGraColor_Base));
+		// file->Write<_bool>(m_bDestSameWithBase_AlphaGra);
+		file->Write<_float4>(ImVec4toColor(m_vAlphaGraColor_Dest));
 
-	/* Opacity */
-	// file->Write<_int>(m_OpacityTexture.first);
-	file->Write<string>(m_OpacityTexture.second);
-	// file->Write<_bool>(m_bUVOptionSameWithOpacity_Opacity);
-	file->Write<_int>(m_iSamplerType);
-	file->Write<_float2>(_float2(m_fTiling_Opacity));
-	file->Write<_float2>(_float2(m_fUVSpeed_Opacity));
+		/* Opacity */
+		// file->Write<_int>(m_OpacityTexture.first);
+		file->Write<string>(m_OpacityTexture.second);
+		// file->Write<_bool>(m_bUVOptionSameWithOpacity_Opacity);
+		file->Write<_int>(m_iSamplerType);
+		file->Write<_float2>(_float2(m_fTiling_Opacity));
+		file->Write<_float2>(_float2(m_fUVSpeed_Opacity));
 
-	/* Gradation by Texture */
-	// file->Write<_bool>(m_bGra_On);
-	// file->Write<_int>(m_GraTexture.first);
-	file->Write<string>(m_GraTexture.second);
-	file->Write<_float4>(ImVec4toColor(m_vGraColor_Base));
-	// file->Write<_bool>(m_bUVOptionSameWithOpacity_Gra);
-	file->Write<_float2>(_float2(m_fTiling_Gra));
-	file->Write<_float2>(_float2(m_fUVSpeed_Gra));
-	// file->Write<_bool>(m_bDestSameWithBase_Gra);
-	file->Write<_float4>(ImVec4toColor(m_vGraColor_Dest));
+		/* Gradation by Texture */
+		// file->Write<_bool>(m_bGra_On);
+		// file->Write<_int>(m_GraTexture.first);
+		file->Write<string>(m_GraTexture.second);
+		file->Write<_float4>(ImVec4toColor(m_vGraColor_Base));
+		// file->Write<_bool>(m_bUVOptionSameWithOpacity_Gra);
+		file->Write<_float2>(_float2(m_fTiling_Gra));
+		file->Write<_float2>(_float2(m_fUVSpeed_Gra));
+		// file->Write<_bool>(m_bDestSameWithBase_Gra);
+		file->Write<_float4>(ImVec4toColor(m_vGraColor_Dest));
 
-	/* Overlay */
-	file->Write<_bool>(m_bOverlay_On);
-	// file->Write<_int>(m_OverlayTexture.first);
-	file->Write<string>(m_OverlayTexture.second);
-	file->Write<_float4>(ImVec4toColor(m_vOverlayColor_Base));
-	// file->Write<_bool>(m_bUVOptionSameWithOpacity_Overlay);
-	file->Write<_float2>(_float2(m_fTiling_Overlay));
-	file->Write<_float2>(_float2(m_fUVSpeed_Overlay));
+		/* Overlay */
+		file->Write<_bool>(m_bOverlay_On);
+		// file->Write<_int>(m_OverlayTexture.first);
+		file->Write<string>(m_OverlayTexture.second);
+		file->Write<_float4>(ImVec4toColor(m_vOverlayColor_Base));
+		// file->Write<_bool>(m_bUVOptionSameWithOpacity_Overlay);
+		file->Write<_float2>(_float2(m_fTiling_Overlay));
+		file->Write<_float2>(_float2(m_fUVSpeed_Overlay));
 
-	/* Normal */
-	// file->Write<_int>(m_NormalTexture.first);
-	file->Write<string>(m_NormalTexture.second);
+		/* Normal */
+		// file->Write<_int>(m_NormalTexture.first);
+		file->Write<string>(m_NormalTexture.second);
 
-	/* Dissolve */
-	// file->Write<_int>(m_DissolveTexture.first);
-	file->Write<string>(m_DissolveTexture.second);
-	// file->Write<_bool>(m_bUVOptionSameWithOpacity_Dissolve);
-	file->Write<_float2>(_float2(m_fTiling_Dissolve));
-	file->Write<_float2>(_float2(m_fUVSpeed_Dissolve));
-	file->Write<_bool>(m_bDissolveInverse);
+		/* Dissolve */
+		// file->Write<_int>(m_DissolveTexture.first);
+		file->Write<string>(m_DissolveTexture.second);
+		// file->Write<_bool>(m_bUVOptionSameWithOpacity_Dissolve);
+		file->Write<_float2>(_float2(m_fTiling_Dissolve));
+		file->Write<_float2>(_float2(m_fUVSpeed_Dissolve));
+		file->Write<_bool>(m_bDissolveInverse);
 
-	/* Distortion */
-	// file->Write<_bool>(m_bDistortion_On);
-	// file->Write<_int>(m_DistortionTexture.first);
-	file->Write<string>(m_DistortionTexture.second);
-	// file->Write<_bool>(m_bUVOptionSameWithOpacity_Distortion);
-	file->Write<_float2>(_float2(m_fTiling_Distortion));
-	file->Write<_float2>(_float2(m_fUVSpeed_Distortion));
+		/* Distortion */
+		// file->Write<_bool>(m_bDistortion_On);
+		// file->Write<_int>(m_DistortionTexture.first);
+		file->Write<string>(m_DistortionTexture.second);
+		// file->Write<_bool>(m_bUVOptionSameWithOpacity_Distortion);
+		file->Write<_float2>(_float2(m_fTiling_Distortion));
+		file->Write<_float2>(_float2(m_fUVSpeed_Distortion));
 
-	/* Blend */
-	// file->Write<_bool>(m_bBlend_On);
-	// file->Write<_int>(m_BlendTexture.first);
-	file->Write<string>(m_BlendTexture.second);
+		/* Blend */
+		// file->Write<_bool>(m_bBlend_On);
+		// file->Write<_int>(m_BlendTexture.first);
+		file->Write<string>(m_BlendTexture.second);
 
-	/* Color Edit */
-	file->Write<_float>(m_fContrast);
+		/* Color Edit */
+		file->Write<_float>(m_fContrast);
 
-	// For. Transform Desc 
-	/* Init position */
-	//file->Write<_int>(m_iInitPosOption);
-	file->Write<_float3>(_float3(m_fPosRange));
+		// For. Transform Desc 
+		/* Init position */
+		//file->Write<_int>(m_iInitPosOption);
+		file->Write<_float3>(_float3(m_fPosRange));
 
-	/* Init Scale */
-	//file->Write<_int>(m_iInitScaleOption);
-	file->Write<_float3>(_float3(m_fInitScale_Min));
-	file->Write<_float3>(_float3(m_fInitScale_Max));
+		/* Init Scale */
+		//file->Write<_int>(m_iInitScaleOption);
+		file->Write<_float3>(_float3(m_fInitScale_Min));
+		file->Write<_float3>(_float3(m_fInitScale_Max));
 
-	/* Init Rotation */
-	//file->Write<_int>(m_iInitRotationOption);
-	file->Write<_float3>(_float3(m_fInitRotation_Min));
-	file->Write<_float3>(_float3(m_fInitRotation_Max));
+		/* Init Rotation */
+		//file->Write<_int>(m_iInitRotationOption);
+		file->Write<_float3>(_float3(m_fInitRotation_Min));
+		file->Write<_float3>(_float3(m_fInitRotation_Max));
 
-	/* Translate */
-	file->Write<_int>(m_iTranslateOption);
-	file->Write<_float>(m_fTranslateSpeed);
-	file->Write<_float3>(_float3(m_fEndPositionOffset_Min));
-	file->Write<_float3>(_float3(m_fEndPositionOffset_Max));
+		/* Translate */
+		file->Write<_int>(m_iTranslateOption);
+		file->Write<_float>(m_fTranslateSpeed);
+		file->Write<_float3>(_float3(m_fEndPositionOffset_Min));
+		file->Write<_float3>(_float3(m_fEndPositionOffset_Max));
 
-	/* Scaling */
-	//file->Write<_int>(m_iScalingOption);
-	file->Write<_float3>(_float3(m_fEndScaleOffset));
+		/* Scaling */
+		file->Write<_int>(m_iScalingOption);
+		file->Write<_float3>(_float3(m_fEndScaleOffset));
 
-	/* Turn */
-	//file->Write<_int>(m_iTurnOption);
-	file->Write<_float>(m_fTurnSpeed);
-	file->Write<_float3>(_float3(m_fRandomAxis_Min));
-	file->Write<_float3>(_float3(m_fRandomAxis_Max));
-
+		/* Turn */
+		file->Write<_int>(m_iTurnOption);
+		file->Write<_float>(m_fTurnSpeed);
+		file->Write<_float3>(_float3(m_fRandomAxis_Min));
+		file->Write<_float3>(_float3(m_fRandomAxis_Max));
+	}	
+	
 	RESOURCES.ReloadOrAddMeshEffectData(Utils::ToWString(strFileName), Utils::ToWString(strFilePath));
 	
 	// For. Update Finished Effect List 
@@ -1136,6 +1166,7 @@ void Widget_EffectMaker_Mesh::Load()
 {
 	_float2 tiling = {0.f, 0.f};
 	_float2 UVSpeed = { 0.f, 0.f };
+	_float3 vFloat3 = { 0.f, 0.f, 0.f };
 	
 	// For. load file and fill imgui 
 	string strFilePath = "..\\Resources\\EffectData\\MeshEffectData\\";
@@ -1150,6 +1181,10 @@ void Widget_EffectMaker_Mesh::Load()
 	m_fDuration = file->Read<_float>();
 	m_bBlurOn = file->Read<_bool>();
 	m_bUseFadeOut = file->Read<_bool>();
+	m_iMeshCnt = file->Read<_int>();
+	m_fCreateInterval = file->Read<_float>();
+	_float2 vFloat2 = file->Read<_float2>();
+	memcpy(m_fParticleDuration, &vFloat2, sizeof(m_fParticleDuration));
 
 	/* Mesh */
 	m_strMesh = file->Read<string>();
@@ -1258,23 +1293,27 @@ void Widget_EffectMaker_Mesh::Load()
 	// For. Transform Desc
 	/* Init Pos */
 	_float3 vTemp1 = file->Read<_float3>();
-	memcpy(m_fPosRange, &vTemp1, sizeof(m_fPosRange));
+	memcpy(m_fPosRange, &vTemp1, sizeof(_float)*3);
 	if (Equal(_float3(m_fPosRange), _float3(0.f, 0.f, 0.f)))
 		m_iInitPosOption = 0;
 	else 
 		m_iInitPosOption = 1;
 
 	/* Init Scale */
-	memcpy(m_fInitScale_Min, &file->Read<_float3>(), sizeof(m_fInitScale_Min));
-	memcpy(m_fInitScale_Max, &file->Read<_float3>(), sizeof(m_fInitScale_Max));
+	vFloat3 = file->Read<_float3>();
+	memcpy(m_fInitScale_Min, &vFloat3, sizeof(m_fInitScale_Min));
+	vFloat3 = file->Read<_float3>();
+	memcpy(m_fInitScale_Max, &vFloat3, sizeof(m_fInitScale_Max));
 	if (Equal(m_fInitScale_Min, m_fInitScale_Max, 3))
 		m_iInitScaleOption = 0;
 	else
 		m_iInitScaleOption = 1;
 
 	/* Init Rotation */
-	memcpy(m_fInitRotation_Min, &file->Read<_float3>(), sizeof(m_fInitRotation_Min));
-	memcpy(m_fInitRotation_Max, &file->Read<_float3>(), sizeof(m_fInitRotation_Max));
+	vFloat3 = file->Read<_float3>();
+	memcpy(m_fInitRotation_Min, &vFloat3, sizeof(m_fInitRotation_Min));
+	vFloat3 = file->Read<_float3>();
+	memcpy(m_fInitRotation_Max, &vFloat3, sizeof(m_fInitRotation_Max));
 	if (Equal(m_fInitRotation_Min, m_fInitRotation_Max, 3))
 		m_iInitRotationOption = 0;
 	else
@@ -1283,20 +1322,27 @@ void Widget_EffectMaker_Mesh::Load()
 	/* Translate */
 	m_iTranslateOption = file->Read<_int>();
 	m_fTranslateSpeed = file->Read<_float>();
-	memcpy(m_fEndPositionOffset_Min, &file->Read<_float3>(), sizeof(m_fEndPositionOffset_Min));
-	memcpy(m_fEndPositionOffset_Max, &file->Read<_float3>(), sizeof(m_fEndPositionOffset_Max));
+	vFloat3 = file->Read<_float3>();
+	memcpy(m_fEndPositionOffset_Min, &vFloat3, sizeof(m_fEndPositionOffset_Min));
+	vFloat3 = file->Read<_float3>();
+	memcpy(m_fEndPositionOffset_Max, &vFloat3, sizeof(m_fEndPositionOffset_Max));
 
 	/* Scaling */
-	memcpy(m_fEndScaleOffset, &file->Read<_float3>(), sizeof(m_fEndScaleOffset));
+	m_iScalingOption = file->Read<_int>();
+	vFloat3 = file->Read<_float3>();
+	memcpy(m_fEndScaleOffset, &vFloat3, sizeof(m_fEndScaleOffset));
 	if (Equal(_float3(m_fEndScaleOffset), _float3(0.f, 0.f, 0.f)))
 		m_iScalingOption = 0;
 	else
 		m_iScalingOption = 1;
 
 	/* Turn */
+	m_iTurnOption = file->Read<_int>();
 	m_fTurnSpeed = file->Read<_float>();
-	memcpy(m_fRandomAxis_Min, &file->Read<_float3>(), sizeof(m_fRandomAxis_Min));
-	memcpy(m_fRandomAxis_Max, &file->Read<_float3>(), sizeof(m_fRandomAxis_Max));
+	vFloat3 = file->Read<_float3>();
+	memcpy(m_fRandomAxis_Min, &vFloat3, sizeof(m_fRandomAxis_Min));
+	vFloat3 = file->Read<_float3>();
+	memcpy(m_fRandomAxis_Max, &vFloat3, sizeof(m_fRandomAxis_Max));
 	if (Equal(_float3(m_fRandomAxis_Min), _float3(0.f, 0.f, 0.f)))
 		m_iTurnOption = 0;
 	else

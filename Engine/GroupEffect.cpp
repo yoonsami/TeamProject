@@ -24,14 +24,29 @@ void GroupEffect::Tick()
 	_int iIndex = 0;
 	for(auto& iter : m_vMemberEffectData)
 	{
-		if ( !iter.bIsActive && iter.fCreateTime < m_fCurrAge)
+		if (iter.fCreateTime < m_fCurrAge )
 		{
-			if (GroupEffectData::TYPE_MESHEFFECT == iter.eType)
-				Create_MeshEffect(iIndex);
-			else if (GroupEffectData::TYPE_PARTICLE == iter.eType)
-				Create_Particle(iIndex);
-			
-			iter.bIsActive = true;
+			wstring wstrMeshEffectDataKey = iter.wstrEffectTag;
+			Utils::DetachExt(wstrMeshEffectDataKey);
+			shared_ptr<MeshEffectData> meshEffectData = RESOURCES.Get<MeshEffectData>(wstrMeshEffectDataKey);
+			MeshEffectData::DESC tDesc = meshEffectData->Get_Desc();
+			 
+			if (tDesc.fDuration + iter.fCreateTime > m_fCurrAge)
+			{
+				// If. only need to create an effect once
+				if (0.f == tDesc.fCreateInterval && !iter.bIsActive)
+				{
+					Create_MeshEffect(iIndex);
+					iter.bIsActive = true;
+				}
+				// If. must be created every interval
+				else if (tDesc.fCreateInterval < m_fTimeAcc_CreatCoolTime)
+				{
+					Create_MeshEffect(iIndex);
+					m_fTimeAcc_CreatCoolTime = 0.f;
+					iter.bIsActive = true;
+				}
+			}
 		}
 		iIndex++;
 	}
@@ -40,6 +55,7 @@ void GroupEffect::Tick()
 void GroupEffect::Final_Tick()
 {
 	m_fCurrAge += fDT;
+	m_fTimeAcc_CreatCoolTime += fDT;
 
 	// For. Check all effect finished
 	_bool bIsAllActive = true;
@@ -48,7 +64,7 @@ void GroupEffect::Final_Tick()
 		if (!iter.bIsActive)
 			bIsAllActive = false;
 	}
-
+	
 	if (bIsAllActive)
 	{
 		_bool bIsAllNullptr = true;
@@ -57,7 +73,7 @@ void GroupEffect::Final_Tick()
 			if (nullptr == iter)
 				bIsAllNullptr = false;
 		}
-
+	
 		if (bIsAllNullptr)
 		{
 			CUR_SCENE->Remove_GameObject(Get_Owner());
@@ -92,34 +108,38 @@ void GroupEffect::Save(const wstring& path)
 
 void GroupEffect::Create_MeshEffect(_int iIndex)
 {
-	auto iter = m_vMemberEffectData[iIndex];
-	
-	shared_ptr<GameObject> EffectObj = make_shared<GameObject>();
-
-	// For. Transform 
-	EffectObj->GetOrAddTransform();
-	EffectObj->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + _float4(iter.vPivot_Pos, 0.f));
-	EffectObj->Get_Transform()->Scaled(iter.vPivot_Scale);
-	EffectObj->Get_Transform()->Set_Rotation(iter.vPivot_Rotation);
-
-	// For. Shader 
-	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
-
 	// For.  Mesh Effect  
-	shared_ptr<MeshEffect> meshEffect = make_shared<MeshEffect>(shader);
-	EffectObj->Add_Component(meshEffect);
+	auto iter = m_vMemberEffectData[iIndex];
 	wstring wstrMeshEffectDataKey = iter.wstrEffectTag;
 	Utils::DetachExt(wstrMeshEffectDataKey);
 	shared_ptr<MeshEffectData> meshEffectData = RESOURCES.Get<MeshEffectData>(wstrMeshEffectDataKey);
 	MeshEffectData::DESC tDesc = meshEffectData->Get_Desc();
-	EffectObj->Get_MeshEffect()->Init(&tDesc);
-	EffectObj->Get_MeshEffect()->Set_IsImmortal(false);
-
-	// For. Add to vector 
-	m_vMemberEffects.push_back(EffectObj);
+	MeshEffectData::Transform_Desc tTransform_Desc = meshEffectData->Get_TransformDesc();
 	
-	// For. Add to scene
-	CUR_SCENE->Add_GameObject(EffectObj);
+	for (_int i = 0; i < tDesc.iMeshCnt; i++)
+	{
+		shared_ptr<GameObject> EffectObj = make_shared<GameObject>();
+
+		// For. Transform 
+		EffectObj->GetOrAddTransform();
+		EffectObj->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + _float4(iter.vPivot_Pos, 0.f));
+		EffectObj->Get_Transform()->Scaled(iter.vPivot_Scale);
+		EffectObj->Get_Transform()->Set_Rotation(iter.vPivot_Rotation);
+
+		// For. Shader 
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
+		shared_ptr<MeshEffect> meshEffect = make_shared<MeshEffect>(shader);
+		EffectObj->Add_Component(meshEffect);
+		EffectObj->Get_MeshEffect()->Init(&tDesc);
+		EffectObj->Get_MeshEffect()->Set_TransformDesc(&tTransform_Desc);
+		EffectObj->Get_MeshEffect()->InitialTransform(_float3(Get_Transform()->Get_State(Transform_State::POS)), Get_Transform()->Get_Scale(), Get_Transform()->Get_RollPitchYaw());
+		
+		// For. Add to vector 
+		m_vMemberEffects.push_back(EffectObj);
+		
+		// For. Add to scene
+		CUR_SCENE->Add_GameObject(EffectObj);
+	}
 }
 
 void GroupEffect::Create_Particle(_int iIndex)

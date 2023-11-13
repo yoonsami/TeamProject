@@ -11,6 +11,9 @@ public:
         _float      fDuration;
         _bool       bBlurOn;
         _bool       bUseFadeOut;
+        _int        iMeshCnt;
+        _float      fCreateInterval;
+        _float2     vParticleDuration;
 
         // Mesh 
         string      strVfxMesh;
@@ -90,6 +93,7 @@ public:
         _float3     vEndPosOffset_Max;
 
         // Scaling 
+        _int        iScalingOption;
         _float3     vEndScale;
 
         // Turn 

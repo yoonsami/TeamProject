@@ -903,10 +903,12 @@ void ResourceMgr::CreateMeshEffectData()
 		/* Property */
 		string strTag = file->Read<string>();
 		tDesc.pszTag = strTag.c_str();
-
 		tDesc.fDuration = file->Read<_float>();
 		tDesc.bBlurOn = file->Read<_bool>();
 		tDesc.bUseFadeOut = file->Read<_bool>();
+		tDesc.iMeshCnt = file->Read<_int>();
+		tDesc.fCreateInterval = file->Read<_float>();
+		tDesc.vParticleDuration = file->Read<_float2>();
 
 		/* Mesh */
 		tDesc.strVfxMesh = file->Read<string>();
@@ -984,6 +986,7 @@ void ResourceMgr::CreateMeshEffectData()
 		tTransformDesc.vEndPosOffset_Max = file->Read<_float3>();
 
 		/* Scaling */
+		tTransformDesc.iScalingOption = file->Read<_int>();
 		tTransformDesc.vEndScale = file->Read<_float3>();
 
 		/* Turn */

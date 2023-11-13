@@ -73,8 +73,10 @@ private:
 	_bool					m_bUseFadeOut = { true };
 
 	/* Mesh Count */
-	_int					m_iMeshCntOption = { 0 };
-	_int					m_iMeshCnt[2];	// min, max					// NEW 
+	_int					m_iMeshCnt = { 1 };
+	_float					m_fCreateInterval = { 0.5f };
+	_int					m_iParticleDurationOption = { 0 };
+	_float					m_fParticleDuration[2] = { 0.1f, 1.f };
 
 	/* Mesh list */
 	_uint					m_iNumMeshes = { 0 };

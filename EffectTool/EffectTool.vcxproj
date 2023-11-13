@@ -171,11 +171,11 @@
     <ClInclude Include="EffectTool_Define.h" />
     <ClInclude Include="ForcePosition.h" />
     <ClInclude Include="FreeCameraScript.h" />
+    <ClInclude Include="GroupEffectScript.h" />
     <ClInclude Include="ImGuiToolMgr.h" />
     <ClInclude Include="Loader.h" />
     <ClInclude Include="LoadingScene.h" />
     <ClInclude Include="MainApp.h" />
-    <ClInclude Include="EffectMovementScript.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="WeaponScript.h" />
@@ -202,11 +202,11 @@
     <ClCompile Include="EffectTool.cpp" />
     <ClCompile Include="ForcePosition.cpp" />
     <ClCompile Include="FreeCameraScript.cpp" />
+    <ClCompile Include="GroupEffectScript.cpp" />
     <ClCompile Include="ImGuiToolMgr.cpp" />
     <ClCompile Include="Loader.cpp" />
     <ClCompile Include="LoadingScene.cpp" />
     <ClCompile Include="MainApp.cpp" />
-    <ClCompile Include="EffectMovementScript.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -29,6 +29,9 @@ void MeshEffectData::Load(const wstring& path)
 	m_tDesc.fDuration = file->Read<_float>();
 	m_tDesc.bBlurOn = file->Read<_bool>();
 	m_tDesc.bUseFadeOut = file->Read<_bool>();
+	m_tDesc.iMeshCnt = file->Read<_float>();
+	m_tDesc.fCreateInterval = file->Read<_float>();
+	m_tDesc.vParticleDuration = file->Read<_float2>();
 
 	/* Mesh */
 	m_tDesc.strVfxMesh = file->Read<string>();
@@ -106,6 +109,7 @@ void MeshEffectData::Load(const wstring& path)
 	m_tTransformDesc.vEndPosOffset_Max = file->Read<_float3>();
 
 	/* Scaling */
+	m_tTransformDesc.iScalingOption = file->Read<_int>();
 	m_tTransformDesc.vEndScale = file->Read<_float3>();
 
 	/* Turn */

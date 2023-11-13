@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "ModelMesh.h"
 #include "Utils.h"
+#include "MathUtils.h"
 #include "Camera.h"
 
 MeshEffect::MeshEffect(shared_ptr<Shader> shader)
@@ -28,34 +29,23 @@ void MeshEffect::Init(void* pArg)
 
 void MeshEffect::Tick()
 {
-	if (m_bIsPlayFinished)
-		return;
+	// For. Transform
+	Translate();
+	Scaling();
+	Turn();
 }
 
 void MeshEffect::Final_Tick()
 {
-	if (m_bIsPlayFinished && m_bIsAlwaysShowFirstTick)
+	if (m_bIsPlayFinished)
 		return;
-
 	m_fCurrAge += fDT;
 
-	if (m_fCurrAge >= m_tDesc.fDuration)
+	// For. Check is dead 
+	if (m_fCurrAge >= m_fDuration)
 	{
-		if (!m_bIsImmortal)
-		{
-			CUR_SCENE->Remove_GameObject(Get_Owner());
-			return;
-		}
-		else
-			m_bIsPlayFinished = true;
-
-		if (m_bIsPlayLoop)
-		{
-			Update_Desc();
-			m_fCurrAge = 0.f;
-
-			m_bIsPlayFinished = true;
-		}
+		CUR_SCENE->Remove_GameObject(Get_Owner());
+		return;
 	}
 }
 
@@ -107,13 +97,12 @@ void MeshEffect::Render()
 
 void MeshEffect::Update_Desc()
 {
-	if (m_bIsAlwaysShowFirstTick)
-		m_bIsPlayFinished = true;
-
 	_float fNoise = _float(rand() % 11) / 10.f;
 	Color vRangStartColor = Color(m_tDesc.vDiffuseColor_BaseStart.x, m_tDesc.vDiffuseColor_BaseStart.y, m_tDesc.vDiffuseColor_BaseStart.z, m_tDesc.vDiffuseColor_BaseStart.w);
 	Color vRangEndColor = Color(m_tDesc.vDiffuseColor_BaseEnd.x, m_tDesc.vDiffuseColor_BaseEnd.y, m_tDesc.vDiffuseColor_BaseEnd.z, m_tDesc.vDiffuseColor_BaseEnd.w);
 	m_vDiffuseColor_Base = vRangStartColor * fNoise + vRangEndColor * (1.f - fNoise);
+
+	m_fDuration = MathUtils::Get_RandomFloat(m_tDesc.vParticleDuration.x, m_tDesc.vParticleDuration.y);
 
 	Init_RenderParams();
 
@@ -161,6 +150,108 @@ void MeshEffect::Update_Desc()
 	wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
 	if (TEXT("None") != wstrKey)
 		m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE9);	// Blend
+}
+
+void MeshEffect::InitialTransform(_float3 vParentPos, _float3 vParentScale, _float3 vParentRotation)
+{
+	// For. Position, Scale, Rotation 
+	m_vStartPos += vParentPos;
+	m_vStartRotation += vParentRotation;
+	
+	m_vEndPos += m_vStartPos;
+
+	Get_Transform()->Set_State(Transform_State::POS, _float4(m_vStartPos, 1.f));
+	Get_Transform()->Scaled(m_vStartScale);
+	Get_Transform()->Set_Rotation(m_vStartRotation);
+}
+
+void MeshEffect::Set_TransformDesc(void* pArg)
+{
+	// For. Setting basic info  
+	MeshEffectData::Transform_Desc* pDesc = (MeshEffectData::Transform_Desc*)pArg;
+
+	// For. Initial Transform 
+	m_vStartPos = _float3(
+		MathUtils::Get_RandomFloat(pDesc->vPosRange.x / 2.f * (-1.f), pDesc->vPosRange.x / 2.f),
+		MathUtils::Get_RandomFloat(pDesc->vPosRange.y / 2.f * (-1.f), pDesc->vPosRange.y / 2.f),
+		MathUtils::Get_RandomFloat(pDesc->vPosRange.z / 2.f * (-1.f), pDesc->vPosRange.z / 2.f)
+	);
+
+	m_vStartScale = _float3(
+		MathUtils::Get_RandomFloat(pDesc->vInitScale_Min.x, pDesc->vInitScale_Max.x),
+		MathUtils::Get_RandomFloat(pDesc->vInitScale_Min.y, pDesc->vInitScale_Max.y),
+		MathUtils::Get_RandomFloat(pDesc->vInitScale_Min.z, pDesc->vInitScale_Max.z)
+	);
+
+	m_vStartRotation = _float3(
+		MathUtils::Get_RandomFloat(pDesc->vInitRotation_Min.x, pDesc->vInitRotation_Max.x),
+		MathUtils::Get_RandomFloat(pDesc->vInitRotation_Min.y, pDesc->vInitRotation_Max.y),
+		MathUtils::Get_RandomFloat(pDesc->vInitRotation_Min.z, pDesc->vInitRotation_Max.z)
+	);
+
+	// For. Translate
+	m_iTranslateOption = pDesc->iTranslateOption;
+	m_fTranslateSpeed = pDesc->fTranslateSpeed;
+	m_vEndPos = m_vStartPos + _float3(
+		MathUtils::Get_RandomFloat(pDesc->vEndPosOffset_Min.x, pDesc->vEndPosOffset_Max.x),
+		MathUtils::Get_RandomFloat(pDesc->vEndPosOffset_Min.y, pDesc->vEndPosOffset_Max.y),
+		MathUtils::Get_RandomFloat(pDesc->vEndPosOffset_Min.z, pDesc->vEndPosOffset_Max.z)
+	);
+
+	m_vEndScale = pDesc->vEndScale;
+	m_vEndScale += m_vStartScale;
+	
+	m_iTurnOption = pDesc->iTurnOption;
+	m_fTurnSpeed = pDesc->fTurnSpeed;
+	m_vRandomAxis = _float3(
+		MathUtils::Get_RandomFloat(pDesc->vRandomAxis_Min.x, pDesc->vRandomAxis_Max.x),
+		MathUtils::Get_RandomFloat(pDesc->vRandomAxis_Min.y, pDesc->vRandomAxis_Max.y),
+		MathUtils::Get_RandomFloat(pDesc->vRandomAxis_Min.z, pDesc->vRandomAxis_Max.z)
+	);
+}
+
+void MeshEffect::Translate()
+{
+	switch (m_iTranslateOption)
+	{
+	case 0:
+		break;
+	case 1: // Move to target position
+	case 2: // Move to random target position
+		Get_Transform()->Set_State(Transform_State::POS, _float4(XMVectorLerp(m_vStartPos, m_vEndPos, m_fCurrAge), 0.f));
+		break;
+	case 3:
+		Get_Transform()->Go_Straight();
+		break;
+	case 4:
+		Get_Transform()->Go_Backward();
+		break;
+	case 5:
+		Get_Transform()->Go_Left();
+		break;
+	case 6:
+		Get_Transform()->Go_Right();
+		break;
+	case 7:
+		// TODO: Spreading dust
+		break;
+	case 8:
+		// TODO: Scattered embers
+		break;
+	}
+}
+
+void MeshEffect::Scaling()
+{
+	_float3 vScale = XMVectorLerp(m_vStartScale, m_vEndScale, m_fCurrAge);
+	Get_Transform()->Scaled(vScale);
+}
+
+void MeshEffect::Turn()
+{
+	if (m_vRandomAxis.x == 0.f && m_vRandomAxis.y == 0.f && m_vRandomAxis.z == 0.f)
+		return;
+	Get_Transform()->Turn(m_vRandomAxis, m_fTurnSpeed);
 }
 
 void MeshEffect::Init_RenderParams()
@@ -218,4 +309,11 @@ void MeshEffect::Bind_RenderParams_ToShader()
 
 	// For. Bind Data 
 	m_pShader->Push_RenderParamData(m_RenderParams);
+}
+
+_float MeshEffect::GetRandomFloatInRange(_float fStart, _float fEnd)
+{
+	uniform_real_distribution<float>	RandomInRange(fStart, fEnd);
+	_float fResult = RandomInRange(m_RandomNumber);
+	return fResult;
 }

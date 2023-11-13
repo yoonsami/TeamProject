@@ -56,8 +56,8 @@
     <Filter Include="97.ImGui\Widget_GroupEffectMaker">
       <UniqueIdentifier>{89240255-8e98-4e8c-9e37-dae141f7e0c6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\00.MonoBehavior\EffectMovementScript">
-      <UniqueIdentifier>{c279911e-1e51-4e08-8c41-3dfa21294b0e}</UniqueIdentifier>
+    <Filter Include="02.Component\00.MonoBehavior\GroupEffectScript">
+      <UniqueIdentifier>{2d426c6a-ef6b-4362-ae88-99f098b31b2e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -160,8 +160,8 @@
     <ClInclude Include="Widget_GroupEffectMaker.h">
       <Filter>97.ImGui\Widget_GroupEffectMaker</Filter>
     </ClInclude>
-    <ClInclude Include="EffectMovementScript.h">
-      <Filter>02.Component\00.MonoBehavior\EffectMovementScript</Filter>
+    <ClInclude Include="GroupEffectScript.h">
+      <Filter>02.Component\00.MonoBehavior\GroupEffectScript</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -246,8 +246,8 @@
     <ClCompile Include="Widget_GroupEffectMaker.cpp">
       <Filter>97.ImGui\Widget_GroupEffectMaker</Filter>
     </ClCompile>
-    <ClCompile Include="EffectMovementScript.cpp">
-      <Filter>02.Component\00.MonoBehavior\EffectMovementScript</Filter>
+    <ClCompile Include="GroupEffectScript.cpp">
+      <Filter>02.Component\00.MonoBehavior\GroupEffectScript</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

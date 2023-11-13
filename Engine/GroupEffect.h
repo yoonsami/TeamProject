@@ -35,6 +35,8 @@ private:
 	vector <GroupEffectData::MemberEffect_Desc> m_vMemberEffectData;
 
 	_float										m_fCurrAge = { 0.f };
+	_float										m_fTimeAcc_CreatCoolTime = { 0.f };
+
 	vector<shared_ptr<GameObject>>				m_vMemberEffects;
 };
 
