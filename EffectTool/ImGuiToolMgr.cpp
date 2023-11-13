@@ -48,8 +48,8 @@ void ImGuiToolMgr::Tick()
     ImGuizmo::BeginFrame();
 
     // For. Basic Widget
-    ImGui::SetNextWindowPos(ImVec2(0, g_iWinSizeY - 70.f));
-    ImGui::SetNextWindowSize(ImVec2(400.f, 70.f));
+    ImGui::SetNextWindowPos(ImVec2(0, g_iWinSizeY - 60.f));
+    ImGui::SetNextWindowSize(ImVec2(500.f, 60.f));
     ImGui::Begin("Basic Widget");
     ImGui_BasicWidget();
     ImGui::End();
@@ -79,7 +79,6 @@ void ImGuiToolMgr::ImGui_BasicWidget()
 
 void ImGuiToolMgr::Option_ToolSelector()
 {
-    ImGui::SeparatorText("Tool");
     ImGui::Checkbox("EffectMaker(Mesh)", &m_bIsEffectMaker_Mesh_On);
     ImGui::SameLine();
     ImGui::Checkbox("ParticleMaker(Instancing)", &m_bIsParticleMaker_Instancing_On);

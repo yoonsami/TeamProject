@@ -33,11 +33,16 @@ public:
 	shared_ptr<T> Clone(const wstring& key, _uint iLevelIndex = 0);
 
 	template<typename T>
-	ResourceType Get_ResourceType();
-	shared_ptr<Texture> GetOrAddTexture(const wstring& key, const wstring& path);
+	void Delete(const wstring& key, _uint iLevelIndex = 0);
 
+	template<typename T>
+	ResourceType Get_ResourceType();
+
+	shared_ptr<Texture> GetOrAddTexture(const wstring& key, const wstring& path);
 	shared_ptr<GroupEffectData> GetOrAddGroupEffectData(const wstring& key, const wstring& path);
 
+	shared_ptr<GroupEffectData> ReloadGroupEffectData(const wstring& key, const wstring& path);
+	shared_ptr<MeshEffectData>	ReloadOrAddMeshEffectData(const wstring& key, const wstring& path);
 	//shared_ptr<Parts> Get_Part(const wstring& key);
 	//map<wstring, shared_ptr<Parts>>& Get_Parts(PARTS_INFO type) { return m_PrototypeParts[(_uint)type]; }
 	auto& Get_Resources(_uint index) { return m_Resources[index]; }
@@ -55,14 +60,11 @@ public:
 	void CreateMeshEffectData();
 	void CreateGroupEffectData();
 
-
 	void Reset_LevelModel(_uint iLevelIndex);
 	
 	shared_ptr<Texture> CreateTexture(const wstring& name, DXGI_FORMAT format, _uint width, _uint height, _uint BindFlags, _float4 clearColor);
 	shared_ptr<Texture> CreateTextureFromResource(const wstring& path, ComPtr<ID3D11Texture2D> texture);
 	shared_ptr<Texture> CreateShadowTexture(const wstring& name, _float width, _float height);
-
-private:
 
 private:
 	wstring m_strTexturePath = L"../Resources/Textures/";
@@ -141,6 +143,19 @@ inline shared_ptr<T> ResourceMgr::Clone(const wstring& key, _uint iLevelIndex)
 }
 
 template<typename T>
+inline void ResourceMgr::Delete(const wstring& key, _uint iLevelIndex)
+{
+	ResourceType eType = Get_ResourceType<T>();
+	KeyResouceMap& keyObjMap = m_Resources[iLevelIndex][static_cast<_uchar>(eType)];
+
+	auto findIt = keyObjMap.find(key);
+	if (findIt != keyObjMap.end())
+		keyObjMap.erase(key);
+	else
+		return;
+}
+
+template<typename T>
 inline ResourceType ResourceMgr::Get_ResourceType()
 {
 	if (is_same_v<T, Texture>)
@@ -169,8 +184,6 @@ inline ResourceType ResourceMgr::Get_ResourceType()
 
 	if (is_same_v<T, GroupEffectData>)
 		return ResourceType::GroupEffectData;
-
-
 
 	assert(false);
 	return ResourceType::None;

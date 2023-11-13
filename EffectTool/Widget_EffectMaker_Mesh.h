@@ -4,6 +4,10 @@
 class Widget_EffectMaker_Mesh
 {
 public:
+	enum MeshEffectType {MT_PARTICLE, MT_EFFECT, MT_END};
+	enum ParticleMovement {PM_END};
+
+public:
 	Widget_EffectMaker_Mesh();
 	~Widget_EffectMaker_Mesh();
 
@@ -34,6 +38,8 @@ private:
 	void					Option_Dissolve();
 	void					Option_Distortion();
 	void					Option_ColorEdit();
+	void					Option_InitTransform();
+	void					Option_Movement();
 
 	void					Create();
 	void					Save();
@@ -42,16 +48,19 @@ private:
 	void					SubWidget_TextureCombo(_int* iSelected, string* strSelected, string strFilePath, const char* pszWidgetKey);
 	void					SubWidget_ImageViewer(string strFileName, string strFilePath, const char* pszWidgetKey);
 	void					SubWidget_SettingTexUV(_float* arrTiling, _float* arrTexUVSpeed, const char* pszWidgetKey, const char* pszWidgetKey2);
-
+	
 	Color					ImVec4toColor(ImVec4 imvec);
 	ImVec4					ColorToImVec4(Color color);
 	_int					GetIndex_FromTexList(string strValue);
 	_int					GetIndex_FromMeshList(string strValue);
-	_bool					Compare_IsSameColor(ImVec4 color1, ImVec4 color2);
+	_bool					Equal(_float2 vSrc, _float2 vDest);
+	_bool					Equal(_float3 vSrc, _float3 vDest);
+	_bool					Equal(ImVec4 vSrc, ImVec4 vDest);
+	_bool					Equal(_float* arrSrc, _float* arrDest, _int iSize);
 	_bool					Compare_IsSameUVOptionsWithOpacity(_float2 tiling, _float2 UVSpeed);
 private:
 	/* Effect List */
-	_uint					m_iNumFinishedEffects = { 0 };
+	_uint					m_iNumFinishedEffects = { MT_PARTICLE };
 	vector<string>			m_vecFinishedEffects;
 	const char**			m_pszFinishedEffects = { nullptr };
 	_int					m_iFinishedObject = { 0 };
@@ -62,6 +71,12 @@ private:
 	_float					m_fDuration = { 3.f };
 	_bool					m_bBlurOn = { false };
 	_bool					m_bUseFadeOut = { true };
+
+	/* Mesh Count */
+	_int					m_iMeshCnt = { 1 };
+	_float					m_fCreateInterval = { 0.5f };
+	_int					m_iParticleDurationOption = { 0 };
+	_float					m_fParticleDuration[2] = { 0.1f, 1.f };
 
 	/* Mesh list */
 	_uint					m_iNumMeshes = { 0 };
@@ -85,11 +100,12 @@ private:
 	_bool					m_bColorChangingOn = { false };
 
 	/* Diffuse */
-	_int					m_iDiffuseOption = { 0 };	// Texture, Custom, Random
+	_int					m_iDiffuseOption = { 1 };	// Texture, Custom, Random
 	pair<_int, string>		m_DiffuseTexture = { 0, "None" };
 	ImVec4					m_vDiffuseColor_BaseStart = ImVec4(1.f, 1.f, 1.f, 1.f);
 	ImVec4					m_vDiffuseColor_BaseEnd = ImVec4(1.f, 1.f, 1.f, 1.f);
 	ImVec4					m_vDiffuseColor_Dest = ImVec4(1.f, 1.f, 1.f, 1.f);
+	_bool					m_bIsTextureSameWithOpacity = { false };
 
 	/* Alpha Gradation */
 	_bool					m_bAlphaGra_On = { false };
@@ -132,6 +148,7 @@ private:
 	_bool					m_bUVOptionSameWithOpacity_Dissolve = { true };
 	_float					m_fTiling_Dissolve[2] = { 0.f, 0.f };
 	_float					m_fUVSpeed_Dissolve[2] = { 0.f, 0.f };
+	_bool					m_bDissolveInverse = { false };
 
 	/* Distortion */
 	_bool					m_bDistortion_On = { true };
@@ -147,6 +164,34 @@ private:
 	/* Color Edit */
 	_float					m_fContrast = { 0.f };
 
+	/* Initliaze Transform */
+	_int					m_iInitPosOption = { 0 };					// static, random in range 
+	_float					m_fPosRange[3] = { 0.f, 0.f, 0.f };		
+		
+	_int					m_iInitScaleOption = { 0 };					// static, random in range 
+	_float					m_fInitScale_Min[3] = { 1.f, 1.f, 1.f };		
+	_float					m_fInitScale_Max[3] = { 1.f, 1.f, 1.f };		
+
+	_int					m_iInitRotationOption = { 0 };				// static, random in range 
+	_float					m_fInitRotation_Min[3] = { -1.f, -1.f, -1.f };
+	_float					m_fInitRotation_Max[3] = { 1.f, 1.f, 1.f };
+	 
+	/* Movement */
+	_int					m_iTranslateOption = { 0 };			// no change, Go stright, Go back, Go left, Go right, Go to TargetPos, Go to Random TargetPos
+	_float					m_fTranslateSpeed = { 0.f };                               
+	_float					m_fEndPositionOffset_Min[3] = { 0.f, 0.f, 0.f };	
+	_float					m_fEndPositionOffset_Max[3] = { 0.f, 0.f, 0.f };
+		// TODO : add bezier
+	
+	_int					m_iScalingOption = { 0 };				// no change, change to endscale
+	_float					m_fEndScaleOffset[3] = { 0.f, 0.f, 0.f };
+		// TODO : add bezier
+	
+	_int					m_iTurnOption = { 0 };			// no change, turn with static, turn with random 
+	_float					m_fTurnSpeed = { 0.f };
+	_float					m_fRandomAxis_Min[3] = { 0.f, 0.f, 0.f };		
+	_float					m_fRandomAxis_Max[3] = { 0.f, 0.f, 0.f };
+	
 	/* const */
 	const string			m_strTexturePath = "../Resources/Textures/Universal/";
 	const string			m_strNormalTexturePath = "../Resources/Textures/Universal/Normal/";

@@ -171,6 +171,7 @@
     <ClInclude Include="EffectTool_Define.h" />
     <ClInclude Include="ForcePosition.h" />
     <ClInclude Include="FreeCameraScript.h" />
+    <ClInclude Include="GroupEffectScript.h" />
     <ClInclude Include="ImGuiToolMgr.h" />
     <ClInclude Include="Loader.h" />
     <ClInclude Include="LoadingScene.h" />
@@ -201,6 +202,7 @@
     <ClCompile Include="EffectTool.cpp" />
     <ClCompile Include="ForcePosition.cpp" />
     <ClCompile Include="FreeCameraScript.cpp" />
+    <ClCompile Include="GroupEffectScript.cpp" />
     <ClCompile Include="ImGuiToolMgr.cpp" />
     <ClCompile Include="Loader.cpp" />
     <ClCompile Include="LoadingScene.cpp" />

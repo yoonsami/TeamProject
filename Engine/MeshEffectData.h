@@ -4,13 +4,16 @@
 class MeshEffectData : public ResourceBase
 {
 public:
-	typedef struct tagMeshEffectData
+	typedef struct tagMeshEffectVData
 	{
         // Property
         const char* pszTag;
         _float      fDuration;
         _bool       bBlurOn;
         _bool       bUseFadeOut;
+        _int        iMeshCnt;
+        _float      fCreateInterval;
+        _float2     vParticleDuration;
 
         // Mesh 
         string      strVfxMesh;
@@ -56,6 +59,7 @@ public:
         string      strDissolveTexture;
         _float2     vTiling_Dissolve;
         _float2     vUVSpeed_Dissolve;
+        _bool       bInverseDissolve;
 
         // Distortion
         string      strDistortionTexture;
@@ -69,18 +73,55 @@ public:
         _float      fContrast;
 	}DESC;
 
+    typedef struct tagMeshEffectTransformData
+    {
+        // Init position
+        _float3     vPosRange;
+
+        // Init scale
+        _float3     vInitScale_Min;
+        _float3     vInitScale_Max;
+
+        // Init rotation
+        _float3     vInitRotation_Min;
+        _float3     vInitRotation_Max;
+
+        // Translate
+        _int        iTranslateOption;
+        _float      fTranslateSpeed;
+        _float3     vEndPosOffset_Min;
+        _float3     vEndPosOffset_Max;
+
+        // Scaling 
+        _int        iScalingOption;
+        _float3     vEndScale;
+
+        // Turn 
+        _int        iTurnOption;
+        _float      fTurnSpeed;
+        _float3     vRandomAxis_Min;
+        _float3     vRandomAxis_Max;
+
+    }Transform_Desc;
 public:
 	MeshEffectData();
 	~MeshEffectData();
 
 public:
-    void    Set_Desc(DESC tDesc);
+    virtual void	Load(const wstring& path) override;
 
-	DESC	Get_Desc() { return m_tDesc; }
-    wstring Get_MeshEffectDataTag() { return wstrTag; }
+    /* Setter */
+    void            Set_Desc(DESC tDesc);
+    void            Set_TransformDesc(Transform_Desc tDesc) { m_tTransformDesc = tDesc; }
+
+    /* Getter */
+    wstring         Get_MeshEffectDataTag() { return m_wstrTag; }
+	DESC	        Get_Desc() { return m_tDesc; }
+    Transform_Desc  Get_TransformDesc() { return m_tTransformDesc; }
 
 private:
-    wstring wstrTag;
-	DESC	m_tDesc;
+    wstring         m_wstrTag;
+	DESC	        m_tDesc;
+    Transform_Desc  m_tTransformDesc;
 };
 

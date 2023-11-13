@@ -39,7 +39,7 @@ void GroupEffectData::Load(const wstring& path)
 		tDesc.eType = EFFECT_TYPE(file->Read<_int>());
 		tDesc.fCreateTime = file->Read<_float>();
 
-		tDesc.fCreateTime = file->Read<_bool>();
+		tDesc.bIsActive = file->Read<_bool>();
 
 		tDesc.vPivot_Pos = file->Read<_float3>();
 		tDesc.vPivot_Scale = file->Read<_float3>();

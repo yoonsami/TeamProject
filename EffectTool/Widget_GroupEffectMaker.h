@@ -5,6 +5,16 @@
 class Widget_GroupEffectMaker 
 {
 public:
+	typedef struct tagMemberEffectProperty
+	{
+		_float		m_fStartTime;
+
+		_float		m_fPos[3];
+		_float		m_fScale[3];
+		_float		m_fRotation[3];
+	}MemberEffectProperty_DESC;
+
+public:
 	Widget_GroupEffectMaker();
 	~Widget_GroupEffectMaker();
 
@@ -55,13 +65,13 @@ private:
 	string					m_strParticle = { "None" };
 
 	/* Member Effect List */
-		// YIJIN TODO 
+	_uint					m_iNumMemberEffects = { 0 };
+	vector<string>			m_vecMemberEffects;
+	const char**			m_pszMemberEffects = { nullptr };
+	_int					m_iMemberEffect = { 0 };
 
 	/* new */
 	char					m_szNewGroupEffectTag[MAX_PATH] = { "-" };
-
-	/* Group Effect Options */
-	_bool					m_bIsLoopOn = { true };
 
 	/* Widget On Options */
 	_bool					m_bWidgetOn_GetTag = { false };
@@ -69,6 +79,7 @@ private:
 	_bool					m_bWidgetOn_AddParticle = { false };
 
 	/* Save something in current */
-	shared_ptr<GameObject>	m_pCurrentGroup = { nullptr };
+	shared_ptr<GameObject>		m_pCurrentGroup = { nullptr };
+	MemberEffectProperty_DESC*	m_tCurrMemberProperty = { nullptr };
 };
 

@@ -94,7 +94,7 @@ shared_ptr<Texture> ResourceMgr::GetOrAddTexture(const wstring& key, const wstri
 		wstring name = key;
 		Utils::DetachExt(name);
 		texture->Set_Name(name);
-		Add(key, texture);
+		Add(name, texture);
 	}
 
 	return texture;
@@ -118,11 +118,62 @@ shared_ptr<GroupEffectData> ResourceMgr::GetOrAddGroupEffectData(const wstring& 
 		wstring name = key;
 		Utils::DetachExt(name);
 		groupEffectData->Set_Name(name);
-		Add(key, groupEffectData);
+		Add(name, groupEffectData);
 	}
 
 	return groupEffectData;
 }
+
+shared_ptr<GroupEffectData> ResourceMgr::ReloadGroupEffectData(const wstring& key, const wstring& path)
+{
+	wstring name = key;
+	Utils::DetachExt(name);
+	auto groupEffectData = Get<GroupEffectData>(name);
+	if (key == L"" || nullptr == groupEffectData)
+		return nullptr;
+
+	// For. Create Reloaded 
+	auto reloadedGroupEffectData = make_shared<GroupEffectData>();
+	reloadedGroupEffectData->Load(path);
+	
+	reloadedGroupEffectData->Set_Name(name);
+
+	// For. Erase prev 
+	Delete<GroupEffectData>(name);
+
+	// For. Add reloaded 
+	//Add(key, reloadedGroupEffectData);
+	Add(name, reloadedGroupEffectData);
+
+	return reloadedGroupEffectData;
+}
+
+shared_ptr<MeshEffectData> ResourceMgr::ReloadOrAddMeshEffectData(const wstring& key, const wstring& path)
+{
+	wstring name = key;
+	Utils::DetachExt(name);
+	if (key == L"")
+		return nullptr;
+
+	auto meshEffectData = Get<MeshEffectData>(name);
+	
+	auto newMeshEffectData = make_shared<MeshEffectData>();
+	newMeshEffectData->Load(path);
+	newMeshEffectData->Set_Name(name);
+
+	// For. Add New Mesh Effect Data 
+	if (nullptr == meshEffectData)
+		Add(name, newMeshEffectData);
+
+	// For. Delete prev Mesh Effect Data and Add new Mesh Effect Data
+	else
+	{
+		Delete<GroupEffectData>(name);	// For. Delete prev 
+		Add(name, newMeshEffectData);	// For. Add new 
+	}
+	return newMeshEffectData;
+}
+
 
 //shared_ptr<Parts> ResourceMgr::Get_Part(const wstring& key)
 //{
@@ -899,20 +950,22 @@ void ResourceMgr::CreateMeshEffectData()
 			continue;
 
 		MeshEffectData::DESC tDesc;
+		MeshEffectData::Transform_Desc tTransformDesc;
 
 		// For. load file and fill imgui 
 		string strFilePath = entry.path().string();
-		string strFileName = entry.path().filename().string();
 		shared_ptr<FileUtils> file = make_shared<FileUtils>();
 		file->Open(Utils::ToWString(strFilePath), FileMode::Read);
 
 		/* Property */
 		string strTag = file->Read<string>();
 		tDesc.pszTag = strTag.c_str();
-
 		tDesc.fDuration = file->Read<_float>();
 		tDesc.bBlurOn = file->Read<_bool>();
 		tDesc.bUseFadeOut = file->Read<_bool>();
+		tDesc.iMeshCnt = file->Read<_int>();
+		tDesc.fCreateInterval = file->Read<_float>();
+		tDesc.vParticleDuration = file->Read<_float2>();
 
 		/* Mesh */
 		tDesc.strVfxMesh = file->Read<string>();
@@ -958,6 +1011,7 @@ void ResourceMgr::CreateMeshEffectData()
 		tDesc.strDissolveTexture = file->Read<string>();
 		tDesc.vTiling_Dissolve = file->Read<_float2>();
 		tDesc.vUVSpeed_Dissolve = file->Read<_float2>();
+		tDesc.bInverseDissolve = file->Read<_bool>();
 		
 		/* Distortion */
 		tDesc.strDistortionTexture = file->Read<string>();
@@ -970,8 +1024,37 @@ void ResourceMgr::CreateMeshEffectData()
 		/* Color Edit */
 		tDesc.fContrast = file->Read<_float>();
 
+		// For. Load Transform_Desc 
+		/* Init Position */
+		tTransformDesc.vPosRange = file->Read<_float3>();
+
+		/* Init scale */
+		tTransformDesc.vInitScale_Min = file->Read<_float3>();
+		tTransformDesc.vInitScale_Max = file->Read<_float3>();
+
+		/* Init Rotation */
+		tTransformDesc.vInitRotation_Min = file->Read<_float3>();
+		tTransformDesc.vInitRotation_Max = file->Read<_float3>();
+
+		/* Translate */
+		tTransformDesc.iTranslateOption = file->Read<_int>();
+		tTransformDesc.fTranslateSpeed = file->Read<_float>();
+		tTransformDesc.vEndPosOffset_Min = file->Read<_float3>();
+		tTransformDesc.vEndPosOffset_Max = file->Read<_float3>();
+
+		/* Scaling */
+		tTransformDesc.iScalingOption = file->Read<_int>();
+		tTransformDesc.vEndScale = file->Read<_float3>();
+
+		/* Turn */
+		tTransformDesc.iTurnOption = file->Read<_int>();
+		tTransformDesc.fTurnSpeed = file->Read<_float>();
+		tTransformDesc.vRandomAxis_Min = file->Read<_float3>();
+		tTransformDesc.vRandomAxis_Max = file->Read<_float3>();
+
 		shared_ptr<MeshEffectData> meshEffectData = make_shared<MeshEffectData>();
 		meshEffectData->Set_Desc(tDesc);
+		meshEffectData->Set_TransformDesc(tTransformDesc);
 
 		wstring key = Utils::ToWString(tDesc.pszTag);
 		Add(key, meshEffectData);
@@ -1000,7 +1083,6 @@ void ResourceMgr::CreateGroupEffectData()
 		shared_ptr<FileUtils> file = make_shared<FileUtils>();
 		file->Open(Utils::ToWString(strFilePath), FileMode::Read);
 
-
 		vector<GroupEffectData::MemberEffect_Desc> vMemberEffect;
 
 		/* Tag */
@@ -1027,6 +1109,7 @@ void ResourceMgr::CreateGroupEffectData()
 
 		// For. Add ResourceBase to Resource Manager 
 		shared_ptr<GroupEffectData> groupEffectData = make_shared<GroupEffectData>();
+		groupEffectData->Set_Name(wstrTag);
 		groupEffectData->Set_Tag(wstrTag);
 		groupEffectData->Set_MemberEffectData(vMemberEffect);
 
