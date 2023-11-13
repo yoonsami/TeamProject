@@ -441,7 +441,7 @@ void DemoScene::Load_Boss_Mir()
 
 	}
 	ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
-
+	ObjMonster->Set_VelocityMap(true);
 	Add_GameObject(ObjMonster);
 }
 
