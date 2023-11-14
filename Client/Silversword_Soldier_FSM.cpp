@@ -221,7 +221,7 @@ void Silversword_Soldier_FSM::Get_Hit(const wstring& skillname, shared_ptr<BaseC
 {
     m_bDetected = true;
 
-    m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.05f);
+    m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.06f);
 
     
     if (skillname == NORMAL_ATTACK || skillname == KNOCKBACK_ATTACK || skillname == KNOCKDOWN_ATTACK || skillname == AIRBORNE_ATTACK)
