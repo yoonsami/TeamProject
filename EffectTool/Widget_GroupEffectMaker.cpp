@@ -251,37 +251,26 @@ void Widget_GroupEffectMaker::Widget_GroupMaker()
 			Set_MeshEffectList();
 			m_bWidgetOn_AddMeshEffect = true;
 		}
+		ImGui::Spacing();
+
 		//if (ImGui::Button("Add Particle##GroupEffect"))
 		//{
 		//	Set_ParticleList();
 		//	m_bWidgetOn_AddParticle = true;
 		//}
-		ImGui::Spacing();
+		//ImGui::Spacing();
 		
 		if (ImGui::Button("Save"))
-		{
 			Save();
-		}
 		ImGui::Spacing();
-		ImGui::SameLine();
 
 		if (ImGui::Button("Play##GroupEffect"))
 			Create();
 		ImGui::Spacing();
 		
-		ImGui::SameLine();
-
 		if (ImGui::Button("Create New Group"))
 			m_bWidgetOn_GetTag = true;
 		ImGui::Spacing();
-
-		if (ImGui::Button("Refresh"))
-		{
-			Set_GroupList();
-			Set_MemberEffectList();
-			Set_MeshEffectList();
-			Set_ParticleList();
-		}
 
 		ImGui::EndChild();
 	}

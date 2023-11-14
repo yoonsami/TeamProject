@@ -170,12 +170,14 @@ void MeshEffect::Update_Desc()
 		m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE9);	// Blend
 }
 
-void MeshEffect::InitialTransform(_float3 vParentPos, _float3 vParentScale, _float3 vParentRotation)
+void MeshEffect::InitialTransform()
 {
 	// For. Position, Scale, Rotation 
-	m_vStartPos += vParentPos;
-	m_vStartRotation += vParentRotation;
+	m_vStartPos += _float3(Get_Transform()->Get_State(Transform_State::POS));
+	m_vStartRotation += _float3(Get_Transform()->Get_Rotation().x, Get_Transform()->Get_Rotation().y, Get_Transform()->Get_Rotation().z);
+	m_vStartScale *= Get_Transform()->Get_Scale();
 	
+	m_vEndScale += m_vStartScale;
 	m_vEndPos += m_vStartPos;
 
 	Get_Transform()->Set_State(Transform_State::POS, _float4(m_vStartPos, 1.f));
@@ -217,7 +219,6 @@ void MeshEffect::Set_TransformDesc(void* pArg)
 	);
 
 	m_vEndScale = pDesc->vEndScale;
-	m_vEndScale += m_vStartScale;
 	
 	m_iTurnOption = pDesc->iTurnOption;
 	m_fTurnSpeed = pDesc->fTurnSpeed;
@@ -274,7 +275,7 @@ void MeshEffect::Turn()
 
 void MeshEffect::Run_SpriteAnimation()
 {
-	if (m_fTimeAcc_SpriteAnimation > m_tDesc.fAnimSpeed)
+ 	if (m_fTimeAcc_SpriteAnimation > m_tDesc.fAnimSpeed)
 	{
 		m_iCurrSpriteIndex++;
 

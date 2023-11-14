@@ -207,9 +207,11 @@ void Widget_EffectMaker_Mesh::Option_Property()
 	ImGui::Spacing();
 	
 	ImGui::InputInt("Number of Mesh##Property", &m_iMeshCnt);
-	if (m_iMeshCnt > 1)
+	
+	ImGui::InputFloat("Create Interval##", &m_fCreateInterval);
+	
+	if (0.f < m_fCreateInterval)
 	{
-		ImGui::InputFloat("Create Interval##", &m_fCreateInterval);
 		const char* pszItem_ParticleDuration[] = { "Static", "Random in rang" };
 		if (ImGui::BeginCombo("Particle Duration##Opacity", pszItem_ParticleDuration[m_iParticleDurationOption], 0))
 		{
@@ -223,7 +225,6 @@ void Widget_EffectMaker_Mesh::Option_Property()
 			}
 			ImGui::EndCombo();
 		}
-
 		switch (m_iParticleDurationOption)
 		{
 		case 0:
@@ -966,7 +967,7 @@ void Widget_EffectMaker_Mesh::Create()
 	// For. Add and Setting Transform Component
 	EffectObj->GetOrAddTransform();
 	EffectObj->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
-	EffectObj->Get_Transform()->Scaled(_float3(1.f));
+	EffectObj->Get_Transform()->Scaled(_float3(0.1f));
 
 	// For. Add and Setting Effect Component to GameObject
 	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
@@ -1070,7 +1071,7 @@ void Widget_EffectMaker_Mesh::Create()
 		_float3(m_fRandomAxis_Max),
 	};
 	EffectObj->Get_MeshEffect()->Set_TransformDesc(&tTransform_Desc);
-	EffectObj->Get_MeshEffect()->InitialTransform(_float3(0.f, 0.f, 0.f), _float3(1.f, 1.f, 1.f), _float3(0.f, 0.f, 0.f));
+	EffectObj->Get_MeshEffect()->InitialTransform();
 
 	// For. Add Effect GameObject to current scene
 	CUR_SCENE->Add_GameObject(EffectObj);

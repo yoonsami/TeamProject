@@ -136,7 +136,7 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
 		EffectObj->Add_Component(meshEffect);
 		EffectObj->Get_MeshEffect()->Init(&tDesc);
 		EffectObj->Get_MeshEffect()->Set_TransformDesc(&tTransform_Desc);
-		EffectObj->Get_MeshEffect()->InitialTransform(_float3(Get_Transform()->Get_State(Transform_State::POS)), Get_Transform()->Get_Scale(), Get_Transform()->Get_RollPitchYaw());
+		EffectObj->Get_MeshEffect()->InitialTransform();
 		
 		// For. Add to vector 
 		m_vMemberEffects.push_back(EffectObj);
