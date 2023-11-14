@@ -295,10 +295,15 @@ void Dellons_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fG
     {
 		shared_ptr<GameObject> targetToLook = nullptr;
 		// skillName에 _Skill 포함이면
-		if (strSkillName.find(L"_Skill") != wstring::npos)
+        if (strSkillName.find(L"_Skill") != wstring::npos)
+        {
 			targetToLook = pCollider->Get_Owner(); // Collider owner를 넘겨준다
+        }
 		else // 아니면
 			targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner(); // Collider를 만든 객체를 넘겨준다
+        
+        if (targetToLook == nullptr)
+            return;
 
 		Get_Hit(strSkillName, targetToLook);
     }
@@ -880,15 +885,19 @@ void Dellons_FSM::skill_1100()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vInputTurnVector != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
+    if (m_vKeyInputTargetDir != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
-    if (_float(Get_CurFrame()) / _float(Get_FinalFrame()) >= 0.25f)
-        m_bCanCombo = true;
+
+    if (Get_CurFrame() < 26)
+    {
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_bCanCombo = true;
+    }
 
     if (m_bCanCombo)
     {
-        if (KEYTAP(KEY_TYPE::LBUTTON))
+        if (Get_CurFrame() > 24)
             m_eCurState = STATE::skill_1200;
     }
 
@@ -907,8 +916,8 @@ void Dellons_FSM::skill_1100_Init()
 
     m_bCanCombo = false;
 
-    m_vInputTurnVector = _float3(0.f);
-    m_vInputTurnVector = Get_InputDirVector();
+    m_vKeyInputTargetDir = _float3(0.f);
+    m_vKeyInputTargetDir = Get_InputDirVector();
 
     m_bInvincible = false;
     m_bSuperArmor = false;
@@ -923,16 +932,18 @@ void Dellons_FSM::skill_1200()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vInputTurnVector != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
+    if (m_vKeyInputTargetDir != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
-
-    if (_float(Get_CurFrame()) / _float(Get_FinalFrame()) >= 0.25f)
-        m_bCanCombo = true;
+    if (Get_CurFrame() < 21)
+    {
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_bCanCombo = true;
+    }
 
     if (m_bCanCombo)
     {
-        if (KEYTAP(KEY_TYPE::LBUTTON))
+        if (Get_CurFrame() > 20)
             m_eCurState = STATE::skill_1300;
     }
 
@@ -954,8 +965,8 @@ void Dellons_FSM::skill_1200_Init()
 
     m_bCanCombo = false;
 
-    m_vInputTurnVector = _float3(0.f);
-    m_vInputTurnVector = Get_InputDirVector();
+    m_vKeyInputTargetDir = _float3(0.f);
+    m_vKeyInputTargetDir = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -972,18 +983,21 @@ void Dellons_FSM::skill_1300()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vInputTurnVector != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
+    if (m_vKeyInputTargetDir != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
-
-    if (_float(Get_CurFrame()) / _float(Get_FinalFrame()) >= 0.25f)
-        m_bCanCombo = true;
+    if (Get_CurFrame() < 20)
+    {
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_bCanCombo = true;
+    }
 
     if (m_bCanCombo)
     {
-        if (KEYTAP(KEY_TYPE::LBUTTON))
+        if (Get_CurFrame() > 18)
             m_eCurState = STATE::skill_1400;
     }
+
 
     if (Is_AnimFinished())
     {
@@ -1003,8 +1017,8 @@ void Dellons_FSM::skill_1300_Init()
 
     m_bCanCombo = false;
 
-    m_vInputTurnVector = _float3(0.f);
-    m_vInputTurnVector = Get_InputDirVector();
+    m_vKeyInputTargetDir = _float3(0.f);
+    m_vKeyInputTargetDir = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1026,8 +1040,8 @@ void Dellons_FSM::skill_1400()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vInputTurnVector != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
+    if (m_vKeyInputTargetDir != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
     if (Is_AnimFinished())
     {
@@ -1047,8 +1061,8 @@ void Dellons_FSM::skill_1400_Init()
 
     m_bCanCombo = false;
 
-    m_vInputTurnVector = _float3(0.f);
-    m_vInputTurnVector = Get_InputDirVector();
+    m_vKeyInputTargetDir = _float3(0.f);
+    m_vKeyInputTargetDir = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1060,8 +1074,8 @@ void Dellons_FSM::skill_91100()
 {
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vInputTurnVector != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
+    if (m_vKeyInputTargetDir != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
@@ -1081,8 +1095,8 @@ void Dellons_FSM::skill_91100_Init()
 
     m_bCanCombo = false;
 
-    m_vInputTurnVector = _float3(0.f);
-    m_vInputTurnVector = Get_InputDirVector();
+    m_vKeyInputTargetDir = _float3(0.f);
+    m_vKeyInputTargetDir = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1145,15 +1159,19 @@ void Dellons_FSM::skill_100100()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vInputTurnVector != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
+    if (m_vKeyInputTargetDir != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
-    if (Get_CurFrame() >= 19)
-        m_bCanCombo = true;
+
+    if (Get_CurFrame() < 28)
+    {
+        if (KEYTAP(KEY_TYPE::KEY_1))
+            m_bCanCombo = true;
+    }
 
     if (m_bCanCombo)
     {
-        if (KEYTAP(KEY_TYPE::KEY_1))
+        if (Get_CurFrame() > 26)
             m_eCurState = STATE::skill_100200;
     }
 
@@ -1175,8 +1193,8 @@ void Dellons_FSM::skill_100100_Init()
 
     m_bCanCombo = false;
 
-    m_vInputTurnVector = _float3(0.f);
-    m_vInputTurnVector = Get_InputDirVector();
+    m_vKeyInputTargetDir = _float3(0.f);
+    m_vKeyInputTargetDir = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1211,8 +1229,8 @@ void Dellons_FSM::skill_100200()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vInputTurnVector != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
+    if (m_vKeyInputTargetDir != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
     if (Is_AnimFinished())
     {
@@ -1232,8 +1250,8 @@ void Dellons_FSM::skill_100200_Init()
 
     m_bCanCombo = false;
 
-    m_vInputTurnVector = _float3(0.f);
-    m_vInputTurnVector = Get_InputDirVector();
+    m_vKeyInputTargetDir = _float3(0.f);
+    m_vKeyInputTargetDir = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1250,15 +1268,18 @@ void Dellons_FSM::skill_200100()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vInputTurnVector != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
+    if (m_vKeyInputTargetDir != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
-    if (Get_CurFrame() >= 16)
-        m_bCanCombo = true;
+    if (Get_CurFrame() < 21)
+    {
+        if (KEYTAP(KEY_TYPE::KEY_2))
+            m_bCanCombo = true;
+    }
 
     if (m_bCanCombo)
     {
-        if (KEYTAP(KEY_TYPE::KEY_2))
+        if (Get_CurFrame() > 20)
             m_eCurState = STATE::skill_200200;
     }
 
@@ -1280,8 +1301,8 @@ void Dellons_FSM::skill_200100_Init()
 
     m_bCanCombo = false;
 
-    m_vInputTurnVector = _float3(0.f);
-    m_vInputTurnVector = Get_InputDirVector();
+    m_vKeyInputTargetDir = _float3(0.f);
+    m_vKeyInputTargetDir = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1312,8 +1333,8 @@ void Dellons_FSM::skill_200200()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vInputTurnVector != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
+    if (m_vKeyInputTargetDir != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
     if (Is_AnimFinished())
     {
@@ -1333,8 +1354,8 @@ void Dellons_FSM::skill_200200_Init()
 
     m_bCanCombo = false;
 
-    m_vInputTurnVector = _float3(0.f);
-    m_vInputTurnVector = Get_InputDirVector();
+    m_vKeyInputTargetDir = _float3(0.f);
+    m_vKeyInputTargetDir = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1392,8 +1413,8 @@ void Dellons_FSM::skill_300100_Init()
 
     m_bCanCombo = false;
 
-    m_vInputTurnVector = _float3(0.f);
-    m_vInputTurnVector = Get_InputDirVector();
+    m_vKeyInputTargetDir = _float3(0.f);
+    m_vKeyInputTargetDir = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1481,8 +1502,8 @@ void Dellons_FSM::skill_400100()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vInputTurnVector != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
+    if (m_vKeyInputTargetDir != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
     if (Get_CurFrame() == 120)
     {
@@ -1502,8 +1523,8 @@ void Dellons_FSM::skill_400100_Init()
 
     m_bCanCombo = false;
 
-    m_vInputTurnVector = _float3(0.f);
-    m_vInputTurnVector = Get_InputDirVector();
+    m_vKeyInputTargetDir = _float3(0.f);
+    m_vKeyInputTargetDir = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1534,8 +1555,8 @@ void Dellons_FSM::skill_501100()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vInputTurnVector != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
+    if (m_vKeyInputTargetDir != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
     if (Is_AnimFinished())
     {
@@ -1555,8 +1576,8 @@ void Dellons_FSM::skill_501100_Init()
 
     m_bCanCombo = false;
 
-    m_vInputTurnVector = _float3(0.f);
-    m_vInputTurnVector = Get_InputDirVector();
+    m_vKeyInputTargetDir = _float3(0.f);
+    m_vKeyInputTargetDir = Get_InputDirVector();
 
     AttackCollider_Off();
 

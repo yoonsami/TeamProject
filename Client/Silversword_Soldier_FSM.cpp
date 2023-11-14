@@ -229,6 +229,9 @@ void Silversword_Soldier_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollide
         else 
             targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner();
 
+        if (targetToLook == nullptr)
+            return;
+
         Get_Hit(strSkillName, targetToLook);
     }
 }

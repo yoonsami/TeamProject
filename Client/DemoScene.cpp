@@ -50,8 +50,9 @@
 #include "MainUiController.h"
 #include "UiCardDeckInvenChange.h"
 
+
 #include <filesystem>
-#include "Player_FSM.h"
+
 namespace fs = std::filesystem;
 
 DemoScene::DemoScene()
@@ -70,6 +71,7 @@ void DemoScene::Init()
 	COLLISION.Check_Group(_int(CollisionGroup::Monster_Attack), _int(CollisionGroup::Player_Body));
 	COLLISION.Check_Group(_int(CollisionGroup::Monster_Skill), _int(CollisionGroup::Player_Body));
 	COLLISION.Check_Group(_int(CollisionGroup::Player_Body), _int(CollisionGroup::MAPObject));
+
 }
 
 void DemoScene::Tick()
