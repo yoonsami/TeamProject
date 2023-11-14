@@ -154,6 +154,12 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\07.UiCardDeckController">
       <UniqueIdentifier>{df3fd50c-985b-4249-80f7-4903d25499ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\01.FSM\01.Hero_FSM\00.Player_FSM">
+      <UniqueIdentifier>{191e18ce-720d-45fb-955c-e7be52b1232b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\05.Object">
+      <UniqueIdentifier>{cb1c73e1-4a3a-44db-89b8-d0e6ad4cc4d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -345,6 +351,9 @@
     <ClInclude Include="UiCardDeckController.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\07.UiCardDeckController</Filter>
     </ClInclude>
+    <ClInclude Include="Player_FSM.h">
+      <Filter>02.Component\01.FSM\01.Hero_FSM\00.Player_FSM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -502,6 +511,9 @@
     </ClCompile>
     <ClCompile Include="UiCardDeckController.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\07.UiCardDeckController</Filter>
+    </ClCompile>
+    <ClCompile Include="Player_FSM.cpp">
+      <Filter>02.Component\01.FSM\01.Hero_FSM\00.Player_FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

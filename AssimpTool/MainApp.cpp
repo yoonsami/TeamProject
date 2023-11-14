@@ -63,6 +63,11 @@ void MainApp::ExportAssets()
 		if (entry.path().extension().wstring() != L".FBX" && entry.path().extension().wstring() != L".fbx")
 			continue;
 
+		wstring fileName = entry.path().filename().wstring();
+		Utils::DetachExt(fileName);
+		if (fileName == L"Player")
+			continue;
+
 		wstring tag = entry.path().wstring();
 
 		shared_ptr<Converter> converter = make_shared<Converter>();

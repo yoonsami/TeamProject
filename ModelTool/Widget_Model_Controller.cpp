@@ -48,6 +48,14 @@ void Widget_Model_Controller::Tick()
 
 	End();
 	}
+
+	if (!m_pControlObject.expired() && m_pControlObject.lock()->Get_Model()->Get_ModelTag() == L"Player")
+	{
+		Begin("Parts Control");
+		Parts_Controller();
+
+		End();
+	}
 }
 
 void Widget_Model_Controller::Load_ModelNames()
@@ -196,6 +204,38 @@ void Widget_Model_Controller::Material_Controller()
 
 		EndTabBar();
 	}
+}
+
+void Widget_Model_Controller::Parts_Controller()
+{
+	vector<string> partsNames[PARTS_MAX_COUNT];
+
+	for(_uint i =0; i< PARTS_MAX_COUNT; ++i)
+	{
+		const auto& parts =	RESOURCES.Get_Parts(static_cast<PARTS_INFO>(i));
+		for (auto& pair : parts)
+		{
+			partsNames[i].push_back(Utils::ToString(pair.first));
+		}
+	}
+	static _int partsIndex[PARTS_MAX_COUNT] = {};
+
+	for(_int i =0; i< PARTS_MAX_COUNT; ++i)
+	{
+		string tag = "##PartsList" + to_string(i);
+		Combo(tag.c_str(), &partsIndex[i], VectorOfStringGetter, &partsNames[i], int(partsNames[i].size()));
+		SameLine();
+		string buttonName = "Set Parts ##" + to_string(i);
+		if (Button(buttonName.c_str()))
+		{
+			auto model = m_pControlObject.lock()->Get_Model();
+			model->AddParts(Utils::ToWString(partsNames[i][partsIndex[i]]), static_cast<PARTS_INFO>(i));
+		}
+	}
+
+
+	
+
 }
 
 void Widget_Model_Controller::Show_ModelList()

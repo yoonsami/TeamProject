@@ -121,7 +121,7 @@ void DellonsWraith_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _flo
 {
 }
 
-void DellonsWraith_FSM::Get_Hit(const wstring& skillname, shared_ptr<BaseCollider> pOppositeCollider)
+void DellonsWraith_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
 {
 
 }

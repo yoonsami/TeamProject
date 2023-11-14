@@ -14,6 +14,7 @@ public:
 
 public:
 	void RenderOptionTab();
+	void ModelOptionTab();
 
 
 private:

@@ -13,7 +13,7 @@ public:
 protected:
 	virtual void State_Tick() = 0;
 	virtual void State_Init() = 0;
-	virtual void Get_Hit(const wstring& skillname, shared_ptr<BaseCollider> pOppositeCollider) = 0;
+	virtual void Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget) = 0;
 	virtual void AttackCollider_On(const wstring& skillname) = 0;
 	virtual void AttackCollider_Off() = 0;
 

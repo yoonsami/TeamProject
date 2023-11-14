@@ -20,6 +20,8 @@ private:
 	/* ImGui Windows */
 	void Model_Controller();
 	void Material_Controller();
+	void Parts_Controller();
+
 
 	/* Funtions */
 	void Show_ModelList();

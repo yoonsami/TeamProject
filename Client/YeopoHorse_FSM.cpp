@@ -134,7 +134,7 @@ void YeopoHorse_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float 
 {
 }
 
-void YeopoHorse_FSM::Get_Hit(const wstring& skillname, shared_ptr<BaseCollider> pOppositeCollider)
+void YeopoHorse_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
 {
     
 }

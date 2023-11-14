@@ -250,7 +250,14 @@ void Boss_Mir_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float f
 
     if (!m_bInvincible)
     {
-        Get_Hit(strSkillName, pCollider);
+		shared_ptr<GameObject> targetToLook = nullptr;
+		// skillName에 _Skill 포함이면
+		if (strSkillName.find(L"_Skill") != wstring::npos)
+			targetToLook = pCollider->Get_Owner(); // Collider owner를 넘겨준다
+		else // 아니면
+			targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_Owner(); // Collider를 만든 객체를 넘겨준다
+
+		Get_Hit(strSkillName, targetToLook);
     }
 }
 
@@ -258,21 +265,14 @@ void Boss_Mir_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fG
 {
 }
 
-void Boss_Mir_FSM::Get_Hit(const wstring& skillname, shared_ptr<BaseCollider> pOppositeCollider)
+void Boss_Mir_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
 {
-    if (skillname == NORMAL_ATTACK || skillname == KNOCKBACK_ATTACK || skillname == KNOCKDOWN_ATTACK || skillname == AIRBORNE_ATTACK)
-    {
-        _float3 vAttackerPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
-        m_vHitDir = vAttackerPos - Get_Transform()->Get_State(Transform_State::POS);
-        m_vHitDir.y = 0.f;
-        m_vHitDir.Normalize();
-    }
-    else if (skillname == NORMAL_SKILL || skillname == KNOCKBACK_SKILL || skillname == KNOCKDOWN_SKILL || skillname == AIRBORNE_SKILL)
-    {
-        m_vHitDir = pOppositeCollider->Get_CenterPos() - Get_Transform()->Get_State(Transform_State::POS);
-        m_vHitDir.y = 0.f;
-        m_vHitDir.Normalize();
-    }
+	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
+	_float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
+
+	m_vHitDir = vOppositePos - vMyPos;
+	m_vHitDir.y = 0.f;
+	m_vHitDir.Normalize();
 
     if (skillname == NORMAL_ATTACK || skillname == NORMAL_SKILL)
     {

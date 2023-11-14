@@ -219,7 +219,7 @@ void ResourceMgr::LoadParts()
 				shared_ptr<Material> material = make_shared<Material>();
 
 				material->Set_Name(Utils::ToWString(file->Read<string>()));
-
+				wstring materialTag = material->Get_Name();
 				if (file->Read<_bool>())
 				{
 					wstring textureStr = Utils::ToWString(file->Read<string>());
@@ -227,19 +227,19 @@ void ResourceMgr::LoadParts()
 					if (textureStr.length() > 0)
 					{
 						textureStr += L".dds";
-						auto texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
+						auto texture = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
 						if (!texture)
 						{
 							Utils::ChangeExt(textureStr, L".DDS");
-							texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
+							texture = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
 							if (!texture)
 							{
 								Utils::ChangeExt(textureStr, L".tga");
-								texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
+								texture = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
 								if (!texture)
 								{
 									Utils::ChangeExt(textureStr, L".png");
-									texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
+									texture = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
 
 								}
 							}
@@ -252,19 +252,19 @@ void ResourceMgr::LoadParts()
 
 						{
 							textureR += L".dds";
-							auto texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+							auto texture_R = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureR, texturePath + L"\\" + textureR);
 							if (!texture_R)
 							{
 								Utils::ChangeExt(textureR, L".DDS");
-								texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+								texture_R = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureR, texturePath + L"\\" + textureR);
 								if (!texture_R)
 								{
 									Utils::ChangeExt(textureR, L".tga");
-									texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+									texture_R = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureR, texturePath + L"\\" + textureR);
 									if (!texture_R)
 									{
 										Utils::ChangeExt(textureR, L".png");
-										texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+										texture_R = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureR, texturePath + L"\\" + textureR);
 
 									}
 								}
@@ -272,19 +272,19 @@ void ResourceMgr::LoadParts()
 							if (!texture_R)
 							{
 								Utils::Replace(textureR, L"_R", L"_M");
-								auto texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+								auto texture_R = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureR, texturePath + L"\\" + textureR);
 								if (!texture_R)
 								{
 									Utils::ChangeExt(textureR, L".DDS");
-									texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+									texture_R = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureR, texturePath + L"\\" + textureR);
 									if (!texture_R)
 									{
 										Utils::ChangeExt(textureR, L".tga");
-										texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+										texture_R = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureR, texturePath + L"\\" + textureR);
 										if (!texture_R)
 										{
 											Utils::ChangeExt(textureR, L".png");
-											texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+											texture_R = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureR, texturePath + L"\\" + textureR);
 
 										}
 									}
@@ -332,12 +332,12 @@ void ResourceMgr::LoadParts()
 					if (textureStr.length() > 0)
 					{
 						textureStr += L".tga";
-						auto texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
+						auto texture = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
 
 						if (!texture)
 						{
 							Utils::ChangeExt(textureStr, L".png");
-							texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
+							texture = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
 
 						}
 						material->Set_TextureMap(texture, TextureMapType::NORMAL);
