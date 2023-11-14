@@ -44,24 +44,36 @@ public:
 	void Reset_Target();
 	void Reset_Weapon();
 	void Reset_Vehicle();
+
  protected:
 	weak_ptr<GameObject> m_pTarget;
 	weak_ptr<GameObject> m_pAttackCollider;
+	weak_ptr<GameObject> m_pSkillCollider;
 	weak_ptr<GameObject> m_pWeapon;
 	weak_ptr<GameObject> m_pCamera;
 	weak_ptr<GameObject> m_pVehicle;
 	
 	_bool m_bInvincible = false;
 	_bool m_bSuperArmor = false;
+	_bool m_bCanCombo = false;
+	_bool m_bSkillCreate = false;
 
 	_float3 m_vHitDir = _float3{ 0.f };
+	_float3 m_vInputTurnVector = _float3(0.f);
+
 	_float m_fAttackRange = 2.f;
 	_float m_fDetectRange = 2.f;
 
+	//For Camera CutScene
+	_float4 m_vCamStopPos = _float4(0.f);
+	_float4 m_vSkillCamRight = _float4(0.f);
+
+	//BoneIndex ,BonePosition , BoneMatrix
 	_uint m_iCenterBoneIndex = 0;
 	_uint m_iDummy_CP_BoneIndex = 0;
 	_uint m_iCamBoneIndex = 0;
 	_uint m_iSkillCamBoneIndex = 0;
+	_uint m_iSkillBoneIndex = 0;
 
 	_float4 m_vCenterBonePos = _float4(0.f);
 	_float4 m_vDummy_CP_BonePos = _float4(0.f);
@@ -72,5 +84,21 @@ public:
 	_float4x4 m_Dummy_CP_BoneMatrix = XMMatrixIdentity();
 	_float4x4 m_CamBoneMatrix = XMMatrixIdentity();
 	_float4x4 m_SkillCamBoneMatrix = XMMatrixIdentity();
+	_float4x4 matBoneMatrix = XMMatrixIdentity();
+
+	//Speed For. Movement
+	_float m_fRunSpeed = 6.f;
+	_float m_fSprintSpeed = 8.f;
+	_float m_fKnockBackSpeed = 6.f;
+	_float m_fKnockDownSpeed = 6.f;
+
+	//Speed For. Animation
+	_float m_fNormalAttack_AnimationSpeed = 2.f;
+	_float m_fSkillAttack_AnimationSpeed = 1.5f;
+	_float m_fEvade_AnimationSpeed = 1.5f;
+
+	//MotionCoolTime
+	COOLTIMEINFO m_tRunEndDelay = { 0.2f,0.f };
+	COOLTIMEINFO m_tKnockDownEndCoolTime = { 3.f, 0.f };
 };
 

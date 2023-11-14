@@ -16,6 +16,7 @@
 #include "LoadingScene.h"
 #include "BaseCollider.h"
 #include "WeaponScript.h"
+#include "Player_FSM.h"
 #include "SpearAce_FSM.h"
 #include "MeshRenderer.h"
 #include "FontRenderer.h"
@@ -29,7 +30,6 @@
 #include "UiGachaCardMove.h"
 #include "Debug_CreateMotionTrail.h"
 #include "CounterMotionTrailScript.h"
-
 
 
 #include "MapObjectScript.h"
@@ -192,15 +192,13 @@ void DemoScene::Load_Player()
 			}
 
 			ObjPlayer->Add_Component(animator);
-			ObjPlayer->Add_Component(make_shared<SpearAce_FSM>());
+			ObjPlayer->Add_Component(make_shared<Player_FSM>());
 		}
 		ObjPlayer->Set_Name(L"Player");
 		ObjPlayer->Set_VelocityMap(true);
 		ObjPlayer->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.8f, 0.5f })); //obbcollider
 		ObjPlayer->Get_Collider()->Set_CollisionGroup(Player_Body);
 		ObjPlayer->Get_Collider()->Set_Activate(true);
-
-		//ObjPlayer->Add_Component(make_shared<Debug_CreateMotionTrail>());
 
 		{
 			auto controller = make_shared<CharacterController>();
@@ -226,7 +224,7 @@ void DemoScene::Load_Player()
 
 			shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
 			{
-				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Weapon_Spear_Ace");
+				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Weapon_Player");
 				renderer->Set_Model(model);
 			}
 
@@ -240,11 +238,12 @@ void DemoScene::Load_Player()
 			ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
 		}
 		ObjWeapon->Set_DrawShadow(true);
-		ObjWeapon->Set_Name(L"Weapon_Spear_Ace");
+		ObjWeapon->Set_Name(L"Weapon_Player");
 		ObjWeapon->Set_VelocityMap(true);
 		Add_GameObject(ObjWeapon);
 
 		ObjPlayer->Add_Component(make_shared<HeroChangeScript>());
+	
 	}
 
 	{

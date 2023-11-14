@@ -70,15 +70,8 @@ private:
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
 	
 
-
 private:
 	STATE m_eCurState = STATE::FX_DellonsWraith_skill_30010;
 	STATE m_ePreState = STATE::NONE;
-
-	_bool m_bSkillCreate = false;
-
-	_uint m_iSkillBoneIndex = 0;
-	_float4x4 matBoneMatrix = XMMatrixIdentity();
-
 };
 
