@@ -46,6 +46,11 @@ HRESULT Dellons_FSM::Init()
 
     m_pCamera = CUR_SCENE->Get_MainCamera();
 
+    m_iCenterBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_CP");
+    m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
+    m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
+    
+
     return S_OK;
 }
 
@@ -58,6 +63,8 @@ void Dellons_FSM::Tick()
         //m_pAttack transform set forward
         m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up);
     }
+
+    Calculate_CamBoneMatrix();
 }
 
 void Dellons_FSM::State_Tick()
@@ -290,7 +297,7 @@ void Dellons_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fG
 		if (strSkillName.find(L"_Skill") != wstring::npos)
 			targetToLook = pCollider->Get_Owner(); // Collider owner를 넘겨준다
 		else // 아니면
-			targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_Owner(); // Collider를 만든 객체를 넘겨준다
+			targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner(); // Collider를 만든 객체를 넘겨준다
 
 		Get_Hit(strSkillName, targetToLook);
     }
@@ -716,6 +723,8 @@ void Dellons_FSM::die_Init()
 
 void Dellons_FSM::airborne_start()
 {
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
     if (Is_AnimFinished())
@@ -768,6 +777,8 @@ void Dellons_FSM::airborne_up_Init()
 
 void Dellons_FSM::hit()
 {
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
     if (Is_AnimFinished())
@@ -788,6 +799,8 @@ void Dellons_FSM::hit_Init()
 
 void Dellons_FSM::knock_start()
 {
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
     Get_Transform()->Go_Backward();
@@ -894,6 +907,8 @@ void Dellons_FSM::knock_up_Init()
 
 void Dellons_FSM::knockdown_start()
 {
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
     Get_Transform()->Go_Backward();
@@ -1524,20 +1539,26 @@ void Dellons_FSM::skill_200200_Init()
 
 void Dellons_FSM::skill_300100()
 {
-    if (Get_CurFrame() == 10)
+    if (Get_CurFrame() >= 10)
     {
         if (!m_pCamera.expired())
         {
-            _float4 vDir = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS) - (Get_Transform()->Get_State(Transform_State::POS));
+            _float4 vDestinationPos = (Get_Transform()->Get_State(Transform_State::POS)) +
+                m_vSkillCamRight +
+                (Get_Transform()->Get_State(Transform_State::LOOK) * -3.f)
+                + _float3::Up * 6.f;
+            _float4 vDir = vDestinationPos - m_vSkillCamBonePos;
+
             vDir.Normalize();
 
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(Get_Transform()->Get_State(Transform_State::POS).xyz());
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(2.5f, vDir.xyz(), 10.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.5f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vSkillCamBonePos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.3f, vDir.xyz(), 13.f);
         }
     }
 
-    if (Get_CurFrame() == 27)
+
+    if (Get_CurFrame() >= 10)
     {
         if (!m_bSkillCreate)
         {
@@ -1574,12 +1595,12 @@ void Dellons_FSM::skill_300100_Init()
     m_bInvincible = true;
     m_bSuperArmor = true;
 
-
+    Calculate_SkillCamRight();
 }
 
 void Dellons_FSM::skill_400100()
 {
-    if (Get_CurFrame() == 13)
+    /*if (Get_CurFrame() == 13)
     {
         if (!m_pCamera.expired())
         {
@@ -1590,7 +1611,26 @@ void Dellons_FSM::skill_400100()
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(Get_Transform()->Get_State(Transform_State::POS).xyz());
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(2.5f, vDir.xyz(), 10.f);
         }
+    }*/
+
+    if (Get_CurFrame() >= 13)
+    {
+        if (!m_pCamera.expired())
+        {
+            _float4 vDestinationPos = (Get_Transform()->Get_State(Transform_State::POS)) +
+                m_vSkillCamRight +
+                (Get_Transform()->Get_State(Transform_State::LOOK) * -3.f)
+                + _float3::Up * 6.f;
+            _float4 vDir = vDestinationPos - m_vSkillCamBonePos;
+
+            vDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.5f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vSkillCamBonePos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.3f, vDir.xyz(), 4.5f);
+        }
     }
+
 
 
     if (Get_CurFrame() == 20)
@@ -1687,6 +1727,8 @@ void Dellons_FSM::skill_400100_Init()
 
     m_bInvincible = true;
     m_bSuperArmor = true;
+
+    Calculate_SkillCamRight();
 }
 
 void Dellons_FSM::skill_501100()
@@ -1808,4 +1850,20 @@ void Dellons_FSM::Set_WraithState(_uint iAnimindex)
 {
     if (!m_pDellonsWraith.expired())
         m_pDellonsWraith.lock()->Get_FSM()->Set_State(iAnimindex);
+}
+
+void Dellons_FSM::Calculate_SkillCamRight()
+{
+    _float4 vDir = _float4(0.f);
+    vDir = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS);
+    vDir.y = 0.f;
+    vDir.Normalize();
+
+    _float4 vCross = _float4(0.f);
+    vCross = XMVector3Cross(Get_Transform()->Get_State(Transform_State::LOOK), vDir);
+
+    if (XMVectorGetY(vCross) < 0.f) // LEFT 
+        m_vSkillCamRight = (Get_Transform()->Get_State(Transform_State::RIGHT) * -3.f);
+    else //RIGHT	
+        m_vSkillCamRight = (Get_Transform()->Get_State(Transform_State::RIGHT) * 3.f);
 }

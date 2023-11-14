@@ -53,10 +53,6 @@ void Kyle_FSM::Tick()
 	}
 
 	Calculate_CamBoneMatrix();
-	//Head_Bone_Pos
-	   //(AnimationModel BonePos)
-	//matBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iSkillBoneIndex) *
-	//	_float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
 }
 
 void Kyle_FSM::State_Tick()
@@ -298,7 +294,7 @@ void Kyle_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
 		if (strSkillName.find(L"_Skill") != wstring::npos)
 			targetToLook = pCollider->Get_Owner(); // Collider owner를 넘겨준다
 		else // 아니면
-			targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_Owner(); // Collider를 만든 객체를 넘겨준다
+			targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner(); // Collider를 만든 객체를 넘겨준다
 
 		Get_Hit(strSkillName, targetToLook);
 	}
@@ -729,6 +725,8 @@ void Kyle_FSM::die_Init()
 
 void Kyle_FSM::airborne_start()
 {
+	m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
 	Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
 	if (Is_AnimFinished())
@@ -781,6 +779,8 @@ void Kyle_FSM::airborne_up_Init()
 
 void Kyle_FSM::hit()
 {
+	m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
 	Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
 	if (Is_AnimFinished())
@@ -801,6 +801,8 @@ void Kyle_FSM::hit_Init()
 
 void Kyle_FSM::knock_start()
 {
+	m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
 	Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
 	Get_Transform()->Go_Backward();
@@ -907,6 +909,8 @@ void Kyle_FSM::knock_up_Init()
 
 void Kyle_FSM::knockdown_start()
 {
+	m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
 	Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
 	Get_Transform()->Go_Backward();
@@ -1279,6 +1283,23 @@ void Kyle_FSM::skill_93100_Init()
 
 void Kyle_FSM::skill_100100()
 {
+	if (Get_CurFrame() >= 17)
+	{
+		if (Get_CurFrame() == 17)
+			m_vCamStopPos = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS);
+
+		if (!m_pCamera.expired())
+		{
+			_float4 vDir = m_vCamStopPos - m_vCenterBonePos;
+			vDir.Normalize();
+
+			m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+			m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
+			m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 6.f);
+		}
+	}
+
+	
 	if (Get_CurFrame() == 5)
 	{
 		if (!m_bSkillCreate)
@@ -1303,24 +1324,6 @@ void Kyle_FSM::skill_100100()
 
 	if (m_vInputTurnVector != _float3(0.f))
 		Soft_Turn_ToInputDir(m_vInputTurnVector, XM_PI * 5.f);
-
-	if (Get_CurFrame() == 17)
-	{
-		if (!m_pCamera.expired())
-		{
-			_float4 vDir = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS) - (Get_Transform()->Get_State(Transform_State::POS));
-			vDir.Normalize();
-
-			m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
-			m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(Get_Transform()->Get_State(Transform_State::POS).xyz());
-			m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.7f, vDir.xyz(), 16.f);
-		}
-	}
-
-	if (Get_CurFrame() >= 17)
-	{
-		m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(Get_Transform()->Get_State(Transform_State::POS).xyz());
-	}
 
 	if (Get_CurFrame() >= 24 && Get_CurFrame() < 34)
 		m_bCanCombo = true;
@@ -1372,17 +1375,18 @@ void Kyle_FSM::skill_100100_Init()
 
 void Kyle_FSM::skill_100200()
 {
-	if (Get_CurFrame() >= 4)
-		m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(Get_Transform()->Get_State(Transform_State::POS).xyz());
 	
-	if (Get_CurFrame() == 4)
+	if (Get_CurFrame() >= 4)
 	{
-		m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedDist(5.f);
-		m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedTime(1.f);
-	}
-	else if (Get_CurFrame() == 34)
-	{
-		m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+		if (!m_pCamera.expired())
+		{
+			_float4 vDir = m_vCamStopPos - m_vCenterBonePos;
+			vDir.Normalize();
+
+			m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(2.f);
+			m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
+			m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.5f, vDir.xyz(), 5.f);
+		}
 	}
 
 	if (Get_CurFrame() == 12)
@@ -1864,18 +1868,26 @@ void Kyle_FSM::skill_502100_Init()
 
 void Kyle_FSM::skill_500100()
 {
-	if (Get_CurFrame() == 11)
+	if (Get_CurFrame() >= 1)
 	{
 		if (!m_pCamera.expired())
 		{
-			_float4 vDir = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS) - (Get_Transform()->Get_State(Transform_State::POS));
-			vDir.Normalize();
+			_float4 vDestinationPos = (Get_Transform()->Get_State(Transform_State::POS)) + 
+									   m_vSkillCamRight +
+									  (Get_Transform()->Get_State(Transform_State::LOOK) * -3.f) 
+										+ _float3::Up * 6.f;
+			_float4 vDir = vDestinationPos - m_vCenterBonePos; 
 
+			vDir.Normalize();
+			
 			m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
-			m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(Get_Transform()->Get_State(Transform_State::POS).xyz());
-			m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(2.5f, vDir.xyz(), 10.f);
+			m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
+			m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.5f, vDir.xyz(), 8.f);
 		}
-		
+	}
+	
+	if (Get_CurFrame() == 11)
+	{
 		if (!m_bSkillCreate)
 		{
 			FORWARDMOVINGSKILLDESC desc;
@@ -1993,6 +2005,9 @@ void Kyle_FSM::skill_500100_Init()
 
 	m_bInvincible = false;
 	m_bSuperArmor = true;
+
+	//For.Skill_CutScene
+	Calculate_SkillCamRight();
 }
 
 
@@ -2020,4 +2035,20 @@ void Kyle_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSk
 	m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
 
 	CUR_SCENE->Add_GameObject(m_pSkillCollider.lock());
+}
+
+void Kyle_FSM::Calculate_SkillCamRight()
+{
+	_float4 vDir = _float4(0.f);
+	vDir = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS);
+	vDir.y = 0.f;
+	vDir.Normalize();
+
+	_float4 vCross = _float4(0.f);
+	vCross = XMVector3Cross(Get_Transform()->Get_State(Transform_State::LOOK), vDir);
+
+	if (XMVectorGetY(vCross) < 0.f) // LEFT 
+		m_vSkillCamRight = (Get_Transform()->Get_State(Transform_State::RIGHT) * -3.f);
+	else //RIGHT	
+		m_vSkillCamRight = (Get_Transform()->Get_State(Transform_State::RIGHT) * 3.f);
 }

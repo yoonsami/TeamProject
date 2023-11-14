@@ -40,7 +40,10 @@ HRESULT SpearAce_FSM::Init()
  
     m_pWeapon = CUR_SCENE->Get_GameObject(L"Weapon_Spear_Ace");
 
-    m_iSkillBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"B_nose");
+    m_iDummy_CP_BoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_CP");
+    m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
+    m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
+
 
     m_pCamera = CUR_SCENE->Get_MainCamera();
 
@@ -56,6 +59,8 @@ void SpearAce_FSM::Tick()
         //m_pAttack transform set forward
         m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up);
     }
+
+    Calculate_CamBoneMatrix();
 }
 
 void SpearAce_FSM::State_Tick()
@@ -279,7 +284,7 @@ void SpearAce_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float f
 		if (strSkillName.find(L"_Skill") != wstring::npos)
 			targetToLook = pCollider->Get_Owner(); // Collider owner를 넘겨준다
 		else // 아니면
-			targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_Owner(); // Collider를 만든 객체를 넘겨준다
+			targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner(); // Collider를 만든 객체를 넘겨준다
 
 		Get_Hit(strSkillName, targetToLook);
     }
@@ -711,7 +716,7 @@ void SpearAce_FSM::die_Init()
 
 void SpearAce_FSM::airborne_start()
 {
-     
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
@@ -733,8 +738,6 @@ void SpearAce_FSM::airborne_start_Init()
 
 void SpearAce_FSM::airborne_end()
 {
-     
-
     if (Is_AnimFinished())
         m_eCurState = STATE::airborne_up;
 }
@@ -751,8 +754,6 @@ void SpearAce_FSM::airborne_end_Init()
 
 void SpearAce_FSM::airborne_up()
 {
-     
-
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 }
@@ -769,7 +770,7 @@ void SpearAce_FSM::airborne_up_Init()
 
 void SpearAce_FSM::hit()
 {
-     
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
@@ -791,7 +792,7 @@ void SpearAce_FSM::hit_Init()
 
 void SpearAce_FSM::knock_start()
 {
-     
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
@@ -817,8 +818,6 @@ void SpearAce_FSM::knock_start_Init()
 
 void SpearAce_FSM::knock_end()
 {
-     
-
     if (Get_CurFrame() < 16)
         Get_Transform()->Go_Backward();
 
@@ -840,8 +839,6 @@ void SpearAce_FSM::knock_end_Init()
 
 void SpearAce_FSM::knock_end_loop()
 {
-     
-
     m_tKnockDownEndCoolTime.fAccTime += fDT;
     
     if (Get_CurFrame() > Get_FinalFrame() / 2)
@@ -860,8 +857,6 @@ void SpearAce_FSM::knock_end_loop_Init()
 
 void SpearAce_FSM::knock_end_hit()
 {
-     
-
     m_tKnockDownEndCoolTime.fAccTime += fDT;
 
     if (Is_AnimFinished())
@@ -885,8 +880,6 @@ void SpearAce_FSM::knock_end_hit_Init()
 
 void SpearAce_FSM::knock_up()
 {
-     
-
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 }
@@ -907,7 +900,7 @@ void SpearAce_FSM::knock_up_Init()
 
 void SpearAce_FSM::knockdown_start()
 {
-     
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
@@ -933,8 +926,6 @@ void SpearAce_FSM::knockdown_start_Init()
 
 void SpearAce_FSM::knockdown_end()
 {
-     
-
     if (Get_CurFrame() < 16)
         Get_Transform()->Go_Backward();
 
@@ -1407,24 +1398,54 @@ void SpearAce_FSM::skill_200200_Init()
 
 void SpearAce_FSM::skill_300100()
 {
-     
 
-    if (Get_CurFrame() == 60)
+    if (Get_CurFrame() <= 59)
     {
         if (!m_pCamera.expired())
         {
-            _float4 vDestinationCamPos = Get_Transform()->Get_State(Transform_State::POS) + (Get_Transform()->Get_State(Transform_State::LOOK) * -3.f) + (Get_Transform()->Get_State(Transform_State::UP) * 3.f);
-            _float4 vDestinationCamDir = _float4(0.f);
-
-            vDestinationCamDir = Get_Transform()->Get_State(Transform_State::POS) - vDestinationCamPos;
-            vDestinationCamDir.Normalize();
+            _float4 vDir = m_vCamBonePos - m_vSkillCamBonePos;
+            vDir.Normalize();
 
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(Get_Transform()->Get_State(Transform_State::POS).xyz());
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.5f, vDestinationCamDir.xyz() * -1.f, 10.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vSkillCamBonePos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, vDir.xyz() * -1.f, 8.f);
         }
     }
+    else if (Get_CurFrame() == 60)
+    {
+        m_vCamStopPos = m_vSkillCamBonePos;
+    }
+    else if (Get_CurFrame() >= 61 && Get_CurFrame() < 105)
+    {
+        if (!m_pCamera.expired())
+        {
+            _float4 vDir = m_vCamStopPos - m_vSkillCamBonePos;
+            vDir.Normalize();
 
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCamStopPos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.2f, vDir.xyz() * -1.f, 8.f);
+        }
+    }
+    else if (Get_CurFrame() >=  105)
+    {
+        if (!m_pCamera.expired())
+        {
+            _float4 vDir = m_vCamBonePos - m_vSkillCamBonePos;
+            vDir.Normalize();
+
+            _float3 vLookPos = m_vSkillCamBonePos.xyz();
+
+            vLookPos = vLookPos + (_float3::Up * -0.5f);
+
+            if (vLookPos.y < 2.f)
+                vLookPos.y = 2.f;
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(vLookPos);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.2f, vDir.xyz() * -1.f, 6.f);
+        }
+    }
     
     if (Get_CurFrame() >= 78 && Get_CurFrame() <= 110)
         m_bInvincible = true;
@@ -1577,7 +1598,7 @@ void SpearAce_FSM::skill_300100()
         m_eCurState = STATE::b_idle;
     }
 
-    if (KEYTAP(KEY_TYPE::SPACE))
+    /*if (KEYTAP(KEY_TYPE::SPACE))
     {
         if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
         {
@@ -1588,7 +1609,7 @@ void SpearAce_FSM::skill_300100()
             else
                 m_eCurState = STATE::skill_93100;
         }
-    }
+    }*/
 }
 
 void SpearAce_FSM::skill_300100_Init()

@@ -3,14 +3,15 @@
 #include "ModelAnimator.h"
 #include "SphereCollider.h"
 #include "AttackColliderInfoScript.h"
+#include "MainCameraScript.h"
 
 HRESULT Silversword_Soldier_FSM::Init()
 {
     auto animator = Get_Owner()->Get_Animator();
     if (animator)
     {
-        // 다음 애니메이션 세팅해주는데, 보간할 예정
-        animator->Set_CurrentAnim(L"b_idle"/*애니메이션 이름*/, true/*반복 애니메이션*/, 1.f/*애니메이션 속도*/);
+       
+        animator->Set_CurrentAnim(L"b_idle", true, 1.f);
         m_eCurState = STATE::b_idle;
     }
     shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
@@ -26,6 +27,8 @@ HRESULT Silversword_Soldier_FSM::Init()
     m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
     m_pAttackCollider.lock()->Set_Name(L"SilverSword_Soldier_AttackCollider");
     m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
+
+    m_pCamera = CUR_SCENE->Get_MainCamera();
 
     return S_OK;
 }
@@ -210,11 +213,11 @@ void Silversword_Soldier_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollide
     if (!m_bInvincible)
     {
         shared_ptr<GameObject> targetToLook = nullptr;
-        // skillName에 _Skill 포함이면
+
         if (strSkillName.find(L"_Skill") != wstring::npos)
-            targetToLook = pCollider->Get_Owner(); // Collider owner를 넘겨준다
-        else // 아니면
-            targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_Owner(); // Collider를 만든 객체를 넘겨준다
+            targetToLook = pCollider->Get_Owner(); 
+        else 
+            targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner();
 
         Get_Hit(strSkillName, targetToLook);
     }
@@ -227,7 +230,7 @@ void Silversword_Soldier_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider
 void Silversword_Soldier_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
 {
     m_bDetected = true;
-
+	m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.05f);
     _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
     _float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
 
@@ -372,11 +375,12 @@ void Silversword_Soldier_FSM::n_run()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, XM_PI * 5.f);
 
-    //IF straight true 반대로 
     if (Get_Transform()->Go_Straight())
     {
         m_vTurnVector.x = m_vTurnVector.x * -1.f;
         m_vTurnVector.z = m_vTurnVector.z * -1.f;
+
+        Soft_Turn_ToInputDir(m_vTurnVector, XM_PI * 10.f);
     }
     
     if ((Get_Transform()->Get_State(Transform_State::POS) - m_vPatrolFirstPos).Length() >= m_fPatrolDistance)

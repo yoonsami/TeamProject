@@ -255,7 +255,7 @@ void Boss_Mir_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float f
 		if (strSkillName.find(L"_Skill") != wstring::npos)
 			targetToLook = pCollider->Get_Owner(); // Collider owner를 넘겨준다
 		else // 아니면
-			targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_Owner(); // Collider를 만든 객체를 넘겨준다
+			targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner(); // Collider를 만든 객체를 넘겨준다
 
 		Get_Hit(strSkillName, targetToLook);
     }

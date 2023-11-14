@@ -152,8 +152,9 @@ private:
 
 	_bool m_bSkillCreate = false;
 	weak_ptr<GameObject> m_pSkillCollider;
+
+	_float4 m_vCamStopPos = _float4(0.f);
 	
-	_uint m_iSkillBoneIndex = 0;
 	_float4x4 matBoneMatrix = XMMatrixIdentity();
 };
 
