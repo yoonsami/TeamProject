@@ -30,6 +30,7 @@ public:
 public:
 	virtual HRESULT Init() override;
 	virtual void Tick() override;
+	virtual void Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget) override;
 
 
 private:
@@ -38,7 +39,6 @@ private:
 	virtual void OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) override;
-	virtual void Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget) override;
 	virtual void AttackCollider_On(const wstring& skillname) override;
 	virtual void AttackCollider_Off() override;
 	virtual void Set_State(_uint iIndex) override;

@@ -65,6 +65,9 @@ public:
 
     void Set_AnimState(_bool bStop) { m_bAnimStop = bStop; }
     _bool Is_AnimStop() { return m_bAnimStop; }
+
+    void Set_RenderState(_bool bRenderOn) { m_bRenderOn = bRenderOn; }
+    _bool Is_RenderOn() { return m_bRenderOn; }
 private:
     TweenDesc   m_TweenDesc;
     TweenDesc   m_preTweenDesc;
@@ -88,6 +91,7 @@ public:
 private:
 	RenderParams m_RenderParams{};
 
+    _bool m_bRenderOn = true;
     _bool m_bAnimStop = false;
 };
 

@@ -110,7 +110,8 @@ void InstancingMgr::Render_ModelRenderer(vector<shared_ptr<GameObject>>& gameObj
 	{
 		if (gameObject->Get_ModelRenderer() == nullptr)
 			continue;
-
+		if (!gameObject->Get_ModelRenderer()->Is_RenderOn())
+			continue;
 		if (gameObject->Get_Instancing())
 		{
 			const InstanceID instanceID = gameObject->Get_ModelRenderer()->Get_InstanceID();
@@ -158,6 +159,9 @@ void InstancingMgr::Render_Animator(vector<shared_ptr<GameObject>>& gameObjects)
 	for (auto& gameObject : gameObjects)
 	{
 		if (gameObject->Get_Animator() == nullptr)
+			continue;
+
+		if(!gameObject->Get_Animator()->Is_RenderOn())
 			continue;
 
 		if (gameObject->Get_Instancing())
@@ -237,6 +241,9 @@ void InstancingMgr::Render_ModelRenderer_Shadow(vector<shared_ptr<GameObject>>& 
 	{
 		if (gameObject->Get_ModelRenderer() == nullptr)
 			continue;
+		
+		if (!gameObject->Get_ModelRenderer()->Is_RenderOn())
+			continue;
 
 		if (gameObject->Get_Instancing())
 		{
@@ -287,6 +294,9 @@ void InstancingMgr::Render_Animator_Shadow(vector<shared_ptr<GameObject>>& gameO
 		if (gameObject->Get_Animator() == nullptr)
 			continue;
 
+		if (!gameObject->Get_Animator()->Is_RenderOn())
+			continue;
+		
 		if (gameObject->Get_Instancing())
 		{
 			const InstanceID instanceID = gameObject->Get_Animator()->Get_InstanceID();
@@ -343,6 +353,9 @@ void InstancingMgr::Render_ModelRenderer_VelocityMap(vector<shared_ptr<GameObjec
 		if (gameObject->Get_ModelRenderer() == nullptr)
 			continue;
 
+		if (!gameObject->Get_ModelRenderer()->Is_RenderOn())
+			continue;
+		
 		if (gameObject->Get_Instancing())
 		{
 			const InstanceID instanceID = gameObject->Get_ModelRenderer()->Get_InstanceID();
@@ -390,6 +403,9 @@ void InstancingMgr::Render_Animator_VelocityMap(vector<shared_ptr<GameObject>>& 
 	for (auto& gameObject : gameObjects)
 	{
 		if (gameObject->Get_Animator() == nullptr)
+			continue;
+
+		if (!gameObject->Get_Animator()->Is_RenderOn())
 			continue;
 
 		if (gameObject->Get_Instancing())

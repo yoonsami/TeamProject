@@ -2,9 +2,13 @@
 #include "FSM.h"
 #include "ForwardMovingSkillScript.h"
 
+#define PLAYER_SKILL1_DIST 10.f
+#define PLAYER_SKILL1_ANGLE (XM_PI / 3.f)
+
 class Player_FSM :
 	public FSM
 {
+
 public:
 	enum class STATE
 	{
@@ -50,6 +54,7 @@ public:
 public:
 	virtual HRESULT Init() override;
 	virtual void Tick() override;
+	virtual void Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget) override;
 
 
 private:
@@ -58,7 +63,6 @@ private:
 	virtual void OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) override;
-	virtual void Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget) override;
 	virtual void AttackCollider_On(const wstring& skillname) override;
 	virtual void AttackCollider_Off() override;
 	virtual void Set_State(_uint iIndex) override;
@@ -166,5 +170,7 @@ private:
 	
 	_uint m_iSkillBoneIndex = 0;
 	_float4x4 matBoneMatrix = XMMatrixIdentity();
+
+	_float m_fSkillCreateTimer = 0.f;
 };
 

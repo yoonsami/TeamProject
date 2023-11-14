@@ -246,6 +246,8 @@ void DebugTool::ModelOptionTab()
 
 		for (_int i = 0; i < PARTS_MAX_COUNT; ++i)
 		{
+			if(i !=0 && i !=2)
+				continue;
 			string tag = "##PartsList" + to_string(i);
 			Combo(tag.c_str(), &partsIndex[i], VectorOfStringGetter, &partsNames[i], int(partsNames[i].size()));
 			SameLine();

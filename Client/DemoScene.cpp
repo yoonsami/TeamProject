@@ -51,6 +51,7 @@
 #include "UiCardDeckInvenChange.h"
 
 #include <filesystem>
+#include "Player_FSM.h"
 namespace fs = std::filesystem;
 
 DemoScene::DemoScene()
@@ -149,8 +150,7 @@ HRESULT DemoScene::Load_Scene()
 	Load_Camera();
 	Load_MapFile(L"KrisMap");
 	Load_Monster(1);
-	//Load_Boss_Mir();
-	//Load_DemoMap();
+	Load_Boss_Mir();
 
 	Load_Ui();
 
@@ -184,15 +184,15 @@ void DemoScene::Load_Player()
 			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
 			{
 				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Player");
-				model->AddParts(L"Am_Mask_01", PARTS_INFO::Hair);
+				model->AddParts(L"Am_Ct_Hat_022", PARTS_INFO::Hair);
 				model->AddParts(L"Am_Head_001", PARTS_INFO::Head);
-				model->AddParts(L"Am_Ct_Uniform_001", PARTS_INFO::Uniform);
+				model->AddParts(L"Am_Ct_Uniform_022", PARTS_INFO::Uniform);
 				animator->Set_Model(model);
 				
 			}
 
 			ObjPlayer->Add_Component(animator);
-			ObjPlayer->Add_Component(make_shared<SpearAce_FSM>());
+			ObjPlayer->Add_Component(make_shared<Player_FSM>());
 		}
 		ObjPlayer->Set_Name(L"Player");
 		ObjPlayer->Set_VelocityMap(true);
@@ -226,7 +226,7 @@ void DemoScene::Load_Player()
 
 			shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
 			{
-				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Weapon_Spear_Ace");
+				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Weapon_Player");
 				renderer->Set_Model(model);
 			}
 
@@ -240,7 +240,7 @@ void DemoScene::Load_Player()
 			ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
 		}
 		ObjWeapon->Set_DrawShadow(true);
-		ObjWeapon->Set_Name(L"Weapon_Spear_Ace");
+		ObjWeapon->Set_Name(L"Weapon_Player");
 		ObjWeapon->Set_VelocityMap(true);
 		Add_GameObject(ObjWeapon);
 
@@ -256,42 +256,6 @@ void DemoScene::Load_Player()
 		debugText->Add_Component(make_shared<ObjectTransformDebug>());
 		debugText->Get_Script<ObjectTransformDebug>()->Set_Target(Get_GameObject(L"Player"));
 		Add_GameObject(debugText);
-	}
-}
-
-void DemoScene::Load_DemoMap()
-{
-	auto shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-	vector<wstring> modelName;
-
-	modelName.push_back(L"Ground");
-	modelName.push_back(L"Wall");
-
-	for(auto& modelTag: modelName)
-	{
-		shared_ptr<GameObject> obj = make_shared<GameObject>();
-		obj->GetOrAddTransform();
-		obj->Set_Name(modelTag);
-		Add_GameObject(obj);
-	}
-	
-	{
-		auto gameObject = Get_GameObject(L"Wall");
-		
-		shared_ptr<MeshCollider> collider = make_shared<MeshCollider>(L"Wall_Collider");
-		gameObject->Add_Component(collider);
-		auto rigidBody = make_shared<RigidBody>();
-		rigidBody->Create_RigidBody(collider, gameObject->GetOrAddTransform()->Get_WorldMatrix());
-		gameObject->Add_Component(rigidBody);
-	}
-	{
-		auto gameObject = Get_GameObject(L"Ground");
-
-		shared_ptr<MeshCollider> collider = make_shared<MeshCollider>(L"Ground_Collider");
-		gameObject->Add_Component(collider);
-		auto rigidBody = make_shared<RigidBody>();
-		rigidBody->Create_RigidBody(collider, gameObject->GetOrAddTransform()->Get_WorldMatrix());
-		gameObject->Add_Component(rigidBody);
 	}
 }
 

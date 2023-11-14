@@ -27,8 +27,8 @@ HRESULT MainApp::Init()
 		}
 	}
 
-	//ExportAssets();
-	ExportParts();
+	ExportAssets();
+	//ExportParts();
 	//ExportWeapon();
 
 	
@@ -66,6 +66,9 @@ void MainApp::ExportAssets()
 		wstring fileName = entry.path().filename().wstring();
 		Utils::DetachExt(fileName);
 		if (fileName == L"Player")
+			continue;
+
+		if(entry.path().wstring().find(L"Parts") != wstring::npos)
 			continue;
 
 		wstring tag = entry.path().wstring();

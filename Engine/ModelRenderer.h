@@ -57,7 +57,9 @@ public:
 	_bool Is_CullNone() { return m_bCullNone; }
 	_float2& Get_UVSliding() { return m_vUvSilding; }
 	void Set_PassType(INSTANCE_PASSTYPE _ePassType) { m_ePassType = _ePassType; }
-	
+	void Set_RenderState(_bool bRenderOn) { m_bRenderOn = bRenderOn; }
+	_bool Is_RenderOn() { return m_bRenderOn; }
+
 private:
 	_bool				m_bHasOutline = false;
 	shared_ptr<Shader>	m_pShader;
@@ -77,5 +79,6 @@ public:
 
 private:
 	RenderParams m_RenderParams{};
+	_bool m_bRenderOn = true;
 };
 
