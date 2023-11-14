@@ -66,34 +66,31 @@ HRESULT DemoScene::Load_Scene()
 void DemoScene::Load_DemoModel()
 {
 	// For. 예시 모델이 될 GameObject생성 
-	//shared_ptr<GameObject> testObj = make_shared<GameObject>();
+	shared_ptr<GameObject> testObj = make_shared<GameObject>();
 
-	//// For. GameObject에 Transform Component 추가
-	//	// 둘중 하나 사용. AddComponent 또는 GetOrAddTransform(있으면 반환 없으면 생성후 반환)
-	//testObj->Add_Component(make_shared<Transform>());
-	//	//testObj->GetOrAddTransform();
+	// For. GameObject에 Transform Component 추가
+		// 둘중 하나 사용. AddComponent 또는 GetOrAddTransform(있으면 반환 없으면 생성후 반환)
+	testObj->Add_Component(make_shared<Transform>());
+		//testObj->GetOrAddTransform();
 
-	//// For. GameObject의 Transform 설정해주기 
-	//testObj->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
-	//
-	//// For. Animator생성할때 필요한 
-	//shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+	// For. GameObject의 Transform 설정해주기 
+	testObj->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
+	testObj->Get_Transform()->Scaled(_float3(3.f,1.f,3.f));
+	
+	// For. Animator생성할때 필요한 
+	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
-	//// For. GameObject에 붙일 animator component 생성하기 
-	//shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
-	//
-	//// For. Animator component에 붙일 Model 생성하기 
-	shared_ptr<Model> model = RESOURCES.Get<Model>(L"Kyle");
+	// For. GameObject에 붙일 animator component 생성하기 
+	shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+	
+	// For. Animator component에 붙일 Model 생성하기 
+	shared_ptr<Model> model = RESOURCES.Get<Model>(L"GridPlane");
 
-	//// For. Animator에 Model 붙이기
-	//animator->Set_Model(model);
-	//
-	//// For. GameObject에 Animator component 붙이기
-	//testObj->Add_Component(animator);
-	//	//testObj->Add_Component(make_shared<DemoAnimationController1>());
+	// For. Animator에 Model 붙이기
+	animator->Set_Model(model);
 
-	//// For. 씬에 GameObject추가 
-	//Add_GameObject(testObj);
+	// For. 씬에 GameObject추가 
+	Add_GameObject(testObj);
 }
 
 void DemoScene::Load_Light()

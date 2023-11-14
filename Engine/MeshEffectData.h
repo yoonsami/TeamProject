@@ -18,6 +18,12 @@ public:
         // Mesh 
         string      strVfxMesh;
 
+        /* Sprite Animation */
+        _bool       bUseSpriteAnim;
+        _int        iNumSprite_Col;
+        _int        iNumSprite_Row;
+        _float      fAnimSpeed;
+
         /* Coloring Options */
         _bool       bColorChangingOn;
 
@@ -26,6 +32,8 @@ public:
         Color       vDiffuseColor_BaseStart;
         Color       vDiffuseColor_BaseEnd;
         Color       vDestColor_Diffuse;
+        _float2     vTiling_Diffuse;
+        _float2     vUVSpeed_Diffuse;
 
         // Opacity
         string      strOpacityTexture;

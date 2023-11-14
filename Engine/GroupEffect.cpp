@@ -31,16 +31,20 @@ void GroupEffect::Tick()
 			shared_ptr<MeshEffectData> meshEffectData = RESOURCES.Get<MeshEffectData>(wstrMeshEffectDataKey);
 			MeshEffectData::DESC tDesc = meshEffectData->Get_Desc();
 			 
-			if (tDesc.fDuration + iter.fCreateTime > m_fCurrAge)
+			// If. Play only once
+			if (0.f == tDesc.fCreateInterval)
 			{
-				// If. only need to create an effect once
-				if (0.f == tDesc.fCreateInterval && !iter.bIsActive)
+				if (!iter.bIsActive)
 				{
 					Create_MeshEffect(iIndex);
 					iter.bIsActive = true;
 				}
-				// If. must be created every interval
-				else if (tDesc.fCreateInterval < m_fTimeAcc_CreatCoolTime)
+			}
+
+			// If. Play every CreateInterval in duration 
+			else if (tDesc.fCreateInterval < m_fTimeAcc_CreatCoolTime)
+			{
+				if (tDesc.fDuration + iter.fCreateTime < m_fCurrAge)
 				{
 					Create_MeshEffect(iIndex);
 					m_fTimeAcc_CreatCoolTime = 0.f;

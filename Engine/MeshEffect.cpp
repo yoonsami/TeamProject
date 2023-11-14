@@ -40,6 +40,7 @@ void MeshEffect::Final_Tick()
 	if (m_bIsPlayFinished)
 		return;
 	m_fCurrAge += fDT;
+	m_fTimeAcc_SpriteAnimation += fDT;
 
 	// For. Check is dead 
 	if (m_fCurrAge >= m_fDuration)
@@ -106,11 +107,28 @@ void MeshEffect::Update_Desc()
 
 	Init_RenderParams();
 
-	m_vCurrTexUVOffset_Opacity = m_tDesc.vTiling_Opacity;
+	// For. Sprite Animation 
+	if (m_tDesc.bUseSpriteAnim)
+	{
+		m_vSpriteSize.x = 1.f / m_tDesc.iNumSprite_Col;
+		m_vSpriteSize.y = 1.f / m_tDesc.iNumSprite_Row;
+		m_iCurrSpriteIndex = -1;		
+		m_iNumSprite = m_tDesc.iNumSprite_Col * m_tDesc.iNumSprite_Row;
+
+		m_UVTexRangeX = _float2(0.f, m_vSpriteSize.x);
+		m_UVTexRangeY = _float2(0.f, m_vSpriteSize.y);
+	}
+	// For. 
+	else
+	{
+		m_vCurrTexUVOffset_Opacity = m_tDesc.vTiling_Opacity;
+		m_vCurrTexUVOffset_Diffuse = m_tDesc.vTiling_Diffuse;
+	}
 	m_vCurrTexUVOffset_Gra = m_tDesc.vTiling_Gra;
 	m_vCurrTexUVOffset_Overlay = m_tDesc.vTiling_Overlay;
 	m_vCurrTexUVOffset_Dissolve = m_tDesc.vTiling_Dissolve;
 	m_vCurrTexUVOffset_Distortion = m_tDesc.vTiling_Distortion;
+
 
 	// For. Model Components
 	m_pModel = RESOURCES.Get<Model>(Utils::ToWString(m_tDesc.strVfxMesh));
@@ -254,6 +272,26 @@ void MeshEffect::Turn()
 	Get_Transform()->Turn(m_vRandomAxis, m_fTurnSpeed);
 }
 
+void MeshEffect::Run_SpriteAnimation()
+{
+	if (m_fTimeAcc_SpriteAnimation > m_tDesc.fAnimSpeed)
+	{
+		m_iCurrSpriteIndex++;
+
+		if (m_iCurrSpriteIndex >= m_iNumSprite)
+			m_iCurrSpriteIndex = 0;
+
+		_int iIndexX = m_iCurrSpriteIndex % m_tDesc.iNumSprite_Col;
+		_int iIndexY = m_iCurrSpriteIndex / m_tDesc.iNumSprite_Col;
+		m_UVTexRangeX.x = (_float)iIndexX / (_float)m_tDesc.iNumSprite_Col;
+		m_UVTexRangeX.y = ((_float)iIndexX + 1) / (_float)m_tDesc.iNumSprite_Col;
+		m_UVTexRangeY.x = (_float)iIndexY / (_float)m_tDesc.iNumSprite_Row;
+		m_UVTexRangeY.y = ((_float)iIndexY + 1) / (_float)m_tDesc.iNumSprite_Row;
+
+		m_fTimeAcc_SpriteAnimation = 0.f;
+	}	
+ }
+
 void MeshEffect::Init_RenderParams()
 {	
 	m_RenderParams.SetInt(0, m_tDesc.iSamplerType);
@@ -264,13 +302,23 @@ void MeshEffect::Init_RenderParams()
 	m_RenderParams.SetFloat(0, m_fCurrAge / m_tDesc.fDuration);
 	m_RenderParams.SetFloat(1, m_tDesc.fAlphaGraIntensity);
 	m_RenderParams.SetFloat(2, m_tDesc.fContrast);
+	if (m_tDesc.bUseSpriteAnim)
+		m_RenderParams.SetFloat(3, 1.f);
+	else
+		m_RenderParams.SetFloat(3, 0.f);
 	
 	m_RenderParams.SetVec2(0, m_vCurrTexUVOffset_Opacity);
 
 	_float4 vUVOffset = _float4(m_vCurrTexUVOffset_Gra.x, m_vCurrTexUVOffset_Gra.y, m_vCurrTexUVOffset_Overlay.x, m_vCurrTexUVOffset_Overlay.y);
 	m_RenderParams.SetVec4(0, vUVOffset);
+
 	vUVOffset = _float4(m_vCurrTexUVOffset_Dissolve.x, m_vCurrTexUVOffset_Dissolve.y, m_vCurrTexUVOffset_Distortion.x, m_vCurrTexUVOffset_Distortion.y);
 	m_RenderParams.SetVec4(1, vUVOffset);
+	
+	if (m_tDesc.bUseSpriteAnim)
+		m_RenderParams.SetVec4(2, _float4(m_UVTexRangeX.x, m_UVTexRangeX.y, m_UVTexRangeY.x, m_UVTexRangeY.y));
+	else
+		m_RenderParams.SetVec4(2, _float4(m_vCurrTexUVOffset_Diffuse.x, m_vCurrTexUVOffset_Diffuse.y, 0.f, 0.f));
 
 	_float4x4 mColor = _float4x4(m_vDiffuseColor_Base,
 							     m_tDesc.vBaseColor_AlphaGra,
@@ -296,24 +344,42 @@ void MeshEffect::Bind_RenderParams_ToShader()
 	m_RenderParams.SetMatrix(0, mColor);
 
 	// For. Update UV Offset
-	m_vCurrTexUVOffset_Opacity	+= m_tDesc.vUVSpeed_Opacity * fDT;
-	m_vCurrTexUVOffset_Gra		+= m_tDesc.vUVSpeed_Gra * fDT;
-	m_vCurrTexUVOffset_Overlay	+= m_tDesc.vUVSpeed_Overlay * fDT;
-	m_vCurrTexUVOffset_Dissolve += m_tDesc.vUVSpeed_Dissolve * fDT;
-	m_vCurrTexUVOffset_Distortion += m_tDesc.vUVSpeed_Distortion * fDT;
-	m_RenderParams.SetVec2(0, m_vCurrTexUVOffset_Opacity);
-	_float4 vUVOffset = _float4(m_vCurrTexUVOffset_Gra.x, m_vCurrTexUVOffset_Gra.y, m_vCurrTexUVOffset_Overlay.x, m_vCurrTexUVOffset_Overlay.y);
-	m_RenderParams.SetVec4(0, vUVOffset);
-	vUVOffset = _float4(m_vCurrTexUVOffset_Dissolve.x, m_vCurrTexUVOffset_Dissolve.y, m_vCurrTexUVOffset_Distortion.x, m_vCurrTexUVOffset_Distortion.y);
-	m_RenderParams.SetVec4(1, vUVOffset);
+
+	if (m_tDesc.bUseSpriteAnim)
+	{
+		Run_SpriteAnimation();
+
+		m_vCurrTexUVOffset_Gra += m_tDesc.vUVSpeed_Gra * fDT;
+		m_vCurrTexUVOffset_Overlay += m_tDesc.vUVSpeed_Overlay * fDT;
+		m_vCurrTexUVOffset_Dissolve += m_tDesc.vUVSpeed_Dissolve * fDT;
+		m_vCurrTexUVOffset_Distortion += m_tDesc.vUVSpeed_Distortion * fDT;
+
+		m_RenderParams.SetVec2(0, m_vCurrTexUVOffset_Opacity);
+		_float4 vUVOffset = _float4(m_vCurrTexUVOffset_Gra.x, m_vCurrTexUVOffset_Gra.y, m_vCurrTexUVOffset_Overlay.x, m_vCurrTexUVOffset_Overlay.y);
+		m_RenderParams.SetVec4(0, vUVOffset);
+		vUVOffset = _float4(m_vCurrTexUVOffset_Dissolve.x, m_vCurrTexUVOffset_Dissolve.y, m_vCurrTexUVOffset_Distortion.x, m_vCurrTexUVOffset_Distortion.y);
+		m_RenderParams.SetVec4(1, vUVOffset);
+		vUVOffset = _float4(m_UVTexRangeX.x, m_UVTexRangeX.y, m_UVTexRangeY.x, m_UVTexRangeY.y);
+		m_RenderParams.SetVec4(2, vUVOffset);
+	}
+	else
+	{
+		m_vCurrTexUVOffset_Opacity	+= m_tDesc.vUVSpeed_Opacity * fDT;
+		m_vCurrTexUVOffset_Diffuse  += m_tDesc.vUVSpeed_Diffuse * fDT;
+		m_vCurrTexUVOffset_Gra		+= m_tDesc.vUVSpeed_Gra * fDT;
+		m_vCurrTexUVOffset_Overlay	+= m_tDesc.vUVSpeed_Overlay * fDT;
+		m_vCurrTexUVOffset_Dissolve += m_tDesc.vUVSpeed_Dissolve * fDT;
+		m_vCurrTexUVOffset_Distortion += m_tDesc.vUVSpeed_Distortion * fDT;
+
+		m_RenderParams.SetVec2(0, m_vCurrTexUVOffset_Opacity);
+		_float4 vUVOffset = _float4(m_vCurrTexUVOffset_Gra.x, m_vCurrTexUVOffset_Gra.y, m_vCurrTexUVOffset_Overlay.x, m_vCurrTexUVOffset_Overlay.y);
+		m_RenderParams.SetVec4(0, vUVOffset);
+		vUVOffset = _float4(m_vCurrTexUVOffset_Dissolve.x, m_vCurrTexUVOffset_Dissolve.y, m_vCurrTexUVOffset_Distortion.x, m_vCurrTexUVOffset_Distortion.y);
+		m_RenderParams.SetVec4(1, vUVOffset);
+		vUVOffset = _float4(m_tDesc.vUVSpeed_Diffuse.x, m_tDesc.vUVSpeed_Diffuse.y, 0.f, 0.f);
+		m_RenderParams.SetVec4(2, vUVOffset);
+	}
 
 	// For. Bind Data 
 	m_pShader->Push_RenderParamData(m_RenderParams);
-}
-
-_float MeshEffect::GetRandomFloatInRange(_float fStart, _float fEnd)
-{
-	uniform_real_distribution<float>	RandomInRange(fStart, fEnd);
-	_float fResult = RandomInRange(m_RandomNumber);
-	return fResult;
 }

@@ -997,6 +997,12 @@ void ResourceMgr::CreateMeshEffectData()
 		/* Mesh */
 		tDesc.strVfxMesh = file->Read<string>();
 
+		/* Sprite Animation */
+		tDesc.bUseSpriteAnim = file->Read<_bool>();
+		tDesc.iNumSprite_Col = file->Read<_int>();
+		tDesc.iNumSprite_Row = file->Read<_int>();
+		tDesc.fAnimSpeed = file->Read<_float>();
+
 		/* Coloring Option */
 		tDesc.bColorChangingOn = file->Read<_bool>();
 
@@ -1005,6 +1011,8 @@ void ResourceMgr::CreateMeshEffectData()
 		tDesc.vDiffuseColor_BaseStart = file->Read<_float4>();
 		tDesc.vDiffuseColor_BaseEnd = file->Read<_float4>();
 		tDesc.vDestColor_Diffuse = file->Read<_float4>();
+		tDesc.vTiling_Diffuse = file->Read<_float2>();
+		tDesc.vUVSpeed_Diffuse = file->Read<_float2>();
 
 		/* Alpha Gradation */
 		tDesc.fAlphaGraIntensity = file->Read<_float>();

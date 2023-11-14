@@ -36,6 +36,12 @@ void MeshEffectData::Load(const wstring& path)
 	/* Mesh */
 	m_tDesc.strVfxMesh = file->Read<string>();
 
+	/* Sprite Animation */
+	m_tDesc.bUseSpriteAnim = file->Read<_bool>();
+	m_tDesc.iNumSprite_Col = file->Read<_int>();
+	m_tDesc.iNumSprite_Row = file->Read<_int>();
+	m_tDesc.fAnimSpeed = file->Read<_float>();
+
 	/* Coloring Option */
 	m_tDesc.bColorChangingOn = file->Read<_bool>();
 
@@ -44,6 +50,8 @@ void MeshEffectData::Load(const wstring& path)
 	m_tDesc.vDiffuseColor_BaseStart = file->Read<_float4>();
 	m_tDesc.vDiffuseColor_BaseEnd = file->Read<_float4>();
 	m_tDesc.vDestColor_Diffuse = file->Read<_float4>();
+	m_tDesc.vTiling_Diffuse = file->Read<_float2>();
+	m_tDesc.vUVSpeed_Diffuse = file->Read<_float2>();
 
 	/* Alpha Gradation */
 	m_tDesc.fAlphaGraIntensity = file->Read<_float>();
