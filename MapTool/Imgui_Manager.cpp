@@ -28,6 +28,8 @@
 #include "MeshRenderer.h"
 #include "RigidBody.h"
 
+#include "PointLightEffect.h"
+
 ImGuizmo::OPERATION m_eGuizmoType = { ImGuizmo::TRANSLATE };
 namespace fs = std::filesystem;
 
@@ -509,6 +511,16 @@ void ImGui_Manager::Frame_Light()
     ImGui::ColorEdit4("Emissive##CreatePtLt", (_float*)&m_CreatePointLightInfo.color.emissive);
     ImGui::DragFloat("Range##CreatePtLt", &m_CreatePointLightInfo.range, 0.1f);
     
+    ImGui::Checkbox("PointLightEffect", &m_bPointLightEffectHas);
+    if (m_bPointLightEffectHas)
+    {
+        ImGui::Text("TargetAmbient");
+        ImGui::ColorEdit4("Ambient##PtLtEffectAmbient", (_float*)&m_CreateTargetAmbient);
+        ImGui::Text("TargetDiffuse");
+        ImGui::ColorEdit4("Diffuse##PtLtEffectDiffuse", (_float*)&m_CreateTargetDiffuse);
+        ImGui::DragFloat("Speed##PointLightEffectSpeed", &m_fCreatePointLightSpeed, 0.1f);
+    }
+
     if (ImGui::Button("Create##CreatePtLt"))
         Create_SelectPointLight();
 
@@ -540,6 +552,57 @@ void ImGui_Manager::Frame_Light()
         _float4 PointLightPosition = m_pPointLightObjects[m_iPointLightIndex]->Get_Transform()->Get_State(Transform_State::POS);
         ImGui::DragFloat3("PointLightPosition", (_float*)&PointLightPosition, 0.1f);
         m_pPointLightObjects[m_iPointLightIndex]->Get_Transform()->Set_State(Transform_State::POS, PointLightPosition);
+
+        // 선택한 점광원의 변화효과 설정
+        if(m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>() != nullptr)
+        {
+            _bool bEffectUse = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Get_bUseEffect();
+            if (ImGui::Checkbox("##CurrentPointLightEffectUse", &bEffectUse))
+                // 사용여부 체크박스 반영하여 다시 넣기
+            {
+                m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Set_bUseEffect(bEffectUse);
+                // 이펙트를 사용하기로 하면 그때색깔을 시작색깔로 지정
+                if (bEffectUse)
+                    m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Init();
+                // 이펙트를 사용 안하기로 하면 시작색을 반대로 대입
+                else
+                    m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Init_Reverse();
+            }
+            if (bEffectUse)
+            {
+                // 스타트앰비언트 가져오고, 변경하면 다시대입
+                _float4 StartAmbient = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Get_AmbientStart();
+                if (ImGui::ColorEdit4("SAmbient##PtLtEffectAmbient", (_float*)&StartAmbient))
+                    m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Set_AmbientStart(StartAmbient);
+                // 타겟앰비언트 가져오고, 변경하면 다시대입
+                _float4 TargetAmbient = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Get_AmbientTarget();
+                if (ImGui::ColorEdit4("EAmbient##PtLtEffectAmbient", (_float*)&TargetAmbient))
+                    m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Set_AmbientTarget(TargetAmbient);
+
+                // 스타트디퓨즈 가져오고, 변경하면 다시대입
+                _float4 StartDiffuse = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Get_DiffuseStart();
+                if (ImGui::ColorEdit4("SDiffuse##PtLtEffectDiffuse", (_float*)&StartDiffuse))
+                    m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Set_DiffuseStart(StartDiffuse);
+                // 타겟디퓨즈 가져오고, 변경하면 다시대입
+                _float4 TargetDiffuse = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Get_DiffuseTarget();
+                if (ImGui::ColorEdit4("Diffuse##PtLtEffectDiffuse", (_float*)&TargetDiffuse))
+                    m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Set_DiffuseTarget(TargetDiffuse);
+
+                // 스타트레인지 가져오고, 변경하면 다시대입
+                _float fStartRange = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Get_StartRange();
+                ImGui::DragFloat("SRange#PtLtTargetRange", &fStartRange, 0.1f);
+                m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Set_StartRange(fStartRange);
+                // 타겟레인지 가져오고, 변경하면 다시대입
+                _float fTargetRange = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Get_TargetRange();
+                ImGui::DragFloat("TRange#PtLtTargetRange", &fTargetRange, 0.1f);
+                m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Set_TargetRange(fTargetRange);
+
+                // 이펙트 스피드 가져오고, 변경하면 다시대입
+                _float fEffectSpeed = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Get_Speed();
+                ImGui::DragFloat("EffectSpeed#PtLtEffectSpeed", &fEffectSpeed, 0.1f);
+                m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Set_Speed(fEffectSpeed);
+            }
+        }
     }
 
     ImGui::SeparatorText("##LightFrame");
@@ -802,6 +865,16 @@ HRESULT ImGui_Manager::Create_SelectPointLight()
     m_CreatePointLightInfo.vPosition = XMVectorSetW(m_PickingPos, 1.f);
     shared_ptr<GameObject>& LightObject = Create_PointLight(m_CreatePointLightInfo);
     m_pPointLightObjects.push_back(LightObject);
+
+    {
+        // 포인트 라이트라면 무조건 추가
+        // 기본초기화
+        shared_ptr<PointLightEffect> pPLightScript = make_shared<PointLightEffect>();
+        m_pPointLightObjects.back()->Add_Component(pPLightScript);
+        pPLightScript->Init();
+    }
+
+    // 이름리스트에 하나 넣기
     m_strPointLightList.push_back("PointLight");
     
     return S_OK;
@@ -826,6 +899,7 @@ shared_ptr<GameObject>& ImGui_Manager::Create_PointLight(LightInfo _ptltInfo)
         PointLight->Add_Component(lightCom);
     }
     CUR_SCENE->Add_GameObject(PointLight);
+
 
     return PointLight;
 }
@@ -970,6 +1044,23 @@ HRESULT ImGui_Manager::Save_MapObject()
         LightInfo& ptltInfo = PtLtObject->Get_Light()->Get_LightInfo();
         file->Write<LightColor>(ptltInfo.color);
         file->Write<_float>(ptltInfo.range);
+
+        // 점광원 울렁울렁효과 관련 정보
+        weak_ptr<PointLightEffect> pPTLTEffect = PtLtObject->Get_Script<PointLightEffect>();
+        if (!pPTLTEffect.expired())
+        {
+            file->Write<_bool>(pPTLTEffect.lock()->Get_bUseEffect());
+            if(pPTLTEffect.lock()->Get_bUseEffect())
+            {
+                file->Write<_float4>(pPTLTEffect.lock()->Get_AmbientStart());
+                file->Write<_float4>(pPTLTEffect.lock()->Get_AmbientTarget());
+                file->Write<_float4>(pPTLTEffect.lock()->Get_DiffuseStart());
+                file->Write<_float4>(pPTLTEffect.lock()->Get_DiffuseTarget());
+                file->Write<_float>(pPTLTEffect.lock()->Get_StartRange());
+                file->Write<_float>(pPTLTEffect.lock()->Get_TargetRange());
+                file->Write<_float>(pPTLTEffect.lock()->Get_Speed());
+            }
+        }
     }
 
     // 벽메시콜라이더에 필요한 정보 저장
@@ -1097,6 +1188,35 @@ HRESULT ImGui_Manager::Load_MapObject()
         shared_ptr<GameObject>& CreatePtltObj = Create_PointLight(loadPointLightInfo);
         m_pPointLightObjects.push_back(CreatePtltObj);
         m_strPointLightList.push_back("PointLight");
+
+        // 점광원효과 기본초기화
+        shared_ptr<PointLightEffect> pPLE = make_shared<PointLightEffect>();
+        m_pPointLightObjects.back()->Add_Component(pPLE);
+        pPLE->Init();
+
+        // 점광원 효과정보
+        _bool bUseEffect = false;
+        file->Read<_bool>(bUseEffect);
+        pPLE->Set_bUseEffect(bUseEffect);
+        if (bUseEffect) // 점광원효과가 있는 녀석이라면
+        {
+            _float4 tempColor = { 1.f, 1.f, 1.f, 1.f };
+            file->Read<_float4>(tempColor);
+            pPLE->Set_AmbientStart(tempColor);
+            file->Read<_float4>(tempColor);
+            pPLE->Set_AmbientTarget(tempColor);
+            file->Read<_float4>(tempColor);
+            pPLE->Set_DiffuseStart(tempColor);
+            file->Read<_float4>(tempColor);
+            pPLE->Set_DiffuseTarget(tempColor);
+            _float tempFloat = { 0.f };
+            file->Read<_float>(tempFloat);
+            pPLE->Set_StartRange(tempFloat);
+            file->Read<_float>(tempFloat);
+            pPLE->Set_TargetRange(tempFloat);
+            file->Read<_float>(tempFloat);
+            pPLE->Set_Speed(tempFloat);
+        }
     }
 
     // 벽정보 불러오기 및 벽생성
@@ -1256,7 +1376,7 @@ void ImGui_Manager::Create_SampleObjects()
         renderer->Set_Model(model);
         renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT);
         renderer->SetFloat(3, 1.f);
-
+        
         CUR_SCENE->Add_GameObject(m_SampleObject);
 
         m_fSampleModelCullSize = Compute_CullingData(m_SampleObject).w;
