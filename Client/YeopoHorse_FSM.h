@@ -61,9 +61,5 @@ private:
 private:
 	STATE m_eCurState = STATE::n_idle;
 	STATE m_ePreState = STATE::NONE;
-
-	_uint m_iSkillBoneIndex = 0;
-	_float4x4 matBoneMatrix = XMMatrixIdentity();
-
 };
 

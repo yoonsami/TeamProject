@@ -164,37 +164,18 @@ private:
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
 	void Create_Vehicle();
 	void Set_VehicleState(_uint iAnimindex);
+
+	void Use_Skill();
+	void Use_Dash();
 private:
 	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;
 
-	_float3 m_vInputTurnVector = _float3(0.f);
-	COOLTIMEINFO m_tRunEndDelay = { 0.2f,0.f };
 	COOLTIMEINFO m_tRidingEndDelay = { 0.4f,0.f };
 	COOLTIMEINFO m_tRidingDelay = { 2.f,0.f };
 
-	_bool m_bCanCombo = false;
-
 	_bool m_bRidingCoolCheck = false;
-
-	_float m_fRunSpeed = 6.f;
-	_float m_fSprintSpeed = 8.f;
 	_float m_fRidingSpeed = 12.f;
-	_float m_fKnockBackSpeed = 6.f;
-	_float m_fKnockDownSpeed = 6.f;
-
-	_float m_fNormalAttack_AnimationSpeed = 2.f;
-	_float m_fSkillAttack_AnimationSpeed = 1.5f;
-	_float m_fEvade_AnimationSpeed = 1.5f;
-
-	COOLTIMEINFO m_tKnockDownEndCoolTime = { 3.f, 0.f };
-
-	_bool m_bSkillCreate = false;
-	weak_ptr<GameObject> m_pSkillCollider;
-
-	_uint m_iSkillBoneIndex = 0;
-	_float4x4 matBoneMatrix = XMMatrixIdentity();
-
 	_float4 m_vRidingEndPos = _float4(0.f);
 };
 

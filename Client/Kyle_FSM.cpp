@@ -40,6 +40,8 @@ HRESULT Kyle_FSM::Init()
 
 	m_pCamera = CUR_SCENE->Get_MainCamera();
 
+	m_fSkillAttack_AnimationSpeed = 2.f;
+
 	return S_OK;
 }
 
@@ -398,26 +400,8 @@ void Kyle_FSM::b_idle()
 
 	if (KEYTAP(KEY_TYPE::LBUTTON))
 		m_eCurState = STATE::skill_1100;
-	else if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
-		m_eCurState = STATE::skill_100100;
-	else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
-		m_eCurState = STATE::skill_200100;
-	else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
-		m_eCurState = STATE::skill_300100;
-	else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
-		m_eCurState = STATE::skill_502100;
-	else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
-		m_eCurState = STATE::skill_500100;
-	else if (KEYTAP(KEY_TYPE::SPACE))
-	{
-		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
-		{
-			if (vInputVector != _float3(0.f))
-				m_eCurState = STATE::skill_91100;
-			else
-				m_eCurState = STATE::skill_93100;
-		}
-	}
+
+	Use_Skill();
 }
 
 void Kyle_FSM::b_idle_Init()
@@ -463,21 +447,8 @@ void Kyle_FSM::b_run_start()
 
 		if (KEYTAP(KEY_TYPE::LBUTTON))
 			m_eCurState = STATE::skill_1100;
-		else if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
-			m_eCurState = STATE::skill_100100;
-		else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
-			m_eCurState = STATE::skill_200100;
-		else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
-			m_eCurState = STATE::skill_300100;
-		else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
-			m_eCurState = STATE::skill_502100;
-		else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
-			m_eCurState = STATE::skill_500100;
-		else if (KEYTAP(KEY_TYPE::SPACE))
-		{
-			if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
-				m_eCurState = STATE::skill_91100;
-		}
+		
+		Use_Skill();
 	}
 }
 
@@ -526,21 +497,8 @@ void Kyle_FSM::b_run()
 
 	if (KEYTAP(KEY_TYPE::LBUTTON))
 		m_eCurState = STATE::skill_1100;
-	else if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
-		m_eCurState = STATE::skill_100100;
-	else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
-		m_eCurState = STATE::skill_200100;
-	else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
-		m_eCurState = STATE::skill_300100;
-	else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
-		m_eCurState = STATE::skill_502100;
-	else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
-		m_eCurState = STATE::skill_500100;
-	else if (KEYTAP(KEY_TYPE::SPACE))
-	{
-		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
-			m_eCurState = STATE::skill_91100;
-	}
+
+	Use_Skill();
 }
 
 void Kyle_FSM::b_run_Init()
@@ -570,22 +528,8 @@ void Kyle_FSM::b_run_end_r()
 
 	if (KEYTAP(KEY_TYPE::LBUTTON))
 		m_eCurState = STATE::skill_1100;
-	else if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
-		m_eCurState = STATE::skill_100100;
-	else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
-		m_eCurState = STATE::skill_200100;
-	else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
-		m_eCurState = STATE::skill_300100;
-	else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
-		m_eCurState = STATE::skill_502100;
-	else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
-		m_eCurState = STATE::skill_500100;
-	else if (KEYTAP(KEY_TYPE::SPACE))
-	{
-		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
-			m_eCurState = STATE::skill_93100;
-	}
 
+	Use_Skill();
 }
 
 void Kyle_FSM::b_run_end_r_Init()
@@ -615,21 +559,8 @@ void Kyle_FSM::b_run_end_l()
 
 	if (KEYTAP(KEY_TYPE::LBUTTON))
 		m_eCurState = STATE::skill_1100;
-	else if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
-		m_eCurState = STATE::skill_100100;
-	else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
-		m_eCurState = STATE::skill_200100;
-	else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
-		m_eCurState = STATE::skill_300100;
-	else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
-		m_eCurState = STATE::skill_502100;
-	else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
-		m_eCurState = STATE::skill_500100;
-	else if (KEYTAP(KEY_TYPE::SPACE))
-	{
-		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
-			m_eCurState = STATE::skill_93100;
-	}
+
+	Use_Skill();
 }
 
 void Kyle_FSM::b_run_end_l_Init()
@@ -677,21 +608,8 @@ void Kyle_FSM::b_sprint()
 
 	if (KEYTAP(KEY_TYPE::LBUTTON))
 		m_eCurState = STATE::skill_1100;
-	else if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
-		m_eCurState = STATE::skill_100100;
-	else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
-		m_eCurState = STATE::skill_200100;
-	else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
-		m_eCurState = STATE::skill_300100;
-	else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
-		m_eCurState = STATE::skill_502100;
-	else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
-		m_eCurState = STATE::skill_500100;
-	else if (KEYTAP(KEY_TYPE::SPACE))
-	{
-		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
-			m_eCurState = STATE::skill_91100;
-	}
+
+	Use_Skill();
 }
 
 void Kyle_FSM::b_sprint_Init()
@@ -980,26 +898,8 @@ void Kyle_FSM::skill_1100()
 	if (Is_AnimFinished())
 		m_eCurState = STATE::b_idle;
 
-	if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
-		m_eCurState = STATE::skill_100100;
-	else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
-		m_eCurState = STATE::skill_200100;
-	else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
-		m_eCurState = STATE::skill_300100;
-	else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
-		m_eCurState = STATE::skill_502100;
-	else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
-		m_eCurState = STATE::skill_500100;
-	else if (KEYTAP(KEY_TYPE::SPACE))
-	{
-		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
-		{
-			if (vInputVector != _float3(0.f))
-				m_eCurState = STATE::skill_91100;
-			else
-				m_eCurState = STATE::skill_93100;
-		}
-	}
+	//Using Skill
+	Use_Skill();
 }
 
 void Kyle_FSM::skill_1100_Init()
@@ -1044,26 +944,8 @@ void Kyle_FSM::skill_1200()
 		m_eCurState = STATE::b_idle;
 	}
 
-	if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
-		m_eCurState = STATE::skill_100100;
-	else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
-		m_eCurState = STATE::skill_200100;
-	else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
-		m_eCurState = STATE::skill_300100;
-	else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
-		m_eCurState = STATE::skill_502100;
-	else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
-		m_eCurState = STATE::skill_500100;
-	else if (KEYTAP(KEY_TYPE::SPACE))
-	{
-		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
-		{
-			if (vInputVector != _float3(0.f))
-				m_eCurState = STATE::skill_91100;
-			else
-				m_eCurState = STATE::skill_93100;
-		}
-	}
+	//Using Skill
+	Use_Skill();
 }
 
 void Kyle_FSM::skill_1200_Init()
@@ -1109,26 +991,8 @@ void Kyle_FSM::skill_1300()
 		m_eCurState = STATE::b_idle;
 	}
 
-	if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
-		m_eCurState = STATE::skill_100100;
-	else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
-		m_eCurState = STATE::skill_200100;
-	else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
-		m_eCurState = STATE::skill_300100;
-	else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
-		m_eCurState = STATE::skill_502100;
-	else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
-		m_eCurState = STATE::skill_500100;
-	else if (KEYTAP(KEY_TYPE::SPACE))
-	{
-		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
-		{
-			if (vInputVector != _float3(0.f))
-				m_eCurState = STATE::skill_91100;
-			else
-				m_eCurState = STATE::skill_93100;
-		}
-	}
+	//Using Skill
+	Use_Skill();
 }
 
 void Kyle_FSM::skill_1300_Init()
@@ -1181,26 +1045,8 @@ void Kyle_FSM::skill_1400()
 		m_eCurState = STATE::b_idle;
 	}
 
-	if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
-		m_eCurState = STATE::skill_100100;
-	else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
-		m_eCurState = STATE::skill_200100;
-	else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
-		m_eCurState = STATE::skill_300100;
-	else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
-		m_eCurState = STATE::skill_502100;
-	else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
-		m_eCurState = STATE::skill_500100;
-	else if (KEYTAP(KEY_TYPE::SPACE))
-	{
-		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
-		{
-			if (vInputVector != _float3(0.f))
-				m_eCurState = STATE::skill_91100;
-			else
-				m_eCurState = STATE::skill_93100;
-		}
-	}
+	//Using Skill
+	Use_Skill();
 }
 
 void Kyle_FSM::skill_1400_Init()
@@ -1343,18 +1189,7 @@ void Kyle_FSM::skill_100100()
 		m_eCurState = STATE::b_idle;
 	}
 
-	if (KEYTAP(KEY_TYPE::SPACE))
-	{
-		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
-		{
-			m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
-
-			if (vInputVector != _float3(0.f))
-				m_eCurState = STATE::skill_91100;
-			else
-				m_eCurState = STATE::skill_93100;
-		}
-	}
+	Use_Dash();
 }
 
 void Kyle_FSM::skill_100100_Init()
@@ -1422,18 +1257,8 @@ void Kyle_FSM::skill_100200()
 		m_eCurState = STATE::b_idle;
 	}
 
-	if (KEYTAP(KEY_TYPE::SPACE))
-	{
-		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
-		{
-			m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 
-			if (vInputVector != _float3(0.f))
-				m_eCurState = STATE::skill_91100;
-			else
-				m_eCurState = STATE::skill_93100;
-		}
-	}
+	Use_Dash();
 }
 
 void Kyle_FSM::skill_100200_Init()
@@ -1480,18 +1305,8 @@ void Kyle_FSM::skill_200100()
 		m_eCurState = STATE::b_idle;
 	}
 
-	if (KEYTAP(KEY_TYPE::SPACE))
-	{
-		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
-		{
-			m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 
-			if (vInputVector != _float3(0.f))
-				m_eCurState = STATE::skill_91100;
-			else
-				m_eCurState = STATE::skill_93100;
-		}
-	}
+	Use_Dash();
 }
 
 void Kyle_FSM::skill_200100_Init()
@@ -1542,18 +1357,8 @@ void Kyle_FSM::skill_200200()
 		m_eCurState = STATE::b_idle;
 	}
 
-	if (KEYTAP(KEY_TYPE::SPACE))
-	{
-		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
-		{
-			m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 
-			if (vInputVector != _float3(0.f))
-				m_eCurState = STATE::skill_91100;
-			else
-				m_eCurState = STATE::skill_93100;
-		}
-	}
+	Use_Dash();
 }
 
 void Kyle_FSM::skill_200200_Init()
@@ -1606,18 +1411,8 @@ void Kyle_FSM::skill_200300()
 		m_eCurState = STATE::b_idle;
 	}
 
-	if (KEYTAP(KEY_TYPE::SPACE))
-	{
-		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
-		{
-			m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 
-			if (vInputVector != _float3(0.f))
-				m_eCurState = STATE::skill_91100;
-			else
-				m_eCurState = STATE::skill_93100;
-		}
-	}
+	Use_Dash();
 }
 
 void Kyle_FSM::skill_200300_Init()
@@ -1711,18 +1506,8 @@ void Kyle_FSM::skill_300100()
 		m_eCurState = STATE::b_idle;
 	}
 
-	if (KEYTAP(KEY_TYPE::SPACE))
-	{
-		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
-		{
-			m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 
-			if (vInputVector != _float3(0.f))
-				m_eCurState = STATE::skill_91100;
-			else
-				m_eCurState = STATE::skill_93100;
-		}
-	}
+	Use_Dash();
 }
 
 void Kyle_FSM::skill_300100_Init()
@@ -1977,18 +1762,8 @@ void Kyle_FSM::skill_500100()
 		m_eCurState = STATE::b_idle;
 	}
 
-	if (KEYTAP(KEY_TYPE::SPACE))
-	{
-		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
-		{
-			m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 
-			if (vInputVector != _float3(0.f))
-				m_eCurState = STATE::skill_91100;
-			else
-				m_eCurState = STATE::skill_93100;
-		}
-	}
+	Use_Dash();
 }
 
 void Kyle_FSM::skill_500100_Init()
@@ -2052,4 +1827,37 @@ void Kyle_FSM::Calculate_SkillCamRight()
 		m_vSkillCamRight = (Get_Transform()->Get_State(Transform_State::RIGHT) * -3.f);
 	else //RIGHT	
 		m_vSkillCamRight = (Get_Transform()->Get_State(Transform_State::RIGHT) * 3.f);
+}
+
+void Kyle_FSM::Use_Skill()
+{
+	if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
+		m_eCurState = STATE::skill_100100;
+	else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
+		m_eCurState = STATE::skill_200100;
+	else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
+		m_eCurState = STATE::skill_300100;
+	else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
+		m_eCurState = STATE::skill_502100;
+	else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
+		m_eCurState = STATE::skill_500100;
+	else 
+		Use_Dash();
+}
+
+void Kyle_FSM::Use_Dash()
+{
+	if (KEYTAP(KEY_TYPE::SPACE))
+	{
+		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
+		{
+			m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
+			_float3 vInputVector = Get_InputDirVector();
+			if (vInputVector != _float3(0.f))
+				m_eCurState = STATE::skill_91100;
+			else
+				m_eCurState = STATE::skill_93100;
+		}
+	}
 }

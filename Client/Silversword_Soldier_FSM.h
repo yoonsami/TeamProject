@@ -108,13 +108,6 @@ private:
 	_float4 m_vPatrolFirstPos = { 0.f,0.f,0.f,1.f };
 	_float3 m_vTurnVector = _float3(0.f);
 
-	_float m_fRunSpeed = 4.f;
-	_float m_fKnockBackSpeed = 4.f;
-	_float m_fKnockDownSpeed = 4.f;
-
-	_float m_fNormalAttack_AnimationSpeed = 2.f;
-	_float m_fSkillAttack_AnimationSpeed = 2.f;
-
 	COOLTIMEINFO m_tAttackCoolTime = { 2.f, 0.f };
 	_bool m_bDetected = false;
 	_bool m_bPatrolMove = false;

@@ -32,6 +32,9 @@ HRESULT Boss_Mir_FSM::Init()
 
     m_pCamera = CUR_SCENE->Get_MainCamera();
 
+    m_fRunSpeed = 4.f;
+    m_fKnockDownSpeed = 4.f;
+
     return S_OK;
 }
 

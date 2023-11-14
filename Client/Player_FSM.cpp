@@ -508,8 +508,6 @@ void Player_FSM::b_run_Init()
 
 void Player_FSM::b_run_end_r()
 {
-     
-
     _float3 vInputVector = Get_InputDirVector();
 
     if (vInputVector != _float3(0.f))
@@ -543,8 +541,6 @@ void Player_FSM::b_run_end_r_Init()
 
 void Player_FSM::b_run_end_l()
 {
-     
-
     _float3 vInputVector = Get_InputDirVector();
 
     if (vInputVector != _float3(0.f))
@@ -577,8 +573,6 @@ void Player_FSM::b_run_end_l_Init()
 
 void Player_FSM::b_sprint()
 {
-     
-
     Get_Transform()->Go_Straight();
 
     _float3 vInputVector = Get_InputDirVector();
@@ -682,8 +676,6 @@ void Player_FSM::airborne_end_Init()
 
 void Player_FSM::airborne_up()
 {
-     
-
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 }
@@ -700,8 +692,6 @@ void Player_FSM::airborne_up_Init()
 
 void Player_FSM::hit()
 {
-     
-
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
     if (Is_AnimFinished())
@@ -746,8 +736,6 @@ void Player_FSM::knock_start_Init()
 
 void Player_FSM::knock_end()
 {
-     
-
     if (Get_CurFrame() < 16)
         Get_Transform()->Go_Backward();
 
@@ -769,8 +757,6 @@ void Player_FSM::knock_end_Init()
 
 void Player_FSM::knock_end_loop()
 {
-     
-
     m_tKnockDownEndCoolTime.fAccTime += fDT;
     
     if (Get_CurFrame() > Get_FinalFrame() / 2)
@@ -789,8 +775,6 @@ void Player_FSM::knock_end_loop_Init()
 
 void Player_FSM::knock_end_hit()
 {
-     
-
     m_tKnockDownEndCoolTime.fAccTime += fDT;
 
     if (Is_AnimFinished())
@@ -814,8 +798,6 @@ void Player_FSM::knock_end_hit_Init()
 
 void Player_FSM::knock_up()
 {
-     
-
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 }
@@ -836,8 +818,6 @@ void Player_FSM::knock_up_Init()
 
 void Player_FSM::knockdown_start()
 {
-     
-
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
     Get_Transform()->Go_Backward();
@@ -862,8 +842,6 @@ void Player_FSM::knockdown_start_Init()
 
 void Player_FSM::knockdown_end()
 {
-     
-
     if (Get_CurFrame() < 16)
         Get_Transform()->Go_Backward();
 
@@ -1639,6 +1617,8 @@ void Player_FSM::Use_Dash()
 	{
 		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
 		{
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
 			_float3 vInputVector = Get_InputDirVector();
 			if (vInputVector != _float3(0.f))
 				m_eCurState = STATE::skill_91100;

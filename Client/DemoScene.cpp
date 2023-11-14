@@ -16,6 +16,7 @@
 #include "LoadingScene.h"
 #include "BaseCollider.h"
 #include "WeaponScript.h"
+#include "Player_FSM.h"
 #include "SpearAce_FSM.h"
 #include "MeshRenderer.h"
 #include "FontRenderer.h"
@@ -29,7 +30,6 @@
 #include "UiGachaCardMove.h"
 #include "Debug_CreateMotionTrail.h"
 #include "CounterMotionTrailScript.h"
-
 
 
 #include "MapObjectScript.h"
@@ -200,8 +200,6 @@ void DemoScene::Load_Player()
 		ObjPlayer->Get_Collider()->Set_CollisionGroup(Player_Body);
 		ObjPlayer->Get_Collider()->Set_Activate(true);
 
-		//ObjPlayer->Add_Component(make_shared<Debug_CreateMotionTrail>());
-
 		{
 			auto controller = make_shared<CharacterController>();
 			ObjPlayer->Add_Component(controller);
@@ -245,6 +243,7 @@ void DemoScene::Load_Player()
 		Add_GameObject(ObjWeapon);
 
 		ObjPlayer->Add_Component(make_shared<HeroChangeScript>());
+	
 	}
 
 	{
