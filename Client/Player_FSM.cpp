@@ -1540,7 +1540,7 @@ void Player_FSM::skill_300200()
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
             desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 1.f;
+            desc.fLifeTime = 0.5f;
             desc.fLimitDistance = 0.f;
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);

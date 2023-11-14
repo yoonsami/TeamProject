@@ -108,9 +108,6 @@ void HeroChangeScript::Change_To_Player()
     CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Vehicle_AttackCollider"));
 
     shared_ptr<Model> model = RESOURCES.Get<Model>(L"Player");
-    model->AddParts(L"Am_Mask_01", PARTS_INFO::Hair);
-    model->AddParts(L"Am_Head_001", PARTS_INFO::Head);
-    model->AddParts(L"Am_Ct_Uniform_001", PARTS_INFO::Uniform);
 
     m_pOwner.lock()->Get_Animator()->Set_Model(model);
 
