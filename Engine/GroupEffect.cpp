@@ -110,6 +110,18 @@ void GroupEffect::Save(const wstring& path)
 	}
 }
 
+void GroupEffect::DeleteMember(const wstring& wstrTag)
+{
+	_int iIndex = 0;
+
+	for (auto& iter : m_vMemberEffectData)
+	{
+		if (iter.wstrEffectTag == wstrTag)
+			m_vMemberEffectData.erase(m_vMemberEffectData.begin() + iIndex);
+		iIndex++;
+	}
+}
+
 void GroupEffect::Create_MeshEffect(_int iIndex)
 {
 	// For.  Mesh Effect  

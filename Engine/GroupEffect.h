@@ -14,6 +14,7 @@ public:
 	virtual void			Final_Tick() override;      
 	
 	void					Save(const wstring& path);
+	void					DeleteMember(const wstring& wstrTag);
 	
 	/* Setter */
 	void					Set_Tag(wstring wstrTag) { m_wstrTag = wstrTag; }

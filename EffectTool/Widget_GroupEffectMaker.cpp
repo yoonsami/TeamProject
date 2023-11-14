@@ -411,6 +411,7 @@ void Widget_GroupEffectMaker::Option_MemberEffectList()
 		string strFloat3Key1 = "Translation##" + iter + strIndex;
 		string strFloat3Key2 = "Scale##" + iter + strIndex;
 		string strFloat3Key3 = "Rotation##" + iter + strIndex;
+		string strDeleteButton = "Delete##" + iter + strIndex;
 
 		if(ImGui::TreeNode(strTreeNodeKey.c_str()))
 		{
@@ -432,6 +433,11 @@ void Widget_GroupEffectMaker::Option_MemberEffectList()
 			{
 				_float3 vRotation = { m_tCurrMemberProperty[iIndex].m_fRotation[0], m_tCurrMemberProperty[iIndex].m_fRotation[1], m_tCurrMemberProperty[iIndex].m_fRotation[2] };
 				m_pCurrentGroup->Get_GroupEffect()->Set_Member_PivotRotation(iIndex, vRotation);
+			}
+			if (ImGui::Button(strDeleteButton.c_str()))
+			{
+				m_pCurrentGroup->Get_GroupEffect()->DeleteMember(Utils::ToWString(iter));
+				Set_MemberEffectList();
 			}
 			ImGui::TreePop();
 		}
