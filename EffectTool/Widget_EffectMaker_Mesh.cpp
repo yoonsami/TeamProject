@@ -30,6 +30,23 @@ void Widget_EffectMaker_Mesh::Tick()
 	ImGui::Begin("Finished Effect");
 	ImGui_FinishedEffect();
 	ImGui::End();
+
+	if (m_bSaveMsgBox_On)
+	{
+		ImGui::SetNextWindowPos(ImVec2(g_iWinSizeX/2.f - 30.f, g_iWinSizeY / 2.f - 10.f));
+		ImGui::Begin("Save");
+		ImGui_SaveMsgBox();
+		ImGui::End();
+	}
+
+	if(m_bTextureList_On)
+	{
+		ImGui::SetNextWindowPos(ImVec2(300.f, 100.f));
+		ImGui::SetNextWindowSize(ImVec2(500.f, 530.f));
+		ImGui::Begin("Texture List");
+		ImGui_TextureList();
+		ImGui::End();
+	}
 }
 
 void Widget_EffectMaker_Mesh::Set_Mesh_List()
@@ -128,7 +145,6 @@ void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 {
 	if (ImGui::BeginTabBar("##Tab1"))
 	{
-
 		if (ImGui::BeginTabItem("Visual"))
 		{
 			Option_Property();
@@ -153,10 +169,7 @@ void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 				Create();
 			ImGui::SameLine();
 			if (ImGui::Button("Save"))
-			{
-				// For. Update file data 
-				Save();
-			}
+				m_bSaveMsgBox_On = true;
 			ImGui::Spacing();
 
 			ImGui::EndTabItem();
@@ -185,7 +198,6 @@ void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 		
 		ImGui::EndTabBar();
 	}
-
 }
 
 void Widget_EffectMaker_Mesh::ImGui_FinishedEffect()
@@ -197,6 +209,43 @@ void Widget_EffectMaker_Mesh::ImGui_FinishedEffect()
 	if (ImGui::Button("Load"))
 		Load();
 	ImGui::SameLine();
+}
+
+void Widget_EffectMaker_Mesh::ImGui_SaveMsgBox()
+{
+	ImGui::Text("Are you sure you want to save it?");
+	ImGui::Spacing();
+	if (ImGui::Button("Save"))
+	{
+		Save();
+		m_bSaveMsgBox_On = false;
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("No"))
+		m_bSaveMsgBox_On = false;
+}
+
+void Widget_EffectMaker_Mesh::ImGui_TextureList()
+{
+	if (ImGui::BeginTabBar("##Tab2"))
+	{
+		if (ImGui::BeginTabItem("Texture List"))
+		{
+			SubWidget_TextureList();
+			ImGui::EndTabItem();
+		}
+		ImGui::SameLine();
+		if (ImGui::BeginTabItem("##Okbutton"))
+		{
+			if (ImGui::Button("Ok"))
+			{
+				m_bTextureList_On = false;
+			}
+			ImGui::EndTabItem();
+		}
+
+		ImGui::EndTabBar();
+	}
 }
 
 void Widget_EffectMaker_Mesh::Option_Property()
@@ -312,7 +361,12 @@ void Widget_EffectMaker_Mesh::Option_Diffuse()
 		switch (m_iDiffuseOption)
 		{
 		case 0: 
-			// For. Texture 
+			// For. Te"xture 
+			if (ImGui::Button("Change Texture"))
+			{
+				m_bTextureList_On = true;
+
+			}
 			if(!m_bIsTextureSameWithOpacity)
 				SubWidget_TextureCombo(&m_DiffuseTexture.first, &m_DiffuseTexture.second, m_strTexturePath,"Texture##Diffuse");
 			if (ImGui::Checkbox("Use same texture with Opacity##DIffuse", &m_bIsTextureSameWithOpacity))
@@ -366,9 +420,17 @@ void Widget_EffectMaker_Mesh::Option_Opacity()
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
 		ImGui::BeginChild("##Child1_Opacity", ImVec2(ImGui::GetContentRegionAvail().x - 100, 200), false, window_flags);
 		
+		if (ImGui::Button("Texture##Opacity"))
+		{
+			m_iTexture_TextureList = &m_OpacityTexture.first;
+			m_pTextureTag_TextureList = &m_OpacityTexture.second;
+			m_pszWidgetKey_TextureList = "Texture##Opacity";
+			m_bTextureList_On = true;
+		}
+
 		// For. Texture 
-		SubWidget_TextureCombo(&m_OpacityTexture.first, &m_OpacityTexture.second, m_strTexturePath, "Texture##Opacity");
-		ImGui::Spacing();
+		//SubWidget_TextureCombo(&m_OpacityTexture.first, &m_OpacityTexture.second, m_strTexturePath, "Texture##Opacity");
+		//ImGui::Spacing();
 	
 		ImGui::EndChild();
 	}
@@ -967,7 +1029,7 @@ void Widget_EffectMaker_Mesh::Create()
 	// For. Add and Setting Transform Component
 	EffectObj->GetOrAddTransform();
 	EffectObj->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
-	EffectObj->Get_Transform()->Scaled(_float3(0.1f));
+	EffectObj->Get_Transform()->Scaled(_float3(1.0f));
 
 	// For. Add and Setting Effect Component to GameObject
 	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
@@ -1414,26 +1476,7 @@ void Widget_EffectMaker_Mesh::Load()
 
 void Widget_EffectMaker_Mesh::SubWidget_TextureCombo(_int* iSelected, string* strSelected, string strFilePath, const char* pszWidgetKey)
 {
-	/*
-	if (ImGui::BeginCombo(pszWidgetKey, m_pszUniversalTextures[*iSelected], 0))
-	{
-		for (_uint n = 0; n < m_iNumUniversalTextures; n++)
-		{
-			const bool is_selected = (*iSelected == n);
-			if (ImGui::Selectable(m_pszUniversalTextures[n], is_selected))
-			{
-				*iSelected = n;
-				*strSelected = m_pszUniversalTextures[*iSelected];
-			}
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();
-		}
-		ImGui::EndCombo();
-	}
-	*/
-
 	ImGui::Text("Texture List");
-
 	{
 		ImGui::BeginChild(pszWidgetKey, ImVec2(ImGui::GetContentRegionAvail().x, 150), false);
 
@@ -1454,6 +1497,35 @@ void Widget_EffectMaker_Mesh::SubWidget_TextureCombo(_int* iSelected, string* st
 			}
 
 			if (0 != n % 4)
+				ImGui::SameLine();
+		}
+		ImGui::EndChild();
+	}
+}
+
+void Widget_EffectMaker_Mesh::SubWidget_TextureList()
+{
+	ImGui::Text("Texture List");
+	{
+		ImGui::BeginChild(m_pszWidgetKey_TextureList, ImVec2(ImGui::GetContentRegionAvail().x, 500), false);
+
+		for (_uint n = 1; n < m_iNumUniversalTextures; n++)
+		{
+			wstring wstrKey = Utils::ToWString(m_pszUniversalTextures[n]);
+			wstring wstrPath = Utils::ToWString(m_strTexturePath) + wstrKey;
+			Utils::DetachExt(wstrKey);
+			auto pTexture = RESOURCES.GetOrAddTexture(wstrKey, wstrPath);
+
+			char pszButtonkey[MAX_PATH];
+			strcpy_s(pszButtonkey, sizeof(pszButtonkey), m_pszWidgetKey_TextureList);
+			strcat_s(pszButtonkey, sizeof(pszButtonkey), m_pszUniversalTextures[n]);
+			if (ImGui::ImageButton(pszButtonkey, (pTexture->Get_SRV().Get()), ImVec2(50, 50)))
+			{
+				*m_iTexture_TextureList = n;
+				*m_pTextureTag_TextureList = m_pszUniversalTextures[n];
+			}
+
+			if (0 != n % 6)
 				ImGui::SameLine();
 		}
 		ImGui::EndChild();

@@ -24,6 +24,8 @@ private:
 	/* ImGui Windows */
 	void					ImGui_EffectMaker();
 	void					ImGui_FinishedEffect();
+	void					ImGui_SaveMsgBox();
+	void					ImGui_TextureList();
 
 	/* Funtions */
 	void					Option_Property();
@@ -47,6 +49,7 @@ private:
 	void					Load();
 
 	void					SubWidget_TextureCombo(_int* iSelected, string* strSelected, string strFilePath, const char* pszWidgetKey);
+	void					SubWidget_TextureList();
 	void					SubWidget_ImageViewer(string strFileName, string strFilePath, const char* pszWidgetKey);
 	void					SubWidget_SettingTexUV(_float* arrTiling, _float* arrTexUVSpeed, const char* pszWidgetKey, const char* pszWidgetKey2);
 	
@@ -60,6 +63,15 @@ private:
 	_bool					Equal(_float* arrSrc, _float* arrDest, _int iSize);
 	_bool					Compare_IsSameUVOptionsWithOpacity(_float2 tiling, _float2 UVSpeed);
 private:
+	/* UI On/Off*/
+	_bool					m_bSaveMsgBox_On = { false };
+	_bool					m_bTextureList_On = { false };
+
+	/* Use in SubWidget_TextureList */
+	_int*					m_iTexture_TextureList;
+	string*					m_pTextureTag_TextureList;
+	const char*				m_pszWidgetKey_TextureList;
+
 	/* Effect List */
 	_uint					m_iNumFinishedEffects = { MT_PARTICLE };
 	vector<string>			m_vecFinishedEffects;
