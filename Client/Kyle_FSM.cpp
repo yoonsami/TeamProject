@@ -30,6 +30,7 @@ HRESULT Kyle_FSM::Init()
 	m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
 	m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
 	m_pAttackCollider.lock()->Set_Name(L"Player_AttackCollider");
+	m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(Get_Owner());
 
 
 	m_iCenterBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Center");

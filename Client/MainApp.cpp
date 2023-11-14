@@ -43,7 +43,7 @@ HRESULT MainApp::Init()
 	DEBUGTOOL.Init();
 #endif
 
-
+	GET_SINGLE(DataMgr).Initialize();
 
     return S_OK;
 }

@@ -11,6 +11,9 @@ public:
     virtual void Tick() override;
 
 private:
+    
+
+private:
     _float m_fValue = { 0.f };
 };
 

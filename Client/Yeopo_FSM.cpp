@@ -40,6 +40,7 @@ HRESULT Yeopo_FSM::Init()
 
     m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
     m_pAttackCollider.lock()->Set_Name(L"Player_AttackCollider");
+	m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(Get_Owner());
 
     m_pWeapon = CUR_SCENE->Get_GameObject(L"Weapon_Yeopo");
 

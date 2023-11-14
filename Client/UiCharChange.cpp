@@ -23,15 +23,16 @@ HRESULT UiCharChange::Init()
     m_vecDesc[2].fAccTime = m_vecDesc[2].fCoolTime;*/
 
     m_pObj.resize(3);
-    m_pObj[0] = CUR_SCENE->Get_GameObject(L"UI_Char_Change0");
-    m_pObj[1] = CUR_SCENE->Get_GameObject(L"UI_Char_Change1");
-    m_pObj[2] = CUR_SCENE->Get_GameObject(L"UI_Char_Change2");
+    m_pObj[0] = CUR_SCENE->Get_UI(L"UI_Char_Change0");
+    m_pObj[1] = CUR_SCENE->Get_UI(L"UI_Char_Change1");
+    m_pObj[2] = CUR_SCENE->Get_UI(L"UI_Char_Change2");
     
     m_pElement.resize(3);
-    m_pElement[0] = CUR_SCENE->Get_GameObject(L"UI_Char_Change_Element0");
-    m_pElement[1] = CUR_SCENE->Get_GameObject(L"UI_Char_Change_Element1");
-    m_pElement[2] = CUR_SCENE->Get_GameObject(L"UI_Char_Change_Element2");
+    m_pElement[0] = CUR_SCENE->Get_UI(L"UI_Char_Change_Element0");
+    m_pElement[1] = CUR_SCENE->Get_UI(L"UI_Char_Change_Element1");
+    m_pElement[2] = CUR_SCENE->Get_UI(L"UI_Char_Change_Element2");
 
+    // get data 로 바꾸기
     m_TextureKey.resize(IDX(HERO::MAX));
     m_TextureKey[0] = L"Card_Ace";
     m_TextureKey[1] = L"Card_Kyle";

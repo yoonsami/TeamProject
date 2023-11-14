@@ -3,6 +3,7 @@
 
 #include "Utils.h"
 #include "MeshRenderer.h"
+#include "UiCardDeckController.h"
 
 UiGachaCardMove::UiGachaCardMove(_uint iIndex)
     : m_iIndex(iIndex)
@@ -78,23 +79,23 @@ HRESULT UiGachaCardMove::Init()
 	_float fRand = Utils::Random_In_Range(0.f, 1.f);
 	if (0.01f > fRand)
 	{
+		m_eHero = HERO::ACE3;
 		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back0"), TextureMapType::DIFFUSE);
-		m_strTextureTag = L"Big_Card_Ace_Line";
 	}
 	else if (0.02f > fRand)
 	{
+		m_eHero = HERO::DELLONS;
 		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back1"), TextureMapType::DIFFUSE);
-		m_strTextureTag = L"Big_Card_Dellons_Line";
 	}
 	else if (0.03f > fRand)
 	{
+		m_eHero = HERO::KYLE;
 		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back3"), TextureMapType::DIFFUSE);
-		m_strTextureTag = L"Big_Card_Kyle_Line";
 	}
 	else if (0.04f > fRand)
 	{
+		m_eHero = HERO::YEOPO;
 		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back4"), TextureMapType::DIFFUSE);
-		m_strTextureTag = L"Big_Card_Yeopo_Line";
 	}
 	else if (0.4f > fRand)
 	{
@@ -105,8 +106,9 @@ HRESULT UiGachaCardMove::Init()
 		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back5"), TextureMapType::DIFFUSE);
 	}
 
-	// 오픈할 카드 정해야함
-	// 우선 test code
+	if(HERO::MAX != m_eHero)
+		m_strTextureTag = GET_DATA(m_eHero).KeyDeckSelect;
+	
 
 
     return S_OK;
@@ -185,7 +187,7 @@ void UiGachaCardMove::Idle()
 	// 쉐이더 코드
 
 }
-
+	
 void UiGachaCardMove::Open()
 {
 	switch (m_eChangeType)
@@ -209,6 +211,9 @@ void UiGachaCardMove::Open()
 	{
 		m_fCurScale.x = 272.f;
 		m_eState = STATE::IDLE;
+
+		if(HERO::MAX != m_eHero)
+			CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Set_Hero(m_eHero);
 	}
 
 	m_pOwner.lock()->GetOrAddTransform()->Scaled(m_fCurScale);

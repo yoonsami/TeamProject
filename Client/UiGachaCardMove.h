@@ -40,7 +40,8 @@ private:
    _float4          m_vecArrivalPos     = {};
 
    // open 관련 변수
-   CHANGE_TYPE      m_eOpenType      = { CHANGE_TYPE::DOWN };
+   CHANGE_TYPE      m_eOpenType         = { CHANGE_TYPE::DOWN };
    wstring          m_strTextureTag;
+   HERO             m_eHero             = { HERO::MAX };
 };
 

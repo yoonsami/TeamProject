@@ -59,7 +59,7 @@ void HeroChangeScript::Tick()
 
             m_pOwner.lock()->Get_FSM()->Init();
 
-            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::ACE);
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::ACE3);
         }
     }
     else if (KEYTAP(KEY_TYPE::F2))

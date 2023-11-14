@@ -26,7 +26,7 @@ private:
 
 private:
     vector<vector<COOLTIMEINFO>>    m_CoolTime;
-    vector<vector<wstring>>         m_TextureKey;
+    //vector<vector<wstring>>         m_TextureKey;
     vector<weak_ptr<GameObject>>    m_pUiSkill;
     vector<weak_ptr<GameObject>>    m_pUiSkill_Effect;
     vector<weak_ptr<GameObject>>    m_pUi_Cool_End;
