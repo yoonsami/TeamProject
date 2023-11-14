@@ -109,7 +109,7 @@ HRESULT UiGachaCardMove::Init()
 	if(HERO::MAX != m_eHero)
 		m_strTextureTag = GET_DATA(m_eHero).KeyDeckSelect;
 	
-
+	// HERO::PLAYER는 뽑는 목록에서 제외
 
     return S_OK;
 }

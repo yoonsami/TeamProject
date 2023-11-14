@@ -5,6 +5,46 @@ void DataMgr::Initialize()
 {
     m_HeroData.resize(IDX(HERO::MAX));
 
+    // PLAYER
+    {
+        auto& tagData = m_HeroData[IDX(HERO::PLAYER)];
+        
+        tagData.Element         = ElementType::WATER;
+        tagData.Star            = 4;
+
+        tagData.AttackDamage    = 1.f;
+        tagData.MaxHp           = 10.f;
+        tagData.CurHp           = 10.f;
+        tagData.PreHp           = 10.f;
+        tagData.Deffence        = 1.f;
+        tagData.HpRegen         = 1.f;
+        tagData.CriPercent      = 0.f;
+        tagData.CriDamageMul    = 1.f;
+
+        tagData.Skill1Cool      = 5.f;
+        tagData.Skill2Cool      = 5.f;
+        tagData.Skill3Cool      = 5.f;
+        tagData.Skill4Cool      = 0.f;
+        tagData.Skill5Cool      = 0.f;
+        tagData.Skill1DamageMul = 1.f;
+        tagData.Skill2DamageMul = 1.f;
+        tagData.Skill3DamageMul = 1.f;
+        tagData.Skill4DamageMul = 1.f;
+        tagData.Skill5DamageMul = 1.f;
+
+        tagData.KeyAttack       = L"Skill_Player0";
+        tagData.KeyEvade        = L"Skill_Player1";
+        tagData.KeySkill1       = L"Skill_Player2";
+        tagData.KeySkill2       = L"Skill_Player3";
+        tagData.KeySkill3       = L"Skill_Player4";
+        tagData.KeySkill4       = L"Skill_Player5";
+        tagData.KeySkill5       = L"Skill_Player6";
+        tagData.KeyChangeCard   = L"";
+        tagData.KeyDeckMini     = L"";
+        tagData.KeyDeckSelect   = L"";
+        
+    }
+
     // ACE3
     {
         auto& tagData = m_HeroData[IDX(HERO::ACE3)];

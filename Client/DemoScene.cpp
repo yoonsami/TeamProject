@@ -588,7 +588,6 @@ void DemoScene::Load_Ui()
 
 	{
 		auto pScript = make_shared<CoolTimeCheckScript>();
-		pScript->Set_Cur_Hero(HERO::ACE3);
 		Get_GameObject(L"Player")->Add_Component(pScript);
 	}
 

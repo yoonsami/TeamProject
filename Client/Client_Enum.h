@@ -2,6 +2,7 @@
 
 enum class HERO 
 { 
+	PLAYER,
 	ACE3,
 	KYLE,
 	YEOPO,
