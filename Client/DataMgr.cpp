@@ -5,11 +5,12 @@ void DataMgr::Initialize()
 {
     m_HeroData.resize(IDX(HERO::MAX));
 
-    // ACE
+    // ACE3
     {
-        auto& tagData = m_HeroData[IDX(HERO::ACE)];
+        auto& tagData = m_HeroData[IDX(HERO::ACE3)];
         
-        tagData.Element = ElementType::WATER;
+        tagData.Element         = ElementType::WATER;
+        tagData.Star            = 4;
 
         tagData.AttackDamage    = 1.f;
         tagData.MaxHp           = 10.f;
@@ -38,16 +39,18 @@ void DataMgr::Initialize()
         tagData.KeySkill3       = L"Skill_Ace4";
         tagData.KeySkill4       = L"Skill_Ace5";
         tagData.KeySkill5       = L"Skill_Ace6";
-        tagData.KeyChangeCard   = L"Card_Ace";
-        tagData.KeyDeckMini     = L"Card_Deck_Ace";
-        tagData.KeyDeckSelect   = L"Big_Card_Ace_Line";
+        tagData.KeyChangeCard   = L"Card_Ace3";
+        tagData.KeyDeckMini     = L"Card_Deck_Ace3";
+        tagData.KeyDeckSelect   = L"Big_Card_Ace_Line3";
+        
     }
     
     // KYLE
     {
         auto& tagData = m_HeroData[IDX(HERO::KYLE)];
         
-        tagData.Element = ElementType::FIRE;
+        tagData.Element         = ElementType::FIRE;
+        tagData.Star            = 4;
 
         tagData.AttackDamage    = 1.f;
         tagData.MaxHp           = 10.f;
@@ -85,7 +88,8 @@ void DataMgr::Initialize()
     {
         auto& tagData = m_HeroData[IDX(HERO::YEOPO)];
         
-        tagData.Element = ElementType::FIRE;
+        tagData.Element         = ElementType::FIRE;
+        tagData.Star            = 4;
 
         tagData.AttackDamage    = 1.f;
         tagData.MaxHp           = 10.f;
@@ -123,7 +127,8 @@ void DataMgr::Initialize()
     {
         auto& tagData = m_HeroData[IDX(HERO::DELLONS)];
         
-        tagData.Element = ElementType::DARK;
+        tagData.Element         = ElementType::DARK;
+        tagData.Star            = 4;
 
         tagData.AttackDamage    = 1.f;
         tagData.MaxHp           = 10.f;
@@ -158,6 +163,11 @@ void DataMgr::Initialize()
     }
     
 
-
-
+    m_KeyElement.resize(ElementType::ElementEnd);
+    m_KeyElement[0] = L"Element_Dark";
+    m_KeyElement[1] = L"Element_Earth";
+    m_KeyElement[2] = L"Element_Fire";
+    m_KeyElement[3] = L"Element_Light";
+    m_KeyElement[4] = L"Element_Water";
+    m_KeyElement[5] = L"Element_Wind";
 }

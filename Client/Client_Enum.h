@@ -2,7 +2,7 @@
 
 enum class HERO 
 { 
-	ACE,
+	ACE3,
 	KYLE,
 	YEOPO,
 	DELLONS,

@@ -506,6 +506,7 @@ void DemoScene::Load_Ui()
 		auto pScript = make_shared<MainUiController>();
 		pObj->Add_Component(pScript);
 
+		pObj->Set_LayerIndex(Layer_UI);
 		Add_GameObject(pObj, true);
 	}
 
@@ -516,6 +517,7 @@ void DemoScene::Load_Ui()
 		auto pScript = make_shared<UiGachaController>();
 		pObj->Add_Component(pScript);
 
+		pObj->Set_LayerIndex(Layer_UI);
 		Add_GameObject(pObj, true);
 	}
 
@@ -526,6 +528,7 @@ void DemoScene::Load_Ui()
 		auto pScript = make_shared<UiCardDeckController>();
 		pObj->Add_Component(pScript);
 
+		pObj->Set_LayerIndex(Layer_UI);
 		Add_GameObject(pObj, true);
 	}
 
@@ -580,7 +583,7 @@ void DemoScene::Load_Ui()
 
 	{
 		auto pScript = make_shared<CoolTimeCheckScript>();
-		pScript->Set_Cur_Hero(HERO::ACE);
+		pScript->Set_Cur_Hero(HERO::ACE3);
 		Get_GameObject(L"Player")->Add_Component(pScript);
 	}
 
@@ -604,8 +607,22 @@ void DemoScene::Load_Ui()
 	{
 		for (_uint i = 0; i < 32; ++i)
 		{
-			auto pScript = make_shared<UiCardDeckInvenChange>();
+			auto pScript = make_shared<UiCardDeckInvenChange>(0);
 			wstring strTemp = L"UI_Card_Deck_Inven";
+			strTemp += to_wstring(i);
+			Get_GameObject(strTemp)->Add_Component(pScript);
+		}
+		for (_uint i = 0; i < 32; ++i)
+		{
+			auto pScript = make_shared<UiCardDeckInvenChange>(1);
+			wstring strTemp = L"UI_Card_Deck_Inven_Element";
+			strTemp += to_wstring(i);
+			Get_GameObject(strTemp)->Add_Component(pScript);
+		}
+		for (_uint i = 0; i < 32; ++i)
+		{
+			auto pScript = make_shared<UiCardDeckInvenChange>(2);
+			wstring strTemp = L"UI_Card_Deck_InvenBg";
 			strTemp += to_wstring(i);
 			Get_GameObject(strTemp)->Add_Component(pScript);
 		}

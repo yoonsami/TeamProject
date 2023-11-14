@@ -15,7 +15,7 @@ HRESULT CoolTimeCheckScript::Init()
     if (m_pOwner.expired())
         return E_FAIL;
 
-    m_eCurHero = HERO::ACE;
+    m_eCurHero = HERO::ACE3;
 
     m_CoolTime.resize(IDX(HERO::MAX));
     //m_TextureKey.resize(IDX(HERO::MAX));
@@ -57,20 +57,20 @@ HRESULT CoolTimeCheckScript::Init()
     // 5 skill
     // 7 texture : attack, evade, skill 0 ~ 4
     // Ace
-    auto tagData = GET_DATA(HERO::ACE);
-    m_CoolTime[IDX(HERO::ACE)][0].fCoolTime = tagData.Skill1Cool;
-    m_CoolTime[IDX(HERO::ACE)][1].fCoolTime = tagData.Skill2Cool;
-    m_CoolTime[IDX(HERO::ACE)][2].fCoolTime = tagData.Skill3Cool;
-    m_CoolTime[IDX(HERO::ACE)][3].fCoolTime = tagData.Skill4Cool;
-    m_CoolTime[IDX(HERO::ACE)][4].fCoolTime = tagData.Skill5Cool;
+    auto tagData = GET_DATA(HERO::ACE3);
+    m_CoolTime[IDX(HERO::ACE3)][0].fCoolTime = tagData.Skill1Cool;
+    m_CoolTime[IDX(HERO::ACE3)][1].fCoolTime = tagData.Skill2Cool;
+    m_CoolTime[IDX(HERO::ACE3)][2].fCoolTime = tagData.Skill3Cool;
+    m_CoolTime[IDX(HERO::ACE3)][3].fCoolTime = tagData.Skill4Cool;
+    m_CoolTime[IDX(HERO::ACE3)][4].fCoolTime = tagData.Skill5Cool;
 
-    //m_TextureKey[IDX(HERO::ACE)][0] = L"Skill_Ace0";
-    //m_TextureKey[IDX(HERO::ACE)][1] = L"Skill_Ace1";
-    //m_TextureKey[IDX(HERO::ACE)][2] = L"Skill_Ace2";
-    //m_TextureKey[IDX(HERO::ACE)][3] = L"Skill_Ace3";
-    //m_TextureKey[IDX(HERO::ACE)][4] = L"Skill_Ace4";
-    //m_TextureKey[IDX(HERO::ACE)][5] = L"Skill_Ace5";
-    //m_TextureKey[IDX(HERO::ACE)][6] = L"Skill_Ace6";
+    //m_TextureKey[IDX(HERO::ACE3)][0] = L"Skill_Ace0";
+    //m_TextureKey[IDX(HERO::ACE3)][1] = L"Skill_Ace1";
+    //m_TextureKey[IDX(HERO::ACE3)][2] = L"Skill_Ace2";
+    //m_TextureKey[IDX(HERO::ACE3)][3] = L"Skill_Ace3";
+    //m_TextureKey[IDX(HERO::ACE3)][4] = L"Skill_Ace4";
+    //m_TextureKey[IDX(HERO::ACE3)][5] = L"Skill_Ace5";
+    //m_TextureKey[IDX(HERO::ACE3)][6] = L"Skill_Ace6";
     
 
     // Kyle

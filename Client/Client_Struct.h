@@ -12,6 +12,8 @@ typedef struct tagHeroData
 {
 	ElementType Element = ElementType::ElementEnd;
 
+	_uint		Star			= 1;
+
 	float		AttackDamage	= 1.f;
 	float		MaxHp			= 10.f;
 	float		CurHp			= 10.f;

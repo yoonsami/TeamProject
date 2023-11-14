@@ -4,11 +4,13 @@
 class UiCardDeckInvenChange : public MonoBehaviour
 {
 public:
-    UiCardDeckInvenChange();
+    UiCardDeckInvenChange(_uint iType);
 
 public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
+
+    _bool Is_Set_Hero() { return m_bIsSetHero; }
 
     void Set_Hero(HERO eHero);
     void Set_Empty();
@@ -17,7 +19,9 @@ private:
 
 
 private:
-   
+    _uint   m_iType         = { 0 };
+    _bool   m_bIsSetHero    = { false };
+    HERO    m_eHero         = { HERO::MAX };
 
 };
 
