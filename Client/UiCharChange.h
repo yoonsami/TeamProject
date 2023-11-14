@@ -16,6 +16,7 @@ public:
 private:
     void Check_Change_Cool();
     void Set_Param_Value();
+    void Change_Hero();
 
 private:
     typedef struct tagCharChangeDesc
@@ -28,7 +29,9 @@ private:
     vector<CHARCHANGEDESC>          m_vecDesc;
     vector<weak_ptr<GameObject>>    m_pObj;
     vector<weak_ptr<GameObject>>    m_pElement;
-    vector<wstring>                 m_TextureKey;
+    vector<HERO>                    m_eHero;
+
+    _uint m_iCurIndex = { 0 };
 
 };
 

@@ -1,8 +1,9 @@
 #include "pch.h"
 #include "UiCharChange.h"
 
-#include "MeshRenderer.h"
 #include "Material.h"
+#include "MeshRenderer.h"
+#include "HeroChangeScript.h"
 
 UiCharChange::UiCharChange()
 {
@@ -32,13 +33,10 @@ HRESULT UiCharChange::Init()
     m_pElement[1] = CUR_SCENE->Get_UI(L"UI_Char_Change_Element1");
     m_pElement[2] = CUR_SCENE->Get_UI(L"UI_Char_Change_Element2");
 
-    // get data 로 바꾸기
-    m_TextureKey.resize(IDX(HERO::MAX));
-    m_TextureKey[0] = L"Card_Ace";
-    m_TextureKey[1] = L"Card_Kyle";
-    m_TextureKey[2] = L"Card_Yeopo";
-    m_TextureKey[3] = L"Card_Dellons";
-
+    m_eHero.resize(3);
+    m_eHero[0] = HERO::MAX;
+    m_eHero[1] = HERO::MAX;
+    m_eHero[2] = HERO::MAX;
 
 
     return S_OK;
@@ -52,6 +50,8 @@ void UiCharChange::Tick()
     Check_Change_Cool();
 
     Set_Param_Value();
+
+    Change_Hero();
 }
 
 void UiCharChange::Set_Hero(_uint iIndex, HERO eHero)
@@ -66,14 +66,15 @@ void UiCharChange::Set_Hero(_uint iIndex, HERO eHero)
     if (HERO::MAX == eHero)
     {
         m_pObj[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"Card_None"), TextureMapType::DIFFUSE);
-        m_pElement[iIndex].lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = 0.f;
+        m_pElement[iIndex].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
+        m_eHero[iIndex] = HERO::MAX;
     }
     else
     {
-        m_pObj[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[IDX(eHero)]), TextureMapType::DIFFUSE);
-        
-        // 선택한 영웅의 속성값을 가져와서 장착해야함
-        m_pElement[iIndex].lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = 1.f;
+        m_pObj[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap((RESOURCES.Get<Texture>(GET_DATA(eHero).KeyChangeCard)), TextureMapType::DIFFUSE);
+        m_pElement[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(GET_ELEMENT(eHero)), TextureMapType::DIFFUSE);
+        m_pElement[iIndex].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        m_eHero[iIndex] = eHero;
     }
 }
 
@@ -127,5 +128,37 @@ void UiCharChange::Set_Param_Value()
         m_pObj[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = m_vecDesc[i].fAccTime / m_vecDesc[i].fCoolTime;
         if (1.f <= m_pObj[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0])
             m_pObj[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = 1.f;
+    }
+}
+
+void UiCharChange::Change_Hero()
+{
+    if (KEYTAP(KEY_TYPE::F1))
+    {
+        if (HERO::MAX == m_eHero[0])
+            return;
+
+        // hero change script
+        auto pScript = CUR_SCENE->Get_GameObject(L"Player")->Get_Script<HeroChangeScript>();
+
+    }
+
+    if (KEYTAP(KEY_TYPE::F2))
+    {
+        if (HERO::MAX == m_eHero[0])
+            return;
+
+        auto pScript = CUR_SCENE->Get_GameObject(L"Player")->Get_Script<HeroChangeScript>();
+
+
+    }
+
+    if (KEYTAP(KEY_TYPE::F3))
+    {
+        if (HERO::MAX == m_eHero[0])
+            return;
+
+        auto pScript = CUR_SCENE->Get_GameObject(L"Player")->Get_Script<HeroChangeScript>();
+
     }
 }
