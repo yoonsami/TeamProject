@@ -18,22 +18,24 @@ public:
 
     void			InitialTransform(_float3 vParentPos, _float3 vParentScale, _float3 vParentRotation);
 
+    /* Setter */
+    void            Set_Desc(MeshEffectData::DESC tDesc) { m_tDesc = tDesc; }
+    void            Set_TransformDesc(void* pArg);
+
     /* Getter */
     shared_ptr<Material>    Get_Material() { return  m_pMaterial; }
     shared_ptr<Shader>      Get_Shader() { return m_pShader; }
 
-    /* Setter */
-    void            Set_Desc(MeshEffectData::DESC tDesc) { m_tDesc = tDesc; }
-    void            Set_TransformDesc(void* pArg);
 private:
-    void            Translate();
-    void            Scaling();
-    void            Turn();
+    void                    Translate();
+    void                    Scaling();
+    void                    Turn();
 
-    void            Init_RenderParams();
-    void            Bind_RenderParams_ToShader();
+    void                    Run_SpriteAnimation();
+    
+    void                    Init_RenderParams();
+    void                    Bind_RenderParams_ToShader();
 
-    _float			GetRandomFloatInRange(_float fStart, _float fEnd);
 private:
     MeshEffectData::DESC    m_tDesc;   
     MeshEffectData::Transform_Desc m_tTransform_Desc;
@@ -42,8 +44,10 @@ private:
 
     _float                  m_fDuration = { 0.f };
     _float                  m_fCurrAge = { 0.f };
+    _float                  m_fTimeAcc_SpriteAnimation = { 0.f };
 
     _float2                 m_vCurrTexUVOffset_Opacity      = { 0.f, 0.f };
+    _float2                 m_vCurrTexUVOffset_Diffuse      = { 0.f, 0.f };
     _float2                 m_vCurrTexUVOffset_Gra          = { 0.f, 0.f };
     _float2                 m_vCurrTexUVOffset_Overlay      = { 0.f, 0.f };
     _float2                 m_vCurrTexUVOffset_Dissolve     = { 0.f, 0.f };
@@ -51,6 +55,13 @@ private:
 
     _bool                   m_bIsPlayFinished = { false };              
    
+    /* Sprite Animation */
+    _float2                 m_vSpriteSize = { 0.f, 0.f };
+    _int                    m_iNumSprite = { 0 };
+    _int                    m_iCurrSpriteIndex = { 0 };
+    _float2                 m_UVTexRangeX = { 0.f, 0.f };
+    _float2                 m_UVTexRangeY = { 0.f, 0.f };
+
     /* Initalize Transform */
     _float3		            m_vStartPos;
     _float3		            m_vStartScale;
@@ -66,9 +77,6 @@ private:
     _int                    m_iTurnOption;
     _float                  m_fTurnSpeed;
     _float3                 m_vRandomAxis;
-
-    /* Random */
-    mt19937_64	            m_RandomNumber;
 
     /* Component */
     shared_ptr<Shader>      m_pShader = { nullptr };

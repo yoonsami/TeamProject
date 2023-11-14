@@ -133,6 +133,7 @@ void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 		{
 			Option_Property();
 			Option_Mesh();
+			Option_SpriteAnimation();
 
 			Option_Opacity();
 			Option_Blend();
@@ -164,6 +165,19 @@ void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 		{
 			Option_InitTransform();
 			Option_Movement();
+			ImGui::Spacing();
+
+			/* For. Create, Save, Load Effect */
+			ImGui::Spacing();
+			ImGui::SeparatorText("Create / Load");
+			if (ImGui::Button("Create"))
+				Create();
+			ImGui::SameLine();
+			if (ImGui::Button("Save"))
+			{
+				// For. Update file data 
+				Save();
+			}
 			ImGui::Spacing();
 
 			ImGui::EndTabItem();
@@ -228,13 +242,16 @@ void Widget_EffectMaker_Mesh::Option_Property()
 	}
 	ImGui::Spacing();
 
-	ImGui::InputFloat("Duration", &m_fDuration);
+	ImGui::InputFloat("Duration##Property", &m_fDuration);
 	ImGui::Spacing();
 
-	ImGui::Checkbox("Blur On", &m_bBlurOn);
+	ImGui::Checkbox("Blur On##Property", &m_bBlurOn);
 	ImGui::Spacing();
 
-	ImGui::Checkbox("On Fade Out", &m_bUseFadeOut);
+	ImGui::Checkbox("On Fade Out##Property", &m_bUseFadeOut);
+	ImGui::Spacing();	
+
+	ImGui::Checkbox("Color Changing On##Property", &m_bColorChangingOn);
 	ImGui::Spacing();
 }
 
@@ -290,7 +307,7 @@ void Widget_EffectMaker_Mesh::Option_Diffuse()
 
 	{
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
-		ImGui::BeginChild("##Child1_Diffuse", ImVec2(ImGui::GetContentRegionAvail().x - 100, 150), false, window_flags);
+		ImGui::BeginChild("##Child1_Diffuse", ImVec2(ImGui::GetContentRegionAvail().x - 100, 200), false, window_flags);
 		switch (m_iDiffuseOption)
 		{
 		case 0: 
@@ -332,6 +349,12 @@ void Widget_EffectMaker_Mesh::Option_Diffuse()
 	}	
 
 	ImGui::Spacing();
+
+	// For. Tiling, move Texture UV Speed 
+	if (!m_bUseSpriteAnimation)
+		SubWidget_SettingTexUV(m_fTiling_Diffuse, m_fUVSpeed_Diffuse, "Tiling(x,y)##Diffuse", "Move TexUV Speed(x,y)##Diffuse");
+
+	ImGui::Spacing();
 }
 
 void Widget_EffectMaker_Mesh::Option_Opacity()
@@ -348,7 +371,9 @@ void Widget_EffectMaker_Mesh::Option_Opacity()
 	
 		ImGui::EndChild();
 	}
+
 	ImGui::SameLine();
+	
 	{
 		ImGui::BeginChild("##Child2_Opacity", ImVec2(80, 200), false);
 
@@ -356,6 +381,7 @@ void Widget_EffectMaker_Mesh::Option_Opacity()
 
 		ImGui::EndChild();
 	}
+	
 	ImGui::Spacing();
 
 	// For. Sampler 
@@ -375,9 +401,23 @@ void Widget_EffectMaker_Mesh::Option_Opacity()
 	ImGui::Spacing();
 
 	// For. Tiling, move Texture UV Speed 
-	SubWidget_SettingTexUV(m_fTiling_Opacity, m_fUVSpeed_Opacity, "Tiling(x,y)##Opacity", "Move TexUV Speed(x,y)##Opacity");
+	if (!m_bUseSpriteAnimation)
+		SubWidget_SettingTexUV(m_fTiling_Opacity, m_fUVSpeed_Opacity, "Tiling(x,y)##Opacity", "Move TexUV Speed(x,y)##Opacity");
 
 	ImGui::Spacing();
+}
+
+void Widget_EffectMaker_Mesh::Option_SpriteAnimation()
+{
+	/* Lock Diffuse and Opacity tiling and uvspeed*/
+
+	ImGui::SeparatorText("Sprite Animation");
+	ImGui::Checkbox("Use Sprite Animation##SpriteAnimation", &m_bUseSpriteAnimation);
+	if (m_bUseSpriteAnimation)
+	{
+		ImGui::InputInt2("Number of Sprite(x,y)##SpriteAnimation", m_iSpriteAni_Count);
+		ImGui::InputFloat("Animation Speed##SpriteAnimation", &m_fSpriteAni_Speed);
+	}
 }
 
 void Widget_EffectMaker_Mesh::Option_Blend()
@@ -596,7 +636,7 @@ void Widget_EffectMaker_Mesh::Option_Dissolve()
 	{
 		{
 			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
-			ImGui::BeginChild("##Child1_Dissolve", ImVec2(ImGui::GetContentRegionAvail().x - 100, 250), false, window_flags);
+			ImGui::BeginChild("##Child1_Dissolve", ImVec2(ImGui::GetContentRegionAvail().x - 100, 270), false, window_flags);
 
 			// For. Inverse 
 			ImGui::Checkbox("Inverse##Dissolve", &m_bDissolveInverse);
@@ -952,12 +992,19 @@ void Widget_EffectMaker_Mesh::Create()
 
 		m_strMesh,
 
+		m_bUseSpriteAnimation,
+		m_iSpriteAni_Count[0],
+		m_iSpriteAni_Count[1],
+		m_fSpriteAni_Speed,
+
 		m_bColorChangingOn,
 
 		m_DiffuseTexture.second,
 		ImVec4toColor(m_vDiffuseColor_BaseStart),
 		ImVec4toColor(m_vDiffuseColor_BaseEnd),
 		ImVec4toColor(m_vDiffuseColor_Dest),
+		_float2(m_fTiling_Diffuse),
+		_float2(m_fUVSpeed_Diffuse),
 
 		m_OpacityTexture.second,
 		m_iSamplerType,
@@ -1052,6 +1099,12 @@ void Widget_EffectMaker_Mesh::Save()
 		// file->Write<_bool>(m_iMesh); 
 		file->Write<string>(m_strMesh);
 
+		/* Sprite Animation */
+		file->Write<_bool>(m_bUseSpriteAnimation);
+		file->Write<_int>(m_iSpriteAni_Count[0]);
+		file->Write<_int>(m_iSpriteAni_Count[1]);
+		file->Write<_float>(m_fSpriteAni_Speed);
+
 		/* Coloring Option */
 		file->Write<_bool>(m_bColorChangingOn);
 
@@ -1061,6 +1114,8 @@ void Widget_EffectMaker_Mesh::Save()
 		file->Write<_float4>(ImVec4toColor(m_vDiffuseColor_BaseStart));
 		file->Write<_float4>(ImVec4toColor(m_vDiffuseColor_BaseEnd));
 		file->Write<_float4>(ImVec4toColor(m_vDiffuseColor_Dest));
+		file->Write<_float2>(_float2(m_fTiling_Diffuse));
+		file->Write<_float2>(_float2(m_fUVSpeed_Diffuse));
 
 		/* Alpha Gradation */
 		file->Write<_float>(m_fAlphaGraIntensity);
@@ -1163,10 +1218,9 @@ void Widget_EffectMaker_Mesh::Save()
 }
 
 void Widget_EffectMaker_Mesh::Load()
-{
-	_float2 tiling = {0.f, 0.f};
-	_float2 UVSpeed = { 0.f, 0.f };
-	_float3 vFloat3 = { 0.f, 0.f, 0.f };
+{	
+	_float3 vTemp_vec3 = { 0.f, 0.f, 0.f };
+	_float2 vTemp_vec2 = { 0.f, 0.f };
 	
 	// For. load file and fill imgui 
 	string strFilePath = "..\\Resources\\EffectData\\MeshEffectData\\";
@@ -1190,6 +1244,12 @@ void Widget_EffectMaker_Mesh::Load()
 	m_strMesh = file->Read<string>();
 	m_iMesh = GetIndex_FromMeshList(m_strMesh);
 
+	/* Sprite Animation */
+	m_bUseSpriteAnimation = file->Read<_bool>();
+	m_iSpriteAni_Count[0] = file->Read<_int>();
+	m_iSpriteAni_Count[1] = file->Read<_int>();
+	m_fSpriteAni_Speed = file->Read<_float>();
+
 	/* Coloring Option */
 	m_bColorChangingOn = file->Read<_bool>();
 
@@ -1198,6 +1258,10 @@ void Widget_EffectMaker_Mesh::Load()
 	m_vDiffuseColor_BaseStart = ColorToImVec4(file->Read<_float4>());
 	m_vDiffuseColor_BaseEnd = ColorToImVec4(file->Read<_float4>());
 	m_vDiffuseColor_Dest = ColorToImVec4(file->Read<_float4>());
+	vTemp_vec2 = file->Read<_float2>();
+	memcpy(m_fTiling_Diffuse, &vTemp_vec2, sizeof(m_fTiling_Diffuse));
+	vTemp_vec2 = file->Read<_float2>();
+	memcpy(m_fUVSpeed_Diffuse, &vTemp_vec2, sizeof(m_fUVSpeed_Diffuse));
 	m_DiffuseTexture.first = GetIndex_FromTexList(m_DiffuseTexture.second);
 
 	/* Alpha Gradation */
@@ -1211,42 +1275,36 @@ void Widget_EffectMaker_Mesh::Load()
 	/* Opacity */
 	m_OpacityTexture.second = file->Read<string>();
 	m_iSamplerType = file->Read<_int>();
-	tiling = file->Read<_float2>();
-	m_fTiling_Opacity[0] = tiling.x;
-	m_fTiling_Opacity[1] = tiling.y;
-	UVSpeed = file->Read<_float2>();
-	m_fUVSpeed_Opacity[0] = UVSpeed.x;
-	m_fUVSpeed_Opacity[1] = UVSpeed.y;
+	vTemp_vec2 = file->Read<_float2>();
+	memcpy(m_fTiling_Opacity, &vTemp_vec2, sizeof(m_fTiling_Opacity));
+	vTemp_vec2 = file->Read<_float2>();
+	memcpy(m_fUVSpeed_Opacity, &vTemp_vec2, sizeof(m_fUVSpeed_Opacity));
 	m_OpacityTexture.first = GetIndex_FromTexList(m_OpacityTexture.second);
 	
 	/* Gradation by Texture */
 	m_GraTexture.second = file->Read<string>();
 	m_vGraColor_Base = ColorToImVec4(file->Read<_float4>());
-	tiling = file->Read<_float2>();
-	m_fTiling_Gra[0] = tiling.x;
-	m_fTiling_Gra[1] = tiling.y;
-	UVSpeed = file->Read<_float2>();
-	m_fUVSpeed_Gra[0] = UVSpeed.x;
-	m_fUVSpeed_Gra[1] = UVSpeed.y;
+	vTemp_vec2 = file->Read<_float2>();
+	memcpy(m_fTiling_Gra, &vTemp_vec2, sizeof(m_fTiling_Gra));
+	vTemp_vec2 = file->Read<_float2>();
+	memcpy(m_fUVSpeed_Gra, &vTemp_vec2, sizeof(m_fUVSpeed_Gra));
 	m_vGraColor_Dest = ColorToImVec4(file->Read<_float4>());
 	m_GraTexture.first = GetIndex_FromTexList(m_GraTexture.second);
 	if (0 == m_GraTexture.first) m_bGra_On = false;
 	else m_bGra_On = true;
-	m_bUVOptionSameWithOpacity_Gra = Compare_IsSameUVOptionsWithOpacity(tiling, UVSpeed);
+	m_bUVOptionSameWithOpacity_Gra = Equal(m_fTiling_Gra, m_fTiling_Opacity, sizeof(_float) * 2) && Equal(m_fUVSpeed_Gra, m_fUVSpeed_Opacity, sizeof(_float) * 2);
 	m_bDestSameWithBase_Gra = Equal(m_vGraColor_Base, m_vGraColor_Dest);
 
 	/* Overlay */
 	m_bOverlay_On = file->Read<_bool>();
 	m_OverlayTexture.second = file->Read<string>();
 	m_vOverlayColor_Base = ColorToImVec4(file->Read<_float4>());
-	tiling = file->Read<_float2>();
-	m_fTiling_Overlay[0] = tiling.x;
-	m_fTiling_Overlay[1] = tiling.y;
-	UVSpeed = file->Read<_float2>();
-	m_fUVSpeed_Overlay[0] = UVSpeed.x;
-	m_fUVSpeed_Overlay[1] = UVSpeed.y;
+	vTemp_vec2 = file->Read<_float2>();
+	memcpy(m_fTiling_Overlay, &vTemp_vec2, sizeof(m_fTiling_Overlay));
+	vTemp_vec2 = file->Read<_float2>();
+	memcpy(m_fUVSpeed_Overlay, &vTemp_vec2, sizeof(m_fUVSpeed_Overlay));
 	m_OverlayTexture.first = GetIndex_FromTexList(m_OverlayTexture.second);
-	m_bUVOptionSameWithOpacity_Overlay = Compare_IsSameUVOptionsWithOpacity(tiling, UVSpeed);
+	m_bUVOptionSameWithOpacity_Overlay = Equal(m_fTiling_Overlay, m_fTiling_Opacity, sizeof(_float) * 2) && Equal(m_fUVSpeed_Overlay, m_fUVSpeed_Opacity, sizeof(_float) * 2);
 
 	/* Normal */
 	m_NormalTexture.second = file->Read<string>();
@@ -1256,28 +1314,24 @@ void Widget_EffectMaker_Mesh::Load()
 
 	/* Dissolve */
 	m_DissolveTexture.second = file->Read<string>();
-	tiling = file->Read<_float2>();
-	m_fTiling_Dissolve[0] = tiling.x;
-	m_fTiling_Dissolve[1] = tiling.y;
-	UVSpeed = file->Read<_float2>();
-	m_fTiling_Dissolve[0] = UVSpeed.x;
-	m_fTiling_Dissolve[1] = UVSpeed.y;
+	vTemp_vec2 = file->Read<_float2>();
+	memcpy(m_fTiling_Dissolve, &vTemp_vec2, sizeof(m_fTiling_Dissolve));
+	vTemp_vec2 = file->Read<_float2>();
+	memcpy(m_fUVSpeed_Dissolve, &vTemp_vec2, sizeof(m_fUVSpeed_Dissolve));
 	m_bDissolveInverse = file->Read<_bool>();
 	m_DissolveTexture.first = GetIndex_FromTexList(m_DissolveTexture.second);
-	m_bUVOptionSameWithOpacity_Dissolve = Compare_IsSameUVOptionsWithOpacity(tiling, UVSpeed);
+	m_bUVOptionSameWithOpacity_Dissolve = Equal(m_fTiling_Dissolve, m_fTiling_Opacity, sizeof(_float) * 2) && Equal(m_fUVSpeed_Dissolve, m_fUVSpeed_Opacity, sizeof(_float) * 2);
 	if (0 == m_DissolveTexture.first) m_bDissolve_On = false;
 	else m_bDissolve_On = true;
 
 	/* Distortion */
 	m_DistortionTexture.second = file->Read<string>();
-	tiling = file->Read<_float2>();
-	m_fTiling_Distortion[0] = tiling.x;
-	m_fTiling_Distortion[1] = tiling.y;
-	UVSpeed = file->Read<_float2>();
-	m_fUVSpeed_Distortion[0] = UVSpeed.x;
-	m_fUVSpeed_Distortion[1] = UVSpeed.y;
+	vTemp_vec2 = file->Read<_float2>();
+	memcpy(m_fTiling_Distortion, &vTemp_vec2, sizeof(m_fTiling_Dissolve));
+	vTemp_vec2 = file->Read<_float2>();
+	memcpy(m_fUVSpeed_Distortion, &vTemp_vec2, sizeof(m_fUVSpeed_Distortion));
 	m_DistortionTexture.first = GetIndex_FromTexList(m_DistortionTexture.second);
-	m_bUVOptionSameWithOpacity_Distortion = Compare_IsSameUVOptionsWithOpacity(tiling, UVSpeed);
+	m_bUVOptionSameWithOpacity_Distortion = Equal(m_fTiling_Distortion, m_fTiling_Opacity, sizeof(_float) * 2) && Equal(m_fUVSpeed_Distortion, m_fUVSpeed_Opacity, sizeof(_float) * 2);
 	if (0 == m_DistortionTexture.first) m_bDistortion_On = false;
 	else m_bDistortion_On = true;
 
@@ -1300,20 +1354,20 @@ void Widget_EffectMaker_Mesh::Load()
 		m_iInitPosOption = 1;
 
 	/* Init Scale */
-	vFloat3 = file->Read<_float3>();
-	memcpy(m_fInitScale_Min, &vFloat3, sizeof(m_fInitScale_Min));
-	vFloat3 = file->Read<_float3>();
-	memcpy(m_fInitScale_Max, &vFloat3, sizeof(m_fInitScale_Max));
+	vTemp_vec3 = file->Read<_float3>();
+	memcpy(m_fInitScale_Min, &vTemp_vec3, sizeof(m_fInitScale_Min));
+	vTemp_vec3 = file->Read<_float3>();
+	memcpy(m_fInitScale_Max, &vTemp_vec3, sizeof(m_fInitScale_Max));
 	if (Equal(m_fInitScale_Min, m_fInitScale_Max, 3))
 		m_iInitScaleOption = 0;
 	else
 		m_iInitScaleOption = 1;
 
 	/* Init Rotation */
-	vFloat3 = file->Read<_float3>();
-	memcpy(m_fInitRotation_Min, &vFloat3, sizeof(m_fInitRotation_Min));
-	vFloat3 = file->Read<_float3>();
-	memcpy(m_fInitRotation_Max, &vFloat3, sizeof(m_fInitRotation_Max));
+	vTemp_vec3 = file->Read<_float3>();
+	memcpy(m_fInitRotation_Min, &vTemp_vec3, sizeof(m_fInitRotation_Min));
+	vTemp_vec3 = file->Read<_float3>();
+	memcpy(m_fInitRotation_Max, &vTemp_vec3, sizeof(m_fInitRotation_Max));
 	if (Equal(m_fInitRotation_Min, m_fInitRotation_Max, 3))
 		m_iInitRotationOption = 0;
 	else
@@ -1322,15 +1376,15 @@ void Widget_EffectMaker_Mesh::Load()
 	/* Translate */
 	m_iTranslateOption = file->Read<_int>();
 	m_fTranslateSpeed = file->Read<_float>();
-	vFloat3 = file->Read<_float3>();
-	memcpy(m_fEndPositionOffset_Min, &vFloat3, sizeof(m_fEndPositionOffset_Min));
-	vFloat3 = file->Read<_float3>();
-	memcpy(m_fEndPositionOffset_Max, &vFloat3, sizeof(m_fEndPositionOffset_Max));
+	vTemp_vec3 = file->Read<_float3>();
+	memcpy(m_fEndPositionOffset_Min, &vTemp_vec3, sizeof(m_fEndPositionOffset_Min));
+	vTemp_vec3 = file->Read<_float3>();
+	memcpy(m_fEndPositionOffset_Max, &vTemp_vec3, sizeof(m_fEndPositionOffset_Max));
 
 	/* Scaling */
 	m_iScalingOption = file->Read<_int>();
-	vFloat3 = file->Read<_float3>();
-	memcpy(m_fEndScaleOffset, &vFloat3, sizeof(m_fEndScaleOffset));
+	vTemp_vec3 = file->Read<_float3>();
+	memcpy(m_fEndScaleOffset, &vTemp_vec3, sizeof(m_fEndScaleOffset));
 	if (Equal(_float3(m_fEndScaleOffset), _float3(0.f, 0.f, 0.f)))
 		m_iScalingOption = 0;
 	else
@@ -1339,10 +1393,10 @@ void Widget_EffectMaker_Mesh::Load()
 	/* Turn */
 	m_iTurnOption = file->Read<_int>();
 	m_fTurnSpeed = file->Read<_float>();
-	vFloat3 = file->Read<_float3>();
-	memcpy(m_fRandomAxis_Min, &vFloat3, sizeof(m_fRandomAxis_Min));
-	vFloat3 = file->Read<_float3>();
-	memcpy(m_fRandomAxis_Max, &vFloat3, sizeof(m_fRandomAxis_Max));
+	vTemp_vec3 = file->Read<_float3>();
+	memcpy(m_fRandomAxis_Min, &vTemp_vec3, sizeof(m_fRandomAxis_Min));
+	vTemp_vec3 = file->Read<_float3>();
+	memcpy(m_fRandomAxis_Max, &vTemp_vec3, sizeof(m_fRandomAxis_Max));
 	if (Equal(_float3(m_fRandomAxis_Min), _float3(0.f, 0.f, 0.f)))
 		m_iTurnOption = 0;
 	else

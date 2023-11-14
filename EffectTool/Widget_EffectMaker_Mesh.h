@@ -29,6 +29,7 @@ private:
 	void					Option_Property();
 	void					Option_Mesh();
 	void					Option_Opacity();
+	void					Option_SpriteAnimation();
 	void					Option_Blend();
 	void					Option_Diffuse();
 	void					Option_Normal();
@@ -99,6 +100,11 @@ private:
 	/* Coloring Options */
 	_bool					m_bColorChangingOn = { false };
 
+	/* Sprite Animation */
+	_bool					m_bUseSpriteAnimation = { false };
+	_int					m_iSpriteAni_Count[2] = { 1, 1 }; 
+	_float					m_fSpriteAni_Speed = { 1.f };
+
 	/* Diffuse */
 	_int					m_iDiffuseOption = { 1 };	// Texture, Custom, Random
 	pair<_int, string>		m_DiffuseTexture = { 0, "None" };
@@ -106,6 +112,8 @@ private:
 	ImVec4					m_vDiffuseColor_BaseEnd = ImVec4(1.f, 1.f, 1.f, 1.f);
 	ImVec4					m_vDiffuseColor_Dest = ImVec4(1.f, 1.f, 1.f, 1.f);
 	_bool					m_bIsTextureSameWithOpacity = { false };
+	_float					m_fTiling_Diffuse[2] = { 0.f, 0.f };
+	_float					m_fUVSpeed_Diffuse[2] = { 0.f, 0.f };
 
 	/* Alpha Gradation */
 	_bool					m_bAlphaGra_On = { false };
