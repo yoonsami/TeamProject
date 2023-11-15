@@ -41,7 +41,7 @@ void Widget_EffectMaker_Mesh::Tick()
 
 	if(m_bTextureList_On)
 	{
-		ImGui::SetNextWindowPos(ImVec2(300.f, 100.f));
+		ImGui::SetNextWindowPos(ImVec2(480.f, 100.f));
 		ImGui::SetNextWindowSize(ImVec2(500.f, 530.f));
 		ImGui::Begin("Texture List");
 		ImGui_TextureList();
@@ -227,24 +227,23 @@ void Widget_EffectMaker_Mesh::ImGui_SaveMsgBox()
 
 void Widget_EffectMaker_Mesh::ImGui_TextureList()
 {
-	if (ImGui::BeginTabBar("##Tab2"))
 	{
-		if (ImGui::BeginTabItem("Texture List"))
-		{
-			SubWidget_TextureList();
-			ImGui::EndTabItem();
-		}
-		ImGui::SameLine();
-		if (ImGui::BeginTabItem("##Okbutton"))
-		{
-			if (ImGui::Button("Ok"))
-			{
-				m_bTextureList_On = false;
-			}
-			ImGui::EndTabItem();
-		}
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
+		ImGui::BeginChild("##Child1_TextureList", ImVec2(390, 480), false, window_flags);
 
-		ImGui::EndTabBar();
+		SubWidget_TextureList();
+
+		ImGui::EndChild();
+	}
+	ImGui::SameLine();
+	{
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
+		ImGui::BeginChild("##Child2_TextureList", ImVec2(50, 360), false, window_flags);
+
+		if (ImGui::Button("  Ok  "))
+			m_bTextureList_On = false;
+
+		ImGui::EndChild();
 	}
 }
 
@@ -355,58 +354,53 @@ void Widget_EffectMaker_Mesh::Option_Diffuse()
 		ImGui::EndCombo();
 	}
 
-	{
-		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
-		ImGui::BeginChild("##Child1_Diffuse", ImVec2(ImGui::GetContentRegionAvail().x - 100, 200), false, window_flags);
-		switch (m_iDiffuseOption)
-		{
-		case 0: 
-			// For. Te"xture 
-			if (ImGui::Button("Change Texture"))
-			{
-				m_bTextureList_On = true;
+	if(0 == m_iDiffuseOption && !m_bIsTextureSameWithOpacity)
+		SubWidget_ImageViewer(m_DiffuseTexture.second, m_strTexturePath, "##Img_Diffuse");
 
-			}
-			if(!m_bIsTextureSameWithOpacity)
-				SubWidget_TextureCombo(&m_DiffuseTexture.first, &m_DiffuseTexture.second, m_strTexturePath,"Texture##Diffuse");
-			if (ImGui::Checkbox("Use same texture with Opacity##DIffuse", &m_bIsTextureSameWithOpacity))
+	switch (m_iDiffuseOption)
+	{
+	case 0:
+		ImGui::SameLine();
+		if (!m_bIsTextureSameWithOpacity)
+		{			
+			if (ImGui::Button("Texture"))
 			{
-				m_DiffuseTexture.first = m_OpacityTexture.first;
-				m_DiffuseTexture.second = m_OpacityTexture.second;
+				m_iTexture_TextureList = &m_DiffuseTexture.first;
+				m_pTextureTag_TextureList = &m_DiffuseTexture.second;
+				m_pszWidgetKey_TextureList = "Texture##Diffuse";
+				m_bTextureList_On = true;
 			}
-			break;
-		case 1:
-			ImGui::ColorEdit4("Color##Diffuse", (float*)&m_vDiffuseColor_BaseStart, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-			m_vDiffuseColor_BaseEnd = m_vDiffuseColor_BaseStart;
-			break;
-		case 2:
-			ImGui::ColorEdit4("Range Color1##Diffuse", (float*)&m_vDiffuseColor_BaseStart, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-			ImGui::ColorEdit4("Range Color2##Diffuse", (float*)&m_vDiffuseColor_BaseEnd, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-			break;
-		default:
-			break;
 		}
+		if (ImGui::Checkbox("Use same texture with Opacity##DIffuse", &m_bIsTextureSameWithOpacity))
+		{
+			m_DiffuseTexture.first = m_OpacityTexture.first;
+			m_DiffuseTexture.second = m_OpacityTexture.second;
+		}
+		break;
+	case 1:
+		ImGui::ColorEdit4("Color##Diffuse", (float*)&m_vDiffuseColor_BaseStart, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+		m_vDiffuseColor_BaseEnd = m_vDiffuseColor_BaseStart;
 
 		if (m_bColorChangingOn)
 			ImGui::ColorEdit4("Dest Color##Diffuse", (float*)&m_vDiffuseColor_Dest, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
 
-		ImGui::EndChild();
+		break;
+	case 2:
+		ImGui::ColorEdit4("Range Color1##Diffuse", (float*)&m_vDiffuseColor_BaseStart, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+		ImGui::ColorEdit4("Range Color2##Diffuse", (float*)&m_vDiffuseColor_BaseEnd, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+		
+		if (m_bColorChangingOn)
+			ImGui::ColorEdit4("Dest Color##Diffuse", (float*)&m_vDiffuseColor_Dest, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+
+		break;
+	default:
+		break;
 	}
-
-	ImGui::SameLine();
-	
-	{
-		ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
-		ImGui::BeginChild("##Child2_Diffuse", ImVec2(80, 100), false, window_flags);
-		SubWidget_ImageViewer(m_DiffuseTexture.second, m_strTexturePath, "##Img_Diffuse");
-
-		ImGui::EndChild();
-	}	
 
 	ImGui::Spacing();
 
 	// For. Tiling, move Texture UV Speed 
-	if (!m_bUseSpriteAnimation)
+	if (0 == m_iDiffuseOption && !m_bUseSpriteAnimation)
 		SubWidget_SettingTexUV(m_fTiling_Diffuse, m_fUVSpeed_Diffuse, "Tiling(x,y)##Diffuse", "Move TexUV Speed(x,y)##Diffuse");
 
 	ImGui::Spacing();
@@ -416,35 +410,18 @@ void Widget_EffectMaker_Mesh::Option_Opacity()
 {
 	ImGui::SeparatorText("Opacity");
 
-	{
-		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
-		ImGui::BeginChild("##Child1_Opacity", ImVec2(ImGui::GetContentRegionAvail().x - 100, 200), false, window_flags);
-		
-		if (ImGui::Button("Texture##Opacity"))
-		{
-			m_iTexture_TextureList = &m_OpacityTexture.first;
-			m_pTextureTag_TextureList = &m_OpacityTexture.second;
-			m_pszWidgetKey_TextureList = "Texture##Opacity";
-			m_bTextureList_On = true;
-		}
-
-		// For. Texture 
-		//SubWidget_TextureCombo(&m_OpacityTexture.first, &m_OpacityTexture.second, m_strTexturePath, "Texture##Opacity");
-		//ImGui::Spacing();
+	SubWidget_ImageViewer(m_OpacityTexture.second, m_strTexturePath, "##Img_Opacity");
 	
-		ImGui::EndChild();
-	}
-
 	ImGui::SameLine();
-	
+
+	if (ImGui::Button("Texture##Opacity"))
 	{
-		ImGui::BeginChild("##Child2_Opacity", ImVec2(80, 200), false);
-
-		SubWidget_ImageViewer(m_OpacityTexture.second, m_strTexturePath, "##Img_Opacity");
-
-		ImGui::EndChild();
+		m_iTexture_TextureList = &m_OpacityTexture.first;
+		m_pTextureTag_TextureList = &m_OpacityTexture.second;
+		m_pszWidgetKey_TextureList = "Texture##Opacity";
+		m_bTextureList_On = true;
 	}
-	
+
 	ImGui::Spacing();
 
 	// For. Sampler 
@@ -491,24 +468,14 @@ void Widget_EffectMaker_Mesh::Option_Blend()
 
 	if (m_bBlend_On)
 	{
-		{
-			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
-			ImGui::BeginChild("##Child1_Blend", ImVec2(ImGui::GetContentRegionAvail().x - 100, 180), false, window_flags);
-
-			// For. Texture 
-			SubWidget_TextureCombo(&m_BlendTexture.first, &m_BlendTexture.second, m_strTexturePath, "Texture##Blend");
-
-			ImGui::EndChild();
-		}
-
+		SubWidget_ImageViewer(m_BlendTexture.second, m_strTexturePath, "##Img_Blend");
 		ImGui::SameLine();
-
+		if (ImGui::Button("Texture##Blend"))
 		{
-			ImGui::BeginChild("##Child2_Blend", ImVec2(80, 100), false);
-
-			SubWidget_ImageViewer(m_BlendTexture.second, m_strTexturePath, "##Img_Blend");
-
-			ImGui::EndChild();
+			m_iTexture_TextureList = &m_BlendTexture.first;
+			m_pTextureTag_TextureList = &m_BlendTexture.second;
+			m_pszWidgetKey_TextureList = "Texture##Blend";
+			m_bTextureList_On = true;
 		}
 	}
 	else
@@ -528,24 +495,16 @@ void Widget_EffectMaker_Mesh::Option_Normal()
 
 	if (m_bNormal_On)
 	{
-		{
-			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
-			ImGui::BeginChild("##Child1_Normal", ImVec2(ImGui::GetContentRegionAvail().x - 100, 180), false, window_flags);
-
-			// For. Texture 
-			SubWidget_TextureCombo(&m_NormalTexture.first, &m_NormalTexture.second, m_strTexturePath, "Texture##Normal");
-
-			ImGui::EndChild();
-		}
+		SubWidget_ImageViewer(m_NormalTexture.second, m_strTexturePath, "##Img_Normal");
 
 		ImGui::SameLine();
 
+		if (ImGui::Button("Texture##Normal"))
 		{
-			ImGui::BeginChild("##Child2_Normal", ImVec2(80, 100), false);
-
-			SubWidget_ImageViewer(m_NormalTexture.second, m_strTexturePath, "##Img_Normal");
-
-			ImGui::EndChild();
+			m_iTexture_TextureList = &m_NormalTexture.first;
+			m_pTextureTag_TextureList = &m_NormalTexture.second;
+			m_pszWidgetKey_TextureList = "Texture##Normal";
+			m_bTextureList_On = true;
 		}
 	}
 	else
@@ -585,49 +544,46 @@ void Widget_EffectMaker_Mesh::Option_Gradation()
 
 	if (m_bGra_On)
 	{
-		{
-			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
-			ImGui::BeginChild("##Child1_Gra", ImVec2(ImGui::GetContentRegionAvail().x - 100, 260), false, window_flags);
-
-			// For. Texture 
-			SubWidget_TextureCombo(&m_GraTexture.first, &m_GraTexture.second, m_strTexturePath, "Texture##Gra");
-
-			// For. Color 
-			ImGui::ColorEdit4("Color##Gra", (float*)&m_vGraColor_Base, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-
-			if (m_bColorChangingOn)
-			{
-				ImGui::ColorEdit4("Dest Color##Gra", (float*)&m_vGraColor_Dest, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-				if (ImGui::Checkbox("Same with Base color##Gra", &m_bDestSameWithBase_Gra))
-				{
-					if (m_bDestSameWithBase_Gra)
-						m_vGraColor_Dest = m_vGraColor_Base;
-				}
-			}
-
-			ImGui::Checkbox("UV Option same with opacity##Opacity", &m_bUVOptionSameWithOpacity_Gra);
-			if (m_bUVOptionSameWithOpacity_Gra)
-			{
-				m_fTiling_Gra[0] = m_fTiling_Opacity[0];
-				m_fTiling_Gra[1] = m_fTiling_Opacity[1];
-				m_fUVSpeed_Gra[0] = m_fUVSpeed_Opacity[0];
-				m_fUVSpeed_Gra[1] = m_fUVSpeed_Opacity[1];
-			}
-			SubWidget_SettingTexUV(m_fTiling_Gra, m_fUVSpeed_Gra, "Tiling(x,y)##Gra", "Move TexUV Speed(x,y)##Gra");
-
-			ImGui::EndChild();
-		}
+		SubWidget_ImageViewer(m_GraTexture.second, m_strTexturePath, "##Img_Gradation");
 
 		ImGui::SameLine();
-
+		if (ImGui::Button("Texture##Gradation"))
 		{
-			ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
-			ImGui::BeginChild("##Child2_Gra", ImVec2(80, 100), false, window_flags);
-
-			SubWidget_ImageViewer(m_GraTexture.second, m_strTexturePath, "##Img_Gra");
-
-			ImGui::EndChild();
+			m_iTexture_TextureList = &m_GraTexture.first;
+			m_pTextureTag_TextureList = &m_GraTexture.second;
+			m_pszWidgetKey_TextureList = "Texture##Gradation";
+			m_bTextureList_On = true;
 		}
+		if (ImGui::Button("Texture##Gradation"))
+		{
+			m_iTexture_TextureList = &m_GraTexture.first;
+			m_pTextureTag_TextureList = &m_GraTexture.second;
+			m_pszWidgetKey_TextureList = "Texture##Gradation";
+			m_bTextureList_On = true;
+		}
+
+		// For. Color 
+		ImGui::ColorEdit4("Color##Gra", (float*)&m_vGraColor_Base, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+
+		if (m_bColorChangingOn)
+		{
+			ImGui::ColorEdit4("Dest Color##Gra", (float*)&m_vGraColor_Dest, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+			if (ImGui::Checkbox("Same with Base color##Gra", &m_bDestSameWithBase_Gra))
+			{
+				if (m_bDestSameWithBase_Gra)
+					m_vGraColor_Dest = m_vGraColor_Base;
+			}
+		}
+
+		ImGui::Checkbox("UV Option same with opacity##Opacity", &m_bUVOptionSameWithOpacity_Gra);
+		if (m_bUVOptionSameWithOpacity_Gra)
+		{
+			m_fTiling_Gra[0] = m_fTiling_Opacity[0];
+			m_fTiling_Gra[1] = m_fTiling_Opacity[1];
+			m_fUVSpeed_Gra[0] = m_fUVSpeed_Opacity[0];
+			m_fUVSpeed_Gra[1] = m_fUVSpeed_Opacity[1];
+		}
+		SubWidget_SettingTexUV(m_fTiling_Gra, m_fUVSpeed_Gra, "Tiling(x,y)##Gra", "Move TexUV Speed(x,y)##Gra");
 	}
 	else
 	{
@@ -646,39 +602,30 @@ void Widget_EffectMaker_Mesh::Option_Overlay()
 
 	if (m_bOverlay_On)
 	{
-		{
-			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
-			ImGui::BeginChild("##Child1_Overlay", ImVec2(ImGui::GetContentRegionAvail().x - 100, 260), false, window_flags);
-
-			// For. Texture 
-			SubWidget_TextureCombo(&m_OverlayTexture.first, &m_OverlayTexture.second, m_strTexturePath, "Texture##Overlay");
-
-			// For. Color 
-			ImGui::ColorEdit4("Color##Overlay", (float*)&m_vOverlayColor_Base, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);		
-
-			ImGui::Checkbox("UV Option same with opacity##Overlay", &m_bUVOptionSameWithOpacity_Overlay);
-			if (m_bUVOptionSameWithOpacity_Overlay)
-			{
-				m_fTiling_Overlay[0] = m_fTiling_Opacity[0];
-				m_fTiling_Overlay[1] = m_fTiling_Opacity[1];
-				m_fUVSpeed_Overlay[0] = m_fUVSpeed_Opacity[0];
-				m_fUVSpeed_Overlay[1] = m_fUVSpeed_Opacity[1];
-			}
-			SubWidget_SettingTexUV(m_fTiling_Overlay, m_fUVSpeed_Overlay, "Tiling(x,y)##Overlay", "Move TexUV Speed##(x,y)Overlay");
-
-			ImGui::EndChild();
-		}
+		SubWidget_ImageViewer(m_OverlayTexture.second, m_strTexturePath, "##Img_Overlay");
 
 		ImGui::SameLine();
-
+		if (ImGui::Button("Texture##Dissolve"))
 		{
-			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
-			ImGui::BeginChild("##Child2_Overlay", ImVec2(80, 100), false, window_flags);
-
-			SubWidget_ImageViewer(m_OverlayTexture.second, m_strTexturePath, "##Img_Overlay");
-
-			ImGui::EndChild();
+			m_iTexture_TextureList = &m_OverlayTexture.first;
+			m_pTextureTag_TextureList = &m_OverlayTexture.second;
+			m_pszWidgetKey_TextureList = "Texture##Dissolve";
+			m_bTextureList_On = true;
 		}
+
+		// For. Color 
+		ImGui::ColorEdit4("Color##Overlay", (float*)&m_vOverlayColor_Base, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+
+		ImGui::Checkbox("UV Option same with opacity##Overlay", &m_bUVOptionSameWithOpacity_Overlay);
+		if (m_bUVOptionSameWithOpacity_Overlay)
+		{
+			m_fTiling_Overlay[0] = m_fTiling_Opacity[0];
+			m_fTiling_Overlay[1] = m_fTiling_Opacity[1];
+			m_fUVSpeed_Overlay[0] = m_fUVSpeed_Opacity[0];
+			m_fUVSpeed_Overlay[1] = m_fUVSpeed_Opacity[1];
+		}
+		SubWidget_SettingTexUV(m_fTiling_Overlay, m_fUVSpeed_Overlay, "Tiling(x,y)##Overlay", "Move TexUV Speed##(x,y)Overlay");
+
 	}
 	else
 	{
@@ -697,39 +644,26 @@ void Widget_EffectMaker_Mesh::Option_Dissolve()
 
 	if (m_bDissolve_On)
 	{
-		{
-			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
-			ImGui::BeginChild("##Child1_Dissolve", ImVec2(ImGui::GetContentRegionAvail().x - 100, 270), false, window_flags);
-
-			// For. Inverse 
-			ImGui::Checkbox("Inverse##Dissolve", &m_bDissolveInverse);
-
-			// For. Texture 
-			SubWidget_TextureCombo(&m_DissolveTexture.first, &m_DissolveTexture.second, m_strTexturePath, "Texture##Dissolve");
-
-			ImGui::Checkbox("UV Option same with opacity##Dissolve", &m_bUVOptionSameWithOpacity_Dissolve);
-			if (m_bUVOptionSameWithOpacity_Dissolve)
-			{
-				m_fTiling_Dissolve[0] = m_fTiling_Opacity[0];
-				m_fTiling_Dissolve[1] = m_fTiling_Opacity[1];
-				m_fUVSpeed_Dissolve[0] = m_fUVSpeed_Opacity[0];
-				m_fUVSpeed_Dissolve[1] = m_fUVSpeed_Opacity[1];
-			}
-			SubWidget_SettingTexUV(m_fTiling_Dissolve, m_fUVSpeed_Dissolve, "Tiling(x,y)##Dissolve", "Move TexUV Speed(x,y)##Dissolve");
-
-			ImGui::EndChild();
-		}
+		SubWidget_ImageViewer(m_DissolveTexture.second, m_strTexturePath, "##Img_Dissolve");
 
 		ImGui::SameLine();
-
+		if (ImGui::Button("Texture##Dissolve"))
 		{
-			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
-			ImGui::BeginChild("##Child2_Dissolve", ImVec2(80, 100), false, window_flags);
-
-			SubWidget_ImageViewer(m_DissolveTexture.second, m_strTexturePath, "##Img_Dissolve");
-
-			ImGui::EndChild();
+			m_iTexture_TextureList = &m_DissolveTexture.first;
+			m_pTextureTag_TextureList = &m_DissolveTexture.second;
+			m_pszWidgetKey_TextureList = "Texture##Dissolve";
+			m_bTextureList_On = true;
 		}
+
+		ImGui::Checkbox("UV Option same with opacity##Dissolve", &m_bUVOptionSameWithOpacity_Dissolve);
+		if (m_bUVOptionSameWithOpacity_Dissolve)
+		{
+			m_fTiling_Dissolve[0] = m_fTiling_Opacity[0];
+			m_fTiling_Dissolve[1] = m_fTiling_Opacity[1];
+			m_fUVSpeed_Dissolve[0] = m_fUVSpeed_Opacity[0];
+			m_fUVSpeed_Dissolve[1] = m_fUVSpeed_Opacity[1];
+		}
+		SubWidget_SettingTexUV(m_fTiling_Dissolve, m_fUVSpeed_Dissolve, "Tiling(x,y)##Dissolve", "Move TexUV Speed(x,y)##Dissolve");
 	}
 	else
 	{
@@ -748,36 +682,28 @@ void Widget_EffectMaker_Mesh::Option_Distortion()
 
 	if (m_bDistortion_On)
 	{
-		{
-			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
-			ImGui::BeginChild("##Child1_Distortion", ImVec2(ImGui::GetContentRegionAvail().x - 100, 250), false, window_flags);
-
-			// For. Texture 
-			SubWidget_TextureCombo(&m_DistortionTexture.first, &m_DistortionTexture.second, m_strTexturePath, "Texture##Distortion");
-
-			ImGui::Checkbox("UV Option same with opacity##Distortion", &m_bUVOptionSameWithOpacity_Distortion);
-			if (m_bUVOptionSameWithOpacity_Dissolve)
-			{
-				m_fTiling_Distortion[0] = m_fTiling_Opacity[0];
-				m_fTiling_Distortion[1] = m_fTiling_Opacity[1];
-				m_fUVSpeed_Distortion[0] = m_fUVSpeed_Opacity[0];
-				m_fUVSpeed_Distortion[1] = m_fUVSpeed_Opacity[1];
-			}
-			SubWidget_SettingTexUV(m_fTiling_Distortion, m_fUVSpeed_Distortion, "Tiling(x,y)##Distortion", "Move TexUV Speed(x,y)##Distortion");
-
-			ImGui::EndChild();
-		}
+		SubWidget_ImageViewer(m_DistortionTexture.second, m_strTexturePath, "##Img_Distortion");
 
 		ImGui::SameLine();
 
+		if (ImGui::Button("Texture##Distortion"))
 		{
-			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
-			ImGui::BeginChild("##Child2_Distortion", ImVec2(80, 100), false, window_flags);
-
-			SubWidget_ImageViewer(m_DistortionTexture.second, m_strTexturePath, "##Img_Distortion");
-
-			ImGui::EndChild();
+			m_iTexture_TextureList = &m_DistortionTexture.first;
+			m_pTextureTag_TextureList = &m_DistortionTexture.second;
+			m_pszWidgetKey_TextureList = "Texture##Distortion";
+			m_bTextureList_On = true;
 		}
+
+		ImGui::Checkbox("UV Option same with opacity##Distortion", &m_bUVOptionSameWithOpacity_Distortion);
+		if (m_bUVOptionSameWithOpacity_Dissolve)
+		{
+			m_fTiling_Distortion[0] = m_fTiling_Opacity[0];
+			m_fTiling_Distortion[1] = m_fTiling_Opacity[1];
+			m_fUVSpeed_Distortion[0] = m_fUVSpeed_Opacity[0];
+			m_fUVSpeed_Distortion[1] = m_fUVSpeed_Opacity[1];
+		}
+
+		SubWidget_SettingTexUV(m_fTiling_Distortion, m_fUVSpeed_Distortion, "Tiling(x,y)##Distortion", "Move TexUV Speed(x,y)##Distortion");
 	}
 	else
 	{
@@ -1519,13 +1445,13 @@ void Widget_EffectMaker_Mesh::SubWidget_TextureList()
 			char pszButtonkey[MAX_PATH];
 			strcpy_s(pszButtonkey, sizeof(pszButtonkey), m_pszWidgetKey_TextureList);
 			strcat_s(pszButtonkey, sizeof(pszButtonkey), m_pszUniversalTextures[n]);
-			if (ImGui::ImageButton(pszButtonkey, (pTexture->Get_SRV().Get()), ImVec2(50, 50)))
+			if (ImGui::ImageButton(pszButtonkey, (pTexture->Get_SRV().Get()), ImVec2(60, 60)))
 			{
 				*m_iTexture_TextureList = n;
 				*m_pTextureTag_TextureList = m_pszUniversalTextures[n];
 			}
 
-			if (0 != n % 6)
+			if (0 != n % 5)
 				ImGui::SameLine();
 		}
 		ImGui::EndChild();
@@ -1540,15 +1466,13 @@ void Widget_EffectMaker_Mesh::SubWidget_ImageViewer(string strFileName, string s
 
 	auto pTexture = RESOURCES.GetOrAddTexture(wstrKey, wstrPath);
 
-	ImGui::Text("Selected");
-	
 	{
-		ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
-		ImGui::BeginChild("##Child2_Diffuse", ImVec2(80,80), true, window_flags);
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
+		ImGui::BeginChild(pszWidgetKey, ImVec2(150,150), true, window_flags);
 		if (nullptr != pTexture)
 		{
 			ImGui::PushStyleColor(ImGuiCol_Border, IM_COL32(1, 255, 1, 255));
-			ImGui::Image((pTexture->Get_SRV().Get()), ImVec2(63, 63));
+			ImGui::Image((pTexture->Get_SRV().Get()), ImVec2(135, 135));
 			ImGui::PopStyleColor();
 		}
 		ImGui::EndChild();
