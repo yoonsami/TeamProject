@@ -144,6 +144,11 @@ private:
 	_int m_iPointLightIndex = { 0 };
 	// 점광원 생성정보
 	LightInfo m_CreatePointLightInfo;
+	// 생성할 점광원의 이펙트 소지여부
+	_bool m_bPointLightEffectHas = { false };
+	_float4 m_CreateTargetAmbient = { 1.f, 1.f, 1.f, 1.f };
+	_float4 m_CreateTargetDiffuse = { 1.f, 1.f, 1.f, 1.f };
+	_float m_fCreatePointLightSpeed = { 1.f };
 
 // 벽을위한피킹정보
 	_float3 m_WallPickingPos[2] = { _float3{0.f, 0.f, 0.f}, _float3{0.f, 0.f, 0.f} };

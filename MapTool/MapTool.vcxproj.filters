@@ -150,7 +150,7 @@
     <ClInclude Include="MapObjectScript.h">
       <Filter>02.Component\00.MonoBehaviour\00.MapObject</Filter>
     </ClInclude>
-    <ClInclude Include="PointLightWave.h">
+    <ClInclude Include="PointLightEffect.h">
       <Filter>02.Component\00.MonoBehaviour\01.PointLightWave</Filter>
     </ClInclude>
   </ItemGroup>
@@ -230,7 +230,7 @@
     <ClCompile Include="MapObjectScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\00.MapObject</Filter>
     </ClCompile>
-    <ClCompile Include="PointLightWave.cpp">
+    <ClCompile Include="PointLightEffect.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.PointLightWave</Filter>
     </ClCompile>
   </ItemGroup>
