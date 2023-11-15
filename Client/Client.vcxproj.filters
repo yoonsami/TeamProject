@@ -387,14 +387,15 @@
     <ClInclude Include="UiCardDeckInvenChange.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\09.UiCardDeckInvenChange</Filter>
     </ClInclude>
-    <ClInclude Include="Boss_Dellons_FSM.h">
-      <Filter>02.Component\01.FSM\02.Monster_FSM\02.Boss_Dellons_FSM</Filter>
-    </ClInclude>
-    <ClInclude Include="Boss_DellonsWraith_FSM.h">
-      <Filter>02.Component\01.FSM\03.Special_FSM\01.Monster_Special_FSM\00.Boss_DellonsWraith_FSM</Filter>
-    </ClInclude>
     <ClInclude Include="Gacha_FSM.h">
       <Filter>02.Component\01.FSM\04.Gacha_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="GachaScene.h" />
+    <ClInclude Include="Boss_DellonsWraith_FSM.h">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\02.Boss_Dellons_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Boss_Dellons_FSM.h">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\02.Boss_Dellons_FSM</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -566,14 +567,15 @@
     <ClCompile Include="UiCardDeckInvenChange.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\09.UiCardDeckInvenChange</Filter>
     </ClCompile>
+    <ClCompile Include="Gacha_FSM.cpp">
+      <Filter>02.Component\01.FSM\04.Gacha_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="GachaScene.cpp" />
     <ClCompile Include="Boss_Dellons_FSM.cpp">
       <Filter>02.Component\01.FSM\02.Monster_FSM\02.Boss_Dellons_FSM</Filter>
     </ClCompile>
     <ClCompile Include="Boss_DellonsWraith_FSM.cpp">
-      <Filter>02.Component\01.FSM\03.Special_FSM\01.Monster_Special_FSM\00.Boss_DellonsWraith_FSM</Filter>
-    </ClCompile>
-    <ClCompile Include="Gacha_FSM.cpp">
-      <Filter>02.Component\01.FSM\04.Gacha_FSM</Filter>
+      <Filter>02.Component\01.FSM\02.Monster_FSM\02.Boss_Dellons_FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

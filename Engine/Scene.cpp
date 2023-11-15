@@ -376,6 +376,8 @@ void Scene::Load_UIFile(const wstring& strDataFilePath, _bool bRender)
 
 void Scene::Load_MapFile(const wstring& _mapFileName)
 {
+	
+
 	// 세이브 파일 이름으로 로드하기
 	wstring strFilePath = L"..\\Resources\\Data\\";
 	strFilePath += _mapFileName + L".dat";
