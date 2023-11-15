@@ -10,6 +10,7 @@ public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
 
+    HERO  Get_Hero()    { return m_eHero; }
     _bool Is_Set_Hero() { return m_bIsSetHero; }
 
     void Set_Hero(HERO eHero);

@@ -50,6 +50,7 @@
 #include "MainUiController.h"
 #include "UiCardDeckInvenChange.h"
 
+
 #include <filesystem>
 #include "Player_FSM.h"
 #include "GachaScene.h"
@@ -71,8 +72,8 @@ void DemoScene::Init()
 	COLLISION.Check_Group(_int(CollisionGroup::Monster_Attack), _int(CollisionGroup::Player_Body));
 	COLLISION.Check_Group(_int(CollisionGroup::Monster_Skill), _int(CollisionGroup::Player_Body));
 	COLLISION.Check_Group(_int(CollisionGroup::Player_Body), _int(CollisionGroup::MAPObject));
-	m_pGachaScene = make_shared<GachaScene>();
-	m_pGachaScene->Init();
+	//m_pGachaScene = make_shared<GachaScene>();
+	//m_pGachaScene->Init();
 }
 
 void DemoScene::Tick()
@@ -505,10 +506,21 @@ void DemoScene::Load_Ui()
 	}
 
 	{
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_Name(L"UI_Char_Change");
+
+		auto pScript = make_shared<UiCharChange>();
+		pObj->Add_Component(pScript);
+
+		pObj->Set_LayerIndex(Layer_UI);
+		Add_GameObject(pObj, true);
+	}
+
+	{
 		auto pObj = Get_GameObject(L"UI_Main_Button2");
 		pObj->Get_Button()->AddOnClickedEvent([]()
 			{
-				CUR_SCENE->Get_GameObject(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Render_On();
+				CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Render_On();
 			});
 	}
 
@@ -555,7 +567,6 @@ void DemoScene::Load_Ui()
 
 	{
 		auto pScript = make_shared<CoolTimeCheckScript>();
-		pScript->Set_Cur_Hero(HERO::ACE3);
 		Get_GameObject(L"Player")->Add_Component(pScript);
 	}
 
@@ -564,16 +575,7 @@ void DemoScene::Load_Ui()
 		Get_GameObject(L"UI_HpBar")->Add_Component(pScript);
 	}
 
-	{
-		auto pScript = make_shared<UiCharChange>();
-		Get_GameObject(L"UI_Char_Change0")->Add_Component(pScript);
-
-		pScript = make_shared<UiCharChange>();
-		Get_GameObject(L"UI_Char_Change1")->Add_Component(pScript);
-
-		pScript = make_shared<UiCharChange>();
-		Get_GameObject(L"UI_Char_Change2")->Add_Component(pScript);
-	}
+	
 
 
 	{
@@ -582,8 +584,15 @@ void DemoScene::Load_Ui()
 			auto pScript = make_shared<UiCardDeckInvenChange>(0);
 			wstring strTemp = L"UI_Card_Deck_Inven";
 			strTemp += to_wstring(i);
-			Get_GameObject(strTemp)->Add_Component(pScript);
+			weak_ptr<GameObject> pObj = Get_UI(strTemp);
+			pObj.lock()->Add_Component(pScript);
+
+			pObj.lock()->Get_Button()->AddOnClickedEvent([pObj]()
+				{
+					CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Click_Deck_Inven(pObj.lock()->Get_Name());
+				});
 		}
+
 		for (_uint i = 0; i < 32; ++i)
 		{
 			auto pScript = make_shared<UiCardDeckInvenChange>(1);
@@ -591,6 +600,7 @@ void DemoScene::Load_Ui()
 			strTemp += to_wstring(i);
 			Get_GameObject(strTemp)->Add_Component(pScript);
 		}
+
 		for (_uint i = 0; i < 32; ++i)
 		{
 			auto pScript = make_shared<UiCardDeckInvenChange>(2);
@@ -614,35 +624,29 @@ void DemoScene::Load_Ui()
 	Add_GameObject(obj);*/
 
 	{
-		/*auto pScript = make_shared<UiGachaCardMove>(0);
-		Get_GameObject(L"UI_Gacha_Card0")->Add_Component(pScript);
+		for (_uint i = 0; i < 3; ++i)
+		{
+			wstring strTemp = L"UI_Card_Deck";
+			strTemp += to_wstring(i);
+			weak_ptr<GameObject> pObj = Get_UI(strTemp);
 
-		pScript = make_shared<UiGachaCardMove>(1);
-		Get_GameObject(L"UI_Gacha_Card1")->Add_Component(pScript);
-
-		pScript = make_shared<UiGachaCardMove>(2);
-		Get_GameObject(L"UI_Gacha_Card2")->Add_Component(pScript);
-
-		pScript = make_shared<UiGachaCardMove>(3);
-		Get_GameObject(L"UI_Gacha_Card3")->Add_Component(pScript);
-
-		pScript = make_shared<UiGachaCardMove>(4);
-		Get_GameObject(L"UI_Gacha_Card4")->Add_Component(pScript);
-
-		pScript = make_shared<UiGachaCardMove>(5);
-		Get_GameObject(L"UI_Gacha_Card5")->Add_Component(pScript);
-
-		pScript = make_shared<UiGachaCardMove>(6);
-		Get_GameObject(L"UI_Gacha_Card6")->Add_Component(pScript);
-
-		pScript = make_shared<UiGachaCardMove>(7);
-		Get_GameObject(L"UI_Gacha_Card7")->Add_Component(pScript);
-
-		pScript = make_shared<UiGachaCardMove>(8);
-		Get_GameObject(L"UI_Gacha_Card8")->Add_Component(pScript);
+			pObj.lock()->Get_Button()->AddOnClickedEvent([pObj]()
+				{
+					CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Click_Deck_Select(pObj.lock()->Get_Name());
+				});
+		}	
 		
-		pScript = make_shared<UiGachaCardMove>(9);
-		Get_GameObject(L"UI_Gacha_Card9")->Add_Component(pScript);*/
+		for (_uint i = 0; i < 3; ++i)
+		{
+			wstring strTemp = L"UI_Card_Deck_X";
+			strTemp += to_wstring(i);
+			weak_ptr<GameObject> pObj = Get_UI(strTemp);
 
+			pObj.lock()->Get_Button()->AddOnClickedEvent([pObj]()
+				{
+					CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Click_Deck_X(pObj.lock()->Get_Name());
+				});
+		}
 	}
+
 }

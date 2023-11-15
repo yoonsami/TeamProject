@@ -84,7 +84,7 @@ void GS_Main(point VS_OUT input[1], inout TriangleStream<GS_OUTPUT> outputStream
     output[2].viewPos = output[2].position.xyz;
     output[3].viewPos = output[3].position.xyz;
 
-    // proj space
+    // proj q
     for (int i = 0; i < 4; ++i)
         output[i].position = mul(output[i].position, P);
 

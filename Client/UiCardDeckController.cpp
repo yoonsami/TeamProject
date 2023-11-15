@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "UiCardDeckController.h"
 
+#include "Material.h"
+#include "MeshRenderer.h"
+#include "UiCharChange.h"
 #include "UiCardDeckInvenChange.h"
 
 UiCardDeckController::UiCardDeckController()
@@ -13,6 +16,8 @@ HRESULT UiCardDeckController::Init()
         return E_FAIL;
     
     auto pScene = CUR_SCENE;
+
+    m_pUiCharChange = pScene->Get_UI(L"UI_Char_Change");
 
     m_vecCardDeckObj.resize(15);
     m_vecCardDeckObj[0]         = pScene->Get_UI(L"UI_Card_Deck_Total_Bg0");
@@ -199,6 +204,74 @@ void UiCardDeckController::Set_Hero(HERO eHero)
                 pScript2->Set_Hero(eHero);
                 return;
             }
+        }
+    }
+}
+
+void UiCardDeckController::Click_Deck_Select(wstring strObjName)
+{
+    if (false == m_bIsRender)
+        return;
+
+    for (_uint i = 3; i < 6; ++i)
+    {
+        if (false == m_vecCardDeckObj[i].expired())
+        {
+            if (m_vecCardDeckObj[i].lock()->Get_Name() == strObjName)
+            {
+                // ¼¼ÆÃ
+                m_bIsPicking = true;
+                m_iPickingIndex = i;
+            }
+        }
+    }
+}
+
+void UiCardDeckController::Click_Deck_Inven(wstring strInvenName)
+{
+    if (false == m_bIsRender)
+        return;
+
+    if (true == m_bIsPicking != 0)
+    {
+        _uint iSize = IDX(m_vecInvenObj.size());
+        for (_uint i = 0; i < iSize; ++i)
+        {
+            if (m_vecInvenObj[i].lock()->Get_Name() == strInvenName)
+            {
+                auto pScript = m_vecInvenObj[i].lock()->Get_Script<UiCardDeckInvenChange>();
+                if (true == pScript->Is_Set_Hero())
+                {
+                    HERO eHero = pScript->Get_Hero();
+                    m_vecCardDeckObj[m_iPickingIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(GET_DATA(eHero).KeyDeckSelect), TextureMapType::DIFFUSE);
+                    m_pUiCharChange.lock()->Get_Script<UiCharChange>()->Set_Hero(m_iPickingIndex - 3, eHero);
+                
+                    m_vecCardDeckObj[m_iPickingIndex + 6].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+                }
+            }
+        }
+
+    }
+    else
+    {
+        m_bIsPicking = 0;
+
+
+    }
+}
+
+void UiCardDeckController::Click_Deck_X(wstring strObjName)
+{
+    if (false == m_bIsRender)
+        return;
+
+    for (_uint i = 9; i < 12; ++i)
+    {
+        if (m_vecCardDeckObj[i].lock()->Get_Name() == strObjName)
+        {
+            m_vecCardDeckObj[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
+            m_vecCardDeckObj[i - 6].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"Card_Deck_Bg_None"), TextureMapType::DIFFUSE);
+            m_pUiCharChange.lock()->Get_Script<UiCharChange>()->Set_Hero(i - 9, HERO::MAX);
         }
     }
 }

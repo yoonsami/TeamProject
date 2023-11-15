@@ -59,7 +59,7 @@ public:
 	_bool m_bSkillCreate = false;
 
 	_float3 m_vHitDir = _float3{ 0.f };
-	_float3 m_vInputTurnVector = _float3(0.f);
+	_float3 m_vKeyInputTargetDir = _float3(0.f);
 
 	_float m_fAttackRange = 2.f;
 	_float m_fDetectRange = 2.f;

@@ -15,7 +15,7 @@ HRESULT CoolTimeCheckScript::Init()
     if (m_pOwner.expired())
         return E_FAIL;
 
-    m_eCurHero = HERO::ACE3;
+    m_eCurHero = HERO::PLAYER;
 
     m_CoolTime.resize(IDX(HERO::MAX));
     //m_TextureKey.resize(IDX(HERO::MAX));
@@ -56,22 +56,25 @@ HRESULT CoolTimeCheckScript::Init()
     // Set Max Cool Time
     // 5 skill
     // 7 texture : attack, evade, skill 0 ~ 4
+    // 
+    
+
+
+    // Player
+    auto tagData = GET_DATA(HERO::PLAYER);
+    m_CoolTime[IDX(HERO::PLAYER)][0].fCoolTime = tagData.Skill1Cool;
+    m_CoolTime[IDX(HERO::PLAYER)][1].fCoolTime = tagData.Skill2Cool;
+    m_CoolTime[IDX(HERO::PLAYER)][2].fCoolTime = tagData.Skill3Cool;
+    m_CoolTime[IDX(HERO::PLAYER)][3].fCoolTime = tagData.Skill4Cool;
+    m_CoolTime[IDX(HERO::PLAYER)][4].fCoolTime = tagData.Skill5Cool;
+    
     // Ace
-    auto tagData = GET_DATA(HERO::ACE3);
+    tagData = GET_DATA(HERO::ACE3);
     m_CoolTime[IDX(HERO::ACE3)][0].fCoolTime = tagData.Skill1Cool;
     m_CoolTime[IDX(HERO::ACE3)][1].fCoolTime = tagData.Skill2Cool;
     m_CoolTime[IDX(HERO::ACE3)][2].fCoolTime = tagData.Skill3Cool;
     m_CoolTime[IDX(HERO::ACE3)][3].fCoolTime = tagData.Skill4Cool;
     m_CoolTime[IDX(HERO::ACE3)][4].fCoolTime = tagData.Skill5Cool;
-
-    //m_TextureKey[IDX(HERO::ACE3)][0] = L"Skill_Ace0";
-    //m_TextureKey[IDX(HERO::ACE3)][1] = L"Skill_Ace1";
-    //m_TextureKey[IDX(HERO::ACE3)][2] = L"Skill_Ace2";
-    //m_TextureKey[IDX(HERO::ACE3)][3] = L"Skill_Ace3";
-    //m_TextureKey[IDX(HERO::ACE3)][4] = L"Skill_Ace4";
-    //m_TextureKey[IDX(HERO::ACE3)][5] = L"Skill_Ace5";
-    //m_TextureKey[IDX(HERO::ACE3)][6] = L"Skill_Ace6";
-    
 
     // Kyle
     tagData = GET_DATA(HERO::KYLE);
@@ -81,15 +84,6 @@ HRESULT CoolTimeCheckScript::Init()
     m_CoolTime[IDX(HERO::KYLE)][3].fCoolTime = tagData.Skill4Cool;
     m_CoolTime[IDX(HERO::KYLE)][4].fCoolTime = tagData.Skill5Cool;
 
-    //m_TextureKey[IDX(HERO::KYLE)][0] = L"Skill_Kyle0";
-    //m_TextureKey[IDX(HERO::KYLE)][1] = L"Skill_Kyle1";
-    //m_TextureKey[IDX(HERO::KYLE)][2] = L"Skill_Kyle2";
-    //m_TextureKey[IDX(HERO::KYLE)][3] = L"Skill_Kyle3";
-    //m_TextureKey[IDX(HERO::KYLE)][4] = L"Skill_Kyle4";
-    //m_TextureKey[IDX(HERO::KYLE)][5] = L"Skill_Kyle5";
-    //m_TextureKey[IDX(HERO::KYLE)][6] = L"Skill_Kyle6";
-
-
     // Yeopo
     tagData = GET_DATA(HERO::YEOPO);
     m_CoolTime[IDX(HERO::YEOPO)][0].fCoolTime = tagData.Skill1Cool;
@@ -98,15 +92,6 @@ HRESULT CoolTimeCheckScript::Init()
     m_CoolTime[IDX(HERO::YEOPO)][3].fCoolTime = tagData.Skill4Cool;
     m_CoolTime[IDX(HERO::YEOPO)][4].fCoolTime = tagData.Skill5Cool;
 
-    //m_TextureKey[IDX(HERO::YEOPO)][0] = L"Skill_Yeopo0";
-    //m_TextureKey[IDX(HERO::YEOPO)][1] = L"Skill_Yeopo1";
-    //m_TextureKey[IDX(HERO::YEOPO)][2] = L"Skill_Yeopo2";
-    //m_TextureKey[IDX(HERO::YEOPO)][3] = L"Skill_Yeopo3";
-    //m_TextureKey[IDX(HERO::YEOPO)][4] = L"Skill_Yeopo4";
-    //m_TextureKey[IDX(HERO::YEOPO)][5] = L"Skill_Yeopo5";
-    //m_TextureKey[IDX(HERO::YEOPO)][6] = L"Skill_Yeopo6";
-
-
     // Dellons
     tagData = GET_DATA(HERO::DELLONS);
     m_CoolTime[IDX(HERO::DELLONS)][0].fCoolTime = tagData.Skill1Cool;
@@ -114,16 +99,6 @@ HRESULT CoolTimeCheckScript::Init()
     m_CoolTime[IDX(HERO::DELLONS)][2].fCoolTime = tagData.Skill3Cool;
     m_CoolTime[IDX(HERO::DELLONS)][3].fCoolTime = tagData.Skill4Cool;
     m_CoolTime[IDX(HERO::DELLONS)][4].fCoolTime = tagData.Skill5Cool;
-
-    //m_TextureKey[IDX(HERO::DELLONS)][0] = L"Skill_Dellons0";
-    //m_TextureKey[IDX(HERO::DELLONS)][1] = L"Skill_Dellons1";
-    //m_TextureKey[IDX(HERO::DELLONS)][2] = L"Skill_Dellons2";
-    //m_TextureKey[IDX(HERO::DELLONS)][3] = L"Skill_Dellons3";
-    //m_TextureKey[IDX(HERO::DELLONS)][4] = L"Skill_Dellons4";
-    //m_TextureKey[IDX(HERO::DELLONS)][5] = L"Skill_Dellons5";
-    //m_TextureKey[IDX(HERO::DELLONS)][6] = L"Skill_Dellons6";
-
-
 
 
 
@@ -247,7 +222,8 @@ void CoolTimeCheckScript::Check_Cool_Time()
                 if (false == vecCool[j].bIsEnd && vecCool[j].fCoolTime < vecCool[j].fAccTime)
                 {
                     vecCool[j].bIsEnd = true;
-                    Start_ButtonEndEffect(j);
+                    if(i == IDX(m_eCurHero))
+                        Start_ButtonEndEffect(j);
                 }
             }
         }
