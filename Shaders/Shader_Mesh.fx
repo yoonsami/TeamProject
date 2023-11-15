@@ -178,6 +178,46 @@ void GS_Sprite(point VS_OUT input[1], inout TriangleStream<GS_OUTPUT> outputStre
     outputStream.RestartStrip();
 }
 
+[maxvertexcount(6)]
+void GS_Ui(point VS_OUT input[1], inout TriangleStream<UIOutput> outputStream)
+{
+    UIOutput output[4] =
+    {
+        (UIOutput)0.f, (UIOutput)0.f, (UIOutput)0.f, (UIOutput)0.f
+    };
+
+    float3 trans, mscale;
+    float4 q;
+    decompose(W, trans, q, mscale);
+
+    VS_OUT vtx = input[0];
+    float2 scale = mscale.xy * 0.5f;
+
+    output[0].position = vtx.viewPos + float4(-scale.x, scale.y,  0.f, 0.f);
+    output[1].position = vtx.viewPos + float4(scale.x,  scale.y,  0.f, 0.f);
+    output[2].position = vtx.viewPos + float4(scale.x,  -scale.y, 0.f, 0.f);
+    output[3].position = vtx.viewPos + float4(-scale.x, -scale.y, 0.f, 0.f);
+
+    for (int i = 0; i < 4; ++i)
+        output[i].position = mul(output[i].position, P);
+
+    output[0].uv = float2(0.f, 0.f);
+    output[1].uv = float2(1.f, 0.f);
+    output[2].uv = float2(1.f, 1.f);
+    output[3].uv = float2(0.f, 1.f);
+
+    outputStream.Append(output[0]);
+    outputStream.Append(output[1]);
+    outputStream.Append(output[2]);
+    outputStream.RestartStrip();
+
+    outputStream.Append(output[0]);
+    outputStream.Append(output[2]);
+    outputStream.Append(output[3]);
+    outputStream.RestartStrip();
+}
+
+
 float4 PS_UI(UIOutput input) : SV_TARGET
 {
     float4 diffuseColor = g_vec4_0;
@@ -709,72 +749,72 @@ technique11 T0
 
     pass DEFAULT_UI
     {
-        SetVertexShader(CompileShader(vs_5_0, VS_UI()));
+        SetVertexShader(CompileShader(vs_5_0, VS_Default()));
         SetRasterizerState(RS_CullNone);
         SetDepthStencilState(DSS_Default, 0);
         SetPixelShader(CompileShader(ps_5_0, PS_UI()));
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetGeometryShader(NULL);
+        SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
 
     pass CURTAIN_UP_UI
     {
-        SetVertexShader(CompileShader(vs_5_0, VS_UI()));
+        SetVertexShader(CompileShader(vs_5_0, VS_Default()));
         SetRasterizerState(RS_CullNone);
         SetDepthStencilState(DSS_Default, 0);
         SetPixelShader(CompileShader(ps_5_0, PS_UI1()));
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetGeometryShader(NULL);
+        SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
 
     pass CLOCK_UI
     {
-        SetVertexShader(CompileShader(vs_5_0, VS_UI()));
+        SetVertexShader(CompileShader(vs_5_0, VS_Default()));
         SetRasterizerState(RS_CullNone);
         SetDepthStencilState(DSS_Default, 0);
         SetPixelShader(CompileShader(ps_5_0, PS_UI2()));
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetGeometryShader(NULL);
+        SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
 
     pass HPBAR_UI
     {
-        SetVertexShader(CompileShader(vs_5_0, VS_UI()));
+        SetVertexShader(CompileShader(vs_5_0, VS_Default()));
         SetRasterizerState(RS_CullNone);
         SetDepthStencilState(DSS_Default, 0);
         SetPixelShader(CompileShader(ps_5_0, PS_UI3()));
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetGeometryShader(NULL);
+        SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
 
     pass SLIDE_RIGHT_UI
     {
-        SetVertexShader(CompileShader(vs_5_0, VS_UI()));
+        SetVertexShader(CompileShader(vs_5_0, VS_Default()));
         SetRasterizerState(RS_CullNone);
         SetDepthStencilState(DSS_Default, 0);
         SetPixelShader(CompileShader(ps_5_0, PS_UI4()));
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetGeometryShader(NULL);
+        SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
 
     pass LOADING_UI
     {
-        SetVertexShader(CompileShader(vs_5_0, VS_UI()));
+        SetVertexShader(CompileShader(vs_5_0, VS_Default()));
         SetRasterizerState(RS_CullNone);
         SetDepthStencilState(DSS_Default, 0);
         SetPixelShader(CompileShader(ps_5_0, PS_UI5()));
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetGeometryShader(NULL);
+        SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
     
     pass SKILL_COOL_END
     {
-        SetVertexShader(CompileShader(vs_5_0, VS_UI()));
+        SetVertexShader(CompileShader(vs_5_0, VS_Default()));
         SetRasterizerState(RS_CullNone);
         SetDepthStencilState(DSS_Default, 0);
         SetPixelShader(CompileShader(ps_5_0, PS_UI6()));
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetGeometryShader(NULL);
+        SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
 
 
