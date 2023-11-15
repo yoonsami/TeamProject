@@ -148,6 +148,45 @@ void CoolTimeCheckScript::Set_Cur_Hero(HERO eType)
     m_pUiSkill[4].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(tagData.KeySkill3), TextureMapType::DIFFUSE);
     m_pUiSkill[5].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(tagData.KeySkill4), TextureMapType::DIFFUSE);
     m_pUiSkill[6].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(tagData.KeySkill5), TextureMapType::DIFFUSE);
+
+    for (_uint i = 0; i < IDX(m_pUi_Skill_Cool.size()); ++i)
+        if (true == m_pUi_Skill_Cool[i].expired())
+            return;
+
+
+    for (_uint i = 0; i < IDX(m_pUi_Skill_Cool.size()); ++i)
+    {
+        Change_Pos_Two_Letter(i);
+    }
+    
+    auto& vecCool = m_CoolTime[IDX(eType)];
+    _uint iSkill1Cool = IDX(vecCool[0].fCoolTime - vecCool[0].fAccTime + 1.f);
+    _uint iSkill2Cool = IDX(vecCool[1].fCoolTime - vecCool[1].fAccTime + 1.f);
+    _uint iSkill3Cool = IDX(vecCool[2].fCoolTime - vecCool[2].fAccTime + 1.f);
+    _uint iSkill4Cool = IDX(vecCool[3].fCoolTime - vecCool[3].fAccTime + 1.f);
+    _uint iSkill5Cool = IDX(vecCool[4].fCoolTime - vecCool[4].fAccTime + 1.f);
+
+    if (0 < iSkill1Cool && iSkill1Cool < 10 && false == m_bIsCoolChangeOne[0])
+        Change_Pos_One_Letter(0);
+    if (0 < iSkill2Cool && iSkill2Cool < 10 && false == m_bIsCoolChangeOne[1])
+        Change_Pos_One_Letter(1);
+    if (0 < iSkill3Cool && iSkill3Cool < 10 && false == m_bIsCoolChangeOne[2])
+        Change_Pos_One_Letter(2);
+    if (0 < iSkill4Cool && iSkill4Cool < 10 && false == m_bIsCoolChangeOne[3])
+        Change_Pos_One_Letter(3);
+    if (0 < iSkill5Cool && iSkill5Cool < 10 && false == m_bIsCoolChangeOne[4])
+        Change_Pos_One_Letter(4);
+
+    if (0 < iSkill1Cool)
+        m_pUi_Skill_Cool[0].lock()->Get_FontRenderer()->Get_Text() = to_wstring(iSkill1Cool);
+    if (0 < iSkill2Cool)
+        m_pUi_Skill_Cool[1].lock()->Get_FontRenderer()->Get_Text() = to_wstring(iSkill2Cool);
+    if (0 < iSkill3Cool)
+        m_pUi_Skill_Cool[2].lock()->Get_FontRenderer()->Get_Text() = to_wstring(iSkill3Cool);
+    if (0 < iSkill4Cool)
+        m_pUi_Skill_Cool[3].lock()->Get_FontRenderer()->Get_Text() = to_wstring(iSkill4Cool);
+    if (0 < iSkill5Cool)
+        m_pUi_Skill_Cool[4].lock()->Get_FontRenderer()->Get_Text() = to_wstring(iSkill5Cool);
 }
 
 void CoolTimeCheckScript::Set_Skill_End()
@@ -230,12 +269,10 @@ void CoolTimeCheckScript::Check_Cool_Time()
                 if (false == vecCool[j].bIsEnd && vecCool[j].fCoolTime < vecCool[j].fAccTime)
                 {
                     vecCool[j].bIsEnd = true;
+                    Change_Pos_Two_Letter(j);
+                    
                     if(i == IDX(m_eCurHero))
-                    {
                         Start_ButtonEndEffect(j);
-                        Change_Pos_Two_Letter(j);
-                        Change_Text_Zero(j);
-                    }
                 }
             }
         }
@@ -273,21 +310,21 @@ void CoolTimeCheckScript::Change_Skills_Value()
     m_pUiSkill[6].lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[4].fAccTime / vecCool[4].fCoolTime;
 
     
-    _uint iSkill1Cool = IDX(vecCool[0].fCoolTime - vecCool[0].fAccTime);
-    _uint iSkill2Cool = IDX(vecCool[1].fCoolTime - vecCool[1].fAccTime);
-    _uint iSkill3Cool = IDX(vecCool[2].fCoolTime - vecCool[2].fAccTime);
-    _uint iSkill4Cool = IDX(vecCool[3].fCoolTime - vecCool[3].fAccTime);
-    _uint iSkill5Cool = IDX(vecCool[4].fCoolTime - vecCool[4].fAccTime);
+    _uint iSkill1Cool = IDX(vecCool[0].fCoolTime - vecCool[0].fAccTime + 1.f);
+    _uint iSkill2Cool = IDX(vecCool[1].fCoolTime - vecCool[1].fAccTime + 1.f);
+    _uint iSkill3Cool = IDX(vecCool[2].fCoolTime - vecCool[2].fAccTime + 1.f);
+    _uint iSkill4Cool = IDX(vecCool[3].fCoolTime - vecCool[3].fAccTime + 1.f);
+    _uint iSkill5Cool = IDX(vecCool[4].fCoolTime - vecCool[4].fAccTime + 1.f);
 
-    if (iSkill1Cool < 10 && false == m_bIsCoolChangeOne[0])
+    if (0 < iSkill1Cool && iSkill1Cool < 10 && false == m_bIsCoolChangeOne[0])
         Change_Pos_One_Letter(0);
-    if (iSkill2Cool < 10 && false == m_bIsCoolChangeOne[1])
+    if (0 < iSkill2Cool && iSkill2Cool < 10 && false == m_bIsCoolChangeOne[1])
         Change_Pos_One_Letter(1);
-    if (iSkill3Cool < 10 && false == m_bIsCoolChangeOne[2])
+    if (0 < iSkill3Cool && iSkill3Cool < 10 && false == m_bIsCoolChangeOne[2])
         Change_Pos_One_Letter(2);
-    if (iSkill4Cool < 10 && false == m_bIsCoolChangeOne[3])
+    if (0 < iSkill4Cool && iSkill4Cool < 10 && false == m_bIsCoolChangeOne[3])
         Change_Pos_One_Letter(3);
-    if (iSkill5Cool < 10 && false == m_bIsCoolChangeOne[4])
+    if (0 < iSkill5Cool && iSkill5Cool < 10 && false == m_bIsCoolChangeOne[4])
         Change_Pos_One_Letter(4);
 
     if (0 < iSkill1Cool)
@@ -349,6 +386,8 @@ void CoolTimeCheckScript::Change_Pos_Two_Letter(_uint iIndex)
     }
 
     pTransform->Set_State(Transform_State::POS, vecPos);
+    
+    Change_Text_Zero(iIndex);
 }
 
 void CoolTimeCheckScript::Change_Pos_One_Letter(_uint iIndex)
@@ -390,4 +429,5 @@ void CoolTimeCheckScript::Change_Text_Zero(_uint iIndex)
         return;
 
     m_pUi_Skill_Cool[iIndex].lock()->Get_FontRenderer()->Get_Text() = L"";
+    m_bIsCoolChangeOne[iIndex] = false;
 }
