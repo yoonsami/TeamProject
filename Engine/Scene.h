@@ -3,7 +3,7 @@
 
 class GameObject;
 
-class Scene
+class Scene : public enable_shared_from_this<Scene>
 {
 public:
 	enum SCENE_STATE
@@ -49,8 +49,10 @@ public:
 
 	void Swap_Object(const wstring& leftObjName, const wstring& rightObjName);
 	void Render_ToneMapping();
-	
+	void Render_BackBuffer();
 	void Load_UIFile(const wstring& path, _bool bRender = true);
+
+	const wstring& Get_FinalRenderTarget() { return m_wstrFinalRenderTarget; }
 
 protected:
 	void Load_MapFile(const wstring& _mapFileName);
@@ -101,7 +103,7 @@ protected:
 
 	void Render_FXAA();
 
-	void Render_BackBuffer();
+
 
 
 
@@ -134,8 +136,13 @@ protected:
 
 	wstring m_wstrFinalRenderTarget = L"";
 
-
+	
 
 	_bool m_bRenderDebug = false;
+
+	shared_ptr<Scene> m_pGachaScene;
+
+	public:
+		static LightParams* params;
 };
 

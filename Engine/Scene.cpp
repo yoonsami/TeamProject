@@ -46,6 +46,9 @@ void Scene::Init()
 
 void Scene::Tick()
 {
+	if (m_pGachaScene)
+		m_pGachaScene->Tick();
+
 	auto objects = m_GameObjects;
 	for (auto& object : objects)
 	{
@@ -56,6 +59,8 @@ void Scene::Tick()
 
 void Scene::Late_Tick()
 {
+	if (m_pGachaScene)
+		m_pGachaScene->Late_Tick();
 	auto objects = m_GameObjects;
 	for (auto& object : objects)
 	{
@@ -65,6 +70,8 @@ void Scene::Late_Tick()
 
 void Scene::Final_Tick()
 {
+	if (m_pGachaScene)
+		m_pGachaScene->Final_Tick();
 	auto objects = m_GameObjects;
 	for (auto& object : objects)
 	{
@@ -74,6 +81,42 @@ void Scene::Final_Tick()
 
 void Scene::Render()
 {
+	if (m_pGachaScene)
+	{
+		m_pGachaScene->Render();
+		wstring finalRenderTarget = m_pGachaScene->Get_FinalRenderTarget();
+
+		{
+			GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::SUBSCENEFINAL)->OMSetRenderTargets();
+
+			auto material = RESOURCES.Get<Material>(L"SubScene");
+			auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+			material->Set_SubMap(0, RESOURCES.Get<Texture>(finalRenderTarget));
+			material->Push_SubMapData();
+
+			mesh->Get_VertexBuffer()->Push_Data();
+			mesh->Get_IndexBuffer()->Push_Data();
+
+			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+			material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+		}
+
+		GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->OMSetRenderTargets();
+
+		for (_uchar i = 0; i < _uchar(RENDER_TARGET_GROUP_TYPE::END) - 1; ++i)
+		{
+			GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE(i))->ClearRenderTargetView();
+		}
+		ID3D11ShaderResourceView* pNullSRV = nullptr;
+
+		for (int i = 0; i < 32; ++i) {
+			CONTEXT->PSSetShaderResources(i, 1, &pNullSRV);
+		}
+	}
+
+
+
 	Gather_LightData();
 	Sort_GameObjects();
 	Render_Shadow();
@@ -628,13 +671,15 @@ void Scene::Gather_LightData()
 		m_LightParams.lights[m_LightParams.lightCount] = lightInfo;
 		m_LightParams.lightCount++;
 	}
+
+	params = &m_LightParams;
 }
 
 void Scene::Sort_GameObjects()
 {
 	for (auto& camera : m_Cameras)
 	{
-		camera->Get_Camera()->Sort_GameObject();
+		camera->Get_Camera()->Sort_GameObject(shared_from_this());
 	}
 }
 
@@ -647,7 +692,7 @@ void Scene::Render_Shadow()
 		if(light->Get_Light()->Get_LightInfo().lightType != static_cast<_int>(LIGHT_TYPE::DIRECTIONAL_LIGHT))
 			continue;
 
-		light->Get_Light()->Render_Shadow();
+		light->Get_Light()->Render_Shadow(shared_from_this());
 
 	}
 	//GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::SHADOW)->UnBindSRV();
@@ -1469,8 +1514,7 @@ void Scene::Render_ToneMapping()
 	material->Get_Shader()->DrawIndexed(0, GAMEINSTANCE.g_iTMIndex, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
 	m_wstrFinalRenderTarget = L"ToneMappingTarget";
-
-	Render_BackBuffer();
+	Render_FXAA();
 }
 
 void Scene::Render_FXAA()
@@ -1498,7 +1542,7 @@ void Scene::Render_FXAA()
 
 void Scene::Render_BackBuffer()
 {
-	Render_FXAA();
+
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->OMSetRenderTargets();
 
 	auto material = RESOURCES.Get<Material>(L"BackBufferRenderFinal");
@@ -1572,3 +1616,5 @@ void Scene::SSAO_MakeFrustumFarCorners()
 	m_vFrustumFarCorner[2] = _float4(+halfWidth, -halfHeight, farZ, 0.0f);
 	m_vFrustumFarCorner[3] = _float4(-halfWidth, -halfHeight, farZ, 0.0f);
 }
+
+LightParams* Scene::params = nullptr;

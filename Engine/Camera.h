@@ -45,8 +45,8 @@ public:
 	static const _float4x4& Get_Proj() { return S_Proj; }
 
 public:
-    void Sort_GameObject();
-    void Sort_ShadowObject();
+    void Sort_GameObject(shared_ptr<Scene> scene);
+    void Sort_ShadowObject(shared_ptr<Scene> scene);
     void Render_DistrotionEffects();
     void Render_BlurForward();
     void Render_Forward();

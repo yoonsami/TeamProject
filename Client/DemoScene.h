@@ -1,7 +1,9 @@
 #pragma once
 #include "Scene.h"
+
+class GachaScene;
 class DemoScene :
-    public Scene
+	public Scene
 {
 public:
 	DemoScene();
@@ -24,4 +26,6 @@ private:
 	void Load_Boss_Mir();
 	void Load_Light();
 	void Load_Ui();
+
+
 };

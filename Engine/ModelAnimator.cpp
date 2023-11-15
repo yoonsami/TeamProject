@@ -190,7 +190,8 @@ void ModelAnimator::Set_Model(shared_ptr<Model> model)
 
 	for (auto& material : materials)
 	{
-		material->Set_Shader(m_pShader);
+		if(!material->Get_Shader())
+			material->Set_Shader(m_pShader);
 	}
 }
 

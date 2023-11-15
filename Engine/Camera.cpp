@@ -52,9 +52,8 @@ void Camera::Update_Matrix()
 	
 }
 
-void Camera::Sort_GameObject()
+void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 {
-	shared_ptr<Scene> scene = CUR_SCENE;
 	auto& gameObjects = scene->Get_Objects();
 
 	// Todo 
@@ -120,9 +119,8 @@ void Camera::Sort_GameObject()
 	}
 }
 
-void Camera::Sort_ShadowObject()
+void Camera::Sort_ShadowObject(shared_ptr<Scene> scene)
 {
-	shared_ptr<Scene> scene = CUR_SCENE;
 	auto& gameObjects = scene->Get_Objects();
 
 	m_Shadow.clear();

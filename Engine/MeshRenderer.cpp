@@ -36,8 +36,9 @@ void MeshRenderer::Render_Instancing(shared_ptr<InstancingBuffer>& buffer, share
 
 	m_pShader->Push_InstanceRenderParamData(*renderParamDesc);
 
-	auto LightParam = CUR_SCENE->Get_LightParams();
-	m_pShader->Push_LightData(LightParam);
+	// auto& LightParam = CUR_SCENE->Get_LightParams();
+	if (Scene::params)
+		m_pShader->Push_LightData(*Scene::params);
 
 	m_pMesh->Get_VertexBuffer()->Push_Data();
 	m_pMesh->Get_IndexBuffer()->Push_Data();
@@ -59,11 +60,13 @@ void MeshRenderer::Render()
 
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 
-	auto LightParam = CUR_SCENE->Get_LightParams();
-	m_pShader->Push_LightData(LightParam);
+	
+	// auto& LightParam = CUR_SCENE->Get_LightParams();
+	if(Scene::params)
+		m_pShader->Push_LightData(*Scene::params);
 
 //	m_pShader->GetScalar("g_BarPercent")->SetFloat(m_fLoadingPercent);
-	auto world = Get_Transform()->Get_WorldMatrix();
+	auto& world = Get_Transform()->Get_WorldMatrix();
 	m_pShader->Push_TransformData(TransformDesc{ world });
 
 	m_pMesh->Get_VertexBuffer()->Push_Data();

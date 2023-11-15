@@ -54,6 +54,8 @@ enum class RENDER_TARGET_GROUP_TYPE : _uchar
 
 	TONEMAPPING,
 
+	SUBSCENEFINAL,
+
 	END,
 };
 

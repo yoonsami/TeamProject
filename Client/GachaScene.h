@@ -1,12 +1,11 @@
 #pragma once
 #include "Scene.h"
-
-class LogoScene :
+class GachaScene :
     public Scene
 {
 public:
-	LogoScene();
-	~LogoScene();
+	GachaScene();
+	~GachaScene();
 
 public:
 	virtual void Init() override;
@@ -17,8 +16,11 @@ public:
 	virtual HRESULT Load_Scene() override;
 
 private:
+	void Load_SkyBox();
+	void Load_Player();
+
 	void Load_Camera();
-	void Load_Ui();
-
+	void Load_Monster(_uint iCnt);
+	void Load_Boss_Mir();
+	void Load_Light();
 };
-

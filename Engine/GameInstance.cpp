@@ -43,7 +43,11 @@ HRESULT GameInstance::Render_Begin()
 HRESULT GameInstance::Render_End()
 {
 	if (CUR_SCENE)
+	{
 		CUR_SCENE->Render_ToneMapping();
+		CUR_SCENE->Render_BackBuffer();
+
+	}
 
 	GRAPHICS.Render_End();
 

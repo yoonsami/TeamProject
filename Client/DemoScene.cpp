@@ -52,6 +52,7 @@
 
 #include <filesystem>
 #include "Player_FSM.h"
+#include "GachaScene.h"
 namespace fs = std::filesystem;
 
 DemoScene::DemoScene()
@@ -70,6 +71,8 @@ void DemoScene::Init()
 	COLLISION.Check_Group(_int(CollisionGroup::Monster_Attack), _int(CollisionGroup::Player_Body));
 	COLLISION.Check_Group(_int(CollisionGroup::Monster_Skill), _int(CollisionGroup::Player_Body));
 	COLLISION.Check_Group(_int(CollisionGroup::Player_Body), _int(CollisionGroup::MAPObject));
+	m_pGachaScene = make_shared<GachaScene>();
+	m_pGachaScene->Init();
 }
 
 void DemoScene::Tick()
@@ -88,6 +91,7 @@ void DemoScene::Tick()
 
 void DemoScene::Late_Tick()
 {
+
 	__super::Late_Tick();
 
 	// Test
@@ -596,6 +600,18 @@ void DemoScene::Load_Ui()
 		}
 	}
 
+	/*shared_ptr<GameObject> obj = make_shared<GameObject>();
+	obj->GetOrAddTransform()->Scaled(_float3(10.f));
+	{
+		shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_TextureMap(RESOURCES.Get<Texture>(L"SUBSCENEFINALTarget"),TextureMapType::DIFFUSE);
+		renderer->Get_RenderParamDesc().vec4Params[0] = _float4(1);
+		renderer->Set_Material(material);
+		renderer->Set_Mesh(RESOURCES.Get<Mesh>(L"Quad"));
+		obj->Add_Component(renderer);
+	}
+	Add_GameObject(obj);*/
 
 	{
 		/*auto pScript = make_shared<UiGachaCardMove>(0);

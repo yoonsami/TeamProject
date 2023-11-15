@@ -169,6 +169,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\09.UiCardDeckInvenChange">
       <UniqueIdentifier>{45081402-d3fc-4713-9ed4-75b7f961e759}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Scene\02.GachaScene">
+      <UniqueIdentifier>{6a4039be-8eb5-40e7-890f-41336be6aa7c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -369,6 +372,9 @@
     <ClInclude Include="UiCardDeckInvenChange.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\09.UiCardDeckInvenChange</Filter>
     </ClInclude>
+    <ClInclude Include="GachaScene.h">
+      <Filter>01.Scene\02.GachaScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -538,6 +544,9 @@
     </ClCompile>
     <ClCompile Include="UiCardDeckInvenChange.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\09.UiCardDeckInvenChange</Filter>
+    </ClCompile>
+    <ClCompile Include="GachaScene.cpp">
+      <Filter>01.Scene\02.GachaScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

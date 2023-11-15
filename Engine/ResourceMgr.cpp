@@ -911,7 +911,13 @@ void ResourceMgr::CreateDefaultMaterial()
 
 		Add(L"BackBufferRenderFinal", material);
 	}
-	
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+
+		Add(L"SubScene", material);
+	}
 }
 
 void ResourceMgr::CreateMapModel(const wstring& mapName)

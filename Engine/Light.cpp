@@ -63,8 +63,9 @@ void Light::Render()
 
 	pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 
-	auto& LightParam = CUR_SCENE->Get_LightParams();
-	pShader->Push_LightData(LightParam);
+	// auto& LightParam = CUR_SCENE->Get_LightParams();
+	if (Scene::params)
+		pShader->Push_LightData(*Scene::params);
 
 	m_pLightMaterial->Push_SubMapData();
 
@@ -84,9 +85,9 @@ void Light::Render()
 
 }
 
-void Light::Render_Shadow()
+void Light::Render_Shadow(shared_ptr<Scene> scene)
 {
-	m_pShadowCamera->Get_Camera()->Sort_ShadowObject();
+	m_pShadowCamera->Get_Camera()->Sort_ShadowObject(scene);
 	m_pShadowCamera->Get_Camera()->Render_Shadow();
 }
 

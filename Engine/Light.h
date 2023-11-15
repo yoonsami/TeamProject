@@ -19,7 +19,7 @@ public:
 	virtual void Final_Tick() override;
 
 	void Render();
-	void Render_Shadow();
+	void Render_Shadow(shared_ptr<Scene> scene);
 
 public:
 	LightInfo& Get_LightInfo() { return m_LightInfo; }
