@@ -2,9 +2,13 @@
 #include "FSM.h"
 #include "ForwardMovingSkillScript.h"
 
+#define PLAYER_SKILL1_DIST 10.f
+#define PLAYER_SKILL1_ANGLE (XM_PI / 3.f)
+
 class Player_FSM :
 	public FSM
 {
+
 public:
 	enum class STATE
 	{
@@ -50,15 +54,15 @@ public:
 public:
 	virtual HRESULT Init() override;
 	virtual void Tick() override;
+	virtual void Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget) override;
 
 
 private:
-	virtual void State_Tick() override; // »óÅÂ¸¦ Ç×»ó ¾÷µ¥ÀÌÆ®ÇØÁÜ
-	virtual void State_Init() override; // »óÅÂ°¡ ¹Ù²ð ¶§ ÇÑ¹ø ÃÊ±âÈ­ ÇØÁÜ
+	virtual void State_Tick() override; // ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½×»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½
+	virtual void State_Init() override; // ï¿½ï¿½ï¿½Â°ï¿½ ï¿½Ù²ï¿½ ï¿½ï¿½ ï¿½Ñ¹ï¿½ ï¿½Ê±ï¿½È­ ï¿½ï¿½ï¿½ï¿½
 	virtual void OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) override;
-	virtual void Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget) override;
 	virtual void AttackCollider_On(const wstring& skillname) override;
 	virtual void AttackCollider_Off() override;
 	virtual void Set_State(_uint iIndex) override;
@@ -143,28 +147,6 @@ private:
 private:
 	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;
-
-	_float3 m_vInputTurnVector = _float3(0.f);
-	COOLTIMEINFO m_tRunEndDelay = { 0.2f,0.f };
-
-	_bool m_bCanCombo = false;
-
-
-	_float m_fRunSpeed = 6.f;
-	_float m_fSprintSpeed = 8.f;
-	_float m_fKnockBackSpeed = 6.f;
-	_float m_fKnockDownSpeed = 6.f;
-
-	_float m_fNormalAttack_AnimationSpeed = 2.f;
-	_float m_fSkillAttack_AnimationSpeed = 1.5f;
-	_float m_fEvade_AnimationSpeed = 1.5f;
-
-	COOLTIMEINFO m_tKnockDownEndCoolTime = { 3.f, 0.f };
-
-	_bool m_bSkillCreate = false;
-	weak_ptr<GameObject> m_pSkillCollider;
-	
-	_uint m_iSkillBoneIndex = 0;
-	_float4x4 matBoneMatrix = XMMatrixIdentity();
+	_float m_fSkillCreateTimer = 0.f;
 };
 

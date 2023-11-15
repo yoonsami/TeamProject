@@ -53,6 +53,7 @@ public:
 public:
 	virtual HRESULT Init() override;
 	virtual void Tick() override;
+	virtual void Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget) override;
 
 
 private:
@@ -61,7 +62,6 @@ private:
 	virtual void OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) override;
-	virtual void Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget) override;
 	virtual void AttackCollider_On(const wstring& skillname) override;
 	virtual void AttackCollider_Off() override;
 	virtual void Set_State(_uint iIndex) override;
@@ -138,20 +138,13 @@ private:
 	DIR m_eAttackDir = DIR::NONE;
 
 	_float3 m_vTurnVector = _float3(0.f);
-
 	_float3 m_vFirstPos = _float3(0.f);
-
-	_float m_fRunSpeed = 4.f;
-	_float m_fKnockDownSpeed = 4.f;
 	_float m_fTurnSpeed = XM_PI * 0.5f;
-
-	_float m_fNormalAttack_AnimationSpeed = 2.f;
-
+	
 	COOLTIMEINFO m_tAttackCoolTime = { 2.f, 0.f };
 	COOLTIMEINFO m_tBreathCoolTime = { 0.15f, 0.f };
 	
 	_bool m_bDetected = false;
-	_bool m_bSkillCreate = false;
 	_bool m_bTurnMotion = false;
 	_bool m_bCounter = false;
 
@@ -163,7 +156,6 @@ private:
 	_uint m_iTailBoneIndex = 0;
 
 	weak_ptr<GameObject> m_pTailCollider;
-
 
 	_bool m_bCamDirSetting = false;
 	_float3 m_vHeadCamDir = _float3(0.f);

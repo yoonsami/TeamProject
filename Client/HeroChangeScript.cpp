@@ -12,8 +12,9 @@
 #include "CoolTimeCheckScript.h"
 #include "WeaponScript.h"
 #include "FSM.h"
-#include "Kyle_FSM.h"
+#include "Player_FSM.h"
 #include "SpearAce_FSM.h"
+#include "Kyle_FSM.h"
 #include "Yeopo_FSM.h"
 #include "Dellons_FSM.h"
 
@@ -34,123 +35,30 @@ void HeroChangeScript::Tick()
     if (KEYTAP(KEY_TYPE::F1))
     {
         if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == (L"Spear_Ace"))
-            return;
+            Change_To_Player();
         else
-        {
-            if (m_pOwner.expired())
-                return;
-
-            m_pOwner.lock()->Get_FSM()->Reset_Weapon();
-            m_pOwner.lock()->Get_FSM()->Reset_Vehicle();
-
-            //AnimIndex Reset
-            m_pOwner.lock()->Get_Animator()->Set_CurrentAnim(0);
-     
-            //PlayerAttackCollider Remove
-            CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Player_AttackCollider"));
-            CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Vehicle_AttackCollider"));
-
-            shared_ptr<Model> model = RESOURCES.Get<Model>(L"Spear_Ace");
-
-            m_pOwner.lock()->Get_Animator()->Set_Model(model);
-            m_pOwner.lock()->Change_Component(make_shared<SpearAce_FSM>());
-         
-            Add_Character_Weapon(L"Weapon_Spear_Ace");
-
-            m_pOwner.lock()->Get_FSM()->Init();
-
-            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::ACE3);
-        }
+            Change_To_Spear_Ace();
     }
     else if (KEYTAP(KEY_TYPE::F2))
     {
         if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == (L"Kyle"))
-            return;
+            Change_To_Player();
         else
-        {
-            if (m_pOwner.expired())
-                return;
-
-            m_pOwner.lock()->Get_FSM()->Reset_Weapon();
-            m_pOwner.lock()->Get_FSM()->Reset_Vehicle();
-            //AnimIndex Reset
-            m_pOwner.lock()->Get_Animator()->Set_CurrentAnim(0);
-
-            //PlayerAttackCollider Remove
-            CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Player_AttackCollider"));
-            CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Vehicle_AttackCollider"));
-
-            shared_ptr<Model> model = RESOURCES.Get<Model>(L"Kyle");
-
-            m_pOwner.lock()->Get_Animator()->Set_Model(model);
-            m_pOwner.lock()->Change_Component(make_shared<Kyle_FSM>());
-            m_pOwner.lock()->Get_FSM()->Init();
-
-            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::KYLE);
-        }
+            Change_To_Kyle();
     }
     else if (KEYTAP(KEY_TYPE::F3))
     {
         if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == (L"Yeopo"))
-            return;
+            Change_To_Player();
         else
-        {
-            if (m_pOwner.expired())
-                return;
-
-            m_pOwner.lock()->Get_FSM()->Reset_Weapon();
-            m_pOwner.lock()->Get_FSM()->Reset_Vehicle();
-            //AnimIndex Reset
-            m_pOwner.lock()->Get_Animator()->Set_CurrentAnim(0);
-
-            //PlayerAttackCollider Remove
-            CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Player_AttackCollider"));
-            CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Vehicle_AttackCollider"));
-
-            shared_ptr<Model> model = RESOURCES.Get<Model>(L"Yeopo");
-
-            m_pOwner.lock()->Get_Animator()->Set_Model(model);
-            m_pOwner.lock()->Change_Component(make_shared<Yeopo_FSM>());
-
-            //Add. Player's Weapon
-            Add_Character_Weapon(L"Weapon_Yeopo");
-
-            m_pOwner.lock()->Get_FSM()->Init();
-
-			m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::YEOPO);
-
-        }
+            Change_To_Yeopo();
     }
     else if (KEYTAP(KEY_TYPE::F4))
     {
         if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == (L"Dellons"))
-            return;
+            Change_To_Player();
         else
-        {
-            if (m_pOwner.expired())
-                return;
-
-            m_pOwner.lock()->Get_FSM()->Reset_Weapon();
-            m_pOwner.lock()->Get_FSM()->Reset_Vehicle();
-            //AnimIndex Reset
-            m_pOwner.lock()->Get_Animator()->Set_CurrentAnim(0);
-
-            //PlayerAttackCollider Remove
-            CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Player_AttackCollider"));
-            CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Vehicle_AttackCollider"));
-
-            shared_ptr<Model> model = RESOURCES.Get<Model>(L"Dellons");
-
-            m_pOwner.lock()->Get_Animator()->Set_Model(model);
-            m_pOwner.lock()->Change_Component(make_shared<Dellons_FSM>());
-
-            //Add. Player's Weapon
-            Add_Character_Weapon(L"Weapon_Dellons");
-
-            m_pOwner.lock()->Get_FSM()->Init();
-			m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::DELLONS);
-
-        }
+            Change_To_Dellons();
     }
 
 }
@@ -182,5 +90,138 @@ void HeroChangeScript::Add_Character_Weapon(const wstring& weaponname)
     ObjWeapon->Get_Transform()->Set_State(Transform_State::POS, _float4{ 0.f, -1000.f,0.f,1.f });
     ObjWeapon->Set_Name(weaponname);
     CUR_SCENE->Add_GameObject(ObjWeapon);
+}
+
+void HeroChangeScript::Change_To_Player()
+{
+    if (m_pOwner.expired())
+        return;
+
+    m_pOwner.lock()->Get_FSM()->Reset_Weapon();
+    m_pOwner.lock()->Get_FSM()->Reset_Vehicle();
+
+    //AnimIndex Reset
+    m_pOwner.lock()->Get_Animator()->Set_CurrentAnim(0);
+
+    //PlayerAttackCollider Remove
+    CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Player_AttackCollider"));
+    CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Vehicle_AttackCollider"));
+
+    shared_ptr<Model> model = RESOURCES.Get<Model>(L"Player");
+
+    m_pOwner.lock()->Get_Animator()->Set_Model(model);
+
+    m_pOwner.lock()->Change_Component(make_shared<Player_FSM>());
+
+    Add_Character_Weapon(L"Weapon_Player");
+
+    m_pOwner.lock()->Get_FSM()->Init();
+
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::ACE3);
+}
+
+void HeroChangeScript::Change_To_Spear_Ace()
+{
+    if (m_pOwner.expired())
+        return;
+
+    m_pOwner.lock()->Get_FSM()->Reset_Weapon();
+    m_pOwner.lock()->Get_FSM()->Reset_Vehicle();
+
+    //AnimIndex Reset
+    m_pOwner.lock()->Get_Animator()->Set_CurrentAnim(0);
+
+    //PlayerAttackCollider Remove
+    CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Player_AttackCollider"));
+    CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Vehicle_AttackCollider"));
+
+    shared_ptr<Model> model = RESOURCES.Get<Model>(L"Spear_Ace");
+
+    m_pOwner.lock()->Get_Animator()->Set_Model(model);
+    m_pOwner.lock()->Change_Component(make_shared<SpearAce_FSM>());
+
+    Add_Character_Weapon(L"Weapon_Spear_Ace");
+
+    m_pOwner.lock()->Get_FSM()->Init();
+
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::ACE3);
+}
+
+void HeroChangeScript::Change_To_Kyle()
+{
+    if (m_pOwner.expired())
+        return;
+
+    m_pOwner.lock()->Get_FSM()->Reset_Weapon();
+    m_pOwner.lock()->Get_FSM()->Reset_Vehicle();
+    //AnimIndex Reset
+    m_pOwner.lock()->Get_Animator()->Set_CurrentAnim(0);
+
+    //PlayerAttackCollider Remove
+    CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Player_AttackCollider"));
+    CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Vehicle_AttackCollider"));
+
+    shared_ptr<Model> model = RESOURCES.Get<Model>(L"Kyle");
+
+    m_pOwner.lock()->Get_Animator()->Set_Model(model);
+    m_pOwner.lock()->Change_Component(make_shared<Kyle_FSM>());
+    m_pOwner.lock()->Get_FSM()->Init();
+
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::KYLE);
+}
+
+void HeroChangeScript::Change_To_Yeopo()
+{
+    if (m_pOwner.expired())
+        return;
+
+    m_pOwner.lock()->Get_FSM()->Reset_Weapon();
+    m_pOwner.lock()->Get_FSM()->Reset_Vehicle();
+    //AnimIndex Reset
+    m_pOwner.lock()->Get_Animator()->Set_CurrentAnim(0);
+
+    //PlayerAttackCollider Remove
+    CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Player_AttackCollider"));
+    CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Vehicle_AttackCollider"));
+
+    shared_ptr<Model> model = RESOURCES.Get<Model>(L"Yeopo");
+
+    m_pOwner.lock()->Get_Animator()->Set_Model(model);
+    m_pOwner.lock()->Change_Component(make_shared<Yeopo_FSM>());
+
+    //Add. Player's Weapon
+    Add_Character_Weapon(L"Weapon_Yeopo");
+
+    m_pOwner.lock()->Get_FSM()->Init();
+
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::YEOPO);
+
+}
+
+void HeroChangeScript::Change_To_Dellons()
+{
+    if (m_pOwner.expired())
+        return;
+
+    m_pOwner.lock()->Get_FSM()->Reset_Weapon();
+    m_pOwner.lock()->Get_FSM()->Reset_Vehicle();
+    //AnimIndex Reset
+    m_pOwner.lock()->Get_Animator()->Set_CurrentAnim(0);
+
+    //PlayerAttackCollider Remove
+    CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Player_AttackCollider"));
+    CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Vehicle_AttackCollider"));
+
+    shared_ptr<Model> model = RESOURCES.Get<Model>(L"Dellons");
+
+    m_pOwner.lock()->Get_Animator()->Set_Model(model);
+    m_pOwner.lock()->Change_Component(make_shared<Dellons_FSM>());
+
+    //Add. Player's Weapon
+    Add_Character_Weapon(L"Weapon_Dellons");
+
+    m_pOwner.lock()->Get_FSM()->Init();
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::DELLONS);
+
 }
 

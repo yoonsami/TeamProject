@@ -199,6 +199,9 @@ void ModelAnimator::Render()
 	if (!m_pModel)
 		return;
 
+	if (!m_bRenderOn)
+		return;
+
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 
 	{

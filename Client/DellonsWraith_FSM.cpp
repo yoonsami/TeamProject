@@ -35,6 +35,8 @@ HRESULT DellonsWraith_FSM::Init()
     m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
 
     m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
+    m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(Get_Owner());
+
     m_pAttackCollider.lock()->Set_Name(L"Wraith_AttackCollider");
 
     m_iSkillBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-R-Hand");
@@ -141,6 +143,7 @@ void DellonsWraith_FSM::State_Init()
 void DellonsWraith_FSM::OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
 }
+
 
 void DellonsWraith_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
 {

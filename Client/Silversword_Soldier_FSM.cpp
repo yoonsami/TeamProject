@@ -30,6 +30,16 @@ HRESULT Silversword_Soldier_FSM::Init()
 
     m_pCamera = CUR_SCENE->Get_MainCamera();
 
+
+
+    m_fRunSpeed = 4.f;
+    m_fKnockBackSpeed = 4.f;
+    m_fKnockDownSpeed = 4.f;
+
+    m_fNormalAttack_AnimationSpeed = 2.f;
+    m_fSkillAttack_AnimationSpeed = 2.f;
+
+
     return S_OK;
 }
 
@@ -218,6 +228,9 @@ void Silversword_Soldier_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollide
             targetToLook = pCollider->Get_Owner(); 
         else 
             targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner();
+
+        if (targetToLook == nullptr)
+            return;
 
         Get_Hit(strSkillName, targetToLook);
     }

@@ -32,6 +32,9 @@ HRESULT Boss_Mir_FSM::Init()
 
     m_pCamera = CUR_SCENE->Get_MainCamera();
 
+    m_fRunSpeed = 4.f;
+    m_fKnockDownSpeed = 4.f;
+
     return S_OK;
 }
 
@@ -256,6 +259,9 @@ void Boss_Mir_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float f
 			targetToLook = pCollider->Get_Owner(); // Collider owner를 넘겨준다
 		else // 아니면
 			targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner(); // Collider를 만든 객체를 넘겨준다
+
+        if (targetToLook == nullptr)
+            return;
 
 		Get_Hit(strSkillName, targetToLook);
     }

@@ -35,6 +35,7 @@ public:
 public:
 	virtual HRESULT Init() override;
 	virtual void Tick() override;
+	virtual void Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget) override;
 
 
 private:
@@ -43,7 +44,6 @@ private:
 	virtual void OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) override;
-	virtual void Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget) override;
 	virtual void AttackCollider_On(const wstring& skillname) override;
 	virtual void AttackCollider_Off() override;
 	virtual void Set_State(_uint iIndex) override;
@@ -107,13 +107,6 @@ private:
 
 	_float4 m_vPatrolFirstPos = { 0.f,0.f,0.f,1.f };
 	_float3 m_vTurnVector = _float3(0.f);
-
-	_float m_fRunSpeed = 4.f;
-	_float m_fKnockBackSpeed = 4.f;
-	_float m_fKnockDownSpeed = 4.f;
-
-	_float m_fNormalAttack_AnimationSpeed = 2.f;
-	_float m_fSkillAttack_AnimationSpeed = 2.f;
 
 	COOLTIMEINFO m_tAttackCoolTime = { 2.f, 0.f };
 	_bool m_bDetected = false;

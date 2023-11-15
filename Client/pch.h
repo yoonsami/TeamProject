@@ -40,6 +40,9 @@
 using namespace ImGui;
 #include "DebugTool.h"
 
+#include <sqltypes.h>
+#include <sql.h>
+#include <sqlext.h>
 
 
 
