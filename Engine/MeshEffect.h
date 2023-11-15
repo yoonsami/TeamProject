@@ -16,7 +16,7 @@ public:
 
     void            Update_Desc();          
 
-    void			InitialTransform(_float3 vParentPos, _float3 vParentScale, _float3 vParentRotation);
+    void			InitialTransform();
 
     /* Setter */
     void            Set_Desc(MeshEffectData::DESC tDesc) { m_tDesc = tDesc; }
@@ -52,6 +52,7 @@ private:
     _float2                 m_vCurrTexUVOffset_Overlay      = { 0.f, 0.f };
     _float2                 m_vCurrTexUVOffset_Dissolve     = { 0.f, 0.f };
     _float2                 m_vCurrTexUVOffset_Distortion   = { 0.f, 0.f };
+    _float2                 m_vCurrTexUVOffset_Blend        = { 0.f, 0.f };
 
     _bool                   m_bIsPlayFinished = { false };              
    

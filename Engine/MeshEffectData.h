@@ -76,6 +76,8 @@ public:
 
         // Blend 
         string      strBlendTexture;
+        _float2     vTiling_Blend;
+        _float2     vUVSpeed_Blend;
 
         // Color Editor
         _float      fContrast;

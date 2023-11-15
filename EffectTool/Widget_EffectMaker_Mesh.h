@@ -24,6 +24,8 @@ private:
 	/* ImGui Windows */
 	void					ImGui_EffectMaker();
 	void					ImGui_FinishedEffect();
+	void					ImGui_SaveMsgBox();
+	void					ImGui_TextureList();
 
 	/* Funtions */
 	void					Option_Property();
@@ -47,6 +49,7 @@ private:
 	void					Load();
 
 	void					SubWidget_TextureCombo(_int* iSelected, string* strSelected, string strFilePath, const char* pszWidgetKey);
+	void					SubWidget_TextureList();
 	void					SubWidget_ImageViewer(string strFileName, string strFilePath, const char* pszWidgetKey);
 	void					SubWidget_SettingTexUV(_float* arrTiling, _float* arrTexUVSpeed, const char* pszWidgetKey, const char* pszWidgetKey2);
 	
@@ -60,6 +63,15 @@ private:
 	_bool					Equal(_float* arrSrc, _float* arrDest, _int iSize);
 	_bool					Compare_IsSameUVOptionsWithOpacity(_float2 tiling, _float2 UVSpeed);
 private:
+	/* UI On/Off*/
+	_bool					m_bSaveMsgBox_On = { false };
+	_bool					m_bTextureList_On = { false };
+
+	/* Use in SubWidget_TextureList */
+	_int*					m_iTexture_TextureList;
+	string*					m_pTextureTag_TextureList;
+	const char*				m_pszWidgetKey_TextureList;
+
 	/* Effect List */
 	_uint					m_iNumFinishedEffects = { MT_PARTICLE };
 	vector<string>			m_vecFinishedEffects;
@@ -168,6 +180,9 @@ private:
 	/* Blend */
 	_bool					m_bBlend_On = { true };
 	pair<_int, string>		m_BlendTexture = { 0, "None" };
+	_bool					m_bUVOptionSameWithOpacity_Blend = { true };
+	_float					m_fTiling_Blend[2] = { 0.f, 0.f };
+	_float					m_fUVSpeed_Blend[2] = { 0.f, 0.f };
 
 	/* Color Edit */
 	_float					m_fContrast = { 0.f };
@@ -175,7 +190,8 @@ private:
 	/* Initliaze Transform */
 	_int					m_iInitPosOption = { 0 };					// static, random in range 
 	_float					m_fPosRange[3] = { 0.f, 0.f, 0.f };		
-		
+	_float					m_fPosOffsetInTool[3] = { 0.f, 0.f, 0.f };	
+
 	_int					m_iInitScaleOption = { 0 };					// static, random in range 
 	_float					m_fInitScale_Min[3] = { 1.f, 1.f, 1.f };		
 	_float					m_fInitScale_Max[3] = { 1.f, 1.f, 1.f };		

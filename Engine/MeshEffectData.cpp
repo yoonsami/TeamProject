@@ -94,6 +94,8 @@ void MeshEffectData::Load(const wstring& path)
 	
 	/* Blend */
 	m_tDesc.strBlendTexture = file->Read<string>();
+	m_tDesc.vTiling_Blend = file->Read<_float2>();
+	m_tDesc.vUVSpeed_Blend = file->Read<_float2>();
 
 	/* Color Edit */
 	m_tDesc.fContrast = file->Read<_float>();
