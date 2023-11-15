@@ -133,7 +133,7 @@ void UiCharChange::Set_Param_Value()
 
 void UiCharChange::Change_Hero()
 {
-    if (KEYTAP(KEY_TYPE::F1))
+    if (KEYTAP(KEY_TYPE::F5))
     {
         if (HERO::MAX == m_eHero[0])
             return;
@@ -143,7 +143,7 @@ void UiCharChange::Change_Hero()
 
     }
 
-    if (KEYTAP(KEY_TYPE::F2))
+    if (KEYTAP(KEY_TYPE::F6))
     {
         if (HERO::MAX == m_eHero[0])
             return;
@@ -153,7 +153,7 @@ void UiCharChange::Change_Hero()
 
     }
 
-    if (KEYTAP(KEY_TYPE::F3))
+    if (KEYTAP(KEY_TYPE::F7))
     {
         if (HERO::MAX == m_eHero[0])
             return;

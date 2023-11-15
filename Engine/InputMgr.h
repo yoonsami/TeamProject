@@ -9,7 +9,7 @@ enum class KEY_TYPE
 
 	W,	A,	S,	D,	Q,	E,	Z,	C,	R, X ,V,
 	KEY_1,	KEY_2,	KEY_3,	KEY_4,	KEY_5,
-	F1, F2, F3, F4,
+	F1, F2, F3, F4, F5, F6, F7,
 
 	SPACE,
 	ESC,
