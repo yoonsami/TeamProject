@@ -155,4 +155,8 @@ private:
 	_bool m_bFirstWallPick = { true };
 	_float m_fWallHeight = { 10.f };
 	vector<pair<_float3, _float3>> m_WallRectPosLDRU;
+
+
+	_int curMapIndex = 0;
+	vector<string> m_MapNames;
 };

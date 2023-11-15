@@ -33,6 +33,13 @@
 ImGuizmo::OPERATION m_eGuizmoType = { ImGuizmo::TRANSLATE };
 namespace fs = std::filesystem;
 
+bool VectorOfStringGetter(void* data, int n, const char** out_text)
+{
+	const vector<string>* v = (vector<string>*)data;
+	*out_text = (v[0][n]).c_str();
+	return true;
+}
+
 ImGui_Manager::~ImGui_Manager()
 {
     ImGui_ImplDX11_Shutdown();
@@ -456,7 +463,27 @@ void ImGui_Manager::Frame_SelcetObjectManager()
             MSG_BOX("Fail : Save_MapObject");
         else
             MSG_BOX("Complete_Save");
-    ImGui::SameLine();
+
+    m_MapNames.clear();
+    wstring partsPath = L"..\\Resources\\Data\\";
+    for (auto& entry : fs::recursive_directory_iterator(partsPath))
+    {
+
+		if (entry.is_directory())
+			continue;
+
+		if (entry.path().extension().wstring() != L".dat" && entry.path().extension().wstring() != L".DAT")
+			continue;
+
+        string fileName = entry.path().filename().string();
+        Utils::DetachExt(fileName);
+
+        m_MapNames.push_back(fileName);
+
+    }
+    curMapIndex %= m_MapNames.size();
+    ImGui::Combo("Map List", &curMapIndex, VectorOfStringGetter, &m_MapNames, int(m_MapNames.size()));
+
     if (ImGui::Button("Load Object"))
         if (FAILED(Load_MapObject()))
             MSG_BOX("Fail : Load_MapObject");
@@ -1138,7 +1165,7 @@ HRESULT ImGui_Manager::Load_MapObject()
     m_iObjects = 0;
 
     // 세이브 파일 이름으로 로드하기
-    string strFileName = m_szSaveFileName;
+    string strFileName = m_MapNames[curMapIndex];
     string strFilePath = "..\\Resources\\Data\\";
     strFilePath += strFileName + ".dat";
     shared_ptr<FileUtils> file = make_shared<FileUtils>();
