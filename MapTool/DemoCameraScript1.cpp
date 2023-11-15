@@ -18,4 +18,13 @@ void DemoCameraScript1::Tick()
 
 	if(KEYPUSH(KEY_TYPE::D))
 		Get_Transform()->Go_Right();
+
+	if (KEYPUSH(KEY_TYPE::LSHIFT))
+	{
+		m_pOwner.lock()->Get_Transform()->Set_Speed(50.f);
+	}
+	else
+	{
+		m_pOwner.lock()->Get_Transform()->Set_Speed(10.f);
+	}
 }
