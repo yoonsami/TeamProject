@@ -503,7 +503,7 @@ void Widget_GroupEffectMaker::Create()
 	// For. Transform 
 	pGroupEffectObj->GetOrAddTransform();
 	pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
-	
+
 	// For. GroupEffectData 
 	wstring wstrFileName = Utils::ToWString(m_strGroup) + L".dat";
 	wstring wtsrFilePath = TEXT("..\\Resources\\EffectData\\GroupEffectData\\") + wstrFileName;
