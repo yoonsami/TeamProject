@@ -583,9 +583,6 @@ void DemoScene::Load_Ui()
 		auto pObj = Get_GameObject(L"Player");
         auto pScript = make_shared<UiHpBarController>(0);
 		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
 	}
 
 	{
