@@ -414,10 +414,8 @@ void Boss_Mir_FSM::sq_Intro2()
     }
 
     if (Is_AnimFinished())
-    {
-        m_bCamDirSetting = false;
         m_eCurState = STATE::b_idle;
-    }
+    
 }
 
 void Boss_Mir_FSM::sq_Intro2_Init()

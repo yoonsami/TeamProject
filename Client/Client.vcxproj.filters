@@ -106,12 +106,6 @@
     <Filter Include="02.Component\01.FSM\03.Special_FSM">
       <UniqueIdentifier>{07de820b-d706-4b0a-a69a-dbc77ce8061d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\01.FSM\03.Special_FSM\00.YeopoHorse_FSM">
-      <UniqueIdentifier>{fa466479-4511-48b4-acab-3bc2b7806f28}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Component\01.FSM\03.Special_FSM\01.DellonsWraith_FSM">
-      <UniqueIdentifier>{ac3b214e-9091-4a89-aaaa-de5645f05306}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Component\01.FSM\02.Monster_FSM\01.Boss_Mir_FSM">
       <UniqueIdentifier>{d4e80f64-1b0a-46b9-805f-e088a44bd55f}</UniqueIdentifier>
     </Filter>
@@ -169,8 +163,23 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\09.UiCardDeckInvenChange">
       <UniqueIdentifier>{45081402-d3fc-4713-9ed4-75b7f961e759}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Scene\02.GachaScene">
-      <UniqueIdentifier>{6a4039be-8eb5-40e7-890f-41336be6aa7c}</UniqueIdentifier>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\02.Boss_Dellons_FSM">
+      <UniqueIdentifier>{f2eabd1a-e71d-4a00-b020-f9c66162fef8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\03.Special_FSM\00.Hero_Special_FSM">
+      <UniqueIdentifier>{5f951534-c818-4ff1-9eac-7dbda5ac0b34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\03.Special_FSM\00.Hero_Special_FSM\00.YeopoHorse_FSM">
+      <UniqueIdentifier>{fa466479-4511-48b4-acab-3bc2b7806f28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\03.Special_FSM\00.Hero_Special_FSM\01.DellonsWraith_FSM">
+      <UniqueIdentifier>{ac3b214e-9091-4a89-aaaa-de5645f05306}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\03.Special_FSM\01.Monster_Special_FSM">
+      <UniqueIdentifier>{24234652-a80d-498a-b2f0-5782c9c5d25b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\03.Special_FSM\01.Monster_Special_FSM\00.Boss_DellonsWraith_FSM">
+      <UniqueIdentifier>{8fba78b0-27ef-41a0-a470-3d59fa36e759}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -316,10 +325,10 @@
       <Filter>02.Component\01.FSM\01.Hero_FSM\04.Dellons_FSM</Filter>
     </ClInclude>
     <ClInclude Include="DellonsWraith_FSM.h">
-      <Filter>02.Component\01.FSM\03.Special_FSM\01.DellonsWraith_FSM</Filter>
+      <Filter>02.Component\01.FSM\03.Special_FSM\00.Hero_Special_FSM\01.DellonsWraith_FSM</Filter>
     </ClInclude>
     <ClInclude Include="YeopoHorse_FSM.h">
-      <Filter>02.Component\01.FSM\03.Special_FSM\00.YeopoHorse_FSM</Filter>
+      <Filter>02.Component\01.FSM\03.Special_FSM\00.Hero_Special_FSM\00.YeopoHorse_FSM</Filter>
     </ClInclude>
     <ClInclude Include="Boss_Mir_FSM.h">
       <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Mir_FSM</Filter>
@@ -372,8 +381,11 @@
     <ClInclude Include="UiCardDeckInvenChange.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\09.UiCardDeckInvenChange</Filter>
     </ClInclude>
-    <ClInclude Include="GachaScene.h">
-      <Filter>01.Scene\02.GachaScene</Filter>
+    <ClInclude Include="Boss_Dellons_FSM.h">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\02.Boss_Dellons_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Boss_DellonsWraith_FSM.h">
+      <Filter>02.Component\01.FSM\03.Special_FSM\01.Monster_Special_FSM\00.Boss_DellonsWraith_FSM</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -498,10 +510,10 @@
       <Filter>02.Component\01.FSM\01.Hero_FSM\04.Dellons_FSM</Filter>
     </ClCompile>
     <ClCompile Include="DellonsWraith_FSM.cpp">
-      <Filter>02.Component\01.FSM\03.Special_FSM\01.DellonsWraith_FSM</Filter>
+      <Filter>02.Component\01.FSM\03.Special_FSM\00.Hero_Special_FSM\01.DellonsWraith_FSM</Filter>
     </ClCompile>
     <ClCompile Include="YeopoHorse_FSM.cpp">
-      <Filter>02.Component\01.FSM\03.Special_FSM\00.YeopoHorse_FSM</Filter>
+      <Filter>02.Component\01.FSM\03.Special_FSM\00.Hero_Special_FSM\00.YeopoHorse_FSM</Filter>
     </ClCompile>
     <ClCompile Include="Boss_Mir_FSM.cpp">
       <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Mir_FSM</Filter>
@@ -545,8 +557,11 @@
     <ClCompile Include="UiCardDeckInvenChange.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\09.UiCardDeckInvenChange</Filter>
     </ClCompile>
-    <ClCompile Include="GachaScene.cpp">
-      <Filter>01.Scene\02.GachaScene</Filter>
+    <ClCompile Include="Boss_Dellons_FSM.cpp">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\02.Boss_Dellons_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="Boss_DellonsWraith_FSM.cpp">
+      <Filter>02.Component\01.FSM\03.Special_FSM\01.Monster_Special_FSM\00.Boss_DellonsWraith_FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

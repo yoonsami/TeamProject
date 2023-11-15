@@ -117,7 +117,7 @@ void HeroChangeScript::Change_To_Player()
 
     m_pOwner.lock()->Get_FSM()->Init();
 
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::ACE3);
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::PLAYER);
 }
 
 void HeroChangeScript::Change_To_Spear_Ace()
