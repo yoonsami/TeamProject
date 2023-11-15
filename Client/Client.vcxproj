@@ -228,7 +228,7 @@
     <ClInclude Include="UiGachaCardMove.h" />
     <ClInclude Include="UiGachaController.h" />
     <ClInclude Include="UiGachaEffectController.h" />
-    <ClInclude Include="UiHpBarFlow.h" />
+    <ClInclude Include="UiHpBarController.h" />
     <ClInclude Include="UiLoadingScript.h" />
     <ClInclude Include="UiSkillButtonEffect.h" />
     <ClInclude Include="WeaponScript.h" />
@@ -292,7 +292,7 @@
     <ClCompile Include="UiGachaCardMove.cpp" />
     <ClCompile Include="UiGachaController.cpp" />
     <ClCompile Include="UiGachaEffectController.cpp" />
-    <ClCompile Include="UiHpBarFlow.cpp" />
+    <ClCompile Include="UiHpBarController.cpp" />
     <ClCompile Include="UiLoadingScript.cpp" />
     <ClCompile Include="UiSkillButtonEffect.cpp" />
     <ClCompile Include="WeaponScript.cpp" />

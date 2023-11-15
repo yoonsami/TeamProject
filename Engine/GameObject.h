@@ -54,6 +54,7 @@ public:
 	virtual HRESULT Change_Component(shared_ptr<Component> component)	final;
 
 public:
+	_float Get_MaxHp()						{ return m_fMaxHP; }
 	_float& Get_CurHp()						{ return m_fHP; }
 	_float Get_HpRatio()					{ return m_fHP / m_fMaxHP; }
 	_float3& Get_CullPos()					{ return m_vCullPos; }
@@ -145,7 +146,7 @@ private:
 	_float		m_fCullRaidus		= 1.f;
 	_float3		m_vCullPos			= { 0,0,0 };
 
-	_float		m_fHP				= 0.f;
+	_float		m_fHP				= 100.f;
 	_float		m_fMaxHP			= 100.f;
 
 	_bool		m_bIsRender			= { true };

@@ -24,8 +24,8 @@ void DataMgr::Initialize()
         tagData.Skill1Cool      = 5.f;
         tagData.Skill2Cool      = 5.f;
         tagData.Skill3Cool      = 5.f;
-        tagData.Skill4Cool      = 0.f;
-        tagData.Skill5Cool      = 0.f;
+        tagData.Skill4Cool      = -1.f;
+        tagData.Skill5Cool      = -1.f;
         tagData.Skill1DamageMul = 1.f;
         tagData.Skill2DamageMul = 1.f;
         tagData.Skill3DamageMul = 1.f;
