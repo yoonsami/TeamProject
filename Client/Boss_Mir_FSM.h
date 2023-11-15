@@ -157,7 +157,6 @@ private:
 
 	weak_ptr<GameObject> m_pTailCollider;
 
-	_bool m_bCamDirSetting = false;
 	_float3 m_vHeadCamDir = _float3(0.f);
 	_float4 m_vHeadBonePos = _float4(0.f);
 	_float4 m_vHeadCamPos = _float4(0.f);

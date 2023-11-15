@@ -2,8 +2,8 @@
 #include "Component.h"
 #include "MeshEffectData.h"
 
-class MeshEffect : public Component 
-{ 
+class MeshEffect : public Component
+{
 public:
     MeshEffect(shared_ptr<Shader> shader);
     virtual ~MeshEffect();
@@ -11,12 +11,12 @@ public:
 public:
     virtual void    Init(void* pArg);
     virtual void    Tick() override;
-    virtual void    Final_Tick() override;  
-    void            Render();               
+    virtual void    Final_Tick() override;
+    void            Render();
 
-    void            Update_Desc();          
+    void            Update_Desc();
 
-    void			InitialTransform();
+    void         InitialTransform();
 
     /* Setter */
     void            Set_Desc(MeshEffectData::DESC tDesc) { m_tDesc = tDesc; }
@@ -32,12 +32,12 @@ private:
     void                    Turn();
 
     void                    Run_SpriteAnimation();
-    
+
     void                    Init_RenderParams();
     void                    Bind_RenderParams_ToShader();
 
 private:
-    MeshEffectData::DESC    m_tDesc;   
+    MeshEffectData::DESC    m_tDesc;
     MeshEffectData::Transform_Desc m_tTransform_Desc;
 
     Color                   m_vDiffuseColor_Base;
@@ -46,16 +46,16 @@ private:
     _float                  m_fCurrAge = { 0.f };
     _float                  m_fTimeAcc_SpriteAnimation = { 0.f };
 
-    _float2                 m_vCurrTexUVOffset_Opacity      = { 0.f, 0.f };
-    _float2                 m_vCurrTexUVOffset_Diffuse      = { 0.f, 0.f };
-    _float2                 m_vCurrTexUVOffset_Gra          = { 0.f, 0.f };
-    _float2                 m_vCurrTexUVOffset_Overlay      = { 0.f, 0.f };
-    _float2                 m_vCurrTexUVOffset_Dissolve     = { 0.f, 0.f };
-    _float2                 m_vCurrTexUVOffset_Distortion   = { 0.f, 0.f };
-    _float2                 m_vCurrTexUVOffset_Blend        = { 0.f, 0.f };
+    _float2                 m_vCurrTexUVOffset_Opacity = { 0.f, 0.f };
+    _float2                 m_vCurrTexUVOffset_Diffuse = { 0.f, 0.f };
+    _float2                 m_vCurrTexUVOffset_Gra = { 0.f, 0.f };
+    _float2                 m_vCurrTexUVOffset_Overlay = { 0.f, 0.f };
+    _float2                 m_vCurrTexUVOffset_Dissolve = { 0.f, 0.f };
+    _float2                 m_vCurrTexUVOffset_Distortion = { 0.f, 0.f };
+    _float2                 m_vCurrTexUVOffset_Blend = { 0.f, 0.f };
 
-    _bool                   m_bIsPlayFinished = { false };              
-   
+    _bool                   m_bIsPlayFinished = { false };
+
     /* Sprite Animation */
     _float2                 m_vSpriteSize = { 0.f, 0.f };
     _int                    m_iNumSprite = { 0 };
@@ -64,9 +64,9 @@ private:
     _float2                 m_UVTexRangeY = { 0.f, 0.f };
 
     /* Initalize Transform */
-    _float3		            m_vStartPos;
-    _float3		            m_vStartScale;
-    _float3		            m_vStartRotation;
+    _float3                  m_vStartPos;
+    _float3                  m_vStartScale;
+    _float3                  m_vStartRotation;
 
     /* Translate */
     _int                    m_iTranslateOption;
@@ -83,9 +83,8 @@ private:
     shared_ptr<Shader>      m_pShader = { nullptr };
     shared_ptr<Mesh>        m_pMesh = { nullptr };
     shared_ptr<Model>       m_pModel = { nullptr };
-    shared_ptr<Material>    m_pMaterial = { nullptr };   
+    shared_ptr<Material>    m_pMaterial = { nullptr };
 
     /* Data to bind Shader */
     RenderParams            m_RenderParams{};
 };
-

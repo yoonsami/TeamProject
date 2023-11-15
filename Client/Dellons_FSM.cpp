@@ -1033,7 +1033,7 @@ void Dellons_FSM::skill_1400()
     else if (Get_CurFrame() == 14)
         AttackCollider_Off();
     else if (Get_CurFrame() == 16)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(KNOCKBACK_ATTACK);
     else if (Get_CurFrame() == 24)
         AttackCollider_Off();
 
@@ -1505,7 +1505,7 @@ void Dellons_FSM::skill_400100()
     if (m_vKeyInputTargetDir != _float3(0.f))
         Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
-    if (Get_CurFrame() == 120)
+    if (Get_CurFrame() >= 120)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;

@@ -4,8 +4,8 @@
 class MeshEffectData : public ResourceBase
 {
 public:
-	typedef struct tagMeshEffectVData
-	{
+    typedef struct tagMeshEffectVData
+    {
         // Property
         const char* pszTag;
         _float      fDuration;
@@ -81,7 +81,7 @@ public:
 
         // Color Editor
         _float      fContrast;
-	}DESC;
+    }DESC;
 
     typedef struct tagMeshEffectTransformData
     {
@@ -114,11 +114,11 @@ public:
 
     }Transform_Desc;
 public:
-	MeshEffectData();
-	~MeshEffectData();
+    MeshEffectData();
+    ~MeshEffectData();
 
 public:
-    virtual void	Load(const wstring& path) override;
+    virtual void   Load(const wstring& path) override;
 
     /* Setter */
     void            Set_Desc(DESC tDesc);
@@ -126,12 +126,11 @@ public:
 
     /* Getter */
     wstring         Get_MeshEffectDataTag() { return m_wstrTag; }
-	DESC	        Get_Desc() { return m_tDesc; }
+    DESC           Get_Desc() { return m_tDesc; }
     Transform_Desc  Get_TransformDesc() { return m_tTransformDesc; }
 
 private:
     wstring         m_wstrTag;
-	DESC	        m_tDesc;
+    DESC           m_tDesc;
     Transform_Desc  m_tTransformDesc;
 };
-

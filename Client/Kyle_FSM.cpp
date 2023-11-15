@@ -7,7 +7,7 @@
 #include "MainCameraScript.h"
 #include "Camera.h"
 #include "CoolTimeCheckScript.h"
-
+#include "GroupEffect.h"
 
 HRESULT Kyle_FSM::Init()
 {
@@ -377,6 +377,7 @@ void Kyle_FSM::AttackCollider_On(const wstring& skillname)
 	{
 		m_pAttackCollider.lock()->Get_Collider()->Set_Activate(true);
 		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
+		Add_Effect(L"KyleTest1");
 	}
 }
 
@@ -878,6 +879,9 @@ void Kyle_FSM::knockdown_end_Init()
 
 void Kyle_FSM::skill_1100()
 {
+	if (m_vKeyInputTargetDir != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+
 	if (Get_CurFrame() == 9)
 		AttackCollider_On(NORMAL_ATTACK);
 	else if (Get_CurFrame() == 19)
@@ -886,8 +890,7 @@ void Kyle_FSM::skill_1100()
 
 	_float3 vInputVector = Get_InputDirVector();
 
-	if (m_vKeyInputTargetDir != _float3(0.f))
-		Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+
 
 	if (Get_CurFrame() < 22)
 	{
@@ -1881,4 +1884,30 @@ void Kyle_FSM::Use_Dash()
 				m_eCurState = STATE::skill_93100;
 		}
 	}
+}
+
+void Kyle_FSM::Add_Effect(const wstring& strSkilltag)
+{
+	shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();
+
+	// For. Transform 
+	pGroupEffectObj->GetOrAddTransform();
+	pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS) + (_float3::Up * 1.5f));
+	pGroupEffectObj->Get_Transform()->Set_Quaternion(Get_Transform()->Get_Rotation());
+
+	_float3 vTemp = Get_Transform()->Get_RollPitchYaw();
+
+	// For. GroupEffectData 
+	wstring wstrFileName = strSkilltag + L".dat";
+	wstring wtsrFilePath = TEXT("..\\Resources\\EffectData\\GroupEffectData\\") + wstrFileName;
+	shared_ptr<GroupEffectData> pGroupEffectData = RESOURCES.GetOrAddGroupEffectData(strSkilltag, wtsrFilePath);
+
+	// For. GroupEffect component 
+	shared_ptr<GroupEffect> pGroupEffect = make_shared<GroupEffect>();
+	pGroupEffectObj->Add_Component(pGroupEffect);
+	pGroupEffectObj->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
+	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
+
+	// For. Add Effect GameObject to current scene
+	CUR_SCENE->Add_GameObject(pGroupEffectObj);
 }

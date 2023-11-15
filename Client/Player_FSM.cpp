@@ -483,9 +483,8 @@ void Player_FSM::b_run()
 
     if (KEYPUSH(KEY_TYPE::LSHIFT))
     {
-        if ((Get_CurFrame() == 1) || Get_CurFrame() >= 19)
+        if (Get_CurFrame() == 1)
             m_eCurState = STATE::b_sprint;
-
     }
 
     if (KEYTAP(KEY_TYPE::LBUTTON))
@@ -1331,8 +1330,6 @@ void Player_FSM::skill_100300_Init()
 
 void Player_FSM::skill_200100()
 {
-     
-
 	if (Get_CurFrame() >= 30)
 	{
         m_fSkillCreateTimer += fDT;
