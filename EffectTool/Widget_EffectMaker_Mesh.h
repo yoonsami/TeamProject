@@ -180,6 +180,9 @@ private:
 	/* Blend */
 	_bool					m_bBlend_On = { true };
 	pair<_int, string>		m_BlendTexture = { 0, "None" };
+	_bool					m_bUVOptionSameWithOpacity_Blend = { true };
+	_float					m_fTiling_Blend[2] = { 0.f, 0.f };
+	_float					m_fUVSpeed_Blend[2] = { 0.f, 0.f };
 
 	/* Color Edit */
 	_float					m_fContrast = { 0.f };
@@ -187,7 +190,8 @@ private:
 	/* Initliaze Transform */
 	_int					m_iInitPosOption = { 0 };					// static, random in range 
 	_float					m_fPosRange[3] = { 0.f, 0.f, 0.f };		
-		
+	_float					m_fPosOffsetInTool[3] = { 0.f, 0.f, 0.f };	
+
 	_int					m_iInitScaleOption = { 0 };					// static, random in range 
 	_float					m_fInitScale_Min[3] = { 1.f, 1.f, 1.f };		
 	_float					m_fInitScale_Max[3] = { 1.f, 1.f, 1.f };		

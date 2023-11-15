@@ -477,6 +477,16 @@ void Widget_EffectMaker_Mesh::Option_Blend()
 			m_pszWidgetKey_TextureList = "Texture##Blend";
 			m_bTextureList_On = true;
 		}
+
+		ImGui::Checkbox("UV Option same with opacity##Blend", &m_bUVOptionSameWithOpacity_Blend);
+		if (m_bUVOptionSameWithOpacity_Blend)
+		{
+			m_fTiling_Blend[0] = m_fTiling_Opacity[0];
+			m_fTiling_Blend[1] = m_fTiling_Opacity[1];
+			m_fUVSpeed_Blend[0] = m_fUVSpeed_Opacity[0];
+			m_fUVSpeed_Blend[1] = m_fUVSpeed_Opacity[1];
+		}
+		SubWidget_SettingTexUV(m_fTiling_Blend, m_fUVSpeed_Blend, "Tiling(x,y)##Blend", "Move TexUV Speed(x,y)##Blend");
 	}
 	else
 	{
@@ -521,12 +531,12 @@ void Widget_EffectMaker_Mesh::Option_AlphaGradation()
 	ImGui::SeparatorText("Alpha Gradation");
 
 	ImGui::SliderFloat("Intensity", &m_fAlphaGraIntensity, 0.f, 1.f);
-	ImGui::ColorEdit4("Color##Diffuse", (float*)&m_vAlphaGraColor_Base, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+	ImGui::ColorEdit4("Color##AlphaGra", (float*)&m_vAlphaGraColor_Base, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
 
 	if (m_bColorChangingOn)
 	{
-		ImGui::ColorEdit4("Dest Color##Diffuse", (float*)&m_vAlphaGraColor_Dest, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-		if (ImGui::Checkbox("Same with Base color##AlphaGra", &m_bDestSameWithBase_AlphaGra))
+		ImGui::ColorEdit4("Dest Color##AlphaGra", (float*)&m_vAlphaGraColor_Dest, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+		if (ImGui::Checkbox("Same with Base color##AlphaGradation", &m_bDestSameWithBase_AlphaGra))
 		{
 			if (m_bDestSameWithBase_AlphaGra)
 				m_vAlphaGraColor_Dest = m_vAlphaGraColor_Base;
@@ -755,6 +765,8 @@ void Widget_EffectMaker_Mesh::Option_InitTransform()
 			break;
 		}
 
+		ImGui::InputFloat3("Offset in tool##InitTransform", m_fPosOffsetInTool);
+
 		ImGui::TreePop();
 	}
 	ImGui::Spacing();
@@ -954,7 +966,7 @@ void Widget_EffectMaker_Mesh::Create()
 
 	// For. Add and Setting Transform Component
 	EffectObj->GetOrAddTransform();
-	EffectObj->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
+	EffectObj->Get_Transform()->Set_State(Transform_State::POS, _float4(m_fPosOffsetInTool[0], m_fPosOffsetInTool[1], m_fPosOffsetInTool[2], 1.f));
 	EffectObj->Get_Transform()->Scaled(_float3(1.0f));
 
 	// For. Add and Setting Effect Component to GameObject
@@ -1028,6 +1040,8 @@ void Widget_EffectMaker_Mesh::Create()
 		_float2(m_fUVSpeed_Distortion),
 
 		m_BlendTexture.second,
+		_float2(m_fTiling_Blend),
+		_float2(m_fUVSpeed_Blend),
 
 		m_fContrast
 
@@ -1164,6 +1178,9 @@ void Widget_EffectMaker_Mesh::Save()
 		// file->Write<_bool>(m_bBlend_On);
 		// file->Write<_int>(m_BlendTexture.first);
 		file->Write<string>(m_BlendTexture.second);
+		// file->Write<_bool>(m_bUVOptionSameWithOpacity_Blend);
+		file->Write<_float2>(_float2(m_fTiling_Blend));
+		file->Write<_float2>(_float2(m_fUVSpeed_Blend));
 
 		/* Color Edit */
 		file->Write<_float>(m_fContrast);
@@ -1326,9 +1343,14 @@ void Widget_EffectMaker_Mesh::Load()
 
 	/* Blend */
 	m_BlendTexture.second = file->Read<string>();
+	vTemp_vec2 = file->Read<_float2>();
+	memcpy(m_fTiling_Blend, &vTemp_vec2, sizeof(m_fTiling_Blend));
+	vTemp_vec2 = file->Read<_float2>();
+	memcpy(m_fUVSpeed_Blend, &vTemp_vec2, sizeof(m_fUVSpeed_Blend));
 	m_BlendTexture.first = GetIndex_FromTexList(m_BlendTexture.second);
 	if (0 == m_BlendTexture.first) m_bBlend_On = false;
 	else m_bBlend_On = true;
+	m_bUVOptionSameWithOpacity_Blend = Equal(m_fTiling_Blend, m_fTiling_Opacity, sizeof(_float) * 2) && Equal(m_fUVSpeed_Blend, m_fUVSpeed_Opacity, sizeof(_float) * 2);
 
 	/* Color Edit */
 	m_fContrast = file->Read<_float>();

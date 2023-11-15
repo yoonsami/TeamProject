@@ -1055,6 +1055,8 @@ void ResourceMgr::CreateMeshEffectData()
 
 		/* Blend */
 		tDesc.strBlendTexture = file->Read<string>();
+		tDesc.vTiling_Blend = file->Read<_float2>();
+		tDesc.vUVSpeed_Blend = file->Read<_float2>();
 		
 		/* Color Edit */
 		tDesc.fContrast = file->Read<_float>();
