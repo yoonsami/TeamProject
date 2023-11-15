@@ -38,6 +38,9 @@ void FontRenderer::Render()
 	if (m_iCurCount == 0)
 		return;
 
+	if (0 == m_strText.length())
+		return;
+
 	wstring text = m_strText.substr(0, m_iCurCount);
 
 	_float3 vPos = Get_Transform()->Get_State(Transform_State::POS).xyz();

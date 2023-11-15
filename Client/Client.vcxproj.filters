@@ -121,9 +121,6 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\00.UiLoading">
       <UniqueIdentifier>{168effa2-6af2-44a5-92c5-5a653c5ee4fd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\02.UiHpBarFlow">
-      <UniqueIdentifier>{ddb62fe5-0028-482f-a21c-728ae38e9433}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\03.UiSkillButtonEffect">
       <UniqueIdentifier>{7e37de1a-2080-4f1e-af15-9e960e8ce733}</UniqueIdentifier>
     </Filter>
@@ -186,6 +183,9 @@
     </Filter>
     <Filter Include="02.Component\01.FSM\04.Gacha_FSM">
       <UniqueIdentifier>{19256a04-e1b4-4293-8c09-37d7b949e6bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\02.UiHpBarController">
+      <UniqueIdentifier>{ddb62fe5-0028-482f-a21c-728ae38e9433}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -351,9 +351,6 @@
     <ClInclude Include="Client_Macro.h">
       <Filter>99.Header</Filter>
     </ClInclude>
-    <ClInclude Include="UiHpBarFlow.h">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\02.UiHpBarFlow</Filter>
-    </ClInclude>
     <ClInclude Include="UiSkillButtonEffect.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\03.UiSkillButtonEffect</Filter>
     </ClInclude>
@@ -396,6 +393,9 @@
     </ClInclude>
     <ClInclude Include="Boss_Dellons_FSM.h">
       <Filter>02.Component\01.FSM\02.Monster_FSM\02.Boss_Dellons_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="UiHpBarController.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\02.UiHpBarController</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -531,9 +531,6 @@
     <ClCompile Include="CounterMotionTrailScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\00.Effect\00.CounterMotionTrailScript</Filter>
     </ClCompile>
-    <ClCompile Include="UiHpBarFlow.cpp">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\02.UiHpBarFlow</Filter>
-    </ClCompile>
     <ClCompile Include="UiSkillButtonEffect.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\03.UiSkillButtonEffect</Filter>
     </ClCompile>
@@ -576,6 +573,9 @@
     </ClCompile>
     <ClCompile Include="Boss_DellonsWraith_FSM.cpp">
       <Filter>02.Component\01.FSM\02.Monster_FSM\02.Boss_Dellons_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="UiHpBarController.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\02.UiHpBarController</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

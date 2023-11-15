@@ -141,24 +141,26 @@ void UiCharChange::Change_Hero()
         // hero change script
         auto pScript = CUR_SCENE->Get_GameObject(L"Player")->Get_Script<HeroChangeScript>();
 
+        pScript->Change_Hero(m_eHero[0]);
     }
 
     if (KEYTAP(KEY_TYPE::F6))
     {
-        if (HERO::MAX == m_eHero[0])
+        if (HERO::MAX == m_eHero[1])
             return;
 
         auto pScript = CUR_SCENE->Get_GameObject(L"Player")->Get_Script<HeroChangeScript>();
 
-
+        pScript->Change_Hero(m_eHero[1]);
     }
 
     if (KEYTAP(KEY_TYPE::F7))
     {
-        if (HERO::MAX == m_eHero[0])
+        if (HERO::MAX == m_eHero[2])
             return;
 
         auto pScript = CUR_SCENE->Get_GameObject(L"Player")->Get_Script<HeroChangeScript>();
 
+        pScript->Change_Hero(m_eHero[2]);
     }
 }

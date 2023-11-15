@@ -12,7 +12,6 @@
 #include "FileUtils.h"
 #include "ModelMesh.h"
 #include "CustomFont.h"
-#include "UiHpBarFlow.h"
 #include "LoadingScene.h"
 #include "BaseCollider.h"
 #include "WeaponScript.h"
@@ -31,7 +30,7 @@
 #include "Debug_CreateMotionTrail.h"
 #include "CounterMotionTrailScript.h"
 
-
+#include "UiHpBarController.h"
 #include "MapObjectScript.h"
 #include "UiCoolEndEffect.h"
 #include "MainCameraScript.h"
@@ -581,6 +580,15 @@ void DemoScene::Load_Ui()
 	}
 
 	{
+		auto pObj = Get_GameObject(L"Player");
+        auto pScript = make_shared<UiHpBarController>(0);
+		pObj->Add_Component(pScript);
+
+		pObj->Set_LayerIndex(Layer_UI);
+		Add_GameObject(pObj, true);
+	}
+
+	{
 		auto pObj = make_shared<GameObject>();
 		pObj->Set_Name(L"UI_Char_Change");
 
@@ -645,10 +653,7 @@ void DemoScene::Load_Ui()
 		Get_GameObject(L"Player")->Add_Component(pScript);
 	}
 
-	{
-		auto pScript = make_shared<UiHpBarFlow>();
-		Get_GameObject(L"UI_HpBar")->Add_Component(pScript);
-	}
+	
 
 	
 

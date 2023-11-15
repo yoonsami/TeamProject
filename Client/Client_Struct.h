@@ -27,6 +27,8 @@ typedef struct tagHeroData
 	float		Skill4DamageMul = 1.f;
 	float		Skill5DamageMul = 1.f;
 
+	wstring		ModelTag;
+	wstring		WeaponTag;
 	wstring		KeyAttack;
 	wstring		KeyEvade;
 	wstring		KeySkill1;

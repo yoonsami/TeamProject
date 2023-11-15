@@ -311,7 +311,7 @@ void Scene::Load_UIFile(const wstring& strDataFilePath, _bool bRender)
 		UiObject->Set_Name(strObjectName);
 
 		shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
-		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+		auto mesh = RESOURCES.Get<Mesh>(L"Point");
 		renderer->Set_Mesh(mesh);
 
 		auto material = make_shared<Material>();
