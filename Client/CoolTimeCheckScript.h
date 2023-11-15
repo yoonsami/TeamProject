@@ -23,6 +23,10 @@ private:
     void Change_Skills_Value();
     void Start_Effect(SkillType eSkillType);
     void Start_ButtonEndEffect(_uint iIndex);
+    
+    void Change_Pos_Two_Letter(_uint iIndex);
+    void Change_Pos_One_Letter(_uint iIndex);
+    void Change_Text_Zero(_uint iIndex);
 
 private:
     vector<vector<COOLTIMEINFO>>    m_CoolTime;
@@ -31,10 +35,13 @@ private:
     vector<weak_ptr<GameObject>>    m_pUiSkill_Effect;
     vector<weak_ptr<GameObject>>    m_pUi_Cool_End;
 
-    COOLTIMEINFO m_tagEvade     = {};
+    vector<_bool>                   m_bIsCoolChangeOne;
+    vector<weak_ptr<GameObject>>    m_pUi_Skill_Cool;
 
-    HERO    m_eCurHero          = { HERO::MAX };
-    _uint   m_iWorkSkillIndex   = { 0 };
-    _bool   m_bIsSkillWork      = { false };
+    COOLTIMEINFO m_tagEvade         = {};
+
+    HERO    m_eCurHero              = { HERO::MAX };
+    _uint   m_iWorkSkillIndex       = { 0 };
+    _bool   m_bIsSkillWork          = { false };
 };
 

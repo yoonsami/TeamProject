@@ -1367,7 +1367,7 @@ void ImguiMgr::Select_Font_Value()
     ImGui::Text("Size");
     ImGui::SameLine();
     ImGui::SetNextItemWidth(100);
-    ImGui::InputFloat("##PosX2", &m_fFontSize, 0.1f, 1.0f, "%.f", eFlag);
+    ImGui::InputFloat("##PosX2", &m_fFontSize, 0.01f, 1.0f, "%.2f", eFlag);
 }
 
 void ImguiMgr::Set_Font()
