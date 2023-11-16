@@ -9,18 +9,18 @@ public:
     virtual ~MeshEffect();
 
 public:
-    virtual void    Init(void* pArg);
-    virtual void    Tick() override;
-    virtual void    Final_Tick() override;
-    void            Render();
+    virtual void            Init(void* pArg);
+    virtual void            Tick() override;
+    virtual void            Final_Tick() override;
+    void                    Render();
 
-    void            Update_Desc();
+    void                    Update_Desc();
 
-    void         InitialTransform();
+    void                    InitialTransform();
 
     /* Setter */
-    void            Set_Desc(MeshEffectData::DESC tDesc) { m_tDesc = tDesc; }
-    void            Set_TransformDesc(void* pArg);
+    void                    Set_Desc(MeshEffectData::DESC tDesc) { m_tDesc = tDesc; }
+    void                    Set_TransformDesc(void* pArg);
 
     /* Getter */
     shared_ptr<Material>    Get_Material() { return  m_pMaterial; }
@@ -34,28 +34,29 @@ private:
     void                    Run_SpriteAnimation();
 
     void                    Init_RenderParams();
+
+    void                    Bind_UpdatedColor_ToShader();
+    void                    Bind_UpdatedTexUVOffset_ToShader();
     void                    Bind_RenderParams_ToShader();
 
 private:
-    MeshEffectData::DESC    m_tDesc;
-    MeshEffectData::Transform_Desc m_tTransform_Desc;
-
-    Color                   m_vDiffuseColor_Base;
+    MeshEffectData::DESC            m_tDesc;
+    MeshEffectData::Transform_Desc  m_tTransform_Desc;
 
     _float                  m_fDuration = { 0.f };
     _float                  m_fCurrAge = { 0.f };
+    _float                  m_fLifeTimeRatio = { 0.f };
     _float                  m_fTimeAcc_SpriteAnimation = { 0.f };
+    _bool                   m_bIsPlayFinished = { false };
 
-    _float2                 m_vCurrTexUVOffset_Opacity = { 0.f, 0.f };
-    _float2                 m_vCurrTexUVOffset_Diffuse = { 0.f, 0.f };
-    _float2                 m_vCurrTexUVOffset_Gra = { 0.f, 0.f };
+    /* Tex UV offset */
+    _float2                 m_vCurrTexUVOffset_Op1 = { 0.f, 0.f };
+    _float2                 m_vCurrTexUVOffset_Op2 = { 0.f, 0.f };
+    _float2                 m_vCurrTexUVOffset_Op3 = { 0.f, 0.f };
+    _float2                 m_vCurrTexUVOffset_Op4 = { 0.f, 0.f };
     _float2                 m_vCurrTexUVOffset_Overlay = { 0.f, 0.f };
     _float2                 m_vCurrTexUVOffset_Dissolve = { 0.f, 0.f };
     _float2                 m_vCurrTexUVOffset_Distortion = { 0.f, 0.f };
-    _float2                 m_vCurrTexUVOffset_Blend = { 0.f, 0.f };
-    _float2                 m_vCurrTexUVOffset_Additional = { 0.f, 0.f };
-
-    _bool                   m_bIsPlayFinished = { false };
 
     /* Sprite Animation */
     _float2                 m_vSpriteSize = { 0.f, 0.f };

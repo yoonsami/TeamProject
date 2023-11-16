@@ -984,7 +984,6 @@ void ResourceMgr::CreateMeshEffectData()
 		shared_ptr<FileUtils> file = make_shared<FileUtils>();
 		file->Open(Utils::ToWString(strFilePath), FileMode::Read);
 
-		/* Property */
 		string strTag = file->Read<string>();
 		tDesc.pszTag = strTag.c_str();
 		tDesc.fDuration = file->Read<_float>();
@@ -993,7 +992,7 @@ void ResourceMgr::CreateMeshEffectData()
 		tDesc.iMeshCnt = file->Read<_int>();
 		tDesc.fCreateInterval = file->Read<_float>();
 		tDesc.vParticleDuration = file->Read<_float2>();
-		tDesc.iSamplerType = file->Read<_int>();		
+		tDesc.iSamplerType = file->Read<_int>();
 
 		/* Mesh */
 		tDesc.strVfxMesh = file->Read<string>();
@@ -1007,37 +1006,47 @@ void ResourceMgr::CreateMeshEffectData()
 		/* Coloring Option */
 		tDesc.bColorChangingOn = file->Read<_bool>();
 
-		/* Diffuse */
-		tDesc.strDiffuseTexture = file->Read<string>();
-		tDesc.vDiffuseColor_BaseStart = file->Read<_float4>();
-		tDesc.vDiffuseColor_BaseEnd = file->Read<_float4>();
-		tDesc.vDiffuseColor_BaseGradation = file->Read<_float4>();
-		tDesc.vDestColor_Diffuse = file->Read<_float4>();
-		tDesc.vTiling_Diffuse = file->Read<_float2>();
-		tDesc.vUVSpeed_Diffuse = file->Read<_float2>();
-		tDesc.bIsUseTextureColor = file->Read<_bool>();
+		/* Option1 */
+		tDesc.strTexture_Op1 = file->Read<string>();
+		tDesc.bIsUseTextureColor_Op1 = file->Read<_int>();
+		tDesc.vBaseColor1_Op1 = file->Read<_float4>();
+		tDesc.vBaseColor2_Op1 = file->Read<_float4>();
+		tDesc.vDestColor1_Op1 = file->Read<_float4>();
+		tDesc.vDestColor2_Op1 = file->Read<_float4>();
+		tDesc.vTiling_Op1 = file->Read<_float2>();
+		tDesc.vUVSpeed_Op1 = file->Read<_float2>();
+		tDesc.fContrast_Op1 = file->Read<_float>();
+		tDesc.fAlphaOffset_Op1 = file->Read<_float>();
 
-		/* Opacity */
-		tDesc.strOpacityTexture = file->Read<string>();
-		tDesc.vTiling_Opacity = file->Read<_float2>();
-		tDesc.vUVSpeed_Opacity = file->Read<_float2>();
+		/* Option2 */
+		tDesc.strTexture_Op2 = file->Read<string>();
+		tDesc.bIsUseTextureColor_Op2 = file->Read<_int>();
+		tDesc.vBaseColor1_Op2 = file->Read<_float4>();
+		tDesc.vBaseColor2_Op2 = file->Read<_float4>();
+		tDesc.vDestColor1_Op2 = file->Read<_float4>();
+		tDesc.vDestColor2_Op2 = file->Read<_float4>();
+		tDesc.vTiling_Op2 = file->Read<_float2>();
+		tDesc.vUVSpeed_Op2 = file->Read<_float2>();
+		tDesc.fContrast_Op2 = file->Read<_float>();
+		tDesc.fAlphaOffset_Op2 = file->Read<_float>();
 
-		/* Alpha Gradation */
-		tDesc.fAlphaGraIntensity = file->Read<_float>();
-		tDesc.vBaseColor_AlphaGra = file->Read<_float4>();
-		tDesc.vDestColor_AlphaGra = file->Read<_float4>();
-
-		/* Gradation by Texture */
-		tDesc.strGraTexture = file->Read<string>();
-		tDesc.vBaseColor_Gra = file->Read<_float4>();
-		tDesc.vTiling_Gra = file->Read<_float2>();
-		tDesc.vUVSpeed_Gra = file->Read<_float2>();
-		tDesc.vDestColor_Gra = file->Read<_float4>();
+		/* Option3 */
+		tDesc.strTexture_Op3 = file->Read<string>();
+		tDesc.bIsUseTextureColor_Op3 = file->Read<_int>();
+		tDesc.vBaseColor1_Op3 = file->Read<_float4>();
+		tDesc.vBaseColor2_Op3 = file->Read<_float4>();
+		tDesc.vDestColor1_Op3 = file->Read<_float4>();
+		tDesc.vDestColor2_Op3 = file->Read<_float4>();
+		tDesc.vTiling_Op3 = file->Read<_float2>();
+		tDesc.vUVSpeed_Op3 = file->Read<_float2>();
+		tDesc.fContrast_Op3 = file->Read<_float>();
+		tDesc.fAlphaOffset_Op3 = file->Read<_float>();
 
 		/* Overlay */
 		tDesc.bIsOverlayOn = file->Read<_bool>();
 		tDesc.strOverlayTexture = file->Read<string>();
 		tDesc.vBaseColor_Overlay = file->Read<_float4>();
+		tDesc.vDestColor_Overlay = file->Read<_float4>();
 		tDesc.vTiling_Overlay = file->Read<_float2>();
 		tDesc.vUVSpeed_Overlay = file->Read<_float2>();
 
@@ -1054,21 +1063,6 @@ void ResourceMgr::CreateMeshEffectData()
 		tDesc.strDistortionTexture = file->Read<string>();
 		tDesc.vTiling_Distortion = file->Read<_float2>();
 		tDesc.vUVSpeed_Distortion = file->Read<_float2>();
-
-		/* Blend */
-		tDesc.strBlendTexture = file->Read<string>();
-		tDesc.vTiling_Blend = file->Read<_float2>();
-		tDesc.vUVSpeed_Blend = file->Read<_float2>();
-
-		/* Additional */
-		tDesc.strAdditionalTexture = file->Read<string>();
-		tDesc.vTiling_Additional = file->Read<_float2>();
-		tDesc.vUVSpeed_Additional = file->Read<_float2>();
-		tDesc.vBaseColor_Additional = file->Read<_float4>();
-		
-		/* Color Edit */
-		tDesc.fContrast = file->Read<_float>();
-		tDesc.fDefinition = file->Read<_float>();
 
 		// For. Load Transform_Desc 
 		/* Init Position */

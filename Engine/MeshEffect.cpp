@@ -40,6 +40,7 @@ void MeshEffect::Final_Tick()
     if (m_bIsPlayFinished)
         return;
     m_fCurrAge += fDT;
+    m_fLifeTimeRatio = m_fCurrAge / m_tDesc.fDuration;
     m_fTimeAcc_SpriteAnimation += fDT;
 
     // For. Check is dead 
@@ -98,81 +99,76 @@ void MeshEffect::Render()
 
 void MeshEffect::Update_Desc()
 {
-    _float fNoise = _float(rand() % 11) / 10.f;
-    Color vRangStartColor = Color(m_tDesc.vDiffuseColor_BaseStart.x, m_tDesc.vDiffuseColor_BaseStart.y, m_tDesc.vDiffuseColor_BaseStart.z, m_tDesc.vDiffuseColor_BaseStart.w);
-    Color vRangEndColor = Color(m_tDesc.vDiffuseColor_BaseEnd.x, m_tDesc.vDiffuseColor_BaseEnd.y, m_tDesc.vDiffuseColor_BaseEnd.z, m_tDesc.vDiffuseColor_BaseEnd.w);
-    m_vDiffuseColor_Base = vRangStartColor * fNoise + vRangEndColor * (1.f - fNoise);
-
     m_fDuration = MathUtils::Get_RandomFloat(m_tDesc.vParticleDuration.x, m_tDesc.vParticleDuration.y);
 
     Init_RenderParams();
 
-    // For. Sprite Animation 
     if (m_tDesc.bUseSpriteAnim)
     {
         m_vSpriteSize.x = 1.f / m_tDesc.iNumSprite_Col;
         m_vSpriteSize.y = 1.f / m_tDesc.iNumSprite_Row;
         m_iCurrSpriteIndex = -1;
         m_iNumSprite = m_tDesc.iNumSprite_Col * m_tDesc.iNumSprite_Row;
-
         m_UVTexRangeX = _float2(0.f, m_vSpriteSize.x);
         m_UVTexRangeY = _float2(0.f, m_vSpriteSize.y);
-    }
-    // For. 
+    }    
     else
     {
-        m_vCurrTexUVOffset_Opacity = m_tDesc.vTiling_Opacity;
-        m_vCurrTexUVOffset_Diffuse = m_tDesc.vTiling_Diffuse;
+        m_vCurrTexUVOffset_Op1 = m_tDesc.vTiling_Op1;
+        m_vCurrTexUVOffset_Op2 = m_tDesc.vTiling_Op2;
+        m_vCurrTexUVOffset_Op3 = m_tDesc.vTiling_Op3;
+        m_vCurrTexUVOffset_Op4 = m_tDesc.vTiling_Op4;
     }
-    m_vCurrTexUVOffset_Gra = m_tDesc.vTiling_Gra;
     m_vCurrTexUVOffset_Overlay = m_tDesc.vTiling_Overlay;
     m_vCurrTexUVOffset_Dissolve = m_tDesc.vTiling_Dissolve;
     m_vCurrTexUVOffset_Distortion = m_tDesc.vTiling_Distortion;
-    m_vCurrTexUVOffset_Blend = m_tDesc.vTiling_Blend;
-    m_vCurrTexUVOffset_Additional = m_tDesc.vTiling_Additional;
-
+    
     // For. Model Components
     m_pModel = RESOURCES.Get<Model>(Utils::ToWString(m_tDesc.strVfxMesh));
 
     // For. Material Components
     m_pMaterial = make_shared<Material>();
     m_pMaterial->Set_Shader(m_pShader);
-    wstring wstrKey = Utils::ToWString(m_tDesc.strDiffuseTexture);
+
+    wstring wstrKey = Utils::ToWString(m_tDesc.strTexture_Op1);
     wstring wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
     if (TEXT("None") != wstrKey)
-        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::DIFFUSE);
-    wstrKey = Utils::ToWString(m_tDesc.strOpacityTexture);
+        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE7);
+    
+    wstrKey = Utils::ToWString(m_tDesc.strTexture_Op2);
     wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
     if (TEXT("None") != wstrKey)
-        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::OPACITY);
-    wstrKey = Utils::ToWString(m_tDesc.strNormalTexture);
+        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE8);
+    
+    wstrKey = Utils::ToWString(m_tDesc.strTexture_Op3);
     wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
     if (TEXT("None") != wstrKey)
-        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::NORMAL);
-    wstrKey = Utils::ToWString(m_tDesc.strDissolveTexture);
+        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE9);
+    
+    wstrKey = Utils::ToWString(m_tDesc.strTexture_Op4);
     wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
     if (TEXT("None") != wstrKey)
-        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::DISSOLVE);
-    wstrKey = Utils::ToWString(m_tDesc.strDistortionTexture);
-    wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
-    if (TEXT("None") != wstrKey)
-        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::DISTORTION);
-    wstrKey = Utils::ToWString(m_tDesc.strGraTexture);
-    wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
-    if (TEXT("None") != wstrKey)
-        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE7);   // Gradation
+        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE10);
+    
     wstrKey = Utils::ToWString(m_tDesc.strOverlayTexture);
     wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
     if (TEXT("None") != wstrKey)
-        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE8);   // Overlay
-    wstrKey = Utils::ToWString(m_tDesc.strBlendTexture);
+        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE11);
+    
+    wstrKey = Utils::ToWString(m_tDesc.strDissolveTexture);
     wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
     if (TEXT("None") != wstrKey)
-        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE9);   // Blend
-    wstrKey = Utils::ToWString(m_tDesc.strAdditionalTexture);
+        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::DISSOLVE);   
+    
+    wstrKey = Utils::ToWString(m_tDesc.strDistortionTexture);
     wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
     if (TEXT("None") != wstrKey)
-        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE10);   // Additional
+        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::DISTORTION);   
+    
+    wstrKey = Utils::ToWString(m_tDesc.strNormalTexture);
+    wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+    if (TEXT("None") != wstrKey)
+        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::NORMAL);   
 }
 
 void MeshEffect::InitialTransform()
@@ -307,113 +303,136 @@ void MeshEffect::Run_SpriteAnimation()
 
 void MeshEffect::Init_RenderParams()
 {
-    m_RenderParams.SetInt(0, m_tDesc.bIsUseTextureColor);
-    m_RenderParams.SetInt(1, m_tDesc.bUseFadeOut);
-    m_RenderParams.SetInt(2, m_tDesc.bIsOverlayOn);
-    m_RenderParams.SetInt(3, m_tDesc.bInverseDissolve);
-
+    _float2 vTemp2;
+    _float4 vTemp4;
+    _float4x4 vTemp4x4;
+    
+    /* Int */
+    m_RenderParams.SetInt(0, m_tDesc.bUseFadeOut);
+    m_RenderParams.SetInt(1, m_tDesc.bInverseDissolve);
+    m_RenderParams.SetInt(2, (_int)m_tDesc.bUseSpriteAnim);
+    
+    /* Float */
     m_RenderParams.SetFloat(0, m_fCurrAge / m_tDesc.fDuration);
-    m_RenderParams.SetFloat(1, m_tDesc.fAlphaGraIntensity);
-    m_RenderParams.SetFloat(2, m_tDesc.fContrast);
+    m_RenderParams.SetFloat(1, m_vCurrTexUVOffset_Distortion.x);
+    m_RenderParams.SetFloat(2, m_vCurrTexUVOffset_Distortion.y);
+
+    /* Float2 */
+    vTemp2 = _float2(m_tDesc.fContrast_Op1, m_tDesc.fAlphaOffset_Op1);
+    m_RenderParams.SetVec2(0, vTemp2);
+    vTemp2 = _float2(m_tDesc.fContrast_Op2, m_tDesc.fAlphaOffset_Op2);
+    m_RenderParams.SetVec2(1, vTemp2);
+    vTemp2 = _float2(m_tDesc.fContrast_Op3, m_tDesc.fAlphaOffset_Op3);
+    m_RenderParams.SetVec2(2, vTemp2);
+    vTemp2 = _float2(m_tDesc.fContrast_Op4, m_tDesc.fAlphaOffset_Op4);
+    m_RenderParams.SetVec2(3, vTemp2);
+
+    /* Float4 */
+    vTemp4 = _float4(m_vCurrTexUVOffset_Op1.x, m_vCurrTexUVOffset_Op1.y, m_vCurrTexUVOffset_Op2.x, m_vCurrTexUVOffset_Op2.y);
+    m_RenderParams.SetVec4(0, vTemp4);
+    vTemp4 = _float4(m_vCurrTexUVOffset_Op3.x, m_vCurrTexUVOffset_Op3.y, m_vCurrTexUVOffset_Op4.x, m_vCurrTexUVOffset_Op4.y);
+    m_RenderParams.SetVec4(1, vTemp4);
+    vTemp4 = _float4(m_vCurrTexUVOffset_Overlay.x, m_vCurrTexUVOffset_Overlay.y, m_vCurrTexUVOffset_Dissolve.x, m_vCurrTexUVOffset_Dissolve.y);
+    m_RenderParams.SetVec4(2, vTemp4);
+    vTemp4 = _float4(m_UVTexRangeX.x, m_UVTexRangeX.y, m_UVTexRangeY.x, m_UVTexRangeY.y);
+    m_RenderParams.SetVec4(3, vTemp4);
+
+    /* Mat4x4 */
+    vTemp4x4 = _float4x4(
+        m_tDesc.vBaseColor1_Op1, 
+        m_tDesc.vBaseColor2_Op1,
+        m_tDesc.vBaseColor1_Op2,
+        m_tDesc.vBaseColor2_Op2
+    );
+    m_RenderParams.SetMatrix(0, vTemp4x4);
+    vTemp4x4 = _float4x4(
+        m_tDesc.vBaseColor1_Op3,
+        m_tDesc.vBaseColor2_Op3,
+        m_tDesc.vBaseColor1_Op4,
+        m_tDesc.vBaseColor2_Op4
+    );
+    m_RenderParams.SetMatrix(1, vTemp4x4);
+    vTemp4x4 = _float4x4(
+        m_tDesc.vBaseColor_Overlay,
+        _float4(0.f, 0.f, 0.f, 0.f),
+        _float4(0.f, 0.f, 0.f, 0.f),
+        _float4(0.f, 0.f, 0.f, 0.f)
+    );
+    m_RenderParams.SetMatrix(2, vTemp4x4);
+}
+
+void MeshEffect::Bind_UpdatedColor_ToShader()
+{
+    _float4x4 vTemp4x4;
+
+    Color vFinalColor1_Op1 = XMVectorLerp(m_tDesc.vBaseColor1_Op1, m_tDesc.vDestColor1_Op1, m_fLifeTimeRatio);
+    Color vFinalColor2_Op1 = XMVectorLerp(m_tDesc.vBaseColor2_Op1, m_tDesc.vDestColor2_Op1, m_fLifeTimeRatio);
+    Color vFinalColor1_Op2 = XMVectorLerp(m_tDesc.vBaseColor1_Op1, m_tDesc.vDestColor1_Op1, m_fLifeTimeRatio);
+    Color vFinalColor2_Op2 = XMVectorLerp(m_tDesc.vBaseColor2_Op1, m_tDesc.vDestColor2_Op1, m_fLifeTimeRatio);
+    Color vFinalColor1_Op3 = XMVectorLerp(m_tDesc.vBaseColor1_Op1, m_tDesc.vDestColor1_Op1, m_fLifeTimeRatio);
+    Color vFinalColor2_Op3 = XMVectorLerp(m_tDesc.vBaseColor2_Op1, m_tDesc.vDestColor2_Op1, m_fLifeTimeRatio);
+    Color vFinalColor1_Op4 = XMVectorLerp(m_tDesc.vBaseColor1_Op1, m_tDesc.vDestColor1_Op1, m_fLifeTimeRatio);
+    Color vFinalColor2_Op4 = XMVectorLerp(m_tDesc.vBaseColor2_Op1, m_tDesc.vDestColor2_Op1, m_fLifeTimeRatio);
+    Color vFinalColor_Overlay = XMVectorLerp(m_tDesc.vBaseColor_Overlay, m_tDesc.vDestColor_Overlay, m_fLifeTimeRatio);
+    vTemp4x4 = _float4x4(
+        m_tDesc.vBaseColor1_Op1,
+        m_tDesc.vBaseColor2_Op1,
+        m_tDesc.vBaseColor1_Op2,
+        m_tDesc.vBaseColor2_Op2
+    );
+    m_RenderParams.SetMatrix(0, vTemp4x4);
+    vTemp4x4 = _float4x4(
+        m_tDesc.vBaseColor1_Op3,
+        m_tDesc.vBaseColor2_Op3,
+        m_tDesc.vBaseColor1_Op4,
+        m_tDesc.vBaseColor2_Op4
+    );
+    m_RenderParams.SetMatrix(1, vTemp4x4);
+    vTemp4x4 = _float4x4(
+        m_tDesc.vBaseColor_Overlay,
+        _float4(0.f, 0.f, 0.f, 0.f),
+        _float4(0.f, 0.f, 0.f, 0.f),
+        _float4(0.f, 0.f, 0.f, 0.f)
+    );
+    m_RenderParams.SetMatrix(2, vTemp4x4);
+}
+
+void MeshEffect::Bind_UpdatedTexUVOffset_ToShader()
+{
+    _float4 vTemp4;
+
+    // For. Update UV Offset
     if (m_tDesc.bUseSpriteAnim)
-        m_RenderParams.SetFloat(3, 1.f);
+        Run_SpriteAnimation();
     else
-        m_RenderParams.SetFloat(3, 0.f);
+    {
+        m_vCurrTexUVOffset_Op1 += m_tDesc.vUVSpeed_Op1 * fDT;
+        m_vCurrTexUVOffset_Op2 += m_tDesc.vUVSpeed_Op2 * fDT;
+        m_vCurrTexUVOffset_Op3 += m_tDesc.vUVSpeed_Op3 * fDT;
+        m_vCurrTexUVOffset_Op4 += m_tDesc.vUVSpeed_Op4 * fDT;
+    }
+    m_vCurrTexUVOffset_Overlay += m_tDesc.vUVSpeed_Overlay * fDT;
+    m_vCurrTexUVOffset_Dissolve += m_tDesc.vUVSpeed_Dissolve * fDT;
+    m_vCurrTexUVOffset_Distortion += m_tDesc.vUVSpeed_Distortion * fDT;
 
-    m_RenderParams.SetVec2(0, m_vCurrTexUVOffset_Opacity);
-
-    _float4 vUVOffset = _float4(m_vCurrTexUVOffset_Gra.x, m_vCurrTexUVOffset_Gra.y, m_vCurrTexUVOffset_Overlay.x, m_vCurrTexUVOffset_Overlay.y);
-    m_RenderParams.SetVec4(0, vUVOffset);
-
-    vUVOffset = _float4(m_vCurrTexUVOffset_Dissolve.x, m_vCurrTexUVOffset_Dissolve.y, m_vCurrTexUVOffset_Distortion.x, m_vCurrTexUVOffset_Distortion.y);
-    m_RenderParams.SetVec4(1, vUVOffset);
-
-    if (m_tDesc.bUseSpriteAnim)
-        m_RenderParams.SetVec4(2, _float4(m_UVTexRangeX.x, m_UVTexRangeX.y, m_UVTexRangeY.x, m_UVTexRangeY.y));
-    else
-        m_RenderParams.SetVec4(2, _float4(m_vCurrTexUVOffset_Diffuse.x, m_vCurrTexUVOffset_Diffuse.y, 0.f, 0.f));
-
-    m_RenderParams.SetVec4(3, _float4(m_vCurrTexUVOffset_Blend.x, m_vCurrTexUVOffset_Blend.y, m_vCurrTexUVOffset_Additional.x, m_vCurrTexUVOffset_Additional.y ));
-
-    _float4x4 mColor = _float4x4(m_vDiffuseColor_Base,
-        m_tDesc.vBaseColor_AlphaGra,
-        m_tDesc.vBaseColor_Gra,
-        m_tDesc.vBaseColor_Overlay);
-    m_RenderParams.SetMatrix(0, mColor);
-
-    _float4x4 mDatas = XMMatrixIdentity();
-    mDatas._11 = m_tDesc.fDefinition;
-    mDatas._21 = m_tDesc.vBaseColor_Additional.x;
-    mDatas._22 = m_tDesc.vBaseColor_Additional.y;
-    mDatas._23 = m_tDesc.vBaseColor_Additional.z;
-    mDatas._24 = m_tDesc.vBaseColor_Additional.w;
-    mDatas._31 = m_tDesc.vDiffuseColor_BaseGradation.x;
-    mDatas._32 = m_tDesc.vDiffuseColor_BaseGradation.y;
-    mDatas._33 = m_tDesc.vDiffuseColor_BaseGradation.z;
-    mDatas._34 = m_tDesc.vDiffuseColor_BaseGradation.w;
-    m_RenderParams.SetMatrix(1, mDatas);
+    m_RenderParams.SetFloat(1, m_vCurrTexUVOffset_Distortion.x);
+    m_RenderParams.SetFloat(2, m_vCurrTexUVOffset_Distortion.y);
+    vTemp4 = _float4(m_vCurrTexUVOffset_Op1.x, m_vCurrTexUVOffset_Op1.y, m_vCurrTexUVOffset_Op2.x, m_vCurrTexUVOffset_Op2.y);
+    m_RenderParams.SetVec4(0, vTemp4);
+    vTemp4 = _float4(m_vCurrTexUVOffset_Op3.x, m_vCurrTexUVOffset_Op3.y, m_vCurrTexUVOffset_Op4.x, m_vCurrTexUVOffset_Op4.y);
+    m_RenderParams.SetVec4(1, vTemp4);
+    vTemp4 = _float4(m_vCurrTexUVOffset_Overlay.x, m_vCurrTexUVOffset_Overlay.y, m_vCurrTexUVOffset_Dissolve.x, m_vCurrTexUVOffset_Dissolve.y);
+    m_RenderParams.SetVec4(2, vTemp4);
+    vTemp4 = _float4(m_UVTexRangeX.x, m_UVTexRangeX.y, m_UVTexRangeY.x, m_UVTexRangeY.y);
+    m_RenderParams.SetVec4(3, vTemp4);
 }
 
 void MeshEffect::Bind_RenderParams_ToShader()
 {
-    // For. Update LifeTimeRatio
-    _float fLifeTimeRatio = m_fCurrAge / m_tDesc.fDuration;
-    m_RenderParams.SetFloat(0, fLifeTimeRatio);
+    m_RenderParams.SetFloat(0, m_fLifeTimeRatio);
 
-    // For. Update ChangingColor
-    Color vFinalDiffuseColor = XMVectorLerp(m_vDiffuseColor_Base, m_tDesc.vDestColor_Diffuse, fLifeTimeRatio);
-    Color vFinalAlphaGraColor = XMVectorLerp(m_tDesc.vBaseColor_AlphaGra, m_tDesc.vDestColor_AlphaGra, fLifeTimeRatio);
-    Color vFinalGraColor = XMVectorLerp(m_tDesc.vBaseColor_Gra, m_tDesc.vDestColor_Gra, fLifeTimeRatio);
-    _float4x4 mColor = _float4x4(vFinalDiffuseColor,
-        vFinalAlphaGraColor,
-        vFinalGraColor,
-        m_tDesc.vBaseColor_Overlay);
-    m_RenderParams.SetMatrix(0, mColor);
-
-    // For. Update UV Offset
-
-    if (m_tDesc.bUseSpriteAnim)
-    {
-        Run_SpriteAnimation();
-
-        m_vCurrTexUVOffset_Gra += m_tDesc.vUVSpeed_Gra * fDT;
-        m_vCurrTexUVOffset_Overlay += m_tDesc.vUVSpeed_Overlay * fDT;
-        m_vCurrTexUVOffset_Dissolve += m_tDesc.vUVSpeed_Dissolve * fDT;
-        m_vCurrTexUVOffset_Distortion += m_tDesc.vUVSpeed_Distortion * fDT;
-        m_vCurrTexUVOffset_Blend += m_tDesc.vUVSpeed_Blend * fDT;
-        m_vCurrTexUVOffset_Additional += m_tDesc.vUVSpeed_Additional * fDT;
-
-        m_RenderParams.SetVec2(0, m_vCurrTexUVOffset_Opacity);
-        _float4 vUVOffset = _float4(m_vCurrTexUVOffset_Gra.x, m_vCurrTexUVOffset_Gra.y, m_vCurrTexUVOffset_Overlay.x, m_vCurrTexUVOffset_Overlay.y);
-        m_RenderParams.SetVec4(0, vUVOffset);
-        vUVOffset = _float4(m_vCurrTexUVOffset_Dissolve.x, m_vCurrTexUVOffset_Dissolve.y, m_vCurrTexUVOffset_Distortion.x, m_vCurrTexUVOffset_Distortion.y);
-        m_RenderParams.SetVec4(1, vUVOffset);
-        vUVOffset = _float4(m_UVTexRangeX.x, m_UVTexRangeX.y, m_UVTexRangeY.x, m_UVTexRangeY.y);
-        m_RenderParams.SetVec4(2, vUVOffset);
-        vUVOffset = _float4(m_vCurrTexUVOffset_Blend.x, m_vCurrTexUVOffset_Blend.y, m_vCurrTexUVOffset_Additional.x, m_vCurrTexUVOffset_Additional.y);
-        m_RenderParams.SetVec4(3, vUVOffset);
-    }
-    else
-    {
-        m_vCurrTexUVOffset_Opacity += m_tDesc.vUVSpeed_Opacity * fDT;
-        m_vCurrTexUVOffset_Diffuse += m_tDesc.vUVSpeed_Diffuse * fDT;
-        m_vCurrTexUVOffset_Gra += m_tDesc.vUVSpeed_Gra * fDT;
-        m_vCurrTexUVOffset_Overlay += m_tDesc.vUVSpeed_Overlay * fDT;
-        m_vCurrTexUVOffset_Dissolve += m_tDesc.vUVSpeed_Dissolve * fDT;
-        m_vCurrTexUVOffset_Distortion += m_tDesc.vUVSpeed_Distortion * fDT;
-        m_vCurrTexUVOffset_Blend += m_tDesc.vUVSpeed_Blend * fDT;
-        m_vCurrTexUVOffset_Additional += m_tDesc.vUVSpeed_Additional * fDT;
-
-        m_RenderParams.SetVec2(0, m_vCurrTexUVOffset_Opacity);
-        _float4 vUVOffset = _float4(m_vCurrTexUVOffset_Gra.x, m_vCurrTexUVOffset_Gra.y, m_vCurrTexUVOffset_Overlay.x, m_vCurrTexUVOffset_Overlay.y);
-        m_RenderParams.SetVec4(0, vUVOffset);
-        vUVOffset = _float4(m_vCurrTexUVOffset_Dissolve.x, m_vCurrTexUVOffset_Dissolve.y, m_vCurrTexUVOffset_Distortion.x, m_vCurrTexUVOffset_Distortion.y);
-        m_RenderParams.SetVec4(1, vUVOffset);
-        vUVOffset = _float4(m_tDesc.vUVSpeed_Diffuse.x, m_tDesc.vUVSpeed_Diffuse.y, 0.f, 0.f);
-        m_RenderParams.SetVec4(2, vUVOffset);
-        vUVOffset = _float4(m_vCurrTexUVOffset_Blend.x, m_vCurrTexUVOffset_Blend.y, m_vCurrTexUVOffset_Additional.x, m_vCurrTexUVOffset_Additional.y);
-        m_RenderParams.SetVec4(3, vUVOffset);
-    }
+    Bind_UpdatedColor_ToShader();
+    Bind_UpdatedTexUVOffset_ToShader();
 
     // For. Bind Data 
     m_pShader->Push_RenderParamData(m_RenderParams);
