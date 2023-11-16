@@ -34,7 +34,10 @@ HRESULT UiHpBarController::Init()
 
 void UiHpBarController::Tick()
 {
-	if (m_pOwner.expired())
+	if (true == m_pOwner.expired() ||
+        true == m_pFrontHp.expired() ||
+        true == m_pBackHp.expired() ||
+        true == m_pFont.expired())
 		return;
 
     Change_Param();
@@ -49,9 +52,6 @@ void UiHpBarController::Tick()
 
 void UiHpBarController::Change_Param()
 {
-    if (true == m_pFrontHp.expired())
-        return;
-
     m_fValue += fDT * 0.2f;
     m_pFrontHp.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[1] = m_fValue;
 
@@ -67,9 +67,6 @@ void UiHpBarController::Change_Param()
 
 void UiHpBarController::Change_Hp_Ratio()
 {
-    if (true == m_pFrontHp.expired() || true == m_pBackHp.expired())
-        return;
-
     _float HpRatio = m_pOwner.lock()->Get_HpRatio();
     m_pFrontHp.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = HpRatio;
 
@@ -85,9 +82,6 @@ void UiHpBarController::Change_Hp_Ratio()
 
 void UiHpBarController::Change_Hp_Slow()
 {
-    if (true == m_pFrontHp.expired() || true == m_pBackHp.expired())
-        return;
-
     if(false == m_bIsWork)
         return;
 

@@ -243,7 +243,9 @@
     <ClInclude Include="UiGachaEffectController.h" />
     <ClInclude Include="UiHpBarController.h" />
     <ClInclude Include="UiLoadingScript.h" />
+    <ClInclude Include="UiMonsterHp.h" />
     <ClInclude Include="UiSkillButtonEffect.h" />
+    <ClInclude Include="UiTargetLockOn.h" />
     <ClInclude Include="WeaponScript.h" />
     <ClInclude Include="YeopoHorse_FSM.h" />
     <ClInclude Include="Yeopo_FSM.h" />
@@ -311,7 +313,9 @@
     <ClCompile Include="UiGachaEffectController.cpp" />
     <ClCompile Include="UiHpBarController.cpp" />
     <ClCompile Include="UiLoadingScript.cpp" />
+    <ClCompile Include="UiMonsterHp.cpp" />
     <ClCompile Include="UiSkillButtonEffect.cpp" />
+    <ClCompile Include="UiTargetLockOn.cpp" />
     <ClCompile Include="WeaponScript.cpp" />
     <ClCompile Include="YeopoHorse_FSM.cpp" />
     <ClCompile Include="Yeopo_FSM.cpp" />
