@@ -38,6 +38,10 @@ void Widget_Model_Controller::Tick()
 
 
 	Begin("Model Controller");
+	static _bool checkBox = true;
+	Checkbox("SkyBox On", &checkBox);
+	if(CUR_SCENE->Get_GameObject(L"SkyBase"))
+	CUR_SCENE->Get_GameObject(L"SkyBase")->Get_ModelRenderer()->Set_RenderState(checkBox);
 	Model_Controller();
 	End();
 }

@@ -1,10 +1,18 @@
 #pragma once
 #include "Scene.h"
+
+struct GachaSceneDesc
+{
+	wstring strMapFileName;
+	wstring strCharModelNmae;
+	HERO eHeroType;
+};
+
 class Kyle_GachaScene :
     public Scene
 {
 public:
-	Kyle_GachaScene();
+	Kyle_GachaScene(const GachaSceneDesc& desc);
 	~Kyle_GachaScene();
 
 public:
@@ -22,4 +30,8 @@ private:
 	void Load_Camera();
 
 	void Load_Light();
+
+private:
+	GachaSceneDesc m_Desc{};
+
 };

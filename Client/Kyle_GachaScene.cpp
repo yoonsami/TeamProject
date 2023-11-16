@@ -54,7 +54,8 @@
 #include "Gacha_FSM.h"
 namespace fs = std::filesystem;
 
-Kyle_GachaScene::Kyle_GachaScene()
+Kyle_GachaScene::Kyle_GachaScene(const GachaSceneDesc& desc)
+	: m_Desc(desc)
 {
 }
 
@@ -93,7 +94,7 @@ HRESULT Kyle_GachaScene::Load_Scene()
 	Load_Player();
 	Load_Light();
 	Load_Camera();
-	Load_MapFile(L"KyleMap");
+	Load_MapFile(m_Desc.strMapFileName);
 	return S_OK;
 }
 
@@ -117,29 +118,53 @@ void Kyle_GachaScene::Load_Player()
 		
 		ObjPlayer->Add_Component(make_shared<Transform>());
 	
-		ObjPlayer->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 5.f, 1.f));
+		ObjPlayer->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
 		ObjPlayer->Get_Transform()->LookAt(_float4(0.f, 0.f, 0.f, 1.f));
 		{
 			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
 			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
 			{
-				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Yeopo");
+				shared_ptr<Model> model = RESOURCES.Get<Model>(m_Desc.strCharModelNmae);
 				animator->Set_Model(model);
 				
 			}
 			ObjPlayer->Add_Component(animator);
 		}
-		ObjPlayer->Set_Name(L"Gacha_Yeopo");
+		ObjPlayer->Set_Name(m_Desc.strCharModelNmae);
+		ObjPlayer->Set_DrawShadow(true);
+		ObjPlayer->Set_ObjectGroup(OBJ_PLAYER);
+		Add_GameObject(ObjPlayer);
 		Gacha_FSM_Desc desc;
+
+		switch (m_Desc.eHeroType)
+		{
+		case HERO::ACE3:
+		{
+			desc.strWeaponName = L"Weapon_Spear_Ace";
+			desc.strAnimTag = L"SQ_SpecialHero_Ace_Origin_01";
+			desc.iAnimStopFrame = 134;
+		}
+			break;
+		case HERO::KYLE:
+			break;
+		case HERO::YEOPO:
+			break;
+		case HERO::DELLONS:
+			break;
+		case HERO::MAX:
+			break;
+		default:
+			break;
+		}
+
+		
 		desc.strWeaponName = L"Weapon_Yeopo";
 		desc.strAnimTag = L"SQ_SpecialHero_Yeopo";
 		desc.iAnimStopFrame = 134;
 		ObjPlayer->Add_Component(make_shared<Gacha_FSM>(desc));
 
-		ObjPlayer->Set_DrawShadow(true);
-		ObjPlayer->Set_ObjectGroup(OBJ_PLAYER);
-		Add_GameObject(ObjPlayer);
+	
 
 		{
 			shared_ptr<GameObject> ObjVehicle = make_shared<GameObject>();
@@ -174,8 +199,8 @@ void Kyle_GachaScene::Load_Camera()
 		shared_ptr<GameObject> camera = make_shared<GameObject>();
 
 		// Transform Component 
-		camera->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(_float3(0.f,5.f,0.f), 1.f));
-		camera->GetOrAddTransform()->LookAt(_float4(0.f, 0.f, 5.f, 1.f));
+		camera->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(_float3(0.f,5.f,5.f), 1.f));
+		camera->GetOrAddTransform()->LookAt(_float4(0.f, 0.f, 0.f, 1.f));
 		camera->GetOrAddTransform()->Set_Speed(5.f);
 
 		// Camera Component Add
