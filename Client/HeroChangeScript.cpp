@@ -17,6 +17,7 @@
 #include "Kyle_FSM.h"
 #include "Yeopo_FSM.h"
 #include "Dellons_FSM.h"
+#include "Spike_FSM.h"
 
 HeroChangeScript::HeroChangeScript()
 {
@@ -59,6 +60,13 @@ void HeroChangeScript::Tick()
             Change_To_Player();
         else
             Change_To_Dellons();
+    }
+    else if (KEYTAP(KEY_TYPE::F5))
+    {
+        if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == (L"Spike"))
+            Change_To_Player();
+        else
+            Change_To_Spike();
     }
 
 }
@@ -234,6 +242,33 @@ void HeroChangeScript::Change_To_Dellons()
 
 }
 
+void HeroChangeScript::Change_To_Spike()
+{
+    if (m_pOwner.expired())
+        return;
+
+    m_pOwner.lock()->Get_FSM()->Reset_Weapon();
+    m_pOwner.lock()->Get_FSM()->Reset_Vehicle();
+    //AnimIndex Reset
+    m_pOwner.lock()->Get_Animator()->Set_CurrentAnim(0);
+
+    //PlayerAttackCollider Remove
+    CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Player_AttackCollider"));
+    CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Vehicle_AttackCollider"));
+
+    shared_ptr<Model> model = RESOURCES.Get<Model>(L"Spike");
+
+    m_pOwner.lock()->Get_Animator()->Set_Model(model);
+    m_pOwner.lock()->Change_Component(make_shared<Spike_FSM>());
+
+    //Add. Player's Weapon
+    Add_Character_Weapon(L"Weapon_Spike");
+
+    m_pOwner.lock()->Get_FSM()->Init();
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::SPIKE);
+
+}
+
 void HeroChangeScript::Change_To_Input(HERO eHero)
 {
     if (m_pOwner.expired() || HERO::MAX == eHero)
@@ -269,6 +304,9 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
         break;
     case HERO::DELLONS:
         m_pOwner.lock()->Change_Component(make_shared<Dellons_FSM>());
+        break;
+    case HERO::SPIKE:
+        m_pOwner.lock()->Change_Component(make_shared<Spike_FSM>());
         break;
     case HERO::MAX:
         break;

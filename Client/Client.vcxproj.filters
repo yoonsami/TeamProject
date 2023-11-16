@@ -100,9 +100,6 @@
     <Filter Include="02.Component\01.FSM\01.Hero_FSM\04.Dellons_FSM">
       <UniqueIdentifier>{6271cf5d-07bd-40b3-981c-e1ac33b0459d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\01.FSM\01.Hero_FSM\05.">
-      <UniqueIdentifier>{c430e1c9-328a-4db3-a452-923e9ba683ea}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Component\01.FSM\03.Special_FSM">
       <UniqueIdentifier>{07de820b-d706-4b0a-a69a-dbc77ce8061d}</UniqueIdentifier>
     </Filter>
@@ -186,6 +183,9 @@
     </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\02.UiHpBarController">
       <UniqueIdentifier>{ddb62fe5-0028-482f-a21c-728ae38e9433}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\01.Hero_FSM\05.Spike_FSM">
+      <UniqueIdentifier>{c430e1c9-328a-4db3-a452-923e9ba683ea}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -397,6 +397,12 @@
     <ClInclude Include="UiHpBarController.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\02.UiHpBarController</Filter>
     </ClInclude>
+    <ClInclude Include="Boss_DellonsWraith_FSM.h">
+      <Filter>02.Component\01.FSM\03.Special_FSM\01.Monster_Special_FSM\00.Boss_DellonsWraith_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Spike_FSM.h">
+      <Filter>02.Component\01.FSM\01.Hero_FSM\05.Spike_FSM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -571,11 +577,14 @@
     <ClCompile Include="Boss_Dellons_FSM.cpp">
       <Filter>02.Component\01.FSM\02.Monster_FSM\02.Boss_Dellons_FSM</Filter>
     </ClCompile>
-    <ClCompile Include="Boss_DellonsWraith_FSM.cpp">
-      <Filter>02.Component\01.FSM\02.Monster_FSM\02.Boss_Dellons_FSM</Filter>
-    </ClCompile>
     <ClCompile Include="UiHpBarController.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\02.UiHpBarController</Filter>
+    </ClCompile>
+    <ClCompile Include="Boss_DellonsWraith_FSM.cpp">
+      <Filter>02.Component\01.FSM\03.Special_FSM\01.Monster_Special_FSM\00.Boss_DellonsWraith_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="Spike_FSM.cpp">
+      <Filter>02.Component\01.FSM\01.Hero_FSM\05.Spike_FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

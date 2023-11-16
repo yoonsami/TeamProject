@@ -41,6 +41,9 @@ HRESULT Player_FSM::Init()
  
     m_pWeapon = CUR_SCENE->Get_GameObject(L"Weapon_Player");
 
+    m_iCenterBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Center");
+    m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
+    m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
     m_iSkillBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"B_nose");
 
     m_pCamera = CUR_SCENE->Get_MainCamera();
@@ -57,6 +60,8 @@ void Player_FSM::Tick()
         //m_pAttack transform set forward
         m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up);
     }
+
+    Calculate_CamBoneMatrix();
 }
 
 void Player_FSM::State_Tick()
@@ -1258,6 +1263,36 @@ void Player_FSM::skill_100200_Init()
 
 void Player_FSM::skill_100300()
 {
+    if (Get_CurFrame() >= 10 && Get_CurFrame() <= 23)
+    {
+        if (Get_CurFrame() == 10)
+            m_vCamStopPos = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS);
+
+        if (!m_pCamera.expired())
+        {
+            _float4 vDir = m_vCamStopPos - m_vCenterBonePos;
+            vDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 6.f);
+        }
+    }
+    else if (Get_CurFrame() >= 24 && Get_CurFrame() < 31)
+    {
+        if (!m_pCamera.expired())
+        {
+            _float4 vDir = m_vCamStopPos - m_vCenterBonePos;
+            vDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 7.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_SmoothReturn();
+        }
+    }
+
+
 	if (Get_CurFrame() == 29)
 	{
 		vector<shared_ptr<GameObject>> targetMonster;
@@ -1290,11 +1325,7 @@ void Player_FSM::skill_100300()
 				continue;
 
 			obj->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, Get_Owner());
-
 		}
-
-
-
 	}
 	else
 	{
@@ -1330,6 +1361,24 @@ void Player_FSM::skill_100300_Init()
 
 void Player_FSM::skill_200100()
 {
+    if (Get_CurFrame() >= 15)
+    {
+        if (Get_CurFrame() == 15)
+            m_vCamStopPos = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS);
+
+        if (!m_pCamera.expired())
+        {
+            _float4 vDir = m_vCamStopPos - m_vCenterBonePos;
+            vDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 10.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_SmoothReturn();
+        }
+    }
+
+
 	if (Get_CurFrame() >= 30)
 	{
         m_fSkillCreateTimer += fDT;
@@ -1358,8 +1407,6 @@ void Player_FSM::skill_200100()
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::skill_200200;
     }
-
-    Use_Dash();
 }
 
 void Player_FSM::skill_200100_Init()
@@ -1375,7 +1422,7 @@ void Player_FSM::skill_200100_Init()
 
     AttackCollider_On(NORMAL_ATTACK);
 
-    m_bInvincible = false;
+    m_bInvincible = true;
     m_bSuperArmor = true;
 }
 
@@ -1415,8 +1462,6 @@ void Player_FSM::skill_200200()
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
     }
-
-    Use_Dash();
 }
 
 void Player_FSM::skill_200200_Init()
@@ -1432,28 +1477,31 @@ void Player_FSM::skill_200200_Init()
 
     AttackCollider_Off();
 
-    m_bInvincible = false;
+    m_bInvincible = true;
     m_bSuperArmor = true;
 }
 
 void Player_FSM::skill_300100()
 {
+
     if (Get_CurFrame() == 14)
     {
-		if (!m_bSkillCreate)
-		{
-			FORWARDMOVINGSKILLDESC desc;
-			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-			desc.fMoveSpeed = 0.f;
-			desc.fLifeTime = 1.f;
-			desc.fLimitDistance = 0.f;
+        if (!m_bSkillCreate)
+        {
+            FORWARDMOVINGSKILLDESC desc;
+            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+            desc.fMoveSpeed = 0.f;
+            desc.fLifeTime = 1.f;
+            desc.fLimitDistance = 0.f;
 
-			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
-			Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_SKILL);
+            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
+            Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_SKILL);
 
-			m_bSkillCreate = true;
-		}
+            m_bSkillCreate = true;
+        }
     }
+    else
+        m_bSkillCreate = false;
 
 	if (Get_CurFrame() < 43)
 	{
@@ -1475,8 +1523,6 @@ void Player_FSM::skill_300100()
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
     }
-
-    Use_Dash();
 }
 
 void Player_FSM::skill_300100_Init()
@@ -1490,14 +1536,37 @@ void Player_FSM::skill_300100_Init()
     m_vKeyInputTargetDir = _float3(0.f);
     m_vKeyInputTargetDir = Get_InputDirVector();
 
-  
     AttackCollider_Off();
-    m_bInvincible = false;
+    m_bInvincible = true;
     m_bSuperArmor = true;
 }
 
 void Player_FSM::skill_300200()
 {
+    if (Get_CurFrame() < 91)
+    {
+        if (!m_pCamera.expired())
+        {
+            _float4 vDir = m_vCamStopPos - m_vCenterBonePos;
+            vDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 12.f);
+        }
+    }
+    else
+    {
+        if (!m_pCamera.expired())
+        {
+            _float4 vDir = m_vCamStopPos - m_vCenterBonePos;
+            vDir.Normalize();
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 4.5f);
+        }
+    }
+    
     if (Get_CurFrame() >= 5 && Get_CurFrame() < 57)
     {
         m_fSkillCreateTimer += fDT;
@@ -1565,11 +1634,12 @@ void Player_FSM::skill_300200_Init()
 	m_vKeyInputTargetDir = _float3(0.f);
 	m_vKeyInputTargetDir = Get_InputDirVector();
 
-
 	AttackCollider_Off();
 
-	m_bInvincible = false;
+	m_bInvincible = true;
 	m_bSuperArmor = true;
+
+    m_vCamStopPos = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS);    
 }
 
 void Player_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType)

@@ -57,6 +57,7 @@ public:
 	_bool m_bSuperArmor = false;
 	_bool m_bCanCombo = false;
 	_bool m_bSkillCreate = false;
+	_bool m_bAttackEffectCreate = false;
 
 	_float3 m_vHitDir = _float3{ 0.f };
 	_float3 m_vKeyInputTargetDir = _float3(0.f);

@@ -233,6 +233,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Silversword_Soldier_FSM.h" />
     <ClInclude Include="SpearAce_FSM.h" />
+    <ClInclude Include="Spike_FSM.h" />
     <ClInclude Include="UiCardDeckController.h" />
     <ClInclude Include="UiCardDeckInvenChange.h" />
     <ClInclude Include="UiCharChange.h" />
@@ -300,6 +301,7 @@
     <ClCompile Include="Player_FSM.cpp" />
     <ClCompile Include="Silversword_Soldier_FSM.cpp" />
     <ClCompile Include="SpearAce_FSM.cpp" />
+    <ClCompile Include="Spike_FSM.cpp" />
     <ClCompile Include="UiCardDeckController.cpp" />
     <ClCompile Include="UiCardDeckInvenChange.cpp" />
     <ClCompile Include="UiCharChange.cpp" />
