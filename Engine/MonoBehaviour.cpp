@@ -18,3 +18,7 @@ HRESULT MonoBehaviour::Init()
 void MonoBehaviour::Tick()
 {
 }
+
+void MonoBehaviour::Late_Tick()
+{
+}

@@ -49,6 +49,8 @@
 #include "UiCardDeckController.h"
 #include "MainUiController.h"
 #include "UiCardDeckInvenChange.h"
+#include "UiTargetLockOn.h"
+#include "UiMonsterHp.h"
 
 #include <filesystem>
 #include "GachaScene.h"
@@ -544,6 +546,8 @@ void DemoScene::Load_Ui()
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Char_Change.dat");
 	//Load_UIFile(L"..\\Resources\\UIData\\UI_Gacha.dat");
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck.dat", false);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", false);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_MonsterHp.dat");
 
 
 	{
@@ -584,6 +588,15 @@ void DemoScene::Load_Ui()
         auto pScript = make_shared<UiHpBarController>(0);
 		pObj->Add_Component(pScript);
 	}
+	
+	{
+		auto pObj = Get_GameObject(L"Boss_Dellons");
+        auto pScript = make_shared<UiMonsterHp>();
+		pObj->Add_Component(pScript);
+	}
+
+
+
 
 	{
 		auto pObj = make_shared<GameObject>();
@@ -597,12 +610,25 @@ void DemoScene::Load_Ui()
 	}
 
 	{
-		auto pObj = Get_GameObject(L"UI_Main_Button2");
+		auto pObj = Get_UI(L"UI_Main_Button2");
 		pObj->Get_Button()->AddOnClickedEvent([]()
 			{
 				CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Render_On();
 			});
 	}
+
+	{
+		auto pScript = make_shared<UiTargetLockOn>();
+		Get_UI(L"UI_Target_LockOn0")->Add_Component(pScript);
+	}
+
+
+
+
+
+
+
+
 
 
 
@@ -610,39 +636,39 @@ void DemoScene::Load_Ui()
 
 	{
 		auto pScript = make_shared<UiSkillButtonEffect>();
-		Get_GameObject(L"UI_Skill0_Effect")->Add_Component(pScript);
+		Get_UI(L"UI_Skill0_Effect")->Add_Component(pScript);
 
 		pScript = make_shared<UiSkillButtonEffect>();
-		Get_GameObject(L"UI_Skill2_Effect")->Add_Component(pScript);
+		Get_UI(L"UI_Skill2_Effect")->Add_Component(pScript);
 
 		pScript = make_shared<UiSkillButtonEffect>();
-		Get_GameObject(L"UI_Skill3_Effect")->Add_Component(pScript);
+		Get_UI(L"UI_Skill3_Effect")->Add_Component(pScript);
 
 		pScript = make_shared<UiSkillButtonEffect>();
-		Get_GameObject(L"UI_Skill4_Effect")->Add_Component(pScript);
+		Get_UI(L"UI_Skill4_Effect")->Add_Component(pScript);
 
 		pScript = make_shared<UiSkillButtonEffect>();
-		Get_GameObject(L"UI_Skill5_Effect")->Add_Component(pScript);
+		Get_UI(L"UI_Skill5_Effect")->Add_Component(pScript);
 
 		pScript = make_shared<UiSkillButtonEffect>();
-		Get_GameObject(L"UI_Skill6_Effect")->Add_Component(pScript);
+		Get_UI(L"UI_Skill6_Effect")->Add_Component(pScript);
 	}
 
 	{
 		auto pScript = make_shared<UiCoolEndEffect>();
-		Get_GameObject(L"UI_Cool_End2")->Add_Component(pScript);
+		Get_UI(L"UI_Cool_End2")->Add_Component(pScript);
 
 		pScript = make_shared<UiCoolEndEffect>();
-		Get_GameObject(L"UI_Cool_End3")->Add_Component(pScript);
+		Get_UI(L"UI_Cool_End3")->Add_Component(pScript);
 
 		pScript = make_shared<UiCoolEndEffect>();
-		Get_GameObject(L"UI_Cool_End4")->Add_Component(pScript);
+		Get_UI(L"UI_Cool_End4")->Add_Component(pScript);
 
 		pScript = make_shared<UiCoolEndEffect>();
-		Get_GameObject(L"UI_Cool_End5")->Add_Component(pScript);
+		Get_UI(L"UI_Cool_End5")->Add_Component(pScript);
 
 		pScript = make_shared<UiCoolEndEffect>();
-		Get_GameObject(L"UI_Cool_End6")->Add_Component(pScript);
+		Get_UI(L"UI_Cool_End6")->Add_Component(pScript);
 	}
 
 	{
@@ -675,7 +701,7 @@ void DemoScene::Load_Ui()
 			auto pScript = make_shared<UiCardDeckInvenChange>(1);
 			wstring strTemp = L"UI_Card_Deck_Inven_Element";
 			strTemp += to_wstring(i);
-			Get_GameObject(strTemp)->Add_Component(pScript);
+			Get_UI(strTemp)->Add_Component(pScript);
 		}
 
 		for (_uint i = 0; i < 32; ++i)
@@ -683,7 +709,7 @@ void DemoScene::Load_Ui()
 			auto pScript = make_shared<UiCardDeckInvenChange>(2);
 			wstring strTemp = L"UI_Card_Deck_InvenBg";
 			strTemp += to_wstring(i);
-			Get_GameObject(strTemp)->Add_Component(pScript);
+			Get_UI(strTemp)->Add_Component(pScript);
 		}
 	}
 

@@ -29,6 +29,29 @@ VS_OUT VS_Default(VTXMesh input)
     return output;
 }
 
+VS_OUT VS_3D_To_2D(VTXMesh input)
+{
+    VS_OUT output;
+    
+    
+    float3 viewPos = mul(float4(g_vec4_1.xyz, 1.f), g_mat_0).xyz;
+    float4 projPos = mul(float4(viewPos, 1.f), g_mat_1);
+
+    projPos.xy /= projPos.w;
+
+    float2 screenPos;
+    screenPos.x = (projPos.x + 1.f) * 0.5f * 1920.f;
+    screenPos.y = ((projPos.y * -1.f) + 1.f) * 0.5f * 1080.f;
+
+    screenPos.x -= 1920 * 0.5f;
+    screenPos.y = (screenPos.y * -1.f) + 1080 * 0.5f;
+
+    output.viewPos = mul(float4(screenPos.x, screenPos.y, W._43, 1.f), V);
+    output.uv = input.uv;
+
+    return output;
+}
+
 UIInstancingOutput VS_Instancing(VTXMeshInstancing input)
 {
     UIInstancingOutput output;
@@ -747,7 +770,7 @@ float4 PS_Test2(GS_OUTPUT input) : SV_TARGET
 technique11 T0
 {
 
-    pass DEFAULT_UI
+    pass UI_DEFAULT
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
         SetRasterizerState(RS_CullNone);
@@ -757,7 +780,7 @@ technique11 T0
         SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
 
-    pass CURTAIN_UP_UI
+    pass UI_CURTAIN_UP
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
         SetRasterizerState(RS_CullNone);
@@ -767,7 +790,7 @@ technique11 T0
         SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
 
-    pass CLOCK_UI
+    pass UI_CLOCK
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
         SetRasterizerState(RS_CullNone);
@@ -777,7 +800,7 @@ technique11 T0
         SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
 
-    pass HPBAR_UI
+    pass UI_HPBAR
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
         SetRasterizerState(RS_CullNone);
@@ -787,7 +810,7 @@ technique11 T0
         SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
 
-    pass SLIDE_RIGHT_UI
+    pass UI_SLIDE_RIGHT
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
         SetRasterizerState(RS_CullNone);
@@ -797,7 +820,7 @@ technique11 T0
         SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
 
-    pass LOADING_UI
+    pass UI_LOADING
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
         SetRasterizerState(RS_CullNone);
@@ -807,12 +830,32 @@ technique11 T0
         SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
     
-    pass SKILL_COOL_END
+    pass UI_SKILL_COOL_END
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
         SetRasterizerState(RS_CullNone);
         SetDepthStencilState(DSS_Default, 0);
         SetPixelShader(CompileShader(ps_5_0, PS_UI6()));
+        SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
+    }
+    
+    pass UI_TARGET_LOCKON
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_3D_To_2D()));
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetPixelShader(CompileShader(ps_5_0, PS_UI()));
+        SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
+    }
+     
+    pass UI_TARGET_HP
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_3D_To_2D()));
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetPixelShader(CompileShader(ps_5_0, PS_UI3()));
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }

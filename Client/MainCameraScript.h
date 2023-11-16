@@ -50,6 +50,7 @@ private:
     _float3 m_vFixedLastPos = _float3(0.f);
     weak_ptr<GameObject> m_pPlayer;
     weak_ptr<GameObject> m_pTarget;
+    weak_ptr<GameObject> m_UiTarget;
 
     
     _float m_fMaxHeightRadian = XM_PI / 3.f;
