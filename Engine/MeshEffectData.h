@@ -14,6 +14,7 @@ public:
         _int        iMeshCnt;
         _float      fCreateInterval;
         _float2     vParticleDuration;
+        _int        iSamplerType;
 
         // Mesh 
         string      strVfxMesh;
@@ -35,10 +36,10 @@ public:
         Color       vDestColor_Diffuse;
         _float2     vTiling_Diffuse;
         _float2     vUVSpeed_Diffuse;
+        _int        bIsUseTextureColor;
 
         // Opacity
         string      strOpacityTexture;
-        _int        iSamplerType;
         _float2     vTiling_Opacity;
         _float2     vUVSpeed_Opacity;
 

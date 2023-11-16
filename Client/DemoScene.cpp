@@ -142,7 +142,7 @@ void DemoScene::Final_Tick()
 	
 	if (KEYTAP(KEY_TYPE::TAB))
 	{
-		SCENE.Add_SubScene(make_shared<Kyle_GachaScene>());
+		SCENE.Add_SubScene(make_shared<Kyle_GachaScene>(GachaSceneDesc{}));
 		SCENE.Exchange_Scene();
 
 

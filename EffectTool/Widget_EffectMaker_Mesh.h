@@ -127,6 +127,7 @@ private:
 	ImVec4					m_vDiffuseColor_BaseGradation = ImVec4(1.f, 1.f, 1.f, 1.f);
 	ImVec4					m_vDiffuseColor_Dest = ImVec4(1.f, 1.f, 1.f, 1.f);
 	_bool					m_bIsTextureSameWithOpacity = { false };
+	_bool					m_bUVOptionSameWithOpacity_Diffuse = { true };
 	_float					m_fTiling_Diffuse[2] = { 0.f, 0.f };
 	_float					m_fUVSpeed_Diffuse[2] = { 0.f, 0.f };
 

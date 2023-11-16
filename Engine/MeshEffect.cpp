@@ -307,7 +307,7 @@ void MeshEffect::Run_SpriteAnimation()
 
 void MeshEffect::Init_RenderParams()
 {
-    m_RenderParams.SetInt(0, m_tDesc.iSamplerType);
+    m_RenderParams.SetInt(0, m_tDesc.bIsUseTextureColor);
     m_RenderParams.SetInt(1, m_tDesc.bUseFadeOut);
     m_RenderParams.SetInt(2, m_tDesc.bIsOverlayOn);
     m_RenderParams.SetInt(3, m_tDesc.bInverseDissolve);

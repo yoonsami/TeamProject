@@ -131,6 +131,8 @@ void ModelRenderer::Render_Skybox()
 	if (m_pModel == nullptr)
 		return;
 
+	if (!m_bRenderOn)
+		return;
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 
 	shared_ptr<BoneDesc> boneDesc = make_shared<BoneDesc>();

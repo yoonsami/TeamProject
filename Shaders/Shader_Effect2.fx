@@ -110,28 +110,17 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     float2 Overlay_Texcoord = input.uv + vTexUVOffset_Overlay;
     float2 Additional_Texcoord = input.uv + vTexUVOffset_Additional;    
 
-    // For. Additional (base)
-    vOutColor = vColor_Additional;
-    if (bHasTexturemap10)
-        vOutColor = vColor_Additional * TextureMap10.Sample(LinearSampler, Additional_Texcoord).a;
-
     // For. Diffuse
     float4 vFianlDiffuse = vColor_Diffuse;
     if (bHasDiffuseMap)
-        vFianlDiffuse = DiffuseMap.Sample(LinearSampler, Diffuse_Texcoord);
+    {
+        vFianlDiffuse = DiffuseMap.Sample(LinearSampler, Opacity_Texcoord);
+        vFianlDiffuse.rgb = lerp(vColor_DiffuseGradation.rgb, vFianlDiffuse.rgb, DiffuseMap.Sample(LinearSampler, Opacity_Texcoord).r);
+    }
         
     // For. Opacity 
     vFianlDiffuse.a = OpacityMap.Sample(LinearSampler, Opacity_Texcoord).a;
-    vFianlDiffuse.rgb = lerp(vColor_DiffuseGradation.rgb, vFianlDiffuse.rgb, OpacityMap.Sample(LinearSampler, Opacity_Texcoord).r);
-    
-    // For. Gradation 
-    float4 vGradationDiffuse = vColor_Gra;
-    if(bHasTexturemap7)
-    {
-        vGradationDiffuse.a = TextureMap7.Sample(LinearSampler, Diffuse_Texcoord).a;
-        vFianlDiffuse.rgb = lerp(vFianlDiffuse.rgb, vGradationDiffuse.rgb, vGradationDiffuse.a);
-    }
-    
+   
     // For. Blend 
     if (bHasTexturemap9)
         vFianlDiffuse.a *= TextureMap9.Sample(LinearSampler, Blend_Texcoord).a;
@@ -155,11 +144,25 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     // For. Final + Alpha Gradation 
     if (vFianlDiffuse.a < fAlphaGraIntensity)
         vFianlDiffuse.rgb = lerp(vColor_AlphaGra.rgb, vFianlDiffuse.rgb, vFianlDiffuse.a);
+
+    // For. Additional (Base)
+    if (bHasTexturemap10)
+    {
+        float4 vAdditional1_Sampled = vColor_Additional;
+        vAdditional1_Sampled = vColor_Additional * TextureMap10.Sample(LinearSampler, Additional_Texcoord).a;
+        vOutColor = lerp(vAdditional1_Sampled, vFianlDiffuse, vFianlDiffuse.a);
+
+    }
+
+     // For. Gradation 
+    if (bHasTexturemap7)
+    {
+        float4 vGradationDiffuse = vColor_Gra;
+        vGradationDiffuse.a = TextureMap7.Sample(LinearSampler, Diffuse_Texcoord).a;
+        vFianlDiffuse.rgb = lerp(vFianlDiffuse.rgb, vGradationDiffuse.rgb, vGradationDiffuse.a);
+    }
     
-    // For. Base + Final Diffuse 
-    vOutColor = lerp(vOutColor, vFianlDiffuse, vFianlDiffuse.a);
-    
-    // For. Overlay
+     // For. Overlay
     if (bIsOverlayOn)
     {
         float fOverlayIntensity = 1.f;
@@ -174,7 +177,7 @@ float4 PS_Wrap(EffectOut input) : SV_Target
         
         vOutColor.rgb = lerp(vOutColor.rgb, vFinalOverlayColor.rgb, fOverlayIntensity);
     }
-
+    
     // Color Edit 
     float luminance = dot(vOutColor.rgb, float3(0.299, 0.587, 0.114));
     vOutColor.rgb = lerp(vOutColor.rgb, vOutColor.rgb * fContrast, saturate(luminance));
@@ -194,7 +197,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     float fDissolveWeight = 1.f;
     
     // For. Get Data from ganeral
-    int iSamplerType = g_int_0;
+    int bUseTextureColor = g_int_0;
     int bUseFadeOut = g_int_1;
     int bIsOverlayOn = g_int_2;
     int bIsInverseDissolve = g_int_3;
@@ -263,31 +266,22 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     float2 Overlay_Texcoord = input.uv + vTexUVOffset_Overlay;
     float2 Additional_Texcoord = input.uv + vTexUVOffset_Additional;
 
-    // For. Additional (base)
-    if (bHasTexturemap10)
-    {
-        vOutColor = vColor_Additional;
-        vOutColor.a = TextureMap10.Sample(LinearSamplerClamp, Additional_Texcoord).a;
-    }
-
     // For. Diffuse
     float4 vFianlDiffuse = vColor_Diffuse;
-    //if (bHasDiffuseMap)
-    //    vFianlDiffuse.rgb = lerp(vColor_DiffuseGradation.rgb, vFianlDiffuse.rgb, DiffuseMap.Sample(LinearSamplerClamp, Diffuse_Texcoord).r);
+    if (bHasDiffuseMap)
+    {
+        if (bUseTextureColor)
+            vFianlDiffuse = DiffuseMap.Sample(LinearSamplerClamp, Opacity_Texcoord);
+        else
+        {
+            vFianlDiffuse.a = DiffuseMap.Sample(LinearSamplerClamp, Opacity_Texcoord).r;
+            vFianlDiffuse.rgb = lerp(vColor_DiffuseGradation.rgb, vFianlDiffuse.rgb, DiffuseMap.Sample(LinearSamplerClamp, Opacity_Texcoord).r);
+        }
+    }
         
     // For. Opacity 
-    vFianlDiffuse.a = OpacityMap.Sample(LinearSamplerClamp, Opacity_Texcoord).r;
-    vFianlDiffuse.rgb = lerp(vColor_DiffuseGradation.rgb, vFianlDiffuse.rgb, OpacityMap.Sample(LinearSamplerClamp, Diffuse_Texcoord).r);
-    
-    // For. Gradation 
-    if (bHasTexturemap7)
-    {
-        float4 vGradationDiffuse = vColor_Gra;
-        vGradationDiffuse.a = TextureMap7.Sample(LinearSamplerClamp, Gra_Texcoord).a;
-        //vFianlDiffuse.rgb = lerp(vFianlDiffuse.rgb, vGradationDiffuse.rgb, vGradationDiffuse.a);
-        vFianlDiffuse += vGradationDiffuse;
-    }
-    
+    vFianlDiffuse.a = OpacityMap.Sample(LinearSamplerClamp, Opacity_Texcoord).a;
+   
     // For. Blend 
     if (bHasTexturemap9)
         vFianlDiffuse.a *= TextureMap9.Sample(LinearSamplerClamp, Blend_Texcoord).a;
@@ -311,11 +305,26 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     // For. Final + Alpha Gradation 
     if (vFianlDiffuse.a < fAlphaGraIntensity)
         vFianlDiffuse.rgb = lerp(vColor_AlphaGra.rgb, vFianlDiffuse.rgb, vFianlDiffuse.a);
+
+    vOutColor = vFianlDiffuse;
     
-    // For. Base + Final Diffuse 
-    vOutColor += vFianlDiffuse;
+    // For. Additional (Base)
+    if (bHasTexturemap10)
+    {
+        float4 vAdditional1_Sampled = vColor_Additional;
+        vAdditional1_Sampled = vColor_Additional * TextureMap10.Sample(LinearSamplerClamp, Additional_Texcoord).a;
+        vOutColor = lerp(vAdditional1_Sampled, vFianlDiffuse, vFianlDiffuse.a);
+    }
+
+     // For. Gradation (front)
+    if (bHasTexturemap7)
+    {
+        float4 vGradationDiffuse = vColor_Gra;
+        vGradationDiffuse.a = TextureMap7.Sample(LinearSamplerClamp, Gra_Texcoord).a;
+        vOutColor = lerp(vOutColor, vGradationDiffuse, vGradationDiffuse.a);
+    }
     
-    // For. Overlay
+     // For. Overlay
     if (bIsOverlayOn)
     {
         float fOverlayIntensity = 1.f;
@@ -330,7 +339,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
         
         vOutColor.rgb = lerp(vOutColor.rgb, vFinalOverlayColor.rgb, fOverlayIntensity);
     }
-
+    
     // Color Edit 
     float luminance = dot(vOutColor.rgb, float3(0.299, 0.587, 0.114));
     vOutColor.rgb = lerp(vOutColor.rgb, vOutColor.rgb * fContrast, saturate(luminance));

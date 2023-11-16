@@ -999,6 +999,7 @@ void ResourceMgr::CreateMeshEffectData()
 		tDesc.iMeshCnt = file->Read<_int>();
 		tDesc.fCreateInterval = file->Read<_float>();
 		tDesc.vParticleDuration = file->Read<_float2>();
+		tDesc.iSamplerType = file->Read<_int>();		
 
 		/* Mesh */
 		tDesc.strVfxMesh = file->Read<string>();
@@ -1020,17 +1021,17 @@ void ResourceMgr::CreateMeshEffectData()
 		tDesc.vDestColor_Diffuse = file->Read<_float4>();
 		tDesc.vTiling_Diffuse = file->Read<_float2>();
 		tDesc.vUVSpeed_Diffuse = file->Read<_float2>();
+		tDesc.bIsUseTextureColor = file->Read<_bool>();
+
+		/* Opacity */
+		tDesc.strOpacityTexture = file->Read<string>();
+		tDesc.vTiling_Opacity = file->Read<_float2>();
+		tDesc.vUVSpeed_Opacity = file->Read<_float2>();
 
 		/* Alpha Gradation */
 		tDesc.fAlphaGraIntensity = file->Read<_float>();
 		tDesc.vBaseColor_AlphaGra = file->Read<_float4>();
 		tDesc.vDestColor_AlphaGra = file->Read<_float4>();
-
-		/* Opacity */
-		tDesc.strOpacityTexture = file->Read<string>();
-		tDesc.iSamplerType = file->Read<_int>();
-		tDesc.vTiling_Opacity = file->Read<_float2>();
-		tDesc.vUVSpeed_Opacity = file->Read<_float2>();
 
 		/* Gradation by Texture */
 		tDesc.strGraTexture = file->Read<string>();
@@ -1111,6 +1112,7 @@ void ResourceMgr::CreateMeshEffectData()
 		Add(key, meshEffectData);
 	}
 }
+
 void ResourceMgr::CreateParticleData()
 {
 }
