@@ -199,6 +199,7 @@
     <ClInclude Include="Boss_DellonsWraith_FSM.h" />
     <ClInclude Include="Boss_Dellons_FSM.h" />
     <ClInclude Include="Boss_Mir_FSM.h" />
+    <ClInclude Include="Boss_Spike_FSM.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Client_Define.h" />
     <ClInclude Include="Client_Enum.h" />
@@ -269,6 +270,7 @@
     <ClCompile Include="Boss_DellonsWraith_FSM.cpp" />
     <ClCompile Include="Boss_Dellons_FSM.cpp" />
     <ClCompile Include="Boss_Mir_FSM.cpp" />
+    <ClCompile Include="Boss_Spike_FSM.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="CoolTimeCheckScript.cpp" />
     <ClCompile Include="CounterMotionTrailScript.cpp" />
