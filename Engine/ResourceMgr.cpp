@@ -1042,6 +1042,17 @@ void ResourceMgr::CreateMeshEffectData()
 		tDesc.fContrast_Op3 = file->Read<_float>();
 		tDesc.fAlphaOffset_Op3 = file->Read<_float>();
 
+		tDesc.strTexture_Op4 = file->Read<string>();
+		tDesc.bIsUseTextureColor_Op4 = file->Read<_int>();
+		tDesc.vBaseColor1_Op4 = file->Read<_float4>();
+		tDesc.vBaseColor2_Op4 = file->Read<_float4>();
+		tDesc.vDestColor1_Op4 = file->Read<_float4>();
+		tDesc.vDestColor2_Op4 = file->Read<_float4>();
+		tDesc.vTiling_Op4 = file->Read<_float2>();
+		tDesc.vUVSpeed_Op4 = file->Read<_float2>();
+		tDesc.fContrast_Op4 = file->Read<_float>();
+		tDesc.fAlphaOffset_Op4 = file->Read<_float>();
+
 		/* Overlay */
 		tDesc.bIsOverlayOn = file->Read<_bool>();
 		tDesc.strOverlayTexture = file->Read<string>();

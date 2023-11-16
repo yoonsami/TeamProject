@@ -1005,6 +1005,7 @@ void Widget_EffectMaker_Mesh::Save()
 		file->Write<_bool>(m_bOverlay_On);
 		file->Write<string>(m_OverlayTexture.second);
 		file->Write<_float4>(ImVec4toColor(m_vOverlayColor_Base));
+		file->Write<_float4>(ImVec4toColor(m_vOverlayColor_Dest));
 		file->Write<_float2>(_float2(m_fTiling_Overlay));
 		file->Write<_float2>(_float2(m_fUVSpeed_Overlay));
 
@@ -1062,7 +1063,7 @@ void Widget_EffectMaker_Mesh::Save()
 
 void Widget_EffectMaker_Mesh::Load()
 {	
-	_float3 vTemp_vec3 = { 0.f, 0.f, 0.f };
+	_float3 vTemp_vec3 = { 0.f , 0.f, 0.f };
 	_float2 vTemp_vec2 = { 0.f, 0.f };
 	
 	// For. load file and fill imgui 
@@ -1120,6 +1121,7 @@ void Widget_EffectMaker_Mesh::Load()
 	m_bOverlay_On = file->Read<_bool>();
 	m_OverlayTexture.second = file->Read<string>();
 	m_vOverlayColor_Base = ColorToImVec4(file->Read<_float4>());
+	m_vOverlayColor_Dest = ColorToImVec4(file->Read<_float4>());
 	vTemp_vec2 = file->Read<_float2>();
 	memcpy(m_fTiling_Overlay, &vTemp_vec2, sizeof(m_fTiling_Overlay));
 	vTemp_vec2 = file->Read<_float2>();
