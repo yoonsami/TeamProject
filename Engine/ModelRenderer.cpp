@@ -59,7 +59,7 @@ void ModelRenderer::Render()
 		mesh->vertexBuffer->Push_Data();
 		mesh->indexBuffer->Push_Data();
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		int techniqueIndex = GAMEINSTANCE.g_bPBR_On ? 4 : 0;
+		int techniqueIndex = CUR_SCENE->g_bPBR_On ? 4 : 0;
 		if (m_ePassType == PASS_MAPOBJECT)
 		{
 			m_pShader->DrawIndexed(techniqueIndex, PS_MAPOBJECT, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
@@ -114,7 +114,7 @@ void ModelRenderer::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 
 
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		int techniqueIndex = GAMEINSTANCE.g_bPBR_On ? 4 : 0;
+		int techniqueIndex = CUR_SCENE->g_bPBR_On ? 4 : 0;
 		if (m_ePassType == PASS_MAPOBJECT)
 			m_pShader->DrawIndexedInstanced(techniqueIndex, PS_MAPOBJECT_INSTANCE, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
 		else if (m_bCullNone)

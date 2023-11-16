@@ -135,6 +135,36 @@ void Kyle_GachaScene::Load_Player()
 		desc.strWeaponName = L"";
 		desc.strAnimTag = L"SQ_SpecialHero_Kyle";
 		desc.iAnimStopFrame = 134;
+
+		{
+			g_fBrightness = 0.f;
+			g_fContrast = 1.04f;
+			g_Saturation = 1.5;
+			g_iTMIndex = 1;
+			g_fMaxWhite = 0.9f;
+		}
+		{
+			g_SSAOData.g_bSSAO_On = true;
+		}
+		{
+			g_bFXAAOn = true;
+		}
+		{
+			g_bLensFlare = true;
+		}
+		{
+			g_MotionBlurData.g_bMotionBlurOn = true;
+			g_MotionBlurData.g_iBlurCount = 20;
+		}
+		{
+			g_BloomData.g_BloomOn = true;
+		}
+		{
+			g_DOFData.g_bDOF_On = true;
+			g_DOFData.g_FocusDepth = 30.f;
+			g_DOFData.g_DOFRange = 35.f;
+		}
+
 		break;
 	case HERO::YEOPO:
 		modelName = L"Yeopo";

@@ -78,7 +78,7 @@ void LoadingScene::Create_LoadingBG()
 	LoadingBackGround->GetOrAddTransform()->Scaled(_float3(g_iWinSizeX, g_iWinSizeY, 1.f));
 	shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
 	
-	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+	auto mesh = RESOURCES.Get<Mesh>(L"Point");
 	renderer->Set_Mesh(mesh);
 
 	auto material = make_shared<Material>();

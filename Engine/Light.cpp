@@ -50,7 +50,7 @@ void Light::Render()
 {
 	assert(m_iLightIndex >= 0);
 	auto pShader = m_pLightMaterial->Get_Shader();
-	pShader->GetScalar("g_SSAO_On")->SetBool(GAMEINSTANCE.g_SSAOData.g_bSSAO_On);
+	pShader->GetScalar("g_SSAO_On")->SetBool(CUR_SCENE->g_SSAOData.g_bSSAO_On);
 
 	_float4x4 matScale = _float4x4::CreateScale(2.f);
 	
@@ -63,9 +63,8 @@ void Light::Render()
 
 	pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 
-	// auto& LightParam = CUR_SCENE->Get_LightParams();
-	if (Scene::params)
-		pShader->Push_LightData(*Scene::params);
+	auto& LightParam = CUR_SCENE->Get_LightParams();
+	pShader->Push_LightData(LightParam);
 
 	m_pLightMaterial->Push_SubMapData();
 
@@ -73,13 +72,13 @@ void Light::Render()
 	_float2 RTSize = { GRAPHICS.Get_ViewPort().Get_Width(), GRAPHICS.Get_ViewPort().Get_Height() };
 
 	pShader->GetVector("RenderTargetResolution")->SetFloatVector((_float*)&RTSize);
-	pShader->GetScalar("g_ShadowBias")->SetFloat(GAMEINSTANCE.g_fShadowBias);
-	pShader->GetScalar("g_lightAttenuation")->SetFloat(GAMEINSTANCE.g_lightAttenuation);
+	pShader->GetScalar("g_ShadowBias")->SetFloat(CUR_SCENE->g_fShadowBias);
+	pShader->GetScalar("g_lightAttenuation")->SetFloat(CUR_SCENE->g_lightAttenuation);
 
 
 	m_pVolumeMesh->Get_VertexBuffer()->Push_Data();
 	m_pVolumeMesh->Get_IndexBuffer()->Push_Data();
-	int techniqueIndex = GAMEINSTANCE.g_bPBR_On ? 1 : 0;
+	int techniqueIndex = CUR_SCENE->g_bPBR_On ? 1 : 0;
 	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	pShader->DrawIndexed(techniqueIndex, m_LightInfo.lightType, m_pVolumeMesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 

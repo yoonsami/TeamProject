@@ -84,7 +84,7 @@ void Scene::Render()
 	Render_MotionBlur();
 	Render_Deferred();
 	Render_DefferedBlur();
-	if(GAMEINSTANCE.g_SSAOData.g_bSSAO_On)
+	if(g_SSAOData.g_bSSAO_On)
 	{
 		Render_SSAO();
 		Render_SSAOBlur(3);
@@ -642,8 +642,6 @@ void Scene::Gather_LightData()
 		m_LightParams.lights[m_LightParams.lightCount] = lightInfo;
 		m_LightParams.lightCount++;
 	}
-
-	params = &m_LightParams;
 }
 
 void Scene::Sort_GameObjects()
@@ -671,7 +669,7 @@ void Scene::Render_Shadow()
 
 void Scene::Render_MotionBlur()
 {
-	if (!GAMEINSTANCE.g_MotionBlurData.g_bMotionBlurOn) return;
+	if (!CUR_SCENE->g_MotionBlurData.g_bMotionBlurOn) return;
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::MOTIONBLUR)->OMSetRenderTargets();
 
 	if (Get_MainCamera())
@@ -872,9 +870,9 @@ void Scene::Render_SSAO()
 	material->Get_Shader()->GetMatrix("gViewToTexSpace")->SetMatrix((_float*)&matViewToTexSpace);
 	material->Get_Shader()->GetVector("gOffsetVectors")->SetFloatVectorArray((_float*)m_vOffsets, 0, 14);
 	material->Get_Shader()->GetVector("gFrustumCorners")->SetFloatVectorArray((_float*)m_vFrustumFarCorner, 0, 4);
-	material->Get_Shader()->GetScalar("gOcclusionRadius")->SetFloat(GAMEINSTANCE.g_SSAOData.g_fOcclusionRadius);
-	material->Get_Shader()->GetScalar("gOcclusionFadeStart")->SetFloat(GAMEINSTANCE.g_SSAOData.g_OcclusionFadeStart);
-	material->Get_Shader()->GetScalar("gOcclusionFadeEnd")->SetFloat(GAMEINSTANCE.g_SSAOData.g_OcclusionFadeEnd);
+	material->Get_Shader()->GetScalar("gOcclusionRadius")->SetFloat(g_SSAOData.g_fOcclusionRadius);
+	material->Get_Shader()->GetScalar("gOcclusionFadeStart")->SetFloat(g_SSAOData.g_OcclusionFadeStart);
+	material->Get_Shader()->GetScalar("gOcclusionFadeEnd")->SetFloat(g_SSAOData.g_OcclusionFadeEnd);
 
 
 	mesh->Get_VertexBuffer()->Push_Data();
@@ -939,8 +937,8 @@ void Scene::Render_Lights()
 		Camera::S_Proj = mainCamera->Get_ProjMat();
 	}
 
-	m_LightParams.specularPower = GAMEINSTANCE.g_LightPowerData.g_specularPower;
-	m_LightParams.rimPower = GAMEINSTANCE.g_LightPowerData.g_rimPower;
+	m_LightParams.specularPower = g_LightPowerData.g_specularPower;
+	m_LightParams.rimPower = g_LightPowerData.g_rimPower;
 
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::LIGHTING)->OMSetRenderTargets();
 
@@ -970,7 +968,7 @@ void Scene::Render_LightFinal()
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 
 
-	material->Get_Shader()->GetScalar("g_SSAO_On")->SetBool(GAMEINSTANCE.g_SSAOData.g_bSSAO_On);
+	material->Get_Shader()->GetScalar("g_SSAO_On")->SetBool(g_SSAOData.g_bSSAO_On);
 
 	material->Push_SubMapData();
 
@@ -978,7 +976,7 @@ void Scene::Render_LightFinal()
 	mesh->Get_IndexBuffer()->Push_Data();
 
 	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	int techniqueIndex = GAMEINSTANCE.g_bPBR_On ? 1 : 0;
+	int techniqueIndex = g_bPBR_On ? 1 : 0;
 	material->Get_Shader()->DrawIndexed(techniqueIndex,3, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
 	m_wstrFinalRenderTarget = L"FinalTarget";
@@ -986,7 +984,7 @@ void Scene::Render_LightFinal()
 
 void Scene::Render_OutLine()
 {
-	if (!GAMEINSTANCE.g_bDrawOutline)
+	if (!g_bDrawOutline)
 		return;
 
 	{
@@ -1025,13 +1023,13 @@ void Scene::Render_OutLine()
 
 void Scene::Render_MotionBlurFinal()
 {
-	if (!GAMEINSTANCE.g_MotionBlurData.g_bMotionBlurOn) return;
+	if (!g_MotionBlurData.g_bMotionBlurOn) return;
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::MOTIONBLURFINAL)->OMSetRenderTargets();
 
 	auto material = RESOURCES.Get<Material>(L"MotionBlurFinal");
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 	material->Set_SubMap(1, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
-	material->Get_Shader()->GetScalar("g_BlurCount")->SetInt(GAMEINSTANCE.g_MotionBlurData.g_iBlurCount);
+	material->Get_Shader()->GetScalar("g_BlurCount")->SetInt(g_MotionBlurData.g_iBlurCount);
 
 	material->Push_SubMapData();
 
@@ -1060,7 +1058,7 @@ void Scene::Render_Forward()
 
 void Scene::Render_BloomMap()
 {
-	if (!GAMEINSTANCE.g_BloomData.g_BloomOn)
+	if (!g_BloomData.g_BloomOn)
 		return;
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::BLOOMMAP)->OMSetRenderTargets();
 
@@ -1068,7 +1066,7 @@ void Scene::Render_BloomMap()
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
 	material->Push_SubMapData();
-	material->Get_Shader()->GetScalar("g_BloomMin")->SetFloat(GAMEINSTANCE.g_BloomData.g_BloomMin);
+	material->Get_Shader()->GetScalar("g_BloomMin")->SetFloat(g_BloomData.g_BloomMin);
 	mesh->Get_VertexBuffer()->Push_Data();
 	mesh->Get_IndexBuffer()->Push_Data();
 
@@ -1079,7 +1077,7 @@ void Scene::Render_BloomMap()
 
 void Scene::Render_BloomMapScaling()
 {
-	if (!GAMEINSTANCE.g_BloomData.g_BloomOn)
+	if (!g_BloomData.g_BloomOn)
 		return;
 
 	for (_uchar i = 0; i < 3; ++i)
@@ -1126,7 +1124,7 @@ void Scene::Render_BloomMapScaling()
 
 void Scene::Render_BloomFinal()
 {
-	if (!GAMEINSTANCE.g_BloomData.g_BloomOn)
+	if (!g_BloomData.g_BloomOn)
 		return;
 
 	{
@@ -1151,7 +1149,7 @@ void Scene::Render_BloomFinal()
 
 void Scene::Render_DOFMap()
 {
-	if (!GAMEINSTANCE.g_DOFData.g_bDOF_On)
+	if (!g_DOFData.g_bDOF_On)
 		return;
 
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::DOFMAP)->OMSetRenderTargets();
@@ -1160,8 +1158,8 @@ void Scene::Render_DOFMap()
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
 	material->Push_SubMapData();
-	material->Get_Shader()->GetScalar("g_FocusDepth")->SetFloat(GAMEINSTANCE.g_DOFData.g_FocusDepth);
-	material->Get_Shader()->GetScalar("g_DOFRange")->SetFloat(GAMEINSTANCE.g_DOFData.g_DOFRange);
+	material->Get_Shader()->GetScalar("g_FocusDepth")->SetFloat(g_DOFData.g_FocusDepth);
+	material->Get_Shader()->GetScalar("g_DOFRange")->SetFloat(g_DOFData.g_DOFRange);
 	mesh->Get_VertexBuffer()->Push_Data();
 	mesh->Get_IndexBuffer()->Push_Data();
 
@@ -1172,7 +1170,7 @@ void Scene::Render_DOFMap()
 
 void Scene::Render_DOFMapScaling()
 {
-	if (!GAMEINSTANCE.g_DOFData.g_bDOF_On)
+	if (!g_DOFData.g_bDOF_On)
 		return;
 
 	for (_uchar i = 0; i < 3; ++i)
@@ -1215,7 +1213,7 @@ void Scene::Render_DOFMapScaling()
 
 void Scene::Render_DOFFinal()
 {
-	if (!GAMEINSTANCE.g_DOFData.g_bDOF_On)
+	if (!g_DOFData.g_bDOF_On)
 		return;
 
 	{
@@ -1226,8 +1224,8 @@ void Scene::Render_DOFFinal()
 		//	material->Get_Shader()->GetScalar("UpScalePower")->SetFloat(m_fUpScalePower);
 		material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
 		material->Push_SubMapData();
-		material->Get_Shader()->GetScalar("g_FocusDepth")->SetFloat(GAMEINSTANCE.g_DOFData.g_FocusDepth);
-		material->Get_Shader()->GetScalar("g_DOFRange")->SetFloat(GAMEINSTANCE.g_DOFData.g_DOFRange);
+		material->Get_Shader()->GetScalar("g_FocusDepth")->SetFloat(g_DOFData.g_FocusDepth);
+		material->Get_Shader()->GetScalar("g_DOFRange")->SetFloat(g_DOFData.g_DOFRange);
 
 
 		mesh->Get_VertexBuffer()->Push_Data();
@@ -1275,7 +1273,7 @@ void Scene::Render_Distortion_Final()
 
 void Scene::Render_LensFlare()
 {
-	if (!GAMEINSTANCE.g_bLensFlare)
+	if (!g_bLensFlare)
 		return;
 
 	if (!CUR_SCENE->Get_MainCamera())
@@ -1304,8 +1302,6 @@ void Scene::Render_LensFlare()
 
 	material->Get_Shader()->GetVector("g_LightPos")->SetFloatVector((_float*)&proj);
 	material->Get_Shader()->GetVector("g_LightUV")->SetFloatVector((_float*)&lightUV);
-	material->Get_Shader()->GetVector("col1")->SetFloatVector((_float*)&GAMEINSTANCE.g_testVec1);
-	material->Get_Shader()->GetVector("col2")->SetFloatVector((_float*)&GAMEINSTANCE.g_testVec2);
 	material->Push_SubMapData();
 	mesh->Get_VertexBuffer()->Push_Data();
 	mesh->Get_IndexBuffer()->Push_Data();
@@ -1379,7 +1375,7 @@ void Scene::Render_LensFlare()
 
 void Scene::Render_Fog()
 {
-	if (!GAMEINSTANCE.g_FogData.g_FogOn)
+	if (!g_FogData.g_FogOn)
 		return;
 
 
@@ -1390,11 +1386,11 @@ void Scene::Render_Fog()
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
 
-	material->Get_Shader()->GetScalar("fogStart")->SetFloat(GAMEINSTANCE.g_FogData.g_fogStart);
-	material->Get_Shader()->GetScalar("fogEnd")->SetFloat(GAMEINSTANCE.g_FogData.g_fogEnd);
-	material->Get_Shader()->GetScalar("fogDensity")->SetFloat(GAMEINSTANCE.g_FogData.g_fogDensity);
-	material->Get_Shader()->GetScalar("fogMode")->SetInt(GAMEINSTANCE.g_FogData.g_fogMode);
-	material->Get_Shader()->GetVector("fogColor")->SetFloatVector((_float*)&GAMEINSTANCE.g_FogData.g_fogColor);
+	material->Get_Shader()->GetScalar("fogStart")->SetFloat(g_FogData.g_fogStart);
+	material->Get_Shader()->GetScalar("fogEnd")->SetFloat(g_FogData.g_fogEnd);
+	material->Get_Shader()->GetScalar("fogDensity")->SetFloat(g_FogData.g_fogDensity);
+	material->Get_Shader()->GetScalar("fogMode")->SetInt(g_FogData.g_fogMode);
+	material->Get_Shader()->GetVector("fogColor")->SetFloatVector((_float*)&g_FogData.g_fogColor);
 
 	material->Push_SubMapData();
 	mesh->Get_VertexBuffer()->Push_Data();
@@ -1409,7 +1405,7 @@ void Scene::Render_Fog()
 
 void Scene::Render_Aberration()
 {
-	if (!GAMEINSTANCE.g_bAberrationOn)
+	if (!g_bAberrationOn)
 		return;
 
 
@@ -1420,7 +1416,7 @@ void Scene::Render_Aberration()
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
 
-	material->Get_Shader()->GetScalar("g_AberrationPower")->SetFloat(GAMEINSTANCE.g_fAberrationPower);
+	material->Get_Shader()->GetScalar("g_AberrationPower")->SetFloat(g_fAberrationPower);
 
 	material->Push_SubMapData();
 	mesh->Get_VertexBuffer()->Push_Data();
@@ -1467,10 +1463,10 @@ void Scene::Render_ToneMapping()
 
 
 
-	material->Get_Shader()->GetScalar("g_brightness")->SetFloat(GAMEINSTANCE.g_fBrightness);
-	material->Get_Shader()->GetScalar("g_contrast")->SetFloat(GAMEINSTANCE.g_fContrast);
-	material->Get_Shader()->GetScalar("g_saturation")->SetFloat(GAMEINSTANCE.g_Saturation);
-	material->Get_Shader()->GetScalar("g_max_white")->SetFloat(GAMEINSTANCE.g_fMaxWhite);
+	material->Get_Shader()->GetScalar("g_brightness")->SetFloat(g_fBrightness);
+	material->Get_Shader()->GetScalar("g_contrast")->SetFloat(g_fContrast);
+	material->Get_Shader()->GetScalar("g_saturation")->SetFloat(g_Saturation);
+	material->Get_Shader()->GetScalar("g_max_white")->SetFloat(g_fMaxWhite);
 
 
 
@@ -1480,9 +1476,9 @@ void Scene::Render_ToneMapping()
 
 	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	if (GAMEINSTANCE.g_iTMIndex > 3) GAMEINSTANCE.g_iTMIndex = 3;
+	if (g_iTMIndex > 3) g_iTMIndex = 3;
 
-	material->Get_Shader()->DrawIndexed(0, GAMEINSTANCE.g_iTMIndex, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	material->Get_Shader()->DrawIndexed(0, g_iTMIndex, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
 	m_wstrFinalRenderTarget = L"ToneMappingTarget";
 	Render_FXAA();
@@ -1490,7 +1486,7 @@ void Scene::Render_ToneMapping()
 
 void Scene::Render_FXAA()
 {
-	if (!GAMEINSTANCE.g_bFXAAOn)
+	if (!g_bFXAAOn)
 		return;
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::FXAA)->OMSetRenderTargets();
 
@@ -1498,7 +1494,7 @@ void Scene::Render_FXAA()
 	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 
-	material->Get_Shader()->GetScalar("Use")->SetBool(GAMEINSTANCE.g_bFXAAOn);
+	material->Get_Shader()->GetScalar("Use")->SetBool(g_bFXAAOn);
 	material->Push_SubMapData();
 	mesh->Get_VertexBuffer()->Push_Data();
 	mesh->Get_IndexBuffer()->Push_Data();
@@ -1587,5 +1583,3 @@ void Scene::SSAO_MakeFrustumFarCorners()
 	m_vFrustumFarCorner[2] = _float4(+halfWidth, -halfHeight, farZ, 0.0f);
 	m_vFrustumFarCorner[3] = _float4(-halfWidth, -halfHeight, farZ, 0.0f);
 }
-
-LightParams* Scene::params = nullptr;

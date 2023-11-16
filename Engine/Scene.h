@@ -140,7 +140,76 @@ protected:
 
 	_bool m_bRenderDebug = false;
 
-	public:
-		static LightParams* params;
+public:
+	_float g_fBrightness = 0.f;
+	_float g_fContrast = 1.f;
+	_float g_Saturation = 1.f;
+	_float g_fShadowBias = _float(6.67628628e-05);
+	_float g_fMaxWhite = 1.f;
+	_int g_iTMIndex = 1;
+
+	struct SSAOData
+	{
+		_bool g_bSSAO_On = true;
+		_float g_fOcclusionRadius = 0.07f;
+		_float g_OcclusionFadeStart = 0.3f;
+		_float g_OcclusionFadeEnd = 1.0f;
+
+	};
+	SSAOData g_SSAOData{};
+
+	struct FogData
+	{
+		_bool g_FogOn = false;
+		_float g_fogStart = 15.f;
+		_float g_fogEnd = 150.f;
+		_int g_fogMode = 0;
+		_float g_fogDensity = 1.f;
+		Color g_fogColor = Color(1.f);
+	};
+	FogData g_FogData{};
+
+	_bool g_bFXAAOn = false;
+	_bool g_bAberrationOn = false;
+	_float g_fAberrationPower = 0.f;
+	_bool g_bLensFlare = false;
+
+	_bool g_bDrawOutline = false;
+
+	struct MotionBlurData
+	{
+		_bool g_bMotionBlurOn = false;
+		int g_iBlurCount = 0;
+	};
+	MotionBlurData g_MotionBlurData{};
+
+	struct BloomData
+	{
+		_bool g_BloomOn = false;
+		_float g_BloomMin = 0.99f;
+	};
+	BloomData g_BloomData{};
+
+
+	struct LIGHTPowerData
+	{
+		_float g_specularPower = 10.f;
+		_float g_rimPower = 10.f;
+	};
+	LIGHTPowerData g_LightPowerData{};
+
+
+	_bool g_bPBR_On = true;
+	_float g_lightAttenuation = 100.f;
+	_float g_ambientRatio = 0.5f;
+
+	struct DOFData
+	{
+		_bool g_bDOF_On = false;
+		_float g_FocusDepth = 7.f;
+		_float g_DOFRange = 100.f;
+	};
+	DOFData g_DOFData{};
+
 };
 

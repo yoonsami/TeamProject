@@ -43,11 +43,14 @@ void DebugTool::Tick()
 	if (m_bIsRender)
 	{
 		ImGui::Begin("Debug");
-		if (BeginTabBar("##a"))
+		if(CUR_SCENE)
 		{
-			RenderOptionTab();
-			ModelOptionTab();
-			EndTabBar();
+			if (BeginTabBar("##a"))
+			{
+				RenderOptionTab();
+				ModelOptionTab();
+				EndTabBar();
+			}
 		}
 
 		End();
@@ -72,9 +75,9 @@ void DebugTool::RenderOptionTab()
 		if (CollapsingHeader("RenderOption"))
 		{
 
-			_float& g_fBrightness = GAMEINSTANCE.g_fBrightness;
-			_float& g_fContrast = GAMEINSTANCE.g_fContrast;
-			_float& g_Saturation = GAMEINSTANCE.g_Saturation;
+			_float& g_fBrightness = CUR_SCENE->g_fBrightness;
+			_float& g_fContrast = CUR_SCENE->g_fContrast;
+			_float& g_Saturation = CUR_SCENE->g_Saturation;
 
 
 
@@ -86,14 +89,14 @@ void DebugTool::RenderOptionTab()
 		}
 		if (CollapsingHeader("Bloom"))
 		{
-			Checkbox("Bloom On", &GAMEINSTANCE.g_BloomData.g_BloomOn);
-			_float& g_fBloomMin = GAMEINSTANCE.g_BloomData.g_BloomMin;
+			Checkbox("Bloom On", &CUR_SCENE->g_BloomData.g_BloomOn);
+			_float& g_fBloomMin = CUR_SCENE->g_BloomData.g_BloomMin;
 			DragFloat("Bloom Min Value", &g_fBloomMin, 0.001f, 0.01f, 1.f);
 		}
 		if (CollapsingHeader("ToneMapping"))
 		{
-			_float& g_fMaxWhite = GAMEINSTANCE.g_fMaxWhite;
-			_int& g_iTMIndex = GAMEINSTANCE.g_iTMIndex;
+			_float& g_fMaxWhite = CUR_SCENE->g_fMaxWhite;
+			_int& g_iTMIndex = CUR_SCENE->g_iTMIndex;
 
 			static _int tmIndex = 0;
 			InputInt("ToneMapping Mod", &tmIndex);
@@ -107,13 +110,13 @@ void DebugTool::RenderOptionTab()
 		}
 		if (CollapsingHeader("SSAO"))
 		{
-			_bool& g_bSSAO_On = GAMEINSTANCE.g_SSAOData.g_bSSAO_On;
+			_bool& g_bSSAO_On = CUR_SCENE->g_SSAOData.g_bSSAO_On;
 			Checkbox("SSAO On", &g_bSSAO_On);
 			if (g_bSSAO_On)
 			{
-				_float& g_fOcclusionRadius = GAMEINSTANCE.g_SSAOData.g_fOcclusionRadius;
-				_float& g_OcclusionFadeStart = GAMEINSTANCE.g_SSAOData.g_OcclusionFadeStart;
-				_float& g_OcclusionFadeEnd = GAMEINSTANCE.g_SSAOData.g_OcclusionFadeEnd;
+				_float& g_fOcclusionRadius = CUR_SCENE->g_SSAOData.g_fOcclusionRadius;
+				_float& g_OcclusionFadeStart = CUR_SCENE->g_SSAOData.g_OcclusionFadeStart;
+				_float& g_OcclusionFadeEnd = CUR_SCENE->g_SSAOData.g_OcclusionFadeEnd;
 
 				DragFloat("SSAO Radius", &g_fOcclusionRadius, 0.01f, 0.0001f, 1.f);
 				DragFloat("SSAO FadeStart", &g_OcclusionFadeStart, 0.01f, 0.0001f, g_OcclusionFadeEnd);
@@ -122,19 +125,19 @@ void DebugTool::RenderOptionTab()
 		}
 		if (CollapsingHeader("Motion Blur"))
 		{
-			GameInstance::MotionBlurData& data = GAMEINSTANCE.g_MotionBlurData;
+			Scene::MotionBlurData& data = CUR_SCENE->g_MotionBlurData;
 			Checkbox("Motion Blur On", &data.g_bMotionBlurOn);
 			InputInt("Motion Blur Count", &data.g_iBlurCount);
 
 		}
 		if (CollapsingHeader("Fog Option"))
 		{
-			_bool& g_FogOn = GAMEINSTANCE.g_FogData.g_FogOn;
-			_float& gFogStart = GAMEINSTANCE.g_FogData.g_fogStart;
-			_float& g_FogEnd = GAMEINSTANCE.g_FogData.g_fogEnd;
-			_float& g_fogDensity = GAMEINSTANCE.g_FogData.g_fogDensity;
-			_int& g_fogMode = GAMEINSTANCE.g_FogData.g_fogMode;
-			Color& gColorFog = GAMEINSTANCE.g_FogData.g_fogColor;
+			_bool& g_FogOn = CUR_SCENE->g_FogData.g_FogOn;
+			_float& gFogStart = CUR_SCENE->g_FogData.g_fogStart;
+			_float& g_FogEnd = CUR_SCENE->g_FogData.g_fogEnd;
+			_float& g_fogDensity = CUR_SCENE->g_FogData.g_fogDensity;
+			_int& g_fogMode = CUR_SCENE->g_FogData.g_fogMode;
+			Color& gColorFog = CUR_SCENE->g_FogData.g_fogColor;
 
 			Checkbox("Fog On", &g_FogOn);
 			DragFloat("Fog Start Range", &gFogStart, 1.f, 0.0001f, g_FogEnd);
@@ -157,24 +160,22 @@ void DebugTool::RenderOptionTab()
 		{
 			if (CUR_SCENE)
 			{
-				_bool& g_bLensFlare = GAMEINSTANCE.g_bLensFlare;
+				_bool& g_bLensFlare = CUR_SCENE->g_bLensFlare;
 				Checkbox("LensFlare On", &g_bLensFlare);
-				DragFloat2("Test1", (_float*)&GAMEINSTANCE.g_testVec1, 0.01f);
-				DragFloat3("Test2", (_float*)&GAMEINSTANCE.g_testVec2, 0.01f);
 			}
 		}
 		if (CollapsingHeader("DOF"))
 		{
-			Checkbox("DOF On", &GAMEINSTANCE.g_DOFData.g_bDOF_On);
-			_float& g_FocusDepth = GAMEINSTANCE.g_DOFData.g_FocusDepth;
-			_float& g_DOFRange = GAMEINSTANCE.g_DOFData.g_DOFRange;
+			Checkbox("DOF On", &CUR_SCENE->g_DOFData.g_bDOF_On);
+			_float& g_FocusDepth = CUR_SCENE->g_DOFData.g_FocusDepth;
+			_float& g_DOFRange = CUR_SCENE->g_DOFData.g_DOFRange;
 			DragFloat("Focus Depth", &g_FocusDepth, 1.f, 0.1f, 1000.f);
 			DragFloat("g_DOFRange", &g_DOFRange, 0.1f, 0.0001f, 1000.f);
 		}
 		if (CollapsingHeader("Light Option"))
 		{
-			_float& g_fSpecularPower = GAMEINSTANCE.g_LightPowerData.g_specularPower;
-			_float& g_fRimPower = GAMEINSTANCE.g_LightPowerData.g_rimPower;
+			_float& g_fSpecularPower = CUR_SCENE->g_LightPowerData.g_specularPower;
+			_float& g_fRimPower = CUR_SCENE->g_LightPowerData.g_rimPower;
 			DragFloat("Specular", &g_fSpecularPower, 0.1f, 0.01f);
 			DragFloat("RimPower", &g_fRimPower, 0.1f, 0.01f);
 			if (CUR_SCENE->Get_Light())
@@ -194,26 +195,26 @@ void DebugTool::RenderOptionTab()
 		if (CollapsingHeader("Other Option"))
 		{
 			SeparatorText("Outline");
-			_bool& g_bOutline = GAMEINSTANCE.g_bDrawOutline;
+			_bool& g_bOutline = CUR_SCENE->g_bDrawOutline;
 			Checkbox("Outline On", &g_bOutline);
 
 			SeparatorText("FXAA");
-			_bool& g_bFXAAOn = GAMEINSTANCE.g_bFXAAOn;
+			_bool& g_bFXAAOn = CUR_SCENE->g_bFXAAOn;
 			Checkbox("FXAA On", &g_bFXAAOn);
 
 			SeparatorText("Aberration");
-			_bool& g_bAberrationOn = GAMEINSTANCE.g_bAberrationOn;
+			_bool& g_bAberrationOn = CUR_SCENE->g_bAberrationOn;
 			Checkbox("Aberration On", &g_bAberrationOn);
 			if (g_bAberrationOn)
 			{
-				_float& g_fAberrationPower = GAMEINSTANCE.g_fAberrationPower;
+				_float& g_fAberrationPower = CUR_SCENE->g_fAberrationPower;
 				DragFloat("Aberration Power", &g_fAberrationPower, 1.f, -300.f, 300.f);
 			}
 			SeparatorText("PBR");
-			_bool& g_bPBR_On = GAMEINSTANCE.g_bPBR_On;
+			_bool& g_bPBR_On = CUR_SCENE->g_bPBR_On;
 			Checkbox("PBR On", &g_bPBR_On);
-			_float& g_lightAttenuation = GAMEINSTANCE.g_lightAttenuation;
-			_float& g_ambientRatio = GAMEINSTANCE.g_ambientRatio;
+			_float& g_lightAttenuation = CUR_SCENE->g_lightAttenuation;
+			_float& g_ambientRatio = CUR_SCENE->g_ambientRatio;
 			DragFloat("g_lightAttenuation", &g_lightAttenuation);
 			DragFloat("g_ambientRatio", &g_ambientRatio, 0.1f, 0.1f, 1.5f);
 		}

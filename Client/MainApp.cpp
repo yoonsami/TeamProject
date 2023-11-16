@@ -34,8 +34,6 @@ HRESULT MainApp::Init()
 			return E_FAIL;
 		}
 	}
-	GAMEINSTANCE.g_bLensFlare = false;
-	GAMEINSTANCE.g_SSAOData.g_bSSAO_On = false;
 
 	Load_Ui();
 	Open_Scene();
