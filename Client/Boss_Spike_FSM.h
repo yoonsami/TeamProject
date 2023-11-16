@@ -2,12 +2,17 @@
 #include "FSM.h"
 #include "ForwardMovingSkillScript.h"
 
-class Spike_FSM :
+class Boss_Spike_FSM :
 	public FSM
 {
 public:
 	enum class STATE
 	{
+		n_idle,
+		talk_01,
+		Intro, //skill 901100 motion
+
+
 		b_idle,
 		b_run_start,
 		b_run,
@@ -27,6 +32,8 @@ public:
 		knock_up,
 		knockdown_start, //knockdown_start -> knockdown_end -> knock_up
 		knockdown_end,
+		stun,
+
 		skill_1100, //normal attack1
 		skill_1200, //normal attack2
 		skill_1300, //normal attack3
@@ -34,20 +41,23 @@ public:
 		skill_91100, //Evade
 		skill_93100, //Backward_Evade
 		skill_100100, // Skill 1-1
-		skill_100300, // Skill 1-2
+		skill_100200, // Skill 1-2
 		skill_200100, // Skill 2-1
-		skill_200100_l, // Skill 2-1 CHARGE
-		skill_200200, // Skill 2-2 
-		skill_200300, // Skill 2-3
-		skill_200400, // Skill 2-4
+		skill_200200, // Skill 2-2
 		skill_300100, // Skill 3
 		skill_400100, // Skill 4
 		skill_501100, // Skill 5
+		skill_901000,
+		skill_901100,
+		skill_902100,
+		skill_903100,
+		skill_904100,
+
 		NONE
 	};
 public:
-	Spike_FSM();
-	~Spike_FSM();
+	Boss_Spike_FSM();
+	~Boss_Spike_FSM();
 
 
 public:
@@ -65,6 +75,15 @@ private:
 	virtual void AttackCollider_On(const wstring& skillname) override;
 	virtual void AttackCollider_Off() override;
 	virtual void Set_State(_uint iIndex) override;
+
+
+	void n_idle();
+	void n_idle_Init();
+	void talk_01();
+	void talk_01_Init();
+	void Intro();
+	void Intro_Init();
+
 
 	void b_idle();
 	void b_idle_Init();
@@ -105,6 +124,8 @@ private:
 	void knockdown_start_Init();
 	void knockdown_end();
 	void knockdown_end_Init();
+	void stun();
+	void stun_Init();
 
 
 	void skill_1100();
@@ -122,37 +143,71 @@ private:
 	void skill_93100_Init();
 	void skill_100100();
 	void skill_100100_Init();
-	void skill_100300();
-	void skill_100300_Init();
+	void skill_100200();
+	void skill_100200_Init();
 	void skill_200100();
 	void skill_200100_Init();
-	void skill_200100_l();
-	void skill_200100_l_Init();
 	void skill_200200();
 	void skill_200200_Init();
-	void skill_200300();
-	void skill_200300_Init();
-	void skill_200400();
-	void skill_200400_Init();
 	void skill_300100();
 	void skill_300100_Init();
+
 	void skill_400100();
 	void skill_400100_Init();
 	void skill_501100();
 	void skill_501100_Init();
 
-	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
+	void skill_901000();
+	void skill_901000_Init();
+	void skill_901100();
+	void skill_901100_Init();
+	void skill_902100();
+	void skill_902100_Init();
+	void skill_903100();
+	void skill_903100_Init();
+	void skill_904100();
+	void skill_904100_Init();
 
-	void Use_Skill();
-	void Use_Dash();
+
+	void Battle_Start();
+	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
+	void Summon_Wraith();
+	void Set_WraithState(_uint iAnimindex);
+	void Calculate_SkillCamRight();
+	void Set_AttackSkill_Phase1();
+
+	_float3 Calculate_TargetTurnVector();
 
 private:
 	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;
+	STATE m_ePatternState = STATE::NONE;
 
-	COOLTIMEINFO m_tWheelWindCoolTime = { 0.3f, 0.f };
-	_float m_fWheelWindRange = 2.f;
-	_float m_fWheelWindSpeed = 6.f;
+
+	weak_ptr<GameObject> m_pDellonsWraith;
+
+	_float3 m_vTurnVector = _float3(0.f);
+	_float3 m_vFirstPos = _float3(0.f);
+	_float m_fTurnSpeed = XM_PI * 5.f;
+
+	COOLTIMEINFO m_tBattleStartTime = { 1.f, 0.f };
+	COOLTIMEINFO m_tSprintCoolTime = { 2.5f, 0.f };
+
+	COOLTIMEINFO m_tAttackCoolTime = { 1.f, 0.f };
+	COOLTIMEINFO m_tWraithSummonCoolTime = { 2.f, 0.f };
+
+	_bool m_bSprint = false;
+	_bool m_bDetected = false;
+	_bool m_bBattleStart = false;
+	_bool m_bCounter = false;
+	_bool m_bSetPattern = false;
+
+	_uint m_iGroggy_Gauge = 0;
+	_uint m_iPreAttack = 100;
+
+	_float3 m_vHeadCamDir = _float3(0.f);
+	_float4 m_vHeadBonePos = _float4(0.f);
+	_float4 m_vHeadCamPos = _float4(0.f);
 
 };
 

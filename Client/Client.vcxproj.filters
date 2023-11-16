@@ -403,6 +403,8 @@
     <ClInclude Include="Spike_FSM.h">
       <Filter>02.Component\01.FSM\01.Hero_FSM\05.Spike_FSM</Filter>
     </ClInclude>
+    <ClInclude Include="UiMonsterHp.h" />
+    <ClInclude Include="UiTargetLockOn.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -586,6 +588,8 @@
     <ClCompile Include="Spike_FSM.cpp">
       <Filter>02.Component\01.FSM\01.Hero_FSM\05.Spike_FSM</Filter>
     </ClCompile>
+    <ClCompile Include="UiMonsterHp.cpp" />
+    <ClCompile Include="UiTargetLockOn.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">

@@ -162,7 +162,7 @@ HRESULT DemoScene::Load_Scene()
 	Load_Camera();
 	Load_MapFile(L"KrisMap");
 	Load_Monster(1);
-	Load_Boss_Dellons();X
+	//Load_Boss_Dellons();
 
 	Load_Ui();
 
@@ -541,7 +541,7 @@ void DemoScene::Load_Ui()
 	//Load_UIFile(L"..\\Resources\\UIData\\UI_Gacha.dat");
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck.dat", false);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", false);
-	Load_UIFile(L"..\\Resources\\UIData\\UI_MonsterHp.dat");
+	//Load_UIFile(L"..\\Resources\\UIData\\UI_MonsterHp.dat");
 
 
 	{
@@ -583,11 +583,11 @@ void DemoScene::Load_Ui()
 		pObj->Add_Component(pScript);
 	}
 	
-	{
-		auto pObj = Get_GameObject(L"Boss_Dellons");
-		auto pScript = make_shared<UiMonsterHp>();
-		pObj->Add_Component(pScript);
-	}
+	//{
+	//	auto pObj = Get_GameObject(L"Boss_Dellons");
+	//	auto pScript = make_shared<UiMonsterHp>();
+	//	pObj->Add_Component(pScript);
+	//}
 
 
 
