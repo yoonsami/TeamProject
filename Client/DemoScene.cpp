@@ -586,13 +586,26 @@ void DemoScene::Load_Ui()
 	}
 
 	{
-		auto pObj = Get_GameObject(L"Boss_Dellons");
-		if (nullptr == pObj)
-			return;
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_Name(L"UI_Monster_Hp");
+
 		auto pScript = make_shared<UiMonsterHp>();
 		pObj->Add_Component(pScript);
+
+		pObj->Set_LayerIndex(Layer_UI);
+		Add_GameObject(pObj, true);
 	}
 
+	{
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_Name(L"UI_Target_LockOn");
+
+		auto pScript = make_shared<UiTargetLockOn>();
+		pObj->Add_Component(pScript);
+
+		pObj->Set_LayerIndex(Layer_UI);
+		Add_GameObject(pObj, true);
+	}
 
 
 
@@ -629,13 +642,7 @@ void DemoScene::Load_Ui()
 
 
 
-	{
-		auto pScript = make_shared<UiTargetLockOn>();
-		auto pObj = Get_UI(L"UI_Target_LockOn0");
-		if (nullptr == pObj)
-			return;
-		pObj->Add_Component(pScript);
-	}
+	
 
 	{
 		auto pScript = make_shared<UiSkillButtonEffect>();

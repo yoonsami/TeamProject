@@ -187,6 +187,12 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCard\02.UiGachaEffectController">
       <UniqueIdentifier>{82ec2157-d9a5-4909-b39f-d09e7c92c4a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\10.UiTargetLockOn">
+      <UniqueIdentifier>{21034836-b46b-4829-bda9-7992a86d5582}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp">
+      <UniqueIdentifier>{8c8fe706-4858-4717-a611-be519d965002}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -403,6 +409,12 @@
     <ClInclude Include="Spike_FSM.h">
       <Filter>02.Component\01.FSM\01.Hero_FSM\05.Spike_FSM</Filter>
     </ClInclude>
+    <ClInclude Include="UiTargetLockOn.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\10.UiTargetLockOn</Filter>
+    </ClInclude>
+    <ClInclude Include="UiMonsterHp.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -585,6 +597,12 @@
     </ClCompile>
     <ClCompile Include="Spike_FSM.cpp">
       <Filter>02.Component\01.FSM\01.Hero_FSM\05.Spike_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="UiTargetLockOn.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\10.UiTargetLockOn</Filter>
+    </ClCompile>
+    <ClCompile Include="UiMonsterHp.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

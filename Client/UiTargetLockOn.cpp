@@ -14,6 +14,7 @@ HRESULT UiTargetLockOn::Init()
         return E_FAIL;
 
     m_pCamera = CUR_SCENE->Get_Camera(L"Default");
+    m_pLockOn0 = CUR_SCENE->Get_UI(L"UI_Target_LockOn0");
     m_pLockOn1 = CUR_SCENE->Get_UI(L"UI_Target_LockOn1");
 
     m_fOriginScale = m_vecScale.x = m_pLockOn1.lock()->GetOrAddTransform()->Get_Scale().x;
@@ -27,17 +28,24 @@ HRESULT UiTargetLockOn::Init()
 
 void UiTargetLockOn::Tick()
 {
-	if (m_pOwner.expired())
+	if (true == m_pOwner.expired() ||
+        true == m_pCamera.expired() ||
+        true == m_pLockOn0.expired() ||
+        true == m_pLockOn1.expired() ||
+        true == m_pTarget.expired())
 		return;
 
     Check_Target();
-    Set_Owner_Render();
     Change_Scale();
 }
 
 void UiTargetLockOn::Late_Tick()
 {
-    if (m_pOwner.expired())
+    if (true == m_pOwner.expired() ||
+        true == m_pCamera.expired() ||
+        true == m_pLockOn0.expired() ||
+        true == m_pLockOn1.expired() ||
+        true == m_pTarget.expired())
         return;
 
     Update_Target_Pos();
@@ -45,10 +53,27 @@ void UiTargetLockOn::Late_Tick()
 
 void UiTargetLockOn::Set_Target(shared_ptr<GameObject> pObj)
 {
+    if (true == m_pOwner.expired() ||
+        true == m_pCamera.expired() ||
+        true == m_pLockOn0.expired() ||
+        true == m_pLockOn1.expired())
+        return;
+
     if (nullptr != pObj)
+    {
         m_pTarget = pObj;
+        m_eState =  STATE::UP;
+        m_vecScale.x = m_vecScale.y = m_fOriginScale;
+        m_pLockOn1.lock()->GetOrAddTransform()->Scaled(m_vecScale);
+        m_pLockOn0.lock()->Set_Render(true);
+        m_pLockOn1.lock()->Set_Render(true);
+    }
     else
+    {
         m_pTarget.reset();
+        m_pLockOn0.lock()->Set_Render(false);
+        m_pLockOn1.lock()->Set_Render(false);
+    }
 }
 
 void UiTargetLockOn::Change_Scale()
@@ -77,44 +102,28 @@ void UiTargetLockOn::Change_Scale()
 
 void UiTargetLockOn::Update_Target_Pos()
 {
-    if (true == m_pTarget.expired() || true == m_pLockOn1.expired() || true == m_pCamera.expired())
-        return;
-
     _float4 vecPos = m_pTarget.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
     vecPos.y = 1.f;
-    m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[1] = vecPos;
+    m_pLockOn0.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[1] = vecPos;
     m_pLockOn1.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[1] = vecPos;
     
     _float4x4 matWorld = m_pCamera.lock()->GetOrAddTransform()->Get_WorldMatrix();
     _float4x4 matView = m_pCamera.lock()->Get_Camera()->Get_ViewMat();
     _float4x4 matProj = m_pCamera.lock()->Get_Camera()->Get_ProjMat();
 
-    m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().matParams[0] = matView;
-    m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().matParams[1] = matProj;
+    m_pLockOn0.lock()->Get_MeshRenderer()->Get_RenderParamDesc().matParams[0] = matView;
+    m_pLockOn0.lock()->Get_MeshRenderer()->Get_RenderParamDesc().matParams[1] = matProj;
 
     m_pLockOn1.lock()->Get_MeshRenderer()->Get_RenderParamDesc().matParams[0] = matView;
     m_pLockOn1.lock()->Get_MeshRenderer()->Get_RenderParamDesc().matParams[1] = matProj;
 }
 
-void UiTargetLockOn::Set_Owner_Render()
-{
-    _bool bRender = true;
-    if (true == m_pTarget.expired())
-        bRender = false;
-
-    if (m_bIsRender != bRender)
-    {
-        m_bIsRender = bRender;
-        m_pOwner.lock()->Set_Render(m_bIsRender);
-        m_pLockOn1.lock()->Set_Render(m_bIsRender);
-    }
-}
-
 void UiTargetLockOn::Check_Target()
 {
-    if (true == m_pTarget.expired() || true == m_pLockOn1.expired())
-        return;
-
     if (0 >= m_pTarget.lock()->Get_CurHp())
+    {
         m_pTarget.reset();
+        m_pLockOn0.lock()->Set_Render(false);
+        m_pLockOn1.lock()->Set_Render(false);
+    }
 }

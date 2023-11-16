@@ -24,11 +24,16 @@ HRESULT CoolTimeCheckScript::Init()
         m_CoolTime[i].resize(5);
 
         auto tagData = GET_DATA(static_cast<HERO>(i));
-        m_CoolTime[i][0].fCoolTime = tagData.Skill1Cool;
-        m_CoolTime[i][1].fCoolTime = tagData.Skill2Cool;
-        m_CoolTime[i][2].fCoolTime = tagData.Skill3Cool;
-        m_CoolTime[i][3].fCoolTime = tagData.Skill4Cool;
-        m_CoolTime[i][4].fCoolTime = tagData.Skill5Cool;
+       m_CoolTime[i][0].fCoolTime = tagData.Skill1Cool;
+       m_CoolTime[i][1].fCoolTime = tagData.Skill2Cool;
+       m_CoolTime[i][2].fCoolTime = tagData.Skill3Cool;
+       m_CoolTime[i][3].fCoolTime = tagData.Skill4Cool;
+       m_CoolTime[i][4].fCoolTime = tagData.Skill5Cool;
+       m_CoolTime[i][0].fAccTime = m_CoolTime[i][0].fCoolTime + 0.1f;
+       m_CoolTime[i][1].fAccTime = m_CoolTime[i][1].fCoolTime + 0.1f;
+       m_CoolTime[i][2].fAccTime = m_CoolTime[i][2].fCoolTime + 0.1f;
+       m_CoolTime[i][3].fAccTime = m_CoolTime[i][3].fCoolTime + 0.1f;
+       m_CoolTime[i][4].fAccTime = m_CoolTime[i][4].fCoolTime + 0.1f;
     }
 
     m_tagEvade.fCoolTime = 3.f;
@@ -65,6 +70,8 @@ HRESULT CoolTimeCheckScript::Init()
     m_pUi_Skill_Cool[2] = CUR_SCENE->Get_UI(L"UI_Skill4_Cool");
     m_pUi_Skill_Cool[3] = CUR_SCENE->Get_UI(L"UI_Skill5_Cool");
     m_pUi_Skill_Cool[4] = CUR_SCENE->Get_UI(L"UI_Skill6_Cool");
+    for (_uint i = 0; i < 5; ++i)
+        m_pUi_Skill_Cool[i].lock()->Get_FontRenderer()->Get_Text() = L"";
 
     m_bIsCoolChangeOne.resize(5);
     m_bIsCoolChangeOne[0] = false;
