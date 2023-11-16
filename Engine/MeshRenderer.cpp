@@ -45,7 +45,11 @@ void MeshRenderer::Render_Instancing(shared_ptr<InstancingBuffer>& buffer, share
 //	m_pShader->GetScalar("g_BarPercent")->SetFloat(m_fLoadingPercent);
 	buffer->Push_Data();
 
-	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	if (m_pMesh->Get_Name() == L"Point")
+		CONTEXT->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
+	else
+		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	m_pShader->DrawIndexedInstanced(0, m_iPass + 1, m_pMesh->Get_IndexBuffer()->Get_IndicesNum(), buffer->Get_Count());
 

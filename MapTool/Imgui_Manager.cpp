@@ -207,7 +207,7 @@ void ImGui_Manager::Frame_ObjectBaseManager()
     // 노란색 저장
     ImVec4 YellowColor(1.f, 1.f, 0.f, 1.f);
     string strCreateObjectName = m_strObjectBaseNameList[m_iObjectBaseIndex];
-    ImGui::Text(("Name - " + strCreateObjectName + "-" + to_string(m_iObjectBaseIndexList[m_iObjectBaseIndex])).data());
+    ImGui::Text(("Name - " + strCreateObjectName/* + "-" + to_string(m_iObjectBaseIndexList[m_iObjectBaseIndex])*/).data());
     m_CreateObjectDesc.strName = strCreateObjectName /*+ "-" + to_string(m_iObjectBaseIndexList[m_iObjectBaseIndex])*/;
     ImGui::InputFloat("UVWeight", &m_CreateObjectDesc.fUVWeight);
     ImGui::TextColored(YellowColor, "Options");
@@ -465,7 +465,7 @@ void ImGui_Manager::Frame_SelcetObjectManager()
             MSG_BOX("Complete_Save");
 
     m_MapNames.clear();
-    wstring partsPath = L"..\\Resources\\Data\\";
+    wstring partsPath = L"..\\Resources\\MapData\\";
     for (auto& entry : fs::recursive_directory_iterator(partsPath))
     {
 
@@ -494,7 +494,21 @@ void ImGui_Manager::Frame_SelcetObjectManager()
 }
 void ImGui_Manager::Frame_Light()
 {
+	ImGui::Text("CameraPos");
+	m_CamPos = CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_State(Transform_State::POS);
+	if (ImGui::DragFloat3("##CamPos", (_float*)&m_CamPos))
+	{
+		CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_CamPos);
+	}
+
     ImGui::Begin("SkyBox&Light"); // 글자 맨윗줄
+
+    ImGui::Text("CameraPos");
+    m_CamPos = CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_State(Transform_State::POS);
+    if (ImGui::DragFloat3("##CamPos", (_float*)&m_CamPos))
+    {
+        CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_CamPos);
+    }
 
     // 스카이박스 변경
     ImGui::SeparatorText("SkyBox##SkyBoxChange");
@@ -512,9 +526,14 @@ void ImGui_Manager::Frame_Light()
     // 포지션
     _float4& Pos = (_float4&)CUR_SCENE->Get_Light()->Get_Transform()->Get_WorldMatrix().m[3];
     ImGui::DragFloat3("Position##DirLight", (_float*)&Pos);
-    _float3& LookDir = CUR_SCENE->Get_Light()->Get_Transform()->Get_CurrentDir();
-    ImGui::DragFloat3("LookDir##DirLight", (_float*)&LookDir);
-    CUR_SCENE->Get_Light()->Get_Transform()->Set_LookDir(LookDir);
+
+    //_float3& LookDir = CUR_SCENE->Get_Light()->Get_Transform()->Get_CurrentDir();
+    //CUR_SCENE->Get_Light()->Get_Transform()->LookAt(XMVectorSetW(m_DirectionalLightLookDir, 1.f));
+    ImGui::DragFloat3("LookAtPos##DirLight", (_float*)&m_DirectionalLightLookAtPos);
+    if(ImGui::Button("LookAt##DirLightLookAt"))
+    {
+        CUR_SCENE->Get_Light()->Get_Transform()->LookAt(XMVectorSetW(m_DirectionalLightLookAtPos, 1.f));
+    }
     LightInfo& DirectionalLightInfo = CUR_SCENE->Get_Light()->Get_Light()->Get_LightInfo();
     Color& Ambient = DirectionalLightInfo.color.ambient;
     ImGui::ColorEdit4("Ambient##DirLight", (_float*)&Ambient);
@@ -526,7 +545,7 @@ void ImGui_Manager::Frame_Light()
     ImGui::ColorEdit4("Emissive##DirLight", (_float*)&Emissive);
 
     m_DirectionalLightPos = Pos;
-    m_DirectionalLightLookDir = LookDir;
+    //m_DirectionalLightLookDir = LookDir;
     m_DirectionalLightInfo = DirectionalLightInfo;
 
     // 점광원생성정보
@@ -649,6 +668,10 @@ void ImGui_Manager::Frame_Wall()
     {
         Clear_WallMesh();
     }
+    if (ImGui::Button("Delete"))
+    {
+        Delete_WallMesh();
+    }
 
     ImGui::End();
 }
@@ -755,12 +778,15 @@ HRESULT ImGui_Manager::Load_SkyBoxTexture()
 HRESULT ImGui_Manager::Load_MapObjectBase()
 {
     wstring path = L"..\\Resources\\Models\\MapObject\\";
-
+    wstring folderName = L"";
     for (auto& entry : fs::recursive_directory_iterator(path))
     {
         // 맵오브젝트 폴더내부의 폴더이름들을 순회하며 베이스오브젝트 리스트를 만듦.
         if (entry.is_directory())
+        {
+            //folderName = entry.path().filename().wstring();
             continue;
+        }
 
         // 확장자가 모델이 아니면 컨티뉴우우우
         wstring Ext = entry.path().extension().wstring();
@@ -770,6 +796,8 @@ HRESULT ImGui_Manager::Load_MapObjectBase()
         // 파일의 이름을 가져옴
         wstring fileName = entry.path().filename().wstring();
         Utils::DetachExt(fileName);
+        // 뒤에 폴더명을 붙임
+        //fileName = fileName + L"-" + folderName;
         WCHAR szTempName[MAX_PATH];
         lstrcpy(szTempName, fileName.c_str());
 
@@ -782,7 +810,7 @@ HRESULT ImGui_Manager::Load_MapObjectBase()
         // 베이스오브젝트 이름을 리스트UI에 추가
         m_strObjectBaseNameList.push_back(pChar.get());
         // 베이스 오브젝트 중복개수 인덱스 추가
-        m_iObjectBaseIndexList.push_back(0);
+        //m_iObjectBaseIndexList.push_back(0);
     }
     return S_OK;
 }
@@ -966,6 +994,11 @@ void ImGui_Manager::Clear_WallMesh()
     m_bFirstWallPick = true;
 }
 
+void ImGui_Manager::Delete_WallMesh()
+{
+    m_WallRectPosLDRU.pop_back();
+}
+
 HRESULT ImGui_Manager::Delete_PointLight()
 {
     // 1. 현재씬에서 제거
@@ -1047,7 +1080,7 @@ HRESULT ImGui_Manager::Save_MapObject()
 
     // 세이브 파일 이름으로 저장하기
     string strFileName = m_szSaveFileName;
-    string strFilePath = "..\\Resources\\Data\\";
+    string strFilePath = "..\\Resources\\MapData\\";
     strFilePath += strFileName + ".dat";
 
     shared_ptr<FileUtils> file = make_shared<FileUtils>();
@@ -1059,7 +1092,7 @@ HRESULT ImGui_Manager::Save_MapObject()
 
     // 방향성광원 정보 저장
     file->Write<_float4>(m_DirectionalLightPos);
-    file->Write<_float3>(m_DirectionalLightLookDir);
+    file->Write<_float3>(m_DirectionalLightLookAtPos);
     file->Write<LightColor>(m_DirectionalLightInfo.color);
 
     // 점광원 정보 저장
@@ -1166,7 +1199,7 @@ HRESULT ImGui_Manager::Load_MapObject()
 
     // 세이브 파일 이름으로 로드하기
     string strFileName = m_MapNames[curMapIndex];
-    string strFilePath = "..\\Resources\\Data\\";
+    string strFilePath = "..\\Resources\\MapData\\";
     strFilePath += strFileName + ".dat";
     shared_ptr<FileUtils> file = make_shared<FileUtils>();
     file->Open(Utils::ToWString(strFilePath), FileMode::Read);
@@ -1195,7 +1228,7 @@ HRESULT ImGui_Manager::Load_MapObject()
     // 보는방향
     _float3 DirLightLookDir = _float3{ 0.f, 0.f, 0.f };
     file->Read<_float3>(DirLightLookDir);
-    DirectionalLightObject->Get_Transform()->Set_LookDir(DirLightLookDir);
+    DirectionalLightObject->Get_Transform()->LookAt(XMVectorSetW(DirLightLookDir,1.f));
     // 색깔
     LightColor DirLightColor;
     file->Read<LightColor>(DirLightColor);

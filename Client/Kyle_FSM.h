@@ -125,7 +125,6 @@ private:
 	void skill_200300();
 	void skill_200300_Init();
 
-
 	void skill_300100();
 	void skill_300100_Init();
 
@@ -133,7 +132,6 @@ private:
 	void skill_502100_Init();
 	void skill_500100();
 	void skill_500100_Init();
-
 
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
 	void Calculate_SkillCamRight();

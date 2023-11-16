@@ -174,13 +174,15 @@ private:
 	void Summon_Wraith();
 	void Set_WraithState(_uint iAnimindex);
 	void Calculate_SkillCamRight();
-	void Execute_AttackSkill_Phase1();
+	void Set_AttackSkill_Phase1();
 
 	_float3 Calculate_TargetTurnVector();
 
 private:
 	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;
+	STATE m_ePatternState = STATE::NONE;
+
 
 	weak_ptr<GameObject> m_pDellonsWraith;
 
@@ -198,6 +200,7 @@ private:
 	_bool m_bDetected = false;
 	_bool m_bBattleStart = false;
 	_bool m_bCounter = false;
+	_bool m_bSetPattern = false;
 
 	_uint m_iGroggy_Gauge = 0;
 	_uint m_iPreAttack = 100;

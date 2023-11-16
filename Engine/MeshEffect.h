@@ -53,6 +53,7 @@ private:
     _float2                 m_vCurrTexUVOffset_Dissolve = { 0.f, 0.f };
     _float2                 m_vCurrTexUVOffset_Distortion = { 0.f, 0.f };
     _float2                 m_vCurrTexUVOffset_Blend = { 0.f, 0.f };
+    _float2                 m_vCurrTexUVOffset_Additional = { 0.f, 0.f };
 
     _bool                   m_bIsPlayFinished = { false };
 

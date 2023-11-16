@@ -197,24 +197,36 @@ void MainCameraScript::Update_Transform()
             fDT * m_fFollowSpeed);
 
         Get_Transform()->Set_State(Transform_State::POS, pos);
+
+        m_vFixedLastPlayerPos = vPlayerPos.xyz();
     }
     else
     {
-        _float3 vCurDir = -Get_Transform()->Get_State(Transform_State::LOOK).xyz();
-
-        _float4x4 matCurDir = Transform::Get_WorldFromLook(vCurDir, _float3(0.f));
-        _float4x4 matNextDir = Transform::Get_WorldFromLook(m_vOffset, _float3(0.f));
-
-        if ((fMinDist) >= m_fMaxDistance)
+        if (m_bSmoothReturn)
         {
-           fMinDist = m_fMaxDistance - 0.2f * fDT;
-           if (fMinDist <= m_fMaxDistance)
-               fMinDist = m_fMaxDistance;
+            m_bSmoothReturn = false;
+            m_vFixedLastDir = Get_Transform()->Get_State(Transform_State::POS) - m_vFixedLastPlayerPos;
+            m_vFixedLastDir.Normalize();
+            m_vOffset = m_vFixedLastDir;
         }
-        _float3 tmp = Transform::SLerpMatrix(matCurDir, matNextDir, fDT * m_fFollowSpeed).Backward();
-        _float4 pos = vPlayerPos + Transform::SLerpMatrix(matCurDir, matNextDir, fDT * m_fFollowSpeed).Backward() * fMinDist;
+        else
+        {
+            _float3 vCurDir = -Get_Transform()->Get_State(Transform_State::LOOK).xyz();
 
-        Get_Transform()->Set_State(Transform_State::POS, pos);
+            _float4x4 matCurDir = Transform::Get_WorldFromLook(vCurDir, _float3(0.f));
+            _float4x4 matNextDir = Transform::Get_WorldFromLook(m_vOffset, _float3(0.f));
+
+            if ((fMinDist) >= m_fMaxDistance)
+            {
+               fMinDist = m_fMaxDistance - 0.2f * fDT;
+               if (fMinDist <= m_fMaxDistance)
+                   fMinDist = m_fMaxDistance;
+            }
+            _float3 tmp = Transform::SLerpMatrix(matCurDir, matNextDir, fDT * m_fFollowSpeed).Backward();
+            _float4 pos = vPlayerPos + Transform::SLerpMatrix(matCurDir, matNextDir, fDT * m_fFollowSpeed).Backward() * fMinDist;
+
+            Get_Transform()->Set_State(Transform_State::POS, pos);
+        }
     }
 
 

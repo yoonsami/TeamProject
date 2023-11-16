@@ -32,6 +32,7 @@ void MeshEffectData::Load(const wstring& path)
     m_tDesc.iMeshCnt = file->Read<_int>();
     m_tDesc.fCreateInterval = file->Read<_float>();
     m_tDesc.vParticleDuration = file->Read<_float2>();
+    m_tDesc.iSamplerType = file->Read<_int>();
 
     /* Mesh */
     m_tDesc.strVfxMesh = file->Read<string>();
@@ -49,20 +50,21 @@ void MeshEffectData::Load(const wstring& path)
     m_tDesc.strDiffuseTexture = file->Read<string>();
     m_tDesc.vDiffuseColor_BaseStart = file->Read<_float4>();
     m_tDesc.vDiffuseColor_BaseEnd = file->Read<_float4>();
+    m_tDesc.vDiffuseColor_BaseGradation = file->Read<_float4>();
     m_tDesc.vDestColor_Diffuse = file->Read<_float4>();
     m_tDesc.vTiling_Diffuse = file->Read<_float2>();
     m_tDesc.vUVSpeed_Diffuse = file->Read<_float2>();
+    m_tDesc.bIsUseTextureColor = file->Read<_bool>();
+
+    /* Opacity */
+    m_tDesc.strGraTexture = file->Read<string>();
+    m_tDesc.vTiling_Opacity = file->Read<_float2>();
+    m_tDesc.vUVSpeed_Opacity = file->Read<_float2>();
 
     /* Alpha Gradation */
     m_tDesc.fAlphaGraIntensity = file->Read<_float>();
     m_tDesc.vBaseColor_AlphaGra = file->Read<_float4>();
     m_tDesc.vBaseColor_AlphaGra = file->Read<_float4>();
-
-    /* Opacity */
-    m_tDesc.strGraTexture = file->Read<string>();
-    m_tDesc.iSamplerType = file->Read<_int>();
-    m_tDesc.vTiling_Opacity = file->Read<_float2>();
-    m_tDesc.vUVSpeed_Opacity = file->Read<_float2>();
 
     /* Gradation by Texture */
     m_tDesc.strGraTexture = file->Read<string>();
@@ -97,8 +99,15 @@ void MeshEffectData::Load(const wstring& path)
     m_tDesc.vTiling_Blend = file->Read<_float2>();
     m_tDesc.vUVSpeed_Blend = file->Read<_float2>();
 
+    /* Additional */
+    m_tDesc.strAdditionalTexture = file->Read<string>();
+    m_tDesc.vTiling_Additional = file->Read<_float2>();
+    m_tDesc.vUVSpeed_Additional = file->Read<_float2>();
+    m_tDesc.vBaseColor_Additional = file->Read<_float4>();
+
     /* Color Edit */
     m_tDesc.fContrast = file->Read<_float>();
+    m_tDesc.fDefinition = file->Read<_float>();
 
     // For. Load Transform_Desc 
     /* Init Position */

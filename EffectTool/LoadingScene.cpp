@@ -76,7 +76,7 @@ void LoadingScene::Create_LoadingBG()
 	shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
 
 	// For. GameObject에 붙일 Renderer에 추가할 Quad 메쉬(rect 버퍼) 생성하기(클론하기)
-	auto mesh = RESOURCES.Get<Mesh>(L"Quad");	// Resource manager는 기본적인 프로토타입들을 들고있다고 생각하면됨. Quad : Rect버퍼같은것.  Get으로 하나 클론해온다는 것. 
+	auto mesh = RESOURCES.Get<Mesh>(L"Point");	// Resource manager는 기본적인 프로토타입들을 들고있다고 생각하면됨. Quad : Rect버퍼같은것.  Get으로 하나 클론해온다는 것. 
 	
 	// For. Renderer에 그리려고하는 Rect 메쉬 세팅해주기
 	renderer->Set_Mesh(mesh);					// 그릴 것을 렌더러에 추가하기 

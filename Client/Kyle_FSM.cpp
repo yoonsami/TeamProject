@@ -377,7 +377,6 @@ void Kyle_FSM::AttackCollider_On(const wstring& skillname)
 	{
 		m_pAttackCollider.lock()->Get_Collider()->Set_Activate(true);
 		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
-		Add_Effect(L"KyleTest1");
 	}
 }
 
@@ -883,10 +882,19 @@ void Kyle_FSM::skill_1100()
 		Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
 	if (Get_CurFrame() == 9)
+	{
 		AttackCollider_On(NORMAL_ATTACK);
+
+		if (!m_bAttackEffectCreate)
+		{
+			m_bAttackEffectCreate = true;
+			Add_Effect(L"KyleTest1");
+		}
+	}
 	else if (Get_CurFrame() == 19)
 		AttackCollider_Off();
-
+	else
+		m_bAttackEffectCreate = false;
 
 	_float3 vInputVector = Get_InputDirVector();
 
@@ -916,7 +924,7 @@ void Kyle_FSM::skill_1100_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+	animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, 2.f);
 
 	m_bCanCombo = false;
 
@@ -1894,8 +1902,6 @@ void Kyle_FSM::Add_Effect(const wstring& strSkilltag)
 	pGroupEffectObj->GetOrAddTransform();
 	pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS) + (_float3::Up * 1.5f));
 	pGroupEffectObj->Get_Transform()->Set_Quaternion(Get_Transform()->Get_Rotation());
-
-	_float3 vTemp = Get_Transform()->Get_RollPitchYaw();
 
 	// For. GroupEffectData 
 	wstring wstrFileName = strSkilltag + L".dat";

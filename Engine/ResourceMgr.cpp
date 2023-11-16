@@ -503,12 +503,6 @@ void ResourceMgr::CreateDefaultShader()
 		shader->Set_ShaderType(SHADER_TYPE::FORWARD);
 	}
 	{
-		wstring ShaderTag = L"Shader_Deferred.fx";
-		Load<Shader>(ShaderTag, ShaderTag);
-		auto shader = Get<Shader>(ShaderTag);
-		shader->Set_ShaderType(SHADER_TYPE::DEFERRED);
-	}	
-	{
 		wstring ShaderTag = L"Blur.fx";
 		Load<Shader>(ShaderTag, ShaderTag);
 		auto shader = Get<Shader>(ShaderTag);
@@ -999,6 +993,7 @@ void ResourceMgr::CreateMeshEffectData()
 		tDesc.iMeshCnt = file->Read<_int>();
 		tDesc.fCreateInterval = file->Read<_float>();
 		tDesc.vParticleDuration = file->Read<_float2>();
+		tDesc.iSamplerType = file->Read<_int>();		
 
 		/* Mesh */
 		tDesc.strVfxMesh = file->Read<string>();
@@ -1016,20 +1011,21 @@ void ResourceMgr::CreateMeshEffectData()
 		tDesc.strDiffuseTexture = file->Read<string>();
 		tDesc.vDiffuseColor_BaseStart = file->Read<_float4>();
 		tDesc.vDiffuseColor_BaseEnd = file->Read<_float4>();
+		tDesc.vDiffuseColor_BaseGradation = file->Read<_float4>();
 		tDesc.vDestColor_Diffuse = file->Read<_float4>();
 		tDesc.vTiling_Diffuse = file->Read<_float2>();
 		tDesc.vUVSpeed_Diffuse = file->Read<_float2>();
+		tDesc.bIsUseTextureColor = file->Read<_bool>();
+
+		/* Opacity */
+		tDesc.strOpacityTexture = file->Read<string>();
+		tDesc.vTiling_Opacity = file->Read<_float2>();
+		tDesc.vUVSpeed_Opacity = file->Read<_float2>();
 
 		/* Alpha Gradation */
 		tDesc.fAlphaGraIntensity = file->Read<_float>();
 		tDesc.vBaseColor_AlphaGra = file->Read<_float4>();
 		tDesc.vDestColor_AlphaGra = file->Read<_float4>();
-
-		/* Opacity */
-		tDesc.strOpacityTexture = file->Read<string>();
-		tDesc.iSamplerType = file->Read<_int>();
-		tDesc.vTiling_Opacity = file->Read<_float2>();
-		tDesc.vUVSpeed_Opacity = file->Read<_float2>();
 
 		/* Gradation by Texture */
 		tDesc.strGraTexture = file->Read<string>();
@@ -1063,9 +1059,16 @@ void ResourceMgr::CreateMeshEffectData()
 		tDesc.strBlendTexture = file->Read<string>();
 		tDesc.vTiling_Blend = file->Read<_float2>();
 		tDesc.vUVSpeed_Blend = file->Read<_float2>();
+
+		/* Additional */
+		tDesc.strAdditionalTexture = file->Read<string>();
+		tDesc.vTiling_Additional = file->Read<_float2>();
+		tDesc.vUVSpeed_Additional = file->Read<_float2>();
+		tDesc.vBaseColor_Additional = file->Read<_float4>();
 		
 		/* Color Edit */
 		tDesc.fContrast = file->Read<_float>();
+		tDesc.fDefinition = file->Read<_float>();
 
 		// For. Load Transform_Desc 
 		/* Init Position */
@@ -1103,6 +1106,7 @@ void ResourceMgr::CreateMeshEffectData()
 		Add(key, meshEffectData);
 	}
 }
+
 void ResourceMgr::CreateParticleData()
 {
 }

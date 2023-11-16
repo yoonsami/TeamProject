@@ -45,6 +45,9 @@
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup>
+    <EnableUnitySupport>true</EnableUnitySupport>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -120,6 +123,9 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Libraries\Include\;$(SolutionDir)Libraries\Include\Engine\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <UnityFilesDirectory>$(ProjectDir)Unity\</UnityFilesDirectory>
+      <MinFilesInUnityFile>8</MinFilesInUnityFile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -148,6 +154,9 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Libraries\Include\;$(SolutionDir)Libraries\Include\Engine\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <UnityFilesDirectory>$(ProjectDir)Unity\</UnityFilesDirectory>
+      <MinFilesInUnityFile>8</MinFilesInUnityFile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -206,7 +215,7 @@
     <ClInclude Include="DemoCameraScript2.h" />
     <ClInclude Include="DemoScene.h" />
     <ClInclude Include="ForwardMovingSkillScript.h" />
-    <ClInclude Include="GachaScene.h" />
+    <ClInclude Include="Kyle_GachaScene.h" />
     <ClInclude Include="Gacha_FSM.h" />
     <ClInclude Include="HeroChangeScript.h" />
     <ClInclude Include="Kyle_FSM.h" />
@@ -224,6 +233,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Silversword_Soldier_FSM.h" />
     <ClInclude Include="SpearAce_FSM.h" />
+    <ClInclude Include="Spike_FSM.h" />
     <ClInclude Include="UiCardDeckController.h" />
     <ClInclude Include="UiCardDeckInvenChange.h" />
     <ClInclude Include="UiCharChange.h" />
@@ -271,7 +281,7 @@
     <ClCompile Include="DemoCameraScript2.cpp" />
     <ClCompile Include="DemoScene.cpp" />
     <ClCompile Include="ForwardMovingSkillScript.cpp" />
-    <ClCompile Include="GachaScene.cpp" />
+    <ClCompile Include="Kyle_GachaScene.cpp" />
     <ClCompile Include="Gacha_FSM.cpp" />
     <ClCompile Include="HeroChangeScript.cpp" />
     <ClCompile Include="Kyle_FSM.cpp" />
@@ -293,6 +303,7 @@
     <ClCompile Include="Player_FSM.cpp" />
     <ClCompile Include="Silversword_Soldier_FSM.cpp" />
     <ClCompile Include="SpearAce_FSM.cpp" />
+    <ClCompile Include="Spike_FSM.cpp" />
     <ClCompile Include="UiCardDeckController.cpp" />
     <ClCompile Include="UiCardDeckInvenChange.cpp" />
     <ClCompile Include="UiCharChange.cpp" />

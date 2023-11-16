@@ -40,8 +40,8 @@ struct VTXMeshInstancing
     float3 normal : NORMAL;
     float3 tangent : TANGENT;
     uint instanceID : SV_INSTANCEID;
-    matrix world : INST;
-    matrix preWorld : INST;
+    row_major float4x4 world : INST;
+    row_major float4x4 preWorld : INST;
 };
 
 // ModelRenderer, Animator
@@ -56,8 +56,8 @@ struct VTXModelInstancing
     float4 blendWeight : BLENDWEIGHT;
     int filtered : TEXCOORD2;
     uint instanceID : SV_INSTANCEID;
-    matrix world : INST;
-    matrix preWorld : INST;
+    row_major float4x4 world : INST;
+    row_major float4x4 preWorld : INST;
 };
 
 
@@ -138,13 +138,13 @@ cbuffer InstanceRenderParamBuffer
 
 cbuffer BoneBuffer
 {
-    matrix BoneTransform[MAX_MODEL_TRANSFORM];
+    row_major float4x4 BoneTransform[MAX_MODEL_TRANSFORM];
 };
 
 cbuffer AnimAddonBuffer
 {
-    matrix OffsetMatrix[MAX_MODEL_TRANSFORM];
-    matrix pivot;
+    row_major float4x4 OffsetMatrix[MAX_MODEL_TRANSFORM];
+    row_major float4x4 pivot;
 };
 
 cbuffer EffectBuffer
@@ -253,7 +253,7 @@ uint BoneIndex;
 
 float2 g_UVSliding;
 
-matrix GetAnimationMatrix(VTXModel input)
+row_major float4x4 GetAnimationMatrix(VTXModel input)
 {
     float indices[4] = { input.blendIndices.x, input.blendIndices.y, input.blendIndices.z, input.blendIndices.w };
     float weights[4] = { input.blendWeight.x, input.blendWeight.y, input.blendWeight.z, input.blendWeight.w };
@@ -278,9 +278,9 @@ matrix GetAnimationMatrix(VTXModel input)
     
         float4 c0, c1, c2, c3;
         float4 n0, n1, n2, n3;
-        matrix curr = 0;
-        matrix next = 0;
-        matrix transform = 0;
+        row_major float4x4 curr = 0;
+        row_major float4x4 next = 0;
+        row_major float4x4 transform = 0;
     
         for (int i = 0; i < 4; ++i)
         {
@@ -288,15 +288,17 @@ matrix GetAnimationMatrix(VTXModel input)
             c1 = TransformMap.Load(int4(indices[i] * 4 + 1, currFrame[0], animIndex[0], 0));
             c2 = TransformMap.Load(int4(indices[i] * 4 + 2, currFrame[0], animIndex[0], 0));
             c3 = TransformMap.Load(int4(indices[i] * 4 + 3, currFrame[0], animIndex[0], 0));
-            curr = matrix(c0, c1, c2, c3);
+            curr = 
+            float4x4(c0, c1, c2, c3);
     
             n0 = TransformMap.Load(int4(indices[i] * 4 + 0, nextFrame[0], animIndex[0], 0));
             n1 = TransformMap.Load(int4(indices[i] * 4 + 1, nextFrame[0], animIndex[0], 0));
             n2 = TransformMap.Load(int4(indices[i] * 4 + 2, nextFrame[0], animIndex[0], 0));
             n3 = TransformMap.Load(int4(indices[i] * 4 + 3, nextFrame[0], animIndex[0], 0));
-            next = matrix(n0, n1, n2, n3);
+            next = 
+             float4x4(n0, n1, n2, n3);
     
-            matrix result = slerpMat(curr, next, ratio[0]);
+            row_major float4x4 result = slerpMat(curr, next, ratio[0]);
             //matrix result = curr;
             if (animIndex[1] >= 0)
             {
@@ -304,15 +306,17 @@ matrix GetAnimationMatrix(VTXModel input)
                 c1 = TransformMap.Load(int4(indices[i] * 4 + 1, currFrame[1], animIndex[1], 0));
                 c2 = TransformMap.Load(int4(indices[i] * 4 + 2, currFrame[1], animIndex[1], 0));
                 c3 = TransformMap.Load(int4(indices[i] * 4 + 3, currFrame[1], animIndex[1], 0));
-                curr = matrix(c0, c1, c2, c3);
+                curr = 
+                float4x4(c0, c1, c2, c3);
     
                 n0 = TransformMap.Load(int4(indices[i] * 4 + 0, nextFrame[1], animIndex[1], 0));
                 n1 = TransformMap.Load(int4(indices[i] * 4 + 1, nextFrame[1], animIndex[1], 0));
                 n2 = TransformMap.Load(int4(indices[i] * 4 + 2, nextFrame[1], animIndex[1], 0));
                 n3 = TransformMap.Load(int4(indices[i] * 4 + 3, nextFrame[1], animIndex[1], 0));
-                next = matrix(n0, n1, n2, n3);
+                next = 
+                float4x4(n0, n1, n2, n3);
     
-                matrix nextResult = slerpMat(curr, next, ratio[1]);
+                row_major float4x4 nextResult = slerpMat(curr, next, ratio[1]);
       
                 result = slerpMat(result, nextResult, TweenFrames.tweenRatio);
               
@@ -327,7 +331,7 @@ matrix GetAnimationMatrix(VTXModel input)
     }
 }
 
-matrix GetPreAnimationMatrix(VTXModel input)
+row_major float4x4 GetPreAnimationMatrix(VTXModel input)
 {
     float indices[4] = { input.blendIndices.x, input.blendIndices.y, input.blendIndices.z, input.blendIndices.w };
     float weights[4] = { input.blendWeight.x, input.blendWeight.y, input.blendWeight.z, input.blendWeight.w };
@@ -352,9 +356,9 @@ matrix GetPreAnimationMatrix(VTXModel input)
     
         float4 c0, c1, c2, c3;
         float4 n0, n1, n2, n3;
-        matrix curr = 0;
-        matrix next = 0;
-        matrix transform = 0;
+        row_major float4x4 curr = 0;
+        row_major float4x4 next = 0;
+        row_major float4x4 transform = 0;
     
         for (int i = 0; i < 4; ++i)
         {
@@ -370,7 +374,7 @@ matrix GetPreAnimationMatrix(VTXModel input)
             n3 = TransformMap.Load(int4(indices[i] * 4 + 3, nextFrame[0], animIndex[0], 0));
             next = matrix(n0, n1, n2, n3);
     
-            matrix result = slerpMat(curr, next, ratio[0]);
+            row_major float4x4 result = slerpMat(curr, next, ratio[0]);
             //matrix result = curr;
             if (animIndex[1] >= 0)
             {
@@ -386,7 +390,7 @@ matrix GetPreAnimationMatrix(VTXModel input)
                 n3 = TransformMap.Load(int4(indices[i] * 4 + 3, nextFrame[1], animIndex[1], 0));
                 next = matrix(n0, n1, n2, n3);
     
-                matrix nextResult = slerpMat(curr, next, ratio[1]);
+                row_major float4x4 nextResult = slerpMat(curr, next, ratio[1]);
       
                 result = slerpMat(result, nextResult, preTweenFrames.tweenRatio);
               
@@ -402,7 +406,7 @@ matrix GetPreAnimationMatrix(VTXModel input)
 }
 
 
-matrix GetAnimationMatrix_Instance(VTXModelInstancing input)
+row_major float4x4 GetAnimationMatrix_Instance(VTXModelInstancing input)
 {
     float indices[4] = { input.blendIndices.x, input.blendIndices.y, input.blendIndices.z, input.blendIndices.w };
     float weights[4] = { input.blendWeight.x, input.blendWeight.y, input.blendWeight.z, input.blendWeight.w };
@@ -426,9 +430,9 @@ matrix GetAnimationMatrix_Instance(VTXModelInstancing input)
     
     float4 c0, c1, c2, c3;
     float4 n0, n1, n2, n3;
-    matrix curr = 0;
-    matrix next = 0;
-    matrix transform = 0;
+    row_major float4x4 curr = 0;
+    row_major float4x4 next = 0;
+    row_major float4x4 transform = 0;
     
     for (int i = 0; i < 4; ++i)
     {
@@ -444,7 +448,7 @@ matrix GetAnimationMatrix_Instance(VTXModelInstancing input)
         n3 = TransformMap.Load(int4(indices[i] * 4 + 3, nextFrame[0], animIndex[0], 0));
         next = matrix(n0, n1, n2, n3);
       
-        matrix result = slerpMat(curr, next, ratio[0]);
+        row_major float4x4 result = slerpMat(curr, next, ratio[0]);
       
         if (animIndex[1] >= 0)
         {
@@ -460,7 +464,7 @@ matrix GetAnimationMatrix_Instance(VTXModelInstancing input)
             n3 = TransformMap.Load(int4(indices[i] * 4 + 3, nextFrame[1], animIndex[1], 0));
             next = matrix(n0, n1, n2, n3);
       
-            matrix nextResult = slerpMat(curr, next, ratio[1]);
+            row_major float4x4 nextResult = slerpMat(curr, next, ratio[1]);
       
 
             result = slerpMat(result, nextResult, InstanceTweenFrames[input.instanceID].tweenRatio);
@@ -474,7 +478,7 @@ matrix GetAnimationMatrix_Instance(VTXModelInstancing input)
     return transform;
 }
 
-matrix GetPreAnimationMatrix_Instance(VTXModelInstancing input)
+row_major float4x4 GetPreAnimationMatrix_Instance(VTXModelInstancing input)
 {
     float indices[4] = { input.blendIndices.x, input.blendIndices.y, input.blendIndices.z, input.blendIndices.w };
     float weights[4] = { input.blendWeight.x, input.blendWeight.y, input.blendWeight.z, input.blendWeight.w };
@@ -498,9 +502,9 @@ matrix GetPreAnimationMatrix_Instance(VTXModelInstancing input)
     
     float4 c0, c1, c2, c3;
     float4 n0, n1, n2, n3;
-    matrix curr = 0;
-    matrix next = 0;
-    matrix transform = 0;
+    row_major float4x4 curr = 0;
+    row_major float4x4 next = 0;
+    row_major float4x4 transform = 0;
     
     for (int i = 0; i < 4; ++i)
     {
@@ -516,7 +520,7 @@ matrix GetPreAnimationMatrix_Instance(VTXModelInstancing input)
         n3 = TransformMap.Load(int4(indices[i] * 4 + 3, nextFrame[0], animIndex[0], 0));
         next = matrix(n0, n1, n2, n3);
       
-        matrix result = slerpMat(curr, next, ratio[0]);
+        row_major float4x4 result = slerpMat(curr, next, ratio[0]);
       
         if (animIndex[1] >= 0)
         {
@@ -532,7 +536,7 @@ matrix GetPreAnimationMatrix_Instance(VTXModelInstancing input)
             n3 = TransformMap.Load(int4(indices[i] * 4 + 3, nextFrame[1], animIndex[1], 0));
             next = matrix(n0, n1, n2, n3);
       
-            matrix nextResult = slerpMat(curr, next, ratio[1]);
+            row_major float4x4 nextResult = slerpMat(curr, next, ratio[1]);
       
 
             result = slerpMat(result, nextResult, InstancePreTweenFrames[input.instanceID].tweenRatio);
@@ -624,7 +628,7 @@ float3 aces_fitted(float3 v)
     return float3(x,y,z);
 }
 
-static const float4x4 T =
+static const row_major float4x4 T =
 {
     0.5f, 0.0f, 0.0f, 0.0f,
 		0.0f, -0.5f, 0.0f, 0.0f,

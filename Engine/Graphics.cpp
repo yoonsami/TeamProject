@@ -40,7 +40,6 @@ HRESULT Graphics::Render_End()
 	if (!m_pSwapChain)
 		return E_FAIL;
 
-
 	HRESULT hr = m_pSwapChain->Present(1, 0);
 	m_pContext->ClearState();
 

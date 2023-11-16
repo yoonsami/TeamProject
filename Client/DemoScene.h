@@ -1,7 +1,6 @@
 #pragma once
 #include "Scene.h"
 
-class GachaScene;
 class DemoScene :
 	public Scene
 {
@@ -18,7 +17,6 @@ public:
 	virtual HRESULT Load_Scene() override;
 
 private:
-	void Load_SkyBox();
 	void Load_Player();
 
 	void Load_Camera();

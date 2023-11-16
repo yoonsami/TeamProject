@@ -184,6 +184,21 @@ void Boss_Dellons_FSM::State_Tick()
     case STATE::skill_501100:
         skill_501100();
         break;
+    case STATE::skill_901000:
+        skill_901000();
+        break;
+    case STATE::skill_901100:
+        skill_901100();
+        break;
+    case STATE::skill_902100:
+        skill_902100();
+        break;
+    case STATE::skill_903100:
+        skill_903100();
+        break;
+    case STATE::skill_904100:
+        skill_904100();
+        break;
     }
 }
 
@@ -297,6 +312,21 @@ void Boss_Dellons_FSM::State_Init()
             break;
         case STATE::skill_501100:
             skill_501100_Init();
+            break;
+        case STATE::skill_901000:
+            skill_901000_Init();
+            break;
+        case STATE::skill_901100:
+            skill_901100_Init();
+            break;
+        case STATE::skill_902100:
+            skill_902100_Init();
+            break;
+        case STATE::skill_903100:
+            skill_903100_Init();
+            break;
+        case STATE::skill_904100:
+            skill_904100_Init();
             break;
         }
         m_ePreState = m_eCurState;
@@ -454,6 +484,8 @@ void Boss_Dellons_FSM::n_idle_Init()
 
     m_bInvincible = true;
     m_bSuperArmor = false;
+    m_bSetPattern = false;
+    m_bSkillCreate = false;
 }
 
 void Boss_Dellons_FSM::talk_01()
@@ -474,15 +506,25 @@ void Boss_Dellons_FSM::talk_01_Init()
 
 void Boss_Dellons_FSM::Intro()
 {
+    
+        if (!m_bSkillCreate)
+        {
+            Summon_Wraith();
+
+            Set_WraithState((_uint)Boss_DellonsWraith_FSM::STATE::FX_Mn_Dellons_skill_500200);
+
+            m_bSkillCreate = true;
+        }
+    
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
+        m_eCurState = STATE::n_idle;
 }
 
 void Boss_Dellons_FSM::Intro_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_901100", 0.1f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_902100", 0.1f, false, 1.f);
 
     AttackCollider_Off();
 
@@ -501,12 +543,15 @@ void Boss_Dellons_FSM::b_idle()
 
         m_tAttackCoolTime.fAccTime += fDT;
 
-        if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
+        if (!m_bSetPattern)
+        {
+            if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
+                Set_AttackSkill_Phase1();
+        }
+        else
         {
             if (Target_In_AttackRange())
-            {
-                Execute_AttackSkill_Phase1();
-            }
+                m_eCurState = m_ePatternState;
             else
                 m_eCurState = STATE::b_run_start;
         }
@@ -541,9 +586,7 @@ void Boss_Dellons_FSM::b_run_start()
         m_eCurState = STATE::b_run;
 
     if (Target_In_AttackRange())
-    {
-        Execute_AttackSkill_Phase1();
-    }
+        m_eCurState = m_ePatternState;
     else
     {
         if (Is_AnimFinished())
@@ -576,7 +619,7 @@ void Boss_Dellons_FSM::b_run()
     
     if (Target_In_AttackRange())
     {
-        Execute_AttackSkill_Phase1();
+        m_eCurState = m_ePatternState;
     }
     else
     {
@@ -655,7 +698,7 @@ void Boss_Dellons_FSM::b_sprint()
     Get_Transform()->Go_Straight();
 
     if (Target_In_AttackRange())
-        Execute_AttackSkill_Phase1();
+        m_eCurState = m_ePatternState;
 }
 
 void Boss_Dellons_FSM::b_sprint_Init()
@@ -952,7 +995,7 @@ void Boss_Dellons_FSM::skill_1100_Init()
     m_vTurnVector = Calculate_TargetTurnVector();
 
     m_tAttackCoolTime.fAccTime = 0.f;
-
+    m_bSetPattern = false;
 
     m_bInvincible = false;
     m_bSuperArmor = false;
@@ -981,6 +1024,7 @@ void Boss_Dellons_FSM::skill_1200_Init()
     m_vTurnVector = Calculate_TargetTurnVector();
 
     m_tAttackCoolTime.fAccTime = 0.f;
+    m_bSetPattern = false;
 
     AttackCollider_Off();
 
@@ -1011,6 +1055,7 @@ void Boss_Dellons_FSM::skill_1300_Init()
     m_vTurnVector = Calculate_TargetTurnVector();
 
     m_tAttackCoolTime.fAccTime = 0.f;
+    m_bSetPattern = false;
 
     AttackCollider_Off();
 
@@ -1045,6 +1090,7 @@ void Boss_Dellons_FSM::skill_1400_Init()
     m_vTurnVector = Calculate_TargetTurnVector();
 
     m_tAttackCoolTime.fAccTime = 0.f;
+    m_bSetPattern = false;
 
     AttackCollider_Off();
 
@@ -1134,6 +1180,7 @@ void Boss_Dellons_FSM::skill_100100_Init()
     m_vTurnVector = Calculate_TargetTurnVector();
 
     m_tAttackCoolTime.fAccTime = 0.f;
+    m_bSetPattern = false;
 
     AttackCollider_Off();
 
@@ -1181,6 +1228,7 @@ void Boss_Dellons_FSM::skill_100200_Init()
     m_vTurnVector = Calculate_TargetTurnVector();
 
     m_tAttackCoolTime.fAccTime = 0.f;
+    m_bSetPattern = false;
 
     AttackCollider_Off();
 
@@ -1211,6 +1259,7 @@ void Boss_Dellons_FSM::skill_200100_Init()
     m_vTurnVector = Calculate_TargetTurnVector();
 
     m_tAttackCoolTime.fAccTime = 0.f;
+    m_bSetPattern = false;
 
     AttackCollider_Off();
 
@@ -1260,6 +1309,7 @@ void Boss_Dellons_FSM::skill_200200_Init()
     m_vTurnVector = Calculate_TargetTurnVector();
 
     m_tAttackCoolTime.fAccTime = 0.f;
+    m_bSetPattern = false;
 
     AttackCollider_Off();
 
@@ -1320,6 +1370,7 @@ void Boss_Dellons_FSM::skill_300100_Init()
     m_vTurnVector = Calculate_TargetTurnVector();
 
     m_tAttackCoolTime.fAccTime = 0.f;
+    m_bSetPattern = false;
 
     AttackCollider_Off();
 
@@ -1422,6 +1473,7 @@ void Boss_Dellons_FSM::skill_400100_Init()
     m_vTurnVector = Calculate_TargetTurnVector();
 
     m_tAttackCoolTime.fAccTime = 0.f;
+    m_bSetPattern = false;
 
     AttackCollider_Off();
 
@@ -1470,6 +1522,7 @@ void Boss_Dellons_FSM::skill_501100_Init()
     m_vTurnVector = Calculate_TargetTurnVector();
 
     m_tAttackCoolTime.fAccTime = 0.f;
+    m_bSetPattern = false;
 
     AttackCollider_Off();
 
@@ -1479,6 +1532,9 @@ void Boss_Dellons_FSM::skill_501100_Init()
 
 void Boss_Dellons_FSM::skill_901000()
 {
+    if (Is_AnimFinished())
+        m_eCurState = STATE::b_idle;
+    
 }
 
 void Boss_Dellons_FSM::skill_901000_Init()
@@ -1489,40 +1545,63 @@ void Boss_Dellons_FSM::skill_901000_Init()
     
     AttackCollider_Off();
 
+    m_tAttackCoolTime.fAccTime = 0.f;
+    m_bSetPattern = false;
+
     m_bInvincible = false;
     m_bSuperArmor = true;
 }
 
 void Boss_Dellons_FSM::skill_901100()
 {
+    if (Is_AnimFinished())
+        m_eCurState = STATE::b_idle;
+
 }
 
 void Boss_Dellons_FSM::skill_901100_Init()
 {
+    m_tAttackCoolTime.fAccTime = 0.f;
+    m_bSetPattern = false;
 }
 
 void Boss_Dellons_FSM::skill_902100()
 {
+    if (Is_AnimFinished())
+        m_eCurState = STATE::b_idle;
+
 }
 
 void Boss_Dellons_FSM::skill_902100_Init()
 {
+    m_tAttackCoolTime.fAccTime = 0.f;
+    m_bSetPattern = false;
 }
 
 void Boss_Dellons_FSM::skill_903100()
 {
+    if (Is_AnimFinished())
+        m_eCurState = STATE::b_idle;
+
 }
 
 void Boss_Dellons_FSM::skill_903100_Init()
 {
+    m_tAttackCoolTime.fAccTime = 0.f;
+    m_bSetPattern = false;
 }
 
 void Boss_Dellons_FSM::skill_904100()
 {
+    if (Is_AnimFinished())
+        m_eCurState = STATE::b_idle;
+
 }
 
 void Boss_Dellons_FSM::skill_904100_Init()
 {
+    m_tAttackCoolTime.fAccTime = 0.f;
+    m_bSetPattern = false;
 }
 
 
@@ -1613,7 +1692,7 @@ void Boss_Dellons_FSM::Calculate_SkillCamRight()
         m_vSkillCamRight = (Get_Transform()->Get_State(Transform_State::RIGHT) * 3.f);
 }
 
-void Boss_Dellons_FSM::Execute_AttackSkill_Phase1()
+void Boss_Dellons_FSM::Set_AttackSkill_Phase1()
 {
     _uint iRan = rand() % 6;
 
@@ -1627,35 +1706,42 @@ void Boss_Dellons_FSM::Execute_AttackSkill_Phase1()
 
     if (iRan == 0)
     {
-        m_eCurState = STATE::skill_1100;
+        m_fAttackRange = 2.f;
+        m_ePatternState = STATE::skill_1100;
         m_iPreAttack = 0;
     }
     else if (iRan == 1)
     {
-        m_eCurState = STATE::skill_100100;
+        m_fAttackRange = 3.f;
+        m_ePatternState = STATE::skill_100100;
         m_iPreAttack = 1;
     }
     else if (iRan == 2)
     {
-        m_eCurState = STATE::skill_200100;
+        m_fAttackRange = 5.f;
+        m_ePatternState = STATE::skill_200100;
         m_iPreAttack = 2;
     }
     else if (iRan == 3)
     {
-        m_eCurState = STATE::skill_300100;
+        m_fAttackRange = 5.f;
+        m_ePatternState = STATE::skill_300100;
         m_iPreAttack = 3;
     }
     else if (iRan == 4)
     {
-        m_eCurState = STATE::skill_400100;
+        m_fAttackRange = 2.5f;
+        m_ePatternState = STATE::skill_400100;
         m_iPreAttack = 4;
     }
     else if (iRan == 5)
     {
-        m_eCurState = STATE::skill_501100;
+        m_fAttackRange = 10.f;
+        m_ePatternState = STATE::skill_501100;
         m_iPreAttack = 5;
     }
 
+    m_bSetPattern = true;
 }
 
 

@@ -67,7 +67,7 @@ void Converter::ExportAnimationData(const wstring& savePath)
 
 		m_Animations.push_back(animation);
 	}
-
+	
 	fs::create_directories(fs::path(savePath).parent_path());
 	wstring fileName = fs::path(savePath).filename();
 	wstring finalPath = savePath  + L".clip";

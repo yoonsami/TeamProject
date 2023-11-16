@@ -8,16 +8,16 @@
 
 cbuffer GlobalBuffer
 {
-    matrix V;
-    matrix P;
-    matrix VP;
-    matrix VInv;
+    row_major float4x4 V;
+    row_major float4x4 P;
+    row_major float4x4 VP;
+    row_major float4x4 VInv;
 };
 
 cbuffer TransformBuffer
 {
-    matrix W;
-    matrix preW;
+    row_major float4x4 W;
+    row_major float4x4 preW;
 };
 
 ////////////////
@@ -444,7 +444,7 @@ float3 CameraPosition()
 
 #define IDENTITY_MATRIX float4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
 
-float4x4 inverse(float4x4 m)
+row_major float4x4 inverse(row_major float4x4 m)
 {
     float n11 = m[0][0], n12 = m[1][0], n13 = m[2][0], n14 = m[3][0];
     float n21 = m[0][1], n22 = m[1][1], n23 = m[2][1], n24 = m[3][1];
@@ -459,7 +459,7 @@ float4x4 inverse(float4x4 m)
     float det = n11 * t11 + n21 * t12 + n31 * t13 + n41 * t14;
     float idet = 1.0f / det;
 
-    float4x4 ret;
+    row_major float4x4 ret;
 
     ret[0][0] = t11 * idet;
     ret[0][1] = (n24 * n33 * n41 - n23 * n34 * n41 - n24 * n31 * n43 + n21 * n34 * n43 + n23 * n31 * n44 - n21 * n33 * n44) * idet;
@@ -485,7 +485,7 @@ float4x4 inverse(float4x4 m)
 }
 
 // http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/
-float4 matrix_to_quaternion(float4x4 m)
+float4 matrix_to_quaternion(row_major float4x4 m)
 {
     float tr = m[0][0] + m[1][1] + m[2][2];
     float4 q = float4(0, 0, 0, 0);
@@ -526,7 +526,7 @@ float4 matrix_to_quaternion(float4x4 m)
     return q;
 }
 
-float4x4 m_scale(float4x4 m, float3 v)
+row_major float4x4 m_scale(row_major float4x4 m, float3 v)
 {
     float x = v.x, y = v.y, z = v.z;
 
@@ -546,9 +546,9 @@ float4x4 m_scale(float4x4 m, float3 v)
     return m;
 }
 
-float4x4 quaternion_to_matrix(float4 quat)
+row_major float4x4 quaternion_to_matrix(float4 quat)
 {
-    float4x4 m = float4x4(float4(0, 0, 0, 0), float4(0, 0, 0, 0), float4(0, 0, 0, 0), float4(0, 0, 0, 0));
+    row_major float4x4 m = float4x4(float4(0, 0, 0, 0), float4(0, 0, 0, 0), float4(0, 0, 0, 0), float4(0, 0, 0, 0));
 
     float x = quat.x, y = quat.y, z = quat.z, w = quat.w;
     float x2 = x + x, y2 = y + y, z2 = z + z;
@@ -573,7 +573,7 @@ float4x4 quaternion_to_matrix(float4 quat)
     return m;
 }
 
-float4x4 m_translate(float4x4 m, float3 v)
+row_major float4x4 m_translate(row_major float4x4 m, float3 v)
 {
     float x = v.x, y = v.y, z = v.z;
     m[3][0] = x;
@@ -582,15 +582,15 @@ float4x4 m_translate(float4x4 m, float3 v)
     return m;
 }
 
-float4x4 compose(float3 position, float4 quat, float3 scale)
+row_major float4x4 compose(float3 position, float4 quat, float3 scale)
 {
-    float4x4 m = quaternion_to_matrix(quat);
+    row_major float4x4 m = quaternion_to_matrix(quat);
     m = m_scale(m, scale);
     m = m_translate(m, position);
     return m;
 }
 
-void decompose(in float4x4 m, out float3 position, out float4 rotation, out float3 scale)
+void decompose(in row_major float4x4 m, out float3 position, out float4 rotation, out float3 scale)
 {
     float sx = length(float3(m[0][0], m[0][1], m[0][2]));
     float sy = length(float3(m[1][0], m[1][1], m[1][2]));
@@ -632,7 +632,7 @@ void decompose(in float4x4 m, out float3 position, out float4 rotation, out floa
     scale.z = sz;
 }
 
-float4x4 axis_matrix(float3 right, float3 up, float3 forward)
+row_major float4x4 axis_matrix(float3 right, float3 up, float3 forward)
 {
     float3 xaxis = right;
     float3 yaxis = up;
@@ -646,7 +646,7 @@ float4x4 axis_matrix(float3 right, float3 up, float3 forward)
 }
 
 // http://stackoverflow.com/questions/349050/calculating-a-lookat-matrix
-float4x4 look_at_matrix(float3 forward, float3 up)
+row_major float4x4 look_at_matrix(float3 forward, float3 up)
 {
     float3 xaxis = normalize(cross(forward, up));
     float3 yaxis = up;
@@ -654,7 +654,7 @@ float4x4 look_at_matrix(float3 forward, float3 up)
     return axis_matrix(xaxis, yaxis, zaxis);
 }
 
-float4x4 look_at_matrix(float3 at, float3 eye, float3 up)
+row_major float4x4 look_at_matrix(float3 at, float3 eye, float3 up)
 {
     float3 zaxis = normalize(at - eye);
     float3 xaxis = normalize(cross(up, zaxis));
@@ -662,7 +662,7 @@ float4x4 look_at_matrix(float3 at, float3 eye, float3 up)
     return axis_matrix(xaxis, yaxis, zaxis);
 }
 
-float4x4 extract_rotation_matrix(float4x4 m)
+row_major float4x4 extract_rotation_matrix(row_major float4x4 m)
 {
     float sx = length(float3(m[0][0], m[0][1], m[0][2]));
     float sy = length(float3(m[1][0], m[1][1], m[1][2]));
@@ -765,7 +765,7 @@ float4 q_slerp(in float4 a, in float4 b, float t)
     return QUATERNION_IDENTITY;
 }
 
-float4x4 slerpMat(float4x4 m0, float4x4 m1, float t)
+row_major float4x4 slerpMat(row_major float4x4 m0, row_major float4x4 m1, float t)
 {
     float3 curTrans, curScale;
     float4 curRot;

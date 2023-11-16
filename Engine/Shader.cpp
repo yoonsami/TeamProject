@@ -17,7 +17,9 @@ Shader::~Shader()
 
 void Shader::Load(const wstring& path)
 {
-	_file = (L"..\\Shaders\\" + path); 
+	wstring fileName = path;
+	Utils::ChangeExt(fileName, L".cso");
+	_file = (L"..\\Binaries\\" + fileName);
 	m_strShaderTag = (path);
 
 		_initialStateBlock = make_shared<StateBlock>();
@@ -141,7 +143,7 @@ ComPtr<ID3D11InputLayout> Shader::CreateInputLayout(ComPtr<ID3DBlob> fxBlob, D3D
 		}
 
 		string name = paramDesc.SemanticName;
-		transform(name.begin(), name.end(), name.begin(), toupper);
+		std::transform(name.begin(), name.end(), name.begin(), ::toupper);
 
 		if (name == "POSITION")
 		{
@@ -293,8 +295,9 @@ ShaderDesc ShaderManager::GetEffect(wstring fileName)
 		ComPtr<ID3DBlob> blob;
 		ComPtr<ID3DBlob> error;
 		INT flag = D3D10_SHADER_ENABLE_BACKWARDS_COMPATIBILITY | D3D10_SHADER_PACK_MATRIX_ROW_MAJOR;
-
-		HRESULT hr = ::D3DCompileFromFile(fileName.c_str(), NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, NULL, "fx_5_0", flag, NULL, blob.GetAddressOf(), error.GetAddressOf());
+		
+		HRESULT hr = ::D3DReadFileToBlob(fileName.c_str(), blob.GetAddressOf());
+		//HRESULT hr = ::D3DCompileFromFile(fileName.c_str(), NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, NULL, "fx_5_0", flag, NULL, blob.GetAddressOf(), error.GetAddressOf());
 		if (FAILED(hr))
 		{
 			if (error != NULL)

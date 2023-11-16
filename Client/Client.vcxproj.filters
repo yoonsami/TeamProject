@@ -100,9 +100,6 @@
     <Filter Include="02.Component\01.FSM\01.Hero_FSM\04.Dellons_FSM">
       <UniqueIdentifier>{6271cf5d-07bd-40b3-981c-e1ac33b0459d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\01.FSM\01.Hero_FSM\05.">
-      <UniqueIdentifier>{c430e1c9-328a-4db3-a452-923e9ba683ea}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Component\01.FSM\03.Special_FSM">
       <UniqueIdentifier>{07de820b-d706-4b0a-a69a-dbc77ce8061d}</UniqueIdentifier>
     </Filter>
@@ -175,11 +172,8 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\02.UiHpBarController">
       <UniqueIdentifier>{ddb62fe5-0028-482f-a21c-728ae38e9433}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\10.UiTargetLockOn">
-      <UniqueIdentifier>{2d633e60-957f-423e-a908-3c3bbcf9e06e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp">
-      <UniqueIdentifier>{28a26473-8e91-41a2-ae24-2eb53fba68b0}</UniqueIdentifier>
+    <Filter Include="02.Component\01.FSM\01.Hero_FSM\05.Spike_FSM">
+      <UniqueIdentifier>{c430e1c9-328a-4db3-a452-923e9ba683ea}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCard">
       <UniqueIdentifier>{102f1145-f71e-42d9-9844-068bc263bbaf}</UniqueIdentifier>
@@ -393,7 +387,7 @@
     <ClInclude Include="Gacha_FSM.h">
       <Filter>02.Component\01.FSM\04.Gacha_FSM</Filter>
     </ClInclude>
-    <ClInclude Include="GachaScene.h" />
+    <ClInclude Include="Kyle_GachaScene.h" />
     <ClInclude Include="Boss_DellonsWraith_FSM.h">
       <Filter>02.Component\01.FSM\02.Monster_FSM\02.Boss_Dellons_FSM</Filter>
     </ClInclude>
@@ -403,11 +397,11 @@
     <ClInclude Include="UiHpBarController.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\02.UiHpBarController</Filter>
     </ClInclude>
-    <ClInclude Include="UiTargetLockOn.h">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\10.UiTargetLockOn</Filter>
+    <ClInclude Include="Boss_DellonsWraith_FSM.h">
+      <Filter>02.Component\01.FSM\03.Special_FSM\01.Monster_Special_FSM\00.Boss_DellonsWraith_FSM</Filter>
     </ClInclude>
-    <ClInclude Include="UiMonsterHp.h">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp</Filter>
+    <ClInclude Include="Spike_FSM.h">
+      <Filter>02.Component\01.FSM\01.Hero_FSM\05.Spike_FSM</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -579,21 +573,18 @@
     <ClCompile Include="Gacha_FSM.cpp">
       <Filter>02.Component\01.FSM\04.Gacha_FSM</Filter>
     </ClCompile>
-    <ClCompile Include="GachaScene.cpp" />
+    <ClCompile Include="Kyle_GachaScene.cpp" />
     <ClCompile Include="Boss_Dellons_FSM.cpp">
-      <Filter>02.Component\01.FSM\02.Monster_FSM\02.Boss_Dellons_FSM</Filter>
-    </ClCompile>
-    <ClCompile Include="Boss_DellonsWraith_FSM.cpp">
       <Filter>02.Component\01.FSM\02.Monster_FSM\02.Boss_Dellons_FSM</Filter>
     </ClCompile>
     <ClCompile Include="UiHpBarController.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\02.UiHpBarController</Filter>
     </ClCompile>
-    <ClCompile Include="UiTargetLockOn.cpp">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\10.UiTargetLockOn</Filter>
+    <ClCompile Include="Boss_DellonsWraith_FSM.cpp">
+      <Filter>02.Component\01.FSM\03.Special_FSM\01.Monster_Special_FSM\00.Boss_DellonsWraith_FSM</Filter>
     </ClCompile>
-    <ClCompile Include="UiMonsterHp.cpp">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp</Filter>
+    <ClCompile Include="Spike_FSM.cpp">
+      <Filter>02.Component\01.FSM\01.Hero_FSM\05.Spike_FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -658,9 +649,6 @@
     <FxCompile Include="..\Shaders\Light.fx">
       <Filter>Shader\Common</Filter>
     </FxCompile>
-    <FxCompile Include="..\Shaders\Render.fx">
-      <Filter>Shader\Common</Filter>
-    </FxCompile>
     <FxCompile Include="..\Shaders\Shader_Bloom.fx">
       <Filter>Shader</Filter>
     </FxCompile>
@@ -683,6 +671,9 @@
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="..\Shaders\PBR.fx">
+      <Filter>Shader\Common</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\Render.fx">
       <Filter>Shader\Common</Filter>
     </FxCompile>
   </ItemGroup>
