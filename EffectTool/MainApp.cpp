@@ -38,8 +38,7 @@ HRESULT MainApp::Init()
 	Open_Scene();
 
 	// For. Off AASO ( for save frame)
-	GAMEINSTANCE.g_SSAOData.g_bSSAO_On = false;
-	GAMEINSTANCE.g_bLensFlare = false;
+
 
 	return S_OK;
 }
