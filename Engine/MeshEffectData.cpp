@@ -49,6 +49,7 @@ void MeshEffectData::Load(const wstring& path)
     m_tDesc.strDiffuseTexture = file->Read<string>();
     m_tDesc.vDiffuseColor_BaseStart = file->Read<_float4>();
     m_tDesc.vDiffuseColor_BaseEnd = file->Read<_float4>();
+    m_tDesc.vDiffuseColor_BaseGradation = file->Read<_float4>();
     m_tDesc.vDestColor_Diffuse = file->Read<_float4>();
     m_tDesc.vTiling_Diffuse = file->Read<_float2>();
     m_tDesc.vUVSpeed_Diffuse = file->Read<_float2>();
@@ -97,8 +98,15 @@ void MeshEffectData::Load(const wstring& path)
     m_tDesc.vTiling_Blend = file->Read<_float2>();
     m_tDesc.vUVSpeed_Blend = file->Read<_float2>();
 
+    /* Additional */
+    m_tDesc.strAdditionalTexture = file->Read<string>();
+    m_tDesc.vTiling_Additional = file->Read<_float2>();
+    m_tDesc.vUVSpeed_Additional = file->Read<_float2>();
+    m_tDesc.vBaseColor_Additional = file->Read<_float4>();
+
     /* Color Edit */
     m_tDesc.fContrast = file->Read<_float>();
+    m_tDesc.fDefinition = file->Read<_float>();
 
     // For. Load Transform_Desc 
     /* Init Position */

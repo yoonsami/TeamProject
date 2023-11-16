@@ -40,6 +40,7 @@ private:
 	void					Option_Overlay();
 	void					Option_Dissolve();
 	void					Option_Distortion();
+	void					Option_Additional();
 	void					Option_ColorEdit();
 	void					Option_InitTransform();
 	void					Option_Movement();
@@ -122,6 +123,8 @@ private:
 	pair<_int, string>		m_DiffuseTexture = { 0, "None" };
 	ImVec4					m_vDiffuseColor_BaseStart = ImVec4(1.f, 1.f, 1.f, 1.f);
 	ImVec4					m_vDiffuseColor_BaseEnd = ImVec4(1.f, 1.f, 1.f, 1.f);
+	_bool					m_bUseSolidColor = { false };
+	ImVec4					m_vDiffuseColor_BaseGradation = ImVec4(1.f, 1.f, 1.f, 1.f);
 	ImVec4					m_vDiffuseColor_Dest = ImVec4(1.f, 1.f, 1.f, 1.f);
 	_bool					m_bIsTextureSameWithOpacity = { false };
 	_float					m_fTiling_Diffuse[2] = { 0.f, 0.f };
@@ -163,7 +166,7 @@ private:
 	pair<_int, string>		m_NormalTexture = { 0, "None" };
 
 	/* Dissolve */
-	_bool					m_bDissolve_On = { true };
+	_bool					m_bDissolve_On = { false };
 	pair<_int, string>		m_DissolveTexture = { 0, "None" };
 	_bool					m_bUVOptionSameWithOpacity_Dissolve = { true };
 	_float					m_fTiling_Dissolve[2] = { 0.f, 0.f };
@@ -171,7 +174,7 @@ private:
 	_bool					m_bDissolveInverse = { false };
 
 	/* Distortion */
-	_bool					m_bDistortion_On = { true };
+	_bool					m_bDistortion_On = { false };
 	pair<_int, string>		m_DistortionTexture = { 0, "None" };
 	_bool					m_bUVOptionSameWithOpacity_Distortion = { true };
 	_float					m_fTiling_Distortion[2] = { 0.f, 0.f };
@@ -184,8 +187,17 @@ private:
 	_float					m_fTiling_Blend[2] = { 0.f, 0.f };
 	_float					m_fUVSpeed_Blend[2] = { 0.f, 0.f };
 
+	/* Additional */
+	_bool					m_bAdditional_On = { false };
+	pair<_int, string>		m_AdditionalTexture = { 0, "None" };
+	_bool					m_bUVOptionSameWithOpacity_Additional = { true };
+	_float					m_fTiling_Additional[2] = { 0.f, 0.f };
+	_float					m_fUVSpeed_Additional[2] = { 0.f, 0.f };
+	ImVec4					m_vAdditionalColor_Base = ImVec4(1.f, 1.f, 1.f, 1.f);
+	
 	/* Color Edit */
-	_float					m_fContrast = { 0.f };
+	_float					m_fContrast = { 1.f };
+	_float					m_fDefinition = { 1.f };
 
 	/* Initliaze Transform */
 	_int					m_iInitPosOption = { 0 };					// static, random in range 
@@ -217,8 +229,8 @@ private:
 	_float					m_fRandomAxis_Max[3] = { 0.f, 0.f, 0.f };
 	
 	/* const */
-	const string			m_strTexturePath = "../Resources/Textures/Universal/";
-	const string			m_strNormalTexturePath = "../Resources/Textures/Universal/Normal/";
+	const string					m_strTexturePath = "../Resources/Textures/Universal/";
+	const string					m_strNormalTexturePath = "../Resources/Textures/Universal/Normal/";
 	const ImGuiColorEditFlags		ColorEdit_flags = 0 | ImGuiColorEditFlags_AlphaBar;
 };
 
