@@ -354,7 +354,7 @@ void MeshEffect::Init_RenderParams()
     m_RenderParams.SetMatrix(1, vTemp4x4);
     vTemp4x4 = _float4x4(
         m_tDesc.vBaseColor_Overlay,
-        _float4(0.f, 0.f, 0.f, 0.f),
+        _float4( (_float)m_tDesc.bIsUseTextureColor_Op1, (_float)m_tDesc.bIsUseTextureColor_Op2, (_float)m_tDesc.bIsUseTextureColor_Op3, (_float)m_tDesc.bIsUseTextureColor_Op4 ),
         _float4(0.f, 0.f, 0.f, 0.f),
         _float4(0.f, 0.f, 0.f, 0.f)
     );
@@ -390,7 +390,7 @@ void MeshEffect::Bind_UpdatedColor_ToShader()
     m_RenderParams.SetMatrix(1, vTemp4x4);
     vTemp4x4 = _float4x4(
         m_tDesc.vBaseColor_Overlay,
-        _float4(0.f, 0.f, 0.f, 0.f),
+        _float4((_float)m_tDesc.bIsUseTextureColor_Op1, (_float)m_tDesc.bIsUseTextureColor_Op2, (_float)m_tDesc.bIsUseTextureColor_Op3, (_float)m_tDesc.bIsUseTextureColor_Op4),
         _float4(0.f, 0.f, 0.f, 0.f),
         _float4(0.f, 0.f, 0.f, 0.f)
     );
