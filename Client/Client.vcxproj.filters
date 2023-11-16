@@ -387,7 +387,7 @@
     <ClInclude Include="Gacha_FSM.h">
       <Filter>02.Component\01.FSM\04.Gacha_FSM</Filter>
     </ClInclude>
-    <ClInclude Include="GachaScene.h" />
+    <ClInclude Include="Kyle_GachaScene.h" />
     <ClInclude Include="Boss_DellonsWraith_FSM.h">
       <Filter>02.Component\01.FSM\02.Monster_FSM\02.Boss_Dellons_FSM</Filter>
     </ClInclude>
@@ -567,7 +567,7 @@
     <ClCompile Include="Gacha_FSM.cpp">
       <Filter>02.Component\01.FSM\04.Gacha_FSM</Filter>
     </ClCompile>
-    <ClCompile Include="GachaScene.cpp" />
+    <ClCompile Include="Kyle_GachaScene.cpp" />
     <ClCompile Include="Boss_Dellons_FSM.cpp">
       <Filter>02.Component\01.FSM\02.Monster_FSM\02.Boss_Dellons_FSM</Filter>
     </ClCompile>

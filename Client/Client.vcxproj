@@ -206,7 +206,7 @@
     <ClInclude Include="DemoCameraScript2.h" />
     <ClInclude Include="DemoScene.h" />
     <ClInclude Include="ForwardMovingSkillScript.h" />
-    <ClInclude Include="GachaScene.h" />
+    <ClInclude Include="Kyle_GachaScene.h" />
     <ClInclude Include="Gacha_FSM.h" />
     <ClInclude Include="HeroChangeScript.h" />
     <ClInclude Include="Kyle_FSM.h" />
@@ -269,7 +269,7 @@
     <ClCompile Include="DemoCameraScript2.cpp" />
     <ClCompile Include="DemoScene.cpp" />
     <ClCompile Include="ForwardMovingSkillScript.cpp" />
-    <ClCompile Include="GachaScene.cpp" />
+    <ClCompile Include="Kyle_GachaScene.cpp" />
     <ClCompile Include="Gacha_FSM.cpp" />
     <ClCompile Include="HeroChangeScript.cpp" />
     <ClCompile Include="Kyle_FSM.cpp" />

@@ -1,7 +1,6 @@
 #pragma once
 #include "Scene.h"
 
-class GachaScene;
 class DemoScene :
 	public Scene
 {

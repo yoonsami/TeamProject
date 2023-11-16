@@ -130,6 +130,7 @@ private:
 	GizmoTarget m_GizmoTarget = GizmoTMapObj;
 
 // 스카이박스 관련
+	_float4 m_CamPos = { 0.f, 0.f, 0.f, 0.f };
 	vector<const char*> m_strSkyboxList;
 	// 로드시 문자열 동적할당을 위한 공간
 	vector<shared_ptr<char[]>> m_strSkyBoxNamePtr;
