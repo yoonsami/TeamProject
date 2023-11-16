@@ -66,6 +66,11 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     float4 vBaseColor1_Op4 = g_mat_1._31_32_33_34;
     float4 vBaseColor2_Op4 = g_mat_1._41_42_43_44;
     float4 vBaseColor_Overlay = g_mat_2._11_12_13_14;
+    
+    float bUseTexColor_Op1 = g_mat_2._21;
+    float bUseTexColor_Op2 = g_mat_2._22;
+    float bUseTexColor_Op3 = g_mat_2._23;
+    float bUseTexColor_Op4 = g_mat_2._24;
         
     /* Calc Texcoord */
     float fDistortionWeight = 0.f;
@@ -97,39 +102,70 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     float4 vSample_Dissolve = { 0.f, 0.f, 0.f, 0.f };
     if (bHasTexturemap7)
     {        
-        vSample_Op1.a = TextureMap7.Sample(LinearSamplerClamp, vTexcoord_Op1).r;
-        vSample_Op1.rgb = lerp(vBaseColor2_Op1, vBaseColor1_Op1, vSample_Op1.a);
+        if (0.f == bUseTexColor_Op1)
+        {
+            vSample_Op1.a = TextureMap7.Sample(LinearSamplerClamp, vTexcoord_Op1).r;
+            vSample_Op1.rgb = lerp(vBaseColor2_Op1, vBaseColor1_Op1, vSample_Op1.a);
+        }
+        else
+        {
+            vSample_Op1 = TextureMap7.Sample(LinearSamplerClamp, vTexcoord_Op1);
+            vSample_Op1.rgb = pow(vSample_Op1.rgb, GAMMA);
+        }
         
         float luminance = dot(vSample_Op1.rgb, float3(0.299, 0.587, 0.114));
         vSample_Op1.rgb = lerp(vSample_Op1.rgb, vSample_Op1.rgb * vOp1_ColorOptions.x, saturate(luminance));
-        vSample_Op1.a *= vOp1_ColorOptions.y;
+        vSample_Op1.a = saturate(vSample_Op1.a * vOp1_ColorOptions.y);
     }
     if (bHasTexturemap8)
     {
-        vSample_Op2.a = TextureMap8.Sample(LinearSamplerClamp, vTexcoord_Op2).r;
-        vSample_Op2.rgb = lerp(vBaseColor2_Op2, vBaseColor1_Op2, vSample_Op2.a);
+        if (0.f == bUseTexColor_Op1)
+        {
+            vSample_Op2.a = TextureMap8.Sample(LinearSamplerClamp, vTexcoord_Op2).r;
+            vSample_Op2.rgb = lerp(vBaseColor2_Op2, vBaseColor1_Op2, vSample_Op2.a);
+        }
+        else
+        {
+            vSample_Op2 = TextureMap8.Sample(LinearSamplerClamp, vTexcoord_Op2);
+            vSample_Op2.rgb = pow(vSample_Op2.rgb, GAMMA);
+        }
         
         float luminance = dot(vSample_Op2.rgb, float3(0.299, 0.587, 0.114));
         vSample_Op2.rgb = lerp(vSample_Op2.rgb, vSample_Op2.rgb * vOp2_ColorOptions.x, saturate(luminance));
-        vSample_Op2.a *= vOp2_ColorOptions.y;
+        vSample_Op2.a = saturate(vSample_Op2.a * vOp2_ColorOptions.y);
     }
     if (bHasTexturemap9)
     {
-        vSample_Op3.a = TextureMap9.Sample(LinearSamplerClamp, vTexcoord_Op3).r;
-        vSample_Op3.rgb = lerp(vBaseColor2_Op3, vBaseColor1_Op3, vSample_Op3.a);
-        
+        if (0.f == bUseTexColor_Op1)
+        {
+            vSample_Op3.a = TextureMap9.Sample(LinearSamplerClamp, vTexcoord_Op3).r;
+            vSample_Op3.rgb = lerp(vBaseColor2_Op3, vBaseColor1_Op3, vSample_Op3.a);
+        }
+        else
+        {
+            vSample_Op3 = TextureMap9.Sample(LinearSamplerClamp, vTexcoord_Op3);
+            vSample_Op3.rgb = pow(vSample_Op3.rgb, GAMMA);
+        }
+
         float luminance = dot(vSample_Op3.rgb, float3(0.299, 0.587, 0.114));
         vSample_Op3.rgb = lerp(vSample_Op3.rgb, vSample_Op3.rgb * vOp3_ColorOptions.x, saturate(luminance));
-        vSample_Op3.a *= vOp3_ColorOptions.y;
+        vSample_Op3.a = saturate(vSample_Op3.a * vOp3_ColorOptions.y);
     }
     if (bHasTexturemap10)
     {
-        vSample_Op4.a = TextureMap10.Sample(LinearSamplerClamp, vTexcoord_Op4).r;
-        vSample_Op4.rgb = lerp(vBaseColor2_Op4, vBaseColor1_Op4, vSample_Op4.a);
-        
+        if (0.f == bUseTexColor_Op1)
+        {
+            vSample_Op4.a = TextureMap10.Sample(LinearSamplerClamp, vTexcoord_Op4).r;
+            vSample_Op4.rgb = lerp(vBaseColor2_Op4, vBaseColor1_Op4, vSample_Op4.a);
+        }
+        else
+        {
+            vSample_Op4 = TextureMap10.Sample(LinearSamplerClamp, vTexcoord_Op4);
+            vSample_Op4.rgb = pow(vSample_Op4.rgb, GAMMA);
+        }
         float luminance = dot(vSample_Op4.rgb, float3(0.299, 0.587, 0.114));
         vSample_Op4.rgb = lerp(vSample_Op4.rgb, vSample_Op4.rgb * vOp4_ColorOptions.x, saturate(luminance));
-        vSample_Op4.a *= vOp4_ColorOptions.y;
+        vSample_Op4.a = saturate(vSample_Op4.a * vOp4_ColorOptions.y);
     }
     if (bHasTexturemap11)
         vSample_Overlay = TextureMap11.Sample(LinearSamplerClamp, vTexcoord_Overlay);
@@ -142,10 +178,17 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     vOutColor = lerp(vOutColor, vSample_Op3, vSample_Op3.a);
     vOutColor = lerp(vOutColor, vSample_Op4, vSample_Op4.a);
     
+    if (bUseTexColor_Op1 || bUseTexColor_Op2 || bUseTexColor_Op3 || bUseTexColor_Op4)
+        vOutColor.rgb = pow(vOutColor.rgb, 1.f / GAMMA);
+    
     /* DissolveMap */
    
     /* Overlay */
-
+    
+    /* Fade Out */
+    if (bUseFadeOut)
+        vOutColor.a *= (1.f - fLifeTimeRatio);
+    
     return vOutColor;
 }
 
