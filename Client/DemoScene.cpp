@@ -160,9 +160,9 @@ HRESULT DemoScene::Load_Scene()
 	Load_Player();
 	Load_Light();
 	Load_Camera();
-	Load_MapFile(L"GranseedMap");
+	Load_MapFile(L"KrisMap");
 	Load_Monster(1);
-	Load_Boss_Mir();
+	Load_Boss_Dellons();X
 
 	Load_Ui();
 
@@ -585,7 +585,7 @@ void DemoScene::Load_Ui()
 	
 	{
 		auto pObj = Get_GameObject(L"Boss_Dellons");
-        auto pScript = make_shared<UiMonsterHp>();
+		auto pScript = make_shared<UiMonsterHp>();
 		pObj->Add_Component(pScript);
 	}
 

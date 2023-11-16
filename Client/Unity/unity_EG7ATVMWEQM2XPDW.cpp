@@ -23,3 +23,6 @@
 
 #include "E:\Programming\TeamProject\Libraries\Include\IMGUI\imgui_impl_dx11.cpp"
 
+
+#include "E:\Programming\TeamProject\Libraries\Include\IMGUI\imgui_impl_win32.cpp"
+

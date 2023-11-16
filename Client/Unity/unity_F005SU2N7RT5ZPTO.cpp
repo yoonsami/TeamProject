@@ -1,8 +1,5 @@
 #include "pch.h"
 
-#include "E:\Programming\TeamProject\Libraries\Include\IMGUI\imgui_impl_win32.cpp"
-
-
 #include "E:\Programming\TeamProject\Libraries\Include\IMGUI\imgui_stdlib.cpp"
 
 
@@ -22,4 +19,10 @@
 
 
 #include "E:\Programming\TeamProject\Client\Boss_Dellons_FSM.cpp"
+
+
+#include "E:\Programming\TeamProject\Client\Boss_Mir_FSM.cpp"
+
+
+#include "E:\Programming\TeamProject\Client\Client.cpp"
 

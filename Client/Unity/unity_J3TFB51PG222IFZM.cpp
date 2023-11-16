@@ -1,11 +1,5 @@
 #include "pch.h"
 
-#include "E:\Programming\TeamProject\Client\Boss_Mir_FSM.cpp"
-
-
-#include "E:\Programming\TeamProject\Client\Client.cpp"
-
-
 #include "E:\Programming\TeamProject\Client\CoolTimeCheckScript.cpp"
 
 
@@ -22,4 +16,13 @@
 
 
 #include "E:\Programming\TeamProject\Client\Dellons_FSM.cpp"
+
+
+#include "E:\Programming\TeamProject\Client\DellonsWraith_FSM.cpp"
+
+
+#include "E:\Programming\TeamProject\Client\DemoAnimationController1.cpp"
+
+
+#include "E:\Programming\TeamProject\Client\DemoCameraScript1.cpp"
 
