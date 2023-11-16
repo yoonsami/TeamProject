@@ -640,9 +640,6 @@
     <FxCompile Include="..\Shaders\Light.fx">
       <Filter>Shader\Common</Filter>
     </FxCompile>
-    <FxCompile Include="..\Shaders\Render.fx">
-      <Filter>Shader\Common</Filter>
-    </FxCompile>
     <FxCompile Include="..\Shaders\Shader_Bloom.fx">
       <Filter>Shader</Filter>
     </FxCompile>
@@ -665,6 +662,9 @@
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="..\Shaders\PBR.fx">
+      <Filter>Shader\Common</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\Render.fx">
       <Filter>Shader\Common</Filter>
     </FxCompile>
   </ItemGroup>

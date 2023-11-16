@@ -66,7 +66,7 @@ struct PS_LIGHT_Deferred
 //SubMap1 : NormalRT
 //SubMap2 : ShadowRT
 float2 RenderTargetResolution;
-float4x4 ShadowCameraVP;
+row_major float4x4 ShadowCameraVP;
 
 //Mesh : Rect
 VS_OUT VS_DirLight(VS_IN input)
@@ -177,7 +177,7 @@ VS_OUT VS_SpotLight(VS_IN input)
 {
     VS_OUT output = (VS_OUT) 0.f;
     
-    float4x4 scale = IDENTITY_MATRIX;
+    row_major float4x4 scale = IDENTITY_MATRIX;
     float halfAngle = lights[lightIndex].angle / 2.f;
     
     float scaleRatio = 1.f/cos(halfAngle);

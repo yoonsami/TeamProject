@@ -4,7 +4,6 @@
 struct GachaSceneDesc
 {
 	wstring strMapFileName;
-	wstring strCharModelNmae;
 	HERO eHeroType;
 };
 

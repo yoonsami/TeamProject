@@ -112,60 +112,35 @@ void Kyle_GachaScene::Load_SkyBox()
 
 void Kyle_GachaScene::Load_Player()
 {
+
+	// Add. Player
+	shared_ptr<GameObject> ObjPlayer = make_shared<GameObject>();
+
+	ObjPlayer->Add_Component(make_shared<Transform>());
+
+	ObjPlayer->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
+	ObjPlayer->Get_Transform()->LookAt(_float4(0.f, 0.f, -1.f, 1.f));
+
+	wstring modelName = L"";
+
+	ObjPlayer->Set_DrawShadow(true);
+	ObjPlayer->Set_ObjectGroup(OBJ_PLAYER);
+	Add_GameObject(ObjPlayer);
+	Gacha_FSM_Desc desc;
+
+	switch (m_Desc.eHeroType)
 	{
-		// Add. Player
-		shared_ptr<GameObject> ObjPlayer = make_shared<GameObject>();
-		
-		ObjPlayer->Add_Component(make_shared<Transform>());
-	
-		ObjPlayer->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
-		ObjPlayer->Get_Transform()->LookAt(_float4(0.f, 0.f, 0.f, 1.f));
-		{
-			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-
-			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
-			{
-				shared_ptr<Model> model = RESOURCES.Get<Model>(m_Desc.strCharModelNmae);
-				animator->Set_Model(model);
-				
-			}
-			ObjPlayer->Add_Component(animator);
-		}
-		ObjPlayer->Set_Name(m_Desc.strCharModelNmae);
-		ObjPlayer->Set_DrawShadow(true);
-		ObjPlayer->Set_ObjectGroup(OBJ_PLAYER);
-		Add_GameObject(ObjPlayer);
-		Gacha_FSM_Desc desc;
-
-		switch (m_Desc.eHeroType)
-		{
-		case HERO::ACE3:
-		{
-			desc.strWeaponName = L"Weapon_Spear_Ace";
-			desc.strAnimTag = L"SQ_SpecialHero_Ace_Origin_01";
-			desc.iAnimStopFrame = 134;
-		}
-			break;
-		case HERO::KYLE:
-			break;
-		case HERO::YEOPO:
-			break;
-		case HERO::DELLONS:
-			break;
-		case HERO::MAX:
-			break;
-		default:
-			break;
-		}
-
-		
+	case HERO::KYLE:
+		modelName = L"Kyle";
+		desc.strWeaponName = L"";
+		desc.strAnimTag = L"SQ_SpecialHero_Kyle";
+		desc.iAnimStopFrame = 134;
+		break;
+	case HERO::YEOPO:
+		modelName = L"Yeopo";
 		desc.strWeaponName = L"Weapon_Yeopo";
 		desc.strAnimTag = L"SQ_SpecialHero_Yeopo";
 		desc.iAnimStopFrame = 134;
-		ObjPlayer->Add_Component(make_shared<Gacha_FSM>(desc));
-
-	
-
 		{
 			shared_ptr<GameObject> ObjVehicle = make_shared<GameObject>();
 
@@ -187,9 +162,23 @@ void Kyle_GachaScene::Load_Player()
 
 			Add_GameObject(ObjVehicle);
 		}
+		break;
+	case HERO::MAX:
+		break;
+	default:
+		break;
 	}
-	
 
+	ObjPlayer->Set_Name(modelName);
+	ObjPlayer->Add_Component(make_shared<Gacha_FSM>(desc));
+
+	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+	shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+	{
+		shared_ptr<Model> model = RESOURCES.Get<Model>(modelName);
+		animator->Set_Model(model);
+	}
+	ObjPlayer->Add_Component(animator);
 }
 
 void Kyle_GachaScene::Load_Camera()

@@ -1,7 +1,7 @@
 #include "Render.fx"
 #include "Light.fx"
 
-float4x4 g_preView;
+row_major float4x4 g_preView;
 
 struct MotionBlurOutput
 {
@@ -56,7 +56,7 @@ MeshOutput VS_Anim(VTXModel input)
 {
     MeshOutput output;
     
-    matrix m = GetAnimationMatrix(input);
+    row_major float4x4 m = GetAnimationMatrix(input);
 
     output.position = mul(float4(input.position, 1.f), m);
 
@@ -126,7 +126,7 @@ MeshInstancingOutput VS_AnimInstancing(VTXModelInstancing input)
 {
     MeshInstancingOutput output;
 
-    matrix m = GetAnimationMatrix_Instance(input);
+    row_major float4x4 m = GetAnimationMatrix_Instance(input);
     
     output.position = mul(float4(input.position, 1.f), m);
     output.position = mul(output.position, input.world);
@@ -166,7 +166,7 @@ ShadowOutput VS_Shadow_Anim(VTXModel input)
 {
     ShadowOutput output = (ShadowOutput) 0.f;
     
-    matrix m = GetAnimationMatrix(input);
+    row_major float4x4 m = GetAnimationMatrix(input);
     
     output.pos = mul(float4(input.position, 1.f), m);
     
@@ -196,7 +196,7 @@ ShadowInstanceOutput VS_Shadow_Anim_Instancing(VTXModelInstancing input)
 {
     ShadowInstanceOutput output = (ShadowInstanceOutput) 0.f;
     
-    matrix m = GetAnimationMatrix_Instance(input);
+    row_major float4x4 m = GetAnimationMatrix_Instance(input);
     
     output.pos = mul(float4(input.position, 1.f), m);
     
@@ -254,8 +254,8 @@ MotionBlurOutput VS_AnimMotionBlur(VTXModel input)
 {
     MotionBlurOutput output;
     
-    matrix m = GetAnimationMatrix(input);
-    matrix preM = GetPreAnimationMatrix(input);
+    row_major float4x4 m = GetAnimationMatrix(input);
+    row_major float4x4 preM = GetPreAnimationMatrix(input);
     
     output.position = mul(float4(input.position, 1.f), m);
     output.position = mul(output.position, W);
@@ -338,8 +338,8 @@ MotionBlurOutput VS_Anim_Instancing_MotionBlur(VTXModelInstancing input)
 {
     MotionBlurOutput output;
     
-    matrix m = GetAnimationMatrix_Instance(input);
-    matrix preM = GetPreAnimationMatrix_Instance(input);
+    row_major float4x4 m = GetAnimationMatrix_Instance(input);
+    row_major float4x4 preM = GetPreAnimationMatrix_Instance(input);
     
     output.position = mul(float4(input.position, 1.f), m);
     output.position = mul(output.position, input.world);
@@ -384,7 +384,7 @@ MeshOutput VS_Anim_MotionTrail(VTXModel input)
 {
     MeshOutput output;
     
-    matrix m = GetAnimationMatrix(input);
+    row_major float4x4 m = GetAnimationMatrix(input);
 
     output.position = mul(float4(input.position, 1.f), m);
 
@@ -408,7 +408,7 @@ MeshInstancingOutput VS_Anim_MotionTrail_Instancing(VTXModelInstancing input)
 {
     MeshInstancingOutput output;
 
-    matrix m = GetAnimationMatrix_Instance(input);
+    row_major float4x4 m = GetAnimationMatrix_Instance(input);
     
     output.position = mul(float4(input.position, 1.f), m);
     output.position = mul(output.position, input.world);

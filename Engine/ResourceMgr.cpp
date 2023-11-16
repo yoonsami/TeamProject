@@ -503,12 +503,6 @@ void ResourceMgr::CreateDefaultShader()
 		shader->Set_ShaderType(SHADER_TYPE::FORWARD);
 	}
 	{
-		wstring ShaderTag = L"Shader_Deferred.fx";
-		Load<Shader>(ShaderTag, ShaderTag);
-		auto shader = Get<Shader>(ShaderTag);
-		shader->Set_ShaderType(SHADER_TYPE::DEFERRED);
-	}	
-	{
 		wstring ShaderTag = L"Blur.fx";
 		Load<Shader>(ShaderTag, ShaderTag);
 		auto shader = Get<Shader>(ShaderTag);

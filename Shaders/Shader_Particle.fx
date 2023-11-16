@@ -752,7 +752,7 @@ VTXParticleModelOutput VS_NonAnim(VTXParticleModel input)
     particleRight = normalize(cross(particleUp, particleLook));
     if(g_int_3 == 0)
         particlePos += W._41_42_43;
-    float4x4 particleMat =
+    row_major float4x4 particleMat =
     float4x4
     (float4(particleRight * g_Data[input.instanceID].size.x, 0.f),
              float4(cross(particleLook, particleRight) * g_Data[input.instanceID].size.x, 0.f),

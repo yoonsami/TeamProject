@@ -3,7 +3,7 @@
 
 cbuffer cbPerFrame
 {
-    float4x4 gViewToTexSpace;
+    row_major float4x4 gViewToTexSpace;
     float4 gOffsetVectors[14];
     float4 gFrustumCorners[4];
 

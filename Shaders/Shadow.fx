@@ -37,7 +37,7 @@ VS_OUT VS_Shadow_Anim(VTXModel input)
 {
     VS_OUT output = (VS_OUT) 0.f;
     
-    matrix m = GetAnimationMatrix(input);
+    row_major float4x4 m = GetAnimationMatrix(input);
     
     output.pos = mul(float4(input.position, 1.f), m);
     
@@ -52,7 +52,7 @@ VS_OUT VS_Shadow_Anim_Instancing(VTXModelInstancing input)
 {
     VS_OUT output = (VS_OUT) 0.f;
     
-    matrix m = GetAnimationMatrix_Instance(input);
+    row_major float4x4 m = GetAnimationMatrix_Instance(input);
     
     output.pos = mul(float4(input.position, 1.f), m);
     
