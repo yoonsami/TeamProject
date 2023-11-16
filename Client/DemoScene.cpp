@@ -162,7 +162,7 @@ HRESULT DemoScene::Load_Scene()
 	Load_Camera();
 	Load_MapFile(L"KrisMap");
 	Load_Monster(1);
-	Load_Boss_Dellons();X
+	Load_Boss_Dellons();
 
 	Load_Ui();
 

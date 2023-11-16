@@ -46,37 +46,47 @@ void MeshEffectData::Load(const wstring& path)
     /* Coloring Option */
     m_tDesc.bColorChangingOn = file->Read<_bool>();
 
-    /* Diffuse */
-    m_tDesc.strDiffuseTexture = file->Read<string>();
-    m_tDesc.vDiffuseColor_BaseStart = file->Read<_float4>();
-    m_tDesc.vDiffuseColor_BaseEnd = file->Read<_float4>();
-    m_tDesc.vDiffuseColor_BaseGradation = file->Read<_float4>();
-    m_tDesc.vDestColor_Diffuse = file->Read<_float4>();
-    m_tDesc.vTiling_Diffuse = file->Read<_float2>();
-    m_tDesc.vUVSpeed_Diffuse = file->Read<_float2>();
-    m_tDesc.bIsUseTextureColor = file->Read<_bool>();
+    /* Option1 */
+    m_tDesc.strTexture_Op1 = file->Read<string>();
+    m_tDesc.bIsUseTextureColor_Op1 = file->Read<_int>();
+    m_tDesc.vBaseColor1_Op1 = file->Read<_float4>();
+    m_tDesc.vBaseColor2_Op1 = file->Read<_float4>();
+    m_tDesc.vDestColor1_Op1 = file->Read<_float4>();
+    m_tDesc.vDestColor2_Op1 = file->Read<_float4>();
+    m_tDesc.vTiling_Op1 = file->Read<_float2>();
+    m_tDesc.vUVSpeed_Op1 = file->Read<_float2>();
+    m_tDesc.fContrast_Op1 = file->Read<_float>();
+    m_tDesc.fAlphaOffset_Op1 = file->Read<_float>();
 
-    /* Opacity */
-    m_tDesc.strGraTexture = file->Read<string>();
-    m_tDesc.vTiling_Opacity = file->Read<_float2>();
-    m_tDesc.vUVSpeed_Opacity = file->Read<_float2>();
+    /* Option2 */
+    m_tDesc.strTexture_Op2 = file->Read<string>();
+    m_tDesc.bIsUseTextureColor_Op2 = file->Read<_int>();
+    m_tDesc.vBaseColor1_Op2 = file->Read<_float4>();
+    m_tDesc.vBaseColor2_Op2 = file->Read<_float4>();
+    m_tDesc.vDestColor1_Op2 = file->Read<_float4>();
+    m_tDesc.vDestColor2_Op2 = file->Read<_float4>();
+    m_tDesc.vTiling_Op2 = file->Read<_float2>();
+    m_tDesc.vUVSpeed_Op2 = file->Read<_float2>();
+    m_tDesc.fContrast_Op2 = file->Read<_float>();
+    m_tDesc.fAlphaOffset_Op2 = file->Read<_float>();
 
-    /* Alpha Gradation */
-    m_tDesc.fAlphaGraIntensity = file->Read<_float>();
-    m_tDesc.vBaseColor_AlphaGra = file->Read<_float4>();
-    m_tDesc.vBaseColor_AlphaGra = file->Read<_float4>();
-
-    /* Gradation by Texture */
-    m_tDesc.strGraTexture = file->Read<string>();
-    m_tDesc.vBaseColor_Gra = file->Read<_float4>();
-    m_tDesc.vTiling_Gra = file->Read<_float2>();
-    m_tDesc.vUVSpeed_Gra = file->Read<_float2>();
-    m_tDesc.vDestColor_Gra = file->Read<_float4>();
+    /* Option3 */
+    m_tDesc.strTexture_Op3 = file->Read<string>();
+    m_tDesc.bIsUseTextureColor_Op3 = file->Read<_int>();
+    m_tDesc.vBaseColor1_Op3 = file->Read<_float4>();
+    m_tDesc.vBaseColor2_Op3 = file->Read<_float4>();
+    m_tDesc.vDestColor1_Op3 = file->Read<_float4>();
+    m_tDesc.vDestColor2_Op3 = file->Read<_float4>();
+    m_tDesc.vTiling_Op3 = file->Read<_float2>();
+    m_tDesc.vUVSpeed_Op3 = file->Read<_float2>();
+    m_tDesc.fContrast_Op3 = file->Read<_float>();
+    m_tDesc.fAlphaOffset_Op3 = file->Read<_float>();
 
     /* Overlay */
     m_tDesc.bIsOverlayOn = file->Read<_bool>();
     m_tDesc.strOverlayTexture = file->Read<string>();
     m_tDesc.vBaseColor_Overlay = file->Read<_float4>();
+    m_tDesc.vDestColor_Overlay = file->Read<_float4>();
     m_tDesc.vTiling_Overlay = file->Read<_float2>();
     m_tDesc.vUVSpeed_Overlay = file->Read<_float2>();
 
@@ -93,21 +103,6 @@ void MeshEffectData::Load(const wstring& path)
     m_tDesc.strDistortionTexture = file->Read<string>();
     m_tDesc.vTiling_Distortion = file->Read<_float2>();
     m_tDesc.vUVSpeed_Distortion = file->Read<_float2>();
-
-    /* Blend */
-    m_tDesc.strBlendTexture = file->Read<string>();
-    m_tDesc.vTiling_Blend = file->Read<_float2>();
-    m_tDesc.vUVSpeed_Blend = file->Read<_float2>();
-
-    /* Additional */
-    m_tDesc.strAdditionalTexture = file->Read<string>();
-    m_tDesc.vTiling_Additional = file->Read<_float2>();
-    m_tDesc.vUVSpeed_Additional = file->Read<_float2>();
-    m_tDesc.vBaseColor_Additional = file->Read<_float4>();
-
-    /* Color Edit */
-    m_tDesc.fContrast = file->Read<_float>();
-    m_tDesc.fDefinition = file->Read<_float>();
 
     // For. Load Transform_Desc 
     /* Init Position */

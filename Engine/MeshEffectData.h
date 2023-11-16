@@ -28,37 +28,59 @@ public:
         /* Coloring Options */
         _bool       bColorChangingOn;
 
-        // Diffuse
-        string      strDiffuseTexture;
-        Color       vDiffuseColor_BaseStart;
-        Color       vDiffuseColor_BaseEnd;
-        Color       vDiffuseColor_BaseGradation;
-        Color       vDestColor_Diffuse;
-        _float2     vTiling_Diffuse;
-        _float2     vUVSpeed_Diffuse;
-        _int        bIsUseTextureColor;
+        // Option1
+        string      strTexture_Op1;
+        _int        bIsUseTextureColor_Op1;
+        Color       vBaseColor1_Op1;
+        Color       vBaseColor2_Op1;
+        Color       vDestColor1_Op1;
+        Color       vDestColor2_Op1;
+        _float2     vTiling_Op1;
+        _float2     vUVSpeed_Op1;
+        _float      fContrast_Op1;
+        _float      fAlphaOffset_Op1;
 
-        // Opacity
-        string      strOpacityTexture;
-        _float2     vTiling_Opacity;
-        _float2     vUVSpeed_Opacity;
+        // Option2
+        string      strTexture_Op2;
+        _int        bIsUseTextureColor_Op2;
+        Color       vBaseColor1_Op2;
+        Color       vBaseColor2_Op2;
+        Color       vDestColor1_Op2;
+        Color       vDestColor2_Op2;
+        _float2     vTiling_Op2;
+        _float2     vUVSpeed_Op2;
+        _float      fContrast_Op2;
+        _float      fAlphaOffset_Op2;
 
-        // Alpha Gradation
-        _float      fAlphaGraIntensity;
-        Color       vBaseColor_AlphaGra;
-        Color       vDestColor_AlphaGra;
+        // Option3
+        string      strTexture_Op3;
+        _int        bIsUseTextureColor_Op3;
+        Color       vBaseColor1_Op3;
+        Color       vBaseColor2_Op3;
+        Color       vDestColor1_Op3;
+        Color       vDestColor2_Op3;
+        _float2     vTiling_Op3;
+        _float2     vUVSpeed_Op3;
+        _float      fContrast_Op3;
+        _float      fAlphaOffset_Op3;
 
-        // Gradation
-        string      strGraTexture;
-        Color       vBaseColor_Gra;
-        Color       vDestColor_Gra;
-        _float2     vTiling_Gra;
-        _float2     vUVSpeed_Gra;
+        // Option4
+        string      strTexture_Op4;
+        _int        bIsUseTextureColor_Op4;
+        Color       vBaseColor1_Op4;
+        Color       vBaseColor2_Op4;
+        Color       vDestColor1_Op4;
+        Color       vDestColor2_Op4;
+        _float2     vTiling_Op4;
+        _float2     vUVSpeed_Op4;
+        _float      fContrast_Op4;
+        _float      fAlphaOffset_Op4;
 
         // Overlay
         _bool       bIsOverlayOn;
         string      strOverlayTexture;
         Color       vBaseColor_Overlay;
+        Color       vDestColor_Overlay;
         _float2     vTiling_Overlay;
         _float2     vUVSpeed_Overlay;
 
@@ -76,20 +98,6 @@ public:
         _float2     vTiling_Distortion;
         _float2     vUVSpeed_Distortion;
 
-        // Blend 
-        string      strBlendTexture;
-        _float2     vTiling_Blend;
-        _float2     vUVSpeed_Blend;
-
-        // Additional 
-        string      strAdditionalTexture;
-        _float2     vTiling_Additional;
-        _float2     vUVSpeed_Additional;
-        Color       vBaseColor_Additional;
-
-        // Color Editor
-        _float      fContrast;
-        _float      fDefinition;
     }DESC;
 
     typedef struct tagMeshEffectTransformData

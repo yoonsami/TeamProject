@@ -7,6 +7,25 @@ public:
 	enum MeshEffectType {MT_PARTICLE, MT_EFFECT, MT_END};
 	enum ParticleMovement {PM_END};
 
+	typedef struct tagOption
+	{
+		_bool					bIsOption_On = { false };
+
+		_int					iColoringOption = { 0 };
+		pair<_int, string>		Texture = { 0, "None" };
+
+		_bool					bUseSolidColor = { false };
+		ImVec4					vColorBase1 = ImVec4(1.f, 1.f, 1.f, 1.f);
+		ImVec4					vColorBase2 = ImVec4(1.f, 1.f, 1.f, 1.f);
+		ImVec4					vColorDest1 = ImVec4(1.f, 1.f, 1.f, 1.f);
+		ImVec4					vColorDest2 = ImVec4(1.f, 1.f, 1.f, 1.f);
+
+		_float					fTiling_Op[2] = { 0.f, 0.f };
+		_float					fUVSpeed_Op[2] = { 0.f, 0.f };
+		_float					fContrast = { 1.f };
+		_float					fAlphaOffset = { 1.f };
+	}Texture_Option;
+
 public:
 	Widget_EffectMaker_Mesh();
 	~Widget_EffectMaker_Mesh();
@@ -27,33 +46,33 @@ private:
 	void					ImGui_SaveMsgBox();
 	void					ImGui_TextureList();
 
-	/* Funtions */
+	/* Options */
 	void					Option_Property();
 	void					Option_Mesh();
-	void					Option_Opacity();
 	void					Option_SpriteAnimation();
-	void					Option_Blend();
-	void					Option_Diffuse();
+
+	void					Option_TextureOp(_int iIndex);
+
 	void					Option_Normal();
-	void					Option_AlphaGradation();
-	void					Option_Gradation();
 	void					Option_Overlay();
 	void					Option_Dissolve();
 	void					Option_Distortion();
-	void					Option_Additional();
-	void					Option_ColorEdit();
+
 	void					Option_InitTransform();
 	void					Option_Movement();
 
-	void					Create();
-	void					Save();
-	void					Load();
-
+	/* Sub Widgets */
 	void					SubWidget_TextureCombo(_int* iSelected, string* strSelected, string strFilePath, const char* pszWidgetKey);
 	void					SubWidget_TextureList();
 	void					SubWidget_ImageViewer(string strFileName, string strFilePath, const char* pszWidgetKey);
 	void					SubWidget_SettingTexUV(_float* arrTiling, _float* arrTexUVSpeed, const char* pszWidgetKey, const char* pszWidgetKey2);
 	
+	/* Function */
+	void					Create();
+	void					Save();
+	void					Load();
+	
+	/* Utils */
 	Color					ImVec4toColor(ImVec4 imvec);
 	ImVec4					ColorToImVec4(Color color);
 	_int					GetIndex_FromTexList(string strValue);
@@ -62,9 +81,9 @@ private:
 	_bool					Equal(_float3 vSrc, _float3 vDest);
 	_bool					Equal(ImVec4 vSrc, ImVec4 vDest);
 	_bool					Equal(_float* arrSrc, _float* arrDest, _int iSize);
-	_bool					Compare_IsSameUVOptionsWithOpacity(_float2 tiling, _float2 UVSpeed);
+
 private:
-	/* UI On/Off*/
+	/* Widget On/Off*/
 	_bool					m_bSaveMsgBox_On = { false };
 	_bool					m_bTextureList_On = { false };
 
@@ -85,6 +104,7 @@ private:
 	_float					m_fDuration = { 3.f };
 	_bool					m_bBlurOn = { false };
 	_bool					m_bUseFadeOut = { true };
+	_int					m_iSamplerType = { 1 };
 
 	/* Mesh Count */
 	_int					m_iMeshCnt = { 1 };
@@ -99,12 +119,6 @@ private:
 	_uint					m_iMesh = { 0 };
 	string					m_strMesh = { "None" };
 
-	/* Texture type list */
-	_int					m_iNumTextureTypes = { 9 };
-	const char*				m_pszTextureTypes[9] = {
-		"Diffuse", "Normal", "Speculer", "Opacity", "Emissive", "Dissolve","Distortion", "Gradation (tex 7)", "Blend (tex 9)"
-	};
-	
 	/* Texture list */
 	_uint					m_iNumUniversalTextures = { 0 };
 	vector<string>			m_vecUniversalTextures;
@@ -118,47 +132,14 @@ private:
 	_int					m_iSpriteAni_Count[2] = { 1, 1 }; 
 	_float					m_fSpriteAni_Speed = { 1.f };
 
-	/* Diffuse */
-	_int					m_iDiffuseOption = { 1 };	// Texture, Custom, Random
-	pair<_int, string>		m_DiffuseTexture = { 0, "None" };
-	ImVec4					m_vDiffuseColor_BaseStart = ImVec4(1.f, 1.f, 1.f, 1.f);
-	ImVec4					m_vDiffuseColor_BaseEnd = ImVec4(1.f, 1.f, 1.f, 1.f);
-	_bool					m_bUseSolidColor = { false };
-	ImVec4					m_vDiffuseColor_BaseGradation = ImVec4(1.f, 1.f, 1.f, 1.f);
-	ImVec4					m_vDiffuseColor_Dest = ImVec4(1.f, 1.f, 1.f, 1.f);
-	_bool					m_bIsTextureSameWithOpacity = { false };
-	_bool					m_bUVOptionSameWithOpacity_Diffuse = { true };
-	_float					m_fTiling_Diffuse[2] = { 0.f, 0.f };
-	_float					m_fUVSpeed_Diffuse[2] = { 0.f, 0.f };
-
-	/* Alpha Gradation */
-	_bool					m_bAlphaGra_On = { false };
-	_float					m_fAlphaGraIntensity = { 0.5f };
-	ImVec4					m_vAlphaGraColor_Base = ImVec4(1.f, 1.f, 1.f, 1.f);
-	_bool					m_bDestSameWithBase_AlphaGra = { false };
-	ImVec4					m_vAlphaGraColor_Dest = ImVec4(1.f, 1.f, 1.f, 1.f);
-
-	/* Opacity */
-	pair<_int, string>		m_OpacityTexture = { 0, "None" };
-	_int					m_iSamplerType = { 1 };
-	_float					m_fTiling_Opacity[2] = {0.f, 0.f};
-	_float					m_fUVSpeed_Opacity[2] = { 0.f, 0.f };
-
-	/* Gradation by Texture */
-	_bool					m_bGra_On = { false };
-	pair<_int, string>		m_GraTexture = { 0, "None" };
-	ImVec4					m_vGraColor_Base = ImVec4(1.f, 1.f, 1.f, 1.f);
-	_bool					m_bUVOptionSameWithOpacity_Gra = { true };
-	_float					m_fTiling_Gra[2] = { 0.f, 0.f };
-	_float					m_fUVSpeed_Gra[2] = { 0.f, 0.f };
-	_bool					m_bDestSameWithBase_Gra = { false };
-	ImVec4					m_vGraColor_Dest = ImVec4(1.f, 1.f, 1.f, 1.f);
+	/* Texture Options */
+	Texture_Option			m_TexOption[4];
 
 	/* Overlay */
 	_bool					m_bOverlay_On = { false };
 	pair<_int, string>		m_OverlayTexture = { 0, "None" };
 	ImVec4					m_vOverlayColor_Base = ImVec4(1.f, 1.f, 1.f, 1.f);
-	_bool					m_bUVOptionSameWithOpacity_Overlay = { true };
+	ImVec4					m_vOverlayColor_Dest = ImVec4(1.f, 1.f, 1.f, 1.f);
 	_float					m_fTiling_Overlay[2] = { 0.f, 0.f };
 	_float					m_fUVSpeed_Overlay[2] = { 0.f, 0.f };
 
@@ -169,7 +150,6 @@ private:
 	/* Dissolve */
 	_bool					m_bDissolve_On = { false };
 	pair<_int, string>		m_DissolveTexture = { 0, "None" };
-	_bool					m_bUVOptionSameWithOpacity_Dissolve = { true };
 	_float					m_fTiling_Dissolve[2] = { 0.f, 0.f };
 	_float					m_fUVSpeed_Dissolve[2] = { 0.f, 0.f };
 	_bool					m_bDissolveInverse = { false };
@@ -177,28 +157,8 @@ private:
 	/* Distortion */
 	_bool					m_bDistortion_On = { false };
 	pair<_int, string>		m_DistortionTexture = { 0, "None" };
-	_bool					m_bUVOptionSameWithOpacity_Distortion = { true };
 	_float					m_fTiling_Distortion[2] = { 0.f, 0.f };
 	_float					m_fUVSpeed_Distortion[2] = { 0.f, 0.f };
-
-	/* Blend */
-	_bool					m_bBlend_On = { true };
-	pair<_int, string>		m_BlendTexture = { 0, "None" };
-	_bool					m_bUVOptionSameWithOpacity_Blend = { true };
-	_float					m_fTiling_Blend[2] = { 0.f, 0.f };
-	_float					m_fUVSpeed_Blend[2] = { 0.f, 0.f };
-
-	/* Additional */
-	_bool					m_bAdditional_On = { false };
-	pair<_int, string>		m_AdditionalTexture = { 0, "None" };
-	_bool					m_bUVOptionSameWithOpacity_Additional = { true };
-	_float					m_fTiling_Additional[2] = { 0.f, 0.f };
-	_float					m_fUVSpeed_Additional[2] = { 0.f, 0.f };
-	ImVec4					m_vAdditionalColor_Base = ImVec4(1.f, 1.f, 1.f, 1.f);
-	
-	/* Color Edit */
-	_float					m_fContrast = { 1.f };
-	_float					m_fDefinition = { 1.f };
 
 	/* Initliaze Transform */
 	_int					m_iInitPosOption = { 0 };					// static, random in range 

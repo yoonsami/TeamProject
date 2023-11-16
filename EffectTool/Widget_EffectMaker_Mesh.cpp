@@ -151,17 +151,19 @@ void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 			Option_Mesh();
 			Option_SpriteAnimation();
 
-			Option_Opacity();
-			Option_Blend();
-			Option_Diffuse();
+			Option_TextureOp(0);
+
+			if (!m_bUseSpriteAnimation)
+			{
+				Option_TextureOp(1);
+				Option_TextureOp(2);
+				Option_TextureOp(3);
+			}
+
 			Option_Normal();
-			Option_AlphaGradation();
-			Option_Gradation();
 			Option_Overlay();
 			Option_Dissolve();
 			Option_Distortion();
-			Option_Additional();
-			Option_ColorEdit();
 
 			/* For. Create, Save, Load Effect */
 			ImGui::Spacing();
@@ -241,7 +243,8 @@ void Widget_EffectMaker_Mesh::ImGui_TextureList()
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
 		ImGui::BeginChild("##Child2_TextureList", ImVec2(50, 360), false, window_flags);
 
-		if (ImGui::Button("  Ok  "))
+		ImGui::Text(" ");
+		if (ImGui::Button("   Ok   "))
 			m_bTextureList_On = false;
 
 		ImGui::EndChild();
@@ -303,6 +306,20 @@ void Widget_EffectMaker_Mesh::Option_Property()
 
 	ImGui::Checkbox("Color Changing On##Property", &m_bColorChangingOn);
 	ImGui::Spacing();
+
+	const char* pszItem_Sampler[] = { "Wrap", "Clamp", "Mirror", "Border"};
+	if (ImGui::BeginCombo("Sampler##Property", pszItem_Sampler[m_iSamplerType], 0))
+	{
+		for (_uint n = 0; n < IM_ARRAYSIZE(pszItem_Sampler); n++)
+		{
+			const bool is_selected = (m_iSamplerType == n);
+			if (ImGui::Selectable(pszItem_Sampler[n], is_selected))
+				m_iSamplerType = n;
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
 }
 
 void Widget_EffectMaker_Mesh::Option_Mesh()
@@ -328,146 +345,6 @@ void Widget_EffectMaker_Mesh::Option_Mesh()
 	}
 }
 
-void Widget_EffectMaker_Mesh::Option_Diffuse()
-{
-	ImGui::SeparatorText("Diffuse");
-
-	// For. Diffuse Option 
-	const char* pszItem_Option[] = { "Use Texture color ", "custom(const)", "custom(random in range)", };
-	if (ImGui::BeginCombo("Diffuse Option##Diffuse", pszItem_Option[m_iDiffuseOption], 0))
-	{
-		for (_uint n = 0; n < IM_ARRAYSIZE(pszItem_Option); n++)
-		{
-			const bool is_selected = (m_iDiffuseOption == n);
-			if (ImGui::Selectable(pszItem_Option[n], is_selected))
-			{
-				m_iDiffuseOption = n;
-
-				if (0 != m_iDiffuseOption)
-				{
-					m_DiffuseTexture.first = 0;
-					m_DiffuseTexture.second = "None";
-				}
-			}
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();
-		}
-		ImGui::EndCombo();
-	}
-
-	SubWidget_ImageViewer(m_DiffuseTexture.second, m_strTexturePath, "##Img_Diffuse");
-
-	ImGui::SameLine();
-	if (!m_bIsTextureSameWithOpacity)
-	{
-		if (ImGui::Button("Texture"))
-		{
-			m_iTexture_TextureList = &m_DiffuseTexture.first;
-			m_pTextureTag_TextureList = &m_DiffuseTexture.second;
-			m_pszWidgetKey_TextureList = "Texture##Diffuse";
-			m_bTextureList_On = true;
-		}
-	}
-	if (ImGui::Checkbox("Use same texture with Opacity##DIffuse", &m_bIsTextureSameWithOpacity))
-	{
-		m_DiffuseTexture.first = m_OpacityTexture.first;
-		m_DiffuseTexture.second = m_OpacityTexture.second;
-	}
-
-	switch (m_iDiffuseOption)
-	{
-	case 1:
-		ImGui::Checkbox("No Gradation##Diffuse", &m_bUseSolidColor);
-
-		ImGui::ColorEdit4("Color##Diffuse", (float*)&m_vDiffuseColor_BaseStart, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-		m_vDiffuseColor_BaseEnd = m_vDiffuseColor_BaseStart;
-
-		if (!m_bUseSolidColor)
-			ImGui::ColorEdit4("Gradation##Diffuse", (float*)&m_vDiffuseColor_BaseGradation, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-		else
-			m_vDiffuseColor_BaseGradation = m_vDiffuseColor_BaseStart;
-
-		if (m_bColorChangingOn)
-			ImGui::ColorEdit4("Dest Color##Diffuse", (float*)&m_vDiffuseColor_Dest, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-
-		break;
-	case 2:
-		ImGui::ColorEdit4("Range Color1##Diffuse", (float*)&m_vDiffuseColor_BaseStart, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-		ImGui::ColorEdit4("Range Color2##Diffuse", (float*)&m_vDiffuseColor_BaseEnd, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-
-		if (!m_bUseSolidColor)
-			ImGui::ColorEdit4("Gradation##Diffuse", (float*)&m_vDiffuseColor_BaseGradation, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-		else
-			m_vDiffuseColor_BaseGradation = m_vDiffuseColor_BaseStart;
-		
-		if (m_bColorChangingOn)
-			ImGui::ColorEdit4("Dest Color##Diffuse", (float*)&m_vDiffuseColor_Dest, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-
-		break;
-	default:
-		break;
-	}
-
-	ImGui::Spacing();
-
-	// For. Tiling, move Texture UV Speed 
-	if (0 == m_iDiffuseOption && !m_bUseSpriteAnimation)
-	{
-		ImGui::Checkbox("UV Option same with opacity##Diffuse", &m_bUVOptionSameWithOpacity_Diffuse);
-		if (m_bUVOptionSameWithOpacity_Diffuse)
-		{
-			m_fTiling_Diffuse[0] = m_fTiling_Opacity[0];
-			m_fTiling_Diffuse[1] = m_fTiling_Opacity[1];
-			m_fUVSpeed_Diffuse[0] = m_fUVSpeed_Opacity[0];
-			m_fUVSpeed_Diffuse[1] = m_fUVSpeed_Opacity[1];
-		}
-		SubWidget_SettingTexUV(m_fTiling_Diffuse, m_fUVSpeed_Diffuse, "Tiling(x,y)##Diffuse", "Move TexUV Speed(x,y)##Diffuse");
-	}
-
-	ImGui::Spacing();
-}
-
-void Widget_EffectMaker_Mesh::Option_Opacity()
-{
-	ImGui::SeparatorText("Opacity");
-
-	SubWidget_ImageViewer(m_OpacityTexture.second, m_strTexturePath, "##Img_Opacity");
-	
-	ImGui::SameLine();
-
-	if (ImGui::Button("Texture##Opacity"))
-	{
-		m_iTexture_TextureList = &m_OpacityTexture.first;
-		m_pTextureTag_TextureList = &m_OpacityTexture.second;
-		m_pszWidgetKey_TextureList = "Texture##Opacity";
-		m_bTextureList_On = true;
-	}
-
-	ImGui::Spacing();
-
-	// For. Sampler 
-	const char* pszItem_Sampler[] = { "Wrap", "Clamp", "Mirror", "Border" };
-	if (ImGui::BeginCombo("Sampler##Opacity", pszItem_Sampler[m_iSamplerType], 0))
-	{
-		for (_uint n = 0; n < IM_ARRAYSIZE(pszItem_Sampler); n++)
-		{
-			const bool is_selected = (m_iSamplerType == n);
-			if (ImGui::Selectable(pszItem_Sampler[n], is_selected))
-				m_iSamplerType = n;
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();
-		}
-		ImGui::EndCombo();
-	}
-	ImGui::Spacing();
-
-	// For. Tiling, move Texture UV Speed 
-	if (!m_bUseSpriteAnimation)
-		SubWidget_SettingTexUV(m_fTiling_Opacity, m_fUVSpeed_Opacity, "Tiling(x,y)##Opacity", "Move TexUV Speed(x,y)##Opacity");
-
-	ImGui::Spacing();
-}
-
 void Widget_EffectMaker_Mesh::Option_SpriteAnimation()
 {
 	/* Lock Diffuse and Opacity tiling and uvspeed*/
@@ -481,41 +358,113 @@ void Widget_EffectMaker_Mesh::Option_SpriteAnimation()
 	}
 }
 
-void Widget_EffectMaker_Mesh::Option_Blend()
+void Widget_EffectMaker_Mesh::Option_TextureOp(_int iIndex)
 {
-	ImGui::SeparatorText("Blend");
+	string strIndex = to_string(iIndex);
+	string strSeparatorTag = "Texture " + strIndex;
+	string strIsOn = "Texture Option On##" + strIndex;
+	string strChild1 = "##Child1_" + strIndex;
+	string strImageViewer = "##Img_" + strIndex;
+	string strTextureButton = "Change Texture##" + strIndex;
+	string strTextureList = "Texture List##" + strIndex;
+	string strColoringOptionCombo = "Color Option##" + strIndex;
+	string strColorEdit_Base1 = "Color Base1 ##" + strIndex;
+	string strColorEdit_Base2 = "Color Base2 ##" + strIndex;
+	string strColorEdit_Dest1 = "Color Dest1 ##" + strIndex;
+	string strColorEdit_Dest2 = "Color Dest2 ##" + strIndex;
+	string strSolidColorCheckBox = "Use solid color##" + strIndex;
+	string strTiling = "Tiling(x,y)##" + strIndex;
+	string strUVSpeed = "UV Speed(x,y)##" + strIndex;
+	string strContrast = "Contrast##" + strIndex;
+	string strAlphaOffset = "Alpha Offset##" + strIndex;
 
-	ImGui::Checkbox("Blend On", &m_bBlend_On);
+	ImGui::SeparatorText(strSeparatorTag.c_str());
 
-	if (m_bBlend_On)
+	// For. On/Off Texture Option
+	ImGui::Checkbox(strIsOn.c_str(), &m_TexOption[iIndex].bIsOption_On);
+
+	if (!m_TexOption[iIndex].bIsOption_On)
 	{
-		SubWidget_ImageViewer(m_BlendTexture.second, m_strTexturePath, "##Img_Blend");
+		m_TexOption[iIndex].Texture.first = 0;
+		m_TexOption[iIndex].Texture.second = "None";
+		return;
+	}
+
+	// For. Texture 
+	{
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
+		ImGui::BeginChild(strChild1.c_str(), ImVec2(280, 170), false, window_flags);
+
+		SubWidget_ImageViewer(m_TexOption[iIndex].Texture.second, m_strTexturePath, strImageViewer.c_str());
+
 		ImGui::SameLine();
-		if (ImGui::Button("Texture##Blend"))
+
+		if (ImGui::Button(strTextureButton.c_str()))
 		{
-			m_iTexture_TextureList = &m_BlendTexture.first;
-			m_pTextureTag_TextureList = &m_BlendTexture.second;
-			m_pszWidgetKey_TextureList = "Texture##Blend";
+			m_iTexture_TextureList = &m_TexOption[iIndex].Texture.first;
+			m_pTextureTag_TextureList = &m_TexOption[iIndex].Texture.second;
+			const char* pszTextureListTag = strTextureList.c_str();
+			m_pszWidgetKey_TextureList = pszTextureListTag;
 			m_bTextureList_On = true;
 		}
 
-		ImGui::Checkbox("UV Option same with opacity##Blend", &m_bUVOptionSameWithOpacity_Blend);
-		if (m_bUVOptionSameWithOpacity_Blend)
+		ImGui::EndChild();
+	}
+
+	// For. Color 
+	const char* pszItem_ColoringOptions[] = { "Custom", "Use Texture Color"};
+	if (ImGui::BeginCombo(strColoringOptionCombo.c_str(), pszItem_ColoringOptions[m_TexOption[iIndex].iColoringOption], 0))
+	{
+		for (_uint n = 0; n < IM_ARRAYSIZE(pszItem_ColoringOptions); n++)
 		{
-			m_fTiling_Blend[0] = m_fTiling_Opacity[0];
-			m_fTiling_Blend[1] = m_fTiling_Opacity[1];
-			m_fUVSpeed_Blend[0] = m_fUVSpeed_Opacity[0];
-			m_fUVSpeed_Blend[1] = m_fUVSpeed_Opacity[1];
+			const bool is_selected = (m_TexOption[iIndex].iColoringOption == n);
+			if (ImGui::Selectable(pszItem_ColoringOptions[n], is_selected))
+				m_TexOption[iIndex].iColoringOption = n;
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
 		}
-		SubWidget_SettingTexUV(m_fTiling_Blend, m_fUVSpeed_Blend, "Tiling(x,y)##Blend", "Move TexUV Speed(x,y)##Blend");
+		ImGui::EndCombo();
+	}
+
+	ImGui::Checkbox(strSolidColorCheckBox.c_str(), &m_TexOption[iIndex].bUseSolidColor);
+
+	if (0 == m_TexOption[iIndex].iColoringOption)
+	{
+		if (m_TexOption[iIndex].bUseSolidColor)
+		{
+			ImGui::ColorEdit4(strColorEdit_Base1.c_str(), (float*)&m_TexOption[iIndex].vColorBase1, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+			m_TexOption[iIndex].vColorBase2 = m_TexOption[iIndex].vColorBase1;
+
+			if (m_bColorChangingOn)
+			{
+				ImGui::ColorEdit4(strColorEdit_Dest1.c_str(), (float*)&m_TexOption[iIndex].vColorDest1, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+				m_TexOption[iIndex].vColorDest2 = m_TexOption[iIndex].vColorDest1;
+			}
+		}
+		else
+		{
+			ImGui::ColorEdit4(strColorEdit_Base1.c_str(), (float*)&m_TexOption[iIndex].vColorBase1, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+			ImGui::ColorEdit4(strColorEdit_Base2.c_str(), (float*)&m_TexOption[iIndex].vColorBase2, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+
+			if (m_bColorChangingOn)
+			{
+				ImGui::ColorEdit4(strColorEdit_Dest1.c_str(), (float*)&m_TexOption[iIndex].vColorDest1, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+				ImGui::ColorEdit4(strColorEdit_Dest2.c_str(), (float*)&m_TexOption[iIndex].vColorDest2, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+			}
+		}
 	}
 	else
 	{
-		m_BlendTexture.first = 0;
-		m_BlendTexture.second = "None";
+		m_TexOption[iIndex].vColorBase1 = ImVec4(1.f, 1.f, 1.f, 1.f);
+		m_TexOption[iIndex].vColorBase2 = ImVec4(1.f, 1.f, 1.f, 1.f);
+		m_TexOption[iIndex].vColorDest1 = ImVec4(1.f, 1.f, 1.f, 1.f);
+		m_TexOption[iIndex].vColorDest2 = ImVec4(1.f, 1.f, 1.f, 1.f);
 	}
 
-	ImGui::Spacing();
+	// For. Texcoord Options
+	ImGui::InputFloat(strContrast.c_str(), &m_TexOption[iIndex].fContrast);
+	ImGui::InputFloat(strAlphaOffset.c_str(), &m_TexOption[iIndex].fAlphaOffset);
+	SubWidget_SettingTexUV(m_TexOption[iIndex].fTiling_Op, m_TexOption[iIndex].fUVSpeed_Op, strTiling.c_str(), strUVSpeed.c_str());
 }
 
 void Widget_EffectMaker_Mesh::Option_Normal()
@@ -524,102 +473,23 @@ void Widget_EffectMaker_Mesh::Option_Normal()
 
 	ImGui::Checkbox("Normal On", &m_bNormal_On);
 
-	if (m_bNormal_On)
-	{
-		SubWidget_ImageViewer(m_NormalTexture.second, m_strTexturePath, "##Img_Normal");
-
-		ImGui::SameLine();
-
-		if (ImGui::Button("Texture##Normal"))
-		{
-			m_iTexture_TextureList = &m_NormalTexture.first;
-			m_pTextureTag_TextureList = &m_NormalTexture.second;
-			m_pszWidgetKey_TextureList = "Texture##Normal";
-			m_bTextureList_On = true;
-		}
-	}
-	else
+	if (!m_bNormal_On)
 	{
 		m_NormalTexture.first = 0;
 		m_NormalTexture.second = "None";
+		return;
 	}
 
-	ImGui::Spacing();
-}
+	SubWidget_ImageViewer(m_NormalTexture.second, m_strTexturePath, "##Img_Normal");
 
-void Widget_EffectMaker_Mesh::Option_AlphaGradation()
-{
-	ImGui::SeparatorText("Alpha Gradation");
+	ImGui::SameLine();
 
-	ImGui::SliderFloat("Intensity", &m_fAlphaGraIntensity, 0.f, 1.f);
-	ImGui::ColorEdit4("Color##AlphaGra", (float*)&m_vAlphaGraColor_Base, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-
-	if (m_bColorChangingOn)
+	if (ImGui::Button("Change Texture##Normal"))
 	{
-		ImGui::ColorEdit4("Dest Color##AlphaGra", (float*)&m_vAlphaGraColor_Dest, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-		if (ImGui::Checkbox("Same with Base color##AlphaGradation", &m_bDestSameWithBase_AlphaGra))
-		{
-			if (m_bDestSameWithBase_AlphaGra)
-				m_vAlphaGraColor_Dest = m_vAlphaGraColor_Base;
-		}
-	}
-
-	ImGui::Spacing();
-}
-
-void Widget_EffectMaker_Mesh::Option_Gradation()
-{
-	ImGui::SeparatorText("Gradation");
-
-	ImGui::Checkbox("Gradation On", &m_bGra_On);
-
-	if (m_bGra_On)
-	{
-		SubWidget_ImageViewer(m_GraTexture.second, m_strTexturePath, "##Img_Gradation");
-
-		ImGui::SameLine();
-		if (ImGui::Button("Texture##Gradation"))
-		{
-			m_iTexture_TextureList = &m_GraTexture.first;
-			m_pTextureTag_TextureList = &m_GraTexture.second;
-			m_pszWidgetKey_TextureList = "Texture##Gradation";
-			m_bTextureList_On = true;
-		}
-		if (ImGui::Button("Texture##Gradation"))
-		{
-			m_iTexture_TextureList = &m_GraTexture.first;
-			m_pTextureTag_TextureList = &m_GraTexture.second;
-			m_pszWidgetKey_TextureList = "Texture##Gradation";
-			m_bTextureList_On = true;
-		}
-
-		// For. Color 
-		ImGui::ColorEdit4("Color##Gra", (float*)&m_vGraColor_Base, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-
-		if (m_bColorChangingOn)
-		{
-			ImGui::ColorEdit4("Dest Color##Gra", (float*)&m_vGraColor_Dest, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-			if (ImGui::Checkbox("Same with Base color##Gra", &m_bDestSameWithBase_Gra))
-			{
-				if (m_bDestSameWithBase_Gra)
-					m_vGraColor_Dest = m_vGraColor_Base;
-			}
-		}
-
-		ImGui::Checkbox("UV Option same with opacity##Opacity", &m_bUVOptionSameWithOpacity_Gra);
-		if (m_bUVOptionSameWithOpacity_Gra)
-		{
-			m_fTiling_Gra[0] = m_fTiling_Opacity[0];
-			m_fTiling_Gra[1] = m_fTiling_Opacity[1];
-			m_fUVSpeed_Gra[0] = m_fUVSpeed_Opacity[0];
-			m_fUVSpeed_Gra[1] = m_fUVSpeed_Opacity[1];
-		}
-		SubWidget_SettingTexUV(m_fTiling_Gra, m_fUVSpeed_Gra, "Tiling(x,y)##Gra", "Move TexUV Speed(x,y)##Gra");
-	}
-	else
-	{
-		m_GraTexture.first = 0;
-		m_GraTexture.second = "None";
+		m_iTexture_TextureList = &m_NormalTexture.first;
+		m_pTextureTag_TextureList = &m_NormalTexture.second;
+		m_pszWidgetKey_TextureList = "Texture List##Normal";
+		m_bTextureList_On = true;
 	}
 
 	ImGui::Spacing();
@@ -631,40 +501,31 @@ void Widget_EffectMaker_Mesh::Option_Overlay()
 
 	ImGui::Checkbox("Overlay On", &m_bOverlay_On);
 
-	if (m_bOverlay_On)
-	{
-		SubWidget_ImageViewer(m_OverlayTexture.second, m_strTexturePath, "##Img_Overlay");
-
-		ImGui::SameLine();
-		if (ImGui::Button("Texture##Dissolve"))
-		{
-			m_iTexture_TextureList = &m_OverlayTexture.first;
-			m_pTextureTag_TextureList = &m_OverlayTexture.second;
-			m_pszWidgetKey_TextureList = "Texture##Dissolve";
-			m_bTextureList_On = true;
-		}
-
-		// For. Color 
-		ImGui::ColorEdit4("Color##Overlay", (float*)&m_vOverlayColor_Base, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-
-		ImGui::Checkbox("UV Option same with opacity##Overlay", &m_bUVOptionSameWithOpacity_Overlay);
-		if (m_bUVOptionSameWithOpacity_Overlay)
-		{
-			m_fTiling_Overlay[0] = m_fTiling_Opacity[0];
-			m_fTiling_Overlay[1] = m_fTiling_Opacity[1];
-			m_fUVSpeed_Overlay[0] = m_fUVSpeed_Opacity[0];
-			m_fUVSpeed_Overlay[1] = m_fUVSpeed_Opacity[1];
-		}
-		SubWidget_SettingTexUV(m_fTiling_Overlay, m_fUVSpeed_Overlay, "Tiling(x,y)##Overlay", "Move TexUV Speed##(x,y)Overlay");
-
-	}
-	else
+	if (!m_bOverlay_On)
 	{
 		m_OverlayTexture.first = 0;
 		m_OverlayTexture.second = "None";
+		return;
 	}
 
-	ImGui::Spacing();
+	SubWidget_ImageViewer(m_OverlayTexture.second, m_strTexturePath, "##Img_Overlay");
+
+	ImGui::SameLine();
+	if (ImGui::Button("Change Texture##Overlay"))
+	{
+		m_iTexture_TextureList = &m_OverlayTexture.first;
+		m_pTextureTag_TextureList = &m_OverlayTexture.second;
+		m_pszWidgetKey_TextureList = "Texture List##Overlay";
+		m_bTextureList_On = true;
+	}
+
+	// For. Color 
+	ImGui::ColorEdit4("Color##Overlay", (float*)&m_vOverlayColor_Base, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+	if(m_bColorChangingOn)
+		ImGui::ColorEdit4("Dest Color##Overlay", (float*)&m_vOverlayColor_Dest, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+
+	// For. Texcoord Options
+	SubWidget_SettingTexUV(m_fTiling_Overlay, m_fUVSpeed_Overlay, "Tiling(x,y)##Overlay", "UV Speed(x,y)##Overlay");
 }
 
 void Widget_EffectMaker_Mesh::Option_Dissolve()
@@ -673,36 +534,25 @@ void Widget_EffectMaker_Mesh::Option_Dissolve()
 
 	ImGui::Checkbox("Dissolve On", &m_bDissolve_On);
 
-	if (m_bDissolve_On)
-	{
-		SubWidget_ImageViewer(m_DissolveTexture.second, m_strTexturePath, "##Img_Dissolve");
-
-		ImGui::SameLine();
-		if (ImGui::Button("Texture##Dissolve"))
-		{
-			m_iTexture_TextureList = &m_DissolveTexture.first;
-			m_pTextureTag_TextureList = &m_DissolveTexture.second;
-			m_pszWidgetKey_TextureList = "Texture##Dissolve";
-			m_bTextureList_On = true;
-		}
-
-		ImGui::Checkbox("UV Option same with opacity##Dissolve", &m_bUVOptionSameWithOpacity_Dissolve);
-		if (m_bUVOptionSameWithOpacity_Dissolve)
-		{
-			m_fTiling_Dissolve[0] = m_fTiling_Opacity[0];
-			m_fTiling_Dissolve[1] = m_fTiling_Opacity[1];
-			m_fUVSpeed_Dissolve[0] = m_fUVSpeed_Opacity[0];
-			m_fUVSpeed_Dissolve[1] = m_fUVSpeed_Opacity[1];
-		}
-		SubWidget_SettingTexUV(m_fTiling_Dissolve, m_fUVSpeed_Dissolve, "Tiling(x,y)##Dissolve", "Move TexUV Speed(x,y)##Dissolve");
-	}
-	else
+	if (!m_bDissolve_On)
 	{
 		m_DissolveTexture.first = 0;
 		m_DissolveTexture.second = "None";
+		return;
 	}
 
-	ImGui::Spacing();
+	SubWidget_ImageViewer(m_DissolveTexture.second, m_strTexturePath, "##Img_Dissolve");
+	
+	ImGui::SameLine();
+	if (ImGui::Button("Change Texture##Dissolve"))
+	{
+		m_iTexture_TextureList = &m_DissolveTexture.first;
+		m_pTextureTag_TextureList = &m_DissolveTexture.second;
+		m_pszWidgetKey_TextureList = "Texture List##Dissolve";
+		m_bTextureList_On = true;
+	}
+	
+	SubWidget_SettingTexUV(m_fTiling_Dissolve, m_fUVSpeed_Dissolve, "Tiling(x,y)##Dissolve", "UV Speed(x,y)##Dissolve");
 }
 
 void Widget_EffectMaker_Mesh::Option_Distortion()
@@ -711,91 +561,26 @@ void Widget_EffectMaker_Mesh::Option_Distortion()
 
 	ImGui::Checkbox("Distortion On", &m_bDistortion_On);
 
-	if (m_bDistortion_On)
-	{
-		SubWidget_ImageViewer(m_DistortionTexture.second, m_strTexturePath, "##Img_Distortion");
-
-		ImGui::SameLine();
-
-		if (ImGui::Button("Texture##Distortion"))
-		{
-			m_iTexture_TextureList = &m_DistortionTexture.first;
-			m_pTextureTag_TextureList = &m_DistortionTexture.second;
-			m_pszWidgetKey_TextureList = "Texture##Distortion";
-			m_bTextureList_On = true;
-		}
-
-		ImGui::Checkbox("UV Option same with opacity##Distortion", &m_bUVOptionSameWithOpacity_Distortion);
-		if (m_bUVOptionSameWithOpacity_Dissolve)
-		{
-			m_fTiling_Distortion[0] = m_fTiling_Opacity[0];
-			m_fTiling_Distortion[1] = m_fTiling_Opacity[1];
-			m_fUVSpeed_Distortion[0] = m_fUVSpeed_Opacity[0];
-			m_fUVSpeed_Distortion[1] = m_fUVSpeed_Opacity[1];
-		}
-
-		SubWidget_SettingTexUV(m_fTiling_Distortion, m_fUVSpeed_Distortion, "Tiling(x,y)##Distortion", "Move TexUV Speed(x,y)##Distortion");
-	}
-	else
+	if (!m_bDistortion_On)
 	{
 		m_DistortionTexture.first = 0;
 		m_DistortionTexture.second = "None";
+		return;
 	}
 
-	ImGui::Spacing();
-}
+	SubWidget_ImageViewer(m_DistortionTexture.second, m_strTexturePath, "##Img_Distortion");
 
-void Widget_EffectMaker_Mesh::Option_Additional()
-{
-	ImGui::SeparatorText("Additional Texture");
+	ImGui::SameLine();
 
-	ImGui::Checkbox("Additional Texture On", &m_bAdditional_On);
-
-	if (m_bAdditional_On)
+	if (ImGui::Button("Change Texture##Distortion"))
 	{
-		SubWidget_ImageViewer(m_AdditionalTexture.second, m_strTexturePath, "##Img_Additional");
-
-		ImGui::SameLine();
-
-		if (ImGui::Button("Texture##Additional"))
-		{
-			m_iTexture_TextureList = &m_AdditionalTexture.first;
-			m_pTextureTag_TextureList = &m_AdditionalTexture.second;
-			m_pszWidgetKey_TextureList = "Texture##Additional";
-			m_bTextureList_On = true;
-		}
-
-		ImGui::Checkbox("UV Option same with opacity##Additional", &m_bUVOptionSameWithOpacity_Additional);
-		if (m_bUVOptionSameWithOpacity_Additional)
-		{
-			m_fTiling_Additional[0] = m_fTiling_Opacity[0];
-			m_fTiling_Additional[1] = m_fTiling_Opacity[1];
-			m_fUVSpeed_Additional[0] = m_fUVSpeed_Opacity[0];
-			m_fUVSpeed_Additional[1] = m_fUVSpeed_Opacity[1];
-		}
-
-		ImGui::ColorEdit4("Color##Additioanl", (float*)&m_vAdditionalColor_Base, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
-
-		SubWidget_SettingTexUV(m_fTiling_Additional, m_fUVSpeed_Additional, "Tiling(x,y)##Additional", "Move TexUV Speed(x,y)##Additional");
-	}
-	else
-	{
-		m_AdditionalTexture.first = 0;
-		m_vAdditionalColor_Base = { 0.f, 0.f, 0.f, 0.f };
-		m_AdditionalTexture.second = "None";
+		m_iTexture_TextureList = &m_DistortionTexture.first;
+		m_pTextureTag_TextureList = &m_DistortionTexture.second;
+		m_pszWidgetKey_TextureList = "Texture List##Distortion";
+		m_bTextureList_On = true;
 	}
 
-	ImGui::Spacing();
-}
-
-void Widget_EffectMaker_Mesh::Option_ColorEdit()
-{
-	ImGui::SeparatorText("Final Color Editor");
-
-	ImGui::InputFloat("Contrast", &m_fContrast);
-	ImGui::InputFloat("Definition", &m_fDefinition);
-	
-	ImGui::Spacing();
+	SubWidget_SettingTexUV(m_fTiling_Distortion, m_fUVSpeed_Distortion, "Tiling(x,y)##Distortion", "UV Speed(x,y)##Distortion");
 }
 
 void Widget_EffectMaker_Mesh::Option_InitTransform()
@@ -1041,15 +826,13 @@ void Widget_EffectMaker_Mesh::Create()
 
 	if (!m_bColorChangingOn)
 	{
-		m_vDiffuseColor_Dest = m_vDiffuseColor_BaseStart;
-		m_vAlphaGraColor_Dest = m_vAlphaGraColor_Base;
-		m_vGraColor_Dest = m_vGraColor_Base;
+		for (_int i = 0; i < 4; i++)
+		{
+			m_TexOption[i].vColorDest1 = m_TexOption[i].vColorBase1;
+			m_TexOption[i].vColorDest2 = m_TexOption[i].vColorBase2;
+		}
+		m_vOverlayColor_Dest = m_vOverlayColor_Base;
 	}
-
-
-	_bool bUseTextureColor = false;
-	if (0 == m_iDiffuseOption)
-		bUseTextureColor = true;
 
 	MeshEffectData::DESC tMeshEffectDesc
 	{
@@ -1071,57 +854,72 @@ void Widget_EffectMaker_Mesh::Create()
 
 		m_bColorChangingOn,
 
-		m_DiffuseTexture.second,
-		ImVec4toColor(m_vDiffuseColor_BaseStart),
-		ImVec4toColor(m_vDiffuseColor_BaseEnd),
-		ImVec4toColor(m_vDiffuseColor_BaseGradation),
-		ImVec4toColor(m_vDiffuseColor_Dest),
-		_float2(m_fTiling_Diffuse),
-		_float2(m_fUVSpeed_Diffuse),
-		bUseTextureColor,
+		m_TexOption[0].Texture.second,
+		m_TexOption[0].iColoringOption,
+		ImVec4toColor(m_TexOption[0].vColorBase1),
+		ImVec4toColor(m_TexOption[0].vColorBase2),
+		ImVec4toColor(m_TexOption[0].vColorDest1),
+		ImVec4toColor(m_TexOption[0].vColorDest2),
+		_float2(m_TexOption[0].fTiling_Op),
+		_float2(m_TexOption[0].fUVSpeed_Op),
+		m_TexOption[0].fContrast,
+		m_TexOption[0].fAlphaOffset,
 
-		m_OpacityTexture.second,
-		_float2(m_fTiling_Opacity),
-		_float2(m_fUVSpeed_Opacity),
+		m_TexOption[1].Texture.second,
+		m_TexOption[1].iColoringOption,
+		ImVec4toColor(m_TexOption[1].vColorBase1),
+		ImVec4toColor(m_TexOption[1].vColorBase2),
+		ImVec4toColor(m_TexOption[1].vColorDest1),
+		ImVec4toColor(m_TexOption[1].vColorDest2),
+		_float2(m_TexOption[1].fTiling_Op),
+		_float2(m_TexOption[1].fUVSpeed_Op),
+		m_TexOption[1].fContrast,
+		m_TexOption[1].fAlphaOffset,
 
-		m_fAlphaGraIntensity,
-		ImVec4toColor(m_vAlphaGraColor_Base),
-		ImVec4toColor(m_vAlphaGraColor_Dest),
+		m_TexOption[2].Texture.second,
+		m_TexOption[2].iColoringOption,
+		ImVec4toColor(m_TexOption[2].vColorBase1),
+		ImVec4toColor(m_TexOption[2].vColorBase2),
+		ImVec4toColor(m_TexOption[2].vColorDest1),
+		ImVec4toColor(m_TexOption[2].vColorDest2),
+		_float2(m_TexOption[2].fTiling_Op),
+		_float2(m_TexOption[2].fUVSpeed_Op),
+		m_TexOption[2].fContrast,
+		m_TexOption[2].fAlphaOffset,
 
-		m_GraTexture.second,
-		ImVec4toColor(m_vGraColor_Base),
-		ImVec4toColor(m_vGraColor_Dest),
-		_float2(m_fTiling_Gra),
-		_float2(m_fUVSpeed_Gra),
+		m_TexOption[3].Texture.second,
+		m_TexOption[3].iColoringOption,
+		ImVec4toColor(m_TexOption[3].vColorBase1),
+		ImVec4toColor(m_TexOption[3].vColorBase2),
+		ImVec4toColor(m_TexOption[3].vColorDest1),
+		ImVec4toColor(m_TexOption[3].vColorDest2),
+		_float2(m_TexOption[3].fTiling_Op),
+		_float2(m_TexOption[3].fUVSpeed_Op),
+		m_TexOption[3].fContrast,
+		m_TexOption[3].fAlphaOffset,
 
+		// Overlay
 		m_bOverlay_On,
 		m_OverlayTexture.second,
 		ImVec4toColor(m_vOverlayColor_Base),
+		ImVec4toColor(m_vOverlayColor_Dest),
 		_float2(m_fTiling_Overlay),
 		_float2(m_fUVSpeed_Overlay),
 
+		// Normal
 		m_NormalTexture.second,
 
+		// Diffolve
 		m_DissolveTexture.second,
 		_float2(m_fTiling_Overlay),
 		_float2(m_fUVSpeed_Overlay),
 		m_bDissolveInverse,
 
+		// Distortion
 		m_DistortionTexture.second,
 		_float2(m_fTiling_Distortion),
 		_float2(m_fUVSpeed_Distortion),
 
-		m_BlendTexture.second,
-		_float2(m_fTiling_Blend),
-		_float2(m_fUVSpeed_Blend),
-
-		m_AdditionalTexture.second,
-		_float2(m_fTiling_Additional),
-		_float2(m_fUVSpeed_Additional),
-		ImVec4toColor(m_vAdditionalColor_Base),
-
-		m_fContrast,
-		m_fDefinition
 	};
 	EffectObj->Get_MeshEffect()->Init(&tMeshEffectDesc);
 
@@ -1162,10 +960,6 @@ void Widget_EffectMaker_Mesh::Save()
 	string strFilePath = "..\\Resources\\EffectData\\MeshEffectData\\";
 	strFilePath += strFileName + ".dat";
 
-	_bool bUseTextureColor = false;
-	if (0 == m_iDiffuseOption)
-		bUseTextureColor = true;
-
 	{	
 		shared_ptr<FileUtils> file = make_shared<FileUtils>();
 		file->Open(Utils::ToWString(strFilePath), FileMode::Write);
@@ -1181,7 +975,6 @@ void Widget_EffectMaker_Mesh::Save()
 		file->Write<_int>(m_iSamplerType);
 
 		/* Mesh */
-		// file->Write<_bool>(m_iMesh); 
 		file->Write<string>(m_strMesh);
 
 		/* Sprite Animation */
@@ -1193,90 +986,41 @@ void Widget_EffectMaker_Mesh::Save()
 		/* Coloring Option */
 		file->Write<_bool>(m_bColorChangingOn);
 
-		/* Diffuse */
-		// file->Write<_int>(m_DiffuseTexture.first);
-		file->Write<string>(m_DiffuseTexture.second);
-		file->Write<_float4>(ImVec4toColor(m_vDiffuseColor_BaseStart));
-		file->Write<_float4>(ImVec4toColor(m_vDiffuseColor_BaseEnd));
-		file->Write<_float4>(ImVec4toColor(m_vDiffuseColor_BaseGradation));
-		file->Write<_float4>(ImVec4toColor(m_vDiffuseColor_Dest));
-		file->Write<_float2>(_float2(m_fTiling_Diffuse));
-		file->Write<_float2>(_float2(m_fUVSpeed_Diffuse));
-		file->Write<_bool>(bUseTextureColor);
-
-		/* Opacity */
-		// file->Write<_int>(m_OpacityTexture.first);
-		file->Write<string>(m_OpacityTexture.second);
-		// file->Write<_bool>(m_bUVOptionSameWithOpacity_Opacity);
-		file->Write<_float2>(_float2(m_fTiling_Opacity));
-		file->Write<_float2>(_float2(m_fUVSpeed_Opacity));
-
-		/* Alpha Gradation */
-		file->Write<_float>(m_fAlphaGraIntensity);
-		file->Write<_float4>(ImVec4toColor(m_vAlphaGraColor_Base));
-		// file->Write<_bool>(m_bDestSameWithBase_AlphaGra);
-		file->Write<_float4>(ImVec4toColor(m_vAlphaGraColor_Dest));
-
-		/* Gradation by Texture */
-		// file->Write<_bool>(m_bGra_On);
-		// file->Write<_int>(m_GraTexture.first);
-		file->Write<string>(m_GraTexture.second);
-		file->Write<_float4>(ImVec4toColor(m_vGraColor_Base));
-		// file->Write<_bool>(m_bUVOptionSameWithOpacity_Gra);
-		file->Write<_float2>(_float2(m_fTiling_Gra));
-		file->Write<_float2>(_float2(m_fUVSpeed_Gra));
-		// file->Write<_bool>(m_bDestSameWithBase_Gra);
-		file->Write<_float4>(ImVec4toColor(m_vGraColor_Dest));
+		/* Option */
+		for (_int i = 0; i < 4; i++)
+		{
+			file->Write<string>(m_TexOption[i].Texture.second);
+			file->Write<_int>(m_TexOption[i].iColoringOption);
+			file->Write<_float4>(ImVec4toColor(m_TexOption[i].vColorBase1));
+			file->Write<_float4>(ImVec4toColor(m_TexOption[i].vColorBase2));
+			file->Write<_float4>(ImVec4toColor(m_TexOption[i].vColorDest1));
+			file->Write<_float4>(ImVec4toColor(m_TexOption[i].vColorDest2));
+			file->Write<_float2>(_float2(m_TexOption[i].fTiling_Op));
+			file->Write<_float2>(_float2(m_TexOption[i].fUVSpeed_Op));
+			file->Write<_float>(m_TexOption[i].fContrast);
+			file->Write<_float>(m_TexOption[i].fAlphaOffset);
+		}
 
 		/* Overlay */
 		file->Write<_bool>(m_bOverlay_On);
-		// file->Write<_int>(m_OverlayTexture.first);
 		file->Write<string>(m_OverlayTexture.second);
 		file->Write<_float4>(ImVec4toColor(m_vOverlayColor_Base));
-		// file->Write<_bool>(m_bUVOptionSameWithOpacity_Overlay);
 		file->Write<_float2>(_float2(m_fTiling_Overlay));
 		file->Write<_float2>(_float2(m_fUVSpeed_Overlay));
 
 		/* Normal */
-		// file->Write<_int>(m_NormalTexture.first);
 		file->Write<string>(m_NormalTexture.second);
 
 		/* Dissolve */
-		// file->Write<_int>(m_DissolveTexture.first);
 		file->Write<string>(m_DissolveTexture.second);
-		// file->Write<_bool>(m_bUVOptionSameWithOpacity_Dissolve);
 		file->Write<_float2>(_float2(m_fTiling_Dissolve));
 		file->Write<_float2>(_float2(m_fUVSpeed_Dissolve));
 		file->Write<_bool>(m_bDissolveInverse);
 
 		/* Distortion */
-		// file->Write<_bool>(m_bDistortion_On);
-		// file->Write<_int>(m_DistortionTexture.first);
 		file->Write<string>(m_DistortionTexture.second);
-		// file->Write<_bool>(m_bUVOptionSameWithOpacity_Distortion);
 		file->Write<_float2>(_float2(m_fTiling_Distortion));
 		file->Write<_float2>(_float2(m_fUVSpeed_Distortion));
-
-		/* Blend */
-		// file->Write<_bool>(m_bBlend_On);
-		// file->Write<_int>(m_BlendTexture.first);
-		file->Write<string>(m_BlendTexture.second);
-		// file->Write<_bool>(m_bUVOptionSameWithOpacity_Blend);
-		file->Write<_float2>(_float2(m_fTiling_Blend));
-		file->Write<_float2>(_float2(m_fUVSpeed_Blend));
-
-		/* Additional */
-		// file->Write<_bool>(m_bAdditional_On);
-		// file->Write<_int>(m_AdditionalTexture.first);
-		file->Write<string>(m_AdditionalTexture.second);
-		// file->Write<_bool>(m_bUVOptionSameWithOpacity_Additional);
-		file->Write<_float2>(_float2(m_fTiling_Additional));
-		file->Write<_float2>(_float2(m_fUVSpeed_Additional));
-		file->Write<_float4>(ImVec4toColor(m_vAdditionalColor_Base));
-
-		/* Color Edit */
-		file->Write<_float>(m_fContrast);
-		file->Write<_float>(m_fDefinition);
 
 		// For. Transform Desc 
 		/* Init position */
@@ -1353,53 +1097,24 @@ void Widget_EffectMaker_Mesh::Load()
 	/* Coloring Option */
 	m_bColorChangingOn = file->Read<_bool>();
 
-	/* Diffuse */
-	m_DiffuseTexture.second = file->Read<string>();
-	m_vDiffuseColor_BaseStart = ColorToImVec4(file->Read<_float4>());
-	m_vDiffuseColor_BaseEnd = ColorToImVec4(file->Read<_float4>());
-	m_vDiffuseColor_BaseGradation = ColorToImVec4(file->Read<_float4>());
-	m_vDiffuseColor_Dest = ColorToImVec4(file->Read<_float4>());
-	vTemp_vec2 = file->Read<_float2>();
-	memcpy(m_fTiling_Diffuse, &vTemp_vec2, sizeof(m_fTiling_Diffuse));
-	vTemp_vec2 = file->Read<_float2>();
-	memcpy(m_fUVSpeed_Diffuse, &vTemp_vec2, sizeof(m_fUVSpeed_Diffuse));
-	_bool bUseTextureColor = file->Read<_bool>();
-	if (bUseTextureColor)
-		m_iDiffuseOption = 0;
-	else
-		m_iDiffuseOption = 1;
-	m_DiffuseTexture.first = GetIndex_FromTexList(m_DiffuseTexture.second);
-	m_bUVOptionSameWithOpacity_Diffuse = Equal(m_fTiling_Diffuse, m_fTiling_Opacity, sizeof(_float) * 2) && Equal(m_fUVSpeed_Diffuse, m_fUVSpeed_Opacity, sizeof(_float) * 2);
-
-	/* Opacity */
-	m_OpacityTexture.second = file->Read<string>();
-	vTemp_vec2 = file->Read<_float2>();
-	memcpy(m_fTiling_Opacity, &vTemp_vec2, sizeof(m_fTiling_Opacity));
-	vTemp_vec2 = file->Read<_float2>();
-	memcpy(m_fUVSpeed_Opacity, &vTemp_vec2, sizeof(m_fUVSpeed_Opacity));
-	m_OpacityTexture.first = GetIndex_FromTexList(m_OpacityTexture.second);
-
-	/* Alpha Gradation */
-	m_fAlphaGraIntensity = file->Read<_float>();
-	m_vAlphaGraColor_Base = ColorToImVec4(file->Read<_float4>());
-	m_vAlphaGraColor_Dest = ColorToImVec4(file->Read<_float4>());
-	m_bDestSameWithBase_AlphaGra = Equal(m_vAlphaGraColor_Base, m_vAlphaGraColor_Dest);
-	if (0 == m_fAlphaGraIntensity) m_bAlphaGra_On = false;
-	else m_bAlphaGra_On = true;
-	
-	/* Gradation by Texture */
-	m_GraTexture.second = file->Read<string>();
-	m_vGraColor_Base = ColorToImVec4(file->Read<_float4>());
-	vTemp_vec2 = file->Read<_float2>();
-	memcpy(m_fTiling_Gra, &vTemp_vec2, sizeof(m_fTiling_Gra));
-	vTemp_vec2 = file->Read<_float2>();
-	memcpy(m_fUVSpeed_Gra, &vTemp_vec2, sizeof(m_fUVSpeed_Gra));
-	m_vGraColor_Dest = ColorToImVec4(file->Read<_float4>());
-	m_GraTexture.first = GetIndex_FromTexList(m_GraTexture.second);
-	if (0 == m_GraTexture.first) m_bGra_On = false;
-	else m_bGra_On = true;
-	m_bUVOptionSameWithOpacity_Gra = Equal(m_fTiling_Gra, m_fTiling_Opacity, sizeof(_float) * 2) && Equal(m_fUVSpeed_Gra, m_fUVSpeed_Opacity, sizeof(_float) * 2);
-	m_bDestSameWithBase_Gra = Equal(m_vGraColor_Base, m_vGraColor_Dest);
+	/* Option */
+	for (_int i = 0; i < 4; i++)
+	{
+		m_TexOption[i].Texture.second = file->Read<string>();
+		m_TexOption[i].Texture.first = GetIndex_FromTexList(m_TexOption[i].Texture.second);
+		m_TexOption[i].iColoringOption = file->Read<_int>();
+		m_TexOption[i].vColorBase1 = ColorToImVec4(file->Read<_float4>());
+		m_TexOption[i].vColorBase2 = ColorToImVec4(file->Read<_float4>());
+		m_TexOption[i].vColorDest1 = ColorToImVec4(file->Read<_float4>());
+		m_TexOption[i].vColorDest2 = ColorToImVec4(file->Read<_float4>());
+		vTemp_vec2 = file->Read<_float2>();
+		memcpy(m_TexOption[i].fTiling_Op, &vTemp_vec2, sizeof(m_TexOption[i].fTiling_Op));
+		vTemp_vec2 = file->Read<_float2>();
+		memcpy(m_TexOption[i].fUVSpeed_Op, &vTemp_vec2, sizeof(m_TexOption[i].fUVSpeed_Op));
+		m_TexOption[i].fContrast = file->Read<_float>();
+		m_TexOption[i].fAlphaOffset = file->Read<_float>();
+		m_TexOption[i].bUseSolidColor = Equal(m_TexOption[i].vColorBase1, m_TexOption[i].vColorBase2) && Equal(m_TexOption[i].vColorDest1, m_TexOption[i].vColorDest2);	
+	}
 
 	/* Overlay */
 	m_bOverlay_On = file->Read<_bool>();
@@ -1410,7 +1125,6 @@ void Widget_EffectMaker_Mesh::Load()
 	vTemp_vec2 = file->Read<_float2>();
 	memcpy(m_fUVSpeed_Overlay, &vTemp_vec2, sizeof(m_fUVSpeed_Overlay));
 	m_OverlayTexture.first = GetIndex_FromTexList(m_OverlayTexture.second);
-	m_bUVOptionSameWithOpacity_Overlay = Equal(m_fTiling_Overlay, m_fTiling_Opacity, sizeof(_float) * 2) && Equal(m_fUVSpeed_Overlay, m_fUVSpeed_Opacity, sizeof(_float) * 2);
 
 	/* Normal */
 	m_NormalTexture.second = file->Read<string>();
@@ -1426,7 +1140,6 @@ void Widget_EffectMaker_Mesh::Load()
 	memcpy(m_fUVSpeed_Dissolve, &vTemp_vec2, sizeof(m_fUVSpeed_Dissolve));
 	m_bDissolveInverse = file->Read<_bool>();
 	m_DissolveTexture.first = GetIndex_FromTexList(m_DissolveTexture.second);
-	m_bUVOptionSameWithOpacity_Dissolve = Equal(m_fTiling_Dissolve, m_fTiling_Opacity, sizeof(_float) * 2) && Equal(m_fUVSpeed_Dissolve, m_fUVSpeed_Opacity, sizeof(_float) * 2);
 	if (0 == m_DissolveTexture.first) m_bDissolve_On = false;
 	else m_bDissolve_On = true;
 
@@ -1437,37 +1150,8 @@ void Widget_EffectMaker_Mesh::Load()
 	vTemp_vec2 = file->Read<_float2>();
 	memcpy(m_fUVSpeed_Distortion, &vTemp_vec2, sizeof(m_fUVSpeed_Distortion));
 	m_DistortionTexture.first = GetIndex_FromTexList(m_DistortionTexture.second);
-	m_bUVOptionSameWithOpacity_Distortion = Equal(m_fTiling_Distortion, m_fTiling_Opacity, sizeof(_float) * 2) && Equal(m_fUVSpeed_Distortion, m_fUVSpeed_Opacity, sizeof(_float) * 2);
 	if (0 == m_DistortionTexture.first) m_bDistortion_On = false;
 	else m_bDistortion_On = true;
-
-	/* Blend */
-	m_BlendTexture.second = file->Read<string>();
-	vTemp_vec2 = file->Read<_float2>();
-	memcpy(m_fTiling_Blend, &vTemp_vec2, sizeof(m_fTiling_Blend));
-	vTemp_vec2 = file->Read<_float2>();
-	memcpy(m_fUVSpeed_Blend, &vTemp_vec2, sizeof(m_fUVSpeed_Blend));
-	m_BlendTexture.first = GetIndex_FromTexList(m_BlendTexture.second);
-	if (0 == m_BlendTexture.first) m_bBlend_On = false;
-	else m_bBlend_On = true;
-	m_bUVOptionSameWithOpacity_Blend = Equal(m_fTiling_Blend, m_fTiling_Opacity, sizeof(_float) * 2) && Equal(m_fUVSpeed_Blend, m_fUVSpeed_Opacity, sizeof(_float) * 2);
-
-	/* Additional */
-	m_AdditionalTexture.second = file->Read<string>();
-	vTemp_vec2 = file->Read<_float2>();
-	memcpy(m_fTiling_Additional, &vTemp_vec2, sizeof(m_fTiling_Additional));
-	vTemp_vec2 = file->Read<_float2>();
-	memcpy(m_fUVSpeed_Additional, &vTemp_vec2, sizeof(m_fUVSpeed_Additional));
-	m_vAdditionalColor_Base = ColorToImVec4(file->Read<_float4>());
-	m_AdditionalTexture.first = GetIndex_FromTexList(m_AdditionalTexture.second);
-	if (0 == m_AdditionalTexture.first) m_bAdditional_On = false;
-	else m_bAdditional_On = true;
-	m_bUVOptionSameWithOpacity_Additional = Equal(m_fTiling_Additional, m_fTiling_Opacity, sizeof(_float) * 2) && Equal(m_fUVSpeed_Additional, m_fUVSpeed_Opacity, sizeof(_float) * 2);
-
-
-	/* Color Edit */
-	m_fContrast = file->Read<_float>();
-	m_fDefinition = file->Read<_float>();
 
 	// For. Transform Desc
 	/* Init Pos */
@@ -1617,7 +1301,7 @@ void Widget_EffectMaker_Mesh::SubWidget_ImageViewer(string strFileName, string s
 
 void Widget_EffectMaker_Mesh::SubWidget_SettingTexUV(_float* arrTiling, _float* arrTexUVSpeed, const char* pszWidgetKey1, const char* pszWidgetKey2)
 {
-	ImGui::SliderFloat2(pszWidgetKey1, arrTiling, -1.00f, 1.00f); 
+	ImGui::InputFloat2(pszWidgetKey1, arrTiling);
 	ImGui::InputFloat2(pszWidgetKey2, arrTexUVSpeed);
 }
 
@@ -1695,15 +1379,4 @@ _bool Widget_EffectMaker_Mesh::Equal(_float* arrSrc, _float* arrDest, _int iSize
 	}
 
 	return bIsSame;
-}
-
-_bool Widget_EffectMaker_Mesh::Compare_IsSameUVOptionsWithOpacity(_float2 tiling, _float2 UVSpeed)
-{
-	if(tiling.x == m_fTiling_Opacity[0] &&
-		tiling.y == m_fTiling_Opacity[1] &&
-		UVSpeed.x == m_fUVSpeed_Overlay[0] &&
-		UVSpeed.y == m_fUVSpeed_Overlay[1] )
-		return true;
-	else
-		return false;
 }
