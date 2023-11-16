@@ -182,8 +182,33 @@ float4 PS_Clamp(EffectOut input) : SV_Target
         vOutColor.rgb = pow(vOutColor.rgb, 1.f / GAMMA);
     
     /* DissolveMap */
-   
+    if (bHasDissolveMap)
+    {
+        float fDissolveWeight = vSample_Dissolve.r;
+        if (bInverseDissolve)
+        {
+            if (fDissolveWeight > sin(fLifeTimeRatio))
+                vOutColor.a = 0.f;
+        }
+        else
+        {
+            if (fDissolveWeight < sin(fLifeTimeRatio))
+                vOutColor.a = 0.f;
+        }
+    }
+    
     /* Overlay */
+    if (bHasTexturemap11)
+    {
+        float fOverlayIntensity = vSample_Overlay.r;
+        float4 vFinalOverlayColor = float4(0.f, 0.f, 0.f, 0.f);
+
+        vFinalOverlayColor.r = (vOutColor.r <= 0.5) ? 2 * vOutColor.r * vSample_Overlay.r : 1 - 2 * (1 - vOutColor.r) * (1 - vSample_Overlay.r);
+        vFinalOverlayColor.g = (vOutColor.g <= 0.5) ? 2 * vOutColor.g * vSample_Overlay.g : 1 - 2 * (1 - vOutColor.g) * (1 - vSample_Overlay.g);
+        vFinalOverlayColor.b = (vOutColor.b <= 0.5) ? 2 * vOutColor.b * vSample_Overlay.b : 1 - 2 * (1 - vOutColor.b) * (1 - vSample_Overlay.b);
+        
+        vOutColor.rgb = lerp(vOutColor.rgb, vFinalOverlayColor.rgb, fOverlayIntensity);
+    }
     
     /* Fade Out */
     if (bUseFadeOut)
