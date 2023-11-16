@@ -85,7 +85,7 @@ void DataMgr::Initialize()
         tagData.KeySkill5       = L"Skill_Ace6";
         tagData.KeyChangeCard   = L"Card_Ace3";
         tagData.KeyDeckMini     = L"Card_Deck_Ace3";
-        tagData.KeyDeckSelect   = L"Big_Card_Ace_Line3";
+        tagData.KeyDeckSelect   = L"Big_Card_Ace3";
         
     }
     
@@ -127,7 +127,7 @@ void DataMgr::Initialize()
         tagData.KeySkill5       = L"Skill_Kyle6";
         tagData.KeyChangeCard   = L"Card_Kyle";
         tagData.KeyDeckMini     = L"Card_Deck_Kyle";
-        tagData.KeyDeckSelect   = L"Big_Card_Kyle_Line";
+        tagData.KeyDeckSelect   = L"Big_Card_Kyle";
     }
 
     // YEOPO
@@ -168,7 +168,7 @@ void DataMgr::Initialize()
         tagData.KeySkill5       = L"Skill_Yeopo6";
         tagData.KeyChangeCard   = L"Card_Yeopo";
         tagData.KeyDeckMini     = L"Card_Deck_Yeopo";
-        tagData.KeyDeckSelect   = L"Big_Card_Yeopo_Line";
+        tagData.KeyDeckSelect   = L"Big_Card_Yeopo";
     }
     
     // DELLONS
@@ -209,7 +209,48 @@ void DataMgr::Initialize()
         tagData.KeySkill5       = L"Skill_Dellons6";
         tagData.KeyChangeCard   = L"Card_Dellons";
         tagData.KeyDeckMini     = L"Card_Deck_Dellons";
-        tagData.KeyDeckSelect   = L"Big_Card_Dellons_Line";
+        tagData.KeyDeckSelect   = L"Big_Card_Dellons";
+    }
+    
+    // SPIKE
+    {
+        auto& tagData = m_HeroData[IDX(HERO::SPIKE)];
+        
+        tagData.Element         = ElementType::WATER;
+        tagData.Star            = 4;
+
+        tagData.AttackDamage    = 1.f;
+        tagData.MaxHp           = 10.f;
+        tagData.CurHp           = 10.f;
+        tagData.PreHp           = 10.f;
+        tagData.Deffence        = 1.f;
+        tagData.HpRegen         = 1.f;
+        tagData.CriPercent      = 0.f;
+        tagData.CriDamageMul    = 1.f;
+
+        tagData.Skill1Cool      = 5.f;
+        tagData.Skill2Cool      = 5.f;
+        tagData.Skill3Cool      = 5.f;
+        tagData.Skill4Cool      = 5.f;
+        tagData.Skill5Cool      = 5.f;
+        tagData.Skill1DamageMul = 1.f;
+        tagData.Skill2DamageMul = 1.f;
+        tagData.Skill3DamageMul = 1.f;
+        tagData.Skill4DamageMul = 1.f;
+        tagData.Skill5DamageMul = 1.f;
+
+        tagData.ModelTag        = L"Spike";
+        tagData.WeaponTag       = L"Weapon_Spike";
+        tagData.KeyAttack       = L"Skill_Spike0";
+        tagData.KeyEvade        = L"Skill_Spike1";
+        tagData.KeySkill1       = L"Skill_Spike2";
+        tagData.KeySkill2       = L"Skill_Spike3";
+        tagData.KeySkill3       = L"Skill_Spike4";
+        tagData.KeySkill4       = L"Skill_Spike5";
+        tagData.KeySkill5       = L"Skill_Spike6";
+        tagData.KeyChangeCard   = L"Card_Spike";
+        tagData.KeyDeckMini     = L"Card_Deck_Spike";
+        tagData.KeyDeckSelect   = L"Big_Card_Dellons";
     }
     
 
