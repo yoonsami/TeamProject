@@ -31,6 +31,7 @@ public:
         string      strDiffuseTexture;
         Color       vDiffuseColor_BaseStart;
         Color       vDiffuseColor_BaseEnd;
+        Color       vDiffuseColor_BaseGradation;
         Color       vDestColor_Diffuse;
         _float2     vTiling_Diffuse;
         _float2     vUVSpeed_Diffuse;
@@ -79,8 +80,15 @@ public:
         _float2     vTiling_Blend;
         _float2     vUVSpeed_Blend;
 
+        // Additional 
+        string      strAdditionalTexture;
+        _float2     vTiling_Additional;
+        _float2     vUVSpeed_Additional;
+        Color       vBaseColor_Additional;
+
         // Color Editor
         _float      fContrast;
+        _float      fDefinition;
     }DESC;
 
     typedef struct tagMeshEffectTransformData

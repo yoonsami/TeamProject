@@ -1016,6 +1016,7 @@ void ResourceMgr::CreateMeshEffectData()
 		tDesc.strDiffuseTexture = file->Read<string>();
 		tDesc.vDiffuseColor_BaseStart = file->Read<_float4>();
 		tDesc.vDiffuseColor_BaseEnd = file->Read<_float4>();
+		tDesc.vDiffuseColor_BaseGradation = file->Read<_float4>();
 		tDesc.vDestColor_Diffuse = file->Read<_float4>();
 		tDesc.vTiling_Diffuse = file->Read<_float2>();
 		tDesc.vUVSpeed_Diffuse = file->Read<_float2>();
@@ -1063,9 +1064,16 @@ void ResourceMgr::CreateMeshEffectData()
 		tDesc.strBlendTexture = file->Read<string>();
 		tDesc.vTiling_Blend = file->Read<_float2>();
 		tDesc.vUVSpeed_Blend = file->Read<_float2>();
+
+		/* Additional */
+		tDesc.strAdditionalTexture = file->Read<string>();
+		tDesc.vTiling_Additional = file->Read<_float2>();
+		tDesc.vUVSpeed_Additional = file->Read<_float2>();
+		tDesc.vBaseColor_Additional = file->Read<_float4>();
 		
 		/* Color Edit */
 		tDesc.fContrast = file->Read<_float>();
+		tDesc.fDefinition = file->Read<_float>();
 
 		// For. Load Transform_Desc 
 		/* Init Position */
