@@ -3,6 +3,7 @@
 #include "Light.h"
 #include <Utils.h>
 #include "Model.h"
+#include "Camera.h"
 #ifdef _DEBUGTOOL
 
 bool VectorOfStringGetter(void* data, int n, const char** out_text)
@@ -49,6 +50,7 @@ void DebugTool::Tick()
 			{
 				RenderOptionTab();
 				ModelOptionTab();
+				CameraOptionTab();
 				EndTabBar();
 			}
 		}
@@ -260,6 +262,21 @@ void DebugTool::ModelOptionTab()
 		}
 
 		EndTabItem();
+	}
+}
+
+void DebugTool::CameraOptionTab()
+{
+	if(CUR_SCENE->Get_MainCamera())
+	{
+		auto& desc = CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_CameraDesc();
+
+		if (BeginTabItem("Camera"))
+		{
+			DragFloat("Near", &desc.fNear, 0.1f, 0.1f, 100.f);
+			DragFloat("Near", &desc.fFar, 1.f, 100.f, 5000.f);
+			EndTabItem();
+		}
 	}
 }
 

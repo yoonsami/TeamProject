@@ -15,6 +15,7 @@ public:
 public:
 	void RenderOptionTab();
 	void ModelOptionTab();
+	void CameraOptionTab();
 
 
 private:

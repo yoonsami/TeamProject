@@ -138,7 +138,7 @@ PBR_OUT PBRShade(
     float3 pointToCamera = normalize(cameraPosition - viewPosition);
     float3 viewLightDir = 0.f;
     
-    float3 ambient = ambientMap * albedoMap * 0.2f;
+    float3 ambient = ambientMap * albedoMap * 0.5f;
     float3 color = 0.f;
     float3 eyeDir = normalize(viewPosition - cameraPosition);
     float3 halfVector = normalize(pointToLight + pointToCamera);
@@ -169,7 +169,6 @@ PBR_OUT PBRShade(
     {
         viewLightDir = normalize(viewPosition - viewLightPos);
         float distance = length(viewLightPos - viewPosition);
-        attenuation = 1.0 / (1.0 + 0.1 * distance);
         attenuation *= saturate(1.f - saturate(pow(distance / lights[lightIndex].range, 2)));;
         
     }
