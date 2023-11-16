@@ -577,7 +577,7 @@ float4 PS_PBR_Final(VS_OUT input) : SV_Target
     float4 output = 0.f;
     output = emissiveColor * ambientLightColor + ambientLightColor;
     
-    return float4(pow(output.xyz,1.f/GAMMA),1.F);
+    return float4(output.xyz,1.F);
 }
 
 

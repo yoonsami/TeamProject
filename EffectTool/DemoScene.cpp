@@ -70,6 +70,7 @@ HRESULT DemoScene::Load_Scene()
 			Add_GameObject(sky);
 		}
 	}
+	Load_MapFile(L"KyleMap");
 	return S_OK;
 }
 

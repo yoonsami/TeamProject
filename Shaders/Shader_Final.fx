@@ -33,7 +33,7 @@ float4 PS_Final(VS_OUT input) : SV_Target0
     output = SubMap0.Sample(LinearSampler, input.uv);
 
 
-   // output.rgb = pow(abs(output.rgb), 1.f / GAMMA);
+    //output.rgb = pow(abs(output.rgb), 1.f / GAMMA);
     return output;
 }
 
@@ -73,7 +73,7 @@ float4 PS_Uncharted2TMO(VS_OUT input) : SV_Target0
         // 채도 조절
     float luminance = dot(output.rgb, float3(0.3, 0.59, 0.11));
     output.rgb = lerp(luminance, output.rgb, g_saturation);
-   // output.rgb = pow(abs(output.rgb), 1.f / GAMMA);
+    //output.rgb = pow(abs(output.rgb), 1.f / GAMMA);
     output.rgb = uncharted2_filmic(output.rgb);
     
     return output;
@@ -95,7 +95,7 @@ float4 PS_ACESTMO(VS_OUT input) : SV_Target0
     float luminance = dot(output.rgb, float3(0.3, 0.59, 0.11));
     output.rgb = lerp(luminance, output.rgb, g_saturation);
     
-  //  output.rgb = pow(abs(output.rgb), 1.f / GAMMA);
+    //output.rgb = pow(abs(output.rgb), 1.f / GAMMA);
     
     output.rgb = aces_fitted(output.rgb);
     return output;

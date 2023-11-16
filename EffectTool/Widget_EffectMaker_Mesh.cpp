@@ -807,6 +807,7 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 		ImGui::TreePop();
 	}
 	ImGui::Spacing();
+
 }
 
 void Widget_EffectMaker_Mesh::Create()
