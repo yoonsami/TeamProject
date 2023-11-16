@@ -18,6 +18,7 @@ private:
     void Change_To_Kyle();
     void Change_To_Yeopo();
     void Change_To_Dellons();
+    void Change_To_Spike();
     void Change_To_Input(HERO eHero);
 };
 

@@ -7,6 +7,7 @@ enum class HERO
 	KYLE,
 	YEOPO,
 	DELLONS,
+	SPIKE,
 	MAX 
 };
 
