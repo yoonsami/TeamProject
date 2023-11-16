@@ -127,6 +127,18 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\05.UiCharChange">
       <UniqueIdentifier>{d7ec9187-4810-4eb3-99f4-b8ac7467bb1f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCardMove">
+      <UniqueIdentifier>{102f1145-f71e-42d9-9844-068bc263bbaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCardMove\01.UiGachaCardMove">
+      <UniqueIdentifier>{3027831e-95ce-4d09-be27-03c52c94d2c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCardMove\00.UiGachaController">
+      <UniqueIdentifier>{59555707-6b8d-4053-8196-de99405ea5f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCardMove\02.UiGachaEffectController">
+      <UniqueIdentifier>{82ec2157-d9a5-4909-b39f-d09e7c92c4a0}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\07.UiCardDeckController">
       <UniqueIdentifier>{df3fd50c-985b-4249-80f7-4903d25499ee}</UniqueIdentifier>
     </Filter>
@@ -175,23 +187,8 @@
     <Filter Include="02.Component\01.FSM\01.Hero_FSM\05.Spike_FSM">
       <UniqueIdentifier>{c430e1c9-328a-4db3-a452-923e9ba683ea}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCard">
-      <UniqueIdentifier>{102f1145-f71e-42d9-9844-068bc263bbaf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCard\01.UiGachaCardMove">
-      <UniqueIdentifier>{3027831e-95ce-4d09-be27-03c52c94d2c6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCard\00.UiGachaController">
-      <UniqueIdentifier>{59555707-6b8d-4053-8196-de99405ea5f9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCard\02.UiGachaEffectController">
-      <UniqueIdentifier>{82ec2157-d9a5-4909-b39f-d09e7c92c4a0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\10.UiTargetLockOn">
-      <UniqueIdentifier>{21034836-b46b-4829-bda9-7992a86d5582}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp">
-      <UniqueIdentifier>{8c8fe706-4858-4717-a611-be519d965002}</UniqueIdentifier>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\03.Boss_Spike_FSM">
+      <UniqueIdentifier>{98ec5a53-91dd-4a0a-8674-9b5c049fbefd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -367,13 +364,13 @@
       <Filter>02.Component\00.MonoBehaviour\01.Ui\05.UiCharChange</Filter>
     </ClInclude>
     <ClInclude Include="UiGachaCardMove.h">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCard\01.UiGachaCardMove</Filter>
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCardMove\01.UiGachaCardMove</Filter>
     </ClInclude>
     <ClInclude Include="UiGachaController.h">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCard\00.UiGachaController</Filter>
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCardMove\00.UiGachaController</Filter>
     </ClInclude>
     <ClInclude Include="UiGachaEffectController.h">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCard\02.UiGachaEffectController</Filter>
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCardMove\02.UiGachaEffectController</Filter>
     </ClInclude>
     <ClInclude Include="UiCardDeckController.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\07.UiCardDeckController</Filter>
@@ -409,11 +406,10 @@
     <ClInclude Include="Spike_FSM.h">
       <Filter>02.Component\01.FSM\01.Hero_FSM\05.Spike_FSM</Filter>
     </ClInclude>
-    <ClInclude Include="UiTargetLockOn.h">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\10.UiTargetLockOn</Filter>
-    </ClInclude>
-    <ClInclude Include="UiMonsterHp.h">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp</Filter>
+    <ClInclude Include="UiMonsterHp.h" />
+    <ClInclude Include="UiTargetLockOn.h" />
+    <ClInclude Include="Boss_Spike_FSM.h">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\03.Boss_Spike_FSM</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -559,13 +555,13 @@
       <Filter>02.Component\00.MonoBehaviour\01.Ui\05.UiCharChange</Filter>
     </ClCompile>
     <ClCompile Include="UiGachaCardMove.cpp">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCard\01.UiGachaCardMove</Filter>
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCardMove\01.UiGachaCardMove</Filter>
     </ClCompile>
     <ClCompile Include="UiGachaController.cpp">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCard\00.UiGachaController</Filter>
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCardMove\00.UiGachaController</Filter>
     </ClCompile>
     <ClCompile Include="UiGachaEffectController.cpp">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCard\02.UiGachaEffectController</Filter>
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCardMove\02.UiGachaEffectController</Filter>
     </ClCompile>
     <ClCompile Include="UiCardDeckController.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\07.UiCardDeckController</Filter>
@@ -598,11 +594,10 @@
     <ClCompile Include="Spike_FSM.cpp">
       <Filter>02.Component\01.FSM\01.Hero_FSM\05.Spike_FSM</Filter>
     </ClCompile>
-    <ClCompile Include="UiTargetLockOn.cpp">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\10.UiTargetLockOn</Filter>
-    </ClCompile>
-    <ClCompile Include="UiMonsterHp.cpp">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp</Filter>
+    <ClCompile Include="UiMonsterHp.cpp" />
+    <ClCompile Include="UiTargetLockOn.cpp" />
+    <ClCompile Include="Boss_Spike_FSM.cpp">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\03.Boss_Spike_FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
