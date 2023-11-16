@@ -19,11 +19,21 @@ HRESULT CoolTimeCheckScript::Init()
     m_eCurHero = HERO::PLAYER;
 
     m_CoolTime.resize(IDX(HERO::MAX));
-    //m_TextureKey.resize(IDX(HERO::MAX));
     for (_uint i = 0; i < IDX(HERO::MAX); ++i)
     {
         m_CoolTime[i].resize(5);
-        //m_TextureKey[i].resize(7);
+
+        auto tagData = GET_DATA(static_cast<HERO>(i));
+       m_CoolTime[i][0].fCoolTime = tagData.Skill1Cool;
+       m_CoolTime[i][1].fCoolTime = tagData.Skill2Cool;
+       m_CoolTime[i][2].fCoolTime = tagData.Skill3Cool;
+       m_CoolTime[i][3].fCoolTime = tagData.Skill4Cool;
+       m_CoolTime[i][4].fCoolTime = tagData.Skill5Cool;
+       m_CoolTime[i][0].fAccTime = m_CoolTime[i][0].fCoolTime + 0.1f;
+       m_CoolTime[i][1].fAccTime = m_CoolTime[i][1].fCoolTime + 0.1f;
+       m_CoolTime[i][2].fAccTime = m_CoolTime[i][2].fCoolTime + 0.1f;
+       m_CoolTime[i][3].fAccTime = m_CoolTime[i][3].fCoolTime + 0.1f;
+       m_CoolTime[i][4].fAccTime = m_CoolTime[i][4].fCoolTime + 0.1f;
     }
 
     m_tagEvade.fCoolTime = 3.f;
@@ -60,6 +70,8 @@ HRESULT CoolTimeCheckScript::Init()
     m_pUi_Skill_Cool[2] = CUR_SCENE->Get_UI(L"UI_Skill4_Cool");
     m_pUi_Skill_Cool[3] = CUR_SCENE->Get_UI(L"UI_Skill5_Cool");
     m_pUi_Skill_Cool[4] = CUR_SCENE->Get_UI(L"UI_Skill6_Cool");
+    for (_uint i = 0; i < 5; ++i)
+        m_pUi_Skill_Cool[i].lock()->Get_FontRenderer()->Get_Text() = L"";
 
     m_bIsCoolChangeOne.resize(5);
     m_bIsCoolChangeOne[0] = false;
@@ -67,46 +79,6 @@ HRESULT CoolTimeCheckScript::Init()
     m_bIsCoolChangeOne[2] = false;
     m_bIsCoolChangeOne[3] = false;
     m_bIsCoolChangeOne[4] = false;
-
-    // Player
-    auto tagData = GET_DATA(HERO::PLAYER);
-    m_CoolTime[IDX(HERO::PLAYER)][0].fCoolTime = tagData.Skill1Cool;
-    m_CoolTime[IDX(HERO::PLAYER)][1].fCoolTime = tagData.Skill2Cool;
-    m_CoolTime[IDX(HERO::PLAYER)][2].fCoolTime = tagData.Skill3Cool;
-    m_CoolTime[IDX(HERO::PLAYER)][3].fCoolTime = tagData.Skill4Cool;
-    m_CoolTime[IDX(HERO::PLAYER)][4].fCoolTime = tagData.Skill5Cool;
-    
-    // Ace
-    tagData = GET_DATA(HERO::ACE3);
-    m_CoolTime[IDX(HERO::ACE3)][0].fCoolTime = tagData.Skill1Cool;
-    m_CoolTime[IDX(HERO::ACE3)][1].fCoolTime = tagData.Skill2Cool;
-    m_CoolTime[IDX(HERO::ACE3)][2].fCoolTime = tagData.Skill3Cool;
-    m_CoolTime[IDX(HERO::ACE3)][3].fCoolTime = tagData.Skill4Cool;
-    m_CoolTime[IDX(HERO::ACE3)][4].fCoolTime = tagData.Skill5Cool;
-
-    // Kyle
-    tagData = GET_DATA(HERO::KYLE);
-    m_CoolTime[IDX(HERO::KYLE)][0].fCoolTime = tagData.Skill1Cool;
-    m_CoolTime[IDX(HERO::KYLE)][1].fCoolTime = tagData.Skill2Cool;
-    m_CoolTime[IDX(HERO::KYLE)][2].fCoolTime = tagData.Skill3Cool;
-    m_CoolTime[IDX(HERO::KYLE)][3].fCoolTime = tagData.Skill4Cool;
-    m_CoolTime[IDX(HERO::KYLE)][4].fCoolTime = tagData.Skill5Cool;
-
-    // Yeopo
-    tagData = GET_DATA(HERO::YEOPO);
-    m_CoolTime[IDX(HERO::YEOPO)][0].fCoolTime = tagData.Skill1Cool;
-    m_CoolTime[IDX(HERO::YEOPO)][1].fCoolTime = tagData.Skill2Cool;
-    m_CoolTime[IDX(HERO::YEOPO)][2].fCoolTime = tagData.Skill3Cool;
-    m_CoolTime[IDX(HERO::YEOPO)][3].fCoolTime = tagData.Skill4Cool;
-    m_CoolTime[IDX(HERO::YEOPO)][4].fCoolTime = tagData.Skill5Cool;
-
-    // Dellons
-    tagData = GET_DATA(HERO::DELLONS);
-    m_CoolTime[IDX(HERO::DELLONS)][0].fCoolTime = tagData.Skill1Cool;
-    m_CoolTime[IDX(HERO::DELLONS)][1].fCoolTime = tagData.Skill2Cool;
-    m_CoolTime[IDX(HERO::DELLONS)][2].fCoolTime = tagData.Skill3Cool;
-    m_CoolTime[IDX(HERO::DELLONS)][3].fCoolTime = tagData.Skill4Cool;
-    m_CoolTime[IDX(HERO::DELLONS)][4].fCoolTime = tagData.Skill5Cool;
 
 
 

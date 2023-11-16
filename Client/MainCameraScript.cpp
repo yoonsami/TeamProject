@@ -8,7 +8,9 @@
 #include "FSM.h"
 #include "MathUtils.h"
 #include "RigidBody.h"
+
 #include "UiTargetLockOn.h"
+#include "UiMonsterHp.h"
 
 MainCameraScript::MainCameraScript(shared_ptr<GameObject> pPlayer)
 {
@@ -25,7 +27,8 @@ HRESULT MainCameraScript::Init()
 
     Get_Transform()->Set_State(Transform_State::POS, m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS) + m_vOffset);
 
-    m_UiTarget = CUR_SCENE->Get_UI(L"UI_Target_LockOn0");
+    m_UiTargetLockon = CUR_SCENE->Get_UI(L"UI_Target_LockOn");
+    m_UiTargetHp = CUR_SCENE->Get_UI(L"UI_Monster_Hp");
 
     return S_OK;
 }
@@ -48,7 +51,8 @@ void MainCameraScript::Late_Tick()
         {
             m_pPlayer.lock()->Get_FSM()->Reset_Target();
             m_pTarget.reset();
-            m_UiTarget.lock()->Get_Script<UiTargetLockOn>()->Set_Target(nullptr);
+            m_UiTargetLockon.lock()->Get_Script<UiTargetLockOn>()->Set_Target(nullptr);
+            m_UiTargetHp.lock()->Get_Script<UiMonsterHp>()->Set_Target(nullptr);
         }
         else
             Find_Target();
@@ -297,7 +301,8 @@ void MainCameraScript::Find_Target()
         {
             fMinDist = sqrtf(distSQ);
             //m_pTarget = object;
-            m_UiTarget.lock()->Get_Script<UiTargetLockOn>()->Set_Target(object);
+            m_UiTargetLockon.lock()->Get_Script<UiTargetLockOn>()->Set_Target(object);
+            m_UiTargetHp.lock()->Get_Script<UiMonsterHp>()->Set_Target(object);
             //m_pPlayer.lock()->Get_FSM()->Set_Target(m_pTarget.lock());
         }
     }

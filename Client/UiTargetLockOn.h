@@ -16,16 +16,14 @@ public:
 private:
     void Change_Scale();
     void Update_Target_Pos();
-    void Set_Owner_Render();
     void Check_Target();
 
 private:
     weak_ptr<GameObject>    m_pCamera;
+    weak_ptr<GameObject>    m_pLockOn0;
     weak_ptr<GameObject>    m_pLockOn1;
     weak_ptr<GameObject>    m_pTarget;
     
-    _bool       m_bIsRender = { false };
-
     enum class STATE { DOWN, UP };
     STATE       m_eState        = { STATE::UP };
     _float3     m_vecScale      = {};

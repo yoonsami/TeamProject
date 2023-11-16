@@ -51,9 +51,14 @@ private:
     _bool m_bFixedCheck = false;
     weak_ptr<GameObject> m_pPlayer;
     weak_ptr<GameObject> m_pTarget;
-    weak_ptr<GameObject> m_UiTarget;
+
+
+    //test
+    weak_ptr<GameObject> m_UiTargetLockon;
+    weak_ptr<GameObject> m_UiTargetHp;
 
     
+
     _float m_fMaxHeightRadian = XM_PI / 3.f;
     _float3 m_vFixedPos = _float3(0.f);
     _float3 m_vFixedDir = _float3(0.f);
