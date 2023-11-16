@@ -128,6 +128,7 @@
       <MinFilesInUnityFile>2</MinFilesInUnityFile>
       <UnityFilesDirectory>$(ProjectDir)Unity\</UnityFilesDirectory>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <IncludeInUnityFile>true</IncludeInUnityFile>
     </ClCompile>
     <Link>
       <SubSystem>

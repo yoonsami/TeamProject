@@ -15,7 +15,6 @@ HRESULT CoolTimeCheckScript::Init()
 {
     if (m_pOwner.expired())
         return E_FAIL;
-
     m_eCurHero = HERO::PLAYER;
 
     m_CoolTime.resize(IDX(HERO::MAX));
@@ -49,13 +48,13 @@ HRESULT CoolTimeCheckScript::Init()
     m_pUiSkill[6] = CUR_SCENE->Get_UI(L"UI_Skill6");
 
     m_pUiSkill_Effect.resize(7);
-    m_pUiSkill_Effect [0] = CUR_SCENE->Get_UI(L"UI_Skill2_Effect");
-    m_pUiSkill_Effect [1] = CUR_SCENE->Get_UI(L"UI_Skill3_Effect");
-    m_pUiSkill_Effect [2] = CUR_SCENE->Get_UI(L"UI_Skill4_Effect");
-    m_pUiSkill_Effect [3] = CUR_SCENE->Get_UI(L"UI_Skill5_Effect");
-    m_pUiSkill_Effect [4] = CUR_SCENE->Get_UI(L"UI_Skill6_Effect");
-    m_pUiSkill_Effect [5] = CUR_SCENE->Get_UI(L"UI_Skill1_Effect");
-    m_pUiSkill_Effect [6] = CUR_SCENE->Get_UI(L"UI_Skill0_Effect");
+    m_pUiSkill_Effect[0] = CUR_SCENE->Get_UI(L"UI_Skill2_Effect");
+    m_pUiSkill_Effect[1] = CUR_SCENE->Get_UI(L"UI_Skill3_Effect");
+    m_pUiSkill_Effect[2] = CUR_SCENE->Get_UI(L"UI_Skill4_Effect");
+    m_pUiSkill_Effect[3] = CUR_SCENE->Get_UI(L"UI_Skill5_Effect");
+    m_pUiSkill_Effect[4] = CUR_SCENE->Get_UI(L"UI_Skill6_Effect");
+    m_pUiSkill_Effect[5] = CUR_SCENE->Get_UI(L"UI_Skill1_Effect");
+    m_pUiSkill_Effect[6] = CUR_SCENE->Get_UI(L"UI_Skill0_Effect");
 
     m_pUi_Cool_End.resize(5);
     m_pUi_Cool_End[0] = CUR_SCENE->Get_UI(L"UI_Cool_End2");
