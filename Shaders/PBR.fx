@@ -170,7 +170,8 @@ PBR_OUT PBRShade(
         viewLightDir = normalize(viewPosition - viewLightPos);
         float distance = length(viewLightPos - viewPosition);
         attenuation *= saturate(1.f - saturate(pow(distance / lights[lightIndex].range, 2)));;
-        
+        attenuation *= 2.f;
+
     }
         //SPOT_LIGHT
     else
@@ -188,7 +189,7 @@ PBR_OUT PBRShade(
             attenuation = 0.f;
 
     }
-    color += (kD * diffuse + specular) * lightColor * 100.f * attenuation * NdotL;
+    color += (kD * diffuse + specular) * lightColor * 50.f * attenuation * NdotL;
     color += ambient * attenuation;
 
     PBR_OUT output = (PBR_OUT) 0.f;

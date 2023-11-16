@@ -127,11 +127,21 @@ void Kyle_GachaScene::Load_Player()
 	ObjPlayer->Set_ObjectGroup(OBJ_PLAYER);
 	Add_GameObject(ObjPlayer);
 	Gacha_FSM_Desc desc;
+	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+	shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
 
+	
 	switch (m_Desc.eHeroType)
 	{
 	case HERO::KYLE:
 		modelName = L"Kyle";
+		{
+			shared_ptr<Model> model = RESOURCES.Get<Model>(modelName);
+			animator->Set_Model(model);
+			model->Get_MaterialByName(L"mi_Wp_Kyle_Chain")->Get_MaterialDesc().emissive = Color(1.f, 0.5f, 0.3f, 1.f);
+			model->Get_MaterialByName(L"mi_Wp_Kyle")->Get_MaterialDesc().emissive = Color(1.f, .5f, 0.3f, 1.f);
+			ObjPlayer->Add_Component(animator);
+		}
 		desc.strWeaponName = L"";
 		desc.strAnimTag = L"SQ_SpecialHero_Kyle";
 		desc.iAnimStopFrame = 134;
@@ -168,6 +178,12 @@ void Kyle_GachaScene::Load_Player()
 		break;
 	case HERO::YEOPO:
 		modelName = L"Yeopo";
+		{
+			shared_ptr<Model> model = RESOURCES.Get<Model>(modelName);
+			animator->Set_Model(model);
+
+			ObjPlayer->Add_Component(animator);
+		}
 		desc.strWeaponName = L"Weapon_Yeopo";
 		desc.strAnimTag = L"SQ_SpecialHero_Yeopo";
 		desc.iAnimStopFrame = 134;
@@ -202,13 +218,9 @@ void Kyle_GachaScene::Load_Player()
 	ObjPlayer->Set_Name(modelName);
 	ObjPlayer->Add_Component(make_shared<Gacha_FSM>(desc));
 
-	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-	shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
-	{
-		shared_ptr<Model> model = RESOURCES.Get<Model>(modelName);
-		animator->Set_Model(model);
-	}
-	ObjPlayer->Add_Component(animator);
+	
+
+	
 }
 
 void Kyle_GachaScene::Load_Camera()
