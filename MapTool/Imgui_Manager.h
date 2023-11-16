@@ -70,6 +70,8 @@ private:
 	HRESULT Save_MapObject();
 	// 맵오브젝트 불러오기
 	HRESULT Load_MapObject();
+	// 맵이름 모음
+	HRESULT Save_ModelNames();
 
 	// 오브젝트를 받아와서 컬링포지션과 길이를 계산하여 반영, 컬링포지션과 길이를 float4로 반환
 	_float4 Compute_CullingData(shared_ptr<GameObject>& _pGameObject);

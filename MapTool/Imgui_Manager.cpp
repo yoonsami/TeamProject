@@ -265,6 +265,9 @@ void ImGui_Manager::Frame_ObjectBaseManager()
     ImGui::SameLine();
     ImGui::Text("Press Z");
 
+    if (ImGui::Button("CreateNames") || KEYTAP(KEY_TYPE::Z))
+        Save_ModelNames();
+
     ImGui::End();
 }
 
@@ -272,7 +275,10 @@ void ImGui_Manager::Frame_Objects()
 {
     ImGui::Begin("Frame_SelectObjects"); // 글자 맨윗줄
 
-    ImGui::ListBox("##Objects", &m_iObjects, m_strObjectName.data(), (_int)m_strObjectName.size(), (_int)m_strObjectName.size());
+    if(ImGui::ListBox("##Objects", &m_iObjects, m_strObjectName.data(), (_int)m_strObjectName.size(), (_int)m_strObjectName.size()))
+    {
+        strcpy_s(m_szBaseObjectFilter, m_strObjectName[m_iObjects]);
+    }
     // 높이재설정
     if(m_bObjectListResetHeight)
     {
@@ -1283,10 +1289,13 @@ HRESULT ImGui_Manager::Load_MapObject()
     m_WallRectPosLDRU.clear();
     _int iNumWall = 0;
     file->Read<_int>(iNumWall);
-    m_WallRectPosLDRU.resize(iNumWall);
-    for (_int i = 0; i < iNumWall; ++i)
-        file->Read<pair<_float3, _float3>>(m_WallRectPosLDRU[i]);
-    Create_WallMesh();
+    if(iNumWall != 0)
+    {
+        m_WallRectPosLDRU.resize(iNumWall);
+        for (_int i = 0; i < iNumWall; ++i)
+            file->Read<pair<_float3, _float3>>(m_WallRectPosLDRU[i]);
+        Create_WallMesh();
+    }
 
     // 오브젝트 개수 불러오기
     _int iNumObjects = file->Read<_int>();
@@ -1341,6 +1350,40 @@ HRESULT ImGui_Manager::Load_MapObject()
         m_strObjectName.push_back(pChar.get());
     }
 
+    return S_OK;
+}
+
+HRESULT ImGui_Manager::Save_ModelNames()
+{
+    // 세이브 파일 이름으로 저장하기
+    string strFilePath = "..\\Resources\\MapData\\";
+    string strTextName = m_szSaveFileName;
+    strFilePath = strFilePath + strTextName + ".txt";
+    shared_ptr<FileUtils> file = make_shared<FileUtils>();
+    file->Open(Utils::ToWString(strFilePath), FileMode::Write);
+
+    for (_int i = 0; i < m_strObjectName.size(); ++i)
+    {
+        string strLastObjName = m_strObjectName[i];
+        if (i == 0)
+        {
+            strLastObjName = strLastObjName + "\n";
+            file->Write<string>(strLastObjName);
+            continue;
+        }
+        for (_int j = i - 1; j >= 0; --j)
+        {
+            string strwndqhrTest = m_strObjectName[j];
+            if (strwndqhrTest == strLastObjName)
+                break;
+            else if(j==0)
+            {
+                strLastObjName = strLastObjName + "\n";
+                file->Write<string>(strLastObjName);
+                break;
+            }
+        }
+    }
     return S_OK;
 }
 
