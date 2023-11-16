@@ -149,29 +149,16 @@ HRESULT DemoScene::Load_Scene()
 	PHYSX.Init();
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\");
 	RESOURCES.LoadParts();
-	Load_SkyBox();
 	Load_Player();
 	Load_Light();
 	Load_Camera();
-	Load_MapFile(L"KrisMap");
+	Load_MapFile(L"GranseedMap");
 	Load_Monster(1);
 	Load_Boss_Mir();
 
 	Load_Ui();
 
 	return S_OK;
-}
-
-void DemoScene::Load_SkyBox()
-{
-	shared_ptr<GameObject> sky = make_shared<GameObject>();
-	sky->GetOrAddTransform();
-	sky->Add_Component(make_shared<ModelRenderer>(RESOURCES.Get<Shader>(L"SkyBox.fx")));
-	sky->Get_ModelRenderer()->Set_Model(RESOURCES.Get<Model>(L"SkyBox"));
-	sky->Set_Name(L"SkyBase");
-	Add_GameObject(sky);
-
-	// 텍스쳐 정보는 LoadMapFile에서 재변경
 }
 
 void DemoScene::Load_Player()

@@ -377,7 +377,7 @@ void Scene::Load_UIFile(const wstring& strDataFilePath, _bool bRender)
 void Scene::Load_MapFile(const wstring& _mapFileName)
 {
 	// 세이브 파일 이름으로 로드하기
-	wstring strFilePath = L"..\\Resources\\Data\\";
+	wstring strFilePath = L"..\\Resources\\MapData\\";
 	strFilePath += _mapFileName + L".dat";
 	shared_ptr<FileUtils> file = make_shared<FileUtils>();
 	file->Open(strFilePath, FileMode::Read);
@@ -399,10 +399,16 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 		}
 	}
 
-	// 스카이박스 텍스쳐 이름 가져와서 적용하기
+	// 스카이박스 생성 및 텍스쳐 적용
+	shared_ptr<GameObject> sky = make_shared<GameObject>();
+	sky->GetOrAddTransform();
+	shared_ptr<ModelRenderer> SkyRenderer = make_shared<ModelRenderer>(RESOURCES.Get<Shader>(L"SkyBox.fx"));
+	SkyRenderer->Set_Model(RESOURCES.Get<Model>(L"SkyBox"));
 	wstring strSkyBoxTextureName = Utils::ToWString(file->Read<string>());
-	vector<shared_ptr<Material>>& Mats = Get_GameObject(L"SkyBase")->Get_ModelRenderer()->Get_Model()->Get_Materials();
-	Mats[0]->Set_TextureMap(RESOURCES.Get<Texture>(strSkyBoxTextureName), TextureMapType::DIFFUSE);
+	SkyRenderer->Get_Model()->Get_Materials()[0]->Set_TextureMap(RESOURCES.Get<Texture>(strSkyBoxTextureName), TextureMapType::DIFFUSE);
+	sky->Add_Component(SkyRenderer);
+	sky->Set_Name(L"SkyBase");
+	Add_GameObject(sky);
 
 	// 광원 정보 가져와서 방향성광원 적용 및 점광원 생성하기
 	// 방향성광원
@@ -414,7 +420,7 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 	// 보는방향
 	_float3 DirLightLookDir = _float3{ 0.f, 0.f, 0.f };
 	file->Read<_float3>(DirLightLookDir);
-	DirectionalLightObject->Get_Transform()->Set_LookDir(DirLightLookDir);
+	DirectionalLightObject->Get_Transform()->LookAt(XMVectorSetW(DirLightLookDir, 1.f));
 	// 색깔
 	LightColor DirLightColor;
 	file->Read<LightColor>(DirLightColor);
@@ -605,8 +611,7 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 				_float3 vObjPos = CreateObject->Get_Transform()->Get_State(Transform_State::POS).xyz();
 				auto rigidBody = make_shared<RigidBody>();
 				CreateObject->Add_Component(rigidBody);
-				rigidBody->Create_CapsuleRigidBody(CreateObject->Get_CullPos() + _float3::Up * 3.f * CreateObject->Get_CullRadius(), CreateObject->Get_CullRadius(), CreateObject->Get_CullRadius() * 5.f);
-
+				rigidBody->Create_CapsuleRigidBody(CreateObject->Get_CullPos(), ColBoundingSize.x, CreateObject->Get_CullRadius() * 5.f);
 				break;
 			}
 			case ColliderType::Mesh:
