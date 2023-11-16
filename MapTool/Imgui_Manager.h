@@ -59,6 +59,8 @@ private:
 	void Create_WallMesh();
 	// 벽메시 정보배열 초기화
 	void Clear_WallMesh();
+	// 최근에 피킹한벽 삭제
+	void Delete_WallMesh();
 
 	// 점광원 제거
 	HRESULT Delete_PointLight();
@@ -84,8 +86,8 @@ private:
 private:
 // 설치 가능한 오브젝트 목록
 	vector<const char*> m_strObjectBaseNameList;
-	// 같은이름의 모델의 중복개수(모델별 번호)
-	vector<_uint> m_iObjectBaseIndexList;
+	//// 같은이름의 모델의 중복개수(모델별 번호)
+	//vector<_uint> m_iObjectBaseIndexList;
 	// 로드시 문자열 동적할당을 위한 공간
 	vector<shared_ptr<char[]>> m_strObjectBaseNamePtr;
 	// 현재 선택된 베이스 오브젝트의 번호
@@ -138,7 +140,7 @@ private:
 
 // 빛관련
 	_float4 m_DirectionalLightPos = _float4{ 0.f, 0.f, 0.f, 1.f };
-	_float3 m_DirectionalLightLookDir = _float3{ 0.f, 0.f, 0.f};
+	_float3 m_DirectionalLightLookAtPos = _float3{ 0.f, 0.f, 0.f};
 	LightInfo m_DirectionalLightInfo; // 빛 생성정보
 	vector<shared_ptr<GameObject>> m_pPointLightObjects;
 	vector<const char*> m_strPointLightList;
@@ -155,6 +157,7 @@ private:
 	_float3 m_WallPickingPos[2] = { _float3{0.f, 0.f, 0.f}, _float3{0.f, 0.f, 0.f} };
 	_bool m_bFirstWallPick = { true };
 	_float m_fWallHeight = { 10.f };
+	// 좌하단 우상단 페어(사각형)를 가진 벡
 	vector<pair<_float3, _float3>> m_WallRectPosLDRU;
 
 
