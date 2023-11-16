@@ -13,7 +13,7 @@
 // Windows 헤더 파일
 #include <windows.h>
 
-#include <random>
+//#include <random>
 // C 런타임 헤더 파일입니다.
 #include <stdlib.h>
 #include <malloc.h>
@@ -22,7 +22,6 @@
 #include <process.h>
 #pragma comment(lib,"Engine/Engine.lib")
 #include "EnginePch.h"
-
 #include "EffectTool_Define.h"
 
 /* For. ImGui*/

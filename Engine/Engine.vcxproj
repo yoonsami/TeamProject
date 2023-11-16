@@ -319,7 +319,10 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneMgr.cpp" />
     <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="SimpleMath.cpp" />
+    <ClCompile Include="SimpleMath.cpp">
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</IncludeInUnityFile>
+    </ClCompile>
     <ClCompile Include="CustomSound.cpp" />
     <ClCompile Include="SoundMgr.cpp" />
     <ClCompile Include="SphereCollider.cpp" />

@@ -9,3 +9,5 @@ Libraries
 *.zip
 Vertices.csv
 *.7z
+Engine/Unity
+Client/Unity
