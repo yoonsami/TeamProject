@@ -412,7 +412,17 @@ void Widget_EffectMaker_Mesh::Option_Diffuse()
 
 	// For. Tiling, move Texture UV Speed 
 	if (0 == m_iDiffuseOption && !m_bUseSpriteAnimation)
+	{
+		ImGui::Checkbox("UV Option same with opacity##Diffuse", &m_bUVOptionSameWithOpacity_Diffuse);
+		if (m_bUVOptionSameWithOpacity_Diffuse)
+		{
+			m_fTiling_Diffuse[0] = m_fTiling_Opacity[0];
+			m_fTiling_Diffuse[1] = m_fTiling_Opacity[1];
+			m_fUVSpeed_Diffuse[0] = m_fUVSpeed_Opacity[0];
+			m_fUVSpeed_Diffuse[1] = m_fUVSpeed_Opacity[1];
+		}
 		SubWidget_SettingTexUV(m_fTiling_Diffuse, m_fUVSpeed_Diffuse, "Tiling(x,y)##Diffuse", "Move TexUV Speed(x,y)##Diffuse");
+	}
 
 	ImGui::Spacing();
 }
@@ -1036,6 +1046,11 @@ void Widget_EffectMaker_Mesh::Create()
 		m_vGraColor_Dest = m_vGraColor_Base;
 	}
 
+
+	_bool bUseTextureColor = false;
+	if (0 == m_iDiffuseOption)
+		bUseTextureColor = true;
+
 	MeshEffectData::DESC tMeshEffectDesc
 	{
 		m_szTag,
@@ -1045,6 +1060,7 @@ void Widget_EffectMaker_Mesh::Create()
 		m_iMeshCnt,
 		m_fCreateInterval,
 		_float2(m_fParticleDuration),
+		m_iSamplerType,
 
 		m_strMesh,
 
@@ -1062,9 +1078,9 @@ void Widget_EffectMaker_Mesh::Create()
 		ImVec4toColor(m_vDiffuseColor_Dest),
 		_float2(m_fTiling_Diffuse),
 		_float2(m_fUVSpeed_Diffuse),
+		bUseTextureColor,
 
 		m_OpacityTexture.second,
-		m_iSamplerType,
 		_float2(m_fTiling_Opacity),
 		_float2(m_fUVSpeed_Opacity),
 
@@ -1146,6 +1162,10 @@ void Widget_EffectMaker_Mesh::Save()
 	string strFilePath = "..\\Resources\\EffectData\\MeshEffectData\\";
 	strFilePath += strFileName + ".dat";
 
+	_bool bUseTextureColor = false;
+	if (0 == m_iDiffuseOption)
+		bUseTextureColor = true;
+
 	{	
 		shared_ptr<FileUtils> file = make_shared<FileUtils>();
 		file->Open(Utils::ToWString(strFilePath), FileMode::Write);
@@ -1158,6 +1178,7 @@ void Widget_EffectMaker_Mesh::Save()
 		file->Write<_int>(m_iMeshCnt);
 		file->Write<_float>(m_fCreateInterval);
 		file->Write<_float2>(_float2(m_fParticleDuration));
+		file->Write<_int>(m_iSamplerType);
 
 		/* Mesh */
 		// file->Write<_bool>(m_iMesh); 
@@ -1181,20 +1202,20 @@ void Widget_EffectMaker_Mesh::Save()
 		file->Write<_float4>(ImVec4toColor(m_vDiffuseColor_Dest));
 		file->Write<_float2>(_float2(m_fTiling_Diffuse));
 		file->Write<_float2>(_float2(m_fUVSpeed_Diffuse));
+		file->Write<_bool>(bUseTextureColor);
+
+		/* Opacity */
+		// file->Write<_int>(m_OpacityTexture.first);
+		file->Write<string>(m_OpacityTexture.second);
+		// file->Write<_bool>(m_bUVOptionSameWithOpacity_Opacity);
+		file->Write<_float2>(_float2(m_fTiling_Opacity));
+		file->Write<_float2>(_float2(m_fUVSpeed_Opacity));
 
 		/* Alpha Gradation */
 		file->Write<_float>(m_fAlphaGraIntensity);
 		file->Write<_float4>(ImVec4toColor(m_vAlphaGraColor_Base));
 		// file->Write<_bool>(m_bDestSameWithBase_AlphaGra);
 		file->Write<_float4>(ImVec4toColor(m_vAlphaGraColor_Dest));
-
-		/* Opacity */
-		// file->Write<_int>(m_OpacityTexture.first);
-		file->Write<string>(m_OpacityTexture.second);
-		// file->Write<_bool>(m_bUVOptionSameWithOpacity_Opacity);
-		file->Write<_int>(m_iSamplerType);
-		file->Write<_float2>(_float2(m_fTiling_Opacity));
-		file->Write<_float2>(_float2(m_fUVSpeed_Opacity));
 
 		/* Gradation by Texture */
 		// file->Write<_bool>(m_bGra_On);
@@ -1316,6 +1337,7 @@ void Widget_EffectMaker_Mesh::Load()
 	m_iMeshCnt = file->Read<_int>();
 	m_fCreateInterval = file->Read<_float>();
 	_float2 vFloat2 = file->Read<_float2>();
+	m_iSamplerType = file->Read<_int>();
 	memcpy(m_fParticleDuration, &vFloat2, sizeof(m_fParticleDuration));
 
 	/* Mesh */
@@ -1341,7 +1363,21 @@ void Widget_EffectMaker_Mesh::Load()
 	memcpy(m_fTiling_Diffuse, &vTemp_vec2, sizeof(m_fTiling_Diffuse));
 	vTemp_vec2 = file->Read<_float2>();
 	memcpy(m_fUVSpeed_Diffuse, &vTemp_vec2, sizeof(m_fUVSpeed_Diffuse));
+	_bool bUseTextureColor = file->Read<_bool>();
+	if (bUseTextureColor)
+		m_iDiffuseOption = 0;
+	else
+		m_iDiffuseOption = 1;
 	m_DiffuseTexture.first = GetIndex_FromTexList(m_DiffuseTexture.second);
+	m_bUVOptionSameWithOpacity_Diffuse = Equal(m_fTiling_Diffuse, m_fTiling_Opacity, sizeof(_float) * 2) && Equal(m_fUVSpeed_Diffuse, m_fUVSpeed_Opacity, sizeof(_float) * 2);
+
+	/* Opacity */
+	m_OpacityTexture.second = file->Read<string>();
+	vTemp_vec2 = file->Read<_float2>();
+	memcpy(m_fTiling_Opacity, &vTemp_vec2, sizeof(m_fTiling_Opacity));
+	vTemp_vec2 = file->Read<_float2>();
+	memcpy(m_fUVSpeed_Opacity, &vTemp_vec2, sizeof(m_fUVSpeed_Opacity));
+	m_OpacityTexture.first = GetIndex_FromTexList(m_OpacityTexture.second);
 
 	/* Alpha Gradation */
 	m_fAlphaGraIntensity = file->Read<_float>();
@@ -1350,15 +1386,6 @@ void Widget_EffectMaker_Mesh::Load()
 	m_bDestSameWithBase_AlphaGra = Equal(m_vAlphaGraColor_Base, m_vAlphaGraColor_Dest);
 	if (0 == m_fAlphaGraIntensity) m_bAlphaGra_On = false;
 	else m_bAlphaGra_On = true;
-
-	/* Opacity */
-	m_OpacityTexture.second = file->Read<string>();
-	m_iSamplerType = file->Read<_int>();
-	vTemp_vec2 = file->Read<_float2>();
-	memcpy(m_fTiling_Opacity, &vTemp_vec2, sizeof(m_fTiling_Opacity));
-	vTemp_vec2 = file->Read<_float2>();
-	memcpy(m_fUVSpeed_Opacity, &vTemp_vec2, sizeof(m_fUVSpeed_Opacity));
-	m_OpacityTexture.first = GetIndex_FromTexList(m_OpacityTexture.second);
 	
 	/* Gradation by Texture */
 	m_GraTexture.second = file->Read<string>();
