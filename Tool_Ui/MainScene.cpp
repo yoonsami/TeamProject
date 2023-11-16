@@ -57,58 +57,7 @@ HRESULT MainScene::Load_Scene()
 
 void MainScene::Load_DemoModel()
 {
-	//{
-	//	// GameObject �����Ҵ�
-	//	shared_ptr<GameObject> testObj = make_shared<GameObject>();
-
-	//	// Transform Component �߰�
-	//	// ���� �ϳ� ���. AddComponent �Ǵ� GetOrAddTransform(������ ��ȯ ������ ������ ��ȯ)
-	//	testObj->Add_Component(make_shared<Transform>());
-	//	//testObj->GetOrAddTransform();
-
-	//	testObj->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
-	//	{
-	//		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-
-	//		shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
-	//		{
-	//			shared_ptr<Model> model = RESOURCES.Get<Model>(L"Kyle");
-	//			animator->Set_Model(model);
-	//		}
-	//		//�ִϸ����� ������Ʈ
-	//		testObj->Add_Component(animator);
-	//	}
-
-	//	//testObj->Add_Component(make_shared<DemoAnimationController1>());
-
-	//	Add_GameObject(testObj);
-	//}
-	//{
-	//	// GameObject �����Ҵ�
-	//	shared_ptr<GameObject> testObj = make_shared<GameObject>();
-
-	//	// Transform Component �߰�
-	//	// ���� �ϳ� ���. AddComponent �Ǵ� GetOrAddTransform(������ ��ȯ ������ ������ ��ȯ)
-	//	testObj->Add_Component(make_shared<Transform>());
-	//	//testObj->GetOrAddTransform();
-
-	//	testObj->Get_Transform()->Set_State(Transform_State::POS, _float4(5.f, 0.f, 0.f, 1.f));
-	//	{
-	//		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-
-	//		shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
-	//		{
-	//			shared_ptr<Model> model = RESOURCES.Get<Model>(L"1058_cooperateuniqueskilltimeline");
-	//			animator->Set_Model(model);
-	//		}
-	//		//�ִϸ����� ������Ʈ
-	//		testObj->Add_Component(animator);
-	//	}
-
-	//	testObj->Add_Component(make_shared<DemoAnimationController1>());
-
-	//	Add_GameObject(testObj);
-	//}
+	
 }
 
 void MainScene::Load_Camera()
