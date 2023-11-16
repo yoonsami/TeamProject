@@ -1103,6 +1103,8 @@ void Widget_EffectMaker_Mesh::Load()
 	{
 		m_TexOption[i].Texture.second = file->Read<string>();
 		m_TexOption[i].Texture.first = GetIndex_FromTexList(m_TexOption[i].Texture.second);
+		if (0 != m_TexOption[i].Texture.first)
+			m_TexOption[i].bIsOption_On = true;
 		m_TexOption[i].iColoringOption = file->Read<_int>();
 		m_TexOption[i].vColorBase1 = ColorToImVec4(file->Read<_float4>());
 		m_TexOption[i].vColorBase2 = ColorToImVec4(file->Read<_float4>());
