@@ -8,6 +8,8 @@ public:
 
 public:
     virtual void Tick() override;
+    
+    void Change_Hero(HERO eHero);
 
 private:
     void Add_Character_Weapon(const wstring& weaponname);
@@ -16,6 +18,6 @@ private:
     void Change_To_Kyle();
     void Change_To_Yeopo();
     void Change_To_Dellons();
-
+    void Change_To_Input(HERO eHero);
 };
 

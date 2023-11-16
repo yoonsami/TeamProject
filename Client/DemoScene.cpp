@@ -12,7 +12,6 @@
 #include "FileUtils.h"
 #include "ModelMesh.h"
 #include "CustomFont.h"
-#include "UiHpBarFlow.h"
 #include "LoadingScene.h"
 #include "BaseCollider.h"
 #include "WeaponScript.h"
@@ -31,7 +30,7 @@
 #include "Debug_CreateMotionTrail.h"
 #include "CounterMotionTrailScript.h"
 
-
+#include "UiHpBarController.h"
 #include "MapObjectScript.h"
 #include "UiCoolEndEffect.h"
 #include "MainCameraScript.h"
@@ -45,15 +44,14 @@
 #include "Silversword_Soldier_FSM.h"
 #include "UiGachaController.h"
 #include "Boss_Mir_FSM.h"
+#include "Boss_Dellons_FSM.h"
 #include "DemoAnimationController1.h"
 #include "UiCardDeckController.h"
 #include "MainUiController.h"
 #include "UiCardDeckInvenChange.h"
 
-
 #include <filesystem>
-#include "Player_FSM.h"
-#include "GachaScene.h"
+#include "Kyle_GachaScene.h"
 namespace fs = std::filesystem;
 
 DemoScene::DemoScene()
@@ -72,8 +70,7 @@ void DemoScene::Init()
 	COLLISION.Check_Group(_int(CollisionGroup::Monster_Attack), _int(CollisionGroup::Player_Body));
 	COLLISION.Check_Group(_int(CollisionGroup::Monster_Skill), _int(CollisionGroup::Player_Body));
 	COLLISION.Check_Group(_int(CollisionGroup::Player_Body), _int(CollisionGroup::MAPObject));
-	//m_pGachaScene = make_shared<GachaScene>();
-	//m_pGachaScene->Init();
+
 }
 
 void DemoScene::Tick()
@@ -142,6 +139,14 @@ void DemoScene::Final_Tick()
 {
 	__super::Final_Tick();
 	PHYSX.Tick();
+	
+	if (KEYTAP(KEY_TYPE::TAB))
+	{
+		SCENE.Add_SubScene(make_shared<Kyle_GachaScene>());
+		SCENE.Exchange_Scene();
+
+
+	}
 }
 
 HRESULT DemoScene::Load_Scene()
@@ -416,6 +421,81 @@ void DemoScene::Load_Boss_Mir()
 	Add_GameObject(ObjMonster);
 }
 
+void DemoScene::Load_Boss_Dellons()
+{
+	{
+		// Add. Boss_Dellons
+		shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
+
+		ObjMonster->Add_Component(make_shared<Transform>());
+
+		ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 30.f, 1.f));
+		{
+			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+
+			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+			{
+				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Dellons");
+				animator->Set_Model(model);
+			}
+
+			ObjMonster->Add_Component(animator);
+			ObjMonster->Add_Component(make_shared<Boss_Dellons_FSM>());
+			
+			auto pPlayer = Get_GameObject(L"Player");
+			ObjMonster->Get_FSM()->Set_Target(pPlayer);
+		}
+		ObjMonster->Set_Name(L"Boss_Dellons");
+		ObjMonster->Set_VelocityMap(true);
+		ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.8f, 0.5f })); //obbcollider
+		ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
+		ObjMonster->Get_Collider()->Set_Activate(true);
+
+		{
+			auto controller = make_shared<CharacterController>();
+			ObjMonster->Add_Component(controller);
+			auto& desc = controller->Get_CapsuleControllerDesc();
+			desc.radius = 0.5f;
+			desc.height = 5.f;
+			_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz();
+			desc.position = { vPos.x, vPos.y, vPos.z };
+			controller->Create_Controller();
+		}
+		ObjMonster->Set_DrawShadow(true);
+		ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
+		Add_GameObject(ObjMonster);
+
+
+		//Add. Player's Weapon
+		shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
+
+		ObjWeapon->Add_Component(make_shared<Transform>());
+		{
+			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+
+			shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+			{
+				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Weapon_Dellons");
+				renderer->Set_Model(model);
+			}
+
+			ObjWeapon->Add_Component(renderer);
+
+			WeaponScript::WEAPONDESC desc;
+			desc.strBoneName = L"Bip001-Prop1";
+			desc.matPivot = _float4x4::CreateRotationX(-XM_PI / 2.f) * _float4x4::CreateRotationZ(XM_PI);
+			desc.pWeaponOwner = ObjMonster;
+
+			ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
+		}
+		ObjWeapon->Set_DrawShadow(true);
+		ObjWeapon->Set_Name(L"Weapon_Boss_Dellons");
+		ObjWeapon->Set_VelocityMap(true);
+		Add_GameObject(ObjWeapon);
+
+	}
+}
+
 void DemoScene::Load_Light()
 {
 	shared_ptr<GameObject> lightObj = make_shared<GameObject>();
@@ -493,6 +573,12 @@ void DemoScene::Load_Ui()
 	}
 
 	{
+		auto pObj = Get_GameObject(L"Player");
+        auto pScript = make_shared<UiHpBarController>(0);
+		pObj->Add_Component(pScript);
+	}
+
+	{
 		auto pObj = make_shared<GameObject>();
 		pObj->Set_Name(L"UI_Char_Change");
 
@@ -557,10 +643,7 @@ void DemoScene::Load_Ui()
 		Get_GameObject(L"Player")->Add_Component(pScript);
 	}
 
-	{
-		auto pScript = make_shared<UiHpBarFlow>();
-		Get_GameObject(L"UI_HpBar")->Add_Component(pScript);
-	}
+	
 
 	
 
@@ -596,20 +679,6 @@ void DemoScene::Load_Ui()
 			Get_GameObject(strTemp)->Add_Component(pScript);
 		}
 	}
-
-	/*shared_ptr<GameObject> obj = make_shared<GameObject>();
-	obj->GetOrAddTransform()->Scaled(_float3(10.f));
-	{
-		shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
-		shared_ptr<Material> material = make_shared<Material>();
-		material->Set_TextureMap(RESOURCES.Get<Texture>(L"SUBSCENEFINALTarget"),TextureMapType::DIFFUSE);
-		renderer->Get_RenderParamDesc().vec4Params[0] = _float4(1);
-		renderer->Set_Material(material);
-		renderer->Set_Mesh(RESOURCES.Get<Mesh>(L"Quad"));
-		obj->Add_Component(renderer);
-	}
-	Add_GameObject(obj);*/
-
 	{
 		for (_uint i = 0; i < 3; ++i)
 		{

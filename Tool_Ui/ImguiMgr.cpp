@@ -398,7 +398,7 @@ void ImguiMgr::Create_Object()
          UiObject->GetOrAddTransform()->Scaled(_float3(0.001f, 0.001f, 0.001f));
          shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
 
-         auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+         auto mesh = RESOURCES.Get<Mesh>(L"Point");
          renderer->Set_Mesh(mesh);
 
          auto material = make_shared<Material>();
@@ -1250,7 +1250,7 @@ void ImguiMgr::Load_Ui_Desc()
             m_GameobjectName.push_back(strObjectName);
 
             shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
-            auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+            auto mesh = RESOURCES.Get<Mesh>(L"Point");
             renderer->Set_Mesh(mesh);
             auto material = make_shared<Material>();
 
@@ -1367,7 +1367,7 @@ void ImguiMgr::Select_Font_Value()
     ImGui::Text("Size");
     ImGui::SameLine();
     ImGui::SetNextItemWidth(100);
-    ImGui::InputFloat("##PosX2", &m_fFontSize, 0.1f, 1.0f, "%.f", eFlag);
+    ImGui::InputFloat("##PosX2", &m_fFontSize, 0.01f, 1.0f, "%.2f", eFlag);
 }
 
 void ImguiMgr::Set_Font()

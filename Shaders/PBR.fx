@@ -189,7 +189,7 @@ PBR_OUT PBRShade(
             attenuation = 0.f;
 
     }
-    color += (kD * diffuse + specular) * lightColor * 50.f * attenuation * NdotL;
+    color += (kD * diffuse + specular) * lightColor * 100.f * attenuation * NdotL;
     color += ambient * attenuation;
 
     PBR_OUT output = (PBR_OUT) 0.f;

@@ -38,6 +38,9 @@ void FontRenderer::Render()
 	if (m_iCurCount == 0)
 		return;
 
+	if (0 == m_strText.length())
+		return;
+
 	wstring text = m_strText.substr(0, m_iCurCount);
 
 	_float3 vPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
@@ -49,7 +52,7 @@ void FontRenderer::Render()
 	vLT += m_vOffset;
 	m_pFont->Get_Batch()->Begin(SpriteSortMode_Deferred);
 
-	m_pFont->Get_Font()->DrawString(m_pFont->Get_Batch().get(), text.c_str(), vLT, m_vColor, 0.f, _float2(0.5f), m_fFontSize);
+	m_pFont->Get_Font()->DrawString(m_pFont->Get_Batch().get(), text.c_str(), _float3(vLT.x,vLT.y, Get_Transform()->Get_State(Transform_State::POS).z), m_vColor, 0.f, _float2(0.5f), m_fFontSize);
 
 	m_pFont->Get_Batch()->End();
 }

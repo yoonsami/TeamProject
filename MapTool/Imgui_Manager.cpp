@@ -494,6 +494,13 @@ void ImGui_Manager::Frame_SelcetObjectManager()
 }
 void ImGui_Manager::Frame_Light()
 {
+	ImGui::Text("CameraPos");
+	m_CamPos = CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_State(Transform_State::POS);
+	if (ImGui::DragFloat3("##CamPos", (_float*)&m_CamPos))
+	{
+		CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_CamPos);
+	}
+
     ImGui::Begin("SkyBox&Light"); // 글자 맨윗줄
 
     ImGui::Text("CameraPos");

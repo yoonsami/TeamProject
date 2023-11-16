@@ -251,37 +251,26 @@ void Widget_GroupEffectMaker::Widget_GroupMaker()
 			Set_MeshEffectList();
 			m_bWidgetOn_AddMeshEffect = true;
 		}
+		ImGui::Spacing();
+
 		//if (ImGui::Button("Add Particle##GroupEffect"))
 		//{
 		//	Set_ParticleList();
 		//	m_bWidgetOn_AddParticle = true;
 		//}
-		ImGui::Spacing();
+		//ImGui::Spacing();
 		
 		if (ImGui::Button("Save"))
-		{
 			Save();
-		}
 		ImGui::Spacing();
-		ImGui::SameLine();
 
 		if (ImGui::Button("Play##GroupEffect"))
 			Create();
 		ImGui::Spacing();
 		
-		ImGui::SameLine();
-
 		if (ImGui::Button("Create New Group"))
 			m_bWidgetOn_GetTag = true;
 		ImGui::Spacing();
-
-		if (ImGui::Button("Refresh"))
-		{
-			Set_GroupList();
-			Set_MemberEffectList();
-			Set_MeshEffectList();
-			Set_ParticleList();
-		}
 
 		ImGui::EndChild();
 	}
@@ -422,6 +411,7 @@ void Widget_GroupEffectMaker::Option_MemberEffectList()
 		string strFloat3Key1 = "Translation##" + iter + strIndex;
 		string strFloat3Key2 = "Scale##" + iter + strIndex;
 		string strFloat3Key3 = "Rotation##" + iter + strIndex;
+		string strDeleteButton = "Delete##" + iter + strIndex;
 
 		if(ImGui::TreeNode(strTreeNodeKey.c_str()))
 		{
@@ -443,6 +433,11 @@ void Widget_GroupEffectMaker::Option_MemberEffectList()
 			{
 				_float3 vRotation = { m_tCurrMemberProperty[iIndex].m_fRotation[0], m_tCurrMemberProperty[iIndex].m_fRotation[1], m_tCurrMemberProperty[iIndex].m_fRotation[2] };
 				m_pCurrentGroup->Get_GroupEffect()->Set_Member_PivotRotation(iIndex, vRotation);
+			}
+			if (ImGui::Button(strDeleteButton.c_str()))
+			{
+				m_pCurrentGroup->Get_GroupEffect()->DeleteMember(Utils::ToWString(iter));
+				Set_MemberEffectList();
 			}
 			ImGui::TreePop();
 		}
@@ -508,7 +503,7 @@ void Widget_GroupEffectMaker::Create()
 	// For. Transform 
 	pGroupEffectObj->GetOrAddTransform();
 	pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
-	
+
 	// For. GroupEffectData 
 	wstring wstrFileName = Utils::ToWString(m_strGroup) + L".dat";
 	wstring wtsrFilePath = TEXT("..\\Resources\\EffectData\\GroupEffectData\\") + wstrFileName;

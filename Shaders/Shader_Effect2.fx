@@ -21,8 +21,6 @@ EffectOut VS_Main(VTXModel input)
     output.viewPosition = mul(float4(output.worldPosition, 1.f), V).xyz;
     output.position = mul(output.position, VP);
     
-    
-    
     output.uv = input.uv + uvSlidingAcc;
     output.originUV = input.uv;
     output.viewNormal = mul(input.normal, (float3x3) BoneTransform[BoneIndex]);
@@ -57,6 +55,7 @@ float4 PS_Main(EffectOut input) : SV_Target
     float2 vTexUVOffset_Overlay = { g_vec4_0.z, g_vec4_0.w };
     float2 vTexUVOffset_Dissolve = { g_vec4_1.x, g_vec4_1.y };
     float2 vTexUVOffset_Distortion = { g_vec4_1.z, g_vec4_1.w };
+    float2 vTexUVOffset_Blend = { g_vec4_3.x, g_vec4_3.y };
     
     float2 vTexUVOffset_Opacity = { 0.f, 0.f };
     float2 vTexUVOffset_Diffuse = { 0.f, 0.f };
@@ -100,6 +99,7 @@ float4 PS_Main(EffectOut input) : SV_Target
         Opacity_Texcoord = input.uv + vTexUVOffset_Opacity + fDistortionWeight;
         Diffuse_Texcoord = input.uv + vTexUVOffset_Diffuse + fDistortionWeight;
     }
+    float2 Blend_Texcoord = input.uv + vTexUVOffset_Blend;
     float2 Dissolve_Texcoord = input.uv + vTexUVOffset_Dissolve;
     float2 Gra_Textoord = input.uv + vTexUVOffset_Gra + fDistortionWeight;
     float2 Overlay_Textoord = input.uv + vTexUVOffset_Overlay;
@@ -117,7 +117,7 @@ float4 PS_Main(EffectOut input) : SV_Target
         {
             vOutColor.a = OpacityMap.Sample(LinearSampler, Opacity_Texcoord).r;
             if (bHasTexturemap9)
-                vOutColor.a *= TextureMap9.Sample(LinearSampler, Opacity_Texcoord).r;
+                vOutColor.a *= TextureMap9.Sample(LinearSampler, Blend_Texcoord).r;
             if (bHasDissolveMap)
                 fDissolveWeight = DissolveMap.Sample(LinearSampler, Dissolve_Texcoord).r;
         }
@@ -125,7 +125,7 @@ float4 PS_Main(EffectOut input) : SV_Target
         {
             vOutColor.a = OpacityMap.Sample(LinearSamplerClamp, Opacity_Texcoord).r;
             if (bHasTexturemap9)
-                vOutColor.a *= TextureMap9.Sample(LinearSamplerClamp, Opacity_Texcoord).r;
+                vOutColor.a *= TextureMap9.Sample(LinearSamplerClamp, Blend_Texcoord).r;
             if (bHasDissolveMap)
                 fDissolveWeight = DissolveMap.Sample(LinearSamplerClamp, Dissolve_Texcoord).r;
         }
@@ -133,7 +133,7 @@ float4 PS_Main(EffectOut input) : SV_Target
         {
             vOutColor.a = OpacityMap.Sample(LinearSamplerMirror, Opacity_Texcoord).r;
             if (bHasTexturemap9)
-                vOutColor.a *= TextureMap9.Sample(LinearSamplerMirror, Opacity_Texcoord).r;
+                vOutColor.a *= TextureMap9.Sample(LinearSamplerMirror, Blend_Texcoord).r;
             if (bHasDissolveMap)
                 fDissolveWeight = DissolveMap.Sample(LinearSamplerMirror, Dissolve_Texcoord).r;
         }
@@ -141,7 +141,7 @@ float4 PS_Main(EffectOut input) : SV_Target
         {
             vOutColor.a = OpacityMap.Sample(LinearSamplerBorder, Opacity_Texcoord).r;
             if (bHasTexturemap9)
-                vOutColor.a *= TextureMap9.Sample(LinearSamplerBorder, Opacity_Texcoord).r;
+                vOutColor.a *= TextureMap9.Sample(LinearSamplerBorder, Blend_Texcoord).r;
             if (bHasDissolveMap)
                 fDissolveWeight = DissolveMap.Sample(LinearSamplerBorder, Dissolve_Texcoord).r;
         }
@@ -161,44 +161,44 @@ float4 PS_Main(EffectOut input) : SV_Target
                 vOutColor.a = 0.f;
         }
     }
-   
-    // For. FadeOut
-        if (bUseFadeOut)
-            vOutColor.a *= (1.f - fLifeRatio);
     
     // For. Alpha Gradation 
-        if (vOutColor.a < fAlphaGraIntensity)
-            vOutColor.rgb = (vOutColor.rgb * vOutColor.a) + (vColor_AlphaGra.rgb * (1.f - vOutColor.a));
+    if (vOutColor.a < fAlphaGraIntensity)
+        vOutColor.rgb = (vOutColor.rgb * vOutColor.a) + (vColor_AlphaGra.rgb * (1.f - vOutColor.a));
     
     // For. Gradation by texture
-        if (bHasTexturemap7)
-        {
-            vColor_Gra.a = TextureMap7.Sample(LinearSamplerClamp, Gra_Textoord).r;
-            vOutColor = lerp(vOutColor, vColor_Gra, vColor_Gra.a);
-        }
+    if (bHasTexturemap7)
+    {
+        vColor_Gra.a = TextureMap7.Sample(LinearSamplerClamp, Gra_Textoord).r;
+        vOutColor = lerp(vOutColor, vColor_Gra, vColor_Gra.a);
+    }
     
     // For. Overlay
-        if (bIsOverlayOn)
-        {
-            float fOverlayIntensity = 1.f;
-            float4 vFinalOverlayColor = float4(0.f, 0.f, 0.f, 0.f);
+    if (bIsOverlayOn)
+    {
+        float fOverlayIntensity = 1.f;
+        float4 vFinalOverlayColor = float4(0.f, 0.f, 0.f, 0.f);
         
-            if (bHasTexturemap8)
-                fOverlayIntensity = TextureMap8.Sample(LinearSamplerClamp, Overlay_Textoord).r;
+        if (bHasTexturemap8)
+            fOverlayIntensity = TextureMap8.Sample(LinearSamplerClamp, Overlay_Textoord).r;
         
-            vFinalOverlayColor.r = (vOutColor.r <= 0.5) ? 2 * vOutColor.r * vColor_Overlay.r : 1 - 2 * (1 - vOutColor.r) * (1 - vColor_Overlay.r);
-            vFinalOverlayColor.g = (vOutColor.g <= 0.5) ? 2 * vOutColor.g * vColor_Overlay.g : 1 - 2 * (1 - vOutColor.g) * (1 - vColor_Overlay.g);
-            vFinalOverlayColor.b = (vOutColor.b <= 0.5) ? 2 * vOutColor.b * vColor_Overlay.b : 1 - 2 * (1 - vOutColor.b) * (1 - vColor_Overlay.b);
+        vFinalOverlayColor.r = (vOutColor.r <= 0.5) ? 2 * vOutColor.r * vColor_Overlay.r : 1 - 2 * (1 - vOutColor.r) * (1 - vColor_Overlay.r);
+        vFinalOverlayColor.g = (vOutColor.g <= 0.5) ? 2 * vOutColor.g * vColor_Overlay.g : 1 - 2 * (1 - vOutColor.g) * (1 - vColor_Overlay.g);
+        vFinalOverlayColor.b = (vOutColor.b <= 0.5) ? 2 * vOutColor.b * vColor_Overlay.b : 1 - 2 * (1 - vOutColor.b) * (1 - vColor_Overlay.b);
         
-            vOutColor.rgb = lerp(vOutColor.rgb, vFinalOverlayColor.rgb, fOverlayIntensity);
-        }
-    
-    // Color Edit 
-        float luminance = dot(vOutColor.rgb, float3(0.299, 0.587, 0.114));
-        vOutColor.rgb = lerp(vOutColor.rgb, vOutColor.rgb * fContrast, saturate(luminance));
-    
-        return vOutColor;
+        vOutColor.rgb = lerp(vOutColor.rgb, vFinalOverlayColor.rgb, fOverlayIntensity);
     }
+    
+        // Color Edit 
+    float luminance = dot(vOutColor.rgb, float3(0.299, 0.587, 0.114));
+    vOutColor.rgb = lerp(vOutColor.rgb, vOutColor.rgb * fContrast, saturate(luminance));
+        
+        // For. FadeOut
+    if (bUseFadeOut)
+        vOutColor.a *= (1.f - fLifeRatio);
+    
+    return vOutColor;
+}
 
 technique11 T0 // 0
 {

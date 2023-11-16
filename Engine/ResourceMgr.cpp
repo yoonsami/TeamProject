@@ -1030,21 +1030,21 @@ void ResourceMgr::CreateMeshEffectData()
 		tDesc.iSamplerType = file->Read<_int>();
 		tDesc.vTiling_Opacity = file->Read<_float2>();
 		tDesc.vUVSpeed_Opacity = file->Read<_float2>();
-		
+
 		/* Gradation by Texture */
 		tDesc.strGraTexture = file->Read<string>();
 		tDesc.vBaseColor_Gra = file->Read<_float4>();
 		tDesc.vTiling_Gra = file->Read<_float2>();
 		tDesc.vUVSpeed_Gra = file->Read<_float2>();
 		tDesc.vDestColor_Gra = file->Read<_float4>();
-		
+
 		/* Overlay */
 		tDesc.bIsOverlayOn = file->Read<_bool>();
 		tDesc.strOverlayTexture = file->Read<string>();
 		tDesc.vBaseColor_Overlay = file->Read<_float4>();
 		tDesc.vTiling_Overlay = file->Read<_float2>();
 		tDesc.vUVSpeed_Overlay = file->Read<_float2>();
-		
+
 		/* Normal */
 		tDesc.strNormalTexture = file->Read<string>();
 
@@ -1053,7 +1053,7 @@ void ResourceMgr::CreateMeshEffectData()
 		tDesc.vTiling_Dissolve = file->Read<_float2>();
 		tDesc.vUVSpeed_Dissolve = file->Read<_float2>();
 		tDesc.bInverseDissolve = file->Read<_bool>();
-		
+
 		/* Distortion */
 		tDesc.strDistortionTexture = file->Read<string>();
 		tDesc.vTiling_Distortion = file->Read<_float2>();
@@ -1061,6 +1061,8 @@ void ResourceMgr::CreateMeshEffectData()
 
 		/* Blend */
 		tDesc.strBlendTexture = file->Read<string>();
+		tDesc.vTiling_Blend = file->Read<_float2>();
+		tDesc.vUVSpeed_Blend = file->Read<_float2>();
 		
 		/* Color Edit */
 		tDesc.fContrast = file->Read<_float>();
@@ -1101,7 +1103,6 @@ void ResourceMgr::CreateMeshEffectData()
 		Add(key, meshEffectData);
 	}
 }
-
 void ResourceMgr::CreateParticleData()
 {
 }

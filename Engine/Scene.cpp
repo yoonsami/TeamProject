@@ -46,9 +46,7 @@ void Scene::Init()
 
 void Scene::Tick()
 {
-	if (m_pGachaScene)
-		m_pGachaScene->Tick();
-
+	
 	auto objects = m_GameObjects;
 	for (auto& object : objects)
 	{
@@ -59,8 +57,7 @@ void Scene::Tick()
 
 void Scene::Late_Tick()
 {
-	if (m_pGachaScene)
-		m_pGachaScene->Late_Tick();
+
 	auto objects = m_GameObjects;
 	for (auto& object : objects)
 	{
@@ -70,8 +67,7 @@ void Scene::Late_Tick()
 
 void Scene::Final_Tick()
 {
-	if (m_pGachaScene)
-		m_pGachaScene->Final_Tick();
+
 	auto objects = m_GameObjects;
 	for (auto& object : objects)
 	{
@@ -81,41 +77,6 @@ void Scene::Final_Tick()
 
 void Scene::Render()
 {
-	if (m_pGachaScene)
-	{
-		m_pGachaScene->Render();
-		wstring finalRenderTarget = m_pGachaScene->Get_FinalRenderTarget();
-
-		{
-			GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::SUBSCENEFINAL)->OMSetRenderTargets();
-
-			auto material = RESOURCES.Get<Material>(L"SubScene");
-			auto mesh = RESOURCES.Get<Mesh>(L"Quad");
-			material->Set_SubMap(0, RESOURCES.Get<Texture>(finalRenderTarget));
-			material->Push_SubMapData();
-
-			mesh->Get_VertexBuffer()->Push_Data();
-			mesh->Get_IndexBuffer()->Push_Data();
-
-			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-			material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
-		}
-
-		GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->OMSetRenderTargets();
-
-		for (_uchar i = 0; i < _uchar(RENDER_TARGET_GROUP_TYPE::END) - 1; ++i)
-		{
-			GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE(i))->ClearRenderTargetView();
-		}
-		ID3D11ShaderResourceView* pNullSRV = nullptr;
-
-		for (int i = 0; i < 32; ++i) {
-			CONTEXT->PSSetShaderResources(i, 1, &pNullSRV);
-		}
-	}
-
-
 
 	Gather_LightData();
 	Sort_GameObjects();
@@ -311,7 +272,7 @@ void Scene::Load_UIFile(const wstring& strDataFilePath, _bool bRender)
 		UiObject->Set_Name(strObjectName);
 
 		shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
-		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+		auto mesh = RESOURCES.Get<Mesh>(L"Point");
 		renderer->Set_Mesh(mesh);
 
 		auto material = make_shared<Material>();
@@ -376,6 +337,8 @@ void Scene::Load_UIFile(const wstring& strDataFilePath, _bool bRender)
 
 void Scene::Load_MapFile(const wstring& _mapFileName)
 {
+	
+
 	// 세이브 파일 이름으로 로드하기
 	wstring strFilePath = L"..\\Resources\\MapData\\";
 	strFilePath += _mapFileName + L".dat";
@@ -461,29 +424,32 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 	WallRectPosLDRU.clear();
 	_int iNumWall = 0;
 	file->Read<_int>(iNumWall);
-	WallRectPosLDRU.resize(iNumWall);
-	// 벽정보 읽어오기
-	for (_int i = 0; i < iNumWall; ++i)
-		file->Read<pair<_float3, _float3>>(WallRectPosLDRU[i]);
-	// 벽정보를 기반으로 벽메시 생성
-	shared_ptr<Mesh> WallMesh = make_shared<Mesh>();
-	WallMesh->Create3DRect(WallRectPosLDRU);
-	// 메시를 기반으로 벽오브젝트 생성
-	shared_ptr<GameObject> WallObject = make_shared<GameObject>();
-	WallObject->Set_Name(L"MapWall");
-	WallObject->GetOrAddTransform();
-	// 메시렌더러
-	shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
-	renderer->Set_Mesh(WallMesh);
-	// 메시를 통해 메시콜라이더 생성
-	shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(*WallMesh.get());
-	WallObject->Add_Component(pCollider);
-	pCollider->Set_Activate(true);
-	// 리지드바디 생성
-	auto rigidBody = make_shared<RigidBody>();
-	rigidBody->Create_RigidBody(pCollider, WallObject->GetOrAddTransform()->Get_WorldMatrix());
-	WallObject->Add_Component(rigidBody);
-	Add_GameObject(WallObject);
+	if(iNumWall >0)
+	{
+		WallRectPosLDRU.resize(iNumWall);
+		// 벽정보 읽어오기
+		for (_int i = 0; i < iNumWall; ++i)
+			file->Read<pair<_float3, _float3>>(WallRectPosLDRU[i]);
+		// 벽정보를 기반으로 벽메시 생성
+		shared_ptr<Mesh> WallMesh = make_shared<Mesh>();
+		WallMesh->Create3DRect(WallRectPosLDRU);
+		// 메시를 기반으로 벽오브젝트 생성
+		shared_ptr<GameObject> WallObject = make_shared<GameObject>();
+		WallObject->Set_Name(L"MapWall");
+		WallObject->GetOrAddTransform();
+		// 메시렌더러
+		shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+		renderer->Set_Mesh(WallMesh);
+		// 메시를 통해 메시콜라이더 생성
+		shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(*WallMesh.get());
+		WallObject->Add_Component(pCollider);
+		pCollider->Set_Activate(true);
+		// 리지드바디 생성
+		auto rigidBody = make_shared<RigidBody>();
+		rigidBody->Create_RigidBody(pCollider, WallObject->GetOrAddTransform()->Get_WorldMatrix());
+		WallObject->Add_Component(rigidBody);
+		Add_GameObject(WallObject);
+	}
 
 	// 오브젝트 개수 불러오기
 	_int iNumObjects = file->Read<_int>();

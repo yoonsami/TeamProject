@@ -186,6 +186,8 @@
     <ClInclude Include="..\Libraries\Include\IMGUI\ImZoomSlider.h" />
     <ClInclude Include="..\Shaders\Fxaa3_11.h" />
     <ClInclude Include="AttackColliderInfoScript.h" />
+    <ClInclude Include="Boss_DellonsWraith_FSM.h" />
+    <ClInclude Include="Boss_Dellons_FSM.h" />
     <ClInclude Include="Boss_Mir_FSM.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Client_Define.h" />
@@ -204,7 +206,8 @@
     <ClInclude Include="DemoCameraScript2.h" />
     <ClInclude Include="DemoScene.h" />
     <ClInclude Include="ForwardMovingSkillScript.h" />
-    <ClInclude Include="GachaScene.h" />
+    <ClInclude Include="Kyle_GachaScene.h" />
+    <ClInclude Include="Gacha_FSM.h" />
     <ClInclude Include="HeroChangeScript.h" />
     <ClInclude Include="Kyle_FSM.h" />
     <ClInclude Include="Loader.h" />
@@ -228,7 +231,7 @@
     <ClInclude Include="UiGachaCardMove.h" />
     <ClInclude Include="UiGachaController.h" />
     <ClInclude Include="UiGachaEffectController.h" />
-    <ClInclude Include="UiHpBarFlow.h" />
+    <ClInclude Include="UiHpBarController.h" />
     <ClInclude Include="UiLoadingScript.h" />
     <ClInclude Include="UiSkillButtonEffect.h" />
     <ClInclude Include="WeaponScript.h" />
@@ -250,6 +253,8 @@
     <ClCompile Include="..\Libraries\Include\IMGUI\imgui_widgets.cpp" />
     <ClCompile Include="..\Libraries\Include\IMGUI\ImSequencer.cpp" />
     <ClCompile Include="AttackColliderInfoScript.cpp" />
+    <ClCompile Include="Boss_DellonsWraith_FSM.cpp" />
+    <ClCompile Include="Boss_Dellons_FSM.cpp" />
     <ClCompile Include="Boss_Mir_FSM.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="CoolTimeCheckScript.cpp" />
@@ -264,7 +269,8 @@
     <ClCompile Include="DemoCameraScript2.cpp" />
     <ClCompile Include="DemoScene.cpp" />
     <ClCompile Include="ForwardMovingSkillScript.cpp" />
-    <ClCompile Include="GachaScene.cpp" />
+    <ClCompile Include="Kyle_GachaScene.cpp" />
+    <ClCompile Include="Gacha_FSM.cpp" />
     <ClCompile Include="HeroChangeScript.cpp" />
     <ClCompile Include="Kyle_FSM.cpp" />
     <ClCompile Include="Loader.cpp" />
@@ -292,7 +298,7 @@
     <ClCompile Include="UiGachaCardMove.cpp" />
     <ClCompile Include="UiGachaController.cpp" />
     <ClCompile Include="UiGachaEffectController.cpp" />
-    <ClCompile Include="UiHpBarFlow.cpp" />
+    <ClCompile Include="UiHpBarController.cpp" />
     <ClCompile Include="UiLoadingScript.cpp" />
     <ClCompile Include="UiSkillButtonEffect.cpp" />
     <ClCompile Include="WeaponScript.cpp" />

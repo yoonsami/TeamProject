@@ -1,7 +1,6 @@
 #pragma once
 #include "Scene.h"
 
-class GachaScene;
 class DemoScene :
 	public Scene
 {
@@ -23,6 +22,7 @@ private:
 	void Load_Camera();
 	void Load_Monster(_uint iCnt);
 	void Load_Boss_Mir();
+	void Load_Boss_Dellons();
 	void Load_Light();
 	void Load_Ui();
 

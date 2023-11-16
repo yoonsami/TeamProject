@@ -140,8 +140,6 @@ protected:
 
 	_bool m_bRenderDebug = false;
 
-	shared_ptr<Scene> m_pGachaScene;
-
 	public:
 		static LightParams* params;
 };
