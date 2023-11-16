@@ -438,7 +438,6 @@
     <ClCompile Include="ParticleData.cpp">
       <Filter>02.Manager\01.ResourceMgr\Resources\ParticleData</Filter>
     </ClCompile>
-    <ClCompile Include="ReflectionRenderer.cpp" />
     <ClCompile Include="Parts.cpp">
       <Filter>02.Manager\01.ResourceMgr\Resources\Model\Parts</Filter>
     </ClCompile>
@@ -678,7 +677,6 @@
     <ClInclude Include="ParticleData.h">
       <Filter>02.Manager\01.ResourceMgr\Resources\ParticleData</Filter>
     </ClInclude>
-    <ClInclude Include="ReflectionRenderer.h" />
     <ClInclude Include="Parts.h">
       <Filter>02.Manager\01.ResourceMgr\Resources\Model\Parts</Filter>
     </ClInclude>

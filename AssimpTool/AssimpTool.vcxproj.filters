@@ -10,13 +10,13 @@
     <Filter Include="00. Main">
       <UniqueIdentifier>{760c5dca-d8fe-4ead-837c-68494c8fb8e6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Utils">
+    <Filter Include="98. Default\01. Utils">
       <UniqueIdentifier>{c3ccbb8c-a452-4cdf-884c-da204c551cfe}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Utils\Converter">
+    <Filter Include="98. Default\01. Utils\Converter">
       <UniqueIdentifier>{b61d756c-5eb0-4f60-995e-d21ae8f66e1a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Utils\AsType">
+    <Filter Include="98. Default\01. Utils\AsType">
       <UniqueIdentifier>{f21b36cd-093f-4ae6-a9ee-0d9c367f9063}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -40,10 +40,10 @@
       <Filter>00. Main</Filter>
     </ClInclude>
     <ClInclude Include="Converter.h">
-      <Filter>01. Utils\Converter</Filter>
+      <Filter>98. Default\01. Utils\Converter</Filter>
     </ClInclude>
     <ClInclude Include="AsType.h">
-      <Filter>01. Utils\AsType</Filter>
+      <Filter>98. Default\01. Utils\AsType</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -57,10 +57,10 @@
       <Filter>00. Main</Filter>
     </ClCompile>
     <ClCompile Include="Converter.cpp">
-      <Filter>01. Utils\Converter</Filter>
+      <Filter>98. Default\01. Utils\Converter</Filter>
     </ClCompile>
     <ClCompile Include="AsType.cpp">
-      <Filter>01. Utils\AsType</Filter>
+      <Filter>98. Default\01. Utils\AsType</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

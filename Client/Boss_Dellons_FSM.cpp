@@ -25,7 +25,7 @@ HRESULT Boss_Dellons_FSM::Init()
     auto animator = Get_Owner()->Get_Animator();
     if (animator)
     {
-        animator->Set_CurrentAnim(L"n_idle", true, 1.f);
+        animator->Set_CurrentAnim(L"b_idle", true, 1.f);
         m_eCurState = STATE::n_idle;
     }
     shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
@@ -469,14 +469,14 @@ void Boss_Dellons_FSM::n_idle()
         m_bDetected = true;
 
     if (m_bDetected)
-        m_eCurState = STATE::Intro;
+        m_eCurState = STATE::b_idle;
 }
 
 void Boss_Dellons_FSM::n_idle_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"n_idle", 0.1f, true, 1.f);
+    animator->Set_NextTweenAnim(L"b_idle", 0.1f, true, 1.f);
     
     Get_Transform()->Set_Speed(m_fRunSpeed);
 

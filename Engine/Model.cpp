@@ -628,7 +628,7 @@ void Model::Create_Texture()
 			_uint startOffset = c * pageSize;
 			BYTE* pageStartPtr = reinterpret_cast<BYTE*>(mallocPtr) + startOffset;
 
-			for (_uint f = 0; f < MAX_MODEL_KEYFRAMES; ++f)
+			for (_uint f = 0; f < m_AnimTransforms[c].transforms.size(); ++f)
 			{
 				void* ptr = pageStartPtr + dataSize * f;
 				::memcpy(ptr, m_AnimTransforms[c].transforms[f].data(), dataSize);
@@ -680,6 +680,7 @@ void Model::Create_AnimationTransform(_uint index)
 
 	shared_ptr<ModelAnimation> animation = Get_AnimationByIndex(index);
 	m_RootBonePosition[index].resize(animation->frameCount);
+	m_AnimTransforms[index].transforms.resize(animation->frameCount);
 	for (_uint frame = 0; frame < animation->frameCount; ++frame)
 	{
 		for (_uint boneIndex = 0; boneIndex < Get_BoneCount(); ++boneIndex)

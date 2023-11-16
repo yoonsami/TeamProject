@@ -8,7 +8,7 @@ struct ModelAnimation;
 struct AnimTransform
 {
 	using TransformArrayType = array<_float4x4, MAX_MODEL_TRANSFORMS>;
-	array<TransformArrayType, MAX_MODEL_KEYFRAMES> transforms;
+	vector<TransformArrayType> transforms;
 };
 class Model : public ResourceBase
 {

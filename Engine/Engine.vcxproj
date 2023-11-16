@@ -227,7 +227,6 @@
     <ClInclude Include="PickingMgr.h" />
     <ClInclude Include="Primitive3D.h" />
     <ClInclude Include="RawBuffer.h" />
-    <ClInclude Include="ReflectionRenderer.h" />
     <ClInclude Include="RenderTargetGroup.h" />
     <ClInclude Include="ResourceBase.h" />
     <ClInclude Include="ResourceMgr.h" />
@@ -311,7 +310,6 @@
     <ClCompile Include="PickingMgr.cpp" />
     <ClCompile Include="Primitive3D.cpp" />
     <ClCompile Include="RawBuffer.cpp" />
-    <ClCompile Include="ReflectionRenderer.cpp" />
     <ClCompile Include="RenderTargetGroup.cpp" />
     <ClCompile Include="ResourceBase.cpp" />
     <ClCompile Include="ResourceMgr.cpp" />
