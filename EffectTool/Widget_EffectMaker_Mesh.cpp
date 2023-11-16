@@ -1005,6 +1005,7 @@ void Widget_EffectMaker_Mesh::Save()
 		file->Write<_bool>(m_bOverlay_On);
 		file->Write<string>(m_OverlayTexture.second);
 		file->Write<_float4>(ImVec4toColor(m_vOverlayColor_Base));
+		file->Write<_float4>(ImVec4toColor(m_vOverlayColor_Dest));
 		file->Write<_float2>(_float2(m_fTiling_Overlay));
 		file->Write<_float2>(_float2(m_fUVSpeed_Overlay));
 
@@ -1102,6 +1103,8 @@ void Widget_EffectMaker_Mesh::Load()
 	{
 		m_TexOption[i].Texture.second = file->Read<string>();
 		m_TexOption[i].Texture.first = GetIndex_FromTexList(m_TexOption[i].Texture.second);
+		if (0 != m_TexOption[i].Texture.first)
+			m_TexOption[i].bIsOption_On = true;
 		m_TexOption[i].iColoringOption = file->Read<_int>();
 		m_TexOption[i].vColorBase1 = ColorToImVec4(file->Read<_float4>());
 		m_TexOption[i].vColorBase2 = ColorToImVec4(file->Read<_float4>());
@@ -1120,6 +1123,7 @@ void Widget_EffectMaker_Mesh::Load()
 	m_bOverlay_On = file->Read<_bool>();
 	m_OverlayTexture.second = file->Read<string>();
 	m_vOverlayColor_Base = ColorToImVec4(file->Read<_float4>());
+	m_vOverlayColor_Dest = ColorToImVec4(file->Read<_float4>());
 	vTemp_vec2 = file->Read<_float2>();
 	memcpy(m_fTiling_Overlay, &vTemp_vec2, sizeof(m_fTiling_Overlay));
 	vTemp_vec2 = file->Read<_float2>();

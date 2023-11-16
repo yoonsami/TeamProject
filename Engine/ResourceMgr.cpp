@@ -174,7 +174,6 @@ shared_ptr<MeshEffectData> ResourceMgr::ReloadOrAddMeshEffectData(const wstring&
 	return newMeshEffectData;
 }
 
-
 shared_ptr<Parts> ResourceMgr::Get_Part(const wstring& key, PARTS_INFO type)
 {
 	return m_PrototypeParts[static_cast<_int>(type)][key];
@@ -1041,6 +1040,18 @@ void ResourceMgr::CreateMeshEffectData()
 		tDesc.vUVSpeed_Op3 = file->Read<_float2>();
 		tDesc.fContrast_Op3 = file->Read<_float>();
 		tDesc.fAlphaOffset_Op3 = file->Read<_float>();
+
+		/* Option4 */
+		tDesc.strTexture_Op4 = file->Read<string>();
+		tDesc.bIsUseTextureColor_Op4 = file->Read<_int>();
+		tDesc.vBaseColor1_Op4 = file->Read<_float4>();
+		tDesc.vBaseColor2_Op4 = file->Read<_float4>();
+		tDesc.vDestColor1_Op4 = file->Read<_float4>();
+		tDesc.vDestColor2_Op4 = file->Read<_float4>();
+		tDesc.vTiling_Op4 = file->Read<_float2>();
+		tDesc.vUVSpeed_Op4 = file->Read<_float2>();
+		tDesc.fContrast_Op4 = file->Read<_float>();
+		tDesc.fAlphaOffset_Op4 = file->Read<_float>();
 
 		/* Overlay */
 		tDesc.bIsOverlayOn = file->Read<_bool>();
