@@ -351,14 +351,16 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 
 		for (auto& entry : fs::recursive_directory_iterator(path))
 		{
+			if (entry.is_directory())
+				continue;
+			if(entry.path().extension().wstring() != L".DDS" && entry.path().extension().wstring() != L".tga")
+				continue;
 			// 파일의 이름을 가져옴
 			wstring fileName = entry.path().filename().wstring();
-			WCHAR szTempName[MAX_PATH];
-			lstrcpy(szTempName, fileName.c_str());
-
-			wstring noExtName = szTempName;
+			wstring noExtName = fileName;
 			Utils::DetachExt(noExtName);
-			RESOURCES.Load<Texture>(noExtName, path + szTempName);
+
+			RESOURCES.Load<Texture>(noExtName, path + fileName);
 		}
 	}
 
@@ -366,7 +368,7 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 	shared_ptr<GameObject> sky = make_shared<GameObject>();
 	sky->GetOrAddTransform();
 	shared_ptr<ModelRenderer> SkyRenderer = make_shared<ModelRenderer>(RESOURCES.Get<Shader>(L"SkyBox.fx"));
-	SkyRenderer->Set_Model(RESOURCES.Get<Model>(L"SkyBox"));
+	SkyRenderer->Set_Model(RESOURCES.Clone<Model>(L"SkyBox"));
 	wstring strSkyBoxTextureName = Utils::ToWString(file->Read<string>());
 	SkyRenderer->Get_Model()->Get_Materials()[0]->Set_TextureMap(RESOURCES.Get<Texture>(strSkyBoxTextureName), TextureMapType::DIFFUSE);
 	sky->Add_Component(SkyRenderer);

@@ -416,7 +416,7 @@ shared_ptr<ResourceBase> Model::Clone()
 
 void Model::Bind_CacheInfo()
 {
-	vector<shared_ptr<ModelMesh>> meshes = Get_Meshes();
+	vector<shared_ptr<ModelMesh>>& meshes = Get_Meshes();
 	if (m_bHasParts)
  		meshes = Get_PartsMeshes();
 	for (const auto& mesh : meshes)

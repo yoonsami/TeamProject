@@ -39,9 +39,10 @@ shared_ptr<ResourceBase> Material::Clone()
 	material->Set_Name(Get_Name());
 	material->m_Desc = m_Desc;
 	material->m_pShader = m_pShader;
-	material->m_TextureMaps = m_TextureMaps;
-
-	material->m_pSubMaps = m_pSubMaps;
+	for(_uint i = 0; i<MAX_TEXTURE_MAP_COUONT;++i)
+		material->m_TextureMaps[i] = m_TextureMaps[i];
+	for (_uint i = 0; i < MAX_SUB_SRV_COUNT; ++i)
+		material->m_pSubMaps[i] = m_pSubMaps[i];
 
 	return material;
 }
