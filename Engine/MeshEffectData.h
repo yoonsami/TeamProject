@@ -64,17 +64,11 @@ public:
         _float      fContrast_Op3;
         _float      fAlphaOffset_Op3;
 
-        // Option4
-        string      strTexture_Op4;
-        _int        bIsUseTextureColor_Op4;
-        Color       vBaseColor1_Op4;
-        Color       vBaseColor2_Op4;
-        Color       vDestColor1_Op4;
-        Color       vDestColor2_Op4;
-        _float2     vTiling_Op4;
-        _float2     vUVSpeed_Op4;
-        _float      fContrast_Op4;
-        _float      fAlphaOffset_Op4;
+        // Blend
+        string      strTexture_Blend;
+        _float2     vTiling_Blend;
+        _float2     vUVSpeed_Blend;
+        _float      fAlphaOffset_Blend;
 
         // Overlay
         _bool       bIsOverlayOn;

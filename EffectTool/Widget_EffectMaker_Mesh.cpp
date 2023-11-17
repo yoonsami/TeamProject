@@ -157,10 +157,10 @@ void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 			{
 				Option_TextureOp(1);
 				Option_TextureOp(2);
-				Option_TextureOp(3);
 			}
 
 			Option_Normal();
+			Option_Blend();
 			Option_Overlay();
 			Option_Dissolve();
 			Option_Distortion();
@@ -190,10 +190,7 @@ void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 				Create();
 			ImGui::SameLine();
 			if (ImGui::Button("Save"))
-			{
-				// For. Update file data 
-				Save();
-			}
+				m_bSaveMsgBox_On = true;
 			ImGui::Spacing();
 
 			ImGui::EndTabItem();
@@ -493,6 +490,34 @@ void Widget_EffectMaker_Mesh::Option_Normal()
 	}
 
 	ImGui::Spacing();
+}
+
+void Widget_EffectMaker_Mesh::Option_Blend()
+{
+	ImGui::SeparatorText("Blend");
+
+	ImGui::Checkbox("Blend On", &m_bBlend_On);
+
+	if (!m_bBlend_On)
+	{
+		m_BlendTexture.first = 0;
+		m_BlendTexture.second = "None";
+		return;
+	}
+
+	SubWidget_ImageViewer(m_BlendTexture.second, m_strTexturePath, "##Img_Blend");
+
+	ImGui::SameLine();
+	if (ImGui::Button("Change Texture##Blend"))
+	{
+		m_iTexture_TextureList = &m_BlendTexture.first;
+		m_pTextureTag_TextureList = &m_BlendTexture.second;
+		m_pszWidgetKey_TextureList = "Texture List##Blend";
+		m_bTextureList_On = true;
+	}
+
+	SubWidget_SettingTexUV(m_fTiling_Blend, m_fUVSpeed_Blend, "Tiling(x,y)##Blend", "UV Speed(x,y)##Blend");
+	ImGui::InputFloat("Alpha Offset##Blend", &m_fAlphaOffset_Blend);
 }
 
 void Widget_EffectMaker_Mesh::Option_Overlay()
@@ -827,7 +852,7 @@ void Widget_EffectMaker_Mesh::Create()
 
 	if (!m_bColorChangingOn)
 	{
-		for (_int i = 0; i < 4; i++)
+		for (_int i = 0; i < m_iTexOptionCnt; i++)
 		{
 			m_TexOption[i].vColorDest1 = m_TexOption[i].vColorBase1;
 			m_TexOption[i].vColorDest2 = m_TexOption[i].vColorBase2;
@@ -888,16 +913,11 @@ void Widget_EffectMaker_Mesh::Create()
 		m_TexOption[2].fContrast,
 		m_TexOption[2].fAlphaOffset,
 
-		m_TexOption[3].Texture.second,
-		m_TexOption[3].iColoringOption,
-		ImVec4toColor(m_TexOption[3].vColorBase1),
-		ImVec4toColor(m_TexOption[3].vColorBase2),
-		ImVec4toColor(m_TexOption[3].vColorDest1),
-		ImVec4toColor(m_TexOption[3].vColorDest2),
-		_float2(m_TexOption[3].fTiling_Op),
-		_float2(m_TexOption[3].fUVSpeed_Op),
-		m_TexOption[3].fContrast,
-		m_TexOption[3].fAlphaOffset,
+		// Blend
+		m_BlendTexture.second,
+		_float2(m_fTiling_Blend),
+		_float2(m_fUVSpeed_Blend),
+		m_fAlphaOffset_Blend,
 
 		// Overlay
 		m_bOverlay_On,
@@ -988,7 +1008,7 @@ void Widget_EffectMaker_Mesh::Save()
 		file->Write<_bool>(m_bColorChangingOn);
 
 		/* Option */
-		for (_int i = 0; i < 4; i++)
+		for (_int i = 0; i < m_iTexOptionCnt; i++)
 		{
 			file->Write<string>(m_TexOption[i].Texture.second);
 			file->Write<_int>(m_TexOption[i].iColoringOption);
@@ -1001,6 +1021,12 @@ void Widget_EffectMaker_Mesh::Save()
 			file->Write<_float>(m_TexOption[i].fContrast);
 			file->Write<_float>(m_TexOption[i].fAlphaOffset);
 		}
+
+		/* Blend */
+		file->Write<string>(m_BlendTexture.second);
+		file->Write<_float2>(_float2(m_fTiling_Blend));
+		file->Write<_float2>(_float2(m_fUVSpeed_Blend));
+		file->Write<_float>(m_fAlphaOffset_Blend);
 
 		/* Overlay */
 		file->Write<_bool>(m_bOverlay_On);
@@ -1100,7 +1126,7 @@ void Widget_EffectMaker_Mesh::Load()
 	m_bColorChangingOn = file->Read<_bool>();
 
 	/* Option */
-	for (_int i = 0; i < 4; i++)
+	for (_int i = 0; i < m_iTexOptionCnt; i++)
 	{
 		m_TexOption[i].Texture.second = file->Read<string>();
 		m_TexOption[i].Texture.first = GetIndex_FromTexList(m_TexOption[i].Texture.second);
@@ -1119,6 +1145,19 @@ void Widget_EffectMaker_Mesh::Load()
 		m_TexOption[i].fAlphaOffset = file->Read<_float>();
 		m_TexOption[i].bUseSolidColor = Equal(m_TexOption[i].vColorBase1, m_TexOption[i].vColorBase2) && Equal(m_TexOption[i].vColorDest1, m_TexOption[i].vColorDest2);	
 	}
+
+	/* Blend */
+	m_BlendTexture.second = file->Read<string>();
+	m_BlendTexture.first = GetIndex_FromTexList(m_BlendTexture.second);
+	if (0 == m_BlendTexture.first)
+		m_bBlend_On = false;
+	else
+		m_bBlend_On = true;
+	vTemp_vec2 = file->Read<_float2>();
+	memcpy(m_fTiling_Blend, &vTemp_vec2, sizeof(m_fTiling_Blend));
+	vTemp_vec2 = file->Read<_float2>();
+	memcpy(m_fUVSpeed_Blend, &vTemp_vec2, sizeof(m_fUVSpeed_Blend));
+	m_fAlphaOffset_Blend = file->Read<_float>();
 
 	/* Overlay */
 	m_bOverlay_On = file->Read<_bool>();

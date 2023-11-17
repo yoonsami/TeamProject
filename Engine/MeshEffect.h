@@ -53,7 +53,7 @@ private:
     _float2                 m_vCurrTexUVOffset_Op1 = { 0.f, 0.f };
     _float2                 m_vCurrTexUVOffset_Op2 = { 0.f, 0.f };
     _float2                 m_vCurrTexUVOffset_Op3 = { 0.f, 0.f };
-    _float2                 m_vCurrTexUVOffset_Op4 = { 0.f, 0.f };
+    _float2                 m_vCurrTexUVOffset_Blend = { 0.f, 0.f };
     _float2                 m_vCurrTexUVOffset_Overlay = { 0.f, 0.f };
     _float2                 m_vCurrTexUVOffset_Dissolve = { 0.f, 0.f };
     _float2                 m_vCurrTexUVOffset_Distortion = { 0.f, 0.f };
