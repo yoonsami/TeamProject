@@ -27,7 +27,6 @@ public:
     const _float3& Get_FixedDir() { return m_vFixedDir; }
     _float Get_FixedDist() { return m_fFixedDist; }
     const _float3& Get_Offset() { return m_vOffset; }
-    void Set_PosDirectly(const _float3& vCenterpos, const _float3& vDir);
     const _float3& Get_FixedPos() { return m_vFixedPos; }
     void Set_State(_bool flag) { m_bOn = flag; if (!m_bOn) m_fFixedTime = 0.f; }
     void Set_Offset(const _float3& offset) { m_vOffset = offset; }

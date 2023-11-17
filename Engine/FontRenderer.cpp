@@ -52,7 +52,7 @@ void FontRenderer::Render()
 	vLT += m_vOffset;
 	m_pFont->Get_Batch()->Begin(SpriteSortMode_Deferred);
 
-	m_pFont->Get_Font()->DrawString(m_pFont->Get_Batch().get(), text.c_str(), _float3(vLT.x,vLT.y, Get_Transform()->Get_State(Transform_State::POS).z), m_vColor, 0.f, _float2(0.5f), m_fFontSize);
+	m_pFont->Get_Font()->DrawString(m_pFont->Get_Batch().get(), text.c_str(), _float3(vLT.x,vLT.y, vPos.z), m_vColor, 0.f, _float2(0.5f), m_fFontSize);
 
 	m_pFont->Get_Batch()->End();
 }

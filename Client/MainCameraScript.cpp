@@ -62,52 +62,6 @@ void MainCameraScript::Late_Tick()
 
 }
 
-void MainCameraScript::Set_PosDirectly(const _float3& vCenterpos, const _float3& vDir)
-{
-    m_vFixedPos = vCenterpos;
-    m_vFixedDir = vDir;
-
-    _float fMinDist = FLT_MAX;
-    Ray ray;
-    ray.position = vCenterpos;
-    ray.direction = m_vOffset;
-
-    auto& objects = CUR_SCENE->Get_Objects();
-    for (auto& object : objects)
-    {
-        if (!object->Get_Collider())
-            continue;
-
-        if (object->Get_Collider()->Get_ColliderType() != ColliderType::Mesh)
-            continue;
-
-        _float fDist = 0.f;
-        if (object->Get_Collider()->Intersects(ray, fDist))
-        {
-            if (fDist < 0)
-                continue;
-            if (fMinDist > fDist)
-            {
-                fMinDist = fDist;
-            }
-        }
-    }
-
-    if ((fMinDist -= 0.5f) >= m_fFixedDist)
-        fMinDist = m_fFixedDist;
-
-
-    _float3 pos =
-        vCenterpos + vDir * fMinDist;
-
-    Get_Transform()->Set_State(Transform_State::POS, _float4(pos, 1.f));
-
-    Get_Transform()->LookAt(_float4(vCenterpos, 1.f));
-
-    Get_Transform()->Scaled(_float3(1.f));
-
-}
-
 void MainCameraScript::Cal_OffsetDir()
 {
     m_fFollowSpeed = 5.f;
