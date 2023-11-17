@@ -345,30 +345,18 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 	shared_ptr<FileUtils> file = make_shared<FileUtils>();
 	file->Open(strFilePath, FileMode::Read);
 
-	// 스카이박스 텍스쳐 추가하기
+	// 스카이박스 생성 중복 체크 후 재생성
+	shared_ptr<GameObject> pSkyBox = Get_GameObject(L"SkyBase");
+	// 기존에 있다면 지움
+	if (pSkyBox != nullptr)
 	{
-		wstring path = L"..\\Resources\\Textures\\MapObject\\SkyBox\\";
-
-		for (auto& entry : fs::recursive_directory_iterator(path))
-		{
-			// 파일의 이름을 가져옴
-			wstring fileName = entry.path().filename().wstring();
-			WCHAR szTempName[MAX_PATH];
-			lstrcpy(szTempName, fileName.c_str());
-
-			wstring noExtName = szTempName;
-			Utils::DetachExt(noExtName);
-			RESOURCES.Load<Texture>(noExtName, path + szTempName);
-		}
+		Remove_GameObject(pSkyBox);
 	}
-
-	// 스카이박스 생성 및 텍스쳐 적용
 	shared_ptr<GameObject> sky = make_shared<GameObject>();
 	sky->GetOrAddTransform();
-	shared_ptr<ModelRenderer> SkyRenderer = make_shared<ModelRenderer>(RESOURCES.Get<Shader>(L"SkyBox.fx"));
-	SkyRenderer->Set_Model(RESOURCES.Get<Model>(L"SkyBox"));
 	wstring strSkyBoxTextureName = Utils::ToWString(file->Read<string>());
-	SkyRenderer->Get_Model()->Get_Materials()[0]->Set_TextureMap(RESOURCES.Get<Texture>(strSkyBoxTextureName), TextureMapType::DIFFUSE);
+	shared_ptr<ModelRenderer> SkyRenderer = make_shared<ModelRenderer>(RESOURCES.Get<Shader>(L"SkyBox.fx"));
+	SkyRenderer->Set_Model(RESOURCES.Get<Model>(strSkyBoxTextureName));
 	sky->Add_Component(SkyRenderer);
 	sky->Set_Name(L"SkyBase");
 	Add_GameObject(sky);
