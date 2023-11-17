@@ -90,24 +90,11 @@ void Kyle_GachaScene::Final_Tick()
 
 HRESULT Kyle_GachaScene::Load_Scene()
 {
-	Load_SkyBox();
 	Load_Player();
 	Load_Light();
 	Load_Camera();
 	Load_MapFile(m_Desc.strMapFileName);
 	return S_OK;
-}
-
-void Kyle_GachaScene::Load_SkyBox()
-{
-	shared_ptr<GameObject> sky = make_shared<GameObject>();
-	sky->GetOrAddTransform();
-	sky->Add_Component(make_shared<ModelRenderer>(RESOURCES.Get<Shader>(L"SkyBox.fx")));
-	sky->Get_ModelRenderer()->Set_Model(RESOURCES.Get<Model>(L"SkyBox"));
-	sky->Set_Name(L"SkyBase");
-	Add_GameObject(sky);
-
-	// 텍스쳐 정보는 LoadMapFile에서 재변경
 }
 
 void Kyle_GachaScene::Load_Player()
