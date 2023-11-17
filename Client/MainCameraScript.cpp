@@ -47,8 +47,9 @@ void MainCameraScript::Late_Tick()
 {
     if (KEYTAP(KEY_TYPE::Z))
     {
-        if (m_pTarget.lock())
+        if (true == m_bTestValue)
         {
+            m_bTestValue = false;
             m_pPlayer.lock()->Get_FSM()->Reset_Target();
             m_pTarget.reset();
             m_UiTargetLockon.lock()->Get_Script<UiTargetLockOn>()->Set_Target(nullptr);
@@ -303,6 +304,7 @@ void MainCameraScript::Find_Target()
             //m_pTarget = object;
             m_UiTargetLockon.lock()->Get_Script<UiTargetLockOn>()->Set_Target(object);
             m_UiTargetHp.lock()->Get_Script<UiMonsterHp>()->Set_Target(object);
+            m_bTestValue = true;
             //m_pPlayer.lock()->Get_FSM()->Set_Target(m_pTarget.lock());
         }
     }

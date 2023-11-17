@@ -35,6 +35,10 @@ void UiTargetLockOn::Tick()
         true == m_pTarget.expired())
 		return;
 
+    Check_Render_State();
+    if (false == m_bIsRender)
+        return;
+
     Check_Target();
     Change_Scale();
 }
@@ -46,6 +50,9 @@ void UiTargetLockOn::Late_Tick()
         true == m_pLockOn0.expired() ||
         true == m_pLockOn1.expired() ||
         true == m_pTarget.expired())
+        return;
+
+    if (false == m_bIsRender)
         return;
 
     Update_Target_Pos();
@@ -73,6 +80,24 @@ void UiTargetLockOn::Set_Target(shared_ptr<GameObject> pObj)
         m_pTarget.reset();
         m_pLockOn0.lock()->Set_Render(false);
         m_pLockOn1.lock()->Set_Render(false);
+    }
+}
+
+void UiTargetLockOn::Check_Render_State()
+{
+    _float3 cullPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
+    _float cullRadius = 1.5f;
+    Frustum frustum = m_pCamera.lock()->Get_Camera()->Get_Frustum();
+
+    _bool bValue = false;
+    if (frustum.Contain_Sphere(cullPos, cullRadius))
+        bValue = true;
+
+    if (m_bIsRender != bValue)
+    {
+        m_bIsRender = bValue;
+        m_pLockOn0.lock()->Set_Render(m_bIsRender);
+        m_pLockOn1.lock()->Set_Render(m_bIsRender);
     }
 }
 

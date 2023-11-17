@@ -12,7 +12,8 @@ public:
     
     void Start_Attack_Button_Effect();
 
-    _bool GetIsWork() { return m_bIsSkillWork; }
+    _bool GetIsWork()   { return m_bIsSkillWork; }
+    HERO Get_Cur_Hero() { return m_eCurHero; }
     _bool IsAvailable(SkillType eSkillType);
 
     void Set_Skill_End();
