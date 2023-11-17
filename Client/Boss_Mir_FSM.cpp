@@ -35,6 +35,12 @@ HRESULT Boss_Mir_FSM::Init()
     m_fRunSpeed = 4.f;
     m_fKnockDownSpeed = 4.f;
 
+    // 용 감지범위
+    m_fDetectRange = 25.f;
+    // 용이 플레이어 바라보게
+    if (!m_pTarget.expired())
+        Get_Transform()->LookAt(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS));
+    
     return S_OK;
 }
 
