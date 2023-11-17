@@ -51,6 +51,7 @@
 #include "UiCardDeckInvenChange.h"
 #include "UiTargetLockOn.h"
 #include "UiMonsterHp.h"
+#include "UiDamageCreate.h"
 
 #include <filesystem>
 #include "Kyle_GachaScene.h"
@@ -571,6 +572,17 @@ void DemoScene::Load_Ui()
 		pObj->Set_Name(L"UI_Card_Deck_Controller");
 
 		auto pScript = make_shared<UiCardDeckController>();
+		pObj->Add_Component(pScript);
+
+		pObj->Set_LayerIndex(Layer_UI);
+		Add_GameObject(pObj, true);
+	}
+
+	{
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_Name(L"UI_Damage_Controller");
+
+		auto pScript = make_shared<UiDamageCreate>();
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);

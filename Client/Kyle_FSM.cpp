@@ -888,7 +888,7 @@ void Kyle_FSM::skill_1100()
 		if (!m_bAttackEffectCreate)
 		{
 			m_bAttackEffectCreate = true;
-			Add_Effect(L"KyleTest1");
+			//Add_Effect(L"KyleTest1");
 		}
 	}
 	else if (Get_CurFrame() == 19)

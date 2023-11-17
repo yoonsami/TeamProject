@@ -193,6 +193,15 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp">
       <UniqueIdentifier>{8c8fe706-4858-4717-a611-be519d965002}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\12.UiDamage">
+      <UniqueIdentifier>{42f57219-04bb-4733-801b-23e14efbe8c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\12.UiDamage\00.UiDamageCreate">
+      <UniqueIdentifier>{3b986a16-2fe9-47d1-bb19-0b3602a1ac59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\12.UiDamage\01.UiDamageMove">
+      <UniqueIdentifier>{f708a9a9-c8d0-41bd-99ce-cbb729bf4bd3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -415,6 +424,12 @@
     <ClInclude Include="UiMonsterHp.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp</Filter>
     </ClInclude>
+    <ClInclude Include="UiDamageCreate.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\12.UiDamage\00.UiDamageCreate</Filter>
+    </ClInclude>
+    <ClInclude Include="UiDamageMove.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\12.UiDamage\01.UiDamageMove</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -603,6 +618,12 @@
     </ClCompile>
     <ClCompile Include="UiMonsterHp.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp</Filter>
+    </ClCompile>
+    <ClCompile Include="UiDamageCreate.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\12.UiDamage\00.UiDamageCreate</Filter>
+    </ClCompile>
+    <ClCompile Include="UiDamageMove.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\12.UiDamage\01.UiDamageMove</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

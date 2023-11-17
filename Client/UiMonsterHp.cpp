@@ -37,6 +37,9 @@ void UiMonsterHp::Tick()
 		return;
 
     Check_Render_State();
+    if (false == m_bIsRender)
+        return;
+
     Check_Target();
     Change_Hp_Ratio();
     Change_Hp_Slow();

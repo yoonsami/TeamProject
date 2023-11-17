@@ -56,7 +56,7 @@ private:
     //test
     weak_ptr<GameObject> m_UiTargetLockon;
     weak_ptr<GameObject> m_UiTargetHp;
-
+    _bool m_bTestValue;
     
 
     _float m_fMaxHeightRadian = XM_PI / 3.f;
@@ -70,4 +70,7 @@ private:
     _float m_fFixedTime = 0.f;
     _float m_fFixedDist = 0.f;
     _float m_fShakePower = 0.f;
+
+
+
 };

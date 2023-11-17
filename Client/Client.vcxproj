@@ -239,6 +239,8 @@
     <ClInclude Include="UiCardDeckInvenChange.h" />
     <ClInclude Include="UiCharChange.h" />
     <ClInclude Include="UiCoolEndEffect.h" />
+    <ClInclude Include="UiDamageCreate.h" />
+    <ClInclude Include="UiDamageMove.h" />
     <ClInclude Include="UiGachaCardMove.h" />
     <ClInclude Include="UiGachaController.h" />
     <ClInclude Include="UiGachaEffectController.h" />
@@ -309,6 +311,8 @@
     <ClCompile Include="UiCardDeckInvenChange.cpp" />
     <ClCompile Include="UiCharChange.cpp" />
     <ClCompile Include="UiCoolEndEffect.cpp" />
+    <ClCompile Include="UiDamageCreate.cpp" />
+    <ClCompile Include="UiDamageMove.cpp" />
     <ClCompile Include="UiGachaCardMove.cpp" />
     <ClCompile Include="UiGachaController.cpp" />
     <ClCompile Include="UiGachaEffectController.cpp" />

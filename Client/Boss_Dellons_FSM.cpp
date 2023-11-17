@@ -11,6 +11,7 @@
 #include "Boss_DellonsWraith_FSM.h"
 #include "MathUtils.h"
 
+#include "UiDamageCreate.h"
 
 Boss_Dellons_FSM::Boss_Dellons_FSM()
 {
@@ -358,6 +359,7 @@ void Boss_Dellons_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _flo
         if (targetToLook == nullptr)
             return;
 
+        CUR_SCENE->Get_GameObject(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(m_pOwner.lock()->GetOrAddTransform()->Get_State(Transform_State::POS));
         Get_Hit(strSkillName, targetToLook);
     }
 }
