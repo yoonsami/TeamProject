@@ -54,6 +54,7 @@ private:
 	void					Option_TextureOp(_int iIndex);
 
 	void					Option_Normal();
+	void					Option_Blend();
 	void					Option_Overlay();
 	void					Option_Dissolve();
 	void					Option_Distortion();
@@ -133,7 +134,15 @@ private:
 	_float					m_fSpriteAni_Speed = { 1.f };
 
 	/* Texture Options */
-	Texture_Option			m_TexOption[4];
+	_int					m_iTexOptionCnt = { 3 };
+	Texture_Option			m_TexOption[3];
+
+	/* Blend */
+	_bool					m_bBlend_On = { false };
+	pair<_int, string>		m_BlendTexture = { 0, "None" };
+	_float					m_fTiling_Blend[2] = { 0.f, 0.f };
+	_float					m_fUVSpeed_Blend[2] = { 0.f, 0.f };
+	_float					m_fAlphaOffset_Blend = { 1.f };
 
 	/* Overlay */
 	_bool					m_bOverlay_On = { false };

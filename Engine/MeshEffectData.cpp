@@ -82,17 +82,11 @@ void MeshEffectData::Load(const wstring& path)
     m_tDesc.fContrast_Op3 = file->Read<_float>();
     m_tDesc.fAlphaOffset_Op3 = file->Read<_float>();
 
-    /* Option4 */
-    m_tDesc.strTexture_Op4 = file->Read<string>();
-    m_tDesc.bIsUseTextureColor_Op4 = file->Read<_int>();
-    m_tDesc.vBaseColor1_Op4 = file->Read<_float4>();
-    m_tDesc.vBaseColor2_Op4 = file->Read<_float4>();
-    m_tDesc.vDestColor1_Op4 = file->Read<_float4>();
-    m_tDesc.vDestColor2_Op4 = file->Read<_float4>();
-    m_tDesc.vTiling_Op4 = file->Read<_float2>();
-    m_tDesc.vUVSpeed_Op4 = file->Read<_float2>();
-    m_tDesc.fContrast_Op4 = file->Read<_float>();
-    m_tDesc.fAlphaOffset_Op4 = file->Read<_float>();
+    /* Blend */
+    m_tDesc.strTexture_Blend = file->Read<string>();
+    m_tDesc.vTiling_Blend = file->Read<_float2>();
+    m_tDesc.vUVSpeed_Blend = file->Read<_float2>();
+    m_tDesc.fAlphaOffset_Blend = file->Read<_float>();
 
     /* Overlay */
     m_tDesc.bIsOverlayOn = file->Read<_bool>();
