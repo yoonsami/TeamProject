@@ -205,6 +205,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp">
       <UniqueIdentifier>{3b1d535a-c0e9-4ceb-8034-76edc7fc9dab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\13.UIBossHpBar">
+      <UniqueIdentifier>{0cc85fc2-7916-4220-b059-59509a41cb3f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -436,6 +439,9 @@
     <ClInclude Include="UiMonsterHp.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp</Filter>
     </ClInclude>
+    <ClInclude Include="UIBossHpBar.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\13.UIBossHpBar</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -633,6 +639,9 @@
     </ClCompile>
     <ClCompile Include="UiMonsterHp.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp</Filter>
+    </ClCompile>
+    <ClCompile Include="UIBossHpBar.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\13.UIBossHpBar</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -53,6 +53,8 @@
 #include "UiTargetLockOn.h"
 #include "UiMonsterHp.h"
 #include "UiDamageCreate.h"
+#include "UIBossHpBar.h"
+
 
 #include <filesystem>
 #include "Kyle_GachaScene.h"
@@ -719,8 +721,14 @@ void DemoScene::Load_Ui()
 	}
 
 
+	// test code
+	{
+		auto pObj = Get_GameObject(L"Boss_Dellons");
+		Load_UIFile(L"..\\Resources\\UIData\\UI_BossHpBar.dat");
 
-
+		auto pScript = make_shared<UIBossHpBar>();
+		pObj->Add_Component(pScript);
+	}
 
 
 
