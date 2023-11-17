@@ -199,6 +199,12 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\12.UiDamage\01.UiDamageMove">
       <UniqueIdentifier>{f708a9a9-c8d0-41bd-99ce-cbb729bf4bd3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\10.UiTargetLockOn">
+      <UniqueIdentifier>{2de1f696-776b-40d4-8616-7cbcaee3cdd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp">
+      <UniqueIdentifier>{3b1d535a-c0e9-4ceb-8034-76edc7fc9dab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -415,8 +421,6 @@
     <ClInclude Include="Spike_FSM.h">
       <Filter>02.Component\01.FSM\01.Hero_FSM\05.Spike_FSM</Filter>
     </ClInclude>
-    <ClInclude Include="UiMonsterHp.h" />
-    <ClInclude Include="UiTargetLockOn.h" />
     <ClInclude Include="Boss_Spike_FSM.h">
       <Filter>02.Component\01.FSM\02.Monster_FSM\03.Boss_Spike_FSM</Filter>
     </ClInclude>
@@ -425,6 +429,12 @@
     </ClInclude>
     <ClInclude Include="UiDamageMove.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\12.UiDamage\01.UiDamageMove</Filter>
+    </ClInclude>
+    <ClInclude Include="UiTargetLockOn.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\10.UiTargetLockOn</Filter>
+    </ClInclude>
+    <ClInclude Include="UiMonsterHp.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -609,8 +619,6 @@
     <ClCompile Include="Spike_FSM.cpp">
       <Filter>02.Component\01.FSM\01.Hero_FSM\05.Spike_FSM</Filter>
     </ClCompile>
-    <ClCompile Include="UiMonsterHp.cpp" />
-    <ClCompile Include="UiTargetLockOn.cpp" />
     <ClCompile Include="Boss_Spike_FSM.cpp">
       <Filter>02.Component\01.FSM\02.Monster_FSM\03.Boss_Spike_FSM</Filter>
     </ClCompile>
@@ -619,6 +627,12 @@
     </ClCompile>
     <ClCompile Include="UiDamageMove.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\12.UiDamage\01.UiDamageMove</Filter>
+    </ClCompile>
+    <ClCompile Include="UiTargetLockOn.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\10.UiTargetLockOn</Filter>
+    </ClCompile>
+    <ClCompile Include="UiMonsterHp.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

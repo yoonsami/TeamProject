@@ -14,12 +14,15 @@ public:
 
 private:
     //void Check_Render_State();
+    void Change_Pos();
     void Change_Size();
     void Change_Alpha();
     void Check_Remove();
 
 private:
     //weak_ptr<GameObject>    m_pCamera;
+
+    _float4 m_vecOriginPos  = {};
 
     _float  m_fOriginSize   = {};
     _float  m_fMinSize      = {};

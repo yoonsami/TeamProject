@@ -79,5 +79,7 @@ void UiDamageCreate::Change_Pos_2D()
 
     m_fPos.x -= 1920 * 0.5f;
     m_fPos.y = (m_fPos.y * -1.f) + 1080 * 0.5f;
-
+    
+    m_fPos.x -= 150.f;
+    m_fPos.y += 300.f;
 }
