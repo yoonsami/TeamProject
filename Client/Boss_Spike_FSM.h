@@ -8,6 +8,13 @@ class Boss_Spike_FSM :
 public:
 	enum class STATE
 	{
+		SQ_Appear_01,
+		SQ_Appear_02,
+		SQ_Appear_03,
+		
+
+
+
 		n_idle,
 		talk_01,
 		Intro, //skill 901100 motion
@@ -75,6 +82,14 @@ private:
 	virtual void AttackCollider_On(const wstring& skillname) override;
 	virtual void AttackCollider_Off() override;
 	virtual void Set_State(_uint iIndex) override;
+
+
+	void SQ_Appear_01();
+	void SQ_Appear_01_Init();
+	void SQ_Appear_02();
+	void SQ_Appear_02_Init();
+	void SQ_Appear_03();
+	void SQ_Appear_03_Init();
 
 
 	void n_idle();
@@ -175,6 +190,7 @@ private:
 	void Set_WraithState(_uint iAnimindex);
 	void Calculate_SkillCamRight();
 	void Set_AttackSkill_Phase1();
+	void Create_BossSpikeChair();
 
 	_float3 Calculate_TargetTurnVector();
 
@@ -187,7 +203,7 @@ private:
 	weak_ptr<GameObject> m_pDellonsWraith;
 
 	_float3 m_vTurnVector = _float3(0.f);
-	_float3 m_vFirstPos = _float3(0.f);
+	_float4 m_vFirstPos = _float4(0.f);
 	_float m_fTurnSpeed = XM_PI * 5.f;
 
 	COOLTIMEINFO m_tBattleStartTime = { 1.f, 0.f };
@@ -205,9 +221,14 @@ private:
 	_uint m_iGroggy_Gauge = 0;
 	_uint m_iPreAttack = 100;
 
-	_float3 m_vHeadCamDir = _float3(0.f);
-	_float4 m_vHeadBonePos = _float4(0.f);
-	_float4 m_vHeadCamPos = _float4(0.f);
+	_float3 m_vCutSceneCamDir = _float3(0.f);
+	_float4 m_vCutSceneCamPos = _float4(0.f);
+	
+
+	_uint m_iChairBoneIndex = 0;
+	_float4 m_vChairBonePos = _float4(0.f);
+	_float4x4 m_ChairBoneMatrix = XMMatrixIdentity();
+
 
 };
 

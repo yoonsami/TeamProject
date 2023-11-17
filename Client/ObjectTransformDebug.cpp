@@ -23,7 +23,9 @@ void ObjectTransformDebug::Tick()
 	//_float4 bonepos = m_pTarget.lock()->Get_FSM()->Get_BonePos();
 	//
 	//fontRenderer->Get_Text() = L"bone_x : " + to_wstring(bonepos.x) + L"/ bone_y: " + to_wstring(bonepos.y) + L"/ bone_z: " + to_wstring(bonepos.z);
-
-	//fontRenderer->Get_Text() = L"X : " + to_wstring(vPos.x) + L"/ Y : " + to_wstring(vPos.y) + L"/ Z : " + to_wstring(vPos.z);
+	_float4 vPos = Get_Owner()->Get_Transform()->Get_State(Transform_State::POS);
+	_float4 vTargetPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS);
+	
+	fontRenderer->Get_Text() = L"X : " + to_wstring(vTargetPos.x) + L"/ Y : " + to_wstring(vTargetPos.y) + L"/ Z : " + to_wstring(vTargetPos.z);
 
 }
