@@ -152,7 +152,7 @@ void DebugTool::RenderOptionTab()
 			static bool alpha_half_preview = false;
 			static bool drag_and_drop = true;
 			static bool options_menu = true;
-			static bool hdr = false;
+			static bool hdr = true;
 
 			ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
 			ImGui::ColorEdit4("FogColor", (float*)&gColorFog, ImGuiColorEditFlags_DisplayHSV | misc_flags);
@@ -258,6 +258,26 @@ void DebugTool::ModelOptionTab()
 			if (Button(buttonName.c_str()))
 			{
 				model->AddParts(Utils::ToWString(partsNames[i][partsIndex[i]]), static_cast<PARTS_INFO>(i));
+			}
+		}
+
+		Separator();
+		{
+			shared_ptr<Model> model = RESOURCES.Get<Model>(L"Kyle");
+			if(model)
+			{
+				static bool alpha_preview = true;
+				static bool alpha_half_preview = false;
+				static bool drag_and_drop = true;
+				static bool options_menu = true;
+				static bool hdr = true;
+
+				static Color em = Color(0.f);
+				ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
+				ImGui::ColorEdit4("ModelEmissive", (float*)&em, ImGuiColorEditFlags_DisplayHSV | misc_flags);
+
+				model->Get_MaterialByName(L"mi_Wp_Kyle_Chain")->Get_MaterialDesc().emissive = em;
+				model->Get_MaterialByName(L"mi_Wp_Kyle")->Get_MaterialDesc().emissive = em;
 			}
 		}
 

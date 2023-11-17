@@ -571,11 +571,16 @@ float4 PS_PBR_Final(VS_OUT input) : SV_Target
 {
     float4 ambientLightColor = SubMap4.Sample(LinearSampler, input.uv);
     
-    float4 emissiveColor = SubMap3.Sample(LinearSampler, input.uv);
+    float4 rimColor = SubMap3.Sample(LinearSampler, input.uv);
+    float4 emissiveColor = SubMap9.Sample(LinearSampler, input.uv);
     float4 emissiveLightColor = SubMap7.Sample(LinearSampler, input.uv);
+    
 
+    float luminance = dot(rimColor.rgb, float3(0.299, 0.587, 0.114));
+    rimColor.rgb = lerp(rimColor.rgb, rimColor.rgb * 20.f, saturate(luminance));
+    
     float4 output = 0.f;
-    output = emissiveColor * ambientLightColor + ambientLightColor;
+    output = rimColor + emissiveColor * emissiveLightColor + ambientLightColor;
     
     return float4(output.xyz,1.F);
 }
@@ -657,6 +662,6 @@ technique11 t1
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetPixelShader(CompileShader(ps_5_0, PS_Final()));
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Final()));
     }
 }

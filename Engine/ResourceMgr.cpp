@@ -627,12 +627,13 @@ void ResourceMgr::CreateDefaultMaterial()
 		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"PositionTarget"));
 		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"DiffuseTarget"));
 		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"SpecularTarget"));
-		material->Set_SubMap(3, RESOURCES.Get<Texture>(L"EmissiveTarget"));
+		material->Set_SubMap(3, RESOURCES.Get<Texture>(L"RimTarget"));
 		material->Set_SubMap(4, RESOURCES.Get<Texture>(L"AmbientLightTarget"));
 		material->Set_SubMap(5, RESOURCES.Get<Texture>(L"DiffuseLightTarget"));
 		material->Set_SubMap(6, RESOURCES.Get<Texture>(L"SpecularLightTarget"));
 		material->Set_SubMap(7, RESOURCES.Get<Texture>(L"EmissiveLightTarget"));
 		material->Set_SubMap(8, RESOURCES.Get<Texture>(L"NormalTarget"));
+		material->Set_SubMap(9, RESOURCES.Get<Texture>(L"EmissiveTarget"));
 
 
 		Add(L"LightFinal", material);

@@ -138,8 +138,8 @@ void Kyle_GachaScene::Load_Player()
 		{
 			shared_ptr<Model> model = RESOURCES.Get<Model>(modelName);
 			animator->Set_Model(model);
-			model->Get_MaterialByName(L"mi_Wp_Kyle_Chain")->Get_MaterialDesc().emissive = Color(1.f, 0.5f, 0.3f, 1.f);
-			model->Get_MaterialByName(L"mi_Wp_Kyle")->Get_MaterialDesc().emissive = Color(1.f, .5f, 0.3f, 1.f);
+			model->Get_MaterialByName(L"mi_Wp_Kyle_Chain")->Get_MaterialDesc().emissive = Color(4.f, 1.f, 0.0f, 1.f);
+			model->Get_MaterialByName(L"mi_Wp_Kyle")->Get_MaterialDesc().emissive = Color(4.f, 1.f, 0.0f, 1.f);
 			ObjPlayer->Add_Component(animator);
 		}
 		desc.strWeaponName = L"";
@@ -150,7 +150,7 @@ void Kyle_GachaScene::Load_Player()
 			g_fBrightness = 0.f;
 			g_fContrast = 1.04f;
 			g_Saturation = 1.5;
-			g_iTMIndex = 1;
+			g_iTMIndex = 0;
 			g_fMaxWhite = 0.9f;
 		}
 		{

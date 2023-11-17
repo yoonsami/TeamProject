@@ -189,13 +189,13 @@ PBR_OUT PBRShade(
             attenuation = 0.f;
 
     }
-    color += (kD * diffuse + specular) * lightColor * 50.f * attenuation * NdotL;
+    color += (kD * diffuse + specular) * lightColor * 10.f * attenuation * NdotL;
     color += ambient * attenuation;
 
     PBR_OUT output = (PBR_OUT) 0.f;
     output.outColor = float4(color, 1.f);
     
-    output.emissiveColor = lights[lightIndex].color.emissive * saturate(dot(viewNormal, -viewLightDir))
+    output.emissiveColor = lights[lightIndex].color.emissive //* saturate(dot(viewNormal, -viewLightDir))
      * pow(smoothstep(0.f, 1.f, 1.f - saturate(dot(-eyeDir, viewNormal))), 2) * attenuation;
     
     return output;
