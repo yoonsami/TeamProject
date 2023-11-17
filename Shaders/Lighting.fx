@@ -573,15 +573,15 @@ float4 PS_PBR_Final(VS_OUT input) : SV_Target
     
     float4 rimColor = SubMap3.Sample(LinearSampler, input.uv);
     float4 emissiveColor = SubMap9.Sample(LinearSampler, input.uv);
-    float4 emissiveLightColor = SubMap7.Sample(LinearSampler, input.uv);
+    float4 rimLightColor = SubMap7.Sample(LinearSampler, input.uv);
     
-
+    rimColor *= rimLightColor;
     float luminance = dot(rimColor.rgb, float3(0.299, 0.587, 0.114));
     rimColor.rgb = lerp(rimColor.rgb, rimColor.rgb * 20.f, saturate(luminance));
     
     float4 output = 0.f;
-    output = rimColor + emissiveColor * emissiveLightColor + ambientLightColor;
-    
+    output = rimColor + emissiveColor + ambientLightColor;
+        
     return float4(output.xyz,1.F);
 }
 
