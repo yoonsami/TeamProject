@@ -23,6 +23,7 @@ private:
 	void Load_Monster(_uint iCnt);
 	void Load_Boss_Mir();
 	void Load_Boss_Dellons();
+	void Load_Boss_Spike();
 	void Load_Light();
 	void Load_Ui();
 

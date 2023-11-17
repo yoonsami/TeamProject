@@ -3,6 +3,7 @@
 #include "Boss_Spike_FSM.h"
 #include "ModelAnimator.h"
 #include "MotionTrailRenderer.h"
+#include "ModelRenderer.h"
 #include "Debug_CreateMotionTrail.h"
 #include "SphereCollider.h"
 #include "AttackColliderInfoScript.h"
@@ -25,8 +26,8 @@ HRESULT Boss_Spike_FSM::Init()
     auto animator = Get_Owner()->Get_Animator();
     if (animator)
     {
-        animator->Set_CurrentAnim(L"n_idle", true, 1.f);
-        m_eCurState = STATE::n_idle;
+        animator->Set_CurrentAnim(L"SQ_Appear_01", true, 1.f);
+        m_eCurState = STATE::SQ_Appear_01;
     }
     shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
     attackCollider->GetOrAddTransform();
@@ -46,7 +47,7 @@ HRESULT Boss_Spike_FSM::Init()
 
     m_pCamera = CUR_SCENE->Get_MainCamera();
 
-    m_iCenterBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_CP");
+    m_iCenterBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Center");
     m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
     m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
 
@@ -56,6 +57,14 @@ HRESULT Boss_Spike_FSM::Init()
 
     if (!m_pTarget.expired())
         Get_Transform()->LookAt(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS));
+
+    m_iChairBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-Pelvis");
+    m_ChairBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iChairBoneIndex) *
+        _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+    m_vChairBonePos = _float4{ m_ChairBoneMatrix.Translation().x, m_ChairBoneMatrix.Translation().y, m_ChairBoneMatrix.Translation().z , 1.f };
+
+
+    m_vFirstPos = Get_Transform()->Get_State(Transform_State::POS);
 
     return S_OK;
 }
@@ -79,6 +88,15 @@ void Boss_Spike_FSM::State_Tick()
 
     switch (m_eCurState)
     {
+    case STATE::SQ_Appear_01:
+        SQ_Appear_01();
+        break;
+    case STATE::SQ_Appear_02:
+        SQ_Appear_02();
+        break;
+    case STATE::SQ_Appear_03:
+        SQ_Appear_03();
+        break;
     case STATE::n_idle:
         n_idle();
         break;
@@ -208,6 +226,15 @@ void Boss_Spike_FSM::State_Init()
     {
         switch (m_eCurState)
         {
+        case STATE::SQ_Appear_01:
+            SQ_Appear_01_Init();
+            break;
+        case STATE::SQ_Appear_02:
+            SQ_Appear_02_Init();
+            break;
+        case STATE::SQ_Appear_03:
+            SQ_Appear_03_Init();
+            break;
         case STATE::n_idle:
             n_idle_Init();
             break;
@@ -463,11 +490,110 @@ void Boss_Spike_FSM::Set_State(_uint iIndex)
 {
 }
 
-void Boss_Spike_FSM::n_idle()
+void Boss_Spike_FSM::SQ_Appear_01()
 {
     if (Target_In_DetectRange())
-        m_bDetected = true;
+        Get_Owner()->Get_Animator()->Set_AnimState(false);
 
+    if (Get_CurFrame() >= 10 && Get_CurFrame() <= 130)
+    {
+        if (!m_pCamera.expired())
+        {
+            _float4 vDir = (m_vSkillCamBonePos + 
+                            Get_Transform()->Get_State(Transform_State::LOOK) +
+                            Get_Transform()->Get_State(Transform_State::RIGHT) * 3.f) 
+                            - m_vCenterBonePos;
+
+            vDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, vDir.xyz(), 5.f);
+        }
+    }
+
+
+    if (Is_AnimFinished())
+    {
+        m_vCamStopPos = m_vCenterBonePos;
+        m_eCurState = STATE::SQ_Appear_02;
+    }
+}
+
+void Boss_Spike_FSM::SQ_Appear_01_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"SQ_Appear_01", 0.1f, false, 1.5f);
+
+    animator->Set_AnimState(true);
+
+    Get_Transform()->Set_Speed(m_fRunSpeed);
+    Get_Transform()->Set_State(Transform_State::POS, m_vFirstPos);
+    AttackCollider_Off();
+
+    m_bInvincible = true;
+    m_bSuperArmor = false;
+    m_bSetPattern = false;
+    m_bSkillCreate = false;
+
+    Create_BossSpikeChair();
+}
+
+void Boss_Spike_FSM::SQ_Appear_02()
+{
+    if (!m_pCamera.expired())
+    {
+        _float4 vDir = m_vSkillCamBonePos - m_vCamBonePos;
+        vDir.Normalize();
+
+        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCamBonePos.xyz());
+        m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 6.f);
+    }
+
+    m_vCamStopPos += Get_Transform()->Get_State(Transform_State::LOOK);
+    Get_Transform()->Set_State(Transform_State::POS, m_vCamStopPos);
+
+
+    if (Is_AnimFinished())
+        m_eCurState = STATE::SQ_Appear_03;
+}
+
+void Boss_Spike_FSM::SQ_Appear_02_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"SQ_Appear_02", 0.1f, false, 1.f);
+
+    CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Boss_Spike_Chair"));
+
+    Get_Transform()->Set_State(Transform_State::POS, m_vCamStopPos);
+
+
+    Get_Transform()->Set_Speed(m_fRunSpeed / 3.f);
+}
+
+void Boss_Spike_FSM::SQ_Appear_03()
+{
+    if (Is_AnimFinished())
+        m_eCurState = STATE::SQ_Appear_01;
+}
+
+void Boss_Spike_FSM::SQ_Appear_03_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"SQ_Appear_03", 0.1f, false, 1.f);
+
+    _float4 vPos = m_vCamStopPos;
+    vPos.y = 0.f;
+
+    Get_Transform()->Set_State(Transform_State::POS, vPos);
+}
+
+void Boss_Spike_FSM::n_idle()
+{
     if (m_bDetected)
         m_eCurState = STATE::Intro;
 }
@@ -1742,6 +1868,31 @@ void Boss_Spike_FSM::Set_AttackSkill_Phase1()
     }
 
     m_bSetPattern = true;
+}
+
+void Boss_Spike_FSM::Create_BossSpikeChair()
+{
+
+    shared_ptr<GameObject> Chair = make_shared<GameObject>();
+    Chair->Add_Component(make_shared<Transform>());
+    Chair->Get_Transform()->Set_WorldMat(m_pOwner.lock()->Get_Transform()->Get_WorldMatrix());
+    _float4 vChairPos = m_vChairBonePos + _float4{ 0.f,1.3f,0.f,0.f } + (Get_Transform()->Get_State(Transform_State::LOOK) * -0.2f);
+    Chair->Get_Transform()->Set_State(Transform_State::POS, vChairPos);
+
+    {
+        shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+
+        shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+        {
+            shared_ptr<Model> model = RESOURCES.Get<Model>(L"D_P_Spike_Chair_01");
+            renderer->Set_Model(model);
+        }
+        Chair->Add_Component(renderer);
+        Chair->Set_Name(L"Boss_Spike_Chair");
+    }
+
+    CUR_SCENE->Add_GameObject(Chair);
+
 }
 
 
