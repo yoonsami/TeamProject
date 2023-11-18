@@ -369,15 +369,11 @@ void Boss_Spike_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pL
             
             if (m_fGroggy_Gauge <= 0.f)
             {
-                for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
-                {
-                    material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
-                }
-
                 m_bGroggyPattern = false;
                 m_eCurState = STATE::groggy_start;
 
                 Create_CounterMotionTrail();
+
                 if (!m_pCamera.expired())
                     m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.f, 0.f);
                 
@@ -401,15 +397,11 @@ void Boss_Spike_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pL
 
             if (m_fGroggy_Gauge <= 0)
             {
-                for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
-                {
-                    material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
-                }
-
                 m_bGroggyPattern = false;
                 m_eCurState = STATE::groggy_start;
 
                 Create_CounterMotionTrail();
+
                 if (!m_pCamera.expired())
                     m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.f, 0.f);
             }
@@ -432,15 +424,11 @@ void Boss_Spike_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pL
 
             if (m_fGroggy_Gauge <= 0)
             {
-                for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
-                {
-                    material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
-                }
-
                 m_bGroggyPattern = false;
                 m_eCurState = STATE::groggy_start;
 
                 Create_CounterMotionTrail();
+
                 if (!m_pCamera.expired())
                     m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.f, 0.f);
             }
@@ -463,11 +451,6 @@ void Boss_Spike_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pL
 
             if (m_fGroggy_Gauge <= 0)
             {
-                for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
-                {
-                    material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
-                }
-
                 m_bGroggyPattern = false;
                 m_eCurState = STATE::groggy_start;
 
