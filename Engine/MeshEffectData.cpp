@@ -104,6 +104,8 @@ void MeshEffectData::Load(const wstring& path)
     m_tDesc.vTiling_Dissolve = file->Read<_float2>();
     m_tDesc.vUVSpeed_Dissolve = file->Read<_float2>();
     m_tDesc.bInverseDissolve = file->Read<_bool>();
+    for(_int i = 0 ; i < 4 ; i ++)
+        m_tDesc.vCurvePoint_Dissolve[i] = file->Read<_float2>();
 
     /* Distortion */
     m_tDesc.strDistortionTexture = file->Read<string>();

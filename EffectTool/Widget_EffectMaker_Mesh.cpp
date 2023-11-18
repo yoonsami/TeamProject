@@ -53,14 +53,6 @@ void Widget_EffectMaker_Mesh::Tick()
 		ImGui_TextureList();
 		ImGui::End();
 	}
-
-	//m_bCurve_On = true;
-	//if (m_bCurve_On)
-	//{
-	//	ImGui::Begin("Curve");
-	//	ImGui_Curve();
-	//	ImGui::End();
-	//}
 }
 
 void Widget_EffectMaker_Mesh::Set_Mesh_List()
@@ -258,43 +250,6 @@ void Widget_EffectMaker_Mesh::ImGui_TextureList()
 		if (ImGui::Button("   Ok   "))
 			m_bTextureList_On = false;
 
-		ImGui::EndChild();
-	}
-}
-
-void Widget_EffectMaker_Mesh::ImGui_Curve()
-{
-	auto draw_list = ImGui::GetWindowDrawList();
-	auto legend = ImGui::GetWindowSize();
-
-	_float fGraphScale = 300.f;
-
-	{
-		ImGui::BeginChild("child_2", { fGraphScale, fGraphScale}, false, ImGuiWindowFlags_HorizontalScrollbar);
-		
-		ImVec2 cursor = ImGui::GetCursorScreenPos();
-
-		/* For. Grid */
-		draw_list->AddLine(cursor, ImVec2(cursor.x + fGraphScale, cursor.y), ImGui::GetColorU32(ImGuiCol_TextDisabled));
-		draw_list->AddLine(cursor, ImVec2(cursor.x, cursor.y + fGraphScale), ImGui::GetColorU32(ImGuiCol_TextDisabled));
-		draw_list->AddLine(ImVec2(cursor.x + fGraphScale, cursor.y), ImVec2(cursor.x + fGraphScale, cursor.y + fGraphScale), ImGui::GetColorU32(ImGuiCol_TextDisabled));
-		draw_list->AddLine(ImVec2(cursor.x + fGraphScale, cursor.y + fGraphScale), ImVec2(cursor.x, cursor.y + fGraphScale), ImGui::GetColorU32(ImGuiCol_TextDisabled));
-
-		/* For. Calc point start, end */
-		ImVec2 vStart = { 0.f, 0.f };
-		ImVec2 vEnd = { 1.f, 1.f };
-
-		/* child 창에 맞게 후처리 */
-		vStart.y = 1.f - vStart.y;
-		vEnd.y = 1.f - vEnd.y;
-		vStart = vStart * fGraphScale;
-		vEnd = vEnd * fGraphScale;
-		vStart = vStart + cursor;
-		vEnd = vEnd + cursor;
-
-		/* For. Draw line */
-		draw_list->AddLine(vStart, vEnd, ImGui::GetColorU32(ImGuiCol_PlotLines), 2.f);
-		
 		ImGui::EndChild();
 	}
 }
@@ -630,7 +585,7 @@ void Widget_EffectMaker_Mesh::Option_Dissolve()
 	
 	SubWidget_SettingTexUV(m_fTiling_Dissolve, m_fUVSpeed_Dissolve, "Tiling(x,y)##Dissolve", "UV Speed(x,y)##Dissolve");
 
-	SubWidget_CatmullRomCurve(m_vCatmmullRomPoint_Dissolve, "Dissolve");
+	SubWidget_CatmullRomCurve(m_vCurvePoint_Dissolve, "Dissolve");
 }
 
 void Widget_EffectMaker_Mesh::Option_Distortion()
@@ -988,6 +943,7 @@ void Widget_EffectMaker_Mesh::Create()
 		_float2(m_fTiling_Overlay),
 		_float2(m_fUVSpeed_Overlay),
 		m_bDissolveInverse,
+		{ m_vCurvePoint_Dissolve[0],m_vCurvePoint_Dissolve[1], m_vCurvePoint_Dissolve[2], m_vCurvePoint_Dissolve[3]},
 
 		// Distortion
 		m_DistortionTexture.second,
@@ -1097,6 +1053,8 @@ void Widget_EffectMaker_Mesh::Save()
 		file->Write<_float2>(_float2(m_fTiling_Dissolve));
 		file->Write<_float2>(_float2(m_fUVSpeed_Dissolve));
 		file->Write<_bool>(m_bDissolveInverse);
+		for (_uint i = 0; i < 4; i++)
+			file->Write<_float2>(m_vCurvePoint_Dissolve[i]);
 
 		/* Distortion */
 		file->Write<string>(m_DistortionTexture.second);
@@ -1239,6 +1197,8 @@ void Widget_EffectMaker_Mesh::Load()
 	m_DissolveTexture.first = GetIndex_FromTexList(m_DissolveTexture.second);
 	if (0 == m_DissolveTexture.first) m_bDissolve_On = false;
 	else m_bDissolve_On = true;
+	for (_int i = 0; i < 4; i++)
+		m_vCurvePoint_Dissolve[i] = file->Read<_float2>();
 
 	/* Distortion */
 	m_DistortionTexture.second = file->Read<string>();
@@ -1479,9 +1439,9 @@ void Widget_EffectMaker_Mesh::SubWidget_CatmullRomCurve(_float2* pPoints, const 
 
 				//ImVec2 vStart = CatMull_Rom(pPoints, px);
 				//ImVec2 vEnd = CatMull_Rom(pPoints, qx);
-				Widget_EffectMaker_Mesh::spline(input, 4, 1, px, output);
+				Utils::Spline(input, 4, 1, px, output);
 				ImVec2 vStart = {px, output[0]};
-				Widget_EffectMaker_Mesh::spline(input, 4, 1, qx, output);
+				Utils::Spline(input, 4, 1, qx, output);
 				ImVec2 vEnd = {qx, output[0]};
 
 				/* child 창에 맞게 후처리 */
@@ -1498,35 +1458,6 @@ void Widget_EffectMaker_Mesh::SubWidget_CatmullRomCurve(_float2* pPoints, const 
 			ImGui::EndChild();
 		}
 		ImGui::TreePop();
-	}
-}
-
-void Widget_EffectMaker_Mesh::spline(const float* key, int num, int dim, float t, float* v)
-{
-	static signed char coefs[16] = {
-		-1, 2,-1, 0,
-		 3,-5, 0, 2,
-		-3, 4, 1, 0,
-		 1,-1, 0, 0 };
-
-	const int size = dim + 1;
-
-	// find key
-	int k = 0; while (key[k * size] < t) k++;
-
-	// interpolant
-	const float h = (t - key[(k - 1) * size]) / (key[k * size] - key[(k - 1) * size]);
-
-	// init result
-	for (int i = 0; i < dim; i++) v[i] = 0.0f;
-
-	// add basis functions
-	for (int i = 0; i < 4; i++)
-	{
-		int kn = k + i - 2; if (kn < 0) kn = 0; else if (kn > (num - 1)) kn = num - 1;
-		const signed char* co = coefs + 4 * i;
-		const float b = 0.5f * (((co[0] * h + co[1]) * h + co[2]) * h + co[3]);
-		for (int j = 0; j < dim; j++) v[j] += b * key[kn * size + j + 1];
 	}
 }
 

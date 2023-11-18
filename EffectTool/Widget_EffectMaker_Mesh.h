@@ -45,7 +45,6 @@ private:
 	void					ImGui_FinishedEffect();
 	void					ImGui_SaveMsgBox();
 	void					ImGui_TextureList();
-	void					ImGui_Curve();
 
 	/* Options */
 	void					Option_Property();
@@ -76,7 +75,6 @@ private:
 	void					Load();
 	
 	/* Utils */
-	void					spline(const float* key, int num, int dim, float t, float* v);
 	ImVec2					CatMull_Rom(_float2* pPoints, _float t);
 	Color					ImVec4toColor(ImVec4 imvec);
 	ImVec2					XmVec2toImVec2(_float2 iSrc);
@@ -92,7 +90,6 @@ private:
 	/* Widget On/Off*/
 	_bool					m_bSaveMsgBox_On = { false };
 	_bool					m_bTextureList_On = { false };
-	_bool					m_bCurve_On = { false };
 
 	/* Use in SubWidget_TextureList */
 	_int*					m_iTexture_TextureList;
@@ -168,7 +165,7 @@ private:
 	_float					m_fTiling_Dissolve[2] = { 0.f, 0.f };
 	_float					m_fUVSpeed_Dissolve[2] = { 0.f, 0.f };
 	_bool					m_bDissolveInverse = { false };
-	_float2					m_vCatmmullRomPoint_Dissolve[4] = {_float2(0.f, 0.f),_float2(0.3f, 0.5f), _float2(0.7f, 0.5f), _float2(1.f, 1.f)};
+	_float2					m_vCurvePoint_Dissolve[4] = {_float2(0.f, 0.f),_float2(0.3f, 0.5f), _float2(0.7f, 0.5f), _float2(1.f, 1.f)};
 
 	/* Distortion */
 	_bool					m_bDistortion_On = { false };

@@ -39,9 +39,14 @@ void MeshEffect::Final_Tick()
 {
     if (m_bIsPlayFinished)
         return;
+    
     m_fCurrAge += fDT;
     m_fLifeTimeRatio = m_fCurrAge / m_tDesc.fDuration;
     m_fTimeAcc_SpriteAnimation += fDT;
+
+    _float output[4];
+    Utils::Spline(m_SplineInput_Dissolve, 4, 1, m_fLifeTimeRatio, output);
+    m_fCurrDissolveWeight = output[0];
 
     // For. Check is dead 
     if (m_fCurrAge >= m_fDuration)
@@ -123,6 +128,12 @@ void MeshEffect::Update_Desc()
     m_vCurrTexUVOffset_Dissolve = m_tDesc.vTiling_Dissolve;
     m_vCurrTexUVOffset_Distortion = m_tDesc.vTiling_Distortion;
     
+    // For. Init Spline input
+    for (int i = 0; i < 4; ++i) {
+        m_SplineInput_Dissolve[i * 2 + 0] = m_tDesc.vCurvePoint_Dissolve[i].x;
+        m_SplineInput_Dissolve[i * 2 + 1] = m_tDesc.vCurvePoint_Dissolve[i].y;
+    }
+
     // For. Model Components
     m_pModel = RESOURCES.Get<Model>(Utils::ToWString(m_tDesc.strVfxMesh));
 
@@ -314,6 +325,7 @@ void MeshEffect::Init_RenderParams()
     
     /* Float */
     m_RenderParams.SetFloat(0, m_fCurrAge / m_tDesc.fDuration);
+    m_RenderParams.SetFloat(1, m_fCurrDissolveWeight);
 
     /* Float2 */
     vTemp2 = _float2(m_tDesc.fContrast_Op1, m_tDesc.fAlphaOffset_Op1);
@@ -412,7 +424,8 @@ void MeshEffect::Bind_UpdatedTexUVOffset_ToShader()
 
 void MeshEffect::Bind_RenderParams_ToShader()
 {
-    m_RenderParams.SetFloat(0, m_fLifeTimeRatio);
+    m_RenderParams.SetFloat(0, m_fLifeTimeRatio);    
+    m_RenderParams.SetFloat(1, m_fCurrDissolveWeight);
 
     Bind_UpdatedColor_ToShader();
     Bind_UpdatedTexUVOffset_ToShader();
