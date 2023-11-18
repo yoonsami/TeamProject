@@ -19,7 +19,18 @@ void ObjectTransformDebug::Tick()
 
 	
 	//fontRenderer->Get_Text() = L"X : " + to_wstring(vTargetPos.x) + L"/ Y : " + to_wstring(vTargetPos.y) + L"/ Z : " + to_wstring(vTargetPos.z);
-	fontRenderer->Get_Text() = L"SpikeHp : " + to_wstring(m_pTarget.lock()->Get_CurHp());
+	
+	if (m_pTarget.lock()->Get_FSM())
+	{
+		_uint iHp = _uint(m_pTarget.lock()->Get_CurHp());
+		_float fGroggyGauge = m_pTarget.lock()->Get_FSM()->Get_GroggyGauge();
+		fontRenderer->Get_Text() = L"SpikeHp : " + to_wstring(iHp) + L"/GroggyGauge : " + to_wstring(fGroggyGauge);
+	}
+	else
+	{
+		_uint iHp = _uint(m_pTarget.lock()->Get_CurHp());
+		fontRenderer->Get_Text() = L"SpikeHp : " + to_wstring(iHp);
+	}
 
 	//fontRenderer->Get_Text() = L"X : " + to_wstring(CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->Get_FixedDist())
 								;

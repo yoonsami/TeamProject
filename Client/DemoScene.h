@@ -26,6 +26,7 @@ private:
 	void Load_Boss_Spike();
 	void Load_Light();
 	void Load_Ui();
+	void Load_Debug();
 
 
 };

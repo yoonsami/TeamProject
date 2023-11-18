@@ -362,6 +362,27 @@ void Boss_Spike_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pL
                 m_eCurState = STATE::groggy_start;
             }
         }
+
+        if (m_bGroggyPattern)
+        {
+            m_fGroggy_Gauge -= 10.f;
+            
+            if (m_fGroggy_Gauge <= 0.f)
+            {
+                for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
+                {
+                    material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
+                }
+
+                m_bGroggyPattern = false;
+                m_eCurState = STATE::groggy_start;
+
+                Create_CounterMotionTrail();
+                if (!m_pCamera.expired())
+                    m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.f, 0.f);
+                
+            }
+        }
     }
     else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
     {
@@ -371,6 +392,26 @@ void Boss_Spike_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pL
             {
                 Create_CounterMotionTrail();
                 m_eCurState = STATE::groggy_start;
+            }
+        }
+
+        if (m_bGroggyPattern)
+        {
+            m_fGroggy_Gauge -= 15;
+
+            if (m_fGroggy_Gauge <= 0)
+            {
+                for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
+                {
+                    material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
+                }
+
+                m_bGroggyPattern = false;
+                m_eCurState = STATE::groggy_start;
+
+                Create_CounterMotionTrail();
+                if (!m_pCamera.expired())
+                    m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.f, 0.f);
             }
         }
     }
@@ -384,6 +425,26 @@ void Boss_Spike_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pL
                 m_eCurState = STATE::groggy_start;
             }
         }
+
+        if (m_bGroggyPattern)
+        {
+            m_fGroggy_Gauge -= 20;
+
+            if (m_fGroggy_Gauge <= 0)
+            {
+                for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
+                {
+                    material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
+                }
+
+                m_bGroggyPattern = false;
+                m_eCurState = STATE::groggy_start;
+
+                Create_CounterMotionTrail();
+                if (!m_pCamera.expired())
+                    m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.f, 0.f);
+            }
+        }
     }
     else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
     {
@@ -393,6 +454,27 @@ void Boss_Spike_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pL
             {
                 Create_CounterMotionTrail();
                 m_eCurState = STATE::groggy_start;
+            }
+        }
+
+        if (m_bGroggyPattern)
+        {
+            m_fGroggy_Gauge -= 20;
+
+            if (m_fGroggy_Gauge <= 0)
+            {
+                for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
+                {
+                    material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
+                }
+
+                m_bGroggyPattern = false;
+                m_eCurState = STATE::groggy_start;
+
+                Create_CounterMotionTrail();
+
+                if (!m_pCamera.expired())
+                    m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.f, 0.f);
             }
         }
     }
@@ -591,11 +673,12 @@ void Boss_Spike_FSM::b_idle()
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
 
     m_tAttackCoolTime.fAccTime += fDT;
+    m_tGroggyPatternTimer.fAccTime += fDT;
 
     if (!m_bSetPattern)
     {
         if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
-            Set_AttackSkill_Phase1();
+            Set_AttackSkill();
     }
     else
     {
@@ -630,6 +713,7 @@ void Boss_Spike_FSM::b_run()
     Get_Transform()->Go_Straight();
 
     m_tChaseCoolTime.fAccTime += fDT;
+    m_tGroggyPatternTimer.fAccTime += fDT * 0.5f;
 
     if (Target_In_AttackRange())
     {
@@ -668,13 +752,14 @@ void Boss_Spike_FSM::gaze_b()
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
 
     m_tAttackCoolTime.fAccTime += fDT;
+    m_tGroggyPatternTimer.fAccTime += fDT;
 
     Get_Transform()->Go_Backward();
 
     if (!m_bSetPattern)
     {
         if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
-            Set_AttackSkill_Phase1();
+            Set_AttackSkill();
     }
     else
     {
@@ -704,13 +789,14 @@ void Boss_Spike_FSM::gaze_f()
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
 
     m_tAttackCoolTime.fAccTime += fDT;
+    m_tGroggyPatternTimer.fAccTime += fDT;
 
     Get_Transform()->Go_Straight();
 
     if (!m_bSetPattern)
     {
         if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
-            Set_AttackSkill_Phase1();
+            Set_AttackSkill();
     }
     else
     {
@@ -740,13 +826,14 @@ void Boss_Spike_FSM::gaze_l()
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
 
     m_tAttackCoolTime.fAccTime += fDT;
+    m_tGroggyPatternTimer.fAccTime += fDT;
 
     Get_Transform()->Go_Left();
 
     if (!m_bSetPattern)
     {
         if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
-            Set_AttackSkill_Phase1();
+            Set_AttackSkill();
     }
     else
     {
@@ -776,13 +863,14 @@ void Boss_Spike_FSM::gaze_r()
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
 
     m_tAttackCoolTime.fAccTime += fDT;
+    m_tGroggyPatternTimer.fAccTime += fDT;
 
     Get_Transform()->Go_Right();
 
     if (!m_bSetPattern)
     {
         if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
-            Set_AttackSkill_Phase1();
+            Set_AttackSkill();
     }
     else
     {
@@ -845,7 +933,7 @@ void Boss_Spike_FSM::groggy_start_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"groggy_start", 0.1f, false, 1.f);
+    animator->Set_NextTweenAnim(L"groggy_start", 0.1f, false, m_fGroggyStateAnimationSpeed);
 
     AttackCollider_Off();
 
@@ -867,22 +955,21 @@ void Boss_Spike_FSM::groggy_loop_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"groggy_loop", 0.1f, false, 1.f);
+    animator->Set_NextTweenAnim(L"groggy_loop", 0.1f, false, m_fGroggyStateAnimationSpeed);
 }
 
 void Boss_Spike_FSM::groggy_end()
 {
-    if (Is_AnimFinished())
-    {
-        m_eCurState = STATE::b_idle;
-    }
+    Set_Gaze();
 }
 
 void Boss_Spike_FSM::groggy_end_Init()
 {
+    m_fGroggy_Gauge = 100.f;
+
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"groggy_end", 0.1f, false, 1.f);
+    animator->Set_NextTweenAnim(L"groggy_end", 0.1f, false, m_fGroggyStateAnimationSpeed);
 }
 
 
@@ -948,12 +1035,13 @@ void Boss_Spike_FSM::skill_1200()
 
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
         {
-            material->Get_MaterialDesc().emissive = Color(0.3f, 0.3f, 1.f, 1.f);
+            material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
     }
     else if (Get_CurFrame() == 73)
     {
         m_bCounter = true;
+        m_fGroggyStateAnimationSpeed = 1.5f;
     }
     else if (Get_CurFrame() == 80)
     {
@@ -1005,12 +1093,13 @@ void Boss_Spike_FSM::skill_1300()
 
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
         {
-            material->Get_MaterialDesc().emissive = Color(0.3f, 0.3f, 1.f, 1.f);
+            material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
     }
     else if (Get_CurFrame() == 32)
     {
         m_bCounter = true;
+        m_fGroggyStateAnimationSpeed = 1.5f;
     }
     else if (Get_CurFrame() == 39)
     {
@@ -1177,18 +1266,19 @@ void Boss_Spike_FSM::skill_2100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 2)
+    if (Get_CurFrame() == 4)
     {
-        m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(0.5f);
+        m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(0.3f);
 
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
         {
-            material->Get_MaterialDesc().emissive = Color(0.3f, 0.3f, 1.f, 1.f);
+            material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
     }
-    else if (Get_CurFrame() == 4)
+    else if (Get_CurFrame() == 6)
     {
         m_bCounter = true;
+        m_fGroggyStateAnimationSpeed = 1.5f;
     }
     else if (Get_CurFrame() == 15)
     {
@@ -1233,18 +1323,19 @@ void Boss_Spike_FSM::skill_2200()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 2)
+    if (Get_CurFrame() == 4)
     {
-        m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(0.5f);
+        m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(0.3f);
 
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
         {
-            material->Get_MaterialDesc().emissive = Color(0.3f, 0.3f, 1.f, 1.f);
+            material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
     }
-    else if (Get_CurFrame() == 4)
+    else if (Get_CurFrame() == 6)
     {
         m_bCounter = true;
+        m_fGroggyStateAnimationSpeed = 1.5f;
     }
     else if (Get_CurFrame() == 15)
     {
@@ -1275,7 +1366,7 @@ void Boss_Spike_FSM::skill_2200_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_2100", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_2200", 0.15f, false, 1.f);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1295,15 +1386,16 @@ void Boss_Spike_FSM::skill_3100()
 
     if (Get_CurFrame() == 42)
     {
-        m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(0.5f);
+        m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(0.3f);
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
         {
-            material->Get_MaterialDesc().emissive = Color(0.3f, 0.3f, 1.f, 1.f);
+            material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
     }
     else if (Get_CurFrame() == 44)
     {
         m_bCounter = true;
+        m_fGroggyStateAnimationSpeed = 1.5f;
     }
     else if (Get_CurFrame() == 51)
     {
@@ -1324,7 +1416,7 @@ void Boss_Spike_FSM::skill_3100()
             _float3 vDir = vPlayerPos - vMyPos;
             vDir.y = 0.f;
 
-            if (vDir.LengthSquared() > 6.f * 6.f)
+            if (vDir.LengthSquared() > 3.f * 3.f)
                 return;
 
             vDir.Normalize();
@@ -1332,7 +1424,7 @@ void Boss_Spike_FSM::skill_3100()
             _float3 vLook = Get_Transform()->Get_State(Transform_State::LOOK).xyz();
             vLook.Normalize();
 
-            if (vDir.Dot(vLook) > cosf(60.f))
+            if (vDir.Dot(vLook) > cosf(XM_PI / 3.f))
             {
                 m_pTarget.lock()->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, Get_Owner());
             }
@@ -1370,10 +1462,10 @@ void Boss_Spike_FSM::skill_3200()
 
     if (Get_CurFrame() == 55)
     {
-        m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(0.5f);
+        m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(0.3f);
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
         {
-            material->Get_MaterialDesc().emissive = Color(0.3f, 0.3f, 1.f, 1.f);
+            material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
     }
     else if (Get_CurFrame() == 60)
@@ -1434,12 +1526,31 @@ void Boss_Spike_FSM::skill_3200_Init()
 
 void Boss_Spike_FSM::skill_6100()
 {
+    if (Get_CurFrame() < 145)
+    {
+        if (!m_pCamera.expired())
+        {
+            _float4 vDir = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS) - m_vCenterBonePos;
+
+            vDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.2f, vDir.xyz(), 4.f);
+        }
+    }
+
+    if (Get_CurFrame() == 145)
+        Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);
+    
+
     //160~380
     if (Get_CurFrame() == 160 ||
-        Get_CurFrame() == 204 ||
-        Get_CurFrame() == 248 ||
-        Get_CurFrame() == 292 ||
-        Get_CurFrame() == 336 ||
+        Get_CurFrame() == 200 ||
+        Get_CurFrame() == 240 ||
+        Get_CurFrame() == 280 ||
+        Get_CurFrame() == 320 ||
+        Get_CurFrame() == 360 ||
         Get_CurFrame() == 380)
     {
         if (!m_bSkillCreate)
@@ -1453,14 +1564,14 @@ void Boss_Spike_FSM::skill_6100()
             desc.fLifeTime = 1.f;
             desc.fLimitDistance = 20.f;
 
-            for (_uint i = 0; i < 8; i++)
+            for (_uint i = 0; i < 6; i++)
             {
                 _float fOffSetX = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
                 _float fOffSetZ = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
 
                 _float4 vSkillPos = vMyPos + _float4{ fOffSetX, 10.f, fOffSetZ, 0.f };
 
-                Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, AIRBORNE_ATTACK);
+                Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, AIRBORNE_ATTACK);
             }
 
             m_bSkillCreate = true;
@@ -1476,7 +1587,7 @@ void Boss_Spike_FSM::skill_6100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_6100", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_6100", 0.15f, false, 2.f);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1485,8 +1596,16 @@ void Boss_Spike_FSM::skill_6100_Init()
 
     AttackCollider_Off();
 
-    m_bInvincible = false;
+    m_bInvincible = true;
     m_bSuperArmor = false;
+
+    if (!m_pTarget.expired())
+        Get_Transform()->LookAt(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS));
+
+    if (!m_pCamera.expired())
+        m_pCamera.lock()->Get_Transform()->Set_State(Transform_State::POS, m_vSkillCamBonePos);
+    
+    m_bLastPattern = true;
 }
 
 void Boss_Spike_FSM::skill_7100()
@@ -1516,7 +1635,7 @@ void Boss_Spike_FSM::skill_7100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_7100", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_7100", 0.15f, false, 2.f);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1564,7 +1683,7 @@ void Boss_Spike_FSM::skill_8100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_8100", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_8100", 0.15f, false, 1.5f);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1582,15 +1701,38 @@ void Boss_Spike_FSM::skill_100000()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (!m_pCamera.expired())
+
+    if (Get_CurFrame() <= 30)
     {
-        _float4 vDir = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS) - m_vCenterBonePos;
+        if (!m_pCamera.expired())
+        {
+            _float4 vDir = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS) - m_vCenterBonePos;
 
-        vDir.Normalize();
+            vDir.Normalize();
 
-        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
-        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
-        m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 4.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.2f, vDir.xyz(), 4.f);
+        }
+
+        if (Get_CurFrame() == 30)
+        {
+            m_bInvincible = false;
+            m_bGroggyPattern = true;
+            Get_Owner()->Get_Animator()->Set_AnimationSpeed(m_fGroggyPatternAnimationSpeed);
+
+            for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
+            {
+                material->Get_MaterialDesc().emissive = Color(1.f, 0.1f, 0.1f, 1.f);
+            }
+        }
+    }
+    else
+    {
+        if (!m_pCamera.expired())
+        {
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.07f);
+        }
     }
 
     if (Is_AnimFinished())
@@ -1626,6 +1768,24 @@ void Boss_Spike_FSM::skill_100000_Init()
 
 void Boss_Spike_FSM::skill_100100()
 {
+    if (Get_CurFrame() == 4)
+    {
+        m_fGroggy_Gauge = 100.f;
+        m_bGroggyPattern = false;
+        Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.5f);
+
+        for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
+        {
+            material->Get_MaterialDesc().emissive = Color(0.f, 0.0f, 0.0f, 1.f);
+        }
+
+        if (!m_pCamera.expired())
+        {
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.f, 0.f);
+        }
+    }
+
+
     if (Get_CurFrame() == 85)
     {
         if (!m_pTarget.expired())
@@ -1636,7 +1796,7 @@ void Boss_Spike_FSM::skill_100100()
             _float3 vDir = vPlayerPos - vMyPos;
             vDir.y = 0.f;
 
-            if (vDir.LengthSquared() > 10.f * 10.f)
+            if (vDir.LengthSquared() > 30.f * 30.f)
                 return;
 
             vDir.Normalize();
@@ -1644,7 +1804,7 @@ void Boss_Spike_FSM::skill_100100()
             _float3 vLook = Get_Transform()->Get_State(Transform_State::LOOK).xyz();
             vLook.Normalize();
 
-            if (vDir.Dot(vLook) > cosf(60.f))
+            if (vDir.Dot(vLook) > cosf(XM_PI))
             {
                 m_pTarget.lock()->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, Get_Owner());
             }
@@ -1658,7 +1818,7 @@ void Boss_Spike_FSM::skill_100100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_100100", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_100100", 0.15f, false, m_fGroggyPatternAnimationSpeed);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1667,7 +1827,7 @@ void Boss_Spike_FSM::skill_100100_Init()
 
     AttackCollider_Off();
 
-    m_bInvincible = true;
+    m_bInvincible = false;
     m_bSuperArmor = false;
 }
 
@@ -1762,88 +1922,93 @@ void Boss_Spike_FSM::Calculate_SkillCamRight()
         m_vSkillCamRight = (Get_Transform()->Get_State(Transform_State::RIGHT) * 3.f);
 }
 
-void Boss_Spike_FSM::Set_AttackSkill_Phase1()
+void Boss_Spike_FSM::Set_AttackSkill()
 {
-    _uint iRan = rand() % 8;
+    if (m_tGroggyPatternTimer.fAccTime < m_tGroggyPatternTimer.fCoolTime)
+    {
+        _uint iRan = rand() % 7;
 
-    while (true)
-    {
-        if (iRan == m_iPreAttack)
-            iRan = rand() % 8;
-        else
-            break;
-    }
+        while (true)
+        {
+            if (iRan == m_iPreAttack)
+                iRan = rand() % 7;
+            else
+                break;
+        }
 
-    if (iRan == 0)
-    {
-        m_fAttackRange = 2.f;
-        m_ePatternState = STATE::skill_1100;
-        m_iPreAttack = 0;
-    }
-    else if (iRan == 1)
-    {
-        m_fAttackRange = 2.f;
+        if (iRan == 0)
+        {
+            m_fAttackRange = 2.f;
+            m_ePatternState = STATE::skill_1100;
+            m_iPreAttack = 0;
+        }
+        else if (iRan == 1)
+        {
+            m_fAttackRange = 2.f;
 
-        if (rand() % 2 == 0)
-            m_ePatternState = STATE::skill_1200;
-        else
-            m_ePatternState = STATE::skill_1300;
-        
-        m_iPreAttack = 1;
-    }
-    else if (iRan == 2)
-    {
-        m_fAttackRange = 5.f;
-        m_ePatternState = STATE::skill_1400;
-        m_iPreAttack = 2;
-    }
-    else if (iRan == 3)
-    {
-        m_fAttackRange = 5.f;
+            if (rand() % 2 == 0)
+                m_ePatternState = STATE::skill_1200;
+            else
+                m_ePatternState = STATE::skill_1300;
+            
+            m_iPreAttack = 1;
+        }
+        else if (iRan == 2)
+        {
+            m_fAttackRange = 5.f;
+            m_ePatternState = STATE::skill_1400;
+            m_iPreAttack = 2;
+        }
+        else if (iRan == 3)
+        {
+            m_fAttackRange = 5.f;
 
-        if (rand() % 2 == 0)
-            m_ePatternState = STATE::skill_2100;
-        else
-            m_ePatternState = STATE::skill_2200;
+            if (rand() % 2 == 0)
+                m_ePatternState = STATE::skill_2100;
+            else
+                m_ePatternState = STATE::skill_2200;
 
-        m_iPreAttack = 3;
-    }
-    else if (iRan == 4)
-    {
-        m_fAttackRange = 5.f;
+            m_iPreAttack = 3;
+        }
+        else if (iRan == 4)
+        {
+            m_fAttackRange = 5.f;
 
-        if (rand() % 2 == 0)
-            m_ePatternState = STATE::skill_3100;
-        else
-            m_ePatternState = STATE::skill_3200;
-        
-        m_iPreAttack = 4;
+            if (rand() % 2 == 0)
+                m_ePatternState = STATE::skill_3100;
+            else
+                m_ePatternState = STATE::skill_3200;
+            
+            m_iPreAttack = 4;
+        }
+        else if (iRan == 5)
+        {
+            m_fAttackRange = 5.f;
+            m_ePatternState = STATE::skill_7100;
+            m_iPreAttack = 5;
+        }
+        else if (iRan == 6)
+        {
+            m_fAttackRange = 5.f;
+            m_ePatternState = STATE::skill_8100;
+            m_iPreAttack = 6;
+        }
     }
-    else if (iRan == 5)
+    else
     {
-        m_fAttackRange = 5.f;
-        m_ePatternState = STATE::skill_7100;
-        m_iPreAttack = 5;
-    }
-    else if (iRan == 6)
-    {
-        m_fAttackRange = 5.f;
-        m_ePatternState = STATE::skill_8100;
-        m_iPreAttack = 6;
-    }
-    else if (iRan == 7)
-    {
+        m_tGroggyPatternTimer.fAccTime = 0.f;
         m_fAttackRange = 10.f;
         m_ePatternState = STATE::skill_100000;
-        m_iPreAttack = 7;
     }
+
+
+
 
     m_bSetPattern = true;
 }
 
 void Boss_Spike_FSM::Create_BossSpikeChair()
 {
-
     shared_ptr<GameObject> Chair = make_shared<GameObject>();
     Chair->Add_Component(make_shared<Transform>());
     Chair->Get_Transform()->Set_WorldMat(m_pOwner.lock()->Get_Transform()->Get_WorldMatrix());
@@ -1887,6 +2052,12 @@ void Boss_Spike_FSM::Set_Gaze()
             m_eCurState = STATE::b_idle;
         else if (iRan == 4)
             m_eCurState = STATE::gaze_f;
+    
+        if (m_pOwner.lock()->Get_HpRatio() <= 0.3f)
+        {
+            if (!m_bLastPattern)
+                m_eCurState = STATE::skill_6100;
+        }
     }
 }
 

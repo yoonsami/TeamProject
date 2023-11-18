@@ -163,11 +163,11 @@ HRESULT DemoScene::Load_Scene()
 	Load_Light();
 	Load_Camera();
 	Load_MapFile(L"KrisMap");
-	Load_Monster(1);
+	//Load_Monster(1);
 	Load_Boss_Spike();
 	//Load_Boss_Dellons();
 	//Load_Boss_Mir();
-
+	Load_Debug();
 	Load_Ui();
 
 	return S_OK;
@@ -248,17 +248,6 @@ void DemoScene::Load_Player()
 
 		ObjPlayer->Add_Component(make_shared<HeroChangeScript>());
 	
-	}
-
-	{
-		shared_ptr<GameObject> debugText = make_shared<GameObject>();
-		debugText->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-300.f, 400.f, 5.f, 1.f));
-		debugText->Add_Component(make_shared<FontRenderer>(L""));
-		debugText->Get_FontRenderer()->Set_Font(RESOURCES.Get<CustomFont>(L"136ex"), Color(0.5f,0.5f,0.5f,1.f), 1.f);
-		debugText->Set_LayerIndex(Layer_UI);
-		debugText->Add_Component(make_shared<ObjectTransformDebug>());
-		debugText->Get_Script<ObjectTransformDebug>()->Set_Target(Get_GameObject(L"Boss_Spike"));
-		Add_GameObject(debugText);
 	}
 }
 
@@ -867,4 +856,18 @@ void DemoScene::Load_Ui()
 		}
 	}
 
+}
+
+void DemoScene::Load_Debug()
+{
+	{
+		shared_ptr<GameObject> debugText = make_shared<GameObject>();
+		debugText->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-300.f, 400.f, 5.f, 1.f));
+		debugText->Add_Component(make_shared<FontRenderer>(L""));
+		debugText->Get_FontRenderer()->Set_Font(RESOURCES.Get<CustomFont>(L"136ex"), Color(0.5f, 0.5f, 0.5f, 1.f), 1.f);
+		debugText->Set_LayerIndex(Layer_UI);
+		debugText->Add_Component(make_shared<ObjectTransformDebug>());
+		debugText->Get_Script<ObjectTransformDebug>()->Set_Target(Get_GameObject(L"Boss_Spike"));
+		Add_GameObject(debugText);
+	}
 }

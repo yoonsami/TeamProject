@@ -10,7 +10,7 @@ HRESULT CounterMotionTrailScript::Init()
 	shared_ptr<GameObject> motionTrail = make_shared<GameObject>();
 	motionTrail->GetOrAddTransform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
 	motionTrail->Add_Component(make_shared<MotionTrailRenderer>(RESOURCES.Get<Shader>(L"Shader_Model.fx"), Get_Owner()->Get_Animator()->Get_TweenDesc(), Get_Owner()->Get_Animator()->Get_Model()));
-	motionTrail->Add_Component(make_shared<MotionTrailDisappear>(2.f, Color(0.3f, 0.3f, 1.f, 1.f)));
+	motionTrail->Add_Component(make_shared<MotionTrailDisappear>(2.f, Color(0.2f, 0.2f, 1.f, 1.f)));
 	motionTrail->Get_Script<MotionTrailDisappear>()->Init();
 	CUR_SCENE->Add_GameObject(motionTrail);
 	m_pMotionTrail = motionTrail;
@@ -22,7 +22,7 @@ void CounterMotionTrailScript::Tick()
 {
 	if (!m_pMotionTrail.expired())
 	{
-		m_fTrailScale += 0.05f * fDT;
+		m_fTrailScale += fDT;
 		m_pMotionTrail.lock()->Get_MotionTrailRenderer()->Set_Scale(m_fTrailScale);
 	}
 	else
