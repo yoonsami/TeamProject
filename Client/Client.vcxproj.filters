@@ -202,6 +202,9 @@
     <Filter Include="02.Component\01.FSM\03.Special_FSM\02.SpearAce_Clone_FSM">
       <UniqueIdentifier>{43464ce5-8328-424a-89d9-4cef32d403f7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Scene\02.GachaScene">
+      <UniqueIdentifier>{ba9d9d61-a529-4011-aa31-f0ae69bdae34}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -402,7 +405,6 @@
     <ClInclude Include="Gacha_FSM.h">
       <Filter>02.Component\01.FSM\04.Gacha_FSM</Filter>
     </ClInclude>
-    <ClInclude Include="Kyle_GachaScene.h" />
     <ClInclude Include="Boss_DellonsWraith_FSM.h">
       <Filter>02.Component\01.FSM\02.Monster_FSM\02.Boss_Dellons_FSM</Filter>
     </ClInclude>
@@ -429,7 +431,12 @@
     <ClInclude Include="UiDamageMove.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\12.UiDamage\01.UiDamageMove</Filter>
     </ClInclude>
-    <ClInclude Include="SpearAce_Clone_FSM.h" />
+    <ClInclude Include="SpearAce_Clone_FSM.h">
+      <Filter>02.Component\01.FSM\03.Special_FSM\02.SpearAce_Clone_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Kyle_GachaScene.h">
+      <Filter>01.Scene\02.GachaScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -600,7 +607,6 @@
     <ClCompile Include="Gacha_FSM.cpp">
       <Filter>02.Component\01.FSM\04.Gacha_FSM</Filter>
     </ClCompile>
-    <ClCompile Include="Kyle_GachaScene.cpp" />
     <ClCompile Include="Boss_Dellons_FSM.cpp">
       <Filter>02.Component\01.FSM\02.Monster_FSM\02.Boss_Dellons_FSM</Filter>
     </ClCompile>
@@ -624,7 +630,12 @@
     <ClCompile Include="UiDamageMove.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\12.UiDamage\01.UiDamageMove</Filter>
     </ClCompile>
-    <ClCompile Include="SpearAce_Clone_FSM.cpp" />
+    <ClCompile Include="SpearAce_Clone_FSM.cpp">
+      <Filter>02.Component\01.FSM\03.Special_FSM\02.SpearAce_Clone_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="Kyle_GachaScene.cpp">
+      <Filter>01.Scene\02.GachaScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
