@@ -52,7 +52,7 @@ HRESULT Boss_Spike_FSM::Init()
     m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
 
 
-    m_fDetectRange = 7.f;
+    m_fDetectRange = 25.f;
     m_fRunSpeed = 6.f;
 
 
