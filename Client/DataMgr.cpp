@@ -12,6 +12,18 @@ void DataMgr::Initialize()
         tagData.Element         = ElementType::WATER;
         tagData.Star            = 4;
 
+        tagData.Skill1Combo = 0;
+        tagData.Skill2Combo = 0;
+        tagData.Skill3Combo = 0;
+        tagData.Skill4Combo = 0;
+        tagData.Skill5Combo = 0;
+
+        tagData.Skill1Info = SkillInfo::NONE;
+        tagData.Skill2Info = SkillInfo::NONE;
+        tagData.Skill3Info = SkillInfo::NONE;
+        tagData.Skill4Info = SkillInfo::NONE;
+        tagData.Skill5Info = SkillInfo::NONE;
+
         tagData.AttackDamage    = 1.f;
         tagData.MaxHp           = 10.f;
         tagData.CurHp           = 10.f;
@@ -53,6 +65,18 @@ void DataMgr::Initialize()
         
         tagData.Element         = ElementType::WATER;
         tagData.Star            = 4;
+
+        tagData.Skill1Combo = 0;
+        tagData.Skill2Combo = 0;
+        tagData.Skill3Combo = 0;
+        tagData.Skill4Combo = 0;
+        tagData.Skill5Combo = 0;
+        
+        tagData.Skill1Info = SkillInfo::NONE;
+        tagData.Skill2Info = SkillInfo::NONE;
+        tagData.Skill3Info = SkillInfo::NONE;
+        tagData.Skill4Info = SkillInfo::NONE;
+        tagData.Skill5Info = SkillInfo::NONE;
 
         tagData.AttackDamage    = 1.f;
         tagData.MaxHp           = 10.f;
@@ -96,6 +120,18 @@ void DataMgr::Initialize()
         tagData.Element         = ElementType::FIRE;
         tagData.Star            = 4;
 
+        tagData.Skill1Combo = 0;
+        tagData.Skill2Combo = 0;
+        tagData.Skill3Combo = 0;
+        tagData.Skill4Combo = 0;
+        tagData.Skill5Combo = 0;
+
+        tagData.Skill1Info = SkillInfo::NONE;
+        tagData.Skill2Info = SkillInfo::NONE;
+        tagData.Skill3Info = SkillInfo::NONE;
+        tagData.Skill4Info = SkillInfo::NONE;
+        tagData.Skill5Info = SkillInfo::NONE;
+
         tagData.AttackDamage    = 1.f;
         tagData.MaxHp           = 10.f;
         tagData.CurHp           = 10.f;
@@ -136,6 +172,18 @@ void DataMgr::Initialize()
         
         tagData.Element         = ElementType::FIRE;
         tagData.Star            = 4;
+
+        tagData.Skill1Combo = 0;
+        tagData.Skill2Combo = 0;
+        tagData.Skill3Combo = 0;
+        tagData.Skill4Combo = 0;
+        tagData.Skill5Combo = 0;
+
+        tagData.Skill1Info = SkillInfo::NONE;
+        tagData.Skill2Info = SkillInfo::NONE;
+        tagData.Skill3Info = SkillInfo::NONE;
+        tagData.Skill4Info = SkillInfo::NONE;
+        tagData.Skill5Info = SkillInfo::NONE;
 
         tagData.AttackDamage    = 1.f;
         tagData.MaxHp           = 10.f;
@@ -178,6 +226,18 @@ void DataMgr::Initialize()
         tagData.Element         = ElementType::DARK;
         tagData.Star            = 4;
 
+        tagData.Skill1Combo = 0;
+        tagData.Skill2Combo = 0;
+        tagData.Skill3Combo = 0;
+        tagData.Skill4Combo = 0;
+        tagData.Skill5Combo = 0;
+
+        tagData.Skill1Info = SkillInfo::NONE;
+        tagData.Skill2Info = SkillInfo::NONE;
+        tagData.Skill3Info = SkillInfo::NONE;
+        tagData.Skill4Info = SkillInfo::NONE;
+        tagData.Skill5Info = SkillInfo::NONE;
+
         tagData.AttackDamage    = 1.f;
         tagData.MaxHp           = 10.f;
         tagData.CurHp           = 10.f;
@@ -219,6 +279,18 @@ void DataMgr::Initialize()
         tagData.Element         = ElementType::WATER;
         tagData.Star            = 4;
 
+        tagData.Skill1Combo = 0;
+        tagData.Skill2Combo = 0;
+        tagData.Skill3Combo = 0;
+        tagData.Skill4Combo = 0;
+        tagData.Skill5Combo = 0;
+
+        tagData.Skill1Info = SkillInfo::NONE;
+        tagData.Skill2Info = SkillInfo::NONE;
+        tagData.Skill3Info = SkillInfo::NONE;
+        tagData.Skill4Info = SkillInfo::NONE;
+        tagData.Skill5Info = SkillInfo::NONE;
+
         tagData.AttackDamage    = 1.f;
         tagData.MaxHp           = 10.f;
         tagData.CurHp           = 10.f;
@@ -259,6 +331,18 @@ void DataMgr::Initialize()
 
         tagData.Element = ElementType::WATER;
         tagData.Star = 4;
+
+        tagData.Skill1Combo = 0;
+        tagData.Skill2Combo = 0;
+        tagData.Skill3Combo = 0;
+        tagData.Skill4Combo = 0;
+        tagData.Skill5Combo = 0;
+
+        tagData.Skill1Info = SkillInfo::NONE;
+        tagData.Skill2Info = SkillInfo::NONE;
+        tagData.Skill3Info = SkillInfo::NONE;
+        tagData.Skill4Info = SkillInfo::NONE;
+        tagData.Skill5Info = SkillInfo::NONE;
 
         tagData.AttackDamage = 1.f;
         tagData.MaxHp = 10.f;

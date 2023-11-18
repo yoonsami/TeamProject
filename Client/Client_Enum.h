@@ -58,7 +58,6 @@ enum SkillType
 	SkillEnd
 };
 
-
 enum ElementType
 {
 	DARK,
@@ -68,4 +67,12 @@ enum ElementType
 	WATER,
 	WIND,
 	ElementEnd
+};
+
+enum SkillInfo
+{
+	CHARGING,
+	HOLDING,
+	MOVING,
+	NONE
 };

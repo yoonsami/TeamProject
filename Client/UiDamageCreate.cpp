@@ -56,6 +56,11 @@ void UiDamageCreate::Create_Damage_Font(_float4 vPos)
     return;
 }
 
+void UiDamageCreate::Create_Damage_Hit()
+{
+
+}
+
 void UiDamageCreate::Check_In_Screen()
 {
     _float3 cullPos = m_fPos.xyz();
