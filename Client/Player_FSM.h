@@ -37,12 +37,14 @@ public:
 		skill_1400, //normal attack4
 		skill_91100, //Evade
 		skill_93100, //Backward_Evade
-		skill_100100, // Skill 1-1
+		skill_100100, // Skill 1-1 Bubble 3
 		skill_100200, // Skill 1-2
 		skill_100300, // Skill 1-3
-		skill_200100, // Skill 2-1
+
+		skill_200100, // Skill 2-1 Bubble X
 		skill_200200, // Skill 2-2
-		skill_300100, // Skill 3-1
+		
+		skill_300100, // Skill 3-1 Bubble 2
 		skill_300200, // Skill 3-2
 		NONE
 	};

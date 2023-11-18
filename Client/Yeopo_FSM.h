@@ -33,15 +33,15 @@ public:
 		skill_1400, //normal attack4
 		skill_91100, //Evade
 		skill_93100, //Backward_Evade
-		skill_100200, // Skill 1-1
+		skill_100200, // Skill 1-1  // Bubble 2
 		skill_100300, // Skill 1-2
-		skill_200100, // Skill 2
-		skill_300100, // Skill 3-1
+		skill_200100, // Skill 2    // Bubble X
+		skill_300100, // Skill 3-1  // Bubble 4
 		skill_300200, // Skill 3-2
 		skill_300300, // Skill 3-3
 		skill_300400, // Skill 3-4
-		skill_400100, // Skill 4 (Ride RedHorse)
-		skill_501100, // Skill 5
+		skill_400100, // Skill 4 (Ride RedHorse) // Bubble X
+		skill_501100, // Skill 5  // Bubble X
 
 		//Ride Horse
 		SQ_RideHorse_Idle,

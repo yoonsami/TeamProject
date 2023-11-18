@@ -180,6 +180,59 @@ _bool FSM::Target_In_DetectRange()
 	return bFlag;
 }
 
+_bool FSM::Target_In_GazeCheckRange()
+{
+	_bool bFlag = false;
+
+	if (m_pTarget.expired())
+		return false;
+
+	_float fGap = (Get_Transform()->Get_State(Transform_State::POS).xyz() -
+		m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz()).Length();
+
+	if (fGap <= m_fGazeCheckRange)
+		bFlag = true;
+
+	return bFlag;
+}
+
+_bool FSM::CounterAttackCheck(_float fCheckDegree)
+{
+	// Monster to player 
+	_float4 vDir = _float4(0.f);
+	vDir = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS);
+	vDir.y = 0.f;
+	vDir.Normalize();
+
+	_float4 vDot = _float4(0.f);
+	_float4 vCross = _float4(0.f);
+
+	vDot = XMVector3Dot(Get_Transform()->Get_State(Transform_State::LOOK), vDir);
+	vCross = XMVector3Cross(Get_Transform()->Get_State(Transform_State::LOOK), vDir);
+
+	if (XMVectorGetX(vDot) >= 0.f) //forward = dot is bigger 0  
+	{
+		if (XMVectorGetY(vCross) < 0.f) //cross > 0 is right , cross < 0 is left
+		{
+			if (XMVectorGetX(vDot) >= cosf(XMConvertToRadians(fCheckDegree / 2.f)))//체크 각도 반만큼 왼쪽 앞
+				return true;
+			else
+				return false;
+		}
+		else //오른쪽  정면오른쪽
+		{
+			if (XMVectorGetX(vDot) >= cosf(XMConvertToRadians(fCheckDegree / 2.f)))//체크각도 반만큼 오른쪽 앞
+				return true;
+			else
+				return false;
+		}
+	}
+	else //뒤 내적음수면 뒤
+	{
+		return false;
+	}
+}
+
 void FSM::Add_Effect(const wstring& strSkilltag)
 {
 	shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();

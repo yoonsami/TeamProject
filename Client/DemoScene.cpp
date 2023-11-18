@@ -257,7 +257,7 @@ void DemoScene::Load_Player()
 		debugText->Get_FontRenderer()->Set_Font(RESOURCES.Get<CustomFont>(L"136ex"), Color(0.5f,0.5f,0.5f,1.f), 1.f);
 		debugText->Set_LayerIndex(Layer_UI);
 		debugText->Add_Component(make_shared<ObjectTransformDebug>());
-		debugText->Get_Script<ObjectTransformDebug>()->Set_Target(Get_GameObject(L"Player"));
+		debugText->Get_Script<ObjectTransformDebug>()->Set_Target(Get_GameObject(L"Boss_Spike"));
 		Add_GameObject(debugText);
 	}
 }
@@ -532,6 +532,8 @@ void DemoScene::Load_Boss_Spike()
 		ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.8f, 0.5f })); //obbcollider
 		ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
 		ObjMonster->Get_Collider()->Set_Activate(true);
+
+		ObjMonster->Add_Component(make_shared<CounterMotionTrailScript>());
 
 		{
 			auto controller = make_shared<CharacterController>();

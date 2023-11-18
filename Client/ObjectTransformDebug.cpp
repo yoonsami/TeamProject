@@ -26,6 +26,7 @@ void ObjectTransformDebug::Tick()
 	_float4 vPos = Get_Owner()->Get_Transform()->Get_State(Transform_State::POS);
 	_float4 vTargetPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS);
 	
-	fontRenderer->Get_Text() = L"X : " + to_wstring(vTargetPos.x) + L"/ Y : " + to_wstring(vTargetPos.y) + L"/ Z : " + to_wstring(vTargetPos.z);
+	//fontRenderer->Get_Text() = L"X : " + to_wstring(vTargetPos.x) + L"/ Y : " + to_wstring(vTargetPos.y) + L"/ Z : " + to_wstring(vTargetPos.z);
+	fontRenderer->Get_Text() = L"SpikeHp : " + to_wstring(m_pTarget.lock()->Get_CurHp());
 
 }

@@ -31,7 +31,6 @@ public:
 		groggy_end,
 		groggy_loop,
 
-
 		skill_1100, 
 		skill_1200, 
 		skill_1300, 
@@ -46,17 +45,13 @@ public:
 		skill_2200, 
 		skill_3100, 
 		skill_3200, 
-		skill_3300, 
-		skill_4100, 
-		skill_4200, 
-		skill_5100, 
-		skill_6100, 
+
+		skill_6100,  // ULTIMATE
 		skill_7100, 
 		skill_8100, 
-		skill_10100, 
+
 		skill_100000, 
 		skill_100100, 
-		skill_101100, 
 		skill_201100,  //CUTSCENE (DOWN)
 		skill_201200,  //CUTSCENE (UP)
 
@@ -139,6 +134,14 @@ private:
 	void hit();
 	void hit_Init();
 	
+	void groggy_start();
+	void groggy_start_Init();
+	void groggy_loop();
+	void groggy_loop_Init();
+	void groggy_end();
+	void groggy_end_Init();
+
+
 	void skill_1100();
 	void skill_1100_Init();
 	void skill_1200();
@@ -148,6 +151,7 @@ private:
 	void skill_1400();
 	void skill_1400_Init();
 
+	//Evade Motion
 	void skill_9100();
 	void skill_9100_Init();
 	void skill_9200();
@@ -158,16 +162,41 @@ private:
 	void skill_9400_Init();
 	
 
+	void skill_2100();
+	void skill_2100_Init();
+	void skill_2200();
+	void skill_2200_Init();
+	void skill_3100();
+	void skill_3100_Init();
+	void skill_3200();
+	void skill_3200_Init();
+	void skill_6100(); //Ulti
+	void skill_6100_Init();
+	void skill_7100();
+	void skill_7100_Init();
+	void skill_8100();
+	void skill_8100_Init();
 
-	void Battle_Start();
+	void skill_100000();
+	void skill_100000_Init();
+	void skill_100100();
+	void skill_100100_Init();
+
+	//For. CutScene
+	void skill_201100();
+	void skill_201100_Init();
+	void skill_201200();
+	void skill_201200_Init();
+
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
 	void Calculate_SkillCamRight();
 	void Set_AttackSkill_Phase1();
 	void Create_BossSpikeChair();
 	void Set_Gaze();
+	void Create_CounterMotionTrail();
 
 	_float3 Calculate_TargetTurnVector();
-
+	
 private:
 	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;
@@ -178,20 +207,18 @@ private:
 	_float4 m_vFirstPos = _float4(0.f);
 	_float m_fTurnSpeed = XM_PI * 5.f;
 
-	COOLTIMEINFO m_tBattleStartTime = { 1.f, 0.f };
 	COOLTIMEINFO m_tAttackCoolTime = { 1.f, 0.f };
 	COOLTIMEINFO m_tChaseCoolTime = { 2.f, 0.f };
+	COOLTIMEINFO m_tSkillCoolTime = { 0.2f, 0.f };
+
 
 	_bool m_bChaseSkill = false;
 	_bool m_bDetected = false;
-	_bool m_bBattleStart = false;
 	_bool m_bCounter = false;
 	_bool m_bSetPattern = false;
 
 	_uint m_iGroggy_Gauge = 0;
 	_uint m_iPreAttack = 100;
-
-	_float m_fGazeCheckRange = 2.f;
 	
 	_float4 m_vPlayerBodyPos = _float4(0.f);
 	_float4 m_vChairPos = _float4(0.f);
