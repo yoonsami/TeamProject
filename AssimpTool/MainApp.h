@@ -16,5 +16,7 @@ public:
 private:
 	void	ExportAssets();			// MEMO: 기본적인 모델 로드시 활성화
 	void	ExportParts();
+
+	void	ExportWrongAnimRight();
 };
 

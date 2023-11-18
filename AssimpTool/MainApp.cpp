@@ -27,10 +27,10 @@ HRESULT MainApp::Init()
 		}
 	}
 
-	ExportAssets();
+	//ExportAssets();
 	//ExportParts();
 	//ExportWeapon();
-
+	ExportWrongAnimRight();
 	
 
 
@@ -136,4 +136,36 @@ void MainApp::ExportParts()
 		Utils::Replace(tag, L"Assets\\", L"");
 		converter->ExportPartsData(tag, eType);
 	}
+}
+
+void MainApp::ExportWrongAnimRight()
+{
+	wstring wrongFBXPath = L"..\\Resources\\AnimCorrector\\BaseFBX\\Rachel.fbx";
+
+	shared_ptr<Converter> converter = make_shared<Converter>();
+	converter->ReadAssetFile(wrongFBXPath);
+	Utils::DetachExt(wrongFBXPath);
+	//Utils::Replace(wrongFBXPath, L"Assets", L"Models");
+
+	converter->ReadAdditionalAnimData(wrongFBXPath);
+
+	wstring additionalAnimPath = L"..\\Resources\\AnimCorrector\\AdditionalFBX\\";
+	for (auto& entry : fs::recursive_directory_iterator(additionalAnimPath))
+	{
+		if (entry.is_directory())
+			continue;
+
+		if (entry.path().extension().wstring() != L".FBX" && entry.path().extension().wstring() != L".fbx")
+			continue;
+
+		wstring tag = entry.path().wstring();
+
+		converter->ReadAssetFile(tag);
+		Utils::DetachExt(tag);
+		Utils::Replace(tag, L"Assets", L"Models");
+		converter->ReadAdditionalAnimData(tag);
+	}
+
+	converter->ExportFinalAnimData(wrongFBXPath);
+
 }

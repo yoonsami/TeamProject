@@ -202,6 +202,9 @@
     <Filter Include="02.Component\01.FSM\03.Special_FSM\02.SpearAce_Clone_FSM">
       <UniqueIdentifier>{43464ce5-8328-424a-89d9-4cef32d403f7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\01.FSM\01.Hero_FSM\06.Rachel_FSM">
+      <UniqueIdentifier>{6a5acd4a-6960-4bb8-99b5-ac06ec5f53d7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -430,6 +433,9 @@
       <Filter>02.Component\00.MonoBehaviour\01.Ui\12.UiDamage\01.UiDamageMove</Filter>
     </ClInclude>
     <ClInclude Include="SpearAce_Clone_FSM.h" />
+    <ClInclude Include="Rachel_FSM.h">
+      <Filter>02.Component\01.FSM\01.Hero_FSM\06.Rachel_FSM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -625,6 +631,9 @@
       <Filter>02.Component\00.MonoBehaviour\01.Ui\12.UiDamage\01.UiDamageMove</Filter>
     </ClCompile>
     <ClCompile Include="SpearAce_Clone_FSM.cpp" />
+    <ClCompile Include="Rachel_FSM.cpp">
+      <Filter>02.Component\01.FSM\01.Hero_FSM\06.Rachel_FSM</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">

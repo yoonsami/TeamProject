@@ -75,6 +75,29 @@ void Converter::ExportAnimationData(const wstring& savePath)
 
 }
 
+void Converter::ReadAdditionalAnimData(const wstring& savePath)
+{
+	const _uint count = m_pScene->mNumAnimations;
+
+	for (_uint i = 0; i < count; ++i)
+	{
+		shared_ptr<asAnimation> animation = ReadAnimationData(m_pScene->mAnimations[i]);
+
+		if (animation->name == "Take 001")
+			continue;
+
+		m_Animations.push_back(animation);
+	}
+}
+
+void Converter::ExportFinalAnimData(const wstring& savePath)
+{
+	fs::create_directories(fs::path(savePath).parent_path());
+	wstring fileName = fs::path(savePath).filename();
+	wstring finalPath = savePath + L".clip";
+	WriteAnimationData(finalPath);
+}
+
 void Converter::ExportBaseData(const wstring& savePath)
 {
 	fs::create_directories(fs::path(savePath).parent_path());
