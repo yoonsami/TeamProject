@@ -1289,8 +1289,11 @@ void Kyle_FSM::skill_100200()
 	if (Is_AnimFinished())
 	{
 		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
-		m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
 		m_eCurState = STATE::b_idle;
+		
+		if (!m_pCamera.expired())
+			m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedTime(0.f);
+		//m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
 	}
 
 

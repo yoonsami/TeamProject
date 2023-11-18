@@ -1013,7 +1013,7 @@ void SpearAce_FSM::skill_91100()
         m_eCurState = STATE::b_idle;
     
 
-    if (Get_CurFrame() >= 9)
+    if (Get_CurFrame() >= 20)
     {
         if (vInputVector != _float3(0.f))
             m_eCurState = STATE::b_run;
