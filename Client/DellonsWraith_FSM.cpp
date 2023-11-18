@@ -483,6 +483,7 @@ void DellonsWraith_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _
     SkillCollider->Add_Component(make_shared<AttackColliderInfoScript>());
     SkillCollider->Get_Collider()->Set_Activate(true);
     SkillCollider->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
+    SkillCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
     SkillCollider->Set_Name(L"Wraith_SkillCollider");
     SkillCollider->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
     SkillCollider->Get_Script<ForwardMovingSkillScript>()->Init();

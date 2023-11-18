@@ -900,6 +900,8 @@ void SpearAce_FSM::skill_1100_Init()
 
     m_bCanCombo = false;
 
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+
     m_vKeyInputTargetDir = _float3(0.f);
     m_vKeyInputTargetDir = Get_InputDirVector();
 
@@ -947,6 +949,8 @@ void SpearAce_FSM::skill_1200_Init()
 
     animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+
     m_bCanCombo = false;
 
     m_vKeyInputTargetDir = _float3(0.f);
@@ -984,6 +988,8 @@ void SpearAce_FSM::skill_1300_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_1300", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+    
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
     m_bCanCombo = false;
 

@@ -36,6 +36,10 @@ protected:
 
 	_bool Target_In_AttackRange();
 	_bool Target_In_DetectRange();
+	_bool Target_In_GazeCheckRange();
+
+	_bool CounterAttackCheck(_float fCheckDegree);
+
 
 	void Add_Effect(const wstring& strSkilltag);
 public:
@@ -65,6 +69,8 @@ public:
 
 	_float m_fAttackRange = 2.f;
 	_float m_fDetectRange = 2.f;
+	_float m_fGazeCheckRange = 2.f;
+
 	_float m_fEffectYOffSet = 1.5f;
 
 	//For Camera CutScene

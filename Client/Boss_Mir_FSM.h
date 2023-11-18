@@ -121,7 +121,6 @@ private:
 	void skill_200100_Init();
 
 	DIR CalCulate_PlayerDir();
-	_bool CounterAttackCheck();
 	void Add_Boss_Mir_Collider();
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
 	void Create_CounterMotionTrail();
