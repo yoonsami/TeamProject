@@ -587,7 +587,7 @@ void Widget_EffectMaker_Mesh::Option_Dissolve()
 
 	if (ImGui::TreeNode("Dissolve weight##Dissiolve"))
 	{
-		SubWidget_Curve(m_vCurvePoint_Dissolve, "Dissolve", _float2(0.f, 1.f));
+		SubWidget_Curve1(m_vCurvePoint_Dissolve, "Dissolve");
 		ImGui::TreePop();
 	}
 }
@@ -774,7 +774,7 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 		case 7:
 			if (ImGui::TreeNode("Force##Transform"))
 			{
-				SubWidget_Curve(m_vCurvePoint_Gravity, "Force", _float2(-1.f, 1.f));
+				SubWidget_Curve2(m_vCurvePoint_Force, "Force");
 				ImGui::TreePop();
 			}
 			break;
@@ -978,7 +978,7 @@ void Widget_EffectMaker_Mesh::Create()
 		m_fTranslateSpeed,
 		_float3(m_fEndPositionOffset_Min),
 		_float3(m_fEndPositionOffset_Max),
-		{ m_vCurvePoint_Gravity[0], m_vCurvePoint_Gravity[1], m_vCurvePoint_Gravity[2], m_vCurvePoint_Gravity[3] },
+		{ m_vCurvePoint_Force[0], m_vCurvePoint_Force[1], m_vCurvePoint_Force[2], m_vCurvePoint_Force[3] },
 
 		m_iScalingOption,
 		_float3(m_fEndScaleOffset),
@@ -1371,7 +1371,7 @@ void Widget_EffectMaker_Mesh::SubWidget_SettingTexUV(_float* arrTiling, _float* 
 	ImGui::InputFloat2(pszWidgetKey2, arrTexUVSpeed);
 }
 
-void Widget_EffectMaker_Mesh::SubWidget_Curve(_float2* pPoints, const string& strKey, _float2 vRange)
+void Widget_EffectMaker_Mesh::SubWidget_Curve1(_float2* pPoints, const string& strKey)
 {
 	ImDrawList* drawList = ImGui::GetWindowDrawList();
 	string strChildTag = "Curve##" + strKey;
@@ -1384,16 +1384,16 @@ void Widget_EffectMaker_Mesh::SubWidget_Curve(_float2* pPoints, const string& st
 	auto draw_list = ImGui::GetWindowDrawList();
 	auto legend = ImGui::GetWindowSize();
 	_float fGraphScale = 300.f;
-	
-	pPoints[0].x = vRange.x;
-	pPoints[3].x = vRange.y;
-	ImGui::SliderFloat(strP1Tag.c_str(), (_float*)&pPoints[0].y, vRange.x, vRange.y);
-	ImGui::SliderFloat2(strP2Tag.c_str(), (_float*)&pPoints[1], vRange.x, vRange.y);
-	ImGui::SliderFloat2(strP3Tag.c_str(), (_float*)&pPoints[2], vRange.x, vRange.y);
-	ImGui::SliderFloat(strP4Tag.c_str(), (_float*)&pPoints[3].y, vRange.x, vRange.y);
+
+	pPoints[0].x = 0.f;
+	pPoints[3].x = 1.f;
+	ImGui::SliderFloat(strP1Tag.c_str(), (_float*)&pPoints[0].y, 0.00f, 1.00f);
+	ImGui::SliderFloat2(strP2Tag.c_str(), (_float*)&pPoints[1], 0.00f, 1.00f);
+	ImGui::SliderFloat2(strP3Tag.c_str(), (_float*)&pPoints[2], 0.00f, 1.00f);
+	ImGui::SliderFloat(strP4Tag.c_str(), (_float*)&pPoints[3].y, 0.00f, 1.00f);
 
 	{
-		ImGui::BeginChild("child_2", { fGraphScale, fGraphScale }, false, ImGuiWindowFlags_HorizontalScrollbar);
+		ImGui::BeginChild(strChildTag.c_str(), { fGraphScale, fGraphScale }, false, ImGuiWindowFlags_HorizontalScrollbar);
 
 		ImVec2 cursor = ImGui::GetCursorScreenPos();
 
@@ -1403,16 +1403,13 @@ void Widget_EffectMaker_Mesh::SubWidget_Curve(_float2* pPoints, const string& st
 		draw_list->AddLine(ImVec2(cursor.x + fGraphScale, cursor.y), ImVec2(cursor.x + fGraphScale, cursor.y + fGraphScale), ImGui::GetColorU32(ImGuiCol_TextDisabled));
 		draw_list->AddLine(ImVec2(cursor.x + fGraphScale, cursor.y + fGraphScale), ImVec2(cursor.x, cursor.y + fGraphScale), ImGui::GetColorU32(ImGuiCol_TextDisabled));
 
-		if(-1.f == vRange.x)
-			draw_list->AddLine(ImVec2(cursor.x, cursor.y + fGraphScale * 0.5f), ImVec2(cursor.x + fGraphScale, cursor.y + fGraphScale * 0.5f), 0X808080FF);	// zero line
-
 		/* For. Draw Points */
 		for (_int i = 0; i < 4; i++)
 		{
-			ImVec2 PointPos1 = cursor + (ImVec2(pPoints[i].x, 1.f - pPoints[i].y) * fGraphScale);
-			draw_list->AddCircle(PointPos1, 3.f, ImGui::GetColorU32(ImGuiCol_PlotLines), 20, 1.f);
+			ImVec2	center = cursor + ImVec2(pPoints[i].x, pPoints[i].y) * fGraphScale;
+			draw_list->AddCircle(center, 3.f, ImGui::GetColorU32(ImGuiCol_PlotLines), 20, 3.f);
 		}
-		
+
 		/* For. Calc Prev */
 		enum { smoothness = 256 };
 		float* input = new float[8];
@@ -1433,15 +1430,93 @@ void Widget_EffectMaker_Mesh::SubWidget_Curve(_float2* pPoints, const string& st
 			ImVec2 vEnd = { qx, output[0] };
 
 			/* fit in rect */
-			if (-1.f == vRange.x)
-			{
-				vStart = ImVec2((vStart.x - 1.f) * 0.5f, (vStart.y - 1.f) * 0.5f);
-				vEnd = ImVec2((vEnd.x - 1.f) * 0.5f, (vEnd.y - 1.f) * 0.5f);
-			}
 			vStart = vStart * fGraphScale;
 			vEnd = vEnd * fGraphScale;
 			vStart = vStart + cursor;
 			vEnd = vEnd + cursor;
+
+			/* For. Draw line */
+			draw_list->AddLine(vStart, vEnd, ImGui::GetColorU32(ImGuiCol_PlotLines), 2.f);
+		}
+		ImGui::EndChild();
+	}
+}
+
+void Widget_EffectMaker_Mesh::SubWidget_Curve2(_float2* pPoints, const string& strKey)
+{
+	ImDrawList* drawList = ImGui::GetWindowDrawList();
+	string strChildTag = "Curve##" + strKey;
+	string strP1Tag1 = "Point1 Speed##" + strKey;
+	string strP2Tag1 = "Point2 Time##" + strKey;
+	string strP2Tag2 = "Point2 Speed##" + strKey;
+	string strP3Tag1 = "Point3 Time##" + strKey;
+	string strP3Tag2 = "Point3 Speed##" + strKey;
+	string strP4Tag1 = "Point4 Time##" + strKey;
+	string strP4Tag2 = "Point4 Speed##" + strKey;
+	string strTreeTag = "Dissolve Weight#3" + strKey;
+
+	auto draw_list = ImGui::GetWindowDrawList();
+	auto legend = ImGui::GetWindowSize();
+	_float fGraphScale = 300.f;
+
+	pPoints[0].x = 0.f;
+	pPoints[3].x = 1.f;
+	ImGui::SliderFloat(strP1Tag1.c_str(), (_float*)&pPoints[0].y, -1.00f, 1.00f);
+	ImGui::Text(" ");
+	ImGui::SliderFloat(strP2Tag1.c_str(), (_float*)&pPoints[1].x, 0.00f, 1.00f);
+	ImGui::SliderFloat(strP2Tag2.c_str(), (_float*)&pPoints[1].y, -1.00f, 1.00f);
+	ImGui::Text(" ");
+	ImGui::SliderFloat(strP3Tag1.c_str(), (_float*)&pPoints[2].x, 0.00f, 1.00f);
+	ImGui::SliderFloat(strP3Tag2.c_str(), (_float*)&pPoints[2].y, -1.00f, 1.00f);
+	ImGui::Text(" ");
+	ImGui::SliderFloat(strP4Tag1.c_str(), (_float*)&pPoints[3].x, 0.00f, 1.00f);
+	ImGui::SliderFloat(strP4Tag2.c_str(), (_float*)&pPoints[3].y, -1.00f, 1.00f);
+
+	{
+		ImGui::BeginChild(strChildTag.c_str(), { fGraphScale, fGraphScale }, false, ImGuiWindowFlags_HorizontalScrollbar);
+
+		ImVec2 cursor = ImGui::GetCursorScreenPos();
+
+		/* For. Grid */
+		draw_list->AddLine(cursor, ImVec2(cursor.x + fGraphScale, cursor.y), ImGui::GetColorU32(ImGuiCol_TextDisabled));
+		draw_list->AddLine(cursor, ImVec2(cursor.x, cursor.y + fGraphScale), ImGui::GetColorU32(ImGuiCol_TextDisabled));
+		draw_list->AddLine(ImVec2(cursor.x + fGraphScale, cursor.y), ImVec2(cursor.x + fGraphScale, cursor.y + fGraphScale), ImGui::GetColorU32(ImGuiCol_TextDisabled));
+		draw_list->AddLine(ImVec2(cursor.x + fGraphScale, cursor.y + fGraphScale), ImVec2(cursor.x, cursor.y + fGraphScale), ImGui::GetColorU32(ImGuiCol_TextDisabled));
+
+		/* For. Draw Points */
+		for (_int i = 0; i < 4; i++)
+		{
+			ImVec2	center = cursor + ImVec2(pPoints[i].x, (pPoints[i].y + 1.f) * -0.5f) * fGraphScale + ImVec2(0.f, fGraphScale);
+			draw_list->AddCircle(center, 3.f, ImGui::GetColorU32(ImGuiCol_PlotLines), 20, 3.f);
+		}
+
+		/* For. Calc Prev */
+		enum { smoothness = 256 };
+		float* input = new float[8];
+		float output[4];
+		for (int i = 0; i < 4; ++i) {
+			input[i * 2 + 0] = pPoints[i].x;
+			input[i * 2 + 1] = pPoints[i].y;
+		}
+
+		for (_int i = 0; i < smoothness; i++)
+		{
+			_float px = (i + 0) / (_float)smoothness;
+			_float qx = (i + 1) / (_float)smoothness;
+
+			Utils::Spline(input, 4, 1, px, output);
+			ImVec2 vStart = { px, output[0] };
+			Utils::Spline(input, 4, 1, qx, output);
+			ImVec2 vEnd = { qx, output[0] };
+
+			vStart = ImVec2(vStart.x, (vStart.y + 1.f) * -0.5f);
+			vEnd = ImVec2(vEnd.x, (vEnd.y + 1.f) * -0.5f);
+
+			/* fit in rect */
+			vStart = vStart * fGraphScale;
+			vEnd = vEnd * fGraphScale;
+			vStart = vStart + cursor + ImVec2(0.f, fGraphScale);
+			vEnd = vEnd + cursor + ImVec2(0.f, fGraphScale);
 
 			/* For. Draw line */
 			draw_list->AddLine(vStart, vEnd, ImGui::GetColorU32(ImGuiCol_PlotLines), 2.f);

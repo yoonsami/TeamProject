@@ -136,10 +136,6 @@ void MeshEffect::Update_Desc()
         // Dissolve 
         m_SplineInput_Dissolve[i * 2 + 0] = m_tDesc.vCurvePoint_Dissolve[i].x;
         m_SplineInput_Dissolve[i * 2 + 1] = m_tDesc.vCurvePoint_Dissolve[i].y;
-
-        // Force 
-        m_SplineInput_Force[i * 2 + 0] = m_tTransform_Desc.vCurvePoint_Force[i].x;
-        m_SplineInput_Force[i * 2 + 1] = m_tTransform_Desc.vCurvePoint_Force[i].y;
     }
 
 
@@ -195,9 +191,6 @@ void MeshEffect::InitialTransform()
 {
     // For. Position, Scale, Rotation 
     m_vStartPos += _float3(Get_Transform()->Get_State(Transform_State::POS));
-  
-    
-    //m_vStartRotation += _float3(Get_Transform()->Get_RollPitchYaw().x, Get_Transform()->Get_RollPitchYaw().y, Get_Transform()->Get_RollPitchYaw().z);
     m_vStartScale *= Get_Transform()->Get_Scale();
 
     m_vEndScale += m_vStartScale;
@@ -205,18 +198,15 @@ void MeshEffect::InitialTransform()
 
     Get_Transform()->Set_State(Transform_State::POS, _float4(m_vStartPos, 1.f));
     Get_Transform()->Scaled(m_vStartScale);
-
-    //_float4x4::CreateRotationY(XM_PI * 0.5f)*
-
+    Get_Transform()->Set_Rotation(m_vStartRotation);
     Get_Transform()->Set_Quaternion(Quaternion::CreateFromRotationMatrix(_float4x4::CreateRotationY(XM_PI * 0.5f) * _float4x4::CreateFromQuaternion(Get_Transform()->Get_Rotation())));
-
-    //Get_Transform()->Set_Quaternion(Quaternion::CreateFromRotationMatrix());
 }
 
 void MeshEffect::Set_TransformDesc(void* pArg)
 {
     // For. Setting basic info  
     MeshEffectData::Transform_Desc* pDesc = (MeshEffectData::Transform_Desc*)pArg;
+    m_tTransform_Desc = *pDesc;
 
     // For. Initial Transform 
     m_vStartPos = _float3(
@@ -236,6 +226,9 @@ void MeshEffect::Set_TransformDesc(void* pArg)
         MathUtils::Get_RandomFloat(pDesc->vInitRotation_Min.y, pDesc->vInitRotation_Max.y),
         MathUtils::Get_RandomFloat(pDesc->vInitRotation_Min.z, pDesc->vInitRotation_Max.z)
     );
+    m_vStartRotation.x *= 3.141592f / 180.f;
+    m_vStartRotation.y *= 3.141592f / 180.f;
+    m_vStartRotation.z *= 3.141592f / 180.f;
 
     // For. Translate
     m_iTranslateOption = pDesc->iTranslateOption;
@@ -255,6 +248,13 @@ void MeshEffect::Set_TransformDesc(void* pArg)
         MathUtils::Get_RandomFloat(pDesc->vRandomAxis_Min.y, pDesc->vRandomAxis_Max.y),
         MathUtils::Get_RandomFloat(pDesc->vRandomAxis_Min.z, pDesc->vRandomAxis_Max.z)
     );
+
+    // For. Init Spline input
+    for (int i = 0; i < 4; ++i) {
+        // Force 
+        m_SplineInput_Force[i * 2 + 0] = m_tTransform_Desc.vCurvePoint_Force[i].x;
+        m_SplineInput_Force[i * 2 + 1] = m_tTransform_Desc.vCurvePoint_Force[i].y;
+    }
 }
 
 void MeshEffect::Translate()
@@ -284,7 +284,7 @@ void MeshEffect::Translate()
         _float output[4];
         Utils::Spline(m_SplineInput_Force, 4, 1, m_fLifeTimeRatio, output);
         _float4 vPos = Get_Transform()->Get_State(Transform_State::POS);
-        Get_Transform()->Set_State(Transform_State::POS, _float4(vPos.x, vPos.y - output[0], vPos.z, 1.f));
+        Get_Transform()->Set_State(Transform_State::POS, _float4(vPos.x, vPos.y + output[0] * fDT, vPos.z, 1.f));
     }
         break;
     case 8:
