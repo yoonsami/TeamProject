@@ -267,29 +267,55 @@ void Widget_Model_Controller::Apply_Model()
 {
 	if (Button("Select Model"))
 	{
-		CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"TestModel"));
+		if (m_pControlObject.expired())
+		{
+			shared_ptr<GameObject> obj = make_shared<GameObject>();
+			obj->Set_Name(L"TestModel");
+			obj->GetOrAddTransform();
+			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(RESOURCES.Get<Shader>(L"Shader_Model.fx"));
+			obj->Add_Component(animator);
+			CUR_SCENE->Add_GameObject(obj);
+			m_pControlObject = obj;
+		}
 
-		shared_ptr<GameObject> obj = make_shared<GameObject>();
-		obj->Set_Name(L"TestModel");
-		obj->GetOrAddTransform();
-		CUR_SCENE->Add_GameObject(obj);
-		
-		
-		auto shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 		shared_ptr<Model> model = RESOURCES.Get<Model>(Utils::ToWString(m_ModelNames[m_iCurrentModelIndex]));
-		if (model->Get_AnimationCount() == 0)
+		m_pControlObject.lock()->Get_Animator()->Set_Model(model);
+		m_pControlObject.lock()->Get_Animator()->Set_CurrentAnim(0);
+		m_pControlObject.lock()->Add_Component(make_shared<ForcePosition>());
+
+		CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"TestWeapon"));
+
+		wstring weaponName;
+		if (model->Get_ModelTag() == L"Spear_Ace")
+			weaponName = L"Weapon_Spear_Ace";
+		else if (model->Get_ModelTag() == (L"Yeopo"))
+			weaponName = L"Weapon_Yeopo";
+		else if (model->Get_ModelTag() == (L"Dellons"))
+			weaponName = L"Weapon_Dellons";
+		else if (model->Get_ModelTag() == (L"Rachel"))
+			weaponName = L"Weapon_Rachel";
+		else if (model->Get_ModelTag() == (L"ShaneGhost"))
+			weaponName = L"Weapon_Shane";
+
+		if (model->Get_ModelTag() != (L"Kyle"))
 		{
-		
-			obj->Add_Component(make_shared<ModelRenderer>(shader));
-			obj->Get_ModelRenderer()->Set_Model(model);
+			shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
+			ObjWeapon->Set_Name(L"TestWeapon");
+			ObjWeapon->GetOrAddTransform();
+			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+			shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+			shared_ptr<Model> m = RESOURCES.Get<Model>(weaponName);
+			renderer->Set_Model(m);
+			ObjWeapon->Add_Component(renderer);
+			WeaponScript::WEAPONDESC desc;
+			desc.strBoneName = L"Bip001-Prop1";
+			desc.matPivot = _float4x4::CreateRotationX(-XM_PI / 2.f) * _float4x4::CreateRotationZ(XM_PI);
+			desc.pWeaponOwner = m_pControlObject.lock();
+			ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
+			CUR_SCENE->Add_GameObject(ObjWeapon);
 		}
-		else
-		{
-			obj->Add_Component(make_shared<ModelAnimator>(shader));
-			obj->Get_Animator()->Set_Model(model);
-		}
-		m_pControlObject = obj;
 	}
+
 	if (Button("Specular Zero & Save"))
 	{
 		auto model = m_pControlObject.lock()->Get_Model();
