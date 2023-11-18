@@ -38,7 +38,7 @@ private:
     void Update_Transform();
 
     void Find_Target();
-
+    void Check_ColliderWithWall(const _float3& centerPos, OUT _float& minDist);
 private:
     _bool m_bOn = true;
     _bool m_bSmoothReturn = false;
@@ -58,7 +58,7 @@ private:
     _bool m_bTestValue;
     
 
-    _float m_fMaxHeightRadian = XM_PI / 3.f;
+    _float m_fMaxHeightRadian = XM_PI / 2.1f;
     _float3 m_vFixedPos = _float3(0.f);
     _float3 m_vFixedDir = _float3(0.f);
     _float3 m_vFixedLastDir = _float3(0.f);
@@ -67,9 +67,9 @@ private:
     _float3 m_vFixedLastPlayerPos = _float3(0.f);
     _float m_fShakeTime = 0.f;
     _float m_fFixedTime = 0.f;
-    _float m_fFixedDist = 0.f;
+    _float m_fFixedDist = 5.f;
     _float m_fShakePower = 0.f;
 
-
+    _float m_fCurDist = 5.f;
 
 };

@@ -38,6 +38,10 @@ void Widget_Model_Controller::Tick()
 
 
 	Begin("Model Controller");
+	static _bool checkBox = true;
+	Checkbox("SkyBox On", &checkBox);
+	if (CUR_SCENE->Get_GameObject(L"SkyBase"))
+		CUR_SCENE->Get_GameObject(L"SkyBase")->Get_ModelRenderer()->Set_RenderState(checkBox);
 	Model_Controller();
 	End();
 
@@ -94,6 +98,20 @@ void Widget_Model_Controller::Model_Controller()
 			if (BeginTabItem("Model Info"))
 			{
 				Model_Info();
+
+				EndTabItem();
+			}
+			if (BeginTabItem("Animation Select"))
+			{
+				m_pControlObject.lock()->Get_Animator()->Set_AnimState(false);
+				Show_AnimationList();
+				Apply_Anim();
+				EndTabItem();
+			}
+			if (BeginTabItem("Animation Control"))
+			{
+				m_pControlObject.lock()->Get_Animator()->Set_AnimState(true);
+				Control_Anim();
 
 				EndTabItem();
 			}
@@ -414,4 +432,55 @@ void Widget_Model_Controller::Model_Info()
 	m_pMaterial = model->Get_MaterialByName(Utils::ToWString(materialNames[curMaterialIndex]));
 
 
+}
+
+void Widget_Model_Controller::Show_AnimationList()
+{
+	auto& animations = m_pControlObject.lock()->Get_Animator()->Get_Model()->Get_Animations();
+
+	m_AnimNames.clear();
+	m_AnimNames.resize(animations.size());
+
+	for (_uint i = 0; i < static_cast<_uint>(animations.size()); ++i)
+		m_AnimNames[i] = Utils::ToString(animations[i]->name);
+
+	SeparatorText("Anim List");
+	ListBox("##Anim List", &m_iCurrentAnimIndex, VectorOfStringGetter, &m_AnimNames, int(m_AnimNames.size()));
+
+}
+
+void Widget_Model_Controller::Apply_Anim()
+{
+	static _float fAnimSpeed = 1.f;
+	static _bool bAnimLoop = false;
+	static _bool bSetPosition = false;
+
+	DragFloat("Anim Speed", &fAnimSpeed, 0.05f, 0.1f, 5.f);
+	Checkbox("Anim Loop", &bAnimLoop);
+	if (Button("Select Animation"))
+		m_pControlObject.lock()->Get_Animator()->Set_CurrentAnim(Utils::ToWString(m_AnimNames[m_iCurrentAnimIndex]), bAnimLoop, fAnimSpeed);
+
+	Checkbox("Position Force To Zero", &bSetPosition);
+	m_pControlObject.lock()->Get_Script<ForcePosition>()->bForcePosition = bSetPosition;
+}
+
+void Widget_Model_Controller::Control_Anim()
+{
+	auto animator = m_pControlObject.lock()->Get_Animator();
+
+	auto& tweenDesc = animator->Get_TweenDesc();
+
+	const auto& animation = animator->Get_Model()->Get_AnimationByIndex(tweenDesc.curr.animIndex);
+
+	static _float fKeyFrame = 0.f;
+
+	DragFloat("## anim", &fKeyFrame, 0.1f, 0.f, _float(animation->frameCount));
+
+	_uint curFrame = _uint(fKeyFrame);
+	_uint nextFrame = curFrame + 1;
+	if (nextFrame >= animation->frameCount) nextFrame = animation->frameCount;
+
+	tweenDesc.curr.currentFrame = curFrame;
+	tweenDesc.curr.nextFrame = nextFrame;
+	tweenDesc.curr.ratio = fKeyFrame - curFrame;
 }

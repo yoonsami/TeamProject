@@ -26,7 +26,7 @@ HRESULT MainCameraScript::Init()
     m_vOffset.Normalize();
 
     Get_Transform()->Set_State(Transform_State::POS, m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS) + m_vOffset);
-
+    
     m_UiTargetLockon = CUR_SCENE->Get_UI(L"UI_Target_LockOn");
     m_UiTargetHp = CUR_SCENE->Get_UI(L"UI_Monster_Hp");
 
@@ -68,15 +68,7 @@ void MainCameraScript::Cal_OffsetDir()
     
     _float2 mouseDir = INPUT.GetMouseDir();
 
-   // auto playerController = m_pPlayer.lock()->Get_CharacterController()->Get_Actor();
-
-    //_float4 vPlayerPos = { _float(playerController->getPosition().x), _float(playerController->getPosition().y), _float(playerController->getPosition().z), 1.f };
-
-    _float3 vPlayerPos = m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
-
-	/*  _float3 vDir = (vPlayerPos + _float3::Up - Get_Transform()->Get_State(Transform_State::POS).xyz());
-
-	  vDir.Normalize();*/
+    //_float3 vPlayerPos = m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
 
     if (m_pTarget.lock())
     {
@@ -100,7 +92,6 @@ void MainCameraScript::Cal_OffsetDir()
 
 void MainCameraScript::Restrict_Offset()
 {
-
     _float3 projOffset = m_vOffset;
     projOffset.y = 0.f;
     projOffset.Normalize();
@@ -129,81 +120,61 @@ void MainCameraScript::Update_Transform()
 
 
     _float fMinDist = FLT_MAX;
-    Ray ray;
-    ray.position = vCenterPos.xyz();
-    m_vOffset.Normalize();
-    ray.direction = m_vOffset;
-    physx::PxRaycastBuffer hit{};
-    physx::PxQueryFilterData filterData;
-    filterData.flags = physx::PxQueryFlag::eSTATIC;
-    if (PHYSX.Get_PxScene()->raycast({ vCenterPos.x,vCenterPos.y,vCenterPos.z }, { m_vOffset.x,m_vOffset.y,m_vOffset.z }, 5.f, hit, PxHitFlags(physx::PxHitFlag::eDEFAULT), filterData))
-    {
-        _float3 vHitPoint = { hit.getAnyHit(0).position.x, hit.getAnyHit(0).position.y, hit.getAnyHit(0).position.z };
-        fMinDist = hit.getAnyHit(0).distance;
-    }
+    Check_ColliderWithWall(vCenterPos.xyz(), fMinDist);
 
     // Set Position
     if (m_fFixedTime > 0.f)
     {
         m_fFixedTime -= fDT;
-        if ((fMinDist -= 0.5f) >= m_fFixedDist)
+      
+        if ((fMinDist - 0.5f) >= m_fFixedDist)
             fMinDist = m_fFixedDist;
 
         _float4 vPrePos = Get_Transform()->Get_State(Transform_State::POS);
 
-        _float4 pos = _float4::Lerp(Get_Transform()->Get_State(Transform_State::POS),
-            vCenterPos + _float4(m_vFixedDir, 0.f) * fMinDist,
+        _float4 pos = _float4::Lerp(vPrePos, vCenterPos + _float4(m_vFixedDir, 0.f) * fMinDist,
             fDT * m_fFollowSpeed);
 
         Get_Transform()->Set_State(Transform_State::POS, pos);
+        Get_Transform()->LookAt(vCenterPos);
+		if (m_fFixedTime < 0.f)
+		{
+			m_vOffset = -Get_Transform()->Get_State(Transform_State::LOOK).xyz();
+		}
 
-        m_vFixedLastPlayerPos = vPlayerPos.xyz();
     }
     else
     {
-        if (m_bSmoothReturn)
-        {
-            m_bSmoothReturn = false;
-            m_vFixedLastDir = Get_Transform()->Get_State(Transform_State::POS) - m_vFixedLastPlayerPos;
-            m_vFixedLastDir.Normalize();
-            m_vOffset = m_vFixedLastDir;
-        }
-        else
         {
             _float3 vCurDir = -Get_Transform()->Get_State(Transform_State::LOOK).xyz();
 
             _float4x4 matCurDir = Transform::Get_WorldFromLook(vCurDir, _float3(0.f));
             _float4x4 matNextDir = Transform::Get_WorldFromLook(m_vOffset, _float3(0.f));
 
-            if ((fMinDist) >= m_fMaxDistance)
+           /* if ((fMinDist) >= m_fMaxDistance)
             {
-               fMinDist = m_fMaxDistance - 0.2f * fDT;
-               if (fMinDist <= m_fMaxDistance)
-                   fMinDist = m_fMaxDistance;
-            }
+                fMinDist = m_fFixedDist;
+               
+            }*/
+			m_fFixedDist = _float2::Lerp({ m_fFixedDist,0.f }, { m_fMaxDistance,0.f }, fDT).x;
+            fMinDist = m_fFixedDist;
             _float3 tmp = Transform::SLerpMatrix(matCurDir, matNextDir, fDT * m_fFollowSpeed).Backward();
             _float4 pos = vPlayerPos + Transform::SLerpMatrix(matCurDir, matNextDir, fDT * m_fFollowSpeed).Backward() * fMinDist;
 
             Get_Transform()->Set_State(Transform_State::POS, pos);
-        }
-    }
 
+            if (!m_pTarget.lock())
+            {
+                
+				Get_Transform()->LookAt(vPlayerPos);
+            }
+			else
+			{
+				_float4 targetPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS);
 
-    // Set Lookat
-    if (m_fFixedTime > 0.f)
-    {
-        Get_Transform()->LookAt(vCenterPos);
-    }
-    else
-    {
-        if (!m_pTarget.lock())
-            Get_Transform()->LookAt(vPlayerPos);
-        else
-        {
-            _float4 targetPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS);
-
-            targetPos = (vPlayerPos -_float4(0.f,1.f,0.f,0.f) + targetPos) / 2.f;
-            Get_Transform()->LookAt(targetPos );
+				targetPos = (vPlayerPos - _float4(0.f, 1.f, 0.f, 0.f) + targetPos) / 2.f;
+				Get_Transform()->LookAt(targetPos);
+			}
         }
     }
 
@@ -262,6 +233,21 @@ void MainCameraScript::Find_Target()
             //m_pPlayer.lock()->Get_FSM()->Set_Target(m_pTarget.lock());
         }
     }
+}
+
+void MainCameraScript::Check_ColliderWithWall(const _float3& centerPos, OUT _float& minDist)
+{
+	Ray ray;
+	ray.position = centerPos;
+	m_vOffset.Normalize();
+	ray.direction = m_vOffset;
+	physx::PxRaycastBuffer hit{};
+	physx::PxQueryFilterData filterData;
+	filterData.flags = physx::PxQueryFlag::eSTATIC;
+	if (PHYSX.Get_PxScene()->raycast({ centerPos.x,centerPos.y,centerPos.z }, { m_vOffset.x,m_vOffset.y,m_vOffset.z }, 5.f, hit, PxHitFlags(physx::PxHitFlag::eDEFAULT), filterData))
+	{
+        minDist = hit.getAnyHit(0).distance;
+	};
 }
 
 void MainCameraScript::Fix_Camera(_float fTime, _float3 vDir, _float fDist)
