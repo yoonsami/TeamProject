@@ -99,6 +99,9 @@ void Boss_Spike_FSM::State_Tick()
     case STATE::SQ_Appear_03:
         SQ_Appear_03();
         break;
+    case STATE::Spawn:
+        Spawn();
+        break;
     case STATE::b_idle:
         b_idle();
         break;
@@ -147,7 +150,9 @@ void Boss_Spike_FSM::State_Tick()
     case STATE::skill_9400:
         skill_9400();
         break;
-   
+    case STATE::skill_2100:
+        skill_9400();
+        break;
     }
 }
 
@@ -165,6 +170,9 @@ void Boss_Spike_FSM::State_Init()
             break;
         case STATE::SQ_Appear_03:
             SQ_Appear_03_Init();
+            break;
+        case STATE::Spawn:
+            Spawn_Init();
             break;
         case STATE::b_idle:
             b_idle_Init();
@@ -469,6 +477,23 @@ void Boss_Spike_FSM::SQ_Appear_03_Init()
     }
 }
 
+void Boss_Spike_FSM::Spawn()
+{
+    if (Is_AnimFinished())
+        m_eCurState = STATE::b_idle;
+}
+
+void Boss_Spike_FSM::Spawn_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"Spawn", 0.3f, true, 1.f);
+
+    Get_Transform()->Set_Speed(m_fRunSpeed);
+
+    AttackCollider_Off();
+}
+
 void Boss_Spike_FSM::b_idle()
 {
     Battle_Start();
@@ -734,9 +759,21 @@ void Boss_Spike_FSM::skill_1100()
         AttackCollider_On(NORMAL_ATTACK);
     else if (Get_CurFrame() == 19)
         AttackCollider_Off();
+    else if (Get_CurFrame() == 29)
+        AttackCollider_On(NORMAL_ATTACK);
+    else if (Get_CurFrame() == 38)
+        AttackCollider_Off();
+    else if (Get_CurFrame() == 53)
+        AttackCollider_On(NORMAL_ATTACK);
+    else if (Get_CurFrame() == 60)
+        AttackCollider_Off();
+    else if (Get_CurFrame() == 70)
+    {
+        //Aim Target
+        m_vTurnVector = Calculate_TargetTurnVector();
+    }
 
-    if (Get_CurFrame() == 25)
-        m_eCurState = STATE::skill_1200;
+
 
     Set_Gaze();
 }
@@ -761,11 +798,18 @@ void Boss_Spike_FSM::skill_1200()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 8)
+    if (Get_CurFrame() == 9)
         AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 18)
+    else if (Get_CurFrame() == 19)
         AttackCollider_Off();
-
+    else if (Get_CurFrame() == 29)
+        AttackCollider_On(NORMAL_ATTACK);
+    else if (Get_CurFrame() == 38)
+        AttackCollider_Off();
+    else if (Get_CurFrame() == 53)
+        AttackCollider_On(NORMAL_ATTACK);
+    else if (Get_CurFrame() == 60)
+        AttackCollider_Off();
     if (Get_CurFrame() == 21)
         m_eCurState = STATE::skill_1300;
 

@@ -11,6 +11,7 @@ public:
 		SQ_Appear_01,
 		SQ_Appear_02,
 		SQ_Appear_03,
+		Spawn,
 		
 		b_idle,
 		b_run,
@@ -41,6 +42,24 @@ public:
 		skill_9300, //Evade
 		skill_9400, //Evade
 		
+		skill_2100, 
+		skill_2200, 
+		skill_3100, 
+		skill_3200, 
+		skill_3300, 
+		skill_4100, 
+		skill_4200, 
+		skill_5100, 
+		skill_6100, 
+		skill_7100, 
+		skill_8100, 
+		skill_10100, 
+		skill_100000, 
+		skill_100100, 
+		skill_101100, 
+		skill_201100,  //CUTSCENE (DOWN)
+		skill_201200,  //CUTSCENE (UP)
+
 
 		NONE
 	};
@@ -95,6 +114,8 @@ private:
 	void SQ_Appear_02();
 	void SQ_Appear_02_Init();
 	void SQ_Appear_03();
+	void SQ_Appear_03_Init();
+	void Spawn();
 	void SQ_Appear_03_Init();
 
 	void b_idle();
