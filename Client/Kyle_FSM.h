@@ -138,7 +138,6 @@ private:
 
 	void Use_Skill();
 	void Use_Dash();
-	void Add_Effect(const wstring& strSkilltag);
 private:
 	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;

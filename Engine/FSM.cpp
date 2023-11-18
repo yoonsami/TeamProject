@@ -2,6 +2,8 @@
 #include "FSM.h"
 
 #include "ModelAnimator.h"
+#include "GroupEffect.h"
+#include "GroupEffectData.h"
 
 FSM::FSM() : Component(COMPONENT_TYPE::FSM)
 {
@@ -176,6 +178,30 @@ _bool FSM::Target_In_DetectRange()
 		bFlag = true;
 
 	return bFlag;
+}
+
+void FSM::Add_Effect(const wstring& strSkilltag)
+{
+	shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();
+
+	// For. Transform 
+	pGroupEffectObj->GetOrAddTransform();
+	pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS) + (_float3::Up * m_fEffectYOffSet));
+	pGroupEffectObj->Get_Transform()->Set_Quaternion(Get_Transform()->Get_Rotation());
+
+	// For. GroupEffectData 
+	wstring wstrFileName = strSkilltag + L".dat";
+	wstring wtsrFilePath = TEXT("..\\Resources\\EffectData\\GroupEffectData\\") + wstrFileName;
+	shared_ptr<GroupEffectData> pGroupEffectData = RESOURCES.GetOrAddGroupEffectData(strSkilltag, wtsrFilePath);
+
+	// For. GroupEffect component 
+	shared_ptr<GroupEffect> pGroupEffect = make_shared<GroupEffect>();
+	pGroupEffectObj->Add_Component(pGroupEffect);
+	pGroupEffectObj->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
+	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
+
+	// For. Add Effect GameObject to current scene
+	CUR_SCENE->Add_GameObject(pGroupEffectObj);
 }
 
 void FSM::Set_Target(shared_ptr<GameObject> pTarget)
