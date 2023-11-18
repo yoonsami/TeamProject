@@ -1063,7 +1063,6 @@ void ResourceMgr::CreateMeshEffectData()
 		tDesc.strDissolveTexture = file->Read<string>();
 		tDesc.vTiling_Dissolve = file->Read<_float2>();
 		tDesc.vUVSpeed_Dissolve = file->Read<_float2>();
-		tDesc.bInverseDissolve = file->Read<_bool>();
 		for (_int i = 0; i < 4; i++)
 			tDesc.vCurvePoint_Dissolve[i] = file->Read<_float2>();
 

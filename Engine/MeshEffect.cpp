@@ -44,9 +44,12 @@ void MeshEffect::Final_Tick()
     m_fLifeTimeRatio = m_fCurrAge / m_tDesc.fDuration;
     m_fTimeAcc_SpriteAnimation += fDT;
 
-    _float output[4];
-    Utils::Spline(m_SplineInput_Dissolve, 4, 1, m_fLifeTimeRatio, output);
-    m_fCurrDissolveWeight = output[0];
+    if ("None" != m_tDesc.strTexture_Blend)
+    {
+        _float output[4];
+        Utils::Spline(m_SplineInput_Dissolve, 4, 1, m_fLifeTimeRatio, output);
+        m_fCurrDissolveWeight = output[0];
+    }
 
     // For. Check is dead 
     if (m_fCurrAge >= m_fDuration)
@@ -130,9 +133,15 @@ void MeshEffect::Update_Desc()
     
     // For. Init Spline input
     for (int i = 0; i < 4; ++i) {
+        // Dissolve 
         m_SplineInput_Dissolve[i * 2 + 0] = m_tDesc.vCurvePoint_Dissolve[i].x;
         m_SplineInput_Dissolve[i * 2 + 1] = m_tDesc.vCurvePoint_Dissolve[i].y;
+
+        // Force 
+        m_SplineInput_Force[i * 2 + 0] = m_tTransform_Desc.vCurvePoint_Force[i].x;
+        m_SplineInput_Force[i * 2 + 1] = m_tTransform_Desc.vCurvePoint_Force[i].y;
     }
+
 
     // For. Model Components
     m_pModel = RESOURCES.Get<Model>(Utils::ToWString(m_tDesc.strVfxMesh));
@@ -270,8 +279,13 @@ void MeshEffect::Translate()
     case 6:
         Get_Transform()->Go_Right();
         break;
-    case 7:
-        // TODO: Spreading dust
+    case 7: // Fountain
+    {
+        _float output[4];
+        Utils::Spline(m_SplineInput_Force, 4, 1, m_fLifeTimeRatio, output);
+        _float4 vPos = Get_Transform()->Get_State(Transform_State::POS);
+        Get_Transform()->Set_State(Transform_State::POS, _float4(vPos.x, vPos.y - output[0], vPos.z, 1.f));
+    }
         break;
     case 8:
         // TODO: Scattered embers
@@ -320,7 +334,7 @@ void MeshEffect::Init_RenderParams()
     
     /* Int */
     m_RenderParams.SetInt(0, m_tDesc.bUseFadeOut);
-    m_RenderParams.SetInt(1, m_tDesc.bInverseDissolve);
+    
     m_RenderParams.SetInt(2, (_int)m_tDesc.bUseSpriteAnim);
     
     /* Float */

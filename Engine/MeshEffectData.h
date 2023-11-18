@@ -85,7 +85,6 @@ public:
         string      strDissolveTexture;
         _float2     vTiling_Dissolve;
         _float2     vUVSpeed_Dissolve;
-        _bool       bInverseDissolve;
         _float2		vCurvePoint_Dissolve[4];
 
         // Distortion
@@ -113,6 +112,7 @@ public:
         _float      fTranslateSpeed;
         _float3     vEndPosOffset_Min;
         _float3     vEndPosOffset_Max;
+        _float2     vCurvePoint_Force[4];
 
         // Scaling 
         _int        iScalingOption;
@@ -125,6 +125,7 @@ public:
         _float3     vRandomAxis_Max;
 
     }Transform_Desc;
+
 public:
     MeshEffectData();
     ~MeshEffectData();
@@ -143,6 +144,6 @@ public:
 
 private:
     wstring         m_wstrTag;
-    DESC           m_tDesc;
+    DESC            m_tDesc;
     Transform_Desc  m_tTransformDesc;
 };

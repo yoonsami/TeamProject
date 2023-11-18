@@ -103,7 +103,6 @@ void MeshEffectData::Load(const wstring& path)
     m_tDesc.strDissolveTexture = file->Read<string>();
     m_tDesc.vTiling_Dissolve = file->Read<_float2>();
     m_tDesc.vUVSpeed_Dissolve = file->Read<_float2>();
-    m_tDesc.bInverseDissolve = file->Read<_bool>();
     for(_int i = 0 ; i < 4 ; i ++)
         m_tDesc.vCurvePoint_Dissolve[i] = file->Read<_float2>();
 
@@ -129,6 +128,8 @@ void MeshEffectData::Load(const wstring& path)
     m_tTransformDesc.fTranslateSpeed = file->Read<_float>();
     m_tTransformDesc.vEndPosOffset_Min = file->Read<_float3>();
     m_tTransformDesc.vEndPosOffset_Max = file->Read<_float3>();
+    for (_int i = 0; i < 4; i++)
+        m_tTransformDesc.vCurvePoint_Force[i] = file->Read<_float2>();
 
     /* Scaling */
     m_tTransformDesc.iScalingOption = file->Read<_int>();

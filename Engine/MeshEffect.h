@@ -60,7 +60,9 @@ private:
 
     /* */
     _float                  m_SplineInput_Dissolve[8];
+    _float                  m_SplineInput_Force[8];
     _float                  m_fCurrDissolveWeight = { 0.f };
+    _float                  m_fCurrForce = { 0.f };
 
     /* Sprite Animation */
     _float2                 m_vSpriteSize = { 0.f, 0.f };

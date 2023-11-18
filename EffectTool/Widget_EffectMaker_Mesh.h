@@ -67,7 +67,7 @@ private:
 	void					SubWidget_TextureList();
 	void					SubWidget_ImageViewer(string strFileName, string strFilePath, const char* pszWidgetKey);
 	void					SubWidget_SettingTexUV(_float* arrTiling, _float* arrTexUVSpeed, const char* pszWidgetKey, const char* pszWidgetKey2);
-	void					SubWidget_CatmullRomCurve(_float2* pPoints, const string& strKey);
+	void					SubWidget_Curve(_float2* pPoints, const string& strKey, _float2 vRange);
 
 	/* Function */
 	void					Create();
@@ -164,7 +164,6 @@ private:
 	pair<_int, string>		m_DissolveTexture = { 0, "None" };
 	_float					m_fTiling_Dissolve[2] = { 0.f, 0.f };
 	_float					m_fUVSpeed_Dissolve[2] = { 0.f, 0.f };
-	_bool					m_bDissolveInverse = { false };
 	_float2					m_vCurvePoint_Dissolve[4] = {_float2(0.f, 0.f),_float2(0.3f, 0.5f), _float2(0.7f, 0.5f), _float2(1.f, 1.f)};
 
 	/* Distortion */
@@ -191,11 +190,10 @@ private:
 	_float					m_fTranslateSpeed = { 0.f };                               
 	_float					m_fEndPositionOffset_Min[3] = { 0.f, 0.f, 0.f };	
 	_float					m_fEndPositionOffset_Max[3] = { 0.f, 0.f, 0.f };
-		// TODO : add bezier
+	_float2					m_vCurvePoint_Gravity[4] = { _float2(0.f, 0.f),_float2(0.3f, 0.5f), _float2(0.7f, 0.5f), _float2(1.f, 1.f) };
 	
 	_int					m_iScalingOption = { 0 };				// no change, change to endscale
 	_float					m_fEndScaleOffset[3] = { 0.f, 0.f, 0.f };
-		// TODO : add bezier
 	
 	_int					m_iTurnOption = { 0 };			// no change, turn with static, turn with random 
 	_float					m_fTurnSpeed = { 0.f };
