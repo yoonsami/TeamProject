@@ -1088,6 +1088,9 @@ void ResourceMgr::CreateMeshEffectData()
 		tTransformDesc.fTranslateSpeed = file->Read<_float>();
 		tTransformDesc.vEndPosOffset_Min = file->Read<_float3>();
 		tTransformDesc.vEndPosOffset_Max = file->Read<_float3>();
+		tTransformDesc.iSpeedType = file->Read<_int>();
+		for (_int i = 0; i < 4; i++)
+			tTransformDesc.vCurvePoint_Force[i] = file->Read<_float2>();
 
 		/* Scaling */
 		tTransformDesc.iScalingOption = file->Read<_int>();

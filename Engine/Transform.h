@@ -42,6 +42,8 @@ public:
     _bool Go_Backward();
     _bool Go_Left();
     _bool Go_Right();
+    _bool Go_Up();
+    _bool Go_Down();
     void Go_Horizontally_Up();      // MEMO : Tool���� Freecam�� ���� �߰� (q,e key)
     void Go_Horizontally_Down();    // MEMO : Tool���� Freecam�� ���� �߰� (q,e key)
     void Rotation(const _float3& vAxis, _float fRadian);

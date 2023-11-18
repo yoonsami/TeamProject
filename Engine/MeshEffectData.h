@@ -112,6 +112,7 @@ public:
         _float      fTranslateSpeed;
         _float3     vEndPosOffset_Min;
         _float3     vEndPosOffset_Max;
+        _int        iSpeedType;
         _float2     vCurvePoint_Force[4];
 
         // Scaling 

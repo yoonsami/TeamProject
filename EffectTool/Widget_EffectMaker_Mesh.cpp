@@ -730,8 +730,8 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 	if (ImGui::TreeNode("Translate##Movement"))
 	{
 		const char* pszItem_TranslateOption[] = { "No change", "Move to target position", "Move to random target position", // 2
-			"Go Straight", "Go Back", "Go Lift", "Go Right", // 6
-			"Fountain", "Scattered embers" // 8
+			"Go Straight", "Go Back", "Go Lift", "Go Right", "Go Up", "Go Down",	// 8
+			"Fountain"
 		};
 		if (ImGui::BeginCombo("Translate option##Movement", pszItem_TranslateOption[m_iTranslateOption], 0))
 		{
@@ -767,16 +767,25 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 		case 4:	// Go back
 		case 5:	// Go left
 		case 6:	// Go right
-			ImGui::InputFloat("Translate Speed##Movement", &m_fTranslateSpeed);
+		case 7:
+		case 8:
+			ImGui::Text("Speed");
+			ImGui::RadioButton("Curve##MoveSpeed", &m_iSpeedType, 0);
+			ImGui::SameLine();
+			ImGui::RadioButton("Linear##MoveSpeed", &m_iSpeedType, 1);
+			
+			m_vCurvePoint_Force[0].x = 0.f;
+			ImGui::InputFloat2("Point1 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[0]);
+			ImGui::InputFloat2("Point2 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[1]);
+			ImGui::InputFloat2("Point3 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[2]);
+			ImGui::InputFloat2("Point4 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[3]);
 			ZeroMemory(m_fEndPositionOffset_Min, sizeof(m_fEndPositionOffset_Min));
 			ZeroMemory(m_fEndPositionOffset_Max, sizeof(m_fEndPositionOffset_Max));
 			break;
-		case 7:
-			if (ImGui::TreeNode("Force##Transform"))
-			{
-				SubWidget_Curve2(m_vCurvePoint_Force, "Force");
-				ImGui::TreePop();
-			}
+		case 9:
+			ImGui::Text("Speed");
+			ImGui::InputFloat("Speed##Speed", (_float*)&m_vCurvePoint_Force[0].x);
+			ImGui::InputFloat("Gravity##Speed", (_float*)&m_vCurvePoint_Force[0].y);
 			break;
 		}
 
@@ -851,148 +860,151 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 		ImGui::TreePop();
 	}
 	ImGui::Spacing();
-
 }
 
 void Widget_EffectMaker_Mesh::Create()
 {
-	// For. Create GameObject 
-	shared_ptr<GameObject> EffectObj = make_shared<GameObject>();
-
-	// For. Add and Setting Transform Component
-	EffectObj->GetOrAddTransform();
-	EffectObj->Get_Transform()->Set_State(Transform_State::POS, _float4(m_fPosOffsetInTool[0], m_fPosOffsetInTool[1], m_fPosOffsetInTool[2], 1.f));
-	EffectObj->Get_Transform()->Scaled(_float3(1.0f));
-
-	// For. Add and Setting Effect Component to GameObject
-	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
-	shared_ptr<MeshEffect> meshEffect = make_shared<MeshEffect>(shader);
-	EffectObj->Add_Component(meshEffect);
-
-	if (!m_bColorChangingOn)
+	for (_uint n = 0; n < m_iMeshCnt; n++)
 	{
-		for (_int i = 0; i < m_iTexOptionCnt; i++)
+		// For. Create GameObject 
+		shared_ptr<GameObject> EffectObj = make_shared<GameObject>();
+
+		// For. Add and Setting Transform Component
+		EffectObj->GetOrAddTransform();
+		EffectObj->Get_Transform()->Set_State(Transform_State::POS, _float4(m_fPosOffsetInTool[0], m_fPosOffsetInTool[1], m_fPosOffsetInTool[2], 1.f));
+		EffectObj->Get_Transform()->Scaled(_float3(1.0f));
+
+		// For. Add and Setting Effect Component to GameObject
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
+		shared_ptr<MeshEffect> meshEffect = make_shared<MeshEffect>(shader);
+		EffectObj->Add_Component(meshEffect);
+
+		if (!m_bColorChangingOn)
 		{
-			m_TexOption[i].vColorDest1 = m_TexOption[i].vColorBase1;
-			m_TexOption[i].vColorDest2 = m_TexOption[i].vColorBase2;
+			for (_int i = 0; i < m_iTexOptionCnt; i++)
+			{
+				m_TexOption[i].vColorDest1 = m_TexOption[i].vColorBase1;
+				m_TexOption[i].vColorDest2 = m_TexOption[i].vColorBase2;
+			}
+			m_vOverlayColor_Dest = m_vOverlayColor_Base;
 		}
-		m_vOverlayColor_Dest = m_vOverlayColor_Base;
+
+		MeshEffectData::DESC tMeshEffectDesc
+		{
+			m_szTag,
+				m_fDuration,
+				m_bBlurOn,
+				m_bUseFadeOut,
+				m_iMeshCnt,
+				m_fCreateInterval,
+				_float2(m_fParticleDuration),
+				m_iSamplerType,
+
+				m_strMesh,
+
+				m_bUseSpriteAnimation,
+				m_iSpriteAni_Count[0],
+				m_iSpriteAni_Count[1],
+				m_fSpriteAni_Speed,
+
+				m_bColorChangingOn,
+
+				m_TexOption[0].Texture.second,
+				m_TexOption[0].iColoringOption,
+				ImVec4toColor(m_TexOption[0].vColorBase1),
+				ImVec4toColor(m_TexOption[0].vColorBase2),
+				ImVec4toColor(m_TexOption[0].vColorDest1),
+				ImVec4toColor(m_TexOption[0].vColorDest2),
+				_float2(m_TexOption[0].fTiling_Op),
+				_float2(m_TexOption[0].fUVSpeed_Op),
+				m_TexOption[0].fContrast,
+				m_TexOption[0].fAlphaOffset,
+
+				m_TexOption[1].Texture.second,
+				m_TexOption[1].iColoringOption,
+				ImVec4toColor(m_TexOption[1].vColorBase1),
+				ImVec4toColor(m_TexOption[1].vColorBase2),
+				ImVec4toColor(m_TexOption[1].vColorDest1),
+				ImVec4toColor(m_TexOption[1].vColorDest2),
+				_float2(m_TexOption[1].fTiling_Op),
+				_float2(m_TexOption[1].fUVSpeed_Op),
+				m_TexOption[1].fContrast,
+				m_TexOption[1].fAlphaOffset,
+
+				m_TexOption[2].Texture.second,
+				m_TexOption[2].iColoringOption,
+				ImVec4toColor(m_TexOption[2].vColorBase1),
+				ImVec4toColor(m_TexOption[2].vColorBase2),
+				ImVec4toColor(m_TexOption[2].vColorDest1),
+				ImVec4toColor(m_TexOption[2].vColorDest2),
+				_float2(m_TexOption[2].fTiling_Op),
+				_float2(m_TexOption[2].fUVSpeed_Op),
+				m_TexOption[2].fContrast,
+				m_TexOption[2].fAlphaOffset,
+
+				// Blend
+				m_BlendTexture.second,
+				_float2(m_fTiling_Blend),
+				_float2(m_fUVSpeed_Blend),
+				m_fAlphaOffset_Blend,
+
+				// Overlay
+				m_bOverlay_On,
+				m_OverlayTexture.second,
+				ImVec4toColor(m_vOverlayColor_Base),
+				ImVec4toColor(m_vOverlayColor_Dest),
+				_float2(m_fTiling_Overlay),
+				_float2(m_fUVSpeed_Overlay),
+
+				// Normal
+				m_NormalTexture.second,
+
+				// Diffolve
+				m_DissolveTexture.second,
+				_float2(m_fTiling_Overlay),
+				_float2(m_fUVSpeed_Overlay),
+			{ m_vCurvePoint_Dissolve[0],m_vCurvePoint_Dissolve[1], m_vCurvePoint_Dissolve[2], m_vCurvePoint_Dissolve[3] },
+
+				// Distortion
+				m_DistortionTexture.second,
+				_float2(m_fTiling_Distortion),
+				_float2(m_fUVSpeed_Distortion),
+
+		};
+		EffectObj->Get_MeshEffect()->Init(&tMeshEffectDesc);
+
+		// For. Add and Setting EffectMovement Script to GameObject
+		MeshEffectData::Transform_Desc tTransform_Desc
+		{
+			_float3(m_fPosRange),
+
+				_float3(m_fInitScale_Min),
+				_float3(m_fInitScale_Max),
+
+				_float3(m_fInitRotation_Min),
+				_float3(m_fInitRotation_Max),
+
+				m_iTranslateOption,
+				m_fTranslateSpeed,
+				_float3(m_fEndPositionOffset_Min),
+				_float3(m_fEndPositionOffset_Max),
+				m_iSpeedType,
+			{ m_vCurvePoint_Force[0], m_vCurvePoint_Force[1], m_vCurvePoint_Force[2], m_vCurvePoint_Force[3] },
+
+				m_iScalingOption,
+				_float3(m_fEndScaleOffset),
+
+				m_iTurnOption,
+				m_fTurnSpeed,
+				_float3(m_fRandomAxis_Min),
+				_float3(m_fRandomAxis_Max),
+		};
+		EffectObj->Get_MeshEffect()->Set_TransformDesc(&tTransform_Desc);
+		EffectObj->Get_MeshEffect()->InitialTransform();
+
+		// For. Add Effect GameObject to current scene
+		CUR_SCENE->Add_GameObject(EffectObj);
 	}
-
-	MeshEffectData::DESC tMeshEffectDesc
-	{
-		m_szTag,
-		m_fDuration,
-		m_bBlurOn,
-		m_bUseFadeOut,
-		m_iMeshCnt,
-		m_fCreateInterval,
-		_float2(m_fParticleDuration),
-		m_iSamplerType,
-
-		m_strMesh,
-
-		m_bUseSpriteAnimation,
-		m_iSpriteAni_Count[0],
-		m_iSpriteAni_Count[1],
-		m_fSpriteAni_Speed,
-
-		m_bColorChangingOn,
-
-		m_TexOption[0].Texture.second,
-		m_TexOption[0].iColoringOption,
-		ImVec4toColor(m_TexOption[0].vColorBase1),
-		ImVec4toColor(m_TexOption[0].vColorBase2),
-		ImVec4toColor(m_TexOption[0].vColorDest1),
-		ImVec4toColor(m_TexOption[0].vColorDest2),
-		_float2(m_TexOption[0].fTiling_Op),
-		_float2(m_TexOption[0].fUVSpeed_Op),
-		m_TexOption[0].fContrast,
-		m_TexOption[0].fAlphaOffset,
-
-		m_TexOption[1].Texture.second,
-		m_TexOption[1].iColoringOption,
-		ImVec4toColor(m_TexOption[1].vColorBase1),
-		ImVec4toColor(m_TexOption[1].vColorBase2),
-		ImVec4toColor(m_TexOption[1].vColorDest1),
-		ImVec4toColor(m_TexOption[1].vColorDest2),
-		_float2(m_TexOption[1].fTiling_Op),
-		_float2(m_TexOption[1].fUVSpeed_Op),
-		m_TexOption[1].fContrast,
-		m_TexOption[1].fAlphaOffset,
-
-		m_TexOption[2].Texture.second,
-		m_TexOption[2].iColoringOption,
-		ImVec4toColor(m_TexOption[2].vColorBase1),
-		ImVec4toColor(m_TexOption[2].vColorBase2),
-		ImVec4toColor(m_TexOption[2].vColorDest1),
-		ImVec4toColor(m_TexOption[2].vColorDest2),
-		_float2(m_TexOption[2].fTiling_Op),
-		_float2(m_TexOption[2].fUVSpeed_Op),
-		m_TexOption[2].fContrast,
-		m_TexOption[2].fAlphaOffset,
-
-		// Blend
-		m_BlendTexture.second,
-		_float2(m_fTiling_Blend),
-		_float2(m_fUVSpeed_Blend),
-		m_fAlphaOffset_Blend,
-
-		// Overlay
-		m_bOverlay_On,
-		m_OverlayTexture.second,
-		ImVec4toColor(m_vOverlayColor_Base),
-		ImVec4toColor(m_vOverlayColor_Dest),
-		_float2(m_fTiling_Overlay),
-		_float2(m_fUVSpeed_Overlay),
-
-		// Normal
-		m_NormalTexture.second,
-
-		// Diffolve
-		m_DissolveTexture.second,
-		_float2(m_fTiling_Overlay),
-		_float2(m_fUVSpeed_Overlay),
-		{ m_vCurvePoint_Dissolve[0],m_vCurvePoint_Dissolve[1], m_vCurvePoint_Dissolve[2], m_vCurvePoint_Dissolve[3]},
-
-		// Distortion
-		m_DistortionTexture.second,
-		_float2(m_fTiling_Distortion),
-		_float2(m_fUVSpeed_Distortion),
-
-	};
-	EffectObj->Get_MeshEffect()->Init(&tMeshEffectDesc);
-
-	// For. Add and Setting EffectMovement Script to GameObject
-	MeshEffectData::Transform_Desc tTransform_Desc
-	{
-		_float3(m_fPosRange),
-
-		_float3(m_fInitScale_Min),
-		_float3(m_fInitScale_Max),
-
-		_float3(m_fInitRotation_Min),
-		_float3(m_fInitRotation_Max),
-
-		m_iTranslateOption,
-		m_fTranslateSpeed,
-		_float3(m_fEndPositionOffset_Min),
-		_float3(m_fEndPositionOffset_Max),
-		{ m_vCurvePoint_Force[0], m_vCurvePoint_Force[1], m_vCurvePoint_Force[2], m_vCurvePoint_Force[3] },
-
-		m_iScalingOption,
-		_float3(m_fEndScaleOffset),
-
-		m_iTurnOption,
-		m_fTurnSpeed,
-		_float3(m_fRandomAxis_Min),
-		_float3(m_fRandomAxis_Max),
-	};
-	EffectObj->Get_MeshEffect()->Set_TransformDesc(&tTransform_Desc);
-	EffectObj->Get_MeshEffect()->InitialTransform();
-
-	// For. Add Effect GameObject to current scene
-	CUR_SCENE->Add_GameObject(EffectObj);
 }
 
 void Widget_EffectMaker_Mesh::Save()
@@ -1091,6 +1103,9 @@ void Widget_EffectMaker_Mesh::Save()
 		file->Write<_float>(m_fTranslateSpeed);
 		file->Write<_float3>(_float3(m_fEndPositionOffset_Min));
 		file->Write<_float3>(_float3(m_fEndPositionOffset_Max));
+		file->Write<_int>(m_iSpeedType);
+		for (_uint i = 0; i < 4; i++)
+			file->Write<_float2>(m_vCurvePoint_Force[i]);
 
 		/* Scaling */
 		file->Write<_int>(m_iScalingOption);
@@ -1255,6 +1270,9 @@ void Widget_EffectMaker_Mesh::Load()
 	memcpy(m_fEndPositionOffset_Min, &vTemp_vec3, sizeof(m_fEndPositionOffset_Min));
 	vTemp_vec3 = file->Read<_float3>();
 	memcpy(m_fEndPositionOffset_Max, &vTemp_vec3, sizeof(m_fEndPositionOffset_Max));
+	m_iSpeedType = file->Read<_int>();
+	for (_int i = 0; i < 4; i++)
+		m_vCurvePoint_Force[i] = file->Read<_float2>();
 
 	/* Scaling */
 	m_iScalingOption = file->Read<_int>();

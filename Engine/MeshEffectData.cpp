@@ -128,6 +128,7 @@ void MeshEffectData::Load(const wstring& path)
     m_tTransformDesc.fTranslateSpeed = file->Read<_float>();
     m_tTransformDesc.vEndPosOffset_Min = file->Read<_float3>();
     m_tTransformDesc.vEndPosOffset_Max = file->Read<_float3>();
+    m_tTransformDesc.iSpeedType = file->Read<_int>();
     for (_int i = 0; i < 4; i++)
         m_tTransformDesc.vCurvePoint_Force[i] = file->Read<_float2>();
 
