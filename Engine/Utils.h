@@ -35,6 +35,8 @@ public:
 	const static wstring m_strSoundDataPath;
 	
 	static float Random_In_Range(float fMin, float fMax);
+
+	static void	 Spline(const float* key, int num, int dim, float t, float* v);
 };
 
 

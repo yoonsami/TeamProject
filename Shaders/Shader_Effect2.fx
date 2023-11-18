@@ -51,6 +51,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     bool bUseSpriteAnim = (bool) g_int_2;
     
     float fLifeTimeRatio = g_float_0;
+    float fDissolveWeight = g_float_1;
     
     float2 vOp1_ColorOptions = g_vec2_0;
     float2 vOp2_ColorOptions = g_vec2_1;
@@ -170,15 +171,15 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     /* DissolveMap */
     if (bHasDissolveMap)
     {
-        float fDissolveWeight = vSample_Dissolve.r;
+        float fDissolve = vSample_Dissolve.r;
         if (bInverseDissolve)
         {
-            if (fDissolveWeight > sin(fLifeTimeRatio))
+            if (fDissolve > sin(fDissolveWeight)) // sin(fLifeTimeRatio))
                 vOutColor.a = 0.f;
         }
         else
         {
-            if (fDissolveWeight < sin(fLifeTimeRatio))
+            if (fDissolve < sin(fDissolveWeight))//sin(fLifeTimeRatio))
                 vOutColor.a = 0.f;
         }
     }
@@ -199,6 +200,9 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     /* Fade Out */
     if (bUseFadeOut)
         vOutColor.a *= (1.f - fLifeTimeRatio);
+    
+    if(vOutColor.a == 0.f)
+        discard;
     
     return vOutColor;
 }
