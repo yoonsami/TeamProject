@@ -923,6 +923,8 @@ void Player_FSM::skill_1100_Init()
     m_vKeyInputTargetDir = _float3(0.f);
     m_vKeyInputTargetDir = Get_InputDirVector();
 
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+
     m_bInvincible = false;
     m_bSuperArmor = false;
 }
@@ -969,6 +971,8 @@ void Player_FSM::skill_1200_Init()
     m_vKeyInputTargetDir = _float3(0.f);
     m_vKeyInputTargetDir = Get_InputDirVector();
 
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+
     AttackCollider_Off();
 
     m_bInvincible = false;
@@ -1014,6 +1018,8 @@ void Player_FSM::skill_1300_Init()
 
     m_bCanCombo = false;
 
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+
     m_vKeyInputTargetDir = Get_InputDirVector();
 
     AttackCollider_Off();
@@ -1048,6 +1054,8 @@ void Player_FSM::skill_1400_Init()
 	animator->Set_NextTweenAnim(L"skill_1400", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
 	m_bCanCombo = false;
+
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
 	m_vKeyInputTargetDir = Get_InputDirVector();
 

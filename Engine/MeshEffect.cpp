@@ -480,7 +480,7 @@ void MeshEffect::Bind_RenderParams_ToShader()
 
 _float MeshEffect::CalcSpeed()
 {
-    _float fSpeed;
+    _float fSpeed = 0.f;
     if (0 == m_tTransform_Desc.iSpeedType)
     {
         _float output[4];
@@ -489,21 +489,21 @@ _float MeshEffect::CalcSpeed()
     }
     else if (1 == m_tTransform_Desc.iSpeedType)
     {
-        if (0.f <= m_fLifeTimeRatio < m_SplineInput_Force[0])
+        if (0.f <= m_fLifeTimeRatio&& m_fLifeTimeRatio < m_SplineInput_Force[0])
             fSpeed = 0.f;
-        else if (m_SplineInput_Force[0] <= m_fLifeTimeRatio < m_SplineInput_Force[2])
+        else if (m_SplineInput_Force[0] <= m_fLifeTimeRatio && m_fLifeTimeRatio < m_SplineInput_Force[2])
         {
             _float fRatio = (m_fCurrAge - m_SplineInput_Force[0]) / (m_SplineInput_Force[2] - m_SplineInput_Force[0]);
             _float2 vTemp2 = XMVectorLerp(_float2(m_SplineInput_Force[1], 0.f), _float2(m_SplineInput_Force[3], 0.f), fRatio);
             fSpeed = vTemp2.x;
         }
-        else if (m_SplineInput_Force[2] <= m_fLifeTimeRatio < m_SplineInput_Force[4])
+        else if (m_SplineInput_Force[2] <= m_fLifeTimeRatio&& m_fLifeTimeRatio < m_SplineInput_Force[4])
         {
             _float fRatio = (m_fCurrAge - m_SplineInput_Force[2]) / (m_SplineInput_Force[4] - m_SplineInput_Force[2]);
             _float2 vTemp2 = XMVectorLerp(_float2(m_SplineInput_Force[3], 0.f), _float2(m_SplineInput_Force[5], 0.f), fRatio);
             fSpeed = vTemp2.x;
         }
-        else if (m_SplineInput_Force[4] <= m_fLifeTimeRatio < m_SplineInput_Force[6])
+        else if (m_SplineInput_Force[4] <= m_fLifeTimeRatio&& m_fLifeTimeRatio < m_SplineInput_Force[6])
         {
             _float fRatio = (m_fCurrAge - m_SplineInput_Force[4]) / (m_SplineInput_Force[6] - m_SplineInput_Force[4]);
             _float2 vTemp2 = XMVectorLerp(_float2(m_SplineInput_Force[5], 0.f), _float2(m_SplineInput_Force[7], 0.f), fRatio);

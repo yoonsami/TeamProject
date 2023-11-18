@@ -1140,15 +1140,15 @@ void Spike_FSM::skill_100100()
 {
     if (Get_CurFrame() >= 19)
     {
-        if (!m_pCamera.expired())
+       /* if (!m_pCamera.expired())
         {
             _float4 vDir =  m_vCamBonePos - m_vSkillCamBonePos;
             vDir.Normalize();
 
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCamBonePos.xyz());
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 1.f);
-        }
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 4.f);
+        }*/
 
         Get_Transform()->Go_Straight();
     }

@@ -177,6 +177,7 @@ private:
 	void skill_8100();
 	void skill_8100_Init();
 
+	//GroggyPattern
 	void skill_100000();
 	void skill_100000_Init();
 	void skill_100100();
@@ -190,7 +191,7 @@ private:
 
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
 	void Calculate_SkillCamRight();
-	void Set_AttackSkill_Phase1();
+	void Set_AttackSkill();
 	void Create_BossSpikeChair();
 	void Set_Gaze();
 	void Create_CounterMotionTrail();
@@ -207,17 +208,24 @@ private:
 	_float4 m_vFirstPos = _float4(0.f);
 	_float m_fTurnSpeed = XM_PI * 5.f;
 
+	_float m_fGroggyStateAnimationSpeed = 1.f;
+	_float m_fGroggyPatternAnimationSpeed = 0.15f;
+
+
 	COOLTIMEINFO m_tAttackCoolTime = { 1.f, 0.f };
 	COOLTIMEINFO m_tChaseCoolTime = { 2.f, 0.f };
 	COOLTIMEINFO m_tSkillCoolTime = { 0.2f, 0.f };
+	COOLTIMEINFO m_tGroggyPatternTimer = { 30.f, 0.f };
 
 
 	_bool m_bChaseSkill = false;
 	_bool m_bDetected = false;
 	_bool m_bCounter = false;
 	_bool m_bSetPattern = false;
+	_bool m_bGroggyPattern = false;
+	_bool m_bLastPattern = false;
 
-	_uint m_iGroggy_Gauge = 0;
+
 	_uint m_iPreAttack = 100;
 	
 	_float4 m_vPlayerBodyPos = _float4(0.f);
