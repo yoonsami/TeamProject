@@ -1,6 +1,7 @@
 #pragma once
 #include "FSM.h"
 #include "ForwardMovingSkillScript.h"
+#include "InstallationSkill_Script.h"
 
 class Yeonhee_FSM :
 	public FSM
@@ -139,6 +140,7 @@ private:
 
 
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
+	void Create_InstallationSkillCollider(const _float4& vPos, _float fSkillRange, INSTALLATIONSKILLDESC desc);
 
 	void Use_Skill();
 	void Use_Dash();
@@ -147,5 +149,8 @@ private:
 	STATE m_ePreState = STATE::NONE;
 
 	_float m_fKeyPushTimer = 0.f;
+	_uint m_iPreFrame = 10000;
+	_uint m_iCurFrame = 0;
+
 };
 

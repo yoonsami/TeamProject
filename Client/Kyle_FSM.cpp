@@ -436,7 +436,7 @@ void Kyle_FSM::b_run_start()
 		m_tRunEndDelay.fAccTime += fDT;
 
 		if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
-			m_eCurState = STATE::b_idle;
+			m_eCurState = STATE::b_run_end_l;
 	}
 	else
 	{

@@ -48,8 +48,9 @@ HRESULT Shane_FSM::Init()
     m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
     m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
 
-
     m_pCamera = CUR_SCENE->Get_MainCamera();
+
+    m_fNormalAttack_AnimationSpeed = 1.5f;
 
     return S_OK;
 }
@@ -419,7 +420,6 @@ void Shane_FSM::b_idle_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed);
     
     m_tRunEndDelay.fAccTime = 0.f;
-    
     m_iCloneIndex = 0;
     
     AttackCollider_Off();
@@ -439,7 +439,7 @@ void Shane_FSM::b_run_start()
         m_tRunEndDelay.fAccTime += fDT;
 
         if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
-            m_eCurState = STATE::b_idle;
+            m_eCurState = STATE::b_run_end_l;
     }
     else
     {
@@ -1050,7 +1050,7 @@ void Shane_FSM::skill_1400()
     else if (Get_CurFrame() == 7)
         AttackCollider_Off();
     else if (Get_CurFrame() == 22)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(KNOCKBACK_ATTACK);
     else if (Get_CurFrame() == 27)
         AttackCollider_Off();
 
@@ -1306,7 +1306,7 @@ void Shane_FSM::skill_200100()
             desc.fLimitDistance = 10.f;
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_ATTACK);
 
             m_bSkillCreate = true;
 
@@ -1369,12 +1369,12 @@ void Shane_FSM::skill_200200()
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
+            desc.fMoveSpeed = 5.f;
             desc.fLifeTime = 0.5f;
-            desc.fLimitDistance = 0.f;
+            desc.fLimitDistance = 3.f;
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_SKILL);
+            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_SKILL);
 
             m_bSkillCreate = true;
         }
@@ -1652,6 +1652,9 @@ void Shane_FSM::Create_200100_Clone(_uint iCloneIndex)
 {
     shared_ptr<GameObject> obj = make_shared<GameObject>();
     obj->GetOrAddTransform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
+
+    _float4 vClonePos = obj->Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK);
+    obj->Get_Transform()->Set_State(Transform_State::POS, vClonePos);
     {
         shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(RESOURCES.Get<Shader>(L"Shader_Model.fx"));
         shared_ptr<Model> model = RESOURCES.Get<Model>(L"Shane_Clone");

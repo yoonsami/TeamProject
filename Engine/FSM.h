@@ -41,8 +41,9 @@ protected:
 	_bool CounterAttackCheck(_float fCheckDegree);
 	shared_ptr<GameObject> Find_TargetInFrustum(const _float maxDist, _uint eType);
 
-
 	void Add_Effect(const wstring& strSkilltag);
+
+
 public:
 	void Set_Target(shared_ptr<GameObject> pTarget);
 	void Set_Camera(shared_ptr<GameObject> pCamera);
@@ -50,6 +51,7 @@ public:
 	void Reset_Target();
 	void Reset_Weapon();
 	void Reset_Vehicle();
+	_float Get_ChargingRatio() { return m_fChargingRatio; }
 
  protected:
 	weak_ptr<GameObject> m_pTarget;
@@ -64,6 +66,7 @@ public:
 	_bool m_bCanCombo = false;
 	_bool m_bSkillCreate = false;
 	_bool m_bAttackEffectCreate = false;
+	
 
 	_float3 m_vHitDir = _float3{ 0.f };
 	_float3 m_vKeyInputTargetDir = _float3(0.f);
@@ -106,6 +109,9 @@ public:
 	_float m_fNormalAttack_AnimationSpeed = 2.f;
 	_float m_fSkillAttack_AnimationSpeed = 1.5f;
 	_float m_fEvade_AnimationSpeed = 1.5f;
+	_float m_fChargingRatio = 0.f;
+	_float m_fHoldingSkillTime = 0.f;
+	_float m_fTimePerFrame = 0.f;
 
 	//MotionCoolTime
 	COOLTIMEINFO m_tRunEndDelay = { 0.2f,0.f };

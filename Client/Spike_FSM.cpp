@@ -443,6 +443,8 @@ void Spike_FSM::b_idle_Init()
 
     m_fWheelWindRange = 2.f;
     m_fWheelWindSpeed = 6.f;
+
+    m_fChargingRatio = 0.f;
 }
 
 void Spike_FSM::b_run_start()
@@ -456,7 +458,7 @@ void Spike_FSM::b_run_start()
         m_tRunEndDelay.fAccTime += fDT;
 
         if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
-            m_eCurState = STATE::b_idle;
+            m_eCurState = STATE::b_run_end_l;
     }
     else
     {
@@ -1271,13 +1273,13 @@ void Spike_FSM::skill_200100_l()
 {
     _float3 vInputVector = Get_InputDirVector();
 
+    m_fChargingRatio = _float(Get_CurFrame()) / _float(Get_FinalFrame());
+    
     if (KEYAWAY(KEY_TYPE::KEY_2))
     {
-        _float fAnimRatio = _float(Get_CurFrame()) / _float(Get_FinalFrame());
-
-        if (fAnimRatio < 0.33f)
+        if (m_fChargingRatio < 0.33f)
             m_eCurState = STATE::skill_200200;
-        else if (fAnimRatio <= 0.66f)
+        else if (m_fChargingRatio <= 0.66f)
             m_eCurState = STATE::skill_200300;
         else
             m_eCurState = STATE::skill_200400;
@@ -1296,7 +1298,7 @@ void Spike_FSM::skill_200100_l_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_200100_l", 0.15f, false, 1.f);
+    animator->Set_CurrentAnim(L"skill_200100_l", false, 1.f);
 
     m_bCanCombo = false;
 
@@ -1354,6 +1356,8 @@ void Spike_FSM::skill_200200_Init()
     m_vKeyInputTargetDir = _float3(0.f);
     m_vKeyInputTargetDir = Get_InputDirVector();
 
+    m_fChargingRatio = 0.f;
+
     AttackCollider_Off();
 
     m_bInvincible = false;
@@ -1403,6 +1407,8 @@ void Spike_FSM::skill_200300_Init()
     animator->Set_NextTweenAnim(L"skill_200300", 0.15f, false, 1.f);
 
     m_bCanCombo = false;
+
+    m_fChargingRatio = 0.f;
 
     m_vKeyInputTargetDir = _float3(0.f);
     m_vKeyInputTargetDir = Get_InputDirVector();
@@ -1484,6 +1490,8 @@ void Spike_FSM::skill_200400_Init()
 
     m_vKeyInputTargetDir = _float3(0.f);
     m_vKeyInputTargetDir = Get_InputDirVector();
+
+    m_fChargingRatio = 0.f;
 
     AttackCollider_Off();
 

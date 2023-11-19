@@ -165,7 +165,7 @@ HRESULT DemoScene::Load_Scene()
 	Load_Light();
 	Load_Camera();
 	Load_MapFile(L"KrisMap");
-	Load_Monster(1);
+	//Load_Monster(1);
 	Load_Boss_Spike();
 	//Load_Boss_Dellons();
 	//Load_Boss_Mir();
