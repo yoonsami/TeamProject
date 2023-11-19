@@ -18,7 +18,7 @@
 #include "Yeopo_FSM.h"
 #include "Dellons_FSM.h"
 #include "Spike_FSM.h"
-#include "Rachel_FSM.h"
+#include "Yeonhee_FSM.h"
 
 HeroChangeScript::HeroChangeScript()
 {
@@ -69,19 +69,19 @@ void HeroChangeScript::Tick()
         else
             Change_To_Spike();
     }
-	/*else if (KEYTAP(KEY_TYPE::F6))
+	else if (KEYTAP(KEY_TYPE::F6))
 	{
-		if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == (L"ShaneGhost"))
+		/*if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == (L"Shane"))
 			Change_To_Player();
 		else
-			Change_To_Shane();
-	}*/
+			Change_To_Shane();*/
+	}
 	else if (KEYTAP(KEY_TYPE::F7))
 	{
-		if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == (L"Rachel"))
+		if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == (L"Yeonhee"))
 			Change_To_Player();
 		else
-			Change_To_Rachel();
+			Change_To_Yeonhee();
 	}
 }
 
@@ -283,7 +283,7 @@ void HeroChangeScript::Change_To_Spike()
 
 }
 
-void HeroChangeScript::Change_To_Rachel()
+void HeroChangeScript::Change_To_Yeonhee()
 {
 	if (m_pOwner.expired())
 		return;
@@ -297,16 +297,13 @@ void HeroChangeScript::Change_To_Rachel()
 	CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Player_AttackCollider"));
 	CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Vehicle_AttackCollider"));
 
-	shared_ptr<Model> model = RESOURCES.Get<Model>(L"Rachel");
+	shared_ptr<Model> model = RESOURCES.Get<Model>(L"Yeonhee");
 
 	m_pOwner.lock()->Get_Animator()->Set_Model(model);
-	m_pOwner.lock()->Change_Component(make_shared<Rachel_FSM>());
-
-	//Add. Player's Weapon
-	Add_Character_Weapon(L"Weapon_Rachel");
+	m_pOwner.lock()->Change_Component(make_shared<Yeonhee_FSM>());
 
 	m_pOwner.lock()->Get_FSM()->Init();
-	m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::RACHEL);
+	m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::YEONHEE);
 }
 
 void HeroChangeScript::Change_To_Shane()
@@ -326,7 +323,7 @@ void HeroChangeScript::Change_To_Shane()
 	shared_ptr<Model> model = RESOURCES.Get<Model>(L"ShaneGhost");
 
 	m_pOwner.lock()->Get_Animator()->Set_Model(model);
-	m_pOwner.lock()->Change_Component(make_shared<Rachel_FSM>());
+	m_pOwner.lock()->Change_Component(make_shared<Yeonhee_FSM>());
 
 	//Add. Player's Weapon
 	Add_Character_Weapon(L"Weapon_Shane");

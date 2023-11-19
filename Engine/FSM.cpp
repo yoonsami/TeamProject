@@ -4,6 +4,7 @@
 #include "ModelAnimator.h"
 #include "GroupEffect.h"
 #include "GroupEffectData.h"
+#include "Camera.h"
 
 FSM::FSM() : Component(COMPONENT_TYPE::FSM)
 {
@@ -231,6 +232,34 @@ _bool FSM::CounterAttackCheck(_float fCheckDegree)
 	{
 		return false;
 	}
+}
+
+shared_ptr<GameObject> FSM::Find_TargetInFrustum(const _float maxDist, _uint eType)
+{
+	auto& gameObjects = CUR_SCENE->Get_Objects();
+	shared_ptr<GameObject> target;
+	_float fMinDistSQ = FLT_MAX;
+	for (auto& gameObject : gameObjects)
+	{
+		if(gameObject->Get_ObjectGroup() != eType)
+			continue;
+
+		_float3 vOwnerPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
+		_float3 vObjectPos = gameObject->Get_Transform()->Get_State(Transform_State::POS).xyz();
+		_float distSQ = (vOwnerPos - vObjectPos).LengthSquared();
+		if(distSQ > maxDist * maxDist)
+			continue;
+		
+		_float3 viewPos = _float3::Transform(vObjectPos, CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_ViewMat());
+		
+		if(viewPos.z <0)
+			continue;
+		if (fMinDistSQ > distSQ)
+			target = gameObject;
+		
+	}
+
+	return target;
 }
 
 void FSM::Add_Effect(const wstring& strSkilltag)

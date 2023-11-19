@@ -37,7 +37,7 @@ public:
 
     void Set_State(Transform_State eState, const _float4& vState);
     void Set_Speed(_float speed) { m_fMoveSpeed = speed; }
-    _bool Go_Dir(const _float3& vVel);
+    _bool Go_Dir(const _float3& vVel); // FDT 곱한 값 넘겨주셈
     _bool Go_Straight();
     _bool Go_Backward();
     _bool Go_Left();

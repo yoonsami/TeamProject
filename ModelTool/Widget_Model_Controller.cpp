@@ -294,10 +294,10 @@ void Widget_Model_Controller::Apply_Model()
 			weaponName = L"Weapon_Dellons";
 		else if (model->Get_ModelTag() == (L"Rachel"))
 			weaponName = L"Weapon_Rachel";
-		else if (model->Get_ModelTag() == (L"ShaneGhost"))
+		else if (model->Get_ModelTag() == (L"Shane"))
 			weaponName = L"Weapon_Shane";
 
-		if (model->Get_ModelTag() != (L"Kyle"))
+		if (model->Get_ModelTag() != (L"Kyle") && model->Get_ModelTag() != (L"Yeonhee"))
 		{
 			shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
 			ObjWeapon->Set_Name(L"TestWeapon");
@@ -500,11 +500,11 @@ void Widget_Model_Controller::Control_Anim()
 
 	static _float fKeyFrame = 0.f;
 
-	DragFloat("## anim", &fKeyFrame, 0.1f, 0.f, _float(animation->frameCount));
+	DragFloat("## anim", &fKeyFrame, 0.1f, 0.f, _float(animation->frameCount -1));
 
 	_uint curFrame = _uint(fKeyFrame);
 	_uint nextFrame = curFrame + 1;
-	if (nextFrame >= animation->frameCount) nextFrame = animation->frameCount;
+	if (nextFrame >= animation->frameCount-1) nextFrame = animation->frameCount-1;
 
 	tweenDesc.curr.currentFrame = curFrame;
 	tweenDesc.curr.nextFrame = nextFrame;

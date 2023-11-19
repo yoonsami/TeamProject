@@ -39,6 +39,7 @@ protected:
 	_bool Target_In_GazeCheckRange();
 
 	_bool CounterAttackCheck(_float fCheckDegree);
+	shared_ptr<GameObject> Find_TargetInFrustum(const _float maxDist, _uint eType);
 
 
 	void Add_Effect(const wstring& strSkilltag);

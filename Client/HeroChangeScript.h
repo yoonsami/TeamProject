@@ -19,7 +19,7 @@ private:
     void Change_To_Yeopo();
     void Change_To_Dellons();
     void Change_To_Spike();
-    void Change_To_Rachel();
+    void Change_To_Yeonhee();
     void Change_To_Shane();
     void Change_To_Input(HERO eHero);
 };

@@ -8,7 +8,7 @@ enum class HERO
 	YEOPO,
 	DELLONS,
 	SPIKE,
-	RACHEL,
+	YEONHEE,
 	SHANE,
 	MAX 
 };

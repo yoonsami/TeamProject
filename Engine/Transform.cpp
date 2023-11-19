@@ -107,8 +107,8 @@ _bool Transform::Go_Dir(const _float3& vVel)
 
 
 		_float3 vDir = vVel;
-
-		auto result = actor->move({ vDir.x ,vDir.y  ,vDir.z }, 0.0f, fDT, PxControllerFilters());
+		
+		auto result = actor->move({ vDir.x  ,vDir.y   ,vDir.z  }, 0.0f, fDT, PxControllerFilters());
 
 		auto controllerPos = actor->getFootPosition();
 		Set_State(Transform_State::POS, _float4(_float(controllerPos.x), _float(controllerPos.y), _float(controllerPos.z), 1.f));
