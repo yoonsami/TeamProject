@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include "Kyle_GachaScene.h"
+#include "GachaScene.h"
 
 #include "Utils.h"
 #include "Model.h"
@@ -54,32 +54,32 @@
 #include "Gacha_FSM.h"
 namespace fs = std::filesystem;
 
-Kyle_GachaScene::Kyle_GachaScene(const GachaSceneDesc& desc)
+GachaScene::GachaScene(const GachaSceneDesc& desc)
 	: m_Desc(desc)
 {
 }
 
-Kyle_GachaScene::~Kyle_GachaScene()
+GachaScene::~GachaScene()
 {
 }
 
-void Kyle_GachaScene::Init()
+void GachaScene::Init()
 {
 	Load_Scene();
 	__super::Init();
 }
 
-void Kyle_GachaScene::Tick()
+void GachaScene::Tick()
 {
 	__super::Tick();
 }
 
-void Kyle_GachaScene::Late_Tick()
+void GachaScene::Late_Tick()
 {
 	__super::Late_Tick();
 }
 
-void Kyle_GachaScene::Final_Tick()
+void GachaScene::Final_Tick()
 {
 	__super::Final_Tick();
 	if (KEYTAP(KEY_TYPE::ENTER))
@@ -88,7 +88,7 @@ void Kyle_GachaScene::Final_Tick()
 	}
 }
 
-HRESULT Kyle_GachaScene::Load_Scene()
+HRESULT GachaScene::Load_Scene()
 {
 	Load_Player();
 	Load_Light();
@@ -97,7 +97,7 @@ HRESULT Kyle_GachaScene::Load_Scene()
 	return S_OK;
 }
 
-void Kyle_GachaScene::Load_Player()
+void GachaScene::Load_Player()
 {
 
 	// Add. Player
@@ -210,7 +210,7 @@ void Kyle_GachaScene::Load_Player()
 	
 }
 
-void Kyle_GachaScene::Load_Camera()
+void GachaScene::Load_Camera()
 {
 	{
 		//GameObj for Camera Create
@@ -242,7 +242,7 @@ void Kyle_GachaScene::Load_Camera()
 	}
 }
 
-void Kyle_GachaScene::Load_Light()
+void GachaScene::Load_Light()
 {
 	shared_ptr<GameObject> lightObj = make_shared<GameObject>();
 	lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(50.f, 30.f, 20.f, 1.f));

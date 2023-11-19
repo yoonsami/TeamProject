@@ -190,15 +190,6 @@
     <Filter Include="02.Component\01.FSM\02.Monster_FSM\03.Boss_Spike_FSM">
       <UniqueIdentifier>{98ec5a53-91dd-4a0a-8674-9b5c049fbefd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\12.UiDamage">
-      <UniqueIdentifier>{42f57219-04bb-4733-801b-23e14efbe8c9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\12.UiDamage\00.UiDamageCreate">
-      <UniqueIdentifier>{3b986a16-2fe9-47d1-bb19-0b3602a1ac59}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\12.UiDamage\01.UiDamageMove">
-      <UniqueIdentifier>{f708a9a9-c8d0-41bd-99ce-cbb729bf4bd3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Component\01.FSM\03.Special_FSM\02.SpearAce_Clone_FSM">
       <UniqueIdentifier>{43464ce5-8328-424a-89d9-4cef32d403f7}</UniqueIdentifier>
     </Filter>
@@ -210,6 +201,24 @@
     </Filter>
     <Filter Include="02.Component\01.FSM\01.Hero_FSM\07.Shane_FSM">
       <UniqueIdentifier>{e3805b94-1dca-49a2-9a34-fde8477d25c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\13.UIBossHPBar">
+      <UniqueIdentifier>{2ecafd13-6b37-47f5-a93d-97652e761bf6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\12.UiDamage">
+      <UniqueIdentifier>{42f57219-04bb-4733-801b-23e14efbe8c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\12.UiDamage\00.UiDamageCreate">
+      <UniqueIdentifier>{3b986a16-2fe9-47d1-bb19-0b3602a1ac59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\12.UiDamage\01.UiDamageMove">
+      <UniqueIdentifier>{f708a9a9-c8d0-41bd-99ce-cbb729bf4bd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\10.UiTargetLockOn">
+      <UniqueIdentifier>{b9ccb558-b601-4d84-9bf2-c095d4b2433a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp">
+      <UniqueIdentifier>{cb43ed75-229b-46df-9b52-ad277e90d9f2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -426,8 +435,6 @@
     <ClInclude Include="Spike_FSM.h">
       <Filter>02.Component\01.FSM\01.Hero_FSM\05.Spike_FSM</Filter>
     </ClInclude>
-    <ClInclude Include="UiMonsterHp.h" />
-    <ClInclude Include="UiTargetLockOn.h" />
     <ClInclude Include="Boss_Spike_FSM.h">
       <Filter>02.Component\01.FSM\02.Monster_FSM\03.Boss_Spike_FSM</Filter>
     </ClInclude>
@@ -440,11 +447,20 @@
     <ClInclude Include="SpearAce_Clone_FSM.h">
       <Filter>02.Component\01.FSM\03.Special_FSM\02.SpearAce_Clone_FSM</Filter>
     </ClInclude>
-    <ClInclude Include="Kyle_GachaScene.h">
+    <ClInclude Include="GachaScene.h">
       <Filter>01.Scene\02.GachaScene</Filter>
     </ClInclude>
     <ClInclude Include="Rachel_FSM.h">
       <Filter>02.Component\01.FSM\01.Hero_FSM\06.Rachel_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="UIBossHpBar.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\13.UIBossHPBar</Filter>
+    </ClInclude>
+    <ClInclude Include="UiTargetLockOn.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\10.UiTargetLockOn</Filter>
+    </ClInclude>
+    <ClInclude Include="UiMonsterHp.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -628,8 +644,6 @@
     <ClCompile Include="Spike_FSM.cpp">
       <Filter>02.Component\01.FSM\01.Hero_FSM\05.Spike_FSM</Filter>
     </ClCompile>
-    <ClCompile Include="UiMonsterHp.cpp" />
-    <ClCompile Include="UiTargetLockOn.cpp" />
     <ClCompile Include="Boss_Spike_FSM.cpp">
       <Filter>02.Component\01.FSM\02.Monster_FSM\03.Boss_Spike_FSM</Filter>
     </ClCompile>
@@ -642,11 +656,20 @@
     <ClCompile Include="SpearAce_Clone_FSM.cpp">
       <Filter>02.Component\01.FSM\03.Special_FSM\02.SpearAce_Clone_FSM</Filter>
     </ClCompile>
-    <ClCompile Include="Kyle_GachaScene.cpp">
+    <ClCompile Include="GachaScene.cpp">
       <Filter>01.Scene\02.GachaScene</Filter>
     </ClCompile>
     <ClCompile Include="Rachel_FSM.cpp">
       <Filter>02.Component\01.FSM\01.Hero_FSM\06.Rachel_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="UIBossHpBar.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\13.UIBossHPBar</Filter>
+    </ClCompile>
+    <ClCompile Include="UiTargetLockOn.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\10.UiTargetLockOn</Filter>
+    </ClCompile>
+    <ClCompile Include="UiMonsterHp.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

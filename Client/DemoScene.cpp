@@ -57,7 +57,7 @@
 
 
 #include <filesystem>
-#include "Kyle_GachaScene.h"
+#include "GachaScene.h"
 namespace fs = std::filesystem;
 
 DemoScene::DemoScene()
@@ -149,7 +149,7 @@ void DemoScene::Final_Tick()
 	if (KEYTAP(KEY_TYPE::TAB))
 	{
 		GachaSceneDesc sceneDesc{ L"KyleMap",HERO::KYLE };
-			SCENE.Add_SubScene(make_shared<Kyle_GachaScene>(sceneDesc));
+			SCENE.Add_SubScene(make_shared<GachaScene>(sceneDesc));
 		SCENE.Exchange_Scene();
 
 

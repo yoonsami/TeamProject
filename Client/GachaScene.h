@@ -7,12 +7,12 @@ struct GachaSceneDesc
 	HERO eHeroType;
 };
 
-class Kyle_GachaScene :
+class GachaScene :
     public Scene
 {
 public:
-	Kyle_GachaScene(const GachaSceneDesc& desc);
-	~Kyle_GachaScene();
+	GachaScene(const GachaSceneDesc& desc);
+	~GachaScene();
 
 public:
 	virtual void Init() override;
