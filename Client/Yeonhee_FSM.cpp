@@ -866,6 +866,16 @@ void Yeonhee_FSM::knockdown_end_Init()
 
 void Yeonhee_FSM::skill_1100()
 {
+	auto Target = Find_TargetInFrustum(10.f, OBJ_MONSTER);
+
+	if (Target)
+		m_vKeyInputTargetDir = (Target->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+	else
+		m_vKeyInputTargetDir = Get_InputDirVector();
+
+	if (m_vKeyInputTargetDir != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+
     if (Get_CurFrame() == 12)
     {
         if (!m_bSkillCreate)
@@ -884,7 +894,6 @@ void Yeonhee_FSM::skill_1100()
 			}
 			else
 			{
-                auto Target = Find_TargetInFrustum(10.f, OBJ_MONSTER);
 
                 if(Target)
                     vSkillPos = Target->Get_Transform()->Get_State(Transform_State::POS) + _float3::Up * 5.f;
@@ -899,15 +908,7 @@ void Yeonhee_FSM::skill_1100()
     else
         m_bSkillCreate = false;
     
-	auto Target = Find_TargetInFrustum(10.f, OBJ_MONSTER);
 
-	if (Target)
-		m_vKeyInputTargetDir = (Target->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
-	else
-		m_vKeyInputTargetDir = Get_InputDirVector();
-
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
     _float3 vInputVector = Get_InputDirVector();
     vInputVector.Normalize();
@@ -947,6 +948,16 @@ void Yeonhee_FSM::skill_1100_Init()
 
 void Yeonhee_FSM::skill_1200()
 {
+	auto Target = Find_TargetInFrustum(10.f, OBJ_MONSTER);
+
+	if (Target)
+		m_vKeyInputTargetDir = (Target->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+	else
+		m_vKeyInputTargetDir = Get_InputDirVector();
+
+	if (m_vKeyInputTargetDir != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+
     if (Get_CurFrame() == 17)
     {
         if (!m_bSkillCreate)
@@ -965,8 +976,6 @@ void Yeonhee_FSM::skill_1200()
 			}
 			else
 			{
-				auto Target = Find_TargetInFrustum(10.f, OBJ_MONSTER);
-
 				if (Target)
 					vSkillPos = Target->Get_Transform()->Get_State(Transform_State::POS) + _float3::Up * 5.f;
 				else
@@ -980,15 +989,7 @@ void Yeonhee_FSM::skill_1200()
     else
         m_bSkillCreate = false;
 
-	auto Target = Find_TargetInFrustum(10.f, OBJ_MONSTER);
 
-	if (Target)
-		m_vKeyInputTargetDir = (Target->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
-	else
-		m_vKeyInputTargetDir = Get_InputDirVector();
-
-	if (m_vKeyInputTargetDir != _float3(0.f))
-		Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
 	_float3 vInputVector = Get_InputDirVector();
 	vInputVector.Normalize();
@@ -1030,6 +1031,16 @@ void Yeonhee_FSM::skill_1200_Init()
 
 void Yeonhee_FSM::skill_1300()
 {
+	auto Target = Find_TargetInFrustum(10.f, OBJ_MONSTER);
+
+	if (Target)
+		m_vKeyInputTargetDir = (Target->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+	else
+		m_vKeyInputTargetDir = Get_InputDirVector();
+
+	if (m_vKeyInputTargetDir != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+
 	if (Get_CurFrame() == 20)
 	{
 		if (!m_bSkillCreate)
@@ -1048,8 +1059,6 @@ void Yeonhee_FSM::skill_1300()
 			}
 			else
 			{
-				auto Target = Find_TargetInFrustum(10.f, OBJ_MONSTER);
-
 				if (Target)
 					vSkillPos = Target->Get_Transform()->Get_State(Transform_State::POS) + _float3::Up * 5.f;
 				else
@@ -1060,24 +1069,14 @@ void Yeonhee_FSM::skill_1300()
 			m_bSkillCreate = true;
 		}
 	}
-
-
 	else
 		m_bSkillCreate = false;
-
-	auto Target = Find_TargetInFrustum(10.f, OBJ_MONSTER);
-
-	if (Target)
-		m_vKeyInputTargetDir = (Target->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
-	else
-		m_vKeyInputTargetDir = Get_InputDirVector();
 
 	_float3 vInputVector = Get_InputDirVector();
 	vInputVector.Normalize();
 	Get_Transform()->Go_Dir(vInputVector * m_fRunSpeed * 0.3f * fDT);
 
-	if (m_vKeyInputTargetDir != _float3(0.f))
-		Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+
 	if (Is_AnimFinished())
 		m_eCurState = STATE::b_idle;
 
@@ -1191,8 +1190,13 @@ void Yeonhee_FSM::skill_100100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+
+	auto Target = Find_TargetInFrustum(10.f, OBJ_MONSTER);
+
+	if (Target)
+		m_vKeyInputTargetDir = (Target->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+	else
+		m_vKeyInputTargetDir = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1228,7 +1232,17 @@ void Yeonhee_FSM::skill_100100_e_Init()
 
 void Yeonhee_FSM::skill_200100()
 {
-    if (Get_CurFrame() == 7 || Get_CurFrame() == 19)
+	auto Target = Find_TargetInFrustum(10.f, OBJ_MONSTER);
+
+	if (Target)
+		m_vKeyInputTargetDir = (Target->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+	else
+		m_vKeyInputTargetDir = Get_InputDirVector();
+
+	if (m_vKeyInputTargetDir != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+
+    if (Get_CurFrame() == 24)
     {
         if (!m_bSkillCreate)
         {
@@ -1238,7 +1252,12 @@ void Yeonhee_FSM::skill_200100()
             desc.fLifeTime = 0.5f;
             desc.fLimitDistance = 0.f;
 
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
+            _float4 vSkillPos;
+            if (Target)
+				vSkillPos = Target->Get_Transform()->Get_State(Transform_State::POS) + _float3::Up;
+
+            else
+                vSkillPos  = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5.f + _float3::Up;
             Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_ATTACK);
 
             m_bSkillCreate = true;
@@ -1248,8 +1267,10 @@ void Yeonhee_FSM::skill_200100()
     else
         m_bSkillCreate = false;
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+	_float3 vInputVector = Get_InputDirVector();
+	vInputVector.Normalize();
+	Get_Transform()->Go_Dir(vInputVector * m_fRunSpeed * 0.3f * fDT);
+
 
     if (Is_AnimFinished())
     {
@@ -1268,8 +1289,7 @@ void Yeonhee_FSM::skill_200100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+ 
 
     AttackCollider_On(NORMAL_ATTACK);
 
@@ -1279,36 +1299,53 @@ void Yeonhee_FSM::skill_200100_Init()
 
 void Yeonhee_FSM::skill_300100()
 {
+	auto Target = Find_TargetInFrustum(10.f, OBJ_MONSTER);
 
+	if (Target)
+		m_vKeyInputTargetDir = (Target->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+	else
+		m_vKeyInputTargetDir = Get_InputDirVector();
+
+	if (m_vKeyInputTargetDir != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
     if (Get_CurFrame() >= 78 && Get_CurFrame() <= 110)
         m_bInvincible = true;
     else
         m_bInvincible = false;
 
-    if (Get_CurFrame() == 30 || Get_CurFrame() == 44 || Get_CurFrame() == 50)
-    {       
-        if (!m_bSkillCreate)
-        {   
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK);
-            _float4 vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+	if (Get_CurFrame() == 24)
+	{
+		if (!m_bSkillCreate)
+		{
+			FORWARDMOVINGSKILLDESC desc;
 
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = vSkillDir.Normalize();
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 1.f;
-            desc.fLimitDistance = 0.f;
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::UP) * 10.f - Get_Transform()->Get_State(Transform_State::LOOK) * 2.f;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
+            _float4 vTargetPos;
+            if (Target)
+                vTargetPos = Target->Get_Transform()->Get_State(Transform_State::POS);
+            else
+                vTargetPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 10.f;
 
-            m_bSkillCreate = true;
-        }
-    }
-    else
-        m_bSkillCreate = false;
+			desc.vSkillDir = vTargetPos - vSkillPos;
+			desc.fMoveSpeed = 30.f;
+			desc.fLifeTime = 1.f;
+			desc.fLimitDistance = 30.f;
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+			Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_ATTACK);
+
+			m_bSkillCreate = true;
+		}
+
+	}
+	else
+		m_bSkillCreate = false;
+
+	_float3 vInputVector = Get_InputDirVector();
+	vInputVector.Normalize();
+	Get_Transform()->Go_Dir(vInputVector * m_fRunSpeed * 0.3f * fDT);
+
 
     if (Is_AnimFinished())
     {
@@ -1325,8 +1362,7 @@ void Yeonhee_FSM::skill_300100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+
 
     FORWARDMOVINGSKILLDESC desc;
     desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1346,10 +1382,23 @@ void Yeonhee_FSM::skill_300100_Init()
 
 void Yeonhee_FSM::skill_400100()
 {
-	if (Get_CurFrame() == 15)
-		AttackCollider_On(KNOCKBACK_ATTACK);
-	else if (Get_CurFrame() == 33)
-		AttackCollider_Off();
+	if (Get_CurFrame() > 22 && Get_CurFrame() < 72)
+	{
+		m_fKeyPushTimer += fDT;
+		if (m_fKeyPushTimer >= 0.3f)
+		{
+			m_fKeyPushTimer = 0.f;
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 15.f;
+			desc.fLifeTime = 0.2f;
+			desc.fLimitDistance = 15.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK);
+			Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKBACK_ATTACK);
+
+		}
+	}
 
 	if (m_vKeyInputTargetDir != _float3(0.f))
 		Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
@@ -1372,8 +1421,12 @@ void Yeonhee_FSM::skill_400100_Init()
 
 	m_bCanCombo = false;
 
-	m_vKeyInputTargetDir = _float3(0.f);
-	m_vKeyInputTargetDir = Get_InputDirVector();
+	auto Target = Find_TargetInFrustum(10.f, OBJ_MONSTER);
+
+	if (Target)
+		m_vKeyInputTargetDir = (Target->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+	else
+		m_vKeyInputTargetDir = Get_InputDirVector();
 
 	AttackCollider_Off();
 
@@ -1383,34 +1436,31 @@ void Yeonhee_FSM::skill_400100_Init()
 
 void Yeonhee_FSM::skill_501100()
 {
-    if (Get_CurFrame() == 17)
+    if (Get_CurFrame() == 57)
     {
-        if (!m_bSkillCreate)
-        {
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 20.f;
-            desc.fLifeTime = 2.f;
-            desc.fLimitDistance = 3.5f;
-            
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
+		if (!m_bSkillCreate)
+		{
+            auto Target = Find_TargetInFrustum(10.f, OBJ_MONSTER);
+			FORWARDMOVINGSKILLDESC desc;
 
-            m_bSkillCreate = true;
-        }
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::UP) * 10.f - Get_Transform()->Get_State(Transform_State::LOOK) * 2.f;
+
+			_float4 vTargetPos;
+			if (Target)
+				vTargetPos = Target->Get_Transform()->Get_State(Transform_State::POS);
+			else
+				vTargetPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 10.f;
+
+			desc.vSkillDir = vTargetPos - vSkillPos;
+			desc.fMoveSpeed = 30.f;
+			desc.fLifeTime = 1.f;
+			desc.fLimitDistance = 20.f;
+
+			Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_ATTACK);
+
+			m_bSkillCreate = true;
+		}
     }
-    else if (Get_CurFrame() == 32)
-    {
-        //TelePort Motion Start = Invincible
-        m_bInvincible = true;
-    }
-    else if (Get_CurFrame() == 44)
-    {
-        m_bInvincible = false;
-        AttackCollider_On(KNOCKBACK_ATTACK);
-    }
-    else if (Get_CurFrame() == 62)
-        AttackCollider_Off();
     else
     {
         m_bSkillCreate = false;
@@ -1437,8 +1487,11 @@ void Yeonhee_FSM::skill_501100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+	auto Target = Find_TargetInFrustum(10.f, OBJ_MONSTER);
+	if (Target)
+		m_vKeyInputTargetDir = (Target->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+	else
+		m_vKeyInputTargetDir = Get_InputDirVector();
 
     AttackCollider_Off();
 
