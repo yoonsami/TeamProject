@@ -49,7 +49,7 @@ void ImGuiToolMgr::Tick()
 
     // For. Basic Widget
     ImGui::SetNextWindowPos(ImVec2(0, g_iWinSizeY - 60.f));
-    ImGui::SetNextWindowSize(ImVec2(500.f, 60.f));
+    ImGui::SetNextWindowSize(ImVec2(600.f, 100.f));
     ImGui::Begin("Basic Widget");
     ImGui_BasicWidget();
     ImGui::End();
@@ -84,4 +84,7 @@ void ImGuiToolMgr::Option_ToolSelector()
     ImGui::Checkbox("ParticleMaker(Instancing)", &m_bIsParticleMaker_Instancing_On);
     ImGui::SameLine();
     ImGui::Checkbox("GroupEffectMaker", &m_bIsGroupEffectMaker_On);
+    ImGui::SameLine();
+    string strFPS = "FPS: " + to_string(TIME.GetFPS());
+    ImGui::Text(strFPS.c_str());
 }

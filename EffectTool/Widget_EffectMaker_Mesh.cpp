@@ -385,7 +385,8 @@ void Widget_EffectMaker_Mesh::Option_TextureOp(_int iIndex)
 	string strRadioButton1 = "Flip (Up/Down)##" + strIndex;
 	string strRadioButton2 = "Flip (Left/Right)##" + strIndex;
 	string strRadioButton3 = "Flip both##" + strIndex;
-	string strRadioButton4 = "Turn 90##" + strIndex;
+	string strRadioButton4 = "Turn 90(cw)##" + strIndex;
+	string strRadioButton5 = "Turn 90(ccw)##" + strIndex;
 
 	ImGui::SeparatorText(strSeparatorTag.c_str());
 
@@ -428,6 +429,7 @@ void Widget_EffectMaker_Mesh::Option_TextureOp(_int iIndex)
 			ImGui::RadioButton(strRadioButton2.c_str(), &m_TexOption[iIndex].iFlipOption, 2);
 			ImGui::RadioButton(strRadioButton3.c_str(), &m_TexOption[iIndex].iFlipOption, 3);
 			ImGui::RadioButton(strRadioButton4.c_str(), &m_TexOption[iIndex].iFlipOption, 4);
+			ImGui::RadioButton(strRadioButton5.c_str(), &m_TexOption[iIndex].iFlipOption, 5);
 			
 			ImGui::EndChild();
 		}
