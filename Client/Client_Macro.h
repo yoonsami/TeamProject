@@ -12,3 +12,7 @@
 #define AIRBORNE_SKILL      L"Airborne_Skill"
 
 #define IDX(VALUE) static_cast<unsigned int>(VALUE)
+
+#define GET_DATA(VALUE)             GET_SINGLE(DataMgr).Get_Data(VALUE)
+#define GET_ELEMENT(VALUE)          GET_SINGLE(DataMgr).Get_Element(VALUE)
+#define GET_ELEMENT_LINE(VALUE)     GET_SINGLE(DataMgr).Get_Element_Line(VALUE)

@@ -250,13 +250,6 @@ float4 PS_UI(UIOutput input) : SV_TARGET
         
     }
 
-    if (bHasOpacityMap)
-    {
-        diffuseColor.a = pow(abs(OpacityMap.Sample(LinearSamplerMirror, input.uv)), GAMMA).x * g_vec4_0.w;
-        if (diffuseColor.a <= 0.01f)
-            discard;
-    }
-
     return diffuseColor;
 }
 
@@ -267,13 +260,6 @@ float4 PS_UI1(UIOutput input) : SV_TARGET
     {
         diffuseColor = pow(abs(DiffuseMap.Sample(LinearSamplerMirror, input.uv)), GAMMA) * g_vec4_0;
         
-    }
-
-    if (bHasOpacityMap)
-    {
-        diffuseColor.a = pow(abs(OpacityMap.Sample(LinearSamplerMirror, input.uv)), GAMMA).x * g_vec4_0.w;
-        if (diffuseColor.a <= 0.01f)
-            discard;
     }
 
     if (g_float_0 < 100.f)
@@ -295,13 +281,6 @@ float4 PS_UI2(UIOutput input) : SV_TARGET
     {
         diffuseColor = pow(abs(DiffuseMap.Sample(LinearSamplerMirror, input.uv)), GAMMA) * g_vec4_0;
         
-    }
-
-    if (bHasOpacityMap)
-    {
-        diffuseColor.a = pow(abs(OpacityMap.Sample(LinearSamplerMirror, input.uv)), GAMMA).x * g_vec4_0.w;
-        if (diffuseColor.a <= 0.01f)
-            discard;
     }
 
     if (g_float_0 < 1.f)
@@ -335,13 +314,6 @@ float4 PS_UI3(UIOutput input) : SV_TARGET
         
     }
 
-    if (bHasOpacityMap)
-    {
-        diffuseColor.a = pow(abs(OpacityMap.Sample(LinearSamplerMirror, input.uv)), GAMMA).x * g_vec4_0.w;
-        if (diffuseColor.a <= 0.01f)
-            discard;
-    }
-
     if (input.uv.x > g_float_0)
         discard;
 
@@ -365,13 +337,6 @@ float4 PS_UI4(UIOutput input) : SV_TARGET
         
     }
 
-    if (bHasOpacityMap)
-    {
-        diffuseColor.a = pow(abs(OpacityMap.Sample(LinearSamplerMirror, input.uv)), GAMMA).x * g_vec4_0.w;
-        if (diffuseColor.a <= 0.01f)
-            discard;
-    }
-
     if (input.uv.x >= g_float_0 / 100.f)
         diffuseColor = float4(0.3f, 0.3f, 0.3f, 1.f);
 
@@ -388,18 +353,11 @@ float4 PS_UI5(UIOutput input) : SV_TARGET
 
 float4 PS_UI6(UIOutput input) : SV_TARGET
 {
-        float4 diffuseColor = g_vec4_0;
+    float4 diffuseColor = g_vec4_0;
     if (bHasDiffuseMap)
     {
         diffuseColor = pow(DiffuseMap.Sample(LinearSamplerMirror, input.uv), GAMMA) * g_vec4_0;
 
-    }
-
-    if (bHasOpacityMap)
-    {
-        diffuseColor.a = pow(OpacityMap.Sample(LinearSamplerMirror, input.uv), GAMMA).x * g_vec4_0.w;
-        if (diffuseColor.a <= 0.01f)
-            discard;
     }
 
     if (g_float_0 <= 1.f)
@@ -435,6 +393,39 @@ float4 PS_UI6(UIOutput input) : SV_TARGET
 
     return diffuseColor;
 }
+
+
+float4 PS_UI7(UIOutput input) : SV_TARGET
+{
+    float4 diffuseColor = g_vec4_0;
+    if (bHasDiffuseMap)
+    {
+        diffuseColor = pow(abs(DiffuseMap.Sample(LinearSamplerMirror, input.uv)), GAMMA) * g_vec4_0;
+
+    }
+
+    if (g_float_0 < 1.f)
+    {
+        float2 uvPos = float2(input.uv.x - 0.5f, 0.5f - input.uv.y);
+        float theta = atan2(uvPos.x, uvPos.y);
+
+        if (theta <= 0.f)
+            theta += 2.f * PI;
+
+        if (theta < 2.f * PI * g_float_0)
+        {
+            discard;
+        }
+    }
+
+    else
+    {
+        diffuseColor.xyz = (pow(abs(DiffuseMap.Sample(LinearSamplerMirror, input.uv)), GAMMA) * g_vec4_0).xyz;
+    }
+
+    return diffuseColor;
+}
+
 
 float4 PS_UIInstancing(UIInstancingOutput input) : SV_TARGET
 {
@@ -860,11 +851,21 @@ technique11 T0
         SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
 
+    pass UI_SKILL_USE_GAUGE
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Default()));
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetPixelShader(CompileShader(ps_5_0, PS_UI7()));
+        SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
+    }
+
 
     PASS_VP(p1_instancing, VS_Instancing, PS_UI)
     PASS_VP_BLEND(P2, VS_UI, PS_UIBAR)
 
-        pass p7
+    pass p7
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
         SetRasterizerState(RS_CullNone);

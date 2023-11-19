@@ -77,13 +77,13 @@ void LoadingScene::Final_Tick()
 
 void LoadingScene::Create_LoadingBG()
 {
-	auto LoadingBackGround = make_shared<GameObject>();
+	/*auto LoadingBackGround = make_shared<GameObject>();
 
 	LoadingBackGround->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0, 0, 2, 1));
 	LoadingBackGround->GetOrAddTransform()->Scaled(_float3(g_iWinSizeX, g_iWinSizeY, 1.f));
 	shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
 	
-	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+	auto mesh = RESOURCES.Get<Mesh>(L"Point");
 	renderer->Set_Mesh(mesh);
 
 	auto material = make_shared<Material>();
@@ -96,7 +96,9 @@ void LoadingScene::Create_LoadingBG()
 	LoadingBackGround->Set_Name(L"LoadingBG");
 	LoadingBackGround->Set_LayerIndex(Layer_UI);
 	LoadingBackGround->Set_Instancing(false);
-	Add_GameObject(LoadingBackGround);
+	Add_GameObject(LoadingBackGround);*/
+
+   Load_UIFile(L"..\\Resources\\UIData\\UI_Loading.dat");
 }
 
 void LoadingScene::Create_LoadingBar()

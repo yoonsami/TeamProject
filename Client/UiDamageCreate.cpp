@@ -56,6 +56,11 @@ void UiDamageCreate::Create_Damage_Font(_float4 vPos)
     return;
 }
 
+void UiDamageCreate::Create_Damage_Hit()
+{
+
+}
+
 void UiDamageCreate::Check_In_Screen()
 {
     _float3 cullPos = m_fPos.xyz();
@@ -79,5 +84,7 @@ void UiDamageCreate::Change_Pos_2D()
 
     m_fPos.x -= 1920 * 0.5f;
     m_fPos.y = (m_fPos.y * -1.f) + 1080 * 0.5f;
-
+    
+    m_fPos.x -= 150.f;
+    m_fPos.y += 300.f;
 }
