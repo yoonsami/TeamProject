@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Component.h"
 
 enum class Transform_State
@@ -44,8 +44,8 @@ public:
     _bool Go_Right();
     _bool Go_Up();
     _bool Go_Down();
-    void Go_Horizontally_Up();      // MEMO : Tool���� Freecam�� ���� �߰� (q,e key)
-    void Go_Horizontally_Down();    // MEMO : Tool���� Freecam�� ���� �߰� (q,e key)
+    void Go_Horizontally_Up();     
+    void Go_Horizontally_Down();   
     void Rotation(const _float3& vAxis, _float fRadian);
     void Turn(const _float3& vAxis, _float fRadianPerSec);
     void Scaled(const _float3& vScale);

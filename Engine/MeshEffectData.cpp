@@ -48,6 +48,7 @@ void MeshEffectData::Load(const wstring& path)
 
     /* Option1 */
     m_tDesc.strTexture_Op1 = file->Read<string>();
+    m_tDesc.iFlipOption_Op1 = file->Read<_int>();
     m_tDesc.bIsUseTextureColor_Op1 = file->Read<_int>();
     m_tDesc.vBaseColor1_Op1 = file->Read<_float4>();
     m_tDesc.vBaseColor2_Op1 = file->Read<_float4>();
@@ -60,6 +61,7 @@ void MeshEffectData::Load(const wstring& path)
 
     /* Option2 */
     m_tDesc.strTexture_Op2 = file->Read<string>();
+    m_tDesc.iFlipOption_Op2 = file->Read<_int>();
     m_tDesc.bIsUseTextureColor_Op2 = file->Read<_int>();
     m_tDesc.vBaseColor1_Op2 = file->Read<_float4>();
     m_tDesc.vBaseColor2_Op2 = file->Read<_float4>();
@@ -72,6 +74,7 @@ void MeshEffectData::Load(const wstring& path)
 
     /* Option3 */
     m_tDesc.strTexture_Op3 = file->Read<string>();
+    m_tDesc.iFlipOption_Op3 = file->Read<_int>();
     m_tDesc.bIsUseTextureColor_Op3 = file->Read<_int>();
     m_tDesc.vBaseColor1_Op3 = file->Read<_float4>();
     m_tDesc.vBaseColor2_Op3 = file->Read<_float4>();
@@ -141,6 +144,8 @@ void MeshEffectData::Load(const wstring& path)
     m_tTransformDesc.fTurnSpeed = file->Read<_float>();
     m_tTransformDesc.vRandomAxis_Min = file->Read<_float3>();
     m_tTransformDesc.vRandomAxis_Max = file->Read<_float3>();
+    for (_int i = 0; i < 2; i++)
+        m_tTransformDesc.bBillbordAxes[i] = file->Read<_bool>();
 }
 
 void MeshEffectData::Set_Desc(DESC tDesc)

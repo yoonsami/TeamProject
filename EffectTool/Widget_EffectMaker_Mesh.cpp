@@ -367,6 +367,7 @@ void Widget_EffectMaker_Mesh::Option_TextureOp(_int iIndex)
 	string strSeparatorTag = "Texture " + strIndex;
 	string strIsOn = "Texture Option On##" + strIndex;
 	string strChild1 = "##Child1_" + strIndex;
+	string strChild2 = "##Child2_" + strIndex;
 	string strImageViewer = "##Img_" + strIndex;
 	string strTextureButton = "Change Texture##" + strIndex;
 	string strTextureList = "Texture List##" + strIndex;
@@ -380,6 +381,11 @@ void Widget_EffectMaker_Mesh::Option_TextureOp(_int iIndex)
 	string strUVSpeed = "UV Speed(x,y)##" + strIndex;
 	string strContrast = "Contrast##" + strIndex;
 	string strAlphaOffset = "Alpha Offset##" + strIndex;
+	string strRadioButton0 = "Use as is##" + strIndex;
+	string strRadioButton1 = "Flip (Up/Down)##" + strIndex;
+	string strRadioButton2 = "Flip (Left/Right)##" + strIndex;
+	string strRadioButton3 = "Flip both##" + strIndex;
+	string strRadioButton4 = "Turn 90##" + strIndex;
 
 	ImGui::SeparatorText(strSeparatorTag.c_str());
 
@@ -396,19 +402,34 @@ void Widget_EffectMaker_Mesh::Option_TextureOp(_int iIndex)
 	// For. Texture 
 	{
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
-		ImGui::BeginChild(strChild1.c_str(), ImVec2(280, 170), false, window_flags);
+		ImGui::BeginChild(strChild1.c_str(), ImVec2(350, 170), false, window_flags);
 
 		SubWidget_ImageViewer(m_TexOption[iIndex].Texture.second, m_strTexturePath, strImageViewer.c_str());
 
 		ImGui::SameLine();
 
-		if (ImGui::Button(strTextureButton.c_str()))
 		{
-			m_iTexture_TextureList = &m_TexOption[iIndex].Texture.first;
-			m_pTextureTag_TextureList = &m_TexOption[iIndex].Texture.second;
-			const char* pszTextureListTag = strTextureList.c_str();
-			m_pszWidgetKey_TextureList = pszTextureListTag;
-			m_bTextureList_On = true;
+			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
+			ImGui::BeginChild(strChild2.c_str(), ImVec2(280, 170), false, window_flags);
+
+			if (ImGui::Button(strTextureButton.c_str()))
+			{
+				m_iTexture_TextureList = &m_TexOption[iIndex].Texture.first;
+				m_pTextureTag_TextureList = &m_TexOption[iIndex].Texture.second;
+				const char* pszTextureListTag = strTextureList.c_str();
+				m_pszWidgetKey_TextureList = pszTextureListTag;
+				m_bTextureList_On = true;
+			}
+			
+			// Flip 
+			ImGui::Text("Texture Flip Options");
+			ImGui::RadioButton(strRadioButton0.c_str(), &m_TexOption[iIndex].iFlipOption, 0); 
+			ImGui::RadioButton(strRadioButton1.c_str(), &m_TexOption[iIndex].iFlipOption, 1); 
+			ImGui::RadioButton(strRadioButton2.c_str(), &m_TexOption[iIndex].iFlipOption, 2);
+			ImGui::RadioButton(strRadioButton3.c_str(), &m_TexOption[iIndex].iFlipOption, 3);
+			ImGui::RadioButton(strRadioButton4.c_str(), &m_TexOption[iIndex].iFlipOption, 4);
+			
+			ImGui::EndChild();
 		}
 
 		ImGui::EndChild();
@@ -692,7 +713,7 @@ void Widget_EffectMaker_Mesh::Option_InitTransform()
 
 	if (ImGui::TreeNode("Init Rotation##EffectMesh"))
 	{
-		const char* pszItem_InitRotationOption[] = { "Static", "Random in range" };
+		const char* pszItem_InitRotationOption[] = { "Static", "Random in range"};
 		if (ImGui::BeginCombo("Decide init rotation option##InitRotation", pszItem_InitRotationOption[m_iInitRotationOption], 0))
 		{
 			for (_uint n = 0; n < IM_ARRAYSIZE(pszItem_InitRotationOption); n++)
@@ -705,11 +726,25 @@ void Widget_EffectMaker_Mesh::Option_InitTransform()
 			}
 			ImGui::EndCombo();
 		}
-
 		switch (m_iInitRotationOption)
 		{
 		case 0:
-			ImGui::InputFloat3("Angle##InitRotation", m_fInitRotation_Min);
+			ImGui::InputFloat3("Angle (x)##InitRotation", &m_fInitRotation_Min[0]);
+			
+			// If. billbord lock is on, set rotation 0.f
+			if (m_iTurnOption == 3)
+			{
+				ImGui::Text("(Billbord Option is On)");
+				
+				if (m_bBillbordAxes[0])
+				{
+					m_fInitRotation_Min[0] = 0.f;
+					m_fInitRotation_Min[2] = 0.f;
+				}
+				if (m_bBillbordAxes[1])
+					m_fInitRotation_Min[1] = 0.f;
+			}
+
 			memcpy(m_fInitRotation_Max, m_fInitRotation_Min, sizeof(m_fInitRotation_Min));
 			break;
 		case 1:
@@ -731,7 +766,7 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 	{
 		const char* pszItem_TranslateOption[] = { "No change", "Move to target position", "Move to random target position", // 2
 			"Go Straight", "Go Back", "Go Lift", "Go Right", "Go Up", "Go Down",	// 8
-			"Fountain"
+			"Fountain" // 9
 		};
 		if (ImGui::BeginCombo("Translate option##Movement", pszItem_TranslateOption[m_iTranslateOption], 0))
 		{
@@ -787,6 +822,9 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 			ImGui::InputFloat("Speed##Speed", (_float*)&m_vCurvePoint_Force[0].x);
 			ImGui::InputFloat("Gravity##Speed", (_float*)&m_vCurvePoint_Force[0].y);
 			break;
+		case 10: // Billbord
+		case 11: // Billbord_XZ
+			break;
 		}
 
 		ImGui::TreePop();
@@ -825,7 +863,7 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 
 	if (ImGui::TreeNode("Turn##Movement"))
 	{
-		const char* pszItem_TurnOption[] = { "No change", "Turn static", "Turn random"};
+		const char* pszItem_TurnOption[] = { "No change", "Turn static", "Turn random", "Billbord"};
 		if (ImGui::BeginCombo("Turn option##Movement", pszItem_TurnOption[m_iTurnOption], 0))
 		{
 			for (_uint n = 0; n < IM_ARRAYSIZE(pszItem_TurnOption); n++)
@@ -855,6 +893,10 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 			ImGui::InputFloat("Turn Speed##Movemenet2", &m_fTurnSpeed);
 			ImGui::InputFloat3("Axis Range (min)##Movement", m_fRandomAxis_Min);
 			ImGui::InputFloat3("Axis Range (max)##Movement", m_fRandomAxis_Max);
+			break;
+		case 3:
+			ImGui::Checkbox("Lock XZ", &m_bBillbordAxes[0]); ImGui::SameLine();
+			ImGui::Checkbox("Lock Y", &m_bBillbordAxes[1]);
 			break;
 		}
 		ImGui::TreePop();
@@ -891,7 +933,7 @@ void Widget_EffectMaker_Mesh::Create()
 
 		MeshEffectData::DESC tMeshEffectDesc
 		{
-			m_szTag,
+				m_szTag,
 				m_fDuration,
 				m_bBlurOn,
 				m_bUseFadeOut,
@@ -910,6 +952,7 @@ void Widget_EffectMaker_Mesh::Create()
 				m_bColorChangingOn,
 
 				m_TexOption[0].Texture.second,
+				m_TexOption[0].iFlipOption,
 				m_TexOption[0].iColoringOption,
 				ImVec4toColor(m_TexOption[0].vColorBase1),
 				ImVec4toColor(m_TexOption[0].vColorBase2),
@@ -921,6 +964,7 @@ void Widget_EffectMaker_Mesh::Create()
 				m_TexOption[0].fAlphaOffset,
 
 				m_TexOption[1].Texture.second,
+				m_TexOption[1].iFlipOption,
 				m_TexOption[1].iColoringOption,
 				ImVec4toColor(m_TexOption[1].vColorBase1),
 				ImVec4toColor(m_TexOption[1].vColorBase2),
@@ -932,6 +976,7 @@ void Widget_EffectMaker_Mesh::Create()
 				m_TexOption[1].fAlphaOffset,
 
 				m_TexOption[2].Texture.second,
+				m_TexOption[2].iFlipOption,
 				m_TexOption[2].iColoringOption,
 				ImVec4toColor(m_TexOption[2].vColorBase1),
 				ImVec4toColor(m_TexOption[2].vColorBase2),
@@ -989,7 +1034,7 @@ void Widget_EffectMaker_Mesh::Create()
 				_float3(m_fEndPositionOffset_Min),
 				_float3(m_fEndPositionOffset_Max),
 				m_iSpeedType,
-			{ m_vCurvePoint_Force[0], m_vCurvePoint_Force[1], m_vCurvePoint_Force[2], m_vCurvePoint_Force[3] },
+				{ m_vCurvePoint_Force[0], m_vCurvePoint_Force[1], m_vCurvePoint_Force[2], m_vCurvePoint_Force[3] },
 
 				m_iScalingOption,
 				_float3(m_fEndScaleOffset),
@@ -998,6 +1043,7 @@ void Widget_EffectMaker_Mesh::Create()
 				m_fTurnSpeed,
 				_float3(m_fRandomAxis_Min),
 				_float3(m_fRandomAxis_Max),
+				{m_bBillbordAxes[0], m_bBillbordAxes[1]}
 		};
 		EffectObj->Get_MeshEffect()->Set_TransformDesc(&tTransform_Desc);
 		EffectObj->Get_MeshEffect()->InitialTransform();
@@ -1043,6 +1089,7 @@ void Widget_EffectMaker_Mesh::Save()
 		for (_int i = 0; i < m_iTexOptionCnt; i++)
 		{
 			file->Write<string>(m_TexOption[i].Texture.second);
+			file->Write<_int>(m_TexOption[i].iFlipOption);
 			file->Write<_int>(m_TexOption[i].iColoringOption);
 			file->Write<_float4>(ImVec4toColor(m_TexOption[i].vColorBase1));
 			file->Write<_float4>(ImVec4toColor(m_TexOption[i].vColorBase2));
@@ -1116,6 +1163,8 @@ void Widget_EffectMaker_Mesh::Save()
 		file->Write<_float>(m_fTurnSpeed);
 		file->Write<_float3>(_float3(m_fRandomAxis_Min));
 		file->Write<_float3>(_float3(m_fRandomAxis_Max));
+		for (_uint i = 0; i < 2; i++)
+			file->Write<_bool>(m_bBillbordAxes[i]);
 	}	
 	
 	RESOURCES.ReloadOrAddMeshEffectData(Utils::ToWString(strFileName), Utils::ToWString(strFilePath));
@@ -1168,6 +1217,7 @@ void Widget_EffectMaker_Mesh::Load()
 		m_TexOption[i].Texture.first = GetIndex_FromTexList(m_TexOption[i].Texture.second);
 		if (0 != m_TexOption[i].Texture.first)
 			m_TexOption[i].bIsOption_On = true;
+		m_TexOption[i].iFlipOption = file->Read<_int>();
 		m_TexOption[i].iColoringOption = file->Read<_int>();
 		m_TexOption[i].vColorBase1 = ColorToImVec4(file->Read<_float4>());
 		m_TexOption[i].vColorBase2 = ColorToImVec4(file->Read<_float4>());
@@ -1290,6 +1340,8 @@ void Widget_EffectMaker_Mesh::Load()
 	memcpy(m_fRandomAxis_Min, &vTemp_vec3, sizeof(m_fRandomAxis_Min));
 	vTemp_vec3 = file->Read<_float3>();
 	memcpy(m_fRandomAxis_Max, &vTemp_vec3, sizeof(m_fRandomAxis_Max));
+	for (_int i = 0; i < 2; i++)
+		m_bBillbordAxes[i] = file->Read<_bool>();
 	if (Equal(_float3(m_fRandomAxis_Min), _float3(0.f, 0.f, 0.f)))
 		m_iTurnOption = 0;
 	else
