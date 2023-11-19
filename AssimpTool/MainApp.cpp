@@ -27,10 +27,10 @@ HRESULT MainApp::Init()
 		}
 	}
 
-	//ExportAssets();
+	ExportAssets();
 	//ExportParts();
 	//ExportWeapon();
-	ExportWrongAnimRight();
+	//ExportWrongAnimRight();
 	
 
 

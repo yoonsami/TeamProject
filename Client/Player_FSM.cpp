@@ -876,11 +876,11 @@ void Player_FSM::skill_1100()
     {
         AttackCollider_On(NORMAL_ATTACK);
 
-        if (!m_bAttackEffectCreate)
-        {
-            Add_Effect(L"Teoi_Slash2");
-            m_bAttackEffectCreate = true;
-        }
+		/*  if (!m_bAttackEffectCreate)
+		  {
+			  Add_Effect(L"Teoi_Slash2");
+			  m_bAttackEffectCreate = true;
+		  }*/
     }
     else if (Get_CurFrame() == 13)
         AttackCollider_Off();
