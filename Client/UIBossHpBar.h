@@ -4,7 +4,7 @@
 class UIBossHpBar : public MonoBehaviour
 {
 public:
-    UIBossHpBar();
+    UIBossHpBar(BOSS eBoss);
 
 
 public:
@@ -28,9 +28,11 @@ private:
     weak_ptr<GameObject>    m_pElement;
     weak_ptr<GameObject>    m_pBossName;
 
-    _float      m_fRatio        = { 0.f };
-    _bool       m_bIsWork       = { false };
-    _float      m_fSpeed        = { 0.f };
-    _float      m_fTargetRatio  = { 0.f };
+    _float                  m_fRatio        = { 0.f };
+    _bool                   m_bIsWork       = { false };
+    _float                  m_fSpeed        = { 0.f };
+    _float                  m_fTargetRatio  = { 0.f };
+
+    BOSS                    m_eBoss         = { BOSS::MAX };
 };
 

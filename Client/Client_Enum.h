@@ -10,10 +10,15 @@ enum class HERO
 	SPIKE,
 	YEONHEE,
 	SHANE,
-	YEONHEE,
 	MAX 
 };
 
+enum class BOSS
+{
+	MIR,
+	AXE,
+	MAX
+};
 
 enum LEVEL
 { 
