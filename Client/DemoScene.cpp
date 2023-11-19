@@ -54,6 +54,7 @@
 #include "UiMonsterHp.h"
 #include "UiDamageCreate.h"
 #include "UIBossHpBar.h"
+#include "UiComboEffect.h"
 
 
 #include <filesystem>
@@ -690,6 +691,15 @@ void DemoScene::Load_Ui()
 		Add_GameObject(pObj, true);
 	}
 
+
+	{
+		auto pObj = Get_UI(L"UI_Combo_Effect");
+		if (nullptr != pObj)
+		{
+			auto pScript = make_shared<UiComboEffect>();
+			pObj->Add_Component(pScript);
+		}
+	}
 
 
 	{

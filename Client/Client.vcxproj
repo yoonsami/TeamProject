@@ -232,6 +232,7 @@
     <ClInclude Include="MapObjectScript.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Player_FSM.h" />
+    <ClInclude Include="UiComboEffect.h" />
     <ClInclude Include="Yeonhee_FSM.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Silversword_Soldier_FSM.h" />
@@ -309,6 +310,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Player_FSM.cpp" />
+    <ClCompile Include="UiComboEffect.cpp" />
     <ClCompile Include="Yeonhee_FSM.cpp" />
     <ClCompile Include="Silversword_Soldier_FSM.cpp" />
     <ClCompile Include="SpearAce_Clone_FSM.cpp" />

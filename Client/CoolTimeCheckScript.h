@@ -51,9 +51,10 @@ private:
     
     vector<weak_ptr<GameObject>>    m_pUi_Skill_Type;
 
-
     vector<_bool>                   m_bIsCoolChangeOne;
     vector<weak_ptr<GameObject>>    m_pUi_Skill_Cool;
+
+    weak_ptr<GameObject>            m_pCombo_Effect;
 
     COOLTIMEINFO                    m_tagEvade              = {};
     HERO                            m_eCurHero              = { HERO::MAX };
