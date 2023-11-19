@@ -365,9 +365,7 @@ void Boss_Spike_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pL
 
         if (m_bGroggyPattern)
         {
-            m_fGroggy_Gauge -= 10.f;
-            
-            if (m_fGroggy_Gauge <= 0.f)
+            if (m_pOwner.lock()->Get_GroggyGauge(10.f))
             {
                 m_bGroggyPattern = false;
                 m_eCurState = STATE::groggy_start;
@@ -375,8 +373,7 @@ void Boss_Spike_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pL
                 Create_CounterMotionTrail();
 
                 if (!m_pCamera.expired())
-                    m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.f, 0.f);
-                
+                    m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.f, 0.f);   
             }
         }
     }
@@ -393,9 +390,7 @@ void Boss_Spike_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pL
 
         if (m_bGroggyPattern)
         {
-            m_fGroggy_Gauge -= 15;
-
-            if (m_fGroggy_Gauge <= 0)
+            if (m_pOwner.lock()->Get_GroggyGauge(15.f))
             {
                 m_bGroggyPattern = false;
                 m_eCurState = STATE::groggy_start;
@@ -420,9 +415,7 @@ void Boss_Spike_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pL
 
         if (m_bGroggyPattern)
         {
-            m_fGroggy_Gauge -= 20;
-
-            if (m_fGroggy_Gauge <= 0)
+            if (m_pOwner.lock()->Get_GroggyGauge(20.f))
             {
                 m_bGroggyPattern = false;
                 m_eCurState = STATE::groggy_start;
@@ -447,9 +440,7 @@ void Boss_Spike_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pL
 
         if (m_bGroggyPattern)
         {
-            m_fGroggy_Gauge -= 20;
-
-            if (m_fGroggy_Gauge <= 0)
+            if (m_pOwner.lock()->Get_GroggyGauge(20.f))
             {
                 m_bGroggyPattern = false;
                 m_eCurState = STATE::groggy_start;
@@ -938,7 +929,7 @@ void Boss_Spike_FSM::groggy_loop_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"groggy_loop", 0.1f, false, m_fGroggyStateAnimationSpeed);
+    animator->Set_NextTweenAnim(L"groggy_loop", 0.1f, false, 3.f);
 }
 
 void Boss_Spike_FSM::groggy_end()
@@ -948,7 +939,7 @@ void Boss_Spike_FSM::groggy_end()
 
 void Boss_Spike_FSM::groggy_end_Init()
 {
-    m_fGroggy_Gauge = 100.f;
+    m_pOwner.lock()->Set_GroggyGauge(100.f);
 
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -1753,7 +1744,8 @@ void Boss_Spike_FSM::skill_100100()
 {
     if (Get_CurFrame() == 4)
     {
-        m_fGroggy_Gauge = 100.f;
+        m_pOwner.lock()->Set_GroggyGauge(100.f);
+
         m_bGroggyPattern = false;
         Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.5f);
 

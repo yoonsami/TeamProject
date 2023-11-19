@@ -44,7 +44,7 @@ private:
     _bool m_bSmoothReturn = false;
     _float m_fFollowSpeed = 1.f;
     _float m_fMaxDistance = 5.f;
-    _float3 m_vOffset = { 1.f,1.f,1.f };
+    _float3 m_vOffset = { 0.f,1.f,-1.f };
     _float m_fRotationSpeed = 1.f;
 
     _bool m_bFixedCheck = false;

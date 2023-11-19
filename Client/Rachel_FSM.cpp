@@ -1081,7 +1081,7 @@ void Rachel_FSM::skill_91100()
         m_eCurState = STATE::b_idle;
     
 
-    if (Get_CurFrame() >= 9)
+    if (Get_CurFrame() >= 22)
     {
         if (vInputVector != _float3(0.f))
             m_eCurState = STATE::b_run;
@@ -1112,7 +1112,7 @@ void Rachel_FSM::skill_93100()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    if (Get_CurFrame() >= 18)
+    if (Get_CurFrame() >= 25)
     {
         if (vInputVector != _float3(0.f))
             m_eCurState = STATE::b_run;

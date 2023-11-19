@@ -19,6 +19,7 @@
 #include "Dellons_FSM.h"
 #include "Spike_FSM.h"
 #include "Rachel_FSM.h"
+#include "Shane_FSM.h"
 
 HeroChangeScript::HeroChangeScript()
 {
@@ -69,13 +70,13 @@ void HeroChangeScript::Tick()
         else
             Change_To_Spike();
     }
-	/*else if (KEYTAP(KEY_TYPE::F6))
+	else if (KEYTAP(KEY_TYPE::F6))
 	{
-		if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == (L"ShaneGhost"))
+		if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == (L"Shane"))
 			Change_To_Player();
 		else
 			Change_To_Shane();
-	}*/
+	}
 	else if (KEYTAP(KEY_TYPE::F7))
 	{
 		if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == (L"Rachel"))
@@ -323,10 +324,10 @@ void HeroChangeScript::Change_To_Shane()
 	CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Player_AttackCollider"));
 	CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Vehicle_AttackCollider"));
 
-	shared_ptr<Model> model = RESOURCES.Get<Model>(L"ShaneGhost");
+	shared_ptr<Model> model = RESOURCES.Get<Model>(L"Shane");
 
 	m_pOwner.lock()->Get_Animator()->Set_Model(model);
-	m_pOwner.lock()->Change_Component(make_shared<Rachel_FSM>());
+	m_pOwner.lock()->Change_Component(make_shared<Shane_FSM>());
 
 	//Add. Player's Weapon
 	Add_Character_Weapon(L"Weapon_Shane");

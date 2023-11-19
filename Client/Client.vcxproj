@@ -234,6 +234,8 @@
     <ClInclude Include="Player_FSM.h" />
     <ClInclude Include="Rachel_FSM.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Shane_Clone_FSM.h" />
+    <ClInclude Include="Shane_FSM.h" />
     <ClInclude Include="Silversword_Soldier_FSM.h" />
     <ClInclude Include="SpearAce_Clone_FSM.h" />
     <ClInclude Include="SpearAce_FSM.h" />
@@ -310,6 +312,8 @@
     </ClCompile>
     <ClCompile Include="Player_FSM.cpp" />
     <ClCompile Include="Rachel_FSM.cpp" />
+    <ClCompile Include="Shane_Clone_FSM.cpp" />
+    <ClCompile Include="Shane_FSM.cpp" />
     <ClCompile Include="Silversword_Soldier_FSM.cpp" />
     <ClCompile Include="SpearAce_Clone_FSM.cpp" />
     <ClCompile Include="SpearAce_FSM.cpp" />

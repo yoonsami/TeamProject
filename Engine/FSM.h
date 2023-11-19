@@ -50,9 +50,6 @@ public:
 	void Reset_Weapon();
 	void Reset_Vehicle();
 
-	_float Get_GroggyGauge() { return m_fGroggy_Gauge; }
-
-
  protected:
 	weak_ptr<GameObject> m_pTarget;
 	weak_ptr<GameObject> m_pAttackCollider;
@@ -73,8 +70,6 @@ public:
 	_float m_fAttackRange = 2.f;
 	_float m_fDetectRange = 2.f;
 	_float m_fGazeCheckRange = 2.f;
-
-	_float m_fGroggy_Gauge = 100.f;
 
 	_float m_fEffectYOffSet = 1.5f;
 
