@@ -76,7 +76,7 @@ void DemoScene::Render_SampleMapObject()
 HRESULT DemoScene::Load_Scene()
 {
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\");
-	//Load_DemoModel();
+	Load_DemoModel();
 	shared_ptr<GameObject> sky = make_shared<GameObject>();
 	sky->GetOrAddTransform();
 	sky->Add_Component(make_shared<ModelRenderer>(RESOURCES.Get<Shader>(L"SkyBox.fx")));

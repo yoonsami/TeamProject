@@ -18,6 +18,7 @@
 #include "OBBBoxCollider.h"
 #include "SphereCollider.h"
 #include "AABBBoxCollider.h"
+#include "PointLightScript.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -388,9 +389,9 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 		file->Read<_float4>(loadPointLightInfo.vPosition);
 		file->Read<LightColor>(loadPointLightInfo.color);
 		file->Read<_float>(loadPointLightInfo.range);
-
 		shared_ptr<GameObject> PointLight = make_shared<GameObject>();
 		PointLight->Set_Name(L"PointLight");
+		//트랜스폼
 		PointLight->GetOrAddTransform()->Set_State(Transform_State::POS, loadPointLightInfo.vPosition);
 		{
 			// LightComponent 생성 후 세팅
@@ -405,6 +406,40 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 			PointLight->Add_Component(lightCom);
 		}
 		Add_GameObject(PointLight);
+
+		// 점광원효과 기본초기화
+		shared_ptr<PointLightScript> pPLE = make_shared<PointLightScript>();
+		PointLight->Add_Component(pPLE);
+		pPLE->Init();
+
+		// 점광원 효과정보
+		_bool bUseEffect = false;
+		file->Read<_bool>(bUseEffect);
+		pPLE->Set_bUseEffect(bUseEffect);
+		if (bUseEffect) // 점광원효과가 있는 녀석이라면
+		{
+			_float4 AS = { 1.f, 1.f, 1.f, 1.f };
+			file->Read<_float4>(AS);
+			pPLE->Set_AmbientStart(AS);
+			_float4 AT = { 1.f, 1.f, 1.f, 1.f };
+			file->Read<_float4>(AT);
+			pPLE->Set_AmbientTarget(AT);
+			_float4 DS = { 1.f, 1.f, 1.f, 1.f };
+			file->Read<_float4>(DS);
+			pPLE->Set_DiffuseStart(DS);
+			_float4 DE = { 1.f, 1.f, 1.f, 1.f };
+			file->Read<_float4>(DE);
+			pPLE->Set_DiffuseTarget(DE);
+			_float SR = { 0.f };
+			file->Read<_float>(SR);
+			pPLE->Set_StartRange(SR);
+			_float TR = { 0.f };
+			file->Read<_float>(TR);
+			pPLE->Set_TargetRange(TR);
+			_float SP = { 0.f };
+			file->Read<_float>(SP);
+			pPLE->Set_Speed(SP);
+		}
 	}
 
 	// 벽정보 불러오기 및 벽생성
@@ -501,7 +536,7 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 		file->Read<_float3>(CullPos);
 		file->Read<_float>(CullRadius);
 
-		// 오브젝트 틀 생성
+// 오브젝트 생성
 		shared_ptr<GameObject> CreateObject = make_shared<GameObject>();
 		CreateObject->Set_Name(strObjectName);
 		CreateObject->Set_DrawShadow(bShadow);
@@ -521,17 +556,31 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 		// 모델생성
 		shared_ptr<Model> model = RESOURCES.Get<Model>(Utils::ToWString(strModelName));
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-		shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
-		CreateObject->Add_Component(renderer);
-		renderer->Set_Model(model);
-		renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT);
-		renderer->SetFloat(3, fUVWeight);
+		// Anim_으로 시작하는 녀석들은 애니메이션모델, 아니면 논애님
+		if (strModelName.find("Anim_") != std::string::npos)
+		{
+			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+			CreateObject->Add_Component(animator);
+			animator->Set_Model(model);
+			// 시작애니메이션의 인덱스, 반복여부, 재생속도
+			animator->Set_CurrentAnim(0, true, 1.f);
+		}
+		else
+		{
+			shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+			CreateObject->Add_Component(renderer);
+			renderer->Set_Model(model);
+			renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT);
+			renderer->SetFloat(3, fUVWeight);
+		}
+
 		// 트랜스폼 생성
 		if (bTransform)
 		{
 			CreateObject->Add_Component(make_shared<Transform>());
 			CreateObject->Get_Transform()->Set_WorldMat(WorldMatrix);
 		}
+
 		// 콜라이더 생성
 		if (bCollider)
 		{

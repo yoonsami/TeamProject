@@ -162,10 +162,10 @@ HRESULT DemoScene::Load_Scene()
 	Load_Player();
 	Load_Light();
 	Load_Camera();
-	Load_MapFile(L"MirMap");
+	Load_MapFile(L"YeopoMap");
 	//Load_Monster(1);
 	//Load_Boss_Dellons();
-	Load_Boss_Mir();
+	//Load_Boss_Mir();
 
 	Load_Ui();
 
@@ -180,7 +180,7 @@ void DemoScene::Load_Player()
 		
 		ObjPlayer->Add_Component(make_shared<Transform>());
 	
-		ObjPlayer->Get_Transform()->Set_State(Transform_State::POS, _float4(-0.f, 6.5f, -50.f, 1.f));
+		ObjPlayer->Get_Transform()->Set_State(Transform_State::POS, _float4(-0.f, 0.f, 0.f, 1.f));
 		{
 			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 

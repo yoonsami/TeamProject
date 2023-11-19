@@ -56,6 +56,7 @@ public:
     _float4x4 Get_CurAnimTransform(_int boneIndex);
 
     void Set_NextTweenAnim(const wstring& animName, _float tweenDuration, _bool loop, _float animSpeed);
+    void Set_CurrentAnim(_int animIndex, _bool loop, _float animSpeed);
     void Set_CurrentAnim(const wstring& animName, _bool loop, _float animSpeed);
 
     void Set_AnimationSpeed(_float animSpeed);
