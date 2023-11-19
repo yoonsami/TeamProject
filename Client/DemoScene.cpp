@@ -162,7 +162,8 @@ HRESULT DemoScene::Load_Scene()
 	Load_Player();
 	Load_Light();
 	Load_Camera();
-	Load_MapFile(L"YeopoMap");
+	// 플레이어의 위치를 잡아주기 때문에 LoadPlayer 이후로 해야함.
+	Load_MapFile(L"MirMap");
 	//Load_Monster(1);
 	//Load_Boss_Dellons();
 	//Load_Boss_Mir();

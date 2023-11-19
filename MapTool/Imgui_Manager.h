@@ -61,6 +61,10 @@ private:
 	void Clear_WallMesh();
 	// 최근에 피킹한벽 삭제
 	void Delete_WallMesh();
+	// 플레이어 생성위치를 현재의 카메라 포지션으로 변경
+	void SetPlayerPosByCameraPos();
+	// 플레이어 룩앳 위치를 피킹 포지션으로 변경
+	void SetPlayerLookAtPosByPickingPos();
 
 	// 점광원 제거
 	HRESULT Delete_PointLight();
@@ -163,8 +167,10 @@ private:
 	vector<pair<_float3, _float3>> m_WallRectPosLDRU;
 
 // 플레이어 위치
-	_float4 m_vecPlayerPosition = { 0.f, 0.f, 0.f, 1.f };
+	_float4 m_PlayerCreatePosition = { 0.f, 0.f, 0.f, 1.f };
+	_float4 m_PlayerLookAtPosition = { 0.f, 0.f, 0.f, 1.f };
 
+// 맵 로드정보
 	_int curMapIndex = 0;
 	vector<string> m_MapNames;
 };

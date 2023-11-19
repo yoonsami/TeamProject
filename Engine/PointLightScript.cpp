@@ -8,19 +8,22 @@ PointLightScript::PointLightScript()
 
 HRESULT PointLightScript::Init()
 {
-	if (Get_Owner()->Get_Light() == nullptr)
-		return E_FAIL;
-
-	//// 기본초기화
-	//m_AmbientStartColor = Get_Owner()->Get_Light()->Get_LightInfo().color.ambient;
-	//m_AmbientEndColor = Get_Owner()->Get_Light()->Get_LightInfo().color.ambient;
-	//m_DiffuseStartColor = Get_Owner()->Get_Light()->Get_LightInfo().color.diffuse;
-	//m_DiffuseEndColor = Get_Owner()->Get_Light()->Get_LightInfo().color.diffuse;
-	//m_fStartRange = Get_Owner()->Get_Light()->Get_LightInfo().range;
-	//m_fEndRange = Get_Owner()->Get_Light()->Get_LightInfo().range;
-	//m_fEffectSpeed = 1.f;
-
 	return S_OK;
+}
+
+void PointLightScript::Clear()
+{
+	if (Get_Owner()->Get_Light() == nullptr)
+		return;
+
+	// 기본초기화
+	m_AmbientStartColor = Get_Owner()->Get_Light()->Get_LightInfo().color.ambient;
+	m_AmbientEndColor = Get_Owner()->Get_Light()->Get_LightInfo().color.ambient;
+	m_DiffuseStartColor = Get_Owner()->Get_Light()->Get_LightInfo().color.diffuse;
+	m_DiffuseEndColor = Get_Owner()->Get_Light()->Get_LightInfo().color.diffuse;
+	m_fStartRange = Get_Owner()->Get_Light()->Get_LightInfo().range;
+	m_fEndRange = Get_Owner()->Get_Light()->Get_LightInfo().range;
+	m_fEffectSpeed = 1.f;
 }
 
 HRESULT PointLightScript::Init_Reverse()

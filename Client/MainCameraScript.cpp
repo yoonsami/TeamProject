@@ -23,9 +23,16 @@ MainCameraScript::~MainCameraScript()
 
 HRESULT MainCameraScript::Init()
 {
+    _float3 vOffSetPos = (m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS) +
+        m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::LOOK) * -3.f +
+        m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::UP) * 2.f).xyz();
+
+    m_vOffset = vOffSetPos - m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
+
     m_vOffset.Normalize();
 
     Get_Transform()->Set_State(Transform_State::POS, m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS) + m_vOffset);
+
 
     m_UiTargetLockon = CUR_SCENE->Get_UI(L"UI_Target_LockOn");
     m_UiTargetHp = CUR_SCENE->Get_UI(L"UI_Monster_Hp");

@@ -338,8 +338,6 @@ void Scene::Load_UIFile(const wstring& strDataFilePath, _bool bRender)
 
 void Scene::Load_MapFile(const wstring& _mapFileName)
 {
-	
-
 	// 세이브 파일 이름으로 로드하기
 	wstring strFilePath = L"..\\Resources\\MapData\\";
 	strFilePath += _mapFileName + L".dat";
@@ -638,6 +636,22 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 		Add_GameObject(CreateObject);
 	}
 
+	// 플레이어 생성위치, 룩앳
+	_float4 PlayerCreatePos = { 0.f, 0.f, 0.f, 1.f };
+	_float4 PlayerLookAtPos = { 0.f, 0.f, 0.f, 1.f };
+	file->Read<_float4>(PlayerCreatePos);
+	// 위험방지
+	PlayerCreatePos.w = 1.f;
+	file->Read<_float4>(PlayerLookAtPos);
+	// 위험방지
+	PlayerLookAtPos.w = 1.f;
+
+	shared_ptr<GameObject> PlayerPtr = Get_GameObject(L"Player");
+	if (PlayerPtr != nullptr)
+	{
+		PlayerPtr->Get_Transform()->Set_State(Transform_State::POS, PlayerCreatePos);
+		PlayerPtr->Get_Transform()->LookAt(PlayerLookAtPos);
+	}
 }
 
 void Scene::PickUI()

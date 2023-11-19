@@ -266,7 +266,8 @@ void ImGui_Manager::Frame_ObjectBaseManager()
     ImGui::SameLine();
     ImGui::Text("Press Z");
 
-    if (ImGui::Button("CreateNames") || KEYTAP(KEY_TYPE::Z))
+    // 현재 맵에있는 오브젝트 이름들을 텍스트파일로 저장.
+    if (ImGui::Button("CreateNames"))
         Save_ModelNames();
 
     ImGui::End();
@@ -501,13 +502,6 @@ void ImGui_Manager::Frame_SelcetObjectManager()
 }
 void ImGui_Manager::Frame_Light()
 {
-	ImGui::Text("CameraPos");
-	m_CamPos = CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_State(Transform_State::POS);
-	if (ImGui::DragFloat3("##CamPos", (_float*)&m_CamPos))
-	{
-		CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_CamPos);
-	}
-
     ImGui::Begin("SkyBox&Light"); // 글자 맨윗줄
 
     ImGui::Text("CameraPos");
@@ -516,6 +510,22 @@ void ImGui_Manager::Frame_Light()
     {
         CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_CamPos);
     }
+
+    // 플레이어 생성위치
+    ImGui::Text("PlayerCreatePosition");
+    if(ImGui::DragFloat3("##PlayerCreatePosition", (_float*)&m_PlayerCreatePosition, 0.1f))
+    {
+        m_PlayerLookAtPosition.y = m_PlayerCreatePosition.y;
+    }
+    if (ImGui::Button("Set Player Pos"))
+        SetPlayerPosByCameraPos();
+    ImGui::Text("PlayerLookAtPosition");
+    if (ImGui::DragFloat3("##PlayerLookAtPosition", (_float*)&m_PlayerLookAtPosition, 0.1f))
+    {
+        m_PlayerLookAtPosition.y = m_PlayerCreatePosition.y;
+    }
+    if (ImGui::Button("Set Player LookAt Pos"))
+        SetPlayerLookAtPosByPickingPos();
 
     // 스카이박스 변경
     ImGui::SeparatorText("SkyBox##SkyBoxChange");
@@ -616,7 +626,7 @@ void ImGui_Manager::Frame_Light()
                 m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Set_bUseEffect(bEffectUse);
                 // 이펙트를 사용하기로 하면 그때색깔을 시작색깔로 지정
                 if (bEffectUse)
-                    m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Init();
+                    m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Clear();
                 // 이펙트를 사용 안하기로 하면 시작색을 반대로 대입
                 else
                     m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Init_Reverse();
@@ -942,7 +952,7 @@ HRESULT ImGui_Manager::Create_SelectPointLight()
         // 기본초기화
         shared_ptr<PointLightScript> pPLightScript = make_shared<PointLightScript>();
         m_pPointLightObjects.back()->Add_Component(pPLightScript);
-        pPLightScript->Init();
+        pPLightScript->Clear();
     }
 
     // 이름리스트에 하나 넣기
@@ -1013,6 +1023,17 @@ void ImGui_Manager::Clear_WallMesh()
 void ImGui_Manager::Delete_WallMesh()
 {
     m_WallRectPosLDRU.pop_back();
+}
+
+void ImGui_Manager::SetPlayerPosByCameraPos()
+{
+    m_PlayerCreatePosition = m_CamPos;
+}
+
+void ImGui_Manager::SetPlayerLookAtPosByPickingPos()
+{
+    m_PlayerLookAtPosition = m_PickingPos;
+    m_PlayerLookAtPosition.y = m_PlayerCreatePosition.y;
 }
 
 HRESULT ImGui_Manager::Delete_PointLight()
@@ -1190,6 +1211,14 @@ HRESULT ImGui_Manager::Save_MapObject()
         file->Write<_float3>(MapDesc.CullPos);
         file->Write<_float>(MapDesc.CullRadius);
     }
+
+    // 플레이어의 시작위치 저장.
+    m_PlayerCreatePosition.w = 1.f;
+    file->Write<_float4>(m_PlayerCreatePosition);
+    // 플레이어 룩앳포지션 저장
+    m_PlayerLookAtPosition.w = 1.f;
+    file->Write<_float4>(m_PlayerLookAtPosition);
+
     return S_OK;
 }
 
@@ -1268,7 +1297,7 @@ HRESULT ImGui_Manager::Load_MapObject()
         // 점광원효과 기본초기화
         shared_ptr<PointLightScript> pPLE = make_shared<PointLightScript>();
         m_pPointLightObjects.back()->Add_Component(pPLE);
-        pPLE->Init();
+        pPLE->Clear();
 
         // 점광원 효과정보
         _bool bUseEffect = false;
@@ -1359,6 +1388,15 @@ HRESULT ImGui_Manager::Load_MapObject()
         m_strObjectNamePtr.push_back(pChar);
         m_strObjectName.push_back(pChar.get());
     }
+
+    // 플레이어 시작지점, 피킹포즈
+    file->Read<_float4>(m_PlayerCreatePosition);
+    m_PlayerCreatePosition.w = 1.f;
+    file->Read<_float4>(m_PlayerLookAtPosition);
+    m_PlayerLookAtPosition.w = 1.f;
+    // 그 위치방향으로 카메라 세팅
+    CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_PlayerCreatePosition);
+    CUR_SCENE->Get_MainCamera()->Get_Transform()->LookAt(m_PlayerLookAtPosition);
 
     return S_OK;
 }

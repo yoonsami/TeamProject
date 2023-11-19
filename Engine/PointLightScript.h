@@ -10,6 +10,8 @@ public:
 
 public:
     HRESULT Init();
+    // 현재정보를 그대로 가져오기, Init에서 사용하면 클라에선 처음에 초기화되기때문에 Clear사용
+    void Clear();
     // 현재색깔과 레인지에 스타트색깔과레인지를 대입
     HRESULT Init_Reverse();
     virtual void Tick() override;
