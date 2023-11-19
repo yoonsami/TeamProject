@@ -155,6 +155,9 @@ SHADER_TYPE GameObject::Get_ShaderType()
 	if (Get_TrailRenderer() && Get_TrailRenderer()->Get_Shader())
 		return Get_TrailRenderer()->Get_Shader()->Get_ShaderType();
 
+	if (Get_DistortionRenderer() && Get_DistortionRenderer()->Get_Shader())
+		return Get_DistortionRenderer()->Get_Shader()->Get_ShaderType();
+
 	return SHADER_TYPE::NONE;
 }
 

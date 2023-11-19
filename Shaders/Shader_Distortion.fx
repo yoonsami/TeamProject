@@ -1,6 +1,9 @@
 #include "Render.fx"
 #include "Light.fx"
 float g_BarPercent;
+
+
+
 struct VS_OUT
 {
     float4 viewPos : POSITION;
@@ -78,6 +81,44 @@ void GS_Main(point VS_OUT input[1], inout TriangleStream<GS_OUTPUT> outputStream
     outputStream.RestartStrip();
 }
 
+MeshOutput VS_Model(VTXModel input)
+{
+    MeshOutput output;
+    output.position = mul(float4(input.position, 1.f), BoneTransform[BoneIndex]);
+    output.position = mul(output.position, W);
+    output.worldPosition = output.position.xyz;
+    output.viewPosition = mul(float4(output.worldPosition, 1.f), V).xyz;
+    output.position = mul(output.position, VP);
+    output.uv = input.uv;
+    output.viewNormal = mul(input.normal, (float3x3) BoneTransform[BoneIndex]);
+    output.viewNormal = mul(output.viewNormal, (float3x3) W);
+    output.viewNormal = normalize(mul(output.viewNormal, (float3x3) V));
+    output.viewTangent = mul(input.tangent, (float3x3) BoneTransform[BoneIndex]);
+    output.viewTangent = mul(output.viewTangent, (float3x3) W);
+    output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
+    
+
+    return output;
+}
+
+float4 PS_Model(MeshOutput input) : SV_Target
+{
+    float4 color = 0.f;
+    if (bHasDistortionMap)
+    {
+        color = DistortionMap.Sample(LinearSampler, input.uv);
+    }
+    if (color.r < 0.1f)
+        discard;
+    
+    color.a *= (1.f - g_float_0);
+    if (color.a < 0.1f)
+        discard;
+    
+    color.r *= (1.f - g_float_1);
+
+    return color;
+}
 //g_float_0 dissolveAcc;
 //g_float_1 distortionPower;
 //g_float_2 turnAngle;
@@ -114,12 +155,12 @@ technique11 T0
 {
     pass p0
     {
-        SetVertexShader(CompileShader(vs_5_0, VS_Default()));
+        SetVertexShader(CompileShader(vs_5_0, VS_Model()));
         SetRasterizerState(RS_CullNone);
         SetDepthStencilState(DSS_Default, 0);
-        SetPixelShader(CompileShader(ps_5_0, PS_CustomEffect1()));
-        SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetGeometryShader(CompileShader(gs_5_0, GS_Main()));
+        SetPixelShader(CompileShader(ps_5_0, PS_Model()));
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetGeometryShader(NULL);
     }
     pass p1
     {

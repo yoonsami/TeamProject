@@ -524,6 +524,7 @@ void ResourceMgr::CreateDefaultShader()
 		Load<Shader>(ShaderTag, ShaderTag);
 		auto shader = Get<Shader>(ShaderTag);
 		shader->Set_ShaderType(SHADER_TYPE::DISTORTION);
+
 	}
 	{
 		wstring ShaderTag = L"Distorted_Final.fx";

@@ -10,6 +10,7 @@
 #include "CoolTimeCheckScript.h"
 #include "ModelRenderer.h"
 #include "DistortionRenderer.h"
+
 Player_FSM::Player_FSM()
 {
 }
@@ -934,8 +935,14 @@ void Player_FSM::skill_1100_Init()
         shared_ptr<GameObject> obj = make_shared<GameObject>();
         obj->GetOrAddTransform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
         {
-            shared_ptr<DistortionRenderer> renderer = make_shared<DistortionRenderer>(RESOURCES.Get<Shader>(L"Shader_Distortion"));
+            shared_ptr<DistortionRenderer> renderer = make_shared<DistortionRenderer>(RESOURCES.Get<Shader>(L"Shader_Distortion.fx"));
+            renderer->Set_Model(RESOURCES.Get<Model>(L"fxmesh_PC_Teo_Trail_Skill_1300_00"));
+            shared_ptr<Material> material = make_shared<Material>();
+            material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"FX_Decal_03.tga", L"../Resources/Textures/Universal/FX_Decal_03.tga"), TextureMapType::DISTORTION);
+            renderer->Set_Material(material);
+            obj->Add_Component(renderer);
         }
+        CUR_SCENE->Add_GameObject(obj);
     }
 }
 
