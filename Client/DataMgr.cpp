@@ -443,6 +443,9 @@ void DataMgr::Initialize()
 
     
 
+   
+
+
     m_KeyElement.resize(ElementType::ElementEnd);
     m_KeyElement[0] = L"Element_Dark";
     m_KeyElement[1] = L"Element_Earth";

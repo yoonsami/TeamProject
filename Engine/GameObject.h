@@ -57,6 +57,8 @@ public:
 	_float Get_MaxHp()						{ return m_fMaxHP; }
 	_float& Get_CurHp()						{ return m_fHP; }
 	_float Get_HpRatio()					{ return m_fHP / m_fMaxHP; }
+	_float Get_CurGroggyGauge()				{ return m_fGroggy_Gauge; }
+	_float Get_Groggy_Gauge_Ratio()			{ return m_fGroggy_Gauge / m_fMaxGroggy_Gauge; }
 	_float3& Get_CullPos()					{ return m_vCullPos; }
 	_bool Get_Instancing()					{ return m_bInstancing; }
 	_uint Get_ObjectGroup()					{ return m_eObjectGroup; }
@@ -83,7 +85,7 @@ public:
 	void Set_ObjectGroup(_uint index)		{ m_eObjectGroup = index; }
 	void Set_VelocityMap(_bool flag)		{ m_bHasVelocityMap = flag; }
 	void Set_FrustumCulled(_bool flag)		{ m_bFrustumCull = flag; }
-
+	void Set_GroggyGauge(_float fGroggyGauge) { m_fGroggy_Gauge = fGroggyGauge; }
 	void DeleteComponent(COMPONENT_TYPE type) { m_Components[static_cast<_uint>(type)] = nullptr; }
 
 	shared_ptr<FSM> Get_FSM();
@@ -126,6 +128,18 @@ public:
 			return false;
 	}
 
+	_bool Get_GroggyGauge(_float fGroggyGauge)
+	{
+		m_fGroggy_Gauge -= fGroggyGauge;
+		if (m_fGroggy_Gauge <= 0)
+		{
+			m_fGroggy_Gauge = 0;
+			return true;
+		}
+		else
+			return false;
+	}
+
 	template<typename T>
 	shared_ptr<T> Get_Script();
 
@@ -148,6 +162,10 @@ private:
 
 	_float		m_fHP				= 100.f;
 	_float		m_fMaxHP			= 100.f;
+
+	_float		m_fGroggy_Gauge = 100.f;
+	_float		m_fMaxGroggy_Gauge = 100.f;
+
 
 	_bool		m_bIsRender			= { true };
 };

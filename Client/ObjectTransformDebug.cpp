@@ -23,7 +23,7 @@ void ObjectTransformDebug::Tick()
 	if (m_pTarget.lock()->Get_FSM())
 	{
 		_uint iHp = _uint(m_pTarget.lock()->Get_CurHp());
-		_float fGroggyGauge = m_pTarget.lock()->Get_FSM()->Get_GroggyGauge();
+		_float fGroggyGauge = m_pTarget.lock()->Get_CurGroggyGauge();
 		fontRenderer->Get_Text() = L"SpikeHp : " + to_wstring(iHp) + L"/GroggyGauge : " + to_wstring(fGroggyGauge);
 	}
 	else
