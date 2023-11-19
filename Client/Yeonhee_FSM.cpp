@@ -1164,7 +1164,7 @@ void Yeonhee_FSM::skill_100100()
 			desc.fLifeTime = 0.2f;
 			desc.fLimitDistance = 15.f;
 
-			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK);
 			Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKBACK_ATTACK);
 
         }

@@ -967,7 +967,7 @@ void ResourceMgr::CreateDefaultFont()
 void ResourceMgr::CreateMeshEffectData()
 {
 	wstring assetPath = L"..\\Resources\\EffectData\\MeshEffectData\\";
-
+	fs::create_directories(fs::path(assetPath));
 	for (auto& entry : fs::recursive_directory_iterator(assetPath))
 	{
 		if (entry.is_directory())
@@ -1118,7 +1118,7 @@ void ResourceMgr::CreateParticleData()
 void ResourceMgr::CreateGroupEffectData()
 {
 	wstring assetPath = L"..\\Resources\\EffectData\\GroupEffectData\\";
-
+	fs::create_directories(fs::path(assetPath));
 	for (auto& entry : fs::recursive_directory_iterator(assetPath))
 	{
 		if (entry.is_directory())

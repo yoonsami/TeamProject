@@ -331,60 +331,7 @@ void DataMgr::Initialize()
         tagData.KeyDeckSelect   = L"Big_Card_Dellons";
     }
     
-    // RACHEL
-    {
-        auto& tagData = m_HeroData[IDX(HERO::RACHEL)];
-        
-        tagData.Element         = ElementType::FIRE;
-        tagData.Star            = 4;
 
-        tagData.Skill0Combo     = 4;
-        tagData.Skill1Combo     = 0;
-        tagData.Skill2Combo     = 2;
-        tagData.Skill3Combo     = 0;
-        tagData.Skill4Combo     = 0;
-        tagData.Skill5Combo     = 0;
-
-        tagData.Skill1Info      = SkillInfo::NONE;
-        tagData.Skill2Info      = SkillInfo::NONE;
-        tagData.Skill3Info      = SkillInfo::NONE;
-        tagData.Skill4Info      = SkillInfo::NONE;
-        tagData.Skill5Info      = SkillInfo::NONE;
-
-        tagData.AttackDamage    = 1.f;
-        tagData.MaxHp           = 10.f;
-        tagData.CurHp           = 10.f;
-        tagData.PreHp           = 10.f;
-        tagData.Deffence        = 1.f;
-        tagData.HpRegen         = 1.f;
-        tagData.CriPercent      = 0.f;
-        tagData.CriDamageMul    = 1.f;
-
-        tagData.Skill1Cool      = 5.f;
-        tagData.Skill2Cool      = 5.f;
-        tagData.Skill3Cool      = 5.f;
-        tagData.Skill4Cool      = 5.f;
-        tagData.Skill5Cool      = 5.f;
-        tagData.Skill1DamageMul = 1.f;
-        tagData.Skill2DamageMul = 1.f;
-        tagData.Skill3DamageMul = 1.f;
-        tagData.Skill4DamageMul = 1.f;
-        tagData.Skill5DamageMul = 1.f;
-
-        tagData.ModelTag        = L"Rachel";
-        tagData.WeaponTag       = L"Weapon_Rachel";
-        tagData.KeyAttack       = L"Skill_Rachel0";
-        tagData.KeyEvade        = L"Skill_Rachel1";
-        tagData.KeySkill1       = L"Skill_Rachel2";
-        tagData.KeySkill2       = L"Skill_Rachel3";
-        tagData.KeySkill3       = L"Skill_Rachel4";
-        tagData.KeySkill4       = L"Skill_Rachel5";
-        tagData.KeySkill5       = L"Skill_Rachel6";
-        tagData.KeyChangeCard   = L"Card_Rachel";
-        tagData.KeyDeckMini     = L"Card_Deck_Rachel";
-        tagData.KeyDeckSelect   = L"Big_Card_Rachel";
-    }
-    
     // SHANE
     {
         auto& tagData = m_HeroData[IDX(HERO::SHANE)];

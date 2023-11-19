@@ -10,7 +10,6 @@ enum class HERO
 	SPIKE,
 	YEONHEE,
 	SHANE,
-	YEONHEE,
 	MAX 
 };
 
