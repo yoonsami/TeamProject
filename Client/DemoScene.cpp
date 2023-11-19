@@ -661,10 +661,11 @@ void DemoScene::Load_Ui()
 
 	{
 		auto pObj = Get_GameObject(L"Player");
-		if (nullptr == pObj)
-			return;
-		auto pScript = make_shared<UiHpBarController>(0);
-		pObj->Add_Component(pScript);
+		if (pObj)
+		{
+			auto pScript = make_shared<UiHpBarController>(0);
+			pObj->Add_Component(pScript);
+		}
 	}
 
 	{
@@ -704,22 +705,26 @@ void DemoScene::Load_Ui()
 
 	{
 		auto pObj = Get_UI(L"UI_Main_Button2");
-		if (nullptr == pObj)
-			return;
-		pObj->Get_Button()->AddOnClickedEvent([]()
-			{
-				CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Render_On();
-			});
+		if (pObj)
+		{
+			pObj->Get_Button()->AddOnClickedEvent([]()
+				{
+					CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Render_On();
+				});
+		}
 	}
 
 
 	// test code
 	{
 		auto pObj = Get_GameObject(L"Boss_Dellons");
-		Load_UIFile(L"..\\Resources\\UIData\\UI_BossHpBar.dat");
+			Load_UIFile(L"..\\Resources\\UIData\\UI_BossHpBar.dat");
+		if(pObj)
+		{
 
-		auto pScript = make_shared<UIBossHpBar>();
-		pObj->Add_Component(pScript);
+			auto pScript = make_shared<UIBossHpBar>();
+			pObj->Add_Component(pScript);
+		}
 	}
 
 
