@@ -164,12 +164,12 @@ HRESULT DemoScene::Load_Scene()
 	Load_Player();
 	Load_Light();
 	Load_Camera();
-	Load_MapFile(L"KrisMap");
-	Load_Monster(1);
-	Load_Boss_Spike();
+	// 플레이어의 위치를 잡아주기 때문에 LoadPlayer 이후로 해야함.
+	Load_MapFile(L"MirMap");
+	//Load_Monster(1);
 	//Load_Boss_Dellons();
 	//Load_Boss_Mir();
-	Load_Debug();
+
 	Load_Ui();
 
 	return S_OK;
@@ -183,7 +183,7 @@ void DemoScene::Load_Player()
 		
 		ObjPlayer->Add_Component(make_shared<Transform>());
 	
-		ObjPlayer->Get_Transform()->Set_State(Transform_State::POS, _float4(-0.f,0.f, 1.5f, 1.f));
+		ObjPlayer->Get_Transform()->Set_State(Transform_State::POS, _float4(-0.f, 0.f, 0.f, 1.f));
 		{
 			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 

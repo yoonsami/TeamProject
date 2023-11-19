@@ -226,6 +226,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="PhysxMgr.h" />
     <ClInclude Include="PickingMgr.h" />
+    <ClInclude Include="PointLightScript.h" />
     <ClInclude Include="Primitive3D.h" />
     <ClInclude Include="RawBuffer.h" />
     <ClInclude Include="RenderTargetGroup.h" />
@@ -309,6 +310,7 @@
     </ClCompile>
     <ClCompile Include="PhysxMgr.cpp" />
     <ClCompile Include="PickingMgr.cpp" />
+    <ClCompile Include="PointLightScript.cpp" />
     <ClCompile Include="Primitive3D.cpp" />
     <ClCompile Include="RawBuffer.cpp" />
     <ClCompile Include="RenderTargetGroup.cpp" />

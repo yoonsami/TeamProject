@@ -608,6 +608,18 @@ void ModelAnimator::Set_NextTweenAnim(const wstring& animName, _float tweenDurat
 	anim->speed = animSpeed;
 }
 
+void ModelAnimator::Set_CurrentAnim(_int animIndex, _bool loop, _float animSpeed)
+{
+	auto anim = Get_Model()->Get_AnimationByIndex(animIndex);
+	assert(animIndex >= 0);
+
+	m_TweenDesc.ClearNextAnim();
+	Set_CurrentAnim(animIndex);
+
+	anim->loop = loop;
+	anim->speed = animSpeed;
+}
+
 void ModelAnimator::Set_CurrentAnim(const wstring& animName, _bool loop, _float animSpeed)
 {
 	_int animIndex = -1;
