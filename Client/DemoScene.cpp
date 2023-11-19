@@ -55,7 +55,7 @@
 #include "UiDamageCreate.h"
 #include "UIBossHpBar.h"
 #include "UiComboEffect.h"
-
+#include "UiSkillGauge.h"
 
 #include <filesystem>
 #include "GachaScene.h"
@@ -697,6 +697,17 @@ void DemoScene::Load_Ui()
 		if (nullptr != pObj)
 		{
 			auto pScript = make_shared<UiComboEffect>();
+			pObj->Add_Component(pScript);
+		}
+	}
+
+	
+
+	{
+		auto pObj = Get_UI(L"UI_Skill_Use_Gauge");
+		if (nullptr != pObj)
+		{
+			auto pScript = make_shared<UiSkillGauge>();
 			pObj->Add_Component(pScript);
 		}
 	}

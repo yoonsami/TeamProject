@@ -223,6 +223,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\14.UiComboEffect">
       <UniqueIdentifier>{cd15e42c-4b44-41e9-a08d-6a1ceece6bee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\15.UiSkillGauge">
+      <UniqueIdentifier>{2df7a875-ec9a-46f7-a66a-9900fe964ab5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -468,6 +471,9 @@
     <ClInclude Include="UiComboEffect.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\14.UiComboEffect</Filter>
     </ClInclude>
+    <ClInclude Include="UiSkillGauge.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\15.UiSkillGauge</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -679,6 +685,9 @@
     </ClCompile>
     <ClCompile Include="UiComboEffect.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\14.UiComboEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="UiSkillGauge.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\15.UiSkillGauge</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
