@@ -1101,6 +1101,8 @@ void ResourceMgr::CreateMeshEffectData()
 		tTransformDesc.fTurnSpeed = file->Read<_float>();
 		tTransformDesc.vRandomAxis_Min = file->Read<_float3>();
 		tTransformDesc.vRandomAxis_Max = file->Read<_float3>();
+		for (_int i = 0; i < 2; i++)
+			tTransformDesc.bBillbordAxes[i] = file->Read<_bool>();
 
 		shared_ptr<MeshEffectData> meshEffectData = make_shared<MeshEffectData>();
 		meshEffectData->Set_Desc(tDesc);

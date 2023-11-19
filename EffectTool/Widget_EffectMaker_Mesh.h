@@ -201,6 +201,7 @@ private:
 	_float					m_fTurnSpeed = { 0.f };
 	_float					m_fRandomAxis_Min[3] = { 0.f, 0.f, 0.f };		
 	_float					m_fRandomAxis_Max[3] = { 0.f, 0.f, 0.f };
+	_bool					m_bBillbordAxes[2] = { true, true};
 	
 	/* const */
 	const string					m_strTexturePath = "../Resources/Textures/Universal/";

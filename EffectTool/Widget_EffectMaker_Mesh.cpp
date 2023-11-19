@@ -692,7 +692,7 @@ void Widget_EffectMaker_Mesh::Option_InitTransform()
 
 	if (ImGui::TreeNode("Init Rotation##EffectMesh"))
 	{
-		const char* pszItem_InitRotationOption[] = { "Static", "Random in range" };
+		const char* pszItem_InitRotationOption[] = { "Static", "Random in range"};
 		if (ImGui::BeginCombo("Decide init rotation option##InitRotation", pszItem_InitRotationOption[m_iInitRotationOption], 0))
 		{
 			for (_uint n = 0; n < IM_ARRAYSIZE(pszItem_InitRotationOption); n++)
@@ -705,11 +705,25 @@ void Widget_EffectMaker_Mesh::Option_InitTransform()
 			}
 			ImGui::EndCombo();
 		}
-
 		switch (m_iInitRotationOption)
 		{
 		case 0:
-			ImGui::InputFloat3("Angle##InitRotation", m_fInitRotation_Min);
+			ImGui::InputFloat3("Angle (x)##InitRotation", &m_fInitRotation_Min[0]);
+			
+			// If. billbord lock is on, set rotation 0.f
+			if (m_iTurnOption == 3)
+			{
+				ImGui::Text("(Billbord Option is On)");
+				
+				if (m_bBillbordAxes[0])
+				{
+					m_fInitRotation_Min[0] = 0.f;
+					m_fInitRotation_Min[2] = 0.f;
+				}
+				if (m_bBillbordAxes[1])
+					m_fInitRotation_Min[1] = 0.f;
+			}
+
 			memcpy(m_fInitRotation_Max, m_fInitRotation_Min, sizeof(m_fInitRotation_Min));
 			break;
 		case 1:
@@ -731,7 +745,7 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 	{
 		const char* pszItem_TranslateOption[] = { "No change", "Move to target position", "Move to random target position", // 2
 			"Go Straight", "Go Back", "Go Lift", "Go Right", "Go Up", "Go Down",	// 8
-			"Fountain"
+			"Fountain" // 9
 		};
 		if (ImGui::BeginCombo("Translate option##Movement", pszItem_TranslateOption[m_iTranslateOption], 0))
 		{
@@ -787,6 +801,9 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 			ImGui::InputFloat("Speed##Speed", (_float*)&m_vCurvePoint_Force[0].x);
 			ImGui::InputFloat("Gravity##Speed", (_float*)&m_vCurvePoint_Force[0].y);
 			break;
+		case 10: // Billbord
+		case 11: // Billbord_XZ
+			break;
 		}
 
 		ImGui::TreePop();
@@ -825,7 +842,7 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 
 	if (ImGui::TreeNode("Turn##Movement"))
 	{
-		const char* pszItem_TurnOption[] = { "No change", "Turn static", "Turn random"};
+		const char* pszItem_TurnOption[] = { "No change", "Turn static", "Turn random", "Billbord"};
 		if (ImGui::BeginCombo("Turn option##Movement", pszItem_TurnOption[m_iTurnOption], 0))
 		{
 			for (_uint n = 0; n < IM_ARRAYSIZE(pszItem_TurnOption); n++)
@@ -855,6 +872,10 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 			ImGui::InputFloat("Turn Speed##Movemenet2", &m_fTurnSpeed);
 			ImGui::InputFloat3("Axis Range (min)##Movement", m_fRandomAxis_Min);
 			ImGui::InputFloat3("Axis Range (max)##Movement", m_fRandomAxis_Max);
+			break;
+		case 3:
+			ImGui::Checkbox("Lock XZ", &m_bBillbordAxes[0]); ImGui::SameLine();
+			ImGui::Checkbox("Lock Y", &m_bBillbordAxes[1]);
 			break;
 		}
 		ImGui::TreePop();
@@ -891,7 +912,7 @@ void Widget_EffectMaker_Mesh::Create()
 
 		MeshEffectData::DESC tMeshEffectDesc
 		{
-			m_szTag,
+				m_szTag,
 				m_fDuration,
 				m_bBlurOn,
 				m_bUseFadeOut,
@@ -989,7 +1010,7 @@ void Widget_EffectMaker_Mesh::Create()
 				_float3(m_fEndPositionOffset_Min),
 				_float3(m_fEndPositionOffset_Max),
 				m_iSpeedType,
-			{ m_vCurvePoint_Force[0], m_vCurvePoint_Force[1], m_vCurvePoint_Force[2], m_vCurvePoint_Force[3] },
+				{ m_vCurvePoint_Force[0], m_vCurvePoint_Force[1], m_vCurvePoint_Force[2], m_vCurvePoint_Force[3] },
 
 				m_iScalingOption,
 				_float3(m_fEndScaleOffset),
@@ -998,6 +1019,7 @@ void Widget_EffectMaker_Mesh::Create()
 				m_fTurnSpeed,
 				_float3(m_fRandomAxis_Min),
 				_float3(m_fRandomAxis_Max),
+				{m_bBillbordAxes[0], m_bBillbordAxes[1]}
 		};
 		EffectObj->Get_MeshEffect()->Set_TransformDesc(&tTransform_Desc);
 		EffectObj->Get_MeshEffect()->InitialTransform();
@@ -1116,6 +1138,8 @@ void Widget_EffectMaker_Mesh::Save()
 		file->Write<_float>(m_fTurnSpeed);
 		file->Write<_float3>(_float3(m_fRandomAxis_Min));
 		file->Write<_float3>(_float3(m_fRandomAxis_Max));
+		for (_uint i = 0; i < 2; i++)
+			file->Write<_bool>(m_bBillbordAxes[i]);
 	}	
 	
 	RESOURCES.ReloadOrAddMeshEffectData(Utils::ToWString(strFileName), Utils::ToWString(strFilePath));
@@ -1290,6 +1314,8 @@ void Widget_EffectMaker_Mesh::Load()
 	memcpy(m_fRandomAxis_Min, &vTemp_vec3, sizeof(m_fRandomAxis_Min));
 	vTemp_vec3 = file->Read<_float3>();
 	memcpy(m_fRandomAxis_Max, &vTemp_vec3, sizeof(m_fRandomAxis_Max));
+	for (_int i = 0; i < 2; i++)
+		m_bBillbordAxes[i] = file->Read<_bool>();
 	if (Equal(_float3(m_fRandomAxis_Min), _float3(0.f, 0.f, 0.f)))
 		m_iTurnOption = 0;
 	else

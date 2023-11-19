@@ -197,7 +197,28 @@ void MeshEffect::InitialTransform()
 
     Get_Transform()->Set_State(Transform_State::POS, _float4(m_vStartPos, 1.f));
     Get_Transform()->Scaled(m_vStartScale);
+    
     Get_Transform()->Set_Rotation(m_vStartRotation);
+    // Billbord 
+    if (m_tTransform_Desc.iTurnOption == 3)
+    {
+        _float3 vCurrDir = Get_Transform()->Get_State(Transform_State::LOOK).xyz();
+        vCurrDir.Normalize();
+
+        _float3 vTargetDir = (CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+        vTargetDir.Normalize();
+
+        if (m_tTransform_Desc.bBillbordAxes[0])
+        {
+            vTargetDir.x = vCurrDir.x;
+            vTargetDir.z = vCurrDir.z;
+        }
+        if (m_tTransform_Desc.bBillbordAxes[1])
+            vTargetDir.y = vCurrDir.y;
+
+        Get_Transform()->Set_LookDir(vTargetDir);
+    }
+    
     Get_Transform()->Set_Quaternion(Quaternion::CreateFromRotationMatrix(_float4x4::CreateRotationY(XM_PI * 0.5f) * _float4x4::CreateFromQuaternion(Get_Transform()->Get_Rotation())));
 }
 
@@ -267,7 +288,7 @@ void MeshEffect::Translate()
         break;
     case 1: // Move to target position
     case 2: // Move to random target position
-        Get_Transform()->Set_State(Transform_State::POS, _float4(XMVectorLerp(m_vStartPos, m_vEndPos, m_fCurrAge), 0.f));
+        Get_Transform()->Set_State(Transform_State::POS, _float4(XMVectorLerp(m_vStartPos, m_vEndPos, m_fLifeTimeRatio), 0.f));
         break;
     case 3:
     {
@@ -325,15 +346,42 @@ void MeshEffect::Translate()
 
 void MeshEffect::Scaling()
 {
-    _float3 vScale = XMVectorLerp(m_vStartScale, m_vEndScale, m_fCurrAge);
+    _float3 vScale = XMVectorLerp(m_vStartScale, m_vEndScale, m_fLifeTimeRatio);
+
+    if (vScale.x < 0)
+        int i = 0;
+
     Get_Transform()->Scaled(vScale);
 }
 
 void MeshEffect::Turn()
 {
-    if (m_vRandomAxis.x == 0.f && m_vRandomAxis.y == 0.f && m_vRandomAxis.z == 0.f)
-        return;
-    Get_Transform()->Turn(m_vRandomAxis, m_fTurnSpeed);
+    // Billbord 
+    if (m_tTransform_Desc.iTurnOption == 3)
+    {
+        _float3 vCurrDir = Get_Transform()->Get_State(Transform_State::LOOK).xyz();
+        vCurrDir.Normalize();
+
+        _float3 vTargetDir = (CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+        vTargetDir.Normalize();
+
+        if (m_tTransform_Desc.bBillbordAxes[0])
+        {
+            vTargetDir.x = vCurrDir.x;
+            vTargetDir.z = vCurrDir.z;
+        }
+        if (m_tTransform_Desc.bBillbordAxes[1])
+            vTargetDir.y = vCurrDir.y;
+
+        Get_Transform()->Set_LookDir(vTargetDir);
+    }
+    else
+    {
+        // Turn 
+        if (m_vRandomAxis.x == 0.f && m_vRandomAxis.y == 0.f && m_vRandomAxis.z == 0.f)
+            return;
+        Get_Transform()->Turn(m_vRandomAxis, m_fTurnSpeed);
+    }
 }
 
 void MeshEffect::Run_SpriteAnimation()
@@ -489,23 +537,23 @@ _float MeshEffect::CalcSpeed()
     }
     else if (1 == m_tTransform_Desc.iSpeedType)
     {
-        if (0.f <= m_fLifeTimeRatio&& m_fLifeTimeRatio < m_SplineInput_Force[0])
+        if (0.f <= m_fLifeTimeRatio && m_fLifeTimeRatio < m_SplineInput_Force[0])
             fSpeed = 0.f;
         else if (m_SplineInput_Force[0] <= m_fLifeTimeRatio && m_fLifeTimeRatio < m_SplineInput_Force[2])
         {
-            _float fRatio = (m_fCurrAge - m_SplineInput_Force[0]) / (m_SplineInput_Force[2] - m_SplineInput_Force[0]);
+            _float fRatio = (m_fLifeTimeRatio - m_SplineInput_Force[0]) / (m_SplineInput_Force[2] - m_SplineInput_Force[0]);
             _float2 vTemp2 = XMVectorLerp(_float2(m_SplineInput_Force[1], 0.f), _float2(m_SplineInput_Force[3], 0.f), fRatio);
             fSpeed = vTemp2.x;
         }
-        else if (m_SplineInput_Force[2] <= m_fLifeTimeRatio&& m_fLifeTimeRatio < m_SplineInput_Force[4])
+        else if (m_SplineInput_Force[2] <= m_fLifeTimeRatio && m_fLifeTimeRatio < m_SplineInput_Force[4])
         {
-            _float fRatio = (m_fCurrAge - m_SplineInput_Force[2]) / (m_SplineInput_Force[4] - m_SplineInput_Force[2]);
+            _float fRatio = (m_fLifeTimeRatio - m_SplineInput_Force[2]) / (m_SplineInput_Force[4] - m_SplineInput_Force[2]);
             _float2 vTemp2 = XMVectorLerp(_float2(m_SplineInput_Force[3], 0.f), _float2(m_SplineInput_Force[5], 0.f), fRatio);
             fSpeed = vTemp2.x;
         }
-        else if (m_SplineInput_Force[4] <= m_fLifeTimeRatio&& m_fLifeTimeRatio < m_SplineInput_Force[6])
+        else if (m_SplineInput_Force[4] <= m_fLifeTimeRatio && m_fLifeTimeRatio < m_SplineInput_Force[6])
         {
-            _float fRatio = (m_fCurrAge - m_SplineInput_Force[4]) / (m_SplineInput_Force[6] - m_SplineInput_Force[4]);
+            _float fRatio = (m_fLifeTimeRatio - m_SplineInput_Force[4]) / (m_SplineInput_Force[6] - m_SplineInput_Force[4]);
             _float2 vTemp2 = XMVectorLerp(_float2(m_SplineInput_Force[5], 0.f), _float2(m_SplineInput_Force[7], 0.f), fRatio);
             fSpeed = vTemp2.x;
         }

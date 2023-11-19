@@ -141,6 +141,8 @@ void MeshEffectData::Load(const wstring& path)
     m_tTransformDesc.fTurnSpeed = file->Read<_float>();
     m_tTransformDesc.vRandomAxis_Min = file->Read<_float3>();
     m_tTransformDesc.vRandomAxis_Max = file->Read<_float3>();
+    for (_int i = 0; i < 2; i++)
+        m_tTransformDesc.bBillbordAxes[i] = file->Read<_bool>();
 }
 
 void MeshEffectData::Set_Desc(DESC tDesc)

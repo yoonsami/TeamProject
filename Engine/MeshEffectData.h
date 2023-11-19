@@ -124,6 +124,7 @@ public:
         _float      fTurnSpeed;
         _float3     vRandomAxis_Min;
         _float3     vRandomAxis_Max;
+        _bool       bBillbordAxes[2];
 
     }Transform_Desc;
 

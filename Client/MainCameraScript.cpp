@@ -58,8 +58,6 @@ void MainCameraScript::Late_Tick()
         else
             Find_Target();
     }
-
-
 }
 
 void MainCameraScript::Cal_OffsetDir()
@@ -87,7 +85,6 @@ void MainCameraScript::Cal_OffsetDir()
     m_vOffset += vUp * mouseDir.y * m_fRotationSpeed * fDT;
 
     m_vOffset.Normalize();
-
 }
 
 void MainCameraScript::Restrict_Offset()
