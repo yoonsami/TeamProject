@@ -1205,6 +1205,9 @@ void Player_FSM::skill_100200()
             if(obj->Get_ObjectGroup()!= OBJ_MONSTER)
                 continue;
 
+			if (!obj->Get_FSM())
+				continue;
+
             _float3 vObjPos = obj->Get_Transform()->Get_State(Transform_State::POS).xyz();
             _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 
@@ -1220,20 +1223,8 @@ void Player_FSM::skill_100200()
             vLook.Normalize();
 
             if (vDir.Dot(vLook) > cosf(PLAYER_SKILL1_ANGLE * 0.5f))
-                targetMonster.push_back(obj);
+                obj->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, Get_Owner());
         }
-
-        for (auto& obj : targetMonster)
-        {
-            if(!obj->Get_FSM())
-                continue;
-
-            obj->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, Get_Owner());
-
-        }
-
-
-
     }
 	else
 	{

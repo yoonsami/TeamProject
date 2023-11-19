@@ -65,8 +65,6 @@ void MainCameraScript::Late_Tick()
         else
             Find_Target();
     }
-
-
 }
 
 void MainCameraScript::Cal_OffsetDir()
@@ -94,7 +92,6 @@ void MainCameraScript::Cal_OffsetDir()
     m_vOffset += vUp * mouseDir.y * m_fRotationSpeed * fDT;
 
     m_vOffset.Normalize();
-
 }
 
 void MainCameraScript::Restrict_Offset()
@@ -164,6 +161,7 @@ void MainCameraScript::Update_Transform()
                
             }*/
 			m_fFixedDist = _float2::Lerp({ m_fFixedDist,0.f }, { m_fMaxDistance,0.f }, fDT).x;
+            if(m_fFixedDist < fMinDist)
             fMinDist = m_fFixedDist;
             _float3 tmp = Transform::SLerpMatrix(matCurDir, matNextDir, fDT * m_fFollowSpeed).Backward();
             _float4 pos = vPlayerPos + Transform::SLerpMatrix(matCurDir, matNextDir, fDT * m_fFollowSpeed).Backward() * fMinDist;

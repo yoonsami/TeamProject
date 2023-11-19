@@ -196,9 +196,6 @@
     <Filter Include="01.Scene\02.GachaScene">
       <UniqueIdentifier>{ba9d9d61-a529-4011-aa31-f0ae69bdae34}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\01.FSM\01.Hero_FSM\06.Rachel_FSM">
-      <UniqueIdentifier>{a76487f4-fab1-4989-9b42-eb64329fcf4c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Component\01.FSM\01.Hero_FSM\07.Shane_FSM">
       <UniqueIdentifier>{e3805b94-1dca-49a2-9a34-fde8477d25c4}</UniqueIdentifier>
     </Filter>
@@ -220,8 +217,11 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp">
       <UniqueIdentifier>{cb43ed75-229b-46df-9b52-ad277e90d9f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\01.FSM\01.Hero_FSM\06.Yeonhee_FSM">
+      <UniqueIdentifier>{a76487f4-fab1-4989-9b42-eb64329fcf4c}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.Component\01.FSM\03.Special_FSM\03.Shane_Clone_FSM">
-      <UniqueIdentifier>{2be2cf68-3f2a-496a-ba00-9ca95939309c}</UniqueIdentifier>
+      <UniqueIdentifier>{bbcff278-03b6-47b4-82e6-9bd5ea5009f0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -453,8 +453,8 @@
     <ClInclude Include="GachaScene.h">
       <Filter>01.Scene\02.GachaScene</Filter>
     </ClInclude>
-    <ClInclude Include="Rachel_FSM.h">
-      <Filter>02.Component\01.FSM\01.Hero_FSM\06.Rachel_FSM</Filter>
+    <ClInclude Include="Yeonhee_FSM.h">
+      <Filter>02.Component\01.FSM\01.Hero_FSM\06.Yeonhee_FSM</Filter>
     </ClInclude>
     <ClInclude Include="UIBossHpBar.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\13.UIBossHPBar</Filter>
@@ -668,8 +668,8 @@
     <ClCompile Include="GachaScene.cpp">
       <Filter>01.Scene\02.GachaScene</Filter>
     </ClCompile>
-    <ClCompile Include="Rachel_FSM.cpp">
-      <Filter>02.Component\01.FSM\01.Hero_FSM\06.Rachel_FSM</Filter>
+    <ClCompile Include="Yeonhee_FSM.cpp">
+      <Filter>02.Component\01.FSM\01.Hero_FSM\06.Yeonhee_FSM</Filter>
     </ClCompile>
     <ClCompile Include="UIBossHpBar.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\13.UIBossHPBar</Filter>

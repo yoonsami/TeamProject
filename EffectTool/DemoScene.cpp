@@ -56,6 +56,7 @@ void DemoScene::Render()
 HRESULT DemoScene::Load_Scene()
 {
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\");
+	RESOURCES.LoadParts();
 	Load_DemoModel();
 	Load_Light();
 	Load_Camera();

@@ -121,6 +121,13 @@ void Widget_Model_Controller::Apply_Model()
 		}
 
 		shared_ptr<Model> model = RESOURCES.Get<Model>(Utils::ToWString(m_ModelNames[m_iCurrentModelIndex]));
+		if (Utils::ToWString(m_ModelNames[m_iCurrentModelIndex]) == L"Player")
+		{
+			model->AddParts(L"Am_Ct_Hat_022", PARTS_INFO::Hair);
+			model->AddParts(L"Am_Head_001", PARTS_INFO::Head);
+			model->AddParts(L"Am_Ct_Uniform_022", PARTS_INFO::Uniform);
+		}
+		
 		m_pControlObject.lock()->Get_Animator()->Set_Model(model);
 		m_pControlObject.lock()->Get_Animator()->Set_CurrentAnim(0);
 		m_pControlObject.lock()->Add_Component(make_shared<ForcePosition>());
@@ -134,8 +141,14 @@ void Widget_Model_Controller::Apply_Model()
 			weaponName = L"Weapon_Yeopo";
 		else if (model->Get_ModelTag() == (L"Dellons"))
 			weaponName = L"Weapon_Dellons";
+		else if (model->Get_ModelTag() == (L"Spike"))
+			weaponName = L"Weapon_Spike";
+		else if (model->Get_ModelTag() == (L"Shane"))
+			weaponName = L"Weapon_Shane";
+		else if (model->Get_ModelTag() == (L"Player"))
+			weaponName = L"Weapon_Player";
 
-		if(model->Get_ModelTag() != (L"Kyle"))
+		if(model->Get_ModelTag() != (L"Kyle") && model->Get_ModelTag() != (L"Yeonhee"))
 		{
 			shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
 			ObjWeapon->Set_Name(L"TestWeapon");
@@ -199,7 +212,7 @@ void Widget_Model_Controller::Control_Anim()
 
 	_uint curFrame = _uint(fKeyFrame);
 	_uint nextFrame = curFrame + 1;
-	if (nextFrame >= animation->frameCount) nextFrame = animation->frameCount;
+	if (nextFrame >= animation->frameCount - 1) nextFrame = animation->frameCount - 1;
 
 	tweenDesc.curr.currentFrame = curFrame;
 	tweenDesc.curr.nextFrame = nextFrame;

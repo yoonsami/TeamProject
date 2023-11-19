@@ -29,12 +29,24 @@ private:
     void Change_Pos_One_Letter(_uint iIndex);
     void Change_Text_Zero(_uint iIndex);
 
+    void Change_Skill_Info(HERO eType);
+
 private:
-    vector<vector<COOLTIMEINFO>>    m_CoolTime;
+    vector<vector<TOTALSKILLINFO>>  m_CoolTime;
     //vector<vector<wstring>>         m_TextureKey;
     vector<weak_ptr<GameObject>>    m_pUiSkill;
     vector<weak_ptr<GameObject>>    m_pUiSkill_Effect;
     vector<weak_ptr<GameObject>>    m_pUi_Cool_End;
+    
+    vector<weak_ptr<GameObject>>    m_pUi_Skill0_Combo;
+    vector<weak_ptr<GameObject>>    m_pUi_Skill2_Combo;
+    vector<weak_ptr<GameObject>>    m_pUi_Skill3_Combo;
+    vector<weak_ptr<GameObject>>    m_pUi_Skill4_Combo;
+    vector<weak_ptr<GameObject>>    m_pUi_Skill5_Combo;
+    vector<weak_ptr<GameObject>>    m_pUi_Skill6_Combo;
+    
+    vector<weak_ptr<GameObject>>    m_pUi_Skill_Type;
+
 
     vector<_bool>                   m_bIsCoolChangeOne;
     vector<weak_ptr<GameObject>>    m_pUi_Skill_Cool;

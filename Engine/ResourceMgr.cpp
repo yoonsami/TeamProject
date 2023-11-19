@@ -967,7 +967,7 @@ void ResourceMgr::CreateDefaultFont()
 void ResourceMgr::CreateMeshEffectData()
 {
 	wstring assetPath = L"..\\Resources\\EffectData\\MeshEffectData\\";
-
+	fs::create_directories(fs::path(assetPath));
 	for (auto& entry : fs::recursive_directory_iterator(assetPath))
 	{
 		if (entry.is_directory())
@@ -1008,6 +1008,7 @@ void ResourceMgr::CreateMeshEffectData()
 
 		/* Option1 */
 		tDesc.strTexture_Op1 = file->Read<string>();
+		tDesc.iFlipOption_Op1 = file->Read<_int>();
 		tDesc.bIsUseTextureColor_Op1 = file->Read<_int>();
 		tDesc.vBaseColor1_Op1 = file->Read<_float4>();
 		tDesc.vBaseColor2_Op1 = file->Read<_float4>();
@@ -1020,6 +1021,7 @@ void ResourceMgr::CreateMeshEffectData()
 
 		/* Option2 */
 		tDesc.strTexture_Op2 = file->Read<string>();
+		tDesc.iFlipOption_Op2 = file->Read<_int>();
 		tDesc.bIsUseTextureColor_Op2 = file->Read<_int>();
 		tDesc.vBaseColor1_Op2 = file->Read<_float4>();
 		tDesc.vBaseColor2_Op2 = file->Read<_float4>();
@@ -1032,6 +1034,7 @@ void ResourceMgr::CreateMeshEffectData()
 
 		/* Option3 */
 		tDesc.strTexture_Op3 = file->Read<string>();
+		tDesc.iFlipOption_Op3 = file->Read<_int>();
 		tDesc.bIsUseTextureColor_Op3 = file->Read<_int>();
 		tDesc.vBaseColor1_Op3 = file->Read<_float4>();
 		tDesc.vBaseColor2_Op3 = file->Read<_float4>();
@@ -1101,6 +1104,8 @@ void ResourceMgr::CreateMeshEffectData()
 		tTransformDesc.fTurnSpeed = file->Read<_float>();
 		tTransformDesc.vRandomAxis_Min = file->Read<_float3>();
 		tTransformDesc.vRandomAxis_Max = file->Read<_float3>();
+		for (_int i = 0; i < 2; i++)
+			tTransformDesc.bBillbordAxes[i] = file->Read<_bool>();
 
 		shared_ptr<MeshEffectData> meshEffectData = make_shared<MeshEffectData>();
 		meshEffectData->Set_Desc(tDesc);
@@ -1118,7 +1123,7 @@ void ResourceMgr::CreateParticleData()
 void ResourceMgr::CreateGroupEffectData()
 {
 	wstring assetPath = L"..\\Resources\\EffectData\\GroupEffectData\\";
-
+	fs::create_directories(fs::path(assetPath));
 	for (auto& entry : fs::recursive_directory_iterator(assetPath))
 	{
 		if (entry.is_directory())

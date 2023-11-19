@@ -9,20 +9,21 @@ void DataMgr::Initialize()
     {
         auto& tagData = m_HeroData[IDX(HERO::PLAYER)];
         
-        tagData.Element         = ElementType::WATER;
+        tagData.Element         = ElementType::DARK;
         tagData.Star            = 4;
 
-        tagData.Skill1Combo = 0;
-        tagData.Skill2Combo = 0;
-        tagData.Skill3Combo = 0;
-        tagData.Skill4Combo = 0;
-        tagData.Skill5Combo = 0;
+        tagData.Skill0Combo     = 4;
+        tagData.Skill1Combo     = 3;
+        tagData.Skill2Combo     = 0;
+        tagData.Skill3Combo     = 2;
+        tagData.Skill4Combo     = 0;
+        tagData.Skill5Combo     = 0;
 
-        tagData.Skill1Info = SkillInfo::NONE;
-        tagData.Skill2Info = SkillInfo::NONE;
-        tagData.Skill3Info = SkillInfo::NONE;
-        tagData.Skill4Info = SkillInfo::NONE;
-        tagData.Skill5Info = SkillInfo::NONE;
+        tagData.Skill1Info      = SkillInfo::NONE;
+        tagData.Skill2Info      = SkillInfo::NONE;
+        tagData.Skill3Info      = SkillInfo::NONE;
+        tagData.Skill4Info      = SkillInfo::NONE;
+        tagData.Skill5Info      = SkillInfo::NONE;
 
         tagData.AttackDamage    = 1.f;
         tagData.MaxHp           = 10.f;
@@ -66,17 +67,18 @@ void DataMgr::Initialize()
         tagData.Element         = ElementType::WATER;
         tagData.Star            = 4;
 
-        tagData.Skill1Combo = 0;
-        tagData.Skill2Combo = 0;
-        tagData.Skill3Combo = 0;
-        tagData.Skill4Combo = 0;
-        tagData.Skill5Combo = 0;
+        tagData.Skill0Combo     = 3;
+        tagData.Skill1Combo     = 0;
+        tagData.Skill2Combo     = 2;
+        tagData.Skill3Combo     = 0;
+        tagData.Skill4Combo     = 0;
+        tagData.Skill5Combo     = 0;
         
-        tagData.Skill1Info = SkillInfo::NONE;
-        tagData.Skill2Info = SkillInfo::NONE;
-        tagData.Skill3Info = SkillInfo::NONE;
-        tagData.Skill4Info = SkillInfo::NONE;
-        tagData.Skill5Info = SkillInfo::NONE;
+        tagData.Skill1Info      = SkillInfo::NONE;
+        tagData.Skill2Info      = SkillInfo::NONE;
+        tagData.Skill3Info      = SkillInfo::NONE;
+        tagData.Skill4Info      = SkillInfo::NONE;
+        tagData.Skill5Info      = SkillInfo::NONE;
 
         tagData.AttackDamage    = 1.f;
         tagData.MaxHp           = 10.f;
@@ -120,17 +122,18 @@ void DataMgr::Initialize()
         tagData.Element         = ElementType::FIRE;
         tagData.Star            = 4;
 
-        tagData.Skill1Combo = 0;
-        tagData.Skill2Combo = 0;
-        tagData.Skill3Combo = 0;
-        tagData.Skill4Combo = 0;
-        tagData.Skill5Combo = 0;
+        tagData.Skill0Combo     = 4;
+        tagData.Skill1Combo     = 2;
+        tagData.Skill2Combo     = 3;
+        tagData.Skill3Combo     = 0;
+        tagData.Skill4Combo     = 0;
+        tagData.Skill5Combo     = 0;
 
-        tagData.Skill1Info = SkillInfo::NONE;
-        tagData.Skill2Info = SkillInfo::NONE;
-        tagData.Skill3Info = SkillInfo::NONE;
-        tagData.Skill4Info = SkillInfo::NONE;
-        tagData.Skill5Info = SkillInfo::NONE;
+        tagData.Skill1Info      = SkillInfo::NONE;
+        tagData.Skill2Info      = SkillInfo::NONE;
+        tagData.Skill3Info      = SkillInfo::NONE;
+        tagData.Skill4Info      = SkillInfo::NONE;
+        tagData.Skill5Info      = SkillInfo::NONE;
 
         tagData.AttackDamage    = 1.f;
         tagData.MaxHp           = 10.f;
@@ -173,17 +176,18 @@ void DataMgr::Initialize()
         tagData.Element         = ElementType::FIRE;
         tagData.Star            = 4;
 
-        tagData.Skill1Combo = 0;
-        tagData.Skill2Combo = 0;
-        tagData.Skill3Combo = 0;
-        tagData.Skill4Combo = 0;
-        tagData.Skill5Combo = 0;
+        tagData.Skill0Combo     = 4;
+        tagData.Skill1Combo     = 2;
+        tagData.Skill2Combo     = 0;
+        tagData.Skill3Combo     = 4;
+        tagData.Skill4Combo     = 0;
+        tagData.Skill5Combo     = 0;
 
-        tagData.Skill1Info = SkillInfo::NONE;
-        tagData.Skill2Info = SkillInfo::NONE;
-        tagData.Skill3Info = SkillInfo::NONE;
-        tagData.Skill4Info = SkillInfo::NONE;
-        tagData.Skill5Info = SkillInfo::NONE;
+        tagData.Skill1Info      = SkillInfo::NONE;
+        tagData.Skill2Info      = SkillInfo::NONE;
+        tagData.Skill3Info      = SkillInfo::NONE;
+        tagData.Skill4Info      = SkillInfo::NONE;
+        tagData.Skill5Info      = SkillInfo::NONE;
 
         tagData.AttackDamage    = 1.f;
         tagData.MaxHp           = 10.f;
@@ -226,17 +230,18 @@ void DataMgr::Initialize()
         tagData.Element         = ElementType::DARK;
         tagData.Star            = 4;
 
-        tagData.Skill1Combo = 0;
-        tagData.Skill2Combo = 0;
-        tagData.Skill3Combo = 0;
-        tagData.Skill4Combo = 0;
-        tagData.Skill5Combo = 0;
+        tagData.Skill0Combo     = 4;
+        tagData.Skill1Combo     = 2;
+        tagData.Skill2Combo     = 2;
+        tagData.Skill3Combo     = 0;
+        tagData.Skill4Combo     = 0;
+        tagData.Skill5Combo     = 0;
 
-        tagData.Skill1Info = SkillInfo::NONE;
-        tagData.Skill2Info = SkillInfo::NONE;
-        tagData.Skill3Info = SkillInfo::NONE;
-        tagData.Skill4Info = SkillInfo::NONE;
-        tagData.Skill5Info = SkillInfo::NONE;
+        tagData.Skill1Info      = SkillInfo::NONE;
+        tagData.Skill2Info      = SkillInfo::NONE;
+        tagData.Skill3Info      = SkillInfo::NONE;
+        tagData.Skill4Info      = SkillInfo::NONE;
+        tagData.Skill5Info      = SkillInfo::NONE;
 
         tagData.AttackDamage    = 1.f;
         tagData.MaxHp           = 10.f;
@@ -279,17 +284,18 @@ void DataMgr::Initialize()
         tagData.Element         = ElementType::WATER;
         tagData.Star            = 4;
 
-        tagData.Skill1Combo = 0;
-        tagData.Skill2Combo = 0;
-        tagData.Skill3Combo = 0;
-        tagData.Skill4Combo = 0;
-        tagData.Skill5Combo = 0;
+        tagData.Skill0Combo     = 4;
+        tagData.Skill1Combo     = 2;
+        tagData.Skill2Combo     = 0;
+        tagData.Skill3Combo     = 0;
+        tagData.Skill4Combo     = 0;
+        tagData.Skill5Combo     = 0;
 
-        tagData.Skill1Info = SkillInfo::NONE;
-        tagData.Skill2Info = SkillInfo::NONE;
-        tagData.Skill3Info = SkillInfo::NONE;
-        tagData.Skill4Info = SkillInfo::NONE;
-        tagData.Skill5Info = SkillInfo::NONE;
+        tagData.Skill1Info      = SkillInfo::MOVING;
+        tagData.Skill2Info      = SkillInfo::CHARGING;
+        tagData.Skill3Info      = SkillInfo::NONE;
+        tagData.Skill4Info      = SkillInfo::NONE;
+        tagData.Skill5Info      = SkillInfo::NONE;
 
         tagData.AttackDamage    = 1.f;
         tagData.MaxHp           = 10.f;
@@ -324,114 +330,120 @@ void DataMgr::Initialize()
         tagData.KeyDeckMini     = L"Card_Deck_Spike";
         tagData.KeyDeckSelect   = L"Big_Card_Dellons";
     }
-
-    // RACHEL
-    {
-        auto& tagData = m_HeroData[IDX(HERO::RACHEL)];
-
-        tagData.Element = ElementType::FIRE;
-        tagData.Star = 4;
-
-        tagData.Skill1Combo = 0;
-        tagData.Skill2Combo = 0;
-        tagData.Skill3Combo = 0;
-        tagData.Skill4Combo = 0;
-        tagData.Skill5Combo = 0;
-
-        tagData.Skill1Info = SkillInfo::NONE;
-        tagData.Skill2Info = SkillInfo::NONE;
-        tagData.Skill3Info = SkillInfo::NONE;
-        tagData.Skill4Info = SkillInfo::NONE;
-        tagData.Skill5Info = SkillInfo::NONE;
-
-        tagData.AttackDamage = 1.f;
-        tagData.MaxHp = 10.f;
-        tagData.CurHp = 10.f;
-        tagData.PreHp = 10.f;
-        tagData.Deffence = 1.f;
-        tagData.HpRegen = 1.f;
-        tagData.CriPercent = 0.f;
-        tagData.CriDamageMul = 1.f;
-
-        tagData.Skill1Cool = 5.f;
-        tagData.Skill2Cool = 5.f;
-        tagData.Skill3Cool = 5.f;
-        tagData.Skill4Cool = 5.f;
-        tagData.Skill5Cool = 5.f;
-        tagData.Skill1DamageMul = 1.f;
-        tagData.Skill2DamageMul = 1.f;
-        tagData.Skill3DamageMul = 1.f;
-        tagData.Skill4DamageMul = 1.f;
-        tagData.Skill5DamageMul = 1.f;
-
-        tagData.ModelTag = L"Rachel";
-        tagData.WeaponTag = L"Weapon_Rachel";
-        tagData.KeyAttack = L"Skill_Rachel0";
-        tagData.KeyEvade = L"Skill_Rachel1";
-        tagData.KeySkill1 = L"Skill_Rachel2";
-        tagData.KeySkill2 = L"Skill_Rachel3";
-        tagData.KeySkill3 = L"Skill_Rachel4";
-        tagData.KeySkill4 = L"Skill_Rachel5";
-        tagData.KeySkill5 = L"Skill_Rachel6";
-        tagData.KeyChangeCard = L"Card_Rachel";
-        tagData.KeyDeckMini = L"Card_Deck_Rachel";
-        tagData.KeyDeckSelect = L"Big_Card_Rachel";
-    }
     
 
     // SHANE
     {
         auto& tagData = m_HeroData[IDX(HERO::SHANE)];
+        
+        tagData.Element         = ElementType::DARK;
+        tagData.Star            = 4;
 
-        tagData.Element = ElementType::DARK;
-        tagData.Star = 4;
+        tagData.Skill0Combo     = 0;
+        tagData.Skill1Combo     = 0;
+        tagData.Skill2Combo     = 0;
+        tagData.Skill3Combo     = 0;
+        tagData.Skill4Combo     = 0;
+        tagData.Skill5Combo     = 0;
 
-        tagData.Skill1Combo = 0;
-        tagData.Skill2Combo = 0;
-        tagData.Skill3Combo = 0;
-        tagData.Skill4Combo = 0;
-        tagData.Skill5Combo = 0;
+        tagData.Skill1Info      = SkillInfo::NONE;
+        tagData.Skill2Info      = SkillInfo::NONE;
+        tagData.Skill3Info      = SkillInfo::NONE;
+        tagData.Skill4Info      = SkillInfo::NONE;
+        tagData.Skill5Info      = SkillInfo::NONE;
 
-        tagData.Skill1Info = SkillInfo::NONE;
-        tagData.Skill2Info = SkillInfo::NONE;
-        tagData.Skill3Info = SkillInfo::NONE;
-        tagData.Skill4Info = SkillInfo::NONE;
-        tagData.Skill5Info = SkillInfo::NONE;
+        tagData.AttackDamage    = 1.f;
+        tagData.MaxHp           = 10.f;
+        tagData.CurHp           = 10.f;
+        tagData.PreHp           = 10.f;
+        tagData.Deffence        = 1.f;
+        tagData.HpRegen         = 1.f;
+        tagData.CriPercent      = 0.f;
+        tagData.CriDamageMul    = 1.f;
 
-        tagData.AttackDamage = 1.f;
-        tagData.MaxHp = 10.f;
-        tagData.CurHp = 10.f;
-        tagData.PreHp = 10.f;
-        tagData.Deffence = 1.f;
-        tagData.HpRegen = 1.f;
-        tagData.CriPercent = 0.f;
-        tagData.CriDamageMul = 1.f;
-
-        tagData.Skill1Cool = 5.f;
-        tagData.Skill2Cool = 5.f;
-        tagData.Skill3Cool = 5.f;
-        tagData.Skill4Cool = 5.f;
-        tagData.Skill5Cool = 5.f;
+        tagData.Skill1Cool      = 5.f;
+        tagData.Skill2Cool      = 5.f;
+        tagData.Skill3Cool      = 5.f;
+        tagData.Skill4Cool      = 5.f;
+        tagData.Skill5Cool      = 5.f;
         tagData.Skill1DamageMul = 1.f;
         tagData.Skill2DamageMul = 1.f;
         tagData.Skill3DamageMul = 1.f;
         tagData.Skill4DamageMul = 1.f;
         tagData.Skill5DamageMul = 1.f;
 
-        tagData.ModelTag = L"Shane";
-        tagData.WeaponTag = L"Weapon_Shane";
-        tagData.KeyAttack = L"Skill_Shane0";
-        tagData.KeyEvade = L"Skill_Shane1";
-        tagData.KeySkill1 = L"Skill_Shane2";
-        tagData.KeySkill2 = L"Skill_Shane3";
-        tagData.KeySkill3 = L"Skill_Shane4";
-        tagData.KeySkill4 = L"Skill_Shane5";
-        tagData.KeySkill5 = L"Skill_Shane6";
-        tagData.KeyChangeCard = L"Card_Shane";
-        tagData.KeyDeckMini = L"Card_Deck_Shane";
-        tagData.KeyDeckSelect = L"Big_Card_Shane";
+        tagData.ModelTag        = L"Shane";
+        tagData.WeaponTag       = L"Weapon_Shane";
+        tagData.KeyAttack       = L"Skill_Shane0";
+        tagData.KeyEvade        = L"Skill_Shane1";
+        tagData.KeySkill1       = L"Skill_Shane2";
+        tagData.KeySkill2       = L"Skill_Shane3";
+        tagData.KeySkill3       = L"Skill_Shane4";
+        tagData.KeySkill4       = L"Skill_Shane5";
+        tagData.KeySkill5       = L"Skill_Shane6";
+        tagData.KeyChangeCard   = L"Card_Shane";
+        tagData.KeyDeckMini     = L"Card_Deck_Shane";
+        tagData.KeyDeckSelect   = L"Big_Card_Shane";
     }
 
+    // YEONHEE
+    {
+        auto& tagData = m_HeroData[IDX(HERO::YEONHEE)];
+        
+        tagData.Element         = ElementType::LIGHT;
+        tagData.Star            = 4;
+
+        tagData.Skill0Combo     = 0;
+        tagData.Skill1Combo     = 0;
+        tagData.Skill2Combo     = 0;
+        tagData.Skill3Combo     = 0;
+        tagData.Skill4Combo     = 0;
+        tagData.Skill5Combo     = 0;
+
+        tagData.Skill1Info      = SkillInfo::HOLDING;
+        tagData.Skill2Info      = SkillInfo::MOVING;
+        tagData.Skill3Info      = SkillInfo::MOVING;
+        tagData.Skill4Info      = SkillInfo::NONE;
+        tagData.Skill5Info      = SkillInfo::NONE;
+
+        tagData.AttackDamage    = 1.f;
+        tagData.MaxHp           = 10.f;
+        tagData.CurHp           = 10.f;
+        tagData.PreHp           = 10.f;
+        tagData.Deffence        = 1.f;
+        tagData.HpRegen         = 1.f;
+        tagData.CriPercent      = 0.f;
+        tagData.CriDamageMul    = 1.f;
+
+        tagData.Skill1Cool      = 5.f;
+        tagData.Skill2Cool      = 5.f;
+        tagData.Skill3Cool      = 5.f;
+        tagData.Skill4Cool      = 5.f;
+        tagData.Skill5Cool      = 5.f;
+        tagData.Skill1DamageMul = 1.f;
+        tagData.Skill2DamageMul = 1.f;
+        tagData.Skill3DamageMul = 1.f;
+        tagData.Skill4DamageMul = 1.f;
+        tagData.Skill5DamageMul = 1.f;
+
+        tagData.ModelTag        = L"Yeonhee";
+        tagData.WeaponTag       = L"";
+        tagData.KeyAttack       = L"Skill_Yeonhee0";
+        tagData.KeyEvade        = L"Skill_Yeonhee1";
+        tagData.KeySkill1       = L"Skill_Yeonhee2";
+        tagData.KeySkill2       = L"Skill_Yeonhee3";
+        tagData.KeySkill3       = L"Skill_Yeonhee4";
+        tagData.KeySkill4       = L"Skill_Yeonhee5";
+        tagData.KeySkill5       = L"Skill_Yeonhee6";
+        tagData.KeyChangeCard   = L"Card_Yeonhee";
+        tagData.KeyDeckMini     = L"Card_Deck_Yeonhee";
+        tagData.KeyDeckSelect   = L"Big_Card_Yeonhee";
+    }
+
+
+    
+
+   
 
 
     m_KeyElement.resize(ElementType::ElementEnd);

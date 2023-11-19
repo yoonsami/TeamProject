@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Component.h"
 
 enum class Transform_State
@@ -37,15 +37,15 @@ public:
 
     void Set_State(Transform_State eState, const _float4& vState);
     void Set_Speed(_float speed) { m_fMoveSpeed = speed; }
-    _bool Go_Dir(const _float3& vVel);
+    _bool Go_Dir(const _float3& vVel); // FDT 곱한 값 넘겨주셈
     _bool Go_Straight();
     _bool Go_Backward();
     _bool Go_Left();
     _bool Go_Right();
     _bool Go_Up();
     _bool Go_Down();
-    void Go_Horizontally_Up();      // MEMO : Tool���� Freecam�� ���� �߰� (q,e key)
-    void Go_Horizontally_Down();    // MEMO : Tool���� Freecam�� ���� �߰� (q,e key)
+    void Go_Horizontally_Up();     
+    void Go_Horizontally_Down();   
     void Rotation(const _float3& vAxis, _float fRadian);
     void Turn(const _float3& vAxis, _float fRadianPerSec);
     void Scaled(const _float3& vScale);
