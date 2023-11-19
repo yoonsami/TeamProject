@@ -15,6 +15,7 @@ HRESULT CoolTimeCheckScript::Init()
 {
     if (m_pOwner.expired())
         return E_FAIL;
+
     m_eCurHero = HERO::PLAYER;
 
     m_CoolTime.resize(IDX(HERO::MAX));
@@ -23,52 +24,60 @@ HRESULT CoolTimeCheckScript::Init()
         m_CoolTime[i].resize(5);
 
         auto tagData = GET_DATA(static_cast<HERO>(i));
-       m_CoolTime[i][0].fCoolTime = tagData.Skill1Cool;
-       m_CoolTime[i][1].fCoolTime = tagData.Skill2Cool;
-       m_CoolTime[i][2].fCoolTime = tagData.Skill3Cool;
-       m_CoolTime[i][3].fCoolTime = tagData.Skill4Cool;
-       m_CoolTime[i][4].fCoolTime = tagData.Skill5Cool;
-       m_CoolTime[i][0].fAccTime = m_CoolTime[i][0].fCoolTime + 0.1f;
-       m_CoolTime[i][1].fAccTime = m_CoolTime[i][1].fCoolTime + 0.1f;
-       m_CoolTime[i][2].fAccTime = m_CoolTime[i][2].fCoolTime + 0.1f;
-       m_CoolTime[i][3].fAccTime = m_CoolTime[i][3].fCoolTime + 0.1f;
-       m_CoolTime[i][4].fAccTime = m_CoolTime[i][4].fCoolTime + 0.1f;
+       m_CoolTime[i][0].CoolInfo.fCoolTime = tagData.Skill1Cool;
+       m_CoolTime[i][1].CoolInfo.fCoolTime = tagData.Skill2Cool;
+       m_CoolTime[i][2].CoolInfo.fCoolTime = tagData.Skill3Cool;
+       m_CoolTime[i][3].CoolInfo.fCoolTime = tagData.Skill4Cool;
+       m_CoolTime[i][4].CoolInfo.fCoolTime = tagData.Skill5Cool;
+
+       m_CoolTime[i][0].CoolInfo.fAccTime = m_CoolTime[i][0].CoolInfo.fCoolTime + 0.1f;
+       m_CoolTime[i][1].CoolInfo.fAccTime = m_CoolTime[i][1].CoolInfo.fCoolTime + 0.1f;
+       m_CoolTime[i][2].CoolInfo.fAccTime = m_CoolTime[i][2].CoolInfo.fCoolTime + 0.1f;
+       m_CoolTime[i][3].CoolInfo.fAccTime = m_CoolTime[i][3].CoolInfo.fCoolTime + 0.1f;
+       m_CoolTime[i][4].CoolInfo.fAccTime = m_CoolTime[i][4].CoolInfo.fCoolTime + 0.1f;
+
+       m_CoolTime[i][0].iSkillCombo = tagData.Skill1Combo;
+       m_CoolTime[i][1].iSkillCombo = tagData.Skill2Combo;
+       m_CoolTime[i][2].iSkillCombo = tagData.Skill3Combo;
+       m_CoolTime[i][3].iSkillCombo = tagData.Skill4Combo;
+       m_CoolTime[i][4].iSkillCombo = tagData.Skill5Combo;
     }
 
     m_tagEvade.fCoolTime = 3.f;
 
     m_pUiSkill.resize(7);
 
-    m_pUiSkill[0] = CUR_SCENE->Get_UI(L"UI_Skill0");
-    m_pUiSkill[1] = CUR_SCENE->Get_UI(L"UI_Skill1");
-    m_pUiSkill[2] = CUR_SCENE->Get_UI(L"UI_Skill2");
-    m_pUiSkill[3] = CUR_SCENE->Get_UI(L"UI_Skill3");
-    m_pUiSkill[4] = CUR_SCENE->Get_UI(L"UI_Skill4");
-    m_pUiSkill[5] = CUR_SCENE->Get_UI(L"UI_Skill5");
-    m_pUiSkill[6] = CUR_SCENE->Get_UI(L"UI_Skill6");
+    auto pScene = CUR_SCENE;
+    m_pUiSkill[0] = pScene->Get_UI(L"UI_Skill0");
+    m_pUiSkill[1] = pScene->Get_UI(L"UI_Skill1");
+    m_pUiSkill[2] = pScene->Get_UI(L"UI_Skill2");
+    m_pUiSkill[3] = pScene->Get_UI(L"UI_Skill3");
+    m_pUiSkill[4] = pScene->Get_UI(L"UI_Skill4");
+    m_pUiSkill[5] = pScene->Get_UI(L"UI_Skill5");
+    m_pUiSkill[6] = pScene->Get_UI(L"UI_Skill6");
 
     m_pUiSkill_Effect.resize(7);
-    m_pUiSkill_Effect[0] = CUR_SCENE->Get_UI(L"UI_Skill2_Effect");
-    m_pUiSkill_Effect[1] = CUR_SCENE->Get_UI(L"UI_Skill3_Effect");
-    m_pUiSkill_Effect[2] = CUR_SCENE->Get_UI(L"UI_Skill4_Effect");
-    m_pUiSkill_Effect[3] = CUR_SCENE->Get_UI(L"UI_Skill5_Effect");
-    m_pUiSkill_Effect[4] = CUR_SCENE->Get_UI(L"UI_Skill6_Effect");
-    m_pUiSkill_Effect[5] = CUR_SCENE->Get_UI(L"UI_Skill1_Effect");
-    m_pUiSkill_Effect[6] = CUR_SCENE->Get_UI(L"UI_Skill0_Effect");
+    m_pUiSkill_Effect[0] = pScene->Get_UI(L"UI_Skill2_Effect");
+    m_pUiSkill_Effect[1] = pScene->Get_UI(L"UI_Skill3_Effect");
+    m_pUiSkill_Effect[2] = pScene->Get_UI(L"UI_Skill4_Effect");
+    m_pUiSkill_Effect[3] = pScene->Get_UI(L"UI_Skill5_Effect");
+    m_pUiSkill_Effect[4] = pScene->Get_UI(L"UI_Skill6_Effect");
+    m_pUiSkill_Effect[5] = pScene->Get_UI(L"UI_Skill1_Effect");
+    m_pUiSkill_Effect[6] = pScene->Get_UI(L"UI_Skill0_Effect");
 
     m_pUi_Cool_End.resize(5);
-    m_pUi_Cool_End[0] = CUR_SCENE->Get_UI(L"UI_Cool_End2");
-    m_pUi_Cool_End[1] = CUR_SCENE->Get_UI(L"UI_Cool_End3");
-    m_pUi_Cool_End[2] = CUR_SCENE->Get_UI(L"UI_Cool_End4");
-    m_pUi_Cool_End[3] = CUR_SCENE->Get_UI(L"UI_Cool_End5");
-    m_pUi_Cool_End[4] = CUR_SCENE->Get_UI(L"UI_Cool_End6");
+    m_pUi_Cool_End[0] = pScene->Get_UI(L"UI_Cool_End2");
+    m_pUi_Cool_End[1] = pScene->Get_UI(L"UI_Cool_End3");
+    m_pUi_Cool_End[2] = pScene->Get_UI(L"UI_Cool_End4");
+    m_pUi_Cool_End[3] = pScene->Get_UI(L"UI_Cool_End5");
+    m_pUi_Cool_End[4] = pScene->Get_UI(L"UI_Cool_End6");
 
     m_pUi_Skill_Cool.resize(5);
-    m_pUi_Skill_Cool[0] = CUR_SCENE->Get_UI(L"UI_Skill2_Cool");
-    m_pUi_Skill_Cool[1] = CUR_SCENE->Get_UI(L"UI_Skill3_Cool");
-    m_pUi_Skill_Cool[2] = CUR_SCENE->Get_UI(L"UI_Skill4_Cool");
-    m_pUi_Skill_Cool[3] = CUR_SCENE->Get_UI(L"UI_Skill5_Cool");
-    m_pUi_Skill_Cool[4] = CUR_SCENE->Get_UI(L"UI_Skill6_Cool");
+    m_pUi_Skill_Cool[0] = pScene->Get_UI(L"UI_Skill2_Cool");
+    m_pUi_Skill_Cool[1] = pScene->Get_UI(L"UI_Skill3_Cool");
+    m_pUi_Skill_Cool[2] = pScene->Get_UI(L"UI_Skill4_Cool");
+    m_pUi_Skill_Cool[3] = pScene->Get_UI(L"UI_Skill5_Cool");
+    m_pUi_Skill_Cool[4] = pScene->Get_UI(L"UI_Skill6_Cool");
     for (_uint i = 0; i < 5; ++i)
         m_pUi_Skill_Cool[i].lock()->Get_FontRenderer()->Get_Text() = L"";
 
@@ -78,6 +87,63 @@ HRESULT CoolTimeCheckScript::Init()
     m_bIsCoolChangeOne[2] = false;
     m_bIsCoolChangeOne[3] = false;
     m_bIsCoolChangeOne[4] = false;
+
+    m_pUi_Skill0_Combo.resize(4);
+    for (_uint i = 0; i < 4; ++i)
+    {
+        wstring strTemp = L"UI_Skill0_Combo";
+        strTemp += to_wstring(i);
+        m_pUi_Skill0_Combo[i] = pScene->Get_UI(strTemp);
+    }
+
+    m_pUi_Skill2_Combo.resize(4);
+    for (_uint i = 0; i < 4; ++i)
+    {
+        wstring strTemp = L"UI_Skill2_Combo";
+        strTemp += to_wstring(i);
+        m_pUi_Skill2_Combo[i] = pScene->Get_UI(strTemp);
+    }
+
+    m_pUi_Skill3_Combo.resize(4);
+    for (_uint i = 0; i < 4; ++i)
+    {
+        wstring strTemp = L"UI_Skill3_Combo";
+        strTemp += to_wstring(i);
+        m_pUi_Skill3_Combo[i] = pScene->Get_UI(strTemp);
+    }
+
+    m_pUi_Skill4_Combo.resize(4);
+    for (_uint i = 0; i < 4; ++i)
+    {
+        wstring strTemp = L"UI_Skill4_Combo";
+        strTemp += to_wstring(i);
+        m_pUi_Skill4_Combo[i] = pScene->Get_UI(strTemp);
+    }
+
+    m_pUi_Skill5_Combo.resize(4);
+    for (_uint i = 0; i < 4; ++i)
+    {
+        wstring strTemp = L"UI_Skill5_Combo";
+        strTemp += to_wstring(i);
+        m_pUi_Skill5_Combo[i] = pScene->Get_UI(strTemp);
+    }
+
+    m_pUi_Skill6_Combo.resize(4);
+    for (_uint i = 0; i < 4; ++i)
+    {
+        wstring strTemp = L"UI_Skill6_Combo";
+        strTemp += to_wstring(i);
+        m_pUi_Skill6_Combo[i] = pScene->Get_UI(strTemp);
+    }
+    
+    m_pUi_Skill_Type.resize(5);
+    m_pUi_Skill_Type[0] = pScene->Get_UI(L"UI_Skill2_Type");
+    m_pUi_Skill_Type[1] = pScene->Get_UI(L"UI_Skill3_Type");
+    m_pUi_Skill_Type[2] = pScene->Get_UI(L"UI_Skill4_Type");
+    m_pUi_Skill_Type[3] = pScene->Get_UI(L"UI_Skill5_Type");
+    m_pUi_Skill_Type[4] = pScene->Get_UI(L"UI_Skill6_Type");
+
+
 
 
 
@@ -131,11 +197,11 @@ void CoolTimeCheckScript::Set_Cur_Hero(HERO eType)
     }
     
     auto& vecCool = m_CoolTime[IDX(eType)];
-    _uint iSkill1Cool = IDX(vecCool[0].fCoolTime - vecCool[0].fAccTime + 1.f);
-    _uint iSkill2Cool = IDX(vecCool[1].fCoolTime - vecCool[1].fAccTime + 1.f);
-    _uint iSkill3Cool = IDX(vecCool[2].fCoolTime - vecCool[2].fAccTime + 1.f);
-    _uint iSkill4Cool = IDX(vecCool[3].fCoolTime - vecCool[3].fAccTime + 1.f);
-    _uint iSkill5Cool = IDX(vecCool[4].fCoolTime - vecCool[4].fAccTime + 1.f);
+    _uint iSkill1Cool = IDX(vecCool[0].CoolInfo.fCoolTime - vecCool[0].CoolInfo.fAccTime + 1.f);
+    _uint iSkill2Cool = IDX(vecCool[1].CoolInfo.fCoolTime - vecCool[1].CoolInfo.fAccTime + 1.f);
+    _uint iSkill3Cool = IDX(vecCool[2].CoolInfo.fCoolTime - vecCool[2].CoolInfo.fAccTime + 1.f);
+    _uint iSkill4Cool = IDX(vecCool[3].CoolInfo.fCoolTime - vecCool[3].CoolInfo.fAccTime + 1.f);
+    _uint iSkill5Cool = IDX(vecCool[4].CoolInfo.fCoolTime - vecCool[4].CoolInfo.fAccTime + 1.f);
 
     if (0 < iSkill1Cool && iSkill1Cool < 10 && false == m_bIsCoolChangeOne[0])
         Change_Pos_One_Letter(0);
@@ -158,6 +224,8 @@ void CoolTimeCheckScript::Set_Cur_Hero(HERO eType)
         m_pUi_Skill_Cool[3].lock()->Get_FontRenderer()->Get_Text() = to_wstring(iSkill4Cool);
     if (0 < iSkill5Cool)
         m_pUi_Skill_Cool[4].lock()->Get_FontRenderer()->Get_Text() = to_wstring(iSkill5Cool);
+
+    Change_Skill_Info(eType);
 }
 
 void CoolTimeCheckScript::Set_Skill_End()
@@ -178,7 +246,7 @@ void CoolTimeCheckScript::Set_Skill_End()
 
     m_bIsSkillWork = false;
     m_CoolTime[IDX(m_eCurHero)][m_iWorkSkillIndex].bIsWork = false;
-    m_CoolTime[IDX(m_eCurHero)][m_iWorkSkillIndex].fAccTime = 0.f;
+    m_CoolTime[IDX(m_eCurHero)][m_iWorkSkillIndex].CoolInfo.fAccTime = 0.f;
 
     m_iWorkSkillIndex = SkillType::DEFAULT;
 }
@@ -205,7 +273,7 @@ _bool CoolTimeCheckScript::IsAvailable(SkillType eSkillType)
 
     // 0 ~ 4 : skill 
     auto& CoolInfo = m_CoolTime[IDX(m_eCurHero)][eSkillType];
-    if (CoolInfo.fCoolTime < CoolInfo.fAccTime)
+    if (CoolInfo.CoolInfo.fCoolTime < CoolInfo.CoolInfo.fAccTime)
     {
         CoolInfo.bIsEnd = false;
         CoolInfo.bIsWork = true;
@@ -234,10 +302,10 @@ void CoolTimeCheckScript::Check_Cool_Time()
         auto& vecCool = m_CoolTime[i];
         for (_uint j = 0; j < 5; ++j)
         {
-            if (false == vecCool[j].bIsWork && vecCool[j].fCoolTime > vecCool[j].fAccTime)
+            if (false == vecCool[j].bIsWork && vecCool[j].CoolInfo.fCoolTime > vecCool[j].CoolInfo.fAccTime)
             {
-                vecCool[j].fAccTime += fDt;
-                if (false == vecCool[j].bIsEnd && vecCool[j].fCoolTime < vecCool[j].fAccTime)
+                vecCool[j].CoolInfo.fAccTime += fDt;
+                if (false == vecCool[j].bIsEnd && vecCool[j].CoolInfo.fCoolTime < vecCool[j].CoolInfo.fAccTime)
                 {
                     vecCool[j].bIsEnd = true;
                     Change_Pos_Two_Letter(j);
@@ -274,18 +342,18 @@ void CoolTimeCheckScript::Change_Skills_Value()
             return;
 
     pGameobjectGauge->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = m_tagEvade.fAccTime / m_tagEvade.fCoolTime;
-    m_pUiSkill[2].lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[0].fAccTime / vecCool[0].fCoolTime;
-    m_pUiSkill[3].lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[1].fAccTime / vecCool[1].fCoolTime;
-    m_pUiSkill[4].lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[2].fAccTime / vecCool[2].fCoolTime;
-    m_pUiSkill[5].lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[3].fAccTime / vecCool[3].fCoolTime;
-    m_pUiSkill[6].lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[4].fAccTime / vecCool[4].fCoolTime;
+    m_pUiSkill[2].lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[0].CoolInfo.fAccTime / vecCool[0].CoolInfo.fCoolTime;
+    m_pUiSkill[3].lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[1].CoolInfo.fAccTime / vecCool[1].CoolInfo.fCoolTime;
+    m_pUiSkill[4].lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[2].CoolInfo.fAccTime / vecCool[2].CoolInfo.fCoolTime;
+    m_pUiSkill[5].lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[3].CoolInfo.fAccTime / vecCool[3].CoolInfo.fCoolTime;
+    m_pUiSkill[6].lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = vecCool[4].CoolInfo.fAccTime / vecCool[4].CoolInfo.fCoolTime;
 
     
-    _uint iSkill1Cool = IDX(vecCool[0].fCoolTime - vecCool[0].fAccTime + 1.f);
-    _uint iSkill2Cool = IDX(vecCool[1].fCoolTime - vecCool[1].fAccTime + 1.f);
-    _uint iSkill3Cool = IDX(vecCool[2].fCoolTime - vecCool[2].fAccTime + 1.f);
-    _uint iSkill4Cool = IDX(vecCool[3].fCoolTime - vecCool[3].fAccTime + 1.f);
-    _uint iSkill5Cool = IDX(vecCool[4].fCoolTime - vecCool[4].fAccTime + 1.f);
+    _uint iSkill1Cool = IDX(vecCool[0].CoolInfo.fCoolTime - vecCool[0].CoolInfo.fAccTime + 1.f);
+    _uint iSkill2Cool = IDX(vecCool[1].CoolInfo.fCoolTime - vecCool[1].CoolInfo.fAccTime + 1.f);
+    _uint iSkill3Cool = IDX(vecCool[2].CoolInfo.fCoolTime - vecCool[2].CoolInfo.fAccTime + 1.f);
+    _uint iSkill4Cool = IDX(vecCool[3].CoolInfo.fCoolTime - vecCool[3].CoolInfo.fAccTime + 1.f);
+    _uint iSkill5Cool = IDX(vecCool[4].CoolInfo.fCoolTime - vecCool[4].CoolInfo.fAccTime + 1.f);
 
     if (0 < iSkill1Cool && iSkill1Cool < 10 && false == m_bIsCoolChangeOne[0])
         Change_Pos_One_Letter(0);
@@ -401,4 +469,180 @@ void CoolTimeCheckScript::Change_Text_Zero(_uint iIndex)
 
     m_pUi_Skill_Cool[iIndex].lock()->Get_FontRenderer()->Get_Text() = L"";
     m_bIsCoolChangeOne[iIndex] = false;
+}
+
+void CoolTimeCheckScript::Change_Skill_Info(HERO eType)
+{
+    auto tagData = GET_DATA(eType);
+    
+    for (_uint i = 0; i < 4; i++)
+    {
+        if (i < tagData.Skill0Combo)
+        {
+            m_pUi_Skill0_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+            m_pUi_Skill0_Combo[i].lock()->Set_Render(true);
+        }
+        else
+            m_pUi_Skill0_Combo[i].lock()->Set_Render(false);
+
+
+        if (i < tagData.Skill1Combo)
+        {
+            m_pUi_Skill2_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+            m_pUi_Skill2_Combo[i].lock()->Set_Render(true);
+        }
+        else
+            m_pUi_Skill2_Combo[i].lock()->Set_Render(false);
+
+
+        if (i < tagData.Skill2Combo)
+        {
+            m_pUi_Skill3_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+            m_pUi_Skill3_Combo[i].lock()->Set_Render(true);
+        }
+        else
+            m_pUi_Skill3_Combo[i].lock()->Set_Render(false);
+
+
+        if (i < tagData.Skill3Combo)
+        {
+            m_pUi_Skill4_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+            m_pUi_Skill4_Combo[i].lock()->Set_Render(true);
+        }
+        else
+            m_pUi_Skill4_Combo[i].lock()->Set_Render(false);
+
+
+        if (i < tagData.Skill4Combo)
+        {
+            m_pUi_Skill5_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+            m_pUi_Skill5_Combo[i].lock()->Set_Render(true);
+        }
+        else
+            m_pUi_Skill5_Combo[i].lock()->Set_Render(false);
+
+
+        if (i < tagData.Skill5Combo)
+        {
+            m_pUi_Skill6_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+            m_pUi_Skill6_Combo[i].lock()->Set_Render(true);
+        }
+        else
+            m_pUi_Skill6_Combo[i].lock()->Set_Render(false);
+
+    }
+
+
+    if (SkillInfo::NONE == tagData.Skill1Info)
+        m_pUi_Skill_Type[0].lock()->Set_Render(false);
+    else if (SkillInfo::CHARGING == tagData.Skill1Info)
+    {
+        m_pUi_Skill_Type[0].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        m_pUi_Skill_Type[0].lock()->Set_Render(true);
+        m_pUi_Skill_Type[0].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Charge"), TextureMapType::DIFFUSE);
+    }
+    else if (SkillInfo::HOLDING == tagData.Skill1Info)
+    {
+        m_pUi_Skill_Type[0].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        m_pUi_Skill_Type[0].lock()->Set_Render(true);
+        m_pUi_Skill_Type[0].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Hold"), TextureMapType::DIFFUSE);
+    }
+    else if (SkillInfo::MOVING == tagData.Skill1Info)
+    {
+        m_pUi_Skill_Type[0].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        m_pUi_Skill_Type[0].lock()->Set_Render(true);
+        m_pUi_Skill_Type[0].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Move"), TextureMapType::DIFFUSE);
+    }
+
+
+
+    if (SkillInfo::NONE == tagData.Skill2Info)
+        m_pUi_Skill_Type[1].lock()->Set_Render(false);
+    else if (SkillInfo::CHARGING == tagData.Skill2Info)
+    {
+        m_pUi_Skill_Type[1].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        m_pUi_Skill_Type[1].lock()->Set_Render(true);
+        m_pUi_Skill_Type[1].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Charge"), TextureMapType::DIFFUSE);
+    }
+    else if (SkillInfo::HOLDING == tagData.Skill2Info)
+    {
+        m_pUi_Skill_Type[1].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        m_pUi_Skill_Type[1].lock()->Set_Render(true);
+        m_pUi_Skill_Type[1].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Hold"), TextureMapType::DIFFUSE);
+    }
+    else if (SkillInfo::MOVING == tagData.Skill2Info)
+    {
+        m_pUi_Skill_Type[1].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        m_pUi_Skill_Type[1].lock()->Set_Render(true);
+        m_pUi_Skill_Type[1].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Move"), TextureMapType::DIFFUSE);
+    }
+
+
+
+    if (SkillInfo::NONE == tagData.Skill3Info)
+        m_pUi_Skill_Type[2].lock()->Set_Render(false);
+    else if (SkillInfo::CHARGING == tagData.Skill3Info)
+    {
+        m_pUi_Skill_Type[2].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        m_pUi_Skill_Type[2].lock()->Set_Render(true);
+        m_pUi_Skill_Type[2].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Charge"), TextureMapType::DIFFUSE);
+    }
+    else if (SkillInfo::HOLDING == tagData.Skill3Info)
+    {
+        m_pUi_Skill_Type[2].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        m_pUi_Skill_Type[2].lock()->Set_Render(true);
+        m_pUi_Skill_Type[2].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Hold"), TextureMapType::DIFFUSE);
+    }
+    else if (SkillInfo::MOVING == tagData.Skill3Info)
+    {
+        m_pUi_Skill_Type[2].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        m_pUi_Skill_Type[2].lock()->Set_Render(true);
+        m_pUi_Skill_Type[2].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Move"), TextureMapType::DIFFUSE);
+    }
+
+
+    if (SkillInfo::NONE == tagData.Skill4Info)
+        m_pUi_Skill_Type[3].lock()->Set_Render(false);
+    else if (SkillInfo::CHARGING == tagData.Skill4Info)
+    {
+        m_pUi_Skill_Type[3].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        m_pUi_Skill_Type[3].lock()->Set_Render(true);
+        m_pUi_Skill_Type[3].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Charge"), TextureMapType::DIFFUSE);
+    }
+    else if (SkillInfo::HOLDING == tagData.Skill4Info)
+    {
+        m_pUi_Skill_Type[3].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        m_pUi_Skill_Type[3].lock()->Set_Render(true);
+        m_pUi_Skill_Type[3].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Hold"), TextureMapType::DIFFUSE);
+    }
+    else if (SkillInfo::MOVING == tagData.Skill4Info)
+    {
+        m_pUi_Skill_Type[3].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        m_pUi_Skill_Type[3].lock()->Set_Render(true);
+        m_pUi_Skill_Type[3].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Move"), TextureMapType::DIFFUSE);
+    }
+
+
+    if (SkillInfo::NONE == tagData.Skill5Info)
+        m_pUi_Skill_Type[4].lock()->Set_Render(false);
+    else if (SkillInfo::CHARGING == tagData.Skill5Info)
+    {
+        m_pUi_Skill_Type[4].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        m_pUi_Skill_Type[4].lock()->Set_Render(true);
+        m_pUi_Skill_Type[4].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Charge"), TextureMapType::DIFFUSE);
+    }
+    else if (SkillInfo::HOLDING == tagData.Skill5Info)
+    {
+        m_pUi_Skill_Type[4].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        m_pUi_Skill_Type[4].lock()->Set_Render(true);
+        m_pUi_Skill_Type[4].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Hold"), TextureMapType::DIFFUSE);
+    }
+    else if (SkillInfo::MOVING == tagData.Skill5Info)
+    {
+        m_pUi_Skill_Type[4].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        m_pUi_Skill_Type[4].lock()->Set_Render(true);
+        m_pUi_Skill_Type[4].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Move"), TextureMapType::DIFFUSE);
+    }
+
+
 }
