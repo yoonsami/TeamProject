@@ -1008,6 +1008,7 @@ void ResourceMgr::CreateMeshEffectData()
 
 		/* Option1 */
 		tDesc.strTexture_Op1 = file->Read<string>();
+		tDesc.iFlipOption_Op1 = file->Read<_int>();
 		tDesc.bIsUseTextureColor_Op1 = file->Read<_int>();
 		tDesc.vBaseColor1_Op1 = file->Read<_float4>();
 		tDesc.vBaseColor2_Op1 = file->Read<_float4>();
@@ -1020,6 +1021,7 @@ void ResourceMgr::CreateMeshEffectData()
 
 		/* Option2 */
 		tDesc.strTexture_Op2 = file->Read<string>();
+		tDesc.iFlipOption_Op2 = file->Read<_int>();
 		tDesc.bIsUseTextureColor_Op2 = file->Read<_int>();
 		tDesc.vBaseColor1_Op2 = file->Read<_float4>();
 		tDesc.vBaseColor2_Op2 = file->Read<_float4>();
@@ -1032,6 +1034,7 @@ void ResourceMgr::CreateMeshEffectData()
 
 		/* Option3 */
 		tDesc.strTexture_Op3 = file->Read<string>();
+		tDesc.iFlipOption_Op3 = file->Read<_int>();
 		tDesc.bIsUseTextureColor_Op3 = file->Read<_int>();
 		tDesc.vBaseColor1_Op3 = file->Read<_float4>();
 		tDesc.vBaseColor2_Op3 = file->Read<_float4>();

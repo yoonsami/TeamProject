@@ -367,6 +367,7 @@ void Widget_EffectMaker_Mesh::Option_TextureOp(_int iIndex)
 	string strSeparatorTag = "Texture " + strIndex;
 	string strIsOn = "Texture Option On##" + strIndex;
 	string strChild1 = "##Child1_" + strIndex;
+	string strChild2 = "##Child2_" + strIndex;
 	string strImageViewer = "##Img_" + strIndex;
 	string strTextureButton = "Change Texture##" + strIndex;
 	string strTextureList = "Texture List##" + strIndex;
@@ -380,6 +381,11 @@ void Widget_EffectMaker_Mesh::Option_TextureOp(_int iIndex)
 	string strUVSpeed = "UV Speed(x,y)##" + strIndex;
 	string strContrast = "Contrast##" + strIndex;
 	string strAlphaOffset = "Alpha Offset##" + strIndex;
+	string strRadioButton0 = "Use as is##" + strIndex;
+	string strRadioButton1 = "Flip (Up/Down)##" + strIndex;
+	string strRadioButton2 = "Flip (Left/Right)##" + strIndex;
+	string strRadioButton3 = "Flip both##" + strIndex;
+	string strRadioButton4 = "Turn 90##" + strIndex;
 
 	ImGui::SeparatorText(strSeparatorTag.c_str());
 
@@ -396,19 +402,34 @@ void Widget_EffectMaker_Mesh::Option_TextureOp(_int iIndex)
 	// For. Texture 
 	{
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
-		ImGui::BeginChild(strChild1.c_str(), ImVec2(280, 170), false, window_flags);
+		ImGui::BeginChild(strChild1.c_str(), ImVec2(350, 170), false, window_flags);
 
 		SubWidget_ImageViewer(m_TexOption[iIndex].Texture.second, m_strTexturePath, strImageViewer.c_str());
 
 		ImGui::SameLine();
 
-		if (ImGui::Button(strTextureButton.c_str()))
 		{
-			m_iTexture_TextureList = &m_TexOption[iIndex].Texture.first;
-			m_pTextureTag_TextureList = &m_TexOption[iIndex].Texture.second;
-			const char* pszTextureListTag = strTextureList.c_str();
-			m_pszWidgetKey_TextureList = pszTextureListTag;
-			m_bTextureList_On = true;
+			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
+			ImGui::BeginChild(strChild2.c_str(), ImVec2(280, 170), false, window_flags);
+
+			if (ImGui::Button(strTextureButton.c_str()))
+			{
+				m_iTexture_TextureList = &m_TexOption[iIndex].Texture.first;
+				m_pTextureTag_TextureList = &m_TexOption[iIndex].Texture.second;
+				const char* pszTextureListTag = strTextureList.c_str();
+				m_pszWidgetKey_TextureList = pszTextureListTag;
+				m_bTextureList_On = true;
+			}
+			
+			// Flip 
+			ImGui::Text("Texture Flip Options");
+			ImGui::RadioButton(strRadioButton0.c_str(), &m_TexOption[iIndex].iFlipOption, 0); 
+			ImGui::RadioButton(strRadioButton1.c_str(), &m_TexOption[iIndex].iFlipOption, 1); 
+			ImGui::RadioButton(strRadioButton2.c_str(), &m_TexOption[iIndex].iFlipOption, 2);
+			ImGui::RadioButton(strRadioButton3.c_str(), &m_TexOption[iIndex].iFlipOption, 3);
+			ImGui::RadioButton(strRadioButton4.c_str(), &m_TexOption[iIndex].iFlipOption, 4);
+			
+			ImGui::EndChild();
 		}
 
 		ImGui::EndChild();
@@ -931,6 +952,7 @@ void Widget_EffectMaker_Mesh::Create()
 				m_bColorChangingOn,
 
 				m_TexOption[0].Texture.second,
+				m_TexOption[0].iFlipOption,
 				m_TexOption[0].iColoringOption,
 				ImVec4toColor(m_TexOption[0].vColorBase1),
 				ImVec4toColor(m_TexOption[0].vColorBase2),
@@ -942,6 +964,7 @@ void Widget_EffectMaker_Mesh::Create()
 				m_TexOption[0].fAlphaOffset,
 
 				m_TexOption[1].Texture.second,
+				m_TexOption[1].iFlipOption,
 				m_TexOption[1].iColoringOption,
 				ImVec4toColor(m_TexOption[1].vColorBase1),
 				ImVec4toColor(m_TexOption[1].vColorBase2),
@@ -953,6 +976,7 @@ void Widget_EffectMaker_Mesh::Create()
 				m_TexOption[1].fAlphaOffset,
 
 				m_TexOption[2].Texture.second,
+				m_TexOption[2].iFlipOption,
 				m_TexOption[2].iColoringOption,
 				ImVec4toColor(m_TexOption[2].vColorBase1),
 				ImVec4toColor(m_TexOption[2].vColorBase2),
@@ -1065,6 +1089,7 @@ void Widget_EffectMaker_Mesh::Save()
 		for (_int i = 0; i < m_iTexOptionCnt; i++)
 		{
 			file->Write<string>(m_TexOption[i].Texture.second);
+			file->Write<_int>(m_TexOption[i].iFlipOption);
 			file->Write<_int>(m_TexOption[i].iColoringOption);
 			file->Write<_float4>(ImVec4toColor(m_TexOption[i].vColorBase1));
 			file->Write<_float4>(ImVec4toColor(m_TexOption[i].vColorBase2));
@@ -1192,6 +1217,7 @@ void Widget_EffectMaker_Mesh::Load()
 		m_TexOption[i].Texture.first = GetIndex_FromTexList(m_TexOption[i].Texture.second);
 		if (0 != m_TexOption[i].Texture.first)
 			m_TexOption[i].bIsOption_On = true;
+		m_TexOption[i].iFlipOption = file->Read<_int>();
 		m_TexOption[i].iColoringOption = file->Read<_int>();
 		m_TexOption[i].vColorBase1 = ColorToImVec4(file->Read<_float4>());
 		m_TexOption[i].vColorBase2 = ColorToImVec4(file->Read<_float4>());

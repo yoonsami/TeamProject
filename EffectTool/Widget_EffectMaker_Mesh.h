@@ -13,6 +13,7 @@ public:
 
 		_int					iColoringOption = { 0 };
 		pair<_int, string>		Texture = { 0, "None" };
+		_int					iFlipOption = { 0 };
 
 		_bool					bUseSolidColor = { false };
 		ImVec4					vColorBase1 = ImVec4(1.f, 1.f, 1.f, 1.f);

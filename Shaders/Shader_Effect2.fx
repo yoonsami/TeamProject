@@ -53,9 +53,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     float fLifeTimeRatio = g_float_0;
     float fDissolveWeight = g_float_1;
     
-    float2 vOp1_ColorOptions = g_vec2_0;
-    float2 vOp2_ColorOptions = g_vec2_1;
-    float2 vOp3_ColorOptions = g_vec2_2;
+    float2 vColorOptions_Op[3] = { g_vec2_0, g_vec2_1, g_vec2_2 };
     
     float4 vBaseColor1_Op1 = g_mat_0._11_12_13_14;
     float4 vBaseColor2_Op1 = g_mat_0._21_22_23_24;
@@ -65,10 +63,9 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     float4 vBaseColor2_Op3 = g_mat_1._21_22_23_24;
     float4 vBaseColor_Overlay = g_mat_1._31_32_33_34;
     
-    float bUseTexColor_Op1 = g_mat_1._41;
-    float bUseTexColor_Op2 = g_mat_1._42;
-    float bUseTexColor_Op3 = g_mat_1._43;
-        
+    float bUseTexColor_Op[3] = { g_mat_1._41, g_mat_1._42, g_mat_1._43 };
+    int iFilpOPtion_Op[3] = { g_mat_2._11, g_mat_2._12, g_mat_2._13 };
+    
     /* Calc Texcoord */
     float fDistortionWeight = 0.f;
     if (bHasDistortionMap)
@@ -76,9 +73,12 @@ float4 PS_Clamp(EffectOut input) : SV_Target
         float4 vDistortion = DistortionMap.Sample(LinearSampler, input.uv + g_vec2_3);
         fDistortionWeight = vDistortion.r * 0.5f;
     }
-    float2 vTexcoord_Op1 = input.uv + float2(g_vec4_0.x, g_vec4_0.y) + fDistortionWeight;
-    float2 vTexcoord_Op2 = input.uv + float2(g_vec4_0.z, g_vec4_0.w) + fDistortionWeight;
-    float2 vTexcoord_Op3 = input.uv + float2(g_vec4_1.x, g_vec4_1.y) + fDistortionWeight;
+
+    float2 vTexcoord_Op[3] = { input.uv + float2(g_vec4_0.x, g_vec4_0.y) + fDistortionWeight,
+                               input.uv + float2(g_vec4_0.z, g_vec4_0.w) + fDistortionWeight,
+                               input.uv + float2(g_vec4_1.x, g_vec4_1.y) + fDistortionWeight
+                             };
+    
     float2 vTexcoord_Blend = input.uv + float2(g_vec4_1.z, g_vec4_1.w) + fDistortionWeight;
     float2 vTexcoord_Overlay    = input.uv + float2(g_vec4_2.x, g_vec4_2.y);
     float2 vTexcoord_Dissolve   = input.uv + float2(g_vec4_2.z, g_vec4_2.w);
@@ -86,12 +86,32 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     {
         float2 vSpriteAnim_RangeX = float2(g_vec4_3.x, g_vec4_3.y);
         float2 vSpriteAnim_RangeY = float2(g_vec4_3.z, g_vec4_3.w);
-        vTexcoord_Op1 = float2(vSpriteAnim_RangeX.x + ((vSpriteAnim_RangeX.y - vSpriteAnim_RangeX.x) * input.uv.x),
+        vTexcoord_Op[0] = float2(vSpriteAnim_RangeX.x + ((vSpriteAnim_RangeX.y - vSpriteAnim_RangeX.x) * input.uv.x),
                               vSpriteAnim_RangeY.x + ((vSpriteAnim_RangeY.y - vSpriteAnim_RangeY.x) * input.uv.y)) + fDistortionWeight;
+    }
+    
+    // For. Flip option 
+    for (int i = 0; i < 3; i++)
+    {
+        if (iFilpOPtion_Op[i] == 1) // flip up/down
+            vTexcoord_Op[i].y = 1.f - vTexcoord_Op[i].y;
+        else if (iFilpOPtion_Op[i] == 2) // flip left/right 
+            vTexcoord_Op[i].x = 1.f - vTexcoord_Op[i].x;
+        else if (iFilpOPtion_Op[i] == 3) // flip up/down and left/right 
+        {
+            vTexcoord_Op[i].x = 1.f - vTexcoord_Op[i].x;
+            vTexcoord_Op[i].y = 1.f - vTexcoord_Op[i].y;
+        }
+        else if(iFilpOPtion_Op[i] == 4)
+        {
+            float2 vTemp = vTexcoord_Op[i];
+            vTexcoord_Op[i].x = 1.f - vTemp.y;
+            vTexcoord_Op[i].y = vTemp.x;
+        }
     }
   
     /* Sampled from textures */    
-    float4 vSample_Op1 = { 0.f, 0.f, 0.f, 0.f };
+        float4 vSample_Op1 = { 0.f, 0.f, 0.f, 0.f };
     float4 vSample_Op2 = { 0.f, 0.f, 0.f, 0.f };
     float4 vSample_Op3 = { 0.f, 0.f, 0.f, 0.f };
     float4 vSample_Blend = { 0.f, 0.f, 0.f, 0.f };
@@ -99,54 +119,54 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     float4 vSample_Dissolve = { 0.f, 0.f, 0.f, 0.f };
     if (bHasTexturemap7)
     {        
-        if (0.f == bUseTexColor_Op1)
+        if (0.f == bUseTexColor_Op[0])
         {
-            vSample_Op1.a = TextureMap7.Sample(LinearSamplerClamp, vTexcoord_Op1).r;
+            vSample_Op1.a = TextureMap7.Sample(LinearSamplerClamp, vTexcoord_Op[0]).r;
             vSample_Op1.rgb = lerp(vBaseColor2_Op1, vBaseColor1_Op1, vSample_Op1.a);
         }
         else
         {
-            vSample_Op1 = TextureMap7.Sample(LinearSamplerClamp, vTexcoord_Op1);
+            vSample_Op1 = TextureMap7.Sample(LinearSamplerClamp, vTexcoord_Op[0]);
             vSample_Op1.rgb = pow(vSample_Op1.rgb, GAMMA);
         }
         
         float luminance = dot(vSample_Op1.rgb, float3(0.299, 0.587, 0.114));
-        vSample_Op1.rgb = lerp(vSample_Op1.rgb, vSample_Op1.rgb * vOp1_ColorOptions.x, saturate(luminance));
-        vSample_Op1.a = saturate(vSample_Op1.a * vOp1_ColorOptions.y);
+        vSample_Op1.rgb = lerp(vSample_Op1.rgb, vSample_Op1.rgb * vColorOptions_Op[0].x, saturate(luminance));
+        vSample_Op1.a = saturate(vSample_Op1.a * vColorOptions_Op[0].y);
     }
     if (bHasTexturemap8)
     {
-        if (0.f == bUseTexColor_Op1)
+        if (0.f == bUseTexColor_Op[1])
         {
-            vSample_Op2.a = TextureMap8.Sample(LinearSamplerClamp, vTexcoord_Op2).r;
+            vSample_Op2.a = TextureMap8.Sample(LinearSamplerClamp, vTexcoord_Op[1]).r;
             vSample_Op2.rgb = lerp(vBaseColor2_Op2, vBaseColor1_Op2, vSample_Op2.a);
         }
         else
         {
-            vSample_Op2 = TextureMap8.Sample(LinearSamplerClamp, vTexcoord_Op2);
+            vSample_Op2 = TextureMap8.Sample(LinearSamplerClamp, vTexcoord_Op[1]);
             vSample_Op2.rgb = pow(vSample_Op2.rgb, GAMMA);
         }
         
         float luminance = dot(vSample_Op2.rgb, float3(0.299, 0.587, 0.114));
-        vSample_Op2.rgb = lerp(vSample_Op2.rgb, vSample_Op2.rgb * vOp2_ColorOptions.x, saturate(luminance));
-        vSample_Op2.a = saturate(vSample_Op2.a * vOp2_ColorOptions.y);
+        vSample_Op2.rgb = lerp(vSample_Op2.rgb, vSample_Op2.rgb * vColorOptions_Op[1].x, saturate(luminance));
+        vSample_Op2.a = saturate(vSample_Op2.a * vColorOptions_Op[1].y);
     }
     if (bHasTexturemap9)
     {
-        if (0.f == bUseTexColor_Op1)
+        if (0.f == bUseTexColor_Op[2])
         {
-            vSample_Op3.a = TextureMap9.Sample(LinearSamplerClamp, vTexcoord_Op3).r;
+            vSample_Op3.a = TextureMap9.Sample(LinearSamplerClamp, vTexcoord_Op[2]).r;
             vSample_Op3.rgb = lerp(vBaseColor2_Op3, vBaseColor1_Op3, vSample_Op3.a);
         }
         else
         {
-            vSample_Op3 = TextureMap9.Sample(LinearSamplerClamp, vTexcoord_Op3);
+            vSample_Op3 = TextureMap9.Sample(LinearSamplerClamp, vTexcoord_Op[2]);
             vSample_Op3.rgb = pow(vSample_Op3.rgb, GAMMA);
         }
 
         float luminance = dot(vSample_Op3.rgb, float3(0.299, 0.587, 0.114));
-        vSample_Op3.rgb = lerp(vSample_Op3.rgb, vSample_Op3.rgb * vOp3_ColorOptions.x, saturate(luminance));
-        vSample_Op3.a = saturate(vSample_Op3.a * vOp3_ColorOptions.y);
+        vSample_Op3.rgb = lerp(vSample_Op3.rgb, vSample_Op3.rgb * vColorOptions_Op[2].x, saturate(luminance));
+        vSample_Op3.a = saturate(vSample_Op3.a * vColorOptions_Op[2].y);
     }
     if (bHasTexturemap10)
         vSample_Blend = TextureMap10.Sample(LinearSamplerClamp, vTexcoord_Blend);
@@ -161,7 +181,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     vOutColor = lerp(vOutColor, vSample_Op3, vSample_Op3.a);
     
     /* Gamma collection */
-    if (bUseTexColor_Op1 || bUseTexColor_Op2 || bUseTexColor_Op3)
+    if (bUseTexColor_Op[0] || bUseTexColor_Op[1] || bUseTexColor_Op[2])
         vOutColor.rgb = pow(vOutColor.rgb, 1.f / GAMMA);
 
     /* Blend */

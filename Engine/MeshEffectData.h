@@ -30,6 +30,7 @@ public:
 
         // Option1
         string      strTexture_Op1;
+        _int        iFlipOption_Op1;
         _int        bIsUseTextureColor_Op1;
         Color       vBaseColor1_Op1;
         Color       vBaseColor2_Op1;
@@ -42,6 +43,7 @@ public:
 
         // Option2
         string      strTexture_Op2;
+        _int        iFlipOption_Op2;
         _int        bIsUseTextureColor_Op2;
         Color       vBaseColor1_Op2;
         Color       vBaseColor2_Op2;
@@ -54,6 +56,7 @@ public:
 
         // Option3
         string      strTexture_Op3;
+        _int        iFlipOption_Op3;
         _int        bIsUseTextureColor_Op3;
         Color       vBaseColor1_Op3;
         Color       vBaseColor2_Op3;

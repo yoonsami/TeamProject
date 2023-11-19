@@ -134,6 +134,10 @@ void Widget_Model_Controller::Apply_Model()
 			weaponName = L"Weapon_Yeopo";
 		else if (model->Get_ModelTag() == (L"Dellons"))
 			weaponName = L"Weapon_Dellons";
+		else if (model->Get_ModelTag() == (L"Spike"))
+			weaponName = L"Weapon_Spike";
+		else if (model->Get_ModelTag() == (L"Shane"))
+			weaponName = L"Weapon_Shane";
 
 		if(model->Get_ModelTag() != (L"Kyle"))
 		{

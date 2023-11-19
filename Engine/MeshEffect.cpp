@@ -412,7 +412,6 @@ void MeshEffect::Init_RenderParams()
     
     /* Int */
     m_RenderParams.SetInt(0, m_tDesc.bUseFadeOut);
-    
     m_RenderParams.SetInt(2, (_int)m_tDesc.bUseSpriteAnim);
     
     /* Float */
@@ -454,6 +453,13 @@ void MeshEffect::Init_RenderParams()
         _float4((_float)m_tDesc.bIsUseTextureColor_Op1, (_float)m_tDesc.bIsUseTextureColor_Op2, (_float)m_tDesc.bIsUseTextureColor_Op3, 0.f)
     );
     m_RenderParams.SetMatrix(1, vTemp4x4);
+    vTemp4x4 = _float4x4(
+        _float4(m_tDesc.iFlipOption_Op1, m_tDesc.iFlipOption_Op2, m_tDesc.iFlipOption_Op3, 0.f),
+        _float4(0.f, 0.f, 0.f, 0.f),
+        _float4(0.f, 0.f, 0.f, 0.f),
+        _float4(0.f, 0.f, 0.f, 0.f)
+    );
+    m_RenderParams.SetMatrix(2, vTemp4x4);
 }
 
 void MeshEffect::Bind_UpdatedColor_ToShader()
