@@ -148,7 +148,7 @@ void DemoScene::Final_Tick()
 	
 	if (KEYTAP(KEY_TYPE::TAB))
 	{
-		GachaSceneDesc sceneDesc{ L"KyleMap",HERO::KYLE };
+		GachaSceneDesc sceneDesc{ L"YeopoMap",HERO::YEOPO};
 			SCENE.Add_SubScene(make_shared<GachaScene>(sceneDesc));
 		SCENE.Exchange_Scene();
 

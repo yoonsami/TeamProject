@@ -68,30 +68,12 @@ void Model::ReadMaterial(const wstring& strPath)
 				wstring textureR = textureStr;
 
 				Utils::Replace(textureR, L"_D", L"_R");
-				Utils::DetachExt(textureR);
-
+				if (textureStr != textureR)
 				{
-					textureR += L".dds";
-					auto texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
-					if (!texture_R)
-					{
-						Utils::ChangeExt(textureR, L".DDS");
-						texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
-						if (!texture_R)
-						{
-							Utils::ChangeExt(textureR, L".tga");
-							texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
-							if (!texture_R)
-							{
-								Utils::ChangeExt(textureR, L".png");
-								texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+					Utils::DetachExt(textureR);
 
-							}
-						}
-					}
-					if (!texture_R)
 					{
-						Utils::Replace(textureR, L"_R", L"_M");
+						textureR += L".dds";
 						auto texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
 						if (!texture_R)
 						{
@@ -109,35 +91,38 @@ void Model::ReadMaterial(const wstring& strPath)
 								}
 							}
 						}
+						if (!texture_R)
+						{
+							Utils::Replace(textureR, L"_R", L"_M");
+							auto texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+							if (!texture_R)
+							{
+								Utils::ChangeExt(textureR, L".DDS");
+								texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+								if (!texture_R)
+								{
+									Utils::ChangeExt(textureR, L".tga");
+									texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+									if (!texture_R)
+									{
+										Utils::ChangeExt(textureR, L".png");
+										texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+
+									}
+								}
+							}
+						}
+						material->Set_SubMap(0, texture_R);
 					}
-					material->Set_SubMap(0, texture_R);
 				}
 
 				wstring textureE = textureStr;
 				Utils::Replace(textureE, L"_D", L"_E");
-				Utils::DetachExt(textureE);
+				if(textureStr != textureE)
 				{
-					textureE += L".dds";
-					auto texture_E = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureE, texturePath + L"\\" + textureE);
-					if (!texture_E)
+					Utils::DetachExt(textureE);
 					{
-						Utils::ChangeExt(textureE, L".DDS");
-						texture_E = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureE, texturePath + L"\\" + textureE);
-						if (!texture_E)
-						{
-							Utils::ChangeExt(textureE, L".tga");
-							texture_E = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureE, texturePath + L"\\" + textureE);
-							if (!texture_E)
-							{
-								Utils::ChangeExt(textureE, L".png");
-								texture_E = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureE, texturePath + L"\\" + textureE);
-
-							}
-						}
-					}
-					if (!texture_E)
-					{
-						Utils::Replace(textureE, L"_R", L"_M");
+						textureE += L".dds";
 						auto texture_E = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureE, texturePath + L"\\" + textureE);
 						if (!texture_E)
 						{
@@ -155,8 +140,29 @@ void Model::ReadMaterial(const wstring& strPath)
 								}
 							}
 						}
+						if (!texture_E)
+						{
+							Utils::Replace(textureE, L"_R", L"_M");
+							auto texture_E = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureE, texturePath + L"\\" + textureE);
+							if (!texture_E)
+							{
+								Utils::ChangeExt(textureE, L".DDS");
+								texture_E = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureE, texturePath + L"\\" + textureE);
+								if (!texture_E)
+								{
+									Utils::ChangeExt(textureE, L".tga");
+									texture_E = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureE, texturePath + L"\\" + textureE);
+									if (!texture_E)
+									{
+										Utils::ChangeExt(textureE, L".png");
+										texture_E = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureE, texturePath + L"\\" + textureE);
+
+									}
+								}
+							}
+						}
+						material->Set_TextureMap(texture_E, TextureMapType::EMISSIVE);
 					}
-					material->Set_TextureMap(texture_E,TextureMapType::EMISSIVE);
 				}
 
 			}
