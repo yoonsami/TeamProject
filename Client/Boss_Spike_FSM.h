@@ -11,54 +11,50 @@ public:
 		SQ_Appear_01,
 		SQ_Appear_02,
 		SQ_Appear_03,
+		Spawn,
 		
-
-
-
-		n_idle,
-		talk_01,
-		Intro, //skill 901100 motion
-
-
 		b_idle,
-		b_run_start,
 		b_run,
-		b_run_end_r,
-		b_run_end_l,
-		b_sprint,
-		b_walk,
-		die,
-		airborne_start, //airborne_start -> airborne_end -> airborne_up
-		airborne_end,
-		airborne_up, // airborne_end_up Animation = knock_end_up animation
-		hit, //normal_hit
-		knock_start, // knock_start -> knock_end -> knock_end_loop -> knock_up
-		knock_end,
-		knock_end_loop,
-		knock_end_hit, // hit on knock_state
-		knock_up,
-		knockdown_start, //knockdown_start -> knockdown_end -> knock_up
-		knockdown_end,
-		stun,
+		
+		gaze_b,
+		gaze_f,
+		gaze_l,
+		gaze_r,
 
-		skill_1100, //normal attack1
-		skill_1200, //normal attack2
-		skill_1300, //normal attack3
-		skill_1400, //normal attack4
-		skill_91100, //Evade
-		skill_93100, //Backward_Evade
-		skill_100100, // Skill 1-1
-		skill_100200, // Skill 1-2
-		skill_200100, // Skill 2-1
-		skill_200200, // Skill 2-2
-		skill_300100, // Skill 3
-		skill_400100, // Skill 4
-		skill_501100, // Skill 5
-		skill_901000,
-		skill_901100,
-		skill_902100,
-		skill_903100,
-		skill_904100,
+		die,
+		hit, //normal_hit
+		hit_b,
+		hit_f,
+		hit_l,
+		hit_r,
+		groggy_start,
+		groggy_end,
+		groggy_loop,
+
+		skill_1100, 
+		skill_1200, 
+		skill_1300, 
+		skill_1400, 
+
+		skill_9100, //Evade
+		skill_9200, //Evade
+		skill_9300, //Evade
+		skill_9400, //Evade
+		
+		skill_2100, 
+		skill_2200, 
+		skill_3100, 
+		skill_3200, 
+
+		skill_6100,  // ULTIMATE
+		skill_7100, 
+		skill_8100, 
+
+		skill_100000, 
+		skill_100100, 
+		skill_201100,  //CUTSCENE (DOWN)
+		skill_201200,  //CUTSCENE (UP)
+
 
 		NONE
 	};
@@ -84,63 +80,66 @@ private:
 	virtual void Set_State(_uint iIndex) override;
 
 
+	//SQ_Appear_01,
+	//	SQ_Appear_02,
+	//	SQ_Appear_03,
+
+	//	b_idle,
+	//	b_run,
+
+	//	gaze_b,
+	//	gaze_f,
+	//	gaze_l,
+	//	gaze_r,
+	//	die,
+
+	//	hit, //normal_hit
+	//	hit_b,
+	//	hit_f,
+	//	hit_l,
+	//	hit_r,
+	//	groggy_start,
+	//	groggy_end,
+	//	groggy_loop,
+
+
+
 	void SQ_Appear_01();
 	void SQ_Appear_01_Init();
 	void SQ_Appear_02();
 	void SQ_Appear_02_Init();
 	void SQ_Appear_03();
 	void SQ_Appear_03_Init();
-
-
-	void n_idle();
-	void n_idle_Init();
-	void talk_01();
-	void talk_01_Init();
-	void Intro();
-	void Intro_Init();
-
+	void Spawn();
+	void Spawn_Init();
 
 	void b_idle();
 	void b_idle_Init();
-	void b_run_start();
-	void b_run_start_Init();
 	void b_run();
 	void b_run_Init();
-	void b_run_end_r();
-	void b_run_end_r_Init();
-	void b_run_end_l();
-	void b_run_end_l_Init();
-	void b_sprint();
-	void b_sprint_Init();
-	void b_walk();
-	void b_walk_Init();
+
+	void gaze_b();
+	void gaze_b_Init();
+	void gaze_f();
+	void gaze_f_Init();
+	void gaze_l();
+	void gaze_l_Init();
+	void gaze_r();
+	void gaze_r_Init();
+
 	void die();
 	void die_Init();
 
-	void airborne_start();
-	void airborne_start_Init();
-	void airborne_end();
-	void airborne_end_Init();
-	void airborne_up();
-	void airborne_up_Init();
+	
 	void hit();
 	void hit_Init();
-	void knock_start();
-	void knock_start_Init();
-	void knock_end();
-	void knock_end_Init();
-	void knock_end_loop();
-	void knock_end_loop_Init();
-	void knock_end_hit();
-	void knock_end_hit_Init();
-	void knock_up();
-	void knock_up_Init();
-	void knockdown_start();
-	void knockdown_start_Init();
-	void knockdown_end();
-	void knockdown_end_Init();
-	void stun();
-	void stun_Init();
+	
+	void groggy_start();
+	void groggy_start_Init();
+	void groggy_loop();
+	void groggy_loop_Init();
+	void groggy_end();
+	void groggy_end_Init();
 
 
 	void skill_1100();
@@ -152,83 +151,88 @@ private:
 	void skill_1400();
 	void skill_1400_Init();
 
-	void skill_91100();
-	void skill_91100_Init();
-	void skill_93100();
-	void skill_93100_Init();
+	//Evade Motion
+	void skill_9100();
+	void skill_9100_Init();
+	void skill_9200();
+	void skill_9200_Init();
+	void skill_9300();
+	void skill_9300_Init();
+	void skill_9400();
+	void skill_9400_Init();
+	
+
+	void skill_2100();
+	void skill_2100_Init();
+	void skill_2200();
+	void skill_2200_Init();
+	void skill_3100();
+	void skill_3100_Init();
+	void skill_3200();
+	void skill_3200_Init();
+	void skill_6100(); //Ulti
+	void skill_6100_Init();
+	void skill_7100();
+	void skill_7100_Init();
+	void skill_8100();
+	void skill_8100_Init();
+
+	//GroggyPattern
+	void skill_100000();
+	void skill_100000_Init();
 	void skill_100100();
 	void skill_100100_Init();
-	void skill_100200();
-	void skill_100200_Init();
-	void skill_200100();
-	void skill_200100_Init();
-	void skill_200200();
-	void skill_200200_Init();
-	void skill_300100();
-	void skill_300100_Init();
 
-	void skill_400100();
-	void skill_400100_Init();
-	void skill_501100();
-	void skill_501100_Init();
+	//For. CutScene
+	void skill_201100();
+	void skill_201100_Init();
+	void skill_201200();
+	void skill_201200_Init();
 
-	void skill_901000();
-	void skill_901000_Init();
-	void skill_901100();
-	void skill_901100_Init();
-	void skill_902100();
-	void skill_902100_Init();
-	void skill_903100();
-	void skill_903100_Init();
-	void skill_904100();
-	void skill_904100_Init();
-
-
-	void Battle_Start();
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
-	void Summon_Wraith();
-	void Set_WraithState(_uint iAnimindex);
 	void Calculate_SkillCamRight();
-	void Set_AttackSkill_Phase1();
+	void Set_AttackSkill();
 	void Create_BossSpikeChair();
+	void Set_Gaze();
+	void Create_CounterMotionTrail();
 
 	_float3 Calculate_TargetTurnVector();
-
+	
 private:
 	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;
 	STATE m_ePatternState = STATE::NONE;
 
 
-	weak_ptr<GameObject> m_pDellonsWraith;
-
 	_float3 m_vTurnVector = _float3(0.f);
 	_float4 m_vFirstPos = _float4(0.f);
 	_float m_fTurnSpeed = XM_PI * 5.f;
 
-	COOLTIMEINFO m_tBattleStartTime = { 1.f, 0.f };
-	COOLTIMEINFO m_tSprintCoolTime = { 2.5f, 0.f };
+	_float m_fGroggyStateAnimationSpeed = 1.f;
+	_float m_fGroggyPatternAnimationSpeed = 0.15f;
+
 
 	COOLTIMEINFO m_tAttackCoolTime = { 1.f, 0.f };
-	COOLTIMEINFO m_tWraithSummonCoolTime = { 2.f, 0.f };
+	COOLTIMEINFO m_tChaseCoolTime = { 2.f, 0.f };
+	COOLTIMEINFO m_tSkillCoolTime = { 0.2f, 0.f };
+	COOLTIMEINFO m_tGroggyPatternTimer = { 30.f, 0.f };
 
-	_bool m_bSprint = false;
+
+	_bool m_bChaseSkill = false;
 	_bool m_bDetected = false;
-	_bool m_bBattleStart = false;
 	_bool m_bCounter = false;
 	_bool m_bSetPattern = false;
+	_bool m_bGroggyPattern = false;
+	_bool m_bLastPattern = false;
 
-	_uint m_iGroggy_Gauge = 0;
+
 	_uint m_iPreAttack = 100;
-
-	_float3 m_vCutSceneCamDir = _float3(0.f);
-	_float4 m_vCutSceneCamPos = _float4(0.f);
 	
-
+	_float4 m_vPlayerBodyPos = _float4(0.f);
+	_float4 m_vChairPos = _float4(0.f);
+	
 	_uint m_iChairBoneIndex = 0;
 	_float4 m_vChairBonePos = _float4(0.f);
 	_float4x4 m_ChairBoneMatrix = XMMatrixIdentity();
-
-
 };
 

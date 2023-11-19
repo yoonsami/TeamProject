@@ -67,14 +67,18 @@ private:
 	void					SubWidget_TextureList();
 	void					SubWidget_ImageViewer(string strFileName, string strFilePath, const char* pszWidgetKey);
 	void					SubWidget_SettingTexUV(_float* arrTiling, _float* arrTexUVSpeed, const char* pszWidgetKey, const char* pszWidgetKey2);
-	
+	void					SubWidget_Curve1(_float2* pPoints, const string& strKey); // 0 ~ 1
+	void					SubWidget_Curve2(_float2* pPoints, const string& strKey); // 0 ~ 1, -1 ~ 1
+
 	/* Function */
 	void					Create();
 	void					Save();
 	void					Load();
 	
 	/* Utils */
+	ImVec2					CatMull_Rom(_float2* pPoints, _float t);
 	Color					ImVec4toColor(ImVec4 imvec);
+	ImVec2					XmVec2toImVec2(_float2 iSrc);
 	ImVec4					ColorToImVec4(Color color);
 	_int					GetIndex_FromTexList(string strValue);
 	_int					GetIndex_FromMeshList(string strValue);
@@ -161,7 +165,7 @@ private:
 	pair<_int, string>		m_DissolveTexture = { 0, "None" };
 	_float					m_fTiling_Dissolve[2] = { 0.f, 0.f };
 	_float					m_fUVSpeed_Dissolve[2] = { 0.f, 0.f };
-	_bool					m_bDissolveInverse = { false };
+	_float2					m_vCurvePoint_Dissolve[4] = {_float2(0.f, 0.f),_float2(0.3f, 0.5f), _float2(0.7f, 0.5f), _float2(1.f, 1.f)};
 
 	/* Distortion */
 	_bool					m_bDistortion_On = { false };
@@ -187,11 +191,11 @@ private:
 	_float					m_fTranslateSpeed = { 0.f };                               
 	_float					m_fEndPositionOffset_Min[3] = { 0.f, 0.f, 0.f };	
 	_float					m_fEndPositionOffset_Max[3] = { 0.f, 0.f, 0.f };
-		// TODO : add bezier
+	_int					m_iSpeedType = { 0 };
+	_float2					m_vCurvePoint_Force[4] = { _float2(0.f, 0.f),_float2(0.3f, 0.5f), _float2(0.7f, 0.5f), _float2(1.f, 1.f) };	
 	
 	_int					m_iScalingOption = { 0 };				// no change, change to endscale
 	_float					m_fEndScaleOffset[3] = { 0.f, 0.f, 0.f };
-		// TODO : add bezier
 	
 	_int					m_iTurnOption = { 0 };			// no change, turn with static, turn with random 
 	_float					m_fTurnSpeed = { 0.f };

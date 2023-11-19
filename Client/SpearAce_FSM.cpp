@@ -8,6 +8,8 @@
 #include "AttackColliderInfoScript.h"
 #include "Model.h"
 #include "CoolTimeCheckScript.h"
+#include "SpearAce_Clone_FSM.h"
+#include "ModelRenderer.h"
 
 
 SpearAce_FSM::SpearAce_FSM()
@@ -898,6 +900,8 @@ void SpearAce_FSM::skill_1100_Init()
 
     m_bCanCombo = false;
 
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+
     m_vKeyInputTargetDir = _float3(0.f);
     m_vKeyInputTargetDir = Get_InputDirVector();
 
@@ -945,6 +949,8 @@ void SpearAce_FSM::skill_1200_Init()
 
     animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+
     m_bCanCombo = false;
 
     m_vKeyInputTargetDir = _float3(0.f);
@@ -982,6 +988,8 @@ void SpearAce_FSM::skill_1300_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_1300", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+    
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
     m_bCanCombo = false;
 
@@ -1005,7 +1013,7 @@ void SpearAce_FSM::skill_91100()
         m_eCurState = STATE::b_idle;
     
 
-    if (Get_CurFrame() >= 9)
+    if (Get_CurFrame() >= 20)
     {
         if (vInputVector != _float3(0.f))
             m_eCurState = STATE::b_run;
@@ -1245,6 +1253,8 @@ void SpearAce_FSM::skill_300100()
     else if (Get_CurFrame() == 60)
     {
         m_vCamStopPos = m_vSkillCamBonePos;
+        Get_Owner()->Get_Animator()->Set_RenderState(false);
+        m_pWeapon.lock()->Get_ModelRenderer()->Set_RenderState(false);
     }
     else if (Get_CurFrame() >= 61 && Get_CurFrame() < 105)
     {
@@ -1260,6 +1270,8 @@ void SpearAce_FSM::skill_300100()
     }
     else if (Get_CurFrame() >=  105)
     {
+        m_pWeapon.lock()->Get_ModelRenderer()->Set_RenderState(true);
+        Get_Owner()->Get_Animator()->Set_RenderState(true);
         if (!m_pCamera.expired())
         {
             _float4 vDir = m_vCamBonePos - m_vSkillCamBonePos;
@@ -1454,7 +1466,7 @@ void SpearAce_FSM::skill_300100_Init()
     Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, NORMAL_SKILL);
 
     AttackCollider_Off();
-
+    Create_300100Clone();
     m_bInvincible = false;
     m_bSuperArmor = true;
 }
@@ -1622,5 +1634,23 @@ void SpearAce_FSM::Use_Dash()
             else
                 m_eCurState = STATE::skill_93100;
         }
+    }
+}
+
+void SpearAce_FSM::Create_300100Clone()
+{
+    for(_uint i =0; i < 5; ++i)
+    {
+        shared_ptr<GameObject> obj = make_shared<GameObject>();
+        obj->GetOrAddTransform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
+        {
+            shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(RESOURCES.Get<Shader>(L"Shader_Model.fx"));
+            shared_ptr<Model> model = RESOURCES.Get<Model>(L"Spear_Ace_Clone");
+            animator->Set_Model(model);
+            obj->Add_Component(animator);
+        }
+        obj->Add_Component(make_shared<SpearAce_Clone_FSM>(i));
+        obj->Get_FSM()->Init();
+        CUR_SCENE->Add_GameObject(obj);
     }
 }

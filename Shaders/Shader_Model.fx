@@ -710,7 +710,7 @@ PBR_OUTPUT PS_PBR_Deferred(MeshOutput input)
         emissiveColor.rgb = pow(abs(emissiveColor.rgb), GAMMA);
     }
     else
-        emissiveColor = Material.emissive;
+        emissiveColor = 0.f;
 
     output.position = float4(input.viewPosition.xyz, 0.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
@@ -719,6 +719,7 @@ PBR_OUTPUT PS_PBR_Deferred(MeshOutput input)
     output.arm = ARM_Map;
     output.diffuseColor = diffuseColor;
     output.emissive = emissiveColor;
+    output.rimColor = Material.emissive;
     output.blur = 0;
     return output;
 }
@@ -776,7 +777,7 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(MeshInstancingOutput input)
         emissiveColor.rgb = pow(abs(emissiveColor.rgb), GAMMA);
     }
     else
-        emissiveColor = Material.emissive;
+        emissiveColor = 0.f;
     
     output.position = float4(input.viewPosition.xyz, 0.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
@@ -785,6 +786,7 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(MeshInstancingOutput input)
     output.arm = ARM_Map;
     output.diffuseColor = diffuseColor;
     output.emissive = emissiveColor;
+    output.rimColor = Material.emissive;
     output.blur = 0;
     return output;
 }
@@ -843,7 +845,7 @@ PBR_OUTPUT PS_PBR_Deferred_MapObject(MeshOutput input)
         emissiveColor.rgb = pow(abs(emissiveColor.rgb), GAMMA);
     }
     else
-        emissiveColor = Material.emissive;
+        emissiveColor = 0.f;
     
     diffuseColor = diffuseColor;
     
@@ -854,6 +856,7 @@ PBR_OUTPUT PS_PBR_Deferred_MapObject(MeshOutput input)
     output.arm = ARM_Map;
     output.diffuseColor = diffuseColor;
     output.emissive = emissiveColor;
+    output.rimColor = Material.emissive;
     output.blur = 0;
     return output;
 }

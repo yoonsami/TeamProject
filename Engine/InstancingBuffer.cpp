@@ -18,7 +18,7 @@ void InstancingBuffer::Clear_Data()
 void InstancingBuffer::Add_Data(InstancingData& data)
 {
 	m_Data.push_back(data);
-}
+ }
 
 void InstancingBuffer::Push_Data()
 {

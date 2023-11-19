@@ -38,6 +38,10 @@ void Widget_Model_Controller::Tick()
 
 
 	Begin("Model Controller");
+	static _bool checkBox = true;
+	Checkbox("SkyBox On", &checkBox);
+	if (CUR_SCENE->Get_GameObject(L"SkyBase"))
+		CUR_SCENE->Get_GameObject(L"SkyBase")->Get_ModelRenderer()->Set_RenderState(checkBox);
 	Model_Controller();
 	End();
 
@@ -94,6 +98,20 @@ void Widget_Model_Controller::Model_Controller()
 			if (BeginTabItem("Model Info"))
 			{
 				Model_Info();
+
+				EndTabItem();
+			}
+			if (BeginTabItem("Animation Select"))
+			{
+				m_pControlObject.lock()->Get_Animator()->Set_AnimState(false);
+				Show_AnimationList();
+				Apply_Anim();
+				EndTabItem();
+			}
+			if (BeginTabItem("Animation Control"))
+			{
+				m_pControlObject.lock()->Get_Animator()->Set_AnimState(true);
+				Control_Anim();
 
 				EndTabItem();
 			}
@@ -249,29 +267,55 @@ void Widget_Model_Controller::Apply_Model()
 {
 	if (Button("Select Model"))
 	{
-		CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"TestModel"));
+		if (m_pControlObject.expired())
+		{
+			shared_ptr<GameObject> obj = make_shared<GameObject>();
+			obj->Set_Name(L"TestModel");
+			obj->GetOrAddTransform();
+			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(RESOURCES.Get<Shader>(L"Shader_Model.fx"));
+			obj->Add_Component(animator);
+			CUR_SCENE->Add_GameObject(obj);
+			m_pControlObject = obj;
+		}
 
-		shared_ptr<GameObject> obj = make_shared<GameObject>();
-		obj->Set_Name(L"TestModel");
-		obj->GetOrAddTransform();
-		CUR_SCENE->Add_GameObject(obj);
-		
-		
-		auto shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 		shared_ptr<Model> model = RESOURCES.Get<Model>(Utils::ToWString(m_ModelNames[m_iCurrentModelIndex]));
-		if (model->Get_AnimationCount() == 0)
+		m_pControlObject.lock()->Get_Animator()->Set_Model(model);
+		m_pControlObject.lock()->Get_Animator()->Set_CurrentAnim(0);
+		m_pControlObject.lock()->Add_Component(make_shared<ForcePosition>());
+
+		CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"TestWeapon"));
+
+		wstring weaponName;
+		if (model->Get_ModelTag() == L"Spear_Ace")
+			weaponName = L"Weapon_Spear_Ace";
+		else if (model->Get_ModelTag() == (L"Yeopo"))
+			weaponName = L"Weapon_Yeopo";
+		else if (model->Get_ModelTag() == (L"Dellons"))
+			weaponName = L"Weapon_Dellons";
+		else if (model->Get_ModelTag() == (L"Rachel"))
+			weaponName = L"Weapon_Rachel";
+		else if (model->Get_ModelTag() == (L"ShaneGhost"))
+			weaponName = L"Weapon_Shane";
+
+		if (model->Get_ModelTag() != (L"Kyle"))
 		{
-		
-			obj->Add_Component(make_shared<ModelRenderer>(shader));
-			obj->Get_ModelRenderer()->Set_Model(model);
+			shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
+			ObjWeapon->Set_Name(L"TestWeapon");
+			ObjWeapon->GetOrAddTransform();
+			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+			shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+			shared_ptr<Model> m = RESOURCES.Get<Model>(weaponName);
+			renderer->Set_Model(m);
+			ObjWeapon->Add_Component(renderer);
+			WeaponScript::WEAPONDESC desc;
+			desc.strBoneName = L"Bip001-Prop1";
+			desc.matPivot = _float4x4::CreateRotationX(-XM_PI / 2.f) * _float4x4::CreateRotationZ(XM_PI);
+			desc.pWeaponOwner = m_pControlObject.lock();
+			ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
+			CUR_SCENE->Add_GameObject(ObjWeapon);
 		}
-		else
-		{
-			obj->Add_Component(make_shared<ModelAnimator>(shader));
-			obj->Get_Animator()->Set_Model(model);
-		}
-		m_pControlObject = obj;
 	}
+
 	if (Button("Specular Zero & Save"))
 	{
 		auto model = m_pControlObject.lock()->Get_Model();
@@ -414,4 +458,55 @@ void Widget_Model_Controller::Model_Info()
 	m_pMaterial = model->Get_MaterialByName(Utils::ToWString(materialNames[curMaterialIndex]));
 
 
+}
+
+void Widget_Model_Controller::Show_AnimationList()
+{
+	auto& animations = m_pControlObject.lock()->Get_Animator()->Get_Model()->Get_Animations();
+
+	m_AnimNames.clear();
+	m_AnimNames.resize(animations.size());
+
+	for (_uint i = 0; i < static_cast<_uint>(animations.size()); ++i)
+		m_AnimNames[i] = Utils::ToString(animations[i]->name);
+
+	SeparatorText("Anim List");
+	ListBox("##Anim List", &m_iCurrentAnimIndex, VectorOfStringGetter, &m_AnimNames, int(m_AnimNames.size()));
+
+}
+
+void Widget_Model_Controller::Apply_Anim()
+{
+	static _float fAnimSpeed = 1.f;
+	static _bool bAnimLoop = false;
+	static _bool bSetPosition = false;
+
+	DragFloat("Anim Speed", &fAnimSpeed, 0.05f, 0.1f, 5.f);
+	Checkbox("Anim Loop", &bAnimLoop);
+	if (Button("Select Animation"))
+		m_pControlObject.lock()->Get_Animator()->Set_CurrentAnim(Utils::ToWString(m_AnimNames[m_iCurrentAnimIndex]), bAnimLoop, fAnimSpeed);
+
+	Checkbox("Position Force To Zero", &bSetPosition);
+	m_pControlObject.lock()->Get_Script<ForcePosition>()->bForcePosition = bSetPosition;
+}
+
+void Widget_Model_Controller::Control_Anim()
+{
+	auto animator = m_pControlObject.lock()->Get_Animator();
+
+	auto& tweenDesc = animator->Get_TweenDesc();
+
+	const auto& animation = animator->Get_Model()->Get_AnimationByIndex(tweenDesc.curr.animIndex);
+
+	static _float fKeyFrame = 0.f;
+
+	DragFloat("## anim", &fKeyFrame, 0.1f, 0.f, _float(animation->frameCount));
+
+	_uint curFrame = _uint(fKeyFrame);
+	_uint nextFrame = curFrame + 1;
+	if (nextFrame >= animation->frameCount) nextFrame = animation->frameCount;
+
+	tweenDesc.curr.currentFrame = curFrame;
+	tweenDesc.curr.nextFrame = nextFrame;
+	tweenDesc.curr.ratio = fKeyFrame - curFrame;
 }

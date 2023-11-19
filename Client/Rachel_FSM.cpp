@@ -1,6 +1,6 @@
-#include "pch.h"
+Ôªø#include "pch.h"
 #include "MainCameraScript.h"
-#include "Spike_FSM.h"
+#include "Rachel_FSM.h"
 #include "ModelAnimator.h"
 #include "MotionTrailRenderer.h"
 #include "Debug_CreateMotionTrail.h"
@@ -8,17 +8,19 @@
 #include "AttackColliderInfoScript.h"
 #include "Model.h"
 #include "CoolTimeCheckScript.h"
+#include "SpearAce_Clone_FSM.h"
+#include "ModelRenderer.h"
 
 
-Spike_FSM::Spike_FSM()
+Rachel_FSM::Rachel_FSM()
 {
 }
 
-Spike_FSM::~Spike_FSM()
+Rachel_FSM::~Rachel_FSM()
 {
 }
 
-HRESULT Spike_FSM::Init()
+HRESULT Rachel_FSM::Init()
 {
     auto animator = Get_Owner()->Get_Animator();
     if (animator)
@@ -28,22 +30,21 @@ HRESULT Spike_FSM::Init()
     }
     shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
     attackCollider->GetOrAddTransform();
-    attackCollider->Add_Component(make_shared<SphereCollider>(1.5f));
+    attackCollider->Add_Component(make_shared<SphereCollider>(1.f));
     attackCollider->Get_Collider()->Set_CollisionGroup(Player_Attack);
 
     m_pAttackCollider = attackCollider;
 
     CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
     m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
-
+    
     m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
     m_pAttackCollider.lock()->Set_Name(L"Player_AttackCollider");
-    m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(Get_Owner());
+	m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(Get_Owner());
 
-    m_pWeapon = CUR_SCENE->Get_GameObject(L"Weapon_Spike");
+    m_pWeapon = CUR_SCENE->Get_GameObject(L"Weapon_Rachel");
 
     m_iDummy_CP_BoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_CP");
-    m_iCenterBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Center");
     m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
     m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
 
@@ -53,7 +54,7 @@ HRESULT Spike_FSM::Init()
     return S_OK;
 }
 
-void Spike_FSM::Tick()
+void Rachel_FSM::Tick()
 {
     State_Tick();
 
@@ -66,7 +67,7 @@ void Spike_FSM::Tick()
     Calculate_CamBoneMatrix();
 }
 
-void Spike_FSM::State_Tick()
+void Rachel_FSM::State_Tick()
 {
     State_Init();
 
@@ -138,9 +139,9 @@ void Spike_FSM::State_Tick()
     case STATE::skill_1300:
         skill_1300();
         break;
-    case STATE::skill_1400:
+	case STATE::skill_1400:
         skill_1400();
-        break;
+		break;
 
     case STATE::skill_91100:
         skill_91100();
@@ -151,37 +152,34 @@ void Spike_FSM::State_Tick()
     case STATE::skill_100100:
         skill_100100();
         break;
-    case STATE::skill_100300:
-        skill_100300();
-        break;
+	case STATE::skill_100200:
+		skill_100200();
+		break;
     case STATE::skill_200100:
         skill_200100();
-        break;
-    case STATE::skill_200100_l:
-        skill_200100_l();
         break;
     case STATE::skill_200200:
         skill_200200();
         break;
-    case STATE::skill_200300:
-        skill_200300();
-        break;
-    case STATE::skill_200400:
-        skill_200400();
-        break;
     case STATE::skill_300100:
         skill_300100();
         break;
-    case STATE::skill_400100:
-        skill_400100();
-        break;
+	case STATE::skill_300200:
+        skill_300200();
+		break;
+	case STATE::skill_300300:
+        skill_300300();
+		break;
     case STATE::skill_501100:
         skill_501100();
+        break;
+    case STATE::skill_500100:
+        skill_500100();
         break;
     }
 }
 
-void Spike_FSM::State_Init()
+void Rachel_FSM::State_Init()
 {
     if (m_eCurState != m_ePreState)
     {
@@ -253,9 +251,9 @@ void Spike_FSM::State_Init()
         case STATE::skill_1300:
             skill_1300_Init();
             break;
-        case STATE::skill_1400:
-            skill_1400_Init();
-            break;
+		case STATE::skill_1400:
+			skill_1400_Init();
+			break;
         case STATE::skill_91100:
             skill_91100_Init();
             break;
@@ -265,80 +263,77 @@ void Spike_FSM::State_Init()
         case STATE::skill_100100:
             skill_100100_Init();
             break;
-        case STATE::skill_100300:
-            skill_100300_Init();
-            break;
+		case STATE::skill_100200:
+			skill_100200_Init();
+			break;
         case STATE::skill_200100:
             skill_200100_Init();
-            break;
-        case STATE::skill_200100_l:
-            skill_200100_l_Init();
             break;
         case STATE::skill_200200:
             skill_200200_Init();
             break;
-        case STATE::skill_200300:
-            skill_200300_Init();
-            break;
-        case STATE::skill_200400:
-            skill_200400_Init();
-            break;
         case STATE::skill_300100:
             skill_300100_Init();
             break;
-        case STATE::skill_400100:
-            skill_400100_Init();
-            break;
+		case STATE::skill_300200:
+			skill_300200_Init();
+			break;
+		case STATE::skill_300300:
+			skill_300300_Init();
+			break;
         case STATE::skill_501100:
             skill_501100_Init();
+            break;
+        case STATE::skill_500100:
+            skill_500100_Init();
             break;
         }
         m_ePreState = m_eCurState;
     }
 }
 
-void Spike_FSM::OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap)
+void Rachel_FSM::OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
 }
 
-void Spike_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
+void Rachel_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
     if (pCollider->Get_Owner() == nullptr)
         return;
 
-    if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
-        return;
+	if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
+		return;
 
     wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
 
     if (!m_bInvincible)
     {
-        shared_ptr<GameObject> targetToLook = nullptr;
-        // skillNameø° _Skill ∆˜«‘¿Ã∏È
-        if (strSkillName.find(L"_Skill") != wstring::npos)
-            targetToLook = pCollider->Get_Owner(); // Collider owner∏¶ ≥—∞‹¡ÿ¥Ÿ
-        else // æ∆¥œ∏È
-            targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner(); // Collider∏¶ ∏∏µÁ ∞¥√º∏¶ ≥—∞‹¡ÿ¥Ÿ
+		shared_ptr<GameObject> targetToLook = nullptr;
+		// skillNameÏóê _Skill Ìè¨Ìï®Ïù¥Î©¥
+		if (strSkillName.find(L"_Skill") != wstring::npos)
+			targetToLook = pCollider->Get_Owner(); // Collider ownerÎ•º ÎÑòÍ≤®Ï§ÄÎã§
+		else // ÏïÑÎãàÎ©¥
+			targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner(); // ColliderÎ•º ÎßåÎì† Í∞ùÏ≤¥Î•º ÎÑòÍ≤®Ï§ÄÎã§
 
         if (targetToLook == nullptr)
             return;
 
-        Get_Hit(strSkillName, targetToLook);
+		Get_Hit(strSkillName, targetToLook);
     }
 }
 
-void Spike_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
+void Rachel_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
 }
 
-void Spike_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
+void Rachel_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
 {
-    _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
-    _float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
+	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
+	_float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
 
-    m_vHitDir = vOppositePos - vMyPos;
-    m_vHitDir.y = 0.f;
-    m_vHitDir.Normalize();
+	m_vHitDir = vOppositePos - vMyPos;
+	m_vHitDir.y = 0.f;
+	m_vHitDir.Normalize();
 
     if (skillname == NORMAL_ATTACK || skillname == NORMAL_SKILL)
     {
@@ -392,7 +387,7 @@ void Spike_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTa
     }
 }
 
-void Spike_FSM::AttackCollider_On(const wstring& skillname)
+void Rachel_FSM::AttackCollider_On(const wstring& skillname)
 {
     if (!m_pAttackCollider.expired())
     {
@@ -401,7 +396,7 @@ void Spike_FSM::AttackCollider_On(const wstring& skillname)
     }
 }
 
-void Spike_FSM::AttackCollider_Off()
+void Rachel_FSM::AttackCollider_Off()
 {
     if (!m_pAttackCollider.expired())
     {
@@ -410,24 +405,24 @@ void Spike_FSM::AttackCollider_Off()
     }
 }
 
-void Spike_FSM::Set_State(_uint iIndex)
+void Rachel_FSM::Set_State(_uint iIndex)
 {
 }
 
-void Spike_FSM::b_idle()
+void Rachel_FSM::b_idle()
 {
-    if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
-        KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
-        m_eCurState = STATE::b_run_start;
+	if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
+		KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
+		m_eCurState = STATE::b_run_start;
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
+	if (KEYTAP(KEY_TYPE::LBUTTON))
+		m_eCurState = STATE::skill_1100;
 
     Use_Skill();
 
 }
 
-void Spike_FSM::b_idle_Init()
+void Rachel_FSM::b_idle_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -440,12 +435,9 @@ void Spike_FSM::b_idle_Init()
 
     m_bInvincible = false;
     m_bSuperArmor = false;
-
-    m_fWheelWindRange = 2.f;
-    m_fWheelWindSpeed = 6.f;
 }
 
-void Spike_FSM::b_run_start()
+void Rachel_FSM::b_run_start()
 {
     Get_Transform()->Go_Straight();
 
@@ -468,12 +460,12 @@ void Spike_FSM::b_run_start()
 
         if (KEYTAP(KEY_TYPE::LBUTTON))
             m_eCurState = STATE::skill_1100;
-
+        
         Use_Skill();
     }
 }
 
-void Spike_FSM::b_run_start_Init()
+void Rachel_FSM::b_run_start_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -483,12 +475,12 @@ void Spike_FSM::b_run_start_Init()
     m_tRunEndDelay.fAccTime = 0.f;
 
     AttackCollider_Off();
-
+    
     m_bInvincible = false;
     m_bSuperArmor = false;
 }
 
-void Spike_FSM::b_run()
+void Rachel_FSM::b_run()
 {
     Get_Transform()->Go_Straight();
 
@@ -511,18 +503,18 @@ void Spike_FSM::b_run()
 
     if (KEYPUSH(KEY_TYPE::LSHIFT))
     {
-        if ((Get_CurFrame() == 1))
+        if ((Get_CurFrame() == 1) || Get_CurFrame() >= 19)
             m_eCurState = STATE::b_sprint;
 
     }
 
     if (KEYTAP(KEY_TYPE::LBUTTON))
         m_eCurState = STATE::skill_1100;
-
+   
     Use_Skill();
 }
 
-void Spike_FSM::b_run_Init()
+void Rachel_FSM::b_run_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -536,7 +528,7 @@ void Spike_FSM::b_run_Init()
     m_bSuperArmor = false;
 }
 
-void Spike_FSM::b_run_end_r()
+void Rachel_FSM::b_run_end_r()
 {
     _float3 vInputVector = Get_InputDirVector();
 
@@ -549,11 +541,11 @@ void Spike_FSM::b_run_end_r()
 
     if (KEYTAP(KEY_TYPE::LBUTTON))
         m_eCurState = STATE::skill_1100;
-
+   
     Use_Skill();
 }
 
-void Spike_FSM::b_run_end_r_Init()
+void Rachel_FSM::b_run_end_r_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -568,7 +560,7 @@ void Spike_FSM::b_run_end_r_Init()
     m_bSuperArmor = false;
 }
 
-void Spike_FSM::b_run_end_l()
+void Rachel_FSM::b_run_end_l()
 {
     _float3 vInputVector = Get_InputDirVector();
 
@@ -581,11 +573,11 @@ void Spike_FSM::b_run_end_l()
 
     if (KEYTAP(KEY_TYPE::LBUTTON))
         m_eCurState = STATE::skill_1100;
-
+    
     Use_Skill();
 }
 
-void Spike_FSM::b_run_end_l_Init()
+void Rachel_FSM::b_run_end_l_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -600,7 +592,7 @@ void Spike_FSM::b_run_end_l_Init()
     m_bSuperArmor = false;
 }
 
-void Spike_FSM::b_sprint()
+void Rachel_FSM::b_sprint()
 {
     Get_Transform()->Go_Straight();
 
@@ -629,11 +621,11 @@ void Spike_FSM::b_sprint()
 
     if (KEYTAP(KEY_TYPE::LBUTTON))
         m_eCurState = STATE::skill_1100;
-
+    
     Use_Skill();
 }
 
-void Spike_FSM::b_sprint_Init()
+void Rachel_FSM::b_sprint_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -647,23 +639,23 @@ void Spike_FSM::b_sprint_Init()
     m_bSuperArmor = false;
 }
 
-void Spike_FSM::b_walk()
+void Rachel_FSM::b_walk()
 {
 }
 
-void Spike_FSM::b_walk_Init()
+void Rachel_FSM::b_walk_Init()
 {
 }
 
-void Spike_FSM::die()
+void Rachel_FSM::die()
 {
 }
 
-void Spike_FSM::die_Init()
+void Rachel_FSM::die_Init()
 {
 }
 
-void Spike_FSM::airborne_start()
+void Rachel_FSM::airborne_start()
 {
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 
@@ -673,7 +665,7 @@ void Spike_FSM::airborne_start()
         m_eCurState = STATE::airborne_end;
 }
 
-void Spike_FSM::airborne_start_Init()
+void Rachel_FSM::airborne_start_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -685,13 +677,13 @@ void Spike_FSM::airborne_start_Init()
     m_bSuperArmor = true;
 }
 
-void Spike_FSM::airborne_end()
+void Rachel_FSM::airborne_end()
 {
     if (Is_AnimFinished())
         m_eCurState = STATE::airborne_up;
 }
 
-void Spike_FSM::airborne_end_Init()
+void Rachel_FSM::airborne_end_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -701,13 +693,13 @@ void Spike_FSM::airborne_end_Init()
     m_bSuperArmor = true;
 }
 
-void Spike_FSM::airborne_up()
+void Rachel_FSM::airborne_up()
 {
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 }
 
-void Spike_FSM::airborne_up_Init()
+void Rachel_FSM::airborne_up_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -717,7 +709,7 @@ void Spike_FSM::airborne_up_Init()
     m_bSuperArmor = true;
 }
 
-void Spike_FSM::hit()
+void Rachel_FSM::hit()
 {
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 
@@ -727,7 +719,7 @@ void Spike_FSM::hit()
         m_eCurState = STATE::b_idle;
 }
 
-void Spike_FSM::hit_Init()
+void Rachel_FSM::hit_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -739,7 +731,7 @@ void Spike_FSM::hit_Init()
     m_bSuperArmor = false;
 }
 
-void Spike_FSM::knock_start()
+void Rachel_FSM::knock_start()
 {
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 
@@ -751,7 +743,7 @@ void Spike_FSM::knock_start()
         m_eCurState = STATE::knock_end;
 }
 
-void Spike_FSM::knock_start_Init()
+void Rachel_FSM::knock_start_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -765,7 +757,7 @@ void Spike_FSM::knock_start_Init()
     Get_Transform()->Set_Speed(m_fKnockBackSpeed * 0.8f);
 }
 
-void Spike_FSM::knock_end()
+void Rachel_FSM::knock_end()
 {
     if (Get_CurFrame() < 16)
         Get_Transform()->Go_Backward();
@@ -774,7 +766,7 @@ void Spike_FSM::knock_end()
         m_eCurState = STATE::knock_end_loop;
 }
 
-void Spike_FSM::knock_end_Init()
+void Rachel_FSM::knock_end_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -786,15 +778,15 @@ void Spike_FSM::knock_end_Init()
     Get_Transform()->Set_Speed(m_fKnockBackSpeed * 0.5f);
 }
 
-void Spike_FSM::knock_end_loop()
+void Rachel_FSM::knock_end_loop()
 {
     m_tKnockDownEndCoolTime.fAccTime += fDT;
-
+    
     if (Get_CurFrame() > Get_FinalFrame() / 2)
         m_eCurState = STATE::knock_up;
 }
 
-void Spike_FSM::knock_end_loop_Init()
+void Rachel_FSM::knock_end_loop_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -804,7 +796,7 @@ void Spike_FSM::knock_end_loop_Init()
     m_bSuperArmor = false;
 }
 
-void Spike_FSM::knock_end_hit()
+void Rachel_FSM::knock_end_hit()
 {
     m_tKnockDownEndCoolTime.fAccTime += fDT;
 
@@ -817,7 +809,7 @@ void Spike_FSM::knock_end_hit()
     }
 }
 
-void Spike_FSM::knock_end_hit_Init()
+void Rachel_FSM::knock_end_hit_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -827,13 +819,13 @@ void Spike_FSM::knock_end_hit_Init()
     m_bSuperArmor = false;
 }
 
-void Spike_FSM::knock_up()
+void Rachel_FSM::knock_up()
 {
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 }
 
-void Spike_FSM::knock_up_Init()
+void Rachel_FSM::knock_up_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -847,7 +839,7 @@ void Spike_FSM::knock_up_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed);
 }
 
-void Spike_FSM::knockdown_start()
+void Rachel_FSM::knockdown_start()
 {
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 
@@ -859,7 +851,7 @@ void Spike_FSM::knockdown_start()
         m_eCurState = STATE::knockdown_end;
 }
 
-void Spike_FSM::knockdown_start_Init()
+void Rachel_FSM::knockdown_start_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -873,7 +865,7 @@ void Spike_FSM::knockdown_start_Init()
     Get_Transform()->Set_Speed(m_fKnockDownSpeed);
 }
 
-void Spike_FSM::knockdown_end()
+void Rachel_FSM::knockdown_end()
 {
     if (Get_CurFrame() < 16)
         Get_Transform()->Go_Backward();
@@ -882,7 +874,7 @@ void Spike_FSM::knockdown_end()
         m_eCurState = STATE::knock_up;
 }
 
-void Spike_FSM::knockdown_end_Init()
+void Rachel_FSM::knockdown_end_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -894,16 +886,13 @@ void Spike_FSM::knockdown_end_Init()
     Get_Transform()->Set_Speed(m_fKnockDownSpeed * 0.5f);
 }
 
-void Spike_FSM::skill_1100()
+void Rachel_FSM::skill_1100()
 {
     if (Get_CurFrame() == 9)
         AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 17)
+    else if (Get_CurFrame() == 12)
         AttackCollider_Off();
-
-
-    _float3 vInputVector = Get_InputDirVector();
-
+    
     if (m_vKeyInputTargetDir != _float3(0.f))
         Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
@@ -925,15 +914,15 @@ void Spike_FSM::skill_1100()
     Use_Skill();
 }
 
-void Spike_FSM::skill_1100_Init()
+void Rachel_FSM::skill_1100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
-
     m_bCanCombo = false;
+
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
     m_vKeyInputTargetDir = _float3(0.f);
     m_vKeyInputTargetDir = Get_InputDirVector();
@@ -942,19 +931,17 @@ void Spike_FSM::skill_1100_Init()
     m_bSuperArmor = false;
 }
 
-void Spike_FSM::skill_1200()
+void Rachel_FSM::skill_1200()
 {
-    if (Get_CurFrame() == 6)
+    if (Get_CurFrame() == 7)
         AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 14)
+    else if (Get_CurFrame() == 9)
         AttackCollider_Off();
-
-    _float3 vInputVector = Get_InputDirVector();
-
+    
     if (m_vKeyInputTargetDir != _float3(0.f))
         Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
-    if (Get_CurFrame() < 33)
+    if (Get_CurFrame() < 20)
     {
         if (KEYTAP(KEY_TYPE::LBUTTON))
             m_bCanCombo = true;
@@ -962,9 +949,10 @@ void Spike_FSM::skill_1200()
 
     if (m_bCanCombo)
     {
-        if (Get_CurFrame() > 31)
+        if (Get_CurFrame() > 20)
             m_eCurState = STATE::skill_1300;
     }
+
 
     if (Is_AnimFinished())
     {
@@ -975,7 +963,7 @@ void Spike_FSM::skill_1200()
     Use_Skill();
 }
 
-void Spike_FSM::skill_1200_Init()
+void Rachel_FSM::skill_1200_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -994,29 +982,27 @@ void Spike_FSM::skill_1200_Init()
     m_bSuperArmor = false;
 }
 
-void Spike_FSM::skill_1300()
+void Rachel_FSM::skill_1300()
 {
-    if (Get_CurFrame() == 10)
+    if (Get_CurFrame() == 14 || Get_CurFrame() == 22)
         AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 18)
+    else if (Get_CurFrame() == 17 || Get_CurFrame() == 25)
         AttackCollider_Off();
 
-    _float3 vInputVector = Get_InputDirVector();
+	if (Get_CurFrame() < 30)
+	{
+		if (KEYTAP(KEY_TYPE::LBUTTON))
+			m_bCanCombo = true;
+	}
+
+	if (m_bCanCombo)
+	{
+		if (Get_CurFrame() > 30)
+			m_eCurState = STATE::skill_1400;
+	}
 
     if (m_vKeyInputTargetDir != _float3(0.f))
         Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
-
-    if (Get_CurFrame() < 37)
-    {
-        if (KEYTAP(KEY_TYPE::LBUTTON))
-            m_bCanCombo = true;
-    }
-
-    if (m_bCanCombo)
-    {
-        if (Get_CurFrame() > 35)
-            m_eCurState = STATE::skill_1400;
-    }
 
     if (Is_AnimFinished())
     {
@@ -1027,12 +1013,12 @@ void Spike_FSM::skill_1300()
     Use_Skill();
 }
 
-void Spike_FSM::skill_1300_Init()
+void Rachel_FSM::skill_1300_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_1300", 0.15f, false, m_fNormalAttack_AnimationSpeed);
-
+    
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
     m_bCanCombo = false;
@@ -1046,58 +1032,63 @@ void Spike_FSM::skill_1300_Init()
     m_bSuperArmor = false;
 }
 
-void Spike_FSM::skill_1400()
+void Rachel_FSM::skill_1400()
 {
-    if (Get_CurFrame() == 11) // 13 == Effect Need
-        AttackCollider_On(KNOCKDOWN_ATTACK);
-    else if (Get_CurFrame() == 15)
-        AttackCollider_Off();
+	if (Get_CurFrame() == 24)
+		AttackCollider_On(NORMAL_ATTACK);
+	else if (Get_CurFrame() == 30)
+		AttackCollider_Off();
 
+	if (m_vKeyInputTargetDir != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+
+	if (Is_AnimFinished())
+	{
+		m_bCanCombo = false;
+		m_eCurState = STATE::b_idle;
+	}
+
+	Use_Skill();
+}
+
+void Rachel_FSM::skill_1400_Init()
+{
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_NextTweenAnim(L"skill_1400", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+
+	m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+
+	m_bCanCombo = false;
+
+	m_vKeyInputTargetDir = _float3(0.f);
+	m_vKeyInputTargetDir = Get_InputDirVector();
+
+	AttackCollider_Off();
+
+	m_bInvincible = false;
+	m_bSuperArmor = false;
+}
+
+void Rachel_FSM::skill_91100()
+{
     _float3 vInputVector = Get_InputDirVector();
 
     if (m_vKeyInputTargetDir != _float3(0.f))
         Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
     if (Is_AnimFinished())
+        m_eCurState = STATE::b_idle;
+    
+
+    if (Get_CurFrame() >= 9)
     {
-        m_bCanCombo = false;
-        m_eCurState = STATE::b_idle;
+        if (vInputVector != _float3(0.f))
+            m_eCurState = STATE::b_run;
     }
-
-    Use_Skill();
 }
 
-void Spike_FSM::skill_1400_Init()
-{
-    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
-
-    animator->Set_NextTweenAnim(L"skill_1400", 0.15f, false, m_fNormalAttack_AnimationSpeed);
-
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
-
-    m_bCanCombo = false;
-
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
-
-    AttackCollider_Off();
-
-    m_bInvincible = false;
-    m_bSuperArmor = false;
-}
-
-void Spike_FSM::skill_91100()
-{
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
-
-    if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
-}
-
-void Spike_FSM::skill_91100_Init()
+void Rachel_FSM::skill_91100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -1114,71 +1105,89 @@ void Spike_FSM::skill_91100_Init()
     m_bSuperArmor = false;
 }
 
-void Spike_FSM::skill_93100()
+void Rachel_FSM::skill_93100()
 {
     _float3 vInputVector = Get_InputDirVector();
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
+
+    if (Get_CurFrame() >= 18)
+    {
+        if (vInputVector != _float3(0.f))
+            m_eCurState = STATE::b_run;
+    }
 }
 
-void Spike_FSM::skill_93100_Init()
+void Rachel_FSM::skill_93100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_93100", 0.15f, false, m_fEvade_AnimationSpeed);
 
     m_bCanCombo = false;
-
+    
     AttackCollider_Off();
 
     m_bInvincible = true;
     m_bSuperArmor = false;
 }
 
-void Spike_FSM::skill_100100()
+void Rachel_FSM::skill_100100()
 {
-    if (Get_CurFrame() >= 19)
+	if (Get_CurFrame() == 15 || Get_CurFrame() == 20 || Get_CurFrame() == 25 || Get_CurFrame() == 30 || Get_CurFrame() == 35 || Get_CurFrame() == 40)
+		AttackCollider_On(NORMAL_ATTACK);
+	else if (Get_CurFrame() == 17|| Get_CurFrame() == 22 || Get_CurFrame() == 28 || Get_CurFrame() == 38 || Get_CurFrame() == 43)
+		AttackCollider_Off();
+
+
+    if (Get_CurFrame() == 53)
     {
-       /* if (!m_pCamera.expired())
+        if (!m_bSkillCreate)
         {
-            _float4 vDir =  m_vCamBonePos - m_vSkillCamBonePos;
-            vDir.Normalize();
-
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCamBonePos.xyz());
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 4.f);
-        }*/
-
-        Get_Transform()->Go_Straight();
+            FORWARDMOVINGSKILLDESC desc;
+            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+            desc.fMoveSpeed = 15.f;
+            desc.fLifeTime = 0.2f;
+            desc.fLimitDistance = 3.f;
+            
+            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
+            Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKBACK_ATTACK);
+        
+            m_bSkillCreate = true;
+        }
     }
-    
-    if (Get_CurFrame() == 16)
-        AttackCollider_On(KNOCKBACK_ATTACK);
-
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (vInputVector != _float3(0.f))
-        Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
-
-
-    if (Get_CurFrame() > 20)
+    else
     {
-        if (KEYTAP(KEY_TYPE::KEY_1))
-            m_bCanCombo = true;
+        m_bSkillCreate = false;
     }
 
-    if (m_bCanCombo)
-        m_eCurState = STATE::skill_100300;
-    
+	if (Get_CurFrame() < 55)
+	{
+		if (KEYTAP(KEY_TYPE::LBUTTON))
+			m_bCanCombo = true;
+	}
+
+	if (m_bCanCombo)
+	{
+		if (Get_CurFrame() > 55)
+			m_eCurState = STATE::skill_100200;
+	}
+
+    if (m_vKeyInputTargetDir != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::skill_100300;
+    {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        m_eCurState = STATE::b_idle;
+    }
+
 
     Use_Dash();
 }
 
-void Spike_FSM::skill_100100_Init()
+void Rachel_FSM::skill_100100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -1186,78 +1195,6 @@ void Spike_FSM::skill_100100_Init()
 
     m_bCanCombo = false;
 
-    Get_Transform()->Set_Speed(m_fRunSpeed * 1.2f);
-
-    AttackCollider_Off();
-
-    m_bInvincible = false;
-    m_bSuperArmor = true;
-}
-
-void Spike_FSM::skill_100300()
-{
-    if (Get_CurFrame() == 16)
-        AttackCollider_On(KNOCKBACK_ATTACK);
-
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
-
-    if (Is_AnimFinished())
-    {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
-        m_eCurState = STATE::b_idle;
-    }
-
-    Use_Dash();
-}
-
-void Spike_FSM::skill_100300_Init()
-{
-    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
-
-    animator->Set_NextTweenAnim(L"skill_100300", 0.15f, false, m_fSkillAttack_AnimationSpeed);
-
-    m_bCanCombo = false;
-
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
-
-    AttackCollider_Off();
-
-    Get_Transform()->Set_Speed(m_fRunSpeed * 1.f);
-
-    if (!m_pCamera.expired())
-        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedTime(0.f);
-    
-
-    m_bInvincible = false;
-    m_bSuperArmor = true;
-
-}
-
-void Spike_FSM::skill_200100()
-{
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (KEYAWAY(KEY_TYPE::KEY_2))
-        m_eCurState = STATE::skill_200200;
-
-    if (Is_AnimFinished())
-        m_eCurState = STATE::skill_200100_l;
-
-    Use_Dash();
-}
-
-void Spike_FSM::skill_200100_Init()
-{
-    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
-
-    animator->Set_NextTweenAnim(L"skill_200100", 0.15f, false, 1.f);
-
-    m_bCanCombo = false;
-
     m_vKeyInputTargetDir = _float3(0.f);
     m_vKeyInputTargetDir = Get_InputDirVector();
 
@@ -1267,203 +1204,93 @@ void Spike_FSM::skill_200100_Init()
     m_bSuperArmor = true;
 }
 
-void Spike_FSM::skill_200100_l()
+void Rachel_FSM::skill_100200()
 {
-    _float3 vInputVector = Get_InputDirVector();
+	
+	if (Get_CurFrame() == 14)
+	{
+		if (!m_bSkillCreate)
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 0.5f;
+			desc.fLimitDistance = 0.f;
 
-    if (KEYAWAY(KEY_TYPE::KEY_2))
-    {
-        _float fAnimRatio = _float(Get_CurFrame()) / _float(Get_FinalFrame());
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.5f;
+			Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_ATTACK);
 
-        if (fAnimRatio < 0.33f)
-            m_eCurState = STATE::skill_200200;
-        else if (fAnimRatio <= 0.66f)
-            m_eCurState = STATE::skill_200300;
-        else
-            m_eCurState = STATE::skill_200400;
-    }
+			m_bSkillCreate = true;
+		}
+	}
+	else
+	{
+		m_bSkillCreate = false;
+	}
 
-    m_fWheelWindRange += fDT * 0.5f;
-    m_fWheelWindSpeed += fDT;
+	if (m_vKeyInputTargetDir != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
-    if (Is_AnimFinished())
-        m_eCurState = STATE::skill_200400;
-
-    Use_Dash();
+	if (Is_AnimFinished())
+	{
+		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+		m_eCurState = STATE::b_idle;
+	}
 }
 
-void Spike_FSM::skill_200100_l_Init()
+void Rachel_FSM::skill_100200_Init()
 {
-    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_200100_l", 0.15f, false, 1.f);
+	animator->Set_NextTweenAnim(L"skill_100200", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
-    m_bCanCombo = false;
+	m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+	m_vKeyInputTargetDir = _float3(0.f);
+	m_vKeyInputTargetDir = Get_InputDirVector();
 
-    AttackCollider_Off();
+	AttackCollider_Off();
 
-    m_bInvincible = false;
-    m_bSuperArmor = true;
+	m_bInvincible = false;
+	m_bSuperArmor = true;
 }
 
-void Spike_FSM::skill_200200()
+void Rachel_FSM::skill_200100()
 {
-    m_tWheelWindCoolTime.fAccTime += fDT;
-
-    if (Get_CurFrame() >= 5 && Get_CurFrame() < 33)
-    {
-        if (m_tWheelWindCoolTime.fAccTime >= m_tWheelWindCoolTime.fCoolTime)
-        {
-            m_tWheelWindCoolTime.fAccTime = 0.f;
-
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 0.3f;
-            desc.fLimitDistance = 0.f;
-
-            Create_ForwardMovingSkillCollider(Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK);
-        }
-    }
-    
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (vInputVector != _float3(0.f))
-        Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
-
-    if (Is_AnimFinished())
-    {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
-        m_eCurState = STATE::b_idle;
-    }
-
-    Use_Dash();
-}
-
-void Spike_FSM::skill_200200_Init()
-{
-    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
-
-    animator->Set_NextTweenAnim(L"skill_200200", 0.15f, false, 1.f);
-
-    m_bCanCombo = false;
-
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
-
-    AttackCollider_Off();
-
-    m_bInvincible = false;
-    m_bSuperArmor = true;
-
-    Get_Transform()->Set_Speed(m_fRunSpeed + m_fWheelWindSpeed);
-}
-
-void Spike_FSM::skill_200300()
-{
-    m_tWheelWindCoolTime.fAccTime += fDT;
-
-    if (Get_CurFrame() >= 5 && Get_CurFrame() < 52)
-    {
-        if (m_tWheelWindCoolTime.fAccTime >= m_tWheelWindCoolTime.fCoolTime)
-        {
-            m_tWheelWindCoolTime.fAccTime = 0.f;
-
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 0.3f;
-            desc.fLimitDistance = 0.f;
-
-            Create_ForwardMovingSkillCollider(Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK);
-        }
-    }
-
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (vInputVector != _float3(0.f))
-        Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
-
-    if (Is_AnimFinished())
-    {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
-        m_eCurState = STATE::b_idle;
-    }
-
-    Use_Dash();
-}
-
-void Spike_FSM::skill_200300_Init()
-{
-    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
-
-    animator->Set_NextTweenAnim(L"skill_200300", 0.15f, false, 1.f);
-
-    m_bCanCombo = false;
-
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
-
-    AttackCollider_Off();
-
-    m_bInvincible = false;
-    m_bSuperArmor = true;
-
-    Get_Transform()->Set_Speed(m_fRunSpeed + m_fWheelWindSpeed);
-}
-
-void Spike_FSM::skill_200400()
-{
-    if (Get_CurFrame() < 44)
-    {
-        _float3 vInputVector = Get_InputDirVector();
-
-        if (vInputVector != _float3(0.f))
-            Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
-    }
-
-    m_tWheelWindCoolTime.fAccTime += fDT;
-
-    if (Get_CurFrame() >= 5 && Get_CurFrame() < 44)
-    {
-        if (m_tWheelWindCoolTime.fAccTime >= m_tWheelWindCoolTime.fCoolTime)
-        {
-            m_tWheelWindCoolTime.fAccTime = 0.f;
-
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 0.3f;
-            desc.fLimitDistance = 0.f;
-
-            Create_ForwardMovingSkillCollider(Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK);
-        }
-    }
-
-    if (Get_CurFrame() == 65)
+    if (Get_CurFrame() == 7 || Get_CurFrame() == 19)
     {
         if (!m_bSkillCreate)
         {
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f;
-
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
             desc.fMoveSpeed = 0.f;
             desc.fLifeTime = 0.5f;
             desc.fLimitDistance = 0.f;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, AIRBORNE_ATTACK);
+            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
+            Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_ATTACK);
 
             m_bSkillCreate = true;
         }
+
     }
     else
         m_bSkillCreate = false;
 
+    if (m_vKeyInputTargetDir != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
+    if (Get_CurFrame() < 39)
+    {
+        if (KEYTAP(KEY_TYPE::KEY_2))
+            m_bCanCombo = true;
+    }
+
+    if (m_bCanCombo)
+    {
+        if (Get_CurFrame() > 39)
+            m_eCurState = STATE::skill_200200;
+    }
 
     if (Is_AnimFinished())
     {
@@ -1474,11 +1301,78 @@ void Spike_FSM::skill_200400()
     Use_Dash();
 }
 
-void Spike_FSM::skill_200400_Init()
+void Rachel_FSM::skill_200100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_200400", 0.15f, false, m_fSkillAttack_AnimationSpeed);
+    animator->Set_NextTweenAnim(L"skill_200100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
+
+    m_bCanCombo = false;
+
+    m_vKeyInputTargetDir = _float3(0.f);
+    m_vKeyInputTargetDir = Get_InputDirVector();
+
+    AttackCollider_On(NORMAL_ATTACK);
+
+    m_bInvincible = false;
+    m_bSuperArmor = true;
+}
+
+void Rachel_FSM::skill_200200()
+{
+    if (Get_CurFrame() == 4)
+    {
+        if (!m_bSkillCreate)
+        {
+            FORWARDMOVINGSKILLDESC desc;
+            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+            desc.fMoveSpeed = 0.f;
+            desc.fLifeTime = 0.5f;
+            desc.fLimitDistance = 0.f;
+
+            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
+            Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_SKILL);
+
+            m_bSkillCreate = true;
+        }
+    }
+    else if (Get_CurFrame() == 31)
+    {
+		if (!m_bSkillCreate)
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 5.f;
+			desc.fLifeTime = 2.f;
+			desc.fLimitDistance = 10.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::LOOK) * 2.f;
+			Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_SKILL);
+
+			m_bSkillCreate = true;
+		}
+    }
+    else
+        m_bSkillCreate = false;
+    
+    if (m_vKeyInputTargetDir != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+
+    if (Is_AnimFinished())
+    {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        m_eCurState = STATE::b_idle;
+    }
+
+
+    Use_Dash();
+}
+
+void Rachel_FSM::skill_200200_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"skill_200200", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
     m_bCanCombo = false;
 
@@ -1489,48 +1383,31 @@ void Spike_FSM::skill_200400_Init()
 
     m_bInvincible = false;
     m_bSuperArmor = true;
-
-    Get_Transform()->Set_Speed(m_fRunSpeed + m_fWheelWindSpeed);
 }
 
-void Spike_FSM::skill_300100()
+void Rachel_FSM::skill_300100()
 {
-    if (Get_CurFrame() <= 50)
-    {
-        if (!m_pCamera.expired())
-        {
-            _float4 vDir = m_vSkillCamBonePos - m_vCenterBonePos;
-            vDir.Normalize();
 
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 10.f);
-        }
-    }
+
+    if (Get_CurFrame() >= 78 && Get_CurFrame() <= 110)
+        m_bInvincible = true;
     else
-    {
-        if (!m_pCamera.expired())
-        {
-            _float4 vDir = m_vSkillCamBonePos - m_vCenterBonePos;
-            vDir.Normalize();
+        m_bInvincible = false;
 
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 6.f);
-        }
-    }
-
-    if (Get_CurFrame() == 30)
-    {
+    if (Get_CurFrame() == 30 || Get_CurFrame() == 44 || Get_CurFrame() == 50)
+    {       
         if (!m_bSkillCreate)
-        {
+        {   
+            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK);
+            _float4 vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+
             FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+            desc.vSkillDir = vSkillDir.Normalize();
             desc.fMoveSpeed = 0.f;
             desc.fLifeTime = 1.f;
             desc.fLimitDistance = 0.f;
 
-            Create_ForwardMovingSkillCollider(Get_Transform()->Get_State(Transform_State::POS), 3.f, desc, AIRBORNE_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
 
             m_bSkillCreate = true;
         }
@@ -1538,6 +1415,17 @@ void Spike_FSM::skill_300100()
     else
         m_bSkillCreate = false;
 
+	if (Get_CurFrame() <59)
+	{
+		if (KEYTAP(KEY_TYPE::KEY_3))
+			m_bCanCombo = true;
+	}
+
+	if (m_bCanCombo)
+	{
+		if (Get_CurFrame() > 59)
+			m_eCurState = STATE::skill_300200;
+	}
 
     if (m_vKeyInputTargetDir != _float3(0.f))
         Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
@@ -1549,138 +1437,204 @@ void Spike_FSM::skill_300100()
     }
 }
 
-void Spike_FSM::skill_300100_Init()
+void Rachel_FSM::skill_300100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_300100", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_300100", 0.15f, false, 1.3f);
 
     m_bCanCombo = false;
 
     m_vKeyInputTargetDir = _float3(0.f);
     m_vKeyInputTargetDir = Get_InputDirVector();
 
-    AttackCollider_Off();
+    FORWARDMOVINGSKILLDESC desc;
+    desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+    desc.fMoveSpeed = 0.f;
+    desc.fLifeTime = 2.f;
+    desc.fLimitDistance = 0.f;
 
-    m_bInvincible = true;
-    m_bSuperArmor = false;
+    _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+                        Get_Transform()->Get_State(Transform_State::LOOK) +
+                        _float3::Up;
+
+
+    AttackCollider_Off();
+    m_bInvincible = false;
+    m_bSuperArmor = true;
 }
 
-void Spike_FSM::skill_400100()
+void Rachel_FSM::skill_300200()
 {
-    if (Get_CurFrame() < 140)
-    {
-        if (!m_pCamera.expired())
-        {
-            _float4 vDir = m_vSkillCamBonePos - m_vCamBonePos;
-            vDir.Normalize();
+	if (Get_CurFrame() == 4)
+	{
+		if (!m_bSkillCreate)
+		{
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK);
+			_float4 vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCamBonePos.xyz());
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 8.f);
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = vSkillDir.Normalize();
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 1.f;
+			desc.fLimitDistance = 0.f;
+
+			Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK);
+
+			m_bSkillCreate = true;
+		}
+	}
+    else if (Get_CurFrame() == 22)
+    {
+		
+
+    }
+	else
+		m_bSkillCreate = false;
+
+	if (Get_CurFrame() < 33)
+	{
+		if (KEYTAP(KEY_TYPE::KEY_3))
+			m_bCanCombo = true;
+	}
+
+	if (m_bCanCombo)
+	{
+		if (Get_CurFrame() > 33)
+			m_eCurState = STATE::skill_300300;
+	}
+
+	if (m_vKeyInputTargetDir != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+
+	if (Is_AnimFinished())
+	{
+		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+		m_eCurState = STATE::b_idle;
+	}
+}
+
+void Rachel_FSM::skill_300200_Init()
+{
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_NextTweenAnim(L"skill_300200", 0.15f, false, m_fSkillAttack_AnimationSpeed);
+
+	m_bCanCombo = false;
+
+	m_vKeyInputTargetDir = _float3(0.f);
+	m_vKeyInputTargetDir = Get_InputDirVector();
+
+	AttackCollider_Off();
+
+	m_bInvincible = false;
+	m_bSuperArmor = true;
+}
+
+void Rachel_FSM::skill_300300()
+{
+    if (Get_CurFrame() == 37)
+	{
+		if (!m_bSkillCreate)
+		{
+			for (_uint i = 0; i < 3; ++i)
+			{
+				_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::UP) * 4.f;
+				_float4 vSkillDir = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * (2.f + 0.5f * i) - vSkillPos;
+
+				FORWARDMOVINGSKILLDESC desc;
+				desc.vSkillDir = vSkillDir.Normalize();
+				desc.fMoveSpeed = 5.f;
+				desc.fLifeTime = 2.f;
+				desc.fLimitDistance = 10.f;
+
+				Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKBACK_ATTACK);
+			}
+
+
+			m_bSkillCreate = true;
+		}
+	}
+	else
+		m_bSkillCreate = false;
+
+	if (Is_AnimFinished())
+	{
+		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+		m_eCurState = STATE::b_idle;
+	}
+}
+
+void Rachel_FSM::skill_300300_Init()
+{
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_NextTweenAnim(L"skill_300300", 0.15f, false, m_fSkillAttack_AnimationSpeed);
+
+	m_bCanCombo = false;
+
+	m_vKeyInputTargetDir = _float3(0.f);
+	m_vKeyInputTargetDir = Get_InputDirVector();
+
+	AttackCollider_Off();
+
+	m_bInvincible = false;
+	m_bSuperArmor = true;
+}
+
+void Rachel_FSM::skill_501100()
+{
+    if (Get_CurFrame() == 17)
+    {
+        if (!m_bSkillCreate)
+        {
+            FORWARDMOVINGSKILLDESC desc;
+            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+            desc.fMoveSpeed = 20.f;
+            desc.fLifeTime = 2.f;
+            desc.fLimitDistance = 3.5f;
+            
+            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
+            Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
+
+            m_bSkillCreate = true;
         }
     }
+    else if (Get_CurFrame() == 32)
+    {
+        //TelePort Motion Start = Invincible
+        m_bInvincible = true;
+    }
+    else if (Get_CurFrame() == 44)
+    {
+        m_bInvincible = false;
+        AttackCollider_On(KNOCKBACK_ATTACK);
+    }
+    else if (Get_CurFrame() == 62)
+        AttackCollider_Off();
     else
     {
-        if (!m_pCamera.expired())
-        {
-            _float4 vDir = m_vSkillCamBonePos - m_vCamBonePos;
-            vDir.Normalize();
-
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCamBonePos.xyz());
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 10.f);
-        }
-    }
-
-
-    if (Get_CurFrame() == 47)
-    {
-        if (!m_bSkillCreate)
-        {
-            _float4 vSkillPos = m_vSkillCamBonePos;
-            vSkillPos.y = 0.f;
-
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 1.f;
-            desc.fLimitDistance = 0.f;
-
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK);
-
-            m_bSkillCreate = true;
-        }
-    }
-    else if (Get_CurFrame() == 85)
-    {
-        if (!m_bSkillCreate)
-        {
-            _float4 vSkillPos = m_vSkillCamBonePos;
-            vSkillPos.y = 0.f;
-
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 1.f;
-            desc.fLimitDistance = 0.f;
-
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK);
-
-            m_bSkillCreate = true;
-        }
-    }
-    else if (Get_CurFrame() == 110)
-    {
-        if (!m_bSkillCreate)
-        {
-            _float4 vSkillPos = m_vSkillCamBonePos;
-            vSkillPos.y = 0.f;
-
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 1.f;
-            desc.fLimitDistance = 0.f;
-
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK);
-
-            m_bSkillCreate = true;
-        }
-    }
-    else if (Get_CurFrame() == 151)
-    {
-        if (!m_bSkillCreate)
-        {
-            _float4 vSkillPos = m_vSkillCamBonePos;
-            vSkillPos.y = 0.f;
-
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 1.f;
-            desc.fLimitDistance = 0.f;
-
-            Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, AIRBORNE_ATTACK);
-
-            m_bSkillCreate = true;
-        }
-    }
-    else
         m_bSkillCreate = false;
+    }
+
+    if (m_vKeyInputTargetDir != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
     if (Is_AnimFinished())
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
     }
+
+
+    Use_Dash();
 }
 
-void Spike_FSM::skill_400100_Init()
+void Rachel_FSM::skill_501100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_400100", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_501100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
     m_bCanCombo = false;
 
@@ -1689,39 +1643,17 @@ void Spike_FSM::skill_400100_Init()
 
     AttackCollider_Off();
 
-    m_bInvincible = true;
-    m_bSuperArmor = false;
+    m_bInvincible = false;
+    m_bSuperArmor = true;
 }
 
-void Spike_FSM::skill_501100()
+void Rachel_FSM::skill_500100()
 {
-    if (Get_CurFrame() == 18)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 23)
+    if (Get_CurFrame() == 15)
+        AttackCollider_On(KNOCKBACK_ATTACK);
+    else if (Get_CurFrame() == 33)
         AttackCollider_Off();
 
-    if (Get_CurFrame() == 34)
-    {
-        if (!m_bSkillCreate)
-        {
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f;
-            
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 1.f;
-            desc.fLimitDistance = 0.f;
-
-            Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK);
-
-            m_bSkillCreate = true;
-        }
-    }
-    else
-        m_bSkillCreate = false;
-
-    _float3 vInputVector = Get_InputDirVector();
-
     if (m_vKeyInputTargetDir != _float3(0.f))
         Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
@@ -1731,14 +1663,15 @@ void Spike_FSM::skill_501100()
         m_eCurState = STATE::b_idle;
     }
 
+
     Use_Dash();
 }
 
-void Spike_FSM::skill_501100_Init()
+void Rachel_FSM::skill_500100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_501100", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_500100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
     m_bCanCombo = false;
 
@@ -1751,8 +1684,7 @@ void Spike_FSM::skill_501100_Init()
     m_bSuperArmor = true;
 }
 
-
-void Spike_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType)
+void Rachel_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType)
 {
     shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
 
@@ -1778,7 +1710,7 @@ void Spike_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fS
     CUR_SCENE->Add_GameObject(m_pSkillCollider.lock());
 }
 
-void Spike_FSM::Use_Skill()
+void Rachel_FSM::Use_Skill()
 {
     if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
         m_eCurState = STATE::skill_100100;
@@ -1787,14 +1719,14 @@ void Spike_FSM::Use_Skill()
     else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
         m_eCurState = STATE::skill_300100;
     else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
-        m_eCurState = STATE::skill_400100;
-    else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
         m_eCurState = STATE::skill_501100;
+    else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
+        m_eCurState = STATE::skill_500100;
     else
         Use_Dash();
 }
 
-void Spike_FSM::Use_Dash()
+void Rachel_FSM::Use_Dash()
 {
     if (KEYTAP(KEY_TYPE::SPACE))
     {

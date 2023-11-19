@@ -29,7 +29,10 @@ private:
 
 	void Model_Info();
 
-	
+	void Show_AnimationList();
+	void Apply_Anim();
+
+	void Control_Anim();
 private:
 	//Model Name
 	_int m_iCurrentModelIndex = 0;

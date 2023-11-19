@@ -27,7 +27,6 @@ public:
     const _float3& Get_FixedDir() { return m_vFixedDir; }
     _float Get_FixedDist() { return m_fFixedDist; }
     const _float3& Get_Offset() { return m_vOffset; }
-    void Set_PosDirectly(const _float3& vCenterpos, const _float3& vDir);
     const _float3& Get_FixedPos() { return m_vFixedPos; }
     void Set_State(_bool flag) { m_bOn = flag; if (!m_bOn) m_fFixedTime = 0.f; }
     void Set_Offset(const _float3& offset) { m_vOffset = offset; }
@@ -39,7 +38,7 @@ private:
     void Update_Transform();
 
     void Find_Target();
-
+    void Check_ColliderWithWall(const _float3& centerPos, OUT _float& minDist);
 private:
     _bool m_bOn = true;
     _bool m_bSmoothReturn = false;
@@ -59,7 +58,7 @@ private:
     _bool m_bTestValue;
     
 
-    _float m_fMaxHeightRadian = XM_PI / 3.f;
+    _float m_fMaxHeightRadian = XM_PI / 2.1f;
     _float3 m_vFixedPos = _float3(0.f);
     _float3 m_vFixedDir = _float3(0.f);
     _float3 m_vFixedLastDir = _float3(0.f);
@@ -68,9 +67,9 @@ private:
     _float3 m_vFixedLastPlayerPos = _float3(0.f);
     _float m_fShakeTime = 0.f;
     _float m_fFixedTime = 0.f;
-    _float m_fFixedDist = 0.f;
+    _float m_fFixedDist = 5.f;
     _float m_fShakePower = 0.f;
 
-
+    _float m_fCurDist = 5.f;
 
 };

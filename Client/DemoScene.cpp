@@ -57,7 +57,7 @@
 
 
 #include <filesystem>
-#include "Kyle_GachaScene.h"
+#include "GachaScene.h"
 namespace fs = std::filesystem;
 
 DemoScene::DemoScene()
@@ -149,7 +149,7 @@ void DemoScene::Final_Tick()
 	if (KEYTAP(KEY_TYPE::TAB))
 	{
 		GachaSceneDesc sceneDesc{ L"KyleMap",HERO::KYLE };
-			SCENE.Add_SubScene(make_shared<Kyle_GachaScene>(sceneDesc));
+			SCENE.Add_SubScene(make_shared<GachaScene>(sceneDesc));
 		SCENE.Exchange_Scene();
 
 
@@ -166,9 +166,10 @@ HRESULT DemoScene::Load_Scene()
 	Load_Camera();
 	Load_MapFile(L"KrisMap");
 	//Load_Monster(1);
-	//Load_Boss_Spike();
-	Load_Boss_Dellons();
-
+	Load_Boss_Spike();
+	//Load_Boss_Dellons();
+	//Load_Boss_Mir();
+	Load_Debug();
 	Load_Ui();
 
 	return S_OK;
@@ -182,7 +183,7 @@ void DemoScene::Load_Player()
 		
 		ObjPlayer->Add_Component(make_shared<Transform>());
 	
-		ObjPlayer->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 1.5f, 1.f));
+		ObjPlayer->Get_Transform()->Set_State(Transform_State::POS, _float4(-0.f,0.f, 1.5f, 1.f));
 		{
 			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
@@ -249,17 +250,6 @@ void DemoScene::Load_Player()
 
 		ObjPlayer->Add_Component(make_shared<HeroChangeScript>());
 	
-	}
-
-	{
-		shared_ptr<GameObject> debugText = make_shared<GameObject>();
-		debugText->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-300.f, 400.f, 5.f, 1.f));
-		debugText->Add_Component(make_shared<FontRenderer>(L""));
-		debugText->Get_FontRenderer()->Set_Font(RESOURCES.Get<CustomFont>(L"136ex"), Color(0.5f,0.5f,0.5f,1.f), 1.f);
-		debugText->Set_LayerIndex(Layer_UI);
-		debugText->Add_Component(make_shared<ObjectTransformDebug>());
-		debugText->Get_Script<ObjectTransformDebug>()->Set_Target(Get_GameObject(L"Player"));
-		Add_GameObject(debugText);
 	}
 }
 
@@ -385,7 +375,7 @@ void DemoScene::Load_Boss_Mir()
 
 	ObjMonster->Add_Component(make_shared<Transform>());
 
-	ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 30.f, 1.f));
+	ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
 	{
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
@@ -534,6 +524,8 @@ void DemoScene::Load_Boss_Spike()
 		ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
 		ObjMonster->Get_Collider()->Set_Activate(true);
 
+		ObjMonster->Add_Component(make_shared<CounterMotionTrailScript>());
+
 		{
 			auto controller = make_shared<CharacterController>();
 			ObjMonster->Add_Component(controller);
@@ -669,10 +661,11 @@ void DemoScene::Load_Ui()
 
 	{
 		auto pObj = Get_GameObject(L"Player");
-		if (nullptr == pObj)
-			return;
-		auto pScript = make_shared<UiHpBarController>(0);
-		pObj->Add_Component(pScript);
+		if (pObj)
+		{
+			auto pScript = make_shared<UiHpBarController>(0);
+			pObj->Add_Component(pScript);
+		}
 	}
 
 	{
@@ -712,22 +705,26 @@ void DemoScene::Load_Ui()
 
 	{
 		auto pObj = Get_UI(L"UI_Main_Button2");
-		if (nullptr == pObj)
-			return;
-		pObj->Get_Button()->AddOnClickedEvent([]()
-			{
-				CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Render_On();
-			});
+		if (pObj)
+		{
+			pObj->Get_Button()->AddOnClickedEvent([]()
+				{
+					CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Render_On();
+				});
+		}
 	}
 
 
 	// test code
 	{
 		auto pObj = Get_GameObject(L"Boss_Dellons");
-		Load_UIFile(L"..\\Resources\\UIData\\UI_BossHpBar.dat");
+			Load_UIFile(L"..\\Resources\\UIData\\UI_BossHpBar.dat");
+		if(pObj)
+		{
 
-		auto pScript = make_shared<UIBossHpBar>();
-		pObj->Add_Component(pScript);
+			auto pScript = make_shared<UIBossHpBar>();
+			pObj->Add_Component(pScript);
+		}
 	}
 
 
@@ -872,4 +869,18 @@ void DemoScene::Load_Ui()
 		}
 	}
 
+}
+
+void DemoScene::Load_Debug()
+{
+	{
+		shared_ptr<GameObject> debugText = make_shared<GameObject>();
+		debugText->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-300.f, 400.f, 5.f, 1.f));
+		debugText->Add_Component(make_shared<FontRenderer>(L""));
+		debugText->Get_FontRenderer()->Set_Font(RESOURCES.Get<CustomFont>(L"136ex"), Color(0.5f, 0.5f, 0.5f, 1.f), 1.f);
+		debugText->Set_LayerIndex(Layer_UI);
+		debugText->Add_Component(make_shared<ObjectTransformDebug>());
+		debugText->Get_Script<ObjectTransformDebug>()->Set_Target(Get_GameObject(L"Boss_Spike"));
+		Add_GameObject(debugText);
+	}
 }

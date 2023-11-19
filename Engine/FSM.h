@@ -34,9 +34,14 @@ protected:
 	_bool Get_SuperArmor() { return m_bSuperArmor; }
 	void Set_SuperArmor(_bool bFlag) { m_bSuperArmor = bFlag; }
 
-
 	_bool Target_In_AttackRange();
 	_bool Target_In_DetectRange();
+	_bool Target_In_GazeCheckRange();
+
+	_bool CounterAttackCheck(_float fCheckDegree);
+
+
+	void Add_Effect(const wstring& strSkilltag);
 public:
 	void Set_Target(shared_ptr<GameObject> pTarget);
 	void Set_Camera(shared_ptr<GameObject> pCamera);
@@ -44,6 +49,9 @@ public:
 	void Reset_Target();
 	void Reset_Weapon();
 	void Reset_Vehicle();
+
+	_float Get_GroggyGauge() { return m_fGroggy_Gauge; }
+
 
  protected:
 	weak_ptr<GameObject> m_pTarget;
@@ -64,6 +72,11 @@ public:
 
 	_float m_fAttackRange = 2.f;
 	_float m_fDetectRange = 2.f;
+	_float m_fGazeCheckRange = 2.f;
+
+	_float m_fGroggy_Gauge = 100.f;
+
+	_float m_fEffectYOffSet = 1.5f;
 
 	//For Camera CutScene
 	_float4 m_vCamStopPos = _float4(0.f);
@@ -100,6 +113,6 @@ public:
 
 	//MotionCoolTime
 	COOLTIMEINFO m_tRunEndDelay = { 0.2f,0.f };
-	COOLTIMEINFO m_tKnockDownEndCoolTime = { 3.f, 0.f };
+	COOLTIMEINFO m_tKnockDownEndCoolTime = { 2.f, 0.f };
 };
 

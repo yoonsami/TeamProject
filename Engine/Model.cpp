@@ -113,7 +113,51 @@ void Model::ReadMaterial(const wstring& strPath)
 					material->Set_SubMap(0, texture_R);
 				}
 
-				
+				wstring textureE = textureStr;
+				Utils::Replace(textureE, L"_D", L"_E");
+				Utils::DetachExt(textureE);
+				{
+					textureE += L".dds";
+					auto texture_E = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureE, texturePath + L"\\" + textureE);
+					if (!texture_E)
+					{
+						Utils::ChangeExt(textureE, L".DDS");
+						texture_E = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureE, texturePath + L"\\" + textureE);
+						if (!texture_E)
+						{
+							Utils::ChangeExt(textureE, L".tga");
+							texture_E = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureE, texturePath + L"\\" + textureE);
+							if (!texture_E)
+							{
+								Utils::ChangeExt(textureE, L".png");
+								texture_E = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureE, texturePath + L"\\" + textureE);
+
+							}
+						}
+					}
+					if (!texture_E)
+					{
+						Utils::Replace(textureE, L"_R", L"_M");
+						auto texture_E = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureE, texturePath + L"\\" + textureE);
+						if (!texture_E)
+						{
+							Utils::ChangeExt(textureE, L".DDS");
+							texture_E = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureE, texturePath + L"\\" + textureE);
+							if (!texture_E)
+							{
+								Utils::ChangeExt(textureE, L".tga");
+								texture_E = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureE, texturePath + L"\\" + textureE);
+								if (!texture_E)
+								{
+									Utils::ChangeExt(textureE, L".png");
+									texture_E = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureE, texturePath + L"\\" + textureE);
+
+								}
+							}
+						}
+					}
+					material->Set_TextureMap(texture_E,TextureMapType::EMISSIVE);
+				}
 
 			}
 		}
@@ -416,7 +460,7 @@ shared_ptr<ResourceBase> Model::Clone()
 
 void Model::Bind_CacheInfo()
 {
-	vector<shared_ptr<ModelMesh>> meshes = Get_Meshes();
+	vector<shared_ptr<ModelMesh>>& meshes = Get_Meshes();
 	if (m_bHasParts)
  		meshes = Get_PartsMeshes();
 	for (const auto& mesh : meshes)

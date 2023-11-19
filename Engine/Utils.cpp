@@ -177,6 +177,35 @@ float Utils::Random_In_Range(float fMin, float fMax)
 	return random(rd);
 }
 
+void Utils::Spline(const float* key, int num, int dim, float t, float* v)
+{
+	static signed char coefs[16] = {
+		-1, 2,-1, 0,
+		 3,-5, 0, 2,
+		-3, 4, 1, 0,
+		 1,-1, 0, 0 };
+
+	const int size = dim + 1;
+
+	// find key
+	int k = 0; while (key[k * size] < t) k++;
+
+	// interpolant
+	const float h = (t - key[(k - 1) * size]) / (key[k * size] - key[(k - 1) * size]);
+
+	// init result
+	for (int i = 0; i < dim; i++) v[i] = 0.0f;
+
+	// add basis functions
+	for (int i = 0; i < 4; i++)
+	{
+		int kn = k + i - 2; if (kn < 0) kn = 0; else if (kn > (num - 1)) kn = num - 1;
+		const signed char* co = coefs + 4 * i;
+		const float b = 0.5f * (((co[0] * h + co[1]) * h + co[2]) * h + co[3]);
+		for (int j = 0; j < dim; j++) v[j] += b * key[kn * size + j + 1];
+	}
+}
+
 _float4x4 Utils::m_matPivot = _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI);
 
 const wstring Utils::m_strModelPath =  L"../Resources/Models/";;

@@ -18,6 +18,7 @@
 #include "Yeopo_FSM.h"
 #include "Dellons_FSM.h"
 #include "Spike_FSM.h"
+#include "Rachel_FSM.h"
 
 HeroChangeScript::HeroChangeScript()
 {
@@ -68,7 +69,20 @@ void HeroChangeScript::Tick()
         else
             Change_To_Spike();
     }
-
+	/*else if (KEYTAP(KEY_TYPE::F6))
+	{
+		if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == (L"ShaneGhost"))
+			Change_To_Player();
+		else
+			Change_To_Shane();
+	}*/
+	else if (KEYTAP(KEY_TYPE::F7))
+	{
+		if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == (L"Rachel"))
+			Change_To_Player();
+		else
+			Change_To_Rachel();
+	}
 }
 
 void HeroChangeScript::Change_Hero(HERO eHero)
@@ -267,6 +281,58 @@ void HeroChangeScript::Change_To_Spike()
     m_pOwner.lock()->Get_FSM()->Init();
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::SPIKE);
 
+}
+
+void HeroChangeScript::Change_To_Rachel()
+{
+	if (m_pOwner.expired())
+		return;
+
+	m_pOwner.lock()->Get_FSM()->Reset_Weapon();
+	m_pOwner.lock()->Get_FSM()->Reset_Vehicle();
+	//AnimIndex Reset
+	m_pOwner.lock()->Get_Animator()->Set_CurrentAnim(0);
+
+	//PlayerAttackCollider Remove
+	CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Player_AttackCollider"));
+	CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Vehicle_AttackCollider"));
+
+	shared_ptr<Model> model = RESOURCES.Get<Model>(L"Rachel");
+
+	m_pOwner.lock()->Get_Animator()->Set_Model(model);
+	m_pOwner.lock()->Change_Component(make_shared<Rachel_FSM>());
+
+	//Add. Player's Weapon
+	Add_Character_Weapon(L"Weapon_Rachel");
+
+	m_pOwner.lock()->Get_FSM()->Init();
+	m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::RACHEL);
+}
+
+void HeroChangeScript::Change_To_Shane()
+{
+	if (m_pOwner.expired())
+		return;
+
+	m_pOwner.lock()->Get_FSM()->Reset_Weapon();
+	m_pOwner.lock()->Get_FSM()->Reset_Vehicle();
+	//AnimIndex Reset
+	m_pOwner.lock()->Get_Animator()->Set_CurrentAnim(0);
+
+	//PlayerAttackCollider Remove
+	CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Player_AttackCollider"));
+	CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Vehicle_AttackCollider"));
+
+	shared_ptr<Model> model = RESOURCES.Get<Model>(L"ShaneGhost");
+
+	m_pOwner.lock()->Get_Animator()->Set_Model(model);
+	m_pOwner.lock()->Change_Component(make_shared<Rachel_FSM>());
+
+	//Add. Player's Weapon
+	Add_Character_Weapon(L"Weapon_Shane");
+
+	m_pOwner.lock()->Get_FSM()->Init();
+	m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::SHANE);
 }
 
 void HeroChangeScript::Change_To_Input(HERO eHero)

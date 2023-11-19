@@ -90,7 +90,6 @@ private:
     vector<shared_ptr<GameObject>> m_Shadow;
     vector<shared_ptr<GameObject>> m_DistortionEffects;
     vector<shared_ptr<GameObject>> m_Trails;
-    vector<shared_ptr<GameObject>> m_Fonts;
 
 
 public:

@@ -8,6 +8,8 @@ enum class HERO
 	YEOPO,
 	DELLONS,
 	SPIKE,
+	RACHEL,
+	SHANE,
 	MAX 
 };
 

@@ -14,7 +14,8 @@ public:
 	void ExportMaterialData(const wstring& savePath);
 	void ExportAnimationData(const wstring& savePath);
 	//void ReadPartsAnimationData(const wstring& savePath);
-
+	void ReadAdditionalAnimData(const wstring& savePath);
+	void ExportFinalAnimData(const wstring& savePath);
 	//void ExportPartsAnimationData();
 
 	void ExportBaseData(const wstring& savePath);

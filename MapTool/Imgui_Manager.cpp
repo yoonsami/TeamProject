@@ -1093,8 +1093,8 @@ HRESULT ImGui_Manager::Save_MapObject()
     file->Open(Utils::ToWString(strFilePath), FileMode::Write);
 
     // 스카이박스 정보 저장
-    string strSkyBoxTetureName = m_strSkyboxList[m_iCurrentSkyBoxIndex];
-    file->Write<string>(strSkyBoxTetureName);
+    string strSkyBoxTextureName = m_strSkyboxList[m_iCurrentSkyBoxIndex];
+    file->Write<string>(strSkyBoxTextureName);
 
     // 방향성광원 정보 저장
     file->Write<_float4>(m_DirectionalLightPos);

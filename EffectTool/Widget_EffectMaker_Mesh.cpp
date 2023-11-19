@@ -5,6 +5,12 @@
 #include "MeshEffect.h"
 #include "Texture.h"
 
+#include "imgui_internal.h"
+
+static inline ImVec2 operator+(const ImVec2& lhs, const ImVec2& rhs) { return ImVec2(lhs.x + rhs.x, lhs.y + rhs.y); }
+static inline ImVec2 operator-(const ImVec2& lhs, const ImVec2& rhs) { return ImVec2(lhs.x - rhs.x, lhs.y - rhs.y); }
+static inline ImVec2 operator*(const ImVec2& lhs, _float fScale) { return ImVec2(lhs.x * fScale, lhs.y * fScale); }
+
 Widget_EffectMaker_Mesh::Widget_EffectMaker_Mesh()
 {
 }
@@ -558,7 +564,7 @@ void Widget_EffectMaker_Mesh::Option_Dissolve()
 	ImGui::SeparatorText("Dissolve");
 
 	ImGui::Checkbox("Dissolve On", &m_bDissolve_On);
-
+	
 	if (!m_bDissolve_On)
 	{
 		m_DissolveTexture.first = 0;
@@ -578,6 +584,12 @@ void Widget_EffectMaker_Mesh::Option_Dissolve()
 	}
 	
 	SubWidget_SettingTexUV(m_fTiling_Dissolve, m_fUVSpeed_Dissolve, "Tiling(x,y)##Dissolve", "UV Speed(x,y)##Dissolve");
+
+	if (ImGui::TreeNode("Dissolve weight##Dissiolve"))
+	{
+		SubWidget_Curve1(m_vCurvePoint_Dissolve, "Dissolve");
+		ImGui::TreePop();
+	}
 }
 
 void Widget_EffectMaker_Mesh::Option_Distortion()
@@ -718,8 +730,8 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 	if (ImGui::TreeNode("Translate##Movement"))
 	{
 		const char* pszItem_TranslateOption[] = { "No change", "Move to target position", "Move to random target position", // 2
-			"Go Straight", "Go Back", "Go Lift", "Go Right", // 6
-			"Spreading dust", "Scattered embers" // 8
+			"Go Straight", "Go Back", "Go Lift", "Go Right", "Go Up", "Go Down",	// 8
+			"Fountain"
 		};
 		if (ImGui::BeginCombo("Translate option##Movement", pszItem_TranslateOption[m_iTranslateOption], 0))
 		{
@@ -755,9 +767,25 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 		case 4:	// Go back
 		case 5:	// Go left
 		case 6:	// Go right
-			ImGui::InputFloat("Translate Speed##Movement", &m_fTranslateSpeed);
+		case 7:
+		case 8:
+			ImGui::Text("Speed");
+			ImGui::RadioButton("Curve##MoveSpeed", &m_iSpeedType, 0);
+			ImGui::SameLine();
+			ImGui::RadioButton("Linear##MoveSpeed", &m_iSpeedType, 1);
+			
+			m_vCurvePoint_Force[0].x = 0.f;
+			ImGui::InputFloat2("Point1 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[0]);
+			ImGui::InputFloat2("Point2 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[1]);
+			ImGui::InputFloat2("Point3 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[2]);
+			ImGui::InputFloat2("Point4 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[3]);
 			ZeroMemory(m_fEndPositionOffset_Min, sizeof(m_fEndPositionOffset_Min));
 			ZeroMemory(m_fEndPositionOffset_Max, sizeof(m_fEndPositionOffset_Max));
+			break;
+		case 9:
+			ImGui::Text("Speed");
+			ImGui::InputFloat("Speed##Speed", (_float*)&m_vCurvePoint_Force[0].x);
+			ImGui::InputFloat("Gravity##Speed", (_float*)&m_vCurvePoint_Force[0].y);
 			break;
 		}
 
@@ -832,147 +860,151 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 		ImGui::TreePop();
 	}
 	ImGui::Spacing();
-
 }
 
 void Widget_EffectMaker_Mesh::Create()
 {
-	// For. Create GameObject 
-	shared_ptr<GameObject> EffectObj = make_shared<GameObject>();
-
-	// For. Add and Setting Transform Component
-	EffectObj->GetOrAddTransform();
-	EffectObj->Get_Transform()->Set_State(Transform_State::POS, _float4(m_fPosOffsetInTool[0], m_fPosOffsetInTool[1], m_fPosOffsetInTool[2], 1.f));
-	EffectObj->Get_Transform()->Scaled(_float3(1.0f));
-
-	// For. Add and Setting Effect Component to GameObject
-	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
-	shared_ptr<MeshEffect> meshEffect = make_shared<MeshEffect>(shader);
-	EffectObj->Add_Component(meshEffect);
-
-	if (!m_bColorChangingOn)
+	for (_uint n = 0; n < m_iMeshCnt; n++)
 	{
-		for (_int i = 0; i < m_iTexOptionCnt; i++)
+		// For. Create GameObject 
+		shared_ptr<GameObject> EffectObj = make_shared<GameObject>();
+
+		// For. Add and Setting Transform Component
+		EffectObj->GetOrAddTransform();
+		EffectObj->Get_Transform()->Set_State(Transform_State::POS, _float4(m_fPosOffsetInTool[0], m_fPosOffsetInTool[1], m_fPosOffsetInTool[2], 1.f));
+		EffectObj->Get_Transform()->Scaled(_float3(1.0f));
+
+		// For. Add and Setting Effect Component to GameObject
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
+		shared_ptr<MeshEffect> meshEffect = make_shared<MeshEffect>(shader);
+		EffectObj->Add_Component(meshEffect);
+
+		if (!m_bColorChangingOn)
 		{
-			m_TexOption[i].vColorDest1 = m_TexOption[i].vColorBase1;
-			m_TexOption[i].vColorDest2 = m_TexOption[i].vColorBase2;
+			for (_int i = 0; i < m_iTexOptionCnt; i++)
+			{
+				m_TexOption[i].vColorDest1 = m_TexOption[i].vColorBase1;
+				m_TexOption[i].vColorDest2 = m_TexOption[i].vColorBase2;
+			}
+			m_vOverlayColor_Dest = m_vOverlayColor_Base;
 		}
-		m_vOverlayColor_Dest = m_vOverlayColor_Base;
+
+		MeshEffectData::DESC tMeshEffectDesc
+		{
+			m_szTag,
+				m_fDuration,
+				m_bBlurOn,
+				m_bUseFadeOut,
+				m_iMeshCnt,
+				m_fCreateInterval,
+				_float2(m_fParticleDuration),
+				m_iSamplerType,
+
+				m_strMesh,
+
+				m_bUseSpriteAnimation,
+				m_iSpriteAni_Count[0],
+				m_iSpriteAni_Count[1],
+				m_fSpriteAni_Speed,
+
+				m_bColorChangingOn,
+
+				m_TexOption[0].Texture.second,
+				m_TexOption[0].iColoringOption,
+				ImVec4toColor(m_TexOption[0].vColorBase1),
+				ImVec4toColor(m_TexOption[0].vColorBase2),
+				ImVec4toColor(m_TexOption[0].vColorDest1),
+				ImVec4toColor(m_TexOption[0].vColorDest2),
+				_float2(m_TexOption[0].fTiling_Op),
+				_float2(m_TexOption[0].fUVSpeed_Op),
+				m_TexOption[0].fContrast,
+				m_TexOption[0].fAlphaOffset,
+
+				m_TexOption[1].Texture.second,
+				m_TexOption[1].iColoringOption,
+				ImVec4toColor(m_TexOption[1].vColorBase1),
+				ImVec4toColor(m_TexOption[1].vColorBase2),
+				ImVec4toColor(m_TexOption[1].vColorDest1),
+				ImVec4toColor(m_TexOption[1].vColorDest2),
+				_float2(m_TexOption[1].fTiling_Op),
+				_float2(m_TexOption[1].fUVSpeed_Op),
+				m_TexOption[1].fContrast,
+				m_TexOption[1].fAlphaOffset,
+
+				m_TexOption[2].Texture.second,
+				m_TexOption[2].iColoringOption,
+				ImVec4toColor(m_TexOption[2].vColorBase1),
+				ImVec4toColor(m_TexOption[2].vColorBase2),
+				ImVec4toColor(m_TexOption[2].vColorDest1),
+				ImVec4toColor(m_TexOption[2].vColorDest2),
+				_float2(m_TexOption[2].fTiling_Op),
+				_float2(m_TexOption[2].fUVSpeed_Op),
+				m_TexOption[2].fContrast,
+				m_TexOption[2].fAlphaOffset,
+
+				// Blend
+				m_BlendTexture.second,
+				_float2(m_fTiling_Blend),
+				_float2(m_fUVSpeed_Blend),
+				m_fAlphaOffset_Blend,
+
+				// Overlay
+				m_bOverlay_On,
+				m_OverlayTexture.second,
+				ImVec4toColor(m_vOverlayColor_Base),
+				ImVec4toColor(m_vOverlayColor_Dest),
+				_float2(m_fTiling_Overlay),
+				_float2(m_fUVSpeed_Overlay),
+
+				// Normal
+				m_NormalTexture.second,
+
+				// Diffolve
+				m_DissolveTexture.second,
+				_float2(m_fTiling_Overlay),
+				_float2(m_fUVSpeed_Overlay),
+			{ m_vCurvePoint_Dissolve[0],m_vCurvePoint_Dissolve[1], m_vCurvePoint_Dissolve[2], m_vCurvePoint_Dissolve[3] },
+
+				// Distortion
+				m_DistortionTexture.second,
+				_float2(m_fTiling_Distortion),
+				_float2(m_fUVSpeed_Distortion),
+
+		};
+		EffectObj->Get_MeshEffect()->Init(&tMeshEffectDesc);
+
+		// For. Add and Setting EffectMovement Script to GameObject
+		MeshEffectData::Transform_Desc tTransform_Desc
+		{
+			_float3(m_fPosRange),
+
+				_float3(m_fInitScale_Min),
+				_float3(m_fInitScale_Max),
+
+				_float3(m_fInitRotation_Min),
+				_float3(m_fInitRotation_Max),
+
+				m_iTranslateOption,
+				m_fTranslateSpeed,
+				_float3(m_fEndPositionOffset_Min),
+				_float3(m_fEndPositionOffset_Max),
+				m_iSpeedType,
+			{ m_vCurvePoint_Force[0], m_vCurvePoint_Force[1], m_vCurvePoint_Force[2], m_vCurvePoint_Force[3] },
+
+				m_iScalingOption,
+				_float3(m_fEndScaleOffset),
+
+				m_iTurnOption,
+				m_fTurnSpeed,
+				_float3(m_fRandomAxis_Min),
+				_float3(m_fRandomAxis_Max),
+		};
+		EffectObj->Get_MeshEffect()->Set_TransformDesc(&tTransform_Desc);
+		EffectObj->Get_MeshEffect()->InitialTransform();
+
+		// For. Add Effect GameObject to current scene
+		CUR_SCENE->Add_GameObject(EffectObj);
 	}
-
-	MeshEffectData::DESC tMeshEffectDesc
-	{
-		m_szTag,
-		m_fDuration,
-		m_bBlurOn,
-		m_bUseFadeOut,
-		m_iMeshCnt,
-		m_fCreateInterval,
-		_float2(m_fParticleDuration),
-		m_iSamplerType,
-
-		m_strMesh,
-
-		m_bUseSpriteAnimation,
-		m_iSpriteAni_Count[0],
-		m_iSpriteAni_Count[1],
-		m_fSpriteAni_Speed,
-
-		m_bColorChangingOn,
-
-		m_TexOption[0].Texture.second,
-		m_TexOption[0].iColoringOption,
-		ImVec4toColor(m_TexOption[0].vColorBase1),
-		ImVec4toColor(m_TexOption[0].vColorBase2),
-		ImVec4toColor(m_TexOption[0].vColorDest1),
-		ImVec4toColor(m_TexOption[0].vColorDest2),
-		_float2(m_TexOption[0].fTiling_Op),
-		_float2(m_TexOption[0].fUVSpeed_Op),
-		m_TexOption[0].fContrast,
-		m_TexOption[0].fAlphaOffset,
-
-		m_TexOption[1].Texture.second,
-		m_TexOption[1].iColoringOption,
-		ImVec4toColor(m_TexOption[1].vColorBase1),
-		ImVec4toColor(m_TexOption[1].vColorBase2),
-		ImVec4toColor(m_TexOption[1].vColorDest1),
-		ImVec4toColor(m_TexOption[1].vColorDest2),
-		_float2(m_TexOption[1].fTiling_Op),
-		_float2(m_TexOption[1].fUVSpeed_Op),
-		m_TexOption[1].fContrast,
-		m_TexOption[1].fAlphaOffset,
-
-		m_TexOption[2].Texture.second,
-		m_TexOption[2].iColoringOption,
-		ImVec4toColor(m_TexOption[2].vColorBase1),
-		ImVec4toColor(m_TexOption[2].vColorBase2),
-		ImVec4toColor(m_TexOption[2].vColorDest1),
-		ImVec4toColor(m_TexOption[2].vColorDest2),
-		_float2(m_TexOption[2].fTiling_Op),
-		_float2(m_TexOption[2].fUVSpeed_Op),
-		m_TexOption[2].fContrast,
-		m_TexOption[2].fAlphaOffset,
-
-		// Blend
-		m_BlendTexture.second,
-		_float2(m_fTiling_Blend),
-		_float2(m_fUVSpeed_Blend),
-		m_fAlphaOffset_Blend,
-
-		// Overlay
-		m_bOverlay_On,
-		m_OverlayTexture.second,
-		ImVec4toColor(m_vOverlayColor_Base),
-		ImVec4toColor(m_vOverlayColor_Dest),
-		_float2(m_fTiling_Overlay),
-		_float2(m_fUVSpeed_Overlay),
-
-		// Normal
-		m_NormalTexture.second,
-
-		// Diffolve
-		m_DissolveTexture.second,
-		_float2(m_fTiling_Overlay),
-		_float2(m_fUVSpeed_Overlay),
-		m_bDissolveInverse,
-
-		// Distortion
-		m_DistortionTexture.second,
-		_float2(m_fTiling_Distortion),
-		_float2(m_fUVSpeed_Distortion),
-
-	};
-	EffectObj->Get_MeshEffect()->Init(&tMeshEffectDesc);
-
-	// For. Add and Setting EffectMovement Script to GameObject
-	MeshEffectData::Transform_Desc tTransform_Desc
-	{
-		_float3(m_fPosRange),
-
-		_float3(m_fInitScale_Min),
-		_float3(m_fInitScale_Max),
-
-		_float3(m_fInitRotation_Min),
-		_float3(m_fInitRotation_Max),
-
-		m_iTranslateOption,
-		m_fTranslateSpeed,
-		_float3(m_fEndPositionOffset_Min),
-		_float3(m_fEndPositionOffset_Max),
-
-		m_iScalingOption,
-		_float3(m_fEndScaleOffset),
-
-		m_iTurnOption,
-		m_fTurnSpeed,
-		_float3(m_fRandomAxis_Min),
-		_float3(m_fRandomAxis_Max),
-	};
-	EffectObj->Get_MeshEffect()->Set_TransformDesc(&tTransform_Desc);
-	EffectObj->Get_MeshEffect()->InitialTransform();
-
-	// For. Add Effect GameObject to current scene
-	CUR_SCENE->Add_GameObject(EffectObj);
 }
 
 void Widget_EffectMaker_Mesh::Save()
@@ -1043,7 +1075,8 @@ void Widget_EffectMaker_Mesh::Save()
 		file->Write<string>(m_DissolveTexture.second);
 		file->Write<_float2>(_float2(m_fTiling_Dissolve));
 		file->Write<_float2>(_float2(m_fUVSpeed_Dissolve));
-		file->Write<_bool>(m_bDissolveInverse);
+		for (_uint i = 0; i < 4; i++)
+			file->Write<_float2>(m_vCurvePoint_Dissolve[i]);
 
 		/* Distortion */
 		file->Write<string>(m_DistortionTexture.second);
@@ -1070,6 +1103,9 @@ void Widget_EffectMaker_Mesh::Save()
 		file->Write<_float>(m_fTranslateSpeed);
 		file->Write<_float3>(_float3(m_fEndPositionOffset_Min));
 		file->Write<_float3>(_float3(m_fEndPositionOffset_Max));
+		file->Write<_int>(m_iSpeedType);
+		for (_uint i = 0; i < 4; i++)
+			file->Write<_float2>(m_vCurvePoint_Force[i]);
 
 		/* Scaling */
 		file->Write<_int>(m_iScalingOption);
@@ -1182,10 +1218,11 @@ void Widget_EffectMaker_Mesh::Load()
 	memcpy(m_fTiling_Dissolve, &vTemp_vec2, sizeof(m_fTiling_Dissolve));
 	vTemp_vec2 = file->Read<_float2>();
 	memcpy(m_fUVSpeed_Dissolve, &vTemp_vec2, sizeof(m_fUVSpeed_Dissolve));
-	m_bDissolveInverse = file->Read<_bool>();
 	m_DissolveTexture.first = GetIndex_FromTexList(m_DissolveTexture.second);
 	if (0 == m_DissolveTexture.first) m_bDissolve_On = false;
 	else m_bDissolve_On = true;
+	for (_int i = 0; i < 4; i++)
+		m_vCurvePoint_Dissolve[i] = file->Read<_float2>();
 
 	/* Distortion */
 	m_DistortionTexture.second = file->Read<string>();
@@ -1233,6 +1270,9 @@ void Widget_EffectMaker_Mesh::Load()
 	memcpy(m_fEndPositionOffset_Min, &vTemp_vec3, sizeof(m_fEndPositionOffset_Min));
 	vTemp_vec3 = file->Read<_float3>();
 	memcpy(m_fEndPositionOffset_Max, &vTemp_vec3, sizeof(m_fEndPositionOffset_Max));
+	m_iSpeedType = file->Read<_int>();
+	for (_int i = 0; i < 4; i++)
+		m_vCurvePoint_Force[i] = file->Read<_float2>();
 
 	/* Scaling */
 	m_iScalingOption = file->Read<_int>();
@@ -1349,9 +1389,179 @@ void Widget_EffectMaker_Mesh::SubWidget_SettingTexUV(_float* arrTiling, _float* 
 	ImGui::InputFloat2(pszWidgetKey2, arrTexUVSpeed);
 }
 
+void Widget_EffectMaker_Mesh::SubWidget_Curve1(_float2* pPoints, const string& strKey)
+{
+	ImDrawList* drawList = ImGui::GetWindowDrawList();
+	string strChildTag = "Curve##" + strKey;
+	string strP1Tag = "Point1##" + strKey;
+	string strP2Tag = "Point2##" + strKey;
+	string strP3Tag = "Point3##" + strKey;
+	string strP4Tag = "Point4##" + strKey;
+	string strTreeTag = "Dissolve Weight#3" + strKey;
+
+	auto draw_list = ImGui::GetWindowDrawList();
+	auto legend = ImGui::GetWindowSize();
+	_float fGraphScale = 300.f;
+
+	pPoints[0].x = 0.f;
+	pPoints[3].x = 1.f;
+	ImGui::SliderFloat(strP1Tag.c_str(), (_float*)&pPoints[0].y, 0.00f, 1.00f);
+	ImGui::SliderFloat2(strP2Tag.c_str(), (_float*)&pPoints[1], 0.00f, 1.00f);
+	ImGui::SliderFloat2(strP3Tag.c_str(), (_float*)&pPoints[2], 0.00f, 1.00f);
+	ImGui::SliderFloat(strP4Tag.c_str(), (_float*)&pPoints[3].y, 0.00f, 1.00f);
+
+	{
+		ImGui::BeginChild(strChildTag.c_str(), { fGraphScale, fGraphScale }, false, ImGuiWindowFlags_HorizontalScrollbar);
+
+		ImVec2 cursor = ImGui::GetCursorScreenPos();
+
+		/* For. Grid */
+		draw_list->AddLine(cursor, ImVec2(cursor.x + fGraphScale, cursor.y), ImGui::GetColorU32(ImGuiCol_TextDisabled));
+		draw_list->AddLine(cursor, ImVec2(cursor.x, cursor.y + fGraphScale), ImGui::GetColorU32(ImGuiCol_TextDisabled));
+		draw_list->AddLine(ImVec2(cursor.x + fGraphScale, cursor.y), ImVec2(cursor.x + fGraphScale, cursor.y + fGraphScale), ImGui::GetColorU32(ImGuiCol_TextDisabled));
+		draw_list->AddLine(ImVec2(cursor.x + fGraphScale, cursor.y + fGraphScale), ImVec2(cursor.x, cursor.y + fGraphScale), ImGui::GetColorU32(ImGuiCol_TextDisabled));
+
+		/* For. Draw Points */
+		for (_int i = 0; i < 4; i++)
+		{
+			ImVec2	center = cursor + ImVec2(pPoints[i].x, pPoints[i].y) * fGraphScale;
+			draw_list->AddCircle(center, 3.f, ImGui::GetColorU32(ImGuiCol_PlotLines), 20, 3.f);
+		}
+
+		/* For. Calc Prev */
+		enum { smoothness = 256 };
+		float* input = new float[8];
+		float output[4];
+		for (int i = 0; i < 4; ++i) {
+			input[i * 2 + 0] = pPoints[i].x;
+			input[i * 2 + 1] = pPoints[i].y;
+		}
+
+		for (_int i = 0; i < smoothness; i++)
+		{
+			_float px = (i + 0) / (_float)smoothness;
+			_float qx = (i + 1) / (_float)smoothness;
+
+			Utils::Spline(input, 4, 1, px, output);
+			ImVec2 vStart = { px, output[0] };
+			Utils::Spline(input, 4, 1, qx, output);
+			ImVec2 vEnd = { qx, output[0] };
+
+			/* fit in rect */
+			vStart = vStart * fGraphScale;
+			vEnd = vEnd * fGraphScale;
+			vStart = vStart + cursor;
+			vEnd = vEnd + cursor;
+
+			/* For. Draw line */
+			draw_list->AddLine(vStart, vEnd, ImGui::GetColorU32(ImGuiCol_PlotLines), 2.f);
+		}
+		ImGui::EndChild();
+	}
+}
+
+void Widget_EffectMaker_Mesh::SubWidget_Curve2(_float2* pPoints, const string& strKey)
+{
+	ImDrawList* drawList = ImGui::GetWindowDrawList();
+	string strChildTag = "Curve##" + strKey;
+	string strP1Tag1 = "Point1 Speed##" + strKey;
+	string strP2Tag1 = "Point2 Time##" + strKey;
+	string strP2Tag2 = "Point2 Speed##" + strKey;
+	string strP3Tag1 = "Point3 Time##" + strKey;
+	string strP3Tag2 = "Point3 Speed##" + strKey;
+	string strP4Tag1 = "Point4 Time##" + strKey;
+	string strP4Tag2 = "Point4 Speed##" + strKey;
+	string strTreeTag = "Dissolve Weight#3" + strKey;
+
+	auto draw_list = ImGui::GetWindowDrawList();
+	auto legend = ImGui::GetWindowSize();
+	_float fGraphScale = 300.f;
+
+	pPoints[0].x = 0.f;
+	pPoints[3].x = 1.f;
+	ImGui::SliderFloat(strP1Tag1.c_str(), (_float*)&pPoints[0].y, -1.00f, 1.00f);
+	ImGui::Text(" ");
+	ImGui::SliderFloat(strP2Tag1.c_str(), (_float*)&pPoints[1].x, 0.00f, 1.00f);
+	ImGui::SliderFloat(strP2Tag2.c_str(), (_float*)&pPoints[1].y, -1.00f, 1.00f);
+	ImGui::Text(" ");
+	ImGui::SliderFloat(strP3Tag1.c_str(), (_float*)&pPoints[2].x, 0.00f, 1.00f);
+	ImGui::SliderFloat(strP3Tag2.c_str(), (_float*)&pPoints[2].y, -1.00f, 1.00f);
+	ImGui::Text(" ");
+	ImGui::SliderFloat(strP4Tag1.c_str(), (_float*)&pPoints[3].x, 0.00f, 1.00f);
+	ImGui::SliderFloat(strP4Tag2.c_str(), (_float*)&pPoints[3].y, -1.00f, 1.00f);
+
+	{
+		ImGui::BeginChild(strChildTag.c_str(), { fGraphScale, fGraphScale }, false, ImGuiWindowFlags_HorizontalScrollbar);
+
+		ImVec2 cursor = ImGui::GetCursorScreenPos();
+
+		/* For. Grid */
+		draw_list->AddLine(cursor, ImVec2(cursor.x + fGraphScale, cursor.y), ImGui::GetColorU32(ImGuiCol_TextDisabled));
+		draw_list->AddLine(cursor, ImVec2(cursor.x, cursor.y + fGraphScale), ImGui::GetColorU32(ImGuiCol_TextDisabled));
+		draw_list->AddLine(ImVec2(cursor.x + fGraphScale, cursor.y), ImVec2(cursor.x + fGraphScale, cursor.y + fGraphScale), ImGui::GetColorU32(ImGuiCol_TextDisabled));
+		draw_list->AddLine(ImVec2(cursor.x + fGraphScale, cursor.y + fGraphScale), ImVec2(cursor.x, cursor.y + fGraphScale), ImGui::GetColorU32(ImGuiCol_TextDisabled));
+
+		/* For. Draw Points */
+		for (_int i = 0; i < 4; i++)
+		{
+			ImVec2	center = cursor + ImVec2(pPoints[i].x, (pPoints[i].y + 1.f) * -0.5f) * fGraphScale + ImVec2(0.f, fGraphScale);
+			draw_list->AddCircle(center, 3.f, ImGui::GetColorU32(ImGuiCol_PlotLines), 20, 3.f);
+		}
+
+		/* For. Calc Prev */
+		enum { smoothness = 256 };
+		float* input = new float[8];
+		float output[4];
+		for (int i = 0; i < 4; ++i) {
+			input[i * 2 + 0] = pPoints[i].x;
+			input[i * 2 + 1] = pPoints[i].y;
+		}
+
+		for (_int i = 0; i < smoothness; i++)
+		{
+			_float px = (i + 0) / (_float)smoothness;
+			_float qx = (i + 1) / (_float)smoothness;
+
+			Utils::Spline(input, 4, 1, px, output);
+			ImVec2 vStart = { px, output[0] };
+			Utils::Spline(input, 4, 1, qx, output);
+			ImVec2 vEnd = { qx, output[0] };
+
+			vStart = ImVec2(vStart.x, (vStart.y + 1.f) * -0.5f);
+			vEnd = ImVec2(vEnd.x, (vEnd.y + 1.f) * -0.5f);
+
+			/* fit in rect */
+			vStart = vStart * fGraphScale;
+			vEnd = vEnd * fGraphScale;
+			vStart = vStart + cursor + ImVec2(0.f, fGraphScale);
+			vEnd = vEnd + cursor + ImVec2(0.f, fGraphScale);
+
+			/* For. Draw line */
+			draw_list->AddLine(vStart, vEnd, ImGui::GetColorU32(ImGuiCol_PlotLines), 2.f);
+		}
+		ImGui::EndChild();
+	}
+}
+
+ImVec2 Widget_EffectMaker_Mesh::CatMull_Rom(_float2* pPoints, _float t)
+{
+	_float2 vResult = 0.5f * ((2.0f * pPoints[1])
+							+ (-1.f * pPoints[0] + pPoints[2]) * t
+							+ (2.0f * pPoints[0] - 5.0f * pPoints[1] + 4.0f * pPoints[2] - pPoints[3]) * t * t
+							+ (-1.f * pPoints[0] + 3.0f * pPoints[1] - 3.0f * pPoints[2] + pPoints[3]) * t * t * t);
+
+	return XmVec2toImVec2(vResult);
+}
+
 Color Widget_EffectMaker_Mesh::ImVec4toColor(ImVec4 imvec)
 {
 	return Color(imvec.x, imvec.y, imvec.z, imvec.w);
+}
+
+ImVec2 Widget_EffectMaker_Mesh::XmVec2toImVec2(_float2 iSrc)
+{
+	ImVec2 vTemp = ImVec2(iSrc.x, iSrc.y);
+	return vTemp;
 }
 
 ImVec4 Widget_EffectMaker_Mesh::ColorToImVec4(Color color)

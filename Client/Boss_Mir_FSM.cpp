@@ -35,6 +35,12 @@ HRESULT Boss_Mir_FSM::Init()
     m_fRunSpeed = 4.f;
     m_fKnockDownSpeed = 4.f;
 
+    // 용 감지범위
+    m_fDetectRange = 25.f;
+    // 용이 플레이어 바라보게
+    if (!m_pTarget.expired())
+        Get_Transform()->LookAt(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS));
+    
     return S_OK;
 }
 
@@ -284,7 +290,7 @@ void Boss_Mir_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLoo
     {
         if (m_bCounter)
         {
-            if (CounterAttackCheck())
+            if (CounterAttackCheck(90.f))
             {
                 Create_CounterMotionTrail();
                 m_eCurState = STATE::groggy_start;
@@ -295,7 +301,7 @@ void Boss_Mir_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLoo
     {
         if (m_bCounter)
         {
-            if (CounterAttackCheck())
+            if (CounterAttackCheck(90.f))
             {
                 Create_CounterMotionTrail();
                 m_eCurState = STATE::groggy_start;
@@ -306,7 +312,7 @@ void Boss_Mir_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLoo
     {
         if (m_bCounter)
         {
-			if (CounterAttackCheck())
+			if (CounterAttackCheck(90.f))
 			{
 				Create_CounterMotionTrail();
 				m_eCurState = STATE::groggy_start;
@@ -317,7 +323,7 @@ void Boss_Mir_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLoo
     {
         if (m_bCounter)
         {
-			if (CounterAttackCheck())
+			if (CounterAttackCheck(90.f))
 			{
 				Create_CounterMotionTrail();
 				m_eCurState = STATE::groggy_start;
@@ -843,7 +849,7 @@ void Boss_Mir_FSM::skill_2100()
 
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
         {
-            material->Get_MaterialDesc().emissive = Color(0.3f, 0.3f, 1.f, 1.f);
+            material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
     }
     else if (Get_CurFrame() == 60)
@@ -1509,7 +1515,7 @@ void Boss_Mir_FSM::skill_100100()
 
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
         {
-            material->Get_MaterialDesc().emissive = Color(0.3f, 0.3f, 1.f, 1.f);
+            material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
     }
     else if (Get_CurFrame() == 4)
@@ -1637,7 +1643,7 @@ void Boss_Mir_FSM::skill_200100()
 
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
         {
-            material->Get_MaterialDesc().emissive = Color(0.3f, 0.3f, 1.f, 1.f);
+            material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
     }
     else if (Get_CurFrame() == 15)
@@ -1767,42 +1773,6 @@ Boss_Mir_FSM::DIR Boss_Mir_FSM::CalCulate_PlayerDir()
     return m_eAttackDir;
 }
 
-_bool Boss_Mir_FSM::CounterAttackCheck()
-{
-    // Monster to player 
-    _float4 vDir = _float4(0.f);
-    vDir = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS);
-    vDir.y = 0.f; 
-    vDir.Normalize();
-
-    _float4 vDot = _float4(0.f);
-    _float4 vCross = _float4(0.f);
-
-    vDot = XMVector3Dot(Get_Transform()->Get_State(Transform_State::LOOK), vDir);
-    vCross = XMVector3Cross(Get_Transform()->Get_State(Transform_State::LOOK), vDir);
-
-    if (XMVectorGetX(vDot) >= 0.f) //forward = dot is bigger 0  
-    {
-        if (XMVectorGetY(vCross) < 0.f) //왼쪽 외적이 음수면 왼쪽 
-        {
-            if (XMVectorGetX(vDot) >= cosf(XMConvertToRadians(45.f)))//왼쪽 45도 내 앞
-                return true;
-            else
-                return false;
-        }
-        else //오른쪽  정면오른쪽
-        {
-            if (XMVectorGetX(vDot) >= cosf(XMConvertToRadians(45.f)))//오른쪽 45도 이내까지 앞
-                return true;
-            else
-                return false;
-        }
-    }
-    else //뒤 내적음수면 뒤
-    {
-        return false;
-    }
-}
 
 void Boss_Mir_FSM::Add_Boss_Mir_Collider()
 {

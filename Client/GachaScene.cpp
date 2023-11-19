@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include "Kyle_GachaScene.h"
+#include "GachaScene.h"
 
 #include "Utils.h"
 #include "Model.h"
@@ -54,32 +54,32 @@
 #include "Gacha_FSM.h"
 namespace fs = std::filesystem;
 
-Kyle_GachaScene::Kyle_GachaScene(const GachaSceneDesc& desc)
+GachaScene::GachaScene(const GachaSceneDesc& desc)
 	: m_Desc(desc)
 {
 }
 
-Kyle_GachaScene::~Kyle_GachaScene()
+GachaScene::~GachaScene()
 {
 }
 
-void Kyle_GachaScene::Init()
+void GachaScene::Init()
 {
 	Load_Scene();
 	__super::Init();
 }
 
-void Kyle_GachaScene::Tick()
+void GachaScene::Tick()
 {
 	__super::Tick();
 }
 
-void Kyle_GachaScene::Late_Tick()
+void GachaScene::Late_Tick()
 {
 	__super::Late_Tick();
 }
 
-void Kyle_GachaScene::Final_Tick()
+void GachaScene::Final_Tick()
 {
 	__super::Final_Tick();
 	if (KEYTAP(KEY_TYPE::ENTER))
@@ -88,9 +88,8 @@ void Kyle_GachaScene::Final_Tick()
 	}
 }
 
-HRESULT Kyle_GachaScene::Load_Scene()
+HRESULT GachaScene::Load_Scene()
 {
-	Load_SkyBox();
 	Load_Player();
 	Load_Light();
 	Load_Camera();
@@ -98,19 +97,7 @@ HRESULT Kyle_GachaScene::Load_Scene()
 	return S_OK;
 }
 
-void Kyle_GachaScene::Load_SkyBox()
-{
-	shared_ptr<GameObject> sky = make_shared<GameObject>();
-	sky->GetOrAddTransform();
-	sky->Add_Component(make_shared<ModelRenderer>(RESOURCES.Get<Shader>(L"SkyBox.fx")));
-	sky->Get_ModelRenderer()->Set_Model(RESOURCES.Get<Model>(L"SkyBox"));
-	sky->Set_Name(L"SkyBase");
-	Add_GameObject(sky);
-
-	// 텍스쳐 정보는 LoadMapFile에서 재변경
-}
-
-void Kyle_GachaScene::Load_Player()
+void GachaScene::Load_Player()
 {
 
 	// Add. Player
@@ -138,8 +125,8 @@ void Kyle_GachaScene::Load_Player()
 		{
 			shared_ptr<Model> model = RESOURCES.Get<Model>(modelName);
 			animator->Set_Model(model);
-			model->Get_MaterialByName(L"mi_Wp_Kyle_Chain")->Get_MaterialDesc().emissive = Color(4.f, 1.f, 0.0f, 1.f);
-			model->Get_MaterialByName(L"mi_Wp_Kyle")->Get_MaterialDesc().emissive = Color(4.f, 1.f, 0.0f, 1.f);
+			model->Get_MaterialByName(L"mi_Wp_Kyle_Chain")->Get_MaterialDesc().emissive = Color(214.f/255.f,55.f/255.f, 0.0f, 1.f);
+			model->Get_MaterialByName(L"mi_Wp_Kyle")->Get_MaterialDesc().emissive = Color(214.f / 255.f, 55.f / 255.f, 0.0f, 1.f);
 			ObjPlayer->Add_Component(animator);
 		}
 		desc.strWeaponName = L"";
@@ -150,7 +137,7 @@ void Kyle_GachaScene::Load_Player()
 			g_fBrightness = 0.f;
 			g_fContrast = 1.04f;
 			g_Saturation = 1.5;
-			g_iTMIndex = 0;
+			g_iTMIndex = 1;
 			g_fMaxWhite = 0.9f;
 		}
 		{
@@ -223,7 +210,7 @@ void Kyle_GachaScene::Load_Player()
 	
 }
 
-void Kyle_GachaScene::Load_Camera()
+void GachaScene::Load_Camera()
 {
 	{
 		//GameObj for Camera Create
@@ -255,7 +242,7 @@ void Kyle_GachaScene::Load_Camera()
 	}
 }
 
-void Kyle_GachaScene::Load_Light()
+void GachaScene::Load_Light()
 {
 	shared_ptr<GameObject> lightObj = make_shared<GameObject>();
 	lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(50.f, 30.f, 20.f, 1.f));

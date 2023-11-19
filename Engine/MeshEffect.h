@@ -39,6 +39,8 @@ private:
     void                    Bind_UpdatedTexUVOffset_ToShader();
     void                    Bind_RenderParams_ToShader();
 
+    _float                  CalcSpeed();
+
 private:
     MeshEffectData::DESC            m_tDesc;
     MeshEffectData::Transform_Desc  m_tTransform_Desc;
@@ -58,6 +60,10 @@ private:
     _float2                 m_vCurrTexUVOffset_Dissolve = { 0.f, 0.f };
     _float2                 m_vCurrTexUVOffset_Distortion = { 0.f, 0.f };
 
+    /* */
+    _float                  m_SplineInput_Dissolve[8];
+    _float                  m_fCurrDissolveWeight = { 0.f };
+
     /* Sprite Animation */
     _float2                 m_vSpriteSize = { 0.f, 0.f };
     _int                    m_iNumSprite = { 0 };
@@ -74,6 +80,8 @@ private:
     _int                    m_iTranslateOption;
     _float                  m_fTranslateSpeed;
     _float3                 m_vEndPos;
+    _float                  m_SplineInput_Force[8];
+    _float                  m_fCurrYspeed = { 0.f };
 
     _float3                 m_vEndScale;
 

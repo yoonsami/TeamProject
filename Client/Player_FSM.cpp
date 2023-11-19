@@ -48,6 +48,8 @@ HRESULT Player_FSM::Init()
 
     m_pCamera = CUR_SCENE->Get_MainCamera();
 
+    m_fEffectYOffSet = 1.2f;
+
     return S_OK;
 }
 
@@ -871,10 +873,20 @@ void Player_FSM::skill_1100()
 {
     // Collider Control
     if (Get_CurFrame() == 9)
+    {
         AttackCollider_On(NORMAL_ATTACK);
+
+        if (!m_bAttackEffectCreate)
+        {
+            Add_Effect(L"Teoi_Slash2");
+            m_bAttackEffectCreate = true;
+        }
+    }
     else if (Get_CurFrame() == 13)
         AttackCollider_Off();
-    
+    else
+        m_bAttackEffectCreate = false;
+
     // Init때 초기
     // m_vKeyInputTargetDir -> 이름 헷갈릴 여지 있음 TargetDir 등으로 회전하고자 하는 목표를 뜻하는 단어로
     if (m_vKeyInputTargetDir != _float3(0.f))
@@ -910,6 +922,8 @@ void Player_FSM::skill_1100_Init()
 
     m_vKeyInputTargetDir = _float3(0.f);
     m_vKeyInputTargetDir = Get_InputDirVector();
+
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
     m_bInvincible = false;
     m_bSuperArmor = false;
@@ -957,6 +971,8 @@ void Player_FSM::skill_1200_Init()
     m_vKeyInputTargetDir = _float3(0.f);
     m_vKeyInputTargetDir = Get_InputDirVector();
 
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+
     AttackCollider_Off();
 
     m_bInvincible = false;
@@ -1002,6 +1018,8 @@ void Player_FSM::skill_1300_Init()
 
     m_bCanCombo = false;
 
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+
     m_vKeyInputTargetDir = Get_InputDirVector();
 
     AttackCollider_Off();
@@ -1036,6 +1054,8 @@ void Player_FSM::skill_1400_Init()
 	animator->Set_NextTweenAnim(L"skill_1400", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
 	m_bCanCombo = false;
+
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
 	m_vKeyInputTargetDir = Get_InputDirVector();
 

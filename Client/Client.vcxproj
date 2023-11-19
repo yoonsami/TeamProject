@@ -217,7 +217,7 @@
     <ClInclude Include="DemoCameraScript2.h" />
     <ClInclude Include="DemoScene.h" />
     <ClInclude Include="ForwardMovingSkillScript.h" />
-    <ClInclude Include="Kyle_GachaScene.h" />
+    <ClInclude Include="GachaScene.h" />
     <ClInclude Include="Gacha_FSM.h" />
     <ClInclude Include="HeroChangeScript.h" />
     <ClInclude Include="Kyle_FSM.h" />
@@ -232,8 +232,10 @@
     <ClInclude Include="MapObjectScript.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Player_FSM.h" />
+    <ClInclude Include="Rachel_FSM.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Silversword_Soldier_FSM.h" />
+    <ClInclude Include="SpearAce_Clone_FSM.h" />
     <ClInclude Include="SpearAce_FSM.h" />
     <ClInclude Include="Spike_FSM.h" />
     <ClInclude Include="UIBossHpBar.h" />
@@ -287,7 +289,7 @@
     <ClCompile Include="DemoCameraScript2.cpp" />
     <ClCompile Include="DemoScene.cpp" />
     <ClCompile Include="ForwardMovingSkillScript.cpp" />
-    <ClCompile Include="Kyle_GachaScene.cpp" />
+    <ClCompile Include="GachaScene.cpp" />
     <ClCompile Include="Gacha_FSM.cpp" />
     <ClCompile Include="HeroChangeScript.cpp" />
     <ClCompile Include="Kyle_FSM.cpp" />
@@ -307,7 +309,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Player_FSM.cpp" />
+    <ClCompile Include="Rachel_FSM.cpp" />
     <ClCompile Include="Silversword_Soldier_FSM.cpp" />
+    <ClCompile Include="SpearAce_Clone_FSM.cpp" />
     <ClCompile Include="SpearAce_FSM.cpp" />
     <ClCompile Include="Spike_FSM.cpp" />
     <ClCompile Include="UIBossHpBar.cpp" />

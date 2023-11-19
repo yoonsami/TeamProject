@@ -2,7 +2,7 @@
 #include "FSM.h"
 #include "ForwardMovingSkillScript.h"
 
-class Yeopo_FSM :
+class Rachel_FSM :
 	public FSM
 {
 public:
@@ -30,32 +30,25 @@ public:
 		skill_1100, //normal attack1
 		skill_1200, //normal attack2
 		skill_1300, //normal attack3
-		skill_1400, //normal attack4
+		skill_1400, //normal attack3
+
 		skill_91100, //Evade
 		skill_93100, //Backward_Evade
-		skill_100200, // Skill 1-1  // Bubble 2
-		skill_100300, // Skill 1-2
-		skill_200100, // Skill 2    // Bubble X
-		skill_300100, // Skill 3-1  // Bubble 4
-		skill_300200, // Skill 3-2
-		skill_300300, // Skill 3-3
-		skill_300400, // Skill 3-4
-		skill_400100, // Skill 4 (Ride RedHorse) // Bubble X
-		skill_501100, // Skill 5  // Bubble X
-
-		//Ride Horse
-		SQ_RideHorse_Idle,
-		SQ_RideHorse_Run,
-		SQ_RideHorse_Stop,
-		SQ_RideHorse_End,
-
-		SQ_SpecialHero_Yeopo,
-
+		
+		skill_100100, // Skill 1 // Bubble X
+		skill_100200, // Skill 1 // Bubble X
+		skill_200100, // Skill 2-1 // BUBBLE 2 
+		skill_200200, // Skill 2-2
+		skill_300100, // Skill 3  // Bubble X
+		skill_300200, // Skill 3  // Bubble X
+		skill_300300, // Skill 3  // Bubble X
+		skill_501100, // Skill 4 // Bubble X
+		skill_500100, // Skill 5 // Bubble X
 		NONE
 	};
 public:
-	Yeopo_FSM();
-	~Yeopo_FSM();
+	Rachel_FSM();
+	~Rachel_FSM();
 
 
 public:
@@ -114,6 +107,7 @@ private:
 	void knockdown_end();
 	void knockdown_end_Init();
 
+
 	void skill_1100();
 	void skill_1100_Init();
 	void skill_1200();
@@ -128,13 +122,15 @@ private:
 	void skill_93100();
 	void skill_93100_Init();
 
+	void skill_100100();
+	void skill_100100_Init();
 	void skill_100200();
 	void skill_100200_Init();
-	void skill_100300();
-	void skill_100300_Init();
 
 	void skill_200100();
 	void skill_200100_Init();
+	void skill_200200();
+	void skill_200200_Init();
 
 	void skill_300100();
 	void skill_300100_Init();
@@ -142,28 +138,13 @@ private:
 	void skill_300200_Init();
 	void skill_300300();
 	void skill_300300_Init();
-	void skill_300400();
-	void skill_300400_Init();
-
-	void skill_400100();
-	void skill_400100_Init();
 
 	void skill_501100();
 	void skill_501100_Init();
+	void skill_500100();
+	void skill_500100_Init();
 
-	void SQ_RideHorse_Idle();
-	void SQ_RideHorse_Idle_Init();
-	void SQ_RideHorse_Run();
-	void SQ_RideHorse_Run_Init();
-	void SQ_RideHorse_Stop();
-	void SQ_RideHorse_Stop_Init();
-	void SQ_RideHorse_End();
-	void SQ_RideHorse_End_Init();
-
-	void RidingCoolCheck();
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
-	void Create_Vehicle();
-	void Set_VehicleState(_uint iAnimindex);
 
 	void Use_Skill();
 	void Use_Dash();
@@ -171,11 +152,5 @@ private:
 	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;
 
-	COOLTIMEINFO m_tRidingEndDelay = { 0.4f,0.f };
-	COOLTIMEINFO m_tRidingDelay = { 2.f,0.f };
-
-	_bool m_bRidingCoolCheck = false;
-	_float m_fRidingSpeed = 12.f;
-	_float4 m_vRidingEndPos = _float4(0.f);
 };
 

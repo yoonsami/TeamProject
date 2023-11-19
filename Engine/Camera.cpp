@@ -65,7 +65,6 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 	m_Particle.clear();
 	m_DistortionEffects.clear();
 	m_Trails.clear();
-	m_Fonts.clear();
 	m_VelocityMapObj.clear();
 	for (auto& gameObject : gameObjects)
 	{
@@ -84,6 +83,7 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 			&& gameObject->Get_MotionTrailRenderer() == nullptr
 			&& gameObject->Get_FontRenderer() ==nullptr)
 			continue;
+
 		if (IsCulled(gameObject->Get_LayerIndex()))
 			continue;
 
@@ -102,6 +102,8 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 			m_Trails.push_back(gameObject);
 		else if (gameObject->Get_MotionTrailRenderer())
 			m_Trails.push_back(gameObject);
+		else if (gameObject->Get_FontRenderer())
+			m_Forward.push_back(gameObject);
 		else if (gameObject->Get_ShaderType() == SHADER_TYPE::DEFERRED)
 			m_Deferred.push_back(gameObject);
 		else if (gameObject->Get_ShaderType() == SHADER_TYPE::FORWARD)
@@ -109,8 +111,7 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 		else if (gameObject->Get_ShaderType() == SHADER_TYPE::DISTORTION)
 			m_DistortionEffects.push_back(gameObject);
 
-		if (gameObject->Get_FontRenderer())
-			m_Fonts.push_back(gameObject);
+		
 		//if (gameObject->Get_ParticleSystem())
 		//	m_Particle.push_back(gameObject);
 		if (gameObject->Get_Particle())
@@ -314,12 +315,15 @@ void Camera::Render_Forward()
 	{
 		if (obj->Get_MeshRenderer())
 			obj->Get_MeshRenderer()->Render();
+
 		else if (obj->Get_ModelRenderer())
 			obj->Get_ModelRenderer()->Render();
 		else if (obj->Get_MeshEffect())
 			obj->Get_MeshEffect()->Render();
 		else if (obj->Get_Animator())
 			obj->Get_Animator()->Render();
+		if (obj->Get_FontRenderer())
+			obj->Get_FontRenderer()->Render();
 	}
 
 
@@ -328,8 +332,7 @@ void Camera::Render_Forward()
 		particle->Get_Particle()->Render();
 	}
 
-	for (auto& font : m_Fonts)
-		font->Get_FontRenderer()->Render();
+
 }
 
 void Camera::Render_Deferred()

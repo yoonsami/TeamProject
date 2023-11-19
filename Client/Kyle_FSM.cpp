@@ -41,6 +41,8 @@ HRESULT Kyle_FSM::Init()
 	m_pCamera = CUR_SCENE->Get_MainCamera();
 
 	m_fSkillAttack_AnimationSpeed = 2.f;
+	m_fEffectYOffSet = 1.5f;
+
 
 	return S_OK;
 }
@@ -926,6 +928,8 @@ void Kyle_FSM::skill_1100_Init()
 
 	animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, 2.f);
 
+	m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+
 	m_bCanCombo = false;
 
 	m_vKeyInputTargetDir = _float3(0.f);
@@ -974,6 +978,8 @@ void Kyle_FSM::skill_1200_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+
+	m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
 	m_bCanCombo = false;
 
@@ -1025,6 +1031,8 @@ void Kyle_FSM::skill_1300_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"skill_1300", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+
+	m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
 	m_bCanCombo = false;
 
@@ -1079,6 +1087,8 @@ void Kyle_FSM::skill_1400_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"skill_1400", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+
+	m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
 	m_bCanCombo = false;
 
@@ -1279,8 +1289,11 @@ void Kyle_FSM::skill_100200()
 	if (Is_AnimFinished())
 	{
 		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
-		m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
 		m_eCurState = STATE::b_idle;
+		
+		if (!m_pCamera.expired())
+			m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedTime(0.f);
+		//m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
 	}
 
 
@@ -1892,28 +1905,4 @@ void Kyle_FSM::Use_Dash()
 				m_eCurState = STATE::skill_93100;
 		}
 	}
-}
-
-void Kyle_FSM::Add_Effect(const wstring& strSkilltag)
-{
-	shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();
-
-	// For. Transform 
-	pGroupEffectObj->GetOrAddTransform();
-	pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS) + (_float3::Up * 1.5f));
-	pGroupEffectObj->Get_Transform()->Set_Quaternion(Get_Transform()->Get_Rotation());
-
-	// For. GroupEffectData 
-	wstring wstrFileName = strSkilltag + L".dat";
-	wstring wtsrFilePath = TEXT("..\\Resources\\EffectData\\GroupEffectData\\") + wstrFileName;
-	shared_ptr<GroupEffectData> pGroupEffectData = RESOURCES.GetOrAddGroupEffectData(strSkilltag, wtsrFilePath);
-
-	// For. GroupEffect component 
-	shared_ptr<GroupEffect> pGroupEffect = make_shared<GroupEffect>();
-	pGroupEffectObj->Add_Component(pGroupEffect);
-	pGroupEffectObj->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
-	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
-
-	// For. Add Effect GameObject to current scene
-	CUR_SCENE->Add_GameObject(pGroupEffectObj);
 }

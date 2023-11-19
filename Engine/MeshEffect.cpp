@@ -39,9 +39,17 @@ void MeshEffect::Final_Tick()
 {
     if (m_bIsPlayFinished)
         return;
+    
     m_fCurrAge += fDT;
     m_fLifeTimeRatio = m_fCurrAge / m_tDesc.fDuration;
     m_fTimeAcc_SpriteAnimation += fDT;
+
+    if ("None" != m_tDesc.strDissolveTexture)
+    {
+        _float output[4];
+        Utils::Spline(m_SplineInput_Dissolve, 4, 1, m_fLifeTimeRatio, output);
+        m_fCurrDissolveWeight = output[0];
+    }
 
     // For. Check is dead 
     if (m_fCurrAge >= m_fDuration)
@@ -123,6 +131,13 @@ void MeshEffect::Update_Desc()
     m_vCurrTexUVOffset_Dissolve = m_tDesc.vTiling_Dissolve;
     m_vCurrTexUVOffset_Distortion = m_tDesc.vTiling_Distortion;
     
+    // For. Init Spline input
+    for (int i = 0; i < 4; ++i) {
+        // Dissolve 
+        m_SplineInput_Dissolve[i * 2 + 0] = m_tDesc.vCurvePoint_Dissolve[i].x;
+        m_SplineInput_Dissolve[i * 2 + 1] = m_tDesc.vCurvePoint_Dissolve[i].y;
+    }
+
     // For. Model Components
     m_pModel = RESOURCES.Get<Model>(Utils::ToWString(m_tDesc.strVfxMesh));
 
@@ -175,9 +190,6 @@ void MeshEffect::InitialTransform()
 {
     // For. Position, Scale, Rotation 
     m_vStartPos += _float3(Get_Transform()->Get_State(Transform_State::POS));
-  
-    
-    //m_vStartRotation += _float3(Get_Transform()->Get_RollPitchYaw().x, Get_Transform()->Get_RollPitchYaw().y, Get_Transform()->Get_RollPitchYaw().z);
     m_vStartScale *= Get_Transform()->Get_Scale();
 
     m_vEndScale += m_vStartScale;
@@ -185,18 +197,15 @@ void MeshEffect::InitialTransform()
 
     Get_Transform()->Set_State(Transform_State::POS, _float4(m_vStartPos, 1.f));
     Get_Transform()->Scaled(m_vStartScale);
-
-    //_float4x4::CreateRotationY(XM_PI * 0.5f)*
-
+    Get_Transform()->Set_Rotation(m_vStartRotation);
     Get_Transform()->Set_Quaternion(Quaternion::CreateFromRotationMatrix(_float4x4::CreateRotationY(XM_PI * 0.5f) * _float4x4::CreateFromQuaternion(Get_Transform()->Get_Rotation())));
-
-    //Get_Transform()->Set_Quaternion(Quaternion::CreateFromRotationMatrix());
 }
 
 void MeshEffect::Set_TransformDesc(void* pArg)
 {
     // For. Setting basic info  
     MeshEffectData::Transform_Desc* pDesc = (MeshEffectData::Transform_Desc*)pArg;
+    m_tTransform_Desc = *pDesc;
 
     // For. Initial Transform 
     m_vStartPos = _float3(
@@ -216,6 +225,9 @@ void MeshEffect::Set_TransformDesc(void* pArg)
         MathUtils::Get_RandomFloat(pDesc->vInitRotation_Min.y, pDesc->vInitRotation_Max.y),
         MathUtils::Get_RandomFloat(pDesc->vInitRotation_Min.z, pDesc->vInitRotation_Max.z)
     );
+    m_vStartRotation.x *= 3.141592f / 180.f;
+    m_vStartRotation.y *= 3.141592f / 180.f;
+    m_vStartRotation.z *= 3.141592f / 180.f;
 
     // For. Translate
     m_iTranslateOption = pDesc->iTranslateOption;
@@ -235,6 +247,16 @@ void MeshEffect::Set_TransformDesc(void* pArg)
         MathUtils::Get_RandomFloat(pDesc->vRandomAxis_Min.y, pDesc->vRandomAxis_Max.y),
         MathUtils::Get_RandomFloat(pDesc->vRandomAxis_Min.z, pDesc->vRandomAxis_Max.z)
     );
+
+    // For. Init Spline input
+    for (int i = 0; i < 4; ++i) {
+        // Force 
+        m_SplineInput_Force[i * 2 + 0] = m_tTransform_Desc.vCurvePoint_Force[i].x;
+        m_SplineInput_Force[i * 2 + 1] = m_tTransform_Desc.vCurvePoint_Force[i].y;
+    }
+
+    if (9 == m_iTranslateOption)
+        m_fCurrYspeed = m_tTransform_Desc.vCurvePoint_Force[0].y;
 }
 
 void MeshEffect::Translate()
@@ -248,23 +270,56 @@ void MeshEffect::Translate()
         Get_Transform()->Set_State(Transform_State::POS, _float4(XMVectorLerp(m_vStartPos, m_vEndPos, m_fCurrAge), 0.f));
         break;
     case 3:
+    {
+        Get_Transform()->Set_Speed(CalcSpeed());
         Get_Transform()->Go_Straight();
         break;
+    }
     case 4:
+    {
+        Get_Transform()->Set_Speed(CalcSpeed());
         Get_Transform()->Go_Backward();
         break;
+    }
     case 5:
+    {
+        Get_Transform()->Set_Speed(CalcSpeed());
         Get_Transform()->Go_Left();
         break;
+    }
     case 6:
+    {
+        Get_Transform()->Set_Speed(CalcSpeed());
         Get_Transform()->Go_Right();
         break;
+    }
     case 7:
-        // TODO: Spreading dust
+    {
+        Get_Transform()->Set_Speed(CalcSpeed());
+        Get_Transform()->Go_Up();
         break;
+    }
     case 8:
-        // TODO: Scattered embers
+    {
+        Get_Transform()->Set_Speed(CalcSpeed());
+        Get_Transform()->Go_Down();
         break;
+    }
+    case 9: // fountain 
+    {
+        // Move x,z in same speed
+        _float4 vPos = Get_Transform()->Get_State(Transform_State::POS);
+        _float4 vDir = Get_Transform()->Get_State(Transform_State::LOOK);
+        vDir = XMVector3Normalize(vDir);
+        vDir.y = 0.f;
+
+        vPos += vDir * m_tTransform_Desc.vCurvePoint_Force[0].x;
+        vPos.y -= m_fCurrYspeed;
+        m_fCurrYspeed += fDT;
+
+        Get_Transform()->Set_State(Transform_State::POS, vPos);
+        break;
+    }
     }
 }
 
@@ -309,11 +364,12 @@ void MeshEffect::Init_RenderParams()
     
     /* Int */
     m_RenderParams.SetInt(0, m_tDesc.bUseFadeOut);
-    m_RenderParams.SetInt(1, m_tDesc.bInverseDissolve);
+    
     m_RenderParams.SetInt(2, (_int)m_tDesc.bUseSpriteAnim);
     
     /* Float */
     m_RenderParams.SetFloat(0, m_fCurrAge / m_tDesc.fDuration);
+    m_RenderParams.SetFloat(1, m_fCurrDissolveWeight);
 
     /* Float2 */
     vTemp2 = _float2(m_tDesc.fContrast_Op1, m_tDesc.fAlphaOffset_Op1);
@@ -412,11 +468,50 @@ void MeshEffect::Bind_UpdatedTexUVOffset_ToShader()
 
 void MeshEffect::Bind_RenderParams_ToShader()
 {
-    m_RenderParams.SetFloat(0, m_fLifeTimeRatio);
+    m_RenderParams.SetFloat(0, m_fLifeTimeRatio);    
+    m_RenderParams.SetFloat(1, m_fCurrDissolveWeight);
 
     Bind_UpdatedColor_ToShader();
     Bind_UpdatedTexUVOffset_ToShader();
 
     // For. Bind Data 
     m_pShader->Push_RenderParamData(m_RenderParams);
+}
+
+_float MeshEffect::CalcSpeed()
+{
+    _float fSpeed = 0.f;
+    if (0 == m_tTransform_Desc.iSpeedType)
+    {
+        _float output[4];
+        Utils::Spline(m_SplineInput_Force, 4, 1, m_fLifeTimeRatio, output);
+        fSpeed = output[0];
+    }
+    else if (1 == m_tTransform_Desc.iSpeedType)
+    {
+        if (0.f <= m_fLifeTimeRatio&& m_fLifeTimeRatio < m_SplineInput_Force[0])
+            fSpeed = 0.f;
+        else if (m_SplineInput_Force[0] <= m_fLifeTimeRatio && m_fLifeTimeRatio < m_SplineInput_Force[2])
+        {
+            _float fRatio = (m_fCurrAge - m_SplineInput_Force[0]) / (m_SplineInput_Force[2] - m_SplineInput_Force[0]);
+            _float2 vTemp2 = XMVectorLerp(_float2(m_SplineInput_Force[1], 0.f), _float2(m_SplineInput_Force[3], 0.f), fRatio);
+            fSpeed = vTemp2.x;
+        }
+        else if (m_SplineInput_Force[2] <= m_fLifeTimeRatio&& m_fLifeTimeRatio < m_SplineInput_Force[4])
+        {
+            _float fRatio = (m_fCurrAge - m_SplineInput_Force[2]) / (m_SplineInput_Force[4] - m_SplineInput_Force[2]);
+            _float2 vTemp2 = XMVectorLerp(_float2(m_SplineInput_Force[3], 0.f), _float2(m_SplineInput_Force[5], 0.f), fRatio);
+            fSpeed = vTemp2.x;
+        }
+        else if (m_SplineInput_Force[4] <= m_fLifeTimeRatio&& m_fLifeTimeRatio < m_SplineInput_Force[6])
+        {
+            _float fRatio = (m_fCurrAge - m_SplineInput_Force[4]) / (m_SplineInput_Force[6] - m_SplineInput_Force[4]);
+            _float2 vTemp2 = XMVectorLerp(_float2(m_SplineInput_Force[5], 0.f), _float2(m_SplineInput_Force[7], 0.f), fRatio);
+            fSpeed = vTemp2.x;
+        }
+        else
+            fSpeed = 0.f;
+    }
+
+    return fSpeed;
 }

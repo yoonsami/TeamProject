@@ -33,16 +33,16 @@ public:
 		skill_1400, //normal attack4
 		skill_91100, //Evade
 		skill_93100, //Backward_Evade
-		skill_100100, // Skill 1-1
+		skill_100100, // Skill 1-1  // BUBBLE 2 TYPE : MOVING
 		skill_100300, // Skill 1-2
-		skill_200100, // Skill 2-1
-		skill_200100_l, // Skill 2-1 CHARGE
+		skill_200100, // Skill 2-1  //BUBBLE X , TYPE: CHARGING 
+		skill_200100_l, // Skill 2-1 
 		skill_200200, // Skill 2-2 
 		skill_200300, // Skill 2-3
 		skill_200400, // Skill 2-4
-		skill_300100, // Skill 3
-		skill_400100, // Skill 4
-		skill_501100, // Skill 5
+		skill_300100, // Skill 3 //BUBBLE X
+		skill_400100, // Skill 4 //BUBBLE X
+		skill_501100, // Skill 5 //BUBBLE X
 		NONE
 	};
 public:
