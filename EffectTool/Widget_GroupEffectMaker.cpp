@@ -437,6 +437,9 @@ void Widget_GroupEffectMaker::Option_MemberEffectList()
 			if (ImGui::Button(strDeleteButton.c_str()))
 			{
 				m_pCurrentGroup->Get_GroupEffect()->DeleteMember(Utils::ToWString(iter));
+				string strFilePath = "..\\Resources\\EffectData\\GroupEffectData\\";
+				strFilePath += (m_strGroup + ".dat");
+				RESOURCES.ReloadGroupEffectData(Utils::ToWString(m_strGroup), Utils::ToWString(strFilePath));
 				Set_MemberEffectList();
 			}
 			ImGui::TreePop();
