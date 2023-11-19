@@ -9,6 +9,7 @@
 #include "Model.h"
 #include "CoolTimeCheckScript.h"
 #include "ModelRenderer.h"
+#include "DistortionRenderer.h"
 Player_FSM::Player_FSM()
 {
 }
@@ -927,6 +928,15 @@ void Player_FSM::skill_1100_Init()
 
     m_bInvincible = false;
     m_bSuperArmor = false;
+
+    //test
+    {
+        shared_ptr<GameObject> obj = make_shared<GameObject>();
+        obj->GetOrAddTransform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
+        {
+            shared_ptr<DistortionRenderer> renderer = make_shared<DistortionRenderer>(RESOURCES.Get<Shader>(L"Shader_Distortion"));
+        }
+    }
 }
 
 void Player_FSM::skill_1200()

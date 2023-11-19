@@ -34,10 +34,10 @@ public:
 	ModelRenderer(shared_ptr<Shader> shader);
 	virtual ~ModelRenderer();
 
-	shared_ptr<Model> Get_Model() { return m_pModel; }
 	shared_ptr<Shader> Get_Shader() { return m_pShader; }
 	void Set_Shader(shared_ptr<Shader> shader) { m_pShader = shader; }
 	void Set_Model(shared_ptr<Model> model);
+	shared_ptr<Model> Get_Model() { return m_pModel; }
 	void Set_Pass(_uint pass) { m_iPass = pass; }
 
 	void Render();

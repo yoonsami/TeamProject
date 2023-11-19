@@ -184,6 +184,7 @@
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="CustomFont.h" />
     <ClInclude Include="Define.h" />
+    <ClInclude Include="DistortionRenderer.h" />
     <ClInclude Include="EnginePch.h" />
     <ClInclude Include="Enum.h" />
     <ClInclude Include="FileUtils.h" />
@@ -265,6 +266,7 @@
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="CustomFont.cpp" />
+    <ClCompile Include="DistortionRenderer.cpp" />
     <ClCompile Include="FileUtils.cpp" />
     <ClCompile Include="FontRenderer.cpp" />
     <ClCompile Include="Frustum.cpp" />

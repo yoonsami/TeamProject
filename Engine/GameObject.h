@@ -20,6 +20,7 @@ class ModelRenderer;
 class EffectRenderer;
 class ParticleSystem;
 class EffectController;
+class DistortionRenderer;
 class CharacterController;
 class MotionTrailRenderer;
 
@@ -110,7 +111,7 @@ public:
 	shared_ptr<TrailRenderer> Get_TrailRenderer();
 	shared_ptr<ParticleSystem> Get_ParticleSystem();
 	//shared_ptr<EffectRenderer> Get_EffectRenderer();
-	//shared_ptr< EffectController> Get_EffectController();
+	shared_ptr<DistortionRenderer> Get_DistortionRenderer();
 	shared_ptr<CharacterController> Get_CharacterController();
 	shared_ptr<MotionTrailRenderer> Get_MotionTrailRenderer();
 	shared_ptr<Component> Get_FixedComponent(COMPONENT_TYPE type);

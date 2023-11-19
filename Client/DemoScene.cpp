@@ -790,11 +790,6 @@ void DemoScene::Load_Ui()
 			pObj->Add_Component(pScript);
 	}
 
-
-
-
-
-
 	{
 		for (_uint i = 0; i < 32; ++i)
 		{

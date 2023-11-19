@@ -164,14 +164,6 @@ void Camera::Render_DistrotionEffects()
 	{
 		if (obj->Get_MeshRenderer())
 			obj->Get_MeshRenderer()->Render();
-		else if (obj->Get_ModelRenderer())
-			obj->Get_ModelRenderer()->Render();
-		//else if (obj->Get_EffectRenderer())
-		//	obj->Get_EffectRenderer()->Render();
-		else if (obj->Get_Animator())
-			obj->Get_Animator()->Render();
-		else if (obj->Get_TrailRenderer())
-			obj->Get_TrailRenderer()->Render();
 	}
 }
 
