@@ -296,7 +296,8 @@ void ModelAnimator::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 
 			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-			m_pShader->DrawIndexedInstanced(0, PS_ANIMINSTANCING, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
+			int techniqueIndex = CUR_SCENE->g_bPBR_On ? 4 : 0;
+			m_pShader->DrawIndexedInstanced(techniqueIndex, PS_ANIMINSTANCING, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
 		}
 	}
 	else
