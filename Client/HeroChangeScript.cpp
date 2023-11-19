@@ -18,7 +18,6 @@
 #include "Yeopo_FSM.h"
 #include "Dellons_FSM.h"
 #include "Spike_FSM.h"
-#include "Rachel_FSM.h"
 #include "Shane_FSM.h"
 #include "Yeonhee_FSM.h"
 

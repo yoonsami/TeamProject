@@ -220,6 +220,9 @@
     <Filter Include="02.Component\01.FSM\01.Hero_FSM\06.Yeonhee_FSM">
       <UniqueIdentifier>{a76487f4-fab1-4989-9b42-eb64329fcf4c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\01.FSM\03.Special_FSM\03.Shane_Clone_FSM">
+      <UniqueIdentifier>{bbcff278-03b6-47b4-82e6-9bd5ea5009f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -462,6 +465,12 @@
     <ClInclude Include="UiMonsterHp.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp</Filter>
     </ClInclude>
+    <ClInclude Include="Shane_FSM.h">
+      <Filter>02.Component\01.FSM\01.Hero_FSM\07.Shane_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Shane_Clone_FSM.h">
+      <Filter>02.Component\01.FSM\03.Special_FSM\03.Shane_Clone_FSM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -670,6 +679,12 @@
     </ClCompile>
     <ClCompile Include="UiMonsterHp.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp</Filter>
+    </ClCompile>
+    <ClCompile Include="Shane_FSM.cpp">
+      <Filter>02.Component\01.FSM\01.Hero_FSM\07.Shane_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="Shane_Clone_FSM.cpp">
+      <Filter>02.Component\01.FSM\03.Special_FSM\03.Shane_Clone_FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
