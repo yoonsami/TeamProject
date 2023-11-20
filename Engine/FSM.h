@@ -61,12 +61,14 @@ public:
 	weak_ptr<GameObject> m_pCamera;
 	weak_ptr<GameObject> m_pVehicle;
 	
+	//Frame Check
+	_uint m_iPreFrame = 10000;
+	_uint m_iCurFrame = 0;
+
 	_bool m_bInvincible = false;
 	_bool m_bSuperArmor = false;
 	_bool m_bCanCombo = false;
-	_bool m_bSkillCreate = false;
-	_bool m_bAttackEffectCreate = false;
-	
+
 
 	_float3 m_vHitDir = _float3{ 0.f };
 	_float3 m_vKeyInputTargetDir = _float3(0.f);
@@ -74,8 +76,6 @@ public:
 	_float m_fAttackRange = 2.f;
 	_float m_fDetectRange = 2.f;
 	_float m_fGazeCheckRange = 2.f;
-
-	_float m_fEffectYOffSet = 1.5f;
 
 	//For Camera CutScene
 	_float4 m_vCamStopPos = _float4(0.f);
@@ -112,6 +112,8 @@ public:
 	_float m_fChargingRatio = 0.f;
 	_float m_fHoldingSkillTime = 0.f;
 	_float m_fTimePerFrame = 0.f;
+
+
 
 	//MotionCoolTime
 	COOLTIMEINFO m_tRunEndDelay = { 0.2f,0.f };

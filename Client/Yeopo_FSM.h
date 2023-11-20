@@ -177,5 +177,6 @@ private:
 	_bool m_bRidingCoolCheck = false;
 	_float m_fRidingSpeed = 12.f;
 	_float4 m_vRidingEndPos = _float4(0.f);
+	_uint m_iTestCnt = 0;
 };
 

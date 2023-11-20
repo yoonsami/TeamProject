@@ -71,6 +71,8 @@ void SpearAce_FSM::State_Tick()
 {
     State_Init();
 
+    m_iCurFrame = Get_CurFrame();
+
     switch (m_eCurState)
     {
     case STATE::b_idle:
@@ -164,6 +166,9 @@ void SpearAce_FSM::State_Tick()
         skill_500100();
         break;
     }
+
+    if (m_iPreFrame != m_iCurFrame)
+        m_iPreFrame = m_iCurFrame;
 }
 
 void SpearAce_FSM::State_Init()
@@ -1069,7 +1074,7 @@ void SpearAce_FSM::skill_100100()
 {
     if (Get_CurFrame() == 11)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1079,20 +1084,12 @@ void SpearAce_FSM::skill_100100()
             
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
             Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
-        
-            m_bSkillCreate = true;
         }
     }
     else if (Get_CurFrame() == 28)
-    {
         AttackCollider_On(KNOCKBACK_ATTACK);
-    }
     else if (Get_CurFrame() == 58)
         AttackCollider_Off();
-    else
-    {
-        m_bSkillCreate = false;
-    }
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -1186,7 +1183,7 @@ void SpearAce_FSM::skill_200200()
 {
     if (Get_CurFrame() == 22)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1196,12 +1193,8 @@ void SpearAce_FSM::skill_200200()
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
             Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_SKILL);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
     
     _float3 vInputVector = Get_InputDirVector();
 
@@ -1297,7 +1290,7 @@ void SpearAce_FSM::skill_300100()
 
     if (Get_CurFrame() == 78)
     {       
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {   
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
                 Get_Transform()->Get_State(Transform_State::LOOK) * 5.f +
@@ -1314,13 +1307,11 @@ void SpearAce_FSM::skill_300100()
             desc.fLimitDistance = 9.f;
 
             Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
-
-            m_bSkillCreate = true;
         }
     }
     else if (Get_CurFrame() == 84)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
                 Get_Transform()->Get_State(Transform_State::LOOK) * 5.f +
@@ -1337,13 +1328,11 @@ void SpearAce_FSM::skill_300100()
             desc.fLimitDistance = 9.f;
 
             Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
-
-            m_bSkillCreate = true;
         }
     }
     else if (Get_CurFrame() == 89)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
                 Get_Transform()->Get_State(Transform_State::LOOK) * -5.f +
@@ -1360,13 +1349,11 @@ void SpearAce_FSM::skill_300100()
             desc.fLimitDistance = 9.f;
 
             Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
-
-            m_bSkillCreate = true;
         }
     }
     else if (Get_CurFrame() == 94)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
                 Get_Transform()->Get_State(Transform_State::LOOK) * -5.f +
@@ -1382,13 +1369,11 @@ void SpearAce_FSM::skill_300100()
             desc.fLimitDistance = 9.f;
 
             Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
-
-            m_bSkillCreate = true;
         }
     }
     else if (Get_CurFrame() == 99)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
                 Get_Transform()->Get_State(Transform_State::LOOK) * -5.f +
@@ -1405,13 +1390,11 @@ void SpearAce_FSM::skill_300100()
             desc.fLimitDistance = 9.f;
 
             Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
-
-            m_bSkillCreate = true;
         }
     }
     else if (Get_CurFrame() == 110)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
 
@@ -1422,12 +1405,8 @@ void SpearAce_FSM::skill_300100()
             desc.fLimitDistance = 0.f;
 
             Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, AIRBORNE_ATTACK);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
 
 
     _float3 vInputVector = Get_InputDirVector();
@@ -1475,7 +1454,7 @@ void SpearAce_FSM::skill_502100()
 {
     if (Get_CurFrame() == 17)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1485,8 +1464,6 @@ void SpearAce_FSM::skill_502100()
             
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
             Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
-
-            m_bSkillCreate = true;
         }
     }
     else if (Get_CurFrame() == 32)
@@ -1501,11 +1478,6 @@ void SpearAce_FSM::skill_502100()
     }
     else if (Get_CurFrame() == 62)
         AttackCollider_Off();
-    else
-    {
-        m_bSkillCreate = false;
-    }
-
  
     _float3 vInputVector = Get_InputDirVector();
 
@@ -1556,7 +1528,6 @@ void SpearAce_FSM::skill_500100()
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
     }
-
 
     Use_Dash();
 }

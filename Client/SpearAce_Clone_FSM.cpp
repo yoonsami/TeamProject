@@ -20,6 +20,8 @@ void SpearAce_Clone_FSM::State_Tick()
 {
 	State_Init();
 
+	m_iCurFrame = Get_CurFrame();
+
 	switch (m_eCurState)
 	{
 	case SpearAce_Clone_FSM::STATE::Skill_Use:
@@ -31,6 +33,9 @@ void SpearAce_Clone_FSM::State_Tick()
 	case SpearAce_Clone_FSM::STATE::NONE:
 		break;
 	}
+
+	if (m_iPreFrame != m_iCurFrame)
+		m_iPreFrame = m_iCurFrame;
 }
 
 void SpearAce_Clone_FSM::State_Init()

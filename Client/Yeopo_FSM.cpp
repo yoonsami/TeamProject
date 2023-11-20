@@ -71,6 +71,8 @@ void Yeopo_FSM::State_Tick()
 {
     State_Init();
 
+    m_iCurFrame = Get_CurFrame();
+
     switch (m_eCurState)
     {
     case STATE::b_idle:
@@ -188,6 +190,9 @@ void Yeopo_FSM::State_Tick()
         SQ_RideHorse_End();
         break;
     }
+
+    if (m_iPreFrame != m_iCurFrame)
+        m_iPreFrame = m_iCurFrame;
 }
 
 void Yeopo_FSM::State_Init()
@@ -1215,7 +1220,7 @@ void Yeopo_FSM::skill_100200()
 {
     if (Get_CurFrame() == 18)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1225,13 +1230,11 @@ void Yeopo_FSM::skill_100200()
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
             Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
-
-            m_bSkillCreate = true;
         }
     }
     else if (Get_CurFrame() == 30)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
                 Get_Transform()->Get_State(Transform_State::LOOK) * 15.f +
@@ -1247,14 +1250,9 @@ void Yeopo_FSM::skill_100200()
             desc.fLimitDistance = 13.f;
 
             Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-    {
-        m_bSkillCreate = false;
-    }
+
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -1303,7 +1301,7 @@ void Yeopo_FSM::skill_100300()
 {
     if (Get_CurFrame() == 24)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1313,12 +1311,8 @@ void Yeopo_FSM::skill_100300()
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK);
             Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, AIRBORNE_ATTACK);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
     
     _float3 vInputVector = Get_InputDirVector();
 
@@ -1355,7 +1349,7 @@ void Yeopo_FSM::skill_200100()
 {
     if (Get_CurFrame() == 10)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1365,13 +1359,8 @@ void Yeopo_FSM::skill_200100()
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
             Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
-
 
     _float3 vInputVector = Get_InputDirVector();
 

@@ -58,7 +58,6 @@ public:
 	virtual void Tick() override;
 	virtual void Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget) override;
 
-
 private:
 	virtual void State_Tick() override; 
 	virtual void State_Init() override; 

@@ -70,6 +70,8 @@ void Yeonhee_FSM::State_Tick()
 {
     State_Init();
 
+    m_iCurFrame = Get_CurFrame();
+
     switch (m_eCurState)
     {
     case STATE::b_idle:
@@ -138,7 +140,6 @@ void Yeonhee_FSM::State_Tick()
     case STATE::skill_1300:
         skill_1300();
         break;
-
     case STATE::skill_91100:
         skill_91100();
         break;
@@ -154,11 +155,9 @@ void Yeonhee_FSM::State_Tick()
     case STATE::skill_200100:
         skill_200100();
         break;
-
     case STATE::skill_300100:
         skill_300100();
         break;
-
 	case STATE::skill_400100:
 		skill_400100();
 		break;
@@ -166,6 +165,9 @@ void Yeonhee_FSM::State_Tick()
         skill_501100();
         break;
     }
+
+    if (m_iPreFrame != m_iCurFrame)
+        m_iPreFrame = m_iCurFrame;
 }
 
 void Yeonhee_FSM::State_Init()
@@ -880,7 +882,7 @@ void Yeonhee_FSM::skill_1100()
 
     if (Get_CurFrame() == 12)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = -Get_Transform()->Get_State(Transform_State::UP);
@@ -903,14 +905,8 @@ void Yeonhee_FSM::skill_1100()
 					vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5 + _float3::Up * 5.f;
 			}
             Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKBACK_ATTACK);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
-    
-
 
     _float3 vInputVector = Get_InputDirVector();
     vInputVector.Normalize();
@@ -962,7 +958,7 @@ void Yeonhee_FSM::skill_1200()
 
     if (Get_CurFrame() == 17)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = -Get_Transform()->Get_State(Transform_State::UP);
@@ -984,14 +980,8 @@ void Yeonhee_FSM::skill_1200()
 					vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5 + _float3::Up * 5.f;
 			}
 			Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKBACK_ATTACK);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
-
-
 
 	_float3 vInputVector = Get_InputDirVector();
 	vInputVector.Normalize();
@@ -1045,7 +1035,7 @@ void Yeonhee_FSM::skill_1300()
 
 	if (Get_CurFrame() == 20)
 	{
-		if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
 		{
 			FORWARDMOVINGSKILLDESC desc;
 			desc.vSkillDir = -Get_Transform()->Get_State(Transform_State::UP);
@@ -1067,12 +1057,8 @@ void Yeonhee_FSM::skill_1300()
 					vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5 + _float3::Up * 5.f;
 			}
 			Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKBACK_ATTACK);
-
-			m_bSkillCreate = true;
 		}
 	}
-	else
-		m_bSkillCreate = false;
 
 	_float3 vInputVector = Get_InputDirVector();
 	vInputVector.Normalize();
@@ -1165,12 +1151,9 @@ void Yeonhee_FSM::skill_100100()
 {
     if (Get_CurFrame() > 20)
     {
-        m_iCurFrame = Get_CurFrame();
-
         if (m_iPreFrame != m_iCurFrame)
         {
             m_fHoldingSkillTime -= m_fTimePerFrame;
-            m_iPreFrame = m_iCurFrame;
         }
 
         m_fKeyPushTimer += fDT;
@@ -1272,7 +1255,8 @@ void Yeonhee_FSM::skill_200100()
 
     if (Get_CurFrame() == 24)
     {
-        if (!m_bSkillCreate)
+        //if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             INSTALLATIONSKILLDESC desc;
             desc.fAttackTickTime = 0.5f;
@@ -1289,11 +1273,9 @@ void Yeonhee_FSM::skill_200100()
             
             Create_InstallationSkillCollider(vSkillPos, 3.f, desc);
 
-            m_bSkillCreate = true;
+            //m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
 
 	_float3 vInputVector = Get_InputDirVector();
 	vInputVector.Normalize();
@@ -1313,7 +1295,8 @@ void Yeonhee_FSM::skill_200100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_200100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
+    //animator->Set_NextTweenAnim(L"skill_200100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
+    animator->Set_CurrentAnim(L"skill_200100", false, m_fSkillAttack_AnimationSpeed);
 
     m_bCanCombo = false;
 
@@ -1337,7 +1320,7 @@ void Yeonhee_FSM::skill_300100()
 
 	if (Get_CurFrame() == 24)
 	{
-		if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
 		{
 			FORWARDMOVINGSKILLDESC desc;
 
@@ -1355,12 +1338,8 @@ void Yeonhee_FSM::skill_300100()
 			desc.fLimitDistance = 30.f;
 
 			Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_ATTACK);
-
-			m_bSkillCreate = true;
 		}
 	}
-	else
-		m_bSkillCreate = false;
 
 	_float3 vInputVector = Get_InputDirVector();
 	vInputVector.Normalize();
@@ -1446,7 +1425,7 @@ void Yeonhee_FSM::skill_501100()
 {
     if (Get_CurFrame() == 57)
     {
-		if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
 		{
             auto Target = Find_TargetInFrustum(10.f, OBJ_MONSTER);
 
@@ -1484,13 +1463,7 @@ void Yeonhee_FSM::skill_501100()
 
                 Create_InstallationSkillCollider(vSkillPos, 2.f, desc);
             }
-			
-			m_bSkillCreate = true;
 		}
-    }
-    else
-    {
-        m_bSkillCreate = false;
     }
 
     if (m_vKeyInputTargetDir != _float3(0.f))

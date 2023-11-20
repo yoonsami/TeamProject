@@ -20,6 +20,8 @@ void Shane_Clone_FSM::State_Tick()
 {
 	State_Init();
 
+	m_iCurFrame = Get_CurFrame();
+
 	switch (m_eCurState)
 	{
 	case Shane_Clone_FSM::STATE::Shane_Clone1:
@@ -43,6 +45,9 @@ void Shane_Clone_FSM::State_Tick()
 	case Shane_Clone_FSM::STATE::NONE:
 		break;
 	}
+
+	if (m_iPreFrame != m_iCurFrame)
+		m_iPreFrame = m_iCurFrame;
 }
 
 void Shane_Clone_FSM::State_Init()

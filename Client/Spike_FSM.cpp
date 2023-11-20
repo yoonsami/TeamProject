@@ -70,6 +70,8 @@ void Spike_FSM::State_Tick()
 {
     State_Init();
 
+    m_iCurFrame = Get_CurFrame();
+
     switch (m_eCurState)
     {
     case STATE::b_idle:
@@ -179,6 +181,9 @@ void Spike_FSM::State_Tick()
         skill_501100();
         break;
     }
+
+    if (m_iPreFrame != m_iCurFrame)
+        m_iPreFrame = m_iCurFrame;
 }
 
 void Spike_FSM::State_Init()
@@ -1451,7 +1456,7 @@ void Spike_FSM::skill_200400()
 
     if (Get_CurFrame() == 65)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f;
 
@@ -1462,14 +1467,8 @@ void Spike_FSM::skill_200400()
             desc.fLimitDistance = 0.f;
 
             Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, AIRBORNE_ATTACK);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
-
-
 
     if (Is_AnimFinished())
     {
@@ -1530,7 +1529,7 @@ void Spike_FSM::skill_300100()
 
     if (Get_CurFrame() == 30)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1539,12 +1538,8 @@ void Spike_FSM::skill_300100()
             desc.fLimitDistance = 0.f;
 
             Create_ForwardMovingSkillCollider(Get_Transform()->Get_State(Transform_State::POS), 3.f, desc, AIRBORNE_ATTACK);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
 
 
     if (m_vKeyInputTargetDir != _float3(0.f))
@@ -1604,7 +1599,7 @@ void Spike_FSM::skill_400100()
 
     if (Get_CurFrame() == 47)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             _float4 vSkillPos = m_vSkillCamBonePos;
             vSkillPos.y = 0.f;
@@ -1616,13 +1611,11 @@ void Spike_FSM::skill_400100()
             desc.fLimitDistance = 0.f;
 
             Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK);
-
-            m_bSkillCreate = true;
         }
     }
     else if (Get_CurFrame() == 85)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             _float4 vSkillPos = m_vSkillCamBonePos;
             vSkillPos.y = 0.f;
@@ -1634,13 +1627,11 @@ void Spike_FSM::skill_400100()
             desc.fLimitDistance = 0.f;
 
             Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK);
-
-            m_bSkillCreate = true;
         }
     }
     else if (Get_CurFrame() == 110)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             _float4 vSkillPos = m_vSkillCamBonePos;
             vSkillPos.y = 0.f;
@@ -1652,13 +1643,11 @@ void Spike_FSM::skill_400100()
             desc.fLimitDistance = 0.f;
 
             Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK);
-
-            m_bSkillCreate = true;
         }
     }
     else if (Get_CurFrame() == 151)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             _float4 vSkillPos = m_vSkillCamBonePos;
             vSkillPos.y = 0.f;
@@ -1670,12 +1659,8 @@ void Spike_FSM::skill_400100()
             desc.fLimitDistance = 0.f;
 
             Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, AIRBORNE_ATTACK);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
 
     if (Is_AnimFinished())
     {
@@ -1710,7 +1695,7 @@ void Spike_FSM::skill_501100()
 
     if (Get_CurFrame() == 34)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f;
             
@@ -1721,12 +1706,8 @@ void Spike_FSM::skill_501100()
             desc.fLimitDistance = 0.f;
 
             Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
 
     _float3 vInputVector = Get_InputDirVector();
 

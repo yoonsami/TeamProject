@@ -63,6 +63,8 @@ void DellonsWraith_FSM::State_Tick()
 {
     State_Init();
 
+    m_iCurFrame = Get_CurFrame();
+
     switch (m_eCurState)
     {
     case STATE::FX_DellonsWraith_skill_30010:
@@ -95,8 +97,10 @@ void DellonsWraith_FSM::State_Tick()
     case STATE::FX_Mn_Dellons_skill_6100:
         FX_Mn_Dellons_skill_6100();
         break;
-   
     }
+
+    if (m_iPreFrame != m_iCurFrame)
+        m_iPreFrame = m_iCurFrame;
 }
 
 void DellonsWraith_FSM::State_Init()
@@ -190,7 +194,7 @@ void DellonsWraith_FSM::FX_DellonsWraith_skill_30010()
         AttackCollider_Off();
     else if (Get_CurFrame() == 54)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -225,14 +229,8 @@ void DellonsWraith_FSM::FX_DellonsWraith_skill_30010()
                                     Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
 
             Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
-
-
 
     if (Is_AnimFinished())
     {

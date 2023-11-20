@@ -58,6 +58,8 @@ void Silversword_Soldier_FSM::State_Tick()
 {
     State_Init();
 
+    m_iCurFrame = Get_CurFrame();
+
     switch (m_eCurState)
     {
     case STATE::b_idle:
@@ -127,6 +129,9 @@ void Silversword_Soldier_FSM::State_Tick()
         skill_3100();
         break;
     }
+
+    if (m_iPreFrame != m_iCurFrame)
+        m_iPreFrame = m_iCurFrame;
 }
 
 void Silversword_Soldier_FSM::State_Init()
