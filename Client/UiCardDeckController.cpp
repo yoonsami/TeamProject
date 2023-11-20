@@ -17,7 +17,8 @@ HRESULT UiCardDeckController::Init()
     
     auto pScene = CUR_SCENE;
 
-    m_pUiCharChange = pScene->Get_UI(L"UI_Char_Change");
+    m_pUiCharChange             = pScene->Get_UI(L"UI_Char_Change");
+    m_pUiCardDeckSelect         = pScene->Get_UI(L"UI_Card_Deck_Select");
 
     m_vecCardDeckObj.resize(18);
     m_vecCardDeckObj[0]         = pScene->Get_UI(L"UI_Card_Deck_Total_Bg0");
@@ -142,12 +143,12 @@ HRESULT UiCardDeckController::Init()
     m_vecCardDeckElement[31]    = pScene->Get_UI(L"UI_Card_Deck_Inven_Element31");
 
     m_vecFont.resize(6);
-    m_vecFont[0] = pScene->Get_UI(L"UI_Card_Deck0_Hero_Info");
-    m_vecFont[1] = pScene->Get_UI(L"UI_Card_Deck0_Hero_");
-    m_vecFont[2] = pScene->Get_UI(L"UI_Card_Deck1_Hero_Info");
-    m_vecFont[3] = pScene->Get_UI(L"UI_Card_Deck1_Hero_");
-    m_vecFont[4] = pScene->Get_UI(L"UI_Card_Deck2_Hero_Info");
-    m_vecFont[5] = pScene->Get_UI(L"UI_Card_Deck2_Hero_");
+    m_vecFont[0]                = pScene->Get_UI(L"UI_Card_Deck0_Hero_Info");
+    m_vecFont[1]                = pScene->Get_UI(L"UI_Card_Deck0_Hero");
+    m_vecFont[2]                = pScene->Get_UI(L"UI_Card_Deck1_Hero_Info");
+    m_vecFont[3]                = pScene->Get_UI(L"UI_Card_Deck1_Hero");
+    m_vecFont[4]                = pScene->Get_UI(L"UI_Card_Deck2_Hero_Info");
+    m_vecFont[5]                = pScene->Get_UI(L"UI_Card_Deck2_Hero");
 
     return S_OK;
 }
@@ -194,6 +195,13 @@ void UiCardDeckController::Render_On()
     {
         if (false == m_vecCardDeckElement[i].expired())
             m_vecCardDeckElement[i].lock()->Set_Render(true);
+    }
+    
+    iSize = IDX(m_vecFont.size());
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        if (false == m_vecFont[i].expired())
+            m_vecFont[i].lock()->Set_Render(true);
     }
 
 }
@@ -318,6 +326,13 @@ void UiCardDeckController::Render_Off()
     {
         if (false == m_vecCardDeckElement[i].expired())
             m_vecCardDeckElement[i].lock()->Set_Render(false);
+    }
+    
+    iSize = IDX(m_vecFont.size());
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        if (false == m_vecFont[i].expired())
+            m_vecFont[i].lock()->Set_Render(false);
     }
 
 }
