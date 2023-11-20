@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Kyle_FSM.h"
 #include "ModelAnimator.h"
 #include "SphereCollider.h"
@@ -14,8 +14,8 @@ HRESULT Kyle_FSM::Init()
 	auto animator = Get_Owner()->Get_Animator();
 	if (animator)
 	{
-		// ���� �ִϸ��̼� �������ִµ�, ������ ����
-		animator->Set_CurrentAnim(L"b_idle"/*�ִϸ��̼� �̸�*/, true/*�ݺ� �ִϸ��̼�*/, 1.f/*�ִϸ��̼� �ӵ�*/);
+	
+		animator->Set_CurrentAnim(L"b_idle", true, 1.f);
 		m_eCurState = STATE::b_idle;
 	}
 
@@ -41,8 +41,6 @@ HRESULT Kyle_FSM::Init()
 	m_pCamera = CUR_SCENE->Get_MainCamera();
 
 	m_fSkillAttack_AnimationSpeed =1.f;
-	m_fEffectYOffSet = 1.5f;
-
 
 	return S_OK;
 }

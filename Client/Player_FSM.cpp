@@ -1422,7 +1422,7 @@ void Player_FSM::skill_200100_Init()
     m_vKeyInputTargetDir = _float3(0.f);
     m_vKeyInputTargetDir = Get_InputDirVector();
 
-    AttackCollider_On(NORMAL_ATTACK);
+    AttackCollider_Off();
 
     m_bInvincible = true;
     m_bSuperArmor = true;
