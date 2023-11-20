@@ -168,7 +168,7 @@ shared_ptr<MeshEffectData> ResourceMgr::ReloadOrAddMeshEffectData(const wstring&
 	// For. Delete prev Mesh Effect Data and Add new Mesh Effect Data
 	else
 	{
-		Delete<GroupEffectData>(name);	// For. Delete prev 
+		Delete<MeshEffectData>(name);	// For. Delete prev 
 		Add(name, newMeshEffectData);	// For. Add new 
 	}
 	return newMeshEffectData;
