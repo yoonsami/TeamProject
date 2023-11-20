@@ -13,6 +13,17 @@ enum class HERO
 	MAX 
 };
 
+enum class DUMMY_HERO
+{
+
+};
+
+enum class BOSS
+{
+	MIR,
+	AXE,
+	MAX
+};
 
 enum LEVEL
 { 

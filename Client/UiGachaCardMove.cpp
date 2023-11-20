@@ -141,56 +141,58 @@ void UiGachaCardMove::Card_Open()
 
 void UiGachaCardMove::Move()
 {
-	m_fCheckTime += fDT;
+	_float fTime = fDT;
+	m_fCheckTime += fTime;
 	if (m_fMaxTime < m_fCheckTime)
 	{
-		m_fCheckTime = 0.f;
+		m_fCheckTime = m_fMaxTime;
 		m_eState = STATE::IDLE;
 		
-		return;
+		//return;
 	}
 	
 	auto pTransform = m_pOwner.lock()->GetOrAddTransform();
-	_float4 vecPos = pTransform->Get_State(Transform_State::POS);
-	vecPos.x += m_vecDir.x * fDT / m_fMaxTime;
-	vecPos.y += m_vecDir.y * fDT / m_fMaxTime;
+	_float4 vecPos = m_vecFirstPos;
+	vecPos.x += m_vecDir.x * m_fCheckTime / m_fMaxTime;
+	vecPos.y += m_vecDir.y * m_fCheckTime / m_fMaxTime;
 
 	pTransform->Set_State(Transform_State::POS, vecPos);
 
-	// pTransform->Turn(_float3(0.f, 1.f, 0.f), m_fTurnSpeed);
+	_float3 vecScale = m_fOriginScale;
 	switch (m_eChangeType)
 	{
 	case UiGachaCardMove::CHANGE_TYPE::DOWN:
-		m_fCurScale.x -= m_fScaleChangeValue * fDT * m_fTrunPerTime / m_fMaxTime;
+		vecScale.x -= m_fScaleChangeValue * m_fCheckTime / m_fMaxTime * 2.f;
 		break;
 	case UiGachaCardMove::CHANGE_TYPE::UP:
-		m_fCurScale.x += m_fScaleChangeValue * fDT * m_fTrunPerTime / m_fMaxTime;
+		vecScale.x = 0.1f;
+		vecScale.x += m_fScaleChangeValue * (m_fCheckTime - m_fMaxTime / 2.f) / (m_fMaxTime - m_fMaxTime/ 2.f);
 		break;
 	}
 
-	if (0.01f > m_fCurScale.x)
+	if (0.01f > vecScale.x)
 	{
-		m_fCurScale.x = 0.01f;
+		vecScale.x = 0.01f;
 		m_eChangeType = CHANGE_TYPE::UP;
 	}
-	else if (272.f < m_fCurScale.x)
+	else if (272.f < vecScale.x)
 	{
-		m_fCurScale.x = 272.f;
+		vecScale.x = 272.f;
 		m_eChangeType = CHANGE_TYPE::DOWN;
 	}
 
-	m_pOwner.lock()->GetOrAddTransform()->Scaled(m_fCurScale);
+	m_pOwner.lock()->GetOrAddTransform()->Scaled(vecScale);
 }
 
 void UiGachaCardMove::Idle()
 {
 	// ½¦ÀÌ´õ ÄÚµå
-
+	m_fCheckTime = 0.f;
 }
 	
 void UiGachaCardMove::Open()
 {
-	switch (m_eChangeType)
+	/*switch (m_eChangeType)
 	{
 	case UiGachaCardMove::CHANGE_TYPE::DOWN:
 		m_fCurScale.x -= m_fScaleChangeValue * fDT * m_fTrunPerTime / m_fMaxTime;
@@ -216,5 +218,45 @@ void UiGachaCardMove::Open()
 			CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Set_Hero(m_eHero);
 	}
 
-	m_pOwner.lock()->GetOrAddTransform()->Scaled(m_fCurScale);
+	m_pOwner.lock()->GetOrAddTransform()->Scaled(m_fCurScale);*/
+
+	_float fTime = fDT;
+	m_fCheckTime += fTime;
+	if (m_fMaxTime < m_fCheckTime)
+	{
+		m_fCheckTime = m_fMaxTime;
+		m_eState = STATE::IDLE;
+
+		//return;
+	}
+
+	_float3 vecScale = m_fOriginScale;
+	switch (m_eChangeType)
+	{
+	case UiGachaCardMove::CHANGE_TYPE::DOWN:
+		vecScale.x -= m_fScaleChangeValue * m_fCheckTime / m_fMaxTime * 2.f;
+		break;
+	case UiGachaCardMove::CHANGE_TYPE::UP:
+		vecScale.x = 0.1f;
+		vecScale.x += m_fScaleChangeValue * (m_fCheckTime - m_fMaxTime / 2.f) / (m_fMaxTime - m_fMaxTime / 2.f);
+		break;
+	}
+
+	if (0.01f > vecScale.x)
+	{
+		vecScale.x = 0.01f;
+		m_eChangeType = CHANGE_TYPE::UP;
+		if (0 != m_strTextureTag.length())
+			m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_strTextureTag), TextureMapType::DIFFUSE);
+	}
+	else if (272.f < vecScale.x)
+	{
+		vecScale.x = 272.f;
+		m_eState = STATE::IDLE;
+
+		if (HERO::MAX != m_eHero)
+			CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Set_Hero(m_eHero);
+	}
+
+	m_pOwner.lock()->GetOrAddTransform()->Scaled(vecScale);
 }

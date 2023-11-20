@@ -11,9 +11,11 @@ public:
     virtual void Tick() override;
     
     void Start_Attack_Button_Effect();
+    void Next_Combo(SkillType eSkillType);
 
     _bool GetIsWork()   { return m_bIsSkillWork; }
     HERO Get_Cur_Hero() { return m_eCurHero; }
+    
     _bool IsAvailable(SkillType eSkillType);
 
     void Set_Skill_End();
@@ -33,6 +35,8 @@ private:
 
 private:
     vector<vector<TOTALSKILLINFO>>  m_CoolTime;
+    vector<TOTALSKILLINFO>          m_tagDefault;
+
     //vector<vector<wstring>>         m_TextureKey;
     vector<weak_ptr<GameObject>>    m_pUiSkill;
     vector<weak_ptr<GameObject>>    m_pUiSkill_Effect;
@@ -47,14 +51,14 @@ private:
     
     vector<weak_ptr<GameObject>>    m_pUi_Skill_Type;
 
-
     vector<_bool>                   m_bIsCoolChangeOne;
     vector<weak_ptr<GameObject>>    m_pUi_Skill_Cool;
 
-    COOLTIMEINFO m_tagEvade         = {};
+    weak_ptr<GameObject>            m_pCombo_Effect;
 
-    HERO    m_eCurHero              = { HERO::MAX };
-    _uint   m_iWorkSkillIndex       = { 0 };
-    _bool   m_bIsSkillWork          = { false };
+    COOLTIMEINFO                    m_tagEvade              = {};
+    HERO                            m_eCurHero              = { HERO::MAX };
+    _uint                           m_iWorkSkillIndex       = { 0 };
+    _bool                           m_bIsSkillWork          = { false };
 };
 

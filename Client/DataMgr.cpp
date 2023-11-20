@@ -393,7 +393,7 @@ void DataMgr::Initialize()
         tagData.Element         = ElementType::LIGHT;
         tagData.Star            = 4;
 
-        tagData.Skill0Combo     = 0;
+        tagData.Skill0Combo     = 3;
         tagData.Skill1Combo     = 0;
         tagData.Skill2Combo     = 0;
         tagData.Skill3Combo     = 0;
@@ -440,6 +440,24 @@ void DataMgr::Initialize()
         tagData.KeyDeckSelect   = L"Big_Card_Yeonhee";
     }
 
+
+
+
+    m_BossData.resize(IDX(BOSS::MAX));
+    
+    {
+        auto& tagData = m_BossData[IDX(BOSS::MIR)];
+        
+        tagData.Element = ElementType::FIRE;
+        tagData.Name = L"Ÿ���� ȭ��";
+    }
+
+    {
+        auto& tagData = m_BossData[IDX(BOSS::AXE)];
+
+        tagData.Element = ElementType::WIND;
+        tagData.Name = L"������ ����";
+    }
 
     
 
