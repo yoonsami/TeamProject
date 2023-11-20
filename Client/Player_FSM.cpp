@@ -879,11 +879,11 @@ void Player_FSM::skill_1100()
     {
         AttackCollider_On(NORMAL_ATTACK);
 
-		/*  if (!m_bAttackEffectCreate)
-		  {
-			  Add_Effect(L"Teoi_Slash2");
-			  m_bAttackEffectCreate = true;
-		  }*/
+		/* if (!m_bAttackEffectCreate)
+		 {
+			 Add_Effect(L"Teoi_Slash2");
+			 m_bAttackEffectCreate = true;
+		 }*/
     }
     else if (Get_CurFrame() == 13)
         AttackCollider_Off();
@@ -891,7 +891,6 @@ void Player_FSM::skill_1100()
         m_bAttackEffectCreate = false;
 
     // Init때 초기
-    // m_vKeyInputTargetDir -> 이름 헷갈릴 여지 있음 TargetDir 등으로 회전하고자 하는 목표를 뜻하는 단어로
     if (m_vKeyInputTargetDir != _float3(0.f))
         Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
@@ -930,23 +929,6 @@ void Player_FSM::skill_1100_Init()
 
     m_bInvincible = false;
     m_bSuperArmor = false;
-
-    _float4x4 matSetting = Get_Owner()->Get_Animator()->Get_CurAnimTransform(m_iCenterBoneIndex) * Utils::m_matPivot * Get_Transform()->Get_WorldMatrix();
-    //test
-    {
-        shared_ptr<GameObject> obj = make_shared<GameObject>();
-        obj->GetOrAddTransform()->Set_WorldMat(matSetting);
-        obj->GetOrAddTransform()->Scaled(_float3(1.f));
-        {
-            shared_ptr<DistortionRenderer> renderer = make_shared<DistortionRenderer>(RESOURCES.Get<Shader>(L"Shader_Distortion.fx"));
-            renderer->Set_Model(RESOURCES.Get<Model>(L"fxmesh_PC_Teo_Trail_Skill_1300_00"));
-            shared_ptr<Material> material = make_shared<Material>();
-            material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"FX_Decal_03.tga", L"../Resources/Textures/Universal/FX_Decal_03.tga"), TextureMapType::DISTORTION);
-            renderer->Set_Material(material);
-            obj->Add_Component(renderer);
-        }
-        CUR_SCENE->Add_GameObject(obj);
-    }
 }
 
 void Player_FSM::skill_1200()
