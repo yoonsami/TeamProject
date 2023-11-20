@@ -882,12 +882,8 @@ void Player_FSM::skill_1100()
     if (Get_CurFrame() == 9)
     {
         AttackCollider_On(NORMAL_ATTACK);
+        Add_Effect(L"Teo_1100_2");
 
-		  if (!m_bAttackEffectCreate)
-		  {
-			  Add_Effect(L"Teo_1100_2");
-			  m_bAttackEffectCreate = true;
-		  }
     }
     else if (Get_CurFrame() == 13)
         AttackCollider_Off();
@@ -939,11 +935,8 @@ void Player_FSM::skill_1200()
     {
         AttackCollider_On(NORMAL_ATTACK);
 
-        if (!m_bAttackEffectCreate)
-        {
-            Add_Effect(L"Teo_1200_1");
-            m_bAttackEffectCreate = true;
-        }
+        Add_Effect(L"Teo_1200_1");
+
     }
     else if (Get_CurFrame() > 8)
         AttackCollider_Off();
