@@ -1141,10 +1141,10 @@ void Yeonhee_FSM::skill_100100()
         if (m_iPreFrame != m_iCurFrame)
         {
             m_fCurrentHoldingSkillTime -= m_fTimePerFrame;
-
-            _float fHoldingRatio = m_fMaxHoldingSkillTime / m_fCurrentHoldingSkillTime;
-
-            CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Ratio(1.f - fHoldingRatio);
+            
+            _float fHoldingRatio = 1.f - (m_fCurrentHoldingSkillTime / m_fMaxHoldingSkillTime);
+         
+            CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Ratio(fHoldingRatio);
         }
 
         m_fKeyPushTimer += fDT;
@@ -1180,7 +1180,8 @@ void Yeonhee_FSM::skill_100100_Init()
 
     m_bCanCombo = false;
 
-    CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Render(true);
+    CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Render(true, HOLDING);
+    CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Ratio(0.f);
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();

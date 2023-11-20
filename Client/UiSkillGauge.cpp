@@ -56,7 +56,7 @@ void UiSkillGauge::Change_Render(_bool bSet, SkillInfo eInfo)
     m_pOwner.lock()->Set_Render(bSet);
     m_pGaugeBg.lock()->Set_Render(bSet);
 
-    if (SkillInfo::NONE != m_eInfo)
+    if (SkillInfo::NONE != eInfo)
     {
         m_eInfo = eInfo;
         if (true == bSet)
