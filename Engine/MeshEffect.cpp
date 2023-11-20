@@ -221,7 +221,12 @@ void MeshEffect::InitialTransform(_float4x4 mParentWorldMatrix, const _float3& v
 
     m_vStartScale *= vInitScale_inGroup;
     m_vEndScale += m_vStartScale;
-
+    if (m_vEndScale.x < 0)
+        m_vEndScale.x = 0.f;
+    if (m_vEndScale.y < 0)
+        m_vEndScale.y = 0.f;
+    if (m_vEndScale.z < 0)
+        m_vEndScale.z = 0.f;
     m_vStartRotation += vInitRotation_inGroup;
 }
 
