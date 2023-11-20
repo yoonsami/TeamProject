@@ -47,6 +47,7 @@ HRESULT Yeonhee_FSM::Init()
     m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
     m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
 
+    m_iHeadBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-Head");
 
     m_pCamera = CUR_SCENE->Get_MainCamera();
 
@@ -62,6 +63,9 @@ void Yeonhee_FSM::Tick()
         //m_pAttack transform set forward
         m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up);
     }
+
+    HeadBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iHeadBoneIndex) *
+        _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
 
     Calculate_CamBoneMatrix();
 }
@@ -1419,18 +1423,40 @@ void Yeonhee_FSM::skill_400100_Init()
 
 void Yeonhee_FSM::skill_501100()
 {
+    if (Get_CurFrame() < 97)
+    {
+        if (!m_pCamera.expired())
+        {
+            m_vHeadCamDir = m_vHeadBonePos.xyz() - m_vHeadCamPos.xyz();
+            m_vHeadCamDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vHeadBonePos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, m_vHeadCamDir * -1.f, 3.f);
+        }
+    }
+    else
+    {
+        if (!m_pCamera.expired())
+        {
+            _float4 vDestinationPos = Get_Transform()->Get_State(Transform_State::POS) +
+                (Get_Transform()->Get_State(Transform_State::LOOK) * -3.f)
+                + _float3::Up * 3.f;
+            _float4 vDir = vDestinationPos - m_vSkillCamBonePos;
+
+            vDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(2.5f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vSkillCamBonePos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.3f, vDir.xyz(), 7.f);
+        }
+    }
+
     if (Get_CurFrame() == 57)
     {
         if (m_iPreFrame != m_iCurFrame)
 		{
             auto Target = Find_TargetInFrustum(10.f, OBJ_MONSTER);
-
-			//FORWARDMOVINGSKILLDESC desc
-            //_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::UP) * 10.f - Get_Transform()->Get_State(Transform_State::LOOK) * 2.f;
-			//desc.vSkillDir = vTargetPos - vSkillPos;
-			//desc.fMoveSpeed = 30.f;
-			//desc.fLifeTime = 1.f;
-			//desc.fLimitDistance = 20.f;
                          
             _float4 vTargetPos;
             if (Target)
@@ -1448,7 +1474,7 @@ void Yeonhee_FSM::skill_501100()
 
             for (_uint i = 0; i < 5; i++)
             {
-                desc.fAttackTickTime = 0.5f + fOffSetTime;
+                desc.fAttackTickTime = 1.f + fOffSetTime;
                 
                 fOffSetTime += 0.3f;
 
@@ -1471,14 +1497,13 @@ void Yeonhee_FSM::skill_501100()
         m_eCurState = STATE::b_idle;
     }
 
-    Use_Dash();
 }
 
 void Yeonhee_FSM::skill_501100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_501100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
+    animator->Set_NextTweenAnim(L"skill_501100", 0.15f, false, 1.2f);//m_fSkillAttack_AnimationSpeed);
 
     m_bCanCombo = false;
 
@@ -1492,6 +1517,10 @@ void Yeonhee_FSM::skill_501100_Init()
 
     m_bInvincible = false;
     m_bSuperArmor = true;
+
+    m_vHeadBonePos = _float4{ HeadBoneMatrix.Translation().x, HeadBoneMatrix.Translation().y, HeadBoneMatrix.Translation().z , 1.f };
+    m_vHeadCamPos = m_vHeadBonePos + (Get_Transform()->Get_State(Transform_State::LOOK) * 3.f) + _float4{ 0.f,-0.1f,0.f,0.f };
+
 }
 
 void Yeonhee_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType)

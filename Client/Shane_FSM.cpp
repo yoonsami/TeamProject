@@ -44,7 +44,7 @@ HRESULT Shane_FSM::Init()
 
     m_pWeapon = CUR_SCENE->Get_GameObject(L"Weapon_Shane");
 
-    m_iDummy_CP_BoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_CP");
+    m_iDummy_CP_BoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Center");
     m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
     m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
 
@@ -412,14 +412,12 @@ void Shane_FSM::b_idle()
         m_eCurState = STATE::skill_1100;
 
     Use_Skill();
-
 }
 
 void Shane_FSM::b_idle_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    //animator->Set_NextTweenAnim(L"b_idle", 0.1f, true, 1.f);
     animator->Set_NextTweenAnim(L"b_idle", 0.1f, true, 1.f);
 
     Get_Transform()->Set_Speed(m_fRunSpeed);
@@ -533,7 +531,6 @@ void Shane_FSM::b_run_end_r()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-
     if (KEYTAP(KEY_TYPE::LBUTTON))
         m_eCurState = STATE::skill_1100;
 
@@ -564,7 +561,6 @@ void Shane_FSM::b_run_end_l()
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
-
 
     if (KEYTAP(KEY_TYPE::LBUTTON))
         m_eCurState = STATE::skill_1100;
@@ -1276,6 +1272,19 @@ void Shane_FSM::skill_100200_Init()
 
 void Shane_FSM::skill_200100()
 {
+    if (!m_pCamera.expired())
+    {
+        _float4 vDestinationPos = (Get_Transform()->Get_State(Transform_State::POS)) + m_vSkillCamRight +
+            (Get_Transform()->Get_State(Transform_State::LOOK) * 3.f) + _float3::Up * 3.f;
+        
+        _float4 vDir = vDestinationPos - m_vCenterBonePos;
+        vDir.Normalize();
+
+        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.5f);
+        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
+        m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.3f, vDir.xyz(), 14.f);
+    }
+
     if (Get_CurFrame() == 20 || 
         Get_CurFrame() == 25 ||
         Get_CurFrame() == 30 ||
@@ -1340,10 +1349,28 @@ void Shane_FSM::skill_200100_Init()
 
     m_bInvincible = false;
     m_bSuperArmor = true;
+
+    Calculate_SkillCamRight();
 }
 
 void Shane_FSM::skill_200200()
 {
+    if (Get_CurFrame() < 46)
+    {
+        if (!m_pCamera.expired())
+        {
+            _float4 vDestinationPos = (Get_Transform()->Get_State(Transform_State::POS)) + m_vSkillCamRight +
+                (Get_Transform()->Get_State(Transform_State::LOOK) * 3.f) + _float3::Up * 3.f;
+
+            _float4 vDir = vDestinationPos - m_vCenterBonePos;
+            vDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(4.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.3f, vDir.xyz(), 6.f);
+        }
+    }
+
     if (Get_CurFrame() == 5)
     {
         if (m_iPreFrame != m_iCurFrame)
@@ -1390,7 +1417,7 @@ void Shane_FSM::skill_200200_Init()
     m_iCloneIndex = 0;
 
     m_bInvincible = false;
-    m_bSuperArmor = true;
+    m_bSuperArmor = true;    
 }
 
 void Shane_FSM::skill_300100()
@@ -1490,6 +1517,50 @@ void Shane_FSM::skill_500100_Init()
 
 void Shane_FSM::skill_502100()
 {
+    /*if (Get_CurFrame() == 8)
+        Get_Owner()->Get_Animator()->Set_AnimationSpeed(0.2f);
+    else if (Get_CurFrame() == 13)
+        Get_Owner()->Get_Animator()->Set_AnimationSpeed(0.4f);
+    else if (Get_CurFrame() == 25)
+        Get_Owner()->Get_Animator()->Set_AnimationSpeed(0.6f);
+    else if (Get_CurFrame() == 35)
+        Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.2f);
+    else if (Get_CurFrame() == 70)
+        m_vCamStopPos = m_vSkillCamBonePos;*/
+
+    if (Get_CurFrame() == 8)
+        Get_Owner()->Get_Animator()->Set_AnimationSpeed(0.2f);
+    else if (Get_CurFrame() == 25)
+        Get_Owner()->Get_Animator()->Set_AnimationSpeed(m_fSkillAttack_AnimationSpeed);
+    else if (Get_CurFrame() == 70)
+        m_vCamStopPos = m_vSkillCamBonePos;
+
+    if (!m_pCamera.expired())
+    {
+        if (Get_CurFrame() < 70)
+        {
+            _float4 vDir = m_vSkillCamBonePos - m_vCamBonePos;
+            vDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.5f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCamBonePos.xyz());
+
+            if (Get_CurFrame() < 26)
+                m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.3f, vDir.xyz(), 2.5f);
+            else 
+                m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.3f, vDir.xyz(), 6.f);
+        }
+        else
+        {
+            _float4 vDir = m_vCamStopPos - m_vCamBonePos;
+            vDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.5f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCamBonePos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.3f, vDir.xyz(), 6.f);
+        }
+    }
+
     if (Get_CurFrame() == 56)
     {
         if (m_iPreFrame != m_iCurFrame)
@@ -1624,4 +1695,20 @@ void Shane_FSM::Create_200100_Clone(_uint iCloneIndex)
     obj->Add_Component(make_shared<Shane_Clone_FSM>(iCloneIndex));
     obj->Get_FSM()->Init();
     CUR_SCENE->Add_GameObject(obj);   
+}
+
+void Shane_FSM::Calculate_SkillCamRight()
+{
+    _float4 vDir = _float4(0.f);
+    vDir = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS);
+    vDir.y = 0.f;
+    vDir.Normalize();
+
+    _float4 vCross = _float4(0.f);
+    vCross = XMVector3Cross(Get_Transform()->Get_State(Transform_State::LOOK), vDir);
+
+    if (XMVectorGetY(vCross) < 0.f) // LEFT 
+        m_vSkillCamRight = (Get_Transform()->Get_State(Transform_State::RIGHT) * -3.f);
+    else //RIGHT	
+        m_vSkillCamRight = (Get_Transform()->Get_State(Transform_State::RIGHT) * 3.f);
 }
