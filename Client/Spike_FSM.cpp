@@ -1073,7 +1073,7 @@ void Spike_FSM::skill_1400_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_1400", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+    animator->Set_NextTweenAnim(L"skill_1400", 0.15f, false, 1.f);
 
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
@@ -1484,7 +1484,7 @@ void Spike_FSM::skill_200400_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_200400", 0.15f, false, m_fSkillAttack_AnimationSpeed);
+    animator->Set_NextTweenAnim(L"skill_200400", 0.15f, false, 1.2f);
 
     m_bCanCombo = false;
 

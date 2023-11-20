@@ -40,7 +40,7 @@ HRESULT Kyle_FSM::Init()
 
 	m_pCamera = CUR_SCENE->Get_MainCamera();
 
-	m_fSkillAttack_AnimationSpeed = 2.f;
+	m_fSkillAttack_AnimationSpeed =1.f;
 	m_fEffectYOffSet = 1.5f;
 
 
@@ -1207,7 +1207,7 @@ void Kyle_FSM::skill_100100()
 	if (m_vKeyInputTargetDir != _float3(0.f))
 		Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
-	if (Get_CurFrame() < 30)
+	if (Get_CurFrame() < 25)
 	{
 		if (KEYTAP(KEY_TYPE::KEY_1))
 			m_bCanCombo = true;
@@ -1215,7 +1215,7 @@ void Kyle_FSM::skill_100100()
 
 	if (m_bCanCombo)
 	{
-		if (Get_CurFrame() >= 30)
+		if (Get_CurFrame() >= 25)
 			m_eCurState = STATE::skill_100200;
 	}
 
@@ -1329,7 +1329,7 @@ void Kyle_FSM::skill_200100()
 	if (m_vKeyInputTargetDir != _float3(0.f))
 		Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
-	if (Get_CurFrame() < 22)
+	if (Get_CurFrame() < 16)
 	{
 		if (KEYTAP(KEY_TYPE::KEY_2))
 			m_bCanCombo = true;
@@ -1337,7 +1337,7 @@ void Kyle_FSM::skill_200100()
 
 	if (m_bCanCombo)
 	{
-		if (Get_CurFrame() >= 22)
+		if (Get_CurFrame() >= 16)
 			m_eCurState = STATE::skill_200200;
 	}
 
@@ -1384,7 +1384,7 @@ void Kyle_FSM::skill_200200()
 	if (m_vKeyInputTargetDir != _float3(0.f))
 		Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
-	if (Get_CurFrame() < 32)
+	if (Get_CurFrame() < 28)
 	{
 		if (KEYTAP(KEY_TYPE::KEY_2))
 			m_bCanCombo = true;
@@ -1392,7 +1392,7 @@ void Kyle_FSM::skill_200200()
 
 	if (m_bCanCombo)
 	{
-		if (Get_CurFrame() >= 32)
+		if (Get_CurFrame() >= 28)
 			m_eCurState = STATE::skill_200300;
 	}
 
@@ -1410,7 +1410,7 @@ void Kyle_FSM::skill_200200_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"skill_200200", 0.15f, false, m_fSkillAttack_AnimationSpeed);
+	animator->Set_NextTweenAnim(L"skill_200200", 0.05f, false, m_fSkillAttack_AnimationSpeed);
 
 	m_bCanCombo = false;
 
@@ -1464,7 +1464,7 @@ void Kyle_FSM::skill_200300_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"skill_200300", 0.15f, false, m_fSkillAttack_AnimationSpeed);
+	animator->Set_NextTweenAnim(L"skill_200300", 0.05f, false, m_fSkillAttack_AnimationSpeed);
 
 	m_bCanCombo = false;
 
@@ -1559,7 +1559,7 @@ void Kyle_FSM::skill_300100_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"skill_300100", 0.15f, false, 1.f);
+	animator->Set_NextTweenAnim(L"skill_300100", 0.15f, false, 1.2f);
 
 	m_bCanCombo = false;
 
@@ -1684,7 +1684,7 @@ void Kyle_FSM::skill_502100_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"skill_502100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
+	animator->Set_NextTweenAnim(L"skill_502100", 0.15f, false, m_fSkillAttack_AnimationSpeed * 1.5f);
 
 	m_bCanCombo = false;
 
@@ -1815,7 +1815,7 @@ void Kyle_FSM::skill_500100_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"skill_500100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
+	animator->Set_NextTweenAnim(L"skill_500100", 0.15f, false, m_fSkillAttack_AnimationSpeed * 1.5f);
 
 	m_bCanCombo = false;
 
