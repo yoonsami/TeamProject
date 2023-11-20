@@ -967,7 +967,10 @@ void Yeopo_FSM::skill_1100()
     }
 
     if (Get_FinalFrame() - Get_CurFrame() < 6)
+    {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
+    }
 
 
     Use_Skill();
@@ -1017,6 +1020,7 @@ void Yeopo_FSM::skill_1200()
 
     if (Get_FinalFrame() - Get_CurFrame() < 7)
     {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
     }
@@ -1032,6 +1036,7 @@ void Yeopo_FSM::skill_1200_Init()
     animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
 
     m_bCanCombo = false;
 
@@ -1083,6 +1088,7 @@ void Yeopo_FSM::skill_1300()
 
     if (Get_FinalFrame() - Get_CurFrame() < 6)
     {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
     }
@@ -1098,6 +1104,7 @@ void Yeopo_FSM::skill_1300_Init()
     animator->Set_NextTweenAnim(L"skill_1300", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
 
     m_bCanCombo = false;
 
@@ -1129,6 +1136,7 @@ void Yeopo_FSM::skill_1400()
 
     if (Get_FinalFrame() - Get_CurFrame() < 6)
     {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
     }
@@ -1144,6 +1152,7 @@ void Yeopo_FSM::skill_1400_Init()
     animator->Set_NextTweenAnim(L"skill_1400", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
 
     m_bCanCombo = false;
 
@@ -1335,6 +1344,7 @@ void Yeopo_FSM::skill_100300_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_100300", 0.15f, false, m_fSkillAttack_AnimationSpeed);
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(SKILL1);
 
     m_bCanCombo = false;
 
@@ -1496,6 +1506,7 @@ void Yeopo_FSM::skill_300200_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_300200", 0.15f, false, 1.3f);
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(SKILL3);
 
     m_bCanCombo = false;
 
@@ -1552,6 +1563,7 @@ void Yeopo_FSM::skill_300300_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_300300", 0.15f, false, 1.3f);
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(SKILL3);
 
     m_bCanCombo = false;
 
@@ -1591,6 +1603,7 @@ void Yeopo_FSM::skill_300400_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_300400", 0.15f, false, 1.3f);
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(SKILL3);
 
     m_bCanCombo = false;
 

@@ -118,7 +118,8 @@ public:
 	_float m_fSkillAttack_AnimationSpeed = 1.5f;
 	_float m_fEvade_AnimationSpeed = 1.5f;
 	_float m_fChargingRatio = 0.f;
-	_float m_fHoldingSkillTime = 0.f;
+	_float m_fCurrentHoldingSkillTime = 0.f;
+	_float m_fMaxHoldingSkillTime = 0.f;
 	_float m_fTimePerFrame = 0.f;
 
 

@@ -8,7 +8,7 @@
 #include "AttackColliderInfoScript.h"
 #include "Model.h"
 #include "CoolTimeCheckScript.h"
-
+#include "UiSkillGauge.h"
 
 Spike_FSM::Spike_FSM()
 {
@@ -927,7 +927,10 @@ void Spike_FSM::skill_1100()
     }
 
     if (Is_AnimFinished())
+    {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
+    }
 
     Use_Skill();
 }
@@ -975,6 +978,7 @@ void Spike_FSM::skill_1200()
 
     if (Is_AnimFinished())
     {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
     }
@@ -989,6 +993,7 @@ void Spike_FSM::skill_1200_Init()
     animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
 
     m_bCanCombo = false;
 
@@ -1027,6 +1032,7 @@ void Spike_FSM::skill_1300()
 
     if (Is_AnimFinished())
     {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
     }
@@ -1041,6 +1047,7 @@ void Spike_FSM::skill_1300_Init()
     animator->Set_NextTweenAnim(L"skill_1300", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
 
     m_bCanCombo = false;
 
@@ -1067,6 +1074,7 @@ void Spike_FSM::skill_1400()
 
     if (Is_AnimFinished())
     {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
     }
@@ -1081,6 +1089,7 @@ void Spike_FSM::skill_1400_Init()
     animator->Set_NextTweenAnim(L"skill_1400", 0.15f, false, 1.f);
 
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
 
     m_bCanCombo = false;
 
@@ -1225,6 +1234,7 @@ void Spike_FSM::skill_100300_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_100300", 0.15f, false, m_fSkillAttack_AnimationSpeed);
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(SKILL1);
 
     m_bCanCombo = false;
 
@@ -1280,6 +1290,8 @@ void Spike_FSM::skill_200100_l()
 
     m_fChargingRatio = _float(Get_CurFrame()) / _float(Get_FinalFrame());
     
+    CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Ratio(m_fChargingRatio);
+   
     if (KEYAWAY(KEY_TYPE::KEY_2))
     {
         if (m_fChargingRatio < 0.33f)
@@ -1309,6 +1321,8 @@ void Spike_FSM::skill_200100_l_Init()
 
     m_vDirToTarget = _float3(0.f);
     m_vDirToTarget = Get_InputDirVector();
+
+    CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Render(true);
 
     AttackCollider_Off();
 
@@ -1355,6 +1369,8 @@ void Spike_FSM::skill_200200_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_200200", 0.15f, false, 1.f);
+
+    CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Render(false);
 
     m_bCanCombo = false;
 
@@ -1410,6 +1426,8 @@ void Spike_FSM::skill_200300_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_200300", 0.15f, false, 1.f);
+
+    CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Render(false);
 
     m_bCanCombo = false;
 
@@ -1482,6 +1500,8 @@ void Spike_FSM::skill_200400()
 void Spike_FSM::skill_200400_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Render(false);
 
     animator->Set_NextTweenAnim(L"skill_200400", 0.15f, false, 1.2f);
 

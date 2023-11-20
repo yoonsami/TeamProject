@@ -11,7 +11,7 @@
 #include "CoolTimeCheckScript.h"
 #include "SpearAce_Clone_FSM.h"
 #include "ModelRenderer.h"
-
+#include "UiSkillGauge.h"
 
 Yeonhee_FSM::Yeonhee_FSM()
 {
@@ -248,7 +248,6 @@ void Yeonhee_FSM::State_Init()
         case STATE::skill_1300:
             skill_1300_Init();
             break;
-
         case STATE::skill_91100:
             skill_91100_Init();
             break;
@@ -920,7 +919,10 @@ void Yeonhee_FSM::skill_1100()
     }
 
     if (Is_AnimFinished())
+    {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
+    }
 
     Use_Skill();
 }
@@ -985,8 +987,11 @@ void Yeonhee_FSM::skill_1200()
 			m_eCurState = STATE::skill_1300;
 	}
 
-	if (Is_AnimFinished())
+    if (Is_AnimFinished())
+    {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 		m_eCurState = STATE::b_idle;
+    }
 
 	Use_Skill();
 }
@@ -998,6 +1003,7 @@ void Yeonhee_FSM::skill_1200_Init()
     animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
 
     m_bCanCombo = false;
 
@@ -1040,8 +1046,12 @@ void Yeonhee_FSM::skill_1300()
 	_float3 vInputVector = Get_InputDirVector();
 	Get_Transform()->Go_Dir(vInputVector * m_fRunSpeed * 0.3f * fDT);
 
-	if (Is_AnimFinished())
+
+    if (Is_AnimFinished())
+    {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 		m_eCurState = STATE::b_idle;
+    }
 
 	Use_Skill();
 }
@@ -1053,6 +1063,7 @@ void Yeonhee_FSM::skill_1300_Init()
     animator->Set_NextTweenAnim(L"skill_1300", 0.15f, false, m_fNormalAttack_AnimationSpeed);
     
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
 
     m_bCanCombo = false;
 
@@ -1129,7 +1140,11 @@ void Yeonhee_FSM::skill_100100()
     {
         if (m_iPreFrame != m_iCurFrame)
         {
-            m_fHoldingSkillTime -= m_fTimePerFrame;
+            m_fCurrentHoldingSkillTime -= m_fTimePerFrame;
+
+            _float fHoldingRatio = m_fMaxHoldingSkillTime / m_fCurrentHoldingSkillTime;
+
+            CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Ratio(1.f - fHoldingRatio);
         }
 
         m_fKeyPushTimer += fDT;
@@ -1165,6 +1180,7 @@ void Yeonhee_FSM::skill_100100_Init()
 
     m_bCanCombo = false;
 
+    CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Render(true);
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
@@ -1176,8 +1192,8 @@ void Yeonhee_FSM::skill_100100_Init()
     m_fTimePerFrame = 1.f / (Get_Owner()->Get_Model()->Get_AnimationByName(L"skill_100100")->frameRate *
                             Get_Owner()->Get_Model()->Get_AnimationByName(L"skill_100100")->speed);
 
-    m_fHoldingSkillTime = m_fTimePerFrame * 76.f;
-
+    m_fMaxHoldingSkillTime = m_fTimePerFrame * 76.f;
+    m_fCurrentHoldingSkillTime = m_fMaxHoldingSkillTime;
 }
 
 void Yeonhee_FSM::skill_100100_e()
@@ -1195,6 +1211,9 @@ void Yeonhee_FSM::skill_100100_e_Init()
 	animator->Set_NextTweenAnim(L"skill_100100_e", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
 	m_bCanCombo = false;
+
+    CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Render(false);
+
 
 	AttackCollider_Off();
 

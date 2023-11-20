@@ -893,7 +893,10 @@ void Player_FSM::skill_1100()
         m_eCurState = STATE::skill_1200;
 	
     if (Is_AnimFinished())
+    {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
+    }
 
     Use_Skill();
 }
@@ -933,6 +936,7 @@ void Player_FSM::skill_1200()
 
     if (Is_AnimFinished())
     {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
     }
@@ -949,6 +953,7 @@ void Player_FSM::skill_1200_Init()
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
 
     AttackCollider_Off();
 
@@ -971,6 +976,7 @@ void Player_FSM::skill_1300()
 
     if (Is_AnimFinished())
     {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
     }
@@ -987,6 +993,7 @@ void Player_FSM::skill_1300_Init()
     m_bCanCombo = false;
 
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
 
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
@@ -1007,6 +1014,7 @@ void Player_FSM::skill_1400()
 
 	if (Is_AnimFinished())
 	{
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 		m_bCanCombo = false;
 		m_eCurState = STATE::b_idle;
 	}
@@ -1023,6 +1031,7 @@ void Player_FSM::skill_1400_Init()
 	m_bCanCombo = false;
 
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
 
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
@@ -1193,6 +1202,8 @@ void Player_FSM::skill_100200_Init()
 
 	animator->Set_NextTweenAnim(L"skill_100200", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(SKILL1);
+
 	m_bCanCombo = false;
 
 	m_vDirToTarget = _float3(0.f);
@@ -1289,6 +1300,8 @@ void Player_FSM::skill_100300_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"skill_100300", 0.15f, false, m_fSkillAttack_AnimationSpeed);
+
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(SKILL1);
 
 	m_bCanCombo = false;
 
@@ -1563,6 +1576,8 @@ void Player_FSM::skill_300200_Init()
 
 	m_vDirToTarget = _float3(0.f);
 	m_vDirToTarget = Get_InputDirVector();
+
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(SKILL3);
 
 	AttackCollider_Off();
 
