@@ -223,6 +223,12 @@
     <Filter Include="02.Component\01.FSM\03.Special_FSM\03.Shane_Clone_FSM">
       <UniqueIdentifier>{bbcff278-03b6-47b4-82e6-9bd5ea5009f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\04.SkillScript\00.ForwardMovingSkillScript">
+      <UniqueIdentifier>{5c9d2a88-8a23-4f25-8ae2-a38e6db5ca6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\04.SkillScript\01.InstallationSkill_Script">
+      <UniqueIdentifier>{c4e21611-c33e-45da-90c1-a4e83bb3a641}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -293,9 +299,6 @@
     </ClInclude>
     <ClInclude Include="AttackColliderInfoScript.h">
       <Filter>02.Component\00.MonoBehaviour\03.ColliderInfoScript\AttackCollider</Filter>
-    </ClInclude>
-    <ClInclude Include="ForwardMovingSkillScript.h">
-      <Filter>02.Component\00.MonoBehaviour\04.SkillScript</Filter>
     </ClInclude>
     <ClInclude Include="..\Libraries\Include\IMGUI\dirent\dirent.h">
       <Filter>98.Debug\IMGUI</Filter>
@@ -471,6 +474,12 @@
     <ClInclude Include="Shane_Clone_FSM.h">
       <Filter>02.Component\01.FSM\03.Special_FSM\03.Shane_Clone_FSM</Filter>
     </ClInclude>
+    <ClInclude Include="InstallationSkill_Script.h">
+      <Filter>02.Component\00.MonoBehaviour\04.SkillScript\01.InstallationSkill_Script</Filter>
+    </ClInclude>
+    <ClInclude Include="ForwardMovingSkillScript.h">
+      <Filter>02.Component\00.MonoBehaviour\04.SkillScript\00.ForwardMovingSkillScript</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -535,9 +544,6 @@
     </ClCompile>
     <ClCompile Include="AttackColliderInfoScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\03.ColliderInfoScript\AttackCollider</Filter>
-    </ClCompile>
-    <ClCompile Include="ForwardMovingSkillScript.cpp">
-      <Filter>02.Component\00.MonoBehaviour\04.SkillScript</Filter>
     </ClCompile>
     <ClCompile Include="..\Libraries\Include\IMGUI\ImCurveEdit.cpp">
       <Filter>98.Debug\IMGUI</Filter>
@@ -685,6 +691,12 @@
     </ClCompile>
     <ClCompile Include="Shane_Clone_FSM.cpp">
       <Filter>02.Component\01.FSM\03.Special_FSM\03.Shane_Clone_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="ForwardMovingSkillScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\04.SkillScript\00.ForwardMovingSkillScript</Filter>
+    </ClCompile>
+    <ClCompile Include="InstallationSkill_Script.cpp">
+      <Filter>02.Component\00.MonoBehaviour\04.SkillScript\01.InstallationSkill_Script</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

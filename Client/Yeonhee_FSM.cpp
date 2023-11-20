@@ -2,6 +2,7 @@
 #include "MainCameraScript.h"
 #include "Yeonhee_FSM.h"
 #include "ModelAnimator.h"
+#include "ModelAnimation.h"
 #include "MotionTrailRenderer.h"
 #include "Debug_CreateMotionTrail.h"
 #include "SphereCollider.h"
@@ -258,7 +259,6 @@ void Yeonhee_FSM::State_Init()
         case STATE::skill_300100:
             skill_300100_Init();
             break;
-
 		case STATE::skill_400100:
 			skill_400100_Init();
 			break;
@@ -408,6 +408,8 @@ void Yeonhee_FSM::b_idle_Init()
 
     Get_Transform()->Set_Speed(m_fRunSpeed);
     m_tRunEndDelay.fAccTime = 0.f;
+    m_iPreFrame = 10000;
+    m_iCurFrame = 0;
 
     AttackCollider_Off();
 
@@ -426,7 +428,7 @@ void Yeonhee_FSM::b_run_start()
         m_tRunEndDelay.fAccTime += fDT;
 
         if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
-            m_eCurState = STATE::b_idle;
+            m_eCurState = STATE::b_run_end_l;
     }
     else
     {
@@ -481,7 +483,7 @@ void Yeonhee_FSM::b_run()
 
     if (KEYPUSH(KEY_TYPE::LSHIFT))
     {
-        if ((Get_CurFrame() == 1) || Get_CurFrame() >= 19)
+        if (Get_CurFrame() == 1)
             m_eCurState = STATE::b_sprint;
 
     }
@@ -1106,6 +1108,11 @@ void Yeonhee_FSM::skill_91100()
     if (m_vKeyInputTargetDir != _float3(0.f))
         Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
+    if (Get_CurFrame() == 7)
+        Get_Owner()->Get_Animator()->Set_RenderState(false);
+    else if (Get_CurFrame() == 16)
+        Get_Owner()->Get_Animator()->Set_RenderState(true);
+
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 }
@@ -1130,6 +1137,11 @@ void Yeonhee_FSM::skill_91100_Init()
 void Yeonhee_FSM::skill_93100()
 {
     _float3 vInputVector = Get_InputDirVector();
+    
+    if (Get_CurFrame() == 8)
+        Get_Owner()->Get_Animator()->Set_RenderState(false);
+    else if (Get_CurFrame() == 16)
+        Get_Owner()->Get_Animator()->Set_RenderState(true);
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
@@ -1153,6 +1165,14 @@ void Yeonhee_FSM::skill_100100()
 {
     if (Get_CurFrame() > 20)
     {
+        m_iCurFrame = Get_CurFrame();
+
+        if (m_iPreFrame != m_iCurFrame)
+        {
+            m_fHoldingSkillTime -= m_fTimePerFrame;
+            m_iPreFrame = m_iCurFrame;
+        }
+
         m_fKeyPushTimer += fDT;
         if (m_fKeyPushTimer >= 0.3f)
         {
@@ -1163,9 +1183,8 @@ void Yeonhee_FSM::skill_100100()
 			desc.fLifeTime = 0.2f;
 			desc.fLimitDistance = 15.f;
 
-			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK);
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) + _float3::Up;
 			Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKBACK_ATTACK);
-
         }
     }
 	
@@ -1203,6 +1222,12 @@ void Yeonhee_FSM::skill_100100_Init()
     m_bInvincible = false;
     m_bSuperArmor = true;
     m_fKeyPushTimer = 0.f;
+
+    m_fTimePerFrame = 1.f / (Get_Owner()->Get_Model()->Get_AnimationByName(L"skill_100100")->frameRate *
+                            Get_Owner()->Get_Model()->Get_AnimationByName(L"skill_100100")->speed);
+
+    m_fHoldingSkillTime = m_fTimePerFrame * 76.f;
+
 }
 
 void Yeonhee_FSM::skill_100100_e()
@@ -1226,6 +1251,9 @@ void Yeonhee_FSM::skill_100100_e_Init()
 
 	AttackCollider_Off();
 
+    m_iPreFrame = 10000;
+    m_iCurFrame = 0;
+
 	m_bInvincible = false;
 	m_bSuperArmor = true;
 }
@@ -1246,11 +1274,11 @@ void Yeonhee_FSM::skill_200100()
     {
         if (!m_bSkillCreate)
         {
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 0.5f;
-            desc.fLimitDistance = 0.f;
+            INSTALLATIONSKILLDESC desc;
+            desc.fAttackTickTime = 0.5f;
+            desc.iLimitAttackCnt = 10;
+            desc.strAttackType = NORMAL_SKILL;
+            desc.strLastAttackType = KNOCKDOWN_SKILL;
 
             _float4 vSkillPos;
             if (Target)
@@ -1258,11 +1286,11 @@ void Yeonhee_FSM::skill_200100()
 
             else
                 vSkillPos  = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5.f + _float3::Up;
-            Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_ATTACK);
+            
+            Create_InstallationSkillCollider(vSkillPos, 3.f, desc);
 
             m_bSkillCreate = true;
         }
-
     }
     else
         m_bSkillCreate = false;
@@ -1289,9 +1317,7 @@ void Yeonhee_FSM::skill_200100_Init()
 
     m_bCanCombo = false;
 
- 
-
-    AttackCollider_On(NORMAL_ATTACK);
+    AttackCollider_Off();
 
     m_bInvincible = false;
     m_bSuperArmor = true;
@@ -1308,11 +1334,6 @@ void Yeonhee_FSM::skill_300100()
 
 	if (m_vKeyInputTargetDir != _float3(0.f))
 		Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
-
-    if (Get_CurFrame() >= 78 && Get_CurFrame() <= 110)
-        m_bInvincible = true;
-    else
-        m_bInvincible = false;
 
 	if (Get_CurFrame() == 24)
 	{
@@ -1337,7 +1358,6 @@ void Yeonhee_FSM::skill_300100()
 
 			m_bSkillCreate = true;
 		}
-
 	}
 	else
 		m_bSkillCreate = false;
@@ -1362,20 +1382,8 @@ void Yeonhee_FSM::skill_300100_Init()
 
     m_bCanCombo = false;
 
-
-
-    FORWARDMOVINGSKILLDESC desc;
-    desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-    desc.fMoveSpeed = 0.f;
-    desc.fLifeTime = 2.f;
-    desc.fLimitDistance = 0.f;
-
-    _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-                        Get_Transform()->Get_State(Transform_State::LOOK) +
-                        _float3::Up;
-
-
     AttackCollider_Off();
+
     m_bInvincible = false;
     m_bSuperArmor = true;
 }
@@ -1394,7 +1402,7 @@ void Yeonhee_FSM::skill_400100()
 			desc.fLifeTime = 0.2f;
 			desc.fLimitDistance = 15.f;
 
-			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK);
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) + _float3::Up;
 			Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKBACK_ATTACK);
 
 		}
@@ -1441,23 +1449,42 @@ void Yeonhee_FSM::skill_501100()
 		if (!m_bSkillCreate)
 		{
             auto Target = Find_TargetInFrustum(10.f, OBJ_MONSTER);
-			FORWARDMOVINGSKILLDESC desc;
 
-			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::UP) * 10.f - Get_Transform()->Get_State(Transform_State::LOOK) * 2.f;
+			//FORWARDMOVINGSKILLDESC desc
+            //_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::UP) * 10.f - Get_Transform()->Get_State(Transform_State::LOOK) * 2.f;
+			//desc.vSkillDir = vTargetPos - vSkillPos;
+			//desc.fMoveSpeed = 30.f;
+			//desc.fLifeTime = 1.f;
+			//desc.fLimitDistance = 20.f;
+                         
+            _float4 vTargetPos;
+            if (Target)
+            	vTargetPos = Target->Get_Transform()->Get_State(Transform_State::POS);
+            else
+            	vTargetPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 10.f;
+            
+            INSTALLATIONSKILLDESC desc;
+            desc.iLimitAttackCnt = 1;
+            desc.strAttackType = KNOCKDOWN_SKILL;
+            desc.strLastAttackType = KNOCKDOWN_SKILL;
+            desc.bFirstAttack = false;          
 
-			_float4 vTargetPos;
-			if (Target)
-				vTargetPos = Target->Get_Transform()->Get_State(Transform_State::POS);
-			else
-				vTargetPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 10.f;
+            _float fOffSetTime = 0.f;
 
-			desc.vSkillDir = vTargetPos - vSkillPos;
-			desc.fMoveSpeed = 30.f;
-			desc.fLifeTime = 1.f;
-			desc.fLimitDistance = 20.f;
+            for (_uint i = 0; i < 5; i++)
+            {
+                desc.fAttackTickTime = 0.5f + fOffSetTime;
+                
+                fOffSetTime += 0.3f;
 
-			Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_ATTACK);
+                _float fOffSetX = ((rand() * 2 / _float(RAND_MAX) - 1));
+                _float fOffSetZ = ((rand() * 2 / _float(RAND_MAX) - 1));
 
+                _float4 vSkillPos = vTargetPos + _float4{ fOffSetX, 0.f, fOffSetZ, 0.f };
+
+                Create_InstallationSkillCollider(vSkillPos, 2.f, desc);
+            }
+			
 			m_bSkillCreate = true;
 		}
     }
@@ -1474,7 +1501,6 @@ void Yeonhee_FSM::skill_501100()
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
     }
-
 
     Use_Dash();
 }
@@ -1523,6 +1549,28 @@ void Yeonhee_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float 
     m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
 
     CUR_SCENE->Add_GameObject(m_pSkillCollider.lock());
+}
+
+void Yeonhee_FSM::Create_InstallationSkillCollider(const _float4& vPos, _float fSkillRange, INSTALLATIONSKILLDESC desc)
+{
+    shared_ptr<GameObject> InstallationSkillCollider = make_shared<GameObject>();
+
+    InstallationSkillCollider->GetOrAddTransform();
+    InstallationSkillCollider->Get_Transform()->Set_State(Transform_State::POS, vPos);
+
+    auto pSphereCollider = make_shared<SphereCollider>(fSkillRange);
+    pSphereCollider->Set_CenterPos(_float3{ vPos.x,vPos.y, vPos.z });
+    InstallationSkillCollider->Add_Component(pSphereCollider);
+    InstallationSkillCollider->Get_Collider()->Set_CollisionGroup(Player_Skill);
+
+    InstallationSkillCollider->Add_Component(make_shared<AttackColliderInfoScript>());
+    InstallationSkillCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
+    InstallationSkillCollider->Add_Component(make_shared<InstallationSkill_Script>(desc));
+    InstallationSkillCollider->Get_Script<InstallationSkill_Script>()->Init();
+    
+    InstallationSkillCollider->Set_Name(L"Player_InstallationSkillCollider");
+
+    CUR_SCENE->Add_GameObject(InstallationSkillCollider);
 }
 
 void Yeonhee_FSM::Use_Skill()
