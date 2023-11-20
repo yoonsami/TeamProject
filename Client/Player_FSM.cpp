@@ -48,6 +48,7 @@ HRESULT Player_FSM::Init()
 
     m_pCamera = CUR_SCENE->Get_MainCamera();
 
+
     return S_OK;
 }
 
