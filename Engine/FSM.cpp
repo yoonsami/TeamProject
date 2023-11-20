@@ -345,10 +345,11 @@ _bool FSM::Check_Combo(_uint minFrame, KEY_TYPE eKeyType)
 		if (KEYTAP(eKeyType))
 			m_bCanCombo = true;
 	}
+
 	if (m_bCanCombo)
 	{
 		if (Get_CurFrame() > minFrame)
-			true;
+			return true;
 	}
 
 	return false;
