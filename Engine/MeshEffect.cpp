@@ -77,7 +77,7 @@ void MeshEffect::Render()
     m_pShader->Push_BoneData(*boneDesc);
 
     // For. Bind data to shader 
-    auto world = Get_Transform()->Get_WorldMatrix();
+    auto& world = Get_Transform()->Get_WorldMatrix();
     m_pShader->Push_TransformData(TransformDesc{ world });
 
     m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());

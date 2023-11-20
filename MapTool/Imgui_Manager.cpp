@@ -14,6 +14,7 @@
 #include "Model.h"
 #include "ModelMesh.h"
 #include "ModelRenderer.h"
+#include "ModelAnimator.h"
 #include "Geometry.h"
 
 #include "Camera.h"
@@ -28,7 +29,9 @@
 #include "MeshRenderer.h"
 #include "RigidBody.h"
 
-#include "PointLightEffect.h"
+#include "PointLightScript.h"
+
+using namespace ImGui;
 
 ImGuizmo::OPERATION m_eGuizmoType = { ImGuizmo::TRANSLATE };
 namespace fs = std::filesystem;
@@ -85,6 +88,7 @@ void ImGui_Manager::ImGui_Tick()
     Frame_Objects();
     Frame_SelcetObjectManager();
     Frame_Wall();
+    Frame_ShaderOption();
 
     Picking_Object();
     LookAtSampleObject();
@@ -265,7 +269,8 @@ void ImGui_Manager::Frame_ObjectBaseManager()
     ImGui::SameLine();
     ImGui::Text("Press Z");
 
-    if (ImGui::Button("CreateNames") || KEYTAP(KEY_TYPE::Z))
+    // 현재 맵에있는 오브젝트 이름들을 텍스트파일로 저장.
+    if (ImGui::Button("CreateNames"))
         Save_ModelNames();
 
     ImGui::End();
@@ -500,13 +505,6 @@ void ImGui_Manager::Frame_SelcetObjectManager()
 }
 void ImGui_Manager::Frame_Light()
 {
-	ImGui::Text("CameraPos");
-	m_CamPos = CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_State(Transform_State::POS);
-	if (ImGui::DragFloat3("##CamPos", (_float*)&m_CamPos))
-	{
-		CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_CamPos);
-	}
-
     ImGui::Begin("SkyBox&Light"); // 글자 맨윗줄
 
     ImGui::Text("CameraPos");
@@ -515,6 +513,22 @@ void ImGui_Manager::Frame_Light()
     {
         CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_CamPos);
     }
+
+    // 플레이어 생성위치
+    ImGui::Text("PlayerCreatePosition");
+    if(ImGui::DragFloat3("##PlayerCreatePosition", (_float*)&m_PlayerCreatePosition, 0.1f))
+    {
+        m_PlayerLookAtPosition.y = m_PlayerCreatePosition.y;
+    }
+    if (ImGui::Button("Set Player Pos"))
+        SetPlayerPosByCameraPos();
+    ImGui::Text("PlayerLookAtPosition");
+    if (ImGui::DragFloat3("##PlayerLookAtPosition", (_float*)&m_PlayerLookAtPosition, 0.1f))
+    {
+        m_PlayerLookAtPosition.y = m_PlayerCreatePosition.y;
+    }
+    if (ImGui::Button("Set Player LookAt Pos"))
+        SetPlayerLookAtPosByPickingPos();
 
     // 스카이박스 변경
     ImGui::SeparatorText("SkyBox##SkyBoxChange");
@@ -606,53 +620,53 @@ void ImGui_Manager::Frame_Light()
         m_pPointLightObjects[m_iPointLightIndex]->Get_Transform()->Set_State(Transform_State::POS, PointLightPosition);
 
         // 선택한 점광원의 변화효과 설정
-        if(m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>() != nullptr)
+        if(m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>() != nullptr)
         {
-            _bool bEffectUse = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Get_bUseEffect();
+            _bool bEffectUse = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Get_bUseEffect();
             if (ImGui::Checkbox("##CurrentPointLightEffectUse", &bEffectUse))
                 // 사용여부 체크박스 반영하여 다시 넣기
             {
-                m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Set_bUseEffect(bEffectUse);
+                m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Set_bUseEffect(bEffectUse);
                 // 이펙트를 사용하기로 하면 그때색깔을 시작색깔로 지정
                 if (bEffectUse)
-                    m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Init();
+                    m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Clear();
                 // 이펙트를 사용 안하기로 하면 시작색을 반대로 대입
                 else
-                    m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Init_Reverse();
+                    m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Init_Reverse();
             }
             if (bEffectUse)
             {
                 // 스타트앰비언트 가져오고, 변경하면 다시대입
-                _float4 StartAmbient = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Get_AmbientStart();
+                _float4 StartAmbient = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Get_AmbientStart();
                 if (ImGui::ColorEdit4("SAmbient##PtLtEffectAmbient", (_float*)&StartAmbient))
-                    m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Set_AmbientStart(StartAmbient);
+                    m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Set_AmbientStart(StartAmbient);
                 // 타겟앰비언트 가져오고, 변경하면 다시대입
-                _float4 TargetAmbient = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Get_AmbientTarget();
+                _float4 TargetAmbient = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Get_AmbientTarget();
                 if (ImGui::ColorEdit4("EAmbient##PtLtEffectAmbient", (_float*)&TargetAmbient))
-                    m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Set_AmbientTarget(TargetAmbient);
+                    m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Set_AmbientTarget(TargetAmbient);
 
                 // 스타트디퓨즈 가져오고, 변경하면 다시대입
-                _float4 StartDiffuse = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Get_DiffuseStart();
+                _float4 StartDiffuse = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Get_DiffuseStart();
                 if (ImGui::ColorEdit4("SDiffuse##PtLtEffectDiffuse", (_float*)&StartDiffuse))
-                    m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Set_DiffuseStart(StartDiffuse);
+                    m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Set_DiffuseStart(StartDiffuse);
                 // 타겟디퓨즈 가져오고, 변경하면 다시대입
-                _float4 TargetDiffuse = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Get_DiffuseTarget();
+                _float4 TargetDiffuse = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Get_DiffuseTarget();
                 if (ImGui::ColorEdit4("Diffuse##PtLtEffectDiffuse", (_float*)&TargetDiffuse))
-                    m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Set_DiffuseTarget(TargetDiffuse);
+                    m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Set_DiffuseTarget(TargetDiffuse);
 
                 // 스타트레인지 가져오고, 변경하면 다시대입
-                _float fStartRange = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Get_StartRange();
+                _float fStartRange = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Get_StartRange();
                 ImGui::DragFloat("SRange#PtLtTargetRange", &fStartRange, 0.1f);
-                m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Set_StartRange(fStartRange);
+                m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Set_StartRange(fStartRange);
                 // 타겟레인지 가져오고, 변경하면 다시대입
-                _float fTargetRange = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Get_TargetRange();
+                _float fTargetRange = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Get_TargetRange();
                 ImGui::DragFloat("TRange#PtLtTargetRange", &fTargetRange, 0.1f);
-                m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Set_TargetRange(fTargetRange);
+                m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Set_TargetRange(fTargetRange);
 
                 // 이펙트 스피드 가져오고, 변경하면 다시대입
-                _float fEffectSpeed = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Get_Speed();
+                _float fEffectSpeed = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Get_Speed();
                 ImGui::DragFloat("EffectSpeed#PtLtEffectSpeed", &fEffectSpeed, 0.1f);
-                m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightEffect>()->Set_Speed(fEffectSpeed);
+                m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Set_Speed(fEffectSpeed);
             }
         }
     }
@@ -677,6 +691,23 @@ void ImGui_Manager::Frame_Wall()
     if (ImGui::Button("Delete"))
     {
         Delete_WallMesh();
+    }
+
+    ImGui::End();
+}
+
+void ImGui_Manager::Frame_ShaderOption()
+{
+    ImGui::Begin("Debug");
+    if (CUR_SCENE)
+    {
+        if (BeginTabBar("##ShaderOptionTabBar"))
+        {
+            RenderOptionTab();
+            //ModelOptionTab();
+            //CameraOptionTab();
+            EndTabBar();
+        }
     }
 
     ImGui::End();
@@ -836,7 +867,7 @@ HRESULT ImGui_Manager::Create_SelectObject()
     return S_OK;
 }
 
-shared_ptr<GameObject>& ImGui_Manager::Create_MapObject(MapObjectScript::MapObjectDesc _CreateDesc)
+shared_ptr<GameObject> ImGui_Manager::Create_MapObject(MapObjectScript::MapObjectDesc _CreateDesc)
 {
     // 오브젝트 틀 생성
     shared_ptr<GameObject> CreateObject = make_shared<GameObject>();
@@ -844,10 +875,6 @@ shared_ptr<GameObject>& ImGui_Manager::Create_MapObject(MapObjectScript::MapObje
     shared_ptr<MapObjectScript> MapObjSc = make_shared<MapObjectScript>(_CreateDesc);
     CreateObject->Add_Component(MapObjSc);
     MapObjectScript::MapObjectDesc& CreateDesc = MapObjSc->Get_DESC();
-    //// 그림자
-    //CreateObject->Set_DrawShadow(CreateDesc.bShadow);
-    //// 블러
-    //CreateObject->Set_Blur(CreateDesc.bBlur);
     // 이름을 사용하여 모델생성
     // 고유번호를 제거하여 모델명을 얻어옴
     _int iPureNameSize = 0;
@@ -858,19 +885,32 @@ shared_ptr<GameObject>& ImGui_Manager::Create_MapObject(MapObjectScript::MapObje
     string strModelName = CreateDesc.strName.substr(0, iPureNameSize);
     CreateDesc.ColModelName = strModelName;
     CreateObject->Set_Name(Utils::ToWString(strModelName));
-    // 모델생성
+    // 모델생성 
     shared_ptr<Model> model = RESOURCES.Get<Model>(Utils::ToWString(strModelName));
     shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-    shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
-    CreateObject->Add_Component(renderer);
-    renderer->Set_Model(model);
-    renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT);
-    renderer->SetFloat(3, CreateDesc.fUVWeight);
+
+    if(strModelName.find("Anim_") != std::string::npos)
+    {
+        shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+        CreateObject->Add_Component(animator);
+        animator->Set_Model(model);
+        animator->Set_CurrentAnim(0, true, 1.f);
+    }
+    else
+    {
+        shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+        CreateObject->Add_Component(renderer);
+        renderer->Set_Model(model);
+        renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT);
+        renderer->SetFloat(3, CreateDesc.fUVWeight);
+    }
+
     if (CreateDesc.bTransform)
     {
         CreateObject->Add_Component(make_shared<Transform>());
         CreateObject->Get_Transform()->Set_WorldMat(CreateDesc.WorldMatrix);
     }
+
     if (CreateDesc.bCollider)
     {
         switch (CreateDesc.ColliderType)
@@ -924,15 +964,15 @@ HRESULT ImGui_Manager::Create_SelectPointLight()
     // 선택한 점광원 생성
     LightInfo CreateLightInfo;
     m_CreatePointLightInfo.vPosition = XMVectorSetW(m_PickingPos, 1.f);
-    shared_ptr<GameObject>& LightObject = Create_PointLight(m_CreatePointLightInfo);
+    shared_ptr<GameObject> LightObject = Create_PointLight(m_CreatePointLightInfo);
     m_pPointLightObjects.push_back(LightObject);
 
     {
         // 포인트 라이트라면 무조건 추가
         // 기본초기화
-        shared_ptr<PointLightEffect> pPLightScript = make_shared<PointLightEffect>();
+        shared_ptr<PointLightScript> pPLightScript = make_shared<PointLightScript>();
         m_pPointLightObjects.back()->Add_Component(pPLightScript);
-        pPLightScript->Init();
+        pPLightScript->Clear();
     }
 
     // 이름리스트에 하나 넣기
@@ -941,7 +981,7 @@ HRESULT ImGui_Manager::Create_SelectPointLight()
     return S_OK;
 }
 
-shared_ptr<GameObject>& ImGui_Manager::Create_PointLight(LightInfo _ptltInfo)
+shared_ptr<GameObject> ImGui_Manager::Create_PointLight(LightInfo _ptltInfo)
 {
     shared_ptr<GameObject> PointLight = make_shared<GameObject>();
     PointLight->Set_Name(L"PointLight");
@@ -1003,6 +1043,17 @@ void ImGui_Manager::Clear_WallMesh()
 void ImGui_Manager::Delete_WallMesh()
 {
     m_WallRectPosLDRU.pop_back();
+}
+
+void ImGui_Manager::SetPlayerPosByCameraPos()
+{
+    m_PlayerCreatePosition = m_CamPos;
+}
+
+void ImGui_Manager::SetPlayerLookAtPosByPickingPos()
+{
+    m_PlayerLookAtPosition = m_PickingPos;
+    m_PlayerLookAtPosition.y = m_PlayerCreatePosition.y;
 }
 
 HRESULT ImGui_Manager::Delete_PointLight()
@@ -1112,7 +1163,7 @@ HRESULT ImGui_Manager::Save_MapObject()
         file->Write<_float>(ptltInfo.range);
 
         // 점광원 울렁울렁효과 관련 정보
-        weak_ptr<PointLightEffect> pPTLTEffect = PtLtObject->Get_Script<PointLightEffect>();
+        weak_ptr<PointLightScript> pPTLTEffect = PtLtObject->Get_Script<PointLightScript>();
         if (!pPTLTEffect.expired())
         {
             file->Write<_bool>(pPTLTEffect.lock()->Get_bUseEffect());
@@ -1180,6 +1231,58 @@ HRESULT ImGui_Manager::Save_MapObject()
         file->Write<_float3>(MapDesc.CullPos);
         file->Write<_float>(MapDesc.CullRadius);
     }
+
+    // 플레이어의 시작위치 저장.
+    m_PlayerCreatePosition.w = 1.f;
+    file->Write<_float4>(m_PlayerCreatePosition);
+    // 플레이어 룩앳포지션 저장
+    m_PlayerLookAtPosition.w = 1.f;
+    file->Write<_float4>(m_PlayerLookAtPosition);
+
+// 셰이더옵션 저장
+    //RenderOption
+    file->Write<_float>(CUR_SCENE->g_fBrightness);
+    file->Write<_float>(CUR_SCENE->g_fContrast);
+    file->Write<_float>(CUR_SCENE->g_Saturation);
+    //Bloom
+    file->Write<_bool>(CUR_SCENE->g_BloomData.g_BloomOn);
+    file->Write<_float>(CUR_SCENE->g_BloomData.g_BloomMin);
+    //TonMapping
+    file->Write<_int>(CUR_SCENE->g_iTMIndex);
+    file->Write<_float>(CUR_SCENE->g_fMaxWhite);
+    //SSAO
+    file->Write<_bool>(CUR_SCENE->g_SSAOData.g_bSSAO_On);
+    file->Write<_float>(CUR_SCENE->g_SSAOData.g_fOcclusionRadius);
+    file->Write<_float>(CUR_SCENE->g_SSAOData.g_OcclusionFadeStart);
+    file->Write<_float>(CUR_SCENE->g_SSAOData.g_OcclusionFadeEnd);
+    //MotionBlur
+    file->Write<_bool>(CUR_SCENE->g_MotionBlurData.g_bMotionBlurOn);
+    file->Write<_int>(CUR_SCENE->g_MotionBlurData.g_iBlurCount);
+    //FogOption
+    file->Write<_bool>(CUR_SCENE->g_FogData.g_FogOn);
+    file->Write<_float>(CUR_SCENE->g_FogData.g_fogStart);
+    file->Write<_float>(CUR_SCENE->g_FogData.g_fogEnd);
+    file->Write<_float>(CUR_SCENE->g_FogData.g_fogDensity);
+    file->Write<_int>(CUR_SCENE->g_FogData.g_fogMode);
+    file->Write<Color>(CUR_SCENE->g_FogData.g_fogColor);
+    //LensFlare
+    file->Write<_bool>(CUR_SCENE->g_bLensFlare);
+    //DOF
+    file->Write<_bool>(CUR_SCENE->g_DOFData.g_bDOF_On);
+    file->Write<_float>(CUR_SCENE->g_DOFData.g_FocusDepth);
+    file->Write<_float>(CUR_SCENE->g_DOFData.g_DOFRange);
+    //LightOption
+    file->Write<_float>(CUR_SCENE->g_LightPowerData.g_specularPower);
+    file->Write<_float>(CUR_SCENE->g_LightPowerData.g_rimPower);
+    file->Write<Color>(CUR_SCENE->Get_Light()->Get_Light()->Get_LightInfo().color.diffuse);
+    //OtherOption
+    file->Write<_bool>(CUR_SCENE->g_bDrawOutline);
+    file->Write<_bool>(CUR_SCENE->g_bFXAAOn);
+    file->Write<_bool>(CUR_SCENE->g_bAberrationOn);
+    file->Write<_bool>(CUR_SCENE->g_bPBR_On);
+    file->Write<_float>(CUR_SCENE->g_lightAttenuation);
+    file->Write<_float>(CUR_SCENE->g_ambientRatio);
+
     return S_OK;
 }
 
@@ -1234,6 +1337,7 @@ HRESULT ImGui_Manager::Load_MapObject()
     // 보는방향
     _float3 DirLightLookDir = _float3{ 0.f, 0.f, 0.f };
     file->Read<_float3>(DirLightLookDir);
+    m_DirectionalLightLookAtPos = DirLightLookDir;
     DirectionalLightObject->Get_Transform()->LookAt(XMVectorSetW(DirLightLookDir,1.f));
     // 색깔
     LightColor DirLightColor;
@@ -1251,14 +1355,14 @@ HRESULT ImGui_Manager::Load_MapObject()
         file->Read<_float4>(loadPointLightInfo.vPosition);
         file->Read<LightColor>(loadPointLightInfo.color);
         file->Read<_float>(loadPointLightInfo.range);
-        shared_ptr<GameObject>& CreatePtltObj = Create_PointLight(loadPointLightInfo);
+        shared_ptr<GameObject> CreatePtltObj = Create_PointLight(loadPointLightInfo);
         m_pPointLightObjects.push_back(CreatePtltObj);
         m_strPointLightList.push_back("PointLight");
 
         // 점광원효과 기본초기화
-        shared_ptr<PointLightEffect> pPLE = make_shared<PointLightEffect>();
+        shared_ptr<PointLightScript> pPLE = make_shared<PointLightScript>();
         m_pPointLightObjects.back()->Add_Component(pPLE);
-        pPLE->Init();
+        pPLE->Clear();
 
         // 점광원 효과정보
         _bool bUseEffect = false;
@@ -1349,6 +1453,59 @@ HRESULT ImGui_Manager::Load_MapObject()
         m_strObjectNamePtr.push_back(pChar);
         m_strObjectName.push_back(pChar.get());
     }
+
+    // 플레이어 시작지점, 피킹포즈
+    file->Read<_float4>(m_PlayerCreatePosition);
+    m_PlayerCreatePosition.w = 1.f;
+    file->Read<_float4>(m_PlayerLookAtPosition);
+    m_PlayerLookAtPosition.w = 1.f;
+    // 그 위치방향으로 카메라 세팅
+    CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_PlayerCreatePosition);
+    CUR_SCENE->Get_MainCamera()->Get_Transform()->LookAt(m_PlayerLookAtPosition);
+
+// 셰이더옵션 로드
+    //RenderOption
+    file->Read<_float>(CUR_SCENE->g_fBrightness);
+    file->Read<_float>(CUR_SCENE->g_fContrast);
+    file->Read<_float>(CUR_SCENE->g_Saturation);
+    //Bloom
+    file->Read<_bool>(CUR_SCENE->g_BloomData.g_BloomOn);
+    file->Read<_float>(CUR_SCENE->g_BloomData.g_BloomMin);
+    //TonMapping
+    file->Read<_int>(CUR_SCENE->g_iTMIndex);
+    file->Read<_float>(CUR_SCENE->g_fMaxWhite);
+    //SSAO
+    file->Read<_bool>(CUR_SCENE->g_SSAOData.g_bSSAO_On);
+    file->Read<_float>(CUR_SCENE->g_SSAOData.g_fOcclusionRadius);
+    file->Read<_float>(CUR_SCENE->g_SSAOData.g_OcclusionFadeStart);
+    file->Read<_float>(CUR_SCENE->g_SSAOData.g_OcclusionFadeEnd);
+    //MotionBlur
+    file->Read<_bool>(CUR_SCENE->g_MotionBlurData.g_bMotionBlurOn);
+    file->Read<_int>(CUR_SCENE->g_MotionBlurData.g_iBlurCount);
+    //FogOption
+    file->Read<_bool>(CUR_SCENE->g_FogData.g_FogOn);
+    file->Read<_float>(CUR_SCENE->g_FogData.g_fogStart);
+    file->Read<_float>(CUR_SCENE->g_FogData.g_fogEnd);
+    file->Read<_float>(CUR_SCENE->g_FogData.g_fogDensity);
+    file->Read<_int>(CUR_SCENE->g_FogData.g_fogMode);
+    file->Read<Color>(CUR_SCENE->g_FogData.g_fogColor);
+    //LensFlare
+    file->Read<_bool>(CUR_SCENE->g_bLensFlare);
+    //DOF
+    file->Read<_bool>(CUR_SCENE->g_DOFData.g_bDOF_On);
+    file->Read<_float>(CUR_SCENE->g_DOFData.g_FocusDepth);
+    file->Read<_float>(CUR_SCENE->g_DOFData.g_DOFRange);
+    //LightOption
+    file->Read<_float>(CUR_SCENE->g_LightPowerData.g_specularPower);
+    file->Read<_float>(CUR_SCENE->g_LightPowerData.g_rimPower);
+    file->Read<Color>(CUR_SCENE->Get_Light()->Get_Light()->Get_LightInfo().color.diffuse);
+    //OtherOption
+    file->Read<_bool>(CUR_SCENE->g_bDrawOutline);
+    file->Read<_bool>(CUR_SCENE->g_bFXAAOn);
+    file->Read<_bool>(CUR_SCENE->g_bAberrationOn);
+    file->Read<_bool>(CUR_SCENE->g_bPBR_On);
+    file->Read<_float>(CUR_SCENE->g_lightAttenuation);
+    file->Read<_float>(CUR_SCENE->g_ambientRatio);
 
     return S_OK;
 }
@@ -1497,4 +1654,211 @@ void ImGui_Manager::Set_SampleObject()
     m_SampleObject->Get_ModelRenderer()->Set_Model(model);
 
     m_fSampleModelCullSize = Compute_CullingData(m_SampleObject).w;
+}
+
+void ImGui_Manager::RenderOptionTab()
+{
+    if (BeginTabItem("Render Option"))
+    {
+        string fps = "FPS : " + to_string(TIME.GetFPS());
+        Text(fps.c_str());
+        if (CollapsingHeader("RenderOption"))
+        {
+
+            _float& g_fBrightness = CUR_SCENE->g_fBrightness;
+            _float& g_fContrast = CUR_SCENE->g_fContrast;
+            _float& g_Saturation = CUR_SCENE->g_Saturation;
+
+
+
+            DragFloat("Brightness", &g_fBrightness, 0.01f, 0.f, 5.f);
+            DragFloat("Contrast", &g_fContrast, 0.01f, 0.01f, 5.f);
+            DragFloat("Saturation", &g_Saturation, 0.01f, 0.01f, 5.f);
+
+
+        }
+        if (CollapsingHeader("Bloom"))
+        {
+            Checkbox("Bloom On", &CUR_SCENE->g_BloomData.g_BloomOn);
+            _float& g_fBloomMin = CUR_SCENE->g_BloomData.g_BloomMin;
+            DragFloat("Bloom Min Value", &g_fBloomMin, 0.001f, 0.01f, 1.f);
+        }
+        if (CollapsingHeader("ToneMapping"))
+        {
+            _float& g_fMaxWhite = CUR_SCENE->g_fMaxWhite;
+            _int& g_iTMIndex = CUR_SCENE->g_iTMIndex;
+
+            static _int tmIndex = 0;
+            InputInt("ToneMapping Mod", &tmIndex);
+
+            if (tmIndex > 3) tmIndex %= 4;
+            else if (tmIndex < 0) tmIndex += 4;
+
+            g_iTMIndex = tmIndex;
+            if (g_iTMIndex == 1)
+                DragFloat("Max_White Value", &g_fMaxWhite, 0.1f, 0.01f, 5.f);
+        }
+        if (CollapsingHeader("SSAO"))
+        {
+            _bool& g_bSSAO_On = CUR_SCENE->g_SSAOData.g_bSSAO_On;
+            Checkbox("SSAO On", &g_bSSAO_On);
+            if (g_bSSAO_On)
+            {
+                _float& g_fOcclusionRadius = CUR_SCENE->g_SSAOData.g_fOcclusionRadius;
+                _float& g_OcclusionFadeStart = CUR_SCENE->g_SSAOData.g_OcclusionFadeStart;
+                _float& g_OcclusionFadeEnd = CUR_SCENE->g_SSAOData.g_OcclusionFadeEnd;
+
+                DragFloat("SSAO Radius", &g_fOcclusionRadius, 0.01f, 0.0001f, 1.f);
+                DragFloat("SSAO FadeStart", &g_OcclusionFadeStart, 0.01f, 0.0001f, g_OcclusionFadeEnd);
+                DragFloat("SSAO FadeEnd", &g_OcclusionFadeEnd, 0.01f, g_OcclusionFadeStart, 1.f);
+            }
+        }
+        if (CollapsingHeader("Motion Blur"))
+        {
+            Scene::MotionBlurData& data = CUR_SCENE->g_MotionBlurData;
+            Checkbox("Motion Blur On", &data.g_bMotionBlurOn);
+            InputInt("Motion Blur Count", &data.g_iBlurCount);
+
+        }
+        if (CollapsingHeader("Fog Option"))
+        {
+            _bool& g_FogOn = CUR_SCENE->g_FogData.g_FogOn;
+            _float& gFogStart = CUR_SCENE->g_FogData.g_fogStart;
+            _float& g_FogEnd = CUR_SCENE->g_FogData.g_fogEnd;
+            _float& g_fogDensity = CUR_SCENE->g_FogData.g_fogDensity;
+            _int& g_fogMode = CUR_SCENE->g_FogData.g_fogMode;
+            Color& gColorFog = CUR_SCENE->g_FogData.g_fogColor;
+
+            Checkbox("Fog On", &g_FogOn);
+            DragFloat("Fog Start Range", &gFogStart, 1.f, 0.0001f, g_FogEnd);
+            DragFloat("Fog End", &g_FogEnd, 1.f, gFogStart, 2000.f);
+            DragFloat("Fog Density", &g_fogDensity, 0.001f, 0.001f, 1.f);
+            InputInt("Fog Mod", &g_fogMode);
+            if (g_fogMode < 0) g_fogMode = 0;
+            if (g_fogMode > 2) g_fogMode = 2;
+            static bool alpha_preview = true;
+            static bool alpha_half_preview = false;
+            static bool drag_and_drop = true;
+            static bool options_menu = true;
+            static bool hdr = true;
+
+            ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
+            ImGui::ColorEdit4("FogColor", (float*)&gColorFog, ImGuiColorEditFlags_DisplayHSV | misc_flags);
+
+        }
+        if (CollapsingHeader("Lens Flare Option"))
+        {
+            if (CUR_SCENE)
+            {
+                _bool& g_bLensFlare = CUR_SCENE->g_bLensFlare;
+                Checkbox("LensFlare On", &g_bLensFlare);
+            }
+        }
+        if (CollapsingHeader("DOF"))
+        {
+            Checkbox("DOF On", &CUR_SCENE->g_DOFData.g_bDOF_On);
+            _float& g_FocusDepth = CUR_SCENE->g_DOFData.g_FocusDepth;
+            _float& g_DOFRange = CUR_SCENE->g_DOFData.g_DOFRange;
+            DragFloat("Focus Depth", &g_FocusDepth, 1.f, 0.1f, 1000.f);
+            DragFloat("g_DOFRange", &g_DOFRange, 0.1f, 0.0001f, 1000.f);
+        }
+        if (CollapsingHeader("Light Option"))
+        {
+            _float& g_fSpecularPower = CUR_SCENE->g_LightPowerData.g_specularPower;
+            _float& g_fRimPower = CUR_SCENE->g_LightPowerData.g_rimPower;
+            DragFloat("Specular", &g_fSpecularPower, 0.1f, 0.01f);
+            DragFloat("RimPower", &g_fRimPower, 0.1f, 0.01f);
+            if (CUR_SCENE->Get_Light())
+            {
+                Color& g_lightDiffuse = CUR_SCENE->Get_Light()->Get_Light()->Get_LightInfo().color.diffuse;
+                static bool alpha_preview = true;
+                static bool alpha_half_preview = false;
+                static bool drag_and_drop = true;
+                static bool options_menu = true;
+                static bool hdr = true;
+
+                ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
+                DragFloat4("color", (_float*)&g_lightDiffuse);
+
+            }
+        }
+        if (CollapsingHeader("Other Option"))
+        {
+            SeparatorText("Outline");
+            _bool& g_bOutline = CUR_SCENE->g_bDrawOutline;
+            Checkbox("Outline On", &g_bOutline);
+
+            SeparatorText("FXAA");
+            _bool& g_bFXAAOn = CUR_SCENE->g_bFXAAOn;
+            Checkbox("FXAA On", &g_bFXAAOn);
+
+            SeparatorText("Aberration");
+            _bool& g_bAberrationOn = CUR_SCENE->g_bAberrationOn;
+            Checkbox("Aberration On", &g_bAberrationOn);
+            if (g_bAberrationOn)
+            {
+                _float& g_fAberrationPower = CUR_SCENE->g_fAberrationPower;
+                DragFloat("Aberration Power", &g_fAberrationPower, 1.f, -300.f, 300.f);
+            }
+            SeparatorText("PBR");
+            _bool& g_bPBR_On = CUR_SCENE->g_bPBR_On;
+            Checkbox("PBR On", &g_bPBR_On);
+            _float& g_lightAttenuation = CUR_SCENE->g_lightAttenuation;
+            _float& g_ambientRatio = CUR_SCENE->g_ambientRatio;
+            DragFloat("g_lightAttenuation", &g_lightAttenuation);
+            DragFloat("g_ambientRatio", &g_ambientRatio, 0.1f, 0.1f, 1.5f);
+        }
+
+        EndTabItem();
+    }
+
+    if (Button("ClearAllOptions"))
+        ClearAllShaderOptions();
+}
+
+void ImGui_Manager::ClearAllShaderOptions()
+{
+    //RenderOption
+    _float& g_fBrightness = CUR_SCENE->g_fBrightness = 0.f;
+    _float& g_fContrast = CUR_SCENE->g_fContrast = 1.f;
+    _float& g_Saturation = CUR_SCENE->g_Saturation = 1.f;
+    //Bloom
+    _bool& g_fBloomOn = CUR_SCENE->g_BloomData.g_BloomOn = false;
+    _float& g_fBloomMin = CUR_SCENE->g_BloomData.g_BloomMin = 0.99f;
+    //TonMapping
+    _int& g_iTMIndex = CUR_SCENE->g_iTMIndex = 0;
+    _float& g_fMaxWhite = CUR_SCENE->g_fMaxWhite = 1.f;
+    //SSAO
+    _bool& g_bSSAO_On = CUR_SCENE->g_SSAOData.g_bSSAO_On = true;
+    _float& g_fOcclusionRadius = CUR_SCENE->g_SSAOData.g_fOcclusionRadius = 0.070f;
+    _float& g_OcclusionFadeStart = CUR_SCENE->g_SSAOData.g_OcclusionFadeStart = 0.3f;
+    _float& g_OcclusionFadeEnd = CUR_SCENE->g_SSAOData.g_OcclusionFadeEnd = 1.f;
+    //MotionBlur
+    Scene::MotionBlurData& data = CUR_SCENE->g_MotionBlurData;
+    data.g_bMotionBlurOn = false;
+    data.g_iBlurCount = 0;
+    //FogOption
+    _bool& g_FogOn = CUR_SCENE->g_FogData.g_FogOn = false;
+    _float& gFogStart = CUR_SCENE->g_FogData.g_fogStart = 15.f;
+    _float& g_FogEnd = CUR_SCENE->g_FogData.g_fogEnd = 150.f;
+    _float& g_fogDensity = CUR_SCENE->g_FogData.g_fogDensity = 1.f;
+    _int& g_fogMode = CUR_SCENE->g_FogData.g_fogMode = 0;
+    Color& g_ColorFog = CUR_SCENE->g_FogData.g_fogColor = Color(1.f);
+    //LensFlare
+    _bool& g_bLensFlare = CUR_SCENE->g_bLensFlare = false;
+    //DOF
+    _bool& g_bDOF_On = CUR_SCENE->g_DOFData.g_bDOF_On = false;
+    _float & g_FocusDepth = CUR_SCENE->g_DOFData.g_FocusDepth = 7.f;
+    _float& g_DOFRange = CUR_SCENE->g_DOFData.g_DOFRange = 100.f;
+    //LightOption
+    _float& g_fSpecularPower = CUR_SCENE->g_LightPowerData.g_specularPower = 10.f;
+    _float& g_fRimPower = CUR_SCENE->g_LightPowerData.g_rimPower = 10.f;
+    Color& g_lightDiffuse = CUR_SCENE->Get_Light()->Get_Light()->Get_LightInfo().color.diffuse = Color(1.f);
+    //OtherOption
+    _bool& g_bOutline = CUR_SCENE->g_bDrawOutline = false;
+    _bool& g_bFXAAOn = CUR_SCENE->g_bFXAAOn = false;
+    _bool& g_bAberrationOn = CUR_SCENE->g_bAberrationOn = false;
+    _bool& g_bPBR_On = CUR_SCENE->g_bPBR_On = true;
+    _float& g_lightAttenuation = CUR_SCENE->g_lightAttenuation = 100.f;
+    _float& g_ambientRatio = CUR_SCENE->g_ambientRatio = 0.5f;
 }

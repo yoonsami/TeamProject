@@ -24,7 +24,7 @@ enum class COMPONENT_TYPE : _uchar
 	FontRenderer,
 	EffectController,
 	MotionTrailRenderer,
-
+	DistortionRenderer,
 	Script,
 	End,
 };

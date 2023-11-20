@@ -296,7 +296,8 @@ void ModelAnimator::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 
 			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-			m_pShader->DrawIndexedInstanced(0, PS_ANIMINSTANCING, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
+			int techniqueIndex = CUR_SCENE->g_bPBR_On ? 4 : 0;
+			m_pShader->DrawIndexedInstanced(techniqueIndex, PS_ANIMINSTANCING, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
 		}
 	}
 	else
@@ -603,6 +604,18 @@ void ModelAnimator::Set_NextTweenAnim(const wstring& animName, _float tweenDurat
 	m_TweenDesc.ClearNextAnim();
 	m_TweenDesc.next.animIndex = animIndex;
 	m_TweenDesc.tweenDuration = tweenDuration;
+
+	anim->loop = loop;
+	anim->speed = animSpeed;
+}
+
+void ModelAnimator::Set_CurrentAnim(_int animIndex, _bool loop, _float animSpeed)
+{
+	auto anim = Get_Model()->Get_AnimationByIndex(animIndex);
+	assert(animIndex >= 0);
+
+	m_TweenDesc.ClearNextAnim();
+	Set_CurrentAnim(animIndex);
 
 	anim->loop = loop;
 	anim->speed = animSpeed;

@@ -108,6 +108,12 @@ float4 PS_Clamp(EffectOut input) : SV_Target
             vTexcoord_Op[i].x = 1.f - vTemp.y;
             vTexcoord_Op[i].y = vTemp.x;
         }
+        else if (iFilpOPtion_Op[i] == 5)
+        {
+            float2 vTemp = vTexcoord_Op[i];
+            vTexcoord_Op[i].x = vTemp.y;
+            vTexcoord_Op[i].y = 1 - vTemp.x;
+        }
     }
   
     /* Sampled from textures */    

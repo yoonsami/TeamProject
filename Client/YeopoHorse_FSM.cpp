@@ -40,7 +40,7 @@ HRESULT YeopoHorse_FSM::Init()
     m_pAttackCollider.lock()->Set_Name(L"Vehicle_AttackCollider");
    
     m_iSkillBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-Head");
-
+    m_pOwner.lock()->Set_DrawShadow(true);
 
     return S_OK;
 }

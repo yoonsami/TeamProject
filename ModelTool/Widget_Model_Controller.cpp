@@ -47,10 +47,10 @@ void Widget_Model_Controller::Tick()
 
 	if (!m_pMaterial.expired())
 	{
-	Begin("Material Controller");
-	Material_Controller();
+		Begin("Material Controller");
+		Material_Controller();
 
-	End();
+		End();
 	}
 
 	if (!m_pControlObject.expired() && m_pControlObject.lock()->Get_Model()->Get_ModelTag() == L"Player")
@@ -128,7 +128,7 @@ void Widget_Model_Controller::Material_Controller()
 		{
 			Text(Utils::ToString(m_pMaterial.lock()->Get_Name()).c_str());
 			
-			for (_uint i = 0; i < MAX_TEXTURE_MAP_COUONT; ++i)
+			/*for (_uint i = 0; i < MAX_TEXTURE_MAP_COUONT; ++i)
 			{
 				if (m_pMaterial.lock()->Get_TextureMap(static_cast<TextureMapType>(i)))
 				{
@@ -136,7 +136,7 @@ void Widget_Model_Controller::Material_Controller()
 				}
 
 
-			}
+			}*/
 
 			auto& materialDesc = m_pMaterial.lock()->Get_MaterialDesc();
 			static bool alpha_preview = true;

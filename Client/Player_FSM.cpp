@@ -9,6 +9,9 @@
 #include "Model.h"
 #include "CoolTimeCheckScript.h"
 #include "ModelRenderer.h"
+#include "DistortionRenderer.h"
+#include <Utils.h>
+
 Player_FSM::Player_FSM()
 {
 }
@@ -880,17 +883,16 @@ void Player_FSM::skill_1100()
     {
         AttackCollider_On(NORMAL_ATTACK);
 
-		/*  if (!m_bAttackEffectCreate)
-		  {
-			  Add_Effect(L"Teoi_Slash2");
-			  m_bAttackEffectCreate = true;
-		  }*/
+		/* if (!m_bAttackEffectCreate)
+		 {
+			 Add_Effect(L"Teoi_Slash2");
+			 m_bAttackEffectCreate = true;
+		 }*/
     }
     else if (Get_CurFrame() == 13)
         AttackCollider_Off();
 
     // Init때 초기
-    // m_vKeyInputTargetDir -> 이름 헷갈릴 여지 있음 TargetDir 등으로 회전하고자 하는 목표를 뜻하는 단어로
     if (m_vKeyInputTargetDir != _float3(0.f))
         Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
@@ -1421,7 +1423,7 @@ void Player_FSM::skill_200100_Init()
     m_vKeyInputTargetDir = _float3(0.f);
     m_vKeyInputTargetDir = Get_InputDirVector();
 
-    AttackCollider_On(NORMAL_ATTACK);
+    AttackCollider_Off();
 
     m_bInvincible = true;
     m_bSuperArmor = true;

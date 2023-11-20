@@ -184,6 +184,7 @@
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="CustomFont.h" />
     <ClInclude Include="Define.h" />
+    <ClInclude Include="DistortionRenderer.h" />
     <ClInclude Include="EnginePch.h" />
     <ClInclude Include="Enum.h" />
     <ClInclude Include="FileUtils.h" />
@@ -226,6 +227,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="PhysxMgr.h" />
     <ClInclude Include="PickingMgr.h" />
+    <ClInclude Include="PointLightScript.h" />
     <ClInclude Include="Primitive3D.h" />
     <ClInclude Include="RawBuffer.h" />
     <ClInclude Include="RenderTargetGroup.h" />
@@ -264,6 +266,7 @@
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="CustomFont.cpp" />
+    <ClCompile Include="DistortionRenderer.cpp" />
     <ClCompile Include="FileUtils.cpp" />
     <ClCompile Include="FontRenderer.cpp" />
     <ClCompile Include="Frustum.cpp" />
@@ -309,6 +312,7 @@
     </ClCompile>
     <ClCompile Include="PhysxMgr.cpp" />
     <ClCompile Include="PickingMgr.cpp" />
+    <ClCompile Include="PointLightScript.cpp" />
     <ClCompile Include="Primitive3D.cpp" />
     <ClCompile Include="RawBuffer.cpp" />
     <ClCompile Include="RenderTargetGroup.cpp" />

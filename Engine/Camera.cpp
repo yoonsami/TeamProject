@@ -9,6 +9,7 @@
 #include "ModelRenderer.h"
 #include "ModelAnimator.h"
 #include "TrailRenderer.h"
+#include "DistortionRenderer.h"
 #include "MotionTrailRenderer.h"
 
 Camera::Camera(CameraDesc desc)
@@ -74,9 +75,8 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 		if (gameObject->Get_MeshRenderer() == nullptr
 			&& gameObject->Get_ModelRenderer() == nullptr
 			&& gameObject->Get_Animator() == nullptr
-			&& gameObject->Get_Collider() == nullptr
 			//&& gameObject->Get_EffectRenderer() == nullptr
-			//&& gameObject->Get_ParticleSystem() == nullptr
+			&& gameObject->Get_DistortionRenderer() == nullptr
 			&& gameObject->Get_Particle() == nullptr
 			&& gameObject->Get_MeshEffect() == nullptr
 			&& gameObject->Get_TrailRenderer() == nullptr
@@ -162,16 +162,8 @@ void Camera::Render_DistrotionEffects()
 
 	for (auto& obj : m_DistortionEffects)
 	{
-		if (obj->Get_MeshRenderer())
-			obj->Get_MeshRenderer()->Render();
-		else if (obj->Get_ModelRenderer())
-			obj->Get_ModelRenderer()->Render();
-		//else if (obj->Get_EffectRenderer())
-		//	obj->Get_EffectRenderer()->Render();
-		else if (obj->Get_Animator())
-			obj->Get_Animator()->Render();
-		else if (obj->Get_TrailRenderer())
-			obj->Get_TrailRenderer()->Render();
+		if (obj->Get_DistortionRenderer())
+			obj->Get_DistortionRenderer()->Render();
 	}
 }
 

@@ -18,6 +18,7 @@
 #include "ModelRenderer.h"
 #include "ModelAnimator.h"
 #include "ParticleSystem.h"
+#include "DistortionRenderer.h"
 #include "CharacterController.h"
 #include "MotionTrailRenderer.h"
 
@@ -154,6 +155,9 @@ SHADER_TYPE GameObject::Get_ShaderType()
 	if (Get_TrailRenderer() && Get_TrailRenderer()->Get_Shader())
 		return Get_TrailRenderer()->Get_Shader()->Get_ShaderType();
 
+	if (Get_DistortionRenderer() && Get_DistortionRenderer()->Get_Shader())
+		return Get_DistortionRenderer()->Get_Shader()->Get_ShaderType();
+
 	return SHADER_TYPE::NONE;
 }
 
@@ -162,6 +166,11 @@ shared_ptr<Component> GameObject::Get_FixedComponent(COMPONENT_TYPE type)
 	_uchar index = static_cast<_uchar>(type);
 	
 	return m_Components[index];
+}
+
+shared_ptr<DistortionRenderer> GameObject::Get_DistortionRenderer()
+{
+	return static_pointer_cast<DistortionRenderer>(Get_FixedComponent(COMPONENT_TYPE::DistortionRenderer));
 }
 
 shared_ptr<CharacterController> GameObject::Get_CharacterController()

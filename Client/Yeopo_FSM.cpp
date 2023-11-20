@@ -51,6 +51,8 @@ HRESULT Yeopo_FSM::Init()
     m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
     m_iSkillBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"D_Eye_Target");
 
+    m_fNormalAttack_AnimationSpeed = 1.2f;
+
     return S_OK;
 }
 
@@ -960,11 +962,11 @@ void Yeopo_FSM::skill_1100()
 
     if (m_bCanCombo)
     {
-        if (Get_CurFrame() > 20)
+        if (Get_CurFrame() > 15)
             m_eCurState = STATE::skill_1200;
     }
 
-    if (Is_AnimFinished())
+    if (Get_FinalFrame() - Get_CurFrame() < 6)
         m_eCurState = STATE::b_idle;
 
 
@@ -1009,11 +1011,11 @@ void Yeopo_FSM::skill_1200()
 
     if (m_bCanCombo)
     {
-        if (Get_CurFrame() > 20)
+        if (Get_CurFrame() > 15)
             m_eCurState = STATE::skill_1300;
     }
 
-    if (Is_AnimFinished())
+    if (Get_FinalFrame() - Get_CurFrame() < 7)
     {
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
@@ -1075,11 +1077,11 @@ void Yeopo_FSM::skill_1300()
 
     if (m_bCanCombo)
     {
-        if (Get_CurFrame() > 53)
+        if (Get_CurFrame() > 45)
             m_eCurState = STATE::skill_1400;
     }
 
-    if (Is_AnimFinished())
+    if (Get_FinalFrame() - Get_CurFrame() < 6)
     {
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
@@ -1125,7 +1127,7 @@ void Yeopo_FSM::skill_1400()
     if (m_vKeyInputTargetDir != _float3(0.f))
         Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
-    if (Is_AnimFinished())
+    if (Get_FinalFrame() - Get_CurFrame() < 6)
     {
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
@@ -1272,7 +1274,7 @@ void Yeopo_FSM::skill_100200()
             m_eCurState = STATE::skill_100300;
     }
 
-    if (Is_AnimFinished())
+    if (Get_FinalFrame() - Get_CurFrame() < 8)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1367,7 +1369,7 @@ void Yeopo_FSM::skill_200100()
     if (m_vKeyInputTargetDir != _float3(0.f))
         Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
-    if (Is_AnimFinished())
+    if (Get_FinalFrame() - Get_CurFrame() < 10)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1424,7 +1426,7 @@ void Yeopo_FSM::skill_300100()
             m_eCurState = STATE::skill_300200;
     }
 
-    if (Is_AnimFinished())
+    if (Get_FinalFrame() - Get_CurFrame() <15)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1479,7 +1481,7 @@ void Yeopo_FSM::skill_300200()
             m_eCurState = STATE::skill_300300;
     }
 
-    if (Is_AnimFinished())
+    if (Get_FinalFrame() - Get_CurFrame() < 15)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1535,7 +1537,7 @@ void Yeopo_FSM::skill_300300()
             m_eCurState = STATE::skill_300400;
     }
 
-    if (Is_AnimFinished())
+    if (Get_FinalFrame() - Get_CurFrame() < 15)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1574,7 +1576,7 @@ void Yeopo_FSM::skill_300400()
     if (m_vKeyInputTargetDir != _float3(0.f))
         Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
-    if (Is_AnimFinished())
+    if (Get_FinalFrame() - Get_CurFrame() < 15)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;

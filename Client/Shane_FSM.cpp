@@ -50,7 +50,7 @@ HRESULT Shane_FSM::Init()
 
     m_pCamera = CUR_SCENE->Get_MainCamera();
 
-    m_fNormalAttack_AnimationSpeed = 1.5f;
+    m_fNormalAttack_AnimationSpeed = 1.2f;
 
     return S_OK;
 }
@@ -419,6 +419,7 @@ void Shane_FSM::b_idle_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
+    //animator->Set_NextTweenAnim(L"b_idle", 0.1f, true, 1.f);
     animator->Set_NextTweenAnim(L"b_idle", 0.1f, true, 1.f);
 
     Get_Transform()->Set_Speed(m_fRunSpeed);
@@ -909,7 +910,7 @@ void Shane_FSM::skill_1100()
             m_eCurState = STATE::skill_1200;
     }
 
-    if (Is_AnimFinished())
+    if (Get_FinalFrame()-Get_CurFrame() < 9)
         m_eCurState = STATE::b_idle;
 
     Use_Skill();
@@ -962,7 +963,7 @@ void Shane_FSM::skill_1200()
     }
 
 
-    if (Is_AnimFinished())
+	if (Get_FinalFrame() - Get_CurFrame() < 9)
     {
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
@@ -1019,7 +1020,7 @@ void Shane_FSM::skill_1300()
     }
 
 
-    if (Is_AnimFinished())
+	if (Get_FinalFrame() - Get_CurFrame() < 9)
     {
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
@@ -1064,7 +1065,7 @@ void Shane_FSM::skill_1400()
     if (m_vKeyInputTargetDir != _float3(0.f))
         Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
-    if (Is_AnimFinished())
+    if (Get_FinalFrame() - Get_CurFrame() < 9)
     {
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
@@ -1195,20 +1196,12 @@ void Shane_FSM::skill_100100()
             m_eCurState = STATE::skill_100200;
     }
 
-
-    if (Is_AnimFinished())
-    {
-        m_bCanCombo = false;
-        m_eCurState = STATE::b_idle;
-    }
-
-    _float3 vInputVector = Get_InputDirVector();
-
     if (m_vKeyInputTargetDir != _float3(0.f))
         Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
-    if (Is_AnimFinished())
+    if (Get_FinalFrame() - Get_CurFrame() < 9)
     {
+        m_bCanCombo = false;
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
     }
@@ -1253,7 +1246,7 @@ void Shane_FSM::skill_100200()
     if (m_vKeyInputTargetDir != _float3(0.f))
         Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
-    if (Is_AnimFinished())
+    if (Get_FinalFrame() - Get_CurFrame() < 9)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1323,7 +1316,7 @@ void Shane_FSM::skill_200100()
             m_eCurState = STATE::skill_200200;
     }
 
-    if (Is_AnimFinished())
+    if (Get_FinalFrame() - Get_CurFrame() < 9)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1371,7 +1364,7 @@ void Shane_FSM::skill_200200()
     if (m_vKeyInputTargetDir != _float3(0.f))
         Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
-    if (Is_AnimFinished())
+    if (Get_FinalFrame() - Get_CurFrame() < 9)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1422,7 +1415,7 @@ void Shane_FSM::skill_300100()
     if (m_vKeyInputTargetDir != _float3(0.f))
         Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
-    if (Is_AnimFinished())
+    if (Get_FinalFrame() - Get_CurFrame() < 9)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1468,7 +1461,7 @@ void Shane_FSM::skill_500100()
     if (m_vKeyInputTargetDir != _float3(0.f))
         Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
-    if (Is_AnimFinished())
+    if (Get_FinalFrame() - Get_CurFrame() < 9)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1531,7 +1524,7 @@ void Shane_FSM::skill_502100()
     if (m_vKeyInputTargetDir != _float3(0.f))
         Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
-    if (Is_AnimFinished())
+    if (Get_FinalFrame() - Get_CurFrame() < 9)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;

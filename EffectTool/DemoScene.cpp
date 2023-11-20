@@ -32,7 +32,6 @@ void DemoScene::Init()
 void DemoScene::Tick()
 {
 	__super::Tick();
-
 	IMGUITOOL_MGR.Tick();
 }
 

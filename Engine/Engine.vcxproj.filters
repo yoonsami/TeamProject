@@ -190,9 +190,6 @@
     <Filter Include="04.Component\07.FSM">
       <UniqueIdentifier>{d8ad09ab-a535-4404-91b9-e888c1e858eb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04.Component\05.UI &amp; Effect\Renderer\03.MotionTrailRenderer">
-      <UniqueIdentifier>{6f75b1ee-ac69-4138-a4c2-c8e5be877ffe}</UniqueIdentifier>
-    </Filter>
     <Filter Include="04.Component\05.UI &amp; Effect\Renderer\04.MotionTrailRenderer">
       <UniqueIdentifier>{5ade97b7-d3fd-483c-9c42-c2925271ad57}</UniqueIdentifier>
     </Filter>
@@ -216,6 +213,18 @@
     </Filter>
     <Filter Include="02.Manager\01.ResourceMgr\Resources\Model\Parts">
       <UniqueIdentifier>{435dff00-1b52-4179-96df-88922408507a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Map">
+      <UniqueIdentifier>{239d91f9-eae2-41d5-acfd-0f9374d453a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Map\00.PointLightScript">
+      <UniqueIdentifier>{b2a3a1c2-54b7-4366-a66f-ab9ac26b97ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Component\05.UI &amp; Effect\Renderer\NewFilter1">
+      <UniqueIdentifier>{9efacd5e-0f70-45b1-9827-179c6d18e572}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Component\05.UI &amp; Effect\Renderer\03.DistortionRenderer">
+      <UniqueIdentifier>{6f75b1ee-ac69-4138-a4c2-c8e5be877ffe}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -440,6 +449,12 @@
     </ClCompile>
     <ClCompile Include="Parts.cpp">
       <Filter>02.Manager\01.ResourceMgr\Resources\Model\Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLightScript.cpp">
+      <Filter>06.Map\00.PointLightScript</Filter>
+    </ClCompile>
+    <ClCompile Include="DistortionRenderer.cpp">
+      <Filter>04.Component\05.UI &amp; Effect\Renderer\03.DistortionRenderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -679,6 +694,12 @@
     </ClInclude>
     <ClInclude Include="Parts.h">
       <Filter>02.Manager\01.ResourceMgr\Resources\Model\Parts</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLightScript.h">
+      <Filter>06.Map\00.PointLightScript</Filter>
+    </ClInclude>
+    <ClInclude Include="DistortionRenderer.h">
+      <Filter>04.Component\05.UI &amp; Effect\Renderer\03.DistortionRenderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
