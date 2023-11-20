@@ -493,7 +493,7 @@ void ResourceMgr::CreateDefaultShader()
 		wstring ShaderTag = L"SkyBox.fx";
 		Load<Shader>(ShaderTag, ShaderTag);
 		auto shader = Get<Shader>(ShaderTag);
-		shader->Set_ShaderType(SHADER_TYPE::FORWARD);
+		shader->Set_ShaderType(SHADER_TYPE::SKYBOX);
 	}
 	{
 		wstring ShaderTag = L"Billboard.fx";

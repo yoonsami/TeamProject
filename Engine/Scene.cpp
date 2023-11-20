@@ -92,15 +92,18 @@ void Scene::Render()
 	}
 	Render_Lights();
 	//Render_BlurEffect();
-	Render_LightFinal();
+	Render_LightFinal();	
+	Render_SkyBox();
+	Render_DOFMap();
+	Render_DOFMapScaling();
+	Render_DOFFinal();
+	Render_Fog();
 	Render_MotionBlurFinal();
 
 
 
 	Render_Forward();
-	Render_DOFMap();
-	Render_DOFMapScaling();
-	Render_DOFFinal();
+
 	Render_BloomMap();
 	Render_BloomMapScaling();
 	Render_BloomFinal();
@@ -108,7 +111,7 @@ void Scene::Render()
 	Render_Distortion();
 	Render_Distortion_Final();
 	Render_LensFlare();
-	Render_Fog();
+
 	Render_Aberration();
 
 	Render_Debug();
@@ -1020,6 +1023,19 @@ void Scene::Render_MotionBlurFinal()
 
 	material->Get_Shader()->DrawIndexed(1, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 	m_wstrFinalRenderTarget = L"MotionBlurFinalTarget";
+}
+
+void Scene::Render_SkyBox()
+{
+	if (Get_MainCamera())
+	{
+		shared_ptr<Camera> mainCamera = Get_MainCamera()->Get_Camera();
+		Camera::S_View = mainCamera->Get_ViewMat();
+		Camera::S_Proj = mainCamera->Get_ProjMat();
+
+
+		mainCamera->Render_SkyBox();
+	}
 }
 
 void Scene::Render_Forward()

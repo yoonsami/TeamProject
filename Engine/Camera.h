@@ -49,6 +49,7 @@ public:
     void Sort_ShadowObject(shared_ptr<Scene> scene);
     void Render_DistrotionEffects();
     void Render_BlurForward();
+    void Render_SkyBox();
     void Render_Forward();
     void Render_Deferred();
     void Render_Shadow();

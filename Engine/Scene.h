@@ -75,7 +75,7 @@ protected:
 	void Render_OutLine();
 
 	void Render_MotionBlurFinal();
-
+	void Render_SkyBox();
 	void Render_Forward();
 
 

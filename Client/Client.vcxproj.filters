@@ -229,6 +229,15 @@
     <Filter Include="02.Component\00.MonoBehaviour\04.SkillScript\01.InstallationSkill_Script">
       <UniqueIdentifier>{c4e21611-c33e-45da-90c1-a4e83bb3a641}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\14.UiComboEffect">
+      <UniqueIdentifier>{f571befa-eff9-439d-ac9d-ebdc078f5243}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\15.UiSkillGauge">
+      <UniqueIdentifier>{9ecc355c-07b4-4c39-a5aa-ab2a17153d0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\16.UiMouseClick">
+      <UniqueIdentifier>{836d48fb-9b5c-4336-a106-442e39d28022}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -480,6 +489,15 @@
     <ClInclude Include="ForwardMovingSkillScript.h">
       <Filter>02.Component\00.MonoBehaviour\04.SkillScript\00.ForwardMovingSkillScript</Filter>
     </ClInclude>
+    <ClInclude Include="UiComboEffect.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\14.UiComboEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="UiMouseClick.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\16.UiMouseClick</Filter>
+    </ClInclude>
+    <ClInclude Include="UiSkillGauge.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\15.UiSkillGauge</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -697,6 +715,15 @@
     </ClCompile>
     <ClCompile Include="InstallationSkill_Script.cpp">
       <Filter>02.Component\00.MonoBehaviour\04.SkillScript\01.InstallationSkill_Script</Filter>
+    </ClCompile>
+    <ClCompile Include="UiComboEffect.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\14.UiComboEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="UiMouseClick.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\16.UiMouseClick</Filter>
+    </ClCompile>
+    <ClCompile Include="UiSkillGauge.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\15.UiSkillGauge</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

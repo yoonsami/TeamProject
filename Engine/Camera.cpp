@@ -96,7 +96,7 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 		if (gameObject->Has_VelocityMap())
 			m_VelocityMapObj.push_back(gameObject);
 		
-		if (gameObject->Get_Name() == L"SkyBase" || gameObject->Get_Name() == L"CloudPlate")
+		if (gameObject->Get_ShaderType() == SHADER_TYPE::SKYBOX)
 			m_Sky.push_back(gameObject);
 		else if (gameObject->Get_TrailRenderer())
 			m_Trails.push_back(gameObject);
@@ -250,13 +250,18 @@ void Camera::Render_BlurForward()
 	}
 }
 
+void Camera::Render_SkyBox()
+{
+	for (auto& obj : m_Sky)
+		obj->Get_ModelRenderer()->Render_Skybox();
+}
+
 void Camera::Render_Forward()
 {
 	S_View = m_matView;
 	S_Proj = m_matProj;
 
-	for(auto& obj : m_Sky)
-		obj->Get_ModelRenderer()->Render_Skybox();
+
 	
 	for (auto& trail : m_Trails)
 	{

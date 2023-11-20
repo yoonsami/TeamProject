@@ -20,8 +20,6 @@ public:
 	void ReadMaterial(const wstring& strPath);
 	void ReadModel(const wstring& strPath);
 	void ReadAnimation(const wstring& strPath);
-	void ReadSFX(const wstring& strPath);
-	
 
 	void AddParts(const wstring& partName, PARTS_INFO partType);
 
@@ -101,7 +99,6 @@ private:
 	vector<shared_ptr<ModelBone>> m_Bones;
 	vector<shared_ptr<ModelMesh>> m_Meshes;
 	vector<shared_ptr<ModelAnimation>> m_Animations;
-	vector<multimap<_float,wstring>> m_AnimationSFX;
 	array<shared_ptr<Parts>, PARTS_MAX_COUNT> m_Parts;
 
 };

@@ -882,7 +882,8 @@ void Player_FSM::skill_1100()
     if (Get_CurFrame() == 9)
     {
         AttackCollider_On(NORMAL_ATTACK);
-        Add_Effect(L"Teo_1100_2");
+        if(m_iPreFrame != m_iCurFrame)
+            Add_Effect(L"Teo_1100_2");
 
     }
     else if (Get_CurFrame() == 13)
@@ -934,8 +935,8 @@ void Player_FSM::skill_1200()
     if (Get_CurFrame() == 4)
     {
         AttackCollider_On(NORMAL_ATTACK);
-
-        Add_Effect(L"Teo_1200_1");
+        if (m_iPreFrame != m_iCurFrame)
+            Add_Effect(L"Teo_1200_1");
 
     }
     else if (Get_CurFrame() > 8)

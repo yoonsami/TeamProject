@@ -12,6 +12,7 @@ enum class SHADER_TYPE
 	PARTICLE,
 	SHADOW,
 	DISTORTION,
+	SKYBOX,
 	NONE
 };
 
