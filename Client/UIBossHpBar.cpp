@@ -24,20 +24,22 @@ HRESULT UIBossHpBar::Init()
     m_pElement      = pScene->Get_UI(L"UI_BossElement");
     m_pBossName     = pScene->Get_UI(L"UI_BossName");
 
-    auto BossData = GET_DATA(m_eBoss);
+    if (BOSS::MAX != m_eBoss)
+    {
+        auto BossData = GET_DATA(m_eBoss);
 
-    // owner 보스 이름, 속성, 체력 연동
-    wstring strName = BossData.Name;
-    m_pBossName.lock()->Get_FontRenderer()->Get_Text() = strName;
-    _float4 vecPos = m_pBossName.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-    vecPos.x = strName.length() * -10.f;
-    m_pBossName.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+        wstring strName = BossData.Name;
+        m_pBossName.lock()->Get_FontRenderer()->Get_Text() = strName;
+        _float4 vecPos = m_pBossName.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+        vecPos.x = strName.length() * -10.f;
+        m_pBossName.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
 
-    vecPos.y = m_pElement.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).y;
-    vecPos.x -= 20.f;
-    m_pElement.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
-    m_pElement.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(GET_ELEMENT(m_eBoss)), TextureMapType::DIFFUSE);
-
+        vecPos.y = m_pElement.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).y;
+        vecPos.x -= 20.f;
+        m_pElement.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+        m_pElement.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(GET_ELEMENT(m_eBoss)), TextureMapType::DIFFUSE);
+    }
+    
 
     return S_OK;
 }

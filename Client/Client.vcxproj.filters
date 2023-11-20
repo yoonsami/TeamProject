@@ -226,6 +226,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\15.UiSkillGauge">
       <UniqueIdentifier>{2df7a875-ec9a-46f7-a66a-9900fe964ab5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\16.UiMouseClick">
+      <UniqueIdentifier>{7706510c-c7f0-4830-bf31-98c02aadd1ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -474,6 +477,9 @@
     <ClInclude Include="UiSkillGauge.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\15.UiSkillGauge</Filter>
     </ClInclude>
+    <ClInclude Include="UiMouseClick.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\16.UiMouseClick</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -688,6 +694,9 @@
     </ClCompile>
     <ClCompile Include="UiSkillGauge.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\15.UiSkillGauge</Filter>
+    </ClCompile>
+    <ClCompile Include="UiMouseClick.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\16.UiMouseClick</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
