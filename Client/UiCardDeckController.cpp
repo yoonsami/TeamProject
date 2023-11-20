@@ -14,13 +14,18 @@ HRESULT UiCardDeckController::Init()
 {
     if (m_pOwner.expired())
         return E_FAIL;
+
+    m_fCheckTime = 0.f;
+    m_fMaxTime = 1.f;
+    m_fSpeed = 30.f;
+
     
     auto pScene = CUR_SCENE;
 
     m_pUiCharChange             = pScene->Get_UI(L"UI_Char_Change");
     m_pUiCardDeckSelect         = pScene->Get_UI(L"UI_Card_Deck_Select");
 
-    m_vecCardDeckObj.resize(18);
+    m_vecCardDeckObj.resize(17);
     m_vecCardDeckObj[0]         = pScene->Get_UI(L"UI_Card_Deck_Total_Bg0");
     m_vecCardDeckObj[1]         = pScene->Get_UI(L"UI_Card_Deck_Total_Bg1");
     m_vecCardDeckObj[2]         = pScene->Get_UI(L"UI_Card_Deck_Inven_Bg");
@@ -38,7 +43,6 @@ HRESULT UiCardDeckController::Init()
     m_vecCardDeckObj[14]        = pScene->Get_UI(L"UI_Card_Deck_Element2");
     m_vecCardDeckObj[15]        = pScene->Get_UI(L"UI_Card_Deck_Exit");
     m_vecCardDeckObj[16]        = pScene->Get_UI(L"UI_Card_Deck_Font");
-    m_vecCardDeckObj[17]        = pScene->Get_UI(L"UI_Card_Deck_Select");
     
     m_vecInvenObj.resize(32);
     m_vecInvenObj[0]            = pScene->Get_UI(L"UI_Card_Deck_Inven0");
@@ -162,6 +166,20 @@ void UiCardDeckController::Tick()
     {
         Render_Off();
     }
+
+    if (true == m_bIsPicking)
+    {
+        switch (m_eState)
+        {
+        case SELECT_STATE::DOWN:
+            Select_Down();
+            break;
+        case SELECT_STATE::UP:
+            Select_Up();
+            break;
+        }
+    }
+
 }
 
 void UiCardDeckController::Render_On()
@@ -257,7 +275,7 @@ void UiCardDeckController::Click_Deck_Select(wstring strObjName)
                 }
                 _float4 vecPos = m_pUiCardDeckSelect.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
                 vecPos.x = fPosX;
-
+                m_pUiCardDeckSelect.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
             }
         }
     }
@@ -268,7 +286,7 @@ void UiCardDeckController::Click_Deck_Inven(wstring strInvenName)
     if (false == m_bIsRender)
         return;
 
-    if (true == m_bIsPicking != 0)
+    if (true == m_bIsPicking)
     {
         _uint iSize = IDX(m_vecInvenObj.size());
         for (_uint i = 0; i < iSize; ++i)
@@ -321,6 +339,7 @@ void UiCardDeckController::Click_Deck_X(wstring strObjName)
 void UiCardDeckController::Render_Off()
 {
     m_bIsRender = false;
+    m_bIsPicking = false;
     auto pScene = CUR_SCENE;
 
     _uint iSize = IDX(m_vecCardDeckObj.size());
@@ -358,4 +377,39 @@ void UiCardDeckController::Render_Off()
             m_vecFont[i].lock()->Set_Render(false);
     }
 
+    m_pUiCardDeckSelect.lock()->Set_Render(false);
+}
+
+void UiCardDeckController::Select_Down()
+{
+    m_fCheckTime += fDT;
+    if (m_fMaxTime < m_fCheckTime)
+    {
+        m_fCheckTime = 0.f;
+        m_eState = SELECT_STATE::UP;
+
+        return;
+    }
+
+    _float PosY = 480 - m_fSpeed * m_fCheckTime / m_fMaxTime;
+    _float4 vecPos = m_pUiCardDeckSelect.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    vecPos.y = PosY;
+    m_pUiCardDeckSelect.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+}
+
+void UiCardDeckController::Select_Up()
+{
+    m_fCheckTime += fDT;
+    if (m_fMaxTime < m_fCheckTime)
+    {
+        m_fCheckTime = 0.f;
+        m_eState = SELECT_STATE::DOWN;
+
+        return;
+    }
+
+    _float PosY = 450 + m_fSpeed * m_fCheckTime / m_fMaxTime;
+    _float4 vecPos = m_pUiCardDeckSelect.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    vecPos.y = PosY;
+    m_pUiCardDeckSelect.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
 }

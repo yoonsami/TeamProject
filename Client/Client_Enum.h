@@ -22,6 +22,8 @@ enum class BOSS
 {
 	MIR,
 	AXE,
+	SPIKE,
+	DELLONS,
 	MAX
 };
 
