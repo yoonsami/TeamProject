@@ -215,20 +215,20 @@ _bool FSM::CounterAttackCheck(_float fCheckDegree)
 	{
 		if (XMVectorGetY(vCross) < 0.f) //cross > 0 is right , cross < 0 is left
 		{
-			if (XMVectorGetX(vDot) >= cosf(XMConvertToRadians(fCheckDegree / 2.f)))//Ã¼Å© °¢µµ ¹Ý¸¸Å­ ¿ÞÂÊ ¾Õ
+			if (XMVectorGetX(vDot) >= cosf(XMConvertToRadians(fCheckDegree / 2.f)))//Ã¼Å© ï¿½ï¿½ï¿½ï¿½ ï¿½Ý¸ï¿½Å­ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 				return true;
 			else
 				return false;
 		}
-		else //¿À¸¥ÂÊ  Á¤¸é¿À¸¥ÂÊ
+		else //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		{
-			if (XMVectorGetX(vDot) >= cosf(XMConvertToRadians(fCheckDegree / 2.f)))//Ã¼Å©°¢µµ ¹Ý¸¸Å­ ¿À¸¥ÂÊ ¾Õ
+			if (XMVectorGetX(vDot) >= cosf(XMConvertToRadians(fCheckDegree / 2.f)))//Ã¼Å©ï¿½ï¿½ï¿½ï¿½ ï¿½Ý¸ï¿½Å­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 				return true;
 			else
 				return false;
 		}
 	}
-	else //µÚ ³»ÀûÀ½¼ö¸é µÚ
+	else //ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 	{
 		return false;
 	}
@@ -268,6 +268,7 @@ void FSM::Add_Effect(const wstring& strSkilltag)
 
 	// For. Transform 
 	pGroupEffectObj->GetOrAddTransform();
+	pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS));
 	pGroupEffectObj->Get_Transform()->Set_Quaternion(Get_Transform()->Get_Rotation());
 
 	// For. GroupEffectData 

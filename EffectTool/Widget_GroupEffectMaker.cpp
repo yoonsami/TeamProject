@@ -260,15 +260,14 @@ void Widget_GroupEffectMaker::Widget_GroupMaker()
 		//}
 		//ImGui::Spacing();
 		
-		if (ImGui::Button("Save"))
+		if (ImGui::Button("Save##GroupEffect"))
 			Save();
-		ImGui::Spacing();
-
+		ImGui::SameLine();
 		if (ImGui::Button("Play##GroupEffect"))
 			Create();
 		ImGui::Spacing();
 		
-		if (ImGui::Button("Create New Group"))
+		if (ImGui::Button("Create New Group##GroupEffect"))
 			m_bWidgetOn_GetTag = true;
 		ImGui::Spacing();
 
@@ -439,7 +438,8 @@ void Widget_GroupEffectMaker::Option_MemberEffectList()
 				m_pCurrentGroup->Get_GroupEffect()->DeleteMember(Utils::ToWString(iter));
 				string strFilePath = "..\\Resources\\EffectData\\GroupEffectData\\";
 				strFilePath += (m_strGroup + ".dat");
-				RESOURCES.ReloadGroupEffectData(Utils::ToWString(m_strGroup), Utils::ToWString(strFilePath));
+				Save();
+				RESOURCES.ReloadOrAddGroupEffectData(Utils::ToWString(m_strGroup), Utils::ToWString(strFilePath));
 				Set_MemberEffectList();
 			}
 			ImGui::TreePop();
@@ -505,7 +505,15 @@ void Widget_GroupEffectMaker::Create()
 	
 	// For. Transform 
 	pGroupEffectObj->GetOrAddTransform();
-	pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
+	if (nullptr != CUR_SCENE->Get_GameObject(L"TestAnimModel"))
+	{
+		_float4x4 mModelWorldMatrix = CUR_SCENE->Get_GameObject(L"TestAnimModel")->Get_Transform()->Get_WorldMatrix();
+		pGroupEffectObj->Get_Transform()->Set_WorldMat(mModelWorldMatrix);
+	}
+	else
+	{
+		pGroupEffectObj->Get_Transform()->Set_WorldMat(XMMatrixIdentity());
+	}
 
 	// For. GroupEffectData 
 	wstring wstrFileName = Utils::ToWString(m_strGroup) + L".dat";
@@ -557,7 +565,7 @@ void Widget_GroupEffectMaker::Save(const string& wstrNewGroupTag)
 		string strFilePath = "..\\Resources\\EffectData\\GroupEffectData\\";
 		strFilePath += (m_strGroup + ".dat");
 		m_pCurrentGroup->Get_GroupEffect()->Save(Utils::ToWString(strFilePath));
-		vector <GroupEffectData::MemberEffect_Desc> vNewGroupEffectData = RESOURCES.ReloadGroupEffectData(Utils::ToWString(m_strGroup), Utils::ToWString(strFilePath))->Get_MemberEffectData();
+		vector <GroupEffectData::MemberEffect_Desc> vNewGroupEffectData = RESOURCES.ReloadOrAddGroupEffectData(Utils::ToWString(m_strGroup), Utils::ToWString(strFilePath))->Get_MemberEffectData();
 
 		Set_MemberEffectList();
 		m_pCurrentGroup->Get_GroupEffect()->Set_MemberEffectData(vNewGroupEffectData);

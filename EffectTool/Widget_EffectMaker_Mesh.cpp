@@ -4,8 +4,7 @@
 /* Components */
 #include "MeshEffect.h"
 #include "Texture.h"
-
-#include "imgui_internal.h"
+#include "Camera.h"
 
 static inline ImVec2 operator+(const ImVec2& lhs, const ImVec2& rhs) { return ImVec2(lhs.x + rhs.x, lhs.y + rhs.y); }
 static inline ImVec2 operator-(const ImVec2& lhs, const ImVec2& rhs) { return ImVec2(lhs.x - rhs.x, lhs.y - rhs.y); }
@@ -153,6 +152,7 @@ void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 	{
 		if (ImGui::BeginTabItem("Visual"))
 		{
+			Option_Guizmo();
 			Option_Property();
 			Option_Mesh();
 			Option_SpriteAnimation();
@@ -185,6 +185,7 @@ void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 		}
 		if (ImGui::BeginTabItem("Transform"))
 		{
+			Option_Guizmo();
 			Option_InitTransform();
 			Option_Movement();
 			ImGui::Spacing();
@@ -252,6 +253,19 @@ void Widget_EffectMaker_Mesh::ImGui_TextureList()
 
 		ImGui::EndChild();
 	}
+}
+
+void Widget_EffectMaker_Mesh::Option_Guizmo()
+{
+	ImGui::Checkbox("Lock Mesh Effect##Guizmo", &m_bIsMeshEffectLocked);
+	if (!m_pCurrMeshEffect.expired())
+		m_pCurrMeshEffect.lock()->Get_MeshEffect()->Set_Lock(m_bIsMeshEffectLocked);
+
+	ImGui::Checkbox("Translation On##Guizmo", &m_bGuizmoTranslation_On);
+	ImGui::SameLine();
+	ImGui::Checkbox("Rotation On##Guizmo", &m_bGuizmoRotation_On);
+
+	Show_Guizmo();
 }
 
 void Widget_EffectMaker_Mesh::Option_Property()
@@ -766,9 +780,10 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 
 	if (ImGui::TreeNode("Translate##Movement"))
 	{
-		const char* pszItem_TranslateOption[] = { "No change", "Move to target position", "Move to random target position", // 2
+		const char* pszItem_TranslateOption[] = { "No change", "Move to direction", "Move to random direction", // 2
 			"Go Straight", "Go Back", "Go Lift", "Go Right", "Go Up", "Go Down",	// 8
-			"Fountain" // 9
+			"Fountain", // 9
+			" Move to Target Position" // 10
 		};
 		if (ImGui::BeginCombo("Translate option##Movement", pszItem_TranslateOption[m_iTranslateOption], 0))
 		{
@@ -790,17 +805,41 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 			ZeroMemory(m_fEndPositionOffset_Min, sizeof(m_fEndPositionOffset_Min));
 			ZeroMemory(m_fEndPositionOffset_Max, sizeof(m_fEndPositionOffset_Max));
 			break;
-		case 1:	// Move to target
+		case 1:	// Move to direction
 			m_fTranslateSpeed = 0;
 			ImGui::InputFloat3("Target Position##Movement", m_fEndPositionOffset_Min);
 			memcpy(m_fEndPositionOffset_Max, m_fEndPositionOffset_Min, sizeof(m_fEndPositionOffset_Min));
+
+			ImGui::Text("Speed");
+			ImGui::RadioButton("Curve##MoveSpeed", &m_iSpeedType, 0);
+			ImGui::SameLine();
+			ImGui::RadioButton("Linear##MoveSpeed", &m_iSpeedType, 1);
+
+			m_vCurvePoint_Force[0].x = 0.f;
+			ImGui::InputFloat2("Point1 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[0]);
+			ImGui::InputFloat2("Point2 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[1]);
+			ImGui::InputFloat2("Point3 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[2]);
+			ImGui::InputFloat2("Point4 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[3]);
+
 			break;
-		case 2: // Move to random target
+		case 2: // Move to random direction
 			m_fTranslateSpeed = 0;
-			ImGui::InputFloat3("Target Position (min)##Movement", m_fEndPositionOffset_Min);
-			ImGui::InputFloat3("Target Position (max)##Movement", m_fEndPositionOffset_Max);
+			ImGui::InputFloat3("Direction range (min)##Movement", m_fEndPositionOffset_Min);
+			ImGui::InputFloat3("Direction range (max)##Movement", m_fEndPositionOffset_Max);
+
+			ImGui::Text("Speed");
+			ImGui::RadioButton("Curve##MoveSpeed", &m_iSpeedType, 0);
+			ImGui::SameLine();
+			ImGui::RadioButton("Linear##MoveSpeed", &m_iSpeedType, 1);
+
+			m_vCurvePoint_Force[0].x = 0.f;
+			ImGui::InputFloat2("Point1 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[0]);
+			ImGui::InputFloat2("Point2 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[1]);
+			ImGui::InputFloat2("Point3 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[2]);
+			ImGui::InputFloat2("Point4 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[3]);
+
 			break;
-		case 3:	// Go straight
+		case 3:	// Go straights
 		case 4:	// Go back
 		case 5:	// Go left
 		case 6:	// Go right
@@ -824,8 +863,9 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 			ImGui::InputFloat("Speed##Speed", (_float*)&m_vCurvePoint_Force[0].x);
 			ImGui::InputFloat("Gravity##Speed", (_float*)&m_vCurvePoint_Force[0].y);
 			break;
-		case 10: // Billbord
-		case 11: // Billbord_XZ
+		case 10: // Move to Target Pos 
+			ImGui::InputFloat3("Target Position##Movement", m_fEndPositionOffset_Min);
+			memcpy(m_fEndPositionOffset_Max, m_fEndPositionOffset_Min, sizeof(m_fEndPositionOffset_Min));
 			break;
 		}
 
@@ -908,7 +948,7 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 
 void Widget_EffectMaker_Mesh::Create()
 {
-	for (_uint n = 0; n < m_iMeshCnt; n++)
+	for (_int n = 0; n < m_iMeshCnt; n++)
 	{
 		// For. Create GameObject 
 		shared_ptr<GameObject> EffectObj = make_shared<GameObject>();
@@ -1048,7 +1088,9 @@ void Widget_EffectMaker_Mesh::Create()
 				{m_bBillbordAxes[0], m_bBillbordAxes[1]}
 		};
 		EffectObj->Get_MeshEffect()->Set_TransformDesc(&tTransform_Desc);
-		EffectObj->Get_MeshEffect()->InitialTransform();
+		EffectObj->Get_MeshEffect()->InitialTransform(XMMatrixIdentity(), _float3(0.f, 1.3f, 0.f), _float3(1.f), _float3(0.f));
+
+		m_pCurrMeshEffect = EffectObj;
 
 		// For. Add Effect GameObject to current scene
 		CUR_SCENE->Add_GameObject(EffectObj);
@@ -1356,6 +1398,28 @@ void Widget_EffectMaker_Mesh::Load()
 
 	// For. Create Effect GameObjects
 	Create();
+}
+
+void Widget_EffectMaker_Mesh::Show_Guizmo()
+{
+	if (m_pCurrMeshEffect.expired())
+		return;
+
+	// Get View, Proj matrix 
+	shared_ptr<Camera> CurCam = CUR_SCENE->Get_Camera(L"Default")->Get_Camera();
+	_float4x4 matView = CurCam->Get_ViewMat();
+	_float4x4 matProj = CurCam->Get_ProjMat();
+
+	// Guizmo Rotation 
+	if (m_bGuizmoRotation_On)
+	{
+		_float4x4 matGuizmo = m_pCurrMeshEffect.lock()->Get_Transform()->Get_WorldMatrix();
+		if (ImGuizmo::Manipulate((float*)&matView, (float*)&matProj, ImGuizmo::OPERATION::ROTATE, ImGuizmo::MODE::LOCAL, (float*)&m_pCurrMeshEffect.lock()->Get_Transform()->Get_WorldMatrix()))
+		{
+			float matrixTranslation[3], matrixScale[3];
+			ImGuizmo::DecomposeMatrixToComponents((float*)&matGuizmo, matrixTranslation, m_fInitRotation_Min, matrixScale);
+		}
+	}
 }
 
 void Widget_EffectMaker_Mesh::SubWidget_TextureCombo(_int* iSelected, string* strSelected, string strFilePath, const char* pszWidgetKey)
