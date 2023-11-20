@@ -351,7 +351,7 @@ _bool FSM::Check_Combo(_uint minFrame, KEY_TYPE eKeyType)
 			true;
 	}
 
-	else return false;
+	return false;
 }
 
 void FSM::Set_Target(shared_ptr<GameObject> pTarget)
