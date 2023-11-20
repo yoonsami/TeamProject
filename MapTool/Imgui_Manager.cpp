@@ -1386,6 +1386,9 @@ HRESULT ImGui_Manager::Load_MapObject()
             pPLE->Set_TargetRange(tempFloat);
             file->Read<_float>(tempFloat);
             pPLE->Set_Speed(tempFloat);
+            // 랜덤으로 델타타임과 PM세팅
+            pPLE->Set_DeltaTime(Utils::Random_In_Range(0.f, 1.f));
+            pPLE->Set_DeltaPM(rand() % 2 > 0 ? 1.f : -1.f);
         }
     }
 
@@ -1460,8 +1463,11 @@ HRESULT ImGui_Manager::Load_MapObject()
     file->Read<_float4>(m_PlayerLookAtPosition);
     m_PlayerLookAtPosition.w = 1.f;
     // 그 위치방향으로 카메라 세팅
-    CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_PlayerCreatePosition);
-    CUR_SCENE->Get_MainCamera()->Get_Transform()->LookAt(m_PlayerLookAtPosition);
+    if(m_PlayerCreatePosition != m_PlayerLookAtPosition)
+    {
+        CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_PlayerCreatePosition);
+        CUR_SCENE->Get_MainCamera()->Get_Transform()->LookAt(m_PlayerLookAtPosition);
+    }
 
 // 셰이더옵션 로드
     //RenderOption

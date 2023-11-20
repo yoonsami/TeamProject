@@ -37,6 +37,8 @@ public:
     void Set_StartRange(_float _fRange) { m_fStartRange = _fRange; }
     void Set_TargetRange(_float _fRange) { m_fEndRange = _fRange; }
     void Set_Speed(_float _fEffectSpeed) { m_fEffectSpeed = _fEffectSpeed; }
+    void Set_DeltaTime(_float _fDeltaTime) { m_fDeltaTime = _fDeltaTime; }
+    void Set_DeltaPM(_float _fDeltaPM) { m_fDeltaPM = _fDeltaPM; }
 
 private:
     _bool m_bUseEffect = { false };
