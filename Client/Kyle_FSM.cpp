@@ -433,7 +433,6 @@ void Kyle_FSM::b_run_start()
 
 	_float3 vInputVector = Get_InputDirVector();
 
-	// ����Ű�� �ƹ��͵� ������ ������ ���¸� ����
 	if (vInputVector == _float3(0.f))
 	{
 		m_tRunEndDelay.fAccTime += fDT;
@@ -443,11 +442,6 @@ void Kyle_FSM::b_run_start()
 	}
 	else
 	{
-		// �ִϸ��̼��� ������ �ε�, ���� �ð������� ����� ���� �־,
-		// �ٷ� �̾����� �ִϸ��̼��� ��쿡��
-		// ������ ���ϸ鼭 �ٲٰų�, 
-		// �Ʒ�ó�� ������ ���� ���� �̸� �ٲٸ� �ڿ������� ��ȯ��
-		// �� �� ����
 		if (Is_AnimFinished())
 			m_eCurState = STATE::b_run;
 
@@ -911,7 +905,10 @@ void Kyle_FSM::skill_1100()
 
 
 	if (Is_AnimFinished())
+	{
+		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 		m_eCurState = STATE::b_idle;
+	}
 
 	//Using Skill
 	Use_Skill();
@@ -960,6 +957,7 @@ void Kyle_FSM::skill_1200()
 
 	if (Is_AnimFinished())
 	{
+		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 		m_bCanCombo = false;
 		m_eCurState = STATE::b_idle;
 	}
@@ -975,6 +973,7 @@ void Kyle_FSM::skill_1200_Init()
 	animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
 	m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+	m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
 
 	m_bCanCombo = false;
 
@@ -1013,6 +1012,7 @@ void Kyle_FSM::skill_1300()
 
 	if (Is_AnimFinished())
 	{
+		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 		m_bCanCombo = false;
 		m_eCurState = STATE::b_idle;
 	}
@@ -1028,6 +1028,7 @@ void Kyle_FSM::skill_1300_Init()
 	animator->Set_NextTweenAnim(L"skill_1300", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
 	m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+	m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
 
 	m_bCanCombo = false;
 
@@ -1065,6 +1066,7 @@ void Kyle_FSM::skill_1400()
 
 	if (Is_AnimFinished())
 	{
+		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 		m_bCanCombo = false;
 		m_eCurState = STATE::b_idle;
 	}
@@ -1080,6 +1082,7 @@ void Kyle_FSM::skill_1400_Init()
 	animator->Set_NextTweenAnim(L"skill_1400", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
 	m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+	m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
 
 	m_bCanCombo = false;
 
@@ -1288,6 +1291,7 @@ void Kyle_FSM::skill_100200_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"skill_100200", 0.15f, false, m_fSkillAttack_AnimationSpeed);
+	m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(SKILL1);
 
 	m_bCanCombo = false;
 
@@ -1394,6 +1398,7 @@ void Kyle_FSM::skill_200200_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"skill_200200", 0.05f, false, m_fSkillAttack_AnimationSpeed);
+	m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(SKILL2);
 
 	m_bCanCombo = false;
 
@@ -1444,6 +1449,7 @@ void Kyle_FSM::skill_200300_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"skill_200300", 0.05f, false, m_fSkillAttack_AnimationSpeed);
+	m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(SKILL2);
 
 	m_bCanCombo = false;
 

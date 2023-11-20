@@ -892,7 +892,10 @@ void SpearAce_FSM::skill_1100()
     }
 
     if (Is_AnimFinished())
+    {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
+    }
 
     Use_Skill();
 }
@@ -941,6 +944,7 @@ void SpearAce_FSM::skill_1200()
 
     if (Is_AnimFinished())
     {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
     }
@@ -955,6 +959,8 @@ void SpearAce_FSM::skill_1200_Init()
     animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
+
 
     m_bCanCombo = false;
 
@@ -981,6 +987,7 @@ void SpearAce_FSM::skill_1300()
 
     if (Is_AnimFinished())
     {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
     }
@@ -995,6 +1002,7 @@ void SpearAce_FSM::skill_1300_Init()
     animator->Set_NextTweenAnim(L"skill_1300", 0.15f, false, m_fNormalAttack_AnimationSpeed);
     
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
 
     m_bCanCombo = false;
 
@@ -1216,6 +1224,8 @@ void SpearAce_FSM::skill_200200_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_200200", 0.15f, false, m_fSkillAttack_AnimationSpeed);
+    
+    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(SKILL2);
 
     m_bCanCombo = false;
 
