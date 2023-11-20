@@ -47,10 +47,10 @@ void Widget_Model_Controller::Tick()
 
 	if (!m_pMaterial.expired())
 	{
-	Begin("Material Controller");
-	Material_Controller();
+		Begin("Material Controller");
+		Material_Controller();
 
-	End();
+		End();
 	}
 
 	if (!m_pControlObject.expired() && m_pControlObject.lock()->Get_Model()->Get_ModelTag() == L"Player")

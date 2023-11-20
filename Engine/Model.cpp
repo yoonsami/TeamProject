@@ -348,8 +348,32 @@ void Model::ReadAnimation(const wstring& strPath)
 		m_Animations.push_back(animation);
 	}
 
+
+
 	if (!m_pTexture)
 		Create_Texture();
+}
+
+void Model::ReadSFX(const wstring& strPath)
+{
+	wstring fullPath = strPath + L".sfx";
+	multimap<_float, wstring> mapSfxEvent;
+
+
+	shared_ptr<FileUtils> file = make_shared<FileUtils>();
+	file->Open(fullPath, FileMode::Read);
+
+	
+
+	const _uint iAnimCount = Get_AnimationCount();
+
+	for (_uint i = 0; i < iAnimCount; ++i)
+	{
+		_float index = file->Read<_float>();
+		wstring soundTag = Utils::ToWString(file->Read<string>());
+		mapSfxEvent.emplace(index, soundTag);
+	}
+
 }
 
 void Model::AddParts(const wstring& partName, PARTS_INFO partType)
@@ -649,8 +673,11 @@ void Model::Create_Texture()
 	if (Get_AnimationCount() == 0)
 		return;
 
+	m_AnimationSFX.resize(Get_AnimationCount());
+
 	m_AnimTransforms.resize(Get_AnimationCount());
 	m_RootBonePosition.resize(Get_AnimationCount());
+
 	Create_BoneData();
 
 	for (_uint i = 0; i < Get_AnimationCount(); ++i)
