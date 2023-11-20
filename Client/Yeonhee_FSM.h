@@ -149,8 +149,15 @@ private:
 	STATE m_ePreState = STATE::NONE;
 
 	_float m_fKeyPushTimer = 0.f;
-	_uint m_iPreFrame = 10000;
-	_uint m_iCurFrame = 0;
+	
+	_uint m_iHeadBoneIndex = 0;
+
+	_float3 m_vHeadCamDir = _float3(0.f);
+	_float4 m_vHeadBonePos = _float4(0.f);
+	_float4 m_vHeadCamPos = _float4(0.f);
+
+	_float4x4 HeadBoneMatrix = XMMatrixIdentity();
+
 
 };
 

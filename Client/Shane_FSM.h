@@ -40,8 +40,8 @@ public:
 		skill_200100, // Skill 2-1 // BUBBLE 2 
 		skill_200200, // Skill 2-2
 		skill_300100, // Skill 3  // Bubble X
-		skill_502100, // Skill 4 // Bubble X
-		skill_500100, // Skill 5 // Bubble X
+		skill_500100, // Skill 4 // Bubble X
+		skill_502100, // Skill 5 // Bubble X
 		NONE
 	};
 public:
@@ -143,6 +143,8 @@ private:
 	void Use_Dash();
 
 	void Create_200100_Clone(_uint iCloneIndex);
+	void Calculate_SkillCamRight();
+
 
 private:
 	STATE m_eCurState = STATE::b_idle;

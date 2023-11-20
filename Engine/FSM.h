@@ -60,7 +60,7 @@ public:
 	weak_ptr<GameObject> m_pWeapon;
 	weak_ptr<GameObject> m_pCamera;
 	weak_ptr<GameObject> m_pVehicle;
-	
+
 	//Frame Check
 	_uint m_iPreFrame = 10000;
 	_uint m_iCurFrame = 0;
