@@ -48,9 +48,8 @@ void GroupEffect::Tick()
                 {
                     Create_MeshEffect(iIndex);
                     m_fTimeAcc_CreatCoolTime = 0.f;
-                }
-                else
                     iter.bIsActive = true;
+                }
             }
         }
         iIndex++;
