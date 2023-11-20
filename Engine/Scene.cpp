@@ -78,7 +78,6 @@ void Scene::Final_Tick()
 
 void Scene::Render()
 {
-
 	Gather_LightData();
 	Sort_GameObjects();
 	Render_Shadow();
@@ -100,8 +99,6 @@ void Scene::Render()
 	Render_Fog();
 	Render_MotionBlurFinal();
 
-
-
 	Render_Forward();
 
 	Render_BloomMap();
@@ -116,11 +113,7 @@ void Scene::Render()
 
 	Render_Debug();
 
-
 	Render_UI();
-	//Render_ToneMapping();
-
-	//Render_BackBuffer();
 }
 
 HRESULT Scene::Load_Scene()

@@ -234,7 +234,33 @@ _bool FSM::CounterAttackCheck(_float fCheckDegree)
 	}
 }
 
-shared_ptr<GameObject> FSM::Find_TargetInFrustum(const _float maxDist, _uint eType)
+void FSM::Set_DirToTarget()
+{
+	if (!m_pLookingTarget.expired())
+		m_vDirToTarget = (m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+}
+
+void FSM::Set_DirToTargetOrInput(_uint eType)
+{
+	m_pLookingTarget.reset();
+	if (m_pTarget.expired())
+		m_pLookingTarget = Find_TargetInFrustum(eType);
+	else
+		m_pLookingTarget = m_pTarget.lock();
+
+	if (!m_pLookingTarget.expired())
+		m_vDirToTarget = (m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+	else
+		m_vDirToTarget = Get_InputDirVector();
+}
+
+void FSM::Look_DirToTarget()
+{
+	if (m_vDirToTarget != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+}
+
+shared_ptr<GameObject> FSM::Find_TargetInFrustum(_uint eType)
 {
 	auto& gameObjects = CUR_SCENE->Get_Objects();
 	shared_ptr<GameObject> target;
@@ -247,7 +273,7 @@ shared_ptr<GameObject> FSM::Find_TargetInFrustum(const _float maxDist, _uint eTy
 		_float3 vOwnerPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 		_float3 vObjectPos = gameObject->Get_Transform()->Get_State(Transform_State::POS).xyz();
 		_float distSQ = (vOwnerPos - vObjectPos).LengthSquared();
-		if(distSQ > maxDist * maxDist)
+		if(distSQ > m_fDetectRange * m_fDetectRange)
 			continue;
 		
 		_float3 viewPos = _float3::Transform(vObjectPos, CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_ViewMat());
@@ -260,6 +286,16 @@ shared_ptr<GameObject> FSM::Find_TargetInFrustum(const _float maxDist, _uint eTy
 	}
 
 	return target;
+}
+
+_bool FSM::Init_CurFrame(const _uint curFrame)
+{
+	if (Get_CurFrame() == curFrame)
+	{
+		if (m_iPreFrame != m_iCurFrame)
+			return true;
+	}
+	return false;
 }
 
 void FSM::Add_Effect(const wstring& strSkilltag)
@@ -284,6 +320,38 @@ void FSM::Add_Effect(const wstring& strSkilltag)
 
 	// For. Add Effect GameObject to current scene
 	CUR_SCENE->Add_GameObject(pGroupEffectObj);
+}
+
+void FSM::Cal_SkillCamDirection(const _float dist)
+{
+	_float3 vDir = _float3(0.f);
+	vDir = (m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+	vDir.y = 0.f;
+	vDir.Normalize();
+
+	_float3 vCross = _float3(0.f);
+	vCross = vDir.Cross(Get_Transform()->Get_State(Transform_State::LOOK).xyz());
+
+	if ((vCross.y) < 0.f) // LEFT 
+		m_vSkillCamRight = (Get_Transform()->Get_State(Transform_State::RIGHT) * -dist);
+	else //RIGHT	
+		m_vSkillCamRight = (Get_Transform()->Get_State(Transform_State::RIGHT) * dist);
+}
+
+_bool FSM::Check_Combo(_uint minFrame, KEY_TYPE eKeyType)
+{
+	if (Get_CurFrame() < minFrame)
+	{
+		if (KEYTAP(eKeyType))
+			m_bCanCombo = true;
+	}
+	if (m_bCanCombo)
+	{
+		if (Get_CurFrame() > minFrame)
+			true;
+	}
+
+	else return false;
 }
 
 void FSM::Set_Target(shared_ptr<GameObject> pTarget)
@@ -317,4 +385,3 @@ void FSM::Reset_Vehicle()
 	if (!m_pVehicle.expired())
 		CUR_SCENE->Remove_GameObject(m_pVehicle.lock());
 }
-

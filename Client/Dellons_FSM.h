@@ -139,9 +139,6 @@ private:
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
 	void Summon_Wraith();
 	void Set_WraithState(_uint iAnimindex);
-	void Calculate_SkillCamRight();
-
-
 
 private:
 	STATE m_eCurState = STATE::b_idle;

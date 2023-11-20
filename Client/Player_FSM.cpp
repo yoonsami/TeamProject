@@ -51,6 +51,7 @@ HRESULT Player_FSM::Init()
 
     m_pCamera = CUR_SCENE->Get_MainCamera();
 
+    m_fDetectRange = 3.f;
 
     return S_OK;
 }
@@ -878,38 +879,22 @@ void Player_FSM::knockdown_end_Init()
 
 void Player_FSM::skill_1100()
 {
-    // Collider Control
-    if (Get_CurFrame() == 9)
-    {
-        AttackCollider_On(NORMAL_ATTACK);
-        if(m_iPreFrame != m_iCurFrame)
-            Add_Effect(L"Teo_1100_2");
+    if(Init_CurFrame(9))
+        Add_Effect(L"Teo_1100_2");
 
-    }
+    if (Get_CurFrame() == 9)
+        AttackCollider_On(NORMAL_ATTACK);
     else if (Get_CurFrame() == 13)
         AttackCollider_Off();
 
-    // Init때 초기
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    Look_DirToTarget();
 
-    // 특정 프레임 이하에서는 마우스 누르면 다음 공격을 예약함.
-	if (Get_CurFrame() < 26)
-	{
-		if (KEYTAP(KEY_TYPE::LBUTTON))
-			m_bCanCombo = true;
-	}
-    // 애니메이션이 자연스러워지는  타이밍에 다음 공격을 실행함
-	if (m_bCanCombo)
-	{
-		if (Get_CurFrame() > 24)
-			m_eCurState = STATE::skill_1200;
-	}
-
+    if(Check_Combo(24, KEY_TYPE::LBUTTON))
+        m_eCurState = STATE::skill_1200;
+	
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    //Using Skill
     Use_Skill();
 }
 
@@ -919,43 +904,32 @@ void Player_FSM::skill_1100_Init()
 
     animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
-    m_bCanCombo = false;
-
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
+    AttackCollider_Off();
+
+    m_bCanCombo = false;
     m_bInvincible = false;
     m_bSuperArmor = false;
 }
 
 void Player_FSM::skill_1200()
 {
+	if (Init_CurFrame(4))
+		Add_Effect(L"Teo_1200_1");
     if (Get_CurFrame() == 4)
     {
         AttackCollider_On(NORMAL_ATTACK);
-        if (m_iPreFrame != m_iCurFrame)
-            Add_Effect(L"Teo_1200_1");
-
     }
     else if (Get_CurFrame() > 8)
         AttackCollider_Off();
     
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
-
-    if (Get_CurFrame() < 13)
-    {
-        if (KEYTAP(KEY_TYPE::LBUTTON))
-            m_bCanCombo = true;
-    }
-
-    if (m_bCanCombo)
-    {
-        if(Get_CurFrame() > 13)
-            m_eCurState = STATE::skill_1300;
-    }
+    Look_DirToTarget();
+    
+    if(Check_Combo(13,KEY_TYPE::LBUTTON))
+        m_eCurState = STATE::skill_1300;
 
     if (Is_AnimFinished())
     {
@@ -972,15 +946,13 @@ void Player_FSM::skill_1200_Init()
 
     animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
-    m_bCanCombo = false;
-
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
     AttackCollider_Off();
 
+    m_bCanCombo = false;
     m_bInvincible = false;
     m_bSuperArmor = false;
 }
@@ -992,20 +964,10 @@ void Player_FSM::skill_1300()
     else if (Get_CurFrame() == 14)
         AttackCollider_Off();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    Look_DirToTarget();
 
-	if (Get_CurFrame() < 27)
-	{
-		if (KEYTAP(KEY_TYPE::LBUTTON))
-			m_bCanCombo = true;
-	}
-
-	if (m_bCanCombo)
-	{
-		if (Get_CurFrame() > 27)
-			m_eCurState = STATE::skill_1400;
-	}
+    if (Check_Combo(27, KEY_TYPE::LBUTTON))
+		m_eCurState = STATE::skill_1400;
 
     if (Is_AnimFinished())
     {
@@ -1026,7 +988,7 @@ void Player_FSM::skill_1300_Init()
 
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1041,8 +1003,7 @@ void Player_FSM::skill_1400()
 	else if (Get_CurFrame() == 20)
 		AttackCollider_Off();
 
-	if (m_vKeyInputTargetDir != _float3(0.f))
-		Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    Look_DirToTarget();
 
 	if (Is_AnimFinished())
 	{
@@ -1063,7 +1024,7 @@ void Player_FSM::skill_1400_Init()
 
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
-	m_vKeyInputTargetDir = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
 	AttackCollider_Off();
 
@@ -1073,10 +1034,6 @@ void Player_FSM::skill_1400_Init()
 
 void Player_FSM::skill_91100()
 {
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
@@ -1090,9 +1047,6 @@ void Player_FSM::skill_91100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
-
     AttackCollider_Off();
 
     m_bInvincible = true;
@@ -1101,8 +1055,6 @@ void Player_FSM::skill_91100_Init()
 
 void Player_FSM::skill_93100()
 {
-    _float3 vInputVector = Get_InputDirVector();
-
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 }
@@ -1123,36 +1075,22 @@ void Player_FSM::skill_93100_Init()
 
 void Player_FSM::skill_100100()
 {
-	if (Get_CurFrame() == 38)
+    if(Init_CurFrame(38))
 	{
-        if (m_iPreFrame != m_iCurFrame)
-		{
-			FORWARDMOVINGSKILLDESC desc;
-			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-			desc.fMoveSpeed = 50.f;
-			desc.fLifeTime = 0.5f;
-			desc.fLimitDistance = 25.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 50.f;
+		desc.fLifeTime = 0.5f;
+		desc.fLimitDistance = 25.f;
 
-			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.f + _float3::Up;
-			Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
-		}
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.f + _float3::Up;
+		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
 	}
     
+    if(Check_Combo(40,KEY_TYPE::KEY_1))
+        m_eCurState = STATE::skill_100200;
 
-	if (Get_CurFrame() < 38)
-	{
-		if (KEYTAP(KEY_TYPE::KEY_1))
-			m_bCanCombo = true;
-	}
-
-	if (m_bCanCombo)
-	{
-		if (Get_CurFrame() > 40)
-			m_eCurState = STATE::skill_100200;
-	}
-
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    Look_DirToTarget();
 
     if (Is_AnimFinished())
     {
@@ -1171,8 +1109,7 @@ void Player_FSM::skill_100100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1226,7 +1163,7 @@ void Player_FSM::skill_100200()
         }
     }
 
-	if (Get_CurFrame() < 29)
+	if (Get_CurFrame() < 27)
 	{
 		if (KEYTAP(KEY_TYPE::KEY_1))
 			m_bCanCombo = true;
@@ -1238,8 +1175,8 @@ void Player_FSM::skill_100200()
 			m_eCurState = STATE::skill_100300;
 	}
 
-	if (m_vKeyInputTargetDir != _float3(0.f))
-		Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+	if (m_vDirToTarget != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
 	if (Is_AnimFinished())
 	{
@@ -1258,8 +1195,8 @@ void Player_FSM::skill_100200_Init()
 
 	m_bCanCombo = false;
 
-	m_vKeyInputTargetDir = _float3(0.f);
-	m_vKeyInputTargetDir = Get_InputDirVector();
+	m_vDirToTarget = _float3(0.f);
+	m_vDirToTarget = Get_InputDirVector();
 
 	AttackCollider_Off();
 
@@ -1337,8 +1274,8 @@ void Player_FSM::skill_100300()
         }
 	}
 
-	if (m_vKeyInputTargetDir != _float3(0.f))
-		Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+	if (m_vDirToTarget != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
 	if (Is_AnimFinished())
 	{
@@ -1355,8 +1292,8 @@ void Player_FSM::skill_100300_Init()
 
 	m_bCanCombo = false;
 
-	m_vKeyInputTargetDir = _float3(0.f);
-	m_vKeyInputTargetDir = Get_InputDirVector();
+	m_vDirToTarget = _float3(0.f);
+	m_vDirToTarget = Get_InputDirVector();
 
 	AttackCollider_Off();
 
@@ -1404,8 +1341,8 @@ void Player_FSM::skill_200100()
         }
 	}
 
-	if (m_vKeyInputTargetDir != _float3(0.f))
-		Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+	if (m_vDirToTarget != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Is_AnimFinished())
     {
@@ -1422,8 +1359,8 @@ void Player_FSM::skill_200100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1455,8 +1392,8 @@ void Player_FSM::skill_200200()
         }
     }
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Is_AnimFinished())
     {
@@ -1473,8 +1410,8 @@ void Player_FSM::skill_200200_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1499,7 +1436,7 @@ void Player_FSM::skill_300100()
         }
     }
 
-	if (Get_CurFrame() < 43)
+	if (Get_CurFrame() < 44)
 	{
 		if (KEYTAP(KEY_TYPE::KEY_3))
 			m_bCanCombo = true;
@@ -1511,8 +1448,8 @@ void Player_FSM::skill_300100()
 			m_eCurState = STATE::skill_300200;
 	}
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Is_AnimFinished())
     {
@@ -1529,8 +1466,8 @@ void Player_FSM::skill_300100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
     m_bInvincible = true;
@@ -1624,8 +1561,8 @@ void Player_FSM::skill_300200_Init()
 
 	m_bCanCombo = false;
 
-	m_vKeyInputTargetDir = _float3(0.f);
-	m_vKeyInputTargetDir = Get_InputDirVector();
+	m_vDirToTarget = _float3(0.f);
+	m_vDirToTarget = Get_InputDirVector();
 
 	AttackCollider_Off();
 

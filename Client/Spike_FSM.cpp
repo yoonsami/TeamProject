@@ -911,8 +911,8 @@ void Spike_FSM::skill_1100()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Get_CurFrame() < 26)
     {
@@ -942,8 +942,8 @@ void Spike_FSM::skill_1100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     m_bInvincible = false;
     m_bSuperArmor = false;
@@ -958,8 +958,8 @@ void Spike_FSM::skill_1200()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Get_CurFrame() < 33)
     {
@@ -992,8 +992,8 @@ void Spike_FSM::skill_1200_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1010,8 +1010,8 @@ void Spike_FSM::skill_1300()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Get_CurFrame() < 37)
     {
@@ -1044,8 +1044,8 @@ void Spike_FSM::skill_1300_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1062,8 +1062,8 @@ void Spike_FSM::skill_1400()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Is_AnimFinished())
     {
@@ -1084,8 +1084,8 @@ void Spike_FSM::skill_1400_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1097,8 +1097,8 @@ void Spike_FSM::skill_91100()
 {
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
@@ -1112,8 +1112,8 @@ void Spike_FSM::skill_91100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1208,8 +1208,8 @@ void Spike_FSM::skill_100300()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Is_AnimFinished())
     {
@@ -1228,8 +1228,8 @@ void Spike_FSM::skill_100300_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1265,8 +1265,8 @@ void Spike_FSM::skill_200100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1307,8 +1307,8 @@ void Spike_FSM::skill_200100_l_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1358,8 +1358,8 @@ void Spike_FSM::skill_200200_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     m_fChargingRatio = 0.f;
 
@@ -1415,8 +1415,8 @@ void Spike_FSM::skill_200300_Init()
 
     m_fChargingRatio = 0.f;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1487,8 +1487,8 @@ void Spike_FSM::skill_200400_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     m_fChargingRatio = 0.f;
 
@@ -1542,8 +1542,8 @@ void Spike_FSM::skill_300100()
     }
 
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Is_AnimFinished())
     {
@@ -1560,8 +1560,8 @@ void Spike_FSM::skill_300100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1677,8 +1677,8 @@ void Spike_FSM::skill_400100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1711,8 +1711,8 @@ void Spike_FSM::skill_501100()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Is_AnimFinished())
     {
@@ -1731,8 +1731,8 @@ void Spike_FSM::skill_501100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 

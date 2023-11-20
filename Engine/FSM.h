@@ -39,10 +39,16 @@ protected:
 	_bool Target_In_GazeCheckRange();
 
 	_bool CounterAttackCheck(_float fCheckDegree);
-	shared_ptr<GameObject> Find_TargetInFrustum(const _float maxDist, _uint eType);
+	void Set_DirToTarget();
+	void Set_DirToTargetOrInput(_uint eType);
+	void Look_DirToTarget();
+	shared_ptr<GameObject> Find_TargetInFrustum(_uint eType);
+
+	_bool Init_CurFrame(const _uint curFrame);
 
 	void Add_Effect(const wstring& strSkilltag);
-
+	void Cal_SkillCamDirection(const _float dist);
+	_bool Check_Combo(_uint minFrame, KEY_TYPE eKeyType);
 
 public:
 	void Set_Target(shared_ptr<GameObject> pTarget);
@@ -61,6 +67,8 @@ public:
 	weak_ptr<GameObject> m_pCamera;
 	weak_ptr<GameObject> m_pVehicle;
 
+	weak_ptr<GameObject> m_pLookingTarget;
+
 	//Frame Check
 	_uint m_iPreFrame = 10000;
 	_uint m_iCurFrame = 0;
@@ -71,7 +79,7 @@ public:
 
 
 	_float3 m_vHitDir = _float3{ 0.f };
-	_float3 m_vKeyInputTargetDir = _float3(0.f);
+	_float3 m_vDirToTarget = _float3(0.f);
 
 	_float m_fAttackRange = 2.f;
 	_float m_fDetectRange = 2.f;

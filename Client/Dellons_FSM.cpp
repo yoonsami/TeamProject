@@ -890,8 +890,8 @@ void Dellons_FSM::skill_1100()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
 
     if (Get_CurFrame() < 26)
@@ -923,8 +923,8 @@ void Dellons_FSM::skill_1100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     m_bInvincible = false;
     m_bSuperArmor = false;
@@ -939,8 +939,8 @@ void Dellons_FSM::skill_1200()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Get_CurFrame() < 21)
     {
@@ -974,8 +974,8 @@ void Dellons_FSM::skill_1200_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -992,8 +992,8 @@ void Dellons_FSM::skill_1300()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Get_CurFrame() < 20)
     {
@@ -1028,8 +1028,8 @@ void Dellons_FSM::skill_1300_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1051,8 +1051,8 @@ void Dellons_FSM::skill_1400()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Is_AnimFinished())
     {
@@ -1074,8 +1074,8 @@ void Dellons_FSM::skill_1400_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1087,8 +1087,8 @@ void Dellons_FSM::skill_91100()
 {
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
@@ -1108,8 +1108,8 @@ void Dellons_FSM::skill_91100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1168,8 +1168,8 @@ void Dellons_FSM::skill_100100()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
 
     if (Get_CurFrame() < 28)
@@ -1202,8 +1202,8 @@ void Dellons_FSM::skill_100100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1233,8 +1233,8 @@ void Dellons_FSM::skill_100200()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Is_AnimFinished())
     {
@@ -1254,8 +1254,8 @@ void Dellons_FSM::skill_100200_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1272,8 +1272,8 @@ void Dellons_FSM::skill_200100()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Get_CurFrame() < 21)
     {
@@ -1305,8 +1305,8 @@ void Dellons_FSM::skill_200100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1333,8 +1333,8 @@ void Dellons_FSM::skill_200200()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Is_AnimFinished())
     {
@@ -1354,8 +1354,8 @@ void Dellons_FSM::skill_200200_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1409,15 +1409,15 @@ void Dellons_FSM::skill_300100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
     m_bInvincible = true;
     m_bSuperArmor = true;
 
-    Calculate_SkillCamRight();
+    Cal_SkillCamDirection(3.f);
 }
 
 void Dellons_FSM::skill_400100()
@@ -1488,8 +1488,8 @@ void Dellons_FSM::skill_400100()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Get_CurFrame() >= 120)
     {
@@ -1509,15 +1509,15 @@ void Dellons_FSM::skill_400100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
     m_bInvincible = true;
     m_bSuperArmor = true;
 
-    Calculate_SkillCamRight();
+    Cal_SkillCamDirection(3.f);
 }
 
 void Dellons_FSM::skill_501100()
@@ -1535,8 +1535,8 @@ void Dellons_FSM::skill_501100()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Is_AnimFinished())
     {
@@ -1556,8 +1556,8 @@ void Dellons_FSM::skill_501100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1657,20 +1657,4 @@ void Dellons_FSM::Set_WraithState(_uint iAnimindex)
 {
     if (!m_pDellonsWraith.expired())
         m_pDellonsWraith.lock()->Get_FSM()->Set_State(iAnimindex);
-}
-
-void Dellons_FSM::Calculate_SkillCamRight()
-{
-    _float4 vDir = _float4(0.f);
-    vDir = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS);
-    vDir.y = 0.f;
-    vDir.Normalize();
-
-    _float4 vCross = _float4(0.f);
-    vCross = XMVector3Cross(Get_Transform()->Get_State(Transform_State::LOOK), vDir);
-
-    if (XMVectorGetY(vCross) < 0.f) // LEFT 
-        m_vSkillCamRight = (Get_Transform()->Get_State(Transform_State::RIGHT) * -3.f);
-    else //RIGHT	
-        m_vSkillCamRight = (Get_Transform()->Get_State(Transform_State::RIGHT) * 3.f);
 }

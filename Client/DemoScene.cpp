@@ -167,12 +167,12 @@ HRESULT DemoScene::Load_Scene()
 	Load_Light();
 	Load_Camera();
 	// 플레이어의 위치를 잡아주기 때문에 LoadPlayer 이후로 해야함.
-	Load_MapFile(L"KrisMap");
-	Load_Monster(1);
-	Load_Boss_Spike();
-	//Load_Boss_Mir();
+	Load_MapFile(L"MirMap");
+	//Load_Monster(1);
+	//Load_Boss_Spike();
+	Load_Boss_Mir();
 
-	Load_Debug();
+	//Load_Debug();
 	Load_Ui();
 
 	return S_OK;

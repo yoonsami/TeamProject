@@ -876,8 +876,8 @@ void SpearAce_FSM::skill_1100()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Get_CurFrame() < 26)
     {
@@ -907,8 +907,8 @@ void SpearAce_FSM::skill_1100_Init()
 
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     m_bInvincible = false;
     m_bSuperArmor = false;
@@ -923,8 +923,8 @@ void SpearAce_FSM::skill_1200()
     
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Get_CurFrame() < 33)
     {
@@ -958,8 +958,8 @@ void SpearAce_FSM::skill_1200_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -976,8 +976,8 @@ void SpearAce_FSM::skill_1300()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Is_AnimFinished())
     {
@@ -998,8 +998,8 @@ void SpearAce_FSM::skill_1300_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1011,8 +1011,8 @@ void SpearAce_FSM::skill_91100()
 {
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
@@ -1033,8 +1033,8 @@ void SpearAce_FSM::skill_91100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1093,8 +1093,8 @@ void SpearAce_FSM::skill_100100()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Is_AnimFinished())
     {
@@ -1114,8 +1114,8 @@ void SpearAce_FSM::skill_100100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1138,8 +1138,8 @@ void SpearAce_FSM::skill_200100()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Get_CurFrame() < 52)
     {
@@ -1170,8 +1170,8 @@ void SpearAce_FSM::skill_200100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_On(NORMAL_ATTACK);
 
@@ -1198,8 +1198,8 @@ void SpearAce_FSM::skill_200200()
     
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Is_AnimFinished())
     {
@@ -1219,8 +1219,8 @@ void SpearAce_FSM::skill_200200_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1411,8 +1411,8 @@ void SpearAce_FSM::skill_300100()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Is_AnimFinished())
     {
@@ -1429,8 +1429,8 @@ void SpearAce_FSM::skill_300100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     FORWARDMOVINGSKILLDESC desc;
     desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1481,8 +1481,8 @@ void SpearAce_FSM::skill_502100()
  
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Get_FinalFrame() - Get_CurFrame() < 9)
     {
@@ -1502,8 +1502,8 @@ void SpearAce_FSM::skill_502100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1520,8 +1520,8 @@ void SpearAce_FSM::skill_500100()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vKeyInputTargetDir != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
+    if (m_vDirToTarget != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Is_AnimFinished())
     {
@@ -1540,8 +1540,8 @@ void SpearAce_FSM::skill_500100_Init()
 
     m_bCanCombo = false;
 
-    m_vKeyInputTargetDir = _float3(0.f);
-    m_vKeyInputTargetDir = Get_InputDirVector();
+    m_vDirToTarget = _float3(0.f);
+    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 

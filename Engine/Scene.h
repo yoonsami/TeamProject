@@ -78,7 +78,6 @@ protected:
 	void Render_SkyBox();
 	void Render_Forward();
 
-
 	void Render_BloomMap();
 	void Render_BloomMapScaling();
 	void Render_BloomFinal();
@@ -86,10 +85,8 @@ protected:
 	void Render_DOFMapScaling();
 	void Render_DOFFinal();
 
-
 	void Render_Distortion();
 	void Render_Distortion_Final();
-
 
 	void Render_LensFlare();
 
@@ -98,14 +95,9 @@ protected:
 
 	void Render_Debug();
 
-
 	void Render_UI();
 
 	void Render_FXAA();
-
-
-
-
 
 private:
 	void SSAO_MakeOffsetVector();
