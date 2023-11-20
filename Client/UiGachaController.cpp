@@ -37,13 +37,24 @@ HRESULT UiGachaController::Init()
     m_vecObjBgTag[2] = L"UI_Gacha_Bg2";
     m_vecObjBgTag[3] = L"UI_Gacha_Bg3";
 
+    m_vecObjButton.resize(4);
+    m_vecObjButton[0] = L"UI_Gacha_Open_Button";
+    m_vecObjButton[1] = L"UI_Gacha_Close_Button";
+    m_vecObjButton[2] = L"UI_Gacha_Font_Open";
+    m_vecObjButton[3] = L"UI_Gacha_Font_Close";
+
+    m_iSize = IDX(m_vecObjTag.size());
+
     return S_OK;
 }
 
 void UiGachaController::Tick()
 {
-	if (m_pOwner.expired())
-		return;
+    if (m_pOwner.expired())
+        return;
+
+    if (true == m_bIsStartOpen)
+        Start_All_Open();
 
     // test code
     if (KEYTAP(KEY_TYPE::Q))
@@ -52,13 +63,16 @@ void UiGachaController::Tick()
     }
     if (KEYTAP(KEY_TYPE::E))
     {
-        Delete_Gacha_Card();
-        Delete_Gacha_Bg();
+        Delete_All();
     }
 }
 
 void UiGachaController::Create_Gacha_Card()
 {
+    if (true == m_bIsCreate)
+        return;
+
+    m_bIsCreate = true;
     auto pScene = CUR_SCENE;
     pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Gacha.dat");
 
@@ -84,12 +98,26 @@ void UiGachaController::Create_Gacha_Card()
         pObj->Add_Component(pScript);
         pObj->Init();
     }
+
+    weak_ptr<GameObject> pObj = pScene->Get_UI(m_vecObjButton[0]);
+    pObj.lock()->Get_Button()->AddOnClickedEvent([]()
+        {
+            CUR_SCENE->Get_GameObject(L"UI_Gacha_Controller")->Get_Script<UiGachaController>()->Open_All_Card();
+        });
+
+    pObj = pScene->Get_UI(m_vecObjButton[1]);
+    pObj.lock()->Get_Button()->AddOnClickedEvent([]()
+        {
+            CUR_SCENE->Get_GameObject(L"UI_Gacha_Controller")->Get_Script<UiGachaController>()->Delete_All();
+        });
+
+
 }
 
 void UiGachaController::Delete_Gacha_Card()
 {
     auto pScene = CUR_SCENE;
-    
+
     _uint iSize = IDX(m_vecObjTag.size());
     for (_uint i = 0; i < iSize; ++i)
     {
@@ -100,10 +128,57 @@ void UiGachaController::Delete_Gacha_Card()
 void UiGachaController::Delete_Gacha_Bg()
 {
     auto pScene = CUR_SCENE;
-    
+
     _uint iSize = IDX(m_vecObjBgTag.size());
     for (_uint i = 0; i < iSize; ++i)
     {
         pScene->Remove_GameObject(pScene->Get_UI(m_vecObjBgTag[i]));
     }
+}
+
+void UiGachaController::Delete_Gacha_Button()
+{
+    auto pScene = CUR_SCENE;
+
+    _uint iSize = IDX(m_vecObjButton.size());
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        pScene->Remove_GameObject(pScene->Get_UI(m_vecObjButton[i]));
+    }
+}
+
+void UiGachaController::Start_All_Open()
+{
+    if (m_iIndex == m_iSize)
+        return;
+
+    m_fCheckTime += fDT;
+    if (m_fMaxTime < m_fCheckTime)
+    {
+        CUR_SCENE->Get_UI(m_vecObjTag[m_iIndex])->Get_Script<UiGachaCardMove>()->Card_Open();
+
+        m_fCheckTime = 0.f;
+        m_iIndex++;
+    }
+}
+
+void UiGachaController::Open_All_Card()
+{
+    if (true == m_bIsStartOpen)
+        return;
+
+    m_bIsStartOpen = true;
+    m_fCheckTime = 0.f;
+    m_fMaxTime = 0.15f;
+    m_iIndex = 0;
+}
+
+void UiGachaController::Delete_All()
+{
+    m_bIsCreate = false;
+    m_bIsStartOpen = false;
+
+    Delete_Gacha_Card();
+    Delete_Gacha_Bg();
+    Delete_Gacha_Button();
 }
