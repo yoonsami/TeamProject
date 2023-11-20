@@ -883,14 +883,13 @@ void Player_FSM::skill_1100()
     {
         AttackCollider_On(NORMAL_ATTACK);
 
-		  if (!m_bAttackEffectCreate)
-		  {
-			  Add_Effect(L"Teo_1100_2");
-			  m_bAttackEffectCreate = true;
-		  }
+        if (m_iPreFrame != m_iCurFrame)
+            Add_Effect(L"Teo_1100_2");
     }
     else if (Get_CurFrame() == 13)
         AttackCollider_Off();
+
+  
 
     // Init때 초기
     if (m_vKeyInputTargetDir != _float3(0.f))
@@ -939,11 +938,8 @@ void Player_FSM::skill_1200()
     {
         AttackCollider_On(NORMAL_ATTACK);
 
-        if (!m_bAttackEffectCreate)
-        {
+        if (m_iPreFrame != m_iCurFrame)
             Add_Effect(L"Teo_1200_1");
-            m_bAttackEffectCreate = true;
-        }
     }
     else if (Get_CurFrame() > 8)
         AttackCollider_Off();
@@ -994,7 +990,12 @@ void Player_FSM::skill_1200_Init()
 void Player_FSM::skill_1300()
 {
     if (Get_CurFrame() == 12)
+    {
         AttackCollider_On(NORMAL_ATTACK);
+
+        if (m_iPreFrame != m_iCurFrame)
+            Add_Effect(L"Teo_1300_1");
+    }
     else if (Get_CurFrame() == 14)
         AttackCollider_Off();
 

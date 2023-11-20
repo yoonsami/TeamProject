@@ -1157,6 +1157,12 @@ void Spike_FSM::skill_100100()
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 4.f);
         }*/
 
+        if (m_iCurFrame != m_iPreFrame)
+        {
+            // TODO : need cooltime
+            Add_Effect(L"Spike_Skill1_1");
+        }
+
         Get_Transform()->Go_Straight();
     }
     
