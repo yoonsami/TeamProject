@@ -257,6 +257,7 @@ void UiCardDeckController::Click_Deck_Select(wstring strObjName)
                 }
                 _float4 vecPos = m_pUiCardDeckSelect.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
                 vecPos.x = fPosX;
+
             }
         }
     }
