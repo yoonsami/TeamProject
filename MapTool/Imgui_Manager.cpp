@@ -31,6 +31,8 @@
 
 #include "PointLightScript.h"
 
+using namespace ImGui;
+
 ImGuizmo::OPERATION m_eGuizmoType = { ImGuizmo::TRANSLATE };
 namespace fs = std::filesystem;
 
@@ -86,6 +88,7 @@ void ImGui_Manager::ImGui_Tick()
     Frame_Objects();
     Frame_SelcetObjectManager();
     Frame_Wall();
+    Frame_ShaderOption();
 
     Picking_Object();
     LookAtSampleObject();
@@ -693,6 +696,23 @@ void ImGui_Manager::Frame_Wall()
     ImGui::End();
 }
 
+void ImGui_Manager::Frame_ShaderOption()
+{
+    ImGui::Begin("Debug");
+    if (CUR_SCENE)
+    {
+        if (BeginTabBar("##ShaderOptionTabBar"))
+        {
+            RenderOptionTab();
+            //ModelOptionTab();
+            //CameraOptionTab();
+            EndTabBar();
+        }
+    }
+
+    ImGui::End();
+}
+
 void ImGui_Manager::Picking_Object()
 {
     // 마우스 우클릭 시 메시피킹
@@ -1219,6 +1239,50 @@ HRESULT ImGui_Manager::Save_MapObject()
     m_PlayerLookAtPosition.w = 1.f;
     file->Write<_float4>(m_PlayerLookAtPosition);
 
+// 셰이더옵션 저장
+    //RenderOption
+    file->Write<_float>(CUR_SCENE->g_fBrightness);
+    file->Write<_float>(CUR_SCENE->g_fContrast);
+    file->Write<_float>(CUR_SCENE->g_Saturation);
+    //Bloom
+    file->Write<_bool>(CUR_SCENE->g_BloomData.g_BloomOn);
+    file->Write<_float>(CUR_SCENE->g_BloomData.g_BloomMin);
+    //TonMapping
+    file->Write<_int>(CUR_SCENE->g_iTMIndex);
+    file->Write<_float>(CUR_SCENE->g_fMaxWhite);
+    //SSAO
+    file->Write<_bool>(CUR_SCENE->g_SSAOData.g_bSSAO_On);
+    file->Write<_float>(CUR_SCENE->g_SSAOData.g_fOcclusionRadius);
+    file->Write<_float>(CUR_SCENE->g_SSAOData.g_OcclusionFadeStart);
+    file->Write<_float>(CUR_SCENE->g_SSAOData.g_OcclusionFadeEnd);
+    //MotionBlur
+    file->Write<_bool>(CUR_SCENE->g_MotionBlurData.g_bMotionBlurOn);
+    file->Write<_int>(CUR_SCENE->g_MotionBlurData.g_iBlurCount);
+    //FogOption
+    file->Write<_bool>(CUR_SCENE->g_FogData.g_FogOn);
+    file->Write<_float>(CUR_SCENE->g_FogData.g_fogStart);
+    file->Write<_float>(CUR_SCENE->g_FogData.g_fogEnd);
+    file->Write<_float>(CUR_SCENE->g_FogData.g_fogDensity);
+    file->Write<_int>(CUR_SCENE->g_FogData.g_fogMode);
+    file->Write<Color>(CUR_SCENE->g_FogData.g_fogColor);
+    //LensFlare
+    file->Write<_bool>(CUR_SCENE->g_bLensFlare);
+    //DOF
+    file->Write<_bool>(CUR_SCENE->g_DOFData.g_bDOF_On);
+    file->Write<_float>(CUR_SCENE->g_DOFData.g_FocusDepth);
+    file->Write<_float>(CUR_SCENE->g_DOFData.g_DOFRange);
+    //LightOption
+    file->Write<_float>(CUR_SCENE->g_LightPowerData.g_specularPower);
+    file->Write<_float>(CUR_SCENE->g_LightPowerData.g_rimPower);
+    file->Write<Color>(CUR_SCENE->Get_Light()->Get_Light()->Get_LightInfo().color.diffuse);
+    //OtherOption
+    file->Write<_bool>(CUR_SCENE->g_bDrawOutline);
+    file->Write<_bool>(CUR_SCENE->g_bFXAAOn);
+    file->Write<_bool>(CUR_SCENE->g_bAberrationOn);
+    file->Write<_bool>(CUR_SCENE->g_bPBR_On);
+    file->Write<_float>(CUR_SCENE->g_lightAttenuation);
+    file->Write<_float>(CUR_SCENE->g_ambientRatio);
+
     return S_OK;
 }
 
@@ -1273,6 +1337,7 @@ HRESULT ImGui_Manager::Load_MapObject()
     // 보는방향
     _float3 DirLightLookDir = _float3{ 0.f, 0.f, 0.f };
     file->Read<_float3>(DirLightLookDir);
+    m_DirectionalLightLookAtPos = DirLightLookDir;
     DirectionalLightObject->Get_Transform()->LookAt(XMVectorSetW(DirLightLookDir,1.f));
     // 색깔
     LightColor DirLightColor;
@@ -1397,6 +1462,50 @@ HRESULT ImGui_Manager::Load_MapObject()
     // 그 위치방향으로 카메라 세팅
     CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_PlayerCreatePosition);
     CUR_SCENE->Get_MainCamera()->Get_Transform()->LookAt(m_PlayerLookAtPosition);
+
+// 셰이더옵션 로드
+    //RenderOption
+    file->Read<_float>(CUR_SCENE->g_fBrightness);
+    file->Read<_float>(CUR_SCENE->g_fContrast);
+    file->Read<_float>(CUR_SCENE->g_Saturation);
+    //Bloom
+    file->Read<_bool>(CUR_SCENE->g_BloomData.g_BloomOn);
+    file->Read<_float>(CUR_SCENE->g_BloomData.g_BloomMin);
+    //TonMapping
+    file->Read<_int>(CUR_SCENE->g_iTMIndex);
+    file->Read<_float>(CUR_SCENE->g_fMaxWhite);
+    //SSAO
+    file->Read<_bool>(CUR_SCENE->g_SSAOData.g_bSSAO_On);
+    file->Read<_float>(CUR_SCENE->g_SSAOData.g_fOcclusionRadius);
+    file->Read<_float>(CUR_SCENE->g_SSAOData.g_OcclusionFadeStart);
+    file->Read<_float>(CUR_SCENE->g_SSAOData.g_OcclusionFadeEnd);
+    //MotionBlur
+    file->Read<_bool>(CUR_SCENE->g_MotionBlurData.g_bMotionBlurOn);
+    file->Read<_int>(CUR_SCENE->g_MotionBlurData.g_iBlurCount);
+    //FogOption
+    file->Read<_bool>(CUR_SCENE->g_FogData.g_FogOn);
+    file->Read<_float>(CUR_SCENE->g_FogData.g_fogStart);
+    file->Read<_float>(CUR_SCENE->g_FogData.g_fogEnd);
+    file->Read<_float>(CUR_SCENE->g_FogData.g_fogDensity);
+    file->Read<_int>(CUR_SCENE->g_FogData.g_fogMode);
+    file->Read<Color>(CUR_SCENE->g_FogData.g_fogColor);
+    //LensFlare
+    file->Read<_bool>(CUR_SCENE->g_bLensFlare);
+    //DOF
+    file->Read<_bool>(CUR_SCENE->g_DOFData.g_bDOF_On);
+    file->Read<_float>(CUR_SCENE->g_DOFData.g_FocusDepth);
+    file->Read<_float>(CUR_SCENE->g_DOFData.g_DOFRange);
+    //LightOption
+    file->Read<_float>(CUR_SCENE->g_LightPowerData.g_specularPower);
+    file->Read<_float>(CUR_SCENE->g_LightPowerData.g_rimPower);
+    file->Read<Color>(CUR_SCENE->Get_Light()->Get_Light()->Get_LightInfo().color.diffuse);
+    //OtherOption
+    file->Read<_bool>(CUR_SCENE->g_bDrawOutline);
+    file->Read<_bool>(CUR_SCENE->g_bFXAAOn);
+    file->Read<_bool>(CUR_SCENE->g_bAberrationOn);
+    file->Read<_bool>(CUR_SCENE->g_bPBR_On);
+    file->Read<_float>(CUR_SCENE->g_lightAttenuation);
+    file->Read<_float>(CUR_SCENE->g_ambientRatio);
 
     return S_OK;
 }
@@ -1545,4 +1654,211 @@ void ImGui_Manager::Set_SampleObject()
     m_SampleObject->Get_ModelRenderer()->Set_Model(model);
 
     m_fSampleModelCullSize = Compute_CullingData(m_SampleObject).w;
+}
+
+void ImGui_Manager::RenderOptionTab()
+{
+    if (BeginTabItem("Render Option"))
+    {
+        string fps = "FPS : " + to_string(TIME.GetFPS());
+        Text(fps.c_str());
+        if (CollapsingHeader("RenderOption"))
+        {
+
+            _float& g_fBrightness = CUR_SCENE->g_fBrightness;
+            _float& g_fContrast = CUR_SCENE->g_fContrast;
+            _float& g_Saturation = CUR_SCENE->g_Saturation;
+
+
+
+            DragFloat("Brightness", &g_fBrightness, 0.01f, 0.f, 5.f);
+            DragFloat("Contrast", &g_fContrast, 0.01f, 0.01f, 5.f);
+            DragFloat("Saturation", &g_Saturation, 0.01f, 0.01f, 5.f);
+
+
+        }
+        if (CollapsingHeader("Bloom"))
+        {
+            Checkbox("Bloom On", &CUR_SCENE->g_BloomData.g_BloomOn);
+            _float& g_fBloomMin = CUR_SCENE->g_BloomData.g_BloomMin;
+            DragFloat("Bloom Min Value", &g_fBloomMin, 0.001f, 0.01f, 1.f);
+        }
+        if (CollapsingHeader("ToneMapping"))
+        {
+            _float& g_fMaxWhite = CUR_SCENE->g_fMaxWhite;
+            _int& g_iTMIndex = CUR_SCENE->g_iTMIndex;
+
+            static _int tmIndex = 0;
+            InputInt("ToneMapping Mod", &tmIndex);
+
+            if (tmIndex > 3) tmIndex %= 4;
+            else if (tmIndex < 0) tmIndex += 4;
+
+            g_iTMIndex = tmIndex;
+            if (g_iTMIndex == 1)
+                DragFloat("Max_White Value", &g_fMaxWhite, 0.1f, 0.01f, 5.f);
+        }
+        if (CollapsingHeader("SSAO"))
+        {
+            _bool& g_bSSAO_On = CUR_SCENE->g_SSAOData.g_bSSAO_On;
+            Checkbox("SSAO On", &g_bSSAO_On);
+            if (g_bSSAO_On)
+            {
+                _float& g_fOcclusionRadius = CUR_SCENE->g_SSAOData.g_fOcclusionRadius;
+                _float& g_OcclusionFadeStart = CUR_SCENE->g_SSAOData.g_OcclusionFadeStart;
+                _float& g_OcclusionFadeEnd = CUR_SCENE->g_SSAOData.g_OcclusionFadeEnd;
+
+                DragFloat("SSAO Radius", &g_fOcclusionRadius, 0.01f, 0.0001f, 1.f);
+                DragFloat("SSAO FadeStart", &g_OcclusionFadeStart, 0.01f, 0.0001f, g_OcclusionFadeEnd);
+                DragFloat("SSAO FadeEnd", &g_OcclusionFadeEnd, 0.01f, g_OcclusionFadeStart, 1.f);
+            }
+        }
+        if (CollapsingHeader("Motion Blur"))
+        {
+            Scene::MotionBlurData& data = CUR_SCENE->g_MotionBlurData;
+            Checkbox("Motion Blur On", &data.g_bMotionBlurOn);
+            InputInt("Motion Blur Count", &data.g_iBlurCount);
+
+        }
+        if (CollapsingHeader("Fog Option"))
+        {
+            _bool& g_FogOn = CUR_SCENE->g_FogData.g_FogOn;
+            _float& gFogStart = CUR_SCENE->g_FogData.g_fogStart;
+            _float& g_FogEnd = CUR_SCENE->g_FogData.g_fogEnd;
+            _float& g_fogDensity = CUR_SCENE->g_FogData.g_fogDensity;
+            _int& g_fogMode = CUR_SCENE->g_FogData.g_fogMode;
+            Color& gColorFog = CUR_SCENE->g_FogData.g_fogColor;
+
+            Checkbox("Fog On", &g_FogOn);
+            DragFloat("Fog Start Range", &gFogStart, 1.f, 0.0001f, g_FogEnd);
+            DragFloat("Fog End", &g_FogEnd, 1.f, gFogStart, 2000.f);
+            DragFloat("Fog Density", &g_fogDensity, 0.001f, 0.001f, 1.f);
+            InputInt("Fog Mod", &g_fogMode);
+            if (g_fogMode < 0) g_fogMode = 0;
+            if (g_fogMode > 2) g_fogMode = 2;
+            static bool alpha_preview = true;
+            static bool alpha_half_preview = false;
+            static bool drag_and_drop = true;
+            static bool options_menu = true;
+            static bool hdr = true;
+
+            ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
+            ImGui::ColorEdit4("FogColor", (float*)&gColorFog, ImGuiColorEditFlags_DisplayHSV | misc_flags);
+
+        }
+        if (CollapsingHeader("Lens Flare Option"))
+        {
+            if (CUR_SCENE)
+            {
+                _bool& g_bLensFlare = CUR_SCENE->g_bLensFlare;
+                Checkbox("LensFlare On", &g_bLensFlare);
+            }
+        }
+        if (CollapsingHeader("DOF"))
+        {
+            Checkbox("DOF On", &CUR_SCENE->g_DOFData.g_bDOF_On);
+            _float& g_FocusDepth = CUR_SCENE->g_DOFData.g_FocusDepth;
+            _float& g_DOFRange = CUR_SCENE->g_DOFData.g_DOFRange;
+            DragFloat("Focus Depth", &g_FocusDepth, 1.f, 0.1f, 1000.f);
+            DragFloat("g_DOFRange", &g_DOFRange, 0.1f, 0.0001f, 1000.f);
+        }
+        if (CollapsingHeader("Light Option"))
+        {
+            _float& g_fSpecularPower = CUR_SCENE->g_LightPowerData.g_specularPower;
+            _float& g_fRimPower = CUR_SCENE->g_LightPowerData.g_rimPower;
+            DragFloat("Specular", &g_fSpecularPower, 0.1f, 0.01f);
+            DragFloat("RimPower", &g_fRimPower, 0.1f, 0.01f);
+            if (CUR_SCENE->Get_Light())
+            {
+                Color& g_lightDiffuse = CUR_SCENE->Get_Light()->Get_Light()->Get_LightInfo().color.diffuse;
+                static bool alpha_preview = true;
+                static bool alpha_half_preview = false;
+                static bool drag_and_drop = true;
+                static bool options_menu = true;
+                static bool hdr = true;
+
+                ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
+                DragFloat4("color", (_float*)&g_lightDiffuse);
+
+            }
+        }
+        if (CollapsingHeader("Other Option"))
+        {
+            SeparatorText("Outline");
+            _bool& g_bOutline = CUR_SCENE->g_bDrawOutline;
+            Checkbox("Outline On", &g_bOutline);
+
+            SeparatorText("FXAA");
+            _bool& g_bFXAAOn = CUR_SCENE->g_bFXAAOn;
+            Checkbox("FXAA On", &g_bFXAAOn);
+
+            SeparatorText("Aberration");
+            _bool& g_bAberrationOn = CUR_SCENE->g_bAberrationOn;
+            Checkbox("Aberration On", &g_bAberrationOn);
+            if (g_bAberrationOn)
+            {
+                _float& g_fAberrationPower = CUR_SCENE->g_fAberrationPower;
+                DragFloat("Aberration Power", &g_fAberrationPower, 1.f, -300.f, 300.f);
+            }
+            SeparatorText("PBR");
+            _bool& g_bPBR_On = CUR_SCENE->g_bPBR_On;
+            Checkbox("PBR On", &g_bPBR_On);
+            _float& g_lightAttenuation = CUR_SCENE->g_lightAttenuation;
+            _float& g_ambientRatio = CUR_SCENE->g_ambientRatio;
+            DragFloat("g_lightAttenuation", &g_lightAttenuation);
+            DragFloat("g_ambientRatio", &g_ambientRatio, 0.1f, 0.1f, 1.5f);
+        }
+
+        EndTabItem();
+    }
+
+    if (Button("ClearAllOptions"))
+        ClearAllShaderOptions();
+}
+
+void ImGui_Manager::ClearAllShaderOptions()
+{
+    //RenderOption
+    _float& g_fBrightness = CUR_SCENE->g_fBrightness = 0.f;
+    _float& g_fContrast = CUR_SCENE->g_fContrast = 1.f;
+    _float& g_Saturation = CUR_SCENE->g_Saturation = 1.f;
+    //Bloom
+    _bool& g_fBloomOn = CUR_SCENE->g_BloomData.g_BloomOn = false;
+    _float& g_fBloomMin = CUR_SCENE->g_BloomData.g_BloomMin = 0.99f;
+    //TonMapping
+    _int& g_iTMIndex = CUR_SCENE->g_iTMIndex = 0;
+    _float& g_fMaxWhite = CUR_SCENE->g_fMaxWhite = 1.f;
+    //SSAO
+    _bool& g_bSSAO_On = CUR_SCENE->g_SSAOData.g_bSSAO_On = true;
+    _float& g_fOcclusionRadius = CUR_SCENE->g_SSAOData.g_fOcclusionRadius = 0.070f;
+    _float& g_OcclusionFadeStart = CUR_SCENE->g_SSAOData.g_OcclusionFadeStart = 0.3f;
+    _float& g_OcclusionFadeEnd = CUR_SCENE->g_SSAOData.g_OcclusionFadeEnd = 1.f;
+    //MotionBlur
+    Scene::MotionBlurData& data = CUR_SCENE->g_MotionBlurData;
+    data.g_bMotionBlurOn = false;
+    data.g_iBlurCount = 0;
+    //FogOption
+    _bool& g_FogOn = CUR_SCENE->g_FogData.g_FogOn = false;
+    _float& gFogStart = CUR_SCENE->g_FogData.g_fogStart = 15.f;
+    _float& g_FogEnd = CUR_SCENE->g_FogData.g_fogEnd = 150.f;
+    _float& g_fogDensity = CUR_SCENE->g_FogData.g_fogDensity = 1.f;
+    _int& g_fogMode = CUR_SCENE->g_FogData.g_fogMode = 0;
+    Color& g_ColorFog = CUR_SCENE->g_FogData.g_fogColor = Color(1.f);
+    //LensFlare
+    _bool& g_bLensFlare = CUR_SCENE->g_bLensFlare = false;
+    //DOF
+    _bool& g_bDOF_On = CUR_SCENE->g_DOFData.g_bDOF_On = false;
+    _float & g_FocusDepth = CUR_SCENE->g_DOFData.g_FocusDepth = 7.f;
+    _float& g_DOFRange = CUR_SCENE->g_DOFData.g_DOFRange = 100.f;
+    //LightOption
+    _float& g_fSpecularPower = CUR_SCENE->g_LightPowerData.g_specularPower = 10.f;
+    _float& g_fRimPower = CUR_SCENE->g_LightPowerData.g_rimPower = 10.f;
+    Color& g_lightDiffuse = CUR_SCENE->Get_Light()->Get_Light()->Get_LightInfo().color.diffuse = Color(1.f);
+    //OtherOption
+    _bool& g_bOutline = CUR_SCENE->g_bDrawOutline = false;
+    _bool& g_bFXAAOn = CUR_SCENE->g_bFXAAOn = false;
+    _bool& g_bAberrationOn = CUR_SCENE->g_bAberrationOn = false;
+    _bool& g_bPBR_On = CUR_SCENE->g_bPBR_On = true;
+    _float& g_lightAttenuation = CUR_SCENE->g_lightAttenuation = 100.f;
+    _float& g_ambientRatio = CUR_SCENE->g_ambientRatio = 0.5f;
 }

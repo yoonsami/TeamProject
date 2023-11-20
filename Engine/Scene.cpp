@@ -652,6 +652,50 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 		PlayerPtr->Get_Transform()->Set_State(Transform_State::POS, PlayerCreatePos);
 		PlayerPtr->Get_Transform()->LookAt(PlayerLookAtPos);
 	}
+
+	// 셰이더옵션 로드
+		//RenderOption
+	file->Read<_float>(g_fBrightness);
+	file->Read<_float>(g_fContrast);
+	file->Read<_float>(g_Saturation);
+	//Bloom
+	file->Read<_bool>(g_BloomData.g_BloomOn);
+	file->Read<_float>(g_BloomData.g_BloomMin);
+	//TonMapping
+	file->Read<_int>(g_iTMIndex);
+	file->Read<_float>(g_fMaxWhite);
+	//SSAO
+	file->Read<_bool>(g_SSAOData.g_bSSAO_On);
+	file->Read<_float>(g_SSAOData.g_fOcclusionRadius);
+	file->Read<_float>(g_SSAOData.g_OcclusionFadeStart);
+	file->Read<_float>(g_SSAOData.g_OcclusionFadeEnd);
+	//MotionBlur
+	file->Read<_bool>(g_MotionBlurData.g_bMotionBlurOn);
+	file->Read<_int>(g_MotionBlurData.g_iBlurCount);
+	//FogOption
+	file->Read<_bool>(g_FogData.g_FogOn);
+	file->Read<_float>(g_FogData.g_fogStart);
+	file->Read<_float>(g_FogData.g_fogEnd);
+	file->Read<_float>(g_FogData.g_fogDensity);
+	file->Read<_int>(g_FogData.g_fogMode);
+	file->Read<Color>(g_FogData.g_fogColor);
+	//LensFlare
+	file->Read<_bool>(g_bLensFlare);
+	//DOF
+	file->Read<_bool>(g_DOFData.g_bDOF_On);
+	file->Read<_float>(g_DOFData.g_FocusDepth);
+	file->Read<_float>(g_DOFData.g_DOFRange);
+	//LightOption
+	file->Read<_float>(g_LightPowerData.g_specularPower);
+	file->Read<_float>(g_LightPowerData.g_rimPower);
+	file->Read<Color>(Get_Light()->Get_Light()->Get_LightInfo().color.diffuse);
+	//OtherOption
+	file->Read<_bool>(g_bDrawOutline);
+	file->Read<_bool>(g_bFXAAOn);
+	file->Read<_bool>(g_bAberrationOn);
+	file->Read<_bool>(g_bPBR_On);
+	file->Read<_float>(g_lightAttenuation);
+	file->Read<_float>(g_ambientRatio);
 }
 
 void Scene::PickUI()

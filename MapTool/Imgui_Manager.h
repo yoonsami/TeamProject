@@ -38,6 +38,9 @@ private:
 	void Frame_Light();
 	// 벽의 정보 관리
 	void Frame_Wall();
+	// 쉐이더옵션관리
+	void Frame_ShaderOption();
+
 	// 피킹
 	void Picking_Object();
 	// 샘플오브젝트로 시야이동
@@ -88,6 +91,10 @@ private:
 	void Create_SampleObjects();
 	// 현재 선택한 베이스오브젝트로 샘플 맵오브젝트 모델변경 및 카메라 조정
 	void Set_SampleObject();
+    // 윤성이형의 옵션변경탭
+	void RenderOptionTab();
+	// 모든 쉐이더 옵션 초기화
+	void ClearAllShaderOptions();
 
 private:
 // 설치 가능한 오브젝트 목록
