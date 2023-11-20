@@ -16,11 +16,12 @@ public:
 
     void                    Update_Desc();
 
-    void                    InitialTransform();
+    void                    InitialTransform(_float4x4 mParentWorldMatrix, const _float3& vInitPos_inGroup, const _float3& vInitScale_inGroup, const _float3& vInitRotation_inGroup);
 
     /* Setter */
     void                    Set_Desc(MeshEffectData::DESC tDesc) { m_tDesc = tDesc; }
     void                    Set_TransformDesc(void* pArg);
+    void                    Set_Lock(_bool bIsLocked) { m_bIsLocked = bIsLocked; }
 
     /* Getter */
     shared_ptr<Material>    Get_Material() { return  m_pMaterial; }
@@ -50,6 +51,7 @@ private:
     _float                  m_fLifeTimeRatio = { 0.f };
     _float                  m_fTimeAcc_SpriteAnimation = { 0.f };
     _bool                   m_bIsPlayFinished = { false };
+    _bool                   m_bIsLocked = { false };
 
     /* Tex UV offset */
     _float2                 m_vCurrTexUVOffset_Op1 = { 0.f, 0.f };

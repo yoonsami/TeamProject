@@ -124,7 +124,7 @@ shared_ptr<GroupEffectData> ResourceMgr::GetOrAddGroupEffectData(const wstring& 
 	return groupEffectData;
 }
 
-shared_ptr<GroupEffectData> ResourceMgr::ReloadGroupEffectData(const wstring& key, const wstring& path)
+shared_ptr<GroupEffectData> ResourceMgr::ReloadOrAddGroupEffectData(const wstring& key, const wstring& path)
 {
 	wstring name = key;
 	Utils::DetachExt(name);
@@ -133,19 +133,19 @@ shared_ptr<GroupEffectData> ResourceMgr::ReloadGroupEffectData(const wstring& ke
 		return nullptr;
 
 	// For. Create Reloaded 
-	auto reloadedGroupEffectData = make_shared<GroupEffectData>();
-	reloadedGroupEffectData->Load(path);
-	
-	reloadedGroupEffectData->Set_Name(name);
+	auto newGroupEffectData = make_shared<GroupEffectData>();
+	newGroupEffectData->Load(path);
+	newGroupEffectData->Set_Name(name);
 
-	// For. Erase prev 
-	Delete<GroupEffectData>(name);
-
-	// For. Add reloaded 
-	//Add(key, reloadedGroupEffectData);
-	Add(name, reloadedGroupEffectData);
-
-	return reloadedGroupEffectData;
+	// For. Add New Mesh Effect Data 
+	if (nullptr == newGroupEffectData)
+		Add(name, newGroupEffectData);
+	else
+	{
+		Delete<GroupEffectData>(name);	// For. Delete prev 
+		Add(name, newGroupEffectData);	// For. Add new 
+	}
+	return newGroupEffectData;
 }
 
 shared_ptr<MeshEffectData> ResourceMgr::ReloadOrAddMeshEffectData(const wstring& key, const wstring& path)
@@ -168,7 +168,7 @@ shared_ptr<MeshEffectData> ResourceMgr::ReloadOrAddMeshEffectData(const wstring&
 	// For. Delete prev Mesh Effect Data and Add new Mesh Effect Data
 	else
 	{
-		Delete<GroupEffectData>(name);	// For. Delete prev 
+		Delete<MeshEffectData>(name);	// For. Delete prev 
 		Add(name, newMeshEffectData);	// For. Add new 
 	}
 	return newMeshEffectData;

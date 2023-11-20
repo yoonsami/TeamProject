@@ -47,6 +47,9 @@ void ImGuiToolMgr::Tick()
     ImGui::NewFrame();
     ImGuizmo::BeginFrame();
 
+    // Start guizmo
+    ImGuizmo::BeginFrame();
+
     // For. Basic Widget
     ImGui::SetNextWindowPos(ImVec2(0, g_iWinSizeY - 60.f));
     ImGui::SetNextWindowSize(ImVec2(600.f, 100.f));
@@ -54,8 +57,6 @@ void ImGuiToolMgr::Tick()
     ImGui_BasicWidget();
     ImGui::End();
 
-    //ImGui::ShowDemoWindow();
-    
     if (m_bIsParticleMaker_Instancing_On)
         m_pWidget_ParticleMaker_Instancing->Tick();
     if (m_bIsEffectMaker_Mesh_On)

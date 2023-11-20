@@ -48,6 +48,7 @@ private:
 	void					ImGui_TextureList();
 
 	/* Options */
+	void					Option_Guizmo();
 	void					Option_Property();
 	void					Option_Mesh();
 	void					Option_SpriteAnimation();
@@ -70,12 +71,13 @@ private:
 	void					SubWidget_SettingTexUV(_float* arrTiling, _float* arrTexUVSpeed, const char* pszWidgetKey, const char* pszWidgetKey2);
 	void					SubWidget_Curve1(_float2* pPoints, const string& strKey); // 0 ~ 1
 	void					SubWidget_Curve2(_float2* pPoints, const string& strKey); // 0 ~ 1, -1 ~ 1
-
+	
 	/* Function */
 	void					Create();
 	void					Save();
 	void					Load();
-	
+	void					Show_Guizmo();
+
 	/* Utils */
 	ImVec2					CatMull_Rom(_float2* pPoints, _float t);
 	Color					ImVec4toColor(ImVec4 imvec);
@@ -92,6 +94,12 @@ private:
 	/* Widget On/Off*/
 	_bool					m_bSaveMsgBox_On = { false };
 	_bool					m_bTextureList_On = { false };
+
+	/* For. guizmo */
+	weak_ptr<GameObject>    m_pCurrMeshEffect;
+	_bool					m_bIsMeshEffectLocked = { false };
+	_bool					m_bGuizmoTranslation_On = { false };
+	_bool					m_bGuizmoRotation_On = { false };
 
 	/* Use in SubWidget_TextureList */
 	_int*					m_iTexture_TextureList;

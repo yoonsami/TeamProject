@@ -64,7 +64,6 @@ void Widget_Model_Controller::Load_ModelNames()
 	}
 }
 
-
 void Widget_Model_Controller::Model_Controller()
 {
 	if (BeginTabBar("##Model Controller"))

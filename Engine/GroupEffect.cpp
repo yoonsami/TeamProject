@@ -138,23 +138,17 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
 
         // For. Transform 
         EffectObj->GetOrAddTransform();
-        EffectObj->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + _float4(iter.vPivot_Pos, 0.f));
        
         Quaternion qRotation = Quaternion::CreateFromYawPitchRoll(iter.vPivot_Rotation.y, iter.vPivot_Rotation.x, iter.vPivot_Rotation.z);
         qRotation.Normalize();
 
-        EffectObj->Get_Transform()->Set_Quaternion(Quaternion::CreateFromRotationMatrix(_float4x4::CreateFromQuaternion(qRotation) * _float4x4::CreateFromQuaternion(Get_Transform()->Get_Rotation())));
-        
-        EffectObj->Get_Transform()->Scaled(iter.vPivot_Scale);
-
-        _float3 vTemp = iter.vPivot_Rotation + Get_Transform()->Get_RollPitchYaw();
         // For. Shader 
         shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
         shared_ptr<MeshEffect> meshEffect = make_shared<MeshEffect>(shader);
         EffectObj->Add_Component(meshEffect);
         EffectObj->Get_MeshEffect()->Init(&tDesc);
         EffectObj->Get_MeshEffect()->Set_TransformDesc(&tTransform_Desc);
-        EffectObj->Get_MeshEffect()->InitialTransform();
+        EffectObj->Get_MeshEffect()->InitialTransform(Get_Transform()->Get_WorldMatrix(), iter.vPivot_Pos, iter.vPivot_Scale, iter.vPivot_Rotation);
 
         // For. Add to vector 
         m_vMemberEffects.push_back(EffectObj);

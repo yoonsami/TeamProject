@@ -268,7 +268,7 @@ void FSM::Add_Effect(const wstring& strSkilltag)
 
 	// For. Transform 
 	pGroupEffectObj->GetOrAddTransform();
-	pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS) + (_float3::Up * m_fEffectYOffSet));
+	pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS));
 	pGroupEffectObj->Get_Transform()->Set_Quaternion(Get_Transform()->Get_Rotation());
 
 	// For. GroupEffectData 

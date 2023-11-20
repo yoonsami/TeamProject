@@ -227,7 +227,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     if (bUseFadeOut)
         vOutColor.a *= (1.f - fLifeTimeRatio);
     
-    if(vOutColor.a == 0.f)
+    if(vOutColor.a < 0.1f)
         discard;
     
     return vOutColor;

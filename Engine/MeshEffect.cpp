@@ -29,6 +29,9 @@ void MeshEffect::Init(void* pArg)
 
 void MeshEffect::Tick()
 {
+    if (m_bIsLocked)
+        return;
+
     // For. Transform
     Translate();
     Scaling();
@@ -37,9 +40,9 @@ void MeshEffect::Tick()
 
 void MeshEffect::Final_Tick()
 {
-    if (m_bIsPlayFinished)
+    if (m_bIsLocked)
         return;
-    
+
     m_fCurrAge += fDT;
     m_fLifeTimeRatio = m_fCurrAge / m_tDesc.fDuration;
     m_fTimeAcc_SpriteAnimation += fDT;
@@ -186,19 +189,12 @@ void MeshEffect::Update_Desc()
         m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::NORMAL);   
 }
 
-void MeshEffect::InitialTransform()
+void MeshEffect::InitialTransform(_float4x4 mParentWorldMatrix, const _float3& vInitPos_inGroup, const _float3& vInitScale_inGroup, const _float3& vInitRotation_inGroup)                    
 {
-    // For. Position, Scale, Rotation 
-    m_vStartPos += _float3(Get_Transform()->Get_State(Transform_State::POS));
-    m_vStartScale *= Get_Transform()->Get_Scale();
+    _float4x4 mLocalWorldMatrix = _float4x4::CreateScale(m_vStartScale) * _float4x4::CreateFromQuaternion(Quaternion::CreateFromYawPitchRoll(m_vStartRotation.y, m_vStartRotation.x, m_vStartRotation.z)) * _float4x4::CreateTranslation(m_vStartPos);
+    _float4x4 mInGroupWorldMatrix = _float4x4::CreateScale(vInitScale_inGroup) * _float4x4::CreateFromQuaternion(Quaternion::CreateFromYawPitchRoll(vInitRotation_inGroup.y, vInitRotation_inGroup.x, vInitRotation_inGroup.z)) * _float4x4::CreateTranslation(vInitPos_inGroup);
+    Get_Transform()->Set_WorldMat(mLocalWorldMatrix * mInGroupWorldMatrix * mParentWorldMatrix);
 
-    m_vEndScale += m_vStartScale;
-    m_vEndPos += m_vStartPos;
-
-    Get_Transform()->Set_State(Transform_State::POS, _float4(m_vStartPos, 1.f));
-    Get_Transform()->Scaled(m_vStartScale);
-    
-    Get_Transform()->Set_Rotation(m_vStartRotation);
     // Billbord 
     if (m_tTransform_Desc.iTurnOption == 3)
     {
@@ -218,8 +214,15 @@ void MeshEffect::InitialTransform()
 
         Get_Transform()->Set_LookDir(vTargetDir);
     }
-    
-    Get_Transform()->Set_Quaternion(Quaternion::CreateFromRotationMatrix(_float4x4::CreateRotationY(XM_PI * 0.5f) * _float4x4::CreateFromQuaternion(Get_Transform()->Get_Rotation())));
+
+    // Final start, end position  
+    m_vStartPos += _float3(Get_Transform()->Get_State(Transform_State::POS));
+    m_vEndPos += m_vStartPos;    
+
+    m_vStartScale *= vInitScale_inGroup;
+    m_vEndScale += m_vStartScale;
+
+    m_vStartRotation += vInitRotation_inGroup;
 }
 
 void MeshEffect::Set_TransformDesc(void* pArg)
@@ -253,7 +256,7 @@ void MeshEffect::Set_TransformDesc(void* pArg)
     // For. Translate
     m_iTranslateOption = pDesc->iTranslateOption;
     m_fTranslateSpeed = pDesc->fTranslateSpeed;
-    m_vEndPos = m_vStartPos + _float3(
+    m_vEndPos = _float3(
         MathUtils::Get_RandomFloat(pDesc->vEndPosOffset_Min.x, pDesc->vEndPosOffset_Max.x),
         MathUtils::Get_RandomFloat(pDesc->vEndPosOffset_Min.y, pDesc->vEndPosOffset_Max.y),
         MathUtils::Get_RandomFloat(pDesc->vEndPosOffset_Min.z, pDesc->vEndPosOffset_Max.z)
@@ -286,10 +289,21 @@ void MeshEffect::Translate()
     {
     case 0:
         break;
-    case 1: // Move to target position
-    case 2: // Move to random target position
-        Get_Transform()->Set_State(Transform_State::POS, _float4(XMVectorLerp(m_vStartPos, m_vEndPos, m_fLifeTimeRatio), 0.f));
+    case 1: // Move to direction 
+    case 2: // Move to random direction 
+    {
+        Get_Transform()->Set_Speed(CalcSpeed());
+        
+        _float4 vCurrPos = Get_Transform()->Get_State(Transform_State::POS);
+
+        _float4 vDir = m_vEndPos - vCurrPos;
+        vDir.Normalize();
+
+        vCurrPos += vDir * Get_Transform()->Get_Speed();
+
+        Get_Transform()->Set_State(Transform_State::POS, vCurrPos);
         break;
+    }
     case 3:
     {
         Get_Transform()->Set_Speed(CalcSpeed());
@@ -339,6 +353,11 @@ void MeshEffect::Translate()
         m_fCurrYspeed += fDT;
 
         Get_Transform()->Set_State(Transform_State::POS, vPos);
+        break;
+    }
+    case 10: // Move to target position 
+    {
+        Get_Transform()->Set_State(Transform_State::POS, XMVectorLerp(m_vStartPos, m_vEndPos, m_fLifeTimeRatio));
         break;
     }
     }
@@ -454,7 +473,7 @@ void MeshEffect::Init_RenderParams()
     );
     m_RenderParams.SetMatrix(1, vTemp4x4);
     vTemp4x4 = _float4x4(
-        _float4(m_tDesc.iFlipOption_Op1, m_tDesc.iFlipOption_Op2, m_tDesc.iFlipOption_Op3, 0.f),
+        _float4((_float)m_tDesc.iFlipOption_Op1, (_float)m_tDesc.iFlipOption_Op2, (_float)m_tDesc.iFlipOption_Op3, 0.f),
         _float4(0.f, 0.f, 0.f, 0.f),
         _float4(0.f, 0.f, 0.f, 0.f),
         _float4(0.f, 0.f, 0.f, 0.f)
@@ -522,6 +541,9 @@ void MeshEffect::Bind_UpdatedTexUVOffset_ToShader()
 
 void MeshEffect::Bind_RenderParams_ToShader()
 {
+    if (m_bIsLocked)
+        return;
+
     m_RenderParams.SetFloat(0, m_fLifeTimeRatio);    
     m_RenderParams.SetFloat(1, m_fCurrDissolveWeight);
 
