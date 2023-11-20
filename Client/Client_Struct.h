@@ -62,7 +62,9 @@ typedef struct tagHeroData
 	wstring			KeyChangeCard;
 	wstring			KeyDeckMini;
 	wstring			KeyDeckSelect;
-
+	wstring			KeyHeroInfo;
+	wstring			KeyHeroName;
+	
 }HERODATA;
 
 

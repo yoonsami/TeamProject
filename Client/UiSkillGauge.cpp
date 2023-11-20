@@ -32,10 +32,21 @@ void UiSkillGauge::Change_Ratio(_float fRatio)
         true == m_pGaugeBg.expired())
         return;
 
-    m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = m_fMinGauge - m_fValue * fRatio;
+    _float fFinalRatio = 0.f;
+    switch (m_eInfo)
+    {
+    case CHARGING:
+        fFinalRatio = m_fMinGauge - m_fValue * fRatio;
+        break;
+    case HOLDING:
+        fFinalRatio = m_fMaxGauge + m_fValue * fRatio;
+        break;
+    }
+    
+    m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = fFinalRatio;
 }
 
-void UiSkillGauge::Change_Render(_bool bSet)
+void UiSkillGauge::Change_Render(_bool bSet, SkillInfo eInfo)
 {
     if (true == m_pOwner.expired() ||
         true == m_pGaugeBg.expired())
@@ -44,4 +55,25 @@ void UiSkillGauge::Change_Render(_bool bSet)
     m_bIsRender = bSet;
     m_pOwner.lock()->Set_Render(bSet);
     m_pGaugeBg.lock()->Set_Render(bSet);
+
+    if (SkillInfo::NONE != m_eInfo)
+    {
+        m_eInfo = eInfo;
+        if (true == bSet)
+        {
+            wstring strName;
+
+            switch (m_eInfo)
+            {
+            case CHARGING:
+                strName = L"UI_Skill_Gauge_Charge";
+                break;
+            case HOLDING:
+                strName = L"UI_Skill_Gauge_Hold";
+                break;
+            }
+
+            m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(strName), TextureMapType::DIFFUSE);
+        }
+    }
 }

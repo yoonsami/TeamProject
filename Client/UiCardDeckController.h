@@ -19,6 +19,8 @@ public:
     void Render_Off();
 
 private:
+    void Select_Down();
+    void Select_Up();
 
 private:
     vector<weak_ptr<GameObject>> m_vecInvenObj;
@@ -35,6 +37,9 @@ private:
     _uint           m_iPickingIndex = { 0 };
     
     enum class SELECT_STATE { DOWN, UP};
-    SELECT_STATE m_eState = { SELECT_STATE::DOWN };
+    SELECT_STATE    m_eState        = { SELECT_STATE::DOWN };
+    _float          m_fCheckTime    = {};
+    _float          m_fMaxTime      = {};
+    _float          m_fSpeed        = {};
 };
 
