@@ -28,6 +28,7 @@ private:
     vector<weak_ptr<GameObject>> m_vecFont;
     
     weak_ptr<GameObject>         m_pUiCharChange;
+    weak_ptr<GameObject>         m_pUiCardDeckSelect;
 
     _bool           m_bIsRender     = { false };
     _bool           m_bIsPicking    = { false };
