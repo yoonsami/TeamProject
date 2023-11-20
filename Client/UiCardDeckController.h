@@ -33,5 +33,8 @@ private:
     _bool           m_bIsRender     = { false };
     _bool           m_bIsPicking    = { false };
     _uint           m_iPickingIndex = { 0 };
+    
+    enum class SELECT_STATE { DOWN, UP};
+    SELECT_STATE m_eState = { SELECT_STATE::DOWN };
 };
 

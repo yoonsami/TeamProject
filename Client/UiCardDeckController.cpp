@@ -241,6 +241,23 @@ void UiCardDeckController::Click_Deck_Select(wstring strObjName)
                 // ¼¼ÆÃ
                 m_bIsPicking = true;
                 m_iPickingIndex = i;
+                m_pUiCardDeckSelect.lock()->Set_Render(true);
+                _float fPosX = {};
+                switch (i)
+                {
+                case 3:
+                    fPosX = -480;
+                    break;
+                case 4:
+                    fPosX = -140;
+                    break;
+                case 5:
+                    fPosX = 200;
+                    break;
+                }
+                _float4 vecPos = m_pUiCardDeckSelect.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+                vecPos.x = fPosX;
+
             }
         }
     }
@@ -266,6 +283,12 @@ void UiCardDeckController::Click_Deck_Inven(wstring strInvenName)
                     m_pUiCharChange.lock()->Get_Script<UiCharChange>()->Set_Hero(m_iPickingIndex - 3, eHero);
                 
                     m_vecCardDeckObj[m_iPickingIndex + 6].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+                    
+                    m_pUiCardDeckSelect.lock()->Set_Render(false);
+                    m_eState = SELECT_STATE::DOWN;
+                    _float4 vPos = m_pUiCardDeckSelect.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+                    vPos.y = 480;
+                    m_pUiCardDeckSelect.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vPos);
                 }
             }
         }
