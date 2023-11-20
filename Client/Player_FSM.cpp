@@ -51,8 +51,6 @@ HRESULT Player_FSM::Init()
 
     m_pCamera = CUR_SCENE->Get_MainCamera();
 
-    m_fEffectYOffSet = 1.2f;
-
     return S_OK;
 }
 
@@ -72,6 +70,8 @@ void Player_FSM::Tick()
 void Player_FSM::State_Tick()
 {
     State_Init();
+
+    m_iCurFrame = Get_CurFrame();
 
     switch (m_eCurState)
     {
@@ -172,6 +172,9 @@ void Player_FSM::State_Tick()
 		skill_300200();
 		break;
     }
+
+    if (m_iPreFrame != m_iCurFrame)
+        m_iPreFrame = m_iCurFrame;
 }
 
 void Player_FSM::State_Init()
@@ -887,8 +890,6 @@ void Player_FSM::skill_1100()
     }
     else if (Get_CurFrame() == 13)
         AttackCollider_Off();
-    else
-        m_bAttackEffectCreate = false;
 
     // Init때 초기
     if (m_vKeyInputTargetDir != _float3(0.f))
@@ -1121,7 +1122,7 @@ void Player_FSM::skill_100100()
 {
 	if (Get_CurFrame() == 38)
 	{
-		if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
 		{
 			FORWARDMOVINGSKILLDESC desc;
 			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1131,14 +1132,9 @@ void Player_FSM::skill_100100()
 
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.f + _float3::Up;
 			Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
-
-			m_bSkillCreate = true;
 		}
 	}
-    else
-    {
-        m_bSkillCreate = false;
-    }
+    
 
 	if (Get_CurFrame() < 38)
 	{
@@ -1185,7 +1181,7 @@ void Player_FSM::skill_100200()
 {
 	if (Get_CurFrame() == 8)
 	{
-		if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
 		{
 			FORWARDMOVINGSKILLDESC desc;
 			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1195,8 +1191,6 @@ void Player_FSM::skill_100200()
 
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
 			Create_ForwardMovingSkillCollider(vSkillPos, 5.f, desc, KNOCKBACK_ATTACK);
-
-			m_bSkillCreate = true;
 		}
 	}
     else if (Get_CurFrame() == 26)
@@ -1228,10 +1222,6 @@ void Player_FSM::skill_100200()
                 obj->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, Get_Owner());
         }
     }
-	else
-	{
-		m_bSkillCreate = false;
-	}
 
 	if (Get_CurFrame() < 29)
 	{
@@ -1308,41 +1298,40 @@ void Player_FSM::skill_100300()
 
 	if (Get_CurFrame() == 29)
 	{
-		vector<shared_ptr<GameObject>> targetMonster;
-		for (auto& obj : CUR_SCENE->Get_Objects())
-		{
-			if (obj->Get_ObjectGroup() != OBJ_MONSTER)
-				continue;
+        if (m_iPreFrame != m_iCurFrame)
+        {
+		    vector<shared_ptr<GameObject>> targetMonster;
+		    for (auto& obj : CUR_SCENE->Get_Objects())
+		    {
+		    	if (obj->Get_ObjectGroup() != OBJ_MONSTER)
+		    		continue;
 
-			_float3 vObjPos = obj->Get_Transform()->Get_State(Transform_State::POS).xyz();
-			_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
+		    	_float3 vObjPos = obj->Get_Transform()->Get_State(Transform_State::POS).xyz();
+		    	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 
-			_float3 vDir = vObjPos - vMyPos;
-			vDir.y = 0.f;
+		    	_float3 vDir = vObjPos - vMyPos;
+		    	vDir.y = 0.f;
 
-			if (vDir.LengthSquared() > PLAYER_SKILL1_DIST * PLAYER_SKILL1_DIST)
-				continue;
+		    	if (vDir.LengthSquared() > PLAYER_SKILL1_DIST * PLAYER_SKILL1_DIST)
+		    		continue;
 
-			vDir.Normalize();
+		    	vDir.Normalize();
 
-			_float3 vLook = Get_Transform()->Get_State(Transform_State::LOOK).xyz();
-			vLook.Normalize();
+		    	_float3 vLook = Get_Transform()->Get_State(Transform_State::LOOK).xyz();
+		    	vLook.Normalize();
 
-			if (vDir.Dot(vLook) > cosf(PLAYER_SKILL1_ANGLE * 0.5f))
-				targetMonster.push_back(obj);
-		}
+		    	if (vDir.Dot(vLook) > cosf(PLAYER_SKILL1_ANGLE * 0.5f))
+		    		targetMonster.push_back(obj);
+		    }
 
-		for (auto& obj : targetMonster)
-		{
-			if (!obj->Get_FSM())
-				continue;
+		    for (auto& obj : targetMonster)
+		    {
+		    	if (!obj->Get_FSM())
+		    		continue;
 
-			obj->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, Get_Owner());
-		}
-	}
-	else
-	{
-		m_bSkillCreate = false;
+		    	obj->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, Get_Owner());
+		    }
+        }
 	}
 
 	if (m_vKeyInputTargetDir != _float3(0.f))
@@ -1450,7 +1439,7 @@ void Player_FSM::skill_200200()
 
     if (Get_CurFrame() == 22)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1460,12 +1449,8 @@ void Player_FSM::skill_200200()
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
             Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_SKILL);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
 
     if (m_vKeyInputTargetDir != _float3(0.f))
         Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
@@ -1496,10 +1481,9 @@ void Player_FSM::skill_200200_Init()
 
 void Player_FSM::skill_300100()
 {
-
     if (Get_CurFrame() == 14)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1509,12 +1493,8 @@ void Player_FSM::skill_300100()
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
             Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_SKILL);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
 
 	if (Get_CurFrame() < 43)
 	{
@@ -1616,7 +1596,7 @@ void Player_FSM::skill_300200()
     }
     else if (Get_CurFrame() == 101)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1626,11 +1606,8 @@ void Player_FSM::skill_300200()
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
             Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_SKILL);
-
-            m_bSkillCreate = true;
         }
     }
-    else m_bSkillCreate = false;
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;

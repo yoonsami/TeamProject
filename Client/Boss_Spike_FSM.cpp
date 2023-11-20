@@ -88,6 +88,8 @@ void Boss_Spike_FSM::State_Tick()
 {
     State_Init();
 
+    m_iCurFrame = Get_CurFrame();
+
     switch (m_eCurState)
     {
     case STATE::SQ_Appear_01:
@@ -193,6 +195,9 @@ void Boss_Spike_FSM::State_Tick()
         skill_201200();
         break;
     }
+
+    if (m_iPreFrame != m_iCurFrame)
+        m_iPreFrame = m_iCurFrame;
 }
 
 void Boss_Spike_FSM::State_Init()
@@ -524,7 +529,6 @@ void Boss_Spike_FSM::SQ_Appear_01_Init()
     m_bInvincible = true;
     m_bSuperArmor = false;
     m_bSetPattern = false;
-    m_bSkillCreate = false;
 
     Create_BossSpikeChair();
 }
@@ -1527,7 +1531,7 @@ void Boss_Spike_FSM::skill_6100()
         Get_CurFrame() == 360 ||
         Get_CurFrame() == 380)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             //_float4 vPlayerPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS);
             _float4 vMyPos = Get_Transform()->Get_State(Transform_State::POS);
@@ -1547,12 +1551,8 @@ void Boss_Spike_FSM::skill_6100()
 
                 Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, AIRBORNE_ATTACK);
             }
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
 
     Set_Gaze();
 }
@@ -1586,7 +1586,7 @@ void Boss_Spike_FSM::skill_7100()
 {
     if (Get_CurFrame() == 137)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = _float3(0.f);
@@ -1595,12 +1595,8 @@ void Boss_Spike_FSM::skill_7100()
             desc.fLimitDistance = 0.f;
             
             Create_ForwardMovingSkillCollider(Get_Transform()->Get_State(Transform_State::POS), 5.f, desc, KNOCKDOWN_ATTACK);
-            
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
 
     Set_Gaze();
 }
@@ -1626,7 +1622,7 @@ void Boss_Spike_FSM::skill_8100()
 {
     if (Get_CurFrame() == 88)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
 
@@ -1643,12 +1639,8 @@ void Boss_Spike_FSM::skill_8100()
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK) + Get_Transform()->Get_State(Transform_State::RIGHT) * 1.f;
             Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
 
     Set_Gaze();
 }

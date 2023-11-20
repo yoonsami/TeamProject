@@ -72,6 +72,8 @@ void Shane_FSM::State_Tick()
 {
     State_Init();
 
+    m_iCurFrame = Get_CurFrame();
+
     switch (m_eCurState)
     {
     case STATE::b_idle:
@@ -170,8 +172,10 @@ void Shane_FSM::State_Tick()
     case STATE::skill_502100:
         skill_502100();
         break;
-
     }
+
+    if (m_iPreFrame != m_iCurFrame)
+        m_iPreFrame = m_iCurFrame;
 }
 
 void Shane_FSM::State_Init()
@@ -1167,7 +1171,7 @@ void Shane_FSM::skill_100100()
     }
     else if (Get_CurFrame() == 20)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1177,15 +1181,8 @@ void Shane_FSM::skill_100100()
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
             Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_SKILL);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-    {
-        m_bSkillCreate = false;
-    }
-
 
     if (Get_CurFrame() < 42)
     {
@@ -1231,7 +1228,7 @@ void Shane_FSM::skill_100200()
 {
     if (Get_CurFrame() == 5)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1241,13 +1238,8 @@ void Shane_FSM::skill_100200()
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
             Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKBACK_SKILL);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
-
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -1290,7 +1282,7 @@ void Shane_FSM::skill_200100()
         Get_CurFrame() == 35 ||
         Get_CurFrame() == 40)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1301,15 +1293,11 @@ void Shane_FSM::skill_200100()
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
             Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_ATTACK);
 
-            m_bSkillCreate = true;
-
             Create_200100_Clone(m_iCloneIndex);
 
             m_iCloneIndex++;
         }
     }
-    else 
-        m_bSkillCreate = false;
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -1358,7 +1346,7 @@ void Shane_FSM::skill_200200()
 {
     if (Get_CurFrame() == 5)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1368,12 +1356,8 @@ void Shane_FSM::skill_200200()
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
             Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_SKILL);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -1413,7 +1397,7 @@ void Shane_FSM::skill_300100()
 {
     if (Get_CurFrame() == 9)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1423,13 +1407,8 @@ void Shane_FSM::skill_300100()
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + _float3::Up;
             Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, KNOCKDOWN_SKILL);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
-
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -1464,7 +1443,7 @@ void Shane_FSM::skill_500100()
 {
     if (Get_CurFrame() == 10)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1474,12 +1453,8 @@ void Shane_FSM::skill_500100()
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
             Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, KNOCKBACK_SKILL);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -1517,7 +1492,7 @@ void Shane_FSM::skill_502100()
 {
     if (Get_CurFrame() == 56)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1527,13 +1502,11 @@ void Shane_FSM::skill_502100()
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
             Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, NORMAL_SKILL);
-
-            m_bSkillCreate = true;
         }
     }
     else if (Get_CurFrame() == 63)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1543,14 +1516,8 @@ void Shane_FSM::skill_502100()
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
             Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, KNOCKBACK_SKILL);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
-    
-
 
     _float3 vInputVector = Get_InputDirVector();
 

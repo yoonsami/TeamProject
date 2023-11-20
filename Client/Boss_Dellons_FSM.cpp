@@ -78,6 +78,8 @@ void Boss_Dellons_FSM::State_Tick()
 {
     State_Init();
 
+    m_iCurFrame = Get_CurFrame();
+
     switch (m_eCurState)
     {
     case STATE::n_idle:
@@ -201,6 +203,9 @@ void Boss_Dellons_FSM::State_Tick()
         skill_904100();
         break;
     }
+
+    if (m_iPreFrame != m_iCurFrame)
+        m_iPreFrame = m_iCurFrame;
 }
 
 void Boss_Dellons_FSM::State_Init()
@@ -487,7 +492,6 @@ void Boss_Dellons_FSM::n_idle_Init()
     m_bInvincible = true;
     m_bSuperArmor = false;
     m_bSetPattern = false;
-    m_bSkillCreate = false;
 }
 
 void Boss_Dellons_FSM::talk_01()
@@ -509,14 +513,12 @@ void Boss_Dellons_FSM::talk_01_Init()
 void Boss_Dellons_FSM::Intro()
 {
     
-        if (!m_bSkillCreate)
-        {
-            Summon_Wraith();
+    if (m_iPreFrame != m_iCurFrame)
+    {
+        Summon_Wraith();
 
-            Set_WraithState((_uint)Boss_DellonsWraith_FSM::STATE::FX_Mn_Dellons_skill_500200);
-
-            m_bSkillCreate = true;
-        }
+        Set_WraithState((_uint)Boss_DellonsWraith_FSM::STATE::FX_Mn_Dellons_skill_500200);
+    }
     
     if (Is_AnimFinished())
         m_eCurState = STATE::n_idle;
@@ -1149,7 +1151,7 @@ void Boss_Dellons_FSM::skill_100100()
 
     if (Get_CurFrame() == 12)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1162,12 +1164,8 @@ void Boss_Dellons_FSM::skill_100100()
                 _float3::Up;
 
             Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
 
     if (Get_CurFrame() == 27)
         m_eCurState = STATE::skill_100200;
@@ -1197,7 +1195,7 @@ void Boss_Dellons_FSM::skill_100200()
 
     if (Get_CurFrame() == 15)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1210,12 +1208,8 @@ void Boss_Dellons_FSM::skill_100200()
                 _float3::Up;
 
             Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, AIRBORNE_ATTACK);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
  
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
@@ -1276,7 +1270,7 @@ void Boss_Dellons_FSM::skill_200200()
 
     if (Get_CurFrame() == 7)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1286,14 +1280,8 @@ void Boss_Dellons_FSM::skill_200200()
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f + _float3::Up;
             Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_SKILL);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
-
-
 
     if (Is_AnimFinished())
     {
@@ -1343,19 +1331,15 @@ void Boss_Dellons_FSM::skill_300100()
     }*/
 
 
-    if (Get_CurFrame() >= 10)
+    if (Get_CurFrame() == 10)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             Summon_Wraith();
 
             Set_WraithState((_uint)Boss_DellonsWraith_FSM::STATE::FX_DellonsWraith_skill_30010);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
 
     if (Is_AnimFinished())
     {
@@ -1405,27 +1389,23 @@ void Boss_Dellons_FSM::skill_400100()
         }
     }*/
 
-
-
     if (Get_CurFrame() == 20)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             Summon_Wraith();
 
             Set_WraithState((_uint)Boss_DellonsWraith_FSM::STATE::FX_Mn_Dellons_skill_5100);
-
-            m_bSkillCreate = true;
         }
     }
     else if (Get_CurFrame() == 33 ||
-        Get_CurFrame() == 40 ||
-        Get_CurFrame() == 47 ||
-        Get_CurFrame() == 60 ||
-        Get_CurFrame() == 67 ||
-        Get_CurFrame() == 72)
+             Get_CurFrame() == 40 ||
+             Get_CurFrame() == 47 ||
+             Get_CurFrame() == 60 ||
+             Get_CurFrame() == 67 ||
+             Get_CurFrame() == 72)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1435,13 +1415,11 @@ void Boss_Dellons_FSM::skill_400100()
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
             Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK);
-
-            m_bSkillCreate = true;
         }
     }
     else if (Get_CurFrame() == 102)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1451,13 +1429,7 @@ void Boss_Dellons_FSM::skill_400100()
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
             Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKDOWN_SKILL);
-
-            m_bSkillCreate = true;
         }
-    }
-    else
-    {
-        m_bSkillCreate = false;
     }
 
     if (Get_CurFrame() == 120)
@@ -1494,18 +1466,12 @@ void Boss_Dellons_FSM::skill_501100()
     if (Get_CurFrame() == 4)
     {
         //Summon Wraith
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             Summon_Wraith();
 
             Set_WraithState((_uint)Boss_DellonsWraith_FSM::STATE::FX_Mn_Dellons_skill_500200);
-
-            m_bSkillCreate = true;
         }
-    }
-    else
-    {
-        m_bSkillCreate = false;
     }
 
     if (Is_AnimFinished())

@@ -80,6 +80,8 @@ void Boss_Mir_FSM::State_Tick()
 {
     State_Init();
 
+    m_iCurFrame = Get_CurFrame();
+
     switch (m_eCurState)
     {
     case STATE::First_Meet:
@@ -158,6 +160,9 @@ void Boss_Mir_FSM::State_Tick()
         skill_200100();
         break;
     }
+
+    if (m_iPreFrame != m_iCurFrame)
+        m_iPreFrame = m_iCurFrame;
 }
 
 void Boss_Mir_FSM::State_Init()
@@ -607,7 +612,6 @@ void Boss_Mir_FSM::groggy_start_Init()
     m_tAttackCoolTime.fAccTime = 0.f;
     m_tBreathCoolTime.fAccTime = 0.f;
     m_bCounter = false;
-    m_bSkillCreate = false;
 }
 
 void Boss_Mir_FSM::groggy_loop()
@@ -672,7 +676,7 @@ void Boss_Mir_FSM::SQ_SBRin_Roar()
         Get_CurFrame() == 64 || 
         Get_CurFrame() == 74 )
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             MouseBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iMouseBoneIndex) *
                 _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
@@ -693,12 +697,8 @@ void Boss_Mir_FSM::SQ_SBRin_Roar()
                 Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, NORMAL_ATTACK);
             else
                 Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_ATTACK);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
 
     if (Is_AnimFinished())
     {
@@ -760,7 +760,7 @@ void Boss_Mir_FSM::skill_1100()
         Get_CurFrame() == 66 ||
         Get_CurFrame() == 76)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             MouseBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iMouseBoneIndex) *
                 _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
@@ -781,12 +781,8 @@ void Boss_Mir_FSM::skill_1100()
                 Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, NORMAL_ATTACK);
             else
                 Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_ATTACK);
-            
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
 
     if (Is_AnimFinished())
     {
@@ -869,9 +865,6 @@ void Boss_Mir_FSM::skill_2100()
         AttackCollider_On(KNOCKBACK_ATTACK);
     else if (Get_CurFrame() == 93)
         AttackCollider_Off();
-    else
-        m_bSkillCreate = false;
-
 
     if (Is_AnimFinished())
     {
@@ -1063,7 +1056,7 @@ void Boss_Mir_FSM::skill_9100()
         Get_CurFrame() == 86 ||
         Get_CurFrame() == 106)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             _float4 vPlayerPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS);
 
@@ -1082,12 +1075,8 @@ void Boss_Mir_FSM::skill_9100()
 
                 Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, AIRBORNE_ATTACK);
             }
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
 
     if (Is_AnimFinished())
     {
@@ -1132,7 +1121,7 @@ void Boss_Mir_FSM::skill_11100()
 {
     if (Get_CurFrame() == 67)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1143,12 +1132,8 @@ void Boss_Mir_FSM::skill_11100()
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
 
             Create_ForwardMovingSkillCollider(vSkillPos, 8.f, desc, KNOCKDOWN_ATTACK);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
 
 
     if (Is_AnimFinished())
@@ -1209,7 +1194,7 @@ void Boss_Mir_FSM::skill_12100()
         Get_CurFrame() == 48 ||
         Get_CurFrame() == 58)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
 
@@ -1234,12 +1219,8 @@ void Boss_Mir_FSM::skill_12100()
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT) * 1.f;
             Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, strAttackType);
-            
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
 
     if (Is_AnimFinished())
     {
@@ -1297,7 +1278,7 @@ void Boss_Mir_FSM::skill_13100()
 {
     if (Get_CurFrame() == 30)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
                 _float3::Up;
@@ -1315,12 +1296,8 @@ void Boss_Mir_FSM::skill_13100()
 
                 desc.vSkillDir = desc.vSkillDir + Get_Transform()->Get_State(Transform_State::RIGHT);
             }
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
 
     if (Is_AnimFinished())
     {
@@ -1377,7 +1354,7 @@ void Boss_Mir_FSM::skill_14100()
 {
     if (Get_CurFrame() == 25)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
 
@@ -1397,13 +1374,11 @@ void Boss_Mir_FSM::skill_14100()
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT) * 1.f;
             Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK);
-
-            m_bSkillCreate = true;
         }
     }
     else if (Get_CurFrame() == 80)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
 
@@ -1428,12 +1403,8 @@ void Boss_Mir_FSM::skill_14100()
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT) * 1.f;
             Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, strAttackType);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
 
     if (Is_AnimFinished())
     {
@@ -1541,7 +1512,7 @@ void Boss_Mir_FSM::skill_100100()
              Get_CurFrame() == 79 ||
              Get_CurFrame() == 84)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             MouseBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iMouseBoneIndex) *
                 _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
@@ -1562,16 +1533,12 @@ void Boss_Mir_FSM::skill_100100()
                 Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, NORMAL_ATTACK);
             else
                 Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK);
-
-            m_bSkillCreate = true;
         }
     }
     else if (Get_CurFrame() == 90)
-    {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed);
-    }
-    else
-        m_bSkillCreate = false;
+    
+
 
     if (Is_AnimFinished())
     {

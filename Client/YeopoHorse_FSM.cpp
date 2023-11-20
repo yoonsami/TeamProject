@@ -65,6 +65,8 @@ void YeopoHorse_FSM::State_Tick()
 {
     State_Init();
 
+    m_iCurFrame = Get_CurFrame();
+
     switch (m_eCurState)
     {
     case STATE::n_idle:
@@ -89,6 +91,9 @@ void YeopoHorse_FSM::State_Tick()
         SQ_RideHorse_End();
         break;
     }
+
+    if (m_iPreFrame != m_iCurFrame)
+        m_iPreFrame = m_iCurFrame;
 }
 
 void YeopoHorse_FSM::State_Init()

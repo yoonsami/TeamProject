@@ -14,8 +14,8 @@ HRESULT Kyle_FSM::Init()
 	auto animator = Get_Owner()->Get_Animator();
 	if (animator)
 	{
-		// ´ÙÀ½ ¾Ö´Ï¸ÞÀÌ¼Ç ¼¼ÆÃÇØÁÖ´Âµ¥, º¸°£ÇÒ ¿¹Á¤
-		animator->Set_CurrentAnim(L"b_idle"/*¾Ö´Ï¸ÞÀÌ¼Ç ÀÌ¸§*/, true/*¹Ýº¹ ¾Ö´Ï¸ÞÀÌ¼Ç*/, 1.f/*¾Ö´Ï¸ÞÀÌ¼Ç ¼Óµµ*/);
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´Âµï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		animator->Set_CurrentAnim(L"b_idle"/*ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½Ì¸ï¿½*/, true/*ï¿½Ýºï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½*/, 1.f/*ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½Óµï¿½*/);
 		m_eCurState = STATE::b_idle;
 	}
 
@@ -63,6 +63,8 @@ void Kyle_FSM::Tick()
 void Kyle_FSM::State_Tick()
 {
 	State_Init();
+
+	m_iCurFrame = Get_CurFrame();
 
 	switch (m_eCurState)
 	{
@@ -166,6 +168,9 @@ void Kyle_FSM::State_Tick()
 		skill_500100();
 		break;
 	}
+
+	if (m_iPreFrame != m_iCurFrame)
+		m_iPreFrame = m_iCurFrame;
 }
 
 void Kyle_FSM::State_Init()
@@ -295,11 +300,11 @@ void Kyle_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
 	if (!m_bInvincible)
 	{
 		shared_ptr<GameObject> targetToLook = nullptr;
-		// skillName¿¡ _Skill Æ÷ÇÔÀÌ¸é
+		// skillNameï¿½ï¿½ _Skill ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½
 		if (strSkillName.find(L"_Skill") != wstring::npos)
-			targetToLook = pCollider->Get_Owner(); // Collider owner¸¦ ³Ñ°ÜÁØ´Ù
-		else // ¾Æ´Ï¸é
-			targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner(); // Collider¸¦ ¸¸µç °´Ã¼¸¦ ³Ñ°ÜÁØ´Ù
+			targetToLook = pCollider->Get_Owner(); // Collider ownerï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½Ø´ï¿½
+		else // ï¿½Æ´Ï¸ï¿½
+			targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner(); // Colliderï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½Ø´ï¿½
 
 		if (targetToLook == nullptr)
 			return;
@@ -430,7 +435,7 @@ void Kyle_FSM::b_run_start()
 
 	_float3 vInputVector = Get_InputDirVector();
 
-	// ¹æÇâÅ°¸¦ ¾Æ¹«°Íµµ ´©¸£Áö ¾ÊÀ¸¸é »óÅÂ¸¦ º¯°æ
+	// ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½ ï¿½Æ¹ï¿½ï¿½Íµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if (vInputVector == _float3(0.f))
 	{
 		m_tRunEndDelay.fAccTime += fDT;
@@ -440,11 +445,11 @@ void Kyle_FSM::b_run_start()
 	}
 	else
 	{
-		// ¾Ö´Ï¸ÞÀÌ¼ÇÀÌ ³¡³ª¸é ÀÎµ¥, º¸°£ ½Ã°£¶§¹®¿¡ ¾î»öÇÒ ¶§°¡ ÀÖ¾î¼­,
-		// ¹Ù·Î ÀÌ¾îÁö´Â ¾Ö´Ï¸ÞÀÌ¼ÇÀÇ °æ¿ì¿¡´Â
-		// º¸°£À» ¾ÈÇÏ¸é¼­ ¹Ù²Ù°Å³ª, 
-		// ¾Æ·¡Ã³·³ ³¡³ª±â Á¶±Ý Àü¿¡ ¹Ì¸® ¹Ù²Ù¸é ÀÚ¿¬½º·´°Ô ÀüÈ¯µÊ
-		// µÑ Áß ¼±ÅÃ
+		// ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾î¼­,
+		// ï¿½Ù·ï¿½ ï¿½Ì¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸é¼­ ï¿½Ù²Ù°Å³ï¿½, 
+		// ï¿½Æ·ï¿½Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½Ù²Ù¸ï¿½ ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½
+		// ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		if (Is_AnimFinished())
 			m_eCurState = STATE::b_run;
 
@@ -478,7 +483,7 @@ void Kyle_FSM::b_run()
 
 	_float3 vInputVector = Get_InputDirVector();
 
-	// ¹æÇâÅ°¸¦ ¾Æ¹«°Íµµ ´©¸£Áö ¾ÊÀ¸¸é »óÅÂ¸¦ º¯°æ
+	// ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½ ï¿½Æ¹ï¿½ï¿½Íµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if (vInputVector == _float3(0.f))
 	{
 		m_tRunEndDelay.fAccTime += fDT;
@@ -524,7 +529,7 @@ void Kyle_FSM::b_run_end_r()
 {
 	_float3 vInputVector = Get_InputDirVector();
 
-	// ¹æÇâÅ°¸¦ ¾Æ¹«°Íµµ ´©¸£Áö ¾ÊÀ¸¸é »óÅÂ¸¦ º¯°æ
+	// ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½ ï¿½Æ¹ï¿½ï¿½Íµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if (vInputVector != _float3(0.f))
 		Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
@@ -589,7 +594,7 @@ void Kyle_FSM::b_sprint()
 
 	_float3 vInputVector = Get_InputDirVector();
 
-	// ¹æÇâÅ°¸¦ ¾Æ¹«°Íµµ ´©¸£Áö ¾ÊÀ¸¸é »óÅÂ¸¦ º¯°æ
+	// ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½ ï¿½Æ¹ï¿½ï¿½Íµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if (vInputVector == _float3(0.f))
 	{
 		m_tRunEndDelay.fAccTime += fDT;
@@ -886,17 +891,9 @@ void Kyle_FSM::skill_1100()
 	if (Get_CurFrame() == 9)
 	{
 		AttackCollider_On(NORMAL_ATTACK);
-
-		if (!m_bAttackEffectCreate)
-		{
-			m_bAttackEffectCreate = true;
-			//Add_Effect(L"KyleTest1");
-		}
 	}
 	else if (Get_CurFrame() == 19)
 		AttackCollider_Off();
-	else
-		m_bAttackEffectCreate = false;
 
 	_float3 vInputVector = Get_InputDirVector();
 
@@ -1049,7 +1046,7 @@ void Kyle_FSM::skill_1400()
 {
 	if (Get_CurFrame() == 11)
 	{
-		if (!m_bSkillCreate)
+		if (m_iPreFrame != m_iCurFrame)
 		{
 			FORWARDMOVINGSKILLDESC desc;
 			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1060,12 +1057,8 @@ void Kyle_FSM::skill_1400()
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + 
 								Get_Transform()->Get_State(Transform_State::LOOK) * 3.f;
 			Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK);
-
-			m_bSkillCreate = true;
 		}
 	}
-	else
-		m_bSkillCreate = false;
 
 	_float3 vInputVector = Get_InputDirVector();
 
@@ -1184,7 +1177,7 @@ void Kyle_FSM::skill_100100()
 	
 	if (Get_CurFrame() == 5)
 	{
-		if (!m_bSkillCreate)
+		if (m_iPreFrame != m_iCurFrame)
 		{
 			FORWARDMOVINGSKILLDESC desc;
 			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1195,12 +1188,8 @@ void Kyle_FSM::skill_100100()
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 				Get_Transform()->Get_State(Transform_State::UP);
 			Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_ATTACK);
-
-			m_bSkillCreate = true;
 		}
 	}
-	else
-		m_bSkillCreate = false;
 
 	_float3 vInputVector = Get_InputDirVector();
 
@@ -1263,7 +1252,7 @@ void Kyle_FSM::skill_100200()
 
 	if (Get_CurFrame() == 12)
 	{
-		if (!m_bSkillCreate)
+		if (m_iPreFrame != m_iCurFrame)
 		{
 			FORWARDMOVINGSKILLDESC desc;
 			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1274,12 +1263,8 @@ void Kyle_FSM::skill_100200()
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
 
 			Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK);
-
-			m_bSkillCreate = true;
 		}
 	}
-	else
-		m_bSkillCreate = false;
 
 	_float3 vInputVector = Get_InputDirVector();
 
@@ -1427,7 +1412,7 @@ void Kyle_FSM::skill_200300()
 {
 	if (Get_CurFrame() == 9)
 	{
-		if (!m_bSkillCreate)
+		if (m_iPreFrame != m_iCurFrame)
 		{
 			FORWARDMOVINGSKILLDESC desc;
 			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1438,12 +1423,8 @@ void Kyle_FSM::skill_200300()
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 				Get_Transform()->Get_State(Transform_State::LOOK) * 5.5f;
 			Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, AIRBORNE_ATTACK);
-
-			m_bSkillCreate = true;
 		}
 	}
-	else
-		m_bSkillCreate = false;
 	
 	_float3 vInputVector = Get_InputDirVector();
 
@@ -1485,7 +1466,7 @@ void Kyle_FSM::skill_300100()
 		AttackCollider_Off();
 	else if (Get_CurFrame() == 10)
 	{
-		if (!m_bSkillCreate)
+		if (m_iPreFrame != m_iCurFrame)
 		{
 			FORWARDMOVINGSKILLDESC desc;
 			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1497,13 +1478,11 @@ void Kyle_FSM::skill_300100()
 				Get_Transform()->Get_State(Transform_State::UP);
 
 			Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, NORMAL_ATTACK);
-
-			m_bSkillCreate = true;
 		}
 	}
 	else if (Get_CurFrame() == 28)
 	{
-		if (!m_bSkillCreate)
+		if (m_iPreFrame != m_iCurFrame)
 		{
 			FORWARDMOVINGSKILLDESC desc;
 			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1515,13 +1494,11 @@ void Kyle_FSM::skill_300100()
 				Get_Transform()->Get_State(Transform_State::LOOK) * 4.f;
 
 			Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, NORMAL_ATTACK);
-
-			m_bSkillCreate = true;
 		}
 	}
 	else if (Get_CurFrame() == 36)
 	{
-		if (!m_bSkillCreate)
+		if (m_iPreFrame != m_iCurFrame)
 		{
 			FORWARDMOVINGSKILLDESC desc;
 			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1533,12 +1510,8 @@ void Kyle_FSM::skill_300100()
 				Get_Transform()->Get_State(Transform_State::LOOK) * 4.f;
 
 			Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, AIRBORNE_ATTACK);
-
-			m_bSkillCreate = true;
 		}
 	}
-	else
-		m_bSkillCreate = false;
 
 	_float3 vInputVector = Get_InputDirVector();
 
@@ -1609,7 +1582,7 @@ void Kyle_FSM::skill_502100()
 
 	if (Get_CurFrame() == 55)
 	{
-		if (!m_bSkillCreate)
+		if (m_iPreFrame != m_iCurFrame)
 		{
 			FORWARDMOVINGSKILLDESC desc;
 			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1621,13 +1594,11 @@ void Kyle_FSM::skill_502100()
 				Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
 				Get_Transform()->Get_State(Transform_State::UP);
 			Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK);
-
-			m_bSkillCreate = true;
 		}
 	}
 	else if (Get_CurFrame() == 78)
 	{
-		if (!m_bSkillCreate)
+		if (m_iPreFrame != m_iCurFrame)
 		{
 			FORWARDMOVINGSKILLDESC desc;
 			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1639,13 +1610,11 @@ void Kyle_FSM::skill_502100()
 				Get_Transform()->Get_State(Transform_State::LOOK) * 5.f +
 				Get_Transform()->Get_State(Transform_State::UP);
 			Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_ATTACK);
-
-			m_bSkillCreate = true;
 		}
 	}
 	else if (Get_CurFrame() == 106)
 	{
-		if (!m_bSkillCreate)
+		if (m_iPreFrame != m_iCurFrame)
 		{
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 				Get_Transform()->Get_State(Transform_State::LOOK) * 5.f +
@@ -1661,12 +1630,8 @@ void Kyle_FSM::skill_502100()
 			desc.fLimitDistance = 4.f;
 
 			Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_SKILL);
-
-			m_bSkillCreate = true;
 		}
 	}
-	else
-		m_bSkillCreate = false;
 
 	_float3 vInputVector = Get_InputDirVector();
 
@@ -1719,7 +1684,7 @@ void Kyle_FSM::skill_500100()
 	
 	if (Get_CurFrame() == 11)
 	{
-		if (!m_bSkillCreate)
+		if (m_iPreFrame != m_iCurFrame)
 		{
 			FORWARDMOVINGSKILLDESC desc;
 			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1730,13 +1695,11 @@ void Kyle_FSM::skill_500100()
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 				Get_Transform()->Get_State(Transform_State::UP);
 			Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, NORMAL_ATTACK);
-
-			m_bSkillCreate = true;
 		}
 	}
 	else if (Get_CurFrame() == 31)
 	{
-		if (!m_bSkillCreate)
+		if (m_iPreFrame != m_iCurFrame)
 		{
 			FORWARDMOVINGSKILLDESC desc;
 			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1747,13 +1710,11 @@ void Kyle_FSM::skill_500100()
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 				Get_Transform()->Get_State(Transform_State::UP);
 			Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, NORMAL_ATTACK);
-
-			m_bSkillCreate = true;
 		}
 	}
 	else if (Get_CurFrame() == 47)
 	{
-		if (!m_bSkillCreate)
+		if (m_iPreFrame != m_iCurFrame)
 		{
 			FORWARDMOVINGSKILLDESC desc;
 			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1764,13 +1725,11 @@ void Kyle_FSM::skill_500100()
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 				Get_Transform()->Get_State(Transform_State::UP);
 			Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, NORMAL_ATTACK);
-
-			m_bSkillCreate = true;
 		}
 	}
 	else if (Get_CurFrame() == 87)
 	{
-		if (!m_bSkillCreate)
+		if (m_iPreFrame != m_iCurFrame)
 		{
 			FORWARDMOVINGSKILLDESC desc;
 			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1781,12 +1740,8 @@ void Kyle_FSM::skill_500100()
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 				Get_Transform()->Get_State(Transform_State::LOOK) * 5.f;
 			Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, AIRBORNE_SKILL);
-
-			m_bSkillCreate = true;
 		}
 	}
-	else 
-		m_bSkillCreate = false;
 
 	if (Get_CurFrame() > 11)
 		m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(Get_Transform()->Get_State(Transform_State::POS).xyz());

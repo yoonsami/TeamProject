@@ -72,6 +72,8 @@ void Dellons_FSM::State_Tick()
 {
     State_Init();
 
+    m_iCurFrame = Get_CurFrame();
+
     switch (m_eCurState)
     {
     case STATE::b_idle:
@@ -171,6 +173,9 @@ void Dellons_FSM::State_Tick()
         skill_501100();
         break;
     }
+
+    if (m_iPreFrame != m_iCurFrame)
+        m_iPreFrame = m_iCurFrame;
 }
 
 void Dellons_FSM::State_Init()
@@ -1144,7 +1149,7 @@ void Dellons_FSM::skill_100100()
 {
     if (Get_CurFrame() == 12)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1157,12 +1162,8 @@ void Dellons_FSM::skill_100100()
                                 _float3::Up;
 
             Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
     
 
     _float3 vInputVector = Get_InputDirVector();
@@ -1214,7 +1215,7 @@ void Dellons_FSM::skill_100200()
 {
     if (Get_CurFrame() == 15)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1227,13 +1228,8 @@ void Dellons_FSM::skill_100200()
                 _float3::Up;
 
             Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, AIRBORNE_ATTACK);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
-
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -1322,7 +1318,7 @@ void Dellons_FSM::skill_200200()
 {
     if (Get_CurFrame() == 7)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1332,12 +1328,8 @@ void Dellons_FSM::skill_200200()
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f + _float3::Up;
             Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_SKILL);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -1392,19 +1384,15 @@ void Dellons_FSM::skill_300100()
     }
 
 
-    if (Get_CurFrame() >= 10)
+    if (Get_CurFrame() == 10)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             Summon_Wraith();
 
             Set_WraithState((_uint)DellonsWraith_FSM::STATE::FX_DellonsWraith_skill_30010);
-
-            m_bSkillCreate = true;
         }
     }
-    else
-        m_bSkillCreate = false;
 
     if (Is_AnimFinished())
     {
@@ -1456,13 +1444,11 @@ void Dellons_FSM::skill_400100()
 
     if (Get_CurFrame() == 20)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             Summon_Wraith();
 
             Set_WraithState((_uint)DellonsWraith_FSM::STATE::FX_Mn_Dellons_skill_5100);
-
-            m_bSkillCreate = true;
         }
     }
     else if (Get_CurFrame() == 33 ||
@@ -1472,7 +1458,7 @@ void Dellons_FSM::skill_400100()
         Get_CurFrame() == 67 ||
         Get_CurFrame() == 72)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1482,13 +1468,11 @@ void Dellons_FSM::skill_400100()
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
             Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK);
-
-            m_bSkillCreate = true;
         }
     }
     else if (Get_CurFrame() == 102)
     {
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1498,13 +1482,7 @@ void Dellons_FSM::skill_400100()
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
             Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKDOWN_SKILL);
-
-            m_bSkillCreate = true;
         }
-    }
-    else
-    {
-        m_bSkillCreate = false;
     }
 
 
@@ -1547,18 +1525,12 @@ void Dellons_FSM::skill_501100()
     if (Get_CurFrame() == 4)
     {
         //Summon Wraith
-        if (!m_bSkillCreate)
+        if (m_iPreFrame != m_iCurFrame)
         {
             Summon_Wraith();
 
             Set_WraithState((_uint)DellonsWraith_FSM::STATE::FX_Mn_Dellons_skill_500200);
-
-            m_bSkillCreate = true;
         }
-    }
-    else
-    {
-        m_bSkillCreate = false;
     }
 
     _float3 vInputVector = Get_InputDirVector();
