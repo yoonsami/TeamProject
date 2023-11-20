@@ -723,6 +723,18 @@ void DemoScene::Load_Ui()
 			pObj->Add_Component(pScript);
 		}
 	}
+	
+
+	{
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Card_Deck_Exit");
+		if (false == pObj.expired())
+		{
+			pObj.lock()->Get_Button()->AddOnClickedEvent([]()
+				{
+					CUR_SCENE->Get_GameObject(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Render_Off();
+				});
+		}
+	}
 
 
 	{

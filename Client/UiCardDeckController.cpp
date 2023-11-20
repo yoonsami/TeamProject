@@ -19,7 +19,7 @@ HRESULT UiCardDeckController::Init()
 
     m_pUiCharChange = pScene->Get_UI(L"UI_Char_Change");
 
-    m_vecCardDeckObj.resize(15);
+    m_vecCardDeckObj.resize(18);
     m_vecCardDeckObj[0]         = pScene->Get_UI(L"UI_Card_Deck_Total_Bg0");
     m_vecCardDeckObj[1]         = pScene->Get_UI(L"UI_Card_Deck_Total_Bg1");
     m_vecCardDeckObj[2]         = pScene->Get_UI(L"UI_Card_Deck_Inven_Bg");
@@ -35,6 +35,9 @@ HRESULT UiCardDeckController::Init()
     m_vecCardDeckObj[12]        = pScene->Get_UI(L"UI_Card_Deck_Element0");
     m_vecCardDeckObj[13]        = pScene->Get_UI(L"UI_Card_Deck_Element1");
     m_vecCardDeckObj[14]        = pScene->Get_UI(L"UI_Card_Deck_Element2");
+    m_vecCardDeckObj[15]        = pScene->Get_UI(L"UI_Card_Deck_Exit");
+    m_vecCardDeckObj[16]        = pScene->Get_UI(L"UI_Card_Deck_Font");
+    m_vecCardDeckObj[17]        = pScene->Get_UI(L"UI_Card_Deck_Select");
     
     m_vecInvenObj.resize(32);
     m_vecInvenObj[0]            = pScene->Get_UI(L"UI_Card_Deck_Inven0");
@@ -137,6 +140,14 @@ HRESULT UiCardDeckController::Init()
     m_vecCardDeckElement[29]    = pScene->Get_UI(L"UI_Card_Deck_Inven_Element29");
     m_vecCardDeckElement[30]    = pScene->Get_UI(L"UI_Card_Deck_Inven_Element30");
     m_vecCardDeckElement[31]    = pScene->Get_UI(L"UI_Card_Deck_Inven_Element31");
+
+    m_vecFont.resize(6);
+    m_vecFont[0] = pScene->Get_UI(L"UI_Card_Deck0_Hero_Info");
+    m_vecFont[1] = pScene->Get_UI(L"UI_Card_Deck0_Hero_");
+    m_vecFont[2] = pScene->Get_UI(L"UI_Card_Deck1_Hero_Info");
+    m_vecFont[3] = pScene->Get_UI(L"UI_Card_Deck1_Hero_");
+    m_vecFont[4] = pScene->Get_UI(L"UI_Card_Deck2_Hero_Info");
+    m_vecFont[5] = pScene->Get_UI(L"UI_Card_Deck2_Hero_");
 
     return S_OK;
 }
