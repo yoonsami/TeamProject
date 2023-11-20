@@ -410,8 +410,7 @@ void Yeonhee_FSM::b_idle_Init()
 
     Get_Transform()->Set_Speed(m_fRunSpeed);
     m_tRunEndDelay.fAccTime = 0.f;
-    m_iPreFrame = 10000;
-    m_iCurFrame = 0;
+
 
     AttackCollider_Off();
 
@@ -1233,9 +1232,6 @@ void Yeonhee_FSM::skill_100100_e_Init()
 	m_vKeyInputTargetDir = Get_InputDirVector();
 
 	AttackCollider_Off();
-
-    m_iPreFrame = 10000;
-    m_iCurFrame = 0;
 
 	m_bInvincible = false;
 	m_bSuperArmor = true;
