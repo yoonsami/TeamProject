@@ -1512,7 +1512,7 @@ void SpearAce_FSM::skill_502100()
     if (m_vKeyInputTargetDir != _float3(0.f))
         Soft_Turn_ToInputDir(m_vKeyInputTargetDir, XM_PI * 5.f);
 
-    if (Is_AnimFinished())
+    if (Get_FinalFrame() - Get_CurFrame() < 9)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
