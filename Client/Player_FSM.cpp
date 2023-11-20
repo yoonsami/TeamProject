@@ -10,6 +10,7 @@
 #include "CoolTimeCheckScript.h"
 #include "ModelRenderer.h"
 #include "DistortionRenderer.h"
+#include <Utils.h>
 
 Player_FSM::Player_FSM()
 {
@@ -930,10 +931,12 @@ void Player_FSM::skill_1100_Init()
     m_bInvincible = false;
     m_bSuperArmor = false;
 
+    _float4x4 matSetting = Get_Owner()->Get_Animator()->Get_CurAnimTransform(m_iCenterBoneIndex) * Utils::m_matPivot * Get_Transform()->Get_WorldMatrix();
     //test
     {
         shared_ptr<GameObject> obj = make_shared<GameObject>();
-        obj->GetOrAddTransform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
+        obj->GetOrAddTransform()->Set_WorldMat(matSetting);
+        obj->GetOrAddTransform()->Scaled(_float3(1.f));
         {
             shared_ptr<DistortionRenderer> renderer = make_shared<DistortionRenderer>(RESOURCES.Get<Shader>(L"Shader_Distortion.fx"));
             renderer->Set_Model(RESOURCES.Get<Model>(L"fxmesh_PC_Teo_Trail_Skill_1300_00"));
