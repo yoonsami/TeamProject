@@ -1289,9 +1289,9 @@ void Spike_FSM::skill_200100_l()
     _float3 vInputVector = Get_InputDirVector();
 
     m_fChargingRatio = _float(Get_CurFrame()) / _float(Get_FinalFrame());
-    
+
     CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Ratio(m_fChargingRatio);
-   
+
     if (KEYAWAY(KEY_TYPE::KEY_2))
     {
         if (m_fChargingRatio < 0.33f)
@@ -1322,7 +1322,7 @@ void Spike_FSM::skill_200100_l_Init()
     m_vDirToTarget = _float3(0.f);
     m_vDirToTarget = Get_InputDirVector();
 
-    CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Render(true);
+    CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Render(true, SkillInfo::CHARGING);
 
     AttackCollider_Off();
 
