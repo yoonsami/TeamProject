@@ -20,7 +20,7 @@ private:
 	void Load_Player();
 
 	void Load_Camera();
-	void Load_Monster(_uint iCnt);
+	void Load_Monster(_uint iCnt, const wstring& strMonsterTag);
 	void Load_Boss_Mir();
 	void Load_Boss_Dellons();
 	void Load_Boss_Spike();

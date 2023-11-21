@@ -238,6 +238,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\16.UiMouseClick">
       <UniqueIdentifier>{836d48fb-9b5c-4336-a106-442e39d28022}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\04.Succubus_Scythe_FSM">
+      <UniqueIdentifier>{76f7d563-0754-457b-a547-be4599148ea2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -498,6 +501,9 @@
     <ClInclude Include="UiSkillGauge.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\15.UiSkillGauge</Filter>
     </ClInclude>
+    <ClInclude Include="Succubus_Scythe_FSM.h">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\04.Succubus_Scythe_FSM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -724,6 +730,9 @@
     </ClCompile>
     <ClCompile Include="UiSkillGauge.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\15.UiSkillGauge</Filter>
+    </ClCompile>
+    <ClCompile Include="Succubus_Scythe_FSM.cpp">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\04.Succubus_Scythe_FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
