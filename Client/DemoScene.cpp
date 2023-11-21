@@ -43,6 +43,9 @@
 #include "ObjectTransformDebug.h"
 #include "Silversword_Soldier_FSM.h"
 #include "Succubus_Scythe_FSM.h"
+#include "Undead_Priest_FSM.h"
+
+
 #include "UiGachaController.h"
 #include "Boss_Mir_FSM.h"
 #include "Boss_Dellons_FSM.h"
@@ -171,6 +174,7 @@ HRESULT DemoScene::Load_Scene()
 	Load_MapFile(L"KrisMap");
 	Load_Monster(1, L"Silversword_Soldier");
 	Load_Monster(1, L"Succubus_Scythe");
+	Load_Monster(1, L"Undead_Priest");
 	//Load_Boss_Spike();
 	//Load_Boss_Mir();
 
@@ -351,6 +355,9 @@ void DemoScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag)
 					ObjMonster->Add_Component(make_shared<Silversword_Soldier_FSM>());
 				else if (strMonsterTag == L"Succubus_Scythe")
 					ObjMonster->Add_Component(make_shared<Succubus_Scythe_FSM>());
+				else if (strMonsterTag == L"Undead_Priest")
+					ObjMonster->Add_Component(make_shared<Undead_Priest_FSM>());
+				
 
 				auto pPlayer = Get_GameObject(L"Player");
 				ObjMonster->Get_FSM()->Set_Target(pPlayer);

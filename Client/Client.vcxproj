@@ -239,6 +239,7 @@
     <ClInclude Include="UiComboEffect.h" />
     <ClInclude Include="UiMouseClick.h" />
     <ClInclude Include="UiSkillGauge.h" />
+    <ClInclude Include="Undead_Priest_FSM.h" />
     <ClInclude Include="Yeonhee_FSM.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Silversword_Soldier_FSM.h" />
@@ -323,6 +324,7 @@
     <ClCompile Include="UiComboEffect.cpp" />
     <ClCompile Include="UiMouseClick.cpp" />
     <ClCompile Include="UiSkillGauge.cpp" />
+    <ClCompile Include="Undead_Priest_FSM.cpp" />
     <ClCompile Include="Yeonhee_FSM.cpp" />
     <ClCompile Include="Silversword_Soldier_FSM.cpp" />
     <ClCompile Include="SpearAce_Clone_FSM.cpp" />

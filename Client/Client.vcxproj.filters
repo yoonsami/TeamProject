@@ -70,9 +70,6 @@
     <Filter Include="02.Component\01.FSM\02.Monster_FSM">
       <UniqueIdentifier>{5c127847-43c6-4fd8-b217-fe6fded2aaa1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\01.FSM\02.Monster_FSM\00.Silversword_Soldier_FSM">
-      <UniqueIdentifier>{2d025cc6-fb7d-439c-b7e9-79904de361be}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\03.ColliderInfoScript">
       <UniqueIdentifier>{4f3b2b44-9774-4323-b110-9299fc60311e}</UniqueIdentifier>
     </Filter>
@@ -102,9 +99,6 @@
     </Filter>
     <Filter Include="02.Component\01.FSM\03.Special_FSM">
       <UniqueIdentifier>{07de820b-d706-4b0a-a69a-dbc77ce8061d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Component\01.FSM\02.Monster_FSM\01.Boss_Mir_FSM">
-      <UniqueIdentifier>{d4e80f64-1b0a-46b9-805f-e088a44bd55f}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\00.Effect\00.CounterMotionTrailScript">
       <UniqueIdentifier>{8488e19a-7f84-4002-9311-474fb39e75d7}</UniqueIdentifier>
@@ -157,9 +151,6 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\09.UiCardDeckInvenChange">
       <UniqueIdentifier>{45081402-d3fc-4713-9ed4-75b7f961e759}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\01.FSM\02.Monster_FSM\02.Boss_Dellons_FSM">
-      <UniqueIdentifier>{f2eabd1a-e71d-4a00-b020-f9c66162fef8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Component\01.FSM\03.Special_FSM\00.Hero_Special_FSM">
       <UniqueIdentifier>{5f951534-c818-4ff1-9eac-7dbda5ac0b34}</UniqueIdentifier>
     </Filter>
@@ -186,9 +177,6 @@
     </Filter>
     <Filter Include="02.Component\01.FSM\01.Hero_FSM\05.Spike_FSM">
       <UniqueIdentifier>{c430e1c9-328a-4db3-a452-923e9ba683ea}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Component\01.FSM\02.Monster_FSM\03.Boss_Spike_FSM">
-      <UniqueIdentifier>{98ec5a53-91dd-4a0a-8674-9b5c049fbefd}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.Component\01.FSM\03.Special_FSM\02.SpearAce_Clone_FSM">
       <UniqueIdentifier>{43464ce5-8328-424a-89d9-4cef32d403f7}</UniqueIdentifier>
@@ -238,8 +226,29 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\16.UiMouseClick">
       <UniqueIdentifier>{836d48fb-9b5c-4336-a106-442e39d28022}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\01.FSM\02.Monster_FSM\04.Succubus_Scythe_FSM">
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster">
+      <UniqueIdentifier>{830e98aa-ad2a-4e1b-a573-5f948f2e43a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster">
+      <UniqueIdentifier>{2bf45222-d7ce-4f76-8939-f4f265bdf103}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\01.Boss_Mir_FSM">
+      <UniqueIdentifier>{d4e80f64-1b0a-46b9-805f-e088a44bd55f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\02.Boss_Dellons_FSM">
+      <UniqueIdentifier>{f2eabd1a-e71d-4a00-b020-f9c66162fef8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\03.Boss_Spike_FSM">
+      <UniqueIdentifier>{98ec5a53-91dd-4a0a-8674-9b5c049fbefd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\00.Silversword_Soldier_FSM">
+      <UniqueIdentifier>{2d025cc6-fb7d-439c-b7e9-79904de361be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\01.Succubus_Scythe_FSM">
       <UniqueIdentifier>{76f7d563-0754-457b-a547-be4599148ea2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\02.Undead_Priest_FSM">
+      <UniqueIdentifier>{7aeab858-8e69-4719-a675-564847d10cd2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -307,7 +316,7 @@
       <Filter>02.Component\MapObject</Filter>
     </ClInclude>
     <ClInclude Include="Silversword_Soldier_FSM.h">
-      <Filter>02.Component\01.FSM\02.Monster_FSM\00.Silversword_Soldier_FSM</Filter>
+      <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\00.Silversword_Soldier_FSM</Filter>
     </ClInclude>
     <ClInclude Include="AttackColliderInfoScript.h">
       <Filter>02.Component\00.MonoBehaviour\03.ColliderInfoScript\AttackCollider</Filter>
@@ -388,7 +397,7 @@
       <Filter>02.Component\01.FSM\03.Special_FSM\00.Hero_Special_FSM\00.YeopoHorse_FSM</Filter>
     </ClInclude>
     <ClInclude Include="Boss_Mir_FSM.h">
-      <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Mir_FSM</Filter>
+      <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\01.Boss_Mir_FSM</Filter>
     </ClInclude>
     <ClInclude Include="CounterMotionTrailScript.h">
       <Filter>02.Component\00.MonoBehaviour\00.Effect\00.CounterMotionTrailScript</Filter>
@@ -439,10 +448,10 @@
       <Filter>02.Component\01.FSM\04.Gacha_FSM</Filter>
     </ClInclude>
     <ClInclude Include="Boss_DellonsWraith_FSM.h">
-      <Filter>02.Component\01.FSM\02.Monster_FSM\02.Boss_Dellons_FSM</Filter>
+      <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\02.Boss_Dellons_FSM</Filter>
     </ClInclude>
     <ClInclude Include="Boss_Dellons_FSM.h">
-      <Filter>02.Component\01.FSM\02.Monster_FSM\02.Boss_Dellons_FSM</Filter>
+      <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\02.Boss_Dellons_FSM</Filter>
     </ClInclude>
     <ClInclude Include="UiHpBarController.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\02.UiHpBarController</Filter>
@@ -454,7 +463,7 @@
       <Filter>02.Component\01.FSM\01.Hero_FSM\05.Spike_FSM</Filter>
     </ClInclude>
     <ClInclude Include="Boss_Spike_FSM.h">
-      <Filter>02.Component\01.FSM\02.Monster_FSM\03.Boss_Spike_FSM</Filter>
+      <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\03.Boss_Spike_FSM</Filter>
     </ClInclude>
     <ClInclude Include="UiDamageCreate.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\12.UiDamage\00.UiDamageCreate</Filter>
@@ -502,7 +511,10 @@
       <Filter>02.Component\00.MonoBehaviour\01.Ui\15.UiSkillGauge</Filter>
     </ClInclude>
     <ClInclude Include="Succubus_Scythe_FSM.h">
-      <Filter>02.Component\01.FSM\02.Monster_FSM\04.Succubus_Scythe_FSM</Filter>
+      <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\01.Succubus_Scythe_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Undead_Priest_FSM.h">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\02.Undead_Priest_FSM</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -564,7 +576,7 @@
       <Filter>02.Component\MapObject</Filter>
     </ClCompile>
     <ClCompile Include="Silversword_Soldier_FSM.cpp">
-      <Filter>02.Component\01.FSM\02.Monster_FSM\00.Silversword_Soldier_FSM</Filter>
+      <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\00.Silversword_Soldier_FSM</Filter>
     </ClCompile>
     <ClCompile Include="AttackColliderInfoScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\03.ColliderInfoScript\AttackCollider</Filter>
@@ -630,7 +642,7 @@
       <Filter>02.Component\01.FSM\03.Special_FSM\00.Hero_Special_FSM\00.YeopoHorse_FSM</Filter>
     </ClCompile>
     <ClCompile Include="Boss_Mir_FSM.cpp">
-      <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Mir_FSM</Filter>
+      <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\01.Boss_Mir_FSM</Filter>
     </ClCompile>
     <ClCompile Include="CounterMotionTrailScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\00.Effect\00.CounterMotionTrailScript</Filter>
@@ -672,7 +684,7 @@
       <Filter>02.Component\01.FSM\04.Gacha_FSM</Filter>
     </ClCompile>
     <ClCompile Include="Boss_Dellons_FSM.cpp">
-      <Filter>02.Component\01.FSM\02.Monster_FSM\02.Boss_Dellons_FSM</Filter>
+      <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\02.Boss_Dellons_FSM</Filter>
     </ClCompile>
     <ClCompile Include="UiHpBarController.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\02.UiHpBarController</Filter>
@@ -684,7 +696,7 @@
       <Filter>02.Component\01.FSM\01.Hero_FSM\05.Spike_FSM</Filter>
     </ClCompile>
     <ClCompile Include="Boss_Spike_FSM.cpp">
-      <Filter>02.Component\01.FSM\02.Monster_FSM\03.Boss_Spike_FSM</Filter>
+      <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\03.Boss_Spike_FSM</Filter>
     </ClCompile>
     <ClCompile Include="UiDamageCreate.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\12.UiDamage\00.UiDamageCreate</Filter>
@@ -732,7 +744,10 @@
       <Filter>02.Component\00.MonoBehaviour\01.Ui\15.UiSkillGauge</Filter>
     </ClCompile>
     <ClCompile Include="Succubus_Scythe_FSM.cpp">
-      <Filter>02.Component\01.FSM\02.Monster_FSM\04.Succubus_Scythe_FSM</Filter>
+      <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\01.Succubus_Scythe_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="Undead_Priest_FSM.cpp">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\02.Undead_Priest_FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
