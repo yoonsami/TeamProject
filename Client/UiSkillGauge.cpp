@@ -14,6 +14,8 @@ HRESULT UiSkillGauge::Init()
 
     auto pScene = CUR_SCENE;
     m_pGaugeBg  = pScene->Get_UI(L"UI_Skill_Use_GaugeBg");
+    if (true == m_pGaugeBg.expired())
+        return E_FAIL;
 
     m_pOwner.lock()->Set_Render(false);
     m_pGaugeBg.lock()->Set_Render(false);

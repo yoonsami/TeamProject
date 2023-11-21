@@ -33,6 +33,11 @@ HRESULT UiDamageCreate::Init()
 
 void UiDamageCreate::Create_Damage_Font(_float4 vPos)
 {
+    if (true == m_pOwner.expired() ||
+        true == m_pPlayer.expired() ||
+        true == m_pCamera.expired())
+        return;
+
     m_fPos = vPos;
     Check_In_Screen();
     if (false == m_bIsIn)

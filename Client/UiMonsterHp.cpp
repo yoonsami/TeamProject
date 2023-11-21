@@ -19,9 +19,14 @@ HRESULT UiMonsterHp::Init()
     m_pBgHp     = pScene->Get_UI(L"UI_MonsterHp2");
     m_pCamera   = pScene->Get_Camera(L"Default");
 
-    m_pFrontHp.lock()->Set_Render(false);
-    m_pBackHp.lock()->Set_Render(false);
-    m_pBgHp.lock()->Set_Render(false);
+    if(false == m_pFrontHp.expired())
+        m_pFrontHp.lock()->Set_Render(false);
+
+    if (false == m_pBackHp.expired())
+        m_pBackHp.lock()->Set_Render(false);
+
+    if (false == m_pBgHp.expired())
+        m_pBgHp.lock()->Set_Render(false);
 
     return S_OK;
 }

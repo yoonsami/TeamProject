@@ -60,7 +60,7 @@
 #include "UIBossHpBar.h"
 #include "UiComboEffect.h"
 #include "UiSkillGauge.h"
-#include "UiMouseClick.h"
+
 
 #include <filesystem>
 #include "GachaScene.h"
@@ -88,15 +88,6 @@ void DemoScene::Init()
 void DemoScene::Tick()
 {
 	__super::Tick();
-
-	/*if (KEYTAP(KEY_TYPE::C))
-	{
-		Get_GameObject(L"Main_Ui_Controller")->Get_Script<MainUiController>()->Set_MainUI_Render(false);
-	}
-	if (KEYTAP(KEY_TYPE::V))
-	{
-		Get_GameObject(L"Main_Ui_Controller")->Get_Script<MainUiController>()->Set_MainUI_Render(true);
-	}*/
 }
 
 void DemoScene::Late_Tick()
@@ -630,10 +621,10 @@ void DemoScene::Load_Ui()
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck.dat", false);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", false);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_MonsterHp.dat");
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat");
+	//Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat");
 
 
-	{
+	/*{
 		auto pObj = make_shared<GameObject>();
 		pObj->Set_Name(L"Main_Ui_Controller");
 
@@ -642,7 +633,7 @@ void DemoScene::Load_Ui()
 
 		pObj->Set_LayerIndex(Layer_UI);
 		Add_GameObject(pObj, true);
-	}
+	}*/
 
 	{
 		auto pObj = make_shared<GameObject>();
@@ -719,14 +710,7 @@ void DemoScene::Load_Ui()
 	}
 	
 
-	{
-		auto pObj = Get_UI(L"UI_Mouse_Click");
-		if (nullptr != pObj)
-		{
-			auto pScript = make_shared<UiMouseClick>();
-			pObj->Add_Component(pScript);
-		}
-	}
+	
 
 	
 

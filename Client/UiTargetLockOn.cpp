@@ -17,11 +17,14 @@ HRESULT UiTargetLockOn::Init()
     m_pLockOn0 = CUR_SCENE->Get_UI(L"UI_Target_LockOn0");
     m_pLockOn1 = CUR_SCENE->Get_UI(L"UI_Target_LockOn1");
 
-    m_fOriginScale = m_vecScale.x = m_pLockOn1.lock()->GetOrAddTransform()->Get_Scale().x;
-    m_vecScale.y = m_pLockOn1.lock()->GetOrAddTransform()->Get_Scale().y;
-
-    m_fMaxScale = 100.f;
-    m_fSpeed = m_fMaxScale - m_fOriginScale + 10.f;
+    if (false == m_pLockOn1.expired())
+    {
+        m_fOriginScale = m_vecScale.x = m_pLockOn1.lock()->GetOrAddTransform()->Get_Scale().x;
+        m_vecScale.y = m_pLockOn1.lock()->GetOrAddTransform()->Get_Scale().y;
+        
+        m_fMaxScale = 100.f;
+        m_fSpeed = m_fMaxScale - m_fOriginScale;
+    }
 
     return S_OK;
 }

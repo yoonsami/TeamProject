@@ -34,6 +34,7 @@
 #include "ObjectTransformDebug.h"
 #include "Silversword_Soldier_FSM.h"
 #include "DemoAnimationController1.h"
+#include "UiMouseController.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -120,6 +121,7 @@ void LogoScene::Load_Ui()
 	}
 
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Logo.dat");
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat");
 
 	auto pGameobject = Get_GameObject(L"UI_Start_Button");
 	if (nullptr != pGameobject)
@@ -128,5 +130,14 @@ void LogoScene::Load_Ui()
 			{
 				SCENE.Change_Scene(make_shared<LoadingScene>(make_shared<DemoScene>()));
 			});
+	}
+
+	{
+		auto pObj = Get_UI(L"UI_Mouse_Click");
+		if (nullptr != pObj)
+		{
+			auto pScript = make_shared<UiMouseController>();
+			pObj->Add_Component(pScript);
+		}
 	}
 }
