@@ -57,7 +57,7 @@ void InputMgr::Tick()
 			}
 			else
 			{
-				state = KEY_STATE::TAP;
+				state = KEY_STATE::TAP;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 			}
 		}
 		else

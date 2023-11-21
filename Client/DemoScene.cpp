@@ -619,8 +619,8 @@ void DemoScene::Load_Ui()
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Char_Change.dat");
 	//Load_UIFile(L"..\\Resources\\UIData\\UI_Gacha.dat");
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck.dat", false);
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", false);
-	Load_UIFile(L"..\\Resources\\UIData\\UI_MonsterHp.dat");
+	//Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", false);
+	//Load_UIFile(L"..\\Resources\\UIData\\UI_MonsterHp.dat");
 	//Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat");
 
 
@@ -642,8 +642,10 @@ void DemoScene::Load_Ui()
 		auto pScript = make_shared<UiGachaController>();
 		pObj->Add_Component(pScript);
 
+		pObj->Set_Render(false);
 		pObj->Set_LayerIndex(Layer_UI);
 		Add_GameObject(pObj, true);
+
 	}
 
 	{

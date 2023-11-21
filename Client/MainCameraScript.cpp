@@ -235,9 +235,9 @@ void MainCameraScript::Find_Target()
             fMinDist = sqrtf(distSQ);
             //m_pTarget = object;
             if(!m_UiTargetLockon.expired())
-            m_UiTargetLockon.lock()->Get_Script<UiTargetLockOn>()->Set_Target(object);
+                m_UiTargetLockon.lock()->Get_Script<UiTargetLockOn>()->Set_Target(object);
             if (!m_UiTargetHp.expired())
-            m_UiTargetHp.lock()->Get_Script<UiMonsterHp>()->Set_Target(object);
+                m_UiTargetHp.lock()->Get_Script<UiMonsterHp>()->Set_Target(object);
             m_bTestValue = true;
             //m_pPlayer.lock()->Get_FSM()->Set_Target(m_pTarget.lock());
         }
