@@ -47,11 +47,20 @@ void MeshEffect::Final_Tick()
     m_fLifeTimeRatio = m_fCurrAge / m_tDesc.fDuration;
     m_fTimeAcc_SpriteAnimation += fDT;
 
+    // Calc Curr Dissolve weight 
     if ("None" != m_tDesc.strDissolveTexture)
     {
         _float output[4];
         Utils::Spline(m_SplineInput_Dissolve, 4, 1, m_fLifeTimeRatio, output);
         m_fCurrDissolveWeight = output[0];
+    }
+
+    // Calc Curr RimLight intensity 
+    if (m_tDesc.bIsRimLightOn)
+    {
+        _float output[4];
+        Utils::Spline(m_SplineInput_RimLight, 4, 1, m_fLifeTimeRatio, output);
+        m_fCurrRimLightIntensity = output[0];
     }
 
     // For. Check is dead 
@@ -219,9 +228,16 @@ void MeshEffect::InitialTransform(_float4x4 mParentWorldMatrix, const _float3& v
     m_vStartPos += _float3(Get_Transform()->Get_State(Transform_State::POS));
     m_vEndPos += m_vStartPos;    
 
+    _float4 test = Get_Transform()->Get_State(Transform_State::POS);
+
     m_vStartScale *= vInitScale_inGroup;
     m_vEndScale += m_vStartScale;
-
+    if (m_vEndScale.x < 0)
+        m_vEndScale.x = 0.f;
+    if (m_vEndScale.y < 0)
+        m_vEndScale.y = 0.f;
+    if (m_vEndScale.z < 0)
+        m_vEndScale.z = 0.f;
     m_vStartRotation += vInitRotation_inGroup;
 }
 
@@ -430,12 +446,14 @@ void MeshEffect::Init_RenderParams()
     _float4x4 vTemp4x4;
     
     /* Int */
-    m_RenderParams.SetInt(0, m_tDesc.bUseFadeOut);
+    m_RenderParams.SetInt(0, (_int)m_tDesc.bUseFadeOut);
+    m_RenderParams.SetInt(1, (_int)m_tDesc.bIsRimLightOn);
     m_RenderParams.SetInt(2, (_int)m_tDesc.bUseSpriteAnim);
     
     /* Float */
     m_RenderParams.SetFloat(0, m_fCurrAge / m_tDesc.fDuration);
     m_RenderParams.SetFloat(1, m_fCurrDissolveWeight);
+    m_RenderParams.SetFloat(2, m_fCurrRimLightIntensity);
 
     /* Float2 */
     vTemp2 = _float2(m_tDesc.fContrast_Op1, m_tDesc.fAlphaOffset_Op1);
@@ -469,12 +487,12 @@ void MeshEffect::Init_RenderParams()
         m_tDesc.vBaseColor1_Op3,
         m_tDesc.vBaseColor2_Op3,
         m_tDesc.vBaseColor_Overlay,
-        _float4((_float)m_tDesc.bIsUseTextureColor_Op1, (_float)m_tDesc.bIsUseTextureColor_Op2, (_float)m_tDesc.bIsUseTextureColor_Op3, 0.f)
+        m_tDesc.vBaseColor_RimLight
     );
     m_RenderParams.SetMatrix(1, vTemp4x4);
     vTemp4x4 = _float4x4(
+        _float4((_float)m_tDesc.bIsUseTextureColor_Op1, (_float)m_tDesc.bIsUseTextureColor_Op2, (_float)m_tDesc.bIsUseTextureColor_Op3, 0.f),
         _float4((_float)m_tDesc.iFlipOption_Op1, (_float)m_tDesc.iFlipOption_Op2, (_float)m_tDesc.iFlipOption_Op3, 0.f),
-        _float4(0.f, 0.f, 0.f, 0.f),
         _float4(0.f, 0.f, 0.f, 0.f),
         _float4(0.f, 0.f, 0.f, 0.f)
     );
@@ -492,6 +510,7 @@ void MeshEffect::Bind_UpdatedColor_ToShader()
     Color vFinalColor1_Op3 = XMVectorLerp(m_tDesc.vBaseColor1_Op3, m_tDesc.vDestColor1_Op3, m_fLifeTimeRatio);
     Color vFinalColor2_Op3 = XMVectorLerp(m_tDesc.vBaseColor2_Op3, m_tDesc.vDestColor2_Op3, m_fLifeTimeRatio);
     Color vFinalColor_Overlay = XMVectorLerp(m_tDesc.vBaseColor_Overlay, m_tDesc.vDestColor_Overlay, m_fLifeTimeRatio);
+    Color vFinalColor_RimLight = XMVectorLerp(m_tDesc.vBaseColor_RimLight, m_tDesc.vBaseColor_RimLight, m_fLifeTimeRatio);
     vTemp4x4 = _float4x4(
         vFinalColor1_Op1,
         vFinalColor2_Op1,
@@ -503,7 +522,7 @@ void MeshEffect::Bind_UpdatedColor_ToShader()
         vFinalColor1_Op3,
         vFinalColor2_Op3,
         vFinalColor_Overlay,
-        _float4((_float)m_tDesc.bIsUseTextureColor_Op1, (_float)m_tDesc.bIsUseTextureColor_Op2, (_float)m_tDesc.bIsUseTextureColor_Op3, 0.f)
+        vFinalColor_RimLight
     );
     m_RenderParams.SetMatrix(1, vTemp4x4);
 }
@@ -546,6 +565,7 @@ void MeshEffect::Bind_RenderParams_ToShader()
 
     m_RenderParams.SetFloat(0, m_fLifeTimeRatio);    
     m_RenderParams.SetFloat(1, m_fCurrDissolveWeight);
+    m_RenderParams.SetFloat(2, m_fCurrRimLightIntensity);
 
     Bind_UpdatedColor_ToShader();
     Bind_UpdatedTexUVOffset_ToShader();

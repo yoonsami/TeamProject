@@ -1078,6 +1078,13 @@ void ResourceMgr::CreateMeshEffectData()
 		tDesc.vTiling_Overlay = file->Read<_float2>();
 		tDesc.vUVSpeed_Overlay = file->Read<_float2>();
 
+		/* RimLight */
+		tDesc.bIsRimLightOn = file->Read<_bool>();
+		tDesc.vBaseColor_RimLight = file->Read<_float4>();
+		tDesc.vDestColor_RimLight = file->Read<_float4>();
+		for (_int i = 0; i < 4; i++)
+			tDesc.vCurvePoint_RimLight[i] = file->Read<_float2>();
+
 		/* Normal */
 		tDesc.strNormalTexture = file->Read<string>();
 
@@ -1092,6 +1099,9 @@ void ResourceMgr::CreateMeshEffectData()
 		tDesc.strDistortionTexture = file->Read<string>();
 		tDesc.vTiling_Distortion = file->Read<_float2>();
 		tDesc.vUVSpeed_Distortion = file->Read<_float2>();
+
+		/* ETC */
+		_float4x4 mTemp = file->Read<_float4x4>();
 
 		// For. Load Transform_Desc 
 		/* Init Position */

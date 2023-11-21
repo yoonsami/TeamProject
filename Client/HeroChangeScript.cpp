@@ -12,6 +12,7 @@
 #include "CoolTimeCheckScript.h"
 #include "WeaponScript.h"
 #include "FSM.h"
+#include "Material.h"
 #include "Player_FSM.h"
 #include "SpearAce_FSM.h"
 #include "Kyle_FSM.h"
@@ -23,15 +24,29 @@
 
 HeroChangeScript::HeroChangeScript()
 {
+    auto shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+
+
+    for (_uint i = 0; i < static_cast<_uint>(HERO::MAX); ++i)
+    {
+		auto& materials = RESOURCES.Get<Model>(GET_DATA(static_cast<HERO>(i)).ModelTag)->Get_Materials();
+		for (auto& material : materials)
+			material->Set_Shader(shader);
+    }
 }
 
 HeroChangeScript::~HeroChangeScript()
 {
 }
 
+HRESULT HeroChangeScript::Init()
+{
+
+    return S_OK;
+}
+
 void HeroChangeScript::Tick()
 {
-    
     if (m_pOwner.expired())
         return;
 
@@ -148,8 +163,8 @@ void HeroChangeScript::Change_To_Player()
     Add_Character_Weapon(L"Weapon_Player");
 
     m_pOwner.lock()->Get_FSM()->Init();
-
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::PLAYER);
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::PLAYER);
 }
 
 void HeroChangeScript::Change_To_Spear_Ace()
@@ -176,7 +191,8 @@ void HeroChangeScript::Change_To_Spear_Ace()
 
     m_pOwner.lock()->Get_FSM()->Init();
 
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::ACE3);
+    if(m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::ACE3);
 }
 
 void HeroChangeScript::Change_To_Kyle()
@@ -198,12 +214,13 @@ void HeroChangeScript::Change_To_Kyle()
     m_pOwner.lock()->Get_Animator()->Set_Model(model);
     m_pOwner.lock()->Change_Component(make_shared<Kyle_FSM>());
     m_pOwner.lock()->Get_FSM()->Init();
-
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::KYLE);
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::KYLE);
 }
 
 void HeroChangeScript::Change_To_Yeopo()
 {
+
     if (m_pOwner.expired())
         return;
 
@@ -225,9 +242,8 @@ void HeroChangeScript::Change_To_Yeopo()
     Add_Character_Weapon(L"Weapon_Yeopo");
 
     m_pOwner.lock()->Get_FSM()->Init();
-
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::YEOPO);
-
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::YEOPO);
 }
 
 void HeroChangeScript::Change_To_Dellons()
@@ -253,7 +269,8 @@ void HeroChangeScript::Change_To_Dellons()
     Add_Character_Weapon(L"Weapon_Dellons");
 
     m_pOwner.lock()->Get_FSM()->Init();
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::DELLONS);
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::DELLONS);
 
 }
 
@@ -280,7 +297,8 @@ void HeroChangeScript::Change_To_Spike()
     Add_Character_Weapon(L"Weapon_Spike");
 
     m_pOwner.lock()->Get_FSM()->Init();
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::SPIKE);
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::SPIKE);
 
 }
 
@@ -304,7 +322,8 @@ void HeroChangeScript::Change_To_Yeonhee()
 	m_pOwner.lock()->Change_Component(make_shared<Yeonhee_FSM>());
 
 	m_pOwner.lock()->Get_FSM()->Init();
-	m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::YEONHEE);
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+	    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::YEONHEE);
 }
 
 void HeroChangeScript::Change_To_Shane()
@@ -330,7 +349,8 @@ void HeroChangeScript::Change_To_Shane()
 	Add_Character_Weapon(L"Weapon_Shane");
 
 	m_pOwner.lock()->Get_FSM()->Init();
-	m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::SHANE);
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+	    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(HERO::SHANE);
 }
 
 void HeroChangeScript::Change_To_Input(HERO eHero)
@@ -381,6 +401,7 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
         Add_Character_Weapon(tagData.WeaponTag);
 
     m_pOwner.lock()->Get_FSM()->Init();
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(eHero);
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(eHero);
 }
 

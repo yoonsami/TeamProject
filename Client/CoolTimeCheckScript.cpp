@@ -150,7 +150,6 @@ HRESULT CoolTimeCheckScript::Init()
 
     m_pCombo_Effect = pScene->Get_UI(L"UI_Combo_Effect");
 
-
     return S_OK;
 }
 

@@ -41,7 +41,7 @@ HRESULT Kyle_FSM::Init()
 	m_pCamera = CUR_SCENE->Get_MainCamera();
 
 	m_fSkillAttack_AnimationSpeed =1.f;
-
+	m_fDetectRange = 5.f;
 	return S_OK;
 }
 
@@ -877,8 +877,7 @@ void Kyle_FSM::knockdown_end_Init()
 
 void Kyle_FSM::skill_1100()
 {
-	if (m_vDirToTarget != _float3(0.f))
-		Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+	Look_DirToTarget();
 
 	if (Get_CurFrame() == 9)
 	{
@@ -887,22 +886,8 @@ void Kyle_FSM::skill_1100()
 	else if (Get_CurFrame() == 19)
 		AttackCollider_Off();
 
-	_float3 vInputVector = Get_InputDirVector();
-
-
-
-	if (Get_CurFrame() < 22)
-	{
-		if (KEYTAP(KEY_TYPE::LBUTTON))
-			m_bCanCombo = true;
-	}
-
-	if (m_bCanCombo)
-	{
-		if (Get_CurFrame() > 20)
-			m_eCurState = STATE::skill_1200;
-	}
-
+	if (Check_Combo(22, KEY_TYPE::LBUTTON))
+		m_eCurState = STATE::skill_1200;
 
 	if (Is_AnimFinished())
 	{
@@ -924,8 +909,7 @@ void Kyle_FSM::skill_1100_Init()
 
 	m_bCanCombo = false;
 
-	m_vDirToTarget = _float3(0.f);
-	m_vDirToTarget = Get_InputDirVector();
+	Set_DirToTargetOrInput(OBJ_MONSTER);
 
 	m_bInvincible = false;
 	m_bSuperArmor = false;
@@ -933,27 +917,16 @@ void Kyle_FSM::skill_1100_Init()
 
 void Kyle_FSM::skill_1200()
 {
+	Look_DirToTarget();
+
 	if (Get_CurFrame() == 9)
 		AttackCollider_On(NORMAL_ATTACK);
 	else if (Get_CurFrame() == 20)
 		AttackCollider_Off();
 
-	_float3 vInputVector = Get_InputDirVector();
-
-	if (m_vDirToTarget != _float3(0.f))
-		Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
-
-	if (Get_CurFrame() < 22)
-	{
-		if (KEYTAP(KEY_TYPE::LBUTTON))
-			m_bCanCombo = true;
-	}
-
-	if (m_bCanCombo)
-	{
-		if (Get_CurFrame() > 20)
-			m_eCurState = STATE::skill_1300;
-	}
+	if (Check_Combo(20, KEY_TYPE::LBUTTON))
+		m_eCurState = STATE::skill_1300;
+	
 
 	if (Is_AnimFinished())
 	{
@@ -977,8 +950,7 @@ void Kyle_FSM::skill_1200_Init()
 
 	m_bCanCombo = false;
 
-	m_vDirToTarget = _float3(0.f);
-	m_vDirToTarget = Get_InputDirVector();
+	Set_DirToTargetOrInput(OBJ_MONSTER);
 
 	AttackCollider_Off();
 
@@ -988,28 +960,16 @@ void Kyle_FSM::skill_1200_Init()
 
 void Kyle_FSM::skill_1300()
 {
+	Look_DirToTarget();
+
 	if (Get_CurFrame() == 8)
 		AttackCollider_On(NORMAL_ATTACK);
 	else if (Get_CurFrame() == 18)
 		AttackCollider_Off();
 
-	_float3 vInputVector = Get_InputDirVector();
-
-	if (m_vDirToTarget != _float3(0.f))
-		Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
-
-	if (Get_CurFrame() < 25)
-	{
-		if (KEYTAP(KEY_TYPE::LBUTTON))
-			m_bCanCombo = true;
-	}
-
-	if (m_bCanCombo)
-	{
-		if (Get_CurFrame() > 24)
-			m_eCurState = STATE::skill_1400;
-	}
-
+	if (Check_Combo(24, KEY_TYPE::LBUTTON))
+		m_eCurState = STATE::skill_1400;
+	
 	if (Is_AnimFinished())
 	{
 		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
@@ -1032,8 +992,7 @@ void Kyle_FSM::skill_1300_Init()
 
 	m_bCanCombo = false;
 
-	m_vDirToTarget = _float3(0.f);
-	m_vDirToTarget = Get_InputDirVector();
+	Set_DirToTargetOrInput(OBJ_MONSTER);
 
 	AttackCollider_Off();
 
@@ -1043,26 +1002,20 @@ void Kyle_FSM::skill_1300_Init()
 
 void Kyle_FSM::skill_1400()
 {
-	if (Get_CurFrame() == 11)
+	Look_DirToTarget();
+
+	if (Init_CurFrame(11))
 	{
-		if (m_iPreFrame != m_iCurFrame)
-		{
-			FORWARDMOVINGSKILLDESC desc;
-			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-			desc.fMoveSpeed = 0.f;
-			desc.fLifeTime = 1.5f;
-			desc.fLimitDistance = 0.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 0.f;
+		desc.fLifeTime = 1.5f;
+		desc.fLimitDistance = 0.f;
 
-			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + 
-								Get_Transform()->Get_State(Transform_State::LOOK) * 3.f;
-			Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK);
-		}
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+			Get_Transform()->Get_State(Transform_State::LOOK) * 3.f;
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK);
 	}
-
-	_float3 vInputVector = Get_InputDirVector();
-
-	if (m_vDirToTarget != _float3(0.f))
-		Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
 	if (Is_AnimFinished())
 	{
@@ -1086,8 +1039,7 @@ void Kyle_FSM::skill_1400_Init()
 
 	m_bCanCombo = false;
 
-	m_vDirToTarget = _float3(0.f);
-	m_vDirToTarget = Get_InputDirVector();
+	Set_DirToTargetOrInput(OBJ_MONSTER);
 
 	AttackCollider_Off();
 
@@ -1097,10 +1049,9 @@ void Kyle_FSM::skill_1400_Init()
 
 void Kyle_FSM::skill_91100()
 {
-	_float3 vInputVector = Get_InputDirVector();
+	Look_DirToTarget();
 
-	if (m_vDirToTarget != _float3(0.f))
-		Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+	_float3 vInputVector = Get_InputDirVector();
 
 	if (Is_AnimFinished())
 		m_eCurState = STATE::b_idle;
@@ -1159,6 +1110,8 @@ void Kyle_FSM::skill_93100_Init()
 
 void Kyle_FSM::skill_100100()
 {
+	Look_DirToTarget();
+
 	if (Get_CurFrame() >= 17)
 	{
 		if (Get_CurFrame() == 17)
@@ -1175,39 +1128,22 @@ void Kyle_FSM::skill_100100()
 		}
 	}
 
-	
-	if (Get_CurFrame() == 5)
+	if (Init_CurFrame(5))
 	{
-		if (m_iPreFrame != m_iCurFrame)
-		{
-			FORWARDMOVINGSKILLDESC desc;
-			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-			desc.fMoveSpeed = 0.f;
-			desc.fLifeTime = 1.5f;
-			desc.fLimitDistance = 0.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 0.f;
+		desc.fLifeTime = 1.5f;
+		desc.fLimitDistance = 0.f;
 
-			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-				Get_Transform()->Get_State(Transform_State::UP);
-			Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_ATTACK);
-		}
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+			Get_Transform()->Get_State(Transform_State::UP);
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_ATTACK);
 	}
 
-	_float3 vInputVector = Get_InputDirVector();
 
-	if (m_vDirToTarget != _float3(0.f))
-		Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
-
-	if (Get_CurFrame() < 25)
-	{
-		if (KEYTAP(KEY_TYPE::KEY_1))
-			m_bCanCombo = true;
-	}
-
-	if (m_bCanCombo)
-	{
-		if (Get_CurFrame() >= 25)
-			m_eCurState = STATE::skill_100200;
-	}
+	if (Check_Combo(25, KEY_TYPE::KEY_1))
+		m_eCurState = STATE::skill_100200;
 
 	if (Is_AnimFinished())
 	{
@@ -1226,8 +1162,7 @@ void Kyle_FSM::skill_100100_Init()
 
 	m_bCanCombo = false;
 
-	m_vDirToTarget = _float3(0.f);
-	m_vDirToTarget = Get_InputDirVector();
+	Set_DirToTargetOrInput(OBJ_MONSTER);
 
 	AttackCollider_Off();
 
@@ -1237,6 +1172,7 @@ void Kyle_FSM::skill_100100_Init()
 
 void Kyle_FSM::skill_100200()
 {
+	Look_DirToTarget();
 	
 	if (Get_CurFrame() >= 4)
 	{
@@ -1251,26 +1187,18 @@ void Kyle_FSM::skill_100200()
 		}
 	}
 
-	if (Get_CurFrame() == 12)
+	if (Init_CurFrame(12))
 	{
-		if (m_iPreFrame != m_iCurFrame)
-		{
-			FORWARDMOVINGSKILLDESC desc;
-			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-			desc.fMoveSpeed = 0.f;
-			desc.fLifeTime = 1.5f;
-			desc.fLimitDistance = 0.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 0.f;
+		desc.fLifeTime = 1.5f;
+		desc.fLimitDistance = 0.f;
 
-			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
 
-			Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK);
-		}
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK);
 	}
-
-	_float3 vInputVector = Get_InputDirVector();
-
-	if (m_vDirToTarget != _float3(0.f))
-		Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
 	if (Is_AnimFinished())
 	{
@@ -1295,8 +1223,7 @@ void Kyle_FSM::skill_100200_Init()
 
 	m_bCanCombo = false;
 
-	m_vDirToTarget = _float3(0.f);
-	m_vDirToTarget = Get_InputDirVector();
+	Set_DirToTargetOrInput(OBJ_MONSTER);
 
 	AttackCollider_Off();
 
@@ -1306,28 +1233,16 @@ void Kyle_FSM::skill_100200_Init()
 
 void Kyle_FSM::skill_200100()
 {
+	Look_DirToTarget();
+
 	if (Get_CurFrame() == 11)
 		AttackCollider_On(NORMAL_ATTACK);
 	else if (Get_CurFrame() == 23)
 		AttackCollider_Off();
+
+	if (Check_Combo(16, KEY_TYPE::KEY_2))
+		m_eCurState = STATE::skill_200200;
 	
-	_float3 vInputVector = Get_InputDirVector();
-
-	if (m_vDirToTarget != _float3(0.f))
-		Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
-
-	if (Get_CurFrame() < 16)
-	{
-		if (KEYTAP(KEY_TYPE::KEY_2))
-			m_bCanCombo = true;
-	}
-
-	if (m_bCanCombo)
-	{
-		if (Get_CurFrame() >= 16)
-			m_eCurState = STATE::skill_200200;
-	}
-
 	if (Is_AnimFinished())
 	{
 		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
@@ -1346,8 +1261,7 @@ void Kyle_FSM::skill_200100_Init()
 
 	m_bCanCombo = false;
 
-	m_vDirToTarget = _float3(0.f);
-	m_vDirToTarget = Get_InputDirVector();
+	Set_DirToTargetOrInput(OBJ_MONSTER);
 
 	AttackCollider_Off();
 
@@ -1366,29 +1280,17 @@ void Kyle_FSM::skill_200200()
 	else if (Get_CurFrame() == 28)
 		AttackCollider_Off();
 
-	_float3 vInputVector = Get_InputDirVector();
+	Look_DirToTarget();
 
-	if (m_vDirToTarget != _float3(0.f))
-		Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
-
-	if (Get_CurFrame() < 28)
-	{
-		if (KEYTAP(KEY_TYPE::KEY_2))
-			m_bCanCombo = true;
-	}
-
-	if (m_bCanCombo)
-	{
-		if (Get_CurFrame() >= 28)
-			m_eCurState = STATE::skill_200300;
-	}
+	if (Check_Combo(28, KEY_TYPE::KEY_2))
+		m_eCurState = STATE::skill_200300;
+	
 
 	if (Is_AnimFinished())
 	{
 		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 		m_eCurState = STATE::b_idle;
 	}
-
 
 	Use_Dash();
 }
@@ -1402,8 +1304,7 @@ void Kyle_FSM::skill_200200_Init()
 
 	m_bCanCombo = false;
 
-	m_vDirToTarget = _float3(0.f);
-	m_vDirToTarget = Get_InputDirVector();
+	Set_DirToTargetOrInput(OBJ_MONSTER);
 
 	AttackCollider_Off();
 
@@ -1413,33 +1314,26 @@ void Kyle_FSM::skill_200200_Init()
 
 void Kyle_FSM::skill_200300()
 {
-	if (Get_CurFrame() == 9)
+	if (Init_CurFrame(9))
 	{
-		if (m_iPreFrame != m_iCurFrame)
-		{
-			FORWARDMOVINGSKILLDESC desc;
-			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-			desc.fMoveSpeed = 0.f;
-			desc.fLifeTime = 1.5f;
-			desc.fLimitDistance = 0.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 0.f;
+		desc.fLifeTime = 1.5f;
+		desc.fLimitDistance = 0.f;
 
-			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-				Get_Transform()->Get_State(Transform_State::LOOK) * 5.5f;
-			Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, AIRBORNE_ATTACK);
-		}
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+			Get_Transform()->Get_State(Transform_State::LOOK) * 5.5f;
+		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, AIRBORNE_ATTACK);
 	}
 	
-	_float3 vInputVector = Get_InputDirVector();
-
-	if (m_vDirToTarget != _float3(0.f))
-		Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+	Look_DirToTarget();
 
 	if (Is_AnimFinished())
 	{
 		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 		m_eCurState = STATE::b_idle;
 	}
-
 
 	Use_Dash();
 }
@@ -1453,8 +1347,7 @@ void Kyle_FSM::skill_200300_Init()
 
 	m_bCanCombo = false;
 
-	m_vDirToTarget = _float3(0.f);
-	m_vDirToTarget = Get_InputDirVector();
+	Set_DirToTargetOrInput(OBJ_MONSTER);
 
 	AttackCollider_Off();
 
@@ -1464,63 +1357,55 @@ void Kyle_FSM::skill_200300_Init()
 
 void Kyle_FSM::skill_300100()
 {
+	Look_DirToTarget();
+
 	if (Get_CurFrame() == 2)
 		AttackCollider_On(NORMAL_ATTACK);
 	else if (Get_CurFrame() == 5)
 		AttackCollider_Off();
-	else if (Get_CurFrame() == 10)
+
+	if (Init_CurFrame(10))
 	{
-		if (m_iPreFrame != m_iCurFrame)
-		{
-			FORWARDMOVINGSKILLDESC desc;
-			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-			desc.fMoveSpeed = 0.f;
-			desc.fLifeTime = 0.5f;
-			desc.fLimitDistance = 0.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 0.f;
+		desc.fLifeTime = 0.5f;
+		desc.fLimitDistance = 0.f;
 
-			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-				Get_Transform()->Get_State(Transform_State::UP);
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+			Get_Transform()->Get_State(Transform_State::UP);
 
-			Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, NORMAL_ATTACK);
-		}
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, NORMAL_ATTACK);
 	}
-	else if (Get_CurFrame() == 28)
+	else if (Init_CurFrame(28))
 	{
-		if (m_iPreFrame != m_iCurFrame)
-		{
-			FORWARDMOVINGSKILLDESC desc;
-			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-			desc.fMoveSpeed = 0.f;
-			desc.fLifeTime = 0.5f;
-			desc.fLimitDistance = 0.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 0.f;
+		desc.fLifeTime = 0.5f;
+		desc.fLimitDistance = 0.f;
 
-			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-				Get_Transform()->Get_State(Transform_State::LOOK) * 4.f;
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+			Get_Transform()->Get_State(Transform_State::LOOK) * 4.f;
 
-			Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, NORMAL_ATTACK);
-		}
+		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, NORMAL_ATTACK);
+
 	}
-	else if (Get_CurFrame() == 36)
+	else if (Init_CurFrame(36))
 	{
-		if (m_iPreFrame != m_iCurFrame)
-		{
-			FORWARDMOVINGSKILLDESC desc;
-			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-			desc.fMoveSpeed = 0.f;
-			desc.fLifeTime = 1.f;
-			desc.fLimitDistance = 0.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 0.f;
+		desc.fLifeTime = 1.f;
+		desc.fLimitDistance = 0.f;
 
-			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-				Get_Transform()->Get_State(Transform_State::LOOK) * 4.f;
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+			Get_Transform()->Get_State(Transform_State::LOOK) * 4.f;
 
-			Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, AIRBORNE_ATTACK);
-		}
+		Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, AIRBORNE_ATTACK);
+
 	}
 
-	_float3 vInputVector = Get_InputDirVector();
-
-	if (m_vDirToTarget != _float3(0.f))
-		Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
 	if (Is_AnimFinished())
 	{
@@ -1540,8 +1425,7 @@ void Kyle_FSM::skill_300100_Init()
 
 	m_bCanCombo = false;
 
-	m_vDirToTarget = _float3(0.f);
-	m_vDirToTarget = Get_InputDirVector();
+	Set_DirToTargetOrInput(OBJ_MONSTER);
 
 	AttackCollider_Off();
 
@@ -1583,64 +1467,52 @@ void Kyle_FSM::skill_502100()
 		m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCamStopPos.xyz());
 	}
 	
-
-	if (Get_CurFrame() == 55)
+	if (Init_CurFrame(55))
 	{
-		if (m_iPreFrame != m_iCurFrame)
-		{
-			FORWARDMOVINGSKILLDESC desc;
-			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-			desc.fMoveSpeed = 0.f;
-			desc.fLifeTime = 1.f;
-			desc.fLimitDistance = 0.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 0.f;
+		desc.fLifeTime = 1.f;
+		desc.fLimitDistance = 0.f;
 
-			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-				Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
-				Get_Transform()->Get_State(Transform_State::UP);
-			Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK);
-		}
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+			Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
+			Get_Transform()->Get_State(Transform_State::UP);
+		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK);
+
 	}
-	else if (Get_CurFrame() == 78)
+	else if (Init_CurFrame(78))
 	{
-		if (m_iPreFrame != m_iCurFrame)
-		{
-			FORWARDMOVINGSKILLDESC desc;
-			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-			desc.fMoveSpeed = 0.f;
-			desc.fLifeTime = 1.f;
-			desc.fLimitDistance = 0.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 0.f;
+		desc.fLifeTime = 1.f;
+		desc.fLimitDistance = 0.f;
 
-			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-				Get_Transform()->Get_State(Transform_State::LOOK) * 5.f +
-				Get_Transform()->Get_State(Transform_State::UP);
-			Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_ATTACK);
-		}
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+			Get_Transform()->Get_State(Transform_State::LOOK) * 5.f +
+			Get_Transform()->Get_State(Transform_State::UP);
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_ATTACK);
 	}
-	else if (Get_CurFrame() == 106)
+	else if (Init_CurFrame(106))
 	{
-		if (m_iPreFrame != m_iCurFrame)
-		{
-			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-				Get_Transform()->Get_State(Transform_State::LOOK) * 5.f +
-				Get_Transform()->Get_State(Transform_State::UP);
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+			Get_Transform()->Get_State(Transform_State::LOOK) * 5.f +
+			Get_Transform()->Get_State(Transform_State::UP);
 
-			_float4 vSkillDir = (Get_Transform()->Get_State(Transform_State::POS) - vSkillPos);
-			vSkillDir.y = 0.f;
-			
-			FORWARDMOVINGSKILLDESC desc;
-			desc.vSkillDir = vSkillDir.Normalize();
-			desc.fMoveSpeed = 20.f;
-			desc.fLifeTime = 1.f;
-			desc.fLimitDistance = 4.f;
+		_float4 vSkillDir = (Get_Transform()->Get_State(Transform_State::POS) - vSkillPos);
+		vSkillDir.y = 0.f;
 
-			Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_SKILL);
-		}
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = vSkillDir.Normalize();
+		desc.fMoveSpeed = 20.f;
+		desc.fLifeTime = 1.f;
+		desc.fLimitDistance = 4.f;
+
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_SKILL);
 	}
 
-	_float3 vInputVector = Get_InputDirVector();
-
-	if (m_vDirToTarget != _float3(0.f))
-		Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+	Look_DirToTarget();
 
 	if (Is_AnimFinished())
 	{
@@ -1657,8 +1529,7 @@ void Kyle_FSM::skill_502100_Init()
 
 	m_bCanCombo = false;
 
-	m_vDirToTarget = _float3(0.f);
-	m_vDirToTarget = Get_InputDirVector();
+	Set_DirToTargetOrInput(OBJ_MONSTER);
 
 	AttackCollider_Off();
 
@@ -1686,65 +1557,57 @@ void Kyle_FSM::skill_500100()
 		}
 	}
 	
-	if (Get_CurFrame() == 11)
+	if (Init_CurFrame(11))
 	{
-		if (m_iPreFrame != m_iCurFrame)
-		{
-			FORWARDMOVINGSKILLDESC desc;
-			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-			desc.fMoveSpeed = 0.f;
-			desc.fLifeTime = 0.5f;
-			desc.fLimitDistance = 0.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 0.f;
+		desc.fLifeTime = 0.5f;
+		desc.fLimitDistance = 0.f;
 
-			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-				Get_Transform()->Get_State(Transform_State::UP);
-			Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, NORMAL_ATTACK);
-		}
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+			Get_Transform()->Get_State(Transform_State::UP);
+		Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, NORMAL_ATTACK);
+
 	}
-	else if (Get_CurFrame() == 31)
+	else if (Init_CurFrame(31))
 	{
-		if (m_iPreFrame != m_iCurFrame)
-		{
-			FORWARDMOVINGSKILLDESC desc;
-			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-			desc.fMoveSpeed = 0.f;
-			desc.fLifeTime = 0.5f;
-			desc.fLimitDistance = 0.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 0.f;
+		desc.fLifeTime = 0.5f;
+		desc.fLimitDistance = 0.f;
 
-			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-				Get_Transform()->Get_State(Transform_State::UP);
-			Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, NORMAL_ATTACK);
-		}
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+			Get_Transform()->Get_State(Transform_State::UP);
+		Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, NORMAL_ATTACK);
+
 	}
-	else if (Get_CurFrame() == 47)
+	else if (Init_CurFrame(47))
 	{
-		if (m_iPreFrame != m_iCurFrame)
-		{
-			FORWARDMOVINGSKILLDESC desc;
-			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-			desc.fMoveSpeed = 0.f;
-			desc.fLifeTime = 0.5f;
-			desc.fLimitDistance = 0.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 0.f;
+		desc.fLifeTime = 0.5f;
+		desc.fLimitDistance = 0.f;
 
-			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-				Get_Transform()->Get_State(Transform_State::UP);
-			Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, NORMAL_ATTACK);
-		}
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+			Get_Transform()->Get_State(Transform_State::UP);
+		Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, NORMAL_ATTACK);
+
 	}
-	else if (Get_CurFrame() == 87)
+	else if (Init_CurFrame(87))
 	{
-		if (m_iPreFrame != m_iCurFrame)
-		{
-			FORWARDMOVINGSKILLDESC desc;
-			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-			desc.fMoveSpeed = 0.f;
-			desc.fLifeTime = 0.5f;
-			desc.fLimitDistance = 0.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 0.f;
+		desc.fLifeTime = 0.5f;
+		desc.fLimitDistance = 0.f;
 
-			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-				Get_Transform()->Get_State(Transform_State::LOOK) * 5.f;
-			Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, AIRBORNE_SKILL);
-		}
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+			Get_Transform()->Get_State(Transform_State::LOOK) * 5.f;
+		Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, AIRBORNE_SKILL);
+
 	}
 
 	if (Get_CurFrame() > 11)
@@ -1754,10 +1617,8 @@ void Kyle_FSM::skill_500100()
 	{
 		m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(0.2f);
 	}
-	_float3 vInputVector = Get_InputDirVector();
 
-	if (m_vDirToTarget != _float3(0.f))
-		Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+	Look_DirToTarget();
 
 	if (Is_AnimFinished())
 	{
@@ -1778,8 +1639,7 @@ void Kyle_FSM::skill_500100_Init()
 
 	m_bCanCombo = false;
 
-	m_vDirToTarget = _float3(0.f);
-	m_vDirToTarget = Get_InputDirVector();
+	Set_DirToTargetOrInput(OBJ_MONSTER);
 
 	AttackCollider_Off();
 
@@ -1787,7 +1647,7 @@ void Kyle_FSM::skill_500100_Init()
 	m_bSuperArmor = true;
 
 	//For.Skill_CutScene
-	Calculate_SkillCamRight();
+	Cal_SkillCamDirection(3.f);
 }
 
 
@@ -1815,22 +1675,6 @@ void Kyle_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSk
 	m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
 
 	CUR_SCENE->Add_GameObject(m_pSkillCollider.lock());
-}
-
-void Kyle_FSM::Calculate_SkillCamRight()
-{
-	_float4 vDir = _float4(0.f);
-	vDir = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS);
-	vDir.y = 0.f;
-	vDir.Normalize();
-
-	_float4 vCross = _float4(0.f);
-	vCross = XMVector3Cross(Get_Transform()->Get_State(Transform_State::LOOK), vDir);
-
-	if (XMVectorGetY(vCross) < 0.f) // LEFT 
-		m_vSkillCamRight = (Get_Transform()->Get_State(Transform_State::RIGHT) * -3.f);
-	else //RIGHT	
-		m_vSkillCamRight = (Get_Transform()->Get_State(Transform_State::RIGHT) * 3.f);
 }
 
 void Kyle_FSM::Use_Skill()

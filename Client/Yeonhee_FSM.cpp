@@ -51,7 +51,7 @@ HRESULT Yeonhee_FSM::Init()
 
     m_pCamera = CUR_SCENE->Get_MainCamera();
 
-    m_fDetectRange = 10.f;
+    m_fDetectRange = 15.f;
 
     return S_OK;
 }
@@ -902,21 +902,12 @@ void Yeonhee_FSM::skill_1100()
 		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKBACK_ATTACK);
 	}
 
-
     _float3 vInputVector = Get_InputDirVector();
     Get_Transform()->Go_Dir(vInputVector* m_fRunSpeed * 0.3f * fDT);
 
-    if (Get_CurFrame() < 22)
-    {
-        if (KEYTAP(KEY_TYPE::LBUTTON))
-            m_bCanCombo = true;
-    }
-
-    if (m_bCanCombo)
-    {
-        if (Get_CurFrame() > 22)
-            m_eCurState = STATE::skill_1200;
-    }
+    if (Check_Combo(22, KEY_TYPE::LBUTTON))
+        m_eCurState = STATE::skill_1200;
+    
 
     if (Is_AnimFinished())
     {
@@ -975,17 +966,9 @@ void Yeonhee_FSM::skill_1200()
 	_float3 vInputVector = Get_InputDirVector();
 	Get_Transform()->Go_Dir(vInputVector * m_fRunSpeed * 0.3f * fDT);
 
-	if (Get_CurFrame() < 23)
-	{
-		if (KEYTAP(KEY_TYPE::LBUTTON))
-			m_bCanCombo = true;
-	}
+	if (Check_Combo(23, KEY_TYPE::LBUTTON))
+        m_eCurState = STATE::skill_1300;
 
-	if (m_bCanCombo)
-	{
-		if (Get_CurFrame() > 23)
-			m_eCurState = STATE::skill_1300;
-	}
 
     if (Is_AnimFinished())
     {
@@ -1045,7 +1028,6 @@ void Yeonhee_FSM::skill_1300()
 	
 	_float3 vInputVector = Get_InputDirVector();
 	Get_Transform()->Go_Dir(vInputVector * m_fRunSpeed * 0.3f * fDT);
-
 
     if (Is_AnimFinished())
     {
@@ -1228,28 +1210,22 @@ void Yeonhee_FSM::skill_200100()
 
     Look_DirToTarget();
 
-    if (Get_CurFrame() == 24)
+    if (Init_CurFrame(24))
     {
-        //if (!m_bSkillCreate)
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            INSTALLATIONSKILLDESC desc;
-            desc.fAttackTickTime = 0.5f;
-            desc.iLimitAttackCnt = 10;
-            desc.strAttackType = NORMAL_SKILL;
-            desc.strLastAttackType = KNOCKDOWN_SKILL;
+		INSTALLATIONSKILLDESC desc;
+		desc.fAttackTickTime = 0.5f;
+		desc.iLimitAttackCnt = 10;
+		desc.strAttackType = NORMAL_SKILL;
+		desc.strLastAttackType = KNOCKDOWN_SKILL;
 
-            _float4 vSkillPos;
-            if (!m_pLookingTarget.expired())
-				vSkillPos = m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float3::Up;
+		_float4 vSkillPos;
+		if (!m_pLookingTarget.expired())
+			vSkillPos = m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float3::Up;
 
-            else
-                vSkillPos  = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5.f + _float3::Up;
-            
-            Create_InstallationSkillCollider(vSkillPos, 3.f, desc);
+		else
+			vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5.f + _float3::Up;
 
-            //m_bSkillCreate = true;
-        }
+		Create_InstallationSkillCollider(vSkillPos, 3.f, desc);
     }
 
 	_float3 vInputVector = Get_InputDirVector();
@@ -1285,7 +1261,6 @@ void Yeonhee_FSM::skill_200100_Init()
 
 void Yeonhee_FSM::skill_300100()
 {
-
     Set_DirToTarget();
 
     Look_DirToTarget();

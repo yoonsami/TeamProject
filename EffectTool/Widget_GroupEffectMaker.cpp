@@ -404,16 +404,16 @@ void Widget_GroupEffectMaker::Option_MemberEffectList()
 	{
 		string strKey = iter;
 		Utils::DetachExt(strKey);
-		string strIndex = to_string(iIndex);
-		string strTreeNodeKey = strKey + "##TreeNodeKey" + strIndex;
-		string strFloatKey = "Start time##" + iter + strIndex;
-		string strFloat3Key1 = "Translation##" + iter + strIndex;
-		string strFloat3Key2 = "Scale##" + iter + strIndex;
-		string strFloat3Key3 = "Rotation##" + iter + strIndex;
-		string strDeleteButton = "Delete##" + iter + strIndex;
+		string strIndex = to_string(iIndex + 1);
+		string strTreeNodeKey =  "Membesr" + strIndex + ": " + strKey;
+		string strFloatKey = "Start time##" + strIndex + ": " + iter;
+		string strFloat3Key1 = "Translation##" + strIndex + ": " + iter;
+		string strFloat3Key2 = "Scale##" + strIndex + ": " + iter;
+		string strFloat3Key3 = "Rotation##" + strIndex + ": " + iter;
+		string strDeleteButton = "Delete##" + strIndex + ": " + iter;
 
 		if(ImGui::TreeNode(strTreeNodeKey.c_str()))
-		{
+		{ 
 			if (ImGui::InputFloat(strFloatKey.c_str(), &m_tCurrMemberProperty[iIndex].m_fStartTime))
 			{
 				m_pCurrentGroup->Get_GroupEffect()->Set_Member_StartTime(iIndex, m_tCurrMemberProperty[iIndex].m_fStartTime);
