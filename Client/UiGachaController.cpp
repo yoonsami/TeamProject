@@ -80,6 +80,8 @@ void UiGachaController::Create_Gacha_Card()
     for (_uint i = 0; i < iSize; ++i)
     {
         weak_ptr<GameObject> pObj = pScene->Get_UI(m_vecObjTag[i]);
+        if (true == pObj.expired())
+            continue;
         auto pScript = make_shared<UiGachaCardMove>(i);
         pObj.lock()->Add_Component(pScript);
         pObj.lock()->Init();
@@ -93,23 +95,40 @@ void UiGachaController::Create_Gacha_Card()
     iSize = IDX(m_vecObjEffectTag.size());
     for (_uint i = 0; i < iSize; ++i)
     {
-        auto pObj = pScene->Get_UI(m_vecObjEffectTag[i]);
+        weak_ptr<GameObject> pObj = pScene->Get_UI(m_vecObjEffectTag[i]);
+        if (true == pObj.expired())
+            continue;
         auto pScript = make_shared<UiGachaEffectController>();
-        pObj->Add_Component(pScript);
-        pObj->Init();
+        pObj.lock()->Add_Component(pScript);
+        pObj.lock()->Init();
     }
 
-    weak_ptr<GameObject> pObj = pScene->Get_UI(m_vecObjButton[0]);
-    pObj.lock()->Get_Button()->AddOnClickedEvent([]()
-        {
-            CUR_SCENE->Get_GameObject(L"UI_Gacha_Controller")->Get_Script<UiGachaController>()->Open_All_Card();
-        });
 
-    pObj = pScene->Get_UI(m_vecObjButton[1]);
-    pObj.lock()->Get_Button()->AddOnClickedEvent([]()
-        {
-            CUR_SCENE->Get_GameObject(L"UI_Gacha_Controller")->Get_Script<UiGachaController>()->Delete_All();
-        });
+    {
+        weak_ptr<GameObject> pObj = pScene->Get_UI(m_vecObjButton[0]);
+        if (true == pObj.expired())
+            return;
+        pObj.lock()->Get_Button()->AddOnClickedEvent([]()
+            {
+                weak_ptr<GameObject> pObject = CUR_SCENE->Get_GameObject(L"UI_Gacha_Controller");
+                if (true == pObject.expired())
+                    return;
+
+                pObject.lock()->Get_Script<UiGachaController>()->Open_All_Card();
+            });
+
+        pObj = pScene->Get_UI(m_vecObjButton[1]);
+        if (true == pObj.expired())
+            return;
+        pObj.lock()->Get_Button()->AddOnClickedEvent([]()
+            {
+                weak_ptr<GameObject> pObject = CUR_SCENE->Get_GameObject(L"UI_Gacha_Controller");
+                if (true == pObject.expired())
+                    return;
+
+                pObject.lock()->Get_Script<UiGachaController>()->Delete_All();
+            });
+    }
 
 
 }
@@ -121,7 +140,11 @@ void UiGachaController::Delete_Gacha_Card()
     _uint iSize = IDX(m_vecObjTag.size());
     for (_uint i = 0; i < iSize; ++i)
     {
-        pScene->Remove_GameObject(pScene->Get_UI(m_vecObjTag[i]));
+        weak_ptr<GameObject> pObj = pScene->Get_UI(m_vecObjTag[i]);
+        if (true == pObj.expired())
+            continue;
+
+        pScene->Remove_GameObject(pObj.lock());
     }
 }
 
@@ -132,7 +155,11 @@ void UiGachaController::Delete_Gacha_Bg()
     _uint iSize = IDX(m_vecObjBgTag.size());
     for (_uint i = 0; i < iSize; ++i)
     {
-        pScene->Remove_GameObject(pScene->Get_UI(m_vecObjBgTag[i]));
+        weak_ptr<GameObject> pObj = pScene->Get_UI(m_vecObjBgTag[i]);
+        if (true == pObj.expired())
+            continue;
+
+        pScene->Remove_GameObject(pObj.lock());
     }
 }
 
@@ -143,7 +170,11 @@ void UiGachaController::Delete_Gacha_Button()
     _uint iSize = IDX(m_vecObjButton.size());
     for (_uint i = 0; i < iSize; ++i)
     {
-        pScene->Remove_GameObject(pScene->Get_UI(m_vecObjButton[i]));
+        weak_ptr<GameObject> pObj = pScene->Get_UI(m_vecObjButton[i]);
+        if (true == pObj.expired())
+            continue;
+
+        pScene->Remove_GameObject(pObj.lock());
     }
 }
 
@@ -155,7 +186,11 @@ void UiGachaController::Start_All_Open()
     m_fCheckTime += fDT;
     if (m_fMaxTime < m_fCheckTime)
     {
-        CUR_SCENE->Get_UI(m_vecObjTag[m_iIndex])->Get_Script<UiGachaCardMove>()->Card_Open();
+        weak_ptr<GameObject> pObj = CUR_SCENE->Get_UI(m_vecObjTag[m_iIndex]);
+        if (true == pObj.expired())
+            return;
+
+        pObj.lock()->Get_Script<UiGachaCardMove>()->Card_Open();
 
         m_fCheckTime = 0.f;
         m_iIndex++;

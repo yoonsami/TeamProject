@@ -265,6 +265,18 @@ void CoolTimeCheckScript::Set_Skill_End()
         m_CoolTime[IDX(m_eCurHero)][m_iWorkSkillIndex].iCurCombo = 0;
     }
 
+    _uint iSize = IDX(m_pUi_Skill0_Combo.size());
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        if (true == m_pUi_Skill0_Combo[i].expired() ||
+            true == m_pUi_Skill2_Combo[i].expired() ||
+            true == m_pUi_Skill3_Combo[i].expired() ||
+            true == m_pUi_Skill4_Combo[i].expired() ||
+            true == m_pUi_Skill5_Combo[i].expired() ||
+            true == m_pUi_Skill6_Combo[i].expired())
+            return;
+    }
+
     _float4 vecPos = {};
     switch (static_cast<SkillType>(m_iWorkSkillIndex))
     {

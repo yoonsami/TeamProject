@@ -20,6 +20,8 @@ HRESULT UiMouseController::Init()
     m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
 
     m_pMouse = CUR_SCENE->Get_GameObject(L"UI_Mouse");
+    if (true == m_pMouse.expired())
+        return E_FAIL;
     //m_pMouse.lock()->Set_Render(false);
     
     //INPUT.Set_Show_Cursor(false);
@@ -30,7 +32,8 @@ HRESULT UiMouseController::Init()
 
 void UiMouseController::Tick()
 {
-	if (m_pOwner.expired())
+	if (true == m_pOwner.expired() ||
+        true == m_pMouse.expired())
 		return;
 
     if (KEYTAP(KEY_TYPE::LALT))
