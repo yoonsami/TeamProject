@@ -122,7 +122,8 @@ public:
 	_float m_fMaxHoldingSkillTime = 0.f;
 	_float m_fTimePerFrame = 0.f;
 
-
+	//For Effect.Create
+	_float m_fEffectCreateTimer = 0.f;
 
 	//MotionCoolTime
 	COOLTIMEINFO m_tRunEndDelay = { 0.2f,0.f };
