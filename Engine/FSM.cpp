@@ -336,6 +336,9 @@ void FSM::Add_And_Set_Effect(const wstring& strSkilltag)
 	wstring wtsrFilePath = TEXT("..\\Resources\\EffectData\\GroupEffectData\\") + wstrFileName;
 	shared_ptr<GroupEffectData> pGroupEffectData = RESOURCES.GetOrAddGroupEffectData(strSkilltag, wtsrFilePath);
 
+	if (pGroupEffectData == nullptr)
+		return;
+
 	// For. GroupEffect component 
 	shared_ptr<GroupEffect> pGroupEffect = make_shared<GroupEffect>();
 	pGroupEffectObj->Add_Component(pGroupEffect);

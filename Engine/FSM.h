@@ -71,6 +71,8 @@ public:
 	weak_ptr<GameObject> m_pLookingTarget;
 	weak_ptr<GameObject> m_pGroupEffect;
 
+	weak_ptr<GameObject> m_pGroupEffect;
+
 	//Frame Check
 	_uint m_iPreFrame = 10000;
 	_uint m_iCurFrame = 0;
