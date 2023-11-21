@@ -17,7 +17,7 @@ public:
 
 public:
     virtual HRESULT Init() override;
-    virtual void Tick() override;
+    virtual void Late_Tick() override;
 
 private:
     wstring m_strBoneName = L"";

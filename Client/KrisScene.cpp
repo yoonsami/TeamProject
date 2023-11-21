@@ -129,8 +129,6 @@ HRESULT KrisScene::Load_Scene()
 {
 	RESOURCES.Delete_NonStaticResources();
 	PHYSX.Init();
-	
-	
 
 	//Static
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\", true);
@@ -149,7 +147,6 @@ HRESULT KrisScene::Load_Scene()
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Wolf\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Succubus_Scythe\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Undead_Priest\\", false);
-
 
 	auto player = Load_Player();
 	Load_Camera();
@@ -614,14 +611,15 @@ void KrisScene::Load_Ui()
 		Utils::DetachExt(fileName);
 		RESOURCES.Load<Texture>(fileName, filePath);
 	}
-
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Main.dat");
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Main_Button.dat");
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Char_Change.dat");
+	auto scene = CUR_SCENE;
+	vector<shared_ptr<GameObject>>& tmp = static_pointer_cast<LoadingScene>(CUR_SCENE)->Get_StaticObjectsFromLoader();
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Main.dat", tmp);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Main_Button.dat", tmp);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Char_Change.dat", tmp);
 	//Load_UIFile(L"..\\Resources\\UIData\\UI_Gacha.dat");
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck.dat", false);
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", false);
-	Load_UIFile(L"..\\Resources\\UIData\\UI_MonsterHp.dat");
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck.dat", tmp, false);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", tmp, false);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_MonsterHp.dat", tmp);
 	//Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat");
 
 

@@ -278,7 +278,7 @@ void Scene::Swap_Object(const wstring& leftObjName, const wstring& rightObjName)
 	}
 }
 
-void Scene::Load_UIFile(const wstring& strDataFilePath, _bool bRender)
+void Scene::Load_UIFile(const wstring& strDataFilePath, const vector<shared_ptr<GameObject>>& staticObjects, _bool bRender)
 {
 	shared_ptr<FileUtils> file = make_shared<FileUtils>();
 	file->Open(strDataFilePath, FileMode::Read);
@@ -353,7 +353,23 @@ void Scene::Load_UIFile(const wstring& strDataFilePath, _bool bRender)
 		_bool bIsStatic = file->Read<_bool>();
 
 		// Temp
-		Add_GameObject(UiObject, false);
+		if(bIsStatic == false)
+			Add_GameObject(UiObject, bIsStatic);
+		else
+		{
+			_bool alreadyHas = false;
+			for (auto& obj : staticObjects)
+			{
+				if (obj->Get_Name() == UiObject->Get_Name())
+				{
+					alreadyHas = true;
+					break;
+				}
+			}
+
+			if(!alreadyHas)
+				Add_GameObject(UiObject, bIsStatic);
+		}
 	}
 }
 

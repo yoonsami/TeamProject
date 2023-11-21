@@ -15,8 +15,9 @@ public:
 	virtual void Tick() override;
 	virtual void Late_Tick() override;
     virtual void Final_Tick() override;
-	void Set_StaticObjects(const vector<shared_ptr<GameObject>>& objs) { m_staticObjects = objs; }
+    void Set_StaticObjects(const vector<shared_ptr<GameObject>>& objs);
     shared_ptr<GameObject> Get_StaticObjectFromLoader(const wstring& strTag);
+    vector<shared_ptr<GameObject>>& Get_StaticObjectsFromLoader() { return m_staticObjects; }
 
 private:
     void Load_Ui();

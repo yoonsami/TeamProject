@@ -122,9 +122,10 @@ void LogoScene::Load_Ui()
 		Utils::DetachExt(fileName);
 		RESOURCES.Load<Texture>(fileName, filePath);
 	}
+	vector<shared_ptr<GameObject>>& tmp = static_pointer_cast<LoadingScene>(CUR_SCENE)->Get_StaticObjects();
 
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Logo.dat");
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat");
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Logo.dat", tmp);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat", tmp);
 
 	auto pGameobject = Get_GameObject(L"UI_Start_Button");
 	if (nullptr != pGameobject)

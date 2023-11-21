@@ -587,14 +587,15 @@ void GranseedScene::Load_Ui()
 		Utils::DetachExt(fileName);
 		RESOURCES.Load<Texture>(fileName, filePath);
 	}
+	vector<shared_ptr<GameObject>>& tmp = static_pointer_cast<LoadingScene>(CUR_SCENE)->Get_StaticObjectsFromLoader();
 
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Main.dat");
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Main_Button.dat");
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Char_Change.dat");
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Main.dat", tmp);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Main_Button.dat", tmp);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Char_Change.dat", tmp);
 	//Load_UIFile(L"..\\Resources\\UIData\\UI_Gacha.dat");
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck.dat", false);
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", false);
-	Load_UIFile(L"..\\Resources\\UIData\\UI_MonsterHp.dat");
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck.dat", tmp, false);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", tmp, false);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_MonsterHp.dat", tmp);
 	//Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat");
 
 

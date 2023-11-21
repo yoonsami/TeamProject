@@ -136,7 +136,7 @@ void HeroChangeScript::Add_Character_Weapon(const wstring& weaponname)
     }
     ObjWeapon->Get_Transform()->Set_State(Transform_State::POS, _float4{ 0.f, -1000.f,0.f,1.f });
     ObjWeapon->Set_Name(weaponname);
-    CUR_SCENE->Add_GameObject(ObjWeapon);
+    CUR_SCENE->Add_GameObject(ObjWeapon,true);
 }
 
 void HeroChangeScript::Change_To_Player()
