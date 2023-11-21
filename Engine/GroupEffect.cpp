@@ -88,25 +88,20 @@ void GroupEffect::Final_Tick()
     }
 
     // For. Update MeshEffect Translation 
-    //_int iIndex = 0;
-    //for (auto& iter : m_vMemberEffects)
-    //{
-    //    if (nullptr != iter)
-    //    {
-    //        iter->Get_MeshEffect()->Translate();
-    //        iter->Get_MeshEffect()->Scaling();
-    //        _float4x4 mLocalWorldMatrix = iter->Get_Transform()->Get_WorldMatrix();
-    //        _float4x4 mInGroupWorldMatrix = iter->Get_MeshEffect()->Get_InGroupMatrix();
-    //        
-    //        if (iter->Get_MeshEffect()->Get_IsFollowGroup())
-    //            iter->Get_Transform()->Set_WorldMat(mLocalWorldMatrix * mInGroupWorldMatrix * Get_Transform()->Get_WorldMatrix());
-    //        else 
-    //            iter->Get_Transform()->Set_WorldMat(mLocalWorldMatrix * mInGroupWorldMatrix * m_mInitWorldMatrix);
-    //
-    //        iter->Get_MeshEffect()->Turn(); // cause of billbord
-    //    }
-    //    iIndex++;
-    //}
+    _int iIndex = 0;
+    for (auto& iter : m_vMemberEffects)
+    {
+        if (nullptr != iter)
+        {
+            if (iter->Get_MeshEffect()->Get_IsFollowGroup())
+            {
+                _float4x4 mLocalWorldMatrix = iter->Get_Transform()->Get_WorldMatrix();
+                mLocalWorldMatrix *= Get_Transform()->Get_WorldMatrix().Invert();
+                iter->Get_Transform()->Set_WorldMat(mLocalWorldMatrix * Get_Transform()->Get_WorldMatrix());
+            }
+        }
+        iIndex++;
+    }
 
 }
 

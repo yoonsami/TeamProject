@@ -29,6 +29,7 @@ public:
     shared_ptr<Shader>      Get_Shader() { return m_pShader; }
     _bool                   Get_IsFollowGroup() { return m_tDesc.bIsFollowingGroup; }
     _bool                   Get_IsLoop() { return m_tDesc.bIsLoop; }
+    _float4x4               Get_InGroupMatrix() { return m_mInGroupWorldMatrix; }
 
     void                    Translate();
     void                    Scaling();
