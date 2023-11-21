@@ -144,6 +144,23 @@ void Scene::Add_GameObject(shared_ptr<GameObject> object, _bool staticFlag)
 		m_StaticObject.push_back(object);
 }
 
+void Scene::Add_GameObject_Front(shared_ptr<GameObject> object, _bool staticFlag)
+{
+	m_GameObjects.push_front(object);
+
+	if (object->Get_Camera())
+		m_Cameras.push_back(object);
+
+	if (object->Get_Light())
+		m_Lights.push_back(object);
+
+	if (object->Get_LayerIndex() == Layer_UI)
+		m_UI.push_back(object);
+
+	if (staticFlag)
+		m_StaticObject.push_back(object);
+}
+
 void Scene::Remove_GameObject(shared_ptr<GameObject> object)
 {
 	{

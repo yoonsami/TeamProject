@@ -44,6 +44,8 @@
 #include "Silversword_Soldier_FSM.h"
 #include "Succubus_Scythe_FSM.h"
 #include "Undead_Priest_FSM.h"
+#include "Alpaca_FSM.h"
+#include "Wolf_FSM.h"
 
 
 #include "UiGachaController.h"
@@ -127,6 +129,8 @@ HRESULT KrisScene::Load_Scene()
 {
 	RESOURCES.Delete_NonStaticResources();
 	PHYSX.Init();
+	
+	
 
 	//Static
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\", true);
@@ -139,13 +143,27 @@ HRESULT KrisScene::Load_Scene()
 
 	//Monster
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Silversword_Soldier\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_White\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_Brown\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_Black\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Wolf\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Succubus_Scythe\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Undead_Priest\\", false);
 
 
 	auto player = Load_Player();
 	Load_Camera();
 	Load_MapFile(L"KrisMap", player);
 
-	Load_Monster(1, L"Silversword_Soldier");
+	//Load_Monster(1, L"Silversword_Soldier", player);
+	//Load_Monster(1, L"Succubus_Scythe", player);
+	//Load_Monster(1, L"Undead_Priest", player);
+	Load_Monster(10, L"Alpaca_White", player);
+	Load_Monster(10, L"Alpaca_Brown", player);
+	Load_Monster(10, L"Alpaca_Black", player);
+	//Load_Monster(1, L"Wolf", player);
+	//Load_Boss_Spike();
+	//Load_Boss_Mir();
 
 	Load_Ui();
 
@@ -322,7 +340,7 @@ void KrisScene::Load_Camera()
 
 }
 
-void KrisScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag)
+void KrisScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_ptr<GameObject> pPlayer)
 {
 	{
 		for (_uint i = 0; i < iCnt; i++)
@@ -350,9 +368,11 @@ void KrisScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag)
 					ObjMonster->Add_Component(make_shared<Succubus_Scythe_FSM>());
 				else if (strMonsterTag == L"Undead_Priest")
 					ObjMonster->Add_Component(make_shared<Undead_Priest_FSM>());
-				
+				else if (strMonsterTag.find(L"Alpaca") != wstring::npos)
+					ObjMonster->Add_Component(make_shared<Alpaca_FSM>());
+				else if (strMonsterTag == L"Wolf")
+					ObjMonster->Add_Component(make_shared<Wolf_FSM>());
 
-				auto pPlayer = Get_GameObject(L"Player");
 				ObjMonster->Get_FSM()->Set_Target(pPlayer);
 			}
 			ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.7f, 0.5f })); //obbcollider

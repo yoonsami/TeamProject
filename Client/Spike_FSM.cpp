@@ -903,8 +903,11 @@ void Spike_FSM::knockdown_end_Init()
 
 void Spike_FSM::skill_1100()
 {
-    if (Get_CurFrame() == 9)
+    if (Init_CurFrame(11))
+    {
+        Add_Effect(L"Spike_1100");
         AttackCollider_On(NORMAL_ATTACK);
+    }
     else if (Get_CurFrame() == 17)
         AttackCollider_Off();
 

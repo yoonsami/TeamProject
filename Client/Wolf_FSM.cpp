@@ -1,11 +1,11 @@
 #include "pch.h"
-#include "Succubus_Scythe_FSM.h"
+#include "Wolf_FSM.h"
 #include "ModelAnimator.h"
 #include "SphereCollider.h"
 #include "AttackColliderInfoScript.h"
 #include "MainCameraScript.h"
 
-HRESULT Succubus_Scythe_FSM::Init()
+HRESULT Wolf_FSM::Init()
 {
     auto animator = Get_Owner()->Get_Animator();
     if (animator)
@@ -25,27 +25,25 @@ HRESULT Succubus_Scythe_FSM::Init()
     m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
 
     m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
-    m_pAttackCollider.lock()->Set_Name(L"Succubus_Whip_AttackCollider");
+    m_pAttackCollider.lock()->Set_Name(L"Alpaca_AttackCollider");
     m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
 
     m_pCamera = CUR_SCENE->Get_MainCamera();
 
 
 
-    m_fRunSpeed = 4.f;
-    m_fSprintSpeed = 5.5f;
+    m_fRunSpeed = 6.f;
     m_fKnockBackSpeed = 4.f;
     m_fKnockDownSpeed = 4.f;
 
-    m_fNormalAttack_AnimationSpeed = 1.3f;
-    m_fSkillAttack_AnimationSpeed = 1.3f;
-
+    m_fNormalAttack_AnimationSpeed = 1.f;
+    m_fSkillAttack_AnimationSpeed = 1.f;
     m_fDetectRange = 10.f;
 
     return S_OK;
 }
 
-void Succubus_Scythe_FSM::Tick()
+void Wolf_FSM::Tick()
 {
     State_Tick();
 
@@ -56,7 +54,7 @@ void Succubus_Scythe_FSM::Tick()
     }
 }
 
-void Succubus_Scythe_FSM::State_Tick()
+void Wolf_FSM::State_Tick()
 {
     State_Init();
 
@@ -70,11 +68,11 @@ void Succubus_Scythe_FSM::State_Tick()
     case STATE::b_run:
         b_run();
         break;
+    case STATE::n_idle:
+        n_idle();
+        break;
     case STATE::n_run:
         n_run();
-        break;
-    case STATE::wander:
-        wander();
         break;
     case STATE::die:
         die();
@@ -127,22 +125,13 @@ void Succubus_Scythe_FSM::State_Tick()
     case STATE::skill_1100:
         skill_1100();
         break;
-    case STATE::skill_1200:
-        skill_1200();
-        break;
-    case STATE::skill_1300:
-        skill_1300();
-        break;
-    case STATE::skill_1400:
-        skill_1400();
-        break;
     }
 
     if (m_iPreFrame != m_iCurFrame)
         m_iPreFrame = m_iCurFrame;
 }
 
-void Succubus_Scythe_FSM::State_Init()
+void Wolf_FSM::State_Init()
 {
     if (m_eCurState != m_ePreState)
     {
@@ -154,11 +143,11 @@ void Succubus_Scythe_FSM::State_Init()
         case STATE::b_run:
             b_run_Init();
             break;
+        case STATE::n_idle:
+            n_idle_Init();
+            break;
         case STATE::n_run:
             n_run_Init();
-            break;
-        case STATE::wander:
-            wander_Init();
             break;
         case STATE::die:
             die_Init();
@@ -211,25 +200,16 @@ void Succubus_Scythe_FSM::State_Init()
         case STATE::skill_1100:
             skill_1100_Init();
             break;
-        case STATE::skill_1200:
-            skill_1200_Init();
-            break;
-        case STATE::skill_1300:
-            skill_1300_Init();
-            break;
-        case STATE::skill_1400:
-            skill_1400_Init();
-            break;
         }
         m_ePreState = m_eCurState;
     }
 }
 
-void Succubus_Scythe_FSM::OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap)
+void Wolf_FSM::OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
 }
 
-void Succubus_Scythe_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
+void Wolf_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
     if (pCollider->Get_Owner() == nullptr)
         return;
@@ -255,11 +235,11 @@ void Succubus_Scythe_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _
     }
 }
 
-void Succubus_Scythe_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
+void Wolf_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
 }
 
-void Succubus_Scythe_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
+void Wolf_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
 {
     m_bDetected = true;
     m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.05f);
@@ -323,7 +303,7 @@ void Succubus_Scythe_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObjec
 
 }
 
-void Succubus_Scythe_FSM::AttackCollider_On(const wstring& skillname)
+void Wolf_FSM::AttackCollider_On(const wstring& skillname)
 {
     if (!m_pAttackCollider.expired())
     {
@@ -332,7 +312,7 @@ void Succubus_Scythe_FSM::AttackCollider_On(const wstring& skillname)
     }
 }
 
-void Succubus_Scythe_FSM::AttackCollider_Off()
+void Wolf_FSM::AttackCollider_Off()
 {
     if (!m_pAttackCollider.expired())
     {
@@ -341,17 +321,12 @@ void Succubus_Scythe_FSM::AttackCollider_Off()
     }
 }
 
-void Succubus_Scythe_FSM::Set_State(_uint iIndex)
+void Wolf_FSM::Set_State(_uint iIndex)
 {
 }
 
-void Succubus_Scythe_FSM::b_idle()
+void Wolf_FSM::b_idle()
 {
-    if (!m_pTarget.expired())
-        Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
-
-    m_tAttackCoolTime.fAccTime += fDT;
-
     if (!m_bDetected)
     {
         CalCulate_PatrolTime();
@@ -360,24 +335,20 @@ void Succubus_Scythe_FSM::b_idle()
         {
             m_eCurState = STATE::n_run;
         }
+
+        if (Target_In_DetectRange())
+            m_bDetected = true;
     }
     else
     {
-        if (!m_bSetPattern)
-        {
-            Set_AttackSkill();
-        }
+        if (Target_In_AttackRange())
+            m_eCurState = STATE::skill_1100;
         else
-        {
-            if (Target_In_AttackRange())
-                m_eCurState = m_ePatternState;
-            else
-                m_eCurState = STATE::b_run;
-        }
+            m_eCurState = STATE::b_run;
     }
 }
 
-void Succubus_Scythe_FSM::b_idle_Init()
+void Wolf_FSM::b_idle_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -391,7 +362,8 @@ void Succubus_Scythe_FSM::b_idle_Init()
     m_bSuperArmor = false;
 }
 
-void Succubus_Scythe_FSM::b_run()
+
+void Wolf_FSM::b_run()
 {
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
@@ -399,22 +371,56 @@ void Succubus_Scythe_FSM::b_run()
     Get_Transform()->Go_Straight();
 
     if (Target_In_AttackRange())
-        m_eCurState = m_ePatternState;
-
+        m_eCurState = STATE::skill_1100;
 }
 
-void Succubus_Scythe_FSM::b_run_Init()
+void Wolf_FSM::b_run_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"b_run", 0.2f, true, 1.f);
 
-    Get_Transform()->Set_Speed(m_fSprintSpeed);
+    Get_Transform()->Set_Speed(m_fRunSpeed);
 
     m_bSuperArmor = false;
 }
 
-void Succubus_Scythe_FSM::n_run()
+void Wolf_FSM::n_idle()
+{
+    if (!m_bDetected)
+    {
+        CalCulate_PatrolTime();
+
+        if (m_bPatrolMove)
+        {
+            m_eCurState = STATE::n_run;
+        }
+
+        if (Target_In_DetectRange())
+            m_bDetected = true;
+    }
+    else
+    {
+        if (Target_In_AttackRange())
+            m_eCurState = STATE::skill_1100;
+        else
+            m_eCurState = STATE::b_run;
+    }
+}
+
+void Wolf_FSM::n_idle_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"n_idle", 0.2f, true, 1.f);
+
+    Get_Transform()->Set_Speed(m_fRunSpeed);
+
+    m_bSuperArmor = false;
+}
+
+
+void Wolf_FSM::n_run()
 {
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, XM_PI * 5.f);
@@ -433,7 +439,7 @@ void Succubus_Scythe_FSM::n_run()
     {
         m_fPatrolDistanceCnt = 0.f;
         m_bPatrolMove = false;
-        m_eCurState = STATE::wander;
+        m_eCurState = STATE::n_idle;
     }
 
     if (Target_In_DetectRange())
@@ -441,18 +447,17 @@ void Succubus_Scythe_FSM::n_run()
 
     if (m_bDetected)
     {
-        Set_AttackSkill();
         m_eCurState = STATE::b_run;
     }
 }
 
-void Succubus_Scythe_FSM::n_run_Init()
+void Wolf_FSM::n_run_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"n_run", 0.2f, true, 1.f);
 
-    Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
+    Get_Transform()->Set_Speed(m_fRunSpeed * 0.4f);
 
     m_vTurnVector = _float3{ (rand() * 2 / _float(RAND_MAX) - 1), 0.f, (rand() * 2 / _float(RAND_MAX) - 1) };
     m_vTurnVector.Normalize();
@@ -460,45 +465,15 @@ void Succubus_Scythe_FSM::n_run_Init()
     m_bSuperArmor = false;
 }
 
-void Succubus_Scythe_FSM::wander()
-{
-    if (!m_bDetected)
-    {
-        CalCulate_PatrolTime();
-
-        if (m_bPatrolMove)
-            m_eCurState = STATE::n_run;
-        
-        if (Target_In_DetectRange())
-            m_bDetected = true;
-    }
-    else
-    {
-        Entry_Battle();
-    }
-}
-
-void Succubus_Scythe_FSM::wander_Init()
-{
-    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
-
-    animator->Set_NextTweenAnim(L"wander", 0.2f, true, 1.f);
-
-    m_vTurnVector = _float3{ (rand() * 2 / _float(RAND_MAX) - 1), 0.f, (rand() * 2 / _float(RAND_MAX) - 1) };
-    m_vTurnVector.Normalize();
-
-    m_bSuperArmor = false;
-}
-
-void Succubus_Scythe_FSM::die()
+void Wolf_FSM::die()
 {
 }
 
-void Succubus_Scythe_FSM::die_Init()
+void Wolf_FSM::die_Init()
 {
 }
 
-void Succubus_Scythe_FSM::gaze_b()
+void Wolf_FSM::gaze_b()
 {
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
@@ -507,32 +482,27 @@ void Succubus_Scythe_FSM::gaze_b()
 
     Get_Transform()->Go_Backward();
 
-    if (!m_bSetPattern)
-    {
-        if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
-            Set_AttackSkill();
-    }
-    else
+    if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
     {
         if (Target_In_AttackRange())
-            m_eCurState = m_ePatternState;
+            m_eCurState = STATE::skill_1100;
         else
             m_eCurState = STATE::b_run;
     }
 }
 
-void Succubus_Scythe_FSM::gaze_b_Init()
+void Wolf_FSM::gaze_b_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"gaze_b", 0.2f, true, 1.f);
 
-    Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
+    Get_Transform()->Set_Speed(m_fRunSpeed * 0.4f);
 
     m_bSuperArmor = false;
 }
 
-void Succubus_Scythe_FSM::gaze_f()
+void Wolf_FSM::gaze_f()
 {
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
@@ -541,32 +511,27 @@ void Succubus_Scythe_FSM::gaze_f()
 
     Get_Transform()->Go_Straight();
 
-    if (!m_bSetPattern)
-    {
-        if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
-            Set_AttackSkill();
-    }
-    else
+    if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
     {
         if (Target_In_AttackRange())
-            m_eCurState = m_ePatternState;
+            m_eCurState = STATE::skill_1100;
         else
             m_eCurState = STATE::b_run;
     }
 }
 
-void Succubus_Scythe_FSM::gaze_f_Init()
+void Wolf_FSM::gaze_f_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"gaze_f", 0.2f, true, 1.f);
 
-    Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
+    Get_Transform()->Set_Speed(m_fRunSpeed * 0.4f);
 
     m_bSuperArmor = false;
 }
 
-void Succubus_Scythe_FSM::gaze_l()
+void Wolf_FSM::gaze_l()
 {
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
@@ -575,32 +540,27 @@ void Succubus_Scythe_FSM::gaze_l()
 
     Get_Transform()->Go_Left();
 
-    if (!m_bSetPattern)
-    {
-        if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
-            Set_AttackSkill();
-    }
-    else
+    if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
     {
         if (Target_In_AttackRange())
-            m_eCurState = m_ePatternState;
+            m_eCurState = STATE::skill_1100;
         else
             m_eCurState = STATE::b_run;
     }
 }
 
-void Succubus_Scythe_FSM::gaze_l_Init()
+void Wolf_FSM::gaze_l_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"gaze_l", 0.2f, true, 1.f);
 
-    Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
+    Get_Transform()->Set_Speed(m_fRunSpeed * 0.4f);
 
     m_bSuperArmor = false;
 }
 
-void Succubus_Scythe_FSM::gaze_r()
+void Wolf_FSM::gaze_r()
 {
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
@@ -609,32 +569,27 @@ void Succubus_Scythe_FSM::gaze_r()
 
     Get_Transform()->Go_Right();
 
-    if (!m_bSetPattern)
-    {
-        if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
-            Set_AttackSkill();
-    }
-    else
+    if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
     {
         if (Target_In_AttackRange())
-            m_eCurState = m_ePatternState;
+            m_eCurState = STATE::skill_1100;
         else
             m_eCurState = STATE::b_run;
     }
 }
 
-void Succubus_Scythe_FSM::gaze_r_Init()
+void Wolf_FSM::gaze_r_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"gaze_r", 0.2f, true, 1.f);
 
-    Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
+    Get_Transform()->Set_Speed(m_fRunSpeed * 0.4f);
 
     m_bSuperArmor = false;
 }
 
-void Succubus_Scythe_FSM::airborne_start()
+void Wolf_FSM::airborne_start()
 {
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 10.f);
 
@@ -642,7 +597,7 @@ void Succubus_Scythe_FSM::airborne_start()
         m_eCurState = STATE::airborne_end;
 }
 
-void Succubus_Scythe_FSM::airborne_start_Init()
+void Wolf_FSM::airborne_start_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -653,13 +608,13 @@ void Succubus_Scythe_FSM::airborne_start_Init()
     m_bSuperArmor = true;
 }
 
-void Succubus_Scythe_FSM::airborne_end()
+void Wolf_FSM::airborne_end()
 {
     if (Is_AnimFinished())
         m_eCurState = STATE::airborne_up;
 }
 
-void Succubus_Scythe_FSM::airborne_end_Init()
+void Wolf_FSM::airborne_end_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -668,13 +623,13 @@ void Succubus_Scythe_FSM::airborne_end_Init()
     m_bSuperArmor = true;
 }
 
-void Succubus_Scythe_FSM::airborne_up()
+void Wolf_FSM::airborne_up()
 {
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 }
 
-void Succubus_Scythe_FSM::airborne_up_Init()
+void Wolf_FSM::airborne_up_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -683,7 +638,7 @@ void Succubus_Scythe_FSM::airborne_up_Init()
     m_bSuperArmor = true;
 }
 
-void Succubus_Scythe_FSM::hit()
+void Wolf_FSM::hit()
 {
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 10.f);
 
@@ -691,7 +646,7 @@ void Succubus_Scythe_FSM::hit()
         m_eCurState = STATE::b_idle;
 }
 
-void Succubus_Scythe_FSM::hit_Init()
+void Wolf_FSM::hit_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -700,7 +655,7 @@ void Succubus_Scythe_FSM::hit_Init()
     AttackCollider_Off();
 }
 
-void Succubus_Scythe_FSM::knock_start()
+void Wolf_FSM::knock_start()
 {
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 10.f);
 
@@ -710,7 +665,7 @@ void Succubus_Scythe_FSM::knock_start()
         m_eCurState = STATE::knock_end;
 }
 
-void Succubus_Scythe_FSM::knock_start_Init()
+void Wolf_FSM::knock_start_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -723,7 +678,7 @@ void Succubus_Scythe_FSM::knock_start_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed * 0.5f);
 }
 
-void Succubus_Scythe_FSM::knock_end()
+void Wolf_FSM::knock_end()
 {
     if (Get_CurFrame() < 13)
         Get_Transform()->Go_Backward();
@@ -732,7 +687,7 @@ void Succubus_Scythe_FSM::knock_end()
         m_eCurState = STATE::knock_end_loop;
 }
 
-void Succubus_Scythe_FSM::knock_end_Init()
+void Wolf_FSM::knock_end_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -741,13 +696,13 @@ void Succubus_Scythe_FSM::knock_end_Init()
     m_bSuperArmor = true;
 }
 
-void Succubus_Scythe_FSM::knock_end_loop()
+void Wolf_FSM::knock_end_loop()
 {
     if (Get_CurFrame() > Get_FinalFrame() / 2)
         m_eCurState = STATE::knock_up;
 }
 
-void Succubus_Scythe_FSM::knock_end_loop_Init()
+void Wolf_FSM::knock_end_loop_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -756,13 +711,13 @@ void Succubus_Scythe_FSM::knock_end_loop_Init()
     m_bSuperArmor = false;
 }
 
-void Succubus_Scythe_FSM::knock_end_hit()
+void Wolf_FSM::knock_end_hit()
 {
     if (Is_AnimFinished())
         m_eCurState = STATE::knock_end_loop;
 }
 
-void Succubus_Scythe_FSM::knock_end_hit_Init()
+void Wolf_FSM::knock_end_hit_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -771,13 +726,13 @@ void Succubus_Scythe_FSM::knock_end_hit_Init()
     m_bSuperArmor = false;
 }
 
-void Succubus_Scythe_FSM::knock_up()
+void Wolf_FSM::knock_up()
 {
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 }
 
-void Succubus_Scythe_FSM::knock_up_Init()
+void Wolf_FSM::knock_up_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -788,7 +743,7 @@ void Succubus_Scythe_FSM::knock_up_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed);
 }
 
-void Succubus_Scythe_FSM::knockdown_start()
+void Wolf_FSM::knockdown_start()
 {
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
@@ -798,7 +753,7 @@ void Succubus_Scythe_FSM::knockdown_start()
         m_eCurState = STATE::knockdown_end;
 }
 
-void Succubus_Scythe_FSM::knockdown_start_Init()
+void Wolf_FSM::knockdown_start_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -811,7 +766,7 @@ void Succubus_Scythe_FSM::knockdown_start_Init()
     Get_Transform()->Set_Speed(m_fKnockDownSpeed);
 }
 
-void Succubus_Scythe_FSM::knockdown_end()
+void Wolf_FSM::knockdown_end()
 {
     if (Get_CurFrame() < 16)
         Get_Transform()->Go_Backward();
@@ -820,7 +775,7 @@ void Succubus_Scythe_FSM::knockdown_end()
         m_eCurState = STATE::knock_up;
 }
 
-void Succubus_Scythe_FSM::knockdown_end_Init()
+void Wolf_FSM::knockdown_end_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -831,122 +786,33 @@ void Succubus_Scythe_FSM::knockdown_end_Init()
     Get_Transform()->Set_Speed(m_fKnockDownSpeed * 0.5f);
 }
 
-void Succubus_Scythe_FSM::skill_1100()
+void Wolf_FSM::skill_1100()
 {
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 14)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 25)
+    if (Get_CurFrame() == 10)
+        AttackCollider_On(NONE_HIT);
+    else if (Get_CurFrame() == 18)
         AttackCollider_Off();
 
     Set_Gaze();
 }
 
-void Succubus_Scythe_FSM::skill_1100_Init()
+void Wolf_FSM::skill_1100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+    animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, 1.f);
 
     m_tAttackCoolTime.fAccTime = 0.f;
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
     m_bSuperArmor = false;
-    m_bSetPattern = false;
 }
 
-void Succubus_Scythe_FSM::skill_1200()
-{
-    if (m_vTurnVector != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
-
-    if (Get_CurFrame() == 21)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 23)
-        AttackCollider_Off();
-
-    Set_Gaze();
-}
-
-void Succubus_Scythe_FSM::skill_1200_Init()
-{
-    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
-
-    animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, m_fNormalAttack_AnimationSpeed);
-
-    m_tAttackCoolTime.fAccTime = 0.f;
-
-    m_vTurnVector = Calculate_TargetTurnVector();
-
-    m_bSuperArmor = false;
-    m_bSetPattern = false;
-}
-
-void Succubus_Scythe_FSM::skill_1300()
-{
-    if (m_vTurnVector != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
-
-    if (Get_CurFrame() == 29)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 31)
-        AttackCollider_Off();
-
-    Set_Gaze();
-}
-
-void Succubus_Scythe_FSM::skill_1300_Init()
-{
-    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
-
-    animator->Set_NextTweenAnim(L"skill_1300", 0.15f, false, m_fNormalAttack_AnimationSpeed);
-
-    m_tAttackCoolTime.fAccTime = 0.f;
-
-    m_vTurnVector = Calculate_TargetTurnVector();
-
-    m_bSuperArmor = false;
-    m_bSetPattern = false;
-}
-
-void Succubus_Scythe_FSM::skill_1400()
-{
-    if (m_vTurnVector != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
-
-    if (Init_CurFrame(51))
-    {
-        FORWARDMOVINGSKILLDESC desc;
-        desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-        desc.fMoveSpeed = 20.f;
-        desc.fLifeTime = 0.5f;
-        desc.fLimitDistance = 12.f;
-
-        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-        Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, NORMAL_SKILL);
-    }
-
-    Set_Gaze();
-}
-
-void Succubus_Scythe_FSM::skill_1400_Init()
-{
-    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
-
-    animator->Set_NextTweenAnim(L"skill_1400", 0.15f, false, m_fNormalAttack_AnimationSpeed);
-
-    m_tAttackCoolTime.fAccTime = 0.f;
-
-    m_vTurnVector = Calculate_TargetTurnVector();
-
-    m_bSuperArmor = false;
-    m_bSetPattern = false;
-}
-
-void Succubus_Scythe_FSM::CalCulate_PatrolTime()
+void Wolf_FSM::CalCulate_PatrolTime()
 {
     m_tPatrolMoveCool.fAccTime += fDT;
 
@@ -962,8 +828,7 @@ void Succubus_Scythe_FSM::CalCulate_PatrolTime()
 }
 
 
-
-void Succubus_Scythe_FSM::Set_Gaze()
+void Wolf_FSM::Set_Gaze()
 {
     if (Is_AnimFinished())
     {
@@ -985,96 +850,10 @@ void Succubus_Scythe_FSM::Set_Gaze()
     }
 }
 
-void Succubus_Scythe_FSM::Entry_Battle()
-{
-    _uint iRan = 0;
-
-    if (Target_In_AttackRange())
-        iRan = rand() % 3;
-    else
-        iRan = rand() % 4;
-
-    if (iRan == 0)
-        m_eCurState = STATE::gaze_b;
-    else if (iRan == 1)
-        m_eCurState = STATE::gaze_l;
-    else if (iRan == 2)
-        m_eCurState = STATE::gaze_r;
-    else if (iRan == 3)
-        m_eCurState = STATE::gaze_f;
-
-}
-
-void Succubus_Scythe_FSM::Set_AttackSkill()
-{
-    _uint iRan = rand() % 4;
-
-    while (true)
-    {
-        if (iRan == m_iPreAttack)
-            iRan = rand() % 4;
-        else
-            break;
-    }
-
-    if (iRan == 0)
-    {
-        m_fAttackRange = 2.f;
-        m_ePatternState = STATE::skill_1100;
-        m_iPreAttack = 0;
-    }
-    else if (iRan == 1)
-    {
-        m_fAttackRange = 2.f;
-        m_ePatternState = STATE::skill_1200;
-        m_iPreAttack = 1;
-    }
-    else if (iRan == 2)
-    {
-        m_fAttackRange = 4.f;
-        m_ePatternState = STATE::skill_1300;
-        m_iPreAttack = 2;
-    }
-    else if (iRan == 3)
-    {
-        m_fAttackRange = 5.f;
-        m_ePatternState = STATE::skill_1400;
-        m_iPreAttack = 3;
-    }
-    
-    m_bSetPattern = true;
-}
-
-_float3 Succubus_Scythe_FSM::Calculate_TargetTurnVector()
+_float3 Wolf_FSM::Calculate_TargetTurnVector()
 {
     if (m_pTarget.expired())
         return _float3(0.f);
     else
         return m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz() - m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
-}
-
-void Succubus_Scythe_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType)
-{
-    shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
-
-    m_pSkillCollider = SkillCollider;
-
-    m_pSkillCollider.lock()->GetOrAddTransform();
-    m_pSkillCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, vPos);
-
-    auto pSphereCollider = make_shared<SphereCollider>(fSkillRange);
-    pSphereCollider->Set_CenterPos(_float3{ vPos.x,vPos.y, vPos.z });
-    m_pSkillCollider.lock()->Add_Component(pSphereCollider);
-
-    m_pSkillCollider.lock()->Get_Collider()->Set_CollisionGroup(Monster_Skill);
-
-    m_pSkillCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
-    m_pSkillCollider.lock()->Get_Collider()->Set_Activate(true);
-    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
-    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
-    m_pSkillCollider.lock()->Set_Name(L"Succubus_Scythe_SkillCollider");
-    m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
-    m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
-
-    CUR_SCENE->Add_GameObject(m_pSkillCollider.lock());
 }

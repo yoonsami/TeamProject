@@ -71,8 +71,8 @@ void LoadingScene::Final_Tick()
 	{
 		if (!m_pLoader->m_bLoadFinished)
 			return;
-		for (auto& obj : m_staticObjects)
-			m_pNextScene->Add_GameObject(obj, true);
+		for (auto iter = m_staticObjects.rbegin(); iter != m_staticObjects.rend(); ++iter)
+			m_pNextScene->Add_GameObject_Front(*iter, true);
 		SCENE.Change_Scene(m_pNextScene);
        
 	}

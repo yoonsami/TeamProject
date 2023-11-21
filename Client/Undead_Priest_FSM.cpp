@@ -25,7 +25,7 @@ HRESULT Undead_Priest_FSM::Init()
     m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
 
     m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
-    m_pAttackCollider.lock()->Set_Name(L"Undead_Priest_AttackCollider");
+    m_pAttackCollider.lock()->Set_Name(L"Succubus_Whip_AttackCollider");
     m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
 
     m_pCamera = CUR_SCENE->Get_MainCamera();
@@ -33,12 +33,15 @@ HRESULT Undead_Priest_FSM::Init()
 
 
     m_fRunSpeed = 4.f;
+    m_fSprintSpeed = 5.5f;
     m_fKnockBackSpeed = 4.f;
     m_fKnockDownSpeed = 4.f;
+    m_fAttackRange = 7.f;
 
-    m_fNormalAttack_AnimationSpeed = 2.f;
-    m_fSkillAttack_AnimationSpeed = 2.f;
+    m_fNormalAttack_AnimationSpeed = 1.3f;
+    m_fSkillAttack_AnimationSpeed = 1.3f;
 
+    m_fDetectRange = 10.f;
 
     return S_OK;
 }
@@ -80,14 +83,11 @@ void Undead_Priest_FSM::State_Tick()
     case STATE::gaze_b:
         gaze_b();
         break;
-    case STATE::gaze_f:
-        gaze_f();
+    case STATE::gaze_bl:
+        gaze_bl();
         break;
-    case STATE::gaze_l:
-        gaze_l();
-        break;
-    case STATE::gaze_r:
-        gaze_r();
+    case STATE::gaze_br:
+        gaze_br();
         break;
     case STATE::airborne_start:
         airborne_start();
@@ -161,14 +161,11 @@ void Undead_Priest_FSM::State_Init()
         case STATE::gaze_b:
             gaze_b_Init();
             break;
-        case STATE::gaze_f:
-            gaze_f_Init();
+        case STATE::gaze_bl:
+            gaze_bl_Init();
             break;
-        case STATE::gaze_l:
-            gaze_l_Init();
-            break;
-        case STATE::gaze_r:
-            gaze_r_Init();
+        case STATE::gaze_br:
+            gaze_br_Init();
             break;
         case STATE::airborne_start:
             airborne_start_Init();
@@ -339,6 +336,11 @@ void Undead_Priest_FSM::Set_State(_uint iIndex)
 
 void Undead_Priest_FSM::b_idle()
 {
+    if (!m_pTarget.expired())
+        Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
+
+    m_tAttackCoolTime.fAccTime += fDT;
+
     if (!m_bDetected)
     {
         CalCulate_PatrolTime();
@@ -350,10 +352,17 @@ void Undead_Priest_FSM::b_idle()
     }
     else
     {
-        if (Target_In_AttackRange())
-            Execute_AttackSkill();
+        if (!m_bSetPattern)
+        {
+            Set_AttackSkill();
+        }
         else
-            m_eCurState = STATE::b_run;
+        {
+            if (Target_In_AttackRange())
+                m_eCurState = m_ePatternState;
+            else
+                m_eCurState = STATE::b_run;
+        }
     }
 }
 
@@ -361,7 +370,7 @@ void Undead_Priest_FSM::b_idle_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"b_idle", 0.2f, true, 1.f);
+    animator->Set_NextTweenAnim(L"b_idle", 0.1f, true, 1.f);
 
     Get_Transform()->Set_Speed(m_fRunSpeed);
 
@@ -376,11 +385,11 @@ void Undead_Priest_FSM::b_run()
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
 
-
     Get_Transform()->Go_Straight();
 
     if (Target_In_AttackRange())
-        Execute_AttackSkill();
+        m_eCurState = m_ePatternState;
+
 }
 
 void Undead_Priest_FSM::b_run_Init()
@@ -389,7 +398,7 @@ void Undead_Priest_FSM::b_run_Init()
 
     animator->Set_NextTweenAnim(L"b_run", 0.2f, true, 1.f);
 
-    Get_Transform()->Set_Speed(m_fRunSpeed);
+    Get_Transform()->Set_Speed(m_fSprintSpeed);
 
     m_bSuperArmor = false;
 }
@@ -399,18 +408,30 @@ void Undead_Priest_FSM::n_run()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, XM_PI * 5.f);
 
+    _float4 vPrePos = Get_Transform()->Get_State(Transform_State::POS);
+
     if (Get_Transform()->Go_Straight())
     {
-        m_vTurnVector.x = m_vTurnVector.x * -1.f;
-        m_vTurnVector.z = m_vTurnVector.z * -1.f;
-
-        Soft_Turn_ToInputDir(m_vTurnVector, XM_PI * 10.f);
+        m_vTurnVector = (Get_Transform()->Get_State(Transform_State::LOOK) * -1.f).xyz();
+        Get_Transform()->Set_LookDir(m_vTurnVector);
     }
 
-    if ((Get_Transform()->Get_State(Transform_State::POS) - m_vPatrolFirstPos).Length() >= m_fPatrolDistance)
+    m_fPatrolDistanceCnt += (Get_Transform()->Get_State(Transform_State::POS) - vPrePos).Length();
+
+    if (m_fPatrolDistanceCnt >= m_fPatrolDistance)
     {
+        m_fPatrolDistanceCnt = 0.f;
         m_bPatrolMove = false;
         m_eCurState = STATE::b_idle;
+    }
+
+    if (Target_In_DetectRange())
+        m_bDetected = true;
+
+    if (m_bDetected)
+    {
+        Set_AttackSkill();
+        m_eCurState = STATE::b_run;
     }
 }
 
@@ -435,16 +456,14 @@ void Undead_Priest_FSM::wander()
         CalCulate_PatrolTime();
 
         if (m_bPatrolMove)
-        {
             m_eCurState = STATE::n_run;
-        }
+
+        if (Target_In_DetectRange())
+            m_bDetected = true;
     }
     else
     {
-        if (Target_In_AttackRange())
-            Execute_AttackSkill();
-        else
-            m_eCurState = STATE::b_run;
+        Entry_Battle();
     }
 }
 
@@ -477,10 +496,22 @@ void Undead_Priest_FSM::gaze_b()
 
     Get_Transform()->Go_Backward();
 
-    if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
+    if (!m_bSetPattern)
     {
-        if (Target_In_AttackRange())
-            Execute_AttackSkill();
+        if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
+            Set_AttackSkill();
+    }
+    else
+    {
+        _float fGap;
+        
+        if (Target_In_AttackRange(&fGap))
+        {
+            m_eCurState = m_ePatternState;
+
+            if (fGap <= 3.f)
+                m_eCurState = STATE::skill_2100;
+        }
         else
             m_eCurState = STATE::b_run;
     }
@@ -497,87 +528,88 @@ void Undead_Priest_FSM::gaze_b_Init()
     m_bSuperArmor = false;
 }
 
-void Undead_Priest_FSM::gaze_f()
+void Undead_Priest_FSM::gaze_bl()
 {
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
 
     m_tAttackCoolTime.fAccTime += fDT;
 
-    Get_Transform()->Go_Straight();
+    _float3 vDir = (Get_Transform()->Get_State(Transform_State::LOOK) * -1.f + Get_Transform()->Get_State(Transform_State::RIGHT)).xyz();
+    vDir.Normalize();
 
-    if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
+    Get_Transform()->Go_Dir(vDir * fDT);
+
+    if (!m_bSetPattern)
     {
-        if (Target_In_AttackRange())
-            Execute_AttackSkill();
+        if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
+            Set_AttackSkill();
+    }
+    else
+    {
+        _float fGap;
+
+        if (Target_In_AttackRange(&fGap))
+        {
+            m_eCurState = m_ePatternState;
+
+            if (fGap <= 3.f)
+                m_eCurState = STATE::skill_2100;
+        }
         else
             m_eCurState = STATE::b_run;
     }
 }
 
-void Undead_Priest_FSM::gaze_f_Init()
+void Undead_Priest_FSM::gaze_bl_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"gaze_f", 0.2f, true, 1.f);
+    animator->Set_NextTweenAnim(L"gaze_bl", 0.2f, true, 1.f);
 
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
 
     m_bSuperArmor = false;
 }
 
-void Undead_Priest_FSM::gaze_l()
+void Undead_Priest_FSM::gaze_br()
 {
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
 
     m_tAttackCoolTime.fAccTime += fDT;
 
-    Get_Transform()->Go_Left();
+    _float3 vDir = (Get_Transform()->Get_State(Transform_State::LOOK) * -1.f + Get_Transform()->Get_State(Transform_State::RIGHT) * -1.f).xyz();
+    vDir.Normalize();
 
-    if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
+    Get_Transform()->Go_Dir(vDir * fDT);
+
+    if (!m_bSetPattern)
     {
-        if (Target_In_AttackRange())
-            Execute_AttackSkill();
+        if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
+            Set_AttackSkill();
+    }
+    else
+    {
+        _float fGap;
+
+        if (Target_In_AttackRange(&fGap))
+        {
+            m_eCurState = m_ePatternState;
+
+            if (fGap <= 3.f)
+                m_eCurState = STATE::skill_2100;
+        }
         else
             m_eCurState = STATE::b_run;
     }
 }
 
-void Undead_Priest_FSM::gaze_l_Init()
+void Undead_Priest_FSM::gaze_br_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"gaze_l", 0.2f, true, 1.f);
-
-    Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
-
-    m_bSuperArmor = false;
-}
-
-void Undead_Priest_FSM::gaze_r()
-{
-    if (!m_pTarget.expired())
-        Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
-
-    m_tAttackCoolTime.fAccTime += fDT;
-
-    Get_Transform()->Go_Right();
-
-    if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
-    {
-        if (Target_In_AttackRange())
-            Execute_AttackSkill();
-        else
-            m_eCurState = STATE::b_run;
-    }
-}
-
-void Undead_Priest_FSM::gaze_r_Init()
-{
-    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
-
-    animator->Set_NextTweenAnim(L"gaze_r", 0.2f, true, 1.f);
+    animator->Set_NextTweenAnim(L"gaze_br", 0.2f, true, 1.f);
 
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
 
@@ -783,34 +815,22 @@ void Undead_Priest_FSM::knockdown_end_Init()
 
 void Undead_Priest_FSM::skill_1100()
 {
-    if (Get_CurFrame() < 17)
+    if (m_vTurnVector != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
+
+    if (Init_CurFrame(40))
     {
-        if (!m_pTarget.expired())
-            Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
+        FORWARDMOVINGSKILLDESC desc;
+        desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+        desc.fMoveSpeed = 20.f;
+        desc.fLifeTime = 1.f;
+        desc.fLimitDistance = 20.f;
+
+        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
+        Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NONE_HIT);
     }
-    else if (Get_CurFrame() == 22)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 26)
-        AttackCollider_Off();
-
-    if (Is_AnimFinished())
-    {
-        _uint iRan = 0;
-
-        if (Target_In_AttackRange())
-            iRan = rand() % 3;
-        else
-            iRan = rand() % 4;
-
-        if (iRan == 0)
-            m_eCurState = STATE::gaze_b;
-        else if (iRan == 1)
-            m_eCurState = STATE::gaze_l;
-        else if (iRan == 2)
-            m_eCurState = STATE::gaze_r;
-        else if (iRan == 3)
-            m_eCurState = STATE::gaze_f;
-    }
+    
+    Set_Gaze();
 }
 
 void Undead_Priest_FSM::skill_1100_Init()
@@ -821,108 +841,92 @@ void Undead_Priest_FSM::skill_1100_Init()
 
     m_tAttackCoolTime.fAccTime = 0.f;
 
+    m_vTurnVector = Calculate_TargetTurnVector();
+
     m_bSuperArmor = false;
+    m_bSetPattern = false;
 }
 
 void Undead_Priest_FSM::skill_2100()
 {
-    if (Get_CurFrame() < 11)
-    {
-        if (!m_pTarget.expired())
-            Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
-    }
-    //NORMAL ATTACK
-    else if (Get_CurFrame() == 17)
+    if (m_vTurnVector != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
+
+    if (Init_CurFrame(30))
         AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 20)
+    else if (Init_CurFrame(34))
         AttackCollider_Off();
-    else if (Get_CurFrame() == 33)
-        AttackCollider_On(KNOCKBACK_ATTACK);
-    else if (Get_CurFrame() == 38)
-        AttackCollider_Off();
-
-    if (Is_AnimFinished())
+    else if (Init_CurFrame(66))
     {
-        _uint iRan = 0;
+        FORWARDMOVINGSKILLDESC desc;
+        desc.vSkillDir = -Get_Transform()->Get_State(Transform_State::UP);
+        desc.fMoveSpeed = 15.f;
+        desc.fLifeTime = 0.2f;
+        desc.fLimitDistance = 3.f;
 
-        if (Target_In_AttackRange())
-            iRan = rand() % 3;
-        else
-            iRan = rand() % 4;
+        _float4 vSkillPos = _float4(0.f);
 
-        if (iRan == 0)
-            m_eCurState = STATE::gaze_b;
-        else if (iRan == 1)
-            m_eCurState = STATE::gaze_l;
-        else if (iRan == 2)
-            m_eCurState = STATE::gaze_r;
-        else if (iRan == 3)
-            m_eCurState = STATE::gaze_f;
+        if (!m_pTarget.expired())
+            vSkillPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float3::Up * 5.f;
+     
+        Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK);
     }
+
+    Set_Gaze();
 }
 
 void Undead_Priest_FSM::skill_2100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+    animator->Set_NextTweenAnim(L"skill_2100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_tAttackCoolTime.fAccTime = 0.f;
 
+    m_vTurnVector = Calculate_TargetTurnVector();
+
     m_bSuperArmor = false;
+    m_bSetPattern = false;
 }
 
 void Undead_Priest_FSM::skill_3100()
 {
-    if (Get_CurFrame() < 11)
+    if (m_vTurnVector != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
+
+    if (Init_CurFrame(73))
     {
+        FORWARDMOVINGSKILLDESC desc;
+        desc.vSkillDir = -Get_Transform()->Get_State(Transform_State::UP);
+        desc.fMoveSpeed = 15.f;
+        desc.fLifeTime = 0.2f;
+        desc.fLimitDistance = 3.f;
+
+        _float4 vSkillPos = _float4(0.f);
+
         if (!m_pTarget.expired())
-            Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
+            vSkillPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float3::Up * 5.f;
+
+        Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NONE_HIT);
     }
-    else if (Get_CurFrame() == 28)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 34)
-        AttackCollider_Off();
-    else if (Get_CurFrame() == 60)
-        AttackCollider_On(KNOCKBACK_ATTACK);
-    else if (Get_CurFrame() == 67)
-        AttackCollider_Off();
-
-    if (Get_CurFrame() >= 48 && Get_CurFrame() < 69)
-        m_bSuperArmor = true;
-    else
-        m_bSuperArmor = false;
-
-    if (Is_AnimFinished())
-    {
-        _uint iRan = 0;
-
-        if (Target_In_AttackRange())
-            iRan = rand() % 3;
-        else
-            iRan = rand() % 4;
-
-        if (iRan == 0)
-            m_eCurState = STATE::gaze_b;
-        else if (iRan == 1)
-            m_eCurState = STATE::gaze_l;
-        else if (iRan == 2)
-            m_eCurState = STATE::gaze_r;
-        else if (iRan == 3)
-            m_eCurState = STATE::gaze_f;
-    }
+    
+    Set_Gaze();
 }
 
 void Undead_Priest_FSM::skill_3100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_1300", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+    animator->Set_NextTweenAnim(L"skill_3100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_tAttackCoolTime.fAccTime = 0.f;
 
+    m_vTurnVector = Calculate_TargetTurnVector();
+
     m_bSuperArmor = false;
+    m_bSetPattern = false;
 }
+
 
 void Undead_Priest_FSM::CalCulate_PatrolTime()
 {
@@ -939,31 +943,119 @@ void Undead_Priest_FSM::CalCulate_PatrolTime()
     }
 }
 
-void Undead_Priest_FSM::Execute_AttackSkill()
+
+
+void Undead_Priest_FSM::Set_Gaze()
+{
+    if (Is_AnimFinished())
+    {
+        _uint iRan = rand() % 3;
+
+
+        if (iRan == 0)
+            m_eCurState = STATE::gaze_b;
+        else if (iRan == 1)
+            m_eCurState = STATE::gaze_bl;
+        else if (iRan == 2)
+            m_eCurState = STATE::gaze_br;
+    }
+}
+
+void Undead_Priest_FSM::Entry_Battle()
 {
     _uint iRan = rand() % 3;
+
+    if (iRan == 0)
+        m_eCurState = STATE::gaze_b;
+    else if (iRan == 1)
+        m_eCurState = STATE::gaze_bl;
+    else if (iRan == 2)
+        m_eCurState = STATE::gaze_br;
+
+}
+
+void Undead_Priest_FSM::Set_AttackSkill()
+{
+    _uint iRan = rand() % 2;
+
+
 
     while (true)
     {
         if (iRan == m_iPreAttack)
-            iRan = rand() % 3;
+            iRan = rand() % 2;
         else
             break;
     }
 
     if (iRan == 0)
     {
-        m_eCurState = STATE::skill_1100;
+        m_fAttackRange = 8.f;
+        m_ePatternState = STATE::skill_1100;
         m_iPreAttack = 0;
     }
     else if (iRan == 1)
     {
-        m_eCurState = STATE::skill_2100;
+        m_fAttackRange = 8.f;
+        m_ePatternState = STATE::skill_3100;
         m_iPreAttack = 1;
     }
-    else if (iRan == 2)
-    {
-        m_eCurState = STATE::skill_3100;
-        m_iPreAttack = 2;
-    }
+
+    m_bSetPattern = true;
+}
+
+_float3 Undead_Priest_FSM::Calculate_TargetTurnVector()
+{
+    if (m_pTarget.expired())
+        return _float3(0.f);
+    else
+        return m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz() - m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
+}
+
+void Undead_Priest_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType)
+{
+    shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
+
+    m_pSkillCollider = SkillCollider;
+
+    m_pSkillCollider.lock()->GetOrAddTransform();
+    m_pSkillCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, vPos);
+
+    auto pSphereCollider = make_shared<SphereCollider>(fSkillRange);
+    pSphereCollider->Set_CenterPos(_float3{ vPos.x,vPos.y, vPos.z });
+    m_pSkillCollider.lock()->Add_Component(pSphereCollider);
+
+    m_pSkillCollider.lock()->Get_Collider()->Set_CollisionGroup(Monster_Skill);
+
+    m_pSkillCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
+    m_pSkillCollider.lock()->Get_Collider()->Set_Activate(true);
+    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
+    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
+    m_pSkillCollider.lock()->Set_Name(L"Undead_Priest_SkillCollider");
+    m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
+    m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
+
+    CUR_SCENE->Add_GameObject(m_pSkillCollider.lock());
+}
+
+void Undead_Priest_FSM::Create_InstallationSkillCollider(const _float4& vPos, _float fSkillRange, INSTALLATIONSKILLDESC desc)
+{
+    shared_ptr<GameObject> InstallationSkillCollider = make_shared<GameObject>();
+
+    InstallationSkillCollider->GetOrAddTransform();
+    InstallationSkillCollider->Get_Transform()->Set_State(Transform_State::POS, vPos);
+
+    auto pSphereCollider = make_shared<SphereCollider>(fSkillRange);
+    pSphereCollider->Set_CenterPos(_float3{ vPos.x,vPos.y, vPos.z });
+    InstallationSkillCollider->Add_Component(pSphereCollider);
+    InstallationSkillCollider->Get_Collider()->Set_CollisionGroup(Monster_Skill);
+
+    InstallationSkillCollider->Add_Component(make_shared<AttackColliderInfoScript>());
+    InstallationSkillCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
+    InstallationSkillCollider->Add_Component(make_shared<InstallationSkill_Script>(desc));
+    InstallationSkillCollider->Get_Script<InstallationSkill_Script>()->Init();
+
+    InstallationSkillCollider->Set_Name(L"Undead_Priest_InstallationSkillCollider");
+
+    CUR_SCENE->Add_GameObject(InstallationSkillCollider);
 }

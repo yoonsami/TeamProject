@@ -1527,7 +1527,7 @@ void Yeopo_FSM::skill_400100()
         }
     }
 
-    Look_DirToTarget();
+    //Look_DirToTarget();
     //Skill End
     if (Get_CurFrame() == 135)
     {

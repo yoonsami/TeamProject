@@ -54,7 +54,29 @@ void CharacterController::Tick()
 			return;
 		auto result = m_pController->move({ vDir.x ,vDir.y  ,vDir.z }, 0.0f, fDT, PxControllerFilters());
 	}*/
-	auto result = m_pController->move({ 0.f ,-30.f  ,0.f }, 0.0f, fDT, PxControllerFilters());
+	if (!m_bJump)
+	{
+		auto result = m_pController->move({ 0.f ,-30.f  ,0.f }, 0.0f, fDT, PxControllerFilters());
+	
+		auto controllerPos = m_pController->getFootPosition();
+		Get_Transform()->Set_State(Transform_State::POS, _float4(_float(controllerPos.x), _float(controllerPos.y), _float(controllerPos.z), 1.f));
+
+	}
+	else
+	{
+		m_fYVelocity -= 9.8f * fDT;
+
+		auto result = m_pController->move({ 0.f ,m_fYVelocity * fDT  ,0.f }, 0.0f, fDT, PxControllerFilters());
+		auto controllerPos = m_pController->getFootPosition();
+		Get_Transform()->Set_State(Transform_State::POS, _float4(_float(controllerPos.x), _float(controllerPos.y), _float(controllerPos.z), 1.f));
+
+		if (result == PxControllerCollisionFlag::eCOLLISION_DOWN && m_fYVelocity < 0.f)
+		{
+			m_fYVelocity = 0.f;
+			m_bOnGround = true;
+			m_bJump = false;
+		}
+	}
 
 
 }

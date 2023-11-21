@@ -26,12 +26,13 @@ public:
 	virtual void Render();
 	virtual HRESULT Load_Scene();
 	virtual void Add_GameObject(shared_ptr<GameObject> object, _bool staticFlag = false);
+	virtual void Add_GameObject_Front(shared_ptr<GameObject> object, _bool staticFlag = false);
 	virtual void Remove_GameObject(shared_ptr<GameObject> object);
 
 public:
 	wstring							Get_Name()			{ return m_strSceneName; }
 	shared_ptr<GameObject>			Get_Light()			{ return m_Lights.empty() ? nullptr : *m_Lights.begin(); }
-	vector<shared_ptr<GameObject>>& Get_Objects()		{ return m_GameObjects; }
+	list<shared_ptr<GameObject>>&	Get_Objects()		{ return m_GameObjects; }
 	SCENE_STATE						Get_SceneState()	{ return m_eSceneState; }
 	LightParams&					Get_LightParams()	{ return m_LightParams; }
 	vector<shared_ptr<GameObject>>& Get_StaticObjects() { return m_StaticObject; }
@@ -105,7 +106,7 @@ private:
 protected:
 	_float m_fLoadPercent = 0.f;
 	wstring m_strSceneName = L"";
-	vector<shared_ptr<GameObject>> m_GameObjects;
+	list<shared_ptr<GameObject>> m_GameObjects;
 	wstring m_strSceneDataPath = L"../Resources/Scene/";
 	//Cache
 	vector<shared_ptr<GameObject>> m_Cameras;

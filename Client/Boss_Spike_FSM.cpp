@@ -597,7 +597,7 @@ void Boss_Spike_FSM::SQ_Appear_03()
 {
     if (!m_pCamera.expired())
     {
-        _float4 vDir = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS) - m_vCenterBonePos;
+        _float4 vDir = m_vCamStopPos - m_vCenterBonePos;
 
         vDir.Normalize();
 
@@ -624,7 +624,9 @@ void Boss_Spike_FSM::SQ_Appear_03_Init()
     if (!m_pCamera.expired())
     {
         m_pCamera.lock()->Get_Transform()->Set_State(Transform_State::POS,
-            Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f + _float4{ 0.f,2.f,0.f,0.f });
+            Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 25.f + _float4{ 0.f,2.f,0.f,0.f });
+
+        m_vCamStopPos = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS);
     }
 }
 
@@ -1967,9 +1969,6 @@ void Boss_Spike_FSM::Set_AttackSkill()
         m_fAttackRange = 10.f;
         m_ePatternState = STATE::skill_100000;
     }
-
-
-
 
     m_bSetPattern = true;
 }

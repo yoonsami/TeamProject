@@ -256,6 +256,12 @@
     <Filter Include="01.Scene\00.PlayScene\01.Kris">
       <UniqueIdentifier>{b11a9161-f469-455d-ba2a-df083b0ca19a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\03.Alpaca_FSM">
+      <UniqueIdentifier>{54d01fd9-1ef6-4785-b4df-736677e6ee2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\04.Wolf_FSM">
+      <UniqueIdentifier>{e40fa01e-01f1-4b77-a2e1-897731c52872}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -525,6 +531,12 @@
     <ClInclude Include="KrisScene.h">
       <Filter>01.Scene\00.PlayScene\01.Kris</Filter>
     </ClInclude>
+    <ClInclude Include="Alpaca_FSM.h">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\03.Alpaca_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Wolf_FSM.h">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\04.Wolf_FSM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -760,6 +772,12 @@
     </ClCompile>
     <ClCompile Include="KrisScene.cpp">
       <Filter>01.Scene\00.PlayScene\01.Kris</Filter>
+    </ClCompile>
+    <ClCompile Include="Alpaca_FSM.cpp">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\03.Alpaca_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="Wolf_FSM.cpp">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\04.Wolf_FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

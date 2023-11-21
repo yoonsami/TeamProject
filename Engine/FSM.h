@@ -34,7 +34,7 @@ protected:
 	_bool Get_SuperArmor() { return m_bSuperArmor; }
 	void Set_SuperArmor(_bool bFlag) { m_bSuperArmor = bFlag; }
 
-	_bool Target_In_AttackRange();
+	_bool Target_In_AttackRange(_float* pGap = nullptr);
 	_bool Target_In_DetectRange();
 	_bool Target_In_GazeCheckRange();
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "FSM.h"
 
-class Silversword_Soldier_FSM :
+class Alpaca_FSM :
 	public FSM
 {
 public:
@@ -20,8 +20,8 @@ public:
 		airborne_up, // airborne_end_up Animation = knock_end_up animation
 		hit, //normal_hit
 		knock_start, // knock_start -> knock_end -> knock_end_loop -> knock_up
-		knock_end, 
-		knock_end_loop, 
+		knock_end,
+		knock_end_loop,
 		knock_end_hit, // hit on knock_state
 		knock_up,
 		knockdown_start, //knockdown_start -> knockdown_end -> knock_up
@@ -101,17 +101,21 @@ private:
 
 	void CalCulate_PatrolTime();
 	void Execute_AttackSkill();
+	void Set_Gaze();
+	_float3 Calculate_TargetTurnVector();
+
 private:
 	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;
 
+	_float m_fTurnSpeed = XM_PI * 5.f;
 	_float m_fPatrolDistance = 1.f;
 	_float m_fPatrolDistanceCnt = 0.f;
-	
+
 	_float3 m_vTurnVector = _float3(0.f);
 	_float4 m_vPatrolFirstPos = { 0.f,0.f,0.f,1.f };
 
-	COOLTIMEINFO m_tAttackCoolTime = { 2.f, 0.f };
+	COOLTIMEINFO m_tAttackCoolTime = { 1.f, 0.f };
 	COOLTIMEINFO m_tPatrolMoveCool = { 4.f, 0.f };
 
 	_bool m_bDetected = false;

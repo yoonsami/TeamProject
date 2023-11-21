@@ -38,7 +38,7 @@ HRESULT Silversword_Soldier_FSM::Init()
 
     m_fNormalAttack_AnimationSpeed = 2.f;
     m_fSkillAttack_AnimationSpeed = 2.f;
-
+    m_fDetectRange = 10.f;
 
     return S_OK;
 }
@@ -341,6 +341,9 @@ void Silversword_Soldier_FSM::b_idle()
         {
             m_eCurState = STATE::n_run;
         }
+
+        if (Target_In_DetectRange())
+            m_bDetected = true;
     }
     else
     {
@@ -393,18 +396,29 @@ void Silversword_Soldier_FSM::n_run()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, XM_PI * 5.f);
 
+    _float4 vPrePos = Get_Transform()->Get_State(Transform_State::POS);
+
     if (Get_Transform()->Go_Straight())
     {
-        m_vTurnVector.x = m_vTurnVector.x * -1.f;
-        m_vTurnVector.z = m_vTurnVector.z * -1.f;
-
-        Soft_Turn_ToInputDir(m_vTurnVector, XM_PI * 10.f);
+        m_vTurnVector = (Get_Transform()->Get_State(Transform_State::LOOK) * -1.f).xyz();
+        Get_Transform()->Set_LookDir(m_vTurnVector);
     }
     
-    if ((Get_Transform()->Get_State(Transform_State::POS) - m_vPatrolFirstPos).Length() >= m_fPatrolDistance)
+    m_fPatrolDistanceCnt += (Get_Transform()->Get_State(Transform_State::POS) - vPrePos).Length();
+
+    if (m_fPatrolDistanceCnt >= m_fPatrolDistance)
     {
+        m_fPatrolDistanceCnt = 0.f;
         m_bPatrolMove = false;
         m_eCurState = STATE::b_idle;
+    }
+
+    if (Target_In_DetectRange())
+        m_bDetected = true;
+
+    if (m_bDetected)
+    {
+        m_eCurState = STATE::b_run;
     }
 }
 
