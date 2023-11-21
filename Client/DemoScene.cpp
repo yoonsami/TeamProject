@@ -42,6 +42,7 @@
 #include "CharacterController.h"
 #include "ObjectTransformDebug.h"
 #include "Silversword_Soldier_FSM.h"
+#include "Succubus_Scythe_FSM.h"
 #include "UiGachaController.h"
 #include "Boss_Mir_FSM.h"
 #include "Boss_Dellons_FSM.h"
@@ -168,7 +169,8 @@ HRESULT DemoScene::Load_Scene()
 	Load_Camera();
 	// 플레이어의 위치를 잡아주기 때문에 LoadPlayer 이후로 해야함.
 	Load_MapFile(L"KrisMap");
-	Load_Monster(1);
+	Load_Monster(1, L"Silversword_Soldier");
+	Load_Monster(1, L"Succubus_Scythe");
 	//Load_Boss_Spike();
 	//Load_Boss_Mir();
 
@@ -323,7 +325,7 @@ void DemoScene::Load_Camera()
 
 }
 
-void DemoScene::Load_Monster(_uint iCnt)
+void DemoScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag)
 {
 	{
 		for (_uint i = 0; i < iCnt; i++)
@@ -339,12 +341,17 @@ void DemoScene::Load_Monster(_uint iCnt)
 
 				shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
 				{
-					shared_ptr<Model> model = RESOURCES.Get<Model>(L"Silversword_Soldier");
+					shared_ptr<Model> model = RESOURCES.Get<Model>(strMonsterTag);
 					animator->Set_Model(model);
 				}
 
 				ObjMonster->Add_Component(animator);
-				ObjMonster->Add_Component(make_shared<Silversword_Soldier_FSM>());
+
+				if (strMonsterTag == L"Silversword_Soldier")
+					ObjMonster->Add_Component(make_shared<Silversword_Soldier_FSM>());
+				else if (strMonsterTag == L"Succubus_Scythe")
+					ObjMonster->Add_Component(make_shared<Succubus_Scythe_FSM>());
+
 				auto pPlayer = Get_GameObject(L"Player");
 				ObjMonster->Get_FSM()->Set_Target(pPlayer);
 			}
