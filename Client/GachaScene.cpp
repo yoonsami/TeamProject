@@ -90,14 +90,14 @@ void GachaScene::Final_Tick()
 
 HRESULT GachaScene::Load_Scene()
 {
-	Load_Player();
+	auto player = Load_Player();
 	Load_Light();
 	Load_Camera();
-	Load_MapFile(m_Desc.strMapFileName);
+	Load_MapFile(m_Desc.strMapFileName, player);
 	return S_OK;
 }
 
-void GachaScene::Load_Player()
+shared_ptr<GameObject> GachaScene::Load_Player()
 {
 
 	// Add. Player
@@ -177,7 +177,7 @@ void GachaScene::Load_Player()
 	ObjPlayer->Add_Component(make_shared<Gacha_FSM>(desc));
 
 	
-
+	return ObjPlayer;
 	
 }
 

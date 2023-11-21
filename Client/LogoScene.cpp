@@ -9,7 +9,7 @@
 #include "Loader.h"
 #include "Geometry.h"
 #include "FileUtils.h"
-#include "DemoScene.h"
+#include "GranseedScene.h"
 #include "ModelMesh.h"
 #include "RigidBody.h"
 #include "CustomFont.h"
@@ -70,9 +70,12 @@ void LogoScene::Final_Tick()
 
 HRESULT LogoScene::Load_Scene()
 {
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Parts\\Player\\", true);
+	RESOURCES.LoadParts();
 	Load_Camera();
 
 	Load_Ui();
+
 
 	return S_OK;
 }
@@ -128,7 +131,9 @@ void LogoScene::Load_Ui()
 	{
 		pGameobject->Get_Button()->AddOnClickedEvent([&]()
 			{
-				SCENE.Change_Scene(make_shared<LoadingScene>(make_shared<DemoScene>()));
+				auto scene = make_shared<LoadingScene>(make_shared<GranseedScene>());
+				scene->Set_StaticObjects(m_StaticObject);
+				SCENE.Change_Scene(scene);
 			});
 	}
 

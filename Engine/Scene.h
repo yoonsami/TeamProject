@@ -43,7 +43,6 @@ public:
 	shared_ptr<GameObject>			Get_GameObject(const wstring& name);
 	
 	_bool							Is_Static(shared_ptr<GameObject> obj);
-	
 	void							Set_Name(const wstring& name)		{ m_strSceneName = name; }
 	void							Set_SceneState(SCENE_STATE state)	{ m_eSceneState = state; }
 
@@ -55,7 +54,7 @@ public:
 	const wstring& Get_FinalRenderTarget() { return m_wstrFinalRenderTarget; }
 
 protected:
-	void Load_MapFile(const wstring& _mapFileName);
+	void Load_MapFile(const wstring& _mapFileName,shared_ptr<GameObject> pPlayer);
 	void PickUI();
 
 protected:
@@ -127,9 +126,6 @@ protected:
 	vector<shared_ptr<GameObject>> m_StaticObject;
 
 	wstring m_wstrFinalRenderTarget = L"";
-
-	
-
 	_bool m_bRenderDebug = false;
 
 public:

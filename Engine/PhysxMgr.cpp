@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "PhysxMgr.h"
+#include "CharacterController.h"
 
 PhysxMgr::~PhysxMgr()
 {
@@ -10,6 +11,8 @@ PhysxMgr::~PhysxMgr()
     PX_RELEASE(m_pPvd);
     PX_RELEASE(m_pTransport);
     PX_RELEASE(m_pFoundation);
+    
+    Set_CharacterControllerNull();
 }
 
 HRESULT PhysxMgr::Init()
@@ -22,7 +25,7 @@ HRESULT PhysxMgr::Init()
 	PX_RELEASE(m_pPvd);
     PX_RELEASE(m_pTransport);
 	PX_RELEASE(m_pFoundation);
-
+	
 
     m_pFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, m_DefalutAllocatorCallback, m_DefaultErrorCallback);
     assert(m_pFoundation);
@@ -42,7 +45,7 @@ HRESULT PhysxMgr::Init()
     sceneDesc.cpuDispatcher = m_pDistpatcher;
     sceneDesc.filterShader = PxDefaultSimulationFilterShader;
     m_pScene = m_pPhysics->createScene(sceneDesc);
-
+    m_pScene->setGravity(PxVec3(0.f, -9.81f, 0.f));
     m_pManager = PxCreateControllerManager(*m_pScene);
 
     PxPvdSceneClient* pvdCilent = m_pScene->getScenePvdClient();
@@ -61,4 +64,15 @@ void PhysxMgr::Tick()
 {
     m_pScene->simulate(fDT);
     m_pScene->fetchResults(true);
+}
+
+void PhysxMgr::Set_CharacterControllerNull()
+{
+	for (auto& obj : m_PhysxObject)
+	{
+		if (obj.expired())
+			continue;
+
+		obj.lock()->Get_CharacterController()->Set_ControllerNull();
+	}
 }

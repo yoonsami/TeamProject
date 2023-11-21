@@ -1,7 +1,8 @@
 #pragma once
 #include "Scene.h"
+
 class GranseedScene :
-    public Scene
+	public Scene
 {
 public:
 	GranseedScene();
@@ -13,15 +14,19 @@ public:
 	virtual void Late_Tick() override;
 	virtual void Final_Tick() override;
 
-	virtual void Render() override;
-
-	void Render_SampleMapObject();
-
 	virtual HRESULT Load_Scene() override;
 
 private:
-	void Load_DemoModel();
-	void Load_Camera();
-	void Load_Light();
-};
+	shared_ptr<GameObject> Load_Player();
 
+	void Load_Camera();
+	void Load_Monster(_uint iCnt, const wstring& strMonsterTag);
+	void Load_Boss_Mir();
+	void Load_Boss_Dellons();
+	void Load_Boss_Spike();
+
+	void Load_Ui();
+	void Load_Debug();
+
+
+};

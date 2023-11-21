@@ -11,6 +11,7 @@
 #include "ModelRenderer.h"
 #include "DistortionRenderer.h"
 #include <Utils.h>
+#include "CharacterController.h"
 
 Player_FSM::Player_FSM()
 {
@@ -52,7 +53,8 @@ HRESULT Player_FSM::Init()
     m_pCamera = CUR_SCENE->Get_MainCamera();
 
     m_fDetectRange = 5.f;
-
+	m_fRunSpeed = 6.f;
+	m_fSprintSpeed = 8.f;
     return S_OK;
 }
 
@@ -512,7 +514,7 @@ void Player_FSM::b_run_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"b_run", 0.2f, true, 1.f);
+    animator->Set_NextTweenAnim(L"b_run", 0.2f, true, 1.2f);
 
     Get_Transform()->Set_Speed(m_fRunSpeed);
 

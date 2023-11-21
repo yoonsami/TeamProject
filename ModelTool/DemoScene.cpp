@@ -14,11 +14,11 @@
 #include "Model.h"
 #include "ImGuiToolMgr.h"
 
-DemoScene::DemoScene()
+GranseedScene::GranseedScene()
 {
 }
 
-void DemoScene::Init()
+void GranseedScene::Init()
 {
 	__super::Init();
 
@@ -29,31 +29,31 @@ void DemoScene::Init()
 	IMGUITOOL_MGR.Tick();
 }
 
-void DemoScene::Tick()
+void GranseedScene::Tick()
 {
 	__super::Tick();
 
 	IMGUITOOL_MGR.Tick();
 }
 
-void DemoScene::Late_Tick()
+void GranseedScene::Late_Tick()
 {
 	__super::Late_Tick();
 }
 
-void DemoScene::Final_Tick()
+void GranseedScene::Final_Tick()
 {
 	__super::Final_Tick();
 }
 
-void DemoScene::Render()
+void GranseedScene::Render()
 {
 	__super::Render();
 
 	IMGUITOOL_MGR.Render();
 }
 
-HRESULT DemoScene::Load_Scene()
+HRESULT GranseedScene::Load_Scene()
 {
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\");
 	RESOURCES.LoadParts();
@@ -64,7 +64,7 @@ HRESULT DemoScene::Load_Scene()
 	return S_OK;
 }
 
-void DemoScene::Load_DemoModel()
+void GranseedScene::Load_DemoModel()
 {
 	// For. 예시 모델이 될 GameObject생성 
 	//shared_ptr<GameObject> testObj = make_shared<GameObject>();
@@ -97,7 +97,7 @@ void DemoScene::Load_DemoModel()
 	//Add_GameObject(testObj);
 }
 
-void DemoScene::Load_Light()
+void GranseedScene::Load_Light()
 {
 	// For. 씬에 추가할 빛 역할을 할 GameObject생성 
 	shared_ptr<GameObject> lightObj = make_shared<GameObject>();
@@ -121,7 +121,7 @@ void DemoScene::Load_Light()
 	Add_GameObject(lightObj);
 }
 
-void DemoScene::Load_Camera()
+void GranseedScene::Load_Camera()
 {
 	/* UI가 아닌 일반 모델들을 그리는 카메라를 생성해서 씬에 추가하기 */
 

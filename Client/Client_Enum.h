@@ -91,3 +91,10 @@ enum SkillInfo
 	MOVING,
 	NONE
 };
+
+enum class LevelInfo
+{
+	STATIC,
+	LOGO,
+
+};

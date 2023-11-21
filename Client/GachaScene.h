@@ -23,7 +23,7 @@ public:
 	virtual HRESULT Load_Scene() override;
 
 private:
-	void Load_Player();
+	shared_ptr<GameObject> Load_Player();
 
 	void Load_Camera();
 

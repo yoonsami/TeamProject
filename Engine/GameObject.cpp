@@ -118,7 +118,15 @@ HRESULT GameObject::Add_Component(shared_ptr<Component> component)
 		m_Components[iIndex] = component;
 	}
 	else
+	{
+		for (auto& script : m_Scripts)
+		{
+			if (typeid(script) == typeid(component))
+				return E_FAIL;
+
+		}
 		m_Scripts.push_back(dynamic_pointer_cast<MonoBehaviour>(component));
+	}
 	
 	return S_OK;
 }

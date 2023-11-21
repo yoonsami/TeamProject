@@ -59,7 +59,7 @@ HRESULT MainApp::Render()
 HRESULT MainApp::Open_Scene()
 {
 	// For. 씬 객체 생성 (스마트 포인터로)
-	shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<DemoScene>());
+	shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<GranseedScene>());
 
 	// For. 위에서 생성한 씬으로 씬 변경하기 
 	SCENE.Change_Scene(scene);

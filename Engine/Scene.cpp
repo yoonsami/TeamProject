@@ -334,11 +334,13 @@ void Scene::Load_UIFile(const wstring& strDataFilePath, _bool bRender)
 		UiObject->Set_Render(bRender);
 
 		_bool bIsStatic = file->Read<_bool>();
-		Add_GameObject(UiObject, bIsStatic);
+
+		// Temp
+		Add_GameObject(UiObject, false);
 	}
 }
 
-void Scene::Load_MapFile(const wstring& _mapFileName)
+void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPlayer)
 {
 	// 세이브 파일 이름으로 로드하기
 	wstring strFilePath = L"..\\Resources\\MapData\\";
@@ -365,14 +367,12 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 	// 광원 정보 가져와서 방향성광원 적용 및 점광원 생성하기
 	// 방향성광원
 	 // 포지션
-	shared_ptr<GameObject> DirectionalLightObject = Get_Light();
-	_float4 DirLightPos = _float4{ 0.f, 0.f, 0.f, 1.f };
-	file->Read<_float4>(DirLightPos);
-	DirectionalLightObject->Get_Transform()->Set_State(Transform_State::POS, DirLightPos);
-	// 보는방향
-	_float3 DirLightLookDir = _float3{ 0.f, 0.f, 0.f };
-	file->Read<_float3>(DirLightLookDir);
-	DirectionalLightObject->Get_Transform()->LookAt(XMVectorSetW(DirLightLookDir, 1.f));
+	shared_ptr<GameObject> DirectionalLightObject = make_shared<GameObject>();
+	DirectionalLightObject->GetOrAddTransform()->Set_State(Transform_State::POS, file->Read<_float4>());
+	DirectionalLightObject->Get_Transform()->LookAt(_float4(file->Read<_float3>(), 1.f));
+
+	DirectionalLightObject->Add_Component(make_shared<Light>());
+	DirectionalLightObject->Get_Light()->Set_LightType(LIGHT_TYPE::DIRECTIONAL_LIGHT);
 	// 색깔
 	LightColor DirLightColor;
 	file->Read<LightColor>(DirLightColor);
@@ -380,7 +380,7 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 	DirectionalLightObject->Get_Light()->Set_Diffuse(DirLightColor.diffuse);
 	DirectionalLightObject->Get_Light()->Set_Specular(DirLightColor.specular);
 	DirectionalLightObject->Get_Light()->Set_Emissive(_float4(1.f));
-
+	Add_GameObject(DirectionalLightObject);
 	// 점광원정보 가져오고 불러오기
 	_int iNumPointLight = file->Read<_int>();
 	for (_int i = 0; i < iNumPointLight; ++i)
@@ -651,7 +651,7 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 	// 위험방지
 	PlayerLookAtPos.w = 1.f;
 
-	shared_ptr<GameObject> PlayerPtr = Get_GameObject(L"Player");
+	shared_ptr<GameObject> PlayerPtr = pPlayer;
 	// 플레이어가 있고 스폰지점과룩앳지점이 다를때만 변경
 	if (PlayerPtr != nullptr && PlayerCreatePos != PlayerLookAtPos)
 	{
@@ -694,7 +694,7 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 	//LightOption
 	file->Read<_float>(g_LightPowerData.g_specularPower);
 	file->Read<_float>(g_LightPowerData.g_rimPower);
-	file->Read<Color>(Get_Light()->Get_Light()->Get_LightInfo().color.diffuse);
+	file->Read<Color>();
 	//OtherOption
 	file->Read<_bool>(g_bDrawOutline);
 	file->Read<_bool>(g_bFXAAOn);

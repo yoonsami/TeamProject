@@ -15,7 +15,12 @@ public:
 
     virtual HRESULT Init() override;
     virtual void Tick() override;
-    void Set_GravityOn(_bool flag) { m_bGravityOn = flag; }
+    void Set_ControllerNull() { m_pController = nullptr; }
+
+    void Add_Velocity(const _float vel);
+private:
+
+
     friend class Transform;
 
 private:
@@ -23,6 +28,8 @@ private:
     PxBoxControllerDesc m_BoxControllerDesc = PxBoxControllerDesc();
     PxController* m_pController = nullptr;
     PxMaterial* m_pMaterial = nullptr;
-    _bool m_bGravityOn = true;
+    _bool m_bOnGround = false;
+    _bool m_bJump = false;
+    _float m_fYVelocity = 0.f;
 };
 
