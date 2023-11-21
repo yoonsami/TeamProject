@@ -341,7 +341,7 @@ void FSM::Add_And_Set_Effect(const wstring& strSkilltag)
 	pGroupEffectObj->Add_Component(pGroupEffect);
 	pGroupEffectObj->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
 	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
-	
+	pGroupEffectObj->Set_Name(strSkilltag);
 	m_pGroupEffect = pGroupEffectObj;
 
 	// For. Add Effect GameObject to current scene
