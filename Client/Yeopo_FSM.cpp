@@ -52,7 +52,7 @@ HRESULT Yeopo_FSM::Init()
     m_iSkillBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"D_Eye_Target");
 
     m_fNormalAttack_AnimationSpeed = 1.2f;
-
+    m_fDetectRange = 5.f;
     return S_OK;
 }
 
@@ -943,28 +943,16 @@ void Yeopo_FSM::knockdown_end_Init()
 
 void Yeopo_FSM::skill_1100()
 {
+    Look_DirToTarget();
+
     if (Get_CurFrame() == 9)
         AttackCollider_On(NORMAL_ATTACK);
     else if (Get_CurFrame() == 19)
         AttackCollider_Off();
 
-
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
-
-    if (Get_CurFrame() < 22)
-    {
-        if (KEYTAP(KEY_TYPE::LBUTTON))
-            m_bCanCombo = true;
-    }
-
-    if (m_bCanCombo)
-    {
-        if (Get_CurFrame() > 15)
-            m_eCurState = STATE::skill_1200;
-    }
+    if (Check_Combo(15, KEY_TYPE::LBUTTON))
+        m_eCurState = STATE::skill_1200;
+    
 
     if (Get_FinalFrame() - Get_CurFrame() < 6)
     {
@@ -986,8 +974,7 @@ void Yeopo_FSM::skill_1100_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     m_bInvincible = false;
     m_bSuperArmor = false;
@@ -995,28 +982,15 @@ void Yeopo_FSM::skill_1100_Init()
 
 void Yeopo_FSM::skill_1200()
 {
+    Look_DirToTarget();
+
     if (Get_CurFrame() == 10)
         AttackCollider_On(NORMAL_ATTACK);
     else if (Get_CurFrame() == 17)
         AttackCollider_Off();
 
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
-
-
-    if (Get_CurFrame() < 25)
-    {
-        if (KEYTAP(KEY_TYPE::LBUTTON))
-            m_bCanCombo = true;
-    }
-
-    if (m_bCanCombo)
-    {
-        if (Get_CurFrame() > 15)
-            m_eCurState = STATE::skill_1300;
-    }
+	if (Check_Combo(15, KEY_TYPE::LBUTTON))
+		m_eCurState = STATE::skill_1300;
 
     if (Get_FinalFrame() - Get_CurFrame() < 7)
     {
@@ -1040,8 +1014,7 @@ void Yeopo_FSM::skill_1200_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1068,23 +1041,11 @@ void Yeopo_FSM::skill_1300()
     else if (Get_CurFrame() == 46)
         AttackCollider_Off();
 
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    Look_DirToTarget();
 
 
-    if (Get_CurFrame() < 56)
-    {
-        if (KEYTAP(KEY_TYPE::LBUTTON))
-            m_bCanCombo = true;
-    }
-
-    if (m_bCanCombo)
-    {
-        if (Get_CurFrame() > 45)
-            m_eCurState = STATE::skill_1400;
-    }
+	if (Check_Combo(45, KEY_TYPE::LBUTTON))
+		m_eCurState = STATE::skill_1400;
 
     if (Get_FinalFrame() - Get_CurFrame() < 6)
     {
@@ -1108,8 +1069,7 @@ void Yeopo_FSM::skill_1300_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1129,10 +1089,7 @@ void Yeopo_FSM::skill_1400()
         AttackCollider_Off();
 
 
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    Look_DirToTarget();
 
     if (Get_FinalFrame() - Get_CurFrame() < 6)
     {
@@ -1156,8 +1113,7 @@ void Yeopo_FSM::skill_1400_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1169,8 +1125,7 @@ void Yeopo_FSM::skill_91100()
 {
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    Look_DirToTarget();
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
@@ -1229,59 +1184,40 @@ void Yeopo_FSM::skill_93100_Init()
 
 void Yeopo_FSM::skill_100200()
 {
-    if (Get_CurFrame() == 18)
+    if (Init_CurFrame(18))
     {
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 35.f;
-            desc.fLifeTime = 1.f;
-            desc.fLimitDistance = 10.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 35.f;
+		desc.fLifeTime = 1.f;
+		desc.fLimitDistance = 10.f;
 
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
-        }
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
+		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
     }
-    else if (Get_CurFrame() == 30)
+    else if (Init_CurFrame(30))
     {
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-                Get_Transform()->Get_State(Transform_State::LOOK) * 15.f +
-                _float3::Up;
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+			Get_Transform()->Get_State(Transform_State::LOOK) * 15.f +
+			_float3::Up;
 
-            _float4 vSkillDir = (Get_Transform()->Get_State(Transform_State::POS) - vSkillPos);
-            vSkillDir.y = 0.f;
+		_float4 vSkillDir = (Get_Transform()->Get_State(Transform_State::POS) - vSkillPos);
+		vSkillDir.y = 0.f;
 
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = vSkillDir.Normalize();
-            desc.fMoveSpeed = 28.f;
-            desc.fLifeTime = 1.f;
-            desc.fLimitDistance = 13.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = vSkillDir.Normalize();
+		desc.fMoveSpeed = 28.f;
+		desc.fLifeTime = 1.f;
+		desc.fLimitDistance = 13.f;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
-        }
+		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
     }
 
+    Look_DirToTarget();
 
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
-
-
-    if (Get_CurFrame() < 56)
-    {
-        if (KEYTAP(KEY_TYPE::KEY_1))
-            m_bCanCombo = true;
-    }
-
-    if (m_bCanCombo)
-    {
-        if (Get_CurFrame() > 56)
-            m_eCurState = STATE::skill_100300;
-    }
+    if (Check_Combo(56, KEY_TYPE::KEY_1))
+        m_eCurState = STATE::skill_100300;
+	
 
     if (Get_FinalFrame() - Get_CurFrame() < 8)
     {
@@ -1299,8 +1235,7 @@ void Yeopo_FSM::skill_100200_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1310,25 +1245,19 @@ void Yeopo_FSM::skill_100200_Init()
 
 void Yeopo_FSM::skill_100300()
 {
-    if (Get_CurFrame() == 24)
+    if (Init_CurFrame(24))
     {
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 1.f;
-            desc.fLimitDistance = 0.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 0.f;
+		desc.fLifeTime = 1.f;
+		desc.fLimitDistance = 0.f;
 
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK);
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, AIRBORNE_ATTACK);
-        }
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK);
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, AIRBORNE_ATTACK);
     }
     
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    Look_DirToTarget();
 
     if (Is_AnimFinished())
     {
@@ -1348,8 +1277,7 @@ void Yeopo_FSM::skill_100300_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1359,25 +1287,20 @@ void Yeopo_FSM::skill_100300_Init()
 
 void Yeopo_FSM::skill_200100()
 {
-    if (Get_CurFrame() == 10)
-    {
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 1.f;
-            desc.fLimitDistance = 0.f;
+    if (Init_CurFrame(10))
+	{
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 0.f;
+		desc.fLifeTime = 1.f;
+		desc.fLimitDistance = 0.f;
 
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
-            Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK);
-        }
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
+		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK);
     }
+    
 
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    Look_DirToTarget();
 
     if (Get_FinalFrame() - Get_CurFrame() < 10)
     {
@@ -1397,8 +1320,7 @@ void Yeopo_FSM::skill_200100_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     m_bInvincible = false;
     m_bSuperArmor = true;
@@ -1419,22 +1341,11 @@ void Yeopo_FSM::skill_300100()
     else if (Get_CurFrame() == 64)
         AttackCollider_Off();
 
-    _float3 vInputVector = Get_InputDirVector();
+    Look_DirToTarget();
 
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
-
-    if (Get_CurFrame() < 65)
-    {
-        if (KEYTAP(KEY_TYPE::KEY_3))
-            m_bCanCombo = true;
-    }
-
-    if (m_bCanCombo)
-    {
-        if (Get_CurFrame() > 65)
-            m_eCurState = STATE::skill_300200;
-    }
+    if (Check_Combo(65, KEY_TYPE::KEY_3))
+        m_eCurState = STATE::skill_300200;
+    
 
     if (Get_FinalFrame() - Get_CurFrame() <15)
     {
@@ -1454,8 +1365,7 @@ void Yeopo_FSM::skill_300100_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1474,22 +1384,11 @@ void Yeopo_FSM::skill_300200()
     else if (Get_CurFrame() == 20)
         AttackCollider_Off();
 
-    _float3 vInputVector = Get_InputDirVector();
+    Look_DirToTarget();
 
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
-
-    if (Get_CurFrame() < 28)
-    {
-        if (KEYTAP(KEY_TYPE::KEY_3))
-            m_bCanCombo = true;
-    }
-
-    if (m_bCanCombo)
-    {
-        if (Get_CurFrame() > 25)
-            m_eCurState = STATE::skill_300300;
-    }
+    if (Check_Combo(25, KEY_TYPE::KEY_3))
+        m_eCurState = STATE::skill_300300;
+    
 
     if (Get_FinalFrame() - Get_CurFrame() < 15)
     {
@@ -1509,9 +1408,7 @@ void Yeopo_FSM::skill_300200_Init()
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(SKILL3);
 
     m_bCanCombo = false;
-
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1530,23 +1427,12 @@ void Yeopo_FSM::skill_300300()
     else if (Get_CurFrame() == 30)
         AttackCollider_Off();
 
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    Look_DirToTarget();
 
 
-    if (Get_CurFrame() < 32)
-    {
-        if (KEYTAP(KEY_TYPE::KEY_3))
-            m_bCanCombo = true;
-    }
-
-    if (m_bCanCombo)
-    {
-        if (Get_CurFrame() > 30)
-            m_eCurState = STATE::skill_300400;
-    }
+    if (Check_Combo(30, KEY_TYPE::KEY_3))
+        m_eCurState = STATE::skill_300400;
+    
 
     if (Get_FinalFrame() - Get_CurFrame() < 15)
     {
@@ -1567,8 +1453,7 @@ void Yeopo_FSM::skill_300300_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1583,10 +1468,7 @@ void Yeopo_FSM::skill_300400()
     else if (Get_CurFrame() == 36)
         AttackCollider_Off();
     
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    Look_DirToTarget();
 
     if (Get_FinalFrame() - Get_CurFrame() < 15)
     {
@@ -1606,9 +1488,7 @@ void Yeopo_FSM::skill_300400_Init()
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(SKILL3);
 
     m_bCanCombo = false;
-
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1647,6 +1527,7 @@ void Yeopo_FSM::skill_400100()
         }
     }
 
+    Look_DirToTarget();
     //Skill End
     if (Get_CurFrame() == 135)
     {
@@ -1663,8 +1544,7 @@ void Yeopo_FSM::skill_400100_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1704,10 +1584,7 @@ void Yeopo_FSM::skill_501100()
         AttackCollider_Off();
     
 
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    Look_DirToTarget();
 
     if (Is_AnimFinished())
     {
@@ -1727,10 +1604,10 @@ void Yeopo_FSM::skill_501100_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
+
 
     m_bInvincible = false;
     m_bSuperArmor = true;

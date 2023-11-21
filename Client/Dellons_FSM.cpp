@@ -50,7 +50,7 @@ HRESULT Dellons_FSM::Init()
     m_iCenterBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_CP");
     m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
     m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
-    
+    m_fDetectRange = 5.f;
 
     return S_OK;
 }
@@ -888,23 +888,12 @@ void Dellons_FSM::skill_1100()
         AttackCollider_Off();
 
 
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    Look_DirToTarget();
 
 
-    if (Get_CurFrame() < 26)
-    {
-        if (KEYTAP(KEY_TYPE::LBUTTON))
-            m_bCanCombo = true;
-    }
-
-    if (m_bCanCombo)
-    {
-        if (Get_CurFrame() > 24)
-            m_eCurState = STATE::skill_1200;
-    }
+    if (Check_Combo(24, KEY_TYPE::LBUTTON))
+        m_eCurState = STATE::skill_1200;
+    
 
     if (Is_AnimFinished())
     {
@@ -926,8 +915,7 @@ void Dellons_FSM::skill_1100_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     m_bInvincible = false;
     m_bSuperArmor = false;
@@ -940,22 +928,11 @@ void Dellons_FSM::skill_1200()
     else if (Get_CurFrame() == 18)
         AttackCollider_Off();
 
-    _float3 vInputVector = Get_InputDirVector();
+    Look_DirToTarget();
 
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    if (Check_Combo(20, KEY_TYPE::LBUTTON))
+        m_eCurState = STATE::skill_1300;
 
-    if (Get_CurFrame() < 21)
-    {
-        if (KEYTAP(KEY_TYPE::LBUTTON))
-            m_bCanCombo = true;
-    }
-
-    if (m_bCanCombo)
-    {
-        if (Get_CurFrame() > 20)
-            m_eCurState = STATE::skill_1300;
-    }
 
     if (Is_AnimFinished())
     {
@@ -979,8 +956,7 @@ void Dellons_FSM::skill_1200_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -995,22 +971,11 @@ void Dellons_FSM::skill_1300()
     else if (Get_CurFrame() == 33)
         AttackCollider_Off();
 
-    _float3 vInputVector = Get_InputDirVector();
+    Look_DirToTarget();
 
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
-
-    if (Get_CurFrame() < 20)
-    {
-        if (KEYTAP(KEY_TYPE::LBUTTON))
-            m_bCanCombo = true;
-    }
-
-    if (m_bCanCombo)
-    {
-        if (Get_CurFrame() > 18)
-            m_eCurState = STATE::skill_1400;
-    }
+    if (Check_Combo(18, KEY_TYPE::LBUTTON))
+        m_eCurState = STATE::skill_1400;
+    
 
 
     if (Is_AnimFinished())
@@ -1035,8 +1000,7 @@ void Dellons_FSM::skill_1300_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1056,10 +1020,7 @@ void Dellons_FSM::skill_1400()
         AttackCollider_Off();
 
 
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    Look_DirToTarget();
 
     if (Is_AnimFinished())
     {
@@ -1083,8 +1044,7 @@ void Dellons_FSM::skill_1400_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1096,8 +1056,7 @@ void Dellons_FSM::skill_91100()
 {
     _float3 vInputVector = Get_InputDirVector();
 
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    Look_DirToTarget();
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
@@ -1156,42 +1115,28 @@ void Dellons_FSM::skill_93100_Init()
 
 void Dellons_FSM::skill_100100()
 {
-    if (Get_CurFrame() == 12)
+    if (Init_CurFrame(12))
     {
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 0.5f;
-            desc.fLimitDistance = 0.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 0.f;
+		desc.fLifeTime = 0.5f;
+		desc.fLimitDistance = 0.f;
 
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + 
-                                Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
-                                _float3::Up;
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+			Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
+			_float3::Up;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK);
-        }
+		Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK);
     }
     
 
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    Look_DirToTarget();
 
 
-    if (Get_CurFrame() < 28)
-    {
-        if (KEYTAP(KEY_TYPE::KEY_1))
-            m_bCanCombo = true;
-    }
+    if (Check_Combo(26, KEY_TYPE::KEY_1))
+        m_eCurState = STATE::skill_100200;
 
-    if (m_bCanCombo)
-    {
-        if (Get_CurFrame() > 26)
-            m_eCurState = STATE::skill_100200;
-    }
 
     if (Is_AnimFinished())
     {
@@ -1211,8 +1156,7 @@ void Dellons_FSM::skill_100100_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1222,28 +1166,21 @@ void Dellons_FSM::skill_100100_Init()
 
 void Dellons_FSM::skill_100200()
 {
-    if (Get_CurFrame() == 15)
+    if (Init_CurFrame(15))
     {
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 0.5f;
-            desc.fLimitDistance = 0.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 0.f;
+		desc.fLifeTime = 0.5f;
+		desc.fLimitDistance = 0.f;
 
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-                Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
-                _float3::Up;
-
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, AIRBORNE_ATTACK);
-        }
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+			Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
+			_float3::Up;
+        Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, AIRBORNE_ATTACK);
     }
 
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    Look_DirToTarget();
 
     if (Is_AnimFinished())
     {
@@ -1264,8 +1201,7 @@ void Dellons_FSM::skill_100200_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1280,22 +1216,11 @@ void Dellons_FSM::skill_200100()
     else if (Get_CurFrame() == 12)
         AttackCollider_Off();
 
-    _float3 vInputVector = Get_InputDirVector();
+    Look_DirToTarget();
 
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+	if (Check_Combo(20, KEY_TYPE::KEY_2))
+        m_eCurState = STATE::skill_200200;
 
-    if (Get_CurFrame() < 21)
-    {
-        if (KEYTAP(KEY_TYPE::KEY_2))
-            m_bCanCombo = true;
-    }
-
-    if (m_bCanCombo)
-    {
-        if (Get_CurFrame() > 20)
-            m_eCurState = STATE::skill_200200;
-    }
 
     if (Is_AnimFinished())
     {
@@ -1315,8 +1240,7 @@ void Dellons_FSM::skill_200100_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1326,25 +1250,19 @@ void Dellons_FSM::skill_200100_Init()
 
 void Dellons_FSM::skill_200200()
 {
-    if (Get_CurFrame() == 7)
+    if (Init_CurFrame(7))
     {
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 1.f;
-            desc.fLimitDistance = 0.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 0.f;
+		desc.fLifeTime = 1.f;
+		desc.fLimitDistance = 0.f;
 
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f + _float3::Up;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_SKILL);
-        }
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f + _float3::Up;
+        Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_SKILL);
     }
 
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    Look_DirToTarget();
 
     if (Is_AnimFinished())
     {
@@ -1365,8 +1283,7 @@ void Dellons_FSM::skill_200200_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1376,6 +1293,7 @@ void Dellons_FSM::skill_200200_Init()
 
 void Dellons_FSM::skill_300100()
 {
+    Look_DirToTarget();
     if (Get_CurFrame() >= 10)
     {
         if (!m_pCamera.expired())
@@ -1394,15 +1312,10 @@ void Dellons_FSM::skill_300100()
         }
     }
 
-
-    if (Get_CurFrame() == 10)
+    if (Init_CurFrame(10))
     {
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            Summon_Wraith();
-
-            Set_WraithState((_uint)DellonsWraith_FSM::STATE::FX_DellonsWraith_skill_30010);
-        }
+		Summon_Wraith();
+		Set_WraithState((_uint)DellonsWraith_FSM::STATE::FX_DellonsWraith_skill_30010);
     }
 
     if (Is_AnimFinished())
@@ -1420,8 +1333,7 @@ void Dellons_FSM::skill_300100_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1453,54 +1365,42 @@ void Dellons_FSM::skill_400100()
 
 
 
-    if (Get_CurFrame() == 20)
+    if (Init_CurFrame(20))
     {
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            Summon_Wraith();
-
-            Set_WraithState((_uint)DellonsWraith_FSM::STATE::FX_Mn_Dellons_skill_5100);
-        }
+		Summon_Wraith();
+        Set_WraithState((_uint)DellonsWraith_FSM::STATE::FX_Mn_Dellons_skill_5100);
     }
-    else if (Get_CurFrame() == 33 ||
-        Get_CurFrame() == 40 ||
-        Get_CurFrame() == 47 ||
-        Get_CurFrame() == 60 ||
-        Get_CurFrame() == 67 ||
-        Get_CurFrame() == 72)
+    else if (Init_CurFrame(33) ||
+        Init_CurFrame(40) ||
+        Init_CurFrame(47) ||
+        Init_CurFrame(60) ||
+        Init_CurFrame(67) ||
+        Init_CurFrame(72))
     {
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 20.f;
-            desc.fLifeTime = 0.5f;
-            desc.fLimitDistance = 3.5f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 20.f;
+		desc.fLifeTime = 0.5f;
+		desc.fLimitDistance = 3.5f;
 
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK);
-        }
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
+        Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK);
+
     }
-    else if (Get_CurFrame() == 102)
+    else if (Init_CurFrame(102))
     {
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 20.f;
-            desc.fLifeTime = 1.f;
-            desc.fLimitDistance = 2.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 20.f;
+		desc.fLifeTime = 1.f;
+		desc.fLimitDistance = 2.f;
 
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKDOWN_SKILL);
-        }
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
+        Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKDOWN_SKILL);
     }
 
 
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    Look_DirToTarget();
 
     if (Get_CurFrame() >= 120)
     {
@@ -1520,8 +1420,7 @@ void Dellons_FSM::skill_400100_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1533,21 +1432,13 @@ void Dellons_FSM::skill_400100_Init()
 
 void Dellons_FSM::skill_501100()
 {
-    if (Get_CurFrame() == 4)
+    if (Init_CurFrame(4))
     {
-        //Summon Wraith
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            Summon_Wraith();
-
-            Set_WraithState((_uint)DellonsWraith_FSM::STATE::FX_Mn_Dellons_skill_500200);
-        }
+		Summon_Wraith();
+		Set_WraithState((_uint)DellonsWraith_FSM::STATE::FX_Mn_Dellons_skill_500200);
     }
 
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    Look_DirToTarget();
 
     if (Is_AnimFinished())
     {
@@ -1567,8 +1458,7 @@ void Dellons_FSM::skill_501100_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 

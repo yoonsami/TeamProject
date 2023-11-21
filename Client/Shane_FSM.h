@@ -143,8 +143,6 @@ private:
 	void Use_Dash();
 
 	void Create_200100_Clone(_uint iCloneIndex);
-	void Calculate_SkillCamRight();
-
 
 private:
 	STATE m_eCurState = STATE::b_idle;

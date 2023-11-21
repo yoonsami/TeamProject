@@ -7,6 +7,7 @@ public:
     ~HeroChangeScript();
 
 public:
+    virtual HRESULT Init() override;
     virtual void Tick() override;
     
     void Change_Hero(HERO eHero);

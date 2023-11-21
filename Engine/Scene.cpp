@@ -47,13 +47,34 @@ void Scene::Init()
 
 void Scene::Tick()
 {
-	
+	system_clock::time_point start_time = system_clock::now();
+
 	auto objects = m_GameObjects;
 	for (auto& object : objects)
 	{
 		object->Tick();
 	}
+
+
 	PickUI();
+	system_clock::time_point end_time = system_clock::now();
+
+	nanoseconds nano = end_time - start_time;
+
+	if (KEYTAP(KEY_TYPE::F1))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F2))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F3))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F4))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F5))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F6))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F7))
+		int a = 0;
 }
 
 void Scene::Late_Tick()

@@ -26,6 +26,9 @@ using namespace std;
 // WIN
 #include <windows.h>
 #include <optional>
+#include <chrono>
+
+using namespace chrono;
 
 // DX
 #include <d3d11.h>

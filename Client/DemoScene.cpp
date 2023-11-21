@@ -831,8 +831,10 @@ void DemoScene::Load_Ui()
 	{
 		auto pScript = make_shared<CoolTimeCheckScript>();
 		auto pObj = Get_GameObject(L"Player");
-		if (nullptr != pObj)
+		if (nullptr != pObj) {
 			pObj->Add_Component(pScript);
+		}
+		
 	}
 
 	{

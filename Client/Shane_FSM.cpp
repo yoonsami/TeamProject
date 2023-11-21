@@ -51,7 +51,7 @@ HRESULT Shane_FSM::Init()
     m_pCamera = CUR_SCENE->Get_MainCamera();
 
     m_fNormalAttack_AnimationSpeed = 1.2f;
-
+    m_fDetectRange = 5.f;
     return S_OK;
 }
 
@@ -888,23 +888,11 @@ void Shane_FSM::skill_1100()
     else if (Get_CurFrame() == 13)
         AttackCollider_Off();
 
+    Look_DirToTarget();
 
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
-
-    if (Get_CurFrame() < 15)
-    {
-        if (KEYTAP(KEY_TYPE::LBUTTON))
-            m_bCanCombo = true;
-    }
-
-    if (m_bCanCombo)
-    {
-        if (Get_CurFrame() > 13)
-            m_eCurState = STATE::skill_1200;
-    }
+    if (Check_Combo(13, KEY_TYPE::LBUTTON))
+        m_eCurState = STATE::skill_1200;
+    
 
     if (Get_FinalFrame() - Get_CurFrame() < 9)
     {
@@ -925,8 +913,7 @@ void Shane_FSM::skill_1100_Init()
 
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     m_bInvincible = false;
     m_bSuperArmor = false;
@@ -944,23 +931,10 @@ void Shane_FSM::skill_1200()
         AttackCollider_Off();
 
 
-    _float3 vInputVector = Get_InputDirVector();
+    Look_DirToTarget();
 
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
-
-    if (Get_CurFrame() < 25)
-    {
-        if (KEYTAP(KEY_TYPE::LBUTTON))
-            m_bCanCombo = true;
-    }
-
-    if (m_bCanCombo)
-    {
-        if (Get_CurFrame() > 25)
-            m_eCurState = STATE::skill_1300;
-    }
-
+    if (Check_Combo(25, KEY_TYPE::LBUTTON))
+        m_eCurState = STATE::skill_1300;
 
 	if (Get_FinalFrame() - Get_CurFrame() < 9)
     {
@@ -983,9 +957,7 @@ void Shane_FSM::skill_1200_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
-
+    Set_DirToTargetOrInput(OBJ_MONSTER);
     AttackCollider_Off();
 
     m_bInvincible = false;
@@ -1003,22 +975,11 @@ void Shane_FSM::skill_1300()
     else if (Get_CurFrame() == 28)
         AttackCollider_Off();
 
-    _float3 vInputVector = Get_InputDirVector();
+    Look_DirToTarget();
 
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
-
-    if (Get_CurFrame() < 32)
-    {
-        if (KEYTAP(KEY_TYPE::LBUTTON))
-            m_bCanCombo = true;
-    }
-
-    if (m_bCanCombo)
-    {
-        if (Get_CurFrame() > 30)
-            m_eCurState = STATE::skill_1400;
-    }
+    if (Check_Combo(30, KEY_TYPE::LBUTTON))
+        m_eCurState = STATE::skill_1400;
+    
 
 
 	if (Get_FinalFrame() - Get_CurFrame() < 9)
@@ -1042,8 +1003,7 @@ void Shane_FSM::skill_1300_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1062,11 +1022,7 @@ void Shane_FSM::skill_1400()
     else if (Get_CurFrame() == 27)
         AttackCollider_Off();
 
-  
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    Look_DirToTarget();
 
     if (Get_FinalFrame() - Get_CurFrame() < 9)
     {
@@ -1090,8 +1046,7 @@ void Shane_FSM::skill_1400_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1101,10 +1056,10 @@ void Shane_FSM::skill_1400_Init()
 
 void Shane_FSM::skill_91100()
 {
-    _float3 vInputVector = Get_InputDirVector();
+	_float3 vInputVector = Get_InputDirVector();
 
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+	if (m_vDirToTarget != _float3(0.f))
+		Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
@@ -1174,35 +1129,23 @@ void Shane_FSM::skill_100100()
         Get_Owner()->Get_Animator()->Set_RenderState(true);
         m_pWeapon.lock()->Get_ModelRenderer()->Set_RenderState(true);
     }
-    else if (Get_CurFrame() == 20)
+    if (Init_CurFrame(20))
     {
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 1.f;
-            desc.fLimitDistance = 0.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 0.f;
+		desc.fLifeTime = 1.f;
+		desc.fLimitDistance = 0.f;
 
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-            Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_SKILL);
-        }
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
+		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_SKILL);
+
     }
 
-    if (Get_CurFrame() < 42)
-    {
-        if (KEYTAP(KEY_TYPE::KEY_1))
-            m_bCanCombo = true;
-    }
+    if (Check_Combo(40, KEY_TYPE::KEY_1))
+        m_eCurState = STATE::skill_100200;
 
-    if (m_bCanCombo)
-    {
-        if (Get_CurFrame() > 40)
-            m_eCurState = STATE::skill_100200;
-    }
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    Look_DirToTarget();
 
     if (Get_FinalFrame() - Get_CurFrame() < 9)
     {
@@ -1220,8 +1163,7 @@ void Shane_FSM::skill_100100_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1231,25 +1173,19 @@ void Shane_FSM::skill_100100_Init()
 
 void Shane_FSM::skill_100200()
 {
-    if (Get_CurFrame() == 5)
+    if (Init_CurFrame(5))
     {
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 1.f;
-            desc.fLimitDistance = 0.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 0.f;
+		desc.fLifeTime = 1.f;
+		desc.fLimitDistance = 0.f;
 
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKBACK_SKILL);
-        }
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
+		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKBACK_SKILL);
     }
 
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    Look_DirToTarget();
 
     if (Get_FinalFrame() - Get_CurFrame() < 9)
     {
@@ -1271,8 +1207,7 @@ void Shane_FSM::skill_100200_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1295,45 +1230,31 @@ void Shane_FSM::skill_200100()
         m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.3f, vDir.xyz(), 14.f);
     }
 
-    if (Get_CurFrame() == 20 || 
-        Get_CurFrame() == 25 ||
-        Get_CurFrame() == 30 ||
-        Get_CurFrame() == 35 ||
-        Get_CurFrame() == 40)
+    if (Init_CurFrame(20) || 
+        Init_CurFrame(25) ||
+        Init_CurFrame(30) ||
+        Init_CurFrame(35) ||
+        Init_CurFrame(40))
     {
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 10.f;
-            desc.fLifeTime = 0.5f;
-            desc.fLimitDistance = 10.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 10.f;
+		desc.fLifeTime = 0.5f;
+		desc.fLimitDistance = 10.f;
 
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_ATTACK);
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_ATTACK);
 
-            Create_200100_Clone(m_iCloneIndex);
+		Create_200100_Clone(m_iCloneIndex);
 
-            m_iCloneIndex++;
-        }
+        m_iCloneIndex++;
     }
 
-    _float3 vInputVector = Get_InputDirVector();
+    Look_DirToTarget();
 
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    if (Check_Combo(42, KEY_TYPE::KEY_2))
+        m_eCurState = STATE::skill_200200;
 
-    if (Get_CurFrame() < 43)
-    {
-        if (KEYTAP(KEY_TYPE::KEY_2))
-            m_bCanCombo = true;
-    }
-
-    if (m_bCanCombo)
-    {
-        if (Get_CurFrame() > 42)
-            m_eCurState = STATE::skill_200200;
-    }
 
     if (Get_FinalFrame() - Get_CurFrame() < 9)
     {
@@ -1352,15 +1273,14 @@ void Shane_FSM::skill_200100_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
     m_bInvincible = false;
     m_bSuperArmor = true;
 
-    Calculate_SkillCamRight();
+    Cal_SkillCamDirection(3.f);
 }
 
 void Shane_FSM::skill_200200()
@@ -1381,25 +1301,19 @@ void Shane_FSM::skill_200200()
         }
     }
 
-    if (Get_CurFrame() == 5)
+    if (Init_CurFrame(5))
     {
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 5.f;
-            desc.fLifeTime = 0.5f;
-            desc.fLimitDistance = 3.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 5.f;
+		desc.fLifeTime = 0.5f;
+		desc.fLimitDistance = 3.f;
 
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_SKILL);
-        }
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_SKILL);
     }
 
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    Look_DirToTarget();
 
     if (Get_FinalFrame() - Get_CurFrame() < 9)
     {
@@ -1420,8 +1334,7 @@ void Shane_FSM::skill_200200_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1433,25 +1346,19 @@ void Shane_FSM::skill_200200_Init()
 
 void Shane_FSM::skill_300100()
 {
-    if (Get_CurFrame() == 9)
+    if (Init_CurFrame(9))
     {
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 0.5f;
-            desc.fLimitDistance = 0.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 0.f;
+		desc.fLifeTime = 0.5f;
+		desc.fLimitDistance = 0.f;
 
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + _float3::Up;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, KNOCKDOWN_SKILL);
-        }
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + _float3::Up;
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, KNOCKDOWN_SKILL);
     }
 
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    Look_DirToTarget();
 
     if (Get_FinalFrame() - Get_CurFrame() < 9)
     {
@@ -1468,8 +1375,7 @@ void Shane_FSM::skill_300100_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1479,25 +1385,19 @@ void Shane_FSM::skill_300100_Init()
 
 void Shane_FSM::skill_500100()
 {
-    if (Get_CurFrame() == 10)
+    if (Init_CurFrame(10))
     {
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 0.5f;
-            desc.fLimitDistance = 0.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 0.f;
+		desc.fLifeTime = 0.5f;
+		desc.fLimitDistance = 0.f;
 
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, KNOCKBACK_SKILL);
-        }
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, KNOCKBACK_SKILL);
     }
 
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    Look_DirToTarget();
 
     if (Get_FinalFrame() - Get_CurFrame() < 9)
     {
@@ -1516,8 +1416,7 @@ void Shane_FSM::skill_500100_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1528,17 +1427,6 @@ void Shane_FSM::skill_500100_Init()
 
 void Shane_FSM::skill_502100()
 {
-    /*if (Get_CurFrame() == 8)
-        Get_Owner()->Get_Animator()->Set_AnimationSpeed(0.2f);
-    else if (Get_CurFrame() == 13)
-        Get_Owner()->Get_Animator()->Set_AnimationSpeed(0.4f);
-    else if (Get_CurFrame() == 25)
-        Get_Owner()->Get_Animator()->Set_AnimationSpeed(0.6f);
-    else if (Get_CurFrame() == 35)
-        Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.2f);
-    else if (Get_CurFrame() == 70)
-        m_vCamStopPos = m_vSkillCamBonePos;*/
-
     if (Get_CurFrame() == 8)
         Get_Owner()->Get_Animator()->Set_AnimationSpeed(0.2f);
     else if (Get_CurFrame() == 25)
@@ -1572,39 +1460,30 @@ void Shane_FSM::skill_502100()
         }
     }
 
-    if (Get_CurFrame() == 56)
+    if (Init_CurFrame(56))
     {
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 0.5f;
-            desc.fLimitDistance = 0.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 0.f;
+		desc.fLifeTime = 0.5f;
+		desc.fLimitDistance = 0.f;
 
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, NORMAL_SKILL);
-        }
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
+        Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, NORMAL_SKILL);
     }
-    else if (Get_CurFrame() == 63)
+    else if (Init_CurFrame(63))
     {
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 0.5f;
-            desc.fLimitDistance = 0.f;
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.fMoveSpeed = 0.f;
+		desc.fLifeTime = 0.5f;
+		desc.fLimitDistance = 0.f;
 
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, KNOCKBACK_SKILL);
-        }
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
+        Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, KNOCKBACK_SKILL);
     }
 
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (m_vDirToTarget != _float3(0.f))
-        Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+    Look_DirToTarget();
 
     if (Get_FinalFrame() - Get_CurFrame() < 9)
     {
@@ -1622,8 +1501,7 @@ void Shane_FSM::skill_502100_Init()
 
     m_bCanCombo = false;
 
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
+    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1706,20 +1584,4 @@ void Shane_FSM::Create_200100_Clone(_uint iCloneIndex)
     obj->Add_Component(make_shared<Shane_Clone_FSM>(iCloneIndex));
     obj->Get_FSM()->Init();
     CUR_SCENE->Add_GameObject(obj);   
-}
-
-void Shane_FSM::Calculate_SkillCamRight()
-{
-    _float4 vDir = _float4(0.f);
-    vDir = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS);
-    vDir.y = 0.f;
-    vDir.Normalize();
-
-    _float4 vCross = _float4(0.f);
-    vCross = XMVector3Cross(Get_Transform()->Get_State(Transform_State::LOOK), vDir);
-
-    if (XMVectorGetY(vCross) < 0.f) // LEFT 
-        m_vSkillCamRight = (Get_Transform()->Get_State(Transform_State::RIGHT) * -3.f);
-    else //RIGHT	
-        m_vSkillCamRight = (Get_Transform()->Get_State(Transform_State::RIGHT) * 3.f);
 }
