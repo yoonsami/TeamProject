@@ -63,6 +63,7 @@ void GroupEffect::Final_Tick()
     m_fTimeAcc_CreatCoolTime += fDT;
 
     _bool bIsAllActive = true;
+
     // For. Check all effect finished
     for (auto& iter : m_vMemberEffectData)
     {

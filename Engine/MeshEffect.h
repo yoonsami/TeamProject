@@ -37,6 +37,7 @@ public:
     void                    Translate();
     void                    Scaling();
     void                    Turn();
+    void                    Billbord();
     void                    FollowGroupEffect();
 
 private:
