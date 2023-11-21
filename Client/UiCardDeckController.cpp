@@ -159,7 +159,7 @@ HRESULT UiCardDeckController::Init()
 
 void UiCardDeckController::Tick()
 {
-	if (m_pOwner.expired())
+	if (m_pOwner.expired() || m_pUiCardDeckSelect.expired())
 		return;
 
     if (KEYTAP(KEY_TYPE::ESC) && true == m_bIsRender)
@@ -250,6 +250,9 @@ void UiCardDeckController::Click_Deck_Select(wstring strObjName)
     if (false == m_bIsRender)
         return;
 
+    if (true == m_pUiCardDeckSelect.expired())
+        return;
+
     for (_uint i = 3; i < 6; ++i)
     {
         if (false == m_vecCardDeckObj[i].expired())
@@ -291,17 +294,33 @@ void UiCardDeckController::Click_Deck_Inven(wstring strInvenName)
         _uint iSize = IDX(m_vecInvenObj.size());
         for (_uint i = 0; i < iSize; ++i)
         {
+            if (true == m_vecInvenObj[i].expired())
+                continue;
+
             if (m_vecInvenObj[i].lock()->Get_Name() == strInvenName)
             {
                 auto pScript = m_vecInvenObj[i].lock()->Get_Script<UiCardDeckInvenChange>();
+                if (nullptr == pScript)
+                    continue;
+
                 if (true == pScript->Is_Set_Hero())
                 {
                     HERO eHero = pScript->Get_Hero();
+
+                    if (true == m_vecCardDeckObj[m_iPickingIndex].expired())
+                        continue;
                     m_vecCardDeckObj[m_iPickingIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(GET_DATA(eHero).KeyDeckSelect), TextureMapType::DIFFUSE);
+                    
+                    if (true == m_pUiCharChange.expired())
+                        continue;
                     m_pUiCharChange.lock()->Get_Script<UiCharChange>()->Set_Hero(m_iPickingIndex - 3, eHero);
                 
+                    if (true == m_vecCardDeckObj[m_iPickingIndex + 6].expired())
+                        continue;
                     m_vecCardDeckObj[m_iPickingIndex + 6].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
                     
+                    if (true == m_pUiCardDeckSelect.expired())
+                        continue;
                     m_pUiCardDeckSelect.lock()->Set_Render(false);
                     m_eState = SELECT_STATE::DOWN;
                     _float4 vPos = m_pUiCardDeckSelect.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
@@ -329,8 +348,16 @@ void UiCardDeckController::Click_Deck_X(wstring strObjName)
     {
         if (m_vecCardDeckObj[i].lock()->Get_Name() == strObjName)
         {
+            if (true == m_vecCardDeckObj[i].expired())
+                continue;
             m_vecCardDeckObj[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
+            
+            if (true == m_vecCardDeckObj[i - 6].expired())
+                continue;
             m_vecCardDeckObj[i - 6].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"Card_Deck_Bg_None"), TextureMapType::DIFFUSE);
+            
+            if (true == m_pUiCharChange.expired())
+                continue;
             m_pUiCharChange.lock()->Get_Script<UiCharChange>()->Set_Hero(i - 9, HERO::MAX);
         }
     }
@@ -377,6 +404,8 @@ void UiCardDeckController::Render_Off()
             m_vecFont[i].lock()->Set_Render(false);
     }
 
+    if (true == m_pUiCardDeckSelect.expired())
+        return;
     m_pUiCardDeckSelect.lock()->Set_Render(false);
 }
 

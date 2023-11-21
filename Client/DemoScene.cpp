@@ -43,6 +43,9 @@
 #include "ObjectTransformDebug.h"
 #include "Silversword_Soldier_FSM.h"
 #include "Succubus_Scythe_FSM.h"
+#include "Undead_Priest_FSM.h"
+
+
 #include "UiGachaController.h"
 #include "Boss_Mir_FSM.h"
 #include "Boss_Dellons_FSM.h"
@@ -57,7 +60,7 @@
 #include "UIBossHpBar.h"
 #include "UiComboEffect.h"
 #include "UiSkillGauge.h"
-#include "UiMouseClick.h"
+
 
 #include <filesystem>
 #include "GachaScene.h"
@@ -85,15 +88,6 @@ void DemoScene::Init()
 void DemoScene::Tick()
 {
 	__super::Tick();
-
-	/*if (KEYTAP(KEY_TYPE::C))
-	{
-		Get_GameObject(L"Main_Ui_Controller")->Get_Script<MainUiController>()->Set_MainUI_Render(false);
-	}
-	if (KEYTAP(KEY_TYPE::V))
-	{
-		Get_GameObject(L"Main_Ui_Controller")->Get_Script<MainUiController>()->Set_MainUI_Render(true);
-	}*/
 }
 
 void DemoScene::Late_Tick()
@@ -171,6 +165,7 @@ HRESULT DemoScene::Load_Scene()
 	Load_MapFile(L"KrisMap");
 	Load_Monster(1, L"Silversword_Soldier");
 	Load_Monster(1, L"Succubus_Scythe");
+	Load_Monster(1, L"Undead_Priest");
 	//Load_Boss_Spike();
 	//Load_Boss_Mir();
 
@@ -351,6 +346,9 @@ void DemoScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag)
 					ObjMonster->Add_Component(make_shared<Silversword_Soldier_FSM>());
 				else if (strMonsterTag == L"Succubus_Scythe")
 					ObjMonster->Add_Component(make_shared<Succubus_Scythe_FSM>());
+				else if (strMonsterTag == L"Undead_Priest")
+					ObjMonster->Add_Component(make_shared<Undead_Priest_FSM>());
+				
 
 				auto pPlayer = Get_GameObject(L"Player");
 				ObjMonster->Get_FSM()->Set_Target(pPlayer);
@@ -623,10 +621,10 @@ void DemoScene::Load_Ui()
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck.dat", false);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", false);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_MonsterHp.dat");
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat");
+	//Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat");
 
 
-	{
+	/*{
 		auto pObj = make_shared<GameObject>();
 		pObj->Set_Name(L"Main_Ui_Controller");
 
@@ -635,7 +633,7 @@ void DemoScene::Load_Ui()
 
 		pObj->Set_LayerIndex(Layer_UI);
 		Add_GameObject(pObj, true);
-	}
+	}*/
 
 	{
 		auto pObj = make_shared<GameObject>();
@@ -712,14 +710,7 @@ void DemoScene::Load_Ui()
 	}
 	
 
-	{
-		auto pObj = Get_UI(L"UI_Mouse_Click");
-		if (nullptr != pObj)
-		{
-			auto pScript = make_shared<UiMouseClick>();
-			pObj->Add_Component(pScript);
-		}
-	}
+	
 
 	
 

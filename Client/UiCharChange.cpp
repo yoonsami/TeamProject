@@ -47,6 +47,16 @@ void UiCharChange::Tick()
 	if (m_pOwner.expired())
 		return;
 
+    _uint iSize = IDX(m_pObj.size());
+    for (_uint i = 0; i < iSize; ++i)
+        if (true == m_pObj[i].expired())
+            return;
+
+    iSize = IDX(m_pElement.size());
+    for (_uint i = 0; i < iSize; ++i)
+        if (true == m_pElement[i].expired())
+            return;
+
     Check_Change_Cool();
 
     Set_Param_Value();
@@ -118,11 +128,7 @@ void UiCharChange::Check_Change_Cool()
 
 void UiCharChange::Set_Param_Value()
 {
-    _uint iSize = IDX(m_vecDesc.size());
-    for (_uint i = 0; i < iSize; ++i)
-        if (true == m_pObj[i].expired())
-            return;
-
+    _uint iSize = IDX(m_pObj.size());
     for (_uint i = 0; i < iSize; ++i)
     {
         m_pObj[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = m_vecDesc[i].fAccTime / m_vecDesc[i].fCoolTime;
@@ -138,7 +144,6 @@ void UiCharChange::Change_Hero()
         if (HERO::MAX == m_eHero[0])
             return;
 
-        // hero change script
         auto pScript = CUR_SCENE->Get_GameObject(L"Player")->Get_Script<HeroChangeScript>();
 
         pScript->Change_Hero(m_eHero[0]);
