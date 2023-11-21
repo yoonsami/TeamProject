@@ -92,13 +92,6 @@ HRESULT DemoScene::Load_Scene()
 
 void DemoScene::Load_DemoModel()
 {
-	shared_ptr<GameObject> sky = make_shared<GameObject>();
-	sky->GetOrAddTransform();
-	sky->Add_Component(make_shared<ModelRenderer>(RESOURCES.Get<Shader>(L"SkyBox.fx")));
-	sky->Get_ModelRenderer()->Set_Model(RESOURCES.Get<Model>(L"SkyBox"));
-	sky->Set_Name(L"SkyBase");
-	Add_GameObject(sky);
-
 	{
 
 		shared_ptr<GameObject> testObj = make_shared<GameObject>();

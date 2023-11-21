@@ -439,6 +439,9 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 			_float SP = { 0.f };
 			file->Read<_float>(SP);
 			pPLE->Set_Speed(SP);
+			// 랜덤으로 델타타임과 PM세팅
+			pPLE->Set_DeltaTime(Utils::Random_In_Range(0.f, 1.f));
+			pPLE->Set_DeltaPM(rand() % 2 > 0 ? 1.f : -1.f);
 		}
 	}
 
@@ -649,7 +652,8 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 	PlayerLookAtPos.w = 1.f;
 
 	shared_ptr<GameObject> PlayerPtr = Get_GameObject(L"Player");
-	if (PlayerPtr != nullptr)
+	// 플레이어가 있고 스폰지점과룩앳지점이 다를때만 변경
+	if (PlayerPtr != nullptr && PlayerCreatePos != PlayerLookAtPos)
 	{
 		PlayerPtr->Get_Transform()->Set_State(Transform_State::POS, PlayerCreatePos);
 		PlayerPtr->Get_Transform()->LookAt(PlayerLookAtPos);

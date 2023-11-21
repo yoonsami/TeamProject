@@ -44,12 +44,12 @@ void PointLightScript::Tick()
 		if (m_fDeltaTime > 1.f)
 		{
 			m_fDeltaPM = -1.f;
-			m_fDeltaTime = 1.f;
+			//m_fDeltaTime = 1.f;
 		}
 		else if (m_fDeltaTime < 0.f)
 		{
 			m_fDeltaPM = 1.f;
-			m_fDeltaTime = 0.f;
+			//m_fDeltaTime = 0.f;
 		}
 
 		_float4 AmbientColor = _float4::Lerp(m_AmbientStartColor, m_AmbientEndColor, m_fDeltaTime);

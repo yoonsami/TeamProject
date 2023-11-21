@@ -22,8 +22,7 @@ void Converter::ReadAssetFile(const wstring& file)
 	
 	m_pScene = m_pImporter->ReadFile(
 		Utils::ToString(fileStr),
-		aiProcess_ConvertToLeftHanded |
-		aiProcessPreset_TargetRealtime_Fast
+		aiProcess_ConvertToLeftHanded
 	);
 	 
 	assert(m_pScene);
