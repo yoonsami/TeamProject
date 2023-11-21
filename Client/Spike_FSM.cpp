@@ -1112,22 +1112,18 @@ void Spike_FSM::skill_93100_Init()
 
 void Spike_FSM::skill_100100()
 {
+    if (Init_CurFrame(19))
+        Add_Effect(L"Spike_100100_RunWind");
+   
     if (Get_CurFrame() >= 19)
     {
-       /* if (!m_pCamera.expired())
-        {
-            _float4 vDir =  m_vCamBonePos - m_vSkillCamBonePos;
-            vDir.Normalize();
+        m_fEffectCreateTimer += fDT;
 
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCamBonePos.xyz());
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 4.f);
-        }*/
-
-        if (m_iCurFrame != m_iPreFrame)
+        if (m_fEffectCreateTimer >= 0.12f)
         {
             // TODO : need cooltime
-            Add_Effect(L"Spike_Skill1_1");
+            m_fEffectCreateTimer = 0.f;
+            Add_Effect(L"Spike_100100_IceFlower");
         }
 
         Get_Transform()->Go_Straight();
@@ -1170,8 +1166,11 @@ void Spike_FSM::skill_100100_Init()
 
 void Spike_FSM::skill_100300()
 {
-    if (Get_CurFrame() == 16)
+    if (Init_CurFrame(20))
+    {
+        Add_Effect(L"Spike_100100_IceAttack");
         AttackCollider_On(KNOCKBACK_ATTACK);
+    }
 
     if (Is_AnimFinished())
     {
