@@ -19,13 +19,13 @@ public:
 private:
 	shared_ptr<GameObject> Load_Player();
 
-	void Load_Camera();
+	void Load_Camera(shared_ptr<GameObject> pPlayer);
 	void Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_ptr<GameObject> pPlayer);
-	void Load_Boss_Mir();
-	void Load_Boss_Dellons();
-	void Load_Boss_Spike();
+	void Load_Boss_Mir(shared_ptr<GameObject> pPlayer);
+	void Load_Boss_Dellons(shared_ptr<GameObject> pPlayer);
+	void Load_Boss_Spike(shared_ptr<GameObject> pPlayer);
 
-	void Load_Ui();
+	void Load_Ui(shared_ptr<GameObject> pPlayer);
 	void Load_Debug();
 
 

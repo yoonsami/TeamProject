@@ -262,6 +262,9 @@
     <Filter Include="02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\04.Wolf_FSM">
       <UniqueIdentifier>{e40fa01e-01f1-4b77-a2e1-897731c52872}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Scene\00.PlayScene\02.Mir">
+      <UniqueIdentifier>{39a19dc2-0ef9-4370-94bb-2b5425573b88}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -537,6 +540,9 @@
     <ClInclude Include="Wolf_FSM.h">
       <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\04.Wolf_FSM</Filter>
     </ClInclude>
+    <ClInclude Include="MirScene.h">
+      <Filter>01.Scene\00.PlayScene\02.Mir</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -778,6 +784,9 @@
     </ClCompile>
     <ClCompile Include="Wolf_FSM.cpp">
       <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\04.Wolf_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="MirScene.cpp">
+      <Filter>01.Scene\00.PlayScene\02.Mir</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

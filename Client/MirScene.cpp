@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include "KrisScene.h"
+#include "MirScene.h"
 
 #include "Utils.h"
 #include "Model.h"
@@ -69,26 +69,26 @@
 #include "GranseedScene.h"
 namespace fs = std::filesystem;
 
-KrisScene::KrisScene()
+MirScene::MirScene()
 {
 }
 
-KrisScene::~KrisScene()
+MirScene::~MirScene()
 {
 }
 
-void KrisScene::Init()
+void MirScene::Init()
 {
 	__super::Init();
 
 }
 
-void KrisScene::Tick()
+void MirScene::Tick()
 {
 	__super::Tick();
 }
 
-void KrisScene::Late_Tick()
+void MirScene::Late_Tick()
 {
 
 	__super::Late_Tick();
@@ -105,7 +105,7 @@ void KrisScene::Late_Tick()
 	}
 }
 
-void KrisScene::Final_Tick()
+void MirScene::Final_Tick()
 {
 	__super::Final_Tick();
 	PHYSX.Tick();
@@ -125,7 +125,7 @@ void KrisScene::Final_Tick()
 	}
 }
 
-HRESULT KrisScene::Load_Scene()
+HRESULT MirScene::Load_Scene()
 {
 	RESOURCES.Delete_NonStaticResources();
 	PHYSX.Init();
@@ -137,37 +137,23 @@ HRESULT KrisScene::Load_Scene()
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Weapon\\", true);
 
 	//Map
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Kris\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Mir\\", false);
 
 	//Monster
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Silversword_Soldier\\", false);
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_White\\", false);
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_Brown\\", false);
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_Black\\", false);
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Wolf\\", false);
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Succubus_Scythe\\", false);
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Undead_Priest\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Boss_Mir\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Boss_Mir2\\", false);
 
 	auto player = Load_Player();
 	Load_Camera(player);
-	Load_MapFile(L"KrisMap", player);
-
-	//Load_Monster(1, L"Silversword_Soldier", player);
-	//Load_Monster(1, L"Succubus_Scythe", player);
-	//Load_Monster(1, L"Undead_Priest", player);
-	Load_Monster(10, L"Alpaca_White", player);
-	Load_Monster(10, L"Alpaca_Brown", player);
-	Load_Monster(10, L"Alpaca_Black", player);
-	//Load_Monster(1, L"Wolf", player);
-	//Load_Boss_Spike();
-	//Load_Boss_Mir();
+	Load_MapFile(L"MirMap", player);
+	Load_Boss_Mir(player);
 
 	Load_Ui(player);
 
 	return S_OK;
 }
 
-shared_ptr<GameObject> KrisScene::Load_Player()
+shared_ptr<GameObject> MirScene::Load_Player()
 {
 	if (CUR_SCENE && typeid(*CUR_SCENE.get()) == typeid(LoadingScene))
 	{
@@ -262,7 +248,7 @@ shared_ptr<GameObject> KrisScene::Load_Player()
 	return nullptr;
 }
 
-void KrisScene::Load_Camera(shared_ptr<GameObject> pPlayer)
+void MirScene::Load_Camera(shared_ptr<GameObject> pPlayer)
 {
 	{
 		//GameObj for Camera Create
@@ -324,7 +310,7 @@ void KrisScene::Load_Camera(shared_ptr<GameObject> pPlayer)
 
 }
 
-void KrisScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_ptr<GameObject> pPlayer)
+void MirScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_ptr<GameObject> pPlayer)
 {
 	{
 		for (_uint i = 0; i < iCnt; i++)
@@ -382,7 +368,7 @@ void KrisScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_pt
 	}
 }
 
-void KrisScene::Load_Boss_Mir(shared_ptr<GameObject> pPlayer)
+void MirScene::Load_Boss_Mir(shared_ptr<GameObject> pPlayer)
 {
 	// Add. Monster
 	shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
@@ -432,7 +418,7 @@ void KrisScene::Load_Boss_Mir(shared_ptr<GameObject> pPlayer)
 	Add_GameObject(ObjMonster);
 }
 
-void KrisScene::Load_Boss_Dellons(shared_ptr<GameObject> pPlayer)
+void MirScene::Load_Boss_Dellons(shared_ptr<GameObject> pPlayer)
 {
 	{
 		// Add. Boss_Dellons
@@ -452,6 +438,7 @@ void KrisScene::Load_Boss_Dellons(shared_ptr<GameObject> pPlayer)
 
 			ObjMonster->Add_Component(animator);
 			ObjMonster->Add_Component(make_shared<Boss_Dellons_FSM>());
+			
 			ObjMonster->Get_FSM()->Set_Target(pPlayer);
 		}
 		ObjMonster->Set_Name(L"Boss_Dellons");
@@ -505,7 +492,7 @@ void KrisScene::Load_Boss_Dellons(shared_ptr<GameObject> pPlayer)
 	}
 }
 
-void KrisScene::Load_Boss_Spike(shared_ptr<GameObject> pPlayer)
+void MirScene::Load_Boss_Spike(shared_ptr<GameObject> pPlayer)
 {
 	{
 		// Add. Boss_Dellons
@@ -525,6 +512,7 @@ void KrisScene::Load_Boss_Spike(shared_ptr<GameObject> pPlayer)
 
 			ObjMonster->Add_Component(animator);
 			ObjMonster->Add_Component(make_shared<Boss_Spike_FSM>());
+
 			ObjMonster->Get_FSM()->Set_Target(pPlayer);
 		}
 		ObjMonster->Set_Name(L"Boss_Spike");
@@ -579,7 +567,7 @@ void KrisScene::Load_Boss_Spike(shared_ptr<GameObject> pPlayer)
 	}
 }
 
-void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
+void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 {
 	wstring assetPath = L"..\\Resources\\Textures\\UITexture\\Main\\";
 
@@ -857,7 +845,7 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 
 }
 
-void KrisScene::Load_Debug()
+void MirScene::Load_Debug()
 {
 	{
 		shared_ptr<GameObject> debugText = make_shared<GameObject>();

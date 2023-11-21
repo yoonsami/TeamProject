@@ -121,7 +121,7 @@ HRESULT GameObject::Add_Component(shared_ptr<Component> component)
 	{
 		for (auto& script : m_Scripts)
 		{
-			if (typeid(script) == typeid(component))
+			if (typeid(*script) == typeid(*component))
 				return E_FAIL;
 
 		}

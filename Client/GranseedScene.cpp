@@ -139,10 +139,10 @@ HRESULT GranseedScene::Load_Scene()
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Yeopo\\", false);
 
 	auto pPlayer = Load_Player();
-	Load_Camera();
+	Load_Camera(pPlayer);
 	Load_MapFile(L"GranseedMap", pPlayer);
 
-	Load_Ui();
+	Load_Ui(pPlayer);
 
 	return S_OK;
 }
@@ -241,7 +241,7 @@ shared_ptr<GameObject> GranseedScene::Load_Player()
 	return nullptr;
 }
 
-void GranseedScene::Load_Camera()
+void GranseedScene::Load_Camera(shared_ptr<GameObject> pPlayer)
 {
 	{
 		//GameObj for Camera Create
@@ -268,18 +268,6 @@ void GranseedScene::Load_Camera()
 		camera->Get_Camera()->Set_ProjType(ProjectionType::Perspective);
 		//Layer_UI culling true
 		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, true);
-
-		shared_ptr<GameObject> pPlayer = nullptr;
-
-		if (CUR_SCENE && typeid(*CUR_SCENE.get()) == typeid(LoadingScene))
-		{
-			pPlayer = static_pointer_cast<LoadingScene>(CUR_SCENE)->Get_StaticObjectFromLoader(L"Player");
-		}
-		if (!pPlayer)
-			if (CUR_SCENE && CUR_SCENE->Get_GameObject(L"Player"))
-				pPlayer = CUR_SCENE->Get_GameObject(L"Player");
-		if (!pPlayer)
-			pPlayer = Get_GameObject(L"Player");
 
 		camera->Add_Component(make_shared<MainCameraScript>(pPlayer));
 
@@ -315,265 +303,7 @@ void GranseedScene::Load_Camera()
 
 }
 
-void GranseedScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag)
-{
-	{
-		for (_uint i = 0; i < iCnt; i++)
-		{
-			// Add. Monster
-			shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
-
-			ObjMonster->Add_Component(make_shared<Transform>());
-
-			ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, (rand() % 5) + 30.f, 1.f));
-			{
-				shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-
-				shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
-				{
-					shared_ptr<Model> model = RESOURCES.Get<Model>(strMonsterTag);
-					animator->Set_Model(model);
-				}
-
-				ObjMonster->Add_Component(animator);
-
-				if (strMonsterTag == L"Silversword_Soldier")
-					ObjMonster->Add_Component(make_shared<Silversword_Soldier_FSM>());
-				else if (strMonsterTag == L"Succubus_Scythe")
-					ObjMonster->Add_Component(make_shared<Succubus_Scythe_FSM>());
-				else if (strMonsterTag == L"Undead_Priest")
-					ObjMonster->Add_Component(make_shared<Undead_Priest_FSM>());
-				
-
-				auto pPlayer = Get_GameObject(L"Player");
-				ObjMonster->Get_FSM()->Set_Target(pPlayer);
-			}
-			ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.7f, 0.5f })); //obbcollider
-			ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
-			ObjMonster->Get_Collider()->Set_Activate(true);
-
-			wstring strMonsterName = (L"Monster") + to_wstring(i);
-			ObjMonster->Set_Name(strMonsterName);
-			{
-				auto controller = make_shared<CharacterController>();
-				ObjMonster->Add_Component(controller);
-				auto& desc = controller->Get_CapsuleControllerDesc();
-				desc.radius = 0.5f;
-				desc.height = 5.f;
-				_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz();
-				desc.position = { vPos.x, vPos.y, vPos.z };
-				controller->Create_Controller();
-			}
-			ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
-
-			Add_GameObject(ObjMonster);
-		}
-	}
-}
-
-void GranseedScene::Load_Boss_Mir()
-{
-	// Add. Monster
-	shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
-
-	ObjMonster->Add_Component(make_shared<Transform>());
-
-	ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
-	{
-		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-
-		shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
-		{
-			shared_ptr<Model> model = RESOURCES.Get<Model>(L"Boss_Mir");
-			animator->Set_Model(model);
-		}
-
-		ObjMonster->Add_Component(animator);
-		ObjMonster->Add_Component(make_shared<Boss_Mir_FSM>());
-		auto pPlayer = Get_GameObject(L"Player");
-		ObjMonster->Get_FSM()->Set_Target(pPlayer);
-	}
-	ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 2.f, 4.f, 6.f })); //obbcollider
-	ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
-	ObjMonster->Get_Collider()->Set_Activate(true);
-
-	ObjMonster->Add_Component(make_shared<CounterMotionTrailScript>());
-
-	wstring strMonsterName = (L"Boss_Mir");
-	ObjMonster->Set_Name(strMonsterName);
-	{
-		auto controller = make_shared<CharacterController>();
-		ObjMonster->Add_Component(controller);
-
-		auto& desc = controller->Get_CapsuleControllerDesc();
-		desc.radius = 4.5f;
-		desc.height = 5.f;
-		desc.climbingMode = PxCapsuleClimbingMode::eCONSTRAINED;
-		
-		_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz() +
-					   ObjMonster->Get_Transform()->Get_State(Transform_State::LOOK);
-		desc.position = { vPos.x, vPos.y, vPos.z };
-		controller->Create_Controller();
-		controller->Get_Actor()->setStepOffset(0.1f);
-
-	}
-	ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
-	ObjMonster->Set_VelocityMap(true);
-	Add_GameObject(ObjMonster);
-}
-
-void GranseedScene::Load_Boss_Dellons()
-{
-	{
-		// Add. Boss_Dellons
-		shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
-
-		ObjMonster->Add_Component(make_shared<Transform>());
-
-		ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 30.f, 1.f));
-		{
-			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-
-			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
-			{
-				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Dellons");
-				animator->Set_Model(model);
-			}
-
-			ObjMonster->Add_Component(animator);
-			ObjMonster->Add_Component(make_shared<Boss_Dellons_FSM>());
-			
-			auto pPlayer = Get_GameObject(L"Player");
-			ObjMonster->Get_FSM()->Set_Target(pPlayer);
-		}
-		ObjMonster->Set_Name(L"Boss_Dellons");
-		ObjMonster->Set_VelocityMap(true);
-		ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.8f, 0.5f })); //obbcollider
-		ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
-		ObjMonster->Get_Collider()->Set_Activate(true);
-
-		{
-			auto controller = make_shared<CharacterController>();
-			ObjMonster->Add_Component(controller);
-			auto& desc = controller->Get_CapsuleControllerDesc();
-			desc.radius = 0.5f;
-			desc.height = 5.f;
-			_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz();
-			desc.position = { vPos.x, vPos.y, vPos.z };
-			controller->Create_Controller();
-		}
-		ObjMonster->Set_DrawShadow(true);
-		ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
-		Add_GameObject(ObjMonster);
-
-
-		//Add. Player's Weapon
-		shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
-
-		ObjWeapon->Add_Component(make_shared<Transform>());
-		{
-			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-
-			shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
-			{
-				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Weapon_Dellons");
-				renderer->Set_Model(model);
-			}
-
-			ObjWeapon->Add_Component(renderer);
-
-			WeaponScript::WEAPONDESC desc;
-			desc.strBoneName = L"Bip001-Prop1";
-			desc.matPivot = _float4x4::CreateRotationX(-XM_PI / 2.f) * _float4x4::CreateRotationZ(XM_PI);
-			desc.pWeaponOwner = ObjMonster;
-
-			ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
-		}
-		ObjWeapon->Set_DrawShadow(true);
-		ObjWeapon->Set_Name(L"Weapon_Boss_Dellons");
-		ObjWeapon->Set_VelocityMap(true);
-		Add_GameObject(ObjWeapon);
-
-	}
-}
-
-void GranseedScene::Load_Boss_Spike()
-{
-	{
-		// Add. Boss_Dellons
-		shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
-
-		ObjMonster->Add_Component(make_shared<Transform>());
-
-		ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 55.f, 1.f));
-		{
-			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-
-			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
-			{
-				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Boss_Spike");
-				animator->Set_Model(model);
-			}
-
-			ObjMonster->Add_Component(animator);
-			ObjMonster->Add_Component(make_shared<Boss_Spike_FSM>());
-
-			auto pPlayer = Get_GameObject(L"Player");
-			ObjMonster->Get_FSM()->Set_Target(pPlayer);
-		}
-		ObjMonster->Set_Name(L"Boss_Spike");
-		ObjMonster->Set_VelocityMap(true);
-		ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.8f, 0.5f })); //obbcollider
-		ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
-		ObjMonster->Get_Collider()->Set_Activate(true);
-
-		ObjMonster->Add_Component(make_shared<CounterMotionTrailScript>());
-
-		{
-			auto controller = make_shared<CharacterController>();
-			ObjMonster->Add_Component(controller);
-			auto& desc = controller->Get_CapsuleControllerDesc();
-			desc.radius = 0.5f;
-			desc.height = 5.f;
-			_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz();
-			desc.position = { vPos.x, vPos.y, vPos.z };
-			controller->Create_Controller();
-		}
-		ObjMonster->Set_DrawShadow(true);
-		ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
-		Add_GameObject(ObjMonster);
-
-
-		//Add. Player's Weapon
-		shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
-
-		ObjWeapon->Add_Component(make_shared<Transform>());
-		{
-			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-
-			shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
-			{
-				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Weapon_Spike");
-				renderer->Set_Model(model);
-			}
-
-			ObjWeapon->Add_Component(renderer);
-
-			WeaponScript::WEAPONDESC desc;
-			desc.strBoneName = L"Bip001-Prop1";
-			desc.matPivot = _float4x4::CreateRotationX(-XM_PI / 2.f) * _float4x4::CreateRotationZ(XM_PI);
-			desc.pWeaponOwner = ObjMonster;
-
-			ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
-		}
-		ObjWeapon->Set_DrawShadow(true);
-		ObjWeapon->Set_Name(L"Weapon_Boss_Spike");
-		ObjWeapon->Set_VelocityMap(true);
-		Add_GameObject(ObjWeapon);
-	}
-}
-
-void GranseedScene::Load_Ui()
+void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 {
 	wstring assetPath = L"..\\Resources\\Textures\\UITexture\\Main\\";
 
@@ -644,7 +374,7 @@ void GranseedScene::Load_Ui()
 	}
 
 	{
-		auto pObj = Get_GameObject(L"Player");
+		auto& pObj = pPlayer;
 		if (nullptr != pObj)
 		{
 			auto pScript = make_shared<UiHpBarController>(0);
@@ -774,7 +504,7 @@ void GranseedScene::Load_Ui()
 
 	{
 		auto pScript = make_shared<CoolTimeCheckScript>();
-		auto pObj = Get_GameObject(L"Player");
+		auto& pObj = pPlayer;
 		if (nullptr != pObj) {
 			pObj->Add_Component(pScript);
 		}
