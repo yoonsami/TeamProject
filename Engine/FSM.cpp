@@ -322,6 +322,32 @@ void FSM::Add_Effect(const wstring& strSkilltag)
 	CUR_SCENE->Add_GameObject(pGroupEffectObj);
 }
 
+void FSM::Add_And_Set_Effect(const wstring& strSkilltag)
+{
+	shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();
+
+	// For. Transform 
+	pGroupEffectObj->GetOrAddTransform();
+	pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS));
+	pGroupEffectObj->Get_Transform()->Set_Quaternion(Get_Transform()->Get_Rotation());
+
+	// For. GroupEffectData 
+	wstring wstrFileName = strSkilltag + L".dat";
+	wstring wtsrFilePath = TEXT("..\\Resources\\EffectData\\GroupEffectData\\") + wstrFileName;
+	shared_ptr<GroupEffectData> pGroupEffectData = RESOURCES.GetOrAddGroupEffectData(strSkilltag, wtsrFilePath);
+
+	// For. GroupEffect component 
+	shared_ptr<GroupEffect> pGroupEffect = make_shared<GroupEffect>();
+	pGroupEffectObj->Add_Component(pGroupEffect);
+	pGroupEffectObj->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
+	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
+	
+	m_pGroupEffect = pGroupEffectObj;
+
+	// For. Add Effect GameObject to current scene
+	CUR_SCENE->Add_GameObject(m_pGroupEffect.lock());
+}
+
 void FSM::Cal_SkillCamDirection(const _float dist)
 {
 	_float3 vDir = _float3(0.f);

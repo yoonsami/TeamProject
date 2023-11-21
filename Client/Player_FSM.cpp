@@ -880,7 +880,7 @@ void Player_FSM::knockdown_end_Init()
 void Player_FSM::skill_1100()
 {
     if(Init_CurFrame(9))
-        Add_Effect(L"Teo_1100_2");
+        Add_Effect(L"Teo_1100");
 
     if (Get_CurFrame() == 9)
         AttackCollider_On(NORMAL_ATTACK);
@@ -922,7 +922,7 @@ void Player_FSM::skill_1100_Init()
 void Player_FSM::skill_1200()
 {
 	if (Init_CurFrame(4))
-		Add_Effect(L"Teo_1200_1");
+		Add_Effect(L"Teo_1200");
 
     if (Get_CurFrame() == 4)
         AttackCollider_On(NORMAL_ATTACK);
@@ -970,7 +970,7 @@ void Player_FSM::skill_1300()
         AttackCollider_On(NORMAL_ATTACK);
 
         if (m_iPreFrame != m_iCurFrame)
-            Add_Effect(L"Teo_1300_1");
+            Add_Effect(L"Teo_1300");
     }
     else if (Get_CurFrame() == 14)
         AttackCollider_Off();

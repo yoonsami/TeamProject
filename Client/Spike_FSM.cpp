@@ -1113,7 +1113,7 @@ void Spike_FSM::skill_93100_Init()
 void Spike_FSM::skill_100100()
 {
     if (Init_CurFrame(19))
-        Add_Effect(L"Spike_100100_RunWind");
+        Add_And_Set_Effect(L"Spike_100100_RunWind");
    
     if (Get_CurFrame() >= 19)
     {
@@ -1126,6 +1126,9 @@ void Spike_FSM::skill_100100()
             Add_Effect(L"Spike_100100_IceFlower");
         }
 
+        if (!m_pGroupEffect.expired())
+            m_pGroupEffect.lock()->Get_Transform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
+
         Get_Transform()->Go_Straight();
     }
     
@@ -1137,10 +1140,16 @@ void Spike_FSM::skill_100100()
 	if (vInputVector != _float3(0.f))
 		Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
+    //THIS LOGIC IS PERFECT -> DON'T TOUCH COMBO
+    if (Get_CurFrame() > 20)
+    {
+        if (KEYTAP(KEY_TYPE::KEY_1))
+            m_bCanCombo = true;
+    }
 
-    if (Check_Combo(20, KEY_TYPE::KEY_1))
+    if (m_bCanCombo)
         m_eCurState = STATE::skill_100300;
-    
+
 
     if (Is_AnimFinished())
         m_eCurState = STATE::skill_100300;
