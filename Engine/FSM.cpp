@@ -149,7 +149,7 @@ _float3 FSM::Soft_Turn_ToTarget(const _float4& vTargetPos, _float turnSpeed)
 }
 
 
-_bool FSM::Target_In_AttackRange()
+_bool FSM::Target_In_AttackRange(_float* pGap)
 {
 	_bool bFlag = false;
 	
@@ -158,6 +158,9 @@ _bool FSM::Target_In_AttackRange()
 
 	_float fGap = (Get_Transform()->Get_State(Transform_State::POS).xyz() -
 		m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz()).Length();
+
+	if (pGap)
+		*pGap = fGap;
 
 	if (fGap <= m_fAttackRange)
 		bFlag = true;
@@ -312,6 +315,9 @@ void FSM::Add_Effect(const wstring& strSkilltag)
 	wstring wtsrFilePath = TEXT("..\\Resources\\EffectData\\GroupEffectData\\") + wstrFileName;
 	shared_ptr<GroupEffectData> pGroupEffectData = RESOURCES.GetOrAddGroupEffectData(strSkilltag, wtsrFilePath);
 
+	if (pGroupEffectData == nullptr)
+		return;
+
 	// For. GroupEffect component 
 	shared_ptr<GroupEffect> pGroupEffect = make_shared<GroupEffect>();
 	pGroupEffectObj->Add_Component(pGroupEffect);
@@ -335,6 +341,9 @@ void FSM::Add_And_Set_Effect(const wstring& strSkilltag)
 	wstring wstrFileName = strSkilltag + L".dat";
 	wstring wtsrFilePath = TEXT("..\\Resources\\EffectData\\GroupEffectData\\") + wstrFileName;
 	shared_ptr<GroupEffectData> pGroupEffectData = RESOURCES.GetOrAddGroupEffectData(strSkilltag, wtsrFilePath);
+
+	if (pGroupEffectData == nullptr)
+		return;
 
 	// For. GroupEffect component 
 	shared_ptr<GroupEffect> pGroupEffect = make_shared<GroupEffect>();

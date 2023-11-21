@@ -1,5 +1,8 @@
 #pragma once
 #include "FSM.h"
+#include "ForwardMovingSkillScript.h"
+#include "InstallationSkill_Script.h"
+
 
 class Undead_Priest_FSM :
 	public FSM
@@ -13,9 +16,8 @@ public:
 		wander,
 		die,
 		gaze_b,
-		gaze_f,
-		gaze_l,
-		gaze_r,
+		gaze_bl,
+		gaze_br,
 		airborne_start, //airborne_start -> airborne_end -> airborne_up
 		airborne_end,
 		airborne_up, // airborne_end_up Animation = knock_end_up animation
@@ -63,13 +65,11 @@ private:
 
 	void gaze_b();
 	void gaze_b_Init();
-	void gaze_f();
-	void gaze_f_Init();
-	void gaze_l();
-	void gaze_l_Init();
-	void gaze_r();
-	void gaze_r_Init();
-
+	void gaze_bl();
+	void gaze_bl_Init();
+	void gaze_br();
+	void gaze_br_Init();
+	
 
 	void airborne_start();
 	void airborne_start_Init();
@@ -101,21 +101,35 @@ private:
 	void skill_2100_Init();
 	void skill_3100();
 	void skill_3100_Init();
-
+	
 	void CalCulate_PatrolTime();
-	void Execute_AttackSkill();
+	void Set_Gaze();
+	void Entry_Battle();
+	void Set_AttackSkill();
+
+	_float3 Calculate_TargetTurnVector();
+	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
+	void Create_InstallationSkillCollider(const _float4& vPos, _float fSkillRange, INSTALLATIONSKILLDESC desc);
+
+
 private:
 	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;
+	STATE m_ePatternState = STATE::NONE;
 
-	_float4 m_vPatrolFirstPos = { 0.f,0.f,0.f,1.f };
+	_float m_fTurnSpeed = XM_PI * 5.f;
+	_float m_fPatrolDistance = 1.f;
+	_float m_fPatrolDistanceCnt = 0.f;
+
 	_float3 m_vTurnVector = _float3(0.f);
+	_float4 m_vPatrolFirstPos = { 0.f,0.f,0.f,1.f };
 
-	COOLTIMEINFO m_tAttackCoolTime = { 2.f, 0.f };
+	_bool m_bSetPattern = false;
 	_bool m_bDetected = false;
 	_bool m_bPatrolMove = false;
+
+	COOLTIMEINFO m_tAttackCoolTime = { 4.f, 0.f };
 	COOLTIMEINFO m_tPatrolMoveCool = { 4.f,0.f };
-	_float m_fPatrolDistance = 1.f;
 
 	_uint m_iPreAttack = 100;
 };

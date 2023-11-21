@@ -1,6 +1,9 @@
 #pragma once
 
 #define DEBUGTOOL                   GET_SINGLE(DebugTool)
+
+
+#define NONE_HIT					L""
 #define NORMAL_ATTACK               L"Normal_Attack"
 #define KNOCKBACK_ATTACK            L"KnockBack_Attack"
 #define KNOCKDOWN_ATTACK            L"KnockDown_Attack"

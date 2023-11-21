@@ -1,7 +1,7 @@
 #pragma once
 #include "FSM.h"
 
-class Silversword_Soldier_FSM :
+class Wolf_FSM :
 	public FSM
 {
 public:
@@ -9,6 +9,7 @@ public:
 	{
 		b_idle,
 		b_run,
+		n_idle,
 		n_run,
 		die,
 		gaze_b,
@@ -20,15 +21,13 @@ public:
 		airborne_up, // airborne_end_up Animation = knock_end_up animation
 		hit, //normal_hit
 		knock_start, // knock_start -> knock_end -> knock_end_loop -> knock_up
-		knock_end, 
-		knock_end_loop, 
+		knock_end,
+		knock_end_loop,
 		knock_end_hit, // hit on knock_state
 		knock_up,
 		knockdown_start, //knockdown_start -> knockdown_end -> knock_up
 		knockdown_end,
 		skill_1100, //SKILL 1
-		skill_2100, //SKILL 2
-		skill_3100, //SKILL 3
 		NONE
 	};
 
@@ -52,6 +51,8 @@ private:
 	void b_idle_Init();
 	void b_run();
 	void b_run_Init();
+	void n_idle();
+	void n_idle_Init();
 	void n_run();
 	void n_run_Init();
 
@@ -94,24 +95,24 @@ private:
 
 	void skill_1100();
 	void skill_1100_Init();
-	void skill_2100();
-	void skill_2100_Init();
-	void skill_3100();
-	void skill_3100_Init();
+
 
 	void CalCulate_PatrolTime();
-	void Execute_AttackSkill();
+	void Set_Gaze();
+	_float3 Calculate_TargetTurnVector();
+
 private:
 	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;
 
+	_float m_fTurnSpeed = XM_PI * 5.f;
 	_float m_fPatrolDistance = 1.f;
 	_float m_fPatrolDistanceCnt = 0.f;
-	
+
 	_float3 m_vTurnVector = _float3(0.f);
 	_float4 m_vPatrolFirstPos = { 0.f,0.f,0.f,1.f };
 
-	COOLTIMEINFO m_tAttackCoolTime = { 2.f, 0.f };
+	COOLTIMEINFO m_tAttackCoolTime = { 1.f, 0.f };
 	COOLTIMEINFO m_tPatrolMoveCool = { 4.f, 0.f };
 
 	_bool m_bDetected = false;

@@ -195,7 +195,9 @@
     <ClInclude Include="..\Libraries\Include\IMGUI\imstb_truetype.h" />
     <ClInclude Include="..\Libraries\Include\IMGUI\ImZoomSlider.h" />
     <ClInclude Include="..\Shaders\Fxaa3_11.h" />
+    <ClInclude Include="Alpaca_FSM.h" />
     <ClInclude Include="AttackColliderInfoScript.h" />
+    <ClInclude Include="Wolf_FSM.h" />
     <ClInclude Include="Boss_DellonsWraith_FSM.h" />
     <ClInclude Include="Boss_Dellons_FSM.h" />
     <ClInclude Include="Boss_Mir_FSM.h" />
@@ -279,7 +281,9 @@
     <ClCompile Include="..\Libraries\Include\IMGUI\imgui_tables.cpp" />
     <ClCompile Include="..\Libraries\Include\IMGUI\imgui_widgets.cpp" />
     <ClCompile Include="..\Libraries\Include\IMGUI\ImSequencer.cpp" />
+    <ClCompile Include="Alpaca_FSM.cpp" />
     <ClCompile Include="AttackColliderInfoScript.cpp" />
+    <ClCompile Include="Wolf_FSM.cpp" />
     <ClCompile Include="Boss_DellonsWraith_FSM.cpp" />
     <ClCompile Include="Boss_Dellons_FSM.cpp" />
     <ClCompile Include="Boss_Mir_FSM.cpp" />

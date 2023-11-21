@@ -44,6 +44,8 @@
 #include "Silversword_Soldier_FSM.h"
 #include "Succubus_Scythe_FSM.h"
 #include "Undead_Priest_FSM.h"
+#include "Alpaca_FSM.h"
+#include "Wolf_FSM.h"
 
 
 #include "UiGachaController.h"
@@ -162,10 +164,15 @@ HRESULT DemoScene::Load_Scene()
 	Load_Light();
 	Load_Camera();
 	// 플레이어의 위치를 잡아주기 때문에 LoadPlayer 이후로 해야함.
-	Load_MapFile(L"MirMapBall");
+	//Load_MapFile(L"MirMap");
+	Load_MapFile(L"KrisMap");
 	//Load_Monster(1, L"Silversword_Soldier");
 	//Load_Monster(1, L"Succubus_Scythe");
 	//Load_Monster(1, L"Undead_Priest");
+	Load_Monster(1, L"Alpaca_White");
+	Load_Monster(1, L"Alpaca_Brown");
+	Load_Monster(1, L"Alpaca_Black");
+	Load_Monster(1, L"Wolf");
 	//Load_Boss_Spike();
 	//Load_Boss_Mir();
 
@@ -348,7 +355,12 @@ void DemoScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag)
 					ObjMonster->Add_Component(make_shared<Succubus_Scythe_FSM>());
 				else if (strMonsterTag == L"Undead_Priest")
 					ObjMonster->Add_Component(make_shared<Undead_Priest_FSM>());
-				
+				else if (strMonsterTag.find(L"Alpaca") != wstring::npos)
+					ObjMonster->Add_Component(make_shared<Alpaca_FSM>());
+				else if (strMonsterTag == L"Wolf")
+					ObjMonster->Add_Component(make_shared<Wolf_FSM>());
+
+
 
 				auto pPlayer = Get_GameObject(L"Player");
 				ObjMonster->Get_FSM()->Set_Target(pPlayer);

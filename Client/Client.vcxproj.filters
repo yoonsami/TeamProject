@@ -250,6 +250,12 @@
     <Filter Include="02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\02.Undead_Priest_FSM">
       <UniqueIdentifier>{7aeab858-8e69-4719-a675-564847d10cd2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\03.Alpaca_FSM">
+      <UniqueIdentifier>{b5614ae7-1c0a-4948-aa41-730aa4c70dfa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\04.Wolf_FSM">
+      <UniqueIdentifier>{2c6742fa-89e2-402d-a107-81253dfd3a0d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -516,6 +522,12 @@
     <ClInclude Include="UiMouseController.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\16.UiMouseClick</Filter>
     </ClInclude>
+    <ClInclude Include="Alpaca_FSM.h">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\03.Alpaca_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Wolf_FSM.h">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\04.Wolf_FSM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -748,6 +760,12 @@
     </ClCompile>
     <ClCompile Include="UiMouseController.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\16.UiMouseClick</Filter>
+    </ClCompile>
+    <ClCompile Include="Alpaca_FSM.cpp">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\03.Alpaca_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="Wolf_FSM.cpp">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\04.Wolf_FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
