@@ -193,8 +193,6 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
         EffectObj->Get_MeshEffect()->Init(&tDesc);
         EffectObj->Get_MeshEffect()->Set_TransformDesc(&tTransform_Desc);
         EffectObj->Get_MeshEffect()->InitialTransform(Get_Transform()->Get_WorldMatrix(), iter.vPivot_Pos, iter.vPivot_Scale, iter.vPivot_Rotation);
-        if (tDesc.bIsFollowingGroup)
-            EffectObj->Get_MeshEffect()->Set_GroupEffect(shared_from_this());
 
         // For. Add to vector 
         m_vMemberEffects.push_back(EffectObj);

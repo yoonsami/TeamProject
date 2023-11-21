@@ -23,22 +23,16 @@ public:
     void                    Set_TransformDesc(void* pArg);
     void                    Set_Lock(_bool bIsLocked) { m_bIsLocked = bIsLocked; }
     void                    Set_Loop(_bool bIsLoop) { m_tDesc.bIsLoop = bIsLoop; }
-    void                    Set_ToolMode(_bool bToolMode) { m_bToolMode_On = bToolMode; }
-    void                    Set_GroupEffect(shared_ptr<GroupEffect> pGroupEffect) {m_pGroupEffect = pGroupEffect;}
 
     /* Getter */
     shared_ptr<Material>    Get_Material() { return  m_pMaterial; }
     shared_ptr<Shader>      Get_Shader() { return m_pShader; }
     _bool                   Get_IsFollowGroup() { return m_tDesc.bIsFollowingGroup; }
-    _float4x4               Get_InGroupMatrix() { return m_mInGroupWorldMatrix; }
-    _float4x4               Get_CurrLocalMatrix();
     _bool                   Get_IsLoop() { return m_tDesc.bIsLoop; }
 
     void                    Translate();
     void                    Scaling();
     void                    Turn();
-    void                    Billbord();
-    void                    FollowGroupEffect();
 
 private:
     void                    Run_SpriteAnimation();
@@ -55,24 +49,14 @@ private:
     MeshEffectData::DESC            m_tDesc;
     MeshEffectData::Transform_Desc  m_tTransform_Desc;
 
-    _bool                           m_bToolMode_On = { false };
-
+    _float4x4                       m_mInGroupWorldMatrix;
+    
     _float                          m_fDuration = { 0.f };
     _float                          m_fCurrAge = { 0.f };
     _float                          m_fLifeTimeRatio = { 0.f };
     _float                          m_fTimeAcc_SpriteAnimation = { 0.f };
     _bool                           m_bIsPlayFinished = { false };
     _bool                           m_bIsLocked = { false };
-
-    /* Group Effect */
-    _float4x4                       m_mInGroupWorldMatrix;
-    _float4x4                       m_mGroupInitWorldMatrix;
-    weak_ptr<GroupEffect>           m_pGroupEffect;
-
-    /* Current Transform */
-    _float4                         m_vCurrPos = { 0.f, 0.f, 0.f, 1.f };
-    _float3                         m_vCurrScale = { 0.f, 0.f, 0.f };
-    _float3                         m_vCurrRotation = { 0.f, 0.f, 0.f };
 
     /* Tex UV offset */
     _float2                         m_vCurrTexUVOffset_Op1 = { 0.f, 0.f };

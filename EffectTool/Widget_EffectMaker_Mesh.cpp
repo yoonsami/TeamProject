@@ -1128,7 +1128,6 @@ void Widget_EffectMaker_Mesh::Create()
 				{m_bBillbordAxes[0], m_bBillbordAxes[1]}
 		};
 		EffectObj->Get_MeshEffect()->Set_TransformDesc(&tTransform_Desc);
-		EffectObj->Get_MeshEffect()->Set_ToolMode(true);
 		EffectObj->Get_MeshEffect()->InitialTransform(XMMatrixIdentity(), _float3(m_fPosOffsetInTool[0], m_fPosOffsetInTool[1], m_fPosOffsetInTool[2]), _float3(1.f), _float3(0.f));
 
 		m_pCurrMeshEffect = EffectObj;
