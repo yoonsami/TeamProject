@@ -120,6 +120,8 @@ private:
 	_bool					m_bBlurOn = { false };
 	_bool					m_bUseFadeOut = { true };
 	_int					m_iSamplerType = { 1 };
+	_bool					m_bIsLoop = { false };
+	_bool					m_bIsFollowingGroup = { false };
 
 	/* Mesh Count */
 	_int					m_iMeshCnt = { 1 };

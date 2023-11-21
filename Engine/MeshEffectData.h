@@ -8,6 +8,7 @@ public:
     {
         // Property
         const char* pszTag = {""};
+        _bool       bIsLoop = { false };
         _float      fDuration = { 0.f };
         _bool       bBlurOn = { false };
         _bool       bUseFadeOut = { false };

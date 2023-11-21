@@ -33,6 +33,11 @@ void DemoScene::Tick()
 {
 	__super::Tick();
 	IMGUITOOL_MGR.Tick();
+
+	if (KEYHOLD(KEY_TYPE::LALT) && KEYHOLD(KEY_TYPE::LBUTTON))
+		INPUT.Set_Mouse_Move(false);
+	else
+		INPUT.Set_Mouse_Move(true);
 }
 
 void DemoScene::Late_Tick()

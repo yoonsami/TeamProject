@@ -6,6 +6,7 @@
 #include "MathUtils.h"
 #include "Camera.h"
 #include "ModelMesh.h"
+#include "GroupEffect.h"
 
 MeshEffect::MeshEffect(shared_ptr<Shader> shader)
     : Component(COMPONENT_TYPE::MeshEffect)
@@ -42,7 +43,15 @@ void MeshEffect::Final_Tick()
 {
     if (m_bIsLocked)
         return;
+ 
+    if (m_tDesc.bIsLoop)
+    {
+        m_fCurrAge = 0.f;
+        m_fLifeTimeRatio = 0.f;
+        m_fTimeAcc_SpriteAnimation = 0.f;
+    }
 
+    // For. Update Time information 
     m_fCurrAge += fDT;
     m_fLifeTimeRatio = m_fCurrAge / m_tDesc.fDuration;
     m_fTimeAcc_SpriteAnimation += fDT;

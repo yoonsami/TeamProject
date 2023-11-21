@@ -47,6 +47,7 @@ protected:
 	_bool Init_CurFrame(const _uint curFrame);
 
 	void Add_Effect(const wstring& strSkilltag);
+	void Add_And_Set_Effect(const wstring& strSkilltag);
 	void Cal_SkillCamDirection(const _float dist);
 	_bool Check_Combo(_uint minFrame, KEY_TYPE eKeyType);
 
@@ -68,6 +69,8 @@ public:
 	weak_ptr<GameObject> m_pVehicle;
 
 	weak_ptr<GameObject> m_pLookingTarget;
+
+	weak_ptr<GameObject> m_pGroupEffect;
 
 	//Frame Check
 	_uint m_iPreFrame = 10000;
