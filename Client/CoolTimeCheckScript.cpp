@@ -243,12 +243,16 @@ void CoolTimeCheckScript::Set_Skill_End()
 
     if (m_pOwner.expired() || HERO::MAX == m_eCurHero)
         return;
-
-    if (SkillType::DEFAULT > m_iWorkSkillIndex)
+    
+    if(SkillType::SKILL5 >= m_iWorkSkillIndex)
     {
-        m_bIsSkillWork = false;
-        m_CoolTime[IDX(m_eCurHero)][m_iWorkSkillIndex].bIsWork = false;
-        m_CoolTime[IDX(m_eCurHero)][m_iWorkSkillIndex].CoolInfo.fAccTime = 0.f;
+        auto& CoolInfo = m_CoolTime[IDX(m_eCurHero)][m_iWorkSkillIndex];
+        if (SkillType::DEFAULT > m_iWorkSkillIndex && true == CoolInfo.bIsWork)
+        {
+            m_bIsSkillWork = false;
+            CoolInfo.bIsWork = false;
+            CoolInfo.CoolInfo.fAccTime = 0.f;
+        }
     }
 
     if (m_iWorkSkillIndex > SkillType::SKILL5)
@@ -258,6 +262,18 @@ void CoolTimeCheckScript::Set_Skill_End()
     else
     {
         m_CoolTime[IDX(m_eCurHero)][m_iWorkSkillIndex].iCurCombo = 0;
+    }
+
+    _uint iSize = IDX(m_pUi_Skill0_Combo.size());
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        if (true == m_pUi_Skill0_Combo[i].expired() ||
+            true == m_pUi_Skill2_Combo[i].expired() ||
+            true == m_pUi_Skill3_Combo[i].expired() ||
+            true == m_pUi_Skill4_Combo[i].expired() ||
+            true == m_pUi_Skill5_Combo[i].expired() ||
+            true == m_pUi_Skill6_Combo[i].expired())
+            return;
     }
 
     _float4 vecPos = {};

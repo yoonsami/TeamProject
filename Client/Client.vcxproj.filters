@@ -504,9 +504,6 @@
     <ClInclude Include="UiComboEffect.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\14.UiComboEffect</Filter>
     </ClInclude>
-    <ClInclude Include="UiMouseClick.h">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\16.UiMouseClick</Filter>
-    </ClInclude>
     <ClInclude Include="UiSkillGauge.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\15.UiSkillGauge</Filter>
     </ClInclude>
@@ -515,6 +512,9 @@
     </ClInclude>
     <ClInclude Include="Undead_Priest_FSM.h">
       <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\02.Undead_Priest_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="UiMouseController.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\16.UiMouseClick</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -737,9 +737,6 @@
     <ClCompile Include="UiComboEffect.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\14.UiComboEffect</Filter>
     </ClCompile>
-    <ClCompile Include="UiMouseClick.cpp">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\16.UiMouseClick</Filter>
-    </ClCompile>
     <ClCompile Include="UiSkillGauge.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\15.UiSkillGauge</Filter>
     </ClCompile>
@@ -748,6 +745,9 @@
     </ClCompile>
     <ClCompile Include="Undead_Priest_FSM.cpp">
       <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\02.Undead_Priest_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="UiMouseController.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\16.UiMouseClick</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

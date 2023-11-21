@@ -24,6 +24,9 @@ HRESULT UIBossHpBar::Init()
     m_pElement      = pScene->Get_UI(L"UI_BossElement");
     m_pBossName     = pScene->Get_UI(L"UI_BossName");
 
+    if (true == m_pElement.expired() || true == m_pBossName.expired())
+        return E_FAIL;
+
     if (BOSS::MAX != m_eBoss)
     {
         auto BossData = GET_DATA(m_eBoss);
