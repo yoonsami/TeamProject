@@ -34,6 +34,11 @@ void DemoScene::Tick()
 	__super::Tick();
 
 	GET_SINGLE(ImGui_Manager).ImGui_Tick();
+	if (KEYHOLD(KEY_TYPE::LALT))
+		INPUT.Set_Mouse_Move(false);
+	else
+		INPUT.Set_Mouse_Move(true);
+
 }
 
 void DemoScene::Late_Tick()
