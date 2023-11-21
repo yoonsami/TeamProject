@@ -94,6 +94,10 @@ void InputMgr::Tick()
 		ClientToScreen(hWnd, &center);
 		SetCursorPos(center.x, center.y);
 	}
+	else
+	{
+		m_vMouseDir = { 0.f, 0.f };
+	}
 }
 
 void InputMgr::Set_Mouse_Move(_bool bValue)
