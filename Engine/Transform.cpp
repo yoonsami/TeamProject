@@ -133,9 +133,6 @@ _bool Transform::Go_Straight()
 	{
 		auto actor = Get_CharacterController()->Get_Actor();
 
-
-
-
 		auto result = actor->move({ vDir.x * m_fMoveSpeed * fDT,vDir.y * m_fMoveSpeed * fDT ,vDir.z * m_fMoveSpeed * fDT }, 0.0f, fDT, PxControllerFilters());
 		auto controllerPos = actor->getFootPosition();
 

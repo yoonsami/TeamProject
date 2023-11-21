@@ -62,8 +62,8 @@ void GroupEffect::Final_Tick()
     m_fCurrAge += fDT;
     m_fTimeAcc_CreatCoolTime += fDT;
 
-    // For. Check all effect finished
     _bool bIsAllActive = true;
+    // For. Check all effect finished
     for (auto& iter : m_vMemberEffectData)
     {
         if (!iter.bIsActive)
@@ -85,6 +85,28 @@ void GroupEffect::Final_Tick()
             return;
         }
     }
+
+    // For. Update MeshEffect Translation 
+    //_int iIndex = 0;
+    //for (auto& iter : m_vMemberEffects)
+    //{
+    //    if (nullptr != iter)
+    //    {
+    //        iter->Get_MeshEffect()->Translate();
+    //        iter->Get_MeshEffect()->Scaling();
+    //        _float4x4 mLocalWorldMatrix = iter->Get_Transform()->Get_WorldMatrix();
+    //        _float4x4 mInGroupWorldMatrix = iter->Get_MeshEffect()->Get_InGroupMatrix();
+    //        
+    //        if (iter->Get_MeshEffect()->Get_IsFollowGroup())
+    //            iter->Get_Transform()->Set_WorldMat(mLocalWorldMatrix * mInGroupWorldMatrix * Get_Transform()->Get_WorldMatrix());
+    //        else 
+    //            iter->Get_Transform()->Set_WorldMat(mLocalWorldMatrix * mInGroupWorldMatrix * m_mInitWorldMatrix);
+    //
+    //        iter->Get_MeshEffect()->Turn(); // cause of billbord
+    //    }
+    //    iIndex++;
+    //}
+
 }
 
 void GroupEffect::Save(const wstring& path)
@@ -123,6 +145,23 @@ void GroupEffect::DeleteMember(const wstring& wstrTag)
     }
 }
 
+void GroupEffect::FreeLoopMember()
+{
+    for (auto& iter : m_vMemberEffects)
+    {
+        if (iter->Get_MeshEffect()->Get_IsLoop())
+            iter->Get_MeshEffect()->Set_Loop(false);
+    }
+}
+
+void GroupEffect::Kill_All()
+{
+    for (auto& iter : m_vMemberEffects)
+    {
+        iter.reset();
+    }
+}
+
 void GroupEffect::Create_MeshEffect(_int iIndex)
 {
     // For.  Mesh Effect  
@@ -135,7 +174,10 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
 
     for (_int i = 0; i < tDesc.iMeshCnt; i++)
     {
-        shared_ptr<GameObject> EffectObj = make_shared<GameObject>();
+        shared_ptr<GameObject> EffectObj = make_shared<GameObject>(); 
+        string strTag = tDesc.pszTag;
+        strTag += to_string(iIndex) + "_" + to_string(i) + "_";
+        EffectObj->Set_Name(Utils::ToWString(strTag));
 
         // For. Transform 
         EffectObj->GetOrAddTransform();
@@ -150,6 +192,8 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
         EffectObj->Get_MeshEffect()->Init(&tDesc);
         EffectObj->Get_MeshEffect()->Set_TransformDesc(&tTransform_Desc);
         EffectObj->Get_MeshEffect()->InitialTransform(Get_Transform()->Get_WorldMatrix(), iter.vPivot_Pos, iter.vPivot_Scale, iter.vPivot_Rotation);
+        if (tDesc.bIsFollowingGroup)
+            EffectObj->Get_MeshEffect()->Set_GroupEffect(shared_from_this());
 
         // For. Add to vector 
         m_vMemberEffects.push_back(EffectObj);

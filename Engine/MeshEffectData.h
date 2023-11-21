@@ -8,7 +8,6 @@ public:
     {
         // Property
         const char* pszTag = {""};
-        _bool       bIsLoop = { false };
         _float      fDuration = { 0.f };
         _bool       bBlurOn = { false };
         _bool       bUseFadeOut = { false };
@@ -16,6 +15,8 @@ public:
         _float      fCreateInterval = {0.f};
         _float2     vParticleDuration = {0.f, 0.f};
         _int        iSamplerType = {1};
+        _bool       bIsLoop = { false };
+        _bool       bIsFollowingGroup = { false };
 
         // Mesh 
         string      strVfxMesh = {""};

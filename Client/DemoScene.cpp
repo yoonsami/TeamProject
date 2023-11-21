@@ -167,7 +167,7 @@ HRESULT DemoScene::Load_Scene()
 	//Load_Monster(1, L"Succubus_Scythe");
 	//Load_Monster(1, L"Undead_Priest");
 	//Load_Boss_Spike();
-	//Load_Boss_Mir();
+	Load_Boss_Mir();
 
 	//Load_Debug();
 	Load_Ui();

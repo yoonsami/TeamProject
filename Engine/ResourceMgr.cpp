@@ -1102,6 +1102,8 @@ void ResourceMgr::CreateMeshEffectData()
 
 		/* ETC */
 		_float4x4 mTemp = file->Read<_float4x4>();
+		tDesc.bIsLoop = mTemp._11;
+		tDesc.bIsFollowingGroup = mTemp._12;
 
 		// For. Load Transform_Desc 
 		/* Init Position */

@@ -271,6 +271,12 @@ void Widget_GroupEffectMaker::Widget_GroupMaker()
 			m_bWidgetOn_GetTag = true;
 		ImGui::Spacing();
 
+		if (ImGui::Button("Reset Scene"))
+		{
+			if (nullptr != m_pCurrentGroup)
+				m_pCurrentGroup->Get_GroupEffect()->FreeLoopMember();
+		}
+
 		ImGui::EndChild();
 	}
 }
@@ -525,6 +531,7 @@ void Widget_GroupEffectMaker::Create()
 	pGroupEffectObj->Add_Component(pGroupEffect);
 	pGroupEffectObj->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
 	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
+	pGroupEffectObj->Get_GroupEffect()->Set_InitWorldMatrix(pGroupEffectObj->Get_Transform()->Get_WorldMatrix());
 
 	// For. bind to member 
 	m_pCurrentGroup = pGroupEffectObj;
