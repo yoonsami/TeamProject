@@ -16,7 +16,8 @@ public:
         _float2     vParticleDuration = {0.f, 0.f};
         _int        iSamplerType = {1};
         _bool       bIsLoop = { false };
-        _bool       bIsFollowingGroup = { false };
+        _bool       bIsFollowingGroup_OnlyTranslate = { false };
+        _bool       bIsFollowingGroup_LooKSameDir = { false };
 
         // Mesh 
         string      strVfxMesh = {""};

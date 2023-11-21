@@ -275,7 +275,9 @@ void MeshEffect::Set_TransformDesc(void* pArg)
         MathUtils::Get_RandomFloat(pDesc->vInitRotation_Min.y, pDesc->vInitRotation_Max.y),
         MathUtils::Get_RandomFloat(pDesc->vInitRotation_Min.z, pDesc->vInitRotation_Max.z)
     );
-    m_vStartRotation *= (3.141592f / 180.f);
+    m_vStartRotation.x *= (3.141592f / 180.f);
+    m_vStartRotation.y *= (3.141592f / 180.f);
+    m_vStartRotation.z *= (3.141592f / 180.f);
 
     // For. Translate
     m_iTranslateOption = pDesc->iTranslateOption;

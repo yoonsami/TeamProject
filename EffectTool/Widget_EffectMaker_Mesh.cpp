@@ -326,10 +326,19 @@ void Widget_EffectMaker_Mesh::Option_Property()
 			m_pCurrMeshEffect.lock()->Get_MeshEffect()->Set_Loop(m_bIsLoop);
 	}
 
-	ImGui::Checkbox("Is Follow Group ##Property", &m_bIsFollowingGroup);
-	ImGui::SameLine();
-	ImGui::Checkbox("On Fade Out##Property", &m_bUseFadeOut);
+	if (ImGui::Checkbox("Is Follow Group (Only Translate)", &m_bIsFollowGroup_OnlyTranslate))
+	{
+		if (m_bIsFollowGroup_OnlyTranslate)
+			m_bIsFollowGroup_LookSameDir = false;
+	}
+	
+	if (ImGui::Checkbox("Is Follow Group (Look same direction)", &m_bIsFollowGroup_LookSameDir))
+	{
+		if (m_bIsFollowGroup_LookSameDir)
+			m_bIsFollowGroup_OnlyTranslate = false;
+	}
 
+	ImGui::Checkbox("On Fade Out##Property", &m_bUseFadeOut);
 	ImGui::Checkbox("Color Changing On##Property", &m_bColorChangingOn);
 
 	ImGui::InputInt("Number of Mesh##Property", &m_iMeshCnt);
@@ -1016,7 +1025,8 @@ void Widget_EffectMaker_Mesh::Create()
 				_float2(m_fParticleDuration),
 				m_iSamplerType,
 				m_bIsLoop,
-				m_bIsFollowingGroup,
+				m_bIsFollowGroup_OnlyTranslate,
+				m_bIsFollowGroup_LookSameDir,
 
 				m_strMesh,
 
@@ -1223,7 +1233,7 @@ void Widget_EffectMaker_Mesh::Save()
 
 		/* ETC */
 		file->Write<_float4x4>(_float4x4(
-			(_float)m_bIsLoop, (_float)m_bIsFollowingGroup, 0.f, 0.f,
+			(_float)m_bIsLoop, (_float)m_bIsFollowGroup_OnlyTranslate, (_float)m_bIsFollowGroup_LookSameDir, 0.f,
 			0.f, 0.f, 0.f, 0.f,
 			0.f, 0.f, 0.f, 0.f,
 			0.f, 0.f, 0.f, 0.f
@@ -1393,7 +1403,8 @@ void Widget_EffectMaker_Mesh::Load()
 	/* ETC */
 	_float4x4 mTemp = file->Read<_float4x4>();
 	m_bIsLoop = (_int)mTemp._11;
-	m_bIsFollowingGroup = (_int)mTemp._12;
+	m_bIsFollowGroup_OnlyTranslate = (_int)mTemp._12;
+	m_bIsFollowGroup_LookSameDir = (_int)mTemp._13;
 
 	// For. Transform Desc
 	/* Init Pos */

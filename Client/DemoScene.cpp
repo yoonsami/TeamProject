@@ -162,12 +162,12 @@ HRESULT DemoScene::Load_Scene()
 	Load_Light();
 	Load_Camera();
 	// 플레이어의 위치를 잡아주기 때문에 LoadPlayer 이후로 해야함.
-	Load_MapFile(L"MirMap");
+	Load_MapFile(L"GranseedMap");
 	//Load_Monster(1, L"Silversword_Soldier");
 	//Load_Monster(1, L"Succubus_Scythe");
 	//Load_Monster(1, L"Undead_Priest");
 	//Load_Boss_Spike();
-	Load_Boss_Mir();
+	//Load_Boss_Mir();
 
 	//Load_Debug();
 	Load_Ui();

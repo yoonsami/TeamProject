@@ -46,5 +46,8 @@ private:
 	_bool								m_bIsFirstTick = { false };
 	_float4x4							m_mInitWorldMatrix;
 
-	vector<shared_ptr<GameObject>>      m_vMemberEffects;
+	vector<weak_ptr<GameObject>>      m_vMemberEffects;
+
+	_float4x4							m_mPrevTickWorldMatrix;
+	_float4x4							m_mPrevRotationMatrix;
 };

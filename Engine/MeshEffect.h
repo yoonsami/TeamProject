@@ -27,7 +27,8 @@ public:
     /* Getter */
     shared_ptr<Material>    Get_Material() { return  m_pMaterial; }
     shared_ptr<Shader>      Get_Shader() { return m_pShader; }
-    _bool                   Get_IsFollowGroup() { return m_tDesc.bIsFollowingGroup; }
+    _bool                   Get_IsFollowGroup_OnlyTranslate() { return m_tDesc.bIsFollowingGroup_OnlyTranslate; }
+    _bool                   Get_IsFollowGroup_LooKSameDir() { return m_tDesc.bIsFollowingGroup_LooKSameDir; }
     _bool                   Get_IsLoop() { return m_tDesc.bIsLoop; }
     _float4x4               Get_InGroupMatrix() { return m_mInGroupWorldMatrix; }
 

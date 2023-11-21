@@ -9,6 +9,7 @@
 #include "Model.h"
 #include "CoolTimeCheckScript.h"
 #include "UiSkillGauge.h"
+#include "GroupEffect.h"
 
 Spike_FSM::Spike_FSM()
 {
@@ -1115,6 +1116,8 @@ void Spike_FSM::skill_100100()
     if (Init_CurFrame(19))
         Add_And_Set_Effect(L"Spike_100100_RunWind");
    
+
+
     if (Get_CurFrame() >= 19)
     {
         m_fEffectCreateTimer += fDT;
@@ -1148,11 +1151,15 @@ void Spike_FSM::skill_100100()
     }
 
     if (m_bCanCombo)
+    {
         m_eCurState = STATE::skill_100300;
+    }
 
 
     if (Is_AnimFinished())
+    {
         m_eCurState = STATE::skill_100300;
+    }
 
     Use_Dash();
 }
@@ -1192,6 +1199,9 @@ void Spike_FSM::skill_100300()
 
 void Spike_FSM::skill_100300_Init()
 {
+    if (!m_pGroupEffect.expired())
+        m_pGroupEffect.lock()->Get_GroupEffect()->FreeLoopMember();
+
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_100300", 0.15f, false, m_fSkillAttack_AnimationSpeed);

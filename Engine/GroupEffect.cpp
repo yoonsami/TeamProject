@@ -76,7 +76,7 @@ void GroupEffect::Final_Tick()
         _bool bIsAllNullptr = true;
         for (auto& iter : m_vMemberEffects)
         {
-            if (nullptr == iter)
+            if (!iter.expired())
                 bIsAllNullptr = false;
         }
 
@@ -91,14 +91,17 @@ void GroupEffect::Final_Tick()
     _int iIndex = 0;
     for (auto& iter : m_vMemberEffects)
     {
-        if (nullptr != iter)
+        if (!iter.expired())
         {
-            if (iter->Get_MeshEffect()->Get_IsFollowGroup())
-            {
-                _float4x4 mLocalWorldMatrix = iter->Get_Transform()->Get_WorldMatrix();
-                mLocalWorldMatrix *= Get_Transform()->Get_WorldMatrix().Invert();
-                iter->Get_Transform()->Set_WorldMat(mLocalWorldMatrix * Get_Transform()->Get_WorldMatrix());
-            }
+            _float4x4 mLocalWorldMatrix = iter.lock()->Get_Transform()->Get_WorldMatrix();
+
+            // Translate
+            mLocalWorldMatrix *= m_mPrevTickWorldMatrix.Invert();
+            iter.lock()->Get_Transform()->Set_WorldMat(mLocalWorldMatrix * Get_Transform()->Get_WorldMatrix());
+            m_mPrevTickWorldMatrix = Get_Transform()->Get_WorldMatrix();
+            
+            //if (iter->Get_MeshEffect()->Get_IsFollowGroup_LooKSameDir())
+            //    iter->Get_Transform()->Set_State(Transform_State::LOOK, Get_Transform()->Get_State(Transform_State::LOOK));
         }
         iIndex++;
     }
@@ -145,8 +148,11 @@ void GroupEffect::FreeLoopMember()
 {
     for (auto& iter : m_vMemberEffects)
     {
-        if (iter->Get_MeshEffect()->Get_IsLoop())
-            iter->Get_MeshEffect()->Set_Loop(false);
+        if (!iter.expired())
+        {
+            if (iter.lock()->Get_MeshEffect()->Get_IsLoop())
+                iter.lock()->Get_MeshEffect()->Set_Loop(false);
+        }
     }
 }
 
