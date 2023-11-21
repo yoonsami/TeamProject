@@ -268,6 +268,9 @@ void Widget_EffectMaker_Mesh::Option_Guizmo()
 	ImGui::SameLine();
 	ImGui::Checkbox("Rotation On##Guizmo", &m_bGuizmoRotation_On);
 
+	if (m_bGuizmoRotation_On)
+		m_iInitRotationOption = 0;
+
 	Show_Guizmo();
 }
 
@@ -1468,6 +1471,7 @@ void Widget_EffectMaker_Mesh::Show_Guizmo()
 		{
 			float matrixTranslation[3], matrixScale[3];
 			ImGuizmo::DecomposeMatrixToComponents((float*)&matGuizmo, matrixTranslation, m_fInitRotation_Min, matrixScale);
+			memcpy(m_fInitRotation_Max, m_fInitRotation_Min, sizeof(m_fInitRotation_Min));
 		}
 	}
 }
