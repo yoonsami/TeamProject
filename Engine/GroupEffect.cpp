@@ -44,12 +44,13 @@ void GroupEffect::Tick()
             // If. Play every CreateInterval in duration 
             else if (tDesc.fCreateInterval < m_fTimeAcc_CreatCoolTime)
             {
-                if (tDesc.fDuration + iter.fCreateTime < m_fCurrAge)
+                if (tDesc.fDuration + iter.fCreateTime > m_fCurrAge)
                 {
                     Create_MeshEffect(iIndex);
                     m_fTimeAcc_CreatCoolTime = 0.f;
-                    iter.bIsActive = true;
                 }
+                else
+                    iter.bIsActive = true;
             }
         }
         iIndex++;

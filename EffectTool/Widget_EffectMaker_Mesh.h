@@ -55,6 +55,7 @@ private:
 
 	void					Option_TextureOp(_int iIndex);
 
+	void					Option_RimLight();
 	void					Option_Normal();
 	void					Option_Blend();
 	void					Option_Overlay();
@@ -164,6 +165,12 @@ private:
 	ImVec4					m_vOverlayColor_Dest = ImVec4(1.f, 1.f, 1.f, 1.f);
 	_float					m_fTiling_Overlay[2] = { 0.f, 0.f };
 	_float					m_fUVSpeed_Overlay[2] = { 0.f, 0.f };
+
+	/* Rim Light */
+	_bool					m_bRimLight_On = { false };
+	ImVec4					m_vRimLightColor_Base = ImVec4(1.f, 1.f, 1.f, 1.f);
+	ImVec4					m_vRimLightColor_Dest = ImVec4(1.f, 1.f, 1.f, 1.f);
+	_float2					m_vCurvePoint_RimLight[4] = { _float2(0.f, 0.f),_float2(0.3f, 0.5f), _float2(0.7f, 0.5f), _float2(1.f, 1.f) };
 
 	/* Normal */
 	_bool					m_bNormal_On = { false };

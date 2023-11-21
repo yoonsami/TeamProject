@@ -62,9 +62,11 @@ private:
     _float2                 m_vCurrTexUVOffset_Dissolve = { 0.f, 0.f };
     _float2                 m_vCurrTexUVOffset_Distortion = { 0.f, 0.f };
 
-    /* */
+    /* Spline */
     _float                  m_SplineInput_Dissolve[8];
     _float                  m_fCurrDissolveWeight = { 0.f };
+    _float                  m_SplineInput_RimLight[8];
+    _float                  m_fCurrRimLightIntensity = { 0.f };
 
     /* Sprite Animation */
     _float2                 m_vSpriteSize = { 0.f, 0.f };
