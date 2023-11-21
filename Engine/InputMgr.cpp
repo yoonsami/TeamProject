@@ -30,6 +30,8 @@ void InputMgr::Initialize(HWND hWnd)
 {
 	m_vecKeyStates.resize(KEY_TYPE_COUNT, KEY_STATE::NONE);
 	m_hWnd = hWnd;
+
+	//::ShowCursor(true);
 }
 
 void InputMgr::Tick()
@@ -80,17 +82,7 @@ void InputMgr::Tick()
 
 	m_ptMousePos = { _float(MousPos.x),_float(MousPos.y) };
 
-	if (GetButtonTap(KEY_TYPE::LALT))
-	{
-		RECT tmp{};
-		GetClientRect(hWnd, &tmp);
-
-		POINT center = { (tmp.right - tmp.left) / 2, (tmp.bottom - tmp.top) / 2 };
-
-		ClientToScreen(hWnd, &center);
-		SetCursorPos(center.x, center.y);
-	}
-	else if(GetButtonHold(KEY_TYPE::LALT) == true)
+	if(false == m_bIsCanMove)
 	{
 		RECT tmp{};
 		GetClientRect(hWnd, &tmp);
@@ -100,13 +92,42 @@ void InputMgr::Tick()
 		m_vMouseDir.x = _float(m_ptMousePos.x - center.x);
 		m_vMouseDir.y = _float(m_ptMousePos.y - center.y);
 		ClientToScreen(hWnd, &center);
-		::ShowCursor(true);
 		SetCursorPos(center.x, center.y);
 	}
-	else
-	{
-		m_vMouseDir = { 0.f,0.f };
-		::ShowCursor(true);
-	}
+}
 
+void InputMgr::Set_Mouse_Move(_bool bValue)
+{
+	if (false == bValue)
+	{
+		HWND hWnd = ::GetActiveWindow();
+		if (m_hWnd != hWnd)
+		{
+			for (auto& i : m_vecKeyStates)
+				i = KEY_STATE::NONE;
+			m_vMouseDir = { 0.f,0.f };
+			return;
+		}
+
+		m_bIsCanMove = bValue;
+
+		RECT tmp{};
+		GetClientRect(hWnd, &tmp);
+
+		POINT center = { (tmp.right - tmp.left) / 2, (tmp.bottom - tmp.top) / 2 };
+
+		ClientToScreen(hWnd, &center);
+		SetCursorPos(center.x, center.y);
+
+		m_vMouseDir = { 0.f,0.f };
+	}
+	else if(true == bValue)
+	{
+		m_bIsCanMove = bValue;
+	}
+}
+
+void InputMgr::Set_Show_Cursor(_bool bValue)
+{
+	::ShowCursor(bValue);
 }

@@ -57,13 +57,18 @@ public:
 	const _float2& GetMouseDir()	 { return m_vMouseDir; }
 	POINT GetMousePosToPoint()		 { return { LONG(m_ptMousePos.x), LONG(m_ptMousePos.y) }; }
 
+	void Set_Mouse_Move(_bool bValue);
+	void Set_Show_Cursor(_bool bValue);
+
 private:
 	inline KEY_STATE GetState(KEY_TYPE key) { return m_vecKeyStates[static_cast<_uchar>(key)]; }
 
 private:
-	HWND				m_hWnd = { nullptr };
 	vector<KEY_STATE>	m_vecKeyStates;
-	_float2				m_ptMousePos{};
-	_float2				m_vMouseDir{};
+	HWND				m_hWnd				= { nullptr };
+	_float2				m_ptMousePos		= {};
+	_float2				m_vMouseDir			= {};
+
+	_bool				m_bIsCanMove		= { true };
 };
 

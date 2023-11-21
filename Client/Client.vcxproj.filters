@@ -235,7 +235,7 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\15.UiSkillGauge">
       <UniqueIdentifier>{9ecc355c-07b4-4c39-a5aa-ab2a17153d0b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\16.UiMouseClick">
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\16.UiMouseController">
       <UniqueIdentifier>{836d48fb-9b5c-4336-a106-442e39d28022}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -492,11 +492,11 @@
     <ClInclude Include="UiComboEffect.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\14.UiComboEffect</Filter>
     </ClInclude>
-    <ClInclude Include="UiMouseClick.h">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\16.UiMouseClick</Filter>
-    </ClInclude>
     <ClInclude Include="UiSkillGauge.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\15.UiSkillGauge</Filter>
+    </ClInclude>
+    <ClInclude Include="UiMouseController.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\16.UiMouseController</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -719,11 +719,11 @@
     <ClCompile Include="UiComboEffect.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\14.UiComboEffect</Filter>
     </ClCompile>
-    <ClCompile Include="UiMouseClick.cpp">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\16.UiMouseClick</Filter>
-    </ClCompile>
     <ClCompile Include="UiSkillGauge.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\15.UiSkillGauge</Filter>
+    </ClCompile>
+    <ClCompile Include="UiMouseController.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\16.UiMouseController</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

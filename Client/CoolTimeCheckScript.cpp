@@ -244,12 +244,16 @@ void CoolTimeCheckScript::Set_Skill_End()
 
     if (m_pOwner.expired() || HERO::MAX == m_eCurHero)
         return;
-
-    if (SkillType::DEFAULT > m_iWorkSkillIndex)
+    
+    if(SkillType::SKILL5 >= m_iWorkSkillIndex)
     {
-        m_bIsSkillWork = false;
-        m_CoolTime[IDX(m_eCurHero)][m_iWorkSkillIndex].bIsWork = false;
-        m_CoolTime[IDX(m_eCurHero)][m_iWorkSkillIndex].CoolInfo.fAccTime = 0.f;
+        auto& CoolInfo = m_CoolTime[IDX(m_eCurHero)][m_iWorkSkillIndex];
+        if (SkillType::DEFAULT > m_iWorkSkillIndex && true == CoolInfo.bIsWork)
+        {
+            m_bIsSkillWork = false;
+            CoolInfo.bIsWork = false;
+            CoolInfo.CoolInfo.fAccTime = 0.f;
+        }
     }
 
     if (m_iWorkSkillIndex > SkillType::SKILL5)

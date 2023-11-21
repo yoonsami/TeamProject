@@ -56,7 +56,7 @@
 #include "UIBossHpBar.h"
 #include "UiComboEffect.h"
 #include "UiSkillGauge.h"
-#include "UiMouseClick.h"
+
 
 #include <filesystem>
 #include "GachaScene.h"
@@ -616,7 +616,7 @@ void DemoScene::Load_Ui()
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck.dat", false);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", false);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_MonsterHp.dat");
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat");
+	//Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat");
 
 
 	{
@@ -705,14 +705,7 @@ void DemoScene::Load_Ui()
 	}
 	
 
-	{
-		auto pObj = Get_UI(L"UI_Mouse_Click");
-		if (nullptr != pObj)
-		{
-			auto pScript = make_shared<UiMouseClick>();
-			pObj->Add_Component(pScript);
-		}
-	}
+	
 
 	
 

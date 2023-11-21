@@ -236,7 +236,7 @@
     <ClInclude Include="Shane_Clone_FSM.h" />
     <ClInclude Include="Shane_FSM.h" />
     <ClInclude Include="UiComboEffect.h" />
-    <ClInclude Include="UiMouseClick.h" />
+    <ClInclude Include="UiMouseController.h" />
     <ClInclude Include="UiSkillGauge.h" />
     <ClInclude Include="Yeonhee_FSM.h" />
     <ClInclude Include="Resource.h" />
@@ -319,7 +319,7 @@
     <ClCompile Include="Shane_Clone_FSM.cpp" />
     <ClCompile Include="Shane_FSM.cpp" />
     <ClCompile Include="UiComboEffect.cpp" />
-    <ClCompile Include="UiMouseClick.cpp" />
+    <ClCompile Include="UiMouseController.cpp" />
     <ClCompile Include="UiSkillGauge.cpp" />
     <ClCompile Include="Yeonhee_FSM.cpp" />
     <ClCompile Include="Silversword_Soldier_FSM.cpp" />
