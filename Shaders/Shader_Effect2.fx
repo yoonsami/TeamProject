@@ -40,11 +40,12 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     
     /* Get Shared Data */
     bool bUseFadeOut = (bool) g_int_0;
-    bool bInverseDissolve = (bool) g_int_1;
+    bool bUseRimLight = (bool) g_int_1;
     bool bUseSpriteAnim = (bool) g_int_2;
     
     float fLifeTimeRatio = g_float_0;
     float fDissolveWeight = g_float_1;
+    float fRimLightIntensity = g_float_2;
     
     float2 vColorOptions_Op[3] = { g_vec2_0, g_vec2_1, g_vec2_2 };
     
@@ -55,9 +56,10 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     float4 vBaseColor1_Op3 = g_mat_1._11_12_13_14;
     float4 vBaseColor2_Op3 = g_mat_1._21_22_23_24;
     float4 vBaseColor_Overlay = g_mat_1._31_32_33_34;
+    float4 vBaseColor_RimLight = g_mat_1._41_42_43_44;
     
-    float bUseTexColor_Op[3] = { g_mat_1._41, g_mat_1._42, g_mat_1._43 };
-    int iFilpOPtion_Op[3] = { g_mat_2._11, g_mat_2._12, g_mat_2._13 };
+    float bUseTexColor_Op[3] = { g_mat_2._11, g_mat_2._12, g_mat_2._13 };
+    int iFilpOPtion_Op[3] = { g_mat_2._21, g_mat_2._22, g_mat_2._23 };
     
     /* Calc Texcoord */
     float fDistortionWeight = 0.f;
@@ -193,16 +195,8 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     if (bHasDissolveMap)
     {
         float fDissolve = vSample_Dissolve.r;
-        if (bInverseDissolve)
-        {
-            if (fDissolve > sin(fDissolveWeight)) // sin(fLifeTimeRatio))
-                vOutColor.a = 0.f;
-        }
-        else
-        {
-            if (fDissolve < sin(fDissolveWeight))//sin(fLifeTimeRatio))
-                vOutColor.a = 0.f;
-        }
+        if (fDissolve < sin(fDissolveWeight))//sin(fLifeTimeRatio))
+            vOutColor.a = 0.f;
     }
     
     /* Overlay */
@@ -217,6 +211,9 @@ float4 PS_Wrap(EffectOut input) : SV_Target
         
         vOutColor.rgb = lerp(vOutColor.rgb, vFinalOverlayColor.rgb, fOverlayIntensity);
     }
+    
+    /* Rim Light */
+        // TODO 
     
     /* Fade Out */
     if (bUseFadeOut)
@@ -249,9 +246,10 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     float4 vBaseColor1_Op3 = g_mat_1._11_12_13_14;
     float4 vBaseColor2_Op3 = g_mat_1._21_22_23_24;
     float4 vBaseColor_Overlay = g_mat_1._31_32_33_34;
+    float4 vBaseColor_RimLight = g_mat_1._41_42_43_44;
     
-    float bUseTexColor_Op[3] = { g_mat_1._41, g_mat_1._42, g_mat_1._43 };
-    int iFilpOPtion_Op[3] = { g_mat_2._11, g_mat_2._12, g_mat_2._13 };
+    float bUseTexColor_Op[3] = { g_mat_2._11, g_mat_2._12, g_mat_2._13 };
+    int iFilpOPtion_Op[3] = { g_mat_2._21, g_mat_2._22, g_mat_2._23 };
     
     /* Calc Texcoord */
     float fDistortionWeight = 0.f;

@@ -99,6 +99,13 @@ void MeshEffectData::Load(const wstring& path)
     m_tDesc.vTiling_Overlay = file->Read<_float2>();
     m_tDesc.vUVSpeed_Overlay = file->Read<_float2>();
 
+    /* RimLight */
+    m_tDesc.bIsRimLightOn = file->Read<_bool>();
+    m_tDesc.vBaseColor_RimLight = file->Read<_float4>();
+    m_tDesc.vDestColor_RimLight = file->Read<_float4>();
+    for (_int i = 0; i < 4; i++)
+        m_tDesc.vCurvePoint_RimLight[i] = file->Read<_float2>();
+
     /* Normal */
     m_tDesc.strNormalTexture = file->Read<string>();
 
@@ -113,6 +120,9 @@ void MeshEffectData::Load(const wstring& path)
     m_tDesc.strDistortionTexture = file->Read<string>();
     m_tDesc.vTiling_Distortion = file->Read<_float2>();
     m_tDesc.vUVSpeed_Distortion = file->Read<_float2>();
+
+    /* ETC */
+    _float4x4 mTemp = file->Read<_float4x4>();
 
     // For. Load Transform_Desc 
     /* Init Position */

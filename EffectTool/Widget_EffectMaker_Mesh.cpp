@@ -165,6 +165,7 @@ void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 				Option_TextureOp(2);
 			}
 
+			Option_RimLight();
 			Option_Normal();
 			Option_Blend();
 			Option_Overlay();
@@ -257,6 +258,8 @@ void Widget_EffectMaker_Mesh::ImGui_TextureList()
 
 void Widget_EffectMaker_Mesh::Option_Guizmo()
 {
+	ImGui::SeparatorText("Guizmo Option");
+
 	ImGui::Checkbox("Lock Mesh Effect##Guizmo", &m_bIsMeshEffectLocked);
 	if (!m_pCurrMeshEffect.expired())
 		m_pCurrMeshEffect.lock()->Get_MeshEffect()->Set_Lock(m_bIsMeshEffectLocked);
@@ -505,6 +508,27 @@ void Widget_EffectMaker_Mesh::Option_TextureOp(_int iIndex)
 	ImGui::InputFloat(strContrast.c_str(), &m_TexOption[iIndex].fContrast);
 	ImGui::InputFloat(strAlphaOffset.c_str(), &m_TexOption[iIndex].fAlphaOffset);
 	SubWidget_SettingTexUV(m_TexOption[iIndex].fTiling_Op, m_TexOption[iIndex].fUVSpeed_Op, strTiling.c_str(), strUVSpeed.c_str());
+}
+
+void Widget_EffectMaker_Mesh::Option_RimLight()
+{
+	ImGui::SeparatorText("Rim Light");
+
+	ImGui::Checkbox("RimLight On", &m_bRimLight_On);
+
+	if (!m_bRimLight_On)
+		return;
+
+	// For. Color 
+	ImGui::ColorEdit4("Color##RimLight", (float*)&m_vRimLightColor_Base, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+	if (m_bColorChangingOn)
+		ImGui::ColorEdit4("Dest Color##RimLight", (float*)&m_vRimLightColor_Dest, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+
+	if (ImGui::TreeNode("RimLight weight##RimLight"))
+	{
+		SubWidget_Curve1(m_vCurvePoint_RimLight, "RimLight");
+		ImGui::TreePop();
+	}
 }
 
 void Widget_EffectMaker_Mesh::Option_Normal()
@@ -1043,6 +1067,12 @@ void Widget_EffectMaker_Mesh::Create()
 				_float2(m_fTiling_Overlay),
 				_float2(m_fUVSpeed_Overlay),
 
+				// Rim Light 
+				m_bRimLight_On,
+				ImVec4toColor(m_vRimLightColor_Base),
+				ImVec4toColor(m_vRimLightColor_Dest),
+				{ m_vCurvePoint_RimLight[0],m_vCurvePoint_RimLight[1], m_vCurvePoint_RimLight[2], m_vCurvePoint_RimLight[3] },
+
 				// Normal
 				m_NormalTexture.second,
 
@@ -1050,7 +1080,7 @@ void Widget_EffectMaker_Mesh::Create()
 				m_DissolveTexture.second,
 				_float2(m_fTiling_Overlay),
 				_float2(m_fUVSpeed_Overlay),
-			{ m_vCurvePoint_Dissolve[0],m_vCurvePoint_Dissolve[1], m_vCurvePoint_Dissolve[2], m_vCurvePoint_Dissolve[3] },
+				{ m_vCurvePoint_Dissolve[0],m_vCurvePoint_Dissolve[1], m_vCurvePoint_Dissolve[2], m_vCurvePoint_Dissolve[3] },
 
 				// Distortion
 				m_DistortionTexture.second,
@@ -1159,6 +1189,13 @@ void Widget_EffectMaker_Mesh::Save()
 		file->Write<_float2>(_float2(m_fTiling_Overlay));
 		file->Write<_float2>(_float2(m_fUVSpeed_Overlay));
 
+		/* Rim Light */
+		file->Write<_bool>(m_bRimLight_On);
+		file->Write<_float4>(ImVec4toColor(m_vRimLightColor_Base));
+		file->Write<_float4>(ImVec4toColor(m_vRimLightColor_Dest));
+		for (_uint i = 0; i < 4; i++)
+			file->Write<_float2>(m_vCurvePoint_RimLight[i]);
+		
 		/* Normal */
 		file->Write<string>(m_NormalTexture.second);
 
@@ -1173,6 +1210,9 @@ void Widget_EffectMaker_Mesh::Save()
 		file->Write<string>(m_DistortionTexture.second);
 		file->Write<_float2>(_float2(m_fTiling_Distortion));
 		file->Write<_float2>(_float2(m_fUVSpeed_Distortion));
+
+		/* ETC */
+		file->Write<_float4x4>(_float4x4::Identity);
 
 		// For. Transform Desc 
 		/* Init position */
@@ -1300,6 +1340,13 @@ void Widget_EffectMaker_Mesh::Load()
 	memcpy(m_fUVSpeed_Overlay, &vTemp_vec2, sizeof(m_fUVSpeed_Overlay));
 	m_OverlayTexture.first = GetIndex_FromTexList(m_OverlayTexture.second);
 
+	/* Rim Light */
+	m_bRimLight_On = file->Read<_bool>();
+	m_vRimLightColor_Base = ColorToImVec4(file->Read<_float4>());
+	m_vRimLightColor_Dest = ColorToImVec4(file->Read<_float4>());
+	for (_int i = 0; i < 4; i++)
+		m_vCurvePoint_RimLight[i] = file->Read<_float2>();
+
 	/* Normal */
 	m_NormalTexture.second = file->Read<string>();
 	m_NormalTexture.first = GetIndex_FromTexList(m_NormalTexture.second);
@@ -1327,6 +1374,9 @@ void Widget_EffectMaker_Mesh::Load()
 	m_DistortionTexture.first = GetIndex_FromTexList(m_DistortionTexture.second);
 	if (0 == m_DistortionTexture.first) m_bDistortion_On = false;
 	else m_bDistortion_On = true;
+
+	/* ETC */
+	_float4x4 mTemp = file->Read<_float4x4>();
 
 	// For. Transform Desc
 	/* Init Pos */

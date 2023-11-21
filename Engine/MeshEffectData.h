@@ -81,6 +81,12 @@ public:
         _float2     vTiling_Overlay = { 0.f, 0.f };
         _float2     vUVSpeed_Overlay = { 0.f, 0.f };
 
+        // Rim Light 
+        _bool       bIsRimLightOn = { false };
+        Color       vBaseColor_RimLight = { 0.f, 0.f, 0.f, 0.f };
+        Color       vDestColor_RimLight = { 0.f, 0.f, 0.f, 0.f };
+        _float2		vCurvePoint_RimLight[4] = { { 0.f, 0.f },{ 0.f, 0.f } ,{ 0.f, 0.f } ,{ 0.f, 0.f } };
+
         // Normal 
         string      strNormalTexture = { " " };
 
