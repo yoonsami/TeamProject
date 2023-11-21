@@ -47,34 +47,13 @@ void Scene::Init()
 
 void Scene::Tick()
 {
-	system_clock::time_point start_time = system_clock::now();
-
+	
 	auto objects = m_GameObjects;
 	for (auto& object : objects)
 	{
 		object->Tick();
 	}
-
-
 	PickUI();
-	system_clock::time_point end_time = system_clock::now();
-
-	nanoseconds nano = end_time - start_time;
-
-	if (KEYTAP(KEY_TYPE::F1))
-		int a = 0;
-	if (KEYTAP(KEY_TYPE::F2))
-		int a = 0;
-	if (KEYTAP(KEY_TYPE::F3))
-		int a = 0;
-	if (KEYTAP(KEY_TYPE::F4))
-		int a = 0;
-	if (KEYTAP(KEY_TYPE::F5))
-		int a = 0;
-	if (KEYTAP(KEY_TYPE::F6))
-		int a = 0;
-	if (KEYTAP(KEY_TYPE::F7))
-		int a = 0;
 }
 
 void Scene::Late_Tick()
@@ -99,6 +78,7 @@ void Scene::Final_Tick()
 
 void Scene::Render()
 {
+
 	Gather_LightData();
 	Sort_GameObjects();
 	Render_Shadow();
@@ -112,16 +92,14 @@ void Scene::Render()
 	}
 	Render_Lights();
 	//Render_BlurEffect();
-	Render_LightFinal();	
-	Render_SkyBox();
+	Render_LightFinal();
+	Render_MotionBlurFinal();
+
+
+	Render_Forward();
 	Render_DOFMap();
 	Render_DOFMapScaling();
 	Render_DOFFinal();
-	Render_Fog();
-	Render_MotionBlurFinal();
-
-	Render_Forward();
-
 	Render_BloomMap();
 	Render_BloomMapScaling();
 	Render_BloomFinal();
@@ -129,12 +107,16 @@ void Scene::Render()
 	Render_Distortion();
 	Render_Distortion_Final();
 	Render_LensFlare();
-
+	Render_Fog();
 	Render_Aberration();
 
 	Render_Debug();
 
+
 	Render_UI();
+	//Render_ToneMapping();
+
+	//Render_BackBuffer();
 }
 
 HRESULT Scene::Load_Scene()
@@ -1037,19 +1019,6 @@ void Scene::Render_MotionBlurFinal()
 
 	material->Get_Shader()->DrawIndexed(1, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 	m_wstrFinalRenderTarget = L"MotionBlurFinalTarget";
-}
-
-void Scene::Render_SkyBox()
-{
-	if (Get_MainCamera())
-	{
-		shared_ptr<Camera> mainCamera = Get_MainCamera()->Get_Camera();
-		Camera::S_View = mainCamera->Get_ViewMat();
-		Camera::S_Proj = mainCamera->Get_ProjMat();
-
-
-		mainCamera->Render_SkyBox();
-	}
 }
 
 void Scene::Render_Forward()
