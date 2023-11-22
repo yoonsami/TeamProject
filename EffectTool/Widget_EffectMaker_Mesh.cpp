@@ -1003,7 +1003,7 @@ void Widget_EffectMaker_Mesh::Create()
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
 		shared_ptr<MeshEffect> meshEffect = make_shared<MeshEffect>(shader);
 		EffectObj->Add_Component(meshEffect);
-
+		EffectObj->Get_MeshEffect()->Set_ToolModeOn(true);
 		if (!m_bColorChangingOn)
 		{
 			for (_int i = 0; i < m_iTexOptionCnt; i++)

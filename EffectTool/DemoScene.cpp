@@ -75,7 +75,7 @@ HRESULT GranseedScene::Load_Scene()
 			Add_GameObject(sky);
 		}
 	}
-	Load_MapFile(L"KyleMap");
+	Load_MapFile(L"KyleMap",nullptr);
 	return S_OK;
 }
 
