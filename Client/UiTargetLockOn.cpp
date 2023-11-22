@@ -135,7 +135,6 @@ void UiTargetLockOn::Update_Target_Pos()
     m_pLockOn0.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[1] = vecPos;
     m_pLockOn1.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[1] = vecPos;
     
-    _float4x4 matWorld = m_pCamera.lock()->GetOrAddTransform()->Get_WorldMatrix();
     _float4x4 matView = m_pCamera.lock()->Get_Camera()->Get_ViewMat();
     _float4x4 matProj = m_pCamera.lock()->Get_Camera()->Get_ProjMat();
 

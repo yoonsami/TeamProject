@@ -14,19 +14,34 @@ HRESULT UiMonsterHp::Init()
         return E_FAIL;
 
     auto pScene = CUR_SCENE;
-    m_pFrontHp  = pScene->Get_UI(L"UI_MonsterHp0");
-    m_pBackHp   = pScene->Get_UI(L"UI_MonsterHp1");
-    m_pBgHp     = pScene->Get_UI(L"UI_MonsterHp2");
-    m_pCamera   = pScene->Get_Camera(L"Default");
+    vector<weak_ptr<GameObject>> addedObj;
+    pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_MonsterHp.dat", addedObj);
 
-    if(false == m_pFrontHp.expired())
+    _uint iSize = IDX(addedObj.size());
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        if (true == addedObj[i].expired())
+            continue;
+
+        wstring strName = addedObj[i].lock()->Get_Name();
+        if (L"UI_MonsterHp0" == strName)
+            m_pFrontHp = addedObj[i];
+        else if(L"UI_MonsterHp1" == strName)
+            m_pBackHp = addedObj[i];
+        else if(L"UI_MonsterHp2" == strName)
+            m_pBgHp = addedObj[i];
+    }
+
+    m_pCamera = pScene->Get_Camera(L"Default");
+
+    /*if(false == m_pFrontHp.expired())
         m_pFrontHp.lock()->Set_Render(false);
 
     if (false == m_pBackHp.expired())
         m_pBackHp.lock()->Set_Render(false);
 
     if (false == m_pBgHp.expired())
-        m_pBgHp.lock()->Set_Render(false);
+        m_pBgHp.lock()->Set_Render(false);*/
 
     return S_OK;
 }
@@ -50,8 +65,8 @@ void UiMonsterHp::Tick()
     Change_Hp_Slow();
     Update_Target_Pos();
 
-    if (KEYTAP(KEY_TYPE::F5))
-        m_pTarget.lock()->Get_Hurt(10.f);
+    /*if (KEYTAP(KEY_TYPE::F5))
+        m_pTarget.lock()->Get_Hurt(10.f);*/
 }
 
 void UiMonsterHp::Set_Target(shared_ptr<GameObject> pObj)

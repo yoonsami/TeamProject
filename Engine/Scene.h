@@ -50,7 +50,10 @@ public:
 	void Swap_Object(const wstring& leftObjName, const wstring& rightObjName);
 	void Render_ToneMapping();
 	void Render_BackBuffer();
+	
+	
 	void Load_UIFile(const wstring& path, const vector<shared_ptr<GameObject>>& staticObjects, _bool bRender = true);
+	void Load_UIFile(const wstring& path, vector<weak_ptr<GameObject>>& addedObjects);
 
 	const wstring& Get_FinalRenderTarget() { return m_wstrFinalRenderTarget; }
 

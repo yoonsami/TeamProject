@@ -11,10 +11,11 @@ public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
 
+    void Delete_Mark();
 
 private:
     void Check_In_Screen();
-
+    void Update_Pos();
 
 private:
     weak_ptr<GameObject>    m_pCamera;

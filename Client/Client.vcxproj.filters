@@ -265,6 +265,9 @@
     <Filter Include="01.Scene\00.PlayScene\02.Mir">
       <UniqueIdentifier>{39a19dc2-0ef9-4370-94bb-2b5425573b88}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\17.UiMarkNpc">
+      <UniqueIdentifier>{72831f1a-04f7-4c99-bb2c-b123a25ffc4f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -543,6 +546,9 @@
     <ClInclude Include="MirScene.h">
       <Filter>01.Scene\00.PlayScene\02.Mir</Filter>
     </ClInclude>
+    <ClInclude Include="UiMarkNpc.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\17.UiMarkNpc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -787,6 +793,9 @@
     </ClCompile>
     <ClCompile Include="MirScene.cpp">
       <Filter>01.Scene\00.PlayScene\02.Mir</Filter>
+    </ClCompile>
+    <ClCompile Include="UiMarkNpc.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\17.UiMarkNpc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
