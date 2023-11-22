@@ -12,6 +12,7 @@
 #include "Boss_DellonsWraith_FSM.h"
 #include "MathUtils.h"
 #include "CounterMotionTrailScript.h"
+#include "UiDamageCreate.h"
 
 Boss_Spike_FSM::Boss_Spike_FSM()
 {
@@ -348,6 +349,8 @@ void Boss_Spike_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float 
 
 void Boss_Spike_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
 {
+    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Transform()->Get_State(Transform_State::POS));
+
     m_pOwner.lock()->Get_Hurt(5);
 
     _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();

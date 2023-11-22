@@ -22,7 +22,7 @@ void CounterMotionTrailScript::Tick()
 {
 	if (!m_pMotionTrail.expired())
 	{
-		m_fTrailScale += fDT;
+		m_fTrailScale += fDT * 0.5f;
 		m_pMotionTrail.lock()->Get_MotionTrailRenderer()->Set_Scale(m_fTrailScale);
 	}
 	else

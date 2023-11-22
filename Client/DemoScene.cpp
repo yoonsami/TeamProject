@@ -144,11 +144,11 @@ void DemoScene::Final_Tick()
 {
 	__super::Final_Tick();
 	PHYSX.Tick();
-	
+
 	if (KEYTAP(KEY_TYPE::TAB))
 	{
-		GachaSceneDesc sceneDesc{ L"YeopoMap",HERO::YEOPO};
-			SCENE.Add_SubScene(make_shared<GachaScene>(sceneDesc));
+		GachaSceneDesc sceneDesc{ L"YeopoMap",HERO::YEOPO };
+		SCENE.Add_SubScene(make_shared<GachaScene>(sceneDesc));
 		SCENE.Exchange_Scene();
 
 
@@ -164,17 +164,17 @@ HRESULT DemoScene::Load_Scene()
 	Load_Light();
 	Load_Camera();
 	// 플레이어의 위치를 잡아주기 때문에 LoadPlayer 이후로 해야함.
-	//Load_MapFile(L"MirMap");
-	Load_MapFile(L"KrisMap");
+	Load_MapFile(L"MirMap");
+	//Load_MapFile(L"KrisMap");
 	//Load_Monster(1, L"Silversword_Soldier");
 	//Load_Monster(1, L"Succubus_Scythe");
 	//Load_Monster(1, L"Undead_Priest");
-	Load_Monster(1, L"Alpaca_White");
-	Load_Monster(1, L"Alpaca_Brown");
-	Load_Monster(1, L"Alpaca_Black");
-	Load_Monster(1, L"Wolf");
+	//Load_Monster(1, L"Alpaca_White");
+	//Load_Monster(1, L"Alpaca_Brown");
+	//Load_Monster(1, L"Alpaca_Black");
+	//Load_Monster(1, L"Wolf");
 	//Load_Boss_Spike();
-	//Load_Boss_Mir();
+	Load_Boss_Mir();
 
 	//Load_Debug();
 	Load_Ui();
@@ -187,9 +187,9 @@ void DemoScene::Load_Player()
 	{
 		// Add. Player
 		shared_ptr<GameObject> ObjPlayer = make_shared<GameObject>();
-		
+
 		ObjPlayer->Add_Component(make_shared<Transform>());
-	
+
 		ObjPlayer->Get_Transform()->Set_State(Transform_State::POS, _float4(-0.f, 0.f, 0.f, 1.f));
 		{
 			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
@@ -201,7 +201,7 @@ void DemoScene::Load_Player()
 				model->AddParts(L"Am_Head_001", PARTS_INFO::Head);
 				model->AddParts(L"Am_Ct_Uniform_022", PARTS_INFO::Uniform);
 				animator->Set_Model(model);
-				
+
 			}
 
 			ObjPlayer->Add_Component(animator);
@@ -256,7 +256,7 @@ void DemoScene::Load_Player()
 		Add_GameObject(ObjWeapon);
 
 		ObjPlayer->Add_Component(make_shared<HeroChangeScript>());
-	
+
 	}
 }
 
@@ -280,10 +280,10 @@ void DemoScene::Load_Camera()
 		desc.fNear = 0.1f;
 		desc.fFar = 1000.f;
 		shared_ptr<Camera> cameraComponent = make_shared<Camera>(desc);
-		
+
 		camera->Add_Component(cameraComponent);
 
-	
+
 		camera->Get_Camera()->Set_ProjType(ProjectionType::Perspective);
 		//Layer_UI culling true
 		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, true);
@@ -294,7 +294,7 @@ void DemoScene::Load_Camera()
 		camera->Add_Component(make_shared<MainCameraScript>(pPlayer));
 
 		Add_GameObject(camera);
-	
+
 		//Setting Camera
 		pPlayer->Get_FSM()->Set_Camera(camera);
 	}
@@ -426,9 +426,9 @@ void DemoScene::Load_Boss_Mir()
 		desc.radius = 4.5f;
 		desc.height = 5.f;
 		desc.climbingMode = PxCapsuleClimbingMode::eCONSTRAINED;
-		
+
 		_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz() +
-					   ObjMonster->Get_Transform()->Get_State(Transform_State::LOOK);
+			ObjMonster->Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.position = { vPos.x, vPos.y, vPos.z };
 		controller->Create_Controller();
 		controller->Get_Actor()->setStepOffset(0.1f);
@@ -459,7 +459,7 @@ void DemoScene::Load_Boss_Dellons()
 
 			ObjMonster->Add_Component(animator);
 			ObjMonster->Add_Component(make_shared<Boss_Dellons_FSM>());
-			
+
 			auto pPlayer = Get_GameObject(L"Player");
 			ObjMonster->Get_FSM()->Set_Target(pPlayer);
 		}
@@ -594,7 +594,7 @@ void DemoScene::Load_Light()
 {
 	shared_ptr<GameObject> lightObj = make_shared<GameObject>();
 	lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(50.f, 30.f, 20.f, 1.f));
-	lightObj->GetOrAddTransform()->LookAt(_float4(0.f,0.f,0.f,1.f));
+	lightObj->GetOrAddTransform()->LookAt(_float4(0.f, 0.f, 0.f, 1.f));
 	{
 		shared_ptr<Light> lightCom = make_shared<Light>();
 		lightCom->Set_Diffuse(Color(0.7f));
@@ -603,7 +603,7 @@ void DemoScene::Load_Light()
 		lightCom->Set_Emissive(Color(1.f));
 		lightCom->Set_LightType(LIGHT_TYPE::DIRECTIONAL_LIGHT);
 		lightObj->Add_Component(lightCom);
-		
+
 	}
 
 	Add_GameObject(lightObj);
@@ -720,11 +720,11 @@ void DemoScene::Load_Ui()
 			pObj->Add_Component(pScript);
 		}
 	}
-	
 
-	
 
-	
+
+
+
 
 	{
 		auto pObj = Get_UI(L"UI_Skill_Use_Gauge");
@@ -734,7 +734,7 @@ void DemoScene::Load_Ui()
 			pObj->Add_Component(pScript);
 		}
 	}
-	
+
 
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Card_Deck_Exit");
@@ -791,7 +791,7 @@ void DemoScene::Load_Ui()
 
 
 
-	
+
 
 	{
 		auto pScript = make_shared<UiSkillButtonEffect>();
@@ -844,7 +844,7 @@ void DemoScene::Load_Ui()
 		if (nullptr != pObj) {
 			pObj->Add_Component(pScript);
 		}
-		
+
 	}
 
 	{
