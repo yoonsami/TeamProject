@@ -222,11 +222,15 @@ void MeshEffect::InitialTransform(_float4x4 mParentWorldMatrix, const _float3& v
                                 //* _float4x4::CreateFromQuaternion(Quaternion::CreateFromYawPitchRoll(m_vStartRotation.y, m_vStartRotation.x, m_vStartRotation.z)) 
                                 * _float4x4::CreateTranslation(m_vStartPos);
     
+		if (m_tDesc.iMeshCnt > 1)
+			int a = 0;
+
 
     // move to parent space 
     Get_Transform()->Set_WorldMat(matLocal * m_mInGroupWorldMatrix * mParentWorldMatrix);
     
     matLocal.Decompose(m_vLocalScale, m_qRotation, m_vLocalPos);
+
 
     // Billbord 
     if (m_tTransform_Desc.iTurnOption == 3)

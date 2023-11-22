@@ -31,7 +31,7 @@ public:
     _bool                   Get_IsFollowGroup_LooKSameDir() { return m_tDesc.bIsFollowingGroup_LooKSameDir; }
     _bool                   Get_IsLoop() { return m_tDesc.bIsLoop; }
     _float4x4               Get_InGroupMatrix() { return m_mInGroupWorldMatrix; }
-
+    MeshEffectData::DESC& Get_Desc() { return m_tDesc; }
     void                    Translate();
     void                    Scaling();
     void                    Turn();
