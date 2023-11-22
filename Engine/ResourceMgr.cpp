@@ -963,13 +963,13 @@ void ResourceMgr::CreateDefaultFont()
 
 		Add(L"Dream", font);
 	}
-	{
+	/*{
 		shared_ptr<CustomFont> font = make_shared<CustomFont>();
 		font->Load(L"..\\Resources\\Font\\overwatch.spritefont");
 
 		Add(L"overwatch", font);
-	}
-	{
+	}*/
+	/*{
 		shared_ptr<CustomFont> font = make_shared<CustomFont>();
 		font->Load(L"..\\Resources\\Font\\maple_light.spritefont");
 
@@ -980,7 +980,7 @@ void ResourceMgr::CreateDefaultFont()
 		font->Load(L"..\\Resources\\Font\\maple_bold.spritefont");
 
 		Add(L"maple_bold", font);
-	}
+	}*/
 }
 
 void ResourceMgr::CreateMeshEffectData()

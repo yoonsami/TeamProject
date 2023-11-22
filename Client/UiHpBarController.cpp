@@ -56,12 +56,12 @@ void UiHpBarController::Change_Param()
     m_pFrontHp.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[1] = m_fValue;
 
     wstring strHp = to_wstring(IDX(m_pOwner.lock()->Get_CurHp()));
-    strHp += L"/";
+    strHp += L" / ";
     strHp += to_wstring(IDX(m_pOwner.lock()->Get_MaxHp()));
 
     m_pFont.lock()->Get_FontRenderer()->Get_Text() = strHp;
     _float4 vecPos = m_pFont.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-    vecPos.x = strHp.length() * 10.f / -2.f;
+    vecPos.x = ((strHp.length() - 3.f) / 2.f * -10.f) - 10.f;
     m_pFont.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
 }
 

@@ -88,6 +88,17 @@ void DemoScene::Init()
 void DemoScene::Tick()
 {
 	__super::Tick();
+
+	{
+		if (KEYPUSH(KEY_TYPE::C))
+		{
+			Get_GameObject(L"Main_Ui_Controller")->Get_Script<MainUiController>()->Set_MainUI_Render(true);
+		}
+		if (KEYPUSH(KEY_TYPE::V))
+		{
+			Get_GameObject(L"Main_Ui_Controller")->Get_Script<MainUiController>()->Set_MainUI_Render(false);
+		}
+	}
 }
 
 void DemoScene::Late_Tick()
@@ -624,7 +635,7 @@ void DemoScene::Load_Ui()
 	//Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat");
 
 
-	/*{
+	{
 		auto pObj = make_shared<GameObject>();
 		pObj->Set_Name(L"Main_Ui_Controller");
 
@@ -633,7 +644,7 @@ void DemoScene::Load_Ui()
 
 		pObj->Set_LayerIndex(Layer_UI);
 		Add_GameObject(pObj, true);
-	}*/
+	}
 
 	{
 		auto pObj = make_shared<GameObject>();

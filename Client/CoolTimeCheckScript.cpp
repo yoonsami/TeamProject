@@ -335,6 +335,8 @@ _bool CoolTimeCheckScript::IsAvailable(SkillType eSkillType)
     {
         if (m_tagEvade.fCoolTime < m_tagEvade.fAccTime)
         {
+            Set_Skill_End();
+
             m_tagEvade.fAccTime = 0.f;
 
             return true;
@@ -349,6 +351,8 @@ _bool CoolTimeCheckScript::IsAvailable(SkillType eSkillType)
     auto& CoolInfo = m_CoolTime[IDX(m_eCurHero)][eSkillType];
     if (CoolInfo.CoolInfo.fCoolTime < CoolInfo.CoolInfo.fAccTime)
     {
+        Set_Skill_End();
+
         CoolInfo.bIsEnd = false;
         CoolInfo.bIsWork = true;
         //CoolInfo.fAccTime = 0.f;
@@ -549,16 +553,16 @@ void CoolTimeCheckScript::Change_Pos_Two_Letter(_uint iIndex)
     switch (iIndex)
     {
     case 0:
-        vecPos.x = 554;
+        vecPos.x = 555;
         break;
     case 1:
         vecPos.x = 685;
         break;
     case 2:
-        vecPos.x = 813;
+        vecPos.x = 815;
         break;
     case 3:
-        vecPos.x = 813;
+        vecPos.x = 815;
         break;
     case 4:
         vecPos.x = 685;
@@ -584,19 +588,19 @@ void CoolTimeCheckScript::Change_Pos_One_Letter(_uint iIndex)
     switch (iIndex)
     {
     case 0:
-        vecPos.x = 565;
+        vecPos.x = 563;
         break;
     case 1:
-        vecPos.x = 695;
+        vecPos.x = 693;
         break;
     case 2:
-        vecPos.x = 825;
+        vecPos.x = 823;
         break;
     case 3:
-        vecPos.x = 825;
+        vecPos.x = 823;
         break;
     case 4:
-        vecPos.x = 695;
+        vecPos.x = 693;
         break;
     default:
         return;
