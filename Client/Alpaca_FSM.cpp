@@ -5,6 +5,7 @@
 #include "AttackColliderInfoScript.h"
 #include "MainCameraScript.h"
 #include "UiDamageCreate.h"
+#include "ObjectDissolve.h"
 
 HRESULT Alpaca_FSM::Init()
 {
@@ -682,6 +683,9 @@ void Alpaca_FSM::knock_end_loop_Init()
     animator->Set_NextTweenAnim(L"knock_end_loop", 0.2f, false, 1.f);
 
     m_bSuperArmor = false;
+    auto script = make_shared<ObjectDissolve>(1.f);
+    Get_Owner()->Add_Component(script);
+    script->Init();
 }
 
 void Alpaca_FSM::knock_end_hit()

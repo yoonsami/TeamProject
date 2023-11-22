@@ -163,6 +163,8 @@ void Scene::Add_GameObject_Front(shared_ptr<GameObject> object, _bool staticFlag
 
 void Scene::Remove_GameObject(shared_ptr<GameObject> object)
 {
+
+
 	{
 		auto findit = find(m_GameObjects.begin(), m_GameObjects.end(), object);
 		if (findit != m_GameObjects.end())

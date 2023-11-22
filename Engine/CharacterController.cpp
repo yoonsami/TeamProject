@@ -9,6 +9,15 @@ CharacterController::CharacterController() : Component(COMPONENT_TYPE::Character
 
 CharacterController::~CharacterController()
 {
+	if (PHYSX.Get_PxScene())
+	{
+		if(m_pController)
+		{
+			m_pController->release();
+			m_pController = nullptr;
+		}
+
+	}
 }
 
 void CharacterController::Create_Controller(_bool IsBoxCollider)

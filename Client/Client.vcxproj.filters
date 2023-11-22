@@ -265,6 +265,9 @@
     <Filter Include="01.Scene\00.PlayScene\02.Mir">
       <UniqueIdentifier>{39a19dc2-0ef9-4370-94bb-2b5425573b88}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\05.Object\00.ObjectDissolve">
+      <UniqueIdentifier>{d1056bc6-9167-4c20-929b-7a2016426db2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -543,6 +546,10 @@
     <ClInclude Include="MirScene.h">
       <Filter>01.Scene\00.PlayScene\02.Mir</Filter>
     </ClInclude>
+    <ClInclude Include="UiMarkNpc.h" />
+    <ClInclude Include="ObjectDissolve.h">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\00.ObjectDissolve</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -787,6 +794,10 @@
     </ClCompile>
     <ClCompile Include="MirScene.cpp">
       <Filter>01.Scene\00.PlayScene\02.Mir</Filter>
+    </ClCompile>
+    <ClCompile Include="UiMarkNpc.cpp" />
+    <ClCompile Include="ObjectDissolve.cpp">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\00.ObjectDissolve</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

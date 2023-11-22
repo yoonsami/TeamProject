@@ -672,7 +672,7 @@ PBR_OUTPUT PS_PBR_Deferred(MeshOutput input)
     float4 emissiveColor;
     float4 ARM_Map;
 
-    if (bHasDissolveMap != 0)
+    if (bHasDissolveMap)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
         if (dissolve < g_float_0)
@@ -711,6 +711,8 @@ PBR_OUTPUT PS_PBR_Deferred(MeshOutput input)
     }
     else
         emissiveColor = 0.f;
+    
+
 
     output.position = float4(input.viewPosition.xyz, 0.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
