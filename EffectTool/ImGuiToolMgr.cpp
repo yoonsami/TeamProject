@@ -11,7 +11,7 @@ ImGuiToolMgr::~ImGuiToolMgr()
     ImGui_ImplDX11_Shutdown();
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
-}
+ }
 
 void ImGuiToolMgr::Init(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

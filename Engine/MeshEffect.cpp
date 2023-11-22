@@ -382,7 +382,7 @@ void MeshEffect::Translate()
             _float4x4 mLocalMatrix = Get_CurrLocalMatrix();
             _float3 vDir = mLocalMatrix.Backward();
             vDir.Normalize();
-            m_vCurrPos -= _float4(vDir * Get_Transform()->Get_Speed() * fDT, 0.f);
+            m_vCurrPos += _float4(vDir * Get_Transform()->Get_Speed() * fDT, 0.f);
         }
         break;
     }
@@ -397,7 +397,7 @@ void MeshEffect::Translate()
             _float4x4 mLocalMatrix = Get_CurrLocalMatrix();
             _float3 vDir = mLocalMatrix.Backward();
             vDir.Normalize();
-            m_vCurrPos += _float4(vDir * Get_Transform()->Get_Speed() * fDT, 0.f);
+            m_vCurrPos -= _float4(vDir * Get_Transform()->Get_Speed() * fDT, 0.f);
         }
         break;
     }
