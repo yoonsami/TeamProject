@@ -161,9 +161,8 @@ private:
 	_bool m_bDetected = false;
 	_bool m_bTurnMotion = false;
 	_bool m_bCounter = false;
-	_bool m_bPhaseTwo = true; // True is Phase One 
+	_bool m_bPhaseTwo = false; // True is Phase One 
 	_bool m_bPhaseOneEmissive = false;
-	_bool m_bGimmick = false; // For. Phase1 Gimmick
 
 	_uint m_iPreAttack = 100;
 	_uint m_iCrashCnt = 0;

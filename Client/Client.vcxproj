@@ -197,6 +197,7 @@
     <ClInclude Include="..\Shaders\Fxaa3_11.h" />
     <ClInclude Include="Alpaca_FSM.h" />
     <ClInclude Include="AttackColliderInfoScript.h" />
+    <ClInclude Include="DragonBall_FSM.h" />
     <ClInclude Include="MirScene.h" />
     <ClInclude Include="Wolf_FSM.h" />
     <ClInclude Include="Boss_DellonsWraith_FSM.h" />
@@ -286,6 +287,7 @@
     <ClCompile Include="..\Libraries\Include\IMGUI\ImSequencer.cpp" />
     <ClCompile Include="Alpaca_FSM.cpp" />
     <ClCompile Include="AttackColliderInfoScript.cpp" />
+    <ClCompile Include="DragonBall_FSM.cpp" />
     <ClCompile Include="MirScene.cpp" />
     <ClCompile Include="Wolf_FSM.cpp" />
     <ClCompile Include="Boss_DellonsWraith_FSM.cpp" />

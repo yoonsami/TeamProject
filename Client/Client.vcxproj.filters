@@ -265,6 +265,9 @@
     <Filter Include="01.Scene\00.PlayScene\02.Mir">
       <UniqueIdentifier>{39a19dc2-0ef9-4370-94bb-2b5425573b88}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\01.FSM\03.Special_FSM\04.DragonBall_FSM">
+      <UniqueIdentifier>{9b66a549-2c44-438b-9700-c96f1d8000d4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -543,6 +546,10 @@
     <ClInclude Include="MirScene.h">
       <Filter>01.Scene\00.PlayScene\02.Mir</Filter>
     </ClInclude>
+    <ClInclude Include="UiMarkNpc.h" />
+    <ClInclude Include="DragonBall_FSM.h">
+      <Filter>02.Component\01.FSM\03.Special_FSM\04.DragonBall_FSM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -787,6 +794,10 @@
     </ClCompile>
     <ClCompile Include="MirScene.cpp">
       <Filter>01.Scene\00.PlayScene\02.Mir</Filter>
+    </ClCompile>
+    <ClCompile Include="UiMarkNpc.cpp" />
+    <ClCompile Include="DragonBall_FSM.cpp">
+      <Filter>02.Component\01.FSM\03.Special_FSM\04.DragonBall_FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
