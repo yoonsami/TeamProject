@@ -175,6 +175,7 @@ void Boss_Mir_FSM::State_Tick()
         break;
     }
 
+
     if (m_iPreFrame != m_iCurFrame)
         m_iPreFrame = m_iCurFrame;
 }
