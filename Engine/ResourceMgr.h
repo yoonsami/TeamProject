@@ -22,19 +22,19 @@ public:
 	void Initialize();
 
 	template<typename T>
-	shared_ptr<T> Load(const wstring& key, const wstring& path, _uint iLevelIndex = 0);
+	shared_ptr<T> Load(const wstring& key, const wstring& path, _bool isStatic = true);
 
 	template<typename T>
-	_bool Add(const wstring& key, shared_ptr<T> resource, _uint iLevelIndex = 0);
+	_bool Add(const wstring& key, shared_ptr<T> resource, _bool isStatic = true);
 
 	template<typename T>
-	shared_ptr<T> Get(const wstring& key, _uint iLevelIndex = 0);
+	shared_ptr<T> Get(const wstring& key);
 
 	template<typename T>
-	shared_ptr<T> Clone(const wstring& key, _uint iLevelIndex = 0);
+	shared_ptr<T> Clone(const wstring& key, _bool isStatic = true);
 
 	template<typename T>
-	void Delete(const wstring& key, _uint iLevelIndex = 0);
+	void Delete(const wstring& key, _bool isStatic = true);
 
 	template<typename T>
 	ResourceType Get_ResourceType();
@@ -51,18 +51,20 @@ public:
 	void LoadParts();
 	void CreateDefaultMesh();
 	void CreateDefaultShader();
-	void CreateModel(const wstring& path);
+	
+	void CreateModel(const wstring& path, _bool isStatic = true);
 
 	void CreateDefaultMaterial();
-	void CreateMapModel(const wstring& mapName);
 	void CreateDefaultFont();
 
 	void CreateParticleData();
 	void CreateMeshEffectData();
 	void CreateGroupEffectData();
 
-	void Reset_LevelModel(_uint iLevelIndex);
+	void Delete_NonStaticResources();
 	
+
+
 	shared_ptr<Texture> CreateTexture(const wstring& name, DXGI_FORMAT format, _uint width, _uint height, _uint BindFlags, _float4 clearColor);
 	shared_ptr<Texture> CreateTextureFromResource(const wstring& path, ComPtr<ID3D11Texture2D> texture);
 	shared_ptr<Texture> CreateShadowTexture(const wstring& name, _float width, _float height);
@@ -72,23 +74,19 @@ private:
 	wstring m_strModelPath = L"../Resources/Models/";
 
 	using KeyResouceMap = map<wstring, shared_ptr<ResourceBase>>;
-	array<array<KeyResouceMap, RESOURCE_TYPE_COUNT>,MAX_LEVEL_COUNT> m_Resources;
+	array<KeyResouceMap, RESOURCE_TYPE_COUNT> m_Resources[2];
 
 	map<wstring, shared_ptr<Parts>> m_PrototypeParts[PARTS_MAX_COUNT];
 };
 
 
 template<typename T>
-inline shared_ptr<T> ResourceMgr::Load(const wstring& key, const wstring& path, _uint iLevelIndex)
+inline shared_ptr<T> ResourceMgr::Load(const wstring& key, const wstring& path, _bool isStatic)
 {
-	if (iLevelIndex >= MAX_LEVEL_COUNT)
-	{
-		MSG_BOX("Level Index Bigger than MaxCount");
-		return nullptr;
-	}
 
+	_uint index = isStatic ? 0 : 1;
 	auto eType = Get_ResourceType<T>();
-	KeyResouceMap& keyObjMap = m_Resources[iLevelIndex][static_cast<_uchar>(eType)];
+	KeyResouceMap& keyObjMap = m_Resources[index][static_cast<_uchar>(eType)];
 
 	auto findIt = keyObjMap.find(key);
 	if (findIt != keyObjMap.end())
@@ -103,10 +101,11 @@ inline shared_ptr<T> ResourceMgr::Load(const wstring& key, const wstring& path, 
 }
 
 template<typename T>
-inline _bool ResourceMgr::Add(const wstring& key, shared_ptr<T> resource, _uint iLevelIndex)
+inline _bool ResourceMgr::Add(const wstring& key, shared_ptr<T> resource, _bool isStatic)
 {
 	ResourceType eType = Get_ResourceType<T>();
-	KeyResouceMap& keyObjMap = m_Resources[iLevelIndex][static_cast<_uchar>(eType)];
+	_uint index = isStatic ? 0 : 1;
+	KeyResouceMap& keyObjMap = m_Resources[index][static_cast<_uchar>(eType)];
 
 	auto findIt = keyObjMap.find(key);
 	if (findIt != keyObjMap.end())
@@ -118,23 +117,28 @@ inline _bool ResourceMgr::Add(const wstring& key, shared_ptr<T> resource, _uint 
 }
 
 template<typename T>
-inline shared_ptr<T> ResourceMgr::Get(const wstring& key, _uint iLevelIndex)
+inline shared_ptr<T> ResourceMgr::Get(const wstring& key)
 {
 	ResourceType eType = Get_ResourceType<T>();
-	KeyResouceMap& keyObjMap = m_Resources[iLevelIndex][static_cast<_uchar>(eType)];
 
-	auto findIt = keyObjMap.find(key);
-	if (findIt != keyObjMap.end())
-		return static_pointer_cast<T>(findIt->second);
+	for(_uint i =0; i<2; ++i)
+	{
+		KeyResouceMap& keyObjMap = m_Resources[i][static_cast<_uchar>(eType)];
+
+		auto findIt = keyObjMap.find(key);
+		if (findIt != keyObjMap.end())
+			return static_pointer_cast<T>(findIt->second);
+	}
 
 	return nullptr;
 }
 
 template<typename T>
-inline shared_ptr<T> ResourceMgr::Clone(const wstring& key, _uint iLevelIndex)
+inline shared_ptr<T> ResourceMgr::Clone(const wstring& key, _bool isStatic)
 {
 	ResourceType eType = Get_ResourceType<T>();
-	KeyResouceMap& keyObjMap = m_Resources[iLevelIndex][static_cast<_uchar>(eType)];
+	_uint index = isStatic ? 0 : 1;
+	KeyResouceMap& keyObjMap = m_Resources[index][static_cast<_uchar>(eType)];
 
 	auto findIt = keyObjMap.find(key);
 	if (findIt != keyObjMap.end())
@@ -144,10 +148,11 @@ inline shared_ptr<T> ResourceMgr::Clone(const wstring& key, _uint iLevelIndex)
 }
 
 template<typename T>
-inline void ResourceMgr::Delete(const wstring& key, _uint iLevelIndex)
+inline void ResourceMgr::Delete(const wstring& key, _bool isStatic)
 {
 	ResourceType eType = Get_ResourceType<T>();
-	KeyResouceMap& keyObjMap = m_Resources[iLevelIndex][static_cast<_uchar>(eType)];
+	_uint index = isStatic ? 0 : 1;
+	KeyResouceMap& keyObjMap = m_Resources[index][static_cast<_uchar>(eType)];
 
 	auto findIt = keyObjMap.find(key);
 	if (findIt != keyObjMap.end())

@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 
 #include "Imgui_Manager.h"
 #include "imgui.h"
@@ -105,16 +105,16 @@ void ImGui_Manager::ImGui_Render()
 
 void ImGui_Manager::Show_Gizmo()
 {
-    // ±âÁî¸ğ Ãâ·Â
+    // ê¸°ì¦ˆëª¨ ì¶œë ¥
     ImGuizmo::BeginFrame();
     if (m_strObjectName.size() != 0 && m_GizmoTarget == GizmoTMapObj)
     {
-        // ±âÁî¸ğ¸¦ À§ÇØ Ä«¸Ş¶óÀÇ ºä,Åõ¿µÀ» °¡Á®¿È.
+        // ê¸°ì¦ˆëª¨ë¥¼ ìœ„í•´ ì¹´ë©”ë¼ì˜ ë·°,íˆ¬ì˜ì„ ê°€ì ¸ì˜´.
         shared_ptr<Camera> CurCam = CUR_SCENE->Get_Camera(L"Default")->Get_Camera();
         _float4x4 matView = CurCam->Get_ViewMat();
         _float4x4 matProj = CurCam->Get_ProjMat();
 
-        // ±âÁî¸ğ »óÅÂ Àû¿ë
+        // ê¸°ì¦ˆëª¨ ìƒíƒœ ì ìš©
         _float4x4 matGuizmo = m_pMapObjects[m_iObjects]->Get_Transform()->Get_WorldMatrix();
 
         ImGuizmo::Manipulate((float*)&matView,
@@ -127,12 +127,12 @@ void ImGui_Manager::Show_Gizmo()
     }
     else if (m_strPointLightList.size() != 0 && m_GizmoTarget == GizmoTPointLight)
     {
-        // ±âÁî¸ğ¸¦ À§ÇØ Ä«¸Ş¶óÀÇ ºä,Åõ¿µÀ» °¡Á®¿È.
+        // ê¸°ì¦ˆëª¨ë¥¼ ìœ„í•´ ì¹´ë©”ë¼ì˜ ë·°,íˆ¬ì˜ì„ ê°€ì ¸ì˜´.
         shared_ptr<Camera> CurCam = CUR_SCENE->Get_Camera(L"Default")->Get_Camera();
         _float4x4 matView = CurCam->Get_ViewMat();
         _float4x4 matProj = CurCam->Get_ProjMat();
 
-        // ±âÁî¸ğ »óÅÂ Àû¿ë
+        // ê¸°ì¦ˆëª¨ ìƒíƒœ ì ìš©
         _float4x4 matGuizmo = m_pPointLightObjects[m_iPointLightIndex]->Get_Transform()->Get_WorldMatrix();
 
         ImGuizmo::Manipulate((float*)&matView,
@@ -147,11 +147,11 @@ void ImGui_Manager::Show_Gizmo()
 
 void ImGui_Manager::Frame_ObjectBase()
 {
-    ImGui::Begin("Frame_ObjectBase"); // ±ÛÀÚ ¸ÇÀ­ÁÙ
+    ImGui::Begin("Frame_ObjectBase"); // ê¸€ì ë§¨ìœ—ì¤„
 
     if (ImGui::ListBox("##ObjectBase", &m_iObjectBaseIndex, m_strObjectBaseNameList.data(), (int)m_strObjectBaseNameList.size(), (_int)m_strObjectBaseNameList.size()))
-        Set_SampleObject(); // ¸®½ºÆ®¹Ú½º ¼±ÅÃ´ë»óÀÌ ´Ş¶óÁö¸é »ùÇÃ¸ğµ¨º¯°æ
-    // ³ôÀÌ Àç¼³Á¤
+        Set_SampleObject(); // ë¦¬ìŠ¤íŠ¸ë°•ìŠ¤ ì„ íƒëŒ€ìƒì´ ë‹¬ë¼ì§€ë©´ ìƒ˜í”Œëª¨ë¸ë³€ê²½
+    // ë†’ì´ ì¬ì„¤ì •
     if (m_bBaseObjectListResetHeight)
     {
         m_bBaseObjectListResetHeight = false;
@@ -163,26 +163,26 @@ void ImGui_Manager::Frame_ObjectBase()
 
 void ImGui_Manager::Frame_ObjectBaseManager()
 {
-    ImGui::Begin("Frame_ObjectBaseManager"); // ±ÛÀÚ ¸ÇÀ­ÁÙ
+    ImGui::Begin("Frame_ObjectBaseManager"); // ê¸€ì ë§¨ìœ—ì¤„
 
     if (ImGui::InputText("Filter##ObjectBase", m_szBaseObjectFilter, sizeof(m_szBaseObjectFilter)))
     {
-        // ÇÊÅÍ³»¿ë stringÈ­
+        // í•„í„°ë‚´ìš© stringí™”
         string strFilter = m_szBaseObjectFilter;
         m_FilteredBaseObjectNames.clear();
         for (size_t i = 0; i < m_strObjectBaseNameList.size(); ++i)
         {
-            // °Ë»ç´çÇÒ ´ë»ó ÅØ½ºÆ®
+            // ê²€ì‚¬ë‹¹í•  ëŒ€ìƒ í…ìŠ¤íŠ¸
             string strFilterTarget = m_strObjectBaseNameList[i];
             if (strFilterTarget.find(strFilter) != std::string::npos)
             {
-                // µ¿Àû»ı¼º
+                // ë™ì ìƒì„±
                 shared_ptr<char[]> pChar = shared_ptr<char[]>(new char[MAX_PATH]);
                 strncpy_s(pChar.get(), MAX_PATH, strFilterTarget.c_str(), _TRUNCATE);
 
-                // ÇÊÅÍµÈ ÀÌ¸§À» Æ÷ÀÎÅÍ º¤ÅÍ¿¡ Ãß°¡
+                // í•„í„°ëœ ì´ë¦„ì„ í¬ì¸í„° ë²¡í„°ì— ì¶”ê°€
                 m_strFilteredNamePtr.push_back(pChar);
-                // ÇÊÅÍµÈ ÀÌ¸§À» ¸®½ºÆ®UI¿¡ Ãß°¡
+                // í•„í„°ëœ ì´ë¦„ì„ ë¦¬ìŠ¤íŠ¸UIì— ì¶”ê°€
                 m_FilteredBaseObjectNames.push_back(pChar.get());
             }
         }
@@ -200,31 +200,31 @@ void ImGui_Manager::Frame_ObjectBaseManager()
                 break;
             }
         }
-        Set_SampleObject(); // ¸®½ºÆ®¹Ú½º ¼±ÅÃ´ë»óÀÌ ´Ş¶óÁö¸é »ùÇÃ¸ğµ¨º¯°æ
-        m_bBaseObjectListResetHeight = true; // º£ÀÌ½º¿ÀºêÁ§Æ®¸®½ºÆ®¸¦ ÇØ´ç ³ôÀÌ¿¡ ¸Â°Ô º¯°æ
+        Set_SampleObject(); // ë¦¬ìŠ¤íŠ¸ë°•ìŠ¤ ì„ íƒëŒ€ìƒì´ ë‹¬ë¼ì§€ë©´ ìƒ˜í”Œëª¨ë¸ë³€ê²½
+        m_bBaseObjectListResetHeight = true; // ë² ì´ìŠ¤ì˜¤ë¸Œì íŠ¸ë¦¬ìŠ¤íŠ¸ë¥¼ í•´ë‹¹ ë†’ì´ì— ë§ê²Œ ë³€ê²½
     }
 
 
 
-    // ¸Ê¿ÀºêÁ§Æ® Á¤º¸
+    // ë§µì˜¤ë¸Œì íŠ¸ ì •ë³´
     ImGui::SeparatorText("BaseObjectDesc");
-    // ³ë¶õ»ö ÀúÀå
+    // ë…¸ë€ìƒ‰ ì €ì¥
     ImVec4 YellowColor(1.f, 1.f, 0.f, 1.f);
     string strCreateObjectName = m_strObjectBaseNameList[m_iObjectBaseIndex];
     ImGui::Text(("Name - " + strCreateObjectName/* + "-" + to_string(m_iObjectBaseIndexList[m_iObjectBaseIndex])*/).data());
     m_CreateObjectDesc.strName = strCreateObjectName /*+ "-" + to_string(m_iObjectBaseIndexList[m_iObjectBaseIndex])*/;
     ImGui::InputFloat("UVWeight", &m_CreateObjectDesc.fUVWeight);
     ImGui::TextColored(YellowColor, "Options");
-    // ±×¸²ÀÚ
+    // ê·¸ë¦¼ì
     ImGui::Text("Shadow - ");
     ImGui::SameLine();
     ImGui::Checkbox("##bShadow", &m_CreateObjectDesc.bShadow);
-    // ºí·¯
+    // ë¸”ëŸ¬
     ImGui::Text("Blur - ");
     ImGui::SameLine();
     ImGui::Checkbox("##bBlur", &m_CreateObjectDesc.bBlur);
     ImGui::TextColored(YellowColor, "Components");
-    // Æ®·£½ºÆûÄÄÆ÷³ÍÆ®
+    // íŠ¸ëœìŠ¤í¼ì»´í¬ë„ŒíŠ¸
     //ImGui::Text("Transform - ");
     //ImGui::SameLine();
     //ImGui::Checkbox("##bTransform", &m_CreateObjectDesc.bTransform);
@@ -233,7 +233,7 @@ void ImGui_Manager::Frame_ObjectBaseManager()
     ImGui::InputFloat3("CreatePos", (_float*)&m_PickingPos);
     memcpy(&m_CreateObjectDesc.WorldMatrix._41, &m_PickingPos, sizeof(_float3));
     //}
-    // Äİ¶óÀÌ´õ ÄÄÆ÷³ÍÆ®
+    // ì½œë¼ì´ë” ì»´í¬ë„ŒíŠ¸
     ImGui::Text("Collider - ");
     ImGui::SameLine();
     ImGui::Checkbox("##bCollider", &m_CreateObjectDesc.bCollider);
@@ -261,7 +261,7 @@ void ImGui_Manager::Frame_ObjectBaseManager()
             break;
         }
     }
-    ImGui::SeparatorText("##CreateLine"); // ¼±±ß±â
+    ImGui::SeparatorText("##CreateLine"); // ì„ ê¸‹ê¸°
     if (ImGui::Button("Create") || KEYTAP(KEY_TYPE::Z))
         if (FAILED(Create_SelectObject()))
             MSG_BOX("Fail : Create_MapObject");
@@ -269,7 +269,7 @@ void ImGui_Manager::Frame_ObjectBaseManager()
     ImGui::SameLine();
     ImGui::Text("Press Z");
 
-    // ÇöÀç ¸Ê¿¡ÀÖ´Â ¿ÀºêÁ§Æ® ÀÌ¸§µéÀ» ÅØ½ºÆ®ÆÄÀÏ·Î ÀúÀå.
+    // í˜„ì¬ ë§µì—ìˆëŠ” ì˜¤ë¸Œì íŠ¸ ì´ë¦„ë“¤ì„ í…ìŠ¤íŠ¸íŒŒì¼ë¡œ ì €ì¥.
     if (ImGui::Button("CreateNames"))
         Save_ModelNames();
 
@@ -278,13 +278,13 @@ void ImGui_Manager::Frame_ObjectBaseManager()
 
 void ImGui_Manager::Frame_Objects()
 {
-    ImGui::Begin("Frame_SelectObjects"); // ±ÛÀÚ ¸ÇÀ­ÁÙ
+    ImGui::Begin("Frame_SelectObjects"); // ê¸€ì ë§¨ìœ—ì¤„
 
     if(ImGui::ListBox("##Objects", &m_iObjects, m_strObjectName.data(), (_int)m_strObjectName.size(), (_int)m_strObjectName.size()))
     {
         strcpy_s(m_szBaseObjectFilter, m_strObjectName[m_iObjects]);
     }
-    // ³ôÀÌÀç¼³Á¤
+    // ë†’ì´ì¬ì„¤ì •
     if(m_bObjectListResetHeight)
     {
         m_bObjectListResetHeight = false;
@@ -295,64 +295,64 @@ void ImGui_Manager::Frame_Objects()
 }
 void ImGui_Manager::Frame_SelcetObjectManager()
 {
-    ImGui::Begin("Frame_SelectObjectManager"); // ±ÛÀÚ ¸ÇÀ­ÁÙ
+    ImGui::Begin("Frame_SelectObjectManager"); // ê¸€ì ë§¨ìœ—ì¤„
 
     if (m_strObjectName.size() > 0)
         if (ImGui::Button("Delete"))
             if (FAILED(Delete_MapObject()))
                 MSG_BOX("Fail : Delete_MapObject");
 
-    // ÇöÀç ¿ÀºêÁ§Æ®ÀÇ Á¤º¸¶ç¿ì±â
+    // í˜„ì¬ ì˜¤ë¸Œì íŠ¸ì˜ ì •ë³´ë„ìš°ê¸°
     if (m_strObjectName.size() > 0)
     {
         if (ImGui::Button("GizmoTargetChange"))
             m_GizmoTarget = GizmoTMapObj;
 
         ImGui::SeparatorText("ObjectDesc");
-        // ³ë¶õ»ö ÀúÀå
+        // ë…¸ë€ìƒ‰ ì €ì¥
         ImVec4 YellowColor(1.f, 1.f, 0.f, 1.f);
 
-        // ¸Ê¿ÀºêÁ§Æ® Á¤º¸
+        // ë§µì˜¤ë¸Œì íŠ¸ ì •ë³´
         ImGui::TextColored(YellowColor, "Default");
         MapObjectScript::MAPOBJDESC& CurObjectDesc = m_pMapObjects[m_iObjects]->Get_Script<MapObjectScript>()->Get_DESC();
         ImGui::Text(("Name - " + CurObjectDesc.strName).data());
-        // ÄÃ¸µ°ü·Ã
+        // ì»¬ë§ê´€ë ¨
         ImGui::Text(("CullPos - X:" + to_string(CurObjectDesc.CullPos.x)
             + " Y:" + to_string(CurObjectDesc.CullPos.y)
             + " Z:" + to_string(CurObjectDesc.CullPos.z)).data());
         ImGui::Text(("CullRadius - " + to_string(CurObjectDesc.CullRadius)).data());
         ImGui::TextColored(YellowColor, "Options");
-        // ±×¸²ÀÚ
+        // ê·¸ë¦¼ì
         ImGui::Text("Shadow - ");
         ImGui::SameLine();
         ImGui::Checkbox("##bShadow", &CurObjectDesc.bShadow);
-        // ºí·¯
+        // ë¸”ëŸ¬
         ImGui::Text("Blur - ");
         ImGui::SameLine();
         ImGui::Checkbox("##bBlur", &CurObjectDesc.bBlur);
-        // ¿ÀºêÁ§Æ®¿¡ ±×¸²ÀÚ¿Í ºí·¯ Àû¿ë
+        // ì˜¤ë¸Œì íŠ¸ì— ê·¸ë¦¼ìì™€ ë¸”ëŸ¬ ì ìš©
         if (ImGui::Button("Bake"))
             Bake(m_pMapObjects[m_iObjects]);
         ImGui::SameLine();
         if (ImGui::Button("Bake All"))
             BakeAll();
         ImGui::TextColored(YellowColor, "Components");
-        // Æ®·£½ºÆûÄÄÆ÷³ÍÆ®
+        // íŠ¸ëœìŠ¤í¼ì»´í¬ë„ŒíŠ¸
         ImGui::Text("Transform - ");
         ImGui::SameLine();
         ImGui::Checkbox("##bTransform", &CurObjectDesc.bTransform);
         if (CurObjectDesc.bTransform && m_pMapObjects[m_iObjects].get()->Get_Transform() != nullptr && m_GizmoTarget == GizmoTMapObj)
         {
-            // ±âÁî¸ğÀÇ ¼±ÅÃ¿É¼Ç(TR or RT or SC) ¾÷µ¥ÀÌÆ®
-            // ÀüÃ¼¿É¼Ç false·Î ÃÊ±âÈ­
+            // ê¸°ì¦ˆëª¨ì˜ ì„ íƒì˜µì…˜(TR or RT or SC) ì—…ë°ì´íŠ¸
+            // ì „ì²´ì˜µì…˜ falseë¡œ ì´ˆê¸°í™”
             for (size_t i = 0; i < GizmoEND; i++)
             {
                 m_bGizmoOp[i] = false;
-                // ÇöÀç¿É¼ÇÀÌ¶û °°À¸¸é true
+                // í˜„ì¬ì˜µì…˜ì´ë‘ ê°™ìœ¼ë©´ true
                 if (m_eGizmoOp == i)
                     m_bGizmoOp[i] = true;
             }
-            // Æ÷Áö¼Ç, È¸Àü, ½ºÄÉÀÏ ¼±ÅÃ
+            // í¬ì§€ì…˜, íšŒì „, ìŠ¤ì¼€ì¼ ì„ íƒ
             if (ImGui::RadioButton("Tr", m_bGizmoOp[GizmoTR]))
                 m_eGizmoOp = GizmoTR;
             ImGui::SameLine();
@@ -361,7 +361,7 @@ void ImGui_Manager::Frame_SelcetObjectManager()
             ImGui::SameLine();
             if (ImGui::RadioButton("Sc", m_bGizmoOp[GizmoSC]))
                 m_eGizmoOp = GizmoSC;
-            // ÇöÀç ±âÁî¸ğ ¿É¼Ç Àû¿ë
+            // í˜„ì¬ ê¸°ì¦ˆëª¨ ì˜µì…˜ ì ìš©
             switch (m_eGizmoOp)
             {
             case GizmoTR:
@@ -376,7 +376,7 @@ void ImGui_Manager::Frame_SelcetObjectManager()
             default:
                 break;
             }
-            // Æ÷Áö¼Ç, È¸Àü, ½ºÄÉÀÏ Á¶Á¤ ¹× Ãâ·Â
+            // í¬ì§€ì…˜, íšŒì „, ìŠ¤ì¼€ì¼ ì¡°ì • ë° ì¶œë ¥
             _float4x4 tempFloat4x4 = m_pMapObjects[m_iObjects].get()->Get_Transform()->Get_WorldMatrix();
             _float4x4* pTempObj = &tempFloat4x4;
             float matrixTranslation[3], matrixRotation[3], matrixScale[3];
@@ -387,14 +387,14 @@ void ImGui_Manager::Frame_SelcetObjectManager()
             ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, (float*)pTempObj);
             m_pMapObjects[m_iObjects]->Get_Transform()->Set_WorldMat(*(_float4x4*)pTempObj);
         }
-        // Äİ¶óÀÌ´õ ÄÄÆ÷³ÍÆ®
+        // ì½œë¼ì´ë” ì»´í¬ë„ŒíŠ¸
         ImGui::Text("Collider - ");
         ImGui::SameLine();
         if (ImGui::Checkbox("##bCollider", &CurObjectDesc.bCollider))
         {
             if (CurObjectDesc.bCollider)
             {
-                // Äİ¶óÀÌ´õ Å¸ÀÔ¿¡ µû¶ó Äİ¶óÀÌ´õ »ı¼º
+                // ì½œë¼ì´ë” íƒ€ì…ì— ë”°ë¼ ì½œë¼ì´ë” ìƒì„±
                 switch (CurObjectDesc.ColliderType)
                 {
                 case static_cast<_int>(ColliderType::Sphere):
@@ -465,7 +465,7 @@ void ImGui_Manager::Frame_SelcetObjectManager()
             //ObjPlayer->Get_Collider()->Set_Activate(true);
         }
     }
-    // ¼¼ÀÌºê·Îµå
+    // ì„¸ì´ë¸Œë¡œë“œ
     ImGui::SeparatorText("Save&Load");
     ImGui::Text("SaveFileName");
     ImGui::InputText("##SaveFileName", m_szSaveFileName, sizeof(m_szSaveFileName));
@@ -505,7 +505,7 @@ void ImGui_Manager::Frame_SelcetObjectManager()
 }
 void ImGui_Manager::Frame_Light()
 {
-    ImGui::Begin("SkyBox&Light"); // ±ÛÀÚ ¸ÇÀ­ÁÙ
+    ImGui::Begin("SkyBox&Light"); // ê¸€ì ë§¨ìœ—ì¤„
 
     ImGui::Text("CameraPos");
     m_CamPos = CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_State(Transform_State::POS);
@@ -514,7 +514,7 @@ void ImGui_Manager::Frame_Light()
         CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_CamPos);
     }
 
-    // ÇÃ·¹ÀÌ¾î »ı¼ºÀ§Ä¡
+    // í”Œë ˆì´ì–´ ìƒì„±ìœ„ì¹˜
     ImGui::Text("PlayerCreatePosition");
     if(ImGui::DragFloat3("##PlayerCreatePosition", (_float*)&m_PlayerCreatePosition, 0.1f))
     {
@@ -530,7 +530,7 @@ void ImGui_Manager::Frame_Light()
     if (ImGui::Button("Set Player LookAt Pos"))
         SetPlayerLookAtPosByPickingPos();
 
-    // ½ºÄ«ÀÌ¹Ú½º º¯°æ
+    // ìŠ¤ì¹´ì´ë°•ìŠ¤ ë³€ê²½
     ImGui::SeparatorText("SkyBox##SkyBoxChange");
     if (ImGui::ListBox("##SkyBoxName", &m_iCurrentSkyBoxIndex, m_strSkyboxList.data(), (int)m_strSkyboxList.size()))
     {
@@ -541,9 +541,9 @@ void ImGui_Manager::Frame_Light()
         Mats[0]->Set_TextureMap(RESOURCES.Get<Texture>(Utils::ToWString(strCurSkybox)), TextureMapType::DIFFUSE);
     }
 
-    // ¹æÇâ¼º±¤¿ø ÅëÁ¦
+    // ë°©í–¥ì„±ê´‘ì› í†µì œ
     ImGui::SeparatorText("DirectionalLight");
-    // Æ÷Áö¼Ç
+    // í¬ì§€ì…˜
     _float4& Pos = (_float4&)CUR_SCENE->Get_Light()->Get_Transform()->Get_WorldMatrix().m[3];
     ImGui::DragFloat3("Position##DirLight", (_float*)&Pos);
 
@@ -568,7 +568,7 @@ void ImGui_Manager::Frame_Light()
     //m_DirectionalLightLookDir = LookDir;
     m_DirectionalLightInfo = DirectionalLightInfo;
 
-    // Á¡±¤¿ø»ı¼ºÁ¤º¸
+    // ì ê´‘ì›ìƒì„±ì •ë³´
     ImGui::SeparatorText("CreatePointLight");
     ImGui::DragFloat3("CreatePos##CreatePtLt", (_float*)&m_PickingPos, 0.1f);
     ImGui::ColorEdit4("Ambient##CreatePtLt", (_float*)&m_CreatePointLightInfo.color.ambient);
@@ -595,7 +595,7 @@ void ImGui_Manager::Frame_Light()
     if (ImGui::Button("Delete##DeletePtLt"))
         Delete_PointLight();
 
-    // ÇöÀç Á¡±¤¿øÀÇ Á¤º¸
+    // í˜„ì¬ ì ê´‘ì›ì˜ ì •ë³´
     if(m_strPointLightList.size() > 0)
     {
         ImGui::SeparatorText("PointLights");
@@ -619,51 +619,51 @@ void ImGui_Manager::Frame_Light()
         ImGui::DragFloat3("PointLightPosition", (_float*)&PointLightPosition, 0.1f);
         m_pPointLightObjects[m_iPointLightIndex]->Get_Transform()->Set_State(Transform_State::POS, PointLightPosition);
 
-        // ¼±ÅÃÇÑ Á¡±¤¿øÀÇ º¯È­È¿°ú ¼³Á¤
+        // ì„ íƒí•œ ì ê´‘ì›ì˜ ë³€í™”íš¨ê³¼ ì„¤ì •
         if(m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>() != nullptr)
         {
             _bool bEffectUse = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Get_bUseEffect();
             if (ImGui::Checkbox("##CurrentPointLightEffectUse", &bEffectUse))
-                // »ç¿ë¿©ºÎ Ã¼Å©¹Ú½º ¹İ¿µÇÏ¿© ´Ù½Ã ³Ö±â
+                // ì‚¬ìš©ì—¬ë¶€ ì²´í¬ë°•ìŠ¤ ë°˜ì˜í•˜ì—¬ ë‹¤ì‹œ ë„£ê¸°
             {
                 m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Set_bUseEffect(bEffectUse);
-                // ÀÌÆåÆ®¸¦ »ç¿ëÇÏ±â·Î ÇÏ¸é ±×¶§»ö±òÀ» ½ÃÀÛ»ö±ò·Î ÁöÁ¤
+                // ì´í™íŠ¸ë¥¼ ì‚¬ìš©í•˜ê¸°ë¡œ í•˜ë©´ ê·¸ë•Œìƒ‰ê¹”ì„ ì‹œì‘ìƒ‰ê¹”ë¡œ ì§€ì •
                 if (bEffectUse)
                     m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Clear();
-                // ÀÌÆåÆ®¸¦ »ç¿ë ¾ÈÇÏ±â·Î ÇÏ¸é ½ÃÀÛ»öÀ» ¹İ´ë·Î ´ëÀÔ
+                // ì´í™íŠ¸ë¥¼ ì‚¬ìš© ì•ˆí•˜ê¸°ë¡œ í•˜ë©´ ì‹œì‘ìƒ‰ì„ ë°˜ëŒ€ë¡œ ëŒ€ì…
                 else
                     m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Init_Reverse();
             }
             if (bEffectUse)
             {
-                // ½ºÅ¸Æ®¾Úºñ¾ğÆ® °¡Á®¿À°í, º¯°æÇÏ¸é ´Ù½Ã´ëÀÔ
+                // ìŠ¤íƒ€íŠ¸ì•°ë¹„ì–¸íŠ¸ ê°€ì ¸ì˜¤ê³ , ë³€ê²½í•˜ë©´ ë‹¤ì‹œëŒ€ì…
                 _float4 StartAmbient = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Get_AmbientStart();
                 if (ImGui::ColorEdit4("SAmbient##PtLtEffectAmbient", (_float*)&StartAmbient))
                     m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Set_AmbientStart(StartAmbient);
-                // Å¸°Ù¾Úºñ¾ğÆ® °¡Á®¿À°í, º¯°æÇÏ¸é ´Ù½Ã´ëÀÔ
+                // íƒ€ê²Ÿì•°ë¹„ì–¸íŠ¸ ê°€ì ¸ì˜¤ê³ , ë³€ê²½í•˜ë©´ ë‹¤ì‹œëŒ€ì…
                 _float4 TargetAmbient = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Get_AmbientTarget();
                 if (ImGui::ColorEdit4("EAmbient##PtLtEffectAmbient", (_float*)&TargetAmbient))
                     m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Set_AmbientTarget(TargetAmbient);
 
-                // ½ºÅ¸Æ®µğÇ»Áî °¡Á®¿À°í, º¯°æÇÏ¸é ´Ù½Ã´ëÀÔ
+                // ìŠ¤íƒ€íŠ¸ë””í“¨ì¦ˆ ê°€ì ¸ì˜¤ê³ , ë³€ê²½í•˜ë©´ ë‹¤ì‹œëŒ€ì…
                 _float4 StartDiffuse = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Get_DiffuseStart();
                 if (ImGui::ColorEdit4("SDiffuse##PtLtEffectDiffuse", (_float*)&StartDiffuse))
                     m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Set_DiffuseStart(StartDiffuse);
-                // Å¸°ÙµğÇ»Áî °¡Á®¿À°í, º¯°æÇÏ¸é ´Ù½Ã´ëÀÔ
+                // íƒ€ê²Ÿë””í“¨ì¦ˆ ê°€ì ¸ì˜¤ê³ , ë³€ê²½í•˜ë©´ ë‹¤ì‹œëŒ€ì…
                 _float4 TargetDiffuse = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Get_DiffuseTarget();
                 if (ImGui::ColorEdit4("Diffuse##PtLtEffectDiffuse", (_float*)&TargetDiffuse))
                     m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Set_DiffuseTarget(TargetDiffuse);
 
-                // ½ºÅ¸Æ®·¹ÀÎÁö °¡Á®¿À°í, º¯°æÇÏ¸é ´Ù½Ã´ëÀÔ
+                // ìŠ¤íƒ€íŠ¸ë ˆì¸ì§€ ê°€ì ¸ì˜¤ê³ , ë³€ê²½í•˜ë©´ ë‹¤ì‹œëŒ€ì…
                 _float fStartRange = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Get_StartRange();
                 ImGui::DragFloat("SRange#PtLtTargetRange", &fStartRange, 0.1f);
                 m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Set_StartRange(fStartRange);
-                // Å¸°Ù·¹ÀÎÁö °¡Á®¿À°í, º¯°æÇÏ¸é ´Ù½Ã´ëÀÔ
+                // íƒ€ê²Ÿë ˆì¸ì§€ ê°€ì ¸ì˜¤ê³ , ë³€ê²½í•˜ë©´ ë‹¤ì‹œëŒ€ì…
                 _float fTargetRange = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Get_TargetRange();
                 ImGui::DragFloat("TRange#PtLtTargetRange", &fTargetRange, 0.1f);
                 m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Set_TargetRange(fTargetRange);
 
-                // ÀÌÆåÆ® ½ºÇÇµå °¡Á®¿À°í, º¯°æÇÏ¸é ´Ù½Ã´ëÀÔ
+                // ì´í™íŠ¸ ìŠ¤í”¼ë“œ ê°€ì ¸ì˜¤ê³ , ë³€ê²½í•˜ë©´ ë‹¤ì‹œëŒ€ì…
                 _float fEffectSpeed = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Get_Speed();
                 ImGui::DragFloat("EffectSpeed#PtLtEffectSpeed", &fEffectSpeed, 0.1f);
                 m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Set_Speed(fEffectSpeed);
@@ -678,7 +678,7 @@ void ImGui_Manager::Frame_Light()
 
 void ImGui_Manager::Frame_Wall()
 {
-    ImGui::Begin("Frame_Wall"); // ±ÛÀÚ ¸ÇÀ­ÁÙ
+    ImGui::Begin("Frame_Wall"); // ê¸€ì ë§¨ìœ—ì¤„
 
     if (ImGui::Button("Create"))
     {
@@ -715,7 +715,7 @@ void ImGui_Manager::Frame_ShaderOption()
 
 void ImGui_Manager::Picking_Object()
 {
-    // ¸¶¿ì½º ¿ìÅ¬¸¯ ½Ã ¸Ş½ÃÇÇÅ·
+    // ë§ˆìš°ìŠ¤ ìš°í´ë¦­ ì‹œ ë©”ì‹œí”¼í‚¹
     if (KEYTAP(KEY_TYPE::RBUTTON))
     {
         POINT MousePos;
@@ -725,20 +725,20 @@ void ImGui_Manager::Picking_Object()
 
         shared_ptr<GameObject> PickObject = PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), CUR_SCENE->Get_Objects(), m_PickingPos);
         if(m_GizmoTarget == GizmoTMapObj)
-            // ¼±ÅÃµÈ ¿ÀºêÁ§Æ® ¹øÈ£ ¹Ù²Ù±â ÇöÀç±âÁî¸ğÅ¸°ÙÀÌ ¸Ê¿ÀºêÁ§Æ®ÀÏ¶§¸¸ »ç¿ë.
+            // ì„ íƒëœ ì˜¤ë¸Œì íŠ¸ ë²ˆí˜¸ ë°”ê¾¸ê¸° í˜„ì¬ê¸°ì¦ˆëª¨íƒ€ê²Ÿì´ ë§µì˜¤ë¸Œì íŠ¸ì¼ë•Œë§Œ ì‚¬ìš©.
         {
             for (_int i = 0; i < m_pMapObjects.size(); ++i)
             {
                 if (PickObject == m_pMapObjects[i])
                 {
                     m_iObjects = i;
-                    // ¿ÀºêÁ§Æ® ¸®½ºÆ®¿¡¼­ ¼±ÅÃÇÑ ³ôÀÌ·Î º¯°æ
+                    // ì˜¤ë¸Œì íŠ¸ ë¦¬ìŠ¤íŠ¸ì—ì„œ ì„ íƒí•œ ë†’ì´ë¡œ ë³€ê²½
                     m_bObjectListResetHeight = true;
                 }
             }
         }
     }
-    // ¸¶¿ì½º ÈÙÅ¬¸¯ ½Ã WallPickingPoint ÀúÀå
+    // ë§ˆìš°ìŠ¤ íœ í´ë¦­ ì‹œ WallPickingPoint ì €ì¥
     if (KEYTAP(KEY_TYPE::MBUTTON))
     {
         POINT MousePos;
@@ -754,9 +754,9 @@ void ImGui_Manager::Picking_Object()
         else
         {
             shared_ptr<GameObject> PickObject = PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), CUR_SCENE->Get_Objects(), m_WallPickingPos[1]);
-            // »ç°¢Çü ÇÏ³ª Ãß°¡
+            // ì‚¬ê°í˜• í•˜ë‚˜ ì¶”ê°€
             m_WallRectPosLDRU.push_back(pair<_float3, _float3>(m_WallPickingPos[0], _float3{ m_WallPickingPos[1].x, m_fWallHeight, m_WallPickingPos[1].z }));
-            // ÁÂÇÏ´Ü Á¡À» ¿ìÇÏ´Ü Á¡À¸·Î º¯°æ
+            // ì¢Œí•˜ë‹¨ ì ì„ ìš°í•˜ë‹¨ ì ìœ¼ë¡œ ë³€ê²½
             m_WallPickingPos[0] = m_WallPickingPos[1];
         }
     }
@@ -766,12 +766,12 @@ void ImGui_Manager::LookAtSampleObject()
 {
     if (KEYTAP(KEY_TYPE::TAB))
     {
-        // ÇöÀç Ä«¸Ş¶ó À§Ä¡ÀúÀå
+        // í˜„ì¬ ì¹´ë©”ë¼ ìœ„ì¹˜ì €ì¥
         m_matPreCamera = CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_WorldMatrix();
     }
     if (KEYHOLD(KEY_TYPE::TAB))
     {
-        // Ä«¸Ş¶ó ÀÌµ¿
+        // ì¹´ë©”ë¼ ì´ë™
         _float4 SampleObjPos = m_SampleObject->Get_Transform()->Get_State(Transform_State::POS);
         shared_ptr<Transform> pMainCameraTransform = CUR_SCENE->Get_MainCamera()->Get_Transform();
         pMainCameraTransform->Set_State(Transform_State::POS, XMVectorAdd(SampleObjPos, _float4{1.f, 1.f, 1.f, 0.f}));
@@ -780,7 +780,7 @@ void ImGui_Manager::LookAtSampleObject()
     }
     if (KEYAWAY(KEY_TYPE::TAB))
     {
-        // Ä«¸Ş¶ó ¿ø·¡´ë·Î µ¹¾Æ°¡±â
+        // ì¹´ë©”ë¼ ì›ë˜ëŒ€ë¡œ ëŒì•„ê°€ê¸°
         CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_WorldMat(m_matPreCamera);
     }
 }
@@ -791,7 +791,7 @@ HRESULT ImGui_Manager::Load_SkyBoxTexture()
 
     for (auto& entry : fs::recursive_directory_iterator(path))
     {
-        // ÆÄÀÏÀÇ ÀÌ¸§À» °¡Á®¿È
+        // íŒŒì¼ì˜ ì´ë¦„ì„ ê°€ì ¸ì˜´
         wstring fileName = entry.path().filename().wstring();
         WCHAR szTempName[MAX_PATH];
         lstrcpy(szTempName, fileName.c_str());
@@ -800,13 +800,13 @@ HRESULT ImGui_Manager::Load_SkyBoxTexture()
         Utils::DetachExt(noExtName);
         RESOURCES.Load<Texture>(noExtName, path+szTempName);
 
-        // char Çü½ÄÀ¸·Î º¯È¯
+        // char í˜•ì‹ìœ¼ë¡œ ë³€í™˜
         shared_ptr<char[]> pChar = shared_ptr<char[]>(new char[MAX_PATH]);
         WideCharToMultiByte(CP_ACP, 0, noExtName.c_str(), -1, pChar.get(), MAX_PATH, 0, 0);
 
-        // ½ºÄ«ÀÌ¹Ú½º ÀÌ¸§À» Æ÷ÀÎÅÍ º¤ÅÍ¿¡ Ãß°¡
+        // ìŠ¤ì¹´ì´ë°•ìŠ¤ ì´ë¦„ì„ í¬ì¸í„° ë²¡í„°ì— ì¶”ê°€
         m_strSkyBoxNamePtr.push_back(pChar);
-        // ½ºÄ«ÀÌ¹Ú½º ÀÌ¸§À» ¸®½ºÆ®UI¿¡ Ãß°¡
+        // ìŠ¤ì¹´ì´ë°•ìŠ¤ ì´ë¦„ì„ ë¦¬ìŠ¤íŠ¸UIì— ì¶”ê°€
         m_strSkyboxList.push_back(pChar.get());
     }
     return S_OK;
@@ -818,35 +818,35 @@ HRESULT ImGui_Manager::Load_MapObjectBase()
     wstring folderName = L"";
     for (auto& entry : fs::recursive_directory_iterator(path))
     {
-        // ¸Ê¿ÀºêÁ§Æ® Æú´õ³»ºÎÀÇ Æú´õÀÌ¸§µéÀ» ¼øÈ¸ÇÏ¸ç º£ÀÌ½º¿ÀºêÁ§Æ® ¸®½ºÆ®¸¦ ¸¸µê.
+        // ë§µì˜¤ë¸Œì íŠ¸ í´ë”ë‚´ë¶€ì˜ í´ë”ì´ë¦„ë“¤ì„ ìˆœíšŒí•˜ë©° ë² ì´ìŠ¤ì˜¤ë¸Œì íŠ¸ ë¦¬ìŠ¤íŠ¸ë¥¼ ë§Œë“¦.
         if (entry.is_directory())
         {
             //folderName = entry.path().filename().wstring();
             continue;
         }
 
-        // È®ÀåÀÚ°¡ ¸ğµ¨ÀÌ ¾Æ´Ï¸é ÄÁÆ¼´º¿ì¿ì¿ì
+        // í™•ì¥ìê°€ ëª¨ë¸ì´ ì•„ë‹ˆë©´ ì»¨í‹°ë‰´ìš°ìš°ìš°
         wstring Ext = entry.path().extension().wstring();
         if (Ext != L".Model")
             continue;
 
-        // ÆÄÀÏÀÇ ÀÌ¸§À» °¡Á®¿È
+        // íŒŒì¼ì˜ ì´ë¦„ì„ ê°€ì ¸ì˜´
         wstring fileName = entry.path().filename().wstring();
         Utils::DetachExt(fileName);
-        // µÚ¿¡ Æú´õ¸íÀ» ºÙÀÓ
+        // ë’¤ì— í´ë”ëª…ì„ ë¶™ì„
         //fileName = fileName + L"-" + folderName;
         WCHAR szTempName[MAX_PATH];
         lstrcpy(szTempName, fileName.c_str());
 
-        // char Çü½ÄÀ¸·Î º¯È¯
+        // char í˜•ì‹ìœ¼ë¡œ ë³€í™˜
         shared_ptr<char[]> pChar = shared_ptr<char[]>(new char[MAX_PATH]);
         WideCharToMultiByte(CP_ACP, 0, szTempName, -1, pChar.get(), MAX_PATH, 0, 0);
 
-        // º£ÀÌ½º¿ÀºêÁ§Æ® ÀÌ¸§À» Æ÷ÀÎÅÍ º¤ÅÍ¿¡ Ãß°¡
+        // ë² ì´ìŠ¤ì˜¤ë¸Œì íŠ¸ ì´ë¦„ì„ í¬ì¸í„° ë²¡í„°ì— ì¶”ê°€
         m_strObjectBaseNamePtr.push_back(pChar);
-        // º£ÀÌ½º¿ÀºêÁ§Æ® ÀÌ¸§À» ¸®½ºÆ®UI¿¡ Ãß°¡
+        // ë² ì´ìŠ¤ì˜¤ë¸Œì íŠ¸ ì´ë¦„ì„ ë¦¬ìŠ¤íŠ¸UIì— ì¶”ê°€
         m_strObjectBaseNameList.push_back(pChar.get());
-        // º£ÀÌ½º ¿ÀºêÁ§Æ® Áßº¹°³¼ö ÀÎµ¦½º Ãß°¡
+        // ë² ì´ìŠ¤ ì˜¤ë¸Œì íŠ¸ ì¤‘ë³µê°œìˆ˜ ì¸ë±ìŠ¤ ì¶”ê°€
         //m_iObjectBaseIndexList.push_back(0);
     }
     return S_OK;
@@ -854,14 +854,14 @@ HRESULT ImGui_Manager::Load_MapObjectBase()
 
 HRESULT ImGui_Manager::Create_SelectObject()
 {
-    // ÇöÀç ¼±ÅÃµÈ º£ÀÌ½º¿ÀºêÁ§Æ®ÀÌ¸§ °¡Á®¿À±â
+    // í˜„ì¬ ì„ íƒëœ ë² ì´ìŠ¤ì˜¤ë¸Œì íŠ¸ì´ë¦„ ê°€ì ¸ì˜¤ê¸°
     wstring strCurObjBase = Utils::ToWString(m_strObjectBaseNameList[m_iObjectBaseIndex]);
-    // ¸Ê¿ÀºêÁ§Æ® »ı¼º
+    // ë§µì˜¤ë¸Œì íŠ¸ ìƒì„±
     shared_ptr<GameObject> pCreateObject = Create_MapObject(m_CreateObjectDesc);
     m_pMapObjects.push_back(pCreateObject);
-    // ÇöÀç ¼³Ä¡µÈ ¿ÀºêÁ§Æ® ¸ñ·Ï¿¡ Ãß°¡
+    // í˜„ì¬ ì„¤ì¹˜ëœ ì˜¤ë¸Œì íŠ¸ ëª©ë¡ì— ì¶”ê°€
     m_strObjectName.push_back(m_strObjectBaseNameList[m_iObjectBaseIndex]);
-    // »õ·Î »ı¼ºµÈ ¿ÀºêÁ§Æ®¸¦ Å¸°ÙÆÃ(±âÁî¸ğ)ÇÏ±â
+    // ìƒˆë¡œ ìƒì„±ëœ ì˜¤ë¸Œì íŠ¸ë¥¼ íƒ€ê²ŸíŒ…(ê¸°ì¦ˆëª¨)í•˜ê¸°
     m_iObjects = (_int)(m_pMapObjects.size() - 1);
 
     return S_OK;
@@ -869,14 +869,14 @@ HRESULT ImGui_Manager::Create_SelectObject()
 
 shared_ptr<GameObject> ImGui_Manager::Create_MapObject(MapObjectScript::MapObjectDesc _CreateDesc)
 {
-    // ¿ÀºêÁ§Æ® Æ² »ı¼º
+    // ì˜¤ë¸Œì íŠ¸ í‹€ ìƒì„±
     shared_ptr<GameObject> CreateObject = make_shared<GameObject>();
-    // ¸Ê¿ÀºêÁ§Æ® Á¤º¸ »ı¼º ¹× ¹İ¿µ
+    // ë§µì˜¤ë¸Œì íŠ¸ ì •ë³´ ìƒì„± ë° ë°˜ì˜
     shared_ptr<MapObjectScript> MapObjSc = make_shared<MapObjectScript>(_CreateDesc);
     CreateObject->Add_Component(MapObjSc);
     MapObjectScript::MapObjectDesc& CreateDesc = MapObjSc->Get_DESC();
-    // ÀÌ¸§À» »ç¿ëÇÏ¿© ¸ğµ¨»ı¼º
-    // °íÀ¯¹øÈ£¸¦ Á¦°ÅÇÏ¿© ¸ğµ¨¸íÀ» ¾ò¾î¿È
+    // ì´ë¦„ì„ ì‚¬ìš©í•˜ì—¬ ëª¨ë¸ìƒì„±
+    // ê³ ìœ ë²ˆí˜¸ë¥¼ ì œê±°í•˜ì—¬ ëª¨ë¸ëª…ì„ ì–»ì–´ì˜´
     _int iPureNameSize = 0;
     while (CreateDesc.strName[iPureNameSize] != '-' && iPureNameSize < CreateDesc.strName.size())
     {
@@ -885,7 +885,7 @@ shared_ptr<GameObject> ImGui_Manager::Create_MapObject(MapObjectScript::MapObjec
     string strModelName = CreateDesc.strName.substr(0, iPureNameSize);
     CreateDesc.ColModelName = strModelName;
     CreateObject->Set_Name(Utils::ToWString(strModelName));
-    // ¸ğµ¨»ı¼º 
+    // ëª¨ë¸ìƒì„± 
     shared_ptr<Model> model = RESOURCES.Get<Model>(Utils::ToWString(strModelName));
     shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
@@ -951,7 +951,7 @@ shared_ptr<GameObject> ImGui_Manager::Create_MapObject(MapObjectScript::MapObjec
             break;
         }
     }
-    // ±×¸²ÀÚ, ºí·¯, ÄÃ¸µÁ¤º¸°è»ê
+    // ê·¸ë¦¼ì, ë¸”ëŸ¬, ì»¬ë§ì •ë³´ê³„ì‚°
     Bake(CreateObject);
 
     CUR_SCENE->Add_GameObject(CreateObject);
@@ -961,21 +961,21 @@ shared_ptr<GameObject> ImGui_Manager::Create_MapObject(MapObjectScript::MapObjec
 
 HRESULT ImGui_Manager::Create_SelectPointLight()
 {
-    // ¼±ÅÃÇÑ Á¡±¤¿ø »ı¼º
+    // ì„ íƒí•œ ì ê´‘ì› ìƒì„±
     LightInfo CreateLightInfo;
     m_CreatePointLightInfo.vPosition = XMVectorSetW(m_PickingPos, 1.f);
     shared_ptr<GameObject> LightObject = Create_PointLight(m_CreatePointLightInfo);
     m_pPointLightObjects.push_back(LightObject);
 
     {
-        // Æ÷ÀÎÆ® ¶óÀÌÆ®¶ó¸é ¹«Á¶°Ç Ãß°¡
-        // ±âº»ÃÊ±âÈ­
+        // í¬ì¸íŠ¸ ë¼ì´íŠ¸ë¼ë©´ ë¬´ì¡°ê±´ ì¶”ê°€
+        // ê¸°ë³¸ì´ˆê¸°í™”
         shared_ptr<PointLightScript> pPLightScript = make_shared<PointLightScript>();
         m_pPointLightObjects.back()->Add_Component(pPLightScript);
         pPLightScript->Clear();
     }
 
-    // ÀÌ¸§¸®½ºÆ®¿¡ ÇÏ³ª ³Ö±â
+    // ì´ë¦„ë¦¬ìŠ¤íŠ¸ì— í•˜ë‚˜ ë„£ê¸°
     m_strPointLightList.push_back("PointLight");
     
     return S_OK;
@@ -985,10 +985,10 @@ shared_ptr<GameObject> ImGui_Manager::Create_PointLight(LightInfo _ptltInfo)
 {
     shared_ptr<GameObject> PointLight = make_shared<GameObject>();
     PointLight->Set_Name(L"PointLight");
-    // Æ÷Áö¼Ç
+    // í¬ì§€ì…˜
     PointLight->GetOrAddTransform()->Set_State(Transform_State::POS, _ptltInfo.vPosition);
     {
-        // LightComponent »ı¼º ÈÄ ¼¼ÆÃ
+        // LightComponent ìƒì„± í›„ ì„¸íŒ…
         shared_ptr<Light> lightCom = make_shared<Light>();
         lightCom->Set_Ambient(_ptltInfo.color.ambient);
         lightCom->Set_Diffuse(_ptltInfo.color.diffuse);
@@ -1007,20 +1007,20 @@ shared_ptr<GameObject> ImGui_Manager::Create_PointLight(LightInfo _ptltInfo)
 
 void ImGui_Manager::Create_WallMesh()
 {
-    // º®Á¤º¸¸¦ ±â¹İÀ¸·Î º®¸Ş½Ã »ı¼º
+    // ë²½ì •ë³´ë¥¼ ê¸°ë°˜ìœ¼ë¡œ ë²½ë©”ì‹œ ìƒì„±
     shared_ptr<Mesh> WallMesh = make_shared<Mesh>();
     WallMesh->Create3DRect(m_WallRectPosLDRU);
 
-    // ¸Ş½Ã¸¦ ±â¹İÀ¸·Î º®¿ÀºêÁ§Æ® »ı¼º
+    // ë©”ì‹œë¥¼ ê¸°ë°˜ìœ¼ë¡œ ë²½ì˜¤ë¸Œì íŠ¸ ìƒì„±
     shared_ptr<GameObject> WallObject = make_shared<GameObject>();
     WallObject->Set_Name(L"Wall");
     WallObject->GetOrAddTransform();
 
-    // ¸Ş½Ã·»´õ·¯
+    // ë©”ì‹œë Œë”ëŸ¬
     shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
     renderer->Set_Mesh(WallMesh);
 
-    // ¸Ş½Ã¸¦ ÅëÇØ ¸Ş½ÃÄİ¶óÀÌ´õ »ı¼º
+    // ë©”ì‹œë¥¼ í†µí•´ ë©”ì‹œì½œë¼ì´ë” ìƒì„±
     shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(*WallMesh.get());
     WallObject->Add_Component(pCollider);
     pCollider->Set_Activate(true);
@@ -1058,29 +1058,29 @@ void ImGui_Manager::SetPlayerLookAtPosByPickingPos()
 
 HRESULT ImGui_Manager::Delete_PointLight()
 {
-    // 1. ÇöÀç¾À¿¡¼­ Á¦°Å
+    // 1. í˜„ì¬ì”¬ì—ì„œ ì œê±°
     CUR_SCENE->Remove_GameObject(m_pPointLightObjects[m_iPointLightIndex]);
-    // 2. ÇöÀç ¼±ÅÃµÈ ¿ÀºêÁ§Æ®¸¦ º¤ÅÍ¿¡¼­ »èÁ¦
+    // 2. í˜„ì¬ ì„ íƒëœ ì˜¤ë¸Œì íŠ¸ë¥¼ ë²¡í„°ì—ì„œ ì‚­ì œ
     {
         auto iter = m_pPointLightObjects.begin();
         for (_int i = 0; i < m_iPointLightIndex; ++i)
             ++iter;
-        // ¸®½ºÆ®º¤ÅÍ¿¡¼­ ÇØ´ç³»¿ë»èÁ¦
+        // ë¦¬ìŠ¤íŠ¸ë²¡í„°ì—ì„œ í•´ë‹¹ë‚´ìš©ì‚­ì œ
         if (m_iPointLightIndex > 0)
             iter = m_pPointLightObjects.erase(iter);
         else
             m_pPointLightObjects.erase(m_pPointLightObjects.begin());
     }
-    // 3. ÇöÀç ¹èÄ¡µÈ ¿ÀºêÁ§Æ® List ÀÌ¸§ Á¦°Å
+    // 3. í˜„ì¬ ë°°ì¹˜ëœ ì˜¤ë¸Œì íŠ¸ List ì´ë¦„ ì œê±°
     {
         auto iter = m_strPointLightList.begin();
         for (_int i = 0; i < m_iPointLightIndex; ++i)
             ++iter;
-        // ¸®½ºÆ®º¤ÅÍ¿¡¼­ ÇØ´ç³»¿ë»èÁ¦
+        // ë¦¬ìŠ¤íŠ¸ë²¡í„°ì—ì„œ í•´ë‹¹ë‚´ìš©ì‚­ì œ
         if (m_iPointLightIndex > 0)
         {
             iter = m_strPointLightList.erase(iter);
-            // ¸®½ºÆ®ÀÇ ÁöÁ¤À§Ä¡ º¯°æ
+            // ë¦¬ìŠ¤íŠ¸ì˜ ì§€ì •ìœ„ì¹˜ ë³€ê²½
             --m_iPointLightIndex;
         }
         else
@@ -1094,31 +1094,31 @@ HRESULT ImGui_Manager::Delete_PointLight()
 
 HRESULT ImGui_Manager::Delete_MapObject()
 {
-    // 1. ÇöÀç ¼±ÅÃµÈ ¿ÀºêÁ§Æ®¸¦ ¾À¿¡¼­ »èÁ¦
+    // 1. í˜„ì¬ ì„ íƒëœ ì˜¤ë¸Œì íŠ¸ë¥¼ ì”¬ì—ì„œ ì‚­ì œ
     CUR_SCENE->Remove_GameObject(m_pMapObjects[m_iObjects]);
 
-    // 2. ÇöÀç ¼±ÅÃµÈ ¿ÀºêÁ§Æ®¸¦ º¤ÅÍ¿¡¼­ »èÁ¦
+    // 2. í˜„ì¬ ì„ íƒëœ ì˜¤ë¸Œì íŠ¸ë¥¼ ë²¡í„°ì—ì„œ ì‚­ì œ
     {
         auto iter = m_pMapObjects.begin();
         for (_int i = 0; i < m_iObjects; ++i)
             ++iter;
-        // ¸®½ºÆ®º¤ÅÍ¿¡¼­ ÇØ´ç³»¿ë»èÁ¦
+        // ë¦¬ìŠ¤íŠ¸ë²¡í„°ì—ì„œ í•´ë‹¹ë‚´ìš©ì‚­ì œ
         if (m_iObjects > 0)
             iter = m_pMapObjects.erase(iter);
         else
             m_pMapObjects.erase(m_pMapObjects.begin());
     }
 
-    // 3. ÇöÀç ¹èÄ¡µÈ ¿ÀºêÁ§Æ® List ÀÌ¸§ Á¦°Å
+    // 3. í˜„ì¬ ë°°ì¹˜ëœ ì˜¤ë¸Œì íŠ¸ List ì´ë¦„ ì œê±°
     {
         auto iter = m_strObjectName.begin();
         for (_int i = 0; i < m_iObjects; ++i)
             ++iter;
-        // ¸®½ºÆ®º¤ÅÍ¿¡¼­ ÇØ´ç³»¿ë»èÁ¦
+        // ë¦¬ìŠ¤íŠ¸ë²¡í„°ì—ì„œ í•´ë‹¹ë‚´ìš©ì‚­ì œ
         if (m_iObjects > 0)
         {
             iter = m_strObjectName.erase(iter);
-            // ¸®½ºÆ®ÀÇ ÁöÁ¤À§Ä¡ º¯°æ
+            // ë¦¬ìŠ¤íŠ¸ì˜ ì§€ì •ìœ„ì¹˜ ë³€ê²½
             --m_iObjects;
         }
         else
@@ -1132,10 +1132,10 @@ HRESULT ImGui_Manager::Delete_MapObject()
 
 HRESULT ImGui_Manager::Save_MapObject()
 {
-    // ¼¼ÀÌºêÀü ÄÃ¸µ°è»ê, ±×¸²ÀÚ, ºí·¯ Ã³¸®
+    // ì„¸ì´ë¸Œì „ ì»¬ë§ê³„ì‚°, ê·¸ë¦¼ì, ë¸”ëŸ¬ ì²˜ë¦¬
     BakeAll();
 
-    // ¼¼ÀÌºê ÆÄÀÏ ÀÌ¸§À¸·Î ÀúÀåÇÏ±â
+    // ì„¸ì´ë¸Œ íŒŒì¼ ì´ë¦„ìœ¼ë¡œ ì €ì¥í•˜ê¸°
     string strFileName = m_szSaveFileName;
     string strFilePath = "..\\Resources\\MapData\\";
     strFilePath += strFileName + ".dat";
@@ -1143,16 +1143,16 @@ HRESULT ImGui_Manager::Save_MapObject()
     shared_ptr<FileUtils> file = make_shared<FileUtils>();
     file->Open(Utils::ToWString(strFilePath), FileMode::Write);
 
-    // ½ºÄ«ÀÌ¹Ú½º Á¤º¸ ÀúÀå
+    // ìŠ¤ì¹´ì´ë°•ìŠ¤ ì •ë³´ ì €ì¥
     string strSkyBoxTextureName = m_strSkyboxList[m_iCurrentSkyBoxIndex];
     file->Write<string>(strSkyBoxTextureName);
 
-    // ¹æÇâ¼º±¤¿ø Á¤º¸ ÀúÀå
+    // ë°©í–¥ì„±ê´‘ì› ì •ë³´ ì €ì¥
     file->Write<_float4>(m_DirectionalLightPos);
     file->Write<_float3>(m_DirectionalLightLookAtPos);
     file->Write<LightColor>(m_DirectionalLightInfo.color);
 
-    // Á¡±¤¿ø Á¤º¸ ÀúÀå
+    // ì ê´‘ì› ì •ë³´ ì €ì¥
     file->Write<_int>((_int)m_pPointLightObjects.size());
     for (auto& PtLtObject : m_pPointLightObjects)
     {
@@ -1162,7 +1162,7 @@ HRESULT ImGui_Manager::Save_MapObject()
         file->Write<LightColor>(ptltInfo.color);
         file->Write<_float>(ptltInfo.range);
 
-        // Á¡±¤¿ø ¿ï··¿ï··È¿°ú °ü·Ã Á¤º¸
+        // ì ê´‘ì› ìš¸ë ìš¸ë íš¨ê³¼ ê´€ë ¨ ì •ë³´
         weak_ptr<PointLightScript> pPTLTEffect = PtLtObject->Get_Script<PointLightScript>();
         if (!pPTLTEffect.expired())
         {
@@ -1180,18 +1180,18 @@ HRESULT ImGui_Manager::Save_MapObject()
         }
     }
 
-    // º®¸Ş½ÃÄİ¶óÀÌ´õ¿¡ ÇÊ¿äÇÑ Á¤º¸ ÀúÀå
+    // ë²½ë©”ì‹œì½œë¼ì´ë”ì— í•„ìš”í•œ ì •ë³´ ì €ì¥
     file->Write<_int>((_int)m_WallRectPosLDRU.size());
     for (_int i = 0; i < m_WallRectPosLDRU.size(); ++i)
     {
         file->Write<pair<_float3, _float3>>(m_WallRectPosLDRU[i]);
     }
 
-    // ¸Ê¿ÀºêÁ§Æ® Á¤º¸ ÀúÀå
-    // 1. ¿ÀºêÁ§Æ® °³¼ö ÀúÀå
+    // ë§µì˜¤ë¸Œì íŠ¸ ì •ë³´ ì €ì¥
+    // 1. ì˜¤ë¸Œì íŠ¸ ê°œìˆ˜ ì €ì¥
     file->Write<_int>((_int)m_pMapObjects.size());
     
-    // 2. ¿ÀºêÁ§Æ®ÀÇ MapObjectDesc ¸ğµçÁ¤º¸ ÀúÀå
+    // 2. ì˜¤ë¸Œì íŠ¸ì˜ MapObjectDesc ëª¨ë“ ì •ë³´ ì €ì¥
     for (_uint i = 0; i < m_pMapObjects.size(); ++i)
     {
         MapObjectScript::MapObjectDesc& MapDesc = m_pMapObjects[i]->Get_Script<MapObjectScript>()->Get_DESC();
@@ -1232,14 +1232,14 @@ HRESULT ImGui_Manager::Save_MapObject()
         file->Write<_float>(MapDesc.CullRadius);
     }
 
-    // ÇÃ·¹ÀÌ¾îÀÇ ½ÃÀÛÀ§Ä¡ ÀúÀå.
+    // í”Œë ˆì´ì–´ì˜ ì‹œì‘ìœ„ì¹˜ ì €ì¥.
     m_PlayerCreatePosition.w = 1.f;
     file->Write<_float4>(m_PlayerCreatePosition);
-    // ÇÃ·¹ÀÌ¾î ·è¾ÜÆ÷Áö¼Ç ÀúÀå
+    // í”Œë ˆì´ì–´ ë£©ì•³í¬ì§€ì…˜ ì €ì¥
     m_PlayerLookAtPosition.w = 1.f;
     file->Write<_float4>(m_PlayerLookAtPosition);
 
-// ¼ÎÀÌ´õ¿É¼Ç ÀúÀå
+// ì…°ì´ë”ì˜µì…˜ ì €ì¥
     //RenderOption
     file->Write<_float>(CUR_SCENE->g_fBrightness);
     file->Write<_float>(CUR_SCENE->g_fContrast);
@@ -1288,7 +1288,7 @@ HRESULT ImGui_Manager::Save_MapObject()
 
 HRESULT ImGui_Manager::Load_MapObject()
 {
-    // ±âÁ¸ÀÇ Æ÷ÀÎÆ®¶óÀÌÆ® ¸ğµÎ»èÁ¦ ¹× Å¬¸®¾î
+    // ê¸°ì¡´ì˜ í¬ì¸íŠ¸ë¼ì´íŠ¸ ëª¨ë‘ì‚­ì œ ë° í´ë¦¬ì–´
     _int iPtltSize = (_int)m_pPointLightObjects.size();
     for (auto& ptltObj : m_pPointLightObjects)
         CUR_SCENE->Remove_GameObject(ptltObj);
@@ -1296,9 +1296,9 @@ HRESULT ImGui_Manager::Load_MapObject()
     m_strPointLightList.clear();
     m_iPointLightIndex = 0;
 
-    // ÇöÀç°®°íÀÖ´Â ¿ÀºêÁ§Æ®°³¼ö
+    // í˜„ì¬ê°–ê³ ìˆëŠ” ì˜¤ë¸Œì íŠ¸ê°œìˆ˜
     _uint iSize = (_int)m_pMapObjects.size();
-    // 1. ±âÁ¸ÀÇ ¸ğµç¿ÀºêÁ§Æ® »èÁ¦ ¹× Clear
+    // 1. ê¸°ì¡´ì˜ ëª¨ë“ ì˜¤ë¸Œì íŠ¸ ì‚­ì œ ë° Clear
     for (auto& mapObj : m_pMapObjects)
         CUR_SCENE->Remove_GameObject(mapObj);
     m_pMapObjects.clear();
@@ -1306,14 +1306,14 @@ HRESULT ImGui_Manager::Load_MapObject()
     m_strObjectNamePtr.clear();
     m_iObjects = 0;
 
-    // ¼¼ÀÌºê ÆÄÀÏ ÀÌ¸§À¸·Î ·ÎµåÇÏ±â
+    // ì„¸ì´ë¸Œ íŒŒì¼ ì´ë¦„ìœ¼ë¡œ ë¡œë“œí•˜ê¸°
     string strFileName = m_MapNames[curMapIndex];
     string strFilePath = "..\\Resources\\MapData\\";
     strFilePath += strFileName + ".dat";
     shared_ptr<FileUtils> file = make_shared<FileUtils>();
     file->Open(Utils::ToWString(strFilePath), FileMode::Read);
 
-    // ½ºÄ«ÀÌ¹Ú½º ÀÌ¸§ °¡Á®¿À°í Àû¿ëÇÏ±â.
+    // ìŠ¤ì¹´ì´ë°•ìŠ¤ ì´ë¦„ ê°€ì ¸ì˜¤ê³  ì ìš©í•˜ê¸°.
     wstring strSkyBoxTextureName = Utils::ToWString(file->Read<string>());
     vector<shared_ptr<Material>>& Mats = CUR_SCENE->Get_GameObject(L"SkyBase")->Get_ModelRenderer()->Get_Model()->Get_Materials();
     Mats[0]->Set_TextureMap(RESOURCES.Get<Texture>(strSkyBoxTextureName), TextureMapType::DIFFUSE);
@@ -1328,18 +1328,18 @@ HRESULT ImGui_Manager::Load_MapObject()
         }
     }
 
-    // ¹æÇâ¼º±¤¿øÁ¤º¸ °¡Á®¿À°í Àû¿ëÇÏ±â
-    // Æ÷Áö¼Ç
+    // ë°©í–¥ì„±ê´‘ì›ì •ë³´ ê°€ì ¸ì˜¤ê³  ì ìš©í•˜ê¸°
+    // í¬ì§€ì…˜
     shared_ptr<GameObject> DirectionalLightObject = CUR_SCENE->Get_Light();
     _float4 DirLightPos = _float4{ 0.f, 0.f, 0.f, 1.f };
     file->Read<_float4>(DirLightPos);
     DirectionalLightObject->Get_Transform()->Set_State(Transform_State::POS, DirLightPos);
-    // º¸´Â¹æÇâ
+    // ë³´ëŠ”ë°©í–¥
     _float3 DirLightLookDir = _float3{ 0.f, 0.f, 0.f };
     file->Read<_float3>(DirLightLookDir);
     m_DirectionalLightLookAtPos = DirLightLookDir;
     DirectionalLightObject->Get_Transform()->LookAt(XMVectorSetW(DirLightLookDir,1.f));
-    // »ö±ò
+    // ìƒ‰ê¹”
     LightColor DirLightColor;
     file->Read<LightColor>(DirLightColor);
     DirectionalLightObject->Get_Light()->Set_Ambient(DirLightColor.ambient);
@@ -1347,7 +1347,7 @@ HRESULT ImGui_Manager::Load_MapObject()
     DirectionalLightObject->Get_Light()->Set_Specular(DirLightColor.specular);
     DirectionalLightObject->Get_Light()->Set_Emissive(DirLightColor.emissive);
 
-    // Á¡±¤¿øÁ¤º¸ °¡Á®¿À°í ºÒ·¯¿À±â
+    // ì ê´‘ì›ì •ë³´ ê°€ì ¸ì˜¤ê³  ë¶ˆëŸ¬ì˜¤ê¸°
     _int iNumPointLight = file->Read<_int>();
     for (_int i = 0; i < iNumPointLight; ++i)
     {
@@ -1359,16 +1359,16 @@ HRESULT ImGui_Manager::Load_MapObject()
         m_pPointLightObjects.push_back(CreatePtltObj);
         m_strPointLightList.push_back("PointLight");
 
-        // Á¡±¤¿øÈ¿°ú ±âº»ÃÊ±âÈ­
+        // ì ê´‘ì›íš¨ê³¼ ê¸°ë³¸ì´ˆê¸°í™”
         shared_ptr<PointLightScript> pPLE = make_shared<PointLightScript>();
         m_pPointLightObjects.back()->Add_Component(pPLE);
         pPLE->Clear();
 
-        // Á¡±¤¿ø È¿°úÁ¤º¸
+        // ì ê´‘ì› íš¨ê³¼ì •ë³´
         _bool bUseEffect = false;
         file->Read<_bool>(bUseEffect);
         pPLE->Set_bUseEffect(bUseEffect);
-        if (bUseEffect) // Á¡±¤¿øÈ¿°ú°¡ ÀÖ´Â ³à¼®ÀÌ¶ó¸é
+        if (bUseEffect) // ì ê´‘ì›íš¨ê³¼ê°€ ìˆëŠ” ë…€ì„ì´ë¼ë©´
         {
             _float4 tempColor = { 1.f, 1.f, 1.f, 1.f };
             file->Read<_float4>(tempColor);
@@ -1386,10 +1386,13 @@ HRESULT ImGui_Manager::Load_MapObject()
             pPLE->Set_TargetRange(tempFloat);
             file->Read<_float>(tempFloat);
             pPLE->Set_Speed(tempFloat);
+            // ëœë¤ìœ¼ë¡œ ë¸íƒ€íƒ€ì„ê³¼ PMì„¸íŒ…
+            pPLE->Set_DeltaTime(Utils::Random_In_Range(0.f, 1.f));
+            pPLE->Set_DeltaPM(rand() % 2 > 0 ? 1.f : -1.f);
         }
     }
 
-    // º®Á¤º¸ ºÒ·¯¿À±â ¹× º®»ı¼º
+    // ë²½ì •ë³´ ë¶ˆëŸ¬ì˜¤ê¸° ë° ë²½ìƒì„±
     m_WallRectPosLDRU.clear();
     _int iNumWall = 0;
     file->Read<_int>(iNumWall);
@@ -1401,7 +1404,7 @@ HRESULT ImGui_Manager::Load_MapObject()
         Create_WallMesh();
     }
 
-    // ¿ÀºêÁ§Æ® °³¼ö ºÒ·¯¿À±â
+    // ì˜¤ë¸Œì íŠ¸ ê°œìˆ˜ ë¶ˆëŸ¬ì˜¤ê¸°
     _int iNumObjects = file->Read<_int>();
     for (_int i = 0; i < iNumObjects; ++i)
     {
@@ -1443,27 +1446,30 @@ HRESULT ImGui_Manager::Load_MapObject()
         shared_ptr<GameObject> CreateObject = Create_MapObject(MapDesc);
         
         m_pMapObjects.push_back(CreateObject);
-        // ÇöÀç ¼³Ä¡µÈ ¿ÀºêÁ§Æ® ÀÌ¸§ UI¿¡ Ãß°¡
+        // í˜„ì¬ ì„¤ì¹˜ëœ ì˜¤ë¸Œì íŠ¸ ì´ë¦„ UIì— ì¶”ê°€
         WCHAR szTempName[MAX_PATH];
         //lstrcpy(szTempName, strObjectName.c_str());
         lstrcpy(szTempName, Utils::ToWString(MapDesc.strName).c_str());
-        // char Çü½ÄÀ¸·Î º¯È¯
+        // char í˜•ì‹ìœ¼ë¡œ ë³€í™˜
         shared_ptr<char[]> pChar = shared_ptr<char[]>(new char[MAX_PATH]);
         WideCharToMultiByte(CP_ACP, 0, szTempName, -1, pChar.get(), MAX_PATH, 0, 0);
         m_strObjectNamePtr.push_back(pChar);
         m_strObjectName.push_back(pChar.get());
     }
 
-    // ÇÃ·¹ÀÌ¾î ½ÃÀÛÁöÁ¡, ÇÇÅ·Æ÷Áî
+    // í”Œë ˆì´ì–´ ì‹œì‘ì§€ì , í”¼í‚¹í¬ì¦ˆ
     file->Read<_float4>(m_PlayerCreatePosition);
     m_PlayerCreatePosition.w = 1.f;
     file->Read<_float4>(m_PlayerLookAtPosition);
     m_PlayerLookAtPosition.w = 1.f;
-    // ±× À§Ä¡¹æÇâÀ¸·Î Ä«¸Ş¶ó ¼¼ÆÃ
-    CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_PlayerCreatePosition);
-    CUR_SCENE->Get_MainCamera()->Get_Transform()->LookAt(m_PlayerLookAtPosition);
+    // ê·¸ ìœ„ì¹˜ë°©í–¥ìœ¼ë¡œ ì¹´ë©”ë¼ ì„¸íŒ…
+    if(m_PlayerCreatePosition != m_PlayerLookAtPosition)
+    {
+        CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_PlayerCreatePosition);
+        CUR_SCENE->Get_MainCamera()->Get_Transform()->LookAt(m_PlayerLookAtPosition);
+    }
 
-// ¼ÎÀÌ´õ¿É¼Ç ·Îµå
+// ì…°ì´ë”ì˜µì…˜ ë¡œë“œ
     //RenderOption
     file->Read<_float>(CUR_SCENE->g_fBrightness);
     file->Read<_float>(CUR_SCENE->g_fContrast);
@@ -1512,7 +1518,7 @@ HRESULT ImGui_Manager::Load_MapObject()
 
 HRESULT ImGui_Manager::Save_ModelNames()
 {
-    // ¼¼ÀÌºê ÆÄÀÏ ÀÌ¸§À¸·Î ÀúÀåÇÏ±â
+    // ì„¸ì´ë¸Œ íŒŒì¼ ì´ë¦„ìœ¼ë¡œ ì €ì¥í•˜ê¸°
     string strFilePath = "..\\Resources\\MapData\\";
     string strTextName = m_szSaveFileName;
     strFilePath = strFilePath + strTextName + ".txt";
@@ -1546,8 +1552,8 @@ HRESULT ImGui_Manager::Save_ModelNames()
 
 _float4 ImGui_Manager::Compute_CullingData(shared_ptr<GameObject>& _pGameObject)
 {
-    // ¸ğµ¨À» ¹Ş¾Æ¿Í¼­ ÄÃ¸µÆ÷Áö¼Ç°ú ±æÀÌ¸¦ °è»êÇÏ¿© ¹İÈ¯ float4(_float(Pos), _float(Radius))
-    // ¸ğµç Á¤Á¡À» µ¹¸é¼­ XYZ°¢°¢ÀÇ min°ú max¸¦ Ã£¾Æ¾ßÇÔ.
+    // ëª¨ë¸ì„ ë°›ì•„ì™€ì„œ ì»¬ë§í¬ì§€ì…˜ê³¼ ê¸¸ì´ë¥¼ ê³„ì‚°í•˜ì—¬ ë°˜í™˜ float4(_float(Pos), _float(Radius))
+    // ëª¨ë“  ì •ì ì„ ëŒë©´ì„œ XYZê°ê°ì˜ minê³¼ maxë¥¼ ì°¾ì•„ì•¼í•¨.
     _float3 vMaxPos = _float3(-FLT_MAX);
     _float3 vMinPos = _float3(FLT_MAX);
 
@@ -1567,7 +1573,7 @@ _float4 ImGui_Manager::Compute_CullingData(shared_ptr<GameObject>& _pGameObject)
         const vector<ModelVertexType>& vertices = pMesh->geometry->Get_Vertices();
         for (auto& VtxData : vertices)
         {
-            // ¿ùµåÇà·Ä¹İ¿µ
+            // ì›”ë“œí–‰ë ¬ë°˜ì˜
             _float3 vPos = _float3::Transform(VtxData.vPosition, boneDesc->transform[boneIndex] * _pGameObject->Get_Transform()->Get_WorldMatrix());
 
             vMaxPos.x = max(vPos.x, vMaxPos.x);
@@ -1579,7 +1585,7 @@ _float4 ImGui_Manager::Compute_CullingData(shared_ptr<GameObject>& _pGameObject)
         }
     }
 
-    // Min°ú Max¸¦ ´õÇÑ ÈÄ 2·Î ³ª´©±â
+    // Minê³¼ Maxë¥¼ ë”í•œ í›„ 2ë¡œ ë‚˜ëˆ„ê¸°
     _float3 vCullPos = vMaxPos + vMinPos;
     vCullPos *= 0.5f;
     _float3 tempVector = vCullPos - vMinPos;

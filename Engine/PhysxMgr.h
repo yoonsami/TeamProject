@@ -26,6 +26,8 @@ public:
 	PxScene* Get_PxScene() { return m_pScene; }
 	PxCookingParams Get_Cooking() { return PxCookingParams(m_ToleranceScale); }
 	PxControllerManager* Get_ControllManager() { return m_pManager; }
+	void Add_GameObject(shared_ptr<GameObject> obj) { m_PhysxObject.push_back(obj); }
+	void Set_CharacterControllerNull();
 
 private:
 	PxDefaultAllocator m_DefalutAllocatorCallback;
@@ -38,5 +40,7 @@ private:
 	PxPvd* m_pPvd = nullptr;
 	PxControllerManager* m_pManager = nullptr;
 	PxPvdTransport* m_pTransport = nullptr;
+
+	vector<weak_ptr<GameObject>> m_PhysxObject;
 };
 

@@ -12,15 +12,15 @@
 #include "Imgui_Manager.h"
 
 
-DemoScene::DemoScene()
+GranseedScene::GranseedScene()
 {
 }
 
-DemoScene::~DemoScene()
+GranseedScene::~GranseedScene()
 {
 }
 
-void DemoScene::Init()
+void GranseedScene::Init()
 {
 	__super::Init();
 	COLLISION.Check_Group(_int(CollisionGroup::Player), _int(CollisionGroup::Monster));
@@ -29,14 +29,19 @@ void DemoScene::Init()
 	GET_SINGLE(ImGui_Manager).ImGui_Tick();
 }
 
-void DemoScene::Tick()
+void GranseedScene::Tick()
 {
 	__super::Tick();
 
 	GET_SINGLE(ImGui_Manager).ImGui_Tick();
+	if (KEYHOLD(KEY_TYPE::LALT))
+		INPUT.Set_Mouse_Move(false);
+	else
+		INPUT.Set_Mouse_Move(true);
+
 }
 
-void DemoScene::Late_Tick()
+void GranseedScene::Late_Tick()
 {
 	if (KEYTAP(KEY_TYPE::X))
 	{
@@ -49,19 +54,19 @@ void DemoScene::Late_Tick()
 	__super::Late_Tick();
 }
 
-void DemoScene::Final_Tick()
+void GranseedScene::Final_Tick()
 {
 	__super::Final_Tick();
 }
 
-void DemoScene::Render()
+void GranseedScene::Render()
 {
 	__super::Render();
 
 	GET_SINGLE(ImGui_Manager).ImGui_Render();
 }
 
-void DemoScene::Render_SampleMapObject()
+void GranseedScene::Render_SampleMapObject()
 {
 	if (Get_Camera(L"SampleCamera"))
 	{
@@ -73,7 +78,7 @@ void DemoScene::Render_SampleMapObject()
 	}
 }
 
-HRESULT DemoScene::Load_Scene()
+HRESULT GranseedScene::Load_Scene()
 {
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\");
 	Load_DemoModel();
@@ -90,15 +95,8 @@ HRESULT DemoScene::Load_Scene()
 	return S_OK;
 }
 
-void DemoScene::Load_DemoModel()
+void GranseedScene::Load_DemoModel()
 {
-	shared_ptr<GameObject> sky = make_shared<GameObject>();
-	sky->GetOrAddTransform();
-	sky->Add_Component(make_shared<ModelRenderer>(RESOURCES.Get<Shader>(L"SkyBox.fx")));
-	sky->Get_ModelRenderer()->Set_Model(RESOURCES.Get<Model>(L"SkyBox"));
-	sky->Set_Name(L"SkyBase");
-	Add_GameObject(sky);
-
 	{
 
 		shared_ptr<GameObject> testObj = make_shared<GameObject>();
@@ -130,7 +128,7 @@ void DemoScene::Load_DemoModel()
 	}
 }
 
-void DemoScene::Load_Camera()
+void GranseedScene::Load_Camera()
 {
 	{
 		//카메라로 사용할 GameObject 생성
@@ -192,7 +190,7 @@ void DemoScene::Load_Camera()
 	}
 }
 
-void DemoScene::Load_Light()
+void GranseedScene::Load_Light()
 {
 	shared_ptr<GameObject> lightObj = make_shared<GameObject>();
 	lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-10.f, 25.f, -10.f, 1.f));

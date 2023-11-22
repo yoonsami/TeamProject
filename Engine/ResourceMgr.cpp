@@ -570,7 +570,7 @@ void ResourceMgr::CreateDefaultShader()
 	}
 }
 
-void ResourceMgr::CreateModel(const wstring& path)
+void ResourceMgr::CreateModel(const wstring& path, _bool flag)
 {
 	{
 		wstring assetPath = path;
@@ -582,17 +582,19 @@ void ResourceMgr::CreateModel(const wstring& path)
 
 			if (entry.path().extension().wstring() != L".Model" && entry.path().extension().wstring() != L".model")
 				continue;
-
 			wstring tag = entry.path();
 			Utils::DetachExt(tag);
+			wstring key = fs::path(tag).filename();
 
+			if(Get<Model>(key))
+				continue;
+		
 			shared_ptr<Model> model = make_shared<Model>();
 			model->ReadModel(tag);
 			model->ReadMaterial(tag);
 			model->ReadAnimation(tag);
 
-			wstring key = fs::path(tag).filename();
-			Add(key, model);
+			Add(key, model, flag);
 		}
 	}
 }
@@ -915,34 +917,6 @@ void ResourceMgr::CreateDefaultMaterial()
 	}
 }
 
-void ResourceMgr::CreateMapModel(const wstring& mapName)
-{
-	wstring assetPath = L"..\\Resources\\Models\\Normal\\Map\\" + mapName;
-
-	for (auto& entry : fs::recursive_directory_iterator(assetPath))
-	{
-		if (entry.is_directory())
-			continue;
-
-		if (entry.path().extension().wstring() != L".Model" && entry.path().extension().wstring() != L".model")
-			continue;
-
-		wstring tag = entry.path().wstring();
-		Utils::DetachExt(tag);
-
-		int i = int(tag.rfind(L"Normal\\"));
-
-		tag = tag.substr(i, tag.size() - i);
-
-		shared_ptr<Model> model = make_shared<Model>();
-		model->ReadModel(tag);
-		model->ReadMaterial(tag);
-		model->ReadAnimation(tag);
-
-		Add(tag, model);
-	}
-}
-
 void ResourceMgr::CreateDefaultFont()
 {
 	{
@@ -1201,9 +1175,9 @@ void ResourceMgr::CreateGroupEffectData()
 	}
 }
 
-void ResourceMgr::Reset_LevelModel(_uint iLevelIndex)
+void ResourceMgr::Delete_NonStaticResources( )
 {
-	array<KeyResouceMap, RESOURCE_TYPE_COUNT>& resources = m_Resources[iLevelIndex];
+	array<KeyResouceMap, RESOURCE_TYPE_COUNT>& resources = m_Resources[1];
 
 	for (auto& resourceMap : resources)
 	{

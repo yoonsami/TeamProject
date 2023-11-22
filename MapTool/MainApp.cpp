@@ -50,7 +50,7 @@ HRESULT MainApp::Render()
 
 HRESULT MainApp::Open_Scene()
 {
-	shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<DemoScene>());
+	shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<GranseedScene>());
 
 	SCENE.Change_Scene(scene);
 

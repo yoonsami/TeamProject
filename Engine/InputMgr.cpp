@@ -3,26 +3,26 @@
 
 int g_arrVK[static_cast<int>(KEY_TYPE::LAST)] =
 {
-	VK_UP,
-	VK_DOWN,
-	VK_LEFT,
-	VK_RIGHT,
+   VK_UP,
+   VK_DOWN,
+   VK_LEFT,
+   VK_RIGHT,
 
-	'W',	'A',	'S',	'D',	'Q',	'E',	'Z',	'C',	'R',	'X',	'V',
-	'1',	'2',	'3',	'4',	'5',
-	VK_F1, VK_F2, VK_F3, VK_F4, VK_F5, VK_F6, VK_F7,
+   'W',   'A',   'S',   'D',   'Q',   'E',   'Z',   'C',   'R',   'X',   'V',
+   '1',   '2',   '3',   '4',   '5',
+   VK_F1, VK_F2, VK_F3, VK_F4, VK_F5, VK_F6, VK_F7,
 
 
-	VK_SPACE,
-	VK_ESCAPE,
-	VK_RETURN,
-	VK_LCONTROL,
-	VK_LSHIFT,
-	VK_MENU,
-	VK_LBUTTON,
-	VK_RBUTTON,
-	VK_MBUTTON,
-	VK_TAB,
+   VK_SPACE,
+   VK_ESCAPE,
+   VK_RETURN,
+   VK_LCONTROL,
+   VK_LSHIFT,
+   VK_MENU,
+   VK_LBUTTON,
+   VK_RBUTTON,
+   VK_MBUTTON,
+   VK_TAB,
 };
 
 
@@ -82,7 +82,7 @@ void InputMgr::Tick()
 
 	m_ptMousePos = { _float(MousPos.x),_float(MousPos.y) };
 
-	if(false == m_bIsCanMove)
+	if (false == m_bIsCanMove)
 	{
 		RECT tmp{};
 		GetClientRect(hWnd, &tmp);
@@ -125,7 +125,7 @@ void InputMgr::Set_Mouse_Move(_bool bValue)
 
 		m_vMouseDir = { 0.f,0.f };
 	}
-	else if(true == bValue)
+	else if (true == bValue)
 	{
 		m_bIsCanMove = bValue;
 	}

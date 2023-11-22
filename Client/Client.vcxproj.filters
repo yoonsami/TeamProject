@@ -16,9 +16,6 @@
     <Filter Include="01.Scene">
       <UniqueIdentifier>{2bcfffec-11fd-40c3-acd5-ace3fb2236a3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Scene\00.DemoScene">
-      <UniqueIdentifier>{13315f5f-4c38-4adc-b0a3-367ada70f7cd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Component">
       <UniqueIdentifier>{6977fc82-f1d7-4874-9763-e3be3397e979}</UniqueIdentifier>
     </Filter>
@@ -250,11 +247,20 @@
     <Filter Include="02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\02.Undead_Priest_FSM">
       <UniqueIdentifier>{7aeab858-8e69-4719-a675-564847d10cd2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Scene\00.PlayScene">
+      <UniqueIdentifier>{13315f5f-4c38-4adc-b0a3-367ada70f7cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Scene\00.PlayScene\00.Granseed">
+      <UniqueIdentifier>{e9033f04-2dd0-4bcc-9306-e93f651e6a4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Scene\00.PlayScene\01.Kris">
+      <UniqueIdentifier>{b11a9161-f469-455d-ba2a-df083b0ca19a}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\03.Alpaca_FSM">
-      <UniqueIdentifier>{b5614ae7-1c0a-4948-aa41-730aa4c70dfa}</UniqueIdentifier>
+      <UniqueIdentifier>{54d01fd9-1ef6-4785-b4df-736677e6ee2d}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\04.Wolf_FSM">
-      <UniqueIdentifier>{2c6742fa-89e2-402d-a107-81253dfd3a0d}</UniqueIdentifier>
+      <UniqueIdentifier>{e40fa01e-01f1-4b77-a2e1-897731c52872}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -278,9 +284,6 @@
     </ClInclude>
     <ClInclude Include="Loader.h">
       <Filter>01.Scene\00.LoadingScene\Loader</Filter>
-    </ClInclude>
-    <ClInclude Include="DemoScene.h">
-      <Filter>01.Scene\00.DemoScene</Filter>
     </ClInclude>
     <ClInclude Include="DemoCameraScript1.h">
       <Filter>02.Component\00.MonoBehaviour\99.DemoCameraScript</Filter>
@@ -522,6 +525,12 @@
     <ClInclude Include="UiMouseController.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\16.UiMouseClick</Filter>
     </ClInclude>
+    <ClInclude Include="GranseedScene.h">
+      <Filter>01.Scene\00.PlayScene\00.Granseed</Filter>
+    </ClInclude>
+    <ClInclude Include="KrisScene.h">
+      <Filter>01.Scene\00.PlayScene\01.Kris</Filter>
+    </ClInclude>
     <ClInclude Include="Alpaca_FSM.h">
       <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\03.Alpaca_FSM</Filter>
     </ClInclude>
@@ -544,9 +553,6 @@
     </ClCompile>
     <ClCompile Include="Loader.cpp">
       <Filter>01.Scene\00.LoadingScene\Loader</Filter>
-    </ClCompile>
-    <ClCompile Include="DemoScene.cpp">
-      <Filter>01.Scene\00.DemoScene</Filter>
     </ClCompile>
     <ClCompile Include="DemoCameraScript1.cpp">
       <Filter>02.Component\00.MonoBehaviour\99.DemoCameraScript</Filter>
@@ -760,6 +766,12 @@
     </ClCompile>
     <ClCompile Include="UiMouseController.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\16.UiMouseClick</Filter>
+    </ClCompile>
+    <ClCompile Include="GranseedScene.cpp">
+      <Filter>01.Scene\00.PlayScene\00.Granseed</Filter>
+    </ClCompile>
+    <ClCompile Include="KrisScene.cpp">
+      <Filter>01.Scene\00.PlayScene\01.Kris</Filter>
     </ClCompile>
     <ClCompile Include="Alpaca_FSM.cpp">
       <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\03.Alpaca_FSM</Filter>

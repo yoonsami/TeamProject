@@ -2,7 +2,7 @@
 #include "MainApp.h"
 
 #include "Utils.h"
-#include "DemoScene.h"
+#include "GranseedScene.h"
 #include "LogoScene.h"
 #include "LoadingScene.h"
 
@@ -42,6 +42,12 @@ HRESULT MainApp::Init()
 #endif
 
 	GET_SINGLE(DataMgr).Initialize();
+
+	COLLISION.Check_Group(_int(CollisionGroup::Player_Attack), _int(CollisionGroup::Monster_Body));
+	COLLISION.Check_Group(_int(CollisionGroup::Player_Skill), _int(CollisionGroup::Monster_Body));
+	COLLISION.Check_Group(_int(CollisionGroup::Monster_Attack), _int(CollisionGroup::Player_Body));
+	COLLISION.Check_Group(_int(CollisionGroup::Monster_Skill), _int(CollisionGroup::Player_Body));
+	COLLISION.Check_Group(_int(CollisionGroup::Player_Body), _int(CollisionGroup::MAPObject));
 
     return S_OK;
 }

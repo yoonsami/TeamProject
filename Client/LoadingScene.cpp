@@ -6,7 +6,7 @@
 #include "Camera.h"
 #include "BaseUI.h"
 #include "Material.h"
-#include "DemoScene.h"
+#include "GranseedScene.h"
 #include "GameObject.h"
 #include "CustomFont.h"
 #include "MeshRenderer.h"
@@ -71,9 +71,21 @@ void LoadingScene::Final_Tick()
 	{
 		if (!m_pLoader->m_bLoadFinished)
 			return;
-
+		for (auto iter = m_staticObjects.rbegin(); iter != m_staticObjects.rend(); ++iter)
+			m_pNextScene->Add_GameObject_Front(*iter, true);
 		SCENE.Change_Scene(m_pNextScene);
+       
 	}
+}
+
+shared_ptr<GameObject> LoadingScene::Get_StaticObjectFromLoader(const wstring& strTag)
+{
+    for (auto& obj : m_staticObjects)
+    {
+        if (obj->Get_Name() == strTag)
+            return obj;
+    }
+    return nullptr;
 }
 
 void LoadingScene::Load_Ui()

@@ -281,6 +281,8 @@ void Widget_EffectMaker_Mesh::Option_Property()
 	ImGui::InputText("Tag", m_szTag, MAX_PATH);
 	ImGui::Spacing();
 	
+	ImGui::Checkbox("Is Loop##Property", &m_bIsLoop);
+
 	ImGui::InputInt("Number of Mesh##Property", &m_iMeshCnt);
 	
 	ImGui::InputFloat("Create Interval##", &m_fCreateInterval);
@@ -1003,6 +1005,7 @@ void Widget_EffectMaker_Mesh::Create()
 		MeshEffectData::DESC tMeshEffectDesc
 		{
 				m_szTag,
+				m_bIsLoop,
 				m_fDuration,
 				m_bBlurOn,
 				m_bUseFadeOut,
@@ -1215,7 +1218,12 @@ void Widget_EffectMaker_Mesh::Save()
 		file->Write<_float2>(_float2(m_fUVSpeed_Distortion));
 
 		/* ETC */
-		file->Write<_float4x4>(_float4x4::Identity);
+		file->Write<_float4x4>(_float4x4(
+			(_int)m_bIsLoop, 0.f, 0.f, 0.f,
+			0.f, 0.f, 0.f, 0.f,
+			0.f, 0.f, 0.f, 0.f,
+			0.f, 0.f, 0.f, 0.f
+		));
 
 		// For. Transform Desc 
 		/* Init position */
@@ -1380,6 +1388,7 @@ void Widget_EffectMaker_Mesh::Load()
 
 	/* ETC */
 	_float4x4 mTemp = file->Read<_float4x4>();
+	m_bIsLoop = (_int)mTemp._11;
 
 	// For. Transform Desc
 	/* Init Pos */

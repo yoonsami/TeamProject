@@ -12,25 +12,8 @@ public:
 	template<typename T>
 	void Change_Scene(shared_ptr<T> scene)
 	{
-		shared_ptr<Scene> preScene = m_pCurrScene;
-
-		if (preScene)
-		{
-			auto& staticObjects = preScene->Get_StaticObjects();
-			m_pCurrScene = scene;
-			scene->Init();
-			for (auto& staticObject : staticObjects)
-			{
-				scene->Add_GameObject(staticObject,true);
-			}
-			
-
-		}
-		else
-		{
-			m_pCurrScene = scene;
-			scene->Init();
-		}
+		m_pCurrScene = scene;
+		scene->Init();
 	}
 
 	shared_ptr<Scene> Get_CurScene() { return m_pCurrScene; }

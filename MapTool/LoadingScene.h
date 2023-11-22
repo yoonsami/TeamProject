@@ -24,5 +24,6 @@ private:
 private:
     shared_ptr<Scene> m_pNextScene = nullptr;
     shared_ptr<Loader> m_pLoader = nullptr;
+
 };
 

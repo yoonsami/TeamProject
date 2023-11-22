@@ -2,11 +2,11 @@
 #include "Scene.h"
 
 class ImGuiToolMgr;
-class DemoScene final : public Scene
+class GranseedScene final : public Scene
 {
 public:
-	DemoScene();
-	virtual ~DemoScene() = default;
+	GranseedScene();
+	virtual ~GranseedScene() = default;
 
 public:
 	virtual void	Init() override;

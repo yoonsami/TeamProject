@@ -1193,14 +1193,15 @@ void SpearAce_FSM::skill_300100()
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, vDir.xyz() * -1.f, 8.f);
         }
     }
-    else if (Get_CurFrame() == 60)
-    {
-        m_vCamStopPos = m_vSkillCamBonePos;
-        Get_Owner()->Get_Animator()->Set_RenderState(false);
-        m_pWeapon.lock()->Get_ModelRenderer()->Set_RenderState(false);
-    }
     else if (Get_CurFrame() >= 61 && Get_CurFrame() < 105)
     {
+        if (Get_CurFrame() == 61)
+        {
+			m_vCamStopPos = m_vSkillCamBonePos;
+			Get_Owner()->Get_Animator()->Set_RenderState(false);
+			m_pWeapon.lock()->Get_ModelRenderer()->Set_RenderState(false);
+        }
+
         if (!m_pCamera.expired())
         {
             _float4 vDir = m_vCamStopPos - m_vSkillCamBonePos;
@@ -1224,8 +1225,8 @@ void SpearAce_FSM::skill_300100()
 
             vLookPos = vLookPos + (_float3::Up * -0.5f);
 
-            if (vLookPos.y < 2.f)
-                vLookPos.y = 2.f;
+            if (vLookPos.y - Get_Transform()->Get_State(Transform_State::POS).y < 2.f)
+                vLookPos.y = Get_Transform()->Get_State(Transform_State::POS).y + 2.f;
 
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(vLookPos);

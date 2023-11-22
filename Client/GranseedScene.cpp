@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include "DemoScene.h"
+#include "GranseedScene.h"
 
 #include "Utils.h"
 #include "Model.h"
@@ -44,8 +44,6 @@
 #include "Silversword_Soldier_FSM.h"
 #include "Succubus_Scythe_FSM.h"
 #include "Undead_Priest_FSM.h"
-#include "Alpaca_FSM.h"
-#include "Wolf_FSM.h"
 
 
 #include "UiGachaController.h"
@@ -66,42 +64,35 @@
 
 #include <filesystem>
 #include "GachaScene.h"
+#include "KrisScene.h"
 namespace fs = std::filesystem;
 
-DemoScene::DemoScene()
+GranseedScene::GranseedScene()
 {
 }
 
-DemoScene::~DemoScene()
+GranseedScene::~GranseedScene()
 {
 }
 
-void DemoScene::Init()
+void GranseedScene::Init()
 {
 	__super::Init();
-	COLLISION.Check_Group(_int(CollisionGroup::Player_Attack), _int(CollisionGroup::Monster_Body));
-	COLLISION.Check_Group(_int(CollisionGroup::Player_Skill), _int(CollisionGroup::Monster_Body));
-	COLLISION.Check_Group(_int(CollisionGroup::Monster_Attack), _int(CollisionGroup::Player_Body));
-	COLLISION.Check_Group(_int(CollisionGroup::Monster_Skill), _int(CollisionGroup::Player_Body));
-	COLLISION.Check_Group(_int(CollisionGroup::Player_Body), _int(CollisionGroup::MAPObject));
 
 }
 
-void DemoScene::Tick()
+void GranseedScene::Tick()
 {
 	__super::Tick();
 }
 
-void DemoScene::Late_Tick()
+void GranseedScene::Late_Tick()
 {
 
 	__super::Late_Tick();
 
 	// Test
 	{
-		shared_ptr<GameObject> player = Get_GameObject(L"Player");
-		auto animator = player->Get_Animator();
-
 		if (KEYTAP(KEY_TYPE::X))
 		{
 			if (m_bRenderDebug)
@@ -109,87 +100,76 @@ void DemoScene::Late_Tick()
 			else
 				m_bRenderDebug = true;
 		}
-		/*{
-			auto model = animator->Get_Model();
-
-			if (KEYPUSH(KEY_TYPE::Q))
-			{
-				for (auto& material : model->Get_Materials())
-					material->Get_MaterialDesc().emissive.x += fDT;
-			}
-
-			if (KEYPUSH(KEY_TYPE::E))
-			{
-				for (auto& material : model->Get_Materials())
-					material->Get_MaterialDesc().emissive.x -= fDT;
-			}
-		}*/
-		{
-			/*if (KEYPUSH(KEY_TYPE::Q))
-			{
-				animator->Get_RenderParamDesc().vec4Params[0].x += fDT;
-			}
-
-			if (KEYPUSH(KEY_TYPE::E))
-			{
-				animator->Get_RenderParamDesc().vec4Params[0].x -= fDT;
-			}*/
-
-
-		}
 	}
 }
 
-void DemoScene::Final_Tick()
+void GranseedScene::Final_Tick()
 {
 	__super::Final_Tick();
 	PHYSX.Tick();
-
-	if (KEYTAP(KEY_TYPE::TAB))
+	
+	if (KEYTAP(KEY_TYPE::TAB)) 
 	{
-		GachaSceneDesc sceneDesc{ L"YeopoMap",HERO::YEOPO };
-		SCENE.Add_SubScene(make_shared<GachaScene>(sceneDesc));
-		SCENE.Exchange_Scene();
+		/*GachaSceneDesc sceneDesc{ L"YeopoMap",HERO::YEOPO};
+			SCENE.Add_SubScene(make_shared<GachaScene>(sceneDesc));
+		SCENE.Exchange_Scene();*/
 
-
+		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<KrisScene>());
+		scene->Set_StaticObjects(m_StaticObject);
+		PHYSX.Set_CharacterControllerNull();
+		SCENE.Change_Scene(scene);
 	}
 }
 
-HRESULT DemoScene::Load_Scene()
+HRESULT GranseedScene::Load_Scene()
 {
+	RESOURCES.Delete_NonStaticResources();
 	PHYSX.Init();
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\");
-	RESOURCES.LoadParts();
-	Load_Player();
-	Load_Light();
-	Load_Camera();
-	// 플레이어의 위치를 잡아주기 때문에 LoadPlayer 이후로 해야함.
-	Load_MapFile(L"MirMap");
-	//Load_MapFile(L"KrisMap");
-	//Load_Monster(1, L"Silversword_Soldier");
-	//Load_Monster(1, L"Succubus_Scythe");
-	//Load_Monster(1, L"Undead_Priest");
-	//Load_Monster(1, L"Alpaca_White");
-	//Load_Monster(1, L"Alpaca_Brown");
-	//Load_Monster(1, L"Alpaca_Black");
-	//Load_Monster(1, L"Wolf");
-	//Load_Boss_Spike();
-	Load_Boss_Mir();
 
-	//Load_Debug();
+	//Static
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\", true);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\VfxMesh\\", true);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\SkyBox\\", true);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Weapon\\", true);
+
+	//Map
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Granseed\\", false);
+	// Gacha
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Kyle\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Yeopo\\", false);
+
+	auto pPlayer = Load_Player();
+	Load_Camera();
+	Load_MapFile(L"GranseedMap", pPlayer);
+
 	Load_Ui();
 
 	return S_OK;
 }
 
-void DemoScene::Load_Player()
+shared_ptr<GameObject> GranseedScene::Load_Player()
 {
+	if (CUR_SCENE && typeid(*CUR_SCENE.get()) == typeid(LoadingScene))
+	{
+		auto pPlayer = static_pointer_cast<LoadingScene>(CUR_SCENE)->Get_StaticObjectFromLoader(L"Player");
+		if (pPlayer && pPlayer->Get_CharacterController())
+		{
+			auto& desc = pPlayer->Get_CharacterController()->Get_CapsuleControllerDesc();
+			desc.radius = 0.5f;
+			desc.height = 5.f;
+			_float3 vPos = pPlayer->Get_Transform()->Get_State(Transform_State::POS).xyz();
+			desc.position = { vPos.x, vPos.y, vPos.z };
+			pPlayer->Get_CharacterController()->Create_Controller();
+			return pPlayer;
+		}
+	}
+	
 	{
 		// Add. Player
 		shared_ptr<GameObject> ObjPlayer = make_shared<GameObject>();
-
+		
 		ObjPlayer->Add_Component(make_shared<Transform>());
-
+	
 		ObjPlayer->Get_Transform()->Set_State(Transform_State::POS, _float4(-0.f, 0.f, 0.f, 1.f));
 		{
 			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
@@ -201,7 +181,7 @@ void DemoScene::Load_Player()
 				model->AddParts(L"Am_Head_001", PARTS_INFO::Head);
 				model->AddParts(L"Am_Ct_Uniform_022", PARTS_INFO::Uniform);
 				animator->Set_Model(model);
-
+				
 			}
 
 			ObjPlayer->Add_Component(animator);
@@ -226,7 +206,7 @@ void DemoScene::Load_Player()
 		ObjPlayer->Set_DrawShadow(true);
 		ObjPlayer->Set_ObjectGroup(OBJ_PLAYER);
 
-		Add_GameObject(ObjPlayer);
+		Add_GameObject(ObjPlayer,true);
 
 		//Add. Player's Weapon
 		shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
@@ -253,14 +233,15 @@ void DemoScene::Load_Player()
 		ObjWeapon->Set_DrawShadow(true);
 		ObjWeapon->Set_Name(L"Weapon_Player");
 		ObjWeapon->Set_VelocityMap(true);
-		Add_GameObject(ObjWeapon);
+		Add_GameObject(ObjWeapon,true);
 
 		ObjPlayer->Add_Component(make_shared<HeroChangeScript>());
-
+		return ObjPlayer;
 	}
+	return nullptr;
 }
 
-void DemoScene::Load_Camera()
+void GranseedScene::Load_Camera()
 {
 	{
 		//GameObj for Camera Create
@@ -280,31 +261,38 @@ void DemoScene::Load_Camera()
 		desc.fNear = 0.1f;
 		desc.fFar = 1000.f;
 		shared_ptr<Camera> cameraComponent = make_shared<Camera>(desc);
-
+		
 		camera->Add_Component(cameraComponent);
 
-
+	
 		camera->Get_Camera()->Set_ProjType(ProjectionType::Perspective);
 		//Layer_UI culling true
 		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, true);
 
-		// MonoBehaviour(Component �� ������ �ƴѰ͵�) �߰�
-		// �Ϻη� ��� ��������
-		auto pPlayer = Get_GameObject(L"Player");
+		shared_ptr<GameObject> pPlayer = nullptr;
+
+		if (CUR_SCENE && typeid(*CUR_SCENE.get()) == typeid(LoadingScene))
+		{
+			pPlayer = static_pointer_cast<LoadingScene>(CUR_SCENE)->Get_StaticObjectFromLoader(L"Player");
+		}
+		if (!pPlayer)
+			if (CUR_SCENE && CUR_SCENE->Get_GameObject(L"Player"))
+				pPlayer = CUR_SCENE->Get_GameObject(L"Player");
+		if (!pPlayer)
+			pPlayer = Get_GameObject(L"Player");
+
 		camera->Add_Component(make_shared<MainCameraScript>(pPlayer));
 
 		Add_GameObject(camera);
-
+	
 		//Setting Camera
 		pPlayer->Get_FSM()->Set_Camera(camera);
 	}
 	{
 		shared_ptr<GameObject> camera = make_shared<GameObject>();
 
-		// Transform Component �߰�
 		camera->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
 
-		// ī�޶� Component ���� 
 		CameraDesc desc;
 		desc.fFOV = XM_PI / 3.f;
 		desc.strName = L"UI_Cam";
@@ -327,7 +315,7 @@ void DemoScene::Load_Camera()
 
 }
 
-void DemoScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag)
+void GranseedScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag)
 {
 	{
 		for (_uint i = 0; i < iCnt; i++)
@@ -355,12 +343,7 @@ void DemoScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag)
 					ObjMonster->Add_Component(make_shared<Succubus_Scythe_FSM>());
 				else if (strMonsterTag == L"Undead_Priest")
 					ObjMonster->Add_Component(make_shared<Undead_Priest_FSM>());
-				else if (strMonsterTag.find(L"Alpaca") != wstring::npos)
-					ObjMonster->Add_Component(make_shared<Alpaca_FSM>());
-				else if (strMonsterTag == L"Wolf")
-					ObjMonster->Add_Component(make_shared<Wolf_FSM>());
-
-
+				
 
 				auto pPlayer = Get_GameObject(L"Player");
 				ObjMonster->Get_FSM()->Set_Target(pPlayer);
@@ -388,7 +371,7 @@ void DemoScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag)
 	}
 }
 
-void DemoScene::Load_Boss_Mir()
+void GranseedScene::Load_Boss_Mir()
 {
 	// Add. Monster
 	shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
@@ -426,9 +409,9 @@ void DemoScene::Load_Boss_Mir()
 		desc.radius = 4.5f;
 		desc.height = 5.f;
 		desc.climbingMode = PxCapsuleClimbingMode::eCONSTRAINED;
-
+		
 		_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz() +
-			ObjMonster->Get_Transform()->Get_State(Transform_State::LOOK);
+					   ObjMonster->Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.position = { vPos.x, vPos.y, vPos.z };
 		controller->Create_Controller();
 		controller->Get_Actor()->setStepOffset(0.1f);
@@ -439,7 +422,7 @@ void DemoScene::Load_Boss_Mir()
 	Add_GameObject(ObjMonster);
 }
 
-void DemoScene::Load_Boss_Dellons()
+void GranseedScene::Load_Boss_Dellons()
 {
 	{
 		// Add. Boss_Dellons
@@ -459,7 +442,7 @@ void DemoScene::Load_Boss_Dellons()
 
 			ObjMonster->Add_Component(animator);
 			ObjMonster->Add_Component(make_shared<Boss_Dellons_FSM>());
-
+			
 			auto pPlayer = Get_GameObject(L"Player");
 			ObjMonster->Get_FSM()->Set_Target(pPlayer);
 		}
@@ -514,7 +497,7 @@ void DemoScene::Load_Boss_Dellons()
 	}
 }
 
-void DemoScene::Load_Boss_Spike()
+void GranseedScene::Load_Boss_Spike()
 {
 	{
 		// Add. Boss_Dellons
@@ -590,28 +573,7 @@ void DemoScene::Load_Boss_Spike()
 	}
 }
 
-void DemoScene::Load_Light()
-{
-	shared_ptr<GameObject> lightObj = make_shared<GameObject>();
-	lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(50.f, 30.f, 20.f, 1.f));
-	lightObj->GetOrAddTransform()->LookAt(_float4(0.f, 0.f, 0.f, 1.f));
-	{
-		shared_ptr<Light> lightCom = make_shared<Light>();
-		lightCom->Set_Diffuse(Color(0.7f));
-		lightCom->Set_Ambient(Color(0.4f));
-		lightCom->Set_Specular(Color(0.f));
-		lightCom->Set_Emissive(Color(1.f));
-		lightCom->Set_LightType(LIGHT_TYPE::DIRECTIONAL_LIGHT);
-		lightObj->Add_Component(lightCom);
-
-	}
-
-	Add_GameObject(lightObj);
-
-	// 방향성광원정보 LoadMap에서 재설정
-}
-
-void DemoScene::Load_Ui()
+void GranseedScene::Load_Ui()
 {
 	wstring assetPath = L"..\\Resources\\Textures\\UITexture\\Main\\";
 
@@ -655,7 +617,7 @@ void DemoScene::Load_Ui()
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 
 	{
@@ -666,7 +628,7 @@ void DemoScene::Load_Ui()
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 
 	{
@@ -677,7 +639,7 @@ void DemoScene::Load_Ui()
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 
 	{
@@ -697,7 +659,7 @@ void DemoScene::Load_Ui()
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 
 	{
@@ -708,7 +670,7 @@ void DemoScene::Load_Ui()
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 
 
@@ -720,12 +682,6 @@ void DemoScene::Load_Ui()
 			pObj->Add_Component(pScript);
 		}
 	}
-
-
-
-
-
-
 	{
 		auto pObj = Get_UI(L"UI_Skill_Use_Gauge");
 		if (nullptr != pObj)
@@ -734,7 +690,7 @@ void DemoScene::Load_Ui()
 			pObj->Add_Component(pScript);
 		}
 	}
-
+	
 
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Card_Deck_Exit");
@@ -756,7 +712,7 @@ void DemoScene::Load_Ui()
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 
 	{
@@ -769,29 +725,6 @@ void DemoScene::Load_Ui()
 				});
 		}
 	}
-
-
-	// test code
-	{
-		/*auto pObj = Get_GameObject(L"Boss_Dellons");
-			Load_UIFile(L"..\\Resources\\UIData\\UI_BossHpBar.dat");
-		if(pObj)
-		{
-
-			auto pScript = make_shared<UIBossHpBar>();
-			pObj->Add_Component(pScript);
-		}*/
-	}
-
-
-
-
-
-
-
-
-
-
 
 	{
 		auto pScript = make_shared<UiSkillButtonEffect>();
@@ -844,7 +777,7 @@ void DemoScene::Load_Ui()
 		if (nullptr != pObj) {
 			pObj->Add_Component(pScript);
 		}
-
+		
 	}
 
 	{
@@ -917,7 +850,7 @@ void DemoScene::Load_Ui()
 
 }
 
-void DemoScene::Load_Debug()
+void GranseedScene::Load_Debug()
 {
 	{
 		shared_ptr<GameObject> debugText = make_shared<GameObject>();

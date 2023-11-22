@@ -318,6 +318,7 @@ void ComputeNormalMapping_ViewSpace(inout float3 viewNormal, float3 viewTangent,
 	// [0,1] 범위에서 [-1,1] 범위로 변환
     float3 tangentSpaceNormal = (map.rgb * 2.0f - 1.0f);
     viewNormal = normalize(mul(tangentSpaceNormal, TBN));
+
 }
 
 

@@ -319,11 +319,11 @@ void Spike_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap
     if (!m_bInvincible)
     {
         shared_ptr<GameObject> targetToLook = nullptr;
-        // skillName¿¡ _Skill Æ÷ÇÔÀÌ¸é
+        // skillNameï¿½ï¿½ _Skill ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½
         if (strSkillName.find(L"_Skill") != wstring::npos)
-            targetToLook = pCollider->Get_Owner(); // Collider owner¸¦ ³Ñ°ÜÁØ´Ù
-        else // ¾Æ´Ï¸é
-            targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner(); // Collider¸¦ ¸¸µç °´Ã¼¸¦ ³Ñ°ÜÁØ´Ù
+            targetToLook = pCollider->Get_Owner(); // Collider ownerï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½Ø´ï¿½
+        else // ï¿½Æ´Ï¸ï¿½
+            targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner(); // Colliderï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½Ø´ï¿½
 
         if (targetToLook == nullptr)
             return;
@@ -1134,14 +1134,14 @@ void Spike_FSM::skill_100100()
 
         Get_Transform()->Go_Straight();
     }
-    
+
     if (Get_CurFrame() == 16)
         AttackCollider_On(KNOCKBACK_ATTACK);
 
-	_float3 vInputVector = Get_InputDirVector();
+    _float3 vInputVector = Get_InputDirVector();
 
-	if (vInputVector != _float3(0.f))
-		Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
+    if (vInputVector != _float3(0.f))
+        Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
     //THIS LOGIC IS PERFECT -> DON'T TOUCH COMBO
     if (Get_CurFrame() > 20)

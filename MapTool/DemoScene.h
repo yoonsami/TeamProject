@@ -1,11 +1,11 @@
 #pragma once
 #include "Scene.h"
-class DemoScene :
+class GranseedScene :
     public Scene
 {
 public:
-	DemoScene();
-	~DemoScene();
+	GranseedScene();
+	~GranseedScene();
 
 public:
 	virtual void Init() override;

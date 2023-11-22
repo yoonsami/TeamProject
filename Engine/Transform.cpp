@@ -3,6 +3,7 @@
 
 #include "BaseCollider.h"
 #include "CharacterController.h"
+#include "MathUtils.h"
 
 //#include "Physics.h"
 //#include "MeshCollider.h"
@@ -21,25 +22,7 @@ HRESULT Transform::Init()
 	return S_OK;
 }
 
-_float3 ToEulerAngles(Quaternion q)
-{
-	_float3 angles;
 
-	float sqw = q.w * q.w;
-	float sqx = q.x * q.x;
-	float sqy = q.y * q.y;
-	float sqz = q.z * q.z;
-	angles.x = asinf(2.0f * (q.w * q.x - q.y * q.z)); // rotation about x-axis
-	angles.y = atan2f(2.0f * (q.x * q.z + q.w * q.y), (-sqx - sqy + sqz + sqw)); // rotation about y-axis
-	angles.z = atan2f(2.0f * (q.x * q.y + q.w * q.z), (-sqx + sqy - sqz + sqw)); // rotation about z-axis
-
-	if (isnan(angles.x) || isnan(angles.y) || isnan(angles.z))
-	{
-		int a = 0;
-	}
-
-	return angles;
-}
 
 
 void Transform::Tick()
@@ -81,7 +64,7 @@ _float3 Transform::Get_RollPitchYaw()
 	Quaternion quaternion;
 	m_matWorld.Decompose(vScale, quaternion, vTranslation);
 
-	return ToEulerAngles(quaternion);
+	return MathUtils::ToEulerAngles(quaternion);
 }
 
 void Transform::Set_State(Transform_State eState, const _float4& vState)
@@ -109,7 +92,7 @@ _bool Transform::Go_Dir(const _float3& vVel)
 		_float3 vDir = vVel;
 		
 		auto result = actor->move({ vDir.x  ,vDir.y   ,vDir.z  }, 0.0f, fDT, PxControllerFilters());
-
+	
 		auto controllerPos = actor->getFootPosition();
 		Set_State(Transform_State::POS, _float4(_float(controllerPos.x), _float(controllerPos.y), _float(controllerPos.z), 1.f));
 		if (result == PxControllerCollisionFlag::eCOLLISION_SIDES)

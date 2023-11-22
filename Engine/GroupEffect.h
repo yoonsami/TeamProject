@@ -2,7 +2,7 @@
 #include "Component.h"
 #include "GroupEffectData.h"
 
-class GroupEffect final : public Component
+class GroupEffect final : public Component,public enable_shared_from_this<GroupEffect>
 {
 public:
 	GroupEffect();
