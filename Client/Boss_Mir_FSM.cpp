@@ -8,6 +8,7 @@
 #include "CounterMotionTrailScript.h"
 #include "MainCameraScript.h"
 #include "UiDamageCreate.h"
+#include "OBBBoxCollider.h"
 
 HRESULT Boss_Mir_FSM::Init()
 {
@@ -40,8 +41,14 @@ HRESULT Boss_Mir_FSM::Init()
     m_fDetectRange = 25.f;
     // 용이 플레이어 바라보게
     if (!m_pTarget.expired())
-        Get_Transform()->LookAt(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS));
+    {
+        _float3 vLook = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
+        vLook.y = 0.f;
+        Get_Transform()->Set_LookDir(vLook);
+    }
     
+    //Setting_DragonBall();
+
     return S_OK;
 }
 
@@ -114,6 +121,12 @@ void Boss_Mir_FSM::State_Tick()
         break;
     case STATE::groggy_end:
         groggy_end();
+        break;
+    case STATE::skill_Assault:
+        skill_Assault();
+        break;
+    case STATE::skill_Return:
+        skill_Return();
         break;
     case STATE::SQ_SBRin_Roar:
         SQ_SBRin_Roar();
@@ -201,6 +214,12 @@ void Boss_Mir_FSM::State_Init()
             break;
         case STATE::groggy_end:
             groggy_end_Init();
+            break;
+        case STATE::skill_Assault:
+            skill_Assault_Init();
+            break;
+        case STATE::skill_Return:
+            skill_Return_Init();
             break;
         case STATE::SQ_SBRin_Roar:
             SQ_SBRin_Roar_Init();
@@ -443,75 +462,41 @@ void Boss_Mir_FSM::sq_Intro2_Init()
 
 void Boss_Mir_FSM::b_idle()
 {
-    //if (!m_pTarget.expired())
-    //    Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 0.5f);
-
     m_tAttackCoolTime.fAccTime += fDT;
 
     if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
     {
-        //m_eCurState = STATE::skill_2100;
-        _uint iRan = rand() % 10;
-        
-        while (true)
+        //Phase1 Assault and Return
+        if (!m_bPhaseTwo)
         {
-            if (iRan == m_iPreAttack)
-                iRan = rand() % 10;
+            CalCulate_PlayerDir();
+
+            if (!m_bTurnMotion)
+                m_eCurState = STATE::skill_Assault;
             else
-                break;
+            {
+                if (m_eAttackDir == DIR::FORWARD_LEFT)
+                {
+                    m_eCurState = STATE::turn_l;
+                }
+                else if (m_eAttackDir == DIR::BACKWARD_LEFT)
+                {
+                    m_eCurState = STATE::turn_l;
+                    m_fTurnSpeed = XM_PI * 1.f;
+                }
+                else if (m_eAttackDir == DIR::FORWARD_RIGHT)
+                {
+                    m_eCurState = STATE::turn_r;
+                }
+                else if (m_eAttackDir == DIR::BACKWARD_RIGHT)
+                {
+                    m_eCurState = STATE::turn_r;
+                    m_fTurnSpeed = XM_PI * 1.f;
+                }
+            }
         }
-        
-        
-        if (iRan == 0)
-        {
-            m_eCurState = STATE::SQ_SBRin_Roar;
-            m_iPreAttack = 0;
-        }
-        else if (iRan == 1)
-        {
-            m_eCurState = STATE::skill_1100;
-            m_iPreAttack = 1;
-        }
-        else if (iRan == 2)
-        {
-            m_eCurState = STATE::skill_2100;
-            m_iPreAttack = 2;
-        }
-        else if (iRan == 3)
-        {
-            m_eCurState = STATE::skill_9100;
-            m_iPreAttack = 3;
-        }
-        else if (iRan == 4)
-        {
-            m_eCurState = STATE::skill_11100;
-            m_iPreAttack = 4;
-        }
-        else if (iRan == 5)
-        {
-            m_eCurState = STATE::skill_12100;
-            m_iPreAttack = 5;
-        }
-        else if (iRan == 6)
-        {
-            m_eCurState = STATE::skill_13100;
-            m_iPreAttack = 6;
-        }
-        else if (iRan == 7)
-        {
-            m_eCurState = STATE::skill_14100;
-            m_iPreAttack = 7;
-        }
-        else if (iRan == 8)
-        {
-            m_eCurState = STATE::skill_100000;
-            m_iPreAttack = 8;
-        }
-        else if (iRan == 9)
-        {
-            m_eCurState = STATE::skill_200000;
-            m_iPreAttack = 9;
-        }
+        else
+            Set_AttackPattern();
     }
 }
 
@@ -528,10 +513,22 @@ void Boss_Mir_FSM::b_idle_Init()
     m_bInvincible = false;
 
     m_tAttackCoolTime.fAccTime = 0.f;
+
     m_tBreathCoolTime.fAccTime = 0.f;
 
     AttackCollider_Off();
     TailAttackCollider_Off();
+
+
+   /* if (!m_bPhaseOneEmissive)
+    {
+        for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
+        {
+            material->Get_MaterialDesc().emissive = Color(1.f, 0.1f, 0.1f, 1.f);
+        }
+
+        m_bPhaseOneEmissive = true;
+    }*/
 }
 
 void Boss_Mir_FSM::turn_l()
@@ -668,6 +665,74 @@ void Boss_Mir_FSM::groggy_end_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"groggy_end", 0.1f, false, 1.f);
+}
+
+void Boss_Mir_FSM::skill_Assault()
+{
+    if (Get_CurFrame() == 75)
+    {
+        m_bGimmick = true;
+        AttackCollider_On(KNOCKBACK_ATTACK);
+    }
+    else if (Get_CurFrame() == 92)
+    {
+        m_bGimmick = false;
+        AttackCollider_Off();
+    }
+
+    if (Is_AnimFinished())
+        m_eCurState = STATE::skill_Return;
+}
+
+void Boss_Mir_FSM::skill_Assault_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+    
+    animator->Set_NextTweenAnim(L"skill_2100", 0.1f, false, 1.f);
+
+    m_tAttackCoolTime.fAccTime = 0.f;
+
+}
+
+void Boss_Mir_FSM::skill_Return()
+{
+    if (Is_AnimFinished())
+    {
+        CalCulate_PlayerDir();
+
+        if (!m_bTurnMotion)
+            m_eCurState = STATE::b_idle;
+        else
+        {
+            if (m_eAttackDir == DIR::FORWARD_LEFT)
+            {
+                m_eCurState = STATE::turn_l;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_LEFT)
+            {
+                m_eCurState = STATE::turn_l;
+                m_fTurnSpeed = XM_PI * 1.f;
+            }
+            else if (m_eAttackDir == DIR::FORWARD_RIGHT)
+            {
+                m_eCurState = STATE::turn_r;
+            }
+            else if (m_eAttackDir == DIR::BACKWARD_RIGHT)
+            {
+                m_eCurState = STATE::turn_r;
+                m_fTurnSpeed = XM_PI * 1.f;
+            }
+        }
+    }
+}
+
+void Boss_Mir_FSM::skill_Return_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"skill_5100", 0.1f, false, 1.f);
+
+    m_tAttackCoolTime.fAccTime = 0.f;
 }
 
 void Boss_Mir_FSM::SQ_SBRin_Roar()
@@ -842,7 +907,7 @@ void Boss_Mir_FSM::skill_1100_Init()
 
 void Boss_Mir_FSM::skill_2100()
 {
-    if (Get_CurFrame() == 55)
+    /*if (Get_CurFrame() == 55)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed / 4.f);
 
@@ -867,11 +932,13 @@ void Boss_Mir_FSM::skill_2100()
     else if (Get_CurFrame() == 70)
         AttackCollider_On(KNOCKBACK_ATTACK);
     else if (Get_CurFrame() == 93)
-        AttackCollider_Off();
+        AttackCollider_Off();*/
 
     if (Is_AnimFinished())
     {
-        _uint iRan = rand() % 2;
+
+        //_float4 vPos = Get_Transform()->Get_State(Transform_State::POS);
+        /*_uint iRan = rand() % 2;
 
         CalCulate_PlayerDir();
 
@@ -900,9 +967,9 @@ void Boss_Mir_FSM::skill_2100()
             }
         }
         else
-        {
+        {*/
             m_eCurState = STATE::skill_5100;
-        }
+        //}
     }
 }
 
@@ -1014,31 +1081,32 @@ void Boss_Mir_FSM::skill_5100()
 {
     if (Is_AnimFinished())
     {
-        CalCulate_PlayerDir();
+        m_eCurState = STATE::skill_2100;
 
-        if (!m_bTurnMotion)
-            m_eCurState = STATE::b_idle;
-        else
-        {
-            if (m_eAttackDir == DIR::FORWARD_LEFT)
-            {
-                m_eCurState = STATE::turn_l;
-            }
-            else if (m_eAttackDir == DIR::BACKWARD_LEFT)
-            {
-                m_eCurState = STATE::turn_l;
-                m_fTurnSpeed = XM_PI * 1.f;
-            }
-            else if (m_eAttackDir == DIR::FORWARD_RIGHT)
-            {
-                m_eCurState = STATE::turn_r;
-            }
-            else if (m_eAttackDir == DIR::BACKWARD_RIGHT)
-            {
-                m_eCurState = STATE::turn_r;
-                m_fTurnSpeed = XM_PI * 1.f;
-            }
-        }
+        //CalCulate_PlayerDir();
+        //if (!m_bTurnMotion)
+        //    m_eCurState = STATE::b_idle;
+        //else
+        //{
+        //    if (m_eAttackDir == DIR::FORWARD_LEFT)
+        //    {
+        //        m_eCurState = STATE::turn_l;
+        //    }
+        //    else if (m_eAttackDir == DIR::BACKWARD_LEFT)
+        //    {
+        //        m_eCurState = STATE::turn_l;
+        //        m_fTurnSpeed = XM_PI * 1.f;
+        //    }
+        //    else if (m_eAttackDir == DIR::FORWARD_RIGHT)
+        //    {
+        //        m_eCurState = STATE::turn_r;
+        //    }
+        //    else if (m_eAttackDir == DIR::BACKWARD_RIGHT)
+        //    {
+        //        m_eCurState = STATE::turn_r;
+        //        m_fTurnSpeed = XM_PI * 1.f;
+        //    }
+        //}
     }
 }
 
@@ -1050,7 +1118,7 @@ void Boss_Mir_FSM::skill_5100_Init()
 
     m_tAttackCoolTime.fAccTime = 0.f;
 
-    Get_Transform()->Set_Speed(0.f);
+    //Get_Transform()->Set_Speed(0.f);
 }
 
 void Boss_Mir_FSM::skill_9100()
@@ -1715,14 +1783,14 @@ Boss_Mir_FSM::DIR Boss_Mir_FSM::CalCulate_PlayerDir()
         {
             m_eAttackDir = DIR::FORWARD_LEFT;
 
-            if (XMVectorGetX(vDot) < cosf(XMConvertToRadians(20.f)))//왼쪽 45도 외 앞
+            if (XMVectorGetX(vDot) < cosf(XMConvertToRadians(20.f)))//왼쪽 20도 외 앞
                 m_bTurnMotion = true; 
         }
         else //오른쪽  정면오른쪽
         {
             m_eAttackDir = DIR::FORWARD_RIGHT;
 
-            if (XMVectorGetX(vDot) < cosf(XMConvertToRadians(20.f)))//오른쪽 45도 이내까지 앞
+            if (XMVectorGetX(vDot) < cosf(XMConvertToRadians(20.f)))//오른쪽 20도 이내까지 앞
                 m_bTurnMotion = true;
         }
     }
@@ -1807,6 +1875,105 @@ void Boss_Mir_FSM::Create_CounterMotionTrail()
 		material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
 	}
     m_pOwner.lock()->Get_Script<CounterMotionTrailScript>()->Init();
+}
+
+void Boss_Mir_FSM::Set_AttackPattern()
+{
+    m_eCurState = STATE::skill_2100;
+    /*_uint iRan = rand() % 10;
+
+    while (true)
+    {
+        if (iRan == m_iPreAttack)
+            iRan = rand() % 10;
+        else
+            break;
+    }
+
+    if (iRan == 0)
+    {
+        m_eCurState = STATE::SQ_SBRin_Roar;
+        m_iPreAttack = 0;
+    }
+    else if (iRan == 1)
+    {
+        m_eCurState = STATE::skill_1100;
+        m_iPreAttack = 1;
+    }
+    else if (iRan == 2)
+    {
+        m_eCurState = STATE::skill_2100;
+        m_iPreAttack = 2;
+    }
+    else if (iRan == 3)
+    {
+        m_eCurState = STATE::skill_9100;
+        m_iPreAttack = 3;
+    }
+    else if (iRan == 4)
+    {
+        m_eCurState = STATE::skill_11100;
+        m_iPreAttack = 4;
+    }
+    else if (iRan == 5)
+    {
+        m_eCurState = STATE::skill_12100;
+        m_iPreAttack = 5;
+    }
+    else if (iRan == 6)
+    {
+        m_eCurState = STATE::skill_13100;
+        m_iPreAttack = 6;
+    }
+    else if (iRan == 7)
+    {
+        m_eCurState = STATE::skill_14100;
+        m_iPreAttack = 7;
+    }
+    else if (iRan == 8)
+    {
+        m_eCurState = STATE::skill_100000;
+        m_iPreAttack = 8;
+    }
+    else if (iRan == 9)
+    {
+        m_eCurState = STATE::skill_200000;
+        m_iPreAttack = 9;
+    }*/
+}
+
+void Boss_Mir_FSM::Setting_DragonBall()
+{
+    _uint iDragonBallIndex = 4;
+    for (_uint i = 0; i < 3; i++)
+    {
+        wstring DragonBallName = L"Anim_P_R02_DecoBall_00_Idle-1"; // TODO 14,15,16
+        DragonBallName += to_wstring(iDragonBallIndex);
+        auto DragonBall = CUR_SCENE->Get_GameObject(DragonBallName);
+
+        if (DragonBall == nullptr)
+            continue;
+
+        DragonBall->Add_Component(make_shared<OBBBoxCollider>(_float3{ 2.f, 2.f, 2.f })); //obbcollider
+        DragonBall->Get_Collider()->Set_CollisionGroup(MAPObject);
+        DragonBall->Get_Collider()->Set_Activate(true);
+
+        {
+            auto controller = make_shared<CharacterController>();
+            DragonBall->Add_Component(controller);
+            auto& desc = controller->Get_CapsuleControllerDesc();
+            desc.radius = 2.f;
+            desc.height = 5.f;
+            _float3 vPos = DragonBall->Get_Transform()->Get_State(Transform_State::POS).xyz() + _float3{ 0.f,4.f,0.f };
+            desc.position = { vPos.x, vPos.y, vPos.z };
+            controller->Create_Controller();
+        }
+
+        DragonBall->Set_DrawShadow(true);
+        DragonBall->Set_ObjectGroup(OBJ_MAPOBJECT);
+
+        iDragonBallIndex++;
+    }
 }
 
 void Boss_Mir_FSM::TailAttackCollider_On(const wstring& skillname)

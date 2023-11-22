@@ -41,6 +41,7 @@ enum ObjectType
 	OBJ_PLAYER,
 	OBJ_MONSTER,
 	OBJ_NPC,
+	OBJ_MAPOBJECT,
 	OBJ_END
 };
 
