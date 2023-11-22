@@ -367,7 +367,7 @@ void MeshEffect::Translate()
         {
             _float4 vDir = m_vEndPos - m_vCurrPos;
             vDir.Normalize();
-            m_vCurrPos += vDir * Get_Transform()->Get_Speed();
+            m_vCurrPos += vDir * Get_Transform()->Get_Speed() * fDT;
         }
         break;
     }
@@ -540,7 +540,7 @@ void MeshEffect::Turn()
             mCurrLocalMatrix.Decompose(scale, q, trans);
             m_vCurrPos = _float4(trans,1.f);
             m_vCurrScale = scale;
-            m_vCurrRotation = ToEulerAngles(q);
+            m_vCurrRotation = MathUtils::ToEulerAngles(q);
         }
     //}
 }
@@ -764,24 +764,4 @@ _float MeshEffect::CalcSpeed()
     }
 
     return fSpeed;
-}
-
-static _float3 ToEulerAngles(Quaternion q)
-{
-    _float3 angles;
-
-    float sqw = q.w * q.w;
-    float sqx = q.x * q.x;
-    float sqy = q.y * q.y;
-    float sqz = q.z * q.z;
-    angles.x = asinf(2.0f * (q.w * q.x - q.y * q.z)); // rotation about x-axis
-    angles.y = atan2f(2.0f * (q.x * q.z + q.w * q.y), (-sqx - sqy + sqz + sqw)); // rotation about y-axis
-    angles.z = atan2f(2.0f * (q.x * q.y + q.w * q.z), (-sqx + sqy - sqz + sqw)); // rotation about z-axis
-
-    if (isnan(angles.x) || isnan(angles.y) || isnan(angles.z))
-    {
-        int a = 0;
-    }
-
-    return angles;
 }
