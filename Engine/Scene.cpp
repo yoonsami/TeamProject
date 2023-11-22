@@ -479,6 +479,7 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 
 	// 오브젝트 개수 불러오기
 	_int iNumObjects = file->Read<_int>();
+	_int iAnimObjectIndex = 0;
 
 	for (_int i = 0; i < iNumObjects; ++i)
 	{
@@ -567,6 +568,9 @@ void Scene::Load_MapFile(const wstring& _mapFileName)
 			animator->Set_Model(model);
 			// 시작애니메이션의 인덱스, 반복여부, 재생속도
 			animator->Set_CurrentAnim(0, true, 1.f);
+			// 애니메이션오브젝트의 이름에 인덱스를 넣음.
+			CreateObject->Set_Name(Utils::ToWString(strModelName) + L"-" + to_wstring(iAnimObjectIndex));
+			++iAnimObjectIndex;
 		}
 		else
 		{

@@ -23,6 +23,13 @@ void Converter::ReadAssetFile(const wstring& file)
 	m_pScene = m_pImporter->ReadFile(
 		Utils::ToString(fileStr),
 		aiProcess_ConvertToLeftHanded
+		| aiProcessPreset_TargetRealtime_Fast
+		/*aiProcess_CalcTangentSpace |
+		aiProcess_GenNormals |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_Triangulate |
+		aiProcess_GenUVCoords |
+		aiProcess_SortByPType*/
 	);
 	 
 	assert(m_pScene);
