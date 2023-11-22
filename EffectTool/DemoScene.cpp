@@ -71,44 +71,44 @@ HRESULT GranseedScene::Load_Scene()
 
 void GranseedScene::Load_DemoModel()
 {
-	// For. ¿¹½Ã ¸ðµ¨ÀÌ µÉ GameObject»ý¼º 
+	// For. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ GameObjectï¿½ï¿½ï¿½ï¿½ 
 	shared_ptr<GameObject> testObj = make_shared<GameObject>();
 
-	// For. GameObject¿¡ Transform Component Ãß°¡
-		// µÑÁß ÇÏ³ª »ç¿ë. AddComponent ¶Ç´Â GetOrAddTransform(ÀÖÀ¸¸é ¹ÝÈ¯ ¾øÀ¸¸é »ý¼ºÈÄ ¹ÝÈ¯)
+	// For. GameObjectï¿½ï¿½ Transform Component ï¿½ß°ï¿½
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ ï¿½ï¿½ï¿½. AddComponent ï¿½Ç´ï¿½ GetOrAddTransform(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯)
 	testObj->Add_Component(make_shared<Transform>());
 		//testObj->GetOrAddTransform();
 
-	// For. GameObjectÀÇ Transform ¼³Á¤ÇØÁÖ±â 
+	// For. GameObjectï¿½ï¿½ Transform ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ 
 	testObj->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
 	testObj->Get_Transform()->Scaled(_float3(3.f,1.f,3.f));
 	
-	// For. Animator»ý¼ºÇÒ¶§ ÇÊ¿äÇÑ 
+	// For. Animatorï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ 
 	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
-	// For. GameObject¿¡ ºÙÀÏ animator component »ý¼ºÇÏ±â 
+	// For. GameObjectï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ animator component ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ 
 	shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
 	
-	// For. Animator component¿¡ ºÙÀÏ Model »ý¼ºÇÏ±â 
+	// For. Animator componentï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Model ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ 
 	shared_ptr<Model> model = RESOURCES.Get<Model>(L"GridPlane");
 
-	// For. Animator¿¡ Model ºÙÀÌ±â
+	// For. Animatorï¿½ï¿½ Model ï¿½ï¿½ï¿½Ì±ï¿½
 	animator->Set_Model(model);
 
-	// For. ¾À¿¡ GameObjectÃß°¡ 
+	// For. ï¿½ï¿½ï¿½ï¿½ GameObjectï¿½ß°ï¿½ 
 	Add_GameObject(testObj);
 }
 
 void GranseedScene::Load_Light()
 {
-	// For. ¾À¿¡ Ãß°¡ÇÒ ºû ¿ªÇÒÀ» ÇÒ GameObject»ý¼º 
+	// For. ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ GameObjectï¿½ï¿½ï¿½ï¿½ 
 	shared_ptr<GameObject> lightObj = make_shared<GameObject>();
 
-	//// For. GameObjectÀÇ Transform ¼³Á¤ 
+	//// For. GameObjectï¿½ï¿½ Transform ï¿½ï¿½ï¿½ï¿½ 
 	lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 25.f, 0.f, 1.f));
 	lightObj->GetOrAddTransform()->Set_LookDir(_float3(-1.f, -1.f, -1.f));
 
-	//// For. GameObject¿¡ ºÙÀÏ LightComponent »ý¼º
+	//// For. GameObjectï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ LightComponent ï¿½ï¿½ï¿½ï¿½
 	shared_ptr<Light> lightCom = make_shared<Light>();
 	lightCom->Set_Diffuse(Color(1.f));
 	lightCom->Set_Ambient(Color(0.8f));
@@ -116,25 +116,25 @@ void GranseedScene::Load_Light()
 	lightCom->Set_Emissive(Color(0.f));
 	lightCom->Set_LightType(LIGHT_TYPE::DIRECTIONAL_LIGHT);
 
-	//// For. GameObject¿¡ Light Component ºÙÀÌ±â 
+	//// For. GameObjectï¿½ï¿½ Light Component ï¿½ï¿½ï¿½Ì±ï¿½ 
 	lightObj->Add_Component(lightCom);
 
-	//// For. ¾À¿¡ ºû ¿ªÇÒÀ» ÇÏ´Â GameObject Ãß°¡ 
+	//// For. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ GameObject ï¿½ß°ï¿½ 
 	Add_GameObject(lightObj);
 }
 
 void GranseedScene::Load_Camera()
 {
-	/* UI°¡ ¾Æ´Ñ ÀÏ¹Ý ¸ðµ¨µéÀ» ±×¸®´Â Ä«¸Þ¶ó¸¦ »ý¼ºÇØ¼­ ¾À¿¡ Ãß°¡ÇÏ±â */
+	/* UIï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½Ï¹ï¿½ ï¿½ðµ¨µï¿½ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ï±ï¿½ */
 
-	// For. ¾À¿¡ Ãß°¡ÇÒ Camera°¡ µÉ GameObject »ý¼º 
+	// For. ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ Cameraï¿½ï¿½ ï¿½ï¿½ GameObject ï¿½ï¿½ï¿½ï¿½ 
 	shared_ptr<GameObject> camera = make_shared<GameObject>();
 
-	// For. Ä«¸Þ¶ó Transform ¼¼ÆÃ 
+	// For. Ä«ï¿½Þ¶ï¿½ Transform ï¿½ï¿½ï¿½ï¿½ 
 	camera->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
 	camera->GetOrAddTransform()->Set_Speed(5.f);
 
-	// For. GameObject¿¡ ºÙÀÏ Ä«¸Þ¶ó ÄÄÆ÷³ÍÆ® »ý¼º 
+	// For. GameObjectï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ 
 	CameraDesc desc;
 	desc.fFOV = XM_PI / 3.f;
 	desc.strName = L"Default";
@@ -144,18 +144,18 @@ void GranseedScene::Load_Camera()
 	desc.fFar = 1000.f;
 	shared_ptr<Camera> cameraComponent = make_shared<Camera>(desc);
 
-	// For. »ý¼ºÇÑ Ä«¸Þ¶ó ÄÄÆ÷³ÍÆ®¸¦ GameObject¿¡ ºÙÀÌ±â 
+	// For. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ GameObjectï¿½ï¿½ ï¿½ï¿½ï¿½Ì±ï¿½ 
 	camera->Add_Component(cameraComponent);
 
-	// For. GameObjectÀÇ Ä«¸Þ¶ó ÄÄÆ÷³ÍÆ®°¡ ¾î¶² Åõ¿µÀ» ÇÒÁö ¼³Á¤ÇÏ±â 
+	// For. GameObjectï¿½ï¿½ Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ 
 	camera->Get_Camera()->Set_ProjType(ProjectionType::Perspective);
 
-	// For. GameObjectÀÇ Ä«¸Þ¶ó ÄÄÆ÷³ÍÆ®°¡ UI´Â ±×¸®Áö ¾Êµµ·Ï ¼³Á¤ 
+	// For. GameObjectï¿½ï¿½ Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ UIï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½Êµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
 	camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, true);
 
-	// For. GameObject¿¡ key input¿¡ µû¸¥ ÀÌµ¿¿¡ °üÇÑ ½ºÅ©¸³Æ® ºÙÀÌ±â 
+	// For. GameObjectï¿½ï¿½ key inputï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ® ï¿½ï¿½ï¿½Ì±ï¿½ 
 	camera->Add_Component(make_shared<FreeCameraScript>());
 
-	// For. ¾À¿¡ »ý¼ºÇÑ Ä«¸Þ¶ó Ãß°¡ 
+	// For. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½Þ¶ï¿½ ï¿½ß°ï¿½ 
 	Add_GameObject(camera);
 }

@@ -23,6 +23,7 @@ public:
     void                    Set_TransformDesc(void* pArg);
     void                    Set_Lock(_bool bIsLocked) { m_bIsLocked = bIsLocked; }
     void                    Set_Loop(_bool bIsLoop) { m_tDesc.bIsLoop = bIsLoop; }
+    void                    Set_ToolModeOn(_bool bIsToolMode) { m_bToolMode_On = bIsToolMode; }
 
     /* Getter */
     shared_ptr<Material>    Get_Material() { return m_pMaterial; }
@@ -33,10 +34,11 @@ public:
     const _float4x4&        Get_InGroupMatrix() { return m_mInGroupWorldMatrix; }
     const _float4x4&        Get_InitGroupMatrix() { return m_mInitGroupMatrix; }
     MeshEffectData::DESC&   Get_Desc() { return m_tDesc; }
+    _float4x4               Get_LocalMatrix();
+
     void                    Translate();
     void                    Scaling();
     void                    Turn();
-    _float4x4               Get_LocalMatrix();
     void                    BillBoard();
 
 private:
@@ -53,9 +55,17 @@ private:
     MeshEffectData::DESC            m_tDesc;
     MeshEffectData::Transform_Desc  m_tTransform_Desc;
 
+    /* For. Group effect heirarchy*/
     _float4x4                       m_mInitGroupMatrix;
     _float4x4                       m_mInGroupWorldMatrix;
-    
+    _float3                         m_vLocalPos = _float3(0.f);
+    _float3                         m_vLocalScale = _float3(1.f);
+    Quaternion                      m_qRotation = Quaternion();
+
+    /* For. Mesh Effect Tool mode */
+    _bool                           m_bToolMode_On = { false };
+
+    /* */
     _float                          m_fDuration = { 0.f };
     _float                          m_fCurrAge = { 0.f };
     _float                          m_fLifeTimeRatio = { 0.f };
@@ -112,11 +122,4 @@ private:
     /* Data to bind Shader */
     RenderParams                    m_RenderParams{};
 
-    //
-    _float3                         m_vLocalPos = _float3(0.f);
-    _float3                         m_vLocalScale = _float3(1.f);
-    Quaternion                      m_qRotation = Quaternion();
-
-
-    _bool                           m_bToolMode_On = false;
 };
