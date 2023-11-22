@@ -209,16 +209,25 @@ void MeshEffect::Update_Desc()
 void MeshEffect::InitialTransform(_float4x4 mParentWorldMatrix, const _float3& vInitPos_inGroup, const _float3& vInitScale_inGroup, const _float3& vInitRotation_inGroup)                    
 {
     m_mInGroupWorldMatrix = _float4x4::CreateScale(vInitScale_inGroup)
-                          * _float4x4::CreateFromQuaternion(Quaternion::CreateFromYawPitchRoll(vInitRotation_inGroup.y, vInitRotation_inGroup.x, vInitRotation_inGroup.z))
+                          * _float4x4::CreateRotationX(vInitRotation_inGroup.x)
+                          * _float4x4::CreateRotationY(vInitRotation_inGroup.y)
+                          * _float4x4::CreateRotationZ(vInitRotation_inGroup.z)
+                          // * _float4x4::CreateFromQuaternion(Quaternion::CreateFromYawPitchRoll(vInitRotation_inGroup.y, vInitRotation_inGroup.x, vInitRotation_inGroup.z))
                           * _float4x4::CreateTranslation(vInitPos_inGroup);
  
-    _float4x4 mLocalWorldMatrix = _float4x4::CreateScale(m_vStartScale)
-                                * _float4x4::CreateFromQuaternion(Quaternion::CreateFromYawPitchRoll(m_vStartRotation.y, m_vStartRotation.x, m_vStartRotation.z)) 
+        _float4x4 matLocal = _float4x4::CreateScale(m_vStartScale)
+		* _float4x4::CreateRotationX(m_vStartRotation.x)
+		* _float4x4::CreateRotationY(m_vStartRotation.y)
+		* _float4x4::CreateRotationZ(m_vStartRotation.z)
+                                //* _float4x4::CreateFromQuaternion(Quaternion::CreateFromYawPitchRoll(m_vStartRotation.y, m_vStartRotation.x, m_vStartRotation.z)) 
                                 * _float4x4::CreateTranslation(m_vStartPos);
     
+
     // move to parent space 
-    Get_Transform()->Set_WorldMat(mLocalWorldMatrix * m_mInGroupWorldMatrix * mParentWorldMatrix);
+    Get_Transform()->Set_WorldMat(matLocal * m_mInGroupWorldMatrix * mParentWorldMatrix);
     
+    matLocal.Decompose(m_vLocalScale, m_qRotation, m_vLocalPos);
+
     // Billbord 
     if (m_tTransform_Desc.iTurnOption == 3)
     {
@@ -319,86 +328,192 @@ void MeshEffect::Translate()
     case 1: // Move to direction 
     case 2: // Move to random direction 
     {
-        Get_Transform()->Set_Speed(CalcSpeed());
+        _float fSpeed = CalcSpeed();
 
-        _float4 vCurrPos = Get_Transform()->Get_State(Transform_State::POS);
 
-        _float4 vDir = m_vEndPos - vCurrPos;
-        vDir.Normalize();
+        if (m_bToolMode_On)
+        {
+            _float4 vCurrPos = Get_Transform()->Get_State(Transform_State::POS);
 
-        vCurrPos += vDir * Get_Transform()->Get_Speed() * fDT;
+            _float4 vDir = m_vEndPos - vCurrPos;
+            vDir.Normalize();
 
-        Get_Transform()->Set_State(Transform_State::POS, vCurrPos);
+            vCurrPos += vDir * fSpeed * fDT;
+
+            Get_Transform()->Set_State(Transform_State::POS, vCurrPos);
+        }
+        else
+        {
+            _float3 vDir = m_vEndPos - m_vLocalPos;
+            vDir.Normalize();
+
+            m_vLocalPos += vDir * fSpeed * fDT;
+        }
+
         break;
     }
     case 3:
     {
         Get_Transform()->Set_Speed(CalcSpeed());
-        Get_Transform()->Go_Straight();
+
+        if (m_bToolMode_On)
+        {
+            Get_Transform()->Go_Straight();
+        }
+        else
+        {
+            _float3 vDir = Get_LocalMatrix().Backward();
+            vDir.Normalize();
+            m_vLocalPos += vDir * Get_Transform()->Get_Speed() * fDT;
+
+        }
         break;
     }
     case 4:
     {
         Get_Transform()->Set_Speed(CalcSpeed());
-        Get_Transform()->Go_Backward();
+
+        if (m_bToolMode_On)
+        {
+            Get_Transform()->Go_Backward();
+        }
+        else
+        {
+            _float3 vDir = Get_LocalMatrix().Backward();
+            vDir.Normalize();
+            m_vLocalPos -= vDir * Get_Transform()->Get_Speed() * fDT;
+
+        }
         break;
     }
     case 5:
     {
         Get_Transform()->Set_Speed(CalcSpeed());
-        Get_Transform()->Go_Left();
+
+        if (m_bToolMode_On)
+        {
+            Get_Transform()->Go_Left();
+        }
+        else
+        {
+            _float3 vDir = Get_LocalMatrix().Right();
+            vDir.Normalize();
+            m_vLocalPos -= vDir * Get_Transform()->Get_Speed() * fDT;
+
+        }
         break;
     }
     case 6:
     {
         Get_Transform()->Set_Speed(CalcSpeed());
-        Get_Transform()->Go_Right();
+
+        if (m_bToolMode_On)
+        {
+            Get_Transform()->Go_Right();
+        }
+        else
+        {
+            _float3 vDir = Get_LocalMatrix().Right();
+            vDir.Normalize();
+            m_vLocalPos += vDir * Get_Transform()->Get_Speed() * fDT;
+
+        }
         break;
     }
     case 7:
     {
         Get_Transform()->Set_Speed(CalcSpeed());
-        Get_Transform()->Go_Up();
+
+        if (m_bToolMode_On)
+        {
+            Get_Transform()->Go_Up();
+        }
+        else
+        {
+            _float3 vDir = Get_LocalMatrix().Up();
+            vDir.Normalize();
+            m_vLocalPos += vDir * Get_Transform()->Get_Speed() * fDT;
+
+        }
         break;
     }
     case 8:
     {
         Get_Transform()->Set_Speed(CalcSpeed());
-        Get_Transform()->Go_Down();
+
+        if (m_bToolMode_On)
+        {
+            Get_Transform()->Go_Down();
+        }
+        else
+        {
+            _float3 vDir = Get_LocalMatrix().Up();
+            vDir.Normalize();
+            m_vLocalPos -= vDir * Get_Transform()->Get_Speed() * fDT;
+
+        }
         break;
     }
     case 9: // fountain 
     {
-        // Move x,z in same speed        
-        _float4 vPos = Get_Transform()->Get_State(Transform_State::POS);
-        _float4 vDir = Get_Transform()->Get_State(Transform_State::LOOK);
-        vDir.Normalize();
-        vDir.y = 0.f;
+        if (m_bToolMode_On)
+        {
+            _float4 vPos = Get_Transform()->Get_State(Transform_State::POS);
+            _float4 vDir = Get_Transform()->Get_State(Transform_State::LOOK);
+            vDir.Normalize();
+            vDir.y = 0.f;
 
-        vPos += vDir * m_tTransform_Desc.vCurvePoint_Force[0].x;
-        vPos.y -= m_fCurrYspeed;
-        m_fCurrYspeed += fDT;
+            vPos += vDir * m_tTransform_Desc.vCurvePoint_Force[0].x;
+            vPos.y -= m_fCurrYspeed;
+            m_fCurrYspeed += fDT;
 
-        Get_Transform()->Set_State(Transform_State::POS, vPos);
+            Get_Transform()->Set_State(Transform_State::POS, vPos);
+        }
+        else
+        {
+            _float3 vDir = Get_LocalMatrix().Backward();
+            vDir.Normalize();
+
+            m_vLocalPos += vDir * m_tTransform_Desc.vCurvePoint_Force[0].x;
+            m_vLocalPos.y -= m_fCurrYspeed;
+            m_fCurrYspeed += fDT;
+        }
+
         break;
     }
     case 10: // Move to target position 
     {
-        Get_Transform()->Set_State(Transform_State::POS, XMVectorLerp(m_vStartPos, m_vEndPos, m_fLifeTimeRatio));
+        if (m_bToolMode_On)
+            Get_Transform()->Set_State(Transform_State::POS, _float4(_float3::Lerp(m_vStartPos, m_vEndPos, m_fLifeTimeRatio), 1.f));
+        else
+        {
+            m_vLocalPos = _float3::Lerp(m_vStartPos, m_vEndPos, m_fLifeTimeRatio);
+        }
         break;
+
     }
     }
 }
 
 void MeshEffect::Scaling()
 {
-    _float3 vScale = XMVectorLerp(m_vStartScale, m_vEndScale, m_fLifeTimeRatio);
-    
-    if (vScale.x < 0) vScale.x = 0.f;
-    if (vScale.y < 0) vScale.y = 0.f;
-    if (vScale.z < 0) vScale.z = 0.f;
-    
-    Get_Transform()->Scaled(vScale);
+    if (m_bToolMode_On)
+	{
+		_float3 vScale = XMVectorLerp(m_vStartScale, m_vEndScale, m_fLifeTimeRatio);
+
+		if (vScale.x < 0) vScale.x = 0.f;
+		if (vScale.y < 0) vScale.y = 0.f;
+		if (vScale.z < 0) vScale.z = 0.f;
+
+		Get_Transform()->Scaled(vScale);
+	}
+    else
+    {
+        m_vLocalScale = _float3::Lerp(m_vStartScale, m_vEndScale, m_fLifeTimeRatio);
+        if (m_vLocalScale.x < 0) m_vLocalScale.x = 0.f;
+        if (m_vLocalScale.y < 0) m_vLocalScale.y = 0.f;
+        if (m_vLocalScale.z < 0) m_vLocalScale.z = 0.f;
+    }
 }
 
 void MeshEffect::Turn()
@@ -406,28 +521,20 @@ void MeshEffect::Turn()
     // Billbord 
     if (m_tTransform_Desc.iTurnOption == 3)
     {
-        _float3 vCurrDir = Get_Transform()->Get_State(Transform_State::LOOK).xyz();
-        vCurrDir.Normalize();
-
-        _float3 vTargetDir = (CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
-        vTargetDir.Normalize();
-
-        if (m_tTransform_Desc.bBillbordAxes[0])
-        {
-            vTargetDir.x = vCurrDir.x;
-            vTargetDir.z = vCurrDir.z;
-        }
-        if (m_tTransform_Desc.bBillbordAxes[1])
-            vTargetDir.y = vCurrDir.y;
-
-        Get_Transform()->Set_LookDir(vTargetDir);
+        //
+        BillBoard();
     }
     else
     {
         if (m_vRandomAxis.x == 0.f && m_vRandomAxis.y == 0.f && m_vRandomAxis.z == 0.f)
             return;
         
-        Get_Transform()->Turn(m_vRandomAxis, m_fTurnSpeed);
+        if(m_bToolMode_On)
+            Get_Transform()->Turn(m_vRandomAxis, m_fTurnSpeed);
+        else
+        {
+            m_qRotation = Quaternion::CreateFromRotationMatrix(_float4x4::CreateFromQuaternion(m_qRotation)* _float4x4::CreateFromAxisAngle(m_vRandomAxis, m_fTurnSpeed * fDT));
+        }
     }
 }
 
@@ -622,6 +729,34 @@ _float MeshEffect::CalcSpeed()
     }
 
     return fSpeed;
+}
+
+void MeshEffect::BillBoard()
+{
+	if (m_tTransform_Desc.iTurnOption == 3)
+	{
+		_float3 vCurrDir = Get_Transform()->Get_State(Transform_State::LOOK).xyz();
+		vCurrDir.Normalize();
+
+		_float3 vTargetDir = (CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+		vTargetDir.Normalize();
+
+		if (m_tTransform_Desc.bBillbordAxes[0])
+		{
+			vTargetDir.x = vCurrDir.x;
+			vTargetDir.z = vCurrDir.z;
+		}
+		if (m_tTransform_Desc.bBillbordAxes[1])
+			vTargetDir.y = vCurrDir.y;
+
+		Get_Transform()->Set_LookDir(vTargetDir);
+	}
+}
+
+_float4x4 MeshEffect::Get_LocalMatrix()
+{
+    
+    return _float4x4::CreateScale(m_vLocalScale) * _float4x4::CreateFromQuaternion(m_qRotation) * _float4x4::CreateTranslation(m_vLocalPos);
 }
 
 static _float3 ToEulerAngles(Quaternion q)

@@ -93,17 +93,21 @@ void GroupEffect::Final_Tick()
     {
         if (!iter.expired())
         {
-            if (iter.lock()->Get_MeshEffect()->Get_IsFollowGroup_OnlyTranslate() || 
-                iter.lock()->Get_MeshEffect()->Get_IsFollowGroup_LooKSameDir())
-            {
-                _float4x4 mLocalWorldMatrix = iter.lock()->Get_Transform()->Get_WorldMatrix();
-
-                mLocalWorldMatrix *= m_mPrevTickWorldMatrix.Invert();
-                mLocalWorldMatrix *= Get_Transform()->Get_WorldMatrix();
-                iter.lock()->Get_Transform()->Set_WorldMat(mLocalWorldMatrix * Get_Transform()->Get_WorldMatrix());
-                
-                m_mPrevTickWorldMatrix = Get_Transform()->Get_WorldMatrix();
+			if (iter.lock()->Get_MeshEffect()->Get_IsFollowGroup_OnlyTranslate() ||
+				iter.lock()->Get_MeshEffect()->Get_IsFollowGroup_LooKSameDir())
+			{
+                _float4x4 matSetting = iter.lock()->Get_MeshEffect()->Get_LocalMatrix() * iter.lock()->Get_MeshEffect()->Get_InGroupMatrix() * Get_Transform()->Get_WorldMatrix();
+                iter.lock()->Get_Transform()->Set_WorldMat(matSetting);
+                iter.lock()->Get_MeshEffect()->BillBoard();
             }
+            else
+            {
+				_float4x4 matSetting = iter.lock()->Get_MeshEffect()->Get_LocalMatrix() * iter.lock()->Get_MeshEffect()->Get_InGroupMatrix() * m_mInitWorldMatrix;
+				iter.lock()->Get_Transform()->Set_WorldMat(matSetting);
+				iter.lock()->Get_MeshEffect()->BillBoard();
+            }
+
+
         }
         iIndex++;
     }

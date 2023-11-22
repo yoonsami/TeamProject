@@ -35,6 +35,8 @@ public:
     void                    Translate();
     void                    Scaling();
     void                    Turn();
+    _float4x4               Get_LocalMatrix();
+    void                    BillBoard();
 
 private:
     void                    Run_SpriteAnimation();
@@ -46,7 +48,6 @@ private:
     void                    Bind_RenderParams_ToShader();
 
     _float                  CalcSpeed();
-
 private:
     MeshEffectData::DESC            m_tDesc;
     MeshEffectData::Transform_Desc  m_tTransform_Desc;
@@ -108,4 +109,12 @@ private:
 
     /* Data to bind Shader */
     RenderParams                    m_RenderParams{};
+
+    //
+    _float3                         m_vLocalPos = _float3(0.f);
+    _float3                         m_vLocalScale = _float3(1.f);
+    Quaternion                      m_qRotation = Quaternion();
+
+
+    _bool                           m_bToolMode_On = false;
 };
