@@ -409,21 +409,4 @@ _float4x4 Transform::SLerpMatrix(_float4x4& m0, _float4x4& m1, _float ratio)
 		_float4x4::CreateTranslation(_float3::Lerp(curTrans, nextTrans, ratio));
 }
 
-void Transform::UpdateTransform()
-{
-
-}
-
-void Transform::SetScale(const _float3& scale)
-{
-}
-
-void Transform::SetRotation(const _float3& rotation)
-{
-}
-
-void Transform::SetPosition(const _float3& position)
-{
-}
-
 
