@@ -26,7 +26,7 @@ HRESULT UiDamageCreate::Init()
     m_Color[ElementType::WATER] = Color{ 0.2000f , 0.6039f, 0.9412f , 1.f };
     m_Color[ElementType::WIND]  = Color{ 0.1882f , 0.6863f, 0.5490f , 1.f };
 
-    m_fSize = 3.f;
+    m_fSize = 2.f;
 
     return S_OK;
 }
@@ -45,8 +45,6 @@ void UiDamageCreate::Create_Damage_Font(weak_ptr<GameObject> pObj)
     Check_In_Screen();
     if (false == m_bIsIn)
         return;
-
-    //Change_Pos_2D();
 
     
     auto pFont = make_shared<GameObject>();

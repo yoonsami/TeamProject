@@ -91,3 +91,10 @@ enum SkillInfo
 	MOVING,
 	NONE
 };
+
+enum class NPCTYPE
+{
+	QUEST,
+	GACHA,
+	MAX
+};

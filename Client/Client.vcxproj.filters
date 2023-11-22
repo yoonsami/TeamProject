@@ -250,6 +250,9 @@
     <Filter Include="02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\02.Undead_Priest_FSM">
       <UniqueIdentifier>{7aeab858-8e69-4719-a675-564847d10cd2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\17.UiMarkNpc">
+      <UniqueIdentifier>{01438b09-cf9a-44ee-9cbb-5f43d700ae04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -516,6 +519,9 @@
     <ClInclude Include="UiMouseController.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\16.UiMouseClick</Filter>
     </ClInclude>
+    <ClInclude Include="UiMarkNpc.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\17.UiMarkNpc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -748,6 +754,9 @@
     </ClCompile>
     <ClCompile Include="UiMouseController.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\16.UiMouseClick</Filter>
+    </ClCompile>
+    <ClCompile Include="UiMarkNpc.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\17.UiMarkNpc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
