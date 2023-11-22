@@ -30,7 +30,8 @@ public:
     _bool                   Get_IsFollowGroup_OnlyTranslate() { return m_tDesc.bIsFollowingGroup_OnlyTranslate; }
     _bool                   Get_IsFollowGroup_LooKSameDir() { return m_tDesc.bIsFollowingGroup_LooKSameDir; }
     _bool                   Get_IsLoop() { return m_tDesc.bIsLoop; }
-    _float4x4               Get_InGroupMatrix() { return m_mInGroupWorldMatrix; }
+    const _float4x4&               Get_InGroupMatrix() { return m_mInGroupWorldMatrix; }
+    const _float4x4&               Get_InitGroupMatrix() { return m_mInitGroupMatrix; }
     MeshEffectData::DESC& Get_Desc() { return m_tDesc; }
     void                    Translate();
     void                    Scaling();
@@ -52,6 +53,7 @@ private:
     MeshEffectData::DESC            m_tDesc;
     MeshEffectData::Transform_Desc  m_tTransform_Desc;
 
+    _float4x4                       m_mInitGroupMatrix;
     _float4x4                       m_mInGroupWorldMatrix;
     
     _float                          m_fDuration = { 0.f };
