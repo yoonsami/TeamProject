@@ -26,7 +26,10 @@ public:
 	void				Set_Member_PivotPos(_int iIndex, _float3 vPos) { m_vMemberEffectData[iIndex].vPivot_Pos = vPos; }
 	void				Set_Member_PivotScale(_int iIndex, _float3 vScale) { m_vMemberEffectData[iIndex].vPivot_Scale = vScale; }
 	void				Set_Member_PivotRotation(_int iIndex, _float3 vRotation) { m_vMemberEffectData[iIndex].vPivot_Rotation = vRotation; }
-	void				Set_InitWorldMatrix(const _float4x4& mInitMat) { m_mInitWorldMatrix = mInitMat; }
+	void				Set_InitWorldMatrix(const _float4x4& mInitMat) {
+		m_mInitWorldMatrix = mInitMat; 
+		m_mPrevRotationMatrix = m_mInitWorldMatrix;
+	}
 
 	/* Getter */
 	vector <GroupEffectData::MemberEffect_Desc> Get_MemberEffectData() { return m_vMemberEffectData; }

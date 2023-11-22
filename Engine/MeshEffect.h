@@ -25,7 +25,7 @@ public:
     void                    Set_Loop(_bool bIsLoop) { m_tDesc.bIsLoop = bIsLoop; }
 
     /* Getter */
-    shared_ptr<Material>    Get_Material() { return  m_pMaterial; }
+    shared_ptr<Material>    Get_Material() { return m_pMaterial; }
     shared_ptr<Shader>      Get_Shader() { return m_pShader; }
     _bool                   Get_IsFollowGroup_OnlyTranslate() { return m_tDesc.bIsFollowingGroup_OnlyTranslate; }
     _bool                   Get_IsFollowGroup_LooKSameDir() { return m_tDesc.bIsFollowingGroup_LooKSameDir; }

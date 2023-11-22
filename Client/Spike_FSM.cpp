@@ -1130,7 +1130,10 @@ void Spike_FSM::skill_100100()
         }
 
         if (!m_pGroupEffect.expired())
+        {
+            _float4x4 vTemp = Get_Transform()->Get_WorldMatrix();
             m_pGroupEffect.lock()->Get_Transform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
+        }
 
         Get_Transform()->Go_Straight();
     }
@@ -1182,7 +1185,7 @@ void Spike_FSM::skill_100100_Init()
 
 void Spike_FSM::skill_100300()
 {
-    if (Init_CurFrame(20))
+    if (Init_CurFrame(22))
     {
         Add_Effect(L"Spike_100100_IceAttack");
         AttackCollider_On(KNOCKBACK_ATTACK);

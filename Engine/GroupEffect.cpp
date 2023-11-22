@@ -93,19 +93,20 @@ void GroupEffect::Final_Tick()
     {
         if (!iter.expired())
         {
-            _float4x4 mLocalWorldMatrix = iter.lock()->Get_Transform()->Get_WorldMatrix();
+            if (iter.lock()->Get_MeshEffect()->Get_IsFollowGroup_OnlyTranslate() || 
+                iter.lock()->Get_MeshEffect()->Get_IsFollowGroup_LooKSameDir())
+            {
+                _float4x4 mLocalWorldMatrix = iter.lock()->Get_Transform()->Get_WorldMatrix();
 
-            // Translate
-            mLocalWorldMatrix *= m_mPrevTickWorldMatrix.Invert();
-            iter.lock()->Get_Transform()->Set_WorldMat(mLocalWorldMatrix * Get_Transform()->Get_WorldMatrix());
-            m_mPrevTickWorldMatrix = Get_Transform()->Get_WorldMatrix();
-            
-            //if (iter->Get_MeshEffect()->Get_IsFollowGroup_LooKSameDir())
-            //    iter->Get_Transform()->Set_State(Transform_State::LOOK, Get_Transform()->Get_State(Transform_State::LOOK));
+                mLocalWorldMatrix *= m_mPrevTickWorldMatrix.Invert();
+                mLocalWorldMatrix *= Get_Transform()->Get_WorldMatrix();
+                iter.lock()->Get_Transform()->Set_WorldMat(mLocalWorldMatrix * Get_Transform()->Get_WorldMatrix());
+                
+                m_mPrevTickWorldMatrix = Get_Transform()->Get_WorldMatrix();
+            }
         }
         iIndex++;
     }
-
 }
 
 void GroupEffect::Save(const wstring& path)

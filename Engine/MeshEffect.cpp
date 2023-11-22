@@ -212,12 +212,13 @@ void MeshEffect::InitialTransform(_float4x4 mParentWorldMatrix, const _float3& v
                           * _float4x4::CreateFromQuaternion(Quaternion::CreateFromYawPitchRoll(vInitRotation_inGroup.y, vInitRotation_inGroup.x, vInitRotation_inGroup.z))
                           * _float4x4::CreateTranslation(vInitPos_inGroup);
  
-    _float4x4 mLocalWorldMatrix = _float4x4::CreateScale(m_vStartScale) 
+    _float4x4 mLocalWorldMatrix = _float4x4::CreateScale(m_vStartScale)
                                 * _float4x4::CreateFromQuaternion(Quaternion::CreateFromYawPitchRoll(m_vStartRotation.y, m_vStartRotation.x, m_vStartRotation.z)) 
                                 * _float4x4::CreateTranslation(m_vStartPos);
     
+    // move to parent space 
     Get_Transform()->Set_WorldMat(mLocalWorldMatrix * m_mInGroupWorldMatrix * mParentWorldMatrix);
-
+    
     // Billbord 
     if (m_tTransform_Desc.iTurnOption == 3)
     {
@@ -238,7 +239,7 @@ void MeshEffect::InitialTransform(_float4x4 mParentWorldMatrix, const _float3& v
         Get_Transform()->Set_LookDir(vTargetDir);
     }
 
-    // For. Setting End 
+    // For. Setting End Informations
     m_vStartPos += _float3(Get_Transform()->Get_State(Transform_State::POS));
     m_vEndPos += m_vStartPos;
 
@@ -376,9 +377,9 @@ void MeshEffect::Translate()
 
         vPos += vDir * m_tTransform_Desc.vCurvePoint_Force[0].x;
         vPos.y -= m_fCurrYspeed;
+        m_fCurrYspeed += fDT;
 
         Get_Transform()->Set_State(Transform_State::POS, vPos);
-        m_fCurrYspeed += fDT;
         break;
     }
     case 10: // Move to target position 
