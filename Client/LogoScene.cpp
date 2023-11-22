@@ -10,6 +10,7 @@
 #include "Geometry.h"
 #include "FileUtils.h"
 #include "GranseedScene.h"
+#include "MirScene.h"
 #include "ModelMesh.h"
 #include "RigidBody.h"
 #include "CustomFont.h"
@@ -132,7 +133,7 @@ void LogoScene::Load_Ui()
 	{
 		pGameobject->Get_Button()->AddOnClickedEvent([&]()
 			{
-				auto scene = make_shared<LoadingScene>(make_shared<GranseedScene>());
+				auto scene = make_shared<LoadingScene>(make_shared<MirScene>());
 				scene->Set_StaticObjects(m_StaticObject);
 				SCENE.Change_Scene(scene);
 			});
