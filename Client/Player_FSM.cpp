@@ -1583,12 +1583,19 @@ void Player_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float f
 
 void Player_FSM::Use_Skill()
 {
+    
     if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
+    {
         m_eCurState = STATE::skill_100100;
+    }
     else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
+    {
         m_eCurState = STATE::skill_200100;
+    }
     else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
+    {
         m_eCurState = STATE::skill_300100;
+    }
     else
         Use_Dash();
 }

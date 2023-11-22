@@ -109,12 +109,14 @@ void KrisScene::Final_Tick()
 {
 	__super::Final_Tick();
 	PHYSX.Tick();
-	
+
 	if (KEYTAP(KEY_TYPE::TAB))
 	{
+
 		/*GachaSceneDesc sceneDesc{ L"YeopoMap",HERO::YEOPO};
 			SCENE.Add_SubScene(make_shared<GachaScene>(sceneDesc));
 		SCENE.Exchange_Scene();*/
+
 
 		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<GranseedScene>());
 		PHYSX.Set_CharacterControllerNull();
@@ -159,8 +161,9 @@ HRESULT KrisScene::Load_Scene()
 	Load_Monster(10, L"Alpaca_Brown", player);
 	Load_Monster(10, L"Alpaca_Black", player);
 	//Load_Monster(1, L"Wolf", player);
+
 	//Load_Boss_Spike();
-	//Load_Boss_Mir();
+
 
 	Load_Ui(player);
 
@@ -187,9 +190,9 @@ shared_ptr<GameObject> KrisScene::Load_Player()
 	{
 		// Add. Player
 		shared_ptr<GameObject> ObjPlayer = make_shared<GameObject>();
-		
+
 		ObjPlayer->Add_Component(make_shared<Transform>());
-	
+
 		ObjPlayer->Get_Transform()->Set_State(Transform_State::POS, _float4(-0.f, 0.f, 0.f, 1.f));
 		{
 			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
@@ -201,7 +204,7 @@ shared_ptr<GameObject> KrisScene::Load_Player()
 				model->AddParts(L"Am_Head_001", PARTS_INFO::Head);
 				model->AddParts(L"Am_Ct_Uniform_022", PARTS_INFO::Uniform);
 				animator->Set_Model(model);
-				
+
 			}
 
 			ObjPlayer->Add_Component(animator);
@@ -257,7 +260,9 @@ shared_ptr<GameObject> KrisScene::Load_Player()
 
 		ObjPlayer->Add_Component(make_shared<HeroChangeScript>());
 
+
 		return ObjPlayer;
+
 	}
 	return nullptr;
 }
@@ -282,10 +287,10 @@ void KrisScene::Load_Camera(shared_ptr<GameObject> pPlayer)
 		desc.fNear = 0.1f;
 		desc.fFar = 1000.f;
 		shared_ptr<Camera> cameraComponent = make_shared<Camera>(desc);
-		
+
 		camera->Add_Component(cameraComponent);
 
-	
+
 		camera->Get_Camera()->Set_ProjType(ProjectionType::Perspective);
 		//Layer_UI culling true
 		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, true);
@@ -293,7 +298,7 @@ void KrisScene::Load_Camera(shared_ptr<GameObject> pPlayer)
 		camera->Add_Component(make_shared<MainCameraScript>(pPlayer));
 
 		Add_GameObject(camera);
-	
+
 		//Setting Camera
 		pPlayer->Get_FSM()->Set_Camera(camera);
 	}
@@ -419,9 +424,9 @@ void KrisScene::Load_Boss_Mir(shared_ptr<GameObject> pPlayer)
 		desc.radius = 4.5f;
 		desc.height = 5.f;
 		desc.climbingMode = PxCapsuleClimbingMode::eCONSTRAINED;
-		
+
 		_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz() +
-					   ObjMonster->Get_Transform()->Get_State(Transform_State::LOOK);
+			ObjMonster->Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.position = { vPos.x, vPos.y, vPos.z };
 		controller->Create_Controller();
 		controller->Get_Actor()->setStepOffset(0.1f);
@@ -689,6 +694,14 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj->Add_Component(pScript);
 		}
 	}
+
+
+
+
+
+
+
+
 	{
 		auto pObj = Get_UI(L"UI_Skill_Use_Gauge");
 		if (nullptr != pObj)
@@ -697,7 +710,7 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj->Add_Component(pScript);
 		}
 	}
-	
+
 
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Card_Deck_Exit");
@@ -732,6 +745,26 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 				});
 		}
 	}
+
+
+
+	// test code
+	{
+		/*auto pObj = Get_GameObject(L"Boss_Dellons");
+			Load_UIFile(L"..\\Resources\\UIData\\UI_BossHpBar.dat");
+		if(pObj)
+		{
+
+			auto pScript = make_shared<UIBossHpBar>();
+			pObj->Add_Component(pScript);
+		}*/
+	}
+
+
+
+
+
+
 
 	{
 		auto pScript = make_shared<UiSkillButtonEffect>();
@@ -784,7 +817,7 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		if (nullptr != pObj) {
 			pObj->Add_Component(pScript);
 		}
-		
+
 	}
 
 	{

@@ -7,6 +7,7 @@
 #include "CharacterController.h"
 #include "CounterMotionTrailScript.h"
 #include "MainCameraScript.h"
+#include "UiDamageCreate.h"
 
 HRESULT Boss_Mir_FSM::Init()
 {
@@ -284,6 +285,8 @@ void Boss_Mir_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fG
 
 void Boss_Mir_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
 {
+    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Transform()->Get_State(Transform_State::POS));
+
 	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 	_float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
 
@@ -440,8 +443,8 @@ void Boss_Mir_FSM::sq_Intro2_Init()
 
 void Boss_Mir_FSM::b_idle()
 {
-    if (!m_pTarget.expired())
-        Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 0.5f);
+    //if (!m_pTarget.expired())
+    //    Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 0.5f);
 
     m_tAttackCoolTime.fAccTime += fDT;
 
@@ -1712,14 +1715,14 @@ Boss_Mir_FSM::DIR Boss_Mir_FSM::CalCulate_PlayerDir()
         {
             m_eAttackDir = DIR::FORWARD_LEFT;
 
-            if (XMVectorGetX(vDot) < cosf(XMConvertToRadians(45.f)))//왼쪽 45도 외 앞
+            if (XMVectorGetX(vDot) < cosf(XMConvertToRadians(20.f)))//왼쪽 45도 외 앞
                 m_bTurnMotion = true; 
         }
         else //오른쪽  정면오른쪽
         {
             m_eAttackDir = DIR::FORWARD_RIGHT;
 
-            if (XMVectorGetX(vDot) < cosf(XMConvertToRadians(45.f)))//오른쪽 45도 이내까지 앞
+            if (XMVectorGetX(vDot) < cosf(XMConvertToRadians(20.f)))//오른쪽 45도 이내까지 앞
                 m_bTurnMotion = true;
         }
     }

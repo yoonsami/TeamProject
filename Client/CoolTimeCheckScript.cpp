@@ -335,6 +335,7 @@ _bool CoolTimeCheckScript::IsAvailable(SkillType eSkillType)
     {
         if (m_tagEvade.fCoolTime < m_tagEvade.fAccTime)
         {
+            Set_Skill_End();
             m_tagEvade.fAccTime = 0.f;
 
             return true;
@@ -349,6 +350,7 @@ _bool CoolTimeCheckScript::IsAvailable(SkillType eSkillType)
     auto& CoolInfo = m_CoolTime[IDX(m_eCurHero)][eSkillType];
     if (CoolInfo.CoolInfo.fCoolTime < CoolInfo.CoolInfo.fAccTime)
     {
+        Set_Skill_End();
         CoolInfo.bIsEnd = false;
         CoolInfo.bIsWork = true;
         //CoolInfo.fAccTime = 0.f;

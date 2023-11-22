@@ -10,7 +10,6 @@
 #include "Camera.h"
 #include "Boss_DellonsWraith_FSM.h"
 #include "MathUtils.h"
-
 #include "UiDamageCreate.h"
 
 Boss_Dellons_FSM::Boss_Dellons_FSM()
@@ -375,6 +374,8 @@ void Boss_Dellons_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _floa
 
 void Boss_Dellons_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
 {
+    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Transform()->Get_State(Transform_State::POS));
+
     _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
     _float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
 
