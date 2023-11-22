@@ -65,54 +65,226 @@ void Model::ReadMaterial(const wstring& strPath)
 					}
 				}
 				material->Set_TextureMap(texture, TextureMapType::DIFFUSE);
-				wstring textureR = textureStr;
-
-				Utils::Replace(textureR, L"_D", L"_R");
-				if (textureStr != textureR)
 				{
-					Utils::DetachExt(textureR);
+
+					wstring textureR = textureStr;
+
+					Utils::Replace(textureR, L"_D_", L"_R_");
 
 					{
-						textureR += L".dds";
-						auto texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
-						if (!texture_R)
+						shared_ptr<Texture> texture_R;
 						{
-							Utils::ChangeExt(textureR, L".DDS");
-							texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
-							if (!texture_R)
+							if (textureR != textureStr)
 							{
-								Utils::ChangeExt(textureR, L".tga");
+								Utils::DetachExt(textureR);
+								textureR += L".dds";
 								texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
 								if (!texture_R)
 								{
-									Utils::ChangeExt(textureR, L".png");
-									texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
-
-								}
-							}
-						}
-						if (!texture_R)
-						{
-							Utils::Replace(textureR, L"_R", L"_M");
-							auto texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
-							if (!texture_R)
-							{
-								Utils::ChangeExt(textureR, L".DDS");
-								texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
-								if (!texture_R)
-								{
-									Utils::ChangeExt(textureR, L".tga");
+									Utils::ChangeExt(textureR, L".DDS");
 									texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
 									if (!texture_R)
 									{
-										Utils::ChangeExt(textureR, L".png");
+										Utils::ChangeExt(textureR, L".tga");
 										texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+										if (!texture_R)
+										{
+											Utils::ChangeExt(textureR, L".png");
+											texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
 
+										}
 									}
 								}
 							}
+							if (!texture_R)
+							{
+								Utils::Replace(textureR, L"_R_", L"_M_");
+								if (textureR != textureStr)
+								{
+									Utils::ChangeExt(textureR, L".dds");
+									texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+									if (!texture_R)
+									{
+										Utils::ChangeExt(textureR, L".DDS");
+										texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+										if (!texture_R)
+										{
+											Utils::ChangeExt(textureR, L".tga");
+											texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+											if (!texture_R)
+											{
+												Utils::ChangeExt(textureR, L".png");
+												texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+
+											}
+										}
+									}
+								}
+							}
+							if (!texture_R)
+							{
+								textureR = textureStr;
+
+								Utils::Replace(textureR, L"_D.", L"_R.");
+								if (textureR != textureStr)
+								{
+									Utils::ChangeExt(textureR, L".dds");
+									texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+									if (!texture_R)
+									{
+										Utils::ChangeExt(textureR, L".DDS");
+										texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+										if (!texture_R)
+										{
+											Utils::ChangeExt(textureR, L".tga");
+											texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+											if (!texture_R)
+											{
+												Utils::ChangeExt(textureR, L".png");
+												texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+
+											}
+										}
+									}
+								}
+							}
+							if (!texture_R)
+							{
+								textureR = textureStr;
+
+								Utils::Replace(textureR, L"_D.", L"_M.");
+								if (textureR != textureStr)
+								{
+									Utils::ChangeExt(textureR, L".dds");
+									texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+									if (!texture_R)
+									{
+										Utils::ChangeExt(textureR, L".DDS");
+										texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+										if (!texture_R)
+										{
+											Utils::ChangeExt(textureR, L".tga");
+											texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+											if (!texture_R)
+											{
+												Utils::ChangeExt(textureR, L".png");
+												texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+
+											}
+										}
+									}
+								}
+							}
+							if (!texture_R)
+							{
+								textureR = textureStr;
+
+								Utils::Replace(textureR, L"_d.", L"_r.");
+								if (textureR != textureStr)
+								{
+									Utils::ChangeExt(textureR, L".dds");
+									texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+									if (!texture_R)
+									{
+										Utils::ChangeExt(textureR, L".DDS");
+										texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+										if (!texture_R)
+										{
+											Utils::ChangeExt(textureR, L".tga");
+											texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+											if (!texture_R)
+											{
+												Utils::ChangeExt(textureR, L".png");
+												texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+
+											}
+										}
+									}
+								}
+							}
+							if (!texture_R)
+							{
+								textureR = textureStr;
+
+								Utils::Replace(textureR, L"_d.", L"_m.");
+								if (textureR != textureStr)
+								{
+									Utils::ChangeExt(textureR, L".dds");
+									texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+									if (!texture_R)
+									{
+										Utils::ChangeExt(textureR, L".DDS");
+										texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+										if (!texture_R)
+										{
+											Utils::ChangeExt(textureR, L".tga");
+											texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+											if (!texture_R)
+											{
+												Utils::ChangeExt(textureR, L".png");
+												texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+
+											}
+										}
+									}
+								}
+							}
+							if (!texture_R)
+							{
+								textureR = textureStr;
+
+								Utils::Replace(textureR, L"_d_", L"_r_");
+								if (textureR != textureStr)
+								{
+									Utils::ChangeExt(textureR, L".dds");
+									texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+									if (!texture_R)
+									{
+										Utils::ChangeExt(textureR, L".DDS");
+										texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+										if (!texture_R)
+										{
+											Utils::ChangeExt(textureR, L".tga");
+											texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+											if (!texture_R)
+											{
+												Utils::ChangeExt(textureR, L".png");
+												texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+
+											}
+										}
+									}
+								}
+							}
+							if (!texture_R)
+							{
+								textureR = textureStr;
+
+								Utils::Replace(textureR, L"_d_", L"_m_");
+								if (textureR != textureStr)
+								{
+									Utils::ChangeExt(textureR, L".dds");
+									texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+									if (!texture_R)
+									{
+										Utils::ChangeExt(textureR, L".DDS");
+										texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+										if (!texture_R)
+										{
+											Utils::ChangeExt(textureR, L".tga");
+											texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+											if (!texture_R)
+											{
+												Utils::ChangeExt(textureR, L".png");
+												texture_R = RESOURCES.GetOrAddTexture(m_MaterialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+
+											}
+										}
+									}
+								}
+							}
+							material->Set_SubMap(0, texture_R);
 						}
-						material->Set_SubMap(0, texture_R);
 					}
 				}
 

@@ -62,7 +62,7 @@ shared_ptr<GameObject> PickingMgr::Pick_Collider(_float2 screenPos, shared_ptr<C
 	return picked;
 }
 
-shared_ptr<GameObject> PickingMgr::Pick_Mesh(_float2 screenPos, shared_ptr<Camera> camera, const vector<shared_ptr<GameObject>>& gameObjects, OUT _float3& outPos)
+shared_ptr<GameObject> PickingMgr::Pick_Mesh(_float2 screenPos, shared_ptr<Camera> camera, const list<shared_ptr<GameObject>>& gameObjects, OUT _float3& outPos)
 {
 	_float width = GRAPHICS.Get_ViewPort().Get_Width();
 	_float height = GRAPHICS.Get_ViewPort().Get_Height();
