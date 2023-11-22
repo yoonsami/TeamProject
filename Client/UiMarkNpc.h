@@ -18,6 +18,7 @@ private:
 
 private:
     weak_ptr<GameObject>    m_pCamera;
+    weak_ptr<GameObject>    m_pMark;
     
     NPCTYPE     m_eType     = { NPCTYPE::MAX };
 
