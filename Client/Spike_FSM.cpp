@@ -183,6 +183,9 @@ void Spike_FSM::State_Tick()
         break;
     }
 
+    if (!m_pGroupEffect.expired())
+        m_pGroupEffect.lock()->Get_Transform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
+    
     if (m_iPreFrame != m_iCurFrame)
         m_iPreFrame = m_iCurFrame;
 }
@@ -906,7 +909,7 @@ void Spike_FSM::skill_1100()
 {
     if (Init_CurFrame(11))
     {
-        Add_Effect(L"Spike_1100");
+        Add_And_Set_Effect(L"Spike_1100");
         AttackCollider_On(NORMAL_ATTACK);
     }
     else if (Get_CurFrame() == 17)
@@ -945,8 +948,11 @@ void Spike_FSM::skill_1100_Init()
 
 void Spike_FSM::skill_1200()
 {
-    if (Get_CurFrame() == 6)
+    if (Init_CurFrame(6))
+    {
+        Add_And_Set_Effect(L"Spike_1200");
         AttackCollider_On(NORMAL_ATTACK);
+    }
     else if (Get_CurFrame() == 14)
         AttackCollider_Off();
 
@@ -987,8 +993,11 @@ void Spike_FSM::skill_1200_Init()
 
 void Spike_FSM::skill_1300()
 {
-    if (Get_CurFrame() == 10)
+    if (Init_CurFrame(15))
+    {
+        Add_And_Set_Effect(L"Spike_1300");
         AttackCollider_On(NORMAL_ATTACK);
+    }
     else if (Get_CurFrame() == 18)
         AttackCollider_Off();
 
@@ -1134,12 +1143,6 @@ void Spike_FSM::skill_100100()
             // TODO : need cooltime
             m_fEffectCreateTimer = 0.f;
             Add_Effect(L"Spike_100100_IceFlower");
-        }
-
-        if (!m_pGroupEffect.expired())
-        {
-            _float4x4 vTemp = Get_Transform()->Get_WorldMatrix();
-            m_pGroupEffect.lock()->Get_Transform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
         }
 
         Get_Transform()->Go_Straight();

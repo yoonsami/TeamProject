@@ -19,17 +19,19 @@ void RigidBody::Late_Tick()
 	
 	_float3 vCenterPos = Get_Owner()->Get_CullPos();
 	_float fRadius = Get_Owner()->Get_CullRadius();
-
-	_float3 vPlayerPos = CUR_SCENE->Get_GameObject(L"Player")->Get_Transform()->Get_State(Transform_State::POS).xyz();
-	
-	if(fRadius == 0.f)
-		m_pRigidBody->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, false);
-	else if ((vPlayerPos - vCenterPos).LengthSquared() > (fRadius + 10.f) * (fRadius + 10.f))
+	if(CUR_SCENE && CUR_SCENE->Get_GameObject(L"Player"))
 	{
-		m_pRigidBody->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
+		_float3 vPlayerPos = CUR_SCENE->Get_GameObject(L"Player")->Get_Transform()->Get_State(Transform_State::POS).xyz();
+
+		if (fRadius == 0.f)
+			m_pRigidBody->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, false);
+		else if ((vPlayerPos - vCenterPos).LengthSquared() > (fRadius + 10.f) * (fRadius + 10.f))
+		{
+			m_pRigidBody->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
+		}
+		else
+			m_pRigidBody->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, false);
 	}
-	else
-		m_pRigidBody->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, false);
 }
 
 void RigidBody::Create_RigidBody(shared_ptr<MeshCollider> meshCollider, const _float4x4& matWorld)
