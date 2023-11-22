@@ -4,7 +4,7 @@
 class UiDamageMove : public MonoBehaviour
 {
 public:
-    UiDamageMove();
+    UiDamageMove(weak_ptr<GameObject> pObj);
 
 
 public:
@@ -13,16 +13,18 @@ public:
 
 
 private:
-    //void Check_Render_State();
+    void Check_Render_State();
     void Change_Pos();
     void Change_Size();
     void Change_Alpha();
     void Check_Remove();
+    void Change_Pos_2D();
 
 private:
-    //weak_ptr<GameObject>    m_pCamera;
+    weak_ptr<GameObject>    m_pCamera;
+    weak_ptr<GameObject>    m_pTarget;
 
-    _float4 m_vecOriginPos  = {};
+    _float4 m_vecPos        = {};
 
     _float  m_fOriginSize   = {};
     _float  m_fMinSize      = {};
