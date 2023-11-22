@@ -87,6 +87,17 @@ void MirScene::Init()
 void MirScene::Tick()
 {
 	__super::Tick();
+
+	{
+		if (KEYPUSH(KEY_TYPE::C))
+		{
+			Get_GameObject(L"Main_Ui_Controller")->Get_Script<MainUiController>()->Set_MainUI_Render(true);
+		}
+		if (KEYPUSH(KEY_TYPE::V))
+		{
+			Get_GameObject(L"Main_Ui_Controller")->Get_Script<MainUiController>()->Set_MainUI_Render(false);
+		}
+	}
 }
 
 void MirScene::Late_Tick()
@@ -594,7 +605,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	//Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat");
 
 
-	/*{
+	{
 		auto pObj = make_shared<GameObject>();
 		pObj->Set_Name(L"Main_Ui_Controller");
 
@@ -603,7 +614,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 
 		pObj->Set_LayerIndex(Layer_UI);
 		Add_GameObject(pObj, true);
-	}*/
+	}
 
 	{
 		auto pObj = make_shared<GameObject>();
@@ -612,8 +623,10 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		auto pScript = make_shared<UiGachaController>();
 		pObj->Add_Component(pScript);
 
+		pObj->Set_Render(false);
 		pObj->Set_LayerIndex(Layer_UI);
 		Add_GameObject(pObj, true);
+
 	}
 
 	{

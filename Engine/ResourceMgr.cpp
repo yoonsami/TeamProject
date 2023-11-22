@@ -921,15 +921,15 @@ void ResourceMgr::CreateDefaultFont()
 {
 	{
 		shared_ptr<CustomFont> font = make_shared<CustomFont>();
-		font->Load(L"..\\Resources\\Font\\Godic.spritefont");
-
-		Add(L"Godic", font);
-	}
-	{
-		shared_ptr<CustomFont> font = make_shared<CustomFont>();
 		font->Load(L"..\\Resources\\Font\\136ex.spritefont");
 
 		Add(L"136ex", font);
+	}
+	/*{
+		shared_ptr<CustomFont> font = make_shared<CustomFont>();
+		font->Load(L"..\\Resources\\Font\\Godic.spritefont");
+
+		Add(L"Godic", font);
 	}
 	{
 		shared_ptr<CustomFont> font = make_shared<CustomFont>();
@@ -954,7 +954,7 @@ void ResourceMgr::CreateDefaultFont()
 		font->Load(L"..\\Resources\\Font\\maple_bold.spritefont");
 
 		Add(L"maple_bold", font);
-	}
+	}*/
 }
 
 void ResourceMgr::CreateMeshEffectData()

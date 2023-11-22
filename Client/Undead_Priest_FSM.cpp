@@ -251,7 +251,7 @@ void Undead_Priest_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _flo
 
 void Undead_Priest_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
 {
-    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Transform()->Get_State(Transform_State::POS));
+    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner());
 
     m_bDetected = true;
     m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.05f);

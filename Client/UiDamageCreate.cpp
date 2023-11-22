@@ -26,33 +26,36 @@ HRESULT UiDamageCreate::Init()
     m_Color[ElementType::WATER] = Color{ 0.2000f , 0.6039f, 0.9412f , 1.f };
     m_Color[ElementType::WIND]  = Color{ 0.1882f , 0.6863f, 0.5490f , 1.f };
 
-    m_fSize = 3.f;
+    m_fSize = 2.f;
 
     return S_OK;
 }
 
-void UiDamageCreate::Create_Damage_Font(_float4 vPos)
+void UiDamageCreate::Create_Damage_Font(weak_ptr<GameObject> pObj)
 {
     if (true == m_pOwner.expired() ||
         true == m_pPlayer.expired() ||
         true == m_pCamera.expired())
         return;
 
-    m_fPos = vPos;
+    if (true == pObj.expired())
+        return;
+
+    m_fPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
     Check_In_Screen();
     if (false == m_bIsIn)
         return;
 
-    Change_Pos_2D();
-
-    HERO eHero = m_pPlayer.lock()->Get_Script<CoolTimeCheckScript>()->Get_Cur_Hero();
     
     auto pFont = make_shared<GameObject>();
-    pFont->GetOrAddTransform()->Set_State(Transform_State::POS, m_fPos);
+    pFont->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
 
+    // 데미지 계산
     pFont->Add_Component(make_shared<FontRenderer>(L"1234"));
+    HERO eHero = m_pPlayer.lock()->Get_Script<CoolTimeCheckScript>()->Get_Cur_Hero();
+
     pFont->Get_FontRenderer()->Set_Font(RESOURCES.Get<CustomFont>(L"136ex"), m_Color[GET_DATA(eHero).Element], m_fSize);
-    pFont->Add_Component(make_shared<UiDamageMove>());
+    pFont->Add_Component(make_shared<UiDamageMove>(pObj));
     
     pFont->Set_LayerIndex(Layer_UI);
     pFont->Init();

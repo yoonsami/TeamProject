@@ -87,6 +87,7 @@ public:
 	void Set_VelocityMap(_bool flag)		{ m_bHasVelocityMap = flag; }
 	void Set_FrustumCulled(_bool flag)		{ m_bFrustumCull = flag; }
 	void Set_GroggyGauge(_float fGroggyGauge) { m_fGroggy_Gauge = fGroggyGauge; }
+
 	void DeleteComponent(COMPONENT_TYPE type) { m_Components[static_cast<_uint>(type)] = nullptr; }
 
 	shared_ptr<FSM> Get_FSM();
@@ -164,8 +165,8 @@ private:
 	_float		m_fHP				= 100.f;
 	_float		m_fMaxHP			= 100.f;
 
-	_float		m_fGroggy_Gauge = 100.f;
-	_float		m_fMaxGroggy_Gauge = 100.f;
+	_float		m_fGroggy_Gauge		= 100.f;
+	_float		m_fMaxGroggy_Gauge	= 100.f;
 
 
 	_bool		m_bIsRender			= { true };

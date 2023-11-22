@@ -349,7 +349,7 @@ void Boss_Spike_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float 
 
 void Boss_Spike_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
 {
-    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Transform()->Get_State(Transform_State::POS));
+    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner());
 
     m_pOwner.lock()->Get_Hurt(5);
 

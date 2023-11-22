@@ -363,7 +363,7 @@ void Boss_Dellons_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _flo
         if (targetToLook == nullptr)
             return;
 
-        CUR_SCENE->Get_GameObject(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(m_pOwner.lock()->GetOrAddTransform()->Get_State(Transform_State::POS));
+        CUR_SCENE->Get_GameObject(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner());
         Get_Hit(strSkillName, targetToLook);
     }
 }
@@ -374,7 +374,7 @@ void Boss_Dellons_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _floa
 
 void Boss_Dellons_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
 {
-    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Transform()->Get_State(Transform_State::POS));
+    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner());
 
     _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
     _float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();

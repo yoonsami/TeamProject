@@ -241,6 +241,7 @@
     <ClInclude Include="Shane_FSM.h" />
     <ClInclude Include="Succubus_Scythe_FSM.h" />
     <ClInclude Include="UiComboEffect.h" />
+    <ClInclude Include="UiMarkNpc.h" />
     <ClInclude Include="UiMouseController.h" />
     <ClInclude Include="UiSkillGauge.h" />
     <ClInclude Include="Undead_Priest_FSM.h" />
@@ -330,6 +331,7 @@
     <ClCompile Include="Shane_FSM.cpp" />
     <ClCompile Include="Succubus_Scythe_FSM.cpp" />
     <ClCompile Include="UiComboEffect.cpp" />
+    <ClCompile Include="UiMarkNpc.cpp" />
     <ClCompile Include="UiMouseController.cpp" />
     <ClCompile Include="UiSkillGauge.cpp" />
     <ClCompile Include="Undead_Priest_FSM.cpp" />

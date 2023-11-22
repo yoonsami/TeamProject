@@ -34,7 +34,7 @@ HRESULT UIBossHpBar::Init()
         wstring strName = BossData.Name;
         m_pBossName.lock()->Get_FontRenderer()->Get_Text() = strName;
         _float4 vecPos = m_pBossName.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-        vecPos.x = strName.length() * -10.f;
+        vecPos.x = strName.length() / 2.f * -21.f;
         m_pBossName.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
 
         vecPos.y = m_pElement.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).y;
@@ -88,6 +88,8 @@ void UIBossHpBar::Check_Target()
 
 void UIBossHpBar::Change_Hp_Ratio()
 {
+    m_pFrontGroggy.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = 1.f - m_pOwner.lock()->Get_Groggy_Gauge_Ratio();
+
     _float HpRatio = m_pOwner.lock()->Get_HpRatio();
     m_pFrontHp.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = HpRatio;
 
@@ -122,11 +124,11 @@ void UIBossHpBar::Change_Hp_Slow()
 void UIBossHpBar::Change_Param()
 {
     wstring strHp = to_wstring(IDX(m_pOwner.lock()->Get_CurHp()));
-    strHp += L"/";
+    strHp += L" / ";
     strHp += to_wstring(IDX(m_pOwner.lock()->Get_MaxHp()));
 
     m_pHpFont.lock()->Get_FontRenderer()->Get_Text() = strHp;
     _float4 vecPos = m_pHpFont.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-    vecPos.x = strHp.length() * 10.f / -2.f;
+    vecPos.x = ((strHp.length() - 3) / 2.f * -10.f) - 10.f;
     m_pHpFont.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
 }

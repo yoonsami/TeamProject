@@ -63,19 +63,22 @@ void UiSkillGauge::Change_Render(_bool bSet, SkillInfo eInfo)
         m_eInfo = eInfo;
         if (true == bSet)
         {
-            wstring strName;
+            wstring strGaugeName;
+            wstring strGaugeBgName;
 
             switch (m_eInfo)
             {
             case CHARGING:
-                strName = L"UI_Skill_Gauge_Charge";
+                strGaugeName = L"UI_Skill_Gauge_Charge";
+                strGaugeBgName = L"UI_Skill_Gauge_Bg1";
                 break;
             case HOLDING:
-                strName = L"UI_Skill_Gauge_Hold";
+                strGaugeName = L"UI_Skill_Gauge_Hold";
+                strGaugeBgName = L"UI_Skill_Gauge_Bg0";
                 break;
             }
-
-            m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(strName), TextureMapType::DIFFUSE);
+            m_pGaugeBg.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(strGaugeBgName), TextureMapType::DIFFUSE);
+            m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(strGaugeName), TextureMapType::DIFFUSE);
         }
     }
 }
