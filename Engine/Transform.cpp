@@ -367,7 +367,6 @@ void Transform::Set_Rotation(const _float3& vRollPitchYaw)
 
 void Transform::Set_LookDir(const _float3& vDir)
 {
-	m_CurrentDir = vDir;
 
 	LookAt(Get_State(Transform_State::POS) + vDir);
 }
@@ -408,6 +407,23 @@ _float4x4 Transform::SLerpMatrix(_float4x4& m0, _float4x4& m1, _float ratio)
 	return _float4x4::CreateScale(_float3::Lerp(curScale, nextScale,ratio))*
 		_float4x4::CreateFromQuaternion(Quaternion::Slerp(curRot, nextRot, ratio))*
 		_float4x4::CreateTranslation(_float3::Lerp(curTrans, nextTrans, ratio));
+}
+
+void Transform::UpdateTransform()
+{
+
+}
+
+void Transform::SetScale(const _float3& scale)
+{
+}
+
+void Transform::SetRotation(const _float3& rotation)
+{
+}
+
+void Transform::SetPosition(const _float3& position)
+{
 }
 
 

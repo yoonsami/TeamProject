@@ -889,13 +889,20 @@ shared_ptr<GameObject> ImGui_Manager::Create_MapObject(MapObjectScript::MapObjec
     shared_ptr<Model> model = RESOURCES.Get<Model>(Utils::ToWString(strModelName));
     shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
+    // 애님모델
     if(strModelName.find("Anim_") != std::string::npos)
     {
         shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
         CreateObject->Add_Component(animator);
         animator->Set_Model(model);
         animator->Set_CurrentAnim(0, true, 1.f);
+        // 이름에 애님모델번호추가
+        wstring animModelName = CreateObject->Get_Name();
+        animModelName += to_wstring(m_iAnimModelIndex);
+        CreateObject->Set_Name(animModelName);
+        ++m_iAnimModelIndex;
     }
+    // 논애님모델
     else
     {
         shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
@@ -1295,6 +1302,7 @@ HRESULT ImGui_Manager::Load_MapObject()
     m_pPointLightObjects.clear();
     m_strPointLightList.clear();
     m_iPointLightIndex = 0;
+    m_iAnimModelIndex = 0; // 애님모델인덱스 초기화
 
     // 현재갖고있는 오브젝트개수
     _uint iSize = (_int)m_pMapObjects.size();
