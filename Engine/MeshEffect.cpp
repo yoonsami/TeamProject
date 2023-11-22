@@ -255,7 +255,9 @@ void MeshEffect::InitialTransform(_float4x4 mParentWorldMatrix, const _float3& v
 
     // For. Setting End Informations
     m_vStartPos += _float3(Get_Transform()->Get_State(Transform_State::POS));
-    m_vEndPos += m_vStartPos;
+    
+    if( 1 != m_iTranslateOption && 2 != m_iTranslateOption)
+        m_vEndPos += m_vStartPos;
 
     m_vStartScale *= vInitScale_inGroup;
     m_vEndScale += m_vStartScale;
@@ -334,16 +336,14 @@ void MeshEffect::Translate()
     case 2: // Move to random direction 
     {
         _float fSpeed = CalcSpeed();
-
-
         if (m_bToolMode_On)
         {
             _float4 vCurrPos = Get_Transform()->Get_State(Transform_State::POS);
 
-            _float4 vDir = m_vEndPos - vCurrPos;
+            _float3 vDir = m_vEndPos;
             vDir.Normalize();
 
-            vCurrPos += vDir * fSpeed * fDT;
+            vCurrPos += _float4(vDir * fSpeed * fDT, 0.f);
 
             Get_Transform()->Set_State(Transform_State::POS, vCurrPos);
         }

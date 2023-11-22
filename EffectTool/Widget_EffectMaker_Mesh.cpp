@@ -1566,7 +1566,6 @@ void Widget_EffectMaker_Mesh::SubWidget_ImageViewer(string strFileName, string s
 	Utils::DetachExt(wstrKey);
 
 	auto pTexture = RESOURCES.GetOrAddTexture(wstrKey, wstrPath);
-
 	{
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
 		ImGui::BeginChild(pszWidgetKey, ImVec2(150,150), true, window_flags);
