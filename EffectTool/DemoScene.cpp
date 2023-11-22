@@ -64,18 +64,8 @@ HRESULT GranseedScene::Load_Scene()
 	Load_DemoModel();
 	Load_Light();
 	Load_Camera();
-	{
-		{
-			shared_ptr<GameObject> sky = make_shared<GameObject>();
-			sky->GetOrAddTransform();
-			sky->Add_Component(make_shared<ModelRenderer>(RESOURCES.Get<Shader>(L"SkyBox.fx")));
-			sky->Get_ModelRenderer()->Set_Model(RESOURCES.Get<Model>(L"SkyBox"));
-			sky->Set_Name(L"SkyBase");
-			sky->Get_Model()->Get_Materials().front()->Set_TextureMap(RESOURCES.GetOrAddTexture(L"T_skybox_11.tga", L"../Resources/Textures/MapObject/SkyBox/T_skybox_11.tga"),TextureMapType::DIFFUSE);
-			Add_GameObject(sky);
-		}
-	}
-	Load_MapFile(L"KyleMap");
+
+	Load_MapFile(L"KyleMap", nullptr);
 	return S_OK;
 }
 
