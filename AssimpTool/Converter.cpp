@@ -115,7 +115,7 @@ void Converter::ExportBaseData(const wstring& savePath)
 
 		shared_ptr<asMesh> mesh = m_Mesh[i];
 
-		// Bone ¼øÈ¸ -> ¿¬°üµÈ vertexindex, weight ±¸ÇÔ
+		// Bone ï¿½ï¿½È¸ -> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ vertexindex, weight ï¿½ï¿½ï¿½ï¿½
 		for (_uint b = 0; b < srcMesh->mNumBones; ++b)
 		{
 			aiBone* srcMeshBone = srcMesh->mBones[b];
@@ -165,7 +165,7 @@ void Converter::ExportBaseData(const wstring& savePath)
 //
 //		shared_ptr<asMesh> mesh = m_Mesh[i];
 //
-//		// Bone ¼øÈ¸ -> ¿¬°üµÈ vertexindex, weight ±¸ÇÔ
+//		// Bone ï¿½ï¿½È¸ -> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ vertexindex, weight ï¿½ï¿½ï¿½ï¿½
 //		for (_uint b = 0; b < srcMesh->mNumBones; ++b)
 //		{
 //			aiBone* srcMeshBone = srcMesh->mBones[b];
@@ -231,7 +231,7 @@ void Converter::ExportPartsData(const wstring& savePath, PARTS_INFO eType)
 	WritePartsFile(finalPath, eType);
 }
 
-// aiNode : »ó¼Ó°ü°è Ç¥Çö
+// aiNode : ï¿½ï¿½Ó°ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½
 //
 void Converter::ReadModelData(aiNode* node, _int index, _int parent)
 {
@@ -243,7 +243,7 @@ void Converter::ReadModelData(aiNode* node, _int index, _int parent)
 	_float4x4 transform(node->mTransformation[0]);
 	bone->transform = transform.Transpose();
 
-	// m_boneÀÇ transform Àº root transform(rootºÎÅÍ Å¸°í µé¾î°¡±â¶§¹®)
+	// m_boneï¿½ï¿½ transform ï¿½ï¿½ root transform(rootï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½î°¡ï¿½â¶§ï¿½ï¿½)
 	_float4x4 matParent = _float4x4::Identity;
 	if (parent >= 0)
 		matParent = m_Bone[parent]->transform;
@@ -274,7 +274,7 @@ void Converter::ReadBaseData(aiNode* node, _int index, _int parent)
 	_float4x4 transform(node->mTransformation[0]);
 	bone->transform = transform.Transpose();
 
-	// m_boneÀÇ transform Àº root transform(rootºÎÅÍ Å¸°í µé¾î°¡±â¶§¹®)
+	// m_boneï¿½ï¿½ transform ï¿½ï¿½ root transform(rootï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½î°¡ï¿½â¶§ï¿½ï¿½)
 	_float4x4 matParent = _float4x4::Identity;
 	if (parent >= 0)
 		matParent = m_Bone[parent]->transform;
@@ -354,7 +354,7 @@ void Converter::ReadSkinData()
 		vector<asBoneWeight> VertexBoneWeights;
 		VertexBoneWeights.resize(mesh->vertices.size());
 
-		// Bone ¼øÈ¸ -> ¿¬°üµÈ vertexindex, weight ±¸ÇÔ
+		// Bone ï¿½ï¿½È¸ -> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ vertexindex, weight ï¿½ï¿½ï¿½ï¿½
 		for (_uint b = 0; b < srcMesh->mNumBones; ++b)
 		{
 			aiBone* srcMeshBone = srcMesh->mBones[b];
@@ -580,7 +580,7 @@ void Converter::ReadPartsSkinData()
 		vector<asBoneWeight> VertexBoneWeights;
 		VertexBoneWeights.resize(mesh->vertices.size());
 
-		// Bone ¼øÈ¸ -> ¿¬°üµÈ vertexindex, weight ±¸ÇÔ
+		// Bone ï¿½ï¿½È¸ -> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ vertexindex, weight ï¿½ï¿½ï¿½ï¿½
 		for (_uint b = 0; b < srcMesh->mNumBones; ++b)
 		{
 			aiBone* srcMeshBone = srcMesh->mBones[b];
@@ -856,7 +856,7 @@ void Converter::ReadKeyFrameData(shared_ptr<asAnimation> animation, aiNode* srcN
 		}
 		else
 		{
-			// º¸°£ÇØ¼­ Ã¤¿ö³Ö±â ½Ãµµ
+			// ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ Ã¤ï¿½ï¿½ï¿½Ö±ï¿½ ï¿½Ãµï¿½
 			frameData = findNode->keyFrame[i];
 		}
 
@@ -931,16 +931,16 @@ void Converter::ApplyScaleToAnimations(const aiMatrix4x4& scale)
 		for (unsigned int i = 0; i < m_pScene->mNumAnimations; i++) {
 			aiAnimation* animation = m_pScene->mAnimations[i];
 
-			// ¾Ö´Ï¸ÞÀÌ¼ÇÀÇ ¸ðµç ÇÁ·¹ÀÓ¿¡ ½ºÄÉÀÏ Àû¿ë
+			// ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ó¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			for (unsigned int j = 0; j < animation->mNumChannels; j++) {
 				aiNodeAnim* channel = animation->mChannels[j];
 
-				// À§Ä¡ Å° ÇÁ·¹ÀÓ¿¡ ½ºÄÉÀÏ Àû¿ë
+				// ï¿½ï¿½Ä¡ Å° ï¿½ï¿½ï¿½ï¿½ï¿½Ó¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 				for (unsigned int k = 0; k < channel->mNumPositionKeys; k++) {
 					channel->mPositionKeys[k].mValue = scale * channel->mPositionKeys[k].mValue;
 				}
 
-				// ½ºÄÉÀÏ Çà·ÄÀ» ½ºÄÉÀÏ Å° ÇÁ·¹ÀÓ¿¡ Àû¿ë
+				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å° ï¿½ï¿½ï¿½ï¿½ï¿½Ó¿ï¿½ ï¿½ï¿½ï¿½ï¿½
 				for (unsigned int k = 0; k < channel->mNumScalingKeys; k++) {
 					channel->mScalingKeys[k].mValue = scale * channel->mScalingKeys[k].mValue;
 				}
