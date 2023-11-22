@@ -281,10 +281,6 @@ void Widget_EffectMaker_Mesh::Option_Property()
 	ImGui::InputText("Tag", m_szTag, MAX_PATH);
 	ImGui::Spacing();
 	
-	ImGui::Checkbox("Is Loop##Property", &m_bIsLoop);
-
-	ImGui::InputInt("Number of Mesh##Property", &m_iMeshCnt);
-	
 	ImGui::InputFloat("Create Interval##", &m_fCreateInterval);
 	
 	if (0.f < m_fCreateInterval)
@@ -321,16 +317,32 @@ void Widget_EffectMaker_Mesh::Option_Property()
 	ImGui::Spacing();
 
 	ImGui::InputFloat("Duration##Property", &m_fDuration);
-	ImGui::Spacing();
 
 	ImGui::Checkbox("Blur On##Property", &m_bBlurOn);
-	ImGui::Spacing();
+	ImGui::SameLine();
+	if (ImGui::Checkbox("Is Loop##Property", &m_bIsLoop))
+	{
+		if (!m_pCurrMeshEffect.expired())
+			m_pCurrMeshEffect.lock()->Get_MeshEffect()->Set_Loop(m_bIsLoop);
+	}
+
+	if (ImGui::Checkbox("Is Follow Group (Only Translate)", &m_bIsFollowGroup_OnlyTranslate))
+	{
+		if (m_bIsFollowGroup_OnlyTranslate)
+			m_bIsFollowGroup_LookSameDir = false;
+	}
+	
+	if (ImGui::Checkbox("Is Follow Group (Look same direction)", &m_bIsFollowGroup_LookSameDir))
+	{
+		if (m_bIsFollowGroup_LookSameDir)
+			m_bIsFollowGroup_OnlyTranslate = false;
+	}
 
 	ImGui::Checkbox("On Fade Out##Property", &m_bUseFadeOut);
-	ImGui::Spacing();	
-
 	ImGui::Checkbox("Color Changing On##Property", &m_bColorChangingOn);
-	ImGui::Spacing();
+
+	ImGui::InputInt("Number of Mesh##Property", &m_iMeshCnt);
+
 
 	const char* pszItem_Sampler[] = { "Wrap", "Clamp", "Mirror", "Border"};
 	if (ImGui::BeginCombo("Sampler##Property", pszItem_Sampler[m_iSamplerType], 0))
@@ -1005,7 +1017,6 @@ void Widget_EffectMaker_Mesh::Create()
 		MeshEffectData::DESC tMeshEffectDesc
 		{
 				m_szTag,
-				m_bIsLoop,
 				m_fDuration,
 				m_bBlurOn,
 				m_bUseFadeOut,
@@ -1013,6 +1024,9 @@ void Widget_EffectMaker_Mesh::Create()
 				m_fCreateInterval,
 				_float2(m_fParticleDuration),
 				m_iSamplerType,
+				m_bIsLoop,
+				m_bIsFollowGroup_OnlyTranslate,
+				m_bIsFollowGroup_LookSameDir,
 
 				m_strMesh,
 
@@ -1124,7 +1138,7 @@ void Widget_EffectMaker_Mesh::Create()
 				{m_bBillbordAxes[0], m_bBillbordAxes[1]}
 		};
 		EffectObj->Get_MeshEffect()->Set_TransformDesc(&tTransform_Desc);
-		EffectObj->Get_MeshEffect()->InitialTransform(XMMatrixIdentity(), _float3(0.f, 1.3f, 0.f), _float3(1.f), _float3(0.f));
+		EffectObj->Get_MeshEffect()->InitialTransform(XMMatrixIdentity(), _float3(m_fPosOffsetInTool[0], m_fPosOffsetInTool[1], m_fPosOffsetInTool[2]), _float3(1.f), _float3(0.f));
 
 		m_pCurrMeshEffect = EffectObj;
 
@@ -1219,7 +1233,7 @@ void Widget_EffectMaker_Mesh::Save()
 
 		/* ETC */
 		file->Write<_float4x4>(_float4x4(
-			(_int)m_bIsLoop, 0.f, 0.f, 0.f,
+			(_float)m_bIsLoop, (_float)m_bIsFollowGroup_OnlyTranslate, (_float)m_bIsFollowGroup_LookSameDir, 0.f,
 			0.f, 0.f, 0.f, 0.f,
 			0.f, 0.f, 0.f, 0.f,
 			0.f, 0.f, 0.f, 0.f
@@ -1389,6 +1403,8 @@ void Widget_EffectMaker_Mesh::Load()
 	/* ETC */
 	_float4x4 mTemp = file->Read<_float4x4>();
 	m_bIsLoop = (_int)mTemp._11;
+	m_bIsFollowGroup_OnlyTranslate = (_int)mTemp._12;
+	m_bIsFollowGroup_LookSameDir = (_int)mTemp._13;
 
 	// For. Transform Desc
 	/* Init Pos */

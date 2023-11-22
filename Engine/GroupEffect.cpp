@@ -62,8 +62,9 @@ void GroupEffect::Final_Tick()
     m_fCurrAge += fDT;
     m_fTimeAcc_CreatCoolTime += fDT;
 
-    // For. Check all effect finished
     _bool bIsAllActive = true;
+
+    // For. Check all effect finished
     for (auto& iter : m_vMemberEffectData)
     {
         if (!iter.bIsActive)
@@ -75,7 +76,7 @@ void GroupEffect::Final_Tick()
         _bool bIsAllNullptr = true;
         for (auto& iter : m_vMemberEffects)
         {
-            if (nullptr == iter)
+            if (!iter.expired())
                 bIsAllNullptr = false;
         }
 
@@ -84,6 +85,34 @@ void GroupEffect::Final_Tick()
             CUR_SCENE->Remove_GameObject(Get_Owner());
             return;
         }
+    }
+
+    // For. Update MeshEffect Translation 
+    _int iIndex = 0;
+    for (auto& iter : m_vMemberEffects)
+    {
+
+        if (!iter.expired())
+        {
+			if (iter.lock()->Get_MeshEffect()->Get_Desc().iMeshCnt > 1)
+				int a = 0;
+			if (iter.lock()->Get_MeshEffect()->Get_IsFollowGroup_OnlyTranslate() ||
+				iter.lock()->Get_MeshEffect()->Get_IsFollowGroup_LooKSameDir())
+			{
+                _float4x4 matSetting = iter.lock()->Get_MeshEffect()->Get_LocalMatrix() * iter.lock()->Get_MeshEffect()->Get_InGroupMatrix() * Get_Transform()->Get_WorldMatrix();
+                iter.lock()->Get_Transform()->Set_WorldMat(matSetting);
+                iter.lock()->Get_MeshEffect()->BillBoard();
+            }
+            else
+            {
+				_float4x4 matSetting = iter.lock()->Get_MeshEffect()->Get_LocalMatrix() * iter.lock()->Get_MeshEffect()->Get_InGroupMatrix() * iter.lock()->Get_MeshEffect()->Get_InitGroupMatrix();
+				iter.lock()->Get_Transform()->Set_WorldMat(matSetting);
+				iter.lock()->Get_MeshEffect()->BillBoard();
+            }
+
+
+        }
+        iIndex++;
     }
 }
 
@@ -123,6 +152,26 @@ void GroupEffect::DeleteMember(const wstring& wstrTag)
     }
 }
 
+void GroupEffect::FreeLoopMember()
+{
+    for (auto& iter : m_vMemberEffects)
+    {
+        if (!iter.expired())
+        {
+            if (iter.lock()->Get_MeshEffect()->Get_IsLoop())
+                iter.lock()->Get_MeshEffect()->Set_Loop(false);
+        }
+    }
+}
+
+void GroupEffect::Kill_All()
+{
+    for (auto& iter : m_vMemberEffects)
+    {
+        iter.reset();
+    }
+}
+
 void GroupEffect::Create_MeshEffect(_int iIndex)
 {
     // For.  Mesh Effect  
@@ -135,7 +184,10 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
 
     for (_int i = 0; i < tDesc.iMeshCnt; i++)
     {
-        shared_ptr<GameObject> EffectObj = make_shared<GameObject>();
+        shared_ptr<GameObject> EffectObj = make_shared<GameObject>(); 
+        string strTag = tDesc.pszTag;
+        strTag += to_string(iIndex) + "_" + to_string(i) + "_";
+        EffectObj->Set_Name(Utils::ToWString(strTag));
 
         // For. Transform 
         EffectObj->GetOrAddTransform();

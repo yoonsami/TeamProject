@@ -42,6 +42,8 @@ private:
 	void	Delete();	// Delete GroupEffect GameObject in m_pCurrentGroup
 	void	Save(const string& wstrNewGroupTag = ".");
 
+	void	OwnerOnOff();
+
 private:
 	/* Group List */
 	_uint					m_iNumGroups = { 0 };
@@ -81,5 +83,8 @@ private:
 	/* Save something in current */
 	shared_ptr<GameObject>		m_pCurrentGroup = { nullptr };
 	MemberEffectProperty_DESC*	m_tCurrMemberProperty = { nullptr };
+
+	/* Owner */
+	shared_ptr<GameObject>		m_pOwner;
 };
 

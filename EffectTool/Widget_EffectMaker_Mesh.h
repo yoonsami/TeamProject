@@ -121,7 +121,8 @@ private:
 	_bool					m_bUseFadeOut = { true };
 	_int					m_iSamplerType = { 1 };
 	_bool					m_bIsLoop = { false };
-	_bool					m_bIsFollowingGroup = { false };
+	_bool					m_bIsFollowGroup_OnlyTranslate = { false };
+	_bool					m_bIsFollowGroup_LookSameDir = { false };
 
 	/* Mesh Count */
 	_int					m_iMeshCnt = { 1 };

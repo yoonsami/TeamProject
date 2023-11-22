@@ -307,8 +307,9 @@ void FSM::Add_Effect(const wstring& strSkilltag)
 
 	// For. Transform 
 	pGroupEffectObj->GetOrAddTransform();
-	pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS));
-	pGroupEffectObj->Get_Transform()->Set_Quaternion(Get_Transform()->Get_Rotation());
+	//pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS));
+	//pGroupEffectObj->Get_Transform()->Set_Quaternion(Get_Transform()->Get_Rotation());
+	pGroupEffectObj->Get_Transform()->Set_WorldMat(m_pOwner.lock()->Get_Transform()->Get_WorldMatrix());
 
 	// For. GroupEffectData 
 	wstring wstrFileName = strSkilltag + L".dat";
@@ -323,6 +324,7 @@ void FSM::Add_Effect(const wstring& strSkilltag)
 	pGroupEffectObj->Add_Component(pGroupEffect);
 	pGroupEffectObj->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
 	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
+	pGroupEffectObj->Get_GroupEffect()->Set_InitWorldMatrix(pGroupEffectObj->Get_Transform()->Get_WorldMatrix());
 
 	// For. Add Effect GameObject to current scene
 	CUR_SCENE->Add_GameObject(pGroupEffectObj);
@@ -350,6 +352,7 @@ void FSM::Add_And_Set_Effect(const wstring& strSkilltag)
 	pGroupEffectObj->Add_Component(pGroupEffect);
 	pGroupEffectObj->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
 	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
+	pGroupEffectObj->Get_GroupEffect()->Set_InitWorldMatrix(Get_Transform()->Get_WorldMatrix());
 	pGroupEffectObj->Set_Name(strSkilltag);
 	m_pGroupEffect = pGroupEffectObj;
 

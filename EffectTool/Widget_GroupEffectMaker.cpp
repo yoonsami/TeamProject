@@ -271,6 +271,15 @@ void Widget_GroupEffectMaker::Widget_GroupMaker()
 			m_bWidgetOn_GetTag = true;
 		ImGui::Spacing();
 
+		if (ImGui::Button("Reset Scene"))
+		{
+			if (nullptr != m_pCurrentGroup)
+				m_pCurrentGroup->Get_GroupEffect()->FreeLoopMember();
+		}
+
+		if (ImGui::Button("Owner On/Off"))	
+			OwnerOnOff();
+
 		ImGui::EndChild();
 	}
 }
@@ -525,6 +534,7 @@ void Widget_GroupEffectMaker::Create()
 	pGroupEffectObj->Add_Component(pGroupEffect);
 	pGroupEffectObj->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
 	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
+	pGroupEffectObj->Get_GroupEffect()->Set_InitWorldMatrix(pGroupEffectObj->Get_Transform()->Get_WorldMatrix());
 
 	// For. bind to member 
 	m_pCurrentGroup = pGroupEffectObj;
@@ -569,5 +579,25 @@ void Widget_GroupEffectMaker::Save(const string& wstrNewGroupTag)
 
 		Set_MemberEffectList();
 		m_pCurrentGroup->Get_GroupEffect()->Set_MemberEffectData(vNewGroupEffectData);
+	}
+}
+
+void Widget_GroupEffectMaker::OwnerOnOff()
+{
+	// On Owner
+	if (nullptr != m_pOwner)
+	{
+		shared_ptr<GameObject> pOwnerObj = make_shared<GameObject>();
+
+		pOwnerObj->GetOrAddTransform();
+		pOwnerObj->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 1.f, 0.f, 1.f));
+
+
+	}
+
+	// Off Owner
+	else
+	{
+
 	}
 }
