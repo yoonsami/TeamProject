@@ -146,7 +146,7 @@ HRESULT MirScene::Load_Scene()
 
 	auto player = Load_Player();
 	Load_Camera(player);
-	Load_MapFile(L"MirMap15", player);
+	Load_MapFile(L"MirMapNoCol2", player);
 	Load_Boss_Mir(player);
 
 	Load_Ui(player);
