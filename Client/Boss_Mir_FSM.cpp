@@ -37,9 +37,9 @@ HRESULT Boss_Mir_FSM::Init()
     m_fRunSpeed = 4.f;
     m_fKnockDownSpeed = 4.f;
 
-    // ¿ë °¨Áö¹üÀ§
+    // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     m_fDetectRange = 25.f;
-    // ¿ëÀÌ ÇÃ·¹ÀÌ¾î ¹Ù¶óº¸°Ô
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½Ù¶óº¸°ï¿½
     if (!m_pTarget.expired())
     {
         _float3 vLook = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
@@ -286,11 +286,11 @@ void Boss_Mir_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float f
     if (!m_bInvincible)
     {
 		shared_ptr<GameObject> targetToLook = nullptr;
-		// skillName¿¡ _Skill Æ÷ÇÔÀÌ¸é
+		// skillNameï¿½ï¿½ _Skill ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½
 		if (strSkillName.find(L"_Skill") != wstring::npos)
-			targetToLook = pCollider->Get_Owner(); // Collider owner¸¦ ³Ñ°ÜÁØ´Ù
-		else // ¾Æ´Ï¸é
-			targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner(); // Collider¸¦ ¸¸µç °´Ã¼¸¦ ³Ñ°ÜÁØ´Ù
+			targetToLook = pCollider->Get_Owner(); // Collider ownerï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½Ø´ï¿½
+		else // ï¿½Æ´Ï¸ï¿½
+			targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner(); // Colliderï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½Ø´ï¿½
 
         if (targetToLook == nullptr)
             return;
@@ -1765,45 +1765,45 @@ void Boss_Mir_FSM::skill_200100_Init()
 
 Boss_Mir_FSM::DIR Boss_Mir_FSM::CalCulate_PlayerDir()
 {
-    //¸ó½ºÅÍ°¡ ÇÃ·¹ÀÌ¾î¹Ù¶óº¸´Â¹æÇâ
+    //ï¿½ï¿½ï¿½Í°ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½Ù¶óº¸´Â¹ï¿½ï¿½ï¿½
     _float4 vDir = _float4(0.f);
     vDir = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS);
-    vDir.y = 0.f; //y°ª 0
+    vDir.y = 0.f; //yï¿½ï¿½ 0
     vDir.Normalize();
        
-    //³ë¸Ö¶óÀÌÁî
+    //ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½
     _float4 vDot = _float4(0.f);
     _float4 vCross = _float4(0.f);
 
     vDot = XMVector3Dot(Get_Transform()->Get_State(Transform_State::LOOK), vDir);
     vCross = XMVector3Cross(Get_Transform()->Get_State(Transform_State::LOOK), vDir);
 
-    if (XMVectorGetX(vDot) >= 0.f) //¾Õ ³»Àû ¾ç¼ö¸é Á¤¸é
+    if (XMVectorGetX(vDot) >= 0.f) //ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     {
-        if (XMVectorGetY(vCross) < 0.f) //¿ÞÂÊ ¿ÜÀûÀÌ À½¼ö¸é ¿ÞÂÊ 
+        if (XMVectorGetY(vCross) < 0.f) //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
         {
             m_eAttackDir = DIR::FORWARD_LEFT;
 
-            if (XMVectorGetX(vDot) < cosf(XMConvertToRadians(20.f)))//¿ÞÂÊ 20µµ ¿Ü ¾Õ
+            if (XMVectorGetX(vDot) < cosf(XMConvertToRadians(20.f)))//ï¿½ï¿½ï¿½ï¿½ 20ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½
                 m_bTurnMotion = true; 
         }
-        else //¿À¸¥ÂÊ  Á¤¸é¿À¸¥ÂÊ
+        else //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         {
             m_eAttackDir = DIR::FORWARD_RIGHT;
 
-            if (XMVectorGetX(vDot) < cosf(XMConvertToRadians(20.f)))//¿À¸¥ÂÊ 20µµ ÀÌ³»±îÁö ¾Õ
+            if (XMVectorGetX(vDot) < cosf(XMConvertToRadians(20.f)))//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 20ï¿½ï¿½ ï¿½Ì³ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
                 m_bTurnMotion = true;
         }
     }
-    else //µÚ ³»ÀûÀ½¼ö¸é µÚ
+    else //ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
     {
         m_bTurnMotion = true;
 
-        if (XMVectorGetY(vCross) < 0.f) // ¿ÜÀû À½¼ö¸é ¿ÞÂÊ
+        if (XMVectorGetY(vCross) < 0.f) // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         {
             m_eAttackDir = DIR::BACKWARD_LEFT;
         }
-        else //¿À¸¥ÂÊ  ¿ÜÀû ¾ç¼ö¸é ¿À¸¥ÂÊ
+        else //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         {
             m_eAttackDir = DIR::BACKWARD_RIGHT;
         }

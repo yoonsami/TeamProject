@@ -875,6 +875,7 @@ shared_ptr<GameObject> ImGui_Manager::Create_MapObject(MapObjectScript::MapObjec
     shared_ptr<MapObjectScript> MapObjSc = make_shared<MapObjectScript>(_CreateDesc);
     CreateObject->Add_Component(MapObjSc);
     MapObjectScript::MapObjectDesc& CreateDesc = MapObjSc->Get_DESC();
+    CreateObject->Set_Name(Utils::ToWString(CreateDesc.strName));
     // 이름을 사용하여 모델생성
     // 고유번호를 제거하여 모델명을 얻어옴
     _int iPureNameSize = 0;
@@ -884,7 +885,6 @@ shared_ptr<GameObject> ImGui_Manager::Create_MapObject(MapObjectScript::MapObjec
     }
     string strModelName = CreateDesc.strName.substr(0, iPureNameSize);
     CreateDesc.ColModelName = strModelName;
-    CreateObject->Set_Name(Utils::ToWString(strModelName));
     // 모델생성 
     shared_ptr<Model> model = RESOURCES.Get<Model>(Utils::ToWString(strModelName));
     shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
@@ -896,11 +896,6 @@ shared_ptr<GameObject> ImGui_Manager::Create_MapObject(MapObjectScript::MapObjec
         CreateObject->Add_Component(animator);
         animator->Set_Model(model);
         animator->Set_CurrentAnim(0, true, 1.f);
-        // 이름에 애님모델번호추가
-        wstring animModelName = CreateObject->Get_Name();
-        animModelName += to_wstring(m_iAnimModelIndex);
-        CreateObject->Set_Name(animModelName);
-        ++m_iAnimModelIndex;
     }
     // 논애님모델
     else
@@ -1197,11 +1192,27 @@ HRESULT ImGui_Manager::Save_MapObject()
     // 맵오브젝트 정보 저장
     // 1. 오브젝트 개수 저장
     file->Write<_int>((_int)m_pMapObjects.size());
-    
+
+    // 애님오브젝트 인덱스관리
+    _int iAnimObjectIndex = 0;
     // 2. 오브젝트의 MapObjectDesc 모든정보 저장
     for (_uint i = 0; i < m_pMapObjects.size(); ++i)
     {
         MapObjectScript::MapObjectDesc& MapDesc = m_pMapObjects[i]->Get_Script<MapObjectScript>()->Get_DESC();
+        
+        // 애님모델은 이름에 숫자를 붙여서 저장
+        if (MapDesc.strName.find("Anim_") != std::string::npos)
+        {
+            // 고유번호를 제거하여 모델명을 얻어옴
+            _int iPureNameSize = 0;
+            while (MapDesc.strName[iPureNameSize] != '-' && iPureNameSize < MapDesc.strName.size())
+            {
+                ++iPureNameSize;
+            }
+            string strModelName = MapDesc.strName.substr(0, iPureNameSize);
+
+            MapDesc.strName = strModelName + "-" + to_string(iAnimObjectIndex++);
+        }
         file->Write<string>(MapDesc.strName);
         file->Write<_float>(MapDesc.fUVWeight);
         file->Write<_bool>(MapDesc.bShadow);
@@ -1302,7 +1313,6 @@ HRESULT ImGui_Manager::Load_MapObject()
     m_pPointLightObjects.clear();
     m_strPointLightList.clear();
     m_iPointLightIndex = 0;
-    m_iAnimModelIndex = 0; // 애님모델인덱스 초기화
 
     // 현재갖고있는 오브젝트개수
     _uint iSize = (_int)m_pMapObjects.size();

@@ -177,9 +177,6 @@ private:
 	_float4 m_PlayerCreatePosition = { 0.f, 0.f, 0.f, 1.f };
 	_float4 m_PlayerLookAtPosition = { 0.f, 0.f, 0.f, 1.f };
 
-	// ¾Ö´Ô¸ðµ¨ÀÎµ¦½º
-	_int m_iAnimModelIndex = { 0 };
-
 // ¸Ê ·ÎµåÁ¤º¸
 	_int curMapIndex = 0;
 	vector<string> m_MapNames;
