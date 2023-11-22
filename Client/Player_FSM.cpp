@@ -1532,7 +1532,10 @@ void Player_FSM::skill_300200()
     }
 
     if (Is_AnimFinished())
+    {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
+    }
 }
 
 void Player_FSM::skill_300200_Init()

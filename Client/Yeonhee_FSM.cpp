@@ -1077,6 +1077,8 @@ void Yeonhee_FSM::skill_91100_Init()
 
     animator->Set_NextTweenAnim(L"skill_91100", 0.15f, false, m_fEvade_AnimationSpeed);
 
+    CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Render(false);
+
     m_bCanCombo = false;
 
     m_vDirToTarget = Get_InputDirVector();
@@ -1105,6 +1107,8 @@ void Yeonhee_FSM::skill_93100_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_93100", 0.15f, false, m_fEvade_AnimationSpeed);
+
+    CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Render(false);
 
     m_bCanCombo = false;
     

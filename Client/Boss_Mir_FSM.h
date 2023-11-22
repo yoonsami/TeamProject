@@ -19,8 +19,14 @@ public:
 		groggy_loop,
 		groggy_end,
 
-		SQ_SBRin_Roar,
+		// ============ Phase1 ===========
 
+		skill_Assault, //ASSAULT = skill_2100 Animation
+		skill_Return, //RETURN POSITION AFTER ASSAULT  = skill_5100 Animation
+
+
+		// ============ Phase2 ===========
+		SQ_SBRin_Roar,
 		skill_1100, //SKILL 1
 		skill_2100, //SKILL 2 ASSAULT
 		skill_3100, //SKILL 3 Tail_Attack - TO RIGHT
@@ -89,6 +95,12 @@ private:
 	void groggy_end();
 	void groggy_end_Init();
 
+	void skill_Assault();
+	void skill_Assault_Init();
+	void skill_Return();
+	void skill_Return_Init();
+	
+
 	void SQ_SBRin_Roar();
 	void SQ_SBRin_Roar_Init();
 	void skill_1100();
@@ -124,6 +136,9 @@ private:
 	void Add_Boss_Mir_Collider();
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
 	void Create_CounterMotionTrail();
+	void Set_AttackPattern();
+
+	void Setting_DragonBall();
 
 	void TailAttackCollider_On(const wstring& skillname);
 	void TailAttackCollider_Off();
@@ -140,15 +155,18 @@ private:
 	_float3 m_vFirstPos = _float3(0.f);
 	_float m_fTurnSpeed = XM_PI * 0.5f;
 	
-	COOLTIMEINFO m_tAttackCoolTime = { 2.f, 0.f };
+	COOLTIMEINFO m_tAttackCoolTime = { 3.f, 0.f };
 	COOLTIMEINFO m_tBreathCoolTime = { 0.15f, 0.f };
 	
 	_bool m_bDetected = false;
 	_bool m_bTurnMotion = false;
 	_bool m_bCounter = false;
+	_bool m_bPhaseTwo = true; // True is Phase One 
+	_bool m_bPhaseOneEmissive = false;
+	_bool m_bGimmick = false; // For. Phase1 Gimmick
 
 	_uint m_iPreAttack = 100;
-	_uint m_iBreathType = 0;
+	_uint m_iCrashCnt = 0;
 
 	_uint m_iHeadBoneIndex = 0;
 	_uint m_iMouseBoneIndex = 0;
