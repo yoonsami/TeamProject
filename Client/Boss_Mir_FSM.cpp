@@ -564,6 +564,7 @@ void Boss_Mir_FSM::b_idle_Init()
             {
                 auto pScript = make_shared<UIBossHpBar>(BOSS::MIR);
                 m_pOwner.lock()->Add_Component(pScript);
+                pScript->Init();
             }
         }
     }

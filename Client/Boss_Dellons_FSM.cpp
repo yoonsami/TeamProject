@@ -494,6 +494,7 @@ void Boss_Dellons_FSM::n_idle()
         {
             auto pScript = make_shared<UIBossHpBar>(BOSS::DELLONS);
             m_pOwner.lock()->Add_Component(pScript);
+            pScript->Init();
         }
 
         m_eCurState = STATE::b_idle;
