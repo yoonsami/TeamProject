@@ -127,6 +127,12 @@ void MeshEffectData::Load(const wstring& path)
     m_tDesc.bIsFollowingGroup_OnlyTranslate = (_int)mTemp._12;
     m_tDesc.bIsFollowingGroup_LooKSameDir = (_int)mTemp._13;
 
+    m_tTransformDesc.iScaleSpeedType = (_int)mTemp._14;
+    m_tTransformDesc.vCurvePoint_Scale[0] = _float2(mTemp._21, mTemp._22);
+    m_tTransformDesc.vCurvePoint_Scale[1] = _float2(mTemp._23, mTemp._24);
+    m_tTransformDesc.vCurvePoint_Scale[2] = _float2(mTemp._31, mTemp._32);
+    m_tTransformDesc.vCurvePoint_Scale[3] = _float2(mTemp._33, mTemp._34);
+
     // For. Load Transform_Desc 
     /* Init Position */
     m_tTransformDesc.vPosRange = file->Read<_float3>();

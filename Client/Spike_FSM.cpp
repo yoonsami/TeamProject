@@ -1275,6 +1275,8 @@ void Spike_FSM::skill_200100_Init()
 
     animator->Set_NextTweenAnim(L"skill_200100", 0.15f, false, 1.f);
 
+    Add_Effect(L"Spike_200100");
+
     m_bCanCombo = false;
 
     AttackCollider_Off();
