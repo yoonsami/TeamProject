@@ -9,6 +9,7 @@
 #include "MainCameraScript.h"
 #include "UiDamageCreate.h"
 #include "DragonBall_FSM.h"
+#include "UIBossHpBar.h"
 
 HRESULT Boss_Mir_FSM::Init()
 {
@@ -480,6 +481,9 @@ void Boss_Mir_FSM::sq_Intro2_Init()
 void Boss_Mir_FSM::b_idle()
 {
     m_tAttackCoolTime.fAccTime += fDT;
+    
+    if (m_eCurPhase == PHASE::PHASE1)
+        Create_Meteor();
 
     if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
     {
@@ -503,7 +507,7 @@ void Boss_Mir_FSM::b_idle()
                     else if (m_eAttackDir == DIR::BACKWARD_LEFT)
                     {
                         m_eCurState = STATE::turn_l;
-                        m_fTurnSpeed = XM_PI * 1.f;
+                        m_fTurnSpeed = XM_PI * 1.2f;
                     }
                     else if (m_eAttackDir == DIR::FORWARD_RIGHT)
                     {
@@ -512,7 +516,7 @@ void Boss_Mir_FSM::b_idle()
                     else if (m_eAttackDir == DIR::BACKWARD_RIGHT)
                     {
                         m_eCurState = STATE::turn_r;
-                        m_fTurnSpeed = XM_PI * 1.f;
+                        m_fTurnSpeed = XM_PI * 1.2f;
                     }
                 }
                 else
@@ -554,6 +558,13 @@ void Boss_Mir_FSM::b_idle_Init()
             }
 
             m_bPhaseOneEmissive = true;
+
+            //Add_BossHp UI
+            if (!m_pOwner.expired())
+            {
+                auto pScript = make_shared<UIBossHpBar>(BOSS::MIR);
+                m_pOwner.lock()->Add_Component(pScript);
+            }
         }
     }
 }
@@ -705,7 +716,6 @@ void Boss_Mir_FSM::groggy_end()
             }
         }
     }
-
 }
 
 void Boss_Mir_FSM::groggy_end_Init()
@@ -717,6 +727,8 @@ void Boss_Mir_FSM::groggy_end_Init()
 
 void Boss_Mir_FSM::skill_Assault()
 {
+    Create_Meteor();
+
     if (Get_CurFrame() <= 30)
     {
         if (!m_pTarget.expired())
@@ -745,11 +757,12 @@ void Boss_Mir_FSM::skill_Assault_Init()
     m_tAttackCoolTime.fAccTime = 0.f;
 
     m_iPhaseOne_TurnCnt = 0;
-
 }
 
 void Boss_Mir_FSM::skill_Return()
 {
+    Create_Meteor();
+
     if (Is_AnimFinished())
     {
         CalCulate_PlayerDir();
@@ -1180,22 +1193,25 @@ void Boss_Mir_FSM::skill_9100()
     {
         if (m_iPreFrame != m_iCurFrame)
         {
-            _float4 vPlayerPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS);
-
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = _float3{ 0.f,-1.f,0.f };
-            desc.fMoveSpeed = 10.f;
-            desc.fLifeTime = 1.f;
-            desc.fLimitDistance = 20.f;
-
-            for (_uint i = 0; i < 4; i++)
+            if (!m_pTarget.expired())
             {
-                _float fOffSetX = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
-                _float fOffSetZ = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
+                _float4 vPlayerPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS);
 
-                _float4 vSkillPos = vPlayerPos + _float4{ fOffSetX, 10.f, fOffSetZ, 0.f };
+                FORWARDMOVINGSKILLDESC desc;
+                desc.vSkillDir = _float3{ 0.f,-1.f,0.f };
+                desc.fMoveSpeed = 10.f;
+                desc.fLifeTime = 1.f;
+                desc.fLimitDistance = 20.f;
 
-                Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, AIRBORNE_ATTACK);
+                for (_uint i = 0; i < 4; i++)
+                {
+                    _float fOffSetX = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
+                    _float fOffSetZ = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
+
+                    _float4 vSkillPos = vPlayerPos + _float4{ fOffSetX, 10.f, fOffSetZ, 0.f };
+
+                    Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, AIRBORNE_ATTACK);
+                }
             }
         }
     }
@@ -1933,6 +1949,38 @@ void Boss_Mir_FSM::Create_CounterMotionTrail()
 		material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
 	}
     m_pOwner.lock()->Get_Script<CounterMotionTrailScript>()->Init();
+}
+
+void Boss_Mir_FSM::Create_Meteor()
+{
+    m_tMeteorCoolTime.fAccTime += fDT;
+
+    if (m_tMeteorCoolTime.fAccTime >= m_tMeteorCoolTime.fCoolTime)
+    {
+        if (!m_pTarget.expired())
+        {
+            _float4 vPlayerPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS);
+
+            FORWARDMOVINGSKILLDESC desc;
+            desc.vSkillDir = _float3{ 0.f,-1.f,0.f };
+            desc.fMoveSpeed = 10.f;
+            desc.fLifeTime = 1.f;
+            desc.fLimitDistance = 20.f;
+
+            for (_uint i = 0; i < 6; i++)
+            {
+                _float fOffSetX = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 5));
+                _float fOffSetZ = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 5));
+
+                _float4 vSkillPos = vPlayerPos + _float4{ fOffSetX, 10.f, fOffSetZ, 0.f };
+
+                Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKDOWN_SKILL);
+            }
+
+            m_tMeteorCoolTime.fAccTime = 0.f;
+        }
+    }
+
 }
 
 void Boss_Mir_FSM::Set_AttackPattern()

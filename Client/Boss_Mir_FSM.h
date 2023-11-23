@@ -143,8 +143,8 @@ private:
 	void Add_Boss_Mir_Collider();
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
 	void Create_CounterMotionTrail();
+	void Create_Meteor();
 	void Set_AttackPattern();
-
 	void Setting_DragonBall();
 
 	void TailAttackCollider_On(const wstring& skillname);
@@ -166,6 +166,7 @@ private:
 	
 	COOLTIMEINFO m_tAttackCoolTime = { 2.f, 0.f };
 	COOLTIMEINFO m_tBreathCoolTime = { 0.15f, 0.f };
+	COOLTIMEINFO m_tMeteorCoolTime = { 2.f, 0.f };
 	
 	_bool m_bDetected = false;
 	_bool m_bTurnMotion = false;

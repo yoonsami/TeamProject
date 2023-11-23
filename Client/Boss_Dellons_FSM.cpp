@@ -11,6 +11,7 @@
 #include "Boss_DellonsWraith_FSM.h"
 #include "MathUtils.h"
 #include "UiDamageCreate.h"
+#include "UIBossHpBar.h"
 
 Boss_Dellons_FSM::Boss_Dellons_FSM()
 {
@@ -487,7 +488,16 @@ void Boss_Dellons_FSM::n_idle()
         m_bDetected = true;
 
     if (m_bDetected)
+    {
+        //Add_BossHp UI
+        if (!m_pOwner.expired())
+        {
+            auto pScript = make_shared<UIBossHpBar>(BOSS::DELLONS);
+            m_pOwner.lock()->Add_Component(pScript);
+        }
+
         m_eCurState = STATE::b_idle;
+    }
 }
 
 void Boss_Dellons_FSM::n_idle_Init()

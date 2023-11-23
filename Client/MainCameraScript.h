@@ -9,7 +9,7 @@ public:
 
 public:
     virtual HRESULT Init() override;
-    virtual void Late_Tick() override;
+    virtual void Tick() override;
     virtual void Final_Tick() override;
 
 public:
