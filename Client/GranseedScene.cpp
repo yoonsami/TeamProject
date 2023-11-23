@@ -61,6 +61,7 @@
 #include "UiComboEffect.h"
 #include "UiSkillGauge.h"
 #include"UiDialogController.h"
+#include "UIInteraction.h"
 
 
 #include <filesystem>
@@ -89,13 +90,18 @@ void GranseedScene::Tick()
 
 	if (KEYTAP(KEY_TYPE::C))
 	{
-		auto pObj = Get_UI(L"UI_Dialog_Controller");
-		pObj->Get_Script<UiDialogController>()->Create_Dialog();
+		auto pObj = Get_UI(L"UI_Interaction");
+		pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::QUEST);
 	}
 	if (KEYTAP(KEY_TYPE::V))
 	{
-		auto pObj = Get_UI(L"UI_Dialog_Controller");
-		pObj->Get_Script<UiDialogController>()->Remove_Dialog();
+		auto pObj = Get_UI(L"UI_Interaction");
+		pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::GACHA);
+	}
+	if (KEYTAP(KEY_TYPE::Z))
+	{
+		auto pObj = Get_UI(L"UI_Interaction");
+		pObj->Get_Script<UIInteraction>()->Remove_Interaction();
 	}
 }
 
@@ -419,10 +425,25 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	}
 
 	{
+
+	}
+
+	{
 		auto pObj = make_shared<GameObject>();
 		pObj->Set_Name(L"UI_Dialog_Controller");
 
 		auto pScript = make_shared<UiDialogController>();
+		pObj->Add_Component(pScript);
+
+		pObj->Set_LayerIndex(Layer_UI);
+		Add_GameObject(pObj);
+	}
+	
+	{
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_Name(L"UI_Interaction");
+
+		auto pScript = make_shared<UIInteraction>();
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);

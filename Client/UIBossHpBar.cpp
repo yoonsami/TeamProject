@@ -53,7 +53,7 @@ HRESULT UIBossHpBar::Init()
         wstring strName = BossData.Name;
         m_pBossName.lock()->Get_FontRenderer()->Get_Text() = strName;
         _float4 vecPos = m_pBossName.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-        vecPos.x = strName.length() / 2.f * -36.f;
+        vecPos.x = strName.length() / 2.f * -33.f;
         m_pBossName.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
 
         vecPos.y = m_pElement.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).y;

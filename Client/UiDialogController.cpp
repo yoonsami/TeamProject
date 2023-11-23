@@ -14,6 +14,7 @@ HRESULT UiDialogController::Init()
     if (m_pOwner.expired())
         return E_FAIL;
 
+    m_bIsCreated = false;
     m_fSpeed = 20.f;
     m_fMaxTime = 1.f;
 
@@ -34,8 +35,12 @@ void UiDialogController::Tick()
     Move_Next();
 }
 
-void UiDialogController::Create_Dialog()
+void UiDialogController::Create_Dialog(NPCTYPE eType)
 {
+    if (true == m_bIsCreated)
+        return;
+
+    m_bIsCreated = true;
     auto pScene = CUR_SCENE;
     vector<weak_ptr<GameObject>> addedObj;
     pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Dialog.dat", addedObj);
@@ -64,7 +69,7 @@ void UiDialogController::Create_Dialog()
     if (false == m_pNpcName.expired())
     {
         // npc type Á¤ÇÏ±â
-        wstring strNpcName = GET_NPC_NAME(NPCTYPE::QUEST);
+        wstring strNpcName = GET_NPC_NAME(eType);
         m_pNpcName.lock()->Get_FontRenderer()->Get_Text() = strNpcName;
         _float4 vecPos = m_pNpcName.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
         vecPos.x = (strNpcName.length() / 2.f) * -28.f;
@@ -100,6 +105,7 @@ void UiDialogController::Remove_Dialog()
         false == m_pPlayerBg.expired()  ||
         false == m_pPlayerDialog.expired())
     {
+        m_bIsCreated = false;
         auto pScene = CUR_SCENE;
         pScene->Remove_GameObject(m_pNext.lock());
         pScene->Remove_GameObject(m_pNpcName.lock());

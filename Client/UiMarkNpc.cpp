@@ -55,7 +55,14 @@ void UiMarkNpc::Tick()
 
 void UiMarkNpc::Delete_Mark()
 {
-	CUR_SCENE->Remove_GameObject(m_pMark.lock());
+	if(false == m_pMark.expired() && false == m_pOwner.expired())
+		CUR_SCENE->Remove_GameObject(m_pMark.lock());
+}
+
+void UiMarkNpc::Change_Render(_bool bValue)
+{
+	if (false == m_pMark.expired() && false == m_pOwner.expired())
+		m_pMark.lock()->Set_Render(bValue);
 }
 
 void UiMarkNpc::Check_In_Screen()

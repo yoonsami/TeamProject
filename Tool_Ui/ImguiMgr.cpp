@@ -40,6 +40,9 @@ HRESULT ImguiMgr::Initialize(HWND& hWnd)
 
    // 폰트 태그 wstring 추가
    m_vecFontType.push_back(L"136ex");
+   m_vecFontType.push_back(L"Ori_136ex");
+   m_vecFontType.push_back(L"overwatch");
+   m_vecFontType.push_back(L"Soyo_Maple");
 
 
 

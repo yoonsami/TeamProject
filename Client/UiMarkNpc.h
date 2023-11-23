@@ -12,6 +12,7 @@ public:
     virtual void Tick() override;
 
     void Delete_Mark();
+    void Change_Render(_bool bValue);
 
 private:
     void Check_In_Screen();

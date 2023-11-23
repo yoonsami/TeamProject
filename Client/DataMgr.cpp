@@ -469,7 +469,7 @@ void DataMgr::Initialize()
 		auto& tagData = m_BossData[IDX(BOSS::MIR)];
 
 		tagData.Element = ElementType::FIRE;
-		tagData.Name = L"타락한화룡";
+		tagData.Name = L"타락한 화룡";
 		tagData.IsUseGroggy = false;
 	}
 
@@ -478,7 +478,7 @@ void DataMgr::Initialize()
 		auto& tagData = m_BossData[IDX(BOSS::AXE)];
 
 		tagData.Element = ElementType::WIND;
-		tagData.Name = L"뇌우의도끼";
+		tagData.Name = L"뇌우의 도끼";
 		tagData.IsUseGroggy = false;
 	}
 
@@ -515,7 +515,7 @@ void DataMgr::Initialize()
 	{
         m_NpcName.resize(IDX(NPCTYPE::MAX));
 		m_NpcName[0] = L"나는 퀘스트맨";
-		m_NpcName[0] = L"나는 가챠맨";
+		m_NpcName[1] = L"나는 가챠맨";
 	}
 
 

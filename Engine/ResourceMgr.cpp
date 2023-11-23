@@ -925,17 +925,11 @@ void ResourceMgr::CreateDefaultFont()
 
 		Add(L"136ex", font);
 	}
-	/*{
-		shared_ptr<CustomFont> font = make_shared<CustomFont>();
-		font->Load(L"..\\Resources\\Font\\Godic.spritefont");
-
-		Add(L"Godic", font);
-	}
 	{
 		shared_ptr<CustomFont> font = make_shared<CustomFont>();
-		font->Load(L"..\\Resources\\Font\\Dream.spritefont");
+		font->Load(L"..\\Resources\\Font\\Ori_136ex.spritefont");
 
-		Add(L"Dream", font);
+		Add(L"Ori_136ex", font);
 	}
 	{
 		shared_ptr<CustomFont> font = make_shared<CustomFont>();
@@ -944,6 +938,12 @@ void ResourceMgr::CreateDefaultFont()
 		Add(L"overwatch", font);
 	}
 	{
+		shared_ptr<CustomFont> font = make_shared<CustomFont>();
+		font->Load(L"..\\Resources\\Font\\Soyo_Maple.spritefont");
+
+		Add(L"Soyo_Maple", font);
+	}
+	/*{
 		shared_ptr<CustomFont> font = make_shared<CustomFont>();
 		font->Load(L"..\\Resources\\Font\\maple_light.spritefont");
 
