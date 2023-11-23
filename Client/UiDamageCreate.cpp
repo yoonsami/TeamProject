@@ -31,7 +31,7 @@ HRESULT UiDamageCreate::Init()
     m_Color[ElementType::WATER] = Color{ 0.2000f , 0.6039f, 0.9412f , 1.f };
     m_Color[ElementType::WIND]  = Color{ 0.1882f , 0.6863f, 0.5490f , 1.f };
 
-    m_fSize = 2.f;
+    m_fSize = 1.f;
 
     return S_OK;
 }
