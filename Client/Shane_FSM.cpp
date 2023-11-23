@@ -308,10 +308,12 @@ void Shane_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap
     if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
         return;
 
-    wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
 
     if (!m_bInvincible)
     {
+        wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
+        _float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
+        
         shared_ptr<GameObject> targetToLook = nullptr;
         // skillName에 _Skill 포함이면
         if (strSkillName.find(L"_Skill") != wstring::npos)
@@ -322,7 +324,7 @@ void Shane_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap
         if (targetToLook == nullptr)
             return;
 
-        Get_Hit(strSkillName, targetToLook);
+        Get_Hit(strSkillName, fAttackDamage, targetToLook);
     }
 }
 
@@ -330,8 +332,11 @@ void Shane_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
 }
 
-void Shane_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
+void Shane_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
+    //Calculate Damage 
+    m_pOwner.lock()->Get_Hurt(fDamage);
+
     _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
     _float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
 
@@ -391,12 +396,13 @@ void Shane_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTa
     }
 }
 
-void Shane_FSM::AttackCollider_On(const wstring& skillname)
+void Shane_FSM::AttackCollider_On(const wstring& skillname, _float fAttackDamage)
 {
     if (!m_pAttackCollider.expired())
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(true);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     }
 }
 
@@ -406,6 +412,7 @@ void Shane_FSM::AttackCollider_Off()
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(0.f);
     }
 }
 
@@ -891,11 +898,11 @@ void Shane_FSM::knockdown_end_Init()
 void Shane_FSM::skill_1100()
 {
     if (Get_CurFrame() == 4)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 7)
         AttackCollider_Off();
     else if (Get_CurFrame() == 10)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 13)
         AttackCollider_Off();
 
@@ -933,11 +940,11 @@ void Shane_FSM::skill_1100_Init()
 void Shane_FSM::skill_1200()
 {
     if (Get_CurFrame() == 12)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 15)
         AttackCollider_Off();
     else if (Get_CurFrame() == 18)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 22)
         AttackCollider_Off();
 
@@ -978,11 +985,11 @@ void Shane_FSM::skill_1200_Init()
 void Shane_FSM::skill_1300()
 {
     if (Get_CurFrame() == 11)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 14)
         AttackCollider_Off();
     else if (Get_CurFrame() == 24)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 28)
         AttackCollider_Off();
 
@@ -1025,11 +1032,11 @@ void Shane_FSM::skill_1300_Init()
 void Shane_FSM::skill_1400()
 {
     if (Get_CurFrame() == 4)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 7)
         AttackCollider_Off();
     else if (Get_CurFrame() == 22)
-        AttackCollider_On(KNOCKBACK_ATTACK);
+        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
     else if (Get_CurFrame() == 27)
         AttackCollider_Off();
 
@@ -1149,7 +1156,7 @@ void Shane_FSM::skill_100100()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_SKILL);
+		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_SKILL, 10.f);
 
     }
 
@@ -1193,7 +1200,7 @@ void Shane_FSM::skill_100200()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKBACK_SKILL);
+		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKBACK_SKILL, 10.f);
     }
 
     Look_DirToTarget();
@@ -1254,7 +1261,7 @@ void Shane_FSM::skill_200100()
 		desc.fLimitDistance = 10.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_ATTACK);
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_ATTACK, 10.f);
 
 		Create_200100_Clone(m_iCloneIndex);
 
@@ -1321,7 +1328,7 @@ void Shane_FSM::skill_200200()
 		desc.fLimitDistance = 3.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_SKILL);
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_SKILL, 10.f);
     }
 
     Look_DirToTarget();
@@ -1366,7 +1373,7 @@ void Shane_FSM::skill_300100()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + _float3::Up;
-		Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, KNOCKDOWN_SKILL);
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, KNOCKDOWN_SKILL, 10.f);
     }
 
     Look_DirToTarget();
@@ -1405,7 +1412,7 @@ void Shane_FSM::skill_500100()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-		Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, KNOCKBACK_SKILL);
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, KNOCKBACK_SKILL, 10.f);
     }
 
     Look_DirToTarget();
@@ -1480,7 +1487,7 @@ void Shane_FSM::skill_502100()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-        Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, NORMAL_SKILL);
+        Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, NORMAL_SKILL, 10.f);
     }
     else if (Init_CurFrame(63))
     {
@@ -1491,7 +1498,7 @@ void Shane_FSM::skill_502100()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-        Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, KNOCKBACK_SKILL);
+        Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, KNOCKBACK_SKILL, 10.f);
     }
 
     Look_DirToTarget();
@@ -1520,7 +1527,7 @@ void Shane_FSM::skill_502100_Init()
     m_bSuperArmor = true;
 }
 
-void Shane_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType)
+void Shane_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
 {
     shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
 
@@ -1538,6 +1545,7 @@ void Shane_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fS
     m_pSkillCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
     m_pSkillCollider.lock()->Get_Collider()->Set_Activate(true);
     m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
+    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
     m_pSkillCollider.lock()->Set_Name(L"Player_SkillCollider");
     m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));

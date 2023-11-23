@@ -152,17 +152,18 @@ void YeopoHorse_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float 
 {
 }
 
-void YeopoHorse_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
+void YeopoHorse_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
     
 }
 
-void YeopoHorse_FSM::AttackCollider_On(const wstring& skillname)
+void YeopoHorse_FSM::AttackCollider_On(const wstring& skillname, _float fAttackDamage)
 {
     if (!m_pAttackCollider.expired())
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(true);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     }
 }
 
@@ -172,6 +173,7 @@ void YeopoHorse_FSM::AttackCollider_Off()
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(0.f);
     }
 }
 
@@ -214,7 +216,7 @@ void YeopoHorse_FSM::skill_400100_fx_Init()
     if (!m_pTarget.expired())
         Get_Transform()->Set_WorldMat(m_pTarget.lock()->Get_Transform()->Get_WorldMatrix());
 
-    AttackCollider_On(KNOCKBACK_ATTACK);
+    AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
 }
 
 void YeopoHorse_FSM::skill_902100_fx()
@@ -260,7 +262,7 @@ void YeopoHorse_FSM::SQ_RideHorse_Run_Init()
 
     animator->Set_NextTweenAnim(L"SQ_RideHorse_Run", 0.1f, true, 1.f);
 
-    AttackCollider_On(KNOCKDOWN_ATTACK);
+    AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
 }
 
 void YeopoHorse_FSM::SQ_RideHorse_Stop()

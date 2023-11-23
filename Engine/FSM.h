@@ -9,12 +9,12 @@ public:
 	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) = 0;
 	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) = 0;
 	virtual void Set_State(_uint iIndex) = 0;
-	virtual void Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget) = 0;
+	virtual void Get_Hit(const wstring& skillname, _float fDamage ,shared_ptr<GameObject> pLookTarget) = 0;
 
 protected:
 	virtual void State_Tick() = 0;
 	virtual void State_Init() = 0;
-	virtual void AttackCollider_On(const wstring& skillname) = 0;
+	virtual void AttackCollider_On(const wstring& skillname, _float fAttackDamage) = 0;
 	virtual void AttackCollider_Off() = 0;
 
 	void Calculate_CamBoneMatrix();

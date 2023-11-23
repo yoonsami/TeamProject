@@ -45,7 +45,7 @@ HRESULT Undead_Priest_FSM::Init()
         m_fNormalAttack_AnimationSpeed = 1.3f;
         m_fSkillAttack_AnimationSpeed = 1.3f;
 
-        m_fDetectRange = 10.f;
+        m_fDetectRange = 5.f;
 
 
         m_bInitialize = true;
@@ -237,10 +237,13 @@ void Undead_Priest_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _fl
     if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
         return;
 
-    wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
 
     if (!m_bInvincible)
     {
+        wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
+        _float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
+
+        
         shared_ptr<GameObject> targetToLook = nullptr;
 
         if (strSkillName.find(L"_Skill") != wstring::npos)
@@ -251,7 +254,7 @@ void Undead_Priest_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _fl
         if (targetToLook == nullptr)
             return;
 
-        Get_Hit(strSkillName, targetToLook);
+        Get_Hit(strSkillName, fAttackDamage, targetToLook);
     }
 }
 
@@ -259,10 +262,8 @@ void Undead_Priest_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _flo
 {
 }
 
-void Undead_Priest_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
+void Undead_Priest_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
-    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner());
-
     auto pScript = m_pOwner.lock()->Get_Script<UiMonsterHp>();
     if (nullptr == pScript)
     {
@@ -270,6 +271,11 @@ void Undead_Priest_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject>
         m_pOwner.lock()->Add_Component(pScript);
         pScript->Init();
     }
+
+    //Calculate Damage 
+    m_pOwner.lock()->Get_Hurt(fDamage);
+
+    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage);
 
     m_bDetected = true;
     m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.05f);
@@ -333,12 +339,13 @@ void Undead_Priest_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject>
 
 }
 
-void Undead_Priest_FSM::AttackCollider_On(const wstring& skillname)
+void Undead_Priest_FSM::AttackCollider_On(const wstring& skillname, _float fAttackDamage)
 {
     if (!m_pAttackCollider.expired())
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(true);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     }
 }
 
@@ -348,6 +355,7 @@ void Undead_Priest_FSM::AttackCollider_Off()
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(0.f);
     }
 }
 
@@ -848,7 +856,7 @@ void Undead_Priest_FSM::skill_1100()
         desc.fLimitDistance = 20.f;
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-        Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK);
+        Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f);
     }
     
     Set_Gaze();
@@ -874,7 +882,7 @@ void Undead_Priest_FSM::skill_2100()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     if (Init_CurFrame(30))
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Init_CurFrame(34))
         AttackCollider_Off();
     else if (Init_CurFrame(66))
@@ -890,7 +898,7 @@ void Undead_Priest_FSM::skill_2100()
         if (!m_pTarget.expired())
             vSkillPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float3::Up * 5.f;
      
-        Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK);
+        Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f);
     }
 
     Set_Gaze();
@@ -928,7 +936,7 @@ void Undead_Priest_FSM::skill_3100()
         if (!m_pTarget.expired())
             vSkillPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float3::Up * 5.f;
 
-        Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK);
+        Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f);
     }
     
     Set_Gaze();
@@ -1033,7 +1041,7 @@ _float3 Undead_Priest_FSM::Calculate_TargetTurnVector()
         return m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz() - m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
 }
 
-void Undead_Priest_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType)
+void Undead_Priest_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
 {
     shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
 
@@ -1051,6 +1059,7 @@ void Undead_Priest_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _
     m_pSkillCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
     m_pSkillCollider.lock()->Get_Collider()->Set_Activate(true);
     m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
+    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
     m_pSkillCollider.lock()->Set_Name(L"Undead_Priest_SkillCollider");
     m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));

@@ -292,11 +292,13 @@ void Boss_Mir_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float f
 
     if (pCollider->Get_CollisionGroup() == Player_Attack || pCollider->Get_CollisionGroup() == Player_Skill)
     {   
-        wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
 
         if (!m_bInvincible)
         {
-	    	shared_ptr<GameObject> targetToLook = nullptr;
+            wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
+            _float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
+
+            shared_ptr<GameObject> targetToLook = nullptr;
 	    	// skillName
 	    	if (strSkillName.find(L"_Skill") != wstring::npos)
 	    		targetToLook = pCollider->Get_Owner(); // Collider owner
@@ -306,12 +308,8 @@ void Boss_Mir_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float f
             if (targetToLook == nullptr)
                 return;
 
-	    	Get_Hit(strSkillName, targetToLook);
+	    	Get_Hit(strSkillName, fAttackDamage, targetToLook);
         }
-    }
-    else if (pCollider->Get_CollisionGroup() == MAPObject)
-    {
-
     }
 }
 
@@ -319,9 +317,12 @@ void Boss_Mir_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fG
 {
 }
 
-void Boss_Mir_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
+void Boss_Mir_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
-    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner());
+    //Calculate Damage 
+    m_pOwner.lock()->Get_Hurt(fDamage);
+
+    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage);
 
 	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 	_float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
@@ -377,12 +378,13 @@ void Boss_Mir_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLoo
 
 }
 
-void Boss_Mir_FSM::AttackCollider_On(const wstring& skillname)
+void Boss_Mir_FSM::AttackCollider_On(const wstring& skillname, _float fAttackDamage)
 {
     if (!m_pAttackCollider.expired())
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(true);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     }
 }
 
@@ -392,6 +394,7 @@ void Boss_Mir_FSM::AttackCollider_Off()
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(0.f);
     }
 }
 
@@ -738,7 +741,7 @@ void Boss_Mir_FSM::skill_Assault()
 
     if (Init_CurFrame(75))
     {
-        AttackCollider_On(KNOCKBACK_ATTACK);
+        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
     }
     else if (Init_CurFrame(92))
     {
@@ -830,9 +833,9 @@ void Boss_Mir_FSM::SQ_SBRin_Roar()
             _float4 vSkillPos = vBonePos;
 
             if (Get_CurFrame() != 74)
-                Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, NORMAL_ATTACK);
+                Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, NORMAL_ATTACK, 10.f);
             else
-                Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_ATTACK);
+                Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_ATTACK, 10.f);
         }
     }
 
@@ -914,9 +917,9 @@ void Boss_Mir_FSM::skill_1100()
             _float4 vSkillPos = vBonePos;
             
             if (Get_CurFrame() != 76)
-                Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, NORMAL_ATTACK);
+                Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, NORMAL_ATTACK, 10.f);
             else
-                Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_ATTACK);
+                Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_ATTACK, 10.f);
         }
     }
 
@@ -998,7 +1001,7 @@ void Boss_Mir_FSM::skill_2100()
 		}
     }
     else if (Get_CurFrame() == 70)
-        AttackCollider_On(KNOCKBACK_ATTACK);
+        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
     else if (Get_CurFrame() == 93)
         AttackCollider_Off();
 
@@ -1211,7 +1214,7 @@ void Boss_Mir_FSM::skill_9100()
 
                     _float4 vSkillPos = vPlayerPos + _float4{ fOffSetX, 10.f, fOffSetZ, 0.f };
 
-                    Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, AIRBORNE_ATTACK);
+                    Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, AIRBORNE_ATTACK, 10.f);
                 }
             }
         }
@@ -1270,7 +1273,7 @@ void Boss_Mir_FSM::skill_11100()
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 8.f, desc, KNOCKDOWN_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 8.f, desc, KNOCKDOWN_ATTACK, 10.f);
         }
     }
 
@@ -1348,16 +1351,16 @@ void Boss_Mir_FSM::skill_12100()
             if (Get_CurFrame() == 58)
                 strAttackType = KNOCKBACK_ATTACK;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, strAttackType);
+            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, strAttackType, 10.f);
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK) * -1.f;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, strAttackType);
+            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, strAttackType, 10.f);
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT) * -1.f;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, strAttackType);
+            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, strAttackType, 10.f);
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT) * 1.f;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, strAttackType);
+            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, strAttackType, 10.f);
         }
     }
 
@@ -1431,7 +1434,7 @@ void Boss_Mir_FSM::skill_13100()
 
             for (_uint i = 0; i < 3; i++)
             {
-                Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK);
+                Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
 
                 desc.vSkillDir = desc.vSkillDir + Get_Transform()->Get_State(Transform_State::RIGHT);
             }
@@ -1503,16 +1506,16 @@ void Boss_Mir_FSM::skill_14100()
             desc.fLimitDistance = 20.f;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK) * -1.f;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT) * -1.f;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT) * 1.f;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
         }
     }
     else if (Get_CurFrame() == 80)
@@ -1532,16 +1535,16 @@ void Boss_Mir_FSM::skill_14100()
             if (Get_CurFrame() == 58)
                 strAttackType = KNOCKBACK_ATTACK;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, strAttackType);
+            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, strAttackType, 10.f);
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK) * -1.f;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, strAttackType);
+            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, strAttackType, 10.f);
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT) * -1.f;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, strAttackType);
+            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, strAttackType, 10.f);
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT) * 1.f;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, strAttackType);
+            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, strAttackType, 10.f);
         }
     }
 
@@ -1669,9 +1672,9 @@ void Boss_Mir_FSM::skill_100100()
             _float4 vSkillPos = vBonePos;
 
             if (Get_CurFrame() != 84)
-                Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, NORMAL_ATTACK);
+                Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, NORMAL_ATTACK, 10.f);
             else
-                Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK);
+                Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK, 10.f);
         }
     }
     else if (Get_CurFrame() == 90)
@@ -1787,7 +1790,7 @@ void Boss_Mir_FSM::skill_200100()
         
             _float4 vSkillPos = vBonePos;
         
-            Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_ATTACK, 10.f);
         }
     }
     
@@ -1918,7 +1921,7 @@ void Boss_Mir_FSM::Add_Boss_Mir_Collider()
     m_pTailCollider = tailCollider;
 }
 
-void Boss_Mir_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType)
+void Boss_Mir_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
 {
     shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
 
@@ -1935,6 +1938,7 @@ void Boss_Mir_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float
     SkillCollider->Add_Component(make_shared<AttackColliderInfoScript>());
     SkillCollider->Get_Collider()->Set_Activate(true);
     SkillCollider->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
+    SkillCollider->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     SkillCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
     SkillCollider->Set_Name(L"Boss_Mir_SkillCollider");
     SkillCollider->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
@@ -1975,7 +1979,7 @@ void Boss_Mir_FSM::Create_Meteor()
 
                 _float4 vSkillPos = vPlayerPos + _float4{ fOffSetX, 10.f, fOffSetZ, 0.f };
 
-                Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKDOWN_SKILL);
+                Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKDOWN_SKILL, 10.f);
             }
 
             m_tMeteorCoolTime.fAccTime = 0.f;

@@ -235,10 +235,12 @@ void Alpaca_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGa
     if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
         return;
 
-    wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
 
     if (!m_bInvincible)
     {
+        wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
+        _float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
+        
         shared_ptr<GameObject> targetToLook = nullptr;
 
         if (strSkillName.find(L"_Skill") != wstring::npos)
@@ -249,7 +251,7 @@ void Alpaca_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGa
         if (targetToLook == nullptr)
             return;
 
-        Get_Hit(strSkillName, targetToLook);
+        Get_Hit(strSkillName, fAttackDamage, targetToLook);
     }
 }
 
@@ -257,9 +259,12 @@ void Alpaca_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap
 {
 }
 
-void Alpaca_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
+void Alpaca_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
-    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner());
+    //Calculate Damage 
+    m_pOwner.lock()->Get_Hurt(fDamage);
+
+    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage);
 
     auto pScript = m_pOwner.lock()->Get_Script<UiMonsterHp>();
     if (nullptr == pScript)
@@ -331,12 +336,13 @@ void Alpaca_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookT
 
 }
 
-void Alpaca_FSM::AttackCollider_On(const wstring& skillname)
+void Alpaca_FSM::AttackCollider_On(const wstring& skillname, _float fAttackDamage)
 {
     if (!m_pAttackCollider.expired())
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(true);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     }
 }
 
@@ -346,6 +352,7 @@ void Alpaca_FSM::AttackCollider_Off()
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(0.f);
     }
 }
 
@@ -787,7 +794,7 @@ void Alpaca_FSM::skill_1100()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     if (Get_CurFrame() == 26)
-        AttackCollider_On(NONE_HIT);
+        AttackCollider_On(NONE_HIT, 2.f);
     else if (Get_CurFrame() == 30)
         AttackCollider_Off();
 
@@ -814,7 +821,7 @@ void Alpaca_FSM::skill_2100()
 
     //NORMAL ATTACK
     if (Get_CurFrame() == 29)
-        AttackCollider_On(NONE_HIT);
+        AttackCollider_On(NONE_HIT, 2.f);
     else if (Get_CurFrame() == 38)
         AttackCollider_Off();
     
@@ -840,7 +847,7 @@ void Alpaca_FSM::skill_3100()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     if (Get_CurFrame() == 33)
-        AttackCollider_On(NONE_HIT);
+        AttackCollider_On(NONE_HIT, 2.f);
     else if (Get_CurFrame() == 34)
         AttackCollider_Off();
 

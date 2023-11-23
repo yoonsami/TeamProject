@@ -200,22 +200,25 @@ private:
 	void Frame_ModelObj();
 	void Show_Models();
 	void Show_ModelInfo();
+	void Select_ModelAnim();
+	void Set_Transform();
 	void Save_Files();
+	void Load_Files();
 
 	_int m_iCurrentModelIndex = 0;
 	_int m_iCurrentObjectIndex = 0;
 	_int m_iCurrentFSMIndex = 0;
-	
-	vector<shared_ptr<GameObject>> m_pAnimModels;
+	_int m_iCurrentAnimIndex = 0;
 
 	struct ObjectMoveInfo
 	{
+		_bool bMoving = false;
 		_int eFSMIndex = 0;
 		_float3 minMoveArrayPos = _float3(0.f);
 		_float3 maxMoveArrayPos = _float3(0.f);
 
 	};
-	vector<ObjectMoveInfo> m_pAnimModelInfo;
+	vector<pair<shared_ptr<GameObject>,ObjectMoveInfo>> m_pAnimModels;
 
 	weak_ptr<GameObject> m_pControlObjects;
 
