@@ -157,8 +157,8 @@ HRESULT MirScene::Load_Scene()
 
 	auto player = Load_Player();
 	Load_Camera(player);
-	Load_MapFile(L"MirMapNoCol2", player);
-	//Load_MapFile(L"MirMap", player);
+	//Load_MapFile(L"MirMapNoCol2", player);
+	Load_MapFile(L"MirMap", player);
 	Load_Boss_Mir(player);
 
 	Load_Ui(player);
@@ -605,15 +605,6 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	//Load_UIFile(L"..\\Resources\\UIData\\UI_MonsterHp.dat", tmp);
 	//Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat");
 
-
-	{
-		auto pObj = Get_GameObject(L"Boss_Mir");
-		if (nullptr != pObj)
-		{
-			auto pScript = make_shared<UIBossHpBar>(BOSS::MIR);
-			pObj->Add_Component(pScript);
-		}
-	}
 
 	{
 		auto pObj = make_shared<GameObject>();

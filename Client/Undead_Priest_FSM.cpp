@@ -5,6 +5,7 @@
 #include "AttackColliderInfoScript.h"
 #include "MainCameraScript.h"
 #include "UiDamageCreate.h"
+#include "UiMonsterHp.h"
 
 HRESULT Undead_Priest_FSM::Init()
 {
@@ -261,6 +262,14 @@ void Undead_Priest_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _flo
 void Undead_Priest_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
 {
     CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner());
+
+    auto pScript = m_pOwner.lock()->Get_Script<UiMonsterHp>();
+    if (nullptr == pScript)
+    {
+        pScript = make_shared<UiMonsterHp>();
+        m_pOwner.lock()->Add_Component(pScript);
+        pScript->Init();
+    }
 
     m_bDetected = true;
     m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.05f);
@@ -839,7 +848,7 @@ void Undead_Priest_FSM::skill_1100()
         desc.fLimitDistance = 20.f;
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-        Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NONE_HIT);
+        Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK);
     }
     
     Set_Gaze();
@@ -919,7 +928,7 @@ void Undead_Priest_FSM::skill_3100()
         if (!m_pTarget.expired())
             vSkillPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float3::Up * 5.f;
 
-        Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NONE_HIT);
+        Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK);
     }
     
     Set_Gaze();

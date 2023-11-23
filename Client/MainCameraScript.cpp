@@ -39,14 +39,14 @@ HRESULT MainCameraScript::Init()
     return S_OK;
 }
 
-void MainCameraScript::Late_Tick()
+void MainCameraScript::Tick()
 {
-	if (m_fFixedTime <= 0.f)
-		Cal_OffsetDir();
+    if (m_fFixedTime <= 0.f)
+        Cal_OffsetDir();
 
 
-	Restrict_Offset();
-	Update_Transform();
+    Restrict_Offset();
+    Update_Transform();
 }
 
 void MainCameraScript::Final_Tick()

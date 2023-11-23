@@ -5,6 +5,8 @@
 #include "AttackColliderInfoScript.h"
 #include "MainCameraScript.h"
 #include "UiDamageCreate.h"
+#include "UiMonsterHp.h"
+
 
 HRESULT Wolf_FSM::Init()
 {
@@ -250,6 +252,14 @@ void Wolf_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
 void Wolf_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
 {
     CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner());
+
+    auto pScript = m_pOwner.lock()->Get_Script<UiMonsterHp>();
+    if (nullptr == pScript)
+    {
+        pScript = make_shared<UiMonsterHp>();
+        m_pOwner.lock()->Add_Component(pScript);
+        pScript->Init();
+    }
 
     m_bDetected = true;
     m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.05f);

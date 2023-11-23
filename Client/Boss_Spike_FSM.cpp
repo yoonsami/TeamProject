@@ -13,6 +13,7 @@
 #include "MathUtils.h"
 #include "CounterMotionTrailScript.h"
 #include "UiDamageCreate.h"
+#include "UIBossHpBar.h"
 
 Boss_Spike_FSM::Boss_Spike_FSM()
 {
@@ -655,6 +656,13 @@ void Boss_Spike_FSM::Spawn_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed);
 
     AttackCollider_Off();
+
+    //Add_BossHp UI
+    if (!m_pOwner.expired())
+    {
+        auto pScript = make_shared<UIBossHpBar>(BOSS::SPIKE);
+        m_pOwner.lock()->Add_Component(pScript);
+    }
 }
 
 void Boss_Spike_FSM::b_idle()
