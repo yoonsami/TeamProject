@@ -55,7 +55,6 @@ void UiDamageCreate::Create_Damage_Font(weak_ptr<GameObject> pObj)
     auto pFont = make_shared<GameObject>();
     pFont->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
 
-    // ������ ���
     pFont->Add_Component(make_shared<FontRenderer>(L"1234"));
     HERO eHero = m_pPlayer.lock()->Get_Script<CoolTimeCheckScript>()->Get_Cur_Hero();
 

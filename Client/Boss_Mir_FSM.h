@@ -164,7 +164,7 @@ private:
 	_float3 m_vFirstPos = _float3(0.f);
 	_float m_fTurnSpeed = XM_PI * 0.5f;
 	
-	COOLTIMEINFO m_tAttackCoolTime = { 3.f, 0.f };
+	COOLTIMEINFO m_tAttackCoolTime = { 2.f, 0.f };
 	COOLTIMEINFO m_tBreathCoolTime = { 0.15f, 0.f };
 	
 	_bool m_bDetected = false;

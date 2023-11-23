@@ -190,6 +190,9 @@ void Spike_FSM::State_Tick()
         break;
     }
 
+    if (!m_pGroupEffect.expired())
+        m_pGroupEffect.lock()->Get_Transform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
+    
     if (m_iPreFrame != m_iCurFrame)
         m_iPreFrame = m_iCurFrame;
 }
@@ -1141,12 +1144,6 @@ void Spike_FSM::skill_100100()
             // TODO : need cooltime
             m_fEffectCreateTimer = 0.f;
             Add_Effect(L"Spike_100100_IceFlower");
-        }
-
-        if (!m_pGroupEffect.expired())
-        {
-            _float4x4 vTemp = Get_Transform()->Get_WorldMatrix();
-            m_pGroupEffect.lock()->Get_Transform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
         }
 
         Get_Transform()->Go_Straight();
