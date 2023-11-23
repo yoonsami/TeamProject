@@ -6,8 +6,12 @@
 
 HRESULT SpearAce_Clone_FSM::Init()
 {
-	m_eCurState = STATE::Skill_Use;
+	if (!m_bInitialize)
+	{
+		m_eCurState = STATE::Skill_Use;
 
+		m_bInitialize = true;
+	}
 	return S_OK;
 }
 

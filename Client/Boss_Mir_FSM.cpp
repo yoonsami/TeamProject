@@ -12,41 +12,48 @@
 
 HRESULT Boss_Mir_FSM::Init()
 {
-    auto animator = Get_Owner()->Get_Animator();
-    if (animator)
+    if (!m_bInitialize)
     {
-        animator->Set_CurrentAnim(L"3D_ui_start", false, 1.f);
-        m_eCurState = STATE::First_Meet;
+        auto animator = Get_Owner()->Get_Animator();
+        if (animator)
+        {
+            animator->Set_CurrentAnim(L"3D_ui_start", false, 1.f);
+            m_eCurState = STATE::First_Meet;
+        }
+
+        m_fDetectRange = 10.f;
+
+        Add_Boss_Mir_Collider();
+
+        m_iHeadBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Head");
+        m_iMouseBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bone057");
+        m_iTailBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bone040");
+
+        HeadBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iHeadBoneIndex) *
+            _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+        m_vHeadCamPos = m_vHeadBonePos + (Get_Transform()->Get_State(Transform_State::LOOK) * 5.f);
+
+        m_pCamera = CUR_SCENE->Get_MainCamera();
+
+        m_fRunSpeed = 4.f;
+        m_fKnockDownSpeed = 4.f;
+
+        m_fDetectRange = 25.f;
+
+        if (!m_pTarget.expired())
+        {
+            _float3 vLook = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
+            vLook.y = 0.f;
+            Get_Transform()->Set_LookDir(vLook);
+        }
+        
+        Setting_DragonBall();
+
+
+
+        m_bInitialize = true;
     }
-
-    m_fDetectRange = 10.f;
-
-    Add_Boss_Mir_Collider();
-
-    m_iHeadBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Head");
-    m_iMouseBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bone057");
-    m_iTailBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bone040");
-
-    HeadBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iHeadBoneIndex) *
-        _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
-
-    m_vHeadCamPos = m_vHeadBonePos + (Get_Transform()->Get_State(Transform_State::LOOK) * 5.f);
-
-    m_pCamera = CUR_SCENE->Get_MainCamera();
-
-    m_fRunSpeed = 4.f;
-    m_fKnockDownSpeed = 4.f;
-
-    m_fDetectRange = 25.f;
-
-    if (!m_pTarget.expired())
-    {
-        _float3 vLook = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
-        vLook.y = 0.f;
-        Get_Transform()->Set_LookDir(vLook);
-    }
-    
-    Setting_DragonBall();
 
     return S_OK;
 }

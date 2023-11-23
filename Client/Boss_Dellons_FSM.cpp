@@ -22,40 +22,47 @@ Boss_Dellons_FSM::~Boss_Dellons_FSM()
 
 HRESULT Boss_Dellons_FSM::Init()
 {
-    auto animator = Get_Owner()->Get_Animator();
-    if (animator)
+    if (!m_bInitialize)
     {
-        animator->Set_CurrentAnim(L"b_idle", true, 1.f);
-        m_eCurState = STATE::n_idle;
+        auto animator = Get_Owner()->Get_Animator();
+        if (animator)
+        {
+            animator->Set_CurrentAnim(L"b_idle", true, 1.f);
+            m_eCurState = STATE::n_idle;
+        }
+        shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
+        attackCollider->GetOrAddTransform();
+        attackCollider->Add_Component(make_shared<SphereCollider>(1.f));
+        attackCollider->Get_Collider()->Set_CollisionGroup(Monster_Attack);
+
+        m_pAttackCollider = attackCollider;
+
+        CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
+        m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
+
+        m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
+        m_pAttackCollider.lock()->Set_Name(L"Boss_Dellons_AttackCollider");
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(Get_Owner());
+
+        m_pWeapon = CUR_SCENE->Get_GameObject(L"Weapon_Boss_Dellons");
+
+        m_pCamera = CUR_SCENE->Get_MainCamera();
+
+        m_iCenterBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_CP");
+        m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
+        m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
+
+        m_fDetectRange = 7.f;
+        m_fRunSpeed = 6.5f;
+        m_fSprintSpeed = 8.5f;
+
+        if (!m_pTarget.expired())
+            Get_Transform()->LookAt(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS));
+
+
+        m_bInitialize = true;
     }
-    shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
-    attackCollider->GetOrAddTransform();
-    attackCollider->Add_Component(make_shared<SphereCollider>(1.f));
-    attackCollider->Get_Collider()->Set_CollisionGroup(Monster_Attack);
 
-    m_pAttackCollider = attackCollider;
-
-    CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
-    m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
-
-    m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
-    m_pAttackCollider.lock()->Set_Name(L"Boss_Dellons_AttackCollider");
-    m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(Get_Owner());
-
-    m_pWeapon = CUR_SCENE->Get_GameObject(L"Weapon_Boss_Dellons");
-
-    m_pCamera = CUR_SCENE->Get_MainCamera();
-
-    m_iCenterBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_CP");
-    m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
-    m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
-
-    m_fDetectRange = 7.f;
-    m_fRunSpeed = 6.5f;
-    m_fSprintSpeed = 8.5f;
-
-    if (!m_pTarget.expired())
-        Get_Transform()->LookAt(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS));
 
     return S_OK;
 }

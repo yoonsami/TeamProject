@@ -75,6 +75,8 @@ public:
 	_uint m_iPreFrame = 10000;
 	_uint m_iCurFrame = 0;
 
+
+	_bool m_bInitialize = false;
 	_bool m_bInvincible = false;
 	_bool m_bSuperArmor = false;
 	_bool m_bCanCombo = false;

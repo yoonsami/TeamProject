@@ -23,35 +23,41 @@ Yeonhee_FSM::~Yeonhee_FSM()
 
 HRESULT Yeonhee_FSM::Init()
 {
-    auto animator = Get_Owner()->Get_Animator();
-    if (animator)
+    if (!m_bInitialize)
     {
-        animator->Set_CurrentAnim(L"b_idle", true, 1.f);
-        m_eCurState = STATE::b_idle;
+        auto animator = Get_Owner()->Get_Animator();
+        if (animator)
+        {
+            animator->Set_CurrentAnim(L"b_idle", true, 1.f);
+            m_eCurState = STATE::b_idle;
+        }
+        shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
+        attackCollider->GetOrAddTransform();
+        attackCollider->Add_Component(make_shared<SphereCollider>(1.f));
+        attackCollider->Get_Collider()->Set_CollisionGroup(Player_Attack);
+
+        m_pAttackCollider = attackCollider;
+
+        CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
+        m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
+        
+        m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
+        m_pAttackCollider.lock()->Set_Name(L"Player_AttackCollider");
+	    m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(Get_Owner());
+
+        m_iDummy_CP_BoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_CP");
+        m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
+        m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
+
+        m_iHeadBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-Head");
+
+        m_pCamera = CUR_SCENE->Get_MainCamera();
+
+        m_fDetectRange = 15.f;
+
+
+        m_bInitialize = true;
     }
-    shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
-    attackCollider->GetOrAddTransform();
-    attackCollider->Add_Component(make_shared<SphereCollider>(1.f));
-    attackCollider->Get_Collider()->Set_CollisionGroup(Player_Attack);
-
-    m_pAttackCollider = attackCollider;
-
-    CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
-    m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
-    
-    m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
-    m_pAttackCollider.lock()->Set_Name(L"Player_AttackCollider");
-	m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(Get_Owner());
-
-    m_iDummy_CP_BoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_CP");
-    m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
-    m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
-
-    m_iHeadBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-Head");
-
-    m_pCamera = CUR_SCENE->Get_MainCamera();
-
-    m_fDetectRange = 15.f;
 
     return S_OK;
 }

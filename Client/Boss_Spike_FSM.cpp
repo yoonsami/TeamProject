@@ -24,50 +24,54 @@ Boss_Spike_FSM::~Boss_Spike_FSM()
 
 HRESULT Boss_Spike_FSM::Init()
 {
-    auto animator = Get_Owner()->Get_Animator();
-    if (animator)
+    if (!m_bInitialize)
     {
-        animator->Set_CurrentAnim(L"SQ_Appear_01", true, 1.f);
-        m_eCurState = STATE::SQ_Appear_01;
+        auto animator = Get_Owner()->Get_Animator();
+        if (animator)
+        {
+            animator->Set_CurrentAnim(L"SQ_Appear_01", true, 1.f);
+            m_eCurState = STATE::SQ_Appear_01;
+        }
+        shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
+        attackCollider->GetOrAddTransform();
+        attackCollider->Add_Component(make_shared<SphereCollider>(1.5f));
+        attackCollider->Get_Collider()->Set_CollisionGroup(Monster_Attack);
+
+        m_pAttackCollider = attackCollider;
+
+        CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
+        m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
+
+        m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
+        m_pAttackCollider.lock()->Set_Name(L"Boss_Spike_AttackCollider");
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(Get_Owner());
+
+        m_pWeapon = CUR_SCENE->Get_GameObject(L"Weapon_Boss_Spike");
+
+        m_pCamera = CUR_SCENE->Get_MainCamera();
+
+        m_iCenterBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Center");
+        m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
+        m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
+
+
+        m_fDetectRange = 25.f;
+        m_fRunSpeed = 6.f;
+
+
+        if (!m_pTarget.expired())
+            Get_Transform()->LookAt(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS));
+
+        m_iChairBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-Pelvis");
+        m_ChairBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iChairBoneIndex) *
+            _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+        m_vChairBonePos = _float4{ m_ChairBoneMatrix.Translation().x, m_ChairBoneMatrix.Translation().y, m_ChairBoneMatrix.Translation().z , 1.f };
+
+        m_vFirstPos = Get_Transform()->Get_State(Transform_State::POS);
+
+        
+        m_bInitialize = true;
     }
-    shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
-    attackCollider->GetOrAddTransform();
-    attackCollider->Add_Component(make_shared<SphereCollider>(1.5f));
-    attackCollider->Get_Collider()->Set_CollisionGroup(Monster_Attack);
-
-    m_pAttackCollider = attackCollider;
-
-    CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
-    m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
-
-    m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
-    m_pAttackCollider.lock()->Set_Name(L"Boss_Spike_AttackCollider");
-    m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(Get_Owner());
-
-    m_pWeapon = CUR_SCENE->Get_GameObject(L"Weapon_Boss_Spike");
-
-    m_pCamera = CUR_SCENE->Get_MainCamera();
-
-    m_iCenterBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Center");
-    m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
-    m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
-
-
-    m_fDetectRange = 25.f;
-    m_fRunSpeed = 6.f;
-
-
-    if (!m_pTarget.expired())
-        Get_Transform()->LookAt(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS));
-
-    m_iChairBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-Pelvis");
-    m_ChairBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iChairBoneIndex) *
-        _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
-    m_vChairBonePos = _float4{ m_ChairBoneMatrix.Translation().x, m_ChairBoneMatrix.Translation().y, m_ChairBoneMatrix.Translation().z , 1.f };
-
-    m_vFirstPos = Get_Transform()->Get_State(Transform_State::POS);
-
-    
 
     return S_OK;
 }
