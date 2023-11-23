@@ -89,9 +89,9 @@ void ImGui_Manager::ImGui_Tick()
     Frame_SelcetObjectManager();
     Frame_Wall();
     Frame_ShaderOption();
-
     Picking_Object();
     LookAtSampleObject();
+    Frame_ModelObj();
 
     Show_Gizmo();
 }
@@ -904,7 +904,7 @@ shared_ptr<GameObject> ImGui_Manager::Create_MapObject(MapObjectScript::MapObjec
         CreateObject->Add_Component(renderer);
         renderer->Set_Model(model);
         renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT);
-        renderer->SetFloat(3, CreateDesc.fUVWeight);
+        renderer->SetVec4(0, _float4(CreateDesc.fUVWeight));
     }
 
     if (CreateDesc.bTransform)
@@ -1659,7 +1659,7 @@ void ImGui_Manager::Create_SampleObjects()
         m_SampleObject->Add_Component(renderer);
         renderer->Set_Model(model);
         renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT);
-        renderer->SetFloat(3, 1.f);
+        renderer->SetVec4(0, _float4(1.f));
         
         CUR_SCENE->Add_GameObject(m_SampleObject);
 
@@ -1885,4 +1885,183 @@ void ImGui_Manager::ClearAllShaderOptions()
     _bool& g_bPBR_On = CUR_SCENE->g_bPBR_On = true;
     _float& g_lightAttenuation = CUR_SCENE->g_lightAttenuation = 100.f;
     _float& g_ambientRatio = CUR_SCENE->g_ambientRatio = 0.5f;
+}
+
+void ImGui_Manager::Frame_ModelObj()
+{
+    Begin("ModelTool");
+
+    if (BeginTabBar("MoTool"))
+    {
+        Show_Models();
+        Show_ModelInfo();
+
+
+
+        EndTabBar();
+    }
+
+
+
+
+    End();
+}
+
+void ImGui_Manager::Show_Models()
+{
+    if(BeginTabItem("Model Select & Create"))
+	{
+		vector<string> ModelNames;
+		if (TreeNode("Character"))
+		{
+			if (TreeNode("Npc"))
+			{
+				if (TreeNode("Granseed"))
+				{
+					string assetsPath = "../Resources/Models/Character/Npc/Granseed/";
+
+					for (auto& entry : fs::recursive_directory_iterator(assetsPath))
+					{
+						if (entry.is_directory())
+							continue;
+
+						if (entry.path().extension().wstring() != L".Model" && entry.path().extension().wstring() != L".model")
+							continue;
+
+						string fileName = entry.path().filename().string();
+						Utils::DetachExt(fileName);
+
+						ModelNames.push_back(fileName);
+					}
+
+					TreePop();
+				}
+				TreePop();
+			}
+			TreePop();
+		}
+
+		ListBox("##Model List", &m_iCurrentModelIndex, VectorOfStringGetter, &ModelNames, int(ModelNames.size()));
+
+		static char objName[MAX_PATH] = "";
+		InputText("Object Name", objName, sizeof(objName));
+		if (Button("Create Model"))
+		{
+			shared_ptr<GameObject> obj = make_shared<GameObject>();
+			obj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(m_PickingPos, 1.f));
+			{
+				shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+				shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+				animator->Set_Model(RESOURCES.Get<Model>(Utils::ToWString(ModelNames[m_iCurrentModelIndex])));
+				obj->Add_Component(animator);
+			}
+			string name = objName;
+			obj->Set_Name(Utils::ToWString(name));
+			CUR_SCENE->Add_GameObject(obj);
+			m_pAnimModels.push_back(obj);
+            m_pAnimModelInfo.push_back(ObjectMoveInfo());
+		}
+
+		vector<string> objNames;
+
+		for (auto& obj : m_pAnimModels)
+			objNames.push_back(Utils::ToString(obj->Get_Name()));
+
+		ListBox("##Object List", &m_iCurrentObjectIndex, VectorOfStringGetter, &objNames, int(objNames.size()));
+
+		if (Button("Select Obj"))
+			m_pControlObjects = m_pAnimModels[m_iCurrentObjectIndex];
+
+        EndTabItem();
+	}
+
+
+
+
+}
+
+void ImGui_Manager::Show_ModelInfo()
+{
+    if (m_pControlObjects.expired())
+        return;
+    
+    if (BeginTabItem("Obj Info"))
+    {
+        
+        vector<string> fsmList;
+        fsmList.push_back("POTION_FSM");
+        fsmList.push_back("GUARD1_FSM");
+        fsmList.push_back("GUARD2_FSM");
+        fsmList.push_back("TRAVLER_FSM");
+
+        static _int tmp =0;
+        RadioButton("minMoveArrayPos",&tmp,0);
+        SameLine();    RadioButton("maxMoveArrayPos", &tmp, 1);
+
+        _float3 vPickPos = m_PickingPos;
+        InputFloat3("Picked Pos", (_float*)&vPickPos);
+
+        if (Button("Set ArrayPos"))
+        {
+            if (tmp == 0)
+                m_pAnimModelInfo[m_iCurrentObjectIndex].minMoveArrayPos = vPickPos;
+            else
+                m_pAnimModelInfo[m_iCurrentObjectIndex].maxMoveArrayPos = vPickPos;
+            
+        }
+
+		ListBox("##FSM List", &m_iCurrentFSMIndex, VectorOfStringGetter, &fsmList, int(fsmList.size()));
+        Text(("FSM : " + fsmList[m_iCurrentFSMIndex]).c_str());
+        if (Button("Set FSM"))
+            m_pAnimModelInfo[m_iCurrentObjectIndex].eFSMIndex = m_iCurrentFSMIndex;
+
+        SeparatorText("Cur Info");
+        Text((" FSM State : " + fsmList[m_pAnimModelInfo[m_iCurrentObjectIndex].eFSMIndex]).c_str());
+        Text(("min Array Pos : " + to_string(m_pAnimModelInfo[m_iCurrentObjectIndex].minMoveArrayPos.x) + ", " + to_string(m_pAnimModelInfo[m_iCurrentObjectIndex].minMoveArrayPos.y) + ", " + to_string(m_pAnimModelInfo[m_iCurrentObjectIndex].minMoveArrayPos.z)).c_str());
+        Text(("max Array Pos : " + to_string(m_pAnimModelInfo[m_iCurrentObjectIndex].maxMoveArrayPos.x) + ", " + to_string(m_pAnimModelInfo[m_iCurrentObjectIndex].maxMoveArrayPos.y) + ", " + to_string(m_pAnimModelInfo[m_iCurrentObjectIndex].maxMoveArrayPos.z)).c_str());
+
+        if (Button("Look At"))
+        {
+            _float3 vPos = m_PickingPos;
+            vPos.y = m_pControlObjects.lock()->Get_Transform()->Get_State(Transform_State::POS).y;
+
+            m_pControlObjects.lock()->Get_Transform()->LookAt(_float4(vPos,1.f));
+        }
+
+
+        Separator();
+        Save_Files();
+
+        EndTabItem();
+    }
+
+}
+
+void ImGui_Manager::Save_Files()
+{
+	ImGui::Text("SaveFileName");
+	ImGui::InputText("##SaveFileName", m_szSaveFileName, sizeof(m_szSaveFileName));
+
+    if (Button(" Save Model Info "))
+    {
+		string strFileName = m_szSaveFileName;
+		string strFilePath = "..\\Resources\\MapData\\";
+		strFilePath += strFileName + ".subdata";
+
+		shared_ptr<FileUtils> file = make_shared<FileUtils>();
+		file->Open(Utils::ToWString(strFilePath), FileMode::Write);
+
+        file->Write<_int>(_int(m_pAnimModels.size()));// count
+        for (_int i = 0; i < _int(m_pAnimModels.size()); ++i)
+        {
+            auto& gameObject = m_pAnimModels[i];
+            auto& gameObjectInfo = m_pAnimModelInfo[i];
+            file->Write<string>(Utils::ToString(gameObject->Get_Name()));
+            file->Write<string>(Utils::ToString(gameObject->Get_Model()->Get_ModelTag()));
+            file->Write<_float3>(gameObject->Get_Transform()->Get_State(Transform_State::POS).xyz());
+            file->Write<_int>(gameObjectInfo.eFSMIndex);
+            file->Write<_float3>(gameObjectInfo.minMoveArrayPos);
+            file->Write<_float3>(gameObjectInfo.maxMoveArrayPos);
+        }
+    }
 }

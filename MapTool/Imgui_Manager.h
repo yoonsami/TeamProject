@@ -10,7 +10,7 @@ class ImGui_Manager
 private:
 	enum GizmoOp { GizmoTR, GizmoRT, GizmoSC, GizmoEND };
 	// 기즈모를 띄울 대상 ( 맵오브젝트 or 점광원 )
-	enum GizmoTarget { GizmoTMapObj, GizmoTPointLight, GizmoTEnd };
+	enum GizmoTarget { GizmoTMapObj, GizmoTPointLight,GizmoAnimNpc, GizmoTEnd };
 
 private:
 	virtual ~ImGui_Manager();
@@ -180,4 +180,33 @@ private:
 // 맵 로드정보
 	_int curMapIndex = 0;
 	vector<string> m_MapNames;
+
+
+
+
+private:
+	void Frame_ModelObj();
+	void Show_Models();
+	void Show_ModelInfo();
+	void Save_Files();
+
+	_int m_iCurrentModelIndex = 0;
+	_int m_iCurrentObjectIndex = 0;
+	_int m_iCurrentFSMIndex = 0;
+	
+	vector<shared_ptr<GameObject>> m_pAnimModels;
+
+	struct ObjectMoveInfo
+	{
+		_int eFSMIndex = 0;
+		_float3 minMoveArrayPos = _float3(0.f);
+		_float3 maxMoveArrayPos = _float3(0.f);
+
+	};
+	vector<ObjectMoveInfo> m_pAnimModelInfo;
+
+	weak_ptr<GameObject> m_pControlObjects;
+
+	
+
 };
