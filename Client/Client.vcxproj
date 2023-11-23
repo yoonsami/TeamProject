@@ -198,6 +198,7 @@
     <ClInclude Include="Alpaca_FSM.h" />
     <ClInclude Include="AttackColliderInfoScript.h" />
     <ClInclude Include="DragonBall_FSM.h" />
+    <ClInclude Include="GranseedGuard01_FSM.h" />
     <ClInclude Include="MirScene.h" />
     <ClInclude Include="ObjectDissolve.h" />
     <ClInclude Include="UiDialogController.h" />
@@ -291,6 +292,7 @@
     <ClCompile Include="Alpaca_FSM.cpp" />
     <ClCompile Include="AttackColliderInfoScript.cpp" />
     <ClCompile Include="DragonBall_FSM.cpp" />
+    <ClCompile Include="GranseedGuard01_FSM.cpp" />
     <ClCompile Include="MirScene.cpp" />
     <ClCompile Include="ObjectDissolve.cpp" />
     <ClCompile Include="UiDialogController.cpp" />

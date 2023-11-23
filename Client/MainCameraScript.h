@@ -9,8 +9,8 @@ public:
 
 public:
     virtual HRESULT Init() override;
-    virtual void Tick() override;
     virtual void Late_Tick() override;
+    virtual void Final_Tick() override;
 
 public:
     _bool Is_Fixed() { return m_fFixedTime > 0.f; }

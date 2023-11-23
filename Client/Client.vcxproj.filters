@@ -277,6 +277,12 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\19.UiInteraction">
       <UniqueIdentifier>{e5bcdf44-e977-42fb-8255-b7bb13c49886}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\01.FSM\05.NPC_FSM">
+      <UniqueIdentifier>{91d13c1b-6195-4187-a9fb-c29f64f61f86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\05.NPC_FSM\00.Granseed">
+      <UniqueIdentifier>{d3d0a97f-e88a-4a0c-b997-fd6da5de3488}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -568,6 +574,8 @@
     <ClInclude Include="UIInteraction.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\19.UiInteraction</Filter>
     </ClInclude>
+    <ClInclude Include="DragonBall_FSM.h" />
+    <ClInclude Include="GranseedGuard01_FSM.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -826,6 +834,8 @@
     <ClCompile Include="UIInteraction.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\19.UiInteraction</Filter>
     </ClCompile>
+    <ClCompile Include="DragonBall_FSM.cpp" />
+    <ClCompile Include="GranseedGuard01_FSM.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">

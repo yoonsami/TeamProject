@@ -140,7 +140,7 @@ void MainApp::ExportParts()
 
 void MainApp::ExportWrongAnimRight()
 {
-	wstring wrongFBXPath = L"..\\Resources\\AnimCorrector\\BaseFBX\\Rachel.fbx";
+	wstring wrongFBXPath = L"..\\Resources\\AnimCorrector\\BaseFBX\\GranseedPotion.fbx";
 
 	shared_ptr<Converter> converter = make_shared<Converter>();
 	converter->ReadAssetFile(wrongFBXPath);

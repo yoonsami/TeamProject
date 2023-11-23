@@ -39,18 +39,19 @@ HRESULT MainCameraScript::Init()
     return S_OK;
 }
 
-void MainCameraScript::Tick()
-{
-    if (m_fFixedTime <= 0.f)
-        Cal_OffsetDir();
- 
-
-    Restrict_Offset();
-    Update_Transform();
-}
-
 void MainCameraScript::Late_Tick()
 {
+	if (m_fFixedTime <= 0.f)
+		Cal_OffsetDir();
+
+
+	Restrict_Offset();
+	Update_Transform();
+}
+
+void MainCameraScript::Final_Tick()
+{
+
     if (KEYTAP(KEY_TYPE::Z))
     {
         if (true == m_bTestValue)
