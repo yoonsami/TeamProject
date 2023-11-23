@@ -30,7 +30,7 @@
 #include "RigidBody.h"
 
 #include "PointLightScript.h"
-
+#include "ModelAnimation.h"
 using namespace ImGui;
 
 ImGuizmo::OPERATION m_eGuizmoType = { ImGuizmo::TRANSLATE };
@@ -2011,7 +2011,7 @@ void ImGui_Manager::Frame_ModelObj()
     {
         Show_Models();
         Show_ModelInfo();
-
+        Select_ModelAnim();
 
 
         EndTabBar();
@@ -2030,29 +2030,20 @@ void ImGui_Manager::Show_Models()
 		vector<string> ModelNames;
 		if (TreeNode("Character"))
 		{
-			if (TreeNode("Npc"))
+			string assetsPath = "../Resources/Models/Character/";
+
+			for (auto& entry : fs::recursive_directory_iterator(assetsPath))
 			{
-				if (TreeNode("Granseed"))
-				{
-					string assetsPath = "../Resources/Models/Character/Npc/Granseed/";
+				if (entry.is_directory())
+					continue;
 
-					for (auto& entry : fs::recursive_directory_iterator(assetsPath))
-					{
-						if (entry.is_directory())
-							continue;
+				if (entry.path().extension().wstring() != L".Model" && entry.path().extension().wstring() != L".model")
+					continue;
 
-						if (entry.path().extension().wstring() != L".Model" && entry.path().extension().wstring() != L".model")
-							continue;
+				string fileName = entry.path().filename().string();
+				Utils::DetachExt(fileName);
 
-						string fileName = entry.path().filename().string();
-						Utils::DetachExt(fileName);
-
-						ModelNames.push_back(fileName);
-					}
-
-					TreePop();
-				}
-				TreePop();
+				ModelNames.push_back(fileName);
 			}
 			TreePop();
 		}
@@ -2135,7 +2126,10 @@ void ImGui_Manager::Show_ModelInfo()
         Text((" FSM State : " + fsmList[m_pAnimModelInfo[m_iCurrentObjectIndex].eFSMIndex]).c_str());
         Text(("min Array Pos : " + to_string(m_pAnimModelInfo[m_iCurrentObjectIndex].minMoveArrayPos.x) + ", " + to_string(m_pAnimModelInfo[m_iCurrentObjectIndex].minMoveArrayPos.y) + ", " + to_string(m_pAnimModelInfo[m_iCurrentObjectIndex].minMoveArrayPos.z)).c_str());
         Text(("max Array Pos : " + to_string(m_pAnimModelInfo[m_iCurrentObjectIndex].maxMoveArrayPos.x) + ", " + to_string(m_pAnimModelInfo[m_iCurrentObjectIndex].maxMoveArrayPos.y) + ", " + to_string(m_pAnimModelInfo[m_iCurrentObjectIndex].maxMoveArrayPos.z)).c_str());
-
+       
+        Checkbox("Is Moving", &m_pAnimModelInfo[m_iCurrentObjectIndex].bMoving);
+        string strTmp = m_pAnimModelInfo[m_iCurrentObjectIndex].bMoving ? "Move" : "NonMove";
+        Text(("Move State : " + strTmp).c_str());
         if (Button("Look At"))
         {
             _float3 vPos = m_PickingPos;
@@ -2148,9 +2142,34 @@ void ImGui_Manager::Show_ModelInfo()
         Separator();
         Save_Files();
 
+
+
         EndTabItem();
     }
 
+}
+
+void ImGui_Manager::Select_ModelAnim()
+{
+	if (m_pControlObjects.expired())
+		return;
+
+    if (BeginTabItem("Anim Info"))
+    {
+        vector<string> animList;
+
+        for (auto& anim : m_pControlObjects.lock()->Get_Model()->Get_Animations())
+            animList.push_back(Utils::ToString(anim->name));
+
+        ListBox("##Anim List", &m_iCurrentAnimIndex, VectorOfStringGetter, &animList, int(animList.size()));
+
+        if (Button("Set Anim"))
+        {
+            m_pControlObjects.lock()->Get_Animator()->Set_CurrentAnim(Utils::ToWString(animList[m_iCurrentAnimIndex]), true, 1.f);
+        }
+
+        EndTabItem();
+    }
 }
 
 void ImGui_Manager::Save_Files()
@@ -2176,6 +2195,7 @@ void ImGui_Manager::Save_Files()
             file->Write<string>(Utils::ToString(gameObject->Get_Model()->Get_ModelTag()));
             file->Write<_float3>(gameObject->Get_Transform()->Get_State(Transform_State::POS).xyz());
             file->Write<_int>(gameObjectInfo.eFSMIndex);
+            file->Write<_bool>(gameObjectInfo.bMoving);
             file->Write<_float3>(gameObjectInfo.minMoveArrayPos);
             file->Write<_float3>(gameObjectInfo.maxMoveArrayPos);
         }

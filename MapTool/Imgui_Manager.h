@@ -200,17 +200,20 @@ private:
 	void Frame_ModelObj();
 	void Show_Models();
 	void Show_ModelInfo();
+	void Select_ModelAnim();
 	void Save_Files();
 
 	_int m_iCurrentModelIndex = 0;
 	_int m_iCurrentObjectIndex = 0;
 	_int m_iCurrentFSMIndex = 0;
+	_int m_iCurrentAnimIndex = 0;
 	
 	vector<shared_ptr<GameObject>> m_pAnimModels;
 
 	struct ObjectMoveInfo
 	{
 		_int eFSMIndex = 0;
+		_bool bMoving = false;
 		_float3 minMoveArrayPos = _float3(0.f);
 		_float3 maxMoveArrayPos = _float3(0.f);
 

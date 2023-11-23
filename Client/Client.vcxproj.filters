@@ -283,9 +283,6 @@
     <Filter Include="02.Component\01.FSM\05.NPC_FSM\00.Granseed">
       <UniqueIdentifier>{d3d0a97f-e88a-4a0c-b997-fd6da5de3488}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\01.FSM\03.Special_FSM\04.DragonBall_FSM">
-      <UniqueIdentifier>{f9d7289e-8b28-467c-b56c-c2aebc1f9da8}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -577,10 +574,9 @@
     <ClInclude Include="UIInteraction.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\19.UiInteraction</Filter>
     </ClInclude>
+    <ClInclude Include="DragonBall_FSM.h" />
     <ClInclude Include="GranseedGuard01_FSM.h" />
-    <ClInclude Include="DragonBall_FSM.h">
-      <Filter>02.Component\01.FSM\03.Special_FSM\04.DragonBall_FSM</Filter>
-    </ClInclude>
+    <ClInclude Include="NPC_FSM.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -839,10 +835,9 @@
     <ClCompile Include="UIInteraction.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\19.UiInteraction</Filter>
     </ClCompile>
+    <ClCompile Include="DragonBall_FSM.cpp" />
     <ClCompile Include="GranseedGuard01_FSM.cpp" />
-    <ClCompile Include="DragonBall_FSM.cpp">
-      <Filter>02.Component\01.FSM\03.Special_FSM\04.DragonBall_FSM</Filter>
-    </ClCompile>
+    <ClCompile Include="NPC_FSM.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
