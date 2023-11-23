@@ -1159,12 +1159,12 @@ void Spike_FSM::skill_100100()
 
     if (Get_CurFrame() >= 19)
     {
-        m_fEffectCreateTimer += fDT;
+        m_fEffectCreateTimer[0] += fDT;
 
-        if (m_fEffectCreateTimer >= 0.12f)
+        if (m_fEffectCreateTimer[0] >= 0.12f)
         {
             // TODO : need cooltime
-            m_fEffectCreateTimer = 0.f;
+            m_fEffectCreateTimer[0] = 0.f;
             Add_Effect(L"Spike_100100_IceFlower");
         }
 
@@ -1285,6 +1285,19 @@ void Spike_FSM::skill_200100_Init()
 
 void Spike_FSM::skill_200100_l()
 {
+    m_fEffectCreateTimer[0] += fDT;
+    m_fEffectCreateTimer[1] += fDT;
+    if (m_fEffectCreateTimer[0] >= 0.4f)
+    {
+        m_fEffectCreateTimer[0] = 0.f;
+        Add_Effect(L"Spike_200100L_Wind1");
+    }
+    if (m_fEffectCreateTimer[1] >= 0.1f)
+    {
+        m_fEffectCreateTimer[1] = 0.f;
+        Add_Effect(L"Spike_200100L_Wind2");
+    }
+
     _float3 vInputVector = Get_InputDirVector();
 
     m_fChargingRatio = _float(Get_CurFrame()) / _float(Get_FinalFrame());
@@ -1299,13 +1312,21 @@ void Spike_FSM::skill_200100_l()
             m_eCurState = STATE::skill_200300;
         else
             m_eCurState = STATE::skill_200400;
+
+        if (!m_pGroupEffect.expired())
+            m_pGroupEffect.lock()->Get_GroupEffect()->FreeLoopMember();
     }
 
     m_fWheelWindRange += fDT * 0.5f;
     m_fWheelWindSpeed += fDT;
 
     if (Is_AnimFinished())
+    {
         m_eCurState = STATE::skill_200400;
+
+        if (!m_pGroupEffect.expired())
+            m_pGroupEffect.lock()->Get_GroupEffect()->FreeLoopMember();
+    }
 
     Use_Dash();
 }
@@ -1315,6 +1336,8 @@ void Spike_FSM::skill_200100_l_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_CurrentAnim(L"skill_200100_l", false, 1.f);
+
+    Add_And_Set_Effect(L"Spike_200100L_LoopWind");
 
     m_bCanCombo = false;
 

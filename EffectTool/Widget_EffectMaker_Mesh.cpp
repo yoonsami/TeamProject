@@ -936,8 +936,21 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 			ZeroMemory(m_fEndScaleOffset, sizeof(m_fEndScaleOffset));
 			break;
 		case 1:
+		{
 			ImGui::InputFloat3("Target Scale##Movement", m_fEndScaleOffset);
+
+			ImGui::Text("Speed");
+			ImGui::RadioButton("Curve##ScaleSpeed", &m_iScaleSpeedType, 0);
+			ImGui::SameLine();
+			ImGui::RadioButton("Linear##ScaleSpeed", &m_iScaleSpeedType, 1);
+
+			m_vCurvePoint_Force[0].x = 0.f;
+			ImGui::InputFloat2("Point1 (time, speed)##ScaleSpeed", (_float*)&m_vCurvePoint_Scale[0]);
+			ImGui::InputFloat2("Point2 (time, speed)##ScaleSpeed", (_float*)&m_vCurvePoint_Scale[1]);
+			ImGui::InputFloat2("Point3 (time, speed)##ScaleSpeed", (_float*)&m_vCurvePoint_Scale[2]);
+			ImGui::InputFloat2("Point4 (time, speed)##ScaleSpeed", (_float*)&m_vCurvePoint_Scale[3]);
 			break;
+		}
 		}
 		
 		ImGui::TreePop();
