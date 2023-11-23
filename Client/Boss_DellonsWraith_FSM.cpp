@@ -169,17 +169,18 @@ void Boss_DellonsWraith_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider,
 {
 }
 
-void Boss_DellonsWraith_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
+void Boss_DellonsWraith_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
 
 }
 
-void Boss_DellonsWraith_FSM::AttackCollider_On(const wstring& skillname)
+void Boss_DellonsWraith_FSM::AttackCollider_On(const wstring& skillname, _float fAttackDamage)
 {
     if (!m_pAttackCollider.expired())
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(true);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     }
 }
 
@@ -189,6 +190,7 @@ void Boss_DellonsWraith_FSM::AttackCollider_Off()
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(0.f);
     }
 }
 
@@ -200,7 +202,7 @@ void Boss_DellonsWraith_FSM::Set_State(_uint iIndex)
 void Boss_DellonsWraith_FSM::FX_DellonsWraith_skill_30010()
 {
     if (Get_CurFrame() == 42)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 50)
         AttackCollider_Off();
     else if (Get_CurFrame() == 54)
@@ -219,27 +221,27 @@ void Boss_DellonsWraith_FSM::FX_DellonsWraith_skill_30010()
                 Get_Transform()->Get_State(Transform_State::LOOK) * 3.f +
                 _float3::Up;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
 
             vSkillPos = vSkillPos + Get_Transform()->Get_State(Transform_State::LOOK) +
                 Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
 
             vSkillPos = vSkillPos + Get_Transform()->Get_State(Transform_State::LOOK) +
                 Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
 
             vSkillPos = vSkillPos - Get_Transform()->Get_State(Transform_State::LOOK) +
                 Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
 
             vSkillPos = vSkillPos - Get_Transform()->Get_State(Transform_State::LOOK) +
                 Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
         }
     }
 
@@ -263,7 +265,7 @@ void Boss_DellonsWraith_FSM::FX_DellonsWraith_skill_30010_Init()
 void Boss_DellonsWraith_FSM::FX_DellonsWraith_skill_400100()
 {
     if (Get_CurFrame() == 12)
-        AttackCollider_On(KNOCKBACK_ATTACK);
+        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
     else if (Get_CurFrame() == 20)
         AttackCollider_Off();
 
@@ -288,7 +290,7 @@ void Boss_DellonsWraith_FSM::FX_DellonsWraith_skill_400100_Init()
 void Boss_DellonsWraith_FSM::FX_DellonsWraith_skill_601100()
 {
     if (Get_CurFrame() == 126)
-        AttackCollider_On(KNOCKBACK_ATTACK);
+        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
     else if (Get_CurFrame() == 140)
         AttackCollider_Off();
 
@@ -313,15 +315,15 @@ void Boss_DellonsWraith_FSM::FX_DellonsWraith_skill_601100_Init()
 void Boss_DellonsWraith_FSM::FX_DellonsWraith_skill_903100()
 {
     if (Get_CurFrame() == 65)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 72)
         AttackCollider_Off();
     else if (Get_CurFrame() == 77)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 82)
         AttackCollider_Off();
     else if (Get_CurFrame() == 109)
-        AttackCollider_On(KNOCKBACK_ATTACK);
+        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
     else if (Get_CurFrame() == 116)
         AttackCollider_Off();
 
@@ -365,7 +367,7 @@ void Boss_DellonsWraith_FSM::FX_DellonsWraith01_Special_01_Init()
 void Boss_DellonsWraith_FSM::FX_SQ_Dellons_QuestEnd_2()
 {
     if (Get_CurFrame() == 85)
-        AttackCollider_On(KNOCKDOWN_ATTACK);
+        AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
     else if (Get_CurFrame() == 100)
         AttackCollider_Off();
 
@@ -389,7 +391,7 @@ void Boss_DellonsWraith_FSM::FX_SQ_Dellons_QuestEnd_2_Init()
 void Boss_DellonsWraith_FSM::FX_Mn_Dellons_skill_500200()
 {
     if (Get_CurFrame() == 19)
-        AttackCollider_On(KNOCKDOWN_ATTACK);
+        AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
 
     if (Is_AnimFinished())
     {
@@ -411,7 +413,7 @@ void Boss_DellonsWraith_FSM::FX_Mn_Dellons_skill_500200_Init()
 void Boss_DellonsWraith_FSM::FX_Mn_Dellons_skill_5100()
 {
     if (Get_CurFrame() == 80)
-        AttackCollider_On(KNOCKDOWN_ATTACK);
+        AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
     else if (Get_CurFrame() == 94)
     {
         CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
@@ -433,7 +435,7 @@ void Boss_DellonsWraith_FSM::FX_Mn_Dellons_skill_5100_Init()
 void Boss_DellonsWraith_FSM::FX_Mn_Dellons_skill_6100()
 {
     if (Get_CurFrame() == 59)
-        AttackCollider_On(KNOCKDOWN_ATTACK);
+        AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
     else if (Get_CurFrame() == 69)
         AttackCollider_Off();
 
@@ -457,7 +459,7 @@ void Boss_DellonsWraith_FSM::FX_Mn_Dellons_skill_6100_Init()
 void Boss_DellonsWraith_FSM::FX_Mn_Dellons_skill_5200()
 {
     if (Get_CurFrame() == 90)
-        AttackCollider_On(KNOCKDOWN_ATTACK);
+        AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
     else if (Get_CurFrame() == 114)
         AttackCollider_Off();
 
@@ -480,7 +482,7 @@ void Boss_DellonsWraith_FSM::FX_Mn_Dellons_skill_5200_Init()
 
 
 
-void Boss_DellonsWraith_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType)
+void Boss_DellonsWraith_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
 {
     shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
 
@@ -492,6 +494,7 @@ void Boss_DellonsWraith_FSM::Create_ForwardMovingSkillCollider(const _float4& vP
     SkillCollider->Add_Component(make_shared<AttackColliderInfoScript>());
     SkillCollider->Get_Collider()->Set_Activate(true);
     SkillCollider->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
+    SkillCollider->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     SkillCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
     SkillCollider->Set_Name(L"Boss_Dellons_Wraith_SkillCollider");
     SkillCollider->Add_Component(make_shared<ForwardMovingSkillScript>(desc));

@@ -5,14 +5,22 @@
 
 #define NONE_HIT					L""
 #define NORMAL_ATTACK               L"Normal_Attack"
+#define NORMAL_ATTACK_COUNTER       L"Normal_Attack_Counter"
 #define KNOCKBACK_ATTACK            L"KnockBack_Attack"
+#define KNOCKBACK_ATTACK_COUNTER    L"KnockBack_Attack_Counter"
 #define KNOCKDOWN_ATTACK            L"KnockDown_Attack"
+#define KNOCKDOWN_ATTACK_COUNTER    L"KnockDown_Attack_Counter"
 #define AIRBORNE_ATTACK             L"Airborne_Attack"
+#define AIRBORNE_ATTACK_COUNTER     L"Airborne_Attack_Counter"
 
 #define NORMAL_SKILL                L"Normal_Skill"
+#define NORMAL_SKILL_COUNTER        L"Normal_Skill_Counter"
 #define KNOCKBACK_SKILL             L"KnockBack_Skill"
+#define KNOCKBACK_SKILL_COUNTER     L"KnockBack_Skill_Counter"
 #define KNOCKDOWN_SKILL             L"KnockDown_Skill"
+#define KNOCKDOWN_SKILL_COUNTER     L"KnockDown_Skill_Counter"
 #define AIRBORNE_SKILL              L"Airborne_Skill"
+#define AIRBORNE_SKILL_COUNTER      L"Airborne_Skill_Counter"
 
 #define IDX(VALUE)                  static_cast<unsigned int>(VALUE)
 

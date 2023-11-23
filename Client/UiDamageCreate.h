@@ -10,7 +10,7 @@ public:
 public:
     virtual HRESULT Init() override;
 
-    void Create_Damage_Font(weak_ptr<GameObject> pObj);
+    void Create_Damage_Font(weak_ptr<GameObject> pObj, _float fDamage);
     void Create_Damage_Hit();
 
 private:

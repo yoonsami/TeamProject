@@ -296,11 +296,13 @@ void SpearAce_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float f
 	if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
 		return;
 
-    wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
 
     if (!m_bInvincible)
     {
-		shared_ptr<GameObject> targetToLook = nullptr;
+        wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
+        _float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
+		
+        shared_ptr<GameObject> targetToLook = nullptr;
 		// skillName에 _Skill 포함이면
 		if (strSkillName.find(L"_Skill") != wstring::npos)
 			targetToLook = pCollider->Get_Owner(); // Collider owner를 넘겨준다
@@ -310,7 +312,7 @@ void SpearAce_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float f
         if (targetToLook == nullptr)
             return;
 
-		Get_Hit(strSkillName, targetToLook);
+		Get_Hit(strSkillName, fAttackDamage, targetToLook);
     }
 }
 
@@ -318,9 +320,12 @@ void SpearAce_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fG
 {
 }
 
-void SpearAce_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
+void SpearAce_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
-	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
+    //Calculate Damage 
+    m_pOwner.lock()->Get_Hurt(fDamage);
+	
+    _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 	_float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
 
 	m_vHitDir = vOppositePos - vMyPos;
@@ -379,12 +384,13 @@ void SpearAce_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLoo
     }
 }
 
-void SpearAce_FSM::AttackCollider_On(const wstring& skillname)
+void SpearAce_FSM::AttackCollider_On(const wstring& skillname, _float fAttackDamage)
 {
     if (!m_pAttackCollider.expired())
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(true);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     }
 }
 
@@ -394,6 +400,7 @@ void SpearAce_FSM::AttackCollider_Off()
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(0.f);
     }
 }
 
@@ -883,7 +890,7 @@ void SpearAce_FSM::skill_1100()
     Look_DirToTarget();
 
     if (Get_CurFrame() == 9)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 19)
         AttackCollider_Off();
     
@@ -920,7 +927,7 @@ void SpearAce_FSM::skill_1200()
     Look_DirToTarget();
 
     if (Get_CurFrame() == 1)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 33)
         AttackCollider_Off();
     
@@ -960,7 +967,7 @@ void SpearAce_FSM::skill_1300()
     Look_DirToTarget();
 
     if (Get_CurFrame() == 4)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 28)
         AttackCollider_Off();
 
@@ -1067,11 +1074,11 @@ void SpearAce_FSM::skill_100100()
         desc.fLimitDistance = 6.f;
         
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-        Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
+        Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
     }
 
     if (Get_CurFrame() == 28)
-        AttackCollider_On(KNOCKBACK_ATTACK);
+        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
     else if (Get_CurFrame() == 58)
         AttackCollider_Off();
 
@@ -1109,11 +1116,11 @@ void SpearAce_FSM::skill_200100()
     if (Get_CurFrame() == 21)
         AttackCollider_Off();
     else if (Get_CurFrame() == 25)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 35)
         AttackCollider_Off();
     else if (Get_CurFrame() == 38)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 61)
         AttackCollider_Off();
 
@@ -1140,7 +1147,7 @@ void SpearAce_FSM::skill_200100_Init()
 
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
-    AttackCollider_On(NORMAL_ATTACK);
+    AttackCollider_On(NORMAL_ATTACK, 10.f);
 
     m_bInvincible = false;
     m_bSuperArmor = true;
@@ -1159,7 +1166,7 @@ void SpearAce_FSM::skill_200200()
 		desc.fLimitDistance = 12.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-		Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_SKILL);
+		Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_SKILL, 10.f);
     }
     
     if (Is_AnimFinished())
@@ -1267,7 +1274,7 @@ void SpearAce_FSM::skill_300100()
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 9.f;
 
-		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
+		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
 
     }
     else if (Init_CurFrame(84))
@@ -1286,7 +1293,7 @@ void SpearAce_FSM::skill_300100()
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 9.f;
 
-		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
+		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
 
     }
     else if (Init_CurFrame(89))
@@ -1305,7 +1312,7 @@ void SpearAce_FSM::skill_300100()
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 9.f;
 
-		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
+		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
 
     }
     else if (Init_CurFrame(94))
@@ -1323,7 +1330,7 @@ void SpearAce_FSM::skill_300100()
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 9.f;
 
-		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
+		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
 
     }
     else if (Init_CurFrame(99))
@@ -1342,7 +1349,7 @@ void SpearAce_FSM::skill_300100()
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 9.f;
 
-		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
+		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
 
     }
     else if (Init_CurFrame(110))
@@ -1355,7 +1362,7 @@ void SpearAce_FSM::skill_300100()
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 0.f;
 
-		Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, AIRBORNE_ATTACK);
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, AIRBORNE_ATTACK, 10.f);
 
     }
 
@@ -1386,7 +1393,7 @@ void SpearAce_FSM::skill_300100_Init()
                         Get_Transform()->Get_State(Transform_State::LOOK) +
                         _float3::Up;
 
-    Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, NORMAL_SKILL);
+    Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, NORMAL_SKILL, 10.f);
 
     AttackCollider_Off();
     Create_300100Clone();
@@ -1407,7 +1414,7 @@ void SpearAce_FSM::skill_502100()
 		desc.fLimitDistance = 3.5f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
+		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
 
     }
 
@@ -1419,7 +1426,7 @@ void SpearAce_FSM::skill_502100()
     else if (Get_CurFrame() == 44)
     {
         m_bInvincible = false;
-        AttackCollider_On(KNOCKBACK_ATTACK);
+        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
     }
     else if (Get_CurFrame() == 62)
         AttackCollider_Off();
@@ -1454,7 +1461,7 @@ void SpearAce_FSM::skill_500100()
     Look_DirToTarget();
 
     if (Get_CurFrame() == 15)
-        AttackCollider_On(KNOCKBACK_ATTACK);
+        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
     else if (Get_CurFrame() == 33)
         AttackCollider_Off();
 
@@ -1483,7 +1490,7 @@ void SpearAce_FSM::skill_500100_Init()
     m_bSuperArmor = true;
 }
 
-void SpearAce_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType)
+void SpearAce_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
 {
     shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
 
@@ -1501,6 +1508,7 @@ void SpearAce_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float
     m_pSkillCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
     m_pSkillCollider.lock()->Get_Collider()->Set_Activate(true);
     m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
+    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
     m_pSkillCollider.lock()->Set_Name(L"Player_SkillCollider");
     m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));

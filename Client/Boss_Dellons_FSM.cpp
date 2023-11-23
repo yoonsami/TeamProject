@@ -358,10 +358,12 @@ void Boss_Dellons_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _flo
     if (pCollider->Get_Owner() == nullptr)
         return;
 
-    wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
 
     if (!m_bInvincible)
     {
+        wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
+        _float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
+
         shared_ptr<GameObject> targetToLook = nullptr;
         // skillName에 _Skill 포함이면
         if (strSkillName.find(L"_Skill") != wstring::npos)
@@ -374,8 +376,7 @@ void Boss_Dellons_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _flo
         if (targetToLook == nullptr)
             return;
 
-        CUR_SCENE->Get_GameObject(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner());
-        Get_Hit(strSkillName, targetToLook);
+        Get_Hit(strSkillName, fAttackDamage,  targetToLook);
     }
 }
 
@@ -383,9 +384,12 @@ void Boss_Dellons_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _floa
 {
 }
 
-void Boss_Dellons_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
+void Boss_Dellons_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
-    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner());
+    //Calculate Damage 
+    m_pOwner.lock()->Get_Hurt(fDamage);
+
+    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage);
 
     _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
     _float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
@@ -460,12 +464,13 @@ void Boss_Dellons_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> 
     }
 }
 
-void Boss_Dellons_FSM::AttackCollider_On(const wstring& skillname)
+void Boss_Dellons_FSM::AttackCollider_On(const wstring& skillname, _float fAttackDamage)
 {
     if (!m_pAttackCollider.expired())
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(true);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     }
 }
 
@@ -475,6 +480,7 @@ void Boss_Dellons_FSM::AttackCollider_Off()
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(0.f);
     }
 }
 
@@ -1004,7 +1010,7 @@ void Boss_Dellons_FSM::skill_1100()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     if (Get_CurFrame() == 9)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 19)
         AttackCollider_Off();
 
@@ -1033,7 +1039,7 @@ void Boss_Dellons_FSM::skill_1200()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     if (Get_CurFrame() == 8)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 18)
         AttackCollider_Off();
   
@@ -1064,7 +1070,7 @@ void Boss_Dellons_FSM::skill_1300()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     if (Get_CurFrame() == 8)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 33)
         AttackCollider_Off();
 
@@ -1095,11 +1101,11 @@ void Boss_Dellons_FSM::skill_1400()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     if (Get_CurFrame() == 8)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 14)
         AttackCollider_Off();
     else if (Get_CurFrame() == 16)
-        AttackCollider_On(KNOCKBACK_ATTACK);
+        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
     else if (Get_CurFrame() == 24)
         AttackCollider_Off();
 
@@ -1185,7 +1191,7 @@ void Boss_Dellons_FSM::skill_100100()
                 Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
                 _float3::Up;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
         }
     }
 
@@ -1229,7 +1235,7 @@ void Boss_Dellons_FSM::skill_100200()
                 Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
                 _float3::Up;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, AIRBORNE_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, AIRBORNE_ATTACK, 10.f);
         }
     }
  
@@ -1260,7 +1266,7 @@ void Boss_Dellons_FSM::skill_200100()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     if (Get_CurFrame() == 7)
-        AttackCollider_On(KNOCKBACK_ATTACK);
+        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
     else if (Get_CurFrame() == 12)
         AttackCollider_Off();
 
@@ -1301,7 +1307,7 @@ void Boss_Dellons_FSM::skill_200200()
             desc.fLimitDistance = 0.f;
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f + _float3::Up;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_SKILL);
+            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_SKILL, 10.f);
         }
     }
 
@@ -1436,7 +1442,7 @@ void Boss_Dellons_FSM::skill_400100()
             desc.fLimitDistance = 3.5f;
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f);
         }
     }
     else if (Get_CurFrame() == 102)
@@ -1450,7 +1456,7 @@ void Boss_Dellons_FSM::skill_400100()
             desc.fLimitDistance = 2.f;
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKDOWN_SKILL);
+            Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKDOWN_SKILL, 10.f);
         }
     }
 
@@ -1606,7 +1612,7 @@ void Boss_Dellons_FSM::Battle_Start()
     }
 }
 
-void Boss_Dellons_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType)
+void Boss_Dellons_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
 {
     shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
 
@@ -1624,6 +1630,7 @@ void Boss_Dellons_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _f
     m_pSkillCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
     m_pSkillCollider.lock()->Get_Collider()->Set_Activate(true);
     m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
+    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
     m_pSkillCollider.lock()->Set_Name(L"Boss_Dellons_SkillCollider");
     m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
