@@ -65,6 +65,7 @@ HRESULT Shane_FSM::Init()
 
 void Shane_FSM::Tick()
 {
+    Calculate_CamBoneMatrix();
     State_Tick();
 
     if (!m_pAttackCollider.expired())
@@ -73,7 +74,6 @@ void Shane_FSM::Tick()
         m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up);
     }
 
-    Calculate_CamBoneMatrix();
 }
 
 void Shane_FSM::State_Tick()

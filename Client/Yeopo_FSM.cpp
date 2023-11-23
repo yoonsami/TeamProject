@@ -65,6 +65,8 @@ HRESULT Yeopo_FSM::Init()
 
 void Yeopo_FSM::Tick()
 {
+    Calculate_CamBoneMatrix();
+
     State_Tick();
 
     if (!m_pAttackCollider.expired())
@@ -73,7 +75,6 @@ void Yeopo_FSM::Tick()
         m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up);
     }
 
-    Calculate_CamBoneMatrix();
 }
 
 void Yeopo_FSM::State_Tick()

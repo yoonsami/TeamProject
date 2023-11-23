@@ -55,8 +55,6 @@ HRESULT YeopoHorse_FSM::Init()
 
 void YeopoHorse_FSM::Tick()
 {
-    State_Tick();
-
     if (!m_pAttackCollider.expired())
     {
         //Head_Bone_Pos
@@ -67,6 +65,8 @@ void YeopoHorse_FSM::Tick()
         _float4 vBonePos = _float4{ matBoneMatrix.Translation().x, matBoneMatrix.Translation().y, matBoneMatrix.Translation().z , 1.f };
         m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, vBonePos);
     }
+    State_Tick();
+
 }
 
 void YeopoHorse_FSM::State_Tick()
