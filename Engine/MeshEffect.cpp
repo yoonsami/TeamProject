@@ -469,7 +469,7 @@ void MeshEffect::Translate()
             vDir.y = 0.f;
 
             vPos += vDir * m_tTransform_Desc.vCurvePoint_Force[0].x;
-            vPos.y -= m_fCurrYspeed;
+            vPos.y -= m_fCurrYspeed * fDT;
             m_fCurrYspeed += fDT;
 
             Get_Transform()->Set_State(Transform_State::POS, vPos);
@@ -480,7 +480,7 @@ void MeshEffect::Translate()
             vDir.Normalize();
 
             m_vLocalPos += vDir * m_tTransform_Desc.vCurvePoint_Force[0].x;
-            m_vLocalPos.y -= m_fCurrYspeed;
+            m_vLocalPos.y -= m_fCurrYspeed * fDT;
             m_fCurrYspeed += fDT;
         }
 
