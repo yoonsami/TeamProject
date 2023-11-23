@@ -39,7 +39,7 @@ HRESULT MainCameraScript::Init()
     return S_OK;
 }
 
-void MainCameraScript::Tick()
+void MainCameraScript::Late_Tick()
 {
     if (m_fFixedTime <= 0.f)
         Cal_OffsetDir();

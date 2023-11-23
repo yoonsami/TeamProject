@@ -150,7 +150,7 @@ private:
 	void TailAttackCollider_On(const wstring& skillname);
 	void TailAttackCollider_Off();
 
-
+	_float CamDistanceLerp(_float fStart, _float fEnd, _float fRatio);
 
 private:
 	STATE m_eCurState = STATE::b_idle;
@@ -163,11 +163,14 @@ private:
 	_float3 m_vTurnVector = _float3(0.f);
 	_float3 m_vFirstPos = _float3(0.f);
 	_float m_fTurnSpeed = XM_PI * 0.5f;
-	
+	_float m_fIntroCamDistance = 0.f;
+	_float m_fCamRatio = 0.f;
+
 	COOLTIMEINFO m_tAttackCoolTime = { 2.f, 0.f };
 	COOLTIMEINFO m_tBreathCoolTime = { 0.15f, 0.f };
 	COOLTIMEINFO m_tMeteorCoolTime = { 2.f, 0.f };
 	
+	_bool m_bIntroCam = false;
 	_bool m_bDetected = false;
 	_bool m_bTurnMotion = false;
 
