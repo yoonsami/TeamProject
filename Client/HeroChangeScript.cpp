@@ -46,6 +46,7 @@ HRESULT HeroChangeScript::Init()
 
 void HeroChangeScript::Tick()
 {
+    
     if (m_pOwner.expired())
         return;
 
@@ -77,6 +78,7 @@ void HeroChangeScript::Tick()
 	{
         Change_Hero(HERO::YEONHEE);
 	}
+
 }
 
 void HeroChangeScript::Change_Hero(HERO eHero)
@@ -336,14 +338,20 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
     if (m_pOwner.expired() || HERO::MAX == eHero)
         return;
 
+
+
     m_pOwner.lock()->Get_FSM()->Reset_Weapon();
     m_pOwner.lock()->Get_FSM()->Reset_Vehicle();
+
+
     //AnimIndex Reset
     m_pOwner.lock()->Get_Animator()->Set_CurrentAnim(0);
 
-    //PlayerAttackCollider Remove
+
     CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Player_AttackCollider"));
     CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Vehicle_AttackCollider"));
+
+    
 
     auto tagData = GET_DATA(eHero);
     shared_ptr<Model> model = RESOURCES.Get<Model>(tagData.ModelTag);
@@ -385,6 +393,7 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
         Add_Character_Weapon(tagData.WeaponTag);
 
     m_pOwner.lock()->Get_FSM()->Init();
+
     if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(eHero);
 }
