@@ -87,7 +87,7 @@ void InstancingMgr::Render_MeshRenderer(vector<shared_ptr<GameObject>>& gameObje
 				data.world = gameobject->Get_Transform()->Get_WorldMatrix();
 				data.preWorld = gameobject->Get_Transform()->Get_preWorldMatrix();
 
-				materialDesc->params[i] = gameobject->Get_ModelRenderer()->Get_RenderParamDesc();
+				materialDesc->params[i] = gameobject->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[0];
 				Add_Data(instanceId, data);
 			}
 
@@ -140,7 +140,7 @@ void InstancingMgr::Render_ModelRenderer(vector<shared_ptr<GameObject>>& gameObj
 				data.world = gameobject->Get_Transform()->Get_WorldMatrix();
 				data.preWorld = gameobject->Get_Transform()->Get_preWorldMatrix();
 
-				materialDesc->params[i] = gameobject->Get_ModelRenderer()->Get_RenderParamDesc();
+				materialDesc->params[i] = gameobject->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[0];
 				Add_Data(instanceId, data);
 			}
 			
@@ -198,7 +198,7 @@ void InstancingMgr::Render_Animator(vector<shared_ptr<GameObject>>& gameObjects)
 
 				tweenDesc->tweens[i] = gameobject->Get_Animator()->Get_TweenDesc();
 				tweenDesc->preTweens[i] = gameobject->Get_Animator()->Get_preTweenDesc();
-				materialDesc->params[i] = gameobject->Get_Animator()->Get_RenderParamDesc();
+				materialDesc->params[i] = gameobject->Get_Animator()->Get_RenderParamDesc().vec4Params[0];
 			}
 			shared_ptr<InstancingBuffer>& buffer = m_Buffers[instanceId];
 			vec[0]->Get_Animator()->Render_Instancing(buffer,tweenDesc,materialDesc);
@@ -273,7 +273,7 @@ void InstancingMgr::Render_ModelRenderer_Shadow(vector<shared_ptr<GameObject>>& 
 				data.world = gameobject->Get_Transform()->Get_WorldMatrix();
 				data.preWorld = gameobject->Get_Transform()->Get_preWorldMatrix();
 
-				materialDesc->params[i] = gameobject->Get_ModelRenderer()->Get_RenderParamDesc();
+				materialDesc->params[i] = gameobject->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[0];
 				Add_Data(instanceId, data);
 			}
 
@@ -332,7 +332,7 @@ void InstancingMgr::Render_Animator_Shadow(vector<shared_ptr<GameObject>>& gameO
 				Add_Data(instanceId, data);
 
 				tweenDesc->tweens[i] = gameobject->Get_Animator()->Get_TweenDesc();
-				materialDesc->params[i] = gameobject->Get_Animator()->Get_RenderParamDesc();
+				materialDesc->params[i] = gameobject->Get_Animator()->Get_RenderParamDesc().vec4Params[0];
 			}
 			shared_ptr<InstancingBuffer>& buffer = m_Buffers[instanceId];
 			vec[0]->Get_Animator()->Render_Shadow_Instancing(buffer, tweenDesc, materialDesc);
@@ -384,7 +384,7 @@ void InstancingMgr::Render_ModelRenderer_VelocityMap(vector<shared_ptr<GameObjec
 				data.world = gameobject->Get_Transform()->Get_WorldMatrix();
 				data.preWorld = gameobject->Get_Transform()->Get_preWorldMatrix();
 
-				materialDesc->params[i] = gameobject->Get_ModelRenderer()->Get_RenderParamDesc();
+				materialDesc->params[i] = gameobject->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[0];
 				Add_Data(instanceId, data);
 			}
 
@@ -443,7 +443,7 @@ void InstancingMgr::Render_Animator_VelocityMap(vector<shared_ptr<GameObject>>& 
 				Add_Data(instanceId, data);
 
 				tweenDesc->tweens[i] = gameobject->Get_Animator()->Get_TweenDesc();
-				materialDesc->params[i] = gameobject->Get_Animator()->Get_RenderParamDesc();
+				materialDesc->params[i] = gameobject->Get_Animator()->Get_RenderParamDesc().vec4Params[0];
 			}
 			shared_ptr<InstancingBuffer>& buffer = m_Buffers[instanceId];
 			vec[0]->Get_Animator()->Render_MotionBlur_Instancing(buffer, tweenDesc, materialDesc);
