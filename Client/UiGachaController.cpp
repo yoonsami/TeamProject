@@ -14,6 +14,11 @@ HRESULT UiGachaController::Init()
     if (m_pOwner.expired())
         return E_FAIL;
 
+    if (true == m_bIsInit)
+        return S_OK;
+
+    m_bIsInit = true;
+
     m_vecObjTag.resize(10);
     m_vecObjTag[0] = L"UI_Gacha_Card0";
     m_vecObjTag[1] = L"UI_Gacha_Card1";

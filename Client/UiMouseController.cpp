@@ -12,6 +12,11 @@ HRESULT UiMouseController::Init()
     if (m_pOwner.expired())
         return E_FAIL;
 
+    if (true == m_bIsInit)
+        return S_OK;
+
+    m_bIsInit = true;
+
     m_fMaxTime = 0.25f;
     m_fCheckTime = 0.f;
     m_fRatio = 1.f / m_fMaxTime;

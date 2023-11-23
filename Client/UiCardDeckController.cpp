@@ -15,6 +15,11 @@ HRESULT UiCardDeckController::Init()
     if (m_pOwner.expired())
         return E_FAIL;
 
+    if (true == m_bIsInit)
+        return S_OK;
+
+    m_bIsInit = true;
+
     m_fCheckTime = 0.f;
     m_fMaxTime = 1.f;
     m_fSpeed = 30.f;

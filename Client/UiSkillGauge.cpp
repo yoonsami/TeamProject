@@ -12,6 +12,11 @@ HRESULT UiSkillGauge::Init()
     if (m_pOwner.expired())
         return E_FAIL;
 
+    if (true == m_bIsInit)
+        return S_OK;
+
+    m_bIsInit = true;
+
     auto pScene = CUR_SCENE;
     m_pGaugeBg  = pScene->Get_UI(L"UI_Skill_Use_GaugeBg");
     if (true == m_pGaugeBg.expired())

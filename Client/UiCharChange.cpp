@@ -14,6 +14,11 @@ HRESULT UiCharChange::Init()
     if (m_pOwner.expired())
         return E_FAIL;
 
+    if (true == m_bIsInit)
+        return S_OK;
+
+    m_bIsInit = true;
+
     m_vecDesc.resize(3);
     m_vecDesc[0].fCoolTime = 10.f;
     m_vecDesc[1].fCoolTime = 10.f;

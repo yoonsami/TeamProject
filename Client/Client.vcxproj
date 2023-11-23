@@ -198,6 +198,7 @@
     <ClInclude Include="Alpaca_FSM.h" />
     <ClInclude Include="AttackColliderInfoScript.h" />
     <ClInclude Include="MirScene.h" />
+    <ClInclude Include="UiDialogController.h" />
     <ClInclude Include="Wolf_FSM.h" />
     <ClInclude Include="Boss_DellonsWraith_FSM.h" />
     <ClInclude Include="Boss_Dellons_FSM.h" />
@@ -287,6 +288,7 @@
     <ClCompile Include="Alpaca_FSM.cpp" />
     <ClCompile Include="AttackColliderInfoScript.cpp" />
     <ClCompile Include="MirScene.cpp" />
+    <ClCompile Include="UiDialogController.cpp" />
     <ClCompile Include="Wolf_FSM.cpp" />
     <ClCompile Include="Boss_DellonsWraith_FSM.cpp" />
     <ClCompile Include="Boss_Dellons_FSM.cpp" />

@@ -31,6 +31,6 @@ private:
     _float      m_fSpeed        = {};
     _float      m_fOriginScale  = {};
     _float      m_fMaxScale     = {};
-    _bool       m_bIsRender = { false };
+    _bool       m_bIsRender     = { false };
 };
 

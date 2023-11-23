@@ -12,6 +12,11 @@ HRESULT UiCoolEndEffect::Init()
     if (m_pOwner.expired())
         return E_FAIL;
 
+    if (true == m_bIsInit)
+        return S_OK;
+
+    m_bIsInit = true;
+
     m_fMaxTime = 0.5f;
     m_fRatio = 1.2f / m_fMaxTime;
 

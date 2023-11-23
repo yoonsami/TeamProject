@@ -14,6 +14,12 @@ HRESULT UiTargetLockOn::Init()
         return E_FAIL;
 
     m_pCamera = CUR_SCENE->Get_Camera(L"Default");
+
+    if (true == m_bIsInit)
+        return S_OK;
+
+    m_bIsInit = true;
+
     m_pLockOn0 = CUR_SCENE->Get_UI(L"UI_Target_LockOn0");
     m_pLockOn1 = CUR_SCENE->Get_UI(L"UI_Target_LockOn1");
 

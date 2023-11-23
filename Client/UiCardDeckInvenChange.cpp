@@ -14,6 +14,11 @@ HRESULT UiCardDeckInvenChange::Init()
     if (m_pOwner.expired())
         return E_FAIL;
 
+    if (true == m_bIsInit)
+        return S_OK;
+
+    m_bIsInit = true;
+
     //m_pOwner.lock()->Set_Render(false);
     //m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
 

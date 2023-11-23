@@ -18,6 +18,11 @@ HRESULT UiDamageCreate::Init()
     m_pPlayer = CUR_SCENE->Get_GameObject(L"Player");
     m_pCamera = CUR_SCENE->Get_Camera(L"Default");
 
+    if (true == m_bIsInit)
+        return S_OK;
+
+    m_bIsInit = true;
+
     m_Color.resize(ElementType::ElementEnd);
     m_Color[ElementType::DARK]  = Color{ 0.5451f , 0.2706f, 0.8196f , 1.f };
     m_Color[ElementType::EARTH] = Color{ 0.7961f , 0.5020f, 0.3765f , 1.f };

@@ -268,6 +268,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\17.UiMarkNpc">
       <UniqueIdentifier>{72831f1a-04f7-4c99-bb2c-b123a25ffc4f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\18.UiDialogController">
+      <UniqueIdentifier>{093b24ca-395b-4343-8de6-fc39038975b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -549,6 +552,9 @@
     <ClInclude Include="UiMarkNpc.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\17.UiMarkNpc</Filter>
     </ClInclude>
+    <ClInclude Include="UiDialogController.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\18.UiDialogController</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -796,6 +802,9 @@
     </ClCompile>
     <ClCompile Include="UiMarkNpc.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\17.UiMarkNpc</Filter>
+    </ClCompile>
+    <ClCompile Include="UiDialogController.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\18.UiDialogController</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

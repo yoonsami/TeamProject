@@ -11,6 +11,11 @@ HRESULT UiSkillButtonEffect::Init()
 {
     if (m_pOwner.expired())
         return E_FAIL;
+    
+    if (true == m_bIsInit)
+        return S_OK;
+
+    m_bIsInit = true;
 
     m_vecOriginScale = m_pOwner.lock()->GetOrAddTransform()->Get_Scale();
     m_vecMaxScale = m_vecOriginScale * 3.f;
