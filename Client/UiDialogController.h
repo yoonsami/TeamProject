@@ -6,16 +6,15 @@ class UiDialogController : public MonoBehaviour
 public:
     UiDialogController();
 
-
 public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
 
-    void Create_Dialog();
-    void Remove_Dialog();
+    void Create_Dialog(NPCTYPE eType);
     void Next_Dialog();
 
 private:
+    void Remove_Dialog();
     void Move_Next();
     void Next_Down();
     void Next_Up();

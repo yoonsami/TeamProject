@@ -18,7 +18,7 @@ private:
     void Delete_Gacha_Card();
     void Delete_Gacha_Bg();
     void Delete_Gacha_Button();
-    
+    void Delete_Gacha_Effect();
     void Start_All_Open();
 
 private:

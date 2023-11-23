@@ -931,12 +931,6 @@ void ResourceMgr::CreateDefaultFont()
 
 		Add(L"Ori_136ex", font);
 	}
-	/*{
-		shared_ptr<CustomFont> font = make_shared<CustomFont>();
-		font->Load(L"..\\Resources\\Font\\Dream.spritefont");
-
-		Add(L"Dream", font);
-	}
 	{
 		shared_ptr<CustomFont> font = make_shared<CustomFont>();
 		font->Load(L"..\\Resources\\Font\\overwatch.spritefont");
@@ -944,6 +938,12 @@ void ResourceMgr::CreateDefaultFont()
 		Add(L"overwatch", font);
 	}
 	{
+		shared_ptr<CustomFont> font = make_shared<CustomFont>();
+		font->Load(L"..\\Resources\\Font\\Soyo_Maple.spritefont");
+
+		Add(L"Soyo_Maple", font);
+	}
+	/*{
 		shared_ptr<CustomFont> font = make_shared<CustomFont>();
 		font->Load(L"..\\Resources\\Font\\maple_light.spritefont");
 

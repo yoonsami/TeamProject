@@ -35,7 +35,7 @@ void UiDialogController::Tick()
     Move_Next();
 }
 
-void UiDialogController::Create_Dialog()
+void UiDialogController::Create_Dialog(NPCTYPE eType)
 {
     if (true == m_bIsCreated)
         return;
@@ -69,7 +69,7 @@ void UiDialogController::Create_Dialog()
     if (false == m_pNpcName.expired())
     {
         // npc type Á¤ÇÏ±â
-        wstring strNpcName = GET_NPC_NAME(NPCTYPE::QUEST);
+        wstring strNpcName = GET_NPC_NAME(eType);
         m_pNpcName.lock()->Get_FontRenderer()->Get_Text() = strNpcName;
         _float4 vecPos = m_pNpcName.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
         vecPos.x = (strNpcName.length() / 2.f) * -28.f;

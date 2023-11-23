@@ -183,6 +183,21 @@ void UiGachaController::Delete_Gacha_Button()
     }
 }
 
+void UiGachaController::Delete_Gacha_Effect()
+{
+    auto pScene = CUR_SCENE;
+
+    _uint iSize = IDX(m_vecObjEffectTag.size());
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        weak_ptr<GameObject> pObj = pScene->Get_UI(m_vecObjEffectTag[i]);
+        if (true == pObj.expired())
+            continue;
+
+        pScene->Remove_GameObject(pObj.lock());
+    }
+}
+
 void UiGachaController::Start_All_Open()
 {
     if (m_iIndex == m_iSize)
@@ -221,4 +236,5 @@ void UiGachaController::Delete_All()
     Delete_Gacha_Card();
     Delete_Gacha_Bg();
     Delete_Gacha_Button();
+    Delete_Gacha_Effect();
 }
