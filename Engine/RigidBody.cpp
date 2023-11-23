@@ -10,7 +10,15 @@ RigidBody::RigidBody() :Component(COMPONENT_TYPE::RigidBody)
 
 RigidBody::~RigidBody()
 {
+	if (PHYSX.Get_PxScene())
+	{
+		if (m_pRigidBody)
+		{
+			m_pRigidBody->release();
+			m_pRigidBody = nullptr;
+		}
 
+	}
 }
 
 void RigidBody::Late_Tick()
@@ -121,6 +129,19 @@ void RigidBody::Create_CapsuleRigidBody(_float3 centerPos, _float radius, _float
 	shape->release();
 
 	PHYSX.Get_PxScene()->addActor(*m_pRigidBody);
+}
+
+void RigidBody::RemoveRigidBody()
+{
+	if (PHYSX.Get_PxScene())
+	{
+		if (m_pRigidBody)
+		{
+			m_pRigidBody->release();
+			m_pRigidBody = nullptr;
+		}
+
+	}
 }
 
 

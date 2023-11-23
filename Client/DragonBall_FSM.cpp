@@ -5,6 +5,7 @@
 #include "MotionTrailRenderer.h"
 #include "MotionTrailDisappear.h"
 #include "SphereCollider.h"
+#include "RigidBody.h"
 
 
 void DragonBall_FSM::Tick()
@@ -104,16 +105,13 @@ void DragonBall_FSM::Crash_Init()
 	{
 		Ray ray;
 		ray.position = Get_Transform()->Get_State(Transform_State::POS).xyz();
-		ray.direction = -_float3::Up;
-		physx::PxRaycastBuffer hit{};
-		physx::PxQueryFilterData filterData;
-		filterData.flags = physx::PxQueryFlag::eSTATIC;
-		if (PHYSX.Get_PxScene()->raycast({ ray.position.x,ray.position.y,ray.position.z }, { ray.direction.x,ray.direction.y,ray.direction.z }, 5.f, hit, PxHitFlags(physx::PxHitFlag::eDEFAULT), filterData))
-		{
-			PxVec3 pos = hit.getAnyHit(0).position;
+		
+			Get_Transform()->Set_State(Transform_State::POS, _float4(ray.position.x, 0.f, ray.position.z, 1.f));
 
-			Get_Transform()->Set_State(Transform_State::POS, _float4(pos.x, 0.f, pos.z, 1.f));
-			
-		};
+	}
+	{
+
+		if (Get_Owner()->Get_RigidBody())
+			Get_Owner()->Get_RigidBody()->RemoveRigidBody();
 	}
 }

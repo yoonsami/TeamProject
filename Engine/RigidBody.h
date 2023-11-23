@@ -18,7 +18,7 @@ public:
 	PxRigidActor* Get_RigidBody() { return m_pRigidBody; }
 	void Create_CapsuleRigidBody(_float3 centerPos, _float radius, _float Height);
 
-
+	void RemoveRigidBody();
 
 private:
 	 _float3 m_vDimension =_float3(1.f);
