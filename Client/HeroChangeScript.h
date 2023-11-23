@@ -12,7 +12,7 @@ public:
 
 public:
     virtual HRESULT Init() override;
-    virtual void Tick() override;
+    virtual void Final_Tick() override;
     
     void Change_Hero(HERO eHero);
 
@@ -28,6 +28,5 @@ private:
     void Change_To_Shane();
     void Change_To_Input(HERO eHero);
 
-    array<pair<shared_ptr<ModelAnimator>, shared_ptr<FSM>>, IDX(HERO::MAX)> m_cacheData;
 };
 

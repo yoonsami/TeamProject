@@ -1158,7 +1158,7 @@ void Spike_FSM::skill_100100()
 
 
     if (Get_CurFrame() >= 19)
-    {
+    {   
         m_fEffectCreateTimer += fDT;
 
         if (m_fEffectCreateTimer >= 0.12f)

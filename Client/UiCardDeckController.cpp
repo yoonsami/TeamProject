@@ -167,6 +167,8 @@ void UiCardDeckController::Tick()
 	if (m_pOwner.expired() || m_pUiCardDeckSelect.expired())
 		return;
 
+    if (!m_bIsRender)
+        return;
     if (KEYTAP(KEY_TYPE::ESC) && true == m_bIsRender)
     {
         Render_Off();

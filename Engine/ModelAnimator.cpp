@@ -148,8 +148,6 @@ void ModelAnimator::Tick()
 		}
 		else
 			vDistToMove = _float3(0.f);
-
-
 	}
 
 	if(vDistToMove != _float3(0.f))

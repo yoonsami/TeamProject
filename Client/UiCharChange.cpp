@@ -52,7 +52,7 @@ void UiCharChange::Tick()
 	if (m_pOwner.expired())
 		return;
 
-    _uint iSize = IDX(m_pObj.size());
+   /* _uint iSize = IDX(m_pObj.size());
     for (_uint i = 0; i < iSize; ++i)
         if (true == m_pObj[i].expired())
             return;
@@ -66,7 +66,7 @@ void UiCharChange::Tick()
 
     Set_Param_Value();
 
-    Change_Hero();
+    Change_Hero();*/
 }
 
 void UiCharChange::Set_Hero(_uint iIndex, HERO eHero)

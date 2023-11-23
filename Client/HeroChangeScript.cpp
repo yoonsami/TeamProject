@@ -41,68 +41,41 @@ HeroChangeScript::~HeroChangeScript()
 
 HRESULT HeroChangeScript::Init()
 {
-    shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-
-
-   // m_cacheData[IDX(HERO::PLAYER)].first = 
-
-
     return S_OK;
 }
 
-void HeroChangeScript::Tick()
+void HeroChangeScript::Final_Tick()
 {
     if (m_pOwner.expired())
         return;
 
     if (KEYTAP(KEY_TYPE::F1))
     {
-        if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == (L"Spear_Ace"))
-            Change_To_Player();
-        else
-            Change_To_Spear_Ace();
+        Change_Hero(HERO::ACE3);
     }
     else if (KEYTAP(KEY_TYPE::F2))
     {
-        if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == (L"Kyle"))
-            Change_To_Player();
-        else
-            Change_To_Kyle();
+        Change_Hero(HERO::KYLE);
     }
     else if (KEYTAP(KEY_TYPE::F3))
     {
-        if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == (L"Yeopo"))
-            Change_To_Player();
-        else
-            Change_To_Yeopo();
+        Change_Hero(HERO::YEOPO);
     }
     else if (KEYTAP(KEY_TYPE::F4))
     {
-        if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == (L"Dellons"))
-            Change_To_Player();
-        else
-            Change_To_Dellons();
+        Change_Hero(HERO::DELLONS);
     }
     else if (KEYTAP(KEY_TYPE::F5))
     {
-        if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == (L"Spike"))
-            Change_To_Player();
-        else
-            Change_To_Spike();
+        Change_Hero(HERO::SPIKE);
     }
 	else if (KEYTAP(KEY_TYPE::F6))
 	{
-		if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == (L"Shane"))
-			Change_To_Player();
-		else
-			Change_To_Shane();
+        Change_Hero(HERO::SHANE);
 	}
 	else if (KEYTAP(KEY_TYPE::F7))
 	{
-		if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == (L"Yeonhee"))
-			Change_To_Player();
-		else
-			Change_To_Yeonhee();
+        Change_Hero(HERO::YEONHEE);
 	}
 }
 
@@ -397,6 +370,12 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
     case HERO::SPIKE:
         m_pOwner.lock()->Change_Component(make_shared<Spike_FSM>());
         break;
+	case HERO::SHANE:
+		m_pOwner.lock()->Change_Component(make_shared<Shane_FSM>());
+		break;
+	case HERO::YEONHEE:
+		m_pOwner.lock()->Change_Component(make_shared<Yeonhee_FSM>());
+		break;
     case HERO::MAX:
         break;
     }
