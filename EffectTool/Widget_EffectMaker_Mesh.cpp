@@ -153,6 +153,16 @@ void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 		if (ImGui::BeginTabItem("Visual"))
 		{
 			Option_Guizmo();
+
+			/* For. Create, Save, Load Effect */
+			ImGui::Spacing();
+			ImGui::SeparatorText("Create / Load");
+			if (ImGui::Button("Create"))
+				Create();
+			ImGui::SameLine();
+			if (ImGui::Button("Save"))
+				m_bSaveMsgBox_On = true;
+
 			Option_Property();
 			Option_Mesh();
 			Option_SpriteAnimation();
@@ -171,16 +181,6 @@ void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 			Option_Overlay();
 			Option_Dissolve();
 			Option_Distortion();
-
-			/* For. Create, Save, Load Effect */
-			ImGui::Spacing();
-			ImGui::SeparatorText("Create / Load");
-			if (ImGui::Button("Create"))
-				Create();
-			ImGui::SameLine();
-			if (ImGui::Button("Save"))
-				m_bSaveMsgBox_On = true;
-			ImGui::Spacing();
 
 			ImGui::EndTabItem();
 		}
@@ -1566,7 +1566,6 @@ void Widget_EffectMaker_Mesh::SubWidget_ImageViewer(string strFileName, string s
 	Utils::DetachExt(wstrKey);
 
 	auto pTexture = RESOURCES.GetOrAddTexture(wstrKey, wstrPath);
-
 	{
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
 		ImGui::BeginChild(pszWidgetKey, ImVec2(150,150), true, window_flags);

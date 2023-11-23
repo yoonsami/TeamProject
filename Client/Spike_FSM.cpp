@@ -916,7 +916,7 @@ void Spike_FSM::skill_1100()
 {
     if (Init_CurFrame(11))
     {
-        Add_Effect(L"Spike_1100");
+        Add_And_Set_Effect(L"Spike_1100");
         AttackCollider_On(NORMAL_ATTACK);
     }
     else if (Get_CurFrame() == 17)
@@ -955,8 +955,11 @@ void Spike_FSM::skill_1100_Init()
 
 void Spike_FSM::skill_1200()
 {
-    if (Get_CurFrame() == 6)
+    if (Init_CurFrame(6))
+    {
+        Add_And_Set_Effect(L"Spike_1200");
         AttackCollider_On(NORMAL_ATTACK);
+    }
     else if (Get_CurFrame() == 14)
         AttackCollider_Off();
 
@@ -997,8 +1000,11 @@ void Spike_FSM::skill_1200_Init()
 
 void Spike_FSM::skill_1300()
 {
-    if (Get_CurFrame() == 10)
+    if (Init_CurFrame(15))
+    {
+        Add_And_Set_Effect(L"Spike_1300");
         AttackCollider_On(NORMAL_ATTACK);
+    }
     else if (Get_CurFrame() == 18)
         AttackCollider_Off();
 
@@ -1039,7 +1045,9 @@ void Spike_FSM::skill_1300_Init()
 
 void Spike_FSM::skill_1400()
 {
-    if (Get_CurFrame() == 11) // 13 == Effect Need
+    if (Init_CurFrame(7))
+        Add_And_Set_Effect(L"Spike_1400");
+    if (Init_CurFrame(11))
         AttackCollider_On(KNOCKDOWN_ATTACK);
     else if (Get_CurFrame() == 15)
         AttackCollider_Off();

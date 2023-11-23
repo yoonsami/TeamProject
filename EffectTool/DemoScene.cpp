@@ -48,6 +48,7 @@ void GranseedScene::Late_Tick()
 void GranseedScene::Final_Tick()
 {
 	__super::Final_Tick();
+	PHYSX.Tick();
 }
 
 void GranseedScene::Render()
@@ -59,6 +60,7 @@ void GranseedScene::Render()
 
 HRESULT GranseedScene::Load_Scene()
 {
+	PHYSX.Init();
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\");
 	RESOURCES.LoadParts();
 	Load_DemoModel();
@@ -66,6 +68,7 @@ HRESULT GranseedScene::Load_Scene()
 	Load_Camera();
 
 	Load_MapFile(L"KyleMap", nullptr);
+	//Load_MapFile(L"MirMap", nullptr);
 	return S_OK;
 }
 
