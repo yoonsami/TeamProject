@@ -2012,7 +2012,7 @@ void ImGui_Manager::Frame_ModelObj()
         Show_Models();
         Show_ModelInfo();
         Select_ModelAnim();
-
+        Set_Transform();
 
         EndTabBar();
     }
@@ -2065,20 +2065,36 @@ void ImGui_Manager::Show_Models()
 			string name = objName;
 			obj->Set_Name(Utils::ToWString(name));
 			CUR_SCENE->Add_GameObject(obj);
-			m_pAnimModels.push_back(obj);
-            m_pAnimModelInfo.push_back(ObjectMoveInfo());
+			m_pAnimModels.push_back(make_pair(obj, ObjectMoveInfo()));
 		}
 
 		vector<string> objNames;
 
 		for (auto& obj : m_pAnimModels)
-			objNames.push_back(Utils::ToString(obj->Get_Name()));
+			objNames.push_back(Utils::ToString(obj.first->Get_Name()));
 
 		ListBox("##Object List", &m_iCurrentObjectIndex, VectorOfStringGetter, &objNames, int(objNames.size()));
 
 		if (Button("Select Obj"))
-			m_pControlObjects = m_pAnimModels[m_iCurrentObjectIndex];
+			m_pControlObjects = m_pAnimModels[m_iCurrentObjectIndex].first;
 
+        SameLine();
+        if (Button("Delete Obj"))
+        {
+            for (auto iter = m_pAnimModels.begin(); iter != m_pAnimModels.end();)
+            {
+                if (iter->first->Get_Name() == Utils::ToWString(objNames[m_iCurrentObjectIndex]))
+                    iter = m_pAnimModels.erase(iter);
+                else iter++;
+             }
+
+        }
+
+
+		Separator();
+		Save_Files();
+        SameLine();
+        Load_Files();
         EndTabItem();
 	}
 
@@ -2111,24 +2127,24 @@ void ImGui_Manager::Show_ModelInfo()
         if (Button("Set ArrayPos"))
         {
             if (tmp == 0)
-                m_pAnimModelInfo[m_iCurrentObjectIndex].minMoveArrayPos = vPickPos;
+                m_pAnimModels[m_iCurrentObjectIndex].second.minMoveArrayPos = vPickPos;
             else
-                m_pAnimModelInfo[m_iCurrentObjectIndex].maxMoveArrayPos = vPickPos;
+                m_pAnimModels[m_iCurrentObjectIndex].second.maxMoveArrayPos = vPickPos;
             
         }
 
 		ListBox("##FSM List", &m_iCurrentFSMIndex, VectorOfStringGetter, &fsmList, int(fsmList.size()));
         Text(("FSM : " + fsmList[m_iCurrentFSMIndex]).c_str());
         if (Button("Set FSM"))
-            m_pAnimModelInfo[m_iCurrentObjectIndex].eFSMIndex = m_iCurrentFSMIndex;
+            m_pAnimModels[m_iCurrentObjectIndex].second.eFSMIndex = m_iCurrentFSMIndex;
 
         SeparatorText("Cur Info");
-        Text((" FSM State : " + fsmList[m_pAnimModelInfo[m_iCurrentObjectIndex].eFSMIndex]).c_str());
-        Text(("min Array Pos : " + to_string(m_pAnimModelInfo[m_iCurrentObjectIndex].minMoveArrayPos.x) + ", " + to_string(m_pAnimModelInfo[m_iCurrentObjectIndex].minMoveArrayPos.y) + ", " + to_string(m_pAnimModelInfo[m_iCurrentObjectIndex].minMoveArrayPos.z)).c_str());
-        Text(("max Array Pos : " + to_string(m_pAnimModelInfo[m_iCurrentObjectIndex].maxMoveArrayPos.x) + ", " + to_string(m_pAnimModelInfo[m_iCurrentObjectIndex].maxMoveArrayPos.y) + ", " + to_string(m_pAnimModelInfo[m_iCurrentObjectIndex].maxMoveArrayPos.z)).c_str());
+        Text((" FSM State : " + fsmList[m_pAnimModels[m_iCurrentObjectIndex].second.eFSMIndex]).c_str());
+        Text(("min Array Pos : " + to_string(m_pAnimModels[m_iCurrentObjectIndex].second.minMoveArrayPos.x) + ", " + to_string(m_pAnimModels[m_iCurrentObjectIndex].second.minMoveArrayPos.y) + ", " + to_string(m_pAnimModels[m_iCurrentObjectIndex].second.minMoveArrayPos.z)).c_str());
+        Text(("max Array Pos : " + to_string(m_pAnimModels[m_iCurrentObjectIndex].second.maxMoveArrayPos.x) + ", " + to_string(m_pAnimModels[m_iCurrentObjectIndex].second.maxMoveArrayPos.y) + ", " + to_string(m_pAnimModels[m_iCurrentObjectIndex].second.maxMoveArrayPos.z)).c_str());
        
-        Checkbox("Is Moving", &m_pAnimModelInfo[m_iCurrentObjectIndex].bMoving);
-        string strTmp = m_pAnimModelInfo[m_iCurrentObjectIndex].bMoving ? "Move" : "NonMove";
+        Checkbox("Is Moving", &m_pAnimModels[m_iCurrentObjectIndex].second.bMoving);
+        string strTmp = m_pAnimModels[m_iCurrentObjectIndex].second.bMoving ? "Move" : "NonMove";
         Text(("Move State : " + strTmp).c_str());
         if (Button("Look At"))
         {
@@ -2139,8 +2155,7 @@ void ImGui_Manager::Show_ModelInfo()
         }
 
 
-        Separator();
-        Save_Files();
+        
 
 
 
@@ -2172,6 +2187,20 @@ void ImGui_Manager::Select_ModelAnim()
     }
 }
 
+void ImGui_Manager::Set_Transform()
+{
+	if (m_pControlObjects.expired())
+		return;
+    if (BeginTabItem("Transform Info"))
+    {
+        _float3 vPos = m_pControlObjects.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
+        DragFloat3("Pos", (_float*)&vPos, 0.05f);
+        m_pControlObjects.lock()->Get_Transform()->Set_State(Transform_State::POS, _float4(vPos, 1.f));
+
+        EndTabItem();
+    }
+}
+
 void ImGui_Manager::Save_Files()
 {
 	ImGui::Text("SaveFileName");
@@ -2189,15 +2218,77 @@ void ImGui_Manager::Save_Files()
         file->Write<_int>(_int(m_pAnimModels.size()));// count
         for (_int i = 0; i < _int(m_pAnimModels.size()); ++i)
         {
-            auto& gameObject = m_pAnimModels[i];
-            auto& gameObjectInfo = m_pAnimModelInfo[i];
+            auto& gameObject = m_pAnimModels[i].first;
+            auto& gameObjectInfo = m_pAnimModels[i].second;
             file->Write<string>(Utils::ToString(gameObject->Get_Name()));
             file->Write<string>(Utils::ToString(gameObject->Get_Model()->Get_ModelTag()));
+            ;
+
+            file->Write<_uint>(gameObject->Get_Animator()->Get_TweenDesc().curr.animIndex);
             file->Write<_float3>(gameObject->Get_Transform()->Get_State(Transform_State::POS).xyz());
-            file->Write<_int>(gameObjectInfo.eFSMIndex);
+            file->Write<Quaternion>(gameObject->Get_Transform()->Get_Rotation());
             file->Write<_bool>(gameObjectInfo.bMoving);
+            file->Write<_int>(gameObjectInfo.eFSMIndex);
             file->Write<_float3>(gameObjectInfo.minMoveArrayPos);
             file->Write<_float3>(gameObjectInfo.maxMoveArrayPos);
         }
+    }
+}
+
+void ImGui_Manager::Load_Files()
+{
+    vector<string> files;
+    string path = "../Resources/MapData/";
+    for (auto& entry : fs::recursive_directory_iterator(path))
+    {
+		if (entry.is_directory())
+			continue;
+
+		if (entry.path().extension().wstring() != L".subdata")
+			continue;
+
+        string filename = entry.path().filename().string();
+        Utils::DetachExt(filename);
+        
+        files.push_back(filename);
+
+    }
+    static _int index = 0;
+
+    ListBox("##File List", &index, VectorOfStringGetter, &files, int(files.size()));
+
+    if (Button("Load"))
+    {
+        wstring finalPath = L"../Resources/MapData/" + Utils::ToWString(files[index]) + L".subdata";
+		shared_ptr<FileUtils> file = make_shared<FileUtils>();
+		file->Open(finalPath, FileMode::Read);
+
+		_int count = file->Read<_int>();
+		for (_int i = 0; i < count; ++i)
+		{
+			shared_ptr<GameObject> obj = make_shared<GameObject>();
+			obj->GetOrAddTransform();
+			obj->Set_Name(Utils::ToWString(file->Read<string>()));
+
+			string modelTag = file->Read<string>();
+			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+			animator->Set_Model(RESOURCES.Get<Model>(Utils::ToWString(modelTag)));
+			obj->Add_Component(animator);
+
+			animator->Set_CurrentAnim(file->Read<_uint>(), true, 1.f);
+			obj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(file->Read<_float3>(), 1.f));
+			obj->GetOrAddTransform()->Set_Quaternion(file->Read<Quaternion>());
+
+			_bool isMoving = file->Read<_bool>();
+			_int iFSMIndex = file->Read<_int>();
+			_float3 vMinPos = file->Read<_float3>();
+			_float3 vMaxPos = file->Read<_float3>();
+
+			CUR_SCENE->Add_GameObject(obj);
+
+			m_pAnimModels.push_back(make_pair(obj, ObjectMoveInfo{ isMoving,iFSMIndex,vMinPos,vMaxPos }));
+
+		}
     }
 }

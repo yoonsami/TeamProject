@@ -141,12 +141,14 @@ HRESULT GranseedScene::Load_Scene()
 
 	//Static
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\", true);
+
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\VfxMesh\\", true);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\SkyBox\\", true);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Weapon\\", true);
 
 	//Map
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Granseed\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Npc\\Granseed\\", false);
 	// Gacha
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Kyle\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Yeopo\\", false);
@@ -156,7 +158,7 @@ HRESULT GranseedScene::Load_Scene()
 	Load_MapFile(L"GranseedMap", pPlayer);
 
 	Load_Ui(pPlayer);
-
+	Load_NPC(L"GranseedMap");
 	return S_OK;
 }
 
@@ -614,5 +616,37 @@ void GranseedScene::Load_Debug()
 		debugText->Add_Component(make_shared<ObjectTransformDebug>());
 		debugText->Get_Script<ObjectTransformDebug>()->Set_Target(Get_GameObject(L"Boss_Spike"));
 		Add_GameObject(debugText);
+	}
+}
+
+void GranseedScene::Load_NPC(const wstring& dataFileName)
+{
+	wstring strFilePath = L"..\\Resources\\MapData\\" + dataFileName + L".subdata";
+	shared_ptr<FileUtils> file = make_shared<FileUtils>();
+	file->Open(strFilePath, FileMode::Read);
+
+	_int count = file->Read<_int>();
+	for (_int i = 0; i < count; ++i)
+	{
+		shared_ptr<GameObject> obj = make_shared<GameObject>();
+		obj->GetOrAddTransform();
+		obj->Set_Name(Utils::ToWString(file->Read<string>()));
+
+		string modelTag = file->Read<string>();
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+		shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+		animator->Set_Model(RESOURCES.Get<Model>(Utils::ToWString(modelTag)));
+		obj->Add_Component(animator);
+
+		animator->Set_CurrentAnim(file->Read<_uint>(), true, 1.f);
+		obj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(file->Read<_float3>(), 1.f));
+		obj->GetOrAddTransform()->Set_Quaternion(file->Read<Quaternion>());
+
+		_bool isMoving = file->Read<_bool>();
+		_int iFSMIndex = file->Read<_int>();
+		_float3 vMinPos = file->Read<_float3>();
+		_float3 vMaxPos = file->Read<_float3>();
+
+		Add_GameObject(obj);
 	}
 }
