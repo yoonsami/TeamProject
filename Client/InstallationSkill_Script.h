@@ -10,7 +10,9 @@ typedef struct tagInstallationSkillDesc
     wstring strAttackType = NORMAL_ATTACK;
     wstring strLastAttackType = NORMAL_ATTACK;
     _bool bFirstAttack = true;
-
+    _float fAttackDamage = 0.f;
+    _float fLastAttackDamage = 0.f;
+   
 }INSTALLATIONSKILLDESC;
 
 class InstallationSkill_Script : public MonoBehaviour
@@ -30,7 +32,11 @@ private:
     
     _float m_fMoveSpeed = 1.f;
     _float m_fLimitDistance = 0.f;
-    
+
+    _float m_fFirstAttackDamage = 0.f;
+    _float m_fAttackDamage = 0.f;
+    _float m_fLastAttackDamage = 0.f;
+
     COOLTIMEINFO m_tAttackTickTime = { 2.f,0.f };
 
     _uint m_iCurrentAttackCnt = 0;
@@ -39,6 +45,7 @@ private:
     wstring m_strAttackType = NORMAL_ATTACK;
     wstring m_strLastAttackType = NORMAL_ATTACK;
     
+
     _bool m_bFirstAttack = true;
     _bool m_bAttackOn = false;
 

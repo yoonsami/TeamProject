@@ -345,11 +345,14 @@ void Yeopo_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap
 	if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
 		return;
 
-    wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
 
     if (!m_bInvincible)
     {
-		shared_ptr<GameObject> targetToLook = nullptr;
+        wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
+        _float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
+
+        
+        shared_ptr<GameObject> targetToLook = nullptr;
 		// skillName에 _Skill 포함이면
 		if (strSkillName.find(L"_Skill") != wstring::npos)
 			targetToLook = pCollider->Get_Owner(); // Collider owner를 넘겨준다
@@ -359,7 +362,7 @@ void Yeopo_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap
         if (targetToLook == nullptr)
             return;
 
-		Get_Hit(strSkillName, targetToLook);
+		Get_Hit(strSkillName, fAttackDamage, targetToLook);
     }
 }
 
@@ -367,8 +370,12 @@ void Yeopo_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
 }
 
-void Yeopo_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
+void Yeopo_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
+    //Calculate Damage 
+    m_pOwner.lock()->Get_Hurt(fDamage);
+
+
 	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 	_float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
 
@@ -428,12 +435,13 @@ void Yeopo_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTa
     }
 }
 
-void Yeopo_FSM::AttackCollider_On(const wstring& skillname)
+void Yeopo_FSM::AttackCollider_On(const wstring& skillname, _float fAttackDamage)
 {
     if (!m_pAttackCollider.expired())
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(true);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     }
 }
 
@@ -443,6 +451,7 @@ void Yeopo_FSM::AttackCollider_Off()
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(0.f);
     }
 }
 
@@ -957,7 +966,7 @@ void Yeopo_FSM::skill_1100()
     Look_DirToTarget();
 
     if (Get_CurFrame() == 9)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 19)
         AttackCollider_Off();
 
@@ -996,7 +1005,7 @@ void Yeopo_FSM::skill_1200()
     Look_DirToTarget();
 
     if (Get_CurFrame() == 10)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 17)
         AttackCollider_Off();
 
@@ -1036,19 +1045,19 @@ void Yeopo_FSM::skill_1200_Init()
 void Yeopo_FSM::skill_1300()
 {
     if (Get_CurFrame() == 8)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 13)
         AttackCollider_Off();
     else if (Get_CurFrame() == 16)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 23)
         AttackCollider_Off();
     else if (Get_CurFrame() == 28)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 36)
         AttackCollider_Off();
     else if (Get_CurFrame() == 41)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 46)
         AttackCollider_Off();
 
@@ -1091,11 +1100,11 @@ void Yeopo_FSM::skill_1300_Init()
 void Yeopo_FSM::skill_1400()
 {
     if (Get_CurFrame() == 7)
-        AttackCollider_On(KNOCKBACK_ATTACK);
+        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
     else if (Get_CurFrame() == 14)
         AttackCollider_Off();
     else if (Get_CurFrame() == 19)
-        AttackCollider_On(KNOCKDOWN_ATTACK);
+        AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
     else if (Get_CurFrame() == 36)
         AttackCollider_Off();
 
@@ -1204,7 +1213,7 @@ void Yeopo_FSM::skill_100200()
 		desc.fLimitDistance = 10.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
+		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
     }
     else if (Init_CurFrame(30))
     {
@@ -1221,7 +1230,7 @@ void Yeopo_FSM::skill_100200()
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 13.f;
 
-		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
+		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
     }
 
     Look_DirToTarget();
@@ -1265,7 +1274,7 @@ void Yeopo_FSM::skill_100300()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK);
-		Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, AIRBORNE_ATTACK);
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, AIRBORNE_ATTACK, 10.f);
     }
     
     Look_DirToTarget();
@@ -1307,7 +1316,7 @@ void Yeopo_FSM::skill_200100()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
-		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK);
+		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK, 10.f);
     }
     
 
@@ -1340,15 +1349,15 @@ void Yeopo_FSM::skill_200100_Init()
 void Yeopo_FSM::skill_300100()
 {
     if (Get_CurFrame() == 25)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 30)
         AttackCollider_Off();
     else if (Get_CurFrame() == 40)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 46)
         AttackCollider_Off();
     else if (Get_CurFrame() == 55)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 64)
         AttackCollider_Off();
 
@@ -1387,11 +1396,11 @@ void Yeopo_FSM::skill_300100_Init()
 void Yeopo_FSM::skill_300200()
 {
     if (Get_CurFrame() == 9)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 12)
         AttackCollider_Off();
     else if (Get_CurFrame() == 15)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 20)
         AttackCollider_Off();
 
@@ -1430,11 +1439,11 @@ void Yeopo_FSM::skill_300200_Init()
 void Yeopo_FSM::skill_300300()
 {
     if (Get_CurFrame() == 13)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 18)
         AttackCollider_Off();
     else if (Get_CurFrame() == 21)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 30)
         AttackCollider_Off();
 
@@ -1475,7 +1484,7 @@ void Yeopo_FSM::skill_300300_Init()
 void Yeopo_FSM::skill_300400()
 {
     if (Get_CurFrame() == 31)
-        AttackCollider_On(KNOCKBACK_ATTACK);
+        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
     else if (Get_CurFrame() == 36)
         AttackCollider_Off();
     
@@ -1570,27 +1579,27 @@ void Yeopo_FSM::skill_400100_Init()
 void Yeopo_FSM::skill_501100()
 {
     if (Get_CurFrame() == 12)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 16)
         AttackCollider_Off();
     else if (Get_CurFrame() == 17)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 19)
         AttackCollider_Off();
     else if (Get_CurFrame() == 21)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 23)
         AttackCollider_Off();
     else if (Get_CurFrame() == 25)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 28)
         AttackCollider_Off();
     else if (Get_CurFrame() == 30)
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (Get_CurFrame() == 35)
         AttackCollider_Off();
     else if (Get_CurFrame() == 52)
-        AttackCollider_On(KNOCKDOWN_ATTACK);
+        AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
     else if (Get_CurFrame() == 55)
         AttackCollider_Off();
     
@@ -1754,7 +1763,7 @@ void Yeopo_FSM::RidingCoolCheck()
     }
 }
 
-void Yeopo_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType)
+void Yeopo_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
 {
     shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
 
@@ -1772,6 +1781,7 @@ void Yeopo_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fS
     m_pSkillCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
     m_pSkillCollider.lock()->Get_Collider()->Set_Activate(true);
     m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
+    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
     m_pSkillCollider.lock()->Set_Name(L"Player_SkillCollider");
     m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));

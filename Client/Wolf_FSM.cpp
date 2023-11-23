@@ -227,10 +227,12 @@ void Wolf_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
     if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
         return;
 
-    wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
 
     if (!m_bInvincible)
     {
+        wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
+        _float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
+        
         shared_ptr<GameObject> targetToLook = nullptr;
 
         if (strSkillName.find(L"_Skill") != wstring::npos)
@@ -241,7 +243,7 @@ void Wolf_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
         if (targetToLook == nullptr)
             return;
 
-        Get_Hit(strSkillName, targetToLook);
+        Get_Hit(strSkillName, fAttackDamage, targetToLook);
     }
 }
 
@@ -249,10 +251,8 @@ void Wolf_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
 }
 
-void Wolf_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
+void Wolf_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
-    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner());
-
     auto pScript = m_pOwner.lock()->Get_Script<UiMonsterHp>();
     if (nullptr == pScript)
     {
@@ -260,6 +260,12 @@ void Wolf_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTar
         m_pOwner.lock()->Add_Component(pScript);
         pScript->Init();
     }
+
+    //Calculate Damage 
+    m_pOwner.lock()->Get_Hurt(fDamage);
+
+    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage);
+
 
     m_bDetected = true;
     m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.05f);
@@ -323,12 +329,13 @@ void Wolf_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTar
 
 }
 
-void Wolf_FSM::AttackCollider_On(const wstring& skillname)
+void Wolf_FSM::AttackCollider_On(const wstring& skillname, _float fAttackDamage)
 {
     if (!m_pAttackCollider.expired())
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(true);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     }
 }
 
@@ -338,6 +345,7 @@ void Wolf_FSM::AttackCollider_Off()
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(0.f);
     }
 }
 
@@ -812,7 +820,7 @@ void Wolf_FSM::skill_1100()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     if (Get_CurFrame() == 10)
-        AttackCollider_On(NONE_HIT);
+        AttackCollider_On(NONE_HIT, 2.f);
     else if (Get_CurFrame() == 18)
         AttackCollider_Off();
 

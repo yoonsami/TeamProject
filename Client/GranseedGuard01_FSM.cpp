@@ -18,7 +18,7 @@ void GranseedGuard01_FSM::Tick()
 {
 }
 
-void GranseedGuard01_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
+void GranseedGuard01_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
 }
 
@@ -42,7 +42,7 @@ void GranseedGuard01_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _f
 {
 }
 
-void GranseedGuard01_FSM::AttackCollider_On(const wstring& skillname)
+void GranseedGuard01_FSM::AttackCollider_On(const wstring& skillname, _float fAttackDamage)
 {
 }
 

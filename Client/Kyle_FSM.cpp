@@ -302,10 +302,12 @@ void Kyle_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
 	if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
 		return;
 
-	wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
 
 	if (!m_bInvincible)
 	{
+		wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
+		_float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
+		
 		shared_ptr<GameObject> targetToLook = nullptr;
 		// skillName�� _Skill �����̸�
 		if (strSkillName.find(L"_Skill") != wstring::npos)
@@ -316,7 +318,7 @@ void Kyle_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
 		if (targetToLook == nullptr)
 			return;
 
-		Get_Hit(strSkillName, targetToLook);
+		Get_Hit(strSkillName, fAttackDamage, targetToLook);
 	}
 }
 
@@ -324,8 +326,11 @@ void Kyle_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
 }
 
-void Kyle_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
+void Kyle_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
+	//Calculate Damage 
+	m_pOwner.lock()->Get_Hurt(fDamage);
+
 	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 	_float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
 
@@ -385,12 +390,13 @@ void Kyle_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTar
 	}
 }
 
-void Kyle_FSM::AttackCollider_On(const wstring& skillname)
+void Kyle_FSM::AttackCollider_On(const wstring& skillname, _float fAttackDamage)
 {
 	if (!m_pAttackCollider.expired())
 	{
 		m_pAttackCollider.lock()->Get_Collider()->Set_Activate(true);
 		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
+		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
 	}
 }
 
@@ -400,6 +406,7 @@ void Kyle_FSM::AttackCollider_Off()
 	{
 		m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
 		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(0.f);
 	}
 }
 
@@ -890,7 +897,7 @@ void Kyle_FSM::skill_1100()
 
 	if (Get_CurFrame() == 9)
 	{
-		AttackCollider_On(NORMAL_ATTACK);
+		AttackCollider_On(NORMAL_ATTACK, 10.f);
 	}
 	else if (Get_CurFrame() == 19)
 		AttackCollider_Off();
@@ -929,7 +936,7 @@ void Kyle_FSM::skill_1200()
 	Look_DirToTarget();
 
 	if (Get_CurFrame() == 9)
-		AttackCollider_On(NORMAL_ATTACK);
+		AttackCollider_On(NORMAL_ATTACK ,15.f);
 	else if (Get_CurFrame() == 20)
 		AttackCollider_Off();
 
@@ -972,7 +979,7 @@ void Kyle_FSM::skill_1300()
 	Look_DirToTarget();
 
 	if (Get_CurFrame() == 8)
-		AttackCollider_On(NORMAL_ATTACK);
+		AttackCollider_On(NORMAL_ATTACK, 10.f);
 	else if (Get_CurFrame() == 18)
 		AttackCollider_Off();
 
@@ -1023,7 +1030,8 @@ void Kyle_FSM::skill_1400()
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::LOOK) * 3.f;
-		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK);
+
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f);
 	}
 
 	if (Is_AnimFinished())
@@ -1147,7 +1155,7 @@ void Kyle_FSM::skill_100100()
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::UP);
-		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_ATTACK);
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_ATTACK, 10.f);
 	}
 
 
@@ -1206,7 +1214,7 @@ void Kyle_FSM::skill_100200()
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
 
-		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK);
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f);
 	}
 
 	if (Is_AnimFinished())
@@ -1245,7 +1253,7 @@ void Kyle_FSM::skill_200100()
 	Look_DirToTarget();
 
 	if (Get_CurFrame() == 11)
-		AttackCollider_On(NORMAL_ATTACK);
+		AttackCollider_On(NORMAL_ATTACK, 10.f);
 	else if (Get_CurFrame() == 23)
 		AttackCollider_Off();
 
@@ -1281,11 +1289,11 @@ void Kyle_FSM::skill_200100_Init()
 void Kyle_FSM::skill_200200()
 {
 	if (Get_CurFrame() == 13)
-		AttackCollider_On(NORMAL_ATTACK);
+		AttackCollider_On(NORMAL_ATTACK, 10.f);
 	else if (Get_CurFrame() == 18)
 		AttackCollider_Off();
 	else if (Get_CurFrame() == 21)
-		AttackCollider_On(NORMAL_ATTACK);
+		AttackCollider_On(NORMAL_ATTACK, 10.f);
 	else if (Get_CurFrame() == 28)
 		AttackCollider_Off();
 
@@ -1333,7 +1341,7 @@ void Kyle_FSM::skill_200300()
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::LOOK) * 5.5f;
-		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, AIRBORNE_ATTACK);
+		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f);
 	}
 	
 	Look_DirToTarget();
@@ -1369,7 +1377,7 @@ void Kyle_FSM::skill_300100()
 	Look_DirToTarget();
 
 	if (Get_CurFrame() == 2)
-		AttackCollider_On(NORMAL_ATTACK);
+		AttackCollider_On(NORMAL_ATTACK, 10.f);
 	else if (Get_CurFrame() == 5)
 		AttackCollider_Off();
 
@@ -1384,7 +1392,7 @@ void Kyle_FSM::skill_300100()
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::UP);
 
-		Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, NORMAL_ATTACK);
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, NORMAL_ATTACK, 10.f);
 	}
 	else if (Init_CurFrame(28))
 	{
@@ -1397,7 +1405,7 @@ void Kyle_FSM::skill_300100()
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::LOOK) * 4.f;
 
-		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, NORMAL_ATTACK);
+		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, NORMAL_ATTACK, 10.f);
 
 	}
 	else if (Init_CurFrame(36))
@@ -1411,7 +1419,7 @@ void Kyle_FSM::skill_300100()
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::LOOK) * 4.f;
 
-		Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, AIRBORNE_ATTACK);
+		Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, AIRBORNE_ATTACK, 10.f);
 
 	}
 
@@ -1487,7 +1495,7 @@ void Kyle_FSM::skill_502100()
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
 			Get_Transform()->Get_State(Transform_State::UP);
-		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK);
+		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f);
 
 	}
 	else if (Init_CurFrame(78))
@@ -1501,7 +1509,7 @@ void Kyle_FSM::skill_502100()
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::LOOK) * 5.f +
 			Get_Transform()->Get_State(Transform_State::UP);
-		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_ATTACK);
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_ATTACK, 10.f);
 	}
 	else if (Init_CurFrame(106))
 	{
@@ -1518,7 +1526,7 @@ void Kyle_FSM::skill_502100()
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 4.f;
 
-		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_SKILL);
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_SKILL, 10.f);
 	}
 
 	Look_DirToTarget();
@@ -1576,7 +1584,7 @@ void Kyle_FSM::skill_500100()
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::UP);
-		Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, NORMAL_ATTACK);
+		Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, NORMAL_ATTACK, 10.f);
 
 	}
 	else if (Init_CurFrame(31))
@@ -1589,7 +1597,7 @@ void Kyle_FSM::skill_500100()
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::UP);
-		Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, NORMAL_ATTACK);
+		Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, NORMAL_ATTACK, 10.f);
 
 	}
 	else if (Init_CurFrame(47))
@@ -1602,7 +1610,7 @@ void Kyle_FSM::skill_500100()
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::UP);
-		Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, NORMAL_ATTACK);
+		Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, NORMAL_ATTACK, 10.f);
 
 	}
 	else if (Init_CurFrame(87))
@@ -1615,7 +1623,7 @@ void Kyle_FSM::skill_500100()
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::LOOK) * 5.f;
-		Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, AIRBORNE_SKILL);
+		Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, AIRBORNE_SKILL, 10.f);
 
 	}
 
@@ -1660,7 +1668,7 @@ void Kyle_FSM::skill_500100_Init()
 }
 
 
-void Kyle_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType)
+void Kyle_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
 {
 	shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
 
@@ -1678,6 +1686,7 @@ void Kyle_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSk
 	m_pSkillCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
 	m_pSkillCollider.lock()->Get_Collider()->Set_Activate(true);
 	m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
+	m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
 	m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
 	m_pSkillCollider.lock()->Set_Name(L"Player_SkillCollider");
 	m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
