@@ -112,8 +112,9 @@ private:
       "TEXTURE15",
    };
 
-   const char* m_arrFontType[1] = {
-      "136ex"
+   const char* m_arrFontType[2] = {
+      "136ex",
+      "Ori_136ex"
    };
 
 };

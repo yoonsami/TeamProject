@@ -925,13 +925,13 @@ void ResourceMgr::CreateDefaultFont()
 
 		Add(L"136ex", font);
 	}
-	/*{
-		shared_ptr<CustomFont> font = make_shared<CustomFont>();
-		font->Load(L"..\\Resources\\Font\\Godic.spritefont");
-
-		Add(L"Godic", font);
-	}
 	{
+		shared_ptr<CustomFont> font = make_shared<CustomFont>();
+		font->Load(L"..\\Resources\\Font\\Ori_136ex.spritefont");
+
+		Add(L"Ori_136ex", font);
+	}
+	/*{
 		shared_ptr<CustomFont> font = make_shared<CustomFont>();
 		font->Load(L"..\\Resources\\Font\\Dream.spritefont");
 
