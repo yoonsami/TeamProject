@@ -10,6 +10,7 @@
 #include "UiDamageCreate.h"
 #include "DragonBall_FSM.h"
 #include "UIBossHpBar.h"
+#include "SimpleMath.h"
 
 HRESULT Boss_Mir_FSM::Init()
 {
@@ -33,7 +34,7 @@ HRESULT Boss_Mir_FSM::Init()
         HeadBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iHeadBoneIndex) *
             _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
 
-        m_vHeadCamPos = m_vHeadBonePos + (Get_Transform()->Get_State(Transform_State::LOOK) * 5.f);
+        m_vHeadCamPos = m_vHeadBonePos + (Get_Transform()->Get_State(Transform_State::LOOK) * 10.f);
 
         m_pCamera = CUR_SCENE->Get_MainCamera();
 
@@ -61,13 +62,13 @@ HRESULT Boss_Mir_FSM::Init()
 
 void Boss_Mir_FSM::Tick()
 {
-	{
-		HeadBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iHeadBoneIndex) *
-			_float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+    {
+        HeadBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iHeadBoneIndex) *
+            _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
 
-		m_vHeadBonePos = _float4{ HeadBoneMatrix.Translation().x, HeadBoneMatrix.Translation().y, HeadBoneMatrix.Translation().z , 1.f };
-		m_vHeadCamPos = m_vHeadBonePos + (Get_Transform()->Get_State(Transform_State::LOOK) * 10.f);
-	}
+        m_vHeadBonePos = _float4{ HeadBoneMatrix.Translation().x, HeadBoneMatrix.Translation().y, HeadBoneMatrix.Translation().z , 1.f };
+        m_vHeadCamPos = m_vHeadBonePos + (Get_Transform()->Get_State(Transform_State::LOOK) * 10.f);
+    }
 
     State_Tick();
 
@@ -87,6 +88,8 @@ void Boss_Mir_FSM::Tick()
         _float4 vBonePos = _float4{ TailBoneMatrix.Translation().x, TailBoneMatrix.Translation().y, TailBoneMatrix.Translation().z , 1.f };
         m_pTailCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, vBonePos);
     }
+
+
 }
 
 void Boss_Mir_FSM::State_Tick()
@@ -403,26 +406,53 @@ void Boss_Mir_FSM::Set_State(_uint iIndex)
 
 void Boss_Mir_FSM::First_Meet()
 {
-    if (Get_CurFrame() > 5)
-    {
-        if (!m_pCamera.expired())
-        {
-            m_pCamera.lock()->Get_Transform()->Set_State(Transform_State::POS, m_vHeadCamPos);
-
-            m_vHeadCamDir = m_vHeadBonePos.xyz() - m_vHeadCamPos.xyz();
-            m_vHeadCamDir.Normalize();
-            
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(2.f);
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vHeadBonePos.xyz());
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, m_vHeadCamDir * -1.f, 10.f);
-        }
-    }
-
     if (Target_In_DetectRange())
         m_bDetected = true;
 
-    if (!m_bDetected)
-        Reset_Frame();
+    
+    if (m_bDetected)
+    {
+        m_pOwner.lock()->Get_Animator()->Set_AnimState(false);
+    
+        if (Get_CurFrame() >= 1 && Get_CurFrame() < 90)
+        {
+            if (!m_pCamera.expired())
+            {
+                m_fIntroCamDistance = CamDistanceLerp(20.f, 10.f, m_fCamRatio);
+                
+                m_fCamRatio += fDT;
+
+                if (m_fCamRatio >= 1.f)
+                    m_fCamRatio = 1.f;
+
+                m_vHeadCamDir = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS) - m_vHeadBonePos.xyz();
+                m_vHeadCamDir.Normalize();
+
+                m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(0.8f);
+                m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vHeadBonePos.xyz());
+                m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, m_vHeadCamDir, m_fIntroCamDistance);
+                
+            }
+        }
+        else if (Get_CurFrame() >= 90)
+        {
+            if (!m_pCamera.expired())
+            {
+                m_pCamera.lock()->Get_Transform()->Set_State(Transform_State::POS, m_vHeadCamPos);
+
+                m_vHeadCamDir = m_vHeadBonePos.xyz() - m_vHeadCamPos.xyz();
+                m_vHeadCamDir.Normalize();
+                
+                m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(0.5f);
+                m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vHeadBonePos.xyz());
+                m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, m_vHeadCamDir * -1.f, 10.f);
+            }
+        }
+    }
+
+
+    //if (!m_bDetected)
+    //    Reset_Frame();
 
     if (Is_AnimFinished())
         m_eCurState = STATE::sq_Intro2;
@@ -435,6 +465,10 @@ void Boss_Mir_FSM::First_Meet_Init()
     animator->Set_NextTweenAnim(L"3D_ui_start", 0.1f, false, 1.5f);
 
     m_bInvincible = true;
+
+    animator->Set_AnimState(true);
+
+    m_fCamRatio = 0.f;
 }
 
 void Boss_Mir_FSM::sq_Intro()
@@ -468,7 +502,8 @@ void Boss_Mir_FSM::sq_Intro2()
     }
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
+        //m_eCurState = STATE::b_idle;
+        m_eCurState = STATE::First_Meet;
     
 }
 
@@ -2088,4 +2123,11 @@ void Boss_Mir_FSM::TailAttackCollider_Off()
     m_pTailCollider.lock()->Get_Collider()->Set_Activate(false);
     m_pTailCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
 }
+
+_float Boss_Mir_FSM::CamDistanceLerp(_float fStart, _float fEnd, _float fRatio)
+{
+    return fStart * (1.f - fRatio) + fEnd * fRatio;
+}
+
+
 

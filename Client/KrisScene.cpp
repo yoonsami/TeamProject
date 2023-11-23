@@ -140,8 +140,10 @@ HRESULT KrisScene::Load_Scene()
 
 	//Map
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Kris\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Spike\\", false);
 
 	//Monster
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Boss_Spike\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Silversword_Soldier\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_White\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_Brown\\", false);
@@ -157,12 +159,12 @@ HRESULT KrisScene::Load_Scene()
 	//Load_Monster(1, L"Silversword_Soldier", player);
 	//Load_Monster(1, L"Succubus_Scythe", player);
 	//Load_Monster(1, L"Undead_Priest", player);
-	Load_Monster(1, L"Alpaca_White", player);
-	Load_Monster(1, L"Alpaca_Brown", player);
-	Load_Monster(1, L"Alpaca_Black", player);
-	Load_Monster(1, L"Wolf", player);
+	//Load_Monster(1, L"Alpaca_White", player);
+	//Load_Monster(1, L"Alpaca_Brown", player);
+	//Load_Monster(1, L"Alpaca_Black", player);
+	//Load_Monster(1, L"Wolf", player);
 
-	//Load_Boss_Spike();
+	Load_Boss_Spike(player);
 
 
 	Load_Ui(player);
