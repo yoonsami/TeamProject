@@ -20,6 +20,7 @@ enum class COMPONENT_TYPE : _uchar
 	Particle,
 	MeshEffect,
 	GroupEffect,
+	GroupEffectOwner,
 	TrailRenderer,
 	FontRenderer,
 	EffectController,
