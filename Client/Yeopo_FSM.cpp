@@ -30,20 +30,7 @@ HRESULT Yeopo_FSM::Init()
             animator->Set_CurrentAnim(L"b_idle", true, 1.f);
             m_eCurState = STATE::b_idle;
         }
-        shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
-        attackCollider->GetOrAddTransform();
-        attackCollider->Add_Component(make_shared<SphereCollider>(1.f));
-        attackCollider->Get_Collider()->Set_CollisionGroup(Player_Attack);
-
-        m_pAttackCollider = attackCollider;
-
-        CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
-        m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
-
-        m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
-        m_pAttackCollider.lock()->Set_Name(L"Player_AttackCollider");
-	    m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(Get_Owner());
-
+       
         m_pWeapon = CUR_SCENE->Get_GameObject(L"Weapon_Yeopo");
 
         m_pCamera = CUR_SCENE->Get_MainCamera();
@@ -56,10 +43,23 @@ HRESULT Yeopo_FSM::Init()
         m_fNormalAttack_AnimationSpeed = 1.2f;
         m_fDetectRange = 5.f;
 
-        
-
         m_bInitialize = true;
     }
+
+    shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
+    attackCollider->GetOrAddTransform();
+    attackCollider->Add_Component(make_shared<SphereCollider>(1.f));
+    attackCollider->Get_Collider()->Set_CollisionGroup(Player_Attack);
+
+    m_pAttackCollider = attackCollider;
+
+    CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
+    m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
+
+    m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
+    m_pAttackCollider.lock()->Set_Name(L"Player_AttackCollider");
+    m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(Get_Owner());
+
     return S_OK;
 }
 

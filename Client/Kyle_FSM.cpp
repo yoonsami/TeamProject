@@ -21,20 +21,6 @@ HRESULT Kyle_FSM::Init()
 			m_eCurState = STATE::b_idle;
 		}
 
-		shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
-		attackCollider->GetOrAddTransform();
-		attackCollider->Add_Component(make_shared<SphereCollider>(1.5f));
-		attackCollider->Get_Collider()->Set_CollisionGroup(Player_Attack);
-
-		m_pAttackCollider = attackCollider;
-
-		CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
-		m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
-		m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
-		m_pAttackCollider.lock()->Set_Name(L"Player_AttackCollider");
-		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(Get_Owner());
-
-
 		m_iCenterBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Center");
 		m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
 		m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
@@ -48,6 +34,18 @@ HRESULT Kyle_FSM::Init()
 		m_bInitialize = true;
 	}
 
+	shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
+	attackCollider->GetOrAddTransform();
+	attackCollider->Add_Component(make_shared<SphereCollider>(1.5f));
+	attackCollider->Get_Collider()->Set_CollisionGroup(Player_Attack);
+
+	m_pAttackCollider = attackCollider;
+
+	CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
+	m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
+	m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
+	m_pAttackCollider.lock()->Set_Name(L"Player_AttackCollider");
+	m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(Get_Owner());
 
 	return S_OK;
 }
@@ -1452,7 +1450,7 @@ void Kyle_FSM::skill_502100()
 
 			m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
 			m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
-			m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(4.f, vDir.xyz(), 10.f);
+			m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(4.5f, vDir.xyz(), 10.f);
 		}
 	}
 	else if (Get_CurFrame() == 90)
