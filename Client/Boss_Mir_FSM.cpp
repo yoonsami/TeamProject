@@ -482,7 +482,7 @@ void Boss_Mir_FSM::b_idle()
     if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
     {
         //Phase1 Assault and Return
-        if (!m_bPhaseTwo)
+        if (m_eCurPhase == PHASE::PHASE1)
         {
             CalCulate_PlayerDir();
 
@@ -490,23 +490,32 @@ void Boss_Mir_FSM::b_idle()
                 m_eCurState = STATE::skill_Assault;
             else
             {
-                if (m_eAttackDir == DIR::FORWARD_LEFT)
+                if (m_iPhaseOne_TurnCnt == 0)
                 {
-                    m_eCurState = STATE::turn_l;
+                    m_iPhaseOne_TurnCnt++;
+
+                    if (m_eAttackDir == DIR::FORWARD_LEFT)
+                    {
+                        m_eCurState = STATE::turn_l;
+                    }
+                    else if (m_eAttackDir == DIR::BACKWARD_LEFT)
+                    {
+                        m_eCurState = STATE::turn_l;
+                        m_fTurnSpeed = XM_PI * 1.f;
+                    }
+                    else if (m_eAttackDir == DIR::FORWARD_RIGHT)
+                    {
+                        m_eCurState = STATE::turn_r;
+                    }
+                    else if (m_eAttackDir == DIR::BACKWARD_RIGHT)
+                    {
+                        m_eCurState = STATE::turn_r;
+                        m_fTurnSpeed = XM_PI * 1.f;
+                    }
                 }
-                else if (m_eAttackDir == DIR::BACKWARD_LEFT)
+                else
                 {
-                    m_eCurState = STATE::turn_l;
-                    m_fTurnSpeed = XM_PI * 1.f;
-                }
-                else if (m_eAttackDir == DIR::FORWARD_RIGHT)
-                {
-                    m_eCurState = STATE::turn_r;
-                }
-                else if (m_eAttackDir == DIR::BACKWARD_RIGHT)
-                {
-                    m_eCurState = STATE::turn_r;
-                    m_fTurnSpeed = XM_PI * 1.f;
+                    m_eCurState = STATE::skill_Assault;
                 }
             }
         }
@@ -533,7 +542,7 @@ void Boss_Mir_FSM::b_idle_Init()
     AttackCollider_Off();
     TailAttackCollider_Off();
 
-    if (!m_bPhaseTwo)
+    if (m_eCurPhase == PHASE::PHASE1)
     {
         if (!m_bPhaseOneEmissive)
         {
@@ -629,24 +638,25 @@ void Boss_Mir_FSM::groggy_start_Init()
     m_tBreathCoolTime.fAccTime = 0.f;
     m_bCounter = false;
 
-    if (!m_bPhaseTwo)
+    if (m_eCurPhase == PHASE::PHASE1)
     {
         m_iCrashCnt++;
 
         //In Phase1 Crash3 -> Phase 2 Start
         if (m_iCrashCnt == 3)
-            m_bPhaseTwo = true;
-    }
-    else //Phase 2
-    {
-        if (m_bPhaseOneEmissive)
-        {
-            for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
-                material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
+            m_eCurPhase = PHASE::PHASE2;
 
-            m_bPhaseOneEmissive = false;
+        if (m_eCurPhase == PHASE::PHASE2)
+        {
+            if (m_bPhaseOneEmissive)
+            {
+                for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
+                    material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
+
+                m_bPhaseOneEmissive = false;
+            }
         }
-    }
+    }   
 }
 
 void Boss_Mir_FSM::groggy_loop()
@@ -704,11 +714,17 @@ void Boss_Mir_FSM::groggy_end_Init()
 
 void Boss_Mir_FSM::skill_Assault()
 {
-    if (Get_CurFrame() == 75)
+    if (Get_CurFrame() <= 30)
+    {
+        if (!m_pTarget.expired())
+            Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 2.f);
+    }
+
+    if (Init_CurFrame(75))
     {
         AttackCollider_On(KNOCKBACK_ATTACK);
     }
-    else if (Get_CurFrame() == 92)
+    else if (Init_CurFrame(92))
     {
         AttackCollider_Off();
     }
@@ -724,6 +740,8 @@ void Boss_Mir_FSM::skill_Assault_Init()
     animator->Set_NextTweenAnim(L"skill_2100", 0.1f, false, m_fNormalAttack_AnimationSpeed);
 
     m_tAttackCoolTime.fAccTime = 0.f;
+
+    m_iPhaseOne_TurnCnt = 0;
 
 }
 
@@ -1794,49 +1812,56 @@ void Boss_Mir_FSM::skill_200100_Init()
 
 Boss_Mir_FSM::DIR Boss_Mir_FSM::CalCulate_PlayerDir()
 {
-    //���Ͱ� �÷��̾�ٶ󺸴¹���
     _float4 vDir = _float4(0.f);
     vDir = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS);
-    vDir.y = 0.f; //y�� 0
+    vDir.y = 0.f; 
     vDir.Normalize();
-       
-    //��ֶ�����
+
     _float4 vDot = _float4(0.f);
     _float4 vCross = _float4(0.f);
 
     vDot = XMVector3Dot(Get_Transform()->Get_State(Transform_State::LOOK), vDir);
     vCross = XMVector3Cross(Get_Transform()->Get_State(Transform_State::LOOK), vDir);
 
-    if (XMVectorGetX(vDot) >= 0.f) //�� ���� ����� ����
+    _float fStandardTurnDegree = 0.f;
+    
+    if (m_eCurPhase == PHASE::PHASE1)
+        fStandardTurnDegree = 20.f;
+    else
+        fStandardTurnDegree = 20.f;
+    
+
+    if (XMVectorGetX(vDot) >= 0.f)
     {
-        if (XMVectorGetY(vCross) < 0.f) //���� ������ ������ ���� 
+        if (XMVectorGetY(vCross) < 0.f)
         {
             m_eAttackDir = DIR::FORWARD_LEFT;
 
-            if (XMVectorGetX(vDot) < cosf(XMConvertToRadians(20.f)))//���� 20�� �� ��
-                m_bTurnMotion = true; 
+            if (XMVectorGetX(vDot) < cosf(XMConvertToRadians(fStandardTurnDegree)))
+                m_bTurnMotion = true;
         }
-        else //������  ���������
+        else
         {
             m_eAttackDir = DIR::FORWARD_RIGHT;
 
-            if (XMVectorGetX(vDot) < cosf(XMConvertToRadians(20.f)))//������ 20�� �̳����� ��
+            if (XMVectorGetX(vDot) < cosf(XMConvertToRadians(fStandardTurnDegree)))
                 m_bTurnMotion = true;
         }
     }
-    else //�� ���������� ��
+    else
     {
         m_bTurnMotion = true;
 
-        if (XMVectorGetY(vCross) < 0.f) // ���� ������ ����
+        if (XMVectorGetY(vCross) < 0.f)
         {
             m_eAttackDir = DIR::BACKWARD_LEFT;
         }
-        else //������  ���� ����� ������
+        else
         {
             m_eAttackDir = DIR::BACKWARD_RIGHT;
         }
     }
+    
 
     return m_eAttackDir;
 }

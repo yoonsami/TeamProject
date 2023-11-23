@@ -56,6 +56,13 @@ public:
 		NONE
 	};
 
+	enum class PHASE
+	{
+		PHASE1,
+		PHASE2,
+		NONE
+	};
+
 public:
 	virtual HRESULT Init() override;
 	virtual void Tick() override;
@@ -150,6 +157,8 @@ private:
 	STATE m_ePreState = STATE::NONE;
 
 	DIR m_eAttackDir = DIR::NONE;
+	PHASE m_eCurPhase = PHASE::PHASE1;
+
 
 	_float3 m_vTurnVector = _float3(0.f);
 	_float3 m_vFirstPos = _float3(0.f);
@@ -160,11 +169,12 @@ private:
 	
 	_bool m_bDetected = false;
 	_bool m_bTurnMotion = false;
+
 	_bool m_bCounter = false;
-	_bool m_bPhaseTwo = false; // True is Phase One 
 	_bool m_bPhaseOneEmissive = false;
 
 	_uint m_iPreAttack = 100;
+	_uint m_iPhaseOne_TurnCnt = 0;
 	_uint m_iCrashCnt = 0;
 
 	_uint m_iHeadBoneIndex = 0;
