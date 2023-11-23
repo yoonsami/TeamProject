@@ -960,7 +960,7 @@ technique11 T0_ModelRender
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject()));
         SetGeometryShader(NULL);
-        SetRasterizerState(RS_CullNone);
+        SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Deferred()));
@@ -970,7 +970,7 @@ technique11 T0_ModelRender
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject_Instancing()));
         SetGeometryShader(NULL);
-        SetRasterizerState(RS_CullNone);
+        SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Instancing()));
@@ -1145,7 +1145,7 @@ technique11 T4_PBR
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject()));
         SetGeometryShader(NULL);
-        SetRasterizerState(RS_CullNone);
+        SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred()));
@@ -1155,7 +1155,7 @@ technique11 T4_PBR
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject_Instancing()));
         SetGeometryShader(NULL);
-        SetRasterizerState(RS_CullNone);
+        SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_Instancing()));

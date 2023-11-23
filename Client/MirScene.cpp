@@ -742,6 +742,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		if (nullptr != pObj)
 			pObj->Add_Component(pScript);
 
+
 		pScript = make_shared<UiSkillButtonEffect>();
 		pObj = Get_UI(L"UI_Skill2_Effect");
 		if (nullptr != pObj)

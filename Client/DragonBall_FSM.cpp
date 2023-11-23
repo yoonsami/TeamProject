@@ -21,9 +21,7 @@ void DragonBall_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float
 	{
 		m_pOwner.lock()->Get_Animator()->Reset_Frame();
 
-		shared_ptr<Model> model = RESOURCES.Get<Model>(L"Anim_P_R02_DecoBall_01_Break");
-
-		m_pOwner.lock()->Get_Animator()->Set_Model(model);
+		
 		
 		m_eCurState = STATE::Crash;
 
@@ -95,7 +93,27 @@ void DragonBall_FSM::Crash()
 
 void DragonBall_FSM::Crash_Init()
 {
+	shared_ptr<Model> model = RESOURCES.Get<Model>(L"Anim_P_R02_DecoBall_01_Break");
+
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+	animator->Set_Model(model);
+
 
 	animator->Set_CurrentAnim(L"P_R02_DecoBall_01_Fire", false, 1.f);
+
+	{
+		Ray ray;
+		ray.position = Get_Transform()->Get_State(Transform_State::POS).xyz();
+		ray.direction = -_float3::Up;
+		physx::PxRaycastBuffer hit{};
+		physx::PxQueryFilterData filterData;
+		filterData.flags = physx::PxQueryFlag::eSTATIC;
+		if (PHYSX.Get_PxScene()->raycast({ ray.position.x,ray.position.y,ray.position.z }, { ray.direction.x,ray.direction.y,ray.direction.z }, 5.f, hit, PxHitFlags(physx::PxHitFlag::eDEFAULT), filterData))
+		{
+			PxVec3 pos = hit.getAnyHit(0).position;
+
+			Get_Transform()->Set_State(Transform_State::POS, _float4(pos.x, pos.y, pos.z, 1.f));
+			
+		};
+	}
 }
