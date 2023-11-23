@@ -112,7 +112,7 @@ void DragonBall_FSM::Crash_Init()
 		{
 			PxVec3 pos = hit.getAnyHit(0).position;
 
-			Get_Transform()->Set_State(Transform_State::POS, _float4(pos.x, pos.y, pos.z, 1.f));
+			Get_Transform()->Set_State(Transform_State::POS, _float4(pos.x, 0.f, pos.z, 1.f));
 			
 		};
 	}

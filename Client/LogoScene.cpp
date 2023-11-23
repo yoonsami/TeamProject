@@ -10,7 +10,6 @@
 #include "Geometry.h"
 #include "FileUtils.h"
 #include "GranseedScene.h"
-#include "MirScene.h"
 #include "ModelMesh.h"
 #include "RigidBody.h"
 #include "CustomFont.h"

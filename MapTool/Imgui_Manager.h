@@ -60,10 +60,14 @@ private:
 	shared_ptr<GameObject> Create_PointLight(LightInfo _ptltInfo);
 	// 벽 메시 생성 후 멤버변수에 적용
 	void Create_WallMesh();
+	// 바닥 메시 생성 후 멤버변수에 적용
+	void Create_GroundMesh();
 	// 벽메시 정보배열 초기화
 	void Clear_WallMesh();
 	// 최근에 피킹한벽 삭제
 	void Delete_WallMesh();
+	// 최근에 피킹한바닥 삭제
+	void Delete_GroundMesh();
 	// 플레이어 생성위치를 현재의 카메라 포지션으로 변경
 	void SetPlayerPosByCameraPos();
 	// 플레이어 룩앳 위치를 피킹 포지션으로 변경
@@ -167,11 +171,19 @@ private:
 	_float m_fCreatePointLightSpeed = { 1.f };
 
 // 벽을위한피킹정보
+	// 벽,바닥피킹선택
+	_bool m_bWallPickingMod = { true };
 	_float3 m_WallPickingPos[2] = { _float3{0.f, 0.f, 0.f}, _float3{0.f, 0.f, 0.f} };
 	_bool m_bFirstWallPick = { true };
 	_float m_fWallHeight = { 10.f };
-	// 좌하단 우상단 페어(사각형)를 가진 벡
+	// 좌하단 우상단 페어(사각형)를 가진 벽을 만들기 위한 벡터
 	vector<pair<_float3, _float3>> m_WallRectPosLDRU;
+// 바닥을위한피킹정보
+	_bool m_bGroundPickingMod = { false };
+	_float3 m_GroundPickingPos[2] = { _float3{0.f, 0.f, 0.f}, _float3{0.f, 0.f, 0.f} };
+	_bool m_bFirstGroundPick = { true };
+	// 좌상단 우하단 페어(사각형)를 가진 바닥을 만들기 위한 벡터
+	vector<pair<_float3, _float3>> m_GroundRectPosLURD;
 
 // 플레이어 위치
 	_float4 m_PlayerCreatePosition = { 0.f, 0.f, 0.f, 1.f };

@@ -14,6 +14,7 @@ public:
 	enum INSTANCE_PASSTYPE
 	{
 		PASS_MAPOBJECT,
+		PASS_MAPOBJECT_CULLNONE,
 		PASS_DEFAULT,
 	};
 	enum PASS_INFO
@@ -29,6 +30,8 @@ public:
 
 		PS_MAPOBJECT = 10,
 		PS_MAPOBJECT_INSTANCE = 11,
+		PS_MAPOBJECT_CULLNONE = 12,
+		PS_MAPOBJECT_INSTANCE_CULLNONE = 13,
 	};
 public:
 	ModelRenderer(shared_ptr<Shader> shader);

@@ -56,6 +56,40 @@ void GeometryHelper::Create3DRect(shared_ptr<Geometry<VTXTEXNORTANDATA>> _geomet
 	_geometry->Set_Indices(idx);
 }
 
+void GeometryHelper::CreateGround(shared_ptr<Geometry<VTXTEXNORTANDATA>> _geometry, vector<pair<_float3, _float3>> _LURDPointsVector)
+{
+	vector<VTXTEXNORTANDATA> vtx;
+	vtx.resize(_LURDPointsVector.size() * 4);
+
+	for (size_t i = 0; i < _LURDPointsVector.size(); ++i)
+	{
+		_float3 LUPos = _LURDPointsVector[i].first;
+		_float3 RDPos = _LURDPointsVector[i].second;
+
+		// 좌상단 우하단 점 두개를 갖고 사각형을 만듦
+		vtx[i * 4].vPosition = LUPos;
+		vtx[i * 4 + 1].vPosition = _float3{ RDPos.x, LUPos.y, LUPos.z };
+		vtx[i * 4 + 2].vPosition = RDPos;
+		vtx[i * 4 + 3].vPosition = _float3{ LUPos.x, RDPos.y, RDPos.z };
+	}
+
+	_geometry->Set_Vertices(vtx);
+
+	vector<_uint> idx;
+	idx.resize(_LURDPointsVector.size() * 6);
+
+	for (_uint i = 0; i < (_uint)_LURDPointsVector.size(); ++i)
+	{
+			idx[i * 6] = i * 4;
+			idx[i * 6 + 1] = i * 4 + 1;
+			idx[i * 6 + 2] = i * 4 + 2;
+			idx[i * 6 + 3] = i * 4;
+			idx[i * 6 + 4] = i * 4 + 2;
+			idx[i * 6 + 5] = i * 4 + 3;
+	}
+	_geometry->Set_Indices(idx);
+}
+
 void GeometryHelper::CreateQuad(shared_ptr<Geometry<VTXCOLORDATA>> geometry, _float4 color)
 {
 	vector<VTXCOLORDATA> vtx;

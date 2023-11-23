@@ -32,6 +32,10 @@ public:
     // Culling
         _float3 CullPos = _float3{ 0.f, 0.f, 0.f };
         _float CullRadius = { 0.f };
+    // CullDirection
+        _bool bCullNone = false;
+    // DummyData
+        _float4x4 matDummyData = _float4x4::Identity;
     }MAPOBJDESC;
 
 public:
