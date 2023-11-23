@@ -60,6 +60,15 @@ HRESULT UIBossHpBar::Init()
         vecPos.x -= 30.f;
         m_pElement.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
         m_pElement.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(GET_ELEMENT(m_eBoss)), TextureMapType::DIFFUSE);
+    
+        if (false == BossData.IsUseGroggy)
+        {
+            if(false == m_pBgGroggy.expired())
+                m_pBgGroggy.lock()->Set_Render(false);
+            if (false == m_pFrontGroggy.expired())
+                m_pFrontGroggy.lock()->Set_Render(false);
+        }
+    
     }
     
 
@@ -101,7 +110,7 @@ void UIBossHpBar::Check_Target()
         pScene->Remove_GameObject(m_pFrontGroggy.lock());
         pScene->Remove_GameObject(m_pElement.lock());
         pScene->Remove_GameObject(m_pBossName.lock());
-        pScene->Remove_GameObject(m_pOwner.lock());
+        //pScene->Remove_GameObject(m_pOwner.lock());
     }
 }
 

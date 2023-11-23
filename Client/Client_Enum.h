@@ -93,16 +93,23 @@ enum SkillInfo
 	NONE
 };
 
-
 enum class LevelInfo
 {
 	STATIC,
 	LOGO,
 };
+
 enum class NPCTYPE
 {
 	QUEST,
 	GACHA,
 	MAX
+};
 
+enum class QUESTDIALOG
+{
+	TRY_GACHA,
+	KILL_MONSTER,
+	KILL_MIR,
+	MAX
 };

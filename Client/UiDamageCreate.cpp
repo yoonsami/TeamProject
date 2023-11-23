@@ -50,7 +50,6 @@ void UiDamageCreate::Create_Damage_Font(weak_ptr<GameObject> pObj)
     Check_In_Screen();
     if (false == m_bIsIn)
         return;
-
     
     auto pFont = make_shared<GameObject>();
     pFont->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
@@ -59,6 +58,7 @@ void UiDamageCreate::Create_Damage_Font(weak_ptr<GameObject> pObj)
     HERO eHero = m_pPlayer.lock()->Get_Script<CoolTimeCheckScript>()->Get_Cur_Hero();
 
     pFont->Get_FontRenderer()->Set_Font(RESOURCES.Get<CustomFont>(L"136ex"), m_Color[GET_DATA(eHero).Element], m_fSize);
+
     pFont->Add_Component(make_shared<UiDamageMove>(pObj));
     
     pFont->Set_LayerIndex(Layer_UI);
