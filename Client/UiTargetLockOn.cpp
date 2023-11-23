@@ -54,6 +54,21 @@ void UiTargetLockOn::Tick()
 
 void UiTargetLockOn::Late_Tick()
 {
+    /*if (true == m_pOwner.expired() ||
+        true == m_pCamera.expired() ||
+        true == m_pLockOn0.expired() ||
+        true == m_pLockOn1.expired() ||
+        true == m_pTarget.expired())
+        return;
+
+    if (false == m_bIsRender)
+        return;
+
+    Update_Target_Pos();*/
+}
+
+void UiTargetLockOn::Final_Tick()
+{
     if (true == m_pOwner.expired() ||
         true == m_pCamera.expired() ||
         true == m_pLockOn0.expired() ||

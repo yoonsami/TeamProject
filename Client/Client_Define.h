@@ -8,3 +8,5 @@ const unsigned int	g_iWinSizeX = 1920;
 const unsigned int	g_iWinSizeY = 1080;
 
 extern HWND		g_hWnd;
+
+extern _bool    g_bIsCanMouseMove;
