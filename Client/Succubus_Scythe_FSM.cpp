@@ -9,40 +9,46 @@
 
 HRESULT Succubus_Scythe_FSM::Init()
 {
-    auto animator = Get_Owner()->Get_Animator();
-    if (animator)
+    if (!m_bInitialize)
     {
+        auto animator = Get_Owner()->Get_Animator();
+        if (animator)
+        {
 
-        animator->Set_CurrentAnim(L"b_idle", true, 1.f);
-        m_eCurState = STATE::b_idle;
+            animator->Set_CurrentAnim(L"b_idle", true, 1.f);
+            m_eCurState = STATE::b_idle;
+        }
+        shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
+        attackCollider->GetOrAddTransform();
+        attackCollider->Add_Component(make_shared<SphereCollider>(1.f));
+        attackCollider->Get_Collider()->Set_CollisionGroup(Monster_Attack);
+
+        m_pAttackCollider = attackCollider;
+
+        CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
+        m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
+
+        m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
+        m_pAttackCollider.lock()->Set_Name(L"Succubus_Whip_AttackCollider");
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
+
+        m_pCamera = CUR_SCENE->Get_MainCamera();
+
+
+
+        m_fRunSpeed = 4.f;
+        m_fSprintSpeed = 5.5f;
+        m_fKnockBackSpeed = 4.f;
+        m_fKnockDownSpeed = 4.f;
+
+        m_fNormalAttack_AnimationSpeed = 1.3f;
+        m_fSkillAttack_AnimationSpeed = 1.3f;
+
+        m_fDetectRange = 10.f;
+
+
+        m_bInitialize = true;
     }
-    shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
-    attackCollider->GetOrAddTransform();
-    attackCollider->Add_Component(make_shared<SphereCollider>(1.f));
-    attackCollider->Get_Collider()->Set_CollisionGroup(Monster_Attack);
-
-    m_pAttackCollider = attackCollider;
-
-    CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
-    m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
-
-    m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
-    m_pAttackCollider.lock()->Set_Name(L"Succubus_Whip_AttackCollider");
-    m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
-
-    m_pCamera = CUR_SCENE->Get_MainCamera();
-
-
-
-    m_fRunSpeed = 4.f;
-    m_fSprintSpeed = 5.5f;
-    m_fKnockBackSpeed = 4.f;
-    m_fKnockDownSpeed = 4.f;
-
-    m_fNormalAttack_AnimationSpeed = 1.3f;
-    m_fSkillAttack_AnimationSpeed = 1.3f;
-
-    m_fDetectRange = 10.f;
 
     return S_OK;
 }

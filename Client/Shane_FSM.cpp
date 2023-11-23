@@ -22,36 +22,43 @@ Shane_FSM::~Shane_FSM()
 
 HRESULT Shane_FSM::Init()
 {
-    auto animator = Get_Owner()->Get_Animator();
-    if (animator)
+    if (!m_bInitialize)
     {
-        animator->Set_CurrentAnim(L"b_idle", true, 1.f);
-        m_eCurState = STATE::b_idle;
+        auto animator = Get_Owner()->Get_Animator();
+        if (animator)
+        {
+            animator->Set_CurrentAnim(L"b_idle", true, 1.f);
+            m_eCurState = STATE::b_idle;
+        }
+        shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
+        attackCollider->GetOrAddTransform();
+        attackCollider->Add_Component(make_shared<SphereCollider>(1.f));
+        attackCollider->Get_Collider()->Set_CollisionGroup(Player_Attack);
+
+        m_pAttackCollider = attackCollider;
+
+        CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
+        m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
+
+        m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
+        m_pAttackCollider.lock()->Set_Name(L"Player_AttackCollider");
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(Get_Owner());
+
+        m_pWeapon = CUR_SCENE->Get_GameObject(L"Weapon_Shane");
+
+        m_iDummy_CP_BoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Center");
+        m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
+        m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
+
+        m_pCamera = CUR_SCENE->Get_MainCamera();
+
+        m_fNormalAttack_AnimationSpeed = 1.2f;
+        m_fDetectRange = 5.f;
+
+
+
+        m_bInitialize = true;
     }
-    shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
-    attackCollider->GetOrAddTransform();
-    attackCollider->Add_Component(make_shared<SphereCollider>(1.f));
-    attackCollider->Get_Collider()->Set_CollisionGroup(Player_Attack);
-
-    m_pAttackCollider = attackCollider;
-
-    CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
-    m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
-
-    m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
-    m_pAttackCollider.lock()->Set_Name(L"Player_AttackCollider");
-    m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(Get_Owner());
-
-    m_pWeapon = CUR_SCENE->Get_GameObject(L"Weapon_Shane");
-
-    m_iDummy_CP_BoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Center");
-    m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
-    m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
-
-    m_pCamera = CUR_SCENE->Get_MainCamera();
-
-    m_fNormalAttack_AnimationSpeed = 1.2f;
-    m_fDetectRange = 5.f;
     return S_OK;
 }
 

@@ -6,7 +6,12 @@
 
 HRESULT Shane_Clone_FSM::Init()
 {
-	m_eCurState = STATE::Shane_Clone1;
+	if (!m_bInitialize)
+	{
+		m_eCurState = STATE::Shane_Clone1;
+
+		m_bInitialize = true;
+	}
 
 	return S_OK;
 }
