@@ -17,7 +17,10 @@ public:
 	static void CreateSphere(shared_ptr<Geometry<VTXTEXNORDATA>> geometry);
 	static void CreateGrid(shared_ptr<Geometry<VTXTEXNORDATA>> geometry, _uint iSizeX, _uint iSizeZ);
 
+	// 점페어(좌하단 우하단페어) 벡터를 통해 벽메시를 만들어줌
 	static void Create3DRect(shared_ptr<Geometry<VTXTEXNORTANDATA>> _geometry, vector<pair<_float3, _float3>> _LDURPairVector);
+	// 점페어(좌상단 우하단) 벡터를 통해 사각형모음메시(바닥)를 만듦 
+	static void CreateGround(shared_ptr<Geometry<VTXTEXNORTANDATA>> _geometry, vector<pair<_float3,_float3>> _LURDPointsVector);
 	static void CreateQuad(shared_ptr<Geometry<VTXTEXNORTANDATA>> geometry);
 	static void CreateCube(shared_ptr<Geometry<VTXTEXNORTANDATA>> geometry);
 	static void CreateSphere(shared_ptr<Geometry<VTXTEXNORTANDATA>> geometry);

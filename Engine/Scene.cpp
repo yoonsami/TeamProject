@@ -510,6 +510,38 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 		Add_GameObject(WallObject);
 	}
 
+	// 바닥정보 불러오기 및 바닥생성
+	vector<pair<_float3, _float3>> GroundRectPosLURD;
+	GroundRectPosLURD.clear();
+	_int iNumGround = 0;
+	file->Read<_int>(iNumGround);
+	if (iNumGround > 0)
+	{
+		GroundRectPosLURD.resize(iNumGround);
+		// 벽정보 읽어오기
+		for (_int i = 0; i < iNumGround; ++i)
+			file->Read<pair<_float3, _float3>>(GroundRectPosLURD[i]);
+		// 벽정보를 기반으로 벽메시 생성
+		shared_ptr<Mesh> GroundMesh = make_shared<Mesh>();
+		GroundMesh->CreateGround(GroundRectPosLURD);
+		// 메시를 기반으로 벽오브젝트 생성
+		shared_ptr<GameObject> GroundObject = make_shared<GameObject>();
+		GroundObject->Set_Name(L"MapGround");
+		GroundObject->GetOrAddTransform();
+		// 메시렌더러
+		shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+		renderer->Set_Mesh(GroundMesh);
+		// 메시를 통해 메시콜라이더 생성
+		shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(*GroundMesh.get());
+		GroundObject->Add_Component(pCollider);
+		pCollider->Set_Activate(true);
+		// 리지드바디 생성
+		auto rigidBody = make_shared<RigidBody>();
+		rigidBody->Create_RigidBody(pCollider, GroundObject->GetOrAddTransform()->Get_WorldMatrix());
+		GroundObject->Add_Component(rigidBody);
+		Add_GameObject(GroundObject);
+	}
+
 	// 오브젝트 개수 불러오기
 	_int iNumObjects = file->Read<_int>();
 
@@ -536,6 +568,10 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 		// Culling
 		_float3 CullPos = _float3{ 0.f, 0.f, 0.f };
 		_float CullRadius = { 0.f };
+		// CullMode
+		_bool bCullNone = false;
+		// Dummy
+		_float4x4 matDummyData = _float4x4::Identity;
 
 		wstring strObjectName = Utils::ToWString(file->Read<string>());
 		strName = Utils::ToString(strObjectName);
@@ -571,6 +607,8 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 		}
 		file->Read<_float3>(CullPos);
 		file->Read<_float>(CullRadius);
+		file->Read<_bool>(bCullNone);
+		file->Read<_float4x4>(matDummyData);
 
 // 오브젝트 생성
 		shared_ptr<GameObject> CreateObject = make_shared<GameObject>();
@@ -606,7 +644,11 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 			shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
 			CreateObject->Add_Component(renderer);
 			renderer->Set_Model(model);
-			renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT);
+			// 컬방향
+			if (bCullNone)
+				renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT_CULLNONE);
+			else
+				renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT);
 			renderer->SetFloat(3, fUVWeight);
 		}
 

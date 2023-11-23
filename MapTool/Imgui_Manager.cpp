@@ -460,9 +460,30 @@ void ImGui_Manager::Frame_SelcetObjectManager()
             default:
                 break;
             }
-            //ObjPlayer->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.8f, 0.5f })); //obbcollider
-            //ObjPlayer->Get_Collider()->Set_CollisionGroup(Player_Body);
-            //ObjPlayer->Get_Collider()->Set_Activate(true);
+        }
+        // 애니메이션여부체크
+        if(m_pMapObjects[m_iObjects]->Get_ModelRenderer() != nullptr)
+        {
+            // CullNone여부 판단
+            if (ImGui::Checkbox("##bCullNone", &CurObjectDesc.bCullNone))
+            {
+                for (_int i = 0; i < m_pMapObjects.size(); ++i)
+                {
+                    MapObjectScript::MAPOBJDESC& tempDesc = m_pMapObjects[i]->Get_Script<MapObjectScript>()->Get_DESC();
+                    if (CurObjectDesc.strName == tempDesc.strName)
+                    {
+                        tempDesc.bCullNone = CurObjectDesc.bCullNone;
+                        if (CurObjectDesc.bCullNone)
+                        {
+                            m_pMapObjects[i]->Get_ModelRenderer()->Set_PassType(ModelRenderer::PASS_MAPOBJECT_CULLNONE);
+                        }
+                        else
+                        {
+                            m_pMapObjects[i]->Get_ModelRenderer()->Set_PassType(ModelRenderer::PASS_MAPOBJECT);
+                        }
+                    }
+                }
+            }
         }
     }
     // 세이브로드
@@ -679,18 +700,37 @@ void ImGui_Manager::Frame_Light()
 void ImGui_Manager::Frame_Wall()
 {
     ImGui::Begin("Frame_Wall"); // 글자 맨윗줄
-
-    if (ImGui::Button("Create"))
+    // 벽피킹관련
+    ImGui::Text("Wall");
+    if (ImGui::Checkbox("WallPickingMode", &m_bWallPickingMod))
+    {
+        m_bGroundPickingMod = !m_bWallPickingMod;
+    }
+    if (ImGui::Button("CreateWall"))
     {
         Create_WallMesh();
     }
-    if (ImGui::Button("Clear"))
+    if (ImGui::Button("ClearWall"))
     {
         Clear_WallMesh();
     }
-    if (ImGui::Button("Delete"))
+    if (ImGui::Button("DeleteWall"))
     {
         Delete_WallMesh();
+    }
+    // 바닥피킹관련
+    ImGui::Text("Ground");
+    if (ImGui::Checkbox("GroundPickingMode", &m_bGroundPickingMod))
+    {
+        m_bWallPickingMod = !m_bGroundPickingMod;
+    }
+    if (ImGui::Button("CreateGround"))
+    {
+        Create_GroundMesh();
+    }
+    if (ImGui::Button("DeleteGround"))
+    {
+        Delete_GroundMesh();
     }
 
     ImGui::End();
@@ -746,18 +786,37 @@ void ImGui_Manager::Picking_Object()
         ::ScreenToClient(g_hWnd, &MousePos);
         _float2 ScreenPos{ (_float)MousePos.x, (_float)MousePos.y };
 
-        if (m_bFirstWallPick)
+        // 벽피킹
+        if (m_bWallPickingMod)
         {
-            m_bFirstWallPick = false;
-            shared_ptr<GameObject> PickObject = PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), CUR_SCENE->Get_Objects(), m_WallPickingPos[0]);
+            if (m_bFirstWallPick)
+            {
+                m_bFirstWallPick = false;
+                shared_ptr<GameObject> PickObject = PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), CUR_SCENE->Get_Objects(), m_WallPickingPos[0]);
+            }
+            else
+            {
+                shared_ptr<GameObject> PickObject = PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), CUR_SCENE->Get_Objects(), m_WallPickingPos[1]);
+                // 사각형 하나 추가
+                m_WallRectPosLDRU.push_back(pair<_float3, _float3>(m_WallPickingPos[0], _float3{ m_WallPickingPos[1].x, m_fWallHeight, m_WallPickingPos[1].z }));
+                // 좌하단 점을 우하단 점으로 변경
+                m_WallPickingPos[0] = m_WallPickingPos[1];
+            }
         }
-        else
+        // 바닥피킹
+        else if (m_bGroundPickingMod)
         {
-            shared_ptr<GameObject> PickObject = PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), CUR_SCENE->Get_Objects(), m_WallPickingPos[1]);
-            // 사각형 하나 추가
-            m_WallRectPosLDRU.push_back(pair<_float3, _float3>(m_WallPickingPos[0], _float3{ m_WallPickingPos[1].x, m_fWallHeight, m_WallPickingPos[1].z }));
-            // 좌하단 점을 우하단 점으로 변경
-            m_WallPickingPos[0] = m_WallPickingPos[1];
+            if (m_bFirstGroundPick)
+            {
+                m_bFirstGroundPick = !m_bFirstGroundPick;
+                PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), CUR_SCENE->Get_Objects(), m_GroundPickingPos[0]);
+            }
+            else
+            {
+                m_bFirstGroundPick = !m_bFirstGroundPick;
+                PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), CUR_SCENE->Get_Objects(), m_GroundPickingPos[1]); // 사각형 하나 추가
+                m_GroundRectPosLURD.push_back(pair<_float3, _float3>(m_GroundPickingPos[0], m_GroundPickingPos[1]));
+            }
         }
     }
 }
@@ -903,7 +962,10 @@ shared_ptr<GameObject> ImGui_Manager::Create_MapObject(MapObjectScript::MapObjec
         shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
         CreateObject->Add_Component(renderer);
         renderer->Set_Model(model);
-        renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT);
+        if (CreateDesc.bCullNone)
+            renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT_CULLNONE);
+        else
+            renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT);
         renderer->SetFloat(3, CreateDesc.fUVWeight);
     }
 
@@ -1036,6 +1098,33 @@ void ImGui_Manager::Create_WallMesh()
     CUR_SCENE->Add_GameObject(WallObject);
 }
 
+void ImGui_Manager::Create_GroundMesh()
+{
+    // 정보를 기반으로 바닥메시 생성
+    shared_ptr<Mesh> GroundMesh = make_shared<Mesh>();
+    GroundMesh->CreateGround(m_GroundRectPosLURD);
+
+    // 메시를 기반으로 바닥오브젝트 생성
+    shared_ptr<GameObject> GroundObject = make_shared<GameObject>();
+    GroundObject->Set_Name(L"Ground");
+    GroundObject->GetOrAddTransform();
+
+    // 메시렌더러
+    shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+    renderer->Set_Mesh(GroundMesh);
+
+    // 메시를 통해 메시콜라이더 생성
+    shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(*GroundMesh.get());
+    GroundObject->Add_Component(pCollider);
+    pCollider->Set_Activate(true);
+
+    // 바닥 콜라이더 중복체크
+    shared_ptr<GameObject> PrGround = CUR_SCENE->Get_GameObject(L"Ground");
+    if (PrGround != nullptr)
+        CUR_SCENE->Remove_GameObject(PrGround);
+    CUR_SCENE->Add_GameObject(GroundObject);
+}
+
 void ImGui_Manager::Clear_WallMesh()
 {
     m_WallRectPosLDRU.clear();
@@ -1045,6 +1134,11 @@ void ImGui_Manager::Clear_WallMesh()
 void ImGui_Manager::Delete_WallMesh()
 {
     m_WallRectPosLDRU.pop_back();
+}
+
+void ImGui_Manager::Delete_GroundMesh()
+{
+    m_GroundRectPosLURD.pop_back();
 }
 
 void ImGui_Manager::SetPlayerPosByCameraPos()
@@ -1188,6 +1282,12 @@ HRESULT ImGui_Manager::Save_MapObject()
     {
         file->Write<pair<_float3, _float3>>(m_WallRectPosLDRU[i]);
     }
+    // 바닥메시콜라이더에 필요한 정보 저장
+    file->Write<_int>((_int)m_GroundRectPosLURD.size());
+    for (_int i = 0; i < m_GroundRectPosLURD.size(); ++i)
+    {
+        file->Write<pair<_float3, _float3>>(m_GroundRectPosLURD[i]);
+    }
 
     // 맵오브젝트 정보 저장
     // 1. 오브젝트 개수 저장
@@ -1248,6 +1348,9 @@ HRESULT ImGui_Manager::Save_MapObject()
         }
         file->Write<_float3>(MapDesc.CullPos);
         file->Write<_float>(MapDesc.CullRadius);
+        file->Write<_bool>(MapDesc.bCullNone);
+
+        file->Write<_float4x4>(MapDesc.matDummyData);
     }
 
     // 플레이어의 시작위치 저장.
@@ -1421,6 +1524,17 @@ HRESULT ImGui_Manager::Load_MapObject()
             file->Read<pair<_float3, _float3>>(m_WallRectPosLDRU[i]);
         Create_WallMesh();
     }
+    // 바닥정보 불러오기 및 바닥생성
+    m_GroundRectPosLURD.clear();
+    _int iNumGround = 0;
+    file->Read<_int>(iNumGround);
+    if (iNumGround != 0)
+    {
+        m_GroundRectPosLURD.resize(iNumGround);
+        for (_int i = 0; i < iNumGround; ++i)
+            file->Read<pair<_float3, _float3>>(m_GroundRectPosLURD[i]);
+        Create_GroundMesh();
+    }
 
     // 오브젝트 개수 불러오기
     _int iNumObjects = file->Read<_int>();
@@ -1460,6 +1574,8 @@ HRESULT ImGui_Manager::Load_MapObject()
         }
         file->Read<_float3>(MapDesc.CullPos);
         file->Read<_float>(MapDesc.CullRadius);
+        file->Read<_bool>(MapDesc.bCullNone);
+        file->Read<_float4x4>(MapDesc.matDummyData);
         
         shared_ptr<GameObject> CreateObject = Create_MapObject(MapDesc);
         

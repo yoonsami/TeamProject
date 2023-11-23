@@ -19,6 +19,12 @@ void Mesh::Create3DRect(vector<pair<_float3, _float3>> _LDURPairVector)
 	Create_Buffer();
 }
 
+void Mesh::CreateGround(vector<pair<_float3, _float3>> _LURDPairVector)
+{
+	GeometryHelper::CreateGround(m_pGeometry, _LURDPairVector);
+	Create_Buffer();
+}
+
 void Mesh::CreateQuad()
 {
 	

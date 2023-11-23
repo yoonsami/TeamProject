@@ -12,6 +12,7 @@ public:
 
 public:
     void Create3DRect(vector<pair<_float3, _float3>> _LDURPairVector);
+    void CreateGround(vector<pair<_float3, _float3>> _LURDPairVector);
     void CreateQuad();
     void CreateCube();
     void CreateGrid(_uint sizeX, _uint sizeZ);
