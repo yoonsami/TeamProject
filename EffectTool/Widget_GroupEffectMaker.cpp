@@ -444,7 +444,8 @@ void Widget_GroupEffectMaker::Option_MemberEffectList()
 			}
 			if (ImGui::Button(strDeleteButton.c_str()))
 			{
-				m_pCurrentGroup->Get_GroupEffect()->DeleteMember(Utils::ToWString(iter));
+				if(nullptr != m_pCurrentGroup)
+					m_pCurrentGroup->Get_GroupEffect()->DeleteMember(Utils::ToWString(iter));
 				string strFilePath = "..\\Resources\\EffectData\\GroupEffectData\\";
 				strFilePath += (m_strGroup + ".dat");
 				Save();
