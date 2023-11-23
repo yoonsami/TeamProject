@@ -23,6 +23,8 @@ RigidBody::~RigidBody()
 
 void RigidBody::Late_Tick()
 {
+	if (!m_pRigidBody)
+		return;
 	auto scene = PHYSX.Get_PxScene();
 	
 	_float3 vCenterPos = Get_Owner()->Get_CullPos();

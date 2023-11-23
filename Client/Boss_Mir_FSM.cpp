@@ -409,7 +409,7 @@ void Boss_Mir_FSM::First_Meet()
             m_vHeadCamDir = m_vHeadBonePos.xyz() - m_vHeadCamPos.xyz();
             m_vHeadCamDir.Normalize();
             
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(0.5f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(2.f);
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vHeadBonePos.xyz());
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, m_vHeadCamDir * -1.f, 10.f);
         }
