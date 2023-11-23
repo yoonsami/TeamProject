@@ -20,3 +20,6 @@
 #define GET_ELEMENT(VALUE)          GET_SINGLE(DataMgr).Get_Element(VALUE)
 #define GET_ELEMENT_LINE(VALUE)     GET_SINGLE(DataMgr).Get_Element_Line(VALUE)
 
+#define GET_NPC_NAME(VALUE)         GET_SINGLE(DataMgr).Get_Npc_Name(VALUE)
+#define GET_DIALOG_COUNT(VALUE)     GET_SINGLE(DataMgr).Get_Quest_Dialog_Count(VALUE)
+#define GET_DIALOG(VALUE, INDEX)    GET_SINGLE(DataMgr).Get_Quest_Dialog(VALUE, INDEX)

@@ -60,6 +60,7 @@
 #include "UIBossHpBar.h"
 #include "UiComboEffect.h"
 #include "UiSkillGauge.h"
+#include"UiDialogController.h"
 
 
 #include <filesystem>
@@ -85,6 +86,17 @@ void GranseedScene::Init()
 void GranseedScene::Tick()
 {
 	__super::Tick();
+
+	if (KEYTAP(KEY_TYPE::C))
+	{
+		auto pObj = Get_UI(L"UI_Dialog_Controller");
+		pObj->Get_Script<UiDialogController>()->Create_Dialog();
+	}
+	if (KEYTAP(KEY_TYPE::V))
+	{
+		auto pObj = Get_UI(L"UI_Dialog_Controller");
+		pObj->Get_Script<UiDialogController>()->Remove_Dialog();
+	}
 }
 
 void GranseedScene::Late_Tick()
@@ -404,6 +416,16 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		Add_GameObject(pObj);
 	}
 
+	{
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_Name(L"UI_Dialog_Controller");
+
+		auto pScript = make_shared<UiDialogController>();
+		pObj->Add_Component(pScript);
+
+		pObj->Set_LayerIndex(Layer_UI);
+		Add_GameObject(pObj);
+	}
 
 	{
 		auto pObj = Get_UI(L"UI_Combo_Effect");

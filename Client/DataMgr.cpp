@@ -347,7 +347,6 @@ void DataMgr::Initialize()
 
 	}
 
-
 	// SHANE
 	{
 		auto& tagData = m_HeroData[IDX(HERO::SHANE)];
@@ -463,36 +462,85 @@ void DataMgr::Initialize()
 	}
 
 
-
-
 	m_BossData.resize(IDX(BOSS::MAX));
 
+	// MIR
 	{
 		auto& tagData = m_BossData[IDX(BOSS::MIR)];
 
 		tagData.Element = ElementType::FIRE;
 		tagData.Name = L"타락한화룡";
+		tagData.IsUseGroggy = false;
 	}
 
+	// AXE
 	{
 		auto& tagData = m_BossData[IDX(BOSS::AXE)];
 
 		tagData.Element = ElementType::WIND;
 		tagData.Name = L"뇌우의도끼";
+		tagData.IsUseGroggy = false;
 	}
 
+	// SPIKE
 	{
 		auto& tagData = m_BossData[IDX(BOSS::SPIKE)];
 
 		tagData.Element = ElementType::WATER;
 		tagData.Name = L"스파이크";
+		tagData.IsUseGroggy = true;
 	}
 
+	// DELLONS
 	{
 		auto& tagData = m_BossData[IDX(BOSS::DELLONS)];
 
 		tagData.Element = ElementType::DARK;
 		tagData.Name = L"델론즈";
+		tagData.IsUseGroggy = false;
+	}
+
+
+	{
+		m_KeyElement.resize(ElementType::ElementEnd);
+		m_KeyElement[0] = L"Element_Dark";
+		m_KeyElement[1] = L"Element_Earth";
+		m_KeyElement[2] = L"Element_Fire";
+		m_KeyElement[3] = L"Element_Light";
+		m_KeyElement[4] = L"Element_Water";
+		m_KeyElement[5] = L"Element_Wind";
+	}
+
+
+	{
+        m_NpcName.resize(IDX(NPCTYPE::MAX));
+		m_NpcName[0] = L"나는 퀘스트맨";
+		m_NpcName[0] = L"나는 가챠맨";
+	}
+
+
+
+	m_QuestDialog.resize(IDX(QUESTDIALOG::MAX));
+	
+	{
+		auto& Dialog = m_QuestDialog[IDX(QUESTDIALOG::TRY_GACHA)];
+		Dialog.push_back(L"안녕 날 소개하지 이름 정윤성 직업은 developer \n 취미는 흡연, 프레임워크 수정, 구조 수정, 팀원 짜르기");
+		Dialog.push_back(L"cold. 비수 flying to my 찌찌 but don't worry \n hand faster than eyes");
+		Dialog.push_back(L"끝");
+	}
+
+	{
+		auto& Dialog = m_QuestDialog[IDX(QUESTDIALOG::KILL_MONSTER)];
+		Dialog.push_back(L"");
+		Dialog.push_back(L"");
+		Dialog.push_back(L"");
+	}
+	
+	{
+		auto& Dialog = m_QuestDialog[IDX(QUESTDIALOG::KILL_MIR)];
+		Dialog.push_back(L"");
+		Dialog.push_back(L"");
+		Dialog.push_back(L"");
 	}
 
 
@@ -500,11 +548,9 @@ void DataMgr::Initialize()
 
 
 
-	m_KeyElement.resize(ElementType::ElementEnd);
-	m_KeyElement[0] = L"Element_Dark";
-	m_KeyElement[1] = L"Element_Earth";
-	m_KeyElement[2] = L"Element_Fire";
-	m_KeyElement[3] = L"Element_Light";
-	m_KeyElement[4] = L"Element_Water";
-	m_KeyElement[5] = L"Element_Wind";
+
+
+
+
+
 }
