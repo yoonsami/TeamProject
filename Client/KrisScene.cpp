@@ -599,7 +599,7 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		RESOURCES.Load<Texture>(fileName, filePath);
 	}
 	auto scene = CUR_SCENE;
-	vector<shared_ptr<GameObject>>& tmp = static_pointer_cast<LoadingScene>(CUR_SCENE)->Get_StaticObjectsFromLoader();
+	list<shared_ptr<GameObject>>& tmp = static_pointer_cast<LoadingScene>(CUR_SCENE)->Get_StaticObjectsFromLoader();
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main.dat", tmp);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main_Button.dat", tmp);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Char_Change.dat", tmp);

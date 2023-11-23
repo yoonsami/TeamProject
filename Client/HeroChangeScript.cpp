@@ -44,7 +44,7 @@ HRESULT HeroChangeScript::Init()
     return S_OK;
 }
 
-void HeroChangeScript::Final_Tick()
+void HeroChangeScript::Tick()
 {
     if (m_pOwner.expired())
         return;

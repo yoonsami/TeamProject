@@ -338,7 +338,7 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		Utils::DetachExt(fileName);
 		RESOURCES.Load<Texture>(fileName, filePath);
 	}
-	vector<shared_ptr<GameObject>>& tmp = static_pointer_cast<LoadingScene>(CUR_SCENE)->Get_StaticObjectsFromLoader();
+	list<shared_ptr<GameObject>>& tmp = static_pointer_cast<LoadingScene>(CUR_SCENE)->Get_StaticObjectsFromLoader();
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main.dat", tmp);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main_Button.dat", tmp);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Char_Change.dat", tmp);

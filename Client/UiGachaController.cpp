@@ -79,7 +79,7 @@ void UiGachaController::Create_Gacha_Card()
 
     m_bIsCreate = true;
     auto pScene = CUR_SCENE;
-    pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Gacha.dat", vector<shared_ptr<GameObject>>());
+    pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Gacha.dat", list<shared_ptr<GameObject>>());
 
     _uint iSize = IDX(m_vecObjTag.size());
     for (_uint i = 0; i < iSize; ++i)

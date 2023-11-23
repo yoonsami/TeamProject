@@ -35,7 +35,7 @@ public:
 	list<shared_ptr<GameObject>>&	Get_Objects()		{ return m_GameObjects; }
 	SCENE_STATE						Get_SceneState()	{ return m_eSceneState; }
 	LightParams&					Get_LightParams()	{ return m_LightParams; }
-	vector<shared_ptr<GameObject>>& Get_StaticObjects() { return m_StaticObject; }
+	list<shared_ptr<GameObject>>&	Get_StaticObjects() { return m_StaticObject; }
 	_float							Get_LoaingPercent() { return m_fLoadPercent; }
 	shared_ptr<GameObject>			Get_UI(const wstring& strName);
 	shared_ptr<GameObject>			Get_Camera(const wstring& cameraName);
@@ -52,7 +52,7 @@ public:
 	void Render_BackBuffer();
 	
 	
-	void Load_UIFile(const wstring& path, const vector<shared_ptr<GameObject>>& staticObjects, _bool bRender = true);
+	void Load_UIFile(const wstring& path, const list<shared_ptr<GameObject>>& staticObjects, _bool bRender = true);
 	void Load_UIFile(const wstring& path, vector<weak_ptr<GameObject>>& addedObjects);
 
 	const wstring& Get_FinalRenderTarget() { return m_wstrFinalRenderTarget; }
@@ -127,7 +127,7 @@ protected:
 	_float4 m_vOffsets[14];
 
 protected:
-	vector<shared_ptr<GameObject>> m_StaticObject;
+	list<shared_ptr<GameObject>> m_StaticObject;
 
 	wstring m_wstrFinalRenderTarget = L"";
 	_bool m_bRenderDebug = false;

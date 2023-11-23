@@ -47,33 +47,98 @@ void Scene::Init()
 
 void Scene::Tick()
 {
-	
+	vector<nanoseconds> test;
+	test.reserve(1000);
 	auto objects = m_GameObjects;
 	for (auto& object : objects)
 	{
+		system_clock::time_point start_time = system_clock::now();
 		object->Tick();
+		system_clock::time_point end_time = system_clock::now();
+
+		nanoseconds nano = end_time - start_time;
+		test.push_back(nano);
+		
 	}
 	PickUI();
+
+	if (KEYTAP(KEY_TYPE::F1))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F2))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F3))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F4))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F5))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F6))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F7))
+		int a = 0;
 }
 
 void Scene::Late_Tick()
 {
-
+	vector<nanoseconds> test;
+	test.reserve(1000);
 	auto objects = m_GameObjects;
 	for (auto& object : objects)
 	{
+		system_clock::time_point start_time = system_clock::now();
 		object->Late_Tick();
+		system_clock::time_point end_time = system_clock::now();
+
+		nanoseconds nano = end_time - start_time;
+		test.push_back(nano);
 	}
+
+	if (KEYTAP(KEY_TYPE::F1))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F2))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F3))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F4))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F5))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F6))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F7))
+		int a = 0;
 }
 
 void Scene::Final_Tick()
 {
 
+	vector<nanoseconds> test;
+	test.reserve(1000);
 	auto objects = m_GameObjects;
 	for (auto& object : objects)
 	{
+		system_clock::time_point start_time = system_clock::now();
 		object->Final_Tick();
+		system_clock::time_point end_time = system_clock::now();
+
+		nanoseconds nano = end_time - start_time;
+		test.push_back(nano);
 	}
+
+	if (KEYTAP(KEY_TYPE::F1))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F2))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F3))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F4))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F5))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F6))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F7))
+		int a = 0;
 }
 
 void Scene::Render()
@@ -158,7 +223,7 @@ void Scene::Add_GameObject_Front(shared_ptr<GameObject> object, _bool staticFlag
 		m_UI.push_back(object);
 
 	if (staticFlag)
-		m_StaticObject.push_back(object);
+		m_StaticObject.push_front(object);
 }
 
 void Scene::Remove_GameObject(shared_ptr<GameObject> object)
@@ -280,7 +345,7 @@ void Scene::Swap_Object(const wstring& leftObjName, const wstring& rightObjName)
 	}
 }
 
-void Scene::Load_UIFile(const wstring& strDataFilePath, const vector<shared_ptr<GameObject>>& staticObjects, _bool bRender)
+void Scene::Load_UIFile(const wstring& strDataFilePath, const list<shared_ptr<GameObject>>& staticObjects, _bool bRender)
 {
 	shared_ptr<FileUtils> file = make_shared<FileUtils>();
 	file->Open(strDataFilePath, FileMode::Read);

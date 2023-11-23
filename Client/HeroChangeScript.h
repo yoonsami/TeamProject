@@ -12,7 +12,7 @@ public:
 
 public:
     virtual HRESULT Init() override;
-    virtual void Final_Tick() override;
+    virtual void Tick() override;
     
     void Change_Hero(HERO eHero);
 

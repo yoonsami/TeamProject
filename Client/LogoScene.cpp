@@ -122,7 +122,7 @@ void LogoScene::Load_Ui()
 		Utils::DetachExt(fileName);
 		RESOURCES.Load<Texture>(fileName, filePath);
 	}
-	vector<shared_ptr<GameObject>>& tmp = static_pointer_cast<LoadingScene>(CUR_SCENE)->Get_StaticObjects();
+	list<shared_ptr<GameObject>>& tmp = static_pointer_cast<LoadingScene>(CUR_SCENE)->Get_StaticObjects();
 
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Logo.dat", tmp);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat", tmp);
