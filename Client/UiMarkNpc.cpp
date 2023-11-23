@@ -80,5 +80,5 @@ void UiMarkNpc::Update_Pos()
 	m_pMark.lock()->Get_MeshRenderer()->Get_RenderParamDesc().matParams[0] = matView;
 
 	_float4x4 matProj = m_pCamera.lock()->Get_Camera()->Get_ProjMat();
-	m_pMark.lock()->Get_MeshRenderer()->Get_RenderParamDesc().matParams[0] = matView;
+	m_pMark.lock()->Get_MeshRenderer()->Get_RenderParamDesc().matParams[1] = matView;
 }

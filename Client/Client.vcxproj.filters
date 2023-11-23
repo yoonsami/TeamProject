@@ -271,6 +271,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\18.UiDialogController">
       <UniqueIdentifier>{093b24ca-395b-4343-8de6-fc39038975b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\19.UiInteraction">
+      <UniqueIdentifier>{e5bcdf44-e977-42fb-8255-b7bb13c49886}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -555,6 +558,9 @@
     <ClInclude Include="UiDialogController.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\18.UiDialogController</Filter>
     </ClInclude>
+    <ClInclude Include="UIInteraction.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\19.UiInteraction</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -805,6 +811,9 @@
     </ClCompile>
     <ClCompile Include="UiDialogController.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\18.UiDialogController</Filter>
+    </ClCompile>
+    <ClCompile Include="UIInteraction.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\19.UiInteraction</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

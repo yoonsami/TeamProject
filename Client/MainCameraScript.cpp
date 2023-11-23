@@ -35,7 +35,6 @@ HRESULT MainCameraScript::Init()
    
     
     m_UiTargetLockon = CUR_SCENE->Get_UI(L"UI_Target_LockOn");
-    m_UiTargetHp = CUR_SCENE->Get_UI(L"UI_Monster_Hp");
 
     return S_OK;
 }
@@ -61,8 +60,6 @@ void MainCameraScript::Late_Tick()
             m_pTarget.reset();
             if(!m_UiTargetLockon.expired())
                 m_UiTargetLockon.lock()->Get_Script<UiTargetLockOn>()->Set_Target(nullptr);
-            if (!m_UiTargetHp.expired())
-                m_UiTargetHp.lock()->Get_Script<UiMonsterHp>()->Set_Target(nullptr);
         }
         else
             Find_Target();
@@ -236,8 +233,6 @@ void MainCameraScript::Find_Target()
             //m_pTarget = object;
             if(!m_UiTargetLockon.expired())
                 m_UiTargetLockon.lock()->Get_Script<UiTargetLockOn>()->Set_Target(object);
-            if (!m_UiTargetHp.expired())
-                m_UiTargetHp.lock()->Get_Script<UiMonsterHp>()->Set_Target(object);
             m_bTestValue = true;
             //m_pPlayer.lock()->Get_FSM()->Set_Target(m_pTarget.lock());
         }

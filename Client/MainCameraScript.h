@@ -54,7 +54,6 @@ private:
 
     //test
     weak_ptr<GameObject> m_UiTargetLockon;
-    weak_ptr<GameObject> m_UiTargetHp;
     _bool m_bTestValue;
     
 

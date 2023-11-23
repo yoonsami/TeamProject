@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "UiDialogController.h" 
 
-UiDialogController::UiHpBarFloat()
+UiDialogController::UiDialogController()
 {
 }
 
