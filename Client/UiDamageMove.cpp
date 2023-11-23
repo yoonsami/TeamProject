@@ -28,18 +28,19 @@ HRESULT UiDamageMove::Init()
 
 void UiDamageMove::Tick()
 {
+    m_fCheckTime += fDT;
+    Check_Remove();
+
 	if (true == m_pOwner.expired() ||
         true == m_pTarget.expired() ||
         true == m_pCamera.expired())
 		return;
 
-    m_fCheckTime += fDT;
-    Check_Remove();
-
     Check_Render_State();
     if (false == m_bIsRender)
         return;
 
+    Change_Pos_2D();
     Change_Pos();
     //Change_Size();
     Change_Alpha();
@@ -63,8 +64,9 @@ void UiDamageMove::Check_Render_State()
 
 void UiDamageMove::Change_Pos()
 {
-    m_vecPos.x += fDT * 200.f;
-    //vecPos.y += fDT * 200.f;
+    //m_vecPos.x += fDT * 200.f;
+    m_vecPos.y += 100.f;
+    m_vecPos.y = 100.f * m_fCheckTime * m_fRatio;
     m_pOwner.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, m_vecPos);
 }
 
@@ -83,7 +85,7 @@ void UiDamageMove::Change_Alpha()
 
 void UiDamageMove::Check_Remove()
 {
-    if (m_fMaxTime < m_fCheckTime)
+    if (m_fMaxTime < m_fCheckTime && false == m_pOwner.expired())
         CUR_SCENE->Remove_GameObject(m_pOwner.lock());
 }
 

@@ -20,17 +20,17 @@ private:
     void On();
 
 private:
-    _bool m_bIsEven = { false };
-    vector<wstring> m_strEvenTextureName;
-    vector<wstring> m_strOddTextureName;
+    static _uint    iTextureIndex;
+    _uint           m_iMaxIndex         = {};
+    _bool           m_bIsEven           = { false };
+    wstring         m_strTextureName;
 
     enum class CHANGE_TYPE { ON_IDLE, OFF, CHANGE, OFF_IDLE, ON };
     CHANGE_TYPE     m_eType = { CHANGE_TYPE::ON_IDLE };
 
-    _float          m_fMaxIdleTime      = { 3.f };
-    _float          m_fOnOffTime        = { 2.f };
-    _float          m_fCheckTime        = { 0.f };
-    _uint           m_iIndex            = { 0 };
+    _float          m_fMaxIdleTime      = {};
+    _float          m_fOnOffTime        = {};
+    _float          m_fCheckTime        = {};
 
 };
 

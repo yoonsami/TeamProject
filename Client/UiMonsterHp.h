@@ -11,7 +11,7 @@ public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
 
-    void Set_Target(shared_ptr<GameObject> pObj);
+    //void Set_Target(shared_ptr<GameObject> pObj);
 
 private:
     void Check_Render_State();
@@ -21,7 +21,6 @@ private:
     void Update_Target_Pos();
 
 private:
-    weak_ptr<GameObject>    m_pTarget;
     weak_ptr<GameObject>    m_pFrontHp;
     weak_ptr<GameObject>    m_pBackHp;
     weak_ptr<GameObject>    m_pBgHp;

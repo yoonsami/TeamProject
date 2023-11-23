@@ -4,6 +4,8 @@
 #include "MeshRenderer.h"
 #include "Material.h"
 
+_uint UiLoadingScript::iTextureIndex = 0;
+
 UiLoadingScript::UiLoadingScript(_bool bIsEven)
     : m_bIsEven(bIsEven)
 {
@@ -14,35 +16,23 @@ HRESULT UiLoadingScript::Init()
     if (m_pOwner.expired())
         return E_FAIL;
 
-    m_strEvenTextureName.push_back(L"UI_Loading0");
-    m_strEvenTextureName.push_back(L"UI_Loading2");
-    m_strEvenTextureName.push_back(L"UI_Loading4");
-    m_strEvenTextureName.push_back(L"UI_Loading6");
-    m_strEvenTextureName.push_back(L"UI_Loading8");
-    m_strEvenTextureName.push_back(L"UI_Loading10");
-    m_strEvenTextureName.push_back(L"UI_Loading12");
+    m_fMaxIdleTime  = 3.f;
+    m_fOnOffTime    = 2.f;
+    m_fCheckTime    = 0.f;
 
-    m_strOddTextureName.push_back(L"UI_Loading1");
-    m_strOddTextureName.push_back(L"UI_Loading3");
-    m_strOddTextureName.push_back(L"UI_Loading5");
-    m_strOddTextureName.push_back(L"UI_Loading7");
-    m_strOddTextureName.push_back(L"UI_Loading9");
-    m_strOddTextureName.push_back(L"UI_Loading11");
-    m_strOddTextureName.push_back(L"UI_Loading13");
+    m_iMaxIndex = 40;
+    m_strTextureName = L"UI_Loading";
 
-
+    wstring TextureName = m_strTextureName + to_wstring(iTextureIndex++);
     if(true == m_bIsEven)
     {
-        m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_strEvenTextureName[m_iIndex]), TextureMapType::DIFFUSE);
+        m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(TextureName), TextureMapType::DIFFUSE);
     }
     else
     {
         m_eType = CHANGE_TYPE::OFF_IDLE;
-        m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_strOddTextureName[m_iIndex]), TextureMapType::DIFFUSE);
+        m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(TextureName), TextureMapType::DIFFUSE);
     }
-
-
-
 
     return S_OK;
 }
@@ -83,11 +73,12 @@ void UiLoadingScript::Tick()
 
 void UiLoadingScript::Change_Texture()
 {
-    ++m_iIndex;
-    if (m_strOddTextureName.size() == m_iIndex)
-        m_iIndex = 0;
+    ++iTextureIndex;
+    if (m_iMaxIndex == iTextureIndex)
+        iTextureIndex = 0;
 
-    m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_strOddTextureName[m_iIndex]), TextureMapType::DIFFUSE);
+    wstring TextureName = m_strTextureName + to_wstring(iTextureIndex);
+    m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(TextureName), TextureMapType::DIFFUSE);
 }
 
 void UiLoadingScript::On_Idle()
@@ -120,23 +111,15 @@ void UiLoadingScript::Change()
     m_fCheckTime = 0.f;
     m_eType = CHANGE_TYPE::OFF_IDLE;
 
+    ++iTextureIndex;
+    if (m_iMaxIndex == iTextureIndex)
+        iTextureIndex = 0;
+
+    wstring TextureName = m_strTextureName + to_wstring(iTextureIndex);
     if (true == m_bIsEven)
-    {
-        ++m_iIndex;
-        if (m_strEvenTextureName.size() == m_iIndex)
-            m_iIndex = 0;
-
-        m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_strEvenTextureName[m_iIndex]), TextureMapType::DIFFUSE);
-    }
+        m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(TextureName), TextureMapType::DIFFUSE);
     else
-    {
-        ++m_iIndex;
-        if (m_strOddTextureName.size() == m_iIndex)
-            m_iIndex = 0;
-
-        m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_strOddTextureName[m_iIndex]), TextureMapType::DIFFUSE);
-    }
-
+        m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(TextureName), TextureMapType::DIFFUSE);
 }
 
 void UiLoadingScript::Off_Idle()

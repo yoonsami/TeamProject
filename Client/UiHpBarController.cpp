@@ -14,6 +14,11 @@ HRESULT UiHpBarController::Init()
     if (m_pOwner.expired())
         return E_FAIL;
 
+    if (true == m_bIsInit)
+        return S_OK;
+
+    m_bIsInit = true;
+
     m_fMaxHp = m_pOwner.lock()->Get_MaxHp();
     m_fPreHp = m_pOwner.lock()->Get_CurHp();
 

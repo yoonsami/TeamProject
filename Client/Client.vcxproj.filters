@@ -268,6 +268,15 @@
     <Filter Include="02.Component\00.MonoBehaviour\05.Object\00.ObjectDissolve">
       <UniqueIdentifier>{d1056bc6-9167-4c20-929b-7a2016426db2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\17.UiMarkNpc">
+      <UniqueIdentifier>{72831f1a-04f7-4c99-bb2c-b123a25ffc4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\18.UiDialogController">
+      <UniqueIdentifier>{093b24ca-395b-4343-8de6-fc39038975b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\19.UiInteraction">
+      <UniqueIdentifier>{e5bcdf44-e977-42fb-8255-b7bb13c49886}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -550,6 +559,15 @@
     <ClInclude Include="ObjectDissolve.h">
       <Filter>02.Component\00.MonoBehaviour\05.Object\00.ObjectDissolve</Filter>
     </ClInclude>
+    <ClInclude Include="UiMarkNpc.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\17.UiMarkNpc</Filter>
+    </ClInclude>
+    <ClInclude Include="UiDialogController.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\18.UiDialogController</Filter>
+    </ClInclude>
+    <ClInclude Include="UIInteraction.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\19.UiInteraction</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -798,6 +816,15 @@
     <ClCompile Include="UiMarkNpc.cpp" />
     <ClCompile Include="ObjectDissolve.cpp">
       <Filter>02.Component\00.MonoBehaviour\05.Object\00.ObjectDissolve</Filter>
+    </ClCompile>
+    <ClCompile Include="UiMarkNpc.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\17.UiMarkNpc</Filter>
+    </ClCompile>
+    <ClCompile Include="UiDialogController.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\18.UiDialogController</Filter>
+    </ClCompile>
+    <ClCompile Include="UIInteraction.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\19.UiInteraction</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

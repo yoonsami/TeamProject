@@ -14,19 +14,34 @@ HRESULT UiMonsterHp::Init()
         return E_FAIL;
 
     auto pScene = CUR_SCENE;
-    m_pFrontHp  = pScene->Get_UI(L"UI_MonsterHp0");
-    m_pBackHp   = pScene->Get_UI(L"UI_MonsterHp1");
-    m_pBgHp     = pScene->Get_UI(L"UI_MonsterHp2");
-    m_pCamera   = pScene->Get_Camera(L"Default");
+    vector<weak_ptr<GameObject>> addedObj;
+    pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_MonsterHp.dat", addedObj);
 
-    if(false == m_pFrontHp.expired())
+    _uint iSize = IDX(addedObj.size());
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        if (true == addedObj[i].expired())
+            continue;
+
+        wstring strName = addedObj[i].lock()->Get_Name();
+        if (L"UI_MonsterHp0" == strName)
+            m_pFrontHp = addedObj[i];
+        else if(L"UI_MonsterHp1" == strName)
+            m_pBackHp = addedObj[i];
+        else if(L"UI_MonsterHp2" == strName)
+            m_pBgHp = addedObj[i];
+    }
+
+    m_pCamera = pScene->Get_Camera(L"Default");
+
+    /*if(false == m_pFrontHp.expired())
         m_pFrontHp.lock()->Set_Render(false);
 
     if (false == m_pBackHp.expired())
         m_pBackHp.lock()->Set_Render(false);
 
     if (false == m_pBgHp.expired())
-        m_pBgHp.lock()->Set_Render(false);
+        m_pBgHp.lock()->Set_Render(false);*/
 
     return S_OK;
 }
@@ -37,8 +52,7 @@ void UiMonsterHp::Tick()
         true == m_pFrontHp.expired()    ||
         true == m_pBackHp.expired()     ||
         true == m_pCamera.expired()     ||
-        true == m_pBgHp.expired()       ||
-        true == m_pTarget.expired())
+        true == m_pBgHp.expired())
 		return;
 
     Check_Render_State();
@@ -50,43 +64,43 @@ void UiMonsterHp::Tick()
     Change_Hp_Slow();
     Update_Target_Pos();
 
-    if (KEYTAP(KEY_TYPE::F5))
-        m_pTarget.lock()->Get_Hurt(10.f);
+    /*if (KEYTAP(KEY_TYPE::F5))
+        m_pTarget.lock()->Get_Hurt(10.f);*/
 }
 
-void UiMonsterHp::Set_Target(shared_ptr<GameObject> pObj)
-{
-    if (true == m_pOwner.expired()      ||
-        true == m_pFrontHp.expired()    ||
-        true == m_pBackHp.expired()     ||
-        true == m_pCamera.expired()     ||
-        true == m_pBgHp.expired())
-        return;
-
-    if (nullptr == pObj)
-    {
-        m_pTarget.reset();
-        m_pFrontHp.lock()->Set_Render(false);
-        m_pBackHp.lock()->Set_Render(false);
-        m_pBgHp.lock()->Set_Render(false);
-    }
-    else
-    {
-        m_pTarget = pObj;
-        _float HpRatio = m_pTarget.lock()->Get_HpRatio();
-        m_pFrontHp.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = HpRatio;
-        m_pBackHp.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = HpRatio;
-        m_bIsWork = false;
-        m_fRatio = HpRatio;
-        m_pFrontHp.lock()->Set_Render(true);
-        m_pBackHp.lock()->Set_Render(true);
-        m_pBgHp.lock()->Set_Render(true);
-    }
-}
+//void UiMonsterHp::Set_Target(shared_ptr<GameObject> pObj)
+//{
+//    if (true == m_pOwner.expired()      ||
+//        true == m_pFrontHp.expired()    ||
+//        true == m_pBackHp.expired()     ||
+//        true == m_pCamera.expired()     ||
+//        true == m_pBgHp.expired())
+//        return;
+//
+//    if (nullptr == pObj)
+//    {
+//        m_pTarget.reset();
+//        m_pFrontHp.lock()->Set_Render(false);
+//        m_pBackHp.lock()->Set_Render(false);
+//        m_pBgHp.lock()->Set_Render(false);
+//    }
+//    else
+//    {
+//        m_pTarget = pObj;
+//        _float HpRatio = m_pTarget.lock()->Get_HpRatio();
+//        m_pFrontHp.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = HpRatio;
+//        m_pBackHp.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = HpRatio;
+//        m_bIsWork = false;
+//        m_fRatio = HpRatio;
+//        m_pFrontHp.lock()->Set_Render(true);
+//        m_pBackHp.lock()->Set_Render(true);
+//        m_pBgHp.lock()->Set_Render(true);
+//    }
+//}
 
 void UiMonsterHp::Check_Render_State()
 {
-    _float3 cullPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
+    _float3 cullPos = m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
     _float cullRadius = 1.5f;
     Frustum frustum = m_pCamera.lock()->Get_Camera()->Get_Frustum();
 
@@ -105,19 +119,22 @@ void UiMonsterHp::Check_Render_State()
 
 void UiMonsterHp::Check_Target()
 {
-    if (0.f >= m_pTarget.lock()->Get_CurHp())
+    if (0.f >= m_pOwner.lock()->Get_CurHp())
     {
         auto pScene = CUR_SCENE;
-        pScene->Remove_GameObject(m_pTarget.lock());
-        m_pFrontHp.lock()->Set_Render(false);
-        m_pBackHp.lock()->Set_Render(false);
-        m_pBgHp.lock()->Set_Render(false);
+        //pScene->Remove_GameObject(m_pOwner.lock());
+        //m_pFrontHp.lock()->Set_Render(false);
+        //m_pBackHp.lock()->Set_Render(false);
+        //m_pBgHp.lock()->Set_Render(false);
+        pScene->Remove_GameObject(m_pFrontHp.lock());
+        pScene->Remove_GameObject(m_pBackHp.lock());
+        pScene->Remove_GameObject(m_pBgHp.lock());
     }
 }
 
 void UiMonsterHp::Change_Hp_Ratio()
 {
-    _float HpRatio = m_pTarget.lock()->Get_HpRatio();
+    _float HpRatio = m_pOwner.lock()->Get_HpRatio();
     m_pFrontHp.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = HpRatio;
 
     m_fRatio = m_pBackHp.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0];
@@ -153,8 +170,8 @@ void UiMonsterHp::Update_Target_Pos()
     if (false == m_bIsRender)
         return;
 
-    _float4 vecPos = m_pTarget.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-    vecPos.y = 3.f;
+    _float4 vecPos = m_pOwner.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    vecPos.y = 2.f;
     m_pFrontHp.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[1] = vecPos;
     m_pBackHp.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[1] = vecPos;
     m_pBgHp.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[1] = vecPos;

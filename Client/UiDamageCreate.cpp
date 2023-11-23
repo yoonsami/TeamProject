@@ -18,6 +18,11 @@ HRESULT UiDamageCreate::Init()
     m_pPlayer = CUR_SCENE->Get_GameObject(L"Player");
     m_pCamera = CUR_SCENE->Get_Camera(L"Default");
 
+    if (true == m_bIsInit)
+        return S_OK;
+
+    m_bIsInit = true;
+
     m_Color.resize(ElementType::ElementEnd);
     m_Color[ElementType::DARK]  = Color{ 0.5451f , 0.2706f, 0.8196f , 1.f };
     m_Color[ElementType::EARTH] = Color{ 0.7961f , 0.5020f, 0.3765f , 1.f };
@@ -26,7 +31,7 @@ HRESULT UiDamageCreate::Init()
     m_Color[ElementType::WATER] = Color{ 0.2000f , 0.6039f, 0.9412f , 1.f };
     m_Color[ElementType::WIND]  = Color{ 0.1882f , 0.6863f, 0.5490f , 1.f };
 
-    m_fSize = 0.7f;
+    m_fSize = 1.f;
 
     return S_OK;
 }
@@ -50,7 +55,7 @@ void UiDamageCreate::Create_Damage_Font(weak_ptr<GameObject> pObj)
     auto pFont = make_shared<GameObject>();
     pFont->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
 
-    // µ¥¹ÌÁö °è»ê
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
     pFont->Add_Component(make_shared<FontRenderer>(L"1234"));
     HERO eHero = m_pPlayer.lock()->Get_Script<CoolTimeCheckScript>()->Get_Cur_Hero();
 

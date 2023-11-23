@@ -14,15 +14,34 @@ HRESULT UIBossHpBar::Init()
     if (m_pOwner.expired())
         return E_FAIL;
 
-    auto pScene = CUR_SCENE;
-    m_pBgHp         = pScene->Get_UI(L"UI_BossHpBar0");
-    m_pFrontHp      = pScene->Get_UI(L"UI_BossHpBar1");
-    m_pBackHp       = pScene->Get_UI(L"UI_BossHpBar2");
-    m_pHpFont       = pScene->Get_UI(L"UI_BossHpFont");
-    m_pBgGroggy     = pScene->Get_UI(L"UI_BossGroggy0");
-    m_pFrontGroggy  = pScene->Get_UI(L"UI_BossGroggy1");
-    m_pElement      = pScene->Get_UI(L"UI_BossElement");
-    m_pBossName     = pScene->Get_UI(L"UI_BossName");
+    vector<weak_ptr<GameObject>> addedObj;
+    CUR_SCENE->Load_UIFile(L"..\\Resources\\UIData\\UI_BossHpBar.dat", addedObj);
+
+    _uint iSize = IDX(addedObj.size());
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        if (true == addedObj[i].expired())
+            continue;
+
+        wstring strName = addedObj[i].lock()->Get_Name();
+        if (L"UI_BossHpBar0" == strName)
+            m_pBgHp = addedObj[i];
+        else if (L"UI_BossHpBar1" == strName)
+            m_pFrontHp = addedObj[i];
+        else if (L"UI_BossHpBar2" == strName)
+            m_pBackHp = addedObj[i];
+        else if (L"UI_BossHpFont" == strName)
+            m_pHpFont = addedObj[i];
+        else if (L"UI_BossGroggy0" == strName)
+            m_pBgGroggy = addedObj[i];
+        else if (L"UI_BossGroggy1" == strName)
+            m_pFrontGroggy = addedObj[i];
+        else if (L"UI_BossElement" == strName)
+            m_pElement = addedObj[i];
+        else if (L"UI_BossName" == strName)
+            m_pBossName = addedObj[i];
+    }
+
 
     if (true == m_pElement.expired() || true == m_pBossName.expired())
         return E_FAIL;
@@ -34,11 +53,11 @@ HRESULT UIBossHpBar::Init()
         wstring strName = BossData.Name;
         m_pBossName.lock()->Get_FontRenderer()->Get_Text() = strName;
         _float4 vecPos = m_pBossName.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-        vecPos.x = strName.length() / 2.f * -21.f;
+        vecPos.x = strName.length() / 2.f * -36.f;
         m_pBossName.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
 
         vecPos.y = m_pElement.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).y;
-        vecPos.x -= 20.f;
+        vecPos.x -= 30.f;
         m_pElement.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
         m_pElement.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(GET_ELEMENT(m_eBoss)), TextureMapType::DIFFUSE);
     }
@@ -129,6 +148,6 @@ void UIBossHpBar::Change_Param()
 
     m_pHpFont.lock()->Get_FontRenderer()->Get_Text() = strHp;
     _float4 vecPos = m_pHpFont.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-    vecPos.x = ((strHp.length() - 3) / 2.f * -10.f) - 10.f;
+    vecPos.x = ((strHp.length() - 3) / 2.f * -20.f) - 15.f;
     m_pHpFont.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
 }

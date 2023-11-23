@@ -10,6 +10,11 @@ HRESULT MainUiController::Init()
     if (m_pOwner.expired())
         return E_FAIL;
 
+    if (true == m_bIsInit)
+        return S_OK;
+
+    m_bIsInit = true;
+
     m_vecUi.resize(72);
 
     auto pScene = CUR_SCENE;

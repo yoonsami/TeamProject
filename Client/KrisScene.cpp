@@ -606,7 +606,7 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	//Load_UIFile(L"..\\Resources\\UIData\\UI_Gacha.dat");
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck.dat", tmp, false);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", tmp, false);
-	Load_UIFile(L"..\\Resources\\UIData\\UI_MonsterHp.dat", tmp);
+	//Load_UIFile(L"..\\Resources\\UIData\\UI_MonsterHp.dat", tmp);
 	//Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat");
 
 
@@ -663,7 +663,7 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		}
 	}
 
-	{
+	/*{
 		auto pObj = make_shared<GameObject>();
 		pObj->Set_Name(L"UI_Monster_Hp");
 
@@ -672,7 +672,7 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 
 		pObj->Set_LayerIndex(Layer_UI);
 		Add_GameObject(pObj, true);
-	}
+	}*/
 
 	{
 		auto pObj = make_shared<GameObject>();

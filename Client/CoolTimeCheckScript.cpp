@@ -17,15 +17,18 @@ HRESULT CoolTimeCheckScript::Init()
     if (m_pOwner.expired())
         return E_FAIL;
 
-    m_eCurHero = HERO::PLAYER;
+    if (true == m_bIsInit)
+        return S_OK;
 
+    m_bIsInit = true;
+    m_eCurHero = HERO::PLAYER;
     m_CoolTime.resize(IDX(HERO::MAX));
     m_tagDefault.resize(IDX(HERO::MAX));
     for (_uint i = 0; i < IDX(HERO::MAX); ++i)
     {
         m_CoolTime[i].resize(5);
 
-        auto tagData = GET_DATA(static_cast<HERO>(i));
+       auto tagData = GET_DATA(static_cast<HERO>(i));
        m_CoolTime[i][0].CoolInfo.fCoolTime = tagData.Skill1Cool;
        m_CoolTime[i][1].CoolInfo.fCoolTime = tagData.Skill2Cool;
        m_CoolTime[i][2].CoolInfo.fCoolTime = tagData.Skill3Cool;
