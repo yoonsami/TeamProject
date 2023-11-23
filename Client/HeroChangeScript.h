@@ -1,5 +1,9 @@
 #pragma once
 #include "MonoBehaviour.h"
+
+class FSM;
+class ModelAnimator;
+
 class HeroChangeScript : public MonoBehaviour
 {
 public:
@@ -23,5 +27,7 @@ private:
     void Change_To_Yeonhee();
     void Change_To_Shane();
     void Change_To_Input(HERO eHero);
+
+    array<pair<shared_ptr<ModelAnimator>, shared_ptr<FSM>>, IDX(HERO::MAX)> m_cacheData;
 };
 

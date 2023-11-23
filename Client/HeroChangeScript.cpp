@@ -41,6 +41,11 @@ HeroChangeScript::~HeroChangeScript()
 
 HRESULT HeroChangeScript::Init()
 {
+    shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+
+
+   // m_cacheData[IDX(HERO::PLAYER)].first = 
+
 
     return S_OK;
 }

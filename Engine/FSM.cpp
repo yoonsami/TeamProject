@@ -285,7 +285,10 @@ shared_ptr<GameObject> FSM::Find_TargetInFrustum(_uint eType)
 		if(viewPos.z <0)
 			continue;
 		if (fMinDistSQ > distSQ)
+		{
+			fMinDistSQ = distSQ;
 			target = gameObject;
+		}
 		
 	}
 
