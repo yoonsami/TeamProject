@@ -18,6 +18,7 @@
 #include "ModelRenderer.h"
 #include "ModelAnimator.h"
 #include "ParticleSystem.h"
+#include "GroupEffectOwner.h"
 #include "DistortionRenderer.h"
 #include "CharacterController.h"
 #include "MotionTrailRenderer.h"
@@ -250,6 +251,11 @@ shared_ptr<Transform> GameObject::GetOrAddTransform()
 shared_ptr<GroupEffect> GameObject::Get_GroupEffect()
 {
 	return static_pointer_cast<GroupEffect>(Get_FixedComponent(COMPONENT_TYPE::GroupEffect));
+}
+
+shared_ptr<GroupEffectOwner> GameObject::Get_GroupEffectOwner()
+{
+	return static_pointer_cast<GroupEffectOwner>(Get_FixedComponent(COMPONENT_TYPE::GroupEffectOwner));
 }
 
 //shared_ptr<Billboard> GameObject::Get_Billboard()

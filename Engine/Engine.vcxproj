@@ -198,6 +198,7 @@
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GroupEffect.h" />
     <ClInclude Include="GroupEffectData.h" />
+    <ClInclude Include="GroupEffectOwner.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="InputMgr.h" />
     <ClInclude Include="InstancingBuffer.h" />
@@ -278,6 +279,7 @@
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="GroupEffect.cpp" />
     <ClCompile Include="GroupEffectData.cpp" />
+    <ClCompile Include="GroupEffectOwner.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InputMgr.cpp" />
     <ClCompile Include="InstancingBuffer.cpp" />

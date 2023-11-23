@@ -4,6 +4,7 @@
 #include "ModelAnimator.h"
 #include "GroupEffect.h"
 #include "GroupEffectData.h"
+#include "GroupEffectOwner.h"
 #include "Camera.h"
 
 FSM::FSM() : Component(COMPONENT_TYPE::FSM)
@@ -358,6 +359,27 @@ void FSM::Add_And_Set_Effect(const wstring& strSkilltag)
 
 	// For. Add Effect GameObject to current scene
 	CUR_SCENE->Add_GameObject(m_pGroupEffect.lock());
+}
+
+void FSM::Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset)
+{
+	shared_ptr<GameObject> pGroupEffectOwnerObj = make_shared<GameObject>();
+
+	// For. Transform 
+	pGroupEffectOwnerObj->GetOrAddTransform();
+	_float4 vDir = m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::LOOK);
+	vDir.Normalize();
+	_float4 vOwnerPos = m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float4(vDir.x * vPosOffset.x, vDir.y * vPosOffset.y, vDir.z * vPosOffset.z, 0.f);
+	pGroupEffectOwnerObj->Get_Transform()->Set_State(Transform_State::POS, vOwnerPos);
+	pGroupEffectOwnerObj->Get_Transform()->Set_Quaternion(Get_Transform()->Get_Rotation());
+
+	// For. GroupEffect component 
+	shared_ptr<GroupEffectOwner> pGroupEffect = make_shared<GroupEffectOwner>();
+	pGroupEffectOwnerObj->Add_Component(pGroupEffect);
+	pGroupEffectOwnerObj->Get_GroupEffectOwner()->Set_GroupEffectTag(strSkilltag);
+
+	// For. Add Effect GameObject to current scene
+	CUR_SCENE->Add_GameObject(pGroupEffectOwnerObj);
 }
 
 void FSM::Cal_SkillCamDirection(const _float dist)

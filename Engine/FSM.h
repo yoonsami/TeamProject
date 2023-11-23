@@ -48,6 +48,7 @@ protected:
 
 	void Add_Effect(const wstring& strSkilltag);
 	void Add_And_Set_Effect(const wstring& strSkilltag);
+	void Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset);
 	void Cal_SkillCamDirection(const _float dist);
 	_bool Check_Combo(_uint minFrame, KEY_TYPE eKeyType);
 

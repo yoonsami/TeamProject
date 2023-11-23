@@ -223,6 +223,9 @@
     <Filter Include="04.Component\05.UI &amp; Effect\Renderer\03.DistortionRenderer">
       <UniqueIdentifier>{6f75b1ee-ac69-4138-a4c2-c8e5be877ffe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04.Component\05.UI &amp; Effect\Renderer\07.GroupEffectOwner">
+      <UniqueIdentifier>{a507ec01-f6f1-4398-8cdc-6b7abf65ee34}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -452,6 +455,9 @@
     </ClCompile>
     <ClCompile Include="DistortionRenderer.cpp">
       <Filter>04.Component\05.UI &amp; Effect\Renderer\03.DistortionRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="GroupEffectOwner.cpp">
+      <Filter>04.Component\05.UI &amp; Effect\Renderer\07.GroupEffectOwner</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -697,6 +703,9 @@
     </ClInclude>
     <ClInclude Include="DistortionRenderer.h">
       <Filter>04.Component\05.UI &amp; Effect\Renderer\03.DistortionRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="GroupEffectOwner.h">
+      <Filter>04.Component\05.UI &amp; Effect\Renderer\07.GroupEffectOwner</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

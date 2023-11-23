@@ -19,6 +19,7 @@ class ModelAnimator;
 class ModelRenderer;
 class EffectRenderer;
 class ParticleSystem;
+class GroupEffectOwner;
 class EffectController;
 class DistortionRenderer;
 class CharacterController;
@@ -112,6 +113,7 @@ public:
 	shared_ptr<TrailRenderer> Get_TrailRenderer();
 	shared_ptr<ParticleSystem> Get_ParticleSystem();
 	//shared_ptr<EffectRenderer> Get_EffectRenderer();
+	shared_ptr<GroupEffectOwner> Get_GroupEffectOwner();
 	shared_ptr<DistortionRenderer> Get_DistortionRenderer();
 	shared_ptr<CharacterController> Get_CharacterController();
 	shared_ptr<MotionTrailRenderer> Get_MotionTrailRenderer();
