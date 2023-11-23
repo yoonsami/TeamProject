@@ -153,6 +153,16 @@ void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 		if (ImGui::BeginTabItem("Visual"))
 		{
 			Option_Guizmo();
+
+			/* For. Create, Save, Load Effect */
+			ImGui::Spacing();
+			ImGui::SeparatorText("Create / Load");
+			if (ImGui::Button("Create"))
+				Create();
+			ImGui::SameLine();
+			if (ImGui::Button("Save"))
+				m_bSaveMsgBox_On = true;
+
 			Option_Property();
 			Option_Mesh();
 			Option_SpriteAnimation();
@@ -171,16 +181,6 @@ void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 			Option_Overlay();
 			Option_Dissolve();
 			Option_Distortion();
-
-			/* For. Create, Save, Load Effect */
-			ImGui::Spacing();
-			ImGui::SeparatorText("Create / Load");
-			if (ImGui::Button("Create"))
-				Create();
-			ImGui::SameLine();
-			if (ImGui::Button("Save"))
-				m_bSaveMsgBox_On = true;
-			ImGui::Spacing();
 
 			ImGui::EndTabItem();
 		}

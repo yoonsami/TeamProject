@@ -264,7 +264,10 @@ void Widget_GroupEffectMaker::Widget_GroupMaker()
 			Save();
 		ImGui::SameLine();
 		if (ImGui::Button("Play##GroupEffect"))
+		{
+			Delete();
 			Create();
+		}
 		ImGui::Spacing();
 		
 		if (ImGui::Button("Create New Group##GroupEffect"))
@@ -272,10 +275,7 @@ void Widget_GroupEffectMaker::Widget_GroupMaker()
 		ImGui::Spacing();
 
 		if (ImGui::Button("Reset Scene"))
-		{
-			if (nullptr != m_pCurrentGroup)
-				m_pCurrentGroup->Get_GroupEffect()->FreeLoopMember();
-		}
+			Delete();
 
 		if (ImGui::Button("Owner On/Off"))	
 			OwnerOnOff();
@@ -551,6 +551,7 @@ void Widget_GroupEffectMaker::Delete()
 {
 	if (nullptr != m_pCurrentGroup)
 	{
+		m_pCurrentGroup->Get_GroupEffect()->FreeLoopMember();
 		CUR_SCENE->Remove_GameObject(m_pCurrentGroup);
 		m_pCurrentGroup = nullptr;
 	}
