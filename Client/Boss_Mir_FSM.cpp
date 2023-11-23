@@ -39,7 +39,7 @@ HRESULT Boss_Mir_FSM::Init()
         m_fRunSpeed = 4.f;
         m_fKnockDownSpeed = 4.f;
 
-        m_fDetectRange = 25.f;
+        m_fDetectRange = 28.f;
 
         if (!m_pTarget.expired())
         {
@@ -181,6 +181,8 @@ void Boss_Mir_FSM::State_Tick()
         break;
     }
 
+    if (!m_pGroupEffect.expired())
+        m_pGroupEffect.lock()->Get_Transform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
 
     if (m_iPreFrame != m_iCurFrame)
         m_iPreFrame = m_iCurFrame;
@@ -655,6 +657,7 @@ void Boss_Mir_FSM::groggy_start_Init()
 
                 m_bPhaseOneEmissive = false;
             }
+
         }
     }   
 }

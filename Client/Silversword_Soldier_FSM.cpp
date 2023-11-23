@@ -137,6 +137,10 @@ void Silversword_Soldier_FSM::State_Tick()
         break;
     }
 
+    if (!m_pGroupEffect.expired())
+        m_pGroupEffect.lock()->Get_Transform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
+
+
     if (m_iPreFrame != m_iCurFrame)
         m_iPreFrame = m_iCurFrame;
 }
