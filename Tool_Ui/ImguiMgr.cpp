@@ -453,6 +453,9 @@ void ImguiMgr::Select_Object()
             m_iPass = pGameobject->Get_MeshRenderer()->Get_Pass();
             m_tagParamDesc = pGameobject->Get_MeshRenderer()->Get_RenderParamDesc();
             m_pSampleObj->GetOrAddTransform()->Set_WorldMat(pGameobject->GetOrAddTransform()->Get_WorldMatrix());
+
+            if(nullptr != pGameobject->Get_FontRenderer())
+               m_fFontSize = pGameobject->Get_FontRenderer()->Get_Size();
          }
 
          ++iIndex;
