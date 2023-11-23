@@ -14,6 +14,7 @@ HRESULT UiDialogController::Init()
     if (m_pOwner.expired())
         return E_FAIL;
 
+    m_bIsCreated = false;
     m_fSpeed = 20.f;
     m_fMaxTime = 1.f;
 
@@ -36,6 +37,10 @@ void UiDialogController::Tick()
 
 void UiDialogController::Create_Dialog()
 {
+    if (true == m_bIsCreated)
+        return;
+
+    m_bIsCreated = true;
     auto pScene = CUR_SCENE;
     vector<weak_ptr<GameObject>> addedObj;
     pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Dialog.dat", addedObj);
@@ -100,6 +105,7 @@ void UiDialogController::Remove_Dialog()
         false == m_pPlayerBg.expired()  ||
         false == m_pPlayerDialog.expired())
     {
+        m_bIsCreated = false;
         auto pScene = CUR_SCENE;
         pScene->Remove_GameObject(m_pNext.lock());
         pScene->Remove_GameObject(m_pNpcName.lock());

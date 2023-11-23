@@ -37,5 +37,6 @@ private:
     _uint           m_iQuestCount   = {};
     _uint           m_iCurIndex     = {};
     _uint           m_iMaxIndex     = {};
+    _bool           m_bIsCreated    = {};
 };
 
