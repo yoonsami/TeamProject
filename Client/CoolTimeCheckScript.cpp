@@ -153,6 +153,11 @@ HRESULT CoolTimeCheckScript::Init()
 
     m_pCombo_Effect = pScene->Get_UI(L"UI_Combo_Effect");
 
+    for (_uint i = 0; i < IDX(HERO::MAX); ++i)
+    {
+        Set_Cur_Hero(static_cast<HERO>(i));
+    }
+
     return S_OK;
 }
 
@@ -554,19 +559,19 @@ void CoolTimeCheckScript::Change_Pos_Two_Letter(_uint iIndex)
     switch (iIndex)
     {
     case 0:
-        vecPos.x = 555;
+        vecPos.x = 553;
         break;
     case 1:
-        vecPos.x = 685;
+        vecPos.x = 683;
         break;
     case 2:
-        vecPos.x = 815;
+        vecPos.x = 813;
         break;
     case 3:
-        vecPos.x = 815;
+        vecPos.x = 813;
         break;
     case 4:
-        vecPos.x = 685;
+        vecPos.x = 683;
         break;
     default:
         return;
@@ -592,7 +597,7 @@ void CoolTimeCheckScript::Change_Pos_One_Letter(_uint iIndex)
         vecPos.x = 563;
         break;
     case 1:
-        vecPos.x = 693;
+        vecPos.x = 695;
         break;
     case 2:
         vecPos.x = 823;

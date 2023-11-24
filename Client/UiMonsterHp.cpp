@@ -55,11 +55,11 @@ void UiMonsterHp::Tick()
         true == m_pBgHp.expired())
 		return;
 
+    Check_Target();
     Check_Render_State();
     if (false == m_bIsRender)
         return;
 
-    Check_Target();
     Change_Hp_Ratio();
     Change_Hp_Slow();
     Update_Target_Pos();

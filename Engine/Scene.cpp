@@ -183,7 +183,6 @@ void Scene::Render()
 	Render_ToneMapping();
 
 	Render_UI();
-	//Render_ToneMapping();
 
 	//Render_BackBuffer();
 

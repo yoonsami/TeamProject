@@ -25,7 +25,5 @@ private:
     _float  m_fMaxTime      = {};
     _float  m_fCheckTime    = {};
     _float  m_fRatio        = {};
-
-    _bool   m_bIsCanMove    = { true };
 };
 
