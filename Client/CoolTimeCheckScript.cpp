@@ -153,6 +153,11 @@ HRESULT CoolTimeCheckScript::Init()
 
     m_pCombo_Effect = pScene->Get_UI(L"UI_Combo_Effect");
 
+    for (_uint i = 0; i < IDX(HERO::MAX); ++i)
+    {
+        Set_Cur_Hero(static_cast<HERO>(i));
+    }
+
     return S_OK;
 }
 
