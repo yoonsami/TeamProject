@@ -318,8 +318,9 @@ void Widget_EffectMaker_Mesh::Option_Property()
 
 	ImGui::InputFloat("Duration##Property", &m_fDuration);
 
-	ImGui::Checkbox("Blur On##Property", &m_bBlurOn);
-	ImGui::SameLine();
+	ImGui::Checkbox("Light On##Property", &m_bLightOn);
+	if(m_bLightOn)
+		ImGui::InputFloat("Light Intensity##Property", &m_fLightIntensity);
 	if (ImGui::Checkbox("Is Loop##Property", &m_bIsLoop))
 	{
 		if (!m_pCurrMeshEffect.expired())
@@ -1034,7 +1035,8 @@ void Widget_EffectMaker_Mesh::Create()
 		{
 				m_szTag,
 				m_fDuration,
-				m_bBlurOn,
+				m_bLightOn,
+				m_fLightIntensity,
 				m_bUseFadeOut,
 				m_iMeshCnt,
 				m_fCreateInterval,
@@ -1178,7 +1180,7 @@ void Widget_EffectMaker_Mesh::Save()
 		/* Property */
 		file->Write<string>(m_szTag);
 		file->Write<_float>(m_fDuration);
-		file->Write<_bool>(m_bBlurOn);
+		file->Write<_bool>(m_bLightOn);
 		file->Write<_bool>(m_bUseFadeOut);
 		file->Write<_int>(m_iMeshCnt);
 		file->Write<_float>(m_fCreateInterval);
@@ -1254,7 +1256,7 @@ void Widget_EffectMaker_Mesh::Save()
 			(_float)m_bIsLoop, (_float)m_bIsFollowGroup_OnlyTranslate, (_float)m_bIsFollowGroup_LookSameDir, (_float)m_iScaleSpeedType,
 			m_vCurvePoint_Scale[0].x, m_vCurvePoint_Scale[0].y, m_vCurvePoint_Scale[1].x, m_vCurvePoint_Scale[1].y,
 			m_vCurvePoint_Scale[2].x, m_vCurvePoint_Scale[2].y, m_vCurvePoint_Scale[3].x, m_vCurvePoint_Scale[3].y,
-			0.f, 0.f, 0.f, 0.f
+			m_fLightIntensity, 0.f, 0.f, 0.f
 		));
 
 
@@ -1317,7 +1319,7 @@ void Widget_EffectMaker_Mesh::Load()
 	string strTag = file->Read<string>();
 	strcpy_s(m_szTag, MAX_PATH, strTag.c_str());
 	m_fDuration = file->Read<_float>();
-	m_bBlurOn = file->Read<_bool>();
+	m_bLightOn = file->Read<_bool>();
 	m_bUseFadeOut = file->Read<_bool>();
 	m_iMeshCnt = file->Read<_int>();
 	m_fCreateInterval = file->Read<_float>();
@@ -1424,6 +1426,7 @@ void Widget_EffectMaker_Mesh::Load()
 	m_bIsLoop = (_int)mTemp._11;
 	m_bIsFollowGroup_OnlyTranslate = (_int)mTemp._12;
 	m_bIsFollowGroup_LookSameDir = (_int)mTemp._13;
+	m_fLightIntensity = mTemp._41;
 
 	m_iScaleSpeedType = (_int)mTemp._14;
 	m_vCurvePoint_Scale[0] = _float2(mTemp._21, mTemp._22);

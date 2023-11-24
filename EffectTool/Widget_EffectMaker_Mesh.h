@@ -117,7 +117,8 @@ private:
 	/* Property */
 	char					m_szTag[MAX_PATH] = "-";
 	_float					m_fDuration = { 3.f };
-	_bool					m_bBlurOn = { false };
+	_bool					m_bLightOn = { false };
+	_float					m_fLightIntensity = { 1.f };
 	_bool					m_bUseFadeOut = { true };
 	_int					m_iSamplerType = { 1 };
 	_bool					m_bIsLoop = { false };

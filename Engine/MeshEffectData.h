@@ -9,7 +9,8 @@ public:
         // Property
         const char* pszTag = {""};
         _float      fDuration = { 0.f };
-        _bool       bBlurOn = { false };
+        _bool       bLightOn = { false };
+        _float      fLightIntensity = { 0.f };
         _bool       bUseFadeOut = { false };
         _int        iMeshCnt = { 1 };
         _float      fCreateInterval = {0.f};
