@@ -112,19 +112,173 @@ void Scene::Late_Tick()
 void Scene::Final_Tick()
 {
 
-	vector<nanoseconds> test;
-	test.reserve(1000);
+	
 	auto objects = m_GameObjects;
 	for (auto& object : objects)
 	{
-		system_clock::time_point start_time = system_clock::now();
+		
 		object->Final_Tick();
-		system_clock::time_point end_time = system_clock::now();
+		
 
-		nanoseconds nano = end_time - start_time;
-		test.push_back(nano);
+		
 	}
 
+
+}
+
+void Scene::Render()
+{
+	vector<nanoseconds> test;
+	test.reserve(1000);
+	system_clock::time_point start_time = system_clock::now();
+	Gather_LightData();
+	system_clock::time_point end_time = system_clock::now();
+	nanoseconds nano = end_time - start_time;
+	start_time = end_time;
+	test.push_back(nano);
+
+	Sort_GameObjects();
+	end_time = system_clock::now();
+	nano = end_time - start_time;
+	start_time = end_time;
+	test.push_back(nano);
+
+
+	Render_Shadow();
+	end_time = system_clock::now();
+	nano = end_time - start_time;
+	start_time = end_time;
+	test.push_back(nano);
+
+
+	Render_MotionBlur();
+	end_time = system_clock::now();
+	nano = end_time - start_time;
+	start_time = end_time;
+	test.push_back(nano);
+
+
+	Render_Deferred();
+	end_time = system_clock::now();
+	nano = end_time - start_time;
+	start_time = end_time;
+	test.push_back(nano);
+
+
+	Render_DefferedBlur();
+	end_time = system_clock::now();
+	nano = end_time - start_time;
+	start_time = end_time;
+	test.push_back(nano);
+
+
+	if(g_SSAOData.g_bSSAO_On)
+	{
+		Render_SSAO();
+		Render_SSAOBlur(3);
+	}
+	end_time = system_clock::now();
+	nano = end_time - start_time;
+	start_time = end_time;
+	test.push_back(nano);
+
+
+	Render_Lights();
+	end_time = system_clock::now();
+	nano = end_time - start_time;
+	start_time = end_time;
+	test.push_back(nano);
+
+	//Render_BlurEffect();
+	Render_LightFinal();
+	end_time = system_clock::now();
+	nano = end_time - start_time;
+	start_time = end_time;
+	test.push_back(nano);
+
+
+	Render_SkyBox();
+	end_time = system_clock::now();
+	nano = end_time - start_time;
+	start_time = end_time;
+	test.push_back(nano);
+
+
+	Render_DOFMap();
+	end_time = system_clock::now();
+	nano = end_time - start_time;
+	start_time = end_time;
+	test.push_back(nano);
+
+
+	Render_DOFMapScaling();
+	end_time = system_clock::now();
+	nano = end_time - start_time;
+	start_time = end_time;
+	test.push_back(nano);
+
+
+	Render_DOFFinal();
+	end_time = system_clock::now();
+	nano = end_time - start_time;
+	start_time = end_time;
+	test.push_back(nano);
+
+
+	Render_Fog();
+	end_time = system_clock::now();
+	nano = end_time - start_time;
+	start_time = end_time;
+	test.push_back(nano);
+
+
+	Render_MotionBlurFinal();
+	end_time = system_clock::now();
+	nano = end_time - start_time;
+	start_time = end_time;
+	test.push_back(nano);
+
+	Render_Forward();
+	end_time = system_clock::now();
+	nano = end_time - start_time;
+	start_time = end_time;
+	test.push_back(nano);
+	Render_BloomMap();
+	Render_BloomMapScaling();
+	end_time = system_clock::now();
+	nano = end_time - start_time;
+	start_time = end_time;
+	test.push_back(nano);
+
+	Render_BloomFinal();
+	end_time = system_clock::now();
+	nano = end_time - start_time;
+	start_time = end_time;
+	test.push_back(nano);
+
+
+	Render_OutLine();
+	Render_Distortion();
+	Render_Distortion_Final();
+	Render_LensFlare();
+	end_time = system_clock::now();
+	nano = end_time - start_time;
+	start_time = end_time;
+	test.push_back(nano);
+	Render_Aberration();
+
+	Render_Debug();
+	Render_ToneMapping();
+	end_time = system_clock::now();
+	nano = end_time - start_time;
+	start_time = end_time;
+	test.push_back(nano);
+	Render_UI();
+	end_time = system_clock::now();
+	nano = end_time - start_time;
+	start_time = end_time;
+	test.push_back(nano);
+	//Render_BackBuffer();
 	if (KEYTAP(KEY_TYPE::F1))
 		int a = 0;
 	if (KEYTAP(KEY_TYPE::F2))
@@ -139,53 +293,6 @@ void Scene::Final_Tick()
 		int a = 0;
 	if (KEYTAP(KEY_TYPE::F7))
 		int a = 0;
-}
-
-void Scene::Render()
-{
-
-
-	Gather_LightData();
-	Sort_GameObjects();
-	Render_Shadow();
-	Render_MotionBlur();
-	Render_Deferred();
-	Render_DefferedBlur();
-	if(g_SSAOData.g_bSSAO_On)
-	{
-		Render_SSAO();
-		Render_SSAOBlur(3);
-	}
-	Render_Lights();
-	//Render_BlurEffect();
-	Render_LightFinal();
-	Render_SkyBox();
-	Render_DOFMap();
-	Render_DOFMapScaling();
-	Render_DOFFinal();
-	Render_Fog();
-	Render_MotionBlurFinal();
-
-
-	Render_Forward();
-
-	Render_BloomMap();
-	Render_BloomMapScaling();
-	Render_BloomFinal();
-	Render_OutLine();
-	Render_Distortion();
-	Render_Distortion_Final();
-	Render_LensFlare();
-
-	Render_Aberration();
-
-	Render_Debug();
-	Render_ToneMapping();
-
-	Render_UI();
-
-	//Render_BackBuffer();
-
 }
 
 HRESULT Scene::Load_Scene()
@@ -1018,13 +1125,7 @@ void Scene::Render_Deferred()
 
 void Scene::Render_DefferedBlur()
 {
-	/*float a[25] = {
-	1.0f / 273.0f,  4.0f / 273.0f,  7.0f / 273.0f,  4.0f / 273.0f,  1.0f / 273.0f,
-	4.0f / 273.0f,  16.0f / 273.0f, 26.0f / 273.0f, 16.0f / 273.0f, 4.0f / 273.0f,
-	7.0f / 273.0f,  26.0f / 273.0f, 41.0f / 273.0f, 26.0f / 273.0f, 7.0f / 273.0f,
-	4.0f / 273.0f,  16.0f / 273.0f, 26.0f / 273.0f, 16.0f / 273.0f, 4.0f / 273.0f,
-	1.0f / 273.0f,  4.0f / 273.0f,  7.0f / 273.0f,  4.0f / 273.0f,  1.0f / 273.0f
-	};*/
+	return;
 	for (_uchar i = 0; i < 2; ++i)
 	{
 		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLURSMALLER0) + i);

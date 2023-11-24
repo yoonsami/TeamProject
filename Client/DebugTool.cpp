@@ -76,9 +76,7 @@ void DebugTool::RenderOptionTab()
 		Separator();
 		string fps = "FPS : " + to_string(TIME.GetFPS());
 		Text(fps.c_str());
-		Separator();
-		Text(to_string(MainApp::tickTime).c_str());
-		Text(to_string(MainApp::renderTime).c_str());
+
 
 		if (CollapsingHeader("RenderOption"))
 		{

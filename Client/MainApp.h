@@ -10,8 +10,6 @@ public:
 	void	Tick();
 	HRESULT Render();
 
-	static int tickTime;
-	static int renderTime;
 
 private:
 	HRESULT Open_Scene();

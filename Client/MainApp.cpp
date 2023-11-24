@@ -55,31 +55,22 @@ HRESULT MainApp::Init()
 
 void MainApp::Tick()
 {
-	clock_t start,end;
-	
-	start = clock();
 
 	GAMEINSTANCE.Tick_Engine();
 #ifdef _DEBUGTOOL
 	DEBUGTOOL.Tick();
 #endif // _DEBUGTOOL
 
-	end = clock();
-
-	tickTime = end - start;
 
 }
 
 HRESULT MainApp::Render()
 {
 
-	clock_t start, end;
-
-	start = clock();
 
 	GAMEINSTANCE.Render_Begin();
 	SCENE.Render();
-	end = clock();
+
 
 
 #ifdef _DEBUGTOOL
@@ -87,8 +78,6 @@ HRESULT MainApp::Render()
 #endif // _DEBUGTOOL
 
 	GAMEINSTANCE.Render_End();
-
-	renderTime = end - start;
 
 	return S_OK;
 }
@@ -119,6 +108,3 @@ void MainApp::Load_Ui()
 	}
 }
 
-int MainApp::tickTime{};
-
-int MainApp::renderTime{};
