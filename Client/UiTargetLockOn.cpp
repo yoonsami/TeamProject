@@ -152,7 +152,7 @@ void UiTargetLockOn::Change_Scale()
 void UiTargetLockOn::Update_Target_Pos()
 {
     _float4 vecPos = m_pTarget.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-    vecPos.y = 1.f;
+    vecPos.y += 1.f;
     m_pLockOn0.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[1] = vecPos;
     m_pLockOn1.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[1] = vecPos;
     
