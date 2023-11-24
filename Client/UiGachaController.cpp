@@ -82,7 +82,7 @@ void UiGachaController::Tick()
     case EFFECT_STATE::NONE:
         break;
     case EFFECT_STATE::START:
-        Effect_Start();
+         Effect_Start();
         break;
     case EFFECT_STATE::CHANGE:
         Effect_Change();
@@ -246,6 +246,8 @@ void UiGachaController::Effect_Start()
     {
         m_eState = EFFECT_STATE::CHANGE;
         m_fEffectCheckTime = 0.f;
+
+        return;
     }
 
     CUR_SCENE->g_fBrightness = m_fEffectCheckTime * 2.f;
