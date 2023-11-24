@@ -10,7 +10,8 @@ public:
 		b_idle,
 		b_run,
 		n_run,
-		die,
+		die_01,
+		die_02,
 		gaze_b,
 		gaze_f,
 		gaze_l,
@@ -55,8 +56,10 @@ private:
 	void n_run();
 	void n_run_Init();
 
-	void die();
-	void die_Init();
+	void die_01();
+	void die_01_Init();
+	void die_02();
+	void die_02_Init();
 
 	void gaze_b();
 	void gaze_b_Init();
@@ -102,6 +105,7 @@ private:
 	void CalCulate_PatrolTime();
 	void Execute_AttackSkill();
 	void Set_Gaze();
+	void GroundCheck();
 	_float3 Calculate_TargetTurnVector();
 
 private:

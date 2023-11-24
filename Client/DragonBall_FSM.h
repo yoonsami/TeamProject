@@ -8,7 +8,7 @@ public:
     {
         Idle,
         Crash,
-        NONE,
+        NONE
     };
 public:
     virtual void Tick() override;

@@ -425,6 +425,19 @@ _bool FSM::Check_Combo(_uint minFrame, KEY_TYPE eKeyType)
 	return false;
 }
 
+_bool FSM::DeadCheck()
+{
+	if (!m_pOwner.expired())
+	{
+		if (m_pOwner.lock()->Get_CurHp() > 0.f)
+			m_bIsDead = false;
+		else
+			m_bIsDead = true;
+	}
+
+	return m_bIsDead;
+}
+
 void FSM::Set_Target(shared_ptr<GameObject> pTarget)
 {
 	m_pTarget = pTarget;

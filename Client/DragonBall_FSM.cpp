@@ -22,8 +22,6 @@ void DragonBall_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float
 	{
 		m_pOwner.lock()->Get_Animator()->Reset_Frame();
 
-		
-		
 		m_eCurState = STATE::Crash;
 
 		if (!m_pTarget.expired())
