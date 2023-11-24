@@ -370,9 +370,16 @@ void FSM::Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset)
 
 	// For. Transform 
 	pGroupEffectOwnerObj->GetOrAddTransform();
-	_float4 vDir = m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::LOOK);
-	vDir.Normalize();
-	_float4 vOwnerPos = m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float4(vDir.x * vPosOffset.x, vDir.y * vPosOffset.y, vDir.z * vPosOffset.z, 0.f);
+	_float4 vOwnerLook = m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::LOOK);
+	vOwnerLook.Normalize();
+	_float4 vOwnerRight = m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::RIGHT);
+	vOwnerRight.Normalize();
+	_float4 vOwnerUp = m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::UP);
+	vOwnerUp.Normalize();
+	_float4 vOwnerPos = m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS)
+		+ vOwnerRight * vPosOffset.x
+		+ vOwnerUp * vPosOffset.y
+		+ vOwnerLook * vPosOffset.z;
 	pGroupEffectOwnerObj->Get_Transform()->Set_State(Transform_State::POS, vOwnerPos);
 	pGroupEffectOwnerObj->Get_Transform()->Set_Quaternion(Get_Transform()->Get_Rotation());
 

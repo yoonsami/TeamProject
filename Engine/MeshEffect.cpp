@@ -352,7 +352,7 @@ void MeshEffect::Translate()
         }
         else
         {
-            _float3 vDir = m_vEndPos - m_vLocalPos;
+            _float3 vDir = m_vEndPos;
             vDir.Normalize();
 
             m_vLocalPos += vDir * fSpeed * fDT;

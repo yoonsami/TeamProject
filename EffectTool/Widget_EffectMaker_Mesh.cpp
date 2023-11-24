@@ -1476,16 +1476,10 @@ void Widget_EffectMaker_Mesh::Load()
 	vTemp_vec3 = file->Read<_float3>();
 	memcpy(m_fEndScaleOffset, &vTemp_vec3, sizeof(m_fEndScaleOffset));
 
-	if (2 != m_iScaleSpeedType)
-		m_iScalingOption = 2;
+	if (Equal(_float3(m_fEndScaleOffset), _float3(0.f, 0.f, 0.f)))
+		m_iScalingOption = 0;
 	else
-	{
-		if (Equal(_float3(m_fEndScaleOffset), _float3(0.f, 0.f, 0.f)))
-			m_iScalingOption = 0;
-		else
-			m_iScalingOption = 1;
-	}
-
+		m_iScalingOption = 1;
 
 	/* Turn */
 	m_iTurnOption = file->Read<_int>();

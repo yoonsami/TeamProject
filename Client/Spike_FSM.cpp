@@ -1060,7 +1060,7 @@ void Spike_FSM::skill_1400()
     }
     if (Init_CurFrame(11))
     {
-        Add_GroupEffectOwner(L"Spike_1400_2", _float3(0.f, 0.f, 1.2f));
+        Add_GroupEffectOwner(L"Spike_1400_2", _float3(0.f, 0.f, 1.f));
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
     }
     else if (Get_CurFrame() == 15)
