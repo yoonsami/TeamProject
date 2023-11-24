@@ -192,7 +192,7 @@ void Scene::Render()
 	Render_Aberration();
 
 	Render_Debug();
-	Render_ToneMapping();
+	//Render_ToneMapping();
 
 	Render_UI();
 

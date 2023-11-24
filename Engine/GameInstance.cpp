@@ -44,7 +44,7 @@ HRESULT GameInstance::Render_End()
 {
 	if (CUR_SCENE)
 	{
-		//CUR_SCENE->Render_ToneMapping();
+		CUR_SCENE->Render_ToneMapping();
 		CUR_SCENE->Render_BackBuffer();
 	}
 

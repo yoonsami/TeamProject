@@ -162,6 +162,17 @@ HRESULT MirScene::Load_Scene()
 
 	Load_Ui(player);
 
+
+	auto pPlayer = Get_GameObject(L"Player");
+	if (nullptr != pPlayer)
+	{
+		for(_uint i = 1 ; i < IDX(HERO::MAX); ++i)
+			pPlayer->Get_Script<HeroChangeScript>()->Change_Hero(static_cast<HERO>(i));
+
+		pPlayer->Get_Script<HeroChangeScript>()->Change_Hero(HERO::PLAYER);
+	}
+
+
 	return S_OK;
 }
 

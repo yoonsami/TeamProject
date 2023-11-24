@@ -19,6 +19,10 @@ HRESULT UiGachaController::Init()
 
     m_bIsInit = true;
 
+    m_fEffectCheckTime = 0.f;
+    m_fEffectMaxTime = 0.5f;
+    m_fEffectRatio = 1.f / m_fEffectMaxTime;
+
     m_vecObjTag.resize(10);
     m_vecObjTag[0] = L"UI_Gacha_Card0";
     m_vecObjTag[1] = L"UI_Gacha_Card1";
@@ -31,10 +35,11 @@ HRESULT UiGachaController::Init()
     m_vecObjTag[8] = L"UI_Gacha_Card8";
     m_vecObjTag[9] = L"UI_Gacha_Card9";
 
-    m_vecObjEffectTag.resize(3);
+    m_vecObjEffectTag.resize(4);
     m_vecObjEffectTag[0] = L"UI_Gacha_Effect0";
     m_vecObjEffectTag[1] = L"UI_Gacha_Effect1";
     m_vecObjEffectTag[2] = L"UI_Gacha_Effect2";
+    m_vecObjEffectTag[2] = L"UI_Gacha_Effect3";
 
     m_vecObjBgTag.resize(4);
     m_vecObjBgTag[0] = L"UI_Gacha_Bg0";
@@ -66,10 +71,23 @@ void UiGachaController::Tick()
     {
         Create_Gacha_Card();
     }
-    if (KEYTAP(KEY_TYPE::E))
+    /*if (KEYTAP(KEY_TYPE::E))
     {
         Delete_All();
+    }*/
+
+    switch (m_eState)
+    {
+    case EFFECT_STATE::NONE:
+        break;
+    case EFFECT_STATE::START:
+        Effect_Start();
+        break;
+    case EFFECT_STATE::RESET:
+        Effect_Reset();
+        break;
     }
+
 }
 
 void UiGachaController::Create_Gacha_Card()
@@ -217,6 +235,28 @@ void UiGachaController::Start_All_Open()
     }
 }
 
+void UiGachaController::Effect_Start()
+{
+    m_fEffectCheckTime += fDT;
+    if (m_fEffectMaxTime < m_fEffectCheckTime)
+    {
+        m_eState = EFFECT_STATE::RESET;
+        m_fEffectCheckTime = 0.f;
+    }
+
+    // 화면 밝기 올리기
+    CUR_SCENE->g_fBrightness = m_fEffectCheckTime;
+}
+
+void UiGachaController::Effect_Reset()
+{
+    m_eState = EFFECT_STATE::NONE;
+
+    CUR_SCENE->g_fBrightness = m_fOriginBrightness;
+
+    Delete_Gacha_Effect();
+}
+
 void UiGachaController::Open_All_Card()
 {
     if (true == m_bIsStartOpen)
@@ -237,4 +277,23 @@ void UiGachaController::Delete_All()
     Delete_Gacha_Bg();
     Delete_Gacha_Button();
     Delete_Gacha_Effect();
+}
+
+void UiGachaController::Start_Effect(_float2 vPos)
+{
+    m_eState = EFFECT_STATE::START;
+
+    m_fOriginBrightness = CUR_SCENE->g_fBrightness;
+
+    auto pScene = CUR_SCENE;
+
+    _uint iSize = IDX(m_vecObjEffectTag.size());
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        weak_ptr<GameObject> pObj = pScene->Get_UI(m_vecObjEffectTag[i]);
+        if (true == pObj.expired())
+            continue;
+
+        pObj.lock()->Get_Script<UiGachaEffectController>()->Start_Effect(vPos);
+    }
 }
