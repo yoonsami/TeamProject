@@ -62,13 +62,7 @@ HRESULT Boss_Mir_FSM::Init()
 
 void Boss_Mir_FSM::Tick()
 {
-    {
-        HeadBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iHeadBoneIndex) *
-            _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
-
-        m_vHeadBonePos = _float4{ HeadBoneMatrix.Translation().x, HeadBoneMatrix.Translation().y, HeadBoneMatrix.Translation().z , 1.f };
-        m_vHeadCamPos = m_vHeadBonePos + (Get_Transform()->Get_State(Transform_State::LOOK) * 10.f);
-    }
+    
 
     State_Tick();
 
@@ -406,10 +400,10 @@ void Boss_Mir_FSM::Set_State(_uint iIndex)
 
 void Boss_Mir_FSM::First_Meet()
 {
+    Calculate_IntroHeadCam();
+
     if (Target_In_DetectRange())
         m_bDetected = true;
-
-    
 
     //THIS CAMERA MOVING IS MASTERPIECE -> NEVER DON'T TOUCH
     if (m_bDetected)
@@ -471,6 +465,8 @@ void Boss_Mir_FSM::First_Meet_Init()
     animator->Set_AnimState(true);
 
     m_fCamRatio = 0.f;
+
+    Calculate_IntroHeadCam();
 }
 
 void Boss_Mir_FSM::sq_Intro()
@@ -490,6 +486,8 @@ void Boss_Mir_FSM::sq_Intro_Init()
 
 void Boss_Mir_FSM::sq_Intro2()
 {
+    Calculate_IntroHeadCam();
+ 
     if (m_iCurFrame > 5)
     {
         if (!m_pCamera.expired())
@@ -514,6 +512,8 @@ void Boss_Mir_FSM::sq_Intro2_Init()
     animator->Set_NextTweenAnim(L"sq_Intro2", 0.1f, false, 1.f);
 
     m_bInvincible = true;
+
+    Calculate_IntroHeadCam();
 }
 
 void Boss_Mir_FSM::b_idle()
@@ -2110,6 +2110,15 @@ void Boss_Mir_FSM::Setting_DragonBall()
 
         iDragonBallIndex++;
     }
+}
+
+void Boss_Mir_FSM::Calculate_IntroHeadCam()
+{
+    HeadBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iHeadBoneIndex) *
+        _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+    m_vHeadBonePos = _float4{ HeadBoneMatrix.Translation().x, HeadBoneMatrix.Translation().y, HeadBoneMatrix.Translation().z , 1.f };
+    m_vHeadCamPos = m_vHeadBonePos + (Get_Transform()->Get_State(Transform_State::LOOK) * 10.f);
 }
 
 void Boss_Mir_FSM::TailAttackCollider_On(const wstring& skillname)

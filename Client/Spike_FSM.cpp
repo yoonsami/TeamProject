@@ -58,7 +58,6 @@ void Spike_FSM::Tick()
 		m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.5f);
     }
 
-    Calculate_CamBoneMatrix();
 }
 
 void Spike_FSM::State_Tick()
@@ -1571,6 +1570,8 @@ void Spike_FSM::skill_300100()
         }
     }
 
+    Calculate_CamBoneMatrix();
+
     if (Init_CurFrame(30))
     {
 		FORWARDMOVINGSKILLDESC desc;
@@ -1636,6 +1637,7 @@ void Spike_FSM::skill_400100()
         }
     }
 
+    Calculate_CamBoneMatrix();
 
     if (Init_CurFrame(47))
     {
@@ -1711,6 +1713,8 @@ void Spike_FSM::skill_400100_Init()
 
     m_bInvincible = true;
     m_bSuperArmor = false;
+
+    Calculate_CamBoneMatrix();
 }
 
 void Spike_FSM::skill_501100()

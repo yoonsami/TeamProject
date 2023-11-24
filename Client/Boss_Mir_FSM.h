@@ -146,6 +146,8 @@ private:
 	void Create_Meteor();
 	void Set_AttackPattern();
 	void Setting_DragonBall();
+	void Calculate_IntroHeadCam();
+	
 
 	void TailAttackCollider_On(const wstring& skillname);
 	void TailAttackCollider_Off();
