@@ -915,7 +915,9 @@ void Dellons_FSM::skill_1100()
 
     if (Is_AnimFinished())
     {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        
         m_eCurState = STATE::b_idle;
     }
 
@@ -929,7 +931,8 @@ void Dellons_FSM::skill_1100_Init()
 
     animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, 1.5f);
 
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
     m_bCanCombo = false;
 
@@ -954,7 +957,9 @@ void Dellons_FSM::skill_1200()
 
     if (Is_AnimFinished())
     {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
     }
@@ -969,8 +974,11 @@ void Dellons_FSM::skill_1200_Init()
 
     animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, 1.5f);
 
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+    {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
+    }
 
     m_bCanCombo = false;
 
@@ -998,7 +1006,9 @@ void Dellons_FSM::skill_1300()
 
     if (Is_AnimFinished())
     {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
     }
@@ -1013,8 +1023,11 @@ void Dellons_FSM::skill_1300_Init()
 
     animator->Set_NextTweenAnim(L"skill_1300", 0.15f, false, 1.5f);
 
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+    {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
+    }
 
     m_bCanCombo = false;
 
@@ -1042,7 +1055,9 @@ void Dellons_FSM::skill_1400()
 
     if (Is_AnimFinished())
     {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
     }
@@ -1057,8 +1072,11 @@ void Dellons_FSM::skill_1400_Init()
 
     animator->Set_NextTweenAnim(L"skill_1400", 0.15f, false, 1.5f);
 
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+    {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
+    }
 
     m_bCanCombo = false;
 
