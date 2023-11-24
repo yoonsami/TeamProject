@@ -554,19 +554,19 @@ void CoolTimeCheckScript::Change_Pos_Two_Letter(_uint iIndex)
     switch (iIndex)
     {
     case 0:
-        vecPos.x = 555;
+        vecPos.x = 553;
         break;
     case 1:
-        vecPos.x = 685;
+        vecPos.x = 683;
         break;
     case 2:
-        vecPos.x = 815;
+        vecPos.x = 813;
         break;
     case 3:
-        vecPos.x = 815;
+        vecPos.x = 813;
         break;
     case 4:
-        vecPos.x = 685;
+        vecPos.x = 683;
         break;
     default:
         return;
@@ -592,7 +592,7 @@ void CoolTimeCheckScript::Change_Pos_One_Letter(_uint iIndex)
         vecPos.x = 563;
         break;
     case 1:
-        vecPos.x = 693;
+        vecPos.x = 695;
         break;
     case 2:
         vecPos.x = 823;

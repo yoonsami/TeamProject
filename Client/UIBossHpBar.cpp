@@ -53,7 +53,12 @@ HRESULT UIBossHpBar::Init()
         wstring strName = BossData.Name;
         m_pBossName.lock()->Get_FontRenderer()->Get_Text() = strName;
         _float4 vecPos = m_pBossName.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-        vecPos.x = strName.length() / 2.f * -33.f;
+
+        if (BOSS::AXE == m_eBoss || BOSS::MIR == m_eBoss)
+            vecPos.x = -90;
+        else
+            vecPos.x = strName.length() / 2.f * -35.f;
+
         m_pBossName.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
 
         vecPos.y = m_pElement.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).y;
@@ -157,6 +162,6 @@ void UIBossHpBar::Change_Param()
 
     m_pHpFont.lock()->Get_FontRenderer()->Get_Text() = strHp;
     _float4 vecPos = m_pHpFont.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-    vecPos.x = ((strHp.length() - 3) / 2.f * -20.f) - 15.f;
+    vecPos.x = ((strHp.length() - 3) / 2.f * -10.f) - 15.f;
     m_pHpFont.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
 }
