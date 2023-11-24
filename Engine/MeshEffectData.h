@@ -130,6 +130,8 @@ public:
         // Scaling 
         _int        iScalingOption = { 0 };
         _float3     vEndScale = { 0.f, 0.f, 0.f };
+        _int        iScaleSpeedType = { 0 };
+        _float2     vCurvePoint_Scale[4] = { { 0.f, 0.f },{ 0.f, 0.f } ,{ 0.f, 0.f } ,{ 0.f, 0.f } };
 
         // Turn 
         _int        iTurnOption = { 0 };

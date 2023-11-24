@@ -317,9 +317,12 @@ void MeshEffect::Set_TransformDesc(void* pArg)
 
     // For. Init Spline input
     for (int i = 0; i < 4; ++i) {
-        // Force 
+        // Translate Force 
         m_SplineInput_Force[i * 2 + 0] = m_tTransform_Desc.vCurvePoint_Force[i].x;
         m_SplineInput_Force[i * 2 + 1] = m_tTransform_Desc.vCurvePoint_Force[i].y;
+        // Scale Speed
+        m_SplineInput_ScaleSpeed[i * 2 + 0] = m_tTransform_Desc.vCurvePoint_Scale[i].x;
+        m_SplineInput_ScaleSpeed[i * 2 + 1] = m_tTransform_Desc.vCurvePoint_Scale[i].y;
     }
 
     if (9 == m_iTranslateOption)
@@ -335,7 +338,7 @@ void MeshEffect::Translate()
     case 1: // Move to direction 
     case 2: // Move to random direction 
     {
-        _float fSpeed = CalcSpeed();
+        _float fSpeed = Calc_Spline(m_tTransform_Desc.iSpeedType, m_SplineInput_Force);
         if (m_bToolMode_On)
         {
             _float4 vCurrPos = Get_Transform()->Get_State(Transform_State::POS);
@@ -349,7 +352,7 @@ void MeshEffect::Translate()
         }
         else
         {
-            _float3 vDir = m_vEndPos - m_vLocalPos;
+            _float3 vDir = m_vEndPos;
             vDir.Normalize();
 
             m_vLocalPos += vDir * fSpeed * fDT;
@@ -359,7 +362,7 @@ void MeshEffect::Translate()
     }
     case 3:
     {
-        Get_Transform()->Set_Speed(CalcSpeed());
+        Get_Transform()->Set_Speed(Calc_Spline(m_tTransform_Desc.iSpeedType, m_SplineInput_Force));
 
         if (m_bToolMode_On)
         {
@@ -376,7 +379,7 @@ void MeshEffect::Translate()
     }
     case 4:
     {
-        Get_Transform()->Set_Speed(CalcSpeed());
+        Get_Transform()->Set_Speed(Calc_Spline(m_tTransform_Desc.iSpeedType, m_SplineInput_Force));
 
         if (m_bToolMode_On)
         {
@@ -393,7 +396,7 @@ void MeshEffect::Translate()
     }
     case 5:
     {
-        Get_Transform()->Set_Speed(CalcSpeed());
+        Get_Transform()->Set_Speed(Calc_Spline(m_tTransform_Desc.iSpeedType, m_SplineInput_Force));
 
         if (m_bToolMode_On)
         {
@@ -410,7 +413,7 @@ void MeshEffect::Translate()
     }
     case 6:
     {
-        Get_Transform()->Set_Speed(CalcSpeed());
+        Get_Transform()->Set_Speed(Calc_Spline(m_tTransform_Desc.iSpeedType, m_SplineInput_Force));
 
         if (m_bToolMode_On)
         {
@@ -427,7 +430,7 @@ void MeshEffect::Translate()
     }
     case 7:
     {
-        Get_Transform()->Set_Speed(CalcSpeed());
+        Get_Transform()->Set_Speed(Calc_Spline(m_tTransform_Desc.iSpeedType, m_SplineInput_Force));
 
         if (m_bToolMode_On)
         {
@@ -444,7 +447,7 @@ void MeshEffect::Translate()
     }
     case 8:
     {
-        Get_Transform()->Set_Speed(CalcSpeed());
+        Get_Transform()->Set_Speed(Calc_Spline(m_tTransform_Desc.iSpeedType, m_SplineInput_Force));
 
         if (m_bToolMode_On)
         {
@@ -502,22 +505,44 @@ void MeshEffect::Translate()
 
 void MeshEffect::Scaling()
 {
+    _float3 vScale = Get_Transform()->Get_Scale();
     if (m_bToolMode_On)
 	{
-		_float3 vScale = XMVectorLerp(m_vStartScale, m_vEndScale, m_fLifeTimeRatio);
+        // lerp 
+        if (2 == m_tTransform_Desc.iScaleSpeedType)
+        {
+		    vScale = XMVectorLerp(m_vStartScale, m_vEndScale, m_fLifeTimeRatio);
 
-		if (vScale.x < 0) vScale.x = 0.f;
-		if (vScale.y < 0) vScale.y = 0.f;
-		if (vScale.z < 0) vScale.z = 0.f;
+		    if (vScale.x < 0) vScale.x = 0.f;
+		    if (vScale.y < 0) vScale.y = 0.f;
+		    if (vScale.z < 0) vScale.z = 0.f;
+
+        }
+        // scaling by scale speed
+        else
+        {
+            _float fScaleSpeed = Calc_Spline(m_tTransform_Desc.iScaleSpeedType, m_SplineInput_ScaleSpeed);
+            vScale = Get_Transform()->Get_Scale() + _float3(fScaleSpeed * fDT);
+        }
 
 		Get_Transform()->Scaled(vScale);
 	}
     else
     {
-        m_vLocalScale = _float3::Lerp(m_vStartScale, m_vEndScale, m_fLifeTimeRatio);
-        if (m_vLocalScale.x < 0) m_vLocalScale.x = 0.f;
-        if (m_vLocalScale.y < 0) m_vLocalScale.y = 0.f;
-        if (m_vLocalScale.z < 0) m_vLocalScale.z = 0.f;
+        // lerp 
+        if (2 == m_tTransform_Desc.iScaleSpeedType)
+        {
+            m_vLocalScale = _float3::Lerp(m_vStartScale, m_vEndScale, m_fLifeTimeRatio);
+            if (m_vLocalScale.x < 0) m_vLocalScale.x = 0.f;
+            if (m_vLocalScale.y < 0) m_vLocalScale.y = 0.f;
+            if (m_vLocalScale.z < 0) m_vLocalScale.z = 0.f;
+        }
+        // scaling by scale speed
+        else
+        {
+            _float fScaleSpeed = Calc_Spline(m_tTransform_Desc.iScaleSpeedType, m_SplineInput_ScaleSpeed);
+            m_vLocalScale = Get_Transform()->Get_Scale() + _float3(fScaleSpeed * fDT);
+        }
     }
 }
 
@@ -698,35 +723,35 @@ void MeshEffect::Bind_RenderParams_ToShader()
     m_pShader->Push_RenderParamData(m_RenderParams);
 }
 
-_float MeshEffect::CalcSpeed()
+_float MeshEffect::Calc_Spline(_int iType, _float* vSplineInput)
 {
     _float fSpeed = 0.f;
-    if (0 == m_tTransform_Desc.iSpeedType)
+    if (0 == iType)
     {
         _float output[4];
-        Utils::Spline(m_SplineInput_Force, 4, 1, m_fLifeTimeRatio, output);
+        Utils::Spline(vSplineInput, 4, 1, m_fLifeTimeRatio, output);
         fSpeed = output[0];
     }
-    else if (1 == m_tTransform_Desc.iSpeedType)
+    else if (1 == iType)
     {
-        if (0.f <= m_fLifeTimeRatio && m_fLifeTimeRatio < m_SplineInput_Force[0])
+        if (0.f <= m_fLifeTimeRatio && m_fLifeTimeRatio < vSplineInput[0])
             fSpeed = 0.f;
-        else if (m_SplineInput_Force[0] <= m_fLifeTimeRatio && m_fLifeTimeRatio < m_SplineInput_Force[2])
+        else if (vSplineInput[0] <= m_fLifeTimeRatio && m_fLifeTimeRatio < vSplineInput[2])
         {
-            _float fRatio = (m_fLifeTimeRatio - m_SplineInput_Force[0]) / (m_SplineInput_Force[2] - m_SplineInput_Force[0]);
-            _float2 vTemp2 = XMVectorLerp(_float2(m_SplineInput_Force[1], 0.f), _float2(m_SplineInput_Force[3], 0.f), fRatio);
+            _float fRatio = (m_fLifeTimeRatio - vSplineInput[0]) / (vSplineInput[2] - vSplineInput[0]);
+            _float2 vTemp2 = XMVectorLerp(_float2(vSplineInput[1], 0.f), _float2(vSplineInput[3], 0.f), fRatio);
             fSpeed = vTemp2.x;
         }
-        else if (m_SplineInput_Force[2] <= m_fLifeTimeRatio && m_fLifeTimeRatio < m_SplineInput_Force[4])
+        else if (vSplineInput[2] <= m_fLifeTimeRatio && m_fLifeTimeRatio < vSplineInput[4])
         {
-            _float fRatio = (m_fLifeTimeRatio - m_SplineInput_Force[2]) / (m_SplineInput_Force[4] - m_SplineInput_Force[2]);
-            _float2 vTemp2 = XMVectorLerp(_float2(m_SplineInput_Force[3], 0.f), _float2(m_SplineInput_Force[5], 0.f), fRatio);
+            _float fRatio = (m_fLifeTimeRatio - vSplineInput[2]) / (vSplineInput[4] - vSplineInput[2]);
+            _float2 vTemp2 = XMVectorLerp(_float2(vSplineInput[3], 0.f), _float2(vSplineInput[5], 0.f), fRatio);
             fSpeed = vTemp2.x;
         }
-        else if (m_SplineInput_Force[4] <= m_fLifeTimeRatio && m_fLifeTimeRatio < m_SplineInput_Force[6])
+        else if (vSplineInput[4] <= m_fLifeTimeRatio && m_fLifeTimeRatio < vSplineInput[6])
         {
-            _float fRatio = (m_fLifeTimeRatio - m_SplineInput_Force[4]) / (m_SplineInput_Force[6] - m_SplineInput_Force[4]);
-            _float2 vTemp2 = XMVectorLerp(_float2(m_SplineInput_Force[5], 0.f), _float2(m_SplineInput_Force[7], 0.f), fRatio);
+            _float fRatio = (m_fLifeTimeRatio - vSplineInput[4]) / (vSplineInput[6] - vSplineInput[4]);
+            _float2 vTemp2 = XMVectorLerp(_float2(vSplineInput[5], 0.f), _float2(vSplineInput[7], 0.f), fRatio);
             fSpeed = vTemp2.x;
         }
         else

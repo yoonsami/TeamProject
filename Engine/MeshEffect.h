@@ -50,7 +50,8 @@ private:
     void                    Bind_UpdatedTexUVOffset_ToShader();
     void                    Bind_RenderParams_ToShader();
 
-    _float                  CalcSpeed();
+    _float                  Calc_Spline(_int iType, _float* vSplineInput);
+
 private:
     MeshEffectData::DESC            m_tDesc;
     MeshEffectData::Transform_Desc  m_tTransform_Desc;
@@ -108,6 +109,7 @@ private:
     _float                          m_fCurrYspeed = { 0.f };
 
     _float3                         m_vEndScale;
+    _float                          m_SplineInput_ScaleSpeed[8];
 
     _int                            m_iTurnOption;
     _float                          m_fTurnSpeed;

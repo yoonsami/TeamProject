@@ -215,7 +215,9 @@ private:
 	
 	_int					m_iScalingOption = { 0 };				// no change, change to endscale
 	_float					m_fEndScaleOffset[3] = { 0.f, 0.f, 0.f };
-	
+	_int					m_iScaleSpeedType = { 0 };
+	_float2					m_vCurvePoint_Scale[4] = { _float2(0.f, 0.f),_float2(0.3f, 0.5f), _float2(0.7f, 0.5f), _float2(1.f, 1.f) };
+
 	_int					m_iTurnOption = { 0 };			// no change, turn with static, turn with random 
 	_float					m_fTurnSpeed = { 0.f };
 	_float					m_fRandomAxis_Min[3] = { 0.f, 0.f, 0.f };		

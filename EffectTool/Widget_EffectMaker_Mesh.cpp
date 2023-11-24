@@ -916,7 +916,7 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 
 	if (ImGui::TreeNode("Scaling##Movement"))
 	{
-		const char* pszItem_ScaleOption[] = { "No change", "Change to target scale" };
+		const char* pszItem_ScaleOption[] = { "No change", "Change to target scale (lerp)", "Scaling by speed"};
 		if (ImGui::BeginCombo("Scaling option##Movement", pszItem_ScaleOption[m_iScalingOption], 0))
 		{
 			for (_uint n = 0; n < IM_ARRAYSIZE(pszItem_ScaleOption); n++)
@@ -934,10 +934,26 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 		{
 		case 0:
 			ZeroMemory(m_fEndScaleOffset, sizeof(m_fEndScaleOffset));
+			m_iScaleSpeedType = 2;
 			break;
 		case 1:
 			ImGui::InputFloat3("Target Scale##Movement", m_fEndScaleOffset);
+			m_iScaleSpeedType = 2;
+			break;		
+		case 2:
+		{
+			ImGui::Text("Speed");
+			ImGui::RadioButton("Curve##ScaleSpeed", &m_iScaleSpeedType, 0);
+			ImGui::SameLine();
+			ImGui::RadioButton("Linear##ScaleSpeed", &m_iScaleSpeedType, 1);
+
+			m_vCurvePoint_Force[0].x = 0.f;
+			ImGui::InputFloat2("Point1 (time, speed)##ScaleSpeed", (_float*)&m_vCurvePoint_Scale[0]);
+			ImGui::InputFloat2("Point2 (time, speed)##ScaleSpeed", (_float*)&m_vCurvePoint_Scale[1]);
+			ImGui::InputFloat2("Point3 (time, speed)##ScaleSpeed", (_float*)&m_vCurvePoint_Scale[2]);
+			ImGui::InputFloat2("Point4 (time, speed)##ScaleSpeed", (_float*)&m_vCurvePoint_Scale[3]);
 			break;
+		}
 		}
 		
 		ImGui::TreePop();
@@ -1130,6 +1146,8 @@ void Widget_EffectMaker_Mesh::Create()
 
 				m_iScalingOption,
 				_float3(m_fEndScaleOffset),
+				m_iScaleSpeedType,
+				{ m_vCurvePoint_Scale[0], m_vCurvePoint_Scale[1], m_vCurvePoint_Scale[2], m_vCurvePoint_Scale[3] },
 
 				m_iTurnOption,
 				m_fTurnSpeed,
@@ -1233,11 +1251,12 @@ void Widget_EffectMaker_Mesh::Save()
 
 		/* ETC */
 		file->Write<_float4x4>(_float4x4(
-			(_float)m_bIsLoop, (_float)m_bIsFollowGroup_OnlyTranslate, (_float)m_bIsFollowGroup_LookSameDir, 0.f,
-			0.f, 0.f, 0.f, 0.f,
-			0.f, 0.f, 0.f, 0.f,
+			(_float)m_bIsLoop, (_float)m_bIsFollowGroup_OnlyTranslate, (_float)m_bIsFollowGroup_LookSameDir, (_float)m_iScaleSpeedType,
+			m_vCurvePoint_Scale[0].x, m_vCurvePoint_Scale[0].y, m_vCurvePoint_Scale[1].x, m_vCurvePoint_Scale[1].y,
+			m_vCurvePoint_Scale[2].x, m_vCurvePoint_Scale[2].y, m_vCurvePoint_Scale[3].x, m_vCurvePoint_Scale[3].y,
 			0.f, 0.f, 0.f, 0.f
 		));
+
 
 		// For. Transform Desc 
 		/* Init position */
@@ -1406,6 +1425,12 @@ void Widget_EffectMaker_Mesh::Load()
 	m_bIsFollowGroup_OnlyTranslate = (_int)mTemp._12;
 	m_bIsFollowGroup_LookSameDir = (_int)mTemp._13;
 
+	m_iScaleSpeedType = (_int)mTemp._14;
+	m_vCurvePoint_Scale[0] = _float2(mTemp._21, mTemp._22);
+	m_vCurvePoint_Scale[1] = _float2(mTemp._23, mTemp._24);
+	m_vCurvePoint_Scale[2] = _float2(mTemp._31, mTemp._32);
+	m_vCurvePoint_Scale[3] = _float2(mTemp._33, mTemp._34);
+
 	// For. Transform Desc
 	/* Init Pos */
 	_float3 vTemp1 = file->Read<_float3>();
@@ -1450,6 +1475,7 @@ void Widget_EffectMaker_Mesh::Load()
 	m_iScalingOption = file->Read<_int>();
 	vTemp_vec3 = file->Read<_float3>();
 	memcpy(m_fEndScaleOffset, &vTemp_vec3, sizeof(m_fEndScaleOffset));
+
 	if (Equal(_float3(m_fEndScaleOffset), _float3(0.f, 0.f, 0.f)))
 		m_iScalingOption = 0;
 	else
