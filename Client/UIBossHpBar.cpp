@@ -48,7 +48,7 @@ HRESULT UIBossHpBar::Init()
 
     if (BOSS::MAX != m_eBoss)
     {
-        auto BossData = GET_DATA(m_eBoss);
+        auto& BossData = GET_DATA(m_eBoss);
 
         wstring strName = BossData.Name;
         m_pBossName.lock()->Get_FontRenderer()->Get_Text() = strName;

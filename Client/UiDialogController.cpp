@@ -81,8 +81,7 @@ void UiDialogController::Create_Dialog(NPCTYPE eType)
         // Get Npc Dialog
         m_iMaxIndex = GET_DIALOG_COUNT(static_cast<QUESTDIALOG>(m_iQuestCount));
 
-        wstring strNpcDialog = GET_DIALOG(static_cast<QUESTDIALOG>(m_iQuestCount), m_iCurIndex);
-        m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = strNpcDialog;
+        m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = GET_DIALOG(static_cast<QUESTDIALOG>(m_iQuestCount), m_iCurIndex);
         m_pNpcDialog.lock()->Get_FontRenderer()->Set_TimePerChar(0.05f);
     }
 
@@ -135,8 +134,7 @@ void UiDialogController::Next_Dialog()
     if (false == m_pNpcDialog.expired())
     {
         // Get Npc Dialog
-        wstring strNpcDialog = GET_DIALOG(static_cast<QUESTDIALOG>(m_iQuestCount), m_iCurIndex);
-        m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = strNpcDialog;
+        m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = GET_DIALOG(static_cast<QUESTDIALOG>(m_iQuestCount), m_iCurIndex);
         m_pNpcDialog.lock()->Get_FontRenderer()->Set_TimePerChar(0.05f);
     }
 }

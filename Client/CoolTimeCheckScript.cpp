@@ -28,7 +28,7 @@ HRESULT CoolTimeCheckScript::Init()
     {
         m_CoolTime[i].resize(5);
 
-       auto tagData = GET_DATA(static_cast<HERO>(i));
+       auto& tagData = GET_DATA(static_cast<HERO>(i));
        m_CoolTime[i][0].CoolInfo.fCoolTime = tagData.Skill1Cool;
        m_CoolTime[i][1].CoolInfo.fCoolTime = tagData.Skill2Cool;
        m_CoolTime[i][2].CoolInfo.fCoolTime = tagData.Skill3Cool;
@@ -189,7 +189,7 @@ void CoolTimeCheckScript::Set_Cur_Hero(HERO eType)
     /*for(_uint i = 0 ; i < iSize; ++i)
         m_pUiSkill[i].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[iIndex][i]), TextureMapType::DIFFUSE);*/
 
-    auto tagData = GET_DATA(eType);
+    auto& tagData = GET_DATA(eType);
     m_pUiSkill[0].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(tagData.KeyAttack), TextureMapType::DIFFUSE);
     m_pUiSkill[1].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(tagData.KeyEvade), TextureMapType::DIFFUSE);
     m_pUiSkill[2].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(tagData.KeySkill1), TextureMapType::DIFFUSE);
@@ -627,39 +627,40 @@ void CoolTimeCheckScript::Change_Text_Zero(_uint iIndex)
 
 void CoolTimeCheckScript::Change_Skill_Info(HERO eType)
 {
-    m_pUi_Skill2_Combo[0].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Combo1"), TextureMapType::DIFFUSE);
-    m_pUi_Skill2_Combo[1].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Combo0"), TextureMapType::DIFFUSE);
-    m_pUi_Skill2_Combo[2].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Combo0"), TextureMapType::DIFFUSE);
-    m_pUi_Skill2_Combo[3].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Combo0"), TextureMapType::DIFFUSE);
+    shared_ptr<Texture>    pTexture_Combo0 = RESOURCES.Get<Texture>(L"UI_Skill_Combo0");
+    shared_ptr<Texture>    pTexture_Combo1 = RESOURCES.Get<Texture>(L"UI_Skill_Combo1");
+
+    m_pUi_Skill2_Combo[0].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo1, TextureMapType::DIFFUSE);
+    m_pUi_Skill2_Combo[1].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo0, TextureMapType::DIFFUSE);
+    m_pUi_Skill2_Combo[2].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo0, TextureMapType::DIFFUSE);
+    m_pUi_Skill2_Combo[3].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo0, TextureMapType::DIFFUSE);
     
-    m_pUi_Skill3_Combo[0].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Combo1"), TextureMapType::DIFFUSE);
-    m_pUi_Skill3_Combo[1].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Combo0"), TextureMapType::DIFFUSE);
-    m_pUi_Skill3_Combo[2].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Combo0"), TextureMapType::DIFFUSE);
-    m_pUi_Skill3_Combo[3].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Combo0"), TextureMapType::DIFFUSE);
+    m_pUi_Skill3_Combo[0].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo1, TextureMapType::DIFFUSE);
+    m_pUi_Skill3_Combo[1].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo0, TextureMapType::DIFFUSE);
+    m_pUi_Skill3_Combo[2].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo0, TextureMapType::DIFFUSE);
+    m_pUi_Skill3_Combo[3].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo0, TextureMapType::DIFFUSE);
    
-    m_pUi_Skill4_Combo[0].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Combo1"), TextureMapType::DIFFUSE);
-    m_pUi_Skill4_Combo[1].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Combo0"), TextureMapType::DIFFUSE);
-    m_pUi_Skill4_Combo[2].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Combo0"), TextureMapType::DIFFUSE);
-    m_pUi_Skill4_Combo[3].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Combo0"), TextureMapType::DIFFUSE);
+    m_pUi_Skill4_Combo[0].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo1, TextureMapType::DIFFUSE);
+    m_pUi_Skill4_Combo[1].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo0, TextureMapType::DIFFUSE);
+    m_pUi_Skill4_Combo[2].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo0, TextureMapType::DIFFUSE);
+    m_pUi_Skill4_Combo[3].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo0, TextureMapType::DIFFUSE);
    
-    m_pUi_Skill5_Combo[0].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Combo1"), TextureMapType::DIFFUSE);
-    m_pUi_Skill5_Combo[1].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Combo0"), TextureMapType::DIFFUSE);
-    m_pUi_Skill5_Combo[2].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Combo0"), TextureMapType::DIFFUSE);
-    m_pUi_Skill5_Combo[3].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Combo0"), TextureMapType::DIFFUSE);
+    m_pUi_Skill5_Combo[0].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo1, TextureMapType::DIFFUSE);
+    m_pUi_Skill5_Combo[1].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo0, TextureMapType::DIFFUSE);
+    m_pUi_Skill5_Combo[2].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo0, TextureMapType::DIFFUSE);
+    m_pUi_Skill5_Combo[3].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo0, TextureMapType::DIFFUSE);
     
-    m_pUi_Skill6_Combo[0].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Combo1"), TextureMapType::DIFFUSE);
-    m_pUi_Skill6_Combo[1].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Combo0"), TextureMapType::DIFFUSE);
-    m_pUi_Skill6_Combo[2].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Combo0"), TextureMapType::DIFFUSE);
-    m_pUi_Skill6_Combo[3].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Combo0"), TextureMapType::DIFFUSE);
+    m_pUi_Skill6_Combo[0].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo1, TextureMapType::DIFFUSE);
+    m_pUi_Skill6_Combo[1].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo0, TextureMapType::DIFFUSE);
+    m_pUi_Skill6_Combo[2].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo0, TextureMapType::DIFFUSE);
+    m_pUi_Skill6_Combo[3].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo0, TextureMapType::DIFFUSE);
     
-    m_pUi_Skill0_Combo[0].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Combo1"), TextureMapType::DIFFUSE);
-    m_pUi_Skill0_Combo[1].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Combo0"), TextureMapType::DIFFUSE);
-    m_pUi_Skill0_Combo[2].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Combo0"), TextureMapType::DIFFUSE);
-    m_pUi_Skill0_Combo[3].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Combo0"), TextureMapType::DIFFUSE);
+    m_pUi_Skill0_Combo[0].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo1, TextureMapType::DIFFUSE);
+    m_pUi_Skill0_Combo[1].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo0, TextureMapType::DIFFUSE);
+    m_pUi_Skill0_Combo[2].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo0, TextureMapType::DIFFUSE);
+    m_pUi_Skill0_Combo[3].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo0, TextureMapType::DIFFUSE);
 
-
-
-    auto tagData = GET_DATA(eType);
+    auto& tagData = GET_DATA(eType);
     
     for (_uint i = 0; i < 4; i++)
     {
@@ -718,7 +719,6 @@ void CoolTimeCheckScript::Change_Skill_Info(HERO eType)
 
     }
 
-
     if (SkillInfo::NONE == tagData.Skill1Info)
         m_pUi_Skill_Type[0].lock()->Set_Render(false);
     else if (SkillInfo::CHARGING == tagData.Skill1Info)
@@ -740,8 +740,6 @@ void CoolTimeCheckScript::Change_Skill_Info(HERO eType)
         m_pUi_Skill_Type[0].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Move"), TextureMapType::DIFFUSE);
     }
 
-
-
     if (SkillInfo::NONE == tagData.Skill2Info)
         m_pUi_Skill_Type[1].lock()->Set_Render(false);
     else if (SkillInfo::CHARGING == tagData.Skill2Info)
@@ -762,8 +760,6 @@ void CoolTimeCheckScript::Change_Skill_Info(HERO eType)
         m_pUi_Skill_Type[1].lock()->Set_Render(true);
         m_pUi_Skill_Type[1].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Move"), TextureMapType::DIFFUSE);
     }
-
-
 
     if (SkillInfo::NONE == tagData.Skill3Info)
         m_pUi_Skill_Type[2].lock()->Set_Render(false);
@@ -829,6 +825,4 @@ void CoolTimeCheckScript::Change_Skill_Info(HERO eType)
         m_pUi_Skill_Type[4].lock()->Set_Render(true);
         m_pUi_Skill_Type[4].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Skill_Move"), TextureMapType::DIFFUSE);
     }
-
-
 }

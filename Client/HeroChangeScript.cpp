@@ -124,8 +124,6 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
     if (m_pOwner.expired() || HERO::MAX == eHero)
         return;
 
-
-
     m_pOwner.lock()->Get_FSM()->Reset_Weapon();
     m_pOwner.lock()->Get_FSM()->Reset_Vehicle();
 
@@ -140,7 +138,8 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
     
     shared_ptr<GameObject> attackCollider = m_pOwner.lock()->Get_FSM()->Get_AttackCollider();
     
-    auto tagData = GET_DATA(eHero);
+   auto& tagData = GET_DATA(eHero);
+
     shared_ptr<Model> model = RESOURCES.Get<Model>(tagData.ModelTag);
 
     m_pOwner.lock()->Get_Animator()->Set_Model(model);
@@ -191,7 +190,7 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
 
     m_pOwner.lock()->Get_FSM()->Init();
 
-	// if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
-	//     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(eHero);
+	 if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+	     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(eHero);
 }
 

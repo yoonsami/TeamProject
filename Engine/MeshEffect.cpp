@@ -600,11 +600,13 @@ void MeshEffect::Init_RenderParams()
     m_RenderParams.SetInt(0, (_int)m_tDesc.bUseFadeOut);
     m_RenderParams.SetInt(1, (_int)m_tDesc.bIsRimLightOn);
     m_RenderParams.SetInt(2, (_int)m_tDesc.bUseSpriteAnim);
-    
+    m_RenderParams.SetInt(3, (_int)m_tDesc.bLightOn);
+
     /* Float */
     m_RenderParams.SetFloat(0, m_fCurrAge / m_tDesc.fDuration);
     m_RenderParams.SetFloat(1, m_fCurrDissolveWeight);
     m_RenderParams.SetFloat(2, m_fCurrRimLightIntensity);
+    m_RenderParams.SetFloat(3, m_tDesc.fLightIntensity);
 
     /* Float2 */
     vTemp2 = _float2(m_tDesc.fContrast_Op1, m_tDesc.fAlphaOffset_Op1);
