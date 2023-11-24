@@ -1554,6 +1554,8 @@ void Boss_Spike_FSM::skill_6100()
         }
     }
 
+    Calculate_CamBoneMatrix();
+
     if (m_iCurFrame == 145)
         Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);
     
@@ -1608,6 +1610,8 @@ void Boss_Spike_FSM::skill_6100_Init()
 
     m_bInvincible = true;
     m_bSuperArmor = false;
+
+    Calculate_CamBoneMatrix();
 
     if (!m_pTarget.expired())
         Get_Transform()->LookAt(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS));
@@ -1737,6 +1741,9 @@ void Boss_Spike_FSM::skill_100000()
         }
     }
 
+
+    Calculate_CamBoneMatrix();
+
     if (Is_AnimFinished())
         m_eCurState = STATE::skill_100100;
 }
@@ -1759,6 +1766,8 @@ void Boss_Spike_FSM::skill_100000_Init()
 
     if (!m_pTarget.expired())
         Get_Transform()->LookAt(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS));
+
+    Calculate_CamBoneMatrix();
 
     if (!m_pCamera.expired())
     {
@@ -1787,6 +1796,9 @@ void Boss_Spike_FSM::skill_100100()
             m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.f, 0.f);
         }
     }
+
+
+    Calculate_CamBoneMatrix();
 
 
     if (m_iCurFrame == 85)
@@ -1829,6 +1841,8 @@ void Boss_Spike_FSM::skill_100100_Init()
     m_bSetPattern = false;
 
     AttackCollider_Off();
+
+    Calculate_CamBoneMatrix();
 
     m_bInvincible = false;
     m_bSuperArmor = false;
