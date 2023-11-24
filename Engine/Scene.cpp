@@ -144,6 +144,7 @@ void Scene::Final_Tick()
 void Scene::Render()
 {
 
+
 	Gather_LightData();
 	Sort_GameObjects();
 	Render_Shadow();
@@ -185,6 +186,7 @@ void Scene::Render()
 	//Render_ToneMapping();
 
 	//Render_BackBuffer();
+
 }
 
 HRESULT Scene::Load_Scene()

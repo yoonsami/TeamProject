@@ -10,9 +10,12 @@ public:
 	void	Tick();
 	HRESULT Render();
 
+	static int tickTime;
+	static int renderTime;
+
 private:
 	HRESULT Open_Scene();
-	void Control_Option();
+
 	void Load_Ui();
 };
 

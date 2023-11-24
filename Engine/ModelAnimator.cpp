@@ -184,6 +184,13 @@ void ModelAnimator::Set_Model(shared_ptr<Model> model)
 {
 	m_pModel = model;
 
+	m_TweenDesc.curr = KeyFrameDesc();
+	m_bFinished = false;
+	m_TweenDesc.ClearNextAnim();
+
+	m_preTweenDesc.curr = KeyFrameDesc();
+	m_preTweenDesc.ClearNextAnim();
+
 	const auto& materials = m_pModel->Get_Materials();
 
 	for (auto& material : materials)

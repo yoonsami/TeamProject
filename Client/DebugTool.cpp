@@ -4,6 +4,7 @@
 #include <Utils.h>
 #include "Model.h"
 #include "Camera.h"
+#include "MainApp.h"
 #ifdef _DEBUGTOOL
 
 bool VectorOfStringGetter(void* data, int n, const char** out_text)
@@ -72,8 +73,13 @@ void DebugTool::RenderOptionTab()
 {
 	if(BeginTabItem("Render Option"))
 	{
+		Separator();
 		string fps = "FPS : " + to_string(TIME.GetFPS());
 		Text(fps.c_str());
+		Separator();
+		Text(to_string(MainApp::tickTime).c_str());
+		Text(to_string(MainApp::renderTime).c_str());
+
 		if (CollapsingHeader("RenderOption"))
 		{
 

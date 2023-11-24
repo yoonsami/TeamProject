@@ -48,9 +48,12 @@ public:
 
     void Set_CurrentAnim(_int index) {
         m_TweenDesc.curr = KeyFrameDesc();
+        m_preTweenDesc.curr = KeyFrameDesc();
         m_TweenDesc.curr.animIndex = index;
+        m_preTweenDesc.curr.animIndex = index;
         m_bFinished = false;
         m_TweenDesc.ClearNextAnim();
+        m_preTweenDesc.ClearNextAnim();
     }
 
     _float4x4 Get_CurAnimTransform(_int boneIndex);

@@ -55,22 +55,40 @@ HRESULT MainApp::Init()
 
 void MainApp::Tick()
 {
+	clock_t start,end;
+	
+	start = clock();
+
 	GAMEINSTANCE.Tick_Engine();
 #ifdef _DEBUGTOOL
-DEBUGTOOL.Tick();
+	DEBUGTOOL.Tick();
 #endif // _DEBUGTOOL
-	Control_Option();
+
+	end = clock();
+
+	tickTime = end - start;
+
 }
 
 HRESULT MainApp::Render()
 {
+
+	clock_t start, end;
+
+	start = clock();
+
 	GAMEINSTANCE.Render_Begin();
 	SCENE.Render();
+	end = clock();
+
+
 #ifdef _DEBUGTOOL
 	DEBUGTOOL.Render();
 #endif // _DEBUGTOOL
 
 	GAMEINSTANCE.Render_End();
+
+	renderTime = end - start;
 
 	return S_OK;
 }
@@ -82,11 +100,6 @@ HRESULT MainApp::Open_Scene()
 	SCENE.Change_Scene(scene);
 
 	return S_OK;
-
-}
-
-void MainApp::Control_Option()
-{
 
 }
 
@@ -105,3 +118,7 @@ void MainApp::Load_Ui()
 		RESOURCES.Load<Texture>(fileName, filePath);
 	}
 }
+
+int MainApp::tickTime{};
+
+int MainApp::renderTime{};
