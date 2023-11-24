@@ -283,6 +283,9 @@
     <Filter Include="02.Component\01.FSM\05.NPC_FSM\00.Granseed">
       <UniqueIdentifier>{d3d0a97f-e88a-4a0c-b997-fd6da5de3488}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Scene\00.PlayScene\03.Spike">
+      <UniqueIdentifier>{4cc58f6d-7c5f-48a0-a56e-d41dd72b8b9f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -577,6 +580,9 @@
     <ClInclude Include="DragonBall_FSM.h" />
     <ClInclude Include="GranseedGuard01_FSM.h" />
     <ClInclude Include="NPC_FSM.h" />
+    <ClInclude Include="SpikeScene.h">
+      <Filter>01.Scene\00.PlayScene\03.Spike</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -611,6 +617,9 @@
     </ClCompile>
     <ClCompile Include="WeaponScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.WeaponScript</Filter>
+    </ClCompile>
+    <ClCompile Include="Kyle_FSM.cpp">
+      <Filter>02.Component\01.FSM\01.Hero_FSM\02.Kyle_FSM</Filter>
     </ClCompile>
     <ClCompile Include="ObjectTransformDebug.cpp">
       <Filter>02.Component\00.MonoBehaviour\97.DebugScript</Filter>
@@ -835,8 +844,8 @@
     <ClCompile Include="DragonBall_FSM.cpp" />
     <ClCompile Include="GranseedGuard01_FSM.cpp" />
     <ClCompile Include="NPC_FSM.cpp" />
-    <ClCompile Include="Kyle_FSM.cpp">
-      <Filter>02.Component\01.FSM\01.Hero_FSM\02.Kyle_FSM</Filter>
+    <ClCompile Include="SpikeScene.cpp">
+      <Filter>01.Scene\00.PlayScene\03.Spike</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,5 @@
-﻿#include "pch.h"
-#include "KrisScene.h"
+#include "pch.h"
+#include "SpikeScene.h"
 
 #include "Utils.h"
 #include "Model.h"
@@ -67,29 +67,40 @@
 #include <filesystem>
 #include "GachaScene.h"
 #include "GranseedScene.h"
-#include "SpikeScene.h"
+#include "KrisScene.h"
 namespace fs = std::filesystem;
 
-KrisScene::KrisScene()
+SpikeScene::SpikeScene()
 {
 }
 
-KrisScene::~KrisScene()
+SpikeScene::~SpikeScene()
 {
 }
 
-void KrisScene::Init()
+void SpikeScene::Init()
 {
 	__super::Init();
 
 }
 
-void KrisScene::Tick()
+void SpikeScene::Tick()
 {
 	__super::Tick();
+
+	{
+		if (KEYPUSH(KEY_TYPE::C))
+		{
+			Get_GameObject(L"Main_Ui_Controller")->Get_Script<MainUiController>()->Set_MainUI_Render(true);
+		}
+		if (KEYPUSH(KEY_TYPE::V))
+		{
+			Get_GameObject(L"Main_Ui_Controller")->Get_Script<MainUiController>()->Set_MainUI_Render(false);
+		}
+	}
 }
 
-void KrisScene::Late_Tick()
+void SpikeScene::Late_Tick()
 {
 
 	__super::Late_Tick();
@@ -106,20 +117,18 @@ void KrisScene::Late_Tick()
 	}
 }
 
-void KrisScene::Final_Tick()
+void SpikeScene::Final_Tick()
 {
 	__super::Final_Tick();
 	PHYSX.Tick();
 
 	if (KEYTAP(KEY_TYPE::TAB))
 	{
-
 		/*GachaSceneDesc sceneDesc{ L"YeopoMap",HERO::YEOPO};
 			SCENE.Add_SubScene(make_shared<GachaScene>(sceneDesc));
 		SCENE.Exchange_Scene();*/
 
-
-		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<SpikeScene>());
+		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<KrisScene>());
 		PHYSX.Set_CharacterControllerNull();
 
 		scene->Set_StaticObjects(m_StaticObject);
@@ -128,7 +137,7 @@ void KrisScene::Final_Tick()
 	}
 }
 
-HRESULT KrisScene::Load_Scene()
+HRESULT SpikeScene::Load_Scene()
 {
 	RESOURCES.Delete_NonStaticResources();
 	PHYSX.Init();
@@ -140,40 +149,23 @@ HRESULT KrisScene::Load_Scene()
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Weapon\\", true);
 
 	//Map
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Kris\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Spike\\", false);
 
 	//Monster
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Boss_Spike\\", false);
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Silversword_Soldier\\", false);
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_White\\", false);
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_Brown\\", false);
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_Black\\", false);
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Wolf\\", false);
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Succubus_Scythe\\", false);
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Undead_Priest\\", false);
+	
 
 	auto player = Load_Player();
 	Load_Camera(player);
-	Load_MapFile(L"KrisMap", player);
-
-	//Load_Monster(1, L"Silversword_Soldier", player);
-	//Load_Monster(1, L"Succubus_Scythe", player);
-	//Load_Monster(1, L"Undead_Priest", player);
-	//Load_Monster(1, L"Alpaca_White", player);
-	//Load_Monster(1, L"Alpaca_Brown", player);
-	//Load_Monster(1, L"Alpaca_Black", player);
-	//Load_Monster(1, L"Wolf", player);
-
+	Load_MapFile(L"SpikeMap", player);
 	Load_Boss_Spike(player);
-
 
 	Load_Ui(player);
 
 	return S_OK;
 }
 
-shared_ptr<GameObject> KrisScene::Load_Player()
+shared_ptr<GameObject> SpikeScene::Load_Player()
 {
 	if (CUR_SCENE && typeid(*CUR_SCENE.get()) == typeid(LoadingScene))
 	{
@@ -189,7 +181,7 @@ shared_ptr<GameObject> KrisScene::Load_Player()
 			return pPlayer;
 		}
 	}
-	
+
 	{
 		// Add. Player
 		shared_ptr<GameObject> ObjPlayer = make_shared<GameObject>();
@@ -232,7 +224,7 @@ shared_ptr<GameObject> KrisScene::Load_Player()
 		ObjPlayer->Set_DrawShadow(true);
 		ObjPlayer->Set_ObjectGroup(OBJ_PLAYER);
 
-		Add_GameObject(ObjPlayer,true);
+		Add_GameObject(ObjPlayer, true);
 
 		//Add. Player's Weapon
 		shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
@@ -259,18 +251,16 @@ shared_ptr<GameObject> KrisScene::Load_Player()
 		ObjWeapon->Set_DrawShadow(true);
 		ObjWeapon->Set_Name(L"Weapon_Player");
 		ObjWeapon->Set_VelocityMap(true);
-		Add_GameObject(ObjWeapon,true);
+		Add_GameObject(ObjWeapon, true);
 
 		ObjPlayer->Add_Component(make_shared<HeroChangeScript>());
 
-
 		return ObjPlayer;
-
 	}
 	return nullptr;
 }
 
-void KrisScene::Load_Camera(shared_ptr<GameObject> pPlayer)
+void SpikeScene::Load_Camera(shared_ptr<GameObject> pPlayer)
 {
 	{
 		//GameObj for Camera Create
@@ -332,7 +322,7 @@ void KrisScene::Load_Camera(shared_ptr<GameObject> pPlayer)
 
 }
 
-void KrisScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_ptr<GameObject> pPlayer)
+void SpikeScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_ptr<GameObject> pPlayer)
 {
 	{
 		for (_uint i = 0; i < iCnt; i++)
@@ -390,7 +380,7 @@ void KrisScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_pt
 	}
 }
 
-void KrisScene::Load_Boss_Mir(shared_ptr<GameObject> pPlayer)
+void SpikeScene::Load_Boss_Mir(shared_ptr<GameObject> pPlayer)
 {
 	// Add. Monster
 	shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
@@ -440,7 +430,7 @@ void KrisScene::Load_Boss_Mir(shared_ptr<GameObject> pPlayer)
 	Add_GameObject(ObjMonster);
 }
 
-void KrisScene::Load_Boss_Dellons(shared_ptr<GameObject> pPlayer)
+void SpikeScene::Load_Boss_Dellons(shared_ptr<GameObject> pPlayer)
 {
 	{
 		// Add. Boss_Dellons
@@ -460,6 +450,7 @@ void KrisScene::Load_Boss_Dellons(shared_ptr<GameObject> pPlayer)
 
 			ObjMonster->Add_Component(animator);
 			ObjMonster->Add_Component(make_shared<Boss_Dellons_FSM>());
+
 			ObjMonster->Get_FSM()->Set_Target(pPlayer);
 		}
 		ObjMonster->Set_Name(L"Boss_Dellons");
@@ -513,7 +504,7 @@ void KrisScene::Load_Boss_Dellons(shared_ptr<GameObject> pPlayer)
 	}
 }
 
-void KrisScene::Load_Boss_Spike(shared_ptr<GameObject> pPlayer)
+void SpikeScene::Load_Boss_Spike(shared_ptr<GameObject> pPlayer)
 {
 	{
 		// Add. Boss_Dellons
@@ -521,7 +512,7 @@ void KrisScene::Load_Boss_Spike(shared_ptr<GameObject> pPlayer)
 
 		ObjMonster->Add_Component(make_shared<Transform>());
 
-		ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 55.f, 1.f));
+		ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, -1.3f, 51.f, 1.f));
 		{
 			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
@@ -533,6 +524,7 @@ void KrisScene::Load_Boss_Spike(shared_ptr<GameObject> pPlayer)
 
 			ObjMonster->Add_Component(animator);
 			ObjMonster->Add_Component(make_shared<Boss_Spike_FSM>());
+
 			ObjMonster->Get_FSM()->Set_Target(pPlayer);
 		}
 		ObjMonster->Set_Name(L"Boss_Spike");
@@ -587,7 +579,7 @@ void KrisScene::Load_Boss_Spike(shared_ptr<GameObject> pPlayer)
 	}
 }
 
-void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
+void SpikeScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 {
 	wstring assetPath = L"..\\Resources\\Textures\\UITexture\\Main\\";
 
@@ -613,7 +605,7 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	//Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat");
 
 
-	/*{
+	{
 		auto pObj = make_shared<GameObject>();
 		pObj->Set_Name(L"Main_Ui_Controller");
 
@@ -622,7 +614,7 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 
 		pObj->Set_LayerIndex(Layer_UI);
 		Add_GameObject(pObj, true);
-	}*/
+	}
 
 	{
 		auto pObj = make_shared<GameObject>();
@@ -631,8 +623,10 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		auto pScript = make_shared<UiGachaController>();
 		pObj->Add_Component(pScript);
 
+		pObj->Set_Render(false);
 		pObj->Set_LayerIndex(Layer_UI);
 		Add_GameObject(pObj, true);
+
 	}
 
 	{
@@ -697,14 +691,6 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj->Add_Component(pScript);
 		}
 	}
-
-
-
-
-
-
-
-
 	{
 		auto pObj = Get_UI(L"UI_Skill_Use_Gauge");
 		if (nullptr != pObj)
@@ -749,31 +735,12 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		}
 	}
 
-
-
-	// test code
-	{
-		/*auto pObj = Get_GameObject(L"Boss_Dellons");
-			Load_UIFile(L"..\\Resources\\UIData\\UI_BossHpBar.dat");
-		if(pObj)
-		{
-
-			auto pScript = make_shared<UIBossHpBar>();
-			pObj->Add_Component(pScript);
-		}*/
-	}
-
-
-
-
-
-
-
 	{
 		auto pScript = make_shared<UiSkillButtonEffect>();
 		auto pObj = Get_UI(L"UI_Skill0_Effect");
 		if (nullptr != pObj)
 			pObj->Add_Component(pScript);
+
 
 		pScript = make_shared<UiSkillButtonEffect>();
 		pObj = Get_UI(L"UI_Skill2_Effect");
@@ -893,7 +860,7 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 
 }
 
-void KrisScene::Load_Debug()
+void SpikeScene::Load_Debug()
 {
 	{
 		shared_ptr<GameObject> debugText = make_shared<GameObject>();

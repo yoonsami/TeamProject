@@ -410,6 +410,8 @@ void Boss_Mir_FSM::First_Meet()
         m_bDetected = true;
 
     
+
+    //THIS CAMERA MOVING IS MASTERPIECE -> NEVER DON'T TOUCH
     if (m_bDetected)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimState(false);

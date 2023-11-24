@@ -507,8 +507,8 @@ void Boss_Spike_FSM::SQ_Appear_01()
         if (!m_pCamera.expired())
         {
             _float4 vDir = (m_vSkillCamBonePos +
-                Get_Transform()->Get_State(Transform_State::LOOK) +
-                Get_Transform()->Get_State(Transform_State::RIGHT) * 3.f)
+                Get_Transform()->Get_State(Transform_State::LOOK) + 
+              Get_Transform()->Get_State(Transform_State::RIGHT) * 1.f)
                 - m_vCenterBonePos;
 
             vDir.Normalize();
@@ -640,7 +640,7 @@ void Boss_Spike_FSM::SQ_Appear_03_Init()
     if (!m_pCamera.expired())
     {
         m_pCamera.lock()->Get_Transform()->Set_State(Transform_State::POS,
-            Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 25.f + _float4{ 0.f,2.f,0.f,0.f });
+            Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 15.f + _float4{ 0.f,1.5f,0.f,0.f });
 
         m_vCamStopPos = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS);
     }
