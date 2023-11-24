@@ -1079,7 +1079,7 @@ void ResourceMgr::CreateMeshEffectData()
 		tDesc.bIsLoop = mTemp._11;
 		tDesc.bIsFollowingGroup_OnlyTranslate = mTemp._12;
 		tDesc.bIsFollowingGroup_LooKSameDir = mTemp._13;
-		tTransformDesc.iScaleSpeedType = mTemp._14;
+		tTransformDesc.iScaleSpeedType = _int(mTemp._14);
 		tTransformDesc.vCurvePoint_Scale[0] = _float2(mTemp._21, mTemp._22);
 		tTransformDesc.vCurvePoint_Scale[1] = _float2(mTemp._23, mTemp._24);
 		tTransformDesc.vCurvePoint_Scale[2] = _float2(mTemp._31, mTemp._32);
