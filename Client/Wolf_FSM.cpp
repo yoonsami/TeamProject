@@ -6,7 +6,8 @@
 #include "MainCameraScript.h"
 #include "UiDamageCreate.h"
 #include "UiMonsterHp.h"
-
+#include "ObjectDissolve.h"
+#include "CharacterController.h"
 
 HRESULT Wolf_FSM::Init()
 {
@@ -52,6 +53,8 @@ HRESULT Wolf_FSM::Init()
 
 void Wolf_FSM::Tick()
 {
+    DeadCheck();
+
     State_Tick();
 
     if (!m_pAttackCollider.expired())
@@ -81,8 +84,11 @@ void Wolf_FSM::State_Tick()
     case STATE::n_run:
         n_run();
         break;
-    case STATE::die:
-        die();
+    case STATE::die_01:
+        die_01();
+        break;
+    case STATE::die_02:
+        die_02();
         break;
     case STATE::gaze_b:
         gaze_b();
@@ -159,8 +165,11 @@ void Wolf_FSM::State_Init()
         case STATE::n_run:
             n_run_Init();
             break;
-        case STATE::die:
-            die_Init();
+        case STATE::die_01:
+            die_01_Init();
+            break;
+        case STATE::die_02:
+            die_02_Init();
             break;
         case STATE::gaze_b:
             gaze_b_Init();
@@ -374,6 +383,17 @@ void Wolf_FSM::b_idle()
         else
             m_eCurState = STATE::b_run;
     }
+
+    if (m_bIsDead)
+    {
+        m_bInvincible = true;
+
+        if (rand() % 2 == 0)
+            m_eCurState = STATE::die_01;
+        else
+            m_eCurState = STATE::die_02;
+    }
+
 }
 
 void Wolf_FSM::b_idle_Init()
@@ -493,12 +513,50 @@ void Wolf_FSM::n_run_Init()
     m_bSuperArmor = false;
 }
 
-void Wolf_FSM::die()
+void Wolf_FSM::die_01()
 {
+    if (Is_AnimFinished())
+    {
+        auto script = make_shared<ObjectDissolve>(1.f);
+        Get_Owner()->Add_Component(script);
+        script->Init();
+
+        if (!m_pAttackCollider.expired())
+            CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+    }
 }
 
-void Wolf_FSM::die_Init()
+void Wolf_FSM::die_01_Init()
 {
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"die_01", 0.2f, false, 1.f);
+
+    m_bSuperArmor = false;
+    m_bInvincible = true;
+}
+
+void Wolf_FSM::die_02()
+{
+    if (Is_AnimFinished())
+    {
+        auto script = make_shared<ObjectDissolve>(1.f);
+        Get_Owner()->Add_Component(script);
+        script->Init();
+
+        if (!m_pAttackCollider.expired())
+            CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+    }
+}
+
+void Wolf_FSM::die_02_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"die_02", 0.2f, false, 1.f);
+
+    m_bSuperArmor = false;
+    m_bInvincible = true;
 }
 
 void Wolf_FSM::gaze_b()
@@ -634,12 +692,30 @@ void Wolf_FSM::airborne_start_Init()
     AttackCollider_Off();
 
     m_bSuperArmor = true;
+
+    Get_CharacterController()->Add_Velocity(5.f);
 }
 
 void Wolf_FSM::airborne_end()
 {
     if (Is_AnimFinished())
-        m_eCurState = STATE::airborne_up;
+    {
+        if (!m_bIsDead)
+            m_eCurState = STATE::airborne_up;
+        else
+        {
+            m_bInvincible = true;
+
+            Get_Owner()->Get_Animator()->Set_AnimState(true);
+
+            auto script = make_shared<ObjectDissolve>(1.f);
+            Get_Owner()->Add_Component(script);
+            script->Init();
+
+            if (!m_pAttackCollider.expired())
+                CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+        }
+    }
 }
 
 void Wolf_FSM::airborne_end_Init()
@@ -672,6 +748,17 @@ void Wolf_FSM::hit()
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
+
+    if (m_bIsDead)
+    {
+        m_bInvincible = true;
+
+        if (rand() % 2 == 0)
+            m_eCurState = STATE::die_01;
+        else
+            m_eCurState = STATE::die_02;
+
+    }
 }
 
 void Wolf_FSM::hit_Init()
@@ -728,6 +815,20 @@ void Wolf_FSM::knock_end_loop()
 {
     if (m_iCurFrame > Get_FinalFrame() / 2)
         m_eCurState = STATE::knock_up;
+
+    if (m_bIsDead)
+    {
+        m_bInvincible = true;
+
+        Get_Owner()->Get_Animator()->Set_AnimState(true);
+
+        auto script = make_shared<ObjectDissolve>(1.f);
+        Get_Owner()->Add_Component(script);
+        script->Init();
+
+        if (!m_pAttackCollider.expired())
+            CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+    }
 }
 
 void Wolf_FSM::knock_end_loop_Init()
@@ -743,6 +844,9 @@ void Wolf_FSM::knock_end_hit()
 {
     if (Is_AnimFinished())
         m_eCurState = STATE::knock_end_loop;
+    
+    if (m_bIsDead)
+        m_bInvincible = true;
 }
 
 void Wolf_FSM::knock_end_hit_Init()
@@ -800,7 +904,23 @@ void Wolf_FSM::knockdown_end()
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::knock_up;
+    {
+        if (!m_bIsDead)
+            m_eCurState = STATE::knock_up;
+        else
+        {
+            m_bInvincible = true;
+
+            Get_Owner()->Get_Animator()->Set_AnimState(true);
+
+            auto script = make_shared<ObjectDissolve>(1.f);
+            Get_Owner()->Add_Component(script);
+            script->Init();
+
+            if (!m_pAttackCollider.expired())
+                CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+        }
+    }
 }
 
 void Wolf_FSM::knockdown_end_Init()

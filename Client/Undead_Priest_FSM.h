@@ -14,7 +14,8 @@ public:
 		b_run,
 		n_run,
 		wander,
-		die,
+		die_01,
+		die_02,
 		gaze_b,
 		gaze_bl,
 		gaze_br,
@@ -60,8 +61,10 @@ private:
 	void wander();
 	void wander_Init();
 
-	void die();
-	void die_Init();
+	void die_01();
+	void die_01_Init();
+	void die_02();
+	void die_02_Init();
 
 	void gaze_b();
 	void gaze_b_Init();

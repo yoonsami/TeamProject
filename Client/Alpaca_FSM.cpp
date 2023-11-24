@@ -7,6 +7,7 @@
 #include "UiDamageCreate.h"
 #include "ObjectDissolve.h"
 #include "UiMonsterHp.h"
+#include "CharacterController.h"
 
 HRESULT Alpaca_FSM::Init()
 {
@@ -660,6 +661,8 @@ void Alpaca_FSM::airborne_start_Init()
     AttackCollider_Off();
 
     m_bSuperArmor = true;
+
+    Get_CharacterController()->Add_Velocity(5.f);
 }
 
 void Alpaca_FSM::airborne_end()
@@ -670,6 +673,8 @@ void Alpaca_FSM::airborne_end()
             m_eCurState = STATE::airborne_up;
         else
         {
+            m_bInvincible = true;
+
             Get_Owner()->Get_Animator()->Set_AnimState(true);
 
             auto script = make_shared<ObjectDissolve>(1.f);
@@ -782,6 +787,8 @@ void Alpaca_FSM::knock_end_loop()
 
     if (m_bIsDead)
     {
+        m_bInvincible = true;
+
         Get_Owner()->Get_Animator()->Set_AnimState(true);
 
         auto script = make_shared<ObjectDissolve>(1.f);
@@ -871,6 +878,8 @@ void Alpaca_FSM::knockdown_end()
             m_eCurState = STATE::knock_up;
         else
         {
+            m_bInvincible = true;
+
             Get_Owner()->Get_Animator()->Set_AnimState(true);
 
             auto script = make_shared<ObjectDissolve>(1.f);

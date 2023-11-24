@@ -11,7 +11,8 @@ public:
 		b_run,
 		n_idle,
 		n_run,
-		die,
+		die_01,
+		die_02,
 		gaze_b,
 		gaze_f,
 		gaze_l,
@@ -56,8 +57,10 @@ private:
 	void n_run();
 	void n_run_Init();
 
-	void die();
-	void die_Init();
+	void die_01();
+	void die_01_Init();
+	void die_02();
+	void die_02_Init();
 
 	void gaze_b();
 	void gaze_b_Init();
