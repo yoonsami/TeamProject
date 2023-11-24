@@ -128,48 +128,19 @@ void Scene::Final_Tick()
 
 void Scene::Render()
 {
-	vector<nanoseconds> test;
-	test.reserve(1000);
-	system_clock::time_point start_time = system_clock::now();
 	Gather_LightData();
-	system_clock::time_point end_time = system_clock::now();
-	nanoseconds nano = end_time - start_time;
-	start_time = end_time;
-	test.push_back(nano);
 
 	Sort_GameObjects();
-	end_time = system_clock::now();
-	nano = end_time - start_time;
-	start_time = end_time;
-	test.push_back(nano);
 
 
 	Render_Shadow();
-	end_time = system_clock::now();
-	nano = end_time - start_time;
-	start_time = end_time;
-	test.push_back(nano);
-
 
 	Render_MotionBlur();
-	end_time = system_clock::now();
-	nano = end_time - start_time;
-	start_time = end_time;
-	test.push_back(nano);
-
 
 	Render_Deferred();
-	end_time = system_clock::now();
-	nano = end_time - start_time;
-	start_time = end_time;
-	test.push_back(nano);
-
 
 	Render_DefferedBlur();
-	end_time = system_clock::now();
-	nano = end_time - start_time;
-	start_time = end_time;
-	test.push_back(nano);
+
 
 
 	if(g_SSAOData.g_bSSAO_On)
@@ -177,122 +148,54 @@ void Scene::Render()
 		Render_SSAO();
 		Render_SSAOBlur(3);
 	}
-	end_time = system_clock::now();
-	nano = end_time - start_time;
-	start_time = end_time;
-	test.push_back(nano);
 
 
 	Render_Lights();
-	end_time = system_clock::now();
-	nano = end_time - start_time;
-	start_time = end_time;
-	test.push_back(nano);
+
 
 	//Render_BlurEffect();
 	Render_LightFinal();
-	end_time = system_clock::now();
-	nano = end_time - start_time;
-	start_time = end_time;
-	test.push_back(nano);
 
 
 	Render_SkyBox();
-	end_time = system_clock::now();
-	nano = end_time - start_time;
-	start_time = end_time;
-	test.push_back(nano);
+
 
 
 	Render_DOFMap();
-	end_time = system_clock::now();
-	nano = end_time - start_time;
-	start_time = end_time;
-	test.push_back(nano);
-
-
 	Render_DOFMapScaling();
-	end_time = system_clock::now();
-	nano = end_time - start_time;
-	start_time = end_time;
-	test.push_back(nano);
-
 
 	Render_DOFFinal();
-	end_time = system_clock::now();
-	nano = end_time - start_time;
-	start_time = end_time;
-	test.push_back(nano);
+
 
 
 	Render_Fog();
-	end_time = system_clock::now();
-	nano = end_time - start_time;
-	start_time = end_time;
-	test.push_back(nano);
+
 
 
 	Render_MotionBlurFinal();
-	end_time = system_clock::now();
-	nano = end_time - start_time;
-	start_time = end_time;
-	test.push_back(nano);
+
 
 	Render_Forward();
-	end_time = system_clock::now();
-	nano = end_time - start_time;
-	start_time = end_time;
-	test.push_back(nano);
+
 	Render_BloomMap();
 	Render_BloomMapScaling();
-	end_time = system_clock::now();
-	nano = end_time - start_time;
-	start_time = end_time;
-	test.push_back(nano);
 
 	Render_BloomFinal();
-	end_time = system_clock::now();
-	nano = end_time - start_time;
-	start_time = end_time;
-	test.push_back(nano);
+
 
 
 	Render_OutLine();
 	Render_Distortion();
 	Render_Distortion_Final();
 	Render_LensFlare();
-	end_time = system_clock::now();
-	nano = end_time - start_time;
-	start_time = end_time;
-	test.push_back(nano);
+
 	Render_Aberration();
 
 	Render_Debug();
 	Render_ToneMapping();
-	end_time = system_clock::now();
-	nano = end_time - start_time;
-	start_time = end_time;
-	test.push_back(nano);
+
 	Render_UI();
-	end_time = system_clock::now();
-	nano = end_time - start_time;
-	start_time = end_time;
-	test.push_back(nano);
-	//Render_BackBuffer();
-	if (KEYTAP(KEY_TYPE::F1))
-		int a = 0;
-	if (KEYTAP(KEY_TYPE::F2))
-		int a = 0;
-	if (KEYTAP(KEY_TYPE::F3))
-		int a = 0;
-	if (KEYTAP(KEY_TYPE::F4))
-		int a = 0;
-	if (KEYTAP(KEY_TYPE::F5))
-		int a = 0;
-	if (KEYTAP(KEY_TYPE::F6))
-		int a = 0;
-	if (KEYTAP(KEY_TYPE::F7))
-		int a = 0;
+
 }
 
 HRESULT Scene::Load_Scene()

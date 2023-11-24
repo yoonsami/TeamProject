@@ -612,9 +612,6 @@
     <ClCompile Include="WeaponScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.WeaponScript</Filter>
     </ClCompile>
-    <ClCompile Include="Kyle_FSM.cpp">
-      <Filter>02.Component\01.FSM\01.Hero_FSM\02.Kyle_FSM</Filter>
-    </ClCompile>
     <ClCompile Include="ObjectTransformDebug.cpp">
       <Filter>02.Component\00.MonoBehaviour\97.DebugScript</Filter>
     </ClCompile>
@@ -838,6 +835,9 @@
     <ClCompile Include="DragonBall_FSM.cpp" />
     <ClCompile Include="GranseedGuard01_FSM.cpp" />
     <ClCompile Include="NPC_FSM.cpp" />
+    <ClCompile Include="Kyle_FSM.cpp">
+      <Filter>02.Component\01.FSM\01.Hero_FSM\02.Kyle_FSM</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
