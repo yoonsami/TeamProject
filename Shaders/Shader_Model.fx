@@ -581,6 +581,7 @@ float4 PS_Shadow(ShadowOutput input) : SV_Target
         if (dissolve < g_vec4_0.x)
             discard;
     }
+  //  return float4(input.clipPos.z, input.clipPos.w, 0.f, 0.f);
     return float4(input.clipPos.z / input.clipPos.w, 0.f, 0.f, 0.f);
 }
 
@@ -681,9 +682,9 @@ PBR_OUTPUT PS_PBR_Deferred(MeshOutput input)
     
     ARM_Map = float4(1.f, 0.4f, 0.1f, 1.f);
     
-    if(bHasSubmap0)
+    if(bHasTexturemap7)
     {
-        ARM_Map = SubMap0.Sample(LinearSampler, input.uv);
+        ARM_Map = TextureMap7.Sample(LinearSampler, input.uv);
         ARM_Map = pow(abs(ARM_Map), GAMMA);
     }
 
@@ -743,9 +744,9 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(MeshInstancingOutput input)
     
     ARM_Map = float4(1.f, 0.4f, 0.0f, 1.f);
     
-    if (bHasSubmap0)
+    if (bHasTexturemap7)
     {
-        ARM_Map = SubMap0.Sample(LinearSampler, input.uv);
+        ARM_Map = TextureMap7.Sample(LinearSampler, input.uv);
         ARM_Map = pow(abs(ARM_Map), GAMMA);
     }
 
@@ -811,9 +812,9 @@ PBR_OUTPUT PS_PBR_Deferred_MapObject(MeshOutput input)
     
     ARM_Map = float4(1.f, 0.f, 0.f, 1.f);
     
-    if (bHasSubmap0)
+    if (bHasTexturemap7)
     {
-        ARM_Map = SubMap0.Sample(LinearSampler, input.uv);
+        ARM_Map = TextureMap7.Sample(LinearSampler, input.uv);
         ARM_Map = pow(abs(ARM_Map), GAMMA);
     }
     

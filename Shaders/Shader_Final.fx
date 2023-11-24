@@ -32,7 +32,15 @@ float4 PS_Final(VS_OUT input) : SV_Target0
 
     output = SubMap0.Sample(LinearSampler, input.uv);
 
+    output.rgb += g_brightness;
 
+        // 대비 조절
+    output.rgb = (output.rgb - 0.5) * g_contrast + 0.5;
+
+        // 채도 조절
+    float luminance = dot(output.rgb, float3(0.3, 0.59, 0.11));
+    output.rgb = lerp(luminance, output.rgb, g_saturation);
+    
     //output.rgb = pow(abs(output.rgb), 1.f / GAMMA);
     return output;
 }

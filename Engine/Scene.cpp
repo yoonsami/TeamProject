@@ -775,6 +775,7 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 			else
 				renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT);
 			renderer->SetVec4(0, _float4(fUVWeight,0,0,0));
+			CreateObject->Set_FrustumCulled(true);
 		}
 
 		// 트랜스폼 생성

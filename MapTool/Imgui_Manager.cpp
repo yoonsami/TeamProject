@@ -745,7 +745,34 @@ void ImGui_Manager::Frame_ShaderOption()
         {
             RenderOptionTab();
             //ModelOptionTab();
-            //CameraOptionTab();
+			if (CUR_SCENE->Get_MainCamera())
+			{
+
+
+				if (BeginTabItem("Camera"))
+				{
+					auto& desc = CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_CameraDesc();
+					DragFloat("Near", &desc.fNear, 0.1f, 0.1f, 100.f);
+					DragFloat("Far", &desc.fFar, 1.f, 100.f, 5000.f);
+					EndTabItem();
+				}
+
+
+
+			}
+			if (CUR_SCENE->Get_Light())
+			{
+				auto& desc = CUR_SCENE->Get_Light()->Get_Light()->Get_ShadowCamera()->Get_Camera()->Get_CameraDesc();
+				if (BeginTabItem("LightCamera"))
+				{
+
+					DragFloat("Near", &desc.fNear, 0.1f, 0.1f);
+					DragFloat("Far", &desc.fFar, 1.f, 100.f, 5000.f);
+
+					EndTabItem();
+				}
+
+			}
             EndTabBar();
         }
     }

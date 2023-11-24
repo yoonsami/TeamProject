@@ -136,7 +136,7 @@ public:
 	_float g_fBrightness = 0.f;
 	_float g_fContrast = 1.f;
 	_float g_Saturation = 1.f;
-	_float g_fShadowBias = _float(6.67628628e-05);
+	_float g_fShadowBias = _float(0.00017f);
 	_float g_fMaxWhite = 1.f;
 	_int g_iTMIndex = 1;
 

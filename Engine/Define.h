@@ -47,3 +47,4 @@ public:										\
     ((DWORD)((((a)&0xff)<<24)|(((r)&0xff)<<16)|(((g)&0xff)<<8)|((b)&0xff)))
 
 #define MAX_LEVEL_COUNT 32
+#define SHADOWMAP_SIZE 8192.f

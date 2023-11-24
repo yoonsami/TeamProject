@@ -194,7 +194,7 @@ void DebugTool::RenderOptionTab()
 				static bool hdr = true;
 
 				ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
-				DragFloat4("color", (_float*)&g_lightDiffuse);
+				ColorEdit4("color", (_float*)&g_lightDiffuse);
 
 			}
 		}
@@ -223,6 +223,8 @@ void DebugTool::RenderOptionTab()
 			_float& g_ambientRatio = CUR_SCENE->g_ambientRatio;
 			DragFloat("g_lightAttenuation", &g_lightAttenuation);
 			DragFloat("g_ambientRatio", &g_ambientRatio, 0.1f, 0.1f, 1.5f);
+			_float& g_shadowBias = CUR_SCENE->g_fShadowBias;
+			DragFloat("g_shadowBias", &g_shadowBias, 0.00001f, 0.f, 1000.f,"%.6f");
 		}
 
 		EndTabItem();
@@ -293,14 +295,31 @@ void DebugTool::CameraOptionTab()
 {
 	if(CUR_SCENE->Get_MainCamera())
 	{
-		auto& desc = CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_CameraDesc();
+		
 
 		if (BeginTabItem("Camera"))
 		{
+			auto& desc = CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_CameraDesc();
 			DragFloat("Near", &desc.fNear, 0.1f, 0.1f, 100.f);
-			DragFloat("Near", &desc.fFar, 1.f, 100.f, 5000.f);
+			DragFloat("Far", &desc.fFar, 1.f, 100.f, 5000.f);
 			EndTabItem();
 		}
+
+		
+		
+	}
+	if (CUR_SCENE->Get_Light())
+	{
+		auto& desc = CUR_SCENE->Get_Light()->Get_Light()->Get_ShadowCamera()->Get_Camera()->Get_CameraDesc();
+		if (BeginTabItem("LightCamera"))
+		{
+
+			DragFloat("Near", &desc.fNear, 0.1f, 0.1f, 100.f);
+			DragFloat("Far", &desc.fFar, 1.f, 100.f, 5000.f);
+
+			EndTabItem();
+		}
+
 	}
 }
 
