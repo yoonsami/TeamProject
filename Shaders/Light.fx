@@ -330,21 +330,30 @@ LightColor CalculateLightColor_ViewSpace_VirtualLight(LightColor virtualLightCol
 void ComputeNormalMapping_ViewSpace(inout float3 viewNormal, float3 viewTangent, float2 uv)
 {
 	// [0,255] 범위에서 [0,1]로 변환
-    float4 map = NormalMap.Sample(LinearSampler, uv);
+ //   float4 map = NormalMap.Sample(LinearSampler, uv);
         
-    if (any(map.rgb) == false)
-        return;
+ //   if (any(map.rgb) == false)
+ //       return;
 
-    float3 N = normalize(viewNormal); // z
-    float3 T = normalize(viewTangent); // x
-    float3 B = normalize(cross(N, T)); // y
-    float3x3 TBN = float3x3(T, B, N); // TS -> WS
+ //   float3 N = normalize(viewNormal); // z
+ //   float3 T = normalize(viewTangent); // x
+ //   float3 B = normalize(cross(N, T)); // y
+ //   float3x3 TBN = float3x3(T, B, N); // TS -> WS
 
-	// [0,1] 범위에서 [-1,1] 범위로 변환
-    float3 tangentSpaceNormal = (map.rgb * 2.0f - 1.0f);
-    viewNormal = normalize(mul(tangentSpaceNormal, TBN));
-
+	//// [0,1] 범위에서 [-1,1] 범위로 변환
+ //   float3 tangentSpaceNormal = (map.rgb * 2.0f - 1.0f);
+ //   viewNormal = normalize(mul(tangentSpaceNormal, TBN));
+    float3 normalT = 2.f * NormalMap.Sample(LinearSampler, uv).rgb - 1.f;
+    
+    float3 N = normalize(viewNormal);
+    float3 T = normalize(viewTangent - dot(viewTangent, N) * N);
+    float3 B = cross(N, T);
+    
+    float3x3 TBN = float3x3(T, B, N);
+    
+    viewNormal = normalize(mul(normalT, TBN));
+    
+    
 }
-
 
 #endif

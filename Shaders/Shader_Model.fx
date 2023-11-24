@@ -31,7 +31,7 @@ MeshOutput VS_NonAnim(VTXModel input)
     return output;
 }
 
-MeshOutput VS_MapObject(VTXModel input)
+MeshOutput VS_MapObject(VTXModel input, uniform bool isWorldNormal = false)
 {
     MeshOutput output;
     output.position = mul(float4(input.position, 1.f), BoneTransform[BoneIndex]);
@@ -41,13 +41,23 @@ MeshOutput VS_MapObject(VTXModel input)
     output.position = mul(output.position, VP);
 
     output.uv = input.uv * g_vec4_0.x;
-    output.viewNormal = mul(input.normal, (float3x3) BoneTransform[BoneIndex]);
-    output.viewNormal = mul(output.viewNormal, (float3x3) W);
-    output.viewNormal = normalize(mul(output.viewNormal, (float3x3) V));
-    output.viewTangent = mul(input.tangent, (float3x3) BoneTransform[BoneIndex]);
-    output.viewTangent = mul(output.viewTangent, (float3x3) W);
-    output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
-    
+    if(isWorldNormal)
+    {
+        output.viewNormal = normalize(mul(float3(0,1,0), (float3x3) W));
+        output.viewNormal = normalize(mul(output.viewNormal, (float3x3) V));
+        output.viewTangent = normalize(mul(float3(1,0,0), (float3x3) W));
+        output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
+    }
+    else
+    {
+        output.viewNormal = mul(input.normal, (float3x3) BoneTransform[BoneIndex]);
+        output.viewNormal = mul(output.viewNormal, (float3x3) W);
+        output.viewNormal = normalize(mul(output.viewNormal, (float3x3) V));
+        output.viewTangent = mul(input.tangent, (float3x3) BoneTransform[BoneIndex]);
+        output.viewTangent = mul(output.viewTangent, (float3x3) W);
+        output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
+    }
+   
 
     return output;
 }
@@ -87,8 +97,8 @@ MeshInstancingOutput VS_NonAnimInstancing(VTXModelInstancing input)
 
     output.position = mul(output.position, VP);
     output.uv = input.uv;
-    output.viewNormal = mul(input.normal, (float3x3) BoneTransform[BoneIndex]);
-    output.viewNormal = mul(output.viewNormal, (float3x3) input.world);
+    output.viewNormal = normalize(mul(input.normal, (float3x3) BoneTransform[BoneIndex]));
+    output.viewNormal = normalize(mul(output.viewNormal, (float3x3) input.world));
     output.viewNormal = normalize(mul(output.viewNormal, (float3x3) V));
     output.viewTangent = mul(input.tangent, (float3x3) BoneTransform[BoneIndex]);
     output.viewTangent = mul(output.viewTangent, (float3x3) input.world);
@@ -99,7 +109,7 @@ MeshInstancingOutput VS_NonAnimInstancing(VTXModelInstancing input)
     return output;
 }
 
-MeshInstancingOutput VS_MapObject_Instancing(VTXModelInstancing input)
+MeshInstancingOutput VS_MapObject_Instancing(VTXModelInstancing input, uniform bool isWorldNormal = false)
 {
     MeshInstancingOutput output;
     
@@ -110,13 +120,25 @@ MeshInstancingOutput VS_MapObject_Instancing(VTXModelInstancing input)
 
     output.position = mul(output.position, VP);
     output.uv = input.uv * InstanceRenderParams[input.instanceID].x;
-    output.viewNormal = mul(input.normal, (float3x3) BoneTransform[BoneIndex]);
-    output.viewNormal = mul(output.viewNormal, (float3x3) input.world);
+
+    if(isWorldNormal)
+    {
+       output.viewNormal = normalize(mul(float3(0, 1, 0), (float3x3) input.world));
+       output.viewNormal = normalize(mul(output.viewNormal, (float3x3) V));
+       
+       output.viewTangent = normalize(mul(float3(1, 0, 0), (float3x3) input.world));
+       output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
+    }
+    else
+    {
+    output.viewNormal = normalize(mul(input.normal, (float3x3) BoneTransform[BoneIndex]));
+    output.viewNormal = normalize(mul(output.viewNormal, (float3x3) input.world));
     output.viewNormal = normalize(mul(output.viewNormal, (float3x3) V));
     output.viewTangent = mul(input.tangent, (float3x3) BoneTransform[BoneIndex]);
     output.viewTangent = mul(output.viewTangent, (float3x3) input.world);
     output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
-    
+        
+    }
     output.id = input.instanceID;
     
     return output;
@@ -468,7 +490,10 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
     
     
     if (bHasNormalMap)
-        ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
+    {
+            ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
+        
+    }
 
     if (bHasDiffuseMap)
     {
@@ -528,7 +553,10 @@ PS_OUT_Deferred PS_Deferred_Instancing(MeshInstancingOutput input)
     }
     
     if (bHasNormalMap)
-        ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
+    {
+            ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
+        
+    }
 
     if (bHasDiffuseMap)
     {
@@ -680,14 +708,13 @@ PBR_OUTPUT PS_PBR_Deferred(MeshOutput input)
             discard;
     }
     
-    ARM_Map = float4(1.f, 0.4f, 0.1f, 1.f);
+    ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
     
     if(bHasTexturemap7)
     {
         ARM_Map = TextureMap7.Sample(LinearSampler, input.uv);
         ARM_Map = pow(abs(ARM_Map), GAMMA);
     }
-
 
     if (bHasNormalMap)
         ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
@@ -742,7 +769,7 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(MeshInstancingOutput input)
             discard;
     }
     
-    ARM_Map = float4(1.f, 0.4f, 0.0f, 1.f);
+    ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
     
     if (bHasTexturemap7)
     {
@@ -752,6 +779,7 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(MeshInstancingOutput input)
 
     if (bHasNormalMap)
         ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
+
 
     if (bHasDiffuseMap)
     {
@@ -810,7 +838,7 @@ PBR_OUTPUT PS_PBR_Deferred_MapObject(MeshOutput input)
             discard;
     }
     
-    ARM_Map = float4(1.f, 0.f, 0.f, 1.f);
+    ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
     
     if (bHasTexturemap7)
     {
@@ -863,7 +891,26 @@ PBR_OUTPUT PS_PBR_Deferred_MapObject(MeshOutput input)
     output.blur = 0;
     return output;
 }
+RasterizerState Depth
+{
+	// [From MSDN]
+	// If the depth buffer currently bound to the output-merger stage has a UNORM format or
+	// no depth buffer is bound the bias value is calculated like this: 
+	//
+	// Bias = (float)DepthBias * r + SlopeScaledDepthBias * MaxDepthSlope;
+	//
+	// where r is the minimum representable value > 0 in the depth-buffer format converted to float32.
+	// [/End MSDN]
+	// 
+	// For a 24-bit depth buffer, r = 1 / 2^24.
+	//
+	// Example: DepthBias = 100000 ==> Actual DepthBias = 100000/2^24 = .006
 
+	// You need to experiment with these values for your scene.
+    DepthBias = 1000;
+    DepthBiasClamp = 0.0f;
+    SlopeScaledDepthBias = 1.0f;
+};
 technique11 T0_ModelRender
 {
     pass NonAnim_NonInstancing
@@ -924,7 +971,7 @@ technique11 T0_ModelRender
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Shadow_NonAnim()));
         SetGeometryShader(NULL);
-        SetRasterizerState(RS_Default);
+        SetRasterizerState(Depth);
         SetDepthStencilState(DSS_LESS, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Shadow()));
@@ -933,7 +980,7 @@ technique11 T0_ModelRender
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Shadow_NonAnim_Instancing()));
         SetGeometryShader(NULL);
-        SetRasterizerState(RS_Default);
+        SetRasterizerState(Depth);
         SetDepthStencilState(DSS_LESS, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_ShadowInstancing()));
@@ -942,7 +989,7 @@ technique11 T0_ModelRender
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Shadow_Anim()));
         SetGeometryShader(NULL);
-        SetRasterizerState(RS_Default);
+        SetRasterizerState(Depth);
         SetDepthStencilState(DSS_LESS, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Shadow()));
@@ -951,7 +998,7 @@ technique11 T0_ModelRender
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Shadow_Anim_Instancing()));
         SetGeometryShader(NULL);
-        SetRasterizerState(RS_Default);
+        SetRasterizerState(Depth);
         SetDepthStencilState(DSS_LESS, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_ShadowInstancing()));
@@ -990,6 +1037,25 @@ technique11 T0_ModelRender
     pass MapObject_Instancing_NonCull
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject_Instancing()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Instancing()));
+    }
+
+    pass MapObject_WorldNormal
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MapObject(true)));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_Deferred()));
+    }
+    pass MapObject_WorldNormalInstancing
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MapObject_Instancing(true)));
         SetGeometryShader(NULL);
         SetRasterizerState(RS_CullNone);
         SetDepthStencilState(DSS_Default, 0);
@@ -1194,6 +1260,25 @@ technique11 T4_PBR
     pass MapObject_Instancing_NonCull
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject_Instancing()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_Instancing()));
+    }
+
+    pass MapObject_WorldNormal
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MapObject(true)));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred()));
+    }
+    pass MapObject_WorldNormalInstancing
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MapObject_Instancing(true)));
         SetGeometryShader(NULL);
         SetRasterizerState(RS_CullNone);
         SetDepthStencilState(DSS_Default, 0);

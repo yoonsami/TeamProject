@@ -111,15 +111,34 @@ void Graphics::Create_RTGroup()
 	}
 
 	//Shadow
+	//{
+	//	vector<RenderTarget> rtVec(RENDER_TARGET_SHADOW_GROUP_MEMBER_COUNT);
+
+	//	rtVec[0].target = RESOURCES.CreateTexture(L"ShadowTarget",
+	//		DXGI_FORMAT_R32_FLOAT, _int(SHADOWMAP_SIZE), _int(SHADOWMAP_SIZE),
+	//		D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET
+	//		| D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+	//	rtVec[0].clearColor = _float4(1.f);
+
+	//	//rtVec[0].target = nullptr;
+
+	//	/*shared_ptr<Texture> shadowDepthTexture
+	//		= RESOURCES.CreateTexture(L"ShadowDepthStencil",
+	//			DXGI_FORMAT_D32_FLOAT, 8192, 8192,
+	//			D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(1.f));
+	//	rtVec[0].clearColor = _float4(0.f);*/
+	//	shared_ptr<Texture> shadowDepthTexture = RESOURCES.CreateShadowTexture(L"ShadowDepthStencil", SHADOWMAP_SIZE, SHADOWMAP_SIZE);
+
+
+	//	m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::SHADOW)] = make_shared<RenderTargetGroup>();
+	//	m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::SHADOW)]->Create(RENDER_TARGET_GROUP_TYPE::SHADOW, rtVec, shadowDepthTexture);
+	//}
+
 	{
 		vector<RenderTarget> rtVec(RENDER_TARGET_SHADOW_GROUP_MEMBER_COUNT);
 
-		rtVec[0].target = RESOURCES.CreateTexture(L"ShadowTarget",
-			DXGI_FORMAT_R32_FLOAT, _int(SHADOWMAP_SIZE), _int(SHADOWMAP_SIZE),
-			D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET
-			| D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
-		rtVec[0].clearColor = _float4(1.f);
-
+		//shared_ptr<Texture> dsTexture0 = RESOURCES.CreateShadowTexture(L"ShadowTarget", SHADOWMAP_SIZE, SHADOWMAP_SIZE);
+		rtVec[0].target = nullptr;
 		//rtVec[0].target = nullptr;
 
 		/*shared_ptr<Texture> shadowDepthTexture
