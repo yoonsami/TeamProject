@@ -922,8 +922,8 @@ void Shane_FSM::skill_1100()
     if (Get_FinalFrame() - m_iCurFrame < 9)
 	{
 		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
     }
 
@@ -939,8 +939,8 @@ void Shane_FSM::skill_1100_Init()
     m_bCanCombo = false;
 
 	if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
@@ -968,8 +968,8 @@ void Shane_FSM::skill_1200()
 	if (Get_FinalFrame() - m_iCurFrame < 9)
 	{
 		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
     }
@@ -982,9 +982,9 @@ void Shane_FSM::skill_1200_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, m_fNormalAttack_AnimationSpeed);
-	if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+	
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
 	{
-
 		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
 	}
@@ -1019,8 +1019,8 @@ void Shane_FSM::skill_1300()
 	if (Get_FinalFrame() - m_iCurFrame < 9)
 	{
 		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
     }
@@ -1033,9 +1033,9 @@ void Shane_FSM::skill_1300_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_1300", 0.15f, false, m_fNormalAttack_AnimationSpeed);
-	if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+	
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
 	{
-
 		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
 	}
@@ -1066,8 +1066,8 @@ void Shane_FSM::skill_1400()
     if (Get_FinalFrame() - m_iCurFrame < 9)
 	{
 		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
     }
@@ -1081,9 +1081,9 @@ void Shane_FSM::skill_1400_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_1400", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+
 	if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
 	{
-
 		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
 	}

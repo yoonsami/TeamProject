@@ -930,6 +930,7 @@ void Player_FSM::skill_1100_Init()
     animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     Set_DirToTargetOrInput(OBJ_MONSTER);
+
     if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
@@ -958,7 +959,9 @@ void Player_FSM::skill_1200()
 
     if (Is_AnimFinished())
     {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
     }
@@ -1003,7 +1006,9 @@ void Player_FSM::skill_1300()
 
     if (Is_AnimFinished())
     {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
     }
@@ -1019,8 +1024,11 @@ void Player_FSM::skill_1300_Init()
 
     m_bCanCombo = false;
 
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+    {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
+    }
 
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
@@ -1041,8 +1049,10 @@ void Player_FSM::skill_1400()
 
 	if (Is_AnimFinished())
 	{
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
-		m_bCanCombo = false;
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+		
+        m_bCanCombo = false;
 		m_eCurState = STATE::b_idle;
 	}
 
@@ -1057,8 +1067,11 @@ void Player_FSM::skill_1400_Init()
 
 	m_bCanCombo = false;
 
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+    {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
+    }
 
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
@@ -1132,7 +1145,9 @@ void Player_FSM::skill_100100()
 
     if (Is_AnimFinished())
     {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        
         m_eCurState = STATE::b_idle;
     }
 
@@ -1206,8 +1221,10 @@ void Player_FSM::skill_100200()
 	
 	if (Is_AnimFinished())
 	{
-		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
-		m_eCurState = STATE::b_idle;
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+		    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+		
+        m_eCurState = STATE::b_idle;
 	}
 
 	Use_Dash();
@@ -1296,8 +1313,10 @@ void Player_FSM::skill_100300()
 
 	if (Is_AnimFinished())
 	{
-		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
-		m_eCurState = STATE::b_idle;
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+		    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+		
+        m_eCurState = STATE::b_idle;
 	}
 }
 
@@ -1307,7 +1326,8 @@ void Player_FSM::skill_100300_Init()
 
 	animator->Set_NextTweenAnim(L"skill_100300", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(SKILL1);
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(SKILL1);
 
 	m_bCanCombo = false;
 
@@ -1363,7 +1383,9 @@ void Player_FSM::skill_200100()
 
     if (Is_AnimFinished())
     {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        
         m_eCurState = STATE::skill_200200;
     }
 }
@@ -1410,7 +1432,9 @@ void Player_FSM::skill_200200()
 
     if (Is_AnimFinished())
     {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        
         m_eCurState = STATE::b_idle;
     }
 }
@@ -1452,7 +1476,9 @@ void Player_FSM::skill_300100()
   
     if (Is_AnimFinished())
     {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        
         m_eCurState = STATE::b_idle;
     }
 }
@@ -1549,7 +1575,9 @@ void Player_FSM::skill_300200()
 
     if (Is_AnimFinished())
     {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        
         m_eCurState = STATE::b_idle;
     }
 }
@@ -1564,7 +1592,8 @@ void Player_FSM::skill_300200_Init()
 
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(SKILL3);
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(SKILL3);
 
 	AttackCollider_Off();
 
@@ -1603,7 +1632,6 @@ void Player_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float f
 
 void Player_FSM::Use_Skill()
 {
-    
     if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
     {
         m_eCurState = STATE::skill_100100;
@@ -1617,7 +1645,7 @@ void Player_FSM::Use_Skill()
         m_eCurState = STATE::skill_300100;
     }
     else
-        Use_Dash();
+        Use_Dash();   
 }
 
 void Player_FSM::Use_Dash()
