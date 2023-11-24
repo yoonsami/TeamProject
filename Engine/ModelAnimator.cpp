@@ -208,6 +208,8 @@ void ModelAnimator::Render()
 	if (!m_bRenderOn)
 		return;
 
+	system_clock::time_point start_time = system_clock::now();
+
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 
 	{
@@ -234,7 +236,11 @@ void ModelAnimator::Render()
 		for (auto& mesh : meshes)
 		{
 			if (!mesh->material.expired())
+			{
 				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
 
 			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 			mesh->vertexBuffer->Push_Data();
@@ -252,7 +258,11 @@ void ModelAnimator::Render()
 		for (auto& mesh : meshes)
 		{
 			if (!mesh->material.expired())
+			{
 				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
 
 			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 			mesh->vertexBuffer->Push_Data();
@@ -263,7 +273,12 @@ void ModelAnimator::Render()
 			m_pShader->DrawIndexed(techniqueIndex, PS_ANIM, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
 		}
 	}
+	system_clock::time_point end_time = system_clock::now();
 
+	nanoseconds nano = end_time - start_time;
+
+	if (KEYTAP(KEY_TYPE::F6))
+		int a = 0;
 
 }
 
@@ -290,7 +305,11 @@ void ModelAnimator::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 		for (auto& mesh : meshes)
 		{
 			if (!mesh->material.expired())
+			{
 				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
 
 			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 
@@ -312,7 +331,11 @@ void ModelAnimator::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 		for (auto& mesh : meshes)
 		{
 			if (!mesh->material.expired())
+			{
 				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
 
 			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 
@@ -333,7 +356,7 @@ void ModelAnimator::Render_Shadow()
 {
 	if (!m_pModel)
 		return;
-
+	system_clock::time_point start_time = system_clock::now();
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 
 	{
@@ -356,7 +379,11 @@ void ModelAnimator::Render_Shadow()
 		for (auto& mesh : meshes)
 		{
 			if (!mesh->material.expired())
+			{
 				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
 
 			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 
@@ -374,7 +401,11 @@ void ModelAnimator::Render_Shadow()
 		for (auto& mesh : meshes)
 		{
 			if (!mesh->material.expired())
+			{
 				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
 
 			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 
@@ -385,6 +416,12 @@ void ModelAnimator::Render_Shadow()
 			m_pShader->DrawIndexed(0, PS_ANIM_SHADOW, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
 		}
 	}
+	system_clock::time_point end_time = system_clock::now();
+
+	nanoseconds nano = end_time - start_time;
+
+	if (KEYTAP(KEY_TYPE::F6))
+		int a = 0;
 }
 
 void ModelAnimator::Render_Shadow_Instancing(shared_ptr<InstancingBuffer>& buffer, shared_ptr<InstanceTweenDesc> desc, shared_ptr<InstanceRenderParamDesc> renderParamDesc)
@@ -412,7 +449,11 @@ void ModelAnimator::Render_Shadow_Instancing(shared_ptr<InstancingBuffer>& buffe
 		for (auto& mesh : meshes)
 		{
 			if (!mesh->material.expired())
+			{
 				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
 
 			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 
@@ -433,7 +474,11 @@ void ModelAnimator::Render_Shadow_Instancing(shared_ptr<InstancingBuffer>& buffe
 		for (auto& mesh : meshes)
 		{
 			if (!mesh->material.expired())
+			{
 				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
 
 			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 
@@ -454,7 +499,7 @@ void ModelAnimator::Render_MotionBlur()
 {
 	if (!m_pModel)
 		return;
-
+	system_clock::time_point start_time = system_clock::now();
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 	auto preView = CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_preWorldMatrix().Invert();
 	m_pShader->GetMatrix("g_preView")->SetMatrix((_float*)&preView);
@@ -479,7 +524,11 @@ void ModelAnimator::Render_MotionBlur()
 		for (auto& mesh : meshes)
 		{
 			if (!mesh->material.expired())
+			{
 				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
 
 			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 			mesh->vertexBuffer->Push_Data();
@@ -497,7 +546,11 @@ void ModelAnimator::Render_MotionBlur()
 		for (auto& mesh : meshes)
 		{
 			if (!mesh->material.expired())
+			{
 				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
 
 			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 			mesh->vertexBuffer->Push_Data();
@@ -508,6 +561,12 @@ void ModelAnimator::Render_MotionBlur()
 			m_pShader->DrawIndexed(2, PS_ANIM, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
 		}
 	}
+	system_clock::time_point end_time = system_clock::now();
+
+	nanoseconds nano = end_time - start_time;
+
+	if (KEYTAP(KEY_TYPE::F6))
+		int a = 0;
 }
 
 void ModelAnimator::Render_MotionBlur_Instancing(shared_ptr<class InstancingBuffer>& buffer, shared_ptr<InstanceTweenDesc> tweenDesc, shared_ptr<InstanceRenderParamDesc> renderParamDesc)
@@ -533,7 +592,11 @@ void ModelAnimator::Render_MotionBlur_Instancing(shared_ptr<class InstancingBuff
 		for (auto& mesh : meshes)
 		{
 			if (!mesh->material.expired())
+			{
 				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
 
 			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 
@@ -554,7 +617,11 @@ void ModelAnimator::Render_MotionBlur_Instancing(shared_ptr<class InstancingBuff
 		for (auto& mesh : meshes)
 		{
 			if (!mesh->material.expired())
+			{
 				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
 
 			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 

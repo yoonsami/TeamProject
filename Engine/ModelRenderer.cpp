@@ -53,7 +53,11 @@ void ModelRenderer::Render()
 	for (auto& mesh : meshes)
 	{
 		if (!mesh->material.expired())
+		{
 			mesh->material.lock()->Tick();
+			mesh->material.lock()->Push_TextureMapData();
+
+		}
 
 		m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 		mesh->vertexBuffer->Push_Data();
@@ -102,7 +106,11 @@ void ModelRenderer::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 	for (auto& mesh : meshes)
 	{
 		if (!mesh->material.expired())
+		{
 			mesh->material.lock()->Tick();
+			mesh->material.lock()->Push_TextureMapData();
+
+		}
 
 		// BoneIndex
 		m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
@@ -159,7 +167,11 @@ void ModelRenderer::Render_Skybox()
 	for (auto& mesh : meshes)
 	{
 		if (!mesh->material.expired())
+		{
 			mesh->material.lock()->Tick();
+			mesh->material.lock()->Push_TextureMapData();
+
+		}
 
 		// BoneIndex
 		m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
@@ -201,7 +213,11 @@ void ModelRenderer::Render_Shadow()
 	for (auto& mesh : meshes)
 	{
 		if (!mesh->material.expired())
+		{
 			mesh->material.lock()->Tick();
+			mesh->material.lock()->Push_TextureMapData();
+
+		}
 
 		// BoneIndex
 		m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
@@ -238,7 +254,11 @@ void ModelRenderer::Render_Shadow_Instancing(shared_ptr<InstancingBuffer>& buffe
 	for (auto& mesh : meshes)
 	{
 		if (!mesh->material.expired())
+		{
 			mesh->material.lock()->Tick();
+			mesh->material.lock()->Push_TextureMapData();
+
+		}
 
 		// BoneIndex
 		m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
@@ -287,7 +307,11 @@ void ModelRenderer::Render_MotionBlur()
 	for (auto& mesh : meshes)
 	{
 		if (!mesh->material.expired())
+		{
 			mesh->material.lock()->Tick();
+			mesh->material.lock()->Push_TextureMapData();
+
+		}
 
 		m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 
@@ -325,7 +349,11 @@ void ModelRenderer::Render_MotionBlur_Instancing(shared_ptr<InstancingBuffer>& b
 	for (auto& mesh : meshes)
 	{
 		if (!mesh->material.expired())
+		{
 			mesh->material.lock()->Tick();
+			mesh->material.lock()->Push_TextureMapData();
+
+		}
 
 		// BoneIndex
 		m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);

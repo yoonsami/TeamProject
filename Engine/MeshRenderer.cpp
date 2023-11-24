@@ -31,6 +31,8 @@ void MeshRenderer::Render_Instancing(shared_ptr<InstancingBuffer>& buffer, share
 		return;
 
 	m_pMaterial->Tick();
+	m_pMaterial->Push_TextureMapData();
+	m_pMaterial->Push_SubMapData();
 
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 
@@ -56,8 +58,12 @@ void MeshRenderer::Render_Instancing(shared_ptr<InstancingBuffer>& buffer, share
 
 void MeshRenderer::Render()
 {
-	if (m_pMaterial)
-		m_pMaterial->Tick();
+	if (!m_pMaterial || !m_pMesh || !m_pShader)
+		return;
+
+	m_pMaterial->Tick();
+	m_pMaterial->Push_TextureMapData();
+	m_pMaterial->Push_SubMapData();
 
 	m_pShader->Push_RenderParamData(m_RenderParams);
 

@@ -163,7 +163,7 @@ HRESULT GranseedScene::Load_Scene()
 
 	//Map
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Granseed\\", false);
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Npc\\Granseed\\", false);
+	//RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Npc\\Granseed\\", false);
 	// Gacha
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Kyle\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Yeopo\\", false);
@@ -173,7 +173,7 @@ HRESULT GranseedScene::Load_Scene()
 	Load_MapFile(L"GranseedMap", pPlayer);
 
 	Load_Ui(pPlayer);
-	Load_NPC(L"GranseedMap");
+	//Load_NPC(L"GranseedMap");
 	return S_OK;
 }
 
@@ -225,7 +225,7 @@ shared_ptr<GameObject> GranseedScene::Load_Player()
 
 				ObjPlayer->Get_FSM()->Set_AttackCollider(attackCollider) ;
 
-				Add_GameObject(attackCollider);
+				Add_GameObject(attackCollider,true);
 				attackCollider->Get_Collider()->Set_Activate(false);
 
 				attackCollider->Add_Component(make_shared<AttackColliderInfoScript>());
