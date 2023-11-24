@@ -1542,7 +1542,9 @@ void Yeopo_FSM::skill_400100()
         if (!m_pCamera.expired())
         {
             _float4 vSkillCamPos = m_vSkillCamBonePos;
-            vSkillCamPos.y = 2.f;
+            vSkillCamPos.y += 2.f;
+
+            
             _float4 vDir = m_vCamBonePos - vSkillCamPos;
             vDir.Normalize();
 
@@ -1556,7 +1558,7 @@ void Yeopo_FSM::skill_400100()
         if (!m_pCamera.expired())
         {
             _float4 vSkillCamPos = m_vSkillCamBonePos;
-            vSkillCamPos.y = 2.f;
+            vSkillCamPos.y += 2.f;
             _float4 vDir = m_vCamBonePos - vSkillCamPos;
             vDir.Normalize();
 
