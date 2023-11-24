@@ -205,11 +205,11 @@ void DataMgr::Initialize()
 		tagData.CriPercent = 0.f;
 		tagData.CriDamageMul = 1.f;
 
-		tagData.Skill1Cool = 5.f;
-		tagData.Skill2Cool = 5.f;
-		tagData.Skill3Cool = 5.f;
-		tagData.Skill4Cool = 5.f;
-		tagData.Skill5Cool = 5.f;
+		tagData.Skill1Cool = 35.f;
+		tagData.Skill2Cool = 35.f;
+		tagData.Skill3Cool = 35.f;
+		tagData.Skill4Cool = 35.f;
+		tagData.Skill5Cool = 35.f;
 		tagData.Skill1DamageMul = 1.f;
 		tagData.Skill2DamageMul = 1.f;
 		tagData.Skill3DamageMul = 1.f;

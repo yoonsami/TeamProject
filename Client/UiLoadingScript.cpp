@@ -74,7 +74,7 @@ void UiLoadingScript::Tick()
 void UiLoadingScript::Change_Texture()
 {
     ++iTextureIndex;
-    if (m_iMaxIndex == iTextureIndex)
+    if (m_iMaxIndex >= iTextureIndex)
         iTextureIndex = 0;
 
     wstring TextureName = m_strTextureName + to_wstring(iTextureIndex);
