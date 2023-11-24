@@ -28,7 +28,7 @@ HRESULT CoolTimeCheckScript::Init()
     {
         m_CoolTime[i].resize(5);
 
-       auto tagData = GET_DATA(static_cast<HERO>(i));
+       auto& tagData = GET_DATA(static_cast<HERO>(i));
        m_CoolTime[i][0].CoolInfo.fCoolTime = tagData.Skill1Cool;
        m_CoolTime[i][1].CoolInfo.fCoolTime = tagData.Skill2Cool;
        m_CoolTime[i][2].CoolInfo.fCoolTime = tagData.Skill3Cool;
@@ -188,7 +188,7 @@ void CoolTimeCheckScript::Set_Cur_Hero(HERO eType)
     /*for(_uint i = 0 ; i < iSize; ++i)
         m_pUiSkill[i].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_TextureKey[iIndex][i]), TextureMapType::DIFFUSE);*/
 
-    auto tagData = GET_DATA(eType);
+    auto& tagData = GET_DATA(eType);
     m_pUiSkill[0].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(tagData.KeyAttack), TextureMapType::DIFFUSE);
     m_pUiSkill[1].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(tagData.KeyEvade), TextureMapType::DIFFUSE);
     m_pUiSkill[2].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(tagData.KeySkill1), TextureMapType::DIFFUSE);
