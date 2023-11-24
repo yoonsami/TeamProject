@@ -2,6 +2,7 @@
 #include "UiGachaController.h" 
 
 #include "BaseUI.h"
+#include "GachaScene.h"
 #include "UiGachaCardMove.h"
 #include "UiGachaEffectController.h"
 
@@ -39,7 +40,7 @@ HRESULT UiGachaController::Init()
     m_vecObjEffectTag[0] = L"UI_Gacha_Effect0";
     m_vecObjEffectTag[1] = L"UI_Gacha_Effect1";
     m_vecObjEffectTag[2] = L"UI_Gacha_Effect2";
-    m_vecObjEffectTag[2] = L"UI_Gacha_Effect3";
+    m_vecObjEffectTag[3] = L"UI_Gacha_Effect3";
 
     m_vecObjBgTag.resize(4);
     m_vecObjBgTag[0] = L"UI_Gacha_Bg0";
@@ -71,10 +72,10 @@ void UiGachaController::Tick()
     {
         Create_Gacha_Card();
     }
-    /*if (KEYTAP(KEY_TYPE::E))
+    if (KEYTAP(KEY_TYPE::E))
     {
         Delete_All();
-    }*/
+    }
 
     switch (m_eState)
     {
@@ -82,6 +83,9 @@ void UiGachaController::Tick()
         break;
     case EFFECT_STATE::START:
         Effect_Start();
+        break;
+    case EFFECT_STATE::CHANGE:
+        Effect_Change();
         break;
     case EFFECT_STATE::RESET:
         Effect_Reset();
@@ -240,12 +244,11 @@ void UiGachaController::Effect_Start()
     m_fEffectCheckTime += fDT;
     if (m_fEffectMaxTime < m_fEffectCheckTime)
     {
-        m_eState = EFFECT_STATE::RESET;
+        m_eState = EFFECT_STATE::CHANGE;
         m_fEffectCheckTime = 0.f;
     }
 
-    // ȭ�� ��� �ø���
-    CUR_SCENE->g_fBrightness = m_fEffectCheckTime;
+    CUR_SCENE->g_fBrightness = m_fEffectCheckTime * 2.f;
 }
 
 void UiGachaController::Effect_Reset()
@@ -254,7 +257,49 @@ void UiGachaController::Effect_Reset()
 
     CUR_SCENE->g_fBrightness = m_fOriginBrightness;
 
-    Delete_Gacha_Effect();
+    auto pScene = CUR_SCENE;
+    _uint iSize = IDX(m_vecObjEffectTag.size());
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        weak_ptr<GameObject> pObj = pScene->Get_UI(m_vecObjEffectTag[i]);
+        if (false == pObj.expired())
+            pObj.lock()->Set_Render(false);
+    }
+}
+
+void UiGachaController::Effect_Change()
+{
+    m_eState = EFFECT_STATE::RESET;
+
+    GachaSceneDesc sceneDesc = {};
+    _bool bIsIt = false;
+    switch (m_eGachaHero)
+    {
+    case HERO::ACE3:
+        break;
+    case HERO::KYLE:
+        sceneDesc = { L"KyleMap", HERO::KYLE };
+        bIsIt = true;
+        break;
+    case HERO::YEOPO:
+        sceneDesc = { L"YeopoMap", HERO::YEOPO };
+        bIsIt = true;
+        break;
+    case HERO::DELLONS:
+        break;
+    case HERO::SPIKE:
+        break;
+    case HERO::YEONHEE:
+        break;
+    case HERO::SHANE:
+        break;
+    }
+
+    if (true == bIsIt)
+    {
+        SCENE.Add_SubScene(make_shared<GachaScene>(sceneDesc));
+        SCENE.Exchange_Scene();
+    }
 }
 
 void UiGachaController::Open_All_Card()
@@ -279,14 +324,26 @@ void UiGachaController::Delete_All()
     Delete_Gacha_Effect();
 }
 
-void UiGachaController::Start_Effect(_float2 vPos)
+void UiGachaController::Start_Effect(_float4 vPos, HERO eHero)
 {
-    m_eState = EFFECT_STATE::START;
+    // if hero gacha scene id added, add switch case
+    _bool bIsit = false;
+    switch (eHero)
+    {
+    case HERO::KYLE:
+    case HERO::YEOPO:
+        bIsit = true;
+    }
 
+    if (false == bIsit)
+        return;
+
+    m_fEffectCheckTime = 0.f;
+    m_eState = EFFECT_STATE::START;
+    m_eGachaHero = eHero;
     m_fOriginBrightness = CUR_SCENE->g_fBrightness;
 
     auto pScene = CUR_SCENE;
-
     _uint iSize = IDX(m_vecObjEffectTag.size());
     for (_uint i = 0; i < iSize; ++i)
     {

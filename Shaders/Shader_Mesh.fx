@@ -267,8 +267,11 @@ float4 PS_UI1(UIOutput input) : SV_TARGET
         if (1.f - input.uv.y >= g_float_0 / 100.f)
             diffuseColor.xyz *= 0.2f;
 
-        float gauge_Color = SubMap0.Sample(LinearSampler, input.uv + float2(0.f, 0.5f + g_float_0 / 100.f)).x;
-        diffuseColor.xyz += gauge_Color;
+        if (bHasTexturemap7)
+        {
+            float gauge_Color = TextureMap7.Sample(LinearSampler, input.uv + float2(0.f, 0.5f + g_float_0 / 100.f)).x;
+            diffuseColor.xyz += gauge_Color;
+        }
     }
 
     return diffuseColor;
@@ -311,7 +314,6 @@ float4 PS_UI3(UIOutput input) : SV_TARGET
     if (bHasDiffuseMap)
     {
         diffuseColor = pow(abs(DiffuseMap.Sample(LinearSamplerMirror, input.uv)), GAMMA) * g_vec4_0;
-        
     }
 
     if (input.uv.x > g_float_0)
@@ -321,7 +323,9 @@ float4 PS_UI3(UIOutput input) : SV_TARGET
     newUV.x = input.uv.x - frac(g_float_1);
     newUV.y = input.uv.y;
 
-    float falpha = SubMap0.Sample(LinearSampler, newUV).a + 0.3f;
+    float falpha;
+    if(bHasTexturemap7)
+        falpha = TextureMap7.Sample(LinearSampler, newUV).a + 0.3f;
     
     diffuseColor.xyz *= falpha;
 

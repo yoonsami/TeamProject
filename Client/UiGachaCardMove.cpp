@@ -3,6 +3,7 @@
 
 #include "Utils.h"
 #include "MeshRenderer.h"
+#include "UiGachaController.h"
 #include "UiCardDeckController.h"
 
 UiGachaCardMove::UiGachaCardMove(_uint iIndex)
@@ -77,6 +78,7 @@ HRESULT UiGachaCardMove::Init()
 	m_vecDir = { m_vecArrivalPos.x - m_vecFirstPos.x,  m_vecArrivalPos.y - m_vecFirstPos.y };
 
 	_float fRand = Utils::Random_In_Range(0.f, 1.f);
+	fRand = 0.023f;
 	if (0.01f > fRand)
 	{
 		m_eHero = HERO::ACE3;
@@ -135,8 +137,11 @@ void UiGachaCardMove::Tick()
 
 void UiGachaCardMove::Card_Open()
 {
-	m_eState = STATE::OPEN;
-	m_fCheckTime = 0.f;
+	if (STATE::NONE != m_eState)
+	{
+		m_eState = STATE::OPEN;
+		m_fCheckTime = 0.f;
+	}
 }
 
 void UiGachaCardMove::Move()
@@ -225,18 +230,18 @@ void UiGachaCardMove::Open()
 	if (m_fMaxTime < m_fCheckTime)
 	{
 		m_fCheckTime = m_fMaxTime;
-		m_eState = STATE::IDLE;
+		m_eState = STATE::NONE;
 
 		//return;
 	}
-
+	
 	_float3 vecScale = m_fOriginScale;
-	switch (m_eChangeType)
+	switch (m_eOpenType)
 	{
-	case UiGachaCardMove::CHANGE_TYPE::DOWN:
+	case CHANGE_TYPE::DOWN:
 		vecScale.x -= m_fScaleChangeValue * m_fCheckTime / m_fMaxTime * 2.f;
 		break;
-	case UiGachaCardMove::CHANGE_TYPE::UP:
+	case CHANGE_TYPE::UP:
 		vecScale.x = 0.1f;
 		vecScale.x += m_fScaleChangeValue * (m_fCheckTime - m_fMaxTime / 2.f) / (m_fMaxTime - m_fMaxTime / 2.f);
 		break;
@@ -245,14 +250,16 @@ void UiGachaCardMove::Open()
 	if (0.01f > vecScale.x)
 	{
 		vecScale.x = 0.01f;
-		m_eChangeType = CHANGE_TYPE::UP;
+		m_eOpenType = CHANGE_TYPE::UP;
 		if (0 != m_strTextureTag.length())
 			m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_strTextureTag), TextureMapType::DIFFUSE);
+
+		CUR_SCENE->Get_UI(L"UI_Gacha_Controller")->Get_Script<UiGachaController>()->Start_Effect(m_pOwner.lock()->GetOrAddTransform()->Get_State(Transform_State::POS), m_eHero);
 	}
 	else if (272.f < vecScale.x)
 	{
 		vecScale.x = 272.f;
-		m_eState = STATE::IDLE;
+		m_eState = STATE::NONE;
 
 		if (HERO::MAX != m_eHero)
 			CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Set_Hero(m_eHero);

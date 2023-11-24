@@ -10,7 +10,7 @@ public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
 
-    void Start_Effect(_float2 vPos);
+    void Start_Effect(_float4 vPos);
 
 private:
     void Decrease_Alpha();

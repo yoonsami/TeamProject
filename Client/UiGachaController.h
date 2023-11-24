@@ -13,7 +13,7 @@ public:
     void Create_Gacha_Card();
     void Open_All_Card();
     void Delete_All();
-    void Start_Effect(_float2 vPos);
+    void Start_Effect(_float4 vPos, HERO eHero);
 
 private:
     void Delete_Gacha_Card();
@@ -24,6 +24,7 @@ private:
 
     void Effect_Start();
     void Effect_Reset();
+    void Effect_Change();
 
 private:
     vector<wstring>     m_vecObjTag;
@@ -38,11 +39,12 @@ private:
     _float  m_fCheckTime    = {};
     _float  m_fMaxTime      = {};
 
-    enum class EFFECT_STATE { NONE, START, RESET };
+    enum class EFFECT_STATE { NONE, START, CHANGE, RESET };
     EFFECT_STATE m_eState       = { EFFECT_STATE::NONE };
-    _float m_fEffectCheckTime   = {};
-    _float m_fEffectMaxTime     = {};
-    _float m_fEffectRatio       = {};
-    _float m_fOriginBrightness  = {};
+    _float  m_fEffectCheckTime  = {};
+    _float  m_fEffectMaxTime    = {};
+    _float  m_fEffectRatio      = {};
+    _float  m_fOriginBrightness = {};
+    HERO    m_eGachaHero        = { HERO::MAX };
 };
 
