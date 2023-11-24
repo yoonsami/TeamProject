@@ -49,7 +49,6 @@ void Kyle_FSM::Tick()
 		m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.5f);
 	}
 
-	Calculate_CamBoneMatrix();
 }
 
 void Kyle_FSM::State_Tick()
@@ -1175,6 +1174,8 @@ void Kyle_FSM::skill_100100()
 		m_eCurState = STATE::b_idle;
 	}
 
+	Calculate_CamBoneMatrix();
+
 	Use_Dash();
 }
 
@@ -1231,9 +1232,9 @@ void Kyle_FSM::skill_100200()
 		
 		if (!m_pCamera.expired())
 			m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedTime(0.f);
-		//m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
 	}
 
+	Calculate_CamBoneMatrix();
 
 	Use_Dash();
 }
@@ -1253,6 +1254,8 @@ void Kyle_FSM::skill_100200_Init()
 
 	m_bInvincible = false;
 	m_bSuperArmor = true;
+
+	Calculate_CamBoneMatrix();
 }
 
 void Kyle_FSM::skill_200100()
@@ -1491,6 +1494,9 @@ void Kyle_FSM::skill_502100()
 		m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCamStopPos.xyz());
 	}
 	
+
+	Calculate_CamBoneMatrix();
+
 	if (Init_CurFrame(55))
 	{
 		FORWARDMOVINGSKILLDESC desc;
@@ -1543,6 +1549,7 @@ void Kyle_FSM::skill_502100()
 		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 		m_eCurState = STATE::b_idle;
 	}
+
 }
 
 void Kyle_FSM::skill_502100_Init()
@@ -1581,6 +1588,8 @@ void Kyle_FSM::skill_500100()
 		}
 	}
 	
+	Calculate_CamBoneMatrix();
+
 	if (Init_CurFrame(11))
 	{
 		FORWARDMOVINGSKILLDESC desc;
@@ -1669,6 +1678,8 @@ void Kyle_FSM::skill_500100_Init()
 
 	m_bInvincible = false;
 	m_bSuperArmor = true;
+
+	Calculate_CamBoneMatrix();
 
 	//For.Skill_CutScene
 	Cal_SkillCamDirection(3.f);

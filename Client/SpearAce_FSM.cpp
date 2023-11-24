@@ -58,8 +58,6 @@ void SpearAce_FSM::Tick()
         //m_pAttack transform set forward
 		m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.5f);
     }
-
-    Calculate_CamBoneMatrix();
 }
 
 void SpearAce_FSM::State_Tick()
@@ -1251,6 +1249,8 @@ void SpearAce_FSM::skill_300100()
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.2f, vDir.xyz() * -1.f, 6.f);
         }
     }
+
+    Calculate_CamBoneMatrix();
     
     if (m_iCurFrame >= 78 && m_iCurFrame <= 110)
         m_bInvincible = true;
@@ -1370,6 +1370,7 @@ void SpearAce_FSM::skill_300100()
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
     }
+
 }
 
 void SpearAce_FSM::skill_300100_Init()
@@ -1398,6 +1399,8 @@ void SpearAce_FSM::skill_300100_Init()
     Create_300100Clone();
     m_bInvincible = false;
     m_bSuperArmor = true;
+
+    Calculate_CamBoneMatrix();
 }
 
 void SpearAce_FSM::skill_502100()

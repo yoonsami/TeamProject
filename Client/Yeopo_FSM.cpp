@@ -52,8 +52,6 @@ HRESULT Yeopo_FSM::Init()
 
 void Yeopo_FSM::Tick()
 {
-    Calculate_CamBoneMatrix();
-
     State_Tick();
 
     if (!m_pAttackCollider.expired())
@@ -1524,13 +1522,14 @@ void Yeopo_FSM::skill_300400_Init()
 
 void Yeopo_FSM::skill_400100()
 {
+    Calculate_CamBoneMatrix();
+
     if (m_iCurFrame < 84)
     {
         if (!m_pCamera.expired())
         {
             _float4 vSkillCamPos = m_vSkillCamBonePos;
             vSkillCamPos.y += 2.f;
-
             
             _float4 vDir = m_vCamBonePos - vSkillCamPos;
             vDir.Normalize();
@@ -1562,6 +1561,7 @@ void Yeopo_FSM::skill_400100()
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
     }
+
 }
 
 void Yeopo_FSM::skill_400100_Init()
@@ -1578,6 +1578,8 @@ void Yeopo_FSM::skill_400100_Init()
 
     m_bInvincible = true;
     m_bSuperArmor = true;
+
+    Calculate_CamBoneMatrix();
 
     Create_Vehicle();
  

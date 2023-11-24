@@ -59,7 +59,7 @@ void Dellons_FSM::Tick()
 		m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.5f);
     }
 
-    Calculate_CamBoneMatrix();
+
 }
 
 void Dellons_FSM::State_Tick()
@@ -1335,6 +1335,8 @@ void Dellons_FSM::skill_300100()
         }
     }
 
+    Calculate_CamBoneMatrix();
+
     if (Init_CurFrame(10))
     {
 		Summon_Wraith();
@@ -1346,6 +1348,7 @@ void Dellons_FSM::skill_300100()
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
     }
+
 }
 
 void Dellons_FSM::skill_300100_Init()
@@ -1363,6 +1366,7 @@ void Dellons_FSM::skill_300100_Init()
     m_bInvincible = true;
     m_bSuperArmor = true;
 
+    Calculate_CamBoneMatrix();
     Cal_SkillCamDirection(3.f);
 }
 
@@ -1386,7 +1390,7 @@ void Dellons_FSM::skill_400100()
         }
     }
 
-
+    Calculate_CamBoneMatrix();
 
     if (Init_CurFrame(20))
     {

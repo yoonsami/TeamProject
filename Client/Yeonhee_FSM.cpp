@@ -60,10 +60,7 @@ void Yeonhee_FSM::Tick()
 		m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.5f);
     }
 
-    HeadBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iHeadBoneIndex) *
-        _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
-
-    Calculate_CamBoneMatrix();
+  
 }
 
 void Yeonhee_FSM::State_Tick()
@@ -1417,6 +1414,10 @@ void Yeonhee_FSM::skill_501100()
         }
     }
 
+    Calculate_CamBoneMatrix();
+    HeadBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iHeadBoneIndex) *
+        _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
     if (Init_CurFrame(57))
     {
 		_float4 vTargetPos;
@@ -1473,8 +1474,13 @@ void Yeonhee_FSM::skill_501100_Init()
     m_bInvincible = false;
     m_bSuperArmor = true;
 
+    HeadBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iHeadBoneIndex) *
+        _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
     m_vHeadBonePos = _float4{ HeadBoneMatrix.Translation().x, HeadBoneMatrix.Translation().y, HeadBoneMatrix.Translation().z , 1.f };
     m_vHeadCamPos = m_vHeadBonePos + (Get_Transform()->Get_State(Transform_State::LOOK) * 3.f) + _float4{ 0.f,-0.1f,0.f,0.f };
+
+    Calculate_CamBoneMatrix();
 
 }
 

@@ -52,7 +52,6 @@ HRESULT Shane_FSM::Init()
 
 void Shane_FSM::Tick()
 {
-    Calculate_CamBoneMatrix();
     State_Tick();
 
     if (!m_pAttackCollider.expired())
@@ -1248,6 +1247,8 @@ void Shane_FSM::skill_100200_Init()
 
 void Shane_FSM::skill_200100()
 {
+    Calculate_CamBoneMatrix();
+
     if (!m_pCamera.expired())
     {
         _float4 vDestinationPos = (Get_Transform()->Get_State(Transform_State::POS)) + m_vSkillCamRight +
@@ -1311,11 +1312,14 @@ void Shane_FSM::skill_200100_Init()
     m_bInvincible = false;
     m_bSuperArmor = true;
 
+    Calculate_CamBoneMatrix();
     Cal_SkillCamDirection(3.f);
 }
 
 void Shane_FSM::skill_200200()
 {
+    Calculate_CamBoneMatrix();
+
     if (m_iCurFrame < 46)
     {
         if (!m_pCamera.expired())
@@ -1464,6 +1468,8 @@ void Shane_FSM::skill_502100()
         Get_Owner()->Get_Animator()->Set_AnimationSpeed(m_fSkillAttack_AnimationSpeed);
     else if (m_iCurFrame == 70)
         m_vCamStopPos = m_vSkillCamBonePos;
+
+    Calculate_CamBoneMatrix();
 
     if (!m_pCamera.expired())
     {

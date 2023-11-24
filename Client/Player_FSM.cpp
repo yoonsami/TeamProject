@@ -63,8 +63,6 @@ void Player_FSM::Tick()
         //m_pAttack transform set forward
 		m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.5f);
     }
-
-    Calculate_CamBoneMatrix();
 }
 
 void Player_FSM::State_Tick()
@@ -1268,6 +1266,7 @@ void Player_FSM::skill_100300()
         }
     }
 
+    Calculate_CamBoneMatrix();
 
 	if (Init_CurFrame(29))
 	{
@@ -1305,6 +1304,7 @@ void Player_FSM::skill_100300()
 		
         m_eCurState = STATE::b_idle;
 	}
+
 }
 
 void Player_FSM::skill_100300_Init()
@@ -1345,6 +1345,7 @@ void Player_FSM::skill_200100()
         }
     }
 
+    Calculate_CamBoneMatrix();
 
 	if (m_iCurFrame >= 30)
 	{
@@ -1375,6 +1376,7 @@ void Player_FSM::skill_200100()
         
         m_eCurState = STATE::skill_200200;
     }
+
 }
 
 void Player_FSM::skill_200100_Init()
@@ -1513,6 +1515,8 @@ void Player_FSM::skill_300200()
         }
     }
     
+    Calculate_CamBoneMatrix();
+
     if (m_iCurFrame >= 5 && m_iCurFrame < 57)
     {
         m_fSkillCreateTimer += fDT;
@@ -1567,6 +1571,7 @@ void Player_FSM::skill_300200()
         
         m_eCurState = STATE::b_idle;
     }
+
 }
 
 void Player_FSM::skill_300200_Init()
@@ -1588,6 +1593,8 @@ void Player_FSM::skill_300200_Init()
 	m_bSuperArmor = true;
 
     m_vCamStopPos = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS);    
+
+    Calculate_CamBoneMatrix();
 }
 
 void Player_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
