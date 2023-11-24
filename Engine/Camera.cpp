@@ -297,14 +297,7 @@ void Camera::Render_Forward()
 
 			_float distanceASQ = (vCameraPos - vPosA).LengthSquared();
 			_float distanceBSQ = (vCameraPos - vPosB).LengthSquared();
-		/*	if (CMP(distanceASQ, distanceBSQ))
-			{
-				if (a->Get_MeshRenderer() && b->Get_EffectRenderer())
-					return false;
-				else if (a->Get_EffectRenderer() && b->Get_MeshRenderer())
-					return true;
-
-			}*/
+			
 
 			return distanceASQ > distanceBSQ; });
 	
