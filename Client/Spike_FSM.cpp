@@ -151,7 +151,6 @@ void Spike_FSM::State_Tick()
     case STATE::skill_1400:
         skill_1400();
         break;
-
     case STATE::skill_91100:
         skill_91100();
         break;
