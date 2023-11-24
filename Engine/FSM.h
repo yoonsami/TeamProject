@@ -10,7 +10,8 @@ public:
 	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) = 0;
 	virtual void Set_State(_uint iIndex) = 0;
 	virtual void Get_Hit(const wstring& skillname, _float fDamage ,shared_ptr<GameObject> pLookTarget) = 0;
-
+	shared_ptr<GameObject> Get_AttackCollider() { return m_pAttackCollider.lock(); }
+	void Set_AttackCollider(shared_ptr<GameObject> attackCollider) { m_pAttackCollider = attackCollider; }
 protected:
 	virtual void State_Tick() = 0;
 	virtual void State_Init() = 0;

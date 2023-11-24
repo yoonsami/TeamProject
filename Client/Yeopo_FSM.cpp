@@ -46,20 +46,7 @@ HRESULT Yeopo_FSM::Init()
         m_bInitialize = true;
     }
 
-    shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
-    attackCollider->GetOrAddTransform();
-    attackCollider->Add_Component(make_shared<SphereCollider>(1.f));
-    attackCollider->Get_Collider()->Set_CollisionGroup(Player_Attack);
-
-    m_pAttackCollider = attackCollider;
-
-    CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
-    m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
-
-    m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
-    m_pAttackCollider.lock()->Set_Name(L"Player_AttackCollider");
-    m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(Get_Owner());
-
+   
     return S_OK;
 }
 
@@ -72,7 +59,7 @@ void Yeopo_FSM::Tick()
     if (!m_pAttackCollider.expired())
     {
         //m_pAttack transform set forward
-        m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up);
+		m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.5F + _float3::Up * m_pAttackCollider.lock()->Get_Transform()->Get_Scale().x);
     }
 
 }

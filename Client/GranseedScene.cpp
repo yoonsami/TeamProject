@@ -68,6 +68,7 @@
 #include "GachaScene.h"
 #include "KrisScene.h"
 #include "MirScene.h"
+#include "AttackColliderInfoScript.h"
 namespace fs = std::filesystem;
 
 GranseedScene::GranseedScene()
@@ -82,6 +83,14 @@ void GranseedScene::Init()
 {
 	__super::Init();
 
+	auto pPlayer = Get_GameObject(L"Player");
+	if (nullptr != pPlayer)
+	{
+		for (_uint i = 1; i < IDX(HERO::MAX); ++i)
+			pPlayer->Get_Script<HeroChangeScript>()->Change_Hero(static_cast<HERO>(i));
+
+		pPlayer->Get_Script<HeroChangeScript>()->Change_Hero(HERO::PLAYER);
+	}
 }
 
 void GranseedScene::Tick()
@@ -207,6 +216,23 @@ shared_ptr<GameObject> GranseedScene::Load_Player()
 
 			ObjPlayer->Add_Component(animator);
 			ObjPlayer->Add_Component(make_shared<Player_FSM>());
+
+			{
+				shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
+				attackCollider->GetOrAddTransform();
+				attackCollider->Add_Component(make_shared<SphereCollider>(1.f));
+				attackCollider->Get_Collider()->Set_CollisionGroup(Player_Attack);
+
+				ObjPlayer->Get_FSM()->Set_AttackCollider(attackCollider) ;
+
+				Add_GameObject(attackCollider);
+				attackCollider->Get_Collider()->Set_Activate(false);
+
+				attackCollider->Add_Component(make_shared<AttackColliderInfoScript>());
+				attackCollider->Set_Name(L"Player_AttackCollider");
+				attackCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(ObjPlayer);
+
+			}
 		}
 		ObjPlayer->Set_Name(L"Player");
 		ObjPlayer->Set_VelocityMap(true);
