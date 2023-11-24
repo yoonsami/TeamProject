@@ -60,5 +60,9 @@ private:
     HERO                            m_eCurHero              = { HERO::MAX };
     _uint                           m_iWorkSkillIndex       = { 0 };
     _bool                           m_bIsSkillWork          = { false };
+
+
+    /* const resources */
+
 };
 
