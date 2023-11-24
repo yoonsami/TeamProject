@@ -160,12 +160,12 @@ HRESULT KrisScene::Load_Scene()
 	//Load_Monster(1, L"Silversword_Soldier", player);
 	//Load_Monster(1, L"Succubus_Scythe", player);
 	//Load_Monster(1, L"Undead_Priest", player);
-	//Load_Monster(1, L"Alpaca_White", player);
-	//Load_Monster(1, L"Alpaca_Brown", player);
-	//Load_Monster(1, L"Alpaca_Black", player);
-	//Load_Monster(1, L"Wolf", player);
+	Load_Monster(10, L"Alpaca_White", player);
+	Load_Monster(10, L"Alpaca_Brown", player);
+	Load_Monster(10, L"Alpaca_Black", player);
+	//Load_Monster(5, L"Wolf", player);
 
-	Load_Boss_Spike(player);
+	//Load_Boss_Spike(player);				
 
 
 	Load_Ui(player);
@@ -332,7 +332,7 @@ void KrisScene::Load_Camera(shared_ptr<GameObject> pPlayer)
 
 }
 
-void KrisScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_ptr<GameObject> pPlayer)
+void KrisScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_ptr<GameObject> pPlayer, _bool bCharacterController)
 {
 	{
 		for (_uint i = 0; i < iCnt; i++)
@@ -342,7 +342,7 @@ void KrisScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_pt
 
 			ObjMonster->Add_Component(make_shared<Transform>());
 
-			ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, (rand() % 5) + 30.f, 1.f));
+			ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(_float(rand() % 20) , 0.f, _float(rand() % 5) + 30.f, 1.f));
 			{
 				shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
@@ -371,17 +371,21 @@ void KrisScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_pt
 			ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
 			ObjMonster->Get_Collider()->Set_Activate(true);
 
-			wstring strMonsterName = (L"Monster") + to_wstring(i);
+			wstring strMonsterName = strMonsterTag + to_wstring(i);
 			ObjMonster->Set_Name(strMonsterName);
 			{
-				auto controller = make_shared<CharacterController>();
-				ObjMonster->Add_Component(controller);
-				auto& desc = controller->Get_CapsuleControllerDesc();
-				desc.radius = 0.5f;
-				desc.height = 5.f;
-				_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz();
-				desc.position = { vPos.x, vPos.y, vPos.z };
-				controller->Create_Controller();
+				//Alpaca and Wolf don't use character controller
+				if (bCharacterController)
+				{
+					auto controller = make_shared<CharacterController>();
+					ObjMonster->Add_Component(controller);
+					auto& desc = controller->Get_CapsuleControllerDesc();
+					desc.radius = 0.5f;
+					desc.height = 5.f;
+					_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz();
+					desc.position = { vPos.x, vPos.y, vPos.z };
+					controller->Create_Controller();
+				}
 			}
 			ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
 

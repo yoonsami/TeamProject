@@ -52,6 +52,8 @@ protected:
 	void Cal_SkillCamDirection(const _float dist);
 	_bool Check_Combo(_uint minFrame, KEY_TYPE eKeyType);
 
+	_bool DeadCheck();
+
 public:
 	void Set_Target(shared_ptr<GameObject> pTarget);
 	void Set_Camera(shared_ptr<GameObject> pCamera);
@@ -81,7 +83,7 @@ public:
 	_bool m_bInvincible = false;
 	_bool m_bSuperArmor = false;
 	_bool m_bCanCombo = false;
-
+	_bool m_bIsDead = false;
 
 	_float3 m_vHitDir = _float3{ 0.f };
 	_float3 m_vDirToTarget = _float3(0.f);
