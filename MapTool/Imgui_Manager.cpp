@@ -579,7 +579,7 @@ void ImGui_Manager::Frame_Light()
     Color& Ambient = DirectionalLightInfo.color.ambient;
     ImGui::ColorEdit4("Ambient##DirLight", (_float*)&Ambient);
     Color& Diffuse = DirectionalLightInfo.color.diffuse;
-    ImGui::ColorEdit4("Diffuse##DirLight", (_float*)&Diffuse);
+    ImGui::ColorEdit4("Diffuse##DirLight", (_float*)&Diffuse,ImGuiColorEditFlags_HDR);
     Color& Specular = DirectionalLightInfo.color.specular;
     ImGui::ColorEdit4("Specular##DirLight", (_float*)&Specular);
     Color& Emissive = DirectionalLightInfo.color.emissive;
