@@ -338,8 +338,6 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
     if (m_pOwner.expired() || HERO::MAX == eHero)
         return;
 
-
-
     m_pOwner.lock()->Get_FSM()->Reset_Weapon();
     m_pOwner.lock()->Get_FSM()->Reset_Vehicle();
 
