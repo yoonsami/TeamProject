@@ -58,8 +58,7 @@ void Shane_FSM::Tick()
     if (!m_pAttackCollider.expired())
     {
         
-		m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.5F + _float3::Up * m_pAttackCollider.lock()->Get_Transform()->Get_Scale().x);
-
+        m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.5f);
     }
 
 }
