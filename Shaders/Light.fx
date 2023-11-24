@@ -206,7 +206,7 @@ LightColor CalculateLightColor_ViewSpace(int lightIndex, float3 viewNormal, floa
         viewLightDir = normalize(mul(float4(lights[lightIndex].vDirection.xyz, 0.f), V).xyz);
         diffuseRatio = saturate(dot(-viewLightDir, normalize(viewNormal)));
         
-        diffuseRatio = ceil(diffuseRatio * 3) / 3.f;
+       // diffuseRatio = ceil(diffuseRatio * 3) / 3.f;
         
     }
     //POINT_LIGHT
@@ -271,6 +271,31 @@ LightColor CalculateLightColor_ViewSpace(int lightIndex, float3 viewNormal, floa
     color.emissive = lights[lightIndex].color.emissive * emissiveRatio * distanceRatio;
 
     return color;
+}
+
+float Cal_EffectLightDiffuse(int lightIndex, float3 viewNormal, float3 viewPosition)
+{
+
+    float3 viewLightDir = 0.f;
+    float3 viewLightPos = 0.f;
+    float diffuseRatio = 0.f;
+    float specularRatio = 0.f;
+    float distanceRatio = 1.f;
+    float emissiveRatio = 0.f;
+    //DIRECTIONAL_LIGHT
+    if (lights[lightIndex].lightType == 0)
+    {
+        viewLightDir = normalize(mul(float4(lights[lightIndex].vDirection.xyz, 0.f), V).xyz);
+        diffuseRatio = saturate(dot(-viewLightDir, normalize(viewNormal)));
+        
+        diffuseRatio = ceil(diffuseRatio * 3) / 3.f;
+        
+    }
+   
+    
+   return diffuseRatio * distanceRatio;
+
+   
 }
 
 LightColor CalculateLightColor_ViewSpace_VirtualLight(LightColor virtualLightColor,float3 virtualDir, float3 viewNormal, float3 viewPosition)

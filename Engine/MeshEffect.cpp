@@ -103,6 +103,8 @@ void MeshEffect::Render()
     m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
     Bind_RenderParams_ToShader();
 
+    m_pShader->Push_LightData(CUR_SCENE->Get_LightParams());
+
     // For. Draw meshes 
     const auto& meshes = m_pModel->Get_Meshes();
     for (auto& mesh : meshes)
