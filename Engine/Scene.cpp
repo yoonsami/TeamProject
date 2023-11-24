@@ -47,66 +47,30 @@ void Scene::Init()
 
 void Scene::Tick()
 {
-	vector<nanoseconds> test;
-	test.reserve(1000);
+
 	auto objects = m_GameObjects;
 	for (auto& object : objects)
 	{
-		system_clock::time_point start_time = system_clock::now();
+		
 		object->Tick();
-		system_clock::time_point end_time = system_clock::now();
 
-		nanoseconds nano = end_time - start_time;
-		test.push_back(nano);
 		
 	}
 	PickUI();
 
-	if (KEYTAP(KEY_TYPE::F1))
-		int a = 0;
-	if (KEYTAP(KEY_TYPE::F2))
-		int a = 0;
-	if (KEYTAP(KEY_TYPE::F3))
-		int a = 0;
-	if (KEYTAP(KEY_TYPE::F4))
-		int a = 0;
-	if (KEYTAP(KEY_TYPE::F5))
-		int a = 0;
-	if (KEYTAP(KEY_TYPE::F6))
-		int a = 0;
-	if (KEYTAP(KEY_TYPE::F7))
-		int a = 0;
+
 }
 
 void Scene::Late_Tick()
 {
-	vector<nanoseconds> test;
-	test.reserve(1000);
 	auto objects = m_GameObjects;
 	for (auto& object : objects)
 	{
-		system_clock::time_point start_time = system_clock::now();
-		object->Late_Tick();
-		system_clock::time_point end_time = system_clock::now();
 
-		nanoseconds nano = end_time - start_time;
-		test.push_back(nano);
+		object->Late_Tick();
+
 	}
 
-	if (KEYTAP(KEY_TYPE::F1))
-		int a = 0;
-	if (KEYTAP(KEY_TYPE::F2))
-		int a = 0;
-	if (KEYTAP(KEY_TYPE::F3))
-		int a = 0;
-	if (KEYTAP(KEY_TYPE::F4))
-		int a = 0;
-	if (KEYTAP(KEY_TYPE::F5))
-		int a = 0;
-	if (KEYTAP(KEY_TYPE::F6))
-		int a = 0;
-	if (KEYTAP(KEY_TYPE::F7))
-		int a = 0;
 }
 
 void Scene::Final_Tick()
@@ -128,6 +92,8 @@ void Scene::Final_Tick()
 
 void Scene::Render()
 {
+	if (KEYTAP(KEY_TYPE::F6))
+		int a = 0;
 	Gather_LightData();
 
 	Sort_GameObjects();

@@ -60,16 +60,6 @@ void UiGachaController::Tick()
 
     if (true == m_bIsStartOpen)
         Start_All_Open();
-
-    //test code
-    if (KEYTAP(KEY_TYPE::Q))
-    {
-        Create_Gacha_Card();
-    }
-    if (KEYTAP(KEY_TYPE::E))
-    {
-        Delete_All();
-    }
 }
 
 void UiGachaController::Create_Gacha_Card()

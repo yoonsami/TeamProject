@@ -150,7 +150,7 @@ void ModelAnimator::Tick()
 			vDistToMove = _float3(0.f);
 	}
 
-	if(vDistToMove != _float3(0.f))
+	if (vDistToMove != _float3(0.f))
 	{
 
 		vDistToMove = _float3::TransformNormal(vDistToMove, Get_Transform()->Get_WorldMatrix());

@@ -50,31 +50,31 @@ void HeroChangeScript::Tick()
     if (m_pOwner.expired())
         return;
 
-    if (KEYTAP(KEY_TYPE::F1))
+    if (KEYTAP(KEY_TYPE::KEY_1))
     {
         Change_Hero(HERO::ACE3);
     }
-    else if (KEYTAP(KEY_TYPE::F2))
+    else if (KEYTAP(KEY_TYPE::KEY_2))
     {
         Change_Hero(HERO::KYLE);
     }
-    else if (KEYTAP(KEY_TYPE::F3))
+    else if (KEYTAP(KEY_TYPE::KEY_3))
     {
         Change_Hero(HERO::YEOPO);
     }
-    else if (KEYTAP(KEY_TYPE::F4))
+    else if (KEYTAP(KEY_TYPE::KEY_4))
     {
         Change_Hero(HERO::DELLONS);
     }
-    else if (KEYTAP(KEY_TYPE::F5))
+    else if (KEYTAP(KEY_TYPE::KEY_5))
     {
         Change_Hero(HERO::SPIKE);
     }
-	else if (KEYTAP(KEY_TYPE::F6))
+	else if (KEYTAP(KEY_TYPE::Q))
 	{
         Change_Hero(HERO::SHANE);
 	}
-	else if (KEYTAP(KEY_TYPE::F7))
+	else if (KEYTAP(KEY_TYPE::E))
 	{
         Change_Hero(HERO::YEONHEE);
 	}
