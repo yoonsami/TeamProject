@@ -504,7 +504,7 @@ void Shane_FSM::b_run()
 
         if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
         {
-            if (Get_CurFrame() % 2 == 0)
+            if (m_iCurFrame % 2 == 0)
                 m_eCurState = STATE::b_run_end_r;
             else
                 m_eCurState = STATE::b_run_end_l;
@@ -515,7 +515,7 @@ void Shane_FSM::b_run()
 
     if (KEYPUSH(KEY_TYPE::LSHIFT))
     {
-        if (Get_CurFrame() == 1)
+        if (m_iCurFrame == 1)
             m_eCurState = STATE::b_sprint;
     }
 
@@ -613,7 +613,7 @@ void Shane_FSM::b_sprint()
 
         if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
         {
-            if (Get_CurFrame() % 2 == 0)
+            if (m_iCurFrame % 2 == 0)
                 m_eCurState = STATE::b_run_end_r;
             else
                 m_eCurState = STATE::b_run_end_l;
@@ -624,7 +624,7 @@ void Shane_FSM::b_sprint()
 
     if (!KEYPUSH(KEY_TYPE::LSHIFT))
     {
-        if (Get_CurFrame() < 1 || Get_CurFrame() > 13)
+        if (m_iCurFrame < 1 || m_iCurFrame > 13)
             m_eCurState = STATE::b_run;
     }
 
@@ -768,7 +768,7 @@ void Shane_FSM::knock_start_Init()
 
 void Shane_FSM::knock_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -791,7 +791,7 @@ void Shane_FSM::knock_end_loop()
 {
     m_tKnockDownEndCoolTime.fAccTime += fDT;
 
-    if (Get_CurFrame() > Get_FinalFrame() / 2)
+    if (m_iCurFrame > Get_FinalFrame() / 2)
         m_eCurState = STATE::knock_up;
 }
 
@@ -876,7 +876,7 @@ void Shane_FSM::knockdown_start_Init()
 
 void Shane_FSM::knockdown_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -897,13 +897,13 @@ void Shane_FSM::knockdown_end_Init()
 
 void Shane_FSM::skill_1100()
 {
-    if (Get_CurFrame() == 4)
+    if (m_iCurFrame == 4)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 7)
+    else if (m_iCurFrame == 7)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 10)
+    else if (m_iCurFrame == 10)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 13)
+    else if (m_iCurFrame == 13)
         AttackCollider_Off();
 
     Look_DirToTarget();
@@ -912,7 +912,7 @@ void Shane_FSM::skill_1100()
         m_eCurState = STATE::skill_1200;
     
 
-    if (Get_FinalFrame() - Get_CurFrame() < 9)
+    if (Get_FinalFrame() - m_iCurFrame < 9)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -939,13 +939,13 @@ void Shane_FSM::skill_1100_Init()
 
 void Shane_FSM::skill_1200()
 {
-    if (Get_CurFrame() == 12)
+    if (m_iCurFrame == 12)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 15)
+    else if (m_iCurFrame == 15)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 18)
+    else if (m_iCurFrame == 18)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 22)
+    else if (m_iCurFrame == 22)
         AttackCollider_Off();
 
 
@@ -954,7 +954,7 @@ void Shane_FSM::skill_1200()
     if (Check_Combo(25, KEY_TYPE::LBUTTON))
         m_eCurState = STATE::skill_1300;
 
-	if (Get_FinalFrame() - Get_CurFrame() < 9)
+	if (Get_FinalFrame() - m_iCurFrame < 9)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_bCanCombo = false;
@@ -984,13 +984,13 @@ void Shane_FSM::skill_1200_Init()
 
 void Shane_FSM::skill_1300()
 {
-    if (Get_CurFrame() == 11)
+    if (m_iCurFrame == 11)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 14)
+    else if (m_iCurFrame == 14)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 24)
+    else if (m_iCurFrame == 24)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 28)
+    else if (m_iCurFrame == 28)
         AttackCollider_Off();
 
     Look_DirToTarget();
@@ -1000,7 +1000,7 @@ void Shane_FSM::skill_1300()
     
 
 
-	if (Get_FinalFrame() - Get_CurFrame() < 9)
+	if (Get_FinalFrame() - m_iCurFrame < 9)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_bCanCombo = false;
@@ -1031,18 +1031,18 @@ void Shane_FSM::skill_1300_Init()
 
 void Shane_FSM::skill_1400()
 {
-    if (Get_CurFrame() == 4)
+    if (m_iCurFrame == 4)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 7)
+    else if (m_iCurFrame == 7)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 22)
+    else if (m_iCurFrame == 22)
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (Get_CurFrame() == 27)
+    else if (m_iCurFrame == 27)
         AttackCollider_Off();
 
     Look_DirToTarget();
 
-    if (Get_FinalFrame() - Get_CurFrame() < 9)
+    if (Get_FinalFrame() - m_iCurFrame < 9)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_bCanCombo = false;
@@ -1083,7 +1083,7 @@ void Shane_FSM::skill_91100()
         m_eCurState = STATE::b_idle;
 
 
-    if (Get_CurFrame() >= 20)
+    if (m_iCurFrame >= 20)
     {
         if (vInputVector != _float3(0.f))
             m_eCurState = STATE::b_run;
@@ -1114,7 +1114,7 @@ void Shane_FSM::skill_93100()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    if (Get_CurFrame() >= 20)
+    if (m_iCurFrame >= 20)
     {
         if (vInputVector != _float3(0.f))
             m_eCurState = STATE::b_run;
@@ -1137,12 +1137,12 @@ void Shane_FSM::skill_93100_Init()
 
 void Shane_FSM::skill_100100()
 {
-    if (Get_CurFrame() == 11)
+    if (m_iCurFrame == 11)
     {
         Get_Owner()->Get_Animator()->Set_RenderState(false);
         m_pWeapon.lock()->Get_ModelRenderer()->Set_RenderState(false);
     }
-    else if (Get_CurFrame() == 19)
+    else if (m_iCurFrame == 19)
     {
         Get_Owner()->Get_Animator()->Set_RenderState(true);
         m_pWeapon.lock()->Get_ModelRenderer()->Set_RenderState(true);
@@ -1165,7 +1165,7 @@ void Shane_FSM::skill_100100()
 
     Look_DirToTarget();
 
-    if (Get_FinalFrame() - Get_CurFrame() < 9)
+    if (Get_FinalFrame() - m_iCurFrame < 9)
     {
         m_bCanCombo = false;
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
@@ -1205,7 +1205,7 @@ void Shane_FSM::skill_100200()
 
     Look_DirToTarget();
 
-    if (Get_FinalFrame() - Get_CurFrame() < 9)
+    if (Get_FinalFrame() - m_iCurFrame < 9)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1274,7 +1274,7 @@ void Shane_FSM::skill_200100()
         m_eCurState = STATE::skill_200200;
 
 
-    if (Get_FinalFrame() - Get_CurFrame() < 9)
+    if (Get_FinalFrame() - m_iCurFrame < 9)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1303,7 +1303,7 @@ void Shane_FSM::skill_200100_Init()
 
 void Shane_FSM::skill_200200()
 {
-    if (Get_CurFrame() < 46)
+    if (m_iCurFrame < 46)
     {
         if (!m_pCamera.expired())
         {
@@ -1333,7 +1333,7 @@ void Shane_FSM::skill_200200()
 
     Look_DirToTarget();
 
-    if (Get_FinalFrame() - Get_CurFrame() < 9)
+    if (Get_FinalFrame() - m_iCurFrame < 9)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1378,7 +1378,7 @@ void Shane_FSM::skill_300100()
 
     Look_DirToTarget();
 
-    if (Get_FinalFrame() - Get_CurFrame() < 9)
+    if (Get_FinalFrame() - m_iCurFrame < 9)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1417,7 +1417,7 @@ void Shane_FSM::skill_500100()
 
     Look_DirToTarget();
 
-    if (Get_FinalFrame() - Get_CurFrame() < 9)
+    if (Get_FinalFrame() - m_iCurFrame < 9)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1445,16 +1445,16 @@ void Shane_FSM::skill_500100_Init()
 
 void Shane_FSM::skill_502100()
 {
-    if (Get_CurFrame() == 8)
+    if (m_iCurFrame == 8)
         Get_Owner()->Get_Animator()->Set_AnimationSpeed(0.2f);
-    else if (Get_CurFrame() == 25)
+    else if (m_iCurFrame == 25)
         Get_Owner()->Get_Animator()->Set_AnimationSpeed(m_fSkillAttack_AnimationSpeed);
-    else if (Get_CurFrame() == 70)
+    else if (m_iCurFrame == 70)
         m_vCamStopPos = m_vSkillCamBonePos;
 
     if (!m_pCamera.expired())
     {
-        if (Get_CurFrame() < 70)
+        if (m_iCurFrame < 70)
         {
             _float4 vDir = m_vSkillCamBonePos - m_vCamBonePos;
             vDir.Normalize();
@@ -1462,7 +1462,7 @@ void Shane_FSM::skill_502100()
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.5f);
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCamBonePos.xyz());
 
-            if (Get_CurFrame() < 26)
+            if (m_iCurFrame < 26)
                 m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.3f, vDir.xyz(), 2.5f);
             else 
                 m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.3f, vDir.xyz(), 6.f);
@@ -1503,7 +1503,7 @@ void Shane_FSM::skill_502100()
 
     Look_DirToTarget();
 
-    if (Get_FinalFrame() - Get_CurFrame() < 9)
+    if (Get_FinalFrame() - m_iCurFrame < 9)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;

@@ -708,7 +708,7 @@ void Wolf_FSM::knock_start_Init()
 
 void Wolf_FSM::knock_end()
 {
-    if (Get_CurFrame() < 13)
+    if (m_iCurFrame < 13)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -726,7 +726,7 @@ void Wolf_FSM::knock_end_Init()
 
 void Wolf_FSM::knock_end_loop()
 {
-    if (Get_CurFrame() > Get_FinalFrame() / 2)
+    if (m_iCurFrame > Get_FinalFrame() / 2)
         m_eCurState = STATE::knock_up;
 }
 
@@ -796,7 +796,7 @@ void Wolf_FSM::knockdown_start_Init()
 
 void Wolf_FSM::knockdown_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -819,9 +819,9 @@ void Wolf_FSM::skill_1100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 10)
+    if (m_iCurFrame == 10)
         AttackCollider_On(NONE_HIT, 2.f);
-    else if (Get_CurFrame() == 18)
+    else if (m_iCurFrame == 18)
         AttackCollider_Off();
 
     Set_Gaze();

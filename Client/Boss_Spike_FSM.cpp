@@ -502,7 +502,7 @@ void Boss_Spike_FSM::SQ_Appear_01()
     if (Target_In_DetectRange())
         Get_Owner()->Get_Animator()->Set_AnimState(false);
 
-    if (Get_CurFrame() >= 10 && Get_CurFrame() <= 75)
+    if (m_iCurFrame >= 10 && m_iCurFrame <= 75)
     {
         if (!m_pCamera.expired())
         {
@@ -518,7 +518,7 @@ void Boss_Spike_FSM::SQ_Appear_01()
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(5.f, vDir.xyz(), 5.f);
         }
 
-        if (Get_CurFrame() == 75)
+        if (m_iCurFrame == 75)
             Get_Owner()->Get_Animator()->Set_AnimationSpeed(4.f);
     }
 
@@ -554,7 +554,7 @@ void Boss_Spike_FSM::SQ_Appear_02()
     m_vPlayerBodyPos += Get_Transform()->Get_State(Transform_State::LOOK) * fDT * m_fRunSpeed * 4.f;
     Get_Transform()->Set_State(Transform_State::POS, m_vPlayerBodyPos);
 
-    if (Get_CurFrame() <= 10)
+    if (m_iCurFrame <= 10)
     {
         if (!m_pCamera.expired())
         {
@@ -567,7 +567,7 @@ void Boss_Spike_FSM::SQ_Appear_02()
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 10.f);
         }
 
-        if (Get_CurFrame() == 10)
+        if (m_iCurFrame == 10)
             m_vCamStopPos = m_vPlayerBodyPos;
     }
     else
@@ -982,17 +982,17 @@ void Boss_Spike_FSM::skill_1100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 9)
+    if (m_iCurFrame == 9)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 19)
+    else if (m_iCurFrame == 19)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 29)
+    else if (m_iCurFrame == 29)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 38)
+    else if (m_iCurFrame == 38)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 53)
+    else if (m_iCurFrame == 53)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 60)
+    else if (m_iCurFrame == 60)
         AttackCollider_Off();
 
     Set_Gaze();
@@ -1018,19 +1018,19 @@ void Boss_Spike_FSM::skill_1200()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 9)
+    if (m_iCurFrame == 9)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 19)
+    else if (m_iCurFrame == 19)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 29)
+    else if (m_iCurFrame == 29)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 38)
+    else if (m_iCurFrame == 38)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 53)
+    else if (m_iCurFrame == 53)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 60)
+    else if (m_iCurFrame == 60)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 70)
+    else if (m_iCurFrame == 70)
     {
         //Aim Target
         m_vTurnVector = Calculate_TargetTurnVector();
@@ -1042,12 +1042,12 @@ void Boss_Spike_FSM::skill_1200()
             material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
     }
-    else if (Get_CurFrame() == 73)
+    else if (m_iCurFrame == 73)
     {
         m_bCounter = true;
         m_fGroggyStateAnimationSpeed = 1.5f;
     }
-    else if (Get_CurFrame() == 80)
+    else if (m_iCurFrame == 80)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(1.5f);
         m_bCounter = false;
@@ -1056,9 +1056,9 @@ void Boss_Spike_FSM::skill_1200()
             material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
         }
     }
-    else if (Get_CurFrame() == 100)
+    else if (m_iCurFrame == 100)
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
-    else if (Get_CurFrame() == 105)
+    else if (m_iCurFrame == 105)
         AttackCollider_Off();
 
 
@@ -1087,11 +1087,11 @@ void Boss_Spike_FSM::skill_1300()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 10)
+    if (m_iCurFrame == 10)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 15)
+    else if (m_iCurFrame == 15)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 25)
+    else if (m_iCurFrame == 25)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(0.5f);
 
@@ -1100,12 +1100,12 @@ void Boss_Spike_FSM::skill_1300()
             material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
     }
-    else if (Get_CurFrame() == 32)
+    else if (m_iCurFrame == 32)
     {
         m_bCounter = true;
         m_fGroggyStateAnimationSpeed = 1.5f;
     }
-    else if (Get_CurFrame() == 39)
+    else if (m_iCurFrame == 39)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(1.5f);
         m_bCounter = false;
@@ -1114,9 +1114,9 @@ void Boss_Spike_FSM::skill_1300()
             material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
         }
     }
-    else if (Get_CurFrame() == 41)
+    else if (m_iCurFrame == 41)
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (Get_CurFrame() == 45)
+    else if (m_iCurFrame == 45)
         AttackCollider_Off();
 
     
@@ -1147,9 +1147,9 @@ void Boss_Spike_FSM::skill_1400()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 17)
+    if (m_iCurFrame == 17)
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (Get_CurFrame() == 25)
+    else if (m_iCurFrame == 25)
         AttackCollider_Off();
     
     Set_Gaze();
@@ -1270,7 +1270,7 @@ void Boss_Spike_FSM::skill_2100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 4)
+    if (m_iCurFrame == 4)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(0.3f);
 
@@ -1279,12 +1279,12 @@ void Boss_Spike_FSM::skill_2100()
             material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
     }
-    else if (Get_CurFrame() == 6)
+    else if (m_iCurFrame == 6)
     {
         m_bCounter = true;
         m_fGroggyStateAnimationSpeed = 1.5f;
     }
-    else if (Get_CurFrame() == 15)
+    else if (m_iCurFrame == 15)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(1.f);
         m_bCounter = false;
@@ -1293,13 +1293,13 @@ void Boss_Spike_FSM::skill_2100()
             material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
         }
     }
-    else if (Get_CurFrame() == 16)
+    else if (m_iCurFrame == 16)
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (Get_CurFrame() == 34)
+    else if (m_iCurFrame == 34)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 52)
+    else if (m_iCurFrame == 52)
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
-    else if (Get_CurFrame() == 56)
+    else if (m_iCurFrame == 56)
         AttackCollider_Off();
 
     Set_Gaze();
@@ -1327,7 +1327,7 @@ void Boss_Spike_FSM::skill_2200()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 4)
+    if (m_iCurFrame == 4)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(0.3f);
 
@@ -1336,12 +1336,12 @@ void Boss_Spike_FSM::skill_2200()
             material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
     }
-    else if (Get_CurFrame() == 6)
+    else if (m_iCurFrame == 6)
     {
         m_bCounter = true;
         m_fGroggyStateAnimationSpeed = 1.5f;
     }
-    else if (Get_CurFrame() == 15)
+    else if (m_iCurFrame == 15)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(1.f);
         m_bCounter = false;
@@ -1350,17 +1350,17 @@ void Boss_Spike_FSM::skill_2200()
             material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
         }
     }
-    else if (Get_CurFrame() == 16)
+    else if (m_iCurFrame == 16)
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (Get_CurFrame() == 46)
+    else if (m_iCurFrame == 46)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 62)
+    else if (m_iCurFrame == 62)
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
-    else if (Get_CurFrame() == 68)
+    else if (m_iCurFrame == 68)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 73)
+    else if (m_iCurFrame == 73)
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
-    else if (Get_CurFrame() == 82)
+    else if (m_iCurFrame == 82)
         AttackCollider_Off();
 
     Set_Gaze();
@@ -1388,7 +1388,7 @@ void Boss_Spike_FSM::skill_3100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 42)
+    if (m_iCurFrame == 42)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(0.3f);
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
@@ -1396,12 +1396,12 @@ void Boss_Spike_FSM::skill_3100()
             material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
     }
-    else if (Get_CurFrame() == 44)
+    else if (m_iCurFrame == 44)
     {
         m_bCounter = true;
         m_fGroggyStateAnimationSpeed = 1.5f;
     }
-    else if (Get_CurFrame() == 51)
+    else if (m_iCurFrame == 51)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(1.f);
         m_bCounter = false;
@@ -1410,7 +1410,7 @@ void Boss_Spike_FSM::skill_3100()
             material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
         }
     }
-    else if (Get_CurFrame() == 53)
+    else if (m_iCurFrame == 53)
     {
         if (!m_pTarget.expired())
         {
@@ -1462,7 +1462,7 @@ void Boss_Spike_FSM::skill_3200()
 
     m_tSkillCoolTime.fAccTime += fDT;
 
-    if (Get_CurFrame() == 55)
+    if (m_iCurFrame == 55)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(0.3f);
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
@@ -1470,11 +1470,11 @@ void Boss_Spike_FSM::skill_3200()
             material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
     }
-    else if (Get_CurFrame() == 60)
+    else if (m_iCurFrame == 60)
     {
         m_bCounter = true;
     }
-    else if (Get_CurFrame() == 69)
+    else if (m_iCurFrame == 69)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(1.f);
         m_bCounter = false;
@@ -1483,11 +1483,11 @@ void Boss_Spike_FSM::skill_3200()
             material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
         }
     }
-    else if (Get_CurFrame() == 70)
+    else if (m_iCurFrame == 70)
         AttackCollider_On(KNOCKBACK_ATTACK,10.f);
-    else if (Get_CurFrame() == 74)
+    else if (m_iCurFrame == 74)
         AttackCollider_Off();
-    else if (Get_CurFrame() >= 133 && Get_CurFrame() <= 156)
+    else if (m_iCurFrame >= 133 && m_iCurFrame <= 156)
     {
         if (m_tSkillCoolTime.fAccTime >= m_tSkillCoolTime.fCoolTime)
         {
@@ -1528,7 +1528,7 @@ void Boss_Spike_FSM::skill_3200_Init()
 
 void Boss_Spike_FSM::skill_6100()
 {
-    if (Get_CurFrame() < 145)
+    if (m_iCurFrame < 145)
     {
         if (!m_pCamera.expired())
         {
@@ -1542,18 +1542,18 @@ void Boss_Spike_FSM::skill_6100()
         }
     }
 
-    if (Get_CurFrame() == 145)
+    if (m_iCurFrame == 145)
         Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);
     
 
     //160~380
-    if (Get_CurFrame() == 160 ||
-        Get_CurFrame() == 200 ||
-        Get_CurFrame() == 240 ||
-        Get_CurFrame() == 280 ||
-        Get_CurFrame() == 320 ||
-        Get_CurFrame() == 360 ||
-        Get_CurFrame() == 380)
+    if (m_iCurFrame == 160 ||
+        m_iCurFrame == 200 ||
+        m_iCurFrame == 240 ||
+        m_iCurFrame == 280 ||
+        m_iCurFrame == 320 ||
+        m_iCurFrame == 360 ||
+        m_iCurFrame == 380)
     {
         if (m_iPreFrame != m_iCurFrame)
         {
@@ -1608,7 +1608,7 @@ void Boss_Spike_FSM::skill_6100_Init()
 
 void Boss_Spike_FSM::skill_7100()
 {
-    if (Get_CurFrame() == 137)
+    if (m_iCurFrame == 137)
     {
         if (m_iPreFrame != m_iCurFrame)
         {
@@ -1644,7 +1644,7 @@ void Boss_Spike_FSM::skill_7100_Init()
 
 void Boss_Spike_FSM::skill_8100()
 {
-    if (Get_CurFrame() == 88)
+    if (m_iCurFrame == 88)
     {
         if (m_iPreFrame != m_iCurFrame)
         {
@@ -1692,7 +1692,7 @@ void Boss_Spike_FSM::skill_100000()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
 
-    if (Get_CurFrame() <= 30)
+    if (m_iCurFrame <= 30)
     {
         if (!m_pCamera.expired())
         {
@@ -1705,7 +1705,7 @@ void Boss_Spike_FSM::skill_100000()
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.2f, vDir.xyz(), 4.f);
         }
 
-        if (Get_CurFrame() == 30)
+        if (m_iCurFrame == 30)
         {
             m_bInvincible = false;
             m_bGroggyPattern = true;
@@ -1758,7 +1758,7 @@ void Boss_Spike_FSM::skill_100000_Init()
 
 void Boss_Spike_FSM::skill_100100()
 {
-    if (Get_CurFrame() == 4)
+    if (m_iCurFrame == 4)
     {
         m_pOwner.lock()->Set_GroggyGauge(100.f);
 
@@ -1777,7 +1777,7 @@ void Boss_Spike_FSM::skill_100100()
     }
 
 
-    if (Get_CurFrame() == 85)
+    if (m_iCurFrame == 85)
     {
         if (!m_pTarget.expired())
         {

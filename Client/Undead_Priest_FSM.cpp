@@ -736,7 +736,7 @@ void Undead_Priest_FSM::knock_start_Init()
 
 void Undead_Priest_FSM::knock_end()
 {
-    if (Get_CurFrame() < 13)
+    if (m_iCurFrame < 13)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -754,7 +754,7 @@ void Undead_Priest_FSM::knock_end_Init()
 
 void Undead_Priest_FSM::knock_end_loop()
 {
-    if (Get_CurFrame() > Get_FinalFrame() / 2)
+    if (m_iCurFrame > Get_FinalFrame() / 2)
         m_eCurState = STATE::knock_up;
 }
 
@@ -824,7 +824,7 @@ void Undead_Priest_FSM::knockdown_start_Init()
 
 void Undead_Priest_FSM::knockdown_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())

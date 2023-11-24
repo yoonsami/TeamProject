@@ -681,7 +681,7 @@ void Silversword_Soldier_FSM::knock_start_Init()
 
 void Silversword_Soldier_FSM::knock_end()
 {
-    if (Get_CurFrame() < 13)
+    if (m_iCurFrame < 13)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -699,7 +699,7 @@ void Silversword_Soldier_FSM::knock_end_Init()
 
 void Silversword_Soldier_FSM::knock_end_loop()
 {
-    if (Get_CurFrame() > Get_FinalFrame() / 2)
+    if (m_iCurFrame > Get_FinalFrame() / 2)
         m_eCurState = STATE::knock_up;
 }
 
@@ -769,7 +769,7 @@ void Silversword_Soldier_FSM::knockdown_start_Init()
 
 void Silversword_Soldier_FSM::knockdown_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -789,14 +789,14 @@ void Silversword_Soldier_FSM::knockdown_end_Init()
 
 void Silversword_Soldier_FSM::skill_1100()
 {
-    if (Get_CurFrame() < 17)
+    if (m_iCurFrame < 17)
     {
         if (!m_pTarget.expired())
             Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
     }
-    else if (Get_CurFrame() == 22)
+    else if (m_iCurFrame == 22)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 26)
+    else if (m_iCurFrame == 26)
         AttackCollider_Off();
 
     if (Is_AnimFinished())
@@ -832,19 +832,19 @@ void Silversword_Soldier_FSM::skill_1100_Init()
 
 void Silversword_Soldier_FSM::skill_2100()
 {
-    if (Get_CurFrame() < 11)
+    if (m_iCurFrame < 11)
     {
         if (!m_pTarget.expired())
             Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
     }
     //NORMAL ATTACK
-    else if (Get_CurFrame() == 17)
+    else if (m_iCurFrame == 17)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 20)
+    else if (m_iCurFrame == 20)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 33)
+    else if (m_iCurFrame == 33)
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (Get_CurFrame() == 38)
+    else if (m_iCurFrame == 38)
         AttackCollider_Off();
 
     if (Is_AnimFinished())
@@ -880,21 +880,21 @@ void Silversword_Soldier_FSM::skill_2100_Init()
 
 void Silversword_Soldier_FSM::skill_3100()
 {
-    if (Get_CurFrame() < 11)
+    if (m_iCurFrame < 11)
     {
         if (!m_pTarget.expired())
             Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
     }
-    else if (Get_CurFrame() == 28)
+    else if (m_iCurFrame == 28)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 34)
+    else if (m_iCurFrame == 34)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 60)
+    else if (m_iCurFrame == 60)
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (Get_CurFrame() == 67)
+    else if (m_iCurFrame == 67)
         AttackCollider_Off();
 
-    if (Get_CurFrame() >= 48 && Get_CurFrame() < 69)
+    if (m_iCurFrame >= 48 && m_iCurFrame < 69)
         m_bSuperArmor = true;
     else 
         m_bSuperArmor = false;

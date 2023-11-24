@@ -564,7 +564,7 @@ void Yeopo_FSM::b_run()
 
         if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
         {
-            if (Get_CurFrame() % 2 == 0)
+            if (m_iCurFrame % 2 == 0)
                 m_eCurState = STATE::b_run_end_r;
             else
                 m_eCurState = STATE::b_run_end_l;
@@ -575,7 +575,7 @@ void Yeopo_FSM::b_run()
 
     if (KEYPUSH(KEY_TYPE::LSHIFT))
     {
-        if ((Get_CurFrame() == 1))
+        if ((m_iCurFrame == 1))
             m_eCurState = STATE::b_sprint;
     }
 
@@ -680,7 +680,7 @@ void Yeopo_FSM::b_sprint()
 
         if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
         {
-            if (Get_CurFrame() % 2 == 0)
+            if (m_iCurFrame % 2 == 0)
                 m_eCurState = STATE::b_run_end_r;
             else
                 m_eCurState = STATE::b_run_end_l;
@@ -691,7 +691,7 @@ void Yeopo_FSM::b_sprint()
 
     if (!KEYPUSH(KEY_TYPE::LSHIFT))
     {
-        if (Get_CurFrame() < 1 || Get_CurFrame() > 13)
+        if (m_iCurFrame < 1 || m_iCurFrame > 13)
             m_eCurState = STATE::b_run;
     }
 
@@ -835,7 +835,7 @@ void Yeopo_FSM::knock_start_Init()
 
 void Yeopo_FSM::knock_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -858,7 +858,7 @@ void Yeopo_FSM::knock_end_loop()
 {
     m_tKnockDownEndCoolTime.fAccTime += fDT;
 
-    if (Get_CurFrame() > Get_FinalFrame() / 2)
+    if (m_iCurFrame > Get_FinalFrame() / 2)
         m_eCurState = STATE::knock_up;
 }
 
@@ -943,7 +943,7 @@ void Yeopo_FSM::knockdown_start_Init()
 
 void Yeopo_FSM::knockdown_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -966,16 +966,16 @@ void Yeopo_FSM::skill_1100()
 {
     Look_DirToTarget();
 
-    if (Get_CurFrame() == 9)
+    if (m_iCurFrame == 9)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 19)
+    else if (m_iCurFrame == 19)
         AttackCollider_Off();
 
     if (Check_Combo(15, KEY_TYPE::LBUTTON))
         m_eCurState = STATE::skill_1200;
     
 
-    if (Get_FinalFrame() - Get_CurFrame() < 6)
+    if (Get_FinalFrame() - m_iCurFrame < 6)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1005,15 +1005,15 @@ void Yeopo_FSM::skill_1200()
 {
     Look_DirToTarget();
 
-    if (Get_CurFrame() == 10)
+    if (m_iCurFrame == 10)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 17)
+    else if (m_iCurFrame == 17)
         AttackCollider_Off();
 
 	if (Check_Combo(15, KEY_TYPE::LBUTTON))
 		m_eCurState = STATE::skill_1300;
 
-    if (Get_FinalFrame() - Get_CurFrame() < 7)
+    if (Get_FinalFrame() - m_iCurFrame < 7)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_bCanCombo = false;
@@ -1045,21 +1045,21 @@ void Yeopo_FSM::skill_1200_Init()
 
 void Yeopo_FSM::skill_1300()
 {
-    if (Get_CurFrame() == 8)
+    if (m_iCurFrame == 8)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 13)
+    else if (m_iCurFrame == 13)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 16)
+    else if (m_iCurFrame == 16)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 23)
+    else if (m_iCurFrame == 23)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 28)
+    else if (m_iCurFrame == 28)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 36)
+    else if (m_iCurFrame == 36)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 41)
+    else if (m_iCurFrame == 41)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 46)
+    else if (m_iCurFrame == 46)
         AttackCollider_Off();
 
     Look_DirToTarget();
@@ -1068,7 +1068,7 @@ void Yeopo_FSM::skill_1300()
 	if (Check_Combo(45, KEY_TYPE::LBUTTON))
 		m_eCurState = STATE::skill_1400;
 
-    if (Get_FinalFrame() - Get_CurFrame() < 6)
+    if (Get_FinalFrame() - m_iCurFrame < 6)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_bCanCombo = false;
@@ -1100,19 +1100,19 @@ void Yeopo_FSM::skill_1300_Init()
 
 void Yeopo_FSM::skill_1400()
 {
-    if (Get_CurFrame() == 7)
+    if (m_iCurFrame == 7)
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (Get_CurFrame() == 14)
+    else if (m_iCurFrame == 14)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 19)
+    else if (m_iCurFrame == 19)
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
-    else if (Get_CurFrame() == 36)
+    else if (m_iCurFrame == 36)
         AttackCollider_Off();
 
 
     Look_DirToTarget();
 
-    if (Get_FinalFrame() - Get_CurFrame() < 6)
+    if (Get_FinalFrame() - m_iCurFrame < 6)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_bCanCombo = false;
@@ -1151,7 +1151,7 @@ void Yeopo_FSM::skill_91100()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    if (Get_CurFrame() >= 23)
+    if (m_iCurFrame >= 23)
     {
         if (vInputVector != _float3(0.f))
             m_eCurState = STATE::b_run;
@@ -1182,7 +1182,7 @@ void Yeopo_FSM::skill_93100()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    if (Get_CurFrame() >= 23)
+    if (m_iCurFrame >= 23)
     {
         if (vInputVector != _float3(0.f))
             m_eCurState = STATE::b_run;
@@ -1240,7 +1240,7 @@ void Yeopo_FSM::skill_100200()
         m_eCurState = STATE::skill_100300;
 	
 
-    if (Get_FinalFrame() - Get_CurFrame() < 8)
+    if (Get_FinalFrame() - m_iCurFrame < 8)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1323,7 +1323,7 @@ void Yeopo_FSM::skill_200100()
 
     Look_DirToTarget();
 
-    if (Get_FinalFrame() - Get_CurFrame() < 10)
+    if (Get_FinalFrame() - m_iCurFrame < 10)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1349,17 +1349,17 @@ void Yeopo_FSM::skill_200100_Init()
 
 void Yeopo_FSM::skill_300100()
 {
-    if (Get_CurFrame() == 25)
+    if (m_iCurFrame == 25)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 30)
+    else if (m_iCurFrame == 30)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 40)
+    else if (m_iCurFrame == 40)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 46)
+    else if (m_iCurFrame == 46)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 55)
+    else if (m_iCurFrame == 55)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 64)
+    else if (m_iCurFrame == 64)
         AttackCollider_Off();
 
     Look_DirToTarget();
@@ -1368,7 +1368,7 @@ void Yeopo_FSM::skill_300100()
         m_eCurState = STATE::skill_300200;
     
 
-    if (Get_FinalFrame() - Get_CurFrame() <15)
+    if (Get_FinalFrame() - m_iCurFrame <15)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1396,13 +1396,13 @@ void Yeopo_FSM::skill_300100_Init()
 
 void Yeopo_FSM::skill_300200()
 {
-    if (Get_CurFrame() == 9)
+    if (m_iCurFrame == 9)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 12)
+    else if (m_iCurFrame == 12)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 15)
+    else if (m_iCurFrame == 15)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 20)
+    else if (m_iCurFrame == 20)
         AttackCollider_Off();
 
     Look_DirToTarget();
@@ -1411,7 +1411,7 @@ void Yeopo_FSM::skill_300200()
         m_eCurState = STATE::skill_300300;
     
 
-    if (Get_FinalFrame() - Get_CurFrame() < 15)
+    if (Get_FinalFrame() - m_iCurFrame < 15)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1439,13 +1439,13 @@ void Yeopo_FSM::skill_300200_Init()
 
 void Yeopo_FSM::skill_300300()
 {
-    if (Get_CurFrame() == 13)
+    if (m_iCurFrame == 13)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 18)
+    else if (m_iCurFrame == 18)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 21)
+    else if (m_iCurFrame == 21)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 30)
+    else if (m_iCurFrame == 30)
         AttackCollider_Off();
 
     Look_DirToTarget();
@@ -1455,7 +1455,7 @@ void Yeopo_FSM::skill_300300()
         m_eCurState = STATE::skill_300400;
     
 
-    if (Get_FinalFrame() - Get_CurFrame() < 15)
+    if (Get_FinalFrame() - m_iCurFrame < 15)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1484,14 +1484,14 @@ void Yeopo_FSM::skill_300300_Init()
 
 void Yeopo_FSM::skill_300400()
 {
-    if (Get_CurFrame() == 31)
+    if (m_iCurFrame == 31)
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (Get_CurFrame() == 36)
+    else if (m_iCurFrame == 36)
         AttackCollider_Off();
     
     Look_DirToTarget();
 
-    if (Get_FinalFrame() - Get_CurFrame() < 15)
+    if (Get_FinalFrame() - m_iCurFrame < 15)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1519,7 +1519,7 @@ void Yeopo_FSM::skill_300400_Init()
 
 void Yeopo_FSM::skill_400100()
 {
-    if (Get_CurFrame() < 84)
+    if (m_iCurFrame < 84)
     {
         if (!m_pCamera.expired())
         {
@@ -1550,7 +1550,7 @@ void Yeopo_FSM::skill_400100()
 
     //Look_DirToTarget();
     //Skill End
-    if (Get_CurFrame() == 135)
+    if (m_iCurFrame == 135)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1579,29 +1579,29 @@ void Yeopo_FSM::skill_400100_Init()
 
 void Yeopo_FSM::skill_501100()
 {
-    if (Get_CurFrame() == 12)
+    if (m_iCurFrame == 12)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 16)
+    else if (m_iCurFrame == 16)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 17)
+    else if (m_iCurFrame == 17)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 19)
+    else if (m_iCurFrame == 19)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 21)
+    else if (m_iCurFrame == 21)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 23)
+    else if (m_iCurFrame == 23)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 25)
+    else if (m_iCurFrame == 25)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 28)
+    else if (m_iCurFrame == 28)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 30)
+    else if (m_iCurFrame == 30)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 35)
+    else if (m_iCurFrame == 35)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 52)
+    else if (m_iCurFrame == 52)
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
-    else if (Get_CurFrame() == 55)
+    else if (m_iCurFrame == 55)
         AttackCollider_Off();
     
 

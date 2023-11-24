@@ -495,7 +495,7 @@ void Yeonhee_FSM::b_run()
 
         if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
         {
-            if (Get_CurFrame() % 2 == 0)
+            if (m_iCurFrame % 2 == 0)
                 m_eCurState = STATE::b_run_end_r;
             else
                 m_eCurState = STATE::b_run_end_l;
@@ -506,7 +506,7 @@ void Yeonhee_FSM::b_run()
 
     if (KEYPUSH(KEY_TYPE::LSHIFT))
     {
-        if (Get_CurFrame() == 1)
+        if (m_iCurFrame == 1)
             m_eCurState = STATE::b_sprint;
 
     }
@@ -607,7 +607,7 @@ void Yeonhee_FSM::b_sprint()
 
         if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
         {
-            if (Get_CurFrame() % 2 == 0)
+            if (m_iCurFrame % 2 == 0)
                 m_eCurState = STATE::b_run_end_r;
             else
                 m_eCurState = STATE::b_run_end_l;
@@ -618,7 +618,7 @@ void Yeonhee_FSM::b_sprint()
 
     if (!KEYPUSH(KEY_TYPE::LSHIFT))
     {
-        if (Get_CurFrame() < 1 || Get_CurFrame() > 13)
+        if (m_iCurFrame < 1 || m_iCurFrame > 13)
             m_eCurState = STATE::b_run;
     }
 
@@ -762,7 +762,7 @@ void Yeonhee_FSM::knock_start_Init()
 
 void Yeonhee_FSM::knock_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -785,7 +785,7 @@ void Yeonhee_FSM::knock_end_loop()
 {
     m_tKnockDownEndCoolTime.fAccTime += fDT;
     
-    if (Get_CurFrame() > Get_FinalFrame() / 2)
+    if (m_iCurFrame > Get_FinalFrame() / 2)
         m_eCurState = STATE::knock_up;
 }
 
@@ -870,7 +870,7 @@ void Yeonhee_FSM::knockdown_start_Init()
 
 void Yeonhee_FSM::knockdown_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -1079,9 +1079,9 @@ void Yeonhee_FSM::skill_91100()
 
     Look_DirToTarget();
 
-    if (Get_CurFrame() == 7)
+    if (m_iCurFrame == 7)
         Get_Owner()->Get_Animator()->Set_RenderState(false);
-    else if (Get_CurFrame() == 16)
+    else if (m_iCurFrame == 16)
         Get_Owner()->Get_Animator()->Set_RenderState(true);
 
     if (Is_AnimFinished())
@@ -1110,9 +1110,9 @@ void Yeonhee_FSM::skill_93100()
 {
     _float3 vInputVector = Get_InputDirVector();
     
-    if (Get_CurFrame() == 8)
+    if (m_iCurFrame == 8)
         Get_Owner()->Get_Animator()->Set_RenderState(false);
-    else if (Get_CurFrame() == 16)
+    else if (m_iCurFrame == 16)
         Get_Owner()->Get_Animator()->Set_RenderState(true);
 
     if (Is_AnimFinished())
@@ -1139,7 +1139,7 @@ void Yeonhee_FSM::skill_100100()
 {
     Look_DirToTarget();
 
-    if (Get_CurFrame() > 20)
+    if (m_iCurFrame > 20)
     {
         if (m_iPreFrame != m_iCurFrame)
         {
@@ -1340,7 +1340,7 @@ void Yeonhee_FSM::skill_400100()
 
     Look_DirToTarget();
 
-	if (Get_CurFrame() > 22 && Get_CurFrame() < 72)
+	if (m_iCurFrame > 22 && m_iCurFrame < 72)
 	{
 		m_fKeyPushTimer += fDT;
 		if (m_fKeyPushTimer >= 0.3f)
@@ -1388,7 +1388,7 @@ void Yeonhee_FSM::skill_501100()
 {
 	Look_DirToTarget();
 
-    if (Get_CurFrame() < 97)
+    if (m_iCurFrame < 97)
     {
         if (!m_pCamera.expired())
         {

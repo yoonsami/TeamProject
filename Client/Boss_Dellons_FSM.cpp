@@ -660,7 +660,7 @@ void Boss_Dellons_FSM::b_run()
 
         if (m_bSprint)
         {
-            if (Get_CurFrame() == 1)
+            if (m_iCurFrame == 1)
             {
                 m_bSprint = false;
                 m_eCurState = STATE::b_sprint;
@@ -863,7 +863,7 @@ void Boss_Dellons_FSM::knock_start_Init()
 
 void Boss_Dellons_FSM::knock_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -886,7 +886,7 @@ void Boss_Dellons_FSM::knock_end_loop()
 {
     m_tKnockDownEndCoolTime.fAccTime += fDT;
 
-    if (Get_CurFrame() > Get_FinalFrame() / 2)
+    if (m_iCurFrame > Get_FinalFrame() / 2)
         m_eCurState = STATE::knock_up;
 }
 
@@ -969,7 +969,7 @@ void Boss_Dellons_FSM::knockdown_start_Init()
 
 void Boss_Dellons_FSM::knockdown_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -1009,12 +1009,12 @@ void Boss_Dellons_FSM::skill_1100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 9)
+    if (m_iCurFrame == 9)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 19)
+    else if (m_iCurFrame == 19)
         AttackCollider_Off();
 
-    if (Get_CurFrame() == 25)
+    if (m_iCurFrame == 25)
         m_eCurState = STATE::skill_1200;
 }
 
@@ -1038,12 +1038,12 @@ void Boss_Dellons_FSM::skill_1200()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 8)
+    if (m_iCurFrame == 8)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 18)
+    else if (m_iCurFrame == 18)
         AttackCollider_Off();
   
-    if (Get_CurFrame() == 21)
+    if (m_iCurFrame == 21)
         m_eCurState = STATE::skill_1300;
 }
 
@@ -1069,12 +1069,12 @@ void Boss_Dellons_FSM::skill_1300()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 8)
+    if (m_iCurFrame == 8)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 33)
+    else if (m_iCurFrame == 33)
         AttackCollider_Off();
 
-    if (Get_CurFrame() == 19)
+    if (m_iCurFrame == 19)
         m_eCurState = STATE::skill_1400;
 }
 
@@ -1100,13 +1100,13 @@ void Boss_Dellons_FSM::skill_1400()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 8)
+    if (m_iCurFrame == 8)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 14)
+    else if (m_iCurFrame == 14)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 16)
+    else if (m_iCurFrame == 16)
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (Get_CurFrame() == 24)
+    else if (m_iCurFrame == 24)
         AttackCollider_Off();
 
     if (Is_AnimFinished())
@@ -1177,7 +1177,7 @@ void Boss_Dellons_FSM::skill_100100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 12)
+    if (m_iCurFrame == 12)
     {
         if (m_iPreFrame != m_iCurFrame)
         {
@@ -1195,7 +1195,7 @@ void Boss_Dellons_FSM::skill_100100()
         }
     }
 
-    if (Get_CurFrame() == 27)
+    if (m_iCurFrame == 27)
         m_eCurState = STATE::skill_100200;
 }
 
@@ -1221,7 +1221,7 @@ void Boss_Dellons_FSM::skill_100200()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 15)
+    if (m_iCurFrame == 15)
     {
         if (m_iPreFrame != m_iCurFrame)
         {
@@ -1265,12 +1265,12 @@ void Boss_Dellons_FSM::skill_200100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 7)
+    if (m_iCurFrame == 7)
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (Get_CurFrame() == 12)
+    else if (m_iCurFrame == 12)
         AttackCollider_Off();
 
-    if (Get_CurFrame() == 21)
+    if (m_iCurFrame == 21)
         m_eCurState = STATE::skill_200200;
 }
 
@@ -1296,7 +1296,7 @@ void Boss_Dellons_FSM::skill_200200()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 7)
+    if (m_iCurFrame == 7)
     {
         if (m_iPreFrame != m_iCurFrame)
         {
@@ -1340,7 +1340,7 @@ void Boss_Dellons_FSM::skill_300100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    /*if (Get_CurFrame() >= 10)
+    /*if (m_iCurFrame >= 10)
     {
         if (!m_pCamera.expired())
         {
@@ -1359,7 +1359,7 @@ void Boss_Dellons_FSM::skill_300100()
     }*/
 
 
-    if (Get_CurFrame() == 10)
+    if (m_iCurFrame == 10)
     {
         if (m_iPreFrame != m_iCurFrame)
         {
@@ -1399,7 +1399,7 @@ void Boss_Dellons_FSM::skill_400100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    /*if (Get_CurFrame() >= 13)
+    /*if (m_iCurFrame >= 13)
     {
         if (!m_pCamera.expired())
         {
@@ -1417,7 +1417,7 @@ void Boss_Dellons_FSM::skill_400100()
         }
     }*/
 
-    if (Get_CurFrame() == 20)
+    if (m_iCurFrame == 20)
     {
         if (m_iPreFrame != m_iCurFrame)
         {
@@ -1426,12 +1426,12 @@ void Boss_Dellons_FSM::skill_400100()
             Set_WraithState((_uint)Boss_DellonsWraith_FSM::STATE::FX_Mn_Dellons_skill_5100);
         }
     }
-    else if (Get_CurFrame() == 33 ||
-             Get_CurFrame() == 40 ||
-             Get_CurFrame() == 47 ||
-             Get_CurFrame() == 60 ||
-             Get_CurFrame() == 67 ||
-             Get_CurFrame() == 72)
+    else if (m_iCurFrame == 33 ||
+             m_iCurFrame == 40 ||
+             m_iCurFrame == 47 ||
+             m_iCurFrame == 60 ||
+             m_iCurFrame == 67 ||
+             m_iCurFrame == 72)
     {
         if (m_iPreFrame != m_iCurFrame)
         {
@@ -1445,7 +1445,7 @@ void Boss_Dellons_FSM::skill_400100()
             Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f);
         }
     }
-    else if (Get_CurFrame() == 102)
+    else if (m_iCurFrame == 102)
     {
         if (m_iPreFrame != m_iCurFrame)
         {
@@ -1460,7 +1460,7 @@ void Boss_Dellons_FSM::skill_400100()
         }
     }
 
-    if (Get_CurFrame() == 120)
+    if (m_iCurFrame == 120)
     {
         m_eCurState = STATE::b_idle;
     }
@@ -1491,7 +1491,7 @@ void Boss_Dellons_FSM::skill_501100()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
 
-    if (Get_CurFrame() == 4)
+    if (m_iCurFrame == 4)
     {
         //Summon Wraith
         if (m_iPreFrame != m_iCurFrame)

@@ -528,7 +528,7 @@ void Spike_FSM::b_run()
 
         if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
         {
-            if (Get_CurFrame() % 2 == 0)
+            if (m_iCurFrame % 2 == 0)
                 m_eCurState = STATE::b_run_end_r;
             else
                 m_eCurState = STATE::b_run_end_l;
@@ -539,7 +539,7 @@ void Spike_FSM::b_run()
 
     if (KEYPUSH(KEY_TYPE::LSHIFT))
     {
-        if ((Get_CurFrame() == 1))
+        if ((m_iCurFrame == 1))
             m_eCurState = STATE::b_sprint;
 
     }
@@ -640,7 +640,7 @@ void Spike_FSM::b_sprint()
 
         if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
         {
-            if (Get_CurFrame() % 2 == 0)
+            if (m_iCurFrame % 2 == 0)
                 m_eCurState = STATE::b_run_end_r;
             else
                 m_eCurState = STATE::b_run_end_l;
@@ -651,7 +651,7 @@ void Spike_FSM::b_sprint()
 
     if (!KEYPUSH(KEY_TYPE::LSHIFT))
     {
-        if (Get_CurFrame() < 1 || Get_CurFrame() > 13)
+        if (m_iCurFrame < 1 || m_iCurFrame > 13)
             m_eCurState = STATE::b_run;
     }
 
@@ -795,7 +795,7 @@ void Spike_FSM::knock_start_Init()
 
 void Spike_FSM::knock_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -818,7 +818,7 @@ void Spike_FSM::knock_end_loop()
 {
     m_tKnockDownEndCoolTime.fAccTime += fDT;
 
-    if (Get_CurFrame() > Get_FinalFrame() / 2)
+    if (m_iCurFrame > Get_FinalFrame() / 2)
         m_eCurState = STATE::knock_up;
 }
 
@@ -903,7 +903,7 @@ void Spike_FSM::knockdown_start_Init()
 
 void Spike_FSM::knockdown_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -929,7 +929,7 @@ void Spike_FSM::skill_1100()
         Add_And_Set_Effect(L"Spike_1100");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     }
-    else if (Get_CurFrame() == 17)
+    else if (m_iCurFrame == 17)
         AttackCollider_Off();
 
     Look_DirToTarget();
@@ -970,7 +970,7 @@ void Spike_FSM::skill_1200()
         Add_And_Set_Effect(L"Spike_1200");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     }
-    else if (Get_CurFrame() == 14)
+    else if (m_iCurFrame == 14)
         AttackCollider_Off();
 
     Look_DirToTarget();
@@ -1015,7 +1015,7 @@ void Spike_FSM::skill_1300()
         Add_And_Set_Effect(L"Spike_1300");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     }
-    else if (Get_CurFrame() == 18)
+    else if (m_iCurFrame == 18)
         AttackCollider_Off();
 
     Look_DirToTarget();
@@ -1064,7 +1064,7 @@ void Spike_FSM::skill_1400()
         Add_GroupEffectOwner(L"Spike_1400_2", _float3(0.f, 0.f, 1.2f));
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
     }
-    else if (Get_CurFrame() == 15)
+    else if (m_iCurFrame == 15)
         AttackCollider_Off();
 
     Look_DirToTarget();
@@ -1158,7 +1158,7 @@ void Spike_FSM::skill_100100()
    
 
 
-    if (Get_CurFrame() >= 19)
+    if (m_iCurFrame >= 19)
     {   
         m_fEffectCreateTimer += fDT;
 
@@ -1172,7 +1172,7 @@ void Spike_FSM::skill_100100()
         Get_Transform()->Go_Straight();
     }
 
-    if (Get_CurFrame() == 16)
+    if (m_iCurFrame == 16)
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
 
     _float3 vInputVector = Get_InputDirVector();
@@ -1181,7 +1181,7 @@ void Spike_FSM::skill_100100()
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
     //THIS LOGIC IS PERFECT -> DON'T TOUCH COMBO
-    if (Get_CurFrame() > 20)
+    if (m_iCurFrame > 20)
     {
         if (KEYTAP(KEY_TYPE::KEY_1))
             m_bCanCombo = true;
@@ -1288,7 +1288,7 @@ void Spike_FSM::skill_200100_l()
 {
     _float3 vInputVector = Get_InputDirVector();
 
-    m_fChargingRatio = _float(Get_CurFrame()) / _float(Get_FinalFrame());
+    m_fChargingRatio = _float(m_iCurFrame) / _float(Get_FinalFrame());
 
     CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Ratio(m_fChargingRatio);
 
@@ -1334,7 +1334,7 @@ void Spike_FSM::skill_200200()
 {
     m_tWheelWindCoolTime.fAccTime += fDT;
 
-    if (Get_CurFrame() >= 5 && Get_CurFrame() < 33)
+    if (m_iCurFrame >= 5 && m_iCurFrame < 33)
     {
         if (m_tWheelWindCoolTime.fAccTime >= m_tWheelWindCoolTime.fCoolTime)
         {
@@ -1391,7 +1391,7 @@ void Spike_FSM::skill_200300()
 {
     m_tWheelWindCoolTime.fAccTime += fDT;
 
-    if (Get_CurFrame() >= 5 && Get_CurFrame() < 52)
+    if (m_iCurFrame >= 5 && m_iCurFrame < 52)
     {
         if (m_tWheelWindCoolTime.fAccTime >= m_tWheelWindCoolTime.fCoolTime)
         {
@@ -1446,7 +1446,7 @@ void Spike_FSM::skill_200300_Init()
 
 void Spike_FSM::skill_200400()
 {
-    if (Get_CurFrame() < 44)
+    if (m_iCurFrame < 44)
     {
 		_float3 vInputVector = Get_InputDirVector();
 
@@ -1456,7 +1456,7 @@ void Spike_FSM::skill_200400()
 
     m_tWheelWindCoolTime.fAccTime += fDT;
 
-    if (Get_CurFrame() >= 5 && Get_CurFrame() < 44)
+    if (m_iCurFrame >= 5 && m_iCurFrame < 44)
     {
         if (m_tWheelWindCoolTime.fAccTime >= m_tWheelWindCoolTime.fCoolTime)
         {
@@ -1518,7 +1518,7 @@ void Spike_FSM::skill_200400_Init()
 
 void Spike_FSM::skill_300100()
 {
-    if (Get_CurFrame() <= 50)
+    if (m_iCurFrame <= 50)
     {
         if (!m_pCamera.expired())
         {
@@ -1583,7 +1583,7 @@ void Spike_FSM::skill_300100_Init()
 
 void Spike_FSM::skill_400100()
 {
-    if (Get_CurFrame() < 140)
+    if (m_iCurFrame < 140)
     {
         if (!m_pCamera.expired())
         {
@@ -1687,9 +1687,9 @@ void Spike_FSM::skill_400100_Init()
 
 void Spike_FSM::skill_501100()
 {
-    if (Get_CurFrame() == 18)
+    if (m_iCurFrame == 18)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 23)
+    else if (m_iCurFrame == 23)
         AttackCollider_Off();
 
     if (Init_CurFrame(34))
