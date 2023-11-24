@@ -414,7 +414,7 @@ void Boss_Mir_FSM::First_Meet()
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimState(false);
     
-        if (Get_CurFrame() >= 1 && Get_CurFrame() < 90)
+        if (m_iCurFrame >= 1 && m_iCurFrame < 90)
         {
             if (!m_pCamera.expired())
             {
@@ -434,7 +434,7 @@ void Boss_Mir_FSM::First_Meet()
                 
             }
         }
-        else if (Get_CurFrame() >= 90)
+        else if (m_iCurFrame >= 90)
         {
             if (!m_pCamera.expired())
             {
@@ -488,7 +488,7 @@ void Boss_Mir_FSM::sq_Intro_Init()
 
 void Boss_Mir_FSM::sq_Intro2()
 {
-    if (Get_CurFrame() > 5)
+    if (m_iCurFrame > 5)
     {
         if (!m_pCamera.expired())
         {
@@ -502,9 +502,7 @@ void Boss_Mir_FSM::sq_Intro2()
     }
 
     if (Is_AnimFinished())
-        //m_eCurState = STATE::b_idle;
-        m_eCurState = STATE::First_Meet;
-    
+        m_eCurState = STATE::b_idle;
 }
 
 void Boss_Mir_FSM::sq_Intro2_Init()
@@ -610,7 +608,7 @@ void Boss_Mir_FSM::b_idle_Init()
 
 void Boss_Mir_FSM::turn_l()
 {
-    if (Get_CurFrame() > 9 && Get_CurFrame() < 28)
+    if (m_iCurFrame > 9 && m_iCurFrame < 28)
     {
         if (!m_pTarget.expired())
             Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
@@ -634,7 +632,7 @@ void Boss_Mir_FSM::turn_l_Init()
 
 void Boss_Mir_FSM::turn_r()
 {
-    if (Get_CurFrame() > 9 && Get_CurFrame() < 28)
+    if (m_iCurFrame > 9 && m_iCurFrame < 28)
     {
         if (!m_pTarget.expired())
             Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
@@ -768,7 +766,7 @@ void Boss_Mir_FSM::skill_Assault()
 {
     Create_Meteor();
 
-    if (Get_CurFrame() <= 30)
+    if (m_iCurFrame <= 30)
     {
         if (!m_pTarget.expired())
             Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 2.f);
@@ -843,12 +841,12 @@ void Boss_Mir_FSM::skill_Return_Init()
 
 void Boss_Mir_FSM::SQ_SBRin_Roar()
 {
-    if (Get_CurFrame() == 24 ||
-        Get_CurFrame() == 34 ||
-        Get_CurFrame() == 44 ||
-        Get_CurFrame() == 54 ||
-        Get_CurFrame() == 64 || 
-        Get_CurFrame() == 74 )
+    if (m_iCurFrame == 24 ||
+        m_iCurFrame == 34 ||
+        m_iCurFrame == 44 ||
+        m_iCurFrame == 54 ||
+        m_iCurFrame == 64 || 
+        m_iCurFrame == 74 )
     {
         if (m_iPreFrame != m_iCurFrame)
         {
@@ -867,7 +865,7 @@ void Boss_Mir_FSM::SQ_SBRin_Roar()
 
             _float4 vSkillPos = vBonePos;
 
-            if (Get_CurFrame() != 74)
+            if (m_iCurFrame != 74)
                 Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, NORMAL_ATTACK, 10.f);
             else
                 Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_ATTACK, 10.f);
@@ -929,10 +927,10 @@ void Boss_Mir_FSM::SQ_SBRin_Roar_Init()
 
 void Boss_Mir_FSM::skill_1100()
 {
-    if (Get_CurFrame() == 46 ||
-        Get_CurFrame() == 56 ||
-        Get_CurFrame() == 66 ||
-        Get_CurFrame() == 76)
+    if (m_iCurFrame == 46 ||
+        m_iCurFrame == 56 ||
+        m_iCurFrame == 66 ||
+        m_iCurFrame == 76)
     {
         if (m_iPreFrame != m_iCurFrame)
         {
@@ -951,7 +949,7 @@ void Boss_Mir_FSM::skill_1100()
 
             _float4 vSkillPos = vBonePos;
             
-            if (Get_CurFrame() != 76)
+            if (m_iCurFrame != 76)
                 Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, NORMAL_ATTACK, 10.f);
             else
                 Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_ATTACK, 10.f);
@@ -1013,7 +1011,7 @@ void Boss_Mir_FSM::skill_1100_Init()
 
 void Boss_Mir_FSM::skill_2100()
 {
-    if (Get_CurFrame() == 55)
+    if (m_iCurFrame == 55)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed / 4.f);
 
@@ -1022,11 +1020,11 @@ void Boss_Mir_FSM::skill_2100()
             material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
     }
-    else if (Get_CurFrame() == 60)
+    else if (m_iCurFrame == 60)
     {
         m_bCounter = true;
     }
-    else if (Get_CurFrame() == 68)
+    else if (m_iCurFrame == 68)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed);
         m_bCounter = false;
@@ -1035,9 +1033,9 @@ void Boss_Mir_FSM::skill_2100()
 			material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
 		}
     }
-    else if (Get_CurFrame() == 70)
+    else if (m_iCurFrame == 70)
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (Get_CurFrame() == 93)
+    else if (m_iCurFrame == 93)
         AttackCollider_Off();
 
     if (Is_AnimFinished())
@@ -1092,9 +1090,9 @@ void Boss_Mir_FSM::skill_2100_Init()
 
 void Boss_Mir_FSM::skill_3100()
 {
-    if (Get_CurFrame() == 80)
+    if (m_iCurFrame == 80)
         TailAttackCollider_On(KNOCKBACK_ATTACK);
-    else if (Get_CurFrame() == 98)
+    else if (m_iCurFrame == 98)
         TailAttackCollider_Off();
 
     if (Is_AnimFinished())
@@ -1139,9 +1137,9 @@ void Boss_Mir_FSM::skill_3100_Init()
 
 void Boss_Mir_FSM::skill_4100()
 {
-    if (Get_CurFrame() == 86)
+    if (m_iCurFrame == 86)
         TailAttackCollider_On(KNOCKBACK_ATTACK);
-    else if (Get_CurFrame() == 108)
+    else if (m_iCurFrame == 108)
         TailAttackCollider_Off();
 
     if (Is_AnimFinished())
@@ -1226,9 +1224,9 @@ void Boss_Mir_FSM::skill_5100_Init()
 
 void Boss_Mir_FSM::skill_9100()
 {
-    if (Get_CurFrame() == 66 ||
-        Get_CurFrame() == 86 ||
-        Get_CurFrame() == 106)
+    if (m_iCurFrame == 66 ||
+        m_iCurFrame == 86 ||
+        m_iCurFrame == 106)
     {
         if (m_iPreFrame != m_iCurFrame)
         {
@@ -1296,7 +1294,7 @@ void Boss_Mir_FSM::skill_9100_Init()
 
 void Boss_Mir_FSM::skill_11100()
 {
-    if (Get_CurFrame() == 67)
+    if (m_iCurFrame == 67)
     {
         if (m_iPreFrame != m_iCurFrame)
         {
@@ -1366,10 +1364,10 @@ void Boss_Mir_FSM::skill_11100_Init()
 
 void Boss_Mir_FSM::skill_12100()
 {
-    if (Get_CurFrame() == 28 ||
-        Get_CurFrame() == 38 ||
-        Get_CurFrame() == 48 ||
-        Get_CurFrame() == 58)
+    if (m_iCurFrame == 28 ||
+        m_iCurFrame == 38 ||
+        m_iCurFrame == 48 ||
+        m_iCurFrame == 58)
     {
         if (m_iPreFrame != m_iCurFrame)
         {
@@ -1383,7 +1381,7 @@ void Boss_Mir_FSM::skill_12100()
 
             wstring strAttackType = NORMAL_ATTACK;
 
-            if (Get_CurFrame() == 58)
+            if (m_iCurFrame == 58)
                 strAttackType = KNOCKBACK_ATTACK;
 
             Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, strAttackType, 10.f);
@@ -1453,7 +1451,7 @@ void Boss_Mir_FSM::skill_12100_Init()
 
 void Boss_Mir_FSM::skill_13100()
 {
-    if (Get_CurFrame() == 30)
+    if (m_iCurFrame == 30)
     {
         if (m_iPreFrame != m_iCurFrame)
         {
@@ -1529,7 +1527,7 @@ void Boss_Mir_FSM::skill_13100_Init()
 
 void Boss_Mir_FSM::skill_14100()
 {
-    if (Get_CurFrame() == 25)
+    if (m_iCurFrame == 25)
     {
         if (m_iPreFrame != m_iCurFrame)
         {
@@ -1553,7 +1551,7 @@ void Boss_Mir_FSM::skill_14100()
             Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
         }
     }
-    else if (Get_CurFrame() == 80)
+    else if (m_iCurFrame == 80)
     {
         if (m_iPreFrame != m_iCurFrame)
         {
@@ -1567,7 +1565,7 @@ void Boss_Mir_FSM::skill_14100()
 
             wstring strAttackType = NORMAL_ATTACK;
 
-            if (Get_CurFrame() == 58)
+            if (m_iCurFrame == 58)
                 strAttackType = KNOCKBACK_ATTACK;
 
             Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, strAttackType, 10.f);
@@ -1636,7 +1634,7 @@ void Boss_Mir_FSM::skill_14100_Init()
 
 void Boss_Mir_FSM::skill_100000()
 {
-    if (Get_CurFrame() > 90)
+    if (m_iCurFrame > 90)
     {
         if (!m_pTarget.expired())
             Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 2.5f);
@@ -1657,7 +1655,7 @@ void Boss_Mir_FSM::skill_100000_Init()
 
 void Boss_Mir_FSM::skill_100100()
 {
-    if (Get_CurFrame() == 1)
+    if (m_iCurFrame == 1)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed / 4.f);
 
@@ -1666,11 +1664,11 @@ void Boss_Mir_FSM::skill_100100()
             material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
     }
-    else if (Get_CurFrame() == 4)
+    else if (m_iCurFrame == 4)
     {
         m_bCounter = true;
     }
-    else if (Get_CurFrame() == 9)
+    else if (m_iCurFrame == 9)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed * 2.f);
         m_bCounter = false;
@@ -1680,14 +1678,14 @@ void Boss_Mir_FSM::skill_100100()
             material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
         }
     }
-    else if (Get_CurFrame() == 19 ||
-             Get_CurFrame() == 29 ||
-             Get_CurFrame() == 39 ||
-             Get_CurFrame() == 49 ||
-             Get_CurFrame() == 59 ||
-             Get_CurFrame() == 69 ||
-             Get_CurFrame() == 79 ||
-             Get_CurFrame() == 84)
+    else if (m_iCurFrame == 19 ||
+             m_iCurFrame == 29 ||
+             m_iCurFrame == 39 ||
+             m_iCurFrame == 49 ||
+             m_iCurFrame == 59 ||
+             m_iCurFrame == 69 ||
+             m_iCurFrame == 79 ||
+             m_iCurFrame == 84)
     {
         if (m_iPreFrame != m_iCurFrame)
         {
@@ -1706,13 +1704,13 @@ void Boss_Mir_FSM::skill_100100()
 
             _float4 vSkillPos = vBonePos;
 
-            if (Get_CurFrame() != 84)
+            if (m_iCurFrame != 84)
                 Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, NORMAL_ATTACK, 10.f);
             else
                 Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK, 10.f);
         }
     }
-    else if (Get_CurFrame() == 90)
+    else if (m_iCurFrame == 90)
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed);
     
 
@@ -1758,7 +1756,7 @@ void Boss_Mir_FSM::skill_100100_Init()
 
 void Boss_Mir_FSM::skill_200000()
 {
-    if (Get_CurFrame() > 15)
+    if (m_iCurFrame > 15)
     {
         if (!m_pTarget.expired())
             Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 2.f);
@@ -1781,7 +1779,7 @@ void Boss_Mir_FSM::skill_200100()
 {
     m_tBreathCoolTime.fAccTime += fDT;
 
-    if (Get_CurFrame() == 10)
+    if (m_iCurFrame == 10)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed / 4.f);
 
@@ -1790,11 +1788,11 @@ void Boss_Mir_FSM::skill_200100()
             material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
     }
-    else if (Get_CurFrame() == 15)
+    else if (m_iCurFrame == 15)
     {
         m_bCounter = true;
     }
-    else if (Get_CurFrame() == 20)
+    else if (m_iCurFrame == 20)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed / 2.f);
         m_bCounter = false;
@@ -1804,7 +1802,7 @@ void Boss_Mir_FSM::skill_200100()
             material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
         }
     }
-    else if (Get_CurFrame() > 33 && Get_CurFrame() < 100)
+    else if (m_iCurFrame > 33 && m_iCurFrame < 100)
     {
         if (m_tBreathCoolTime.fAccTime >= m_tBreathCoolTime.fCoolTime)
         {

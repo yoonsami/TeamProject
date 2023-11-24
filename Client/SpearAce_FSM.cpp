@@ -603,7 +603,7 @@ void SpearAce_FSM::b_sprint()
 
         if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
         {
-            if (Get_CurFrame() % 2 == 0)
+            if (m_iCurFrame % 2 == 0)
                 m_eCurState = STATE::b_run_end_r;
             else
                 m_eCurState = STATE::b_run_end_l;
@@ -614,7 +614,7 @@ void SpearAce_FSM::b_sprint()
 
     if (!KEYPUSH(KEY_TYPE::LSHIFT))
     {
-        if (Get_CurFrame() < 1 || Get_CurFrame() > 13)
+        if (m_iCurFrame < 1 || m_iCurFrame > 13)
             m_eCurState = STATE::b_run;
     }
 
@@ -758,7 +758,7 @@ void SpearAce_FSM::knock_start_Init()
 
 void SpearAce_FSM::knock_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -781,7 +781,7 @@ void SpearAce_FSM::knock_end_loop()
 {
     m_tKnockDownEndCoolTime.fAccTime += fDT;
     
-    if (Get_CurFrame() > Get_FinalFrame() / 2)
+    if (m_iCurFrame > Get_FinalFrame() / 2)
         m_eCurState = STATE::knock_up;
 }
 
@@ -866,7 +866,7 @@ void SpearAce_FSM::knockdown_start_Init()
 
 void SpearAce_FSM::knockdown_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -889,9 +889,9 @@ void SpearAce_FSM::skill_1100()
 {
     Look_DirToTarget();
 
-    if (Get_CurFrame() == 9)
+    if (m_iCurFrame == 9)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 19)
+    else if (m_iCurFrame == 19)
         AttackCollider_Off();
     
     if (Check_Combo(24, KEY_TYPE::LBUTTON))
@@ -926,9 +926,9 @@ void SpearAce_FSM::skill_1200()
 {
     Look_DirToTarget();
 
-    if (Get_CurFrame() == 1)
+    if (m_iCurFrame == 1)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 33)
+    else if (m_iCurFrame == 33)
         AttackCollider_Off();
     
     if (Check_Combo(33, KEY_TYPE::LBUTTON))
@@ -966,9 +966,9 @@ void SpearAce_FSM::skill_1300()
 {
     Look_DirToTarget();
 
-    if (Get_CurFrame() == 4)
+    if (m_iCurFrame == 4)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 28)
+    else if (m_iCurFrame == 28)
         AttackCollider_Off();
 
     if (Is_AnimFinished())
@@ -1006,7 +1006,7 @@ void SpearAce_FSM::skill_91100()
 	if (m_vDirToTarget != _float3(0.f))
 		Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
 
-    if (Get_CurFrame() >= 20)
+    if (m_iCurFrame >= 20)
     {
         if (vInputVector != _float3(0.f))
             m_eCurState = STATE::b_run;
@@ -1040,7 +1040,7 @@ void SpearAce_FSM::skill_93100()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    if (Get_CurFrame() >= 18)
+    if (m_iCurFrame >= 18)
     {
         if (vInputVector != _float3(0.f))
             m_eCurState = STATE::b_run;
@@ -1077,9 +1077,9 @@ void SpearAce_FSM::skill_100100()
         Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
     }
 
-    if (Get_CurFrame() == 28)
+    if (m_iCurFrame == 28)
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (Get_CurFrame() == 58)
+    else if (m_iCurFrame == 58)
         AttackCollider_Off();
 
 
@@ -1113,15 +1113,15 @@ void SpearAce_FSM::skill_200100()
 {
     Look_DirToTarget();
 
-    if (Get_CurFrame() == 21)
+    if (m_iCurFrame == 21)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 25)
+    else if (m_iCurFrame == 25)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 35)
+    else if (m_iCurFrame == 35)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 38)
+    else if (m_iCurFrame == 38)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 61)
+    else if (m_iCurFrame == 61)
         AttackCollider_Off();
 
 
@@ -1200,7 +1200,7 @@ void SpearAce_FSM::skill_300100()
 {
     Look_DirToTarget();
 
-    if (Get_CurFrame() <= 59)
+    if (m_iCurFrame <= 59)
     {
         if (!m_pCamera.expired())
         {
@@ -1212,9 +1212,9 @@ void SpearAce_FSM::skill_300100()
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, vDir.xyz() * -1.f, 8.f);
         }
     }
-    else if (Get_CurFrame() >= 61 && Get_CurFrame() < 105)
+    else if (m_iCurFrame >= 61 && m_iCurFrame < 105)
     {
-        if (Get_CurFrame() == 61)
+        if (m_iCurFrame == 61)
         {
 			m_vCamStopPos = m_vSkillCamBonePos;
 			Get_Owner()->Get_Animator()->Set_RenderState(false);
@@ -1231,7 +1231,7 @@ void SpearAce_FSM::skill_300100()
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.2f, vDir.xyz() * -1.f, 8.f);
         }
     }
-    else if (Get_CurFrame() >=  105)
+    else if (m_iCurFrame >=  105)
     {
         m_pWeapon.lock()->Get_ModelRenderer()->Set_RenderState(true);
         Get_Owner()->Get_Animator()->Set_RenderState(true);
@@ -1253,7 +1253,7 @@ void SpearAce_FSM::skill_300100()
         }
     }
     
-    if (Get_CurFrame() >= 78 && Get_CurFrame() <= 110)
+    if (m_iCurFrame >= 78 && m_iCurFrame <= 110)
         m_bInvincible = true;
     else
         m_bInvincible = false;
@@ -1418,20 +1418,20 @@ void SpearAce_FSM::skill_502100()
 
     }
 
-    if (Get_CurFrame() == 32)
+    if (m_iCurFrame == 32)
     {
         //TelePort Motion Start = Invincible
         m_bInvincible = true;
     }
-    else if (Get_CurFrame() == 44)
+    else if (m_iCurFrame == 44)
     {
         m_bInvincible = false;
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
     }
-    else if (Get_CurFrame() == 62)
+    else if (m_iCurFrame == 62)
         AttackCollider_Off();
  
-    if (Get_FinalFrame() - Get_CurFrame() < 9)
+    if (Get_FinalFrame() - m_iCurFrame < 9)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1460,9 +1460,9 @@ void SpearAce_FSM::skill_500100()
 {
     Look_DirToTarget();
 
-    if (Get_CurFrame() == 15)
+    if (m_iCurFrame == 15)
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (Get_CurFrame() == 33)
+    else if (m_iCurFrame == 33)
         AttackCollider_Off();
 
     if (Is_AnimFinished())

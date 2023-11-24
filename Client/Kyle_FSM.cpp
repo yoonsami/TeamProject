@@ -309,11 +309,11 @@ void Kyle_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
 		_float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
 		
 		shared_ptr<GameObject> targetToLook = nullptr;
-		// skillName�� _Skill �����̸�
+		// skillName _Skill
 		if (strSkillName.find(L"_Skill") != wstring::npos)
-			targetToLook = pCollider->Get_Owner(); // Collider owner�� �Ѱ��ش�
-		else // �ƴϸ�
-			targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner(); // Collider�� ���� ��ü�� �Ѱ��ش�
+			targetToLook = pCollider->Get_Owner(); // Collider owner
+		else //
+			targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner(); // Collider
 
 		if (targetToLook == nullptr)
 			return;
@@ -491,14 +491,14 @@ void Kyle_FSM::b_run()
 
 	_float3 vInputVector = Get_InputDirVector();
 
-	// ����Ű�� �ƹ��͵� ������ ������ ���¸� ����
+	
 	if (vInputVector == _float3(0.f))
 	{
 		m_tRunEndDelay.fAccTime += fDT;
 
 		if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
 		{
-			if (Get_CurFrame() % 2 == 0)
+			if (m_iCurFrame % 2 == 0)
 				m_eCurState = STATE::b_run_end_r;
 			else
 				m_eCurState = STATE::b_run_end_l;
@@ -509,7 +509,7 @@ void Kyle_FSM::b_run()
 
 	if (KEYPUSH(KEY_TYPE::LSHIFT))
 	{
-		if ((Get_CurFrame() == 1))
+		if (m_iCurFrame == 1)
 			m_eCurState = STATE::b_sprint;
 	}
 
@@ -609,7 +609,7 @@ void Kyle_FSM::b_sprint()
 
 		if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
 		{
-			if (Get_CurFrame() % 2 == 0)
+			if (m_iCurFrame % 2 == 0)
 				m_eCurState = STATE::b_run_end_r;
 			else
 				m_eCurState = STATE::b_run_end_l;
@@ -620,7 +620,7 @@ void Kyle_FSM::b_sprint()
 
 	if (!KEYPUSH(KEY_TYPE::LSHIFT))
 	{
-		if (Get_CurFrame() < 1 || Get_CurFrame() > 13)
+		if (m_iCurFrame < 1 || m_iCurFrame > 13)
 			m_eCurState = STATE::b_run;
 	}
 
@@ -764,7 +764,7 @@ void Kyle_FSM::knock_start_Init()
 
 void Kyle_FSM::knock_end()
 {
-	if (Get_CurFrame() < 16)
+	if (m_iCurFrame < 16)
 		Get_Transform()->Go_Backward();
 
 	if (Is_AnimFinished())
@@ -787,7 +787,7 @@ void Kyle_FSM::knock_end_loop()
 {
 	m_tKnockDownEndCoolTime.fAccTime += fDT;
 
-	if (Get_CurFrame() > Get_FinalFrame() / 2)
+	if (m_iCurFrame > Get_FinalFrame() / 2)
 		m_eCurState = STATE::knock_up;
 }
 
@@ -872,7 +872,7 @@ void Kyle_FSM::knockdown_start_Init()
 
 void Kyle_FSM::knockdown_end()
 {
-	if (Get_CurFrame() < 16)
+	if (m_iCurFrame < 16)
 		Get_Transform()->Go_Backward();
 
 	if (Is_AnimFinished())
@@ -895,11 +895,11 @@ void Kyle_FSM::skill_1100()
 {
 	Look_DirToTarget();
 
-	if (Get_CurFrame() == 9)
+	if (m_iCurFrame == 9)
 	{
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
 	}
-	else if (Get_CurFrame() == 19)
+	else if (m_iCurFrame == 19)
 		AttackCollider_Off();
 
 	if (Check_Combo(22, KEY_TYPE::LBUTTON))
@@ -935,9 +935,9 @@ void Kyle_FSM::skill_1200()
 {
 	Look_DirToTarget();
 
-	if (Get_CurFrame() == 9)
+	if (m_iCurFrame == 9)
 		AttackCollider_On(NORMAL_ATTACK ,15.f);
-	else if (Get_CurFrame() == 20)
+	else if (m_iCurFrame == 20)
 		AttackCollider_Off();
 
 	if (Check_Combo(20, KEY_TYPE::LBUTTON))
@@ -978,9 +978,9 @@ void Kyle_FSM::skill_1300()
 {
 	Look_DirToTarget();
 
-	if (Get_CurFrame() == 8)
+	if (m_iCurFrame == 8)
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
-	else if (Get_CurFrame() == 18)
+	else if (m_iCurFrame == 18)
 		AttackCollider_Off();
 
 	if (Check_Combo(24, KEY_TYPE::LBUTTON))
@@ -1073,7 +1073,7 @@ void Kyle_FSM::skill_91100()
 	if (Is_AnimFinished())
 		m_eCurState = STATE::b_idle;
 
-	if (Get_CurFrame() >= 22)
+	if (m_iCurFrame >= 22)
 	{
 		if (vInputVector != _float3(0.f))
 			m_eCurState = STATE::b_run;
@@ -1104,7 +1104,7 @@ void Kyle_FSM::skill_93100()
 	if (Is_AnimFinished())
 		m_eCurState = STATE::b_idle;
 
-	if (Get_CurFrame() >= 22)
+	if (m_iCurFrame >= 22)
 	{
 		if (vInputVector != _float3(0.f))
 			m_eCurState = STATE::b_run;
@@ -1129,9 +1129,9 @@ void Kyle_FSM::skill_100100()
 {
 	Look_DirToTarget();
 
-	if (Get_CurFrame() >= 17)
+	if (m_iCurFrame >= 17)
 	{
-		if (Get_CurFrame() == 17)
+		if (m_iCurFrame == 17)
 			m_vCamStopPos = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS);
 
 		if (!m_pCamera.expired())
@@ -1191,7 +1191,7 @@ void Kyle_FSM::skill_100200()
 {
 	Look_DirToTarget();
 	
-	if (Get_CurFrame() >= 4)
+	if (m_iCurFrame >= 4)
 	{
 		if (!m_pCamera.expired())
 		{
@@ -1252,9 +1252,9 @@ void Kyle_FSM::skill_200100()
 {
 	Look_DirToTarget();
 
-	if (Get_CurFrame() == 11)
+	if (m_iCurFrame == 11)
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
-	else if (Get_CurFrame() == 23)
+	else if (m_iCurFrame == 23)
 		AttackCollider_Off();
 
 	if (Check_Combo(16, KEY_TYPE::KEY_2))
@@ -1288,13 +1288,13 @@ void Kyle_FSM::skill_200100_Init()
 
 void Kyle_FSM::skill_200200()
 {
-	if (Get_CurFrame() == 13)
+	if (m_iCurFrame == 13)
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
-	else if (Get_CurFrame() == 18)
+	else if (m_iCurFrame == 18)
 		AttackCollider_Off();
-	else if (Get_CurFrame() == 21)
+	else if (m_iCurFrame == 21)
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
-	else if (Get_CurFrame() == 28)
+	else if (m_iCurFrame == 28)
 		AttackCollider_Off();
 
 	Look_DirToTarget();
@@ -1376,9 +1376,9 @@ void Kyle_FSM::skill_300100()
 {
 	Look_DirToTarget();
 
-	if (Get_CurFrame() == 2)
+	if (m_iCurFrame == 2)
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
-	else if (Get_CurFrame() == 5)
+	else if (m_iCurFrame == 5)
 		AttackCollider_Off();
 
 	if (Init_CurFrame(10))
@@ -1452,7 +1452,7 @@ void Kyle_FSM::skill_300100_Init()
 
 void Kyle_FSM::skill_502100()
 {
-	if (Get_CurFrame() == 17)
+	if (m_iCurFrame == 17)
 	{
 		if (!m_pCamera.expired())
 		{
@@ -1465,16 +1465,16 @@ void Kyle_FSM::skill_502100()
 			m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(4.5f, vDir.xyz(), 10.f);
 		}
 	}
-	else if (Get_CurFrame() == 90)
+	else if (m_iCurFrame == 90)
 	{
 		m_vCamStopPos = m_vCenterBonePos;
 	}
-	else if (Get_CurFrame() > 90 && Get_CurFrame() <= 152)
+	else if (m_iCurFrame > 90 && m_iCurFrame <= 152)
 	{
 		m_vCamStopPos.y += fDT * 2.f;
 		m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCamStopPos.xyz());
 	}
-	else if (Get_CurFrame() > 152)
+	else if (m_iCurFrame > 152)
 	{
 		if (m_vCamStopPos.y >= 0.f)
 			m_vCamStopPos.y -= fDT * 3.f;
@@ -1556,7 +1556,7 @@ void Kyle_FSM::skill_502100_Init()
 
 void Kyle_FSM::skill_500100()
 {
-	if (Get_CurFrame() >= 1)
+	if (m_iCurFrame >= 1)
 	{
 		if (!m_pCamera.expired())
 		{
@@ -1627,10 +1627,10 @@ void Kyle_FSM::skill_500100()
 
 	}
 
-	if (Get_CurFrame() > 11)
+	if (m_iCurFrame > 11)
 		m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(Get_Transform()->Get_State(Transform_State::POS).xyz());
 
-	if (Get_CurFrame() == 164)
+	if (m_iCurFrame == 164)
 	{
 		m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(0.2f);
 	}

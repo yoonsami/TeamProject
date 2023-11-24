@@ -512,7 +512,7 @@ void Player_FSM::b_run()
 
         if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
         {
-            if (Get_CurFrame() % 2 == 0)
+            if (m_iCurFrame % 2 == 0)
                 m_eCurState = STATE::b_run_end_r;
             else
                 m_eCurState = STATE::b_run_end_l;
@@ -523,7 +523,7 @@ void Player_FSM::b_run()
 
     if (KEYPUSH(KEY_TYPE::LSHIFT))
     {
-        if (Get_CurFrame() == 1)
+        if (m_iCurFrame == 1)
             m_eCurState = STATE::b_sprint;
     }
 
@@ -624,7 +624,7 @@ void Player_FSM::b_sprint()
 
         if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
         {
-            if (Get_CurFrame() % 2 == 0)
+            if (m_iCurFrame % 2 == 0)
                 m_eCurState = STATE::b_run_end_r;
             else
                 m_eCurState = STATE::b_run_end_l;
@@ -635,7 +635,7 @@ void Player_FSM::b_sprint()
 
     if (!KEYPUSH(KEY_TYPE::LSHIFT))
     {
-        if (Get_CurFrame() < 1 || Get_CurFrame() > 13)
+        if (m_iCurFrame < 1 || m_iCurFrame > 13)
             m_eCurState = STATE::b_run;
     }
 
@@ -677,8 +677,6 @@ void Player_FSM::die_Init()
 
 void Player_FSM::airborne_start()
 {
-     
-
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
     if (Is_AnimFinished())
@@ -699,8 +697,6 @@ void Player_FSM::airborne_start_Init()
 
 void Player_FSM::airborne_end()
 {
-     
-
     if (Is_AnimFinished())
         m_eCurState = STATE::airborne_up;
 }
@@ -777,7 +773,7 @@ void Player_FSM::knock_start_Init()
 
 void Player_FSM::knock_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -800,7 +796,7 @@ void Player_FSM::knock_end_loop()
 {
     m_tKnockDownEndCoolTime.fAccTime += fDT;
     
-    if (Get_CurFrame() > Get_FinalFrame() / 2)
+    if (m_iCurFrame > Get_FinalFrame() / 2)
         m_eCurState = STATE::knock_up;
 }
 
@@ -883,7 +879,7 @@ void Player_FSM::knockdown_start_Init()
 
 void Player_FSM::knockdown_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -907,9 +903,9 @@ void Player_FSM::skill_1100()
     if(Init_CurFrame(9))
         Add_Effect(L"Teo_1100");
 
-    if (Get_CurFrame() == 9)
+    if (m_iCurFrame == 9)
         AttackCollider_On(NORMAL_ATTACK, _float(rand() % 10 + 1));
-    else if (Get_CurFrame() == 13)
+    else if (m_iCurFrame == 13)
         AttackCollider_Off();
 
     Look_DirToTarget();
@@ -949,10 +945,10 @@ void Player_FSM::skill_1200()
 	if (Init_CurFrame(4))
 		Add_Effect(L"Teo_1200");
 
-    if (Get_CurFrame() == 4)
+    if (m_iCurFrame == 4)
         AttackCollider_On(NORMAL_ATTACK, _float(rand() % 10 + 1));
 
-    else if (Get_CurFrame() > 8)
+    else if (m_iCurFrame > 8)
         AttackCollider_Off();
     
     Look_DirToTarget();
@@ -990,14 +986,14 @@ void Player_FSM::skill_1200_Init()
 
 void Player_FSM::skill_1300()
 {
-    if (Get_CurFrame() == 12)
+    if (m_iCurFrame == 12)
     {
         AttackCollider_On(NORMAL_ATTACK, _float(rand() % 10 + 1));
 
         if (m_iPreFrame != m_iCurFrame)
             Add_Effect(L"Teo_1300");
     }
-    else if (Get_CurFrame() == 14)
+    else if (m_iCurFrame == 14)
         AttackCollider_Off();
 
     Look_DirToTarget();
@@ -1036,9 +1032,9 @@ void Player_FSM::skill_1300_Init()
 
 void Player_FSM::skill_1400()
 {
-	if (Get_CurFrame() == 16)
+	if (m_iCurFrame == 16)
 		AttackCollider_On(NORMAL_ATTACK, _float(rand() % 10 + 1));
-	else if (Get_CurFrame() == 20)
+	else if (m_iCurFrame == 20)
 		AttackCollider_Off();
 
     Look_DirToTarget();
@@ -1239,9 +1235,9 @@ void Player_FSM::skill_100300()
 {
     Look_DirToTarget();
 
-    if (Get_CurFrame() >= 10 && Get_CurFrame() <= 23)
+    if (m_iCurFrame >= 10 && m_iCurFrame <= 23)
     {
-        if (Get_CurFrame() == 10)
+        if (m_iCurFrame == 10)
             m_vCamStopPos = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS);
 
         if (!m_pCamera.expired())
@@ -1254,7 +1250,7 @@ void Player_FSM::skill_100300()
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 6.f);
         }
     }
-    else if (Get_CurFrame() >= 24 && Get_CurFrame() < 31)
+    else if (m_iCurFrame >= 24 && m_iCurFrame < 31)
     {
         if (!m_pCamera.expired())
         {
@@ -1325,9 +1321,9 @@ void Player_FSM::skill_100300_Init()
 
 void Player_FSM::skill_200100()
 {
-    if (Get_CurFrame() >= 15)
+    if (m_iCurFrame >= 15)
     {
-        if (Get_CurFrame() == 15)
+        if (m_iCurFrame == 15)
             m_vCamStopPos = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS);
 
         if (!m_pCamera.expired())
@@ -1343,7 +1339,7 @@ void Player_FSM::skill_200100()
     }
 
 
-	if (Get_CurFrame() >= 30)
+	if (m_iCurFrame >= 30)
 	{
         m_fSkillCreateTimer += fDT;
         if (m_fSkillCreateTimer >= 0.3f)
@@ -1392,7 +1388,7 @@ void Player_FSM::skill_200200()
 {
     Look_DirToTarget();
 
-    if (Get_CurFrame() >= 5)
+    if (m_iCurFrame >= 5)
 	{
 		shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
         animator->Set_RenderState(true);
@@ -1480,7 +1476,7 @@ void Player_FSM::skill_300200()
 {
     Look_DirToTarget();
 
-    if (Get_CurFrame() < 91)
+    if (m_iCurFrame < 91)
     {
         if (!m_pCamera.expired())
         {
@@ -1504,7 +1500,7 @@ void Player_FSM::skill_300200()
         }
     }
     
-    if (Get_CurFrame() >= 5 && Get_CurFrame() < 57)
+    if (m_iCurFrame >= 5 && m_iCurFrame < 57)
     {
         m_fSkillCreateTimer += fDT;
         if (m_fSkillCreateTimer >= 0.3f)
@@ -1521,7 +1517,7 @@ void Player_FSM::skill_300200()
 
         }
     }
-    else if (Get_CurFrame() >= 57 && Get_CurFrame() < 75)
+    else if (m_iCurFrame >= 57 && m_iCurFrame < 75)
     {
         m_fSkillCreateTimer += fDT;
         if (m_fSkillCreateTimer >= 0.1f)

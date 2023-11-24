@@ -200,11 +200,11 @@ void DellonsWraith_FSM::Set_State(_uint iIndex)
 
 void DellonsWraith_FSM::FX_DellonsWraith_skill_30010()
 {
-    if (Get_CurFrame() == 42)
+    if (m_iCurFrame == 42)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 50)
+    else if (m_iCurFrame == 50)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 54)
+    else if (m_iCurFrame == 54)
     {
         if (m_iPreFrame != m_iCurFrame)
         {
@@ -263,9 +263,9 @@ void DellonsWraith_FSM::FX_DellonsWraith_skill_30010_Init()
 
 void DellonsWraith_FSM::FX_DellonsWraith_skill_400100()
 {
-    if (Get_CurFrame() == 12)
+    if (m_iCurFrame == 12)
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (Get_CurFrame() == 20)
+    else if (m_iCurFrame == 20)
         AttackCollider_Off();
 
 
@@ -288,9 +288,9 @@ void DellonsWraith_FSM::FX_DellonsWraith_skill_400100_Init()
 
 void DellonsWraith_FSM::FX_DellonsWraith_skill_601100()
 {
-    if (Get_CurFrame() == 126)
+    if (m_iCurFrame == 126)
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (Get_CurFrame() == 140)
+    else if (m_iCurFrame == 140)
         AttackCollider_Off();
 
 
@@ -313,17 +313,17 @@ void DellonsWraith_FSM::FX_DellonsWraith_skill_601100_Init()
 
 void DellonsWraith_FSM::FX_DellonsWraith_skill_903100()
 {
-    if (Get_CurFrame() == 65)
+    if (m_iCurFrame == 65)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 72)
+    else if (m_iCurFrame == 72)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 77)
+    else if (m_iCurFrame == 77)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 82)
+    else if (m_iCurFrame == 82)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 109)
+    else if (m_iCurFrame == 109)
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (Get_CurFrame() == 116)
+    else if (m_iCurFrame == 116)
         AttackCollider_Off();
 
     if (Is_AnimFinished())
@@ -365,9 +365,9 @@ void DellonsWraith_FSM::FX_DellonsWraith01_Special_01_Init()
 
 void DellonsWraith_FSM::FX_SQ_Dellons_QuestEnd_2()
 {
-    if (Get_CurFrame() == 85)
+    if (m_iCurFrame == 85)
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
-    else if (Get_CurFrame() == 100)
+    else if (m_iCurFrame == 100)
         AttackCollider_Off();
 
     if (Is_AnimFinished())
@@ -389,7 +389,7 @@ void DellonsWraith_FSM::FX_SQ_Dellons_QuestEnd_2_Init()
 
 void DellonsWraith_FSM::FX_Mn_Dellons_skill_500200()
 {
-    if (Get_CurFrame() == 19)
+    if (m_iCurFrame == 19)
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
 
     if (Is_AnimFinished())
@@ -411,9 +411,9 @@ void DellonsWraith_FSM::FX_Mn_Dellons_skill_500200_Init()
 
 void DellonsWraith_FSM::FX_Mn_Dellons_skill_5100()
 {
-    if (Get_CurFrame() == 80)
+    if (m_iCurFrame == 80)
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
-    else if (Get_CurFrame() == 94)
+    else if (m_iCurFrame == 94)
     {
         CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
         CUR_SCENE->Remove_GameObject(m_pOwner.lock());
@@ -433,9 +433,9 @@ void DellonsWraith_FSM::FX_Mn_Dellons_skill_5100_Init()
 
 void DellonsWraith_FSM::FX_Mn_Dellons_skill_6100()
 {
-    if (Get_CurFrame() == 59)
+    if (m_iCurFrame == 59)
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
-    else if (Get_CurFrame() == 69)
+    else if (m_iCurFrame == 69)
         AttackCollider_Off();
 
     if (Is_AnimFinished())
@@ -457,9 +457,9 @@ void DellonsWraith_FSM::FX_Mn_Dellons_skill_6100_Init()
 
 void DellonsWraith_FSM::FX_Mn_Dellons_skill_5200()
 {
-    if (Get_CurFrame() == 90)
+    if (m_iCurFrame == 90)
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
-    else if (Get_CurFrame() == 114)
+    else if (m_iCurFrame == 114)
         AttackCollider_Off();
 
     if (Is_AnimFinished())

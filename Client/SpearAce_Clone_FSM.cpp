@@ -69,12 +69,12 @@ void SpearAce_Clone_FSM::State_Init()
 
 void SpearAce_Clone_FSM::Skill_Use()
 {
-	if (Get_CurFrame() > 70)
+	if (m_iCurFrame > 70)
 	{
 		shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 		animator->Set_RenderState(true);
 	}
-	if (Get_CurFrame() > 100)
+	if (m_iCurFrame > 100)
 	{
 		shared_ptr<GameObject> motionTrail = make_shared<GameObject>();
 		motionTrail->GetOrAddTransform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());

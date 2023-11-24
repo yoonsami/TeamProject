@@ -756,7 +756,7 @@ void Succubus_Scythe_FSM::knock_start_Init()
 
 void Succubus_Scythe_FSM::knock_end()
 {
-    if (Get_CurFrame() < 13)
+    if (m_iCurFrame < 13)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -774,7 +774,7 @@ void Succubus_Scythe_FSM::knock_end_Init()
 
 void Succubus_Scythe_FSM::knock_end_loop()
 {
-    if (Get_CurFrame() > Get_FinalFrame() / 2)
+    if (m_iCurFrame > Get_FinalFrame() / 2)
         m_eCurState = STATE::knock_up;
 }
 
@@ -844,7 +844,7 @@ void Succubus_Scythe_FSM::knockdown_start_Init()
 
 void Succubus_Scythe_FSM::knockdown_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -867,9 +867,9 @@ void Succubus_Scythe_FSM::skill_1100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 14)
+    if (m_iCurFrame == 14)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 25)
+    else if (m_iCurFrame == 25)
         AttackCollider_Off();
 
     Set_Gaze();
@@ -894,9 +894,9 @@ void Succubus_Scythe_FSM::skill_1200()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 21)
+    if (m_iCurFrame == 21)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 23)
+    else if (m_iCurFrame == 23)
         AttackCollider_Off();
 
     Set_Gaze();
@@ -921,9 +921,9 @@ void Succubus_Scythe_FSM::skill_1300()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 29)
+    if (m_iCurFrame == 29)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 31)
+    else if (m_iCurFrame == 31)
         AttackCollider_Off();
 
     Set_Gaze();

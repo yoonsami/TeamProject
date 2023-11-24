@@ -679,7 +679,7 @@ void Alpaca_FSM::knock_start_Init()
 
 void Alpaca_FSM::knock_end()
 {
-    if (Get_CurFrame() < 13)
+    if (m_iCurFrame < 13)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -697,7 +697,7 @@ void Alpaca_FSM::knock_end_Init()
 
 void Alpaca_FSM::knock_end_loop()
 {
-    if (Get_CurFrame() > Get_FinalFrame() / 2)
+    if (m_iCurFrame > Get_FinalFrame() / 2)
         m_eCurState = STATE::knock_up;
 }
 
@@ -770,7 +770,7 @@ void Alpaca_FSM::knockdown_start_Init()
 
 void Alpaca_FSM::knockdown_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -793,9 +793,9 @@ void Alpaca_FSM::skill_1100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 26)
+    if (m_iCurFrame == 26)
         AttackCollider_On(NONE_HIT, 2.f);
-    else if (Get_CurFrame() == 30)
+    else if (m_iCurFrame == 30)
         AttackCollider_Off();
 
     Set_Gaze();   
@@ -820,9 +820,9 @@ void Alpaca_FSM::skill_2100()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     //NORMAL ATTACK
-    if (Get_CurFrame() == 29)
+    if (m_iCurFrame == 29)
         AttackCollider_On(NONE_HIT, 2.f);
-    else if (Get_CurFrame() == 38)
+    else if (m_iCurFrame == 38)
         AttackCollider_Off();
     
     Set_Gaze();
@@ -846,9 +846,9 @@ void Alpaca_FSM::skill_3100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 33)
+    if (m_iCurFrame == 33)
         AttackCollider_On(NONE_HIT, 2.f);
-    else if (Get_CurFrame() == 34)
+    else if (m_iCurFrame == 34)
         AttackCollider_Off();
 
     Set_Gaze();

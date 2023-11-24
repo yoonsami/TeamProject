@@ -505,7 +505,7 @@ void Dellons_FSM::b_run()
 
         if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
         {
-            if (Get_CurFrame() % 2 == 0)
+            if (m_iCurFrame % 2 == 0)
                 m_eCurState = STATE::b_run_end_r;
             else
                 m_eCurState = STATE::b_run_end_l;
@@ -516,7 +516,7 @@ void Dellons_FSM::b_run()
 
     if (KEYPUSH(KEY_TYPE::LSHIFT))
     {
-        if ((Get_CurFrame() == 1))
+        if ((m_iCurFrame == 1))
             m_eCurState = STATE::b_sprint;
 
     }
@@ -616,7 +616,7 @@ void Dellons_FSM::b_sprint()
 
         if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
         {
-            if (Get_CurFrame() % 2 == 0)
+            if (m_iCurFrame % 2 == 0)
                 m_eCurState = STATE::b_run_end_r;
             else
                 m_eCurState = STATE::b_run_end_l;
@@ -627,7 +627,7 @@ void Dellons_FSM::b_sprint()
 
     if (!KEYPUSH(KEY_TYPE::LSHIFT))
     {
-        if (Get_CurFrame() < 1 || Get_CurFrame() > 13)
+        if (m_iCurFrame < 1 || m_iCurFrame > 13)
             m_eCurState = STATE::b_run;
     }
 
@@ -771,7 +771,7 @@ void Dellons_FSM::knock_start_Init()
 
 void Dellons_FSM::knock_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -794,7 +794,7 @@ void Dellons_FSM::knock_end_loop()
 {
     m_tKnockDownEndCoolTime.fAccTime += fDT;
 
-    if (Get_CurFrame() > Get_FinalFrame() / 2)
+    if (m_iCurFrame > Get_FinalFrame() / 2)
         m_eCurState = STATE::knock_up;
 }
 
@@ -879,7 +879,7 @@ void Dellons_FSM::knockdown_start_Init()
 
 void Dellons_FSM::knockdown_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -900,9 +900,9 @@ void Dellons_FSM::knockdown_end_Init()
 
 void Dellons_FSM::skill_1100()
 {
-    if (Get_CurFrame() == 9)
+    if (m_iCurFrame == 9)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 19)
+    else if (m_iCurFrame == 19)
         AttackCollider_Off();
 
 
@@ -941,9 +941,9 @@ void Dellons_FSM::skill_1100_Init()
 
 void Dellons_FSM::skill_1200()
 {
-    if (Get_CurFrame() == 8)
+    if (m_iCurFrame == 8)
         AttackCollider_On(NORMAL_ATTACK,10.f);
-    else if (Get_CurFrame() == 18)
+    else if (m_iCurFrame == 18)
         AttackCollider_Off();
 
     Look_DirToTarget();
@@ -984,9 +984,9 @@ void Dellons_FSM::skill_1200_Init()
 
 void Dellons_FSM::skill_1300()
 {
-    if (Get_CurFrame() == 8)
+    if (m_iCurFrame == 8)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 33)
+    else if (m_iCurFrame == 33)
         AttackCollider_Off();
 
     Look_DirToTarget();
@@ -1028,13 +1028,13 @@ void Dellons_FSM::skill_1300_Init()
 
 void Dellons_FSM::skill_1400()
 {
-    if (Get_CurFrame() == 8)
+    if (m_iCurFrame == 8)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (Get_CurFrame() == 14)
+    else if (m_iCurFrame == 14)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 16)
+    else if (m_iCurFrame == 16)
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (Get_CurFrame() == 24)
+    else if (m_iCurFrame == 24)
         AttackCollider_Off();
 
 
@@ -1079,7 +1079,7 @@ void Dellons_FSM::skill_91100()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    if (Get_CurFrame() >= 27)
+    if (m_iCurFrame >= 27)
     {
         if (vInputVector != _float3(0.f))
             m_eCurState = STATE::b_run;
@@ -1110,7 +1110,7 @@ void Dellons_FSM::skill_93100()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    if (Get_CurFrame() >= 18)
+    if (m_iCurFrame >= 18)
     {
         if (vInputVector != _float3(0.f))
             m_eCurState = STATE::b_run;
@@ -1229,9 +1229,9 @@ void Dellons_FSM::skill_100200_Init()
 
 void Dellons_FSM::skill_200100()
 {
-    if (Get_CurFrame() == 7)
+    if (m_iCurFrame == 7)
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (Get_CurFrame() == 12)
+    else if (m_iCurFrame == 12)
         AttackCollider_Off();
 
     Look_DirToTarget();
@@ -1312,7 +1312,7 @@ void Dellons_FSM::skill_200200_Init()
 void Dellons_FSM::skill_300100()
 {
     Look_DirToTarget();
-    if (Get_CurFrame() >= 10)
+    if (m_iCurFrame >= 10)
     {
         if (!m_pCamera.expired())
         {
@@ -1363,7 +1363,7 @@ void Dellons_FSM::skill_300100_Init()
 
 void Dellons_FSM::skill_400100()
 {
-    if (Get_CurFrame() >= 13)
+    if (m_iCurFrame >= 13)
     {
         if (!m_pCamera.expired())
         {
@@ -1420,7 +1420,7 @@ void Dellons_FSM::skill_400100()
 
     Look_DirToTarget();
 
-    if (Get_CurFrame() >= 120)
+    if (m_iCurFrame >= 120)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
