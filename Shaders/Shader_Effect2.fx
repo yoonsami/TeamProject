@@ -189,6 +189,21 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     if (bUseTexColor_Op[0] || bUseTexColor_Op[1] || bUseTexColor_Op[2])
         vOutColor.rgb = pow(vOutColor.rgb, 1.f / GAMMA);
 
+     /* Lighting */
+    if (bLightOn)
+    {
+        float diffuseRatio = 0.f;
+        {
+            float3 viewLightDir = 0.f;
+            
+            viewLightDir = normalize(mul(float4(lights[0].vDirection.xyz, 0.f), V).xyz);
+            diffuseRatio = saturate(dot(-viewLightDir, normalize(input.viewNormal)));
+                    
+        }
+        float3 vLightingColor = vOutColor.rgb * diffuseRatio;
+        vOutColor.rgb = lerp(vOutColor.rgb, vLightingColor, fLightIntensity);
+    }
+    
     /* Blend */
     if (bHasTexturemap10)
         vOutColor.a *= vSample_Blend.r;
@@ -212,21 +227,6 @@ float4 PS_Wrap(EffectOut input) : SV_Target
         vFinalOverlayColor.b = (vOutColor.b <= 0.5) ? 2 * vOutColor.b * vSample_Overlay.b : 1 - 2 * (1 - vOutColor.b) * (1 - vSample_Overlay.b);
         
         vOutColor.rgb = lerp(vOutColor.rgb, vFinalOverlayColor.rgb, fOverlayIntensity);
-    }
-    
-    /* Lighting */
-    if (bLightOn)
-    {
-        float diffuseRatio = 0.f;
-        {
-            float3 viewLightDir = 0.f;
-            
-            viewLightDir = normalize(mul(float4(lights[0].vDirection.xyz, 0.f), V).xyz);
-            diffuseRatio = saturate(dot(-viewLightDir, normalize(input.viewNormal)));
-                    
-        }
-        float3 vLightingColor = vOutColor.rgb * diffuseRatio;
-        vOutColor.rgb = lerp(vOutColor.rgb, vLightingColor, fLightIntensity);
     }
     
     /* Rim Light */
@@ -433,9 +433,9 @@ float4 PS_Clamp(EffectOut input) : SV_Target
             diffuseRatio = saturate(dot(-viewLightDir, normalize(input.viewNormal)));
                     
         }
-        //float3 vLightingColor = vOutColor.rgb * diffuseRatio;
-        //vOutColor.rgb = lerp(vOutColor.rgb, vLightingColor, fLightIntensity);
-        vOutColor.rgb = (vOutColor.rgb * diffuseRatio) + fLightIntensity;
+        float3 vLightingColor = vOutColor.rgb * diffuseRatio;
+        vOutColor.rgb = lerp(vOutColor.rgb, vLightingColor, fLightIntensity);
+        //vOutColor.rgb = (vOutColor.rgb * diffuseRatio) + fLightIntensity;
 
     }
     
