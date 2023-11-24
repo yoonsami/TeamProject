@@ -128,7 +128,7 @@ void SpikeScene::Final_Tick()
 			SCENE.Add_SubScene(make_shared<GachaScene>(sceneDesc));
 		SCENE.Exchange_Scene();*/
 
-		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<KrisScene>());
+		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<GranseedScene>());
 		PHYSX.Set_CharacterControllerNull();
 
 		scene->Set_StaticObjects(m_StaticObject);
