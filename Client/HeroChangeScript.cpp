@@ -351,7 +351,7 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
 
     
 
-    auto tagData = GET_DATA(eHero);
+    auto& tagData = GET_DATA(eHero);
     shared_ptr<Model> model = RESOURCES.Get<Model>(tagData.ModelTag);
 
     m_pOwner.lock()->Get_Animator()->Set_Model(model);

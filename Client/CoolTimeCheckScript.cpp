@@ -659,7 +659,7 @@ void CoolTimeCheckScript::Change_Skill_Info(HERO eType)
     m_pUi_Skill0_Combo[2].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo0, TextureMapType::DIFFUSE);
     m_pUi_Skill0_Combo[3].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pTexture_Combo0, TextureMapType::DIFFUSE);
 
-    auto tagData = GET_DATA(eType);
+    auto& tagData = GET_DATA(eType);
     
     for (_uint i = 0; i < 4; i++)
     {
