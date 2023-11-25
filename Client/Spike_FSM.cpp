@@ -1546,13 +1546,10 @@ void Spike_FSM::skill_200400_Init()
 void Spike_FSM::skill_300100()
 {
     if (Init_CurFrame(1))
-    {
         Add_And_Set_Effect(L"Spike_300100_Jump");
-    }
     if (Init_CurFrame(30))
-    {
         Add_And_Set_Effect(L"Spike_300100");
-    }
+
     if (m_iCurFrame <= 50)
     {
         if (!m_pCamera.expired())
