@@ -133,6 +133,7 @@ void MirScene::Final_Tick()
 
 		scene->Set_StaticObjects(m_StaticObject);
 		SCENE.Change_Scene(scene);
+		g_bCutScene = false;
 
 	}
 }

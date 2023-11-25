@@ -15,6 +15,7 @@
 #include "ObjectDissolve.h"
 #include "CharacterController.h"
 
+
 Boss_Dellons_FSM::Boss_Dellons_FSM()
 {
 }
@@ -55,7 +56,7 @@ HRESULT Boss_Dellons_FSM::Init()
         m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
         m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
 
-        m_fDetectRange = 7.f;
+        m_fDetectRange = 15.f;
         m_fRunSpeed = 6.5f;
         m_fSprintSpeed = 8.5f;
 
@@ -96,9 +97,6 @@ void Boss_Dellons_FSM::State_Tick()
         break;
     case STATE::talk_01:
         talk_01();
-        break;
-    case STATE::Intro:
-        Intro();
         break;
     case STATE::b_idle:
         b_idle();
@@ -216,9 +214,6 @@ void Boss_Dellons_FSM::State_Init()
             break;
         case STATE::talk_01:
             talk_01_Init();
-            break;
-        case STATE::Intro:
-            Intro_Init();
             break;
         case STATE::b_idle:
             b_idle_Init();
@@ -487,21 +482,34 @@ void Boss_Dellons_FSM::Set_State(_uint iIndex)
 
 void Boss_Dellons_FSM::n_idle()
 {
+    //Origin
+    //if (Target_In_DetectRange())
+    //    m_bDetected = true;
+
+    //if (m_bDetected)
+    //{
+    //    //Add_BossHp UI
+    //    if (!m_pOwner.expired())
+    //    {
+    //        auto pScript = make_shared<UIBossHpBar>(BOSS::DELLONS);
+    //        m_pOwner.lock()->Add_Component(pScript);
+    //        pScript->Init();
+    //    }
+
+    //    m_eCurState = STATE::b_idle;
+    //}
+
+    _float4 vPos = Get_Transform()->Get_State(Transform_State::POS);
+
+    //Change
     if (Target_In_DetectRange())
         m_bDetected = true;
 
     if (m_bDetected)
-    {
-        //Add_BossHp UI
-        if (!m_pOwner.expired())
-        {
-            auto pScript = make_shared<UIBossHpBar>(BOSS::DELLONS);
-            m_pOwner.lock()->Add_Component(pScript);
-            pScript->Init();
-        }
+        m_eCurState = STATE::talk_01;
+    
 
-        m_eCurState = STATE::b_idle;
-    }
+
 }
 
 void Boss_Dellons_FSM::n_idle_Init()
@@ -521,44 +529,38 @@ void Boss_Dellons_FSM::n_idle_Init()
 
 void Boss_Dellons_FSM::talk_01()
 {
+    if (!m_pCamera.expired())
+    {
+        _float4 m_vCamPos = m_vCenterBonePos + _float4{ 0.f,1.f,0.f,0.f };
+        _float4 vDir = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS) - m_vCamPos;
+
+        vDir.Normalize();
+
+        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCamPos.xyz());
+        m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.2f, vDir.xyz(), 4.f);
+    }
+
+    Calculate_CamBoneMatrix();
+
+    //Dialogue END
+    if (KEYTAP(KEY_TYPE::Z))
+        m_eCurState = STATE::b_idle;
 }
 
 void Boss_Dellons_FSM::talk_01_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"talk_01", 0.1f, true, 1.f);
+    animator->Set_NextTweenAnim(L"talk_01", 0.2f ,true, 0.5f);
 
     AttackCollider_Off();
 
     m_bInvincible = true;
     m_bSuperArmor = false;
-}
 
-void Boss_Dellons_FSM::Intro()
-{
-    
-    if (m_iPreFrame != m_iCurFrame)
-    {
-        Summon_Wraith();
 
-        Set_WraithState((_uint)Boss_DellonsWraith_FSM::STATE::FX_Mn_Dellons_skill_500200);
-    }
-    
-    if (Is_AnimFinished())
-        m_eCurState = STATE::n_idle;
-}
-
-void Boss_Dellons_FSM::Intro_Init()
-{
-    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
-
-    animator->Set_NextTweenAnim(L"skill_902100", 0.1f, false, 1.f);
-
-    AttackCollider_Off();
-
-    m_bInvincible = true;
-    m_bSuperArmor = false;
+    Calculate_CamBoneMatrix();
 }
 
 void Boss_Dellons_FSM::b_idle()
@@ -604,6 +606,19 @@ void Boss_Dellons_FSM::b_idle_Init()
 
     m_bInvincible = false;
     m_bSuperArmor = false;
+
+    if (!m_bCreateUI)
+    {
+        //Add_BossHp UI
+        if (!m_pOwner.expired())
+        {
+            auto pScript = make_shared<UIBossHpBar>(BOSS::DELLONS);
+            m_pOwner.lock()->Add_Component(pScript);
+            pScript->Init();
+        }
+
+        m_bCreateUI = true;
+    }
 }
 
 void Boss_Dellons_FSM::b_run_start()
@@ -766,6 +781,9 @@ void Boss_Dellons_FSM::die()
 
         if (!m_pAttackCollider.expired())
             CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+
+        if (!m_pWeapon.expired())
+            CUR_SCENE->Remove_GameObject(m_pWeapon.lock());
     }
 }
 
@@ -819,6 +837,9 @@ void Boss_Dellons_FSM::airborne_end()
 
             if (!m_pAttackCollider.expired())
                 CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+
+            if (!m_pWeapon.expired())
+                CUR_SCENE->Remove_GameObject(m_pWeapon.lock());
         }
     }
 }
@@ -935,6 +956,9 @@ void Boss_Dellons_FSM::knock_end_loop()
 
         if (!m_pAttackCollider.expired())
             CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+
+        if (!m_pWeapon.expired())
+            CUR_SCENE->Remove_GameObject(m_pWeapon.lock());
     }
 }
 
@@ -1036,6 +1060,9 @@ void Boss_Dellons_FSM::knockdown_end()
 
             if (!m_pAttackCollider.expired())
                 CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+
+            if (!m_pWeapon.expired())
+                CUR_SCENE->Remove_GameObject(m_pWeapon.lock());
         }
     }
 }
@@ -1280,7 +1307,7 @@ void Boss_Dellons_FSM::skill_100100_Init()
     AttackCollider_Off();
 
     m_bInvincible = false;
-    m_bSuperArmor = true;
+    m_bSuperArmor = false;
 }
 
 void Boss_Dellons_FSM::skill_100200()
@@ -1326,7 +1353,7 @@ void Boss_Dellons_FSM::skill_100200_Init()
     AttackCollider_Off();
 
     m_bInvincible = false;
-    m_bSuperArmor = true;
+    m_bSuperArmor = false;
 }
 
 void Boss_Dellons_FSM::skill_200100()
@@ -1359,7 +1386,7 @@ void Boss_Dellons_FSM::skill_200100_Init()
     AttackCollider_Off();
 
     m_bInvincible = false;
-    m_bSuperArmor = true;
+    m_bSuperArmor = false;
 }
 
 void Boss_Dellons_FSM::skill_200200()
@@ -1405,7 +1432,7 @@ void Boss_Dellons_FSM::skill_200200_Init()
     AttackCollider_Off();
 
     m_bInvincible = false;
-    m_bSuperArmor = true;
+    m_bSuperArmor = false;
 }
 
 void Boss_Dellons_FSM::skill_300100()
@@ -1442,7 +1469,7 @@ void Boss_Dellons_FSM::skill_300100_Init()
 
     AttackCollider_Off();
 
-    m_bInvincible = true;
+    m_bInvincible = false;
     m_bSuperArmor = true;
 
     Calculate_SkillCamRight();
@@ -1515,7 +1542,7 @@ void Boss_Dellons_FSM::skill_400100_Init()
 
     AttackCollider_Off();
 
-    m_bInvincible = true;
+    m_bInvincible = false;
     m_bSuperArmor = true;
 
     Calculate_SkillCamRight();
@@ -1558,7 +1585,7 @@ void Boss_Dellons_FSM::skill_501100_Init()
     AttackCollider_Off();
 
     m_bInvincible = false;
-    m_bSuperArmor = true;
+    m_bSuperArmor = false;
 }
 
 void Boss_Dellons_FSM::Battle_Start()

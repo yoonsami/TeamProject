@@ -146,6 +146,7 @@ void GranseedScene::Final_Tick()
 		scene->Set_StaticObjects(m_StaticObject);
 		PHYSX.Set_CharacterControllerNull();
 		SCENE.Change_Scene(scene);
+		g_bCutScene = false;
 	}
 }
 

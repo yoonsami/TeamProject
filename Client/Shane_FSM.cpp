@@ -10,7 +10,7 @@
 #include "CoolTimeCheckScript.h"
 #include "Shane_Clone_FSM.h"
 #include "ModelRenderer.h"
-
+#include "CharacterController.h"
 
 Shane_FSM::Shane_FSM()
 {
@@ -408,14 +408,17 @@ void Shane_FSM::Set_State(_uint iIndex)
 
 void Shane_FSM::b_idle()
 {
-    if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
-        KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
-        m_eCurState = STATE::b_run_start;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
+            KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
+            m_eCurState = STATE::b_run_start;
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
 
-    Use_Skill();
+        Use_Skill();
+    }
 }
 
 void Shane_FSM::b_idle_Init()
@@ -455,11 +458,13 @@ void Shane_FSM::b_run_start()
 
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
+        if (!g_bIsCanMouseMove && !g_bCutScene)
+        {
+            if (KEYTAP(KEY_TYPE::LBUTTON))
+                m_eCurState = STATE::skill_1100;
 
-        if (KEYTAP(KEY_TYPE::LBUTTON))
-            m_eCurState = STATE::skill_1100;
-
-        Use_Skill();
+            Use_Skill();
+        }
     }
 }
 
@@ -499,16 +504,27 @@ void Shane_FSM::b_run()
     else
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
-    if (KEYPUSH(KEY_TYPE::LSHIFT))
+    if (g_bIsCanMouseMove || g_bCutScene)
     {
-        if (m_iCurFrame == 1)
-            m_eCurState = STATE::b_sprint;
+        if (m_iCurFrame % 2 == 0)
+            m_eCurState = STATE::b_run_end_r;
+        else
+            m_eCurState = STATE::b_run_end_l;
     }
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYPUSH(KEY_TYPE::LSHIFT))
+        {
+            if (m_iCurFrame == 1)
+                m_eCurState = STATE::b_sprint;
+        }
 
-    Use_Skill();
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
+
+        Use_Skill();
+    }
 }
 
 void Shane_FSM::b_run_Init()
@@ -535,10 +551,13 @@ void Shane_FSM::b_run_end_r()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
 
-    Use_Skill();
+        Use_Skill();
+    }
 }
 
 void Shane_FSM::b_run_end_r_Init()
@@ -566,10 +585,13 @@ void Shane_FSM::b_run_end_l()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
 
-    Use_Skill();
+        Use_Skill();
+    }
 }
 
 void Shane_FSM::b_run_end_l_Init()
@@ -608,16 +630,27 @@ void Shane_FSM::b_sprint()
     else
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
-    if (!KEYPUSH(KEY_TYPE::LSHIFT))
+    if (g_bIsCanMouseMove || g_bCutScene)
     {
-        if (m_iCurFrame < 1 || m_iCurFrame > 13)
-            m_eCurState = STATE::b_run;
+        if (m_iCurFrame % 2 == 0)
+            m_eCurState = STATE::b_run_end_r;
+        else
+            m_eCurState = STATE::b_run_end_l;
     }
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (!KEYPUSH(KEY_TYPE::LSHIFT))
+        {
+            if (m_iCurFrame < 1 || m_iCurFrame > 13)
+                m_eCurState = STATE::b_run;
+        }
 
-    Use_Skill();
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
+
+        Use_Skill();
+    }
 }
 
 void Shane_FSM::b_sprint_Init()
@@ -671,6 +704,8 @@ void Shane_FSM::airborne_start_Init()
 
     m_bInvincible = false;
     m_bSuperArmor = true;
+
+    Get_CharacterController()->Add_Velocity(6.f);
 }
 
 void Shane_FSM::airborne_end()
@@ -901,9 +936,13 @@ void Shane_FSM::skill_1100()
 
     Look_DirToTarget();
 
-    if (Check_Combo(13, KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1200;
-    
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (Check_Combo(13, KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1200;
+
+        Use_Skill();
+    }
 
     if (Get_FinalFrame() - m_iCurFrame < 9)
 	{
@@ -913,7 +952,6 @@ void Shane_FSM::skill_1100()
         m_eCurState = STATE::b_idle;
     }
 
-    Use_Skill();
 }
 
 void Shane_FSM::skill_1100_Init()
@@ -948,8 +986,13 @@ void Shane_FSM::skill_1200()
 
     Look_DirToTarget();
 
-    if (Check_Combo(25, KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1300;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (Check_Combo(25, KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1300;
+
+        Use_Skill();
+    }
 
 	if (Get_FinalFrame() - m_iCurFrame < 9)
 	{
@@ -960,7 +1003,6 @@ void Shane_FSM::skill_1200()
         m_eCurState = STATE::b_idle;
     }
 
-    Use_Skill();
 }
 
 void Shane_FSM::skill_1200_Init()
@@ -997,10 +1039,13 @@ void Shane_FSM::skill_1300()
 
     Look_DirToTarget();
 
-    if (Check_Combo(30, KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1400;
-    
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (Check_Combo(30, KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1400;
 
+        Use_Skill();
+    }
 
 	if (Get_FinalFrame() - m_iCurFrame < 9)
 	{
@@ -1011,7 +1056,6 @@ void Shane_FSM::skill_1300()
         m_eCurState = STATE::b_idle;
     }
 
-    Use_Skill();
 }
 
 void Shane_FSM::skill_1300_Init()
@@ -1058,8 +1102,11 @@ void Shane_FSM::skill_1400()
         m_eCurState = STATE::b_idle;
     }
 
-    //Using Skill
-    Use_Skill();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        //Using Skill
+        Use_Skill();
+    }
 }
 
 void Shane_FSM::skill_1400_Init()
@@ -1172,8 +1219,11 @@ void Shane_FSM::skill_100100()
 
     }
 
-    if (Check_Combo(40, KEY_TYPE::KEY_1))
-        m_eCurState = STATE::skill_100200;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (Check_Combo(40, KEY_TYPE::KEY_1))
+            m_eCurState = STATE::skill_100200;
+    }
 
     Look_DirToTarget();
 
@@ -1223,9 +1273,8 @@ void Shane_FSM::skill_100200()
         m_eCurState = STATE::b_idle;
     }
 
-
-    Use_Dash();
-
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+        Use_Dash();
 }
 
 void Shane_FSM::skill_100200_Init()
@@ -1284,9 +1333,11 @@ void Shane_FSM::skill_200100()
 
     Look_DirToTarget();
 
-    if (Check_Combo(42, KEY_TYPE::KEY_2))
-        m_eCurState = STATE::skill_200200;
-
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (Check_Combo(42, KEY_TYPE::KEY_2))
+            m_eCurState = STATE::skill_200200;
+    }
 
     if (Get_FinalFrame() - m_iCurFrame < 9)
     {
@@ -1356,8 +1407,8 @@ void Shane_FSM::skill_200200()
         m_eCurState = STATE::b_idle;
     }
 
-
-    Use_Dash();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+        Use_Dash();
 }
 
 void Shane_FSM::skill_200200_Init()
@@ -1440,7 +1491,8 @@ void Shane_FSM::skill_500100()
         m_eCurState = STATE::b_idle;
     }
 
-    Use_Dash();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+        Use_Dash();
 }
 
 void Shane_FSM::skill_500100_Init()

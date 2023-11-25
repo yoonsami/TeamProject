@@ -414,14 +414,17 @@ void Player_FSM::b_idle()
 {
 	_float3 vInputVector = Get_InputDirVector();
 
-	if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
-		KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
-		m_eCurState = STATE::b_run_start;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+	    if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
+	    	KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
+	    	m_eCurState = STATE::b_run_start;
 
-	if (KEYTAP(KEY_TYPE::LBUTTON))
-		m_eCurState = STATE::skill_1100;
+	    if (KEYTAP(KEY_TYPE::LBUTTON))
+	    	m_eCurState = STATE::skill_1100;
 
-    Use_Skill();
+        Use_Skill();
+    }
 }
 
 void Player_FSM::b_idle_Init()
@@ -459,11 +462,13 @@ void Player_FSM::b_run_start()
 
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
+        if (!g_bIsCanMouseMove && !g_bCutScene)
+        {
+            if (KEYTAP(KEY_TYPE::LBUTTON))
+                m_eCurState = STATE::skill_1100;
 
-        if (KEYTAP(KEY_TYPE::LBUTTON))
-            m_eCurState = STATE::skill_1100;
-
-        Use_Skill();
+            Use_Skill();
+        }
     }
 }
 
@@ -503,16 +508,27 @@ void Player_FSM::b_run()
     else
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
-    if (KEYPUSH(KEY_TYPE::LSHIFT))
+    if (g_bIsCanMouseMove || g_bCutScene)
     {
-        if (m_iCurFrame == 1)
-            m_eCurState = STATE::b_sprint;
+        if (m_iCurFrame % 2 == 0)
+            m_eCurState = STATE::b_run_end_r;
+        else
+            m_eCurState = STATE::b_run_end_l;
     }
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYPUSH(KEY_TYPE::LSHIFT))
+        {
+            if (m_iCurFrame == 1)
+                m_eCurState = STATE::b_sprint;
+        }
 
-    Use_Skill();
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
+
+        Use_Skill();
+    }
 }
 
 void Player_FSM::b_run_Init()
@@ -539,11 +555,13 @@ void Player_FSM::b_run_end_r()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
-
-    Use_Skill();
+        Use_Skill();
+    }
 
 }
 
@@ -573,10 +591,13 @@ void Player_FSM::b_run_end_l()
         m_eCurState = STATE::b_idle;
 
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
 
-    Use_Skill();
+        Use_Skill();
+    }
 }
 
 void Player_FSM::b_run_end_l_Init()
@@ -615,16 +636,27 @@ void Player_FSM::b_sprint()
     else
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
-    if (!KEYPUSH(KEY_TYPE::LSHIFT))
+    if (g_bIsCanMouseMove || g_bCutScene)
     {
-        if (m_iCurFrame < 1 || m_iCurFrame > 13)
-            m_eCurState = STATE::b_run;
+        if (m_iCurFrame % 2 == 0)
+            m_eCurState = STATE::b_run_end_r;
+        else
+            m_eCurState = STATE::b_run_end_l;
     }
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (!KEYPUSH(KEY_TYPE::LSHIFT))
+        {
+            if (m_iCurFrame < 1 || m_iCurFrame > 13)
+                m_eCurState = STATE::b_run;
+        }
 
-    Use_Skill();
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
+
+        Use_Skill();
+    }
 }
 
 void Player_FSM::b_sprint_Init()
@@ -675,6 +707,8 @@ void Player_FSM::airborne_start_Init()
 
     m_bInvincible = false;
     m_bSuperArmor = true;
+
+    Get_CharacterController()->Add_Velocity(6.f);
 }
 
 void Player_FSM::airborne_end()
@@ -892,17 +926,22 @@ void Player_FSM::skill_1100()
 
     Look_DirToTarget();
 
-    if(Check_Combo(24, KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1200;
-	
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if(Check_Combo(24, KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1200;
+	    
+        Use_Skill();
+    }
+    
     if (Is_AnimFinished())
     {
         if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
             m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
         m_eCurState = STATE::b_idle;
     }
 
-    Use_Skill();
 }
 
 void Player_FSM::skill_1100_Init()
@@ -936,8 +975,13 @@ void Player_FSM::skill_1200()
     
     Look_DirToTarget();
     
-    if(Check_Combo(13,KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1300;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if(Check_Combo(13,KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1300;
+
+        Use_Skill();
+    }
 
     if (Is_AnimFinished())
     {
@@ -948,7 +992,6 @@ void Player_FSM::skill_1200()
         m_eCurState = STATE::b_idle;
     }
 
-    Use_Skill();
 }
 
 void Player_FSM::skill_1200_Init()
@@ -983,9 +1026,14 @@ void Player_FSM::skill_1300()
 
     Look_DirToTarget();
 
-    if (Check_Combo(27, KEY_TYPE::LBUTTON))
-		m_eCurState = STATE::skill_1400;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (Check_Combo(27, KEY_TYPE::LBUTTON))
+	    	m_eCurState = STATE::skill_1400;
 
+        Use_Skill();
+    }
+ 
     if (Is_AnimFinished())
     {
         if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
@@ -995,7 +1043,6 @@ void Player_FSM::skill_1300()
         m_eCurState = STATE::b_idle;
     }
 
-    Use_Skill();
 }
 
 void Player_FSM::skill_1300_Init()
@@ -1038,7 +1085,10 @@ void Player_FSM::skill_1400()
 		m_eCurState = STATE::b_idle;
 	}
 
-	Use_Skill();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+	    Use_Skill();
+    }
 }
 
 void Player_FSM::skill_1400_Init()
@@ -1108,6 +1158,8 @@ void Player_FSM::skill_93100_Init()
 
 void Player_FSM::skill_100100()
 {
+    Look_DirToTarget();
+
     if(Init_CurFrame(38))
 	{
 		FORWARDMOVINGSKILLDESC desc;
@@ -1120,10 +1172,13 @@ void Player_FSM::skill_100100()
 		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
 	}
     
-    if(Check_Combo(40,KEY_TYPE::KEY_1))
-        m_eCurState = STATE::skill_100200;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if(Check_Combo(40,KEY_TYPE::KEY_1))
+            m_eCurState = STATE::skill_100200;
 
-    Look_DirToTarget();
+        Use_Dash();
+    }
 
     if (Is_AnimFinished())
     {
@@ -1133,7 +1188,7 @@ void Player_FSM::skill_100100()
         m_eCurState = STATE::b_idle;
     }
 
-    Use_Dash();
+   
 }
 
 void Player_FSM::skill_100100_Init()
@@ -1198,8 +1253,13 @@ void Player_FSM::skill_100200()
         }
     }
 
-	if (Check_Combo(27, KEY_TYPE::KEY_1))
-		m_eCurState = STATE::skill_100300;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+    	if (Check_Combo(27, KEY_TYPE::KEY_1))
+    		m_eCurState = STATE::skill_100300;
+	    
+        Use_Dash();
+    }
 	
 	if (Is_AnimFinished())
 	{
@@ -1208,8 +1268,6 @@ void Player_FSM::skill_100200()
 		
         m_eCurState = STATE::b_idle;
 	}
-
-	Use_Dash();
 }
 
 void Player_FSM::skill_100200_Init()
@@ -1405,7 +1463,6 @@ void Player_FSM::skill_200200()
 
     if (Init_CurFrame(22))
     {
-
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.fMoveSpeed = 0.f;
@@ -1456,8 +1513,11 @@ void Player_FSM::skill_300100()
 
     }
 
-	if (Check_Combo(44, KEY_TYPE::KEY_3))
-        m_eCurState = STATE::skill_300200;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+	    if (Check_Combo(44, KEY_TYPE::KEY_3))
+            m_eCurState = STATE::skill_300200;
+    }
 
   
     if (Is_AnimFinished())
@@ -1641,17 +1701,20 @@ void Player_FSM::Use_Skill()
 
 void Player_FSM::Use_Dash()
 {
-	if (KEYTAP(KEY_TYPE::SPACE))
-	{
-		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
-		{
-            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+	    if (KEYTAP(KEY_TYPE::SPACE))
+	    {
+	    	if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
+	    	{
+                m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 
-			_float3 vInputVector = Get_InputDirVector();
-			if (vInputVector != _float3(0.f))
-				m_eCurState = STATE::skill_91100;
-			else
-				m_eCurState = STATE::skill_93100;
-		}
-	}
+	    		_float3 vInputVector = Get_InputDirVector();
+	    		if (vInputVector != _float3(0.f))
+	    			m_eCurState = STATE::skill_91100;
+	    		else
+	    			m_eCurState = STATE::skill_93100;
+	    	}
+	    }
+    }
 }

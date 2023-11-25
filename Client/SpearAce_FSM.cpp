@@ -10,6 +10,7 @@
 #include "CoolTimeCheckScript.h"
 #include "SpearAce_Clone_FSM.h"
 #include "ModelRenderer.h"
+#include "CharacterController.h"
 
 
 SpearAce_FSM::SpearAce_FSM()
@@ -395,15 +396,17 @@ void SpearAce_FSM::Set_State(_uint iIndex)
 
 void SpearAce_FSM::b_idle()
 {
-	if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
-		KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
-		m_eCurState = STATE::b_run_start;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
+            KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
+            m_eCurState = STATE::b_run_start;
 
-	if (KEYTAP(KEY_TYPE::LBUTTON))
-		m_eCurState = STATE::skill_1100;
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
 
-    Use_Skill();
-
+        Use_Skill();
+    }
 }
 
 void SpearAce_FSM::b_idle_Init()
@@ -441,11 +444,13 @@ void SpearAce_FSM::b_run_start()
 
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
+        if (!g_bIsCanMouseMove && !g_bCutScene)
+        {
+            if (KEYTAP(KEY_TYPE::LBUTTON))
+                m_eCurState = STATE::skill_1100;
 
-        if (KEYTAP(KEY_TYPE::LBUTTON))
-            m_eCurState = STATE::skill_1100;
-        
-        Use_Skill();
+            Use_Skill();
+        }
     }
 }
 
@@ -485,17 +490,28 @@ void SpearAce_FSM::b_run()
     else
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
-    if (KEYPUSH(KEY_TYPE::LSHIFT))
+    if (g_bIsCanMouseMove || g_bCutScene)
     {
-        if ((Get_CurFrame() == 1) || Get_CurFrame() >= 19)
-            m_eCurState = STATE::b_sprint;
-
+        if (m_iCurFrame % 2 == 0)
+            m_eCurState = STATE::b_run_end_r;
+        else
+            m_eCurState = STATE::b_run_end_l;
     }
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
-   
-    Use_Skill();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYPUSH(KEY_TYPE::LSHIFT))
+        {
+            if ((Get_CurFrame() == 1) || Get_CurFrame() >= 19)
+                m_eCurState = STATE::b_sprint;
+
+        }
+
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
+
+        Use_Skill();
+    }
 }
 
 void SpearAce_FSM::b_run_Init()
@@ -522,11 +538,13 @@ void SpearAce_FSM::b_run_end_r()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
-   
-    Use_Skill();
+        Use_Skill();
+    }
 }
 
 void SpearAce_FSM::b_run_end_r_Init()
@@ -554,11 +572,13 @@ void SpearAce_FSM::b_run_end_l()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
-    
-    Use_Skill();
+        Use_Skill();
+    }
 }
 
 void SpearAce_FSM::b_run_end_l_Init()
@@ -597,16 +617,27 @@ void SpearAce_FSM::b_sprint()
     else
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
-    if (!KEYPUSH(KEY_TYPE::LSHIFT))
+    if (g_bIsCanMouseMove || g_bCutScene)
     {
-        if (m_iCurFrame < 1 || m_iCurFrame > 13)
-            m_eCurState = STATE::b_run;
+        if (m_iCurFrame % 2 == 0)
+            m_eCurState = STATE::b_run_end_r;
+        else
+            m_eCurState = STATE::b_run_end_l;
     }
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
-    
-    Use_Skill();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (!KEYPUSH(KEY_TYPE::LSHIFT))
+        {
+            if (m_iCurFrame < 1 || m_iCurFrame > 13)
+                m_eCurState = STATE::b_run;
+        }
+
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
+
+        Use_Skill();
+    }
 }
 
 void SpearAce_FSM::b_sprint_Init()
@@ -659,6 +690,8 @@ void SpearAce_FSM::airborne_start_Init()
 
     m_bInvincible = false;
     m_bSuperArmor = true;
+
+    Get_CharacterController()->Add_Velocity(6.f);
 }
 
 void SpearAce_FSM::airborne_end()
@@ -879,9 +912,14 @@ void SpearAce_FSM::skill_1100()
     else if (m_iCurFrame == 19)
         AttackCollider_Off();
     
-    if (Check_Combo(24, KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1200;
-    
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (Check_Combo(24, KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1200;
+
+        Use_Skill();
+    }
+
     if (Is_AnimFinished())
     {
         if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
@@ -890,7 +928,6 @@ void SpearAce_FSM::skill_1100()
         m_eCurState = STATE::b_idle;
     }
 
-    Use_Skill();
 }
 
 void SpearAce_FSM::skill_1100_Init()
@@ -918,9 +955,14 @@ void SpearAce_FSM::skill_1200()
     else if (m_iCurFrame == 33)
         AttackCollider_Off();
     
-    if (Check_Combo(33, KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1300;
-    
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (Check_Combo(33, KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1300;
+
+        Use_Skill();
+    }
+
     if (Is_AnimFinished())
     {
         if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
@@ -930,7 +972,6 @@ void SpearAce_FSM::skill_1200()
         m_eCurState = STATE::b_idle;
     }
 
-    Use_Skill();
 }
 
 void SpearAce_FSM::skill_1200_Init()
@@ -972,7 +1013,10 @@ void SpearAce_FSM::skill_1300()
         m_eCurState = STATE::b_idle;
     }
 
-    Use_Skill();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        Use_Skill();
+    }
 }
 
 void SpearAce_FSM::skill_1300_Init()
@@ -1086,8 +1130,8 @@ void SpearAce_FSM::skill_100100()
         m_eCurState = STATE::b_idle;
     }
 
-
-    Use_Dash();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+        Use_Dash();
 }
 
 void SpearAce_FSM::skill_100100_Init()
@@ -1121,17 +1165,21 @@ void SpearAce_FSM::skill_200100()
     else if (m_iCurFrame == 61)
         AttackCollider_Off();
 
-
-    if (Check_Combo(52, KEY_TYPE::KEY_2))
-        m_eCurState = STATE::skill_200200;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (Check_Combo(52, KEY_TYPE::KEY_2))
+            m_eCurState = STATE::skill_200200;
     
+        Use_Dash();
+    }
+
+
     if (Is_AnimFinished())
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
     }
 
-    Use_Dash();
 }
 
 void SpearAce_FSM::skill_200100_Init()
@@ -1172,7 +1220,8 @@ void SpearAce_FSM::skill_200200()
         m_eCurState = STATE::b_idle;
     }
 
-    Use_Dash();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+        Use_Dash();
 }
 
 void SpearAce_FSM::skill_200200_Init()
@@ -1439,7 +1488,8 @@ void SpearAce_FSM::skill_502100()
         m_eCurState = STATE::b_idle;
     }
 
-    Use_Dash();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+        Use_Dash();
 }
 
 void SpearAce_FSM::skill_502100_Init()
@@ -1473,7 +1523,8 @@ void SpearAce_FSM::skill_500100()
         m_eCurState = STATE::b_idle;
     }
 
-    Use_Dash();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+        Use_Dash();
 }
 
 void SpearAce_FSM::skill_500100_Init()

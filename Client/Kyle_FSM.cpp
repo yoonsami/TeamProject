@@ -8,6 +8,7 @@
 #include "Camera.h"
 #include "CoolTimeCheckScript.h"
 #include "GroupEffect.h"
+#include "CharacterController.h"
 
 HRESULT Kyle_FSM::Init()
 {
@@ -406,14 +407,17 @@ void Kyle_FSM::b_idle()
 {
 	_float3 vInputVector = Get_InputDirVector();
 
-	if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
-		KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
-		m_eCurState = STATE::b_run_start;
+	if (!g_bIsCanMouseMove && !g_bCutScene)
+	{
+		if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
+			KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
+			m_eCurState = STATE::b_run_start;
 
-	if (KEYTAP(KEY_TYPE::LBUTTON))
-		m_eCurState = STATE::skill_1100;
+		if (KEYTAP(KEY_TYPE::LBUTTON))
+			m_eCurState = STATE::skill_1100;
 
-	Use_Skill();
+		Use_Skill();
+	}
 }
 
 void Kyle_FSM::b_idle_Init()
@@ -451,10 +455,13 @@ void Kyle_FSM::b_run_start()
 
 		Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
-		if (KEYTAP(KEY_TYPE::LBUTTON))
-			m_eCurState = STATE::skill_1100;
-		
-		Use_Skill();
+		if (!g_bIsCanMouseMove && !g_bCutScene)
+		{
+			if (KEYTAP(KEY_TYPE::LBUTTON))
+				m_eCurState = STATE::skill_1100;
+			
+			Use_Skill();
+		}
 	}
 }
 
@@ -495,16 +502,27 @@ void Kyle_FSM::b_run()
 	else
 		Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
-	if (KEYPUSH(KEY_TYPE::LSHIFT))
+	if (g_bIsCanMouseMove || g_bCutScene)
 	{
-		if (m_iCurFrame == 1)
-			m_eCurState = STATE::b_sprint;
+		if (m_iCurFrame % 2 == 0)
+			m_eCurState = STATE::b_run_end_r;
+		else
+			m_eCurState = STATE::b_run_end_l;
 	}
 
-	if (KEYTAP(KEY_TYPE::LBUTTON))
-		m_eCurState = STATE::skill_1100;
+	if (!g_bIsCanMouseMove && !g_bCutScene)
+	{
+		if (KEYPUSH(KEY_TYPE::LSHIFT))
+		{
+			if (m_iCurFrame == 1)
+				m_eCurState = STATE::b_sprint;
+		}
 
-	Use_Skill();
+		if (KEYTAP(KEY_TYPE::LBUTTON))
+			m_eCurState = STATE::skill_1100;
+
+		Use_Skill();
+	}
 }
 
 void Kyle_FSM::b_run_Init()
@@ -525,17 +543,19 @@ void Kyle_FSM::b_run_end_r()
 {
 	_float3 vInputVector = Get_InputDirVector();
 
-	// ����Ű�� �ƹ��͵� ������ ������ ���¸� ����
 	if (vInputVector != _float3(0.f))
 		Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
 	if (Is_AnimFinished())
 		m_eCurState = STATE::b_idle;
 
-	if (KEYTAP(KEY_TYPE::LBUTTON))
-		m_eCurState = STATE::skill_1100;
+	if (!g_bIsCanMouseMove && !g_bCutScene)
+	{
+		if (KEYTAP(KEY_TYPE::LBUTTON))
+			m_eCurState = STATE::skill_1100;
 
-	Use_Skill();
+		Use_Skill();
+	}
 }
 
 void Kyle_FSM::b_run_end_r_Init()
@@ -563,10 +583,13 @@ void Kyle_FSM::b_run_end_l()
 	if (Is_AnimFinished())
 		m_eCurState = STATE::b_idle;
 
-	if (KEYTAP(KEY_TYPE::LBUTTON))
-		m_eCurState = STATE::skill_1100;
+	if (!g_bIsCanMouseMove && !g_bCutScene)
+	{
+		if (KEYTAP(KEY_TYPE::LBUTTON))
+			m_eCurState = STATE::skill_1100;
 
-	Use_Skill();
+		Use_Skill();
+	}
 }
 
 void Kyle_FSM::b_run_end_l_Init()
@@ -590,7 +613,6 @@ void Kyle_FSM::b_sprint()
 
 	_float3 vInputVector = Get_InputDirVector();
 
-	// ����Ű�� �ƹ��͵� ������ ������ ���¸� ����
 	if (vInputVector == _float3(0.f))
 	{
 		m_tRunEndDelay.fAccTime += fDT;
@@ -606,16 +628,27 @@ void Kyle_FSM::b_sprint()
 	else
 		Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
-	if (!KEYPUSH(KEY_TYPE::LSHIFT))
+	if (g_bIsCanMouseMove || g_bCutScene)
 	{
-		if (m_iCurFrame < 1 || m_iCurFrame > 13)
-			m_eCurState = STATE::b_run;
+		if (m_iCurFrame % 2 == 0)
+			m_eCurState = STATE::b_run_end_r;
+		else
+			m_eCurState = STATE::b_run_end_l;
 	}
 
-	if (KEYTAP(KEY_TYPE::LBUTTON))
-		m_eCurState = STATE::skill_1100;
+	if (!g_bIsCanMouseMove && !g_bCutScene)
+	{
+		if (!KEYPUSH(KEY_TYPE::LSHIFT))
+		{
+			if (m_iCurFrame < 1 || m_iCurFrame > 13)
+				m_eCurState = STATE::b_run;
+		}
 
-	Use_Skill();
+		if (KEYTAP(KEY_TYPE::LBUTTON))
+			m_eCurState = STATE::skill_1100;
+
+		Use_Skill();
+	}
 }
 
 void Kyle_FSM::b_sprint_Init()
@@ -668,6 +701,8 @@ void Kyle_FSM::airborne_start_Init()
 
 	m_bInvincible = false;
 	m_bSuperArmor = true;
+
+	Get_CharacterController()->Add_Velocity(6.f);
 }
 
 void Kyle_FSM::airborne_end()
@@ -890,9 +925,15 @@ void Kyle_FSM::skill_1100()
 	else if (m_iCurFrame == 19)
 		AttackCollider_Off();
 
-	if (Check_Combo(22, KEY_TYPE::LBUTTON))
-		m_eCurState = STATE::skill_1200;
+	if (!g_bIsCanMouseMove && !g_bCutScene)
+	{
+		if (Check_Combo(22, KEY_TYPE::LBUTTON))
+			m_eCurState = STATE::skill_1200;
 
+		//Using Skill
+		Use_Skill();
+	}
+	
 	if (Is_AnimFinished())
 	{
 		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
@@ -901,8 +942,6 @@ void Kyle_FSM::skill_1100()
 		m_eCurState = STATE::b_idle;
 	}
 
-	//Using Skill
-	Use_Skill();
 }
 
 void Kyle_FSM::skill_1100_Init()
@@ -931,9 +970,14 @@ void Kyle_FSM::skill_1200()
 	else if (m_iCurFrame == 20)
 		AttackCollider_Off();
 
-	if (Check_Combo(20, KEY_TYPE::LBUTTON))
-		m_eCurState = STATE::skill_1300;
-	
+	if (!g_bIsCanMouseMove && !g_bCutScene)
+	{
+		if (Check_Combo(20, KEY_TYPE::LBUTTON))
+			m_eCurState = STATE::skill_1300;
+
+		//Using Skill
+		Use_Skill();
+	}
 
 	if (Is_AnimFinished())
 	{
@@ -943,9 +987,6 @@ void Kyle_FSM::skill_1200()
 		m_bCanCombo = false;
 		m_eCurState = STATE::b_idle;
 	}
-
-	//Using Skill
-	Use_Skill();
 }
 
 void Kyle_FSM::skill_1200_Init()
@@ -979,9 +1020,15 @@ void Kyle_FSM::skill_1300()
 	else if (m_iCurFrame == 18)
 		AttackCollider_Off();
 
-	if (Check_Combo(24, KEY_TYPE::LBUTTON))
-		m_eCurState = STATE::skill_1400;
-	
+	if (!g_bIsCanMouseMove && !g_bCutScene)
+	{
+		if (Check_Combo(24, KEY_TYPE::LBUTTON))
+			m_eCurState = STATE::skill_1400;
+
+		//Using Skill
+		Use_Skill();
+	}
+
 	if (Is_AnimFinished())
 	{
 		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
@@ -991,8 +1038,6 @@ void Kyle_FSM::skill_1300()
 		m_eCurState = STATE::b_idle;
 	}
 
-	//Using Skill
-	Use_Skill();
 }
 
 void Kyle_FSM::skill_1300_Init()
@@ -1044,8 +1089,11 @@ void Kyle_FSM::skill_1400()
 		m_eCurState = STATE::b_idle;
 	}
 
-	//Using Skill
-	Use_Skill();
+	if (!g_bIsCanMouseMove && !g_bCutScene)
+	{
+		//Using Skill
+		Use_Skill();
+	}
 }
 
 void Kyle_FSM::skill_1400_Init()
@@ -1164,9 +1212,13 @@ void Kyle_FSM::skill_100100()
 		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, NORMAL_ATTACK, 10.f);
 	}
 
+	if (!g_bIsCanMouseMove && !g_bCutScene)
+	{
+		if (Check_Combo(25, KEY_TYPE::KEY_1))
+			m_eCurState = STATE::skill_100200;
 
-	if (Check_Combo(25, KEY_TYPE::KEY_1))
-		m_eCurState = STATE::skill_100200;
+		Use_Dash();
+	}
 
 	if (Is_AnimFinished())
 	{
@@ -1176,7 +1228,6 @@ void Kyle_FSM::skill_100100()
 
 	Calculate_CamBoneMatrix();
 
-	Use_Dash();
 }
 
 void Kyle_FSM::skill_100100_Init()
@@ -1236,7 +1287,8 @@ void Kyle_FSM::skill_100200()
 
 	Calculate_CamBoneMatrix();
 
-	Use_Dash();
+	if (!g_bIsCanMouseMove && !g_bCutScene)
+		Use_Dash();
 }
 
 void Kyle_FSM::skill_100200_Init()
@@ -1266,10 +1318,15 @@ void Kyle_FSM::skill_200100()
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
 	else if (m_iCurFrame == 23)
 		AttackCollider_Off();
-
-	if (Check_Combo(16, KEY_TYPE::KEY_2))
-		m_eCurState = STATE::skill_200200;
 	
+	if (!g_bIsCanMouseMove && !g_bCutScene)
+	{
+		if (Check_Combo(16, KEY_TYPE::KEY_2))
+			m_eCurState = STATE::skill_200200;
+
+		Use_Dash();
+	}
+
 	if (Is_AnimFinished())
 	{
 		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
@@ -1277,7 +1334,6 @@ void Kyle_FSM::skill_200100()
 	}
 
 
-	Use_Dash();
 }
 
 void Kyle_FSM::skill_200100_Init()
@@ -1309,9 +1365,13 @@ void Kyle_FSM::skill_200200()
 
 	Look_DirToTarget();
 
-	if (Check_Combo(28, KEY_TYPE::KEY_2))
-		m_eCurState = STATE::skill_200300;
-	
+	if (!g_bIsCanMouseMove && !g_bCutScene)
+	{
+		if (Check_Combo(28, KEY_TYPE::KEY_2))
+			m_eCurState = STATE::skill_200300;
+
+		Use_Dash();
+	}
 
 	if (Is_AnimFinished())
 	{
@@ -1319,7 +1379,6 @@ void Kyle_FSM::skill_200200()
 		m_eCurState = STATE::b_idle;
 	}
 
-	Use_Dash();
 }
 
 void Kyle_FSM::skill_200200_Init()
@@ -1362,7 +1421,8 @@ void Kyle_FSM::skill_200300()
 		m_eCurState = STATE::b_idle;
 	}
 
-	Use_Dash();
+	if (!g_bIsCanMouseMove && !g_bCutScene)
+		Use_Dash();
 }
 
 void Kyle_FSM::skill_200300_Init()
@@ -1440,8 +1500,8 @@ void Kyle_FSM::skill_300100()
 		m_eCurState = STATE::b_idle;
 	}
 
-
-	Use_Dash();
+	if (!g_bIsCanMouseMove && !g_bCutScene)
+		Use_Dash();
 }
 
 void Kyle_FSM::skill_300100_Init()
@@ -1660,8 +1720,8 @@ void Kyle_FSM::skill_500100()
 		m_eCurState = STATE::b_idle;
 	}
 
-
-	Use_Dash();
+	if (!g_bIsCanMouseMove && !g_bCutScene)
+		Use_Dash();
 }
 
 void Kyle_FSM::skill_500100_Init()

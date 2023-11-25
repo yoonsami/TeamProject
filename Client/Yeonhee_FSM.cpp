@@ -12,6 +12,8 @@
 #include "SpearAce_Clone_FSM.h"
 #include "ModelRenderer.h"
 #include "UiSkillGauge.h"
+#include "CharacterController.h"
+
 
 Yeonhee_FSM::Yeonhee_FSM()
 {
@@ -397,14 +399,17 @@ void Yeonhee_FSM::Set_State(_uint iIndex)
 
 void Yeonhee_FSM::b_idle()
 {
-	if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
-		KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
-		m_eCurState = STATE::b_run_start;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+	    if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
+	    	KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
+	    	m_eCurState = STATE::b_run_start;
 
-	if (KEYTAP(KEY_TYPE::LBUTTON))
-		m_eCurState = STATE::skill_1100;
+	    if (KEYTAP(KEY_TYPE::LBUTTON))
+	    	m_eCurState = STATE::skill_1100;
 
-    Use_Skill();
+        Use_Skill();
+    }
 
 }
 
@@ -445,10 +450,13 @@ void Yeonhee_FSM::b_run_start()
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
 
-        if (KEYTAP(KEY_TYPE::LBUTTON))
-            m_eCurState = STATE::skill_1100;
-        
-        Use_Skill();
+        if (!g_bIsCanMouseMove && !g_bCutScene)
+        {
+            if (KEYTAP(KEY_TYPE::LBUTTON))
+                m_eCurState = STATE::skill_1100;
+
+            Use_Skill();
+        }
     }
 }
 
@@ -488,17 +496,28 @@ void Yeonhee_FSM::b_run()
     else
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
-    if (KEYPUSH(KEY_TYPE::LSHIFT))
+    if (g_bIsCanMouseMove || g_bCutScene)
     {
-        if (m_iCurFrame == 1)
-            m_eCurState = STATE::b_sprint;
-
+        if (m_iCurFrame % 2 == 0)
+            m_eCurState = STATE::b_run_end_r;
+        else
+            m_eCurState = STATE::b_run_end_l;
     }
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
-   
-    Use_Skill();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYPUSH(KEY_TYPE::LSHIFT))
+        {
+            if (m_iCurFrame == 1)
+                m_eCurState = STATE::b_sprint;
+
+        }
+
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
+
+        Use_Skill();
+    }
 }
 
 void Yeonhee_FSM::b_run_Init()
@@ -525,11 +544,13 @@ void Yeonhee_FSM::b_run_end_r()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
-   
-    Use_Skill();
+        Use_Skill();
+    }
 }
 
 void Yeonhee_FSM::b_run_end_r_Init()
@@ -557,11 +578,13 @@ void Yeonhee_FSM::b_run_end_l()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
-    
-    Use_Skill();
+        Use_Skill();
+    }
 }
 
 void Yeonhee_FSM::b_run_end_l_Init()
@@ -600,16 +623,27 @@ void Yeonhee_FSM::b_sprint()
     else
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
-    if (!KEYPUSH(KEY_TYPE::LSHIFT))
+    if (g_bIsCanMouseMove || g_bCutScene)
     {
-        if (m_iCurFrame < 1 || m_iCurFrame > 13)
-            m_eCurState = STATE::b_run;
+        if (m_iCurFrame % 2 == 0)
+            m_eCurState = STATE::b_run_end_r;
+        else
+            m_eCurState = STATE::b_run_end_l;
     }
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
-    
-    Use_Skill();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (!KEYPUSH(KEY_TYPE::LSHIFT))
+        {
+            if (m_iCurFrame < 1 || m_iCurFrame > 13)
+                m_eCurState = STATE::b_run;
+        }
+
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
+
+        Use_Skill();
+    }
 }
 
 void Yeonhee_FSM::b_sprint_Init()
@@ -662,6 +696,8 @@ void Yeonhee_FSM::airborne_start_Init()
 
     m_bInvincible = false;
     m_bSuperArmor = true;
+
+    Get_CharacterController()->Add_Velocity(6.f);
 }
 
 void Yeonhee_FSM::airborne_end()
@@ -906,9 +942,13 @@ void Yeonhee_FSM::skill_1100()
     _float3 vInputVector = Get_InputDirVector();
     Get_Transform()->Go_Dir(vInputVector* m_fRunSpeed * 0.3f * fDT);
 
-    if (Check_Combo(22, KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1200;
-    
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (Check_Combo(22, KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1200;
+
+        Use_Skill();
+    }
 
     if (Is_AnimFinished())
     {
@@ -918,7 +958,6 @@ void Yeonhee_FSM::skill_1100()
         m_eCurState = STATE::b_idle;
     }
 
-    Use_Skill();
 }
 
 void Yeonhee_FSM::skill_1100_Init()
@@ -970,9 +1009,13 @@ void Yeonhee_FSM::skill_1200()
 	_float3 vInputVector = Get_InputDirVector();
 	Get_Transform()->Go_Dir(vInputVector * m_fRunSpeed * 0.3f * fDT);
 
-	if (Check_Combo(23, KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1300;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (Check_Combo(23, KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1300;
 
+        Use_Skill();
+    }
 
     if (Is_AnimFinished())
     {
@@ -982,7 +1025,6 @@ void Yeonhee_FSM::skill_1200()
         m_eCurState = STATE::b_idle;
     }
 
-	Use_Skill();
 }
 
 void Yeonhee_FSM::skill_1200_Init()
@@ -1046,7 +1088,8 @@ void Yeonhee_FSM::skill_1300()
         m_eCurState = STATE::b_idle;
     }
 
-	Use_Skill();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+	    Use_Skill();
 }
 
 void Yeonhee_FSM::skill_1300_Init()
@@ -1168,8 +1211,8 @@ void Yeonhee_FSM::skill_100100()
         m_eCurState = STATE::skill_100100_e;
     }
 
-
-    Use_Dash();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+        Use_Dash();
 }
 
 void Yeonhee_FSM::skill_100100_Init()
@@ -1259,7 +1302,8 @@ void Yeonhee_FSM::skill_200100()
         m_eCurState = STATE::b_idle;
     }
 
-    Use_Dash();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+        Use_Dash();
 }
 
 void Yeonhee_FSM::skill_200100_Init()
@@ -1361,8 +1405,8 @@ void Yeonhee_FSM::skill_400100()
 		m_eCurState = STATE::b_idle;
 	}
 
-
-	Use_Dash();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+	    Use_Dash();
 }
 
 void Yeonhee_FSM::skill_400100_Init()

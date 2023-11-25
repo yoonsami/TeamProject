@@ -12,6 +12,9 @@
 #include "UiTargetLockOn.h"
 #include "UiMonsterHp.h"
 
+_bool g_bCutScene = false;
+
+
 MainCameraScript::MainCameraScript(shared_ptr<GameObject> pPlayer)
 {
     m_pPlayer = pPlayer;

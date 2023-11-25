@@ -10,7 +10,6 @@ public:
 	{
 		n_idle,
 		talk_01,
-		Intro, //skill 901100 motion
 
 
 		b_idle,
@@ -47,11 +46,6 @@ public:
 		skill_300100, // Skill 3
 		skill_400100, // Skill 4
 		skill_501100, // Skill 5
-		skill_901000,
-		skill_901100,
-		skill_902100,
-		skill_903100,
-		skill_904100,
 
 		NONE
 	};
@@ -76,13 +70,11 @@ private:
 	virtual void AttackCollider_Off() override;
 	virtual void Set_State(_uint iIndex) override;
 
-
+	
 	void n_idle();
 	void n_idle_Init();
 	void talk_01();
 	void talk_01_Init();
-	void Intro();
-	void Intro_Init();
 
 
 	void b_idle();
@@ -193,6 +185,8 @@ private:
 	_bool m_bCounter = false;
 	_bool m_bSetPattern = false;
 	_bool m_bEvade = false;
+	_bool m_bCreateUI = false;
+
 
 	_uint m_iGroggy_Gauge = 0;
 	_uint m_iPreAttack = 100;

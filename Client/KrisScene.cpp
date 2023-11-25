@@ -124,7 +124,7 @@ void KrisScene::Final_Tick()
 
 		scene->Set_StaticObjects(m_StaticObject);
 		SCENE.Change_Scene(scene);
-
+		g_bCutScene = false;
 	}
 }
 
@@ -157,15 +157,16 @@ HRESULT KrisScene::Load_Scene()
 	Load_Camera(player);
 	Load_MapFile(L"KrisMap", player);
 
-	Load_Monster(2, L"Silversword_Soldier", player);
+	/*Load_Monster(2, L"Silversword_Soldier", player);
 	Load_Monster(2, L"Succubus_Scythe", player);
 	Load_Monster(2, L"Undead_Priest", player);
 	Load_Monster(1, L"Alpaca_White", player);
 	Load_Monster(1, L"Alpaca_Brown", player);
-	Load_Monster(1, L"Alpaca_Black", player);
+	Load_Monster(1, L"Alpaca_Black", player);*/
 	Load_Monster(3, L"Wolf", player);
 
 	//Load_Boss_Spike(player);				
+	Load_Boss_Dellons(player);				
 
 
 	Load_Ui(player);

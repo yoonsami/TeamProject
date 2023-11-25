@@ -10,7 +10,7 @@
 #include "Model.h"
 #include "YeopoHorse_FSM.h"
 #include "CoolTimeCheckScript.h"
-
+#include "CharacterController.h"
 
 Yeopo_FSM::Yeopo_FSM()
 {
@@ -451,21 +451,24 @@ void Yeopo_FSM::b_idle()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
-        KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
-        m_eCurState = STATE::b_run_start;
-
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
-    
-    Use_Skill();
-
-    if (KEYPUSH(KEY_TYPE::V))
+    if (!g_bIsCanMouseMove && !g_bCutScene)
     {
-        if (!m_bRidingCoolCheck)
+        if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
+            KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
+            m_eCurState = STATE::b_run_start;
+
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
+
+        Use_Skill();
+
+        if (KEYPUSH(KEY_TYPE::V))
         {
-            Create_Vehicle();
-            m_eCurState = STATE::SQ_RideHorse_Idle;
+            if (!m_bRidingCoolCheck)
+            {
+                Create_Vehicle();
+                m_eCurState = STATE::SQ_RideHorse_Idle;
+            }
         }
     }
 }
@@ -513,10 +516,13 @@ void Yeopo_FSM::b_run_start()
 
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
-        if (KEYTAP(KEY_TYPE::LBUTTON))
-            m_eCurState = STATE::skill_1100;
-       
-        Use_Skill();
+        if (!g_bIsCanMouseMove && !g_bCutScene)
+        {
+            if (KEYTAP(KEY_TYPE::LBUTTON))
+                m_eCurState = STATE::skill_1100;
+
+            Use_Skill();
+        }
     }
 }
 
@@ -558,17 +564,27 @@ void Yeopo_FSM::b_run()
     else
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
-    if (KEYPUSH(KEY_TYPE::LSHIFT))
+    if (g_bIsCanMouseMove || g_bCutScene)
     {
-        if ((m_iCurFrame == 1))
-            m_eCurState = STATE::b_sprint;
+        if (m_iCurFrame % 2 == 0)
+            m_eCurState = STATE::b_run_end_r;
+        else
+            m_eCurState = STATE::b_run_end_l;
     }
 
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYPUSH(KEY_TYPE::LSHIFT))
+        {
+            if ((m_iCurFrame == 1))
+                m_eCurState = STATE::b_sprint;
+        }
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
 
-    Use_Skill();
+        Use_Skill();
+    }
 }
 
 void Yeopo_FSM::b_run_Init()
@@ -597,10 +613,13 @@ void Yeopo_FSM::b_run_end_r()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
 
-    Use_Skill();
+        Use_Skill();
+    }
 }
 
 void Yeopo_FSM::b_run_end_r_Init()
@@ -630,10 +649,13 @@ void Yeopo_FSM::b_run_end_l()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
 
-    Use_Skill();
+        Use_Skill();
+    }
 }
 
 void Yeopo_FSM::b_run_end_l_Init()
@@ -674,16 +696,27 @@ void Yeopo_FSM::b_sprint()
     else
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
-    if (!KEYPUSH(KEY_TYPE::LSHIFT))
+    if (g_bIsCanMouseMove || g_bCutScene)
     {
-        if (m_iCurFrame < 1 || m_iCurFrame > 13)
-            m_eCurState = STATE::b_run;
+        if (m_iCurFrame % 2 == 0)
+            m_eCurState = STATE::b_run_end_r;
+        else
+            m_eCurState = STATE::b_run_end_l;
     }
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (!KEYPUSH(KEY_TYPE::LSHIFT))
+        {
+            if (m_iCurFrame < 1 || m_iCurFrame > 13)
+                m_eCurState = STATE::b_run;
+        }
 
-    Use_Skill();
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
+
+        Use_Skill();
+    }
 }
 
 void Yeopo_FSM::b_sprint_Init()
@@ -736,6 +769,8 @@ void Yeopo_FSM::airborne_start_Init()
 
     m_bInvincible = false;
     m_bSuperArmor = true;
+
+    Get_CharacterController()->Add_Velocity(6.f);
 }
 
 void Yeopo_FSM::airborne_end()
@@ -956,9 +991,13 @@ void Yeopo_FSM::skill_1100()
     else if (m_iCurFrame == 19)
         AttackCollider_Off();
 
-    if (Check_Combo(15, KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1200;
-    
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (Check_Combo(15, KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1200;
+
+        Use_Skill();
+    }
 
     if (Get_FinalFrame() - m_iCurFrame < 6)
     {
@@ -969,7 +1008,6 @@ void Yeopo_FSM::skill_1100()
     }
 
 
-    Use_Skill();
 }
 
 void Yeopo_FSM::skill_1100_Init()
@@ -998,8 +1036,13 @@ void Yeopo_FSM::skill_1200()
     else if (m_iCurFrame == 17)
         AttackCollider_Off();
 
-	if (Check_Combo(15, KEY_TYPE::LBUTTON))
-		m_eCurState = STATE::skill_1300;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (Check_Combo(15, KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1300;
+
+        Use_Skill();
+    }
 
     if (Get_FinalFrame() - m_iCurFrame < 7)
     {
@@ -1011,7 +1054,6 @@ void Yeopo_FSM::skill_1200()
     }
 
 
-    Use_Skill();
 }
 
 void Yeopo_FSM::skill_1200_Init()
@@ -1057,9 +1099,13 @@ void Yeopo_FSM::skill_1300()
 
     Look_DirToTarget();
 
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (Check_Combo(45, KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1400;
 
-	if (Check_Combo(45, KEY_TYPE::LBUTTON))
-		m_eCurState = STATE::skill_1400;
+        Use_Skill();
+    }
 
     if (Get_FinalFrame() - m_iCurFrame < 6)
     {
@@ -1071,7 +1117,6 @@ void Yeopo_FSM::skill_1300()
     }
 
 
-    Use_Skill();
 }
 
 void Yeopo_FSM::skill_1300_Init()
@@ -1119,8 +1164,8 @@ void Yeopo_FSM::skill_1400()
         m_eCurState = STATE::b_idle;
     }
 
-
-    Use_Skill();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+        Use_Skill();
 }
 
 void Yeopo_FSM::skill_1400_Init()
@@ -1239,9 +1284,11 @@ void Yeopo_FSM::skill_100200()
 
     Look_DirToTarget();
 
-    if (Check_Combo(56, KEY_TYPE::KEY_1))
-        m_eCurState = STATE::skill_100300;
-	
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (Check_Combo(56, KEY_TYPE::KEY_1))
+            m_eCurState = STATE::skill_100300;
+    }
 
     if (Get_FinalFrame() - m_iCurFrame < 8)
     {
@@ -1289,7 +1336,8 @@ void Yeopo_FSM::skill_100300()
         m_eCurState = STATE::b_idle;
     }
 
-    Use_Dash();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+        Use_Dash();
 }
 
 void Yeopo_FSM::skill_100300_Init()
@@ -1332,8 +1380,8 @@ void Yeopo_FSM::skill_200100()
         m_eCurState = STATE::b_idle;
     }
 
-
-    Use_Dash();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+        Use_Dash();
 }
 
 void Yeopo_FSM::skill_200100_Init()
@@ -1367,9 +1415,13 @@ void Yeopo_FSM::skill_300100()
 
     Look_DirToTarget();
 
-    if (Check_Combo(65, KEY_TYPE::KEY_3))
-        m_eCurState = STATE::skill_300200;
-    
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (Check_Combo(65, KEY_TYPE::KEY_3))
+            m_eCurState = STATE::skill_300200;
+
+        Use_Dash();
+    }
 
     if (Get_FinalFrame() - m_iCurFrame <15)
     {
@@ -1378,7 +1430,6 @@ void Yeopo_FSM::skill_300100()
     }
 
 
-    Use_Dash();
 }
 
 void Yeopo_FSM::skill_300100_Init()
@@ -1410,18 +1461,19 @@ void Yeopo_FSM::skill_300200()
 
     Look_DirToTarget();
 
-    if (Check_Combo(25, KEY_TYPE::KEY_3))
-        m_eCurState = STATE::skill_300300;
-    
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (Check_Combo(25, KEY_TYPE::KEY_3))
+            m_eCurState = STATE::skill_300300;
+
+        Use_Dash();
+    }
 
     if (Get_FinalFrame() - m_iCurFrame < 15)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
     }
-
-
-    Use_Dash();
 }
 
 void Yeopo_FSM::skill_300200_Init()
@@ -1453,10 +1505,13 @@ void Yeopo_FSM::skill_300300()
 
     Look_DirToTarget();
 
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (Check_Combo(30, KEY_TYPE::KEY_3))
+            m_eCurState = STATE::skill_300400;
 
-    if (Check_Combo(30, KEY_TYPE::KEY_3))
-        m_eCurState = STATE::skill_300400;
-    
+        Use_Dash();
+    }
 
     if (Get_FinalFrame() - m_iCurFrame < 15)
     {
@@ -1465,7 +1520,6 @@ void Yeopo_FSM::skill_300300()
     }
 
 
-    Use_Dash();
 }
 
 void Yeopo_FSM::skill_300300_Init()
@@ -1500,8 +1554,8 @@ void Yeopo_FSM::skill_300400()
         m_eCurState = STATE::b_idle;
     }
 
-
-    Use_Dash();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+        Use_Dash();
 }
 
 void Yeopo_FSM::skill_300400_Init()
@@ -1622,8 +1676,8 @@ void Yeopo_FSM::skill_501100()
         m_eCurState = STATE::b_idle;
     }
 
-
-    Use_Dash();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+        Use_Dash();
 }
 
 void Yeopo_FSM::skill_501100_Init()
@@ -1648,12 +1702,15 @@ void Yeopo_FSM::SQ_RideHorse_Idle()
 {
     _float3 vInputVector = Get_InputDirVector();
 
-    if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
-        KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
-        m_eCurState = STATE::SQ_RideHorse_Run;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
+            KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
+            m_eCurState = STATE::SQ_RideHorse_Run;
 
-    if (KEYTAP(KEY_TYPE::V))
-        m_eCurState = STATE::SQ_RideHorse_End;
+        if (KEYTAP(KEY_TYPE::V))
+            m_eCurState = STATE::SQ_RideHorse_End;
+    }
 }
 
 void Yeopo_FSM::SQ_RideHorse_Idle_Init()

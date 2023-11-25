@@ -409,7 +409,9 @@ void Boss_Mir_FSM::First_Meet()
     if (m_bDetected)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimState(false);
-    
+        
+        g_bCutScene = true;
+
         if (m_iCurFrame >= 1 && m_iCurFrame < 90)
         {
             if (!m_pCamera.expired())
@@ -499,7 +501,10 @@ void Boss_Mir_FSM::sq_Intro2()
     }
 
     if (Is_AnimFinished())
+    {
+        g_bCutScene = false;
         m_eCurState = STATE::b_idle;
+    }
 }
 
 void Boss_Mir_FSM::sq_Intro2_Init()
