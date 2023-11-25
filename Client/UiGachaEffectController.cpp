@@ -40,7 +40,7 @@ void UiGachaEffectController::Tick()
     }
 }
 
-void UiGachaEffectController::Start_Effect(_float2 vPos)
+void UiGachaEffectController::Start_Effect(_float4 vPos)
 {
     if (true == m_pOwner.expired())
         return;
@@ -74,7 +74,8 @@ void UiGachaEffectController::Remove()
     //CUR_SCENE->Remove_GameObject(m_pOwner.lock());
     m_fCheckTime = 0.f;
     m_pOwner.lock()->Set_Render(false);
-    //m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
+    //m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;\
+
 }
 
 void UiGachaEffectController::Start()

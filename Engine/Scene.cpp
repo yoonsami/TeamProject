@@ -923,6 +923,9 @@ void Scene::PickUI()
 		if(!gameObject->Get_Button())
 			continue;
 
+		if (false == gameObject->Is_Render())
+			continue;
+
 		if (gameObject->Get_Button()->Picked(screenPt))
 			gameObject->Get_Button()->InvokeOnClicked();
 	}

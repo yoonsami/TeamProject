@@ -18,7 +18,7 @@ private:
     void Open();
 
 private:
-   enum class STATE { START, IDLE, OPEN };
+   enum class STATE { START, IDLE, OPEN, NONE };
    STATE            m_eState            = { STATE::START };
 
    _uint            m_iIndex            = { 0 };
