@@ -24,6 +24,7 @@ public:
     void                    Set_Lock(_bool bIsLocked) { m_bIsLocked = bIsLocked; }
     void                    Set_Loop(_bool bIsLoop) { m_tDesc.bIsLoop = bIsLoop; }
     void                    Set_ToolModeOn(_bool bIsToolMode) { m_bToolMode_On = bIsToolMode; }
+    void                    Set_RenderPriority(_int iPriority) { m_iRenderPriority = iPriority; }
 
     /* Getter */
     shared_ptr<Material>    Get_Material() { return m_pMaterial; }
@@ -35,6 +36,7 @@ public:
     const _float4x4&        Get_InitGroupMatrix() { return m_mInitGroupMatrix; }
     MeshEffectData::DESC&   Get_Desc() { return m_tDesc; }
     _float4x4               Get_LocalMatrix();
+    _int                    Get_RenderPriority() { return m_iRenderPriority; }
 
     void                    Translate();
     void                    Scaling();
@@ -123,5 +125,8 @@ private:
 
     /* Data to bind Shader */
     RenderParams                    m_RenderParams{};
+
+    /* Render Priority */
+    _int                            m_iRenderPriority = { 0 };
 
 };
