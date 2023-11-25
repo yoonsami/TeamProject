@@ -90,33 +90,21 @@ void HeroChangeScript::Change_Hero(HERO eHero)
 
 }
 
-void HeroChangeScript::Add_Character_Weapon(const wstring& weaponname)
+void HeroChangeScript::Change_Character_Weapon(const wstring& weaponname, shared_ptr<GameObject> weapon)
 {
     //Add. Player's Weapon
-    shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
-
-    ObjWeapon->Add_Component(make_shared<Transform>());
+  
     {
-        shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-
-        shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+       
+        shared_ptr<ModelRenderer> renderer = weapon->Get_ModelRenderer();;
         {
             shared_ptr<Model> model = RESOURCES.Get<Model>(weaponname);
             renderer->Set_Model(model);
         }
 
-        ObjWeapon->Add_Component(renderer);
-
-        WeaponScript::WEAPONDESC desc;
-        desc.strBoneName = L"Bip001-Prop1";
-        desc.matPivot = _float4x4::CreateRotationX(-XM_PI / 2.f) * _float4x4::CreateRotationZ(XM_PI);
-        desc.pWeaponOwner = m_pOwner;
-
-        ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
     }
-    ObjWeapon->Get_Transform()->Set_State(Transform_State::POS, _float4{ 0.f, -1000.f,0.f,1.f });
-    ObjWeapon->Set_Name(weaponname);
-    CUR_SCENE->Add_GameObject(ObjWeapon,true);
+    weapon->Set_Name(weaponname);
+    weapon->Get_ModelRenderer()->Set_RenderState(true);
 }
 
 void HeroChangeScript::Change_To_Input(HERO eHero)
@@ -124,7 +112,7 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
     if (m_pOwner.expired() || HERO::MAX == eHero)
         return;
 
-    m_pOwner.lock()->Get_FSM()->Reset_Weapon();
+    //m_pOwner.lock()->Get_FSM()->Reset_Weapon();
     m_pOwner.lock()->Get_FSM()->Reset_Vehicle();
 
 
@@ -143,6 +131,8 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
     shared_ptr<Model> model = RESOURCES.Get<Model>(tagData.ModelTag);
 
     m_pOwner.lock()->Get_Animator()->Set_Model(model);
+
+    auto weapon = m_pOwner.lock()->Get_FSM()->Get_Weapon();
 
     switch (eHero)
     {
@@ -183,10 +173,16 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
     }
 
 	m_pOwner.lock()->Get_FSM()->Set_AttackCollider(attackCollider);
-
+    m_pOwner.lock()->Get_FSM()->Set_Weapon(weapon);
     //Add. Player's Weapon
-    if(0 != tagData.WeaponTag.length())
-        Add_Character_Weapon(tagData.WeaponTag);
+
+    if(weapon && weapon->Get_ModelRenderer())
+	{
+		if (0 != tagData.WeaponTag.length())
+			Change_Character_Weapon(tagData.WeaponTag, weapon);
+		else
+            weapon->Get_ModelRenderer()->Set_RenderState(false);
+	}
 
     m_pOwner.lock()->Get_FSM()->Init();
 

@@ -56,9 +56,11 @@ protected:
 	_bool DeadCheck();
 
 public:
+	shared_ptr<GameObject> Get_Weapon() { return m_pWeapon.lock(); }
 	void Set_Target(shared_ptr<GameObject> pTarget);
 	void Set_Camera(shared_ptr<GameObject> pCamera);
 	void Set_Vehicle(shared_ptr<GameObject> pVehicle);
+	void Set_Weapon(shared_ptr<GameObject> pWeapon) { m_pWeapon = pWeapon; }
 	void Reset_Target();
 	void Reset_Weapon();
 	void Reset_Vehicle();

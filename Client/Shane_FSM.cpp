@@ -30,9 +30,7 @@ HRESULT Shane_FSM::Init()
             animator->Set_CurrentAnim(L"b_idle", true, 1.f);
             m_eCurState = STATE::b_idle;
         }
-        
-        m_pWeapon = CUR_SCENE->Get_GameObject(L"Weapon_Shane");
-
+ 
         //m_iDummy_CP_BoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Center");
         //m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
         //m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");

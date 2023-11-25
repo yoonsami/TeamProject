@@ -31,8 +31,6 @@ HRESULT Dellons_FSM::Init()
             animator->Set_CurrentAnim(L"b_idle", true, 1.f);
             m_eCurState = STATE::b_idle;
         }
-       
-        m_pWeapon = CUR_SCENE->Get_GameObject(L"Weapon_Dellons");
 
         m_pCamera = CUR_SCENE->Get_MainCamera();
 

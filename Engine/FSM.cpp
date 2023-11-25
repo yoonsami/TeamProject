@@ -463,8 +463,8 @@ void FSM::Reset_Target()
 
 void FSM::Reset_Weapon()
 {
-	if (!m_pWeapon.expired())
-		CUR_SCENE->Remove_GameObject(m_pWeapon.lock());
+	//if (!m_pWeapon.expired())
+	//	CUR_SCENE->Remove_GameObject(m_pWeapon.lock());
 }
 
 void FSM::Reset_Vehicle()

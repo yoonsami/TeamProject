@@ -32,8 +32,6 @@ HRESULT Player_FSM::Init()
             m_eCurState = STATE::b_idle;
         }
 
-        m_pWeapon = CUR_SCENE->Get_GameObject(L"Weapon_Player");
-
         m_iCenterBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Center");
         m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
         m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");

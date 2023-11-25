@@ -17,7 +17,7 @@ public:
     void Change_Hero(HERO eHero);
 
 private:
-    void Add_Character_Weapon(const wstring& weaponname);
+    void Change_Character_Weapon(const wstring& weaponname,shared_ptr<GameObject> weapon);
     void Change_To_Input(HERO eHero);
 
 };

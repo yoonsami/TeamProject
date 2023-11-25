@@ -14,6 +14,8 @@ YeopoHorse_FSM::YeopoHorse_FSM()
 
 YeopoHorse_FSM::~YeopoHorse_FSM()
 {
+    if (!m_pAttackCollider.expired())
+        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
 }
 
 HRESULT YeopoHorse_FSM::Init()
