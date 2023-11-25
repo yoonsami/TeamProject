@@ -1032,7 +1032,7 @@ void Kyle_FSM::skill_1400()
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::LOOK) * 3.f;
 
-		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f);
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.3f, desc, AIRBORNE_ATTACK, 10.f);
 	}
 
 	if (Is_AnimFinished())
@@ -1217,7 +1217,7 @@ void Kyle_FSM::skill_100200()
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.fMoveSpeed = 0.f;
-		desc.fLifeTime = 1.5f;
+		desc.fLifeTime = 0.5f;
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);

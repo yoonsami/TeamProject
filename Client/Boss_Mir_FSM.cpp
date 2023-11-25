@@ -447,9 +447,6 @@ void Boss_Mir_FSM::First_Meet()
     }
 
 
-    //if (!m_bDetected)
-    //    Reset_Frame();
-
     if (Is_AnimFinished())
         m_eCurState = STATE::sq_Intro2;
 }

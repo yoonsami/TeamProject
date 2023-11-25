@@ -157,13 +157,13 @@ HRESULT KrisScene::Load_Scene()
 	Load_Camera(player);
 	Load_MapFile(L"KrisMap", player);
 
-	//Load_Monster(1, L"Silversword_Soldier", player);
-	//Load_Monster(1, L"Succubus_Scythe", player);
-	//Load_Monster(1, L"Undead_Priest", player);
-	Load_Monster(10, L"Alpaca_White", player);
-	Load_Monster(10, L"Alpaca_Brown", player);
-	Load_Monster(10, L"Alpaca_Black", player);
-	//Load_Monster(5, L"Wolf", player);
+	Load_Monster(2, L"Silversword_Soldier", player);
+	Load_Monster(2, L"Succubus_Scythe", player);
+	Load_Monster(2, L"Undead_Priest", player);
+	Load_Monster(1, L"Alpaca_White", player);
+	Load_Monster(1, L"Alpaca_Brown", player);
+	Load_Monster(1, L"Alpaca_Black", player);
+	Load_Monster(3, L"Wolf", player);
 
 	//Load_Boss_Spike(player);				
 

@@ -271,7 +271,10 @@ shared_ptr<GameObject> FSM::Find_TargetInFrustum(_uint eType)
 	_float fMinDistSQ = FLT_MAX;
 	for (auto& gameObject : gameObjects)
 	{
-		if(gameObject->Get_ObjectGroup() != eType)
+		if (gameObject->Get_ObjectGroup() != eType)
+			continue;
+
+		if (gameObject->Get_CurHp() <= 0.f)
 			continue;
 
 		_float3 vOwnerPos = Get_Transform()->Get_State(Transform_State::POS).xyz();

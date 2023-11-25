@@ -421,9 +421,6 @@ void Player_FSM::b_idle()
 	if (KEYTAP(KEY_TYPE::LBUTTON))
 		m_eCurState = STATE::skill_1100;
 
-    if (KEYTAP(KEY_TYPE::Z))
-        Get_CharacterController()->Add_Velocity(5.f);
-
     Use_Skill();
 }
 
