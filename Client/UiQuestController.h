@@ -1,10 +1,10 @@
 #pragma once
 #include "MonoBehaviour.h"
 
-class UiDialogController : public MonoBehaviour
+class UiQuestController : public MonoBehaviour
 {
 public:
-    UiDialogController();
+    UiQuestController();
 
 public:
     virtual HRESULT Init() override;
@@ -12,7 +12,6 @@ public:
 
     void Create_Dialog(NPCTYPE eType);
     void Next_Dialog();
-    void Clear_Quest();
 
 private:
     void Remove_Dialog();
@@ -27,6 +26,7 @@ private:
     weak_ptr<GameObject> m_pUiCurQuest;
     weak_ptr<GameObject> m_pUiCurQuestName;
     weak_ptr<GameObject> m_pUiCurQuestInfo;
+    weak_ptr<GameObject> m_pUiCurQuestCount;
 
     weak_ptr<GameObject> m_pNext;
     weak_ptr<GameObject> m_pNpcName;
@@ -41,13 +41,6 @@ private:
     _float          m_fMaxTime          = {};
     _float          m_fSpeed            = {};
 
-    _uint           m_iMaxQuestCount    = {};
-    _uint           m_iQuestCount       = {};
-    _uint           m_iCurIndex         = {};
-    _uint           m_iMaxIndex         = {};
     _bool           m_bIsCreated        = {};
-    _bool           m_bIsClear          = {};
-    _bool           m_bIsDialogEnd      = {};
-    _bool           m_bIsStoryEnd       = {};
 };
 

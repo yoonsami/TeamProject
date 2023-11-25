@@ -60,9 +60,8 @@
 #include "UIBossHpBar.h"
 #include "UiComboEffect.h"
 #include "UiSkillGauge.h"
-#include"UiDialogController.h"
 #include "UIInteraction.h"
-#include "UiDialogController.h"
+#include "UiQuestController.h"
 
 #include <filesystem>
 #include "GachaScene.h"
@@ -110,7 +109,7 @@ void GranseedScene::Tick()
 	if (KEYTAP(KEY_TYPE::Z))
 	{
 		auto pObj = Get_UI(L"UI_Dialog_Controller");
-		pObj->Get_Script<UiDialogController>()->Clear_Quest();
+		//pObj->Get_Script<UiQuestController>()->Clear_Quest();
 	}
 }
 
@@ -459,7 +458,7 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		auto pObj = make_shared<GameObject>();
 		pObj->Set_Name(L"UI_Dialog_Controller");
 
-		auto pScript = make_shared<UiDialogController>();
+		auto pScript = make_shared<UiQuestController>();
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);

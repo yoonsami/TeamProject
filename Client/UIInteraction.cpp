@@ -4,7 +4,7 @@
 #include "BaseUI.h"
 #include "FontRenderer.h"
 #include "UiGachaController.h"
-#include "UiDialogController.h"
+#include "UiQuestController.h"
 
 UIInteraction::UIInteraction()
 {
@@ -79,7 +79,7 @@ void UIInteraction::Create_Interaction(NPCTYPE eType)
                 {
                     if (false == pObj.expired())
                     {
-                        pObj.lock()->Get_Script<UiDialogController>()->Create_Dialog(eType);
+                        pObj.lock()->Get_Script<UiQuestController>()->Create_Dialog(eType);
                         this->Remove_Interaction();
                     }
                 });

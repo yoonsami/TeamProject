@@ -1,16 +1,16 @@
 #include "pch.h"
-#include "UiDialogController.h" 
+#include "UiQuestController.h" 
 
 #include "BaseUI.h"
 #include "MeshRenderer.h"
 #include "FontRenderer.h"
 #include "MainUiController.h"
 
-UiDialogController::UiDialogController()
+UiQuestController::UiQuestController()
 {
 }
 
-HRESULT UiDialogController::Init()
+HRESULT UiQuestController::Init()
 {
     if (m_pOwner.expired())
         return E_FAIL;
@@ -29,15 +29,12 @@ HRESULT UiDialogController::Init()
     m_pUiCurQuest =         pScene->Get_UI(L"UI_Cur_Quest");
     m_pUiCurQuestName =     pScene->Get_UI(L"UI_Cur_Quest_Name");
     m_pUiCurQuestInfo =     pScene->Get_UI(L"UI_Cur_Quest_Info");
-
-    m_iMaxQuestCount = GET_QUEST_COUNT;
-    m_bIsClear = true;
-    m_bIsDialogEnd = false;
+    m_pUiCurQuestCount =    pScene->Get_UI(L"UI_Cur_Quest_Count");
 
     return S_OK;
 }
 
-void UiDialogController::Tick()
+void UiQuestController::Tick()
 {
 	if (true == m_pOwner.expired()      ||
         true == m_pNext.expired()       ||
@@ -51,19 +48,10 @@ void UiDialogController::Tick()
     Move_Next();
 }
 
-void UiDialogController::Create_Dialog(NPCTYPE eType)
+void UiQuestController::Create_Dialog(NPCTYPE eType)
 {
     if (true == m_bIsCreated)
         return;
-
-    if (true == m_bIsStoryEnd)
-        return;
-
-    if (m_iMaxQuestCount == m_iQuestCount)
-        return;
-
-    if(true == m_bIsClear)
-        Set_Render_Off();
 
     m_bIsCreated = true;
     auto pScene = CUR_SCENE;
@@ -94,7 +82,6 @@ void UiDialogController::Create_Dialog(NPCTYPE eType)
 
     if (false == m_pNpcName.expired())
     {
-
         // npc type 정하기
         wstring strNpcName = GET_NPC_NAME(eType);
         m_pNpcName.lock()->Get_FontRenderer()->Get_Text() = strNpcName;
@@ -103,22 +90,9 @@ void UiDialogController::Create_Dialog(NPCTYPE eType)
         m_pNpcName.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
     }
     
-    if (false == m_bIsClear)
+    if (false == m_pNpcDialog.expired())
     {
-        m_iMaxIndex = GET_DIALOG_COUNT(static_cast<QUESTDIALOG>(m_iQuestCount));
-
-        m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = GET_MO_CLEAR(static_cast<QUESTDIALOG>(m_iQuestCount));
-        m_pNpcDialog.lock()->Get_FontRenderer()->Set_TimePerChar(0.05f);
-    }
-
-    else if (false == m_pNpcDialog.expired())
-    {
-        m_bIsClear = false;
-        m_bIsDialogEnd = false;
-        // Get Npc Dialog
-        m_iMaxIndex = GET_DIALOG_COUNT(static_cast<QUESTDIALOG>(m_iQuestCount));
-
-        m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = GET_DIALOG(static_cast<QUESTDIALOG>(m_iQuestCount), m_iCurIndex);
+        m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = L"";
         m_pNpcDialog.lock()->Get_FontRenderer()->Set_TimePerChar(0.05f);
     }
 
@@ -135,7 +109,7 @@ void UiDialogController::Create_Dialog(NPCTYPE eType)
 
 }
 
-void UiDialogController::Remove_Dialog()
+void UiQuestController::Remove_Dialog()
 {
     if (false == m_pNext.expired()      ||
         false == m_pNpcName.expired()   ||
@@ -155,72 +129,12 @@ void UiDialogController::Remove_Dialog()
     }
 }
 
-void UiDialogController::Next_Dialog()
+void UiQuestController::Next_Dialog()
 {
-    if (false == m_pNpcDialog.lock()->Get_FontRenderer()->Is_Finished())
-    {
-        m_pNpcDialog.lock()->Get_FontRenderer()->Set_Finished();
-        return;
-    }
-
-    if (false == m_bIsClear && true == m_bIsDialogEnd)
-    {
-        Remove_Dialog();
-        if (false == m_pUiTotalController.expired())
-            m_pUiTotalController.lock()->Get_Script<MainUiController>()->Set_MainUI_Render(true);
-        return;
-    }
-
-    ++m_iCurIndex;
-    if (m_iMaxIndex == m_iCurIndex)
-    {
-        
-
-        m_iCurIndex = 0;
-        Remove_Dialog();
-        m_bIsDialogEnd = true;
-
-        if (false == m_pUiTotalController.expired())
-            m_pUiTotalController.lock()->Get_Script<MainUiController>()->Set_MainUI_Render(true);
-
-        if (m_iMaxQuestCount - 1 == m_iQuestCount)
-            m_bIsStoryEnd = true;
-
-        Set_Cur_Quest();
-        
-        return;
-    }
-
-    if (false == m_pNpcDialog.expired())
-    {
-        // Get Npc Dialog
-        m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = GET_DIALOG(static_cast<QUESTDIALOG>(m_iQuestCount), m_iCurIndex);
-        m_pNpcDialog.lock()->Get_FontRenderer()->Set_TimePerChar(0.05f);
-    }
+    
 }
 
-void UiDialogController::Clear_Quest()
-{
-    if (true == m_pUiCurQuest.expired() ||
-        true == m_pUiCurQuestName.expired() ||
-        true == m_pUiCurQuestInfo.expired())
-        return;
-
-    if (m_iMaxQuestCount == m_iQuestCount)
-        return;
-
-    m_pUiCurQuest.lock()->Set_Render(true);
-    m_pUiCurQuestName.lock()->Set_Render(true);
-    m_pUiCurQuestInfo.lock()->Set_Render(true);
-
-    m_pUiCurQuestName.lock()->Get_FontRenderer()->Get_Text() = GET_CUR_QUEST_NAME(static_cast<QUESTDIALOG>(m_iQuestCount));
-    m_pUiCurQuestInfo.lock()->Get_FontRenderer()->Get_Text() = GET_CUR_QUEST_CLEAR(static_cast<QUESTDIALOG>(m_iQuestCount));
-
-    m_bIsClear = true;
-    ++m_iQuestCount;
-}
-
-void UiDialogController::Move_Next()
+void UiQuestController::Move_Next()
 {
     switch (m_eState)
     {
@@ -233,7 +147,7 @@ void UiDialogController::Move_Next()
     }
 }
 
-void UiDialogController::Next_Down()
+void UiQuestController::Next_Down()
 {
     m_fCheckTime += fDT;
     if (m_fMaxTime < m_fCheckTime)
@@ -250,7 +164,7 @@ void UiDialogController::Next_Down()
     m_pNext.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
 }
 
-void UiDialogController::Next_Up()
+void UiQuestController::Next_Up()
 {
     m_fCheckTime += fDT;
     if (m_fMaxTime < m_fCheckTime)
@@ -267,28 +181,26 @@ void UiDialogController::Next_Up()
     m_pNext.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
 }
 
-void UiDialogController::Set_Cur_Quest()
+void UiQuestController::Set_Cur_Quest()
 {
     if (true == m_pUiCurQuest.expired() ||
         true == m_pUiCurQuestName.expired() ||
         true == m_pUiCurQuestInfo.expired())
         return;
 
-    if (true == m_bIsStoryEnd)
-    {
-        Set_Render_Off();
-        return;
-    }
-
     m_pUiCurQuest.lock()->Set_Render(true);
     m_pUiCurQuestName.lock()->Set_Render(true);
     m_pUiCurQuestInfo.lock()->Set_Render(true);
+    
+    m_pUiCurQuestName.lock()->Get_FontRenderer()->Get_Text() = L"";
+    m_pUiCurQuestInfo.lock()->Get_FontRenderer()->Get_Text() = L"";
 
-    m_pUiCurQuestName.lock()->Get_FontRenderer()->Get_Text() = GET_CUR_QUEST_NAME(static_cast<QUESTDIALOG>(m_iQuestCount));
-    m_pUiCurQuestInfo.lock()->Get_FontRenderer()->Get_Text() = GET_CUR_QUEST_INFO(static_cast<QUESTDIALOG>(m_iQuestCount));
+    //마리수 띄워야 할경우 판단하기
+    m_pUiCurQuestCount.lock()->Set_Render(true);
+    m_pUiCurQuestCount.lock()->Get_FontRenderer()->Get_Text() = L"";
 }
 
-void UiDialogController::Set_Render_Off()
+void UiQuestController::Set_Render_Off()
 {
     if (true == m_pUiCurQuest.expired() ||
         true == m_pUiCurQuestName.expired() ||
@@ -298,4 +210,5 @@ void UiDialogController::Set_Render_Off()
     m_pUiCurQuest.lock()->Set_Render(false);
     m_pUiCurQuestName.lock()->Set_Render(false);
     m_pUiCurQuestInfo.lock()->Set_Render(false);
+    m_pUiCurQuestCount.lock()->Set_Render(false);
 }
