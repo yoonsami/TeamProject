@@ -694,7 +694,7 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 		_float3 CullPos = _float3{ 0.f, 0.f, 0.f };
 		_float CullRadius = { 0.f };
 		// CullMode
-		_bool bCullNone = false;
+		_char bCullNone = 0;
 		// Dummy
 		_float4x4 matDummyData = _float4x4::Identity;
 
@@ -732,7 +732,7 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 		}
 		file->Read<_float3>(CullPos);
 		file->Read<_float>(CullRadius);
-		file->Read<_bool>(bCullNone);
+		file->Read<_char>(bCullNone);
 		file->Read<_float4x4>(matDummyData);
 
 // 오브젝트 생성
@@ -770,10 +770,9 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 			CreateObject->Add_Component(renderer);
 			renderer->Set_Model(model);
 			// 컬방향
-			if (bCullNone)
-				renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT_CULLNONE);
-			else
-				renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT);
+
+				renderer->Set_PassType((ModelRenderer::INSTANCE_PASSTYPE)bCullNone);
+
 			renderer->SetVec4(0, _float4(fUVWeight,0,0,0));
 			CreateObject->Set_FrustumCulled(true);
 		}
