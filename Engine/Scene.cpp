@@ -92,6 +92,7 @@ void Scene::Final_Tick()
 
 void Scene::Render()
 {
+	system_clock::time_point start_time = system_clock::now();
 	if (KEYTAP(KEY_TYPE::F6))
 		int a = 0;
 	Gather_LightData();
@@ -161,7 +162,23 @@ void Scene::Render()
 	Render_ToneMapping();
 
 	Render_UI();
+	system_clock::time_point end_time = system_clock::now();
 
+	nanoseconds nano = end_time - start_time;
+	if (KEYTAP(KEY_TYPE::F1))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F2))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F3))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F4))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F5))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F6))
+		int a = 0;
+	if (KEYTAP(KEY_TYPE::F7))
+		int a = 0;
 }
 
 HRESULT Scene::Load_Scene()
