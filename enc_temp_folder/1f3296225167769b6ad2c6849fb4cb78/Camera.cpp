@@ -76,15 +76,21 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 		if (gameObject->Get_MeshRenderer() == nullptr
 			&& gameObject->Get_ModelRenderer() == nullptr
 			&& gameObject->Get_Animator() == nullptr
+			//&& gameObject->Get_EffectRenderer() == nullptr
 			&& gameObject->Get_DistortionRenderer() == nullptr
 			&& gameObject->Get_Particle() == nullptr
 			&& gameObject->Get_TrailRenderer() == nullptr
 			&& gameObject->Get_MotionTrailRenderer() == nullptr
-			&& gameObject->Get_FontRenderer() == nullptr
-			&& ((m_bEffectToolMode_On && gameObject->Get_MeshEffect() == nullptr) ||
-			    (!m_bEffectToolMode_On && gameObject->Get_GroupEffect() == nullptr))
-			)
-			continue;
+			&& gameObject->Get_FontRenderer() == nullptr)
+		{
+			//if((m_bEffectToolMode_On && gameObject->Get_MeshEffect() == nullptr) || 
+			//   (!m_bEffectToolMode_On && gameObject->Get_GroupEffect() == nullptr))
+			//	continue;
+			if (m_bEffectToolMode_On && gameObject->Get_MeshEffect() == nullptr)
+				continue;
+			else if (!m_bEffectToolMode_On && gameObject->Get_GroupEffect() == nullptr)
+				continue;
+		}
 
 		if (IsCulled(gameObject->Get_LayerIndex()))
 			continue;
@@ -272,6 +278,8 @@ void Camera::Render_Forward()
 	S_View = m_matView;
 	S_Proj = m_matProj;
 
+
+	
 	for (auto& trail : m_Trails)
 	{
 		if (trail->Get_TrailRenderer())
@@ -325,7 +333,7 @@ void Camera::Render_Forward()
 			if (obj->Get_MeshEffect())
 				obj->Get_MeshEffect()->Render();
 		}
-		else
+		else if (!m_bEffectToolMode_On)
 		{
 			if (obj->Get_GroupEffect())
 				obj->Get_GroupEffect()->Render();
