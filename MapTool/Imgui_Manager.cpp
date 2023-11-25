@@ -465,22 +465,27 @@ void ImGui_Manager::Frame_SelcetObjectManager()
         if(m_pMapObjects[m_iObjects]->Get_ModelRenderer() != nullptr)
         {
             // CullNone여부 판단
-            if (ImGui::Checkbox("##bCullNone", &CurObjectDesc.bCullNone))
+            _int passType = _int(CurObjectDesc.bCullNone);
+            if (ImGui::InputInt("##bCullNone", &passType))
             {
+                if (passType < 0) passType = 0;
+                if (passType > ModelRenderer::INSTANCE_PASSTYPE::PASS_DEFAULT) passType = ModelRenderer::INSTANCE_PASSTYPE::PASS_DEFAULT;
+                CurObjectDesc.bCullNone = _char(passType);
                 for (_int i = 0; i < m_pMapObjects.size(); ++i)
                 {
                     MapObjectScript::MAPOBJDESC& tempDesc = m_pMapObjects[i]->Get_Script<MapObjectScript>()->Get_DESC();
                     if (CurObjectDesc.strName == tempDesc.strName)
                     {
                         tempDesc.bCullNone = CurObjectDesc.bCullNone;
-                        if (CurObjectDesc.bCullNone)
+                        m_pMapObjects[i]->Get_ModelRenderer()->Set_PassType((ModelRenderer::INSTANCE_PASSTYPE)CurObjectDesc.bCullNone);
+                        /*if (CurObjectDesc.bCullNone)
                         {
                             m_pMapObjects[i]->Get_ModelRenderer()->Set_PassType(ModelRenderer::PASS_MAPOBJECT_CULLNONE);
                         }
                         else
                         {
                             m_pMapObjects[i]->Get_ModelRenderer()->Set_PassType(ModelRenderer::PASS_MAPOBJECT);
-                        }
+                        }*/
                     }
                 }
             }
@@ -989,10 +994,9 @@ shared_ptr<GameObject> ImGui_Manager::Create_MapObject(MapObjectScript::MapObjec
         shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
         CreateObject->Add_Component(renderer);
         renderer->Set_Model(model);
-        if (CreateDesc.bCullNone)
-            renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT_CULLNONE);
-        else
-            renderer->Set_PassType(ModelRenderer::PASS_MAPOBJECT);
+
+        renderer->Set_PassType((ModelRenderer::INSTANCE_PASSTYPE)CreateDesc.bCullNone);
+
          renderer->SetVec4(0, _float4(CreateDesc.fUVWeight));
     }
 
@@ -1375,7 +1379,7 @@ HRESULT ImGui_Manager::Save_MapObject()
         }
         file->Write<_float3>(MapDesc.CullPos);
         file->Write<_float>(MapDesc.CullRadius);
-        file->Write<_bool>(MapDesc.bCullNone);
+        file->Write<_char>(MapDesc.bCullNone);
 
         file->Write<_float4x4>(MapDesc.matDummyData);
     }
@@ -1601,7 +1605,7 @@ HRESULT ImGui_Manager::Load_MapObject()
         }
         file->Read<_float3>(MapDesc.CullPos);
         file->Read<_float>(MapDesc.CullRadius);
-        file->Read<_bool>(MapDesc.bCullNone);
+        file->Read<_char>(MapDesc.bCullNone);
         file->Read<_float4x4>(MapDesc.matDummyData);
         
         shared_ptr<GameObject> CreateObject = Create_MapObject(MapDesc);

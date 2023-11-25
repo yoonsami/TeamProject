@@ -64,19 +64,37 @@ void ModelRenderer::Render()
 		mesh->indexBuffer->Push_Data();
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		int techniqueIndex = CUR_SCENE->g_bPBR_On ? 4 : 0;
-		if (m_ePassType == PASS_MAPOBJECT)
+
+		switch (m_ePassType)
+		{
+		case ModelRenderer::PASS_MAPOBJECT:
 			m_pShader->DrawIndexed(techniqueIndex, PS_MAPOBJECT, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
-		else if(m_ePassType == PASS_MAPOBJECT_CULLNONE)
+
+			break;
+		case ModelRenderer::PASS_MAPOBJECT_CULLNONE:
 			m_pShader->DrawIndexed(techniqueIndex, PS_MAPOBJECT_CULLNONE, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
-		else if (m_bCullNone)
+
+			break;
+		case ModelRenderer::PASS_MAPOBJECT_WORLDNORMAL:
+			m_pShader->DrawIndexed(techniqueIndex, PS_MAPOBJECT_WORLDNORMAL, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
+
+			break;
+		case ModelRenderer::PASS_MAPOBJECT_WORLDNORMAL_CULLNONE:
+			m_pShader->DrawIndexed(techniqueIndex, PS_MAPOBJECT_CULLNONE_WORLDNORMAL, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
+
+			break;
+		case ModelRenderer::PASS_DEFAULT:
 		{
-			m_pShader->DrawIndexed(techniqueIndex, PS_NONANIM_CULLNONE, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
+			if(m_bCullNone)
+				m_pShader->DrawIndexed(techniqueIndex, PS_NONANIM_CULLNONE, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
+			else
+				m_pShader->DrawIndexed(techniqueIndex, PS_NONANIM, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
+
 		}
-		else
-		{
-			
-			m_pShader->DrawIndexed(techniqueIndex, PS_NONANIM, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
-		}		
+			break;
+
+		}
+
 	}
 }
 
@@ -123,16 +141,36 @@ void ModelRenderer::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		int techniqueIndex = CUR_SCENE->g_bPBR_On ? 4 : 0;
-		if (m_ePassType == PASS_MAPOBJECT)
+
+		switch (m_ePassType)
+		{
+		case ModelRenderer::PASS_MAPOBJECT:
 			m_pShader->DrawIndexedInstanced(techniqueIndex, PS_MAPOBJECT_INSTANCE, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
-		else if(m_ePassType == PASS_MAPOBJECT_CULLNONE)
+
+			break;
+		case ModelRenderer::PASS_MAPOBJECT_CULLNONE:
 			m_pShader->DrawIndexedInstanced(techniqueIndex, PS_MAPOBJECT_INSTANCE_CULLNONE, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
-		else if (m_bCullNone)
-			m_pShader->DrawIndexedInstanced(techniqueIndex, PS_NONANIM_CULLNONE_INSTANCE, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
-		else
-			m_pShader->DrawIndexedInstanced(techniqueIndex, PS_NONANIMINSTANCE, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
 
+			break;
+		case ModelRenderer::PASS_MAPOBJECT_WORLDNORMAL:
+			m_pShader->DrawIndexedInstanced(techniqueIndex, PS_MAPOBJECT_INSTANCE_WORLDNORMAL, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
 
+			break;
+		case ModelRenderer::PASS_MAPOBJECT_WORLDNORMAL_CULLNONE:
+			m_pShader->DrawIndexedInstanced(techniqueIndex, PS_MAPOBJECT_INSTANCE_CULLNONE_WORLDNORMAL, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
+
+			break;
+		case ModelRenderer::PASS_DEFAULT:
+		{
+			if (m_bCullNone)
+				m_pShader->DrawIndexedInstanced(techniqueIndex, PS_NONANIM_CULLNONE_INSTANCE, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
+			else
+				m_pShader->DrawIndexedInstanced(techniqueIndex, PS_NONANIMINSTANCE, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
+
+		}
+		break;
+
+		}
 	}
 }
 
