@@ -17,7 +17,8 @@ public:
 
     const wstring&      Get_Npc_Name(NPCTYPE eType)                         { return m_NpcName[IDX(eType)]; }
     
-    const wstring&      Get_Dialog(QUESTINDEX eIndex, _bool bHaveQuest, _bool bIsClear, _uint iIndex);
+    _uint               Get_Dialog_Size(QUESTINDEX eIndex, _bool bHaveQuest, _uint iIndex, _bool bIsClear = false);
+    const wstring&      Get_Dialog(QUESTINDEX eIndex, _bool bHaveQuest, _uint iIndex, _bool bIsClear = false);
     const QUESTDATA&    Get_Quest(QUESTINDEX eIndex)                        { return m_Quest[IDX(eIndex)]; }
 
 

@@ -109,7 +109,7 @@ void GranseedScene::Tick()
 	if (KEYTAP(KEY_TYPE::Z))
 	{
 		auto pObj = Get_UI(L"UI_Dialog_Controller");
-		//pObj->Get_Script<UiQuestController>()->Clear_Quest();
+		pObj->Get_Script<UiQuestController>()->Change_Value();
 	}
 }
 

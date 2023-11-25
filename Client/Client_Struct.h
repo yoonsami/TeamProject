@@ -86,5 +86,6 @@ typedef struct tagQuestData
 
 	wstring		Name;
 	wstring		Info;
+	wstring		Clear;
 
 }QUESTDATA;

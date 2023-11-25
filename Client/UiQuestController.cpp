@@ -20,7 +20,6 @@ HRESULT UiQuestController::Init()
 
     m_bIsInit = true;
 
-    m_bIsCreated = false;
     m_fSpeed = 20.f;
     m_fMaxTime = 1.f;
 
@@ -30,6 +29,10 @@ HRESULT UiQuestController::Init()
     m_pUiCurQuestName =     pScene->Get_UI(L"UI_Cur_Quest_Name");
     m_pUiCurQuestInfo =     pScene->Get_UI(L"UI_Cur_Quest_Info");
     m_pUiCurQuestCount =    pScene->Get_UI(L"UI_Cur_Quest_Count");
+
+    m_bIsCreated = false;
+    m_bHaveQuest = false;
+    m_iMaxIndex = m_iCurIndex = 0;
 
     return S_OK;
 }
@@ -79,6 +82,15 @@ void UiQuestController::Create_Dialog(NPCTYPE eType)
             m_pPlayerDialog = addedObj[i];
     }
 
+    if (true == m_bHaveQuest)
+        Set_Render(false);
+
+    // 매우 중요
+    // 현재 퀘스트 인덱스가 뭔지 얻어올 방법 마련해야함
+    // 매우 중요
+
+    if(false == m_bHaveQuest)
+        m_eIndex = QUESTINDEX::KILL_DELLONS;
 
     if (false == m_pNpcName.expired())
     {
@@ -89,24 +101,32 @@ void UiQuestController::Create_Dialog(NPCTYPE eType)
         vecPos.x = (strNpcName.length() / 2.f) * -28.f;
         m_pNpcName.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
     }
-    
     if (false == m_pNpcDialog.expired())
     {
-        m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = L"";
+        // 첫 대화 정하기
+        m_iMaxIndex = DATAMGR.Get_Dialog_Size(m_eIndex, m_bHaveQuest, m_iCurIndex, m_tagCurQuestData.IsClear);
+        m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = DATAMGR.Get_Dialog(m_eIndex, m_bHaveQuest, m_iCurIndex, m_tagCurQuestData.IsClear);
         m_pNpcDialog.lock()->Get_FontRenderer()->Set_TimePerChar(0.05f);
     }
-
     if (false == m_pNext.expired())
     {
+        // 버튼 실행 함수 지정
         m_pNext.lock()->Get_Button()->AddOnClickedEvent([&]()
             {
                 this->Next_Dialog();
             });
     }
-
     if (false == m_pUiTotalController.expired())
+    {
+        // 대화 하는 동안 다 끄기
         m_pUiTotalController.lock()->Get_Script<MainUiController>()->Set_MainUI_Render(false);
+    }
 
+
+}
+
+void UiQuestController::Clear_Quest()
+{
 }
 
 void UiQuestController::Remove_Dialog()
@@ -131,7 +151,86 @@ void UiQuestController::Remove_Dialog()
 
 void UiQuestController::Next_Dialog()
 {
+    // 인덱스 최대 비교후 미만이면 대화 가져오고 최대일때는 메인유아이 키고 다 지우기 
+    // 마지막일때 m_bHaveQuest = true;
+    // 퀘스트 가지게 되면 유아이에 띄워야함
+
+    ++m_iCurIndex;
+    if (m_iMaxIndex <= m_iCurIndex)
+    {
+        if (true == m_tagCurQuestData.IsClear)
+        {
+            Set_Render(false);
+            m_tagCurQuestData = QUESTDATA{};
+            m_bHaveQuest = false;
+        }
+        else if(false == m_bHaveQuest)
+        {
+            m_bHaveQuest = true;
+            m_tagCurQuestData = GET_QUEST(m_eIndex);
+            Set_Cur_Quest();
+        }
+        else if (true == m_bHaveQuest)
+        {
+            Set_Render(true);
+        }
+
+        m_iCurIndex = 0;
+        
+        Remove_Dialog();
+
+        if (false == m_pUiTotalController.expired())
+        {
+            m_pUiTotalController.lock()->Get_Script<MainUiController>()->Set_MainUI_Render(true);
+        }
+    }
+
+    else
+    {
+        m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = DATAMGR.Get_Dialog(m_eIndex, m_bHaveQuest, m_iCurIndex, m_tagCurQuestData.IsClear);
+        m_pNpcDialog.lock()->Get_FontRenderer()->Set_TimePerChar(0.05f);
+    }
+
+}
+
+void UiQuestController::Change_Value()
+{
+    if (true == m_tagCurQuestData.IsClear)
+        return;
+
+    // 개수 비교를 통해 클리어로 바꾼다음 info 클리어로 바꾸기
+    // 또는 그냥 클리어 문구로 바꾸기
+    // 개수 바뀌는건 문구도 바꿔야함
     
+
+    switch (m_tagCurQuestData.Type)
+    {
+    case QUESTTYPE::COLLECT:
+    case QUESTTYPE::HUNT:
+        ++m_tagCurQuestData.CurCount;
+        if (m_tagCurQuestData.MaxCount <= m_tagCurQuestData.CurCount)
+        {
+            m_tagCurQuestData.IsClear = true;
+            // 성공으로 바꾸기
+            m_pUiCurQuestInfo.lock()->Get_FontRenderer()->Get_Text() = m_tagCurQuestData.Clear;
+            m_pUiCurQuestCount.lock()->Set_Render(false);
+        }
+        else
+        {
+            // 개수 바꾼거 폰트도 바꾸기
+            wstring strTemp = to_wstring(m_tagCurQuestData.CurCount) + L" / " + to_wstring(m_tagCurQuestData.MaxCount);
+            m_pUiCurQuestCount.lock()->Get_FontRenderer()->Get_Text() = strTemp;
+        }
+        break;
+
+    case QUESTTYPE::BOSS:
+    case QUESTTYPE::ACT:
+        m_tagCurQuestData.IsClear = true;
+        m_pUiCurQuestInfo.lock()->Get_FontRenderer()->Get_Text() = m_tagCurQuestData.Clear;
+        // 성공으로 바꾸기
+        break;
+    }
+
 }
 
 void UiQuestController::Move_Next()
@@ -192,23 +291,29 @@ void UiQuestController::Set_Cur_Quest()
     m_pUiCurQuestName.lock()->Set_Render(true);
     m_pUiCurQuestInfo.lock()->Set_Render(true);
     
-    m_pUiCurQuestName.lock()->Get_FontRenderer()->Get_Text() = L"";
-    m_pUiCurQuestInfo.lock()->Get_FontRenderer()->Get_Text() = L"";
+    m_pUiCurQuestName.lock()->Get_FontRenderer()->Get_Text() = m_tagCurQuestData.Name;
+    m_pUiCurQuestInfo.lock()->Get_FontRenderer()->Get_Text() = m_tagCurQuestData.Info;
 
     //마리수 띄워야 할경우 판단하기
-    m_pUiCurQuestCount.lock()->Set_Render(true);
-    m_pUiCurQuestCount.lock()->Get_FontRenderer()->Get_Text() = L"";
+    if (QUESTTYPE::COLLECT == m_tagCurQuestData.Type || QUESTTYPE::HUNT == m_tagCurQuestData.Type)
+    {
+        m_pUiCurQuestCount.lock()->Set_Render(true);
+        wstring strTemp = to_wstring(0) + L" / " + to_wstring(m_tagCurQuestData.MaxCount);
+        m_pUiCurQuestCount.lock()->Get_FontRenderer()->Get_Text() = strTemp;
+    }
 }
 
-void UiQuestController::Set_Render_Off()
+void UiQuestController::Set_Render(_bool _bValue)
 {
     if (true == m_pUiCurQuest.expired() ||
         true == m_pUiCurQuestName.expired() ||
         true == m_pUiCurQuestInfo.expired())
         return;
 
-    m_pUiCurQuest.lock()->Set_Render(false);
-    m_pUiCurQuestName.lock()->Set_Render(false);
-    m_pUiCurQuestInfo.lock()->Set_Render(false);
-    m_pUiCurQuestCount.lock()->Set_Render(false);
+    m_pUiCurQuest.lock()->Set_Render(_bValue);
+    m_pUiCurQuestName.lock()->Set_Render(_bValue);
+    m_pUiCurQuestInfo.lock()->Set_Render(_bValue);
+    
+    if(QUESTTYPE::COLLECT == m_tagCurQuestData.Type || QUESTTYPE::HUNT == m_tagCurQuestData.Type)
+        m_pUiCurQuestCount.lock()->Set_Render(_bValue);
 }

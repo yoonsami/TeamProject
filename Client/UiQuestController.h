@@ -12,14 +12,16 @@ public:
 
     void Create_Dialog(NPCTYPE eType);
     void Next_Dialog();
+    void Change_Value();
 
 private:
+    void Clear_Quest();
     void Remove_Dialog();
     void Move_Next();
     void Next_Down();
     void Next_Up();
     void Set_Cur_Quest();
-    void Set_Render_Off();
+    void Set_Render(_bool _bValue);
 
 private:
     weak_ptr<GameObject> m_pUiTotalController;
@@ -41,6 +43,15 @@ private:
     _float          m_fMaxTime          = {};
     _float          m_fSpeed            = {};
 
+    QUESTINDEX      m_eIndex            = {};
+    QUESTDATA       m_tagCurQuestData   = {};
     _bool           m_bIsCreated        = {};
+    _bool           m_bHaveQuest        = {};
+    _uint           m_iMaxIndex         = {};
+    _uint           m_iCurIndex         = {};
+
+
+
+
 };
 

@@ -546,6 +546,7 @@ void DataMgr::Initialize()
         m_Quest[iIndex].MaxCount = 0;
         m_Quest[iIndex].Name = L"가챠 시도";
         m_Quest[iIndex].Info = L"가챠를 하세요";
+        m_Quest[iIndex].Clear = L"가챠 끗";
     }
 
     
@@ -569,6 +570,7 @@ void DataMgr::Initialize()
         m_Quest[iIndex].MaxCount = 10;
         m_Quest[iIndex].Name = L"kill alpha-car";
         m_Quest[iIndex].Info = L"알파카 학살자";
+        m_Quest[iIndex].Clear = L"알파카 컷";
     }
 
     
@@ -591,7 +593,8 @@ void DataMgr::Initialize()
         m_Quest[iIndex].CurCount = 0;
         m_Quest[iIndex].MaxCount = 0;
         m_Quest[iIndex].Name = L"델론즈 죽여";
-        m_Quest[iIndex].Info = L"컷 컷 컷!";
+        m_Quest[iIndex].Info = L"죽어 죽어 죽어 !!!";
+        m_Quest[iIndex].Clear = L"컷 컷 컷 !";
     }
 
     
@@ -602,7 +605,23 @@ void DataMgr::Initialize()
 
 }
 
-const wstring& DataMgr::Get_Dialog(QUESTINDEX eIndex, _bool bHaveQuest, _bool bIsClear, _uint iIndex)
+_uint DataMgr::Get_Dialog_Size(QUESTINDEX eIndex, _bool bHaveQuest, _uint iIndex, _bool bIsClear)
+{
+    if (QUESTINDEX::MAX == eIndex)
+        return 0;
+
+    _uint iQuestIndex = IDX(eIndex);
+    if (false == bHaveQuest)
+        return IDX(m_DialogAccept[iQuestIndex].size());
+
+    else if (false == bIsClear)
+        return IDX(m_DialogNoClear[iQuestIndex].size());
+
+    else
+        return IDX(m_DialogClear[iQuestIndex].size());
+}
+
+const wstring& DataMgr::Get_Dialog(QUESTINDEX eIndex, _bool bHaveQuest, _uint iIndex, _bool bIsClear)
 {
     if (QUESTINDEX::MAX == eIndex)
         return strTemp;
