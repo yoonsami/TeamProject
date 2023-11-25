@@ -1617,13 +1617,13 @@ void Spike_FSM::skill_300100_Init()
 
 void Spike_FSM::skill_400100()
 {
-    if (Init_CurFrame(50))
+    if (Init_CurFrame(46))
     {
-        Add_GroupEffectOwner(L"Spike_400100_pase1", _float3(3.f, 0.f, 0.2f));
+        Add_GroupEffectOwner(L"Spike_400100_pase1", _float3(3.f, 0.f, 0.1f));
     }
-    if (Init_CurFrame(85))
+    if (Init_CurFrame(76))
     {
-        Add_GroupEffectOwner(L"Spike_400100_pase2", _float3(-3.f, 0.f, 2.2f));
+        Add_GroupEffectOwner(L"Spike_400100_pase2", _float3(-3.f, 0.f, 1.8f));
     }
 
     if (m_iCurFrame == 17)
@@ -1663,7 +1663,7 @@ void Spike_FSM::skill_400100()
 
         Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f);
     }
-    else if (Init_CurFrame(85))
+    else if (Init_CurFrame(76))
     {
         _float4 vSkillPos = m_vSkillCamBonePos;
         vSkillPos.y = 0.f;
