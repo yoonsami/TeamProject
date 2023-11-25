@@ -417,16 +417,7 @@ void Succubus_Scythe_FSM::b_idle()
         }
     }
 
-    if (m_bIsDead)
-    {
-        m_bInvincible = true;
-
-        if (rand() % 2 == 0)
-            m_eCurState = STATE::die_01;
-        else
-            m_eCurState = STATE::die_02;
-    }
-
+    Dead_Setting();
 }
 
 void Succubus_Scythe_FSM::b_idle_Init()
@@ -799,15 +790,7 @@ void Succubus_Scythe_FSM::hit()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
     
-    if (m_bIsDead)
-    {
-        m_bInvincible = true;
-
-        if (rand() % 2 == 0)
-            m_eCurState = STATE::die_01;
-        else
-            m_eCurState = STATE::die_02;
-    }
+    Dead_Setting();
 }
 
 void Succubus_Scythe_FSM::hit_Init()
@@ -1135,6 +1118,19 @@ void Succubus_Scythe_FSM::Set_Gaze()
             m_eCurState = STATE::gaze_r;
         else if (iRan == 3)
             m_eCurState = STATE::gaze_f;
+    }
+}
+
+void Succubus_Scythe_FSM::Dead_Setting()
+{
+    if (m_bIsDead)
+    {
+        m_bInvincible = true;
+
+        if (rand() % 2 == 0)
+            m_eCurState = STATE::die_01;
+        else
+            m_eCurState = STATE::die_02;
     }
 }
 

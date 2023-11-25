@@ -103,6 +103,7 @@ private:
 	void skill_3100();
 	void skill_3100_Init();
 
+	void Dead_Setting();
 	void CalCulate_PatrolTime();
 	void Execute_AttackSkill();
 private:

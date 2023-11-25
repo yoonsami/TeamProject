@@ -102,6 +102,7 @@ private:
 
 	void CalCulate_PatrolTime();
 	void Set_Gaze();
+	void Dead_Setting();
 	_float3 Calculate_TargetTurnVector();
 
 private:

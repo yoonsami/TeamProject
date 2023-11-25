@@ -384,15 +384,7 @@ void Wolf_FSM::b_idle()
             m_eCurState = STATE::b_run;
     }
 
-    if (m_bIsDead)
-    {
-        m_bInvincible = true;
-
-        if (rand() % 2 == 0)
-            m_eCurState = STATE::die_01;
-        else
-            m_eCurState = STATE::die_02;
-    }
+    Dead_Setting();
 
 }
 
@@ -575,6 +567,7 @@ void Wolf_FSM::gaze_b()
         else
             m_eCurState = STATE::b_run;
     }
+
 }
 
 void Wolf_FSM::gaze_b_Init()
@@ -604,6 +597,7 @@ void Wolf_FSM::gaze_f()
         else
             m_eCurState = STATE::b_run;
     }
+
 }
 
 void Wolf_FSM::gaze_f_Init()
@@ -749,16 +743,7 @@ void Wolf_FSM::hit()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    if (m_bIsDead)
-    {
-        m_bInvincible = true;
-
-        if (rand() % 2 == 0)
-            m_eCurState = STATE::die_01;
-        else
-            m_eCurState = STATE::die_02;
-
-    }
+    Dead_Setting();
 }
 
 void Wolf_FSM::hit_Init()
@@ -983,9 +968,9 @@ void Wolf_FSM::Set_Gaze()
         _uint iRan = 0;
 
         if (Target_In_AttackRange())
-            iRan = rand() % 3;
-        else
             iRan = rand() % 4;
+        else
+            iRan = rand() % 5;
 
         if (iRan == 0)
             m_eCurState = STATE::gaze_b;
@@ -994,7 +979,22 @@ void Wolf_FSM::Set_Gaze()
         else if (iRan == 2)
             m_eCurState = STATE::gaze_r;
         else if (iRan == 3)
+            m_eCurState = STATE::b_idle;
+        else if (iRan == 4)
             m_eCurState = STATE::gaze_f;
+    }
+}
+
+void Wolf_FSM::Dead_Setting()
+{
+    if (m_bIsDead)
+    {
+        m_bInvincible = true;
+
+        if (rand() % 2 == 0)
+            m_eCurState = STATE::die_01;
+        else
+            m_eCurState = STATE::die_02;
     }
 }
 

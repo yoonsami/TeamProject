@@ -405,15 +405,7 @@ void Undead_Priest_FSM::b_idle()
         }
     }
 
-    if (m_bIsDead)
-    {
-        m_bInvincible = true;
-
-        if (rand() % 2 == 0)
-            m_eCurState = STATE::die_01;
-        else
-            m_eCurState = STATE::die_02;
-    }
+    Dead_Setting();
 }
 
 void Undead_Priest_FSM::b_idle_Init()
@@ -778,15 +770,8 @@ void Undead_Priest_FSM::hit()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    if (m_bIsDead)
-    {
-        m_bInvincible = true;
 
-        if (rand() % 2 == 0)
-            m_eCurState = STATE::die_01;
-        else
-            m_eCurState = STATE::die_02;
-    }
+    Dead_Setting();
 }
 
 void Undead_Priest_FSM::hit_Init()
@@ -1092,7 +1077,18 @@ void Undead_Priest_FSM::CalCulate_PatrolTime()
     }
 }
 
+void Undead_Priest_FSM::Dead_Setting()
+{
+    if (m_bIsDead)
+    {
+        m_bInvincible = true;
 
+        if (rand() % 2 == 0)
+            m_eCurState = STATE::die_01;
+        else
+            m_eCurState = STATE::die_02;
+    }
+}
 
 void Undead_Priest_FSM::Set_Gaze()
 {

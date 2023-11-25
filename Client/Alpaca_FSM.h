@@ -105,6 +105,7 @@ private:
 	void CalCulate_PatrolTime();
 	void Execute_AttackSkill();
 	void Set_Gaze();
+	void Dead_Setting();
 	void GroundCheck();
 	_float3 Calculate_TargetTurnVector();
 

@@ -157,16 +157,6 @@ private:
 	void skill_501100();
 	void skill_501100_Init();
 
-	void skill_901000();
-	void skill_901000_Init();
-	void skill_901100();
-	void skill_901100_Init();
-	void skill_902100();
-	void skill_902100_Init();
-	void skill_903100();
-	void skill_903100_Init();
-	void skill_904100();
-	void skill_904100_Init();
 
 
 	void Battle_Start();
@@ -175,6 +165,7 @@ private:
 	void Set_WraithState(_uint iAnimindex);
 	void Calculate_SkillCamRight();
 	void Set_AttackSkill_Phase1();
+	void Dead_Setting();
 
 	_float3 Calculate_TargetTurnVector();
 
@@ -201,6 +192,7 @@ private:
 	_bool m_bBattleStart = false;
 	_bool m_bCounter = false;
 	_bool m_bSetPattern = false;
+	_bool m_bEvade = false;
 
 	_uint m_iGroggy_Gauge = 0;
 	_uint m_iPreAttack = 100;

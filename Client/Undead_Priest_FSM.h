@@ -106,6 +106,7 @@ private:
 	void skill_3100_Init();
 	
 	void CalCulate_PatrolTime();
+	void Dead_Setting();
 	void Set_Gaze();
 	void Entry_Battle();
 	void Set_AttackSkill();
