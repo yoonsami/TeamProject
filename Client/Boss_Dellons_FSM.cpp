@@ -12,6 +12,8 @@
 #include "MathUtils.h"
 #include "UiDamageCreate.h"
 #include "UIBossHpBar.h"
+#include "ObjectDissolve.h"
+#include "CharacterController.h"
 
 Boss_Dellons_FSM::Boss_Dellons_FSM()
 {
@@ -70,6 +72,8 @@ HRESULT Boss_Dellons_FSM::Init()
 
 void Boss_Dellons_FSM::Tick()
 {
+    DeadCheck();
+
     State_Tick();
 
     if (!m_pAttackCollider.expired())
@@ -77,8 +81,6 @@ void Boss_Dellons_FSM::Tick()
         //m_pAttack transform set forward
         m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up);
     }
-
-    Calculate_CamBoneMatrix();
 }
 
 void Boss_Dellons_FSM::State_Tick()
@@ -193,21 +195,6 @@ void Boss_Dellons_FSM::State_Tick()
         break;
     case STATE::skill_501100:
         skill_501100();
-        break;
-    case STATE::skill_901000:
-        skill_901000();
-        break;
-    case STATE::skill_901100:
-        skill_901100();
-        break;
-    case STATE::skill_902100:
-        skill_902100();
-        break;
-    case STATE::skill_903100:
-        skill_903100();
-        break;
-    case STATE::skill_904100:
-        skill_904100();
         break;
     }
 
@@ -329,21 +316,6 @@ void Boss_Dellons_FSM::State_Init()
         case STATE::skill_501100:
             skill_501100_Init();
             break;
-        case STATE::skill_901000:
-            skill_901000_Init();
-            break;
-        case STATE::skill_901100:
-            skill_901100_Init();
-            break;
-        case STATE::skill_902100:
-            skill_902100_Init();
-            break;
-        case STATE::skill_903100:
-            skill_903100_Init();
-            break;
-        case STATE::skill_904100:
-            skill_904100_Init();
-            break;
         }
         m_ePreState = m_eCurState;
     }
@@ -386,10 +358,21 @@ void Boss_Dellons_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _floa
 
 void Boss_Dellons_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
-    //Calculate Damage 
-    m_pOwner.lock()->Get_Hurt(fDamage);
+    if (!m_bSuperArmor)
+    {
+        if (rand() % 4 == 0)
+            m_bEvade = true;
+    }
+    else
+        m_bEvade = false;
 
-    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage);
+    if (!m_bEvade)
+    {
+        //Calculate Damage 
+        m_pOwner.lock()->Get_Hurt(fDamage);
+        CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage);
+    }
+
 
     _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
     _float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
@@ -402,64 +385,78 @@ void Boss_Dellons_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_
     {
         if (!m_bSuperArmor)
         {
-            if (m_eCurState == STATE::hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_loop)
-                m_eCurState = STATE::knock_end_hit;
+            if (!m_bEvade)
+            {
+                if (m_eCurState == STATE::hit)
+                    Reset_Frame();
+                else if (m_eCurState == STATE::knock_end_hit)
+                    Reset_Frame();
+                else if (m_eCurState == STATE::knock_end_loop)
+                    m_eCurState = STATE::knock_end_hit;
+                else
+                    m_eCurState = STATE::hit;
+            }
             else
-                m_eCurState = STATE::hit;
-
-            if (rand() % 3 == 0)
+            {
                 m_eCurState = STATE::skill_91100;
+            }
         }
     }
     else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
     {
         if (!m_bSuperArmor)
         {
-            if (m_eCurState == STATE::knock_end_hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_loop)
-                m_eCurState = STATE::knock_end_hit;
+            if (!m_bEvade)
+            {
+                if (m_eCurState == STATE::knock_end_hit)
+                    Reset_Frame();
+                else if (m_eCurState == STATE::knock_end_loop)
+                    m_eCurState = STATE::knock_end_hit;
+                else
+                    m_eCurState = STATE::knock_start;
+            }
             else
-                m_eCurState = STATE::knock_start;
-
-
-            if (rand() % 3 == 0)
+            {
                 m_eCurState = STATE::skill_91100;
+            }
         }
     }
     else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
     {
         if (!m_bSuperArmor)
         {
-            if (m_eCurState == STATE::knock_end_hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_loop)
-                m_eCurState = STATE::knock_end_hit;
+            if (!m_bEvade)
+            {
+                if (m_eCurState == STATE::knock_end_hit)
+                    Reset_Frame();
+                else if (m_eCurState == STATE::knock_end_loop)
+                    m_eCurState = STATE::knock_end_hit;
+                else
+                    m_eCurState = STATE::knockdown_start;
+            }
             else
-                m_eCurState = STATE::knockdown_start;
-
-
-            if (rand() % 3 == 0)
+            {
                 m_eCurState = STATE::skill_91100;
+            }
         }
     }
     else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
     {
         if (!m_bSuperArmor)
         {
-            if (m_eCurState == STATE::knock_end_hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_loop)
-                m_eCurState = STATE::knock_end_hit;
+            if (!m_bEvade)
+            {
+                if (m_eCurState == STATE::knock_end_hit)
+                    Reset_Frame();
+                else if (m_eCurState == STATE::knock_end_loop)
+                    m_eCurState = STATE::knock_end_hit;
+                else
+                    m_eCurState = STATE::airborne_start;
+            }
             else
-                m_eCurState = STATE::airborne_start;
-
-            if (rand() % 3 == 0)
+            {
                 m_eCurState = STATE::skill_91100;
+            }
         }
     }
 }
@@ -587,6 +584,8 @@ void Boss_Dellons_FSM::b_idle()
             else
                 m_eCurState = STATE::b_run_start;
         }
+
+        Dead_Setting();
     }
 }
 
@@ -759,10 +758,25 @@ void Boss_Dellons_FSM::b_walk_Init()
 
 void Boss_Dellons_FSM::die()
 {
+    if (Is_AnimFinished())
+    {
+        auto script = make_shared<ObjectDissolve>(1.f);
+        Get_Owner()->Add_Component(script);
+        script->Init();
+
+        if (!m_pAttackCollider.expired())
+            CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+    }
 }
 
 void Boss_Dellons_FSM::die_Init()
 {
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"die", 0.2f, false, 1.f);
+
+    m_bInvincible = true;
+    m_bSuperArmor = true;
 }
 
 void Boss_Dellons_FSM::airborne_start()
@@ -783,12 +797,30 @@ void Boss_Dellons_FSM::airborne_start_Init()
 
     m_bInvincible = false;
     m_bSuperArmor = true;
+
+    Get_CharacterController()->Add_Velocity(6.f);
 }
 
 void Boss_Dellons_FSM::airborne_end()
 {
     if (Is_AnimFinished())
-        m_eCurState = STATE::airborne_up;
+    {
+        if (!m_bIsDead)
+            m_eCurState = STATE::airborne_up;
+        else
+        {
+            m_bInvincible = true;
+
+            Get_Owner()->Get_Animator()->Set_AnimState(true);
+
+            auto script = make_shared<ObjectDissolve>(1.f);
+            Get_Owner()->Add_Component(script);
+            script->Init();
+
+            if (!m_pAttackCollider.expired())
+                CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+        }
+    }
 }
 
 void Boss_Dellons_FSM::airborne_end_Init()
@@ -823,6 +855,8 @@ void Boss_Dellons_FSM::hit()
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
+
+    Dead_Setting();
 }
 
 void Boss_Dellons_FSM::hit_Init()
@@ -888,6 +922,20 @@ void Boss_Dellons_FSM::knock_end_loop()
 
     if (m_iCurFrame > Get_FinalFrame() / 2)
         m_eCurState = STATE::knock_up;
+
+    if (m_bIsDead)
+    {
+        m_bInvincible = true;
+
+        Get_Owner()->Get_Animator()->Set_AnimState(true);
+
+        auto script = make_shared<ObjectDissolve>(1.f);
+        Get_Owner()->Add_Component(script);
+        script->Init();
+
+        if (!m_pAttackCollider.expired())
+            CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+    }
 }
 
 void Boss_Dellons_FSM::knock_end_loop_Init()
@@ -973,7 +1021,23 @@ void Boss_Dellons_FSM::knockdown_end()
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
-        m_eCurState = STATE::knock_up;
+    {
+        if (!m_bIsDead)
+            m_eCurState = STATE::knock_up;
+        else
+        {
+            m_bInvincible = true;
+
+            Get_Owner()->Get_Animator()->Set_AnimState(true);
+
+            auto script = make_shared<ObjectDissolve>(1.f);
+            Get_Owner()->Add_Component(script);
+            script->Init();
+
+            if (!m_pAttackCollider.expired())
+                CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+        }
+    }
 }
 
 void Boss_Dellons_FSM::knockdown_end_Init()
@@ -1152,6 +1216,7 @@ void Boss_Dellons_FSM::skill_91100_Init()
     
     m_bInvincible = true;
     m_bSuperArmor = false;
+    m_bEvade = false;
 }
 
 void Boss_Dellons_FSM::skill_93100()
@@ -1197,6 +1262,8 @@ void Boss_Dellons_FSM::skill_100100()
 
     if (m_iCurFrame == 27)
         m_eCurState = STATE::skill_100200;
+
+    Dead_Setting();
 }
 
 void Boss_Dellons_FSM::skill_100100_Init()
@@ -1241,6 +1308,8 @@ void Boss_Dellons_FSM::skill_100200()
  
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
+
+    Dead_Setting();
 }
 
 void Boss_Dellons_FSM::skill_100200_Init()
@@ -1272,6 +1341,8 @@ void Boss_Dellons_FSM::skill_200100()
 
     if (m_iCurFrame == 21)
         m_eCurState = STATE::skill_200200;
+
+    Dead_Setting();
 }
 
 void Boss_Dellons_FSM::skill_200100_Init()
@@ -1316,6 +1387,8 @@ void Boss_Dellons_FSM::skill_200200()
         m_eCurState = STATE::b_idle;
     }
 
+
+    Dead_Setting();
 }
 
 void Boss_Dellons_FSM::skill_200200_Init()
@@ -1340,25 +1413,6 @@ void Boss_Dellons_FSM::skill_300100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    /*if (m_iCurFrame >= 10)
-    {
-        if (!m_pCamera.expired())
-        {
-            _float4 vDestinationPos = (Get_Transform()->Get_State(Transform_State::POS)) +
-                m_vSkillCamRight +
-                (Get_Transform()->Get_State(Transform_State::LOOK) * -3.f)
-                + _float3::Up * 6.f;
-            _float4 vDir = vDestinationPos - m_vSkillCamBonePos;
-
-            vDir.Normalize();
-
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.5f);
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vSkillCamBonePos.xyz());
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.3f, vDir.xyz(), 13.f);
-        }
-    }*/
-
-
     if (m_iCurFrame == 10)
     {
         if (m_iPreFrame != m_iCurFrame)
@@ -1370,9 +1424,9 @@ void Boss_Dellons_FSM::skill_300100()
     }
 
     if (Is_AnimFinished())
-    {
         m_eCurState = STATE::b_idle;
-    }
+    
+    Dead_Setting();
 }
 
 void Boss_Dellons_FSM::skill_300100_Init()
@@ -1398,24 +1452,6 @@ void Boss_Dellons_FSM::skill_400100()
 {
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
-
-    /*if (m_iCurFrame >= 13)
-    {
-        if (!m_pCamera.expired())
-        {
-            _float4 vDestinationPos = (Get_Transform()->Get_State(Transform_State::POS)) +
-                m_vSkillCamRight +
-                (Get_Transform()->Get_State(Transform_State::LOOK) * -3.f)
-                + _float3::Up * 6.f;
-            _float4 vDir = vDestinationPos - m_vSkillCamBonePos;
-
-            vDir.Normalize();
-
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.5f);
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vSkillCamBonePos.xyz());
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.3f, vDir.xyz(), 4.5f);
-        }
-    }*/
 
     if (m_iCurFrame == 20)
     {
@@ -1461,9 +1497,9 @@ void Boss_Dellons_FSM::skill_400100()
     }
 
     if (m_iCurFrame == 120)
-    {
         m_eCurState = STATE::b_idle;
-    }
+    
+    Dead_Setting();
 }
 
 void Boss_Dellons_FSM::skill_400100_Init()
@@ -1503,10 +1539,9 @@ void Boss_Dellons_FSM::skill_501100()
     }
 
     if (Is_AnimFinished())
-    {
         m_eCurState = STATE::b_idle;
-    }
-
+    
+    Dead_Setting();
 }
 
 void Boss_Dellons_FSM::skill_501100_Init()
@@ -1525,81 +1560,6 @@ void Boss_Dellons_FSM::skill_501100_Init()
     m_bInvincible = false;
     m_bSuperArmor = true;
 }
-
-void Boss_Dellons_FSM::skill_901000()
-{
-    if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
-    
-}
-
-void Boss_Dellons_FSM::skill_901000_Init()
-{
-    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
-
-    animator->Set_NextTweenAnim(L"skill_901100", 0.15f, false, 1.f);
-    
-    AttackCollider_Off();
-
-    m_tAttackCoolTime.fAccTime = 0.f;
-    m_bSetPattern = false;
-
-    m_bInvincible = false;
-    m_bSuperArmor = true;
-}
-
-void Boss_Dellons_FSM::skill_901100()
-{
-    if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
-
-}
-
-void Boss_Dellons_FSM::skill_901100_Init()
-{
-    m_tAttackCoolTime.fAccTime = 0.f;
-    m_bSetPattern = false;
-}
-
-void Boss_Dellons_FSM::skill_902100()
-{
-    if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
-
-}
-
-void Boss_Dellons_FSM::skill_902100_Init()
-{
-    m_tAttackCoolTime.fAccTime = 0.f;
-    m_bSetPattern = false;
-}
-
-void Boss_Dellons_FSM::skill_903100()
-{
-    if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
-
-}
-
-void Boss_Dellons_FSM::skill_903100_Init()
-{
-    m_tAttackCoolTime.fAccTime = 0.f;
-    m_bSetPattern = false;
-}
-
-void Boss_Dellons_FSM::skill_904100()
-{
-    if (Is_AnimFinished())
-        m_eCurState = STATE::b_idle;
-
-}
-
-void Boss_Dellons_FSM::skill_904100_Init()
-{
-    m_tAttackCoolTime.fAccTime = 0.f;
-    m_bSetPattern = false;
-}
-
 
 void Boss_Dellons_FSM::Battle_Start()
 {
@@ -1739,6 +1699,16 @@ void Boss_Dellons_FSM::Set_AttackSkill_Phase1()
     }
 
     m_bSetPattern = true;
+}
+
+void Boss_Dellons_FSM::Dead_Setting()
+{
+    if (m_bIsDead)
+    {
+        m_bInvincible = true;
+
+        m_eCurState = STATE::die;
+    }
 }
 
 

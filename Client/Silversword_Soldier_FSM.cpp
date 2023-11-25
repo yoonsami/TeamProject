@@ -393,15 +393,7 @@ void Silversword_Soldier_FSM::b_idle()
             m_eCurState = STATE::b_run;
     }
 
-    if (m_bIsDead)
-    {
-        m_bInvincible = true;
-
-        if (rand() % 2 == 0)
-            m_eCurState = STATE::die_01;
-        else
-            m_eCurState = STATE::die_02;
-    }
+    Dead_Setting();
 }
 
 void Silversword_Soldier_FSM::b_idle_Init()
@@ -548,6 +540,7 @@ void Silversword_Soldier_FSM::gaze_b()
         else
             m_eCurState = STATE::b_run;
     }
+
 }
 
 void Silversword_Soldier_FSM::gaze_b_Init()
@@ -635,6 +628,7 @@ void Silversword_Soldier_FSM::gaze_r()
         else
             m_eCurState = STATE::b_run;
     }
+
 }
 
 void Silversword_Soldier_FSM::gaze_r_Init()
@@ -722,15 +716,7 @@ void Silversword_Soldier_FSM::hit()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    if (m_bIsDead)
-    {
-        m_bInvincible = true;
-
-        if (rand() % 2 == 0)
-            m_eCurState = STATE::die_01;
-        else
-            m_eCurState = STATE::die_02;
-    }
+    Dead_Setting();
 }
 
 void Silversword_Soldier_FSM::hit_Init()
@@ -936,6 +922,8 @@ void Silversword_Soldier_FSM::skill_1100()
         else if (iRan == 3)
             m_eCurState = STATE::gaze_f;
     }
+
+
 }
 
 void Silversword_Soldier_FSM::skill_1100_Init()
@@ -984,6 +972,7 @@ void Silversword_Soldier_FSM::skill_2100()
         else if (iRan == 3)
             m_eCurState = STATE::gaze_f;
     }
+
 }
 
 void Silversword_Soldier_FSM::skill_2100_Init()
@@ -1036,6 +1025,8 @@ void Silversword_Soldier_FSM::skill_3100()
         else if (iRan == 3)
             m_eCurState = STATE::gaze_f;
     }
+
+    Dead_Setting();
 }
 
 void Silversword_Soldier_FSM::skill_3100_Init()
@@ -1047,6 +1038,19 @@ void Silversword_Soldier_FSM::skill_3100_Init()
     m_tAttackCoolTime.fAccTime = 0.f;
 
     m_bSuperArmor = false;
+}
+
+void Silversword_Soldier_FSM::Dead_Setting()
+{
+    if (m_bIsDead)
+    {
+        m_bInvincible = true;
+
+        if (rand() % 2 == 0)
+            m_eCurState = STATE::die_01;
+        else
+            m_eCurState = STATE::die_02;
+    }
 }
 
 void Silversword_Soldier_FSM::CalCulate_PatrolTime()

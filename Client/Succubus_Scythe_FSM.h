@@ -112,6 +112,7 @@ private:
 
 	void CalCulate_PatrolTime();
 	void Set_Gaze();
+	void Dead_Setting();
 	void Entry_Battle();
 	void Set_AttackSkill();
 
