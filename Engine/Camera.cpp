@@ -5,6 +5,7 @@
 #include "Particle.h"
 #include "MeshEffect.h"
 #include "MeshRenderer.h"
+#include "GroupEffect.h"
 #include "FontRenderer.h"
 #include "ModelRenderer.h"
 #include "ModelAnimator.h"
@@ -20,8 +21,8 @@ Camera::Camera(CameraDesc desc)
 
 Camera::~Camera()
 {
-}
 
+}
 HRESULT Camera::Init()
 {
 	return S_OK;
@@ -78,7 +79,7 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 			//&& gameObject->Get_EffectRenderer() == nullptr
 			&& gameObject->Get_DistortionRenderer() == nullptr
 			&& gameObject->Get_Particle() == nullptr
-			&& gameObject->Get_MeshEffect() == nullptr
+			&& gameObject->Get_GroupEffect() == nullptr
 			&& gameObject->Get_TrailRenderer() == nullptr
 			&& gameObject->Get_MotionTrailRenderer() == nullptr
 			&& gameObject->Get_FontRenderer() ==nullptr)
@@ -110,6 +111,8 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 			m_Forward.push_back(gameObject);
 		else if (gameObject->Get_ShaderType() == SHADER_TYPE::DISTORTION)
 			m_DistortionEffects.push_back(gameObject);
+		else if(gameObject->Get_GroupEffect())
+			m_Forward.push_back(gameObject);
 
 		
 		//if (gameObject->Get_ParticleSystem())
@@ -308,8 +311,8 @@ void Camera::Render_Forward()
 
 		else if (obj->Get_ModelRenderer())
 			obj->Get_ModelRenderer()->Render();
-		else if (obj->Get_MeshEffect())
-			obj->Get_MeshEffect()->Render();
+		else if (obj->Get_GroupEffect())
+			obj->Get_GroupEffect()->Render();
 		else if (obj->Get_Animator())
 			obj->Get_Animator()->Render();
 		if (obj->Get_FontRenderer())

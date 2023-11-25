@@ -420,6 +420,8 @@ void Widget_GroupEffectMaker::Option_MemberEffectList()
 		string strFloat3Key2 = "Scale##" + strIndex + ": " + iter;
 		string strFloat3Key3 = "Rotation##" + strIndex + ": " + iter;
 		string strDeleteButton = "Delete##" + strIndex + ": " + iter;
+		string strUpButton = "Up##" + strIndex + ": " + iter;
+		string strDownButton = "Down##" + strIndex + ": " + iter;
 
 		if(ImGui::TreeNode(strTreeNodeKey.c_str()))
 		{ 
@@ -441,6 +443,41 @@ void Widget_GroupEffectMaker::Option_MemberEffectList()
 			{
 				_float3 vRotation = { m_tCurrMemberProperty[iIndex].m_fRotation[0], m_tCurrMemberProperty[iIndex].m_fRotation[1], m_tCurrMemberProperty[iIndex].m_fRotation[2] };
 				m_pCurrentGroup->Get_GroupEffect()->Set_Member_PivotRotation(iIndex, vRotation);
+			}
+
+			if (iIndex > 0)
+			{
+				if (ImGui::Button(strUpButton.c_str()))
+				{
+					_int iPrevIndex = iIndex - 1;
+
+					// GroupEffect의 m_vMemberEffectData에서 순서 바꾸기 
+					GroupEffectData::MemberEffect_Desc m_tTemp_i = m_pCurrentGroup->Get_GroupEffect()->Get_MemberEffectData_index(iIndex);
+					GroupEffectData::MemberEffect_Desc m_tTemp_iPrev = m_pCurrentGroup->Get_GroupEffect()->Get_MemberEffectData_index(iPrevIndex);
+					m_pCurrentGroup->Get_GroupEffect()->Set_MemberEffectData_index(iIndex, m_tTemp_iPrev);
+					m_pCurrentGroup->Get_GroupEffect()->Set_MemberEffectData_index(iPrevIndex, m_tTemp_i);
+
+					// m_tCurrMemberProperty에서 순서 바꾸기 또는 memberlist 리로드하기 
+					Set_MemberEffectList();
+				}
+				ImGui::SameLine();
+			}
+			if (iIndex < m_iNumMeshEffects - 1)
+			{
+				if (ImGui::Button(strDownButton.c_str()))
+				{
+					_int iNextIndex = iIndex + 1;
+
+					// GroupEffect의 m_vMemberEffectData에서 순서 바꾸기 
+					GroupEffectData::MemberEffect_Desc m_tTemp_i = m_pCurrentGroup->Get_GroupEffect()->Get_MemberEffectData_index(iIndex);
+					GroupEffectData::MemberEffect_Desc m_tTemp_iPrev = m_pCurrentGroup->Get_GroupEffect()->Get_MemberEffectData_index(iNextIndex);
+					m_pCurrentGroup->Get_GroupEffect()->Set_MemberEffectData_index(iIndex, m_tTemp_iPrev);
+					m_pCurrentGroup->Get_GroupEffect()->Set_MemberEffectData_index(iNextIndex, m_tTemp_i);
+
+					// m_tCurrMemberProperty에서 순서 바꾸기 또는 memberlist 리로드하기 
+					Set_MemberEffectList();
+				}
+				ImGui::SameLine();
 			}
 			if (ImGui::Button(strDeleteButton.c_str()))
 			{

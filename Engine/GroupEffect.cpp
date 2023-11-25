@@ -6,6 +6,11 @@
 #include "MeshEffect.h"
 #include "MeshEffectData.h"
 
+bool Compare_RenderPriority(weak_ptr<GameObject> pSrc, weak_ptr<GameObject> pDest)
+{
+    return pSrc.lock()->Get_MeshEffect()->Get_RenderPriority() < pDest.lock()->Get_MeshEffect()->Get_RenderPriority();
+}
+
 GroupEffect::GroupEffect()
     : Component(COMPONENT_TYPE::GroupEffect)
 {
@@ -74,7 +79,7 @@ void GroupEffect::Final_Tick()
     if (bIsAllActive)
     {
         _bool bIsAllNullptr = true;
-        for (auto& iter : m_vMemberEffects)
+        for (auto& iter : m_lMemberEffects)
         {
             if (!iter.expired())
                 bIsAllNullptr = false;
@@ -89,7 +94,7 @@ void GroupEffect::Final_Tick()
 
     // For. Update MeshEffect Translation 
     _int iIndex = 0;
-    for (auto& iter : m_vMemberEffects)
+    for (auto& iter : m_lMemberEffects)
     {
 
         if (!iter.expired())
@@ -113,6 +118,15 @@ void GroupEffect::Final_Tick()
 
         }
         iIndex++;
+    }
+}
+
+void GroupEffect::Render()
+{
+    for (auto& iter : m_lMemberEffects)
+    {
+        if(!iter.expired())
+            iter.lock()->Get_MeshEffect()->Render();
     }
 }
 
@@ -154,7 +168,7 @@ void GroupEffect::DeleteMember(const wstring& wstrTag)
 
 void GroupEffect::FreeLoopMember()
 {
-    for (auto& iter : m_vMemberEffects)
+    for (auto& iter : m_lMemberEffects)
     {
         if (!iter.expired())
         {
@@ -166,7 +180,7 @@ void GroupEffect::FreeLoopMember()
 
 void GroupEffect::Kill_All()
 {
-    for (auto& iter : m_vMemberEffects)
+    for (auto& iter : m_lMemberEffects)
     {
         iter.reset();
     }
@@ -186,7 +200,7 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
     {
         shared_ptr<GameObject> EffectObj = make_shared<GameObject>(); 
         string strTag = tDesc.pszTag;
-        strTag += to_string(iIndex) + "_" + to_string(i) + "_";
+        strTag = strTag + to_string(iIndex) + "_" + to_string(i) + "_";
         EffectObj->Set_Name(Utils::ToWString(strTag));
 
         // For. Transform 
@@ -202,9 +216,16 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
         EffectObj->Get_MeshEffect()->Init(&tDesc);
         EffectObj->Get_MeshEffect()->Set_TransformDesc(&tTransform_Desc);
         EffectObj->Get_MeshEffect()->InitialTransform(Get_Transform()->Get_WorldMatrix(), iter.vPivot_Pos, iter.vPivot_Scale, iter.vPivot_Rotation);
+        EffectObj->Get_MeshEffect()->Set_RenderPriority(iIndex);
 
         // For. Add to vector 
-        m_vMemberEffects.push_back(EffectObj);
+        m_lMemberEffects.push_back(EffectObj);
+
+        // For. Sort Vector by RenderPriority 
+        OrganizeMemberEffectList();
+
+        m_lMemberEffects.sort(Compare_RenderPriority);
+        //sort(m_lMemberEffects.begin(), m_lMemberEffects.end(), Compare_RenderPriority);
 
         // For. Add to scene
         CUR_SCENE->Add_GameObject(EffectObj);
@@ -214,4 +235,14 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
 void GroupEffect::Create_Particle(_int iIndex)
 {
 
+}
+
+void GroupEffect::OrganizeMemberEffectList()
+{
+    for (auto iter = m_lMemberEffects.begin(); iter != m_lMemberEffects.end();) {
+        if (iter->expired())
+            iter = m_lMemberEffects.erase(iter);
+        else 
+            iter++;
+    }   
 }
