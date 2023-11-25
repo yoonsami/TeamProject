@@ -1008,8 +1008,11 @@ void Widget_EffectMaker_Mesh::Create()
 {
 	for (_int n = 0; n < m_iMeshCnt; n++)
 	{
+		CUR_SCENE->Get_Camera(L"Default")->Get_Camera()->Set_EffectToolOn(true);
+
 		// For. Create GameObject 
 		shared_ptr<GameObject> EffectObj = make_shared<GameObject>();
+		EffectObj->Set_Name(Utils::ToWString(m_strMesh));
 
 		// For. Add and Setting Transform Component
 		EffectObj->GetOrAddTransform();
