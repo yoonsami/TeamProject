@@ -1545,11 +1545,11 @@ void Spike_FSM::skill_200400_Init()
 
 void Spike_FSM::skill_300100()
 {
-    if (Init_CurFrame(2))
+    if (Init_CurFrame(1))
     {
         Add_And_Set_Effect(L"Spike_300100_Jump");
     }
-    if (Init_CurFrame(10))
+    if (Init_CurFrame(30))
     {
         Add_And_Set_Effect(L"Spike_300100");
     }
@@ -1562,7 +1562,7 @@ void Spike_FSM::skill_300100()
 
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 10.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 12.f);
         }
     }
     else
