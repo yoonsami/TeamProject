@@ -225,7 +225,6 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
         OrganizeMemberEffectList();
 
         m_lMemberEffects.sort(Compare_RenderPriority);
-        //sort(m_lMemberEffects.begin(), m_lMemberEffects.end(), Compare_RenderPriority);
 
         // For. Add to scene
         CUR_SCENE->Add_GameObject(EffectObj);
