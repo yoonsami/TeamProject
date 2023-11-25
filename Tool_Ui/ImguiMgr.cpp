@@ -455,7 +455,16 @@ void ImguiMgr::Select_Object()
             m_pSampleObj->GetOrAddTransform()->Set_WorldMat(pGameobject->GetOrAddTransform()->Get_WorldMatrix());
 
             if(nullptr != pGameobject->Get_FontRenderer())
+            {
                m_fFontSize = pGameobject->Get_FontRenderer()->Get_Size();
+
+               _float4 vColor = pGameobject->Get_FontRenderer()->Get_Color();
+
+               m_arrColors[0] = vColor.x;
+               m_arrColors[1] = vColor.y;
+               m_arrColors[2] = vColor.z;
+               m_arrColors[3] = vColor.w;
+            }
          }
 
          ++iIndex;

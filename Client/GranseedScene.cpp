@@ -62,7 +62,7 @@
 #include "UiSkillGauge.h"
 #include"UiDialogController.h"
 #include "UIInteraction.h"
-
+#include "UiDialogController.h"
 
 #include <filesystem>
 #include "GachaScene.h"
@@ -105,12 +105,12 @@ void GranseedScene::Tick()
 	if (KEYTAP(KEY_TYPE::V))
 	{
 		auto pObj = Get_UI(L"UI_Interaction");
-		pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::GACHA);
+		pObj->Get_Script<UIInteraction>()->Remove_Interaction();
 	}
 	if (KEYTAP(KEY_TYPE::Z))
 	{
-		auto pObj = Get_UI(L"UI_Interaction");
-		pObj->Get_Script<UIInteraction>()->Remove_Interaction();
+		auto pObj = Get_UI(L"UI_Dialog_Controller");
+		pObj->Get_Script<UiDialogController>()->Clear_Quest();
 	}
 }
 
@@ -373,6 +373,7 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", tmp, false);
 	//Load_UIFile(L"..\\Resources\\UIData\\UI_MonsterHp.dat", tmp);
 	//Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat");
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Cur_Quest.dat", tmp, false);
 
 
 	{

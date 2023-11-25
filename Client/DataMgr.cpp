@@ -514,33 +514,77 @@ void DataMgr::Initialize()
 
 	{
         m_NpcName.resize(IDX(NPCTYPE::MAX));
-		m_NpcName[0] = L"나는 퀘스트맨";
-		m_NpcName[1] = L"나는 가챠맨";
+		m_NpcName[0] = L"아리엘";
+		m_NpcName[1] = L"테스트";
 	}
 
 
 
 	m_QuestDialog.resize(IDX(QUESTDIALOG::MAX));
+	m_CurQuestName.resize(IDX(QUESTDIALOG::MAX));
+	m_CurQuestInfo.resize(IDX(QUESTDIALOG::MAX));
+	m_CurQuestClear.resize(IDX(QUESTDIALOG::MAX));
+	m_NoClear.resize(IDX(QUESTDIALOG::MAX));
 	
 	{
+		m_CurQuestName[IDX(QUESTDIALOG::TRY_GACHA)] = L"맹약의 후보자";
+		m_CurQuestInfo[IDX(QUESTDIALOG::TRY_GACHA)] = L"영웅의 힘 계승하기";
+		m_CurQuestClear[IDX(QUESTDIALOG::TRY_GACHA)] = L"영웅의 힘 계승 완료";
+		m_NoClear[IDX(QUESTDIALOG::TRY_GACHA)] = L"계승을 완료해주세요";
+
 		auto& Dialog = m_QuestDialog[IDX(QUESTDIALOG::TRY_GACHA)];
-		Dialog.push_back(L"안녕 날 소개하지 이름 정윤성 직업은 developer \n 취미는 흡연, 프레임워크 수정, 구조 수정, 팀원 짜르기");
-		Dialog.push_back(L"cold. 비수 flying to my 찌찌 but don't worry \n hand faster than eyes");
-		Dialog.push_back(L"끝");
+		Dialog.push_back(L"가챠 퀘 0");
+		Dialog.push_back(L"가챠 퀘 1");
+		Dialog.push_back(L"가챠 퀘 2");
 	}
 
 	{
-		auto& Dialog = m_QuestDialog[IDX(QUESTDIALOG::KILL_MONSTER)];
-		Dialog.push_back(L"");
-		Dialog.push_back(L"");
-		Dialog.push_back(L"");
+		m_CurQuestName[IDX(QUESTDIALOG::KILL_DELLONS)] = L"배반자 처단";
+		m_CurQuestInfo[IDX(QUESTDIALOG::KILL_DELLONS)] = L"델론즈를 처치하라";
+		m_CurQuestClear[IDX(QUESTDIALOG::KILL_DELLONS)] = L"델론즈를 처치 성공";
+		m_NoClear[IDX(QUESTDIALOG::KILL_DELLONS)] = L"델론즈를 처지하고 돌아와주세요";
+
+		auto& Dialog = m_QuestDialog[IDX(QUESTDIALOG::KILL_DELLONS)];
+		Dialog.push_back(L"델론즈 퀘 0");
+		Dialog.push_back(L"델론즈 퀘 1");
+		Dialog.push_back(L"델론즈 퀘 2");
 	}
 	
 	{
+		m_CurQuestName[IDX(QUESTDIALOG::KILL_SPIKE)] = L"폭군 퇴치";
+		m_CurQuestInfo[IDX(QUESTDIALOG::KILL_SPIKE)] = L"스파이크를 물리쳐라";
+		m_CurQuestClear[IDX(QUESTDIALOG::KILL_SPIKE)] = L"스파이크를 퇴치 성공";
+		m_NoClear[IDX(QUESTDIALOG::KILL_SPIKE)] = L"스파이크를 퇴치하고 돌아와주세요";
+
+		auto& Dialog = m_QuestDialog[IDX(QUESTDIALOG::KILL_SPIKE)];
+		Dialog.push_back(L"스파이크 퀘 0");
+		Dialog.push_back(L"스파이크 퀘 1");
+		Dialog.push_back(L"스파이크 퀘 2");
+	}
+	
+	{
+		m_CurQuestName[IDX(QUESTDIALOG::KILL_MIR)] = L"맹약의 수호자";
+		m_CurQuestInfo[IDX(QUESTDIALOG::KILL_MIR)] = L"타락한 화룡을 물리쳐라";
+		m_CurQuestClear[IDX(QUESTDIALOG::KILL_MIR)] = L"타락한 화룡을 처단 성공";
+		m_NoClear[IDX(QUESTDIALOG::KILL_MIR)] = L"타락한 화룡을 처단하고 돌아와주세요";
+
 		auto& Dialog = m_QuestDialog[IDX(QUESTDIALOG::KILL_MIR)];
-		Dialog.push_back(L"");
-		Dialog.push_back(L"");
-		Dialog.push_back(L"");
+		Dialog.push_back(L"화룡 퀘 0");
+		Dialog.push_back(L"화룡 퀘 1");
+		Dialog.push_back(L"화룡 퀘 2");
+	}
+
+	
+	{
+		m_CurQuestName[IDX(QUESTDIALOG::STORY_CLEAR)] = L"";
+		m_CurQuestInfo[IDX(QUESTDIALOG::STORY_CLEAR)] = L"";
+		m_CurQuestClear[IDX(QUESTDIALOG::STORY_CLEAR)] = L"";
+		m_NoClear[IDX(QUESTDIALOG::STORY_CLEAR)] = L"";
+
+		auto& Dialog = m_QuestDialog[IDX(QUESTDIALOG::STORY_CLEAR)];
+		Dialog.push_back(L"스토리 클리어 0");
+		Dialog.push_back(L"스토리 클리어 1");
+		Dialog.push_back(L"스토리 클리어 2");
 	}
 
 

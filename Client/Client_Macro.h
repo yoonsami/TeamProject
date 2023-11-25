@@ -29,5 +29,11 @@
 #define GET_ELEMENT_LINE(VALUE)     GET_SINGLE(DataMgr).Get_Element_Line(VALUE)
 
 #define GET_NPC_NAME(VALUE)         GET_SINGLE(DataMgr).Get_Npc_Name(VALUE)
+#define GET_QUEST_COUNT             GET_SINGLE(DataMgr).Get_Quest_Count()
 #define GET_DIALOG_COUNT(VALUE)     GET_SINGLE(DataMgr).Get_Quest_Dialog_Count(VALUE)
 #define GET_DIALOG(VALUE, INDEX)    GET_SINGLE(DataMgr).Get_Quest_Dialog(VALUE, INDEX)
+
+#define GET_CUR_QUEST_NAME(VALUE)   GET_SINGLE(DataMgr).Get_Cur_Quest_Name(VALUE)
+#define GET_CUR_QUEST_INFO(VALUE)   GET_SINGLE(DataMgr).Get_Cur_Quest_Info(VALUE)
+#define GET_CUR_QUEST_CLEAR(VALUE)  GET_SINGLE(DataMgr).Get_Cur_Quest_Clear(VALUE)
+#define GET_MO_CLEAR(VALUE)         GET_SINGLE(DataMgr).Get_No_Clear(VALUE)

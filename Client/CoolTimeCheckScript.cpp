@@ -670,7 +670,10 @@ void CoolTimeCheckScript::Change_Skill_Info(HERO eType)
             m_pUi_Skill0_Combo[i].lock()->Set_Render(true);
         }
         else
+        {
+            m_pUi_Skill0_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
             m_pUi_Skill0_Combo[i].lock()->Set_Render(false);
+        }
 
 
         if (i < tagData.Skill1Combo)
@@ -679,7 +682,10 @@ void CoolTimeCheckScript::Change_Skill_Info(HERO eType)
             m_pUi_Skill2_Combo[i].lock()->Set_Render(true);
         }
         else
+        {
+            m_pUi_Skill2_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
             m_pUi_Skill2_Combo[i].lock()->Set_Render(false);
+        }
 
 
         if (i < tagData.Skill2Combo)
@@ -688,7 +694,10 @@ void CoolTimeCheckScript::Change_Skill_Info(HERO eType)
             m_pUi_Skill3_Combo[i].lock()->Set_Render(true);
         }
         else
+        {
+            m_pUi_Skill3_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
             m_pUi_Skill3_Combo[i].lock()->Set_Render(false);
+        }
 
 
         if (i < tagData.Skill3Combo)
@@ -697,7 +706,10 @@ void CoolTimeCheckScript::Change_Skill_Info(HERO eType)
             m_pUi_Skill4_Combo[i].lock()->Set_Render(true);
         }
         else
+        {
+            m_pUi_Skill4_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
             m_pUi_Skill4_Combo[i].lock()->Set_Render(false);
+        }
 
 
         if (i < tagData.Skill4Combo)
@@ -706,7 +718,10 @@ void CoolTimeCheckScript::Change_Skill_Info(HERO eType)
             m_pUi_Skill5_Combo[i].lock()->Set_Render(true);
         }
         else
+        {
+            m_pUi_Skill5_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
             m_pUi_Skill5_Combo[i].lock()->Set_Render(false);
+        }
 
 
         if (i < tagData.Skill5Combo)
@@ -715,12 +730,18 @@ void CoolTimeCheckScript::Change_Skill_Info(HERO eType)
             m_pUi_Skill6_Combo[i].lock()->Set_Render(true);
         }
         else
+        {
+            m_pUi_Skill6_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
             m_pUi_Skill6_Combo[i].lock()->Set_Render(false);
+        }
 
     }
 
     if (SkillInfo::NONE == tagData.Skill1Info)
+    {
+        m_pUi_Skill_Type[0].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
         m_pUi_Skill_Type[0].lock()->Set_Render(false);
+    }
     else if (SkillInfo::CHARGING == tagData.Skill1Info)
     {
         m_pUi_Skill_Type[0].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
@@ -741,7 +762,10 @@ void CoolTimeCheckScript::Change_Skill_Info(HERO eType)
     }
 
     if (SkillInfo::NONE == tagData.Skill2Info)
+    {
+        m_pUi_Skill_Type[1].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
         m_pUi_Skill_Type[1].lock()->Set_Render(false);
+    }
     else if (SkillInfo::CHARGING == tagData.Skill2Info)
     {
         m_pUi_Skill_Type[1].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
@@ -762,7 +786,10 @@ void CoolTimeCheckScript::Change_Skill_Info(HERO eType)
     }
 
     if (SkillInfo::NONE == tagData.Skill3Info)
+    {
+        m_pUi_Skill_Type[2].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
         m_pUi_Skill_Type[2].lock()->Set_Render(false);
+    }
     else if (SkillInfo::CHARGING == tagData.Skill3Info)
     {
         m_pUi_Skill_Type[2].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
@@ -784,7 +811,10 @@ void CoolTimeCheckScript::Change_Skill_Info(HERO eType)
 
 
     if (SkillInfo::NONE == tagData.Skill4Info)
+    {
+        m_pUi_Skill_Type[3].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
         m_pUi_Skill_Type[3].lock()->Set_Render(false);
+    }
     else if (SkillInfo::CHARGING == tagData.Skill4Info)
     {
         m_pUi_Skill_Type[3].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
@@ -806,7 +836,10 @@ void CoolTimeCheckScript::Change_Skill_Info(HERO eType)
 
 
     if (SkillInfo::NONE == tagData.Skill5Info)
+    {
+        m_pUi_Skill_Type[4].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
         m_pUi_Skill_Type[4].lock()->Set_Render(false);
+    }
     else if (SkillInfo::CHARGING == tagData.Skill5Info)
     {
         m_pUi_Skill_Type[4].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
