@@ -90,8 +90,11 @@ void MeshEffect::MeshEffect_Final_Tick()
     // For. Check is dead 
     if (m_fCurrAge >= m_fDuration)
     {
-        EVENTMGR.Delete_Object(Get_Owner());
-        return;
+        if (!m_tDesc.bIsLoop)
+        {
+            EVENTMGR.Delete_Object(Get_Owner());
+            return; 
+        }
     }
 }
 
