@@ -120,8 +120,36 @@ void GranseedScene::Tick()
 		obj->Add_Component(animator);
 		obj->Add_Component(make_shared<Shane_FSM>());
 		obj->Get_FSM()->Init();
+		obj->Set_DrawShadow(true);
+		obj->Set_VelocityMap(true);
 		CUR_SCENE->Add_GameObject(obj);
 
+		/*	shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
+
+			ObjWeapon->Add_Component(make_shared<Transform>());
+			{
+				shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+
+				shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+				{
+					shared_ptr<Model> model = RESOURCES.Get<Model>(L"Weapon_Shane");
+					renderer->Set_Model(model);
+				}
+
+				ObjWeapon->Add_Component(renderer);
+
+				WeaponScript::WEAPONDESC desc;
+				desc.strBoneName = L"Bip001-Prop1";
+				desc.matPivot = _float4x4::CreateRotationX(-XM_PI / 2.f) * _float4x4::CreateRotationZ(XM_PI);
+				desc.pWeaponOwner = obj;
+
+				ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
+			}
+			ObjWeapon->Set_DrawShadow(true);
+			ObjWeapon->Set_Name(L"Weapon_Shane");
+			ObjWeapon->Set_VelocityMap(true);
+			CUR_SCENE->Add_GameObject(ObjWeapon);
+			obj->Get_FSM()->Set_Weapon(ObjWeapon);*/
 	}
 }
 
