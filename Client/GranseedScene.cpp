@@ -70,6 +70,8 @@
 #include "MirScene.h"
 #include "AttackColliderInfoScript.h"
 #include "Shane_FSM.h"
+#include "NPC_FSM.h"
+#include "GranseedGuard01_FSM.h"
 namespace fs = std::filesystem;
 
 GranseedScene::GranseedScene()
@@ -185,7 +187,7 @@ HRESULT GranseedScene::Load_Scene()
 
 	//Map
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Granseed\\", false);
-	//RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Npc\\Granseed\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Npc\\Granseed\\", false);
 	// Gacha
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Kyle\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Yeopo\\", false);
@@ -195,7 +197,7 @@ HRESULT GranseedScene::Load_Scene()
 	Load_MapFile(L"GranseedMap", pPlayer);
 
 	Load_Ui(pPlayer);
-	//Load_NPC(L"GranseedMap");
+	Load_NPC(L"GranseedMap");
 	return S_OK;
 }
 
@@ -736,6 +738,37 @@ void GranseedScene::Load_NPC(const wstring& dataFileName)
 		_int iFSMIndex = file->Read<_int>();
 		_float3 vMinPos = file->Read<_float3>();
 		_float3 vMaxPos = file->Read<_float3>();
+
+		if (isMoving)
+		{
+			switch (iFSMIndex)
+			{
+			case NPC_FSM::POTION:
+
+				break;
+			case NPC_FSM::GUARD1:
+			{
+				auto fsm = make_shared<GranseedGuard01_FSM>();
+				fsm->Set_MinMovePos(vMinPos);
+				fsm->Set_MaxMovePos(vMaxPos);
+				obj->Add_Component(fsm);
+			}
+
+				break;
+			case NPC_FSM::GUARD2:
+
+				break;
+			case NPC_FSM::TRAVELER:
+
+				break;
+			}
+			{
+				// Potion_FSM
+			}
+
+
+
+		}
 
 		Add_GameObject(obj);
 	}

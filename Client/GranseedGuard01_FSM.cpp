@@ -23,6 +23,7 @@ void GranseedGuard01_FSM::Tick()
 
 void GranseedGuard01_FSM::State_Tick()
 {
+	State_Init();
 	switch (m_eCurState)
 	{
 	case GranseedGuard01_FSM::STATE::n_idle:
@@ -59,6 +60,7 @@ void GranseedGuard01_FSM::State_Init()
 			walk_Init();
 			break;
 		}
+		m_ePreState = m_eCurState;
 	}
 }
 
@@ -67,6 +69,7 @@ void GranseedGuard01_FSM::n_idle()
 	m_fStateAcc += fDT;
 	if (m_fStateAcc >= m_fIdleTimer)
 	{
+		m_fStateAcc = 0.f;
 		m_eCurState = STATE::walk;
 	}
 }
@@ -144,8 +147,13 @@ void GranseedGuard01_FSM::walk_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"walk", 0.15f, true, 1.f);
+	Get_Transform()->Set_Speed(3.f);
 }
 
 void GranseedGuard01_FSM::Set_State(_uint iIndex)
+{
+}
+
+void GranseedGuard01_FSM::InteractWithPlayer()
 {
 }

@@ -2185,7 +2185,10 @@ void ImGui_Manager::Show_Models()
             for (auto iter = m_pAnimModels.begin(); iter != m_pAnimModels.end();)
             {
                 if (iter->first->Get_Name() == Utils::ToWString(objNames[m_iCurrentObjectIndex]))
+                {
+                    EVENTMGR.Delete_Object(iter->first);
                     iter = m_pAnimModels.erase(iter);
+                }
                 else iter++;
              }
 
@@ -2216,7 +2219,7 @@ void ImGui_Manager::Show_ModelInfo()
         fsmList.push_back("POTION_FSM");
         fsmList.push_back("GUARD1_FSM");
         fsmList.push_back("GUARD2_FSM");
-        fsmList.push_back("TRAVLER_FSM");
+        fsmList.push_back("TRAVELER_FSM");
 
         static _int tmp =0;
         RadioButton("minMoveArrayPos",&tmp,0);
