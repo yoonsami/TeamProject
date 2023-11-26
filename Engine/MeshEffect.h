@@ -10,8 +10,8 @@ public:
 
 public:
     virtual void            Init(void* pArg);
-    virtual void            Tick() override;
-    virtual void            Final_Tick() override;
+	virtual void            MeshEffect_Tick() ;
+	virtual void            MeshEffect_Final_Tick();
     void                    Render();
 
     void                    Update_Desc();

@@ -28,7 +28,7 @@ void MeshEffect::Init(void* pArg)
     Update_Desc();
 }
 
-void MeshEffect::Tick()
+void MeshEffect::MeshEffect_Tick()
 {
     if (m_bIsLocked)
         return;
@@ -38,7 +38,7 @@ void MeshEffect::Tick()
     Turn(); 
 }
 
-void MeshEffect::Final_Tick()
+void MeshEffect::MeshEffect_Final_Tick()
 {
     if (m_bIsLocked)
         return;
@@ -74,8 +74,6 @@ void MeshEffect::Final_Tick()
     // For. Check is dead 
     if (m_fCurrAge >= m_fDuration)
     {
-        if (m_tDesc.fDuration >= 3.f && m_tDesc.strVfxMesh == "Mesh_PC_Spike_skill_20010_Ice_000")
-            int a = 0;
         EVENTMGR.Delete_Object(Get_Owner());
         return;
     }

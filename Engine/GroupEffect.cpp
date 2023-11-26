@@ -60,6 +60,12 @@ void GroupEffect::Tick()
         }
         iIndex++;
     }
+
+    for (auto& meshEffect : m_lMemberEffects)
+    {
+        if (!meshEffect.expired())
+            meshEffect.lock()->Get_MeshEffect()->MeshEffect_Tick();
+    }
 }
 
 void GroupEffect::Final_Tick()
@@ -93,7 +99,6 @@ void GroupEffect::Final_Tick()
     }
 
     // For. Update MeshEffect Translation 
-    _int iIndex = 0;
     for (auto& iter : m_lMemberEffects)
     {
 
@@ -117,8 +122,13 @@ void GroupEffect::Final_Tick()
 
 
         }
-        iIndex++;
     }
+
+	for (auto& meshEffect : m_lMemberEffects)
+	{
+		if (!meshEffect.expired())
+			meshEffect.lock()->Get_MeshEffect()->MeshEffect_Final_Tick();
+	}
 }
 
 void GroupEffect::Render()
