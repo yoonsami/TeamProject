@@ -1671,7 +1671,8 @@ void Spike_FSM::skill_400100()
             m_pGroupEffect.lock()->Get_GroupEffect()->FreeLoopMember();
         Add_And_Set_Effect(L"Spike_400100_2");
     }
-
+	static _float fAngle = 0.f;
+	static _float3 vUp = _float3(0.f);
     if (m_iCurFrame == 17)
     {
         if (!m_pCamera.expired())
@@ -1696,7 +1697,7 @@ void Spike_FSM::skill_400100()
             
         }
 
-        fAngle = fDT;
+        fAngle = 0.75f *fDT;
         m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCamStopPos.xyz());
         _float3 vDir = m_pCamera.lock()->Get_Script<MainCameraScript>()->Get_FixedDir();
 
