@@ -999,7 +999,7 @@ void Boss_Spike_FSM::die_01()
         script->Init();
 
         if (!m_pAttackCollider.expired())
-            CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+            EVENTMGR.Delete_Object(m_pAttackCollider.lock());
 
         if (!m_pWeapon.expired())
         {

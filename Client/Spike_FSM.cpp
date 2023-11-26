@@ -1258,9 +1258,9 @@ void Spike_FSM::skill_100100_Init()
 
 void Spike_FSM::skill_100300()
 {
-    if (Init_CurFrame(21))
+    if (Init_CurFrame(20))
     {
-        Add_Effect(L"Spike_100100_IceAttack");
+        Add_GroupEffectOwner(L"Spike_100100_IceAttack",_float3(0,0,1));
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
     }
 
