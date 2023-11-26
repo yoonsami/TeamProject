@@ -99,7 +99,6 @@ struct preTweenDesc
 struct InstanceTweenDesc
 {
 	TweenDesc tweens[MAX_MODEL_INSTANCE];
-	TweenDesc preTweens[MAX_MODEL_INSTANCE];
 };
 
 

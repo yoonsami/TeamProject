@@ -92,6 +92,22 @@ void GranseedScene::Init()
 
 		pPlayer->Get_Script<HeroChangeScript>()->Change_Hero(HERO::PLAYER);
 	}
+
+	for(_int i =0; i< _int(HERO::MAX); ++i)
+	{
+		auto& tagData = GET_DATA(HERO(i));
+		/*	shared_ptr<GameObject> obj = make_shared<GameObject>();
+			obj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, -200.f, 0.f, 1.f));
+			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+			animator->Set_Model(RESOURCES.Get<Model>(tagData.ModelTag));
+			obj->Add_Component(animator);
+			obj->Set_Instancing(false);
+			CUR_SCENE->Add_GameObject(obj);*/
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+		shader->GetSRV("TransformMap")->SetResource(RESOURCES.Get<Model>(tagData.ModelTag)->Get_TransformSRV().Get());
+	}
+	
 }
 
 void GranseedScene::Tick()
@@ -112,44 +128,9 @@ void GranseedScene::Tick()
 	}
 	if (KEYTAP(KEY_TYPE::Z))
 	{
-		shared_ptr<GameObject> obj = make_shared<GameObject>();
-		obj->GetOrAddTransform();
-		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-		shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
-		animator->Set_Model(RESOURCES.Get<Model>(L"Shane"));
-		obj->Add_Component(animator);
-		obj->Add_Component(make_shared<Shane_FSM>());
-		obj->Get_FSM()->Init();
-		obj->Set_DrawShadow(true);
-		obj->Set_VelocityMap(true);
-		CUR_SCENE->Add_GameObject(obj);
+		
 
-		/*	shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
-
-			ObjWeapon->Add_Component(make_shared<Transform>());
-			{
-				shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-
-				shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
-				{
-					shared_ptr<Model> model = RESOURCES.Get<Model>(L"Weapon_Shane");
-					renderer->Set_Model(model);
-				}
-
-				ObjWeapon->Add_Component(renderer);
-
-				WeaponScript::WEAPONDESC desc;
-				desc.strBoneName = L"Bip001-Prop1";
-				desc.matPivot = _float4x4::CreateRotationX(-XM_PI / 2.f) * _float4x4::CreateRotationZ(XM_PI);
-				desc.pWeaponOwner = obj;
-
-				ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
-			}
-			ObjWeapon->Set_DrawShadow(true);
-			ObjWeapon->Set_Name(L"Weapon_Shane");
-			ObjWeapon->Set_VelocityMap(true);
-			CUR_SCENE->Add_GameObject(ObjWeapon);
-			obj->Get_FSM()->Set_Weapon(ObjWeapon);*/
+		
 	}
 }
 
