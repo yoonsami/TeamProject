@@ -417,9 +417,9 @@ void ImguiMgr::Create_Object()
          UiObject->Set_Instancing(false);
 
          if(0 == m_iSetStaticValue)
-            CUR_SCENE->Add_GameObject(UiObject, true);
+            EVENTMGR.Create_Object(UiObject, true);
          else
-            CUR_SCENE->Add_GameObject(UiObject, false);
+            EVENTMGR.Create_Object(UiObject, false);
       }
    }
 }
@@ -579,7 +579,7 @@ void ImguiMgr::Delete_Object()
             return;
          }
 
-         CUR_SCENE->Remove_GameObject(pGameobject);
+         EVENTMGR.Delete_Object(pGameobject);
 
          m_strSelectObjName = L"";
       }
@@ -612,7 +612,7 @@ void ImguiMgr::Delete_Object()
                return;
             }
 
-            CUR_SCENE->Remove_GameObject(pGameobject);
+            EVENTMGR.Delete_Object(pGameobject);
          }
 
          
@@ -1319,7 +1319,7 @@ void ImguiMgr::Load_Ui_Desc()
             UiObject->Set_LayerIndex(Layer_UI);
             UiObject->Set_Instancing(false);
             _bool bIsStatic = file->Read<_bool>();
-            CUR_SCENE->Add_GameObject(UiObject, bIsStatic);
+            EVENTMGR.Create_Object(UiObject, bIsStatic);
 
          }
       }

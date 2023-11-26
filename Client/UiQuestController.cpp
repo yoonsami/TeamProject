@@ -140,12 +140,12 @@ void UiQuestController::Remove_Dialog()
     {
         m_bIsCreated = false;
         auto pScene = CUR_SCENE;
-        pScene->Remove_GameObject(m_pNext.lock());
-        pScene->Remove_GameObject(m_pNpcName.lock());
-        pScene->Remove_GameObject(m_pNpcBg.lock());
-        pScene->Remove_GameObject(m_pNpcDialog.lock());
-        pScene->Remove_GameObject(m_pPlayerBg.lock());
-        pScene->Remove_GameObject(m_pPlayerDialog.lock());
+       EVENTMGR.Delete_Object(m_pNext.lock());
+       EVENTMGR.Delete_Object(m_pNpcName.lock());
+       EVENTMGR.Delete_Object(m_pNpcBg.lock());
+       EVENTMGR.Delete_Object(m_pNpcDialog.lock());
+       EVENTMGR.Delete_Object(m_pPlayerBg.lock());
+       EVENTMGR.Delete_Object(m_pPlayerDialog.lock());
     }
 }
 
