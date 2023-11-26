@@ -34,7 +34,7 @@ HRESULT SphereCollider::Init()
 		physics = make_shared<Physics>();
 	PxSphereGeometry tmp(m_BoundingSphere.Radius);
 	physics->Create_RigidBody(&tmp, true);*/
-	m_vOffset = Get_Transform()->Get_State(Transform_State::UP).xyz() * m_BoundingSphere.Radius;
+	m_vOffset = _float3::Up * m_BoundingSphere.Radius;
 	return S_OK;
 }
 
