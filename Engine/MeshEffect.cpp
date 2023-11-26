@@ -475,7 +475,7 @@ void MeshEffect::Translate()
             vDir.y = 0.f;
 
             vPos += vDir * (m_tTransform_Desc.vCurvePoint_Force[0].x * fDT);
-            m_fCurrYspeed += 9.8f * fDT;
+            m_fCurrYspeed += 10.0f * fDT;
             vPos.y -= m_fCurrYspeed * fDT;
 
             Get_Transform()->Set_State(Transform_State::POS, vPos);

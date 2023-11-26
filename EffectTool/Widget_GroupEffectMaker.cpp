@@ -3,6 +3,7 @@
 
 #include "GameObject.h"
 #include "GroupEffect.h"
+#include "Camera.h"
 
 bool VectorOfStringGetter2(void* data, int n, const char** out_text)
 {
@@ -544,13 +545,14 @@ void Widget_GroupEffectMaker::Create()
 {
 	/* Get GroupEffectData gameObject if resource manager already has GroupEffectData
 	  if it does not, add new GroupEffectData to resource manager and get */
-
 	// Erase prev created loop mesh effect 
 	if (nullptr != m_pCurrentGroup)
 		m_pCurrentGroup->Get_GroupEffect()->FreeLoopMember();
 
 	if ("None" == m_strGroup)
 		return;	
+
+	CUR_SCENE->Get_Camera(L"Default")->Get_Camera()->Set_EffectToolOn(false);
 
 	shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();
 	

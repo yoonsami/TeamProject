@@ -76,13 +76,14 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 		if (gameObject->Get_MeshRenderer() == nullptr
 			&& gameObject->Get_ModelRenderer() == nullptr
 			&& gameObject->Get_Animator() == nullptr
-			//&& gameObject->Get_EffectRenderer() == nullptr
 			&& gameObject->Get_DistortionRenderer() == nullptr
 			&& gameObject->Get_Particle() == nullptr
-			&& gameObject->Get_GroupEffect() == nullptr
 			&& gameObject->Get_TrailRenderer() == nullptr
 			&& gameObject->Get_MotionTrailRenderer() == nullptr
-			&& gameObject->Get_FontRenderer() ==nullptr)
+			&& gameObject->Get_FontRenderer() == nullptr
+			&& ((m_bEffectToolMode_On && gameObject->Get_MeshEffect() == nullptr) ||
+			    (!m_bEffectToolMode_On && gameObject->Get_GroupEffect() == nullptr))
+			)
 			continue;
 
 		if (IsCulled(gameObject->Get_LayerIndex()))
@@ -107,13 +108,14 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 			m_Forward.push_back(gameObject);
 		else if (gameObject->Get_ShaderType() == SHADER_TYPE::DEFERRED)
 			m_Deferred.push_back(gameObject);
+		else if (m_bEffectToolMode_On && gameObject->Get_MeshEffect())
+			m_Forward.push_back(gameObject);
+		else if (!m_bEffectToolMode_On && gameObject->Get_GroupEffect())
+			m_Forward.push_back(gameObject);
 		else if (gameObject->Get_ShaderType() == SHADER_TYPE::FORWARD)
 			m_Forward.push_back(gameObject);
 		else if (gameObject->Get_ShaderType() == SHADER_TYPE::DISTORTION)
 			m_DistortionEffects.push_back(gameObject);
-		else if(gameObject->Get_GroupEffect())
-			m_Forward.push_back(gameObject);
-
 		
 		//if (gameObject->Get_ParticleSystem())
 		//	m_Particle.push_back(gameObject);
@@ -264,8 +266,6 @@ void Camera::Render_Forward()
 	S_View = m_matView;
 	S_Proj = m_matProj;
 
-
-	
 	for (auto& trail : m_Trails)
 	{
 		if (trail->Get_TrailRenderer())
@@ -308,24 +308,26 @@ void Camera::Render_Forward()
 	{
 		if (obj->Get_MeshRenderer())
 			obj->Get_MeshRenderer()->Render();
-
 		else if (obj->Get_ModelRenderer())
 			obj->Get_ModelRenderer()->Render();
-		else if (obj->Get_GroupEffect())
-			obj->Get_GroupEffect()->Render();
 		else if (obj->Get_Animator())
 			obj->Get_Animator()->Render();
+
+		// Effect
+		else if (m_bEffectToolMode_On && obj->Get_MeshEffect())
+			obj->Get_MeshEffect()->Render();
+		else if(!m_bEffectToolMode_On && obj->Get_GroupEffect())
+			obj->Get_GroupEffect()->Render();
+
+		// Font
 		if (obj->Get_FontRenderer())
 			obj->Get_FontRenderer()->Render();
 	}
-
 
 	for (auto& particle : m_Particle)
 	{
 		particle->Get_Particle()->Render();
 	}
-
-
 }
 
 void Camera::Render_Deferred()

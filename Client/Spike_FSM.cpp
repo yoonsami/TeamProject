@@ -1591,6 +1591,11 @@ void Spike_FSM::skill_200400_Init()
 
 void Spike_FSM::skill_300100()
 {
+    if (Init_CurFrame(1))
+        Add_And_Set_Effect(L"Spike_300100_Jump");
+    if (Init_CurFrame(30))
+        Add_And_Set_Effect(L"Spike_300100");
+
     if (m_iCurFrame <= 50)
     {
         if (!m_pCamera.expired())
@@ -1658,30 +1663,10 @@ void Spike_FSM::skill_300100_Init()
 
 void Spike_FSM::skill_400100()
 {
-    //if (m_iCurFrame < 140)
-    //{
-    //    if (!m_pCamera.expired())
-    //    {
-    //        _float4 vDir = m_vSkillCamBonePos - m_vCamBonePos;
-    //        vDir.Normalize();
-
-    //        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
-    //        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vSkillCamBonePos.xyz());
-    //        m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz() * -1.f, 8.f);
-    //    }
-    //}
-    //else
-    //{
-    //    if (!m_pCamera.expired())
-    //    {
-    //        _float4 vDir = m_vSkillCamBonePos - m_vCamBonePos;
-    //        vDir.Normalize();
-
-    //        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
-    //        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCamBonePos.xyz());
-    //        m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 10.f);
-    //    }
-    //}
+    if (Init_CurFrame(49))    
+        Add_GroupEffectOwner(L"Spike_400100_pase1", _float3(2.f, 0.f, -0.8f));
+    if (Init_CurFrame(77))
+        Add_GroupEffectOwner(L"Spike_400100_pase2", _float3(-3.f, 0.f, 1.8f));
 
     if (m_iCurFrame == 17)
     {
@@ -1709,55 +1694,55 @@ void Spike_FSM::skill_400100()
 
     if (Init_CurFrame(50))
     {
-		_float4 vSkillPos = m_vSkillCamBonePos;
-		vSkillPos.y = 0.f;
+        _float4 vSkillPos = m_vSkillCamBonePos;
+        vSkillPos.y = 0.f;
 
-		FORWARDMOVINGSKILLDESC desc;
-		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-		desc.fMoveSpeed = 0.f;
-		desc.fLifeTime = 1.f;
-		desc.fLimitDistance = 0.f;
+        FORWARDMOVINGSKILLDESC desc;
+        desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+        desc.fMoveSpeed = 0.f;
+        desc.fLifeTime = 1.f;
+        desc.fLimitDistance = 0.f;
 
-		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f);
     }
-    else if (Init_CurFrame(85))
+    else if (Init_CurFrame(76))
     {
-		_float4 vSkillPos = m_vSkillCamBonePos;
-		vSkillPos.y = 0.f;
+        _float4 vSkillPos = m_vSkillCamBonePos;
+        vSkillPos.y = 0.f;
 
-		FORWARDMOVINGSKILLDESC desc;
-		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-		desc.fMoveSpeed = 0.f;
-		desc.fLifeTime = 1.f;
-		desc.fLimitDistance = 0.f;
+        FORWARDMOVINGSKILLDESC desc;
+        desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+        desc.fMoveSpeed = 0.f;
+        desc.fLifeTime = 1.f;
+        desc.fLimitDistance = 0.f;
 
-		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f);
     }
     else if (Init_CurFrame(110))
     {
-		_float4 vSkillPos = m_vSkillCamBonePos;
-		vSkillPos.y = 0.f;
+        _float4 vSkillPos = m_vSkillCamBonePos;
+        vSkillPos.y = 0.f;
 
-		FORWARDMOVINGSKILLDESC desc;
-		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-		desc.fMoveSpeed = 0.f;
-		desc.fLifeTime = 1.f;
-		desc.fLimitDistance = 0.f;
+        FORWARDMOVINGSKILLDESC desc;
+        desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+        desc.fMoveSpeed = 0.f;
+        desc.fLifeTime = 1.f;
+        desc.fLimitDistance = 0.f;
 
-		Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f);
     }
     else if (Init_CurFrame(151))
     {
-		_float4 vSkillPos = m_vSkillCamBonePos;
-		vSkillPos.y = 0.f;
+        _float4 vSkillPos = m_vSkillCamBonePos;
+        vSkillPos.y = 0.f;
 
-		FORWARDMOVINGSKILLDESC desc;
-		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-		desc.fMoveSpeed = 0.f;
-		desc.fLifeTime = 1.f;
-		desc.fLimitDistance = 0.f;
+        FORWARDMOVINGSKILLDESC desc;
+        desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+        desc.fMoveSpeed = 0.f;
+        desc.fLifeTime = 1.f;
+        desc.fLimitDistance = 0.f;
 
-		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f);
     }
 
     if (Is_AnimFinished())

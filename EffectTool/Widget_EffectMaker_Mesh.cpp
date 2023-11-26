@@ -1008,8 +1008,11 @@ void Widget_EffectMaker_Mesh::Create()
 {
 	for (_int n = 0; n < m_iMeshCnt; n++)
 	{
+		CUR_SCENE->Get_Camera(L"Default")->Get_Camera()->Set_EffectToolOn(true);
+
 		// For. Create GameObject 
 		shared_ptr<GameObject> EffectObj = make_shared<GameObject>();
+		EffectObj->Set_Name(Utils::ToWString(m_strMesh));
 
 		// For. Add and Setting Transform Component
 		EffectObj->GetOrAddTransform();
@@ -1478,7 +1481,8 @@ void Widget_EffectMaker_Mesh::Load()
 	m_iScalingOption = file->Read<_int>();
 	vTemp_vec3 = file->Read<_float3>();
 	memcpy(m_fEndScaleOffset, &vTemp_vec3, sizeof(m_fEndScaleOffset));
-
+	if (2 != m_iScaleSpeedType)
+		m_iScalingOption = 2;
 	if (Equal(_float3(m_fEndScaleOffset), _float3(0.f, 0.f, 0.f)))
 		m_iScalingOption = 0;
 	else

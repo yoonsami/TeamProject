@@ -64,6 +64,7 @@ public:
     }
     void Set_CullingMaskAll() { Set_CullingMask(UINT32_MAX); }
     void Set_CullingMask(_uint mask) { m_iCullingMask = mask; }
+    void Set_EffectToolOn(_bool bEffectToolOn) { m_bEffectToolMode_On = bEffectToolOn; }
     _bool IsCulled(_uchar layerIndex) { return (m_iCullingMask & (1 << layerIndex)) != 0; }
 
     Frustum& Get_Frustum() { return frustum; }
@@ -92,6 +93,8 @@ private:
     vector<shared_ptr<GameObject>> m_DistortionEffects;
     vector<shared_ptr<GameObject>> m_Trails;
 
+private:
+    _bool                           m_bEffectToolMode_On = { false };
 
 public:
 	static _float4x4 S_View;

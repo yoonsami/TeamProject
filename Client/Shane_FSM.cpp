@@ -299,11 +299,11 @@ void Shane_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap
         _float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
         
         shared_ptr<GameObject> targetToLook = nullptr;
-        // skillName¿¡ _Skill Æ÷ÇÔÀÌ¸é
+        // skillNameï¿½ï¿½ _Skill ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½
         if (strSkillName.find(L"_Skill") != wstring::npos)
-            targetToLook = pCollider->Get_Owner(); // Collider owner¸¦ ³Ñ°ÜÁØ´Ù
-        else // ¾Æ´Ï¸é
-            targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner(); // Collider¸¦ ¸¸µç °´Ã¼¸¦ ³Ñ°ÜÁØ´Ù
+            targetToLook = pCollider->Get_Owner(); // Collider ownerï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½Ø´ï¿½
+        else // ï¿½Æ´Ï¸ï¿½
+            targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner(); // Colliderï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½Ø´ï¿½
 
         if (targetToLook == nullptr)
             return;
