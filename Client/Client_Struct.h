@@ -75,3 +75,17 @@ typedef struct tagBossData
 	wstring			Name;
 
 }BOSSDATA;
+
+typedef struct tagQuestData
+{
+	_bool		IsClear			= false;
+	QUESTTYPE	Type			= QUESTTYPE::MAX;
+
+	_uint		CurCount		= 0;
+	_uint		MaxCount		= 0;
+
+	wstring		Name;
+	wstring		Info;
+	wstring		Clear;
+
+}QUESTDATA;

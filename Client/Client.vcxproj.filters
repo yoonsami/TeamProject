@@ -139,9 +139,6 @@
     <Filter Include="02.Component\00.MonoBehaviour\05.Object">
       <UniqueIdentifier>{cb1c73e1-4a3a-44db-89b8-d0e6ad4cc4d6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="97.Manager">
-      <UniqueIdentifier>{4ee62b09-76e9-4bd3-8553-1d4e912c45b2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\08.MainUIController">
       <UniqueIdentifier>{30821e96-89ae-4920-865d-9c36a2e717df}</UniqueIdentifier>
     </Filter>
@@ -271,9 +268,6 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\17.UiMarkNpc">
       <UniqueIdentifier>{72831f1a-04f7-4c99-bb2c-b123a25ffc4f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\18.UiDialogController">
-      <UniqueIdentifier>{093b24ca-395b-4343-8de6-fc39038975b6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\19.UiInteraction">
       <UniqueIdentifier>{e5bcdf44-e977-42fb-8255-b7bb13c49886}</UniqueIdentifier>
     </Filter>
@@ -288,6 +282,15 @@
     </Filter>
     <Filter Include="02.Component\01.FSM\03.Special_FSM\04.DragonBall_FSM">
       <UniqueIdentifier>{586a98a9-59d6-4639-9bb4-015cca513dbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.Data">
+      <UniqueIdentifier>{4ee62b09-76e9-4bd3-8553-1d4e912c45b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\18.UiQuestController">
+      <UniqueIdentifier>{093b24ca-395b-4343-8de6-fc39038975b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\20.UiSettingController">
+      <UniqueIdentifier>{f2441089-0aeb-4843-bdaa-56777f4f01ef}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -472,7 +475,7 @@
       <Filter>02.Component\01.FSM\01.Hero_FSM\00.Player_FSM</Filter>
     </ClInclude>
     <ClInclude Include="DataMgr.h">
-      <Filter>97.Manager</Filter>
+      <Filter>97.Data</Filter>
     </ClInclude>
     <ClInclude Include="MainUiController.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\08.MainUIController</Filter>
@@ -574,9 +577,6 @@
     <ClInclude Include="UiMarkNpc.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\17.UiMarkNpc</Filter>
     </ClInclude>
-    <ClInclude Include="UiDialogController.h">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\18.UiDialogController</Filter>
-    </ClInclude>
     <ClInclude Include="UIInteraction.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\19.UiInteraction</Filter>
     </ClInclude>
@@ -587,6 +587,12 @@
     </ClInclude>
     <ClInclude Include="DragonBall_FSM.h">
       <Filter>02.Component\01.FSM\03.Special_FSM\04.DragonBall_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="UiQuestController.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\18.UiQuestController</Filter>
+    </ClInclude>
+    <ClInclude Include="UiSettingController.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\20.UiSettingController</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -741,7 +747,7 @@
       <Filter>02.Component\01.FSM\01.Hero_FSM\00.Player_FSM</Filter>
     </ClCompile>
     <ClCompile Include="DataMgr.cpp">
-      <Filter>97.Manager</Filter>
+      <Filter>97.Data</Filter>
     </ClCompile>
     <ClCompile Include="MainUiController.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\08.MainUIController</Filter>
@@ -840,9 +846,6 @@
     <ClCompile Include="UiMarkNpc.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\17.UiMarkNpc</Filter>
     </ClCompile>
-    <ClCompile Include="UiDialogController.cpp">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\18.UiDialogController</Filter>
-    </ClCompile>
     <ClCompile Include="UIInteraction.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\19.UiInteraction</Filter>
     </ClCompile>
@@ -853,6 +856,12 @@
     </ClCompile>
     <ClCompile Include="DragonBall_FSM.cpp">
       <Filter>02.Component\01.FSM\03.Special_FSM\04.DragonBall_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="UiQuestController.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\18.UiQuestController</Filter>
+    </ClCompile>
+    <ClCompile Include="UiSettingController.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\20.UiSettingController</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

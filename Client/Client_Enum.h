@@ -106,10 +106,22 @@ enum class NPCTYPE
 	MAX
 };
 
-enum class QUESTDIALOG
+enum class QUESTINDEX
 {
 	TRY_GACHA,
-	KILL_MONSTER,
+	KILL_ALPACA,
+	KILL_DELLONS,
+	KILL_SPIKE,
 	KILL_MIR,
+	STORY_CLEAR,
+	MAX
+};
+
+enum class QUESTTYPE
+{
+	ACT,
+	COLLECT,
+	HUNT,
+	BOSS,
 	MAX
 };

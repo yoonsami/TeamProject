@@ -16,14 +16,24 @@ public:
     wstring             Get_Element_Line(BOSS eBoss)                        { return m_KeyElement[m_BossData[IDX(eBoss)].Element] + L"1"; }
 
     const wstring&      Get_Npc_Name(NPCTYPE eType)                         { return m_NpcName[IDX(eType)]; }
-    _uint               Get_Quest_Dialog_Count(QUESTDIALOG eType)           { return IDX(m_QuestDialog.size()); }
-    const wstring&      Get_Quest_Dialog(QUESTDIALOG eType, _uint iIndex)   { return m_QuestDialog[IDX(eType)][iIndex]; }
+    
+    _uint               Get_Dialog_Size(QUESTINDEX eIndex, _bool bHaveQuest, _uint iIndex, _bool bIsClear = false);
+    const wstring&      Get_Dialog(QUESTINDEX eIndex, _bool bHaveQuest, _uint iIndex, _bool bIsClear = false);
+    const QUESTDATA&    Get_Quest(QUESTINDEX eIndex)                        { return m_Quest[IDX(eIndex)]; }
+
 
 private:
     vector<HERODATA>            m_HeroData;
     vector<wstring>             m_KeyElement;
     vector<BOSSDATA>            m_BossData;
     vector<wstring>             m_NpcName;
-    vector<vector<wstring>>     m_QuestDialog;
+
+    vector<wstring>             m_DialogGameClear;
+    vector<vector<wstring>>     m_DialogAccept;
+    vector<vector<wstring>>     m_DialogNoClear;
+    vector<vector<wstring>>     m_DialogClear;
+    vector<QUESTDATA>           m_Quest;
+
+    wstring                     strTemp;
 };
 

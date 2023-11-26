@@ -581,7 +581,7 @@ void SpikeScene::Load_Boss_Spike(shared_ptr<GameObject> pPlayer)
 
 void SpikeScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 {
-	wstring assetPath = L"..\\Resources\\Textures\\UITexture\\Main\\";
+	/*wstring assetPath = L"..\\Resources\\Textures\\UITexture\\Main\\";
 
 	for (auto& entry : fs::recursive_directory_iterator(assetPath))
 	{
@@ -592,7 +592,7 @@ void SpikeScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		wstring fileName = entry.path().filename().wstring();
 		Utils::DetachExt(fileName);
 		RESOURCES.Load<Texture>(fileName, filePath);
-	}
+	}*/
 	auto scene = CUR_SCENE;
 	list<shared_ptr<GameObject>>& tmp = static_pointer_cast<LoadingScene>(CUR_SCENE)->Get_StaticObjectsFromLoader();
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main.dat", tmp);

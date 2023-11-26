@@ -60,9 +60,9 @@
 #include "UIBossHpBar.h"
 #include "UiComboEffect.h"
 #include "UiSkillGauge.h"
-#include"UiDialogController.h"
 #include "UIInteraction.h"
-
+#include "UiQuestController.h"
+#include "UiSettingController.h"
 
 #include <filesystem>
 #include "GachaScene.h"
@@ -121,64 +121,12 @@ void GranseedScene::Tick()
 	if (KEYTAP(KEY_TYPE::V))
 	{
 		auto pObj = Get_UI(L"UI_Interaction");
-		if (pObj)
-		pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::GACHA);
+		pObj->Get_Script<UIInteraction>()->Remove_Interaction();
 	}
 	if (KEYTAP(KEY_TYPE::Z))
 	{
-		{
-			wstring assetPath = L"..\\Resources\\EffectData\\GroupEffectData\\";
-			fs::create_directories(fs::path(assetPath));
-			for (auto& entry : fs::recursive_directory_iterator(assetPath))
-			{
-				if (entry.is_directory())
-					continue;
-
-				if (entry.path().extension().wstring() != L".dat")
-					continue;
-
-				wstring name = entry.path().filename();
-				Utils::DetachExt(name);
-				auto groupEffectData = RESOURCES.Get<GroupEffectData>(name);
-		
-				// For. Create Reloaded 
-				auto newGroupEffectData = make_shared<GroupEffectData>();
-				newGroupEffectData->Load(entry.path().wstring());
-				newGroupEffectData->Set_Name(name);
-
-
-				RESOURCES.Delete<GroupEffectData>(name);	// For. Delete prev 
-				RESOURCES.Add(name, newGroupEffectData);	// For. Add new 
-
-			}
-		}
-		{
-			wstring assetPath = L"..\\Resources\\EffectData\\MeshEffectData\\";
-			fs::create_directories(fs::path(assetPath));
-			for (auto& entry : fs::recursive_directory_iterator(assetPath))
-			{
-				if (entry.is_directory())
-					continue;
-
-				if (entry.path().extension().wstring() != L".dat")
-					continue;
-
-				wstring name = entry.path().filename();
-				Utils::DetachExt(name);
-				auto groupEffectData = RESOURCES.Get<MeshEffectData>(name);
-		
-
-				// For. Create Reloaded 
-				auto newGroupEffectData = make_shared<MeshEffectData>();
-				newGroupEffectData->Load(entry.path().wstring());
-				newGroupEffectData->Set_Name(name);
-
-
-				RESOURCES.Delete<MeshEffectData>(name);	// For. Delete prev 
-				RESOURCES.Add(name, newGroupEffectData);	// For. Add new 
-
-			}
-		}
+		auto pObj = Get_UI(L"UI_Dialog_Controller");
+		pObj->Get_Script<UiQuestController>()->Change_Value();
 	}
 }
 
@@ -421,7 +369,7 @@ void GranseedScene::Load_Camera(shared_ptr<GameObject> pPlayer)
 
 void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 {
-	wstring assetPath = L"..\\Resources\\Textures\\UITexture\\Main\\";
+	/*wstring assetPath = L"..\\Resources\\Textures\\UITexture\\Main\\";
 
 	for (auto& entry : fs::recursive_directory_iterator(assetPath))
 	{
@@ -432,7 +380,7 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		wstring fileName = entry.path().filename().wstring();
 		Utils::DetachExt(fileName);
 		RESOURCES.Load<Texture>(fileName, filePath);
-	}
+	}*/
 	list<shared_ptr<GameObject>>& tmp = static_pointer_cast<LoadingScene>(CUR_SCENE)->Get_StaticObjectsFromLoader();
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main.dat", tmp);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main_Button.dat", tmp);
@@ -442,6 +390,8 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", tmp, false);
 	//Load_UIFile(L"..\\Resources\\UIData\\UI_MonsterHp.dat", tmp);
 	//Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat");
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Cur_Quest.dat", tmp, false);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Setting.dat", tmp, false);
 
 
 	{
@@ -520,14 +470,21 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	}
 
 	{
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_Name(L"UI_Setting_Controller");
 
+		auto pScript = make_shared<UiSettingController>();
+		pObj->Add_Component(pScript);
+
+		pObj->Set_LayerIndex(Layer_UI);
+		Add_GameObject(pObj);
 	}
 
 	{
 		auto pObj = make_shared<GameObject>();
 		pObj->Set_Name(L"UI_Dialog_Controller");
 
-		auto pScript = make_shared<UiDialogController>();
+		auto pScript = make_shared<UiQuestController>();
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
@@ -596,6 +553,18 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 				});
 		}
 	}
+	
+	{
+		auto pObj = Get_UI(L"UI_Main_Button3");
+		if (nullptr != pObj)
+		{
+			pObj->Get_Button()->AddOnClickedEvent([]()
+				{
+					CUR_SCENE->Get_UI(L"UI_Setting_Controller")->Get_Script<UiSettingController>()->Set_Render(true);
+				});
+		}
+	}
+
 
 	{
 		auto pScript = make_shared<UiSkillButtonEffect>();

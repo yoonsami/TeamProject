@@ -110,7 +110,7 @@ void LogoScene::Load_Camera()
 
 void LogoScene::Load_Ui()
 {
-	wstring assetPath = L"..\\Resources\\Textures\\UITexture\\Logo\\";
+	wstring assetPath = L"..\\Resources\\Textures\\UITexture\\";
 
 	for (auto& entry : fs::recursive_directory_iterator(assetPath))
 	{
