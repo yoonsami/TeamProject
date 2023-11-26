@@ -116,6 +116,7 @@ protected:
 	//Cache
 	vector<shared_ptr<GameObject>> m_Lights;
 	vector<shared_ptr<GameObject>> m_UI;
+	vector<shared_ptr<GameObject>> m_ButtonUI;
 
 	LightParams m_LightParams;
 	SCENE_STATE m_eSceneState = SCENE_READY;

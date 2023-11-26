@@ -49,13 +49,14 @@ public:
 	void Tick();
 
 public:
-	bool GetButtonHold(KEY_TYPE key) { return GetState(key) == KEY_STATE::HOLD; }
-	bool GetButtonTap(KEY_TYPE key)  { return GetState(key) == KEY_STATE::TAP; }
-	bool GetButtonAway(KEY_TYPE key) { return GetState(key) == KEY_STATE::AWAY; }
+	bool GetButtonHold(KEY_TYPE key)	{ return GetState(key) == KEY_STATE::HOLD; }
+	bool GetButtonTap(KEY_TYPE key)		{ return GetState(key) == KEY_STATE::TAP; }
+	bool GetButtonAway(KEY_TYPE key)	{ return GetState(key) == KEY_STATE::AWAY; }
 
-	const _float2& GetMousePos()	 { return m_ptMousePos; }
-	const _float2& GetMouseDir()	 { return m_vMouseDir; }
-	POINT GetMousePosToPoint()		 { return { LONG(m_ptMousePos.x), LONG(m_ptMousePos.y) }; }
+	const _float2& GetMousePos()		{ return m_ptMousePos; }
+	const _float2& GetMouseDir()		{ return m_vMouseDir; }
+	POINT GetMousePosToPoint()			{ return { LONG(m_ptMousePos.x), LONG(m_ptMousePos.y) }; }
+	_bool Get_IsCanMove()				{ return m_bIsCanMove; }
 
 	void Set_Mouse_Move(_bool bValue);
 	void Set_Show_Cursor(_bool bValue);

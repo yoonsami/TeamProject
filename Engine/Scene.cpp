@@ -180,7 +180,12 @@ void Scene::Add_GameObject(shared_ptr<GameObject> object, _bool staticFlag)
 		m_Lights.push_back(object);
 
 	if (object->Get_LayerIndex() == Layer_UI)
+	{
 		m_UI.push_back(object);
+
+		if (nullptr != object->Get_Button())
+			m_ButtonUI.push_back(object);
+	}
 
 	if (staticFlag)
 		m_StaticObject.push_back(object);
@@ -197,7 +202,12 @@ void Scene::Add_GameObject_Front(shared_ptr<GameObject> object, _bool staticFlag
 		m_Lights.push_back(object);
 
 	if (object->Get_LayerIndex() == Layer_UI)
+	{
 		m_UI.push_back(object);
+
+		if (nullptr != object->Get_Button())
+			m_ButtonUI.push_back(object);
+	}
 
 	if (staticFlag)
 		m_StaticObject.push_front(object);
@@ -205,8 +215,6 @@ void Scene::Add_GameObject_Front(shared_ptr<GameObject> object, _bool staticFlag
 
 void Scene::Remove_GameObject(shared_ptr<GameObject> object)
 {
-
-
 	{
 		auto findit = find(m_GameObjects.begin(), m_GameObjects.end(), object);
 		if (findit != m_GameObjects.end())
@@ -231,6 +239,11 @@ void Scene::Remove_GameObject(shared_ptr<GameObject> object)
 		auto findit = find(m_StaticObject.begin(), m_StaticObject.end(), object);
 		if (findit != m_StaticObject.end())
 			m_StaticObject.erase(findit);
+	}
+	{
+		auto findit = find(m_ButtonUI.begin(), m_ButtonUI.end(), object);
+		if (findit != m_ButtonUI.end())
+			m_ButtonUI.erase(findit);
 	}
 }
 
@@ -906,28 +919,45 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 
 void Scene::PickUI()
 {
-	if (!KEYTAP(KEY_TYPE::LBUTTON))
+	if (false == INPUT.Get_IsCanMove())
+		return;
+
+	if (!KEYPUSH(KEY_TYPE::LBUTTON))
 		return;
 
 	if (!Get_UICamera())
 		return;
 
 	POINT screenPt = INPUT.GetMousePosToPoint();
+	_bool bIsTap = KEYTAP(KEY_TYPE::LBUTTON);
 
-	shared_ptr<Camera> camera = Get_UICamera()->Get_Camera();
-
-	const auto gameobjects = m_GameObjects;
-
+	const auto gameobjects = m_ButtonUI;
 	for (auto& gameObject : gameobjects)
 	{
-		if(!gameObject->Get_Button())
-			continue;
-
 		if (false == gameObject->Is_Render())
 			continue;
+		
+		auto Button = gameObject->Get_Button();
+		if (true == Button->Get_Type() && true == bIsTap)
+		{
+			if (Button->Picked(screenPt))
+			{
+				Button->InvokeOnClicked();
 
-		if (gameObject->Get_Button()->Picked(screenPt))
-			gameObject->Get_Button()->InvokeOnClicked();
+				break;
+			}
+		}
+
+		else if (false == Button->Get_Type())
+		{
+			if (Button->Picked(screenPt))
+			{
+				Button->InvokeOnClicked();
+
+				break;
+			}
+		}
+		
 	}
 
 }
