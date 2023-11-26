@@ -111,8 +111,8 @@ void UIInteraction::Remove_Interaction()
         false == m_pInteraction_Font.expired())
     {
         m_bIsCreated = false;
-        auto pScene = CUR_SCENE;
-        pScene->Remove_GameObject(m_pInteraction_Bg.lock());
-        pScene->Remove_GameObject(m_pInteraction_Font.lock());
+
+        EVENTMGR.Delete_Object(m_pInteraction_Bg.lock());
+        EVENTMGR.Delete_Object(m_pInteraction_Font.lock());
     }
 }

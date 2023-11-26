@@ -1258,7 +1258,7 @@ void Spike_FSM::skill_100100_Init()
 
 void Spike_FSM::skill_100300()
 {
-    if (Init_CurFrame(22))
+    if (Init_CurFrame(21))
     {
         Add_Effect(L"Spike_100100_IceAttack");
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
@@ -1842,7 +1842,7 @@ void Spike_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fS
     m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
     m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
 
-    CUR_SCENE->Add_GameObject(m_pSkillCollider.lock());
+    EVENTMGR.Create_Object(m_pSkillCollider.lock());
 }
 
 void Spike_FSM::Use_Skill()
@@ -1853,12 +1853,13 @@ void Spike_FSM::Use_Skill()
         m_eCurState = STATE::skill_200100;
     else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
         m_eCurState = STATE::skill_300100;
-    else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
+    else if (KEYTAP(KEY_TYPE::KEY_4))
         m_eCurState = STATE::skill_400100;
     else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
         m_eCurState = STATE::skill_501100;
     else
         Use_Dash();
+
 }
 
 void Spike_FSM::Use_Dash()

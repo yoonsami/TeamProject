@@ -171,7 +171,7 @@ void UiGachaController::Delete_Gacha_Card()
         if (true == pObj.expired())
             continue;
 
-        pScene->Remove_GameObject(pObj.lock());
+        EVENTMGR.Delete_Object(pObj.lock());
     }
 }
 
@@ -186,7 +186,7 @@ void UiGachaController::Delete_Gacha_Bg()
         if (true == pObj.expired())
             continue;
 
-        pScene->Remove_GameObject(pObj.lock());
+        EVENTMGR.Delete_Object(pObj.lock());
     }
 }
 
@@ -201,7 +201,7 @@ void UiGachaController::Delete_Gacha_Button()
         if (true == pObj.expired())
             continue;
 
-        pScene->Remove_GameObject(pObj.lock());
+        EVENTMGR.Delete_Object(pObj.lock());
     }
 }
 
@@ -216,7 +216,7 @@ void UiGachaController::Delete_Gacha_Effect()
         if (true == pObj.expired())
             continue;
 
-        pScene->Remove_GameObject(pObj.lock());
+        EVENTMGR.Delete_Object(pObj.lock());
     }
 }
 

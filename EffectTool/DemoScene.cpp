@@ -61,7 +61,14 @@ void GranseedScene::Render()
 HRESULT GranseedScene::Load_Scene()
 {
 	PHYSX.Init();
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\");
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Parts\\Player\\", true);
+	RESOURCES.LoadParts();
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\");
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\VfxMesh\\");
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\SkyBox\\");
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Weapon\\");
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Kyle\\");
+
 	RESOURCES.LoadParts();
 	Load_DemoModel();
 	Load_Light();

@@ -27,7 +27,7 @@ HRESULT Wolf_FSM::Init()
 
         m_pAttackCollider = attackCollider;
 
-        CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
+        EVENTMGR.Create_Object(m_pAttackCollider.lock());
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
 
         m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
@@ -514,7 +514,7 @@ void Wolf_FSM::die_01()
         script->Init();
 
         if (!m_pAttackCollider.expired())
-            CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+            EVENTMGR.Delete_Object(m_pAttackCollider.lock());
     }
 }
 
@@ -537,7 +537,7 @@ void Wolf_FSM::die_02()
         script->Init();
 
         if (!m_pAttackCollider.expired())
-            CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+            EVENTMGR.Delete_Object(m_pAttackCollider.lock());
     }
 }
 
@@ -707,7 +707,7 @@ void Wolf_FSM::airborne_end()
             script->Init();
 
             if (!m_pAttackCollider.expired())
-                CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+                EVENTMGR.Delete_Object(m_pAttackCollider.lock());
         }
     }
 }
@@ -812,7 +812,7 @@ void Wolf_FSM::knock_end_loop()
         script->Init();
 
         if (!m_pAttackCollider.expired())
-            CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+            EVENTMGR.Delete_Object(m_pAttackCollider.lock());
     }
 }
 
@@ -903,7 +903,7 @@ void Wolf_FSM::knockdown_end()
             script->Init();
 
             if (!m_pAttackCollider.expired())
-                CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+                EVENTMGR.Delete_Object(m_pAttackCollider.lock());
         }
     }
 }

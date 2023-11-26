@@ -1852,7 +1852,7 @@ void Yeopo_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fS
     m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
     m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
 
-    CUR_SCENE->Add_GameObject(m_pSkillCollider.lock());
+    EVENTMGR.Create_Object(m_pSkillCollider.lock());
 }
 
 void Yeopo_FSM::Create_Vehicle()
@@ -1878,7 +1878,7 @@ void Yeopo_FSM::Create_Vehicle()
     ObjVehicle->Get_FSM()->Init();
     ObjVehicle->Set_Name(L"Yeopo_RedHorse");
     
-    CUR_SCENE->Add_GameObject(ObjVehicle);
+    EVENTMGR.Create_Object(ObjVehicle);
 
     m_pVehicle = ObjVehicle;
 }

@@ -107,14 +107,14 @@ void UIBossHpBar::Check_Target()
     if (0.f >= m_pOwner.lock()->Get_CurHp())
     {
         auto pScene = CUR_SCENE;
-        pScene->Remove_GameObject(m_pBgHp.lock());
-        pScene->Remove_GameObject(m_pFrontHp.lock());
-        pScene->Remove_GameObject(m_pBackHp.lock());
-        pScene->Remove_GameObject(m_pHpFont.lock());
-        pScene->Remove_GameObject(m_pBgGroggy.lock());
-        pScene->Remove_GameObject(m_pFrontGroggy.lock());
-        pScene->Remove_GameObject(m_pElement.lock());
-        pScene->Remove_GameObject(m_pBossName.lock());
+        EVENTMGR.Delete_Object(m_pBgHp.lock());
+        EVENTMGR.Delete_Object(m_pFrontHp.lock());
+        EVENTMGR.Delete_Object(m_pBackHp.lock());
+        EVENTMGR.Delete_Object(m_pHpFont.lock());
+        EVENTMGR.Delete_Object(m_pBgGroggy.lock());
+        EVENTMGR.Delete_Object(m_pFrontGroggy.lock());
+        EVENTMGR.Delete_Object(m_pElement.lock());
+        EVENTMGR.Delete_Object(m_pBossName.lock());
         //pScene->Remove_GameObject(m_pOwner.lock());
     }
 }

@@ -28,7 +28,7 @@ HRESULT Succubus_Scythe_FSM::Init()
 
         m_pAttackCollider = attackCollider;
 
-        CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
+        EVENTMGR.Create_Object(m_pAttackCollider.lock());
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
 
         m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
@@ -542,7 +542,7 @@ void Succubus_Scythe_FSM::die_01()
         script->Init();
 
         if (!m_pAttackCollider.expired())
-            CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+            EVENTMGR.Delete_Object(m_pAttackCollider.lock());
     }
 }
 
@@ -565,7 +565,7 @@ void Succubus_Scythe_FSM::die_02()
         script->Init();
 
         if (!m_pAttackCollider.expired())
-            CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+            EVENTMGR.Delete_Object(m_pAttackCollider.lock());
     }
 }
 
@@ -754,7 +754,7 @@ void Succubus_Scythe_FSM::airborne_end()
             script->Init();
 
             if (!m_pAttackCollider.expired())
-                CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+                EVENTMGR.Delete_Object(m_pAttackCollider.lock());
         }
     }
 }
@@ -859,7 +859,7 @@ void Succubus_Scythe_FSM::knock_end_loop()
         script->Init();
 
         if (!m_pAttackCollider.expired())
-            CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+            EVENTMGR.Delete_Object(m_pAttackCollider.lock());
     }
 }
 
@@ -951,7 +951,7 @@ void Succubus_Scythe_FSM::knockdown_end()
             script->Init();
 
             if (!m_pAttackCollider.expired())
-                CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+                EVENTMGR.Delete_Object(m_pAttackCollider.lock());
         }
     }
 }
@@ -1226,5 +1226,5 @@ void Succubus_Scythe_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos,
     m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
     m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
 
-    CUR_SCENE->Add_GameObject(m_pSkillCollider.lock());
+    EVENTMGR.Create_Object(m_pSkillCollider.lock());
 }

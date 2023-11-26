@@ -87,5 +87,5 @@ void InstallationSkill_Script::Tick()
 	}
 
 	if (m_iCurrentAttackCnt > m_iLimitAttackCnt)
-		CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+		EVENTMGR.Delete_Object(m_pOwner.lock());
 }

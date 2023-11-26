@@ -27,6 +27,7 @@ public:										\
 #define RESOURCES				GET_SINGLE(ResourceMgr)
 #define INSTANCING				GET_SINGLE(InstancingMgr)
 #define SCENE					GET_SINGLE(SceneMgr)
+#define EVENTMGR				GET_SINGLE(EventMgr)
 #define CUR_SCENE				SCENE.Get_CurScene()
 
 #define fDT						TIME.GetfloatDeltaTime()

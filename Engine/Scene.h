@@ -25,8 +25,11 @@ public:
 	virtual void Final_Tick();
 	virtual void Render();
 	virtual HRESULT Load_Scene();
-	virtual void Add_GameObject(shared_ptr<GameObject> object, _bool staticFlag = false);
+
+	friend class EventMgr;
 	virtual void Add_GameObject_Front(shared_ptr<GameObject> object, _bool staticFlag = false);
+protected:
+	virtual void Add_GameObject(shared_ptr<GameObject> object, _bool staticFlag = false);
 	virtual void Remove_GameObject(shared_ptr<GameObject> object);
 
 public:

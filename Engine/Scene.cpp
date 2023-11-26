@@ -38,7 +38,7 @@ void Scene::Init()
 
 	SSAO_MakeFrustumFarCorners();
 
-	auto objects = m_GameObjects;
+	auto& objects = m_GameObjects;
 	for (auto& object : objects)
 	{
 		object->Init();
@@ -48,7 +48,7 @@ void Scene::Init()
 void Scene::Tick()
 {
 
-	auto objects = m_GameObjects;
+	auto& objects = m_GameObjects;
 	for (auto& object : objects)
 	{
 		object->Tick();
@@ -60,7 +60,7 @@ void Scene::Tick()
 
 void Scene::Late_Tick()
 {
-	auto objects = m_GameObjects;
+	auto& objects = m_GameObjects;
 	for (auto& object : objects)
 	{
 
@@ -74,7 +74,7 @@ void Scene::Final_Tick()
 {
 
 	
-	auto objects = m_GameObjects;
+	auto& objects = m_GameObjects;
 	for (auto& object : objects)
 	{
 		
@@ -201,8 +201,6 @@ void Scene::Add_GameObject_Front(shared_ptr<GameObject> object, _bool staticFlag
 
 void Scene::Remove_GameObject(shared_ptr<GameObject> object)
 {
-
-
 	{
 		auto findit = find(m_GameObjects.begin(), m_GameObjects.end(), object);
 		if (findit != m_GameObjects.end())

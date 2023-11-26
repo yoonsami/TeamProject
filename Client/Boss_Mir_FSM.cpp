@@ -1936,7 +1936,7 @@ void Boss_Mir_FSM::Add_Boss_Mir_Collider()
 
     m_pAttackCollider = attackCollider;
 
-    CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
+    EVENTMGR.Create_Object(m_pAttackCollider.lock());
     m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
 
     m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
@@ -1948,7 +1948,7 @@ void Boss_Mir_FSM::Add_Boss_Mir_Collider()
     tailCollider->Add_Component(make_shared<SphereCollider>(6.f));
     tailCollider->Get_Collider()->Set_CollisionGroup(Monster_Attack);
 
-    CUR_SCENE->Add_GameObject(tailCollider);
+    EVENTMGR.Create_Object(tailCollider);
     tailCollider->Get_Collider()->Set_Activate(false);
 
     tailCollider->Add_Component(make_shared<AttackColliderInfoScript>());
@@ -1981,7 +1981,7 @@ void Boss_Mir_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float
     SkillCollider->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
     SkillCollider->Get_Script<ForwardMovingSkillScript>()->Init();
 
-    CUR_SCENE->Add_GameObject(SkillCollider);
+    EVENTMGR.Create_Object(SkillCollider);
 }
 
 void Boss_Mir_FSM::Create_CounterMotionTrail()

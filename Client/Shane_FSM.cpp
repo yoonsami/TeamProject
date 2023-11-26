@@ -1620,7 +1620,7 @@ void Shane_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fS
     m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
     m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
 
-    CUR_SCENE->Add_GameObject(m_pSkillCollider.lock());
+    EVENTMGR.Create_Object(m_pSkillCollider.lock());
 }
 
 void Shane_FSM::Use_Skill()
@@ -1671,5 +1671,5 @@ void Shane_FSM::Create_200100_Clone(_uint iCloneIndex)
     }
     obj->Add_Component(make_shared<Shane_Clone_FSM>(iCloneIndex));
     obj->Get_FSM()->Init();
-    CUR_SCENE->Add_GameObject(obj);   
+    EVENTMGR.Create_Object(obj);
 }

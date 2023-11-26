@@ -334,7 +334,7 @@ void FSM::Add_Effect(const wstring& strSkilltag)
 	pGroupEffectObj->Get_GroupEffect()->Set_InitWorldMatrix(pGroupEffectObj->Get_Transform()->Get_WorldMatrix());
 
 	// For. Add Effect GameObject to current scene
-	CUR_SCENE->Add_GameObject(pGroupEffectObj);
+	EVENTMGR.Create_Object(pGroupEffectObj);
 }
 
 void FSM::Add_And_Set_Effect(const wstring& strSkilltag)
@@ -364,7 +364,7 @@ void FSM::Add_And_Set_Effect(const wstring& strSkilltag)
 	m_pGroupEffect = pGroupEffectObj;
 
 	// For. Add Effect GameObject to current scene
-	CUR_SCENE->Add_GameObject(m_pGroupEffect.lock());
+	EVENTMGR.Create_Object(m_pGroupEffect.lock());
 }
 
 void FSM::Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset)
@@ -392,7 +392,7 @@ void FSM::Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset)
 	pGroupEffectOwnerObj->Get_GroupEffectOwner()->Set_GroupEffectTag(strSkilltag);
 
 	// For. Add Effect GameObject to current scene
-	CUR_SCENE->Add_GameObject(pGroupEffectOwnerObj);
+	EVENTMGR.Create_Object(pGroupEffectOwnerObj);
 }
 
 void FSM::Cal_SkillCamDirection(const _float dist)
@@ -470,14 +470,14 @@ void FSM::Reset_Weapon()
 void FSM::Reset_Vehicle()
 {
 	if (!m_pVehicle.expired())
-		CUR_SCENE->Remove_GameObject(m_pVehicle.lock());
+		EVENTMGR.Delete_Object(m_pVehicle.lock());
 }
 
 void FSM::Remove_Object()
 {
 	if (!m_pAttackCollider.expired())
-		CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+		EVENTMGR.Delete_Object(m_pAttackCollider.lock());
 	
 	if (!m_pOwner.expired())
-		CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+		EVENTMGR.Delete_Object(m_pOwner.lock());
 }

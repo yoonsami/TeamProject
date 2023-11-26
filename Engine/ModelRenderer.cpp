@@ -317,6 +317,8 @@ void ModelRenderer::Render_MotionBlur()
 	if (m_pModel == nullptr)
 		return;
 
+	if (!m_bRenderOn)
+		return;
 	// Set VP
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 

@@ -41,7 +41,7 @@ HRESULT Boss_Dellons_FSM::Init()
 
         m_pAttackCollider = attackCollider;
 
-        CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
+        EVENTMGR.Create_Object(m_pAttackCollider.lock());
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
 
         m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
@@ -783,10 +783,10 @@ void Boss_Dellons_FSM::die()
         script->Init();
 
         if (!m_pAttackCollider.expired())
-            CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+            EVENTMGR.Delete_Object(m_pAttackCollider.lock());
 
         if (!m_pWeapon.expired())
-            CUR_SCENE->Remove_GameObject(m_pWeapon.lock()); 
+            EVENTMGR.Delete_Object(m_pWeapon.lock());
     }
 }
 
@@ -845,10 +845,10 @@ void Boss_Dellons_FSM::airborne_end()
             script->Init();
 
             if (!m_pAttackCollider.expired())
-                CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+                EVENTMGR.Delete_Object(m_pAttackCollider.lock());
 
             if (!m_pWeapon.expired())
-                CUR_SCENE->Remove_GameObject(m_pWeapon.lock());
+                EVENTMGR.Delete_Object(m_pWeapon.lock());
 
             if (!m_pDellonsWraith.expired())
             {
@@ -970,10 +970,10 @@ void Boss_Dellons_FSM::knock_end_loop()
         script->Init();
 
         if (!m_pAttackCollider.expired())
-            CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+            EVENTMGR.Delete_Object(m_pAttackCollider.lock());
 
         if (!m_pWeapon.expired())
-            CUR_SCENE->Remove_GameObject(m_pWeapon.lock());
+            EVENTMGR.Delete_Object(m_pWeapon.lock());
 
         if (!m_pDellonsWraith.expired())
         {
@@ -1080,10 +1080,10 @@ void Boss_Dellons_FSM::knockdown_end()
             script->Init();
 
             if (!m_pAttackCollider.expired())
-                CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+                EVENTMGR.Delete_Object(m_pAttackCollider.lock());
 
             if (!m_pWeapon.expired())
-                CUR_SCENE->Remove_GameObject(m_pWeapon.lock());
+                EVENTMGR.Delete_Object(m_pWeapon.lock());
 
             if (!m_pDellonsWraith.expired())
             {
@@ -1647,7 +1647,7 @@ void Boss_Dellons_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _f
     m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
     m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
 
-    CUR_SCENE->Add_GameObject(m_pSkillCollider.lock());
+    EVENTMGR.Create_Object(m_pSkillCollider.lock());
 }
 
 void Boss_Dellons_FSM::Summon_Wraith()
@@ -1673,7 +1673,7 @@ void Boss_Dellons_FSM::Summon_Wraith()
     ObjWraith->Get_FSM()->Init();
     ObjWraith->Set_Name(L"Boss_Dellons_Wraith");
 
-    CUR_SCENE->Add_GameObject(ObjWraith);
+    EVENTMGR.Create_Object(ObjWraith);
 
     m_pDellonsWraith = ObjWraith;
 }

@@ -102,9 +102,9 @@ void Shane_Clone_FSM::Skill_Use()
 		motionTrail->Add_Component(make_shared<MotionTrailRenderer>(RESOURCES.Get<Shader>(L"Shader_Model.fx"), Get_Owner()->Get_Animator()->Get_TweenDesc(), Get_Owner()->Get_Animator()->Get_Model()));
 		motionTrail->Add_Component(make_shared<MotionTrailDisappear>(2.f, Color(1.f, 0.3f, 0.3f, 1.f)));
 		motionTrail->Get_Script<MotionTrailDisappear>()->Init();
-		CUR_SCENE->Add_GameObject(motionTrail);
+		EVENTMGR.Create_Object(motionTrail);
 
-		CUR_SCENE->Remove_GameObject(Get_Owner());
+		EVENTMGR.Delete_Object(Get_Owner());
 	}
 }
 

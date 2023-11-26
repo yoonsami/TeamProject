@@ -22,7 +22,7 @@ void GroupEffectOwner::Tick()
 
 	if (m_pGroupEffect.expired())
 	{
-		CUR_SCENE->Remove_GameObject(Get_Owner());
+		EVENTMGR.Delete_Object(Get_Owner());
 		return;
 	}
 }
@@ -54,6 +54,6 @@ void GroupEffectOwner::PlayEffect()
 	m_pGroupEffect = pGroupEffectObj;
 
 	// For. Add Effect GameObject to current scene
-	CUR_SCENE->Add_GameObject(m_pGroupEffect.lock());
+	EVENTMGR.Create_Object(m_pGroupEffect.lock());
 }
 

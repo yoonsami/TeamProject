@@ -126,9 +126,9 @@ void UiMonsterHp::Check_Target()
         //m_pFrontHp.lock()->Set_Render(false);
         //m_pBackHp.lock()->Set_Render(false);
         //m_pBgHp.lock()->Set_Render(false);
-        pScene->Remove_GameObject(m_pFrontHp.lock());
-        pScene->Remove_GameObject(m_pBackHp.lock());
-        pScene->Remove_GameObject(m_pBgHp.lock());
+        EVENTMGR.Delete_Object(m_pFrontHp.lock());
+        EVENTMGR.Delete_Object(m_pBackHp.lock());
+        EVENTMGR.Delete_Object(m_pBgHp.lock());
     }
 }
 

@@ -86,7 +86,7 @@ void UiDamageMove::Change_Alpha()
 void UiDamageMove::Check_Remove()
 {
     if (m_fMaxTime < m_fCheckTime && false == m_pOwner.expired())
-        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+        EVENTMGR.Delete_Object(m_pOwner.lock());
 }
 
 void UiDamageMove::Change_Pos_2D()

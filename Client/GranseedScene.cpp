@@ -29,7 +29,7 @@
 #include "UiGachaCardMove.h"
 #include "Debug_CreateMotionTrail.h"
 #include "CounterMotionTrailScript.h"
-
+#include "GroupEffectData.h"
 #include "UiHpBarController.h"
 #include "MapObjectScript.h"
 #include "UiCoolEndEffect.h"
@@ -45,7 +45,7 @@
 #include "Succubus_Scythe_FSM.h"
 #include "Undead_Priest_FSM.h"
 
-
+#include "MeshEffectData.h"
 #include "UiGachaController.h"
 #include "Boss_Mir_FSM.h"
 #include "Boss_Dellons_FSM.h"
@@ -103,7 +103,7 @@ void GranseedScene::Init()
 			animator->Set_Model(RESOURCES.Get<Model>(tagData.ModelTag));
 			obj->Add_Component(animator);
 			obj->Set_Instancing(false);
-			CUR_SCENE->Add_GameObject(obj);
+			Add_GameObject(obj);
 	}
 	
 }
@@ -126,9 +126,59 @@ void GranseedScene::Tick()
 	}
 	if (KEYTAP(KEY_TYPE::Z))
 	{
+		{
+			wstring assetPath = L"..\\Resources\\EffectData\\GroupEffectData\\";
+			fs::create_directories(fs::path(assetPath));
+			for (auto& entry : fs::recursive_directory_iterator(assetPath))
+			{
+				if (entry.is_directory())
+					continue;
+
+				if (entry.path().extension().wstring() != L".dat")
+					continue;
+
+				wstring name = entry.path().filename();
+				Utils::DetachExt(name);
+				auto groupEffectData = RESOURCES.Get<GroupEffectData>(name);
+		
+				// For. Create Reloaded 
+				auto newGroupEffectData = make_shared<GroupEffectData>();
+				newGroupEffectData->Load(entry.path().wstring());
+				newGroupEffectData->Set_Name(name);
+
+
+				RESOURCES.Delete<GroupEffectData>(name);	// For. Delete prev 
+				RESOURCES.Add(name, newGroupEffectData);	// For. Add new 
+
+			}
+		}
+		{
+			wstring assetPath = L"..\\Resources\\EffectData\\MeshEffectData\\";
+			fs::create_directories(fs::path(assetPath));
+			for (auto& entry : fs::recursive_directory_iterator(assetPath))
+			{
+				if (entry.is_directory())
+					continue;
+
+				if (entry.path().extension().wstring() != L".dat")
+					continue;
+
+				wstring name = entry.path().filename();
+				Utils::DetachExt(name);
+				auto groupEffectData = RESOURCES.Get<MeshEffectData>(name);
 		
 
-		
+				// For. Create Reloaded 
+				auto newGroupEffectData = make_shared<MeshEffectData>();
+				newGroupEffectData->Load(entry.path().wstring());
+				newGroupEffectData->Set_Name(name);
+
+
+				RESOURCES.Delete<MeshEffectData>(name);	// For. Delete prev 
+				RESOURCES.Add(name, newGroupEffectData);	// For. Add new 
+
+			}
+		}
 	}
 }
 

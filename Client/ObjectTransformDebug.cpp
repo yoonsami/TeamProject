@@ -11,7 +11,7 @@ void ObjectTransformDebug::Tick()
 {
 	if (m_pTarget.expired())
 	{
-		CUR_SCENE->Remove_GameObject(Get_Owner());
+		EVENTMGR.Delete_Object(Get_Owner());
 		return;
 	}
 

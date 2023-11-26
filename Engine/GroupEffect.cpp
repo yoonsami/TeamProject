@@ -87,7 +87,7 @@ void GroupEffect::Final_Tick()
 
         if (bIsAllNullptr)
         {
-            CUR_SCENE->Remove_GameObject(Get_Owner());
+			EVENTMGR.Delete_Object(Get_Owner());
             return;
         }
     }
@@ -227,7 +227,7 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
         m_lMemberEffects.sort(Compare_RenderPriority);
 
         // For. Add to scene
-        CUR_SCENE->Add_GameObject(EffectObj);
+        EVENTMGR.Create_Object(EffectObj);
     }
 }
 

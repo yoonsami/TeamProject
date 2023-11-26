@@ -1565,7 +1565,7 @@ void SpearAce_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float
     m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
     m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
 
-    CUR_SCENE->Add_GameObject(m_pSkillCollider.lock());
+    EVENTMGR.Create_Object(m_pSkillCollider.lock());
 }
 
 void SpearAce_FSM::Use_Skill()
@@ -1615,6 +1615,6 @@ void SpearAce_FSM::Create_300100Clone()
         }
         obj->Add_Component(make_shared<SpearAce_Clone_FSM>(i));
         obj->Get_FSM()->Init();
-        CUR_SCENE->Add_GameObject(obj);
+        EVENTMGR.Create_Object(obj);
     }
 }

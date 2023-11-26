@@ -33,7 +33,7 @@ HRESULT Boss_DellonsWraith_FSM::Init()
 
         m_pAttackCollider = attackCollider;
 
-        CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
+        EVENTMGR.Create_Object(m_pAttackCollider.lock());
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
 
         m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
@@ -247,8 +247,8 @@ void Boss_DellonsWraith_FSM::FX_DellonsWraith_skill_30010()
 
     if (Is_AnimFinished())
     {
-        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
-        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+        EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        EVENTMGR.Delete_Object(m_pOwner.lock());
     }
 }
 
@@ -272,8 +272,8 @@ void Boss_DellonsWraith_FSM::FX_DellonsWraith_skill_400100()
 
     if (Is_AnimFinished())
     {
-        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
-        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+        EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        EVENTMGR.Delete_Object(m_pOwner.lock());
     }
 }
 
@@ -297,8 +297,8 @@ void Boss_DellonsWraith_FSM::FX_DellonsWraith_skill_601100()
 
     if (Is_AnimFinished())
     {
-        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
-        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+        EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        EVENTMGR.Delete_Object(m_pOwner.lock());
     }
 }
 
@@ -329,8 +329,8 @@ void Boss_DellonsWraith_FSM::FX_DellonsWraith_skill_903100()
 
     if (Is_AnimFinished())
     {
-        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
-        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+     EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+     EVENTMGR.Delete_Object(m_pOwner.lock());
     }
 }
 
@@ -348,8 +348,8 @@ void Boss_DellonsWraith_FSM::FX_DellonsWraith01_Special_01()
 {
     if (Is_AnimFinished())
     {
-        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
-        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+        EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        EVENTMGR.Delete_Object(m_pOwner.lock());
     }
 }
 
@@ -373,8 +373,8 @@ void Boss_DellonsWraith_FSM::FX_SQ_Dellons_QuestEnd_2()
 
     if (Is_AnimFinished())
     {
-        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
-        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+        EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        EVENTMGR.Delete_Object(m_pOwner.lock());
     }
 }
 
@@ -395,8 +395,8 @@ void Boss_DellonsWraith_FSM::FX_Mn_Dellons_skill_500200()
 
     if (Is_AnimFinished())
     {
-        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
-        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+       EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+       EVENTMGR.Delete_Object(m_pOwner.lock());
     }
 }
 
@@ -416,8 +416,8 @@ void Boss_DellonsWraith_FSM::FX_Mn_Dellons_skill_5100()
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
     else if (m_iCurFrame == 94)
     {
-        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
-        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+        EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        EVENTMGR.Delete_Object(m_pOwner.lock());
     }
 }
 
@@ -441,8 +441,8 @@ void Boss_DellonsWraith_FSM::FX_Mn_Dellons_skill_6100()
 
     if (Is_AnimFinished())
     {
-        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
-        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+       EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+       EVENTMGR.Delete_Object(m_pOwner.lock());
     }
 }
 
@@ -465,8 +465,8 @@ void Boss_DellonsWraith_FSM::FX_Mn_Dellons_skill_5200()
 
     if (Is_AnimFinished())
     {
-        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
-        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+        EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        EVENTMGR.Delete_Object(m_pOwner.lock());
     }
 }
 
@@ -500,11 +500,11 @@ void Boss_DellonsWraith_FSM::Create_ForwardMovingSkillCollider(const _float4& vP
     SkillCollider->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
     SkillCollider->Get_Script<ForwardMovingSkillScript>()->Init();
 
-    CUR_SCENE->Add_GameObject(SkillCollider);
+    EVENTMGR.Create_Object(SkillCollider);
 }
 
 void Boss_DellonsWraith_FSM::Remove_Wraith()
 {
-    CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
-    CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+    EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+    EVENTMGR.Delete_Object(m_pOwner.lock());
 }

@@ -1552,7 +1552,7 @@ void Yeonhee_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float 
     m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
     m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
 
-    CUR_SCENE->Add_GameObject(m_pSkillCollider.lock());
+    EVENTMGR.Create_Object(m_pSkillCollider.lock());
 }
 
 void Yeonhee_FSM::Create_InstallationSkillCollider(const _float4& vPos, _float fSkillRange, INSTALLATIONSKILLDESC desc)
@@ -1574,7 +1574,7 @@ void Yeonhee_FSM::Create_InstallationSkillCollider(const _float4& vPos, _float f
     
     InstallationSkillCollider->Set_Name(L"Player_InstallationSkillCollider");
 
-    CUR_SCENE->Add_GameObject(InstallationSkillCollider);
+    EVENTMGR.Create_Object(InstallationSkillCollider);
 }
 
 void Yeonhee_FSM::Use_Skill()

@@ -63,7 +63,7 @@ void UiDamageCreate::Create_Damage_Font(weak_ptr<GameObject> pObj, _float fDamag
     
     pFont->Set_LayerIndex(Layer_UI);
     pFont->Init();
-    CUR_SCENE->Add_GameObject(pFont);
+    EVENTMGR.Create_Object(pFont);
 
     return;
 }

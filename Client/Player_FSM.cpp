@@ -1676,7 +1676,7 @@ void Player_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float f
     m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
     m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
 
-    CUR_SCENE->Add_GameObject(m_pSkillCollider.lock());
+    EVENTMGR.Create_Object(m_pSkillCollider.lock());
 }
 
 void Player_FSM::Use_Skill()

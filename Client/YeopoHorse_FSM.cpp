@@ -15,7 +15,7 @@ YeopoHorse_FSM::YeopoHorse_FSM()
 YeopoHorse_FSM::~YeopoHorse_FSM()
 {
     if (!m_pAttackCollider.expired())
-        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+        EVENTMGR.Delete_Object(m_pAttackCollider.lock());
 }
 
 HRESULT YeopoHorse_FSM::Init()
@@ -35,7 +35,7 @@ HRESULT YeopoHorse_FSM::Init()
 
         m_pAttackCollider = attackCollider;
 
-        CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
+        EVENTMGR.Create_Object(m_pAttackCollider.lock());
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
         
         m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
@@ -204,8 +204,8 @@ void YeopoHorse_FSM::skill_400100_fx()
 
     if (Is_AnimFinished())
     {
-        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
-        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+        EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        EVENTMGR.Delete_Object(m_pOwner.lock());
     }
 }
 
@@ -289,8 +289,8 @@ void YeopoHorse_FSM::SQ_RideHorse_End()
 
     if (Is_AnimFinished())
     {
-        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
-        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+        EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        EVENTMGR.Delete_Object(m_pOwner.lock());
     }
 }
 

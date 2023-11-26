@@ -80,7 +80,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 		pMainApp->Render();
 
-		
+        EVENTMGR.Tick();
 
 		if (KEYPUSH(KEY_TYPE::ESC) && KEYPUSH(KEY_TYPE::F4))
 			break;

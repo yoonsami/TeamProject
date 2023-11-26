@@ -74,7 +74,9 @@ void MeshEffect::Final_Tick()
     // For. Check is dead 
     if (m_fCurrAge >= m_fDuration)
     {
-        CUR_SCENE->Remove_GameObject(Get_Owner());
+        if (m_tDesc.fDuration >= 3.f && m_tDesc.strVfxMesh == "Mesh_PC_Spike_skill_20010_Ice_000")
+            int a = 0;
+        EVENTMGR.Delete_Object(Get_Owner());
         return;
     }
 }

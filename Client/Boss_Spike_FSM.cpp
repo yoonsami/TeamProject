@@ -40,7 +40,7 @@ HRESULT Boss_Spike_FSM::Init()
 
         m_pAttackCollider = attackCollider;
 
-        CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
+        EVENTMGR.Create_Object(m_pAttackCollider.lock());
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
 
         m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
@@ -601,7 +601,7 @@ void Boss_Spike_FSM::SQ_Appear_02_Init()
 
     animator->Set_NextTweenAnim(L"SQ_Appear_02", 0.1f, false, 1.f);
 
-    CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Boss_Spike_Chair"));
+    EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Boss_Spike_Chair"));
 
     Calculate_CamBoneMatrix();
 
@@ -1924,7 +1924,7 @@ void Boss_Spike_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _flo
     m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
     m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
 
-    CUR_SCENE->Add_GameObject(m_pSkillCollider.lock());
+    EVENTMGR.Create_Object(m_pSkillCollider.lock());
 }
 
 
@@ -2046,7 +2046,7 @@ void Boss_Spike_FSM::Create_BossSpikeChair()
         Chair->Set_Name(L"Boss_Spike_Chair");
     }
 
-    CUR_SCENE->Add_GameObject(Chair);
+    EVENTMGR.Create_Object(Chair);
 
 }
 
