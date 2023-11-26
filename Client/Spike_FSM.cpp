@@ -1692,7 +1692,7 @@ void Spike_FSM::skill_400100()
 
     Calculate_CamBoneMatrix();
 
-    if (Init_CurFrame(49))
+    if (Init_CurFrame(52))
     {
         _float4 vSkillPos = m_vSkillCamBonePos;
         vSkillPos.y = 0.f;
