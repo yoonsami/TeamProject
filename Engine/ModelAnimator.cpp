@@ -499,7 +499,6 @@ void ModelAnimator::Render_MotionBlur()
 {
 	if (!m_pModel)
 		return;
-	system_clock::time_point start_time = system_clock::now();
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 	auto preView = CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_preWorldMatrix().Invert();
 	m_pShader->GetMatrix("g_preView")->SetMatrix((_float*)&preView);
@@ -561,12 +560,7 @@ void ModelAnimator::Render_MotionBlur()
 			m_pShader->DrawIndexed(2, PS_ANIM, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
 		}
 	}
-	system_clock::time_point end_time = system_clock::now();
 
-	nanoseconds nano = end_time - start_time;
-
-	if (KEYTAP(KEY_TYPE::F6))
-		int a = 0;
 }
 
 void ModelAnimator::Render_MotionBlur_Instancing(shared_ptr<class InstancingBuffer>& buffer, shared_ptr<InstanceTweenDesc> tweenDesc, shared_ptr<InstanceRenderParamDesc> renderParamDesc)

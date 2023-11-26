@@ -350,7 +350,13 @@ void Camera::Render_MotionBlur()
 {
 	S_View = m_matView;
 	S_Proj = m_matProj;
-	INSTANCING.Render_VelocityMap(m_VelocityMapObj);
+	for (auto& obj : m_VelocityMapObj)
+	{
+		if (obj->Get_ModelRenderer())
+			obj->Get_ModelRenderer()->Render_MotionBlur();
+		if (obj->Get_Animator())
+			obj->Get_Animator()->Render_MotionBlur();
+	}
 }
 
 vector<shared_ptr<MonoBehaviour>>& Camera::Get_Scripts()

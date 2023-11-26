@@ -11,8 +11,6 @@ public:
 
 	void Render_Shadow(vector<shared_ptr<GameObject>>& gameObjects);
 
-	void Render_VelocityMap(vector<shared_ptr<GameObject>>& gameObjects);
-
 	void Clear_Data();
 
 private:
@@ -26,9 +24,7 @@ private:
 	void Render_ModelRenderer_Shadow(vector<shared_ptr<GameObject>>& gameObjects);
 	void Render_Animator_Shadow(vector<shared_ptr<GameObject>>& gameObjects);
 	
-	//Render VelocityMap
-	void Render_ModelRenderer_VelocityMap(vector<shared_ptr<GameObject>>& gameObjects);
-	void Render_Animator_VelocityMap(vector<shared_ptr<GameObject>>& gameObjects);
+
 
 
 	void Add_Data(InstanceID instanceId, InstancingData& data);

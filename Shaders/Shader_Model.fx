@@ -169,7 +169,6 @@ MeshInstancingOutput VS_AnimInstancing(VTXModelInstancing input)
     return output;
 }
 
-
 // VS_Shadow
 ShadowOutput VS_Shadow_NonAnim(VTXModel input)
 {
@@ -230,7 +229,6 @@ ShadowInstanceOutput VS_Shadow_Anim_Instancing(VTXModelInstancing input)
     output.id = input.instanceID;
     return output;
 }
-
 // VS_MotionBlur
 MotionBlurOutput VS_NonAnimMotionBlur(VTXModel input)
 {
@@ -356,50 +354,50 @@ MotionBlurOutput VS_NonAnim_Instancing_MotionBlur(VTXModelInstancing input)
     return output;
 }
 
-MotionBlurOutput VS_Anim_Instancing_MotionBlur(VTXModelInstancing input)
-{
-    MotionBlurOutput output;
+//MotionBlurOutput VS_Anim_Instancing_MotionBlur(VTXModelInstancing input)
+//{
+//    MotionBlurOutput output;
     
-    row_major float4x4 m = GetAnimationMatrix_Instance(input);
-    row_major float4x4 preM = GetPreAnimationMatrix_Instance(input);
+//    row_major float4x4 m = GetAnimationMatrix_Instance(input);
+//    row_major float4x4 preM = GetPreAnimationMatrix_Instance(input);
     
-    output.position = mul(float4(input.position, 1.f), m);
-    output.position = mul(output.position, input.world);
-    output.position = mul(output.position, V);
+//    output.position = mul(float4(input.position, 1.f), m);
+//    output.position = mul(output.position, input.world);
+//    output.position = mul(output.position, V);
     
-    float3 viewNormal = normalize(mul(input.normal, (float3x3) m));
-    viewNormal = normalize(mul(viewNormal, (float3x3) input.world));
-    viewNormal = normalize(mul(viewNormal, (float3x3) V));
+//    float3 viewNormal = normalize(mul(input.normal, (float3x3) m));
+//    viewNormal = normalize(mul(viewNormal, (float3x3) input.world));
+//    viewNormal = normalize(mul(viewNormal, (float3x3) V));
     
-    float4 vOldPos = mul(float4(input.position, 1.f), preM);
-    vOldPos = mul(vOldPos, input.preWorld);
-    vOldPos = mul(vOldPos, g_preView);
+//    float4 vOldPos = mul(float4(input.position, 1.f), preM);
+//    vOldPos = mul(vOldPos, input.preWorld);
+//    vOldPos = mul(vOldPos, g_preView);
     
-    float4 vNewPos = output.position;
+//    float4 vNewPos = output.position;
     
-    float3 vDir = vNewPos.xyz - vOldPos.xyz;
+//    float3 vDir = vNewPos.xyz - vOldPos.xyz;
     
-    float a = dot(normalize(vDir), viewNormal);
-    if (a < 0.f)
-        output.position = vOldPos;
-    else
-        output.position = vNewPos;
+//    float a = dot(normalize(vDir), viewNormal);
+//    if (a < 0.f)
+//        output.position = vOldPos;
+//    else
+//        output.position = vNewPos;
     
-    output.position = mul(output.position, P);
+//    output.position = mul(output.position, P);
     
-   //[-2~2]
-    float2 velocity = (vNewPos.xy / vNewPos.w) - (vOldPos.xy / vOldPos.w);
+//   //[-2~2]
+//    float2 velocity = (vNewPos.xy / vNewPos.w) - (vOldPos.xy / vOldPos.w);
     
-    //[-1~1]
-    velocity.xy *= 0.5f;
-    velocity.y *= -1.f;
-   // output.vDir.xy = (velocity + 2.f) * 0.25f;
-    output.vDir.xy = velocity;
-    output.vDir.z = output.position.z;
-    output.vDir.w = output.position.w;
+//    //[-1~1]
+//    velocity.xy *= 0.5f;
+//    velocity.y *= -1.f;
+//   // output.vDir.xy = (velocity + 2.f) * 0.25f;
+//    output.vDir.xy = velocity;
+//    output.vDir.z = output.position.z;
+//    output.vDir.w = output.position.w;
     
-    return output;
-}
+//    return output;
+//}
 
 // VS_Motion Trail
 MeshOutput VS_Anim_MotionTrail(VTXModel input)
@@ -780,7 +778,6 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(MeshInstancingOutput input)
     if (bHasNormalMap)
         ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
 
-
     if (bHasDiffuseMap)
     {
         diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
@@ -793,15 +790,7 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(MeshInstancingOutput input)
         discard;
 
     diffuseColor.a = 1.f;
-    
-    if (bHasSpecularMap)
-    {
-        specularColor = SpecularMap.Sample(LinearSampler, input.uv);
-        specularColor.rgb = pow(abs(specularColor.rgb), GAMMA);
-    }
-    else
-        specularColor = Material.specular;
-   
+       
     if (bHasEmissiveMap)
     {
         emissiveColor = EmissiveMap.Sample(LinearSampler, input.uv);
@@ -809,7 +798,7 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(MeshInstancingOutput input)
     }
     else
         emissiveColor = 0.f;
-    
+
     output.position = float4(input.viewPosition.xyz, 0.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
     output.depth = input.position.z;
@@ -828,7 +817,7 @@ PBR_OUTPUT PS_PBR_Deferred_MapObject(MeshOutput input)
     float4 diffuseColor;
     float4 specularColor = vector(0.f, 0.f, 0.f, 0.f);
     float4 emissiveColor;
-    float4 ARM_Map;
+    float4 ARM_Map; 
     float2 distortedUV = input.uv;
     
     if (bHasDissolveMap != 0)
@@ -1118,15 +1107,15 @@ technique11 T2_MotionBlur
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_MotionBlur()));
     }
-    pass Anim_Instancing_MotionBlur
-    {
-        SetVertexShader(CompileShader(vs_5_0, VS_Anim_Instancing_MotionBlur()));
-        SetGeometryShader(NULL);
-        SetRasterizerState(RS_Default);
-        SetDepthStencilState(DSS_LESS, 0);
-        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetPixelShader(CompileShader(ps_5_0, PS_MotionBlur()));
-    }
+    //pass Anim_Instancing_MotionBlur
+    //{
+    //    SetVertexShader(CompileShader(vs_5_0, VS_Anim_Instancing_MotionBlur()));
+    //    SetGeometryShader(NULL);
+    //    SetRasterizerState(RS_Default);
+    //    SetDepthStencilState(DSS_LESS, 0);
+    //    SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+    //    SetPixelShader(CompileShader(ps_5_0, PS_MotionBlur()));
+    //}
    
 };
 
