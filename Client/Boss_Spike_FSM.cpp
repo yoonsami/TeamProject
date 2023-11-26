@@ -70,7 +70,7 @@ HRESULT Boss_Spike_FSM::Init()
         m_iLipBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"B_Lip_Up");
    
 
-        m_fDetectRange = 25.f;
+        m_fDetectRange = 36.f;
         m_fRunSpeed = 6.f;
 
 
