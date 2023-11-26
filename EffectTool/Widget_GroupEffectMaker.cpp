@@ -564,9 +564,7 @@ void Widget_GroupEffectMaker::Create()
 		pGroupEffectObj->Get_Transform()->Set_WorldMat(mModelWorldMatrix);
 	}
 	else
-	{
 		pGroupEffectObj->Get_Transform()->Set_WorldMat(XMMatrixIdentity());
-	}
 
 	// For. GroupEffectData 
 	wstring wstrFileName = Utils::ToWString(m_strGroup) + L".dat";
