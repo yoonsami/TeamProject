@@ -62,6 +62,7 @@
 #include "UiSkillGauge.h"
 #include "UIInteraction.h"
 #include "UiQuestController.h"
+#include "UiSettingController.h"
 
 #include <filesystem>
 #include "GachaScene.h"
@@ -373,6 +374,7 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	//Load_UIFile(L"..\\Resources\\UIData\\UI_MonsterHp.dat", tmp);
 	//Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat");
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Cur_Quest.dat", tmp, false);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Setting.dat", tmp, false);
 
 
 	{
@@ -451,7 +453,14 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	}
 
 	{
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_Name(L"UI_Setting_Controller");
 
+		auto pScript = make_shared<UiSettingController>();
+		pObj->Add_Component(pScript);
+
+		pObj->Set_LayerIndex(Layer_UI);
+		Add_GameObject(pObj);
 	}
 
 	{
@@ -527,6 +536,18 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 				});
 		}
 	}
+	
+	{
+		auto pObj = Get_UI(L"UI_Main_Button3");
+		if (nullptr != pObj)
+		{
+			pObj->Get_Button()->AddOnClickedEvent([]()
+				{
+					CUR_SCENE->Get_UI(L"UI_Setting_Controller")->Get_Script<UiSettingController>()->Set_Render(true);
+				});
+		}
+	}
+
 
 	{
 		auto pScript = make_shared<UiSkillButtonEffect>();

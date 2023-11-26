@@ -11,12 +11,11 @@ public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
 
+    void Set_Render(_bool bValue);
 
 private:
+    _bool Check_Expire();
 
-
-public:
-    
 
 private:
     weak_ptr<GameObject>    m_pBg;
@@ -45,5 +44,12 @@ private:
     weak_ptr<Texture>       m_pTextureCheck;
     weak_ptr<Texture>       m_pTextureNoCheck;
 
+    _bool m_bBloom      = {};
+    _bool m_bSSAO       = {};
+    _bool m_bMotionBlur = {};
+    _bool m_bLensFlare  = {};
+    _bool m_bOutline    = {};
+    _bool m_bFXAA       = {};
+    _bool m_bPBR        = {};
 };
 
