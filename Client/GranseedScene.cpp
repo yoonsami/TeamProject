@@ -96,16 +96,14 @@ void GranseedScene::Init()
 	for(_int i =0; i< _int(HERO::MAX); ++i)
 	{
 		auto& tagData = GET_DATA(HERO(i));
-		/*	shared_ptr<GameObject> obj = make_shared<GameObject>();
+			shared_ptr<GameObject> obj = make_shared<GameObject>();
 			obj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, -200.f, 0.f, 1.f));
 			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
 			animator->Set_Model(RESOURCES.Get<Model>(tagData.ModelTag));
 			obj->Add_Component(animator);
 			obj->Set_Instancing(false);
-			CUR_SCENE->Add_GameObject(obj);*/
-		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-		shader->GetSRV("TransformMap")->SetResource(RESOURCES.Get<Model>(tagData.ModelTag)->Get_TransformSRV().Get());
+			CUR_SCENE->Add_GameObject(obj);
 	}
 	
 }
