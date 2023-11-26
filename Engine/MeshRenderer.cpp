@@ -82,7 +82,7 @@ void MeshRenderer::Render()
 
 	
 
-	if(m_pMesh->Get_Name()==L"Point")
+	if(m_pMesh->Get_Name()==L"Point" )
 		CONTEXT->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 	else
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

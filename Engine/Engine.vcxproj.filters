@@ -229,6 +229,9 @@
     <Filter Include="02.Manager\09.EventMgr">
       <UniqueIdentifier>{f75c4437-a896-4960-b7b5-ee5ea1cdc7ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06.Map\01.Terrain">
+      <UniqueIdentifier>{8415b906-9975-4246-81b4-7ed228377b53}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -463,6 +466,9 @@
       <Filter>04.Component\05.UI &amp; Effect\Renderer\07.GroupEffectOwner</Filter>
     </ClCompile>
     <ClCompile Include="EventMgr.cpp" />
+    <ClCompile Include="Terrain.cpp">
+      <Filter>06.Map\01.Terrain</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -712,6 +718,9 @@
       <Filter>04.Component\05.UI &amp; Effect\Renderer\07.GroupEffectOwner</Filter>
     </ClInclude>
     <ClInclude Include="EventMgr.h" />
+    <ClInclude Include="Terrain.h">
+      <Filter>06.Map\01.Terrain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
