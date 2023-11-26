@@ -45,8 +45,8 @@ private:
 
     QUESTINDEX      m_eIndex            = {};
     QUESTDATA       m_tagCurQuestData   = {};
-    _bool           m_bIsCreated        = {};
     _bool           m_bHaveQuest        = {};
+    _bool           m_bIsCreated        = {};
     _uint           m_iMaxIndex         = {};
     _uint           m_iCurIndex         = {};
 

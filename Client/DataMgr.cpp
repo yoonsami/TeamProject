@@ -599,6 +599,14 @@ void DataMgr::Initialize()
 
     
 
+    m_BossDialog.resize(IDX(BOSS::MAX));
+    {
+        auto& Dialog = m_BossDialog[IDX(BOSS::DELLONS)];
+        
+        Dialog.push_back(L"크큭 내안의 어둠이 날뛴다 !!");
+        Dialog.push_back(L"나는 어둠의 다크 델론즈");
+        Dialog.push_back(L"자 덤벼라 애송아");
+    }
 
 
 
