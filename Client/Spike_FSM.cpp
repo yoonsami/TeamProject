@@ -1658,31 +1658,6 @@ void Spike_FSM::skill_300100_Init()
 
 void Spike_FSM::skill_400100()
 {
-    //if (m_iCurFrame < 140)
-    //{
-    //    if (!m_pCamera.expired())
-    //    {
-    //        _float4 vDir = m_vSkillCamBonePos - m_vCamBonePos;
-    //        vDir.Normalize();
-
-    //        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
-    //        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vSkillCamBonePos.xyz());
-    //        m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz() * -1.f, 8.f);
-    //    }
-    //}
-    //else
-    //{
-    //    if (!m_pCamera.expired())
-    //    {
-    //        _float4 vDir = m_vSkillCamBonePos - m_vCamBonePos;
-    //        vDir.Normalize();
-
-    //        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
-    //        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCamBonePos.xyz());
-    //        m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 10.f);
-    //    }
-    //}
-
     if (m_iCurFrame == 17)
     {
         if (!m_pCamera.expired())

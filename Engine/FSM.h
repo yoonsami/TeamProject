@@ -64,6 +64,7 @@ public:
 	void Reset_Target();
 	void Reset_Weapon();
 	void Reset_Vehicle();
+	void Remove_Object();
 	_float Get_ChargingRatio() { return m_fChargingRatio; }
 
  protected:

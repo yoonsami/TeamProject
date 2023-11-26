@@ -472,3 +472,12 @@ void FSM::Reset_Vehicle()
 	if (!m_pVehicle.expired())
 		CUR_SCENE->Remove_GameObject(m_pVehicle.lock());
 }
+
+void FSM::Remove_Object()
+{
+	if (!m_pAttackCollider.expired())
+		CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+	
+	if (!m_pOwner.expired())
+		CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+}

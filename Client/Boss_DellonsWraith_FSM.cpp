@@ -502,3 +502,9 @@ void Boss_DellonsWraith_FSM::Create_ForwardMovingSkillCollider(const _float4& vP
 
     CUR_SCENE->Add_GameObject(SkillCollider);
 }
+
+void Boss_DellonsWraith_FSM::Remove_Wraith()
+{
+    CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+    CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+}
