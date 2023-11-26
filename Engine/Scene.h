@@ -203,5 +203,9 @@ public:
 	};
 	DOFData g_DOFData{};
 
+	nanoseconds time{};
+
+	nanoseconds preSecond{};
+	nanoseconds second{};
 };
 

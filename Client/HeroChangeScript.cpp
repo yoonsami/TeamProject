@@ -103,6 +103,9 @@ void HeroChangeScript::Change_Character_Weapon(const wstring& weaponname, shared
         }
 
     }
+    auto script = weapon->Get_Script<WeaponScript>();
+    if (script)
+        script->Set_ModelChanged();
     weapon->Set_Name(weaponname);
     weapon->Get_ModelRenderer()->Set_RenderState(true);
 }

@@ -18,10 +18,11 @@ public:
 public:
     virtual HRESULT Init() override;
     virtual void Late_Tick() override;
-
+    void Set_ModelChanged() { m_bModelChanged = true; }
 private:
     wstring m_strBoneName = L"";
     _float4x4 m_matPivot = XMMatrixIdentity();
     weak_ptr<GameObject> m_pWeaponOwner;
+    _bool m_bModelChanged = false;
 };
 

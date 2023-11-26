@@ -31,6 +31,7 @@ public:										\
 
 #define fDT						TIME.GetfloatDeltaTime()
 #define dDT						TIME.GetdoubleDeltaTime()
+#define fABT					TIME.GetAbsoluteTime()
 
 #define KEYHOLD(keyType)		INPUT.GetButtonHold(keyType)
 #define KEYTAP(keyType)			INPUT.GetButtonTap(keyType)

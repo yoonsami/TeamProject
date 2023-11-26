@@ -258,7 +258,7 @@ shared_ptr<GameObject> GranseedScene::Load_Player()
 
 		//Add. Player's Weapon
 		shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
-
+		
 		ObjWeapon->Add_Component(make_shared<Transform>());
 		{
 			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");

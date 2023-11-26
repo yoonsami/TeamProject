@@ -77,6 +77,17 @@ void DebugTool::RenderOptionTab()
 		string fps = "FPS : " + to_string(TIME.GetFPS());
 		Text(fps.c_str());
 
+		string preSecondTick = to_string(g_preSecondTick.count());
+		Text(("pre Tick : " + preSecondTick).c_str());
+
+		string preSecondRender = to_string(g_preSecondRender.count());
+		Text(("pre Render : " + preSecondRender).c_str());
+
+		string SecondTick = to_string(g_secondTick.count());
+		Text(("cur Tick : " + SecondTick).c_str());
+
+		string SecondRender = to_string(g_secondRender.count());
+		Text(("cur Render : " + SecondRender).c_str());
 
 		if (CollapsingHeader("RenderOption"))
 		{

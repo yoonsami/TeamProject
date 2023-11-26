@@ -18,7 +18,7 @@ HRESULT GameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHICDESC& Gra
 
 void GameInstance::Tick_Engine()
 {
-	INPUT.Tick();
+
 	TIME.Tick();
 	SOUND.Tick();
 

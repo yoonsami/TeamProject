@@ -55,23 +55,17 @@ HRESULT MainApp::Init()
 
 void MainApp::Tick()
 {
-
 	GAMEINSTANCE.Tick_Engine();
 #ifdef _DEBUGTOOL
 	DEBUGTOOL.Tick();
 #endif // _DEBUGTOOL
 
-
 }
 
 HRESULT MainApp::Render()
 {
-
-
 	GAMEINSTANCE.Render_Begin();
 	SCENE.Render();
-
-
 
 #ifdef _DEBUGTOOL
 	DEBUGTOOL.Render();

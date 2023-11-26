@@ -59,6 +59,7 @@ public:
     static Quaternion Get_QuatFromLook(const _float3& vLook);
 
     static _float4x4 SLerpMatrix(_float4x4& m0, _float4x4& m1, _float ratio);
+    void Reset_Position() { m_matPreWorld = m_matWorld; }
 
 private:
     _float4x4 m_matWorld = _float4x4::Identity;
