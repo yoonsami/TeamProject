@@ -54,12 +54,12 @@ HRESULT UiSettingController::Init()
     _float fContrast         = pScene->g_fContrast;
     _float fSaturation       = pScene->g_Saturation;
     _float fBloom            = pScene->g_BloomData.g_BloomMin;
-    _float fToneMapping      = pScene->g_iTMIndex;
+    _uint  fToneMapping      = pScene->g_iTMIndex;
     _float fToneMappingMax   = pScene->g_fMaxWhite;
     _float fSSAO_Radius      = pScene->g_SSAOData.g_fOcclusionRadius;
     _float fSSAO_Start       = pScene->g_SSAOData.g_OcclusionFadeStart;
     _float fSSAO_End         = pScene->g_SSAOData.g_OcclusionFadeEnd;
-    _float fMotionBlur       = pScene->g_MotionBlurData.g_iBlurCount;
+    _uint  fMotionBlur       = pScene->g_MotionBlurData.g_iBlurCount;
     _float fPBR_Attenuation  = pScene->g_lightAttenuation;
     _float fPBR_Ratio        = pScene->g_ambientRatio;
     _float fPBR_ShadowBius   = pScene->g_fShadowBias;
@@ -347,7 +347,7 @@ HRESULT UiSettingController::Init()
     m_pBloom.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
     
     
-    fTotal = m_ToneMappingIndex.second - m_ToneMappingIndex.first;
+    fTotal = static_cast<_float>(m_ToneMappingIndex.second - m_ToneMappingIndex.first);
     fRatio = fabs((static_cast<_float>(fToneMapping) - static_cast<_float>(m_ToneMappingIndex.first)) / fTotal);
     fValue = -660 + 300.f * fRatio;
     vecPos = m_pToneMapping.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
@@ -387,7 +387,7 @@ HRESULT UiSettingController::Init()
     m_pSSAO_End.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
     
 
-    fTotal = m_MotionBlurCount.second - m_MotionBlurCount.first;
+    fTotal = static_cast<_float>(m_MotionBlurCount.second - m_MotionBlurCount.first);
     fRatio = fabs((static_cast<_float>(fMotionBlur) - static_cast<_float>(m_MotionBlurCount.first)) / fTotal);
     fValue = -660 + 300.f * fRatio;
     vecPos = m_pMotionBlur.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
@@ -638,48 +638,171 @@ void UiSettingController::Change_Value_Brightness()
 
 void UiSettingController::Change_Value_Contrast()
 {
+    _float fX = m_pContrast.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
+    fX -= m_fMinPos;
+
+    _float fRatio = fX / 300.f;
+    _float fTotal = m_Contrast.second - m_Contrast.first;
+    fTotal *= fRatio;
+
+    fTotal += m_Contrast.first;
+
+    CUR_SCENE->g_fContrast = fTotal;
 }
 
 void UiSettingController::Change_Value_Saturation()
 {
+    _float fX = m_pSaturation.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
+    fX -= m_fMinPos;
+
+    _float fRatio = fX / 300.f;
+    _float fTotal = m_Saturation.second - m_Saturation.first;
+    fTotal *= fRatio;
+
+    fTotal += m_Saturation.first;
+
+    CUR_SCENE->g_Saturation = fTotal;
 }
 
 void UiSettingController::Change_Value_Bloom()
 {
+    _float fX = m_pBloom.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
+    fX -= m_fMinPos;
+
+    _float fRatio = fX / 300.f;
+    _float fTotal = m_Bloom.second - m_Bloom.first;
+    fTotal *= fRatio;
+
+    fTotal += m_Bloom.first;
+
+    CUR_SCENE->g_BloomData.g_BloomMin = fTotal;
 }
 
 void UiSettingController::Change_Value_ToneMappingIndex()
 {
+    _float fX = m_pToneMapping.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
+    fX -= m_fMinPos;
+
+    _float fRatio = fX / 300.f;
+    _float fTotal = static_cast<_float>(m_ToneMappingIndex.second - m_ToneMappingIndex.first);
+    fTotal *= fRatio;
+
+    fTotal += m_ToneMappingIndex.first;
+
+    if (2.9f < fTotal)
+        fTotal = 3.1f;
+
+    CUR_SCENE->g_iTMIndex = IDX(fTotal);
 }
 
 void UiSettingController::Change_Value_ToneMappingMaxWhite()
 {
+    _float fX = m_pToneMappingMax.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
+    fX -= m_fMinPos;
+
+    _float fRatio = fX / 300.f;
+    _float fTotal = m_White.second - m_White.first;
+    fTotal *= fRatio;
+
+    fTotal += m_White.first;
+
+    CUR_SCENE->g_fMaxWhite = fTotal;
 }
 
 void UiSettingController::Change_Value_SSAO_Radius()
 {
+    _float fX = m_pSSAO_Radius.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
+    fX -= m_fMinPos;
+
+    _float fRatio = fX / 300.f;
+    _float fTotal = m_SSAORadius.second - m_SSAORadius.first;
+    fTotal *= fRatio;
+
+    fTotal += m_SSAORadius.first;
+
+    CUR_SCENE->g_SSAOData.g_fOcclusionRadius = fTotal;
 }
 
 void UiSettingController::Change_Value_SSAO_Start()
 {
+    _float fX = m_pSSAO_Start.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
+    fX -= m_fMinPos;
+
+    _float fRatio = fX / 300.f;
+    _float fTotal = m_SSAOStart.second - m_SSAOStart.first;
+    fTotal *= fRatio;
+
+    fTotal += m_SSAOStart.first;
+
+    CUR_SCENE->g_SSAOData.g_OcclusionFadeStart = fTotal;
 }
 
 void UiSettingController::Change_Value_SSAO_End()
 {
+    _float fX = m_pSSAO_End.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
+    fX -= m_fMinPos;
+
+    _float fRatio = fX / 300.f;
+    _float fTotal = m_SSAOEnd.second - m_SSAOEnd.first;
+    fTotal *= fRatio;
+
+    fTotal += m_SSAOEnd.first;
+
+    CUR_SCENE->g_SSAOData.g_OcclusionFadeEnd = fTotal;
 }
 
 void UiSettingController::Change_Value_MotionBlur()
 {
+    _float fX = m_pMotionBlur.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
+    fX -= m_fMinPos;
+
+    _float fRatio = fX / 300.f;
+    _float fTotal = static_cast<_float>(m_MotionBlurCount.second - m_MotionBlurCount.first);
+    fTotal *= fRatio;
+
+    fTotal += m_MotionBlurCount.first;
+
+    CUR_SCENE->g_MotionBlurData.g_iBlurCount = IDX(fTotal);
 }
 
 void UiSettingController::Change_Value_PBR_Attenuation()
 {
+    _float fX = m_pPBR_Attenuation.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
+    fX -= m_fMinPos;
+
+    _float fRatio = fX / 300.f;
+    _float fTotal = m_PBRAttenuation.second - m_PBRAttenuation.first;
+    fTotal *= fRatio;
+
+    fTotal += m_PBRAttenuation.first;
+
+    CUR_SCENE->g_lightAttenuation = fTotal;
 }
 
 void UiSettingController::Change_Value_PBR_Ratio()
 {
+    _float fX = m_pPBR_Ratio.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
+    fX -= m_fMinPos;
+
+    _float fRatio = fX / 300.f;
+    _float fTotal = m_PBRRatio.second - m_PBRRatio.first;
+    fTotal *= fRatio;
+
+    fTotal += m_PBRRatio.first;
+
+    CUR_SCENE->g_ambientRatio = fTotal;
 }
 
 void UiSettingController::Change_Value_PBR_ShadowBius()
 {
+    _float fX = m_pPBR_ShadowBius.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
+    fX -= m_fMinPos;
+
+    _float fRatio = fX / 300.f;
+    _float fTotal = m_PBRShadowBius.second - m_PBRShadowBius.first;
+    fTotal *= fRatio;
+
+    fTotal += m_PBRShadowBius.first;
+
+    CUR_SCENE->g_fShadowBias = fTotal;
 }
