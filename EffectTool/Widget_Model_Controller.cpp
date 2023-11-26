@@ -115,7 +115,7 @@ void Widget_Model_Controller::Apply_Model()
 			obj->GetOrAddTransform();
 			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(RESOURCES.Get<Shader>(L"Shader_Model.fx"));
 			obj->Add_Component(animator);
-			CUR_SCENE->Add_GameObject(obj);
+			EVENTMGR.Create_Object(obj);
 			m_pControlObject = obj;
 		}
 
@@ -131,7 +131,7 @@ void Widget_Model_Controller::Apply_Model()
 		m_pControlObject.lock()->Get_Animator()->Set_CurrentAnim(0);
 		m_pControlObject.lock()->Add_Component(make_shared<ForcePosition>());
 
-		CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"TestWeapon"));
+		EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"TestWeapon"));
 
 		wstring weaponName;
 		if (model->Get_ModelTag() == L"Spear_Ace")
@@ -162,7 +162,7 @@ void Widget_Model_Controller::Apply_Model()
 			desc.matPivot = _float4x4::CreateRotationX(-XM_PI / 2.f) * _float4x4::CreateRotationZ(XM_PI);
 			desc.pWeaponOwner = m_pControlObject.lock();
 			ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
-			CUR_SCENE->Add_GameObject(ObjWeapon);
+			EVENTMGR.Create_Object(ObjWeapon);
 		}
 	}
 }

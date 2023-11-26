@@ -582,7 +582,7 @@ void Widget_GroupEffectMaker::Create()
 	m_pCurrentGroup = pGroupEffectObj;
 
 	// For. Add Effect GameObject to current scene
-	CUR_SCENE->Add_GameObject(pGroupEffectObj);
+	EVENTMGR.Create_Object(pGroupEffectObj);
 }
 
 void Widget_GroupEffectMaker::Delete()
@@ -590,7 +590,7 @@ void Widget_GroupEffectMaker::Delete()
 	if (nullptr != m_pCurrentGroup)
 	{
 		m_pCurrentGroup->Get_GroupEffect()->FreeLoopMember();
-		CUR_SCENE->Remove_GameObject(m_pCurrentGroup);
+		EVENTMGR.Delete_Object(m_pCurrentGroup);
 		m_pCurrentGroup = nullptr;
 	}
 }

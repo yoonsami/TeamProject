@@ -1166,7 +1166,7 @@ void Widget_EffectMaker_Mesh::Create()
 		m_pCurrMeshEffect = EffectObj;
 
 		// For. Add Effect GameObject to current scene
-		CUR_SCENE->Add_GameObject(EffectObj);
+		EVENTMGR.Create_Object(EffectObj);
 	}
 }
 
