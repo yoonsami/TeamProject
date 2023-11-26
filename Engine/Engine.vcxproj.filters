@@ -465,9 +465,11 @@
     <ClCompile Include="GroupEffectOwner.cpp">
       <Filter>04.Component\05.UI &amp; Effect\Renderer\07.GroupEffectOwner</Filter>
     </ClCompile>
-    <ClCompile Include="EventMgr.cpp" />
     <ClCompile Include="Terrain.cpp">
       <Filter>06.Map\01.Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="EventMgr.cpp">
+      <Filter>02.Manager\09.EventMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -717,9 +719,11 @@
     <ClInclude Include="GroupEffectOwner.h">
       <Filter>04.Component\05.UI &amp; Effect\Renderer\07.GroupEffectOwner</Filter>
     </ClInclude>
-    <ClInclude Include="EventMgr.h" />
     <ClInclude Include="Terrain.h">
       <Filter>06.Map\01.Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="EventMgr.h">
+      <Filter>02.Manager\09.EventMgr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
