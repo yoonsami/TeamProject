@@ -130,14 +130,20 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
    auto& tagData = GET_DATA(eHero);
 
     shared_ptr<Model> model = RESOURCES.Get<Model>(tagData.ModelTag);
+    //shared_ptr<Model> model = RESOURCES.Get<Model>(L"Shane");
 
-    m_pOwner.lock()->Get_Animator()->Set_Model(model);
+   m_pOwner.lock()->Get_Animator()->Set_Model(model);
 
     auto weapon = m_pOwner.lock()->Get_FSM()->Get_Weapon();
 
     switch (eHero)
     {
     case HERO::PLAYER:
+	{
+		shared_ptr<Model> model = RESOURCES.Get<Model>(L"Player");
+
+		m_pOwner.lock()->Get_Animator()->Set_Model(model);
+	}
         m_pOwner.lock()->Change_Component(make_shared<Player_FSM>());
         attackCollider->Get_Transform()->Scaled(_float3(1.f));
         break;

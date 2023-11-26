@@ -69,6 +69,7 @@
 #include "KrisScene.h"
 #include "MirScene.h"
 #include "AttackColliderInfoScript.h"
+#include "Shane_FSM.h"
 namespace fs = std::filesystem;
 
 GranseedScene::GranseedScene()
@@ -100,17 +101,27 @@ void GranseedScene::Tick()
 	if (KEYTAP(KEY_TYPE::C))
 	{
 		auto pObj = Get_UI(L"UI_Interaction");
+		if(pObj)
 		pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::QUEST);
 	}
 	if (KEYTAP(KEY_TYPE::V))
 	{
 		auto pObj = Get_UI(L"UI_Interaction");
+		if (pObj)
 		pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::GACHA);
 	}
 	if (KEYTAP(KEY_TYPE::Z))
 	{
-		auto pObj = Get_UI(L"UI_Interaction");
-		pObj->Get_Script<UIInteraction>()->Remove_Interaction();
+		shared_ptr<GameObject> obj = make_shared<GameObject>();
+		obj->GetOrAddTransform();
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+		shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+		animator->Set_Model(RESOURCES.Get<Model>(L"Shane"));
+		obj->Add_Component(animator);
+		obj->Add_Component(make_shared<Shane_FSM>());
+		obj->Get_FSM()->Init();
+		CUR_SCENE->Add_GameObject(obj);
+
 	}
 }
 
