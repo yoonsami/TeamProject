@@ -1597,13 +1597,26 @@ void Yeopo_FSM::skill_400100()
         {
             _float4 vSkillCamPos = m_vSkillCamBonePos;
             vSkillCamPos.y += 2.f;
+
             _float4 vDir = m_vCamBonePos - vSkillCamPos;
             vDir.Normalize();
 
-            //m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(vSkillCamPos.xyz());
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.5f, vDir.xyz() * -1.f, 12.f);
         }
+    }
+
+    if (Init_CurFrame(123))
+    {
+        FORWARDMOVINGSKILLDESC desc;
+        desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+        desc.fMoveSpeed = 0.f;
+        desc.fLifeTime = 1.f;
+        desc.fLimitDistance = 0.f;
+
+        _float4 vSkillPos = m_vCenterBonePos;
+        Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, AIRBORNE_ATTACK, 10.f);
     }
 
     //Look_DirToTarget();

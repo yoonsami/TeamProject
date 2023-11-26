@@ -91,8 +91,8 @@ void MainCameraScript::Cal_OffsetDir()
     _float3 vRight = Get_Transform()->Get_State(Transform_State::RIGHT).xyz();
     vRight.Normalize();
     _float3 vUp = Get_Transform()->Get_State(Transform_State::UP).xyz();
-    m_vOffset += vRight * -mouseDir.x * m_fRotationSpeed * fDT;
-    m_vOffset += vUp * mouseDir.y * m_fRotationSpeed * fDT;
+    m_vOffset += vRight * -mouseDir.x * m_fRotationSpeed * fABT;
+    m_vOffset += vUp * mouseDir.y * m_fRotationSpeed * fABT;
 
     m_vOffset.Normalize();
 }
@@ -132,7 +132,7 @@ void MainCameraScript::Update_Transform()
     // Set Position
     if (m_fFixedTime > 0.f)
     {
-        m_fFixedTime -= fDT;
+        m_fFixedTime -= fABT;
       
         if ((fMinDist - 0.5f) >= m_fFixedDist)
             fMinDist = m_fFixedDist;
@@ -140,7 +140,7 @@ void MainCameraScript::Update_Transform()
         _float4 vPrePos = Get_Transform()->Get_State(Transform_State::POS);
 
         _float4 pos = _float4::Lerp(vPrePos, vCenterPos + _float4(m_vFixedDir, 0.f) * fMinDist,
-            fDT * m_fFollowSpeed);
+            fABT * m_fFollowSpeed);
 
         Get_Transform()->Set_State(Transform_State::POS, pos);
         Get_Transform()->LookAt(vCenterPos);
@@ -163,11 +163,11 @@ void MainCameraScript::Update_Transform()
                 fMinDist = m_fFixedDist;
                
             }*/
-			m_fFixedDist = _float2::Lerp({ m_fFixedDist,0.f }, { m_fMaxDistance,0.f }, fDT).x;
+			m_fFixedDist = _float2::Lerp({ m_fFixedDist,0.f }, { m_fMaxDistance,0.f }, fABT).x;
             if(m_fFixedDist < fMinDist)
             fMinDist = m_fFixedDist;
-            _float3 tmp = Transform::SLerpMatrix(matCurDir, matNextDir, fDT * m_fFollowSpeed).Backward();
-            _float4 pos = vPlayerPos + Transform::SLerpMatrix(matCurDir, matNextDir, fDT * m_fFollowSpeed).Backward() * fMinDist;
+            _float3 tmp = Transform::SLerpMatrix(matCurDir, matNextDir, fABT * m_fFollowSpeed).Backward();
+            _float4 pos = vPlayerPos + Transform::SLerpMatrix(matCurDir, matNextDir, fABT * m_fFollowSpeed).Backward() * fMinDist;
 
             Get_Transform()->Set_State(Transform_State::POS, pos);
 

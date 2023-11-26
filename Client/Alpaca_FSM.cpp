@@ -379,8 +379,16 @@ void Alpaca_FSM::b_idle()
             m_eCurState = STATE::n_run;
         }
 
-        if (Target_In_DetectRange())
-            m_bDetected = true;
+        if (CUR_SCENE->Get_Name() == L"KrisScene")
+        {
+            if (CUR_SCENE->Get_AttackCall())
+                m_bDetected = true;
+        }
+        else
+        {
+            if (Target_In_DetectRange())
+                m_bDetected = true;
+        }
     }
     else
     {
@@ -405,6 +413,12 @@ void Alpaca_FSM::b_idle_Init()
     m_vTurnVector = _float3(0.f);
 
     m_bSuperArmor = false;
+
+    if (CUR_SCENE->Get_Name() == L"KrisScene")
+    {
+        if (!CUR_SCENE->Get_AttackCall())
+            m_bInvincible = true;
+    }
 }
 
 void Alpaca_FSM::b_run()
@@ -427,6 +441,7 @@ void Alpaca_FSM::b_run_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed);
 
     m_bSuperArmor = false;
+    m_bInvincible = false;
 }
 
 void Alpaca_FSM::n_run()
@@ -451,13 +466,22 @@ void Alpaca_FSM::n_run()
         m_eCurState = STATE::b_idle;
     }
 
-    if (Target_In_DetectRange())
-        m_bDetected = true;
+    if (CUR_SCENE->Get_Name() == L"KrisScene")
+    {
+        if (CUR_SCENE->Get_AttackCall())
+            m_bDetected = true;
+    }
+    else
+    {
+        if (Target_In_DetectRange())
+            m_bDetected = true;
+    }
 
     if (m_bDetected)
     {
         m_eCurState = STATE::b_run;
     }
+
 }
 
 void Alpaca_FSM::n_run_Init()
@@ -472,6 +496,9 @@ void Alpaca_FSM::n_run_Init()
     m_vTurnVector.Normalize();
 
     m_bSuperArmor = false;
+
+    if (CUR_SCENE->Get_Name() == L"KrisScene")
+        m_bInvincible = true;
 }
 
 void Alpaca_FSM::die_01()

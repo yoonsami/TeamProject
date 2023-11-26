@@ -1429,6 +1429,10 @@ void Yeonhee_FSM::skill_501100()
 {
 	Look_DirToTarget();
 
+    TIME.Set_TimeSlow(0.1f, 0.1f);
+
+ 
+
     if (m_iCurFrame < 97)
     {
         if (!m_pCamera.expired())
@@ -1499,6 +1503,8 @@ void Yeonhee_FSM::skill_501100()
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
+
+        m_pOwner.lock()->Set_TimeSlowed(true);
     }
 
 }
@@ -1515,16 +1521,22 @@ void Yeonhee_FSM::skill_501100_Init()
 
     AttackCollider_Off();
 
-    m_bInvincible = false;
+    m_bInvincible = true;
     m_bSuperArmor = true;
 
-    HeadBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iHeadBoneIndex) *
-        _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+    if (!m_pOwner.expired())
+    {
+        HeadBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iHeadBoneIndex) *
+            _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
 
-    m_vHeadBonePos = _float4{ HeadBoneMatrix.Translation().x, HeadBoneMatrix.Translation().y, HeadBoneMatrix.Translation().z , 1.f };
-    m_vHeadCamPos = m_vHeadBonePos + (Get_Transform()->Get_State(Transform_State::LOOK) * 3.f) + _float4{ 0.f,-0.1f,0.f,0.f };
+        m_vHeadBonePos = _float4{ HeadBoneMatrix.Translation().x, HeadBoneMatrix.Translation().y, HeadBoneMatrix.Translation().z , 1.f };
+        m_vHeadCamPos = m_vHeadBonePos + (Get_Transform()->Get_State(Transform_State::LOOK) * 3.f) + _float4{ 0.f,-0.1f,0.f,0.f };
+    
+        m_pOwner.lock()->Set_TimeSlowed(false);
+    }
 
     Calculate_CamBoneMatrix();
+
 
 }
 

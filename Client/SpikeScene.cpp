@@ -96,8 +96,9 @@ void SpikeScene::Init()
 			obj->Set_Instancing(false);
 			Add_GameObject(obj);
 		}
-
 	}
+
+	m_strSceneName = L"SpikeScene";
 }
 
 void SpikeScene::Tick()
