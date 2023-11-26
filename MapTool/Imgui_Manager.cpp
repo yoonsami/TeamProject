@@ -2330,6 +2330,15 @@ void ImGui_Manager::Save_Files()
             file->Write<Quaternion>(gameObject->Get_Transform()->Get_Rotation());
             file->Write<_bool>(gameObjectInfo.bMoving);
             file->Write<_int>(gameObjectInfo.eFSMIndex);
+
+            if (gameObjectInfo.minMoveArrayPos.x > gameObjectInfo.maxMoveArrayPos.x)
+                swap(gameObjectInfo.minMoveArrayPos.x, gameObjectInfo.maxMoveArrayPos.x);
+
+			if (gameObjectInfo.minMoveArrayPos.y > gameObjectInfo.maxMoveArrayPos.y)
+				swap(gameObjectInfo.minMoveArrayPos.y, gameObjectInfo.maxMoveArrayPos.y);
+			if (gameObjectInfo.minMoveArrayPos.z > gameObjectInfo.maxMoveArrayPos.x)
+				swap(gameObjectInfo.minMoveArrayPos.z, gameObjectInfo.maxMoveArrayPos.z);
+
             file->Write<_float3>(gameObjectInfo.minMoveArrayPos);
             file->Write<_float3>(gameObjectInfo.maxMoveArrayPos);
         }

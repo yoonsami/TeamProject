@@ -67,25 +67,7 @@ void GranseedGuard01_FSM::n_idle()
 	m_fStateAcc += fDT;
 	if (m_fStateAcc >= m_fIdleTimer)
 	{
-		_float4x4 matWorld = Get_Transform()->Get_WorldMatrix();
-		
-		_float3 rayPos = matWorld.Translation() + matWorld.Up();
-		_float3 rayDir = matWorld.Backward();
-
-		physx::PxRaycastBuffer hit{};
-		physx::PxQueryFilterData filterData;
-		filterData.flags = physx::PxQueryFlag::eSTATIC;
-		if (PHYSX.Get_PxScene()->raycast({ rayPos.x,rayPos.y,rayPos.z }, { rayDir.x,rayDir.y,rayDir.z }, 2.f, hit, PxHitFlags(physx::PxHitFlag::eDEFAULT), filterData))
-		{
-			if (hit.getAnyHit(0).distance < 2.f)
-			{
-				//Turn;
-			}
-		}
-		else
-		{
-
-		}
+		m_eCurState = STATE::walk;
 	}
 }
 
@@ -134,12 +116,27 @@ void GranseedGuard01_FSM::talk_Init()
 void GranseedGuard01_FSM::walk()
 {
 	m_fStateAcc += fDT;
+	
+
+	_float3 vPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
+	_float3 vLook = Get_Transform()->Get_State(Transform_State::LOOK).xyz();
+	
+	if (vPos.x > m_vMaxMovingPoint.x || vPos.x < m_vMinMovingPoint.x)
+	{
+		vLook.x *= -1.f;
+	}
+
+	if (vPos.z > m_vMaxMovingPoint.z || vPos.z < m_vMinMovingPoint.z)
+	{
+		vLook.z *= -1.f;
+	}
+	Get_Transform()->Set_LookDir(vLook);           
+	Get_Transform()->Go_Straight();
 	if (m_fStateAcc >= m_fMoveTimer)
 	{
 		m_fStateAcc = 0.f;
 		m_eCurState = STATE::n_idle;
 	}
-
 }
 
 void GranseedGuard01_FSM::walk_Init()

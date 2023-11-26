@@ -81,7 +81,23 @@ MirScene::~MirScene()
 void MirScene::Init()
 {
 	__super::Init();
+	for (_int i = 0; i < _int(HERO::MAX); ++i)
+	{
+		auto& tagData = GET_DATA(HERO(i));
 
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+
+		{
+			shared_ptr<GameObject> obj = make_shared<GameObject>();
+			obj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, -200.f, 0.f, 1.f));
+			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+			animator->Set_Model(RESOURCES.Get<Model>(tagData.ModelTag));
+			obj->Add_Component(animator);
+			obj->Set_Instancing(false);
+			Add_GameObject(obj);
+		}
+
+	}
 }
 
 void MirScene::Tick()
@@ -98,6 +114,7 @@ void MirScene::Tick()
 			Get_GameObject(L"Main_Ui_Controller")->Get_Script<MainUiController>()->Set_MainUI_Render(false);
 		}
 	}
+	
 }
 
 void MirScene::Late_Tick()
