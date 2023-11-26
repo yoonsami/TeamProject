@@ -289,6 +289,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\18.UiQuestController">
       <UniqueIdentifier>{093b24ca-395b-4343-8de6-fc39038975b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\20.UiSettingController">
+      <UniqueIdentifier>{f2441089-0aeb-4843-bdaa-56777f4f01ef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -588,6 +591,9 @@
     <ClInclude Include="UiQuestController.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\18.UiQuestController</Filter>
     </ClInclude>
+    <ClInclude Include="UiSettingController.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\20.UiSettingController</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -853,6 +859,9 @@
     </ClCompile>
     <ClCompile Include="UiQuestController.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\18.UiQuestController</Filter>
+    </ClCompile>
+    <ClCompile Include="UiSettingController.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\20.UiSettingController</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

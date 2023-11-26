@@ -205,6 +205,7 @@
     <ClInclude Include="SpikeScene.h" />
     <ClInclude Include="UIInteraction.h" />
     <ClInclude Include="UiQuestController.h" />
+    <ClInclude Include="UiSettingController.h" />
     <ClInclude Include="Wolf_FSM.h" />
     <ClInclude Include="Boss_DellonsWraith_FSM.h" />
     <ClInclude Include="Boss_Dellons_FSM.h" />
@@ -301,6 +302,7 @@
     <ClCompile Include="SpikeScene.cpp" />
     <ClCompile Include="UIInteraction.cpp" />
     <ClCompile Include="UiQuestController.cpp" />
+    <ClCompile Include="UiSettingController.cpp" />
     <ClCompile Include="Wolf_FSM.cpp" />
     <ClCompile Include="Boss_DellonsWraith_FSM.cpp" />
     <ClCompile Include="Boss_Dellons_FSM.cpp" />
