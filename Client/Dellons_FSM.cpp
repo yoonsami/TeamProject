@@ -1460,17 +1460,18 @@ void Dellons_FSM::skill_400100()
         Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f);
 
     }
-    else if (Init_CurFrame(102))
+    else if (Init_CurFrame(99))
     {
-		FORWARDMOVINGSKILLDESC desc;
-		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-		desc.fMoveSpeed = 20.f;
-		desc.fLifeTime = 1.f;
-		desc.fLimitDistance = 2.f;
-
-		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-        Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKDOWN_SKILL, 10.f);
+        FORWARDMOVINGSKILLDESC desc;
+        desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+        desc.fMoveSpeed = 20.f;
+        desc.fLifeTime = 1.f;
+        desc.fLimitDistance = 5.f;
+    
+        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * -0.5f + _float3::Up;
+        Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKDOWN_SKILL, 10.f);
     }
+
 
 
     Look_DirToTarget();

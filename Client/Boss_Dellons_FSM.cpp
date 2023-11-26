@@ -559,6 +559,7 @@ void Boss_Dellons_FSM::talk_01_Init()
     m_bInvincible = true;
     m_bSuperArmor = false;
 
+    g_bCutScene = true;
 
     Calculate_CamBoneMatrix();
 }
@@ -618,6 +619,8 @@ void Boss_Dellons_FSM::b_idle_Init()
         }
 
         m_bCreateUI = true;
+
+        g_bCutScene = false;
     }
 }
 
@@ -783,7 +786,7 @@ void Boss_Dellons_FSM::die()
             CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
 
         if (!m_pWeapon.expired())
-            CUR_SCENE->Remove_GameObject(m_pWeapon.lock());
+            CUR_SCENE->Remove_GameObject(m_pWeapon.lock()); 
     }
 }
 
@@ -795,6 +798,12 @@ void Boss_Dellons_FSM::die_Init()
 
     m_bInvincible = true;
     m_bSuperArmor = true;
+
+    if (!m_pDellonsWraith.expired())
+    {
+        if (m_pDellonsWraith.lock()->Get_FSM())
+            m_pDellonsWraith.lock()->Get_FSM()->Remove_Object();
+    }
 }
 
 void Boss_Dellons_FSM::airborne_start()
@@ -840,6 +849,12 @@ void Boss_Dellons_FSM::airborne_end()
 
             if (!m_pWeapon.expired())
                 CUR_SCENE->Remove_GameObject(m_pWeapon.lock());
+
+            if (!m_pDellonsWraith.expired())
+            {
+                if (m_pDellonsWraith.lock()->Get_FSM())
+                    m_pDellonsWraith.lock()->Get_FSM()->Remove_Object();
+            }
         }
     }
 }
@@ -959,6 +974,12 @@ void Boss_Dellons_FSM::knock_end_loop()
 
         if (!m_pWeapon.expired())
             CUR_SCENE->Remove_GameObject(m_pWeapon.lock());
+
+        if (!m_pDellonsWraith.expired())
+        {
+            if (m_pDellonsWraith.lock()->Get_FSM())
+                m_pDellonsWraith.lock()->Get_FSM()->Remove_Object();
+        }
     }
 }
 
@@ -1063,6 +1084,12 @@ void Boss_Dellons_FSM::knockdown_end()
 
             if (!m_pWeapon.expired())
                 CUR_SCENE->Remove_GameObject(m_pWeapon.lock());
+
+            if (!m_pDellonsWraith.expired())
+            {
+                if (m_pDellonsWraith.lock()->Get_FSM())
+                    m_pDellonsWraith.lock()->Get_FSM()->Remove_Object();
+            }
         }
     }
 }
@@ -1508,19 +1535,16 @@ void Boss_Dellons_FSM::skill_400100()
             Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f);
         }
     }
-    else if (m_iCurFrame == 102)
+    else if (Init_CurFrame(99))
     {
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 20.f;
-            desc.fLifeTime = 1.f;
-            desc.fLimitDistance = 2.f;
+        FORWARDMOVINGSKILLDESC desc;
+        desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+        desc.fMoveSpeed = 20.f;
+        desc.fLifeTime = 1.f;
+        desc.fLimitDistance = 5.f;
 
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKDOWN_SKILL, 10.f);
-        }
+        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * -0.5f + _float3::Up;
+        Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKDOWN_SKILL, 10.f);
     }
 
     if (m_iCurFrame == 120)

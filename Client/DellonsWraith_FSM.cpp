@@ -411,13 +411,19 @@ void DellonsWraith_FSM::FX_Mn_Dellons_skill_500200_Init()
 
 void DellonsWraith_FSM::FX_Mn_Dellons_skill_5100()
 {
-    if (m_iCurFrame == 80)
-        AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
-    else if (m_iCurFrame == 94)
+    if (m_iCurFrame == 94)
     {
         CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
         CUR_SCENE->Remove_GameObject(m_pOwner.lock());
     }
+    
+    //if (m_iCurFrame == 80)
+    //    AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
+    //else if (m_iCurFrame == 94)
+    //{
+    //    CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+    //    CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+    //}
 }
 
 void DellonsWraith_FSM::FX_Mn_Dellons_skill_5100_Init()

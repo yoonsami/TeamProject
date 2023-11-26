@@ -503,6 +503,8 @@ void Boss_Spike_FSM::SQ_Appear_01()
 
     if (m_iCurFrame >= 10 && m_iCurFrame <= 75)
     {
+        g_bCutScene = true;
+
         if (!m_pCamera.expired())
         {
             _float4 vDir = (m_vSkillCamBonePos +
@@ -681,6 +683,8 @@ void Boss_Spike_FSM::Spawn_Init()
         m_pOwner.lock()->Add_Component(pScript);
         pScript->Init();
     }
+
+    g_bCutScene = false;
 }
 
 void Boss_Spike_FSM::b_idle()
