@@ -1663,10 +1663,14 @@ void Spike_FSM::skill_300100_Init()
 
 void Spike_FSM::skill_400100()
 {
-    if (Init_CurFrame(52))    
-        Add_GroupEffectOwner(L"Spike_400100_pase1", _float3(2.f, 0.f, -0.8f));
-    if (Init_CurFrame(77))
-        Add_GroupEffectOwner(L"Spike_400100_pase2", _float3(-3.f, 0.f, 1.8f));
+    if (Init_CurFrame(52))
+        Add_And_Set_Effect(L"Spike_400100_1");
+    if (Init_CurFrame(150))
+    {
+        if (!m_pGroupEffect.expired())
+            m_pGroupEffect.lock()->Get_GroupEffect()->FreeLoopMember();
+        Add_And_Set_Effect(L"Spike_400100_2");
+    }
 
     if (m_iCurFrame == 17)
     {
