@@ -71,6 +71,7 @@ public:
 	_bool Is_Blured()						{ return m_bIsBlur; }
 	_bool Is_Render()						{ return m_bIsRender; }
 	_bool Is_DrawShadow()					{ return m_bDrawShadow; }
+	_bool Is_TimeSlowed()					{ return m_bGetTimeSlow; }
 	_bool Has_VelocityMap()					{ return m_bHasVelocityMap; }
 	_bool Is_FrustumCulled()				{ return m_bFrustumCull; }
 	
@@ -80,6 +81,7 @@ public:
 	void Set_MaxHp(_float fHP)				{ m_fMaxHP = fHP; m_fHP = fHP; }
 	void Set_Render(_bool Value)			{ m_bIsRender = Value; }
 	void Set_CullPos(const _float3& pos )	{ m_vCullPos = pos; }
+	void Set_TimeSlowed(_bool flag)			{ m_bGetTimeSlow = flag; }
 	void Set_CullRadius(_float radius)		{ m_fCullRaidus = radius; }
 	void Set_LayerIndex(_uchar layerIndex)	{ m_iLayerIndex = layerIndex; }
 	void Set_Instancing(_bool flag)			{ m_bInstancing = flag; }
@@ -172,6 +174,7 @@ private:
 
 
 	_bool		m_bIsRender			= { true };
+	_bool		m_bGetTimeSlow = true;
 };
 
 template<typename T>

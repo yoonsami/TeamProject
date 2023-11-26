@@ -28,7 +28,11 @@ void ModelAnimator::Tick()
 
 	m_preTweenDesc = m_TweenDesc;
 
-	m_TweenDesc.curr.sumTime += fDT;
+	_float deltaTime = fABT;
+	if(Get_Owner()->Is_TimeSlowed())
+		deltaTime += fDT;
+
+	m_TweenDesc.curr.sumTime += deltaTime;
 
 	{
 		shared_ptr<ModelAnimation> currentAnim = m_pModel->Get_AnimationByIndex(m_TweenDesc.curr.animIndex);
@@ -100,7 +104,7 @@ void ModelAnimator::Tick()
 
 	if (m_TweenDesc.next.animIndex >= 0)
 	{
-		m_TweenDesc.tweenSumTime += fDT;
+		m_TweenDesc.tweenSumTime += deltaTime;
 		m_TweenDesc.tweenRatio = m_TweenDesc.tweenSumTime / m_TweenDesc.tweenDuration;
 
 		if (m_TweenDesc.tweenRatio >= 1.f || m_bFinished)
@@ -113,7 +117,7 @@ void ModelAnimator::Tick()
 		else
 		{
 			shared_ptr<ModelAnimation> nextAnim = m_pModel->Get_AnimationByIndex(m_TweenDesc.next.animIndex);
-			m_TweenDesc.next.sumTime += fDT;
+			m_TweenDesc.next.sumTime += deltaTime;
 
 			_float timePerFrame = 1.f / (nextAnim->frameRate * nextAnim->speed);
 
