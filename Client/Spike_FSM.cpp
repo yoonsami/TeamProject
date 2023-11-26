@@ -1670,6 +1670,7 @@ void Spike_FSM::skill_400100()
         if (!m_pGroupEffect.expired())
             m_pGroupEffect.lock()->Get_GroupEffect()->FreeLoopMember();
         Add_And_Set_Effect(L"Spike_400100_2");
+        Add_And_Set_Effect(L"Spike_400100_3");
     }
 	static _float fAngle = 0.f;
 	static _float3 vUp = _float3(0.f);
