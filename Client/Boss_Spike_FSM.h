@@ -21,7 +21,7 @@ public:
 		gaze_l,
 		gaze_r,
 
-		die_01,
+		SQ_Die,
 		hit, //normal_hit
 		hit_b,
 		hit_f,
@@ -127,8 +127,8 @@ private:
 	void gaze_r();
 	void gaze_r_Init();
 
-	void die_01();
-	void die_01_Init();
+	void SQ_Die();
+	void SQ_Die_Init();
 
 	
 	void hit();
@@ -232,13 +232,15 @@ private:
 	_bool m_bLastPattern = false;
 
 
-
 	_uint m_iPreAttack = 100;
 	
 	
+	_float4 m_vLastPatternCamStopPos = _float4(0.f);
 	_float4 m_vPlayerBodyPos = _float4(0.f); //For. Intro 
 	_float4 m_vChairPos = _float4(0.f); //For.Intro
 	_float4 m_vDieCamStopPos = _float4(0.f); //For. DieCam
+	_float4x4 m_DieCamWorld = XMMatrixIdentity(); //For. DieCam
+	_float4x4 m_DieCamPlayerWorld = XMMatrixIdentity(); //For. DieCam
 	
 	_uint m_iLipBoneIndex = 0;
 	_float4 m_vLipBonePos = _float4(0.f);
@@ -247,5 +249,6 @@ private:
 	_uint m_iChairBoneIndex = 0;
 	_float4 m_vChairBonePos = _float4(0.f);
 	_float4x4 m_ChairBoneMatrix = XMMatrixIdentity();
+
 };
 

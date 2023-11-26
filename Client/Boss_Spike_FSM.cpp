@@ -15,6 +15,7 @@
 #include "UiDamageCreate.h"
 #include "UIBossHpBar.h"
 #include "ObjectDissolve.h"
+#include "CharacterController.h"
 
 Boss_Spike_FSM::Boss_Spike_FSM()
 {
@@ -22,6 +23,17 @@ Boss_Spike_FSM::Boss_Spike_FSM()
 
 Boss_Spike_FSM::~Boss_Spike_FSM()
 {
+    if (!m_pTarget.expired())
+    {
+        m_pTarget.lock()->Get_CharacterController()->Get_Actor()->setFootPosition({ m_DieCamPlayerWorld.Translation().x,  m_DieCamPlayerWorld.Translation().y, m_DieCamPlayerWorld.Translation().z });
+        m_pTarget.lock()->Get_Animator()->Set_RenderState(true);
+    }
+
+    if (!m_pCamera.expired())
+    {
+        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedTime(0.f);
+        g_bCutScene = false;
+    }
 }
 
 HRESULT Boss_Spike_FSM::Init()
@@ -131,8 +143,8 @@ void Boss_Spike_FSM::State_Tick()
     case STATE::gaze_r:
         gaze_r();
         break;
-    case STATE::die_01:
-        die_01();
+    case STATE::SQ_Die:
+        SQ_Die();
         break;
     case STATE::groggy_start:
         groggy_start();
@@ -248,8 +260,8 @@ void Boss_Spike_FSM::State_Init()
         case STATE::gaze_r:
             gaze_r_Init();
             break;
-        case STATE::die_01:
-            die_01_Init();
+        case STATE::SQ_Die:
+            SQ_Die_Init();
             break;
         case STATE::groggy_start:
             groggy_start_Init();
@@ -605,7 +617,7 @@ void Boss_Spike_FSM::SQ_Appear_02_Init()
 
     animator->Set_NextTweenAnim(L"SQ_Appear_02", 0.1f, false, 1.f);
 
-    EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Boss_Spike_Chair"));
+    //EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Boss_Spike_Chair"));
 
     Calculate_CamBoneMatrix();
 
@@ -687,6 +699,8 @@ void Boss_Spike_FSM::Spawn_Init()
         m_pOwner.lock()->Add_Component(pScript);
         pScript->Init();
     }
+
+    m_DieCamWorld = Get_Transform()->Get_WorldMatrix();
 
     g_bCutScene = false;
 }
@@ -931,7 +945,7 @@ void Boss_Spike_FSM::gaze_r_Init()
 }
 
 
-void Boss_Spike_FSM::die_01()
+void Boss_Spike_FSM::SQ_Die()
 {
     if (m_iCurFrame <= 4)
     {
@@ -983,8 +997,6 @@ void Boss_Spike_FSM::die_01()
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vLipBonePos.xyz());
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.2f, vDir.xyz(), m_fDieCamDistance);
         }
-
-
     }
 
     Calculate_CamBoneMatrix();
@@ -992,8 +1004,6 @@ void Boss_Spike_FSM::die_01()
 
     if (Is_AnimFinished())
     {
-        g_bCutScene = false;
-
         auto script = make_shared<ObjectDissolve>(1.f);
         Get_Owner()->Add_Component(script);
         script->Init();
@@ -1010,7 +1020,7 @@ void Boss_Spike_FSM::die_01()
     }
 }
 
-void Boss_Spike_FSM::die_01_Init()
+void Boss_Spike_FSM::SQ_Die_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -1019,6 +1029,25 @@ void Boss_Spike_FSM::die_01_Init()
     m_bInvincible = true;
 
     m_fCamRatio = 0.f;
+
+    {
+        //Setting Spawn Position For CutScene
+        Get_CharacterController()->Get_Actor()->setFootPosition({ m_DieCamWorld.Translation().x,  m_DieCamWorld.Translation().y, m_DieCamWorld.Translation().z });
+        Get_Transform()->Set_LookDir(m_DieCamWorld.Backward());
+    }
+
+
+    if (!m_pTarget.expired())
+    {
+        //Save PlayerWorld 
+        m_DieCamPlayerWorld = m_pTarget.lock()->Get_Transform()->Get_WorldMatrix();
+        
+        //Player Render False For CutScene
+        m_pTarget.lock()->Get_Animator()->Set_RenderState(false);
+        
+        //Player Go to America For CutScene 
+        m_pTarget.lock()->Get_Transform()->Set_State(Transform_State::POS, _float4{ 0.f,1000.f,0.f,1.f });
+    }
 
     Calculate_CamBoneMatrix();
 
@@ -1031,6 +1060,8 @@ void Boss_Spike_FSM::die_01_Init()
 
         g_bCutScene = true;
     }
+
+    
 }
 
 void Boss_Spike_FSM::hit()
@@ -1656,7 +1687,7 @@ void Boss_Spike_FSM::skill_3200_Init()
 
 void Boss_Spike_FSM::skill_6100()
 {
-    if (m_iCurFrame < 145)
+    if (m_iCurFrame < 33)
     {
         if (!m_pCamera.expired())
         {
@@ -1666,6 +1697,51 @@ void Boss_Spike_FSM::skill_6100()
 
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.2f, vDir.xyz(), 4.f);
+        }
+    }
+    else if (m_iCurFrame >= 33 && m_iCurFrame < 108)
+    {
+        if (m_iCurFrame == 33)
+            m_vLastPatternCamStopPos = m_vCenterBonePos;
+
+        if (!m_pCamera.expired())
+        {
+            _float4 vDir = m_vCamStopPos - m_vLastPatternCamStopPos;
+
+            vDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vLastPatternCamStopPos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.2f, vDir.xyz(), 4.f);
+        }
+    }
+    else if (m_iCurFrame >= 108 && m_iCurFrame < 115)
+    {
+        if (!m_pCamera.expired())
+        {
+            _float4 vDir = m_vCamStopPos - m_vCenterBonePos;
+
+            vDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.2f, vDir.xyz(), 4.f);
+        }
+    }
+    else if (m_iCurFrame >= 115 && m_iCurFrame < 145)
+    {
+        if (m_iCurFrame == 115)
+            m_vLastPatternCamStopPos = m_vCenterBonePos;
+
+        if (!m_pCamera.expired())
+        {
+            _float4 vDir = m_vCamStopPos - m_vLastPatternCamStopPos;
+
+            vDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vLastPatternCamStopPos.xyz());
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.2f, vDir.xyz(), 4.f);
         }
     }
@@ -2219,9 +2295,16 @@ void Boss_Spike_FSM::DeadSetting()
 {
     if (m_bIsDead)
     {
-        m_bInvincible = true;
+        if (!m_bLastPattern)
+        {
+            m_eCurState = STATE::skill_6100;
+        }
+        else
+        {
+            m_bInvincible = true;
 
-        m_eCurState = STATE::die_01;
+            m_eCurState = STATE::SQ_Die;
+        }
     }
 }
 
