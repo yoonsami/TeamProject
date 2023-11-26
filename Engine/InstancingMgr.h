@@ -24,8 +24,8 @@ private:
 	void Render_ModelRenderer_Shadow(vector<shared_ptr<GameObject>>& gameObjects);
 	void Render_Animator_Shadow(vector<shared_ptr<GameObject>>& gameObjects);
 	
-
-
+	//
+	void Render_Effect_Particle(vector<shared_ptr<GameObject>>& gameObjects);
 
 	void Add_Data(InstanceID instanceId, InstancingData& data);
 

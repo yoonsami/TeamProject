@@ -39,6 +39,8 @@ public:
     MeshEffectData::DESC&   Get_Desc() { return m_tDesc; }
     _float4x4               Get_LocalMatrix();
     _int                    Get_RenderPriority() { return m_iRenderPriority; }
+    InstanceID              Get_InstanceID();
+
 
     void                    Translate();
     void                    Scaling();

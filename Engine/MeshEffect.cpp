@@ -813,6 +813,11 @@ _float4x4 MeshEffect::Get_LocalMatrix()
     return _float4x4::CreateScale(m_vLocalScale) * _float4x4::CreateFromQuaternion(m_qRotation) * _float4x4::CreateTranslation(m_vLocalPos);
 }
 
+InstanceID MeshEffect::Get_InstanceID()
+{
+	return make_pair(_ulonglong(m_pShader.get()), _ulonglong(m_pMaterial.get()));
+}
+
 static _float3 ToEulerAngles(Quaternion q)
 {
     _float3 angles;

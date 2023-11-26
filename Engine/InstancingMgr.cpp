@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "InstancingMgr.h"
 
+#include "MeshEffect.h"
 #include "GameObject.h"
 #include "MeshRenderer.h"
 #include "BaseCollider.h"
@@ -331,6 +332,49 @@ void InstancingMgr::Render_Animator_Shadow(vector<shared_ptr<GameObject>>& gameO
 	}
 	for (auto& gameObject : nonInstancing)
 		gameObject->Get_Animator()->Render_Shadow();
+}
+
+void InstancingMgr::Render_Effect_Particle(vector<shared_ptr<GameObject>>& gameObjects)
+{
+	map<InstanceID, vector<shared_ptr<GameObject>>> cache;
+
+	shared_ptr<InstanceRenderParamDesc> materialDesc = make_shared<InstanceRenderParamDesc>();
+	for (auto& gameObject : gameObjects)
+	{
+		if (gameObject->Get_MeshEffect() == nullptr)
+			continue;
+
+		const InstanceID instanceID = gameObject->Get_MeshEffect()->Get_InstanceID();
+		cache[instanceID].push_back(gameObject);
+	}
+
+	for (auto& pair : cache)
+	{
+		vector<shared_ptr<GameObject>>& vec = pair.second;
+
+		if (vec.size() == 1)
+		{
+			vec.front()->Get_MeshEffect()->Render();
+		}
+		else
+		{
+			const InstanceID instanceId = pair.first;
+
+			for (size_t i = 0; i < vec.size(); ++i)
+			{
+				shared_ptr<GameObject>& gameobject = vec[i];
+				InstancingData data{};
+				data.world = gameobject->Get_Transform()->Get_WorldMatrix();
+				data.preWorld = gameobject->Get_Transform()->Get_preWorldMatrix();
+
+				materialDesc->params[i] = gameobject->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[0];
+				Add_Data(instanceId, data);
+			}
+
+			shared_ptr<InstancingBuffer>& buffer = m_Buffers[instanceId];
+			vec[0]->Get_MeshEffect()->Render_Instancing(buffer, materialDesc);
+		}
+	}
 }
 
 void InstancingMgr::Add_Data(InstanceID instanceId, InstancingData& data)

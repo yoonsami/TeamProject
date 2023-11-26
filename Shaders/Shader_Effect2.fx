@@ -11,6 +11,21 @@ struct EffectOut
     float3 viewNormal : NORMAL;
     float3 viewTangent : TANGENT;
 };
+struct EffectOutInstancing
+{
+    float4 position : SV_POSITION;
+    float3 worldPosition : POSITION1;
+    float3 viewPosition : POSITION2;
+    float2 uv : TEXCOORD;
+    float2 originUV : TEXCOORD1;
+    float3 viewNormal : NORMAL;
+    float3 viewTangent : TANGENT;
+    uint instanceID : SV_INSTANCEID;
+    row_major float4x4 world : INST;
+    row_major float4x4 g_mat_0 : INST;
+    row_major float4x4 g_mat_1 : INST;
+    row_major float4x4 g_mat_2 : INST;
+};
 
 EffectOut VS_Main(VTXModel input)
 {
