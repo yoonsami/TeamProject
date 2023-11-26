@@ -325,6 +325,10 @@ void CoolTimeCheckScript::Set_Skill_End()
             return;
     }
 
+    if (true == m_pCombo0.expired() ||
+        true == m_pCombo1.expired())
+        return;
+
     _float4 vecPos = {};
     switch (static_cast<SkillType>(m_iWorkSkillIndex))
     {
@@ -447,6 +451,10 @@ void CoolTimeCheckScript::Next_Combo(SkillType eSkillType)
         iMaxCombo = m_CoolTime[IDX(m_eCurHero)][eSkillType].iSkillCombo;
     }
     
+    if (true == m_pCombo0.expired() ||
+        true == m_pCombo1.expired())
+        return;
+
     if (iCombo < iMaxCombo - 1)
     {
         switch (eSkillType)
@@ -670,6 +678,10 @@ void CoolTimeCheckScript::Change_Skill_Info(HERO eType)
     //shared_ptr<Texture>    pTexture_Combo0 = RESOURCES.Get<Texture>(L"UI_Skill_Combo0");
     //shared_ptr<Texture>    pTexture_Combo1 = RESOURCES.Get<Texture>(L"UI_Skill_Combo1");
 
+    if (true == m_pCombo0.expired() ||
+        true == m_pCombo1.expired())
+        return;
+
     m_pUi_Skill2_Combo[0].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(m_pCombo1.lock(), TextureMapType::DIFFUSE);
     m_pUi_Skill2_Combo[1].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(m_pCombo0.lock(), TextureMapType::DIFFUSE);
     m_pUi_Skill2_Combo[2].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(m_pCombo0.lock(), TextureMapType::DIFFUSE);
@@ -776,6 +788,12 @@ void CoolTimeCheckScript::Change_Skill_Info(HERO eType)
         }
 
     }
+
+    if (true == m_pCharge.expired() ||
+        true == m_pHold.expired() ||
+        true == m_pMove.expired())
+        return;
+
 
     if (SkillInfo::NONE == tagData.Skill1Info)
     {
