@@ -195,6 +195,22 @@ void Widget_Model_Controller::Apply_Anim()
 
 	Checkbox("Position Force To Zero", &bSetPosition);
 	m_pControlObject.lock()->Get_Script<ForcePosition>()->bForcePosition = bSetPosition;
+
+	static _int startFrame = 0;
+	InputInt("Start Frame", &startFrame);
+	static _int endFrame = 0;
+	InputInt("End Frame", &endFrame);
+	auto animator = m_pControlObject.lock()->Get_Animator();
+
+	auto& tweenDesc = animator->Get_TweenDesc();
+
+	const auto& animation = animator->Get_Model()->Get_AnimationByIndex(tweenDesc.curr.animIndex);
+
+	_float timePerFrame = 1 / (animation->frameRate * animation->speed);
+
+	Text(("Time from StartFrame to EndFrame : " + to_string(timePerFrame * (endFrame - startFrame))).c_str());
+
+
 }
 
 void Widget_Model_Controller::Control_Anim()
@@ -207,7 +223,7 @@ void Widget_Model_Controller::Control_Anim()
 
 	static _float fKeyFrame = 0.f;
 
-	DragFloat("## anim", &fKeyFrame, 0.1f, 0.f, _float(animation->frameCount));
+	DragFloat("## anim", &fKeyFrame, 0.1f, 0.f, _float(animation->frameCount - 1));
 
 	_uint curFrame = _uint(fKeyFrame);
 	_uint nextFrame = curFrame + 1;

@@ -73,7 +73,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 				DispatchMessage(&msg);
 			}
 		}
-        INPUT.Tick();
+
 		
 		pMainApp->Tick();
 		
