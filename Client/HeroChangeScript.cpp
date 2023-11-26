@@ -124,9 +124,7 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
 
 
     //CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Player_AttackCollider"));
-    CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Vehicle_AttackCollider"));
-    
-    
+    //CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Vehicle_AttackCollider"));
     shared_ptr<GameObject> attackCollider = m_pOwner.lock()->Get_FSM()->Get_AttackCollider();
     
    auto& tagData = GET_DATA(eHero);
