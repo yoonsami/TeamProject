@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "GranseedGuard01_FSM.h"
 #include "ModelAnimator.h"
+#include <MathUtils.h>
 
 GranseedGuard01_FSM::GranseedGuard01_FSM()
 {
@@ -120,7 +121,6 @@ void GranseedGuard01_FSM::walk()
 {
 	m_fStateAcc += fDT;
 	
-
 	_float3 vPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 	_float3 vLook = Get_Transform()->Get_State(Transform_State::LOOK).xyz();
 	
@@ -148,6 +148,8 @@ void GranseedGuard01_FSM::walk_Init()
 
 	animator->Set_NextTweenAnim(L"walk", 0.15f, true, 1.f);
 	Get_Transform()->Set_Speed(3.f);
+	m_vDirToTarget = MathUtils::Get_RandomVector(_float3(-1, 0, -1), _float3(1, 0, 1));
+
 }
 
 void GranseedGuard01_FSM::Set_State(_uint iIndex)

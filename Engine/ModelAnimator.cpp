@@ -30,7 +30,7 @@ void ModelAnimator::Tick()
 
 	_float deltaTime = fABT;
 	if(Get_Owner()->Is_TimeSlowed())
-		deltaTime += fDT;
+		deltaTime = fDT;
 
 	m_TweenDesc.curr.sumTime += deltaTime;
 
