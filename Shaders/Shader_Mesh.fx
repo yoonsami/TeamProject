@@ -18,6 +18,17 @@ UIOutput VS_UI(VTXMesh input)
     return output;
 }
 
+MeshOutput VS_Terrain(VTXMesh input)
+{
+    MeshOutput output;
+    output.position = mul(float4(input.position, 1.f), W);
+    output.worldPosition = output.position;
+    
+    output.position = mul(output.position, VP);
+    output.uv = input.uv;
+    return output;
+}
+
 VS_OUT VS_Default(VTXMesh input)
 {
     VS_OUT output;
@@ -79,6 +90,9 @@ struct GS_OUTPUT
 //g_vec4_0.z = dissolveSpeed
 //g_vec4_0.w = MaintainTime
 
+//g_vec4_0 - TerrainBrushPos
+//g_float_0 - TerrainBrushRadius
+
 [maxvertexcount(6)]
 void GS_Main(point VS_OUT input[1], inout TriangleStream<GS_OUTPUT> outputStream)
 {
@@ -97,7 +111,7 @@ void GS_Main(point VS_OUT input[1], inout TriangleStream<GS_OUTPUT> outputStream
     VS_OUT vtx = input[0];
     float2 scale = mscale.xy * 0.5f;
 
-    output[0].position = vtx.viewPos + float4(-scale.x, scale.y, 0.f, 0.f);
+    output[0].position = vtx.viewPos +float4(-scale.x, scale.y, 0.f, 0.f);
     output[1].position = vtx.viewPos + float4(scale.x, scale.y, 0.f, 0.f);
     output[2].position = vtx.viewPos + float4(scale.x, -scale.y, 0.f, 0.f);
     output[3].position = vtx.viewPos + float4(-scale.x, -scale.y, 0.f, 0.f);
@@ -693,11 +707,29 @@ float4 PS_Test2(GS_OUTPUT input) : SV_TARGET
 
     return color;
 }
+float4 PS_Terrain(MeshOutput input) : SV_TARGET
+{
+    float4 color;
+    float4 diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
+    // 브러시관련
+    float3 vBrushPos = g_vec4_0;
+    float fBrushRadius = g_float_0;
+    float colBrushColor = float4(0.f, 0.f, 0.f, 0.f);
+    
+    // 브러시포지션과 거리가 브러시Radius이하라면 색깔을 흰색으로 함.
+    if (length(input.worldPosition - vBrushPos) <= fBrushRadius)
+    {
+        colBrushColor = float4(0.2f, 0.2f, 0.2, 0.f);
+    }
+    color = diffuseColor + colBrushColor;
+    
+    return color;
+}
 
 
 technique11 T0
 {
-
+//0
     pass UI_DEFAULT
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
@@ -707,7 +739,7 @@ technique11 T0
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
-
+//1
     pass UI_CURTAIN_UP
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
@@ -717,7 +749,7 @@ technique11 T0
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
-
+//2
     pass UI_CLOCK
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
@@ -727,7 +759,7 @@ technique11 T0
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
-
+//3
     pass UI_HPBAR
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
@@ -737,7 +769,7 @@ technique11 T0
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
-
+//4
     pass UI_SLIDE_RIGHT
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
@@ -747,7 +779,7 @@ technique11 T0
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
-
+//5
     pass UI_LOADING
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
@@ -757,7 +789,7 @@ technique11 T0
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
-    
+//6
     pass UI_SKILL_COOL_END
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
@@ -767,7 +799,7 @@ technique11 T0
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
-    
+//7
     pass UI_TARGET_LOCKON
     {
         SetVertexShader(CompileShader(vs_5_0, VS_3D_To_2D()));
@@ -777,7 +809,7 @@ technique11 T0
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
-     
+//8
     pass UI_TARGET_HP
     {
         SetVertexShader(CompileShader(vs_5_0, VS_3D_To_2D()));
@@ -787,7 +819,7 @@ technique11 T0
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
-
+//9
     pass UI_SKILL_USE_GAUGE
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
@@ -797,11 +829,12 @@ technique11 T0
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
-
-
+//10
     PASS_VP(p1_instancing, VS_Instancing, PS_UI)
+//11
     PASS_VP_BLEND(P2, VS_UI, PS_UIBAR)
 
+//12
     pass p7
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
@@ -812,6 +845,7 @@ technique11 T0
         SetGeometryShader(CompileShader(gs_5_0, GS_Sprite()));
 
     }
+//13
     pass p8
     {
         SetVertexShader(CompileShader(vs_5_0, VS_UI()));
@@ -822,6 +856,7 @@ technique11 T0
         SetGeometryShader(NULL);
 
     }
+//14
     pass p9
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
@@ -832,6 +867,7 @@ technique11 T0
         SetGeometryShader(CompileShader(gs_5_0, GS_Sprite()));
 
     }
+//15
     pass p10
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
@@ -842,6 +878,7 @@ technique11 T0
         SetGeometryShader(CompileShader(gs_5_0, GS_Sprite()));
 
     }
+//16
     pass p11
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
@@ -852,6 +889,7 @@ technique11 T0
         SetGeometryShader(CompileShader(gs_5_0, GS_Sprite()));
 
     }
+//17
     pass p12
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Default()));
@@ -861,6 +899,16 @@ technique11 T0
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetGeometryShader(CompileShader(gs_5_0, GS_Main()));
 
+    }
+//18
+    pass Terrain
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Terrain()));
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetPixelShader(CompileShader(ps_5_0, PS_Terrain()));
+        SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetGeometryShader(NULL);
     }
 };
 

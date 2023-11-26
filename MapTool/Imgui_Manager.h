@@ -40,6 +40,8 @@ private:
 	void Frame_Wall();
 	// 쉐이더옵션관리
 	void Frame_ShaderOption();
+	// 터레인 관련
+	void Frame_Terrain();
 
 	// 피킹
 	void Picking_Object();
@@ -73,6 +75,10 @@ private:
 	// 플레이어 룩앳 위치를 피킹 포지션으로 변경
 	void SetPlayerLookAtPosByPickingPos();
 
+private:
+	// 터레인 드가자!!!!
+	void Create_Terrain();
+
 	// 점광원 제거
 	HRESULT Delete_PointLight();
 	// 맵오브젝트 제거
@@ -95,7 +101,7 @@ private:
 	void Create_SampleObjects();
 	// 현재 선택한 베이스오브젝트로 샘플 맵오브젝트 모델변경 및 카메라 조정
 	void Set_SampleObject();
-    // 윤성이형의 옵션변경탭
+    // 윤성이형의 셰이더옵션변경탭
 	void RenderOptionTab();
 	// 모든 쉐이더 옵션 초기화
 	void ClearAllShaderOptions();
@@ -193,8 +199,13 @@ private:
 	_int curMapIndex = 0;
 	vector<string> m_MapNames;
 
-
-
+// 터레인관련
+	// 터레인 가로세로 타일개수
+	_int m_iTerrainSize[2] = { 1, 1 };
+	shared_ptr<GameObject> m_pTerrain = { nullptr };
+	// 터레인브러시크기
+	_float m_fTerrainBrushRadius = { 0.f };
+	_float3 m_vTerrainBrushPosition = _float3{ 0.f, 0.f, 0.f};
 
 private:
 	void Frame_ModelObj();

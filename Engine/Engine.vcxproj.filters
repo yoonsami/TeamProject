@@ -226,6 +226,9 @@
     <Filter Include="04.Component\05.UI &amp; Effect\Renderer\07.GroupEffectOwner">
       <UniqueIdentifier>{a507ec01-f6f1-4398-8cdc-6b7abf65ee34}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06.Map\01.Terrain">
+      <UniqueIdentifier>{8415b906-9975-4246-81b4-7ed228377b53}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -458,6 +461,9 @@
     </ClCompile>
     <ClCompile Include="GroupEffectOwner.cpp">
       <Filter>04.Component\05.UI &amp; Effect\Renderer\07.GroupEffectOwner</Filter>
+    </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>06.Map\01.Terrain</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -706,6 +712,9 @@
     </ClInclude>
     <ClInclude Include="GroupEffectOwner.h">
       <Filter>04.Component\05.UI &amp; Effect\Renderer\07.GroupEffectOwner</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>06.Map\01.Terrain</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

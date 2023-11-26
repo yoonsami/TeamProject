@@ -16,6 +16,7 @@
 #include "ModelRenderer.h"
 #include "ModelAnimator.h"
 #include "Geometry.h"
+#include "Terrain.h"
 
 #include "Camera.h"
 #include "DemoScene.h"
@@ -92,6 +93,7 @@ void ImGui_Manager::ImGui_Tick()
     Picking_Object();
     LookAtSampleObject();
     Frame_ModelObj();
+    Frame_Terrain();
 
     Show_Gizmo();
 }
@@ -785,17 +787,52 @@ void ImGui_Manager::Frame_ShaderOption()
     ImGui::End();
 }
 
+void ImGui_Manager::Frame_Terrain()
+{
+    ImGui::Begin("Frame_Terrain");
+    ImGui::Text("TerrainSize");
+    ImGui::DragInt2("##TerrainSize", m_iTerrainSize);
+
+    if (ImGui::Button("CreateTerrain"))
+    {
+        Create_Terrain();
+    }
+    ImGui::DragFloat("BrushRadius", &m_fTerrainBrushRadius, 0.1f);
+
+    ImGui::End();
+}
+
 void ImGui_Manager::Picking_Object()
 {
-    // 마우스 우클릭 시 메시피킹
+    POINT MousePos;
+    ::GetCursorPos(&MousePos);
+    ::ScreenToClient(g_hWnd, &MousePos);
+    _float2 ScreenPos{ (_float)MousePos.x, (_float)MousePos.y };
+
+    if (m_pTerrain != nullptr)
+    {
+        // 터레인 피킹위치갱신
+        PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), m_pTerrain, m_vTerrainBrushPosition);
+
+        m_pTerrain->Get_MeshRenderer()->SetVec4(0, _float4(m_vTerrainBrushPosition, 1.f));
+        m_pTerrain->Get_MeshRenderer()->SetFloat(0, m_fTerrainBrushRadius);
+
+        if (KEYPUSH(KEY_TYPE::O))
+        {
+            auto& vtx = m_pTerrain->Get_MeshRenderer()->Get_Mesh()->Get_Geometry()->Get_Vertices();
+            for (auto& VB : vtx)
+            {
+
+            }
+        }
+    }
+
+    // 마우스 우클릭 시 맵오브젝트피킹
     if (KEYTAP(KEY_TYPE::RBUTTON))
     {
-        POINT MousePos;
-        ::GetCursorPos(&MousePos);
-        ::ScreenToClient(g_hWnd, &MousePos);
-        _float2 ScreenPos{ (_float)MousePos.x, (_float)MousePos.y };
 
-        shared_ptr<GameObject> PickObject = PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), CUR_SCENE->Get_Objects(), m_PickingPos);
+        shared_ptr<GameObject> PickObject = PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), m_pMapObjects, m_PickingPos);
+
         if(m_GizmoTarget == GizmoTMapObj)
             // 선택된 오브젝트 번호 바꾸기 현재기즈모타겟이 맵오브젝트일때만 사용.
         {
@@ -813,12 +850,7 @@ void ImGui_Manager::Picking_Object()
     // 마우스 휠클릭 시 WallPickingPoint 저장
     if (KEYTAP(KEY_TYPE::MBUTTON))
     {
-        POINT MousePos;
-        ::GetCursorPos(&MousePos);
-        ::ScreenToClient(g_hWnd, &MousePos);
-        _float2 ScreenPos{ (_float)MousePos.x, (_float)MousePos.y };
-
-        // 벽피킹
+        // 맵오브젝트피킹 - 벽으로사용
         if (m_bWallPickingMod)
         {
             if (m_bFirstWallPick)
@@ -835,7 +867,7 @@ void ImGui_Manager::Picking_Object()
                 m_WallPickingPos[0] = m_WallPickingPos[1];
             }
         }
-        // 바닥피킹
+        // 맵오브젝트피킹 - 바닥으로사용
         else if (m_bGroundPickingMod)
         {
             if (m_bFirstGroundPick)
@@ -1181,6 +1213,44 @@ void ImGui_Manager::SetPlayerLookAtPosByPickingPos()
 {
     m_PlayerLookAtPosition = m_PickingPos;
     m_PlayerLookAtPosition.y = m_PlayerCreatePosition.y;
+}
+
+void ImGui_Manager::Create_Terrain()
+{
+    // 터레인생성
+    shared_ptr<Terrain> terrain = make_shared<Terrain>();
+    terrain->CreateGrid(m_iTerrainSize[0], m_iTerrainSize[1]);
+
+    // 메시를 기반으로 바닥오브젝트 생성
+    shared_ptr<GameObject> TerrainObject = make_shared<GameObject>();
+    TerrainObject->Set_Name(L"Terrain");
+    TerrainObject->GetOrAddTransform();
+
+    // 메시렌더러
+    shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+    renderer->Set_Mesh(terrain);
+    renderer->Set_Pass(18); // 터레인패스
+    
+    shared_ptr<Material> material = make_shared<Material>();
+    RESOURCES.Load<Texture>(L"TileTexture1", L"..\\Resources\\Textures\\MapObject\\TerrainTile\\Bamboo_T_Tile_D_01_KEK.tga");
+    material->Set_TextureMap(RESOURCES.Get<Texture>(L"TileTexture1"), TextureMapType::DIFFUSE);
+
+    renderer->Set_Material(material);
+
+    //// 메시를 통해 메시콜라이더 생성
+    //shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(*terrain.get());
+    //TerrainObject->Add_Component(pCollider);
+    //pCollider->Set_Activate(true);
+
+    TerrainObject->Add_Component(renderer);
+
+    // 터레인오브젝트 중복체크
+    shared_ptr<GameObject> PrTerrain = CUR_SCENE->Get_GameObject(L"Terrain");
+    if (PrTerrain != nullptr)
+        CUR_SCENE->Remove_GameObject(PrTerrain);
+    CUR_SCENE->Add_GameObject(TerrainObject);
+
+    m_pTerrain = TerrainObject;
 }
 
 HRESULT ImGui_Manager::Delete_PointLight()
