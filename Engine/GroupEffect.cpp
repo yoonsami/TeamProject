@@ -103,8 +103,6 @@ void GroupEffect::Final_Tick()
     {
         if (!iter.expired())
         {
-			if (iter.lock()->Get_MeshEffect()->Get_Desc().iMeshCnt > 1)
-				int a = 0;
 			if (iter.lock()->Get_MeshEffect()->Get_IsFollowGroup_OnlyTranslate() ||
 				iter.lock()->Get_MeshEffect()->Get_IsFollowGroup_LooKSameDir())
 			{

@@ -32,7 +32,7 @@ void MeshEffect::Tick()
 {
     if (!m_bToolMode_On)
         return;
-
+    string str = m_tDesc.strVfxMesh;
     MeshEffect_Tick();
 }
 
