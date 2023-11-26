@@ -49,9 +49,6 @@
     <Filter Include="02.Manager\04.PhysxMgr">
       <UniqueIdentifier>{f46c7903-9a77-4557-b818-a85daea9cf33}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Manager\05.CollisionMgr">
-      <UniqueIdentifier>{2df816b7-b10e-4b44-9e6c-1afc74325ea0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Manager\01.ResourceMgr\Resources">
       <UniqueIdentifier>{306bebfd-d202-46ee-8a28-55579333110e}</UniqueIdentifier>
     </Filter>
@@ -231,6 +228,9 @@
     </Filter>
     <Filter Include="06.Map\01.Terrain">
       <UniqueIdentifier>{8415b906-9975-4246-81b4-7ed228377b53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Manager\05.CollisionMgr">
+      <UniqueIdentifier>{2df816b7-b10e-4b44-9e6c-1afc74325ea0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

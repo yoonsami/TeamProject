@@ -499,6 +499,9 @@ void ModelAnimator::Render_MotionBlur()
 {
 	if (!m_pModel)
 		return;
+
+	if (!m_bRenderOn)
+		return;
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 	auto preView = CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_preWorldMatrix().Invert();
 	m_pShader->GetMatrix("g_preView")->SetMatrix((_float*)&preView);
@@ -567,7 +570,8 @@ void ModelAnimator::Render_MotionBlur_Instancing(shared_ptr<class InstancingBuff
 {
 	if (!m_pModel)
 		return;
-
+	if (!m_bRenderOn)
+		return;
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 	auto preView = CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_preWorldMatrix().Invert();
 	m_pShader->GetMatrix("g_preView")->SetMatrix((_float*)&preView);

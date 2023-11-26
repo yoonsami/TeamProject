@@ -1667,16 +1667,18 @@ void Spike_FSM::skill_400100()
         Add_GroupEffectOwner(L"Spike_400100_pase1", _float3(2.f, 0.f, -0.8f));
     if (Init_CurFrame(77))
         Add_GroupEffectOwner(L"Spike_400100_pase2", _float3(-3.f, 0.f, 1.8f));
-
+    static _float fAngle = 0.f;
+    static _float3 vUp = _float3(0.f);
     if (m_iCurFrame == 17)
     {
         if (!m_pCamera.expired())
         {
+
             _float4 vDestinationPos = (Get_Transform()->Get_State(Transform_State::POS)) + (Get_Transform()->Get_State(Transform_State::LOOK) * -5.f) + _float3::Up * 4.f;
             _float4 vDir = vDestinationPos - (Get_Transform()->Get_State(Transform_State::POS));
             vDir.Normalize();
 
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(2.f);
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(8.f, vDir.xyz(), 10.f);
         }
@@ -1684,9 +1686,19 @@ void Spike_FSM::skill_400100()
     else if (m_iCurFrame >= 26)
     {
         if (m_iCurFrame == 26)
+        {
+            vUp = m_pCamera.lock()->Get_Transform()->Get_Transform()->Get_State(Transform_State::UP).xyz();
+            fAngle = 0.f;
             m_vCamStopPos = m_vCenterBonePos;
+            
+        }
 
+        fAngle = fDT;
         m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCamStopPos.xyz());
+        _float3 vDir = m_pCamera.lock()->Get_Script<MainCameraScript>()->Get_FixedDir();
+
+        vDir = _float3::TransformNormal(vDir, _float4x4::CreateFromAxisAngle(vUp, fAngle));
+        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedDir(vDir);
     }
 
 

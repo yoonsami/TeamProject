@@ -292,6 +292,12 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\20.UiSettingController">
       <UniqueIdentifier>{f2441089-0aeb-4843-bdaa-56777f4f01ef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\01.FSM\05.NPC_FSM\00.Granseed\00.GranseedPotion">
+      <UniqueIdentifier>{47afc46a-640b-4307-a608-8f0c53425527}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\05.NPC_FSM\00.Granseed\01.GranseedGuard">
+      <UniqueIdentifier>{37536de3-6f3d-44f9-8588-ab10b3c63794}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -580,8 +586,6 @@
     <ClInclude Include="UIInteraction.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\19.UiInteraction</Filter>
     </ClInclude>
-    <ClInclude Include="GranseedGuard01_FSM.h" />
-    <ClInclude Include="NPC_FSM.h" />
     <ClInclude Include="SpikeScene.h">
       <Filter>01.Scene\00.PlayScene\03.Spike</Filter>
     </ClInclude>
@@ -593,6 +597,12 @@
     </ClInclude>
     <ClInclude Include="UiSettingController.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\20.UiSettingController</Filter>
+    </ClInclude>
+    <ClInclude Include="NPC_FSM.h">
+      <Filter>02.Component\01.FSM\05.NPC_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="GranseedGuard01_FSM.h">
+      <Filter>02.Component\01.FSM\05.NPC_FSM\00.Granseed\01.GranseedGuard</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -849,8 +859,6 @@
     <ClCompile Include="UIInteraction.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\19.UiInteraction</Filter>
     </ClCompile>
-    <ClCompile Include="GranseedGuard01_FSM.cpp" />
-    <ClCompile Include="NPC_FSM.cpp" />
     <ClCompile Include="SpikeScene.cpp">
       <Filter>01.Scene\00.PlayScene\03.Spike</Filter>
     </ClCompile>
@@ -862,6 +870,12 @@
     </ClCompile>
     <ClCompile Include="UiSettingController.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\20.UiSettingController</Filter>
+    </ClCompile>
+    <ClCompile Include="NPC_FSM.cpp">
+      <Filter>02.Component\01.FSM\05.NPC_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="GranseedGuard01_FSM.cpp">
+      <Filter>02.Component\01.FSM\05.NPC_FSM\00.Granseed\01.GranseedGuard</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
