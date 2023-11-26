@@ -1617,14 +1617,10 @@ void Spike_FSM::skill_300100_Init()
 
 void Spike_FSM::skill_400100()
 {
-    if (Init_CurFrame(46))
-    {
-        Add_GroupEffectOwner(L"Spike_400100_pase1", _float3(3.f, 0.f, 0.1f));
-    }
-    if (Init_CurFrame(76))
-    {
+    if (Init_CurFrame(49))    
+        Add_GroupEffectOwner(L"Spike_400100_pase1", _float3(2.f, 0.f, -0.8f));
+    if (Init_CurFrame(77))
         Add_GroupEffectOwner(L"Spike_400100_pase2", _float3(-3.f, 0.f, 1.8f));
-    }
 
     if (m_iCurFrame == 17)
     {

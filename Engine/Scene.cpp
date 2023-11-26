@@ -51,10 +51,7 @@ void Scene::Tick()
 	auto objects = m_GameObjects;
 	for (auto& object : objects)
 	{
-		
 		object->Tick();
-
-		
 	}
 	PickUI();
 
