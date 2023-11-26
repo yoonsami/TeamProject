@@ -28,6 +28,22 @@ void MeshEffect::Init(void* pArg)
     Update_Desc();
 }
 
+void MeshEffect::Tick()
+{
+    if (!m_bToolMode_On)
+        return;
+    string str = m_tDesc.strVfxMesh;
+    MeshEffect_Tick();
+}
+
+void MeshEffect::Final_Tick()
+{
+    if (!m_bToolMode_On)
+        return;
+
+    MeshEffect_Final_Tick();
+}
+
 void MeshEffect::MeshEffect_Tick()
 {
     if (m_bIsLocked)

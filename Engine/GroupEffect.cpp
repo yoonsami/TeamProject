@@ -101,11 +101,8 @@ void GroupEffect::Final_Tick()
     // For. Update MeshEffect Translation 
     for (auto& iter : m_lMemberEffects)
     {
-
         if (!iter.expired())
         {
-			if (iter.lock()->Get_MeshEffect()->Get_Desc().iMeshCnt > 1)
-				int a = 0;
 			if (iter.lock()->Get_MeshEffect()->Get_IsFollowGroup_OnlyTranslate() ||
 				iter.lock()->Get_MeshEffect()->Get_IsFollowGroup_LooKSameDir())
 			{
@@ -119,8 +116,6 @@ void GroupEffect::Final_Tick()
 				iter.lock()->Get_Transform()->Set_WorldMat(matSetting);
 				iter.lock()->Get_MeshEffect()->BillBoard();
             }
-
-
         }
     }
 

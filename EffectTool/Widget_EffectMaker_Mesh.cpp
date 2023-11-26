@@ -5,6 +5,7 @@
 #include "MeshEffect.h"
 #include "Texture.h"
 #include "Camera.h"
+#include "GroupEffect.h"
 
 static inline ImVec2 operator+(const ImVec2& lhs, const ImVec2& rhs) { return ImVec2(lhs.x + rhs.x, lhs.y + rhs.y); }
 static inline ImVec2 operator-(const ImVec2& lhs, const ImVec2& rhs) { return ImVec2(lhs.x - rhs.x, lhs.y - rhs.y); }
@@ -1006,6 +1007,13 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 
 void Widget_EffectMaker_Mesh::Create()
 {
+	// Delete all group effect ans mesh effects
+	for (auto& iter : CUR_SCENE->Get_Objects())
+	{
+		if (iter->Get_MeshEffect())
+			EVENTMGR.Delete_Object(iter);
+	}
+
 	for (_int n = 0; n < m_iMeshCnt; n++)
 	{
 		CUR_SCENE->Get_Camera(L"Default")->Get_Camera()->Set_EffectToolOn(true);
