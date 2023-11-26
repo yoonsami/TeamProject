@@ -21,7 +21,7 @@ public:
 		gaze_l,
 		gaze_r,
 
-		die,
+		die_01,
 		hit, //normal_hit
 		hit_b,
 		hit_f,
@@ -127,8 +127,8 @@ private:
 	void gaze_r();
 	void gaze_r_Init();
 
-	void die();
-	void die_Init();
+	void die_01();
+	void die_01_Init();
 
 	
 	void hit();
@@ -191,13 +191,16 @@ private:
 
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage);
 	void Calculate_SkillCamRight();
+	void Calculate_LipBoneMatrix();
 	void Set_AttackSkill();
 	void Create_BossSpikeChair();
 	void Set_Gaze();
+	void DeadSetting();
 	void Create_CounterMotionTrail();
 
 	_float3 Calculate_TargetTurnVector();
-	
+	_float CamDistanceLerp(_float fStart, _float fEnd, _float fRatio);
+
 private:
 	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;
@@ -207,6 +210,9 @@ private:
 	_float3 m_vTurnVector = _float3(0.f);
 	_float4 m_vFirstPos = _float4(0.f);
 	_float m_fTurnSpeed = XM_PI * 5.f;
+
+	_float m_fDieCamDistance = 0.f;
+	_float m_fCamRatio = 0.f;
 
 	_float m_fGroggyStateAnimationSpeed = 1.f;
 	_float m_fGroggyPatternAnimationSpeed = 0.15f;
@@ -226,11 +232,18 @@ private:
 	_bool m_bLastPattern = false;
 
 
+
 	_uint m_iPreAttack = 100;
 	
-	_float4 m_vPlayerBodyPos = _float4(0.f);
-	_float4 m_vChairPos = _float4(0.f);
 	
+	_float4 m_vPlayerBodyPos = _float4(0.f); //For. Intro 
+	_float4 m_vChairPos = _float4(0.f); //For.Intro
+	_float4 m_vDieCamStopPos = _float4(0.f); //For. DieCam
+	
+	_uint m_iLipBoneIndex = 0;
+	_float4 m_vLipBonePos = _float4(0.f);
+	_float4x4 m_LipBoneMatrix= XMMatrixIdentity();
+
 	_uint m_iChairBoneIndex = 0;
 	_float4 m_vChairBonePos = _float4(0.f);
 	_float4x4 m_ChairBoneMatrix = XMMatrixIdentity();
