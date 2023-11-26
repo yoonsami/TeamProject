@@ -786,7 +786,11 @@ void Boss_Dellons_FSM::die()
             EVENTMGR.Delete_Object(m_pAttackCollider.lock());
 
         if (!m_pWeapon.expired())
-            EVENTMGR.Delete_Object(m_pWeapon.lock());
+        {
+            auto script = make_shared<ObjectDissolve>(1.f);
+            m_pWeapon.lock()->Add_Component(script);
+            script->Init();
+        }
     }
 }
 
@@ -848,7 +852,11 @@ void Boss_Dellons_FSM::airborne_end()
                 EVENTMGR.Delete_Object(m_pAttackCollider.lock());
 
             if (!m_pWeapon.expired())
-                EVENTMGR.Delete_Object(m_pWeapon.lock());
+            {
+                auto script = make_shared<ObjectDissolve>(1.f);
+                m_pWeapon.lock()->Add_Component(script);
+                script->Init();
+            }
 
             if (!m_pDellonsWraith.expired())
             {
@@ -973,7 +981,11 @@ void Boss_Dellons_FSM::knock_end_loop()
             EVENTMGR.Delete_Object(m_pAttackCollider.lock());
 
         if (!m_pWeapon.expired())
-            EVENTMGR.Delete_Object(m_pWeapon.lock());
+        {
+            auto script = make_shared<ObjectDissolve>(1.f);
+            m_pWeapon.lock()->Add_Component(script);
+            script->Init();
+        }
 
         if (!m_pDellonsWraith.expired())
         {
@@ -1083,7 +1095,11 @@ void Boss_Dellons_FSM::knockdown_end()
                 EVENTMGR.Delete_Object(m_pAttackCollider.lock());
 
             if (!m_pWeapon.expired())
-                EVENTMGR.Delete_Object(m_pWeapon.lock());
+            {
+                auto script = make_shared<ObjectDissolve>(1.f);
+                m_pWeapon.lock()->Add_Component(script);
+                script->Init();
+            }
 
             if (!m_pDellonsWraith.expired())
             {

@@ -153,7 +153,8 @@ private:
 	COOLTIMEINFO m_tWheelWindCoolTime = { 0.3f, 0.f };
 	_float m_fWheelWindRange = 2.f;
 	_float m_fWheelWindSpeed = 6.f;
-	_float m_fColliderTimer = 0.f;
+	_float m_fAssaultColliderTimer = 0.2f;
+	_bool m_bAssaultColliderOn = false;
 	
 
 };

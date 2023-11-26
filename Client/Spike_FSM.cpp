@@ -1209,8 +1209,26 @@ void Spike_FSM::skill_100100()
         Get_Transform()->Go_Straight();
     }
 
-    if (m_iCurFrame == 16)
-        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+    if (m_iCurFrame >= 16)
+    {
+        m_fAssaultColliderTimer += fDT;
+
+        if (m_fAssaultColliderTimer >= 0.2f)
+        {
+            m_bAssaultColliderOn = true;
+            m_fAssaultColliderTimer = 0.f;
+            AttackCollider_On(NORMAL_ATTACK, 10.f);
+        }
+        else
+        {
+            if (m_bAssaultColliderOn)
+            {
+                AttackCollider_Off();
+                m_bAssaultColliderOn = false;
+            }
+        }
+
+    }
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -1254,6 +1272,8 @@ void Spike_FSM::skill_100100_Init()
 
     m_bInvincible = false;
     m_bSuperArmor = true;
+
+    m_fAssaultColliderTimer = 0.2f;
 }
 
 void Spike_FSM::skill_100300()
