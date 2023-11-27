@@ -112,16 +112,16 @@ void SpikeScene::Tick()
 {
 	__super::Tick();
 
-	{
-		if (KEYPUSH(KEY_TYPE::C))
-		{
-			Get_GameObject(L"Main_Ui_Controller")->Get_Script<MainUiController>()->Set_MainUI_Render(true);
-		}
-		if (KEYPUSH(KEY_TYPE::V))
-		{
-			Get_GameObject(L"Main_Ui_Controller")->Get_Script<MainUiController>()->Set_MainUI_Render(false);
-		}
-	}
+	//{
+	//	if (KEYPUSH(KEY_TYPE::C))
+	//	{
+	//		Get_GameObject(L"Main_Ui_Controller")->Get_Script<MainUiController>()->Set_MainUI_Render(true);
+	//	}
+	//	if (KEYPUSH(KEY_TYPE::V))
+	//	{
+	//		Get_GameObject(L"Main_Ui_Controller")->Get_Script<MainUiController>()->Set_MainUI_Render(false);
+	//	}
+	//}
 }
 
 void SpikeScene::Late_Tick()
