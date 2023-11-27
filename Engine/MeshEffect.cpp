@@ -187,53 +187,7 @@ void MeshEffect::Update_Desc()
     m_pMaterial = RESOURCES.Get<Material>(Utils::ToWString(m_tDesc.strTag));
     if (nullptr == m_pMaterial)
     {
-        m_pMaterial = make_shared<Material>();
-
-        // Shader
-        shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
-        m_pMaterial->Set_Shader(shader);
-
-        // Texture 
-        wstring wstrKey = Utils::ToWString(m_tDesc.strTag);
-        wstring wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
-        if (TEXT("None") != wstrKey)
-            m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE7);
-
-        wstrKey = Utils::ToWString(m_tDesc.strTexture_Op2);
-        wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
-        if (TEXT("None") != wstrKey)
-            m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE8);
-
-        wstrKey = Utils::ToWString(m_tDesc.strTexture_Op3);
-        wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
-        if (TEXT("None") != wstrKey)
-            m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE9);
-
-        wstrKey = Utils::ToWString(m_tDesc.strTexture_Blend);
-        wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
-        if (TEXT("None") != wstrKey)
-            m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE10);
-
-        wstrKey = Utils::ToWString(m_tDesc.strOverlayTexture);
-        wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
-        if (TEXT("None") != wstrKey)
-            m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE11);
-
-        wstrKey = Utils::ToWString(m_tDesc.strDissolveTexture);
-        wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
-        if (TEXT("None") != wstrKey)
-            m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::DISSOLVE);
-
-        wstrKey = Utils::ToWString(m_tDesc.strDistortionTexture);
-        wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
-        if (TEXT("None") != wstrKey)
-            m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::DISTORTION);
-
-        wstrKey = Utils::ToWString(m_tDesc.strNormalTexture);
-        wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
-        if (TEXT("None") != wstrKey)
-            m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::NORMAL);
-
+        Set_Material();
         RESOURCES.Add<Material>(Utils::ToWString(m_tDesc.strTag), m_pMaterial, true);
     }
 }
@@ -359,6 +313,56 @@ void MeshEffect::Set_TransformDesc(void* pArg)
 
     if (9 == m_iTranslateOption)
         m_fCurrYspeed = m_tTransform_Desc.vCurvePoint_Force[0].y;
+}
+
+void MeshEffect::Set_Material()
+{
+    m_pMaterial = make_shared<Material>();
+
+    // Shader
+    shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
+    m_pMaterial->Set_Shader(shader);
+
+    // Texture 
+    wstring wstrKey = Utils::ToWString(m_tDesc.strTag);
+    wstring wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+    if (TEXT("None") != wstrKey)
+        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE7);
+
+    wstrKey = Utils::ToWString(m_tDesc.strTexture_Op2);
+    wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+    if (TEXT("None") != wstrKey)
+        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE8);
+
+    wstrKey = Utils::ToWString(m_tDesc.strTexture_Op3);
+    wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+    if (TEXT("None") != wstrKey)
+        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE9);
+
+    wstrKey = Utils::ToWString(m_tDesc.strTexture_Blend);
+    wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+    if (TEXT("None") != wstrKey)
+        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE10);
+
+    wstrKey = Utils::ToWString(m_tDesc.strOverlayTexture);
+    wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+    if (TEXT("None") != wstrKey)
+        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE11);
+
+    wstrKey = Utils::ToWString(m_tDesc.strDissolveTexture);
+    wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+    if (TEXT("None") != wstrKey)
+        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::DISSOLVE);
+
+    wstrKey = Utils::ToWString(m_tDesc.strDistortionTexture);
+    wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+    if (TEXT("None") != wstrKey)
+        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::DISTORTION);
+
+    wstrKey = Utils::ToWString(m_tDesc.strNormalTexture);
+    wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+    if (TEXT("None") != wstrKey)
+        m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::NORMAL);
 }
 
 void MeshEffect::Translate()

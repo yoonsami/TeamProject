@@ -27,6 +27,7 @@ public:
     void                    Set_Loop(_bool bIsLoop) { m_tDesc.bIsLoop = bIsLoop; }
     void                    Set_ToolModeOn(_bool bIsToolMode) { m_bToolMode_On = bIsToolMode; }
     void                    Set_RenderPriority(_int iPriority) { m_iRenderPriority = iPriority; }
+    void                    Set_Material();
 
     /* Getter */
     shared_ptr<Material>    Get_Material() { return m_pMaterial; }
