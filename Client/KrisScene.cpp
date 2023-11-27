@@ -98,6 +98,8 @@ void KrisScene::Init()
 		}
 
 	}
+
+	m_strSceneName = L"KrisScene";
 }
 
 void KrisScene::Tick()
@@ -175,10 +177,10 @@ HRESULT KrisScene::Load_Scene()
 
 	/*Load_Monster(2, L"Silversword_Soldier", player);
 	Load_Monster(2, L"Succubus_Scythe", player);
-	Load_Monster(2, L"Undead_Priest", player);
-	Load_Monster(1, L"Alpaca_White", player);
-	Load_Monster(1, L"Alpaca_Brown", player);
-	Load_Monster(1, L"Alpaca_Black", player);*/
+	Load_Monster(2, L"Undead_Priest", player);*/
+	Load_Monster(10, L"Alpaca_White", player);
+	Load_Monster(10, L"Alpaca_Brown", player);
+	Load_Monster(10, L"Alpaca_Black", player);
 	Load_Monster(3, L"Wolf", player);
 
 	//Load_Boss_Spike(player);				

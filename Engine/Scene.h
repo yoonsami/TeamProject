@@ -28,6 +28,9 @@ public:
 
 	friend class EventMgr;
 	virtual void Add_GameObject_Front(shared_ptr<GameObject> object, _bool staticFlag = false);
+
+	void Set_AttackCall(_bool bFlag) { m_bAttackCall = bFlag; }
+	_bool Get_AttackCall() { return m_bAttackCall; }
 protected:
 	virtual void Add_GameObject(shared_ptr<GameObject> object, _bool staticFlag = false);
 	virtual void Remove_GameObject(shared_ptr<GameObject> object);
@@ -124,6 +127,7 @@ protected:
 	SCENE_STATE m_eSceneState = SCENE_READY;
 
 	_bool m_bSceneFinished = false;
+	_bool m_bAttackCall = false;
 
 	_uint m_iLevelIndex = 0;
 	_float4 m_vFrustumFarCorner[4];

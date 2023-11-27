@@ -122,6 +122,8 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
     //AnimIndex Reset
     m_pOwner.lock()->Get_Animator()->Set_CurrentAnim(0);
 
+    //TimeSlowSetting Reset
+    m_pOwner.lock()->Set_TimeSlowed(true);
 
     //CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Player_AttackCollider"));
     //CUR_SCENE->Remove_GameObject(CUR_SCENE->Get_GameObject(L"Vehicle_AttackCollider"));

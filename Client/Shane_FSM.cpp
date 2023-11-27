@@ -1513,11 +1513,21 @@ void Shane_FSM::skill_500100_Init()
 void Shane_FSM::skill_502100()
 {
     if (m_iCurFrame == 8)
+    {
         Get_Owner()->Get_Animator()->Set_AnimationSpeed(0.2f);
+        m_pOwner.lock()->Set_TimeSlowed(false);
+    }
     else if (m_iCurFrame == 25)
         Get_Owner()->Get_Animator()->Set_AnimationSpeed(m_fSkillAttack_AnimationSpeed);
+    else if (m_iCurFrame == 56)
+        m_pOwner.lock()->Set_TimeSlowed(true);
     else if (m_iCurFrame == 70)
         m_vCamStopPos = m_vSkillCamBonePos;
+
+    if (m_iCurFrame >= 8 && m_iCurFrame < 56)
+        TIME.Set_TimeSlow(0.1f, 0.1f);
+    
+
 
     Calculate_CamBoneMatrix();
 
@@ -1592,8 +1602,9 @@ void Shane_FSM::skill_502100_Init()
 
     AttackCollider_Off();
 
-    m_bInvincible = false;
+    m_bInvincible = true;
     m_bSuperArmor = true;
+
 }
 
 void Shane_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)

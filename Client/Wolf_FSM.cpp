@@ -423,6 +423,7 @@ void Wolf_FSM::b_run_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed);
 
     m_bSuperArmor = false;
+    m_bInvincible = false;
 }
 
 void Wolf_FSM::n_idle()
@@ -436,8 +437,17 @@ void Wolf_FSM::n_idle()
             m_eCurState = STATE::n_run;
         }
 
-        if (Target_In_DetectRange())
-            m_bDetected = true;
+        if (CUR_SCENE->Get_Name() == L"KrisScene")
+        {
+            if (CUR_SCENE->Get_AttackCall())
+                m_bDetected = true;
+        }
+        else
+        {
+            if (Target_In_DetectRange())
+                m_bDetected = true;
+        }
+
     }
     else
     {
@@ -457,6 +467,12 @@ void Wolf_FSM::n_idle_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed);
 
     m_bSuperArmor = false;
+
+    if (CUR_SCENE->Get_Name() == L"KrisScene")
+    {
+        if (!CUR_SCENE->Get_AttackCall())
+            m_bInvincible = true;
+    }
 }
 
 
@@ -482,8 +498,17 @@ void Wolf_FSM::n_run()
         m_eCurState = STATE::n_idle;
     }
 
-    if (Target_In_DetectRange())
-        m_bDetected = true;
+    if (CUR_SCENE->Get_Name() == L"KrisScene")
+    {
+        if (CUR_SCENE->Get_AttackCall())
+            m_bDetected = true;
+    }
+    else
+    {
+        if (Target_In_DetectRange())
+            m_bDetected = true;
+    }
+
 
     if (m_bDetected)
     {
@@ -503,6 +528,9 @@ void Wolf_FSM::n_run_Init()
     m_vTurnVector.Normalize();
 
     m_bSuperArmor = false;
+
+    if (CUR_SCENE->Get_Name() == L"KrisScene")
+        m_bInvincible = true;
 }
 
 void Wolf_FSM::die_01()

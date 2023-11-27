@@ -114,6 +114,8 @@ void GranseedScene::Init()
 
 	}
 	
+
+	m_strSceneName = L"GranseedScene";
 }
 
 void GranseedScene::Tick()

@@ -56,7 +56,7 @@ HRESULT Boss_Dellons_FSM::Init()
         m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
         m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
 
-        m_fDetectRange = 15.f;
+        m_fDetectRange = 20.f;
         m_fRunSpeed = 6.5f;
         m_fSprintSpeed = 8.5f;
 
@@ -499,8 +499,7 @@ void Boss_Dellons_FSM::n_idle()
     //    m_eCurState = STATE::b_idle;
     //}
 
-    _float4 vPos = Get_Transform()->Get_State(Transform_State::POS);
-
+   
     //Change
     if (Target_In_DetectRange())
         m_bDetected = true;
@@ -545,7 +544,10 @@ void Boss_Dellons_FSM::talk_01()
 
     //Dialogue END
     if (KEYTAP(KEY_TYPE::Z))
+    {
+        CUR_SCENE->Set_AttackCall(true);
         m_eCurState = STATE::b_idle;
+    }
 }
 
 void Boss_Dellons_FSM::talk_01_Init()

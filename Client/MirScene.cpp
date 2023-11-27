@@ -98,6 +98,8 @@ void MirScene::Init()
 		}
 
 	}
+
+	m_strSceneName = L"MirScene";
 }
 
 void MirScene::Tick()
