@@ -94,6 +94,7 @@ void ImGui_Manager::ImGui_Tick()
     LookAtSampleObject();
     Frame_ModelObj();
     Frame_Terrain();
+    Frame_PickingManager();
 
     Show_Gizmo();
 }
@@ -473,6 +474,7 @@ void ImGui_Manager::Frame_SelcetObjectManager()
                 if (passType < 0) passType = 0;
                 if (passType > ModelRenderer::INSTANCE_PASSTYPE::PASS_DEFAULT) passType = ModelRenderer::INSTANCE_PASSTYPE::PASS_DEFAULT;
                 CurObjectDesc.bCullNone = _char(passType);
+                m_pMapObjects[m_iObjects]->Get_ModelRenderer()->Set_PassType((ModelRenderer::INSTANCE_PASSTYPE)CurObjectDesc.bCullNone);
                 for (_int i = 0; i < m_pMapObjects.size(); ++i)
                 {
                     MapObjectScript::MAPOBJDESC& tempDesc = m_pMapObjects[i]->Get_Script<MapObjectScript>()->Get_DESC();
@@ -802,6 +804,34 @@ void ImGui_Manager::Frame_Terrain()
     ImGui::End();
 }
 
+void ImGui_Manager::Frame_PickingManager()
+{
+    ImGui::Begin("Frame_PickingManager");
+
+    // 우클릭 맵오브젝트or터레인 피킹
+    ImGui::Text("RightButton");
+    if (ImGui::Checkbox("MapObjectPickingMode", &m_bMapObjectPickingMode))
+    {
+        m_bTerrainPickingMode = !m_bMapObjectPickingMode;
+    }
+    if (ImGui::Checkbox("TerrainPickingMode", &m_bTerrainPickingMode))
+    {
+        m_bMapObjectPickingMode = !m_bTerrainPickingMode;
+    }
+    // 휠버튼 벽or바닥 피킹
+    ImGui::Text("MiddleButton");
+    if (ImGui::Checkbox("WallPickingMode", &m_bWallPickingMod))
+    {
+        m_bGroundPickingMod = !m_bWallPickingMod;
+    }
+    if (ImGui::Checkbox("GroundPickingMode", &m_bGroundPickingMod))
+    {
+        m_bWallPickingMod = !m_bGroundPickingMod;
+    }
+
+    ImGui::End();
+}
+
 void ImGui_Manager::Picking_Object()
 {
     POINT MousePos;
@@ -809,42 +839,82 @@ void ImGui_Manager::Picking_Object()
     ::ScreenToClient(g_hWnd, &MousePos);
     _float2 ScreenPos{ (_float)MousePos.x, (_float)MousePos.y };
 
-    if (m_pTerrain != nullptr)
+    if (m_bTerrainPickingMode && m_pTerrain != nullptr)
     {
-        // 터레인 피킹위치갱신
-        PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), m_pTerrain, m_vTerrainBrushPosition);
-
-        m_pTerrain->Get_MeshRenderer()->SetVec4(0, _float4(m_vTerrainBrushPosition, 1.f));
-        m_pTerrain->Get_MeshRenderer()->SetFloat(0, m_fTerrainBrushRadius);
-
-        if (KEYPUSH(KEY_TYPE::O))
+        // 브러시위치를 기준으로 y제외 BrushRadius 거리안에있는 범위를 상승(y증가)시킴
+        if (KEYPUSH(KEY_TYPE::E))
         {
             auto& vtx = m_pTerrain->Get_MeshRenderer()->Get_Mesh()->Get_Geometry()->Get_Vertices();
-            for (auto& VB : vtx)
+            auto tempVTX = vtx;
+            for (auto& VB : tempVTX)
             {
-
+                m_vTerrainBrushPosition.y = VB.vPosition.y; // 같은높이라고 가정.
+                if ((VB.vPosition - m_vTerrainBrushPosition).Length() <= m_fTerrainBrushRadius)
+                {
+                    VB.vPosition.y += 0.01f;
+                }
             }
+            m_pTerrain->Get_MeshRenderer()->Get_Mesh()->Get_Geometry()->Set_Vertices(tempVTX);
+            m_pTerrain->Get_MeshRenderer()->Get_Mesh()->Create_Buffer();
+            //D3D11_MAPPED_SUBRESOURCE tempDesc;
+            //CONTEXT->Map(m_pTerrain->Get_MeshRenderer()->Get_Mesh()->Get_VertexBuffer()->Get_ComPtr().Get(),
+            //    0,
+            //    D3D11_MAP_WRITE_DISCARD,
+            //    0,
+            //    &tempDesc);
+
+            //CONTEXT->Unmap(m_pTerrain->Get_MeshRenderer()->Get_Mesh()->Get_VertexBuffer()->Get_ComPtr().Get(), 0);
+        }
+        // 브러시위치를 기준으로 y제외 BrushRadius 거리안에있는 범위를 상승(y증가)시킴
+        else if (KEYPUSH(KEY_TYPE::Q))
+        {
+            auto& vtx = m_pTerrain->Get_MeshRenderer()->Get_Mesh()->Get_Geometry()->Get_Vertices();
+            auto tempVTX = vtx;
+            for (auto& VB : tempVTX)
+            {
+                m_vTerrainBrushPosition.y = VB.vPosition.y; // 같은높이라고 가정.
+                if ((VB.vPosition - m_vTerrainBrushPosition).Length() <= m_fTerrainBrushRadius)
+                {
+                    VB.vPosition.y -= 0.01f;
+                }
+            }
+            m_pTerrain->Get_MeshRenderer()->Get_Mesh()->Get_Geometry()->Set_Vertices(tempVTX);
+            m_pTerrain->Get_MeshRenderer()->Get_Mesh()->Create_Buffer();
         }
     }
 
     // 마우스 우클릭 시 맵오브젝트피킹
     if (KEYTAP(KEY_TYPE::RBUTTON))
     {
-
-        shared_ptr<GameObject> PickObject = PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), m_pMapObjects, m_PickingPos);
-
-        if(m_GizmoTarget == GizmoTMapObj)
-            // 선택된 오브젝트 번호 바꾸기 현재기즈모타겟이 맵오브젝트일때만 사용.
+        // 맵오브젝트피킹
+        if(m_bMapObjectPickingMode)
         {
-            for (_int i = 0; i < m_pMapObjects.size(); ++i)
+            shared_ptr<GameObject> PickObject = PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), m_pMapObjects, m_PickingPos);
+
+            if (m_GizmoTarget == GizmoTMapObj)
+                // 선택된 오브젝트 번호 바꾸기 현재기즈모타겟이 맵오브젝트일때만 사용.
             {
-                if (PickObject == m_pMapObjects[i])
+                for (_int i = 0; i < m_pMapObjects.size(); ++i)
                 {
-                    m_iObjects = i;
-                    // 오브젝트 리스트에서 선택한 높이로 변경
-                    m_bObjectListResetHeight = true;
+                    if (PickObject == m_pMapObjects[i])
+                    {
+                        m_iObjects = i;
+                        // 오브젝트 리스트에서 선택한 높이로 변경
+                        m_bObjectListResetHeight = true;
+                    }
                 }
             }
+        }
+    }
+    if (KEYPUSH(KEY_TYPE::RBUTTON))
+    {
+        if (m_bTerrainPickingMode && m_pTerrain != nullptr)
+        {
+            // 터레인 피킹위치갱신
+            PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), m_pTerrain, m_vTerrainBrushPosition);
+
+            m_pTerrain->Get_MeshRenderer()->SetVec4(0, _float4(m_vTerrainBrushPosition, 1.f));
+            m_pTerrain->Get_MeshRenderer()->SetFloat(0, m_fTerrainBrushRadius);
         }
     }
     // 마우스 휠클릭 시 WallPickingPoint 저장
@@ -973,6 +1043,25 @@ HRESULT ImGui_Manager::Load_MapObjectBase()
         //m_iObjectBaseIndexList.push_back(0);
     }
     return S_OK;
+}
+
+void ImGui_Manager::Load_TerrainTile()
+{
+    wstring partsPath = L"..\\Resources\\MapData\\";
+    for (auto& entry : fs::recursive_directory_iterator(partsPath))
+    {
+
+        if (entry.is_directory())
+            continue;
+
+        if (entry.path().extension().wstring() != L".tga" && entry.path().extension().wstring() != L".TGA")
+            continue;
+
+        string fileName = entry.path().filename().string();
+        Utils::DetachExt(fileName);
+
+        m_TileNames.push_back(fileName);
+    }
 }
 
 HRESULT ImGui_Manager::Create_SelectObject()
@@ -1237,10 +1326,10 @@ void ImGui_Manager::Create_Terrain()
 
     renderer->Set_Material(material);
 
-    //// 메시를 통해 메시콜라이더 생성
-    //shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(*terrain.get());
-    //TerrainObject->Add_Component(pCollider);
-    //pCollider->Set_Activate(true);
+    // 메시를 통해 메시콜라이더 생성
+    shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(*terrain.get());
+    TerrainObject->Add_Component(pCollider);
+    pCollider->Set_Activate(true);
 
     TerrainObject->Add_Component(renderer);
 
