@@ -221,7 +221,7 @@ private:
 	COOLTIMEINFO m_tAttackCoolTime = { 1.f, 0.f };
 	COOLTIMEINFO m_tChaseCoolTime = { 2.f, 0.f };
 	COOLTIMEINFO m_tSkillCoolTime = { 0.2f, 0.f };
-	COOLTIMEINFO m_tGroggyPatternTimer = { 30.f, 0.f };
+	COOLTIMEINFO m_tGroggyPatternTimer = { 20.f, 0.f };
 
 
 	_bool m_bChaseSkill = false;

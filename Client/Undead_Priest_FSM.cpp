@@ -420,19 +420,7 @@ void Undead_Priest_FSM::b_idle_Init()
     m_vTurnVector = _float3(0.f);
 
     m_bSuperArmor = false;
-
-    if (CUR_SCENE->Get_Name() == L"KrisScene")
-    {
-        if (!CUR_SCENE->Get_AttackCall())
-            m_bInvincible = true;
-        else
-            m_bInvincible = false;
-
-    }
-    else
-    {
-        m_bInvincible = false;
-    }
+    m_bInvincible = false;
 }
 
 void Undead_Priest_FSM::b_run()
@@ -481,16 +469,10 @@ void Undead_Priest_FSM::n_run()
         m_eCurState = STATE::b_idle;
     }
 
-    if (CUR_SCENE->Get_Name() == L"KrisScene")
-    {
-        if (CUR_SCENE->Get_AttackCall())
-            m_bDetected = true;
-    }
-    else
-    {
-        if (Target_In_DetectRange())
-            m_bDetected = true;
-    }
+
+    if (Target_In_DetectRange())
+        m_bDetected = true;
+    
 
     if (m_bDetected)
     {
@@ -511,9 +493,7 @@ void Undead_Priest_FSM::n_run_Init()
     m_vTurnVector.Normalize();
 
     m_bSuperArmor = false;
-
-    if (CUR_SCENE->Get_Name() == L"KrisScene")
-        m_bInvincible = true;
+    m_bInvincible = false;
 }
 
 void Undead_Priest_FSM::wander()
@@ -525,16 +505,8 @@ void Undead_Priest_FSM::wander()
         if (m_bPatrolMove)
             m_eCurState = STATE::n_run;
 
-        if (CUR_SCENE->Get_Name() == L"KrisScene")
-        {
-            if (CUR_SCENE->Get_AttackCall())
-                m_bDetected = true;
-        }
-        else
-        {
-            if (Target_In_DetectRange())
-                m_bDetected = true;
-        }
+        if (Target_In_DetectRange())
+            m_bDetected = true;
     }
     else
     {
@@ -552,9 +524,7 @@ void Undead_Priest_FSM::wander_Init()
     m_vTurnVector.Normalize();
 
     m_bSuperArmor = false;
-
-    if (CUR_SCENE->Get_Name() == L"KrisScene")
-        m_bInvincible = true;
+    m_bInvincible = false;
 }
 
 void Undead_Priest_FSM::die_01()

@@ -456,6 +456,7 @@ void Succubus_Scythe_FSM::b_run_Init()
     Get_Transform()->Set_Speed(m_fSprintSpeed);
 
     m_bSuperArmor = false;
+    m_bInvincible = false;
 }
 
 void Succubus_Scythe_FSM::n_run()
@@ -480,16 +481,9 @@ void Succubus_Scythe_FSM::n_run()
         m_eCurState = STATE::wander;
     }
 
-    if (CUR_SCENE->Get_Name() == L"KrisScene")
-    {
-        if (CUR_SCENE->Get_AttackCall())
-            m_bDetected = true;
-    }
-    else
-    {
-        if (Target_In_DetectRange())
-            m_bDetected = true;
-    }
+
+    if (Target_In_DetectRange())
+        m_bDetected = true;
 
     if (m_bDetected)
     {
@@ -510,9 +504,7 @@ void Succubus_Scythe_FSM::n_run_Init()
     m_vTurnVector.Normalize();
 
     m_bSuperArmor = false;
-
-    if (CUR_SCENE->Get_Name() == L"KrisScene")
-        m_bInvincible = true;
+    m_bInvincible = false;
 }
 
 void Succubus_Scythe_FSM::wander()
@@ -524,16 +516,10 @@ void Succubus_Scythe_FSM::wander()
         if (m_bPatrolMove)
             m_eCurState = STATE::n_run;
         
-        if (CUR_SCENE->Get_Name() == L"KrisScene")
-        {
-            if (CUR_SCENE->Get_AttackCall())
-                m_bDetected = true;
-        }
-        else
-        {
-            if (Target_In_DetectRange())
-                m_bDetected = true;
-        }
+       
+        if (Target_In_DetectRange())
+            m_bDetected = true;
+       
     }
     else
     {
@@ -551,9 +537,7 @@ void Succubus_Scythe_FSM::wander_Init()
     m_vTurnVector.Normalize();
 
     m_bSuperArmor = false;
-
-    if (CUR_SCENE->Get_Name() == L"KrisScene")
-        m_bInvincible = true;
+    m_bInvincible = false;
 }
 
 void Succubus_Scythe_FSM::die_01()
