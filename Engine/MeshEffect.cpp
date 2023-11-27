@@ -240,6 +240,11 @@ void MeshEffect::Update_Desc()
         Set_Material();
         RESOURCES.Add<Material>(Utils::ToWString(m_tDesc.strTag), m_pMaterial, true);
     }
+    else
+    {
+        if(m_bToolMode_On)
+            Set_Material();
+    }
 }
 
 void MeshEffect::InitialTransform(_float4x4 mParentWorldMatrix, const _float3& vInitPos_inGroup, const _float3& vInitScale_inGroup, const _float3& vInitRotation_inGroup)                    
@@ -374,7 +379,7 @@ void MeshEffect::Set_Material()
     m_pMaterial->Set_Shader(shader);
 
     // Texture 
-    wstring wstrKey = Utils::ToWString(m_tDesc.strTag);
+    wstring wstrKey = Utils::ToWString(m_tDesc.strTexture_Op1);
     wstring wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
     if (TEXT("None") != wstrKey)
         m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE7);
