@@ -3,6 +3,7 @@
 #include "ObjectDissolve.h"
 #include "ModelRenderer.h"
 #include "ModelAnimator.h"
+#include "CharacterController.h"
 
 ObjectDissolve::ObjectDissolve(_float fDissolveSpeed, shared_ptr<Texture> dissolveTexture)
     : m_fDissolveSpeed(fDissolveSpeed)
@@ -18,6 +19,9 @@ HRESULT ObjectDissolve::Init()
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
             material->Set_TextureMap(m_pTexture.lock(), TextureMapType::DISSOLVE);
     }
+
+    if (Get_CharacterController() && Get_CharacterController()->Get_Actor())
+        Get_CharacterController()->Release_Controller();
     return S_OK;
 }
 

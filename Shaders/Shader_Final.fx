@@ -143,15 +143,9 @@ float g_DOFRange;
 
 float4 PS_ExtractDOF(VS_OUT input) : SV_Target
 {
-    float depth = SubMap2.Sample(PointSampler, input.uv).w;
     float3 originalColor = SubMap0.Sample(PointSampler, input.uv).rgb;
-    if ((1.f / g_DOFRange * abs(g_FocusDepth - depth)) >= 1.f)
-    {
-        return float4(originalColor, 1.f);
-    }
-    else
-        discard;
-    return 0.f;
+
+    return float4(originalColor, 1.f);
     
 }
 
@@ -170,10 +164,8 @@ float4 PS_DOF(VS_OUT input) : SV_Target
     //    outColor = originalColor;
     
     float blendFactor = saturate(1.f / g_DOFRange * abs(g_FocusDepth - depth));
-    if (1.f / g_DOFRange * abs(g_FocusDepth - depth) < 1.f)
-        outColor = originalColor;
-    else
-        outColor = lerp(originalColor, blurColor, blendFactor);
+ 
+    outColor = lerp(originalColor, blurColor, blendFactor);
     
     return float4(outColor, 1.f);
 }

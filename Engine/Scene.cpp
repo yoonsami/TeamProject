@@ -120,7 +120,7 @@ void Scene::Render()
 
 
 	Render_DOFMap();
-	Render_DOFMapScaling();
+	Render_DOFMapScaling(2);
 
 	Render_DOFFinal();
 
@@ -1097,27 +1097,7 @@ void Scene::Render_SSAOBlur(_uint downSamplingCount)
 		m_wstrFinalRenderTarget = L"UpSample" + to_wstring(i);
 	}
 	RESOURCES.Get<Material>(L"LightMaterial")->Set_SubMap(3, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
-	//for (_uchar i = 0; i < 3; ++i)
-	//{
-	//	RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::SSAOUPSCALE0) + i);
-	//	GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
-	//	auto material = RESOURCES.Get<Material>(L"SSAOUpScale" + to_wstring(i));
-	//	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
-	//	//	material->Get_Shader()->GetScalar("UpScalePower")->SetFloat(m_fUpScalePower);
-
-	//	material->Push_SubMapData();
-
-	//	mesh->Get_VertexBuffer()->Push_Data();
-	//	mesh->Get_IndexBuffer()->Push_Data();
-
-	//	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	//	if (i != 2)
-	//		material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
-	//	else
-	//		material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
-
-	//}
+	
 }
 
 void Scene::Render_Lights()
@@ -1134,8 +1114,6 @@ void Scene::Render_Lights()
 
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::LIGHTING)->OMSetRenderTargets();
 
-
-
 	for (auto& light : m_Lights)
 	{
 		if (light->Get_Light()->Get_LightInfo().lightType == static_cast<_int>(LIGHT_TYPE::POINT_LIGHT))
@@ -1146,10 +1124,6 @@ void Scene::Render_Lights()
 		}
 		light->Get_Light()->Render();
 	}
-
-
-
-	//GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::LIGHTING)->UnBindSRV();
 }
 
 void Scene::Render_LightFinal()
@@ -1158,7 +1132,6 @@ void Scene::Render_LightFinal()
 
 	auto material = RESOURCES.Get<Material>(L"LightFinal");
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
-
 
 	material->Get_Shader()->GetScalar("g_SSAO_On")->SetBool(g_SSAOData.g_bSSAO_On);
 
@@ -1373,12 +1346,57 @@ void Scene::Render_DOFMap()
 	material->Get_Shader()->DrawIndexed(1, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 }
 
-void Scene::Render_DOFMapScaling()
+void Scene::Render_DOFMapScaling(_uint blurCount)
 {
 	if (!g_DOFData.g_bDOF_On)
 		return;
 
-	for (_uchar i = 0; i < 3; ++i)
+	wstring rtTexture = m_wstrFinalRenderTarget;
+
+	for (_uint i = 0; i < blurCount; ++i)
+	{
+		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOWNSAMPLER0) + i);
+		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
+
+		auto material = RESOURCES.Get<Material>(L"Sampler");
+		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(rtTexture));
+
+		material->Push_SubMapData();
+
+		mesh->Get_VertexBuffer()->Push_Data();
+
+		mesh->Get_IndexBuffer()->Push_Data();
+
+		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+
+		rtTexture = L"DownSample" + to_wstring(i);
+	}
+
+	for (_int i = blurCount - 1; i >= 0; --i)
+	{
+		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::UPSAMPLER0) + i);
+		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
+		auto material = RESOURCES.Get<Material>(L"Sampler");
+		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(rtTexture));
+
+		material->Push_SubMapData();
+
+		mesh->Get_VertexBuffer()->Push_Data();
+		mesh->Get_IndexBuffer()->Push_Data();
+
+		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+
+		rtTexture = L"UpSample" + to_wstring(i);
+	}
+	RESOURCES.Get<Material>(L"DOFFinal")->Set_SubMap(1, RESOURCES.Get<Texture>(rtTexture));
+
+	/*for (_uchar i = 0; i < 3; ++i)
 	{
 		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOFDOWNSCALE0) + i);
 		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
@@ -1413,7 +1431,7 @@ void Scene::Render_DOFMapScaling()
 			material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 		else
 			material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
-	}
+	}*/
 }
 
 void Scene::Render_DOFFinal()

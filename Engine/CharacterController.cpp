@@ -90,6 +90,19 @@ void CharacterController::Tick()
 
 }
 
+void CharacterController::Release_Controller()
+{
+	if (PHYSX.Get_PxScene())
+	{
+		if (m_pController)
+		{
+			m_pController->release();
+			m_pController = nullptr;
+		}
+
+	}
+}
+
 void CharacterController::Add_Velocity(const _float vel)
 {
 	m_fYVelocity += vel;

@@ -90,7 +90,7 @@ protected:
 	void Render_BloomMapScaling();
 	void Render_BloomFinal();
 	void Render_DOFMap();
-	void Render_DOFMapScaling();
+	void Render_DOFMapScaling(_uint blurCount);
 	void Render_DOFFinal();
 
 	void Render_Distortion();

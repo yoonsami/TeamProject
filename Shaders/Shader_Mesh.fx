@@ -716,8 +716,10 @@ float4 PS_Terrain(MeshOutput input) : SV_TARGET
     float fBrushRadius = g_float_0;
     float colBrushColor = float4(0.f, 0.f, 0.f, 0.f);
     
+    vBrushPos.y = input.worldPosition.y; // 높이는 같다고 가정.
+    
     // 브러시포지션과 거리가 브러시Radius이하라면 색깔을 흰색으로 함.
-    if (length(input.worldPosition - vBrushPos) <= fBrushRadius)
+    if (length((input.worldPosition) - vBrushPos) <= fBrushRadius)
     {
         colBrushColor = float4(0.2f, 0.2f, 0.2, 0.f);
     }
