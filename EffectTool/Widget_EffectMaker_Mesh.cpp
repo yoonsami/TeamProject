@@ -987,23 +987,54 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 			break;
 		case 1:
 			ImGui::InputFloat("Turn Speed##Movemenet1", &m_fTurnSpeed);
-			ImGui::Text("Turn Axes options##Turn");
-			if (ImGui::Button("Look ##Turn"))
+			ImGui::Text("Turn Axes options");
+			if (ImGui::Button("Right##Turn"))
 			{
-				//// Make World Matrix 
-				//_float4x4 mWorldMatrix = Create
-				//
-				//// Get Look vector 
-				//m_fRandomAxis_Min
-
+				// Make World Matrix 
+				_float4x4 mWorld = _float4x4::CreateScale(_float3(m_fInitScale_Min[0], m_fInitScale_Min[1], m_fInitScale_Min[2]))
+					* _float4x4::CreateRotationX(m_fInitRotation_Min[0]) 
+					* _float4x4::CreateRotationY(m_fInitRotation_Min[1])
+					* _float4x4::CreateRotationZ(m_fInitRotation_Min[2])
+					* _float4x4::CreateTranslation(_float3(m_fPosOffsetInTool[0], m_fPosOffsetInTool[1], m_fPosOffsetInTool[2]));
+				
+				// Get Right vector 
+				_float3 vRight = mWorld.Right();
+				vRight.Normalize();
+				memcpy(m_fRandomAxis_Min, &vRight, sizeof(m_fRandomAxis_Min));
 			}
 			ImGui::SameLine();
-			ImGui::Button("Right ##Turn");
+			if (ImGui::Button("Up##Turn"))
+			{
+				// Make World Matrix 
+				_float4x4 mWorld = _float4x4::CreateScale(_float3(m_fInitScale_Min[0], m_fInitScale_Min[1], m_fInitScale_Min[2]))
+					* _float4x4::CreateRotationX(m_fInitRotation_Min[0])
+					* _float4x4::CreateRotationY(m_fInitRotation_Min[1])
+					* _float4x4::CreateRotationZ(m_fInitRotation_Min[2])
+					* _float4x4::CreateTranslation(_float3(m_fPosOffsetInTool[0], m_fPosOffsetInTool[1], m_fPosOffsetInTool[2]));
+
+				// Get Up vector 
+				_float3 vUp = mWorld.Up();
+				vUp.Normalize();
+				memcpy(m_fRandomAxis_Min, &vUp, sizeof(m_fRandomAxis_Min));
+			}
 			ImGui::SameLine();
-			ImGui::Button("Up ##Turn");
+			if (ImGui::Button("Look##Turn"))
+			{
+				// Make World Matrix 
+				_float4x4 mWorld = _float4x4::CreateScale(_float3(m_fInitScale_Min[0], m_fInitScale_Min[1], m_fInitScale_Min[2]))
+					* _float4x4::CreateRotationX(m_fInitRotation_Min[0])
+					* _float4x4::CreateRotationY(m_fInitRotation_Min[1])
+					* _float4x4::CreateRotationZ(m_fInitRotation_Min[2])
+					* _float4x4::CreateTranslation(_float3(m_fPosOffsetInTool[0], m_fPosOffsetInTool[1], m_fPosOffsetInTool[2]));
+
+				// Get Look vector 
+				_float3 vLook = mWorld.Backward();
+				vLook.Normalize();
+				memcpy(m_fRandomAxis_Min, &vLook, sizeof(m_fRandomAxis_Min));
+			}
 
 			ImGui::InputFloat3("Axis##Movement2", m_fRandomAxis_Min);
-			memcpy(m_fRandomAxis_Max, m_fRandomAxis_Min, sizeof(m_fRandomAxis_Min));
+			memcpy(m_fRandomAxis_Max, m_fRandomAxis_Min, sizeof(m_fRandomAxis_Max));
 			break;
 		case 2:
 			ImGui::InputFloat("Turn Speed##Movemenet2", &m_fTurnSpeed);
@@ -1506,10 +1537,13 @@ void Widget_EffectMaker_Mesh::Load()
 	memcpy(m_fEndScaleOffset, &vTemp_vec3, sizeof(m_fEndScaleOffset));
 	if (2 != m_iScaleSpeedType)
 		m_iScalingOption = 2;
-	if (Equal(_float3(m_fEndScaleOffset), _float3(0.f, 0.f, 0.f)))
-		m_iScalingOption = 0;
 	else
-		m_iScalingOption = 1;
+	{
+		if (Equal(_float3(m_fEndScaleOffset), _float3(0.f, 0.f, 0.f)))
+			m_iScalingOption = 0;
+		else
+			m_iScalingOption = 1;
+	}
 
 	/* Turn */
 	m_iTurnOption = file->Read<_int>();
@@ -1520,16 +1554,7 @@ void Widget_EffectMaker_Mesh::Load()
 	memcpy(m_fRandomAxis_Max, &vTemp_vec3, sizeof(m_fRandomAxis_Max));
 	for (_int i = 0; i < 2; i++)
 		m_bBillbordAxes[i] = file->Read<_bool>();
-	if (Equal(_float3(m_fRandomAxis_Min), _float3(0.f, 0.f, 0.f)))
-		m_iTurnOption = 0;
-	else
-	{
-		if (Equal(m_fRandomAxis_Min, m_fRandomAxis_Max, 3))
-			m_iTurnOption = 1;
-		else
-			m_iTurnOption = 2;
-	}
-
+	
 	// For. Create Effect GameObjects
 	Create();
 }
