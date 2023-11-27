@@ -104,7 +104,7 @@ void Scene::Render()
 	if (g_SSAOData.g_bSSAO_On)
 	{
 		Render_SSAO();
-		Render_SSAOBlur(3);
+		Render_SSAOBlur(2);
 	}
 
 
@@ -1049,36 +1049,41 @@ void Scene::Render_SSAO()
 
 	material->Get_Shader()->DrawIndexed(0, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
-
+	m_wstrFinalRenderTarget = L"SSAOTarget";
 }
 
-void Scene::Render_SSAOBlur(_uint blurCount)
+void Scene::Render_SSAOBlur(_uint downSamplingCount)
 {
-	for (_uchar i = 0; i < 3; ++i)
+
+	for (_uint i = 0; i < downSamplingCount; ++i)
 	{
-		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::SSAODOWNSCALE0) + i);
+		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOWNSAMPLER0) + i);
 		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
-		auto material = RESOURCES.Get<Material>(L"SSAODownScale" + to_wstring(i));
+
+		auto material = RESOURCES.Get<Material>(L"Sampler");
 		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
-		//material->Get_Shader()->GetScalar("GaussianWeight")->SetFloatArray(a, 0, 25);
-		//material->Get_Shader()->GetScalar("DownScalePower")->SetFloat(m_fDownScalePower);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
+
 		material->Push_SubMapData();
 
 		mesh->Get_VertexBuffer()->Push_Data();
+
 		mesh->Get_IndexBuffer()->Push_Data();
 
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+
+		m_wstrFinalRenderTarget = L"DownSample" + to_wstring(i);
 	}
 
-	for (_uchar i = 0; i < 3; ++i)
+	for (_int i = downSamplingCount - 1; i >=0 ; --i)
 	{
-		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::SSAOUPSCALE0) + i);
+		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::UPSAMPLER0) + i);
 		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
-		auto material = RESOURCES.Get<Material>(L"SSAOUpScale" + to_wstring(i));
+		auto material = RESOURCES.Get<Material>(L"Sampler");
 		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
-		//	material->Get_Shader()->GetScalar("UpScalePower")->SetFloat(m_fUpScalePower);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
 
 		material->Push_SubMapData();
 
@@ -1087,12 +1092,32 @@ void Scene::Render_SSAOBlur(_uint blurCount)
 
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		if (i != 2)
-			material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
-		else
-			material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+		material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
+		m_wstrFinalRenderTarget = L"UpSample" + to_wstring(i);
 	}
+
+	//for (_uchar i = 0; i < 3; ++i)
+	//{
+	//	RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::SSAOUPSCALE0) + i);
+	//	GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
+	//	auto material = RESOURCES.Get<Material>(L"SSAOUpScale" + to_wstring(i));
+	//	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+	//	//	material->Get_Shader()->GetScalar("UpScalePower")->SetFloat(m_fUpScalePower);
+
+	//	material->Push_SubMapData();
+
+	//	mesh->Get_VertexBuffer()->Push_Data();
+	//	mesh->Get_IndexBuffer()->Push_Data();
+
+	//	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	//	if (i != 2)
+	//		material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	//	else
+	//		material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+
+	//}
 }
 
 void Scene::Render_Lights()
@@ -1109,7 +1134,7 @@ void Scene::Render_Lights()
 
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::LIGHTING)->OMSetRenderTargets();
 
-	
+	RESOURCES.Get<Material>(L"LightMaterial")->Set_SubMap(3, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
 
 	for (auto& light : m_Lights)
 	{

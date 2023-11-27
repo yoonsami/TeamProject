@@ -679,7 +679,7 @@ void Graphics::Create_RTGroup()
 		vector<RenderTarget> rtVec(RENDER_TARGET_SSAO_GROUP_MEMBER_COUNT);
 		shared_ptr<Texture> dsTexture0 = RESOURCES.CreateTexture(L"DOWNSAMPLER0DS", DXGI_FORMAT_D24_UNORM_S8_UINT, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL, _float4(0.f));
 
-		rtVec[0].target = RESOURCES.CreateTexture(L"DOWNSAMPLER0", FORMATTYPE, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].target = RESOURCES.CreateTexture(L"DownSample0", FORMATTYPE, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
 		rtVec[0].clearColor = _float4(0.f);
 
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOWNSAMPLER0)] = make_shared<RenderTargetGroup>();
@@ -692,7 +692,7 @@ void Graphics::Create_RTGroup()
 		vector<RenderTarget> rtVec(RENDER_TARGET_SSAO_GROUP_MEMBER_COUNT);
 		shared_ptr<Texture> dsTexture0 = RESOURCES.CreateTexture(L"DOWNSAMPLER1DS", DXGI_FORMAT_D24_UNORM_S8_UINT, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL, _float4(0.f));
 
-		rtVec[0].target = RESOURCES.CreateTexture(L"DOWNSAMPLER1", FORMATTYPE, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].target = RESOURCES.CreateTexture(L"DownSample1", FORMATTYPE, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
 		rtVec[0].clearColor = _float4(0.f);
 
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOWNSAMPLER1)] = make_shared<RenderTargetGroup>();
@@ -705,7 +705,7 @@ void Graphics::Create_RTGroup()
 		vector<RenderTarget> rtVec(RENDER_TARGET_SSAO_GROUP_MEMBER_COUNT);
 		shared_ptr<Texture> dsTexture0 = RESOURCES.CreateTexture(L"DOWNSAMPLER2DS", DXGI_FORMAT_D24_UNORM_S8_UINT, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL, _float4(0.f));
 
-		rtVec[0].target = RESOURCES.CreateTexture(L"DOWNSAMPLER2", FORMATTYPE, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].target = RESOURCES.CreateTexture(L"DownSample2", FORMATTYPE, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
 		rtVec[0].clearColor = _float4(0.f);
 
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOWNSAMPLER2)] = make_shared<RenderTargetGroup>();
@@ -718,63 +718,65 @@ void Graphics::Create_RTGroup()
 		vector<RenderTarget> rtVec(RENDER_TARGET_SSAO_GROUP_MEMBER_COUNT);
 		shared_ptr<Texture> dsTexture0 = RESOURCES.CreateTexture(L"DOWNSAMPLER3DS", DXGI_FORMAT_D24_UNORM_S8_UINT, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL, _float4(0.f));
 
-		rtVec[0].target = RESOURCES.CreateTexture(L"DOWNSAMPLER3", FORMATTYPE, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].target = RESOURCES.CreateTexture(L"DownSample3", FORMATTYPE, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
 		rtVec[0].clearColor = _float4(0.f);
 
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOWNSAMPLER3)] = make_shared<RenderTargetGroup>();
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::DOWNSAMPLER3)]->Create(RENDER_TARGET_GROUP_TYPE::DOWNSAMPLER3, rtVec, dsTexture0);
 	}
-
-	//UPSAMPLER3
+	//UPSAMPLER0
 	{
-		_float ratio = 0.5f * 0.5f * 0.5F;
+		_float ratio = 1.f;
 		vector<RenderTarget> rtVec(RENDER_TARGET_SSAO_GROUP_MEMBER_COUNT);
-		shared_ptr<Texture> dsTexture0 = RESOURCES.CreateTexture(L"UPSAMPLER3DS", DXGI_FORMAT_D24_UNORM_S8_UINT, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL, _float4(0.f));
+		shared_ptr<Texture> dsTexture0 = RESOURCES.CreateTexture(L"UPSAMPLER0DS", DXGI_FORMAT_D24_UNORM_S8_UINT, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL, _float4(0.f));
 
-		rtVec[0].target = RESOURCES.CreateTexture(L"UPSAMPLER3", FORMATTYPE, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].target = RESOURCES.CreateTexture(L"UpSample0", FORMATTYPE, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
 		rtVec[0].clearColor = _float4(0.f);
 
-		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::UPSAMPLER3)] = make_shared<RenderTargetGroup>();
-		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::UPSAMPLER3)]->Create(RENDER_TARGET_GROUP_TYPE::UPSAMPLER3, rtVec, dsTexture0);
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::UPSAMPLER0)] = make_shared<RenderTargetGroup>();
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::UPSAMPLER0)]->Create(RENDER_TARGET_GROUP_TYPE::UPSAMPLER0, rtVec, dsTexture0);
 	}
-
-	//UPSAMPLER2
-	{
-		_float ratio = 0.5f * 0.5f;
-		vector<RenderTarget> rtVec(RENDER_TARGET_SSAO_GROUP_MEMBER_COUNT);
-		shared_ptr<Texture> dsTexture0 = RESOURCES.CreateTexture(L"UPSAMPLER2DS", DXGI_FORMAT_D24_UNORM_S8_UINT, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL, _float4(0.f));
-
-		rtVec[0].target = RESOURCES.CreateTexture(L"UPSAMPLER2", FORMATTYPE, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
-		rtVec[0].clearColor = _float4(0.f);
-
-		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::UPSAMPLER2)] = make_shared<RenderTargetGroup>();
-		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::UPSAMPLER2)]->Create(RENDER_TARGET_GROUP_TYPE::UPSAMPLER2, rtVec, dsTexture0);
-	}
-
 	//UPSAMPLER1
 	{
 		_float ratio = 0.5f;
 		vector<RenderTarget> rtVec(RENDER_TARGET_SSAO_GROUP_MEMBER_COUNT);
 		shared_ptr<Texture> dsTexture0 = RESOURCES.CreateTexture(L"UPSAMPLER1DS", DXGI_FORMAT_D24_UNORM_S8_UINT, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL, _float4(0.f));
 
-		rtVec[0].target = RESOURCES.CreateTexture(L"UPSAMPLER1", FORMATTYPE, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].target = RESOURCES.CreateTexture(L"UpSample1", FORMATTYPE, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
 		rtVec[0].clearColor = _float4(0.f);
 
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::UPSAMPLER1)] = make_shared<RenderTargetGroup>();
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::UPSAMPLER1)]->Create(RENDER_TARGET_GROUP_TYPE::UPSAMPLER1, rtVec, dsTexture0);
 	}
-
-	//UPSAMPLER0
+	//UPSAMPLER2
 	{
 		_float ratio = 0.5f * 0.5f;
 		vector<RenderTarget> rtVec(RENDER_TARGET_SSAO_GROUP_MEMBER_COUNT);
-		shared_ptr<Texture> dsTexture0 = RESOURCES.CreateTexture(L"UPSAMPLER0DS", DXGI_FORMAT_D24_UNORM_S8_UINT, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL, _float4(0.f));
+		shared_ptr<Texture> dsTexture0 = RESOURCES.CreateTexture(L"UPSAMPLER2DS", DXGI_FORMAT_D24_UNORM_S8_UINT, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL, _float4(0.f));
 
-		rtVec[0].target = RESOURCES.CreateTexture(L"UPSAMPLER0", FORMATTYPE, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].target = RESOURCES.CreateTexture(L"UpSample2", FORMATTYPE, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
 		rtVec[0].clearColor = _float4(0.f);
 
-		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::UPSAMPLER0)] = make_shared<RenderTargetGroup>();
-		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::UPSAMPLER0)]->Create(RENDER_TARGET_GROUP_TYPE::UPSAMPLER0, rtVec, dsTexture0);
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::UPSAMPLER2)] = make_shared<RenderTargetGroup>();
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::UPSAMPLER2)]->Create(RENDER_TARGET_GROUP_TYPE::UPSAMPLER2, rtVec, dsTexture0);
 	}
+	//UPSAMPLER3
+	{
+		_float ratio = 0.5f * 0.5f * 0.5F;
+		vector<RenderTarget> rtVec(RENDER_TARGET_SSAO_GROUP_MEMBER_COUNT);
+		shared_ptr<Texture> dsTexture0 = RESOURCES.CreateTexture(L"UPSAMPLER3DS", DXGI_FORMAT_D24_UNORM_S8_UINT, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL, _float4(0.f));
+
+		rtVec[0].target = RESOURCES.CreateTexture(L"UpSample3", FORMATTYPE, _uint(m_Viewport.Get_Width() * ratio), _uint(m_Viewport.Get_Height() * ratio), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].clearColor = _float4(0.f);
+
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::UPSAMPLER3)] = make_shared<RenderTargetGroup>();
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::UPSAMPLER3)]->Create(RENDER_TARGET_GROUP_TYPE::UPSAMPLER3, rtVec, dsTexture0);
+	}
+
+	
+
+
+
+
 
 }

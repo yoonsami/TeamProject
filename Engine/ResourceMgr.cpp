@@ -1140,6 +1140,13 @@ void ResourceMgr::CreateDefaultMaterial()
 
 		Add(L"SubScene", material);
 	}
+
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		Add(L"Sampler", material);
+	}
 }
 
 void ResourceMgr::CreateDefaultFont()
