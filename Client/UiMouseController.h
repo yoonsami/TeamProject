@@ -10,6 +10,8 @@ public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
 
+    void Change_Mouse_State(_bool bValue);
+
 private:
     void Change_Mouse_State();
     void Start_Effect();

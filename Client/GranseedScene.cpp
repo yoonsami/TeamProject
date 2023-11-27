@@ -133,8 +133,11 @@ void GranseedScene::Tick()
 	}
 	if (KEYTAP(KEY_TYPE::V))
 	{
-		auto pObj = Get_UI(L"UI_Interaction");
-		pObj->Get_Script<UIInteraction>()->Remove_Interaction();
+		//auto pObj = Get_UI(L"UI_Interaction");
+		//pObj->Get_Script<UIInteraction>()->Remove_Interaction();
+		auto pObj = Get_UI(L"UI_Boss_Dialog");
+		if (pObj)
+			pObj->Get_Script<UiBossDialog>()->Is_Finish();
 	}
 	if (KEYTAP(KEY_TYPE::Z))
 	{

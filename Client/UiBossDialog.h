@@ -23,6 +23,7 @@ private:
     void Next_Up();
 
 private:
+    weak_ptr<GameObject> m_pUiMouseController;
     weak_ptr<GameObject> m_pUiTotalController;
     weak_ptr<GameObject> m_pNext;
     weak_ptr<GameObject> m_pNpcName;
