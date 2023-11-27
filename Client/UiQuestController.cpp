@@ -106,7 +106,7 @@ void UiQuestController::Create_Dialog(NPCTYPE eType)
         // 첫 대화 정하기
         m_iMaxIndex = DATAMGR.Get_Dialog_Size(m_eIndex, m_bHaveQuest, m_iCurIndex, m_tagCurQuestData.IsClear);
         m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = DATAMGR.Get_Dialog(m_eIndex, m_bHaveQuest, m_iCurIndex, m_tagCurQuestData.IsClear);
-        m_pNpcDialog.lock()->Get_FontRenderer()->Set_TimePerChar(1.f);
+        m_pNpcDialog.lock()->Get_FontRenderer()->Set_TimePerChar(0.05f);
     }
     if (false == m_pNext.expired())
     {
