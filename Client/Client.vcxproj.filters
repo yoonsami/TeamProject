@@ -295,11 +295,14 @@
     <Filter Include="02.Component\01.FSM\05.NPC_FSM\00.Granseed\00.GranseedPotion">
       <UniqueIdentifier>{47afc46a-640b-4307-a608-8f0c53425527}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\01.FSM\05.NPC_FSM\00.Granseed\01.GranseedGuard">
-      <UniqueIdentifier>{37536de3-6f3d-44f9-8588-ab10b3c63794}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\21.UiBossDialog">
       <UniqueIdentifier>{476d526a-e4bc-4678-8005-5dfc05d3244d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\05.NPC_FSM\00.Granseed\01.GranseedGuard01">
+      <UniqueIdentifier>{37536de3-6f3d-44f9-8588-ab10b3c63794}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\05.NPC_FSM\00.Granseed\02.GranseedGuard02">
+      <UniqueIdentifier>{13f40f8c-b93e-4e74-92c4-058fa58289de}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -605,10 +608,13 @@
       <Filter>02.Component\01.FSM\05.NPC_FSM</Filter>
     </ClInclude>
     <ClInclude Include="GranseedGuard01_FSM.h">
-      <Filter>02.Component\01.FSM\05.NPC_FSM\00.Granseed\01.GranseedGuard</Filter>
+      <Filter>02.Component\01.FSM\05.NPC_FSM\00.Granseed\01.GranseedGuard01</Filter>
     </ClInclude>
     <ClInclude Include="UiBossDialog.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\21.UiBossDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="GranseedGuard02_FSM.h">
+      <Filter>02.Component\01.FSM\05.NPC_FSM\00.Granseed\02.GranseedGuard02</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -881,10 +887,13 @@
       <Filter>02.Component\01.FSM\05.NPC_FSM</Filter>
     </ClCompile>
     <ClCompile Include="GranseedGuard01_FSM.cpp">
-      <Filter>02.Component\01.FSM\05.NPC_FSM\00.Granseed\01.GranseedGuard</Filter>
+      <Filter>02.Component\01.FSM\05.NPC_FSM\00.Granseed\01.GranseedGuard01</Filter>
     </ClCompile>
     <ClCompile Include="UiBossDialog.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\21.UiBossDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GranseedGuard02_FSM.cpp">
+      <Filter>02.Component\01.FSM\05.NPC_FSM\00.Granseed\02.GranseedGuard02</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -73,6 +73,7 @@
 #include "Shane_FSM.h"
 #include "NPC_FSM.h"
 #include "GranseedGuard01_FSM.h"
+#include "GranseedGuard02_FSM.h"
 namespace fs = std::filesystem;
 
 GranseedScene::GranseedScene()
@@ -733,6 +734,12 @@ void GranseedScene::Load_NPC(const wstring& dataFileName)
 
 				break;
 			case NPC_FSM::GUARD2:
+			{
+				auto fsm = make_shared<GranseedGuard02_FSM>();
+				fsm->Set_MinMovePos(vMinPos);
+				fsm->Set_MaxMovePos(vMaxPos);
+				obj->Add_Component(fsm);
+			}
 
 				break;
 			case NPC_FSM::TRAVELER:

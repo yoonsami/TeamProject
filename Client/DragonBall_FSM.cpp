@@ -6,6 +6,7 @@
 #include "MotionTrailDisappear.h"
 #include "SphereCollider.h"
 #include "RigidBody.h"
+#include "Model.h"
 
 
 void DragonBall_FSM::Tick()

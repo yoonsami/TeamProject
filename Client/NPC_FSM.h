@@ -28,7 +28,7 @@ protected:
     _float m_fStateAcc = 0.f;
 
     _float m_fInteractRange = 1.f;
-    _float m_fMoveTimer = 3.f;
+    _float m_fMoveTimer = 7.f;
     _float m_fIdleTimer = 5.f; 
 };
 

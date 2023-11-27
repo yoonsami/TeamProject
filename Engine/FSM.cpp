@@ -257,10 +257,10 @@ void FSM::Set_DirToTargetOrInput(_uint eType)
 		m_vDirToTarget = Get_InputDirVector();
 }
 
-void FSM::Look_DirToTarget()
+void FSM::Look_DirToTarget(_float fTurnSpeed)
 {
 	if (m_vDirToTarget != _float3(0.f))
-		Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+		Soft_Turn_ToInputDir(m_vDirToTarget, fTurnSpeed);
 }
 
 shared_ptr<GameObject> FSM::Find_TargetInFrustum(_uint eType)

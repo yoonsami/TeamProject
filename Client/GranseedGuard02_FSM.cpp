@@ -1,81 +1,81 @@
 #include "pch.h"
-#include "GranseedGuard01_FSM.h"
+#include "GranseedGuard02_FSM.h"
 #include "ModelAnimator.h"
-#include <MathUtils.h>
+#include "MathUtils.h"
 
-GranseedGuard01_FSM::GranseedGuard01_FSM()
+GranseedGuard02_FSM::GranseedGuard02_FSM()
 {
 }
 
-GranseedGuard01_FSM::~GranseedGuard01_FSM()
+GranseedGuard02_FSM::~GranseedGuard02_FSM()
 {
 }
 
-HRESULT GranseedGuard01_FSM::Init()
+HRESULT GranseedGuard02_FSM::Init()
 {
     m_eCurState = STATE::n_idle;
     return S_OK;
 }
 
-void GranseedGuard01_FSM::Tick()
+void GranseedGuard02_FSM::Tick()
 {
     State_Tick();
 }
 
-void GranseedGuard01_FSM::State_Tick()
+void GranseedGuard02_FSM::State_Tick()
 {
 	State_Init();
 	switch (m_eCurState)
 	{
-	case GranseedGuard01_FSM::STATE::n_idle:
+	case GranseedGuard02_FSM::STATE::n_idle:
 		n_idle();
 		break;
-	case GranseedGuard01_FSM::STATE::run:
-		run();
+	case GranseedGuard02_FSM::STATE::n_run:
+		n_run();
 		break;
-	case GranseedGuard01_FSM::STATE::talk:
-		talk();
+	case GranseedGuard02_FSM::STATE::talk_01:
+		talk_01();
 		break;
-	case GranseedGuard01_FSM::STATE::walk:
-		walk();
+	case GranseedGuard02_FSM::STATE::n_walk:
+		n_walk();
 		break;
 	}
 }
 
-void GranseedGuard01_FSM::State_Init()
+void GranseedGuard02_FSM::State_Init()
 {
 	if (m_eCurState != m_ePreState)
 	{
 		switch (m_eCurState)
 		{
-		case GranseedGuard01_FSM::STATE::n_idle:
+		case GranseedGuard02_FSM::STATE::n_idle:
 			n_idle_Init();
 			break;
-		case GranseedGuard01_FSM::STATE::run:
-			run_Init();
+		case GranseedGuard02_FSM::STATE::n_run:
+			n_run_Init();
 			break;
-		case GranseedGuard01_FSM::STATE::talk:
-			talk_Init();
+		case GranseedGuard02_FSM::STATE::talk_01:
+			talk_01_Init();
 			break;
-		case GranseedGuard01_FSM::STATE::walk:
-			walk_Init();
+		case GranseedGuard02_FSM::STATE::n_walk:
+			n_walk_Init();
 			break;
 		}
 		m_ePreState = m_eCurState;
 	}
 }
 
-void GranseedGuard01_FSM::n_idle()
+void GranseedGuard02_FSM::n_idle()
 {
 	m_fStateAcc += fDT;
 	if (m_fStateAcc >= m_fIdleTimer)
 	{
 		m_fStateAcc = 0.f;
-		m_eCurState = STATE::walk;
+		m_eCurState = STATE::n_walk;
 	}
 }
 
-void GranseedGuard01_FSM::n_idle_Init()
+void GranseedGuard02_FSM::n_idle_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -83,7 +83,7 @@ void GranseedGuard01_FSM::n_idle_Init()
 
 }
 
-void GranseedGuard01_FSM::run()
+void GranseedGuard02_FSM::n_run()
 {
 	m_fStateAcc += fDT;
 
@@ -94,26 +94,26 @@ void GranseedGuard01_FSM::run()
 	}
 }
 
-void GranseedGuard01_FSM::run_Init()
+void GranseedGuard02_FSM::n_run_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"run", 0.15f, true, 1.f);
+	animator->Set_NextTweenAnim(L"n_run", 0.15f, true, 1.f);
 }
 
-void GranseedGuard01_FSM::talk()
+void GranseedGuard02_FSM::talk_01()
 {
 
 }
 
-void GranseedGuard01_FSM::talk_Init()
+void GranseedGuard02_FSM::talk_01_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"talk", 0.15f, true, 1.f);
+	animator->Set_NextTweenAnim(L"talk_01", 0.15f, true, 1.f);
 }
 
-void GranseedGuard01_FSM::walk()
+void GranseedGuard02_FSM::n_walk()
 {
 	m_fStateAcc += fDT;
 	
@@ -163,11 +163,11 @@ void GranseedGuard01_FSM::walk()
 	}
 }
 
-void GranseedGuard01_FSM::walk_Init()
+void GranseedGuard02_FSM::n_walk_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"walk", 0.15f, true, 1.f);
+	animator->Set_NextTweenAnim(L"n_walk", 0.15f, true, 1.f);
 	Get_Transform()->Set_Speed(3.f);
 	m_vDirToTarget = MathUtils::Get_RandomVector(_float3(-1, 0, -1), _float3(1, 0, 1));
 	m_vDirToTarget.Normalize();
@@ -178,10 +178,10 @@ void GranseedGuard01_FSM::walk_Init()
 	m_vDirToTarget = vLook;
 }
 
-void GranseedGuard01_FSM::Set_State(_uint iIndex)
+void GranseedGuard02_FSM::Set_State(_uint iIndex)
 {
 }
 
-void GranseedGuard01_FSM::InteractWithPlayer()
+void GranseedGuard02_FSM::InteractWithPlayer()
 {
 }

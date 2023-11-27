@@ -42,7 +42,7 @@ protected:
 	_bool CounterAttackCheck(_float fCheckDegree);
 	void Set_DirToTarget();
 	void Set_DirToTargetOrInput(_uint eType);
-	void Look_DirToTarget();
+	void Look_DirToTarget(_float fTurnSpeed = XM_PI * 5.f);
 	shared_ptr<GameObject> Find_TargetInFrustum(_uint eType);
 
 	_bool Init_CurFrame(const _uint curFrame);
