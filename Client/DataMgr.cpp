@@ -576,25 +576,20 @@ void DataMgr::Initialize()
     
     {
         _uint iIndex = IDX(QUESTINDEX::KILL_DELLONS);
-        m_DialogAccept[iIndex].push_back(L"보스퀘0");
-        m_DialogAccept[iIndex].push_back(L"보스퀘1");
-        m_DialogAccept[iIndex].push_back(L"보스퀘2");
-        m_DialogAccept[iIndex].push_back(L"보스퀘3");
+        m_DialogAccept[iIndex].push_back(L"계승자님 저희 마을에 있던 알파카가 사라졌어요 \n 도와주실 수 있을까요?");
+        m_DialogAccept[iIndex].push_back(L"알파카를 훔쳐간 도둑을 처단해주세요");
 
-        m_DialogNoClear[iIndex].push_back(L"깨고오세요");
-        m_DialogNoClear[iIndex].push_back(L"깨고와라");
+        m_DialogNoClear[iIndex].push_back(L"아직인가요?");
 
-        m_DialogClear[iIndex].push_back(L"깨고왔구나");
-        m_DialogClear[iIndex].push_back(L"테스트");
-        m_DialogClear[iIndex].push_back(L"끝");
+        m_DialogClear[iIndex].push_back(L"어라? 알파카는 어디있죠?");
 
         m_Quest[iIndex].IsClear = false;
         m_Quest[iIndex].Type = QUESTTYPE::BOSS;
         m_Quest[iIndex].CurCount = 0;
         m_Quest[iIndex].MaxCount = 0;
-        m_Quest[iIndex].Name = L"델론즈 죽여";
-        m_Quest[iIndex].Info = L"죽어 죽어 죽어 !!!";
-        m_Quest[iIndex].Clear = L"컷 컷 컷 !";
+        m_Quest[iIndex].Name = L"도둑 잡기";
+        m_Quest[iIndex].Info = L"알파카를 훔쳐간 델론즈를 잡아라";
+        m_Quest[iIndex].Clear = L"마을에 돌아가 보고하자";
     }
 
     
