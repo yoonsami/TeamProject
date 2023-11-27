@@ -1096,7 +1096,7 @@ void Scene::Render_SSAOBlur(_uint downSamplingCount)
 
 		m_wstrFinalRenderTarget = L"UpSample" + to_wstring(i);
 	}
-
+	RESOURCES.Get<Material>(L"LightMaterial")->Set_SubMap(3, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
 	//for (_uchar i = 0; i < 3; ++i)
 	//{
 	//	RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::SSAOUPSCALE0) + i);
@@ -1134,7 +1134,7 @@ void Scene::Render_Lights()
 
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::LIGHTING)->OMSetRenderTargets();
 
-	RESOURCES.Get<Material>(L"LightMaterial")->Set_SubMap(3, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
+
 
 	for (auto& light : m_Lights)
 	{
