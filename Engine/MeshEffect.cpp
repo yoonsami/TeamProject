@@ -252,12 +252,12 @@ void MeshEffect::InitialTransform(_float4x4 mParentWorldMatrix, const _float3& v
                           // * _float4x4::CreateFromQuaternion(Quaternion::CreateFromYawPitchRoll(vInitRotation_inGroup.y, vInitRotation_inGroup.x, vInitRotation_inGroup.z))
                           * _float4x4::CreateTranslation(vInitPos_inGroup);
  
-        _float4x4 matLocal = _float4x4::CreateScale(m_vStartScale)
-		* _float4x4::CreateRotationX(m_vStartRotation.x)
-		* _float4x4::CreateRotationY(m_vStartRotation.y)
-		* _float4x4::CreateRotationZ(m_vStartRotation.z)
-                                //* _float4x4::CreateFromQuaternion(Quaternion::CreateFromYawPitchRoll(m_vStartRotation.y, m_vStartRotation.x, m_vStartRotation.z)) 
-                                * _float4x4::CreateTranslation(m_vStartPos);
+   _float4x4 matLocal = _float4x4::CreateScale(m_vStartScale)
+		                  * _float4x4::CreateRotationX(m_vStartRotation.x)
+		                  * _float4x4::CreateRotationY(m_vStartRotation.y)
+		                  * _float4x4::CreateRotationZ(m_vStartRotation.z)
+                          //* _float4x4::CreateFromQuaternion(Quaternion::CreateFromYawPitchRoll(m_vStartRotation.y, m_vStartRotation.x, m_vStartRotation.z)) 
+                          * _float4x4::CreateTranslation(m_vStartPos);
     
 		if (m_tDesc.iMeshCnt > 1)
 			int a = 0;
