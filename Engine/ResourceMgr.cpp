@@ -1209,8 +1209,7 @@ void ResourceMgr::CreateMeshEffectData()
 		shared_ptr<FileUtils> file = make_shared<FileUtils>();
 		file->Open(Utils::ToWString(strFilePath), FileMode::Read);
 
-		string strTag = file->Read<string>();
-		tDesc.pszTag = strTag.c_str();
+		tDesc.strTag = file->Read<string>();
 		tDesc.fDuration = file->Read<_float>();
 		tDesc.bLightOn = file->Read<_bool>();
 		tDesc.bUseFadeOut = file->Read<_bool>();
@@ -1355,7 +1354,7 @@ void ResourceMgr::CreateMeshEffectData()
 		meshEffectData->Set_Desc(tDesc);
 		meshEffectData->Set_TransformDesc(tTransformDesc);
 
-		wstring key = Utils::ToWString(tDesc.pszTag);
+		wstring key = Utils::ToWString(tDesc.strTag);
 		Add(key, meshEffectData);
 	}
 }

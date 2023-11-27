@@ -18,6 +18,7 @@ GroupEffect::GroupEffect()
 
 GroupEffect::~GroupEffect()
 {
+
 }
 
 void GroupEffect::Init(void* pArg)
@@ -189,8 +190,69 @@ void GroupEffect::FreeLoopMember()
 void GroupEffect::Kill_All()
 {
     for (auto& iter : m_lMemberEffects)
-    {
         iter.reset();
+}
+
+void GroupEffect::Set_MemberEffectMaterials()
+{
+    for (auto& iter : m_vMemberEffectData)
+    {
+        wstring wstrMeshEffectDataKey = iter.wstrEffectTag;
+        Utils::DetachExt(wstrMeshEffectDataKey);
+        shared_ptr<MeshEffectData> meshEffectData = RESOURCES.Get<MeshEffectData>(wstrMeshEffectDataKey);
+        MeshEffectData::DESC tDesc = meshEffectData->Get_Desc();
+
+        if (!RESOURCES.Get<Material>(Utils::ToWString(tDesc.strTag)))
+        {
+            shared_ptr<Material> material = make_shared<Material>();
+
+            // Shader
+            shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
+            material->Set_Shader(shader);
+
+            // Texture 
+            wstring wstrKey = Utils::ToWString(tDesc.strTexture_Op1);
+            wstring wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+            if (TEXT("None") != wstrKey)
+                material->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE7);
+
+            wstrKey = Utils::ToWString(tDesc.strTexture_Op2);
+            wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+            if (TEXT("None") != wstrKey)
+                material->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE8);
+
+            wstrKey = Utils::ToWString(tDesc.strTexture_Op3);
+            wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+            if (TEXT("None") != wstrKey)
+                material->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE9);
+
+            wstrKey = Utils::ToWString(tDesc.strTexture_Blend);
+            wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+            if (TEXT("None") != wstrKey)
+                material->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE10);
+
+            wstrKey = Utils::ToWString(tDesc.strOverlayTexture);
+            wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+            if (TEXT("None") != wstrKey)
+                material->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::TEXTURE11);
+
+            wstrKey = Utils::ToWString(tDesc.strDissolveTexture);
+            wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+            if (TEXT("None") != wstrKey)
+                material->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::DISSOLVE);
+
+            wstrKey = Utils::ToWString(tDesc.strDistortionTexture);
+            wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+            if (TEXT("None") != wstrKey)
+                material->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::DISTORTION);
+
+            wstrKey = Utils::ToWString(tDesc.strNormalTexture);
+            wstrPath = TEXT("../Resources/Textures/Universal/") + wstrKey;
+            if (TEXT("None") != wstrKey)
+                material->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::NORMAL);
+
+            RESOURCES.Add<Material>(Utils::ToWString(tDesc.strTag), material, true);
+        }
     }
 }
 
@@ -207,7 +269,7 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
     for (_int i = 0; i < tDesc.iMeshCnt; i++)
     {
         shared_ptr<GameObject> EffectObj = make_shared<GameObject>(); 
-        string strTag = tDesc.pszTag;
+        string strTag = tDesc.strTag;
         strTag = strTag + to_string(iIndex) + "_" + to_string(i) + "_";
         EffectObj->Set_Name(Utils::ToWString(strTag));
 
