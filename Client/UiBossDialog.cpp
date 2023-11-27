@@ -23,7 +23,7 @@ HRESULT UiBossDialog::Init()
     m_bIsCreated = false;
 
     auto pScene = CUR_SCENE;
-    m_pUiTotalController = pScene->Get_UI(L"Main_Ui_Controller");
+    m_pUiTotalController = pScene->Get_UI(L"Main_UI_Controller");
     m_pUiMouseController = pScene->Get_GameObject(L"UI_Mouse_Click");
 
     m_iMaxIndex = m_iCurIndex = 0;
@@ -117,6 +117,12 @@ void UiBossDialog::Create_Dialog(BOSS eType)
 
 void UiBossDialog::Next_Dialog()
 {
+    if (false == m_pNpcDialog.lock()->Get_FontRenderer()->Is_Finished())
+    {
+        m_pNpcDialog.lock()->Get_FontRenderer()->Set_Finished();
+        return;
+    }
+
     ++m_iCurIndex;
     if (m_iMaxIndex <= m_iCurIndex)
     {

@@ -42,6 +42,8 @@ private:
 	void Frame_ShaderOption();
 	// 터레인 관련
 	void Frame_Terrain();
+	// 피킹관리
+	void Frame_PickingManager();
 
 	// 피킹
 	void Picking_Object();
@@ -52,6 +54,8 @@ private:
 	HRESULT Load_SkyBoxTexture();
 	// 맵오브젝트베이스 목록 불러오기
 	HRESULT Load_MapObjectBase();
+	// 타일목록 및 텍스쳐로드
+	void Load_TerrainTile();
 	// 선택한 맵 오브젝트 생성
 	HRESULT Create_SelectObject();
 	// 맵 오브젝트 생성정보를 바탕으로 오브젝트를 생성하여 반환하는 함수
@@ -126,6 +130,8 @@ private:
 	vector<shared_ptr<char[]>> m_strFilteredNamePtr;
 	// 베이스오브젝트리스트가 바뀌었을때 높이를 찾아가도록 변경, true면 틱에서 1회변경후 false로 다시바꿈
 	_bool m_bBaseObjectListResetHeight = { false };
+	// 오브젝트 피킹가능상태
+	_bool m_bMapObjectPickingMode = { true };
 
 // 샘플오브젝트
 	shared_ptr<GameObject> m_SampleObject;
@@ -202,10 +208,14 @@ private:
 // 터레인관련
 	// 터레인 가로세로 타일개수
 	_int m_iTerrainSize[2] = { 1, 1 };
+	// 터레인 포인터
 	shared_ptr<GameObject> m_pTerrain = { nullptr };
 	// 터레인브러시크기
 	_float m_fTerrainBrushRadius = { 0.f };
 	_float3 m_vTerrainBrushPosition = _float3{ 0.f, 0.f, 0.f};
+	// 터레인만 피킹함.
+	_bool m_bTerrainPickingMode = { false };
+	vector<string> m_TileNames;
 
 private:
 	void Frame_ModelObj();

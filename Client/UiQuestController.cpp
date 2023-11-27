@@ -24,7 +24,7 @@ HRESULT UiQuestController::Init()
     m_fMaxTime = 1.f;
 
     auto pScene = CUR_SCENE;
-    m_pUiTotalController =  pScene->Get_UI(L"Main_Ui_Controller");
+    m_pUiTotalController =  pScene->Get_UI(L"Main_UI_Controller");
     m_pUiCurQuest =         pScene->Get_UI(L"UI_Cur_Quest");
     m_pUiCurQuestName =     pScene->Get_UI(L"UI_Cur_Quest_Name");
     m_pUiCurQuestInfo =     pScene->Get_UI(L"UI_Cur_Quest_Info");
@@ -154,6 +154,11 @@ void UiQuestController::Next_Dialog()
     // 인덱스 최대 비교후 미만이면 대화 가져오고 최대일때는 메인유아이 키고 다 지우기 
     // 마지막일때 m_bHaveQuest = true;
     // 퀘스트 가지게 되면 유아이에 띄워야함
+    if (false == m_pNpcDialog.lock()->Get_FontRenderer()->Is_Finished())
+    {
+        m_pNpcDialog.lock()->Get_FontRenderer()->Set_Finished();
+        return;
+    }
 
     ++m_iCurIndex;
     if (m_iMaxIndex <= m_iCurIndex)

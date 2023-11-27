@@ -62,12 +62,19 @@
 #include "UIBossHpBar.h"
 #include "UiComboEffect.h"
 #include "UiSkillGauge.h"
-
+#include "UiSettingController.h"
+#include "UiQuestController.h"
+#include "UiBossDialog.h"
+#include "UIInteraction.h"
 
 #include <filesystem>
 #include "GachaScene.h"
 #include "GranseedScene.h"
 #include "KrisScene.h"
+#include "UiSettingController.h"
+#include "UiQuestController.h"
+#include "UiBossDialog.h"
+#include "UIInteraction.h"
 namespace fs = std::filesystem;
 
 MirScene::MirScene()
@@ -106,16 +113,16 @@ void MirScene::Tick()
 {
 	__super::Tick();
 
-	{
-		if (KEYPUSH(KEY_TYPE::C))
-		{
-			Get_GameObject(L"Main_Ui_Controller")->Get_Script<MainUiController>()->Set_MainUI_Render(true);
-		}
-		if (KEYPUSH(KEY_TYPE::V))
-		{
-			Get_GameObject(L"Main_Ui_Controller")->Get_Script<MainUiController>()->Set_MainUI_Render(false);
-		}
-	}
+	//{
+	//	if (KEYPUSH(KEY_TYPE::C))
+	//	{
+	//		Get_GameObject(L"Main_Ui_Controller")->Get_Script<MainUiController>()->Set_MainUI_Render(true);
+	//	}
+	//	if (KEYPUSH(KEY_TYPE::V))
+	//	{
+	//		Get_GameObject(L"Main_Ui_Controller")->Get_Script<MainUiController>()->Set_MainUI_Render(false);
+	//	}
+	//}
 	
 }
 
@@ -179,6 +186,7 @@ HRESULT MirScene::Load_Scene()
 	Load_Camera(player);
 	Load_MapFile(L"MirMap", player);
 	Load_Boss_Mir(player);
+	//Load_Boss_Giant_Mir(player);
 
 	Load_Ui(player);
 
@@ -461,6 +469,56 @@ void MirScene::Load_Boss_Mir(shared_ptr<GameObject> pPlayer)
 	Add_GameObject(ObjMonster);
 }
 
+void MirScene::Load_Boss_Giant_Mir(shared_ptr<GameObject> pPlayer)
+{
+	// Add. Monster
+	shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
+
+	ObjMonster->Add_Component(make_shared<Transform>());
+
+	ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+
+		shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+		{
+			shared_ptr<Model> model = RESOURCES.Get<Model>(L"Mir_02");
+			animator->Set_Model(model);
+		}
+
+		ObjMonster->Add_Component(animator);
+		//ObjMonster->Add_Component(make_shared<Boss_Mir_FSM>());
+		//ObjMonster->Get_FSM()->Set_Target(pPlayer);
+	}
+	ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 2.f, 4.f, 6.f })); //obbcollider
+	ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
+	ObjMonster->Get_Collider()->Set_Activate(true);
+
+	//ObjMonster->Add_Component(make_shared<CounterMotionTrailScript>());
+
+	wstring strMonsterName = (L"Giant_Mir");
+	ObjMonster->Set_Name(strMonsterName);
+	{
+		auto controller = make_shared<CharacterController>();
+		ObjMonster->Add_Component(controller);
+
+		auto& desc = controller->Get_CapsuleControllerDesc();
+		desc.radius = 4.5f;
+		desc.height = 5.f;
+		desc.climbingMode = PxCapsuleClimbingMode::eCONSTRAINED;
+
+		_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz() +
+			ObjMonster->Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.position = { vPos.x, vPos.y, vPos.z };
+		controller->Create_Controller();
+		controller->Get_Actor()->setStepOffset(0.1f);
+
+	}
+	ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
+	ObjMonster->Set_VelocityMap(true);
+	Add_GameObject(ObjMonster);
+}
+
 void MirScene::Load_Boss_Dellons(shared_ptr<GameObject> pPlayer)
 {
 	{
@@ -612,74 +670,51 @@ void MirScene::Load_Boss_Spike(shared_ptr<GameObject> pPlayer)
 
 void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 {
-	/*wstring assetPath = L"..\\Resources\\Textures\\UITexture\\Main\\";
-
-	for (auto& entry : fs::recursive_directory_iterator(assetPath))
-	{
-		if (entry.is_directory())
-			continue;
-
-		wstring filePath = entry.path().wstring();
-		wstring fileName = entry.path().filename().wstring();
-		Utils::DetachExt(fileName);
-		RESOURCES.Load<Texture>(fileName, filePath);
-	}*/
-	auto scene = CUR_SCENE;
 	list<shared_ptr<GameObject>>& tmp = static_pointer_cast<LoadingScene>(CUR_SCENE)->Get_StaticObjectsFromLoader();
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main.dat", tmp);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main_Button.dat", tmp);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Char_Change.dat", tmp);
-	//Load_UIFile(L"..\\Resources\\UIData\\UI_Gacha.dat");
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck.dat", tmp, false);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", tmp, false);
-	//Load_UIFile(L"..\\Resources\\UIData\\UI_MonsterHp.dat", tmp);
-	//Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat");
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Cur_Quest.dat", tmp, false);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Setting.dat", tmp, false);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Controller.dat", tmp, false);
 
 
 	{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"Main_Ui_Controller");
-
-		auto pScript = make_shared<MainUiController>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		weak_ptr<GameObject> pObj = Get_UI(L"Main_UI_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<MainUiController>();
+			pObj.lock()->Add_Component(pScript);
+		}
 	}
 
 	{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"UI_Gacha_Controller");
-
-		auto pScript = make_shared<UiGachaController>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_Render(false);
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
-
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Gacha_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiGachaController>();
+			pObj.lock()->Add_Component(pScript);
+		}
 	}
 
 	{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"UI_Card_Deck_Controller");
-
-		auto pScript = make_shared<UiCardDeckController>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Card_Deck_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiCardDeckController>();
+			pObj.lock()->Add_Component(pScript);
+		}
 	}
 
 	{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"UI_Damage_Controller");
-
-		auto pScript = make_shared<UiDamageCreate>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Damage_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiDamageCreate>();
+			pObj.lock()->Add_Component(pScript);
+		}
 	}
 
 	{
@@ -691,28 +726,52 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		}
 	}
 
-	/*{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"UI_Monster_Hp");
 
-		auto pScript = make_shared<UiMonsterHp>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
-	}*/
 
 	{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"UI_Target_LockOn");
-
-		auto pScript = make_shared<UiTargetLockOn>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Target_LockOn");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiTargetLockOn>();
+			pObj.lock()->Add_Component(pScript);
+		}
 	}
 
+	{
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Setting_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiSettingController>();
+			pObj.lock()->Add_Component(pScript);
+		}
+	}
+
+	{
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Dialog_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiQuestController>();
+			pObj.lock()->Add_Component(pScript);
+		}
+	}
+
+	{
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Boss_Dialog");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiBossDialog>();
+			pObj.lock()->Add_Component(pScript);
+		}
+	}
+
+	{
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Interaction");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UIInteraction>();
+			pObj.lock()->Add_Component(pScript);
+		}
+	}
 
 	{
 		auto pObj = Get_UI(L"UI_Combo_Effect");
@@ -730,7 +789,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj->Add_Component(pScript);
 		}
 	}
-	
+
 
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Card_Deck_Exit");
@@ -745,14 +804,12 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 
 
 	{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"UI_Char_Change");
-
-		auto pScript = make_shared<UiCharChange>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Char_Change");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiCharChange>();
+			pObj.lock()->Add_Component(pScript);
+		}
 	}
 
 	{
@@ -767,11 +824,22 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	}
 
 	{
+		auto pObj = Get_UI(L"UI_Main_Button3");
+		if (nullptr != pObj)
+		{
+			pObj->Get_Button()->AddOnClickedEvent([]()
+				{
+					CUR_SCENE->Get_UI(L"UI_Setting_Controller")->Get_Script<UiSettingController>()->Set_Render(true);
+				});
+		}
+	}
+
+
+	{
 		auto pScript = make_shared<UiSkillButtonEffect>();
 		auto pObj = Get_UI(L"UI_Skill0_Effect");
 		if (nullptr != pObj)
 			pObj->Add_Component(pScript);
-
 
 		pScript = make_shared<UiSkillButtonEffect>();
 		pObj = Get_UI(L"UI_Skill2_Effect");
@@ -818,7 +886,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		if (nullptr != pObj) {
 			pObj->Add_Component(pScript);
 		}
-		
+
 	}
 
 	{
@@ -889,18 +957,4 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		}
 	}
 
-}
-
-void MirScene::Load_Debug()
-{
-	{
-		shared_ptr<GameObject> debugText = make_shared<GameObject>();
-		debugText->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-300.f, 400.f, 5.f, 1.f));
-		debugText->Add_Component(make_shared<FontRenderer>(L""));
-		debugText->Get_FontRenderer()->Set_Font(RESOURCES.Get<CustomFont>(L"136ex"), Color(0.5f, 0.5f, 0.5f, 1.f), 1.f);
-		debugText->Set_LayerIndex(Layer_UI);
-		debugText->Add_Component(make_shared<ObjectTransformDebug>());
-		debugText->Get_Script<ObjectTransformDebug>()->Set_Target(Get_GameObject(L"Boss_Spike"));
-		Add_GameObject(debugText);
-	}
 }
