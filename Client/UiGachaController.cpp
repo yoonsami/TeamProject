@@ -5,6 +5,7 @@
 #include "GachaScene.h"
 #include "UiGachaCardMove.h"
 #include "UiGachaEffectController.h"
+#include "UiQuestController.h"
 
 UiGachaController::UiGachaController()
 {
@@ -102,6 +103,10 @@ void UiGachaController::Create_Gacha_Card()
     m_bIsCreate = true;
     auto pScene = CUR_SCENE;
     pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Gacha.dat", list<shared_ptr<GameObject>>());
+
+    auto pObj = pScene->Get_UI(L"UI_Dialog_Controller");
+    pObj->Get_Script<UiQuestController>()->Change_Value();
+
 
     _uint iSize = IDX(m_vecObjTag.size());
     for (_uint i = 0; i < iSize; ++i)

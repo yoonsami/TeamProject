@@ -616,6 +616,19 @@ void DataMgr::Initialize()
     }
 
 
+    
+
+    m_NoAcceptDialog.resize(IDX(QUESTINDEX::MAX));
+    {
+        m_NoAcceptDialog[IDX(QUESTINDEX::TRY_GACHA)]     = L"바쁘시군요";
+        m_NoAcceptDialog[IDX(QUESTINDEX::KILL_ALPACA)]   = L"바쁘시군요";
+        m_NoAcceptDialog[IDX(QUESTINDEX::KILL_DELLONS)]  = L"바쁘시군요";
+        m_NoAcceptDialog[IDX(QUESTINDEX::KILL_SPIKE)]    = L"바쁘시군요";
+        m_NoAcceptDialog[IDX(QUESTINDEX::KILL_MIR)]      = L"바쁘시군요";
+        m_NoAcceptDialog[IDX(QUESTINDEX::STORY_CLEAR)]   = L"바쁘시군요";
+    }
+
+
 
 
 
@@ -627,34 +640,38 @@ void DataMgr::Initialize()
 
 }
 
-_uint DataMgr::Get_Dialog_Size(QUESTINDEX eIndex, _bool bHaveQuest, _uint iIndex, _bool bIsClear)
+_uint DataMgr::Get_Dialog_Size(QUESTINDEX eIndex, CUR_QUEST eType)
 {
     if (QUESTINDEX::MAX == eIndex)
         return 0;
 
     _uint iQuestIndex = IDX(eIndex);
-    if (false == bHaveQuest)
+    if (CUR_QUEST::ACCEPT == eType)
         return IDX(m_DialogAccept[iQuestIndex].size());
 
-    else if (false == bIsClear)
+    else if (CUR_QUEST::PROGRESS == eType)
         return IDX(m_DialogNoClear[iQuestIndex].size());
 
-    else
+    else if(CUR_QUEST::CLEAR == eType)
         return IDX(m_DialogClear[iQuestIndex].size());
+
+    return 0;
 }
 
-const wstring& DataMgr::Get_Dialog(QUESTINDEX eIndex, _bool bHaveQuest, _uint iIndex, _bool bIsClear)
+const wstring& DataMgr::Get_Dialog(QUESTINDEX eIndex, CUR_QUEST eType, _uint iIndex)
 {
     if (QUESTINDEX::MAX == eIndex)
         return strTemp;
 
     _uint iQuestIndex = IDX(eIndex);
-    if (false == bHaveQuest)
+    if (CUR_QUEST::ACCEPT == eType)
         return m_DialogAccept[iQuestIndex][iIndex];
 
-    else if (false == bIsClear)
+    else if (CUR_QUEST::PROGRESS == eType)
         return m_DialogNoClear[iQuestIndex][iIndex];
 
-    else
+    else if (CUR_QUEST::CLEAR == eType)
         return m_DialogClear[iQuestIndex][iIndex];
+
+    return strTemp;
 }

@@ -125,3 +125,13 @@ enum class QUESTTYPE
 	BOSS,
 	MAX
 };
+
+enum class CUR_QUEST 
+{ 
+	NONE,
+	ACCEPT, 
+	PROGRESS, 
+	CLEAR, 
+	OTHER, 
+	MAX 
+};

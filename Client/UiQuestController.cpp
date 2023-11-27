@@ -31,11 +31,12 @@ HRESULT UiQuestController::Init()
     m_pUiCurQuestCount =    pScene->Get_UI(L"UI_Cur_Quest_Count");
 
     m_bIsCreated = false;
-    m_bHaveQuest = false;
     m_iMaxIndex = m_iCurIndex = 0;
 
     _uint iSize = IDX(QUESTINDEX::MAX);
     m_ClearCheck.resize(iSize);
+
+    m_eCurType = CUR_QUEST::NONE;
 
     return S_OK;
 }
@@ -85,15 +86,18 @@ void UiQuestController::Create_Dialog(NPCTYPE eType, QUESTINDEX eIndex)
             m_pPlayerDialog = addedObj[i];
     }
 
-    if (true == m_bHaveQuest)
-        Set_Render(false);
+    Set_Render(false);
 
-    // 매우 중요
-    // 현재 퀘스트 인덱스가 뭔지 얻어올 방법 마련해야함
-    // 매우 중요
-
-    if(false == m_bHaveQuest)
+    if(CUR_QUEST::NONE == m_eCurType)
+    {
+        m_eCurType = CUR_QUEST::ACCEPT;
         m_eIndex = eIndex;
+    }
+    else if (m_eIndex != eIndex)
+    {
+        m_ePreType = m_eCurType;
+        m_eCurType = CUR_QUEST::OTHER;
+    }
 
     if (false == m_pNpcName.expired())
     {
@@ -104,21 +108,41 @@ void UiQuestController::Create_Dialog(NPCTYPE eType, QUESTINDEX eIndex)
         vecPos.x = (strNpcName.length() / 2.f) * -28.f;
         m_pNpcName.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
     }
+
+
     if (false == m_pNpcDialog.expired())
     {
-        if (true == m_ClearCheck[IDX(eIndex)])
+        if (CUR_QUEST::OTHER == m_eCurType)
         {
-            m_iMaxIndex = 1;
-            m_tagCurQuestData.IsClear = true;
-            m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = DATAMGR.Get_NoQuest_Dialog(eIndex);;
-            m_pNpcDialog.lock()->Get_FontRenderer()->Set_TimePerChar(0.05f);
+            if (true == m_ClearCheck[IDX(eIndex)])
+            {
+                m_iMaxIndex = 1;
+                m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = DATAMGR.Get_NoQuest_Dialog(eIndex);;
+                m_pNpcDialog.lock()->Get_FontRenderer()->Set_TimePerChar(0.05f);
+            }
+            else
+            {
+                m_iMaxIndex = 1;
+                m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = DATAMGR.Get_NoAccept_Dialog(eIndex);;
+                m_pNpcDialog.lock()->Get_FontRenderer()->Set_TimePerChar(0.05f);
+            }
         }
+        
         else
         {
-            // 첫 대화 정하기
-            m_iMaxIndex = DATAMGR.Get_Dialog_Size(m_eIndex, m_bHaveQuest, m_iCurIndex, m_tagCurQuestData.IsClear);
-            m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = DATAMGR.Get_Dialog(m_eIndex, m_bHaveQuest, m_iCurIndex, m_tagCurQuestData.IsClear);
-            m_pNpcDialog.lock()->Get_FontRenderer()->Set_TimePerChar(0.05f);
+            if (true == m_ClearCheck[IDX(eIndex)])
+            {
+                m_iMaxIndex = 1;
+                m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = DATAMGR.Get_NoQuest_Dialog(eIndex);;
+                m_pNpcDialog.lock()->Get_FontRenderer()->Set_TimePerChar(0.05f);
+            }
+            else
+            {
+                m_iMaxIndex = DATAMGR.Get_Dialog_Size(m_eIndex, m_eCurType);
+                m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = DATAMGR.Get_Dialog(m_eIndex, m_eCurType, m_iCurIndex);
+                m_pNpcDialog.lock()->Get_FontRenderer()->Set_TimePerChar(0.05f);
+            }
+            
         }
         
     }
@@ -143,7 +167,6 @@ void UiQuestController::Clear_Quest()
 {
     m_ClearCheck[IDX(m_eIndex)] = true;
     m_tagCurQuestData = QUESTDATA{};
-    m_bHaveQuest = false;
 }
 
 void UiQuestController::Remove_Dialog()
@@ -180,22 +203,32 @@ void UiQuestController::Next_Dialog()
     ++m_iCurIndex;
     if (m_iMaxIndex <= m_iCurIndex)
     {
-        if (true == m_tagCurQuestData.IsClear)
+        if (true == m_ClearCheck[IDX(m_eIndex)])
         {
             Set_Render(false);
-            Clear_Quest();
         }
-        else if(false == m_bHaveQuest)
+        if (CUR_QUEST::OTHER == m_eCurType)
         {
-            m_bHaveQuest = true;
+            m_eCurType = m_ePreType;
+            Set_Render(true);
+        }
+        else if (CUR_QUEST::ACCEPT == m_eCurType)
+        {
             m_tagCurQuestData = GET_QUEST(m_eIndex);
             Set_Cur_Quest();
+            m_eCurType = CUR_QUEST::PROGRESS;
         }
-        else if (true == m_bHaveQuest)
+        else if (CUR_QUEST::PROGRESS == m_eCurType)
         {
             Set_Render(true);
         }
-
+        else if (CUR_QUEST::CLEAR == m_eCurType)
+        {
+            m_eCurType = CUR_QUEST::NONE;
+            Set_Render(false);
+            Clear_Quest();
+        }
+        
         m_iCurIndex = 0;
         
         Remove_Dialog();
@@ -208,7 +241,7 @@ void UiQuestController::Next_Dialog()
 
     else
     {
-        m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = DATAMGR.Get_Dialog(m_eIndex, m_bHaveQuest, m_iCurIndex, m_tagCurQuestData.IsClear);
+        m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = DATAMGR.Get_Dialog(m_eIndex, m_eCurType, m_iCurIndex);
         m_pNpcDialog.lock()->Get_FontRenderer()->Set_TimePerChar(0.05f);
     }
 
@@ -231,7 +264,8 @@ void UiQuestController::Change_Value()
         ++m_tagCurQuestData.CurCount;
         if (m_tagCurQuestData.MaxCount <= m_tagCurQuestData.CurCount)
         {
-            m_tagCurQuestData.IsClear = true;
+            //m_tagCurQuestData.IsClear = true;
+            m_eCurType = CUR_QUEST::CLEAR;
             // 성공으로 바꾸기
             m_pUiCurQuestInfo.lock()->Get_FontRenderer()->Get_Text() = m_tagCurQuestData.Clear;
             m_pUiCurQuestCount.lock()->Set_Render(false);
@@ -246,7 +280,8 @@ void UiQuestController::Change_Value()
 
     case QUESTTYPE::BOSS:
     case QUESTTYPE::ACT:
-        m_tagCurQuestData.IsClear = true;
+        //m_tagCurQuestData.IsClear = true;
+        m_eCurType = CUR_QUEST::CLEAR;
         m_pUiCurQuestInfo.lock()->Get_FontRenderer()->Get_Text() = m_tagCurQuestData.Clear;
         // 성공으로 바꾸기
         break;

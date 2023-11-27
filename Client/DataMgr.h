@@ -17,14 +17,16 @@ public:
 
     const wstring&      Get_Npc_Name(NPCTYPE eType)                         { return m_NpcName[IDX(eType)]; }
     
-    _uint               Get_Dialog_Size(QUESTINDEX eIndex, _bool bHaveQuest, _uint iIndex, _bool bIsClear = false);
-    const wstring&      Get_Dialog(QUESTINDEX eIndex, _bool bHaveQuest, _uint iIndex, _bool bIsClear = false);
+    _uint               Get_Dialog_Size(QUESTINDEX eIndex, CUR_QUEST eType);
+    const wstring&      Get_Dialog(QUESTINDEX eIndex, CUR_QUEST eType, _uint iIndex);
     const QUESTDATA&    Get_Quest(QUESTINDEX eIndex)                        { return m_Quest[IDX(eIndex)]; }
 
     _uint               Get_Boss_Dialog_Size(BOSS eType)                    { return IDX(m_BossDialog[IDX(eType)].size()); }
     const wstring&      Get_Boss_Dialog(BOSS eType, _uint iIndex)           { return m_BossDialog[IDX(eType)][iIndex]; }
 
-    const wstring&      Get_NoQuest_Dialog(QUESTINDEX eIndex)                { return m_NoQuestDialog[IDX(eIndex)]; }
+    const wstring&      Get_NoQuest_Dialog(QUESTINDEX eIndex)               { return m_NoQuestDialog[IDX(eIndex)]; }
+    const wstring&      Get_NoAccept_Dialog(QUESTINDEX eIndex)              { return m_NoAcceptDialog[IDX(eIndex)]; }
+
 
 private:
     vector<HERODATA>            m_HeroData;
@@ -41,6 +43,7 @@ private:
     vector<vector<wstring>>     m_BossDialog;
 
     vector<wstring>             m_NoQuestDialog;
+    vector<wstring>             m_NoAcceptDialog;
 
     wstring                     strTemp;
 };
