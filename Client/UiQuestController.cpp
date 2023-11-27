@@ -59,7 +59,6 @@ void UiQuestController::Create_Dialog(NPCTYPE eType, QUESTINDEX eIndex)
     if (true == m_bIsCreated)
         return;
 
-    
     m_bIsCreated = true;
     auto pScene = CUR_SCENE;
     vector<weak_ptr<GameObject>> addedObj;

@@ -71,37 +71,27 @@ void UIInteraction::Create_Interaction(NPCTYPE eType)
     if (false == m_pInteraction_Bg.expired())
     {
         weak_ptr<GameObject> pObj;
+        QUESTINDEX eIndex = QUESTINDEX::MAX;
         switch (eType)
         {
         case NPCTYPE::QUEST:
-            pObj = m_pDialog_Controller;
-            m_pInteraction_Bg.lock()->Get_Button()->AddOnClickedEvent([pObj, eType, this]()
-                {
-                    if (false == pObj.expired())
-                    {
-                        pObj.lock()->Get_Script<UiQuestController>()->Create_Dialog(eType, QUESTINDEX::KILL_DELLONS);
-                        this->Remove_Interaction();
-                    }
-                });
-
+            eIndex = QUESTINDEX::KILL_DELLONS;
             break;
         case NPCTYPE::GACHA:
-            pObj = m_pGachaController;
-            m_pInteraction_Bg.lock()->Get_Button()->AddOnClickedEvent([pObj, this]()
-                {
-                    if (false == pObj.expired())
-                    {
-                        pObj.lock()->Get_Script<UiGachaController>()->Create_Gacha_Card();
-                        this->Remove_Interaction();
-                    }
-                });
-
+            eIndex = QUESTINDEX::TRY_GACHA;
             break;
         }
+
+        pObj = m_pDialog_Controller;
+        m_pInteraction_Bg.lock()->Get_Button()->AddOnClickedEvent([pObj, eType, this, eIndex]()
+            {
+                if (false == pObj.expired())
+                {
+                    pObj.lock()->Get_Script<UiQuestController>()->Create_Dialog(eType, eIndex);
+                    this->Remove_Interaction();
+                }
+            });
     }
-
-
-
 
 }
 
