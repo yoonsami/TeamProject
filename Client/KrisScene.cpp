@@ -175,13 +175,13 @@ HRESULT KrisScene::Load_Scene()
 	Load_Camera(player);
 	Load_MapFile(L"KrisMap", player);
 
-	/*Load_Monster(2, L"Silversword_Soldier", player);
+	Load_Monster(2, L"Silversword_Soldier", player);
 	Load_Monster(2, L"Succubus_Scythe", player);
-	Load_Monster(2, L"Undead_Priest", player);*/
+	Load_Monster(2, L"Undead_Priest", player);
 	Load_Monster(10, L"Alpaca_White", player);
 	Load_Monster(10, L"Alpaca_Brown", player);
 	Load_Monster(10, L"Alpaca_Black", player);
-	Load_Monster(3, L"Wolf", player);
+	Load_Monster(2, L"Wolf", player);
 
 	//Load_Boss_Spike(player);				
 	Load_Boss_Dellons(player);				
@@ -361,7 +361,13 @@ void KrisScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_pt
 
 			ObjMonster->Add_Component(make_shared<Transform>());
 
-			ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(_float(rand() % 20) , 0.f, _float(rand() % 5) + 30.f, 1.f));
+			_float fRan = 0;
+			if (rand() % 2 == 0)
+				fRan = -1.f;
+			else
+				fRan = 1.f;
+
+			ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(_float(rand() % 20) * fRan, 0.f, _float(rand() % 15) + 30.f, 1.f));
 			{
 				shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
