@@ -3,6 +3,7 @@
 
 #include "BaseUI.h"
 #include "MeshRenderer.h"
+#include "FontRenderer.h"
 
 UiSettingController::UiSettingController()
 {
@@ -32,9 +33,9 @@ HRESULT UiSettingController::Init()
     m_pSSAO_Start       = pScene->Get_UI(L"UI_Setting_Star_SSAO_Start");
     m_pSSAO_End         = pScene->Get_UI(L"UI_Setting_Star_SSAO_End");
     m_pMotionBlur       = pScene->Get_UI(L"UI_Setting_Star_MotionBlur");
-    m_pPBR_Attenuation  = pScene->Get_UI(L"UI_Setting_Star__PBR_Attenuation");
-    m_pPBR_Ratio        = pScene->Get_UI(L"UI_Setting_Star__PBR_Ratio");
-    m_pPBR_ShadowBius   = pScene->Get_UI(L"UI_Setting_Star__PBR_ShadowBius");
+    //m_pPBR_Attenuation  = pScene->Get_UI(L"UI_Setting_Star__PBR_Attenuation");
+    //m_pPBR_Ratio        = pScene->Get_UI(L"UI_Setting_Star__PBR_Ratio");
+    //m_pPBR_ShadowBius   = pScene->Get_UI(L"UI_Setting_Star__PBR_ShadowBius");
 
     m_pCheck_Bloom      = pScene->Get_UI(L"UI_Setting_Check_Bloom");
     m_pCheck_SSAO       = pScene->Get_UI(L"UI_Setting_Check_SSAO");
@@ -43,6 +44,8 @@ HRESULT UiSettingController::Init()
     m_pCheck_Outline    = pScene->Get_UI(L"UI_Setting_Check_Outline");
     m_pCheck_FXAA       = pScene->Get_UI(L"UI_Setting_Check_FXAA");
     m_pCheck_PBR        = pScene->Get_UI(L"UI_Setting_Check_PBR");
+    m_pCheck_FPS        = pScene->Get_UI(L"UI_Setting_Check_FPS");
+    m_pFPS_Font         = pScene->Get_UI(L"UI_FPS_Font");
 
     m_pTextureCheck     = RESOURCES.Get<Texture>(L"UI_Setting_Check");
     m_pTextureNoCheck   = RESOURCES.Get<Texture>(L"UI_Setting_No_Check");
@@ -88,16 +91,16 @@ HRESULT UiSettingController::Init()
         m_pCheck_PBR.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(m_pTextureCheck.lock(), TextureMapType::DIFFUSE);
 
     m_Brightness        = pair(-1.f, 1.f);
-    m_Contrast          = pair(0.f, 5.f);
+    m_Contrast          = pair(0.f, 2.f);
     m_Saturation        = pair(0.01f, 5.f);
     m_Bloom             = pair(0.01f, 1.f);
     m_White             = pair(0.f, 5.f);
     m_SSAORadius        = pair(0.f, 1.f);
     m_SSAOStart         = pair(0.f, 1.f);
     m_SSAOEnd           = pair(0.f, 1.f);
-    m_PBRAttenuation    = pair(-100.f, 100.f);
-    m_PBRRatio          = pair(0.1f, 1.5f);
-    m_PBRShadowBius     = pair(0.f, 0.05f);
+    //m_PBRAttenuation    = pair(-100.f, 100.f);
+    //m_PBRRatio          = pair(0.1f, 1.5f);
+    //m_PBRShadowBius     = pair(0.f, 0.05f);
 
     m_ToneMappingIndex  = pair(0, 3);
     m_MotionBlurCount   = pair(0,30);
@@ -142,6 +145,11 @@ HRESULT UiSettingController::Init()
     m_pCheck_PBR.lock()->Get_Button()->AddOnClickedEvent([&]()
         {
             this->Change_PBR();
+        });
+    
+    m_pCheck_FPS.lock()->Get_Button()->AddOnClickedEvent([&]()
+        {
+            this->Change_FPS();
         });
     
 
@@ -275,44 +283,44 @@ HRESULT UiSettingController::Init()
             m_pMotionBlur.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
         });
     
-    m_pPBR_Attenuation.lock()->Get_Button()->Set_Type(false);
-    m_pPBR_Attenuation.lock()->Get_Button()->AddOnClickedEvent([this]()
-        {
-            POINT ptMouse = INPUT.GetMousePosToPoint();
-            _float4 vecPos = m_pPBR_Attenuation.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-            vecPos.x = static_cast<_float>(ptMouse.x - g_iWinSizeX / 2.f);
-            if (-660.f > vecPos.x)
-                vecPos.x = -660.f;
-            if (-360.f < vecPos.x)
-                vecPos.x = -360.f;
-            m_pPBR_Attenuation.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
-        });
-    
-    m_pPBR_Ratio.lock()->Get_Button()->Set_Type(false);
-    m_pPBR_Ratio.lock()->Get_Button()->AddOnClickedEvent([this]()
-        {
-            POINT ptMouse = INPUT.GetMousePosToPoint();
-            _float4 vecPos = m_pPBR_Ratio.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-            vecPos.x = static_cast<_float>(ptMouse.x - g_iWinSizeX / 2.f);
-            if (-660.f > vecPos.x)
-                vecPos.x = -660.f;
-            if (-360.f < vecPos.x)
-                vecPos.x = -360.f;
-            m_pPBR_Ratio.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
-        });
-    
-    m_pPBR_ShadowBius.lock()->Get_Button()->Set_Type(false);
-    m_pPBR_ShadowBius.lock()->Get_Button()->AddOnClickedEvent([this]()
-        {
-            POINT ptMouse = INPUT.GetMousePosToPoint();
-            _float4 vecPos = m_pPBR_ShadowBius.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-            vecPos.x = static_cast<_float>(ptMouse.x - g_iWinSizeX / 2.f);
-            if (-660.f > vecPos.x)
-                vecPos.x = -660.f;
-            if (-360.f < vecPos.x)
-                vecPos.x = -360.f;
-            m_pPBR_ShadowBius.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
-        });
+    //m_pPBR_Attenuation.lock()->Get_Button()->Set_Type(false);
+    //m_pPBR_Attenuation.lock()->Get_Button()->AddOnClickedEvent([this]()
+    //    {
+    //        POINT ptMouse = INPUT.GetMousePosToPoint();
+    //        _float4 vecPos = m_pPBR_Attenuation.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    //        vecPos.x = static_cast<_float>(ptMouse.x - g_iWinSizeX / 2.f);
+    //        if (-660.f > vecPos.x)
+    //            vecPos.x = -660.f;
+    //        if (-360.f < vecPos.x)
+    //            vecPos.x = -360.f;
+    //        m_pPBR_Attenuation.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+    //    });
+    //
+    //m_pPBR_Ratio.lock()->Get_Button()->Set_Type(false);
+    //m_pPBR_Ratio.lock()->Get_Button()->AddOnClickedEvent([this]()
+    //    {
+    //        POINT ptMouse = INPUT.GetMousePosToPoint();
+    //        _float4 vecPos = m_pPBR_Ratio.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    //        vecPos.x = static_cast<_float>(ptMouse.x - g_iWinSizeX / 2.f);
+    //        if (-660.f > vecPos.x)
+    //            vecPos.x = -660.f;
+    //        if (-360.f < vecPos.x)
+    //            vecPos.x = -360.f;
+    //        m_pPBR_Ratio.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+    //    });
+    //
+    //m_pPBR_ShadowBius.lock()->Get_Button()->Set_Type(false);
+    //m_pPBR_ShadowBius.lock()->Get_Button()->AddOnClickedEvent([this]()
+    //    {
+    //        POINT ptMouse = INPUT.GetMousePosToPoint();
+    //        _float4 vecPos = m_pPBR_ShadowBius.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    //        vecPos.x = static_cast<_float>(ptMouse.x - g_iWinSizeX / 2.f);
+    //        if (-660.f > vecPos.x)
+    //            vecPos.x = -660.f;
+    //        if (-360.f < vecPos.x)
+    //            vecPos.x = -360.f;
+    //        m_pPBR_ShadowBius.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+    //    });
 
 
     _float fTotal = m_Brightness.second - m_Brightness.first;
@@ -395,28 +403,28 @@ HRESULT UiSettingController::Init()
     m_pMotionBlur.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
     
 
-    fTotal = m_PBRAttenuation.second - m_PBRAttenuation.first;
-    fRatio = fabs((fPBR_Attenuation - m_PBRAttenuation.first) / fTotal);
-    fValue = -660 + 300.f * fRatio;
-    vecPos = m_pPBR_Attenuation.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-    vecPos.x = fValue;
-    m_pPBR_Attenuation.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
-    
-
-    fTotal = m_PBRRatio.second - m_PBRRatio.first;
-    fRatio = fabs((fPBR_Ratio - m_PBRRatio.first) / fTotal);
-    fValue = -660 + 300.f * fRatio;
-    vecPos = m_pPBR_Ratio.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-    vecPos.x = fValue;
-    m_pPBR_Ratio.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
-    
-
-    fTotal = m_PBRShadowBius.second - m_PBRShadowBius.first;
-    fRatio = fabs((fPBR_ShadowBius - m_PBRShadowBius.first) / fTotal);
-    fValue = -660 + 300.f * fRatio;
-    vecPos = m_pPBR_ShadowBius.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-    vecPos.x = fValue;
-    m_pPBR_ShadowBius.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+    //fTotal = m_PBRAttenuation.second - m_PBRAttenuation.first;
+    //fRatio = fabs((fPBR_Attenuation - m_PBRAttenuation.first) / fTotal);
+    //fValue = -660 + 300.f * fRatio;
+    //vecPos = m_pPBR_Attenuation.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    //vecPos.x = fValue;
+    //m_pPBR_Attenuation.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+    //
+    //
+    //fTotal = m_PBRRatio.second - m_PBRRatio.first;
+    //fRatio = fabs((fPBR_Ratio - m_PBRRatio.first) / fTotal);
+    //fValue = -660 + 300.f * fRatio;
+    //vecPos = m_pPBR_Ratio.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    //vecPos.x = fValue;
+    //m_pPBR_Ratio.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+    //
+    //
+    //fTotal = m_PBRShadowBius.second - m_PBRShadowBius.first;
+    //fRatio = fabs((fPBR_ShadowBius - m_PBRShadowBius.first) / fTotal);
+    //fValue = -660 + 300.f * fRatio;
+    //vecPos = m_pPBR_ShadowBius.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    //vecPos.x = fValue;
+    //m_pPBR_ShadowBius.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
     
 
 
@@ -425,8 +433,14 @@ HRESULT UiSettingController::Init()
 
 void UiSettingController::Tick()
 {
-	if (true == Check_Expire())
+    if (true == Check_Expire())
 		return;
+
+    if (KEYTAP(KEY_TYPE::ESC))
+        Set_Render(false);
+
+    if (true == m_bFPS)
+        Change_FPS_Font();
 
     if (false == m_bIsRender)
         return;
@@ -453,9 +467,9 @@ void UiSettingController::Set_Render(_bool bValue)
     m_pSSAO_Start.lock()->Set_Render(bValue);
     m_pSSAO_End.lock()->Set_Render(bValue);
     m_pMotionBlur.lock()->Set_Render(bValue);
-    m_pPBR_Attenuation.lock()->Set_Render(bValue);
-    m_pPBR_Ratio.lock()->Set_Render(bValue);
-    m_pPBR_ShadowBius.lock()->Set_Render(bValue);
+    //m_pPBR_Attenuation.lock()->Set_Render(bValue);
+    //m_pPBR_Ratio.lock()->Set_Render(bValue);
+    //m_pPBR_ShadowBius.lock()->Set_Render(bValue);
 
     m_pCheck_Bloom.lock()->Set_Render(bValue);
     m_pCheck_SSAO.lock()->Set_Render(bValue);
@@ -464,6 +478,7 @@ void UiSettingController::Set_Render(_bool bValue)
     m_pCheck_Outline.lock()->Set_Render(bValue);
     m_pCheck_FXAA.lock()->Set_Render(bValue);
     m_pCheck_PBR.lock()->Set_Render(bValue);
+    m_pCheck_FPS.lock()->Set_Render(bValue);
 }
 
 void UiSettingController::Change_Bloom()
@@ -571,6 +586,25 @@ void UiSettingController::Change_PBR()
     CUR_SCENE->g_bPBR_On = m_bPBR;
 }
 
+void UiSettingController::Change_FPS()
+{
+    m_bFPS = !m_bFPS;
+
+    if (true == Check_Expire())
+        return;
+
+    if (true == m_bFPS)
+    {
+        m_pFPS_Font.lock()->Set_Render(true);
+        m_pCheck_FPS.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(m_pTextureCheck.lock(), TextureMapType::DIFFUSE);
+    }
+    else
+    {
+        m_pFPS_Font.lock()->Set_Render(false);
+        m_pCheck_FPS.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(m_pTextureNoCheck.lock(), TextureMapType::DIFFUSE);
+    }
+}
+
 _bool UiSettingController::Check_Expire()
 {
     _bool bValue = false;
@@ -587,9 +621,9 @@ _bool UiSettingController::Check_Expire()
     bValue |= m_pSSAO_Start.expired();
     bValue |= m_pSSAO_End.expired();
     bValue |= m_pMotionBlur.expired();
-    bValue |= m_pPBR_Attenuation.expired();
-    bValue |= m_pPBR_Ratio.expired();
-    bValue |= m_pPBR_ShadowBius.expired();
+    //bValue |= m_pPBR_Attenuation.expired();
+    //bValue |= m_pPBR_Ratio.expired();
+    //bValue |= m_pPBR_ShadowBius.expired();
 
     bValue |= m_pCheck_Bloom.expired();
     bValue |= m_pCheck_SSAO.expired();
@@ -598,6 +632,7 @@ _bool UiSettingController::Check_Expire()
     bValue |= m_pCheck_Outline.expired();
     bValue |= m_pCheck_FXAA.expired();
     bValue |= m_pCheck_PBR.expired();
+    bValue |= m_pCheck_FPS.expired();
 
     bValue |= m_pTextureCheck.expired();
     bValue |= m_pTextureNoCheck.expired();
@@ -617,9 +652,9 @@ void UiSettingController::Change_All_Value()
     Change_Value_SSAO_Start();
     Change_Value_SSAO_End();
     Change_Value_MotionBlur();
-    Change_Value_PBR_Attenuation();
-    Change_Value_PBR_Ratio();
-    Change_Value_PBR_ShadowBius();
+    //Change_Value_PBR_Attenuation();
+    //Change_Value_PBR_Ratio();
+    //Change_Value_PBR_ShadowBius();
 }
 
 void UiSettingController::Change_Value_Brightness()
@@ -765,44 +800,52 @@ void UiSettingController::Change_Value_MotionBlur()
     CUR_SCENE->g_MotionBlurData.g_iBlurCount = IDX(fTotal);
 }
 
-void UiSettingController::Change_Value_PBR_Attenuation()
+void UiSettingController::Change_FPS_Font()
 {
-    _float fX = m_pPBR_Attenuation.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
-    fX -= m_fMinPos;
+    _uint iFps = TIME.GetFPS();
 
-    _float fRatio = fX / 300.f;
-    _float fTotal = m_PBRAttenuation.second - m_PBRAttenuation.first;
-    fTotal *= fRatio;
-
-    fTotal += m_PBRAttenuation.first;
-
-    CUR_SCENE->g_lightAttenuation = fTotal;
+    wstring strTemp = L"FPS : " + to_wstring(iFps);
+    m_pFPS_Font.lock()->Get_FontRenderer()->Get_Text() = strTemp;
 }
 
-void UiSettingController::Change_Value_PBR_Ratio()
-{
-    _float fX = m_pPBR_Ratio.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
-    fX -= m_fMinPos;
-
-    _float fRatio = fX / 300.f;
-    _float fTotal = m_PBRRatio.second - m_PBRRatio.first;
-    fTotal *= fRatio;
-
-    fTotal += m_PBRRatio.first;
-
-    CUR_SCENE->g_ambientRatio = fTotal;
-}
-
-void UiSettingController::Change_Value_PBR_ShadowBius()
-{
-    _float fX = m_pPBR_ShadowBius.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
-    fX -= m_fMinPos;
-
-    _float fRatio = fX / 300.f;
-    _float fTotal = m_PBRShadowBius.second - m_PBRShadowBius.first;
-    fTotal *= fRatio;
-
-    fTotal += m_PBRShadowBius.first;
-
-    CUR_SCENE->g_fShadowBias = fTotal;
-}
+//void UiSettingController::Change_Value_PBR_Attenuation()
+//{
+//    _float fX = m_pPBR_Attenuation.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
+//    fX -= m_fMinPos;
+//
+//    _float fRatio = fX / 300.f;
+//    _float fTotal = m_PBRAttenuation.second - m_PBRAttenuation.first;
+//    fTotal *= fRatio;
+//
+//    fTotal += m_PBRAttenuation.first;
+//
+//    CUR_SCENE->g_lightAttenuation = fTotal;
+//}
+//
+//void UiSettingController::Change_Value_PBR_Ratio()
+//{
+//    _float fX = m_pPBR_Ratio.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
+//    fX -= m_fMinPos;
+//
+//    _float fRatio = fX / 300.f;
+//    _float fTotal = m_PBRRatio.second - m_PBRRatio.first;
+//    fTotal *= fRatio;
+//
+//    fTotal += m_PBRRatio.first;
+//
+//    CUR_SCENE->g_ambientRatio = fTotal;
+//}
+//
+//void UiSettingController::Change_Value_PBR_ShadowBius()
+//{
+//    _float fX = m_pPBR_ShadowBius.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
+//    fX -= m_fMinPos;
+//
+//    _float fRatio = fX / 300.f;
+//    _float fTotal = m_PBRShadowBius.second - m_PBRShadowBius.first;
+//    fTotal *= fRatio;
+//
+//    fTotal += m_PBRShadowBius.first;
+//
+//    CUR_SCENE->g_fShadowBias = fTotal;
+//}

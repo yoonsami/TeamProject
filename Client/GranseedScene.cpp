@@ -63,6 +63,7 @@
 #include "UIInteraction.h"
 #include "UiQuestController.h"
 #include "UiSettingController.h"
+#include "UiBossDialog.h"
 
 #include <filesystem>
 #include "GachaScene.h"
@@ -121,9 +122,12 @@ void GranseedScene::Tick()
 
 	if (KEYTAP(KEY_TYPE::C))
 	{
-		auto pObj = Get_UI(L"UI_Interaction");
-		if(pObj)
-		pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::QUEST);
+		//auto pObj = Get_UI(L"UI_Interaction");
+		//if(pObj)
+		//	pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::QUEST);
+		auto pObj = Get_UI(L"UI_Boss_Dialog");
+		if (pObj)
+			pObj->Get_Script<UiBossDialog>()->Create_Dialog(BOSS::DELLONS);
 	}
 	if (KEYTAP(KEY_TYPE::V))
 	{
@@ -492,6 +496,17 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Set_Name(L"UI_Dialog_Controller");
 
 		auto pScript = make_shared<UiQuestController>();
+		pObj->Add_Component(pScript);
+
+		pObj->Set_LayerIndex(Layer_UI);
+		Add_GameObject(pObj);
+	}
+	
+	{
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_Name(L"UI_Boss_Dialog");
+
+		auto pScript = make_shared<UiBossDialog>();
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);

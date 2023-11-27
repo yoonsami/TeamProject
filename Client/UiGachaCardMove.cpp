@@ -77,36 +77,52 @@ HRESULT UiGachaCardMove::Init()
 	}
 	m_vecDir = { m_vecArrivalPos.x - m_vecFirstPos.x,  m_vecArrivalPos.y - m_vecFirstPos.y };
 
-	_float fRand = Utils::Random_In_Range(0.f, 1.f);
-	fRand = 0.023f;
-	if (0.01f > fRand)
-	{
-		m_eHero = HERO::ACE3;
-		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back0"), TextureMapType::DIFFUSE);
-	}
-	else if (0.02f > fRand)
-	{
-		m_eHero = HERO::DELLONS;
-		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back1"), TextureMapType::DIFFUSE);
-	}
-	else if (0.03f > fRand)
+	//_float fRand = Utils::Random_In_Range(0.f, 1.f);
+	//fRand = 0.023f;
+	//if (0.01f > fRand)
+	//{
+	//	m_eHero = HERO::ACE3;
+	//	m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back0"), TextureMapType::DIFFUSE);
+	//}
+	//else if (0.02f > fRand)
+	//{
+	//	m_eHero = HERO::DELLONS;
+	//	m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back1"), TextureMapType::DIFFUSE);
+	//}
+	//else if (0.03f > fRand)
+	//{
+	//	m_eHero = HERO::KYLE;
+	//	m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back3"), TextureMapType::DIFFUSE);
+	//}
+	//else if (0.04f > fRand)
+	//{
+	//	m_eHero = HERO::YEOPO;
+	//	m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back4"), TextureMapType::DIFFUSE);
+	//}
+	//else if (0.4f > fRand)
+	//{
+	//	m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back2"), TextureMapType::DIFFUSE);
+	//}
+	//else
+	//{
+	//	m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back5"), TextureMapType::DIFFUSE);
+	//}
+
+	if (0 == m_iIndex)
 	{
 		m_eHero = HERO::KYLE;
-		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back3"), TextureMapType::DIFFUSE);
+		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back0"), TextureMapType::DIFFUSE);
 	}
-	else if (0.04f > fRand)
+	else if (7 == m_iIndex)
 	{
 		m_eHero = HERO::YEOPO;
-		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back4"), TextureMapType::DIFFUSE);
-	}
-	else if (0.4f > fRand)
-	{
-		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back2"), TextureMapType::DIFFUSE);
+		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back1"), TextureMapType::DIFFUSE);
 	}
 	else
 	{
 		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back5"), TextureMapType::DIFFUSE);
 	}
+
 
 	if(HERO::MAX != m_eHero)
 		m_strTextureTag = GET_DATA(m_eHero).KeyDeckSelect;
@@ -232,7 +248,8 @@ void UiGachaCardMove::Open()
 		m_fCheckTime = m_fMaxTime;
 		m_eState = STATE::NONE;
 
-		//return;
+		m_pOwner.lock()->GetOrAddTransform()->Scaled(m_fOriginScale);
+		return;
 	}
 	
 	_float3 vecScale = m_fOriginScale;
