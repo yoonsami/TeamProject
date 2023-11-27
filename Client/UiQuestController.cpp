@@ -106,7 +106,7 @@ void UiQuestController::Create_Dialog(NPCTYPE eType)
         // 첫 대화 정하기
         m_iMaxIndex = DATAMGR.Get_Dialog_Size(m_eIndex, m_bHaveQuest, m_iCurIndex, m_tagCurQuestData.IsClear);
         m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = DATAMGR.Get_Dialog(m_eIndex, m_bHaveQuest, m_iCurIndex, m_tagCurQuestData.IsClear);
-        m_pNpcDialog.lock()->Get_FontRenderer()->Set_TimePerChar(0.05f);
+        m_pNpcDialog.lock()->Get_FontRenderer()->Set_TimePerChar(1.f);
     }
     if (false == m_pNext.expired())
     {
@@ -154,6 +154,11 @@ void UiQuestController::Next_Dialog()
     // 인덱스 최대 비교후 미만이면 대화 가져오고 최대일때는 메인유아이 키고 다 지우기 
     // 마지막일때 m_bHaveQuest = true;
     // 퀘스트 가지게 되면 유아이에 띄워야함
+    if (false == m_pNpcDialog.lock()->Get_FontRenderer()->Is_Finished())
+    {
+        m_pNpcDialog.lock()->Get_FontRenderer()->Set_Finished();
+        return;
+    }
 
     ++m_iCurIndex;
     if (m_iMaxIndex <= m_iCurIndex)
