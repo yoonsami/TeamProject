@@ -71,6 +71,10 @@
 #include "GachaScene.h"
 #include "GranseedScene.h"
 #include "KrisScene.h"
+#include "UiSettingController.h"
+#include "UIInteraction.h"
+#include "UiBossDialog.h"
+#include "UiQuestController.h"
 namespace fs = std::filesystem;
 
 SpikeScene::SpikeScene()
@@ -601,50 +605,51 @@ void SpikeScene::Load_Boss_Spike(shared_ptr<GameObject> pPlayer)
 
 void SpikeScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 {
+	list<shared_ptr<GameObject>>& tmp = static_pointer_cast<LoadingScene>(CUR_SCENE)->Get_StaticObjectsFromLoader();
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Main.dat", tmp);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Main_Button.dat", tmp);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Char_Change.dat", tmp);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck.dat", tmp, false);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", tmp, false);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Cur_Quest.dat", tmp, false);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Setting.dat", tmp, false);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Controller.dat", tmp, false);
 
 
 	{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"Main_Ui_Controller");
-
-		auto pScript = make_shared<MainUiController>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj);
+		weak_ptr<GameObject> pObj = Get_UI(L"Main_UI_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<MainUiController>();
+			pObj.lock()->Add_Component(pScript);
+		}
 	}
 
 	{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"UI_Gacha_Controller");
-
-		auto pScript = make_shared<UiGachaController>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj);
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Gacha_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiGachaController>();
+			pObj.lock()->Add_Component(pScript);
+		}
 	}
 
 	{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"UI_Card_Deck_Controller");
-
-		auto pScript = make_shared<UiCardDeckController>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj);
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Card_Deck_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiCardDeckController>();
+			pObj.lock()->Add_Component(pScript);
+		}
 	}
 
 	{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"UI_Damage_Controller");
-
-		auto pScript = make_shared<UiDamageCreate>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj);
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Damage_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiDamageCreate>();
+			pObj.lock()->Add_Component(pScript);
+		}
 	}
 
 	{
@@ -656,70 +661,51 @@ void SpikeScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		}
 	}
 
-	/*{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"UI_Monster_Hp");
 
-		auto pScript = make_shared<UiMonsterHp>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj);
-	}*/
 
 	{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"UI_Target_LockOn");
-
-		auto pScript = make_shared<UiTargetLockOn>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj);
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Target_LockOn");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiTargetLockOn>();
+			pObj.lock()->Add_Component(pScript);
+		}
 	}
 
 	{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"UI_Setting_Controller");
-
-		auto pScript = make_shared<UiSettingController>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj);
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Setting_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiSettingController>();
+			pObj.lock()->Add_Component(pScript);
+		}
 	}
 
 	{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"UI_Dialog_Controller");
-
-		auto pScript = make_shared<UiQuestController>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj);
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Dialog_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiQuestController>();
+			pObj.lock()->Add_Component(pScript);
+		}
 	}
 
 	{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"UI_Boss_Dialog");
-
-		auto pScript = make_shared<UiBossDialog>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj);
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Boss_Dialog");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiBossDialog>();
+			pObj.lock()->Add_Component(pScript);
+		}
 	}
 
 	{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"UI_Interaction");
-
-		auto pScript = make_shared<UIInteraction>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj);
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Interaction");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UIInteraction>();
+			pObj.lock()->Add_Component(pScript);
+		}
 	}
 
 	{
@@ -753,14 +739,12 @@ void SpikeScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 
 
 	{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"UI_Char_Change");
-
-		auto pScript = make_shared<UiCharChange>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj);
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Char_Change");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiCharChange>();
+			pObj.lock()->Add_Component(pScript);
+		}
 	}
 
 	{
