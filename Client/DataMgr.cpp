@@ -605,6 +605,25 @@ void DataMgr::Initialize()
 
 
 
+    m_NoQuestDialog.resize(IDX(QUESTINDEX::MAX));
+    {
+        m_NoQuestDialog[IDX(QUESTINDEX::TRY_GACHA)]     = L"... ...";
+        m_NoQuestDialog[IDX(QUESTINDEX::KILL_ALPACA)]   = L"... ...";
+        m_NoQuestDialog[IDX(QUESTINDEX::KILL_DELLONS)]  = L"알파카 돌려줘요...";
+        m_NoQuestDialog[IDX(QUESTINDEX::KILL_SPIKE)]    = L"... ...";
+        m_NoQuestDialog[IDX(QUESTINDEX::KILL_MIR)]      = L"... ...";
+        m_NoQuestDialog[IDX(QUESTINDEX::STORY_CLEAR)]   = L"... ...";
+    }
+
+
+
+
+
+
+
+
+
+
 
 }
 

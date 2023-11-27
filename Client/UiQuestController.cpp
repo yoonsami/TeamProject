@@ -34,6 +34,9 @@ HRESULT UiQuestController::Init()
     m_bHaveQuest = false;
     m_iMaxIndex = m_iCurIndex = 0;
 
+    _uint iSize = IDX(QUESTINDEX::MAX);
+    m_ClearCheck.resize(iSize);
+
     return S_OK;
 }
 
@@ -51,11 +54,12 @@ void UiQuestController::Tick()
     Move_Next();
 }
 
-void UiQuestController::Create_Dialog(NPCTYPE eType)
+void UiQuestController::Create_Dialog(NPCTYPE eType, QUESTINDEX eIndex)
 {
     if (true == m_bIsCreated)
         return;
 
+    
     m_bIsCreated = true;
     auto pScene = CUR_SCENE;
     vector<weak_ptr<GameObject>> addedObj;
@@ -90,7 +94,7 @@ void UiQuestController::Create_Dialog(NPCTYPE eType)
     // 매우 중요
 
     if(false == m_bHaveQuest)
-        m_eIndex = QUESTINDEX::KILL_DELLONS;
+        m_eIndex = eIndex;
 
     if (false == m_pNpcName.expired())
     {
@@ -103,10 +107,21 @@ void UiQuestController::Create_Dialog(NPCTYPE eType)
     }
     if (false == m_pNpcDialog.expired())
     {
-        // 첫 대화 정하기
-        m_iMaxIndex = DATAMGR.Get_Dialog_Size(m_eIndex, m_bHaveQuest, m_iCurIndex, m_tagCurQuestData.IsClear);
-        m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = DATAMGR.Get_Dialog(m_eIndex, m_bHaveQuest, m_iCurIndex, m_tagCurQuestData.IsClear);
-        m_pNpcDialog.lock()->Get_FontRenderer()->Set_TimePerChar(0.05f);
+        if (true == m_ClearCheck[IDX(eIndex)])
+        {
+            m_iMaxIndex = 1;
+            m_tagCurQuestData.IsClear = true;
+            m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = DATAMGR.Get_NoQuest_Dialog(eIndex);;
+            m_pNpcDialog.lock()->Get_FontRenderer()->Set_TimePerChar(0.05f);
+        }
+        else
+        {
+            // 첫 대화 정하기
+            m_iMaxIndex = DATAMGR.Get_Dialog_Size(m_eIndex, m_bHaveQuest, m_iCurIndex, m_tagCurQuestData.IsClear);
+            m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = DATAMGR.Get_Dialog(m_eIndex, m_bHaveQuest, m_iCurIndex, m_tagCurQuestData.IsClear);
+            m_pNpcDialog.lock()->Get_FontRenderer()->Set_TimePerChar(0.05f);
+        }
+        
     }
     if (false == m_pNext.expired())
     {
@@ -127,6 +142,9 @@ void UiQuestController::Create_Dialog(NPCTYPE eType)
 
 void UiQuestController::Clear_Quest()
 {
+    m_ClearCheck[IDX(m_eIndex)] = true;
+    m_tagCurQuestData = QUESTDATA{};
+    m_bHaveQuest = false;
 }
 
 void UiQuestController::Remove_Dialog()
@@ -166,8 +184,7 @@ void UiQuestController::Next_Dialog()
         if (true == m_tagCurQuestData.IsClear)
         {
             Set_Render(false);
-            m_tagCurQuestData = QUESTDATA{};
-            m_bHaveQuest = false;
+            Clear_Quest();
         }
         else if(false == m_bHaveQuest)
         {

@@ -24,6 +24,7 @@ public:
     _uint               Get_Boss_Dialog_Size(BOSS eType)                    { return IDX(m_BossDialog[IDX(eType)].size()); }
     const wstring&      Get_Boss_Dialog(BOSS eType, _uint iIndex)           { return m_BossDialog[IDX(eType)][iIndex]; }
 
+    const wstring&      Get_NoQuest_Dialog(QUESTINDEX eIndex)                { return m_NoQuestDialog[IDX(eIndex)]; }
 
 private:
     vector<HERODATA>            m_HeroData;
@@ -38,6 +39,8 @@ private:
     vector<QUESTDATA>           m_Quest;
 
     vector<vector<wstring>>     m_BossDialog;
+
+    vector<wstring>             m_NoQuestDialog;
 
     wstring                     strTemp;
 };

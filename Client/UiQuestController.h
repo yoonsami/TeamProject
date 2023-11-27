@@ -10,7 +10,7 @@ public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
 
-    void Create_Dialog(NPCTYPE eType);
+    void Create_Dialog(NPCTYPE eType, QUESTINDEX eIndex);
     void Next_Dialog();
     void Change_Value();
 
@@ -38,19 +38,19 @@ private:
     weak_ptr<GameObject> m_pPlayerDialog;
 
     enum class NEXT_STATE { DOWN, UP };
-    NEXT_STATE      m_eState            = { NEXT_STATE::DOWN };
-    _float          m_fCheckTime        = {};
-    _float          m_fMaxTime          = {};
-    _float          m_fSpeed            = {};
+    NEXT_STATE          m_eState            = { NEXT_STATE::DOWN };
+    _float              m_fCheckTime        = {};
+    _float              m_fMaxTime          = {};
+    _float              m_fSpeed            = {};
 
-    QUESTINDEX      m_eIndex            = {};
-    QUESTDATA       m_tagCurQuestData   = {};
-    _bool           m_bHaveQuest        = {};
-    _bool           m_bIsCreated        = {};
-    _uint           m_iMaxIndex         = {};
-    _uint           m_iCurIndex         = {};
+    QUESTINDEX          m_eIndex            = {};
+    QUESTDATA           m_tagCurQuestData   = {};
+    _bool               m_bHaveQuest        = {};
+    _bool               m_bIsCreated        = {};
+    _uint               m_iMaxIndex         = {};
+    _uint               m_iCurIndex         = {};
 
-
+    vector<_bool>       m_ClearCheck;
 
 
 };

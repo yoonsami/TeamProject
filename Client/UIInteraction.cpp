@@ -79,7 +79,7 @@ void UIInteraction::Create_Interaction(NPCTYPE eType)
                 {
                     if (false == pObj.expired())
                     {
-                        pObj.lock()->Get_Script<UiQuestController>()->Create_Dialog(eType);
+                        pObj.lock()->Get_Script<UiQuestController>()->Create_Dialog(eType, QUESTINDEX::KILL_DELLONS);
                         this->Remove_Interaction();
                     }
                 });
