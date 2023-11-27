@@ -182,6 +182,7 @@ HRESULT MirScene::Load_Scene()
 	Load_Camera(player);
 	Load_MapFile(L"MirMap", player);
 	Load_Boss_Mir(player);
+	//Load_Boss_Giant_Mir(player);
 
 	Load_Ui(player);
 
@@ -454,6 +455,56 @@ void MirScene::Load_Boss_Mir(shared_ptr<GameObject> pPlayer)
 		
 		_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz() +
 					   ObjMonster->Get_Transform()->Get_State(Transform_State::LOOK);
+		desc.position = { vPos.x, vPos.y, vPos.z };
+		controller->Create_Controller();
+		controller->Get_Actor()->setStepOffset(0.1f);
+
+	}
+	ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
+	ObjMonster->Set_VelocityMap(true);
+	Add_GameObject(ObjMonster);
+}
+
+void MirScene::Load_Boss_Giant_Mir(shared_ptr<GameObject> pPlayer)
+{
+	// Add. Monster
+	shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
+
+	ObjMonster->Add_Component(make_shared<Transform>());
+
+	ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+
+		shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+		{
+			shared_ptr<Model> model = RESOURCES.Get<Model>(L"Mir_02");
+			animator->Set_Model(model);
+		}
+
+		ObjMonster->Add_Component(animator);
+		//ObjMonster->Add_Component(make_shared<Boss_Mir_FSM>());
+		//ObjMonster->Get_FSM()->Set_Target(pPlayer);
+	}
+	ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 2.f, 4.f, 6.f })); //obbcollider
+	ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
+	ObjMonster->Get_Collider()->Set_Activate(true);
+
+	//ObjMonster->Add_Component(make_shared<CounterMotionTrailScript>());
+
+	wstring strMonsterName = (L"Giant_Mir");
+	ObjMonster->Set_Name(strMonsterName);
+	{
+		auto controller = make_shared<CharacterController>();
+		ObjMonster->Add_Component(controller);
+
+		auto& desc = controller->Get_CapsuleControllerDesc();
+		desc.radius = 4.5f;
+		desc.height = 5.f;
+		desc.climbingMode = PxCapsuleClimbingMode::eCONSTRAINED;
+
+		_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz() +
+			ObjMonster->Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.position = { vPos.x, vPos.y, vPos.z };
 		controller->Create_Controller();
 		controller->Get_Actor()->setStepOffset(0.1f);
