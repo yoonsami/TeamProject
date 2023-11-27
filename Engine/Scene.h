@@ -70,7 +70,6 @@ protected:
 	void Render_Shadow();
 	void Render_MotionBlur();
 	void Render_Deferred();
-	void Render_DefferedBlur();
 	void Render_SSAO();
 
 	void Render_SSAOBlur(_uint blurCount);

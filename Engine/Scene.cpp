@@ -101,10 +101,6 @@ void Scene::Render()
 
 	Render_Deferred();
 
-	Render_DefferedBlur();
-
-
-
 	if (g_SSAOData.g_bSSAO_On)
 	{
 		Render_SSAO();
@@ -1021,45 +1017,7 @@ void Scene::Render_Deferred()
 	//GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->UnBindSRV();
 }
 
-void Scene::Render_DefferedBlur()
-{
-	return;
-	for (_uchar i = 0; i < 2; ++i)
-	{
-		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLURSMALLER0) + i);
-		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
-		auto material = RESOURCES.Get<Material>(L"BlurSmaller" + to_wstring(i));
-		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
-		//material->Get_Shader()->GetScalar("GaussianWeight")->SetFloatArray(a, 0, 25);
-		//material->Get_Shader()->GetScalar("DownScalePower")->SetFloat(m_fDownScalePower);
-		material->Push_SubMapData();
 
-		mesh->Get_VertexBuffer()->Push_Data();
-		mesh->Get_IndexBuffer()->Push_Data();
-
-		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		material->Get_Shader()->DrawIndexed(0, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
-	}
-
-	for (_uchar i = 0; i < 2; ++i)
-	{
-		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLURBIGGER0) + i);
-		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
-		auto material = RESOURCES.Get<Material>(L"BlurBigger" + to_wstring(i));
-		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
-	//	material->Get_Shader()->GetScalar("UpScalePower")->SetFloat(m_fUpScalePower);
-
-		material->Push_SubMapData();
-
-		mesh->Get_VertexBuffer()->Push_Data();
-		mesh->Get_IndexBuffer()->Push_Data();
-
-		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
-	}
-}
 
 void Scene::Render_SSAO()
 {
