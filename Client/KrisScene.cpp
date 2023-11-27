@@ -185,7 +185,7 @@ HRESULT KrisScene::Load_Scene()
 	Load_Monster(10, L"Alpaca_White", player);
 	Load_Monster(10, L"Alpaca_Brown", player);
 	Load_Monster(10, L"Alpaca_Black", player);
-	//Load_Monster(2, L"Wolf", player);
+	Load_Monster(2, L"Wolf", player);
 
 	////Load_Boss_Spike(player);				
 	Load_Boss_Dellons(player);				
