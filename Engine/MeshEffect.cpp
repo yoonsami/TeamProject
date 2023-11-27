@@ -193,7 +193,7 @@ void MeshEffect::Render_Instancing(shared_ptr<InstancingBuffer> buffer, shared_p
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		// For. Draw call
-		m_pShader->DrawIndexed(1, m_tDesc.iSamplerType, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
+		m_pShader->DrawIndexedInstanced(1, m_tDesc.iSamplerType, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
 	}
 }
 

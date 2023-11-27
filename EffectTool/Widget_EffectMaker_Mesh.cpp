@@ -987,7 +987,25 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 			break;
 		case 1:
 			ImGui::InputFloat("Turn Speed##Movemenet1", &m_fTurnSpeed);
-			ImGui::InputFloat3("Axis##Movement1", m_fRandomAxis_Min);
+			ImGui::Text("Turn Axes options##Turn");
+			if (ImGui::Button("Look ##Turn"))
+			{
+				// Make World Matrix 
+				_float4x4 mWorldMatrix = Create
+
+				// Get Look vector 
+				m_fRandomAxis_Min
+
+			}
+			ImGui::SameLine();
+			ImGui::Button("Right ##Turn");
+			ImGui::SameLine();
+			ImGui::Button("Up ##Turn");
+
+			if()
+
+
+			ImGui::InputFloat3("Axis##Movement2", m_fRandomAxis_Min);
 			memcpy(m_fRandomAxis_Max, m_fRandomAxis_Min, sizeof(m_fRandomAxis_Min));
 			break;
 		case 2:

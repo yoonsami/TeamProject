@@ -84,7 +84,7 @@ void UiBossDialog::Create_Dialog(BOSS eType)
 
     if (false == m_pNpcName.expired())
     {
-        // npc type ���ϱ�
+
         wstring strNpcName = GET_DATA(eType).Name;
         m_pNpcName.lock()->Get_FontRenderer()->Get_Text() = strNpcName;
         _float4 vecPos = m_pNpcName.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
@@ -93,14 +93,14 @@ void UiBossDialog::Create_Dialog(BOSS eType)
     }
     if (false == m_pNpcDialog.expired())
     {
-        // ù ��ȭ ���ϱ�
+
         m_iMaxIndex = DATAMGR.Get_Boss_Dialog_Size(eType);
         m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = DATAMGR.Get_Boss_Dialog(eType, 0);
         m_pNpcDialog.lock()->Get_FontRenderer()->Set_TimePerChar(0.05f);
     }
     if (false == m_pNext.expired())
     {
-        // ��ư ���� �Լ� ����
+
         m_pNext.lock()->Get_Button()->AddOnClickedEvent([&]()
             {
                 this->Next_Dialog();
@@ -108,7 +108,7 @@ void UiBossDialog::Create_Dialog(BOSS eType)
     }
     if (false == m_pUiTotalController.expired())
     {
-        // ��ȭ �ϴ� ���� �� ���
+
         m_pUiTotalController.lock()->Get_Script<MainUiController>()->Set_MainUI_Render(false);
     }
 
