@@ -117,6 +117,12 @@ void UiBossDialog::Create_Dialog(BOSS eType)
 
 void UiBossDialog::Next_Dialog()
 {
+    if (false == m_pNpcDialog.lock()->Get_FontRenderer()->Is_Finished())
+    {
+        m_pNpcDialog.lock()->Get_FontRenderer()->Set_Finished();
+        return;
+    }
+
     ++m_iCurIndex;
     if (m_iMaxIndex <= m_iCurIndex)
     {
