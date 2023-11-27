@@ -68,6 +68,10 @@
 #include "GachaScene.h"
 #include "GranseedScene.h"
 #include "SpikeScene.h"
+#include "UiSettingController.h"
+#include "UiQuestController.h"
+#include "UiBossDialog.h"
+#include "UIInteraction.h"
 namespace fs = std::filesystem;
 
 KrisScene::KrisScene()
@@ -612,72 +616,51 @@ void KrisScene::Load_Boss_Spike(shared_ptr<GameObject> pPlayer)
 
 void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 {
-	/*wstring assetPath = L"..\\Resources\\Textures\\UITexture\\Main\\";
-
-	for (auto& entry : fs::recursive_directory_iterator(assetPath))
-	{
-		if (entry.is_directory())
-			continue;
-
-		wstring filePath = entry.path().wstring();
-		wstring fileName = entry.path().filename().wstring();
-		Utils::DetachExt(fileName);
-		RESOURCES.Load<Texture>(fileName, filePath);
-	}*/
-	auto scene = CUR_SCENE;
 	list<shared_ptr<GameObject>>& tmp = static_pointer_cast<LoadingScene>(CUR_SCENE)->Get_StaticObjectsFromLoader();
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main.dat", tmp);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main_Button.dat", tmp);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Char_Change.dat", tmp);
-	//Load_UIFile(L"..\\Resources\\UIData\\UI_Gacha.dat");
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck.dat", tmp, false);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", tmp, false);
-	//Load_UIFile(L"..\\Resources\\UIData\\UI_MonsterHp.dat", tmp);
-	//Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat");
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Cur_Quest.dat", tmp, false);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Setting.dat", tmp, false);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Controller.dat", tmp, false);
 
-
-	/*{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"Main_Ui_Controller");
-
-		auto pScript = make_shared<MainUiController>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
-	}*/
 
 	{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"UI_Gacha_Controller");
-
-		auto pScript = make_shared<UiGachaController>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		weak_ptr<GameObject> pObj = Get_UI(L"Main_UI_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<MainUiController>();
+			pObj.lock()->Add_Component(pScript);
+		}
 	}
 
 	{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"UI_Card_Deck_Controller");
-
-		auto pScript = make_shared<UiCardDeckController>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Gacha_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiGachaController>();
+			pObj.lock()->Add_Component(pScript);
+		}
 	}
 
 	{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"UI_Damage_Controller");
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Card_Deck_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiCardDeckController>();
+			pObj.lock()->Add_Component(pScript);
+		}
+	}
 
-		auto pScript = make_shared<UiDamageCreate>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+	{
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Damage_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiDamageCreate>();
+			pObj.lock()->Add_Component(pScript);
+		}
 	}
 
 	{
@@ -689,28 +672,52 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		}
 	}
 
-	/*{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"UI_Monster_Hp");
 
-		auto pScript = make_shared<UiMonsterHp>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
-	}*/
 
 	{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"UI_Target_LockOn");
-
-		auto pScript = make_shared<UiTargetLockOn>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Target_LockOn");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiTargetLockOn>();
+			pObj.lock()->Add_Component(pScript);
+		}
 	}
 
+	{
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Setting_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiSettingController>();
+			pObj.lock()->Add_Component(pScript);
+		}
+	}
+
+	{
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Dialog_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiQuestController>();
+			pObj.lock()->Add_Component(pScript);
+		}
+	}
+
+	{
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Boss_Dialog");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiBossDialog>();
+			pObj.lock()->Add_Component(pScript);
+		}
+	}
+
+	{
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Interaction");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UIInteraction>();
+			pObj.lock()->Add_Component(pScript);
+		}
+	}
 
 	{
 		auto pObj = Get_UI(L"UI_Combo_Effect");
@@ -720,14 +727,6 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj->Add_Component(pScript);
 		}
 	}
-
-
-
-
-
-
-
-
 	{
 		auto pObj = Get_UI(L"UI_Skill_Use_Gauge");
 		if (nullptr != pObj)
@@ -751,14 +750,12 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 
 
 	{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_Name(L"UI_Char_Change");
-
-		auto pScript = make_shared<UiCharChange>();
-		pObj->Add_Component(pScript);
-
-		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Char_Change");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiCharChange>();
+			pObj.lock()->Add_Component(pScript);
+		}
 	}
 
 	{
@@ -772,24 +769,16 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		}
 	}
 
-
-
-	// test code
 	{
-		/*auto pObj = Get_GameObject(L"Boss_Dellons");
-			Load_UIFile(L"..\\Resources\\UIData\\UI_BossHpBar.dat");
-		if(pObj)
+		auto pObj = Get_UI(L"UI_Main_Button3");
+		if (nullptr != pObj)
 		{
-
-			auto pScript = make_shared<UIBossHpBar>();
-			pObj->Add_Component(pScript);
-		}*/
+			pObj->Get_Button()->AddOnClickedEvent([]()
+				{
+					CUR_SCENE->Get_UI(L"UI_Setting_Controller")->Get_Script<UiSettingController>()->Set_Render(true);
+				});
+		}
 	}
-
-
-
-
-
 
 
 	{
