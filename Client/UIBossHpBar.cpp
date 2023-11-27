@@ -101,6 +101,17 @@ void UIBossHpBar::Tick()
 
 void UIBossHpBar::Remove_HpBar()
 {
+    if (m_pOwner.expired() ||
+        m_pBgHp.expired() ||
+        m_pFrontHp.expired() ||
+        m_pBackHp.expired() ||
+        m_pHpFont.expired() ||
+        m_pBgGroggy.expired() ||
+        m_pFrontGroggy.expired() ||
+        m_pElement.expired() ||
+        m_pBossName.expired())
+        return;
+
     auto pScene = CUR_SCENE;
     EVENTMGR.Delete_Object(m_pBgHp.lock());
     EVENTMGR.Delete_Object(m_pFrontHp.lock());
