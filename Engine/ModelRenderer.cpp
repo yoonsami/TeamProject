@@ -120,6 +120,7 @@ void ModelRenderer::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 	}
 	m_pShader->Push_BoneData(*boneDesc);
 	m_pShader->GetVector("g_UVSliding")->SetFloatVector((_float*)(&m_vUvSilding));
+	buffer->Push_Data();
 	const auto& meshes = m_pModel->Get_Meshes();
 	for (auto& mesh : meshes)
 	{
@@ -136,7 +137,7 @@ void ModelRenderer::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 		mesh->vertexBuffer->Push_Data();
 		mesh->indexBuffer->Push_Data();
 
-		buffer->Push_Data();
+
 
 
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

@@ -300,7 +300,7 @@ void ModelAnimator::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 	m_pShader->GetSRV("TransformMap")->SetResource(m_pModel->Get_TransformSRV().Get());
 
 	auto& animAddonDesc = m_pModel->Get_AnimAddonDesc();
-
+	buffer->Push_Data();
 	m_pShader->Push_AnimAddonData(animAddonDesc);
 	if (!m_pModel->Has_Parts())
 	{
@@ -320,7 +320,7 @@ void ModelAnimator::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 			mesh->vertexBuffer->Push_Data();
 			mesh->indexBuffer->Push_Data();
 
-			buffer->Push_Data();
+
 
 			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -346,7 +346,6 @@ void ModelAnimator::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 			mesh->vertexBuffer->Push_Data();
 			mesh->indexBuffer->Push_Data();
 
-			buffer->Push_Data();
 
 			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -445,7 +444,7 @@ void ModelAnimator::Render_Shadow_Instancing(shared_ptr<InstancingBuffer>& buffe
 	auto& animAddonDesc = m_pModel->Get_AnimAddonDesc();
 
 	m_pShader->Push_AnimAddonData(animAddonDesc);
-
+	buffer->Push_Data();
 	if (!m_pModel->Has_Parts())
 	{
 		const auto& meshes = m_pModel->Get_Meshes();
@@ -464,7 +463,6 @@ void ModelAnimator::Render_Shadow_Instancing(shared_ptr<InstancingBuffer>& buffe
 			mesh->vertexBuffer->Push_Data();
 			mesh->indexBuffer->Push_Data();
 
-			buffer->Push_Data();
 
 			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -489,7 +487,7 @@ void ModelAnimator::Render_Shadow_Instancing(shared_ptr<InstancingBuffer>& buffe
 			mesh->vertexBuffer->Push_Data();
 			mesh->indexBuffer->Push_Data();
 
-			buffer->Push_Data();
+
 
 			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -542,7 +540,7 @@ void ModelAnimator::Render_MotionBlur()
 
 			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-			m_pShader->DrawIndexed(2, PS_ANIM, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
+			m_pShader->DrawIndexed(2, 1, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
 		}
 	}
 	else
@@ -564,79 +562,10 @@ void ModelAnimator::Render_MotionBlur()
 
 			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-			m_pShader->DrawIndexed(2, PS_ANIM, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
+			m_pShader->DrawIndexed(2, 1, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
 		}
 	}
 
-}
-
-void ModelAnimator::Render_MotionBlur_Instancing(shared_ptr<class InstancingBuffer>& buffer, shared_ptr<InstanceTweenDesc> tweenDesc, shared_ptr<InstanceRenderParamDesc> renderParamDesc)
-{
-	if (!m_pModel)
-		return;
-	if (!m_bRenderOn)
-		return;
-	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
-	auto preView = CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_preWorldMatrix().Invert();
-	m_pShader->GetMatrix("g_preView")->SetMatrix((_float*)&preView);
-
-	m_pShader->Push_InstanceTweenData(*tweenDesc);
-	m_pShader->Push_InstanceRenderParamData(*renderParamDesc);
-	m_pShader->GetSRV("TransformMap")->SetResource(m_pModel->Get_TransformSRV().Get());
-
-	auto& animAddonDesc = m_pModel->Get_AnimAddonDesc();
-	m_pShader->Push_AnimAddonData(animAddonDesc);
-
-	if (!m_pModel->Has_Parts())
-	{
-		const auto& meshes = m_pModel->Get_Meshes();
-
-		for (auto& mesh : meshes)
-		{
-			if (!mesh->material.expired())
-			{
-				mesh->material.lock()->Tick();
-				mesh->material.lock()->Push_TextureMapData();
-
-			}
-
-			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
-
-			mesh->vertexBuffer->Push_Data();
-			mesh->indexBuffer->Push_Data();
-
-			buffer->Push_Data();
-
-			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-			m_pShader->DrawIndexedInstanced(2, PS_ANIMINSTANCING, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
-		}
-	}
-	else
-	{
-		const auto meshes = m_pModel->Get_PartsMeshes();
-
-		for (auto& mesh : meshes)
-		{
-			if (!mesh->material.expired())
-			{
-				mesh->material.lock()->Tick();
-				mesh->material.lock()->Push_TextureMapData();
-
-			}
-
-			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
-
-			mesh->vertexBuffer->Push_Data();
-			mesh->indexBuffer->Push_Data();
-
-			buffer->Push_Data();
-
-			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-			m_pShader->DrawIndexedInstanced(2, PS_ANIMINSTANCING, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
-		}
-	}
 }
 
 InstanceID ModelAnimator::Get_InstanceID()

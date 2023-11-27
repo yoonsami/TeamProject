@@ -7,6 +7,7 @@
 #include "Camera.h"
 #include "ModelMesh.h"
 #include "GroupEffect.h"
+#include "StructuredBuffer.h"
 
 MeshEffect::MeshEffect(shared_ptr<Shader> shader)
     : Component(COMPONENT_TYPE::MeshEffect)
@@ -145,6 +146,55 @@ void MeshEffect::Render()
         // For. Draw call
         m_pShader->DrawIndexed(0, m_tDesc.iSamplerType, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
     }
+}
+
+void MeshEffect::Render_Instancing(shared_ptr<InstancingBuffer> buffer, shared_ptr<StructuredBuffer> pRenderParamBuffer)
+{
+	if (m_pModel == nullptr)
+		return;
+
+	// Bones
+	shared_ptr<BoneDesc> boneDesc = make_shared<BoneDesc>();
+
+	const _uint boneCount = m_pModel->Get_BoneCount();
+
+	for (_uint i = 0; i < boneCount; ++i)
+	{
+		shared_ptr<ModelBone> bone = m_pModel->Get_BoneByIndex(i);
+		boneDesc->transform[i] = bone->transform * Utils::m_matPivot;
+	}
+
+	m_pShader->Push_BoneData(*boneDesc);
+
+    buffer->Push_Data();
+
+	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
+
+    m_pShader->GetSRV("g_effectData")->SetResource(pRenderParamBuffer->Get_SRV().Get());
+
+	m_pShader->Push_LightData(CUR_SCENE->Get_LightParams());
+
+	// For. Draw meshes 
+	const auto& meshes = m_pModel->Get_Meshes();
+	for (auto& mesh : meshes)
+	{
+		// For. Material tick 
+		if (!mesh->material.expired()) 
+		{
+			mesh->vertexBuffer->Push_Data();
+			mesh->indexBuffer->Push_Data();
+		}
+		m_pMaterial->Tick();
+		m_pMaterial->Push_TextureMapData();
+
+		m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
+
+		// For. Setting Context Topology
+		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		// For. Draw call
+		m_pShader->DrawIndexed(1, m_tDesc.iSamplerType, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
+	}
 }
 
 void MeshEffect::Update_Desc()
@@ -815,7 +865,7 @@ _float4x4 MeshEffect::Get_LocalMatrix()
 
 InstanceID MeshEffect::Get_InstanceID()
 {
-	return make_pair(_ulonglong(m_pShader.get()), _ulonglong(m_pMaterial.get()));
+	return make_pair(_ulonglong(m_iRenderPriority), _ulonglong(m_pMaterial.get()));
 }
 
 static _float3 ToEulerAngles(Quaternion q)

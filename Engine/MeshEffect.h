@@ -1,7 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "MeshEffectData.h"
-
+class StructuredBuffer;
 class MeshEffect : public Component
 {
 public:
@@ -15,6 +15,7 @@ public:
 	virtual void            MeshEffect_Tick() ;
 	virtual void            MeshEffect_Final_Tick();
     void                    Render();
+    void                    Render_Instancing(shared_ptr<InstancingBuffer> buffer, shared_ptr<StructuredBuffer> pRenderParamBuffer);
 
     void                    Update_Desc();
 
@@ -40,7 +41,7 @@ public:
     _float4x4               Get_LocalMatrix();
     _int                    Get_RenderPriority() { return m_iRenderPriority; }
     InstanceID              Get_InstanceID();
-
+    const RenderParams&     Get_RenderParamDesc() { return m_RenderParams; }
 
     void                    Translate();
     void                    Scaling();

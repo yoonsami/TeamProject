@@ -10,7 +10,7 @@ public:
 	void Render(vector<shared_ptr<GameObject>>& gameObjects);
 
 	void Render_Shadow(vector<shared_ptr<GameObject>>& gameObjects);
-
+	void Render_MeshEffect(list <weak_ptr<GameObject>>& gameObjects);
 	void Clear_Data();
 
 private:
@@ -25,7 +25,7 @@ private:
 	void Render_Animator_Shadow(vector<shared_ptr<GameObject>>& gameObjects);
 	
 	//
-	void Render_Effect_Particle(vector<shared_ptr<GameObject>>& gameObjects);
+
 
 	void Add_Data(InstanceID instanceId, InstancingData& data);
 

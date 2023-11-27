@@ -22,6 +22,8 @@ GroupEffect::~GroupEffect()
 
 void GroupEffect::Init(void* pArg)
 {
+    
+
 }
 
 void GroupEffect::Tick()
@@ -128,11 +130,12 @@ void GroupEffect::Final_Tick()
 
 void GroupEffect::Render()
 {
-    for (auto& iter : m_lMemberEffects)
-    {
-        if(!iter.expired())
-            iter.lock()->Get_MeshEffect()->Render();
-    }
+	/*for (auto& iter : m_lMemberEffects)
+	{
+		if (!iter.expired())
+			iter.lock()->Get_MeshEffect()->Render();
+	}*/
+    INSTANCING.Render_MeshEffect(m_lMemberEffects);
 }
 
 void GroupEffect::Save(const wstring& path)
@@ -194,7 +197,7 @@ void GroupEffect::Kill_All()
 void GroupEffect::Create_MeshEffect(_int iIndex)
 {
     // For.  Mesh Effect  
-    auto iter = m_vMemberEffectData[iIndex];
+    const auto& iter = m_vMemberEffectData[iIndex];
     wstring wstrMeshEffectDataKey = iter.wstrEffectTag;
     Utils::DetachExt(wstrMeshEffectDataKey);
     shared_ptr<MeshEffectData> meshEffectData = RESOURCES.Get<MeshEffectData>(wstrMeshEffectDataKey);

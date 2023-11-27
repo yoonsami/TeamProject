@@ -314,90 +314,7 @@ MotionBlurOutput VS_AnimMotionBlur(VTXModel input)
     return output;
 }
 
-MotionBlurOutput VS_NonAnim_Instancing_MotionBlur(VTXModelInstancing input)
-{
-    MotionBlurOutput output;
-    
-    output.position = mul(float4(input.position, 1.f), BoneTransform[BoneIndex]);
-    output.position = mul(output.position, input.world);
-    output.position = mul(output.position, V);
-    float3 viewNormal = normalize(mul(input.normal, (float3x3) BoneTransform[BoneIndex]));
-    viewNormal = normalize(mul(viewNormal, (float3x3) input.world));
-    viewNormal = normalize(mul(viewNormal, (float3x3) V));
-    float4 vOldPos = mul(float4(input.position, 1.f), BoneTransform[BoneIndex]);
-    vOldPos = mul(vOldPos, input.preWorld);
-    vOldPos = mul(vOldPos, g_preView);
-    
-    float4 vNewPos = output.position;
-    
-    float3 vDir = vNewPos.xyz - vOldPos.xyz;
-    
-    float a = dot(normalize(vDir), viewNormal);
-    if (a < 0.f)
-        output.position = vOldPos;
-    else
-        output.position = vNewPos;
-    
-    output.position = mul(output.position, P);
-    
-    //[-2~2]
-    float2 velocity = (vNewPos.xy / vNewPos.w) - (vOldPos.xy / vOldPos.w);
-    
-    //[-1~1]
-    velocity.xy *= 0.5f;
-    velocity.y *= -1.f;
-   // output.vDir.xy = (velocity + 2.f) * 0.25f;
-    output.vDir.xy = velocity;
-    output.vDir.z = output.position.z;
-    output.vDir.w = output.position.w;
-    
-    return output;
-}
 
-//MotionBlurOutput VS_Anim_Instancing_MotionBlur(VTXModelInstancing input)
-//{
-//    MotionBlurOutput output;
-    
-//    row_major float4x4 m = GetAnimationMatrix_Instance(input);
-//    row_major float4x4 preM = GetPreAnimationMatrix_Instance(input);
-    
-//    output.position = mul(float4(input.position, 1.f), m);
-//    output.position = mul(output.position, input.world);
-//    output.position = mul(output.position, V);
-    
-//    float3 viewNormal = normalize(mul(input.normal, (float3x3) m));
-//    viewNormal = normalize(mul(viewNormal, (float3x3) input.world));
-//    viewNormal = normalize(mul(viewNormal, (float3x3) V));
-    
-//    float4 vOldPos = mul(float4(input.position, 1.f), preM);
-//    vOldPos = mul(vOldPos, input.preWorld);
-//    vOldPos = mul(vOldPos, g_preView);
-    
-//    float4 vNewPos = output.position;
-    
-//    float3 vDir = vNewPos.xyz - vOldPos.xyz;
-    
-//    float a = dot(normalize(vDir), viewNormal);
-//    if (a < 0.f)
-//        output.position = vOldPos;
-//    else
-//        output.position = vNewPos;
-    
-//    output.position = mul(output.position, P);
-    
-//   //[-2~2]
-//    float2 velocity = (vNewPos.xy / vNewPos.w) - (vOldPos.xy / vOldPos.w);
-    
-//    //[-1~1]
-//    velocity.xy *= 0.5f;
-//    velocity.y *= -1.f;
-//   // output.vDir.xy = (velocity + 2.f) * 0.25f;
-//    output.vDir.xy = velocity;
-//    output.vDir.z = output.position.z;
-//    output.vDir.w = output.position.w;
-    
-//    return output;
-//}
 
 // VS_Motion Trail
 MeshOutput VS_Anim_MotionTrail(VTXModel input)
@@ -1089,15 +1006,15 @@ technique11 T2_MotionBlur
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_MotionBlur()));
     }
-    pass NonAnim_Instancing_MotionBlur
-    {
-        SetVertexShader(CompileShader(vs_5_0, VS_NonAnim_Instancing_MotionBlur()));
-        SetGeometryShader(NULL);
-        SetRasterizerState(RS_Default);
-        SetDepthStencilState(DSS_LESS, 0);
-        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetPixelShader(CompileShader(ps_5_0, PS_MotionBlur()));
-    }
+    //pass NonAnim_Instancing_MotionBlur
+    //{
+    //    SetVertexShader(CompileShader(vs_5_0, VS_NonAnim_Instancing_MotionBlur()));
+    //    SetGeometryShader(NULL);
+    //    SetRasterizerState(RS_Default);
+    //    SetDepthStencilState(DSS_LESS, 0);
+    //    SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+    //    SetPixelShader(CompileShader(ps_5_0, PS_MotionBlur()));
+    //}
     pass AnimMotionBlur
     {
         SetVertexShader(CompileShader(vs_5_0, VS_AnimMotionBlur()));

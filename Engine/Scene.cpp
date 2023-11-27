@@ -170,7 +170,7 @@ void Scene::Add_GameObject(shared_ptr<GameObject> object, _bool staticFlag)
 	m_GameObjects.push_back(object);
 
 	if (object->Get_Camera())
-		m_Cameras.push_back(object);
+		m_Cameras.push_back(object); 
 
 	if (object->Get_Light())
 		m_Lights.push_back(object);

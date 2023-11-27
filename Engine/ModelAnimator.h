@@ -39,7 +39,6 @@ public:
 	void Render_Shadow_Instancing(shared_ptr<class InstancingBuffer>& buffer, shared_ptr<InstanceTweenDesc> tweenDesc, shared_ptr<InstanceRenderParamDesc> renderParamDesc );
 
 	void Render_MotionBlur();
-	void Render_MotionBlur_Instancing(shared_ptr<class InstancingBuffer>& buffer, shared_ptr<InstanceTweenDesc> tweenDesc, shared_ptr<InstanceRenderParamDesc> renderParamDesc);
 
     InstanceID Get_InstanceID();
     TweenDesc& Get_TweenDesc() { return m_TweenDesc; }
