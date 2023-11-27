@@ -56,6 +56,14 @@ void UiMouseController::Tick()
         Start();
 }
 
+void UiMouseController::Change_Mouse_State(_bool bValue)
+{
+    if (bValue == g_bIsCanMouseMove)
+        return;
+
+    Change_Mouse_State();
+}
+
 void UiMouseController::Change_Mouse_State()
 {
     g_bIsCanMouseMove = !g_bIsCanMouseMove;

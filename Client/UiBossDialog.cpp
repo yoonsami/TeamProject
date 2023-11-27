@@ -5,6 +5,7 @@
 #include "MeshRenderer.h"
 #include "FontRenderer.h"
 #include "MainUiController.h"
+#include "UiMouseController.h"
 
 UiBossDialog::UiBossDialog()
 {
@@ -23,6 +24,7 @@ HRESULT UiBossDialog::Init()
 
     auto pScene = CUR_SCENE;
     m_pUiTotalController = pScene->Get_UI(L"Main_Ui_Controller");
+    m_pUiMouseController = pScene->Get_GameObject(L"UI_Mouse_Click");
 
     m_iMaxIndex = m_iCurIndex = 0;
     m_bIsFinish = false;
@@ -55,6 +57,8 @@ void UiBossDialog::Create_Dialog(BOSS eType)
     auto pScene = CUR_SCENE;
     vector<weak_ptr<GameObject>> addedObj;
     pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Dialog.dat", addedObj);
+
+    m_pUiMouseController.lock()->Get_Script<UiMouseController>()->Change_Mouse_State(true);
 
     _uint iSize = IDX(addedObj.size());
     for (_uint i = 0; i < iSize; ++i)
@@ -135,10 +139,12 @@ void UiBossDialog::Next_Dialog()
 
 _bool UiBossDialog::Is_Finish()
 {
-    if (true == m_bIsCreated || true == m_bIsFinish)
+    if (true == m_bIsCreated && true == m_bIsFinish)
     {
         m_bIsCreated = false;
         m_bIsFinish = false;
+
+        m_pUiMouseController.lock()->Get_Script<UiMouseController>()->Change_Mouse_State(false);
 
         return true;
     }
@@ -156,7 +162,6 @@ void UiBossDialog::Remove_Dialog()
         false == m_pPlayerBg.expired() ||
         false == m_pPlayerDialog.expired())
     {
-        m_bIsCreated = false;
         auto pScene = CUR_SCENE;
         EVENTMGR.Delete_Object(m_pNext.lock());
         EVENTMGR.Delete_Object(m_pNpcName.lock());
