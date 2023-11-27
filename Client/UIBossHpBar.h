@@ -11,6 +11,7 @@ public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
 
+    void Remove_HpBar();
 
 private:
     void Check_Target();
