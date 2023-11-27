@@ -84,7 +84,7 @@ void UiBossDialog::Create_Dialog(BOSS eType)
 
     if (false == m_pNpcName.expired())
     {
-        // npc type Á¤ÇÏ±â
+        // npc type ï¿½ï¿½ï¿½Ï±ï¿½
         wstring strNpcName = GET_DATA(eType).Name;
         m_pNpcName.lock()->Get_FontRenderer()->Get_Text() = strNpcName;
         _float4 vecPos = m_pNpcName.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
@@ -93,14 +93,14 @@ void UiBossDialog::Create_Dialog(BOSS eType)
     }
     if (false == m_pNpcDialog.expired())
     {
-        // Ã¹ ´ëÈ­ Á¤ÇÏ±â
+        // Ã¹ ï¿½ï¿½È­ ï¿½ï¿½ï¿½Ï±ï¿½
         m_iMaxIndex = DATAMGR.Get_Boss_Dialog_Size(eType);
         m_pNpcDialog.lock()->Get_FontRenderer()->Get_Text() = DATAMGR.Get_Boss_Dialog(eType, 0);
         m_pNpcDialog.lock()->Get_FontRenderer()->Set_TimePerChar(0.05f);
     }
     if (false == m_pNext.expired())
     {
-        // ¹öÆ° ½ÇÇà ÇÔ¼ö ÁöÁ¤
+        // ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½
         m_pNext.lock()->Get_Button()->AddOnClickedEvent([&]()
             {
                 this->Next_Dialog();
@@ -108,7 +108,7 @@ void UiBossDialog::Create_Dialog(BOSS eType)
     }
     if (false == m_pUiTotalController.expired())
     {
-        // ´ëÈ­ ÇÏ´Â µ¿¾È ´Ù ²ô±â
+        // ï¿½ï¿½È­ ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½
         m_pUiTotalController.lock()->Get_Script<MainUiController>()->Set_MainUI_Render(false);
     }
 
