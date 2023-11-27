@@ -62,7 +62,10 @@
 #include "UIBossHpBar.h"
 #include "UiComboEffect.h"
 #include "UiSkillGauge.h"
-
+#include "UiSettingController.h"
+#include "UiQuestController.h"
+#include "UiBossDialog.h"
+#include "UIInteraction.h"
 
 #include <filesystem>
 #include "GachaScene.h"
@@ -612,28 +615,6 @@ void MirScene::Load_Boss_Spike(shared_ptr<GameObject> pPlayer)
 
 void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 {
-	/*wstring assetPath = L"..\\Resources\\Textures\\UITexture\\Main\\";
-
-	for (auto& entry : fs::recursive_directory_iterator(assetPath))
-	{
-		if (entry.is_directory())
-			continue;
-
-		wstring filePath = entry.path().wstring();
-		wstring fileName = entry.path().filename().wstring();
-		Utils::DetachExt(fileName);
-		RESOURCES.Load<Texture>(fileName, filePath);
-	}*/
-	auto scene = CUR_SCENE;
-	list<shared_ptr<GameObject>>& tmp = static_pointer_cast<LoadingScene>(CUR_SCENE)->Get_StaticObjectsFromLoader();
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Main.dat", tmp);
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Main_Button.dat", tmp);
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Char_Change.dat", tmp);
-	//Load_UIFile(L"..\\Resources\\UIData\\UI_Gacha.dat");
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck.dat", tmp, false);
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", tmp, false);
-	//Load_UIFile(L"..\\Resources\\UIData\\UI_MonsterHp.dat", tmp);
-	//Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat");
 
 
 	{
@@ -644,7 +625,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 
 	{
@@ -654,10 +635,8 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		auto pScript = make_shared<UiGachaController>();
 		pObj->Add_Component(pScript);
 
-		pObj->Set_Render(false);
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
-
+		Add_GameObject(pObj);
 	}
 
 	{
@@ -668,7 +647,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 
 	{
@@ -679,7 +658,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 
 	{
@@ -699,7 +678,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}*/
 
 	{
@@ -710,9 +689,52 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 
+	{
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_Name(L"UI_Setting_Controller");
+
+		auto pScript = make_shared<UiSettingController>();
+		pObj->Add_Component(pScript);
+
+		pObj->Set_LayerIndex(Layer_UI);
+		Add_GameObject(pObj);
+	}
+
+	{
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_Name(L"UI_Dialog_Controller");
+
+		auto pScript = make_shared<UiQuestController>();
+		pObj->Add_Component(pScript);
+
+		pObj->Set_LayerIndex(Layer_UI);
+		Add_GameObject(pObj);
+	}
+
+	{
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_Name(L"UI_Boss_Dialog");
+
+		auto pScript = make_shared<UiBossDialog>();
+		pObj->Add_Component(pScript);
+
+		pObj->Set_LayerIndex(Layer_UI);
+		Add_GameObject(pObj);
+	}
+
+	{
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_Name(L"UI_Interaction");
+
+		auto pScript = make_shared<UIInteraction>();
+		pObj->Add_Component(pScript);
+
+		pObj->Set_LayerIndex(Layer_UI);
+		Add_GameObject(pObj);
+	}
 
 	{
 		auto pObj = Get_UI(L"UI_Combo_Effect");
@@ -730,7 +752,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj->Add_Component(pScript);
 		}
 	}
-	
+
 
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Card_Deck_Exit");
@@ -752,7 +774,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 
 	{
@@ -767,11 +789,22 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	}
 
 	{
+		auto pObj = Get_UI(L"UI_Main_Button3");
+		if (nullptr != pObj)
+		{
+			pObj->Get_Button()->AddOnClickedEvent([]()
+				{
+					CUR_SCENE->Get_UI(L"UI_Setting_Controller")->Get_Script<UiSettingController>()->Set_Render(true);
+				});
+		}
+	}
+
+
+	{
 		auto pScript = make_shared<UiSkillButtonEffect>();
 		auto pObj = Get_UI(L"UI_Skill0_Effect");
 		if (nullptr != pObj)
 			pObj->Add_Component(pScript);
-
 
 		pScript = make_shared<UiSkillButtonEffect>();
 		pObj = Get_UI(L"UI_Skill2_Effect");
@@ -818,7 +851,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		if (nullptr != pObj) {
 			pObj->Add_Component(pScript);
 		}
-		
+
 	}
 
 	{
@@ -889,18 +922,4 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		}
 	}
 
-}
-
-void MirScene::Load_Debug()
-{
-	{
-		shared_ptr<GameObject> debugText = make_shared<GameObject>();
-		debugText->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-300.f, 400.f, 5.f, 1.f));
-		debugText->Add_Component(make_shared<FontRenderer>(L""));
-		debugText->Get_FontRenderer()->Set_Font(RESOURCES.Get<CustomFont>(L"136ex"), Color(0.5f, 0.5f, 0.5f, 1.f), 1.f);
-		debugText->Set_LayerIndex(Layer_UI);
-		debugText->Add_Component(make_shared<ObjectTransformDebug>());
-		debugText->Get_Script<ObjectTransformDebug>()->Set_Target(Get_GameObject(L"Boss_Spike"));
-		Add_GameObject(debugText);
-	}
 }

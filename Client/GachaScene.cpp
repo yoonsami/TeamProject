@@ -91,7 +91,6 @@ void GachaScene::Final_Tick()
 HRESULT GachaScene::Load_Scene()
 {
 	auto player = Load_Player();
-	Load_Light();
 	Load_Camera();
 	Load_MapFile(m_Desc.strMapFileName, player);
 	return S_OK;
@@ -111,6 +110,7 @@ shared_ptr<GameObject> GachaScene::Load_Player()
 	wstring modelName = L"";
 
 	ObjPlayer->Set_DrawShadow(true);
+	ObjPlayer->Set_VelocityMap(true);
 	ObjPlayer->Set_ObjectGroup(OBJ_PLAYER);
 	Add_GameObject(ObjPlayer);
 	Gacha_FSM_Desc desc;
@@ -157,9 +157,11 @@ shared_ptr<GameObject> GachaScene::Load_Player()
 					shared_ptr<Model> model = RESOURCES.Get<Model>(L"Yeopo_Horse");
 					renderer->Set_Model(model);
 				}
-
 				ObjVehicle->Add_Component(renderer);
+				ObjVehicle->Set_DrawShadow(true);
+				ObjVehicle->Set_VelocityMap(true);
 				renderer->Set_CurrentAnim(L"SQ_SpecialHero_Yeopo_Horse", false, 1.f);
+				renderer->Set_RenderState(true);
 			}
 
 			ObjVehicle->Set_Name(L"Yeopo_RedHorse");

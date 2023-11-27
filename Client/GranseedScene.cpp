@@ -418,7 +418,7 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 
 	{
@@ -429,7 +429,7 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 
 	{
@@ -440,7 +440,7 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 
 	{
@@ -451,7 +451,7 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 
 	{
@@ -482,7 +482,7 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 
 	{
@@ -493,7 +493,7 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 
 	{
@@ -504,7 +504,7 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 	
 	{
@@ -515,7 +515,7 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 	
 	{
@@ -526,7 +526,7 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 
 	{
@@ -567,7 +567,7 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 
 	{

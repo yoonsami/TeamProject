@@ -68,6 +68,10 @@
 #include "GachaScene.h"
 #include "GranseedScene.h"
 #include "SpikeScene.h"
+#include "UiSettingController.h"
+#include "UiQuestController.h"
+#include "UiBossDialog.h"
+#include "UIInteraction.h"
 namespace fs = std::filesystem;
 
 KrisScene::KrisScene()
@@ -636,7 +640,8 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	//Load_UIFile(L"..\\Resources\\UIData\\UI_Mouse.dat");
 
 
-	/*{
+
+	{
 		auto pObj = make_shared<GameObject>();
 		pObj->Set_Name(L"Main_Ui_Controller");
 
@@ -644,8 +649,8 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
-	}*/
+		Add_GameObject(pObj);
+	}
 
 	{
 		auto pObj = make_shared<GameObject>();
@@ -655,7 +660,7 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 
 	{
@@ -666,7 +671,7 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 
 	{
@@ -677,7 +682,7 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 
 	{
@@ -697,7 +702,7 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}*/
 
 	{
@@ -708,9 +713,52 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 
+	{
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_Name(L"UI_Setting_Controller");
+
+		auto pScript = make_shared<UiSettingController>();
+		pObj->Add_Component(pScript);
+
+		pObj->Set_LayerIndex(Layer_UI);
+		Add_GameObject(pObj);
+	}
+
+	{
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_Name(L"UI_Dialog_Controller");
+
+		auto pScript = make_shared<UiQuestController>();
+		pObj->Add_Component(pScript);
+
+		pObj->Set_LayerIndex(Layer_UI);
+		Add_GameObject(pObj);
+	}
+
+	{
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_Name(L"UI_Boss_Dialog");
+
+		auto pScript = make_shared<UiBossDialog>();
+		pObj->Add_Component(pScript);
+
+		pObj->Set_LayerIndex(Layer_UI);
+		Add_GameObject(pObj);
+	}
+
+	{
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_Name(L"UI_Interaction");
+
+		auto pScript = make_shared<UIInteraction>();
+		pObj->Add_Component(pScript);
+
+		pObj->Set_LayerIndex(Layer_UI);
+		Add_GameObject(pObj);
+	}
 
 	{
 		auto pObj = Get_UI(L"UI_Combo_Effect");
@@ -720,14 +768,6 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj->Add_Component(pScript);
 		}
 	}
-
-
-
-
-
-
-
-
 	{
 		auto pObj = Get_UI(L"UI_Skill_Use_Gauge");
 		if (nullptr != pObj)
@@ -758,7 +798,7 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Add_Component(pScript);
 
 		pObj->Set_LayerIndex(Layer_UI);
-		Add_GameObject(pObj, true);
+		Add_GameObject(pObj);
 	}
 
 	{
@@ -772,24 +812,16 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		}
 	}
 
-
-
-	// test code
 	{
-		/*auto pObj = Get_GameObject(L"Boss_Dellons");
-			Load_UIFile(L"..\\Resources\\UIData\\UI_BossHpBar.dat");
-		if(pObj)
+		auto pObj = Get_UI(L"UI_Main_Button3");
+		if (nullptr != pObj)
 		{
-
-			auto pScript = make_shared<UIBossHpBar>();
-			pObj->Add_Component(pScript);
-		}*/
+			pObj->Get_Button()->AddOnClickedEvent([]()
+				{
+					CUR_SCENE->Get_UI(L"UI_Setting_Controller")->Get_Script<UiSettingController>()->Set_Render(true);
+				});
+		}
 	}
-
-
-
-
-
 
 
 	{
