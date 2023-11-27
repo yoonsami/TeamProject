@@ -301,6 +301,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\21.UiBossDialog">
       <UniqueIdentifier>{476d526a-e4bc-4678-8005-5dfc05d3244d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\04.Boss_Giant_Mir_FSM">
+      <UniqueIdentifier>{222bdfb6-ec6a-4014-935c-b6ae4a1d194a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -610,6 +613,9 @@
     <ClInclude Include="UiBossDialog.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\21.UiBossDialog</Filter>
     </ClInclude>
+    <ClInclude Include="Boss_Giant_Mir_FSM.h">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\04.Boss_Giant_Mir_FSM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -885,6 +891,9 @@
     </ClCompile>
     <ClCompile Include="UiBossDialog.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\21.UiBossDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="Boss_Giant_Mir_FSM.cpp">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\04.Boss_Giant_Mir_FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,7 @@
 #include "FSM.h"
 #include "ForwardMovingSkillScript.h"
 
-class Boss_Mir_FSM :
+class Boss_Giant_Mir_FSM :
 	public FSM
 {
 public:
@@ -24,8 +24,6 @@ public:
 		skill_Assault, //ASSAULT = skill_2100 Animation
 		skill_Return, //RETURN POSITION AFTER ASSAULT  = skill_5100 Animation
 
-		// ============ Restart Phase =============
-		skill_Restart_Phase1,  
 
 		// ============ Phase2 ===========
 		SQ_SBRin_Roar,
@@ -39,7 +37,7 @@ public:
 		skill_12100, //SKILL 8 ThunderAttack
 		skill_13100, //SKILL 9 Breath to Forward
 		skill_14100, //SKILL 10 Breath to Ground Twice
-		
+
 		skill_100000, //SKILL 11  Ready to PowerBreath
 		skill_100100, //SKILL 11 - 1-  Shoot PowerBreath (Short)- end
 
@@ -108,11 +106,7 @@ private:
 	void skill_Assault_Init();
 	void skill_Return();
 	void skill_Return_Init();
-	
-	void skill_Restart_Phase1();
-	void skill_Restart_Phase1_Init();
-	void skill_Restart_Phase1_Intro();
-	void skill_Restart_Phase1_Intro_Init();
+
 
 	void SQ_SBRin_Roar();
 	void SQ_SBRin_Roar_Init();
@@ -153,8 +147,7 @@ private:
 	void Set_AttackPattern();
 	void Setting_DragonBall();
 	void Calculate_IntroHeadCam();
-	void Calculate_PhaseChangeHeadCam();
-	
+
 
 	void TailAttackCollider_On(const wstring& skillname);
 	void TailAttackCollider_Off();
@@ -168,18 +161,17 @@ private:
 	DIR m_eAttackDir = DIR::NONE;
 	PHASE m_eCurPhase = PHASE::PHASE1;
 
+
 	_float3 m_vTurnVector = _float3(0.f);
 	_float3 m_vFirstPos = _float3(0.f);
 	_float m_fTurnSpeed = XM_PI * 0.5f;
 	_float m_fIntroCamDistance = 0.f;
 	_float m_fCamRatio = 0.f;
 
-
-
 	COOLTIMEINFO m_tAttackCoolTime = { 2.f, 0.f };
 	COOLTIMEINFO m_tBreathCoolTime = { 0.15f, 0.f };
 	COOLTIMEINFO m_tMeteorCoolTime = { 1.f, 0.f };
-	
+
 	_bool m_bIntroCam = false;
 	_bool m_bDetected = false;
 	_bool m_bTurnMotion = false;

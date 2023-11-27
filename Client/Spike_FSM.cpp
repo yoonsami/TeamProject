@@ -1094,6 +1094,9 @@ void Spike_FSM::skill_1400()
     {
         Add_GroupEffectOwner(L"Spike_1400_2", _float3(0.f, 0.f, 1.f));
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
+        
+        if (!m_pCamera.expired())
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.3f, 0.4f);
     }
     else if (m_iCurFrame == 15)
         AttackCollider_Off();
