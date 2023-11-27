@@ -67,6 +67,8 @@ void GachaScene::Init()
 {
 	Load_Scene();
 	__super::Init();
+	if(Get_GameObject(L"Yeopo_RedHorse"))
+	Get_GameObject(L"Yeopo_RedHorse")->Get_Transform()->Set_WorldMat(Get_GameObject(L"Yeopo")->Get_Transform()->Get_WorldMatrix());
 }
 
 void GachaScene::Tick()
@@ -93,6 +95,8 @@ HRESULT GachaScene::Load_Scene()
 	auto player = Load_Player();
 	Load_Camera();
 	Load_MapFile(m_Desc.strMapFileName, player);
+
+
 	return S_OK;
 }
 
