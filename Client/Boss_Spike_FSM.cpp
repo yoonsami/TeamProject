@@ -25,8 +25,11 @@ Boss_Spike_FSM::~Boss_Spike_FSM()
 {
     if (!m_pTarget.expired())
     {
-        m_pTarget.lock()->Get_CharacterController()->Get_Actor()->setFootPosition({ m_DieCamPlayerWorld.Translation().x,  m_DieCamPlayerWorld.Translation().y, m_DieCamPlayerWorld.Translation().z });
-        m_pTarget.lock()->Get_Animator()->Set_RenderState(true);
+        if (m_DieCamPlayerWorld != XMMatrixIdentity())
+        {
+            m_pTarget.lock()->Get_CharacterController()->Get_Actor()->setFootPosition({ m_DieCamPlayerWorld.Translation().x,  m_DieCamPlayerWorld.Translation().y, m_DieCamPlayerWorld.Translation().z });
+            m_pTarget.lock()->Get_Animator()->Set_RenderState(true);
+        }
     }
 
     if (!m_pCamera.expired())

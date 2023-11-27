@@ -14,6 +14,7 @@
 #include "UIBossHpBar.h"
 #include "ObjectDissolve.h"
 #include "CharacterController.h"
+#include "UiBossDialog.h"
 
 
 Boss_Dellons_FSM::Boss_Dellons_FSM()
@@ -63,6 +64,8 @@ HRESULT Boss_Dellons_FSM::Init()
         if (!m_pTarget.expired())
             Get_Transform()->LookAt(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS));
 
+        if (!m_pOwner.expired())
+            m_pOwner.lock()->Add_Component(make_shared<UiBossDialog>());
 
         m_bInitialize = true;
     }
@@ -543,10 +546,14 @@ void Boss_Dellons_FSM::talk_01()
     Calculate_CamBoneMatrix();
 
     //Dialogue END
-    if (KEYTAP(KEY_TYPE::Z))
+    if (m_pOwner.lock()->Get_Script<UiBossDialog>())
     {
-        CUR_SCENE->Set_AttackCall(true);
-        m_eCurState = STATE::b_idle;
+        if (m_pOwner.lock()->Get_Script<UiBossDialog>()->Is_Finish() == true)
+        {
+            CUR_SCENE->Set_AttackCall(true);
+            m_eCurState = STATE::b_idle;
+            g_bCutScene = false;
+        }
     }
 }
 
@@ -562,6 +569,9 @@ void Boss_Dellons_FSM::talk_01_Init()
     m_bSuperArmor = false;
 
     g_bCutScene = true;
+
+    if (m_pOwner.lock()->Get_Script<UiBossDialog>())
+        m_pOwner.lock()->Get_Script<UiBossDialog>()->Create_Dialog(BOSS::DELLONS);
 
     Calculate_CamBoneMatrix();
 }
@@ -621,8 +631,6 @@ void Boss_Dellons_FSM::b_idle_Init()
         }
 
         m_bCreateUI = true;
-
-        g_bCutScene = false;
     }
 }
 

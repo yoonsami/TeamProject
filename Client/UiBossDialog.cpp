@@ -135,7 +135,7 @@ void UiBossDialog::Next_Dialog()
 
 _bool UiBossDialog::Is_Finish()
 {
-    if (true == m_bIsCreated || true == m_bIsFinish)
+    if (true == m_bIsCreated && true == m_bIsFinish)
     {
         m_bIsCreated = false;
         m_bIsFinish = false;
@@ -156,7 +156,7 @@ void UiBossDialog::Remove_Dialog()
         false == m_pPlayerBg.expired() ||
         false == m_pPlayerDialog.expired())
     {
-        m_bIsCreated = false;
+        //m_bIsCreated = false;
         auto pScene = CUR_SCENE;
         EVENTMGR.Delete_Object(m_pNext.lock());
         EVENTMGR.Delete_Object(m_pNpcName.lock());
