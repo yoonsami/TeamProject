@@ -436,6 +436,9 @@ void UiSettingController::Tick()
     if (true == Check_Expire())
 		return;
 
+    if (KEYTAP(KEY_TYPE::ESC))
+        Set_Render(false);
+
     if (true == m_bFPS)
         Change_FPS_Font();
 
