@@ -577,6 +577,7 @@ void Widget_GroupEffectMaker::Create()
 	pGroupEffectObj->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
 	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
 	pGroupEffectObj->Get_GroupEffect()->Set_InitWorldMatrix(pGroupEffectObj->Get_Transform()->Get_WorldMatrix());
+	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectMaterials();
 
 	// For. bind to member 
 	m_pCurrentGroup = pGroupEffectObj;

@@ -50,6 +50,7 @@ void GroupEffectOwner::PlayEffect()
 	pGroupEffectObj->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
 	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
 	pGroupEffectObj->Get_GroupEffect()->Set_InitWorldMatrix(Get_Transform()->Get_WorldMatrix());
+	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectMaterials();
 	pGroupEffectObj->Set_Name(m_wstrGroupEffectTag);
 	m_pGroupEffect = pGroupEffectObj;
 

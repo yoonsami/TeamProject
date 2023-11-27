@@ -22,6 +22,7 @@ public:
 	void				Kill_All();
 
 	/* Setter */
+	void				Set_MemberEffectMaterials();
 	void				Set_Tag(wstring wstrTag) { m_wstrTag = wstrTag; }
 	void				Set_MemberEffectData(vector <GroupEffectData::MemberEffect_Desc> vData) { m_vMemberEffectData = vData; }
 	void				Set_MemberEffectData_index(_int iIndex, GroupEffectData::MemberEffect_Desc& tTemp) { m_vMemberEffectData[iIndex] = tTemp; }
@@ -32,8 +33,8 @@ public:
 	void				Set_InitWorldMatrix(const _float4x4& mInitMat) { m_mInitWorldMatrix = mInitMat; }
 
 	/* Getter */
-	vector <GroupEffectData::MemberEffect_Desc>& Get_MemberEffectData() { return m_vMemberEffectData; }
-	GroupEffectData::MemberEffect_Desc& Get_MemberEffectData_index(_int iIndex) { return m_vMemberEffectData[iIndex]; }
+	vector <GroupEffectData::MemberEffect_Desc>&	Get_MemberEffectData() { return m_vMemberEffectData; }
+	GroupEffectData::MemberEffect_Desc&				Get_MemberEffectData_index(_int iIndex) { return m_vMemberEffectData[iIndex]; }
 
 private:
 	void				Create_MeshEffect(_int iIndex);

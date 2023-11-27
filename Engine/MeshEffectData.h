@@ -7,7 +7,7 @@ public:
     typedef struct tagMeshEffectVData
     {
         // Property
-        const char* pszTag = {""};
+        string      strTag = {""};
         _float      fDuration = { 0.f };
         _bool       bLightOn = { false };
         _float      fLightIntensity = { 0.f };
@@ -151,16 +151,14 @@ public:
     virtual void    Load(const wstring& path) override;
 
     /* Setter */
-    void            Set_Desc(DESC tDesc);
+    void            Set_Desc(DESC tDesc) { m_tDesc = tDesc; }
     void            Set_TransformDesc(Transform_Desc tDesc) { m_tTransformDesc = tDesc; }
 
     /* Getter */
-    wstring         Get_MeshEffectDataTag() { return m_wstrTag; }
     DESC            Get_Desc() { return m_tDesc; }
     Transform_Desc  Get_TransformDesc() { return m_tTransformDesc; }
 
 private:
-    wstring         m_wstrTag;
     DESC            m_tDesc;
     Transform_Desc  m_tTransformDesc;
 };

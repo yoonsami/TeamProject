@@ -23,9 +23,7 @@ void MeshEffectData::Load(const wstring& path)
 
     // For. Load Desc 
     /* Property */
-    string strTag = file->Read<string>();
-    m_tDesc.pszTag = strTag.c_str();
-    m_wstrTag = Utils::ToWString(strTag);
+    m_tDesc.strTag = file->Read<string>();
     m_tDesc.fDuration = file->Read<_float>();
     m_tDesc.bLightOn = file->Read<_bool>();    
     m_tDesc.bUseFadeOut = file->Read<_bool>();
@@ -166,10 +164,4 @@ void MeshEffectData::Load(const wstring& path)
     m_tTransformDesc.vRandomAxis_Max = file->Read<_float3>();
     for (_int i = 0; i < 2; i++)
         m_tTransformDesc.bBillbordAxes[i] = file->Read<_bool>();
-}
-
-void MeshEffectData::Set_Desc(DESC tDesc)
-{
-    m_tDesc = tDesc;
-    m_wstrTag = Utils::ToWString(m_tDesc.pszTag);
 }

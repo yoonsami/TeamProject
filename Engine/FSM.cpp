@@ -149,7 +149,6 @@ _float3 FSM::Soft_Turn_ToTarget(const _float4& vTargetPos, _float turnSpeed)
 	return vDir;
 }
 
-
 _bool FSM::Target_In_AttackRange(_float* pGap)
 {
 	_bool bFlag = false;
@@ -328,10 +327,13 @@ void FSM::Add_Effect(const wstring& strSkilltag)
 
 	// For. GroupEffect component 
 	shared_ptr<GroupEffect> pGroupEffect = make_shared<GroupEffect>();
+
 	pGroupEffectObj->Add_Component(pGroupEffect);
 	pGroupEffectObj->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
 	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
 	pGroupEffectObj->Get_GroupEffect()->Set_InitWorldMatrix(pGroupEffectObj->Get_Transform()->Get_WorldMatrix());
+	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectMaterials();
+	pGroupEffectObj->Set_Name(strSkilltag);
 
 	// For. Add Effect GameObject to current scene
 	EVENTMGR.Create_Object(pGroupEffectObj);
@@ -360,6 +362,7 @@ void FSM::Add_And_Set_Effect(const wstring& strSkilltag)
 	pGroupEffectObj->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
 	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
 	pGroupEffectObj->Get_GroupEffect()->Set_InitWorldMatrix(Get_Transform()->Get_WorldMatrix());
+	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectMaterials();
 	pGroupEffectObj->Set_Name(strSkilltag);
 	m_pGroupEffect = pGroupEffectObj;
 
