@@ -103,6 +103,7 @@ enum class NPCTYPE
 {
 	QUEST,
 	GACHA,
+	POTION,
 	MAX
 };
 

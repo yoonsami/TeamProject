@@ -1712,7 +1712,9 @@ void Spike_FSM::skill_400100()
     {
         if (m_iCurFrame == 26)
         {
-            vUp = m_pCamera.lock()->Get_Transform()->Get_Transform()->Get_State(Transform_State::UP).xyz();
+            _float4x4 matWorld = Get_Transform()->Get_WorldMatrix();
+            vUp = matWorld.Backward() + matWorld.Up() * 2.f;
+            vUp.Normalize();
             fAngle = 0.f;
             m_vCamStopPos = m_vCenterBonePos;
             

@@ -74,6 +74,8 @@
 #include "NPC_FSM.h"
 #include "GranseedGuard01_FSM.h"
 #include "GranseedGuard02_FSM.h"
+#include "GranseedPotion_FSM.h"
+#include "GranseedTraveler_FSM.h"
 namespace fs = std::filesystem;
 
 GranseedScene::GranseedScene()
@@ -722,8 +724,14 @@ void GranseedScene::Load_NPC(const wstring& dataFileName)
 			switch (iFSMIndex)
 			{
 			case NPC_FSM::POTION:
+			{
+				auto fsm = make_shared<GranseedPotion_FSM>();
+				fsm->Set_MinMovePos(vMinPos);
+				fsm->Set_MaxMovePos(vMaxPos);
+				obj->Add_Component(fsm);
+			}
 
-				break;
+			break;
 			case NPC_FSM::GUARD1:
 			{
 				auto fsm = make_shared<GranseedGuard01_FSM>();
@@ -743,7 +751,12 @@ void GranseedScene::Load_NPC(const wstring& dataFileName)
 
 				break;
 			case NPC_FSM::TRAVELER:
-
+			{
+				auto fsm = make_shared<GranseedTraveler_FSM>();
+				fsm->Set_MinMovePos(vMinPos);
+				fsm->Set_MaxMovePos(vMaxPos);
+				obj->Add_Component(fsm);
+			}
 				break;
 			}
 			{

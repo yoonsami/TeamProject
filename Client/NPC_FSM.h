@@ -17,6 +17,8 @@ public:
     virtual void InteractWithPlayer() abstract;
     virtual void AttackCollider_On(const wstring& skillname, _float fAttackDamage) override {}
     virtual void AttackCollider_Off() override {}
+    virtual _bool Can_Interact();
+
 
     void Set_MinMovePos(const _float3& pos) { m_vMinMovingPoint = pos; }
     void Set_MaxMovePos(const _float3& pos) { m_vMaxMovingPoint = pos; }

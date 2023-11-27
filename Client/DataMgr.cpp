@@ -518,6 +518,7 @@ void DataMgr::Initialize()
         m_NpcName.resize(IDX(NPCTYPE::MAX));
         m_NpcName[0] = L"아리엘";
         m_NpcName[1] = L"가챠맨";
+        m_NpcName[2] = L"상점걸";
     }
 
 

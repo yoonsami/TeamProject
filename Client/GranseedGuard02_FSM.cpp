@@ -103,7 +103,9 @@ void GranseedGuard02_FSM::n_run_Init()
 
 void GranseedGuard02_FSM::talk_01()
 {
-
+	Look_DirToTarget(XM_PI * 0.5f);
+	if (KEYTAP(KEY_TYPE::E))
+		m_eCurState = STATE::n_idle;
 }
 
 void GranseedGuard02_FSM::talk_01_Init()
@@ -184,4 +186,8 @@ void GranseedGuard02_FSM::Set_State(_uint iIndex)
 
 void GranseedGuard02_FSM::InteractWithPlayer()
 {
+	auto pPlayer = CUR_SCENE->Get_GameObject(L"Player");
+	m_vDirToTarget = (pPlayer->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+	m_vDirToTarget.y = 0;
+	m_eCurState = STATE::talk_01;
 }

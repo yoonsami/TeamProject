@@ -304,6 +304,12 @@
     <Filter Include="02.Component\01.FSM\05.NPC_FSM\00.Granseed\02.GranseedGuard02">
       <UniqueIdentifier>{13f40f8c-b93e-4e74-92c4-058fa58289de}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\01.FSM\05.NPC_FSM\00.Granseed\03.GranseedTraveler">
+      <UniqueIdentifier>{ffe508f9-7cb0-4295-b485-5e8a7aa0ac1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\05.NPC_FSM\00.Granseed\04.GranseedChildren">
+      <UniqueIdentifier>{41d48cdd-c6b0-4019-99ea-09675940be92}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -616,6 +622,15 @@
     <ClInclude Include="GranseedGuard02_FSM.h">
       <Filter>02.Component\01.FSM\05.NPC_FSM\00.Granseed\02.GranseedGuard02</Filter>
     </ClInclude>
+    <ClInclude Include="GranseedPotion_FSM.h">
+      <Filter>02.Component\01.FSM\05.NPC_FSM\00.Granseed\00.GranseedPotion</Filter>
+    </ClInclude>
+    <ClInclude Include="GranseedTraveler_FSM.h">
+      <Filter>02.Component\01.FSM\05.NPC_FSM\00.Granseed\03.GranseedTraveler</Filter>
+    </ClInclude>
+    <ClInclude Include="GranseedChildren_FSM.h">
+      <Filter>02.Component\01.FSM\05.NPC_FSM\00.Granseed\04.GranseedChildren</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -894,6 +909,15 @@
     </ClCompile>
     <ClCompile Include="GranseedGuard02_FSM.cpp">
       <Filter>02.Component\01.FSM\05.NPC_FSM\00.Granseed\02.GranseedGuard02</Filter>
+    </ClCompile>
+    <ClCompile Include="GranseedPotion_FSM.cpp">
+      <Filter>02.Component\01.FSM\05.NPC_FSM\00.Granseed\00.GranseedPotion</Filter>
+    </ClCompile>
+    <ClCompile Include="GranseedTraveler_FSM.cpp">
+      <Filter>02.Component\01.FSM\05.NPC_FSM\00.Granseed\03.GranseedTraveler</Filter>
+    </ClCompile>
+    <ClCompile Include="GranseedChildren_FSM.cpp">
+      <Filter>02.Component\01.FSM\05.NPC_FSM\00.Granseed\04.GranseedChildren</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
