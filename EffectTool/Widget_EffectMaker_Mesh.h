@@ -224,7 +224,8 @@ private:
 	_float					m_fRandomAxis_Min[3] = { 0.f, 0.f, 0.f };		
 	_float					m_fRandomAxis_Max[3] = { 0.f, 0.f, 0.f };
 	_bool					m_bBillbordAxes[2] = { true, true};
-	
+	_int					m_iTurnAxesOption = { 0 };
+
 	/* const */
 	const string					m_strTexturePath = "../Resources/Textures/Universal/";
 	const string					m_strNormalTexturePath = "../Resources/Textures/Universal/Normal/";
