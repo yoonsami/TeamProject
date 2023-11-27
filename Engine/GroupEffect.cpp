@@ -131,11 +131,13 @@ void GroupEffect::Final_Tick()
 
 void GroupEffect::Render()
 {
-	/*for (auto& iter : m_lMemberEffects)
+	/*
+    for (auto& iter : m_lMemberEffects)
 	{
 		if (!iter.expired())
 			iter.lock()->Get_MeshEffect()->Render();
-	}*/
+	}
+    */
     INSTANCING.Render_MeshEffect(m_lMemberEffects);
 }
 
