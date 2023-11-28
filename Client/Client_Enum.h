@@ -15,7 +15,7 @@ enum class HERO
 
 enum class DUMMY_HERO
 {
-
+	MAX
 };
 
 enum class BOSS

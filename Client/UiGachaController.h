@@ -46,5 +46,6 @@ private:
     _float  m_fEffectRatio      = {};
     _float  m_fOriginBrightness = {};
     HERO    m_eGachaHero        = { HERO::MAX };
+    DUMMY_HERO m_eDummyHero     = { DUMMY_HERO::MAX };
 };
 
