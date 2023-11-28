@@ -5,6 +5,7 @@
 #include "GachaScene.h"
 #include "UiGachaCardMove.h"
 #include "UiGachaEffectController.h"
+#include "UiQuestController.h"
 
 UiGachaController::UiGachaController()
 {
@@ -103,13 +104,23 @@ void UiGachaController::Create_Gacha_Card()
     auto pScene = CUR_SCENE;
     pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Gacha.dat", list<shared_ptr<GameObject>>());
 
+    auto pObj = pScene->Get_UI(L"UI_Dialog_Controller");
+    pObj->Get_Script<UiQuestController>()->Change_Value();
+
+    _uint iRand = rand() % 10;
     _uint iSize = IDX(m_vecObjTag.size());
     for (_uint i = 0; i < iSize; ++i)
     {
         weak_ptr<GameObject> pObj = pScene->Get_UI(m_vecObjTag[i]);
         if (true == pObj.expired())
             continue;
-        auto pScript = make_shared<UiGachaCardMove>(i);
+
+        shared_ptr<UiGachaCardMove> pScript;
+        if(iRand == i)
+            pScript = make_shared<UiGachaCardMove>(i, true);
+        else
+            pScript = make_shared<UiGachaCardMove>(i, false);
+
         pObj.lock()->Add_Component(pScript);
         pObj.lock()->Init();
 

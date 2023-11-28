@@ -32,15 +32,15 @@ void ObjectDissolve::Tick()
 
     if (Get_Owner()->Get_ModelRenderer())
     {
-        Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[0].x += m_fDissolveSpeed * fDT;
-        if (Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[0].x > 1.f)
+        Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[0].w += m_fDissolveSpeed * fDT;
+        if (Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[0].w > 1.f)
             EVENTMGR.Delete_Object(Get_Owner());
     }
 
     if (Get_Owner()->Get_Animator())
     {
-		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[0].x += m_fDissolveSpeed * fDT;
-		if (Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[0].x > 1.f)
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[0].w += m_fDissolveSpeed * fDT;
+		if (Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[0].w > 1.f)
             EVENTMGR.Delete_Object(Get_Owner());
     }
 }

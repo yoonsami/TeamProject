@@ -63,7 +63,7 @@ void Dellons_FSM::Tick()
 void Dellons_FSM::State_Tick()
 {
     State_Init();
-
+    Recovery_Color();
     m_iCurFrame = Get_CurFrame();
 
     switch (m_eCurState)
@@ -316,8 +316,8 @@ void Dellons_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGa
 
 void Dellons_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
-    //Calculate Damage 
-    m_pOwner.lock()->Get_Hurt(fDamage);
+	//Calculate Damage 
+	m_pOwner.lock()->Get_Hurt(fDamage);
 
 	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 	_float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
@@ -326,56 +326,73 @@ void Dellons_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<G
 	m_vHitDir.y = 0.f;
 	m_vHitDir.Normalize();
 
-    if (skillname == NORMAL_ATTACK || skillname == NORMAL_SKILL)
-    {
-        if (!m_bSuperArmor)
-        {
-            if (m_eCurState == STATE::hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_loop)
-                m_eCurState = STATE::knock_end_hit;
-            else
-                m_eCurState = STATE::hit;
-        }
-    }
-    else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
-    {
-        if (!m_bSuperArmor)
-        {
-            if (m_eCurState == STATE::knock_end_hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_loop)
-                m_eCurState = STATE::knock_end_hit;
-            else
-                m_eCurState = STATE::knock_start;
-        }
-    }
-    else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
-    {
-        if (!m_bSuperArmor)
-        {
-            if (m_eCurState == STATE::knock_end_hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_loop)
-                m_eCurState = STATE::knock_end_hit;
-            else
-                m_eCurState = STATE::knockdown_start;
-        }
-    }
-    else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
-    {
-        if (!m_bSuperArmor)
-        {
-            if (m_eCurState == STATE::knock_end_hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_loop)
-                m_eCurState = STATE::knock_end_hit;
-            else
-                m_eCurState = STATE::airborne_start;
-        }
-    }
+	Set_HitColor();
+
+	if (skillname == NORMAL_ATTACK || skillname == NORMAL_SKILL)
+	{
+		if (!m_bSuperArmor)
+		{
+			if (m_eCurState == STATE::hit)
+				Reset_Frame();
+			else if (m_eCurState == STATE::knock_end_hit)
+				Reset_Frame();
+			else if (m_eCurState == STATE::knock_end_loop)
+				m_eCurState = STATE::knock_end_hit;
+			else
+				m_eCurState = STATE::hit;
+
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.1f);
+
+
+		}
+	}
+	else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
+	{
+		if (!m_bSuperArmor)
+		{
+			if (m_eCurState == STATE::knock_end_hit)
+				Reset_Frame();
+			else if (m_eCurState == STATE::knock_end_loop)
+				m_eCurState = STATE::knock_end_hit;
+			else
+				m_eCurState = STATE::knock_start;
+
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.2f);
+
+		}
+	}
+	else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
+	{
+		if (!m_bSuperArmor)
+		{
+			if (m_eCurState == STATE::knock_end_hit)
+				Reset_Frame();
+			else if (m_eCurState == STATE::knock_end_loop)
+				m_eCurState = STATE::knock_end_hit;
+			else
+				m_eCurState = STATE::knockdown_start;
+
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.3f);
+
+		}
+	}
+	else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
+	{
+		if (!m_bSuperArmor)
+		{
+			if (m_eCurState == STATE::knock_end_hit)
+				Reset_Frame();
+			else if (m_eCurState == STATE::knock_end_loop)
+				m_eCurState = STATE::knock_end_hit;
+			else
+				m_eCurState = STATE::airborne_start;
+
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.3f);
+
+		}
+	}
+	else
+		CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.03f);
 }
 
 void Dellons_FSM::AttackCollider_On(const wstring& skillname, _float fAttackDamage)

@@ -411,9 +411,8 @@ void UiCardDeckController::Render_Off()
             m_vecFont[i].lock()->Set_Render(false);
     }
 
-    if (true == m_pUiCardDeckSelect.expired())
-        return;
-    m_pUiCardDeckSelect.lock()->Set_Render(false);
+    if (false == m_pUiCardDeckSelect.expired())
+        m_pUiCardDeckSelect.lock()->Set_Render(false);
 }
 
 void UiCardDeckController::Select_Down()

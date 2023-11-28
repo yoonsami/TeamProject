@@ -92,7 +92,7 @@ void Boss_Dellons_FSM::State_Tick()
     State_Init();
 
     m_iCurFrame = Get_CurFrame();
-
+    Recovery_Color();
     switch (m_eCurState)
     {
     case STATE::n_idle:
@@ -377,6 +377,7 @@ void Boss_Dellons_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_
     m_vHitDir = vOppositePos - vMyPos;
     m_vHitDir.y = 0.f;
     m_vHitDir.Normalize();
+	Set_HitColor();
 
     if (skillname == NORMAL_ATTACK || skillname == NORMAL_SKILL)
     {

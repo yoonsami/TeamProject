@@ -467,6 +467,28 @@ _bool FSM::DeadCheck()
 	return m_bIsDead;
 }
 
+void FSM::Set_HitColor()
+{
+	if(Get_Owner()->Get_Animator())
+	{
+		_float4& renderParam = Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[0];
+		renderParam.x = 1.f;
+		renderParam.y = 1.f;
+		renderParam.z = 1.f;
+	}
+}
+
+void FSM::Recovery_Color()
+{
+	if (Get_Owner()->Get_Animator())
+	{
+		_float4& param = Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[0];
+		param.x = clamp(param.x - 10.f * fDT, 0.f, FLT_MAX);
+		param.y = clamp(param.y - 10.f * fDT, 0.f, FLT_MAX);
+		param.z = clamp(param.z - 10.f * fDT, 0.f, FLT_MAX);
+	}
+}
+
 void FSM::Set_Target(shared_ptr<GameObject> pTarget)
 {
 	m_pTarget = pTarget;

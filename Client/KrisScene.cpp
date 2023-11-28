@@ -185,7 +185,7 @@ HRESULT KrisScene::Load_Scene()
 	Load_Monster(10, L"Alpaca_White", player);
 	Load_Monster(10, L"Alpaca_Brown", player);
 	Load_Monster(10, L"Alpaca_Black", player);
-	//Load_Monster(2, L"Wolf", player);
+	Load_Monster(2, L"Wolf", player);
 
 	////Load_Boss_Spike(player);				
 	Load_Boss_Dellons(player);				
@@ -219,7 +219,7 @@ shared_ptr<GameObject> KrisScene::Load_Player()
 
 		ObjPlayer->Add_Component(make_shared<Transform>());
 
-		ObjPlayer->Get_Transform()->Set_State(Transform_State::POS, _float4(-0.f, 0.f, 0.f, 1.f));
+		ObjPlayer->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
 		{
 			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 

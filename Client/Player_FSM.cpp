@@ -68,7 +68,7 @@ void Player_FSM::State_Tick()
     State_Init();
 
     m_iCurFrame = Get_CurFrame();
-
+    Recovery_Color();
     switch (m_eCurState)
     {
     case STATE::b_idle:
@@ -330,6 +330,8 @@ void Player_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
 	m_vHitDir.y = 0.f;
 	m_vHitDir.Normalize();
 
+    Set_HitColor();
+
     if (skillname == NORMAL_ATTACK || skillname == NORMAL_SKILL)
     {
         if (!m_bSuperArmor)
@@ -342,6 +344,10 @@ void Player_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::hit;
+
+            CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.1f);
+           
+
         }
     }
     else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
@@ -354,6 +360,9 @@ void Player_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::knock_start;
+
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.2f);
+
         }
     }
     else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
@@ -366,6 +375,9 @@ void Player_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::knockdown_start;
+
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.3f);
+
         }
     }
     else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
@@ -378,8 +390,14 @@ void Player_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::airborne_start;
+
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.3f);
+
         }
     }
+    else
+		CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.03f);
+
 }
 
 void Player_FSM::AttackCollider_On(const wstring& skillname, _float fAttackDamage)

@@ -57,6 +57,8 @@ protected:
 	_bool Check_Combo(_uint minFrame, KEY_TYPE eKeyType);
 
 	_bool DeadCheck();
+	void Set_HitColor();
+	void Recovery_Color();
 
 public:
 	shared_ptr<GameObject> Get_Weapon() { return m_pWeapon.lock(); }
@@ -142,5 +144,7 @@ public:
 	//MotionCoolTime
 	COOLTIMEINFO m_tRunEndDelay = { 0.2f,0.f };
 	COOLTIMEINFO m_tKnockDownEndCoolTime = { 2.f, 0.f };
+
+	_float m_fColorRecoverySpeed = 3.f;
 };
 

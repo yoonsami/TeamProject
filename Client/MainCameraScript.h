@@ -32,6 +32,7 @@ public:
     void Set_Offset(const _float3& offset) { m_vOffset = offset; }
     _float Get_ShakingPower() { if (m_fShakeTime > 0) return m_fShakePower; else return 0.f; }
     _float& Get_MaxDist() { return m_fMaxDistance; }
+
 private:
     void Cal_OffsetDir();
     void Restrict_Offset();
@@ -58,6 +59,7 @@ private:
     
 
     _float m_fMaxHeightRadian = XM_PI / 2.1f;
+    _float m_fMinHeightRadian = XM_PI / 3.f;
     _float3 m_vFixedPos = _float3(0.f);
     _float3 m_vFixedDir = _float3(0.f);
     _float3 m_vFixedLastDir = _float3(0.f);

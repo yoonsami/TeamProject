@@ -15,7 +15,7 @@ enum class HERO
 
 enum class DUMMY_HERO
 {
-
+	MAX
 };
 
 enum class BOSS
@@ -125,4 +125,14 @@ enum class QUESTTYPE
 	HUNT,
 	BOSS,
 	MAX
+};
+
+enum class CUR_QUEST 
+{ 
+	NONE,
+	ACCEPT, 
+	PROGRESS, 
+	CLEAR, 
+	OTHER, 
+	MAX 
 };

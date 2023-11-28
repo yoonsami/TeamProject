@@ -4,7 +4,7 @@
 class UiGachaCardMove : public MonoBehaviour
 {
 public:
-    UiGachaCardMove(_uint iIndex);
+    UiGachaCardMove(_uint iIndex, _bool bValue);
 
 public:
     virtual HRESULT Init() override;
@@ -21,6 +21,7 @@ private:
    enum class STATE { START, IDLE, OPEN, NONE };
    STATE            m_eState            = { STATE::START };
 
+   _bool            m_bIsUnique         = { false };
    _uint            m_iIndex            = { 0 };
 
    _float           m_fMaxTime          = { 1.f };

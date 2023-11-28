@@ -316,6 +316,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\00.Camera\01.QuarterViewCamera">
       <UniqueIdentifier>{78ae0b78-6377-484d-8c53-03f5a32f41f8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\04.Boss_Giant_Mir_FSM">
+      <UniqueIdentifier>{222bdfb6-ec6a-4014-935c-b6ae4a1d194a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -637,8 +640,8 @@
     <ClInclude Include="MainCameraScript.h">
       <Filter>02.Component\00.MonoBehaviour\00.Camera\00.MainCamera</Filter>
     </ClInclude>
-    <ClInclude Include="QuarterViewCameraScript.h">
-      <Filter>02.Component\00.MonoBehaviour\00.Camera\01.QuarterViewCamera</Filter>
+    <ClInclude Include="Boss_Giant_Mir_FSM.h">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\04.Boss_Giant_Mir_FSM</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -928,8 +931,8 @@
     <ClCompile Include="MainCameraScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\00.Camera\00.MainCamera</Filter>
     </ClCompile>
-    <ClCompile Include="QuarterViewCameraScript.cpp">
-      <Filter>02.Component\00.MonoBehaviour\00.Camera\01.QuarterViewCamera</Filter>
+    <ClCompile Include="Boss_Giant_Mir_FSM.cpp">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\04.Boss_Giant_Mir_FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
