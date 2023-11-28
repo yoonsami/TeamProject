@@ -159,10 +159,8 @@ void Kyle_FSM::State_Tick()
 		skill_500100();
 		break;
 	}
-
-	if (!m_pGroupEffect.expired())
-		m_pGroupEffect.lock()->Get_Transform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
-
+	
+	Update_GroupEffectWorldPos();
 
 	if (m_iPreFrame != m_iCurFrame)
 		m_iPreFrame = m_iCurFrame;

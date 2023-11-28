@@ -174,9 +174,8 @@ void Spike_FSM::State_Tick()
         break;
     }
 
-    if (!m_pGroupEffect.expired())
-        m_pGroupEffect.lock()->Get_Transform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
-    
+    Update_GroupEffectWorldPos();
+
     if (m_iPreFrame != m_iCurFrame)
         m_iPreFrame = m_iCurFrame;
 }
@@ -1296,8 +1295,7 @@ void Spike_FSM::skill_100300()
 
 void Spike_FSM::skill_100300_Init()
 {
-    if (!m_pGroupEffect.expired())
-        m_pGroupEffect.lock()->Get_GroupEffect()->FreeLoopMember();
+    FreeLoopMembers();
 
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -1385,8 +1383,7 @@ void Spike_FSM::skill_200100_l()
         else
             m_eCurState = STATE::skill_200400;
 
-        if (!m_pGroupEffect.expired())
-            m_pGroupEffect.lock()->Get_GroupEffect()->FreeLoopMember();
+        FreeLoopMembers();
     }
 
     m_fWheelWindRange += fDT * 0.5f;
@@ -1396,8 +1393,7 @@ void Spike_FSM::skill_200100_l()
     {
         m_eCurState = STATE::skill_200400;
 
-        if (!m_pGroupEffect.expired())
-            m_pGroupEffect.lock()->Get_GroupEffect()->FreeLoopMember();
+        FreeLoopMembers();
     }
 
     if (!g_bIsCanMouseMove && !g_bCutScene)
@@ -1427,6 +1423,8 @@ void Spike_FSM::skill_200100_l_Init()
 
 void Spike_FSM::skill_200200()
 {
+    m_fEffectCreateTimer[0] += fDT;
+    
     if (Init_CurFrame(5))
         Add_And_Set_Effect(L"Spike_200200_Slash");
 
@@ -1434,6 +1432,12 @@ void Spike_FSM::skill_200200()
 
     if (m_iCurFrame >= 5 && m_iCurFrame < 33)
     {
+        if (m_fEffectCreateTimer[0] >= 0.1f)
+        {
+            m_fEffectCreateTimer[0] = 0.f;
+            Add_Effect(L"Spike_200200_Particle1");
+        }
+
         if (m_tWheelWindCoolTime.fAccTime >= m_tWheelWindCoolTime.fCoolTime)
         {
             m_tWheelWindCoolTime.fAccTime = 0.f;
@@ -1488,15 +1492,21 @@ void Spike_FSM::skill_200200_Init()
 
 void Spike_FSM::skill_200300()
 {
-    if (Init_CurFrame(5))
-        Add_And_Set_Effect(L"Spike_200200_Slash");
-    if (Init_CurFrame(25))
-        Add_And_Set_Effect(L"Spike_200200_Slash");
+    m_fEffectCreateTimer[0] += fDT;
+ 
+    //if (Init_CurFrame(5))
+    //    Add_And_Set_Effect(L"Spike_200200_Slash");
 
     m_tWheelWindCoolTime.fAccTime += fDT;
 
     if (m_iCurFrame >= 5 && m_iCurFrame < 52)
     {
+        if (m_fEffectCreateTimer[0] >= 0.1f)
+        {
+            m_fEffectCreateTimer[0] = 0.f;
+            Add_And_Set_Effect(L"Spike_200200_Particle1");
+        }
+
         if (m_tWheelWindCoolTime.fAccTime >= m_tWheelWindCoolTime.fCoolTime)
         {
             m_tWheelWindCoolTime.fAccTime = 0.f;
@@ -1551,11 +1561,11 @@ void Spike_FSM::skill_200300_Init()
 
 void Spike_FSM::skill_200400()
 {
-    if (Init_CurFrame(5))
-        Add_And_Set_Effect(L"Spike_200200_Slash");
-    if (Init_CurFrame(25))
-        Add_And_Set_Effect(L"Spike_200200_Slash");
+    m_fEffectCreateTimer[0] += fDT;
 
+    //if (Init_CurFrame(5))
+    //    Add_And_Set_Effect(L"Spike_200200_Slash");
+    
     if (m_iCurFrame < 44)
     {
 		_float3 vInputVector = Get_InputDirVector();
@@ -1568,6 +1578,12 @@ void Spike_FSM::skill_200400()
 
     if (m_iCurFrame >= 5 && m_iCurFrame < 44)
     {
+        if (m_fEffectCreateTimer[0] >= 0.1f)
+        {
+            m_fEffectCreateTimer[0] = 0.f;
+            Add_And_Set_Effect(L"Spike_200200_Particle1");
+        }
+
         if (m_tWheelWindCoolTime.fAccTime >= m_tWheelWindCoolTime.fCoolTime)
         {
             m_tWheelWindCoolTime.fAccTime = 0.f;
@@ -1705,8 +1721,7 @@ void Spike_FSM::skill_400100()
         Add_And_Set_Effect(L"Spike_400100_1");
     if (Init_CurFrame(150))
     {
-        if (!m_pGroupEffect.expired())
-            m_pGroupEffect.lock()->Get_GroupEffect()->FreeLoopMember();
+        FreeLoopMembers();
         Add_And_Set_Effect(L"Spike_400100_2");
         Add_And_Set_Effect(L"Spike_400100_3");
     }
