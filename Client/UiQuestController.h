@@ -14,6 +14,8 @@ public:
     void Next_Dialog();
     void Change_Value();
 
+    _bool Get_Dialog_End() { return m_bIsCreated; }
+
 private:
     void Clear_Quest();
     void Remove_Dialog();

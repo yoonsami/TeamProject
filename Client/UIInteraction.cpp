@@ -91,6 +91,16 @@ void UIInteraction::Create_Interaction(NPCTYPE eType)
                     this->Remove_Interaction();
                 }
             });
+
+        //pObj = m_pGachaController;
+        //m_pInteraction_Bg.lock()->Get_Button()->AddOnClickedEvent([pObj, this]()
+        //    {
+        //        if (false == pObj.expired())
+        //        {
+        //            pObj.lock()->Get_Script<UiGachaController>()->Create_Gacha_Card();
+        //            this->Remove_Interaction();
+        //        }
+        //    });
     }
 
 }
