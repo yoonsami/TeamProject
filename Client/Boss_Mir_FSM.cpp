@@ -130,6 +130,12 @@ void Boss_Mir_FSM::State_Tick()
     case STATE::skill_Return:
         skill_Return();
         break;
+    case STATE::skill_Restart_Phase1:
+        skill_Restart_Phase1();
+        break;
+    case STATE::skill_Restart_Phase1_Intro:
+        skill_Restart_Phase1_Intro();
+        break;
     case STATE::SQ_SBRin_Roar:
         SQ_SBRin_Roar();
         break;
@@ -225,6 +231,12 @@ void Boss_Mir_FSM::State_Init()
             break;
         case STATE::skill_Return:
             skill_Return_Init();
+            break;
+        case STATE::skill_Restart_Phase1:
+            skill_Restart_Phase1_Init();
+            break;
+        case STATE::skill_Restart_Phase1_Intro:
+            skill_Restart_Phase1_Intro_Init();
             break;
         case STATE::SQ_SBRin_Roar:
             SQ_SBRin_Roar_Init();
@@ -503,7 +515,8 @@ void Boss_Mir_FSM::sq_Intro2()
     if (Is_AnimFinished())
     {
         g_bCutScene = false;
-        m_eCurState = STATE::b_idle;
+        m_eCurState = STATE::skill_Restart_Phase1;
+        //m_eCurState = STATE::b_idle;
     }
 }
 
@@ -516,6 +529,8 @@ void Boss_Mir_FSM::sq_Intro2_Init()
     m_bInvincible = true;
 
     Calculate_IntroHeadCam();
+
+    m_FirstWorldMat = Get_Transform()->Get_WorldMatrix();
 }
 
 void Boss_Mir_FSM::b_idle()
@@ -566,7 +581,29 @@ void Boss_Mir_FSM::b_idle()
             }
         }
         else
+        {
             Set_AttackPattern();
+
+            if (m_pOwner.lock()->Get_HpRatio() >= 0.33f && m_pOwner.lock()->Get_HpRatio() <= 0.66f)
+            {
+                if (!m_bPhaseChange)
+                {
+                    m_bPhaseChange = true;
+
+                    m_eCurState = STATE::skill_Restart_Phase1;
+                }
+            }
+            else if (m_pOwner.lock()->Get_HpRatio() <= 0.33f)
+            {
+                if (m_bPhaseChange)
+                {
+                    m_bPhaseChange = false;
+
+                    m_eCurState = STATE::skill_Restart_Phase1;
+                }
+            }
+            
+        }
     }
 }
 
@@ -647,7 +684,6 @@ void Boss_Mir_FSM::turn_r()
         m_fTurnSpeed = XM_PI * 0.5f;
         m_eCurState = STATE::b_idle;
     }
-
 }
 
 void Boss_Mir_FSM::turn_r_Init()
@@ -847,18 +883,50 @@ void Boss_Mir_FSM::skill_Restart_Phase1()
 {
     Calculate_PhaseChangeHeadCam();
 
-    if (!m_pCamera.expired())
+    if (m_iCurFrame < 100)
     {
-        m_vHeadCamDir = m_vHeadBonePos.xyz() - m_vHeadCamPos.xyz();
-        m_vHeadCamDir.Normalize();
+        m_fIntroCamDistance = CamDistanceLerp(10.f, 4.f, m_fCamRatio);
 
-        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.5f);
-        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vHeadBonePos.xyz());
-        m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, m_vHeadCamDir, 10.f);
+        m_fCamRatio += fDT;
+
+        if (m_fCamRatio >= 1.f)
+            m_fCamRatio = 1.f;
+
+        if (!m_pCamera.expired())
+        {
+            m_vHeadCamDir = m_vHeadBonePos.xyz() - m_vHeadCamPos.xyz();
+            m_vHeadCamDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(2.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vHeadBonePos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, m_vHeadCamDir * -1.f, m_fIntroCamDistance);
+        }
+    }
+    else
+    {
+        if (Init_CurFrame(100))
+            m_fCamRatio = 0.f;
+
+        m_fIntroCamDistance = CamDistanceLerp(4.f, 10.f, m_fCamRatio);
+
+        m_fCamRatio += fDT;
+
+        if (m_fCamRatio >= 1.f)
+            m_fCamRatio = 1.f;
+
+        if (!m_pCamera.expired())
+        {
+            m_vHeadCamDir = m_vHeadBonePos.xyz() - m_vHeadCamPos.xyz();
+            m_vHeadCamDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vHeadBonePos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, m_vHeadCamDir * -1.f, m_fIntroCamDistance);
+        }
     }
 
-
-
+    if (Is_AnimFinished())
+        m_eCurState = STATE::skill_Restart_Phase1_Intro;
 }
 
 void Boss_Mir_FSM::skill_Restart_Phase1_Init()
@@ -869,6 +937,8 @@ void Boss_Mir_FSM::skill_Restart_Phase1_Init()
 
     m_tAttackCoolTime.fAccTime = 0.f;
 
+    m_fCamRatio = 0.f;
+
     m_bInvincible = true;
 
     Calculate_PhaseChangeHeadCam();
@@ -876,6 +946,23 @@ void Boss_Mir_FSM::skill_Restart_Phase1_Init()
 
 void Boss_Mir_FSM::skill_Restart_Phase1_Intro()
 {
+    Calculate_IntroHeadCam();
+
+    if (!m_pCamera.expired())
+    {
+        m_vHeadCamDir = m_vHeadBonePos.xyz() - m_vHeadCamPos.xyz();
+        m_vHeadCamDir.Normalize();
+
+        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(0.5f);
+        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vHeadBonePos.xyz());
+        m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, m_vHeadCamDir * -1.f, 10.f);
+    }
+    
+    if (Is_AnimFinished())
+    {
+        m_eCurState = STATE::skill_Restart_Phase1;
+        m_eCurPhase = PHASE::PHASE1;
+    }
 }
 
 void Boss_Mir_FSM::skill_Restart_Phase1_Intro_Init()
@@ -885,6 +972,8 @@ void Boss_Mir_FSM::skill_Restart_Phase1_Intro_Init()
     animator->Set_NextTweenAnim(L"sq_Intro2", 0.1f, false, 1.f);
 
     m_bInvincible = true;
+
+    Calculate_IntroHeadCam();
 }
 
 void Boss_Mir_FSM::SQ_SBRin_Roar()
@@ -2173,7 +2262,7 @@ void Boss_Mir_FSM::Calculate_PhaseChangeHeadCam()
         _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
 
     m_vHeadBonePos = _float4{ HeadBoneMatrix.Translation().x, HeadBoneMatrix.Translation().y, HeadBoneMatrix.Translation().z , 1.f };
-    m_vHeadCamPos = m_vHeadBonePos + (Get_Transform()->Get_State(Transform_State::UP) * 10.f);
+    m_vHeadCamPos = m_vHeadBonePos + (Get_Transform()->Get_State(Transform_State::LOOK) * 20.f) + (Get_Transform()->Get_State(Transform_State::UP) * 5.f);
 }
 
 void Boss_Mir_FSM::TailAttackCollider_On(const wstring& skillname)

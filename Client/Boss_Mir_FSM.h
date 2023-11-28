@@ -26,6 +26,7 @@ public:
 
 		// ============ Restart Phase =============
 		skill_Restart_Phase1,  
+		skill_Restart_Phase1_Intro,  
 
 		// ============ Phase2 ===========
 		SQ_SBRin_Roar,
@@ -168,12 +169,11 @@ private:
 	DIR m_eAttackDir = DIR::NONE;
 	PHASE m_eCurPhase = PHASE::PHASE1;
 
+	_float4x4 m_FirstWorldMat = XMMatrixIdentity();
 	_float3 m_vTurnVector = _float3(0.f);
-	_float3 m_vFirstPos = _float3(0.f);
 	_float m_fTurnSpeed = XM_PI * 0.5f;
 	_float m_fIntroCamDistance = 0.f;
 	_float m_fCamRatio = 0.f;
-
 
 
 	COOLTIMEINFO m_tAttackCoolTime = { 2.f, 0.f };
@@ -186,6 +186,7 @@ private:
 
 	_bool m_bCounter = false;
 	_bool m_bPhaseOneEmissive = false;
+	_bool m_bPhaseChange = false;
 
 	_uint m_iPreAttack = 100;
 	_uint m_iPhaseOne_TurnCnt = 0;
