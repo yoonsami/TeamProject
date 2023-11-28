@@ -1525,7 +1525,7 @@ void Spike_FSM::skill_200300()
         if (m_fEffectCreateTimer[0] >= 0.1f)
         {
             m_fEffectCreateTimer[0] = 0.f;
-            Add_And_Set_Effect(L"Spike_200200_Particle1");
+            Add_Effect(L"Spike_200200_Particle1");
         }
 
         if (m_tWheelWindCoolTime.fAccTime >= m_tWheelWindCoolTime.fCoolTime)
@@ -1586,9 +1586,17 @@ void Spike_FSM::skill_200400()
 
     if (Init_CurFrame(5))
         Add_And_Set_Effect(L"Spike_200400_Slash");
+    if (Init_CurFrame(44))
+        Add_And_Set_Effect(L"Spike_200400_Floor");
     
     if (m_iCurFrame < 44)
     {
+        if (m_fEffectCreateTimer[0] >= 0.1f)
+        {
+            m_fEffectCreateTimer[0] = 0.f;
+            Add_Effect(L"Spike_200200_Particle1");
+        }
+
 		_float3 vInputVector = Get_InputDirVector();
 
 		if (vInputVector != _float3(0.f))
