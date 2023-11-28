@@ -365,10 +365,14 @@ void FSM::Add_And_Set_Effect(const wstring& strSkilltag)
 	pGroupEffectObj->Get_GroupEffect()->Set_InitWorldMatrix(Get_Transform()->Get_WorldMatrix());
 	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectMaterials();
 	pGroupEffectObj->Set_Name(strSkilltag);
-	m_pGroupEffect = pGroupEffectObj;
+	m_vGroupEffect.push_back(pGroupEffectObj);
 	pGroupEffectObj->Init();
 	// For. Add Effect GameObject to current scene
-	EVENTMGR.Create_Object(m_pGroupEffect.lock());
+	for (auto& iter : m_vGroupEffect)
+	{
+		if(!iter.expired())
+			EVENTMGR.Create_Object(iter.lock());
+	}
 }
 
 void FSM::Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset)
@@ -397,6 +401,24 @@ void FSM::Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset)
 
 	// For. Add Effect GameObject to current scene
 	EVENTMGR.Create_Object(pGroupEffectOwnerObj);
+}
+
+void FSM::Update_GroupEffectWorldPos()
+{
+	for (auto& iter : m_vGroupEffect)
+	{
+		if(!iter.expired())
+			iter.lock()->Get_Transform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
+	}
+}
+
+void FSM::FreeLoopMembers()
+{
+	for (auto& iter : m_vGroupEffect)
+	{
+		if (!iter.expired())
+			iter.lock()->Get_GroupEffect()->FreeLoopMember();
+	}
 }
 
 void FSM::Cal_SkillCamDirection(const _float dist)
