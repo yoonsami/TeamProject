@@ -5,6 +5,7 @@
 #include "Model.h"
 #include "Camera.h"
 #include "MainApp.h"
+#include "MainCameraScript.h"
 #ifdef _DEBUGTOOL
 
 bool VectorOfStringGetter(void* data, int n, const char** out_text)
@@ -236,6 +237,8 @@ void DebugTool::RenderOptionTab()
 			DragFloat("g_ambientRatio", &g_ambientRatio, 0.1f, 0.1f, 1.5f);
 			_float& g_shadowBias = CUR_SCENE->g_fShadowBias;
 			DragFloat("g_shadowBias", &g_shadowBias, 0.00001f, 0.f, 1000.f,"%.6f");
+
+		
 		}
 
 		EndTabItem();
@@ -306,18 +309,16 @@ void DebugTool::CameraOptionTab()
 {
 	if(CUR_SCENE->Get_MainCamera())
 	{
-		
-
 		if (BeginTabItem("Camera"))
 		{
 			auto& desc = CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_CameraDesc();
 			DragFloat("Near", &desc.fNear, 0.1f, 0.1f, 100.f);
 			DragFloat("Far", &desc.fFar, 1.f, 100.f, 5000.f);
+			_float& g_CameraDist = CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->Get_MaxDist();
+			DragFloat("g_CameraDist", &g_CameraDist, 0.1f, 0.1f, 100.f);
+
 			EndTabItem();
 		}
-
-		
-		
 	}
 	if (CUR_SCENE->Get_Light())
 	{
@@ -330,7 +331,6 @@ void DebugTool::CameraOptionTab()
 
 			EndTabItem();
 		}
-
 	}
 }
 

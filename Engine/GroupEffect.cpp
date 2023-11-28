@@ -187,7 +187,7 @@ void GroupEffect::Render()
 		{
             const InstanceID instanceId = pair.first;
             vector<RenderParams> paramInfo;
-            paramInfo.reserve(MAX_EFFECT_INSTANCE);
+            paramInfo.reserve(m_RenderParamBuffer[pair.first.first]->Get_InputCount());
 			for (size_t i = 0; i < vec.size(); ++i)
 			{
 				shared_ptr<GameObject>& gameobject = vec[i];

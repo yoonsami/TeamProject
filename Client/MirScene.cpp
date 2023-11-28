@@ -328,7 +328,7 @@ void MirScene::Load_Camera(shared_ptr<GameObject> pPlayer)
 		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, true);
 
 		camera->Add_Component(make_shared<MainCameraScript>(pPlayer));
-
+		camera->Get_Script<MainCameraScript>()->Get_MaxDist() = 25.f;
 		Add_GameObject(camera);
 	
 		//Setting Camera

@@ -637,9 +637,6 @@
     <ClInclude Include="MainCameraScript.h">
       <Filter>02.Component\00.MonoBehaviour\00.Camera\00.MainCamera</Filter>
     </ClInclude>
-    <ClInclude Include="QuarterViewCameraScript.h">
-      <Filter>02.Component\00.MonoBehaviour\00.Camera\01.QuarterViewCamera</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -927,9 +924,6 @@
     </ClCompile>
     <ClCompile Include="MainCameraScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\00.Camera\00.MainCamera</Filter>
-    </ClCompile>
-    <ClCompile Include="QuarterViewCameraScript.cpp">
-      <Filter>02.Component\00.MonoBehaviour\00.Camera\01.QuarterViewCamera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
