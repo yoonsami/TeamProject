@@ -68,7 +68,7 @@ void Player_FSM::State_Tick()
     State_Init();
 
     m_iCurFrame = Get_CurFrame();
-
+    Recovery_Color();
     switch (m_eCurState)
     {
     case STATE::b_idle:
@@ -332,6 +332,11 @@ void Player_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
 	m_vHitDir.y = 0.f;
 	m_vHitDir.Normalize();
 
+	_float4& renderParam = Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[0];
+	renderParam.x = 1.f;
+	renderParam.y = 1.f;
+	renderParam.z = 1.f;
+
     if (skillname == NORMAL_ATTACK || skillname == NORMAL_SKILL)
     {
         if (!m_bSuperArmor)
@@ -346,6 +351,8 @@ void Player_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
                 m_eCurState = STATE::hit;
 
             CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.1f);
+           
+
         }
     }
     else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
