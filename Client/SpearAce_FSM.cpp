@@ -62,7 +62,7 @@ void SpearAce_FSM::Tick()
 void SpearAce_FSM::State_Tick()
 {
     State_Init();
-
+    Recovery_Color();
     m_iCurFrame = Get_CurFrame();
 
     switch (m_eCurState)
@@ -315,6 +315,8 @@ void SpearAce_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<
 	m_vHitDir.y = 0.f;
 	m_vHitDir.Normalize();
 
+	Set_HitColor();
+
 	if (skillname == NORMAL_ATTACK || skillname == NORMAL_SKILL)
 	{
 		if (!m_bSuperArmor)
@@ -329,6 +331,8 @@ void SpearAce_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<
 				m_eCurState = STATE::hit;
 
 			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.1f);
+
+
 		}
 	}
 	else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
@@ -342,7 +346,7 @@ void SpearAce_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<
 			else
 				m_eCurState = STATE::knock_start;
 
-			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.1f);
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.2f);
 
 		}
 	}
@@ -357,7 +361,7 @@ void SpearAce_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<
 			else
 				m_eCurState = STATE::knockdown_start;
 
-			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.1f);
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.3f);
 
 		}
 	}
@@ -372,7 +376,7 @@ void SpearAce_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<
 			else
 				m_eCurState = STATE::airborne_start;
 
-			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.1f);
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.3f);
 
 		}
 	}

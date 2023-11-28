@@ -445,6 +445,17 @@ _bool FSM::DeadCheck()
 	return m_bIsDead;
 }
 
+void FSM::Set_HitColor()
+{
+	if(Get_Owner()->Get_Animator())
+	{
+		_float4& renderParam = Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[0];
+		renderParam.x = 1.f;
+		renderParam.y = 1.f;
+		renderParam.z = 1.f;
+	}
+}
+
 void FSM::Recovery_Color()
 {
 	if (Get_Owner()->Get_Animator())

@@ -65,7 +65,7 @@ void Yeopo_FSM::State_Tick()
     State_Init();
 
     m_iCurFrame = Get_CurFrame();
-
+    Recovery_Color();
     switch (m_eCurState)
     {
     case STATE::b_idle:
@@ -356,6 +356,7 @@ void Yeopo_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
 
 void Yeopo_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
+	//Calculate Damage 
 	m_pOwner.lock()->Get_Hurt(fDamage);
 
 	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
@@ -364,6 +365,8 @@ void Yeopo_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Gam
 	m_vHitDir = vOppositePos - vMyPos;
 	m_vHitDir.y = 0.f;
 	m_vHitDir.Normalize();
+
+	Set_HitColor();
 
 	if (skillname == NORMAL_ATTACK || skillname == NORMAL_SKILL)
 	{
@@ -379,6 +382,8 @@ void Yeopo_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Gam
 				m_eCurState = STATE::hit;
 
 			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.1f);
+
+
 		}
 	}
 	else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
@@ -392,7 +397,7 @@ void Yeopo_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Gam
 			else
 				m_eCurState = STATE::knock_start;
 
-			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.1f);
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.2f);
 
 		}
 	}
@@ -407,7 +412,7 @@ void Yeopo_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Gam
 			else
 				m_eCurState = STATE::knockdown_start;
 
-			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.1f);
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.3f);
 
 		}
 	}
@@ -422,7 +427,7 @@ void Yeopo_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Gam
 			else
 				m_eCurState = STATE::airborne_start;
 
-			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.1f);
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.3f);
 
 		}
 	}

@@ -54,6 +54,7 @@ protected:
 	_bool Check_Combo(_uint minFrame, KEY_TYPE eKeyType);
 
 	_bool DeadCheck();
+	void Set_HitColor();
 	void Recovery_Color();
 
 public:
