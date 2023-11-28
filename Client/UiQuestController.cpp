@@ -205,9 +205,10 @@ void UiQuestController::Next_Dialog()
     {
         if (true == m_ClearCheck[IDX(m_eIndex)])
         {
-            Set_Render(false);
+            if(CUR_QUEST::NONE == m_eCurType)
+                Set_Render(false);
         }
-        if (CUR_QUEST::OTHER == m_eCurType)
+        else if (CUR_QUEST::OTHER == m_eCurType)
         {
             m_eCurType = m_ePreType;
             Set_Render(true);

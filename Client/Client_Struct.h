@@ -67,7 +67,6 @@ typedef struct tagHeroData
 	
 }HERODATA;
 
-
 typedef struct tagBossData
 {
 	ElementType		Element = ElementType::ElementEnd;
