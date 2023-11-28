@@ -53,6 +53,7 @@ void GroupEffectOwner::PlayEffect()
 	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectMaterials();
 	pGroupEffectObj->Set_Name(m_wstrGroupEffectTag);
 	m_pGroupEffect = pGroupEffectObj;
+	pGroupEffectObj->Get_GroupEffect()->Init();
 
 	// For. Add Effect GameObject to current scene
 	EVENTMGR.Create_Object(m_pGroupEffect.lock());

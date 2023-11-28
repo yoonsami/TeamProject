@@ -1,7 +1,9 @@
 #pragma once
 #include "Component.h"
 #include "GroupEffectData.h"
+#define MAX_EFFECT_INSTANCE 1000
 
+class StructuredBuffer;
 class GroupEffect final : public Component, public enable_shared_from_this<GroupEffect>
 {
 public:
@@ -9,7 +11,7 @@ public:
 	virtual ~GroupEffect();
 
 public:
-	virtual void        Init(void* pArg);
+	virtual HRESULT        Init() override;
 	virtual void        Tick() override;
 	virtual void        Final_Tick() override;
 
@@ -51,5 +53,10 @@ private:
 	_bool								m_bIsFirstTick = { false };
 	_float4x4							m_mInitWorldMatrix;
 
-	list <weak_ptr<GameObject>>			m_lMemberEffects;
+	list <weak_ptr<GameObject>>					m_lMemberEffects;
+
+
+	map<InstanceID, vector<shared_ptr<GameObject>>>	m_RenderGroup;
+	vector<shared_ptr<StructuredBuffer>>			m_RenderParamBuffer;
+
 };

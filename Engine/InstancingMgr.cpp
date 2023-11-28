@@ -332,6 +332,7 @@ void InstancingMgr::Render_Animator_Shadow(vector<shared_ptr<GameObject>>& gameO
 
 void InstancingMgr::Render_MeshEffect(list <weak_ptr<GameObject>>& gameObjects)
 {
+	Clear_Data();
 	map<InstanceID, vector<shared_ptr<GameObject>>> cache;
 
 	for (auto& gameObject : gameObjects)

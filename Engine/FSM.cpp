@@ -334,6 +334,7 @@ void FSM::Add_Effect(const wstring& strSkilltag)
 	pGroupEffectObj->Get_GroupEffect()->Set_InitWorldMatrix(pGroupEffectObj->Get_Transform()->Get_WorldMatrix());
 	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectMaterials();
 	pGroupEffectObj->Set_Name(strSkilltag);
+	pGroupEffectObj->Init();
 
 	// For. Add Effect GameObject to current scene
 	EVENTMGR.Create_Object(pGroupEffectObj);
@@ -365,7 +366,7 @@ void FSM::Add_And_Set_Effect(const wstring& strSkilltag)
 	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectMaterials();
 	pGroupEffectObj->Set_Name(strSkilltag);
 	m_pGroupEffect = pGroupEffectObj;
-
+	pGroupEffectObj->Init();
 	// For. Add Effect GameObject to current scene
 	EVENTMGR.Create_Object(m_pGroupEffect.lock());
 }

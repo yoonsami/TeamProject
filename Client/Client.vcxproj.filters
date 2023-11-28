@@ -34,9 +34,6 @@
     <Filter Include="99.Header\98.Default">
       <UniqueIdentifier>{1416d258-c22e-43be-a507-5d8b90f21cef}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\00.MainCameraScript">
-      <UniqueIdentifier>{c016c014-a8d2-4a1c-a3ab-e1eca59afce4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\01.WeaponScript">
       <UniqueIdentifier>{b9bdbe99-4328-44ff-a881-4aa947da18c2}</UniqueIdentifier>
     </Filter>
@@ -310,6 +307,15 @@
     <Filter Include="02.Component\01.FSM\05.NPC_FSM\00.Granseed\04.GranseedChildren">
       <UniqueIdentifier>{41d48cdd-c6b0-4019-99ea-09675940be92}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\00.Camera">
+      <UniqueIdentifier>{c016c014-a8d2-4a1c-a3ab-e1eca59afce4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\00.Camera\00.MainCamera">
+      <UniqueIdentifier>{d6f88cda-afc7-488e-9f4d-c57069f2febd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\00.Camera\01.QuarterViewCamera">
+      <UniqueIdentifier>{78ae0b78-6377-484d-8c53-03f5a32f41f8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -344,9 +350,6 @@
     </ClInclude>
     <ClInclude Include="SpearAce_FSM.h">
       <Filter>02.Component\01.FSM\01.Hero_FSM\01.SpearAce_FSM</Filter>
-    </ClInclude>
-    <ClInclude Include="MainCameraScript.h">
-      <Filter>02.Component\00.MonoBehaviour\00.MainCameraScript</Filter>
     </ClInclude>
     <ClInclude Include="WeaponScript.h">
       <Filter>02.Component\00.MonoBehaviour\01.WeaponScript</Filter>
@@ -631,6 +634,12 @@
     <ClInclude Include="GranseedChildren_FSM.h">
       <Filter>02.Component\01.FSM\05.NPC_FSM\00.Granseed\04.GranseedChildren</Filter>
     </ClInclude>
+    <ClInclude Include="MainCameraScript.h">
+      <Filter>02.Component\00.MonoBehaviour\00.Camera\00.MainCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="QuarterViewCameraScript.h">
+      <Filter>02.Component\00.MonoBehaviour\00.Camera\01.QuarterViewCamera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -659,9 +668,6 @@
     </ClCompile>
     <ClCompile Include="SpearAce_FSM.cpp">
       <Filter>02.Component\01.FSM\01.Hero_FSM\01.SpearAce_FSM</Filter>
-    </ClCompile>
-    <ClCompile Include="MainCameraScript.cpp">
-      <Filter>02.Component\00.MonoBehaviour\00.MainCameraScript</Filter>
     </ClCompile>
     <ClCompile Include="WeaponScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.WeaponScript</Filter>
@@ -918,6 +924,12 @@
     </ClCompile>
     <ClCompile Include="GranseedChildren_FSM.cpp">
       <Filter>02.Component\01.FSM\05.NPC_FSM\00.Granseed\04.GranseedChildren</Filter>
+    </ClCompile>
+    <ClCompile Include="MainCameraScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\00.Camera\00.MainCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="QuarterViewCameraScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\00.Camera\01.QuarterViewCamera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

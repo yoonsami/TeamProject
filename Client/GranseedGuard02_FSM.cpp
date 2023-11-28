@@ -81,6 +81,7 @@ void GranseedGuard02_FSM::n_idle_Init()
 
 	animator->Set_NextTweenAnim(L"n_idle", 0.15f, true, 1.f);
 
+	m_fIdleTimer = MathUtils::Get_RandomFloat(2.f, 4.f);
 }
 
 void GranseedGuard02_FSM::n_run()
@@ -99,6 +100,8 @@ void GranseedGuard02_FSM::n_run_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"n_run", 0.15f, true, 1.f);
+
+	m_fMoveTimer = MathUtils::Get_RandomFloat(7.f, 10.f);
 }
 
 void GranseedGuard02_FSM::talk_01()

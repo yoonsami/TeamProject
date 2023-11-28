@@ -5,6 +5,7 @@
 #include "FileUtils.h"
 #include "MeshEffect.h"
 #include "MeshEffectData.h"
+#include "StructuredBuffer.h"
 
 bool Compare_RenderPriority(weak_ptr<GameObject> pSrc, weak_ptr<GameObject> pDest)
 {
@@ -21,10 +22,32 @@ GroupEffect::~GroupEffect()
 
 }
 
-void GroupEffect::Init(void* pArg)
+HRESULT GroupEffect::Init()
 {
-    
+    m_RenderParamBuffer.resize(m_vMemberEffectData.size());
+   
+    for (_uint i = 0; i < static_cast<_uint>(m_vMemberEffectData.size()); ++i)
+    {
+		wstring wstrMeshEffectDataKey = m_vMemberEffectData[i].wstrEffectTag;
+		Utils::DetachExt(wstrMeshEffectDataKey);
+		shared_ptr<MeshEffectData> meshEffectData = RESOURCES.Get<MeshEffectData>(wstrMeshEffectDataKey);
 
+        if(meshEffectData->Get_Desc().iMeshCnt ==1)
+            continue;
+
+        if(meshEffectData->Get_Desc().fCreateInterval == 0)
+            m_RenderParamBuffer[i] = make_shared<StructuredBuffer>(nullptr, static_cast<_uint>(sizeof RenderParams), meshEffectData->Get_Desc().iMeshCnt);
+        else
+        {
+			_int count =_int( meshEffectData->Get_Desc().fDuration / meshEffectData->Get_Desc().fCreateInterval * meshEffectData->Get_Desc().iMeshCnt);
+
+			m_RenderParamBuffer[i] = make_shared<StructuredBuffer>(nullptr, static_cast<_uint>(sizeof RenderParams), count);
+        }
+        
+
+    }
+
+    return S_OK;
 }
 
 void GroupEffect::Tick()
@@ -69,6 +92,8 @@ void GroupEffect::Tick()
         if (!meshEffect.expired())
             meshEffect.lock()->Get_MeshEffect()->MeshEffect_Tick();
     }
+
+
 }
 
 void GroupEffect::Final_Tick()
@@ -122,11 +147,20 @@ void GroupEffect::Final_Tick()
         }
     }
 
+    for (auto& renderGroup : m_RenderGroup)
+        renderGroup.second.clear();
+
 	for (auto& meshEffect : m_lMemberEffects)
 	{
-		if (!meshEffect.expired())
+        if (!meshEffect.expired())
+        {
 			meshEffect.lock()->Get_MeshEffect()->MeshEffect_Final_Tick();
+            const InstanceID instanceID = meshEffect.lock()->Get_MeshEffect()->Get_InstanceID();
+            m_RenderGroup[instanceID].push_back(meshEffect.lock());
+        }
 	}
+
+
 }
 
 void GroupEffect::Render()
@@ -138,7 +172,42 @@ void GroupEffect::Render()
 			iter.lock()->Get_MeshEffect()->Render();
 	}
     */
-    INSTANCING.Render_MeshEffect(m_lMemberEffects);
+    INSTANCING.Clear_Data();
+    for (auto& pair : m_RenderGroup)
+    {
+        vector<shared_ptr<GameObject>>& vec = pair.second;
+
+        if(vec.size() == 0)
+            continue;
+		if (vec.size() == 1)
+		{
+			vec.front()->Get_MeshEffect()->Render();
+		}
+		else
+		{
+            const InstanceID instanceId = pair.first;
+            vector<RenderParams> paramInfo;
+            paramInfo.reserve(MAX_EFFECT_INSTANCE);
+			for (size_t i = 0; i < vec.size(); ++i)
+			{
+				shared_ptr<GameObject>& gameobject = vec[i];
+				InstancingData data{};
+				data.world = gameobject->Get_Transform()->Get_WorldMatrix();
+				paramInfo.push_back( gameobject->Get_MeshEffect()->Get_RenderParamDesc());
+                INSTANCING.Add_Data(instanceId, data);
+			}
+            m_RenderParamBuffer[pair.first.first]->Copy_ToInput(paramInfo.data());
+
+            shared_ptr<InstancingBuffer>& buffer = INSTANCING.Get_Buffer(instanceId);
+			vec[0]->Get_MeshEffect()->Render_Instancing(buffer, m_RenderParamBuffer[pair.first.first]);
+
+			
+
+		}
+
+    }
+
+    
 }
 
 void GroupEffect::Save(const wstring& path)

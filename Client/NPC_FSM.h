@@ -9,7 +9,8 @@ public:
         POTION,
         GUARD1,
         GUARD2,
-        TRAVELER
+        TRAVELER,
+        CHILDREN,
     };
 public:
 
