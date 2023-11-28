@@ -1811,6 +1811,14 @@ void Spike_FSM::skill_400100_Init()
 
 void Spike_FSM::skill_501100()
 {
+    if (Init_CurFrame(20))
+    {
+        Add_And_Set_Effect(L"Spike_500100_1");
+        Add_GroupEffectOwner(L"Spike_500100_Floor", _float3(0.f, 0.f, 0.5f));
+    }
+    if (Init_CurFrame(34))
+        Add_GroupEffectOwner(L"Spike_500100_Floor2", _float3(0.f, 0.f, 2.f));
+
     if (m_iCurFrame == 18)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (m_iCurFrame == 23)
