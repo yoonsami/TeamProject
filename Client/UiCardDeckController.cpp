@@ -252,6 +252,27 @@ void UiCardDeckController::Set_Hero(HERO eHero)
     }
 }
 
+void UiCardDeckController::Set_Hero(DUMMY_HERO eHero)
+{
+    _uint iSize = IDX(m_vecInvenObj.size());
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        if (false == m_vecInvenObj[i].expired() && false == m_vecCardDeckBg[i].expired() && false == m_vecCardDeckElement[i].expired())
+        {
+            auto pScript0 = m_vecInvenObj[i].lock()->Get_Script<UiCardDeckInvenChange>();
+            auto pScript1 = m_vecCardDeckBg[i].lock()->Get_Script<UiCardDeckInvenChange>();
+            auto pScript2 = m_vecCardDeckElement[i].lock()->Get_Script<UiCardDeckInvenChange>();
+            if (false == pScript0->Is_Set_Hero() && false == pScript1->Is_Set_Hero() && false == pScript2->Is_Set_Hero())
+            {
+                pScript0->Set_Hero(eHero);
+                pScript1->Set_Hero(eHero);
+                pScript2->Set_Hero(eHero);
+                return;
+            }
+        }
+    }
+}
+
 void UiCardDeckController::Click_Deck_Select(wstring strObjName)
 {
     if (false == m_bIsRender)

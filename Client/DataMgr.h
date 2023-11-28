@@ -27,6 +27,9 @@ public:
     const wstring&      Get_NoQuest_Dialog(QUESTINDEX eIndex)               { return m_NoQuestDialog[IDX(eIndex)]; }
     const wstring&      Get_NoAccept_Dialog(QUESTINDEX eIndex)              { return m_NoAcceptDialog[IDX(eIndex)]; }
 
+    const HERODATA&     Get_Data(DUMMY_HERO eHero)                          { return m_DummyData[IDX(eHero)]; }
+    wstring             Get_Element(DUMMY_HERO eHero)                       { return m_KeyElement[m_DummyData[IDX(eHero)].Element] + L"0"; }
+    wstring             Get_Element_Line(DUMMY_HERO eHero)                  { return m_KeyElement[m_DummyData[IDX(eHero)].Element] + L"1"; }
 
 private:
     vector<HERODATA>            m_HeroData;
@@ -44,6 +47,8 @@ private:
 
     vector<wstring>             m_NoQuestDialog;
     vector<wstring>             m_NoAcceptDialog;
+
+    vector<HERODATA>            m_DummyData;
 
     wstring                     strTemp;
 };

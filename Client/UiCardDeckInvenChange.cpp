@@ -53,6 +53,25 @@ void UiCardDeckInvenChange::Set_Hero(HERO eHero)
     m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
 }
 
+void UiCardDeckInvenChange::Set_Hero(DUMMY_HERO eHero)
+{
+    if (true == m_pOwner.expired())
+        return;
+
+    m_eDummy = eHero;
+
+    m_bIsSetHero = true;
+    if (0 == m_iType)
+        m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(GET_DATA(eHero).KeyDeckMini), TextureMapType::DIFFUSE);
+    else if (1 == m_iType)
+    {
+        wstring strTemp = GET_ELEMENT(eHero);
+        m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(strTemp), TextureMapType::DIFFUSE);
+    }
+
+    m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+}
+
 void UiCardDeckInvenChange::Set_Empty()
 {
     if (true == m_pOwner.expired())
