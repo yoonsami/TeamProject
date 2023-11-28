@@ -6,8 +6,9 @@
 #include "UiGachaController.h"
 #include "UiCardDeckController.h"
 
-UiGachaCardMove::UiGachaCardMove(_uint iIndex)
+UiGachaCardMove::UiGachaCardMove(_uint iIndex, _bool bValue)
     : m_iIndex(iIndex)
+	, m_bIsUnique(bValue)
 {
 }
 
@@ -108,15 +109,10 @@ HRESULT UiGachaCardMove::Init()
 	//	m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back5"), TextureMapType::DIFFUSE);
 	//}
 
-	if (0 == m_iIndex)
+	if (true == m_bIsUnique)
 	{
 		m_eHero = HERO::KYLE;
 		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back0"), TextureMapType::DIFFUSE);
-	}
-	else if (7 == m_iIndex)
-	{
-		m_eHero = HERO::YEOPO;
-		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back1"), TextureMapType::DIFFUSE);
 	}
 	else
 	{

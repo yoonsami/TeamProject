@@ -93,13 +93,35 @@ void UIBossHpBar::Tick()
         m_pBossName.expired())
 		return;
 
-    Check_Target();
+    //Check_Target();
     Change_Hp_Ratio();
     Change_Hp_Slow();
     Change_Param();
+}
 
-    if (KEYTAP(KEY_TYPE::F5))
-        m_pOwner.lock()->Get_Hurt(10.f);
+void UIBossHpBar::Remove_HpBar()
+{
+    if (m_pOwner.expired() ||
+        m_pBgHp.expired() ||
+        m_pFrontHp.expired() ||
+        m_pBackHp.expired() ||
+        m_pHpFont.expired() ||
+        m_pBgGroggy.expired() ||
+        m_pFrontGroggy.expired() ||
+        m_pElement.expired() ||
+        m_pBossName.expired())
+        return;
+
+    auto pScene = CUR_SCENE;
+    EVENTMGR.Delete_Object(m_pBgHp.lock());
+    EVENTMGR.Delete_Object(m_pFrontHp.lock());
+    EVENTMGR.Delete_Object(m_pBackHp.lock());
+    EVENTMGR.Delete_Object(m_pHpFont.lock());
+    EVENTMGR.Delete_Object(m_pBgGroggy.lock());
+    EVENTMGR.Delete_Object(m_pFrontGroggy.lock());
+    EVENTMGR.Delete_Object(m_pElement.lock());
+    EVENTMGR.Delete_Object(m_pBossName.lock());
+
 }
 
 void UIBossHpBar::Check_Target()
