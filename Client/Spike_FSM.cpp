@@ -1494,8 +1494,8 @@ void Spike_FSM::skill_200300()
 {
     m_fEffectCreateTimer[0] += fDT;
  
-    //if (Init_CurFrame(5))
-    //    Add_And_Set_Effect(L"Spike_200200_Slash");
+    if (Init_CurFrame(5))
+        Add_And_Set_Effect(L"Spike_200300_Slash");
 
     m_tWheelWindCoolTime.fAccTime += fDT;
 
@@ -1563,8 +1563,8 @@ void Spike_FSM::skill_200400()
 {
     m_fEffectCreateTimer[0] += fDT;
 
-    //if (Init_CurFrame(5))
-    //    Add_And_Set_Effect(L"Spike_200200_Slash");
+    if (Init_CurFrame(5))
+        Add_And_Set_Effect(L"Spike_200400_Slash");
     
     if (m_iCurFrame < 44)
     {
