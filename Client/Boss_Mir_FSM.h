@@ -195,15 +195,18 @@ private:
 	_uint m_iHeadBoneIndex = 0;
 	_uint m_iMouseBoneIndex = 0;
 	_uint m_iTailBoneIndex = 0;
+	_uint m_iTopBoneIndex = 0;
 
 	weak_ptr<GameObject> m_pTailCollider;
 
 	_float3 m_vHeadCamDir = _float3(0.f);
 	_float4 m_vHeadBonePos = _float4(0.f);
 	_float4 m_vHeadCamPos = _float4(0.f);
+	_float4 m_vTopBonePos = _float4(0.f);
 
 	_float4x4 HeadBoneMatrix = XMMatrixIdentity();
 	_float4x4 MouseBoneMatrix = XMMatrixIdentity();
 	_float4x4 TailBoneMatrix = XMMatrixIdentity();
+	_float4x4 TopBoneMatrix = XMMatrixIdentity();
 
 };
