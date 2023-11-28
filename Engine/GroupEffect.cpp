@@ -200,14 +200,8 @@ void GroupEffect::Render()
 
             shared_ptr<InstancingBuffer>& buffer = INSTANCING.Get_Buffer(instanceId);
 			vec[0]->Get_MeshEffect()->Render_Instancing(buffer, m_RenderParamBuffer[pair.first.first]);
-
-			
-
 		}
-
     }
-
-    
 }
 
 void GroupEffect::Save(const wstring& path)

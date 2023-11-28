@@ -11,7 +11,7 @@ public:
 	virtual ~GroupEffect();
 
 public:
-	virtual HRESULT        Init() override;
+	virtual HRESULT     Init() override;
 	virtual void        Tick() override;
 	virtual void        Final_Tick() override;
 
