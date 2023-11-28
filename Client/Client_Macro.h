@@ -24,9 +24,11 @@
 #define IDX(VALUE)                      static_cast<unsigned int>(VALUE)
 
 #define DATAMGR                         GET_SINGLE(DataMgr)
-#define GET_DATA(VALUE)                 GET_SINGLE(DataMgr).Get_Data(VALUE)
-#define GET_ELEMENT(VALUE)              GET_SINGLE(DataMgr).Get_Element(VALUE)
-#define GET_ELEMENT_LINE(VALUE)         GET_SINGLE(DataMgr).Get_Element_Line(VALUE)
+#define GET_DATA(VALUE)                 DATAMGR.Get_Data(VALUE)
+#define GET_ELEMENT(VALUE)              DATAMGR.Get_Element(VALUE)
+#define GET_ELEMENT_LINE(VALUE)         DATAMGR.Get_Element_Line(VALUE)
 
-#define GET_NPC_NAME(VALUE)             GET_SINGLE(DataMgr).Get_Npc_Name(VALUE)
-#define GET_QUEST(VALUE)                GET_SINGLE(DataMgr).Get_Quest(VALUE)
+#define GET_NPC_NAME(VALUE)             DATAMGR.Get_Npc_Name(VALUE)
+#define GET_QUEST(VALUE)                DATAMGR.Get_Quest(VALUE)
+
+#define CAMERA_SHAKE(Time,Power)        if(CUR_SCENE->Get_MainCamera()) CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(Time,Power);

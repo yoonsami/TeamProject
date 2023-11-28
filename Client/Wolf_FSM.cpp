@@ -335,7 +335,6 @@ void Wolf_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Game
                 m_eCurState = STATE::airborne_start;
         }
     }
-
 }
 
 void Wolf_FSM::AttackCollider_On(const wstring& skillname, _float fAttackDamage)
@@ -385,7 +384,6 @@ void Wolf_FSM::b_idle()
     }
 
     Dead_Setting();
-
 }
 
 void Wolf_FSM::b_idle_Init()

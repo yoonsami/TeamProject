@@ -952,6 +952,7 @@ void Spike_FSM::skill_1100()
 {
     if (Init_CurFrame(11))
     {
+        CAMERA_SHAKE(0.1f, 0.1f)
         Add_And_Set_Effect(L"Spike_1100");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     }
@@ -998,7 +999,8 @@ void Spike_FSM::skill_1100_Init()
 void Spike_FSM::skill_1200()
 {
     if (Init_CurFrame(6))
-    {
+	{
+		CAMERA_SHAKE(0.1f, 0.1f)
         Add_And_Set_Effect(L"Spike_1200");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     }
@@ -1051,7 +1053,8 @@ void Spike_FSM::skill_1200_Init()
 void Spike_FSM::skill_1300()
 {
     if (Init_CurFrame(15))
-    {
+	{
+		CAMERA_SHAKE(0.1f, 0.1f)
         Add_And_Set_Effect(L"Spike_1300");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     }
@@ -1112,11 +1115,13 @@ void Spike_FSM::skill_1400()
         Add_GroupEffectOwner(L"Spike_1400_2", _float3(0.f, 0.f, 1.f));
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
         
-        if (!m_pCamera.expired())
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.3f, 0.4f);
+        //CAMERA_SHAKE(0.3f, 0.4f);
     }
-    else if (m_iCurFrame == 15)
-        AttackCollider_Off();
+	else if (m_iCurFrame == 15)
+		AttackCollider_Off();
+
+    if(Init_CurFrame(13))
+        CAMERA_SHAKE(0.3f, 0.4f);
 
     Look_DirToTarget();
 
@@ -1238,6 +1243,7 @@ void Spike_FSM::skill_100100()
             m_bAssaultColliderOn = true;
             m_fAssaultColliderTimer = 0.f;
             AttackCollider_On(NORMAL_ATTACK, 10.f);
+            CAMERA_SHAKE(0.1f, 0.02f);
         }
         else
         {
@@ -1302,7 +1308,10 @@ void Spike_FSM::skill_100300()
     {
         Add_GroupEffectOwner(L"Spike_100100_IceAttack",_float3(0,0,1));
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+        CAMERA_SHAKE(0.2f, 0.2f);
     }
+    if(Init_CurFrame(32))
+        CAMERA_SHAKE(0.2f, 0.2f);
 
     if (Is_AnimFinished())
     {
@@ -1699,7 +1708,8 @@ void Spike_FSM::skill_300100()
     Calculate_CamBoneMatrix();
 
     if (Init_CurFrame(30))
-    {
+	{
+		CAMERA_SHAKE(0.4f, 0.5f);
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.fMoveSpeed = 0.f;
@@ -1739,12 +1749,18 @@ void Spike_FSM::skill_300100_Init()
 void Spike_FSM::skill_400100()
 {
     if (Init_CurFrame(52))
+    {
         Add_And_Set_Effect(L"Spike_400100_1");
+        
+    }
+    if(Init_CurFrame(52) || Init_CurFrame(77) || Init_CurFrame(97))
+        CAMERA_SHAKE(0.2f, 0.3f);
     if (Init_CurFrame(150))
     {
         FreeLoopMembers();
         Add_And_Set_Effect(L"Spike_400100_2");
         Add_And_Set_Effect(L"Spike_400100_3");
+        CAMERA_SHAKE(0.4f, 0.5f);
     }
 	static _float fAngle = 0.f;
 	static _float3 vUp = _float3(0.f);
@@ -1753,13 +1769,13 @@ void Spike_FSM::skill_400100()
         if (!m_pCamera.expired())
         {
 
-            _float4 vDestinationPos = (Get_Transform()->Get_State(Transform_State::POS)) + (Get_Transform()->Get_State(Transform_State::LOOK) * -5.f) + _float3::Up * 4.f;
+            _float4 vDestinationPos = (Get_Transform()->Get_State(Transform_State::POS)) + (Get_Transform()->Get_State(Transform_State::LOOK) * -5.f) + _float3::Up * 5.f;
             _float4 vDir = vDestinationPos - (Get_Transform()->Get_State(Transform_State::POS));
             vDir.Normalize();
 
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(2.f);
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(8.f, vDir.xyz(), 10.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz() + _float3::Up);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(7.f, vDir.xyz(), 10.f);
         }
     }
     else if (m_iCurFrame >= 26)
@@ -1767,10 +1783,10 @@ void Spike_FSM::skill_400100()
         if (m_iCurFrame == 26)
         {
             _float4x4 matWorld = Get_Transform()->Get_WorldMatrix();
-            vUp = matWorld.Backward() + matWorld.Up() * 2.f;
+            vUp = matWorld.Backward() + matWorld.Up() * 3.f;
             vUp.Normalize();
             fAngle = 0.f;
-            m_vCamStopPos = m_vCenterBonePos;
+            m_vCamStopPos = m_vCenterBonePos + _float3::Up;
             
         }
 
