@@ -12,6 +12,7 @@ public:
 
     void Render_On();
     void Set_Hero(HERO eHero);
+    void Set_Hero(DUMMY_HERO eHero);
 
     void Click_Deck_Select(wstring strObjName);
     void Click_Deck_Inven(wstring strInvenName);

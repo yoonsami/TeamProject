@@ -632,9 +632,16 @@ void DataMgr::Initialize()
 
 
 
-
-
-
+    _uint iSize = IDX(DUMMY_HERO::MAX);
+    m_DummyData.resize(iSize);
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        auto& tagData = m_DummyData[i];
+        wstring strIndex = to_wstring(i);
+        tagData.KeyDeckMini     = L"Card_Deck_Dummy" + strIndex;
+        tagData.KeyDeckSelect   = L"Bick_Card_Dummy" + strIndex;
+        tagData.Element         = ElementType::WATER;
+    }
 
 
 

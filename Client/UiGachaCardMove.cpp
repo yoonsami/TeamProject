@@ -6,6 +6,8 @@
 #include "UiGachaController.h"
 #include "UiCardDeckController.h"
 
+_uint UiGachaCardMove::iHeroIndex = 0;
+
 UiGachaCardMove::UiGachaCardMove(_uint iIndex, _bool bValue)
     : m_iIndex(iIndex)
 	, m_bIsUnique(bValue)
@@ -111,17 +113,33 @@ HRESULT UiGachaCardMove::Init()
 
 	if (true == m_bIsUnique)
 	{
-		m_eHero = HERO::KYLE;
+		switch (iHeroIndex)
+		{
+		case 0:
+			m_eHero = HERO::KYLE;
+			break;
+		case 1:
+			m_eHero = HERO::YEOPO;
+			break;
+		case 2:
+			m_eHero = HERO::YEONHEE;
+			break;
+		case 3:
+			m_eHero = HERO::SHANE;
+			break;
+		}
+		
 		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back0"), TextureMapType::DIFFUSE);
+
+        m_strTextureTag = GET_DATA(m_eHero).KeyDeckSelect;
 	}
 	else
 	{
+		_uint iIndex = IDX(DUMMY_HERO::MAX);
+		m_eDummyHero = static_cast<DUMMY_HERO>(rand() % iIndex);
+		m_strTextureTag = GET_DATA(m_eDummyHero).KeyDeckSelect;
 		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back5"), TextureMapType::DIFFUSE);
 	}
-
-
-	if(HERO::MAX != m_eHero)
-		m_strTextureTag = GET_DATA(m_eHero).KeyDeckSelect;
 	
 	// HERO::PLAYER는 뽑는 목록에서 제외
 
@@ -239,7 +257,7 @@ void UiGachaCardMove::Open()
 
 	_float fTime = fDT;
 	m_fCheckTime += fTime;
-	if (m_fMaxTime < m_fCheckTime)
+	if (m_fMaxTime * 1.1f < m_fCheckTime)
 	{
 		m_fCheckTime = m_fMaxTime;
 		m_eState = STATE::NONE;
@@ -274,8 +292,10 @@ void UiGachaCardMove::Open()
 		vecScale.x = 272.f;
 		m_eState = STATE::NONE;
 
-		if (HERO::MAX != m_eHero)
+		if (true == m_bIsUnique)
 			CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Set_Hero(m_eHero);
+		else
+			CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Set_Hero(m_eDummyHero);
 	}
 
 	m_pOwner.lock()->GetOrAddTransform()->Scaled(vecScale);

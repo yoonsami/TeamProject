@@ -18,6 +18,8 @@ private:
     void Open();
 
 private:
+    static _uint    iHeroIndex;
+
    enum class STATE { START, IDLE, OPEN, NONE };
    STATE            m_eState            = { STATE::START };
 
@@ -44,5 +46,7 @@ private:
    CHANGE_TYPE      m_eOpenType         = { CHANGE_TYPE::DOWN };
    wstring          m_strTextureTag;
    HERO             m_eHero             = { HERO::MAX };
+
+   DUMMY_HERO       m_eDummyHero        = { DUMMY_HERO::MAX };
 };
 
