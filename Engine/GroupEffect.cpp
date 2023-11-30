@@ -32,7 +32,7 @@ HRESULT GroupEffect::Init()
 		Utils::DetachExt(wstrMeshEffectDataKey);
 		shared_ptr<MeshEffectData> meshEffectData = RESOURCES.Get<MeshEffectData>(wstrMeshEffectDataKey);
 
-        if(meshEffectData->Get_Desc().iMeshCnt ==1)
+        if(meshEffectData->Get_Desc().iMeshCnt ==1 && meshEffectData->Get_Desc().fCreateInterval == 0)
             continue;
 
         if(meshEffectData->Get_Desc().fCreateInterval == 0)
