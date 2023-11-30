@@ -46,6 +46,7 @@ private:
 	void					ImGui_FinishedEffect();
 	void					ImGui_SaveMsgBox();
 	void					ImGui_TextureList();
+	void					ImGui_ForwordDistortion();
 
 	/* Options */
 	void					Option_Guizmo();
@@ -78,6 +79,9 @@ private:
 	void					Save();
 	void					Load();
 	void					Show_Guizmo();
+
+	void					Create_FDistortion();
+	void					Save_FDistortion();
 
 	/* Utils */
 	ImVec2					CatMull_Rom(_float2* pPoints, _float t);
@@ -192,6 +196,15 @@ private:
 	pair<_int, string>		m_DistortionTexture = { 0, "None" };
 	_float					m_fTiling_Distortion[2] = { 0.f, 0.f };
 	_float					m_fUVSpeed_Distortion[2] = { 0.f, 0.f };
+
+	/* Forword Distortion */
+	_bool					m_bFDistortion_On = { false };
+	pair<_int, string>		m_FDistortionTexture = { 0, "None" };
+	_float					m_fTiling_FDistortion[2] = { 0.f, 0.f };
+	_float					m_fUVSpeed_FDistortion[2] = { 0.f, 0.f };
+	_float					m_fWeight_FDistortion = { 1.f };
+
+
 
 	/* Initliaze Transform */
 	_int					m_iInitPosOption = { 0 };					// static, random in range 

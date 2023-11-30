@@ -42,9 +42,9 @@ private:
 	void	Delete();	// Delete GroupEffect GameObject in m_pCurrentGroup
 	void	Save(const string& wstrNewGroupTag = ".");
 
-	void	OwnerOnOff();
-
 private:
+	_bool					m_bIsFDistortionGroup = { false };
+
 	/* Group List */
 	_uint					m_iNumGroups = { 0 };
 	vector<string>			m_vecGroups;

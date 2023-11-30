@@ -288,6 +288,8 @@ void Widget_GroupEffectMaker::Widget_GetTag()
 
 	ImGui::InputText("##GetTag", m_szNewGroupEffectTag, MAX_PATH);
 
+	ImGui::Checkbox("Is Forword Distortion Group", &m_bIsFDistortionGroup);
+
 	if (ImGui::Button("Create##GetTag"))
 	{
 		Save(m_szNewGroupEffectTag);
