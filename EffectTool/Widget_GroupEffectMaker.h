@@ -86,5 +86,6 @@ private:
 
 	/* Owner */
 	shared_ptr<GameObject>		m_pOwner;
+	
 };
 

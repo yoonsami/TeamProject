@@ -108,14 +108,17 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 			m_Forward.push_back(gameObject);
 		else if (gameObject->Get_ShaderType() == SHADER_TYPE::DEFERRED)
 			m_Deferred.push_back(gameObject);
-		else if (m_bEffectToolMode_On && gameObject->Get_MeshEffect())
+		else if (m_bEffectToolMode_On && gameObject->Get_MeshEffect() && gameObject->Get_ShaderType() == SHADER_TYPE::FORWARD)
 			m_Forward.push_back(gameObject);
+		else if (m_bEffectToolMode_On && gameObject->Get_MeshEffect() && gameObject->Get_ShaderType() == SHADER_TYPE::DISTORTION)
+			m_DistortionEffects.push_back(gameObject);
 		else if (!m_bEffectToolMode_On && gameObject->Get_GroupEffect())
 			m_Forward.push_back(gameObject);
 		else if (gameObject->Get_ShaderType() == SHADER_TYPE::FORWARD)
 			m_Forward.push_back(gameObject);
 		else if (gameObject->Get_ShaderType() == SHADER_TYPE::DISTORTION)
 			m_DistortionEffects.push_back(gameObject);
+
 		
 		//if (gameObject->Get_ParticleSystem())
 		//	m_Particle.push_back(gameObject);
@@ -157,7 +160,9 @@ void Camera::Render_DistrotionEffects()
 {
 	for (auto& obj : m_DistortionEffects)
 	{
-		if (obj->Get_GroupEffect())
+		if (m_bEffectToolMode_On && obj->Get_MeshEffect())
+			obj->Get_MeshEffect()->Render();
+		else if (!m_bEffectToolMode_On && obj->Get_GroupEffect())
 			obj->Get_GroupEffect()->Render();
 	}
 }
