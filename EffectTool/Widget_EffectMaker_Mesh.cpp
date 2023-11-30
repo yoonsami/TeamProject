@@ -204,7 +204,13 @@ void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 
 			ImGui::EndTabItem();
 		}
-		
+
+		if (ImGui::BeginTabItem("Forword Distortion"))
+		{
+			ImGui_ForwordDistortion();
+			ImGui::EndTabItem();
+		}
+
 		ImGui::EndTabBar();
 	}
 }
@@ -255,6 +261,41 @@ void Widget_EffectMaker_Mesh::ImGui_TextureList()
 
 		ImGui::EndChild();
 	}
+}
+
+void Widget_EffectMaker_Mesh::ImGui_ForwordDistortion()
+{
+	ImGui::SeparatorText("Forword distortion");
+
+	Option_Mesh();
+
+	// Distoriton Texture
+	SubWidget_ImageViewer(m_TexOption[0].Texture.second, m_strTexturePath, "##Img_FDistortion");
+
+	ImGui::SameLine();
+	if (ImGui::Button("Change Texture##FDistortion"))
+	{
+		m_iTexture_TextureList = &m_TexOption[0].Texture.first;
+		m_pTextureTag_TextureList = &m_TexOption[0].Texture.second;
+		m_pszWidgetKey_TextureList = "Texture List##FDistortion";
+		m_bTextureList_On = true;
+	}
+
+	ImGui::SliderFloat("Distortion Weight##FDistortion", &m_fWeight_FDistortion, 0.00f, 1.00f);
+	SubWidget_SettingTexUV(m_TexOption[0].fTiling_Op, m_TexOption[0].fUVSpeed_Op, "Tiling(x,y)##FDistortion", "UV Speed(x,y)##FDistortion");
+
+	// Dissolve
+	Option_Dissolve();
+
+	// Distoriton 
+	Option_Distortion();
+
+	// Create Save
+	if (ImGui::Button("Create##FDistortion"))
+		Create_FDistortion();
+	ImGui::SameLine();
+	if (ImGui::Button("Save##FDistortion"))
+		Save_FDistortion();
 }
 
 void Widget_EffectMaker_Mesh::Option_Guizmo()
@@ -1090,7 +1131,7 @@ void Widget_EffectMaker_Mesh::Create()
 
 		MeshEffectData::DESC tMeshEffectDesc
 		{
-				m_szTag,
+			m_szTag,
 				m_fDuration,
 				m_bLightOn,
 				m_fLightIntensity,
@@ -1166,7 +1207,7 @@ void Widget_EffectMaker_Mesh::Create()
 				m_bRimLight_On,
 				ImVec4toColor(m_vRimLightColor_Base),
 				ImVec4toColor(m_vRimLightColor_Dest),
-				{ m_vCurvePoint_RimLight[0],m_vCurvePoint_RimLight[1], m_vCurvePoint_RimLight[2], m_vCurvePoint_RimLight[3] },
+			{ m_vCurvePoint_RimLight[0],m_vCurvePoint_RimLight[1], m_vCurvePoint_RimLight[2], m_vCurvePoint_RimLight[3] },
 
 				// Normal
 				m_NormalTexture.second,
@@ -1175,7 +1216,7 @@ void Widget_EffectMaker_Mesh::Create()
 				m_DissolveTexture.second,
 				_float2(m_fTiling_Overlay),
 				_float2(m_fUVSpeed_Overlay),
-				{ m_vCurvePoint_Dissolve[0],m_vCurvePoint_Dissolve[1], m_vCurvePoint_Dissolve[2], m_vCurvePoint_Dissolve[3] },
+			{ m_vCurvePoint_Dissolve[0],m_vCurvePoint_Dissolve[1], m_vCurvePoint_Dissolve[2], m_vCurvePoint_Dissolve[3] },
 
 				// Distortion
 				m_DistortionTexture.second,
@@ -1201,18 +1242,18 @@ void Widget_EffectMaker_Mesh::Create()
 				_float3(m_fEndPositionOffset_Min),
 				_float3(m_fEndPositionOffset_Max),
 				m_iSpeedType,
-				{ m_vCurvePoint_Force[0], m_vCurvePoint_Force[1], m_vCurvePoint_Force[2], m_vCurvePoint_Force[3] },
+			{ m_vCurvePoint_Force[0], m_vCurvePoint_Force[1], m_vCurvePoint_Force[2], m_vCurvePoint_Force[3] },
 
 				m_iScalingOption,
 				_float3(m_fEndScaleOffset),
 				m_iScaleSpeedType,
-				{ m_vCurvePoint_Scale[0], m_vCurvePoint_Scale[1], m_vCurvePoint_Scale[2], m_vCurvePoint_Scale[3] },
+			{ m_vCurvePoint_Scale[0], m_vCurvePoint_Scale[1], m_vCurvePoint_Scale[2], m_vCurvePoint_Scale[3] },
 
 				m_iTurnOption,
 				m_fTurnSpeed,
 				_float3(m_fRandomAxis_Min),
 				_float3(m_fRandomAxis_Max),
-				{m_bBillbordAxes[0], m_bBillbordAxes[1]}
+			{ m_bBillbordAxes[0], m_bBillbordAxes[1] }
 		};
 		EffectObj->Get_MeshEffect()->Set_TransformDesc(&tTransform_Desc);
 		EffectObj->Get_MeshEffect()->InitialTransform(XMMatrixIdentity(), _float3(m_fPosOffsetInTool[0], m_fPosOffsetInTool[1], m_fPosOffsetInTool[2]), _float3(1.f), _float3(0.f));
@@ -1580,6 +1621,174 @@ void Widget_EffectMaker_Mesh::Show_Guizmo()
 			memcpy(m_fInitRotation_Max, m_fInitRotation_Min, sizeof(m_fInitRotation_Min));
 		}
 	}
+}
+
+void Widget_EffectMaker_Mesh::Create_FDistortion()
+{
+	// Delete all group effect ans mesh effects
+	for (auto& iter : CUR_SCENE->Get_Objects())
+	{
+		if (iter->Get_MeshEffect())
+			EVENTMGR.Delete_Object(iter);
+	}
+
+	for (_int n = 0; n < m_iMeshCnt; n++)
+	{
+		CUR_SCENE->Get_Camera(L"Default")->Get_Camera()->Set_EffectToolOn(true);
+
+		// For. Create GameObject 
+		shared_ptr<GameObject> EffectObj = make_shared<GameObject>();
+		EffectObj->Set_Name(Utils::ToWString(m_strMesh));
+
+		// For. Add and Setting Transform Component
+		EffectObj->GetOrAddTransform();
+		EffectObj->Get_Transform()->Set_State(Transform_State::POS, _float4(m_fPosOffsetInTool[0], m_fPosOffsetInTool[1], m_fPosOffsetInTool[2], 1.f));
+		EffectObj->Get_Transform()->Scaled(_float3(1.0f));
+
+		// For. Add and Setting Effect Component to GameObject
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Distortion.fx");
+		shared_ptr<MeshEffect> meshEffect = make_shared<MeshEffect>(shader);
+		EffectObj->Add_Component(meshEffect);
+		EffectObj->Get_MeshEffect()->Set_ToolModeOn(true);
+
+		MeshEffectData::DESC tMeshEffectDesc
+		{
+			m_szTag,
+				m_fDuration,
+				m_bLightOn,
+				m_fLightIntensity,
+				m_bUseFadeOut,
+				m_iMeshCnt,
+				m_fCreateInterval,
+				_float2(m_fParticleDuration),
+				m_iSamplerType,
+				m_bIsLoop,
+				m_bIsFollowGroup_OnlyTranslate,
+				m_bIsFollowGroup_LookSameDir,
+
+				m_strMesh,
+
+				m_bUseSpriteAnimation,
+				m_iSpriteAni_Count[0],
+				m_iSpriteAni_Count[1],
+				m_fSpriteAni_Speed,
+
+				m_bColorChangingOn,
+
+				m_TexOption[0].Texture.second,
+				m_TexOption[0].iFlipOption,
+				m_TexOption[0].iColoringOption,
+				ImVec4toColor(m_TexOption[0].vColorBase1),
+				ImVec4toColor(m_TexOption[0].vColorBase2),
+				ImVec4toColor(m_TexOption[0].vColorDest1),
+				ImVec4toColor(m_TexOption[0].vColorDest2),
+				_float2(m_TexOption[0].fTiling_Op),
+				_float2(m_TexOption[0].fUVSpeed_Op),
+				m_TexOption[0].fContrast,
+				m_TexOption[0].fAlphaOffset,
+
+				m_TexOption[1].Texture.second,
+				m_TexOption[1].iFlipOption,
+				m_TexOption[1].iColoringOption,
+				ImVec4toColor(m_TexOption[1].vColorBase1),
+				ImVec4toColor(m_TexOption[1].vColorBase2),
+				ImVec4toColor(m_TexOption[1].vColorDest1),
+				ImVec4toColor(m_TexOption[1].vColorDest2),
+				_float2(m_TexOption[1].fTiling_Op),
+				_float2(m_TexOption[1].fUVSpeed_Op),
+				m_TexOption[1].fContrast,
+				m_TexOption[1].fAlphaOffset,
+
+				m_TexOption[2].Texture.second,
+				m_TexOption[2].iFlipOption,
+				m_TexOption[2].iColoringOption,
+				ImVec4toColor(m_TexOption[2].vColorBase1),
+				ImVec4toColor(m_TexOption[2].vColorBase2),
+				ImVec4toColor(m_TexOption[2].vColorDest1),
+				ImVec4toColor(m_TexOption[2].vColorDest2),
+				_float2(m_TexOption[2].fTiling_Op),
+				_float2(m_TexOption[2].fUVSpeed_Op),
+				m_TexOption[2].fContrast,
+				m_TexOption[2].fAlphaOffset,
+
+				// Blend
+				m_BlendTexture.second,
+				_float2(m_fTiling_Blend),
+				_float2(m_fUVSpeed_Blend),
+				m_fAlphaOffset_Blend,
+
+				// Overlay
+				m_bOverlay_On,
+				m_OverlayTexture.second,
+				ImVec4toColor(m_vOverlayColor_Base),
+				ImVec4toColor(m_vOverlayColor_Dest),
+				_float2(m_fTiling_Overlay),
+				_float2(m_fUVSpeed_Overlay),
+
+				// Rim Light 
+				m_bRimLight_On,
+				ImVec4toColor(m_vRimLightColor_Base),
+				ImVec4toColor(m_vRimLightColor_Dest),
+			{ m_vCurvePoint_RimLight[0],m_vCurvePoint_RimLight[1], m_vCurvePoint_RimLight[2], m_vCurvePoint_RimLight[3] },
+
+				// Normal
+				m_NormalTexture.second,
+
+				// Diffolve
+				m_DissolveTexture.second,
+				_float2(m_fTiling_Overlay),
+				_float2(m_fUVSpeed_Overlay),
+			{ m_vCurvePoint_Dissolve[0],m_vCurvePoint_Dissolve[1], m_vCurvePoint_Dissolve[2], m_vCurvePoint_Dissolve[3] },
+
+				// Distortion
+				m_DistortionTexture.second,
+				_float2(m_fTiling_Distortion),
+				_float2(m_fUVSpeed_Distortion),
+
+		};
+		EffectObj->Get_MeshEffect()->Init(&tMeshEffectDesc);
+
+		// For. Add and Setting EffectMovement Script to GameObject
+		MeshEffectData::Transform_Desc tTransform_Desc
+		{
+			_float3(m_fPosRange),
+
+				_float3(m_fInitScale_Min),
+				_float3(m_fInitScale_Max),
+
+				_float3(m_fInitRotation_Min),
+				_float3(m_fInitRotation_Max),
+
+				m_iTranslateOption,
+				m_fTranslateSpeed,
+				_float3(m_fEndPositionOffset_Min),
+				_float3(m_fEndPositionOffset_Max),
+				m_iSpeedType,
+			{ m_vCurvePoint_Force[0], m_vCurvePoint_Force[1], m_vCurvePoint_Force[2], m_vCurvePoint_Force[3] },
+
+				m_iScalingOption,
+				_float3(m_fEndScaleOffset),
+				m_iScaleSpeedType,
+			{ m_vCurvePoint_Scale[0], m_vCurvePoint_Scale[1], m_vCurvePoint_Scale[2], m_vCurvePoint_Scale[3] },
+
+				m_iTurnOption,
+				m_fTurnSpeed,
+				_float3(m_fRandomAxis_Min),
+				_float3(m_fRandomAxis_Max),
+			{ m_bBillbordAxes[0], m_bBillbordAxes[1] }
+		};
+		EffectObj->Get_MeshEffect()->Set_TransformDesc(&tTransform_Desc);
+		EffectObj->Get_MeshEffect()->InitialTransform(XMMatrixIdentity(), _float3(m_fPosOffsetInTool[0], m_fPosOffsetInTool[1], m_fPosOffsetInTool[2]), _float3(1.f), _float3(0.f));
+
+		m_pCurrMeshEffect = EffectObj;
+
+		// For. Add Effect GameObject to current scene
+		EVENTMGR.Create_Object(EffectObj);
+	}
+}
+
+void Widget_EffectMaker_Mesh::Save_FDistortion()
+{
 }
 
 void Widget_EffectMaker_Mesh::SubWidget_TextureCombo(_int* iSelected, string* strSelected, string strFilePath, const char* pszWidgetKey)
