@@ -155,10 +155,6 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     {
         vSample_Op1 = TextureMap7.Sample(LinearSampler, vTexcoord_Op[0]);
         vSample_Op1.rgb = pow(vSample_Op1.rgb, GAMMA);
-
-        float luminance = dot(vSample_Op1.rgb, float3(0.299, 0.587, 0.114));
-        vSample_Op1.rgb = lerp(vSample_Op1.rgb, vSample_Op1.rgb * vColorOptions_Op[0].x, saturate(luminance));
-        vSample_Op1.a = saturate(vSample_Op1.a * vColorOptions_Op[0].y);
     }
     
     if (bHasTexturemap10)
@@ -170,8 +166,6 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     
     /* Mix four option textures */
     vOutColor = vSample_Op1;
-    vOutColor = lerp(vOutColor, vSample_Op2, vSample_Op2.a);
-    vOutColor = lerp(vOutColor, vSample_Op3, vSample_Op3.a);
     
     /* Gamma collection */
     if (bUseTexColor_Op[0] || bUseTexColor_Op[1] || bUseTexColor_Op[2])
@@ -191,12 +185,15 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     
     /* Fade Out */
     if (bUseFadeOut)
-        vOutColor.a *= (1.f - fLifeTimeRatio);
+    {
+        vOutColor.r *= (1.f - fLifeTimeRatio);
+        
+    }
     
     if (vOutColor.a < 0.1f)
         discard;
     
-    vOutColor.r *= g_float_1;
+    vOutColor.r *= g_vec2_0.x;
     
     return vOutColor;
 }
@@ -284,10 +281,6 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     {
         vSample_Op1 = TextureMap7.Sample(LinearSamplerClamp, vTexcoord_Op[0]);
         vSample_Op1.rgb = pow(vSample_Op1.rgb, GAMMA);
-
-        float luminance = dot(vSample_Op1.rgb, float3(0.299, 0.587, 0.114));
-        vSample_Op1.rgb = lerp(vSample_Op1.rgb, vSample_Op1.rgb * vColorOptions_Op[0].x, saturate(luminance));
-        vSample_Op1.a = saturate(vSample_Op1.a * vColorOptions_Op[0].y);
     }
     
     if (bHasTexturemap10)
@@ -299,8 +292,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     
     /* Mix four option textures */
     vOutColor = vSample_Op1;
-    vOutColor = lerp(vOutColor, vSample_Op2, vSample_Op2.a);
-    vOutColor = lerp(vOutColor, vSample_Op3, vSample_Op3.a);
+
     
     /* Gamma collection */
     if (bUseTexColor_Op[0] || bUseTexColor_Op[1] || bUseTexColor_Op[2])
@@ -318,14 +310,16 @@ float4 PS_Clamp(EffectOut input) : SV_Target
             vOutColor.a = 0.f;
     }
     
-    /* Fade Out */
     if (bUseFadeOut)
-        vOutColor.a *= (1.f - fLifeTimeRatio);
+    {
+        vOutColor.r *= (1.f - fLifeTimeRatio);
+        
+    }
     
     if (vOutColor.a < 0.1f)
         discard;
     
-    vOutColor.r *= g_float_1;
+    vOutColor.r *= g_vec2_0.x;
     
     return vOutColor;
 }
@@ -429,10 +423,6 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
     {
         vSample_Op1 = TextureMap7.Sample(LinearSampler, vTexcoord_Op[0]);
         vSample_Op1.rgb = pow(vSample_Op1.rgb, GAMMA);
-
-        float luminance = dot(vSample_Op1.rgb, float3(0.299, 0.587, 0.114));
-        vSample_Op1.rgb = lerp(vSample_Op1.rgb, vSample_Op1.rgb * vColorOptions_Op[0].x, saturate(luminance));
-        vSample_Op1.a = saturate(vSample_Op1.a * vColorOptions_Op[0].y);
     }
     
     if (bHasTexturemap10)
@@ -444,8 +434,6 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
     
     /* Mix four option textures */
     vOutColor = vSample_Op1;
-    vOutColor = lerp(vOutColor, vSample_Op2, vSample_Op2.a);
-    vOutColor = lerp(vOutColor, vSample_Op3, vSample_Op3.a);
     
     /* Gamma collection */
     if (bUseTexColor_Op[0] || bUseTexColor_Op[1] || bUseTexColor_Op[2])
@@ -465,12 +453,15 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
     
     /* Fade Out */
     if (bUseFadeOut)
-        vOutColor.a *= (1.f - fLifeTimeRatio);
+    {
+        vOutColor.r *= (1.f - fLifeTimeRatio);
+        
+    }
     
     if (vOutColor.a < 0.1f)
         discard;
     
-    vOutColor.r *= g_effectData[id].g_float_1;
+    vOutColor.r *= g_effectData[id].g_vec2_0.x;
     
     return vOutColor;
 }
@@ -594,12 +585,15 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
     
     /* Fade Out */
     if (bUseFadeOut)
-        vOutColor.a *= (1.f - fLifeTimeRatio);
+    {
+        vOutColor.r *= (1.f - fLifeTimeRatio);
+        
+    }
     
     if (vOutColor.a < 0.1f)
         discard;
     
-    vOutColor.r *= g_effectData[id].g_float_1;
+    vOutColor.r *= g_effectData[id].g_vec2_0.x;
     
     return vOutColor;
 }

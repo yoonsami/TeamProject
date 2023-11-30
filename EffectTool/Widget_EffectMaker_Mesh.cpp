@@ -342,7 +342,7 @@ void Widget_EffectMaker_Mesh::Option_Property()
 
 	ImGui::Checkbox("On Fade Out##Property", &m_bUseFadeOut);
 	ImGui::Checkbox("Color Changing On##Property", &m_bColorChangingOn);
-
+	ImGui::Checkbox("FDistortion##Property", &m_bIsFDistortion);
 	ImGui::InputInt("Number of Mesh##Property", &m_iMeshCnt);
 
 
@@ -1075,7 +1075,7 @@ void Widget_EffectMaker_Mesh::Create()
 
 		// For. Add and Setting Effect Component to GameObject
 		shared_ptr<Shader> shader;
-		if(m_bIsFDistortion)
+		if (m_bIsFDistortion)
 			shader = RESOURCES.Get<Shader>(L"Shader_Distortion.fx");
 		else
 			shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
@@ -1106,7 +1106,7 @@ void Widget_EffectMaker_Mesh::Create()
 				m_bIsLoop,
 				m_bIsFollowGroup_OnlyTranslate,
 				m_bIsFollowGroup_LookSameDir,
-
+				m_bIsFDistortion,
 				m_strMesh,
 
 				m_bUseSpriteAnimation,
