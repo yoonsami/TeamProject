@@ -42,8 +42,6 @@ HRESULT Dellons_FSM::Init()
         m_bInitialize = true;
     }
 
-  
-
     return S_OK;
 }
 
@@ -286,6 +284,9 @@ void Dellons_FSM::OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap)
 void Dellons_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
     if (pCollider->Get_Owner() == nullptr)
+        return;
+
+    if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
         return;
 
 

@@ -348,6 +348,8 @@ void Boss_Spike_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float
     if (pCollider->Get_Owner() == nullptr)
         return;
 
+    if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
+        return;
 
     if (!m_bInvincible)
     {

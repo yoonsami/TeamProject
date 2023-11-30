@@ -297,6 +297,9 @@ void Boss_Mir_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float f
     if (pCollider->Get_Owner() == nullptr)
         return;
 
+    if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
+        return;
+
     if (pCollider->Get_CollisionGroup() == Player_Attack || pCollider->Get_CollisionGroup() == Player_Skill)
     {   
 
@@ -522,6 +525,11 @@ void Boss_Mir_FSM::sq_Intro2()
         g_bCutScene = false;
         //m_eCurState = STATE::skill_Restart_Phase1;
         m_eCurState = STATE::b_idle;
+
+        if (!m_pCamera.expired())
+        {
+            m_vPhaseChangePos = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS);
+        }
     }
 }
 
@@ -536,6 +544,8 @@ void Boss_Mir_FSM::sq_Intro2_Init()
     Calculate_IntroHeadCam();
 
     m_FirstWorldMat = Get_Transform()->Get_WorldMatrix();
+    
+
 }
 
 void Boss_Mir_FSM::b_idle()
@@ -589,7 +599,7 @@ void Boss_Mir_FSM::b_idle()
         {
             Set_AttackPattern();
 
-        /*    if (m_pOwner.lock()->Get_HpRatio() >= 0.33f && m_pOwner.lock()->Get_HpRatio() <= 0.66f)
+            if (m_pOwner.lock()->Get_HpRatio() >= 0.33f && m_pOwner.lock()->Get_HpRatio() <= 0.66f)
             {
                 if (!m_bPhaseChange)
                 {
@@ -606,7 +616,7 @@ void Boss_Mir_FSM::b_idle()
 
                     m_eCurState = STATE::skill_Restart_Phase1;
                 }
-            }*/
+            }
             
         }
     }
@@ -892,32 +902,59 @@ void Boss_Mir_FSM::skill_Restart_Phase1()
     {
         if (!m_pCamera.expired())
         {
-            m_vHeadCamDir = m_vTopBonePos.xyz() - m_vHeadCamPos.xyz();
+            _float3 vLookPos = m_vTopBonePos + (_float3::Up * -1.f);
+            m_vHeadCamDir = vLookPos - m_vHeadCamPos.xyz();
             m_vHeadCamDir.Normalize();
 
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(2.f);
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vTopBonePos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(vLookPos);
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, m_vHeadCamDir * -1.f, 12.f);
         }
     }
-    else if (m_iCurFrame >= 10)
+    else if (m_iCurFrame >= 10 && m_iCurFrame < 100)
     {
         if (Init_CurFrame(10))
             m_vCamStopPos = m_vHeadCamPos;
-        else if (Init_CurFrame(100))
+    
+        if (!m_pCamera.expired())
+        {
+            _float3 vLookPos = m_vTopBonePos + (_float3::Up * -1.f);
+            m_vHeadCamDir = vLookPos - m_vCamStopPos.xyz();
+            m_vHeadCamDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(vLookPos);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, m_vHeadCamDir * -1.f, 12.f);
+        }
+    }
+    else
+    {
+        if (Init_CurFrame(100))
         {
             //Setting Spawn Position For CutScene
             Get_CharacterController()->Get_Actor()->setFootPosition({ m_FirstWorldMat.Translation().x,  m_FirstWorldMat.Translation().y, m_FirstWorldMat.Translation().z });
             Get_Transform()->Set_LookDir(m_FirstWorldMat.Backward());
-        }
 
-        if (!m_pCamera.expired())
-        {
-            m_vHeadCamDir = m_vTopBonePos.xyz() - m_vCamStopPos.xyz();
+            m_vCamStopPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 10.f + Get_Transform()->Get_State(Transform_State::UP) * 5.f;
+
+            if (!m_pCamera.expired())
+                m_pCamera.lock()->Get_Transform()->Set_State(Transform_State::POS, m_vPhaseChangePos);
+        }
+        
+        if (!m_pCamera.expired())   
+        {   
+            _float3 vLookPos = Get_Transform()->Get_State(Transform_State::POS) + 
+                               Get_Transform()->Get_State(Transform_State::LOOK) * 8.f +
+                               (_float3::Up * 5.f);
+            
+            if (m_vHeadBonePos.y < vLookPos.y)
+                vLookPos.y = m_vHeadBonePos.y;
+
+            m_vHeadCamDir = vLookPos - m_vCamStopPos.xyz();
             m_vHeadCamDir.Normalize();
 
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vTopBonePos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(2.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(vLookPos);
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, m_vHeadCamDir * -1.f, 12.f);
         }
     }
@@ -2159,7 +2196,8 @@ void Boss_Mir_FSM::Create_Meteor()
 
 void Boss_Mir_FSM::Set_AttackPattern()
 {
-    _uint iRan = rand() % 10;
+    m_eCurState = STATE::skill_2100;
+   /* _uint iRan = rand() % 10;
 
     while (true)
     {
@@ -2218,7 +2256,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
     {
         m_eCurState = STATE::skill_200000;
         m_iPreAttack = 9;
-    }
+    }*/
 }
 
 void Boss_Mir_FSM::Setting_DragonBall()
