@@ -544,6 +544,7 @@ void Widget_GroupEffectMaker::Create()
 {
 	/* Get GroupEffectData gameObject if resource manager already has GroupEffectData
 	  if it does not, add new GroupEffectData to resource manager and get */
+
 	// Erase prev created loop mesh effect 
 	if (nullptr != m_pCurrentGroup)
 		m_pCurrentGroup->Get_GroupEffect()->FreeLoopMember();
@@ -576,11 +577,13 @@ void Widget_GroupEffectMaker::Create()
 	pGroupEffectObj->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
 	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
 	pGroupEffectObj->Get_GroupEffect()->Set_InitWorldMatrix(pGroupEffectObj->Get_Transform()->Get_WorldMatrix());
+	pGroupEffectObj->Get_GroupEffect()->Set_DistortionGroup(m_bIsFDistortionGroup);
 	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectMaterials();
 	pGroupEffectObj->Init();
+
 	// For. bind to member 
 	m_pCurrentGroup = pGroupEffectObj;
-	pGroupEffectObj->Get_GroupEffect()->Set_DistortionGroup(m_bIsFDistortionGroup);
+
 	// For. Add Effect GameObject to current scene
 	EVENTMGR.Create_Object(pGroupEffectObj);
 }
