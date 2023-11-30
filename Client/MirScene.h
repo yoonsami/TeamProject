@@ -27,7 +27,7 @@ private:
 	void Load_Boss_Dellons(shared_ptr<GameObject> pPlayer);
 	void Load_Boss_Spike(shared_ptr<GameObject> pPlayer);
 
-	void Load_Debug();
+	void Load_Water();
 
 
 };

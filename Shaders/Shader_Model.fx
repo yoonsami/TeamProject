@@ -514,6 +514,78 @@ PS_OUT_Deferred PS_Deferred_Instancing(MeshInstancingOutput input)
     return output;
 }
 
+PS_OUT_Deferred PS_WATER(MeshOutput input)
+{
+    PS_OUT_Deferred output = (PS_OUT_Deferred) 0.f;
+    float4 diffuseColor;
+    float4 specularColor;
+    float4 emissiveColor;
+    float4 ARM_Map;
+    
+    /* Get Shared Data */   
+    float fLightIntensity = 1.05f;
+        
+    float4 vBaseColor1_Op1 = float4(100.f / 255.f, 191.f / 255.f, 1.f, 1.f);
+    float4 vBaseColor2_Op1 = float4(0.f, 150.f / 255.f, 289.f / 255.f, 1.f);
+        
+    /* Calc Texcoord */
+    float fDistortionWeight = 0.f;
+    if (bHasDistortionMap)
+    {
+        float4 vDistortion = DistortionMap.Sample(LinearSampler, input.uv * 0.01f + g_vec2_0 /*uvsliding*/);
+        fDistortionWeight = vDistortion.r * 0.5f;
+    }
+
+    /* Sampled from textures */    
+    float4 vSample_Op1 = { 0.f, 0.f, 0.f, 0.f };
+    float4 vSample_Op2 = { 0.f, 0.f, 0.f, 0.f };
+    float4 vSample_Op3 = { 0.f, 0.f, 0.f, 0.f };
+    float4 vSample_Blend = { 0.f, 0.f, 0.f, 0.f };
+    float4 vSample_Overlay = { 0.f, 0.f, 0.f, 0.f };
+    float4 vSample_Dissolve = { 0.f, 0.f, 0.f, 0.f };
+    if (bHasDiffuseMap)
+    {
+        vSample_Op1.a = DiffuseMap.Sample(LinearSampler, input.uv + g_vec2_1 /*uvsliding*/ + fDistortionWeight).r;
+        vSample_Op1.rgb = lerp(vBaseColor2_Op1, vBaseColor1_Op1, vSample_Op1.a);
+
+        float luminance = dot(vSample_Op1.rgb, float3(0.299, 0.587, 0.114));
+        vSample_Op1.rgb = lerp(vSample_Op1.rgb, vSample_Op1.rgb * 1.5f, saturate(luminance));
+        vSample_Op1.a = saturate(vSample_Op1.a * 4.f);
+    }
+   
+    /* Mix four option textures */
+    diffuseColor = vSample_Op1;
+
+    if (bHasNormalMap)
+        ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv + g_vec2_1 /*uvsliding*/ + fDistortionWeight);
+    
+    ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
+    
+    if (bHasTexturemap7)
+    {
+        ARM_Map = TextureMap7.Sample(LinearSampler, input.uv);
+        ARM_Map = pow(abs(ARM_Map), GAMMA);
+    }
+
+    if (bHasEmissiveMap)
+    {
+        emissiveColor = EmissiveMap.Sample(LinearSampler, input.uv);
+        emissiveColor.rgb = pow(abs(emissiveColor.rgb), GAMMA);
+    }
+    else
+        emissiveColor = 0.f;
+    
+
+
+    output.position = float4(input.viewPosition.xyz, 0.f);
+    output.normal = float4(input.viewNormal.xyz, 0.f);
+    output.depth = input.position.z;
+    output.depth.w = input.viewPosition.z;
+    output.diffuseColor = diffuseColor;
+    output.specularColor = float4(1.f, 1.f, 1.f, 1.f);
+    output.emissiveColor = emissiveColor;
+    return output;
+}
 
 // PS_Shadow
 float4 PS_Shadow(ShadowOutput input) : SV_Target
@@ -852,6 +924,81 @@ PBR_OUTPUT PS_PBR_Deferred_MapObject_Instancing(MeshInstancingOutput input)
     return output;
 }
 
+PBR_OUTPUT PS_PBR_WATER(MeshOutput input)
+{
+    PBR_OUTPUT output = (PBR_OUTPUT) 0.f;
+    float4 diffuseColor;
+    float4 specularColor;
+    float4 emissiveColor;
+    float4 ARM_Map;
+    
+    /* Get Shared Data */   
+    float fLightIntensity = 1.05f;
+        
+    float4 vBaseColor1_Op1 = float4(100.f/255.f,191.f/255.f,1.f,1.f);
+    float4 vBaseColor2_Op1 = float4(0.f, 150.f / 255.f,289.f/255.f, 1.f);
+        
+    /* Calc Texcoord */
+    float fDistortionWeight = 0.f;
+    if (bHasDistortionMap)
+    {
+        float4 vDistortion = DistortionMap.Sample(LinearSampler, input.uv + g_vec2_0/*uvsliding*/);
+        fDistortionWeight = vDistortion.r * 0.5f;
+    }
+
+    /* Sampled from textures */    
+    float4 vSample_Op1 = { 0.f, 0.f, 0.f, 0.f };
+    float4 vSample_Op2 = { 0.f, 0.f, 0.f, 0.f };
+    float4 vSample_Op3 = { 0.f, 0.f, 0.f, 0.f };
+    float4 vSample_Blend = { 0.f, 0.f, 0.f, 0.f };
+    float4 vSample_Overlay = { 0.f, 0.f, 0.f, 0.f };
+    float4 vSample_Dissolve = { 0.f, 0.f, 0.f, 0.f };
+    if (bHasDiffuseMap)
+    {
+        vSample_Op1.a = DiffuseMap.Sample(LinearSampler, input.uv + g_vec2_1 /*uvsliding*/ + fDistortionWeight).r;
+        vSample_Op1.rgb = lerp(vBaseColor2_Op1, vBaseColor1_Op1, vSample_Op1.a);
+
+        float luminance = dot(vSample_Op1.rgb, float3(0.299, 0.587, 0.114));
+        vSample_Op1.rgb = lerp(vSample_Op1.rgb, vSample_Op1.rgb * 1.5f, saturate(luminance));
+        vSample_Op1.a = saturate(vSample_Op1.a * 4.f);
+    }
+   
+    /* Mix four option textures */
+    diffuseColor = vSample_Op1;
+
+    if (bHasNormalMap)
+        ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv * 0.4f + g_vec2_1 /*uvsliding*/ + fDistortionWeight);
+    
+    ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
+    
+    if (bHasTexturemap7)
+    {
+        ARM_Map = TextureMap7.Sample(LinearSampler, input.uv);
+        ARM_Map = pow(abs(ARM_Map), GAMMA);
+    }
+
+    if (bHasEmissiveMap)
+    {
+        emissiveColor = EmissiveMap.Sample(LinearSampler, input.uv);
+        emissiveColor.rgb = pow(abs(emissiveColor.rgb), GAMMA);
+    }
+    else
+        emissiveColor = 0.f;
+    
+
+
+    output.position = float4(input.viewPosition.xyz, 0.f);
+    output.normal = float4(input.viewNormal.xyz, 0.f);
+    output.depth = input.position.z;
+    output.depth.w = input.viewPosition.z;
+    output.arm = ARM_Map;
+    output.diffuseColor = diffuseColor;
+    output.emissive = emissiveColor;
+    output.rimColor = Material.emissive;
+    output.blur = 0;
+    return output; 
+}
+
 RasterizerState Depth
 {
 	// [From MSDN]
@@ -874,7 +1021,7 @@ RasterizerState Depth
 };
 technique11 T0_ModelRender
 {
-    pass NonAnim_NonInstancing
+    pass NonAnim_NonInstancing //0
     {
         SetVertexShader(CompileShader(vs_5_0, VS_NonAnim()));
         SetGeometryShader(NULL);
@@ -883,7 +1030,7 @@ technique11 T0_ModelRender
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Deferred()));
     }
-    pass NonAnim_Instancing
+    pass NonAnim_Instancing //1
     {
         SetVertexShader(CompileShader(vs_5_0, VS_NonAnimInstancing()));
         SetGeometryShader(NULL);
@@ -892,7 +1039,7 @@ technique11 T0_ModelRender
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Instancing()));
     }
-    pass Anim_NonInstancing
+    pass Anim_NonInstancing //2
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Anim()));
         SetGeometryShader(NULL);
@@ -901,7 +1048,7 @@ technique11 T0_ModelRender
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Deferred()));
     }
-    pass Anim_Instancing
+    pass Anim_Instancing //3
     {
         SetVertexShader(CompileShader(vs_5_0, VS_AnimInstancing()));
         SetGeometryShader(NULL);
@@ -910,7 +1057,7 @@ technique11 T0_ModelRender
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Instancing()));
     }
-    pass NonAnim_NonInstancing_CullNone
+    pass NonAnim_NonInstancing_CullNone //4
     {
         SetVertexShader(CompileShader(vs_5_0, VS_NonAnim()));
         SetGeometryShader(NULL);
@@ -919,7 +1066,7 @@ technique11 T0_ModelRender
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Deferred()));
     }
-    pass NonAnim_Instancing_CullNone
+    pass NonAnim_Instancing_CullNone //5
     {
         SetVertexShader(CompileShader(vs_5_0, VS_NonAnimInstancing()));
         SetGeometryShader(NULL);
@@ -928,7 +1075,7 @@ technique11 T0_ModelRender
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Instancing()));
     }
-    pass NonAnimShadow
+    pass NonAnimShadow //6
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Shadow_NonAnim()));
         SetGeometryShader(NULL);
@@ -937,7 +1084,7 @@ technique11 T0_ModelRender
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Shadow()));
     }
-    pass NonAnimShadowInstancing
+    pass NonAnimShadowInstancing //7
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Shadow_NonAnim_Instancing()));
         SetGeometryShader(NULL);
@@ -946,7 +1093,7 @@ technique11 T0_ModelRender
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_ShadowInstancing()));
     }
-    pass AnimShadow
+    pass AnimShadow //8
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Shadow_Anim()));
         SetGeometryShader(NULL);
@@ -955,7 +1102,7 @@ technique11 T0_ModelRender
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Shadow()));
     }
-    pass AnimShadowInstancing
+    pass AnimShadowInstancing //9
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Shadow_Anim_Instancing()));
         SetGeometryShader(NULL);
@@ -965,7 +1112,7 @@ technique11 T0_ModelRender
         SetPixelShader(CompileShader(ps_5_0, PS_ShadowInstancing()));
     }
 
-    pass MapObject
+    pass MapObject //10
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject()));
         SetGeometryShader(NULL);
@@ -975,7 +1122,7 @@ technique11 T0_ModelRender
         SetPixelShader(CompileShader(ps_5_0, PS_Deferred()));
     }
 
-    pass MapObject_Instancing
+    pass MapObject_Instancing //11
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject_Instancing()));
         SetGeometryShader(NULL);
@@ -985,7 +1132,7 @@ technique11 T0_ModelRender
         SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Instancing()));
     }
 
-    pass MapObject_NonCull
+    pass MapObject_NonCull //12
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject()));
         SetGeometryShader(NULL);
@@ -995,7 +1142,7 @@ technique11 T0_ModelRender
         SetPixelShader(CompileShader(ps_5_0, PS_Deferred()));
     }
 
-    pass MapObject_Instancing_NonCull
+    pass MapObject_Instancing_NonCull //13
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject_Instancing()));
         SetGeometryShader(NULL);
@@ -1005,7 +1152,7 @@ technique11 T0_ModelRender
         SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Instancing()));
     }
 
-    pass MapObject_WorldNormal
+    pass MapObject_WorldNormal //14
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject(true)));
         SetGeometryShader(NULL);
@@ -1014,7 +1161,7 @@ technique11 T0_ModelRender
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Deferred()));
     }
-    pass MapObject_WorldNormalInstancing
+    pass MapObject_WorldNormalInstancing //15
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject_Instancing(true)));
         SetGeometryShader(NULL);
@@ -1023,7 +1170,7 @@ technique11 T0_ModelRender
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Instancing()));
     }
-    pass MapObject_WorldNormal_CullNone
+    pass MapObject_WorldNormal_CullNone //16
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject(true)));
         SetGeometryShader(NULL);
@@ -1032,7 +1179,7 @@ technique11 T0_ModelRender
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Deferred()));
     }
-    pass MapObject_WorldNormalInstancing_CullNone
+    pass MapObject_WorldNormalInstancing_CullNone //17
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject_Instancing(true)));
         SetGeometryShader(NULL);
@@ -1040,6 +1187,15 @@ technique11 T0_ModelRender
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Deferred_Instancing()));
+    }
+    pass MapObject_Water //18
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MapObject()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_WATER()));
     }
     PASS_RS_VP(P4_WIREFRAME, FillModeWireFrame, VS_NonAnim, PS_FRAME)
     PASS_RS_VP(P6_WIREFRAME, FillModeWireFrame, VS_NonAnimInstancing, PS_FRAME)
@@ -1115,7 +1271,7 @@ technique11 T3_MotionTrail
 
 technique11 T4_PBR
 {
-    pass NonAnim_NonInstancing
+    pass NonAnim_NonInstancing//0
     {
         SetVertexShader(CompileShader(vs_5_0, VS_NonAnim()));
         SetGeometryShader(NULL);
@@ -1124,7 +1280,7 @@ technique11 T4_PBR
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred()));
     }
-    pass NonAnim_Instancing
+    pass NonAnim_Instancing //1
     {
         SetVertexShader(CompileShader(vs_5_0, VS_NonAnimInstancing()));
         SetGeometryShader(NULL);
@@ -1133,7 +1289,7 @@ technique11 T4_PBR
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_Instancing()));
     }
-    pass Anim_NonInstancing
+    pass Anim_NonInstancing //2
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Anim()));
         SetGeometryShader(NULL);
@@ -1142,7 +1298,7 @@ technique11 T4_PBR
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred()));
     }
-    pass Anim_Instancing
+    pass Anim_Instancing //3
     {
         SetVertexShader(CompileShader(vs_5_0, VS_AnimInstancing()));
         SetGeometryShader(NULL);
@@ -1151,7 +1307,7 @@ technique11 T4_PBR
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_Instancing()));
     }
-    pass NonAnim_NonInstancing_CullNone
+    pass NonAnim_NonInstancing_CullNone //4
     {
         SetVertexShader(CompileShader(vs_5_0, VS_NonAnim()));
         SetGeometryShader(NULL);
@@ -1160,7 +1316,7 @@ technique11 T4_PBR
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred()));
     }
-    pass NonAnim_Instancing_CullNone
+    pass NonAnim_Instancing_CullNone //5
     {
         SetVertexShader(CompileShader(vs_5_0, VS_NonAnimInstancing()));
         SetGeometryShader(NULL);
@@ -1169,7 +1325,7 @@ technique11 T4_PBR
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_Instancing()));
     }
-    pass NonAnimShadow
+    pass NonAnimShadow //6
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Shadow_NonAnim()));
         SetGeometryShader(NULL);
@@ -1178,7 +1334,7 @@ technique11 T4_PBR
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Shadow()));
     }
-    pass NonAnimShadowInstancing
+    pass NonAnimShadowInstancing //7
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Shadow_NonAnim_Instancing()));
         SetGeometryShader(NULL);
@@ -1187,7 +1343,7 @@ technique11 T4_PBR
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_ShadowInstancing()));
     }
-    pass AnimShadow
+    pass AnimShadow //8
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Shadow_Anim()));
         SetGeometryShader(NULL);
@@ -1196,7 +1352,7 @@ technique11 T4_PBR
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Shadow()));
     }
-    pass AnimShadowInstancing
+    pass AnimShadowInstancing //9
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Shadow_Anim_Instancing()));
         SetGeometryShader(NULL);
@@ -1206,7 +1362,7 @@ technique11 T4_PBR
         SetPixelShader(CompileShader(ps_5_0, PS_ShadowInstancing()));
     }
 
-    pass MapObject
+    pass MapObject //10
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject()));
         SetGeometryShader(NULL);
@@ -1216,7 +1372,7 @@ technique11 T4_PBR
         SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_MapObject()));
     }
 
-    pass MapObject_Instancing
+    pass MapObject_Instancing //11
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject_Instancing()));
         SetGeometryShader(NULL);
@@ -1225,7 +1381,7 @@ technique11 T4_PBR
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_MapObject_Instancing()));
     }
-    pass MapObject_NonCull
+    pass MapObject_NonCull //12
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject()));
         SetGeometryShader(NULL);
@@ -1235,7 +1391,7 @@ technique11 T4_PBR
         SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_MapObject()));
     }
 
-    pass MapObject_Instancing_NonCull
+    pass MapObject_Instancing_NonCull //13
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject_Instancing()));
         SetGeometryShader(NULL);
@@ -1245,7 +1401,7 @@ technique11 T4_PBR
         SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_MapObject_Instancing()));
     }
 
-    pass MapObject_WorldNormal
+    pass MapObject_WorldNormal //14
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject(true)));
         SetGeometryShader(NULL);
@@ -1254,7 +1410,7 @@ technique11 T4_PBR
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_MapObject()));
     }
-    pass MapObject_WorldNormalInstancing
+    pass MapObject_WorldNormalInstancing //15
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject_Instancing(true)));
         SetGeometryShader(NULL);
@@ -1263,7 +1419,7 @@ technique11 T4_PBR
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_MapObject_Instancing()));
     }
-    pass MapObject_WorldNormal_CullNone
+    pass MapObject_WorldNormal_CullNone //16
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject(true)));
         SetGeometryShader(NULL);
@@ -1272,7 +1428,7 @@ technique11 T4_PBR
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_MapObject()));
     }
-    pass MapObject_WorldNormalInstancing_CullNone
+    pass MapObject_WorldNormalInstancing_CullNone //17
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject_Instancing(true)));
         SetGeometryShader(NULL);
@@ -1280,5 +1436,14 @@ technique11 T4_PBR
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_MapObject_Instancing()));
+    }
+    pass MapObject_Water//18
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MapObject()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_WATER()));
     }
 };

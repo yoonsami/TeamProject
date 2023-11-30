@@ -212,7 +212,7 @@ float4 PS_Wrap(EffectOut input) : SV_Target
         vSample_Blend = TextureMap10.Sample(LinearSampler, vTexcoord_Blend);
     if (bHasTexturemap11)
         vSample_Overlay = TextureMap11.Sample(LinearSampler, vTexcoord_Overlay);
-    if (bHasDissolveMap)
+    if (bHasDissolveMap)                                                                
         vSample_Dissolve = DissolveMap.Sample(LinearSampler, vTexcoord_Dissolve);
     
     /* Mix four option textures */
@@ -224,6 +224,10 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     if (bUseTexColor_Op[0] || bUseTexColor_Op[1] || bUseTexColor_Op[2])
         vOutColor.rgb = pow(vOutColor.rgb, 1.f / GAMMA);
 
+    /* Normal Mapping */
+    if(bHasNormalMap)
+        ComputeNormalMapping_ViewSpace(input.viewNormal,input.viewTangent,vTexcoord_Op[0]);
+    
      /* Lighting */
     if (bLightOn)
     {
@@ -457,6 +461,9 @@ float4 PS_Clamp(EffectOut input) : SV_Target
         vOutColor.rgb = lerp(vOutColor.rgb, vFinalOverlayColor.rgb, fOverlayIntensity);
     }
     
+    if (bHasNormalMap)
+        ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, vTexcoord_Op[0]);
+    
     /* Lighting */
     if (bLightOn)
     {
@@ -659,7 +666,10 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
     /* Gamma collection */
     if (bUseTexColor_Op[0] || bUseTexColor_Op[1] || bUseTexColor_Op[2])
         vOutColor.rgb = pow(vOutColor.rgb, 1.f / GAMMA);
-
+    
+    if (bHasNormalMap)
+        ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, vTexcoord_Op[0]);
+    
      /* Lighting */
     if (bLightOn)
     {
@@ -892,6 +902,9 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
         
         vOutColor.rgb = lerp(vOutColor.rgb, vFinalOverlayColor.rgb, fOverlayIntensity);
     }
+    
+    if (bHasNormalMap)
+        ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, vTexcoord_Op[0]);
     
     /* Lighting */
     if (bLightOn)

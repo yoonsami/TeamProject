@@ -83,6 +83,10 @@ void ModelRenderer::Render()
 			m_pShader->DrawIndexed(techniqueIndex, PS_MAPOBJECT_CULLNONE_WORLDNORMAL, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
 
 			break;
+		case ModelRenderer::PASS_WATER:
+			m_pShader->DrawIndexed(techniqueIndex, PS_WATER, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
+
+			break;
 		case ModelRenderer::PASS_DEFAULT:
 		{
 			if(m_bCullNone)
@@ -161,6 +165,7 @@ void ModelRenderer::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 			m_pShader->DrawIndexedInstanced(techniqueIndex, PS_MAPOBJECT_INSTANCE_CULLNONE_WORLDNORMAL, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
 
 			break;
+
 		case ModelRenderer::PASS_DEFAULT:
 		{
 			if (m_bCullNone)

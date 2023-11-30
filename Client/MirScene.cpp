@@ -75,6 +75,7 @@
 #include "UiQuestController.h"
 #include "UiBossDialog.h"
 #include "UIInteraction.h"
+#include "WaterUVSliding.h"
 namespace fs = std::filesystem;
 
 MirScene::MirScene()
@@ -189,7 +190,7 @@ HRESULT MirScene::Load_Scene()
 	//Load_Boss_Giant_Mir(player);
 
 	Load_Ui(player);
-
+	Load_Water();
 
 	auto pPlayer = Get_GameObject(L"Player");
 	if (nullptr != pPlayer)
@@ -666,6 +667,24 @@ void MirScene::Load_Boss_Spike(shared_ptr<GameObject> pPlayer)
 		ObjWeapon->Set_VelocityMap(true);
 		Add_GameObject(ObjWeapon);
 	}
+}
+
+void MirScene::Load_Water()
+{
+	shared_ptr<GameObject> obj = make_shared<GameObject>();
+	obj->GetOrAddTransform();
+	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+	shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+	shared_ptr<Model> model = RESOURCES.Get<Model>(L"Water_Plane");
+	model->Get_Materials().front()->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterDiffuse", L"..\\Resources\\Textures\\MapObject\\Water\\T_Boom_000_a.tga"), TextureMapType::DIFFUSE);
+	model->Get_Materials().front()->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterNormal", L"..\\Resources\\Textures\\MapObject\\Water\\T_chicken_meet_001.tga"), TextureMapType::NORMAL);
+	model->Get_Materials().front()->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterDistortion", L"..\\Resources\\Textures\\MapObject\\Water\\T_Perlin_Noise_M.tga"), TextureMapType::DISTORTION);
+	renderer->Set_PassType(ModelRenderer::PASS_WATER);
+	renderer->Set_Model(model);
+	obj->Add_Component(renderer);
+	obj->Add_Component(make_shared<WaterUVSliding>());
+	Add_GameObject(obj);
+
 }
 
 void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
