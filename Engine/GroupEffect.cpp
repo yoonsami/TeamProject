@@ -203,6 +203,7 @@ void GroupEffect::Render()
 		}
     }
 }
+
 void GroupEffect::Save(const wstring& path)
 {
     shared_ptr<FileUtils> file = make_shared<FileUtils>();
@@ -344,7 +345,11 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
         qRotation.Normalize();
 
         // For. Shader 
-        shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
+        shared_ptr<Shader> shader;
+        if(tDesc.bIsFDistortion)
+            shader = RESOURCES.Get<Shader>(L"Shader_Distortion.fx");
+        else
+            shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
         shared_ptr<MeshEffect> meshEffect = make_shared<MeshEffect>(shader);
         EffectObj->Add_Component(meshEffect);
         EffectObj->Get_MeshEffect()->Init(&tDesc);
