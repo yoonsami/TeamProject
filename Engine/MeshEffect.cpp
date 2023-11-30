@@ -436,7 +436,6 @@ void MeshEffect::Set_Material()
         m_pMaterial->Set_TextureMap(RESOURCES.Load<Texture>(wstrKey, wstrPath), TextureMapType::NORMAL);
     else
         m_pMaterial->Set_TextureMap(nullptr, TextureMapType::NORMAL);
-
 }
 
 void MeshEffect::Translate()
