@@ -96,6 +96,44 @@ void Widget_GroupEffectMaker::Set_GroupList()
 	}
 }
 
+void Widget_GroupEffectMaker::Set_FDistortionGroupList()
+{
+	// For. Clear prev Group List
+	if (nullptr != m_pszFDistortionGroups)
+		delete[] m_pszFDistortionGroups;
+	m_vecFDistortionGroups.clear();
+	m_iNumFDistortionGroups = 0;
+	m_iFDistortionGroup = { 0 };
+	m_strFDistortionGroup = { "None" };
+
+	// For. Fill Group List 
+	m_vecFDistortionGroups.push_back("None");
+
+	wstring assetPath = L"..\\Resources\\EffectData\\FDistortionGroupEffectData\\";
+	for (auto& entry : fs::recursive_directory_iterator(assetPath))
+	{
+		if (entry.is_directory())
+			continue;
+
+		if (entry.path().extension().wstring() != L".dat")
+			continue;
+
+		string tag = entry.path().filename().string();
+		Utils::DetachExt(tag);
+		m_vecFDistortionGroups.push_back(tag);
+	}
+
+	m_iNumFDistortionGroups = (_uint)m_vecFDistortionGroups.size();
+	m_pszFDistortionGroups = new const char* [m_iNumFDistortionGroups];
+
+	int iIndex = 0;
+	for (auto iter : m_vecFDistortionGroups)
+	{
+		m_pszFDistortionGroups[iIndex] = m_vecFDistortionGroups[iIndex].c_str();
+		iIndex++;
+	}
+}
+
 void Widget_GroupEffectMaker::Set_MemberEffectList()
 {	
 	if (nullptr == m_pCurrentGroup)
@@ -262,7 +300,12 @@ void Widget_GroupEffectMaker::Widget_GroupMaker()
 		//ImGui::Spacing();
 		
 		if (ImGui::Button("Save##GroupEffect"))
-			Save();
+		{
+			if(m_bIsFDistortionGroup)
+				Save("..\\Resources\\EffectData\\FDistortionGroupEffectData\\");
+			else
+				Save("..\\Resources\\EffectData\\GroupEffectData\\");
+		}
 		ImGui::SameLine();
 		if (ImGui::Button("Play##GroupEffect"))
 		{
@@ -598,12 +641,12 @@ void Widget_GroupEffectMaker::Delete()
 	}
 }
 
-void Widget_GroupEffectMaker::Save(const string& wstrNewGroupTag)
+void Widget_GroupEffectMaker::Save(const string& strPath, const string& wstrNewGroupTag)
 {
 	// For. Save New Group Effect 
 	if ("." != wstrNewGroupTag)
 	{
-		string strNewFilePath = "..\\Resources\\EffectData\\GroupEffectData\\";
+		string strNewFilePath = strPath;// "..\\Resources\\EffectData\\GroupEffectData\\";
 		strNewFilePath += wstrNewGroupTag + ".dat";
 		
 		shared_ptr<GroupEffectData> tGroupEffectData = make_shared<GroupEffectData>();
@@ -631,4 +674,6 @@ void Widget_GroupEffectMaker::Save(const string& wstrNewGroupTag)
 	// Delete prev group effect and create new group effect which has updated info 
 	Delete();
 	Create();
+
+	m_bIsFDistortionGroup = false;
 }

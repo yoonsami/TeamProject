@@ -265,37 +265,28 @@ void Widget_EffectMaker_Mesh::ImGui_TextureList()
 
 void Widget_EffectMaker_Mesh::ImGui_ForwordDistortion()
 {
-	ImGui::SeparatorText("Forword distortion");
+	Option_Guizmo();
 
-	Option_Mesh();
-
-	// Distoriton Texture
-	SubWidget_ImageViewer(m_TexOption[0].Texture.second, m_strTexturePath, "##Img_FDistortion");
-
-	ImGui::SameLine();
-	if (ImGui::Button("Change Texture##FDistortion"))
-	{
-		m_iTexture_TextureList = &m_TexOption[0].Texture.first;
-		m_pTextureTag_TextureList = &m_TexOption[0].Texture.second;
-		m_pszWidgetKey_TextureList = "Texture List##FDistortion";
-		m_bTextureList_On = true;
-	}
-
-	ImGui::SliderFloat("Distortion Weight##FDistortion", &m_fWeight_FDistortion, 0.00f, 1.00f);
-	SubWidget_SettingTexUV(m_TexOption[0].fTiling_Op, m_TexOption[0].fUVSpeed_Op, "Tiling(x,y)##FDistortion", "UV Speed(x,y)##FDistortion");
-
-	// Dissolve
-	Option_Dissolve();
-
-	// Distoriton 
-	Option_Distortion();
-
-	// Create Save
-	if (ImGui::Button("Create##FDistortion"))
+	/* For. Create, Save, Load Effect */
+	ImGui::Spacing();
+	ImGui::SeparatorText("Create / Load");
+	if (ImGui::Button("Create"))
 		Create_FDistortion();
 	ImGui::SameLine();
-	if (ImGui::Button("Save##FDistortion"))
-		Save_FDistortion();
+	if (ImGui::Button("Save"))
+		m_bSaveMsgBox_On = true;
+
+	Option_Property();
+	Option_Mesh();
+	Option_SpriteAnimation();
+
+	Option_TextureOp(0);
+
+	Option_Dissolve();
+	Option_Distortion();
+
+	Option_InitTransform();
+	Option_Movement();
 }
 
 void Widget_EffectMaker_Mesh::Option_Guizmo()
@@ -401,7 +392,7 @@ void Widget_EffectMaker_Mesh::Option_Property()
 		ImGui::EndCombo();
 	}
 }
-
+ 
 void Widget_EffectMaker_Mesh::Option_Mesh()
 {
 	ImGui::SeparatorText("Vfx Mesh");
@@ -1785,10 +1776,6 @@ void Widget_EffectMaker_Mesh::Create_FDistortion()
 		// For. Add Effect GameObject to current scene
 		EVENTMGR.Create_Object(EffectObj);
 	}
-}
-
-void Widget_EffectMaker_Mesh::Save_FDistortion()
-{
 }
 
 void Widget_EffectMaker_Mesh::SubWidget_TextureCombo(_int* iSelected, string* strSelected, string strFilePath, const char* pszWidgetKey)

@@ -135,129 +135,35 @@ void Widget_Model_Controller::Apply_Model()
 
 		wstring weaponName;
 		if (model->Get_ModelTag() == L"Spear_Ace")
-		{
 			weaponName = L"Weapon_Spear_Ace";
-			{
-				shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
-				ObjWeapon->Set_Name(L"TestWeapon");
-				ObjWeapon->GetOrAddTransform();
-				shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-				shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
-				shared_ptr<Model> m = RESOURCES.Get<Model>(weaponName);
-				renderer->Set_Model(m);
-				ObjWeapon->Add_Component(renderer);
-				WeaponScript::WEAPONDESC desc;
-				desc.strBoneName = L"Bip001-Prop1";
-				desc.matPivot = _float4x4::CreateRotationX(-XM_PI / 2.f) * _float4x4::CreateRotationZ(XM_PI);
-				desc.pWeaponOwner = m_pControlObject.lock();
-				ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
-				EVENTMGR.Create_Object(ObjWeapon);
-			}
-		}
 		else if (model->Get_ModelTag() == (L"Yeopo"))
-		{
 			weaponName = L"Weapon_Yeopo";
-			{
-				shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
-				ObjWeapon->Set_Name(L"TestWeapon");
-				ObjWeapon->GetOrAddTransform();
-				shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-				shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
-				shared_ptr<Model> m = RESOURCES.Get<Model>(weaponName);
-				renderer->Set_Model(m);
-				ObjWeapon->Add_Component(renderer);
-				WeaponScript::WEAPONDESC desc;
-				desc.strBoneName = L"Bip001-Prop1";
-				desc.matPivot = _float4x4::CreateRotationX(-XM_PI / 2.f) * _float4x4::CreateRotationZ(XM_PI);
-				desc.pWeaponOwner = m_pControlObject.lock();
-				ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
-				EVENTMGR.Create_Object(ObjWeapon);
-			}
-		}
 		else if (model->Get_ModelTag() == (L"Dellons"))
-		{
 			weaponName = L"Weapon_Dellons";
-			{
-				shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
-				ObjWeapon->Set_Name(L"TestWeapon");
-				ObjWeapon->GetOrAddTransform();
-				shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-				shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
-				shared_ptr<Model> m = RESOURCES.Get<Model>(weaponName);
-				renderer->Set_Model(m);
-				ObjWeapon->Add_Component(renderer);
-				WeaponScript::WEAPONDESC desc;
-				desc.strBoneName = L"Bip001-Prop1";
-				desc.matPivot = _float4x4::CreateRotationX(-XM_PI / 2.f) * _float4x4::CreateRotationZ(XM_PI);
-				desc.pWeaponOwner = m_pControlObject.lock();
-				ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
-				EVENTMGR.Create_Object(ObjWeapon);
-			}
-		}
 		else if (model->Get_ModelTag() == (L"Spike"))
-		{
 			weaponName = L"Weapon_Spike";
-			{
-				shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
-				ObjWeapon->Set_Name(L"TestWeapon");
-				ObjWeapon->GetOrAddTransform();
-				shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-				shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
-				shared_ptr<Model> m = RESOURCES.Get<Model>(weaponName);
-				renderer->Set_Model(m);
-				ObjWeapon->Add_Component(renderer);
-				WeaponScript::WEAPONDESC desc;
-				desc.strBoneName = L"Bip001-Prop1";
-				desc.matPivot = _float4x4::CreateRotationX(-XM_PI / 2.f) * _float4x4::CreateRotationZ(XM_PI);
-				desc.pWeaponOwner = m_pControlObject.lock();
-				ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
-				EVENTMGR.Create_Object(ObjWeapon);
-			}
-		}
 		else if (model->Get_ModelTag() == (L"Shane"))
-		{
 			weaponName = L"Weapon_Shane";
-			{
-				shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
-				ObjWeapon->Set_Name(L"TestWeapon");
-				ObjWeapon->GetOrAddTransform();
-				shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-				shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
-				shared_ptr<Model> m = RESOURCES.Get<Model>(weaponName);
-				renderer->Set_Model(m);
-				ObjWeapon->Add_Component(renderer);
-				WeaponScript::WEAPONDESC desc;
-				desc.strBoneName = L"Bip001-Prop1";
-				desc.matPivot = _float4x4::CreateRotationX(-XM_PI / 2.f) * _float4x4::CreateRotationZ(XM_PI);
-				desc.pWeaponOwner = m_pControlObject.lock();
-				ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
-				EVENTMGR.Create_Object(ObjWeapon);
-			}
-		}
 		else if (model->Get_ModelTag() == (L"Player"))
-		{
 			weaponName = L"Weapon_Player";
-			{
-				shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
-				ObjWeapon->Set_Name(L"TestWeapon");
-				ObjWeapon->GetOrAddTransform();
-				shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-				shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
-				shared_ptr<Model> m = RESOURCES.Get<Model>(weaponName);
-				renderer->Set_Model(m);
-				ObjWeapon->Add_Component(renderer);
-				WeaponScript::WEAPONDESC desc;
-				desc.strBoneName = L"Bip001-Prop1";
-				desc.matPivot = _float4x4::CreateRotationX(-XM_PI / 2.f) * _float4x4::CreateRotationZ(XM_PI);
-				desc.pWeaponOwner = m_pControlObject.lock();
-				ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
-				EVENTMGR.Create_Object(ObjWeapon);
-			}
+
+		if(model->Get_ModelTag() != (L"Kyle") && model->Get_ModelTag() != (L"Yeonhee"))
+		{
+			shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
+			ObjWeapon->Set_Name(L"TestWeapon");
+			ObjWeapon->GetOrAddTransform();
+			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+			shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+			shared_ptr<Model> m = RESOURCES.Get<Model>(weaponName);
+			renderer->Set_Model(m);
+			ObjWeapon->Add_Component(renderer);
+			WeaponScript::WEAPONDESC desc;
+			desc.strBoneName = L"Bip001-Prop1";
+			desc.matPivot = _float4x4::CreateRotationX(-XM_PI / 2.f) * _float4x4::CreateRotationZ(XM_PI);
+			desc.pWeaponOwner = m_pControlObject.lock();
+			ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
+			EVENTMGR.Create_Object(ObjWeapon);
 		}
-
-
-		
-	
 	}
 }
 

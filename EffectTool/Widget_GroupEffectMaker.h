@@ -24,6 +24,7 @@ public:
 
 private:
 	void	Set_GroupList();
+	void	Set_FDistortionGroupList();
 	void	Set_MemberEffectList();
 	void	Set_MeshEffectList();
 	void	Set_ParticleList();
@@ -40,10 +41,17 @@ private:
 	void	AddMemberEffect(const wstring& wstrTag, GroupEffectData::EFFECT_TYPE eType);
 	void	Create();
 	void	Delete();	// Delete GroupEffect GameObject in m_pCurrentGroup
-	void	Save(const string& wstrNewGroupTag = ".");
+	void	Save(const string& strPath, const string& wstrNewGroupTag = ".");
 
 private:
 	_bool					m_bIsFDistortionGroup = { false };
+
+	/* FDistortionGroup List */
+	_uint					m_iNumFDistortionGroups = { 0 };
+	vector<string>			m_vecFDistortionGroups;
+	const char**			m_pszFDistortionGroups = { nullptr };
+	_int					m_iFDistortionGroup = { 0 };
+	string					m_strFDistortionGroup = { "None" };
 
 	/* Group List */
 	_uint					m_iNumGroups = { 0 };

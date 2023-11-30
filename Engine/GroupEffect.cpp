@@ -203,6 +203,7 @@ void GroupEffect::Render()
 		}
     }
 }
+
 void GroupEffect::Save(const wstring& path)
 {
     shared_ptr<FileUtils> file = make_shared<FileUtils>();

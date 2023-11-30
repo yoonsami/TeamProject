@@ -81,7 +81,6 @@ private:
 	void					Show_Guizmo();
 
 	void					Create_FDistortion();
-	void					Save_FDistortion();
 
 	/* Utils */
 	ImVec2					CatMull_Rom(_float2* pPoints, _float t);
