@@ -412,6 +412,51 @@ void FSM::Update_GroupEffectWorldPos()
 	}
 }
 
+void FSM::Add_FDistortion_Effect(const wstring& strSkilltag)
+{
+	shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();
+
+	// For. Transform 
+	pGroupEffectObj->GetOrAddTransform();
+	//pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS));
+	//pGroupEffectObj->Get_Transform()->Set_Quaternion(Get_Transform()->Get_Rotation());
+	pGroupEffectObj->Get_Transform()->Set_WorldMat(m_pOwner.lock()->Get_Transform()->Get_WorldMatrix());
+
+	// For. GroupEffectData 
+	wstring wstrFileName = strSkilltag + L".dat";
+	wstring wtsrFilePath = TEXT("..\\Resources\\EffectData\\FDistortionGroupEffectData\\") + wstrFileName;
+	shared_ptr<GroupEffectData> pGroupEffectData = RESOURCES.GetOrAddGroupEffectData(strSkilltag, wtsrFilePath);
+
+	if (pGroupEffectData == nullptr)
+		return;
+
+	// For. GroupEffect component 
+	shared_ptr<GroupEffect> pGroupEffect = make_shared<GroupEffect>();
+
+	pGroupEffectObj->Add_Component(pGroupEffect);
+	pGroupEffectObj->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
+	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
+	pGroupEffectObj->Get_GroupEffect()->Set_InitWorldMatrix(pGroupEffectObj->Get_Transform()->Get_WorldMatrix());
+	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectMaterials();
+	pGroupEffectObj->Set_Name(strSkilltag);
+	pGroupEffectObj->Init();
+
+	// For. Add Effect GameObject to current scene
+	EVENTMGR.Create_Object(pGroupEffectObj);
+}
+
+void FSM::Add_And_Set_FDistortion_Effect(const wstring& strSkilltag)
+{
+}
+
+void FSM::Add_FDistortion_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset)
+{
+}
+
+void FSM::Update_FDistortion_GroupEffectWorldPos()
+{
+}
+
 void FSM::FreeLoopMembers()
 {
 	for (auto& iter : m_vGroupEffect)

@@ -1386,7 +1386,7 @@ void Spike_FSM::skill_200100_Init()
 
 void Spike_FSM::skill_200100_l()
 {
-    CAMERA_SHAKE(0.1f, 0.05f)
+    CAMERA_SHAKE(0.1f, 0.02f)
     if (Init_CurFrame(0))
         Add_And_Set_Effect(L"Spike_200100L_floor");
 
@@ -1485,7 +1485,7 @@ void Spike_FSM::skill_200200()
             desc.fMoveSpeed = 0.f;
             desc.fLifeTime = 0.3f;
             desc.fLimitDistance = 0.f;
-
+            CAMERA_SHAKE(0.1f, 0.2f)
             Create_ForwardMovingSkillCollider(Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f);
         }
     }
@@ -1556,7 +1556,7 @@ void Spike_FSM::skill_200300()
             desc.fMoveSpeed = 0.f;
             desc.fLifeTime = 0.3f;
             desc.fLimitDistance = 0.f;
-
+            CAMERA_SHAKE(0.1f, 0.2f)
             Create_ForwardMovingSkillCollider(Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f);
         }
     }
@@ -1637,7 +1637,7 @@ void Spike_FSM::skill_200400()
             desc.fMoveSpeed = 0.f;
             desc.fLifeTime = 0.3f;
             desc.fLimitDistance = 0.f;
-
+            CAMERA_SHAKE(0.1f, 0.2f)
             Create_ForwardMovingSkillCollider(Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f);
         }
     }
@@ -1651,7 +1651,7 @@ void Spike_FSM::skill_200400()
 		desc.fMoveSpeed = 0.f;
 		desc.fLifeTime = 0.5f;
 		desc.fLimitDistance = 0.f;
-
+        CAMERA_SHAKE(0.2f, 0.5f)
         Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f);
     }
 
@@ -1897,19 +1897,16 @@ void Spike_FSM::skill_501100()
 {
     if (Init_CurFrame(20))
     {
+        
         Add_And_Set_Effect(L"Spike_500100_1");
         Add_GroupEffectOwner(L"Spike_500100_Floor", _float3(0.f, 0.f, 0.5f));
     }
-    if (Init_CurFrame(34))
-        Add_GroupEffectOwner(L"Spike_500100_Floor2", _float3(0.f, 0.f, 2.f));
-
-    if (m_iCurFrame == 18)
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (m_iCurFrame == 23)
-        AttackCollider_Off();
+    if(Init_CurFrame(22))
+        CAMERA_SHAKE(0.1f, 0.4f)
 
     if (Init_CurFrame(34))
     {
+        Add_GroupEffectOwner(L"Spike_500100_Floor2", _float3(0.f, 0.f, 2.f));
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f;
 
 		FORWARDMOVINGSKILLDESC desc;
@@ -1920,6 +1917,13 @@ void Spike_FSM::skill_501100()
 
 		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK, 10.f);
     }
+    if (Init_CurFrame(36))
+        CAMERA_SHAKE(0.2f, 0.4f)
+
+    if (m_iCurFrame == 18)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 23)
+        AttackCollider_Off();
 
     Look_DirToTarget();
 

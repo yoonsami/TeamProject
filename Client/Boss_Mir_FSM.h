@@ -174,7 +174,7 @@ private:
 	_float m_fTurnSpeed = XM_PI * 0.5f;
 	_float m_fIntroCamDistance = 0.f;
 	_float m_fCamRatio = 0.f;
-
+	_float m_fStateTimer = 0.f;
 
 	COOLTIMEINFO m_tAttackCoolTime = { 2.f, 0.f };
 	COOLTIMEINFO m_tBreathCoolTime = { 0.15f, 0.f };

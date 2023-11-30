@@ -28,9 +28,12 @@ HRESULT GroupEffect::Init()
    
     for (_uint i = 0; i < static_cast<_uint>(m_vMemberEffectData.size()); ++i)
     {
+
 		wstring wstrMeshEffectDataKey = m_vMemberEffectData[i].wstrEffectTag;
 		Utils::DetachExt(wstrMeshEffectDataKey);
 		shared_ptr<MeshEffectData> meshEffectData = RESOURCES.Get<MeshEffectData>(wstrMeshEffectDataKey);
+        if (meshEffectData->Get_Desc().bIsFDistortion)
+            m_bDistortionGroup = true;
 
         if(meshEffectData->Get_Desc().iMeshCnt ==1 && meshEffectData->Get_Desc().fCreateInterval == 0)
             continue;
@@ -44,8 +47,10 @@ HRESULT GroupEffect::Init()
 			m_RenderParamBuffer[i] = make_shared<StructuredBuffer>(nullptr, static_cast<_uint>(sizeof RenderParams), count);
         }
         
-
+        
     }
+
+
 
     return S_OK;
 }
@@ -176,9 +181,11 @@ void GroupEffect::Render()
     for (auto& pair : m_RenderGroup)
     {
         vector<shared_ptr<GameObject>>& vec = pair.second;
-
         if(vec.size() == 0)
             continue;
+        if(vec[0]->Get_MeshEffect()->Get_Desc().bIsFDistortion)
+            continue;
+
 		if (vec.size() == 1)
 		{
 			vec.front()->Get_MeshEffect()->Render();
@@ -202,6 +209,43 @@ void GroupEffect::Render()
 			vec[0]->Get_MeshEffect()->Render_Instancing(buffer, m_RenderParamBuffer[pair.first.first]);
 		}
     }
+}
+
+void GroupEffect::Render_Distortion()
+{
+	INSTANCING.Clear_Data();
+	for (auto& pair : m_RenderGroup)
+	{
+		vector<shared_ptr<GameObject>>& vec = pair.second;
+		if (vec.size() == 0)
+			continue;
+		if (!vec[0]->Get_MeshEffect()->Get_Desc().bIsFDistortion)
+			continue;
+
+		if (vec.size() == 1)
+		{
+			vec.front()->Get_MeshEffect()->Render();
+		}
+		else
+		{
+			const InstanceID instanceId = pair.first;
+			vector<RenderParams> paramInfo;
+			paramInfo.reserve(m_RenderParamBuffer[pair.first.first]->Get_InputCount());
+			for (size_t i = 0; i < vec.size(); ++i)
+			{
+				shared_ptr<GameObject>& gameobject = vec[i];
+				InstancingData data{};
+				data.world = gameobject->Get_Transform()->Get_WorldMatrix();
+				paramInfo.push_back(gameobject->Get_MeshEffect()->Get_RenderParamDesc());
+				INSTANCING.Add_Data(instanceId, data);
+			}
+			m_RenderParamBuffer[pair.first.first]->Copy_ToInput(paramInfo.data());
+
+			shared_ptr<InstancingBuffer>& buffer = INSTANCING.Get_Buffer(instanceId);
+			vec[0]->Get_MeshEffect()->Render_Instancing(buffer, m_RenderParamBuffer[pair.first.first]);
+		}
+	}
+
 }
 
 void GroupEffect::Save(const wstring& path)
@@ -272,7 +316,12 @@ void GroupEffect::Set_MemberEffectMaterials()
             shared_ptr<Material> material = make_shared<Material>();
 
             // Shader
-            shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
+
+			shared_ptr<Shader> shader;
+			if (tDesc.bIsFDistortion)
+				shader = RESOURCES.Get<Shader>(L"Shader_Distortion.fx");
+			else
+				shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
             material->Set_Shader(shader);
 
             // Texture 
@@ -345,7 +394,11 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
         qRotation.Normalize();
 
         // For. Shader 
-        shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
+        shared_ptr<Shader> shader;
+        if(tDesc.bIsFDistortion)
+            shader = RESOURCES.Get<Shader>(L"Shader_Distortion.fx");
+        else
+            shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
         shared_ptr<MeshEffect> meshEffect = make_shared<MeshEffect>(shader);
         EffectObj->Add_Component(meshEffect);
         EffectObj->Get_MeshEffect()->Init(&tDesc);

@@ -373,7 +373,11 @@ void MeshEffect::Set_Material()
         m_pMaterial = make_shared<Material>();
 
     // Shader
-    shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
+    shared_ptr<Shader> shader;
+    if(!m_tDesc.bIsFDistortion)
+        shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
+	else 
+		shader = RESOURCES.Get<Shader>(L"Shader_Distortion.fx");
     m_pMaterial->Set_Shader(shader);
 
     // Texture 

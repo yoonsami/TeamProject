@@ -53,6 +53,11 @@ protected:
 	void Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset);
 	void Update_GroupEffectWorldPos();
 
+	void Add_FDistortion_Effect(const wstring& strSkilltag);
+	void Add_And_Set_FDistortion_Effect(const wstring& strSkilltag);
+	void Add_FDistortion_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset);
+	void Update_FDistortion_GroupEffectWorldPos();
+
 	void Cal_SkillCamDirection(const _float dist);
 	_bool Check_Combo(_uint minFrame, KEY_TYPE eKeyType);
 

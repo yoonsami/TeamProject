@@ -124,6 +124,7 @@ private:
 	_bool					m_bIsLoop = { false };
 	_bool					m_bIsFollowGroup_OnlyTranslate = { false };
 	_bool					m_bIsFollowGroup_LookSameDir = { false };
+	_bool					m_bIsFDistortion = { false };
 
 	/* Mesh Count */
 	_int					m_iMeshCnt = { 1 };
