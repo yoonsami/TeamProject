@@ -210,6 +210,19 @@ void DebugTool::RenderOptionTab()
 
 			}
 		}
+		if (CollapsingHeader("RadialBlurData Option"))
+		{
+			_bool& g_bRadialBlurOn = CUR_SCENE->g_RadialBlurData.g_bRadialBlurOn;
+			_float& g_fRadialBlurStrength = CUR_SCENE->g_RadialBlurData.g_fRadialBlurStrength;
+			_int& g_iSamples = CUR_SCENE->g_RadialBlurData.g_iSamples;
+			_float2& g_vCenterPos = CUR_SCENE->g_RadialBlurData.g_vCenterPos;
+			_float& g_fNormalRadius = CUR_SCENE->g_RadialBlurData.g_fNormalRadius;
+			Checkbox("g_bRadialBlurOn", &g_bRadialBlurOn);
+			DragFloat("g_fRadialBlurStrength", &g_fRadialBlurStrength, 0.01f, 0.01f,1.f);
+			InputInt("g_iSamples", &g_iSamples);
+			DragFloat2("g_vCenterPos", (_float*)&g_vCenterPos, 0.01f, -0.5f,0.5f);
+			DragFloat("g_fNormalRadius", &g_fNormalRadius, 0.01f, 0.01f,1.f);
+		}
 		if (CollapsingHeader("Other Option"))
 		{
 			SeparatorText("Outline");

@@ -148,7 +148,7 @@ void Scene::Render()
 	Render_LensFlare();
 
 	Render_Aberration();
-
+	Render_RadialBlur();
 	Render_Debug();
 	//Render_ToneMapping();
 
@@ -1650,6 +1650,33 @@ void Scene::Render_Aberration()
 
 	material->Get_Shader()->DrawIndexed(1, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 	m_wstrFinalRenderTarget = L"AberrationTarget";
+}
+
+void Scene::Render_RadialBlur()
+{
+	if (!g_RadialBlurData.g_bRadialBlurOn)
+		return;
+
+	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::RADIALBLUR)->OMSetRenderTargets();
+
+	auto material = RESOURCES.Get<Material>(L"Sampler");
+	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
+
+	material->Push_SubMapData();
+	mesh->Get_VertexBuffer()->Push_Data();
+	mesh->Get_IndexBuffer()->Push_Data();
+
+	material->Get_Shader()->GetScalar("g_fRadialBlurStrength")->SetFloat(g_RadialBlurData.g_fRadialBlurStrength);
+	material->Get_Shader()->GetScalar("g_fNormalRadius")->SetFloat(g_RadialBlurData.g_fNormalRadius);
+	material->Get_Shader()->GetScalar("g_iSamples")->SetInt(g_RadialBlurData.g_iSamples);
+	material->Get_Shader()->GetVector("g_vCenterPos")->SetFloatVector((_float*)&g_RadialBlurData.g_vCenterPos);
+
+	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+
+	material->Get_Shader()->DrawIndexed(1, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	m_wstrFinalRenderTarget = L"RadialBlurTarget";
 }
 
 void Scene::Render_Debug()

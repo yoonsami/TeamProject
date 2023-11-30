@@ -100,6 +100,7 @@ protected:
 
 	void Render_Fog();
 	void Render_Aberration();
+	void Render_RadialBlur();
 
 	void Render_Debug();
 
@@ -214,5 +215,16 @@ public:
 
 	nanoseconds preSecond{};
 	nanoseconds second{};
+
+	struct RadialBlurData
+	{
+		_bool g_bRadialBlurOn = false;
+		_float g_fRadialBlurStrength = 0.125f;
+		_int g_iSamples = 64;
+		_float2 g_vCenterPos = _float2(0.f);
+		_float g_fNormalRadius = 0.1f;
+	};
+	RadialBlurData g_RadialBlurData{};
+
 };
 

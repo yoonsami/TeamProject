@@ -11,6 +11,8 @@
 #include "DragonBall_FSM.h"
 #include "UIBossHpBar.h"
 #include "SimpleMath.h"
+#include "ModelAnimation.h"
+#include "Camera.h"
 
 HRESULT Boss_Mir_FSM::Init()
 {
@@ -514,7 +516,37 @@ void Boss_Mir_FSM::sq_Intro2()
     }
     if (m_iCurFrame > 28 && m_iCurFrame < 56)
     {
-        m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.1f);
+        m_fStateTimer += fDT;
+        CAMERA_SHAKE(0.05f, 0.1f);
+		auto animator = Get_Owner()->Get_Animator();
+
+		auto& tweenDesc = animator->Get_TweenDesc();
+
+		const auto& animation = animator->Get_Model()->Get_AnimationByIndex(tweenDesc.curr.animIndex);
+
+		_float timePerFrame = 1 / (animation->frameRate * animation->speed);
+        _float time = 28.f * timePerFrame;
+
+        CUR_SCENE->g_bAberrationOn = true;
+        CUR_SCENE->g_fAberrationPower = -500.f * (m_fStateTimer) * (m_fStateTimer - time);
+
+        CUR_SCENE->g_RadialBlurData.g_bRadialBlurOn = true;
+        CUR_SCENE->g_RadialBlurData.g_fNormalRadius = 0.f;
+        CUR_SCENE->g_RadialBlurData.g_fRadialBlurStrength = -0.7f * (m_fStateTimer) * (m_fStateTimer - time);
+
+        const _float4x4& matView = CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_ViewMat();
+        const _float4x4& matProj = CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_ProjMat();
+
+        _float3 vCenterPos = _float3::Transform(m_vHeadBonePos.xyz(), matView * matProj);
+        CUR_SCENE->g_RadialBlurData.g_vCenterPos = { vCenterPos.x,vCenterPos.y };
+
+    }
+    if (m_iCurFrame > 56)
+    {
+		CUR_SCENE->g_bAberrationOn = false;
+		CUR_SCENE->g_fAberrationPower = 0.f;
+        CUR_SCENE->g_RadialBlurData.g_bRadialBlurOn = false;
+        CUR_SCENE->g_RadialBlurData.g_fRadialBlurStrength = 0.f;
     }
 
     if (Is_AnimFinished())
@@ -536,6 +568,7 @@ void Boss_Mir_FSM::sq_Intro2_Init()
     Calculate_IntroHeadCam();
 
     m_FirstWorldMat = Get_Transform()->Get_WorldMatrix();
+    m_fStateTimer = 0.f;
 }
 
 void Boss_Mir_FSM::b_idle()

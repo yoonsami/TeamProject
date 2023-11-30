@@ -270,6 +270,8 @@ void MainCameraScript::Find_Target()
 
 void MainCameraScript::Check_ColliderWithWall(const _float3& centerPos, OUT _float& minDist)
 {
+    if (m_fMaxDistance > 5.f)
+        return;
 	Ray ray;
 	ray.position = centerPos;
 	m_vOffset.Normalize();
