@@ -1340,6 +1340,9 @@ void Spike_FSM::skill_100300_Init()
 
 void Spike_FSM::skill_200100()
 {
+    if (Init_CurFrame(3))
+        Add_And_Set_Effect(L"Spike_200100L_1");
+
     if (!g_bIsCanMouseMove && !g_bCutScene)
     {
         if (KEYAWAY(KEY_TYPE::KEY_2))
@@ -1371,10 +1374,8 @@ void Spike_FSM::skill_200100_Init()
 
 void Spike_FSM::skill_200100_l()
 {
-    if (Init_CurFrame(5))
-    {
-        // TODO : Effect 
-    }
+    if (Init_CurFrame(0))
+        Add_And_Set_Effect(L"Spike_200100L_floor");
 
     m_fEffectCreateTimer[0] += fDT;
     m_fEffectCreateTimer[1] += fDT;
@@ -1444,8 +1445,11 @@ void Spike_FSM::skill_200100_l_Init()
 
 void Spike_FSM::skill_200200()
 {
+
     m_fEffectCreateTimer[0] += fDT;
     
+    if (Init_CurFrame(0))
+        FreeLoopMembers();
     if (Init_CurFrame(5))
         Add_And_Set_Effect(L"Spike_200200_Slash");
 
@@ -1515,6 +1519,8 @@ void Spike_FSM::skill_200300()
 {
     m_fEffectCreateTimer[0] += fDT;
  
+    if (Init_CurFrame(0))
+        FreeLoopMembers();
     if (Init_CurFrame(5))
         Add_And_Set_Effect(L"Spike_200300_Slash");
 
@@ -1584,19 +1590,15 @@ void Spike_FSM::skill_200400()
 {
     m_fEffectCreateTimer[0] += fDT;
 
-    if (Init_CurFrame(5))
+    if (Init_CurFrame(0))
+        FreeLoopMembers();
+    if (Init_CurFrame(3))
         Add_And_Set_Effect(L"Spike_200400_Slash");
-    if (Init_CurFrame(44))
-        Add_And_Set_Effect(L"Spike_200400_Floor");
+    if (Init_CurFrame(62))
+        Add_GroupEffectOwner(L"Spike_200400_Crack", _float3(0.f, 0.f, 2.5f));
     
     if (m_iCurFrame < 44)
     {
-        if (m_fEffectCreateTimer[0] >= 0.1f)
-        {
-            m_fEffectCreateTimer[0] = 0.f;
-            Add_Effect(L"Spike_200200_Particle1");
-        }
-
 		_float3 vInputVector = Get_InputDirVector();
 
 		if (vInputVector != _float3(0.f))
@@ -1610,7 +1612,7 @@ void Spike_FSM::skill_200400()
         if (m_fEffectCreateTimer[0] >= 0.1f)
         {
             m_fEffectCreateTimer[0] = 0.f;
-            Add_And_Set_Effect(L"Spike_200200_Particle1");
+            Add_Effect(L"Spike_200200_Particle1");
         }
 
         if (m_tWheelWindCoolTime.fAccTime >= m_tWheelWindCoolTime.fCoolTime)
