@@ -227,6 +227,8 @@ private:
 	_bool					m_bBillbordAxes[2] = { true, true};
 	_int					m_iTurnAxesOption = { 0 };
 
+	_bool					m_bIsFDistortion = false;
+
 	/* const */
 	const string					m_strTexturePath = "../Resources/Textures/Universal/";
 	const string					m_strNormalTexturePath = "../Resources/Textures/Universal/Normal/";
