@@ -1106,6 +1106,7 @@ void Widget_EffectMaker_Mesh::Create()
 				m_bIsLoop,
 				m_bIsFollowGroup_OnlyTranslate,
 				m_bIsFollowGroup_LookSameDir,
+				m_bIsFDistortion,
 
 				m_strMesh,
 
