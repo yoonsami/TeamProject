@@ -118,7 +118,7 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
     //m_pOwner.lock()->Get_FSM()->Reset_Weapon();
     m_pOwner.lock()->Get_FSM()->Reset_Vehicle();
 
-
+    Get_Owner()->Get_FSM()->FreeLoopMembers();
     //AnimIndex Reset
     m_pOwner.lock()->Get_Animator()->Set_CurrentAnim(0);
 

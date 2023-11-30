@@ -1350,7 +1350,10 @@ void Spike_FSM::skill_100300_Init()
 void Spike_FSM::skill_200100()
 {
     if (Init_CurFrame(3))
+    {
         Add_And_Set_Effect(L"Spike_200100L_1");
+        CAMERA_SHAKE(0.2f, 0.3f)
+    }
 
     if (!g_bIsCanMouseMove && !g_bCutScene)
     {
@@ -1383,6 +1386,7 @@ void Spike_FSM::skill_200100_Init()
 
 void Spike_FSM::skill_200100_l()
 {
+    CAMERA_SHAKE(0.1f, 0.05f)
     if (Init_CurFrame(0))
         Add_And_Set_Effect(L"Spike_200100L_floor");
 
