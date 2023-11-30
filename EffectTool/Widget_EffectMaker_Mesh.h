@@ -124,6 +124,7 @@ private:
 	_bool					m_bIsLoop = { false };
 	_bool					m_bIsFollowGroup_OnlyTranslate = { false };
 	_bool					m_bIsFollowGroup_LookSameDir = { false };
+	_bool					m_bIsFDistortion = { false };
 
 	/* Mesh Count */
 	_int					m_iMeshCnt = { 1 };
@@ -225,8 +226,6 @@ private:
 	_float					m_fRandomAxis_Max[3] = { 0.f, 0.f, 0.f };
 	_bool					m_bBillbordAxes[2] = { true, true};
 	_int					m_iTurnAxesOption = { 0 };
-
-	_bool					m_bIsFDistortion = false;
 
 	/* const */
 	const string					m_strTexturePath = "../Resources/Textures/Universal/";
