@@ -155,20 +155,10 @@ void Camera::Sort_ShadowObject(shared_ptr<Scene> scene)
 
 void Camera::Render_DistrotionEffects()
 {
-	sort(m_DistortionEffects.begin(), m_DistortionEffects.end(), [this](shared_ptr<GameObject>& a, shared_ptr<GameObject>& b) {
-		_float3 vPosA = a->Get_Transform()->Get_State(Transform_State::POS).xyz();
-		_float3 vPosB = b->Get_Transform()->Get_State(Transform_State::POS).xyz();
-
-		_float viewDepthA = _float3::Transform(vPosA, m_matView).z;
-		_float viewDepthB = _float3::Transform(vPosB, m_matView).z;
-
-		return viewDepthA > viewDepthB;
-		});
-
 	for (auto& obj : m_DistortionEffects)
 	{
-		if (obj->Get_DistortionRenderer())
-			obj->Get_DistortionRenderer()->Render();
+		if (obj->Get_GroupEffect())
+			obj->Get_GroupEffect()->Render();
 	}
 }
 

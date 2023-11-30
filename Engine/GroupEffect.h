@@ -33,10 +33,11 @@ public:
 	void				Set_Member_PivotScale(_int iIndex, _float3 vScale) { m_vMemberEffectData[iIndex].vPivot_Scale = vScale; }
 	void				Set_Member_PivotRotation(_int iIndex, _float3 vRotation) { m_vMemberEffectData[iIndex].vPivot_Rotation = vRotation; }
 	void				Set_InitWorldMatrix(const _float4x4& mInitMat) { m_mInitWorldMatrix = mInitMat; }
-
+	void				Set_DistortionGroup(_bool flag) { m_bDistortionGroup = flag; }
 	/* Getter */
 	vector <GroupEffectData::MemberEffect_Desc>&	Get_MemberEffectData() { return m_vMemberEffectData; }
 	GroupEffectData::MemberEffect_Desc&				Get_MemberEffectData_index(_int iIndex) { return m_vMemberEffectData[iIndex]; }
+	_bool				Is_DistortionGroup() { return m_bDistortionGroup; }
 
 private:
 	void				Create_MeshEffect(_int iIndex);
@@ -59,4 +60,5 @@ private:
 	map<InstanceID, vector<shared_ptr<GameObject>>>	m_RenderGroup;
 	vector<shared_ptr<StructuredBuffer>>			m_RenderParamBuffer;
 
+	_bool								m_bDistortionGroup = false;
 };

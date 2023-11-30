@@ -167,6 +167,9 @@ SHADER_TYPE GameObject::Get_ShaderType()
 	if (Get_DistortionRenderer() && Get_DistortionRenderer()->Get_Shader())
 		return Get_DistortionRenderer()->Get_Shader()->Get_ShaderType();
 
+	if (Get_GroupEffect() && Get_GroupEffect()->Is_DistortionGroup())
+		return SHADER_TYPE::DISTORTION;
+
 	return SHADER_TYPE::NONE;
 }
 
