@@ -113,7 +113,7 @@ HRESULT UiGachaCardMove::Init()
 
 	if (true == m_bIsUnique)
 	{
-		switch (iHeroIndex)
+		switch (iHeroIndex++)
 		{
 		case 0:
 			m_eHero = HERO::KYLE;
@@ -127,11 +127,15 @@ HRESULT UiGachaCardMove::Init()
 		case 3:
 			m_eHero = HERO::SHANE;
 			break;
+		default:
+			m_eHero = HERO::KYLE;
+			break;
 		}
 		
 		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back0"), TextureMapType::DIFFUSE);
 
-        m_strTextureTag = GET_DATA(m_eHero).KeyDeckSelect;
+		if(HERO::MAX != m_eHero)
+			m_strTextureTag = GET_DATA(m_eHero).KeyDeckSelect;
 	}
 	else
 	{
@@ -161,6 +165,9 @@ void UiGachaCardMove::Tick()
 		break;
 	case STATE::OPEN:
 		Open();
+		break;
+	case STATE::END:
+		End();
 		break;
 	}
 }
@@ -196,10 +203,10 @@ void UiGachaCardMove::Move()
 	_float3 vecScale = m_fOriginScale;
 	switch (m_eChangeType)
 	{
-	case UiGachaCardMove::CHANGE_TYPE::DOWN:
+	case CHANGE_TYPE::DOWN:
 		vecScale.x -= m_fScaleChangeValue * m_fCheckTime / m_fMaxTime * 2.f;
 		break;
-	case UiGachaCardMove::CHANGE_TYPE::UP:
+	case CHANGE_TYPE::UP:
 		vecScale.x = 0.1f;
 		vecScale.x += m_fScaleChangeValue * (m_fCheckTime - m_fMaxTime / 2.f) / (m_fMaxTime - m_fMaxTime/ 2.f);
 		break;
@@ -261,7 +268,7 @@ void UiGachaCardMove::Open()
 	{
 		m_fCheckTime = m_fMaxTime;
 		m_eState = STATE::NONE;
-
+	
 		m_pOwner.lock()->GetOrAddTransform()->Scaled(m_fOriginScale);
 		return;
 	}
@@ -285,18 +292,32 @@ void UiGachaCardMove::Open()
 		if (0 != m_strTextureTag.length())
 			m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_strTextureTag), TextureMapType::DIFFUSE);
 
-		CUR_SCENE->Get_UI(L"UI_Gacha_Controller")->Get_Script<UiGachaController>()->Start_Effect(m_pOwner.lock()->GetOrAddTransform()->Get_State(Transform_State::POS), m_eHero);
+		if (HERO::MAX != m_eHero)
+			CUR_SCENE->Get_UI(L"UI_Gacha_Controller")->Get_Script<UiGachaController>()->Start_Effect(m_pOwner.lock()->GetOrAddTransform()->Get_State(Transform_State::POS), m_eHero);
 	}
 	else if (272.f < vecScale.x)
 	{
 		vecScale.x = 272.f;
-		m_eState = STATE::NONE;
+		m_eState = STATE::END;
 
-		if (true == m_bIsUnique)
-			CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Set_Hero(m_eHero);
-		else
-			CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Set_Hero(m_eDummyHero);
+		if (true == m_bIsUnique && HERO::MAX != m_eHero)
+			DATAMGR.Set_Card_Inven(m_eHero);
+		else if(DUMMY_HERO::MAX != m_eDummyHero)
+			DATAMGR.Set_Card_Inven(m_eDummyHero);
 	}
 
 	m_pOwner.lock()->GetOrAddTransform()->Scaled(vecScale);
+}
+
+void UiGachaCardMove::End()
+{
+	//m_eState = STATE::NONE;
+	m_pOwner.lock()->GetOrAddTransform()->Scaled(m_fOriginScale);
+
+	if (0 != m_strTextureTag.length())
+		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_strTextureTag), TextureMapType::DIFFUSE);
+
+	//wstring strName = m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Get_TextureMap(TextureMapType::DIFFUSE)->Get_Name();
+	//if(m_strTextureTag == strName)
+	//	m_eState = STATE::NONE;
 }

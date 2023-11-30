@@ -8,7 +8,6 @@ public:
 
 public:
     virtual HRESULT Init() override;
-    virtual void Tick() override;
 
     void Set_MainUI_Render(_bool bValue);
 

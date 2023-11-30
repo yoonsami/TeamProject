@@ -4,6 +4,7 @@
 void DataMgr::Initialize()
 {
     strTemp = L"";
+    tagTemp = {};
 
     m_HeroData.resize(IDX(HERO::MAX));
 
@@ -640,9 +641,381 @@ void DataMgr::Initialize()
         wstring strIndex = to_wstring(i);
         tagData.KeyDeckMini     = L"Card_Deck_Dummy" + strIndex;
         tagData.KeyDeckSelect   = L"Bick_Card_Dummy" + strIndex;
-        tagData.Element         = ElementType::WATER;
+
+        
     }
 
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_ARIA)];
+
+        tagData.Element     = ElementType::WATER;
+        tagData.Star        = 3;
+        tagData.KeyHeroInfo = L"용제후계자";
+        tagData.KeyHeroName = L"아리아";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_BANE)];
+
+        tagData.Element     = ElementType::DARK;
+        tagData.Star        = 2;
+        tagData.KeyHeroInfo = L"야망의반역자";
+        tagData.KeyHeroName = L"베인";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_ENT)];
+
+        tagData.Element     = ElementType::EARTH;
+        tagData.Star        = 2;
+        tagData.KeyHeroInfo = L"녹님의거목";
+        tagData.KeyHeroName = L"천목";
+    }
+     
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_GOBLIN)];
+
+        tagData.Element     = ElementType::EARTH;
+        tagData.Star        = 2;
+        tagData.KeyHeroInfo = L"숲의악몽";
+        tagData.KeyHeroName = L"고블린";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_ONI)];
+
+        tagData.Element     = ElementType::FIRE;
+        tagData.Star        = 2;
+        tagData.KeyHeroInfo = L"백전노장";
+        tagData.KeyHeroName = L"오니";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_PANDA)];
+
+        tagData.Element     = ElementType::EARTH;
+        tagData.Star        = 2;
+        tagData.KeyHeroInfo = L"취권의대가";
+        tagData.KeyHeroName = L"판다";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_NAGA)];
+
+        tagData.Element     = ElementType::WATER;
+        tagData.Star        = 2;
+        tagData.KeyHeroInfo = L"표독한저주";
+        tagData.KeyHeroName = L"나가여왕";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_SCOTT)];
+
+        tagData.Element     = ElementType::WIND;
+        tagData.Star        = 2;
+        tagData.KeyHeroInfo = L"거침없는질주";
+        tagData.KeyHeroName = L"오대오";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_VAMPIRE)];
+
+        tagData.Element     = ElementType::DARK;
+        tagData.Star        = 2;
+        tagData.KeyHeroInfo = L"피의군주";
+        tagData.KeyHeroName = L"뱀파이어로드";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_WEREWOLF)];
+
+        tagData.Element     = ElementType::EARTH;
+        tagData.Star        = 2;
+        tagData.KeyHeroInfo = L"야성의발톱";
+        tagData.KeyHeroName = L"웨어울프";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_BRANSEL)];
+
+        tagData.Element     = ElementType::LIGHT;
+        tagData.Star        = 3;
+        tagData.KeyHeroInfo = L"순백의기사";
+        tagData.KeyHeroName = L"브란셀";
+    }
+      
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_DARKARMY_AXE)];
+
+        tagData.Element     = ElementType::DARK;
+        tagData.Star        = 1;
+        tagData.KeyHeroInfo = L"어둠의군세";
+        tagData.KeyHeroName = L"도끼병";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_DARKARMY_CROSSBOW)];
+
+        tagData.Element     = ElementType::DARK;
+        tagData.Star        = 1;
+        tagData.KeyHeroInfo = L"어둠의군세";
+        tagData.KeyHeroName = L"궁병";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_DARKARMY_SWORD)];
+
+        tagData.Element     = ElementType::DARK;
+        tagData.Star        = 1;
+        tagData.KeyHeroInfo = L"어둠의군세";
+        tagData.KeyHeroName = L"검병";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_DEA)];
+
+        tagData.Element     = ElementType::FIRE;
+        tagData.Star        = 3;
+        tagData.KeyHeroInfo = L"희망의하모니";
+        tagData.KeyHeroName = L"데아";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_FERUS)];
+
+        tagData.Element     = ElementType::FIRE;
+        tagData.Star        = 3;
+        tagData.KeyHeroInfo = L"전장의투사";
+        tagData.KeyHeroName = L"페루스";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_GEHENNA)];
+
+        tagData.Element     = ElementType::DARK;
+        tagData.Star        = 3;
+        tagData.KeyHeroInfo = L"언령의인형술사";
+        tagData.KeyHeroName = L"게헨나";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_HAERI)];
+
+        tagData.Element     = ElementType::WATER;
+        tagData.Star        = 3;
+        tagData.KeyHeroInfo = L"물의영수";
+        tagData.KeyHeroName = L"해리";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_JUNO)];
+
+        tagData.Element     = ElementType::WIND;
+        tagData.Star        = 3;
+        tagData.KeyHeroInfo = L"삼족오의수장";
+        tagData.KeyHeroName = L"준오";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_KAGURA)];
+
+        tagData.Element     = ElementType::WIND;
+        tagData.Star        = 3;
+        tagData.KeyHeroInfo = L"삼판의무녀";
+        tagData.KeyHeroName = L"카구라";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_KARIN)];
+
+        tagData.Element     = ElementType::EARTH;
+        tagData.Star        = 3;
+        tagData.KeyHeroInfo = L"불멸의성녀";
+        tagData.KeyHeroName = L"카린";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_KARMA)];
+
+        tagData.Element     = ElementType::EARTH;
+        tagData.Star        = 3;
+        tagData.KeyHeroInfo = L"절망의신선";
+        tagData.KeyHeroName = L"카르마";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_LINA)];
+
+        tagData.Element     = ElementType::FIRE;
+        tagData.Star        = 3;
+        tagData.KeyHeroInfo = L"고요한선율";
+        tagData.KeyHeroName = L"리나";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_LUCIA)];
+
+        tagData.Element     = ElementType::FIRE;
+        tagData.Star        = 3;
+        tagData.KeyHeroInfo = L"고양이마법사";
+        tagData.KeyHeroName = L"루시아";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_MELYN)];
+
+        tagData.Element     = ElementType::DARK;
+        tagData.Star        = 3;
+        tagData.KeyHeroInfo = L"흑마법연구가";
+        tagData.KeyHeroName = L"멜린";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_MERCURE)];
+
+        tagData.Element     = ElementType::WATER;
+        tagData.Star        = 3;
+        tagData.KeyHeroInfo = L"광기의연구자";
+        tagData.KeyHeroName = L"멜키르";
+    }
+
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_WATT)];
+
+        tagData.Element     = ElementType::FIRE;
+        tagData.Star        = 2;
+        tagData.KeyHeroInfo = L"건설감독관";
+        tagData.KeyHeroName = L"와트";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_OSCAR)];
+
+        tagData.Element     = ElementType::DARK;
+        tagData.Star        = 3;
+        tagData.KeyHeroInfo = L"광기의칼날";
+        tagData.KeyHeroName = L"오스카";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_PALLANUS)];
+
+        tagData.Element     = ElementType::FIRE;
+        tagData.Star        = 3;
+        tagData.KeyHeroInfo = L"기회의지휘관";
+        tagData.KeyHeroName = L"팔라누스";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_PASCAL)];
+
+        tagData.Element     = ElementType::FIRE;
+        tagData.Star        = 2;
+        tagData.KeyHeroInfo = L"황제";
+        tagData.KeyHeroName = L"파스칼";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_PHYSYS1)];
+
+        tagData.Element     = ElementType::DARK;
+        tagData.Star        = 1;
+        tagData.KeyHeroInfo = L"피지스";
+        tagData.KeyHeroName = L"어둠의검사";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_PHYSYS2)];
+
+        tagData.Element     = ElementType::DARK;
+        tagData.Star        = 1;
+        tagData.KeyHeroInfo = L"피지스";
+        tagData.KeyHeroName = L"어둠의사제";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_PLANE)];
+
+        tagData.Element     = ElementType::WATER;
+        tagData.Star        = 2;
+        tagData.KeyHeroInfo = L"열혈매니저";
+        tagData.KeyHeroName = L"플라네";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_PLATON)];
+
+        tagData.Element     = ElementType::WIND;
+        tagData.Star        = 3;
+        tagData.KeyHeroInfo = L"여신의사자";
+        tagData.KeyHeroName = L"플라톤";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_RACHEL1)];
+
+        tagData.Element     = ElementType::FIRE;
+        tagData.Star        = 2;
+        tagData.KeyHeroInfo = L"불멸의화신";
+        tagData.KeyHeroName = L"레이첼";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_RACHEL2)];
+
+        tagData.Element     = ElementType::FIRE;
+        tagData.Star        = 3;
+        tagData.KeyHeroInfo = L"워커홀릭";
+        tagData.KeyHeroName = L"레이첼";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_RADIN)];
+
+        tagData.Element     = ElementType::WATER;
+        tagData.Star        = 3;
+        tagData.KeyHeroInfo = L"검은마법사";
+        tagData.KeyHeroName = L"라딘";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_RADISAND)];
+
+        tagData.Element     = ElementType::WATER;
+        tagData.Star        = 3;
+        tagData.KeyHeroInfo = L"은빛그림자";
+        tagData.KeyHeroName = L"레디샌즈";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_SILVESTA)];
+
+        tagData.Element     = ElementType::EARTH;
+        tagData.Star        = 2;
+        tagData.KeyHeroInfo = L"검은정의";
+        tagData.KeyHeroName = L"실베스타";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_SUCCUBUS)];
+
+        tagData.Element     = ElementType::DARK;
+        tagData.Star        = 1;
+        tagData.KeyHeroInfo = L"어둠의악몽";
+        tagData.KeyHeroName = L"서큐버스";
+    }
+    
+    {
+        auto& tagData = m_DummyData[IDX(DUMMY_HERO::DUMMY_VANESSA)];
+
+        tagData.Element     = ElementType::WIND;
+        tagData.Star        = 3;
+        tagData.KeyHeroInfo = L"운명의지휘자";
+        tagData.KeyHeroName = L"바네사";
+    }
+
+
+    m_CardInven.resize(50);
 
 
 
@@ -682,4 +1055,72 @@ const wstring& DataMgr::Get_Dialog(QUESTINDEX eIndex, CUR_QUEST eType, _uint iIn
         return m_DialogClear[iQuestIndex][iIndex];
 
     return strTemp;
+}
+
+_uint DataMgr::Get_Card_Inven_Use_Size()
+{
+    _uint iSize = IDX(m_CardInven.size());
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        if (false == m_CardInven[i].first)
+            return i;
+    }
+
+    return iSize;
+}
+
+HERODATA& DataMgr::Get_Card_Inven(_uint iIndex)
+{
+    if (IDX(m_CardInven.size()) <= iIndex)
+        return tagTemp;
+
+    if(false == m_CardInven[iIndex].first)
+        return tagTemp;
+
+    return m_CardInven[iIndex].second;
+}
+
+void DataMgr::Set_Card_Inven(HERO eType)
+{
+    _uint iSize = IDX(m_CardInven.size());
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        auto& tagData = m_CardInven[i];
+        if (false == tagData.first)
+        {
+            tagData.first = true;
+            tagData.second = m_HeroData[IDX(eType)];
+
+            return;
+        }
+    }
+}
+
+void DataMgr::Set_Card_Inven(DUMMY_HERO eType)
+{
+    _uint iSize = IDX(m_CardInven.size());
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        auto& tagData = m_CardInven[i];
+        if (false == tagData.first)
+        {
+            tagData.first = true;
+            tagData.second = m_DummyData[IDX(eType)];
+
+            return;
+        }
+    }
+}
+
+void DataMgr::Remove_Card_Inven(_uint iIndex)
+{
+    if (IDX(m_CardInven.size()) <= iIndex)
+        return;
+
+    auto& tagData = m_CardInven[iIndex];
+    if (true == tagData.first)
+    {
+        tagData.first = false;
+        tagData.second = HERODATA();
+    }
 }

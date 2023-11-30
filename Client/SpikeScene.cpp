@@ -55,7 +55,6 @@
 #include "DemoAnimationController1.h"
 #include "UiCardDeckController.h"
 #include "MainUiController.h"
-#include "UiCardDeckInvenChange.h"
 #include "UiTargetLockOn.h"
 #include "UiMonsterHp.h"
 #include "UiDamageCreate.h"
@@ -609,10 +608,10 @@ void SpikeScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main.dat", tmp);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main_Button.dat", tmp);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Char_Change.dat", tmp);
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck.dat", tmp, false);
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", tmp, false);
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Cur_Quest.dat", tmp, false);
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Setting.dat", tmp, false);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck.dat", tmp, false, false);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", tmp, false, false);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Cur_Quest.dat", tmp, false, false);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Setting.dat", tmp, false, false);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Controller.dat", tmp, false);
 
 
@@ -732,7 +731,7 @@ void SpikeScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		{
 			pObj.lock()->Get_Button()->AddOnClickedEvent([]()
 				{
-					CUR_SCENE->Get_GameObject(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Render_Off();
+					CUR_SCENE->Get_GameObject(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Set_Render(false);
 				});
 		}
 	}
@@ -753,7 +752,7 @@ void SpikeScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		{
 			pObj->Get_Button()->AddOnClickedEvent([]()
 				{
-					CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Render_On();
+					CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Set_Render(true);
 				});
 		}
 	}
@@ -822,44 +821,6 @@ void SpikeScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj->Add_Component(pScript);
 		}
 
-	}
-
-	{
-		for (_uint i = 0; i < 32; ++i)
-		{
-			auto pScript = make_shared<UiCardDeckInvenChange>(0);
-			wstring strTemp = L"UI_Card_Deck_Inven";
-			strTemp += to_wstring(i);
-			weak_ptr<GameObject> pObj = Get_UI(strTemp);
-			if (true != pObj.expired())
-			{
-				pObj.lock()->Add_Component(pScript);
-				pObj.lock()->Get_Button()->AddOnClickedEvent([pObj]()
-					{
-						CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Click_Deck_Inven(pObj.lock()->Get_Name());
-					});
-			}
-		}
-
-		for (_uint i = 0; i < 32; ++i)
-		{
-			auto pScript = make_shared<UiCardDeckInvenChange>(1);
-			wstring strTemp = L"UI_Card_Deck_Inven_Element";
-			strTemp += to_wstring(i);
-			auto pObj = Get_UI(strTemp);
-			if (nullptr != pObj)
-				pObj->Add_Component(pScript);
-		}
-
-		for (_uint i = 0; i < 32; ++i)
-		{
-			auto pScript = make_shared<UiCardDeckInvenChange>(2);
-			wstring strTemp = L"UI_Card_Deck_InvenBg";
-			strTemp += to_wstring(i);
-			auto pObj = Get_UI(strTemp);
-			if (nullptr != pObj)
-				pObj->Add_Component(pScript);
-		}
 	}
 
 	{

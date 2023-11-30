@@ -433,20 +433,16 @@ HRESULT UiSettingController::Init()
 
 void UiSettingController::Tick()
 {
-    if (true == Check_Expire())
-		return;
-
-    if (KEYTAP(KEY_TYPE::ESC))
-        Set_Render(false);
-
     if (true == m_bFPS)
         Change_FPS_Font();
 
     if (false == m_bIsRender)
         return;
 
-    Change_All_Value();
+    if (true == Check_Expire())
+		return;
 
+    Change_All_Value();
 }
 
 void UiSettingController::Set_Render(_bool bValue)
@@ -479,6 +475,27 @@ void UiSettingController::Set_Render(_bool bValue)
     m_pCheck_FXAA.lock()->Set_Render(bValue);
     m_pCheck_PBR.lock()->Set_Render(bValue);
     m_pCheck_FPS.lock()->Set_Render(bValue);
+
+
+    m_pBg.lock()->Set_Tick(bValue);
+    m_pBrightness.lock()->Set_Tick(bValue);
+    m_pContrast.lock()->Set_Tick(bValue);
+    m_pSaturation.lock()->Set_Tick(bValue);
+    m_pBloom.lock()->Set_Tick(bValue);
+    m_pToneMapping.lock()->Set_Tick(bValue);
+    m_pToneMappingMax.lock()->Set_Tick(bValue);
+    m_pSSAO_Radius.lock()->Set_Tick(bValue);
+    m_pSSAO_Start.lock()->Set_Tick(bValue);
+    m_pSSAO_End.lock()->Set_Tick(bValue);
+    m_pMotionBlur.lock()->Set_Tick(bValue);
+    m_pCheck_Bloom.lock()->Set_Tick(bValue);
+    m_pCheck_SSAO.lock()->Set_Tick(bValue);
+    m_pCheck_MotionBlur.lock()->Set_Tick(bValue);
+    m_pCheck_LensFlare.lock()->Set_Tick(bValue);
+    m_pCheck_Outline.lock()->Set_Tick(bValue);
+    m_pCheck_FXAA.lock()->Set_Tick(bValue);
+    m_pCheck_PBR.lock()->Set_Tick(bValue);
+    m_pCheck_FPS.lock()->Set_Tick(bValue);
 }
 
 void UiSettingController::Change_Bloom()
@@ -802,6 +819,9 @@ void UiSettingController::Change_Value_MotionBlur()
 
 void UiSettingController::Change_FPS_Font()
 {
+    if (true == m_pCheck_FPS.expired())
+        return;
+
     _uint iFps = TIME.GetFPS();
 
     wstring strTemp = L"FPS : " + to_wstring(iFps);

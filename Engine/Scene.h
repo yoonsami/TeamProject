@@ -58,7 +58,7 @@ public:
 	void Render_BackBuffer();
 	
 	
-	void Load_UIFile(const wstring& path, const list<shared_ptr<GameObject>>& staticObjects, _bool bRender = true);
+	void Load_UIFile(const wstring& path, const list<shared_ptr<GameObject>>& staticObjects, _bool bRender = true, _bool bTick = true);
 	void Load_UIFile(const wstring& path, vector<weak_ptr<GameObject>>& addedObjects);
 
 	const wstring& Get_FinalRenderTarget() { return m_wstrFinalRenderTarget; }

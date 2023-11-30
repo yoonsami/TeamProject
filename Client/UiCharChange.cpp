@@ -81,14 +81,16 @@ void UiCharChange::Set_Hero(_uint iIndex, HERO eHero)
     if (HERO::MAX == eHero)
     {
         m_pObj[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"Card_None"), TextureMapType::DIFFUSE);
-        m_pElement[iIndex].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
+        m_pElement[iIndex].lock()->Set_Tick(false);
+        m_pElement[iIndex].lock()->Set_Render(false);
         m_eHero[iIndex] = HERO::MAX;
     }
     else
     {
         m_pObj[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap((RESOURCES.Get<Texture>(GET_DATA(eHero).KeyChangeCard)), TextureMapType::DIFFUSE);
         m_pElement[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(GET_ELEMENT(eHero)), TextureMapType::DIFFUSE);
-        m_pElement[iIndex].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        m_pElement[iIndex].lock()->Set_Tick(true);
+        m_pElement[iIndex].lock()->Set_Render(true);
         m_eHero[iIndex] = eHero;
     }
 }

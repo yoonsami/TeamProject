@@ -8,7 +8,6 @@ public:
 
 public:
     virtual HRESULT Init() override;
-    virtual void Tick() override;
 
     void Create_Interaction(NPCTYPE eType);
     void Remove_Interaction();

@@ -59,15 +59,16 @@ public:
 	_float Get_MaxHp()						{ return m_fMaxHP; }
 	_float& Get_CurHp()						{ return m_fHP; }
 	_float Get_HpRatio()					{ return m_fHP / m_fMaxHP; }
-	_float Get_CurGroggyGauge()				{ return m_fGroggy_Gauge; }
-	_float Get_Groggy_Gauge_Ratio()			{ return m_fGroggy_Gauge / m_fMaxGroggy_Gauge; }
 	_float3& Get_CullPos()					{ return m_vCullPos; }
 	_bool Get_Instancing()					{ return m_bInstancing; }
 	_uint Get_ObjectGroup()					{ return m_eObjectGroup; }
 	_float Get_CullRadius()					{ return m_fCullRaidus; }
 	_uchar Get_LayerIndex()					{ return m_iLayerIndex; }
 	const wstring& Get_Name()				{ return m_strName; }
+	_float Get_CurGroggyGauge()				{ return m_fGroggy_Gauge; }
+	_float Get_Groggy_Gauge_Ratio()			{ return m_fGroggy_Gauge / m_fMaxGroggy_Gauge; }
 
+	_bool Is_Tick()							{ return m_bIsTick; }
 	_bool Is_Blured()						{ return m_bIsBlur; }
 	_bool Is_Render()						{ return m_bIsRender; }
 	_bool Is_DrawShadow()					{ return m_bDrawShadow; }
@@ -76,10 +77,11 @@ public:
 	_bool Is_FrustumCulled()				{ return m_bFrustumCull; }
 	
 	void Set_Hp(_float fHP)					{ m_fHP = fHP; }
+	void Set_Tick(_bool bValue)				{ m_bIsTick = bValue; }
 	void Set_Blur(_bool flag)				{ m_bIsBlur = flag; }
 	void Set_Name(const wstring& name)		{ m_strName = name; }
 	void Set_MaxHp(_float fHP)				{ m_fMaxHP = fHP; m_fHP = fHP; }
-	void Set_Render(_bool Value)			{ m_bIsRender = Value; }
+	void Set_Render(_bool bValue)			{ m_bIsRender = bValue; }
 	void Set_CullPos(const _float3& pos )	{ m_vCullPos = pos; }
 	void Set_TimeSlowed(_bool flag)			{ m_bGetTimeSlow = flag; }
 	void Set_CullRadius(_float radius)		{ m_fCullRaidus = radius; }
@@ -174,7 +176,8 @@ private:
 
 
 	_bool		m_bIsRender			= { true };
-	_bool		m_bGetTimeSlow = true;
+	_bool		m_bIsTick			= { true };
+	_bool		m_bGetTimeSlow		= true;
 };
 
 template<typename T>
