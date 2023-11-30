@@ -964,12 +964,18 @@ void Boss_Mir_FSM::skill_Restart_Phase1()
         {
             //Setting Spawn Position For CutScene
             Get_CharacterController()->Get_Actor()->setFootPosition({ m_FirstWorldMat.Translation().x,  m_FirstWorldMat.Translation().y, m_FirstWorldMat.Translation().z });
+            Get_Transform()->Set_State(Transform_State::POS, _float4(m_FirstWorldMat.Translation(),1.f));
             Get_Transform()->Set_LookDir(m_FirstWorldMat.Backward());
 
-            m_vCamStopPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 10.f + Get_Transform()->Get_State(Transform_State::UP) * 5.f;
+            m_vCamStopPos = m_FirstWorldMat.Translation() + m_FirstWorldMat.Backward() * 10.f + Get_Transform()->Get_State(Transform_State::UP) * 5.f;
 
             if (!m_pCamera.expired())
+            {
                 m_pCamera.lock()->Get_Transform()->Set_State(Transform_State::POS, m_vPhaseChangePos);
+                _float3 vDir = m_vPhaseChangePos.xyz() - (m_vTopBonePos.xyz() + (_float3::Up * -1.f));
+                vDir.Normalize();
+                m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_Offset(vDir);
+            }
         }
         
         if (!m_pCamera.expired())   
@@ -1025,6 +1031,41 @@ void Boss_Mir_FSM::skill_Restart_Phase1_Intro()
         m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, m_vHeadCamDir * -1.f, 10.f);
     }
     
+	if (m_iCurFrame > 28 && m_iCurFrame < 56)
+	{
+		m_fStateTimer += fDT;
+		CAMERA_SHAKE(0.05f, 0.1f);
+		auto animator = Get_Owner()->Get_Animator();
+
+		auto& tweenDesc = animator->Get_TweenDesc();
+
+		const auto& animation = animator->Get_Model()->Get_AnimationByIndex(tweenDesc.curr.animIndex);
+
+		_float timePerFrame = 1 / (animation->frameRate * animation->speed);
+		_float time = 28.f * timePerFrame;
+
+		CUR_SCENE->g_bAberrationOn = true;
+		CUR_SCENE->g_fAberrationPower = -500.f * (m_fStateTimer) * (m_fStateTimer - time);
+
+		CUR_SCENE->g_RadialBlurData.g_bRadialBlurOn = true;
+		CUR_SCENE->g_RadialBlurData.g_fNormalRadius = 0.f;
+		CUR_SCENE->g_RadialBlurData.g_fRadialBlurStrength = -0.7f * (m_fStateTimer) * (m_fStateTimer - time);
+
+		const _float4x4& matView = CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_ViewMat();
+		const _float4x4& matProj = CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_ProjMat();
+
+		_float3 vCenterPos = _float3::Transform(m_vHeadBonePos.xyz(), matView * matProj);
+		CUR_SCENE->g_RadialBlurData.g_vCenterPos = { vCenterPos.x,vCenterPos.y };
+
+	}
+	if (m_iCurFrame > 56)
+	{
+		CUR_SCENE->g_bAberrationOn = false;
+		CUR_SCENE->g_fAberrationPower = 0.f;
+		CUR_SCENE->g_RadialBlurData.g_bRadialBlurOn = false;
+		CUR_SCENE->g_RadialBlurData.g_fRadialBlurStrength = 0.f;
+	}
+
     if (Is_AnimFinished())
     {
         m_eCurState = STATE::skill_Restart_Phase1;
@@ -1041,6 +1082,7 @@ void Boss_Mir_FSM::skill_Restart_Phase1_Intro_Init()
     m_bInvincible = true;
 
     Calculate_IntroHeadCam();
+    m_fStateTimer = 0.f;
 }
 
 void Boss_Mir_FSM::SQ_SBRin_Roar()
