@@ -1074,7 +1074,11 @@ void Widget_EffectMaker_Mesh::Create()
 		EffectObj->Get_Transform()->Scaled(_float3(1.0f));
 
 		// For. Add and Setting Effect Component to GameObject
-		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
+		shared_ptr<Shader> shader;
+		if(m_bIsFDistortion)
+			shader = RESOURCES.Get<Shader>(L"Shader_Distortion.fx");
+		else
+			shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
 		shared_ptr<MeshEffect> meshEffect = make_shared<MeshEffect>(shader);
 		EffectObj->Add_Component(meshEffect);
 		EffectObj->Get_MeshEffect()->Set_ToolModeOn(true);

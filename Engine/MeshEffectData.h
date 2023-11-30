@@ -19,6 +19,7 @@ public:
         _bool       bIsLoop = { false };
         _bool       bIsFollowingGroup_OnlyTranslate = { false };
         _bool       bIsFollowingGroup_LooKSameDir = { false };
+        _bool       bIsFDistortion = { false };
 
         // Mesh 
         string      strVfxMesh = {""};
