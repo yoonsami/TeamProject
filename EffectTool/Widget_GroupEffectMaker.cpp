@@ -580,7 +580,7 @@ void Widget_GroupEffectMaker::Create()
 	pGroupEffectObj->Init();
 	// For. bind to member 
 	m_pCurrentGroup = pGroupEffectObj;
-	pGroupEffectObj->Get_GroupEffect()->Set_DistortionGroup(m_bIsDistortionGroup);
+	pGroupEffectObj->Get_GroupEffect()->Set_DistortionGroup(m_bIsFDistortionGroup);
 	// For. Add Effect GameObject to current scene
 	EVENTMGR.Create_Object(pGroupEffectObj);
 }
