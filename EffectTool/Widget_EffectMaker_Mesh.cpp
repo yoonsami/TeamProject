@@ -1313,7 +1313,7 @@ void Widget_EffectMaker_Mesh::Save()
 			(_float)m_bIsLoop, (_float)m_bIsFollowGroup_OnlyTranslate, (_float)m_bIsFollowGroup_LookSameDir, (_float)m_iScaleSpeedType,
 			m_vCurvePoint_Scale[0].x, m_vCurvePoint_Scale[0].y, m_vCurvePoint_Scale[1].x, m_vCurvePoint_Scale[1].y,
 			m_vCurvePoint_Scale[2].x, m_vCurvePoint_Scale[2].y, m_vCurvePoint_Scale[3].x, m_vCurvePoint_Scale[3].y,
-			m_fLightIntensity, 0.f, 0.f, 0.f
+			m_fLightIntensity, (_float)m_bIsFDistortion, 0.f, 0.f
 		));
 
 
@@ -1484,6 +1484,7 @@ void Widget_EffectMaker_Mesh::Load()
 	m_bIsFollowGroup_OnlyTranslate = (_int)mTemp._12;
 	m_bIsFollowGroup_LookSameDir = (_int)mTemp._13;
 	m_fLightIntensity = mTemp._41;
+	m_bIsFDistortion = _bool(mTemp._42);
 
 	m_iScaleSpeedType = (_int)mTemp._14;
 	m_vCurvePoint_Scale[0] = _float2(mTemp._21, mTemp._22);
