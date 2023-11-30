@@ -589,7 +589,7 @@ void Boss_Mir_FSM::b_idle()
         {
             Set_AttackPattern();
 
-            if (m_pOwner.lock()->Get_HpRatio() >= 0.33f && m_pOwner.lock()->Get_HpRatio() <= 0.66f)
+        /*    if (m_pOwner.lock()->Get_HpRatio() >= 0.33f && m_pOwner.lock()->Get_HpRatio() <= 0.66f)
             {
                 if (!m_bPhaseChange)
                 {
@@ -606,7 +606,7 @@ void Boss_Mir_FSM::b_idle()
 
                     m_eCurState = STATE::skill_Restart_Phase1;
                 }
-            }
+            }*/
             
         }
     }
