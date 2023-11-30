@@ -319,6 +319,9 @@
     <Filter Include="02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\04.Boss_Giant_Mir_FSM">
       <UniqueIdentifier>{222bdfb6-ec6a-4014-935c-b6ae4a1d194a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\05.Object\01.ObjectDissolveCreate">
+      <UniqueIdentifier>{a346a383-8ff9-4e70-8209-86371d56dae2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -643,6 +646,9 @@
     <ClInclude Include="Boss_Giant_Mir_FSM.h">
       <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\04.Boss_Giant_Mir_FSM</Filter>
     </ClInclude>
+    <ClInclude Include="ObjectDissolveCreate.h">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\01.ObjectDissolveCreate</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -933,6 +939,9 @@
     </ClCompile>
     <ClCompile Include="Boss_Giant_Mir_FSM.cpp">
       <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\04.Boss_Giant_Mir_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectDissolveCreate.cpp">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\01.ObjectDissolveCreate</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

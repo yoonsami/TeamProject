@@ -14,9 +14,6 @@ ObjectDissolveCreate::ObjectDissolveCreate(_float fDissolveSpeed, shared_ptr<Tex
 
 HRESULT ObjectDissolveCreate::Init()
 {
-    if (m_pOwner.expired())
-        return;
-
     if (!m_pOwner.expired())
     {
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
@@ -24,14 +21,11 @@ HRESULT ObjectDissolveCreate::Init()
     }
 
     if (Get_Owner()->Get_ModelRenderer())
-    {
         Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
-    }
-
-    if (Get_Owner()->Get_Animator())
-    {
+    
+    if (Get_Owner()->Get_Animator())    
         Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
-    }
+    
 
     return S_OK;
 }
@@ -47,13 +41,13 @@ void ObjectDissolveCreate::Tick()
             return;
         
         Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[0].w -= m_fDissolveSpeed * fDT;
-            EVENTMGR.Delete_Object(Get_Owner());
     }
 
     if (Get_Owner()->Get_Animator())
     {
-        Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[0].w += m_fDissolveSpeed * fDT;
-        if (Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[0].w > 1.f)
-            EVENTMGR.Delete_Object(Get_Owner());
+        if (Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[0].w <= 0.f)
+            return;
+
+        Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[0].w -= m_fDissolveSpeed * fDT;
     }
 }

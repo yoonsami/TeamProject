@@ -151,11 +151,12 @@ private:
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage);
 	void Create_CounterMotionTrail();
 	void Create_Meteor();
+	void Create_DragonBall();
 	void Set_AttackPattern();
 	void Setting_DragonBall();
 	void Calculate_IntroHeadCam();
 	void Calculate_PhaseChangeHeadCam();
-	
+	void Check_PhaseChange();
 
 	void TailAttackCollider_On(const wstring& skillname);
 	void TailAttackCollider_Off();
@@ -169,8 +170,6 @@ private:
 	DIR m_eAttackDir = DIR::NONE;
 	PHASE m_eCurPhase = PHASE::PHASE1;
 
-	_float4x4 m_FirstWorldMat = XMMatrixIdentity();
-	_float3 m_vTurnVector = _float3(0.f);
 	_float m_fTurnSpeed = XM_PI * 0.5f;
 	_float m_fIntroCamDistance = 0.f;
 	_float m_fCamRatio = 0.f;
@@ -186,8 +185,10 @@ private:
 
 	_bool m_bCounter = false;
 	_bool m_bPhaseOneEmissive = false;
-	_bool m_bPhaseChange = false;
+	_bool m_bCheckPhaseChange[2];
+	_bool m_bPhaseChange[2];
 
+	
 	_uint m_iPreAttack = 100;
 	_uint m_iPhaseOne_TurnCnt = 0;
 	_uint m_iCrashCnt = 0;
@@ -199,15 +200,17 @@ private:
 
 	weak_ptr<GameObject> m_pTailCollider;
 
+	_float3 m_vTurnVector = _float3(0.f);
 	_float3 m_vHeadCamDir = _float3(0.f);
 	_float4 m_vHeadBonePos = _float4(0.f);
 	_float4 m_vHeadCamPos = _float4(0.f);
 	_float4 m_vTopBonePos = _float4(0.f);
 	_float4 m_vPhaseChangePos = _float4(0.f);
+	_float4 m_vDragonBallPosArray[3];
 
 	_float4x4 HeadBoneMatrix = XMMatrixIdentity();
 	_float4x4 MouseBoneMatrix = XMMatrixIdentity();
 	_float4x4 TailBoneMatrix = XMMatrixIdentity();
 	_float4x4 TopBoneMatrix = XMMatrixIdentity();
-
+	_float4x4 m_FirstWorldMat = XMMatrixIdentity();
 };

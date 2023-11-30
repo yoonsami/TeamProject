@@ -3,6 +3,7 @@
 #include "ModelAnimator.h"
 #include "SphereCollider.h"
 #include "AttackColliderInfoScript.h"
+#include "ObjectDissolveCreate.h"
 #include "Model.h"
 #include "CharacterController.h"
 #include "CounterMotionTrailScript.h"
@@ -555,7 +556,6 @@ void Boss_Mir_FSM::sq_Intro2()
     if (Is_AnimFinished())
     {
         g_bCutScene = false;
-        //m_eCurState = STATE::skill_Restart_Phase1;
         m_eCurState = STATE::b_idle;
 
         if (!m_pCamera.expired())
@@ -585,6 +585,7 @@ void Boss_Mir_FSM::b_idle()
     
     if (m_eCurPhase == PHASE::PHASE1)
         Create_Meteor();
+
 
     if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
     {
@@ -628,27 +629,16 @@ void Boss_Mir_FSM::b_idle()
         }
         else
         {
-            Set_AttackPattern();
+            Set_AttackPattern();            
+        }
+    }
 
-            if (m_pOwner.lock()->Get_HpRatio() >= 0.33f && m_pOwner.lock()->Get_HpRatio() <= 0.66f)
-            {
-                if (!m_bPhaseChange)
-                {
-                    m_bPhaseChange = true;
-
-                    m_eCurState = STATE::skill_Restart_Phase1;
-                }
-            }
-            else if (m_pOwner.lock()->Get_HpRatio() <= 0.33f)
-            {
-                if (m_bPhaseChange)
-                {
-                    m_bPhaseChange = false;
-
-                    m_eCurState = STATE::skill_Restart_Phase1;
-                }
-            }
-            
+    if (m_eCurPhase == PHASE::PHASE2)
+    {
+        if ((m_bCheckPhaseChange[0] && !m_bPhaseChange[0]) || (m_bCheckPhaseChange[1] && !m_bPhaseChange[1]))
+        {
+            m_iPreAttack = 100;
+            m_eCurState = STATE::skill_Restart_Phase1;
         }
     }
 }
@@ -670,6 +660,7 @@ void Boss_Mir_FSM::b_idle_Init()
 
     AttackCollider_Off();
     TailAttackCollider_Off();
+    Check_PhaseChange();
 
     if (m_eCurPhase == PHASE::PHASE1)
     {
@@ -685,9 +676,12 @@ void Boss_Mir_FSM::b_idle_Init()
             //Add_BossHp UI
             if (!m_pOwner.expired())
             {
-                auto pScript = make_shared<UIBossHpBar>(BOSS::MIR);
-                m_pOwner.lock()->Add_Component(pScript);
-                pScript->Init();
+                if (!m_pOwner.lock()->Get_Script<UIBossHpBar>())
+                {
+                    auto pScript = make_shared<UIBossHpBar>(BOSS::MIR);
+                    m_pOwner.lock()->Add_Component(pScript);
+                    pScript->Init();
+                }
             }
         }
     }
@@ -790,6 +784,7 @@ void Boss_Mir_FSM::groggy_start_Init()
                     material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
 
                 m_bPhaseOneEmissive = false;
+                m_iCrashCnt = 0;
             }
 
         }
@@ -976,6 +971,8 @@ void Boss_Mir_FSM::skill_Restart_Phase1()
                 vDir.Normalize();
                 m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_Offset(vDir);
             }
+
+            Create_DragonBall();
         }
         
         if (!m_pCamera.expired())   
@@ -1014,6 +1011,11 @@ void Boss_Mir_FSM::skill_Restart_Phase1_Init()
 
     Calculate_PhaseChangeHeadCam();
 
+    if (m_bCheckPhaseChange[0])
+        m_bPhaseChange[0] = true;
+    else if (m_bCheckPhaseChange[1])
+        m_bPhaseChange[1] = true;
+    
     g_bCutScene = true;
 }
 
@@ -1068,7 +1070,8 @@ void Boss_Mir_FSM::skill_Restart_Phase1_Intro()
 
     if (Is_AnimFinished())
     {
-        m_eCurState = STATE::skill_Restart_Phase1;
+        g_bCutScene = false;
+        m_eCurState = STATE::b_idle;
         m_eCurPhase = PHASE::PHASE1;
     }
 }
@@ -2264,13 +2267,61 @@ void Boss_Mir_FSM::Create_Meteor()
             m_tMeteorCoolTime.fAccTime = 0.f;
         }
     }
+}
 
+void Boss_Mir_FSM::Create_DragonBall()
+{
+    for (_uint i = 0; i < 3; i++)
+    {
+        shared_ptr<GameObject> ObjDragonBall = make_shared<GameObject>();
+
+        ObjDragonBall->Add_Component(make_shared<Transform>());
+
+        ObjDragonBall->Get_Transform()->Set_State(Transform_State::POS, m_vDragonBallPosArray[i]);
+        {
+            shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+
+            shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+            {
+                shared_ptr<Model> model = RESOURCES.Get<Model>(L"Anim_P_R02_DecoBall_00_Idle");
+                animator->Set_Model(model);
+            }
+
+            ObjDragonBall->Add_Component(animator);
+
+            ObjDragonBall->Add_Component(make_shared<SphereCollider>(2.f)); //SphereCollider
+            ObjDragonBall->Get_Collider()->Set_CollisionGroup(MAPObject);
+            ObjDragonBall->Get_Collider()->Set_Activate(true);
+
+            wstring DragonBallName = L"DragonBall_"; // TODO 14,15,16
+            DragonBallName += to_wstring(i);
+
+            ObjDragonBall->Set_Name(DragonBallName);
+            ObjDragonBall->Set_DrawShadow(true);
+            ObjDragonBall->Set_ObjectGroup(OBJ_MAPOBJECT);
+            ObjDragonBall->Add_Component(make_shared<DragonBall_FSM>());
+            ObjDragonBall->Get_FSM()->Set_Target(m_pOwner.lock());
+
+            EVENTMGR.Create_Object(ObjDragonBall);
+
+            //Add ObjectDissolveCreate
+            ObjDragonBall->Add_Component(make_shared<ObjectDissolveCreate>(1.f));
+            ObjDragonBall->Get_Script<ObjectDissolveCreate>()->Init();
+        }
+       
+        //PLEASE MAKE RIGIDBODY 
+        //PLEASE DO. CAPTAIN
+        {
+            //MAKE RIGIDBODY...
+
+        }
+
+    }
 }
 
 void Boss_Mir_FSM::Set_AttackPattern()
 {
-    m_eCurState = STATE::skill_2100;
-   /* _uint iRan = rand() % 10;
+   _uint iRan = rand() % 10;
 
     while (true)
     {
@@ -2329,17 +2380,20 @@ void Boss_Mir_FSM::Set_AttackPattern()
     {
         m_eCurState = STATE::skill_200000;
         m_iPreAttack = 9;
-    }*/
+    }
 }
 
 void Boss_Mir_FSM::Setting_DragonBall()
 {
     _uint iDragonBallIndex = 4;
+
     for (_uint i = 0; i < 3; i++)
     {
         wstring DragonBallName = L"Anim_P_R02_DecoBall_00_Idle-1"; // TODO 14,15,16
         DragonBallName += to_wstring(iDragonBallIndex);
         auto DragonBall = CUR_SCENE->Get_GameObject(DragonBallName);
+        
+        m_vDragonBallPosArray[i] = DragonBall->Get_Transform()->Get_State(Transform_State::POS);
 
         if (DragonBall == nullptr)
             continue;
@@ -2378,6 +2432,20 @@ void Boss_Mir_FSM::Calculate_PhaseChangeHeadCam()
         _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
 
     m_vTopBonePos = _float4{ TopBoneMatrix.Translation().x, TopBoneMatrix.Translation().y, TopBoneMatrix.Translation().z , 1.f };
+}
+
+void Boss_Mir_FSM::Check_PhaseChange()
+{
+    if (m_pOwner.lock()->Get_HpRatio() >= 0.33f && m_pOwner.lock()->Get_HpRatio() <= 0.66f)
+    {
+        if (!m_bCheckPhaseChange[0])
+            m_bCheckPhaseChange[0] = true;
+    }
+    else if (m_pOwner.lock()->Get_HpRatio() <= 0.33f)
+    {
+        if (!m_bCheckPhaseChange[1])
+            m_bCheckPhaseChange[1] = true;
+    }
 }
 
 void Boss_Mir_FSM::TailAttackCollider_On(const wstring& skillname)
