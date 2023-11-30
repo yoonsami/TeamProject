@@ -283,6 +283,9 @@ void Boss_Giant_Mir_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _f
     if (pCollider->Get_Owner() == nullptr)
         return;
 
+    if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
+        return;
+
     if (pCollider->Get_CollisionGroup() == Player_Attack || pCollider->Get_CollisionGroup() == Player_Skill)
     {
 

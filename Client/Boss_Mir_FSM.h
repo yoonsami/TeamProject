@@ -203,6 +203,7 @@ private:
 	_float4 m_vHeadBonePos = _float4(0.f);
 	_float4 m_vHeadCamPos = _float4(0.f);
 	_float4 m_vTopBonePos = _float4(0.f);
+	_float4 m_vPhaseChangePos = _float4(0.f);
 
 	_float4x4 HeadBoneMatrix = XMMatrixIdentity();
 	_float4x4 MouseBoneMatrix = XMMatrixIdentity();
