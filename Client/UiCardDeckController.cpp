@@ -25,6 +25,8 @@ HRESULT UiCardDeckController::Init()
 
     auto pScene = CUR_SCENE;
 
+    m_pCharChange = pScene->Get_UI(L"UI_Char_Change");
+
     m_vecCardDeckObj.resize(17);
     m_vecCardDeckObj[0] = pScene->Get_UI(L"UI_Card_Deck_Total_Bg0");
     m_vecCardDeckObj[1] = pScene->Get_UI(L"UI_Card_Deck_Total_Bg1");
@@ -193,6 +195,14 @@ HRESULT UiCardDeckController::Init()
     return S_OK;
 }
 
+void UiCardDeckController::Tick()
+{
+    if (true == m_pOwner.expired())
+        return;
+
+
+}
+
 void UiCardDeckController::Set_Render(_bool bValue)
 {
     m_bIsRender = bValue;
@@ -257,9 +267,10 @@ void UiCardDeckController::Set_Render(_bool bValue)
 
 void UiCardDeckController::Click_Deck_Select(wstring strObjName)
 {
-    if (false == m_bIsRender)
+    if (false == m_bIsRender || false == m_bIsClickSet)
         return;
 
+    m_bIsClickSet = false;
     for (_uint i = 3; i < 6; ++i)
     {
         if (false == m_vecCardDeckObj[i].expired())
@@ -270,7 +281,22 @@ void UiCardDeckController::Click_Deck_Select(wstring strObjName)
                 Create_Switch_Complete(true);
 
                 // 정보창에서 장착 누른 후 카드 클릭 시 -> 카드 바꿔주고 데이터 셋해야함
+                DATAMGR.Set_Cur_Hero(i - 3, m_iSetIndex);
+                wstring strKey = DATAMGR.Get_Card_Inven(m_iSetIndex).KeyDeckSelect;
+                m_vecCardDeckObj[i].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(strKey), TextureMapType::DIFFUSE);
+                
+                if (false == m_pCharChange.expired())
+                    m_pCharChange.lock()->Get_Script<UiCharChange>()->Set_Hero(i - 3);
 
+                // 9X , 12Ele
+                if (true == m_vecCardDeckObj[i + 6].expired())
+                    return;
+                m_vecCardDeckObj[i + 6].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+
+                if (true == m_vecCardDeckObj[i + 9].expired())
+                    return;
+                m_vecCardDeckObj[i + 9].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+                m_vecCardDeckObj[i + 9].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(DATAMGR.Get_Card_Inven_Element_Line(m_iSetIndex)), TextureMapType::DIFFUSE);
             }
         }
     }
@@ -308,19 +334,36 @@ void UiCardDeckController::Click_Deck_X(wstring strObjName)
         {
             if (true == m_vecCardDeckObj[i].expired())
                 continue;
-            m_vecCardDeckObj[i].lock()->Set_Tick(false);
-            m_vecCardDeckObj[i].lock()->Set_Render(false);
+            m_vecCardDeckObj[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
+            //pObj.lock()->Set_Tick(false);
+            //pObj.lock()->Set_Render(false);
 
             if (true == m_vecCardDeckObj[i - 6].expired())
                 continue;
             m_vecCardDeckObj[i - 6].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"Card_Deck_Bg_None"), TextureMapType::DIFFUSE);
 
+            if (true == m_vecCardDeckObj[i + 3].expired())
+                continue;
+            m_vecCardDeckObj[i + 3].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
+            //pObj.lock()->Set_Tick(false);
+            //pObj.lock()->Set_Render(false);
+
             // 장착 해제 창 띄우기
             Create_Switch_Complete(false);
 
             // 데이터에서 빼야함
+            DATAMGR.Remove_Cur_Hero(i - 9);
+            if (false == m_pCharChange.expired())
+                m_pCharChange.lock()->Get_Script<UiCharChange>()->Set_Hero(i - 9);
         }
     }
+}
+
+void UiCardDeckController::Click_Info_Set(_uint iIndex)
+{
+    m_bIsClickSet = true;
+    m_iSetIndex = iIndex;
+    Remove_Info();
 }
 
 void UiCardDeckController::Remove_Info()
@@ -408,7 +451,7 @@ void UiCardDeckController::Create_Info(_uint iIndex)
         return;
 
     auto& pData = DATAMGR;
-    HERODATA tagData = pData.Get_Card_Inven(iIndex);
+    auto& tagData = pData.Get_Card_Inven(iIndex);
     if (ElementType::ElementEnd == tagData.Element)
         return;
 
@@ -481,7 +524,11 @@ void UiCardDeckController::Create_Info(_uint iIndex)
                 {
                     CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Remove_Info();
                 });
-
+        else if (L"Card_Deck_info_Set_Button" == strName)
+            pObj.lock()->Get_Button()->AddOnClickedEvent([iIndex]()
+                {
+                    CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Click_Info_Set(iIndex);
+                });
 
     }
 }

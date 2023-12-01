@@ -50,18 +50,18 @@ void HeroChangeScript::Tick()
     if (m_pOwner.expired())
         return;
 
-    if (KEYTAP(KEY_TYPE::F1))
-    {
-        Change_Hero(HERO::ACE3);
-    }
-    else if (KEYTAP(KEY_TYPE::F2))
-    {
-        Change_Hero(HERO::KYLE);
-    }
-    else if (KEYTAP(KEY_TYPE::F3))
-    {
-        Change_Hero(HERO::YEOPO);
-    }
+    //if (KEYTAP(KEY_TYPE::F1))
+    //{
+    //    Change_Hero(HERO::ACE3);
+    //}
+    //else if (KEYTAP(KEY_TYPE::F2))
+    //{
+    //    Change_Hero(HERO::KYLE);
+    //}
+    //else if (KEYTAP(KEY_TYPE::F3))
+    //{
+    //    Change_Hero(HERO::YEOPO);
+    //}
     else if (KEYTAP(KEY_TYPE::F4))
     {
         Change_Hero(HERO::DELLONS);
@@ -78,16 +78,23 @@ void HeroChangeScript::Tick()
 	{
         Change_Hero(HERO::YEONHEE);
 	}
-
+    else if (KEYTAP(KEY_TYPE::R))
+	{
+        Change_Hero(HERO::PLAYER);
+	}
 }
 
 void HeroChangeScript::Change_Hero(HERO eHero)
 {
-    if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == GET_DATA(eHero).ModelTag)
-        Change_To_Input(HERO::PLAYER);
-    else
+    //if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == GET_DATA(eHero).ModelTag)
+    //    Change_To_Input(HERO::PLAYER);
+    //else
         Change_To_Input(eHero);
+}
 
+void HeroChangeScript::Change_Player()
+{
+    Change_To_Input(HERO::PLAYER);
 }
 
 void HeroChangeScript::Change_Character_Weapon(const wstring& weaponname, shared_ptr<GameObject> weapon)

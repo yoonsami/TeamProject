@@ -174,7 +174,7 @@ void UiGachaCardMove::Tick()
 
 void UiGachaCardMove::Card_Open()
 {
-	if (STATE::NONE != m_eState)
+	if (STATE::END != m_eState)
 	{
 		m_eState = STATE::OPEN;
 		m_fCheckTime = 0.f;
@@ -275,7 +275,7 @@ void UiGachaCardMove::Open()
 	if (m_fMaxTime * 1.1f < m_fCheckTime)
 	{
 		m_fCheckTime = m_fMaxTime;
-		m_eState = STATE::NONE;
+		m_eState = STATE::END;
 	
 		m_pOwner.lock()->GetOrAddTransform()->Scaled(m_fOriginScale);
 		return;

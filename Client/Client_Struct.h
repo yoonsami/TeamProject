@@ -2,17 +2,18 @@
 
 typedef struct tagSkillTotalInfo
 {
-	_bool			bIsWork			= false;
-	_bool			bIsEnd			= false;
-	SkillInfo		eSKillInfo		= SkillInfo::NONE;
-	_uint			iSkillCombo		= 0;
-	_uint			iCurCombo		= 0;
-	COOLTIMEINFO	CoolInfo		= {};
+	_bool			bIsWork				= false;
+	_bool			bIsEnd				= false;
+	SkillInfo		eSKillInfo			= SkillInfo::NONE;
+	_uint			iSkillCombo			= 0;
+	_uint			iCurCombo			= 0;
+	COOLTIMEINFO	CoolInfo			= {};
 }TOTALSKILLINFO;
 
 typedef struct tagHeroData
 {
-	ElementType		Element = ElementType::ElementEnd;
+	HERO			Hero				= HERO::MAX;
+	ElementType		Element				= ElementType::ElementEnd;
 
 	_uint			Star				= 1;
 	_uint			Level				= 1;
@@ -71,19 +72,19 @@ typedef struct tagHeroData
 
 typedef struct tagBossData
 {
-	ElementType		Element = ElementType::ElementEnd;
-	_bool			IsUseGroggy = false;
+	ElementType		Element				= ElementType::ElementEnd;
+	_bool			IsUseGroggy			= false;
 	wstring			Name;
 
 }BOSSDATA;
 
 typedef struct tagQuestData
 {
-	_bool		IsClear			= false;
-	QUESTTYPE	Type			= QUESTTYPE::MAX;
+	_bool		IsClear					= false;
+	QUESTTYPE	Type					= QUESTTYPE::MAX;
 
-	_uint		CurCount		= 0;
-	_uint		MaxCount		= 0;
+	_uint		CurCount				= 0;
+	_uint		MaxCount				= 0;
 
 	wstring		Name;
 	wstring		Info;

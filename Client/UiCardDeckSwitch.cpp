@@ -14,7 +14,7 @@ HRESULT UiCardDeckSwitch::Init()
     if (m_pOwner.expired())
         return E_FAIL;
 
-    m_fMaxTime = 1.f;
+    m_fMaxTime = 2.f;
     m_fRatio = 1.f / m_fMaxTime;
 
     return S_OK;

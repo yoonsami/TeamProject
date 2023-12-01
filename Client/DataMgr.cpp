@@ -6,12 +6,18 @@ void DataMgr::Initialize()
     strTemp = L"";
     tagTemp = {};
 
+    m_CurSetHero.resize(3);
+    m_CurSetHero[0] = -1;
+    m_CurSetHero[1] = -1;
+    m_CurSetHero[2] = -1;
+
     m_HeroData.resize(IDX(HERO::MAX));
 
     // PLAYER
     {
         auto& tagData = m_HeroData[IDX(HERO::PLAYER)];
 
+        tagData.Hero = HERO::PLAYER;
         tagData.Element = ElementType::DARK;
         tagData.Star = 4;
 
@@ -70,6 +76,7 @@ void DataMgr::Initialize()
     {
         auto& tagData = m_HeroData[IDX(HERO::ACE3)];
 
+        tagData.Hero = HERO::ACE3;
         tagData.Element = ElementType::WATER;
         tagData.Star = 4;
 
@@ -128,6 +135,7 @@ void DataMgr::Initialize()
     {
         auto& tagData = m_HeroData[IDX(HERO::KYLE)];
 
+        tagData.Hero = HERO::KYLE;
         tagData.Element = ElementType::FIRE;
         tagData.Star = 4;
 
@@ -186,6 +194,7 @@ void DataMgr::Initialize()
     {
         auto& tagData = m_HeroData[IDX(HERO::YEOPO)];
 
+        tagData.Hero = HERO::YEOPO;
         tagData.Element = ElementType::FIRE;
         tagData.Star = 4;
 
@@ -244,6 +253,7 @@ void DataMgr::Initialize()
     {
         auto& tagData = m_HeroData[IDX(HERO::DELLONS)];
 
+        tagData.Hero = HERO::DELLONS;
         tagData.Element = ElementType::DARK;
         tagData.Star = 4;
 
@@ -302,6 +312,7 @@ void DataMgr::Initialize()
     {
         auto& tagData = m_HeroData[IDX(HERO::SPIKE)];
 
+        tagData.Hero = HERO::SPIKE;
         tagData.Element = ElementType::WATER;
         tagData.Star = 4;
 
@@ -360,6 +371,7 @@ void DataMgr::Initialize()
     {
         auto& tagData = m_HeroData[IDX(HERO::SHANE)];
 
+        tagData.Hero = HERO::SHANE;
         tagData.Element = ElementType::DARK;
         tagData.Star = 4;
 
@@ -418,6 +430,7 @@ void DataMgr::Initialize()
     {
         auto& tagData = m_HeroData[IDX(HERO::YEONHEE)];
 
+        tagData.Hero = HERO::YEONHEE;
         tagData.Element = ElementType::LIGHT;
         tagData.Star = 4;
 
@@ -1131,4 +1144,26 @@ void DataMgr::Remove_Card_Inven(_uint iIndex)
         tagData.first = false;
         tagData.second = HERODATA();
     }
+}
+
+HERO DataMgr::Get_Cur_Set_Hero(_uint iIndex)
+{
+    if (-1 == m_CurSetHero[iIndex])
+        return HERO::MAX;
+ 
+    return m_CardInven[m_CurSetHero[iIndex]].second.Hero;
+}
+
+void DataMgr::Set_Cur_Hero(_uint iIndex, _uint iCardIndex)
+{
+    if (IDX(m_CardInven.size()) <= iCardIndex)
+        return;
+
+    m_CurSetHero[iIndex] = iCardIndex;
+}
+
+void DataMgr::Remove_Cur_Hero(_uint iIndex)
+{
+    if (IDX(m_CurSetHero.size()) > iIndex)
+        m_CurSetHero[iIndex] = -1;
 }

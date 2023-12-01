@@ -40,6 +40,10 @@ public:
     void                Set_Card_Inven(DUMMY_HERO eType);
     void                Remove_Card_Inven(_uint iIndex);
 
+    HERO                Get_Cur_Set_Hero(_uint iIndex);
+    void                Set_Cur_Hero(_uint iIndex, _uint iCardIndex);
+    void                Remove_Cur_Hero(_uint iIndex);
+
 private:
     vector<HERODATA>                m_HeroData;
     vector<wstring>                 m_KeyElement;
@@ -60,7 +64,7 @@ private:
     vector<HERODATA>                m_DummyData;
 
     vector<pair<_bool, HERODATA>>   m_CardInven;
-    
+    vector<_uint>                   m_CurSetHero;
 
     wstring                         strTemp;
     HERODATA                        tagTemp;

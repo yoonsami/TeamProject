@@ -15,6 +15,7 @@ public:
     virtual void Tick() override;
     
     void Change_Hero(HERO eHero);
+    void Change_Player();
 
 private:
     void Change_Character_Weapon(const wstring& weaponname,shared_ptr<GameObject> weapon);
