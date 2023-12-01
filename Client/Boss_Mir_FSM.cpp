@@ -1721,7 +1721,7 @@ void Boss_Mir_FSM::skill_13100()
 
             for (_uint i = 0; i < 3; i++)
             {
-                Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f, L"Mir_Fireball");
+                Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
 
                 desc.vSkillDir = desc.vSkillDir + Get_Transform()->Get_State(Transform_State::RIGHT);
             }
@@ -1793,16 +1793,16 @@ void Boss_Mir_FSM::skill_14100()
             desc.fLimitDistance = 20.f;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f, L"Mir_Fireball");
+            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK) * -1.f;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f, L"Mir_Fireball");
+            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT) * -1.f;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f, L"Mir_Fireball");
+            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT) * 1.f;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f, L"Mir_Fireball");
+            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
         }
     }
     else if (m_iCurFrame == 80)
@@ -2350,7 +2350,8 @@ void Boss_Mir_FSM::Create_DragonBall()
 
 void Boss_Mir_FSM::Set_AttackPattern()
 {
-   _uint iRan = rand() % 10;
+    m_eCurState = STATE::skill_13100;
+   /*_uint iRan = rand() % 10;
 
     while (true)
     {
@@ -2409,7 +2410,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
     {
         m_eCurState = STATE::skill_200000;
         m_iPreAttack = 9;
-    }
+    }*/
 }
 
 void Boss_Mir_FSM::Setting_DragonBall()
