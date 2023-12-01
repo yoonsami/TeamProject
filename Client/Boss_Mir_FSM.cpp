@@ -2520,8 +2520,8 @@ void Boss_Mir_FSM::Create_DragonBall()
 
 void Boss_Mir_FSM::Set_AttackPattern()
 {
-    m_eCurState = STATE::SQ_Flee;
-   /*_uint iRan = rand() % 10;
+    //m_eCurState = STATE::SQ_Flee;
+   _uint iRan = rand() % 10;
 
     while (true)
     {
@@ -2580,7 +2580,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
     {
         m_eCurState = STATE::skill_200000;
         m_iPreAttack = 9;
-    }*/
+    }
 }
 
 void Boss_Mir_FSM::Setting_DragonBall()
