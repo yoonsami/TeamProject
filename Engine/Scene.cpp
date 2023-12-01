@@ -47,15 +47,13 @@ void Scene::Init()
 
 void Scene::Tick()
 {
-
 	auto& objects = m_GameObjects;
 	for (auto& object : objects)
 	{
-		object->Tick();
+		if(true == object->Is_Tick())
+			object->Tick();
 	}
 	PickUI();
-
-
 }
 
 void Scene::Late_Tick()
@@ -63,28 +61,19 @@ void Scene::Late_Tick()
 	auto& objects = m_GameObjects;
 	for (auto& object : objects)
 	{
-
-		object->Late_Tick();
-
+		if (true == object->Is_Tick())
+			object->Late_Tick();
 	}
-
 }
 
 void Scene::Final_Tick()
 {
-
-	
 	auto& objects = m_GameObjects;
 	for (auto& object : objects)
 	{
-		
-		object->Final_Tick();
-		
-
-		
+		if (true == object->Is_Tick())
+			object->Final_Tick();
 	}
-
-
 }
 
 void Scene::Render()
@@ -327,7 +316,7 @@ void Scene::Swap_Object(const wstring& leftObjName, const wstring& rightObjName)
 	}
 }
 
-void Scene::Load_UIFile(const wstring& strDataFilePath, const list<shared_ptr<GameObject>>& staticObjects, _bool bRender)
+void Scene::Load_UIFile(const wstring& strDataFilePath, const list<shared_ptr<GameObject>>& staticObjects, _bool bRender, _bool bTick)
 {
 	shared_ptr<FileUtils> file = make_shared<FileUtils>();
 	file->Open(strDataFilePath, FileMode::Read);
@@ -397,6 +386,7 @@ void Scene::Load_UIFile(const wstring& strDataFilePath, const list<shared_ptr<Ga
 
 		UiObject->Set_LayerIndex(Layer_UI);
 		UiObject->Set_Instancing(false);
+		UiObject->Set_Tick(bTick);
 		UiObject->Set_Render(bRender);
 
 		_bool bIsStatic = file->Read<_bool>();

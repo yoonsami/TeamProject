@@ -213,6 +213,7 @@
     <ClInclude Include="SpikeScene.h" />
     <ClInclude Include="TimerScript.h" />
     <ClInclude Include="UiBossDialog.h" />
+    <ClInclude Include="UiCardDeckSwitch.h" />
     <ClInclude Include="UIInteraction.h" />
     <ClInclude Include="UiQuestController.h" />
     <ClInclude Include="UiSettingController.h" />
@@ -272,7 +273,6 @@
     <ClInclude Include="Spike_FSM.h" />
     <ClInclude Include="UIBossHpBar.h" />
     <ClInclude Include="UiCardDeckController.h" />
-    <ClInclude Include="UiCardDeckInvenChange.h" />
     <ClInclude Include="UiCharChange.h" />
     <ClInclude Include="UiCoolEndEffect.h" />
     <ClInclude Include="UiDamageCreate.h" />
@@ -321,6 +321,7 @@
     <ClCompile Include="SpikeScene.cpp" />
     <ClCompile Include="TimerScript.cpp" />
     <ClCompile Include="UiBossDialog.cpp" />
+    <ClCompile Include="UiCardDeckSwitch.cpp" />
     <ClCompile Include="UIInteraction.cpp" />
     <ClCompile Include="UiQuestController.cpp" />
     <ClCompile Include="UiSettingController.cpp" />
@@ -380,7 +381,6 @@
     <ClCompile Include="Spike_FSM.cpp" />
     <ClCompile Include="UIBossHpBar.cpp" />
     <ClCompile Include="UiCardDeckController.cpp" />
-    <ClCompile Include="UiCardDeckInvenChange.cpp" />
     <ClCompile Include="UiCharChange.cpp" />
     <ClCompile Include="UiCoolEndEffect.cpp" />
     <ClCompile Include="UiDamageCreate.cpp" />

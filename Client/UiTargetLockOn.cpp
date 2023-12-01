@@ -98,12 +98,16 @@ void UiTargetLockOn::Set_Target(shared_ptr<GameObject> pObj)
         m_pLockOn1.lock()->GetOrAddTransform()->Scaled(m_vecScale);
         m_pLockOn0.lock()->Set_Render(true);
         m_pLockOn1.lock()->Set_Render(true);
+        m_pLockOn0.lock()->Set_Tick(true);
+        m_pLockOn1.lock()->Set_Tick(true);
     }
     else
     {
         m_pTarget.reset();
         m_pLockOn0.lock()->Set_Render(false);
         m_pLockOn1.lock()->Set_Render(false);
+        m_pLockOn0.lock()->Set_Tick(false);
+        m_pLockOn1.lock()->Set_Tick(false);
     }
 }
 
@@ -122,6 +126,8 @@ void UiTargetLockOn::Check_Render_State()
         m_bIsRender = bValue;
         m_pLockOn0.lock()->Set_Render(m_bIsRender);
         m_pLockOn1.lock()->Set_Render(m_bIsRender);
+        m_pLockOn0.lock()->Set_Tick(m_bIsRender);
+        m_pLockOn1.lock()->Set_Tick(m_bIsRender);
     }
 }
 
@@ -173,5 +179,7 @@ void UiTargetLockOn::Check_Target()
         m_pTarget.reset();
         m_pLockOn0.lock()->Set_Render(false);
         m_pLockOn1.lock()->Set_Render(false);
+        m_pLockOn0.lock()->Set_Tick(false);
+        m_pLockOn1.lock()->Set_Tick(false);
     }
 }

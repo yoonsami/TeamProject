@@ -371,6 +371,13 @@ void UiQuestController::Set_Render(_bool _bValue)
     m_pUiCurQuestName.lock()->Set_Render(_bValue);
     m_pUiCurQuestInfo.lock()->Set_Render(_bValue);
     
+    m_pUiCurQuest.lock()->Set_Tick(_bValue);
+    m_pUiCurQuestName.lock()->Set_Tick(_bValue);
+    m_pUiCurQuestInfo.lock()->Set_Tick(_bValue);
+    
     if(QUESTTYPE::COLLECT == m_tagCurQuestData.Type || QUESTTYPE::HUNT == m_tagCurQuestData.Type)
+    {
         m_pUiCurQuestCount.lock()->Set_Render(_bValue);
+        m_pUiCurQuestCount.lock()->Set_Tick(_bValue);
+    }
 }

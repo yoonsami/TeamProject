@@ -8,7 +8,7 @@ public:
 
 public:
     virtual HRESULT Init() override;
-    virtual void Tick() override;
+
 	virtual shared_ptr<MonoBehaviour> Copy_Script()override { return make_shared<UIInteraction>(); }
 
     void Create_Interaction(NPCTYPE eType);

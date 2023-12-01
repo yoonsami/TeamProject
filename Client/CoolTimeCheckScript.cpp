@@ -437,6 +437,7 @@ void CoolTimeCheckScript::Next_Combo(SkillType eSkillType)
             return;
     }
 
+    Start_Effect(eSkillType);
     _uint iCombo = 0;
     _uint iMaxCombo = 0;
     _float4 vecPos = {};
@@ -718,73 +719,85 @@ void CoolTimeCheckScript::Change_Skill_Info(HERO eType)
     {
         if (i < tagData.Skill0Combo)
         {
-            m_pUi_Skill0_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+            //m_pUi_Skill0_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
             m_pUi_Skill0_Combo[i].lock()->Set_Render(true);
+            m_pUi_Skill0_Combo[i].lock()->Set_Tick(true);
         }
         else
         {
-            m_pUi_Skill0_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
+            //m_pUi_Skill0_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
             m_pUi_Skill0_Combo[i].lock()->Set_Render(false);
+            m_pUi_Skill0_Combo[i].lock()->Set_Tick(false);
         }
 
 
         if (i < tagData.Skill1Combo)
         {
-            m_pUi_Skill2_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+            //m_pUi_Skill2_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
             m_pUi_Skill2_Combo[i].lock()->Set_Render(true);
+            m_pUi_Skill2_Combo[i].lock()->Set_Tick(true);
         }
         else
         {
-            m_pUi_Skill2_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
+            //m_pUi_Skill2_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
             m_pUi_Skill2_Combo[i].lock()->Set_Render(false);
+            m_pUi_Skill2_Combo[i].lock()->Set_Tick(false);
         }
 
 
         if (i < tagData.Skill2Combo)
         {
-            m_pUi_Skill3_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+            //m_pUi_Skill3_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
             m_pUi_Skill3_Combo[i].lock()->Set_Render(true);
+            m_pUi_Skill3_Combo[i].lock()->Set_Tick(true);
         }
         else
         {
-            m_pUi_Skill3_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
+            //m_pUi_Skill3_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
             m_pUi_Skill3_Combo[i].lock()->Set_Render(false);
+            m_pUi_Skill3_Combo[i].lock()->Set_Tick(false);
         }
 
 
         if (i < tagData.Skill3Combo)
         {
-            m_pUi_Skill4_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+            //m_pUi_Skill4_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
             m_pUi_Skill4_Combo[i].lock()->Set_Render(true);
+            m_pUi_Skill4_Combo[i].lock()->Set_Tick(true);
         }
         else
         {
-            m_pUi_Skill4_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
+            //m_pUi_Skill4_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
             m_pUi_Skill4_Combo[i].lock()->Set_Render(false);
+            m_pUi_Skill4_Combo[i].lock()->Set_Tick(false);
         }
 
 
         if (i < tagData.Skill4Combo)
         {
-            m_pUi_Skill5_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+            //m_pUi_Skill5_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
             m_pUi_Skill5_Combo[i].lock()->Set_Render(true);
+            m_pUi_Skill5_Combo[i].lock()->Set_Tick(true);
         }
         else
         {
-            m_pUi_Skill5_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
+            //m_pUi_Skill5_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
             m_pUi_Skill5_Combo[i].lock()->Set_Render(false);
+            m_pUi_Skill5_Combo[i].lock()->Set_Tick(false);
         }
 
 
         if (i < tagData.Skill5Combo)
         {
-            m_pUi_Skill6_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+            //m_pUi_Skill6_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
             m_pUi_Skill6_Combo[i].lock()->Set_Render(true);
+            m_pUi_Skill6_Combo[i].lock()->Set_Tick(true);
         }
         else
         {
-            m_pUi_Skill6_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
+            //m_pUi_Skill6_Combo[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
             m_pUi_Skill6_Combo[i].lock()->Set_Render(false);
+            m_pUi_Skill6_Combo[i].lock()->Set_Tick(false);
         }
 
     }
@@ -797,123 +810,143 @@ void CoolTimeCheckScript::Change_Skill_Info(HERO eType)
 
     if (SkillInfo::NONE == tagData.Skill1Info)
     {
-        m_pUi_Skill_Type[0].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
+        //m_pUi_Skill_Type[0].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
         m_pUi_Skill_Type[0].lock()->Set_Render(false);
+        m_pUi_Skill_Type[0].lock()->Set_Tick(false);
     }
     else if (SkillInfo::CHARGING == tagData.Skill1Info)
     {
-        m_pUi_Skill_Type[0].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        //m_pUi_Skill_Type[0].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
         m_pUi_Skill_Type[0].lock()->Set_Render(true);
+        m_pUi_Skill_Type[0].lock()->Set_Tick(true);
         m_pUi_Skill_Type[0].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(m_pCharge.lock(), TextureMapType::DIFFUSE);
     }
     else if (SkillInfo::HOLDING == tagData.Skill1Info)
     {
-        m_pUi_Skill_Type[0].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        //m_pUi_Skill_Type[0].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
         m_pUi_Skill_Type[0].lock()->Set_Render(true);
+        m_pUi_Skill_Type[0].lock()->Set_Tick(true);
         m_pUi_Skill_Type[0].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(m_pHold.lock(), TextureMapType::DIFFUSE);
     }
     else if (SkillInfo::MOVING == tagData.Skill1Info)
     {
-        m_pUi_Skill_Type[0].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        //m_pUi_Skill_Type[0].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
         m_pUi_Skill_Type[0].lock()->Set_Render(true);
+        m_pUi_Skill_Type[0].lock()->Set_Tick(true);
         m_pUi_Skill_Type[0].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(m_pMove.lock(), TextureMapType::DIFFUSE);
     }
 
     if (SkillInfo::NONE == tagData.Skill2Info)
     {
-        m_pUi_Skill_Type[1].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
+        //m_pUi_Skill_Type[1].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
         m_pUi_Skill_Type[1].lock()->Set_Render(false);
+        m_pUi_Skill_Type[1].lock()->Set_Tick(false);
     }
     else if (SkillInfo::CHARGING == tagData.Skill2Info)
     {
-        m_pUi_Skill_Type[1].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        //m_pUi_Skill_Type[1].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
         m_pUi_Skill_Type[1].lock()->Set_Render(true);
+        m_pUi_Skill_Type[1].lock()->Set_Tick(true);
         m_pUi_Skill_Type[1].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(m_pCharge.lock(), TextureMapType::DIFFUSE);
     }
     else if (SkillInfo::HOLDING == tagData.Skill2Info)
     {
-        m_pUi_Skill_Type[1].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        //m_pUi_Skill_Type[1].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
         m_pUi_Skill_Type[1].lock()->Set_Render(true);
+        m_pUi_Skill_Type[1].lock()->Set_Tick(true);
         m_pUi_Skill_Type[1].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(m_pHold.lock(), TextureMapType::DIFFUSE);
     }
     else if (SkillInfo::MOVING == tagData.Skill2Info)
     {
-        m_pUi_Skill_Type[1].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        //m_pUi_Skill_Type[1].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
         m_pUi_Skill_Type[1].lock()->Set_Render(true);
+        m_pUi_Skill_Type[1].lock()->Set_Tick(true);
         m_pUi_Skill_Type[1].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(m_pMove.lock(), TextureMapType::DIFFUSE);
     }
 
     if (SkillInfo::NONE == tagData.Skill3Info)
     {
-        m_pUi_Skill_Type[2].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
+        //m_pUi_Skill_Type[2].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
         m_pUi_Skill_Type[2].lock()->Set_Render(false);
+        m_pUi_Skill_Type[2].lock()->Set_Tick(false);
     }
     else if (SkillInfo::CHARGING == tagData.Skill3Info)
     {
-        m_pUi_Skill_Type[2].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        //m_pUi_Skill_Type[2].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
         m_pUi_Skill_Type[2].lock()->Set_Render(true);
+        m_pUi_Skill_Type[2].lock()->Set_Tick(true);
         m_pUi_Skill_Type[2].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(m_pCharge.lock(), TextureMapType::DIFFUSE);
     }
     else if (SkillInfo::HOLDING == tagData.Skill3Info)
     {
-        m_pUi_Skill_Type[2].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        //m_pUi_Skill_Type[2].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
         m_pUi_Skill_Type[2].lock()->Set_Render(true);
+        m_pUi_Skill_Type[2].lock()->Set_Tick(true);
         m_pUi_Skill_Type[2].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(m_pHold.lock(), TextureMapType::DIFFUSE);
     }
     else if (SkillInfo::MOVING == tagData.Skill3Info)
     {
-        m_pUi_Skill_Type[2].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        //m_pUi_Skill_Type[2].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
         m_pUi_Skill_Type[2].lock()->Set_Render(true);
+        m_pUi_Skill_Type[2].lock()->Set_Tick(true);
         m_pUi_Skill_Type[2].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(m_pMove.lock(), TextureMapType::DIFFUSE);
     }
 
 
     if (SkillInfo::NONE == tagData.Skill4Info)
     {
-        m_pUi_Skill_Type[3].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
+        //m_pUi_Skill_Type[3].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
         m_pUi_Skill_Type[3].lock()->Set_Render(false);
+        m_pUi_Skill_Type[3].lock()->Set_Tick(false);
     }
     else if (SkillInfo::CHARGING == tagData.Skill4Info)
     {
-        m_pUi_Skill_Type[3].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        //m_pUi_Skill_Type[3].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
         m_pUi_Skill_Type[3].lock()->Set_Render(true);
+        m_pUi_Skill_Type[3].lock()->Set_Tick(true);
         m_pUi_Skill_Type[3].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(m_pCharge.lock(), TextureMapType::DIFFUSE);
     }
     else if (SkillInfo::HOLDING == tagData.Skill4Info)
     {
-        m_pUi_Skill_Type[3].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        //m_pUi_Skill_Type[3].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
         m_pUi_Skill_Type[3].lock()->Set_Render(true);
+        m_pUi_Skill_Type[3].lock()->Set_Tick(true);
         m_pUi_Skill_Type[3].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(m_pHold.lock(), TextureMapType::DIFFUSE);
     }
     else if (SkillInfo::MOVING == tagData.Skill4Info)
     {
-        m_pUi_Skill_Type[3].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        //m_pUi_Skill_Type[3].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
         m_pUi_Skill_Type[3].lock()->Set_Render(true);
+        m_pUi_Skill_Type[3].lock()->Set_Tick(true);
         m_pUi_Skill_Type[3].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(m_pMove.lock(), TextureMapType::DIFFUSE);
     }
 
 
     if (SkillInfo::NONE == tagData.Skill5Info)
     {
-        m_pUi_Skill_Type[4].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
+        //m_pUi_Skill_Type[4].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
         m_pUi_Skill_Type[4].lock()->Set_Render(false);
+        m_pUi_Skill_Type[4].lock()->Set_Tick(false);
     }
     else if (SkillInfo::CHARGING == tagData.Skill5Info)
     {
-        m_pUi_Skill_Type[4].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        //m_pUi_Skill_Type[4].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
         m_pUi_Skill_Type[4].lock()->Set_Render(true);
+        m_pUi_Skill_Type[4].lock()->Set_Tick(true);
         m_pUi_Skill_Type[4].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(m_pCharge.lock(), TextureMapType::DIFFUSE);
     }
     else if (SkillInfo::HOLDING == tagData.Skill5Info)
     {
-        m_pUi_Skill_Type[4].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        //m_pUi_Skill_Type[4].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
         m_pUi_Skill_Type[4].lock()->Set_Render(true);
+        m_pUi_Skill_Type[4].lock()->Set_Tick(true);
         m_pUi_Skill_Type[4].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(m_pHold.lock(), TextureMapType::DIFFUSE);
     }
     else if (SkillInfo::MOVING == tagData.Skill5Info)
     {
-        m_pUi_Skill_Type[4].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+        //m_pUi_Skill_Type[4].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
         m_pUi_Skill_Type[4].lock()->Set_Render(true);
+        m_pUi_Skill_Type[4].lock()->Set_Tick(true);
         m_pUi_Skill_Type[4].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(m_pMove.lock(), TextureMapType::DIFFUSE);
     }
 }

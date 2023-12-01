@@ -95,14 +95,6 @@ HRESULT MainUiController::Init()
     return S_OK;
 }
 
-void MainUiController::Tick()
-{
-	if (m_pOwner.expired())
-		return;
-
-  
-}
-
 void MainUiController::Set_MainUI_Render(_bool bValue)
 {
     _uint iSize = IDX(m_vecUi.size());

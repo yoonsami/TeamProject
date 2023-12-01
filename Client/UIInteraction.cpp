@@ -29,14 +29,6 @@ HRESULT UIInteraction::Init()
     return S_OK;
 }
 
-void UIInteraction::Tick()
-{
-	if (m_pOwner.expired())
-		return;
-
-
-}
-
 void UIInteraction::Create_Interaction(NPCTYPE eType)
 {
     if (NPCTYPE::MAX == eType)

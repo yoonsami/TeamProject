@@ -12,16 +12,18 @@ public:
 	virtual shared_ptr<MonoBehaviour> Copy_Script() { return make_shared<UiGachaCardMove>(m_iIndex,m_bIsUnique); }
 
     void Card_Open();
+    void Add_Data();
 
 private:
     void Move();
     void Idle();
     void Open();
+    void End();
 
 private:
     static _uint    iHeroIndex;
 
-   enum class STATE { START, IDLE, OPEN, NONE };
+   enum class STATE { START, IDLE, OPEN, END, NONE };
    STATE            m_eState            = { STATE::START };
 
    _bool            m_bIsUnique         = { false };

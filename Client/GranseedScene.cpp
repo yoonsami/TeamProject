@@ -53,7 +53,6 @@
 #include "DemoAnimationController1.h"
 #include "UiCardDeckController.h"
 #include "MainUiController.h"
-#include "UiCardDeckInvenChange.h"
 #include "UiTargetLockOn.h"
 #include "UiMonsterHp.h"
 #include "UiDamageCreate.h"
@@ -395,10 +394,10 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main.dat", tmp);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main_Button.dat", tmp);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Char_Change.dat", tmp);
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck.dat", tmp, false);
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", tmp, false);
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Cur_Quest.dat", tmp, false);
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Setting.dat", tmp, false);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck.dat", tmp, false, false);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", tmp, false, false);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Cur_Quest.dat", tmp, false, false);
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Setting.dat", tmp, false, false);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Controller.dat", tmp, false);
 
 
@@ -518,7 +517,7 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		{
 			pObj.lock()->Get_Button()->AddOnClickedEvent([]()
 				{
-					CUR_SCENE->Get_GameObject(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Render_Off();
+					CUR_SCENE->Get_GameObject(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Set_Render(false);
 				});
 		}
 	}
@@ -539,7 +538,7 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		{
 			pObj->Get_Button()->AddOnClickedEvent([]()
 				{
-					CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Render_On();
+					CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Set_Render(true);
 				});
 		}
 	}
@@ -557,36 +556,17 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 
 
 	{
-		auto pScript = make_shared<UiSkillButtonEffect>();
-		auto pObj = Get_UI(L"UI_Skill0_Effect");
-		if (nullptr != pObj)
-			pObj->Add_Component(pScript);
+		for (_uint i = 0; i < 7; ++i)
+		{
+			if (1 == i)
+				continue;
 
-		pScript = make_shared<UiSkillButtonEffect>();
-		pObj = Get_UI(L"UI_Skill2_Effect");
-		if (nullptr != pObj)
-			pObj->Add_Component(pScript);
-
-		pScript = make_shared<UiSkillButtonEffect>();
-		pObj = Get_UI(L"UI_Skill3_Effect");
-		if (nullptr != pObj)
-			pObj->Add_Component(pScript);
-
-		pScript = make_shared<UiSkillButtonEffect>();
-		pObj = Get_UI(L"UI_Skill4_Effect");
-		if (nullptr != pObj)
-			pObj->Add_Component(pScript);
-
-		pScript = make_shared<UiSkillButtonEffect>();
-		pObj = Get_UI(L"UI_Skill5_Effect");
-		if (nullptr != pObj)
-			pObj->Add_Component(pScript);
-
-		pScript = make_shared<UiSkillButtonEffect>();
-		pObj = Get_UI(L"UI_Skill6_Effect");
-		if (nullptr != pObj)
-			pObj->Add_Component(pScript);
-
+			wstring strName = L"UI_Skill" + to_wstring(i) + L"_Effect";
+			auto pScript = make_shared<UiSkillButtonEffect>();
+			auto pObj = Get_UI(strName);
+			if (nullptr != pObj)
+				pObj->Add_Component(pScript);
+		}
 	}
 
 	{
@@ -607,77 +587,7 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		if (nullptr != pObj) {
 			pObj->Add_Component(pScript);
 		}
-		
 	}
-
-	{
-		for (_uint i = 0; i < 32; ++i)
-		{
-			auto pScript = make_shared<UiCardDeckInvenChange>(0);
-			wstring strTemp = L"UI_Card_Deck_Inven";
-			strTemp += to_wstring(i);
-			weak_ptr<GameObject> pObj = Get_UI(strTemp);
-			if (true != pObj.expired())
-			{
-				pObj.lock()->Add_Component(pScript);
-				pObj.lock()->Get_Button()->AddOnClickedEvent([pObj]()
-					{
-						CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Click_Deck_Inven(pObj.lock()->Get_Name());
-					});
-			}
-		}
-
-		for (_uint i = 0; i < 32; ++i)
-		{
-			auto pScript = make_shared<UiCardDeckInvenChange>(1);
-			wstring strTemp = L"UI_Card_Deck_Inven_Element";
-			strTemp += to_wstring(i);
-			auto pObj = Get_UI(strTemp);
-			if (nullptr != pObj)
-				pObj->Add_Component(pScript);
-		}
-
-		for (_uint i = 0; i < 32; ++i)
-		{
-			auto pScript = make_shared<UiCardDeckInvenChange>(2);
-			wstring strTemp = L"UI_Card_Deck_InvenBg";
-			strTemp += to_wstring(i);
-			auto pObj = Get_UI(strTemp);
-			if (nullptr != pObj)
-				pObj->Add_Component(pScript);
-		}
-	}
-
-	{
-		for (_uint i = 0; i < 3; ++i)
-		{
-			wstring strTemp = L"UI_Card_Deck";
-			strTemp += to_wstring(i);
-			weak_ptr<GameObject> pObj = Get_UI(strTemp);
-			if (true != pObj.expired())
-			{
-				pObj.lock()->Get_Button()->AddOnClickedEvent([pObj]()
-					{
-						CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Click_Deck_Select(pObj.lock()->Get_Name());
-					});
-			}
-		}
-
-		for (_uint i = 0; i < 3; ++i)
-		{
-			wstring strTemp = L"UI_Card_Deck_X";
-			strTemp += to_wstring(i);
-			weak_ptr<GameObject> pObj = Get_UI(strTemp);
-			if (true != pObj.expired())
-			{
-				pObj.lock()->Get_Button()->AddOnClickedEvent([pObj]()
-					{
-						CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Click_Deck_X(pObj.lock()->Get_Name());
-					});
-			}
-		}
-	}
-
 }
 
 void GranseedScene::Load_Debug()
