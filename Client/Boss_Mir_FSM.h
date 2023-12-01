@@ -214,5 +214,5 @@ private:
 	_float4x4 TopBoneMatrix = XMMatrixIdentity();
 	_float4x4 m_FirstWorldMat = XMMatrixIdentity();
 
-	weak_ptr<GameObject> m_pSubController;
+	weak_ptr<GameObject> m_pSubController[2];
 };

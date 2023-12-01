@@ -441,7 +441,7 @@ void MirScene::Load_Boss_Mir(shared_ptr<GameObject> pPlayer)
 		ObjMonster->Add_Component(make_shared<Boss_Mir_FSM>());
 		ObjMonster->Get_FSM()->Set_Target(pPlayer);
 	}
-	ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 2.f, 4.f, 6.f })); //obbcollider
+	ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 2.f, 4.f, 8.f })); //obbcollider
 	ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
 	ObjMonster->Get_Collider()->Set_Activate(true);
 

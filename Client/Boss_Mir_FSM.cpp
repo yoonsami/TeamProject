@@ -66,7 +66,7 @@ HRESULT Boss_Mir_FSM::Init()
         obj->GetOrAddTransform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
 		{
 			auto controller = make_shared<CharacterController>();
-            obj->Add_Component(controller);
+			obj->Add_Component(controller);
 
 			auto& desc = controller->Get_CapsuleControllerDesc();
 			desc.radius = 2.f;
@@ -77,21 +77,50 @@ HRESULT Boss_Mir_FSM::Init()
 			controller->Get_Actor()->setStepOffset(0.1f);
 
 		}
-        m_pSubController = obj;
+        m_pSubController[0] = obj;
         EVENTMGR.Create_Object(obj);
-
-
     }
+	{
+		shared_ptr<GameObject> obj = make_shared<GameObject>();
+		obj->GetOrAddTransform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
+		{
+			auto controller = make_shared<CharacterController>();
+			obj->Add_Component(controller);
+
+			auto& desc = controller->Get_CapsuleControllerDesc();
+			desc.radius = 2.f;
+			desc.height = 5.f;
+			desc.climbingMode = PxCapsuleClimbingMode::eCONSTRAINED;
+
+			controller->Create_Controller();
+			controller->Get_Actor()->setStepOffset(0.1f);
+
+		}
+		m_pSubController[1] = obj;
+		EVENTMGR.Create_Object(obj);
+	}
 
     return S_OK;
 }
 
 void Boss_Mir_FSM::Tick()
 {
-    
 
     State_Tick();
-
+    if (!m_pSubController[0].expired())
+    {
+        _float4 newPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f;
+        if (m_pSubController[0].lock()->Get_CharacterController())
+            m_pSubController[0].lock()->Get_CharacterController()->Get_Actor()->setFootPosition({ newPos.x,newPos.y,newPos.z });
+        m_pSubController[0].lock()->Get_Transform()->Set_State(Transform_State::POS, newPos);
+    }
+	if (!m_pSubController[1].expired())
+	{
+		_float4 newPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 6.f;
+		if (m_pSubController[1].lock()->Get_CharacterController())
+			m_pSubController[1].lock()->Get_CharacterController()->Get_Actor()->setFootPosition({ newPos.x,newPos.y,newPos.z });
+		m_pSubController[1].lock()->Get_Transform()->Set_State(Transform_State::POS, newPos);
+	}
     if (!m_pAttackCollider.expired())
     {
         //m_pAttack transform set forward
