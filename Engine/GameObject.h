@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include "MonoBehaviour.h"
 
 class FSM;
 class Model;
@@ -14,7 +15,7 @@ class BaseCollider;
 class MeshRenderer;
 class FontRenderer;
 class TrailRenderer;
-class MonoBehaviour;
+//class MonoBehaviour;
 class ModelAnimator;
 class ModelRenderer;
 class EffectRenderer;
@@ -180,31 +181,30 @@ private:
 	_bool		m_bIsRender			= { true };
 	_bool		m_bGetTimeSlow = true;
 };
-
 template<typename T>
 inline void GameObject::Copy_Component(shared_ptr<T> component)
 {
-	component->Set_Owner(shared_from_this());
-	_uchar iIndex = static_cast<_uchar>(component->Get_Type());
+	auto newScript = make_shared<T>();
+	newScript->Set_Owner(shared_from_this());
+	_uchar iIndex = static_cast<_uchar>(newScript->Get_Type());
 	if (iIndex < FIXED_COMPONENT_COUNT)
 	{
 		if (m_Components[iIndex])
-			return E_FAIL;
 
-		m_Components[iIndex] = component;
+
+			m_Components[iIndex] = newScript;
 	}
 	else
 	{
 		for (auto& script : m_Scripts)
 		{
-			if (typeid(*script) == typeid(*component))
-				return E_FAIL;
+			if (typeid(*script) == typeid(*newScript))
+				continue;
 
 		}
-		m_Scripts.push_back(make_shared<T>());
+		m_Scripts.push_back(newScript);
 	}
 
-	return S_OK;
 }
 
 template<typename T>
