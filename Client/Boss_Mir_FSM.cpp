@@ -61,6 +61,27 @@ HRESULT Boss_Mir_FSM::Init()
 
         m_bInitialize = true;
     }
+    {
+        shared_ptr<GameObject> obj = make_shared<GameObject>();
+        obj->GetOrAddTransform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
+		{
+			auto controller = make_shared<CharacterController>();
+            obj->Add_Component(controller);
+
+			auto& desc = controller->Get_CapsuleControllerDesc();
+			desc.radius = 2.f;
+			desc.height = 5.f;
+			desc.climbingMode = PxCapsuleClimbingMode::eCONSTRAINED;
+
+			controller->Create_Controller();
+			controller->Get_Actor()->setStepOffset(0.1f);
+
+		}
+        m_pSubController = obj;
+        EVENTMGR.Create_Object(obj);
+
+
+    }
 
     return S_OK;
 }

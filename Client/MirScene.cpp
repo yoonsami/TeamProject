@@ -454,13 +454,13 @@ void MirScene::Load_Boss_Mir(shared_ptr<GameObject> pPlayer)
 		ObjMonster->Add_Component(controller);
 
 		auto& desc = controller->Get_CapsuleControllerDesc();
-		desc.radius = 4.5f;
+		desc.radius = 2.f;
 		desc.height = 5.f;
 		desc.climbingMode = PxCapsuleClimbingMode::eCONSTRAINED;
 		
 		_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz() +
 					   ObjMonster->Get_Transform()->Get_State(Transform_State::LOOK);
-		desc.position = { vPos.x, vPos.y, vPos.z };
+		//desc.position = { vPos.x, vPos.y, vPos.z };
 		controller->Create_Controller();
 		controller->Get_Actor()->setStepOffset(0.1f);
 
