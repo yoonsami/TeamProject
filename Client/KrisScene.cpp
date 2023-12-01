@@ -636,7 +636,6 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Setting.dat", tmp, false, false);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Controller.dat", tmp, false);
 
-
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"Main_UI_Controller");
 		if (false == pObj.expired())
@@ -645,7 +644,6 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
-
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Gacha_Controller");
 		if (false == pObj.expired())
@@ -654,7 +652,6 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
-
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Card_Deck_Controller");
 		if (false == pObj.expired())
@@ -663,7 +660,6 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
-
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Damage_Controller");
 		if (false == pObj.expired())
@@ -672,7 +668,6 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
-
 	{
 		auto& pObj = pPlayer;
 		if (nullptr != pObj)
@@ -681,9 +676,6 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj->Add_Component(pScript);
 		}
 	}
-
-
-
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Target_LockOn");
 		if (false == pObj.expired())
@@ -692,7 +684,6 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
-
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Setting_Controller");
 		if (false == pObj.expired())
@@ -701,7 +692,6 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
-
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Dialog_Controller");
 		if (false == pObj.expired())
@@ -710,7 +700,6 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
-
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Boss_Dialog");
 		if (false == pObj.expired())
@@ -719,7 +708,6 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
-
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Interaction");
 		if (false == pObj.expired())
@@ -728,7 +716,6 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
-
 	{
 		auto pObj = Get_UI(L"UI_Combo_Effect");
 		if (nullptr != pObj)
@@ -745,8 +732,6 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj->Add_Component(pScript);
 		}
 	}
-
-
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Card_Deck_Exit");
 		if (false == pObj.expired())
@@ -757,8 +742,6 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 				});
 		}
 	}
-
-
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Char_Change");
 		if (false == pObj.expired())
@@ -767,7 +750,6 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
-
 	{
 		auto pObj = Get_UI(L"UI_Main_Button2");
 		if (nullptr != pObj)
@@ -778,7 +760,6 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 				});
 		}
 	}
-
 	{
 		auto pObj = Get_UI(L"UI_Main_Button3");
 		if (nullptr != pObj)
@@ -789,41 +770,19 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 				});
 		}
 	}
-
-
 	{
-		auto pScript = make_shared<UiSkillButtonEffect>();
-		auto pObj = Get_UI(L"UI_Skill0_Effect");
-		if (nullptr != pObj)
-			pObj->Add_Component(pScript);
+		for (_uint i = 0; i < 7; ++i)
+		{
+			if (1 == i)
+				continue;
 
-		pScript = make_shared<UiSkillButtonEffect>();
-		pObj = Get_UI(L"UI_Skill2_Effect");
-		if (nullptr != pObj)
-			pObj->Add_Component(pScript);
-
-		pScript = make_shared<UiSkillButtonEffect>();
-		pObj = Get_UI(L"UI_Skill3_Effect");
-		if (nullptr != pObj)
-			pObj->Add_Component(pScript);
-
-		pScript = make_shared<UiSkillButtonEffect>();
-		pObj = Get_UI(L"UI_Skill4_Effect");
-		if (nullptr != pObj)
-			pObj->Add_Component(pScript);
-
-		pScript = make_shared<UiSkillButtonEffect>();
-		pObj = Get_UI(L"UI_Skill5_Effect");
-		if (nullptr != pObj)
-			pObj->Add_Component(pScript);
-
-		pScript = make_shared<UiSkillButtonEffect>();
-		pObj = Get_UI(L"UI_Skill6_Effect");
-		if (nullptr != pObj)
-			pObj->Add_Component(pScript);
-
+			wstring strName = L"UI_Skill" + to_wstring(i) + L"_Effect";
+			auto pScript = make_shared<UiSkillButtonEffect>();
+			auto pObj = Get_UI(strName);
+			if (nullptr != pObj)
+				pObj->Add_Component(pScript);
+		}
 	}
-
 	{
 		for (_uint i = 2; i < 7; ++i)
 		{
@@ -835,46 +794,13 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 				pObj->Add_Component(pScript);
 		}
 	}
-
 	{
 		auto pScript = make_shared<CoolTimeCheckScript>();
 		auto& pObj = pPlayer;
 		if (nullptr != pObj) {
 			pObj->Add_Component(pScript);
 		}
-
 	}
-
-	{
-		for (_uint i = 0; i < 3; ++i)
-		{
-			wstring strTemp = L"UI_Card_Deck";
-			strTemp += to_wstring(i);
-			weak_ptr<GameObject> pObj = Get_UI(strTemp);
-			if (true != pObj.expired())
-			{
-				pObj.lock()->Get_Button()->AddOnClickedEvent([pObj]()
-					{
-						CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Click_Deck_Select(pObj.lock()->Get_Name());
-					});
-			}
-		}
-
-		for (_uint i = 0; i < 3; ++i)
-		{
-			wstring strTemp = L"UI_Card_Deck_X";
-			strTemp += to_wstring(i);
-			weak_ptr<GameObject> pObj = Get_UI(strTemp);
-			if (true != pObj.expired())
-			{
-				pObj.lock()->Get_Button()->AddOnClickedEvent([pObj]()
-					{
-						CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Click_Deck_X(pObj.lock()->Get_Name());
-					});
-			}
-		}
-	}
-
 }
 
 void KrisScene::Load_Debug()

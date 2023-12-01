@@ -25,6 +25,8 @@ private:
     void Create_Switch_Complete(_bool bValue);
 
     void Create_Info(_uint iIndex);
+    void Set_Font(_uint iIndex);
+    void Remove_Font(_uint iIndex);
 
 private:
     weak_ptr<GameObject>            m_pCharChange;

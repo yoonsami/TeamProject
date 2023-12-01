@@ -281,22 +281,27 @@ void UiCardDeckController::Click_Deck_Select(wstring strObjName)
                 Create_Switch_Complete(true);
 
                 // 정보창에서 장착 누른 후 카드 클릭 시 -> 카드 바꿔주고 데이터 셋해야함
-                DATAMGR.Set_Cur_Hero(i - 3, m_iSetIndex);
+                _uint iIndex = i - 3;
+                DATAMGR.Set_Cur_Hero(iIndex, m_iSetIndex);
                 wstring strKey = DATAMGR.Get_Card_Inven(m_iSetIndex).KeyDeckSelect;
                 m_vecCardDeckObj[i].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(strKey), TextureMapType::DIFFUSE);
                 
                 if (false == m_pCharChange.expired())
-                    m_pCharChange.lock()->Get_Script<UiCharChange>()->Set_Hero(i - 3);
+                    m_pCharChange.lock()->Get_Script<UiCharChange>()->Set_Hero(iIndex);
 
                 // 9X , 12Ele
-                if (true == m_vecCardDeckObj[i + 6].expired())
+                iIndex = i + 6;
+                if (true == m_vecCardDeckObj[iIndex].expired())
                     return;
-                m_vecCardDeckObj[i + 6].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+                m_vecCardDeckObj[iIndex].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
 
-                if (true == m_vecCardDeckObj[i + 9].expired())
+                iIndex = i + 9;
+                if (true == m_vecCardDeckObj[iIndex].expired())
                     return;
-                m_vecCardDeckObj[i + 9].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
-                m_vecCardDeckObj[i + 9].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(DATAMGR.Get_Card_Inven_Element_Line(m_iSetIndex)), TextureMapType::DIFFUSE);
+                m_vecCardDeckObj[iIndex].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+                m_vecCardDeckObj[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(DATAMGR.Get_Card_Inven_Element_Line(m_iSetIndex)), TextureMapType::DIFFUSE);
+            
+                Set_Font(i - 3);
             }
         }
     }
@@ -338,13 +343,15 @@ void UiCardDeckController::Click_Deck_X(wstring strObjName)
             //pObj.lock()->Set_Tick(false);
             //pObj.lock()->Set_Render(false);
 
-            if (true == m_vecCardDeckObj[i - 6].expired())
+            _uint iIndex = i - 6;
+            if (true == m_vecCardDeckObj[iIndex].expired())
                 continue;
-            m_vecCardDeckObj[i - 6].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"Card_Deck_Bg_None"), TextureMapType::DIFFUSE);
+            m_vecCardDeckObj[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"Card_Deck_Bg_None"), TextureMapType::DIFFUSE);
 
-            if (true == m_vecCardDeckObj[i + 3].expired())
+            iIndex = i + 3;
+            if (true == m_vecCardDeckObj[iIndex].expired())
                 continue;
-            m_vecCardDeckObj[i + 3].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
+            m_vecCardDeckObj[iIndex].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
             //pObj.lock()->Set_Tick(false);
             //pObj.lock()->Set_Render(false);
 
@@ -352,9 +359,12 @@ void UiCardDeckController::Click_Deck_X(wstring strObjName)
             Create_Switch_Complete(false);
 
             // 데이터에서 빼야함
-            DATAMGR.Remove_Cur_Hero(i - 9);
+            iIndex = i - 9;
+            DATAMGR.Remove_Cur_Hero(iIndex);
             if (false == m_pCharChange.expired())
-                m_pCharChange.lock()->Get_Script<UiCharChange>()->Set_Hero(i - 9);
+                m_pCharChange.lock()->Get_Script<UiCharChange>()->Set_Hero(iIndex);
+
+            Remove_Font(i - 9);
         }
     }
 }
@@ -532,3 +542,54 @@ void UiCardDeckController::Create_Info(_uint iIndex)
 
     }
 }
+
+void UiCardDeckController::Set_Font(_uint iIndex)
+{
+    _uint Index = iIndex * 2;
+    auto& tagData = DATAMGR.Get_Card_Inven(m_iSetIndex);
+
+    if (true == m_vecFont[Index].expired())
+        return;
+    m_vecFont[Index].lock()->Get_FontRenderer()->Get_Text() = tagData.KeyHeroInfo;
+    _float fLength = static_cast<_float>(tagData.KeyHeroInfo.length());
+    _float4 vecPos = m_vecFont[Index].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    vecPos.x += fLength / 2.f * -27.f;
+    m_vecFont[Index].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+
+    if (true == m_vecFont[Index + 1].expired())
+        return;
+    m_vecFont[Index + 1].lock()->Get_FontRenderer()->Get_Text() = tagData.KeyHeroName;
+    fLength = static_cast<_float>(tagData.KeyHeroName.length());
+    vecPos = m_vecFont[Index + 1].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    vecPos.x += fLength / 2.f * -27.f;
+    m_vecFont[Index + 1].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+}
+
+void UiCardDeckController::Remove_Font(_uint iIndex)
+{
+    _uint Index = iIndex * 2;
+    if (true == m_vecFont[Index].expired())
+        return;
+    m_vecFont[Index].lock()->Get_FontRenderer()->Get_Text() = L"";
+
+    if (true == m_vecFont[Index + 1].expired())
+        return;
+    m_vecFont[Index + 1].lock()->Get_FontRenderer()->Get_Text() = L"";
+    
+    _float4 vecPos = m_vecFont[Index].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    switch (Index)
+    {
+    case 0:
+        vecPos.x = -480;
+        break;
+    case 2:
+        vecPos.x = -140;
+        break;
+    case 4:
+        vecPos.x = 200;
+        break;
+    }
+    m_vecFont[Index].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+    m_vecFont[Index + 1].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+}
+    

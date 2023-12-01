@@ -612,11 +612,13 @@ void UiSettingController::Change_FPS()
 
     if (true == m_bFPS)
     {
+        m_pFPS_Font.lock()->Set_Tick(true);
         m_pFPS_Font.lock()->Set_Render(true);
         m_pCheck_FPS.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(m_pTextureCheck.lock(), TextureMapType::DIFFUSE);
     }
     else
     {
+        m_pFPS_Font.lock()->Set_Tick(false);
         m_pFPS_Font.lock()->Set_Render(false);
         m_pCheck_FPS.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(m_pTextureNoCheck.lock(), TextureMapType::DIFFUSE);
     }
