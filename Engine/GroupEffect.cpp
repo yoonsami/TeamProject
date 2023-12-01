@@ -408,7 +408,7 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
 
         // For. Add Script 
         if (nullptr != m_pScript)
-            EffectObj->Add_Component(m_pScript);    // TODO : copy �� �� �ֵ��� �����ϱ� 
+            EffectObj->Add_Component(m_pScript->Copy_Script()); 
 
         // For. Add to vector 
         m_lMemberEffects.push_back(EffectObj);

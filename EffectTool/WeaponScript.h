@@ -19,6 +19,8 @@ public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
 
+    virtual shared_ptr<MonoBehaviour> Copy_Script()override { return make_shared<WeaponScript>(WEAPONDESC{ m_strBoneName,m_matPivot,m_pWeaponOwner.lock() }); }
+
 private:
     wstring m_strBoneName = L"";
     _float4x4 m_matPivot = XMMatrixIdentity();
