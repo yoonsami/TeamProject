@@ -87,6 +87,39 @@ void Boss_Mir_FSM::Tick()
         m_pTailCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, vBonePos);
     }
 
+    if (KEYTAP(KEY_TYPE::P))
+    {
+        m_bCheckPhaseChange[0] = true;
+        m_bCheckPhaseChange[1] = true;
+        m_bPhaseChange[0] = true;
+        m_bPhaseChange[1] = true;
+        
+        _uint iDragonBallIndex = 4;
+
+        for (_uint i = 0; i < 3; i++)
+        {
+            wstring DragonBallName = L"Anim_P_R02_DecoBall_00_Idle-1"; // TODO 14,15,16
+            DragonBallName += to_wstring(iDragonBallIndex);
+
+            if (CUR_SCENE->Get_GameObject(DragonBallName))
+            {
+                EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(DragonBallName));
+            }
+
+            iDragonBallIndex++;
+        }
+
+        if (m_bPhaseOneEmissive)
+        {
+            for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
+                material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
+
+            m_bPhaseOneEmissive = false;
+            m_iCrashCnt = 0;
+            m_bInvincible = false;
+        }
+        m_eCurPhase = PHASE::PHASE2;
+    }
 
 }
 
@@ -2279,6 +2312,8 @@ void Boss_Mir_FSM::Create_Meteor()
 
 void Boss_Mir_FSM::Create_DragonBall()
 {
+    _uint iDragonBallIndex = 4;
+
     for (_uint i = 0; i < 3; i++)
     {
         shared_ptr<GameObject> ObjDragonBall = make_shared<GameObject>();
@@ -2301,8 +2336,9 @@ void Boss_Mir_FSM::Create_DragonBall()
             ObjDragonBall->Get_Collider()->Set_CollisionGroup(MAPObject);
             ObjDragonBall->Get_Collider()->Set_Activate(true);
 
-            wstring DragonBallName = L"DragonBall_"; // TODO 14,15,16
-            DragonBallName += to_wstring(i);
+            wstring DragonBallName = L"Anim_P_R02_DecoBall_00_Idle-1"; // TODO 14,15,16
+            DragonBallName += to_wstring(iDragonBallIndex);
+            iDragonBallIndex++;
 
             ObjDragonBall->Set_Name(DragonBallName);
             ObjDragonBall->Set_DrawShadow(true);
