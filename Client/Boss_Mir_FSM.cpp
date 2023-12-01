@@ -109,6 +109,7 @@ HRESULT Boss_Mir_FSM::Init()
 
 void Boss_Mir_FSM::Tick()
 {
+    DeadCheck();
 
     State_Tick();
     if (!m_pSubController[0].expired())
@@ -141,7 +142,8 @@ void Boss_Mir_FSM::Tick()
         _float4 vBonePos = _float4{ TailBoneMatrix.Translation().x, TailBoneMatrix.Translation().y, TailBoneMatrix.Translation().z , 1.f };
         m_pTailCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, vBonePos);
     }
-
+    
+    //For. Debugging
     if (KEYTAP(KEY_TYPE::P))
     {
         m_bCheckPhaseChange[0] = true;
@@ -215,6 +217,9 @@ void Boss_Mir_FSM::State_Tick()
         break;
     case STATE::groggy_end:
         groggy_end();
+        break;
+    case STATE::SQ_Flee:
+        SQ_Flee();
         break;
     case STATE::skill_Assault:
         skill_Assault();
@@ -316,6 +321,9 @@ void Boss_Mir_FSM::State_Init()
             break;
         case STATE::groggy_end:
             groggy_end_Init();
+            break;
+        case STATE::SQ_Flee:
+            SQ_Flee_Init();
             break;
         case STATE::skill_Assault:
             skill_Assault_Init();
@@ -729,6 +737,8 @@ void Boss_Mir_FSM::b_idle()
             m_eCurState = STATE::skill_Restart_Phase1;
         }
     }
+
+    DeadSetting();
 }
 
 void Boss_Mir_FSM::b_idle_Init()
@@ -790,6 +800,8 @@ void Boss_Mir_FSM::turn_l()
         m_fTurnSpeed = XM_PI * 0.5f;
         m_eCurState = STATE::b_idle;
     }
+
+    DeadSetting();
 }
 
 void Boss_Mir_FSM::turn_l_Init()
@@ -814,6 +826,8 @@ void Boss_Mir_FSM::turn_r()
         m_fTurnSpeed = XM_PI * 0.5f;
         m_eCurState = STATE::b_idle;
     }
+
+    DeadSetting();
 }
 
 void Boss_Mir_FSM::turn_r_Init()
@@ -932,6 +946,60 @@ void Boss_Mir_FSM::groggy_end_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"groggy_end", 0.1f, false, 1.f);
+}
+
+void Boss_Mir_FSM::SQ_Flee()
+{
+    Calculate_PhaseChangeHeadCam();
+
+    if (!m_pCamera.expired())
+    {
+        _float3 vLookPos = m_vTopBonePos + (_float3::Up * 6.f);
+        m_vHeadCamDir = vLookPos - m_vCamStopPos.xyz();
+        m_vHeadCamDir.Normalize();
+
+        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(2.f);
+        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(vLookPos);
+        m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, m_vHeadCamDir * -1.f, 3.f);
+    }
+
+    if (Is_AnimFinished())
+    {
+        m_eCurState = STATE::b_idle; // for debug
+        g_bCutScene = false;
+    }
+
+}
+
+void Boss_Mir_FSM::SQ_Flee_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"SQ_Flee", 0.1f, false, 1.f);
+
+    m_bInvincible = true;
+
+    //Setting Spawn Position For CutScene
+    Get_CharacterController()->Get_Actor()->setFootPosition({ m_FirstWorldMat.Translation().x,  m_FirstWorldMat.Translation().y, m_FirstWorldMat.Translation().z });
+    Get_Transform()->Set_State(Transform_State::POS, _float4(m_FirstWorldMat.Translation(), 1.f));
+    Get_Transform()->Set_LookDir(m_FirstWorldMat.Backward());
+
+    m_vCamStopPos = m_FirstWorldMat.Translation() + 
+                    m_FirstWorldMat.Backward() * 30.f +
+                    m_FirstWorldMat.Right() * -5.f + 
+                    Get_Transform()->Get_State(Transform_State::UP) * 5.f;
+  
+    if (!m_pCamera.expired())
+    {
+        m_pCamera.lock()->Get_Transform()->Set_State(Transform_State::POS, m_vCamStopPos);
+    }
+
+    AttackCollider_Off();
+    TailAttackCollider_Off();
+
+    Calculate_PhaseChangeHeadCam();
+
+    g_bCutScene = true;
 }
 
 void Boss_Mir_FSM::skill_Assault()
@@ -2452,7 +2520,7 @@ void Boss_Mir_FSM::Create_DragonBall()
 
 void Boss_Mir_FSM::Set_AttackPattern()
 {
-    m_eCurState = STATE::skill_13100;
+    m_eCurState = STATE::SQ_Flee;
    /*_uint iRan = rand() % 10;
 
     while (true)
@@ -2591,6 +2659,16 @@ void Boss_Mir_FSM::TailAttackCollider_Off()
     m_pTailCollider.lock()->Get_Collider()->Set_Activate(false);
     m_pTailCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
 }
+
+void Boss_Mir_FSM::DeadSetting()
+{
+    if (m_bIsDead)
+    {
+        m_bInvincible = true;
+        m_eCurState = STATE::SQ_Flee;
+    }
+}
+
 
 _float Boss_Mir_FSM::CamDistanceLerp(_float fStart, _float fEnd, _float fRatio)
 {

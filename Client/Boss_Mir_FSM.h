@@ -18,7 +18,7 @@ public:
 		groggy_start,
 		groggy_loop,
 		groggy_end,
-
+		SQ_Flee, // It's Die
 		// ============ Phase1 ===========
 
 		skill_Assault, //ASSAULT = skill_2100 Animation
@@ -104,6 +104,9 @@ private:
 	void groggy_loop_Init();
 	void groggy_end();
 	void groggy_end_Init();
+	void SQ_Flee();
+	void SQ_Flee_Init();
+
 
 	void skill_Assault();
 	void skill_Assault_Init();
@@ -160,6 +163,7 @@ private:
 
 	void TailAttackCollider_On(const wstring& skillname);
 	void TailAttackCollider_Off();
+	void DeadSetting();
 
 	_float CamDistanceLerp(_float fStart, _float fEnd, _float fRatio);
 
