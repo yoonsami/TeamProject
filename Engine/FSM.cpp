@@ -307,7 +307,7 @@ _bool FSM::Init_CurFrame(const _uint curFrame)
 	return false;
 }
 
-void FSM::Add_Effect(const wstring& strSkilltag, shared_ptr<Component> pScript)
+void FSM::Add_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript)
 {
 	shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();
 
@@ -344,7 +344,7 @@ void FSM::Add_Effect(const wstring& strSkilltag, shared_ptr<Component> pScript)
 	EVENTMGR.Create_Object(pGroupEffectObj);
 }
 
-void FSM::Add_And_Set_Effect(const wstring& strSkilltag, shared_ptr<Component> pScript)
+void FSM::Add_And_Set_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript)
 {
 	shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();
 

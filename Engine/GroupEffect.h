@@ -35,7 +35,7 @@ public:
 	void				Set_Member_PivotRotation(_int iIndex, _float3 vRotation) { m_vMemberEffectData[iIndex].vPivot_Rotation = vRotation; }
 	void				Set_InitWorldMatrix(const _float4x4& mInitMat) { m_mInitWorldMatrix = mInitMat; }
 	void				Set_DistortionGroup(_bool flag) { m_bDistortionGroup = flag; }
-	void				Set_Script(shared_ptr<Component> pScript) { m_pScript = pScript; }
+	void				Set_Script(shared_ptr<MonoBehaviour> pScript) { m_pScript = pScript; }
 
 	/* Getter */
 	vector <GroupEffectData::MemberEffect_Desc>&	Get_MemberEffectData() { return m_vMemberEffectData; }
@@ -65,5 +65,5 @@ private:
 
 	_bool								m_bDistortionGroup = false;
 
-	shared_ptr<Component>				m_pScript;
+	shared_ptr<MonoBehaviour>			m_pScript;
 };

@@ -11,7 +11,7 @@ public:
     virtual void Tick()         override;
 
 private:
-    void         Add_Effect(const wstring& wstrEffectTag, shared_ptr<Component> pScript = nullptr);
+    void         Add_Effect(const wstring& wstrEffectTag, shared_ptr<MonoBehaviour> pScript = nullptr);
     void         Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset, _bool usePosAs = false);
 
 private:

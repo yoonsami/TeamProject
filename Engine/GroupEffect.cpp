@@ -407,8 +407,8 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
         EffectObj->Get_MeshEffect()->Set_RenderPriority(iIndex);
 
         // For. Script
-        if(nullptr != m_pScript)
-            EffectObj->Add_Component(m_pScript);
+        if (nullptr != m_pScript)
+            EffectObj->Copy_Component(m_pScript);
 
         // For. Add to vector 
         m_lMemberEffects.push_back(EffectObj);
