@@ -2207,7 +2207,7 @@ void Boss_Mir_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float
     SkillCollider->Get_Transform()->Set_State(Transform_State::POS, vPos);
     
     auto pSphereCollider = make_shared<SphereCollider>(fSkillRange);
-    pSphereCollider->Set_CenterPos(_float3{ vPos.x,vPos.y, vPos.z });
+    pSphereCollider->Set_CenterPos(SkillCollider->Get_Transform()->Get_State(Transform_State::POS).xyz());
     SkillCollider->Add_Component(pSphereCollider);
 
 
@@ -2247,7 +2247,7 @@ void Boss_Mir_FSM::Create_Meteor()
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = _float3{ 0.f,-1.f,0.f };
             desc.fMoveSpeed = 10.f;
-            desc.fLifeTime = 1.f;
+            desc.fLifeTime = 1.5f;
             desc.fLimitDistance = 20.f;
 
             for (_uint i = 0; i < 6; i++)
@@ -2255,10 +2255,12 @@ void Boss_Mir_FSM::Create_Meteor()
                 _float fOffSetX = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 5));
                 _float fOffSetZ = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 5));
 
-                _float4 vSkillPos = vPlayerPos + _float4{ fOffSetX, 10.f, fOffSetZ, 0.f };
+                _float4 vSkillPos = vPlayerPos + _float4{ fOffSetX, 13.5f, fOffSetZ, 0.f };
 
-                Add_GroupEffectOwner(L"Mir_Meteor_Meteor", _float3(vSkillPos.x, vPlayerPos.y, vSkillPos.z));
-                Add_GroupEffectOwner(L"Mir_Meteor_Floor", _float3(vSkillPos.x, vPlayerPos.y, vSkillPos.z));
+           
+
+                Add_GroupEffectOwner(L"Mir_Meteor_Meteor", _float3(vSkillPos.x, vPlayerPos.y, vSkillPos.z),true);
+                Add_GroupEffectOwner(L"Mir_Meteor_Floor", _float3(vSkillPos.x, vPlayerPos.y, vSkillPos.z), true);
                 Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKDOWN_SKILL, 10.f);
             }
 

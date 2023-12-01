@@ -50,7 +50,7 @@ protected:
 
 	void Add_Effect(const wstring& strSkilltag);
 	void Add_And_Set_Effect(const wstring& strSkilltag);
-	void Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset);
+	void Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset, _bool usePosAs = false);
 	void Update_GroupEffectWorldPos();
 
 	void Add_FDistortion_Effect(const wstring& strSkilltag);
