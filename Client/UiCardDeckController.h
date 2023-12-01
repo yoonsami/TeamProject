@@ -14,6 +14,7 @@ public:
     void Click_Deck_Select(wstring strObjName);
     void Click_Deck_Inven(wstring strInvenName);
     void Click_Deck_X(wstring strObjName);
+    void Click_Info_Set();
 
     void Remove_Info();
 

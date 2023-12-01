@@ -48,6 +48,7 @@ void DataMgr::Initialize()
         tagData.Skill4DamageMul = 1.f;
         tagData.Skill5DamageMul = 1.f;
 
+        tagData.KeyWeapon = L"근거리";
         tagData.ModelTag = L"Player";
         tagData.WeaponTag = L"Weapon_Player";
         tagData.KeyAttack = L"Skill_Player0";
@@ -105,6 +106,7 @@ void DataMgr::Initialize()
         tagData.Skill4DamageMul = 1.f;
         tagData.Skill5DamageMul = 1.f;
 
+        tagData.KeyWeapon = L"근거리";
         tagData.ModelTag = L"Spear_Ace";
         tagData.WeaponTag = L"Weapon_Spear_Ace";
         tagData.KeyAttack = L"Skill_Ace0";
@@ -162,6 +164,7 @@ void DataMgr::Initialize()
         tagData.Skill4DamageMul = 1.f;
         tagData.Skill5DamageMul = 1.f;
 
+        tagData.KeyWeapon = L"중거리";
         tagData.ModelTag = L"Kyle";
         tagData.WeaponTag = L"";
         tagData.KeyAttack = L"Skill_Kyle0";
@@ -219,6 +222,7 @@ void DataMgr::Initialize()
         tagData.Skill4DamageMul = 1.f;
         tagData.Skill5DamageMul = 1.f;
 
+        tagData.KeyWeapon = L"근거리";
         tagData.ModelTag = L"Yeopo";
         tagData.WeaponTag = L"Weapon_Yeopo";
         tagData.KeyAttack = L"Skill_Yeopo0";
@@ -276,6 +280,7 @@ void DataMgr::Initialize()
         tagData.Skill4DamageMul = 1.f;
         tagData.Skill5DamageMul = 1.f;
 
+        tagData.KeyWeapon = L"근거리";
         tagData.ModelTag = L"Dellons";
         tagData.WeaponTag = L"Weapon_Dellons";
         tagData.KeyAttack = L"Skill_Dellons0";
@@ -333,6 +338,7 @@ void DataMgr::Initialize()
         tagData.Skill4DamageMul = 1.f;
         tagData.Skill5DamageMul = 1.f;
 
+        tagData.KeyWeapon = L"근거리";
         tagData.ModelTag = L"Spike";
         tagData.WeaponTag = L"Weapon_Spike";
         tagData.KeyAttack = L"Skill_Spike0";
@@ -390,6 +396,7 @@ void DataMgr::Initialize()
         tagData.Skill4DamageMul = 1.f;
         tagData.Skill5DamageMul = 1.f;
 
+        tagData.KeyWeapon = L"근거리";
         tagData.ModelTag = L"Shane";
         tagData.WeaponTag = L"Weapon_Shane";
         tagData.KeyAttack = L"Skill_Shane0";
@@ -447,6 +454,7 @@ void DataMgr::Initialize()
         tagData.Skill4DamageMul = 1.f;
         tagData.Skill5DamageMul = 1.f;
 
+        tagData.KeyWeapon = L"원거리";
         tagData.ModelTag = L"Yeonhee";
         tagData.WeaponTag = L"";
         tagData.KeyAttack = L"Skill_Yeonhee0";

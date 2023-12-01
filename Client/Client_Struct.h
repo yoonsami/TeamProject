@@ -55,6 +55,7 @@ typedef struct tagHeroData
 	wstring			WeaponTag;
 	wstring			KeyAttack;
 	wstring			KeyEvade;
+	wstring			KeyWeapon;
 	wstring			KeySkill1			= L"Skill_None";
 	wstring			KeySkill2			= L"Skill_None";
 	wstring			KeySkill3			= L"Skill_None";

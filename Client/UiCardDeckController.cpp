@@ -438,7 +438,7 @@ void UiCardDeckController::Create_Info(_uint iIndex)
         else if (L"Card_Deck_info_Hero_Level_Value" == strName)
             pObj.lock()->Get_FontRenderer()->Get_Text() = to_wstring(tagData.Level);
         else if (L"Card_Deck_info_Hero_Weapon" == strName)
-            pObj.lock()->Get_FontRenderer()->Get_Text() = L"±Ù°Å¸®";
+            pObj.lock()->Get_FontRenderer()->Get_Text() = tagData.KeyWeapon;
         else if (L"Card_Deck_info_Hero_Star" == strName)
         {
             _uint iStar = tagData.Star;
