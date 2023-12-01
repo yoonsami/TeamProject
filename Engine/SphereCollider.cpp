@@ -29,12 +29,7 @@ SphereCollider::~SphereCollider()
 
 HRESULT SphereCollider::Init()
 {
-	/*auto physics = Get_Owner()->Get_Physics();
-	if (!physics)
-		physics = make_shared<Physics>();
-	PxSphereGeometry tmp(m_BoundingSphere.Radius);
-	physics->Create_RigidBody(&tmp, true);*/
-	m_vOffset = _float3::Up * m_BoundingSphere.Radius;
+
 	return S_OK;
 }
 
