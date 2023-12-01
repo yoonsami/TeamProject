@@ -331,6 +331,12 @@
     <Filter Include="02.Component\01.FSM\06.Animal_FSM">
       <UniqueIdentifier>{d4df34c5-b1ba-4475-bd86-f5d2e40f72a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\07.EffectScript">
+      <UniqueIdentifier>{d54bbf98-a001-4676-9f6b-99ae709e8776}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\07.EffectScript\Mir_13100_Fireball">
+      <UniqueIdentifier>{550bbbbe-f295-477c-97c1-00a2a21c99ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -663,6 +669,9 @@
     <ClInclude Include="NeutralAlpaca_FSM.h">
       <Filter>02.Component\01.FSM\06.Animal_FSM</Filter>
     </ClInclude>
+    <ClInclude Include="Mir_13100_Fireball.h">
+      <Filter>02.Component\00.MonoBehaviour\07.EffectScript\Mir_13100_Fireball</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -961,6 +970,9 @@
     <ClCompile Include="TimerScript.cpp" />
     <ClCompile Include="NeutralAlpaca_FSM.cpp">
       <Filter>02.Component\01.FSM\06.Animal_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="Mir_13100_Fireball.cpp">
+      <Filter>02.Component\00.MonoBehaviour\07.EffectScript\Mir_13100_Fireball</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -17,6 +17,9 @@
 #include "GroupEffect.h"
 #include "TimerScript.h"
 
+/* Effect Script */
+#include "Mir_13100_Fireball.h"
+
 HRESULT Boss_Mir_FSM::Init()
 {
     if (!m_bInitialize)
@@ -1803,12 +1806,17 @@ void Boss_Mir_FSM::skill_13100()
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK) +
                 Get_Transform()->Get_State(Transform_State::RIGHT) * -1.f;
 
+            // For. Collider 
             for (_uint i = 0; i < 3; i++)
             {
                 Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
 
                 desc.vSkillDir = desc.vSkillDir + Get_Transform()->Get_State(Transform_State::RIGHT);
             }
+
+            // For. Effect 
+            shared_ptr<Mir_13100_Fireball> pScript = make_shared<Mir_13100_Fireball>();
+            Add_Effect(L"Mir_13100", pScript);
         }
     }
 
@@ -2583,7 +2591,6 @@ void Boss_Mir_FSM::TailAttackCollider_Off()
     m_pTailCollider.lock()->Get_Collider()->Set_Activate(false);
     m_pTailCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
 }
-
 
 _float Boss_Mir_FSM::CamDistanceLerp(_float fStart, _float fEnd, _float fRatio)
 {
