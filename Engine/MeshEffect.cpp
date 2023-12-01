@@ -884,11 +884,10 @@ void MeshEffect::BillBoard()
 
 		if (m_tTransform_Desc.bBillbordAxes[0])
 		{
-			vTargetDir.x = vCurrDir.x;
-			vTargetDir.z = vCurrDir.z;
+            vTargetDir.y = 0.f;
 		}
 		if (m_tTransform_Desc.bBillbordAxes[1])
-			vTargetDir.y = vCurrDir.y;
+			vTargetDir.y = 0.f;
 
 		Get_Transform()->Set_LookDir(vTargetDir);
 	}
