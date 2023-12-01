@@ -307,7 +307,7 @@ _bool FSM::Init_CurFrame(const _uint curFrame)
 	return false;
 }
 
-void FSM::Add_Effect(const wstring& strSkilltag)
+void FSM::Add_Effect(const wstring& strSkilltag, shared_ptr<Component> pScript)
 {
 	shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();
 
@@ -336,11 +336,15 @@ void FSM::Add_Effect(const wstring& strSkilltag)
 	pGroupEffectObj->Set_Name(strSkilltag);
 	pGroupEffectObj->Init();
 
+	// For. Script 
+	if(nullptr != pScript)
+		pGroupEffectObj->Get_GroupEffect()->Set_Script(pScript);
+
 	// For. Add Effect GameObject to current scene
 	EVENTMGR.Create_Object(pGroupEffectObj);
 }
 
-void FSM::Add_And_Set_Effect(const wstring& strSkilltag)
+void FSM::Add_And_Set_Effect(const wstring& strSkilltag, shared_ptr<Component> pScript)
 {
 	shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();
 
@@ -367,6 +371,11 @@ void FSM::Add_And_Set_Effect(const wstring& strSkilltag)
 	pGroupEffectObj->Set_Name(strSkilltag);
 	m_vGroupEffect.push_back(pGroupEffectObj);
 	pGroupEffectObj->Init();
+
+	// For. Script 
+	if (nullptr != pScript)
+		pGroupEffectObj->Get_GroupEffect()->Set_Script(pScript);
+
 	// For. Add Effect GameObject to current scene
 	for (auto& iter : m_vGroupEffect)
 	{

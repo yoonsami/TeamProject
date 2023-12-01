@@ -48,8 +48,8 @@ protected:
 
 	_bool Init_CurFrame(const _uint curFrame);
 
-	void Add_Effect(const wstring& strSkilltag);
-	void Add_And_Set_Effect(const wstring& strSkilltag);
+	void Add_Effect(const wstring& strSkilltag, shared_ptr<Component> pScript = nullptr);
+	void Add_And_Set_Effect(const wstring& strSkilltag, shared_ptr<Component> pScript = nullptr);
 	void Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset, _bool usePosAs = false);
 	void Update_GroupEffectWorldPos();
 

@@ -205,6 +205,7 @@
     <ClInclude Include="GranseedPotion_FSM.h" />
     <ClInclude Include="GranseedTraveler_FSM.h" />
     <ClInclude Include="MirScene.h" />
+    <ClInclude Include="Mir_13100_Fireball.h" />
     <ClInclude Include="NPC_FSM.h" />
     <ClInclude Include="ObjectDissolve.h" />
     <ClInclude Include="ObjectDissolveCreate.h" />
@@ -310,6 +311,7 @@
     <ClCompile Include="GranseedPotion_FSM.cpp" />
     <ClCompile Include="GranseedTraveler_FSM.cpp" />
     <ClCompile Include="MirScene.cpp" />
+    <ClCompile Include="Mir_13100_Fireball.cpp" />
     <ClCompile Include="NPC_FSM.cpp" />
     <ClCompile Include="ObjectDissolve.cpp" />
     <ClCompile Include="ObjectDissolveCreate.cpp" />
