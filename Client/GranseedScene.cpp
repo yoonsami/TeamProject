@@ -400,7 +400,6 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Setting.dat", tmp, false, false);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Controller.dat", tmp, false);
 
-
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"Main_UI_Controller");
 		if (false == pObj.expired())
@@ -409,7 +408,6 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
-
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Gacha_Controller");
 		if (false == pObj.expired())
@@ -418,7 +416,6 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
-
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Card_Deck_Controller");
 		if (false == pObj.expired())
@@ -427,7 +424,6 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
-
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Damage_Controller");
 		if (false == pObj.expired())
@@ -436,7 +432,6 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
-
 	{
 		auto& pObj = pPlayer;
 		if (nullptr != pObj)
@@ -445,9 +440,6 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj->Add_Component(pScript);
 		}
 	}
-
-	
-
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Target_LockOn");
 		if (false == pObj.expired())
@@ -456,7 +448,6 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
-
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Setting_Controller");
 		if (false == pObj.expired())
@@ -465,7 +456,6 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
-
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Dialog_Controller");
 		if (false == pObj.expired())
@@ -474,7 +464,6 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
-	
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Boss_Dialog");
 		if (false == pObj.expired())
@@ -483,7 +472,6 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
-	
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Interaction");
 		if (false == pObj.expired())
@@ -492,7 +480,6 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
-
 	{
 		auto pObj = Get_UI(L"UI_Combo_Effect");
 		if (nullptr != pObj)
@@ -509,8 +496,6 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj->Add_Component(pScript);
 		}
 	}
-	
-
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Card_Deck_Exit");
 		if (false == pObj.expired())
@@ -521,8 +506,6 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 				});
 		}
 	}
-
-
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Char_Change");
 		if (false == pObj.expired())
@@ -531,7 +514,6 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
-
 	{
 		auto pObj = Get_UI(L"UI_Main_Button2");
 		if (nullptr != pObj)
@@ -542,7 +524,6 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 				});
 		}
 	}
-	
 	{
 		auto pObj = Get_UI(L"UI_Main_Button3");
 		if (nullptr != pObj)
@@ -553,8 +534,6 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 				});
 		}
 	}
-
-
 	{
 		for (_uint i = 0; i < 7; ++i)
 		{
@@ -568,7 +547,6 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 				pObj->Add_Component(pScript);
 		}
 	}
-
 	{
 		for (_uint i = 2; i < 7; ++i)
 		{
@@ -580,7 +558,6 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 				pObj->Add_Component(pScript);
 		}
 	}
-
 	{
 		auto pScript = make_shared<CoolTimeCheckScript>();
 		auto& pObj = pPlayer;
