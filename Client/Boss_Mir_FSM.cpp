@@ -653,8 +653,6 @@ void Boss_Mir_FSM::b_idle_Init()
 
     m_vTurnVector = _float3(0.f);
 
-    m_bInvincible = false;
-
     m_tAttackCoolTime.fAccTime = 0.f;
     m_tBreathCoolTime.fAccTime = 0.f;
 
@@ -684,6 +682,10 @@ void Boss_Mir_FSM::b_idle_Init()
                 }
             }
         }
+    }
+    else
+    {
+        m_bInvincible = false;
     }
 }
 
@@ -785,6 +787,7 @@ void Boss_Mir_FSM::groggy_start_Init()
 
                 m_bPhaseOneEmissive = false;
                 m_iCrashCnt = 0;
+                m_bInvincible = false;
             }
 
         }
@@ -1013,9 +1016,11 @@ void Boss_Mir_FSM::skill_Restart_Phase1_Init()
 
     if (m_bCheckPhaseChange[0])
         m_bPhaseChange[0] = true;
-    else if (m_bCheckPhaseChange[1])
+    
+    if (m_bCheckPhaseChange[1])
         m_bPhaseChange[1] = true;
     
+    m_bInvincible = true;
     g_bCutScene = true;
 }
 
