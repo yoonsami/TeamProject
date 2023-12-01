@@ -182,6 +182,7 @@ void UiGachaController::Delete_Gacha_Card()
         if (true == pObj.expired())
             continue;
 
+        pObj.lock()->Get_Script<UiGachaCardMove>()->Add_Data();
         EVENTMGR.Delete_Object(pObj.lock());
     }
 }

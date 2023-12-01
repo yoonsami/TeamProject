@@ -209,6 +209,7 @@
     <ClInclude Include="ObjectDissolve.h" />
     <ClInclude Include="SpikeScene.h" />
     <ClInclude Include="UiBossDialog.h" />
+    <ClInclude Include="UiCardDeckSwitch.h" />
     <ClInclude Include="UIInteraction.h" />
     <ClInclude Include="UiQuestController.h" />
     <ClInclude Include="UiSettingController.h" />
@@ -311,6 +312,7 @@
     <ClCompile Include="ObjectDissolve.cpp" />
     <ClCompile Include="SpikeScene.cpp" />
     <ClCompile Include="UiBossDialog.cpp" />
+    <ClCompile Include="UiCardDeckSwitch.cpp" />
     <ClCompile Include="UIInteraction.cpp" />
     <ClCompile Include="UiQuestController.cpp" />
     <ClCompile Include="UiSettingController.cpp" />

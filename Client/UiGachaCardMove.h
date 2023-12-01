@@ -11,6 +11,7 @@ public:
     virtual void Tick() override;
 
     void Card_Open();
+    void Add_Data();
 
 private:
     void Move();

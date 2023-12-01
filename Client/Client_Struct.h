@@ -15,6 +15,7 @@ typedef struct tagHeroData
 	ElementType		Element = ElementType::ElementEnd;
 
 	_uint			Star				= 1;
+	_uint			Level				= 1;
 
 	_uint			Skill0Combo			= 0;
 	_uint			Skill1Combo			= 0;
@@ -54,11 +55,11 @@ typedef struct tagHeroData
 	wstring			WeaponTag;
 	wstring			KeyAttack;
 	wstring			KeyEvade;
-	wstring			KeySkill1;
-	wstring			KeySkill2;
-	wstring			KeySkill3;
-	wstring			KeySkill4;
-	wstring			KeySkill5;
+	wstring			KeySkill1			= L"Skill_None";
+	wstring			KeySkill2			= L"Skill_None";
+	wstring			KeySkill3			= L"Skill_None";
+	wstring			KeySkill4			= L"Skill_None";
+	wstring			KeySkill5			= L"Skill_None";
 	wstring			KeyChangeCard;
 	wstring			KeyDeckMini;
 	wstring			KeyDeckSelect;

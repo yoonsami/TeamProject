@@ -127,9 +127,6 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\08.MainUIController">
       <UniqueIdentifier>{30821e96-89ae-4920-865d-9c36a2e717df}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\09.UiCardDeckInvenChange">
-      <UniqueIdentifier>{45081402-d3fc-4713-9ed4-75b7f961e759}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Component\01.FSM\03.Special_FSM\00.Hero_Special_FSM">
       <UniqueIdentifier>{5f951534-c818-4ff1-9eac-7dbda5ac0b34}</UniqueIdentifier>
     </Filter>
@@ -318,6 +315,9 @@
     </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\06.UiGachaCard\02.UiGachaEffectController">
       <UniqueIdentifier>{82ec2157-d9a5-4909-b39f-d09e7c92c4a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\09.UiCardDeckSwitch">
+      <UniqueIdentifier>{45081402-d3fc-4713-9ed4-75b7f961e759}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -640,6 +640,9 @@
     <ClInclude Include="Boss_Giant_Mir_FSM.h">
       <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\04.Boss_Giant_Mir_FSM</Filter>
     </ClInclude>
+    <ClInclude Include="UiCardDeckSwitch.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\09.UiCardDeckSwitch</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -927,6 +930,9 @@
     </ClCompile>
     <ClCompile Include="Boss_Giant_Mir_FSM.cpp">
       <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\04.Boss_Giant_Mir_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="UiCardDeckSwitch.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\09.UiCardDeckSwitch</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -15,8 +15,13 @@ public:
     void Click_Deck_Inven(wstring strInvenName);
     void Click_Deck_X(wstring strObjName);
 
+    void Remove_Info();
+
 private:
     void Set_Card();
+    void Create_Switch_Complete(_bool bValue);
+
+    void Create_Info(_uint iIndex);
 
 private:
     vector<weak_ptr<GameObject>> m_vecCardDeckObj;
@@ -28,5 +33,8 @@ private:
     _bool           m_bIsRender     = { false };
     _uint           m_iPickingIndex = { 0 };
     _uint           m_iPreSize      = {};
+
+    _bool           m_bIsInfoCreate = {};
+    vector<weak_ptr<GameObject>> m_vecAddedObj;
 };
 

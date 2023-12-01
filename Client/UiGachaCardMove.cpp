@@ -181,6 +181,14 @@ void UiGachaCardMove::Card_Open()
 	}
 }
 
+void UiGachaCardMove::Add_Data()
+{
+	if (true == m_bIsUnique && HERO::MAX != m_eHero)
+		DATAMGR.Set_Card_Inven(m_eHero);
+	else if (DUMMY_HERO::MAX != m_eDummyHero)
+		DATAMGR.Set_Card_Inven(m_eDummyHero);
+}
+
 void UiGachaCardMove::Move()
 {
 	_float fTime = fDT;
@@ -300,10 +308,10 @@ void UiGachaCardMove::Open()
 		vecScale.x = 272.f;
 		m_eState = STATE::END;
 
-		if (true == m_bIsUnique && HERO::MAX != m_eHero)
-			DATAMGR.Set_Card_Inven(m_eHero);
-		else if(DUMMY_HERO::MAX != m_eDummyHero)
-			DATAMGR.Set_Card_Inven(m_eDummyHero);
+		//if (true == m_bIsUnique && HERO::MAX != m_eHero)
+		//	DATAMGR.Set_Card_Inven(m_eHero);
+		//else if(DUMMY_HERO::MAX != m_eDummyHero)
+		//	DATAMGR.Set_Card_Inven(m_eDummyHero);
 	}
 
 	m_pOwner.lock()->GetOrAddTransform()->Scaled(vecScale);

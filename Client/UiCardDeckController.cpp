@@ -1,9 +1,12 @@
 #include "pch.h"
 #include "UiCardDeckController.h"
 
+#include "BaseUI.h"
 #include "Material.h"
 #include "MeshRenderer.h"
+#include "FontRenderer.h"
 #include "UiCharChange.h"
+#include "UiCardDeckSwitch.h"
 
 UiCardDeckController::UiCardDeckController()
 {
@@ -151,6 +154,42 @@ HRESULT UiCardDeckController::Init()
     m_vecFont[4] = pScene->Get_UI(L"UI_Card_Deck2_Hero_Info");
     m_vecFont[5] = pScene->Get_UI(L"UI_Card_Deck2_Hero");
 
+    for (_uint i = 0; i < IDX(m_vecInvenObj.size()); ++i)
+    {
+        auto& pObj = m_vecInvenObj[i];
+        if (true == pObj.expired())
+            continue;
+
+        pObj.lock()->Get_Button()->AddOnClickedEvent([pObj, this]()
+            {
+                this->Click_Deck_Inven(pObj.lock()->Get_Name());
+            });
+    }
+
+    for (_uint i = 3; i < 6; ++i)
+    {
+        auto& pObj = m_vecCardDeckObj[i];
+        if (true == pObj.expired())
+            continue;
+
+        pObj.lock()->Get_Button()->AddOnClickedEvent([pObj, this]()
+            {
+                this->Click_Deck_Select(pObj.lock()->Get_Name());
+            });
+    }
+
+    for (_uint i = 9; i < 12; ++i)
+    {
+        auto& pObj = m_vecCardDeckObj[i];
+        if (true == pObj.expired())
+            continue;
+
+        pObj.lock()->Get_Button()->AddOnClickedEvent([pObj, this]()
+            {
+                this->Click_Deck_X(pObj.lock()->Get_Name());
+            });
+    }
+
     return S_OK;
 }
 
@@ -170,7 +209,7 @@ void UiCardDeckController::Set_Render(_bool bValue)
             pObj.lock()->Set_Render(bValue);
         }
     }
-    
+
     for (_uint i = 0; i < iUseSize; ++i)
     {
         auto& pObj = m_vecInvenObj[i];
@@ -227,10 +266,11 @@ void UiCardDeckController::Click_Deck_Select(wstring strObjName)
         {
             if (m_vecCardDeckObj[i].lock()->Get_Name() == strObjName)
             {
-                // 세팅
-                m_iPickingIndex = i;
-
                 // 장착 성공 창 띄우기
+                Create_Switch_Complete(true);
+
+                // 정보창에서 장착 누른 후 카드 클릭 시 -> 카드 바꿔주고 데이터 셋해야함
+
             }
         }
     }
@@ -249,9 +289,10 @@ void UiCardDeckController::Click_Deck_Inven(wstring strInvenName)
 
         if (m_vecInvenObj[i].lock()->Get_Name() == strInvenName)
         {
+            // 클릭 한 인벤토리 인덱스의 해당하는 데이터 가져와서 정보창 켜기
+            Create_Info(i);
 
-
-
+            return;
         }
     }
 }
@@ -275,14 +316,39 @@ void UiCardDeckController::Click_Deck_X(wstring strObjName)
             m_vecCardDeckObj[i - 6].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"Card_Deck_Bg_None"), TextureMapType::DIFFUSE);
 
             // 장착 해제 창 띄우기
+            Create_Switch_Complete(false);
+
+            // 데이터에서 빼야함
         }
     }
+}
+
+void UiCardDeckController::Remove_Info()
+{
+    if (false == m_bIsInfoCreate)
+        return;
+
+    m_bIsInfoCreate = false;
+
+    auto& pEventMgr = EVENTMGR;
+
+    for (_uint i = 0; i < IDX(m_vecAddedObj.size()); ++i)
+    {
+        auto& pObj = m_vecAddedObj[i];
+        if (false == pObj.expired())
+        {
+            pEventMgr.Delete_Object(pObj.lock());
+            pObj.reset();
+        }
+    }
+
+    m_vecAddedObj.clear();
 }
 
 void UiCardDeckController::Set_Card()
 {
     auto& pDataMgr = DATAMGR;
-    _uint iUseSize = pDataMgr.Get_Card_Inven_Use_Size(); 
+    _uint iUseSize = pDataMgr.Get_Card_Inven_Use_Size();
     _uint iSize = IDX(m_vecInvenObj.size());
     if (iSize < iUseSize)
         iUseSize = iSize;
@@ -291,7 +357,7 @@ void UiCardDeckController::Set_Card()
         m_iPreSize = iUseSize;
     else
         return;
-    
+
     for (_uint i = 0; i < iUseSize; ++i)
     {
         if (i < iUseSize)
@@ -303,5 +369,119 @@ void UiCardDeckController::Set_Card()
             m_vecInvenObj[i].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(Data.KeyDeckMini), TextureMapType::DIFFUSE);
             m_vecCardDeckElement[i].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(pDataMgr.Get_Card_Inven_Element(i)), TextureMapType::DIFFUSE);
         }
+    }
+}
+
+void UiCardDeckController::Create_Switch_Complete(_bool bValue)
+{
+    wstring strPath = L"";
+    if (true == bValue)
+        strPath = L"..\\Resources\\UIData\\UI_Card_Deck_Switch_In.dat";
+    else
+        strPath = L"..\\Resources\\UIData\\UI_Card_Deck_Switch_Out.dat";
+
+    auto pScene = CUR_SCENE;
+    vector<weak_ptr<GameObject>> addedObj;
+    pScene->Load_UIFile(strPath, addedObj);
+
+    _uint iSize = IDX(addedObj.size());
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        auto& pObj = addedObj[i];
+        if (true == pObj.expired())
+            continue;
+
+        wstring strName = pObj.lock()->Get_Name();
+        _bool bIsFont = false;
+        if (L"UI_Card_Deck_Switch_Font" == strName)
+            bIsFont = true;
+
+        auto pScript = make_shared<UiCardDeckSwitch>(bIsFont);
+        pScene->Init();
+        pObj.lock()->Add_Component(pScript);
+    }
+}
+
+void UiCardDeckController::Create_Info(_uint iIndex)
+{
+    if (true == m_bIsInfoCreate)
+        return;
+
+    auto& pData = DATAMGR;
+    HERODATA tagData = pData.Get_Card_Inven(iIndex);
+    if (ElementType::ElementEnd == tagData.Element)
+        return;
+
+    m_bIsInfoCreate = true;
+
+    auto pScene = CUR_SCENE;
+    pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck_Info.dat", m_vecAddedObj);
+
+    auto& pResource = RESOURCES;
+
+    _uint iSize = IDX(m_vecAddedObj.size());
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        auto& pObj = m_vecAddedObj[i];
+        if (true == pObj.expired())
+            continue;
+
+        wstring strName = pObj.lock()->Get_Name();
+        if (L"Card_Deck_info_Element" == strName)
+            pObj.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pResource.Get<Texture>(pData.Get_Card_Inven_Element(iIndex)), TextureMapType::DIFFUSE);
+        else if (L"Card_Deck_info_Hero" == strName)
+            pObj.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pResource.Get<Texture>(tagData.KeyDeckMini), TextureMapType::DIFFUSE);
+        else if (L"Card_Deck_info_Hero_Info" == strName)
+            pObj.lock()->Get_FontRenderer()->Get_Text() = tagData.KeyHeroInfo;
+        else if (L"Card_Deck_info_Hero_Name" == strName)
+            pObj.lock()->Get_FontRenderer()->Get_Text() = tagData.KeyHeroName;
+        else if (L"Card_Deck_info_Hero_Level_Value" == strName)
+            pObj.lock()->Get_FontRenderer()->Get_Text() = to_wstring(tagData.Level);
+        else if (L"Card_Deck_info_Hero_Weapon" == strName)
+            pObj.lock()->Get_FontRenderer()->Get_Text() = L"근거리";
+        else if (L"Card_Deck_info_Hero_Star" == strName)
+        {
+            _uint iStar = tagData.Star;
+            wstring strTextureTag = L"";
+
+            switch (iStar)
+            {
+            case 1:
+                strTextureTag = L"Card_Deck_info_Star1";
+                break;
+            case 2:
+                strTextureTag = L"Card_Deck_info_Star2";
+                break;
+            case 3:
+                strTextureTag = L"Card_Deck_info_Star3";
+                break;
+            case 4:
+                strTextureTag = L"Card_Deck_info_Star4";
+                break;
+            }
+
+            pObj.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pResource.Get<Texture>(strTextureTag), TextureMapType::DIFFUSE);
+        }
+        else if (L"Card_Deck_info_Hero_Attack_Value" == strName)
+            pObj.lock()->Get_FontRenderer()->Get_Text() = to_wstring(IDX(tagData.AttackDamage));
+        else if (L"Card_Deck_info_Hero_Deffence_Value" == strName)
+            pObj.lock()->Get_FontRenderer()->Get_Text() = to_wstring(IDX(tagData.Deffence));
+        else  if (L"Card_Deck_info_Skill1" == strName)
+            pObj.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pResource.Get<Texture>(tagData.KeySkill1), TextureMapType::DIFFUSE);
+        else if (L"Card_Deck_info_Skill2" == strName)
+            pObj.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pResource.Get<Texture>(tagData.KeySkill2), TextureMapType::DIFFUSE);
+        else if (L"Card_Deck_info_Skill3" == strName)
+            pObj.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pResource.Get<Texture>(tagData.KeySkill3), TextureMapType::DIFFUSE);
+        else if (L"Card_Deck_info_Skill4" == strName)
+            pObj.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pResource.Get<Texture>(tagData.KeySkill4), TextureMapType::DIFFUSE);
+        else if (L"Card_Deck_info_Skill5" == strName)
+            pObj.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pResource.Get<Texture>(tagData.KeySkill5), TextureMapType::DIFFUSE);
+        else if (L"Card_Deck_info_Close_Button" == strName)
+            pObj.lock()->Get_Button()->AddOnClickedEvent([]()
+                {
+                    CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Remove_Info();
+                });
+
+
     }
 }
