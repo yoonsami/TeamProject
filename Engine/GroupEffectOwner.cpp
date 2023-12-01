@@ -59,3 +59,11 @@ void GroupEffectOwner::PlayEffect()
 	EVENTMGR.Create_Object(m_pGroupEffect.lock());
 }
 
+void GroupEffectOwner::Set_GroupEffectScript(shared_ptr<MonoBehaviour> pScript)
+{
+	if (m_pGroupEffect.expired())
+		return;
+
+	m_pGroupEffect.lock()->Get_GroupEffect()->Set_Script(pScript);
+}
+

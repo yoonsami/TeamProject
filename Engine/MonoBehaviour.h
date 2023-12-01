@@ -12,6 +12,13 @@ public:
     virtual void Late_Tick()    override;
     virtual void Final_Tick()   override;
 
+    /* Setter */ 
+    void            Set_Tag(const wstring& wstrTag) { m_wstrTag = wstrTag; }
+
+    /* Getter */
+    const wstring&  Get_Tag() { return m_wstrTag; }
+
 protected:
-    _bool   m_bIsInit = { false };
+    _bool           m_bIsInit = { false };
+    wstring         m_wstrTag = { L"" };
 };

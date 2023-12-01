@@ -2095,7 +2095,7 @@ void Boss_Giant_Mir_FSM::Setting_DragonBall()
     _uint iDragonBallIndex = 4;
     for (_uint i = 0; i < 3; i++)
     {
-        wstring DragonBallName = L"Anim_P_R02_DecoBall_00_Idle-1"; // TODO 14,15,16
+        wstring DragonBallName = L"Anim_P_R02_DecoBall_00_Idle-1";
         DragonBallName += to_wstring(iDragonBallIndex);
         auto DragonBall = CUR_SCENE->Get_GameObject(DragonBallName);
 
