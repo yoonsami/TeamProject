@@ -40,6 +40,8 @@ public:
 	/* Getter */
 	vector <GroupEffectData::MemberEffect_Desc>&	Get_MemberEffectData() { return m_vMemberEffectData; }
 	GroupEffectData::MemberEffect_Desc&				Get_MemberEffectData_index(_int iIndex) { return m_vMemberEffectData[iIndex]; }
+	list <weak_ptr<GameObject>>&					Get_MemberEffects() { return m_lMemberEffects; }
+	
 	_bool				Is_DistortionGroup() { return m_bDistortionGroup; }
 
 private:
@@ -63,7 +65,7 @@ private:
 	map<InstanceID, vector<shared_ptr<GameObject>>>	m_RenderGroup;
 	vector<shared_ptr<StructuredBuffer>>			m_RenderParamBuffer;
 
-	_bool								m_bDistortionGroup = false;
+	_bool								m_bDistortionGroup = false;	
 
 	shared_ptr<MonoBehaviour>			m_pScript;
 };

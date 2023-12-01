@@ -1112,7 +1112,7 @@ void Spike_FSM::skill_1400()
     }
     if (Init_CurFrame(11))
     {
-        Add_GroupEffectOwner(L"Spike_1400_2", _float3(0.f, 0.f, 1.f));
+        Add_GroupEffectOwner(L"Spike_1400_2", _float3(0.f, 0.f, 1.f), false);
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
         
         //CAMERA_SHAKE(0.3f, 0.4f);
@@ -1226,7 +1226,6 @@ void Spike_FSM::skill_100100()
 
         if (m_fEffectCreateTimer[0] >= 0.12f)
         {
-            // TODO : need cooltime
             m_fEffectCreateTimer[0] = 0.f;
             Add_Effect(L"Spike_100100_IceFlower");
         }
@@ -1306,7 +1305,7 @@ void Spike_FSM::skill_100300()
 {
     if (Init_CurFrame(20))
     {
-        Add_GroupEffectOwner(L"Spike_100100_IceAttack",_float3(0,0,1));
+        Add_GroupEffectOwner(L"Spike_100100_IceAttack",_float3(0,0,1), false);
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
         CAMERA_SHAKE(0.2f, 0.2f);
     }
@@ -1608,7 +1607,7 @@ void Spike_FSM::skill_200400()
     if (Init_CurFrame(3))
         Add_And_Set_Effect(L"Spike_200400_Slash");
     if (Init_CurFrame(62))
-        Add_GroupEffectOwner(L"Spike_200400_Crack", _float3(0.f, 0.f, 2.5f));
+        Add_GroupEffectOwner(L"Spike_200400_Crack", _float3(0.f, 0.f, 2.5f), false);
     
     if (m_iCurFrame < 44)
     {
@@ -1899,14 +1898,14 @@ void Spike_FSM::skill_501100()
     {
         
         Add_And_Set_Effect(L"Spike_500100_1");
-        Add_GroupEffectOwner(L"Spike_500100_Floor", _float3(0.f, 0.f, 0.5f));
+        Add_GroupEffectOwner(L"Spike_500100_Floor", _float3(0.f, 0.f, 0.5f), false);
     }
     if(Init_CurFrame(22))
         CAMERA_SHAKE(0.1f, 0.4f)
 
     if (Init_CurFrame(34))
     {
-        Add_GroupEffectOwner(L"Spike_500100_Floor2", _float3(0.f, 0.f, 2.f));
+        Add_GroupEffectOwner(L"Spike_500100_Floor2", _float3(0.f, 0.f, 2.f), false);
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f;
 
 		FORWARDMOVINGSKILLDESC desc;

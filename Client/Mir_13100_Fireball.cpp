@@ -21,7 +21,7 @@ void Mir_13100_Fireball::Tick()
 
 	if (m_fCoolTime_CreateFloorEffect > 0.3f)
 	{
-		Add_GroupEffectOwner(L"Mir_13100_floor", _float3(0.f, 2.f, 0.f));
+		Add_GroupEffectOwner(L"Mir_13100_floor", _float3(0.f, 1.5f, 0.f));
 		m_fCoolTime_CreateFloorEffect = 0.f;
 	}
 }
@@ -55,7 +55,7 @@ void Mir_13100_Fireball::Add_Effect(const wstring& wstrEffectTag, shared_ptr<Mon
 
 	// For. Script 
 	if (nullptr != pScript)
-		pGroupEffectObj->Get_GroupEffect()->Set_Script(pScript);
+		pGroupEffectObj->Add_Component(pScript);
 
 	// For. Add Effect GameObject to current scene
 	EVENTMGR.Create_Object(pGroupEffectObj);

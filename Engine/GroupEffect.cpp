@@ -406,8 +406,9 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
         EffectObj->Get_MeshEffect()->InitialTransform(Get_Transform()->Get_WorldMatrix(), iter.vPivot_Pos, iter.vPivot_Scale, iter.vPivot_Rotation);
         EffectObj->Get_MeshEffect()->Set_RenderPriority(iIndex);
 
-        // For. Script
-    
+        // For. Add Script 
+        if (nullptr != m_pScript)
+            EffectObj->Add_Component(m_pScript);    // TODO : copy �� �� �ֵ��� �����ϱ� 
 
         // For. Add to vector 
         m_lMemberEffects.push_back(EffectObj);

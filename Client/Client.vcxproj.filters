@@ -332,10 +332,10 @@
       <UniqueIdentifier>{d4df34c5-b1ba-4475-bd86-f5d2e40f72a8}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\07.EffectScript">
-      <UniqueIdentifier>{d54bbf98-a001-4676-9f6b-99ae709e8776}</UniqueIdentifier>
+      <UniqueIdentifier>{6eb06c3f-53f0-4091-86d4-44355dc8cec2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\07.EffectScript\Mir_13100_Fireball">
-      <UniqueIdentifier>{550bbbbe-f295-477c-97c1-00a2a21c99ba}</UniqueIdentifier>
+    <Filter Include="02.Component\00.MonoBehaviour\07.EffectScript\01. Mir_13100_FireballScript">
+      <UniqueIdentifier>{1824f691-7ac3-40d1-9f3d-329b5191010d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -670,7 +670,7 @@
       <Filter>02.Component\01.FSM\06.Animal_FSM</Filter>
     </ClInclude>
     <ClInclude Include="Mir_13100_Fireball.h">
-      <Filter>02.Component\00.MonoBehaviour\07.EffectScript\Mir_13100_Fireball</Filter>
+      <Filter>02.Component\00.MonoBehaviour\07.EffectScript\01. Mir_13100_FireballScript</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -972,7 +972,7 @@
       <Filter>02.Component\01.FSM\06.Animal_FSM</Filter>
     </ClCompile>
     <ClCompile Include="Mir_13100_Fireball.cpp">
-      <Filter>02.Component\00.MonoBehaviour\07.EffectScript\Mir_13100_Fireball</Filter>
+      <Filter>02.Component\00.MonoBehaviour\07.EffectScript\01. Mir_13100_FireballScript</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
