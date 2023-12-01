@@ -14,6 +14,7 @@
 #include "SimpleMath.h"
 #include "ModelAnimation.h"
 #include "Camera.h"
+#include "GroupEffect.h"
 
 HRESULT Boss_Mir_FSM::Init()
 {
@@ -1720,7 +1721,7 @@ void Boss_Mir_FSM::skill_13100()
 
             for (_uint i = 0; i < 3; i++)
             {
-                Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
+                Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f, L"Mir_Fireball");
 
                 desc.vSkillDir = desc.vSkillDir + Get_Transform()->Get_State(Transform_State::RIGHT);
             }
@@ -1792,16 +1793,16 @@ void Boss_Mir_FSM::skill_14100()
             desc.fLimitDistance = 20.f;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f, L"Mir_Fireball");
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK) * -1.f;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f, L"Mir_Fireball");
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT) * -1.f;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f, L"Mir_Fireball");
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT) * 1.f;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f, L"Mir_Fireball");
         }
     }
     else if (m_iCurFrame == 80)
@@ -2175,7 +2176,6 @@ Boss_Mir_FSM::DIR Boss_Mir_FSM::CalCulate_PlayerDir()
     return m_eAttackDir;
 }
 
-
 void Boss_Mir_FSM::Add_Boss_Mir_Collider()
 {
     shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
@@ -2207,7 +2207,7 @@ void Boss_Mir_FSM::Add_Boss_Mir_Collider()
     m_pTailCollider = tailCollider;
 }
 
-void Boss_Mir_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
+void Boss_Mir_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage, const wstring& wstrGroupEffectTag)
 {
     shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
 
@@ -2217,7 +2217,6 @@ void Boss_Mir_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float
     auto pSphereCollider = make_shared<SphereCollider>(fSkillRange);
     pSphereCollider->Set_CenterPos(SkillCollider->Get_Transform()->Get_State(Transform_State::POS).xyz());
     SkillCollider->Add_Component(pSphereCollider);
-
 
     SkillCollider->Get_Collider()->Set_CollisionGroup(Monster_Skill);
 
@@ -2229,6 +2228,28 @@ void Boss_Mir_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float
     SkillCollider->Set_Name(L"Boss_Mir_SkillCollider");
     SkillCollider->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
     SkillCollider->Get_Script<ForwardMovingSkillScript>()->Init();
+
+    // For. GroupEffect component 
+    if (TEXT("None") != wstrGroupEffectTag)
+    {
+        // For. GroupEffectData 
+        wstring wstrFileName = wstrGroupEffectTag + L".dat";
+        wstring wtsrFilePath = TEXT("..\\Resources\\EffectData\\GroupEffectData\\") + wstrFileName;
+        shared_ptr<GroupEffectData> pGroupEffectData = RESOURCES.GetOrAddGroupEffectData(wstrGroupEffectTag, wtsrFilePath);
+
+        if (pGroupEffectData == nullptr)
+            return;
+
+        shared_ptr<GroupEffect> pGroupEffect = make_shared<GroupEffect>();
+
+        SkillCollider->Add_Component(pGroupEffect);
+        SkillCollider->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
+        SkillCollider->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
+        SkillCollider->Get_GroupEffect()->Set_InitWorldMatrix(SkillCollider->Get_Transform()->Get_WorldMatrix());
+        SkillCollider->Get_GroupEffect()->Set_MemberEffectMaterials();
+        SkillCollider->Get_GroupEffect()->Init();
+    }
+
 
     EVENTMGR.Create_Object(SkillCollider);
 }
