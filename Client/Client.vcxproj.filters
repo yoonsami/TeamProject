@@ -322,6 +322,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\05.Object\01.WaterUVSliding">
       <UniqueIdentifier>{e39c4234-5790-41d6-92d7-1ff38da9307c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\05.Object\01.ObjectDissolveCreate">
+      <UniqueIdentifier>{a346a383-8ff9-4e70-8209-86371d56dae2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -647,6 +650,9 @@
       <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\04.Boss_Giant_Mir_FSM</Filter>
     </ClInclude>
     <ClInclude Include="WaterUVSliding.h" />
+    <ClInclude Include="ObjectDissolveCreate.h">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\01.ObjectDissolveCreate</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -939,6 +945,9 @@
       <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\04.Boss_Giant_Mir_FSM</Filter>
     </ClCompile>
     <ClCompile Include="WaterUVSliding.cpp" />
+    <ClCompile Include="ObjectDissolveCreate.cpp">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\01.ObjectDissolveCreate</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
