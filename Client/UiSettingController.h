@@ -10,6 +10,7 @@ public:
 public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
+	virtual shared_ptr<MonoBehaviour> Copy_Script()override { return make_shared<UiSettingController>(); }
 
     void Set_Render(_bool bValue);
     

@@ -320,7 +320,8 @@ shared_ptr<GameObject> GranseedScene::Load_Player()
 		ObjWeapon->Set_VelocityMap(true);
 		Add_GameObject(ObjWeapon,true);
 		ObjPlayer->Get_FSM()->Set_Weapon(ObjWeapon);
-		ObjPlayer->Add_Component(make_shared<HeroChangeScript>());
+		shared_ptr<MonoBehaviour> script = make_shared<HeroChangeScript>();
+		ObjPlayer->Add_Component(script);
 		return ObjPlayer;
 	}
 	return nullptr;

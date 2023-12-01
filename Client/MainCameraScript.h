@@ -11,6 +11,7 @@ public:
     virtual HRESULT Init() override;
     virtual void Late_Tick() override;
     virtual void Final_Tick() override;
+	virtual shared_ptr<MonoBehaviour> Copy_Script() { return make_shared<MainCameraScript>(m_pPlayer.lock()); }
 
 public:
     _bool Is_Fixed() { return m_fFixedTime > 0.f; }

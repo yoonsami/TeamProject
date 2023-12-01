@@ -11,6 +11,7 @@ public:
     virtual void Tick()         override;
     virtual void Late_Tick()    override;
     virtual void Final_Tick()   override;
+	virtual shared_ptr<MonoBehaviour> Copy_Script() { return make_shared<UiTargetLockOn>(); }
 
     void Set_Target(shared_ptr<GameObject> pObj);
 

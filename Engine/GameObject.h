@@ -54,10 +54,6 @@ public:
 
 public:
 	virtual HRESULT Add_Component(shared_ptr<Component> component)		final;
-
-	template<typename T>
-	void Copy_Component(shared_ptr<T> component);
-
 	virtual HRESULT Change_Component(shared_ptr<Component> component)	final;
 
 public:
@@ -181,29 +177,6 @@ private:
 	_bool		m_bIsRender			= { true };
 	_bool		m_bGetTimeSlow = true;
 };
-template<typename T>
-inline void GameObject::Copy_Component(shared_ptr<T> component)
-{
-	auto newScript = make_shared<T>();
-	newScript->Set_Owner(shared_from_this());
-	_uchar iIndex = static_cast<_uchar>(newScript->Get_Type());
-	if (iIndex < FIXED_COMPONENT_COUNT)
-	{
-		return;
-	}
-	else
-	{
-		for (auto& script : m_Scripts)
-		{
-			if (typeid(*script) == typeid(*component))
-				return;
-
-		}
-		m_Scripts.push_back(newScript);
-	}
-
-}
-
 
 template<typename T>
 inline shared_ptr<T> GameObject::Get_Script()

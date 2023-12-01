@@ -9,6 +9,7 @@ public:
 public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
+	virtual shared_ptr<MonoBehaviour> Copy_Script()override { return make_shared<UiBossDialog>(); }
 
     void Create_Dialog(BOSS eType);
     void Next_Dialog();

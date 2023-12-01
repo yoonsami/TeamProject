@@ -25,6 +25,7 @@ public:
 
     virtual HRESULT Init() override;
     virtual void Tick() override;
+    virtual shared_ptr<MonoBehaviour> Copy_Script()override { return make_shared<InstallationSkill_Script>(INSTALLATIONSKILLDESC{m_vLook,m_fMoveSpeed,m_fLimitDistance,m_tAttackTickTime.fCoolTime,m_iLimitAttackCnt,m_strAttackType,m_strLastAttackType,m_bFirstAttack,m_fAttackDamage,m_fLastAttackDamage}); }
 
 private:
     _float4 m_vFirstPos = { 0.f,0.f,0.f,1.f };

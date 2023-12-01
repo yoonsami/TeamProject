@@ -10,6 +10,7 @@ public:
 public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
+	virtual shared_ptr<MonoBehaviour> Copy_Script() { return make_shared<UiMonsterHp>(); }
 
     //void Set_Target(shared_ptr<GameObject> pObj);
 

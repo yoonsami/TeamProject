@@ -9,6 +9,7 @@ public:
 public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
+	virtual shared_ptr<MonoBehaviour> Copy_Script() { return make_shared<UiCardDeckController>(); }
 
     void Render_On();
     void Set_Hero(HERO eHero);

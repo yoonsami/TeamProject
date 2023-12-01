@@ -9,6 +9,7 @@ public:
 
 public:
     virtual void Tick()         override;
+	virtual shared_ptr<MonoBehaviour> Copy_Script()override { return make_shared<Mir_13100_Fireball>(); }
 
 private:
     void         Add_Effect(const wstring& wstrEffectTag, shared_ptr<MonoBehaviour> pScript = nullptr);

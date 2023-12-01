@@ -10,7 +10,7 @@ public:
 public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
-
+    virtual shared_ptr<MonoBehaviour> Copy_Script()override { return make_shared<UiMarkNpc>(m_eType); }
     void Delete_Mark();
     void Change_Render(_bool bValue);
 

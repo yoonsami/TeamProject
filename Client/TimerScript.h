@@ -8,6 +8,7 @@ public:
 public:
     virtual void Tick() override;
     void Set_Function(function<void(void)> func) { m_Func = func; }
+	virtual shared_ptr<MonoBehaviour> Copy_Script()override { return make_shared<TimerScript>(m_fTime); }
 
 private:
     _float m_fAcc = 0.f;

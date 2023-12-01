@@ -9,7 +9,8 @@ public:
 public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
-    
+	virtual shared_ptr<MonoBehaviour> Copy_Script() { return make_shared<CoolTimeCheckScript>(); }
+
     void Start_Attack_Button_Effect();
     void Next_Combo(SkillType eSkillType);
 

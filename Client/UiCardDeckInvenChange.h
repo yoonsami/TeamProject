@@ -9,6 +9,7 @@ public:
 public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
+	virtual shared_ptr<MonoBehaviour> Copy_Script() { return make_shared<UiCardDeckInvenChange>(m_iType); }
 
     HERO  Get_Hero()    { return m_eHero; }
     _bool Is_Set_Hero() { return m_bIsSetHero; }

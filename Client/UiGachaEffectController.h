@@ -9,6 +9,7 @@ public:
 public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
+	virtual shared_ptr<MonoBehaviour> Copy_Script() { return make_shared<UiGachaEffectController>(); }
 
     void Start_Effect(_float4 vPos);
 

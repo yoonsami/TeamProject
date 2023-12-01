@@ -9,6 +9,7 @@ public:
 public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
+	virtual shared_ptr<MonoBehaviour> Copy_Script() { return make_shared<UiCharChange>(); }
 
     void Set_Hero(_uint iIndex, HERO eHero);        // 카드 바꾸기
     _bool IsChangePossible(_uint iIndex);           // 변신 가능 여부

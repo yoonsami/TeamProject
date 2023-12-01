@@ -15,6 +15,7 @@ public:
     virtual void Tick() override;
     
     void Change_Hero(HERO eHero);
+	virtual shared_ptr<MonoBehaviour> Copy_Script()override { return make_shared<HeroChangeScript>(); }
 
 private:
     void Change_Character_Weapon(const wstring& weaponname,shared_ptr<GameObject> weapon);

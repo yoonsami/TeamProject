@@ -9,7 +9,7 @@ public:
 public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
-
+    virtual shared_ptr<MonoBehaviour> Copy_Script()override { return make_shared<UiQuestController>(); }
     void Create_Dialog(NPCTYPE eType, QUESTINDEX eIndex);
     void Next_Dialog();
     void Change_Value();
