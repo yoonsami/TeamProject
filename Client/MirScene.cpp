@@ -292,9 +292,9 @@ shared_ptr<GameObject> MirScene::Load_Player()
 		ObjWeapon->Set_Name(L"Weapon_Player");
 		ObjWeapon->Set_VelocityMap(true);
 		Add_GameObject(ObjWeapon,true);
-
-		ObjPlayer->Add_Component(make_shared<HeroChangeScript>());
-
+		auto script = make_shared<HeroChangeScript>();
+		ObjPlayer->Add_Component(script);
+		ObjPlayer->Copy_Component(make_shared<MonoBehaviour>());
 		return ObjPlayer;
 	}
 	return nullptr;

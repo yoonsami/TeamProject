@@ -52,7 +52,6 @@ HRESULT Alpaca_FSM::Init()
         m_bInitialize = true;
     }
 
-
     return S_OK;
 }
 

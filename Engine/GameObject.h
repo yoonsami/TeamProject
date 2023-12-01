@@ -188,24 +188,21 @@ inline void GameObject::Copy_Component(shared_ptr<T> component)
 	_uchar iIndex = static_cast<_uchar>(component->Get_Type());
 	if (iIndex < FIXED_COMPONENT_COUNT)
 	{
-		if (m_Components[iIndex])
-			return E_FAIL;
-
-		m_Components[iIndex] = component;
+		return;
 	}
 	else
 	{
 		for (auto& script : m_Scripts)
 		{
 			if (typeid(*script) == typeid(*component))
-				return E_FAIL;
+				return;
 
 		}
 		m_Scripts.push_back(make_shared<T>());
 	}
 
-	return S_OK;
 }
+
 
 template<typename T>
 inline shared_ptr<T> GameObject::Get_Script()
