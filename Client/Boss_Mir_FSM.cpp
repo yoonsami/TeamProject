@@ -984,15 +984,15 @@ void Boss_Mir_FSM::SQ_Flee_Init()
     Get_Transform()->Set_State(Transform_State::POS, _float4(m_FirstWorldMat.Translation(), 1.f));
     Get_Transform()->Set_LookDir(m_FirstWorldMat.Backward());
 
-    m_vCamStopPos = m_FirstWorldMat.Translation() + 
-                    m_FirstWorldMat.Backward() * 30.f +
-                    m_FirstWorldMat.Right() * -5.f + 
-                    Get_Transform()->Get_State(Transform_State::UP) * 5.f;
-  
-    if (!m_pCamera.expired())
-    {
-        m_pCamera.lock()->Get_Transform()->Set_State(Transform_State::POS, m_vCamStopPos);
-    }
+	m_vCamStopPos = _float4(m_FirstWorldMat.Translation() +
+		m_FirstWorldMat.Backward() * 30.f +
+		m_FirstWorldMat.Right() * -5.f +
+		m_FirstWorldMat.Up() * 5.f,1.f);
+
+	if (!m_pCamera.expired())
+	{
+		m_pCamera.lock()->Get_Transform()->Set_State(Transform_State::POS, m_vCamStopPos);
+	}
 
     AttackCollider_Off();
     TailAttackCollider_Off();
