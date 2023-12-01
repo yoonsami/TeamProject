@@ -190,7 +190,7 @@ HRESULT MirScene::Load_Scene()
 	//Load_Boss_Giant_Mir(player);
 
 	Load_Ui(player);
-	Load_Water();
+	//Load_Water();
 
 	auto pPlayer = Get_GameObject(L"Player");
 	if (nullptr != pPlayer)
@@ -487,14 +487,13 @@ void MirScene::Load_Boss_Giant_Mir(shared_ptr<GameObject> pPlayer)
 		}
 
 		ObjMonster->Add_Component(animator);
-		//ObjMonster->Add_Component(make_shared<Boss_Mir_FSM>());
-		//ObjMonster->Get_FSM()->Set_Target(pPlayer);
+		ObjMonster->Add_Component(make_shared<Boss_Mir_FSM>());
+		ObjMonster->Get_FSM()->Set_Target(pPlayer);
 	}
 	ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 2.f, 4.f, 6.f })); //obbcollider
 	ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
 	ObjMonster->Get_Collider()->Set_Activate(true);
 
-	//ObjMonster->Add_Component(make_shared<CounterMotionTrailScript>());
 
 	wstring strMonsterName = (L"Giant_Mir");
 	ObjMonster->Set_Name(strMonsterName);

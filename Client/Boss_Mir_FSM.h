@@ -164,6 +164,7 @@ private:
 	void TailAttackCollider_On(const wstring& skillname);
 	void TailAttackCollider_Off();
 	void DeadSetting();
+	void Load_Giant_Boss_Mir();
 
 	_float CamDistanceLerp(_float fStart, _float fEnd, _float fRatio);
 
@@ -210,6 +211,7 @@ private:
 	_float4 m_vHeadCamPos = _float4(0.f);
 	_float4 m_vTopBonePos = _float4(0.f);
 	_float4 m_vPhaseChangePos = _float4(0.f);
+	_float4 m_vFleeCamPos = _float4(0.f);
 	_float4 m_vDragonBallPosArray[3];
 
 	_float4x4 HeadBoneMatrix = XMMatrixIdentity();

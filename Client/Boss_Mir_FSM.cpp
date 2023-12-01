@@ -1,7 +1,10 @@
 ﻿#include "pch.h"
 #include "Boss_Mir_FSM.h"
+#include "Boss_Giant_Mir_FSM.h"
+
 #include "ModelAnimator.h"
 #include "SphereCollider.h"
+#include "OBBBoxCollider.h"
 #include "AttackColliderInfoScript.h"
 #include "ObjectDissolveCreate.h"
 #include "Model.h"
@@ -952,21 +955,44 @@ void Boss_Mir_FSM::SQ_Flee()
 {
     Calculate_PhaseChangeHeadCam();
 
-    if (!m_pCamera.expired())
+    if (m_iCurFrame < 80)
     {
-        _float3 vLookPos = m_vTopBonePos + (_float3::Up * 6.f);
-        m_vHeadCamDir = vLookPos - m_vCamStopPos.xyz();
-        m_vHeadCamDir.Normalize();
+        if (!m_pCamera.expired())
+        {
+            _float3 vLookPos = m_vTopBonePos + (_float3::Up * 6.f);
 
-        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(2.f);
-        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(vLookPos);
-        m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, m_vHeadCamDir * -1.f, 3.f);
+            if (vLookPos.y <= m_vHeadBonePos.y)
+                vLookPos.y = m_vHeadBonePos.y;
+
+            m_vHeadCamDir = vLookPos - m_vCamStopPos.xyz();
+            m_vHeadCamDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(2.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(vLookPos);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, m_vHeadCamDir * -1.f, 6.f);
+        
+            if (m_iCurFrame == 79)
+                m_vFleeCamPos = vLookPos;
+        }
+    }
+    else
+    {
+        if (!m_pCamera.expired())
+        {
+            m_vHeadCamDir = m_vFleeCamPos - m_vCamStopPos.xyz();
+            m_vHeadCamDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(2.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vFleeCamPos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, m_vHeadCamDir * -1.f, 6.f);
+        }
     }
 
     if (Is_AnimFinished())
     {
-        m_eCurState = STATE::b_idle; // for debug
+        EVENTMGR.Delete_Object(m_pOwner.lock());
         g_bCutScene = false;
+        Load_Giant_Boss_Mir();
     }
 
 }
@@ -985,9 +1011,9 @@ void Boss_Mir_FSM::SQ_Flee_Init()
     Get_Transform()->Set_LookDir(m_FirstWorldMat.Backward());
 
 	m_vCamStopPos = _float4(m_FirstWorldMat.Translation() +
-		m_FirstWorldMat.Backward() * 30.f +
-		m_FirstWorldMat.Right() * -5.f +
-		m_FirstWorldMat.Up() * 5.f,1.f);
+		                    m_FirstWorldMat.Backward() * 15.f +
+		                    m_FirstWorldMat.Right() * -5.f +
+		                    m_FirstWorldMat.Up() * 12.f, 1.f);
 
 	if (!m_pCamera.expired())
 	{
@@ -2667,6 +2693,34 @@ void Boss_Mir_FSM::DeadSetting()
         m_bInvincible = true;
         m_eCurState = STATE::SQ_Flee;
     }
+}
+
+void Boss_Mir_FSM::Load_Giant_Boss_Mir()
+{
+    // Add. Monster
+    shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
+
+    ObjMonster->Add_Component(make_shared<Transform>());
+
+    ObjMonster->Get_Transform()->Scaled(_float3(0.7f, 0.7f, 0.7f));
+    ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(0.2f, 0.3f, 30.f, 1.f));
+    {
+        shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+
+        shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+        {
+            shared_ptr<Model> model = RESOURCES.Get<Model>(L"Mir_02");
+            animator->Set_Model(model);
+        }
+
+        ObjMonster->Add_Component(animator);
+        ObjMonster->Add_Component(make_shared<Boss_Giant_Mir_FSM>());
+        ObjMonster->Get_FSM()->Set_Target(m_pTarget.lock());
+    }
+
+    ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 2.f, 4.f, 6.f })); //obbcollider
+    ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
+    ObjMonster->Get_Collider()->Set_Activate(true);
 }
 
 

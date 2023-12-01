@@ -804,6 +804,9 @@ void Boss_Dellons_FSM::die()
             m_pWeapon.lock()->Add_Component(script);
             script->Init();
         }
+
+        if (!m_pDellonsWraith.expired())
+            EVENTMGR.Delete_Object(m_pDellonsWraith.lock());
     }
 }
 
