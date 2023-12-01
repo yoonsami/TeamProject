@@ -15,6 +15,7 @@
 #include "ModelAnimation.h"
 #include "Camera.h"
 #include "GroupEffect.h"
+#include "TimerScript.h"
 
 HRESULT Boss_Mir_FSM::Init()
 {
@@ -2374,6 +2375,13 @@ void Boss_Mir_FSM::Create_Meteor()
                 Add_GroupEffectOwner(L"Mir_Meteor_Meteor", _float3(vSkillPos.x, vPlayerPos.y, vSkillPos.z),true);
                 Add_GroupEffectOwner(L"Mir_Meteor_Floor", _float3(vSkillPos.x, vPlayerPos.y, vSkillPos.z), true);
                 Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKDOWN_SKILL, 10.f);
+            }
+            {
+                shared_ptr<GameObject> obj = make_shared<GameObject>();
+                auto script = make_shared<TimerScript>(1.35f);
+                script->Set_Function([]() {CAMERA_SHAKE(0.2f, 0.3f); });
+                obj->Add_Component(script);
+                EVENTMGR.Create_Object(obj);
             }
 
             m_tMeteorCoolTime.fAccTime = 0.f;

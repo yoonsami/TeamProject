@@ -205,10 +205,12 @@
     <ClInclude Include="GranseedPotion_FSM.h" />
     <ClInclude Include="GranseedTraveler_FSM.h" />
     <ClInclude Include="MirScene.h" />
+    <ClInclude Include="NeutralAlpaca_FSM.h" />
     <ClInclude Include="NPC_FSM.h" />
     <ClInclude Include="ObjectDissolve.h" />
     <ClInclude Include="ObjectDissolveCreate.h" />
     <ClInclude Include="SpikeScene.h" />
+    <ClInclude Include="TimerScript.h" />
     <ClInclude Include="UiBossDialog.h" />
     <ClInclude Include="UIInteraction.h" />
     <ClInclude Include="UiQuestController.h" />
@@ -310,10 +312,12 @@
     <ClCompile Include="GranseedPotion_FSM.cpp" />
     <ClCompile Include="GranseedTraveler_FSM.cpp" />
     <ClCompile Include="MirScene.cpp" />
+    <ClCompile Include="NeutralAlpaca_FSM.cpp" />
     <ClCompile Include="NPC_FSM.cpp" />
     <ClCompile Include="ObjectDissolve.cpp" />
     <ClCompile Include="ObjectDissolveCreate.cpp" />
     <ClCompile Include="SpikeScene.cpp" />
+    <ClCompile Include="TimerScript.cpp" />
     <ClCompile Include="UiBossDialog.cpp" />
     <ClCompile Include="UIInteraction.cpp" />
     <ClCompile Include="UiQuestController.cpp" />

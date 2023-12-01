@@ -173,7 +173,7 @@ void GranseedScene::Final_Tick()
 	__super::Final_Tick();
 	PHYSX.Tick();
 	
-	if (KEYTAP(KEY_TYPE::TAB)) 
+	if (KEYPUSH(KEY_TYPE::TAB) && KEYPUSH(KEY_TYPE::F4))
 	{
 		/*GachaSceneDesc sceneDesc{ L"YeopoMap",HERO::YEOPO};
 			SCENE.Add_SubScene(make_shared<GachaScene>(sceneDesc));

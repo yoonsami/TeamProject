@@ -325,6 +325,12 @@
     <Filter Include="02.Component\00.MonoBehaviour\05.Object\01.ObjectDissolveCreate">
       <UniqueIdentifier>{a346a383-8ff9-4e70-8209-86371d56dae2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\07.Timer">
+      <UniqueIdentifier>{d42a2e20-88b8-43ae-a258-7a71dd1186e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\06.Animal_FSM">
+      <UniqueIdentifier>{d4df34c5-b1ba-4475-bd86-f5d2e40f72a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -653,6 +659,10 @@
     <ClInclude Include="ObjectDissolveCreate.h">
       <Filter>02.Component\00.MonoBehaviour\05.Object\01.ObjectDissolveCreate</Filter>
     </ClInclude>
+    <ClInclude Include="TimerScript.h" />
+    <ClInclude Include="NeutralAlpaca_FSM.h">
+      <Filter>02.Component\01.FSM\06.Animal_FSM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -947,6 +957,10 @@
     <ClCompile Include="WaterUVSliding.cpp" />
     <ClCompile Include="ObjectDissolveCreate.cpp">
       <Filter>02.Component\00.MonoBehaviour\05.Object\01.ObjectDissolveCreate</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerScript.cpp" />
+    <ClCompile Include="NeutralAlpaca_FSM.cpp">
+      <Filter>02.Component\01.FSM\06.Animal_FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

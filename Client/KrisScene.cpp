@@ -72,6 +72,7 @@
 #include "UiQuestController.h"
 #include "UiBossDialog.h"
 #include "UIInteraction.h"
+#include "NeutralAlpaca_FSM.h"
 namespace fs = std::filesystem;
 
 KrisScene::KrisScene()
@@ -133,7 +134,7 @@ void KrisScene::Final_Tick()
 	__super::Final_Tick();
 	PHYSX.Tick();
 
-	if (KEYTAP(KEY_TYPE::TAB))
+	if (KEYPUSH(KEY_TYPE::TAB) && KEYPUSH(KEY_TYPE::F4))
 	{
 
 		/*GachaSceneDesc sceneDesc{ L"YeopoMap",HERO::YEOPO};
@@ -171,6 +172,9 @@ HRESULT KrisScene::Load_Scene()
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_White\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_Brown\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_Black\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Bad_Alpaca_White\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Bad_Alpaca_Brown\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Bad_Alpaca_Black\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Wolf\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Succubus_Scythe\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Undead_Priest\\", false);
@@ -182,13 +186,16 @@ HRESULT KrisScene::Load_Scene()
 	//Load_Monster(2, L"Silversword_Soldier", player);
 	//Load_Monster(2, L"Succubus_Scythe", player);
 	//Load_Monster(2, L"Undead_Priest", player);
-	Load_Monster(10, L"Alpaca_White", player);
-	Load_Monster(10, L"Alpaca_Brown", player);
-	Load_Monster(10, L"Alpaca_Black", player);
-	Load_Monster(2, L"Wolf", player);
+	Load_Monster(5, L"Alpaca_White", player);
+	Load_Monster(5, L"Alpaca_Brown", player);
+	Load_Monster(5, L"Alpaca_Black", player); 
+	Load_Monster(5, L"Bad_Alpaca_White", player);
+	Load_Monster(5, L"Bad_Alpaca_Brown", player);
+	Load_Monster(5, L"Bad_Alpaca_Black", player);
+	//Load_Monster(2, L"Wolf", player);
 
 	////Load_Boss_Spike(player);				
-	Load_Boss_Dellons(player);				
+	//Load_Boss_Dellons(player);				
 
 
 	Load_Ui(player);
@@ -389,8 +396,10 @@ void KrisScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_pt
 					ObjMonster->Add_Component(make_shared<Succubus_Scythe_FSM>());
 				else if (strMonsterTag == L"Undead_Priest")
 					ObjMonster->Add_Component(make_shared<Undead_Priest_FSM>());
-				else if (strMonsterTag.find(L"Alpaca") != wstring::npos)
+				else if (strMonsterTag.find(L"Bad_Alpaca") != wstring::npos)
 					ObjMonster->Add_Component(make_shared<Alpaca_FSM>());
+				else if (strMonsterTag.find(L"Alpaca") != wstring::npos)
+					ObjMonster->Add_Component(make_shared<NeutralAlpaca_FSM>());
 				else if (strMonsterTag == L"Wolf")
 					ObjMonster->Add_Component(make_shared<Wolf_FSM>());
 
@@ -399,6 +408,10 @@ void KrisScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_pt
 			ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.7f, 0.5f })); //obbcollider
 			ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
 			ObjMonster->Get_Collider()->Set_Activate(true);
+
+			if (strMonsterTag.find(L"Bad_Alpaca") != wstring::npos);
+			else if (strMonsterTag.find(L"Alpaca") != wstring::npos)
+				ObjMonster->Get_Collider()->Set_Activate(false);
 
 			wstring strMonsterName = strMonsterTag + to_wstring(i);
 			ObjMonster->Set_Name(strMonsterName);
