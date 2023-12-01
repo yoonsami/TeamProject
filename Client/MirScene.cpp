@@ -79,6 +79,7 @@ namespace fs = std::filesystem;
 
 MirScene::MirScene()
 {
+	m_strSceneName = L"MirScene";
 }
 
 MirScene::~MirScene()
@@ -106,7 +107,7 @@ void MirScene::Init()
 
 	}
 
-	m_strSceneName = L"MirScene";
+
 }
 
 void MirScene::Tick()
@@ -189,7 +190,7 @@ HRESULT MirScene::Load_Scene()
 	//Load_Boss_Giant_Mir(player);
 
 	Load_Ui(player);
-	Load_Water();
+	//Load_Water();
 
 	auto pPlayer = Get_GameObject(L"Player");
 	if (nullptr != pPlayer)
@@ -327,7 +328,7 @@ void MirScene::Load_Camera(shared_ptr<GameObject> pPlayer)
 		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, true);
 
 		camera->Add_Component(make_shared<MainCameraScript>(pPlayer));
-		camera->Get_Script<MainCameraScript>()->Get_MaxDist() = 25.f;
+		//camera->Get_Script<MainCameraScript>()->Get_MaxDist() = 25.f;
 		Add_GameObject(camera);
 	
 		//Setting Camera

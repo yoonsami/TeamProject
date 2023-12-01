@@ -40,6 +40,7 @@ public:
 
 public:
     MapObjectScript(MAPOBJDESC _MapObjDesc);
+	virtual shared_ptr<MonoBehaviour> Copy_Script() { return make_shared<MapObjectScript>(m_MapObjDesc); }
 
 public:
     _float Get_UVWeight() { return m_MapObjDesc.fUVWeight; }
