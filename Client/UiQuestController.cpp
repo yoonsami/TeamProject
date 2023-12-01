@@ -24,7 +24,7 @@ HRESULT UiQuestController::Init()
     m_fMaxTime = 1.f;
 
     auto pScene = CUR_SCENE;
-    m_pUiTotalController =  pScene->Get_UI(L"Main_Ui_Controller");
+    m_pUiTotalController =  pScene->Get_UI(L"Main_UI_Controller");
     m_pUiCurQuest =         pScene->Get_UI(L"UI_Cur_Quest");
     m_pUiCurQuestName =     pScene->Get_UI(L"UI_Cur_Quest_Name");
     m_pUiCurQuestInfo =     pScene->Get_UI(L"UI_Cur_Quest_Info");
