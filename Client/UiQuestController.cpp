@@ -86,8 +86,6 @@ void UiQuestController::Create_Dialog(NPCTYPE eType, QUESTINDEX eIndex)
             m_pPlayerDialog = addedObj[i];
     }
 
-    Set_Render(false);
-
     if(CUR_QUEST::NONE == m_eCurType)
     {
         m_eCurType = CUR_QUEST::ACCEPT;
@@ -160,7 +158,7 @@ void UiQuestController::Create_Dialog(NPCTYPE eType, QUESTINDEX eIndex)
         m_pUiTotalController.lock()->Get_Script<MainUiController>()->Set_MainUI_Render(false);
     }
 
-
+    Set_Render(false);
 }
 
 void UiQuestController::Clear_Quest()
@@ -205,8 +203,10 @@ void UiQuestController::Next_Dialog()
     {
         if (true == m_ClearCheck[IDX(m_eIndex)])
         {
-            if(CUR_QUEST::NONE == m_eCurType)
+            if (CUR_QUEST::NONE == m_eCurType)
                 Set_Render(false);
+            else
+                m_eCurType = CUR_QUEST::NONE;
         }
         else if (CUR_QUEST::OTHER == m_eCurType)
         {
@@ -218,6 +218,7 @@ void UiQuestController::Next_Dialog()
             m_tagCurQuestData = GET_QUEST(m_eIndex);
             Set_Cur_Quest();
             m_eCurType = CUR_QUEST::PROGRESS;
+            Set_Render(true);
         }
         else if (CUR_QUEST::PROGRESS == m_eCurType)
         {
@@ -367,17 +368,17 @@ void UiQuestController::Set_Render(_bool _bValue)
         true == m_pUiCurQuestInfo.expired())
         return;
 
-    m_pUiCurQuest.lock()->Set_Render(_bValue);
-    m_pUiCurQuestName.lock()->Set_Render(_bValue);
-    m_pUiCurQuestInfo.lock()->Set_Render(_bValue);
-    
     m_pUiCurQuest.lock()->Set_Tick(_bValue);
     m_pUiCurQuestName.lock()->Set_Tick(_bValue);
     m_pUiCurQuestInfo.lock()->Set_Tick(_bValue);
     
+    m_pUiCurQuest.lock()->Set_Render(_bValue);
+    m_pUiCurQuestName.lock()->Set_Render(_bValue);
+    m_pUiCurQuestInfo.lock()->Set_Render(_bValue);
+    
     if(QUESTTYPE::COLLECT == m_tagCurQuestData.Type || QUESTTYPE::HUNT == m_tagCurQuestData.Type)
     {
-        m_pUiCurQuestCount.lock()->Set_Render(_bValue);
         m_pUiCurQuestCount.lock()->Set_Tick(_bValue);
+        m_pUiCurQuestCount.lock()->Set_Render(_bValue);
     }
 }

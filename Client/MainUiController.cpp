@@ -101,6 +101,12 @@ void MainUiController::Set_MainUI_Render(_bool bValue)
     for (_uint i = 0; i < iSize; ++i)
     {
         if (false == m_vecUi[i].expired())
-            m_vecUi[i].lock()->Set_Render(bValue);
+        {
+            _bool bTemp = bValue;
+            if (false == m_vecUi[i].lock()->Is_Tick())
+                bTemp = false;
+
+            m_vecUi[i].lock()->Set_Render(bTemp);
+        }
     }
 }
