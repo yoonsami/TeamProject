@@ -21,8 +21,14 @@ UIOutput VS_UI(VTXMesh input)
 MeshOutput VS_Terrain(VTXMesh input)
 {
     MeshOutput output;
+    
     output.position = mul(float4(input.position, 1.f), W);
-    output.worldPosition = output.position;
+    output.worldPosition = output.position.xyz;
+    
+    //output.viewNormal = mul(input.normal, (float3x3) W);
+    //output.viewNormal = normalize(mul(output.viewNormal, (float3x3) V));
+    //output.viewTangent = mul(input.normal, (float3x3) W);
+    //output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
     
     output.position = mul(output.position, VP);
     output.uv = input.uv;
@@ -708,13 +714,32 @@ float4 PS_Test2(GS_OUTPUT input) : SV_TARGET
     return color;
 }
 float4 PS_Terrain(MeshOutput input) : SV_TARGET
-{
+{   
     float4 color;
-    float4 diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
+    
+    float4 maskColor = TextureMap7.Sample(LinearSampler, float2(input.uv.x / g_vec2_0.x, input.uv.y / g_vec2_0.y));
+    float4 diffuseColor = 1.f;
+    
+    // 길이 있으면 길색깔잡초색깔 비율맞춤
+    if (maskColor.g > 0)
+    {
+        float4 RoadColor = TextureMap8.Sample(LinearSampler, input.uv);
+        float4 tempDiffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
+        
+        RoadColor = mul(RoadColor, maskColor.g);
+        tempDiffuseColor = mul(tempDiffuseColor, 1 - maskColor.g);
+        
+        diffuseColor = RoadColor + tempDiffuseColor;
+    }
+    else
+        diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
+    
+    //ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
+    
     // 브러시관련
-    float3 vBrushPos = g_vec4_0;
+    float3 vBrushPos = g_vec4_0.xyz;
     float fBrushRadius = g_float_0;
-    float colBrushColor = float4(0.f, 0.f, 0.f, 0.f);
+    float4 colBrushColor = float4(0.f, 0.f, 0.f, 0.f);
     
     vBrushPos.y = input.worldPosition.y; // 높이는 같다고 가정.
     

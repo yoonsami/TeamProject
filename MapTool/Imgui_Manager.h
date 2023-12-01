@@ -56,6 +56,7 @@ private:
 	HRESULT Load_MapObjectBase();
 	// 타일목록 및 텍스쳐로드
 	void Load_TerrainTile();
+
 	// 선택한 맵 오브젝트 생성
 	HRESULT Create_SelectObject();
 	// 맵 오브젝트 생성정보를 바탕으로 오브젝트를 생성하여 반환하는 함수
@@ -80,8 +81,15 @@ private:
 	void SetPlayerLookAtPosByPickingPos();
 
 private:
-	// 터레인 드가자!!!!
+// 터레인
+	// 현재 갖고있는 타일정보로 터레인새로생성
 	void Create_Terrain();
+	// 터레인정보(메시)를 기반으로 터레인오브젝트 생성
+	void Create_Terrain(shared_ptr<class Terrain> _pTerrainMesh);
+	// 마스크텍스쳐 생성저장
+	void Create_MaskTexture();
+	// 범위에 들어가는 정점들의 높이를 fInitHeight로 변경
+	void Set_TerrainHeight();
 
 	// 점광원 제거
 	HRESULT Delete_PointLight();
@@ -91,8 +99,12 @@ private:
 	HRESULT Save_MapObject();
 	// 맵오브젝트 불러오기
 	HRESULT Load_MapObject();
-	// 맵이름 모음
+	// 맵에있는 설치된 오브젝트 이름을 모은 텍스트 파일 저장
 	HRESULT Save_ModelNames();
+	// 지형정보 저장.
+	HRESULT Save_TerrainData();
+	// 지형정보 가져와서 멤버변수 메시렌더러에 넣고 터레인 다시생성하기
+	HRESULT LoadAndCreateTerrain();
 
 	// 오브젝트를 받아와서 컬링포지션과 길이를 계산하여 반영, 컬링포지션과 길이를 float4로 반환
 	_float4 Compute_CullingData(shared_ptr<GameObject>& _pGameObject);
@@ -216,6 +228,10 @@ private:
 	// 터레인만 피킹함.
 	_bool m_bTerrainPickingMode = { false };
 	vector<string> m_TileNames;
+	_int m_iCurrentTile = { 0 };
+	_float m_fTilePressForce = { 0.01f };
+	// 범위안에 들어오는 녀석들의 높이를 해당숫자로 초기화 
+	_float m_fTerrainSetHeight = { 0.f };
 
 private:
 	void Frame_ModelObj();
