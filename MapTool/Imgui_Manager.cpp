@@ -32,6 +32,7 @@
 
 #include "PointLightScript.h"
 #include "ModelAnimation.h"
+
 using namespace ImGui;
 
 ImGuizmo::OPERATION m_eGuizmoType = { ImGuizmo::TRANSLATE };
@@ -70,6 +71,8 @@ void ImGui_Manager::ImGui_SetUp()
 
     Load_SkyBoxTexture();
     Load_MapObjectBase();
+    Load_TerrainTile();
+    //Create_MaskTexture();
 
     Create_SampleObjects();
 }
@@ -799,7 +802,28 @@ void ImGui_Manager::Frame_Terrain()
     {
         Create_Terrain();
     }
+    //ImGui::ListBox("Tile Texture List", &m_iCurrentTile, VectorOfStringGetter, &m_TileNames, int(m_TileNames.size()));
+
     ImGui::DragFloat("BrushRadius", &m_fTerrainBrushRadius, 0.1f);
+    ImGui::DragFloat("TilePressForce", &m_fTilePressForce, 0.001f);
+
+    // 범위안의 정점을 해당높이로 변환
+    ImGui::InputFloat("##TerrainSetHeight", &m_fTerrainSetHeight);
+    ImGui::SameLine();
+    if(ImGui::Button("TerrainSetHeight"))
+    {
+        Set_TerrainHeight();
+    }
+
+    if (ImGui::Button("Save##TerrainSave"))
+    {
+        Save_TerrainData();
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Load##TerrainLoad"))
+    {
+        LoadAndCreateTerrain();
+    }
 
     ImGui::End();
 }
@@ -851,7 +875,7 @@ void ImGui_Manager::Picking_Object()
                 m_vTerrainBrushPosition.y = VB.vPosition.y; // 같은높이라고 가정.
                 if ((VB.vPosition - m_vTerrainBrushPosition).Length() <= m_fTerrainBrushRadius)
                 {
-                    VB.vPosition.y += 0.01f;
+                    VB.vPosition.y += m_fTilePressForce;
                 }
             }
             m_pTerrain->Get_MeshRenderer()->Get_Mesh()->Get_Geometry()->Set_Vertices(tempVTX);
@@ -875,7 +899,7 @@ void ImGui_Manager::Picking_Object()
                 m_vTerrainBrushPosition.y = VB.vPosition.y; // 같은높이라고 가정.
                 if ((VB.vPosition - m_vTerrainBrushPosition).Length() <= m_fTerrainBrushRadius)
                 {
-                    VB.vPosition.y -= 0.01f;
+                    VB.vPosition.y -= m_fTilePressForce;
                 }
             }
             m_pTerrain->Get_MeshRenderer()->Get_Mesh()->Get_Geometry()->Set_Vertices(tempVTX);
@@ -906,12 +930,15 @@ void ImGui_Manager::Picking_Object()
             }
         }
     }
+    // 터레인피킹
     if (KEYPUSH(KEY_TYPE::RBUTTON))
     {
         if (m_bTerrainPickingMode && m_pTerrain != nullptr)
         {
             // 터레인 피킹위치갱신
             PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), m_pTerrain, m_vTerrainBrushPosition);
+            // 오브젝트 생성 피킹위치도 변경
+            m_PickingPos = m_vTerrainBrushPosition;
 
             m_pTerrain->Get_MeshRenderer()->SetVec4(0, _float4(m_vTerrainBrushPosition, 1.f));
             m_pTerrain->Get_MeshRenderer()->SetFloat(0, m_fTerrainBrushRadius);
@@ -1047,7 +1074,7 @@ HRESULT ImGui_Manager::Load_MapObjectBase()
 
 void ImGui_Manager::Load_TerrainTile()
 {
-    wstring partsPath = L"..\\Resources\\MapData\\";
+    wstring partsPath = L"..\\Resources\\Textures\\MapObject\\TerrainTile\\";
     for (auto& entry : fs::recursive_directory_iterator(partsPath))
     {
 
@@ -1060,6 +1087,11 @@ void ImGui_Manager::Load_TerrainTile()
         string fileName = entry.path().filename().string();
         Utils::DetachExt(fileName);
 
+        // 타일의 텍스쳐이름을 리소스에 로드
+        wstring TileTexture = L"..\\Resources\\Textures\\MapObject\\TerrainTile\\";
+        TileTexture += Utils::ToWString(fileName) + L".tga";
+        RESOURCES.Load<Texture>(Utils::ToWString(fileName), TileTexture);
+        // 리스트에도 추가
         m_TileNames.push_back(fileName);
     }
 }
@@ -1310,24 +1342,100 @@ void ImGui_Manager::Create_Terrain()
     shared_ptr<Terrain> terrain = make_shared<Terrain>();
     terrain->CreateGrid(m_iTerrainSize[0], m_iTerrainSize[1]);
 
-    // 메시를 기반으로 바닥오브젝트 생성
+    Create_Terrain(terrain);
+}
+
+void ImGui_Manager::Create_Terrain(shared_ptr<Terrain> _pTerrainMesh)
+{
+    /// 지형오브젝트 생성
     shared_ptr<GameObject> TerrainObject = make_shared<GameObject>();
     TerrainObject->Set_Name(L"Terrain");
     TerrainObject->GetOrAddTransform();
 
+    //// 하이트맵 계산해서 메시에 적용하기
+    //// TGA(HeightMap)텍스쳐를 가져와서 RGB값 모두 저장.
+    //{
+    //    // TGA 파일 경로 설정
+    //    const wchar_t* filePath = L"..\\Resources\\Textures\\MapObject\\TerrainTile\\Texture2D_90.tga";
+    //    // TGA 파일 로드
+    //    TexMetadata metadata;
+    //    ScratchImage image;
+    //    LoadFromTGAFile(filePath, &metadata, image);
+
+    //    // 픽셀 데이터 얻기
+    //    const auto* img = image.GetImage(0, 0, 0); // 첫 이미지 데이터 가져오기
+    //    // 픽셀 데이터에 접근하여 출력
+    //    const uint8_t* pixels = static_cast<const uint8_t*>(img->pixels);
+    //    size_t pixelSize = metadata.format == DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM ? 4 : 3; // RGBA 또는 RGB 픽셀 크기
+    //    size_t rowPitch = img->rowPitch;
+
+    //    // 모든픽셀의 색을 저장할 벡터
+    //    vector<_float4> pixelColors;
+    //    for (size_t i = 0; i < img->height ; ++i) {
+    //        for (size_t j = 0; j < img->width; ++j) {
+    //            size_t pixelIndex = i * rowPitch + j * pixelSize;
+    //            _float4 pixelColor = _float4{ static_cast<_float>(pixels[pixelIndex + 0]) , static_cast<_float>(pixels[pixelIndex + 1]), static_cast<_float>(pixels[pixelIndex + 2]), static_cast<_float>(pixels[pixelIndex + 3]) };
+    //            pixelColors.push_back(pixelColor);
+    //        }
+    //    }
+
+    //    // 정점들의 w
+    //    auto& vertices = _pTerrainMesh->Get_Geometry()->Get_Vertices();
+    //    auto tempVertices = vertices;
+    //    for (size_t i = 0; i < vertices.size(); ++i)
+    //    {
+    //        tempVertices[i].vPosition.y = pixelColors[i].z * 0.04;
+    //    }
+    //    _pTerrainMesh->Get_Geometry()->Set_Vertices(tempVertices);
+    //    _pTerrainMesh->Create_Buffer();
+    //}
+
     // 메시렌더러
     shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
-    renderer->Set_Mesh(terrain);
+    renderer->Set_Mesh(_pTerrainMesh);
     renderer->Set_Pass(18); // 터레인패스
-    
+
+    // 디퓨즈텍스쳐
     shared_ptr<Material> material = make_shared<Material>();
-    RESOURCES.Load<Texture>(L"TileTexture1", L"..\\Resources\\Textures\\MapObject\\TerrainTile\\Bamboo_T_Tile_D_01_KEK.tga");
-    material->Set_TextureMap(RESOURCES.Get<Texture>(L"TileTexture1"), TextureMapType::DIFFUSE);
+    auto Grasstexture = RESOURCES.Get<Texture>(L"Wood_T_Tile_D_01_KEK");
+    if (Grasstexture == nullptr)
+    {
+        MSG_BOX("NoDiffuseTexture");
+        return;
+    }
+    material->Set_TextureMap(Grasstexture, TextureMapType::DIFFUSE);
+
+    // 노말텍스쳐
+    auto Normaltexture = RESOURCES.Get<Texture>(L"Wood_T_Tile_N_01_KEK");
+    if (Normaltexture == nullptr)
+    {
+        MSG_BOX("NoNormalTexture");
+        return;
+    }
+    material->Set_TextureMap(Grasstexture, TextureMapType::NORMAL);
+
+    // Mask텍스쳐
+    auto Masktexture = RESOURCES.Get<Texture>(L"TileMask");
+    if (Masktexture == nullptr)
+    {
+        MSG_BOX("NoMaskTexture");
+        return;
+    }
+    material->Set_TextureMap(Masktexture, TextureMapType::TEXTURE7);
+
+    // Road텍스쳐
+    auto Roadtexture = RESOURCES.Get<Texture>(L"TileRoad");
+    if (Roadtexture == nullptr)
+    {
+        MSG_BOX("NoSubTexture");
+        return;
+    }
+    material->Set_TextureMap(Roadtexture, TextureMapType::TEXTURE8);
 
     renderer->Set_Material(material);
 
     // 메시를 통해 메시콜라이더 생성
-    shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(*terrain.get());
+    shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(*_pTerrainMesh.get());
     TerrainObject->Add_Component(pCollider);
     pCollider->Set_Activate(true);
 
@@ -1340,6 +1448,97 @@ void ImGui_Manager::Create_Terrain()
     EVENTMGR.Create_Object(TerrainObject);
 
     m_pTerrain = TerrainObject;
+    // 터레인의 가로세로 정보 셰이더에 떤져주기
+    m_pTerrain->Get_MeshRenderer()->SetVec2(0, _float2{ (_float)m_iTerrainSize[0], (_float)m_iTerrainSize[1] });
+}
+
+void ImGui_Manager::Create_MaskTexture()
+{
+    ID3D11Texture2D* pTexture2D = { nullptr };
+
+    D3D11_TEXTURE2D_DESC TextureDesc;
+    ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
+
+    TextureDesc.Width = 512;
+    TextureDesc.Height = 512;
+    TextureDesc.MipLevels = 1;
+    TextureDesc.ArraySize = 1;
+    TextureDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+
+    TextureDesc.SampleDesc.Quality = 0;
+    TextureDesc.SampleDesc.Count = 1;
+
+    // 맵언맵을 사용하기위해 다이나믹.
+    TextureDesc.Usage = D3D11_USAGE_DYNAMIC;
+    // 용도 - 쉐이더리소스
+    TextureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+    TextureDesc.CPUAccessFlags = D3D10_CPU_ACCESS_WRITE;
+    TextureDesc.MiscFlags = 0;
+
+    _ulong* pPixel = new _ulong[TextureDesc.Width * TextureDesc.Height];
+
+    //for (_uint i = 0; i < TextureDesc.Height; ++i)
+    //{
+    //    for (_uint j = 0; j < TextureDesc.Width; ++j)
+    //    {
+    //        _uint iIndex = i * TextureDesc.Width + j;
+
+    //        pPixel[iIndex] = D3DCOLOR_ARGB(0, 0, 0, 0);
+    //    }
+    //}
+
+    D3D11_SUBRESOURCE_DATA SubResourceData;
+    ZeroMemory(&SubResourceData, sizeof SubResourceData);
+
+    SubResourceData.pSysMem = pPixel;
+    // 한줄짜리 데이터가 아니기 때문에 한줄의 사이즈를 지정해줌.
+    SubResourceData.SysMemPitch = TextureDesc.Width * 4;
+
+    if (FAILED(DEVICE->CreateTexture2D(&TextureDesc, &SubResourceData, &pTexture2D)))
+        return;
+
+    for (_uint i = 0; i < TextureDesc.Height; ++i)
+    {
+        for (_uint j = 0; j < TextureDesc.Width; j++)
+        {
+            _uint iIndex = i * TextureDesc.Width + j;
+
+            if (j < 256)
+                pPixel[iIndex] = D3DCOLOR_ARGB(255, 0, 0, 255);
+            else
+                pPixel[iIndex] = D3DCOLOR_ARGB(255, 255, 255, 255);
+        }
+    }
+
+    D3D11_MAPPED_SUBRESOURCE MappedSubResource;
+
+    CONTEXT->Map(pTexture2D, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedSubResource);
+
+    memcpy(MappedSubResource.pData, pPixel, sizeof(_ulong) * TextureDesc.Width * TextureDesc.Height);
+
+    CONTEXT->Unmap(pTexture2D, 0);
+
+    ScratchImage scratchImage;
+    CaptureTexture(DEVICE.Get(), CONTEXT.Get(), pTexture2D, scratchImage);
+
+    wstring wstrName = L"..\\Resources\\Textures\\MapObject\\TerrainTile\\TileMask.tga";
+    SaveToTGAFile(*scratchImage.GetImage(0, 0, 0), wstrName.data());
+}
+
+void ImGui_Manager::Set_TerrainHeight()
+{
+    auto& vtx = m_pTerrain->Get_MeshRenderer()->Get_Mesh()->Get_Geometry()->Get_Vertices();
+    auto tempVTX = vtx;
+    for (auto& VB : tempVTX)
+    {
+        m_vTerrainBrushPosition.y = VB.vPosition.y; // 같은높이라고 가정.
+        if ((VB.vPosition - m_vTerrainBrushPosition).Length() <= m_fTerrainBrushRadius)
+        {
+            VB.vPosition.y = m_fTerrainSetHeight;
+        }
+    }
+    m_pTerrain->Get_MeshRenderer()->Get_Mesh()->Get_Geometry()->Set_Vertices(tempVTX);
+    m_pTerrain->Get_MeshRenderer()->Get_Mesh()->Create_Buffer();
 }
 
 HRESULT ImGui_Manager::Delete_PointLight()
@@ -1871,6 +2070,80 @@ HRESULT ImGui_Manager::Save_ModelNames()
             }
         }
     }
+    return S_OK;
+}
+
+HRESULT ImGui_Manager::Save_TerrainData()
+{
+    // 세이브 파일 이름으로 저장하기
+    string strFilePath = "..\\Resources\\MapData\\TerrainData.TRdat";
+    shared_ptr<FileUtils> file = make_shared<FileUtils>();
+    file->Open(Utils::ToWString(strFilePath), FileMode::Write);
+
+    shared_ptr<GameObject> TerrainObject = CUR_SCENE->Get_GameObject(L"Terrain");
+    if (TerrainObject == nullptr)
+    {
+        MSG_BOX("NoTerrainObject");
+        return E_FAIL;
+    }
+    auto TerrainGeometry = TerrainObject->Get_MeshRenderer()->Get_Mesh()->Get_Geometry();
+
+    // 버텍스의 개수와 포지션,노말 저장
+    auto& TerrainVertices = TerrainGeometry->Get_Vertices();
+    file->Write<_int>((_int)TerrainVertices.size());
+    for (size_t i = 0; i < TerrainVertices.size(); ++i)
+    {
+        file->Write<_float3>(TerrainVertices[i].vPosition);
+        file->Write<_float2>(TerrainVertices[i].vTexCoord);
+        file->Write<_float3>(TerrainVertices[i].vNormal);
+    }
+    // 인덱스의 개수 저장
+    auto& TerrainIndices = TerrainGeometry->Get_Indices();
+    file->Write<_int>((_int)TerrainIndices.size());
+    for (size_t i = 0; i < TerrainIndices.size(); i++)
+    {
+        file->Write<_uint>(TerrainIndices[i]);
+    }
+
+    MSG_BOX("Save_Complete");
+
+    return S_OK;
+}
+
+HRESULT ImGui_Manager::LoadAndCreateTerrain()
+{
+    shared_ptr<Terrain> loadedTerrain = make_shared<Terrain>();
+
+    string strFilePath = "..\\Resources\\MapData\\TerrainData.TRdat";
+    shared_ptr<FileUtils> file = make_shared<FileUtils>();
+    file->Open(Utils::ToWString(strFilePath), FileMode::Read);
+
+    vector<VTXTEXNORTANDATA> loadedVertices;
+    // 버텍스의 개수와 포지션,노말 로드
+    loadedVertices.resize(file->Read<_int>());
+    for (size_t i = 0; i < loadedVertices.size(); ++i)
+    {
+        file->Read<_float3>(loadedVertices[i].vPosition);
+        file->Read<_float2>(loadedVertices[i].vTexCoord);
+        file->Read<_float3>(loadedVertices[i].vNormal);
+    }
+
+    // 인덱스의 개수와 정보 로드
+    vector<_uint> loadedIndices;
+    // 버텍스의 개수와 포지션,노말 로드
+    loadedIndices.resize(file->Read<_int>());
+    for (size_t i = 0; i < loadedIndices.size(); i++)
+    {
+        file->Read<_uint>(loadedIndices[i]);
+    }
+
+    // 터레인버퍼생성
+    loadedTerrain->Get_Geometry()->Set_Vertices(loadedVertices);
+    loadedTerrain->Get_Geometry()->Set_Indices(loadedIndices);
+    loadedTerrain->Create_Buffer();
+
+    Create_Terrain(loadedTerrain);
+
     return S_OK;
 }
 

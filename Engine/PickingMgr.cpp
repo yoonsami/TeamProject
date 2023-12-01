@@ -243,6 +243,7 @@ shared_ptr<GameObject> PickingMgr::Pick_Mesh(_float2 screenPos, shared_ptr<Camer
 	return picked;
 }
 
+// 특정 오브젝트만 피킹
 shared_ptr<GameObject> PickingMgr::Pick_Mesh(_float2 screenPos, shared_ptr<Camera> camera, shared_ptr<GameObject> gameObject, OUT _float3& outPos)
 {
 	_float width = GRAPHICS.Get_ViewPort().Get_Width();
@@ -298,13 +299,10 @@ shared_ptr<GameObject> PickingMgr::Pick_Mesh(_float2 screenPos, shared_ptr<Camer
 				if (!ray.Intersects(vVtxPos[0], vVtxPos[1], vVtxPos[2], fDistance))
 					continue;
 
-				if (fDistance < minDist)
-				{
-					minDist = fDistance;
-					distance = minDist;
-					picked = gameObject;
-					outPos = rayOriginPos_World + rayDir_World * minDist;
-				}
+				//최소거리 계산X, 피킹성공하면 리턴
+				picked = gameObject;
+				outPos = rayOriginPos_World + rayDir_World * fDistance;
+				return picked;
 			}
 		}
 	}
