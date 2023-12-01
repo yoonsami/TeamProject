@@ -1694,7 +1694,6 @@ void Boss_Mir_FSM::skill_12100_Init()
     m_tAttackCoolTime.fAccTime = 0.f;
 }
 
-
 void Boss_Mir_FSM::skill_13100()
 {
     if (m_iCurFrame == 30)
@@ -2258,6 +2257,8 @@ void Boss_Mir_FSM::Create_Meteor()
 
                 _float4 vSkillPos = vPlayerPos + _float4{ fOffSetX, 10.f, fOffSetZ, 0.f };
 
+                Add_GroupEffectOwner(L"Mir_Meteor_Meteor", _float3(vSkillPos.x, vPlayerPos.y, vSkillPos.z));
+                Add_GroupEffectOwner(L"Mir_Meteor_Floor", _float3(vSkillPos.x, vPlayerPos.y, vSkillPos.z));
                 Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKDOWN_SKILL, 10.f);
             }
 

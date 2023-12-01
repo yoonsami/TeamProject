@@ -439,6 +439,10 @@ void Widget_GroupEffectMaker::Option_MemberEffectList()
 			}
 			if (ImGui::InputFloat3(strFloat3Key3.c_str(), m_tCurrMemberProperty[iIndex].m_fRotation))
 			{
+				m_tCurrMemberProperty[iIndex].m_fRotation[0] = m_tCurrMemberProperty[iIndex].m_fRotation[0] * (XM_PI / 180.f);
+				m_tCurrMemberProperty[iIndex].m_fRotation[1] = m_tCurrMemberProperty[iIndex].m_fRotation[1] * (XM_PI / 180.f);
+				m_tCurrMemberProperty[iIndex].m_fRotation[2] = m_tCurrMemberProperty[iIndex].m_fRotation[2] * (XM_PI / 180.f);
+
 				_float3 vRotation = { m_tCurrMemberProperty[iIndex].m_fRotation[0], m_tCurrMemberProperty[iIndex].m_fRotation[1], m_tCurrMemberProperty[iIndex].m_fRotation[2] };
 				m_pCurrentGroup->Get_GroupEffect()->Set_Member_PivotRotation(iIndex, vRotation);
 			}

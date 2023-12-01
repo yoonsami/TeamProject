@@ -68,6 +68,7 @@ HRESULT GranseedScene::Load_Scene()
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\SkyBox\\");
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Weapon\\");
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Granseed\\");
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\");
 
 	RESOURCES.LoadParts();
 	Load_DemoModel();
