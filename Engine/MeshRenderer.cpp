@@ -89,6 +89,35 @@ void MeshRenderer::Render()
 
 }
 
+void MeshRenderer::Render_Water()
+{
+	if (!m_pMaterial || !m_pMesh || !m_pShader)
+		return;
+
+	m_pMaterial->Tick();
+	m_pMaterial->Push_TextureMapData();
+
+	m_pShader->Push_RenderParamData(m_RenderParams);
+
+	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
+
+
+	auto& LightParam = CUR_SCENE->Get_LightParams();
+	m_pShader->Push_LightData(LightParam);
+
+	//	m_pShader->GetScalar("g_BarPercent")->SetFloat(m_fLoadingPercent);
+	auto& world = Get_Transform()->Get_WorldMatrix();
+	m_pShader->Push_TransformData(TransformDesc{ world });
+
+	m_pMesh->Get_VertexBuffer()->Push_Data();
+	m_pMesh->Get_IndexBuffer()->Push_Data();
+
+
+	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	m_pShader->DrawIndexed(0, 0, m_pMesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+}
+
 InstanceID MeshRenderer::Get_InstanceID()
 {
 	return make_pair(_ulonglong(m_pMesh.get()), _ulonglong(m_pMaterial.get()));

@@ -682,7 +682,12 @@ void ResourceMgr::CreateDefaultShader()
 		auto shader = Get<Shader>(ShaderTag);
 		shader->Set_ShaderType(SHADER_TYPE::PARTICLE);
 	}
-
+	{
+		wstring ShaderTag = L"Water.fx";
+		Load<Shader>(ShaderTag, ShaderTag);
+		auto shader = Get<Shader>(ShaderTag);
+		shader->Set_ShaderType(SHADER_TYPE::WATER);
+	}
 	{
 		wstring ShaderTag = L"Shader_Effect2.fx";
 		Load<Shader>(ShaderTag, ShaderTag);

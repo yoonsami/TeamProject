@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "MainApp.h"
 #include "MainCameraScript.h"
+#include "MeshRenderer.h"
 #ifdef _DEBUGTOOL
 
 bool VectorOfStringGetter(void* data, int n, const char** out_text)
@@ -320,27 +321,22 @@ void DebugTool::ModelOptionTab()
 
 void DebugTool::CameraOptionTab()
 {
-	if(CUR_SCENE->Get_MainCamera())
+	auto water = CUR_SCENE->Get_GameObject(L"Water_Plane");
+	if(water)
 	{
 		if (BeginTabItem("Camera"))
 		{
-			auto& desc = CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_CameraDesc();
-			DragFloat("Near", &desc.fNear, 0.1f, 0.1f, 100.f);
-			DragFloat("Far", &desc.fFar, 1.f, 100.f, 5000.f);
-			_float& g_CameraDist = CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->Get_MaxDist();
-			DragFloat("g_CameraDist", &g_CameraDist, 0.1f, 0.1f, 100.f);
+			static bool alpha_preview = true;
+			static bool alpha_half_preview = false;
+			static bool drag_and_drop = true;
+			static bool options_menu = true;
+			static bool hdr = true;
+			auto& desc = water->Get_MeshRenderer()->Get_RenderParamDesc();
+			ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
+			ImGui::ColorEdit4("vBaseColor1_Op1", (float*)&desc.vec4Params[1], ImGuiColorEditFlags_DisplayHSV | misc_flags);
+			ImGui::ColorEdit4("vBaseColor2_Op1", (float*)&desc.vec4Params[2], ImGuiColorEditFlags_DisplayHSV | misc_flags);
 
-			EndTabItem();
-		}
-	}
-	if (CUR_SCENE->Get_Light())
-	{
-		auto& desc = CUR_SCENE->Get_Light()->Get_Light()->Get_ShadowCamera()->Get_Camera()->Get_CameraDesc();
-		if (BeginTabItem("LightCamera"))
-		{
 
-			DragFloat("Near", &desc.fNear, 0.1f, 0.1f, 100.f);
-			DragFloat("Far", &desc.fFar, 1.f, 100.f, 5000.f);
 
 			EndTabItem();
 		}

@@ -62,6 +62,7 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 	//Frustum Check
 
 	m_Sky.clear();
+	m_Water.clear();
 	m_Forward.clear();
 	m_Deferred.clear();
 	m_Particle.clear();
@@ -100,6 +101,8 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 		
 		if (gameObject->Get_ShaderType() == SHADER_TYPE::SKYBOX)
 			m_Sky.push_back(gameObject);
+		else if (gameObject->Get_ShaderType() == SHADER_TYPE::WATER)
+			m_Water.push_back(gameObject);
 		else if (gameObject->Get_TrailRenderer())
 			m_Trails.push_back(gameObject);
 		else if (gameObject->Get_MotionTrailRenderer())
@@ -257,6 +260,12 @@ void Camera::Render_Forward()
 {
 	S_View = m_matView;
 	S_Proj = m_matProj;
+
+	for (auto& obj : m_Water)
+	{
+		if (obj->Get_MeshRenderer())
+			obj->Get_MeshRenderer()->Render_Water();
+	}
 
 	for (auto& trail : m_Trails)
 	{

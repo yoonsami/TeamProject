@@ -84,6 +84,7 @@ private:
 private:
     _uint m_iCullingMask = 0;
     vector<shared_ptr<GameObject>> m_Sky;
+    vector<shared_ptr<GameObject>> m_Water;
     vector<shared_ptr<GameObject>> m_Forward;
     vector<shared_ptr<GameObject>> m_VelocityMapObj;
     vector<shared_ptr<GameObject>> m_Deferred;
