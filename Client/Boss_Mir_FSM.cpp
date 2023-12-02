@@ -1006,7 +1006,12 @@ void Boss_Mir_FSM::SQ_Flee()
             m_pTarget.lock()->Get_CharacterController()->Get_Actor()->setFootPosition({ m_vSetPlayerPos.x,  m_vSetPlayerPos.y, m_vSetPlayerPos.z });
         }
 
-        Load_Giant_Boss_Mir();
+        if (!m_pCamera.expired())
+        {
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedTime(0.2f);
+        }
+
+        //Load_Giant_Boss_Mir();
     }
 
 }
@@ -2735,7 +2740,7 @@ void Boss_Mir_FSM::Load_Giant_Boss_Mir()
     ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 2.f, 4.f, 6.f })); //obbcollider
     ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
     ObjMonster->Get_Collider()->Set_Activate(true);
-    
+    ObjMonster->Get_FSM()->Init();
     EVENTMGR.Create_Object(ObjMonster);
 }
 
