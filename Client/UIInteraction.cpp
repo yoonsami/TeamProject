@@ -123,8 +123,11 @@ void UIInteraction::Remove_Interaction(shared_ptr<GameObject> pObj)
     }
 }
 
-_bool UIInteraction::Get_Is_Activate()
+_bool UIInteraction::Get_Is_Activate(shared_ptr<GameObject> pObj)
 {
+    if (m_pAccessObj.lock() != pObj)
+        return false;
+
     if (true == m_bIsActivate)
     {
         m_bIsActivate = false;

@@ -14,7 +14,7 @@ public:
     void Create_Interaction(NPCTYPE eType, shared_ptr<GameObject> pObj);
     void Remove_Interaction(shared_ptr<GameObject> pObj);
 
-    _bool Get_Is_Activate();
+    _bool Get_Is_Activate(shared_ptr<GameObject> pObj);
     _bool Is_Created()      { return m_bIsCreated; }
 
 private:
