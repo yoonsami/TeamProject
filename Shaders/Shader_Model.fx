@@ -948,11 +948,7 @@ PBR_OUTPUT PS_PBR_WATER(MeshOutput input)
 
     /* Sampled from textures */    
     float4 vSample_Op1 = { 0.f, 0.f, 0.f, 0.f };
-    float4 vSample_Op2 = { 0.f, 0.f, 0.f, 0.f };
-    float4 vSample_Op3 = { 0.f, 0.f, 0.f, 0.f };
-    float4 vSample_Blend = { 0.f, 0.f, 0.f, 0.f };
-    float4 vSample_Overlay = { 0.f, 0.f, 0.f, 0.f };
-    float4 vSample_Dissolve = { 0.f, 0.f, 0.f, 0.f };
+
     if (bHasDiffuseMap)
     {
         vSample_Op1.a = DiffuseMap.Sample(LinearSampler, input.uv + g_vec2_1 /*uvsliding*/ + fDistortionWeight).r;

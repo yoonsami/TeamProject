@@ -36,16 +36,61 @@
 
 //float4 PS(MeshOutput input) : SV_TARGET
 //{
-//    //if (g_bHasNormalMap)
-//    //    ComputeNormalMapping(input.normal, input.tangent, input.uv);
+//    float4 diffuseColor;
+//    float4 specularColor;
+//    float4 emissiveColor;
     
-//    //LightColor color = ComputeLight(input.normal, input.uv, input.worldPosition);
-  
+//    float fLightIntensity = 1.05f;
+        
+//    float4 vBaseColor1_Op1 = float4(100.f / 255.f, 191.f / 255.f, 1.f, 1.f);
+//    float4 vBaseColor2_Op1 = float4(0.f, 150.f / 255.f, 289.f / 255.f, 1.f);
+        
+//    /* Calc Texcoord */
+//    float fDistortionWeight = 0.f;
+//    if (bHasDistortionMap)
+//    {
+//        float4 vDistortion = DistortionMap.Sample(LinearSampler, input.uv + g_vec2_0 /*uvsliding*/);
+//        fDistortionWeight = vDistortion.r * 0.5f;
+//    }
+    
+//    float4 vSample_Op1 = { 0.f, 0.f, 0.f, 0.f };
+
+//    if (bHasDiffuseMap)
+//    {
+//        vSample_Op1.a = DiffuseMap.Sample(LinearSampler, input.uv + g_vec2_1 /*uvsliding*/ + fDistortionWeight).r;
+//        vSample_Op1.rgb = lerp(vBaseColor2_Op1, vBaseColor1_Op1, vSample_Op1.a);
+
+//        float luminance = dot(vSample_Op1.rgb, float3(0.299, 0.587, 0.114));
+//        vSample_Op1.rgb = lerp(vSample_Op1.rgb, vSample_Op1.rgb * 1.5f, saturate(luminance));
+//        vSample_Op1.a = saturate(vSample_Op1.a * 4.f);
+//    }
+    
+//    diffuseColor = vSample_Op1;
+
+//    float3 normal1 = input.viewNormal;
+//    ComputeNormalMapping_ViewSpace(normal1, input.viewTangent, input.uv * 0.4f + g_vec2_1 /*uvsliding*/ + fDistortionWeight);
+//    float3 normal2 = input.viewNormal;
+//    ComputeNormalMapping_ViewSpace(normal2, input.viewTangent, input.uv * 0.4f - g_vec2_1 /*uvsliding*/ + fDistortionWeight);
+
+//    float3 normal = (normal1 + normal2) * 0.5f;
+//    normal *= float3(0.5, 0.5, 1.);
+    
+//    float diffuseRatio = 0.f;
+//    {
+//        float3 viewLightDir = 0.f;
+            
+//        viewLightDir = normalize(mul(float4(lights[0].vDirection.xyz, 0.f), V).xyz);
+//        diffuseRatio = saturate(dot(-viewLightDir, normalize(normal)));
+                    
+//    }
+//    float3 vLightingColor = diffuseColor.rgb * diffuseRatio;
+//    diffuseColor.rgb = lerp(diffuseColor.rgb, vLightingColor, fLightIntensity);
+    
 //    return DiffuseMap.Sample(LinearSampler, input.uv);
 //}
 
 //float4 PS_Masked(MeshOutput input) : SV_TARGET
-//{ 
+//{
 //    //if (g_bHasNormalMap)
 //    //    ComputeNormalMapping(input.normal, input.tangent, input.uv);
     
@@ -67,16 +112,16 @@
     
    
     
-//    return float4(1.f,1.f,1.f,maskColor.r);
+//    return float4(1.f, 1.f, 1.f, maskColor.r);
 //}
 
 //technique11 T0
 //{
 //    pass p0
-//    {													
+//    {
 //        SetRasterizerState(RS_Default);
-//        SetBlendState(BlendDefault,float4( 0.0f, 0.0f, 0.0f, 0.0f ), 0xFFFFFFFF);						
-//      	SetDepthStencilState(DSS_Sky,0);	                   
+//        SetBlendState(BlendDefault, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+//        SetDepthStencilState(DSS_Sky, 0);
 //        SetVertexShader(CompileShader(vs_5_0, VS()));
 //        SetPixelShader(CompileShader(ps_5_0, PS()));
 //    }
