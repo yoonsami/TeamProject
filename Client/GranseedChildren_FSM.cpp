@@ -2,6 +2,7 @@
 #include "GranseedChildren_FSM.h"
 #include "ModelAnimator.h"
 #include <MathUtils.h>
+#include "UIInteraction.h"
 
 GranseedChildren_FSM::GranseedChildren_FSM()
 {
@@ -36,19 +37,16 @@ void GranseedChildren_FSM::State_Tick()
 	{
 	case STATE::n_idle:
 		n_idle();
-		if (Can_Interact())
-			InteractWithPlayer();
+	
 		break;
 		
 	case STATE::n_run:
 		n_run();
-		if (Can_Interact())
-			InteractWithPlayer();
+
 		break;
 	case STATE::n_walk:
 		n_walk();
-		if (Can_Interact())
-			InteractWithPlayer();
+
 		break;
 	case STATE::talk_01:
 		talk_01();
@@ -88,6 +86,24 @@ void GranseedChildren_FSM::n_idle()
 	{
 		m_fStateAcc = 0.f;
 		m_eCurState = STATE::n_run;
+	}
+
+	if (Can_Interact())
+	{
+		{
+			auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
+			if (pObj && pObj->Get_Script<UIInteraction>()->Get_Is_Activate())
+				m_eCurState = STATE::talk_01;
+			else if (pObj && !pObj->Get_Script<UIInteraction>()->Is_Created())
+				pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::HIDE_KID);
+		}
+
+	}
+	else
+	{
+		auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
+		if (pObj)
+			pObj->Get_Script<UIInteraction>()->Remove_Interaction();
 	}
 }
 
@@ -163,6 +179,23 @@ void GranseedChildren_FSM::n_run()
 		m_fStateAcc = 0.f;
 		m_eCurState = STATE::n_idle;
 	}
+	if (Can_Interact())
+	{
+		{
+			auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
+			if (pObj && pObj->Get_Script<UIInteraction>()->Get_Is_Activate())
+				m_eCurState = STATE::talk_01;
+			else if (pObj && !pObj->Get_Script<UIInteraction>()->Is_Created())
+				pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::HIDE_KID);
+		}
+
+	}
+	else
+	{
+		auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
+		if (pObj)
+			pObj->Get_Script<UIInteraction>()->Remove_Interaction();
+	}
 }
 
 void GranseedChildren_FSM::n_run_Init()
@@ -228,6 +261,23 @@ void GranseedChildren_FSM::n_walk()
 	{
 		m_fStateAcc = 0.f;
 		m_eCurState = STATE::n_idle;
+	}
+	if (Can_Interact())
+	{
+		{
+			auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
+			if (pObj && pObj->Get_Script<UIInteraction>()->Get_Is_Activate())
+				m_eCurState = STATE::talk_01;
+			else if (pObj && !pObj->Get_Script<UIInteraction>()->Is_Created())
+				pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::HIDE_KID);
+		}
+
+	}
+	else
+	{
+		auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
+		if (pObj)
+			pObj->Get_Script<UIInteraction>()->Remove_Interaction();
 	}
 }
 

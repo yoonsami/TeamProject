@@ -35,23 +35,7 @@ void GranseedTraveler_FSM::State_Tick()
 	{
 	case STATE::n_idle:
 		n_idle();
-		if (Can_Interact())
-		{
-			{
-				auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
-				if (pObj && pObj->Get_Script<UIInteraction>()->Get_Is_Activate())
-					m_eCurState = STATE::talk_01;
-				else if (pObj && !pObj->Get_Script<UIInteraction>()->Is_Created())
-					pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::GACHA);
-			}
-			
-		}
-		else
-		{
-			auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
-			if (pObj)
-				pObj->Get_Script<UIInteraction>()->Remove_Interaction();
-		}
+		
 		break;
 
 		break;
@@ -83,6 +67,23 @@ void GranseedTraveler_FSM::State_Init()
 
 void GranseedTraveler_FSM::n_idle()
 {
+	if (Can_Interact())
+	{
+		{
+			auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
+			if (pObj && pObj->Get_Script<UIInteraction>()->Get_Is_Activate())
+				m_eCurState = STATE::talk_01;
+			else if (pObj && !pObj->Get_Script<UIInteraction>()->Is_Created())
+				pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::GACHA);
+		}
+
+	}
+	else
+	{
+		auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
+		if (pObj)
+			pObj->Get_Script<UIInteraction>()->Remove_Interaction();
+	}
 }
 
 void GranseedTraveler_FSM::n_idle_Init()

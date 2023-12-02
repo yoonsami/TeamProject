@@ -1016,7 +1016,7 @@
     <FxCompile Include="..\Shaders\SkyBox.fx">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="..\Shaders\Billboard.fx">
+    <FxCompile Include="..\Shaders\Fire.fx">
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="..\Shaders\Blur.fx">

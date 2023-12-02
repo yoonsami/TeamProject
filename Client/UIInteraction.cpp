@@ -72,6 +72,9 @@ void UIInteraction::Create_Interaction(NPCTYPE eType)
             break;
         case NPCTYPE::GACHA:
             eIndex = QUESTINDEX::TRY_GACHA;
+        case NPCTYPE::HIDE_KID:
+            eIndex = QUESTINDEX::HIDE_AND_SEEK;
+
             break;
         }
 

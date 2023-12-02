@@ -405,7 +405,7 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\Shaders\Billboard.fx" />
+    <FxCompile Include="..\Shaders\Fire.fx" />
     <FxCompile Include="..\Shaders\Blur.fx" />
     <FxCompile Include="..\Shaders\ComputeShader.fx" />
     <FxCompile Include="..\Shaders\Distorted_Final.fx" />

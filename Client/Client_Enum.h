@@ -145,6 +145,7 @@ enum class NPCTYPE
 	QUEST,
 	GACHA,
 	POTION,
+	HIDE_KID,
 	MAX
 };
 
@@ -156,6 +157,7 @@ enum class QUESTINDEX
 	KILL_SPIKE,
 	KILL_MIR,
 	STORY_CLEAR,
+	HIDE_AND_SEEK,
 	MAX
 };
 

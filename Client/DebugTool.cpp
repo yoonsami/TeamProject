@@ -252,7 +252,13 @@ void DebugTool::RenderOptionTab()
 			_float& g_shadowBias = CUR_SCENE->g_fShadowBias;
 			DragFloat("g_shadowBias", &g_shadowBias, 0.00001f, 0.f, 1000.f,"%.6f");
 
-		
+			SeparatorText("Vignette");
+			_bool& g_VignetteOn = CUR_SCENE->g_VignetteData.g_bVignetteOn;
+			_float& g_fVignettePower = CUR_SCENE->g_VignetteData.g_fVignettePower;
+
+			Checkbox("g_VignetteOn", &g_VignetteOn);
+			DragFloat("g_fVignettePower", &g_fVignettePower, 0.1f, 0.0f, 20.f);
+
 		}
 
 		EndTabItem();

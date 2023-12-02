@@ -102,6 +102,8 @@ protected:
 	void Render_Aberration();
 	void Render_RadialBlur();
 
+	void Render_Vignette();
+
 	void Render_Debug();
 
 	void Render_UI();
@@ -226,5 +228,11 @@ public:
 	};
 	RadialBlurData g_RadialBlurData{};
 
+	struct VignetteData
+	{
+		_bool g_bVignetteOn = false;
+		_float g_fVignettePower = 2.f;
+	};
+	VignetteData g_VignetteData{};
 };
 

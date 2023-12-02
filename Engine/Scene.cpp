@@ -138,6 +138,8 @@ void Scene::Render()
 
 	Render_Aberration();
 	Render_RadialBlur();
+
+	Render_Vignette();
 	Render_Debug();
 	//Render_ToneMapping();
 
@@ -1667,6 +1669,30 @@ void Scene::Render_RadialBlur()
 
 	material->Get_Shader()->DrawIndexed(1, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 	m_wstrFinalRenderTarget = L"RadialBlurTarget";
+}
+
+void Scene::Render_Vignette()
+{
+	if (!g_VignetteData.g_bVignetteOn)
+		return;
+
+	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::VIGNETTE)->OMSetRenderTargets();
+
+	auto material = RESOURCES.Get<Material>(L"AberrationFinal");
+	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
+
+	material->Push_SubMapData();
+	mesh->Get_VertexBuffer()->Push_Data();
+	mesh->Get_IndexBuffer()->Push_Data();
+
+	material->Get_Shader()->GetScalar("g_fVignettePower")->SetFloat(g_VignetteData.g_fVignettePower);
+
+	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+
+	material->Get_Shader()->DrawIndexed(1, 3, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	m_wstrFinalRenderTarget = L"VignetteTarget";
 }
 
 void Scene::Render_Debug()

@@ -170,6 +170,22 @@ float4 PS_DOF(VS_OUT input) : SV_Target
     return float4(outColor, 1.f);
 }
 
+float g_fVignettePower;
+
+float4 PS_Vignette(VS_OUT input) : SV_Target
+{
+    float4 originColor = SubMap0.Sample(LinearSampler, input.uv);
+    
+    float2 uv = input.uv;
+    uv *= 1.f - uv.yx;
+    float vig = uv.x * uv.y * 15.f;
+    
+    vig = pow(vig, g_fVignettePower);
+    
+    
+    return originColor * vig;
+}
+
 cbuffer FogBuffer
 {
     float fogStart;
@@ -271,7 +287,15 @@ technique11 T1_AfterEffect
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_ExtractDOF()));
     }
-  
+    Pass pass_Vignette
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Final()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_Vignette()));
+    }
 };
 
 technique11 T2_RenderFinal
