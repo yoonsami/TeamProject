@@ -657,6 +657,7 @@ void DataMgr::Initialize()
         m_NoQuestDialog[IDX(QUESTINDEX::KILL_SPIKE)]    = L"... ...";
         m_NoQuestDialog[IDX(QUESTINDEX::KILL_MIR)]      = L"... ...";
         m_NoQuestDialog[IDX(QUESTINDEX::STORY_CLEAR)]   = L"... ...";
+        m_NoQuestDialog[IDX(QUESTINDEX::HIDE_AND_SEEK)]   = L"... ...";
     }
 
 
@@ -670,6 +671,7 @@ void DataMgr::Initialize()
         m_NoAcceptDialog[IDX(QUESTINDEX::KILL_SPIKE)]    = L"바쁘시군요";
         m_NoAcceptDialog[IDX(QUESTINDEX::KILL_MIR)]      = L"바쁘시군요";
         m_NoAcceptDialog[IDX(QUESTINDEX::STORY_CLEAR)]   = L"바쁘시군요";
+        m_NoAcceptDialog[IDX(QUESTINDEX::HIDE_AND_SEEK)]   = L"바쁘시군요";
     }
 
 
