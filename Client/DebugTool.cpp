@@ -336,7 +336,10 @@ void DebugTool::CameraOptionTab()
 			ImGui::ColorEdit4("vBaseColor1_Op1", (float*)&desc.vec4Params[1], ImGuiColorEditFlags_DisplayHSV | misc_flags);
 			ImGui::ColorEdit4("vBaseColor2_Op1", (float*)&desc.vec4Params[2], ImGuiColorEditFlags_DisplayHSV | misc_flags);
 
-
+			DragFloat("light intensity", &desc.floatParams[0], 0.01f, 0.f, 1.5f);
+			DragFloat("wave speed", &desc.floatParams[1], 0.01f, 0.f, 1.5f);
+			DragFloat("wave height", &desc.floatParams[2], 0.01f, 0.01f, 1.5f);
+			InputInt("wave gap", (_int*)(&desc.intParams[0]));
 
 			EndTabItem();
 		}

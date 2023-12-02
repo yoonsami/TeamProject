@@ -181,7 +181,7 @@ HRESULT MirScene::Load_Scene()
 
 	//Monster
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Boss_Mir\\", false);
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Boss_Mir2\\", false);
+	//RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Boss_Mir2\\", false);
 
 	auto player = Load_Player();
 	Load_Camera(player);
@@ -671,17 +671,18 @@ void MirScene::Load_Boss_Spike(shared_ptr<GameObject> pPlayer)
 void MirScene::Load_Water()
 {
 	shared_ptr<GameObject> obj = make_shared<GameObject>();
+	obj->GetOrAddTransform()->Scaled(_float3(30.f));
 	obj->GetOrAddTransform()->Set_State(Transform_State::POS,_float4(-150.f,0.f,-150.f,1.f));
 	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Water.fx");
 	shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(shader);
 	{
 		shared_ptr<Mesh> mesh = make_shared<Mesh>();
-		mesh->CreateGrid(300, 300);
+		mesh->CreateGrid(10, 10);
 		renderer->Set_Mesh(mesh);
 	}
 	{
 		shared_ptr<Material> material = make_shared<Material>();
-		material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterDiffuse", L"..\\Resources\\Textures\\MapObject\\Water\\T_Boom_000_a.tga"), TextureMapType::DIFFUSE);
+		material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterDiffuse", L"..\\Resources\\Textures\\MapObject\\Water\\D05_T_Water_D_01.tga"), TextureMapType::DIFFUSE);
 		material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterNormal", L"..\\Resources\\Textures\\MapObject\\Water\\T_chicken_meet_001.tga"), TextureMapType::NORMAL);
 		material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterDistortion", L"..\\Resources\\Textures\\MapObject\\Water\\T_Perlin_Noise_M.tga"), TextureMapType::DISTORTION);
 

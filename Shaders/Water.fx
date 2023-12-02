@@ -1,12 +1,18 @@
 #include "Render.fx"
 #include "Light.fx"
 
-float4 LightingWater(float3 viewNormal, float3 viewLightDir, float3 viewDir)
+float4 LightingWater(float3 viewNormal, float3 viewLightDir, float3 viewPosition)
 {
-    float rim = saturate(dot(viewNormal, viewDir));
-    rim = pow(1 - rim, 3);
+    float3 eyeDir = normalize(viewPosition);
     
-    float4 final = rim;
+    float3 reflectionDir = normalize(viewLightDir + 2 * dot(-viewLightDir, normalize(viewNormal)) * normalize(viewNormal));
+
+    float rim = pow(smoothstep(0.f, 1.f, 1.f - saturate(dot(-eyeDir, viewNormal))), g_int_0);
+    
+    float specularRatio = pow(saturate(dot(-eyeDir, reflectionDir)), g_int_1);
+
+    
+    float4 final = rim + lights[0].color.specular * specularRatio;
     
     return float4(final.rgb, 0.f);
 }
@@ -16,14 +22,14 @@ MeshOutput VS_Water(VTXMesh input)
     MeshOutput output;
     
     output.position = mul(float4(input.position, 1.f), W);
-    //output.position.y += cos(abs(input.uv.x * 2 - 1) * 3);
+    output.position.y += cos(abs(input.uv.x * 2 - 1) * 100 + g_float_1) * 0.3f;
     
     output.worldPosition = output.position.xyz;
-    output.viewPosition = mul(float4(output.worldPosition, 1.f), V);
+    output.viewPosition = mul(float4(output.worldPosition, 1.f), V).xyz;
     
     output.viewNormal = mul(input.normal, (float3x3) W);
     output.viewNormal = normalize(mul(output.viewNormal, (float3x3) V));
-    output.viewTangent = mul(input.normal, (float3x3) W);
+    output.viewTangent = mul(input.tangent, (float3x3) W);
     output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
     
     output.position = mul(output.position, VP);
@@ -37,10 +43,11 @@ float4 PS(MeshOutput input) : SV_TARGET
     float4 specularColor;
     float4 emissiveColor;
     
-    float fLightIntensity = 1.05f;
         
     float4 vBaseColor1_Op1 = g_vec4_1;
     float4 vBaseColor2_Op1 = g_vec4_2;
+    
+    float fLightIntensity = g_float_0;
         
     /* Calc Texcoord */
     float fDistortionWeight = 0.f;
@@ -63,6 +70,7 @@ float4 PS(MeshOutput input) : SV_TARGET
     }
     
     diffuseColor = vSample_Op1;
+    //diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv + g_vec2_1 /*uvsliding*/ + fDistortionWeight);
 
     float3 normal1 = input.viewNormal;
     ComputeNormalMapping_ViewSpace(normal1, input.viewTangent, input.uv + g_vec2_1 /*uvsliding*/ + fDistortionWeight);
@@ -70,7 +78,8 @@ float4 PS(MeshOutput input) : SV_TARGET
     ComputeNormalMapping_ViewSpace(normal2, input.viewTangent, input.uv - g_vec2_1 /*uvsliding*/ + fDistortionWeight);
 
     float3 normal = (normal1 + normal2) * 0.5f;
-    normal *= float3(0.5, 0.5, 1.);
+    
+    normal = normalize(normal);
     
     float diffuseRatio = 0.f;
     {
@@ -84,9 +93,10 @@ float4 PS(MeshOutput input) : SV_TARGET
     
     
     float3 vLightingColor = diffuseColor.rgb * diffuseRatio;
-    diffuseColor.rgb = lerp(diffuseColor.rgb, vLightingColor, fLightIntensity);
-    diffuseColor += LightingWater(normal, lights[0].vDirection.xyz, input.viewPosition);
+    diffuseColor.rgb = vLightingColor;
     diffuseColor.a = 1.f;
+    //diffuseColor.rgb = lerp(diffuseColor.rgb, vLightingColor, fLightIntensity);
+    diffuseColor.rgb += LightingWater(normal, lights[0].vDirection.xyz, input.viewPosition).rgb;
     
     return diffuseColor;
 }
@@ -122,7 +132,7 @@ technique11 T0
     pass p0
     {
         SetRasterizerState(RS_Default);
-        SetBlendState(BlendDefault, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetDepthStencilState(DSS_Default, 0);
         SetVertexShader(CompileShader(vs_5_0, VS_Water()));
         SetPixelShader(CompileShader(ps_5_0, PS()));
