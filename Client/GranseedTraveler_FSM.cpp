@@ -39,18 +39,13 @@ void GranseedTraveler_FSM::State_Tick()
 		{
 			{
 				auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
-				if (pObj)
+				if (pObj && pObj->Get_Script<UIInteraction>()->Get_Is_Activate())
+					m_eCurState = STATE::talk_01;
+				else if (pObj && !pObj->Get_Script<UIInteraction>()->Is_Created())
 					pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::GACHA);
-			}
-
-			{
-				/*auto pObj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
-				if (pObj)
-				{
-					pObj->Get_Script<UiQuestController>()->Get_Dialog_End()
-
-				}*/
-
+				
+			
+			
 			}
 			
 		}
@@ -105,9 +100,13 @@ void GranseedTraveler_FSM::talk_01()
 	Look_DirToTarget(XM_PI * 0.5f);
 
 
+	auto obj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
+	if (obj && !obj->Get_Script<UiQuestController>()->Get_Dialog_End())
+	{
+	m_eCurState = STATE::n_idle;
+			
+	}
 
-
-		m_eCurState = STATE::n_idle;
 }
 
 void GranseedTraveler_FSM::talk_Init()
