@@ -238,18 +238,8 @@ float4 PS_RadialBlur(VS_OUT input) : SV_Target
 
     for (int i = 0; i < g_iSamples; i += 2) //operating at 2 samples for better performance
     {
-        if (length(dir) > g_fNormalRadius)
-        {
             color += SubMap0.Sample(LinearSamplerClamp, input.uv + float(i) / float(g_iSamples) * dir * g_fRadialBlurStrength);
             color += SubMap0.Sample(LinearSamplerClamp, input.uv + float(i + 1) / float(g_iSamples) * dir * g_fRadialBlurStrength);
-        }
-        else
-        {
-            color += normalColor;
-            color += normalColor;
-            
-        }
-
     }
 
     

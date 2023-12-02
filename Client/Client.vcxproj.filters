@@ -1064,5 +1064,8 @@
     <FxCompile Include="..\Shaders\Render.fx">
       <Filter>Shader\Common</Filter>
     </FxCompile>
+    <FxCompile Include="..\Shaders\Water.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

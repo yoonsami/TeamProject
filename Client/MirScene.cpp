@@ -190,7 +190,7 @@ HRESULT MirScene::Load_Scene()
 	//Load_Boss_Giant_Mir(player);
 
 	Load_Ui(player);
-	//Load_Water();
+	Load_Water();
 
 	auto pPlayer = Get_GameObject(L"Player");
 	if (nullptr != pPlayer)
@@ -328,7 +328,7 @@ void MirScene::Load_Camera(shared_ptr<GameObject> pPlayer)
 		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, true);
 
 		camera->Add_Component(make_shared<MainCameraScript>(pPlayer));
-		//camera->Get_Script<MainCameraScript>()->Get_MaxDist() = 25.f;
+		camera->Get_Script<MainCameraScript>()->Get_MaxDist() = 15.f;
 		Add_GameObject(camera);
 	
 		//Setting Camera
@@ -466,6 +466,7 @@ void MirScene::Load_Boss_Mir(shared_ptr<GameObject> pPlayer)
 	}
 	ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
 	ObjMonster->Set_VelocityMap(true);
+	ObjMonster->Set_DrawShadow(true);
 	Add_GameObject(ObjMonster);
 }
 
@@ -678,6 +679,7 @@ void MirScene::Load_Water()
 	model->Get_Materials().front()->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterDiffuse", L"..\\Resources\\Textures\\MapObject\\Water\\T_Boom_000_a.tga"), TextureMapType::DIFFUSE);
 	model->Get_Materials().front()->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterNormal", L"..\\Resources\\Textures\\MapObject\\Water\\T_chicken_meet_001.tga"), TextureMapType::NORMAL);
 	model->Get_Materials().front()->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterDistortion", L"..\\Resources\\Textures\\MapObject\\Water\\T_Perlin_Noise_M.tga"), TextureMapType::DISTORTION);
+	model->Get_Materials().front()->Get_MaterialDesc().emissive = Color(0.3f);
 	renderer->Set_PassType(ModelRenderer::PASS_WATER);
 	renderer->Set_Model(model);
 	obj->Add_Component(renderer);

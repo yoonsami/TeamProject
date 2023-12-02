@@ -110,11 +110,8 @@ void MainCameraScript::Restrict_Offset()
 			m_vOffset.y = m_vOffset.Dot(projOffset) * tanf(m_fMinHeightRadian);
 		}
 
-		if ((m_vOffset.Dot(projOffset) > cosf(m_fMinHeightRadian * 3.f / 4.f)))
-		{
-			m_vOffset.y = m_vOffset.Dot(projOffset) * tanf(m_fMinHeightRadian * 3.f / 4.f);
-		}
-		
+		if (m_vOffset.y < 0.f)
+			m_vOffset.y = 0.f;
 
 		m_vOffset.Normalize();
     }
@@ -151,8 +148,6 @@ void MainCameraScript::Update_Transform()
 
     _float fMinDist = FLT_MAX;
     Check_ColliderWithWall(vCenterPos.xyz(), fMinDist);
-
-    
 
     // Set Position
     if (m_fFixedTime > 0.f)

@@ -966,8 +966,14 @@ PBR_OUTPUT PS_PBR_WATER(MeshOutput input)
     /* Mix four option textures */
     diffuseColor = vSample_Op1;
 
-    if (bHasNormalMap)
-        ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv * 0.4f + g_vec2_1 /*uvsliding*/ + fDistortionWeight);
+    float3 normal1 = input.viewNormal;
+    ComputeNormalMapping_ViewSpace(normal1, input.viewTangent, input.uv * 0.4f + g_vec2_1 /*uvsliding*/ + fDistortionWeight);
+    float3 normal2 = input.viewNormal;
+    ComputeNormalMapping_ViewSpace(normal2, input.viewTangent, input.uv * 0.4f - g_vec2_1 /*uvsliding*/ + fDistortionWeight);
+
+    float3 normal = (normal1 + normal2) * 0.5f;
+    normal *= float3(0.5, 0.5, 1.);
+    
     
     ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
     
@@ -988,7 +994,7 @@ PBR_OUTPUT PS_PBR_WATER(MeshOutput input)
 
 
     output.position = float4(input.viewPosition.xyz, 0.f);
-    output.normal = float4(input.viewNormal.xyz, 0.f);
+    output.normal = float4(normal, 0.f);
     output.depth = input.position.z;
     output.depth.w = input.viewPosition.z;
     output.arm = ARM_Map;

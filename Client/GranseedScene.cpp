@@ -659,7 +659,7 @@ void GranseedScene::Load_NPC(const wstring& dataFileName)
 			break;
 			}
 		}
-
+		obj->Set_DrawShadow(true);
 		Add_GameObject(obj);
 	}
 }

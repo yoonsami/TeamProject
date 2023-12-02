@@ -430,6 +430,7 @@
     <FxCompile Include="..\Shaders\Shader_Trail.fx" />
     <FxCompile Include="..\Shaders\Shadow.fx" />
     <FxCompile Include="..\Shaders\SkyBox.fx" />
+    <FxCompile Include="..\Shaders\Water.fx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
