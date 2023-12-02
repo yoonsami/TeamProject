@@ -45,7 +45,11 @@ HRESULT Boss_Giant_Mir_FSM::Init()
         {
             _float3 vLook = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
             vLook.y = 0.f;
-            Get_Transform()->Set_LookDir(vLook);
+            _float3 vLookPos = _float3{ -0.25f, 0.f, -57.f };
+            //_float3 vLookPos = _float3(0.24f, 0.f, 57.5f);
+            //_float3 vLookPos = _float3(0.f, 0.f, 30.f);
+            
+            Get_Transform()->Set_LookDir(vLookPos);
         }
 
         //Setting_DragonBall();
@@ -262,19 +266,19 @@ void Boss_Giant_Mir_FSM::SQ_Spawn_Init()
 
 void Boss_Giant_Mir_FSM::b_idle()
 {
-    /*m_tAttackCoolTime.fAccTime += fDT;
+    m_tAttackCoolTime.fAccTime += fDT;
 
     Create_Meteor();
 
     if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
-       Set_AttackPattern();*/
+       Set_AttackPattern();
 }
 
 void Boss_Giant_Mir_FSM::b_idle_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"b_idle", 0.3f, true, 1.f);
+    animator->Set_NextTweenAnim(L"b_idle", 0.6f, true, 1.f);
 
     m_bInvincible = false;
 
@@ -324,7 +328,7 @@ void Boss_Giant_Mir_FSM::skill_1100()
         }
     }
 
-    if (Is_AnimFinished())
+    if (m_iCurFrame >= Get_FinalFrame() - 5 )
         m_eCurState = STATE::b_idle;    
     
 
@@ -369,7 +373,7 @@ void Boss_Giant_Mir_FSM::skill_100100()
         }
     }
 
-    if (Is_AnimFinished())
+    if (m_iCurFrame >= Get_FinalFrame() - 5)
         m_eCurState = STATE::b_idle;
 }
 
