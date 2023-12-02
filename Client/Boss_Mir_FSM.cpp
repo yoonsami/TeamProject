@@ -23,6 +23,14 @@
 /* Effect Script */
 #include "Mir_13100_Fireball.h"
 
+Boss_Mir_FSM::Boss_Mir_FSM()
+{
+}
+
+Boss_Mir_FSM::~Boss_Mir_FSM()
+{
+}
+
 HRESULT Boss_Mir_FSM::Init()
 {
     if (!m_bInitialize)
@@ -64,7 +72,7 @@ HRESULT Boss_Mir_FSM::Init()
         
         Setting_DragonBall();
 
-
+        m_vSetPlayerPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 20.f;
 
         m_bInitialize = true;
     }
@@ -987,11 +995,17 @@ void Boss_Mir_FSM::SQ_Flee()
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, m_vHeadCamDir * -1.f, 6.f);
         }
     }
-
+    
     if (Is_AnimFinished())
     {
         EVENTMGR.Delete_Object(m_pOwner.lock());
         g_bCutScene = false;
+
+        if (!m_pTarget.expired())
+        {
+            m_pTarget.lock()->Get_CharacterController()->Get_Actor()->setFootPosition({ m_vSetPlayerPos.x,  m_vSetPlayerPos.y, m_vSetPlayerPos.z });
+        }
+
         Load_Giant_Boss_Mir();
     }
 
@@ -2546,8 +2560,7 @@ void Boss_Mir_FSM::Create_DragonBall()
 
 void Boss_Mir_FSM::Set_AttackPattern()
 {
-    m_eCurState = STATE::SQ_Flee;
-   /*_uint iRan = rand() % 10;
+   _uint iRan = rand() % 10;
 
     while (true)
     {
@@ -2606,7 +2619,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
     {
         m_eCurState = STATE::skill_200000;
         m_iPreAttack = 9;
-    }*/
+    }
 }
 
 void Boss_Mir_FSM::Setting_DragonBall()
@@ -2702,8 +2715,9 @@ void Boss_Mir_FSM::Load_Giant_Boss_Mir()
 
     ObjMonster->Add_Component(make_shared<Transform>());
 
-    ObjMonster->Get_Transform()->Scaled(_float3(0.7f, 0.7f, 0.7f));
-    ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(0.2f, 0.3f, 30.f, 1.f));
+    //ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(0.242f, 11.7f, 57.5f, 1.f));
+    //ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(0.2f, 0.3f, 30.f, 1.f));
+    ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
     {
         shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
@@ -2721,6 +2735,8 @@ void Boss_Mir_FSM::Load_Giant_Boss_Mir()
     ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 2.f, 4.f, 6.f })); //obbcollider
     ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
     ObjMonster->Get_Collider()->Set_Activate(true);
+    
+    EVENTMGR.Create_Object(ObjMonster);
 }
 
 

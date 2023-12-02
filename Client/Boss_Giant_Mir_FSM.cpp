@@ -48,7 +48,7 @@ HRESULT Boss_Giant_Mir_FSM::Init()
             Get_Transform()->Set_LookDir(vLook);
         }
 
-        Setting_DragonBall();
+        //Setting_DragonBall();
 
         m_bInitialize = true;
     }
@@ -222,26 +222,52 @@ void Boss_Giant_Mir_FSM::Set_State(_uint iIndex)
 
 void Boss_Giant_Mir_FSM::SQ_Spawn()
 {
+    Calculate_IntroHeadCam();
+
+    if (!m_pCamera.expired())
+    {
+        //m_fIntroCamDistance = CamDistanceLerp(20.f, 10.f, m_fCamRatio);
+        //
+        //m_fCamRatio += fDT;
+        //
+        //if (m_fCamRatio >= 1.f)
+        //    m_fCamRatio = 1.f;
+    
+        m_vHeadCamDir = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS) - m_vHeadBonePos.xyz();
+        m_vHeadCamDir.Normalize();
+    
+        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(0.8f);
+        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vHeadBonePos.xyz());
+        m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, m_vHeadCamDir, 10.f);
+    
+    }
+
     if (Is_AnimFinished())
+    {
+        g_bCutScene = false;
         m_eCurState = STATE::b_idle;
+    }
 }
 
 void Boss_Giant_Mir_FSM::SQ_Spawn_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"SQ_Spawn", 0.3f, true, 1.f);
+    animator->Set_NextTweenAnim(L"SQ_Spawn", 0.3f, false, 1.f);
 
+    Calculate_IntroHeadCam();
+
+    g_bCutScene = true;
 }
 
 void Boss_Giant_Mir_FSM::b_idle()
 {
-    m_tAttackCoolTime.fAccTime += fDT;
+    /*m_tAttackCoolTime.fAccTime += fDT;
 
     Create_Meteor();
 
     if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
-       Set_AttackPattern();
+       Set_AttackPattern();*/
 }
 
 void Boss_Giant_Mir_FSM::b_idle_Init()
@@ -442,12 +468,12 @@ void Boss_Giant_Mir_FSM::Set_AttackPattern()
 
     if (iRan == 0)
     {
-        m_eCurState = STATE::SQ_Spawn;
+        m_eCurState = STATE::skill_1100;
         m_iPreAttack = 0;
     }
     else if (iRan == 1)
     {
-        m_eCurState = STATE::skill_1100;
+        m_eCurState = STATE::skill_100100;
         m_iPreAttack = 1;
     }
   
