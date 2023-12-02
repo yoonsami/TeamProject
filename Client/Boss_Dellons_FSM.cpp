@@ -487,34 +487,13 @@ void Boss_Dellons_FSM::Set_State(_uint iIndex)
 }
 
 void Boss_Dellons_FSM::n_idle()
-{
-    //Origin
-    //if (Target_In_DetectRange())
-    //    m_bDetected = true;
-
-    //if (m_bDetected)
-    //{
-    //    //Add_BossHp UI
-    //    if (!m_pOwner.expired())
-    //    {
-    //        auto pScript = make_shared<UIBossHpBar>(BOSS::DELLONS);
-    //        m_pOwner.lock()->Add_Component(pScript);
-    //        pScript->Init();
-    //    }
-
-    //    m_eCurState = STATE::b_idle;
-    //}
-
-   
+{   
     //Change
     if (Target_In_DetectRange())
         m_bDetected = true;
 
     if (m_bDetected)
         m_eCurState = STATE::talk_01;
-    
-
-
 }
 
 void Boss_Dellons_FSM::n_idle_Init()
@@ -824,6 +803,12 @@ void Boss_Dellons_FSM::die_Init()
         if (m_pDellonsWraith.lock()->Get_FSM())
             m_pDellonsWraith.lock()->Get_FSM()->Remove_Object();
     }
+
+    if (!m_pOwner.expired())
+    {
+        if (m_pOwner.lock()->Get_Script<UIBossHpBar>())
+            m_pOwner.lock()->Get_Script<UIBossHpBar>()->Remove_HpBar();
+    }
 }
 
 void Boss_Dellons_FSM::airborne_start()
@@ -878,6 +863,12 @@ void Boss_Dellons_FSM::airborne_end()
             {
                 if (m_pDellonsWraith.lock()->Get_FSM())
                     m_pDellonsWraith.lock()->Get_FSM()->Remove_Object();
+            }
+
+            if (!m_pOwner.expired())
+            {
+                if (m_pOwner.lock()->Get_Script<UIBossHpBar>())
+                    m_pOwner.lock()->Get_Script<UIBossHpBar>()->Remove_HpBar();
             }
         }
     }
@@ -1008,6 +999,12 @@ void Boss_Dellons_FSM::knock_end_loop()
             if (m_pDellonsWraith.lock()->Get_FSM())
                 m_pDellonsWraith.lock()->Get_FSM()->Remove_Object();
         }
+
+        if (!m_pOwner.expired())
+        {
+            if (m_pOwner.lock()->Get_Script<UIBossHpBar>())
+                m_pOwner.lock()->Get_Script<UIBossHpBar>()->Remove_HpBar();
+        }
     }
 }
 
@@ -1121,6 +1118,12 @@ void Boss_Dellons_FSM::knockdown_end()
             {
                 if (m_pDellonsWraith.lock()->Get_FSM())
                     m_pDellonsWraith.lock()->Get_FSM()->Remove_Object();
+            }
+
+            if (!m_pOwner.expired())
+            {
+                if (m_pOwner.lock()->Get_Script<UIBossHpBar>())
+                    m_pOwner.lock()->Get_Script<UIBossHpBar>()->Remove_HpBar();
             }
         }
     }

@@ -2,7 +2,7 @@
 //#include "ConstantBuffer.h"
 
 #define MAX_MODEL_TRANSFORMS 300
-#define MAX_MODEL_KEYFRAMES 500
+#define MAX_MODEL_KEYFRAMES 600
 #define MAX_MODEL_INSTANCE 400
 
 class Shader;

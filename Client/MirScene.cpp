@@ -181,8 +181,7 @@ HRESULT MirScene::Load_Scene()
 
 	//Monster
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Boss_Mir\\", false);
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Boss_Mir2\\", false);
-
+	
 	auto player = Load_Player();
 	Load_Camera(player);
 	Load_MapFile(L"MirMap", player);
@@ -190,7 +189,7 @@ HRESULT MirScene::Load_Scene()
 	//Load_Boss_Giant_Mir(player);
 
 	Load_Ui(player);
-	Load_Water();
+	//Load_Water();
 
 	auto pPlayer = Get_GameObject(L"Player");
 	if (nullptr != pPlayer)
@@ -483,7 +482,7 @@ void MirScene::Load_Boss_Giant_Mir(shared_ptr<GameObject> pPlayer)
 
 		shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
 		{
-			shared_ptr<Model> model = RESOURCES.Get<Model>(L"Mir_02");
+			shared_ptr<Model> model = RESOURCES.Get<Model>(L"Mir_03");
 			animator->Set_Model(model);
 		}
 
