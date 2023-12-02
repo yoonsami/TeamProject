@@ -92,7 +92,7 @@ void GranseedChildren_FSM::n_idle()
 	{
 		{
 			auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
-			if (pObj && pObj->Get_Script<UIInteraction>()->Get_Is_Activate())
+			if (pObj && pObj->Get_Script<UIInteraction>()->Get_Is_Activate(m_pOwner.lock()))
 				m_eCurState = STATE::talk_01;
 			else if (pObj && !pObj->Get_Script<UIInteraction>()->Is_Created())
 				pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::HIDE_KID, m_pOwner.lock());
@@ -183,7 +183,7 @@ void GranseedChildren_FSM::n_run()
 	{
 		{
 			auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
-			if (pObj && pObj->Get_Script<UIInteraction>()->Get_Is_Activate())
+			if (pObj && pObj->Get_Script<UIInteraction>()->Get_Is_Activate(m_pOwner.lock()))
 				m_eCurState = STATE::talk_01;
 			else if (pObj && !pObj->Get_Script<UIInteraction>()->Is_Created())
 				pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::HIDE_KID, m_pOwner.lock());
@@ -266,7 +266,7 @@ void GranseedChildren_FSM::n_walk()
 	{
 		{
 			auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
-			if (pObj && pObj->Get_Script<UIInteraction>()->Get_Is_Activate())
+			if (pObj && pObj->Get_Script<UIInteraction>()->Get_Is_Activate(m_pOwner.lock()))
 				m_eCurState = STATE::talk_01;
 			else if (pObj && !pObj->Get_Script<UIInteraction>()->Is_Created())
 				pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::HIDE_KID, m_pOwner.lock());
