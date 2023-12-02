@@ -23,13 +23,13 @@ HRESULT NeutralAlpaca_FSM::Init()
     
         m_pCamera = CUR_SCENE->Get_MainCamera();
 
-        m_fRunSpeed = 6.f;
+        m_fRunSpeed = 7.f;
         m_fKnockBackSpeed = 4.f;
         m_fKnockDownSpeed = 4.f;
 
         m_fNormalAttack_AnimationSpeed = 1.f;
         m_fSkillAttack_AnimationSpeed = 1.f;
-        m_fDetectRange = 10.f;
+        m_fDetectRange = 6.f;
 
         m_bInitialize = true;
     }
@@ -220,26 +220,33 @@ void NeutralAlpaca_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _fl
     if (pCollider->Get_Owner() == nullptr)
         return;
 
-    if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
-        return;
 
+    if (pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
+	{
+		if (!m_bInvincible)
+		{
+			wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
+			_float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
 
-    if (!m_bInvincible)
+			shared_ptr<GameObject> targetToLook = nullptr;
+
+			if (strSkillName.find(L"_Skill") != wstring::npos)
+				targetToLook = pCollider->Get_Owner();
+			else
+				targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner();
+
+			if (targetToLook == nullptr)
+				return;
+
+			Get_Hit(strSkillName, fAttackDamage, targetToLook);
+		}
+	}
+
+    if (pCollider->Get_Owner()->Get_Name() == L"Alpaca_Exit")
     {
-        wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
-        _float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
-        
-        shared_ptr<GameObject> targetToLook = nullptr;
-
-        if (strSkillName.find(L"_Skill") != wstring::npos)
-            targetToLook = pCollider->Get_Owner();
-        else
-            targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner();
-
-        if (targetToLook == nullptr)
-            return;
-
-        Get_Hit(strSkillName, fAttackDamage, targetToLook);
+		auto script = make_shared<ObjectDissolve>(1.f);
+		Get_Owner()->Add_Component(script);
+		script->Init();
     }
 }
 
@@ -350,7 +357,7 @@ void NeutralAlpaca_FSM::Set_State(_uint iIndex)
 
 void NeutralAlpaca_FSM::b_idle()
 {
-   
+    if (!m_bDetected)
 	{
 		CalCulate_PatrolTime();
 
@@ -358,15 +365,14 @@ void NeutralAlpaca_FSM::b_idle()
 		{
 			m_eCurState = STATE::n_run;
 		}
+		if (Target_In_DetectRange())
+			m_bDetected = true;
 	}
-
-	if (Target_In_DetectRange())
-		m_bDetected = true;
 
     if (m_bDetected)
         m_eCurState = STATE::b_run;
 
-    Dead_Setting();
+
 }
 
 void NeutralAlpaca_FSM::b_idle_Init()
@@ -395,7 +401,15 @@ void NeutralAlpaca_FSM::b_run()
 
     Get_Transform()->Go_Straight();
 
-	m_bDetected = Target_In_DetectRange();
+	_bool bFlag = false;
+
+	_float fGap = (Get_Transform()->Get_State(Transform_State::POS).xyz() -
+		m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz()).LengthSquared();
+
+	if (fGap <= pow(m_fDetectRange + 2.f,2.f))
+		bFlag = true;
+
+	m_bDetected = bFlag;
 
 	if (!m_bDetected)
 		m_eCurState = STATE::b_idle;

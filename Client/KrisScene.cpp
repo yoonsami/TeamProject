@@ -76,6 +76,7 @@ namespace fs = std::filesystem;
 
 KrisScene::KrisScene()
 {
+	m_strSceneName = L"KrisScene";
 }
 
 KrisScene::~KrisScene()
@@ -103,7 +104,7 @@ void KrisScene::Init()
 
 	}
 
-	m_strSceneName = L"KrisScene";
+
 }
 
 void KrisScene::Tick()
@@ -171,9 +172,7 @@ HRESULT KrisScene::Load_Scene()
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_White\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_Brown\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_Black\\", false);
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Bad_Alpaca_White\\", false);
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Bad_Alpaca_Brown\\", false);
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Bad_Alpaca_Black\\", false);
+
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Wolf\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Succubus_Scythe\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Undead_Priest\\", false);
@@ -182,9 +181,6 @@ HRESULT KrisScene::Load_Scene()
 	Load_Camera(player);
 	Load_MapFile(L"KrisMap", player);
 
-	//Load_Monster(2, L"Silversword_Soldier", player);
-	//Load_Monster(2, L"Succubus_Scythe", player);
-	//Load_Monster(2, L"Undead_Priest", player);
 	Load_Monster(5, L"Alpaca_White", player);
 	Load_Monster(5, L"Alpaca_Brown", player);
 	Load_Monster(5, L"Alpaca_Black", player); 
@@ -194,11 +190,11 @@ HRESULT KrisScene::Load_Scene()
 	//Load_Monster(2, L"Wolf", player);
 
 	////Load_Boss_Spike(player);				
-	//Load_Boss_Dellons(player);				
+	Load_Boss_Dellons(player);				
 
 
 	Load_Ui(player);
-
+	Load_EventScript();
 	return S_OK;
 }
 
@@ -407,10 +403,6 @@ void KrisScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_pt
 			ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.7f, 0.5f })); //obbcollider
 			ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
 			ObjMonster->Get_Collider()->Set_Activate(true);
-
-			if (strMonsterTag.find(L"Bad_Alpaca") != wstring::npos);
-			else if (strMonsterTag.find(L"Alpaca") != wstring::npos)
-				ObjMonster->Get_Collider()->Set_Activate(false);
 
 			wstring strMonsterName = strMonsterTag + to_wstring(i);
 			ObjMonster->Set_Name(strMonsterName);
@@ -823,4 +815,21 @@ void KrisScene::Load_Debug()
 		debugText->Get_Script<ObjectTransformDebug>()->Set_Target(Get_GameObject(L"Boss_Spike"));
 		Add_GameObject(debugText);
 	}
+}
+
+void KrisScene::Load_EventScript()
+{
+	{
+		shared_ptr<GameObject> obj = make_shared<GameObject>();
+		obj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(1.619f, -0.029f, -27.929f, 1.f));
+		obj->Add_Component(make_shared<AABBBoxCollider>(_float3(10.f, 4.f, 4.f)));
+		obj->Get_Collider()->Set_Activate(true);
+		obj->Get_Collider()->Set_CollisionGroup(MAPObject);
+		obj->Set_Name(L"Alpaca_Exit");
+
+		Add_GameObject(obj);
+
+		
+	}
+
 }

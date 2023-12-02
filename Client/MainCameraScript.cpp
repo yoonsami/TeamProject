@@ -133,7 +133,7 @@ void MainCameraScript::Restrict_Offset()
 
 void MainCameraScript::Update_Transform()
 {
-    if (!g_bCutScene && m_fMaxDistance > 5.f)
+    if (!g_bCutScene && CUR_SCENE->Get_Name() ==  L"MirScene")
     {
         m_fFixedTime = 0.f;
         m_fFixedDist = m_fMaxDistance;

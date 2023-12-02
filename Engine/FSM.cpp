@@ -223,7 +223,7 @@ _bool FSM::CounterAttackCheck(_float fCheckDegree)
 			else
 				return false;
 		}
-		else //������  ���������
+		else 
 		{
 			if (XMVectorGetX(vDot) >= cosf(XMConvertToRadians(fCheckDegree / 2.f)))//üũ���� �ݸ�ŭ ������ ��
 				return true;
@@ -231,7 +231,7 @@ _bool FSM::CounterAttackCheck(_float fCheckDegree)
 				return false;
 		}
 	}
-	else //�� ���������� ��
+	else 
 	{
 		return false;
 	}

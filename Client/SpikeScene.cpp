@@ -78,6 +78,7 @@ namespace fs = std::filesystem;
 
 SpikeScene::SpikeScene()
 {
+	m_strSceneName = L"SpikeScene";
 }
 
 SpikeScene::~SpikeScene()
@@ -104,7 +105,7 @@ void SpikeScene::Init()
 		}
 	}
 
-	m_strSceneName = L"SpikeScene";
+
 }
 
 void SpikeScene::Tick()

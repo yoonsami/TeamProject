@@ -80,6 +80,7 @@ namespace fs = std::filesystem;
 
 GranseedScene::GranseedScene()
 {
+	m_strSceneName = L"GranseedScene";
 }
 
 GranseedScene::~GranseedScene()
@@ -118,7 +119,7 @@ void GranseedScene::Init()
 	}
 	
 
-	m_strSceneName = L"GranseedScene";
+
 }
 
 void GranseedScene::Tick()
