@@ -7,6 +7,7 @@
 #include "SphereCollider.h"
 #include "RigidBody.h"
 #include "Model.h"
+#include "Get_Gravity.h"
 
 
 HRESULT DestroyBuilding_FSM::Init()
@@ -22,6 +23,8 @@ HRESULT DestroyBuilding_FSM::Init()
 
 		animator->Set_RenderState(false);
 
+
+		Get_Owner()->Add_Component(make_shared<Get_Gravity>(0.f));
 
 		m_bInitialize = true;
 	}
