@@ -1,0 +1,115 @@
+#include "pch.h"
+#include "DestroyBuilding_FSM.h"
+#include "Boss_Mir_FSM.h"
+#include "ModelAnimator.h"
+#include "MotionTrailRenderer.h"
+#include "MotionTrailDisappear.h"
+#include "SphereCollider.h"
+#include "RigidBody.h"
+#include "Model.h"
+
+
+HRESULT DestroyBuilding_FSM::Init()
+{
+	if (!m_bInitialize)
+	{
+		auto animator = Get_Owner()->Get_Animator();
+		if (animator)
+		{
+			animator->Set_CurrentAnim(L"Mir_Intro_v02_BuildCenter_Anim", false, 1.f);
+			m_eCurState = STATE::Crash;
+		}
+
+		animator->Set_RenderState(false);
+
+
+		m_bInitialize = true;
+	}
+
+	return S_OK;
+}
+
+void DestroyBuilding_FSM::Tick()
+{
+	State_Tick();
+}
+
+void DestroyBuilding_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
+{
+	if (pCollider->Get_Owner() == nullptr)
+		return;
+}
+
+void DestroyBuilding_FSM::State_Tick()
+{
+	State_Init();
+
+	m_iCurFrame = Get_CurFrame();
+
+	switch (m_eCurState)
+	{
+	case STATE::Idle:
+		Idle();
+		break;
+	case STATE::Crash:
+		Crash();
+		break;
+	case STATE::NONE:
+		break;
+	}
+
+	if (m_iPreFrame != m_iCurFrame)
+		m_iPreFrame = m_iCurFrame;
+}
+
+void DestroyBuilding_FSM::State_Init()
+{
+	if (m_eCurState != m_ePreState)
+	{
+		switch (m_eCurState)
+		{
+		case STATE::Idle:
+			Idle_Init();
+			break;
+		case STATE::Crash:
+			Crash_Init();
+			break;
+		case STATE::NONE:
+			break;
+		}
+
+
+		m_ePreState = m_eCurState;
+	}
+
+}
+
+void DestroyBuilding_FSM::Idle()
+{
+}
+
+void DestroyBuilding_FSM::Idle_Init()
+{
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	//animator->Set_CurrentAnim(L"anim_R02_DecoBall_00_Anim", true, 1.f);
+}
+
+void DestroyBuilding_FSM::Crash()
+{
+	if (Init_CurFrame(1))
+	{
+		if (!m_pOwner.expired())
+			Get_Owner()->Get_Animator()->Set_RenderState(true);
+	}
+
+	if (Is_AnimFinished())
+		EVENTMGR.Delete_Object(m_pOwner.lock());
+}
+
+void DestroyBuilding_FSM::Crash_Init()
+{
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_CurrentAnim(L"Mir_Intro_v02_BuildCenter_Anim", false, 1.f);
+}

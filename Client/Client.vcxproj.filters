@@ -337,6 +337,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\09.UiCardDeckSwitch">
       <UniqueIdentifier>{45081402-d3fc-4713-9ed4-75b7f961e759}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\01.FSM\03.Special_FSM\05.DestroyBuilding_FSM">
+      <UniqueIdentifier>{87c8fa28-b774-48de-b277-c3e1f4a06dab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -622,9 +625,6 @@
     <ClInclude Include="SpikeScene.h">
       <Filter>01.Scene\00.PlayScene\03.Spike</Filter>
     </ClInclude>
-    <ClInclude Include="DragonBall_FSM.h">
-      <Filter>02.Component\01.FSM\03.Special_FSM\04.DragonBall_FSM</Filter>
-    </ClInclude>
     <ClInclude Include="UiQuestController.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\18.UiQuestController</Filter>
     </ClInclude>
@@ -671,6 +671,12 @@
     </ClInclude>
     <ClInclude Include="UiCardDeckSwitch.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\09.UiCardDeckSwitch</Filter>
+    </ClInclude>
+    <ClInclude Include="DestroyBuilding_FSM.h">
+      <Filter>02.Component\01.FSM\03.Special_FSM\05.DestroyBuilding_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="DragonBall_FSM.h">
+      <Filter>02.Component\01.FSM\03.Special_FSM\04.DragonBall_FSM</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -973,6 +979,9 @@
     </ClCompile>
     <ClCompile Include="UiCardDeckSwitch.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\09.UiCardDeckSwitch</Filter>
+    </ClCompile>
+    <ClCompile Include="DestroyBuilding_FSM.cpp">
+      <Filter>02.Component\01.FSM\03.Special_FSM\05.DestroyBuilding_FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

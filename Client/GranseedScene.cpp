@@ -185,6 +185,18 @@ void GranseedScene::Final_Tick()
 		SCENE.Change_Scene(scene);
 		g_bCutScene = false;
 	}
+	if (KEYPUSH(KEY_TYPE::TAB) && KEYPUSH(KEY_TYPE::F7))
+	{
+		/*GachaSceneDesc sceneDesc{ L"YeopoMap",HERO::YEOPO};
+			SCENE.Add_SubScene(make_shared<GachaScene>(sceneDesc));
+		SCENE.Exchange_Scene();*/
+
+		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<GranseedScene>());
+		scene->Set_StaticObjects(m_StaticObject);
+		PHYSX.Set_CharacterControllerNull();
+		SCENE.Change_Scene(scene);
+		g_bCutScene = false;
+	}
 }
 
 HRESULT GranseedScene::Load_Scene()

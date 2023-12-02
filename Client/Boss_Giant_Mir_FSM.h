@@ -9,10 +9,24 @@ public:
 	enum class STATE
 	{
 		SQ_Spawn,
+		groggy_start,
+		groggy_loop,
+		groggy_end,
+		SQ_Leave,
 		b_idle,
 		skill_1100, // Breath
+		skill_1200, // Breath
+		skill_2100, // Breath
+		skill_5100, // Tail Attack
+		skill_7100, // Breath
+		
+		skill_100000, // Breath 
 		skill_100100, // Breath 
-		SQ_Leave,
+
+		skill_200000, // Breath 
+		skill_200100, // Breath 
+
+
 		NONE
 	};
 
@@ -35,20 +49,29 @@ private:
 
 	void SQ_Spawn();
 	void SQ_Spawn_Init();
+
+	void groggy_start();
+	void groggy_start_Init();
+	void groggy_loop();
+	void groggy_loop_Init();
+	void groggy_end();
+	void groggy_end_Init();
+	void SQ_Leave();
+	void SQ_Leave_Init();
+	
 	void b_idle();
 	void b_idle_Init();
 	void skill_1100();
 	void skill_1100_Init();
 	void skill_100100();
 	void skill_100100_Init();
-	void SQ_Leave();
-	void SQ_Leave_Init();
 
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage);
 	void Create_Meteor();
 	void Set_AttackPattern();
 	void Calculate_IntroHeadCam();
 	void Setting_DragonBall();
+	void Destroy_MapObject();
 
 	_float CamDistanceLerp(_float fStart, _float fEnd, _float fRatio);
 
@@ -76,6 +99,7 @@ private:
 	_float3 m_vHeadCamDir = _float3(0.f);
 	_float4 m_vHeadBonePos = _float4(0.f);
 	_float4 m_vHeadCamPos = _float4(0.f);
+	_float4 m_vIntroCamPos = _float4(0.f);
 
 	_float4x4 HeadBoneMatrix = XMMatrixIdentity();
 	_float4x4 MouseBoneMatrix = XMMatrixIdentity();
