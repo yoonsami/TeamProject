@@ -525,8 +525,8 @@ PS_OUT_Deferred PS_WATER(MeshOutput input)
     /* Get Shared Data */   
     float fLightIntensity = 1.05f;
         
-    float4 vBaseColor1_Op1 = float4(100.f / 255.f, 191.f / 255.f, 1.f, 1.f);
-    float4 vBaseColor2_Op1 = float4(0.f, 150.f / 255.f, 289.f / 255.f, 1.f);
+    float4 vBaseColor1_Op1 = g_vec4_1;
+    float4 vBaseColor2_Op1 = g_vec4_2;
         
     /* Calc Texcoord */
     float fDistortionWeight = 0.f;
@@ -935,8 +935,8 @@ PBR_OUTPUT PS_PBR_WATER(MeshOutput input)
     /* Get Shared Data */   
     float fLightIntensity = 1.05f;
         
-    float4 vBaseColor1_Op1 = float4(100.f/255.f,191.f/255.f,1.f,1.f);
-    float4 vBaseColor2_Op1 = float4(0.f, 150.f / 255.f,289.f/255.f, 1.f);
+    float4 vBaseColor1_Op1 = g_vec4_1;
+    float4 vBaseColor2_Op1 = g_vec4_2;
         
     /* Calc Texcoord */
     float fDistortionWeight = 0.f;

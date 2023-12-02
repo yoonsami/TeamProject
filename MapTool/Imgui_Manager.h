@@ -85,12 +85,14 @@ private:
 	// 현재 갖고있는 타일정보로 터레인새로생성
 	void Create_Terrain();
 	// 터레인정보(메시)를 기반으로 터레인오브젝트 생성
-	void Create_Terrain(shared_ptr<class Terrain> _pTerrainMesh);
+	void Create_Terrain(shared_ptr<class Terrain> _pTerrainMesh, _int _iTerrainSizeX, _int _iTerrainSizeY);
 	// 마스크텍스쳐 생성저장
 	void Create_MaskTexture();
 	// 범위에 들어가는 정점들의 높이를 fInitHeight로 변경
 	void Set_TerrainHeight();
 
+// 물 생성
+	void Load_Water();
 	// 점광원 제거
 	HRESULT Delete_PointLight();
 	// 맵오브젝트 제거
@@ -232,6 +234,11 @@ private:
 	_float m_fTilePressForce = { 0.01f };
 	// 범위안에 들어오는 녀석들의 높이를 해당숫자로 초기화 
 	_float m_fTerrainSetHeight = { 0.f };
+
+// 바다
+	// 물색깔
+	Color m_WaterColor1 = Color(100.f / 255.f, 191.f / 255.f, 1.f, 1.f);
+	Color m_WaterColor2 = Color(0.f, 150.f / 255.f, 289.f / 255.f, 1.f);
 
 private:
 	void Frame_ModelObj();
