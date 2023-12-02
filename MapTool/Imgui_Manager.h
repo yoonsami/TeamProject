@@ -237,8 +237,10 @@ private:
 
 // ¹Ù´Ù
 	// ¹°»ö±ò
-	Color m_WaterColor1 = Color(100.f / 255.f, 191.f / 255.f, 1.f, 1.f);
-	Color m_WaterColor2 = Color(0.f, 150.f / 255.f, 289.f / 255.f, 1.f);
+	//Color m_WaterColor1 = Color(100.f / 255.f, 191.f / 255.f, 1.f, 1.f);
+	Color m_WaterColor1 = Color(100.f / 255.f, 107.f / 255.f, 202.f / 255.f, 1.f);
+	//Color m_WaterColor2 = Color(0.f, 150.f / 255.f, 289.f / 255.f, 1.f);
+	Color m_WaterColor2 = Color(0.f, 66.f / 255.f, 236.f / 255.f, 1.f);
 
 private:
 	void Frame_ModelObj();
