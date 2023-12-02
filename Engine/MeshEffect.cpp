@@ -69,7 +69,7 @@ void MeshEffect::MeshEffect_Final_Tick()
 
     // For. Update Time information 
     m_fCurrAge += fDT;
-    m_fLifeTimeRatio = m_fCurrAge / m_tDesc.fDuration;
+    m_fLifeTimeRatio = m_fCurrAge / m_fDuration;
     m_fTimeAcc_SpriteAnimation += fDT;
 
     // Calc Curr Dissolve weight 
@@ -482,7 +482,6 @@ void MeshEffect::Translate()
             _float3 vDir = Get_LocalMatrix().Backward();
             vDir.Normalize();
             m_vLocalPos += vDir * Get_Transform()->Get_Speed() * fDT;
-
         }
         break;
     }
@@ -499,7 +498,6 @@ void MeshEffect::Translate()
             _float3 vDir = Get_LocalMatrix().Backward();
             vDir.Normalize();
             m_vLocalPos -= vDir * Get_Transform()->Get_Speed() * fDT;
-
         }
         break;
     }
@@ -516,7 +514,6 @@ void MeshEffect::Translate()
             _float3 vDir = Get_LocalMatrix().Right();
             vDir.Normalize();
             m_vLocalPos -= vDir * Get_Transform()->Get_Speed() * fDT;
-
         }
         break;
     }
@@ -533,7 +530,6 @@ void MeshEffect::Translate()
             _float3 vDir = Get_LocalMatrix().Right();
             vDir.Normalize();
             m_vLocalPos += vDir * Get_Transform()->Get_Speed() * fDT;
-
         }
         break;
     }
@@ -688,6 +684,7 @@ void MeshEffect::Run_SpriteAnimation()
 
         _int iIndexX = m_iCurrSpriteIndex % m_tDesc.iNumSprite_Col;
         _int iIndexY = m_iCurrSpriteIndex / m_tDesc.iNumSprite_Col;
+
         m_UVTexRangeX.x = (_float)iIndexX / (_float)m_tDesc.iNumSprite_Col;
         m_UVTexRangeX.y = ((_float)iIndexX + 1) / (_float)m_tDesc.iNumSprite_Col;
         m_UVTexRangeY.x = (_float)iIndexY / (_float)m_tDesc.iNumSprite_Row;
@@ -710,7 +707,7 @@ void MeshEffect::Init_RenderParams()
     m_RenderParams.SetInt(3, (_int)m_tDesc.bLightOn);
 
     /* Float */
-    m_RenderParams.SetFloat(0, m_fCurrAge / m_tDesc.fDuration);
+    m_RenderParams.SetFloat(0, m_fCurrAge / m_fDuration);
     m_RenderParams.SetFloat(1, m_fCurrDissolveWeight);
     m_RenderParams.SetFloat(2, m_fCurrRimLightIntensity);
     m_RenderParams.SetFloat(3, m_tDesc.fLightIntensity);

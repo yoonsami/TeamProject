@@ -419,6 +419,15 @@ void FSM::Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset, _
 	EVENTMGR.Create_Object(pGroupEffectOwnerObj);
 }
 
+void FSM::KillAllEffect()
+{
+	for (auto& iter : m_vGroupEffect)
+	{
+		if(!iter.expired())
+			iter.reset();
+	}
+}
+
 void FSM::Update_GroupEffectWorldPos()
 {
 	for (auto& iter : m_vGroupEffect)
