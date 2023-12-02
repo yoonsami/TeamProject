@@ -282,10 +282,24 @@ void Boss_Giant_Mir_FSM::SQ_Spawn()
             if (!m_pOwner.expired())
                 m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(1.f);
         }
+        else if (Init_CurFrame(234))
+        {
+            m_pOwner.lock()->Set_TimeSlowed(false);
+            Get_Owner()->Get_Animator()->Set_AnimationSpeed(0.3f);
+        }
         else if (Init_CurFrame(235))
         {
             Destroy_MapObject();
         }
+        else if (Init_CurFrame(250))
+        {
+            m_pOwner.lock()->Set_TimeSlowed(true);
+            Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);
+        }
+
+        if (m_iCurFrame >= 234 && m_iCurFrame <= 250)
+            TIME.Set_TimeSlow(0.1f, 0.3f);
+
 
 
         if (!m_pCamera.expired())
@@ -398,10 +412,10 @@ void Boss_Giant_Mir_FSM::b_idle()
 {
     m_tAttackCoolTime.fAccTime += fDT;
 
-    Create_Meteor();
+    //Create_Meteor();
 
-    if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
-       Set_AttackPattern();
+    //if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
+       //Set_AttackPattern();
 }
 
 void Boss_Giant_Mir_FSM::b_idle_Init()

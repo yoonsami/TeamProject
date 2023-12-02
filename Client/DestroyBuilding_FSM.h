@@ -6,7 +6,6 @@ class DestroyBuilding_FSM :
 public:
     enum class STATE
     {
-        Idle,
         Crash,
         NONE
     };
@@ -27,13 +26,11 @@ protected:
     virtual void AttackCollider_Off() override {}
 
 private:
-    void Idle();
-    void Idle_Init();
     void Crash();
     void Crash_Init();
 
 private:
-    STATE m_eCurState = STATE::Idle;
+    STATE m_eCurState = STATE::Crash;
     STATE m_ePreState = STATE::NONE;
 
 

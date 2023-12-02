@@ -48,9 +48,6 @@ void DestroyBuilding_FSM::State_Tick()
 
 	switch (m_eCurState)
 	{
-	case STATE::Idle:
-		Idle();
-		break;
 	case STATE::Crash:
 		Crash();
 		break;
@@ -68,9 +65,6 @@ void DestroyBuilding_FSM::State_Init()
 	{
 		switch (m_eCurState)
 		{
-		case STATE::Idle:
-			Idle_Init();
-			break;
 		case STATE::Crash:
 			Crash_Init();
 			break;
@@ -82,17 +76,6 @@ void DestroyBuilding_FSM::State_Init()
 		m_ePreState = m_eCurState;
 	}
 
-}
-
-void DestroyBuilding_FSM::Idle()
-{
-}
-
-void DestroyBuilding_FSM::Idle_Init()
-{
-	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
-
-	//animator->Set_CurrentAnim(L"anim_R02_DecoBall_00_Anim", true, 1.f);
 }
 
 void DestroyBuilding_FSM::Crash()
