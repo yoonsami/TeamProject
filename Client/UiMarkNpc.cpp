@@ -72,9 +72,9 @@ void UiMarkNpc::Check_In_Screen()
 	Frustum frustum = m_pCamera.lock()->Get_Camera()->Get_Frustum();
 
 	if (frustum.Contain_Sphere(cullPos, cullRadius))
-		m_pOwner.lock()->Set_Render(true);
+		m_pMark.lock()->Set_Render(true);
 	else
-		m_pOwner.lock()->Set_Render(false);
+		m_pMark.lock()->Set_Render(false);
 }
 
 void UiMarkNpc::Update_Pos()
@@ -87,5 +87,5 @@ void UiMarkNpc::Update_Pos()
 	m_pMark.lock()->Get_MeshRenderer()->Get_RenderParamDesc().matParams[0] = matView;
 
 	_float4x4 matProj = m_pCamera.lock()->Get_Camera()->Get_ProjMat();
-	m_pMark.lock()->Get_MeshRenderer()->Get_RenderParamDesc().matParams[1] = matView;
+	m_pMark.lock()->Get_MeshRenderer()->Get_RenderParamDesc().matParams[1] = matProj;
 }
