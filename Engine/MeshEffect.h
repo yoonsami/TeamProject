@@ -16,7 +16,7 @@ public:
 	virtual void            MeshEffect_Final_Tick();
     void                    Render();
     void                    Render_Instancing(shared_ptr<InstancingBuffer> buffer, shared_ptr<StructuredBuffer> pRenderParamBuffer);
-
+    void                    Update_RenderParams();
     void                    Update_Desc();
 
     void                    InitialTransform(_float4x4 mParentWorldMatrix, const _float3& vInitPos_inGroup, const _float3& vInitScale_inGroup, const _float3& vInitRotation_inGroup);

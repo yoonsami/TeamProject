@@ -2615,7 +2615,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
     _uint iRan = rand() % 2;
     m_eCurState = STATE::skill_1100;
 
-   /*_uint iRan = rand() % 10;
+   /*_uint iRan = rand() % 10;*/
 
     while (true)
     {

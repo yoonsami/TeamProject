@@ -88,6 +88,8 @@ void MeshEffect::MeshEffect_Final_Tick()
         m_fCurrRimLightIntensity = output[0];
     }
 
+    Update_RenderParams();
+
     // For. Check is dead 
     if (m_fCurrAge >= m_fDuration)
     {
@@ -97,6 +99,7 @@ void MeshEffect::MeshEffect_Final_Tick()
             return; 
         }
     }
+
 }
 
 void MeshEffect::Render()
@@ -195,6 +198,19 @@ void MeshEffect::Render_Instancing(shared_ptr<InstancingBuffer> buffer, shared_p
 		// For. Draw call
 		m_pShader->DrawIndexedInstanced(1, m_tDesc.iSamplerType, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
 	}
+}
+
+void MeshEffect::Update_RenderParams()
+{
+	if (m_bIsLocked)
+		return;
+
+	m_RenderParams.SetFloat(0, m_fLifeTimeRatio);
+	m_RenderParams.SetFloat(1, m_fCurrDissolveWeight);
+	m_RenderParams.SetFloat(2, m_fCurrRimLightIntensity);
+
+	Bind_UpdatedColor_ToShader();
+	Bind_UpdatedTexUVOffset_ToShader();
 }
 
 void MeshEffect::Update_Desc()
