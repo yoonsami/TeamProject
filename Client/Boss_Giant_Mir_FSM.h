@@ -68,11 +68,15 @@ private:
 
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage);
 	void Create_Meteor();
+	void Create_TailCollider();
 	void Set_AttackPattern();
 	void Calculate_IntroHeadCam();
 	void Setting_DragonBall();
 	void Destroy_MapObject();
 
+
+	void TailAttackCollider_On(const wstring& skillname, _float fAttackDamage);
+	void TailAttackCollider_Off();
 	_float CamDistanceLerp(_float fStart, _float fEnd, _float fRatio);
 
 private:
@@ -93,6 +97,10 @@ private:
 	
 	_uint m_iHeadBoneIndex = 0;
 	_uint m_iMouseBoneIndex = 0;
+	_uint m_iTailBoneIndex = 0;
+	
+	weak_ptr<GameObject> m_pTailCollider;
+
 
 	_float3 m_vFirstPos = _float3(0.f);
 
@@ -103,5 +111,5 @@ private:
 
 	_float4x4 HeadBoneMatrix = XMMatrixIdentity();
 	_float4x4 MouseBoneMatrix = XMMatrixIdentity();
-
+	_float4x4 TailBoneMatrix = XMMatrixIdentity();
 };

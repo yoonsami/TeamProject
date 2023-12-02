@@ -8,7 +8,7 @@
 #include "RigidBody.h"
 #include "Model.h"
 #include "Get_Gravity.h"
-
+#include "MathUtils.h"
 
 HRESULT DestroyBuilding_FSM::Init()
 {
@@ -23,6 +23,8 @@ HRESULT DestroyBuilding_FSM::Init()
 
 		animator->Set_RenderState(false);
 
+		_float3 vRandomLook = MathUtils::Get_RandomVector(_float3(-1.f,0.f,-1.f), _float3 (1.f,0.f,1.f));
+		Get_Transform()->Set_LookDir(vRandomLook);
 
 		Get_Owner()->Add_Component(make_shared<Get_Gravity>(0.f));
 

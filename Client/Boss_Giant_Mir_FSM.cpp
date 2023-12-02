@@ -24,8 +24,6 @@ HRESULT Boss_Giant_Mir_FSM::Init()
             m_eCurState = STATE::SQ_Spawn;
         }
 
-        m_fDetectRange = 10.f;
-
         if (!m_pTarget.expired())
         {
             _float3 vLookPos = _float3{ -0.25f, 0.f, -57.f };
@@ -41,6 +39,7 @@ HRESULT Boss_Giant_Mir_FSM::Init()
 
         m_iHeadBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bone067");
         m_iMouseBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bone066");
+        m_iTailBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"SOXNFB_Bone045");
   
         HeadBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iHeadBoneIndex) *
             _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
@@ -52,11 +51,8 @@ HRESULT Boss_Giant_Mir_FSM::Init()
         m_fRunSpeed = 4.f;
         m_fKnockDownSpeed = 4.f;
 
-        m_fDetectRange = 28.f;
 
-       
-
-        //Setting_DragonBall();
+        Create_TailCollider();
 
         m_bInitialize = true;
     }
@@ -72,6 +68,16 @@ void Boss_Giant_Mir_FSM::Tick()
     {
         //m_pAttack transform set forward
         m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 6.f + _float3::Up);
+    }
+
+    if (!m_pTailCollider.expired())
+    {
+        //(AnimationModel BonePos)
+        TailBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iTailBoneIndex) *
+            _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+        _float4 vBonePos = _float4{ TailBoneMatrix.Translation().x, TailBoneMatrix.Translation().y, TailBoneMatrix.Translation().z , 1.f };
+        m_pTailCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, vBonePos);
     }
 }
 
@@ -277,7 +283,7 @@ void Boss_Giant_Mir_FSM::SQ_Spawn()
             if (!m_pCamera.expired())
                 m_vCamStopPos = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS);
         }
-        else if (Init_CurFrame(85))
+       /* else if (Init_CurFrame(85))
         {
             if (!m_pOwner.expired())
                 m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(1.f);
@@ -286,19 +292,19 @@ void Boss_Giant_Mir_FSM::SQ_Spawn()
         {
             m_pOwner.lock()->Set_TimeSlowed(false);
             Get_Owner()->Get_Animator()->Set_AnimationSpeed(0.3f);
-        }
+        }*/
         else if (Init_CurFrame(235))
         {
             Destroy_MapObject();
         }
-        else if (Init_CurFrame(250))
+      /*  else if (Init_CurFrame(250))
         {
             m_pOwner.lock()->Set_TimeSlowed(true);
             Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);
         }
 
-        if (m_iCurFrame >= 234 && m_iCurFrame <= 250)
-            TIME.Set_TimeSlow(0.1f, 0.3f);
+        if (m_iCurFrame >= 234 && m_iCurFrame < 250)
+            TIME.Set_TimeSlow(0.1f, 0.3f);*/
 
 
 
@@ -588,6 +594,23 @@ void Boss_Giant_Mir_FSM::Create_Meteor()
 
 }
 
+void Boss_Giant_Mir_FSM::Create_TailCollider()
+{
+    shared_ptr<GameObject> tailCollider = make_shared<GameObject>();
+    tailCollider->GetOrAddTransform();
+    tailCollider->Add_Component(make_shared<SphereCollider>(14.f));
+    tailCollider->Get_Collider()->Set_CollisionGroup(Monster_Attack);
+
+    EVENTMGR.Create_Object(tailCollider);
+    tailCollider->Get_Collider()->Set_Activate(false);
+
+    tailCollider->Add_Component(make_shared<AttackColliderInfoScript>());
+    tailCollider->Set_Name(L"Boss_Giant_Mir_TailCollider");
+    tailCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
+
+    m_pTailCollider = tailCollider;
+}
+
 void Boss_Giant_Mir_FSM::Set_AttackPattern()
 {
     m_eCurState = STATE::SQ_Spawn;
@@ -641,14 +664,14 @@ void Boss_Giant_Mir_FSM::Setting_DragonBall()
 
 void Boss_Giant_Mir_FSM::Destroy_MapObject()
 {
-    if (CUR_SCENE->Get_GameObject(L"F01_P_BackGCircle_02_KEK"))
+    if (CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_MiddleHouse_03_AHJ-49"))
     {
-        _float4 vPos = CUR_SCENE->Get_GameObject(L"F01_P_BackGCircle_02_KEK")->Get_Transform()->Get_State(Transform_State::POS);
-        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"F01_P_BackGCircle_02_KEK"));
+        _float4 vPos = CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_MiddleHouse_03_AHJ-49")->Get_Transform()->Get_State(Transform_State::POS);
+        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_MiddleHouse_03_AHJ-49"));
         
         shared_ptr<GameObject> DestroyBuilding = make_shared<GameObject>();
         DestroyBuilding->GetOrAddTransform()->Set_State(Transform_State::POS, vPos);
-        DestroyBuilding->Get_Transform()->Scaled(_float3(3.f, 3.f,3.f));
+        DestroyBuilding->Get_Transform()->Scaled(_float3(2.f, 2.f,2.f));
         shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
         shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
@@ -664,14 +687,14 @@ void Boss_Giant_Mir_FSM::Destroy_MapObject()
         EVENTMGR.Create_Object(DestroyBuilding);
     }
 
-    if (CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_MiddleHouse_01_AHJ"))
+    if (CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_MiddleHouse_02_AHJ-50"))
     {
-        _float4 vPos = CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_MiddleHouse_01_AHJ")->Get_Transform()->Get_State(Transform_State::POS);
-        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_MiddleHouse_01_AHJ"));
+        _float4 vPos = CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_MiddleHouse_02_AHJ-50")->Get_Transform()->Get_State(Transform_State::POS);
+        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_MiddleHouse_02_AHJ-50"));
 
         shared_ptr<GameObject> DestroyBuilding = make_shared<GameObject>();
         DestroyBuilding->GetOrAddTransform()->Set_State(Transform_State::POS, vPos);
-        DestroyBuilding->Get_Transform()->Scaled(_float3(3.f, 3.f, 3.f));
+        DestroyBuilding->Get_Transform()->Scaled(_float3(2.f, 2.f, 2.f));
         shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
         shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
@@ -687,14 +710,14 @@ void Boss_Giant_Mir_FSM::Destroy_MapObject()
         EVENTMGR.Create_Object(DestroyBuilding);
     }
 
-    if (CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_MiddleHouse_02_AHJ"))
+    if (CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_MiddleHouse_01_AHJ-51"))
     {
-        _float4 vPos = CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_MiddleHouse_02_AHJ")->Get_Transform()->Get_State(Transform_State::POS);
-        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_MiddleHouse_02_AHJ"));
+        _float4 vPos = CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_MiddleHouse_01_AHJ-51")->Get_Transform()->Get_State(Transform_State::POS);
+        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_MiddleHouse_01_AHJ-51"));
 
         shared_ptr<GameObject> DestroyBuilding = make_shared<GameObject>();
         DestroyBuilding->GetOrAddTransform()->Set_State(Transform_State::POS, vPos);
-        DestroyBuilding->Get_Transform()->Scaled(_float3(3.f, 3.f, 3.f));
+        DestroyBuilding->Get_Transform()->Scaled(_float3(2.f, 2.f, 2.f));
         shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
         shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
@@ -710,14 +733,14 @@ void Boss_Giant_Mir_FSM::Destroy_MapObject()
         EVENTMGR.Create_Object(DestroyBuilding);
     }
 
-    if (CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_MiddleHouse_03_AHJ"))
+    if (CUR_SCENE->Get_GameObject(L"F01_P_BackGCircle_02_KEK-52"))
     {
-        _float4 vPos = CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_MiddleHouse_03_AHJ")->Get_Transform()->Get_State(Transform_State::POS);
-        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_MiddleHouse_03_AHJ"));
+        _float4 vPos = CUR_SCENE->Get_GameObject(L"F01_P_BackGCircle_02_KEK-52")->Get_Transform()->Get_State(Transform_State::POS);
+        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"F01_P_BackGCircle_02_KEK-52"));
 
         shared_ptr<GameObject> DestroyBuilding = make_shared<GameObject>();
         DestroyBuilding->GetOrAddTransform()->Set_State(Transform_State::POS, vPos);
-        DestroyBuilding->Get_Transform()->Scaled(_float3(3.f, 3.f, 3.f));
+        DestroyBuilding->Get_Transform()->Scaled(_float3(2.f, 2.f, 2.f));
         shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
         shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
@@ -733,14 +756,14 @@ void Boss_Giant_Mir_FSM::Destroy_MapObject()
         EVENTMGR.Create_Object(DestroyBuilding);
     }
 
-    if (CUR_SCENE->Get_GameObject(L"R02_Dragon_002_01"))
+    if (CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_Circle_02_AHJ-53"))
     {
-        _float4 vPos = CUR_SCENE->Get_GameObject(L"R02_Dragon_002_01")->Get_Transform()->Get_State(Transform_State::POS);
-        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"R02_Dragon_002_01"));
+        _float4 vPos = CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_Circle_02_AHJ-53")->Get_Transform()->Get_State(Transform_State::POS);
+        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_Circle_02_AHJ-53"));
 
         shared_ptr<GameObject> DestroyBuilding = make_shared<GameObject>();
         DestroyBuilding->GetOrAddTransform()->Set_State(Transform_State::POS, vPos);
-        DestroyBuilding->Get_Transform()->Scaled(_float3(3.f, 3.f, 3.f));
+        DestroyBuilding->Get_Transform()->Scaled(_float3(2.f, 2.f, 2.f));
         shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
         shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
@@ -756,14 +779,14 @@ void Boss_Giant_Mir_FSM::Destroy_MapObject()
         EVENTMGR.Create_Object(DestroyBuilding);
     }
 
-    if (CUR_SCENE->Get_GameObject(L"Mir_R02_Dragon_001_01"))
+    if (CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_Circle_01_AHJ-54"))
     {
-        _float4 vPos = CUR_SCENE->Get_GameObject(L"Mir_R02_Dragon_001_01")->Get_Transform()->Get_State(Transform_State::POS);
-        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Mir_R02_Dragon_001_01"));
+        _float4 vPos = CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_Circle_01_AHJ-54")->Get_Transform()->Get_State(Transform_State::POS);
+        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_Circle_01_AHJ-54"));
 
         shared_ptr<GameObject> DestroyBuilding = make_shared<GameObject>();
         DestroyBuilding->GetOrAddTransform()->Set_State(Transform_State::POS, vPos);
-        DestroyBuilding->Get_Transform()->Scaled(_float3(3.f, 3.f, 3.f));
+        DestroyBuilding->Get_Transform()->Scaled(_float3(2.f, 2.f, 2.f));
         shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
         shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
@@ -779,14 +802,14 @@ void Boss_Giant_Mir_FSM::Destroy_MapObject()
         EVENTMGR.Create_Object(DestroyBuilding);
     }
 
-    if (CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_Circle_01_AHJ"))
+    if (CUR_SCENE->Get_GameObject(L"Mir_R02_Dragon_001_01-55"))
     {
-        _float4 vPos = CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_Circle_01_AHJ")->Get_Transform()->Get_State(Transform_State::POS);
-        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_Circle_01_AHJ"));
+        _float4 vPos = CUR_SCENE->Get_GameObject(L"Mir_R02_Dragon_001_01-55")->Get_Transform()->Get_State(Transform_State::POS);
+        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Mir_R02_Dragon_001_01-55"));
 
         shared_ptr<GameObject> DestroyBuilding = make_shared<GameObject>();
         DestroyBuilding->GetOrAddTransform()->Set_State(Transform_State::POS, vPos);
-        DestroyBuilding->Get_Transform()->Scaled(_float3(3.f, 3.f, 3.f));
+        DestroyBuilding->Get_Transform()->Scaled(_float3(2.f, 2.f, 2.f));
         shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
         shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
@@ -802,14 +825,14 @@ void Boss_Giant_Mir_FSM::Destroy_MapObject()
         EVENTMGR.Create_Object(DestroyBuilding);
     }
 
-    if (CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_Circle_02_AHJ"))
+    if (CUR_SCENE->Get_GameObject(L"R02_Dragon_002_01-67"))
     {
-         _float4 vPos = CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_Circle_02_AHJ")->Get_Transform()->Get_State(Transform_State::POS);
-        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_Circle_02_AHJ"));
+         _float4 vPos = CUR_SCENE->Get_GameObject(L"R02_Dragon_002_01-67")->Get_Transform()->Get_State(Transform_State::POS);
+        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"R02_Dragon_002_01-67"));
 
         shared_ptr<GameObject> DestroyBuilding = make_shared<GameObject>();
         DestroyBuilding->GetOrAddTransform()->Set_State(Transform_State::POS, vPos);
-        DestroyBuilding->Get_Transform()->Scaled(_float3(3.f, 3.f, 3.f));
+        DestroyBuilding->Get_Transform()->Scaled(_float3(2.f, 2.f, 2.f));
         shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
         shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
@@ -824,6 +847,45 @@ void Boss_Giant_Mir_FSM::Destroy_MapObject()
         DestroyBuilding->Get_FSM()->Init();
         EVENTMGR.Create_Object(DestroyBuilding);
     }
+
+
+    //Just Destroy
+    if (CUR_SCENE->Get_GameObject(L"Mir_R01_Floor_01_Circle_03_ASB-4"))
+        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Mir_R01_Floor_01_Circle_03_ASB-4"));
+    
+    if (CUR_SCENE->Get_GameObject(L"Mir_Dragon_Cloud_01_AHJ-41"))
+        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Mir_Dragon_Cloud_01_AHJ-41"));
+
+    if (CUR_SCENE->Get_GameObject(L"Mir_Dragon_Cloud_02_AHJ-42"))
+        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Mir_Dragon_Cloud_02_AHJ-42"));
+
+    if (CUR_SCENE->Get_GameObject(L"Mir_Dragon_Cloud_03_AHJ-43"))
+        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Mir_Dragon_Cloud_03_AHJ-43"));
+
+    if (CUR_SCENE->Get_GameObject(L"Mir_Dragon_Cloud_01_AHJ-45"))
+        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Mir_Dragon_Cloud_01_AHJ-45"));
+
+    if (CUR_SCENE->Get_GameObject(L"Mir_Dragon_Cloud_01_AHJ-46"))
+        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Mir_Dragon_Cloud_01_AHJ-46"));
+
+    if (CUR_SCENE->Get_GameObject(L"Mir_Dragon_Cloud_03_AHJ-47"))
+        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Mir_Dragon_Cloud_03_AHJ-47"));
+
+    if (CUR_SCENE->Get_GameObject(L"Mir_Dragon_Cloud_03_AHJ-48"))
+        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Mir_Dragon_Cloud_03_AHJ-48"));
+
+    if (CUR_SCENE->Get_GameObject(L"Anim_R02_P_lamp_01-8"))
+        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Anim_R02_P_lamp_01-8"));
+
+    if (CUR_SCENE->Get_GameObject(L"Anim_R02_P_lamp_01-9"))
+        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Anim_R02_P_lamp_01-9"));
+
+    if (CUR_SCENE->Get_GameObject(L"Anim_R02_P_lamp_01-11"))
+        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Anim_R02_P_lamp_01-11"));
+
+    if (CUR_SCENE->Get_GameObject(L"Anim_R02_P_lamp_01-12"))
+        EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Anim_R02_P_lamp_01-12"));
+
 
 
 
@@ -840,12 +902,23 @@ void Boss_Giant_Mir_FSM::Calculate_IntroHeadCam()
                     (Get_Transform()->Get_State(Transform_State::UP) * 20.f) +
                     (Get_Transform()->Get_State(Transform_State::LOOK) * 30.f) ;
 
-    //m_vHeadCamPos = m_vHeadBonePos + (Get_Transform()->Get_State(Transform_State::LOOK) * 30.f);
+    m_vIntroCamPos = (Get_Transform()->Get_State(Transform_State::POS) +
+                      Get_Transform()->Get_State(Transform_State::LOOK) * 5.f +
+                      Get_Transform()->Get_State(Transform_State::UP) * 15.f);
+}
 
-    m_vIntroCamPos =
-        (Get_Transform()->Get_State(Transform_State::POS) +
-            Get_Transform()->Get_State(Transform_State::LOOK) * 5.f +
-                (Get_Transform()->Get_State(Transform_State::UP) * 15.f));
+void Boss_Giant_Mir_FSM::TailAttackCollider_On(const wstring& skillname, _float fAttackDamage)
+{
+    m_pTailCollider.lock()->Get_Collider()->Set_Activate(true);
+    m_pTailCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
+    m_pTailCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
+}
+
+void Boss_Giant_Mir_FSM::TailAttackCollider_Off()
+{
+    m_pTailCollider.lock()->Get_Collider()->Set_Activate(false);
+    m_pTailCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+    m_pTailCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(0.f);
 }
 
 _float Boss_Giant_Mir_FSM::CamDistanceLerp(_float fStart, _float fEnd, _float fRatio)
