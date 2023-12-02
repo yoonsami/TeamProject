@@ -1392,6 +1392,9 @@ void Boss_Mir_FSM::SQ_SBRin_Roar_Init()
 
 void Boss_Mir_FSM::skill_1100()
 {
+    if (Init_CurFrame(0))
+        Add_Effect(L"Mir_1100");
+
     if (m_iCurFrame == 46 ||
         m_iCurFrame == 56 ||
         m_iCurFrame == 66 ||
@@ -1476,6 +1479,11 @@ void Boss_Mir_FSM::skill_1100_Init()
 
 void Boss_Mir_FSM::skill_2100()
 {
+    if (Init_CurFrame(55))
+        Add_And_Set_Effect(L"Mir_2100");
+    if (Init_CurFrame(93))
+        Add_Effect(L"Mir_2100_End");
+
     if (m_iCurFrame == 55)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed / 4.f);
@@ -1505,7 +1513,6 @@ void Boss_Mir_FSM::skill_2100()
 
     if (Is_AnimFinished())
     {
-
         _float4 vPos = Get_Transform()->Get_State(Transform_State::POS);
         _uint iRan = rand() % 2;
 
@@ -1513,6 +1520,7 @@ void Boss_Mir_FSM::skill_2100()
 
         if (iRan == 0)
         {
+
             if (!m_bTurnMotion)
                 m_eCurState = STATE::b_idle;
             else
@@ -1555,6 +1563,9 @@ void Boss_Mir_FSM::skill_2100_Init()
 
 void Boss_Mir_FSM::skill_3100()
 {
+    if (Init_CurFrame(80))
+        Add_Effect(L"Mir_3100");
+
     if (m_iCurFrame == 80)
         TailAttackCollider_On(KNOCKBACK_ATTACK);
     else if (m_iCurFrame == 98)
@@ -1602,6 +1613,9 @@ void Boss_Mir_FSM::skill_3100_Init()
 
 void Boss_Mir_FSM::skill_4100()
 {
+    if (Init_CurFrame(86))
+        Add_Effect(L"Mir_3100");
+
     if (m_iCurFrame == 86)
         TailAttackCollider_On(KNOCKBACK_ATTACK);
     else if (m_iCurFrame == 108)
@@ -1759,6 +1773,9 @@ void Boss_Mir_FSM::skill_9100_Init()
 
 void Boss_Mir_FSM::skill_11100()
 {
+    if (Init_CurFrame(4))
+        Add_Effect(L"Mir_11100");
+
     if (m_iCurFrame == 67)
     {
         if (m_iPreFrame != m_iCurFrame)
@@ -1829,6 +1846,21 @@ void Boss_Mir_FSM::skill_11100_Init()
 
 void Boss_Mir_FSM::skill_12100()
 {
+    // For. Effect 
+    if (m_iCurFrame >= 18 && m_iCurFrame <= 48)
+    {
+        for (_uint i = 0; i < 10; i++)
+        {
+            if (Init_CurFrame(28 + i*2))
+            {
+                Add_GroupEffectOwner(L"Mir_Lightning", _float3(0.f, 0.f, i * 3.f), false); // z+
+                Add_GroupEffectOwner(L"Mir_Lightning", _float3(0.f, 0.f, i * -3.f), false); // z-
+                Add_GroupEffectOwner(L"Mir_Lightning", _float3(i * 3.f, 0.f, 0.f), false); // x+
+                Add_GroupEffectOwner(L"Mir_Lightning", _float3(i * -3.f, 0.f, 0.f), false); // x-
+            }
+        }
+    }
+
     if (m_iCurFrame == 28 ||
         m_iCurFrame == 38 ||
         m_iCurFrame == 48 ||
@@ -2018,6 +2050,10 @@ void Boss_Mir_FSM::skill_14100()
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT) * 1.f;
             Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
+
+            // For. Effect 
+            shared_ptr<Mir_13100_Fireball> pScript = make_shared<Mir_13100_Fireball>();
+            Add_Effect(L"Mir_14100", pScript);
         }
     }
     else if (m_iCurFrame == 80)
@@ -2575,7 +2611,11 @@ void Boss_Mir_FSM::Create_DragonBall()
 
 void Boss_Mir_FSM::Set_AttackPattern()
 {
-   _uint iRan = rand() % 10;
+    // TODO:  의진
+    _uint iRan = rand() % 2;
+    m_eCurState = STATE::skill_1100;
+
+   /*_uint iRan = rand() % 10;
 
     while (true)
     {

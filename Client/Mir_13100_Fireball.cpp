@@ -21,7 +21,7 @@ void Mir_13100_Fireball::Tick()
 
 	if (m_fCoolTime_CreateFloorEffect > 0.1f)
 	{
-		Add_GroupEffectOwner(L"Mir_13100_floor", _float3(0.f, 2.f, 0.f));
+		Add_GroupEffectOwner(L"Mir_13100_floor", _float3(0.f, 3.6f, 0.f));
 		m_fCoolTime_CreateFloorEffect = 0.f;
 	}
 }

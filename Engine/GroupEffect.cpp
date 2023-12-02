@@ -399,6 +399,7 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
             shader = RESOURCES.Get<Shader>(L"Shader_Distortion.fx");
         else
             shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
+
         shared_ptr<MeshEffect> meshEffect = make_shared<MeshEffect>(shader);
         EffectObj->Add_Component(meshEffect);
         EffectObj->Get_MeshEffect()->Init(&tDesc);
@@ -415,7 +416,7 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
 
         // For. Sort Vector by RenderPriority 
         OrganizeMemberEffectList();
-
+         
         m_lMemberEffects.sort(Compare_RenderPriority);
 
         // For. Add to scene
@@ -430,7 +431,8 @@ void GroupEffect::Create_Particle(_int iIndex)
 
 void GroupEffect::OrganizeMemberEffectList()
 {
-    for (auto iter = m_lMemberEffects.begin(); iter != m_lMemberEffects.end();) {
+    for (auto iter = m_lMemberEffects.begin(); iter != m_lMemberEffects.end();) 
+    {
         if (iter->expired())
             iter = m_lMemberEffects.erase(iter);
         else 

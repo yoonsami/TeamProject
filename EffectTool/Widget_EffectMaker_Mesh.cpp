@@ -1058,6 +1058,9 @@ void Widget_EffectMaker_Mesh::Create()
 	{
 		if (iter->Get_MeshEffect())
 			EVENTMGR.Delete_Object(iter);
+
+		if (iter->Get_GroupEffect())
+			EVENTMGR.Delete_Object(iter);
 	}
 
 	for (_int n = 0; n < m_iMeshCnt; n++)
@@ -1385,8 +1388,8 @@ void Widget_EffectMaker_Mesh::Load()
 	m_iMeshCnt = file->Read<_int>();
 	m_fCreateInterval = file->Read<_float>();
 	_float2 vFloat2 = file->Read<_float2>();
-	m_iSamplerType = file->Read<_int>();
 	memcpy(m_fParticleDuration, &vFloat2, sizeof(m_fParticleDuration));
+	m_iSamplerType = file->Read<_int>();
 
 	/* Mesh */
 	m_strMesh = file->Read<string>();
