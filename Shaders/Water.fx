@@ -1,7 +1,15 @@
 //#include "Render.fx"
 //#include "Light.fx"
 
-
+//float4 LightingWater(float3 viewNormal, float3 viewLightDir, float3 viewDir)
+//{
+//    float rim = saturate(dot(viewNormal, viewDir));
+//    rim = pow(1 - rim, 3);
+    
+//    float4 final = rim * lights[0].color.diffuse;
+    
+//    return final;
+//}
 
 //struct VS_OUT
 //{
