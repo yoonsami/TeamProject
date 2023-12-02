@@ -998,7 +998,15 @@ void Boss_Mir_FSM::SQ_Flee()
     
     if (Is_AnimFinished())
     {
-        EVENTMGR.Delete_Object(m_pOwner.lock());
+        if (!m_pOwner.expired())
+            EVENTMGR.Delete_Object(m_pOwner.lock());
+        
+        if (!m_pAttackCollider.expired())
+            EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        
+        if (!m_pTailCollider.expired())
+            EVENTMGR.Delete_Object(m_pTailCollider.lock());
+
         g_bCutScene = false;
 
         if (!m_pTarget.expired())
@@ -1006,12 +1014,8 @@ void Boss_Mir_FSM::SQ_Flee()
             m_pTarget.lock()->Get_CharacterController()->Get_Actor()->setFootPosition({ m_vSetPlayerPos.x,  m_vSetPlayerPos.y, m_vSetPlayerPos.z });
         }
 
-        if (!m_pCamera.expired())
-        {
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedTime(0.2f);
-        }
 
-        //Load_Giant_Boss_Mir();
+        Load_Giant_Boss_Mir();
     }
 
 }
@@ -1043,6 +1047,12 @@ void Boss_Mir_FSM::SQ_Flee_Init()
     TailAttackCollider_Off();
 
     Calculate_PhaseChangeHeadCam();
+
+    if (!m_pOwner.expired())
+    {
+        if (m_pOwner.lock()->Get_Script<UIBossHpBar>())
+            m_pOwner.lock()->Get_Script<UIBossHpBar>()->Remove_HpBar();
+    }
 
     g_bCutScene = true;
 }
@@ -2728,7 +2738,7 @@ void Boss_Mir_FSM::Load_Giant_Boss_Mir()
 
         shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
         {
-            shared_ptr<Model> model = RESOURCES.Get<Model>(L"Mir_02");
+            shared_ptr<Model> model = RESOURCES.Get<Model>(L"Mir_03");
             animator->Set_Model(model);
         }
 
