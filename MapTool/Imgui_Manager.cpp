@@ -32,6 +32,7 @@
 
 #include "PointLightScript.h"
 #include "ModelAnimation.h"
+#include "WaterUVSliding.h"
 
 using namespace ImGui;
 
@@ -73,6 +74,7 @@ void ImGui_Manager::ImGui_SetUp()
     Load_MapObjectBase();
     Load_TerrainTile();
     //Create_MaskTexture();
+    Load_Water();
 
     Create_SampleObjects();
 }
@@ -795,6 +797,18 @@ void ImGui_Manager::Frame_ShaderOption()
 void ImGui_Manager::Frame_Terrain()
 {
     ImGui::Begin("Frame_Terrain");
+
+    // 바다 색깔변ㄱ경
+    ImGui::ColorEdit4("Color##Ocean1", (_float*)&m_WaterColor1, ImGuiColorEditFlags_HDR);
+    ImGui::ColorEdit4("Color##Ocean2", (_float*)&m_WaterColor2, ImGuiColorEditFlags_HDR);
+    auto OceanObj = CUR_SCENE->Get_GameObject(L"Ocean");
+    if(OceanObj != nullptr)
+    {
+        auto WaterScript = OceanObj->Get_Script<WaterUVSliding>();
+        WaterScript->Set_Color1(m_WaterColor1);
+        WaterScript->Set_Color2(m_WaterColor2);
+    }
+
     ImGui::Text("TerrainSize");
     ImGui::DragInt2("##TerrainSize", m_iTerrainSize);
 
@@ -1342,10 +1356,10 @@ void ImGui_Manager::Create_Terrain()
     shared_ptr<Terrain> terrain = make_shared<Terrain>();
     terrain->CreateGrid(m_iTerrainSize[0], m_iTerrainSize[1]);
 
-    Create_Terrain(terrain);
+    Create_Terrain(terrain, m_iTerrainSize[0], m_iTerrainSize[1]);
 }
 
-void ImGui_Manager::Create_Terrain(shared_ptr<Terrain> _pTerrainMesh)
+void ImGui_Manager::Create_Terrain(shared_ptr<Terrain> _pTerrainMesh, _int _iTerrainSizeX, _int _iTerrainSizeY)
 {
     /// 지형오브젝트 생성
     shared_ptr<GameObject> TerrainObject = make_shared<GameObject>();
@@ -1449,7 +1463,7 @@ void ImGui_Manager::Create_Terrain(shared_ptr<Terrain> _pTerrainMesh)
 
     m_pTerrain = TerrainObject;
     // 터레인의 가로세로 정보 셰이더에 떤져주기
-    m_pTerrain->Get_MeshRenderer()->SetVec2(0, _float2{ (_float)m_iTerrainSize[0], (_float)m_iTerrainSize[1] });
+    m_pTerrain->Get_MeshRenderer()->SetVec2(0, _float2{ (_float)_iTerrainSizeX, (_float)_iTerrainSizeY });
 }
 
 void ImGui_Manager::Create_MaskTexture()
@@ -2105,6 +2119,10 @@ HRESULT ImGui_Manager::Save_TerrainData()
         file->Write<_uint>(TerrainIndices[i]);
     }
 
+    // 가로세로 개수
+    file->Write<_int>(m_iTerrainSize[0]);
+    file->Write<_int>(m_iTerrainSize[1]);
+
     MSG_BOX("Save_Complete");
 
     return S_OK;
@@ -2137,12 +2155,19 @@ HRESULT ImGui_Manager::LoadAndCreateTerrain()
         file->Read<_uint>(loadedIndices[i]);
     }
 
+    _int sizeX = 0;
+    _int sizeY = 0;
+    file->Read<_int>(sizeX);
+    file->Read<_int>(sizeY);
+    m_iTerrainSize[0] = sizeX;
+    m_iTerrainSize[1] = sizeY;
+
     // 터레인버퍼생성
     loadedTerrain->Get_Geometry()->Set_Vertices(loadedVertices);
     loadedTerrain->Get_Geometry()->Set_Indices(loadedIndices);
     loadedTerrain->Create_Buffer();
 
-    Create_Terrain(loadedTerrain);
+    Create_Terrain(loadedTerrain, sizeX, sizeY);
 
     return S_OK;
 }
@@ -2767,4 +2792,24 @@ void ImGui_Manager::Load_Files()
 
 		}
     }
+}
+
+void ImGui_Manager::Load_Water()
+{
+    shared_ptr<GameObject> obj = make_shared<GameObject>();
+    obj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4{ 128.f, -20.f, 128.f, 1.f });
+    obj->GetOrAddTransform()->Scaled(_float3{ 3.f, 1.f, 3.f });
+    shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+    shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+    shared_ptr<Model> model = RESOURCES.Get<Model>(L"Water_Plane");
+    model->Get_Materials().front()->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterDiffuse", L"..\\Resources\\Textures\\MapObject\\Field\\T_Boom_000_a.tga"), TextureMapType::DIFFUSE);
+    model->Get_Materials().front()->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterNormal", L"..\\Resources\\Textures\\MapObject\\Field\\T_chicken_meet_001.tga"), TextureMapType::NORMAL);
+    model->Get_Materials().front()->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterDistortion", L"..\\Resources\\Textures\\MapObject\\Field\\T_Perlin_Noise_M.tga"), TextureMapType::DISTORTION);
+    renderer->Set_PassType(ModelRenderer::PASS_WATER);
+    renderer->Set_Model(model);
+    obj->Add_Component(renderer);
+    obj->Add_Component(make_shared<WaterUVSliding>());
+    obj->Set_Name(L"Ocean");
+    CUR_SCENE->Add_GameObject_Front(obj);
+
 }
