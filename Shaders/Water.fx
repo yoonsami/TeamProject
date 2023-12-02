@@ -28,9 +28,9 @@ MeshOutput VS_Water(VTXMesh input)
     output.worldPosition = output.position.xyz;
     output.viewPosition = mul(float4(output.worldPosition, 1.f), V).xyz;
     
-    output.viewNormal = mul(input.normal, (float3x3) W);
+    output.viewNormal = normalize(mul(float3(0, 1, 0), (float3x3) W));
     output.viewNormal = normalize(mul(output.viewNormal, (float3x3) V));
-    output.viewTangent = mul(input.tangent, (float3x3) W);
+    output.viewTangent = normalize(mul(float3(1, 0, 0), (float3x3) W));
     output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
     
     output.position = mul(output.position, VP);
@@ -55,7 +55,7 @@ float4 PS(MeshOutput input) : SV_TARGET
     if (bHasDistortionMap)
     {
         float4 vDistortion = DistortionMap.Sample(LinearSampler, input.uv + g_vec2_0 /*uvsliding*/);
-        fDistortionWeight = vDistortion.r * 0.5f;
+        fDistortionWeight = vDistortion.r * 0.3f;
     }
     
     float4 vSample_Op1 = { 0.f, 0.f, 0.f, 0.f };
@@ -93,13 +93,13 @@ float4 PS(MeshOutput input) : SV_TARGET
     
     
     
-    float3 vLightingColor = diffuseColor.rgb * diffuseRatio;
+    float3 vLightingColor = 0.3f + diffuseColor.rgb * diffuseRatio;
     diffuseColor.rgb = vLightingColor;
+    diffuseColor.rgb += LightingWater(normal, lights[0].vDirection.xyz, input.viewPosition).rgb;
     diffuseColor.a = 1.f;
     //diffuseColor.rgb = lerp(diffuseColor.rgb, vLightingColor, fLightIntensity);
-    //diffuseColor.rgb += LightingWater(normal, lights[0].vDirection.xyz, input.viewPosition).rgb;
     
-    diffuseColor.rgb += PBRShade(float3(1, 1, 1), diffuseColor.rgb, 0.f, 0.8f, normal, input.viewPosition, lights[0].color.diffuse.rgb, 0).outColor;
+    //PBRShade(float3(1,1,1),diffuseColor.rgb,0.f,0.8f,normal,input.viewPosition,lights[0].color.diffuse,0)
     
     return diffuseColor;
 }

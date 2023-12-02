@@ -43,9 +43,6 @@ void GranseedTraveler_FSM::State_Tick()
 					m_eCurState = STATE::talk_01;
 				else if (pObj && !pObj->Get_Script<UIInteraction>()->Is_Created())
 					pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::GACHA);
-				
-			
-			
 			}
 			
 		}
@@ -103,7 +100,7 @@ void GranseedTraveler_FSM::talk_01()
 	auto obj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
 	if (obj && !obj->Get_Script<UiQuestController>()->Get_Dialog_End())
 	{
-	m_eCurState = STATE::n_idle;
+		m_eCurState = STATE::n_idle;
 			
 	}
 

@@ -339,7 +339,9 @@ void DebugTool::CameraOptionTab()
 			DragFloat("light intensity", &desc.floatParams[0], 0.01f, 0.f, 1.5f);
 			DragFloat("wave speed", &desc.floatParams[1], 0.01f, 0.f, 1.5f);
 			DragFloat("wave height", &desc.floatParams[2], 0.01f, 0.01f, 1.5f);
-			InputInt("wave gap", (_int*)(&desc.intParams[0]));
+			InputInt("Rim Power", (_int*)(&desc.intParams[0]));
+			InputInt("Specular Power", (_int*)(&desc.intParams[1]));
+
 
 			EndTabItem();
 		}

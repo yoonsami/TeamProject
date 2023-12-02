@@ -682,8 +682,8 @@ void MirScene::Load_Water()
 	}
 	{
 		shared_ptr<Material> material = make_shared<Material>();
-		material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterDiffuse", L"..\\Resources\\Textures\\MapObject\\Water\\D05_T_Water_D_01.tga"), TextureMapType::DIFFUSE);
-		material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterNormal", L"..\\Resources\\Textures\\MapObject\\Water\\T_chicken_meet_001.tga"), TextureMapType::NORMAL);
+		material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterDiffuse", L"..\\Resources\\Textures\\MapObject\\Water\\T_Boom_000_a.tga"), TextureMapType::DIFFUSE);
+		material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterNormal", L"..\\Resources\\Textures\\MapObject\\Water\\T_chicken_meet_001.png"), TextureMapType::NORMAL);
 		material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterDistortion", L"..\\Resources\\Textures\\MapObject\\Water\\T_Perlin_Noise_M.tga"), TextureMapType::DISTORTION);
 
 		renderer->Set_Material(material);
