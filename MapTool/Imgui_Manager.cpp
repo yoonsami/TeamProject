@@ -799,14 +799,20 @@ void ImGui_Manager::Frame_Terrain()
     ImGui::Begin("Frame_Terrain");
 
     // 바다 색깔변ㄱ경
+    ImGui::Text("OceanData");
     ImGui::ColorEdit4("Color##Ocean1", (_float*)&m_WaterColor1, ImGuiColorEditFlags_HDR);
     ImGui::ColorEdit4("Color##Ocean2", (_float*)&m_WaterColor2, ImGuiColorEditFlags_HDR);
-    auto OceanObj = CUR_SCENE->Get_GameObject(L"Ocean");
+    ImGui::DragInt("##OceanInt0", &m_WaterInt0, 0.1f);
+    ImGui::DragInt("##OceanInt1", &m_WaterInt1, 0.1f);
+    
+    auto OceanObj = CUR_SCENE->Get_GameObject(L"Water_Plane");
     if(OceanObj != nullptr)
     {
         auto WaterScript = OceanObj->Get_Script<WaterUVSliding>();
         WaterScript->Set_Color1(m_WaterColor1);
         WaterScript->Set_Color2(m_WaterColor2);
+        WaterScript->Set_Int0(m_WaterInt0);
+        WaterScript->Set_Int1(m_WaterInt1);
     }
 
     ImGui::Text("TerrainSize");
@@ -2796,20 +2802,43 @@ void ImGui_Manager::Load_Files()
 
 void ImGui_Manager::Load_Water()
 {
+    //shared_ptr<GameObject> obj = make_shared<GameObject>();
+    //obj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4{ 128.f, -20.f, 128.f, 1.f });
+    //obj->GetOrAddTransform()->Scaled(_float3{ 3.f, 1.f, 3.f });
+    //shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+    //shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+    //shared_ptr<Model> model = RESOURCES.Get<Model>(L"Water_Plane");
+    //model->Get_Materials().front()->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterDiffuse", L"..\\Resources\\Textures\\MapObject\\Field\\T_Boom_000_a.tga"), TextureMapType::DIFFUSE);
+    //model->Get_Materials().front()->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterNormal", L"..\\Resources\\Textures\\MapObject\\Field\\T_chicken_meet_001.tga"), TextureMapType::NORMAL);
+    //model->Get_Materials().front()->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterDistortion", L"..\\Resources\\Textures\\MapObject\\Field\\T_Perlin_Noise_M.tga"), TextureMapType::DISTORTION);
+    //renderer->Set_PassType(ModelRenderer::PASS_WATER);
+    //renderer->Set_Model(model);
+    //obj->Add_Component(renderer);
+    //obj->Add_Component(make_shared<WaterUVSliding>());
+    //obj->Set_Name(L"Ocean");
+    //CUR_SCENE->Add_GameObject_Front(obj);
+
+
     shared_ptr<GameObject> obj = make_shared<GameObject>();
-    obj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4{ 128.f, -20.f, 128.f, 1.f });
-    obj->GetOrAddTransform()->Scaled(_float3{ 3.f, 1.f, 3.f });
-    shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-    shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
-    shared_ptr<Model> model = RESOURCES.Get<Model>(L"Water_Plane");
-    model->Get_Materials().front()->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterDiffuse", L"..\\Resources\\Textures\\MapObject\\Field\\T_Boom_000_a.tga"), TextureMapType::DIFFUSE);
-    model->Get_Materials().front()->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterNormal", L"..\\Resources\\Textures\\MapObject\\Field\\T_chicken_meet_001.tga"), TextureMapType::NORMAL);
-    model->Get_Materials().front()->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterDistortion", L"..\\Resources\\Textures\\MapObject\\Field\\T_Perlin_Noise_M.tga"), TextureMapType::DISTORTION);
-    renderer->Set_PassType(ModelRenderer::PASS_WATER);
-    renderer->Set_Model(model);
+    obj->GetOrAddTransform()->Scaled(_float3(30.f));
+    obj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-150.f, -20.f, -150.f, 1.f));
+    shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Water.fx");
+    shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(shader);
+    {
+        shared_ptr<Mesh> mesh = make_shared<Mesh>();
+        mesh->CreateGrid(10, 10);
+        renderer->Set_Mesh(mesh);
+    }
+    {
+        shared_ptr<Material> material = make_shared<Material>();
+        material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterDiffuse", L"..\\Resources\\Textures\\MapObject\\Field\\D05_T_Water_D_01.tga"), TextureMapType::DIFFUSE);
+        material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterNormal", L"..\\Resources\\Textures\\MapObject\\Field\\T_chicken_meet_001.tga"), TextureMapType::NORMAL);
+        material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterDistortion", L"..\\Resources\\Textures\\MapObject\\Field\\T_Perlin_Noise_M.tga"), TextureMapType::DISTORTION);
+
+        renderer->Set_Material(material);
+    }
+    obj->Set_Name(L"Water_Plane");
     obj->Add_Component(renderer);
     obj->Add_Component(make_shared<WaterUVSliding>());
-    obj->Set_Name(L"Ocean");
     CUR_SCENE->Add_GameObject_Front(obj);
-
 }
