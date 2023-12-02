@@ -44,6 +44,9 @@ public:
     void                Set_Cur_Hero(_uint iIndex, _uint iCardIndex);
     void                Remove_Cur_Hero(_uint iIndex);
 
+    void                Sort_By_Star();
+
+
 private:
     vector<HERODATA>                m_HeroData;
     vector<wstring>                 m_KeyElement;
@@ -64,7 +67,7 @@ private:
     vector<HERODATA>                m_DummyData;
 
     vector<pair<_bool, HERODATA>>   m_CardInven;
-    vector<_uint>                   m_CurSetHero;
+    vector<_int>                    m_CurSetHero;
 
     wstring                         strTemp;
     HERODATA                        tagTemp;

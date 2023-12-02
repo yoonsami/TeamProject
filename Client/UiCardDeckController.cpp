@@ -22,6 +22,11 @@ HRESULT UiCardDeckController::Init()
 
     m_bIsInit = true;
 
+    m_fMaxTime = 1.f;
+    m_fSpeed = 30.f;
+    m_fCheckTime = 0.f;
+    m_bIsMoveDown = true;
+
 
     auto pScene = CUR_SCENE;
 
@@ -200,7 +205,7 @@ void UiCardDeckController::Tick()
     if (true == m_pOwner.expired())
         return;
 
-
+    Move_Select_Mark();
 }
 
 void UiCardDeckController::Set_Render(_bool bValue)
@@ -208,7 +213,6 @@ void UiCardDeckController::Set_Render(_bool bValue)
     m_bIsRender = bValue;
     auto pScene = CUR_SCENE;
 
-    _uint iUseSize = DATAMGR.Get_Card_Inven_Use_Size();
     _uint iSize = IDX(m_vecCardDeckObj.size());
     for (_uint i = 0; i < iSize; ++i)
     {
@@ -220,6 +224,10 @@ void UiCardDeckController::Set_Render(_bool bValue)
         }
     }
 
+    _uint iUseSize = DATAMGR.Get_Card_Inven_Use_Size();
+    iSize = IDX(m_vecInvenObj.size());
+    if (iSize < iUseSize)
+        iUseSize = iSize;
     for (_uint i = 0; i < iUseSize; ++i)
     {
         auto& pObj = m_vecInvenObj[i];
@@ -302,6 +310,8 @@ void UiCardDeckController::Click_Deck_Select(wstring strObjName)
                 m_vecCardDeckObj[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(DATAMGR.Get_Card_Inven_Element_Line(m_iSetIndex)), TextureMapType::DIFFUSE);
             
                 Set_Font(i - 3);
+
+                Remove_Select_Mark();
             }
         }
     }
@@ -374,6 +384,8 @@ void UiCardDeckController::Click_Info_Set(_uint iIndex)
     m_bIsClickSet = true;
     m_iSetIndex = iIndex;
     Remove_Info();
+
+    Create_Select_Mark();
 }
 
 void UiCardDeckController::Remove_Info()
@@ -415,12 +427,18 @@ void UiCardDeckController::Set_Card()
     {
         if (i < iUseSize)
         {
-            if (true == m_vecInvenObj[i].expired() || true == m_vecCardDeckElement[i].expired())
+            if (true == m_vecInvenObj[i].expired() || 
+                true == m_vecCardDeckElement[i].expired() || 
+                true == m_vecCardDeckBg[i].expired())
                 continue;
 
             auto& Data = pDataMgr.Get_Card_Inven(i);
             m_vecInvenObj[i].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(Data.KeyDeckMini), TextureMapType::DIFFUSE);
             m_vecCardDeckElement[i].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(pDataMgr.Get_Card_Inven_Element(i)), TextureMapType::DIFFUSE);
+
+            wstring strTextureKey = L"Card_Deck_Inven_Bg" + to_wstring(Data.Star);
+              m_vecCardDeckBg[i].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(strTextureKey), TextureMapType::DIFFUSE);
+
         }
     }
 }
@@ -545,6 +563,8 @@ void UiCardDeckController::Create_Info(_uint iIndex)
 
 void UiCardDeckController::Set_Font(_uint iIndex)
 {
+    Remove_Font(iIndex);
+
     _uint Index = iIndex * 2;
     auto& tagData = DATAMGR.Get_Card_Inven(m_iSetIndex);
 
@@ -576,20 +596,93 @@ void UiCardDeckController::Remove_Font(_uint iIndex)
         return;
     m_vecFont[Index + 1].lock()->Get_FontRenderer()->Get_Text() = L"";
     
-    _float4 vecPos = m_vecFont[Index].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    _float4 vecPos1 = m_vecFont[Index].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    _float4 vecPos2 = m_vecFont[Index + 1].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
     switch (Index)
     {
     case 0:
-        vecPos.x = -480;
+        vecPos1.x = -480;
+        vecPos2.x = -480;
         break;
     case 2:
-        vecPos.x = -140;
+        vecPos1.x = -140;
+        vecPos2.x = -140;
         break;
     case 4:
-        vecPos.x = 200;
+        vecPos1.x = 200;
+        vecPos2.x = 200;
         break;
     }
-    m_vecFont[Index].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
-    m_vecFont[Index + 1].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+    m_vecFont[Index].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos1);
+    m_vecFont[Index + 1].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos2);
 }
-    
+
+void UiCardDeckController::Create_Select_Mark()
+{
+    if (true == m_bIsSelectMarkCreate)
+        return;
+
+    m_bIsSelectMarkCreate = true;
+
+    auto pScene = CUR_SCENE;
+    pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Select.dat", m_vecSelectMark);
+}
+
+void UiCardDeckController::Remove_Select_Mark()
+{
+    if (false == m_bIsSelectMarkCreate)
+        return;
+
+    m_bIsSelectMarkCreate = false;
+    m_bIsMoveDown = true;
+
+    auto& pEventMgr = EVENTMGR;
+
+    for (_uint i = 0; i < IDX(m_vecSelectMark.size()); ++i)
+    {
+        auto& pObj = m_vecSelectMark[i];
+        if (false == pObj.expired())
+        {
+            pEventMgr.Delete_Object(pObj.lock());
+            pObj.reset();
+        }
+    }
+
+    m_vecSelectMark.clear();
+}
+
+void UiCardDeckController::Move_Select_Mark()
+{
+    if (false == m_bIsSelectMarkCreate)
+        return;
+
+    m_fCheckTime += fDT;
+    if(m_fMaxTime < m_fCheckTime)
+    {
+        m_fCheckTime = 0.f;
+        m_bIsMoveDown = !m_bIsMoveDown;
+    }
+
+    if (true == m_vecSelectMark[0].expired() ||
+        true == m_vecSelectMark[1].expired() ||
+        true == m_vecSelectMark[2].expired())
+        return;
+
+    _float4 vecPos = m_vecSelectMark[0].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    _float fY = {};
+    if(true == m_bIsMoveDown)
+        fY = vecPos.y - fDT * m_fSpeed;
+    else
+        fY = vecPos.y + fDT * m_fSpeed;
+
+    vecPos.y = fY;
+    m_vecSelectMark[0].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+
+    vecPos = m_vecSelectMark[1].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    vecPos.y = fY;
+    m_vecSelectMark[1].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+
+    vecPos = m_vecSelectMark[2].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    vecPos.y = fY;
+    m_vecSelectMark[2].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+}

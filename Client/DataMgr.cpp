@@ -1036,10 +1036,7 @@ void DataMgr::Initialize()
     }
 
 
-    m_CardInven.resize(50);
-
-
-
+    m_CardInven.resize(60);
 }
 
 _uint DataMgr::Get_Dialog_Size(QUESTINDEX eIndex, CUR_QUEST eType)
@@ -1167,3 +1164,15 @@ void DataMgr::Remove_Cur_Hero(_uint iIndex)
     if (IDX(m_CurSetHero.size()) > iIndex)
         m_CurSetHero[iIndex] = -1;
 }
+
+_bool SortByStar(const pair<_bool, HERODATA>& a, const pair<_bool, HERODATA>& b)
+{
+    return a.second.Star > b.second.Star;
+}
+
+void DataMgr::Sort_By_Star()
+{
+    sort(m_CardInven.begin(), m_CardInven.end(), SortByStar);
+}
+
+

@@ -24,9 +24,9 @@ HRESULT UiCharChange::Init()
     m_vecDesc[1].fCoolTime = 10.f;
     m_vecDesc[2].fCoolTime = 10.f;
 
-    /*m_vecDesc[0].fAccTime = m_vecDesc[0].fCoolTime;
-    m_vecDesc[1].fAccTime = m_vecDesc[1].fCoolTime;
-    m_vecDesc[2].fAccTime = m_vecDesc[2].fCoolTime;*/
+    m_vecDesc[0].fAccTime = m_vecDesc[0].fCoolTime + 1.f;
+    m_vecDesc[1].fAccTime = m_vecDesc[1].fCoolTime + 1.f;
+    m_vecDesc[2].fAccTime = m_vecDesc[2].fCoolTime + 1.f;
 
     m_pObj.resize(3);
     m_pObj[0] = CUR_SCENE->Get_UI(L"UI_Char_Change0");

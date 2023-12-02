@@ -28,6 +28,11 @@ private:
     void Set_Font(_uint iIndex);
     void Remove_Font(_uint iIndex);
 
+    void Create_Select_Mark();
+    void Remove_Select_Mark();
+    void Move_Select_Mark();
+
+
 private:
     weak_ptr<GameObject>            m_pCharChange;
 
@@ -37,14 +42,23 @@ private:
     vector<weak_ptr<GameObject>>    m_vecCardDeckElement;
     vector<weak_ptr<GameObject>>    m_vecFont;
     
-    _bool           m_bIsRender     = { false };
-    _uint           m_iPickingIndex = { 0 };
-    _uint           m_iPreSize      = {};
+    vector<weak_ptr<GameObject>>    m_vecAddedObj;
+    vector<weak_ptr<GameObject>>    m_vecSelectMark;
 
-    _bool           m_bIsInfoCreate = {};
-    vector<weak_ptr<GameObject>> m_vecAddedObj;
+    _bool       m_bIsRender             = { false };
+    _uint       m_iPickingIndex         = { 0 };
+    _uint       m_iPreSize              = {};
 
-    _bool           m_bIsClickSet = {};
-    _uint           m_iSetIndex = {};
+    _bool       m_bIsInfoCreate         = {};
+
+    _bool       m_bIsClickSet           = {};
+    _uint       m_iSetIndex             = {};
+
+    _bool       m_bIsSelectMarkCreate   = {};
+    
+    _bool       m_bIsMoveDown           = {};
+    _float      m_fCheckTime            = {};
+    _float      m_fMaxTime              = {};
+    _float      m_fSpeed                = {};
 };
 

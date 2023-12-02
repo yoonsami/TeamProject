@@ -392,6 +392,8 @@ void GranseedScene::Load_Camera(shared_ptr<GameObject> pPlayer)
 void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 {
 	list<shared_ptr<GameObject>>& tmp = static_pointer_cast<LoadingScene>(CUR_SCENE)->Get_StaticObjectsFromLoader();
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Controller.dat", tmp, false);
+
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main.dat", tmp);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main_Button.dat", tmp);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Char_Change.dat", tmp);
@@ -399,7 +401,6 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", tmp, false, false);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Cur_Quest.dat", tmp, false, false);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Setting.dat", tmp, false, false);
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Controller.dat", tmp, false);
 
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"Main_UI_Controller");

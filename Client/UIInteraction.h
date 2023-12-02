@@ -14,12 +14,15 @@ public:
     void Create_Interaction(NPCTYPE eType);
     void Remove_Interaction();
 
+    _bool Get_Is_Activate() { return m_bIsActivate; }
+
 private:
     weak_ptr<GameObject> m_pInteraction_Bg;
     weak_ptr<GameObject> m_pInteraction_Font;
     weak_ptr<GameObject> m_pDialog_Controller;
     weak_ptr<GameObject> m_pGachaController;
 
-    _bool           m_bIsCreated = {};
+    _bool           m_bIsCreated    = {};
+    _bool           m_bIsActivate   = {};
 };
 
