@@ -1,5 +1,6 @@
 #include "Render.fx"
 #include "Light.fx"
+#include "PBR.fx"
 
 float4 LightingWater(float3 viewNormal, float3 viewLightDir, float3 viewPosition)
 {
@@ -96,7 +97,9 @@ float4 PS(MeshOutput input) : SV_TARGET
     diffuseColor.rgb = vLightingColor;
     diffuseColor.a = 1.f;
     //diffuseColor.rgb = lerp(diffuseColor.rgb, vLightingColor, fLightIntensity);
-    diffuseColor.rgb += LightingWater(normal, lights[0].vDirection.xyz, input.viewPosition).rgb;
+    //diffuseColor.rgb += LightingWater(normal, lights[0].vDirection.xyz, input.viewPosition).rgb;
+    
+    diffuseColor.rgb += PBRShade(float3(1, 1, 1), diffuseColor.rgb, 0.f, 0.8f, normal, input.viewPosition, lights[0].color.diffuse.rgb, 0).outColor;
     
     return diffuseColor;
 }
