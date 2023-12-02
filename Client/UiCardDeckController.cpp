@@ -22,6 +22,11 @@ HRESULT UiCardDeckController::Init()
 
     m_bIsInit = true;
 
+    m_fMaxTime = 1.f;
+    m_fSpeed = 30.f;
+    m_fCheckTime = 0.f;
+    m_bIsMoveDown = true;
+
 
     auto pScene = CUR_SCENE;
 
@@ -200,7 +205,7 @@ void UiCardDeckController::Tick()
     if (true == m_pOwner.expired())
         return;
 
-
+    Move_Select_Mark();
 }
 
 void UiCardDeckController::Set_Render(_bool bValue)
@@ -305,6 +310,8 @@ void UiCardDeckController::Click_Deck_Select(wstring strObjName)
                 m_vecCardDeckObj[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(DATAMGR.Get_Card_Inven_Element_Line(m_iSetIndex)), TextureMapType::DIFFUSE);
             
                 Set_Font(i - 3);
+
+                Remove_Select_Mark();
             }
         }
     }
@@ -377,6 +384,8 @@ void UiCardDeckController::Click_Info_Set(_uint iIndex)
     m_bIsClickSet = true;
     m_iSetIndex = iIndex;
     Remove_Info();
+
+    Create_Select_Mark();
 }
 
 void UiCardDeckController::Remove_Info()
@@ -607,4 +616,73 @@ void UiCardDeckController::Remove_Font(_uint iIndex)
     m_vecFont[Index].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos1);
     m_vecFont[Index + 1].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos2);
 }
-    
+
+void UiCardDeckController::Create_Select_Mark()
+{
+    if (true == m_bIsSelectMarkCreate)
+        return;
+
+    m_bIsSelectMarkCreate = true;
+
+    auto pScene = CUR_SCENE;
+    pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Select.dat", m_vecSelectMark);
+}
+
+void UiCardDeckController::Remove_Select_Mark()
+{
+    if (false == m_bIsSelectMarkCreate)
+        return;
+
+    m_bIsSelectMarkCreate = false;
+    m_bIsMoveDown = true;
+
+    auto& pEventMgr = EVENTMGR;
+
+    for (_uint i = 0; i < IDX(m_vecSelectMark.size()); ++i)
+    {
+        auto& pObj = m_vecSelectMark[i];
+        if (false == pObj.expired())
+        {
+            pEventMgr.Delete_Object(pObj.lock());
+            pObj.reset();
+        }
+    }
+
+    m_vecSelectMark.clear();
+}
+
+void UiCardDeckController::Move_Select_Mark()
+{
+    if (false == m_bIsSelectMarkCreate)
+        return;
+
+    m_fCheckTime += fDT;
+    if(m_fMaxTime < m_fCheckTime)
+    {
+        m_fCheckTime = 0.f;
+        m_bIsMoveDown = !m_bIsMoveDown;
+    }
+
+    if (true == m_vecSelectMark[0].expired() ||
+        true == m_vecSelectMark[1].expired() ||
+        true == m_vecSelectMark[2].expired())
+        return;
+
+    _float4 vecPos = m_vecSelectMark[0].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    _float fY = {};
+    if(true == m_bIsMoveDown)
+        fY = vecPos.y - fDT * m_fSpeed;
+    else
+        fY = vecPos.y + fDT * m_fSpeed;
+
+    vecPos.y = fY;
+    m_vecSelectMark[0].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+
+    vecPos = m_vecSelectMark[1].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    vecPos.y = fY;
+    m_vecSelectMark[1].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+
+    vecPos = m_vecSelectMark[2].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    vecPos.y = fY;
+    m_vecSelectMark[2].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+}
