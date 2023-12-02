@@ -37,7 +37,10 @@ void GranseedPotion_FSM::State_Tick()
 	case STATE::n_idle:
 		n_idle();
 		if (Can_Interact())
-			InteractWithPlayer();
+		{
+			if(KEYTAP(KEY_TYPE::E))
+				InteractWithPlayer();
+		}
 		break;
 
 		break;

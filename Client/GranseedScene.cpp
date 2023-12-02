@@ -76,6 +76,7 @@
 #include "GranseedPotion_FSM.h"
 #include "GranseedTraveler_FSM.h"
 #include "GranseedChildren_FSM.h"
+#include "UiMarkNpc.h"
 namespace fs = std::filesystem;
 
 GranseedScene::GranseedScene()
@@ -633,6 +634,8 @@ void GranseedScene::Load_NPC(const wstring& dataFileName)
 				fsm->Set_MinMovePos(vMinPos);
 				fsm->Set_MaxMovePos(vMaxPos);
 				obj->Add_Component(fsm);
+				obj->Add_Component(make_shared<UiMarkNpc>(NPCTYPE::POTION));
+
 			}
 
 			break;
@@ -660,7 +663,11 @@ void GranseedScene::Load_NPC(const wstring& dataFileName)
 				fsm->Set_MinMovePos(vMinPos);
 				fsm->Set_MaxMovePos(vMaxPos);
 				obj->Add_Component(fsm);
+
+				obj->Add_Component(make_shared<UiMarkNpc>(NPCTYPE::GACHA));
+
 			}
+
 				break;
 			case NPC_FSM::CHILDREN:
 			{
