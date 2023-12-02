@@ -126,24 +126,24 @@ void GranseedScene::Tick()
 {
 	__super::Tick();
 
-	if (KEYTAP(KEY_TYPE::C))
-	{
-		auto pObj = Get_UI(L"UI_Interaction");
-		if(pObj)
-			pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::QUEST);
-		//auto pObj = Get_UI(L"UI_Boss_Dialog");
-		//if (pObj)
-		//	pObj->Get_Script<UiBossDialog>()->Create_Dialog(BOSS::DELLONS);
-	}
-	if (KEYTAP(KEY_TYPE::V))
-	{
-		auto pObj = Get_UI(L"UI_Interaction");
-		if (pObj)
-			pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::GACHA);
-		//auto pObj = Get_UI(L"UI_Boss_Dialog");
-		//if (pObj)
-		//	pObj->Get_Script<UiBossDialog>()->Is_Finish();
-	}
+	//if (KEYTAP(KEY_TYPE::C))
+	//{
+	//	auto pObj = Get_UI(L"UI_Interaction");
+	//	if(pObj)
+	//		pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::QUEST);
+	//	//auto pObj = Get_UI(L"UI_Boss_Dialog");
+	//	//if (pObj)
+	//	//	pObj->Get_Script<UiBossDialog>()->Create_Dialog(BOSS::DELLONS);
+	//}
+	//if (KEYTAP(KEY_TYPE::V))
+	//{
+	//	auto pObj = Get_UI(L"UI_Interaction");
+	//	if (pObj)
+	//		pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::GACHA);
+	//	//auto pObj = Get_UI(L"UI_Boss_Dialog");
+	//	//if (pObj)
+	//	//	pObj->Get_Script<UiBossDialog>()->Is_Finish();
+	//}
 	if (KEYTAP(KEY_TYPE::Z))
 	{
 		auto pObj = Get_UI(L"UI_Dialog_Controller");

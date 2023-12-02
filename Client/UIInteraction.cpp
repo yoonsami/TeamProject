@@ -29,13 +29,15 @@ HRESULT UIInteraction::Init()
     return S_OK;
 }
 
-void UIInteraction::Create_Interaction(NPCTYPE eType)
+void UIInteraction::Create_Interaction(NPCTYPE eType, shared_ptr<GameObject> pObj)
 {
     if (NPCTYPE::MAX == eType)
         return;
 
     if (true == m_bIsCreated)
         return;
+
+    m_pAccessObj = pObj;
 
     m_bIsCreated = true;
     m_bIsActivate = false;
@@ -72,9 +74,9 @@ void UIInteraction::Create_Interaction(NPCTYPE eType)
             break;
         case NPCTYPE::GACHA:
             eIndex = QUESTINDEX::TRY_GACHA;
+            break;
         case NPCTYPE::HIDE_KID:
             eIndex = QUESTINDEX::HIDE_AND_SEEK;
-
             break;
         }
 
@@ -102,11 +104,17 @@ void UIInteraction::Create_Interaction(NPCTYPE eType)
 
 }
 
-void UIInteraction::Remove_Interaction()
+void UIInteraction::Remove_Interaction(shared_ptr<GameObject> pObj)
 {
     if (false == m_pInteraction_Bg.expired() ||
-        false == m_pInteraction_Font.expired())
+        false == m_pInteraction_Font.expired() ||
+        false == m_pAccessObj.expired())
     {
+        if (m_pAccessObj.lock() != pObj)
+            return;
+
+        m_pAccessObj.reset();
+
         m_bIsCreated = false;
         m_bIsActivate = true;
 
@@ -124,4 +132,17 @@ _bool UIInteraction::Get_Is_Activate()
     }
 
     return false;
+}
+
+void UIInteraction::Remove_Interaction()
+{
+    if (false == m_pInteraction_Bg.expired() ||
+        false == m_pInteraction_Font.expired())
+    {
+        m_bIsCreated = false;
+        m_bIsActivate = true;
+
+        EVENTMGR.Delete_Object(m_pInteraction_Bg.lock());
+        EVENTMGR.Delete_Object(m_pInteraction_Font.lock());
+    }
 }
