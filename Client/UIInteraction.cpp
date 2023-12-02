@@ -38,6 +38,7 @@ void UIInteraction::Create_Interaction(NPCTYPE eType)
         return;
 
     m_bIsCreated = true;
+    m_bIsActivate = false;
 
     auto pScene = CUR_SCENE;
     vector<weak_ptr<GameObject>> addedObj;
@@ -81,6 +82,7 @@ void UIInteraction::Create_Interaction(NPCTYPE eType)
                 {
                     pObj.lock()->Get_Script<UiQuestController>()->Create_Dialog(eType, eIndex);
                     this->Remove_Interaction();
+
                 }
             });
 
@@ -103,6 +105,7 @@ void UIInteraction::Remove_Interaction()
         false == m_pInteraction_Font.expired())
     {
         m_bIsCreated = false;
+        m_bIsActivate = true;
 
         EVENTMGR.Delete_Object(m_pInteraction_Bg.lock());
         EVENTMGR.Delete_Object(m_pInteraction_Font.lock());
