@@ -97,7 +97,6 @@ void GranseedTraveler_FSM::talk_01()
 {
 	Look_DirToTarget(XM_PI * 0.5f);
 
-
 	auto obj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
 	if (obj && !obj->Get_Script<UiQuestController>()->Get_Dialog_End())
 	{
