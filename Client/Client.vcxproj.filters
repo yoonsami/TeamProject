@@ -340,6 +340,9 @@
     <Filter Include="02.Component\01.FSM\03.Special_FSM\05.DestroyBuilding_FSM">
       <UniqueIdentifier>{87c8fa28-b774-48de-b277-c3e1f4a06dab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\05.Object\02.Get_Gravity">
+      <UniqueIdentifier>{e4baddf9-a0cd-47bc-9948-cdba84922f4c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -658,11 +661,9 @@
     <ClInclude Include="Boss_Giant_Mir_FSM.h">
       <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\04.Boss_Giant_Mir_FSM</Filter>
     </ClInclude>
-    <ClInclude Include="WaterUVSliding.h" />
     <ClInclude Include="ObjectDissolveCreate.h">
       <Filter>02.Component\00.MonoBehaviour\05.Object\01.ObjectDissolveCreate</Filter>
     </ClInclude>
-    <ClInclude Include="TimerScript.h" />
     <ClInclude Include="NeutralAlpaca_FSM.h">
       <Filter>02.Component\01.FSM\06.Animal_FSM</Filter>
     </ClInclude>
@@ -677,6 +678,15 @@
     </ClInclude>
     <ClInclude Include="DragonBall_FSM.h">
       <Filter>02.Component\01.FSM\03.Special_FSM\04.DragonBall_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="WaterUVSliding.h">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\01.WaterUVSliding</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerScript.h">
+      <Filter>02.Component\00.MonoBehaviour\07.Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="Get_Gravity.h">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\02.Get_Gravity</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -966,11 +976,9 @@
     <ClCompile Include="Boss_Giant_Mir_FSM.cpp">
       <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\04.Boss_Giant_Mir_FSM</Filter>
     </ClCompile>
-    <ClCompile Include="WaterUVSliding.cpp" />
     <ClCompile Include="ObjectDissolveCreate.cpp">
       <Filter>02.Component\00.MonoBehaviour\05.Object\01.ObjectDissolveCreate</Filter>
     </ClCompile>
-    <ClCompile Include="TimerScript.cpp" />
     <ClCompile Include="NeutralAlpaca_FSM.cpp">
       <Filter>02.Component\01.FSM\06.Animal_FSM</Filter>
     </ClCompile>
@@ -982,6 +990,15 @@
     </ClCompile>
     <ClCompile Include="DestroyBuilding_FSM.cpp">
       <Filter>02.Component\01.FSM\03.Special_FSM\05.DestroyBuilding_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="WaterUVSliding.cpp">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\01.WaterUVSliding</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\07.Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="Get_Gravity.cpp">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\02.Get_Gravity</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
