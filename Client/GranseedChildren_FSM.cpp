@@ -3,6 +3,7 @@
 #include "ModelAnimator.h"
 #include <MathUtils.h>
 #include "UIInteraction.h"
+#include "UiQuestController.h"
 
 GranseedChildren_FSM::GranseedChildren_FSM()
 {
@@ -93,7 +94,7 @@ void GranseedChildren_FSM::n_idle()
 		{
 			auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
 			if (pObj && pObj->Get_Script<UIInteraction>()->Get_Is_Activate())
-				m_eCurState = STATE::talk_01;
+				InteractWithPlayer();
 			else if (pObj && !pObj->Get_Script<UIInteraction>()->Is_Created())
 				pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::HIDE_KID, m_pOwner.lock());
 		}
@@ -119,6 +120,13 @@ void GranseedChildren_FSM::n_idle_Init()
 void GranseedChildren_FSM::talk_01()
 {
 	Look_DirToTarget(XM_PI * 0.5f);
+
+	auto obj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
+	if (obj && !obj->Get_Script<UiQuestController>()->Get_Dialog_End())
+	{
+		m_eCurState = STATE::n_idle;
+
+	}
 
 	if (KEYTAP(KEY_TYPE::E)/*talk 종료 조건*/)
 		m_eCurState = STATE::n_idle;
