@@ -67,6 +67,11 @@ public:
 	};
 
 public:
+	Boss_Mir_FSM();
+	~Boss_Mir_FSM();
+
+
+public:
 	virtual HRESULT Init() override;
 	virtual void Tick() override;
 	virtual void Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget) override;
@@ -164,6 +169,7 @@ private:
 	void TailAttackCollider_On(const wstring& skillname);
 	void TailAttackCollider_Off();
 	void DeadSetting();
+	void Load_Giant_Boss_Mir();
 
 	_float CamDistanceLerp(_float fStart, _float fEnd, _float fRatio);
 
@@ -210,6 +216,9 @@ private:
 	_float4 m_vHeadCamPos = _float4(0.f);
 	_float4 m_vTopBonePos = _float4(0.f);
 	_float4 m_vPhaseChangePos = _float4(0.f);
+	_float4 m_vFleeCamPos = _float4(0.f);
+	_float4 m_vSetPlayerPos = _float4(0.f);
+	
 	_float4 m_vDragonBallPosArray[3];
 
 	_float4x4 HeadBoneMatrix = XMMatrixIdentity();
@@ -217,6 +226,7 @@ private:
 	_float4x4 TailBoneMatrix = XMMatrixIdentity();
 	_float4x4 TopBoneMatrix = XMMatrixIdentity();
 	_float4x4 m_FirstWorldMat = XMMatrixIdentity();
+
 
 	weak_ptr<GameObject> m_pSubController[2];
 };
