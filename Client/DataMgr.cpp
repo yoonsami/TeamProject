@@ -1036,10 +1036,7 @@ void DataMgr::Initialize()
     }
 
 
-    m_CardInven.resize(50);
-
-
-
+    m_CardInven.resize(60);
 }
 
 _uint DataMgr::Get_Dialog_Size(QUESTINDEX eIndex, CUR_QUEST eType)

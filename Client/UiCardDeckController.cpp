@@ -418,12 +418,18 @@ void UiCardDeckController::Set_Card()
     {
         if (i < iUseSize)
         {
-            if (true == m_vecInvenObj[i].expired() || true == m_vecCardDeckElement[i].expired())
+            if (true == m_vecInvenObj[i].expired() || 
+                true == m_vecCardDeckElement[i].expired() || 
+                true == m_vecCardDeckBg[i].expired())
                 continue;
 
             auto& Data = pDataMgr.Get_Card_Inven(i);
             m_vecInvenObj[i].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(Data.KeyDeckMini), TextureMapType::DIFFUSE);
             m_vecCardDeckElement[i].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(pDataMgr.Get_Card_Inven_Element(i)), TextureMapType::DIFFUSE);
+
+            wstring strTextureKey = L"Card_Deck_Inven_Bg" + to_wstring(Data.Star);
+              m_vecCardDeckBg[i].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(strTextureKey), TextureMapType::DIFFUSE);
+
         }
     }
 }
