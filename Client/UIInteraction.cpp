@@ -111,3 +111,14 @@ void UIInteraction::Remove_Interaction()
         EVENTMGR.Delete_Object(m_pInteraction_Font.lock());
     }
 }
+
+_bool UIInteraction::Get_Is_Activate()
+{
+    if (true == m_bIsActivate)
+    {
+        m_bIsActivate = false;
+        return true;
+    }
+
+    return false;
+}

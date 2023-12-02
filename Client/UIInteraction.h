@@ -14,7 +14,7 @@ public:
     void Create_Interaction(NPCTYPE eType);
     void Remove_Interaction();
 
-    _bool Get_Is_Activate() { return m_bIsActivate; }
+    _bool Get_Is_Activate();
     _bool Is_Created()      { return m_bIsCreated; }
 private:
     weak_ptr<GameObject> m_pInteraction_Bg;
