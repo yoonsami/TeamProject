@@ -4,9 +4,6 @@
 
 _bool NPC_FSM::Can_Interact()
 {
-	if (!KEYTAP(KEY_TYPE::E))
-		return false;
-
 	_float3 pos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 
 	if (_float3::Transform(pos, CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_ViewMat()).z < 0)

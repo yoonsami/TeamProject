@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "GranseedTraveler_FSM.h"
 #include "ModelAnimator.h"
+#include "UIInteraction.h"
+#include "UiQuestController.h"
 
 GranseedTraveler_FSM::GranseedTraveler_FSM()
 {
@@ -23,10 +25,7 @@ void GranseedTraveler_FSM::Tick()
 
 void GranseedTraveler_FSM::InteractWithPlayer()
 {
-	auto pPlayer = CUR_SCENE->Get_GameObject(L"Player");
-	m_vDirToTarget = (pPlayer->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
-	m_vDirToTarget.y = 0;
-	m_eCurState = STATE::talk_01;
+	;
 }
 
 void GranseedTraveler_FSM::State_Tick()
@@ -37,7 +36,30 @@ void GranseedTraveler_FSM::State_Tick()
 	case STATE::n_idle:
 		n_idle();
 		if (Can_Interact())
-			InteractWithPlayer();
+		{
+			{
+				auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
+				if (pObj)
+					pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::GACHA);
+			}
+
+			{
+				/*auto pObj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
+				if (pObj)
+				{
+					pObj->Get_Script<UiQuestController>()->Get_Dialog_End()
+
+				}*/
+
+			}
+			
+		}
+		else
+		{
+			auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
+			if (pObj)
+				pObj->Get_Script<UIInteraction>()->Remove_Interaction();
+		}
 		break;
 
 		break;
@@ -82,7 +104,9 @@ void GranseedTraveler_FSM::talk_01()
 {
 	Look_DirToTarget(XM_PI * 0.5f);
 
-	if (KEYTAP(KEY_TYPE::E)/*talk 종료 조건*/)
+
+
+
 		m_eCurState = STATE::n_idle;
 }
 
