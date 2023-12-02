@@ -185,6 +185,8 @@ void UiGachaController::Delete_Gacha_Card()
         pObj.lock()->Get_Script<UiGachaCardMove>()->Add_Data();
         EVENTMGR.Delete_Object(pObj.lock());
     }
+
+    DATAMGR.Sort_By_Star();
 }
 
 void UiGachaController::Delete_Gacha_Bg()

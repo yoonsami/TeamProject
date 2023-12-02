@@ -208,7 +208,6 @@ void UiCardDeckController::Set_Render(_bool bValue)
     m_bIsRender = bValue;
     auto pScene = CUR_SCENE;
 
-    _uint iUseSize = DATAMGR.Get_Card_Inven_Use_Size();
     _uint iSize = IDX(m_vecCardDeckObj.size());
     for (_uint i = 0; i < iSize; ++i)
     {
@@ -220,6 +219,10 @@ void UiCardDeckController::Set_Render(_bool bValue)
         }
     }
 
+    _uint iUseSize = DATAMGR.Get_Card_Inven_Use_Size();
+    iSize = IDX(m_vecInvenObj.size());
+    if (iSize < iUseSize)
+        iUseSize = iSize;
     for (_uint i = 0; i < iUseSize; ++i)
     {
         auto& pObj = m_vecInvenObj[i];
@@ -545,6 +548,8 @@ void UiCardDeckController::Create_Info(_uint iIndex)
 
 void UiCardDeckController::Set_Font(_uint iIndex)
 {
+    Remove_Font(iIndex);
+
     _uint Index = iIndex * 2;
     auto& tagData = DATAMGR.Get_Card_Inven(m_iSetIndex);
 
@@ -576,20 +581,24 @@ void UiCardDeckController::Remove_Font(_uint iIndex)
         return;
     m_vecFont[Index + 1].lock()->Get_FontRenderer()->Get_Text() = L"";
     
-    _float4 vecPos = m_vecFont[Index].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    _float4 vecPos1 = m_vecFont[Index].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    _float4 vecPos2 = m_vecFont[Index + 1].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
     switch (Index)
     {
     case 0:
-        vecPos.x = -480;
+        vecPos1.x = -480;
+        vecPos2.x = -480;
         break;
     case 2:
-        vecPos.x = -140;
+        vecPos1.x = -140;
+        vecPos2.x = -140;
         break;
     case 4:
-        vecPos.x = 200;
+        vecPos1.x = 200;
+        vecPos2.x = 200;
         break;
     }
-    m_vecFont[Index].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
-    m_vecFont[Index + 1].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+    m_vecFont[Index].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos1);
+    m_vecFont[Index + 1].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos2);
 }
     
