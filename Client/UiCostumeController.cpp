@@ -85,6 +85,7 @@ void UiCostumeController::Create_Costume()
     if (true == m_bIsCreated)
         return;
 
+    m_TempSet = m_OriginSet;
     m_eType = COSTUME_TYPE::HAIR;
 
     m_bIsCreated = true;
