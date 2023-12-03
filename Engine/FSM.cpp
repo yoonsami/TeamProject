@@ -352,7 +352,7 @@ void FSM::Add_And_Set_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviou
 	pGroupEffectObj->GetOrAddTransform();
 	pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS));
 	pGroupEffectObj->Get_Transform()->Set_Quaternion(Get_Transform()->Get_Rotation());
-
+	pGroupEffectObj->Set_Name(strSkilltag);
 	// For. GroupEffectData 
 	wstring wstrFileName = strSkilltag + L".dat";
 	wstring wtsrFilePath = TEXT("..\\Resources\\EffectData\\GroupEffectData\\") + wstrFileName;
@@ -428,12 +428,12 @@ void FSM::KillAllEffect()
 	}
 }
 
-void FSM::Update_GroupEffectWorldPos()
+void FSM::Update_GroupEffectWorldPos(const _float4x4& mWorldMatrix)
 {
 	for (auto& iter : m_vGroupEffect)
 	{
 		if(!iter.expired())
-			iter.lock()->Get_Transform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
+			iter.lock()->Get_Transform()->Set_WorldMat(mWorldMatrix);
 	}
 }
 
@@ -451,6 +451,7 @@ void FSM::Add_FDistortion_Effect(const wstring& strSkilltag)
 	wstring wstrFileName = strSkilltag + L".dat";
 	wstring wtsrFilePath = TEXT("..\\Resources\\EffectData\\FDistortionGroupEffectData\\") + wstrFileName;
 	shared_ptr<GroupEffectData> pGroupEffectData = RESOURCES.GetOrAddGroupEffectData(strSkilltag, wtsrFilePath);
+
 
 	if (pGroupEffectData == nullptr)
 		return;

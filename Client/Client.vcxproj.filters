@@ -343,6 +343,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\05.Object\02.Get_Gravity">
       <UniqueIdentifier>{e4baddf9-a0cd-47bc-9948-cdba84922f4c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\07.EffectScript\02. Mir_100100_FireScript">
+      <UniqueIdentifier>{41e6a3e9-0881-4260-b242-45a42a945f09}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -688,6 +691,9 @@
     <ClInclude Include="Get_Gravity.h">
       <Filter>02.Component\00.MonoBehaviour\05.Object\02.Get_Gravity</Filter>
     </ClInclude>
+    <ClInclude Include="Mir_100100_FireScript.h">
+      <Filter>02.Component\00.MonoBehaviour\07.EffectScript\02. Mir_100100_FireScript</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -999,6 +1005,9 @@
     </ClCompile>
     <ClCompile Include="Get_Gravity.cpp">
       <Filter>02.Component\00.MonoBehaviour\05.Object\02.Get_Gravity</Filter>
+    </ClCompile>
+    <ClCompile Include="Mir_100100_FireScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\07.EffectScript\02. Mir_100100_FireScript</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

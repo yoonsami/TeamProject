@@ -291,8 +291,6 @@ void Boss_Mir_FSM::State_Tick()
         break;
     }
 
-    Update_GroupEffectWorldPos();
-
     if (m_iPreFrame != m_iCurFrame)
         m_iPreFrame = m_iCurFrame;
 }
@@ -1484,6 +1482,8 @@ void Boss_Mir_FSM::skill_2100()
     if (Init_CurFrame(93))
         Add_Effect(L"Mir_2100_End");
 
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_iCurFrame == 55)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed / 4.f);
@@ -2160,6 +2160,15 @@ void Boss_Mir_FSM::skill_100000_Init()
 
 void Boss_Mir_FSM::skill_100100()
 {
+    for (_int i = 19; i < 85; i += 2)
+    {
+        MouseBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iMouseBoneIndex) *
+            _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+        if (Init_CurFrame(i))
+            Add_GroupEffectOwner(L"Mir_100100", _float3(MouseBoneMatrix.Translation().x, MouseBoneMatrix.Translation().y, MouseBoneMatrix.Translation().z), true);
+    }
+
     if (m_iCurFrame == 1)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed / 4.f);
@@ -2619,7 +2628,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
 {
     // TODO:  의진
     _uint iRan = rand() % 2;
-    m_eCurState = STATE::skill_200000;
+    m_eCurState = STATE::skill_100000;
 
    /*_uint iRan = rand() % 10;*/
     /*
