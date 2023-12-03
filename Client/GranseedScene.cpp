@@ -141,7 +141,7 @@ void GranseedScene::Tick()
 	}
 	if (KEYTAP(KEY_TYPE::V))
 	{
-		auto pObj = Get_UI(L"UI_Custume_Controller");
+		auto pObj = Get_UI(L"UI_Costume_Controller");
 		if (pObj)
 			pObj->Get_Script<UiCostumeController>()->Remove_Costume();
 		//auto pObj = Get_UI(L"UI_Interaction");
