@@ -2282,6 +2282,9 @@ void Boss_Mir_FSM::skill_200000_Init()
 
 void Boss_Mir_FSM::skill_200100()
 {
+    if (Init_CurFrame(25))
+        Add_GroupEffectOwner(L"Mir_200100", _float3(0.f, 0.f, 2.f), false);
+
     m_tBreathCoolTime.fAccTime += fDT;
 
     if (m_iCurFrame == 10)
@@ -2613,7 +2616,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
 {
     // TODO:  의진
     _uint iRan = rand() % 2;
-    m_eCurState = STATE::skill_1100;
+    m_eCurState = STATE::skill_200000;
 
    /*_uint iRan = rand() % 10;*/
     /*
