@@ -274,7 +274,7 @@ void Boss_Mir_FSM::State_Tick()
     case STATE::skill_13100:
         skill_13100();
         break;
-    case STATE::skill_14100:
+    case STATE::skill_14100:    
         skill_14100();
         break;
     case STATE::skill_100000:
@@ -2261,6 +2261,9 @@ void Boss_Mir_FSM::skill_100100_Init()
 
 void Boss_Mir_FSM::skill_200000()
 {
+    if (Init_CurFrame(125))
+        Add_GroupEffectOwner(L"Mir_200100_pizza", _float3(0.f, 0.f, 2.f), false);
+
     if (m_iCurFrame > 15)
     {
         if (!m_pTarget.expired())
@@ -2797,7 +2800,6 @@ void Boss_Mir_FSM::Load_Giant_Boss_Mir()
     ObjMonster->Get_FSM()->Init();
     EVENTMGR.Create_Object(ObjMonster);
 }
-
 
 _float Boss_Mir_FSM::CamDistanceLerp(_float fStart, _float fEnd, _float fRatio)
 {
