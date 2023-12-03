@@ -343,6 +343,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\05.Object\02.Get_Gravity">
       <UniqueIdentifier>{e4baddf9-a0cd-47bc-9948-cdba84922f4c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\22.UiCostumeController">
+      <UniqueIdentifier>{9fb9fff3-ce8a-4e9d-8820-b04532654252}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -688,6 +691,9 @@
     <ClInclude Include="Get_Gravity.h">
       <Filter>02.Component\00.MonoBehaviour\05.Object\02.Get_Gravity</Filter>
     </ClInclude>
+    <ClInclude Include="UiCostumeController.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\22.UiCostumeController</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -999,6 +1005,9 @@
     </ClCompile>
     <ClCompile Include="Get_Gravity.cpp">
       <Filter>02.Component\00.MonoBehaviour\05.Object\02.Get_Gravity</Filter>
+    </ClCompile>
+    <ClCompile Include="UiCostumeController.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\22.UiCostumeController</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
