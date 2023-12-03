@@ -86,6 +86,8 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     
     float2 vColorOptions_Op[3] = { g_vec2_0, g_vec2_1, g_vec2_2 };
     
+    float fAlphaOffset_Blend = g_mat_2._24;
+    
     float4 vBaseColor1_Op1 = g_mat_0._11_12_13_14;
     float4 vBaseColor2_Op1 = g_mat_0._21_22_23_24;
     float4 vBaseColor1_Op2 = g_mat_0._31_32_33_34;
@@ -209,7 +211,10 @@ float4 PS_Wrap(EffectOut input) : SV_Target
         vSample_Op3.a = saturate(vSample_Op3.a * vColorOptions_Op[2].y);
     }
     if (bHasTexturemap10)
+    {
         vSample_Blend = TextureMap10.Sample(LinearSampler, vTexcoord_Blend);
+        vSample_Blend.r *= fAlphaOffset_Blend;
+    }
     if (bHasTexturemap11)
         vSample_Overlay = TextureMap11.Sample(LinearSampler, vTexcoord_Overlay);
     if (bHasDissolveMap)                                                                
@@ -297,6 +302,8 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     float fLightIntensity = g_float_3;
     
     float2 vColorOptions_Op[3] = { g_vec2_0, g_vec2_1, g_vec2_2 };
+    
+    float fAlphaOffset_Blend = g_mat_2._24;
     
     float4 vBaseColor1_Op1 = g_mat_0._11_12_13_14;
     float4 vBaseColor2_Op1 = g_mat_0._21_22_23_24;
@@ -421,7 +428,10 @@ float4 PS_Clamp(EffectOut input) : SV_Target
         vSample_Op3.a = saturate(vSample_Op3.a * vColorOptions_Op[2].y);
     }
     if (bHasTexturemap10)
+    {
         vSample_Blend = TextureMap10.Sample(LinearSamplerClamp, vTexcoord_Blend);
+        vSample_Blend.r *= fAlphaOffset_Blend;
+    }
     if (bHasTexturemap11)
         vSample_Overlay = TextureMap11.Sample(LinearSamplerClamp, vTexcoord_Overlay);
     if (bHasDissolveMap)
@@ -510,7 +520,6 @@ float4 PS_Border(EffectOut input) : SV_Target
 
 StructuredBuffer<RenderParam> g_effectData;
 
-
 float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
 {
     float4 vOutColor = float4(1.f, 1.f, 1.f, 1.f);
@@ -528,6 +537,8 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
     float fLightIntensity = g_effectData[id].g_float_3;
     
     float2 vColorOptions_Op[3] = { g_effectData[id].g_vec2_0, g_effectData[id].g_vec2_1, g_effectData[id].g_vec2_2 };
+    
+    float fAlphaOffset_Blend = g_effectData[id].g_mat_2._24;
     
     float4 vBaseColor1_Op1 = g_effectData[id].g_mat_0._11_12_13_14;
     float4 vBaseColor2_Op1 = g_effectData[id].g_mat_0._21_22_23_24;
@@ -652,7 +663,10 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
         vSample_Op3.a = saturate(vSample_Op3.a * vColorOptions_Op[2].y);
     }
     if (bHasTexturemap10)
+    {
         vSample_Blend = TextureMap10.Sample(LinearSampler, vTexcoord_Blend);
+        vSample_Blend.r *= fAlphaOffset_Blend;
+    }
     if (bHasTexturemap11)
         vSample_Overlay = TextureMap11.Sample(LinearSampler, vTexcoord_Overlay);
     if (bHasDissolveMap)
@@ -739,6 +753,8 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
     float fLightIntensity = g_effectData[id].g_float_3;
     
     float2 vColorOptions_Op[3] = { g_effectData[id].g_vec2_0, g_effectData[id].g_vec2_1, g_effectData[id].g_vec2_2 };
+    
+    float fAlphaOffset_Blend = g_effectData[id].g_mat_2._24;
     
     float4 vBaseColor1_Op1 = g_effectData[id].g_mat_0._11_12_13_14;
     float4 vBaseColor2_Op1 = g_effectData[id].g_mat_0._21_22_23_24;
@@ -863,7 +879,10 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
         vSample_Op3.a = saturate(vSample_Op3.a * vColorOptions_Op[2].y);
     }
     if (bHasTexturemap10)
+    {
         vSample_Blend = TextureMap10.Sample(LinearSamplerClamp, vTexcoord_Blend);
+        vSample_Blend.r *= fAlphaOffset_Blend;
+    }
     if (bHasTexturemap11)
         vSample_Overlay = TextureMap11.Sample(LinearSamplerClamp, vTexcoord_Overlay);
     if (bHasDissolveMap)

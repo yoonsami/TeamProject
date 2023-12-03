@@ -765,7 +765,7 @@ void MeshEffect::Init_RenderParams()
     m_RenderParams.SetMatrix(1, vTemp4x4);
     vTemp4x4 = _float4x4(
         _float4((_float)m_tDesc.bIsUseTextureColor_Op1, (_float)m_tDesc.bIsUseTextureColor_Op2, (_float)m_tDesc.bIsUseTextureColor_Op3, 0.f),
-        _float4((_float)m_tDesc.iFlipOption_Op1, (_float)m_tDesc.iFlipOption_Op2, (_float)m_tDesc.iFlipOption_Op3, 0.f),
+        _float4((_float)m_tDesc.iFlipOption_Op1, (_float)m_tDesc.iFlipOption_Op2, (_float)m_tDesc.iFlipOption_Op3, m_tDesc.fAlphaOffset_Blend),
         _float4(0.f, 0.f, 0.f, 0.f),
         _float4(0.f, 0.f, 0.f, 0.f)
     );
