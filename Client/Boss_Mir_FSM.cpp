@@ -1392,7 +1392,7 @@ void Boss_Mir_FSM::SQ_SBRin_Roar_Init()
 
 void Boss_Mir_FSM::skill_1100()
 {
-    if (Init_CurFrame(10))
+    if (Init_CurFrame(0))
         Add_GroupEffectOwner(L"Mir_1100", _float3(0.f, 0.f, 2.f), false);
 
     if (m_iCurFrame == 46 ||
