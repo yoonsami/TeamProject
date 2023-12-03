@@ -213,7 +213,7 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     if (bHasTexturemap10)
     {
         vSample_Blend = TextureMap10.Sample(LinearSampler, vTexcoord_Blend);
-        vSample_Blend.r *= fAlphaOffset_Blend;
+        vSample_Blend.r = saturate(vSample_Blend.r *fAlphaOffset_Blend);
     }
     if (bHasTexturemap11)
         vSample_Overlay = TextureMap11.Sample(LinearSampler, vTexcoord_Overlay);
@@ -430,7 +430,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     if (bHasTexturemap10)
     {
         vSample_Blend = TextureMap10.Sample(LinearSamplerClamp, vTexcoord_Blend);
-        vSample_Blend.r *= fAlphaOffset_Blend;
+        vSample_Blend.r = saturate(vSample_Blend.r * fAlphaOffset_Blend);
     }
     if (bHasTexturemap11)
         vSample_Overlay = TextureMap11.Sample(LinearSamplerClamp, vTexcoord_Overlay);
@@ -665,7 +665,7 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
     if (bHasTexturemap10)
     {
         vSample_Blend = TextureMap10.Sample(LinearSampler, vTexcoord_Blend);
-        vSample_Blend.r *= fAlphaOffset_Blend;
+        vSample_Blend.r = saturate(vSample_Blend.r * fAlphaOffset_Blend);
     }
     if (bHasTexturemap11)
         vSample_Overlay = TextureMap11.Sample(LinearSampler, vTexcoord_Overlay);
@@ -881,7 +881,7 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
     if (bHasTexturemap10)
     {
         vSample_Blend = TextureMap10.Sample(LinearSamplerClamp, vTexcoord_Blend);
-        vSample_Blend.r *= fAlphaOffset_Blend;
+        vSample_Blend.r = saturate(vSample_Blend.r * fAlphaOffset_Blend);
     }
     if (bHasTexturemap11)
         vSample_Overlay = TextureMap11.Sample(LinearSamplerClamp, vTexcoord_Overlay);
