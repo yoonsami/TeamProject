@@ -15,6 +15,7 @@ public:
 public:
     weak_ptr<Texture> m_pTexture;
     _float m_fDissolveSpeed = 0.f;
+    _bool m_bCreate = false;
 
 };
 

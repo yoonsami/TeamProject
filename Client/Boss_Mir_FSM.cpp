@@ -1005,6 +1005,12 @@ void Boss_Mir_FSM::SQ_Flee()
         if (!m_pTailCollider.expired())
             EVENTMGR.Delete_Object(m_pTailCollider.lock());
 
+        if (!m_pSubController[0].expired())
+            EVENTMGR.Delete_Object(m_pSubController[0].lock());
+
+        if (!m_pSubController[1].expired())
+            EVENTMGR.Delete_Object(m_pSubController[1].lock());
+
         g_bCutScene = false;
 
         if (!m_pTarget.expired())
@@ -2747,9 +2753,9 @@ void Boss_Mir_FSM::Load_Giant_Boss_Mir()
         ObjMonster->Get_FSM()->Set_Target(m_pTarget.lock());
     }
 
-    ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 2.f, 4.f, 6.f })); //obbcollider
-    ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
-    ObjMonster->Get_Collider()->Set_Activate(true);
+    //ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 2.f, 4.f, 6.f })); //obbcollider
+    //ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
+    //ObjMonster->Get_Collider()->Set_Activate(true);
     ObjMonster->Get_FSM()->Init();
     EVENTMGR.Create_Object(ObjMonster);
 }

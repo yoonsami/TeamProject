@@ -30,8 +30,6 @@ protected:
 	_float3 Soft_Turn_ToTarget(const _float3& vTargetPos, _float turnSpeed);
 	_float3 Soft_Turn_ToTarget(const _float4& vTargetPos, _float turnSpeed);
 
-	_bool Get_Invincible() { return m_bInvincible; }
-	void Set_Invincible(_bool bFlag) { m_bInvincible = bFlag; }
 
 	_bool Get_SuperArmor() { return m_bSuperArmor; }
 	void Set_SuperArmor(_bool bFlag) { m_bSuperArmor = bFlag; }
@@ -76,6 +74,9 @@ public:
 	void Reset_Vehicle();
 	void Remove_Object();
 	_float Get_ChargingRatio() { return m_fChargingRatio; }
+
+	_bool Get_Invincible() { return m_bInvincible; }
+	void Set_Invincible(_bool bFlag) { m_bInvincible = bFlag; }
 
  protected:
 	weak_ptr<GameObject> m_pTarget;

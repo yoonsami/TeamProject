@@ -240,7 +240,10 @@ _bool FSM::CounterAttackCheck(_float fCheckDegree)
 void FSM::Set_DirToTarget()
 {
 	if (!m_pLookingTarget.expired())
+	{
 		m_vDirToTarget = (m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+		m_vDirToTarget.y = 0.f;
+	}
 }
 
 void FSM::Set_DirToTargetOrInput(_uint eType)
@@ -252,7 +255,10 @@ void FSM::Set_DirToTargetOrInput(_uint eType)
 		m_pLookingTarget = m_pTarget.lock();
 
 	if (!m_pLookingTarget.expired())
+	{
 		m_vDirToTarget = (m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+		m_vDirToTarget.y = 0.f;
+	}
 	else
 		m_vDirToTarget = Get_InputDirVector();
 }

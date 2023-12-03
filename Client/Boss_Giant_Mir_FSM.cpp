@@ -9,9 +9,13 @@
 #include "MainCameraScript.h"
 #include "UiDamageCreate.h"
 #include "DragonBall_FSM.h"
+#include "DragonBallMonster_FSM.h"
 #include "UIBossHpBar.h"
 #include "SimpleMath.h"
 #include "DestroyBuilding_FSM.h"
+#include "Boss_Giant_Mir_Parts_FSM.h"
+#include "FSM.h"
+#include "ObjectDissolveCreate.h"
 
 HRESULT Boss_Giant_Mir_FSM::Init()
 {
@@ -38,11 +42,20 @@ HRESULT Boss_Giant_Mir_FSM::Init()
 
 
         m_iHeadBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bone067");
-        m_iMouseBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bone066");
+        m_iMouseBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bone062");
         m_iTailBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"SOXNFB_Bone045");
+        m_iStomachBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"SOXNFB_Bone006");
+        m_iLfootBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-L-Foot");
   
         HeadBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iHeadBoneIndex) *
             _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+        StomachBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iStomachBoneIndex) *
+            _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+        LfootBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iLfootBoneIndex) *
+            _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
 
         m_vHeadCamPos = m_vHeadBonePos + (Get_Transform()->Get_State(Transform_State::LOOK) * 30.f);
 
@@ -51,8 +64,11 @@ HRESULT Boss_Giant_Mir_FSM::Init()
         m_fRunSpeed = 4.f;
         m_fKnockDownSpeed = 4.f;
 
+        if (!m_pOwner.expired())
+            m_pOwner.lock()->Set_MaxHp(300.f);
 
-        Create_TailCollider();
+
+        Create_Giant_Mir_Collider();
 
         m_bInitialize = true;
     }
@@ -64,21 +80,7 @@ void Boss_Giant_Mir_FSM::Tick()
 {
     State_Tick();
 
-    if (!m_pAttackCollider.expired())
-    {
-        //m_pAttack transform set forward
-        m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 6.f + _float3::Up);
-    }
-
-    if (!m_pTailCollider.expired())
-    {
-        //(AnimationModel BonePos)
-        TailBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iTailBoneIndex) *
-            _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
-
-        _float4 vBonePos = _float4{ TailBoneMatrix.Translation().x, TailBoneMatrix.Translation().y, TailBoneMatrix.Translation().z , 1.f };
-        m_pTailCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, vBonePos);
-    }
+    Update_Collider();
 }
 
 void Boss_Giant_Mir_FSM::State_Tick()
@@ -92,14 +94,41 @@ void Boss_Giant_Mir_FSM::State_Tick()
     case STATE::SQ_Spawn:
         SQ_Spawn();
         break;
+    case STATE::groggy_start:
+        groggy_start();
+        break;
+    case STATE::groggy_loop:
+        groggy_loop();
+        break;
+    case STATE::groggy_end:
+        groggy_end();
+        break;
     case STATE::b_idle:
         b_idle();
         break;
     case STATE::skill_1100:
         skill_1100();
         break;
+    case STATE::skill_1200:
+        skill_1200();
+        break;
+    case STATE::skill_2100:
+        skill_2100();
+        break;
+    case STATE::skill_7100:
+        skill_7100();
+        break;
+    case STATE::skill_100000:
+        skill_100000();
+        break;
     case STATE::skill_100100:
         skill_100100();
+        break;
+    case STATE::skill_200000:
+        skill_200000();
+        break;
+    case STATE::skill_200100:
+        skill_200100();
         break;
     case STATE::SQ_Leave:
         SQ_Leave();
@@ -135,8 +164,26 @@ void Boss_Giant_Mir_FSM::State_Init()
         case STATE::skill_1100:
             skill_1100_Init();
             break;
+        case STATE::skill_1200:
+            skill_1200_Init();
+            break;
+        case STATE::skill_2100:
+            skill_2100_Init();
+            break;
+        case STATE::skill_7100:
+            skill_7100_Init();
+            break;
+        case STATE::skill_100000:
+            skill_100000_Init();
+            break;
         case STATE::skill_100100:
             skill_100100_Init();
+            break;
+        case STATE::skill_200000:
+            skill_200000_Init();
+            break;
+        case STATE::skill_200100:
+            skill_200100_Init();
             break;
         case STATE::SQ_Leave:
             SQ_Leave_Init();
@@ -215,7 +262,6 @@ void Boss_Giant_Mir_FSM::Get_Hit(const wstring& skillname, _float fDamage, share
     {
         
     }
-
 }
 
 void Boss_Giant_Mir_FSM::AttackCollider_On(const wstring& skillname, _float fAttackDamage)
@@ -267,7 +313,6 @@ void Boss_Giant_Mir_FSM::SQ_Spawn()
             _float3 vLookPos = Get_Transform()->Get_State(Transform_State::POS).xyz() +
                                Get_Transform()->Get_State(Transform_State::UP) * 15.f;
             
-          
             _float3 vDir = m_vIntroCamPos - vLookPos;
             vDir.Normalize();
 
@@ -283,30 +328,10 @@ void Boss_Giant_Mir_FSM::SQ_Spawn()
             if (!m_pCamera.expired())
                 m_vCamStopPos = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS);
         }
-       /* else if (Init_CurFrame(85))
-        {
-            if (!m_pOwner.expired())
-                m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(1.f);
-        }
-        else if (Init_CurFrame(234))
-        {
-            m_pOwner.lock()->Set_TimeSlowed(false);
-            Get_Owner()->Get_Animator()->Set_AnimationSpeed(0.3f);
-        }*/
         else if (Init_CurFrame(235))
         {
             Destroy_MapObject();
         }
-      /*  else if (Init_CurFrame(250))
-        {
-            m_pOwner.lock()->Set_TimeSlowed(true);
-            Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);
-        }
-
-        if (m_iCurFrame >= 234 && m_iCurFrame < 250)
-            TIME.Set_TimeSlow(0.1f, 0.3f);*/
-
-
 
         if (!m_pCamera.expired())
         {
@@ -356,6 +381,17 @@ void Boss_Giant_Mir_FSM::SQ_Spawn_Init()
 
 void Boss_Giant_Mir_FSM::groggy_start()
 {
+    if (m_iCurFrame >= 58)
+    {
+        m_fOffSetY -= fDT;
+
+        if (m_fOffSetY <= 0.f)
+            m_fOffSetY = 0.f;
+        _float4 vPos = _float4(0.f, m_fOffSetY, 0.f, 1.f);
+
+        Get_Transform()->Set_State(Transform_State::POS, vPos);
+    }
+
     if (Is_AnimFinished())
         m_eCurState = STATE::groggy_loop;
 }
@@ -364,12 +400,15 @@ void Boss_Giant_Mir_FSM::groggy_start_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"groggy_start", 0.1f, false, 1.f);
+    animator->Set_NextTweenAnim(L"groggy_start", 0.4f, false, 1.f);
 
     AttackCollider_Off();
 
     m_tAttackCoolTime.fAccTime = 0.f;
     m_tBreathCoolTime.fAccTime = 0.f;
+
+    Set_Invincible(false);
+    m_bDragonBall = false; 
 }
 
 void Boss_Giant_Mir_FSM::groggy_loop()
@@ -387,7 +426,18 @@ void Boss_Giant_Mir_FSM::groggy_loop_Init()
 
 void Boss_Giant_Mir_FSM::groggy_end()
 {
-    if (Is_AnimFinished())
+    if (m_iCurFrame >= 15)
+    {
+        m_fOffSetY += fDT;
+
+        if (m_fOffSetY >= 1.5f)
+            m_fOffSetY = 1.5f;
+        _float4 vPos = _float4(0.f, m_fOffSetY, 0.f, 1.f);
+
+        Get_Transform()->Set_State(Transform_State::POS, vPos);
+    }
+
+    if (Get_FinalFrame() - 10 < m_iCurFrame)
         m_eCurState = STATE::b_idle;
 }
 
@@ -420,8 +470,8 @@ void Boss_Giant_Mir_FSM::b_idle()
 
     //Create_Meteor();
 
-    //if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
-       //Set_AttackPattern();
+    if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
+       Set_AttackPattern();
 }
 
 void Boss_Giant_Mir_FSM::b_idle_Init()
@@ -430,13 +480,15 @@ void Boss_Giant_Mir_FSM::b_idle_Init()
 
     animator->Set_NextTweenAnim(L"b_idle", 0.6f, true, 1.f);
 
-    m_bInvincible = false;
-
+    
     m_tAttackCoolTime.fAccTime = 0.f;
     m_tBreathCoolTime.fAccTime = 0.f;
 
     AttackCollider_Off();
    
+    if (m_ePreState == STATE::groggy_end)
+        Set_Invincible(true);
+    
     //Add_BossHp UI
     if (!m_pOwner.expired())
     {
@@ -453,7 +505,7 @@ void Boss_Giant_Mir_FSM::skill_1100()
 {
     m_tBreathCoolTime.fAccTime += fDT;
 
-    if (m_iCurFrame >= 154 && m_iCurFrame <= 254)
+    if (m_iCurFrame >= 126 && m_iCurFrame <= 163)
     {
         if (m_tBreathCoolTime.fAccTime >= m_tBreathCoolTime.fCoolTime)
         {
@@ -465,16 +517,21 @@ void Boss_Giant_Mir_FSM::skill_1100()
             _float4 vBonePos = _float4{ MouseBoneMatrix.Translation().x, MouseBoneMatrix.Translation().y, MouseBoneMatrix.Translation().z , 1.f };
 
             vBonePos = vBonePos + Get_Transform()->Get_State(Transform_State::LOOK);
+            vBonePos.y = 0.f;
+
+            _float4 vDir = Get_Transform()->Get_State(Transform_State::LOOK) +
+                           Get_Transform()->Get_State(Transform_State::RIGHT) * -1.f;
+            vDir.Normalize();
 
             FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+            desc.vSkillDir = vDir;
             desc.fMoveSpeed = 20.f;
-            desc.fLifeTime = 0.5f;
-            desc.fLimitDistance = 10.f;
+            desc.fLifeTime = 1.5f;
+            desc.fLimitDistance = 50.f;
 
             _float4 vSkillPos = vBonePos;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, NORMAL_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(vSkillPos, 6.f, desc, KNOCKBACK_ATTACK, 10.f);
         }
     }
 
@@ -494,11 +551,33 @@ void Boss_Giant_Mir_FSM::skill_1100_Init()
     m_tBreathCoolTime.fAccTime = 0.f;
 }
 
-void Boss_Giant_Mir_FSM::skill_100100()
+void Boss_Giant_Mir_FSM::skill_1200()
+{
+    if (Init_CurFrame(191))
+        TailAttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+    else if (Init_CurFrame(194))
+        TailAttackCollider_Off();
+
+    if (Is_AnimFinished())
+        m_eCurState = STATE::b_idle;
+
+}
+
+void Boss_Giant_Mir_FSM::skill_1200_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+
+    m_tAttackCoolTime.fAccTime = 0.f;
+    m_tBreathCoolTime.fAccTime = 0.f;
+}
+
+void Boss_Giant_Mir_FSM::skill_2100()
 {
     m_tBreathCoolTime.fAccTime += fDT;
 
-    if (m_iCurFrame >= 58 && m_iCurFrame <= 168)
+    if (m_iCurFrame >= 184 && m_iCurFrame <= 260)
     {
         if (m_tBreathCoolTime.fAccTime >= m_tBreathCoolTime.fCoolTime)
         {
@@ -510,20 +589,108 @@ void Boss_Giant_Mir_FSM::skill_100100()
             _float4 vBonePos = _float4{ MouseBoneMatrix.Translation().x, MouseBoneMatrix.Translation().y, MouseBoneMatrix.Translation().z , 1.f };
 
             vBonePos = vBonePos + Get_Transform()->Get_State(Transform_State::LOOK);
+            vBonePos.y = 0.f;
 
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
             desc.fMoveSpeed = 20.f;
-            desc.fLifeTime = 0.5f;
+            desc.fLifeTime = 1.f;
             desc.fLimitDistance = 10.f;
 
             _float4 vSkillPos = vBonePos;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, NORMAL_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(vSkillPos, 6.f, desc, NORMAL_ATTACK, 10.f);
         }
     }
 
-    if (m_iCurFrame >= Get_FinalFrame() - 5)
+    if (Is_AnimFinished())
+        m_eCurState = STATE::b_idle;
+}
+
+void Boss_Giant_Mir_FSM::skill_2100_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"skill_2100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+
+    m_tAttackCoolTime.fAccTime = 0.f;
+    m_tBreathCoolTime.fAccTime = 0.f;
+}
+
+void Boss_Giant_Mir_FSM::skill_7100()
+{
+    if (Init_CurFrame(142))
+        Create_DragonBall();
+
+
+    if (Is_AnimFinished())
+        m_eCurState = STATE::b_idle;
+}
+
+void Boss_Giant_Mir_FSM::skill_7100_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"skill_7100", 0.15f, false, 4.f);
+
+    m_tAttackCoolTime.fAccTime = 0.f;
+    m_tBreathCoolTime.fAccTime = 0.f;
+
+    m_bDragonBall = true;
+
+    Set_Invincible(true);
+}
+
+
+
+
+void Boss_Giant_Mir_FSM::skill_100000()
+{
+    if (Is_AnimFinished())
+        m_eCurState = STATE::skill_100100;
+}
+
+void Boss_Giant_Mir_FSM::skill_100000_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"skill_100000", 0.15f, false, 4.f);
+
+    m_tAttackCoolTime.fAccTime = 0.f;
+    m_tBreathCoolTime.fAccTime = 0.f;
+}
+
+void Boss_Giant_Mir_FSM::skill_100100()
+{
+    m_tBreathCoolTime.fAccTime += fDT;
+
+    if (m_iCurFrame >= 24 && m_iCurFrame <= 98)
+    {
+        if (m_tBreathCoolTime.fAccTime >= m_tBreathCoolTime.fCoolTime)
+        {
+            m_tBreathCoolTime.fAccTime = 0.f;
+
+            MouseBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iMouseBoneIndex) *
+                _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+            _float4 vBonePos = _float4{ MouseBoneMatrix.Translation().x, MouseBoneMatrix.Translation().y, MouseBoneMatrix.Translation().z , 1.f };
+
+            vBonePos = vBonePos + Get_Transform()->Get_State(Transform_State::LOOK);
+            vBonePos.y = 0.f;
+
+            FORWARDMOVINGSKILLDESC desc;
+            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+            desc.fMoveSpeed = 20.f;
+            desc.fLifeTime = 2.f;
+            desc.fLimitDistance = 50.f;
+
+            _float4 vSkillPos = vBonePos;
+
+            Create_ForwardMovingSkillCollider(vSkillPos, 5.f, desc, KNOCKBACK_ATTACK, 10.f);
+        }
+    }
+
+    if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 }
 
@@ -532,6 +699,66 @@ void Boss_Giant_Mir_FSM::skill_100100_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_100100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+
+    m_tAttackCoolTime.fAccTime = 0.f;
+    m_tBreathCoolTime.fAccTime = 0.f;
+}
+
+void Boss_Giant_Mir_FSM::skill_200000()
+{
+    if (Is_AnimFinished())
+        m_eCurState = STATE::skill_200100;
+}
+
+void Boss_Giant_Mir_FSM::skill_200000_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"skill_200000", 0.15f, false, 4.f);
+
+    m_tAttackCoolTime.fAccTime = 0.f;
+    m_tBreathCoolTime.fAccTime = 0.f;
+}
+
+void Boss_Giant_Mir_FSM::skill_200100()
+{
+    m_tBreathCoolTime.fAccTime += fDT;
+
+    if (m_iCurFrame >= 47 && m_iCurFrame <= 117)
+    {
+        if (m_tBreathCoolTime.fAccTime >= m_tBreathCoolTime.fCoolTime)
+        {
+            m_tBreathCoolTime.fAccTime = 0.f;
+
+            MouseBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iMouseBoneIndex) *
+                _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+            _float4 vBonePos = _float4{ MouseBoneMatrix.Translation().x, MouseBoneMatrix.Translation().y, MouseBoneMatrix.Translation().z , 1.f };
+
+            vBonePos = vBonePos + Get_Transform()->Get_State(Transform_State::LOOK);
+            vBonePos.y = 0.f;
+
+            FORWARDMOVINGSKILLDESC desc;
+            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+            desc.fMoveSpeed = 20.f;
+            desc.fLifeTime = 2.f;
+            desc.fLimitDistance = 50.f;
+
+            _float4 vSkillPos = vBonePos;
+
+            Create_ForwardMovingSkillCollider(vSkillPos, 5.f, desc, KNOCKBACK_ATTACK, 10.f);
+        }
+    }
+
+    if (Is_AnimFinished())
+        m_eCurState = STATE::b_idle;
+}
+
+void Boss_Giant_Mir_FSM::skill_200100_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"skill_200100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_tAttackCoolTime.fAccTime = 0.f;
     m_tBreathCoolTime.fAccTime = 0.f;
@@ -594,7 +821,7 @@ void Boss_Giant_Mir_FSM::Create_Meteor()
 
 }
 
-void Boss_Giant_Mir_FSM::Create_TailCollider()
+void Boss_Giant_Mir_FSM::Create_Giant_Mir_Collider()
 {
     shared_ptr<GameObject> tailCollider = make_shared<GameObject>();
     tailCollider->GetOrAddTransform();
@@ -609,17 +836,84 @@ void Boss_Giant_Mir_FSM::Create_TailCollider()
     tailCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
 
     m_pTailCollider = tailCollider;
+
+    shared_ptr<GameObject> StomachCollider = make_shared<GameObject>();
+    StomachCollider->GetOrAddTransform();
+    StomachCollider->Add_Component(make_shared<SphereCollider>(10.f));
+    StomachCollider->Get_Collider()->Set_CollisionGroup(Monster_Body);
+    StomachCollider->Add_Component(make_shared<Boss_Giant_Mir_Parts_FSM>());
+    EVENTMGR.Create_Object(StomachCollider);
+    StomachCollider->Get_Collider()->Set_Activate(true);
+
+    StomachCollider->Set_Name(L"Boss_Giant_Mir_StomachCollider");
+    StomachCollider->Get_FSM()->Set_Target(m_pOwner.lock());
+
+    m_pStomachCollider = StomachCollider;
+
+    shared_ptr<GameObject> LfootCollider = make_shared<GameObject>();
+    LfootCollider->GetOrAddTransform();
+    LfootCollider->Add_Component(make_shared<SphereCollider>(6.f));
+    LfootCollider->Get_Collider()->Set_CollisionGroup(Monster_Body);
+    LfootCollider->Add_Component(make_shared<Boss_Giant_Mir_Parts_FSM>());
+    EVENTMGR.Create_Object(LfootCollider);
+    LfootCollider->Get_Collider()->Set_Activate(true);
+
+    LfootCollider->Set_Name(L"Boss_Giant_Mir_LfootCollider");
+    LfootCollider->Get_FSM()->Set_Target(m_pOwner.lock());
+
+    m_pLfootCollider = LfootCollider;
+
+
+}
+
+void Boss_Giant_Mir_FSM::Create_DragonBall()
+{
+    _uint iDragonBallIndex = 4;
+
+    shared_ptr<GameObject> ObjDragonBall = make_shared<GameObject>();
+
+    ObjDragonBall->Add_Component(make_shared<Transform>());
+
+    ObjDragonBall->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f,1.5f,0.f,1.f));
+    {
+        shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+
+        shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+        {
+            shared_ptr<Model> model = RESOURCES.Get<Model>(L"Anim_P_R02_DecoBall_00_Idle");
+            animator->Set_Model(model);
+        }
+
+        ObjDragonBall->Add_Component(animator);
+
+        ObjDragonBall->Add_Component(make_shared<SphereCollider>(2.f)); //SphereCollider
+        ObjDragonBall->Get_Collider()->Set_CollisionGroup(Monster_Body);
+        ObjDragonBall->Get_Collider()->Set_Activate(true);
+
+        wstring DragonBallName = L"Boss_Giant_Mir_DragonBall";
+        ObjDragonBall->Set_Name(DragonBallName);
+        ObjDragonBall->Set_DrawShadow(true);
+        ObjDragonBall->Set_ObjectGroup(OBJ_MONSTER);
+        ObjDragonBall->Add_Component(make_shared<DragonBallMonster_FSM>());
+        ObjDragonBall->Get_FSM()->Set_Target(m_pOwner.lock());
+
+        EVENTMGR.Create_Object(ObjDragonBall);
+
+        //Add ObjectDissolveCreate
+        ObjDragonBall->Add_Component(make_shared<ObjectDissolveCreate>(1.f));
+        ObjDragonBall->Get_Script<ObjectDissolveCreate>()->Init();
+    }
+    
 }
 
 void Boss_Giant_Mir_FSM::Set_AttackPattern()
 {
-    m_eCurState = STATE::SQ_Spawn;
-   /* _uint iRan = rand() % 2;
+    _uint iRan = rand() % 5;
 
     while (true)
     {
         if (iRan == m_iPreAttack)
-            iRan = rand() % 2;
+            iRan = rand() % 5;
         else
             break;
     }
@@ -631,10 +925,27 @@ void Boss_Giant_Mir_FSM::Set_AttackPattern()
     }
     else if (iRan == 1)
     {
-        m_eCurState = STATE::skill_100100;
+        m_eCurState = STATE::skill_1200;
         m_iPreAttack = 1;
-    }*/
-  
+    }
+    else if (iRan == 2)
+    {
+        m_eCurState = STATE::skill_2100;
+        m_iPreAttack = 2;
+    }
+    else if (iRan == 3)
+    {
+        m_eCurState = STATE::skill_100000;
+        m_iPreAttack = 3;
+    }
+    else if (iRan == 4)
+    {
+        m_eCurState = STATE::skill_200000;
+        m_iPreAttack = 4;
+    }
+
+    if (!m_bDragonBall)
+        m_eCurState = STATE::skill_7100;
 }
 
 void Boss_Giant_Mir_FSM::Setting_DragonBall()
@@ -889,6 +1200,67 @@ void Boss_Giant_Mir_FSM::Destroy_MapObject()
 
 
 
+}
+
+void Boss_Giant_Mir_FSM::Update_Collider()
+{
+    if (!m_pAttackCollider.expired())
+    {
+        //m_pAttack transform set forward
+        m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 6.f + _float3::Up);
+    }
+
+    if (!m_pTailCollider.expired())
+    {
+        //(AnimationModel BonePos)
+        TailBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iTailBoneIndex) *
+            _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+        _float4 vBonePos = _float4{ TailBoneMatrix.Translation().x, TailBoneMatrix.Translation().y, TailBoneMatrix.Translation().z , 1.f };
+        m_pTailCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, vBonePos);
+    }
+
+    if (!m_pStomachCollider.expired())
+    {
+        StomachBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iStomachBoneIndex) *
+            _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+        _float4 vBonePos = _float4{ StomachBoneMatrix.Translation().x, StomachBoneMatrix.Translation().y, StomachBoneMatrix.Translation().z , 1.f };
+        vBonePos = vBonePos + 
+                   Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f + // 4
+                   Get_Transform()->Get_State(Transform_State::LOOK) * 1.f; //2
+        m_pStomachCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, vBonePos);
+    }
+
+    if (!m_pLfootCollider.expired())
+    {
+        LfootBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iLfootBoneIndex) *
+            _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+        _float4 vBonePos = _float4{ LfootBoneMatrix.Translation().x, LfootBoneMatrix.Translation().y, LfootBoneMatrix.Translation().z , 1.f };
+        vBonePos = vBonePos +
+                   Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f +
+                   Get_Transform()->Get_State(Transform_State::LOOK) * 2.f; 
+        
+        m_pLfootCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, vBonePos);
+    }
+}
+
+void Boss_Giant_Mir_FSM::Set_Invincible(_bool bFlag)
+{
+    m_bInvincible = bFlag;
+
+    if (!m_pStomachCollider.expired())
+    {
+        if (m_pStomachCollider.lock()->Get_FSM())
+            m_pStomachCollider.lock()->Get_FSM()->Set_Invincible(bFlag);
+    }
+
+    if (!m_pLfootCollider.expired())
+    {
+        if (m_pLfootCollider.lock()->Get_FSM())
+            m_pLfootCollider.lock()->Get_FSM()->Set_Invincible(bFlag);
+    }
 }
 
 void Boss_Giant_Mir_FSM::Calculate_IntroHeadCam()
