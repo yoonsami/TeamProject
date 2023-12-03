@@ -1392,7 +1392,7 @@ void Boss_Mir_FSM::SQ_SBRin_Roar_Init()
 
 void Boss_Mir_FSM::skill_1100()
 {
-    if (Init_CurFrame(10))
+    if (Init_CurFrame(20))
         Add_GroupEffectOwner(L"Mir_1100", _float3(0.f, 0.f, 2.f), false);
 
     if (m_iCurFrame == 46 ||
@@ -2616,7 +2616,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
     m_eCurState = STATE::skill_1100;
 
    /*_uint iRan = rand() % 10;*/
-    /*
+
     while (true)
     {
         if (iRan == m_iPreAttack)
@@ -2675,7 +2675,6 @@ void Boss_Mir_FSM::Set_AttackPattern()
         m_eCurState = STATE::skill_200000;
         m_iPreAttack = 9;
     }
-    */
 }
 
 void Boss_Mir_FSM::Setting_DragonBall()

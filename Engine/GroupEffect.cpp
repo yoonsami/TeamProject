@@ -25,7 +25,9 @@ GroupEffect::~GroupEffect()
 HRESULT GroupEffect::Init()
 {
     m_RenderParamBuffer.resize(m_vMemberEffectData.size());
-   
+    m_vCreateCoolTime.resize(m_vMemberEffectData.size());
+    fill(m_vCreateCoolTime.begin(), m_vCreateCoolTime.end(), 0.f);
+
     for (_uint i = 0; i < static_cast<_uint>(m_vMemberEffectData.size()); ++i)
     {
 
@@ -78,12 +80,12 @@ void GroupEffect::Tick()
             }
 
             // If. Play every CreateInterval in duration 
-            else if (tDesc.fCreateInterval < m_fTimeAcc_CreatCoolTime)
+            else if (tDesc.fCreateInterval < m_vCreateCoolTime[iIndex])
             {
                 if (tDesc.fDuration + iter.fCreateTime > m_fCurrAge)
                 {
                     Create_MeshEffect(iIndex);
-                    m_fTimeAcc_CreatCoolTime = 0.f;
+                    m_vCreateCoolTime[iIndex] = 0.f;
                 }
                 else
                     iter.bIsActive = true;
@@ -104,7 +106,8 @@ void GroupEffect::Tick()
 void GroupEffect::Final_Tick()
 {
     m_fCurrAge += fDT;
-    m_fTimeAcc_CreatCoolTime += fDT;
+    for (auto iter = m_vCreateCoolTime.begin(); iter != m_vCreateCoolTime.end(); iter++)
+        *iter += fDT;
 
     _bool bIsAllActive = true;
 

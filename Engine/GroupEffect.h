@@ -55,6 +55,7 @@ private:
 
 	_float                              m_fCurrAge = { 0.f };
 	_float                              m_fTimeAcc_CreatCoolTime = { 0.f };
+	vector<_float>						m_vCreateCoolTime;
 
 	_bool								m_bIsFirstTick = { false };
 	_float4x4							m_mInitWorldMatrix;

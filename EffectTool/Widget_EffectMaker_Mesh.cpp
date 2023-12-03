@@ -1389,6 +1389,8 @@ void Widget_EffectMaker_Mesh::Load()
 	m_fCreateInterval = file->Read<_float>();
 	_float2 vFloat2 = file->Read<_float2>();
 	memcpy(m_fParticleDuration, &vFloat2, sizeof(m_fParticleDuration));
+	if (m_fParticleDuration[0] != m_fParticleDuration[1])
+		m_iParticleDurationOption = 1;
 	m_iSamplerType = file->Read<_int>();
 
 	/* Mesh */
