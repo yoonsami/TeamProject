@@ -19,6 +19,7 @@
 #include "Camera.h"
 #include "GroupEffect.h"
 #include "TimerScript.h"
+#include "RigidBody.h"
 
 /* Effect Script */
 #include "Mir_13100_Fireball.h"
@@ -2611,6 +2612,8 @@ void Boss_Mir_FSM::Create_DragonBall()
             ObjDragonBall->Add_Component(make_shared<DragonBall_FSM>());
             ObjDragonBall->Get_FSM()->Set_Target(m_pOwner.lock());
 
+
+
             EVENTMGR.Create_Object(ObjDragonBall);
 
             //Add ObjectDissolveCreate
@@ -2621,8 +2624,10 @@ void Boss_Mir_FSM::Create_DragonBall()
         //PLEASE MAKE RIGIDBODY 
         //PLEASE DO. CAPTAIN
         {
-            //MAKE RIGIDBODY...
-
+			_float3 vObjPos = ObjDragonBall->Get_Transform()->Get_State(Transform_State::POS).xyz();
+			auto rigidBody = make_shared<RigidBody>();
+            ObjDragonBall->Add_Component(rigidBody);
+			rigidBody->Create_CapsuleRigidBody(vObjPos, 2.f, 2.f);
         }
 
     }
@@ -2631,11 +2636,11 @@ void Boss_Mir_FSM::Create_DragonBall()
 void Boss_Mir_FSM::Set_AttackPattern()
 {
     // TODO:  의진
-    _uint iRan = rand() % 2;
-    m_eCurState = STATE::skill_100000;
+    //_uint iRan = rand() % 2;
+    //m_eCurState = STATE::skill_100000;
 
-   /*_uint iRan = rand() % 10;*/
-    /*
+   _uint iRan = rand() % 10;
+    
     while (true)
     {
         if (iRan == m_iPreAttack)
@@ -2694,7 +2699,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
         m_eCurState = STATE::skill_200000;
         m_iPreAttack = 9;
     }
-    */
+    
 }
 
 void Boss_Mir_FSM::Setting_DragonBall()
@@ -2815,6 +2820,7 @@ void Boss_Mir_FSM::Load_Giant_Boss_Mir()
     ObjMonster->Get_FSM()->Init();
     EVENTMGR.Create_Object(ObjMonster);
 }
+
 
 _float Boss_Mir_FSM::CamDistanceLerp(_float fStart, _float fEnd, _float fRatio)
 {

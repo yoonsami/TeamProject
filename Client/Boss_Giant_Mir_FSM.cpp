@@ -16,6 +16,7 @@
 #include "Boss_Giant_Mir_Parts_FSM.h"
 #include "FSM.h"
 #include "ObjectDissolveCreate.h"
+#include "RigidBody.h"
 
 HRESULT Boss_Giant_Mir_FSM::Init()
 {
@@ -863,6 +864,16 @@ void Boss_Giant_Mir_FSM::Create_Giant_Mir_Collider()
 
     m_pLfootCollider = LfootCollider;
 
+    shared_ptr<GameObject> rigidBodyObj = make_shared<GameObject>();
+    rigidBodyObj->GetOrAddTransform()->Set_State(Transform_State::POS,{12.8122845,5.01855755,22.8058624,1.f});
+	{
+		_float3 vObjPos = rigidBodyObj->Get_Transform()->Get_State(Transform_State::POS).xyz();
+		auto rigidBody = make_shared<RigidBody>();
+        rigidBodyObj->Add_Component(rigidBody);
+		rigidBody->Create_CapsuleRigidBody(vObjPos, 6.f, 6.f);
+	}
+    EVENTMGR.Create_Object(rigidBodyObj);
+    m_pFootRigidBody = rigidBodyObj;
 
 }
 
@@ -1261,6 +1272,17 @@ void Boss_Giant_Mir_FSM::Set_Invincible(_bool bFlag)
         if (m_pLfootCollider.lock()->Get_FSM())
             m_pLfootCollider.lock()->Get_FSM()->Set_Invincible(bFlag);
     }
+}
+
+void Boss_Giant_Mir_FSM::Set_RigidBodyActivate(_bool flag)
+{
+    if (m_pFootRigidBody.expired())
+        return;
+
+    if (!m_pFootRigidBody.lock()->Get_RigidBody() || !m_pFootRigidBody.lock()->Get_RigidBody()->Get_RigidBody())
+        return;
+
+    m_pFootRigidBody.lock()->Get_RigidBody()->Get_RigidBody()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, !flag);
 }
 
 void Boss_Giant_Mir_FSM::Calculate_IntroHeadCam()

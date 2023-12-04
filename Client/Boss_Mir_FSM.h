@@ -171,6 +171,7 @@ private:
 	void DeadSetting();
 	void Load_Giant_Boss_Mir();
 
+
 	_float CamDistanceLerp(_float fStart, _float fEnd, _float fRatio);
 
 private:
@@ -195,8 +196,8 @@ private:
 
 	_bool m_bCounter = false;
 	_bool m_bPhaseOneEmissive = false;
-	_bool m_bCheckPhaseChange[2];
-	_bool m_bPhaseChange[2];
+	_bool m_bCheckPhaseChange[2] = {false,false};
+	_bool m_bPhaseChange[2] = { false,false };
 
 	
 	_uint m_iPreAttack = 100;

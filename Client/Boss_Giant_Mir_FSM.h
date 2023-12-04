@@ -89,6 +89,7 @@ private:
 	void Update_Collider();
 	void Set_Invincible(_bool bFlag);
 
+	void Set_RigidBodyActivate(_bool flag);
 
 	void TailAttackCollider_On(const wstring& skillname, _float fAttackDamage);
 	void TailAttackCollider_Off();
@@ -122,6 +123,7 @@ private:
 	weak_ptr<GameObject> m_pTailCollider;
 	weak_ptr<GameObject> m_pStomachCollider;
 	weak_ptr<GameObject> m_pLfootCollider;
+	weak_ptr<GameObject> m_pFootRigidBody;
 
 
 	_float3 m_vFirstPos = _float3(0.f);
