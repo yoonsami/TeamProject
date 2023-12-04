@@ -294,7 +294,7 @@ void UiQuestController::Change_Value()
 const CUR_QUEST& UiQuestController::Get_CurState(QUESTINDEX eIndex)
 {
     if (m_eIndex != eIndex)
-        return CUR_QUEST::NONE;
+        return CUR_QUEST::MAX;
 
     return m_eCurType;
 }
