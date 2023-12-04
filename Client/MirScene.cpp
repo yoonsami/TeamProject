@@ -75,6 +75,7 @@
 #include "UiBossDialog.h"
 #include "UIInteraction.h"
 #include "WaterUVSliding.h"
+#include "UiCostumeController.h"
 namespace fs = std::filesystem;
 
 MirScene::MirScene()
@@ -709,6 +710,8 @@ void MirScene::Load_Water()
 void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 {
 	list<shared_ptr<GameObject>>& tmp = static_pointer_cast<LoadingScene>(CUR_SCENE)->Get_StaticObjectsFromLoader();
+	Load_UIFile(L"..\\Resources\\UIData\\UI_Controller.dat", tmp, false);
+
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main.dat", tmp);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main_Button.dat", tmp);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Char_Change.dat", tmp);
@@ -716,7 +719,6 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", tmp, false, false);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Cur_Quest.dat", tmp, false, false);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Setting.dat", tmp, false, false);
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Controller.dat", tmp, false);
 
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"Main_UI_Controller");
@@ -726,6 +728,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
+
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Gacha_Controller");
 		if (false == pObj.expired())
@@ -734,6 +737,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
+
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Card_Deck_Controller");
 		if (false == pObj.expired())
@@ -742,6 +746,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
+
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Damage_Controller");
 		if (false == pObj.expired())
@@ -750,6 +755,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
+
 	{
 		auto& pObj = pPlayer;
 		if (nullptr != pObj)
@@ -758,6 +764,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj->Add_Component(pScript);
 		}
 	}
+
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Target_LockOn");
 		if (false == pObj.expired())
@@ -766,6 +773,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
+
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Setting_Controller");
 		if (false == pObj.expired())
@@ -774,6 +782,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
+
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Dialog_Controller");
 		if (false == pObj.expired())
@@ -782,6 +791,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
+
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Boss_Dialog");
 		if (false == pObj.expired())
@@ -790,6 +800,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
+
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Interaction");
 		if (false == pObj.expired())
@@ -798,6 +809,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
+
 	{
 		auto pObj = Get_UI(L"UI_Combo_Effect");
 		if (nullptr != pObj)
@@ -806,6 +818,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj->Add_Component(pScript);
 		}
 	}
+
 	{
 		auto pObj = Get_UI(L"UI_Skill_Use_Gauge");
 		if (nullptr != pObj)
@@ -814,6 +827,16 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj->Add_Component(pScript);
 		}
 	}
+
+	{
+		auto pObj = Get_UI(L"UI_Costume_Controller");
+		if (nullptr != pObj)
+		{
+			auto pScript = make_shared<UiCostumeController>();
+			pObj->Add_Component(pScript);
+		}
+	}
+
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Card_Deck_Exit");
 		if (false == pObj.expired())
@@ -824,6 +847,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 				});
 		}
 	}
+
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Char_Change");
 		if (false == pObj.expired())
@@ -832,6 +856,18 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
+
+	{
+		auto pObj = Get_UI(L"UI_Main_Button0");
+		if (nullptr != pObj)
+		{
+			pObj->Get_Button()->AddOnClickedEvent([]()
+				{
+					CUR_SCENE->Get_UI(L"UI_Setting_Controller")->Get_Script<UiSettingController>()->Set_Render(true);
+				});
+		}
+	}
+
 	{
 		auto pObj = Get_UI(L"UI_Main_Button2");
 		if (nullptr != pObj)
@@ -842,16 +878,18 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 				});
 		}
 	}
+
 	{
 		auto pObj = Get_UI(L"UI_Main_Button3");
 		if (nullptr != pObj)
 		{
 			pObj->Get_Button()->AddOnClickedEvent([]()
 				{
-					CUR_SCENE->Get_UI(L"UI_Setting_Controller")->Get_Script<UiSettingController>()->Set_Render(true);
+					CUR_SCENE->Get_UI(L"UI_Costume_Controller")->Get_Script<UiCostumeController>()->Create_Costume();
 				});
 		}
 	}
+
 	{
 		for (_uint i = 0; i < 7; ++i)
 		{
@@ -865,6 +903,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 				pObj->Add_Component(pScript);
 		}
 	}
+
 	{
 		for (_uint i = 2; i < 7; ++i)
 		{
@@ -876,6 +915,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 				pObj->Add_Component(pScript);
 		}
 	}
+
 	{
 		auto pScript = make_shared<CoolTimeCheckScript>();
 		auto& pObj = pPlayer;

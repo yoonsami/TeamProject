@@ -26,6 +26,7 @@ private:
 
 
 private:
+    weak_ptr<GameObject>            m_pController;
     vector<weak_ptr<GameObject>>    m_vecAddedObj;
 
     COSTUME_TYPE    m_eType = { COSTUME_TYPE::HAIR };

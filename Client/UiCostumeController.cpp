@@ -5,6 +5,7 @@
 #include "BaseUI.h"
 #include "MeshRenderer.h"
 #include "FontRenderer.h"
+#include "MainUiController.h"
 
 UiCostumeController::UiCostumeController()
 {
@@ -67,7 +68,7 @@ HRESULT UiCostumeController::Init()
         m_vecUniform[5].second = L"프라임 컬렉션 룩";
     }
 
-
+    m_pController = CUR_SCENE->Get_UI(L"Main_UI_Controller");
 
     return S_OK;
 }
@@ -201,6 +202,8 @@ void UiCostumeController::Create_Costume()
         }
     }
 
+    if (false == m_pController.expired())
+        m_pController.lock()->Get_Script<MainUiController>()->Set_MainUI_Render(false);
     
     _float4 vecTemp = pE.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
     vecTemp.x = vecPos.x + -95.f;
@@ -228,6 +231,9 @@ void UiCostumeController::Remove_Costume()
     }
 
     m_vecAddedObj.clear();
+
+    if (false == m_pController.expired())
+        m_pController.lock()->Get_Script<MainUiController>()->Set_MainUI_Render(true);
 
     auto model = RESOURCES.Get<Model>(L"Player");
     if (!model)

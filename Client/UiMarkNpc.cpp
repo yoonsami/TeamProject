@@ -109,7 +109,7 @@ void UiMarkNpc::Check_Distance()
     {
         _float lengthSQ = (pPlayer->Get_Transform()->Get_State(Transform_State::POS).xyz() - pos).LengthSquared();
 
-        if (lengthSQ > 5.f * 5.f)
+        if (lengthSQ > 9.f * 9.f)
             Change_Render(false);
         else
             Change_Render(true);
