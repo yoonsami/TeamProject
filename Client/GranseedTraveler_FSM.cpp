@@ -25,7 +25,10 @@ void GranseedTraveler_FSM::Tick()
 
 void GranseedTraveler_FSM::InteractWithPlayer()
 {
-	;
+	auto pPlayer = CUR_SCENE->Get_GameObject(L"Player");
+	m_vDirToTarget = (pPlayer->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+	m_vDirToTarget.y = 0;
+	m_eCurState = STATE::talk_01;
 }
 
 void GranseedTraveler_FSM::State_Tick()

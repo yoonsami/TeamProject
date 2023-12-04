@@ -15,6 +15,7 @@ public:
     virtual shared_ptr<MonoBehaviour> Copy_Script()override { return make_shared<UiMarkNpc>(m_eType); }
     void Delete_Mark();
     void Change_Render(_bool bValue);
+    void Change_Set_On(_bool bValue);
 
 private:
     void Check_Distance();
@@ -27,6 +28,6 @@ private:
     
     NPCTYPE     m_eType     = { NPCTYPE::MAX };
     _bool       m_bIsRender = {};
-
+    _bool       m_bSetOn    = {};
 };
 

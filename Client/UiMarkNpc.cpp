@@ -19,6 +19,7 @@ HRESULT UiMarkNpc::Init()
     pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Mark_Npc.dat", addedObj);
 
     m_pMark = addedObj[0];
+    m_pMark.lock()->Set_Render(false);
 
     m_pCamera = pScene->Get_Camera(L"Default");
 
@@ -52,6 +53,9 @@ void UiMarkNpc::Tick()
         true == m_pMark.expired())
         return;
 
+    if (false == m_bSetOn)
+        return;
+
     Check_Distance();
     if (false == m_bIsRender)
         return;
@@ -64,6 +68,9 @@ void UiMarkNpc::Final_Tick()
     if (true == m_pOwner.expired() ||
         true == m_pCamera.expired() ||
         true == m_pMark.expired())
+        return;
+
+    if (false == m_bSetOn)
         return;
 
     if (false == m_bIsRender)
@@ -85,6 +92,12 @@ void UiMarkNpc::Change_Render(_bool bValue)
         m_pMark.lock()->Set_Render(bValue);
         m_bIsRender = bValue;
     }
+}
+
+void UiMarkNpc::Change_Set_On(_bool bValue)
+{
+    m_bSetOn = bValue;
+    Change_Render(m_bSetOn);
 }
 
 void UiMarkNpc::Check_Distance()
@@ -119,7 +132,7 @@ void UiMarkNpc::Check_In_Screen()
 void UiMarkNpc::Update_Pos()
 {
     _float4 vecPos = m_pOwner.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-    vecPos.y += 2.f;
+    vecPos.y += 2.5f;
     m_pMark.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[1] = vecPos;
 
     _float4x4 matView = m_pCamera.lock()->Get_Camera()->Get_ViewMat();
