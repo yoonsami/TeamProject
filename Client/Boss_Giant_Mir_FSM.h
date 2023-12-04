@@ -94,7 +94,9 @@ private:
 	void Setting_DragonBall();
 	void Destroy_MapObject();
 	void Update_Collider();
+	void DeadSetting();
 	void Set_Invincible(_bool bFlag);
+	
 
 	void Set_RigidBodyActivate(_bool flag);
 
