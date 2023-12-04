@@ -31,4 +31,5 @@
 #define GET_NPC_NAME(VALUE)             DATAMGR.Get_Npc_Name(VALUE)
 #define GET_QUEST(VALUE)                DATAMGR.Get_Quest(VALUE)
 
+#define GET_PLAYER                      auto pPlayer = CUR_SCENE->Get_GameObject(L"Player");
 #define CAMERA_SHAKE(Time,Power)        if(CUR_SCENE->Get_MainCamera()) CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(Time,Power);
