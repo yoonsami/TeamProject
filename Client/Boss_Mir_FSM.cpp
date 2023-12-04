@@ -185,6 +185,7 @@ void Boss_Mir_FSM::Tick()
             m_bInvincible = false;
         }
         m_eCurPhase = PHASE::PHASE2;
+        m_pOwner.lock()->Set_Hp(0.f);
     }
 
 }

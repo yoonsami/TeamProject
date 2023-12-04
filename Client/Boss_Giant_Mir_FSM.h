@@ -1,6 +1,8 @@
 #pragma once
 #include "FSM.h"
 #include "ForwardMovingSkillScript.h"
+#include "InstallationSkill_Script.h"
+#include "FloorSkill_Script.h"
 
 class Boss_Giant_Mir_FSM :
 	public FSM
@@ -18,6 +20,7 @@ public:
 		skill_1200, // TailAttack
 		skill_2100, // Breath
 		skill_7100, //Summon DragonBall
+		skill_8100, //Summon Meteor
 		skill_100000, // Breath 
 		skill_100100, // Breath 
 
@@ -66,6 +69,8 @@ private:
 	void skill_2100_Init();
 	void skill_7100();
 	void skill_7100_Init();
+	void skill_8100();
+	void skill_8100_Init();
 	void skill_100000();
 	void skill_100000_Init();
 	void skill_100100();
@@ -79,6 +84,8 @@ private:
 
 
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage);
+	void Create_InstallationSkillCollider(const _float4& vPos, _float fSkillRange, INSTALLATIONSKILLDESC desc);
+	void Create_FloorSkillCollider(const _float4& vPos, _float3 vSkillScale, FLOORSKILLDESC desc);
 	void Create_Meteor();
 	void Create_Giant_Mir_Collider();
 	void Create_DragonBall();
@@ -104,13 +111,16 @@ private:
 
 	COOLTIMEINFO m_tAttackCoolTime = { 2.f, 0.f };
 	COOLTIMEINFO m_tBreathCoolTime = { 0.15f, 0.f };
-	COOLTIMEINFO m_tMeteorCoolTime = { 1.f, 0.f };
+	COOLTIMEINFO m_tMeteorCoolTime = { 2.f, 0.f };
 	
-	_bool m_bIntroCam = false;
-	_bool m_bEmissive = false;
+
 	_bool m_bDragonBall = false;
+	_bool m_bSummonMeteor = false;
 
 	_uint m_iPreAttack = 100;
+	_uint m_iCurMeteorCnt = 0;
+	_uint m_iLimitMeteorCnt = 0;
+
 	
 	_uint m_iHeadBoneIndex = 0;
 	_uint m_iMouseBoneIndex = 0;

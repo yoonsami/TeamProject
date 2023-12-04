@@ -77,6 +77,9 @@ void InstallationSkill_Script::Tick()
 		}
 		else
 		{
+			if (m_iCurrentAttackCnt >= m_iLimitAttackCnt)
+				EVENTMGR.Delete_Object(m_pOwner.lock());
+
 			if (m_bAttackOn)
 			{
 				m_bAttackOn = false;
@@ -85,7 +88,4 @@ void InstallationSkill_Script::Tick()
 			}
 		}
 	}
-
-	if (m_iCurrentAttackCnt > m_iLimitAttackCnt)
-		EVENTMGR.Delete_Object(m_pOwner.lock());
 }

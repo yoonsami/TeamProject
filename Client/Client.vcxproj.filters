@@ -355,6 +355,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\07.EffectScript\02. Mir_100100_FireScript">
       <UniqueIdentifier>{41e6a3e9-0881-4260-b242-45a42a945f09}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\04.SkillScript\02.FloorSkill_Script">
+      <UniqueIdentifier>{2a4f0a6d-e9b3-46e8-bea1-1019d0b7e2b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -712,6 +715,9 @@
     <ClInclude Include="Mir_100100_FireScript.h">
       <Filter>02.Component\00.MonoBehaviour\07.EffectScript\02. Mir_100100_FireScript</Filter>
     </ClInclude>
+    <ClInclude Include="FloorSkill_Script.h">
+      <Filter>02.Component\00.MonoBehaviour\04.SkillScript\02.FloorSkill_Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1035,6 +1041,9 @@
     </ClCompile>
     <ClCompile Include="Mir_100100_FireScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\07.EffectScript\02. Mir_100100_FireScript</Filter>
+    </ClCompile>
+    <ClCompile Include="FloorSkill_Script.cpp">
+      <Filter>02.Component\00.MonoBehaviour\04.SkillScript\02.FloorSkill_Script</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

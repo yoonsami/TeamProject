@@ -216,6 +216,7 @@
     <ClInclude Include="ObjectDissolve.h" />
     <ClInclude Include="ObjectDissolveCreate.h" />
     <ClInclude Include="SpikeScene.h" />
+    <ClInclude Include="FloorSkill_Script.h" />
     <ClInclude Include="TimerScript.h" />
     <ClInclude Include="UiBossDialog.h" />
     <ClInclude Include="UiCardDeckSwitch.h" />
@@ -330,6 +331,7 @@
     <ClCompile Include="ObjectDissolve.cpp" />
     <ClCompile Include="ObjectDissolveCreate.cpp" />
     <ClCompile Include="SpikeScene.cpp" />
+    <ClCompile Include="FloorSkill_Script.cpp" />
     <ClCompile Include="TimerScript.cpp" />
     <ClCompile Include="UiBossDialog.cpp" />
     <ClCompile Include="UiCardDeckSwitch.cpp" />
