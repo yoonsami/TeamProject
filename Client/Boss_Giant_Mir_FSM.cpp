@@ -1449,7 +1449,8 @@ void Boss_Giant_Mir_FSM::Set_RigidBodyActivate(_bool flag)
     if (!m_pFootRigidBody.lock()->Get_RigidBody() || !m_pFootRigidBody.lock()->Get_RigidBody()->Get_RigidBody())
         return;
 
-    m_pFootRigidBody.lock()->Get_RigidBody()->Get_RigidBody()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, !flag);
+
+    m_pFootRigidBody.lock()->Get_RigidBody()->AddOrRemoveRigidBody_FromScene(flag);
 }
 
 void Boss_Giant_Mir_FSM::Calculate_IntroHeadCam()
