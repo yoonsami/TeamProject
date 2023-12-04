@@ -51,7 +51,7 @@ void Shane_Clone_FSM::State_Tick()
 		break;
 	}
 
-	Update_GroupEffectWorldPos();
+	Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
 	if (m_iPreFrame != m_iCurFrame)
 		m_iPreFrame = m_iCurFrame;

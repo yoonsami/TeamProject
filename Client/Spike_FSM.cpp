@@ -174,7 +174,7 @@ void Spike_FSM::State_Tick()
         break;
     }
 
-    Update_GroupEffectWorldPos();
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
     if (m_iPreFrame != m_iCurFrame)
         m_iPreFrame = m_iCurFrame;
@@ -1218,8 +1218,6 @@ void Spike_FSM::skill_100100()
     if (Init_CurFrame(19))
         Add_And_Set_Effect(L"Spike_100100_RunWind");
    
-
-
     if (m_iCurFrame >= 19)
     {   
        m_fEffectCreateTimer[0] += fDT;

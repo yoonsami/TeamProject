@@ -272,7 +272,7 @@ void Boss_Mir_FSM::State_Tick()
     case STATE::skill_13100:
         skill_13100();
         break;
-    case STATE::skill_14100:
+    case STATE::skill_14100:    
         skill_14100();
         break;
     case STATE::skill_100000:
@@ -288,8 +288,6 @@ void Boss_Mir_FSM::State_Tick()
         skill_200100();
         break;
     }
-
-    Update_GroupEffectWorldPos();
 
     if (m_iPreFrame != m_iCurFrame)
         m_iPreFrame = m_iCurFrame;
@@ -1397,7 +1395,7 @@ void Boss_Mir_FSM::SQ_SBRin_Roar_Init()
 void Boss_Mir_FSM::skill_1100()
 {
     if (Init_CurFrame(0))
-        Add_Effect(L"Mir_1100");
+        Add_GroupEffectOwner(L"Mir_1100", _float3(0.f, 0.f, 2.f), false);
 
     if (m_iCurFrame == 46 ||
         m_iCurFrame == 56 ||
@@ -1487,6 +1485,8 @@ void Boss_Mir_FSM::skill_2100()
         Add_And_Set_Effect(L"Mir_2100");
     if (Init_CurFrame(93))
         Add_Effect(L"Mir_2100_End");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
     if (m_iCurFrame == 55)
     {
@@ -2164,6 +2164,15 @@ void Boss_Mir_FSM::skill_100000_Init()
 
 void Boss_Mir_FSM::skill_100100()
 {
+    for (_int i = 19; i < 85; i += 2)
+    {
+        MouseBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iMouseBoneIndex) *
+            _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+        if (Init_CurFrame(i))
+            Add_GroupEffectOwner(L"Mir_100100", _float3(MouseBoneMatrix.Translation().x, MouseBoneMatrix.Translation().y, MouseBoneMatrix.Translation().z), true);
+    }
+
     if (m_iCurFrame == 1)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed / 4.f);
@@ -2265,6 +2274,9 @@ void Boss_Mir_FSM::skill_100100_Init()
 
 void Boss_Mir_FSM::skill_200000()
 {
+    if (Init_CurFrame(125))
+        Add_GroupEffectOwner(L"Mir_200100_pizza", _float3(0.f, 0.f, 2.f), false);
+
     if (m_iCurFrame > 15)
     {
         if (!m_pTarget.expired())
@@ -2286,6 +2298,9 @@ void Boss_Mir_FSM::skill_200000_Init()
 
 void Boss_Mir_FSM::skill_200100()
 {
+    if (Init_CurFrame(25))
+        Add_GroupEffectOwner(L"Mir_200100", _float3(0.f, 0.f, 2.f), false);
+
     m_tBreathCoolTime.fAccTime += fDT;
 
     if (m_iCurFrame == 10)
@@ -2617,10 +2632,10 @@ void Boss_Mir_FSM::Set_AttackPattern()
 {
     // TODO:  의진
     _uint iRan = rand() % 2;
-    m_eCurState = STATE::skill_1100;
+    m_eCurState = STATE::skill_100000;
 
    /*_uint iRan = rand() % 10;*/
-
+    /*
     while (true)
     {
         if (iRan == m_iPreAttack)
@@ -2679,6 +2694,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
         m_eCurState = STATE::skill_200000;
         m_iPreAttack = 9;
     }
+    */
 }
 
 void Boss_Mir_FSM::Setting_DragonBall()
@@ -2799,7 +2815,6 @@ void Boss_Mir_FSM::Load_Giant_Boss_Mir()
     ObjMonster->Get_FSM()->Init();
     EVENTMGR.Create_Object(ObjMonster);
 }
-
 
 _float Boss_Mir_FSM::CamDistanceLerp(_float fStart, _float fEnd, _float fRatio)
 {
