@@ -4,7 +4,8 @@
 #include "Camera.h"
 #include "MeshRenderer.h"
 
-UiMonsterHp::UiMonsterHp()
+UiMonsterHp::UiMonsterHp(_bool bIsPosChange)
+    : m_bIsPosChange(bIsPosChange)
 {
 }
 
@@ -170,7 +171,12 @@ void UiMonsterHp::Update_Target_Pos()
     if (false == m_bIsRender)
         return;
 
-    _float4 vecPos = m_pOwner.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    _float4 vecPos = {};
+    if (false == m_bIsPosChange)
+        vecPos = m_pOwner.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    else
+        vecPos = m_vecChangePos;
+
     vecPos.y += 2.f;
     m_pFrontHp.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[1] = vecPos;
     m_pBackHp.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[1] = vecPos;

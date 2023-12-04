@@ -4,7 +4,7 @@
 class UiMonsterHp : public MonoBehaviour
 {
 public:
-    UiMonsterHp();
+    UiMonsterHp(_bool bIsPosChange = false);
 
 
 public:
@@ -12,7 +12,7 @@ public:
     virtual void Tick() override;
 	virtual shared_ptr<MonoBehaviour> Copy_Script() { return make_shared<UiMonsterHp>(); }
 
-    //void Set_Target(shared_ptr<GameObject> pObj);
+    void Change_Pos(_float4 vecPos)     { m_vecChangePos = vecPos; }
 
 private:
     void Check_Render_State();
@@ -32,6 +32,10 @@ private:
     _float  m_fSpeed            = { 0.f };
     _bool   m_bIsWork           = { false };
     _bool   m_bIsRender         = { false };
+
+    _bool   m_bIsPosChange      = {};
+    _float4 m_vecChangePos      = {};
+
 };
 
 
