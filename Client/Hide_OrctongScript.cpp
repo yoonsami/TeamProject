@@ -50,7 +50,9 @@ void Hide_OrctongScript::Tick()
 	_float dist = FLT_MAX;
  	if (ray.Intersects(BoundingSphere{ Get_Owner()->Get_CullPos() ,Get_Owner()->Get_CullRadius() }, dist))
 	{
-		Get_Owner()->Add_Component(make_shared<ObjectDissolve>(1.f));
+		auto script = make_shared<ObjectDissolve>(1.f);
+		Get_Owner()->Add_Component(script);
+		script->Init();
 	}
 
 }

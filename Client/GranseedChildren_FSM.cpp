@@ -321,33 +321,13 @@ void GranseedChildren_FSM::Hide_Init()
 {
 	Get_Owner()->Get_Animator()->Set_RenderState(false);
 
-	vector<_float3> pos(5);
-	pos[0] = { -14.834f, -0.02f,-1.5f };
-	pos[1] = { 17.015f, - 4.667f, 64.654f };
-	pos[2] = { 9.966f, 0.205f, 14.260f };
-	pos[3] = { 12.1f, -4.667f,21.194f };
-	pos[4] = { -14.834f, -4.667f, 21.161f };
-
-	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-	shared_ptr<Model> model = RESOURCES.Get<Model>(L"Granseed_Orctong");
 	for (_uint i = 0; i < 5; ++i)
 	{
-		shared_ptr<GameObject> orctong = make_shared<GameObject>();
-		orctong->GetOrAddTransform()->Rotation(_float3(1.f, 0.f, 0.f), XM_PI / 2.f);
-		_float4 vPos = _float4(pos[i], 1.f) + _float4(0.f, 0.4f, 0.f, 0.f);
-		orctong->GetOrAddTransform()->Set_State(Transform_State::POS, vPos);
-		orctong->Add_Component(make_shared<ModelRenderer>(shader));
-		orctong->Get_ModelRenderer()->Set_Model(model);
-		orctong->Get_ModelRenderer()->Set_PassType(ModelRenderer::PASS_DEFAULT);
-		orctong->Set_CullPos(vPos.xyz());
-		orctong->Set_CullRadius(0.4f);
-		orctong->Set_Instancing(false);
-		orctong->Add_Component(make_shared<SphereCollider>(0.4f));
-		orctong->Set_Name(L"Hide_Orctong" + to_wstring(i));
-
-		orctong->Add_Component(make_shared<Hide_OrctongScript>(i));
-		EVENTMGR.Create_Object(orctong);
+		auto object = CUR_SCENE->Get_GameObject(L"Hide_Orctong" + to_wstring(i));
+		object->Get_ModelRenderer()->Set_RenderState(true);
+		object->Add_Component(make_shared<Hide_OrctongScript>(i));
 	}
+	
 }
 
 void GranseedChildren_FSM::Set_State(_uint iIndex)

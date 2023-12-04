@@ -78,6 +78,7 @@
 #include "GranseedTraveler_FSM.h"
 #include "GranseedChildren_FSM.h"
 #include "UiMarkNpc.h"
+#include "Hide_OrctongScript.h"
 namespace fs = std::filesystem;
 
 GranseedScene::GranseedScene()
@@ -749,5 +750,37 @@ void GranseedScene::Load_NPC(const wstring& dataFileName)
 		}
 		obj->Set_DrawShadow(true);
 		Add_GameObject(obj);
+	}
+	{
+		vector<_float3> pos(5);
+		pos[0] = { -14.834f, -0.02f,-1.5f };
+		pos[1] = { 17.015f, -4.667f, 64.654f };
+		pos[2] = { 9.966f, 0.205f, 14.260f };
+		pos[3] = { 12.1f, -4.667f,21.194f };
+		pos[4] = { -14.834f, -4.667f, 21.161f };
+
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+		shared_ptr<Model> model = RESOURCES.Get<Model>(L"Granseed_Orctong");
+		for (_uint i = 0; i < 5; ++i)
+		{
+			shared_ptr<GameObject> orctong = make_shared<GameObject>();
+			orctong->GetOrAddTransform()->Scaled(_float3(1.5f));
+			orctong->GetOrAddTransform()->Rotation(_float3(1.f, 0.f, 0.f), XM_PI / 2.f);
+			_float4 vPos = _float4(pos[i], 1.f) + _float4(0.f, 0.4f, 0.f, 0.f);
+			orctong->GetOrAddTransform()->Set_State(Transform_State::POS, vPos);
+			orctong->Add_Component(make_shared<ModelRenderer>(shader));
+			orctong->Get_ModelRenderer()->Set_Model(model);
+			orctong->Get_ModelRenderer()->Set_RenderState(false);
+			orctong->Get_ModelRenderer()->Set_PassType(ModelRenderer::PASS_DEFAULT);
+			orctong->Set_CullPos(vPos.xyz());
+			orctong->Set_CullRadius(0.4f);
+			orctong->Set_Instancing(false);
+			orctong->Set_DrawShadow(true);
+			orctong->Add_Component(make_shared<SphereCollider>(0.4f));
+			orctong->Set_Name(L"Hide_Orctong" + to_wstring(i));
+
+			
+			Add_GameObject(orctong);
+		}
 	}
 }
