@@ -15,7 +15,7 @@ public:
     void Change_Value();
 
     _bool Get_Dialog_End() { return m_bIsCreated; }
-    const CUR_QUEST& Get_CurState() { return m_eCurType; }
+    const CUR_QUEST& Get_CurState(QUESTINDEX eIndex);
 
 private:
     void Clear_Quest();

@@ -291,6 +291,14 @@ void UiQuestController::Change_Value()
 
 }
 
+const CUR_QUEST& UiQuestController::Get_CurState(QUESTINDEX eIndex)
+{
+    if (m_eIndex != eIndex)
+        return;
+
+    return m_eCurType;
+}
+
 void UiQuestController::Move_Next()
 {
     switch (m_eState)
