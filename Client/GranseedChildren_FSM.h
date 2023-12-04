@@ -36,6 +36,8 @@ private:
 	void	n_run_Init();
 	void	n_walk();
 	void	n_walk_Init();
+	void	Hide();
+	void	Hide_Init();
 
 private:
 

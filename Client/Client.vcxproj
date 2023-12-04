@@ -208,6 +208,7 @@
     <ClInclude Include="GranseedGuard02_FSM.h" />
     <ClInclude Include="GranseedPotion_FSM.h" />
     <ClInclude Include="GranseedTraveler_FSM.h" />
+    <ClInclude Include="Hide_OrctongScript.h" />
     <ClInclude Include="InventoryModelRotation.h" />
     <ClInclude Include="MirScene.h" />
     <ClInclude Include="Mir_100100_FireScript.h" />
@@ -323,6 +324,7 @@
     <ClCompile Include="GranseedGuard02_FSM.cpp" />
     <ClCompile Include="GranseedPotion_FSM.cpp" />
     <ClCompile Include="GranseedTraveler_FSM.cpp" />
+    <ClCompile Include="Hide_OrctongScript.cpp" />
     <ClCompile Include="InventoryModelRotation.cpp" />
     <ClCompile Include="MirScene.cpp" />
     <ClCompile Include="Mir_100100_FireScript.cpp" />

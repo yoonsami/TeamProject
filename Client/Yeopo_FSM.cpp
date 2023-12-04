@@ -1051,8 +1051,8 @@ void Yeopo_FSM::skill_1200()
 
     if (!g_bIsCanMouseMove && !g_bCutScene)
     {
-        if (Check_Combo(15, KEY_TYPE::LBUTTON))
-            m_eCurState = STATE::skill_1300;
+        if (Check_Combo(23, KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1400;
 
         Use_Skill();
     }

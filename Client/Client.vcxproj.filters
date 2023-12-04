@@ -358,6 +358,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\05.Object\03.InventoryModelRotation">
       <UniqueIdentifier>{bf44e733-45da-47de-af96-703b3e9e737c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\05.Object\04.Granseeed_Hide_OrctongScript">
+      <UniqueIdentifier>{60393e62-d0da-45cf-abd1-c27dbe2963ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -715,7 +718,10 @@
     <ClInclude Include="Mir_100100_FireScript.h">
       <Filter>02.Component\00.MonoBehaviour\07.EffectScript\02. Mir_100100_FireScript</Filter>
     </ClInclude>
-    <ClInclude Include="InventoryModelRotation.h" />
+    <ClInclude Include="InventoryModelRotation.h">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\03.InventoryModelRotation</Filter>
+    </ClInclude>
+    <ClInclude Include="Hide_OrctongScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1040,7 +1046,10 @@
     <ClCompile Include="Mir_100100_FireScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\07.EffectScript\02. Mir_100100_FireScript</Filter>
     </ClCompile>
-    <ClCompile Include="InventoryModelRotation.cpp" />
+    <ClCompile Include="InventoryModelRotation.cpp">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\03.InventoryModelRotation</Filter>
+    </ClCompile>
+    <ClCompile Include="Hide_OrctongScript.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">

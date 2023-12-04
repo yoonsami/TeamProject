@@ -4,6 +4,8 @@
 #include <MathUtils.h>
 #include "UIInteraction.h"
 #include "UiQuestController.h"
+#include "ModelRenderer.h"
+#include "SphereCollider.h"
 
 GranseedChildren_FSM::GranseedChildren_FSM()
 {
@@ -301,6 +303,39 @@ void GranseedChildren_FSM::n_walk_Init()
 	vLook = _float3::TransformNormal(vLook, _float4x4::CreateRotationY(MathUtils::Get_RandomFloat(-XM_PI * 0.1f, XM_PI * 0.1f)));
 
 	m_vDirToTarget = vLook;
+}
+
+void GranseedChildren_FSM::Hide()
+{
+
+}
+
+void GranseedChildren_FSM::Hide_Init()
+{
+	Get_Owner()->Get_Animator()->Set_RenderState(false);
+
+	vector<_float3> pos(5);
+	pos[0] = { -14.834f,-0.02f,-1.5f };
+	pos[1] = { 17.015f - 4.667f, 64.654f };
+	pos[2] = { 9.966f,0.205f,14.260f };
+	pos[3] = { 12.1f - 4.667f,21.194f };
+	pos[4] = { -14.834f,-4.667f, 21.161f };
+
+	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+	shared_ptr<Model> model = RESOURCES.Get<Model>(L"Granseed_Orctong");
+	for (_uint i = 0; i < 5; ++i)
+	{
+		shared_ptr<GameObject> orctong = make_shared<GameObject>();
+		orctong->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(pos[i], 1.f) + _float4(0.f,0.4f,0.f,0.f));
+		orctong->Add_Component(make_shared<ModelRenderer>(shader));
+		orctong->Get_ModelRenderer()->Set_Model(model);
+
+		orctong->Set_CullPos(Get_Transform()->Get_State(Transform_State::POS).xyz());
+		orctong->Set_CullRadius(0.4f);
+
+		orctong->Set_Name(L"Hide_Orctong" + to_wstring(i));
+		EVENTMGR.Create_Object(orctong);
+	}
 }
 
 void GranseedChildren_FSM::Set_State(_uint iIndex)
