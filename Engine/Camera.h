@@ -55,6 +55,7 @@ public:
     void Render_Shadow();
 
     void Render_MotionBlur();
+    void Render_AfterUI();
     void Set_CullingMaskLayerOnOff(_uint layer, _bool on)
     {
         if (on)
@@ -93,6 +94,7 @@ private:
     vector<shared_ptr<GameObject>> m_Shadow;
     vector<shared_ptr<GameObject>> m_DistortionEffects;
     vector<shared_ptr<GameObject>> m_Trails;
+    vector<shared_ptr<GameObject>> m_AfterUI;
 
 private:
     _bool                           m_bEffectToolMode_On = { false };

@@ -69,6 +69,7 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 	m_DistortionEffects.clear();
 	m_Trails.clear();
 	m_VelocityMapObj.clear();
+	m_AfterUI.clear();
 	for (auto& gameObject : gameObjects)
 	{
 		if (false == gameObject->Is_Render())
@@ -125,6 +126,8 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 		if (gameObject->Get_Particle())
 			m_Particle.push_back(gameObject);
 
+		if (gameObject->Is_DrawAfterUI())
+			m_AfterUI.push_back(gameObject);
 	}
 }
 
@@ -358,6 +361,10 @@ void Camera::Render_MotionBlur()
 		if (obj->Get_Animator())
 			obj->Get_Animator()->Render_MotionBlur();
 	}
+}
+
+void Camera::Render_AfterUI()
+{
 }
 
 vector<shared_ptr<MonoBehaviour>>& Camera::Get_Scripts()

@@ -108,6 +108,8 @@ protected:
 
 	void Render_UI();
 
+	void Render_AfterUI();
+
 	void Render_FXAA();
 
 private:

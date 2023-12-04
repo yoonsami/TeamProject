@@ -1001,6 +1001,74 @@ PBR_OUTPUT PS_PBR_WATER(MeshOutput input)
     return output; 
 }
 
+float4 PS_Forward(MeshOutput input) : SV_Target
+{
+    float4 diffuseColor;
+    float4 specularColor;
+    float4 emissiveColor;
+    
+    float2 distortedUV = input.uv;
+    
+    if (bHasDissolveMap != 0)
+    {
+        float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
+        if (dissolve < g_vec4_0.w)
+            discard;
+    }
+    
+    
+    if (bHasNormalMap)
+    {
+        ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
+        
+    }
+
+    if (bHasDiffuseMap)
+    {
+        diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
+        diffuseColor.rgb = pow(abs(diffuseColor.rgb), GAMMA);
+    }
+    else
+        diffuseColor = Material.diffuse;
+    
+    if (diffuseColor.a <= 0.1f)
+        discard;
+
+    diffuseColor.a = 1.f;
+    
+    if (bHasSpecularMap)
+    {
+        specularColor = SpecularMap.Sample(LinearSampler, input.uv);
+        specularColor.rgb = pow(abs(specularColor.rgb), GAMMA);
+    }
+    else
+        specularColor = Material.specular;
+   
+    if (bHasEmissiveMap)
+    {
+        emissiveColor = EmissiveMap.Sample(LinearSampler, input.uv);
+        emissiveColor.rgb = pow(abs(emissiveColor.rgb), GAMMA);
+    }
+    else
+        emissiveColor = Material.emissive;
+    
+    LightColor color = CalculateLightColor_ViewSpace(0, input.viewNormal, input.viewPosition);
+    
+    float4 finalDiffuseColor = diffuseColor * saturate(color.diffuse + color.ambient);
+    float4 finalSpecularColor = specularColor * color.specular;
+    float4 finalEmissiveColor = emissiveColor * color.emissive;
+    
+    float3 finalColor = finalDiffuseColor.rgb + finalSpecularColor.rgb + finalEmissiveColor.rgb;
+    
+    
+    return float4(finalColor, 1.f);
+}
+
+float4 PS_PBR_Forward(MeshOutput input)
+{
+    return 0.f;
+}
+
 RasterizerState Depth
 {
 	// [From MSDN]
@@ -1017,7 +1085,7 @@ RasterizerState Depth
 	// Example: DepthBias = 100000 ==> Actual DepthBias = 100000/2^24 = .006
 
 	// You need to experiment with these values for your scene.
-    DepthBias = 1000;
+    DepthBias = 3000;
     DepthBiasClamp = 0.0f;
     SlopeScaledDepthBias = 1.0f;
 };
@@ -1440,6 +1508,185 @@ technique11 T4_PBR
         SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_MapObject_Instancing()));
     }
     pass MapObject_Water//18
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MapObject()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_WATER()));
+    }
+};
+
+technique11 T5_NonPBR_Forward
+{
+    pass NonAnim_NonInstancing //0
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_NonAnim()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred()));
+    }
+    pass NonAnim_Instancing //1
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_NonAnimInstancing()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_Instancing()));
+    }
+    pass Anim_NonInstancing //2
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Anim()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred()));
+    }
+    pass Anim_Instancing //3
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_AnimInstancing()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_Instancing()));
+    }
+    pass NonAnim_NonInstancing_CullNone //4
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_NonAnim()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred()));
+    }
+    pass NonAnim_Instancing_CullNone //5
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_NonAnimInstancing()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_Instancing()));
+    }
+    pass NonAnimShadow //6
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Shadow_NonAnim()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_LESS, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_Shadow()));
+    }
+    pass NonAnimShadowInstancing //7
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Shadow_NonAnim_Instancing()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_LESS, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_ShadowInstancing()));
+    }
+    pass AnimShadow //8
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Shadow_Anim()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_LESS, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_Shadow()));
+    }
+    pass AnimShadowInstancing //9
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Shadow_Anim_Instancing()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_LESS, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_ShadowInstancing()));
+    }
+
+    pass MapObject //10
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MapObject()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_MapObject()));
+    }
+
+    pass MapObject_Instancing //11
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MapObject_Instancing()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_MapObject_Instancing()));
+    }
+    pass MapObject_NonCull //12
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MapObject()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_MapObject()));
+    }
+
+    pass MapObject_Instancing_NonCull //13
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MapObject_Instancing()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_MapObject_Instancing()));
+    }
+
+    pass MapObject_WorldNormal //14
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MapObject(true)));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_MapObject()));
+    }
+    pass MapObject_WorldNormalInstancing //15
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MapObject_Instancing(true)));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_MapObject_Instancing()));
+    }
+    pass MapObject_WorldNormal_CullNone //16
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MapObject(true)));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_MapObject()));
+    }
+    pass MapObject_WorldNormalInstancing_CullNone //17
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MapObject_Instancing(true)));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_PBR_Deferred_MapObject_Instancing()));
+    }
+    pass MapObject_Water //18
     {
         SetVertexShader(CompileShader(vs_5_0, VS_MapObject()));
         SetGeometryShader(NULL);

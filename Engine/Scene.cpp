@@ -1717,6 +1717,19 @@ void Scene::Render_UI()
 	}
 }
 
+void Scene::Render_AfterUI()
+{
+	if (Get_MainCamera())
+	{
+		shared_ptr<Camera> mainCamera = Get_MainCamera()->Get_Camera();
+		Camera::S_View = mainCamera->Get_ViewMat();
+		Camera::S_Proj = mainCamera->Get_ProjMat();
+
+
+		mainCamera->Render_AfterUI();
+	}
+}
+
 
 void Scene::Render_ToneMapping()
 {

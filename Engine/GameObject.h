@@ -74,9 +74,9 @@ public:
 	_bool Is_Render()						{ return m_bIsRender; }
 	_bool Is_DrawShadow()					{ return m_bDrawShadow; }
 	_bool Is_TimeSlowed()					{ return m_bGetTimeSlow; }
+	_bool Is_DrawAfterUI()					{ return m_bDrawAfterUI;}
 	_bool Has_VelocityMap()					{ return m_bHasVelocityMap; }
 	_bool Is_FrustumCulled()				{ return m_bFrustumCull; }
-	
 	void Set_Hp(_float fHP)					{ m_fHP = fHP; }
 	void Set_Tick(_bool bValue)				{ m_bIsTick = bValue; }
 	void Set_Blur(_bool flag)				{ m_bIsBlur = flag; }
@@ -162,7 +162,8 @@ private:
 	_bool		m_bHasVelocityMap	= false;
 	_bool		m_bFrustumCull		= false;
 	_bool		m_bDrawShadow		= false;
-	
+	_bool		m_bDrawAfterUI		= false;
+
 	_uchar		m_iLayerIndex		= Layer_Default;
 	_uint		m_eObjectGroup		= 0;
 
