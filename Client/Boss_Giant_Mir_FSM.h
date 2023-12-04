@@ -15,17 +15,14 @@ public:
 		SQ_Leave,
 		b_idle,
 		skill_1100, // Breath
-		skill_1200, // Breath
+		skill_1200, // TailAttack
 		skill_2100, // Breath
-		skill_5100, // Tail Attack
-		skill_7100, // Breath
-		
+		skill_7100, //Summon DragonBall
 		skill_100000, // Breath 
 		skill_100100, // Breath 
 
 		skill_200000, // Breath 
 		skill_200100, // Breath 
-
 
 		NONE
 	};
@@ -63,16 +60,38 @@ private:
 	void b_idle_Init();
 	void skill_1100();
 	void skill_1100_Init();
+	void skill_1200();
+	void skill_1200_Init();
+	void skill_2100();
+	void skill_2100_Init();
+	void skill_7100();
+	void skill_7100_Init();
+	void skill_100000();
+	void skill_100000_Init();
 	void skill_100100();
 	void skill_100100_Init();
 
+	void skill_200000();
+	void skill_200000_Init();
+	void skill_200100();
+	void skill_200100_Init();
+
+
+
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage);
 	void Create_Meteor();
+	void Create_Giant_Mir_Collider();
+	void Create_DragonBall();
 	void Set_AttackPattern();
 	void Calculate_IntroHeadCam();
 	void Setting_DragonBall();
 	void Destroy_MapObject();
+	void Update_Collider();
+	void Set_Invincible(_bool bFlag);
 
+
+	void TailAttackCollider_On(const wstring& skillname, _float fAttackDamage);
+	void TailAttackCollider_Off();
 	_float CamDistanceLerp(_float fStart, _float fEnd, _float fRatio);
 
 private:
@@ -81,18 +100,29 @@ private:
 
 	_float m_fIntroCamDistance = 0.f;
 	_float m_fCamRatio = 0.f;
+	_float m_fOffSetY = 1.5f;
 
 	COOLTIMEINFO m_tAttackCoolTime = { 2.f, 0.f };
 	COOLTIMEINFO m_tBreathCoolTime = { 0.15f, 0.f };
 	COOLTIMEINFO m_tMeteorCoolTime = { 1.f, 0.f };
-
+	
 	_bool m_bIntroCam = false;
 	_bool m_bEmissive = false;
-	
+	_bool m_bDragonBall = false;
+
 	_uint m_iPreAttack = 100;
 	
 	_uint m_iHeadBoneIndex = 0;
 	_uint m_iMouseBoneIndex = 0;
+	_uint m_iTailBoneIndex = 0;
+	_uint m_iStomachBoneIndex = 0;
+	_uint m_iLfootBoneIndex = 0;
+	
+
+	weak_ptr<GameObject> m_pTailCollider;
+	weak_ptr<GameObject> m_pStomachCollider;
+	weak_ptr<GameObject> m_pLfootCollider;
+
 
 	_float3 m_vFirstPos = _float3(0.f);
 
@@ -100,8 +130,12 @@ private:
 	_float4 m_vHeadBonePos = _float4(0.f);
 	_float4 m_vHeadCamPos = _float4(0.f);
 	_float4 m_vIntroCamPos = _float4(0.f);
+	_float4 m_vStomachBonePos = _float4(0.f);
+	_float4 m_vLfootBonePos = _float4(0.f);
 
 	_float4x4 HeadBoneMatrix = XMMatrixIdentity();
 	_float4x4 MouseBoneMatrix = XMMatrixIdentity();
-
+	_float4x4 TailBoneMatrix = XMMatrixIdentity();
+	_float4x4 StomachBoneMatrix = XMMatrixIdentity();
+	_float4x4 LfootBoneMatrix = XMMatrixIdentity();
 };

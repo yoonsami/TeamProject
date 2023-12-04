@@ -42,8 +42,6 @@ HRESULT Boss_Mir_FSM::Init()
             m_eCurState = STATE::First_Meet;
         }
 
-        m_fDetectRange = 10.f;
-
         Add_Boss_Mir_Collider();
 
         m_iHeadBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Head");
@@ -992,7 +990,7 @@ void Boss_Mir_FSM::SQ_Flee()
 
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(2.f);
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vFleeCamPos.xyz());
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, m_vHeadCamDir * -1.f, 6.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(2.f, m_vHeadCamDir * -1.f, 6.f);
         }
     }
     
@@ -1006,6 +1004,12 @@ void Boss_Mir_FSM::SQ_Flee()
         
         if (!m_pTailCollider.expired())
             EVENTMGR.Delete_Object(m_pTailCollider.lock());
+
+        if (!m_pSubController[0].expired())
+            EVENTMGR.Delete_Object(m_pSubController[0].lock());
+
+        if (!m_pSubController[1].expired())
+            EVENTMGR.Delete_Object(m_pSubController[1].lock());
 
         g_bCutScene = false;
 
@@ -1567,7 +1571,7 @@ void Boss_Mir_FSM::skill_3100()
         Add_Effect(L"Mir_3100");
 
     if (m_iCurFrame == 80)
-        TailAttackCollider_On(KNOCKBACK_ATTACK);
+        TailAttackCollider_On(KNOCKBACK_ATTACK, 10.f);
     else if (m_iCurFrame == 98)
         TailAttackCollider_Off();
 
@@ -1617,7 +1621,7 @@ void Boss_Mir_FSM::skill_4100()
         Add_Effect(L"Mir_3100");
 
     if (m_iCurFrame == 86)
-        TailAttackCollider_On(KNOCKBACK_ATTACK);
+        TailAttackCollider_On(KNOCKBACK_ATTACK, 10.f);
     else if (m_iCurFrame == 108)
         TailAttackCollider_Off();
 
@@ -2742,16 +2746,18 @@ void Boss_Mir_FSM::Check_PhaseChange()
     }
 }
 
-void Boss_Mir_FSM::TailAttackCollider_On(const wstring& skillname)
+void Boss_Mir_FSM::TailAttackCollider_On(const wstring& skillname, _float fAttackDamage)
 {
     m_pTailCollider.lock()->Get_Collider()->Set_Activate(true);
     m_pTailCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
+    m_pTailCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
 }
 
 void Boss_Mir_FSM::TailAttackCollider_Off()
 {
     m_pTailCollider.lock()->Get_Collider()->Set_Activate(false);
     m_pTailCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+    m_pTailCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(0.f);
 }
 
 void Boss_Mir_FSM::DeadSetting()
@@ -2787,9 +2793,9 @@ void Boss_Mir_FSM::Load_Giant_Boss_Mir()
         ObjMonster->Get_FSM()->Set_Target(m_pTarget.lock());
     }
 
-    ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 2.f, 4.f, 6.f })); //obbcollider
-    ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
-    ObjMonster->Get_Collider()->Set_Activate(true);
+    //ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 2.f, 4.f, 6.f })); //obbcollider
+    //ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
+    //ObjMonster->Get_Collider()->Set_Activate(true);
     ObjMonster->Get_FSM()->Init();
     EVENTMGR.Create_Object(ObjMonster);
 }
