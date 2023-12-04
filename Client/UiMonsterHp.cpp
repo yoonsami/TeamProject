@@ -171,7 +171,7 @@ void UiMonsterHp::Update_Target_Pos()
         return;
 
     _float4 vecPos = m_pOwner.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-    vecPos.y = 2.f;
+    vecPos.y += 2.f;
     m_pFrontHp.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[1] = vecPos;
     m_pBackHp.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[1] = vecPos;
     m_pBgHp.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[1] = vecPos;

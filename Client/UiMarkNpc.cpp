@@ -31,6 +31,9 @@ HRESULT UiMarkNpc::Init()
 	case NPCTYPE::GACHA:
 		strTextureTag = L"UI_Mark_Gacha";
 		break;
+	case NPCTYPE::POTION:
+		strTextureTag = L"UI_Mark_Shop";
+		break;
 	case NPCTYPE::MAX:
 		return E_FAIL;
 	}
@@ -80,7 +83,7 @@ void UiMarkNpc::Check_In_Screen()
 void UiMarkNpc::Update_Pos()
 {
 	_float4 vecPos = m_pOwner.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-	vecPos.y = 2.f;
+	vecPos.y += 2.f;
 	m_pMark.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[1] = vecPos;
 
 	_float4x4 matView = m_pCamera.lock()->Get_Camera()->Get_ViewMat();

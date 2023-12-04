@@ -166,7 +166,7 @@ private:
 	void Calculate_PhaseChangeHeadCam();
 	void Check_PhaseChange();
 
-	void TailAttackCollider_On(const wstring& skillname);
+	void TailAttackCollider_On(const wstring& skillname, _float fAttackDamage);
 	void TailAttackCollider_Off();
 	void DeadSetting();
 	void Load_Giant_Boss_Mir();

@@ -198,7 +198,9 @@
     <ClInclude Include="Alpaca_FSM.h" />
     <ClInclude Include="AttackColliderInfoScript.h" />
     <ClInclude Include="Boss_Giant_Mir_FSM.h" />
+    <ClInclude Include="Boss_Giant_Mir_Parts_FSM.h" />
     <ClInclude Include="DestroyBuilding_FSM.h" />
+    <ClInclude Include="DragonBallMonster_FSM.h" />
     <ClInclude Include="DragonBall_FSM.h" />
     <ClInclude Include="Get_Gravity.h" />
     <ClInclude Include="GranseedChildren_FSM.h" />
@@ -217,6 +219,7 @@
     <ClInclude Include="TimerScript.h" />
     <ClInclude Include="UiBossDialog.h" />
     <ClInclude Include="UiCardDeckSwitch.h" />
+    <ClInclude Include="UiCostumeController.h" />
     <ClInclude Include="UIInteraction.h" />
     <ClInclude Include="UiQuestController.h" />
     <ClInclude Include="UiSettingController.h" />
@@ -309,7 +312,9 @@
     <ClCompile Include="Alpaca_FSM.cpp" />
     <ClCompile Include="AttackColliderInfoScript.cpp" />
     <ClCompile Include="Boss_Giant_Mir_FSM.cpp" />
+    <ClCompile Include="Boss_Giant_Mir_Parts_FSM.cpp" />
     <ClCompile Include="DestroyBuilding_FSM.cpp" />
+    <ClCompile Include="DragonBallMonster_FSM.cpp" />
     <ClCompile Include="DragonBall_FSM.cpp" />
     <ClCompile Include="Get_Gravity.cpp" />
     <ClCompile Include="GranseedChildren_FSM.cpp" />
@@ -328,6 +333,7 @@
     <ClCompile Include="TimerScript.cpp" />
     <ClCompile Include="UiBossDialog.cpp" />
     <ClCompile Include="UiCardDeckSwitch.cpp" />
+    <ClCompile Include="UiCostumeController.cpp" />
     <ClCompile Include="UIInteraction.cpp" />
     <ClCompile Include="UiQuestController.cpp" />
     <ClCompile Include="UiSettingController.cpp" />

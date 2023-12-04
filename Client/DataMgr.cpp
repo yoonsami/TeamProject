@@ -1184,8 +1184,10 @@ void DataMgr::Set_Cur_Hero(_uint iIndex, _uint iCardIndex)
 
 void DataMgr::Remove_Cur_Hero(_uint iIndex)
 {
-    if (IDX(m_CurSetHero.size()) > iIndex)
-        m_CurSetHero[iIndex] = -1;
+    if (IDX(m_CurSetHero.size()) <= iIndex)
+        return;
+
+    m_CurSetHero[iIndex] = -1;
 }
 
 _bool SortByStar(const pair<_bool, HERODATA>& a, const pair<_bool, HERODATA>& b)

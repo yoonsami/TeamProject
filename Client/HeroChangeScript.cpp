@@ -86,9 +86,9 @@ void HeroChangeScript::Tick()
 
 void HeroChangeScript::Change_Hero(HERO eHero)
 {
-    //if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == GET_DATA(eHero).ModelTag)
-    //    Change_To_Input(HERO::PLAYER);
-    //else
+    if (m_pOwner.lock()->Get_Model()->Get_ModelTag() == GET_DATA(eHero).ModelTag)
+        Change_To_Input(HERO::PLAYER);
+    else
         Change_To_Input(eHero);
 }
 

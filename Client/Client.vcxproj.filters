@@ -343,6 +343,15 @@
     <Filter Include="02.Component\00.MonoBehaviour\05.Object\02.Get_Gravity">
       <UniqueIdentifier>{e4baddf9-a0cd-47bc-9948-cdba84922f4c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\22.UiCostumeController">
+      <UniqueIdentifier>{9fb9fff3-ce8a-4e9d-8820-b04532654252}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\04.Boss_Giant_Mir_FSM\00.Boss_Giant_Mir_Parts_FSM">
+      <UniqueIdentifier>{d36909e6-df0e-4cc8-9af0-dc8edc9f77c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\03.Special_FSM\06.DragonBallMonster_FSM">
+      <UniqueIdentifier>{6ab2dadf-e0df-42e1-8328-a2e28bc35cc5}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\07.EffectScript\02. Mir_100100_FireScript">
       <UniqueIdentifier>{41e6a3e9-0881-4260-b242-45a42a945f09}</UniqueIdentifier>
     </Filter>
@@ -691,6 +700,15 @@
     <ClInclude Include="Get_Gravity.h">
       <Filter>02.Component\00.MonoBehaviour\05.Object\02.Get_Gravity</Filter>
     </ClInclude>
+    <ClInclude Include="UiCostumeController.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\22.UiCostumeController</Filter>
+    </ClInclude>
+    <ClInclude Include="Boss_Giant_Mir_Parts_FSM.h">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\04.Boss_Giant_Mir_FSM\00.Boss_Giant_Mir_Parts_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="DragonBallMonster_FSM.h">
+      <Filter>02.Component\01.FSM\03.Special_FSM\06.DragonBallMonster_FSM</Filter>
+    </ClInclude>
     <ClInclude Include="Mir_100100_FireScript.h">
       <Filter>02.Component\00.MonoBehaviour\07.EffectScript\02. Mir_100100_FireScript</Filter>
     </ClInclude>
@@ -1005,6 +1023,15 @@
     </ClCompile>
     <ClCompile Include="Get_Gravity.cpp">
       <Filter>02.Component\00.MonoBehaviour\05.Object\02.Get_Gravity</Filter>
+    </ClCompile>
+    <ClCompile Include="UiCostumeController.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\22.UiCostumeController</Filter>
+    </ClCompile>
+    <ClCompile Include="Boss_Giant_Mir_Parts_FSM.cpp">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\04.Boss_Giant_Mir_FSM\00.Boss_Giant_Mir_Parts_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="DragonBallMonster_FSM.cpp">
+      <Filter>02.Component\01.FSM\03.Special_FSM\06.DragonBallMonster_FSM</Filter>
     </ClCompile>
     <ClCompile Include="Mir_100100_FireScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\07.EffectScript\02. Mir_100100_FireScript</Filter>

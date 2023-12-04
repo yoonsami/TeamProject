@@ -38,16 +38,18 @@ void ObjectDissolveCreate::Tick()
     if (Get_Owner()->Get_ModelRenderer())
     {
         if (Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[0].w <= 0.f)
-            return;
-        
-        Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[0].w -= m_fDissolveSpeed * fDT;
+            m_bCreate = true;
+            
+        if (!m_bCreate)
+            Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[0].w -= m_fDissolveSpeed * fDT;
     }
 
     if (Get_Owner()->Get_Animator())
     {
         if (Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[0].w <= 0.f)
-            return;
+            m_bCreate = true;
 
-        Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[0].w -= m_fDissolveSpeed * fDT;
+        if (!m_bCreate)
+            Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[0].w -= m_fDissolveSpeed * fDT;
     }
 }
