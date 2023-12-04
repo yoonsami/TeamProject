@@ -865,7 +865,7 @@ void Boss_Giant_Mir_FSM::Create_Giant_Mir_Collider()
     m_pLfootCollider = LfootCollider;
 
     shared_ptr<GameObject> rigidBodyObj = make_shared<GameObject>();
-    rigidBodyObj->GetOrAddTransform()->Set_State(Transform_State::POS,{12.8122845,5.01855755,22.8058624,1.f});
+    rigidBodyObj->GetOrAddTransform()->Set_State(Transform_State::POS,{12.8122845f,5.01855755f,22.8058624f,1.f});
 	{
 		_float3 vObjPos = rigidBodyObj->Get_Transform()->Get_State(Transform_State::POS).xyz();
 		auto rigidBody = make_shared<RigidBody>();

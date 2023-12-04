@@ -10,7 +10,7 @@ public:
 		n_run,
 		n_walk,
 		talk_01,
-
+		Hide,
 
 		NONE
 	};

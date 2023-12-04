@@ -164,7 +164,8 @@ void UIInteraction::Remove_Interaction()
        
         m_bIsMarkSetOn = false;
         if (false == m_pAccessObj.expired())
-            m_pAccessObj.lock()->Get_Script<UiMarkNpc>()->Change_Set_On(m_bIsMarkSetOn);
+            if(m_pAccessObj.lock()->Get_Script<UiMarkNpc>())
+                m_pAccessObj.lock()->Get_Script<UiMarkNpc>()->Change_Set_On(m_bIsMarkSetOn);
 
         EVENTMGR.Delete_Object(m_pInteraction_Bg.lock());
         EVENTMGR.Delete_Object(m_pInteraction_Font.lock());

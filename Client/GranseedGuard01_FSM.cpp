@@ -31,21 +31,17 @@ void GranseedGuard01_FSM::State_Tick()
 	{
 	case GranseedGuard01_FSM::STATE::n_idle:
 		n_idle();
-		if (Can_Interact())
-			InteractWithPlayer();
 		break;
 	case GranseedGuard01_FSM::STATE::run:
 		run();
-		if (Can_Interact())
-			InteractWithPlayer();
+		
 		break;
 	case GranseedGuard01_FSM::STATE::talk:
 		talk();
 		break;
 	case GranseedGuard01_FSM::STATE::walk:
 		walk();
-		if (Can_Interact())
-			InteractWithPlayer();
+		
 		break;
 	}
 }
@@ -80,6 +76,10 @@ void GranseedGuard01_FSM::n_idle()
 	{
 		m_fStateAcc = 0.f;
 		m_eCurState = STATE::walk;
+	}
+	if (Can_Interact())
+	{
+		InteractWithPlayer();
 	}
 }
 
@@ -172,6 +172,10 @@ void GranseedGuard01_FSM::walk()
 		m_fStateAcc = 0.f;
 		m_eCurState = STATE::n_idle;
 	}
+	if (Can_Interact())
+	{
+		InteractWithPlayer();
+	}
 }
 
 void GranseedGuard01_FSM::walk_Init()
@@ -195,9 +199,12 @@ void GranseedGuard01_FSM::Set_State(_uint iIndex)
 
 void GranseedGuard01_FSM::InteractWithPlayer()
 {
-	auto pPlayer = CUR_SCENE->Get_GameObject(L"Player");
-	m_vDirToTarget = (pPlayer->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
-	m_vDirToTarget.y = 0;
-	m_eCurState = STATE::talk;
+	if(KEYPUSH(KEY_TYPE::E))
+	{
+		auto pPlayer = CUR_SCENE->Get_GameObject(L"Player");
+		m_vDirToTarget = (pPlayer->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+		m_vDirToTarget.y = 0;
+		m_eCurState = STATE::talk;
+	}
 }
 

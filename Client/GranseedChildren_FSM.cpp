@@ -38,7 +38,6 @@ void GranseedChildren_FSM::State_Tick()
 	{
 	case STATE::n_idle:
 		n_idle();
-	
 		break;
 		
 	case STATE::n_run:
@@ -124,12 +123,11 @@ void GranseedChildren_FSM::talk_01()
 	auto obj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
 	if (obj && !obj->Get_Script<UiQuestController>()->Get_Dialog_End())
 	{
-		m_eCurState = STATE::n_idle;
-
+		if (obj->Get_Script<UiQuestController>()->Get_CurState() == CUR_QUEST::PROGRESS)
+			m_eCurState = STATE::Hide;
+		else
+			m_eCurState = STATE::n_idle;
 	}
-
-	if (KEYTAP(KEY_TYPE::E)/*talk ���� ����*/)
-		m_eCurState = STATE::n_idle;
 }
 
 void GranseedChildren_FSM::talk_Init()
