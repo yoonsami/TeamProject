@@ -123,7 +123,7 @@ void GranseedChildren_FSM::talk_01()
 	auto obj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
 	if (obj && !obj->Get_Script<UiQuestController>()->Get_Dialog_End())
 	{
-		if (obj->Get_Script<UiQuestController>()->Get_CurState() == CUR_QUEST::PROGRESS)
+		if (obj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::HIDE_AND_SEEK)== CUR_QUEST::PROGRESS)
 			m_eCurState = STATE::Hide;
 		else
 			m_eCurState = STATE::n_idle;
