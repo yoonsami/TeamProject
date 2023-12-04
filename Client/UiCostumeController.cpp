@@ -86,6 +86,8 @@ void UiCostumeController::Create_Costume()
     if (true == m_bIsCreated)
         return;
 
+    g_bIsCanRotation = false;
+
     m_TempSet = m_OriginSet;
     m_eType = COSTUME_TYPE::HAIR;
 
@@ -217,6 +219,7 @@ void UiCostumeController::Remove_Costume()
         return;
 
     m_bIsCreated = false;
+    g_bIsCanRotation = true;
 
     auto& pEventMgr = EVENTMGR;
 
