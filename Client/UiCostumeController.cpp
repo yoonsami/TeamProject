@@ -1,10 +1,11 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "UiCostumeController.h" 
 
 #include "Model.h"
 #include "BaseUI.h"
 #include "MeshRenderer.h"
 #include "FontRenderer.h"
+#include "MainUiController.h"
 #include "ModelRenderer.h"
 #include "ModelAnimator.h"
 #include "InventoryModelRotation.h"
@@ -30,48 +31,48 @@ HRESULT UiCostumeController::Init()
     m_TempSet = m_OriginSet = pair(3, 2);
 
     // first : texture key, second : text
-    {
-        m_vecHair[0].first = L"Am_ct_hat_009";
-        m_vecHair[0].second = L"»ç¶óÁø ¿©¿ÕÀÇ ¿Õ°ü";
+	{
+		m_vecHair[0].first = L"Am_ct_hat_009";
+		m_vecHair[0].second = L"ì‚¬ë¼ì§„ ì—¬ì™•ì˜ ì™•ê´€";
 
-        m_vecHair[1].first = L"Am_Ct_Hat_013";
-        m_vecHair[1].second = L"ÇØ±º Àå±³ ¸ðÀÚ";
+		m_vecHair[1].first = L"Am_Ct_Hat_013";
+		m_vecHair[1].second = L"í•´êµ° ìž¥êµ ëª¨ìž";
 
-        m_vecHair[2].first = L"Am_Ct_Hat_020";
-        m_vecHair[2].second = L"Æ®·ÎÇÇÄÃ ¹ÙÄ²½º Çì¾î";
+		m_vecHair[2].first = L"Am_Ct_Hat_020";
+		m_vecHair[2].second = L"íŠ¸ë¡œí”¼ì»¬ ë°”ìº‰ìŠ¤ í—¤ì–´";
 
-        m_vecHair[3].first = L"Am_Ct_Hat_022";
-        m_vecHair[3].second = L"º¸¸§´Þ ´ëÃàÁ¦ Çì¾î";
+		m_vecHair[3].first = L"Am_Ct_Hat_022";
+		m_vecHair[3].second = L"ë³´ë¦„ë‹¬ ëŒ€ì¶•ì œ í—¤ì–´";
 
-        m_vecHair[4].first = L"Am_Ct_Hat_036";
-        m_vecHair[4].second = L"ºòÅä¸®¾Æ ÇØÀû´Ü ¸ðÀÚ";
+		m_vecHair[4].first = L"Am_Ct_Hat_036";
+		m_vecHair[4].second = L"ë¹…í† ë¦¬ì•„ í•´ì ë‹¨ ëª¨ìž";
 
-        m_vecHair[5].first = L"Am_Ct_Hat_039";
-        m_vecHair[5].second = L"¿ùÇÏ¹ÌÀÎ Çì¾î";
-    }
-
-
-    {
-        m_vecUniform[0].first = L"Am_Ct_Uniform_013";
-        m_vecUniform[0].second = L"ÇØ±º Àå±³ÀÇ Á¦º¹";
-
-        m_vecUniform[1].first = L"Am_Ct_Uniform_020";
-        m_vecUniform[1].second = L"Æ®·ÎÇÇÄÃ ¹ÙÄ²½º ·è";
-
-        m_vecUniform[2].first = L"Am_Ct_Uniform_022";
-        m_vecUniform[2].second = L"º¸¸§´Þ ´ëÃàÁ¦ ÀÇ»ó";
-
-        m_vecUniform[3].first = L"Am_Ct_Uniform_037";
-        m_vecUniform[3].second = L"¾²¸®Å×ÀÏ ¹ÙÄ²½º ·è";
-
-        m_vecUniform[4].first = L"Am_Ct_Uniform_039";
-        m_vecUniform[4].second = L"¿ùÇÏ¹ÌÀÎ ¿¹º¹";
-
-        m_vecUniform[5].first = L"Am_Light_Uniform_006";
-        m_vecUniform[5].second = L"ÇÁ¶óÀÓ ÄÃ·º¼Ç ·è";
-    }
+		m_vecHair[5].first = L"Am_Ct_Hat_039";
+		m_vecHair[5].second = L"ì›”í•˜ë¯¸ì¸ í—¤ì–´";
+	}
 
 
+	{
+		m_vecUniform[0].first = L"Am_Ct_Uniform_013";
+		m_vecUniform[0].second = L"í•´êµ° ìž¥êµì˜ ì œë³µ";
+
+		m_vecUniform[1].first = L"Am_Ct_Uniform_020";
+		m_vecUniform[1].second = L"íŠ¸ë¡œí”¼ì»¬ ë°”ìº‰ìŠ¤ ë£©";
+
+		m_vecUniform[2].first = L"Am_Ct_Uniform_022";
+		m_vecUniform[2].second = L"ë³´ë¦„ë‹¬ ëŒ€ì¶•ì œ ì˜ìƒ";
+
+		m_vecUniform[3].first = L"Am_Ct_Uniform_037";
+		m_vecUniform[3].second = L"ì“°ë¦¬í…Œì¼ ë°”ìº‰ìŠ¤ ë£©";
+
+		m_vecUniform[4].first = L"Am_Ct_Uniform_039";
+		m_vecUniform[4].second = L"ì›”í•˜ë¯¸ì¸ ì˜ˆë³µ";
+
+		m_vecUniform[5].first = L"Am_Light_Uniform_006";
+		m_vecUniform[5].second = L"í”„ë¼ìž„ ì»¬ë ‰ì…˜ ë£©";
+	}
+
+    m_pController = CUR_SCENE->Get_UI(L"Main_UI_Controller");
 
     return S_OK;
 }
@@ -88,6 +89,8 @@ void UiCostumeController::Create_Costume()
 {
     if (true == m_bIsCreated)
         return;
+
+    g_bIsCanRotation = false;
 
     m_TempSet = m_OriginSet;
     m_eType = COSTUME_TYPE::HAIR;
@@ -205,6 +208,8 @@ void UiCostumeController::Create_Costume()
         }
     }
 
+    if (false == m_pController.expired())
+        m_pController.lock()->Get_Script<MainUiController>()->Set_MainUI_Render(false);
     
     _float4 vecTemp = pE.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
     vecTemp.x = vecPos.x + -95.f;
@@ -251,9 +256,7 @@ void UiCostumeController::Create_Costume()
 
 				ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
 			}
-			ObjWeapon->Set_DrawShadow(true);
 			ObjWeapon->Set_Name(L"Weapon_Test_Model");
-			ObjWeapon->Set_VelocityMap(true);
             ObjWeapon->Set_LayerIndex(Layer_AfterUI);
             EVENTMGR.Create_Object(ObjWeapon);
         }
@@ -284,6 +287,7 @@ void UiCostumeController::Remove_Costume()
         return;
 
     m_bIsCreated = false;
+    g_bIsCanRotation = true;
 
     auto& pEventMgr = EVENTMGR;
 
@@ -299,6 +303,9 @@ void UiCostumeController::Remove_Costume()
 
     m_vecAddedObj.clear();
 
+    if (false == m_pController.expired())
+        m_pController.lock()->Get_Script<MainUiController>()->Set_MainUI_Render(true);
+
     auto model = RESOURCES.Get<Model>(L"Player");
     if (!model)
         return;
@@ -307,6 +314,7 @@ void UiCostumeController::Remove_Costume()
     model->AddParts(m_vecUniform[m_OriginSet.second].first, PARTS_INFO::Uniform);
 
     EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"TestUIModel"));
+    EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Weapon_Test_Model"));
     EVENTMGR.Delete_Object(CUR_SCENE->Get_UI(L"Character_UI"));
 }
 

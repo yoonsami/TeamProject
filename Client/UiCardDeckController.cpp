@@ -8,6 +8,8 @@
 #include "UiCharChange.h"
 #include "UiCardDeckSwitch.h"
 
+_bool g_bIsCanRotation = true;
+
 UiCardDeckController::UiCardDeckController()
 {
 }
@@ -211,6 +213,11 @@ void UiCardDeckController::Tick()
 void UiCardDeckController::Set_Render(_bool bValue)
 {
     m_bIsRender = bValue;
+    if (true == m_bIsRender)
+        g_bIsCanRotation = false;
+    else
+        g_bIsCanRotation = true;
+
     auto pScene = CUR_SCENE;
 
     _uint iSize = IDX(m_vecCardDeckObj.size());

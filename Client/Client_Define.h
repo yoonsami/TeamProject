@@ -16,4 +16,5 @@ extern nanoseconds timeTick;
 extern nanoseconds timeRender;
 
 extern _bool    g_bIsCanMouseMove;
+extern _bool    g_bIsCanRotation;
 extern _bool	g_bCutScene;

@@ -74,7 +74,9 @@ void MainCameraScript::Cal_OffsetDir()
 {
     m_fFollowSpeed = 5.f;
     
-    _float2 mouseDir = INPUT.GetMouseDir();
+    _float2 mouseDir = _float2(0.f);
+    if (g_bIsCanRotation)
+        mouseDir = INPUT.GetMouseDir();
 
     //_float3 vPlayerPos = m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
 

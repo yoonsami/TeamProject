@@ -8,7 +8,7 @@ public:
 
 public:
     virtual HRESULT Init() override;
-
+    virtual void Tick() override;
 	virtual shared_ptr<MonoBehaviour> Copy_Script()override { return make_shared<UIInteraction>(); }
 
     void Create_Interaction(NPCTYPE eType, shared_ptr<GameObject> pObj);
@@ -30,5 +30,6 @@ private:
 
     _bool           m_bIsCreated    = {};
     _bool           m_bIsActivate   = {};
+    _bool           m_bIsMarkSetOn  = {};
 };
 

@@ -30,6 +30,22 @@ HRESULT UIInteraction::Init()
     return S_OK;
 }
 
+void UIInteraction::Tick()
+{
+    if (true == m_pOwner.expired() ||
+        true == m_pDialog_Controller.expired() ||
+        true == m_pAccessObj.expired())
+        return;
+
+    if(false == m_bIsMarkSetOn)
+        if (false == m_pDialog_Controller.lock()->Get_Script<UiQuestController>()->Get_Dialog_End())
+        {
+            m_bIsMarkSetOn = true;
+            if(m_pAccessObj.lock()->Get_Script<UiMarkNpc>())
+                m_pAccessObj.lock()->Get_Script<UiMarkNpc>()->Change_Set_On(m_bIsMarkSetOn);
+        }
+}
+
 void UIInteraction::Create_Interaction(NPCTYPE eType, shared_ptr<GameObject> pObj)
 {
     if (NPCTYPE::MAX == eType)
@@ -145,10 +161,10 @@ void UIInteraction::Remove_Interaction()
     {
         m_bIsCreated = false;
         m_bIsActivate = true;
-
+       
+        m_bIsMarkSetOn = false;
         if (false == m_pAccessObj.expired())
-            if (nullptr != m_pAccessObj.lock()->Get_Script<UiMarkNpc>())
-                m_pAccessObj.lock()->Get_Script<UiMarkNpc>()->Change_Render(false);
+            m_pAccessObj.lock()->Get_Script<UiMarkNpc>()->Change_Set_On(m_bIsMarkSetOn);
 
         EVENTMGR.Delete_Object(m_pInteraction_Bg.lock());
         EVENTMGR.Delete_Object(m_pInteraction_Font.lock());

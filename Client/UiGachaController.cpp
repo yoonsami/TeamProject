@@ -100,6 +100,7 @@ void UiGachaController::Create_Gacha_Card()
     if (true == m_bIsCreate)
         return;
 
+    g_bIsCanRotation = false;
     m_bIsCreate = true;
     auto pScene = CUR_SCENE;
     pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Gacha.dat", list<shared_ptr<GameObject>>());
@@ -331,6 +332,7 @@ void UiGachaController::Open_All_Card()
 
 void UiGachaController::Delete_All()
 {
+    g_bIsCanRotation = true;
     m_bIsCreate = false;
     m_bIsStartOpen = false;
 
