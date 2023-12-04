@@ -799,7 +799,7 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	}
 
 	{
-		auto pObj = Get_UI(L"UI_Main_Button2");
+		auto pObj = Get_UI(L"UI_Main_Button1");
 		if (nullptr != pObj)
 		{
 			pObj->Get_Button()->AddOnClickedEvent([]()
@@ -810,7 +810,7 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	}
 
 	{
-		auto pObj = Get_UI(L"UI_Main_Button3");
+		auto pObj = Get_UI(L"UI_Main_Button2");
 		if (nullptr != pObj)
 		{
 			pObj->Get_Button()->AddOnClickedEvent([]()
