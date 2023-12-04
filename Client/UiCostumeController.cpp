@@ -92,6 +92,9 @@ void UiCostumeController::Create_Costume()
     auto pScene = CUR_SCENE;
     pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Costume_Test.dat", m_vecAddedObj);
 
+    weak_ptr<GameObject> pE;
+    _float4 vecPos = {};
+
     _uint iSize = IDX(m_vecAddedObj.size());
     for (_uint i = 0; i < iSize; ++i)
     {
@@ -101,60 +104,108 @@ void UiCostumeController::Create_Costume()
 
         wstring strName = pObj.lock()->Get_Name();
         if (L"UI_Costume_Exit_Button" == strName)
+        {
             pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
                 {
                     this->Remove_Costume();
                 });
+        }
         else if (L"UI_Costume_Hair_Button" == strName)
+        {
             pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
                 {
                     this->Change_Costume_Type(COSTUME_TYPE::HAIR);
                 });
+        }
         else if (L"UI_Costume_Uniform_Button" == strName)
+        {
             pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
                 {
                     this->Change_Costume_Type(COSTUME_TYPE::UNIFORM);
                 });
+        }
         else if (L"UI_Costume_Select" == strName)
         {
             pObj.lock()->Set_Render(false);
         }
         else if (L"UI_Costume_Inven_0" == strName)
+        {
+            if (0 == m_OriginSet.first)
+                vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+
             pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
                 {
                     this->Select_Inven(0);
                 });
+        }
         else if (L"UI_Costume_Inven_1" == strName)
+        {
+            if (1 == m_OriginSet.first)
+                vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+
             pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
                 {
                     this->Select_Inven(1);
                 });
+        }
         else if (L"UI_Costume_Inven_2" == strName)
+        {
+            if (2 == m_OriginSet.first)
+                vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+
             pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
                 {
                     this->Select_Inven(2);
                 });
+        }
         else if (L"UI_Costume_Inven_3" == strName)
+        {
+            if (3 == m_OriginSet.first)
+                vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+
             pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
                 {
                     this->Select_Inven(3);
                 });
+        }
         else if (L"UI_Costume_Inven_4" == strName)
+        {
+            if (4 == m_OriginSet.first)
+                vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+
             pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
                 {
                     this->Select_Inven(4);
                 });
+        }
         else if (L"UI_Costume_Inven_5" == strName)
+        {
+            if (5 == m_OriginSet.first)
+                vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+
             pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
                 {
                     this->Select_Inven(5);
                 });
+        }
         else if (L"UI_Costume_Set_Button" == strName)
+        {
             pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
                 {
                     this->Change_Costume();
                 });
+        }
+        else if (L"UI_Costume_E" == strName)
+        {
+            pE = pObj;
+        }
     }
+
+    
+    _float4 vecTemp = pE.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    vecTemp.x = vecPos.x + -95.f;
+    vecTemp.y = vecPos.y + 50.f;
+    pE.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecTemp);
 }
 
 void UiCostumeController::Remove_Costume()
@@ -199,6 +250,7 @@ void UiCostumeController::Change_Costume_Type(COSTUME_TYPE eType)
 
     _float4 vecTemp = {};
 
+    weak_ptr<GameObject> pE;
     switch (m_eType)
     {
     case COSTUME_TYPE::HAIR:
@@ -295,10 +347,9 @@ void UiCostumeController::Change_Costume_Type(COSTUME_TYPE eType)
             }
             else if (L"UI_Costume_E" == strName)
             {
-                vecTemp.x += -95.f;
-                vecTemp.y += 50.f;
-                vecTemp.z = 4.5f;
-                pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecTemp);
+                
+                pE = pObj;
+                
             }
             else if (L"UI_Costume_Select" == strName)
             {
@@ -401,10 +452,7 @@ void UiCostumeController::Change_Costume_Type(COSTUME_TYPE eType)
             }
             else if (L"UI_Costume_E" == strName)
             {
-                vecTemp.x += -95.f;
-                vecTemp.y += 50.f;
-                vecTemp.z = 4.5f;
-                pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecTemp);
+                pE = pObj;
             }
             else if (L"UI_Costume_Select" == strName)
             {
@@ -413,6 +461,11 @@ void UiCostumeController::Change_Costume_Type(COSTUME_TYPE eType)
         }
         break;
     }
+
+    _float4 vecPos = pE.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    vecPos.x = vecTemp.x + -95.f;
+    vecPos.y = vecTemp.y + 50.f;
+    pE.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
 }
 
 void UiCostumeController::Change_Costume()

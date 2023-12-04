@@ -2,6 +2,7 @@
 #include "UIInteraction.h"
 
 #include "BaseUI.h"
+#include "UiMarkNpc.h"
 #include "FontRenderer.h"
 #include "UiGachaController.h"
 #include "UiQuestController.h"
@@ -144,6 +145,10 @@ void UIInteraction::Remove_Interaction()
     {
         m_bIsCreated = false;
         m_bIsActivate = true;
+
+        if (false == m_pAccessObj.expired())
+            if (nullptr != m_pAccessObj.lock()->Get_Script<UiMarkNpc>())
+                m_pAccessObj.lock()->Get_Script<UiMarkNpc>()->Change_Render(false);
 
         EVENTMGR.Delete_Object(m_pInteraction_Bg.lock());
         EVENTMGR.Delete_Object(m_pInteraction_Font.lock());
