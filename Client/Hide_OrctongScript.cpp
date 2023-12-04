@@ -2,10 +2,14 @@
 #include "Hide_OrctongScript.h"
 #include "Camera.h"
 #include <MathUtils.h>
+#include "ObjectDissolve.h"
 
 void Hide_OrctongScript::Tick()
 {
 	if (!KEYPUSH(KEY_TYPE::E))
+		return;
+
+	if (m_pOwner.expired())
 		return;
 
 	auto pPlayer = CUR_SCENE->Get_GameObject(L"Player");
@@ -29,10 +33,8 @@ void Hide_OrctongScript::Tick()
 	_float width = GRAPHICS.Get_ViewPort().Get_Width();
 	_float height = GRAPHICS.Get_ViewPort().Get_Height();
 
-	POINT MousePos;
-	::GetCursorPos(&MousePos);
-	::ScreenToClient(g_hWnd, &MousePos);
-	_float2 screenPos{ (_float)MousePos.x, (_float)MousePos.y };
+
+	_float2 screenPos = INPUT.GetMousePos();
 
 	_float viewX = (2.f * screenPos.x / width - 1.f) / matProj(0, 0);
 	_float viewY = (-2.f * screenPos.y / height + 1.f) / matProj(1, 1);
@@ -46,9 +48,9 @@ void Hide_OrctongScript::Tick()
 
 	Ray ray = Ray(rayOriginPos_World, rayDir_World);
 	_float dist = FLT_MAX;
-	if (MathUtils::RayCast(Sphere3D{ Get_Owner()->Get_CullPos(),Get_Owner()->Get_CullRadius() }, Ray3D{ ray.position,ray.direction }, dist))
+ 	if (ray.Intersects(BoundingSphere{ Get_Owner()->Get_CullPos() ,Get_Owner()->Get_CullRadius() }, dist))
 	{
-		// Todo.
+		Get_Owner()->Add_Component(make_shared<ObjectDissolve>(1.f));
 	}
 
 }

@@ -49,7 +49,8 @@ HRESULT GameObject::Init()
 				return E_FAIL;
 		}
 	}
-	for (auto& script : m_Scripts)
+	auto scripts = m_Scripts;
+	for (auto& script : scripts)
 	{
 		hr = script->Init();
 		if (hr == E_FAIL)
@@ -65,7 +66,7 @@ void GameObject::Tick()
 		if(component)
 			component->Tick();
 	}
-	auto &scripts = m_Scripts;
+	auto scripts = m_Scripts;
 	for (auto& script : scripts)
 		script->Tick();
 }
@@ -77,7 +78,7 @@ void GameObject::Late_Tick()
 		if (component)
 			component->Late_Tick();
 	}
-	auto &scripts = m_Scripts;
+	auto scripts = m_Scripts;
 	for (auto& script : scripts)
 		script->Late_Tick();
 }
@@ -89,7 +90,7 @@ void GameObject::Final_Tick()
 		if (component)
 			component->Final_Tick();
 	}
-	auto& scripts = m_Scripts;
+	auto scripts = m_Scripts;
 	for (auto& script : scripts)
 	{
 		script->Final_Tick();
@@ -103,7 +104,8 @@ void GameObject::Fixed_Tick()
 		if (component)
 			component->Fixed_Tick();
 	}
-	for (auto& script : m_Scripts)
+	auto scripts = m_Scripts;
+	for (auto& script : scripts)
 		script->Fixed_Tick();
 }
 
