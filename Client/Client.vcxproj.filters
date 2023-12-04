@@ -361,6 +361,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\05.Object\04.Granseeed_Hide_OrctongScript">
       <UniqueIdentifier>{60393e62-d0da-45cf-abd1-c27dbe2963ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\04.SkillScript\02.FloorSkill_Script">
+      <UniqueIdentifier>{2a4f0a6d-e9b3-46e8-bea1-1019d0b7e2b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -722,6 +725,9 @@
       <Filter>02.Component\00.MonoBehaviour\05.Object\03.InventoryModelRotation</Filter>
     </ClInclude>
     <ClInclude Include="Hide_OrctongScript.h" />
+    <ClInclude Include="FloorSkill_Script.h">
+      <Filter>02.Component\00.MonoBehaviour\04.SkillScript\02.FloorSkill_Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1050,6 +1056,9 @@
       <Filter>02.Component\00.MonoBehaviour\05.Object\03.InventoryModelRotation</Filter>
     </ClCompile>
     <ClCompile Include="Hide_OrctongScript.cpp" />
+    <ClCompile Include="FloorSkill_Script.cpp">
+      <Filter>02.Component\00.MonoBehaviour\04.SkillScript\02.FloorSkill_Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">

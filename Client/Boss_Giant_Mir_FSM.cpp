@@ -17,6 +17,8 @@
 #include "FSM.h"
 #include "ObjectDissolveCreate.h"
 #include "RigidBody.h"
+#include "FloorSkill_Script.h"
+#include "OBBBoxCollider.h"
 
 HRESULT Boss_Giant_Mir_FSM::Init()
 {
@@ -90,6 +92,9 @@ void Boss_Giant_Mir_FSM::State_Tick()
 
     m_iCurFrame = Get_CurFrame();
 
+    if (m_bSummonMeteor)
+        Create_Meteor();
+
     switch (m_eCurState)
     {
     case STATE::SQ_Spawn:
@@ -118,6 +123,9 @@ void Boss_Giant_Mir_FSM::State_Tick()
         break;
     case STATE::skill_7100:
         skill_7100();
+        break;
+    case STATE::skill_8100:
+        skill_8100();
         break;
     case STATE::skill_100000:
         skill_100000();
@@ -173,6 +181,9 @@ void Boss_Giant_Mir_FSM::State_Init()
             break;
         case STATE::skill_7100:
             skill_7100_Init();
+            break;
+        case STATE::skill_8100:
+            skill_8100_Init();
             break;
         case STATE::skill_100000:
             skill_100000_Init();
@@ -407,9 +418,13 @@ void Boss_Giant_Mir_FSM::groggy_start_Init()
 
     m_tAttackCoolTime.fAccTime = 0.f;
     m_tBreathCoolTime.fAccTime = 0.f;
+    m_iCurMeteorCnt = 0;
+    m_iPreAttack = 100;
 
     Set_Invincible(false);
+
     m_bDragonBall = false; 
+    m_bSummonMeteor = false;
 }
 
 void Boss_Giant_Mir_FSM::groggy_loop()
@@ -468,8 +483,6 @@ void Boss_Giant_Mir_FSM::SQ_Leave_Init()
 void Boss_Giant_Mir_FSM::b_idle()
 {
     m_tAttackCoolTime.fAccTime += fDT;
-
-    //Create_Meteor();
 
     if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
        Set_AttackPattern();
@@ -558,6 +571,25 @@ void Boss_Giant_Mir_FSM::skill_1200()
         TailAttackCollider_On(KNOCKBACK_ATTACK, 10.f);
     else if (Init_CurFrame(194))
         TailAttackCollider_Off();
+    else if (Init_CurFrame(244))
+    {
+        if (!m_pTarget.expired())
+        {
+            INSTALLATIONSKILLDESC desc;
+            desc.fAttackTickTime = 3.f; //JANGPAN TIME  
+
+            desc.iLimitAttackCnt = 1;
+            desc.strAttackType = KNOCKDOWN_SKILL;
+            desc.strLastAttackType = KNOCKDOWN_SKILL;
+            desc.bFirstAttack = false;
+            desc.fAttackDamage = 5.f;
+            desc.fLastAttackDamage = 5.f;
+
+            _float4 vSkillPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float4{ 0.001f, 0.f,0.f,0.f };
+
+            Create_InstallationSkillCollider(vSkillPos, 3.f, desc);
+        }
+    }
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
@@ -642,8 +674,28 @@ void Boss_Giant_Mir_FSM::skill_7100_Init()
     Set_Invincible(true);
 }
 
+void Boss_Giant_Mir_FSM::skill_8100()
+{
+    if (Init_CurFrame(142))
+    {
+        m_bSummonMeteor = true;
+        m_iLimitMeteorCnt = rand() % 3 + 3;
+    }
 
+    if (Is_AnimFinished())
+        m_eCurState = STATE::b_idle;
+}
 
+void Boss_Giant_Mir_FSM::skill_8100_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"skill_8100", 0.15f, false, 4.f);
+
+    m_tAttackCoolTime.fAccTime = 0.f;
+    m_tBreathCoolTime.fAccTime = 0.f;
+    m_iCurMeteorCnt = 0;
+}
 
 void Boss_Giant_Mir_FSM::skill_100000()
 {
@@ -790,6 +842,50 @@ void Boss_Giant_Mir_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, 
     EVENTMGR.Create_Object(SkillCollider);
 }
 
+void Boss_Giant_Mir_FSM::Create_InstallationSkillCollider(const _float4& vPos, _float fSkillRange, INSTALLATIONSKILLDESC desc)
+{
+    shared_ptr<GameObject> InstallationSkillCollider = make_shared<GameObject>();
+
+    InstallationSkillCollider->GetOrAddTransform();
+    InstallationSkillCollider->Get_Transform()->Set_State(Transform_State::POS, vPos);
+
+    auto pSphereCollider = make_shared<SphereCollider>(fSkillRange);
+    pSphereCollider->Set_CenterPos(_float3{ vPos.x,vPos.y, vPos.z });
+    InstallationSkillCollider->Add_Component(pSphereCollider);
+    InstallationSkillCollider->Get_Collider()->Set_CollisionGroup(Monster_Skill);
+
+    InstallationSkillCollider->Add_Component(make_shared<AttackColliderInfoScript>());
+    InstallationSkillCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
+    InstallationSkillCollider->Add_Component(make_shared<InstallationSkill_Script>(desc));
+    InstallationSkillCollider->Get_Script<InstallationSkill_Script>()->Init();
+
+    InstallationSkillCollider->Set_Name(L"Boss_Giant_Mir_InstallationSkillCollider");
+
+    EVENTMGR.Create_Object(InstallationSkillCollider);
+}
+
+void Boss_Giant_Mir_FSM::Create_FloorSkillCollider(const _float4& vPos, _float3 vSkillScale, FLOORSKILLDESC desc)
+{
+    shared_ptr<GameObject> FloorSkillCollider = make_shared<GameObject>();
+
+    FloorSkillCollider->GetOrAddTransform();
+    FloorSkillCollider->Get_Transform()->Set_State(Transform_State::POS, vPos);
+
+
+    auto pOBBCollider = make_shared<OBBBoxCollider>(vSkillScale);
+    FloorSkillCollider->Add_Component(pOBBCollider);
+    FloorSkillCollider->Get_Collider()->Set_CollisionGroup(Monster_Skill);
+
+    FloorSkillCollider->Add_Component(make_shared<AttackColliderInfoScript>());
+    FloorSkillCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
+    FloorSkillCollider->Add_Component(make_shared<FloorSkill_Script>(desc));
+    FloorSkillCollider->Get_Script<FloorSkill_Script>()->Init();
+
+    FloorSkillCollider->Set_Name(L"Boss_Giant_Mir_FloorSkillCollider");
+
+    EVENTMGR.Create_Object(FloorSkillCollider);
+}
+
 void Boss_Giant_Mir_FSM::Create_Meteor()
 {
     m_tMeteorCoolTime.fAccTime += fDT;
@@ -817,9 +913,15 @@ void Boss_Giant_Mir_FSM::Create_Meteor()
             }
 
             m_tMeteorCoolTime.fAccTime = 0.f;
+            m_iCurMeteorCnt++;
         }
     }
 
+    if (m_iCurMeteorCnt >= m_iLimitMeteorCnt)
+    {
+        m_iCurMeteorCnt = 0;
+        m_bSummonMeteor = false;
+    }
 }
 
 void Boss_Giant_Mir_FSM::Create_Giant_Mir_Collider()
@@ -914,17 +1016,16 @@ void Boss_Giant_Mir_FSM::Create_DragonBall()
         ObjDragonBall->Add_Component(make_shared<ObjectDissolveCreate>(1.f));
         ObjDragonBall->Get_Script<ObjectDissolveCreate>()->Init();
     }
-    
 }
 
 void Boss_Giant_Mir_FSM::Set_AttackPattern()
 {
-    _uint iRan = rand() % 5;
+    _uint iRan = rand() % 6;
 
     while (true)
     {
         if (iRan == m_iPreAttack)
-            iRan = rand() % 5;
+            iRan = rand() % 6;
         else
             break;
     }
@@ -946,17 +1047,24 @@ void Boss_Giant_Mir_FSM::Set_AttackPattern()
     }
     else if (iRan == 3)
     {
-        m_eCurState = STATE::skill_100000;
+        m_eCurState = STATE::skill_8100;
         m_iPreAttack = 3;
     }
     else if (iRan == 4)
     {
-        m_eCurState = STATE::skill_200000;
+        m_eCurState = STATE::skill_100000;
         m_iPreAttack = 4;
+    }
+    else if (iRan == 5)
+    {
+        m_eCurState = STATE::skill_200000;
+        m_iPreAttack = 5;
     }
 
     if (!m_bDragonBall)
         m_eCurState = STATE::skill_7100;
+
+    m_tAttackCoolTime.fCoolTime = _float(rand() % 2) + 1.5f;
 }
 
 void Boss_Giant_Mir_FSM::Setting_DragonBall()
