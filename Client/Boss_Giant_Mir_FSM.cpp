@@ -393,6 +393,12 @@ void Boss_Giant_Mir_FSM::SQ_Spawn_Init()
 
 void Boss_Giant_Mir_FSM::groggy_start()
 {
+    if (Init_CurFrame(26))
+        Set_RigidBodyActivate(false);
+    else if (Init_CurFrame(80))
+        Set_RigidBodyActivate(true);
+
+
     if (m_iCurFrame >= 58)
     {
         m_fOffSetY -= fDT;
@@ -425,6 +431,8 @@ void Boss_Giant_Mir_FSM::groggy_start_Init()
 
     m_bDragonBall = false; 
     m_bSummonMeteor = false;
+
+    Set_RigidBodyActivate(true);
 }
 
 void Boss_Giant_Mir_FSM::groggy_loop()
@@ -442,6 +450,12 @@ void Boss_Giant_Mir_FSM::groggy_loop_Init()
 
 void Boss_Giant_Mir_FSM::groggy_end()
 {
+    if (Init_CurFrame(38))
+        Set_RigidBodyActivate(false);
+    else if (Init_CurFrame(83))
+        Set_RigidBodyActivate(true);
+
+
     if (m_iCurFrame >= 15)
     {
         m_fOffSetY += fDT;
@@ -517,6 +531,12 @@ void Boss_Giant_Mir_FSM::b_idle_Init()
 
 void Boss_Giant_Mir_FSM::skill_1100()
 {
+    if (Init_CurFrame(51))
+        Set_RigidBodyActivate(false);
+    else if (Init_CurFrame(192))
+        Set_RigidBodyActivate(true);
+
+
     m_tBreathCoolTime.fAccTime += fDT;
 
     if (m_iCurFrame >= 126 && m_iCurFrame <= 163)
@@ -567,6 +587,13 @@ void Boss_Giant_Mir_FSM::skill_1100_Init()
 
 void Boss_Giant_Mir_FSM::skill_1200()
 {
+    if (Init_CurFrame(131))
+        Set_RigidBodyActivate(false);
+    else if (Init_CurFrame(182))
+        Set_RigidBodyActivate(true);
+
+
+
     if (Init_CurFrame(191))
         TailAttackCollider_On(KNOCKBACK_ATTACK, 10.f);
     else if (Init_CurFrame(194))
@@ -610,6 +637,13 @@ void Boss_Giant_Mir_FSM::skill_2100()
 {
     m_tBreathCoolTime.fAccTime += fDT;
 
+    if (Init_CurFrame(19))
+        Set_RigidBodyActivate(false);
+    else if (Init_CurFrame(330))
+        Set_RigidBodyActivate(true);
+
+
+
     if (m_iCurFrame >= 184 && m_iCurFrame <= 260)
     {
         if (m_tBreathCoolTime.fAccTime >= m_tBreathCoolTime.fCoolTime)
@@ -652,9 +686,13 @@ void Boss_Giant_Mir_FSM::skill_2100_Init()
 
 void Boss_Giant_Mir_FSM::skill_7100()
 {
+    if (Init_CurFrame(52))
+        Set_RigidBodyActivate(false);
+    else if (Init_CurFrame(195))
+        Set_RigidBodyActivate(true);
+
     if (Init_CurFrame(142))
         Create_DragonBall();
-
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
@@ -676,6 +714,11 @@ void Boss_Giant_Mir_FSM::skill_7100_Init()
 
 void Boss_Giant_Mir_FSM::skill_8100()
 {
+    if (Init_CurFrame(52))
+        Set_RigidBodyActivate(false);
+    else if (Init_CurFrame(195))
+        Set_RigidBodyActivate(true);
+
     if (Init_CurFrame(142))
     {
         m_bSummonMeteor = true;
@@ -699,6 +742,9 @@ void Boss_Giant_Mir_FSM::skill_8100_Init()
 
 void Boss_Giant_Mir_FSM::skill_100000()
 {
+    if (Init_CurFrame(38))
+        Set_RigidBodyActivate(false);
+
     if (Is_AnimFinished())
         m_eCurState = STATE::skill_100100;
 }
@@ -715,6 +761,10 @@ void Boss_Giant_Mir_FSM::skill_100000_Init()
 
 void Boss_Giant_Mir_FSM::skill_100100()
 {
+    if (Init_CurFrame(179))
+        Set_RigidBodyActivate(true);
+
+
     m_tBreathCoolTime.fAccTime += fDT;
 
     if (m_iCurFrame >= 24 && m_iCurFrame <= 98)
@@ -759,6 +809,10 @@ void Boss_Giant_Mir_FSM::skill_100100_Init()
 
 void Boss_Giant_Mir_FSM::skill_200000()
 {
+    if (Init_CurFrame(10))
+        Set_RigidBodyActivate(false);
+
+
     if (Is_AnimFinished())
         m_eCurState = STATE::skill_200100;
 }
@@ -775,6 +829,9 @@ void Boss_Giant_Mir_FSM::skill_200000_Init()
 
 void Boss_Giant_Mir_FSM::skill_200100()
 {
+    if (Init_CurFrame(201))
+        Set_RigidBodyActivate(true);
+
     m_tBreathCoolTime.fAccTime += fDT;
 
     if (m_iCurFrame >= 47 && m_iCurFrame <= 117)
@@ -1020,7 +1077,9 @@ void Boss_Giant_Mir_FSM::Create_DragonBall()
 
 void Boss_Giant_Mir_FSM::Set_AttackPattern()
 {
-    _uint iRan = rand() % 6;
+    m_eCurState = STATE::skill_1100;
+
+    /*_uint iRan = rand() % 6;
 
     while (true)
     {
@@ -1064,7 +1123,7 @@ void Boss_Giant_Mir_FSM::Set_AttackPattern()
     if (!m_bDragonBall)
         m_eCurState = STATE::skill_7100;
 
-    m_tAttackCoolTime.fCoolTime = _float(rand() % 2) + 1.5f;
+    m_tAttackCoolTime.fCoolTime = _float(rand() % 2) + 1.5f;*/
 }
 
 void Boss_Giant_Mir_FSM::Setting_DragonBall()
