@@ -37,6 +37,7 @@ enum LayerMask
 	Layer_UI = 1,
 	Layer_Skybox = 2,
 	Layer_Effect = 3,
+	Layer_AfterUI = 4,
 };
 
 class GameObject : public enable_shared_from_this<GameObject>
@@ -93,6 +94,7 @@ public:
 	void Set_VelocityMap(_bool flag)		{ m_bHasVelocityMap = flag; }
 	void Set_FrustumCulled(_bool flag)		{ m_bFrustumCull = flag; }
 	void Set_GroggyGauge(_float fGroggyGauge) { m_fGroggy_Gauge = fGroggyGauge; }
+	void Set_DrawAfterUI(_bool flag)		{ m_bDrawAfterUI = flag; }
 
 	void DeleteComponent(COMPONENT_TYPE type) { m_Components[static_cast<_uint>(type)] = nullptr; }
 

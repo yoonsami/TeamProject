@@ -88,6 +88,9 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 			)
 			continue;
 
+		if (gameObject->Get_LayerIndex() == Layer_AfterUI)
+			int a = 0;
+
 		if (IsCulled(gameObject->Get_LayerIndex()))
 			continue;
 
@@ -125,9 +128,6 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 		//	m_Particle.push_back(gameObject);
 		if (gameObject->Get_Particle())
 			m_Particle.push_back(gameObject);
-
-		if (gameObject->Is_DrawAfterUI())
-			m_AfterUI.push_back(gameObject);
 	}
 }
 
@@ -365,6 +365,15 @@ void Camera::Render_MotionBlur()
 
 void Camera::Render_AfterUI()
 {
+	S_View = m_matView;
+	S_Proj = m_matProj;
+	for (auto& obj : m_Deferred)
+	{
+		if (obj->Get_Animator())
+			obj->Get_Animator()->Render_Forward();
+		if (obj->Get_ModelRenderer())
+			obj->Get_ModelRenderer()->Render_Forward();
+	}
 }
 
 vector<shared_ptr<MonoBehaviour>>& Camera::Get_Scripts()

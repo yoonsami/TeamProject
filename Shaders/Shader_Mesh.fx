@@ -27,7 +27,7 @@ MeshOutput VS_Terrain(VTXMesh input)
     
     output.viewNormal = mul(input.normal, (float3x3) W);
     output.viewNormal = normalize(mul(output.viewNormal, (float3x3) V));
-    output.viewTangent = mul(input.normal, (float3x3) W);
+    output.viewTangent = mul(input.tangent, (float3x3) W);
     output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
     
     output.position = mul(output.position, VP);
@@ -64,6 +64,17 @@ VS_OUT VS_3D_To_2D(VTXMesh input)
     screenPos.y = (screenPos.y * -1.f) + 1080 * 0.5f;
 
     output.viewPos = mul(float4(screenPos.x, screenPos.y, W._43, 1.f), V);
+    output.uv = input.uv;
+
+    return output;
+}
+
+VS_OUT VS_ViewPort(VTXMesh input)
+{    
+    VS_OUT output;
+    float3 worldPos = mul(float4(input.position, 1.f), W).xyz;
+    output.viewPos = mul(float4(worldPos, 1.f), V);
+
     output.uv = input.uv;
 
     return output;
@@ -543,7 +554,6 @@ float4 PS_CustomEffect1(GS_OUTPUT input) : SV_Target
     return color;
 }
 
-
 float4 PS_FRAME(UIOutput input) : SV_TARGET
 {
     return g_DrawColor;
@@ -753,6 +763,16 @@ float4 PS_Terrain(MeshOutput input) : SV_TARGET
     return color;
 }
 
+float4 PS_ViewPort(UIOutput input) : SV_Target
+{
+    float4 color = DiffuseMap.Sample(LinearSampler, input.uv);
+    
+    if (color.w < 0.1f)
+        discard;
+    
+    return color;
+}
+
 
 technique11 T0
 {
@@ -936,6 +956,16 @@ technique11 T0
         SetPixelShader(CompileShader(ps_5_0, PS_Terrain()));
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetGeometryShader(NULL);
+    }
+//19
+    pass UIModel
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Default()));
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_Default, 0);
+        SetPixelShader(CompileShader(ps_5_0, PS_ViewPort()));
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetGeometryShader(CompileShader(gs_5_0, GS_Ui()));
     }
 };
 

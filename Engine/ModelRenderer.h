@@ -61,7 +61,7 @@ public:
 	
 	void Render_MotionBlur();
 	void Render_MotionBlur_Instancing(shared_ptr<InstancingBuffer>& buffer, shared_ptr<InstanceRenderParamDesc> renderParamDesc);
-
+	void Render_Forward();
 	void Set_Outline() { m_bHasOutline = true; }
 	InstanceID Get_InstanceID();
 	void Set_CullMode(_bool cullNone) { m_bCullNone = cullNone; }

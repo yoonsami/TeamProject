@@ -5,6 +5,10 @@
 #include "BaseUI.h"
 #include "MeshRenderer.h"
 #include "FontRenderer.h"
+#include "ModelRenderer.h"
+#include "ModelAnimator.h"
+#include "InventoryModelRotation.h"
+#include "WeaponScript.h"
 
 UiCostumeController::UiCostumeController()
 {
@@ -90,7 +94,7 @@ void UiCostumeController::Create_Costume()
 
     m_bIsCreated = true;
     auto pScene = CUR_SCENE;
-    pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Costume_Test.dat", m_vecAddedObj);
+    pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Costume.dat", m_vecAddedObj);
 
     weak_ptr<GameObject> pE;
     _float4 vecPos = {};
@@ -206,6 +210,72 @@ void UiCostumeController::Create_Costume()
     vecTemp.x = vecPos.x + -95.f;
     vecTemp.y = vecPos.y + 50.f;
     pE.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecTemp);
+
+    {
+        shared_ptr<GameObject> garaModel = make_shared<GameObject>();
+        garaModel->GetOrAddTransform()->Set_LookDir(_float3(0.f,0.f,-1.f));
+		{
+			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+			shared_ptr<ModelAnimator> renderer = make_shared<ModelAnimator>(shader);
+			{
+				auto model = RESOURCES.Get<Model>(L"Player");
+				renderer->Set_Model(model);
+			}
+			garaModel->Add_Component(renderer);
+			garaModel->Add_Component(make_shared<InventoryModelRotation>());
+			garaModel->Get_Animator()->Set_CurrentAnim(L"b_idle", true, 1.f);
+			garaModel->Set_LayerIndex(Layer_AfterUI);
+			garaModel->Set_Name(L"TestUIModel");
+		}
+
+        EVENTMGR.Create_Object(garaModel);
+        {
+			shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
+
+			ObjWeapon->Add_Component(make_shared<Transform>());
+			{
+				shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+
+				shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+				{
+					shared_ptr<Model> model = RESOURCES.Get<Model>(L"Weapon_Player");
+					renderer->Set_Model(model);
+				}
+
+				ObjWeapon->Add_Component(renderer);
+
+				WeaponScript::WEAPONDESC desc;
+				desc.strBoneName = L"Bip001-Prop1";
+				desc.matPivot = _float4x4::CreateRotationX(-XM_PI / 2.f) * _float4x4::CreateRotationZ(XM_PI);
+				desc.pWeaponOwner = garaModel;
+
+				ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
+			}
+			ObjWeapon->Set_DrawShadow(true);
+			ObjWeapon->Set_Name(L"Weapon_Test_Model");
+			ObjWeapon->Set_VelocityMap(true);
+            ObjWeapon->Set_LayerIndex(Layer_AfterUI);
+            EVENTMGR.Create_Object(ObjWeapon);
+        }
+    }
+    {
+        shared_ptr<GameObject> ui = make_shared<GameObject>();
+        ui->GetOrAddTransform()->Set_State(Transform_State::POS,_float4(0.f,0.f,20.f,1.f));
+        ui->GetOrAddTransform()->Scaled(_float3(1920.f,1080.f,1.f));
+        shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+        auto mesh = RESOURCES.Get<Mesh>(L"Point");
+        renderer->Set_Mesh(mesh);
+
+        auto material = make_shared<Material>();
+        material->Set_TextureMap(RESOURCES.Get<Texture>(L"AFTER_UI_ToneMappingTarget"),TextureMapType::DIFFUSE);
+        renderer->Set_Material(material);
+        renderer->Set_Pass(19);
+        ui->Add_Component(renderer);
+        ui->Set_LayerIndex(Layer_UI);
+        ui->Set_Name(L"Character_UI");
+        EVENTMGR.Create_Object(ui);
+    }
+
 }
 
 void UiCostumeController::Remove_Costume()
@@ -235,6 +305,9 @@ void UiCostumeController::Remove_Costume()
 
     model->AddParts(m_vecHair[m_OriginSet.first].first, PARTS_INFO::Hair);
     model->AddParts(m_vecUniform[m_OriginSet.second].first, PARTS_INFO::Uniform);
+
+    EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"TestUIModel"));
+    EVENTMGR.Delete_Object(CUR_SCENE->Get_UI(L"Character_UI"));
 }
 
 void UiCostumeController::Change_Costume_Type(COSTUME_TYPE eType)

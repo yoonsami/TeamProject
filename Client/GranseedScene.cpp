@@ -374,6 +374,7 @@ void GranseedScene::Load_Camera(shared_ptr<GameObject> pPlayer)
 		camera->Get_Camera()->Set_ProjType(ProjectionType::Perspective);
 		//Layer_UI culling true
 		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, true);
+		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_AfterUI, true);
 
 		camera->Add_Component(make_shared<MainCameraScript>(pPlayer));
 
@@ -405,7 +406,29 @@ void GranseedScene::Load_Camera(shared_ptr<GameObject> pPlayer)
 
 		Add_GameObject(camera);
 	}
+	{
+		shared_ptr<GameObject> camera = make_shared<GameObject>();
 
+		camera->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.7f, 1.f, -3.f, 1.f));
+
+		CameraDesc desc;
+		desc.fFOV = XM_PI / 3.f;
+		desc.strName = L"After_UI";
+		desc.fSizeX = _float(g_iWinSizeX);
+		desc.fSizeY = _float(g_iWinSizeY);
+		desc.fNear = 0.1f;
+		desc.fFar = 1000.f;
+		shared_ptr<Camera> cameraComponent = make_shared<Camera>(desc);
+
+		camera->Add_Component(cameraComponent);
+
+		camera->Get_Camera()->Set_ProjType(ProjectionType::Perspective);
+
+		camera->Get_Camera()->Set_CullingMaskAll();
+		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_AfterUI, false);
+
+		Add_GameObject(camera);
+	}
 
 }
 

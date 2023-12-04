@@ -99,7 +99,7 @@ void Scene::Render()
 
 	Render_Lights();
 
-
+	Render_AfterUI();
 	//Render_BlurEffect();
 	Render_LightFinal();
 
@@ -144,7 +144,7 @@ void Scene::Render()
 	//Render_ToneMapping();
 
 	Render_UI();
-	
+
 }
 
 HRESULT Scene::Load_Scene()
@@ -1719,15 +1719,44 @@ void Scene::Render_UI()
 
 void Scene::Render_AfterUI()
 {
-	if (Get_MainCamera())
+	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::AFTER_UI)->OMSetRenderTargets();
+	if (Get_Camera(L"After_UI"))
 	{
-		shared_ptr<Camera> mainCamera = Get_MainCamera()->Get_Camera();
+		shared_ptr<Camera> mainCamera = Get_Camera(L"After_UI")->Get_Camera();
 		Camera::S_View = mainCamera->Get_ViewMat();
 		Camera::S_Proj = mainCamera->Get_ProjMat();
 
 
 		mainCamera->Render_AfterUI();
 	}
+	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::AFTER_UI_TONEMAPPING)->OMSetRenderTargets();
+
+	{
+		auto material = RESOURCES.Get<Material>(L"BackBufferRenderFinal");
+		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"AFTER_UITarget"));
+
+
+
+		material->Get_Shader()->GetScalar("g_brightness")->SetFloat(g_fBrightness);
+		material->Get_Shader()->GetScalar("g_contrast")->SetFloat(g_fContrast);
+		material->Get_Shader()->GetScalar("g_saturation")->SetFloat(g_Saturation);
+		material->Get_Shader()->GetScalar("g_max_white")->SetFloat(g_fMaxWhite);
+
+
+
+		material->Push_SubMapData();
+		mesh->Get_VertexBuffer()->Push_Data();
+		mesh->Get_IndexBuffer()->Push_Data();
+
+		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		if (g_iTMIndex > 3) g_iTMIndex = 3;
+
+		material->Get_Shader()->DrawIndexed(0, g_iTMIndex, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	}
+
 }
 
 

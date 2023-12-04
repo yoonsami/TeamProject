@@ -355,6 +355,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\07.EffectScript\02. Mir_100100_FireScript">
       <UniqueIdentifier>{41e6a3e9-0881-4260-b242-45a42a945f09}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\05.Object\03.InventoryModelRotation">
+      <UniqueIdentifier>{bf44e733-45da-47de-af96-703b3e9e737c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -712,6 +715,7 @@
     <ClInclude Include="Mir_100100_FireScript.h">
       <Filter>02.Component\00.MonoBehaviour\07.EffectScript\02. Mir_100100_FireScript</Filter>
     </ClInclude>
+    <ClInclude Include="InventoryModelRotation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1036,6 +1040,7 @@
     <ClCompile Include="Mir_100100_FireScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\07.EffectScript\02. Mir_100100_FireScript</Filter>
     </ClCompile>
+    <ClCompile Include="InventoryModelRotation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">

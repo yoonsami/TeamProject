@@ -352,6 +352,69 @@ void DebugTool::CameraOptionTab()
 			EndTabItem();
 		}
 	}
+	{
+		auto bg = CUR_SCENE->Get_UI(L"UI_Costume_Bg0");
+		if (bg)
+		{
+			if (BeginTabItem("BG UI1"))
+			{
+				_float3 vPos = bg->Get_Transform()->Get_State(Transform_State::POS).xyz();
+				DragFloat3("Pos", (_float*)&vPos);
+				bg->Get_Transform()->Set_State(Transform_State::POS, _float4(vPos, 1.f));
+
+
+
+				EndTabItem();
+			}
+		}
+	}
+	{
+		auto bg = CUR_SCENE->Get_UI(L"UI_Costume_Bg1");
+		if (bg)
+		{
+			if (BeginTabItem("BG UI2"))
+			{
+				_float3 vPos = bg->Get_Transform()->Get_State(Transform_State::POS).xyz();
+				DragFloat3("Pos", (_float*)&vPos);
+				bg->Get_Transform()->Set_State(Transform_State::POS, _float4(vPos, 1.f));
+
+
+
+				EndTabItem();
+			}
+		}
+	}
+	{
+		auto bg = CUR_SCENE->Get_Camera(L"After_UI");
+		if (bg)
+		{
+			if (BeginTabItem("After_UI Camera"))
+			{
+				_float3 vPos = bg->Get_Transform()->Get_State(Transform_State::POS).xyz();
+				DragFloat3("Pos", (_float*)&vPos);
+				bg->Get_Transform()->Set_State(Transform_State::POS, _float4(vPos, 1.f));
+
+
+				EndTabItem();
+			}
+		}
+	}
+	{
+		auto bg = CUR_SCENE->Get_GameObject(L"TestUIModel");
+		if (bg)
+		{
+			if (BeginTabItem("Model"))
+			{
+				_float3 vPos = bg->Get_Transform()->Get_State(Transform_State::POS).xyz();
+				DragFloat3("Pos", (_float*)&vPos);
+				bg->Get_Transform()->Set_State(Transform_State::POS, _float4(vPos, 1.f));
+				_float3 vRot = bg->Get_Transform()->Get_RollPitchYaw();
+				DragFloat3("Rotation", (_float*)&vRot);
+				bg->Get_Transform()->Set_Rotation(vRot);
+				EndTabItem();
+			}
+		}
+	}
 }
 
 #endif

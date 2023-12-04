@@ -17,6 +17,8 @@ public:
         PS_ANIM_SHADOW = 8,
         PS_ANIM_SHADOW_INSTANCING =9,
 
+        PS_FORWARD = 19,
+
 	};
 public:
     ModelAnimator(shared_ptr<Shader> shader);
@@ -39,6 +41,8 @@ public:
 	void Render_Shadow_Instancing(shared_ptr<class InstancingBuffer>& buffer, shared_ptr<InstanceTweenDesc> tweenDesc, shared_ptr<InstanceRenderParamDesc> renderParamDesc );
 
 	void Render_MotionBlur();
+
+    void Render_Forward();
 
     InstanceID Get_InstanceID();
     TweenDesc& Get_TweenDesc() { return m_TweenDesc; }

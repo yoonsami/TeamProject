@@ -791,8 +791,25 @@ void Graphics::Create_RTGroup()
 		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::UPSAMPLER3)]->Create(RENDER_TARGET_GROUP_TYPE::UPSAMPLER3, rtVec, dsTexture0);
 	}
 
-	
+	{
+		vector<RenderTarget> rtVec(RENDER_TARGET_BLOOMMAP_GROUP_MEMBER_COUNT);
+		shared_ptr<Texture> dsTexture0 = RESOURCES.CreateTexture(L"AFTER_UIDS", DXGI_FORMAT_D24_UNORM_S8_UINT, _uint(m_Viewport.Get_Width()), _uint(m_Viewport.Get_Height()), D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL, _float4(0.f));
 
+		rtVec[0].target = RESOURCES.CreateTexture(L"AFTER_UITarget", FORMATTYPE, _uint(m_Viewport.Get_Width()), _uint(m_Viewport.Get_Height()), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].clearColor = _float4(0.f);
+
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::AFTER_UI)] = make_shared<RenderTargetGroup>();
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::AFTER_UI)]->Create(RENDER_TARGET_GROUP_TYPE::AFTER_UI, rtVec, dsTexture0);
+	}
+	//ToneMapping
+	{
+		vector<RenderTarget> rtVec(RENDER_TARGET_TONEMAPPING_GROUP_MEMBER_COUNT);
+		rtVec[0].target = RESOURCES.CreateTexture(L"AFTER_UI_ToneMappingTarget", FORMATTYPE, _uint(m_Viewport.Get_Width()), _uint(m_Viewport.Get_Height()), D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE, _float4(0.f));
+		rtVec[0].clearColor = _float4(0.f);
+
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::AFTER_UI_TONEMAPPING)] = make_shared<RenderTargetGroup>();
+		m_RTGroup[static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::AFTER_UI_TONEMAPPING)]->Create(RENDER_TARGET_GROUP_TYPE::AFTER_UI_TONEMAPPING, rtVec, dsTexture);
+	}
 
 
 

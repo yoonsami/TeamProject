@@ -212,8 +212,6 @@ void ModelAnimator::Render()
 	if (!m_bRenderOn)
 		return;
 
-	system_clock::time_point start_time = system_clock::now();
-
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 
 	{
@@ -277,12 +275,7 @@ void ModelAnimator::Render()
 			m_pShader->DrawIndexed(techniqueIndex, PS_ANIM, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
 		}
 	}
-	system_clock::time_point end_time = system_clock::now();
 
-	nanoseconds nano = end_time - start_time;
-
-	if (KEYTAP(KEY_TYPE::F6))
-		int a = 0;
 
 }
 
@@ -566,6 +559,80 @@ void ModelAnimator::Render_MotionBlur()
 		}
 	}
 
+}
+
+void ModelAnimator::Render_Forward()
+{
+	if (!m_pModel)
+		return;
+
+	if (!m_bRenderOn)
+		return;
+
+	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
+
+	{
+		m_pShader->Push_TweenData({ m_TweenDesc,m_preTweenDesc });
+
+		m_pShader->GetSRV("TransformMap")->SetResource(m_pModel->Get_TransformSRV().Get());
+
+		auto& desc = m_pModel->Get_AnimAddonDesc();
+
+		m_pShader->Push_AnimAddonData(desc);
+	}
+
+	m_pShader->Push_RenderParamData(m_RenderParams);
+
+
+	auto& world = Get_Transform()->Get_WorldMatrix();
+	auto& preWorld = Get_Transform()->Get_preWorldMatrix();
+	m_pShader->Push_TransformData(TransformDesc{ world,preWorld });
+	m_pShader->Push_LightData(CUR_SCENE->Get_LightParams());
+	m_pShader->GetScalar("lightIndex")->SetInt(0);
+	if (!m_pModel->Has_Parts())
+	{
+		const auto& meshes = m_pModel->Get_Meshes();
+
+		for (auto& mesh : meshes)
+		{
+			if (!mesh->material.expired())
+			{
+				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
+
+			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
+			mesh->vertexBuffer->Push_Data();
+			mesh->indexBuffer->Push_Data();
+			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+			int techniqueIndex = CUR_SCENE->g_bPBR_On ? 4 : 0;
+			m_pShader->DrawIndexed(techniqueIndex, PS_FORWARD, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
+		}
+	}
+	else
+	{
+		const auto meshes = m_pModel->Get_PartsMeshes();
+
+		for (auto& mesh : meshes)
+		{
+			if (!mesh->material.expired())
+			{
+				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
+
+			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
+			mesh->vertexBuffer->Push_Data();
+			mesh->indexBuffer->Push_Data();
+			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+			int techniqueIndex = CUR_SCENE->g_bPBR_On ? 4 : 0;
+			m_pShader->DrawIndexed(techniqueIndex, PS_FORWARD, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
+		}
+	}
 }
 
 InstanceID ModelAnimator::Get_InstanceID()

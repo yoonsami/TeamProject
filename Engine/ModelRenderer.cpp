@@ -416,6 +416,60 @@ void ModelRenderer::Render_MotionBlur_Instancing(shared_ptr<InstancingBuffer>& b
 	}
 }
 
+void ModelRenderer::Render_Forward()
+{
+	if (m_pModel == nullptr)
+		return;
+	// Set VP
+	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
+	m_pShader->Push_LightData(CUR_SCENE->Get_LightParams());
+	m_pShader->GetScalar("lightIndex")->SetInt(0);
+	// Transform
+	auto& world = Get_Transform()->Get_WorldMatrix();
+	auto& preWorld = Get_Transform()->Get_preWorldMatrix();
+	m_pShader->Push_TransformData(TransformDesc{ world,preWorld });
+
+	auto preView = CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_preWorldMatrix().Invert();
+	m_pShader->GetMatrix("g_preView")->SetMatrix((_float*)&preView);
+
+	m_pShader->Push_RenderParamData(m_RenderParams);
+
+	// Bones
+	shared_ptr<BoneDesc> boneDesc = make_shared<BoneDesc>();
+
+	const _uint boneCount = m_pModel->Get_BoneCount();
+
+	for (_uint i = 0; i < boneCount; ++i)
+	{
+		shared_ptr<ModelBone> bone = m_pModel->Get_BoneByIndex(i);
+		boneDesc->transform[i] = bone->transform * Utils::m_matPivot;
+	}
+	m_pShader->Push_BoneData(*boneDesc);
+
+	m_pShader->GetVector("g_UVSliding")->SetFloatVector((_float*)(&m_vUvSilding));
+
+	const auto& meshes = m_pModel->Get_Meshes();
+	for (auto& mesh : meshes)
+	{
+		if (!mesh->material.expired())
+		{
+			mesh->material.lock()->Tick();
+			mesh->material.lock()->Push_TextureMapData();
+
+		}
+
+		m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
+		mesh->vertexBuffer->Push_Data();
+		mesh->indexBuffer->Push_Data();
+		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		int techniqueIndex = CUR_SCENE->g_bPBR_On ? 4 : 0;
+
+		m_pShader->DrawIndexed(techniqueIndex, 20, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
+
+
+	}
+}
+
 void ModelRenderer::Set_Model(shared_ptr<Model> model)
 {
 	m_pModel = model;
