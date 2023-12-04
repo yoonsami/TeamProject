@@ -63,6 +63,7 @@
 #include "UiQuestController.h"
 #include "UiSettingController.h"
 #include "UiBossDialog.h"
+#include "UiCostumeController.h"
 
 #include <filesystem>
 #include "GachaScene.h"
@@ -127,24 +128,30 @@ void GranseedScene::Tick()
 {
 	__super::Tick();
 
-	//if (KEYTAP(KEY_TYPE::C))
-	//{
-	//	auto pObj = Get_UI(L"UI_Interaction");
-	//	if(pObj)
-	//		pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::QUEST);
-	//	//auto pObj = Get_UI(L"UI_Boss_Dialog");
-	//	//if (pObj)
-	//	//	pObj->Get_Script<UiBossDialog>()->Create_Dialog(BOSS::DELLONS);
-	//}
-	//if (KEYTAP(KEY_TYPE::V))
-	//{
-	//	auto pObj = Get_UI(L"UI_Interaction");
-	//	if (pObj)
-	//		pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::GACHA);
-	//	//auto pObj = Get_UI(L"UI_Boss_Dialog");
-	//	//if (pObj)
-	//	//	pObj->Get_Script<UiBossDialog>()->Is_Finish();
-	//}
+	if (KEYTAP(KEY_TYPE::C))
+	{
+		auto pObj = Get_UI(L"UI_Costume_Controller");
+		if (pObj)
+			pObj->Get_Script<UiCostumeController>()->Create_Costume();
+		//auto pObj = Get_UI(L"UI_Interaction");
+		//if(pObj)
+		//	pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::QUEST);
+		//auto pObj = Get_UI(L"UI_Boss_Dialog");
+		//if (pObj)
+		//	pObj->Get_Script<UiBossDialog>()->Create_Dialog(BOSS::DELLONS);
+	}
+	if (KEYTAP(KEY_TYPE::V))
+	{
+		auto pObj = Get_UI(L"UI_Costume_Controller");
+		if (pObj)
+			pObj->Get_Script<UiCostumeController>()->Remove_Costume();
+		//auto pObj = Get_UI(L"UI_Interaction");
+		//if (pObj)
+		//	pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::GACHA);
+		//auto pObj = Get_UI(L"UI_Boss_Dialog");
+		//if (pObj)
+		//	pObj->Get_Script<UiBossDialog>()->Is_Finish();
+	}
 	if (KEYTAP(KEY_TYPE::Z))
 	{
 		auto pObj = Get_UI(L"UI_Dialog_Controller");
@@ -508,6 +515,14 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		if (nullptr != pObj)
 		{
 			auto pScript = make_shared<UiSkillGauge>();
+			pObj->Add_Component(pScript);
+		}
+	}
+	{
+		auto pObj = Get_UI(L"UI_Costume_Controller");
+		if (nullptr != pObj)
+		{
+			auto pScript = make_shared<UiCostumeController>();
 			pObj->Add_Component(pScript);
 		}
 	}

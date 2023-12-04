@@ -65,7 +65,7 @@ void UiDamageMove::Check_Render_State()
 void UiDamageMove::Change_Pos()
 {
     //m_vecPos.x += fDT * 200.f;
-    m_vecPos.y += 100.f;
+    //m_vecPos.y += 100.f;
     m_vecPos.y = 100.f * m_fCheckTime * m_fRatio;
     m_pOwner.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, m_vecPos);
 }
