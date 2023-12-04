@@ -81,6 +81,8 @@ HRESULT Boss_Giant_Mir_FSM::Init()
 
 void Boss_Giant_Mir_FSM::Tick()
 {
+    DeadCheck();
+
     State_Tick();
 
     Update_Collider();
@@ -489,7 +491,19 @@ void Boss_Giant_Mir_FSM::SQ_Leave_Init()
 
     animator->Set_NextTweenAnim(L"SQ_Leave", 0.15f, false, 1.f);
 
-    m_bInvincible = true;
+    if (!m_pTailCollider.expired())
+        EVENTMGR.Delete_Object(m_pTailCollider.lock());
+
+    if (!m_pStomachCollider.expired())
+        EVENTMGR.Delete_Object(m_pStomachCollider.lock());
+
+    if (!m_pLfootCollider.expired())
+        EVENTMGR.Delete_Object(m_pLfootCollider.lock());
+
+    if (!m_pFootRigidBody.expired())
+        EVENTMGR.Delete_Object(m_pFootRigidBody.lock());
+
+
 }
 
 
@@ -1421,6 +1435,15 @@ void Boss_Giant_Mir_FSM::Update_Collider()
                    Get_Transform()->Get_State(Transform_State::LOOK) * 2.f; 
         
         m_pLfootCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, vBonePos);
+    }
+}
+
+void Boss_Giant_Mir_FSM::DeadSetting()
+{
+    if (m_bIsDead)
+    {
+        Set_Invincible(true);
+        m_eCurState = STATE::SQ_Leave;
     }
 }
 
