@@ -22,6 +22,7 @@ HRESULT UiMarkNpc::Init()
     m_pMark.lock()->Set_Render(false);
 
     m_pCamera = pScene->Get_Camera(L"Default");
+    m_bSetOn = true;
 
     wstring strTextureTag;
     switch (m_eType)
