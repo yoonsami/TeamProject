@@ -38,6 +38,8 @@ HRESULT Yeopo_FSM::Init()
         m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
         m_iSkillBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"D_Eye_Target");
 
+        m_iWeaponBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-Prop1");
+
         m_fNormalAttack_AnimationSpeed = 1.2f;
         m_fDetectRange = 5.f;
 
