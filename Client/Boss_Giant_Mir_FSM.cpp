@@ -480,7 +480,6 @@ void Boss_Giant_Mir_FSM::groggy_end_Init()
     animator->Set_NextTweenAnim(L"groggy_end", 0.1f, false, 1.f);
 }
 
-
 void Boss_Giant_Mir_FSM::SQ_Leave()
 {
 }
@@ -505,8 +504,6 @@ void Boss_Giant_Mir_FSM::SQ_Leave_Init()
 
 
 }
-
-
 
 void Boss_Giant_Mir_FSM::b_idle()
 {
