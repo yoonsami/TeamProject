@@ -1290,8 +1290,6 @@ void Yeopo_FSM::skill_100200()
     if (Init_CurFrame(30))
         FreeLoopMembers();
 
-    _float4x4 fTime = m_pWeapon.lock()->Get_Transform()->Get_WorldMatrix();
-
     Update_GroupEffectWorldPos(m_pWeapon.lock()->Get_Transform()->Get_WorldMatrix());
 
     if (Init_CurFrame(18))
@@ -1750,7 +1748,6 @@ void Yeopo_FSM::skill_501100_Init()
     m_bInvincible = false;
     m_bSuperArmor = true;
 }
-
 
 void Yeopo_FSM::SQ_RideHorse_Idle()
 {
