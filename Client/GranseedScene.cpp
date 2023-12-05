@@ -811,6 +811,7 @@ void GranseedScene::Load_HideAndSeek()
 
 		vector<_float3>quadraticCurvePoints;
 
+		_int index = 0;
 
 		for (_float x = x1; x <= x2; x += (x2 - x1) / 49.f) {
 			_float z = MathUtils::evaluateQuadraticEquation(x, coefficients);
@@ -819,6 +820,7 @@ void GranseedScene::Load_HideAndSeek()
 			shared_ptr<GameObject> obj = make_shared<GameObject>();
 			obj->GetOrAddTransform()->Set_State(Transform_State::POS, vPos);
 
+			wstring skillTag = L"";
 
 		}
 
