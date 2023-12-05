@@ -167,8 +167,6 @@ void GroupEffect::Final_Tick()
             m_RenderGroup[instanceID].push_back(meshEffect.lock());
         }
 	}
-
-
 }
 
 void GroupEffect::Render()
