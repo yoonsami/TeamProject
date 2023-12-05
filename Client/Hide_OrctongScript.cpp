@@ -9,6 +9,7 @@
 #include "UIInteraction.h"
 #include "ModelAnimator.h"
 #include "GranseedChildren_FSM.h"
+#include "ObjectDissolveCreate.h"
 
 void Hide_OrctongScript::Tick()
 {
@@ -58,6 +59,9 @@ void Hide_OrctongScript::Tick()
 				accessObj->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) - _float4(0.f,0.4f,0.f,0.f));
 				accessObj->Get_Animator()->Set_RenderState(true);
 				static_pointer_cast<GranseedChildren_FSM>(accessObj->Get_FSM())->Set_State(_int(GranseedChildren_FSM::STATE::Seek));
+
+				accessObj->Add_Component(make_shared<ObjectDissolveCreate>(1.f));
+
 			}
 
 		}
