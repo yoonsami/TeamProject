@@ -15,7 +15,7 @@ HRESULT MainUiController::Init()
 
     m_bIsInit = true;
 
-    m_vecUi.resize(72);
+    m_vecUi.resize(73);
 
     auto pScene = CUR_SCENE;
     _uint iIndex = 0;
@@ -91,6 +91,7 @@ HRESULT MainUiController::Init()
     m_vecUi[iIndex++] = pScene->Get_UI(L"UI_Char_Change_Element0");
     m_vecUi[iIndex++] = pScene->Get_UI(L"UI_Char_Change_Element1");
     m_vecUi[iIndex++] = pScene->Get_UI(L"UI_Char_Change_Element2");
+    m_vecUi[iIndex++] = pScene->Get_UI(L"UI_UseItem_Slot");
 
     return S_OK;
 }

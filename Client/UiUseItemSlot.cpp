@@ -149,6 +149,8 @@ void UiUseItemSlot::Use_Item()
         return;
 
     // 플레이어 체력 증가
+
+
     m_bIsCanUse = false;
     m_fCheckTime = 0.f;
 
