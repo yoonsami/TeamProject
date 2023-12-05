@@ -287,7 +287,8 @@ shared_ptr<GameObject> PickingMgr::Pick_Mesh(_float2 screenPos, shared_ptr<Camer
 			auto& vertices = mesh->Get_Geometry()->Get_Vertices();
 			auto& indices = mesh->Get_Geometry()->Get_Indices();
 
-			for (_uint i = 0; i < _uint(indices.size());)
+			// 필요한 사이즈만 사용
+			for (_uint i = _uint(indices.size() * 0.2f); i < _uint(indices.size() * 0.5f);)
 			{
 				_float fDistance = 0.f;
 				_float3 vVtxPos[3] = {
@@ -299,10 +300,16 @@ shared_ptr<GameObject> PickingMgr::Pick_Mesh(_float2 screenPos, shared_ptr<Camer
 				if (!ray.Intersects(vVtxPos[0], vVtxPos[1], vVtxPos[2], fDistance))
 					continue;
 
-				//최소거리 계산X, 피킹성공하면 리턴
-				picked = gameObject;
-				outPos = rayOriginPos_World + rayDir_World * fDistance;
-				return picked;
+				if (fDistance < minDist)
+				{
+					minDist = fDistance;
+					distance = minDist;
+					picked = gameObject;
+					outPos = rayOriginPos_World + rayDir_World * minDist;
+				}
+				////최소거리 계산X, 피킹성공하면 리턴
+				//outPos = rayOriginPos_World + rayDir_World * fDistance;
+				//return picked;
 			}
 		}
 	}
