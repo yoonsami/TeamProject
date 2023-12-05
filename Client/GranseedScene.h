@@ -26,4 +26,6 @@ private:
 
 	void Load_NPC(const wstring& dataFileName);
 
+	void Load_HideAndSeek();
+
 };

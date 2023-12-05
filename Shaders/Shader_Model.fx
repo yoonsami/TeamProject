@@ -620,6 +620,7 @@ float4 PS_MotionBlur(MotionBlurOutput input) : SV_Target
     float4 output = (float4) 0.f;
     
     output.xy = input.vDir.xy / input.vDir.w;
+    //output.xy = input.vDir.xy;
     output.z = 1.f;
     output.w = input.vDir.z / input.vDir.w;
     

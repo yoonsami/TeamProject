@@ -64,6 +64,7 @@
 #include "UiSettingController.h"
 #include "UiBossDialog.h"
 #include "UiCostumeController.h"
+#include "UiUseItemSlot.h"
 
 #include <filesystem>
 #include "GachaScene.h"
@@ -79,6 +80,8 @@
 #include "GranseedChildren_FSM.h"
 #include "UiMarkNpc.h"
 #include "Hide_OrctongScript.h"
+#include "WitcherSense.h"
+#include "MathUtils.h"
 namespace fs = std::filesystem;
 
 GranseedScene::GranseedScene()
@@ -233,6 +236,8 @@ HRESULT GranseedScene::Load_Scene()
 
 	Load_Ui(pPlayer);
 	Load_NPC(L"GranseedMap");
+	Load_HideAndSeek();
+	Load_Debug();
 	return S_OK;
 }
 
@@ -258,7 +263,7 @@ shared_ptr<GameObject> GranseedScene::Load_Player()
 		shared_ptr<GameObject> ObjPlayer = make_shared<GameObject>();
 		
 		ObjPlayer->Add_Component(make_shared<Transform>());
-	
+		ObjPlayer->Add_Component(make_shared<WitcherSense>());
 		ObjPlayer->Get_Transform()->Set_State(Transform_State::POS, _float4(-0.f, 0.f, 0.f, 1.f));
 		{
 			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
@@ -478,6 +483,15 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		if (false == pObj.expired())
 		{
 			auto pScript = make_shared<UiDamageCreate>();
+			pObj.lock()->Add_Component(pScript);
+		}
+	}
+	
+	{
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_UseItem_Slot_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiUseItemSlot>();
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
@@ -751,6 +765,11 @@ void GranseedScene::Load_NPC(const wstring& dataFileName)
 		obj->Set_DrawShadow(true);
 		Add_GameObject(obj);
 	}
+	
+}
+
+void GranseedScene::Load_HideAndSeek()
+{
 	{
 		vector<_float3> pos(5);
 		pos[0] = { -14.834f, -0.02f,-1.5f };
@@ -779,8 +798,32 @@ void GranseedScene::Load_NPC(const wstring& dataFileName)
 			orctong->Add_Component(make_shared<SphereCollider>(0.4f));
 			orctong->Set_Name(L"Hide_Orctong" + to_wstring(i));
 
-			
+
 			Add_GameObject(orctong);
 		}
 	}
+
+	{
+		_float x1 = -0.437f, y1 = -0.02f, z1 = 11.372f;
+		_float x2 = -14.628f, y2 = -0.02f, z2 = -1.933f;
+	
+		_float3 coefficients = MathUtils::calculateQuadraticCoefficients(x1, y1, z1, x2, y2, z2);
+
+		vector<_float3>quadraticCurvePoints;
+
+		_int index = 0;
+
+		for (_float x = x1; x <= x2; x += (x2 - x1) / 49.f) {
+			_float z = MathUtils::evaluateQuadraticEquation(x, coefficients);
+			
+			_float4 vPos = _float4({ x, y1, z }, 1.f);
+			shared_ptr<GameObject> obj = make_shared<GameObject>();
+			obj->GetOrAddTransform()->Set_State(Transform_State::POS, vPos);
+
+			wstring skillTag = L"";
+
+		}
+
+	}
+
 }

@@ -1187,6 +1187,7 @@ void Scene::Render_MotionBlurFinal()
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 	material->Set_SubMap(1, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
 	material->Get_Shader()->GetScalar("g_BlurCount")->SetInt(g_MotionBlurData.g_iBlurCount);
+	material->Get_Shader()->GetScalar("g_MotionBlurPower")->SetFloat(g_MotionBlurData.g_MotionBlurPower);
 
 	material->Push_SubMapData();
 

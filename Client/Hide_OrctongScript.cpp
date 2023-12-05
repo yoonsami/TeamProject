@@ -21,12 +21,8 @@ void Hide_OrctongScript::Tick()
 	_float lengthSQ = (vOwnerPos - vPlayerPos).LengthSquared();
 
 	if (lengthSQ >= 3.f * 3.f)
-	{
-		Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[1] = Color(0.f);
 		return;
-	}
 
-	Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[1] = Color(1.f,0.f,0.f,0.f);
 
 	if (!KEYPUSH(KEY_TYPE::E))
 		return;
@@ -35,7 +31,7 @@ void Hide_OrctongScript::Tick()
 	
 	if (camera->Get_Frustum().Contain_Sphere(Get_Owner()->Get_CullPos(), Get_Owner()->Get_CullRadius()))
 	{
-		auto script = make_shared<ObjectDissolve>(0.3f,RESOURCES.GetOrAddTexture(L"Tex_Cloud_01.tga",L"..\\Resources\\Textures\\Universal\\Tex_Cloud_01.tga"));
+		auto script = make_shared<ObjectDissolve>(0.3f);
 		Get_Owner()->Add_Component(script);
 		script->Init();
 	}

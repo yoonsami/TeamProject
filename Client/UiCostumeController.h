@@ -21,6 +21,7 @@ public:
 
     void Change_Costume();
     void Select_Inven(_uint iIndex);
+    void Change_Costume_Have(_uint iIndex);
 
 private:
 
@@ -29,13 +30,15 @@ private:
     weak_ptr<GameObject>            m_pController;
     vector<weak_ptr<GameObject>>    m_vecAddedObj;
 
-    COSTUME_TYPE    m_eType = { COSTUME_TYPE::HAIR };
-    _bool           m_bIsCreated        = {};
+    COSTUME_TYPE        m_eType = { COSTUME_TYPE::HAIR };
+    _bool               m_bIsCreated        = {};
 
     vector<pair<wstring, wstring>>  m_vecHair;
     vector<pair<wstring, wstring>>  m_vecUniform;
 
-    pair<_uint, _uint> m_OriginSet;
-    pair<_uint, _uint> m_TempSet;
+    pair<_uint, _uint>  m_OriginSet;
+    pair<_uint, _uint>  m_TempSet;
+
+    vector<_bool>       m_bIsHave;
 };
 

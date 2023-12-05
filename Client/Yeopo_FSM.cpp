@@ -184,8 +184,6 @@ void Yeopo_FSM::State_Tick()
         break;
     }
 
-    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
-
     if (m_iPreFrame != m_iCurFrame)
         m_iPreFrame = m_iCurFrame;
 }
@@ -1290,8 +1288,6 @@ void Yeopo_FSM::skill_100200()
     if (Init_CurFrame(30))
         FreeLoopMembers();
 
-    _float4x4 fTime = m_pWeapon.lock()->Get_Transform()->Get_WorldMatrix();
-
     Update_GroupEffectWorldPos(m_pWeapon.lock()->Get_Transform()->Get_WorldMatrix());
 
     if (Init_CurFrame(18))
@@ -1357,6 +1353,12 @@ void Yeopo_FSM::skill_100200_Init()
 
 void Yeopo_FSM::skill_100300()
 {
+    if (Init_CurFrame(2))
+    Add_GroupEffectOwner(L"Yeopo_100300_Jump", _float3(0.f, 0.f, 0.3f), false);
+
+    if (Init_CurFrame(20))
+        Add_GroupEffectOwner(L"Yeopo_100300", _float3(0.f, 0.f, 1.f), false);
+
     if (Init_CurFrame(24))
     {
 		FORWARDMOVINGSKILLDESC desc;
@@ -1750,7 +1752,6 @@ void Yeopo_FSM::skill_501100_Init()
     m_bInvincible = false;
     m_bSuperArmor = true;
 }
-
 
 void Yeopo_FSM::SQ_RideHorse_Idle()
 {

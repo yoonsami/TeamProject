@@ -25,51 +25,59 @@ HRESULT UiCostumeController::Init()
 
     m_bIsInit = true;
 
+    m_bIsHave.resize(6);
+    m_bIsHave[0] = true;
+    m_bIsHave[1] = true;
+    m_bIsHave[2] = true;
+    m_bIsHave[3] = false;
+    m_bIsHave[4] = false;
+    m_bIsHave[5] = false;
+
     m_vecHair.resize(6);
     m_vecUniform.resize(6);
     
-    m_TempSet = m_OriginSet = pair(3, 2);
+    m_TempSet = m_OriginSet = pair(0, 0);
 
     // first : texture key, second : text
 	{
-		m_vecHair[0].first = L"Am_ct_hat_009";
-		m_vecHair[0].second = L"사라진 여왕의 왕관";
+		m_vecHair[0].first = L"Am_Ct_Hat_022";
+		m_vecHair[0].second = L"보름달 대축제 헤어";
 
-		m_vecHair[1].first = L"Am_Ct_Hat_013";
-		m_vecHair[1].second = L"해군 장교 모자";
+		m_vecHair[1].first = L"Am_Ct_Hat_020";
+		m_vecHair[1].second = L"트로피컬 바캉스 헤어";
 
-		m_vecHair[2].first = L"Am_Ct_Hat_020";
-		m_vecHair[2].second = L"트로피컬 바캉스 헤어";
+		m_vecHair[2].first = L"Am_ct_hat_009";
+		m_vecHair[2].second = L"프라임 컬렉션 왕관";
 
-		m_vecHair[3].first = L"Am_Ct_Hat_022";
-		m_vecHair[3].second = L"보름달 대축제 헤어";
+		m_vecHair[3].first = L"Am_Ct_Hat_039";
+		m_vecHair[3].second = L"월하미인 헤어";
 
 		m_vecHair[4].first = L"Am_Ct_Hat_036";
-		m_vecHair[4].second = L"빅토리아 해적단 모자";
+		m_vecHair[4].second = L"쓰리테일 바캉스 모자";
 
-		m_vecHair[5].first = L"Am_Ct_Hat_039";
-		m_vecHair[5].second = L"월하미인 헤어";
+		m_vecHair[5].first = L"Am_Ct_Hat_013";
+		m_vecHair[5].second = L"해군 장교 모자";
 	}
 
 
 	{
-		m_vecUniform[0].first = L"Am_Ct_Uniform_013";
-		m_vecUniform[0].second = L"해군 장교의 제복";
+		m_vecUniform[0].first = L"Am_Ct_Uniform_022";
+		m_vecUniform[0].second = L"보름달 대축제 의상";
 
 		m_vecUniform[1].first = L"Am_Ct_Uniform_020";
 		m_vecUniform[1].second = L"트로피컬 바캉스 룩";
 
-		m_vecUniform[2].first = L"Am_Ct_Uniform_022";
-		m_vecUniform[2].second = L"보름달 대축제 의상";
+		m_vecUniform[2].first = L"Am_Light_Uniform_006";
+		m_vecUniform[2].second = L"프라임 컬렉션 룩";
 
-		m_vecUniform[3].first = L"Am_Ct_Uniform_037";
-		m_vecUniform[3].second = L"쓰리테일 바캉스 룩";
+		m_vecUniform[3].first = L"Am_Ct_Uniform_039";
+		m_vecUniform[3].second = L"월하미인 예복";
 
-		m_vecUniform[4].first = L"Am_Ct_Uniform_039";
-		m_vecUniform[4].second = L"월하미인 예복";
+		m_vecUniform[4].first = L"Am_Ct_Uniform_037";
+		m_vecUniform[4].second = L"쓰리테일 바캉스 룩";
 
-		m_vecUniform[5].first = L"Am_Light_Uniform_006";
-		m_vecUniform[5].second = L"프라임 컬렉션 룩";
+		m_vecUniform[5].first = L"Am_Ct_Uniform_013";
+		m_vecUniform[5].second = L"해군 장교 제복";
 	}
 
     m_pController = CUR_SCENE->Get_UI(L"Main_UI_Controller");
@@ -205,6 +213,21 @@ void UiCostumeController::Create_Costume()
         else if (L"UI_Costume_E" == strName)
         {
             pE = pObj;
+        }
+        else if (L"UI_Costume_Inven_3_Have" == strName)
+        {
+            if (true == m_bIsHave[3])
+                pObj.lock()->Get_FontRenderer()->Get_Text() = L"보유중";
+        }
+        else if (L"UI_Costume_Inven_4_Have" == strName)
+        {
+            if (true == m_bIsHave[4])
+                pObj.lock()->Get_FontRenderer()->Get_Text() = L"보유중";
+        }
+        else if (L"UI_Costume_Inven_5_Have" == strName)
+        {
+            if (true == m_bIsHave[5])
+                pObj.lock()->Get_FontRenderer()->Get_Text() = L"보유중";
         }
     }
 
@@ -394,21 +417,21 @@ void UiCostumeController::Change_Costume_Type(COSTUME_TYPE eType)
             else if (L"UI_Costume_Inven_1_Font" == strName)
             {
                 _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-                vecPos.x = 695.f;
+                vecPos.x = 665.f;
                 pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
                 pObj.lock()->Get_FontRenderer()->Get_Text() = m_vecHair[1].second;
             }
             else if (L"UI_Costume_Inven_2_Font" == strName)
             {
                 _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-                vecPos.x = 430.f;
+                vecPos.x = 440.f;
                 pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
                 pObj.lock()->Get_FontRenderer()->Get_Text() = m_vecHair[2].second;
             }
             else if (L"UI_Costume_Inven_3_Font" == strName)
             {
                 _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-                vecPos.x = 680.f;
+                vecPos.x = 700.f;
                 pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
                 pObj.lock()->Get_FontRenderer()->Get_Text() = m_vecHair[3].second;
             }
@@ -492,7 +515,7 @@ void UiCostumeController::Change_Costume_Type(COSTUME_TYPE eType)
             else if (L"UI_Costume_Inven_0_Font" == strName)
             {
                 _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-                vecPos.x = 455.f;
+                vecPos.x = 440.f;
                 pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
                 pObj.lock()->Get_FontRenderer()->Get_Text() = m_vecUniform[0].second;
             }
@@ -506,28 +529,28 @@ void UiCostumeController::Change_Costume_Type(COSTUME_TYPE eType)
             else if (L"UI_Costume_Inven_2_Font" == strName)
             {
                 _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-                vecPos.x = 440.f;
+                vecPos.x = 450.f;
                 pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
                 pObj.lock()->Get_FontRenderer()->Get_Text() = m_vecUniform[2].second;
             }
             else if (L"UI_Costume_Inven_3_Font" == strName)
             {
                 _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-                vecPos.x = 675.f;
+                vecPos.x = 700.f;
                 pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
                 pObj.lock()->Get_FontRenderer()->Get_Text() = m_vecUniform[3].second;
             }
             else if (L"UI_Costume_Inven_4_Font" == strName)
             {
                 _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-                vecPos.x = 465.f;
+                vecPos.x = 440;
                 pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
                 pObj.lock()->Get_FontRenderer()->Get_Text() = m_vecUniform[4].second;
             }
             else if (L"UI_Costume_Inven_5_Font" == strName)
             {
                 _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-                vecPos.x = 690.f;
+                vecPos.x = 700;
                 pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
                 pObj.lock()->Get_FontRenderer()->Get_Text() = m_vecUniform[5].second;
             }
@@ -590,6 +613,9 @@ void UiCostumeController::Change_Costume()
 
 void UiCostumeController::Select_Inven(_uint iIndex)
 {
+    if (false == m_bIsHave[iIndex])
+        return;
+
     weak_ptr<GameObject> pSelect;
     weak_ptr<GameObject> pInven;
     wstring strTemp = L"UI_Costume_Inven_" + to_wstring(iIndex);
@@ -638,4 +664,12 @@ void UiCostumeController::Select_Inven(_uint iIndex)
 
     model->AddParts(m_vecHair[m_TempSet.first].first, PARTS_INFO::Hair);
     model->AddParts(m_vecUniform[m_TempSet.second].first, PARTS_INFO::Uniform);
+}
+
+void UiCostumeController::Change_Costume_Have(_uint iIndex)
+{
+    if (IDX(m_bIsHave.size()) <= iIndex)
+        return;
+
+    m_bIsHave[iIndex] = true;
 }

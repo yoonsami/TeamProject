@@ -26,6 +26,8 @@ void FSM::Calculate_CamBoneMatrix()
 	m_SkillCamBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iSkillCamBoneIndex) *
 		_float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
 
+
+
 	m_vDummy_CP_BonePos = _float4{ m_Dummy_CP_BoneMatrix.Translation().x, m_Dummy_CP_BoneMatrix.Translation().y, m_Dummy_CP_BoneMatrix.Translation().z , 1.f };
 	m_vCenterBonePos = _float4{ m_CenterBoneMatrix.Translation().x, m_CenterBoneMatrix.Translation().y, m_CenterBoneMatrix.Translation().z , 1.f };
 	m_vCamBonePos = _float4{ m_CamBoneMatrix.Translation().x, m_CamBoneMatrix.Translation().y, m_CamBoneMatrix.Translation().z , 1.f };

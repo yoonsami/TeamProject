@@ -184,6 +184,7 @@ public:
 	{
 		_bool g_bMotionBlurOn = false;
 		int g_iBlurCount = 0;
+		_float g_MotionBlurPower = 1.f;
 	};
 	MotionBlurData g_MotionBlurData{};
 

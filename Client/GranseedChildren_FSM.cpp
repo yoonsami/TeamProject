@@ -7,6 +7,7 @@
 #include "ModelRenderer.h"
 #include "SphereCollider.h"
 #include "Hide_OrctongScript.h"
+#include "Glow_WitcherSense.h"
 
 GranseedChildren_FSM::GranseedChildren_FSM()
 {
@@ -132,7 +133,7 @@ void GranseedChildren_FSM::talk_01()
 	auto obj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
 	if (obj && !obj->Get_Script<UiQuestController>()->Get_Dialog_End())
 	{
-		if (obj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::HIDE_AND_SEEK)== CUR_QUEST::PROGRESS)
+		if (obj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::HIDE_AND_SEEK) == CUR_QUEST::PROGRESS)
 			m_eCurState = STATE::Hide;
 		else
 			m_eCurState = STATE::n_idle;
@@ -336,12 +337,13 @@ void GranseedChildren_FSM::Hide_Init()
 {
 	m_fStateAcc = 0.f;
 
-
+	auto pPlayer = CUR_SCENE->Get_GameObject(L"Player");
 	for (_uint i = 0; i < 5; ++i)
 	{
 		auto object = CUR_SCENE->Get_GameObject(L"Hide_Orctong" + to_wstring(i));
 		object->Get_ModelRenderer()->Set_RenderState(true);
 		object->Add_Component(make_shared<Hide_OrctongScript>(i));
+		object->Add_Component(make_shared<Glow_WitcherSense>(pPlayer));
 	}
 	
 	CUR_SCENE->g_VignetteData.g_bVignetteOn = true;
