@@ -25,8 +25,4 @@ void ObjectTransformDebug::Tick()
 	if (!pPlayer)
 		return;
 
-	_float4 vPos = pPlayer->Get_FSM()->Get_WeaponBonePos();
-	fontRenderer->Get_Text() = L"X : " + to_wstring(vPos.x) + L"Y : " + to_wstring(vPos.y) + L"Z : " + to_wstring(vPos.z);
-								;
-
 }

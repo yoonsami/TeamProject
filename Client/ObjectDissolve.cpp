@@ -10,8 +10,7 @@ ObjectDissolve::ObjectDissolve(_float fDissolveSpeed, shared_ptr<Texture> dissol
 {
     if (!dissolveTexture)
         m_pTexture = RESOURCES.GetOrAddTexture(L"Dissolve_Default", L"..\\Resources\\Textures\\Universal\\T_glow_ring_001.tga");
-    else
-        m_pTexture = dissolveTexture;
+
 }
 
 HRESULT ObjectDissolve::Init()

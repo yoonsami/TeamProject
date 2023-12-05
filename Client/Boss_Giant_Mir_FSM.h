@@ -14,6 +14,8 @@ public:
 		groggy_start,
 		groggy_loop,
 		groggy_end,
+		SQ_Leave_Groggy_Start,
+		SQ_Leave_Groggy_End,
 		SQ_Leave,
 		b_idle,
 		skill_1100, // Breath
@@ -56,6 +58,10 @@ private:
 	void groggy_loop_Init();
 	void groggy_end();
 	void groggy_end_Init();
+	void SQ_Leave_Groggy_Start();
+	void SQ_Leave_Groggy_Start_Init();
+	void SQ_Leave_Groggy_End();
+	void SQ_Leave_Groggy_End_Init();
 	void SQ_Leave();
 	void SQ_Leave_Init();
 	
@@ -91,6 +97,7 @@ private:
 	void Create_DragonBall();
 	void Set_AttackPattern();
 	void Calculate_IntroHeadCam();
+	void Calculate_LeaveHeadCam();
 	void Setting_DragonBall();
 	void Destroy_MapObject();
 	void Update_Collider();
@@ -109,7 +116,6 @@ private:
 
 	_float m_fIntroCamDistance = 0.f;
 	_float m_fCamRatio = 0.f;
-	_float m_fOffSetY = 1.5f;
 
 	COOLTIMEINFO m_tAttackCoolTime = { 2.f, 0.f };
 	COOLTIMEINFO m_tBreathCoolTime = { 0.15f, 0.f };
@@ -137,14 +143,16 @@ private:
 	weak_ptr<GameObject> m_pFootRigidBody;
 
 
-	_float3 m_vFirstPos = _float3(0.f);
 
 	_float3 m_vHeadCamDir = _float3(0.f);
 	_float4 m_vHeadBonePos = _float4(0.f);
 	_float4 m_vHeadCamPos = _float4(0.f);
-	_float4 m_vIntroCamPos = _float4(0.f);
 	_float4 m_vStomachBonePos = _float4(0.f);
 	_float4 m_vLfootBonePos = _float4(0.f);
+	_float4 m_vIntroCamPos = _float4(0.f);
+	_float4 m_vLeaveCamPos = _float4(0.f);
+	_float4 m_vLeaveCamLookPos = _float4(0.f);
+	_float4 m_vFirstPos = _float4(0.f);
 
 	_float4x4 HeadBoneMatrix = XMMatrixIdentity();
 	_float4x4 MouseBoneMatrix = XMMatrixIdentity();

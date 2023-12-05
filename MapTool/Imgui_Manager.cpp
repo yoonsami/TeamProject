@@ -1704,6 +1704,8 @@ HRESULT ImGui_Manager::Save_MapObject()
 
     // 애님오브젝트 인덱스관리
     _int iAnimObjectIndex = 0;
+    // 논애님오브젝트 인덱스관리
+    _int iNonAnimObjectIndex = 0;
     // 2. 오브젝트의 MapObjectDesc 모든정보 저장
     for (_uint i = 0; i < m_pMapObjects.size(); ++i)
     {
@@ -1721,6 +1723,21 @@ HRESULT ImGui_Manager::Save_MapObject()
             string strModelName = MapDesc.strName.substr(0, iPureNameSize);
 
             MapDesc.strName = strModelName + "-" + to_string(iAnimObjectIndex++);
+        }
+        else
+            // 논애님모델은 논애님숫자를 붙임
+        {
+            // 고유번호를 제거하여 모델명을 얻어옴
+            _int iPureNameSize = 0;
+            while (MapDesc.strName[iPureNameSize] != '-' && iPureNameSize < MapDesc.strName.size())
+            {
+                ++iPureNameSize;
+            }
+            string strModelName = MapDesc.strName.substr(0, iPureNameSize);
+            // 비법코드 ( -가 안나왔을때 \0이 들어가서 뭔가가 뭔가한 오류 해결하는 비법코드
+            if (strModelName.back() == '\0')
+                strModelName.pop_back();
+            MapDesc.strName = strModelName + "-" + to_string(iNonAnimObjectIndex++);
         }
         file->Write<string>(MapDesc.strName);
         file->Write<_float>(MapDesc.fUVWeight);
@@ -2820,19 +2837,19 @@ void ImGui_Manager::Load_Water()
 
 
     shared_ptr<GameObject> obj = make_shared<GameObject>();
-    obj->GetOrAddTransform()->Scaled(_float3(30.f));
-    obj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-150.f, -20.f, -150.f, 1.f));
+    obj->GetOrAddTransform()->Scaled(_float3(120.f));
+    obj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-450.f, -20.f, -450.f, 1.f));
     shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Water.fx");
     shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(shader);
     {
         shared_ptr<Mesh> mesh = make_shared<Mesh>();
-        mesh->CreateGrid(10, 10);
+        mesh->CreateGrid(40, 40);
         renderer->Set_Mesh(mesh);
     }
     {
         shared_ptr<Material> material = make_shared<Material>();
-        material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterDiffuse", L"..\\Resources\\Textures\\MapObject\\Field\\D05_T_Water_D_01.tga"), TextureMapType::DIFFUSE);
-        material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterNormal", L"..\\Resources\\Textures\\MapObject\\Field\\T_chicken_meet_001.tga"), TextureMapType::NORMAL);
+        material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterDiffuse", L"..\\Resources\\Textures\\MapObject\\Field\\T_Boom_000_a.tga"), TextureMapType::DIFFUSE);
+        material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterNormal", L"..\\Resources\\Textures\\MapObject\\Field\\T_chicken_meet_001.png"), TextureMapType::NORMAL);
         material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterDistortion", L"..\\Resources\\Textures\\MapObject\\Field\\T_Perlin_Noise_M.tga"), TextureMapType::DISTORTION);
 
         renderer->Set_Material(material);

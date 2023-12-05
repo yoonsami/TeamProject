@@ -13,9 +13,7 @@ public:
 	shared_ptr<GameObject> Get_AttackCollider() { return m_pAttackCollider.lock(); }
 	void Set_AttackCollider(shared_ptr<GameObject> attackCollider) { m_pAttackCollider = attackCollider; }
 	void FreeLoopMembers();
-	_float4& Get_WeaponBonePos() {
-		return m_vWeaponBonePos;
-	}
+
 
 
 protected:
@@ -125,19 +123,19 @@ public:
 	_uint m_iCamBoneIndex = 0;
 	_uint m_iSkillCamBoneIndex = 0;
 	_uint m_iSkillBoneIndex = 0;
-	_uint m_iWeaponBoneIndex = 0;
+
 
 	_float4 m_vCenterBonePos = _float4(0.f);
 	_float4 m_vDummy_CP_BonePos = _float4(0.f);
 	_float4 m_vCamBonePos = _float4(0.f);
 	_float4 m_vSkillCamBonePos = _float4(0.f);
-	_float4 m_vWeaponBonePos = _float4(0.f);
+
 
 	_float4x4 m_CenterBoneMatrix = XMMatrixIdentity();
 	_float4x4 m_Dummy_CP_BoneMatrix = XMMatrixIdentity();
 	_float4x4 m_CamBoneMatrix = XMMatrixIdentity();
 	_float4x4 m_SkillCamBoneMatrix = XMMatrixIdentity();
-	_float4x4 m_WeaponBoneMatrix = XMMatrixIdentity();
+
 	_float4x4 matBoneMatrix = XMMatrixIdentity();
 
 	//Speed For. Movement
