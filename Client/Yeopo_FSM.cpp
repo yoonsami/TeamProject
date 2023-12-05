@@ -997,6 +997,11 @@ void Yeopo_FSM::knockdown_end_Init()
 
 void Yeopo_FSM::skill_1100()
 {
+    if(Init_CurFrame(5))
+        Add_And_Set_Effect(L"Yeopo_1100");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     Look_DirToTarget();
 
     if (m_iCurFrame == 9)
@@ -1042,6 +1047,11 @@ void Yeopo_FSM::skill_1100_Init()
 
 void Yeopo_FSM::skill_1200()
 {
+    if (Init_CurFrame(0))
+        Add_And_Set_Effect(L"Yeopo_1200");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     Look_DirToTarget();
 
     if (m_iCurFrame == 10)
@@ -1073,7 +1083,7 @@ void Yeopo_FSM::skill_1200_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+    animator->Set_NextTweenAnim(L"skill_1200", 0.001f, false, m_fNormalAttack_AnimationSpeed);
 
     if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
     {
@@ -1156,6 +1166,11 @@ void Yeopo_FSM::skill_1300_Init()
 
 void Yeopo_FSM::skill_1400()
 {
+    if (Init_CurFrame(5))
+        Add_And_Set_Effect(L"Yeopo_1400");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_iCurFrame == 7)
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
     else if (m_iCurFrame == 14)

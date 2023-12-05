@@ -984,7 +984,7 @@ void Kyle_FSM::skill_1100_Init()
 void Kyle_FSM::skill_1200()
 {
 	if (Init_CurFrame(9))
-		Add_And_Set_Effect(L"Kyle_1200");
+		Add_And_Set_Effect(L"Klye_1200");
 
 	Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
@@ -1038,6 +1038,11 @@ void Kyle_FSM::skill_1200_Init()
 
 void Kyle_FSM::skill_1300()
 {
+	if (Init_CurFrame(9))
+		Add_And_Set_Effect(L"Klye_1300");
+
+	Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
 	Look_DirToTarget();
 
 	if (m_iCurFrame == 8)
