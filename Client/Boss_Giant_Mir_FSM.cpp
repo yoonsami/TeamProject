@@ -431,6 +431,8 @@ void Boss_Giant_Mir_FSM::groggy_start()
 
     if (Is_AnimFinished())
         m_eCurState = STATE::groggy_loop;
+
+    DeadSetting();
 }
 
 void Boss_Giant_Mir_FSM::groggy_start_Init()
@@ -460,6 +462,8 @@ void Boss_Giant_Mir_FSM::groggy_loop()
 {
     if (Is_AnimFinished())
         m_eCurState = STATE::groggy_end;
+
+    DeadSetting();
 }
 
 void Boss_Giant_Mir_FSM::groggy_loop_Init()
@@ -490,6 +494,8 @@ void Boss_Giant_Mir_FSM::groggy_end()
 
     if (Get_FinalFrame() - 10 < m_iCurFrame)
         m_eCurState = STATE::b_idle;
+
+    DeadSetting();
 }
 
 void Boss_Giant_Mir_FSM::groggy_end_Init()
@@ -714,6 +720,8 @@ void Boss_Giant_Mir_FSM::b_idle()
 
     if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
        Set_AttackPattern();
+
+    DeadSetting();
 }
 
 void Boss_Giant_Mir_FSM::b_idle_Init()
@@ -1639,7 +1647,7 @@ void Boss_Giant_Mir_FSM::DeadSetting()
     if (m_bIsDead)
     {
         Set_Invincible(true);
-        m_eCurState = STATE::SQ_Leave;
+        m_eCurState = STATE::SQ_Leave_Groggy_Start;
     }
 }
 
