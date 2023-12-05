@@ -2704,7 +2704,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
         m_eCurState = STATE::skill_200000;
         m_iPreAttack = 9;
     }
-    
+    */
 }
 
 void Boss_Mir_FSM::Setting_DragonBall()
