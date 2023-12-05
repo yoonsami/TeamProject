@@ -22,6 +22,7 @@ public:
 
 private:
     void Create_Inven();
+    void Check_Cooltime();
 
 private:
     vector<weak_ptr<GameObject>> m_addedObj;
@@ -29,11 +30,13 @@ private:
     weak_ptr<GameObject> m_pUseItem_Slot;
     weak_ptr<GameObject> m_pUseItem_Count;
 
-    
+    _float  m_fCheckTime    = {};
+    _float  m_fMaxTime      = {};
+    _bool   m_bIsCanUse     = {};
 
-    _bool   m_bIsSet = {};
-    _bool   m_bIsCreated = {};
+    _bool   m_bIsSet        = {};
+    _bool   m_bIsCreated    = {};
 
-    _uint   m_iCount = {};
+    _uint   m_iCount        = {};
 };
 

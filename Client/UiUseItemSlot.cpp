@@ -31,6 +31,8 @@ HRESULT UiUseItemSlot::Init()
 
     m_iCount = 100;
 
+    m_fMaxTime = 8.f;
+
     return S_OK;
 }
 
@@ -41,6 +43,9 @@ void UiUseItemSlot::Tick()
 
     if (KEYTAP(KEY_TYPE::R))
         Use_Item();
+
+    if (false == m_bIsCanUse)
+        Check_Cooltime();
 }
 
 void UiUseItemSlot::Click_Slot()
@@ -83,6 +88,17 @@ void UiUseItemSlot::Create_Inven()
             pObj.lock()->Get_FontRenderer()->Get_Text() = to_wstring(m_iCount);
         }
     }
+}
+
+void UiUseItemSlot::Check_Cooltime()
+{
+    m_fCheckTime += fDT;
+    if (m_fMaxTime < m_fCheckTime)
+    {
+        m_bIsCanUse = true;
+    }
+
+    m_pUseItem_Slot.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = m_fCheckTime / m_fMaxTime;
 }
 
 void UiUseItemSlot::Click_Inven(_uint iIndex)
@@ -129,11 +145,12 @@ void UiUseItemSlot::Use_Item()
         true == m_pUseItem_Count.expired())
         return;
 
-    if (false == m_bIsSet)
+    if (false == m_bIsSet || false == m_bIsCanUse)
         return;
 
     // 플레이어 체력 증가
-    
+    m_bIsCanUse = false;
+    m_fCheckTime = 0.f;
 
     --m_iCount;
     if (0 == m_iCount)
