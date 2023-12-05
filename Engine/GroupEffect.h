@@ -36,6 +36,7 @@ public:
 	void				Set_InitWorldMatrix(const _float4x4& mInitMat) { m_mInitWorldMatrix = mInitMat; }
 	void				Set_DistortionGroup(_bool flag) { m_bDistortionGroup = flag; }
 	void				Set_Script(shared_ptr<MonoBehaviour> pScript) { m_pScript = pScript; }
+	void				Set_TickRenderState(_bool bTickOn, _bool bRenderOn) { m_bTickOn = bTickOn; m_bRenderOn = bRenderOn; }
 
 	/* Getter */
 	vector <GroupEffectData::MemberEffect_Desc>&	Get_MemberEffectData() { return m_vMemberEffectData; }
@@ -50,15 +51,18 @@ private:
 	void				OrganizeMemberEffectList();
 private:
 	/* Data */
-	wstring                             m_wstrTag;
+	wstring										m_wstrTag;
 	vector <GroupEffectData::MemberEffect_Desc> m_vMemberEffectData;
 
-	_float                              m_fCurrAge = { 0.f };
-	_float                              m_fTimeAcc_CreatCoolTime = { 0.f };
-	vector<_float>						m_vCreateCoolTime;
+	_float										m_fCurrAge = { 0.f };
+	_float										m_fTimeAcc_CreatCoolTime = { 0.f };
+	vector<_float>								m_vCreateCoolTime;
 
-	_bool								m_bIsFirstTick = { false };
-	_float4x4							m_mInitWorldMatrix;
+	_bool										m_bIsFirstTick = { false };
+	_bool										m_bDistortionGroup = false;	
+	_bool										m_bRenderOn = true;
+	_bool										m_bTickOn = true;
+	_float4x4									m_mInitWorldMatrix;
 
 	list <weak_ptr<GameObject>>					m_lMemberEffects;
 
@@ -66,7 +70,7 @@ private:
 	map<InstanceID, vector<shared_ptr<GameObject>>>	m_RenderGroup;
 	vector<shared_ptr<StructuredBuffer>>			m_RenderParamBuffer;
 
-	_bool								m_bDistortionGroup = false;	
 
-	shared_ptr<MonoBehaviour>			m_pScript;
+	shared_ptr<MonoBehaviour>					m_pScript;
+
 };

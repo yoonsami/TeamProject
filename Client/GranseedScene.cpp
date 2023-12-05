@@ -82,6 +82,8 @@
 #include "Hide_OrctongScript.h"
 #include "WitcherSense.h"
 #include "MathUtils.h"
+#include "GroupEffect.h"
+#include "Smoke_WitcherSense.h"
 namespace fs = std::filesystem;
 
 GranseedScene::GranseedScene()
@@ -156,11 +158,7 @@ void GranseedScene::Tick()
 		//if (pObj)
 		//	pObj->Get_Script<UiBossDialog>()->Is_Finish();
 	}
-	if (KEYTAP(KEY_TYPE::Z))
-	{
-		auto pObj = Get_UI(L"UI_Dialog_Controller");
-		pObj->Get_Script<UiQuestController>()->Change_Value();
-	}
+
 }
 
 void GranseedScene::Late_Tick()
@@ -236,7 +234,7 @@ HRESULT GranseedScene::Load_Scene()
 
 	Load_Ui(pPlayer);
 	Load_NPC(L"GranseedMap");
-	Load_HideAndSeek();
+	Load_HideAndSeek(pPlayer);
 	Load_Debug();
 	return S_OK;
 }
@@ -768,7 +766,7 @@ void GranseedScene::Load_NPC(const wstring& dataFileName)
 	
 }
 
-void GranseedScene::Load_HideAndSeek()
+void GranseedScene::Load_HideAndSeek(shared_ptr<GameObject> pPlayer)
 {
 	{
 		vector<_float3> pos(5);
@@ -804,24 +802,40 @@ void GranseedScene::Load_HideAndSeek()
 	}
 
 	{
-		_float x1 = -0.437f, y1 = -0.02f, z1 = 11.372f;
-		_float x2 = -14.628f, y2 = -0.02f, z2 = -1.933f;
+		_float x2 = -0.437f, y2 = -0.02f, z2 = 11.372f;
+		_float x1 = -14.628f, y1 = -0.02f, z1 = -1.933f;
 	
 		_float3 coefficients = MathUtils::calculateQuadraticCoefficients(x1, y1, z1, x2, y2, z2);
 
 		vector<_float3>quadraticCurvePoints;
 
-		_int index = 0;
-
-		for (_float x = x1; x <= x2; x += (x2 - x1) / 49.f) {
+		for (_float x = x1; x <= x2; x += (x2 - x1) / 20.f) {
 			_float z = MathUtils::evaluateQuadraticEquation(x, coefficients);
 			
 			_float4 vPos = _float4({ x, y1, z }, 1.f);
 			shared_ptr<GameObject> obj = make_shared<GameObject>();
 			obj->GetOrAddTransform()->Set_State(Transform_State::POS, vPos);
 
-			wstring skillTag = L"";
+			_int skillIndex = 1;
+		
 
+			wstring strSkilltag = L"Witcher_Sense" + to_wstring(skillIndex);
+			Set_Name(strSkilltag);
+
+			wstring wstrFileName = strSkilltag + L".dat";
+			wstring wtsrFilePath = TEXT("..\\Resources\\EffectData\\GroupEffectData\\") + wstrFileName;
+			shared_ptr<GroupEffectData> pGroupEffectData = RESOURCES.GetOrAddGroupEffectData(strSkilltag, wtsrFilePath);
+			shared_ptr<GroupEffect> pGroupEffect = make_shared<GroupEffect>();
+			obj->Add_Component(pGroupEffect);
+			obj->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
+			obj->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
+			obj->Get_GroupEffect()->Set_InitWorldMatrix(obj->Get_Transform()->Get_WorldMatrix());
+			obj->Get_GroupEffect()->Set_MemberEffectMaterials();
+			obj->Set_Name(strSkilltag);
+			obj->Get_GroupEffect()->Set_TickRenderState(false, false);
+			obj->Add_Component(make_shared<Smoke_WitcherSense>(pPlayer));
+
+			Add_GameObject(obj);
 		}
 
 	}

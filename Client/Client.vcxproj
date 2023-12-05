@@ -218,6 +218,7 @@
     <ClInclude Include="NPC_FSM.h" />
     <ClInclude Include="ObjectDissolve.h" />
     <ClInclude Include="ObjectDissolveCreate.h" />
+    <ClInclude Include="Smoke_WitcherSense.h" />
     <ClInclude Include="SpikeScene.h" />
     <ClInclude Include="FloorSkill_Script.h" />
     <ClInclude Include="TimerScript.h" />
@@ -338,6 +339,7 @@
     <ClCompile Include="NPC_FSM.cpp" />
     <ClCompile Include="ObjectDissolve.cpp" />
     <ClCompile Include="ObjectDissolveCreate.cpp" />
+    <ClCompile Include="Smoke_WitcherSense.cpp" />
     <ClCompile Include="SpikeScene.cpp" />
     <ClCompile Include="FloorSkill_Script.cpp" />
     <ClCompile Include="TimerScript.cpp" />

@@ -730,10 +730,6 @@
     <ClInclude Include="Mir_100100_FireScript.h">
       <Filter>02.Component\00.MonoBehaviour\07.EffectScript\02. Mir_100100_FireScript</Filter>
     </ClInclude>
-    <ClInclude Include="InventoryModelRotation.h">
-      <Filter>02.Component\00.MonoBehaviour\05.Object\03.InventoryModelRotation</Filter>
-    </ClInclude>
-    <ClInclude Include="Hide_OrctongScript.h" />
     <ClInclude Include="FloorSkill_Script.h">
       <Filter>02.Component\00.MonoBehaviour\04.SkillScript\02.FloorSkill_Script</Filter>
     </ClInclude>
@@ -747,6 +743,13 @@
     <ClInclude Include="UiUseItemSlot.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\23.UiUseItemSlot</Filter>
     </ClInclude>
+    <ClInclude Include="Hide_OrctongScript.h">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\04.Granseeed_Hide_OrctongScript</Filter>
+    </ClInclude>
+    <ClInclude Include="InventoryModelRotation.h">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\03.InventoryModelRotation</Filter>
+    </ClInclude>
+    <ClInclude Include="Smoke_WitcherSense.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1071,10 +1074,6 @@
     <ClCompile Include="Mir_100100_FireScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\07.EffectScript\02. Mir_100100_FireScript</Filter>
     </ClCompile>
-    <ClCompile Include="InventoryModelRotation.cpp">
-      <Filter>02.Component\00.MonoBehaviour\05.Object\03.InventoryModelRotation</Filter>
-    </ClCompile>
-    <ClCompile Include="Hide_OrctongScript.cpp" />
     <ClCompile Include="FloorSkill_Script.cpp">
       <Filter>02.Component\00.MonoBehaviour\04.SkillScript\02.FloorSkill_Script</Filter>
     </ClCompile>
@@ -1088,6 +1087,13 @@
     <ClCompile Include="UiUseItemSlot.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\23.UiUseItemSlot</Filter>
     </ClCompile>
+    <ClCompile Include="Hide_OrctongScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\04.Granseeed_Hide_OrctongScript</Filter>
+    </ClCompile>
+    <ClCompile Include="InventoryModelRotation.cpp">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\03.InventoryModelRotation</Filter>
+    </ClCompile>
+    <ClCompile Include="Smoke_WitcherSense.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">

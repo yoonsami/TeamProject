@@ -60,6 +60,12 @@ void GranseedChildren_FSM::State_Tick()
 		Hide();
 		break;
 
+	case STATE::Seek:
+		Seek();
+		break;
+	case STATE::Reset:
+		Reset();
+		break;
 	}
 }
 
@@ -83,6 +89,12 @@ void GranseedChildren_FSM::State_Init()
 			break;
 		case STATE::Hide:
 			Hide_Init();
+			break;
+		case STATE::Seek:
+			Seek_Init();
+			break;
+		case STATE::Reset:
+			Reset_Init();
 			break;
 		}
 		m_ePreState = m_eCurState;
@@ -135,9 +147,14 @@ void GranseedChildren_FSM::talk_01()
 	{
 		if (obj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::HIDE_AND_SEEK) == CUR_QUEST::PROGRESS)
 			m_eCurState = STATE::Hide;
+		else if (obj->Get_Script<UiQuestController>()->Get_QuestState(QUESTINDEX::HIDE_AND_SEEK))
+		{
+			m_eCurState = STATE::Reset;
+		}
 		else
 			m_eCurState = STATE::n_idle;
 	}
+
 }
 
 void GranseedChildren_FSM::talk_Init()
@@ -350,6 +367,66 @@ void GranseedChildren_FSM::Hide_Init()
 	CUR_SCENE->g_VignetteData.g_fVignettePower = 0.f;
 }
 
+void GranseedChildren_FSM::Seek()
+{
+	if (Can_Interact())
+	{
+		{
+			auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
+			if (pObj && pObj->Get_Script<UIInteraction>()->Get_Is_Activate(m_pOwner.lock()))
+				InteractWithPlayer();
+			else if (pObj && !pObj->Get_Script<UIInteraction>()->Is_Created())
+				pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::HIDE_KID, m_pOwner.lock());
+		}
+
+	}
+	else
+	{
+		auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
+		if (pObj)
+			pObj->Get_Script<UIInteraction>()->Remove_Interaction(m_pOwner.lock());
+	}
+}
+
+void GranseedChildren_FSM::Seek_Init()
+{
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_NextTweenAnim(L"n_idle", 0.15f, true, 1.f);
+
+}
+
+void GranseedChildren_FSM::Reset()
+{
+	m_fStateAcc += fDT;
+	if (m_fStateAcc < 1.f)
+		CUR_SCENE->g_VignetteData.g_fVignettePower += 15.f * fDT;
+
+	else if (m_fStateAcc >= 1.f && m_fStateAcc < 1.5f)
+	{
+		Get_Transform()->Set_State(Transform_State::POS, _float4(17.015f, -4.667f, 64.654f, 1.f));
+	}
+	else if (m_fStateAcc >= 1.5f && m_fStateAcc < 2.5f)
+	{
+		CUR_SCENE->g_VignetteData.g_fVignettePower -= 15.f * fDT;
+	}
+	else if (m_fStateAcc >= 2.5f)
+	{
+		CUR_SCENE->g_VignetteData.g_fVignettePower = 0.f;
+		CUR_SCENE->g_VignetteData.g_bVignetteOn = false;
+		m_eCurState = STATE::n_idle;
+	}
+}
+
+void GranseedChildren_FSM::Reset_Init()
+{
+	CUR_SCENE->g_VignetteData.g_bVignetteOn = true;
+	CUR_SCENE->g_VignetteData.g_fVignettePower = 0.f;
+
+	m_fStateAcc = 0.f;
+}
+
 void GranseedChildren_FSM::Set_State(_uint iIndex)
 {
+	m_eCurState = STATE(iIndex);
 }

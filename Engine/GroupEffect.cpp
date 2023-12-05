@@ -59,6 +59,9 @@ HRESULT GroupEffect::Init()
 
 void GroupEffect::Tick()
 {
+	if (!m_bTickOn)
+		return;
+
     _int iIndex = 0;
     for (auto& iter : m_vMemberEffectData)
     {
@@ -105,6 +108,9 @@ void GroupEffect::Tick()
 
 void GroupEffect::Final_Tick()
 {
+    if (!m_bTickOn)
+        return;
+
     m_fCurrAge += fDT;
     for (auto iter = m_vCreateCoolTime.begin(); iter != m_vCreateCoolTime.end(); iter++)
         *iter += fDT;
@@ -158,6 +164,7 @@ void GroupEffect::Final_Tick()
     for (auto& renderGroup : m_RenderGroup)
         renderGroup.second.clear();
 
+
 	for (auto& meshEffect : m_lMemberEffects)
 	{
         if (!meshEffect.expired())
@@ -171,6 +178,8 @@ void GroupEffect::Final_Tick()
 
 void GroupEffect::Render()
 {
+    if (!m_bRenderOn)
+        return;
 	/*
     for (auto& iter : m_lMemberEffects)
 	{
@@ -216,6 +225,9 @@ void GroupEffect::Render()
 
 void GroupEffect::Render_Distortion()
 {
+	if (!m_bRenderOn)
+		return;
+
 	INSTANCING.Clear_Data();
 	for (auto& pair : m_RenderGroup)
 	{

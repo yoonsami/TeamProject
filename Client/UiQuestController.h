@@ -16,6 +16,8 @@ public:
 
     _bool Get_Dialog_End() { return m_bIsCreated; }
     CUR_QUEST Get_CurState(QUESTINDEX eIndex);
+    _bool Get_QuestState(QUESTINDEX eIndex) { return m_ClearCheck[_int(eIndex)]; }
+
 
 private:
     void Clear_Quest();

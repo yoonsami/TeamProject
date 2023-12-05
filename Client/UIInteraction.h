@@ -17,6 +17,8 @@ public:
     _bool Get_Is_Activate(shared_ptr<GameObject> pObj);
     _bool Is_Created()      { return m_bIsCreated; }
 
+    shared_ptr<GameObject> Get_AccessObject() { return m_pAccessObj.lock(); }
+
 private:
     void Remove_Interaction();
 

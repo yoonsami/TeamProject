@@ -11,7 +11,8 @@ public:
 		n_walk,
 		talk_01,
 		Hide,
-
+		Seek,
+		Reset,
 		NONE
 	};
 public:
@@ -24,6 +25,9 @@ public:
 	virtual void Tick() override;
 	virtual void Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget) override {}
 	void InteractWithPlayer() override;
+
+	virtual void Set_State(_uint iIndex) override;
+
 private:
 	virtual void State_Tick() override;
 	virtual void State_Init() override;
@@ -38,13 +42,19 @@ private:
 	void	n_walk_Init();
 	void	Hide();
 	void	Hide_Init();
+	void	Seek();
+	void	Seek_Init();
+
+	void	Reset();
+	void	Reset_Init();
+
 
 private:
 
 	virtual void OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap) override {}
 	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) override {}
 	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) override {}
-	virtual void Set_State(_uint iIndex) override;
+
 
 
 

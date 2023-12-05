@@ -630,9 +630,9 @@ void DataMgr::Initialize()
 		m_DialogClear[iIndex].push_back(L"대단하군!");
 
 		m_Quest[iIndex].IsClear = false;
-		m_Quest[iIndex].Type = QUESTTYPE::COLLECT;
+		m_Quest[iIndex].Type = QUESTTYPE::ACT;
 		m_Quest[iIndex].CurCount = 0;
-		m_Quest[iIndex].MaxCount = 3;
+		m_Quest[iIndex].MaxCount = 0;
 		m_Quest[iIndex].Name = L"술래 잡기";
 		m_Quest[iIndex].Info = L"마을에 숨은 꼬마를 찾자.";
 		m_Quest[iIndex].Clear = L"꼬마를 찾아가 보고하자";
