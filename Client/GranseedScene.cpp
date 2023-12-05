@@ -801,13 +801,13 @@ void GranseedScene::Load_HideAndSeek()
 
 		vector<_float3>quadraticCurvePoints;
 
+
 		for (_float x = x1; x <= x2; x += (x2 - x1) / 49.f) {
 			_float z = MathUtils::evaluateQuadraticEquation(x, coefficients);
 			
 			_float4 vPos = _float4({ x, y1, z }, 1.f);
 			shared_ptr<GameObject> obj = make_shared<GameObject>();
 			obj->GetOrAddTransform()->Set_State(Transform_State::POS, vPos);
-			
 
 
 		}
