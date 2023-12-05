@@ -314,12 +314,28 @@ void GranseedChildren_FSM::n_walk_Init()
 
 void GranseedChildren_FSM::Hide()
 {
+	m_fStateAcc += fDT;
+	if(m_fStateAcc < 1.f)
+		CUR_SCENE->g_VignetteData.g_fVignettePower += 15.f * fDT;
 
+	else if(m_fStateAcc >= 1.f && m_fStateAcc < 1.5f)
+		Get_Owner()->Get_Animator()->Set_RenderState(false);
+	else if (m_fStateAcc >= 1.5f && m_fStateAcc < 2.5f)
+	{
+		CUR_SCENE->g_VignetteData.g_fVignettePower -= 15.f * fDT;
+	}
+	else if (m_fStateAcc >= 2.5f)
+	{
+		CUR_SCENE->g_VignetteData.g_fVignettePower = 0.f;
+		CUR_SCENE->g_VignetteData.g_bVignetteOn = false;
+	}
+	
 }
 
 void GranseedChildren_FSM::Hide_Init()
 {
-	Get_Owner()->Get_Animator()->Set_RenderState(false);
+	m_fStateAcc = 0.f;
+
 
 	for (_uint i = 0; i < 5; ++i)
 	{
@@ -328,6 +344,8 @@ void GranseedChildren_FSM::Hide_Init()
 		object->Add_Component(make_shared<Hide_OrctongScript>(i));
 	}
 	
+	CUR_SCENE->g_VignetteData.g_bVignetteOn = true;
+	CUR_SCENE->g_VignetteData.g_fVignettePower = 0.f;
 }
 
 void GranseedChildren_FSM::Set_State(_uint iIndex)

@@ -1164,7 +1164,7 @@ RasterizerState Depth
 	// Example: DepthBias = 100000 ==> Actual DepthBias = 100000/2^24 = .006
 
 	// You need to experiment with these values for your scene.
-    DepthBias = 3000;
+    DepthBias = 1000;
     DepthBiasClamp = 0.0f;
     SlopeScaledDepthBias = 1.0f;
 };
