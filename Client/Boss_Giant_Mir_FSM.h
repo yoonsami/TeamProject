@@ -95,9 +95,8 @@ private:
 	void Destroy_MapObject();
 	void Update_Collider();
 	void DeadSetting();
-	void Set_Invincible(_bool bFlag);
-	
 
+	void Set_Invincible(_bool bFlag);
 	void Set_RigidBodyActivate(_bool flag);
 
 	void TailAttackCollider_On(const wstring& skillname, _float fAttackDamage);
