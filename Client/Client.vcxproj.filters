@@ -358,6 +358,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\05.Object\03.InventoryModelRotation">
       <UniqueIdentifier>{bf44e733-45da-47de-af96-703b3e9e737c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\23.UiUseItemSlot">
+      <UniqueIdentifier>{e912456c-169a-43d6-8df8-a98e77bf473a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -716,6 +719,9 @@
       <Filter>02.Component\00.MonoBehaviour\07.EffectScript\02. Mir_100100_FireScript</Filter>
     </ClInclude>
     <ClInclude Include="InventoryModelRotation.h" />
+    <ClInclude Include="UiUseItemSlot.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\23.UiUseItemSlot</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1041,6 +1047,9 @@
       <Filter>02.Component\00.MonoBehaviour\07.EffectScript\02. Mir_100100_FireScript</Filter>
     </ClCompile>
     <ClCompile Include="InventoryModelRotation.cpp" />
+    <ClCompile Include="UiUseItemSlot.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\23.UiUseItemSlot</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
