@@ -117,6 +117,9 @@ void LogoScene::Load_Ui()
 		if (entry.is_directory())
 			continue;
 
+		if(entry.path().extension() == L".png" || entry.path().extension() == L".tga")
+			continue;
+
 		wstring filePath = entry.path().wstring();
 		wstring fileName = entry.path().filename().wstring();
 		Utils::DetachExt(fileName);

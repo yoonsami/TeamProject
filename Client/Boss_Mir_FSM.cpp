@@ -2640,11 +2640,11 @@ void Boss_Mir_FSM::Create_DragonBall()
 void Boss_Mir_FSM::Set_AttackPattern()
 {
     // TODO:  의진
-    _uint iRan = rand() % 4;
+    /*_uint iRan = rand() % 4;
     if(iRan == 0)
-        m_eCurState = STATE::skill_2100;
+        m_eCurState = STATE::skill_2100;*/
 
-   //_uint iRan = rand() % 10;
+   _uint iRan = rand() % 10;
     
     while (true)
     {

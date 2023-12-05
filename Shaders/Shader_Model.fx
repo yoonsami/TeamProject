@@ -301,6 +301,8 @@ MotionBlurOutput VS_AnimMotionBlur(VTXModel input)
         output.position = vNewPos;
     
     output.position = mul(output.position, P);
+    vNewPos = mul(vNewPos, P);
+    vOldPos = mul(vOldPos, P);
     
    //[-2~2]
     float2 velocity = (vNewPos.xy / vNewPos.w) - (vOldPos.xy / vOldPos.w);
@@ -448,7 +450,7 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
     output.depth.w = input.viewPosition.z;
     output.diffuseColor = diffuseColor;
     output.specularColor = specularColor;
-    output.emissiveColor = emissiveColor;
+    output.emissiveColor = emissiveColor + g_vec4_1;
     return output;
 }
 
@@ -606,7 +608,7 @@ float4 PS_ShadowInstancing(ShadowInstanceOutput input) : SV_Target
     if (bHasDissolveMap != 0)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
-        if (dissolve < InstanceRenderParams[input.id].x)
+        if (dissolve < InstanceRenderParams[input.id].w)
             discard;
     }
     return float4(input.clipPos.z / input.clipPos.w, 0.f, 0.f, 0.f);
@@ -737,7 +739,7 @@ PBR_OUTPUT PS_PBR_Deferred(MeshOutput input)
     output.arm = ARM_Map;
     output.diffuseColor = diffuseColor + float4(g_vec4_0.xyz, 0.f);
     output.emissive = emissiveColor;
-    output.rimColor = Material.emissive;
+    output.rimColor = Material.emissive + g_vec4_1;
     output.blur = 0;
     return output;
 }
@@ -798,7 +800,7 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(MeshInstancingOutput input)
     output.arm = ARM_Map;
     output.diffuseColor = diffuseColor + float4(InstanceRenderParams[input.id].xyz, 0.f);;
     output.emissive = emissiveColor;
-    output.rimColor = Material.emissive;
+    output.rimColor = Material.emissive + g_vec4_1;
     output.blur = 0;
     return output;
 }
@@ -859,7 +861,7 @@ PBR_OUTPUT PS_PBR_Deferred_MapObject(MeshOutput input)
     output.arm = ARM_Map;
     output.diffuseColor = diffuseColor;
     output.emissive = emissiveColor;
-    output.rimColor = Material.emissive;
+    output.rimColor = Material.emissive + g_vec4_1;
     output.blur = 0;
     return output;
 }
@@ -919,8 +921,8 @@ PBR_OUTPUT PS_PBR_Deferred_MapObject_Instancing(MeshInstancingOutput input)
     output.depth.w = input.viewPosition.z;
     output.arm = ARM_Map;
     output.diffuseColor = diffuseColor;
-    output.emissive = emissiveColor;
-    output.rimColor = Material.emissive;
+    output.emissive = emissiveColor ;
+    output.rimColor = Material.emissive + g_vec4_1;
     output.blur = 0;
     return output;
 }
