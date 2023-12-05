@@ -199,7 +199,7 @@ void DataMgr::Initialize()
 			tagData.Element = ElementType::FIRE;
 			tagData.Star = 4;
 
-			tagData.Skill0Combo = 4;
+			tagData.Skill0Combo = 3;
 			tagData.Skill1Combo = 2;
 			tagData.Skill2Combo = 0;
 			tagData.Skill3Combo = 4;

@@ -1281,6 +1281,19 @@ void Yeopo_FSM::skill_93100_Init()
 
 void Yeopo_FSM::skill_100200()
 {
+    if (Init_CurFrame(5))
+        Add_Effect(L"Yeopo_100200");
+
+    if (Init_CurFrame(18))
+        Add_And_Set_Effect(L"Yeopo_100200_weapon");
+    
+    if (Init_CurFrame(30))
+        FreeLoopMembers();
+
+    _float4x4 fTime = m_pWeapon.lock()->Get_Transform()->Get_WorldMatrix();
+
+    Update_GroupEffectWorldPos(m_pWeapon.lock()->Get_Transform()->Get_WorldMatrix());
+
     if (Init_CurFrame(18))
     {
 		FORWARDMOVINGSKILLDESC desc;
