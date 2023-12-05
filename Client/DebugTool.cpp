@@ -147,6 +147,7 @@ void DebugTool::RenderOptionTab()
 			Scene::MotionBlurData& data = CUR_SCENE->g_MotionBlurData;
 			Checkbox("Motion Blur On", &data.g_bMotionBlurOn);
 			InputInt("Motion Blur Count", &data.g_iBlurCount);
+			DragFloat("Motion Blur Power", &data.g_MotionBlurPower,0.01f,0.f,2.f);
 
 		}
 		if (CollapsingHeader("Fog Option"))

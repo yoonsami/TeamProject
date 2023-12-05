@@ -171,6 +171,8 @@ float4 PS_UPGaussian(VS_OUT input) : SV_Target0
     return Out;
 }
 
+float g_MotionBlurPower;
+
 float4 PS_MotionBlur(VS_OUT input) : SV_Target0
 {
     float4 output = (float4) 0.f;
@@ -179,6 +181,7 @@ float4 PS_MotionBlur(VS_OUT input) : SV_Target0
     float4 velocity = SubMap0.Sample(PointSamplerMirror, input.uv);
             
     velocity.xy /= (float) NumBlurSample;
+    velocity.xy *= g_MotionBlurPower;
     
     int iCnt = 1;
     
