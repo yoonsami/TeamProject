@@ -487,7 +487,9 @@ void Widget_GroupEffectMaker::Option_MemberEffectList()
 					m_pCurrentGroup->Get_GroupEffect()->DeleteMember(Utils::ToWString(iter));
 				string strFilePath = "..\\Resources\\EffectData\\GroupEffectData\\";
 				strFilePath += (m_strGroup + ".dat");
+
 				Save();
+
 				RESOURCES.ReloadOrAddGroupEffectData(Utils::ToWString(m_strGroup), Utils::ToWString(strFilePath));
 				Set_MemberEffectList();
 			}

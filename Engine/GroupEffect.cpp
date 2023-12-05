@@ -167,8 +167,6 @@ void GroupEffect::Final_Tick()
             m_RenderGroup[instanceID].push_back(meshEffect.lock());
         }
 	}
-
-
 }
 
 void GroupEffect::Render()
@@ -197,7 +195,9 @@ void GroupEffect::Render()
 		{
             const InstanceID instanceId = pair.first;
             vector<RenderParams> paramInfo;
-            paramInfo.reserve(m_RenderParamBuffer[pair.first.first]->Get_InputCount());
+
+            if(pair.first.first < m_RenderParamBuffer.size())
+                paramInfo.reserve(m_RenderParamBuffer[pair.first.first]->Get_InputCount());
 			for (size_t i = 0; i < vec.size(); ++i)
 			{
 				shared_ptr<GameObject>& gameobject = vec[i];
@@ -206,7 +206,8 @@ void GroupEffect::Render()
 				paramInfo.push_back( gameobject->Get_MeshEffect()->Get_RenderParamDesc());
                 INSTANCING.Add_Data(instanceId, data);
 			}
-            m_RenderParamBuffer[pair.first.first]->Copy_ToInput(paramInfo.data());
+            if (pair.first.first < m_RenderParamBuffer.size())
+                m_RenderParamBuffer[pair.first.first]->Copy_ToInput(paramInfo.data());
 
             shared_ptr<InstancingBuffer>& buffer = INSTANCING.Get_Buffer(instanceId);
 			vec[0]->Get_MeshEffect()->Render_Instancing(buffer, m_RenderParamBuffer[pair.first.first]);
