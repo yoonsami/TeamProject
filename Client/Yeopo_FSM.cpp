@@ -1292,8 +1292,6 @@ void Yeopo_FSM::skill_100200()
 
     Update_GroupEffectWorldPos(m_pWeapon.lock()->Get_Transform()->Get_WorldMatrix());
 
-
-
     if (Init_CurFrame(18))
     {
 		FORWARDMOVINGSKILLDESC desc;
@@ -1357,14 +1355,6 @@ void Yeopo_FSM::skill_100200_Init()
 
 void Yeopo_FSM::skill_100300()
 {
-    if (Init_CurFrame(0))
-        Add_And_Set_Effect(L"Yeopo_100200_weapon");
-
-    if (Init_CurFrame(20))
-        FreeLoopMembers();
-
-    Update_GroupEffectWorldPos(m_pWeapon.lock()->Get_Transform()->Get_WorldMatrix());
-
     if (Init_CurFrame(24))
     {
 		FORWARDMOVINGSKILLDESC desc;
@@ -1758,7 +1748,6 @@ void Yeopo_FSM::skill_501100_Init()
     m_bInvincible = false;
     m_bSuperArmor = true;
 }
-
 
 void Yeopo_FSM::SQ_RideHorse_Idle()
 {
