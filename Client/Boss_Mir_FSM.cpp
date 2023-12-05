@@ -870,6 +870,8 @@ void Boss_Mir_FSM::groggy_start()
 
 void Boss_Mir_FSM::groggy_start_Init()
 {
+    KillAllEffect();
+
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"groggy_start", 0.1f, false, 1.f);
@@ -1488,7 +1490,8 @@ void Boss_Mir_FSM::skill_2100()
     if (Init_CurFrame(93))
         Add_Effect(L"Mir_2100_End");
 
-    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+    if(Init_CurFrame(60))
+        m_eCurState = STATE::groggy_start;
 
     if (m_iCurFrame == 55)
     {
@@ -2637,8 +2640,9 @@ void Boss_Mir_FSM::Create_DragonBall()
 void Boss_Mir_FSM::Set_AttackPattern()
 {
     // TODO:  의진
-    //_uint iRan = rand() % 2;
-    //m_eCurState = STATE::skill_100000;
+    _uint iRan = rand() % 4;
+    if(iRan == 0)
+        m_eCurState = STATE::skill_2100;
 
    _uint iRan = rand() % 10;
     

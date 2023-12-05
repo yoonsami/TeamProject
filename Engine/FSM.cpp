@@ -429,8 +429,12 @@ void FSM::KillAllEffect()
 {
 	for (auto& iter : m_vGroupEffect)
 	{
-		if(!iter.expired())
+		if (!iter.expired())
+		{
+			iter.lock()->Get_GroupEffect()->Kill_All();
+			EVENTMGR.Delete_Object(iter.lock());
 			iter.reset();
+		}
 	}
 }
 

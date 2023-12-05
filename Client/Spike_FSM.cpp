@@ -998,7 +998,7 @@ void Spike_FSM::skill_1100_Init()
 
 void Spike_FSM::skill_1200()
 {
-    if (Init_CurFrame(6))
+    if (Init_CurFrame(0))
 	{
 		CAMERA_SHAKE(0.1f, 0.1f)
         Add_And_Set_Effect(L"Spike_1200");
