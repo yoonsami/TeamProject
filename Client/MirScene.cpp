@@ -47,7 +47,7 @@
 #include "Alpaca_FSM.h"
 #include "Wolf_FSM.h"
 
-
+#include "UiUseItemSlot.h"
 #include "UiGachaController.h"
 #include "Boss_Mir_FSM.h"
 #include "Boss_Dellons_FSM.h"
@@ -752,6 +752,15 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		if (false == pObj.expired())
 		{
 			auto pScript = make_shared<UiDamageCreate>();
+			pObj.lock()->Add_Component(pScript);
+		}
+	}
+
+	{
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_UseItem_Slot_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiUseItemSlot>();
 			pObj.lock()->Add_Component(pScript);
 		}
 	}

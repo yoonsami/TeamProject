@@ -64,6 +64,7 @@
 #include "UiSettingController.h"
 #include "UiBossDialog.h"
 #include "UiCostumeController.h"
+#include "UiUseItemSlot.h"
 
 #include <filesystem>
 #include "GachaScene.h"
@@ -482,6 +483,15 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		if (false == pObj.expired())
 		{
 			auto pScript = make_shared<UiDamageCreate>();
+			pObj.lock()->Add_Component(pScript);
+		}
+	}
+	
+	{
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_UseItem_Slot_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiUseItemSlot>();
 			pObj.lock()->Add_Component(pScript);
 		}
 	}

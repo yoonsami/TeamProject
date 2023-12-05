@@ -227,6 +227,7 @@
     <ClInclude Include="UIInteraction.h" />
     <ClInclude Include="UiQuestController.h" />
     <ClInclude Include="UiSettingController.h" />
+    <ClInclude Include="UiUseItemSlot.h" />
     <ClInclude Include="WaterUVSliding.h" />
     <ClInclude Include="WitcherSense.h" />
     <ClInclude Include="Wolf_FSM.h" />
@@ -346,6 +347,7 @@
     <ClCompile Include="UIInteraction.cpp" />
     <ClCompile Include="UiQuestController.cpp" />
     <ClCompile Include="UiSettingController.cpp" />
+    <ClCompile Include="UiUseItemSlot.cpp" />
     <ClCompile Include="WaterUVSliding.cpp" />
     <ClCompile Include="WitcherSense.cpp" />
     <ClCompile Include="Wolf_FSM.cpp" />

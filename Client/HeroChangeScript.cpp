@@ -80,7 +80,7 @@ void HeroChangeScript::Tick()
 	}
     else if (KEYTAP(KEY_TYPE::R))
 	{
-        Change_Hero(HERO::PLAYER);
+        //Change_Hero(HERO::PLAYER);
 	}
 }
 

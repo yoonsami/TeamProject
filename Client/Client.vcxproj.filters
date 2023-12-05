@@ -370,6 +370,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\08.WitcherSense">
       <UniqueIdentifier>{5092edd2-9b2f-4fb8-bc53-974f663954f4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\23.UiUseItemSlot">
+      <UniqueIdentifier>{e912456c-169a-43d6-8df8-a98e77bf473a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -740,6 +743,10 @@
     <ClInclude Include="Glow_WitcherSense.h">
       <Filter>02.Component\00.MonoBehaviour\05.Object\05.Glow_WitcherSense</Filter>
     </ClInclude>
+    <ClInclude Include="InventoryModelRotation.h" />
+    <ClInclude Include="UiUseItemSlot.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\23.UiUseItemSlot</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1076,6 +1083,10 @@
     </ClCompile>
     <ClCompile Include="Glow_WitcherSense.cpp">
       <Filter>02.Component\00.MonoBehaviour\05.Object\05.Glow_WitcherSense</Filter>
+    </ClCompile>
+    <ClCompile Include="InventoryModelRotation.cpp" />
+    <ClCompile Include="UiUseItemSlot.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\23.UiUseItemSlot</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
