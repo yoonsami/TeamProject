@@ -579,6 +579,8 @@ void Boss_Giant_Mir_FSM::SQ_Leave_Groggy_Start_Init()
     m_fCamRatio = 0.f;
 
     g_bCutScene = true;
+    
+    m_bSummonMeteor = false;
 
     Set_Invincible(true);
 
