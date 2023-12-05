@@ -483,6 +483,35 @@ void Boss_Giant_Mir_FSM::groggy_end_Init()
 
 void Boss_Giant_Mir_FSM::SQ_Leave()
 {
+    Calculate_IntroHeadCam();
+
+  
+    if (!m_pCamera.expired())
+    {
+        m_fIntroCamDistance = CamDistanceLerp(15.f, 25.f, m_fCamRatio);
+
+        m_fCamRatio += fDT * 0.5f;
+
+        if (m_fCamRatio >= 1.f)
+            m_fCamRatio = 1.f;
+
+        /*_float3 vLookPos = Get_Transform()->Get_State(Transform_State::POS).xyz() +
+            Get_Transform()->Get_State(Transform_State::UP) * 15.f;*/
+
+        _float3 vDir = m_vIntroCamPos - m_vHeadBonePos.xyz();
+        vDir.Normalize();
+
+        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(5.f);
+        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vHeadBonePos.xyz());
+        m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, vDir, m_fIntroCamDistance);
+    }
+   
+
+    if (Is_AnimFinished())
+    {
+        g_bCutScene = false;
+        m_eCurState = STATE::b_idle;
+    }
 }
 
 void Boss_Giant_Mir_FSM::SQ_Leave_Init()
@@ -503,7 +532,11 @@ void Boss_Giant_Mir_FSM::SQ_Leave_Init()
     if (!m_pFootRigidBody.expired())
         EVENTMGR.Delete_Object(m_pFootRigidBody.lock());
 
+    m_fCamRatio = 0.f;
+    m_tAttackCoolTime.fAccTime = 0.f;
 
+    g_bCutScene = true;
+    Calculate_IntroHeadCam();
 }
 
 
@@ -1091,9 +1124,8 @@ void Boss_Giant_Mir_FSM::Create_DragonBall()
 
 void Boss_Giant_Mir_FSM::Set_AttackPattern()
 {
-    m_eCurState = STATE::skill_1100;
-
-    /*_uint iRan = rand() % 6;
+    m_eCurState = STATE::SQ_Leave;
+   /* _uint iRan = rand() % 6;
 
     while (true)
     {
