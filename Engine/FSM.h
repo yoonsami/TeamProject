@@ -13,6 +13,11 @@ public:
 	shared_ptr<GameObject> Get_AttackCollider() { return m_pAttackCollider.lock(); }
 	void Set_AttackCollider(shared_ptr<GameObject> attackCollider) { m_pAttackCollider = attackCollider; }
 	void FreeLoopMembers();
+	_float4& Get_WeaponBonePos() {
+		return m_vWeaponBonePos;
+	}
+
+
 protected:
 	virtual void State_Tick() = 0;
 	virtual void State_Init() = 0;
@@ -63,6 +68,8 @@ protected:
 	_bool DeadCheck();
 	void Set_HitColor();
 	void Recovery_Color();
+
+
 
 public:
 	shared_ptr<GameObject> Get_Weapon() { return m_pWeapon.lock(); }

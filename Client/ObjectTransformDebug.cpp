@@ -20,19 +20,13 @@ void ObjectTransformDebug::Tick()
 	
 	//fontRenderer->Get_Text() = L"X : " + to_wstring(vTargetPos.x) + L"/ Y : " + to_wstring(vTargetPos.y) + L"/ Z : " + to_wstring(vTargetPos.z);
 	
-	if (m_pTarget.lock()->Get_FSM())
-	{
-		_uint iHp = _uint(m_pTarget.lock()->Get_CurHp());
-		_float fGroggyGauge = m_pTarget.lock()->Get_CurGroggyGauge();
-		fontRenderer->Get_Text() = L"SpikeHp : " + to_wstring(iHp) + L"/GroggyGauge : " + to_wstring(fGroggyGauge);
-	}
-	else
-	{
-		_uint iHp = _uint(m_pTarget.lock()->Get_CurHp());
-		fontRenderer->Get_Text() = L"SpikeHp : " + to_wstring(iHp);
-	}
+	auto pPlayer = CUR_SCENE->Get_GameObject(L"Player");
 
-	//fontRenderer->Get_Text() = L"X : " + to_wstring(CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->Get_FixedDist())
+	if (!pPlayer)
+		return;
+
+	_float4 vPos = pPlayer->Get_FSM()->Get_WeaponBonePos();
+	fontRenderer->Get_Text() = L"X : " + to_wstring(vPos.x) + L"Y : " + to_wstring(vPos.y) + L"Z : " + to_wstring(vPos.z);
 								;
 
 }
