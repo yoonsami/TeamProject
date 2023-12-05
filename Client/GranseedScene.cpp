@@ -233,6 +233,8 @@ HRESULT GranseedScene::Load_Scene()
 
 	Load_Ui(pPlayer);
 	Load_NPC(L"GranseedMap");
+
+	Load_Debug();
 	return S_OK;
 }
 
