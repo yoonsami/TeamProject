@@ -364,6 +364,12 @@
     <Filter Include="02.Component\00.MonoBehaviour\04.SkillScript\02.FloorSkill_Script">
       <UniqueIdentifier>{2a4f0a6d-e9b3-46e8-bea1-1019d0b7e2b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\05.Object\05.Glow_WitcherSense">
+      <UniqueIdentifier>{6963d75e-e475-4989-a640-6cb48f27ccaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\08.WitcherSense">
+      <UniqueIdentifier>{5092edd2-9b2f-4fb8-bc53-974f663954f4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -728,6 +734,12 @@
     <ClInclude Include="FloorSkill_Script.h">
       <Filter>02.Component\00.MonoBehaviour\04.SkillScript\02.FloorSkill_Script</Filter>
     </ClInclude>
+    <ClInclude Include="WitcherSense.h">
+      <Filter>02.Component\00.MonoBehaviour\08.WitcherSense</Filter>
+    </ClInclude>
+    <ClInclude Include="Glow_WitcherSense.h">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\05.Glow_WitcherSense</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1058,6 +1070,12 @@
     <ClCompile Include="Hide_OrctongScript.cpp" />
     <ClCompile Include="FloorSkill_Script.cpp">
       <Filter>02.Component\00.MonoBehaviour\04.SkillScript\02.FloorSkill_Script</Filter>
+    </ClCompile>
+    <ClCompile Include="WitcherSense.cpp">
+      <Filter>02.Component\00.MonoBehaviour\08.WitcherSense</Filter>
+    </ClCompile>
+    <ClCompile Include="Glow_WitcherSense.cpp">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\05.Glow_WitcherSense</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

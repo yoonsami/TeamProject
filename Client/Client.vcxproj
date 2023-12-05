@@ -203,6 +203,7 @@
     <ClInclude Include="DragonBallMonster_FSM.h" />
     <ClInclude Include="DragonBall_FSM.h" />
     <ClInclude Include="Get_Gravity.h" />
+    <ClInclude Include="Glow_WitcherSense.h" />
     <ClInclude Include="GranseedChildren_FSM.h" />
     <ClInclude Include="GranseedGuard01_FSM.h" />
     <ClInclude Include="GranseedGuard02_FSM.h" />
@@ -227,6 +228,7 @@
     <ClInclude Include="UiQuestController.h" />
     <ClInclude Include="UiSettingController.h" />
     <ClInclude Include="WaterUVSliding.h" />
+    <ClInclude Include="WitcherSense.h" />
     <ClInclude Include="Wolf_FSM.h" />
     <ClInclude Include="Boss_DellonsWraith_FSM.h" />
     <ClInclude Include="Boss_Dellons_FSM.h" />
@@ -320,6 +322,7 @@
     <ClCompile Include="DragonBallMonster_FSM.cpp" />
     <ClCompile Include="DragonBall_FSM.cpp" />
     <ClCompile Include="Get_Gravity.cpp" />
+    <ClCompile Include="Glow_WitcherSense.cpp" />
     <ClCompile Include="GranseedChildren_FSM.cpp" />
     <ClCompile Include="GranseedGuard01_FSM.cpp" />
     <ClCompile Include="GranseedGuard02_FSM.cpp" />
@@ -344,6 +347,7 @@
     <ClCompile Include="UiQuestController.cpp" />
     <ClCompile Include="UiSettingController.cpp" />
     <ClCompile Include="WaterUVSliding.cpp" />
+    <ClCompile Include="WitcherSense.cpp" />
     <ClCompile Include="Wolf_FSM.cpp" />
     <ClCompile Include="Boss_DellonsWraith_FSM.cpp" />
     <ClCompile Include="Boss_Dellons_FSM.cpp" />

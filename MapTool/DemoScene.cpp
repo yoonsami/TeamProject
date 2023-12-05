@@ -99,7 +99,6 @@ HRESULT GranseedScene::Load_Scene()
 void GranseedScene::Load_DemoModel()
 {
 	{
-
 		shared_ptr<GameObject> testObj = make_shared<GameObject>();
 		// Transform Component
 
