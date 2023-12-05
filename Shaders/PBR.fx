@@ -202,4 +202,53 @@ PBR_OUT PBRShade(
         
 }
 
+float4 PBRShadeWater(
+    in float3 ambientMap,
+    in float3 albedoMap,
+    in float roughnessMap,
+    in float metallicMap,
+    in float3 viewNormal,
+    in float3 viewPosition,
+    in float3 lightColor,
+    in float shadowAmount
+)
+{
+    float3 viewLightPos = mul(float4(lights[0].vPosition.xyz, 1.f), V).xyz;
+    float3 pointToLight = normalize(viewLightPos - viewPosition);
+    float3 cameraPosition = 0.f;
+    float3 pointToCamera = normalize(cameraPosition - viewPosition);
+    float3 viewLightDir = 0.f;
+    
+    float3 ambient = ambientMap * albedoMap * 0.2f;
+    float3 color = 0.f;
+    float3 eyeDir = normalize(viewPosition - cameraPosition);
+    float3 halfVector = normalize(pointToLight + pointToCamera);
+    
+    float3 diffuse = CalculateLambertianBRDF(albedoMap);
+    
+    float3 F0 = float3(0.04f, 0.04f, 0.04f);
+    F0 = lerp(F0, albedoMap, metallicMap);
+    float3 F = FresnelSchlick(max(dot(halfVector, pointToCamera), 0.0), F0);
+    
+    float3 kS = F;
+    float3 kD = float3(1.f, 1.f, 1.f) - kS;
+    kD = kD * float3(1.f - metallicMap, 1.f - metallicMap, 1.f - metallicMap);
+    
+    float3 specular = CalculateCookTorranceBRDF(viewNormal, pointToCamera, halfVector, pointToLight, roughnessMap, F);
+   
+    float NdotL = max(dot(viewNormal, pointToLight), 0.0);
+    float attenuation = 1.f;
+       //DIRECTIONAL_LIGHT
+
+    viewLightDir = normalize(mul(float4(lights[0].vDirection.xyz, 0.f), V).xyz);
+    diffuse = saturate(diffuse * shadowAmount);
+    specular = saturate(specular * shadowAmount);
+
+
+    color += (kD * diffuse + specular) * lightColor * 100.f * attenuation * NdotL;
+   
+    return float4(color, 1.f);
+}
+
+
 #endif

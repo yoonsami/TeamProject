@@ -10,7 +10,8 @@ public:
 		b_idle,
 		b_run,
 		n_run,
-		die,
+		die_01,
+		die_02,
 		gaze_b,
 		gaze_f,
 		gaze_l,
@@ -35,7 +36,7 @@ public:
 public:
 	virtual HRESULT Init() override;
 	virtual void Tick() override;
-	virtual void Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget) override;
+	virtual void Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget) override;
 
 
 private:
@@ -44,7 +45,7 @@ private:
 	virtual void OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) override;
-	virtual void AttackCollider_On(const wstring& skillname) override;
+	virtual void AttackCollider_On(const wstring& skillname, _float fAttackDamage) override;
 	virtual void AttackCollider_Off() override;
 	virtual void Set_State(_uint iIndex) override;
 
@@ -55,8 +56,11 @@ private:
 	void n_run();
 	void n_run_Init();
 
-	void die();
-	void die_Init();
+	void die_01();
+	void die_01_Init();
+	void die_02();
+	void die_02_Init();
+
 
 	void gaze_b();
 	void gaze_b_Init();
@@ -99,6 +103,7 @@ private:
 	void skill_3100();
 	void skill_3100_Init();
 
+	void Dead_Setting();
 	void CalCulate_PatrolTime();
 	void Execute_AttackSkill();
 private:

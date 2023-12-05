@@ -10,7 +10,7 @@
 #include "Model.h"
 #include "YeopoHorse_FSM.h"
 #include "CoolTimeCheckScript.h"
-
+#include "CharacterController.h"
 
 Yeopo_FSM::Yeopo_FSM()
 {
@@ -30,8 +30,6 @@ HRESULT Yeopo_FSM::Init()
             animator->Set_CurrentAnim(L"b_idle", true, 1.f);
             m_eCurState = STATE::b_idle;
         }
-       
-        m_pWeapon = CUR_SCENE->Get_GameObject(L"Weapon_Yeopo");
 
         m_pCamera = CUR_SCENE->Get_MainCamera();
 
@@ -46,20 +44,7 @@ HRESULT Yeopo_FSM::Init()
         m_bInitialize = true;
     }
 
-    shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
-    attackCollider->GetOrAddTransform();
-    attackCollider->Add_Component(make_shared<SphereCollider>(1.f));
-    attackCollider->Get_Collider()->Set_CollisionGroup(Player_Attack);
-
-    m_pAttackCollider = attackCollider;
-
-    CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
-    m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
-
-    m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
-    m_pAttackCollider.lock()->Set_Name(L"Player_AttackCollider");
-    m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(Get_Owner());
-
+   
     return S_OK;
 }
 
@@ -70,10 +55,9 @@ void Yeopo_FSM::Tick()
     if (!m_pAttackCollider.expired())
     {
         //m_pAttack transform set forward
-        m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up);
+		m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.5f + _float3::Up);
     }
 
-    Calculate_CamBoneMatrix();
 }
 
 void Yeopo_FSM::State_Tick()
@@ -81,7 +65,7 @@ void Yeopo_FSM::State_Tick()
     State_Init();
 
     m_iCurFrame = Get_CurFrame();
-
+    Recovery_Color();
     switch (m_eCurState)
     {
     case STATE::b_idle:
@@ -200,9 +184,7 @@ void Yeopo_FSM::State_Tick()
         break;
     }
 
-    if (!m_pGroupEffect.expired())
-        m_pGroupEffect.lock()->Get_Transform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
-
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
     if (m_iPreFrame != m_iCurFrame)
         m_iPreFrame = m_iCurFrame;
@@ -345,11 +327,14 @@ void Yeopo_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap
 	if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
 		return;
 
-    wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
 
     if (!m_bInvincible)
     {
-		shared_ptr<GameObject> targetToLook = nullptr;
+        wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
+        _float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
+
+        
+        shared_ptr<GameObject> targetToLook = nullptr;
 		// skillName에 _Skill 포함이면
 		if (strSkillName.find(L"_Skill") != wstring::npos)
 			targetToLook = pCollider->Get_Owner(); // Collider owner를 넘겨준다
@@ -359,7 +344,7 @@ void Yeopo_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap
         if (targetToLook == nullptr)
             return;
 
-		Get_Hit(strSkillName, targetToLook);
+		Get_Hit(strSkillName, fAttackDamage, targetToLook);
     }
 }
 
@@ -367,8 +352,11 @@ void Yeopo_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
 }
 
-void Yeopo_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
+void Yeopo_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
+	//Calculate Damage 
+	m_pOwner.lock()->Get_Hurt(fDamage);
+
 	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 	_float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
 
@@ -376,64 +364,83 @@ void Yeopo_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTa
 	m_vHitDir.y = 0.f;
 	m_vHitDir.Normalize();
 
-    if (skillname == NORMAL_ATTACK || skillname == NORMAL_SKILL)
-    {
-        if (!m_bSuperArmor)
-        {
-            if (m_eCurState == STATE::hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_loop)
-                m_eCurState = STATE::knock_end_hit;
-            else
-                m_eCurState = STATE::hit;
-        }
-    }
-    else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
-    {
-        if (!m_bSuperArmor)
-        {
-            if (m_eCurState == STATE::knock_end_hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_loop)
-                m_eCurState = STATE::knock_end_hit;
-            else
-                m_eCurState = STATE::knock_start;
-        }
-    }
-    else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
-    {
-        if (!m_bSuperArmor)
-        {
-            if (m_eCurState == STATE::knock_end_hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_loop)
-                m_eCurState = STATE::knock_end_hit;
-            else
-                m_eCurState = STATE::knockdown_start;
-        }
-    }
-    else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
-    {
-        if (!m_bSuperArmor)
-        {
-            if (m_eCurState == STATE::knock_end_hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_loop)
-                m_eCurState = STATE::knock_end_hit;
-            else
-                m_eCurState = STATE::airborne_start;
-        }
-    }
+	Set_HitColor();
+
+	if (skillname == NORMAL_ATTACK || skillname == NORMAL_SKILL)
+	{
+		if (!m_bSuperArmor)
+		{
+			if (m_eCurState == STATE::hit)
+				Reset_Frame();
+			else if (m_eCurState == STATE::knock_end_hit)
+				Reset_Frame();
+			else if (m_eCurState == STATE::knock_end_loop)
+				m_eCurState = STATE::knock_end_hit;
+			else
+				m_eCurState = STATE::hit;
+
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.1f);
+
+
+		}
+	}
+	else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
+	{
+		if (!m_bSuperArmor)
+		{
+			if (m_eCurState == STATE::knock_end_hit)
+				Reset_Frame();
+			else if (m_eCurState == STATE::knock_end_loop)
+				m_eCurState = STATE::knock_end_hit;
+			else
+				m_eCurState = STATE::knock_start;
+
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.2f);
+
+		}
+	}
+	else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
+	{
+		if (!m_bSuperArmor)
+		{
+			if (m_eCurState == STATE::knock_end_hit)
+				Reset_Frame();
+			else if (m_eCurState == STATE::knock_end_loop)
+				m_eCurState = STATE::knock_end_hit;
+			else
+				m_eCurState = STATE::knockdown_start;
+
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.3f);
+
+		}
+	}
+	else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
+	{
+		if (!m_bSuperArmor)
+		{
+			if (m_eCurState == STATE::knock_end_hit)
+				Reset_Frame();
+			else if (m_eCurState == STATE::knock_end_loop)
+				m_eCurState = STATE::knock_end_hit;
+			else
+				m_eCurState = STATE::airborne_start;
+
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.3f);
+
+		}
+	}
+	else
+		CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.03f);
+
 }
 
-void Yeopo_FSM::AttackCollider_On(const wstring& skillname)
+void Yeopo_FSM::AttackCollider_On(const wstring& skillname, _float fAttackDamage)
 {
     if (!m_pAttackCollider.expired())
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(true);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     }
 }
 
@@ -443,6 +450,7 @@ void Yeopo_FSM::AttackCollider_Off()
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(0.f);
     }
 }
 
@@ -456,21 +464,24 @@ void Yeopo_FSM::b_idle()
 
     _float3 vInputVector = Get_InputDirVector();
 
-    if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
-        KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
-        m_eCurState = STATE::b_run_start;
-
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
-    
-    Use_Skill();
-
-    if (KEYPUSH(KEY_TYPE::V))
+    if (!g_bIsCanMouseMove && !g_bCutScene)
     {
-        if (!m_bRidingCoolCheck)
+        if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
+            KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
+            m_eCurState = STATE::b_run_start;
+
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
+
+        Use_Skill();
+
+        if (KEYPUSH(KEY_TYPE::V))
         {
-            Create_Vehicle();
-            m_eCurState = STATE::SQ_RideHorse_Idle;
+            if (!m_bRidingCoolCheck)
+            {
+                Create_Vehicle();
+                m_eCurState = STATE::SQ_RideHorse_Idle;
+            }
         }
     }
 }
@@ -518,10 +529,13 @@ void Yeopo_FSM::b_run_start()
 
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
-        if (KEYTAP(KEY_TYPE::LBUTTON))
-            m_eCurState = STATE::skill_1100;
-       
-        Use_Skill();
+        if (!g_bIsCanMouseMove && !g_bCutScene)
+        {
+            if (KEYTAP(KEY_TYPE::LBUTTON))
+                m_eCurState = STATE::skill_1100;
+
+            Use_Skill();
+        }
     }
 }
 
@@ -554,7 +568,7 @@ void Yeopo_FSM::b_run()
 
         if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
         {
-            if (Get_CurFrame() % 2 == 0)
+            if (m_iCurFrame % 2 == 0)
                 m_eCurState = STATE::b_run_end_r;
             else
                 m_eCurState = STATE::b_run_end_l;
@@ -563,17 +577,27 @@ void Yeopo_FSM::b_run()
     else
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
-    if (KEYPUSH(KEY_TYPE::LSHIFT))
+    if (g_bIsCanMouseMove || g_bCutScene)
     {
-        if ((Get_CurFrame() == 1))
-            m_eCurState = STATE::b_sprint;
+        if (m_iCurFrame % 2 == 0)
+            m_eCurState = STATE::b_run_end_r;
+        else
+            m_eCurState = STATE::b_run_end_l;
     }
 
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYPUSH(KEY_TYPE::LSHIFT))
+        {
+            if ((m_iCurFrame == 1))
+                m_eCurState = STATE::b_sprint;
+        }
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
 
-    Use_Skill();
+        Use_Skill();
+    }
 }
 
 void Yeopo_FSM::b_run_Init()
@@ -602,10 +626,13 @@ void Yeopo_FSM::b_run_end_r()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
 
-    Use_Skill();
+        Use_Skill();
+    }
 }
 
 void Yeopo_FSM::b_run_end_r_Init()
@@ -635,10 +662,13 @@ void Yeopo_FSM::b_run_end_l()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
 
-    Use_Skill();
+        Use_Skill();
+    }
 }
 
 void Yeopo_FSM::b_run_end_l_Init()
@@ -670,7 +700,7 @@ void Yeopo_FSM::b_sprint()
 
         if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
         {
-            if (Get_CurFrame() % 2 == 0)
+            if (m_iCurFrame % 2 == 0)
                 m_eCurState = STATE::b_run_end_r;
             else
                 m_eCurState = STATE::b_run_end_l;
@@ -679,16 +709,27 @@ void Yeopo_FSM::b_sprint()
     else
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
-    if (!KEYPUSH(KEY_TYPE::LSHIFT))
+    if (g_bIsCanMouseMove || g_bCutScene)
     {
-        if (Get_CurFrame() < 1 || Get_CurFrame() > 13)
-            m_eCurState = STATE::b_run;
+        if (m_iCurFrame % 2 == 0)
+            m_eCurState = STATE::b_run_end_r;
+        else
+            m_eCurState = STATE::b_run_end_l;
     }
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (!KEYPUSH(KEY_TYPE::LSHIFT))
+        {
+            if (m_iCurFrame < 1 || m_iCurFrame > 13)
+                m_eCurState = STATE::b_run;
+        }
 
-    Use_Skill();
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
+
+        Use_Skill();
+    }
 }
 
 void Yeopo_FSM::b_sprint_Init()
@@ -741,6 +782,8 @@ void Yeopo_FSM::airborne_start_Init()
 
     m_bInvincible = false;
     m_bSuperArmor = true;
+
+    Get_CharacterController()->Add_Velocity(6.f);
 }
 
 void Yeopo_FSM::airborne_end()
@@ -825,7 +868,7 @@ void Yeopo_FSM::knock_start_Init()
 
 void Yeopo_FSM::knock_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -848,7 +891,7 @@ void Yeopo_FSM::knock_end_loop()
 {
     m_tKnockDownEndCoolTime.fAccTime += fDT;
 
-    if (Get_CurFrame() > Get_FinalFrame() / 2)
+    if (m_iCurFrame > Get_FinalFrame() / 2)
         m_eCurState = STATE::knock_up;
 }
 
@@ -933,7 +976,7 @@ void Yeopo_FSM::knockdown_start_Init()
 
 void Yeopo_FSM::knockdown_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -954,25 +997,35 @@ void Yeopo_FSM::knockdown_end_Init()
 
 void Yeopo_FSM::skill_1100()
 {
+    if(Init_CurFrame(5))
+        Add_And_Set_Effect(L"Yeopo_1100");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     Look_DirToTarget();
 
-    if (Get_CurFrame() == 9)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 19)
+    if (m_iCurFrame == 9)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 19)
         AttackCollider_Off();
 
-    if (Check_Combo(15, KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1200;
-    
-
-    if (Get_FinalFrame() - Get_CurFrame() < 6)
+    if (!g_bIsCanMouseMove && !g_bCutScene)
     {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        if (Check_Combo(15, KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1200;
+
+        Use_Skill();
+    }
+
+    if (Get_FinalFrame() - m_iCurFrame < 6)
+    {
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        
         m_eCurState = STATE::b_idle;
     }
 
 
-    Use_Skill();
 }
 
 void Yeopo_FSM::skill_1100_Init()
@@ -981,7 +1034,8 @@ void Yeopo_FSM::skill_1100_Init()
 
     animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
     m_bCanCombo = false;
 
@@ -993,35 +1047,49 @@ void Yeopo_FSM::skill_1100_Init()
 
 void Yeopo_FSM::skill_1200()
 {
+    if (Init_CurFrame(0))
+        Add_And_Set_Effect(L"Yeopo_1200");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     Look_DirToTarget();
 
-    if (Get_CurFrame() == 10)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 17)
+    if (m_iCurFrame == 10)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 17)
         AttackCollider_Off();
 
-	if (Check_Combo(15, KEY_TYPE::LBUTTON))
-		m_eCurState = STATE::skill_1300;
-
-    if (Get_FinalFrame() - Get_CurFrame() < 7)
+    if (!g_bIsCanMouseMove && !g_bCutScene)
     {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        if (Check_Combo(23, KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1400;
+
+        Use_Skill();
+    }
+
+    if (Get_FinalFrame() - m_iCurFrame < 7)
+    {
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
     }
 
 
-    Use_Skill();
 }
 
 void Yeopo_FSM::skill_1200_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+    animator->Set_NextTweenAnim(L"skill_1200", 0.001f, false, m_fNormalAttack_AnimationSpeed);
 
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+    {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
+    }
 
     m_bCanCombo = false;
 
@@ -1035,38 +1103,43 @@ void Yeopo_FSM::skill_1200_Init()
 
 void Yeopo_FSM::skill_1300()
 {
-    if (Get_CurFrame() == 8)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 13)
+    if (m_iCurFrame == 8)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 13)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 16)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 23)
+    else if (m_iCurFrame == 16)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 23)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 28)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 36)
+    else if (m_iCurFrame == 28)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 36)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 41)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 46)
+    else if (m_iCurFrame == 41)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 46)
         AttackCollider_Off();
 
     Look_DirToTarget();
 
-
-	if (Check_Combo(45, KEY_TYPE::LBUTTON))
-		m_eCurState = STATE::skill_1400;
-
-    if (Get_FinalFrame() - Get_CurFrame() < 6)
+    if (!g_bIsCanMouseMove && !g_bCutScene)
     {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        if (Check_Combo(45, KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1400;
+
+        Use_Skill();
+    }
+
+    if (Get_FinalFrame() - m_iCurFrame < 6)
+    {
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
     }
 
 
-    Use_Skill();
 }
 
 void Yeopo_FSM::skill_1300_Init()
@@ -1075,8 +1148,11 @@ void Yeopo_FSM::skill_1300_Init()
 
     animator->Set_NextTweenAnim(L"skill_1300", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+    {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
+    }
 
     m_bCanCombo = false;
 
@@ -1090,27 +1166,34 @@ void Yeopo_FSM::skill_1300_Init()
 
 void Yeopo_FSM::skill_1400()
 {
-    if (Get_CurFrame() == 7)
-        AttackCollider_On(KNOCKBACK_ATTACK);
-    else if (Get_CurFrame() == 14)
+    if (Init_CurFrame(5))
+        Add_And_Set_Effect(L"Yeopo_1400");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
+    if (m_iCurFrame == 7)
+        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+    else if (m_iCurFrame == 14)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 19)
-        AttackCollider_On(KNOCKDOWN_ATTACK);
-    else if (Get_CurFrame() == 36)
+    else if (m_iCurFrame == 19)
+        AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
+    else if (m_iCurFrame == 36)
         AttackCollider_Off();
 
 
     Look_DirToTarget();
 
-    if (Get_FinalFrame() - Get_CurFrame() < 6)
+    if (Get_FinalFrame() - m_iCurFrame < 6)
     {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
     }
 
-
-    Use_Skill();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+        Use_Skill();
 }
 
 void Yeopo_FSM::skill_1400_Init()
@@ -1119,8 +1202,11 @@ void Yeopo_FSM::skill_1400_Init()
 
     animator->Set_NextTweenAnim(L"skill_1400", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+    {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
+    }
 
     m_bCanCombo = false;
 
@@ -1141,7 +1227,7 @@ void Yeopo_FSM::skill_91100()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    if (Get_CurFrame() >= 23)
+    if (m_iCurFrame >= 23)
     {
         if (vInputVector != _float3(0.f))
             m_eCurState = STATE::b_run;
@@ -1172,7 +1258,7 @@ void Yeopo_FSM::skill_93100()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
-    if (Get_CurFrame() >= 23)
+    if (m_iCurFrame >= 23)
     {
         if (vInputVector != _float3(0.f))
             m_eCurState = STATE::b_run;
@@ -1204,7 +1290,7 @@ void Yeopo_FSM::skill_100200()
 		desc.fLimitDistance = 10.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
+		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
     }
     else if (Init_CurFrame(30))
     {
@@ -1221,16 +1307,18 @@ void Yeopo_FSM::skill_100200()
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 13.f;
 
-		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
+		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
     }
 
     Look_DirToTarget();
 
-    if (Check_Combo(56, KEY_TYPE::KEY_1))
-        m_eCurState = STATE::skill_100300;
-	
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (Check_Combo(56, KEY_TYPE::KEY_1))
+            m_eCurState = STATE::skill_100300;
+    }
 
-    if (Get_FinalFrame() - Get_CurFrame() < 8)
+    if (Get_FinalFrame() - m_iCurFrame < 8)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
@@ -1265,7 +1353,7 @@ void Yeopo_FSM::skill_100300()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK);
-		Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, AIRBORNE_ATTACK);
+		Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, AIRBORNE_ATTACK, 10.f);
     }
     
     Look_DirToTarget();
@@ -1276,7 +1364,8 @@ void Yeopo_FSM::skill_100300()
         m_eCurState = STATE::b_idle;
     }
 
-    Use_Dash();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+        Use_Dash();
 }
 
 void Yeopo_FSM::skill_100300_Init()
@@ -1307,20 +1396,20 @@ void Yeopo_FSM::skill_200100()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
-		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK);
+		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK, 10.f);
     }
     
 
     Look_DirToTarget();
 
-    if (Get_FinalFrame() - Get_CurFrame() < 10)
+    if (Get_FinalFrame() - m_iCurFrame < 10)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
     }
 
-
-    Use_Dash();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+        Use_Dash();
 }
 
 void Yeopo_FSM::skill_200100_Init()
@@ -1339,33 +1428,36 @@ void Yeopo_FSM::skill_200100_Init()
 
 void Yeopo_FSM::skill_300100()
 {
-    if (Get_CurFrame() == 25)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 30)
+    if (m_iCurFrame == 25)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 30)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 40)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 46)
+    else if (m_iCurFrame == 40)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 46)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 55)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 64)
+    else if (m_iCurFrame == 55)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 64)
         AttackCollider_Off();
 
     Look_DirToTarget();
 
-    if (Check_Combo(65, KEY_TYPE::KEY_3))
-        m_eCurState = STATE::skill_300200;
-    
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (Check_Combo(65, KEY_TYPE::KEY_3))
+            m_eCurState = STATE::skill_300200;
 
-    if (Get_FinalFrame() - Get_CurFrame() <15)
+        Use_Dash();
+    }
+
+    if (Get_FinalFrame() - m_iCurFrame <15)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
     }
 
 
-    Use_Dash();
 }
 
 void Yeopo_FSM::skill_300100_Init()
@@ -1386,29 +1478,30 @@ void Yeopo_FSM::skill_300100_Init()
 
 void Yeopo_FSM::skill_300200()
 {
-    if (Get_CurFrame() == 9)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 12)
+    if (m_iCurFrame == 9)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 12)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 15)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 20)
+    else if (m_iCurFrame == 15)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 20)
         AttackCollider_Off();
 
     Look_DirToTarget();
 
-    if (Check_Combo(25, KEY_TYPE::KEY_3))
-        m_eCurState = STATE::skill_300300;
-    
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (Check_Combo(25, KEY_TYPE::KEY_3))
+            m_eCurState = STATE::skill_300300;
 
-    if (Get_FinalFrame() - Get_CurFrame() < 15)
+        Use_Dash();
+    }
+
+    if (Get_FinalFrame() - m_iCurFrame < 15)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
     }
-
-
-    Use_Dash();
 }
 
 void Yeopo_FSM::skill_300200_Init()
@@ -1429,30 +1522,32 @@ void Yeopo_FSM::skill_300200_Init()
 
 void Yeopo_FSM::skill_300300()
 {
-    if (Get_CurFrame() == 13)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 18)
+    if (m_iCurFrame == 13)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 18)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 21)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 30)
+    else if (m_iCurFrame == 21)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 30)
         AttackCollider_Off();
 
     Look_DirToTarget();
 
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (Check_Combo(30, KEY_TYPE::KEY_3))
+            m_eCurState = STATE::skill_300400;
 
-    if (Check_Combo(30, KEY_TYPE::KEY_3))
-        m_eCurState = STATE::skill_300400;
-    
+        Use_Dash();
+    }
 
-    if (Get_FinalFrame() - Get_CurFrame() < 15)
+    if (Get_FinalFrame() - m_iCurFrame < 15)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
     }
 
 
-    Use_Dash();
 }
 
 void Yeopo_FSM::skill_300300_Init()
@@ -1474,21 +1569,21 @@ void Yeopo_FSM::skill_300300_Init()
 
 void Yeopo_FSM::skill_300400()
 {
-    if (Get_CurFrame() == 31)
-        AttackCollider_On(KNOCKBACK_ATTACK);
-    else if (Get_CurFrame() == 36)
+    if (m_iCurFrame == 31)
+        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+    else if (m_iCurFrame == 36)
         AttackCollider_Off();
     
     Look_DirToTarget();
 
-    if (Get_FinalFrame() - Get_CurFrame() < 15)
+    if (Get_FinalFrame() - m_iCurFrame < 15)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
     }
 
-
-    Use_Dash();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+        Use_Dash();
 }
 
 void Yeopo_FSM::skill_300400_Init()
@@ -1509,12 +1604,15 @@ void Yeopo_FSM::skill_300400_Init()
 
 void Yeopo_FSM::skill_400100()
 {
-    if (Get_CurFrame() < 84)
+    Calculate_CamBoneMatrix();
+
+    if (m_iCurFrame < 84)
     {
         if (!m_pCamera.expired())
         {
             _float4 vSkillCamPos = m_vSkillCamBonePos;
-            vSkillCamPos.y = 2.f;
+            vSkillCamPos.y += 2.f;
+            
             _float4 vDir = m_vCamBonePos - vSkillCamPos;
             vDir.Normalize();
 
@@ -1528,23 +1626,37 @@ void Yeopo_FSM::skill_400100()
         if (!m_pCamera.expired())
         {
             _float4 vSkillCamPos = m_vSkillCamBonePos;
-            vSkillCamPos.y = 2.f;
+            vSkillCamPos.y += 2.f;
+
             _float4 vDir = m_vCamBonePos - vSkillCamPos;
             vDir.Normalize();
 
-            //m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(vSkillCamPos.xyz());
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.5f, vDir.xyz() * -1.f, 12.f);
         }
     }
 
+    if (Init_CurFrame(123))
+    {
+        FORWARDMOVINGSKILLDESC desc;
+        desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+        desc.fMoveSpeed = 0.f;
+        desc.fLifeTime = 1.f;
+        desc.fLimitDistance = 0.f;
+
+        _float4 vSkillPos = m_vCenterBonePos;
+        Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, AIRBORNE_ATTACK, 10.f);
+    }
+
     //Look_DirToTarget();
     //Skill End
-    if (Get_CurFrame() == 135)
+    if (m_iCurFrame == 135)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
     }
+
 }
 
 void Yeopo_FSM::skill_400100_Init()
@@ -1562,6 +1674,8 @@ void Yeopo_FSM::skill_400100_Init()
     m_bInvincible = true;
     m_bSuperArmor = true;
 
+    Calculate_CamBoneMatrix();
+
     Create_Vehicle();
  
     Set_VehicleState((_uint)YeopoHorse_FSM::STATE::skill_400100_fx);
@@ -1569,29 +1683,29 @@ void Yeopo_FSM::skill_400100_Init()
 
 void Yeopo_FSM::skill_501100()
 {
-    if (Get_CurFrame() == 12)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 16)
+    if (m_iCurFrame == 12)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 16)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 17)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 19)
+    else if (m_iCurFrame == 17)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 19)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 21)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 23)
+    else if (m_iCurFrame == 21)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 23)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 25)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 28)
+    else if (m_iCurFrame == 25)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 28)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 30)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 35)
+    else if (m_iCurFrame == 30)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 35)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 52)
-        AttackCollider_On(KNOCKDOWN_ATTACK);
-    else if (Get_CurFrame() == 55)
+    else if (m_iCurFrame == 52)
+        AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
+    else if (m_iCurFrame == 55)
         AttackCollider_Off();
     
 
@@ -1603,8 +1717,8 @@ void Yeopo_FSM::skill_501100()
         m_eCurState = STATE::b_idle;
     }
 
-
-    Use_Dash();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+        Use_Dash();
 }
 
 void Yeopo_FSM::skill_501100_Init()
@@ -1629,12 +1743,15 @@ void Yeopo_FSM::SQ_RideHorse_Idle()
 {
     _float3 vInputVector = Get_InputDirVector();
 
-    if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
-        KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
-        m_eCurState = STATE::SQ_RideHorse_Run;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
+            KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
+            m_eCurState = STATE::SQ_RideHorse_Run;
 
-    if (KEYTAP(KEY_TYPE::V))
-        m_eCurState = STATE::SQ_RideHorse_End;
+        if (KEYTAP(KEY_TYPE::V))
+            m_eCurState = STATE::SQ_RideHorse_End;
+    }
 }
 
 void Yeopo_FSM::SQ_RideHorse_Idle_Init()
@@ -1754,7 +1871,7 @@ void Yeopo_FSM::RidingCoolCheck()
     }
 }
 
-void Yeopo_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType)
+void Yeopo_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
 {
     shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
 
@@ -1772,12 +1889,13 @@ void Yeopo_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fS
     m_pSkillCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
     m_pSkillCollider.lock()->Get_Collider()->Set_Activate(true);
     m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
+    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
     m_pSkillCollider.lock()->Set_Name(L"Player_SkillCollider");
     m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
     m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
 
-    CUR_SCENE->Add_GameObject(m_pSkillCollider.lock());
+    EVENTMGR.Create_Object(m_pSkillCollider.lock());
 }
 
 void Yeopo_FSM::Create_Vehicle()
@@ -1803,7 +1921,7 @@ void Yeopo_FSM::Create_Vehicle()
     ObjVehicle->Get_FSM()->Init();
     ObjVehicle->Set_Name(L"Yeopo_RedHorse");
     
-    CUR_SCENE->Add_GameObject(ObjVehicle);
+    EVENTMGR.Create_Object(ObjVehicle);
 
     m_pVehicle = ObjVehicle;
 }

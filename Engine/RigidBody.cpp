@@ -133,6 +133,37 @@ void RigidBody::Create_CapsuleRigidBody(_float3 centerPos, _float radius, _float
 	PHYSX.Get_PxScene()->addActor(*m_pRigidBody);
 }
 
+void RigidBody::AddOrRemoveRigidBody_FromScene(_bool flag)
+{
+	PxActor** actors = nullptr;
+	PxU32 numActors = PHYSX.Get_PxScene()->getNbActors(PxActorTypeFlag::eRIGID_DYNAMIC | PxActorTypeFlag::eRIGID_STATIC);
+	_bool alreadyHas = false;
+	if (numActors > 0)
+	{
+		actors = new PxActor * [numActors];
+		PHYSX.Get_PxScene()->getActors(PxActorTypeFlag::eRIGID_DYNAMIC | PxActorTypeFlag::eRIGID_STATIC, actors, numActors);
+		for (PxU32 i = 0; i < numActors; ++i)
+		{
+			if (actors[i] == m_pRigidBody)
+			{
+				alreadyHas = true;
+			}
+		}
+		delete[] actors;
+	}
+
+	if (flag)
+	{
+		if(alreadyHas == false)
+			PHYSX.Get_PxScene()->addActor(*m_pRigidBody);
+	}
+	else
+	{
+		if (alreadyHas == true)
+		PHYSX.Get_PxScene()->removeActor(*m_pRigidBody);
+	}
+}
+
 void RigidBody::RemoveRigidBody()
 {
 	if (PHYSX.Get_PxScene())

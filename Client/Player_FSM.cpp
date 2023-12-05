@@ -32,8 +32,6 @@ HRESULT Player_FSM::Init()
             m_eCurState = STATE::b_idle;
         }
 
-        m_pWeapon = CUR_SCENE->Get_GameObject(L"Weapon_Player");
-
         m_iCenterBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Center");
         m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
         m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
@@ -49,20 +47,7 @@ HRESULT Player_FSM::Init()
     }
 
 
-    shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
-    attackCollider->GetOrAddTransform();
-    attackCollider->Add_Component(make_shared<SphereCollider>(1.f));
-    attackCollider->Get_Collider()->Set_CollisionGroup(Player_Attack);
-
-    m_pAttackCollider = attackCollider;
-
-    CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
-    m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
-
-    m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
-    m_pAttackCollider.lock()->Set_Name(L"Player_AttackCollider");
-    m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(Get_Owner());
-
+   
 
     return S_OK;
 }
@@ -74,10 +59,8 @@ void Player_FSM::Tick()
     if (!m_pAttackCollider.expired())
     {
         //m_pAttack transform set forward
-        m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up);
+		m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.5f + _float3::Up);
     }
-
-    Calculate_CamBoneMatrix();
 }
 
 void Player_FSM::State_Tick()
@@ -85,7 +68,7 @@ void Player_FSM::State_Tick()
     State_Init();
 
     m_iCurFrame = Get_CurFrame();
-
+    Recovery_Color();
     switch (m_eCurState)
     {
     case STATE::b_idle:
@@ -186,9 +169,7 @@ void Player_FSM::State_Tick()
 		break;
     }
 
-    if (!m_pGroupEffect.expired())
-        m_pGroupEffect.lock()->Get_Transform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
-
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
     if (m_iPreFrame != m_iCurFrame)
         m_iPreFrame = m_iCurFrame;
@@ -313,11 +294,13 @@ void Player_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGa
 	if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
 		return;
 
-    wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
 
     if (!m_bInvincible)
 	{
-		shared_ptr<GameObject> targetToLook = nullptr;
+        wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
+        _float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
+
+        shared_ptr<GameObject> targetToLook = nullptr;
 		// skillName에 _Skill 포함이면
 		if (strSkillName.find(L"_Skill") != wstring::npos)
 			targetToLook = pCollider->Get_Owner(); // Collider owner를 넘겨준다
@@ -327,7 +310,7 @@ void Player_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGa
         if (targetToLook == nullptr)
             return;
 
-        Get_Hit(strSkillName, targetToLook);
+        Get_Hit(strSkillName, fAttackDamage, targetToLook);
     }
 }
 
@@ -335,14 +318,19 @@ void Player_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap
 {
 }
 
-void Player_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
+void Player_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
-	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
+    //Calculate Damage 
+    m_pOwner.lock()->Get_Hurt(fDamage);
+	
+    _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 	_float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
 
 	m_vHitDir = vOppositePos - vMyPos;
 	m_vHitDir.y = 0.f;
 	m_vHitDir.Normalize();
+
+    Set_HitColor();
 
     if (skillname == NORMAL_ATTACK || skillname == NORMAL_SKILL)
     {
@@ -356,6 +344,10 @@ void Player_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookT
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::hit;
+
+            CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.1f);
+           
+
         }
     }
     else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
@@ -368,6 +360,9 @@ void Player_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookT
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::knock_start;
+
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.2f);
+
         }
     }
     else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
@@ -380,6 +375,9 @@ void Player_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookT
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::knockdown_start;
+
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.3f);
+
         }
     }
     else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
@@ -392,16 +390,23 @@ void Player_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookT
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::airborne_start;
+
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.3f);
+
         }
     }
+    else
+		CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.03f);
+
 }
 
-void Player_FSM::AttackCollider_On(const wstring& skillname)
+void Player_FSM::AttackCollider_On(const wstring& skillname, _float fAttackDamage)
 {
     if (!m_pAttackCollider.expired())
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(true);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     }
 }
 
@@ -411,6 +416,7 @@ void Player_FSM::AttackCollider_Off()
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(0.f);
     }
 }
 
@@ -422,17 +428,17 @@ void Player_FSM::b_idle()
 {
 	_float3 vInputVector = Get_InputDirVector();
 
-	if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
-		KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
-		m_eCurState = STATE::b_run_start;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+	    if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
+	    	KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
+	    	m_eCurState = STATE::b_run_start;
 
-	if (KEYTAP(KEY_TYPE::LBUTTON))
-		m_eCurState = STATE::skill_1100;
+	    if (KEYTAP(KEY_TYPE::LBUTTON))
+	    	m_eCurState = STATE::skill_1100;
 
-    if (KEYTAP(KEY_TYPE::Z))
-        Get_CharacterController()->Add_Velocity(5.f);
-
-    Use_Skill();
+        Use_Skill();
+    }
 }
 
 void Player_FSM::b_idle_Init()
@@ -470,11 +476,13 @@ void Player_FSM::b_run_start()
 
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
+        if (!g_bIsCanMouseMove && !g_bCutScene)
+        {
+            if (KEYTAP(KEY_TYPE::LBUTTON))
+                m_eCurState = STATE::skill_1100;
 
-        if (KEYTAP(KEY_TYPE::LBUTTON))
-            m_eCurState = STATE::skill_1100;
-
-        Use_Skill();
+            Use_Skill();
+        }
     }
 }
 
@@ -505,7 +513,7 @@ void Player_FSM::b_run()
 
         if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
         {
-            if (Get_CurFrame() % 2 == 0)
+            if (m_iCurFrame % 2 == 0)
                 m_eCurState = STATE::b_run_end_r;
             else
                 m_eCurState = STATE::b_run_end_l;
@@ -514,16 +522,27 @@ void Player_FSM::b_run()
     else
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
-    if (KEYPUSH(KEY_TYPE::LSHIFT))
+    if (g_bIsCanMouseMove || g_bCutScene)
     {
-        if (Get_CurFrame() == 1)
-            m_eCurState = STATE::b_sprint;
+        if (m_iCurFrame % 2 == 0)
+            m_eCurState = STATE::b_run_end_r;
+        else
+            m_eCurState = STATE::b_run_end_l;
     }
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYPUSH(KEY_TYPE::LSHIFT))
+        {
+            if (m_iCurFrame == 1)
+                m_eCurState = STATE::b_sprint;
+        }
 
-    Use_Skill();
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
+
+        Use_Skill();
+    }
 }
 
 void Player_FSM::b_run_Init()
@@ -550,11 +569,13 @@ void Player_FSM::b_run_end_r()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
-
-    Use_Skill();
+        Use_Skill();
+    }
 
 }
 
@@ -584,10 +605,13 @@ void Player_FSM::b_run_end_l()
         m_eCurState = STATE::b_idle;
 
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
 
-    Use_Skill();
+        Use_Skill();
+    }
 }
 
 void Player_FSM::b_run_end_l_Init()
@@ -617,7 +641,7 @@ void Player_FSM::b_sprint()
 
         if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
         {
-            if (Get_CurFrame() % 2 == 0)
+            if (m_iCurFrame % 2 == 0)
                 m_eCurState = STATE::b_run_end_r;
             else
                 m_eCurState = STATE::b_run_end_l;
@@ -626,16 +650,27 @@ void Player_FSM::b_sprint()
     else
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
 
-    if (!KEYPUSH(KEY_TYPE::LSHIFT))
+    if (g_bIsCanMouseMove || g_bCutScene)
     {
-        if (Get_CurFrame() < 1 || Get_CurFrame() > 13)
-            m_eCurState = STATE::b_run;
+        if (m_iCurFrame % 2 == 0)
+            m_eCurState = STATE::b_run_end_r;
+        else
+            m_eCurState = STATE::b_run_end_l;
     }
 
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (!KEYPUSH(KEY_TYPE::LSHIFT))
+        {
+            if (m_iCurFrame < 1 || m_iCurFrame > 13)
+                m_eCurState = STATE::b_run;
+        }
 
-    Use_Skill();
+        if (KEYTAP(KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1100;
+
+        Use_Skill();
+    }
 }
 
 void Player_FSM::b_sprint_Init()
@@ -670,8 +705,6 @@ void Player_FSM::die_Init()
 
 void Player_FSM::airborne_start()
 {
-     
-
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
     if (Is_AnimFinished())
@@ -688,12 +721,12 @@ void Player_FSM::airborne_start_Init()
 
     m_bInvincible = false;
     m_bSuperArmor = true;
+
+    Get_CharacterController()->Add_Velocity(6.f);
 }
 
 void Player_FSM::airborne_end()
 {
-     
-
     if (Is_AnimFinished())
         m_eCurState = STATE::airborne_up;
 }
@@ -770,7 +803,7 @@ void Player_FSM::knock_start_Init()
 
 void Player_FSM::knock_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -793,7 +826,7 @@ void Player_FSM::knock_end_loop()
 {
     m_tKnockDownEndCoolTime.fAccTime += fDT;
     
-    if (Get_CurFrame() > Get_FinalFrame() / 2)
+    if (m_iCurFrame > Get_FinalFrame() / 2)
         m_eCurState = STATE::knock_up;
 }
 
@@ -876,7 +909,7 @@ void Player_FSM::knockdown_start_Init()
 
 void Player_FSM::knockdown_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -900,24 +933,29 @@ void Player_FSM::skill_1100()
     if(Init_CurFrame(9))
         Add_Effect(L"Teo_1100");
 
-    if (Get_CurFrame() == 9)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 13)
+    if (m_iCurFrame == 9)
+        AttackCollider_On(NORMAL_ATTACK, _float(rand() % 10 + 1));
+    else if (m_iCurFrame == 13)
         AttackCollider_Off();
 
     Look_DirToTarget();
 
-    if(Check_Combo(24, KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1200;
-	
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if(Check_Combo(24, KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1200;
+	    
+        Use_Skill();
+    }
+    
     if (Is_AnimFinished())
     {
         if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
             m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+
         m_eCurState = STATE::b_idle;
     }
 
-    Use_Skill();
 }
 
 void Player_FSM::skill_1100_Init()
@@ -927,6 +965,7 @@ void Player_FSM::skill_1100_Init()
     animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     Set_DirToTargetOrInput(OBJ_MONSTER);
+
     if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
@@ -942,25 +981,31 @@ void Player_FSM::skill_1200()
 	if (Init_CurFrame(4))
 		Add_Effect(L"Teo_1200");
 
-    if (Get_CurFrame() == 4)
-        AttackCollider_On(NORMAL_ATTACK);
+    if (m_iCurFrame == 4)
+        AttackCollider_On(NORMAL_ATTACK, _float(rand() % 10 + 1));
 
-    else if (Get_CurFrame() > 8)
+    else if (m_iCurFrame > 8)
         AttackCollider_Off();
     
     Look_DirToTarget();
     
-    if(Check_Combo(13,KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1300;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if(Check_Combo(13,KEY_TYPE::LBUTTON))
+            m_eCurState = STATE::skill_1300;
+
+        Use_Skill();
+    }
 
     if (Is_AnimFinished())
     {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
     }
 
-    Use_Skill();
 }
 
 void Player_FSM::skill_1200_Init()
@@ -983,29 +1028,35 @@ void Player_FSM::skill_1200_Init()
 
 void Player_FSM::skill_1300()
 {
-    if (Get_CurFrame() == 12)
+    if (m_iCurFrame == 12)
     {
-        AttackCollider_On(NORMAL_ATTACK);
+        AttackCollider_On(NORMAL_ATTACK, _float(rand() % 10 + 1));
 
         if (m_iPreFrame != m_iCurFrame)
             Add_Effect(L"Teo_1300");
     }
-    else if (Get_CurFrame() == 14)
+    else if (m_iCurFrame == 14)
         AttackCollider_Off();
 
     Look_DirToTarget();
 
-    if (Check_Combo(27, KEY_TYPE::LBUTTON))
-		m_eCurState = STATE::skill_1400;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (Check_Combo(27, KEY_TYPE::LBUTTON))
+	    	m_eCurState = STATE::skill_1400;
 
+        Use_Skill();
+    }
+ 
     if (Is_AnimFinished())
     {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        
         m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
     }
 
-    Use_Skill();
 }
 
 void Player_FSM::skill_1300_Init()
@@ -1016,8 +1067,11 @@ void Player_FSM::skill_1300_Init()
 
     m_bCanCombo = false;
 
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+    {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
+    }
 
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
@@ -1029,21 +1083,26 @@ void Player_FSM::skill_1300_Init()
 
 void Player_FSM::skill_1400()
 {
-	if (Get_CurFrame() == 16)
-		AttackCollider_On(NORMAL_ATTACK);
-	else if (Get_CurFrame() == 20)
+	if (m_iCurFrame == 16)
+		AttackCollider_On(NORMAL_ATTACK, _float(rand() % 10 + 1));
+	else if (m_iCurFrame == 20)
 		AttackCollider_Off();
 
     Look_DirToTarget();
 
 	if (Is_AnimFinished())
 	{
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
-		m_bCanCombo = false;
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+		
+        m_bCanCombo = false;
 		m_eCurState = STATE::b_idle;
 	}
 
-	Use_Skill();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+	    Use_Skill();
+    }
 }
 
 void Player_FSM::skill_1400_Init()
@@ -1054,8 +1113,11 @@ void Player_FSM::skill_1400_Init()
 
 	m_bCanCombo = false;
 
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+    {
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
+    }
 
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
@@ -1110,6 +1172,8 @@ void Player_FSM::skill_93100_Init()
 
 void Player_FSM::skill_100100()
 {
+    Look_DirToTarget();
+
     if(Init_CurFrame(38))
 	{
 		FORWARDMOVINGSKILLDESC desc;
@@ -1119,21 +1183,26 @@ void Player_FSM::skill_100100()
 		desc.fLimitDistance = 25.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.f + _float3::Up;
-		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL);
+		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
 	}
     
-    if(Check_Combo(40,KEY_TYPE::KEY_1))
-        m_eCurState = STATE::skill_100200;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if(Check_Combo(40,KEY_TYPE::KEY_1))
+            m_eCurState = STATE::skill_100200;
 
-    Look_DirToTarget();
+        Use_Dash();
+    }
 
     if (Is_AnimFinished())
     {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        
         m_eCurState = STATE::b_idle;
     }
 
-    Use_Dash();
+   
 }
 
 void Player_FSM::skill_100100_Init()
@@ -1165,7 +1234,7 @@ void Player_FSM::skill_100200()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
-		Create_ForwardMovingSkillCollider(vSkillPos, 5.f, desc, KNOCKBACK_ATTACK);
+		Create_ForwardMovingSkillCollider(vSkillPos, 5.f, desc, KNOCKBACK_ATTACK, 10.f);
 
 	}
     else if (Init_CurFrame(26))
@@ -1194,20 +1263,25 @@ void Player_FSM::skill_100200()
             vLook.Normalize();
 
             if (vDir.Dot(vLook) > cosf(PLAYER_SKILL1_ANGLE * 0.5f))
-                obj->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, Get_Owner());
+                obj->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, 10.f,Get_Owner());
         }
     }
 
-	if (Check_Combo(27, KEY_TYPE::KEY_1))
-		m_eCurState = STATE::skill_100300;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+    	if (Check_Combo(27, KEY_TYPE::KEY_1))
+    		m_eCurState = STATE::skill_100300;
+	    
+        Use_Dash();
+    }
 	
 	if (Is_AnimFinished())
 	{
-		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
-		m_eCurState = STATE::b_idle;
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+		    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+		
+        m_eCurState = STATE::b_idle;
 	}
-
-	Use_Dash();
 }
 
 void Player_FSM::skill_100200_Init()
@@ -1232,9 +1306,9 @@ void Player_FSM::skill_100300()
 {
     Look_DirToTarget();
 
-    if (Get_CurFrame() >= 10 && Get_CurFrame() <= 23)
+    if (m_iCurFrame >= 10 && m_iCurFrame <= 23)
     {
-        if (Get_CurFrame() == 10)
+        if (m_iCurFrame == 10)
             m_vCamStopPos = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS);
 
         if (!m_pCamera.expired())
@@ -1247,7 +1321,7 @@ void Player_FSM::skill_100300()
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 6.f);
         }
     }
-    else if (Get_CurFrame() >= 24 && Get_CurFrame() < 31)
+    else if (m_iCurFrame >= 24 && m_iCurFrame < 31)
     {
         if (!m_pCamera.expired())
         {
@@ -1261,6 +1335,7 @@ void Player_FSM::skill_100300()
         }
     }
 
+    Calculate_CamBoneMatrix();
 
 	if (Init_CurFrame(29))
 	{
@@ -1287,15 +1362,18 @@ void Player_FSM::skill_100300()
 			vLook.Normalize();
 
 			if (vDir.Dot(vLook) > cosf(PLAYER_SKILL1_ANGLE * 0.5f))
-                obj->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, Get_Owner());
+                obj->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, 10.f ,Get_Owner());
 		}
 	}
 
 	if (Is_AnimFinished())
 	{
-		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
-		m_eCurState = STATE::b_idle;
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+		    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+		
+        m_eCurState = STATE::b_idle;
 	}
+
 }
 
 void Player_FSM::skill_100300_Init()
@@ -1304,7 +1382,8 @@ void Player_FSM::skill_100300_Init()
 
 	animator->Set_NextTweenAnim(L"skill_100300", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(SKILL1);
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(SKILL1);
 
 	m_bCanCombo = false;
 
@@ -1318,9 +1397,9 @@ void Player_FSM::skill_100300_Init()
 
 void Player_FSM::skill_200100()
 {
-    if (Get_CurFrame() >= 15)
+    if (m_iCurFrame >= 15)
     {
-        if (Get_CurFrame() == 15)
+        if (m_iCurFrame == 15)
             m_vCamStopPos = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS);
 
         if (!m_pCamera.expired())
@@ -1335,8 +1414,9 @@ void Player_FSM::skill_200100()
         }
     }
 
+    Calculate_CamBoneMatrix();
 
-	if (Get_CurFrame() >= 30)
+	if (m_iCurFrame >= 30)
 	{
         m_fSkillCreateTimer += fDT;
         if (m_fSkillCreateTimer >= 0.3f)
@@ -1349,7 +1429,7 @@ void Player_FSM::skill_200100()
 			desc.fLimitDistance = 0.f;
 
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
-			Create_ForwardMovingSkillCollider(vSkillPos, 5.f, desc, NORMAL_ATTACK);
+			Create_ForwardMovingSkillCollider(vSkillPos, 5.f, desc, NORMAL_ATTACK, 10.f);
 
 			Get_Owner()->Get_Animator()->Set_RenderState(false);
 			m_pWeapon.lock()->Get_ModelRenderer()->Set_RenderState(false);
@@ -1360,9 +1440,12 @@ void Player_FSM::skill_200100()
 
     if (Is_AnimFinished())
     {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        
         m_eCurState = STATE::skill_200200;
     }
+
 }
 
 void Player_FSM::skill_200100_Init()
@@ -1385,7 +1468,7 @@ void Player_FSM::skill_200200()
 {
     Look_DirToTarget();
 
-    if (Get_CurFrame() >= 5)
+    if (m_iCurFrame >= 5)
 	{
 		shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
         animator->Set_RenderState(true);
@@ -1394,7 +1477,6 @@ void Player_FSM::skill_200200()
 
     if (Init_CurFrame(22))
     {
-
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.fMoveSpeed = 0.f;
@@ -1402,12 +1484,14 @@ void Player_FSM::skill_200200()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_SKILL); 
+		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_SKILL, 10.f); 
     }
 
     if (Is_AnimFinished())
     {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        
         m_eCurState = STATE::b_idle;
     }
 }
@@ -1439,17 +1523,22 @@ void Player_FSM::skill_300100()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
-		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_SKILL);
+		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_SKILL, 10.f);
 
     }
 
-	if (Check_Combo(44, KEY_TYPE::KEY_3))
-        m_eCurState = STATE::skill_300200;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+	    if (Check_Combo(44, KEY_TYPE::KEY_3))
+            m_eCurState = STATE::skill_300200;
+    }
 
   
     if (Is_AnimFinished())
     {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        
         m_eCurState = STATE::b_idle;
     }
 }
@@ -1473,7 +1562,7 @@ void Player_FSM::skill_300200()
 {
     Look_DirToTarget();
 
-    if (Get_CurFrame() < 91)
+    if (m_iCurFrame < 91)
     {
         if (!m_pCamera.expired())
         {
@@ -1497,7 +1586,9 @@ void Player_FSM::skill_300200()
         }
     }
     
-    if (Get_CurFrame() >= 5 && Get_CurFrame() < 57)
+    Calculate_CamBoneMatrix();
+
+    if (m_iCurFrame >= 5 && m_iCurFrame < 57)
     {
         m_fSkillCreateTimer += fDT;
         if (m_fSkillCreateTimer >= 0.3f)
@@ -1510,11 +1601,11 @@ void Player_FSM::skill_300200()
             desc.fLimitDistance = 0.f;
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
-            Create_ForwardMovingSkillCollider(vSkillPos, 5.f, desc, NORMAL_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 5.f, desc, NORMAL_ATTACK, 10.f);
 
         }
     }
-    else if (Get_CurFrame() >= 57 && Get_CurFrame() < 75)
+    else if (m_iCurFrame >= 57 && m_iCurFrame < 75)
     {
         m_fSkillCreateTimer += fDT;
         if (m_fSkillCreateTimer >= 0.1f)
@@ -1527,7 +1618,7 @@ void Player_FSM::skill_300200()
             desc.fLimitDistance = 0.f;
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
-            Create_ForwardMovingSkillCollider(vSkillPos, 5.f, desc, NORMAL_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 5.f, desc, NORMAL_ATTACK, 10.f);
 
         }
     }
@@ -1540,15 +1631,18 @@ void Player_FSM::skill_300200()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
-		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_SKILL);
+		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_SKILL, 10.f);
 
     }
 
     if (Is_AnimFinished())
     {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        
         m_eCurState = STATE::b_idle;
     }
+
 }
 
 void Player_FSM::skill_300200_Init()
@@ -1561,7 +1655,8 @@ void Player_FSM::skill_300200_Init()
 
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(SKILL3);
+    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
+        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(SKILL3);
 
 	AttackCollider_Off();
 
@@ -1569,9 +1664,11 @@ void Player_FSM::skill_300200_Init()
 	m_bSuperArmor = true;
 
     m_vCamStopPos = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS);    
+
+    Calculate_CamBoneMatrix();
 }
 
-void Player_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType)
+void Player_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
 {
     shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
 
@@ -1589,17 +1686,17 @@ void Player_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float f
     m_pSkillCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
     m_pSkillCollider.lock()->Get_Collider()->Set_Activate(true);
     m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
+    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
     m_pSkillCollider.lock()->Set_Name(L"Player_SkillCollider");
     m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
     m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
 
-    CUR_SCENE->Add_GameObject(m_pSkillCollider.lock());
+    EVENTMGR.Create_Object(m_pSkillCollider.lock());
 }
 
 void Player_FSM::Use_Skill()
 {
-    
     if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
     {
         m_eCurState = STATE::skill_100100;
@@ -1613,22 +1710,25 @@ void Player_FSM::Use_Skill()
         m_eCurState = STATE::skill_300100;
     }
     else
-        Use_Dash();
+        Use_Dash();   
 }
 
 void Player_FSM::Use_Dash()
 {
-	if (KEYTAP(KEY_TYPE::SPACE))
-	{
-		if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
-		{
-            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+	    if (KEYTAP(KEY_TYPE::SPACE))
+	    {
+	    	if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
+	    	{
+                m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 
-			_float3 vInputVector = Get_InputDirVector();
-			if (vInputVector != _float3(0.f))
-				m_eCurState = STATE::skill_91100;
-			else
-				m_eCurState = STATE::skill_93100;
-		}
-	}
+	    		_float3 vInputVector = Get_InputDirVector();
+	    		if (vInputVector != _float3(0.f))
+	    			m_eCurState = STATE::skill_91100;
+	    		else
+	    			m_eCurState = STATE::skill_93100;
+	    	}
+	    }
+    }
 }

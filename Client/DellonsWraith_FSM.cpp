@@ -33,7 +33,7 @@ HRESULT DellonsWraith_FSM::Init()
 
         m_pAttackCollider = attackCollider;
 
-        CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
+        EVENTMGR.Create_Object(m_pAttackCollider.lock());
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
 
         m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
@@ -106,8 +106,7 @@ void DellonsWraith_FSM::State_Tick()
         break;
     }
 
-    if (!m_pGroupEffect.expired())
-        m_pGroupEffect.lock()->Get_Transform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
     if (m_iPreFrame != m_iCurFrame)
         m_iPreFrame = m_iCurFrame;
@@ -168,17 +167,18 @@ void DellonsWraith_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _flo
 {
 }
 
-void DellonsWraith_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
+void DellonsWraith_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
 
 }
 
-void DellonsWraith_FSM::AttackCollider_On(const wstring& skillname)
+void DellonsWraith_FSM::AttackCollider_On(const wstring& skillname, _float fAttackDamage)
 {
     if (!m_pAttackCollider.expired())
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(true);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     }
 }
 
@@ -188,6 +188,7 @@ void DellonsWraith_FSM::AttackCollider_Off()
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(0.f);
     }
 }
 
@@ -198,11 +199,11 @@ void DellonsWraith_FSM::Set_State(_uint iIndex)
 
 void DellonsWraith_FSM::FX_DellonsWraith_skill_30010()
 {
-    if (Get_CurFrame() == 42)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 50)
+    if (m_iCurFrame == 42)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 50)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 54)
+    else if (m_iCurFrame == 54)
     {
         if (m_iPreFrame != m_iCurFrame)
         {
@@ -218,34 +219,34 @@ void DellonsWraith_FSM::FX_DellonsWraith_skill_30010()
                 Get_Transform()->Get_State(Transform_State::LOOK) * 3.f +
                 _float3::Up;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
            
             vSkillPos = vSkillPos + Get_Transform()->Get_State(Transform_State::LOOK) +
                                     Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
             
             vSkillPos = vSkillPos + Get_Transform()->Get_State(Transform_State::LOOK) +
                                     Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
 
             vSkillPos = vSkillPos - Get_Transform()->Get_State(Transform_State::LOOK) +
                                     Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
 
             vSkillPos = vSkillPos - Get_Transform()->Get_State(Transform_State::LOOK) +
                                     Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK);
+            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
         }
     }
 
     if (Is_AnimFinished())
     {
-        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
-        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+        EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        EVENTMGR.Delete_Object(m_pOwner.lock());
     }
 }
 
@@ -261,16 +262,16 @@ void DellonsWraith_FSM::FX_DellonsWraith_skill_30010_Init()
 
 void DellonsWraith_FSM::FX_DellonsWraith_skill_400100()
 {
-    if (Get_CurFrame() == 12)
-        AttackCollider_On(KNOCKBACK_ATTACK);
-    else if (Get_CurFrame() == 20)
+    if (m_iCurFrame == 12)
+        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+    else if (m_iCurFrame == 20)
         AttackCollider_Off();
 
 
     if (Is_AnimFinished())
     {
-        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
-        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+        EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        EVENTMGR.Delete_Object(m_pOwner.lock());
     }
 }
 
@@ -286,16 +287,16 @@ void DellonsWraith_FSM::FX_DellonsWraith_skill_400100_Init()
 
 void DellonsWraith_FSM::FX_DellonsWraith_skill_601100()
 {
-    if (Get_CurFrame() == 126)
-        AttackCollider_On(KNOCKBACK_ATTACK);
-    else if (Get_CurFrame() == 140)
+    if (m_iCurFrame == 126)
+        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+    else if (m_iCurFrame == 140)
         AttackCollider_Off();
 
 
     if (Is_AnimFinished())
     {
-        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
-        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+        EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        EVENTMGR.Delete_Object(m_pOwner.lock());
     }
 }
 
@@ -311,23 +312,23 @@ void DellonsWraith_FSM::FX_DellonsWraith_skill_601100_Init()
 
 void DellonsWraith_FSM::FX_DellonsWraith_skill_903100()
 {
-    if (Get_CurFrame() == 65)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 72)
+    if (m_iCurFrame == 65)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 72)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 77)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 82)
+    else if (m_iCurFrame == 77)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 82)
         AttackCollider_Off();
-    else if (Get_CurFrame() == 109)
-        AttackCollider_On(KNOCKBACK_ATTACK);
-    else if (Get_CurFrame() == 116)
+    else if (m_iCurFrame == 109)
+        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+    else if (m_iCurFrame == 116)
         AttackCollider_Off();
 
     if (Is_AnimFinished())
     {
-        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
-        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+        EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        EVENTMGR.Delete_Object(m_pOwner.lock());
     }
 }
 
@@ -345,8 +346,8 @@ void DellonsWraith_FSM::FX_DellonsWraith01_Special_01()
 {
     if (Is_AnimFinished())
     {
-        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
-        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+        EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        EVENTMGR.Delete_Object(m_pOwner.lock());
     }
 }
 
@@ -363,15 +364,15 @@ void DellonsWraith_FSM::FX_DellonsWraith01_Special_01_Init()
 
 void DellonsWraith_FSM::FX_SQ_Dellons_QuestEnd_2()
 {
-    if (Get_CurFrame() == 85)
-        AttackCollider_On(KNOCKDOWN_ATTACK);
-    else if (Get_CurFrame() == 100)
+    if (m_iCurFrame == 85)
+        AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
+    else if (m_iCurFrame == 100)
         AttackCollider_Off();
 
     if (Is_AnimFinished())
     {
-        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
-        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+        EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        EVENTMGR.Delete_Object(m_pOwner.lock());
     }
 }
 
@@ -387,13 +388,13 @@ void DellonsWraith_FSM::FX_SQ_Dellons_QuestEnd_2_Init()
 
 void DellonsWraith_FSM::FX_Mn_Dellons_skill_500200()
 {
-    if (Get_CurFrame() == 19)
-        AttackCollider_On(KNOCKDOWN_ATTACK);
+    if (m_iCurFrame == 19)
+        AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
 
     if (Is_AnimFinished())
     {
-        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
-        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+        EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        EVENTMGR.Delete_Object(m_pOwner.lock());
     }
 }
 
@@ -409,13 +410,19 @@ void DellonsWraith_FSM::FX_Mn_Dellons_skill_500200_Init()
 
 void DellonsWraith_FSM::FX_Mn_Dellons_skill_5100()
 {
-    if (Get_CurFrame() == 80)
-        AttackCollider_On(KNOCKDOWN_ATTACK);
-    else if (Get_CurFrame() == 94)
+    if (m_iCurFrame == 94)
     {
-        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
-        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+        EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        EVENTMGR.Delete_Object(m_pOwner.lock());
     }
+    
+    //if (m_iCurFrame == 80)
+    //    AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
+    //else if (m_iCurFrame == 94)
+    //{
+    //    CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
+    //    CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+    //}
 }
 
 void DellonsWraith_FSM::FX_Mn_Dellons_skill_5100_Init()
@@ -431,15 +438,15 @@ void DellonsWraith_FSM::FX_Mn_Dellons_skill_5100_Init()
 
 void DellonsWraith_FSM::FX_Mn_Dellons_skill_6100()
 {
-    if (Get_CurFrame() == 59)
-        AttackCollider_On(KNOCKDOWN_ATTACK);
-    else if (Get_CurFrame() == 69)
+    if (m_iCurFrame == 59)
+        AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
+    else if (m_iCurFrame == 69)
         AttackCollider_Off();
 
     if (Is_AnimFinished())
     {
-        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
-        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+        EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        EVENTMGR.Delete_Object(m_pOwner.lock());
     }
 }
 
@@ -455,15 +462,15 @@ void DellonsWraith_FSM::FX_Mn_Dellons_skill_6100_Init()
 
 void DellonsWraith_FSM::FX_Mn_Dellons_skill_5200()
 {
-    if (Get_CurFrame() == 90)
-        AttackCollider_On(KNOCKDOWN_ATTACK);
-    else if (Get_CurFrame() == 114)
+    if (m_iCurFrame == 90)
+        AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
+    else if (m_iCurFrame == 114)
         AttackCollider_Off();
 
     if (Is_AnimFinished())
     {
-        CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
-        CUR_SCENE->Remove_GameObject(m_pOwner.lock());
+        EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        EVENTMGR.Delete_Object(m_pOwner.lock());
     }
 }
 
@@ -479,7 +486,7 @@ void DellonsWraith_FSM::FX_Mn_Dellons_skill_5200_Init()
 
 
 
-void DellonsWraith_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType)
+void DellonsWraith_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
 {
     shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
 
@@ -491,10 +498,11 @@ void DellonsWraith_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _
     SkillCollider->Add_Component(make_shared<AttackColliderInfoScript>());
     SkillCollider->Get_Collider()->Set_Activate(true);
     SkillCollider->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
+    SkillCollider->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     SkillCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
     SkillCollider->Set_Name(L"Wraith_SkillCollider");
     SkillCollider->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
     SkillCollider->Get_Script<ForwardMovingSkillScript>()->Init();
 
-    CUR_SCENE->Add_GameObject(SkillCollider);
+    EVENTMGR.Create_Object(SkillCollider);
 }

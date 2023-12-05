@@ -226,71 +226,296 @@ void ResourceMgr::LoadParts()
 					if (textureStr.length() > 0)
 					{
 						textureStr += L".dds";
-						auto texture = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
+						auto texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
 						if (!texture)
 						{
 							Utils::ChangeExt(textureStr, L".DDS");
-							texture = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
+							texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
 							if (!texture)
 							{
 								Utils::ChangeExt(textureStr, L".tga");
-								texture = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
+								texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
 								if (!texture)
 								{
 									Utils::ChangeExt(textureStr, L".png");
-									texture = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureStr, texturePath + L"\\" + textureStr);
+									texture = RESOURCES.GetOrAddTexture(textureStr, texturePath + L"\\" + textureStr);
 
 								}
 							}
 						}
 						material->Set_TextureMap(texture, TextureMapType::DIFFUSE);
-						wstring textureR = textureStr;
-
-						Utils::Replace(textureR, L"_D", L"_R");
-						Utils::DetachExt(textureR);
-
 						{
-							textureR += L".dds";
-							auto texture_R = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureR, texturePath + L"\\" + textureR);
-							if (!texture_R)
-							{
-								Utils::ChangeExt(textureR, L".DDS");
-								texture_R = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureR, texturePath + L"\\" + textureR);
-								if (!texture_R)
-								{
-									Utils::ChangeExt(textureR, L".tga");
-									texture_R = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureR, texturePath + L"\\" + textureR);
-									if (!texture_R)
-									{
-										Utils::ChangeExt(textureR, L".png");
-										texture_R = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureR, texturePath + L"\\" + textureR);
 
-									}
-								}
-							}
-							if (!texture_R)
+							wstring textureR = textureStr;
+
+							Utils::Replace(textureR, L"_D_", L"_R_");
+
 							{
-								Utils::Replace(textureR, L"_R", L"_M");
-								auto texture_R = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureR, texturePath + L"\\" + textureR);
-								if (!texture_R)
+								shared_ptr<Texture> texture_R;
 								{
-									Utils::ChangeExt(textureR, L".DDS");
-									texture_R = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureR, texturePath + L"\\" + textureR);
-									if (!texture_R)
+									if (textureR != textureStr)
 									{
-										Utils::ChangeExt(textureR, L".tga");
-										texture_R = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+										Utils::DetachExt(textureR);
+										textureR += L".dds";
+										texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
 										if (!texture_R)
 										{
-											Utils::ChangeExt(textureR, L".png");
-											texture_R = RESOURCES.GetOrAddTexture(materialTag + L"_" + textureR, texturePath + L"\\" + textureR);
+											Utils::ChangeExt(textureR, L".DDS");
+											texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+											if (!texture_R)
+											{
+												Utils::ChangeExt(textureR, L".tga");
+												texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+												if (!texture_R)
+												{
+													Utils::ChangeExt(textureR, L".png");
+													texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+
+												}
+											}
+										}
+									}
+									if (!texture_R)
+									{
+										Utils::Replace(textureR, L"_R_", L"_M_");
+										if (textureR != textureStr)
+										{
+											Utils::ChangeExt(textureR, L".dds");
+											texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+											if (!texture_R)
+											{
+												Utils::ChangeExt(textureR, L".DDS");
+												texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+												if (!texture_R)
+												{
+													Utils::ChangeExt(textureR, L".tga");
+													texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+													if (!texture_R)
+													{
+														Utils::ChangeExt(textureR, L".png");
+														texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+
+													}
+												}
+											}
+										}
+									}
+									if (!texture_R)
+									{
+										textureR = textureStr;
+
+										Utils::Replace(textureR, L"_D.", L"_R.");
+										if (textureR != textureStr)
+										{
+											Utils::ChangeExt(textureR, L".dds");
+											texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+											if (!texture_R)
+											{
+												Utils::ChangeExt(textureR, L".DDS");
+												texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+												if (!texture_R)
+												{
+													Utils::ChangeExt(textureR, L".tga");
+													texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+													if (!texture_R)
+													{
+														Utils::ChangeExt(textureR, L".png");
+														texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+
+													}
+												}
+											}
+										}
+									}
+									if (!texture_R)
+									{
+										textureR = textureStr;
+
+										Utils::Replace(textureR, L"_D.", L"_M.");
+										if (textureR != textureStr)
+										{
+											Utils::ChangeExt(textureR, L".dds");
+											texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+											if (!texture_R)
+											{
+												Utils::ChangeExt(textureR, L".DDS");
+												texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+												if (!texture_R)
+												{
+													Utils::ChangeExt(textureR, L".tga");
+													texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+													if (!texture_R)
+													{
+														Utils::ChangeExt(textureR, L".png");
+														texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+
+													}
+												}
+											}
+										}
+									}
+									if (!texture_R)
+									{
+										textureR = textureStr;
+
+										Utils::Replace(textureR, L"_d.", L"_r.");
+										if (textureR != textureStr)
+										{
+											Utils::ChangeExt(textureR, L".dds");
+											texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+											if (!texture_R)
+											{
+												Utils::ChangeExt(textureR, L".DDS");
+												texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+												if (!texture_R)
+												{
+													Utils::ChangeExt(textureR, L".tga");
+													texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+													if (!texture_R)
+													{
+														Utils::ChangeExt(textureR, L".png");
+														texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+
+													}
+												}
+											}
+										}
+									}
+									if (!texture_R)
+									{
+										textureR = textureStr;
+
+										Utils::Replace(textureR, L"_d.", L"_m.");
+										if (textureR != textureStr)
+										{
+											Utils::ChangeExt(textureR, L".dds");
+											texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+											if (!texture_R)
+											{
+												Utils::ChangeExt(textureR, L".DDS");
+												texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+												if (!texture_R)
+												{
+													Utils::ChangeExt(textureR, L".tga");
+													texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+													if (!texture_R)
+													{
+														Utils::ChangeExt(textureR, L".png");
+														texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+
+													}
+												}
+											}
+										}
+									}
+									if (!texture_R)
+									{
+										textureR = textureStr;
+
+										Utils::Replace(textureR, L"_d_", L"_r_");
+										if (textureR != textureStr)
+										{
+											Utils::ChangeExt(textureR, L".dds");
+											texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+											if (!texture_R)
+											{
+												Utils::ChangeExt(textureR, L".DDS");
+												texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+												if (!texture_R)
+												{
+													Utils::ChangeExt(textureR, L".tga");
+													texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+													if (!texture_R)
+													{
+														Utils::ChangeExt(textureR, L".png");
+														texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+
+													}
+												}
+											}
+										}
+									}
+									if (!texture_R)
+									{
+										textureR = textureStr;
+
+										Utils::Replace(textureR, L"_d_", L"_m_");
+										if (textureR != textureStr)
+										{
+											Utils::ChangeExt(textureR, L".dds");
+											texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+											if (!texture_R)
+											{
+												Utils::ChangeExt(textureR, L".DDS");
+												texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+												if (!texture_R)
+												{
+													Utils::ChangeExt(textureR, L".tga");
+													texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+													if (!texture_R)
+													{
+														Utils::ChangeExt(textureR, L".png");
+														texture_R = RESOURCES.GetOrAddTexture(textureR, texturePath + L"\\" + textureR);
+
+													}
+												}
+											}
+										}
+									}
+									material->Set_TextureMap(texture_R, TextureMapType::TEXTURE7);
+								}
+							}
+						}
+
+						wstring textureE = textureStr;
+						Utils::Replace(textureE, L"_D", L"_E");
+						if (textureStr != textureE)
+						{
+							Utils::DetachExt(textureE);
+							{
+								textureE += L".dds";
+								auto texture_E = RESOURCES.GetOrAddTexture(textureE, texturePath + L"\\" + textureE);
+								if (!texture_E)
+								{
+									Utils::ChangeExt(textureE, L".DDS");
+									texture_E = RESOURCES.GetOrAddTexture(textureE, texturePath + L"\\" + textureE);
+									if (!texture_E)
+									{
+										Utils::ChangeExt(textureE, L".tga");
+										texture_E = RESOURCES.GetOrAddTexture(textureE, texturePath + L"\\" + textureE);
+										if (!texture_E)
+										{
+											Utils::ChangeExt(textureE, L".png");
+											texture_E = RESOURCES.GetOrAddTexture(textureE, texturePath + L"\\" + textureE);
 
 										}
 									}
 								}
+								if (!texture_E)
+								{
+									Utils::Replace(textureE, L"_R", L"_M");
+									auto texture_E = RESOURCES.GetOrAddTexture(textureE, texturePath + L"\\" + textureE);
+									if (!texture_E)
+									{
+										Utils::ChangeExt(textureE, L".DDS");
+										texture_E = RESOURCES.GetOrAddTexture(textureE, texturePath + L"\\" + textureE);
+										if (!texture_E)
+										{
+											Utils::ChangeExt(textureE, L".tga");
+											texture_E = RESOURCES.GetOrAddTexture(textureE, texturePath + L"\\" + textureE);
+											if (!texture_E)
+											{
+												Utils::ChangeExt(textureE, L".png");
+												texture_E = RESOURCES.GetOrAddTexture(textureE, texturePath + L"\\" + textureE);
+
+											}
+										}
+									}
+								}
+								material->Set_TextureMap(texture_E, TextureMapType::EMISSIVE);
 							}
-							material->Set_SubMap(0, texture_R);
 						}
+
 					}
 				}
 
@@ -457,7 +682,12 @@ void ResourceMgr::CreateDefaultShader()
 		auto shader = Get<Shader>(ShaderTag);
 		shader->Set_ShaderType(SHADER_TYPE::PARTICLE);
 	}
-
+	{
+		wstring ShaderTag = L"Water.fx";
+		Load<Shader>(ShaderTag, ShaderTag);
+		auto shader = Get<Shader>(ShaderTag);
+		shader->Set_ShaderType(SHADER_TYPE::WATER);
+	}
 	{
 		wstring ShaderTag = L"Shader_Effect2.fx";
 		Load<Shader>(ShaderTag, ShaderTag);
@@ -495,12 +725,7 @@ void ResourceMgr::CreateDefaultShader()
 		auto shader = Get<Shader>(ShaderTag);
 		shader->Set_ShaderType(SHADER_TYPE::SKYBOX);
 	}
-	{
-		wstring ShaderTag = L"Billboard.fx";
-		Load<Shader>(ShaderTag, ShaderTag);
-		auto shader = Get<Shader>(ShaderTag);
-		shader->Set_ShaderType(SHADER_TYPE::FORWARD);
-	}
+
 	{
 		wstring ShaderTag = L"Blur.fx";
 		Load<Shader>(ShaderTag, ShaderTag);
@@ -607,7 +832,7 @@ void ResourceMgr::CreateDefaultMaterial()
 		material->Set_Shader(shader);
 		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"PositionTarget"));
 		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"NormalTarget"));
-		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"ShadowTarget"));
+		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"ShadowDepthStencil"));
 		material->Set_SubMap(3, RESOURCES.Get<Texture>(L"SSAOUPSCALE2"));
 		material->Set_SubMap(4, RESOURCES.Get<Texture>(L"DiffuseTarget"));
 		material->Set_SubMap(5, RESOURCES.Get<Texture>(L"SpecularTarget"));
@@ -915,6 +1140,13 @@ void ResourceMgr::CreateDefaultMaterial()
 
 		Add(L"SubScene", material);
 	}
+
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		Add(L"Sampler", material);
+	}
 }
 
 void ResourceMgr::CreateDefaultFont()
@@ -925,17 +1157,11 @@ void ResourceMgr::CreateDefaultFont()
 
 		Add(L"136ex", font);
 	}
-	/*{
-		shared_ptr<CustomFont> font = make_shared<CustomFont>();
-		font->Load(L"..\\Resources\\Font\\Godic.spritefont");
-
-		Add(L"Godic", font);
-	}
 	{
 		shared_ptr<CustomFont> font = make_shared<CustomFont>();
-		font->Load(L"..\\Resources\\Font\\Dream.spritefont");
+		font->Load(L"..\\Resources\\Font\\Ori_136ex.spritefont");
 
-		Add(L"Dream", font);
+		Add(L"Ori_136ex", font);
 	}
 	{
 		shared_ptr<CustomFont> font = make_shared<CustomFont>();
@@ -944,6 +1170,12 @@ void ResourceMgr::CreateDefaultFont()
 		Add(L"overwatch", font);
 	}
 	{
+		shared_ptr<CustomFont> font = make_shared<CustomFont>();
+		font->Load(L"..\\Resources\\Font\\Soyo_Maple.spritefont");
+
+		Add(L"Soyo_Maple", font);
+	}
+	/*{
 		shared_ptr<CustomFont> font = make_shared<CustomFont>();
 		font->Load(L"..\\Resources\\Font\\maple_light.spritefont");
 
@@ -977,10 +1209,9 @@ void ResourceMgr::CreateMeshEffectData()
 		shared_ptr<FileUtils> file = make_shared<FileUtils>();
 		file->Open(Utils::ToWString(strFilePath), FileMode::Read);
 
-		string strTag = file->Read<string>();
-		tDesc.pszTag = strTag.c_str();
+		tDesc.strTag = file->Read<string>();
 		tDesc.fDuration = file->Read<_float>();
-		tDesc.bBlurOn = file->Read<_bool>();
+		tDesc.bLightOn = file->Read<_bool>();
 		tDesc.bUseFadeOut = file->Read<_bool>();
 		tDesc.iMeshCnt = file->Read<_int>();
 		tDesc.fCreateInterval = file->Read<_float>();
@@ -1079,6 +1310,13 @@ void ResourceMgr::CreateMeshEffectData()
 		tDesc.bIsLoop = mTemp._11;
 		tDesc.bIsFollowingGroup_OnlyTranslate = mTemp._12;
 		tDesc.bIsFollowingGroup_LooKSameDir = mTemp._13;
+		tDesc.fLightIntensity = mTemp._41;
+		tDesc.bIsFDistortion = mTemp._42;
+		tTransformDesc.iScaleSpeedType = _int(mTemp._14);
+		tTransformDesc.vCurvePoint_Scale[0] = _float2(mTemp._21, mTemp._22);
+		tTransformDesc.vCurvePoint_Scale[1] = _float2(mTemp._23, mTemp._24);
+		tTransformDesc.vCurvePoint_Scale[2] = _float2(mTemp._31, mTemp._32);
+		tTransformDesc.vCurvePoint_Scale[3] = _float2(mTemp._33, mTemp._34);
 
 		// For. Load Transform_Desc 
 		/* Init Position */
@@ -1117,7 +1355,7 @@ void ResourceMgr::CreateMeshEffectData()
 		meshEffectData->Set_Desc(tDesc);
 		meshEffectData->Set_TransformDesc(tTransformDesc);
 
-		wstring key = Utils::ToWString(tDesc.pszTag);
+		wstring key = Utils::ToWString(tDesc.strTag);
 		Add(key, meshEffectData);
 	}
 }

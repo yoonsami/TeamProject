@@ -5,6 +5,7 @@
 #include "MeshEffect.h"
 #include "Texture.h"
 #include "Camera.h"
+#include "GroupEffect.h"
 
 static inline ImVec2 operator+(const ImVec2& lhs, const ImVec2& rhs) { return ImVec2(lhs.x + rhs.x, lhs.y + rhs.y); }
 static inline ImVec2 operator-(const ImVec2& lhs, const ImVec2& rhs) { return ImVec2(lhs.x - rhs.x, lhs.y - rhs.y); }
@@ -318,8 +319,9 @@ void Widget_EffectMaker_Mesh::Option_Property()
 
 	ImGui::InputFloat("Duration##Property", &m_fDuration);
 
-	ImGui::Checkbox("Blur On##Property", &m_bBlurOn);
-	ImGui::SameLine();
+	ImGui::Checkbox("Light On##Property", &m_bLightOn);
+	if(m_bLightOn)
+		ImGui::InputFloat("Light Intensity##Property", &m_fLightIntensity);
 	if (ImGui::Checkbox("Is Loop##Property", &m_bIsLoop))
 	{
 		if (!m_pCurrMeshEffect.expired())
@@ -340,7 +342,7 @@ void Widget_EffectMaker_Mesh::Option_Property()
 
 	ImGui::Checkbox("On Fade Out##Property", &m_bUseFadeOut);
 	ImGui::Checkbox("Color Changing On##Property", &m_bColorChangingOn);
-
+	ImGui::Checkbox("FDistortion##Property", &m_bIsFDistortion);
 	ImGui::InputInt("Number of Mesh##Property", &m_iMeshCnt);
 
 
@@ -916,7 +918,7 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 
 	if (ImGui::TreeNode("Scaling##Movement"))
 	{
-		const char* pszItem_ScaleOption[] = { "No change", "Change to target scale" };
+		const char* pszItem_ScaleOption[] = { "No change", "Change to target scale (lerp)", "Scaling by speed"};
 		if (ImGui::BeginCombo("Scaling option##Movement", pszItem_ScaleOption[m_iScalingOption], 0))
 		{
 			for (_uint n = 0; n < IM_ARRAYSIZE(pszItem_ScaleOption); n++)
@@ -934,10 +936,26 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 		{
 		case 0:
 			ZeroMemory(m_fEndScaleOffset, sizeof(m_fEndScaleOffset));
+			m_iScaleSpeedType = 2;
 			break;
 		case 1:
 			ImGui::InputFloat3("Target Scale##Movement", m_fEndScaleOffset);
+			m_iScaleSpeedType = 2;
+			break;		
+		case 2:
+		{
+			ImGui::Text("Speed");
+			ImGui::RadioButton("Curve##ScaleSpeed", &m_iScaleSpeedType, 0);
+			ImGui::SameLine();
+			ImGui::RadioButton("Linear##ScaleSpeed", &m_iScaleSpeedType, 1);
+
+			m_vCurvePoint_Force[0].x = 0.f;
+			ImGui::InputFloat2("Point1 (time, speed)##ScaleSpeed", (_float*)&m_vCurvePoint_Scale[0]);
+			ImGui::InputFloat2("Point2 (time, speed)##ScaleSpeed", (_float*)&m_vCurvePoint_Scale[1]);
+			ImGui::InputFloat2("Point3 (time, speed)##ScaleSpeed", (_float*)&m_vCurvePoint_Scale[2]);
+			ImGui::InputFloat2("Point4 (time, speed)##ScaleSpeed", (_float*)&m_vCurvePoint_Scale[3]);
 			break;
+		}
 		}
 		
 		ImGui::TreePop();
@@ -969,8 +987,54 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 			break;
 		case 1:
 			ImGui::InputFloat("Turn Speed##Movemenet1", &m_fTurnSpeed);
-			ImGui::InputFloat3("Axis##Movement1", m_fRandomAxis_Min);
-			memcpy(m_fRandomAxis_Max, m_fRandomAxis_Min, sizeof(m_fRandomAxis_Min));
+			ImGui::Text("Turn Axes options");
+			if (ImGui::Button("Right##Turn"))
+			{
+				// Make World Matrix 
+				_float4x4 mWorld = _float4x4::CreateScale(_float3(m_fInitScale_Min[0], m_fInitScale_Min[1], m_fInitScale_Min[2]))
+					* _float4x4::CreateRotationX(m_fInitRotation_Min[0]) 
+					* _float4x4::CreateRotationY(m_fInitRotation_Min[1])
+					* _float4x4::CreateRotationZ(m_fInitRotation_Min[2])
+					* _float4x4::CreateTranslation(_float3(m_fPosOffsetInTool[0], m_fPosOffsetInTool[1], m_fPosOffsetInTool[2]));
+				
+				// Get Right vector 
+				_float3 vRight = mWorld.Right();
+				vRight.Normalize();
+				memcpy(m_fRandomAxis_Min, &vRight, sizeof(m_fRandomAxis_Min));
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Up##Turn"))
+			{
+				// Make World Matrix 
+				_float4x4 mWorld = _float4x4::CreateScale(_float3(m_fInitScale_Min[0], m_fInitScale_Min[1], m_fInitScale_Min[2]))
+					* _float4x4::CreateRotationX(m_fInitRotation_Min[0])
+					* _float4x4::CreateRotationY(m_fInitRotation_Min[1])
+					* _float4x4::CreateRotationZ(m_fInitRotation_Min[2])
+					* _float4x4::CreateTranslation(_float3(m_fPosOffsetInTool[0], m_fPosOffsetInTool[1], m_fPosOffsetInTool[2]));
+
+				// Get Up vector 
+				_float3 vUp = mWorld.Up();
+				vUp.Normalize();
+				memcpy(m_fRandomAxis_Min, &vUp, sizeof(m_fRandomAxis_Min));
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Look##Turn"))
+			{
+				// Make World Matrix 
+				_float4x4 mWorld = _float4x4::CreateScale(_float3(m_fInitScale_Min[0], m_fInitScale_Min[1], m_fInitScale_Min[2]))
+					* _float4x4::CreateRotationX(m_fInitRotation_Min[0])
+					* _float4x4::CreateRotationY(m_fInitRotation_Min[1])
+					* _float4x4::CreateRotationZ(m_fInitRotation_Min[2])
+					* _float4x4::CreateTranslation(_float3(m_fPosOffsetInTool[0], m_fPosOffsetInTool[1], m_fPosOffsetInTool[2]));
+
+				// Get Look vector 
+				_float3 vLook = mWorld.Backward();
+				vLook.Normalize();
+				memcpy(m_fRandomAxis_Min, &vLook, sizeof(m_fRandomAxis_Min));
+			}
+
+			ImGui::InputFloat3("Axis##Movement2", m_fRandomAxis_Min);
+			memcpy(m_fRandomAxis_Max, m_fRandomAxis_Min, sizeof(m_fRandomAxis_Max));
 			break;
 		case 2:
 			ImGui::InputFloat("Turn Speed##Movemenet2", &m_fTurnSpeed);
@@ -989,10 +1053,23 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 
 void Widget_EffectMaker_Mesh::Create()
 {
+	// Delete all group effect ans mesh effects
+	for (auto& iter : CUR_SCENE->Get_Objects())
+	{
+		if (iter->Get_MeshEffect())
+			EVENTMGR.Delete_Object(iter);
+
+		if (iter->Get_GroupEffect())
+			EVENTMGR.Delete_Object(iter);
+	}
+
 	for (_int n = 0; n < m_iMeshCnt; n++)
 	{
+		CUR_SCENE->Get_Camera(L"Default")->Get_Camera()->Set_EffectToolOn(true);
+
 		// For. Create GameObject 
 		shared_ptr<GameObject> EffectObj = make_shared<GameObject>();
+		EffectObj->Set_Name(Utils::ToWString(m_strMesh));
 
 		// For. Add and Setting Transform Component
 		EffectObj->GetOrAddTransform();
@@ -1000,7 +1077,11 @@ void Widget_EffectMaker_Mesh::Create()
 		EffectObj->Get_Transform()->Scaled(_float3(1.0f));
 
 		// For. Add and Setting Effect Component to GameObject
-		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
+		shared_ptr<Shader> shader;
+		if (m_bIsFDistortion)
+			shader = RESOURCES.Get<Shader>(L"Shader_Distortion.fx");
+		else
+			shader = RESOURCES.Get<Shader>(L"Shader_Effect2.fx");
 		shared_ptr<MeshEffect> meshEffect = make_shared<MeshEffect>(shader);
 		EffectObj->Add_Component(meshEffect);
 		EffectObj->Get_MeshEffect()->Set_ToolModeOn(true);
@@ -1018,7 +1099,8 @@ void Widget_EffectMaker_Mesh::Create()
 		{
 				m_szTag,
 				m_fDuration,
-				m_bBlurOn,
+				m_bLightOn,
+				m_fLightIntensity,
 				m_bUseFadeOut,
 				m_iMeshCnt,
 				m_fCreateInterval,
@@ -1027,7 +1109,7 @@ void Widget_EffectMaker_Mesh::Create()
 				m_bIsLoop,
 				m_bIsFollowGroup_OnlyTranslate,
 				m_bIsFollowGroup_LookSameDir,
-
+				m_bIsFDistortion,
 				m_strMesh,
 
 				m_bUseSpriteAnimation,
@@ -1130,6 +1212,8 @@ void Widget_EffectMaker_Mesh::Create()
 
 				m_iScalingOption,
 				_float3(m_fEndScaleOffset),
+				m_iScaleSpeedType,
+				{ m_vCurvePoint_Scale[0], m_vCurvePoint_Scale[1], m_vCurvePoint_Scale[2], m_vCurvePoint_Scale[3] },
 
 				m_iTurnOption,
 				m_fTurnSpeed,
@@ -1143,7 +1227,7 @@ void Widget_EffectMaker_Mesh::Create()
 		m_pCurrMeshEffect = EffectObj;
 
 		// For. Add Effect GameObject to current scene
-		CUR_SCENE->Add_GameObject(EffectObj);
+		EVENTMGR.Create_Object(EffectObj);
 	}
 }
 
@@ -1160,7 +1244,7 @@ void Widget_EffectMaker_Mesh::Save()
 		/* Property */
 		file->Write<string>(m_szTag);
 		file->Write<_float>(m_fDuration);
-		file->Write<_bool>(m_bBlurOn);
+		file->Write<_bool>(m_bLightOn);
 		file->Write<_bool>(m_bUseFadeOut);
 		file->Write<_int>(m_iMeshCnt);
 		file->Write<_float>(m_fCreateInterval);
@@ -1233,11 +1317,12 @@ void Widget_EffectMaker_Mesh::Save()
 
 		/* ETC */
 		file->Write<_float4x4>(_float4x4(
-			(_float)m_bIsLoop, (_float)m_bIsFollowGroup_OnlyTranslate, (_float)m_bIsFollowGroup_LookSameDir, 0.f,
-			0.f, 0.f, 0.f, 0.f,
-			0.f, 0.f, 0.f, 0.f,
-			0.f, 0.f, 0.f, 0.f
+			(_float)m_bIsLoop, (_float)m_bIsFollowGroup_OnlyTranslate, (_float)m_bIsFollowGroup_LookSameDir, (_float)m_iScaleSpeedType,
+			m_vCurvePoint_Scale[0].x, m_vCurvePoint_Scale[0].y, m_vCurvePoint_Scale[1].x, m_vCurvePoint_Scale[1].y,
+			m_vCurvePoint_Scale[2].x, m_vCurvePoint_Scale[2].y, m_vCurvePoint_Scale[3].x, m_vCurvePoint_Scale[3].y,
+			m_fLightIntensity, (_float)m_bIsFDistortion, 0.f, 0.f
 		));
+
 
 		// For. Transform Desc 
 		/* Init position */
@@ -1298,13 +1383,15 @@ void Widget_EffectMaker_Mesh::Load()
 	string strTag = file->Read<string>();
 	strcpy_s(m_szTag, MAX_PATH, strTag.c_str());
 	m_fDuration = file->Read<_float>();
-	m_bBlurOn = file->Read<_bool>();
+	m_bLightOn = file->Read<_bool>();
 	m_bUseFadeOut = file->Read<_bool>();
 	m_iMeshCnt = file->Read<_int>();
 	m_fCreateInterval = file->Read<_float>();
 	_float2 vFloat2 = file->Read<_float2>();
-	m_iSamplerType = file->Read<_int>();
 	memcpy(m_fParticleDuration, &vFloat2, sizeof(m_fParticleDuration));
+	if (m_fParticleDuration[0] != m_fParticleDuration[1])
+		m_iParticleDurationOption = 1;
+	m_iSamplerType = file->Read<_int>();
 
 	/* Mesh */
 	m_strMesh = file->Read<string>();
@@ -1405,6 +1492,14 @@ void Widget_EffectMaker_Mesh::Load()
 	m_bIsLoop = (_int)mTemp._11;
 	m_bIsFollowGroup_OnlyTranslate = (_int)mTemp._12;
 	m_bIsFollowGroup_LookSameDir = (_int)mTemp._13;
+	m_fLightIntensity = mTemp._41;
+	m_bIsFDistortion = _bool(mTemp._42);
+
+	m_iScaleSpeedType = (_int)mTemp._14;
+	m_vCurvePoint_Scale[0] = _float2(mTemp._21, mTemp._22);
+	m_vCurvePoint_Scale[1] = _float2(mTemp._23, mTemp._24);
+	m_vCurvePoint_Scale[2] = _float2(mTemp._31, mTemp._32);
+	m_vCurvePoint_Scale[3] = _float2(mTemp._33, mTemp._34);
 
 	// For. Transform Desc
 	/* Init Pos */
@@ -1450,10 +1545,15 @@ void Widget_EffectMaker_Mesh::Load()
 	m_iScalingOption = file->Read<_int>();
 	vTemp_vec3 = file->Read<_float3>();
 	memcpy(m_fEndScaleOffset, &vTemp_vec3, sizeof(m_fEndScaleOffset));
-	if (Equal(_float3(m_fEndScaleOffset), _float3(0.f, 0.f, 0.f)))
-		m_iScalingOption = 0;
+	if (2 != m_iScaleSpeedType)
+		m_iScalingOption = 2;
 	else
-		m_iScalingOption = 1;
+	{
+		if (Equal(_float3(m_fEndScaleOffset), _float3(0.f, 0.f, 0.f)))
+			m_iScalingOption = 0;
+		else
+			m_iScalingOption = 1;
+	}
 
 	/* Turn */
 	m_iTurnOption = file->Read<_int>();
@@ -1464,16 +1564,7 @@ void Widget_EffectMaker_Mesh::Load()
 	memcpy(m_fRandomAxis_Max, &vTemp_vec3, sizeof(m_fRandomAxis_Max));
 	for (_int i = 0; i < 2; i++)
 		m_bBillbordAxes[i] = file->Read<_bool>();
-	if (Equal(_float3(m_fRandomAxis_Min), _float3(0.f, 0.f, 0.f)))
-		m_iTurnOption = 0;
-	else
-	{
-		if (Equal(m_fRandomAxis_Min, m_fRandomAxis_Max, 3))
-			m_iTurnOption = 1;
-		else
-			m_iTurnOption = 2;
-	}
-
+	
 	// For. Create Effect GameObjects
 	Create();
 }

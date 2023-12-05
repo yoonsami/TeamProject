@@ -18,12 +18,15 @@ public:
 		groggy_start,
 		groggy_loop,
 		groggy_end,
-
+		SQ_Flee, // It's Die
 		// ============ Phase1 ===========
 
 		skill_Assault, //ASSAULT = skill_2100 Animation
 		skill_Return, //RETURN POSITION AFTER ASSAULT  = skill_5100 Animation
 
+		// ============ Restart Phase =============
+		skill_Restart_Phase1,  
+		skill_Restart_Phase1_Intro,  
 
 		// ============ Phase2 ===========
 		SQ_SBRin_Roar,
@@ -64,9 +67,14 @@ public:
 	};
 
 public:
+	Boss_Mir_FSM();
+	~Boss_Mir_FSM();
+
+
+public:
 	virtual HRESULT Init() override;
 	virtual void Tick() override;
-	virtual void Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget) override;
+	virtual void Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget) override;
 
 
 private:
@@ -75,7 +83,7 @@ private:
 	virtual void OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) override;
-	virtual void AttackCollider_On(const wstring& skillname) override;
+	virtual void AttackCollider_On(const wstring& skillname, _float fAttackDamage) override;
 	virtual void AttackCollider_Off() override;
 	virtual void Set_State(_uint iIndex) override;
 
@@ -101,12 +109,19 @@ private:
 	void groggy_loop_Init();
 	void groggy_end();
 	void groggy_end_Init();
+	void SQ_Flee();
+	void SQ_Flee_Init();
+
 
 	void skill_Assault();
 	void skill_Assault_Init();
 	void skill_Return();
 	void skill_Return_Init();
 	
+	void skill_Restart_Phase1();
+	void skill_Restart_Phase1_Init();
+	void skill_Restart_Phase1_Intro();
+	void skill_Restart_Phase1_Intro_Init();
 
 	void SQ_SBRin_Roar();
 	void SQ_SBRin_Roar_Init();
@@ -141,16 +156,23 @@ private:
 
 	DIR CalCulate_PlayerDir();
 	void Add_Boss_Mir_Collider();
-	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType);
+	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage, const wstring& wstrGroupEffectTag = TEXT("None"));
 	void Create_CounterMotionTrail();
 	void Create_Meteor();
+	void Create_DragonBall();
 	void Set_AttackPattern();
 	void Setting_DragonBall();
+	void Calculate_IntroHeadCam();
+	void Calculate_PhaseChangeHeadCam();
+	void Check_PhaseChange();
 
-	void TailAttackCollider_On(const wstring& skillname);
+	void TailAttackCollider_On(const wstring& skillname, _float fAttackDamage);
 	void TailAttackCollider_Off();
+	void DeadSetting();
+	void Load_Giant_Boss_Mir();
 
 
+	_float CamDistanceLerp(_float fStart, _float fEnd, _float fRatio);
 
 private:
 	STATE m_eCurState = STATE::b_idle;
@@ -159,21 +181,25 @@ private:
 	DIR m_eAttackDir = DIR::NONE;
 	PHASE m_eCurPhase = PHASE::PHASE1;
 
-
-	_float3 m_vTurnVector = _float3(0.f);
-	_float3 m_vFirstPos = _float3(0.f);
 	_float m_fTurnSpeed = XM_PI * 0.5f;
-	
+	_float m_fIntroCamDistance = 0.f;
+	_float m_fCamRatio = 0.f;
+	_float m_fStateTimer = 0.f;
+
 	COOLTIMEINFO m_tAttackCoolTime = { 2.f, 0.f };
 	COOLTIMEINFO m_tBreathCoolTime = { 0.15f, 0.f };
-	COOLTIMEINFO m_tMeteorCoolTime = { 2.f, 0.f };
+	COOLTIMEINFO m_tMeteorCoolTime = { 1.f, 0.f };
 	
+	_bool m_bIntroCam = false;
 	_bool m_bDetected = false;
 	_bool m_bTurnMotion = false;
 
 	_bool m_bCounter = false;
 	_bool m_bPhaseOneEmissive = false;
+	_bool m_bCheckPhaseChange[2] = {false,false};
+	_bool m_bPhaseChange[2] = { false,false };
 
+	
 	_uint m_iPreAttack = 100;
 	_uint m_iPhaseOne_TurnCnt = 0;
 	_uint m_iCrashCnt = 0;
@@ -181,15 +207,27 @@ private:
 	_uint m_iHeadBoneIndex = 0;
 	_uint m_iMouseBoneIndex = 0;
 	_uint m_iTailBoneIndex = 0;
+	_uint m_iTopBoneIndex = 0;
 
 	weak_ptr<GameObject> m_pTailCollider;
 
+	_float3 m_vTurnVector = _float3(0.f);
 	_float3 m_vHeadCamDir = _float3(0.f);
 	_float4 m_vHeadBonePos = _float4(0.f);
 	_float4 m_vHeadCamPos = _float4(0.f);
+	_float4 m_vTopBonePos = _float4(0.f);
+	_float4 m_vPhaseChangePos = _float4(0.f);
+	_float4 m_vFleeCamPos = _float4(0.f);
+	_float4 m_vSetPlayerPos = _float4(0.f);
+	
+	_float4 m_vDragonBallPosArray[3];
 
 	_float4x4 HeadBoneMatrix = XMMatrixIdentity();
 	_float4x4 MouseBoneMatrix = XMMatrixIdentity();
 	_float4x4 TailBoneMatrix = XMMatrixIdentity();
+	_float4x4 TopBoneMatrix = XMMatrixIdentity();
+	_float4x4 m_FirstWorldMat = XMMatrixIdentity();
 
+
+	weak_ptr<GameObject> m_pSubController[2];
 };

@@ -28,7 +28,11 @@ void ModelAnimator::Tick()
 
 	m_preTweenDesc = m_TweenDesc;
 
-	m_TweenDesc.curr.sumTime += fDT;
+	_float deltaTime = fABT;
+	if(Get_Owner()->Is_TimeSlowed())
+		deltaTime = fDT;
+
+	m_TweenDesc.curr.sumTime += deltaTime;
 
 	{
 		shared_ptr<ModelAnimation> currentAnim = m_pModel->Get_AnimationByIndex(m_TweenDesc.curr.animIndex);
@@ -100,7 +104,7 @@ void ModelAnimator::Tick()
 
 	if (m_TweenDesc.next.animIndex >= 0)
 	{
-		m_TweenDesc.tweenSumTime += fDT;
+		m_TweenDesc.tweenSumTime += deltaTime;
 		m_TweenDesc.tweenRatio = m_TweenDesc.tweenSumTime / m_TweenDesc.tweenDuration;
 
 		if (m_TweenDesc.tweenRatio >= 1.f || m_bFinished)
@@ -113,7 +117,7 @@ void ModelAnimator::Tick()
 		else
 		{
 			shared_ptr<ModelAnimation> nextAnim = m_pModel->Get_AnimationByIndex(m_TweenDesc.next.animIndex);
-			m_TweenDesc.next.sumTime += fDT;
+			m_TweenDesc.next.sumTime += deltaTime;
 
 			_float timePerFrame = 1.f / (nextAnim->frameRate * nextAnim->speed);
 
@@ -148,11 +152,9 @@ void ModelAnimator::Tick()
 		}
 		else
 			vDistToMove = _float3(0.f);
-
-
 	}
 
-	if(vDistToMove != _float3(0.f))
+	if (vDistToMove != _float3(0.f))
 	{
 
 		vDistToMove = _float3::TransformNormal(vDistToMove, Get_Transform()->Get_WorldMatrix());
@@ -185,6 +187,13 @@ void ModelAnimator::Set_NextAnim(_int index)
 void ModelAnimator::Set_Model(shared_ptr<Model> model)
 {
 	m_pModel = model;
+
+	m_TweenDesc.curr = KeyFrameDesc();
+	m_bFinished = false;
+	m_TweenDesc.ClearNextAnim();
+
+	m_preTweenDesc.curr = KeyFrameDesc();
+	m_preTweenDesc.ClearNextAnim();
 
 	const auto& materials = m_pModel->Get_Materials();
 
@@ -229,7 +238,11 @@ void ModelAnimator::Render()
 		for (auto& mesh : meshes)
 		{
 			if (!mesh->material.expired())
+			{
 				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
 
 			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 			mesh->vertexBuffer->Push_Data();
@@ -247,7 +260,11 @@ void ModelAnimator::Render()
 		for (auto& mesh : meshes)
 		{
 			if (!mesh->material.expired())
+			{
 				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
 
 			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 			mesh->vertexBuffer->Push_Data();
@@ -276,7 +293,7 @@ void ModelAnimator::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 	m_pShader->GetSRV("TransformMap")->SetResource(m_pModel->Get_TransformSRV().Get());
 
 	auto& animAddonDesc = m_pModel->Get_AnimAddonDesc();
-
+	buffer->Push_Data();
 	m_pShader->Push_AnimAddonData(animAddonDesc);
 	if (!m_pModel->Has_Parts())
 	{
@@ -285,14 +302,18 @@ void ModelAnimator::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 		for (auto& mesh : meshes)
 		{
 			if (!mesh->material.expired())
+			{
 				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
 
 			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 
 			mesh->vertexBuffer->Push_Data();
 			mesh->indexBuffer->Push_Data();
 
-			buffer->Push_Data();
+
 
 			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -307,14 +328,17 @@ void ModelAnimator::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 		for (auto& mesh : meshes)
 		{
 			if (!mesh->material.expired())
+			{
 				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
 
 			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 
 			mesh->vertexBuffer->Push_Data();
 			mesh->indexBuffer->Push_Data();
 
-			buffer->Push_Data();
 
 			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -328,7 +352,7 @@ void ModelAnimator::Render_Shadow()
 {
 	if (!m_pModel)
 		return;
-
+	system_clock::time_point start_time = system_clock::now();
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 
 	{
@@ -351,7 +375,11 @@ void ModelAnimator::Render_Shadow()
 		for (auto& mesh : meshes)
 		{
 			if (!mesh->material.expired())
+			{
 				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
 
 			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 
@@ -369,7 +397,11 @@ void ModelAnimator::Render_Shadow()
 		for (auto& mesh : meshes)
 		{
 			if (!mesh->material.expired())
+			{
 				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
 
 			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 
@@ -380,6 +412,12 @@ void ModelAnimator::Render_Shadow()
 			m_pShader->DrawIndexed(0, PS_ANIM_SHADOW, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
 		}
 	}
+	system_clock::time_point end_time = system_clock::now();
+
+	nanoseconds nano = end_time - start_time;
+
+	if (KEYTAP(KEY_TYPE::F6))
+		int a = 0;
 }
 
 void ModelAnimator::Render_Shadow_Instancing(shared_ptr<InstancingBuffer>& buffer, shared_ptr<InstanceTweenDesc> desc, shared_ptr<InstanceRenderParamDesc> renderParamDesc)
@@ -399,7 +437,7 @@ void ModelAnimator::Render_Shadow_Instancing(shared_ptr<InstancingBuffer>& buffe
 	auto& animAddonDesc = m_pModel->Get_AnimAddonDesc();
 
 	m_pShader->Push_AnimAddonData(animAddonDesc);
-
+	buffer->Push_Data();
 	if (!m_pModel->Has_Parts())
 	{
 		const auto& meshes = m_pModel->Get_Meshes();
@@ -407,14 +445,17 @@ void ModelAnimator::Render_Shadow_Instancing(shared_ptr<InstancingBuffer>& buffe
 		for (auto& mesh : meshes)
 		{
 			if (!mesh->material.expired())
+			{
 				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
 
 			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 
 			mesh->vertexBuffer->Push_Data();
 			mesh->indexBuffer->Push_Data();
 
-			buffer->Push_Data();
 
 			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -428,14 +469,18 @@ void ModelAnimator::Render_Shadow_Instancing(shared_ptr<InstancingBuffer>& buffe
 		for (auto& mesh : meshes)
 		{
 			if (!mesh->material.expired())
+			{
 				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
 
 			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 
 			mesh->vertexBuffer->Push_Data();
 			mesh->indexBuffer->Push_Data();
 
-			buffer->Push_Data();
+
 
 			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -450,6 +495,8 @@ void ModelAnimator::Render_MotionBlur()
 	if (!m_pModel)
 		return;
 
+	if (!m_bRenderOn)
+		return;
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 	auto preView = CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_preWorldMatrix().Invert();
 	m_pShader->GetMatrix("g_preView")->SetMatrix((_float*)&preView);
@@ -474,7 +521,11 @@ void ModelAnimator::Render_MotionBlur()
 		for (auto& mesh : meshes)
 		{
 			if (!mesh->material.expired())
+			{
 				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
 
 			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 			mesh->vertexBuffer->Push_Data();
@@ -482,7 +533,7 @@ void ModelAnimator::Render_MotionBlur()
 
 			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-			m_pShader->DrawIndexed(2, PS_ANIM, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
+			m_pShader->DrawIndexed(2, 1, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
 		}
 	}
 	else
@@ -492,7 +543,11 @@ void ModelAnimator::Render_MotionBlur()
 		for (auto& mesh : meshes)
 		{
 			if (!mesh->material.expired())
+			{
 				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
 
 			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
 			mesh->vertexBuffer->Push_Data();
@@ -500,27 +555,40 @@ void ModelAnimator::Render_MotionBlur()
 
 			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-			m_pShader->DrawIndexed(2, PS_ANIM, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
+			m_pShader->DrawIndexed(2, 1, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
 		}
 	}
+
 }
 
-void ModelAnimator::Render_MotionBlur_Instancing(shared_ptr<class InstancingBuffer>& buffer, shared_ptr<InstanceTweenDesc> tweenDesc, shared_ptr<InstanceRenderParamDesc> renderParamDesc)
+void ModelAnimator::Render_Forward()
 {
 	if (!m_pModel)
 		return;
 
+	if (!m_bRenderOn)
+		return;
+
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
-	auto preView = CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_preWorldMatrix().Invert();
-	m_pShader->GetMatrix("g_preView")->SetMatrix((_float*)&preView);
 
-	m_pShader->Push_InstanceTweenData(*tweenDesc);
-	m_pShader->Push_InstanceRenderParamData(*renderParamDesc);
-	m_pShader->GetSRV("TransformMap")->SetResource(m_pModel->Get_TransformSRV().Get());
+	{
+		m_pShader->Push_TweenData({ m_TweenDesc,m_preTweenDesc });
 
-	auto& animAddonDesc = m_pModel->Get_AnimAddonDesc();
-	m_pShader->Push_AnimAddonData(animAddonDesc);
+		m_pShader->GetSRV("TransformMap")->SetResource(m_pModel->Get_TransformSRV().Get());
 
+		auto& desc = m_pModel->Get_AnimAddonDesc();
+
+		m_pShader->Push_AnimAddonData(desc);
+	}
+
+	m_pShader->Push_RenderParamData(m_RenderParams);
+
+
+	auto& world = Get_Transform()->Get_WorldMatrix();
+	auto& preWorld = Get_Transform()->Get_preWorldMatrix();
+	m_pShader->Push_TransformData(TransformDesc{ world,preWorld });
+	m_pShader->Push_LightData(CUR_SCENE->Get_LightParams());
+	m_pShader->GetScalar("lightIndex")->SetInt(0);
 	if (!m_pModel->Has_Parts())
 	{
 		const auto& meshes = m_pModel->Get_Meshes();
@@ -528,18 +596,19 @@ void ModelAnimator::Render_MotionBlur_Instancing(shared_ptr<class InstancingBuff
 		for (auto& mesh : meshes)
 		{
 			if (!mesh->material.expired())
+			{
 				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
 
 			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
-
 			mesh->vertexBuffer->Push_Data();
 			mesh->indexBuffer->Push_Data();
-
-			buffer->Push_Data();
-
 			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-			m_pShader->DrawIndexedInstanced(2, PS_ANIMINSTANCING, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
+			int techniqueIndex = CUR_SCENE->g_bPBR_On ? 4 : 0;
+			m_pShader->DrawIndexed(techniqueIndex, PS_FORWARD, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
 		}
 	}
 	else
@@ -549,18 +618,19 @@ void ModelAnimator::Render_MotionBlur_Instancing(shared_ptr<class InstancingBuff
 		for (auto& mesh : meshes)
 		{
 			if (!mesh->material.expired())
+			{
 				mesh->material.lock()->Tick();
+				mesh->material.lock()->Push_TextureMapData();
+
+			}
 
 			m_pShader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
-
 			mesh->vertexBuffer->Push_Data();
 			mesh->indexBuffer->Push_Data();
-
-			buffer->Push_Data();
-
 			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-			m_pShader->DrawIndexedInstanced(2, PS_ANIMINSTANCING, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
+			int techniqueIndex = CUR_SCENE->g_bPBR_On ? 4 : 0;
+			m_pShader->DrawIndexed(techniqueIndex, PS_FORWARD, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
 		}
 	}
 }

@@ -9,12 +9,14 @@ public:
 	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) = 0;
 	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) = 0;
 	virtual void Set_State(_uint iIndex) = 0;
-	virtual void Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget) = 0;
-
+	virtual void Get_Hit(const wstring& skillname, _float fDamage ,shared_ptr<GameObject> pLookTarget) = 0;
+	shared_ptr<GameObject> Get_AttackCollider() { return m_pAttackCollider.lock(); }
+	void Set_AttackCollider(shared_ptr<GameObject> attackCollider) { m_pAttackCollider = attackCollider; }
+	void FreeLoopMembers();
 protected:
 	virtual void State_Tick() = 0;
 	virtual void State_Init() = 0;
-	virtual void AttackCollider_On(const wstring& skillname) = 0;
+	virtual void AttackCollider_On(const wstring& skillname, _float fAttackDamage) = 0;
 	virtual void AttackCollider_Off() = 0;
 
 	void Calculate_CamBoneMatrix();
@@ -28,8 +30,6 @@ protected:
 	_float3 Soft_Turn_ToTarget(const _float3& vTargetPos, _float turnSpeed);
 	_float3 Soft_Turn_ToTarget(const _float4& vTargetPos, _float turnSpeed);
 
-	_bool Get_Invincible() { return m_bInvincible; }
-	void Set_Invincible(_bool bFlag) { m_bInvincible = bFlag; }
 
 	_bool Get_SuperArmor() { return m_bSuperArmor; }
 	void Set_SuperArmor(_bool bFlag) { m_bSuperArmor = bFlag; }
@@ -41,25 +41,43 @@ protected:
 	_bool CounterAttackCheck(_float fCheckDegree);
 	void Set_DirToTarget();
 	void Set_DirToTargetOrInput(_uint eType);
-	void Look_DirToTarget();
+	void Look_DirToTarget(_float fTurnSpeed = XM_PI * 5.f);
 	shared_ptr<GameObject> Find_TargetInFrustum(_uint eType);
 
 	_bool Init_CurFrame(const _uint curFrame);
 
-	void Add_Effect(const wstring& strSkilltag);
-	void Add_And_Set_Effect(const wstring& strSkilltag);
-	void Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset);
+	void Add_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript = nullptr);
+	void Add_And_Set_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript = nullptr);
+	void Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset, _bool usePosAs, shared_ptr<MonoBehaviour> pScript = nullptr);
+	void KillAllEffect();
+	void Update_GroupEffectWorldPos(const _float4x4& mWorldMatrix);
+
+	void Add_FDistortion_Effect(const wstring& strSkilltag);
+	void Add_And_Set_FDistortion_Effect(const wstring& strSkilltag);
+	void Add_FDistortion_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset);
+	void Update_FDistortion_GroupEffectWorldPos();
+
 	void Cal_SkillCamDirection(const _float dist);
 	_bool Check_Combo(_uint minFrame, KEY_TYPE eKeyType);
 
+	_bool DeadCheck();
+	void Set_HitColor();
+	void Recovery_Color();
+
 public:
+	shared_ptr<GameObject> Get_Weapon() { return m_pWeapon.lock(); }
 	void Set_Target(shared_ptr<GameObject> pTarget);
 	void Set_Camera(shared_ptr<GameObject> pCamera);
 	void Set_Vehicle(shared_ptr<GameObject> pVehicle);
+	void Set_Weapon(shared_ptr<GameObject> pWeapon) { m_pWeapon = pWeapon; }
 	void Reset_Target();
 	void Reset_Weapon();
 	void Reset_Vehicle();
+	void Remove_Object();
 	_float Get_ChargingRatio() { return m_fChargingRatio; }
+
+	_bool Get_Invincible() { return m_bInvincible; }
+	void Set_Invincible(_bool bFlag) { m_bInvincible = bFlag; }
 
  protected:
 	weak_ptr<GameObject> m_pTarget;
@@ -69,8 +87,8 @@ public:
 	weak_ptr<GameObject> m_pCamera;
 	weak_ptr<GameObject> m_pVehicle;
 
-	weak_ptr<GameObject> m_pLookingTarget;
-	weak_ptr<GameObject> m_pGroupEffect;
+	weak_ptr<GameObject>			m_pLookingTarget;
+	vector<weak_ptr<GameObject>>	m_vGroupEffect;
 
 	//Frame Check
 	_uint m_iPreFrame = 10000;
@@ -81,7 +99,7 @@ public:
 	_bool m_bInvincible = false;
 	_bool m_bSuperArmor = false;
 	_bool m_bCanCombo = false;
-
+	_bool m_bIsDead = false;
 
 	_float3 m_vHitDir = _float3{ 0.f };
 	_float3 m_vDirToTarget = _float3(0.f);
@@ -128,10 +146,12 @@ public:
 	_float m_fTimePerFrame = 0.f;
 
 	//For Effect.Create
-	_float m_fEffectCreateTimer = 0.f;
+	_float m_fEffectCreateTimer[4] = { 0.f, 0.f, 0.f, 0.f };
 
 	//MotionCoolTime
 	COOLTIMEINFO m_tRunEndDelay = { 0.2f,0.f };
 	COOLTIMEINFO m_tKnockDownEndCoolTime = { 2.f, 0.f };
+
+	_float m_fColorRecoverySpeed = 3.f;
 };
 

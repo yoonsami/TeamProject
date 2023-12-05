@@ -149,7 +149,6 @@ _float3 FSM::Soft_Turn_ToTarget(const _float4& vTargetPos, _float turnSpeed)
 	return vDir;
 }
 
-
 _bool FSM::Target_In_AttackRange(_float* pGap)
 {
 	_bool bFlag = false;
@@ -224,7 +223,7 @@ _bool FSM::CounterAttackCheck(_float fCheckDegree)
 			else
 				return false;
 		}
-		else //������  ���������
+		else 
 		{
 			if (XMVectorGetX(vDot) >= cosf(XMConvertToRadians(fCheckDegree / 2.f)))//üũ���� �ݸ�ŭ ������ ��
 				return true;
@@ -232,7 +231,7 @@ _bool FSM::CounterAttackCheck(_float fCheckDegree)
 				return false;
 		}
 	}
-	else //�� ���������� ��
+	else 
 	{
 		return false;
 	}
@@ -241,7 +240,10 @@ _bool FSM::CounterAttackCheck(_float fCheckDegree)
 void FSM::Set_DirToTarget()
 {
 	if (!m_pLookingTarget.expired())
+	{
 		m_vDirToTarget = (m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+		m_vDirToTarget.y = 0.f;
+	}
 }
 
 void FSM::Set_DirToTargetOrInput(_uint eType)
@@ -253,15 +255,18 @@ void FSM::Set_DirToTargetOrInput(_uint eType)
 		m_pLookingTarget = m_pTarget.lock();
 
 	if (!m_pLookingTarget.expired())
+	{
 		m_vDirToTarget = (m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+		m_vDirToTarget.y = 0.f;
+	}
 	else
 		m_vDirToTarget = Get_InputDirVector();
 }
 
-void FSM::Look_DirToTarget()
+void FSM::Look_DirToTarget(_float fTurnSpeed)
 {
 	if (m_vDirToTarget != _float3(0.f))
-		Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+		Soft_Turn_ToInputDir(m_vDirToTarget, fTurnSpeed);
 }
 
 shared_ptr<GameObject> FSM::Find_TargetInFrustum(_uint eType)
@@ -271,7 +276,10 @@ shared_ptr<GameObject> FSM::Find_TargetInFrustum(_uint eType)
 	_float fMinDistSQ = FLT_MAX;
 	for (auto& gameObject : gameObjects)
 	{
-		if(gameObject->Get_ObjectGroup() != eType)
+		if (gameObject->Get_ObjectGroup() != eType)
+			continue;
+
+		if (gameObject->Get_CurHp() <= 0.f)
 			continue;
 
 		_float3 vOwnerPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
@@ -285,7 +293,10 @@ shared_ptr<GameObject> FSM::Find_TargetInFrustum(_uint eType)
 		if(viewPos.z <0)
 			continue;
 		if (fMinDistSQ > distSQ)
+		{
+			fMinDistSQ = distSQ;
 			target = gameObject;
+		}
 		
 	}
 
@@ -302,7 +313,7 @@ _bool FSM::Init_CurFrame(const _uint curFrame)
 	return false;
 }
 
-void FSM::Add_Effect(const wstring& strSkilltag)
+void FSM::Add_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript)
 {
 	shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();
 
@@ -322,16 +333,24 @@ void FSM::Add_Effect(const wstring& strSkilltag)
 
 	// For. GroupEffect component 
 	shared_ptr<GroupEffect> pGroupEffect = make_shared<GroupEffect>();
+
 	pGroupEffectObj->Add_Component(pGroupEffect);
 	pGroupEffectObj->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
 	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
 	pGroupEffectObj->Get_GroupEffect()->Set_InitWorldMatrix(pGroupEffectObj->Get_Transform()->Get_WorldMatrix());
+	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectMaterials();
+	pGroupEffectObj->Set_Name(strSkilltag);
+	pGroupEffectObj->Init();
+
+	// For. Script 
+	if(nullptr != pScript)
+		pGroupEffectObj->Get_GroupEffect()->Set_Script(pScript);
 
 	// For. Add Effect GameObject to current scene
-	CUR_SCENE->Add_GameObject(pGroupEffectObj);
+	EVENTMGR.Create_Object(pGroupEffectObj);
 }
 
-void FSM::Add_And_Set_Effect(const wstring& strSkilltag)
+void FSM::Add_And_Set_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript)
 {
 	shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();
 
@@ -339,7 +358,7 @@ void FSM::Add_And_Set_Effect(const wstring& strSkilltag)
 	pGroupEffectObj->GetOrAddTransform();
 	pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS));
 	pGroupEffectObj->Get_Transform()->Set_Quaternion(Get_Transform()->Get_Rotation());
-
+	pGroupEffectObj->Set_Name(strSkilltag);
 	// For. GroupEffectData 
 	wstring wstrFileName = strSkilltag + L".dat";
 	wstring wtsrFilePath = TEXT("..\\Resources\\EffectData\\GroupEffectData\\") + wstrFileName;
@@ -354,32 +373,133 @@ void FSM::Add_And_Set_Effect(const wstring& strSkilltag)
 	pGroupEffectObj->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
 	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
 	pGroupEffectObj->Get_GroupEffect()->Set_InitWorldMatrix(Get_Transform()->Get_WorldMatrix());
+	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectMaterials();
 	pGroupEffectObj->Set_Name(strSkilltag);
-	m_pGroupEffect = pGroupEffectObj;
+	m_vGroupEffect.push_back(pGroupEffectObj);
+	pGroupEffectObj->Init();
+
+	// For. Script 
+	if (nullptr != pScript)
+		pGroupEffectObj->Get_GroupEffect()->Set_Script(pScript);
 
 	// For. Add Effect GameObject to current scene
-	CUR_SCENE->Add_GameObject(m_pGroupEffect.lock());
+	for (auto& iter : m_vGroupEffect)
+	{
+		if(!iter.expired())
+			EVENTMGR.Create_Object(iter.lock());
+	}
 }
 
-void FSM::Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset)
+void FSM::Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset, _bool usePosAs, shared_ptr<MonoBehaviour> pScript)
 {
 	shared_ptr<GameObject> pGroupEffectOwnerObj = make_shared<GameObject>();
 
 	// For. Transform 
 	pGroupEffectOwnerObj->GetOrAddTransform();
-	_float4 vDir = m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::LOOK);
-	vDir.Normalize();
-	_float4 vOwnerPos = m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float4(vDir.x * vPosOffset.x, vDir.y * vPosOffset.y, vDir.z * vPosOffset.z, 0.f);
-	pGroupEffectOwnerObj->Get_Transform()->Set_State(Transform_State::POS, vOwnerPos);
+	if(!usePosAs)
+	{
+		_float4 vOwnerLook = m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::LOOK);
+		vOwnerLook.Normalize();
+		_float4 vOwnerRight = m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::RIGHT);
+		vOwnerRight.Normalize();
+		_float4 vOwnerUp = m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::UP);
+		vOwnerUp.Normalize();
+		_float4 vOwnerPos = m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS)
+			+ vOwnerRight * vPosOffset.x
+			+ vOwnerUp * vPosOffset.y
+			+ vOwnerLook * vPosOffset.z;
+		pGroupEffectOwnerObj->Get_Transform()->Set_State(Transform_State::POS, vOwnerPos);
+	}
+	else
+		pGroupEffectOwnerObj->Get_Transform()->Set_State(Transform_State::POS, _float4(vPosOffset,1.f));
 	pGroupEffectOwnerObj->Get_Transform()->Set_Quaternion(Get_Transform()->Get_Rotation());
 
 	// For. GroupEffect component 
 	shared_ptr<GroupEffectOwner> pGroupEffect = make_shared<GroupEffectOwner>();
 	pGroupEffectOwnerObj->Add_Component(pGroupEffect);
 	pGroupEffectOwnerObj->Get_GroupEffectOwner()->Set_GroupEffectTag(strSkilltag);
+	if(nullptr != pScript)
+		pGroupEffectOwnerObj->Get_GroupEffectOwner()->Set_GroupEffectScript(pScript);
 
 	// For. Add Effect GameObject to current scene
-	CUR_SCENE->Add_GameObject(pGroupEffectOwnerObj);
+	EVENTMGR.Create_Object(pGroupEffectOwnerObj);
+}
+
+void FSM::KillAllEffect()
+{
+	for (auto& iter : m_vGroupEffect)
+	{
+		if (!iter.expired())
+		{
+			iter.lock()->Get_GroupEffect()->Kill_All();
+			EVENTMGR.Delete_Object(iter.lock());
+			iter.reset();
+		}
+	}
+}
+
+void FSM::Update_GroupEffectWorldPos(const _float4x4& mWorldMatrix)
+{
+	for (auto& iter : m_vGroupEffect)
+	{
+		if(!iter.expired())
+			iter.lock()->Get_Transform()->Set_WorldMat(mWorldMatrix);
+	}
+}
+
+void FSM::Add_FDistortion_Effect(const wstring& strSkilltag)
+{
+	shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();
+
+	// For. Transform 
+	pGroupEffectObj->GetOrAddTransform();
+	//pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS));
+	//pGroupEffectObj->Get_Transform()->Set_Quaternion(Get_Transform()->Get_Rotation());
+	pGroupEffectObj->Get_Transform()->Set_WorldMat(m_pOwner.lock()->Get_Transform()->Get_WorldMatrix());
+
+	// For. GroupEffectData 
+	wstring wstrFileName = strSkilltag + L".dat";
+	wstring wtsrFilePath = TEXT("..\\Resources\\EffectData\\FDistortionGroupEffectData\\") + wstrFileName;
+	shared_ptr<GroupEffectData> pGroupEffectData = RESOURCES.GetOrAddGroupEffectData(strSkilltag, wtsrFilePath);
+
+
+	if (pGroupEffectData == nullptr)
+		return;
+
+	// For. GroupEffect component 
+	shared_ptr<GroupEffect> pGroupEffect = make_shared<GroupEffect>();
+
+	pGroupEffectObj->Add_Component(pGroupEffect);
+	pGroupEffectObj->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
+	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
+	pGroupEffectObj->Get_GroupEffect()->Set_InitWorldMatrix(pGroupEffectObj->Get_Transform()->Get_WorldMatrix());
+	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectMaterials();
+	pGroupEffectObj->Set_Name(strSkilltag);
+	pGroupEffectObj->Init();
+
+	// For. Add Effect GameObject to current scene
+	EVENTMGR.Create_Object(pGroupEffectObj);
+}
+
+void FSM::Add_And_Set_FDistortion_Effect(const wstring& strSkilltag)
+{
+}
+
+void FSM::Add_FDistortion_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset)
+{
+}
+
+void FSM::Update_FDistortion_GroupEffectWorldPos()
+{
+}
+
+void FSM::FreeLoopMembers()
+{
+	for (auto& iter : m_vGroupEffect)
+	{
+		if (!iter.expired())
+			iter.lock()->Get_GroupEffect()->FreeLoopMember();
+	}
 }
 
 void FSM::Cal_SkillCamDirection(const _float dist)
@@ -415,6 +535,41 @@ _bool FSM::Check_Combo(_uint minFrame, KEY_TYPE eKeyType)
 	return false;
 }
 
+_bool FSM::DeadCheck()
+{
+	if (!m_pOwner.expired())
+	{
+		if (m_pOwner.lock()->Get_CurHp() > 0.f)
+			m_bIsDead = false;
+		else
+			m_bIsDead = true;
+	}
+
+	return m_bIsDead;
+}
+
+void FSM::Set_HitColor()
+{
+	if(Get_Owner()->Get_Animator())
+	{
+		_float4& renderParam = Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[0];
+		renderParam.x = 1.f;
+		renderParam.y = 1.f;
+		renderParam.z = 1.f;
+	}
+}
+
+void FSM::Recovery_Color()
+{
+	if (Get_Owner()->Get_Animator())
+	{
+		_float4& param = Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[0];
+		param.x = clamp(param.x - 10.f * fDT, 0.f, FLT_MAX);
+		param.y = clamp(param.y - 10.f * fDT, 0.f, FLT_MAX);
+		param.z = clamp(param.z - 10.f * fDT, 0.f, FLT_MAX);
+	}
+}
+
 void FSM::Set_Target(shared_ptr<GameObject> pTarget)
 {
 	m_pTarget = pTarget;
@@ -437,12 +592,21 @@ void FSM::Reset_Target()
 
 void FSM::Reset_Weapon()
 {
-	if (!m_pWeapon.expired())
-		CUR_SCENE->Remove_GameObject(m_pWeapon.lock());
+	//if (!m_pWeapon.expired())
+	//	CUR_SCENE->Remove_GameObject(m_pWeapon.lock());
 }
 
 void FSM::Reset_Vehicle()
 {
 	if (!m_pVehicle.expired())
-		CUR_SCENE->Remove_GameObject(m_pVehicle.lock());
+		EVENTMGR.Delete_Object(m_pVehicle.lock());
+}
+
+void FSM::Remove_Object()
+{
+	if (!m_pAttackCollider.expired())
+		EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+	
+	if (!m_pOwner.expired())
+		EVENTMGR.Delete_Object(m_pOwner.lock());
 }

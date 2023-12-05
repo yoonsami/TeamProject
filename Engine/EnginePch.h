@@ -104,6 +104,7 @@ using namespace physx;
 #include "InstancingMgr.h"
 #include "CollisionMgr.h"
 #include "PhysxMgr.h"
+#include "EventMgr.h"
 
 // Engine
 #include "VertexData.h"

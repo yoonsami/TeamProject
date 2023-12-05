@@ -6,6 +6,8 @@
 #include "MainCameraScript.h"
 #include "UiDamageCreate.h"
 #include "UiMonsterHp.h"
+#include "ObjectDissolve.h"
+#include "CharacterController.h"
 
 
 HRESULT Succubus_Scythe_FSM::Init()
@@ -26,7 +28,7 @@ HRESULT Succubus_Scythe_FSM::Init()
 
         m_pAttackCollider = attackCollider;
 
-        CUR_SCENE->Add_GameObject(m_pAttackCollider.lock());
+        EVENTMGR.Create_Object(m_pAttackCollider.lock());
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
 
         m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
@@ -45,7 +47,7 @@ HRESULT Succubus_Scythe_FSM::Init()
         m_fNormalAttack_AnimationSpeed = 1.3f;
         m_fSkillAttack_AnimationSpeed = 1.3f;
 
-        m_fDetectRange = 10.f;
+        m_fDetectRange = 6.f;
 
 
         m_bInitialize = true;
@@ -56,6 +58,8 @@ HRESULT Succubus_Scythe_FSM::Init()
 
 void Succubus_Scythe_FSM::Tick()
 {
+    DeadCheck();
+
     State_Tick();
 
     if (!m_pAttackCollider.expired())
@@ -70,7 +74,7 @@ void Succubus_Scythe_FSM::State_Tick()
     State_Init();
 
     m_iCurFrame = Get_CurFrame();
-
+    Recovery_Color();
     switch (m_eCurState)
     {
     case STATE::b_idle:
@@ -85,8 +89,11 @@ void Succubus_Scythe_FSM::State_Tick()
     case STATE::wander:
         wander();
         break;
-    case STATE::die:
-        die();
+    case STATE::die_01:
+        die_01();
+        break;
+    case STATE::die_02:
+        die_02();
         break;
     case STATE::gaze_b:
         gaze_b();
@@ -147,9 +154,7 @@ void Succubus_Scythe_FSM::State_Tick()
         break;
     }
 
-    if (!m_pGroupEffect.expired())
-        m_pGroupEffect.lock()->Get_Transform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
-
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
     if (m_iPreFrame != m_iCurFrame)
         m_iPreFrame = m_iCurFrame;
@@ -173,8 +178,11 @@ void Succubus_Scythe_FSM::State_Init()
         case STATE::wander:
             wander_Init();
             break;
-        case STATE::die:
-            die_Init();
+        case STATE::die_01:
+            die_01_Init();
+            break;
+        case STATE::die_02:
+            die_02_Init();
             break;
         case STATE::gaze_b:
             gaze_b_Init();
@@ -250,10 +258,12 @@ void Succubus_Scythe_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _
     if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
         return;
 
-    wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
 
     if (!m_bInvincible)
     {
+        wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
+        _float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
+
         shared_ptr<GameObject> targetToLook = nullptr;
 
         if (strSkillName.find(L"_Skill") != wstring::npos)
@@ -264,7 +274,7 @@ void Succubus_Scythe_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _
         if (targetToLook == nullptr)
             return;
 
-        Get_Hit(strSkillName, targetToLook);
+        Get_Hit(strSkillName, fAttackDamage, targetToLook);
     }
 }
 
@@ -272,10 +282,8 @@ void Succubus_Scythe_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _f
 {
 }
 
-void Succubus_Scythe_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObject> pLookTarget)
+void Succubus_Scythe_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
-    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner());
-
     auto pScript = m_pOwner.lock()->Get_Script<UiMonsterHp>();
     if (nullptr == pScript)
     {
@@ -283,6 +291,12 @@ void Succubus_Scythe_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObjec
         m_pOwner.lock()->Add_Component(pScript);
         pScript->Init();
     }
+
+    //Calculate Damage 
+    m_pOwner.lock()->Get_Hurt(fDamage);
+
+    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage);
+
 
     m_bDetected = true;
     m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.05f);
@@ -292,6 +306,7 @@ void Succubus_Scythe_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObjec
     m_vHitDir = vOppositePos - vMyPos;
     m_vHitDir.y = 0.f;
     m_vHitDir.Normalize();
+	Set_HitColor();
 
     if (skillname == NORMAL_ATTACK || skillname == NORMAL_SKILL)
     {
@@ -346,12 +361,13 @@ void Succubus_Scythe_FSM::Get_Hit(const wstring& skillname, shared_ptr<GameObjec
 
 }
 
-void Succubus_Scythe_FSM::AttackCollider_On(const wstring& skillname)
+void Succubus_Scythe_FSM::AttackCollider_On(const wstring& skillname, _float fAttackDamage)
 {
     if (!m_pAttackCollider.expired())
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(true);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     }
 }
 
@@ -361,6 +377,7 @@ void Succubus_Scythe_FSM::AttackCollider_Off()
     {
         m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
         m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(0.f);
     }
 }
 
@@ -398,6 +415,8 @@ void Succubus_Scythe_FSM::b_idle()
                 m_eCurState = STATE::b_run;
         }
     }
+
+    Dead_Setting();
 }
 
 void Succubus_Scythe_FSM::b_idle_Init()
@@ -412,6 +431,7 @@ void Succubus_Scythe_FSM::b_idle_Init()
     m_vTurnVector = _float3(0.f);
 
     m_bSuperArmor = false;
+    m_bInvincible = false;
 }
 
 void Succubus_Scythe_FSM::b_run()
@@ -435,6 +455,7 @@ void Succubus_Scythe_FSM::b_run_Init()
     Get_Transform()->Set_Speed(m_fSprintSpeed);
 
     m_bSuperArmor = false;
+    m_bInvincible = false;
 }
 
 void Succubus_Scythe_FSM::n_run()
@@ -459,6 +480,7 @@ void Succubus_Scythe_FSM::n_run()
         m_eCurState = STATE::wander;
     }
 
+
     if (Target_In_DetectRange())
         m_bDetected = true;
 
@@ -481,6 +503,7 @@ void Succubus_Scythe_FSM::n_run_Init()
     m_vTurnVector.Normalize();
 
     m_bSuperArmor = false;
+    m_bInvincible = false;
 }
 
 void Succubus_Scythe_FSM::wander()
@@ -492,8 +515,10 @@ void Succubus_Scythe_FSM::wander()
         if (m_bPatrolMove)
             m_eCurState = STATE::n_run;
         
+       
         if (Target_In_DetectRange())
             m_bDetected = true;
+       
     }
     else
     {
@@ -511,15 +536,55 @@ void Succubus_Scythe_FSM::wander_Init()
     m_vTurnVector.Normalize();
 
     m_bSuperArmor = false;
+    m_bInvincible = false;
 }
 
-void Succubus_Scythe_FSM::die()
+void Succubus_Scythe_FSM::die_01()
 {
+    if (Is_AnimFinished())
+    {
+        auto script = make_shared<ObjectDissolve>(1.f);
+        Get_Owner()->Add_Component(script);
+        script->Init();
+
+        if (!m_pAttackCollider.expired())
+            EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+    }
 }
 
-void Succubus_Scythe_FSM::die_Init()
+void Succubus_Scythe_FSM::die_01_Init()
 {
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"die_01", 0.2f, false, 1.f);
+
+    m_bSuperArmor = false;
+    m_bInvincible = true;
 }
+
+void Succubus_Scythe_FSM::die_02()
+{
+    if (Is_AnimFinished())
+    {
+        auto script = make_shared<ObjectDissolve>(1.f);
+        Get_Owner()->Add_Component(script);
+        script->Init();
+
+        if (!m_pAttackCollider.expired())
+            EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+    }
+}
+
+void Succubus_Scythe_FSM::die_02_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"die_02", 0.2f, false, 1.f);
+
+    m_bSuperArmor = false;
+    m_bInvincible = true;
+}
+
 
 void Succubus_Scythe_FSM::gaze_b()
 {
@@ -674,12 +739,30 @@ void Succubus_Scythe_FSM::airborne_start_Init()
     AttackCollider_Off();
 
     m_bSuperArmor = true;
+
+    Get_CharacterController()->Add_Velocity(7.f);
 }
 
 void Succubus_Scythe_FSM::airborne_end()
 {
     if (Is_AnimFinished())
-        m_eCurState = STATE::airborne_up;
+    {
+        if (!m_bIsDead)
+            m_eCurState = STATE::airborne_up;
+        else
+        {
+            m_bInvincible = true;
+
+            Get_Owner()->Get_Animator()->Set_AnimState(true);
+
+            auto script = make_shared<ObjectDissolve>(1.f);
+            Get_Owner()->Add_Component(script);
+            script->Init();
+
+            if (!m_pAttackCollider.expired())
+                EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        }
+    }
 }
 
 void Succubus_Scythe_FSM::airborne_end_Init()
@@ -712,6 +795,8 @@ void Succubus_Scythe_FSM::hit()
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
+    
+    Dead_Setting();
 }
 
 void Succubus_Scythe_FSM::hit_Init()
@@ -748,7 +833,7 @@ void Succubus_Scythe_FSM::knock_start_Init()
 
 void Succubus_Scythe_FSM::knock_end()
 {
-    if (Get_CurFrame() < 13)
+    if (m_iCurFrame < 13)
         Get_Transform()->Go_Backward();
 
     if (Is_AnimFinished())
@@ -766,8 +851,22 @@ void Succubus_Scythe_FSM::knock_end_Init()
 
 void Succubus_Scythe_FSM::knock_end_loop()
 {
-    if (Get_CurFrame() > Get_FinalFrame() / 2)
+    if (m_iCurFrame > Get_FinalFrame() / 2)
         m_eCurState = STATE::knock_up;
+
+    if (m_bIsDead)
+    {
+        m_bInvincible = true;
+
+        Get_Owner()->Get_Animator()->Set_AnimState(true);
+
+        auto script = make_shared<ObjectDissolve>(1.f);
+        Get_Owner()->Add_Component(script);
+        script->Init();
+
+        if (!m_pAttackCollider.expired())
+            EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+    }
 }
 
 void Succubus_Scythe_FSM::knock_end_loop_Init()
@@ -783,6 +882,9 @@ void Succubus_Scythe_FSM::knock_end_hit()
 {
     if (Is_AnimFinished())
         m_eCurState = STATE::knock_end_loop;
+
+    if (m_bIsDead)
+        m_bInvincible = true;
 }
 
 void Succubus_Scythe_FSM::knock_end_hit_Init()
@@ -836,11 +938,28 @@ void Succubus_Scythe_FSM::knockdown_start_Init()
 
 void Succubus_Scythe_FSM::knockdown_end()
 {
-    if (Get_CurFrame() < 16)
+    if (m_iCurFrame < 16)
         Get_Transform()->Go_Backward();
 
+
     if (Is_AnimFinished())
-        m_eCurState = STATE::knock_up;
+    {
+        if (!m_bIsDead)
+            m_eCurState = STATE::knock_up;
+        else
+        {
+            m_bInvincible = true;
+
+            Get_Owner()->Get_Animator()->Set_AnimState(true);
+
+            auto script = make_shared<ObjectDissolve>(1.f);
+            Get_Owner()->Add_Component(script);
+            script->Init();
+
+            if (!m_pAttackCollider.expired())
+                EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        }
+    }
 }
 
 void Succubus_Scythe_FSM::knockdown_end_Init()
@@ -859,9 +978,9 @@ void Succubus_Scythe_FSM::skill_1100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 14)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 25)
+    if (m_iCurFrame == 14)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 25)
         AttackCollider_Off();
 
     Set_Gaze();
@@ -886,9 +1005,9 @@ void Succubus_Scythe_FSM::skill_1200()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 21)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 23)
+    if (m_iCurFrame == 21)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 23)
         AttackCollider_Off();
 
     Set_Gaze();
@@ -913,9 +1032,9 @@ void Succubus_Scythe_FSM::skill_1300()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Get_CurFrame() == 29)
-        AttackCollider_On(NORMAL_ATTACK);
-    else if (Get_CurFrame() == 31)
+    if (m_iCurFrame == 29)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 31)
         AttackCollider_Off();
 
     Set_Gaze();
@@ -949,7 +1068,7 @@ void Succubus_Scythe_FSM::skill_1400()
         desc.fLimitDistance = 12.f;
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-        Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, NORMAL_SKILL);
+        Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, NORMAL_SKILL, 10.f);
     }
 
     Set_Gaze();
@@ -1005,6 +1124,19 @@ void Succubus_Scythe_FSM::Set_Gaze()
             m_eCurState = STATE::gaze_r;
         else if (iRan == 3)
             m_eCurState = STATE::gaze_f;
+    }
+}
+
+void Succubus_Scythe_FSM::Dead_Setting()
+{
+    if (m_bIsDead)
+    {
+        m_bInvincible = true;
+
+        if (rand() % 2 == 0)
+            m_eCurState = STATE::die_01;
+        else
+            m_eCurState = STATE::die_02;
     }
 }
 
@@ -1076,7 +1208,7 @@ _float3 Succubus_Scythe_FSM::Calculate_TargetTurnVector()
         return m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz() - m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
 }
 
-void Succubus_Scythe_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType)
+void Succubus_Scythe_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
 {
     shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
 
@@ -1094,10 +1226,11 @@ void Succubus_Scythe_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos,
     m_pSkillCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
     m_pSkillCollider.lock()->Get_Collider()->Set_Activate(true);
     m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
+    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
     m_pSkillCollider.lock()->Set_Name(L"Succubus_Scythe_SkillCollider");
     m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
     m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
 
-    CUR_SCENE->Add_GameObject(m_pSkillCollider.lock());
+    EVENTMGR.Create_Object(m_pSkillCollider.lock());
 }

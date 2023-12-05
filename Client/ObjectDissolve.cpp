@@ -3,6 +3,7 @@
 #include "ObjectDissolve.h"
 #include "ModelRenderer.h"
 #include "ModelAnimator.h"
+#include "CharacterController.h"
 
 ObjectDissolve::ObjectDissolve(_float fDissolveSpeed, shared_ptr<Texture> dissolveTexture)
     : m_fDissolveSpeed(fDissolveSpeed)
@@ -18,6 +19,9 @@ HRESULT ObjectDissolve::Init()
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
             material->Set_TextureMap(m_pTexture.lock(), TextureMapType::DISSOLVE);
     }
+
+    if (Get_CharacterController() && Get_CharacterController()->Get_Actor())
+        Get_CharacterController()->Release_Controller();
     return S_OK;
 }
 
@@ -28,15 +32,15 @@ void ObjectDissolve::Tick()
 
     if (Get_Owner()->Get_ModelRenderer())
     {
-        Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[0].x += m_fDissolveSpeed * fDT;
-        if (Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[0].x > 1.f)
-            CUR_SCENE->Remove_GameObject(Get_Owner());
+        Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[0].w += m_fDissolveSpeed * fDT;
+        if (Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[0].w > 1.f)
+            EVENTMGR.Delete_Object(Get_Owner());
     }
 
     if (Get_Owner()->Get_Animator())
     {
-		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[0].x += m_fDissolveSpeed * fDT;
-		if (Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[0].x > 1.f)
-			CUR_SCENE->Remove_GameObject(Get_Owner());
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[0].w += m_fDissolveSpeed * fDT;
+		if (Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[0].w > 1.f)
+            EVENTMGR.Delete_Object(Get_Owner());
     }
 }

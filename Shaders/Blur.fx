@@ -216,6 +216,38 @@ float4 PS_MotionBlur(VS_OUT input) : SV_Target0
     return output;
 }
 
+float g_fRadialBlurStrength;
+int g_iSamples = 64;
+float2 g_vCenterPos;
+float g_fNormalRadius;
+
+float4 PS_RadialBlur(VS_OUT input) : SV_Target
+{
+    uint width, height, numMips;
+    SubMap0.GetDimensions(0, width, height, numMips);
+    
+    float2 centerUV = 0;
+    centerUV = g_vCenterPos;
+    centerUV.y *= -1.f;
+    centerUV += 0.5f;
+    
+    float2 dir = input.uv - centerUV;
+    float4 normalColor = SubMap0.Sample(LinearSamplerClamp, input.uv);
+    float4 color = (float4) 0;
+
+
+    for (int i = 0; i < g_iSamples; i += 2) //operating at 2 samples for better performance
+    {
+            color += SubMap0.Sample(LinearSamplerClamp, input.uv + float(i) / float(g_iSamples) * dir * g_fRadialBlurStrength);
+            color += SubMap0.Sample(LinearSamplerClamp, input.uv + float(i + 1) / float(g_iSamples) * dir * g_fRadialBlurStrength);
+    }
+
+    
+    return color / float(g_iSamples);
+    
+  
+}
+
 technique11 t0
 {
     pass smaller
@@ -267,5 +299,14 @@ technique11 t1
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_MotionBlur()));
     }
-
+    pass RadialBlur
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_MAIN()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_LESS_NO_WRITE, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_RadialBlur()));
+    }
+    
 }

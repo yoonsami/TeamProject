@@ -24,9 +24,9 @@ HRESULT UiCharChange::Init()
     m_vecDesc[1].fCoolTime = 10.f;
     m_vecDesc[2].fCoolTime = 10.f;
 
-    /*m_vecDesc[0].fAccTime = m_vecDesc[0].fCoolTime;
-    m_vecDesc[1].fAccTime = m_vecDesc[1].fCoolTime;
-    m_vecDesc[2].fAccTime = m_vecDesc[2].fCoolTime;*/
+    m_vecDesc[0].fAccTime = m_vecDesc[0].fCoolTime + 1.f;
+    m_vecDesc[1].fAccTime = m_vecDesc[1].fCoolTime + 1.f;
+    m_vecDesc[2].fAccTime = m_vecDesc[2].fCoolTime + 1.f;
 
     m_pObj.resize(3);
     m_pObj[0] = CUR_SCENE->Get_UI(L"UI_Char_Change0");
@@ -38,11 +38,7 @@ HRESULT UiCharChange::Init()
     m_pElement[1] = CUR_SCENE->Get_UI(L"UI_Char_Change_Element1");
     m_pElement[2] = CUR_SCENE->Get_UI(L"UI_Char_Change_Element2");
 
-    m_eHero.resize(3);
-    m_eHero[0] = HERO::MAX;
-    m_eHero[1] = HERO::MAX;
-    m_eHero[2] = HERO::MAX;
-
+    
 
     return S_OK;
 }
@@ -69,7 +65,7 @@ void UiCharChange::Tick()
     Change_Hero();
 }
 
-void UiCharChange::Set_Hero(_uint iIndex, HERO eHero)
+void UiCharChange::Set_Hero(_uint iIndex)
 {
     if (m_pOwner.expired() || 2 < iIndex)
         return;
@@ -78,18 +74,22 @@ void UiCharChange::Set_Hero(_uint iIndex, HERO eHero)
         return;
 
     // UI의 Index 위치에 업데이트할 영웅 사진 껴주기
+    HERO eHero = DATAMGR.Get_Cur_Set_Hero(iIndex);
+
     if (HERO::MAX == eHero)
     {
         m_pObj[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"Card_None"), TextureMapType::DIFFUSE);
-        m_pElement[iIndex].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
-        m_eHero[iIndex] = HERO::MAX;
+        m_pElement[iIndex].lock()->Set_Tick(false);
+        m_pElement[iIndex].lock()->Set_Render(false);
+        m_vecDesc[iIndex].bIsSet = false;
     }
     else
     {
         m_pObj[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap((RESOURCES.Get<Texture>(GET_DATA(eHero).KeyChangeCard)), TextureMapType::DIFFUSE);
         m_pElement[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(GET_ELEMENT(eHero)), TextureMapType::DIFFUSE);
-        m_pElement[iIndex].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
-        m_eHero[iIndex] = eHero;
+        m_pElement[iIndex].lock()->Set_Tick(true);
+        m_pElement[iIndex].lock()->Set_Render(true);
+        m_vecDesc[iIndex].bIsSet = true;
     }
 }
 
@@ -99,13 +99,12 @@ _bool UiCharChange::IsChangePossible(_uint iIndex)
         return false;
 
     auto& Desc = m_vecDesc[iIndex];
-    if(HERO::MAX == Desc.eHero)
+    if (false == Desc.bIsSet)
         return false;
 
     if (Desc.fCoolTime < Desc.fAccTime)
     {
-        // Hero Change Script 호출
-        // Desc.eHero의 영웅 값을 따라서 호출
+        m_vecDesc[iIndex].fAccTime = 0.f;
         
         return true;
     }
@@ -119,15 +118,8 @@ void UiCharChange::Check_Change_Cool()
     for (_uint i = 0; i < iSize; ++i)
     {
         auto& Desc = m_vecDesc[i];
-        if (HERO::MAX == Desc.eHero)
-        {
-            Desc.fAccTime = Desc.fCoolTime;
-        }
-        else
-        {
-            if (Desc.fCoolTime > Desc.fAccTime)
-                Desc.fAccTime += fDT;
-        }
+        if (Desc.fCoolTime > Desc.fAccTime)
+            Desc.fAccTime += fDT;
     }
 }
 
@@ -144,33 +136,64 @@ void UiCharChange::Set_Param_Value()
 
 void UiCharChange::Change_Hero()
 {
-    if (KEYTAP(KEY_TYPE::F5))
+    if (KEYTAP(KEY_TYPE::F1))
     {
-        if (HERO::MAX == m_eHero[0])
-            return;
+        if (true == IsChangePossible(0))
+        {
+            auto eValue = DATAMGR.Get_Cur_Set_Hero(0);
+            if (HERO::MAX == eValue)
+                return;
 
-        auto pScript = CUR_SCENE->Get_GameObject(L"Player")->Get_Script<HeroChangeScript>();
-
-        pScript->Change_Hero(m_eHero[0]);
+            m_bIsChange = true;
+            auto pScript = CUR_SCENE->Get_GameObject(L"Player")->Get_Script<HeroChangeScript>();
+            pScript->Change_Hero(eValue);
+        }
+        else if(true == m_bIsChange)
+        {
+            m_bIsChange = false;
+            auto pScript = CUR_SCENE->Get_GameObject(L"Player")->Get_Script<HeroChangeScript>();
+            pScript->Change_Player();
+        }
+        
     }
 
-    if (KEYTAP(KEY_TYPE::F6))
+    if (KEYTAP(KEY_TYPE::F2))
     {
-        if (HERO::MAX == m_eHero[1])
-            return;
+        if (true == IsChangePossible(1))
+        {
+            auto eValue = DATAMGR.Get_Cur_Set_Hero(1);
+            if (HERO::MAX == eValue)
+                return;
 
-        auto pScript = CUR_SCENE->Get_GameObject(L"Player")->Get_Script<HeroChangeScript>();
-
-        pScript->Change_Hero(m_eHero[1]);
+            m_bIsChange = true;
+            auto pScript = CUR_SCENE->Get_GameObject(L"Player")->Get_Script<HeroChangeScript>();
+            pScript->Change_Hero(eValue);
+        }
+        else if (true == m_bIsChange)
+        {
+            m_bIsChange = false;
+            auto pScript = CUR_SCENE->Get_GameObject(L"Player")->Get_Script<HeroChangeScript>();
+            pScript->Change_Player();
+        }
     }
 
-    if (KEYTAP(KEY_TYPE::F7))
+    if (KEYTAP(KEY_TYPE::F3))
     {
-        if (HERO::MAX == m_eHero[2])
-            return;
+        if (true == IsChangePossible(2))
+        {
+            auto eValue = DATAMGR.Get_Cur_Set_Hero(2);
+            if (HERO::MAX == eValue)
+                return;
 
-        auto pScript = CUR_SCENE->Get_GameObject(L"Player")->Get_Script<HeroChangeScript>();
-
-        pScript->Change_Hero(m_eHero[2]);
+            m_bIsChange = true;
+            auto pScript = CUR_SCENE->Get_GameObject(L"Player")->Get_Script<HeroChangeScript>();
+            pScript->Change_Hero(eValue);
+        }
+        else if (true == m_bIsChange)
+        {
+            m_bIsChange = false;
+            auto pScript = CUR_SCENE->Get_GameObject(L"Player")->Get_Script<HeroChangeScript>();
+            pScript->Change_Player();
+        }
     }
 }
