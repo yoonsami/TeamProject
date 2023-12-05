@@ -153,6 +153,8 @@ private:
 	_float4 m_vLeaveCamPos = _float4(0.f);
 	_float4 m_vLeaveCamLookPos = _float4(0.f);
 	_float4 m_vFirstPos = _float4(0.f);
+	_float4 m_vSetPlayerPos = _float4(0.f);
+
 
 	_float4x4 HeadBoneMatrix = XMMatrixIdentity();
 	_float4x4 MouseBoneMatrix = XMMatrixIdentity();

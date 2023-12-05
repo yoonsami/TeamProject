@@ -19,6 +19,7 @@
 #include "RigidBody.h"
 #include "FloorSkill_Script.h"
 #include "OBBBoxCollider.h"
+#include "ModelRenderer.h"
 
 HRESULT Boss_Giant_Mir_FSM::Init()
 {
@@ -46,6 +47,11 @@ HRESULT Boss_Giant_Mir_FSM::Init()
         Get_Transform()->Set_State(Transform_State::POS, vPos);
 
         m_vFirstPos = vPos;
+
+        if (!m_pTarget.expired())
+        {
+            m_vSetPlayerPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS);
+        }
 
         m_iHeadBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bone067");
         m_iMouseBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bone062");
@@ -470,7 +476,7 @@ void Boss_Giant_Mir_FSM::groggy_loop_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"groggy_loop", 0.1f, false, 1.f);
+    animator->Set_NextTweenAnim(L"groggy_loop", 0.1f, false, 0.5f);
 }
 
 void Boss_Giant_Mir_FSM::groggy_end()
@@ -545,7 +551,6 @@ void Boss_Giant_Mir_FSM::SQ_Leave_Groggy_Start()
     {
         m_eCurState = STATE::SQ_Leave_Groggy_End;
     }
-        //m_eCurState = STATE::SQ_Leave;
 }
 
 void Boss_Giant_Mir_FSM::SQ_Leave_Groggy_Start_Init()
@@ -585,6 +590,15 @@ void Boss_Giant_Mir_FSM::SQ_Leave_Groggy_Start_Init()
     Set_Invincible(true);
 
     m_vFirstPos.y = 2.f;
+
+    if (!m_pTarget.expired())
+    {
+        m_pTarget.lock()->Get_Animator()->Set_RenderState(false);
+        
+        if (m_pTarget.lock()->Get_FSM()->Get_Weapon())
+            m_pTarget.lock()->Get_FSM()->Get_Weapon()->Get_ModelRenderer()->Set_RenderState(false);
+
+    }
 }
 
 void Boss_Giant_Mir_FSM::SQ_Leave_Groggy_End()
@@ -619,7 +633,6 @@ void Boss_Giant_Mir_FSM::SQ_Leave_Groggy_End()
 
     if (Is_AnimFinished())
         m_eCurState = STATE::SQ_Leave;
-        //m_eCurState = STATE::SQ_Leave;
 
 }
 
@@ -671,7 +684,7 @@ void Boss_Giant_Mir_FSM::SQ_Leave()
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(vLookPos);
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, vDir, m_fIntroCamDistance);
         }
-        else // if (m_iCurFrame >= 50 && m_iCurFrame < 200)
+        else if (m_iCurFrame >= 50 && m_iCurFrame < 180)
         {
             if (Init_CurFrame(50))
             {
@@ -689,10 +702,31 @@ void Boss_Giant_Mir_FSM::SQ_Leave()
 
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(2.f);
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vLeaveCamLookPos.xyz());
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedTime(1.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedTime(0.2f);
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedDir(vDir);
+        }
+        else
+        {
+            if (Init_CurFrame(180))
+            {
+                if (!m_pTarget.expired())
+                {
+                    m_pTarget.lock()->Get_CharacterController()->Get_Actor()->setFootPosition({ m_vSetPlayerPos.x,  m_vSetPlayerPos.y, m_vSetPlayerPos.z });
 
-            CAMERA_SHAKE(0.1f, 0.15f);
+                    m_pTarget.lock()->Get_Animator()->Set_RenderState(true);
+
+                    if (m_pTarget.lock()->Get_FSM()->Get_Weapon())
+                        m_pTarget.lock()->Get_FSM()->Get_Weapon()->Get_ModelRenderer()->Set_RenderState(true);
+                }
+                
+                _float4 vCamPos = m_vSetPlayerPos +
+                    m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::UP) * 5.f +
+                    m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::LOOK) * 5.f;
+
+                m_pCamera.lock()->Get_Transform()->Set_State(Transform_State::POS, vCamPos);
+                m_pCamera.lock()->Get_Transform()->LookAt(m_vSetPlayerPos);
+                g_bCutScene = false;
+            }
         }
     }
    
@@ -1220,7 +1254,7 @@ void Boss_Giant_Mir_FSM::Create_Giant_Mir_Collider()
 
     shared_ptr<GameObject> StomachCollider = make_shared<GameObject>();
     StomachCollider->GetOrAddTransform();
-    StomachCollider->Add_Component(make_shared<SphereCollider>(10.f));
+    StomachCollider->Add_Component(make_shared<SphereCollider>(12.f));
     StomachCollider->Get_Collider()->Set_CollisionGroup(Monster_Body);
     StomachCollider->Add_Component(make_shared<Boss_Giant_Mir_Parts_FSM>());
     EVENTMGR.Create_Object(StomachCollider);
@@ -1298,7 +1332,7 @@ void Boss_Giant_Mir_FSM::Create_DragonBall()
 
 void Boss_Giant_Mir_FSM::Set_AttackPattern()
 {
-    //m_eCurState = STATE::SQ_Leave_Groggy_Start;
+    
     _uint iRan = rand() % 6;
 
     while (true)
