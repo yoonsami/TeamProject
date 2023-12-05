@@ -192,6 +192,8 @@ void DragonBallMonster_FSM::Crash_Init()
 
 void DragonBallMonster_FSM::Summon_CrossFloor()
 {
+	m_tPatternCoolTime.fAccTime = 0.f;
+
 	_float3 vSkillScale = _float3{ 3.f,1.f, 12.f };
 
 	FLOORSKILLDESC desc;
@@ -239,6 +241,8 @@ void DragonBallMonster_FSM::Summon_CrossFloor()
 
 void DragonBallMonster_FSM::Summon_X_Floor()
 {
+	m_tPatternCoolTime.fAccTime = 0.f;
+
 	_float3 vSkillScale = _float3{ 3.f,1.f, 12.f };
 
 	FLOORSKILLDESC desc;
@@ -296,6 +300,8 @@ void DragonBallMonster_FSM::Summon_X_Floor()
 
 void DragonBallMonster_FSM::Summon_Hash_Floor()
 {
+	m_tPatternCoolTime.fAccTime = 0.f;
+
 	_float3 vSkillScale = _float3{ 4.f,1.f, 25.f };
 
 	FLOORSKILLDESC desc;
@@ -341,6 +347,8 @@ void DragonBallMonster_FSM::Summon_Hash_Floor()
 
 void DragonBallMonster_FSM::Summon_Web_Floor()
 {
+	m_tPatternCoolTime.fAccTime = 0.f;
+
 	_float3 vSkillScale = _float3{ 3.f,1.f, 27.f };
 
 	FLOORSKILLDESC desc;
@@ -388,6 +396,8 @@ void DragonBallMonster_FSM::Summon_Web_Floor()
 
 void DragonBallMonster_FSM::Summon_HalfCircle_Floor()
 {
+	m_tPatternCoolTime.fAccTime = 0.f;
+
 	_float3 vSkillScale = _float3{ 14.f,1.f, 30.f };
 
 	FLOORSKILLDESC desc;
@@ -418,6 +428,8 @@ void DragonBallMonster_FSM::Summon_HalfCircle_Floor()
 
 void DragonBallMonster_FSM::Summon_Star_Floor()
 {
+	m_tPatternCoolTime.fAccTime = 0.f;
+
 	_float3 vSkillScale = _float3{ 3.f,1.f, 12.f };
 
 	FLOORSKILLDESC desc;
@@ -541,7 +553,6 @@ void DragonBallMonster_FSM::Create_Meteor()
 
 void DragonBallMonster_FSM::Set_AttackPattern()
 {
-	m_tPatternCoolTime.fAccTime = 0.f;
 	_uint iRan = rand() % 6;
 
 	while (true)
