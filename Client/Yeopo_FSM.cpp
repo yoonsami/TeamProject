@@ -1355,6 +1355,9 @@ void Yeopo_FSM::skill_100200_Init()
 
 void Yeopo_FSM::skill_100300()
 {
+    if (Init_CurFrame(20))
+        Add_GroupEffectOwner(L"Yeopo_100300", _float3(0.f, 0.f, 1.f), false);
+
     if (Init_CurFrame(24))
     {
 		FORWARDMOVINGSKILLDESC desc;
