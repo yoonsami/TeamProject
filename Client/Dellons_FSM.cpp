@@ -1494,7 +1494,7 @@ void Dellons_FSM::skill_400100()
 
     Look_DirToTarget();
 
-    if (m_iCurFrame >= 120)
+    if (m_iCurFrame >= 110)
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
