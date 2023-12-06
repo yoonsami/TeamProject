@@ -1446,11 +1446,6 @@ void Yeopo_FSM::skill_300100()
 {
     if (Init_CurFrame(25))
         Add_And_Set_Effect(L"Yeopo_300100_1");
-    else if (Init_CurFrame(38))
-        Add_And_Set_Effect(L"Yeopo_300100_2");
-    else if (Init_CurFrame(55))
-        Add_And_Set_Effect(L"Yeopo_300100_3");
-
     Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
     if (m_iCurFrame == 25)
