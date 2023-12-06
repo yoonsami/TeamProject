@@ -202,6 +202,7 @@
     <ClInclude Include="DestroyBuilding_FSM.h" />
     <ClInclude Include="DragonBallMonster_FSM.h" />
     <ClInclude Include="DragonBall_FSM.h" />
+    <ClInclude Include="Friend_FSM.h" />
     <ClInclude Include="Get_Gravity.h" />
     <ClInclude Include="Glow_WitcherSense.h" />
     <ClInclude Include="GranseedChildren_FSM.h" />
@@ -218,6 +219,7 @@
     <ClInclude Include="NPC_FSM.h" />
     <ClInclude Include="ObjectDissolve.h" />
     <ClInclude Include="ObjectDissolveCreate.h" />
+    <ClInclude Include="Smoke_Detect.h" />
     <ClInclude Include="Smoke_WitcherSense.h" />
     <ClInclude Include="SpikeScene.h" />
     <ClInclude Include="FloorSkill_Script.h" />
@@ -323,6 +325,7 @@
     <ClCompile Include="DestroyBuilding_FSM.cpp" />
     <ClCompile Include="DragonBallMonster_FSM.cpp" />
     <ClCompile Include="DragonBall_FSM.cpp" />
+    <ClCompile Include="Friend_FSM.cpp" />
     <ClCompile Include="Get_Gravity.cpp" />
     <ClCompile Include="Glow_WitcherSense.cpp" />
     <ClCompile Include="GranseedChildren_FSM.cpp" />
@@ -339,6 +342,7 @@
     <ClCompile Include="NPC_FSM.cpp" />
     <ClCompile Include="ObjectDissolve.cpp" />
     <ClCompile Include="ObjectDissolveCreate.cpp" />
+    <ClCompile Include="Smoke_Detect.cpp" />
     <ClCompile Include="Smoke_WitcherSense.cpp" />
     <ClCompile Include="SpikeScene.cpp" />
     <ClCompile Include="FloorSkill_Script.cpp" />

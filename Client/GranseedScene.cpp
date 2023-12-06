@@ -84,6 +84,7 @@
 #include "MathUtils.h"
 #include "GroupEffect.h"
 #include "Smoke_WitcherSense.h"
+#include "Smoke_Detect.h"
 namespace fs = std::filesystem;
 
 GranseedScene::GranseedScene()
@@ -768,6 +769,10 @@ void GranseedScene::Load_NPC(const wstring& dataFileName)
 
 void GranseedScene::Load_HideAndSeek(shared_ptr<GameObject> pPlayer)
 {
+	auto obj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
+	if (obj && obj->Get_Script<UiQuestController>()->Get_QuestState(QUESTINDEX::HIDE_AND_SEEK))
+		return;
+
 	{
 		vector<_float3> pos(5);
 		pos[0] = { -14.834f, -0.02f,-1.5f };
@@ -837,6 +842,14 @@ void GranseedScene::Load_HideAndSeek(shared_ptr<GameObject> pPlayer)
 
 			Add_GameObject(obj);
 		}
+
+	}
+
+	{
+		shared_ptr<GameObject> smellScript = make_shared<GameObject>();
+		smellScript->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-0.437f, -0.02f, 11.372f, 1.f));
+		smellScript->Add_Component(make_shared<Smoke_Detect>());
+		Add_GameObject(smellScript);
 
 	}
 

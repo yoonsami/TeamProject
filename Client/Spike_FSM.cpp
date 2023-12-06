@@ -1000,7 +1000,7 @@ void Spike_FSM::skill_1200()
 {
     if (Init_CurFrame(0))
 	{
-		//CAMERA_SHAKE(0.1f, 0.1f)
+		CAMERA_SHAKE(0.1f, 0.1f)
         Add_And_Set_Effect(L"Spike_1200");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     }

@@ -373,6 +373,18 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\23.UiUseItemSlot">
       <UniqueIdentifier>{e912456c-169a-43d6-8df8-a98e77bf473a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\09.FieldScript">
+      <UniqueIdentifier>{64954211-a7b2-4fc2-b4ba-841085d12c64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\09.FieldScript\00.Granseed">
+      <UniqueIdentifier>{1987bcb4-94a8-4750-b97e-5746bb872646}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\09.FieldScript\00.Granseed\00.Smoke_Detect">
+      <UniqueIdentifier>{320a2878-20d7-44cc-be4d-502c4d50009b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\07.Friend_FSM">
+      <UniqueIdentifier>{18d4e8a7-2626-44a6-a38e-d0a13ecb3c96}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -749,7 +761,15 @@
     <ClInclude Include="InventoryModelRotation.h">
       <Filter>02.Component\00.MonoBehaviour\05.Object\03.InventoryModelRotation</Filter>
     </ClInclude>
-    <ClInclude Include="Smoke_WitcherSense.h" />
+    <ClInclude Include="Smoke_WitcherSense.h">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\05.Glow_WitcherSense</Filter>
+    </ClInclude>
+    <ClInclude Include="Smoke_Detect.h">
+      <Filter>02.Component\00.MonoBehaviour\09.FieldScript\00.Granseed\00.Smoke_Detect</Filter>
+    </ClInclude>
+    <ClInclude Include="Friend_FSM.h">
+      <Filter>02.Component\01.FSM\07.Friend_FSM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1093,7 +1113,15 @@
     <ClCompile Include="InventoryModelRotation.cpp">
       <Filter>02.Component\00.MonoBehaviour\05.Object\03.InventoryModelRotation</Filter>
     </ClCompile>
-    <ClCompile Include="Smoke_WitcherSense.cpp" />
+    <ClCompile Include="Smoke_WitcherSense.cpp">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\05.Glow_WitcherSense</Filter>
+    </ClCompile>
+    <ClCompile Include="Smoke_Detect.cpp">
+      <Filter>02.Component\00.MonoBehaviour\09.FieldScript\00.Granseed\00.Smoke_Detect</Filter>
+    </ClCompile>
+    <ClCompile Include="Friend_FSM.cpp">
+      <Filter>02.Component\01.FSM\07.Friend_FSM</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">

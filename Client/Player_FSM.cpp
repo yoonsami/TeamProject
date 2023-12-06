@@ -12,6 +12,8 @@
 #include "DistortionRenderer.h"
 #include <Utils.h>
 #include "CharacterController.h"
+#include "Friend_FSM.h"
+#include "WeaponScript.h"
 
 Player_FSM::Player_FSM()
 {
@@ -60,6 +62,22 @@ void Player_FSM::Tick()
     {
         //m_pAttack transform set forward
 		m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.5f + _float3::Up);
+    }
+
+    if (KEYTAP(KEY_TYPE::DOWN))
+    {
+        shared_ptr<GameObject> obj = make_shared<GameObject>();
+        obj->GetOrAddTransform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::RIGHT) * 3.f);
+        obj->GetOrAddTransform()->LookAt(Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f);
+
+        obj->Add_Component(make_shared<Friend_FSM>(HERO::ACE3));
+
+        obj->Set_DrawShadow(true);
+        obj->Set_VelocityMap(true);
+        obj->Set_Name(L"Friend");
+        obj->Get_FSM()->Init();
+
+        EVENTMGR.Create_Object(obj);
     }
 }
 
