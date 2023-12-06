@@ -34,7 +34,7 @@ HRESULT UiCardDeckController::Init()
 
     m_pCharChange = pScene->Get_UI(L"UI_Char_Change");
 
-    m_vecCardDeckObj.resize(17);
+    m_vecCardDeckObj.resize(14);
     m_vecCardDeckObj[0] = pScene->Get_UI(L"UI_Card_Deck_Total_Bg0");
     m_vecCardDeckObj[1] = pScene->Get_UI(L"UI_Card_Deck_Total_Bg1");
     m_vecCardDeckObj[2] = pScene->Get_UI(L"UI_Card_Deck_Inven_Bg");
@@ -47,11 +47,11 @@ HRESULT UiCardDeckController::Init()
     m_vecCardDeckObj[9] = pScene->Get_UI(L"UI_Card_Deck_X0");
     m_vecCardDeckObj[10] = pScene->Get_UI(L"UI_Card_Deck_X1");
     m_vecCardDeckObj[11] = pScene->Get_UI(L"UI_Card_Deck_X2");
-    m_vecCardDeckObj[12] = pScene->Get_UI(L"UI_Card_Deck_Element0");
-    m_vecCardDeckObj[13] = pScene->Get_UI(L"UI_Card_Deck_Element1");
-    m_vecCardDeckObj[14] = pScene->Get_UI(L"UI_Card_Deck_Element2");
-    m_vecCardDeckObj[15] = pScene->Get_UI(L"UI_Card_Deck_Exit");
-    m_vecCardDeckObj[16] = pScene->Get_UI(L"UI_Card_Deck_Font");
+    //m_vecCardDeckObj[12] = pScene->Get_UI(L"UI_Card_Deck_Element0");
+    //m_vecCardDeckObj[13] = pScene->Get_UI(L"UI_Card_Deck_Element1");
+    //m_vecCardDeckObj[14] = pScene->Get_UI(L"UI_Card_Deck_Element2");
+    m_vecCardDeckObj[12] = pScene->Get_UI(L"UI_Card_Deck_Exit");
+    m_vecCardDeckObj[13] = pScene->Get_UI(L"UI_Card_Deck_Font");
 
     m_vecInvenObj.resize(32);
     m_vecInvenObj[0] = pScene->Get_UI(L"UI_Card_Deck_Inven0");
@@ -310,11 +310,11 @@ void UiCardDeckController::Click_Deck_Select(wstring strObjName)
                     return;
                 m_vecCardDeckObj[iIndex].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
 
-                iIndex = i + 9;
-                if (true == m_vecCardDeckObj[iIndex].expired())
-                    return;
-                m_vecCardDeckObj[iIndex].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
-                m_vecCardDeckObj[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(DATAMGR.Get_Card_Inven_Element_Line(m_iSetIndex)), TextureMapType::DIFFUSE);
+                //iIndex = i + 9;
+                //if (true == m_vecCardDeckObj[iIndex].expired())
+                //    return;
+                //m_vecCardDeckObj[iIndex].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+                //m_vecCardDeckObj[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(DATAMGR.Get_Card_Inven_Element_Line(m_iSetIndex)), TextureMapType::DIFFUSE);
             
                 Set_Font(i - 3);
 
@@ -365,10 +365,10 @@ void UiCardDeckController::Click_Deck_X(wstring strObjName)
                 continue;
             m_vecCardDeckObj[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"Card_Deck_Bg_None"), TextureMapType::DIFFUSE);
 
-            iIndex = i + 3;
-            if (true == m_vecCardDeckObj[iIndex].expired())
-                continue;
-            m_vecCardDeckObj[iIndex].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
+            //iIndex = i + 3;
+            //if (true == m_vecCardDeckObj[iIndex].expired())
+            //    continue;
+            //m_vecCardDeckObj[iIndex].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
             //pObj.lock()->Set_Tick(false);
             //pObj.lock()->Set_Render(false);
 
