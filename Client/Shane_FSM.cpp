@@ -43,7 +43,9 @@ HRESULT Shane_FSM::Init()
         m_bInitialize = true;
     }
 
-
+	m_fNormalAttack_AnimationSpeed = 1.2f;
+	m_fSkillAttack_AnimationSpeed = 1.0f;
+	m_fEvade_AnimationSpeed = 1.5f;
   
     return S_OK;
 }
