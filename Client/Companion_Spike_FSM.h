@@ -1,13 +1,15 @@
 #pragma once
-#include "FSM.h"
+#include "Companion_FSM.h"
 #include "ForwardMovingSkillScript.h"
 
 class Companion_Spike_FSM :
-	public FSM
+	public Companion_FSM
 {
 public:
 	enum class STATE
 	{
+		talk_01,
+		n_idle,
 		b_idle,
 		b_run_start,
 		b_run,
@@ -16,6 +18,7 @@ public:
 		b_sprint,
 		b_walk,
 		die,
+		stun,
 		airborne_start, //airborne_start -> airborne_end -> airborne_up
 		airborne_end,
 		airborne_up, // airborne_end_up Animation = knock_end_up animation
@@ -66,6 +69,10 @@ private:
 	virtual void AttackCollider_Off() override;
 	virtual void Set_State(_uint iIndex) override;
 
+	void talk_01();
+	void talk_01_Init();
+	void n_idle();
+	void n_idle_Init();
 	void b_idle();
 	void b_idle_Init();
 	void b_run_start();
@@ -82,6 +89,8 @@ private:
 	void b_walk_Init();
 	void die();
 	void die_Init();
+	void stun();
+	void stun_Init();
 
 	void airborne_start();
 	void airborne_start_Init();
@@ -142,20 +151,21 @@ private:
 	void skill_501100_Init();
 
 	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage);
+	void Set_AttackSkill();
 
-	void Use_Skill();
-	void Use_Dash();
 
 private:
 	STATE m_eCurState = STATE::b_idle;
+	STATE m_eCurSkillState = STATE::NONE;
 	STATE m_ePreState = STATE::NONE;
+
+	_uint m_iWheelWindType = 0;
 
 	COOLTIMEINFO m_tWheelWindCoolTime = { 0.3f, 0.f };
 	_float m_fWheelWindRange = 2.f;
 	_float m_fWheelWindSpeed = 6.f;
 	_float m_fAssaultColliderTimer = 0.2f;
 	_bool m_bAssaultColliderOn = false;
-
 
 };
 

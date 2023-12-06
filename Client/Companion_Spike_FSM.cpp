@@ -7,10 +7,10 @@
 #include "SphereCollider.h"
 #include "AttackColliderInfoScript.h"
 #include "Model.h"
-#include "CoolTimeCheckScript.h"
 #include "UiSkillGauge.h"
 #include "GroupEffect.h"
 #include "CharacterController.h"
+#include "MathUtils.h"
 
 Companion_Spike_FSM::Companion_Spike_FSM()
 {
@@ -28,24 +28,36 @@ HRESULT Companion_Spike_FSM::Init()
         if (animator)
         {
             animator->Set_CurrentAnim(L"b_idle", true, 1.f);
-            m_eCurState = STATE::b_idle;
+            m_eCurState = STATE::n_idle;
         }
 
-        m_iDummy_CP_BoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_CP");
-        m_iCenterBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Center");
-        m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
-        m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
+        shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
+        attackCollider->GetOrAddTransform();
+        attackCollider->Add_Component(make_shared<SphereCollider>(1.5f));
+        attackCollider->Get_Collider()->Set_CollisionGroup(Companion_Attack);
 
+        m_pAttackCollider = attackCollider;
 
-        m_pCamera = CUR_SCENE->Get_MainCamera();
-        m_fDetectRange = 5.f;
+        EVENTMGR.Create_Object(m_pAttackCollider.lock());
+        m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
+
+        m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
+        m_pAttackCollider.lock()->Set_Name(L"Companion_Spike_AttackCollider");
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(Get_Owner());
+
+        m_pWeapon = CUR_SCENE->Get_GameObject(L"Companion_Weapon_Spike");
+
+        m_fDetectRange = 10.f;
 
         m_bInitialize = true;
     }
+    
+    m_tRunEndDelay.fCoolTime = 0.5f;
 
     m_fNormalAttack_AnimationSpeed = 1.5f;
     m_fSkillAttack_AnimationSpeed = 1.0f;
     m_fEvade_AnimationSpeed = 1.5f;
+
     return S_OK;
 }
 
@@ -63,12 +75,20 @@ void Companion_Spike_FSM::Tick()
 
 void Companion_Spike_FSM::State_Tick()
 {
+    Detect_Target();
+    
     State_Init();
 
     m_iCurFrame = Get_CurFrame();
     Recovery_Color();
     switch (m_eCurState)
     {
+    case STATE::talk_01:
+        talk_01();
+        break;
+    case STATE::n_idle:
+        n_idle();
+        break;
     case STATE::b_idle:
         b_idle();
         break;
@@ -188,6 +208,12 @@ void Companion_Spike_FSM::State_Init()
     {
         switch (m_eCurState)
         {
+        case STATE::talk_01:
+            talk_01_Init();
+            break;
+        case STATE::n_idle:
+            n_idle_Init();
+            break;
         case STATE::b_idle:
             b_idle_Init();
             break;
@@ -337,8 +363,19 @@ void Companion_Spike_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _f
 
 void Companion_Spike_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
-    //Calculate Damage 
-    m_pOwner.lock()->Get_Hurt(fDamage);
+    if (!m_bSuperArmor)
+    {
+        if (rand() % 4 == 0)
+            m_bEvade = true;
+    }
+    else
+        m_bEvade = false;
+
+    if (!m_bEvade)
+    {
+        //Calculate Damage 
+        m_pOwner.lock()->Get_Hurt(fDamage);
+    }
 
     _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
     _float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
@@ -349,72 +386,97 @@ void Companion_Spike_FSM::Get_Hit(const wstring& skillname, _float fDamage, shar
 
     Set_HitColor();
 
+    
     if (skillname == NORMAL_ATTACK || skillname == NORMAL_SKILL)
     {
         if (!m_bSuperArmor)
         {
-            if (m_eCurState == STATE::hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_loop)
-                m_eCurState = STATE::knock_end_hit;
+            if (!m_bEvade)
+            {
+                if (m_eCurState == STATE::hit)
+                    Reset_Frame();
+                else if (m_eCurState == STATE::knock_end_hit)
+                    Reset_Frame();
+                else if (m_eCurState == STATE::knock_end_loop)
+                    m_eCurState = STATE::knock_end_hit;
+                else
+                    m_eCurState = STATE::hit;
+            }
             else
-                m_eCurState = STATE::hit;
-
-            CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.1f);
-
-
+            {
+                if (rand() % 3 == 0)
+                    m_eCurState = STATE::skill_93100;
+                else
+                    m_eCurState = STATE::skill_91100;
+            }
         }
     }
     else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
     {
         if (!m_bSuperArmor)
         {
-            if (m_eCurState == STATE::knock_end_hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_loop)
-                m_eCurState = STATE::knock_end_hit;
+            if (!m_bEvade)
+            {
+                if (m_eCurState == STATE::knock_end_hit)
+                    Reset_Frame();
+                else if (m_eCurState == STATE::knock_end_loop)
+                    m_eCurState = STATE::knock_end_hit;
+                else
+                    m_eCurState = STATE::knock_start;
+            }
             else
-                m_eCurState = STATE::knock_start;
-
-            CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.2f);
-
+            {
+                if (rand() % 3 == 0)
+                    m_eCurState = STATE::skill_93100;
+                else
+                    m_eCurState = STATE::skill_91100;
+            }
         }
     }
     else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
     {
         if (!m_bSuperArmor)
         {
-            if (m_eCurState == STATE::knock_end_hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_loop)
-                m_eCurState = STATE::knock_end_hit;
+            if (!m_bEvade)
+            {
+                if (m_eCurState == STATE::knock_end_hit)
+                    Reset_Frame();
+                else if (m_eCurState == STATE::knock_end_loop)
+                    m_eCurState = STATE::knock_end_hit;
+                else
+                    m_eCurState = STATE::knockdown_start;
+            }
             else
-                m_eCurState = STATE::knockdown_start;
-
-            CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.3f);
-
+            {
+                if (rand() % 3 == 0)
+                    m_eCurState = STATE::skill_93100;
+                else
+                    m_eCurState = STATE::skill_91100;
+            }
         }
     }
     else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
     {
         if (!m_bSuperArmor)
         {
-            if (m_eCurState == STATE::knock_end_hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_loop)
-                m_eCurState = STATE::knock_end_hit;
+            if (!m_bEvade)
+            {
+                if (m_eCurState == STATE::knock_end_hit)
+                    Reset_Frame();
+                else if (m_eCurState == STATE::knock_end_loop)
+                    m_eCurState = STATE::knock_end_hit;
+                else
+                    m_eCurState = STATE::airborne_start;
+            }
             else
-                m_eCurState = STATE::airborne_start;
-
-            CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.3f);
-
+            {
+                if (rand() % 3 == 0)
+                    m_eCurState = STATE::skill_93100;
+                else
+                    m_eCurState = STATE::skill_91100;
+            }
         }
     }
-    else
-        CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.03f);
-
 }
 
 void Companion_Spike_FSM::AttackCollider_On(const wstring& skillname, _float fAttackDamage)
@@ -442,18 +504,98 @@ void Companion_Spike_FSM::Set_State(_uint iIndex)
 {
 }
 
+void Companion_Spike_FSM::talk_01()
+{
+    if (!m_pTarget.expired())
+        Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
+
+    if (KEYTAP(KEY_TYPE::P)) //For. Debugging
+    {
+        m_bIsFollow = true;
+        m_eCurState = STATE::b_idle;
+    }
+
+
+}
+
+void Companion_Spike_FSM::talk_01_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+    
+    //TODO talk_01
+    animator->Set_NextTweenAnim(L"b_idle", 0.1f, true, 1.f);
+}
+
+void Companion_Spike_FSM::n_idle()
+{
+    if (Can_Interact())
+    {
+        if (KEYTAP(KEY_TYPE::P)) //For. Debugging
+        {
+            m_eCurState = STATE::talk_01;
+        }
+    }
+    else
+    {
+
+    }
+}
+
+void Companion_Spike_FSM::n_idle_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"b_idle", 0.1f, true, 1.f);
+
+    m_bInvincible = true;
+    m_bSuperArmor = false;
+}
+
 void Companion_Spike_FSM::b_idle()
 {
-    if (!g_bIsCanMouseMove && !g_bCutScene)
+    //Monster Follow (Battle)
+    if (!m_pLookingTarget.expired())
     {
-        if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
-            KEYPUSH(KEY_TYPE::A) || KEYPUSH(KEY_TYPE::D))
-            m_eCurState = STATE::b_run_start;
+        //Monster Follow
+        Soft_Turn_ToTarget(m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
 
-        if (KEYTAP(KEY_TYPE::LBUTTON))
-            m_eCurState = STATE::skill_1100;
+        m_tAttackCoolTime.fAccTime += fDT;
+        m_tSkillCoolTime.fAccTime += fDT;
 
-        Use_Skill();
+        if (!m_bSetAttack)
+        {
+            if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
+                Set_AttackSkill();
+        }
+        else
+        {
+            if (LookingTarget_In_AttackRange())
+                m_eCurState = m_eCurSkillState;
+            else
+                m_eCurState = STATE::b_run_start;
+        }
+    }
+    else  //Player Follow (Not Battle)
+    {
+        //Player Follow
+        if (!m_pTarget.expired())
+            Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
+
+        if (Go_Follow())
+        {
+            m_tFollowCheckTime.fAccTime += fDT;
+
+            if (m_tFollowCheckTime.fAccTime >= m_tFollowCheckTime.fCoolTime)
+            {
+                m_tFollowCheckTime.fAccTime = 0.f;
+                m_eCurState = STATE::b_run_start;
+            }
+        }
+        else
+        {
+            m_tFollowCheckTime.fAccTime = 0.f;
+        }
+
     }
 }
 
@@ -464,7 +606,10 @@ void Companion_Spike_FSM::b_idle_Init()
     animator->Set_NextTweenAnim(L"b_idle", 0.1f, true, 1.f);
 
     Get_Transform()->Set_Speed(m_fRunSpeed);
+
     m_tRunEndDelay.fAccTime = 0.f;
+    m_tRunEndDelay.fCoolTime = 0.5f;
+    m_tSprintCoolTime.fAccTime = 0.f;
 
     AttackCollider_Off();
 
@@ -479,30 +624,34 @@ void Companion_Spike_FSM::b_idle_Init()
 
 void Companion_Spike_FSM::b_run_start()
 {
-    Get_Transform()->Go_Straight();
-
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (vInputVector == _float3(0.f))
+    if (!m_pLookingTarget.expired())
     {
-        m_tRunEndDelay.fAccTime += fDT;
+        Soft_Turn_ToTarget(m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
 
-        if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
-            m_eCurState = STATE::b_run_end_l;
+        m_tAttackCoolTime.fAccTime += fDT;
+        m_tSkillCoolTime.fAccTime += fDT;
+
+        if (!m_bSetAttack)
+        {
+            if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
+                Set_AttackSkill();
+        }
+        else
+        {
+            if (LookingTarget_In_AttackRange())
+                m_eCurState = m_eCurSkillState;
+        }
     }
     else
     {
-        if (Is_AnimFinished())
-            m_eCurState = STATE::b_run;
-
-        Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
-
-
-        if (KEYTAP(KEY_TYPE::LBUTTON))
-            m_eCurState = STATE::skill_1100;
-
-        Use_Skill();
+        if (!m_pTarget.expired())
+            Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
     }
+
+    Get_Transform()->Go_Straight();
+
+    if (Is_AnimFinished())
+        m_eCurState = STATE::b_run;
 }
 
 void Companion_Spike_FSM::b_run_start_Init()
@@ -512,7 +661,6 @@ void Companion_Spike_FSM::b_run_start_Init()
     animator->Set_NextTweenAnim(L"b_run_start", 0.1f, false, 1.5f);
 
     Get_Transform()->Set_Speed(m_fRunSpeed);
-    m_tRunEndDelay.fAccTime = 0.f;
 
     AttackCollider_Off();
 
@@ -522,46 +670,77 @@ void Companion_Spike_FSM::b_run_start_Init()
 
 void Companion_Spike_FSM::b_run()
 {
-    Get_Transform()->Go_Straight();
-
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (vInputVector == _float3(0.f))
+    if (!m_pLookingTarget.expired())
     {
-        m_tRunEndDelay.fAccTime += fDT;
+        Soft_Turn_ToTarget(m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
 
-        if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
+        Get_Transform()->Go_Straight();
+
+        m_tSprintCoolTime.fAccTime += fDT;
+
+        if (m_tSprintCoolTime.fAccTime >= m_tSprintCoolTime.fCoolTime)
+            m_bSprint = true;
+
+        if (m_bSprint)
         {
-            if (m_iCurFrame % 2 == 0)
-                m_eCurState = STATE::b_run_end_r;
-            else
-                m_eCurState = STATE::b_run_end_l;
+            if (m_iCurFrame == 1)
+            {
+                m_bSprint = false;
+                m_eCurState = STATE::b_sprint;
+            }
+        }
+
+        m_tAttackCoolTime.fAccTime += fDT;
+        m_tSkillCoolTime.fAccTime += fDT;
+
+        if (!m_bSetAttack)
+        {
+            if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
+                Set_AttackSkill();
+        }
+        else
+        {
+            if (LookingTarget_In_AttackRange())
+                m_eCurState = m_eCurSkillState;
         }
     }
     else
-        Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
-
-    if (g_bIsCanMouseMove || g_bCutScene)
     {
-        if (m_iCurFrame % 2 == 0)
-            m_eCurState = STATE::b_run_end_r;
-        else
-            m_eCurState = STATE::b_run_end_l;
-    }
+        if (!m_pTarget.expired())
+            Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
+    
+        Get_Transform()->Go_Straight();
 
-    if (!g_bIsCanMouseMove && !g_bCutScene)
-    {
-        if (KEYPUSH(KEY_TYPE::LSHIFT))
+        m_tSprintCoolTime.fAccTime += fDT;
+
+        if (!Go_Follow())
         {
-            if ((m_iCurFrame == 1))
-                m_eCurState = STATE::b_sprint;
+            m_tRunEndDelay.fAccTime += fDT;
 
+            if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
+            {
+                m_tRunEndDelay.fAccTime = 0.f;
+
+                if (m_iCurFrame % 2 == 0)
+                    m_eCurState = STATE::b_run_end_r;
+                else
+                    m_eCurState = STATE::b_run_end_l;
+            }
         }
+        else
+        {
+            if (m_tSprintCoolTime.fAccTime >= m_tSprintCoolTime.fCoolTime)
+                m_bSprint = true;
 
-        if (KEYTAP(KEY_TYPE::LBUTTON))
-            m_eCurState = STATE::skill_1100;
-
-        Use_Skill();
+            if (m_bSprint)
+            {
+                if (m_iCurFrame == 1)
+                {
+                    m_bSprint = false;
+                    m_eCurState = STATE::b_sprint;
+                }
+            }
+        }
     }
 }
 
@@ -581,19 +760,32 @@ void Companion_Spike_FSM::b_run_Init()
 
 void Companion_Spike_FSM::b_run_end_r()
 {
-    _float3 vInputVector = Get_InputDirVector();
+    if (!m_pLookingTarget.expired())
+    {
+        Soft_Turn_ToTarget(m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
 
-    if (vInputVector != _float3(0.f))
-        Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
+        m_tAttackCoolTime.fAccTime += fDT;
+        m_tSkillCoolTime.fAccTime += fDT;
+
+        if (!m_bSetAttack)
+        {
+            if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
+                Set_AttackSkill();
+        }
+        else
+        {
+            if (LookingTarget_In_AttackRange())
+                m_eCurState = m_eCurSkillState;
+        }
+    }
+    else
+    {
+        if (!m_pTarget.expired())
+            Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
+    }
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
-
-
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
-
-    Use_Skill();
 }
 
 void Companion_Spike_FSM::b_run_end_r_Init()
@@ -613,19 +805,32 @@ void Companion_Spike_FSM::b_run_end_r_Init()
 
 void Companion_Spike_FSM::b_run_end_l()
 {
-    _float3 vInputVector = Get_InputDirVector();
+    if (!m_pLookingTarget.expired())
+    {
+        Soft_Turn_ToTarget(m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
 
-    if (vInputVector != _float3(0.f))
-        Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
+        m_tAttackCoolTime.fAccTime += fDT;
+        m_tSkillCoolTime.fAccTime += fDT;
+
+        if (!m_bSetAttack)
+        {
+            if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
+                Set_AttackSkill();
+        }
+        else
+        {
+            if (LookingTarget_In_AttackRange())
+                m_eCurState = m_eCurSkillState;
+        }
+    }
+    else
+    {
+        if (!m_pTarget.expired())
+            Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
+    }
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
-
-
-    if (KEYTAP(KEY_TYPE::LBUTTON))
-        m_eCurState = STATE::skill_1100;
-
-    Use_Skill();
 }
 
 void Companion_Spike_FSM::b_run_end_l_Init()
@@ -645,45 +850,47 @@ void Companion_Spike_FSM::b_run_end_l_Init()
 
 void Companion_Spike_FSM::b_sprint()
 {
-    Get_Transform()->Go_Straight();
-
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (vInputVector == _float3(0.f))
+    if (!m_pLookingTarget.expired())
     {
-        m_tRunEndDelay.fAccTime += fDT;
+        Soft_Turn_ToTarget(m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
 
-        if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
+        Get_Transform()->Go_Straight();
+
+        m_tAttackCoolTime.fAccTime += fDT;
+        m_tSkillCoolTime.fAccTime += fDT;
+
+        if (!m_bSetAttack)
         {
-            if (m_iCurFrame % 2 == 0)
-                m_eCurState = STATE::b_run_end_r;
-            else
-                m_eCurState = STATE::b_run_end_l;
+            if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
+                Set_AttackSkill();
+        }
+        else
+        {
+            if (LookingTarget_In_AttackRange())
+                m_eCurState = m_eCurSkillState;
         }
     }
     else
-        Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
-
-    if (g_bIsCanMouseMove || g_bCutScene)
     {
-        if (m_iCurFrame % 2 == 0)
-            m_eCurState = STATE::b_run_end_r;
-        else
-            m_eCurState = STATE::b_run_end_l;
-    }
+        if (!m_pTarget.expired())
+            Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
 
-    if (!g_bIsCanMouseMove && !g_bCutScene)
-    {
-        if (!KEYPUSH(KEY_TYPE::LSHIFT))
+        Get_Transform()->Go_Straight();
+
+        if (!Go_Follow())
         {
-            if (m_iCurFrame < 1 || m_iCurFrame > 13)
-                m_eCurState = STATE::b_run;
+            m_tRunEndDelay.fAccTime += fDT;
+
+            if (m_tRunEndDelay.fAccTime >= m_tRunEndDelay.fCoolTime)
+            {
+                m_tRunEndDelay.fAccTime = 0.f;
+                m_tRunEndDelay.fCoolTime = 0.5f;
+                if (m_iCurFrame % 2 == 0)
+                    m_eCurState = STATE::b_run_end_r;
+                else
+                    m_eCurState = STATE::b_run_end_l;
+            }
         }
-
-        if (KEYTAP(KEY_TYPE::LBUTTON))
-            m_eCurState = STATE::skill_1100;
-
-        Use_Skill();
     }
 }
 
@@ -695,6 +902,7 @@ void Companion_Spike_FSM::b_sprint_Init()
 
     Get_Transform()->Set_Speed(m_fSprintSpeed);
 
+    m_tRunEndDelay.fCoolTime = 0.3f;
     AttackCollider_Off();
 
     m_bInvincible = false;
@@ -717,10 +925,26 @@ void Companion_Spike_FSM::die_Init()
 {
 }
 
+void Companion_Spike_FSM::stun()
+{
+    if (Is_AnimFinished())
+        m_eCurState = STATE::b_idle;
+}
+
+void Companion_Spike_FSM::stun_Init()
+{
+    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+    animator->Set_NextTweenAnim(L"stun", 0.2f, false, 1.f);
+
+    AttackCollider_Off();
+
+    m_bInvincible = true;
+    m_bSuperArmor = true;
+}
+
 void Companion_Spike_FSM::airborne_start()
 {
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
-
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
     if (Is_AnimFinished())
@@ -775,8 +999,6 @@ void Companion_Spike_FSM::airborne_up_Init()
 
 void Companion_Spike_FSM::hit()
 {
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
-
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
     if (Is_AnimFinished())
@@ -797,8 +1019,6 @@ void Companion_Spike_FSM::hit_Init()
 
 void Companion_Spike_FSM::knock_start()
 {
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
-
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
     Get_Transform()->Go_Backward();
@@ -905,8 +1125,6 @@ void Companion_Spike_FSM::knock_up_Init()
 
 void Companion_Spike_FSM::knockdown_start()
 {
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
-
     Soft_Turn_ToInputDir(m_vHitDir, XM_PI * 5.f);
 
     Get_Transform()->Go_Backward();
@@ -954,8 +1172,7 @@ void Companion_Spike_FSM::skill_1100()
 {
     if (Init_CurFrame(11))
     {
-        CAMERA_SHAKE(0.1f, 0.1f)
-            Add_And_Set_Effect(L"Spike_1100");
+        Add_And_Set_Effect(L"Spike_1100");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     }
     else if (m_iCurFrame == 17)
@@ -963,22 +1180,8 @@ void Companion_Spike_FSM::skill_1100()
 
     Look_DirToTarget();
 
-    if (!g_bIsCanMouseMove && !g_bCutScene)
-    {
-        if (Check_Combo(24, KEY_TYPE::LBUTTON))
-            m_eCurState = STATE::skill_1200;
-
-        Use_Skill();
-    }
-
-    if (Is_AnimFinished())
-    {
-        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
-            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
-
-        m_eCurState = STATE::b_idle;
-    }
-
+    if (m_iCurFrame >= 24)
+        m_eCurState = STATE::skill_1200;
 }
 
 void Companion_Spike_FSM::skill_1100_Init()
@@ -987,23 +1190,16 @@ void Companion_Spike_FSM::skill_1100_Init()
 
     animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
-    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
-
-    m_bCanCombo = false;
-
-    Set_DirToTargetOrInput(OBJ_MONSTER);
-
     m_bInvincible = false;
     m_bSuperArmor = false;
+    m_bSetAttack = false;
 }
 
 void Companion_Spike_FSM::skill_1200()
 {
     if (Init_CurFrame(0))
     {
-        CAMERA_SHAKE(0.1f, 0.1f)
-            Add_And_Set_Effect(L"Spike_1200");
+        Add_And_Set_Effect(L"Spike_1200");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     }
     else if (m_iCurFrame == 14)
@@ -1011,23 +1207,8 @@ void Companion_Spike_FSM::skill_1200()
 
     Look_DirToTarget();
 
-    if (!g_bIsCanMouseMove && !g_bCutScene)
-    {
-        if (Check_Combo(33, KEY_TYPE::LBUTTON))
-            m_eCurState = STATE::skill_1300;
-
-        Use_Skill();
-    }
-
-    if (Is_AnimFinished())
-    {
-        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
-            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
-
-        m_bCanCombo = false;
-        m_eCurState = STATE::b_idle;
-    }
-
+    if (m_iCurFrame >= 33)
+        m_eCurState = STATE::skill_1300;
 }
 
 void Companion_Spike_FSM::skill_1200_Init()
@@ -1035,16 +1216,6 @@ void Companion_Spike_FSM::skill_1200_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, m_fNormalAttack_AnimationSpeed);
-
-    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
-    {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
-    }
-
-    m_bCanCombo = false;
-
-    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1056,8 +1227,7 @@ void Companion_Spike_FSM::skill_1300()
 {
     if (Init_CurFrame(15))
     {
-        CAMERA_SHAKE(0.1f, 0.1f)
-            Add_And_Set_Effect(L"Spike_1300");
+        Add_And_Set_Effect(L"Spike_1300");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     }
     else if (m_iCurFrame == 18)
@@ -1065,23 +1235,9 @@ void Companion_Spike_FSM::skill_1300()
 
     Look_DirToTarget();
 
-    if (!g_bIsCanMouseMove && !g_bCutScene)
-    {
-        if (Check_Combo(35, KEY_TYPE::LBUTTON))
-            m_eCurState = STATE::skill_1400;
-
-        Use_Skill();
-    }
-
-    if (Is_AnimFinished())
-    {
-        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
-            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
-
-        m_bCanCombo = false;
-        m_eCurState = STATE::b_idle;
-    }
-
+    
+    if (m_iCurFrame >= 35)
+        m_eCurState = STATE::skill_1400;
 }
 
 void Companion_Spike_FSM::skill_1300_Init()
@@ -1089,16 +1245,6 @@ void Companion_Spike_FSM::skill_1300_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_1300", 0.15f, false, m_fNormalAttack_AnimationSpeed);
-
-    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
-    {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
-    }
-
-    m_bCanCombo = false;
-
-    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1117,27 +1263,14 @@ void Companion_Spike_FSM::skill_1400()
         Add_GroupEffectOwner(L"Spike_1400_2", _float3(0.f, 0.f, 1.f), false);
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
 
-        //CAMERA_SHAKE(0.3f, 0.4f);
     }
     else if (m_iCurFrame == 15)
         AttackCollider_Off();
 
-    if (Init_CurFrame(13))
-        CAMERA_SHAKE(0.3f, 0.4f);
-
     Look_DirToTarget();
 
     if (Is_AnimFinished())
-    {
-        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
-            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
-
-        m_bCanCombo = false;
         m_eCurState = STATE::b_idle;
-    }
-
-    if (!g_bIsCanMouseMove && !g_bCutScene)
-        Use_Skill();
 }
 
 void Companion_Spike_FSM::skill_1400_Init()
@@ -1145,16 +1278,6 @@ void Companion_Spike_FSM::skill_1400_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_1400", 0.15f, false, m_fNormalAttack_AnimationSpeed);
-
-    if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
-    {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
-    }
-
-    m_bCanCombo = false;
-
-    Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
 
@@ -1164,9 +1287,8 @@ void Companion_Spike_FSM::skill_1400_Init()
 
 void Companion_Spike_FSM::skill_91100()
 {
-    _float3 vInputVector = Get_InputDirVector();
-
-    Look_DirToTarget();
+    if (m_vEvadeVector != _float3(0.f))
+        Soft_Turn_ToInputDir(m_vEvadeVector, m_fTurnSpeed);
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
@@ -1174,16 +1296,12 @@ void Companion_Spike_FSM::skill_91100()
 
 void Companion_Spike_FSM::skill_91100_Init()
 {
+    m_vEvadeVector = MathUtils::Get_RandomVector(_float3{ -1.f,0.f,-1.f }, _float3{ 1.f,0.f,1.f });
+    m_vEvadeVector.Normalize();
+
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_91100", 0.15f, false, m_fEvade_AnimationSpeed);
-
-    CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Render(false);
-
-    m_bCanCombo = false;
-
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1193,8 +1311,6 @@ void Companion_Spike_FSM::skill_91100_Init()
 
 void Companion_Spike_FSM::skill_93100()
 {
-    _float3 vInputVector = Get_InputDirVector();
-
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 }
@@ -1204,10 +1320,6 @@ void Companion_Spike_FSM::skill_93100_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_93100", 0.15f, false, m_fEvade_AnimationSpeed);
-
-    CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Render(false);
-
-    m_bCanCombo = false;
 
     AttackCollider_Off();
 
@@ -1242,7 +1354,6 @@ void Companion_Spike_FSM::skill_100100()
             m_bAssaultColliderOn = true;
             m_fAssaultColliderTimer = 0.f;
             AttackCollider_On(NORMAL_ATTACK, 10.f);
-            CAMERA_SHAKE(0.1f, 0.02f);
         }
         else
         {
@@ -1254,28 +1365,7 @@ void Companion_Spike_FSM::skill_100100()
         }
 
     }
-
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (vInputVector != _float3(0.f))
-        Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
-
-    if (!g_bIsCanMouseMove && !g_bCutScene)
-    {
-        //THIS LOGIC IS PERFECT -> DON'T TOUCH COMBO
-        if (m_iCurFrame > 20)
-        {
-            if (KEYTAP(KEY_TYPE::KEY_1))
-                m_bCanCombo = true;
-        }
-
-        if (m_bCanCombo)
-        {
-            m_eCurState = STATE::skill_100300;
-        }
-
-        Use_Dash();
-    }
+    Look_DirToTarget();
 
     if (Is_AnimFinished())
     {
@@ -1289,12 +1379,11 @@ void Companion_Spike_FSM::skill_100100_Init()
 
     animator->Set_NextTweenAnim(L"skill_100100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
-    m_bCanCombo = false;
 
     Get_Transform()->Set_Speed(m_fRunSpeed * 1.2f);
 
     AttackCollider_Off();
-
+    m_bSetAttack = false;
     m_bInvincible = false;
     m_bSuperArmor = true;
 
@@ -1307,19 +1396,10 @@ void Companion_Spike_FSM::skill_100300()
     {
         Add_GroupEffectOwner(L"Spike_100100_IceAttack", _float3(0, 0, 1), false);
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-        CAMERA_SHAKE(0.2f, 0.2f);
     }
-    if (Init_CurFrame(32))
-        CAMERA_SHAKE(0.2f, 0.2f);
-
+    
     if (Is_AnimFinished())
-    {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
-    }
-
-    if (!g_bIsCanMouseMove && !g_bCutScene)
-        Use_Dash();
 }
 
 void Companion_Spike_FSM::skill_100300_Init()
@@ -1329,21 +1409,13 @@ void Companion_Spike_FSM::skill_100300_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_100300", 0.15f, false, m_fSkillAttack_AnimationSpeed);
-    m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(SKILL1);
-
-    m_bCanCombo = false;
 
     AttackCollider_Off();
 
     Get_Transform()->Set_Speed(m_fRunSpeed * 1.f);
 
-    if (!m_pCamera.expired())
-        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedTime(0.f);
-
-
     m_bInvincible = false;
     m_bSuperArmor = true;
-
 }
 
 void Companion_Spike_FSM::skill_200100()
@@ -1351,20 +1423,10 @@ void Companion_Spike_FSM::skill_200100()
     if (Init_CurFrame(3))
     {
         Add_And_Set_Effect(L"Spike_200100L_1");
-        CAMERA_SHAKE(0.2f, 0.3f)
-    }
-
-    if (!g_bIsCanMouseMove && !g_bCutScene)
-    {
-        if (KEYAWAY(KEY_TYPE::KEY_2))
-            m_eCurState = STATE::skill_200200;
-
-        Use_Dash();
     }
 
     if (Is_AnimFinished())
         m_eCurState = STATE::skill_200100_l;
-
 }
 
 void Companion_Spike_FSM::skill_200100_Init()
@@ -1374,64 +1436,45 @@ void Companion_Spike_FSM::skill_200100_Init()
     animator->Set_NextTweenAnim(L"skill_200100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
     Add_Effect(L"Spike_200100");
-
-    m_bCanCombo = false;
-
+    
     AttackCollider_Off();
 
     m_bInvincible = false;
     m_bSuperArmor = true;
+    m_bSetAttack = false;
 }
 
 void Companion_Spike_FSM::skill_200100_l()
-{
-    CAMERA_SHAKE(0.1f, 0.02f)
-        if (Init_CurFrame(0))
-            Add_And_Set_Effect(L"Spike_200100L_floor");
-
-    /*  m_fEffectCreateTimer[0] += fDT;
-      m_fEffectCreateTimer[1] += fDT;
-      if (m_fEffectCreateTimer[0] >= 0.4f)
-      {
-          m_fEffectCreateTimer[0] = 0.f;
-          Add_Effect(L"Spike_200100L_Wind1");
-      }
-      if (m_fEffectCreateTimer[1] >= 0.1f)
-      {
-          m_fEffectCreateTimer[1] = 0.f;
-          Add_Effect(L"Spike_200100L_Wind2");
-      }*/
-
-    _float3 vInputVector = Get_InputDirVector();
-
-    m_fChargingRatio = _float(m_iCurFrame) / _float(Get_FinalFrame());
-
-    CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Ratio(m_fChargingRatio);
-
-    if (KEYAWAY(KEY_TYPE::KEY_2))
-    {
-        if (m_fChargingRatio < 0.33f)
-            m_eCurState = STATE::skill_200200;
-        else if (m_fChargingRatio <= 0.66f)
-            m_eCurState = STATE::skill_200300;
-        else
-            m_eCurState = STATE::skill_200400;
-
-        FreeLoopMembers();
-    }
+{   
+    if (Init_CurFrame(0))
+        Add_And_Set_Effect(L"Spike_200100L_floor");
 
     m_fWheelWindRange += fDT * 0.5f;
     m_fWheelWindSpeed += fDT;
 
+    m_fChargingRatio = _float(m_iCurFrame) / _float(Get_FinalFrame());
+
+    if (m_iWheelWindType == 0)
+    {
+        if (m_fChargingRatio >= 0.33f)
+            m_eCurState = STATE::skill_200200;
+
+        FreeLoopMembers();
+    }
+    else  if (m_iWheelWindType == 1)
+    {
+        if (m_fChargingRatio >= 0.66f)
+            m_eCurState = STATE::skill_200300;
+
+        FreeLoopMembers();
+    }
+ 
     if (Is_AnimFinished())
     {
         m_eCurState = STATE::skill_200400;
 
         FreeLoopMembers();
     }
-
-    if (!g_bIsCanMouseMove && !g_bCutScene)
-        Use_Dash();
 }
 
 void Companion_Spike_FSM::skill_200100_l_Init()
@@ -1442,14 +1485,9 @@ void Companion_Spike_FSM::skill_200100_l_Init()
 
     Add_And_Set_Effect(L"Spike_200100L_LoopWind");
 
-    m_bCanCombo = false;
-
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
-
-    CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Render(true, SkillInfo::CHARGING);
-
     AttackCollider_Off();
+
+    m_iWheelWindType = rand() % 3;
 
     m_bInvincible = false;
     m_bSuperArmor = true;
@@ -1457,7 +1495,6 @@ void Companion_Spike_FSM::skill_200100_l_Init()
 
 void Companion_Spike_FSM::skill_200200()
 {
-
     m_fEffectCreateTimer[0] += fDT;
 
     if (Init_CurFrame(0))
@@ -1466,6 +1503,8 @@ void Companion_Spike_FSM::skill_200200()
         Add_And_Set_Effect(L"Spike_200200_Slash");
 
     m_tWheelWindCoolTime.fAccTime += fDT;
+
+    Look_DirToTarget();
 
     if (m_iCurFrame >= 5 && m_iCurFrame < 33)
     {
@@ -1484,24 +1523,13 @@ void Companion_Spike_FSM::skill_200200()
             desc.fMoveSpeed = 0.f;
             desc.fLifeTime = 0.3f;
             desc.fLimitDistance = 0.f;
-            CAMERA_SHAKE(0.1f, 0.2f)
-                Create_ForwardMovingSkillCollider(Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f);
         }
     }
 
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (vInputVector != _float3(0.f))
-        Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
-
     if (Is_AnimFinished())
-    {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
-    }
 
-    if (!g_bIsCanMouseMove && !g_bCutScene)
-        Use_Dash();
 }
 
 void Companion_Spike_FSM::skill_200200_Init()
@@ -1509,15 +1537,6 @@ void Companion_Spike_FSM::skill_200200_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_200200", 0.15f, false, m_fSkillAttack_AnimationSpeed);
-
-    CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Render(false);
-
-    m_bCanCombo = false;
-
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
-
-    m_fChargingRatio = 0.f;
 
     AttackCollider_Off();
 
@@ -1538,6 +1557,8 @@ void Companion_Spike_FSM::skill_200300()
 
     m_tWheelWindCoolTime.fAccTime += fDT;
 
+    Look_DirToTarget();
+
     if (m_iCurFrame >= 5 && m_iCurFrame < 52)
     {
         if (m_fEffectCreateTimer[0] >= 0.1f)
@@ -1555,24 +1576,12 @@ void Companion_Spike_FSM::skill_200300()
             desc.fMoveSpeed = 0.f;
             desc.fLifeTime = 0.3f;
             desc.fLimitDistance = 0.f;
-            CAMERA_SHAKE(0.1f, 0.2f)
                 Create_ForwardMovingSkillCollider(Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f);
         }
     }
 
-    _float3 vInputVector = Get_InputDirVector();
-
-    if (vInputVector != _float3(0.f))
-        Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
-
     if (Is_AnimFinished())
-    {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
-    }
-
-    if (!g_bIsCanMouseMove && !g_bCutScene)
-        Use_Dash();
 }
 
 void Companion_Spike_FSM::skill_200300_Init()
@@ -1580,15 +1589,6 @@ void Companion_Spike_FSM::skill_200300_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_200300", 0.15f, false, m_fSkillAttack_AnimationSpeed);
-
-    CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Render(false);
-
-    m_bCanCombo = false;
-
-    m_fChargingRatio = 0.f;
-
-    m_vDirToTarget = _float3(0.f);
-    m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
 
@@ -1609,13 +1609,7 @@ void Companion_Spike_FSM::skill_200400()
     if (Init_CurFrame(62))
         Add_GroupEffectOwner(L"Spike_200400_Crack", _float3(0.f, 0.f, 2.5f), false);
 
-    if (m_iCurFrame < 44)
-    {
-        _float3 vInputVector = Get_InputDirVector();
-
-        if (vInputVector != _float3(0.f))
-            Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
-    }
+    Look_DirToTarget();
 
     m_tWheelWindCoolTime.fAccTime += fDT;
 
@@ -1636,8 +1630,7 @@ void Companion_Spike_FSM::skill_200400()
             desc.fMoveSpeed = 0.f;
             desc.fLifeTime = 0.3f;
             desc.fLimitDistance = 0.f;
-            CAMERA_SHAKE(0.1f, 0.2f)
-                Create_ForwardMovingSkillCollider(Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f);
         }
     }
 
@@ -1650,33 +1643,20 @@ void Companion_Spike_FSM::skill_200400()
         desc.fMoveSpeed = 0.f;
         desc.fLifeTime = 0.5f;
         desc.fLimitDistance = 0.f;
-        CAMERA_SHAKE(0.2f, 0.5f)
-            Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f);
     }
 
     if (Is_AnimFinished())
     {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
     }
-
-    if (!g_bIsCanMouseMove && !g_bCutScene)
-        Use_Dash();
 }
 
 void Companion_Spike_FSM::skill_200400_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
-
-    CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Render(false);
-
+    
     animator->Set_NextTweenAnim(L"skill_200400", 0.15f, false, m_fSkillAttack_AnimationSpeed);
-
-    m_bCanCombo = false;
-
-    Set_DirToTargetOrInput(OBJ_MONSTER);
-
-    m_fChargingRatio = 0.f;
 
     AttackCollider_Off();
 
@@ -1693,36 +1673,8 @@ void Companion_Spike_FSM::skill_300100()
     if (Init_CurFrame(30))
         Add_And_Set_Effect(L"Spike_300100");
 
-    if (m_iCurFrame <= 50)
-    {
-        if (!m_pCamera.expired())
-        {
-            _float4 vDir = m_vSkillCamBonePos - m_vCenterBonePos;
-            vDir.Normalize();
-
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 12.f);
-        }
-    }
-    else
-    {
-        if (!m_pCamera.expired())
-        {
-            _float4 vDir = m_vSkillCamBonePos - m_vCenterBonePos;
-            vDir.Normalize();
-
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.35f, vDir.xyz(), 6.f);
-        }
-    }
-
-    Calculate_CamBoneMatrix();
-
     if (Init_CurFrame(30))
     {
-        CAMERA_SHAKE(0.4f, 0.5f);
         FORWARDMOVINGSKILLDESC desc;
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
         desc.fMoveSpeed = 0.f;
@@ -1733,14 +1685,11 @@ void Companion_Spike_FSM::skill_300100()
 
     }
 
-
     Look_DirToTarget();
 
     if (Is_AnimFinished())
-    {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
-    }
+    
 }
 
 void Companion_Spike_FSM::skill_300100_Init()
@@ -1749,70 +1698,25 @@ void Companion_Spike_FSM::skill_300100_Init()
 
     animator->Set_NextTweenAnim(L"skill_300100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
-    m_bCanCombo = false;
-
-    Set_DirToTargetOrInput(OBJ_MONSTER);
-
     AttackCollider_Off();
 
     m_bInvincible = true;
     m_bSuperArmor = false;
+    m_bSetAttack = false;
 }
 
 void Companion_Spike_FSM::skill_400100()
 {
     if (Init_CurFrame(52))
-    {
         Add_And_Set_Effect(L"Spike_400100_1");
 
-    }
-    if (Init_CurFrame(52) || Init_CurFrame(77) || Init_CurFrame(97))
-        CAMERA_SHAKE(0.2f, 0.3f);
     if (Init_CurFrame(150))
     {
         FreeLoopMembers();
         Add_And_Set_Effect(L"Spike_400100_2");
         Add_And_Set_Effect(L"Spike_400100_3");
-        CAMERA_SHAKE(0.4f, 0.5f);
-    }
-    static _float fAngle = 0.f;
-    static _float3 vUp = _float3(0.f);
-    if (m_iCurFrame == 17)
-    {
-        if (!m_pCamera.expired())
-        {
-
-            _float4 vDestinationPos = (Get_Transform()->Get_State(Transform_State::POS)) + (Get_Transform()->Get_State(Transform_State::LOOK) * -5.f) + _float3::Up * 5.f;
-            _float4 vDir = vDestinationPos - (Get_Transform()->Get_State(Transform_State::POS));
-            vDir.Normalize();
-
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(2.f);
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz() + _float3::Up);
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(7.f, vDir.xyz(), 10.f);
-        }
-    }
-    else if (m_iCurFrame >= 26)
-    {
-        if (m_iCurFrame == 26)
-        {
-            _float4x4 matWorld = Get_Transform()->Get_WorldMatrix();
-            vUp = matWorld.Backward() + matWorld.Up() * 3.f;
-            vUp.Normalize();
-            fAngle = 0.f;
-            m_vCamStopPos = m_vCenterBonePos + _float3::Up;
-
-        }
-
-        fAngle = 0.75f * fDT;
-        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCamStopPos.xyz());
-        _float3 vDir = m_pCamera.lock()->Get_Script<MainCameraScript>()->Get_FixedDir();
-
-        vDir = _float3::TransformNormal(vDir, _float4x4::CreateFromAxisAngle(vUp, fAngle));
-        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedDir(vDir);
     }
 
-
-    Calculate_CamBoneMatrix();
 
     if (Init_CurFrame(52))
     {
@@ -1869,7 +1773,6 @@ void Companion_Spike_FSM::skill_400100()
 
     if (Is_AnimFinished())
     {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
         m_eCurState = STATE::b_idle;
     }
 }
@@ -1880,60 +1783,44 @@ void Companion_Spike_FSM::skill_400100_Init()
 
     animator->Set_NextTweenAnim(L"skill_400100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
-    m_bCanCombo = false;
-
-    Set_DirToTargetOrInput(OBJ_MONSTER);
-
     AttackCollider_Off();
 
     m_bInvincible = true;
     m_bSuperArmor = false;
-
-    Calculate_CamBoneMatrix();
+    m_bSetAttack = false;
 }
 
 void Companion_Spike_FSM::skill_501100()
 {
     if (Init_CurFrame(20))
     {
-
         Add_And_Set_Effect(L"Spike_500100_1");
         Add_GroupEffectOwner(L"Spike_500100_Floor", _float3(0.f, 0.f, 0.5f), false);
     }
-    if (Init_CurFrame(22))
-        CAMERA_SHAKE(0.1f, 0.4f)
 
-        if (Init_CurFrame(34))
-        {
-            Add_GroupEffectOwner(L"Spike_500100_Floor2", _float3(0.f, 0.f, 2.f), false);
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f;
+    if (Init_CurFrame(34))
+    {
+        Add_GroupEffectOwner(L"Spike_500100_Floor2", _float3(0.f, 0.f, 2.f), false);
+        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f;
 
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 1.f;
-            desc.fLimitDistance = 0.f;
+        FORWARDMOVINGSKILLDESC desc;
+        desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+        desc.fMoveSpeed = 0.f;
+        desc.fLifeTime = 1.f;
+        desc.fLimitDistance = 0.f;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK, 10.f);
-        }
-    if (Init_CurFrame(36))
-        CAMERA_SHAKE(0.2f, 0.4f)
-
-        if (m_iCurFrame == 18)
-            AttackCollider_On(NORMAL_ATTACK, 10.f);
-        else if (m_iCurFrame == 23)
-            AttackCollider_Off();
+        Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK, 10.f);
+    }
+    
+    if (m_iCurFrame == 18)
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
+    else if (m_iCurFrame == 23)
+        AttackCollider_Off();
 
     Look_DirToTarget();
 
-    if (Is_AnimFinished())
-    {
-        m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+    if (Is_AnimFinished())    
         m_eCurState = STATE::b_idle;
-    }
-
-    if (!g_bIsCanMouseMove && !g_bCutScene)
-        Use_Dash();
 }
 
 void Companion_Spike_FSM::skill_501100_Init()
@@ -1942,14 +1829,11 @@ void Companion_Spike_FSM::skill_501100_Init()
 
     animator->Set_NextTweenAnim(L"skill_501100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
-    m_bCanCombo = false;
-
-    Set_DirToTargetOrInput(OBJ_MONSTER);
-
     AttackCollider_Off();
 
     m_bInvincible = false;
     m_bSuperArmor = true;
+    m_bSetAttack = false;
 }
 
 void Companion_Spike_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
@@ -1965,50 +1849,72 @@ void Companion_Spike_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos,
     pSphereCollider->Set_CenterPos(_float3{ vPos.x,vPos.y, vPos.z });
     m_pSkillCollider.lock()->Add_Component(pSphereCollider);
 
-    m_pSkillCollider.lock()->Get_Collider()->Set_CollisionGroup(Player_Skill);
+    m_pSkillCollider.lock()->Get_Collider()->Set_CollisionGroup(Companion_Skill);
 
     m_pSkillCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
     m_pSkillCollider.lock()->Get_Collider()->Set_Activate(true);
     m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
     m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
-    m_pSkillCollider.lock()->Set_Name(L"Player_SkillCollider");
+    m_pSkillCollider.lock()->Set_Name(L"Companion_Spike_SkillCollider");
     m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
     m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
 
     EVENTMGR.Create_Object(m_pSkillCollider.lock());
 }
 
-void Companion_Spike_FSM::Use_Skill()
-{
-    if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
-        m_eCurState = STATE::skill_100100;
-    else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
-        m_eCurState = STATE::skill_200100;
-    else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
-        m_eCurState = STATE::skill_300100;
-    else if (KEYTAP(KEY_TYPE::KEY_4))
-        m_eCurState = STATE::skill_400100;
-    else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
-        m_eCurState = STATE::skill_501100;
-    else
-        Use_Dash();
 
-}
-
-void Companion_Spike_FSM::Use_Dash()
+void Companion_Spike_FSM::Set_AttackSkill()
 {
-    if (KEYTAP(KEY_TYPE::SPACE))
+    m_eCurSkillState = STATE::skill_1100;
+    m_fAttackRange = 2.f;
+    m_bSetAttack = true;
+    m_tAttackCoolTime.fAccTime = 0.f;
+
+    if (m_tSkillCoolTime.fAccTime >= m_tSkillCoolTime.fCoolTime)
     {
-        if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(EVADE))
-        {
-            m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
+        m_tSkillCoolTime.fAccTime = 0.f;
 
-            _float3 vInputVector = Get_InputDirVector();
-            if (vInputVector != _float3(0.f))
-                m_eCurState = STATE::skill_91100;
+        _uint iRan = rand() % 5;
+
+        while (true)
+        {
+            if (iRan == m_iPreAttack)
+                iRan = rand() % 5;
             else
-                m_eCurState = STATE::skill_93100;
+                break;
+        }
+
+        if (iRan == 0)
+        {
+            m_fAttackRange = 2.f;
+            m_eCurSkillState = STATE::skill_100100;
+            m_iPreAttack = 0;
+        }
+        else if (iRan == 1)
+        {
+            m_fAttackRange = 2.f;
+            m_eCurSkillState = STATE::skill_200100;
+            m_iPreAttack = 1;
+        }
+        else if (iRan == 2)
+        {
+            m_fAttackRange = 5.f;
+            m_eCurSkillState = STATE::skill_300100;
+            m_iPreAttack = 2;
+        }
+        else if (iRan == 3)
+        {
+            m_fAttackRange = 5.f;
+            m_eCurSkillState = STATE::skill_400100;
+            m_iPreAttack = 3;
+        }
+        else if (iRan == 4)
+        {
+            m_fAttackRange = 5.f;
+            m_eCurSkillState = STATE::skill_501100;
+            m_iPreAttack = 4;
         }
     }
+
 }

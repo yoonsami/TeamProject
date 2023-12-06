@@ -188,7 +188,7 @@ private:
 
 	COOLTIMEINFO m_tAttackCoolTime = { 3.f, 0.f };
 	COOLTIMEINFO m_tBreathCoolTime = { 0.15f, 0.f };
-	COOLTIMEINFO m_tMeteorCoolTime = { 2.f, 0.f };
+	COOLTIMEINFO m_tMeteorCoolTime = { 1.5f, 0.f };
 	
 	_bool m_bIntroCam = false;
 	_bool m_bDetected = false;

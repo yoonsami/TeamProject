@@ -199,6 +199,8 @@
     <ClInclude Include="AttackColliderInfoScript.h" />
     <ClInclude Include="Boss_Giant_Mir_FSM.h" />
     <ClInclude Include="Boss_Giant_Mir_Parts_FSM.h" />
+    <ClInclude Include="Companion_FSM.h" />
+    <ClInclude Include="Companion_Spike_FSM.h" />
     <ClInclude Include="DestroyBuilding_FSM.h" />
     <ClInclude Include="DragonBallMonster_FSM.h" />
     <ClInclude Include="DragonBall_FSM.h" />
@@ -323,6 +325,8 @@
     <ClCompile Include="AttackColliderInfoScript.cpp" />
     <ClCompile Include="Boss_Giant_Mir_FSM.cpp" />
     <ClCompile Include="Boss_Giant_Mir_Parts_FSM.cpp" />
+    <ClCompile Include="Companion_FSM.cpp" />
+    <ClCompile Include="Companion_Spike_FSM.cpp" />
     <ClCompile Include="DestroyBuilding_FSM.cpp" />
     <ClCompile Include="DragonBallMonster_FSM.cpp" />
     <ClCompile Include="DragonBall_FSM.cpp" />

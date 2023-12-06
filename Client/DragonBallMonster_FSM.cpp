@@ -24,7 +24,7 @@ HRESULT DragonBallMonster_FSM::Init()
 		_float3 vObjPos = rigidBodyObj->Get_Transform()->Get_State(Transform_State::POS).xyz();
 		auto rigidBody = make_shared<RigidBody>();
 		rigidBodyObj->Add_Component(rigidBody);
-		rigidBody->Create_CapsuleRigidBody(vObjPos, 2.f, 2.f);
+		rigidBody->Create_CapsuleRigidBody(vObjPos, 2.f, 6.f);
 	}
 	EVENTMGR.Create_Object(rigidBodyObj);
 	m_pRigidBody = rigidBodyObj;

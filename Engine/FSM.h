@@ -38,6 +38,7 @@ protected:
 	void Set_SuperArmor(_bool bFlag) { m_bSuperArmor = bFlag; }
 
 	_bool Target_In_AttackRange(_float* pGap = nullptr);
+	_bool LookingTarget_In_AttackRange(_float* pGap = nullptr);
 	_bool Target_In_DetectRange();
 	_bool Target_In_GazeCheckRange();
 
@@ -45,8 +46,7 @@ protected:
 	void Set_DirToTarget();
 	void Set_DirToTargetOrInput(_uint eType);
 	void Look_DirToTarget(_float fTurnSpeed = XM_PI * 5.f);
-	shared_ptr<GameObject> Find_TargetInFrustum(_uint eType);
-
+	shared_ptr<GameObject> Find_TargetInFrustum(_uint eType, _bool bFrustumCheck = true);
 	_bool Init_CurFrame(const _uint curFrame);
 
 	void Add_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript = nullptr);
