@@ -92,7 +92,8 @@ void Graphics::Set_ViewPort(_uint iWinCX, _uint iWinCY)
 void Graphics::Create_RTGroup()
 {
 	//
-	shared_ptr<Texture> dsTexture = RESOURCES.CreateTexture(L"DepthStencil", DXGI_FORMAT_D24_UNORM_S8_UINT, _uint(m_Viewport.Get_Width()), _uint(m_Viewport.Get_Height()), D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL, _float4(0.f));
+	//shared_ptr<Texture> dsTexture = RESOURCES.CreateTexture(L"DepthStencil", DXGI_FORMAT_D24_UNORM_S8_UINT, _uint(m_Viewport.Get_Width()), _uint(m_Viewport.Get_Height()), D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL, _float4(0.f));
+	shared_ptr<Texture> dsTexture = RESOURCES.CreateShadowTexture(L"DepthStencil", (m_Viewport.Get_Width()), (m_Viewport.Get_Height()));
 
 	//SwapChain
 	{

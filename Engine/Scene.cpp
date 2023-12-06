@@ -102,7 +102,7 @@ void Scene::Render()
 	Render_AfterUI();
 	//Render_BlurEffect();
 	Render_LightFinal();
-
+	Render_MotionBlurFinal();
 
 	Render_SkyBox();
 
@@ -119,7 +119,7 @@ void Scene::Render()
 
 
 
-	Render_MotionBlurFinal();
+
 
 
 	Render_Forward();
