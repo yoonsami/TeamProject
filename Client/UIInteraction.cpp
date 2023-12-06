@@ -7,6 +7,7 @@
 #include "FontRenderer.h"
 #include "UiGachaController.h"
 #include "UiQuestController.h"
+#include "UiDialogController.h"
 
 UIInteraction::UIInteraction()
 {
@@ -28,7 +29,8 @@ HRESULT UIInteraction::Init()
     m_pDialog_Controller = pScene->Get_UI(L"UI_Dialog_Controller");
     m_pGachaController = pScene->Get_UI(L"UI_Gacha_Controller");
     m_pShopController = pScene->Get_UI(L"UI_Shop_Controller");
-
+    m_pNpcDialogController = pScene->Get_UI(L"UI_NpcDialog_Controller");
+    
     return S_OK;
 }
 
@@ -84,6 +86,7 @@ void UIInteraction::Create_Interaction(NPCTYPE eType, shared_ptr<GameObject> pAc
 
     if (false == m_pInteraction_Bg.expired())
     {
+        _bool JustDialog = false;
         weak_ptr<GameObject> pObj;
         QUESTINDEX eIndex = QUESTINDEX::MAX;
         switch (eType)
@@ -97,9 +100,25 @@ void UIInteraction::Create_Interaction(NPCTYPE eType, shared_ptr<GameObject> pAc
         case NPCTYPE::HIDE_KID:
             eIndex = QUESTINDEX::HIDE_AND_SEEK;
             break;
+        default:
+            JustDialog = true;
+            break;
         }
 
-        if (QUESTINDEX::MAX != eIndex)
+        if (true == JustDialog)
+        {
+            pObj = m_pNpcDialogController;
+            m_pInteraction_Bg.lock()->Get_Button()->AddOnClickedEvent([pObj, eType, this, eIndex]()
+                {
+                    if (false == pObj.expired())
+                    {
+                        pObj.lock()->Get_Script<UiDialogController>()->Create_Dialog(eType, m_pAccessObj.lock());
+                        this->Remove_Interaction();
+                    }
+                });
+        }
+
+        else if (QUESTINDEX::MAX != eIndex)
         {
             pObj = m_pDialog_Controller;
             m_pInteraction_Bg.lock()->Get_Button()->AddOnClickedEvent([pObj, eType, this, eIndex]()
@@ -111,6 +130,7 @@ void UIInteraction::Create_Interaction(NPCTYPE eType, shared_ptr<GameObject> pAc
                     }
                 });
         }
+
         else if (NPCTYPE::POTION == eType)
         {
             pObj = m_pShopController;

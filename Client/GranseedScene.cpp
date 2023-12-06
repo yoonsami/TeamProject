@@ -66,6 +66,8 @@
 #include "UiCostumeController.h"
 #include "UiUseItemSlot.h"
 #include "UIShop.h"
+#include "UiMessageNotHere.h"
+#include "UiDialogController.h"
 
 #include <filesystem>
 #include "GachaScene.h"
@@ -138,9 +140,9 @@ void GranseedScene::Tick()
 
 	if (KEYTAP(KEY_TYPE::C))
 	{
-		auto pObj = Get_UI(L"UI_Shop_Controller");
-		if (pObj)
-			pObj->Get_Script<UIShop>()->Create_Shop();
+		//auto pObj = Get_UI(L"UI_Interaction");
+		//if (pObj)
+		//	pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::TEST, make_shared<GameObject>());
 		//auto pObj = Get_UI(L"UI_Costume_Controller");
 		//if (pObj)
 		//	pObj->Get_Script<UiCostumeController>()->Create_Costume();
@@ -153,9 +155,9 @@ void GranseedScene::Tick()
 	}
 	if (KEYTAP(KEY_TYPE::V))
 	{
-		auto pObj = Get_UI(L"UI_Shop_Controller");
-		if (pObj)
-			pObj->Get_Script<UIShop>()->Remove_Shop();
+		//auto pObj = Get_UI(L"UI_Shop_Controller");
+		//if (pObj)
+		//	pObj->Get_Script<UIShop>()->Remove_Shop();
 		//auto pObj = Get_UI(L"UI_Costume_Controller");
 		//if (pObj)
 		//	pObj->Get_Script<UiCostumeController>()->Remove_Costume();
@@ -467,6 +469,15 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	}
 
 	{
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_NpcDialog_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiDialogController>();
+			pObj.lock()->Add_Component(pScript);
+		}
+	}
+	
+	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Gacha_Controller");
 		if (false == pObj.expired())
 		{
@@ -678,6 +689,42 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj->Add_Component(pScript);
 		}
 	}
+
+
+
+
+
+
+
+
+
+
+	// ※※※※※※※※※※※※※※※
+	// add only GranseedScene
+	// ※※※※※※※※※※※※※※※
+
+	{
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_LayerIndex(Layer_UI);
+		pObj->Set_Instancing(false);
+		pObj->Set_Name(L"UI_Message_Controller");
+
+		auto pScript = make_shared<UiMessageNotHere>();
+		pObj->Add_Component(pScript);
+
+		Add_GameObject(pObj);
+	}
+
+	// ※※※※※※※※※※※※※※※
+	// add only GranseedScene
+	// ※※※※※※※※※※※※※※※
+
+
+
+
+
+
+
 }
 
 void GranseedScene::Load_Debug()

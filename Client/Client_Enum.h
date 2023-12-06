@@ -142,6 +142,7 @@ enum class LevelInfo
 
 enum class NPCTYPE
 {
+	TEST,
 	QUEST,
 	GACHA,
 	POTION,
@@ -151,6 +152,7 @@ enum class NPCTYPE
 
 enum class QUESTINDEX
 {
+
 	TRY_GACHA,
 	KILL_ALPACA,
 	KILL_DELLONS,

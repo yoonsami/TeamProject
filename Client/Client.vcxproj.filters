@@ -388,6 +388,12 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\24.UiShop">
       <UniqueIdentifier>{128cecf3-6023-457a-aaed-e5a5e5b1a401}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\25.UiMessageNotHere">
+      <UniqueIdentifier>{943a32d2-dc6b-449e-ba79-ad8fa7259c46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\26.UiDialogController">
+      <UniqueIdentifier>{f68d6109-b445-4921-a3ba-10b7aff062e1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -776,6 +782,12 @@
     <ClInclude Include="UIShop.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\24.UiShop</Filter>
     </ClInclude>
+    <ClInclude Include="UiMessageNotHere.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessageNotHere</Filter>
+    </ClInclude>
+    <ClInclude Include="UiDialogController.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\26.UiDialogController</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1130,6 +1142,12 @@
     </ClCompile>
     <ClCompile Include="UIShop.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\24.UiShop</Filter>
+    </ClCompile>
+    <ClCompile Include="UiMessageNotHere.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessageNotHere</Filter>
+    </ClCompile>
+    <ClCompile Include="UiDialogController.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\26.UiDialogController</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
