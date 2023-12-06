@@ -43,7 +43,9 @@ HRESULT Spike_FSM::Init()
         m_bInitialize = true;
     }
 
-  
+	m_fNormalAttack_AnimationSpeed = 1.5f;
+	m_fSkillAttack_AnimationSpeed = 1.0f;
+	m_fEvade_AnimationSpeed = 1.5f;
     return S_OK;
 }
 
@@ -1369,7 +1371,7 @@ void Spike_FSM::skill_200100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_200100", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_200100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
     Add_Effect(L"Spike_200100");
 
@@ -1436,7 +1438,7 @@ void Spike_FSM::skill_200100_l_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_CurrentAnim(L"skill_200100_l", false, 1.f);
+    animator->Set_CurrentAnim(L"skill_200100_l", false, m_fSkillAttack_AnimationSpeed);
 
     Add_And_Set_Effect(L"Spike_200100L_LoopWind");
 
@@ -1506,7 +1508,7 @@ void Spike_FSM::skill_200200_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_200200", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_200200", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
     CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Render(false);
 
@@ -1577,7 +1579,7 @@ void Spike_FSM::skill_200300_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_200300", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_200300", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
     CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Render(false);
 
@@ -1668,7 +1670,7 @@ void Spike_FSM::skill_200400_Init()
 
     CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Render(false);
 
-    animator->Set_NextTweenAnim(L"skill_200400", 0.15f, false, 1.2f);
+    animator->Set_NextTweenAnim(L"skill_200400", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
     m_bCanCombo = false;
 
@@ -1745,7 +1747,7 @@ void Spike_FSM::skill_300100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_300100", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_300100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
     m_bCanCombo = false;
 
@@ -1876,7 +1878,7 @@ void Spike_FSM::skill_400100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_400100", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_400100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
     m_bCanCombo = false;
 
@@ -1938,7 +1940,7 @@ void Spike_FSM::skill_501100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_501100", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_501100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
     m_bCanCombo = false;
 
