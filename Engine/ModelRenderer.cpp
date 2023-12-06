@@ -49,6 +49,12 @@ void ModelRenderer::Render()
 
 	m_pShader->GetVector("g_UVSliding")->SetFloatVector((_float*)(&m_vUvSilding));
 
+	m_pShader->GetScalar("g_DepthRange")->SetFloat(CUR_SCENE->g_DepthRange);
+	m_pShader->GetScalar("g_ClosestDepth")->SetFloat(CUR_SCENE->g_ClosestDepth);
+
+
+
+
 	const auto& meshes = m_pModel->Get_Meshes();
 	for (auto& mesh : meshes)
 	{
@@ -85,6 +91,10 @@ void ModelRenderer::Render()
 			break;
 		case ModelRenderer::PASS_WATER:
 			m_pShader->DrawIndexed(techniqueIndex, PS_WATER, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
+
+			break;
+		case ModelRenderer::PASS_NORMAL_CONTROL:
+			m_pShader->DrawIndexed(techniqueIndex, PS_MapObject_NormalControl, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
 
 			break;
 		case ModelRenderer::PASS_DEFAULT:
@@ -124,6 +134,11 @@ void ModelRenderer::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 	}
 	m_pShader->Push_BoneData(*boneDesc);
 	m_pShader->GetVector("g_UVSliding")->SetFloatVector((_float*)(&m_vUvSilding));
+	
+	m_pShader->GetScalar("g_DepthRange")->SetFloat(CUR_SCENE->g_DepthRange);
+	m_pShader->GetScalar("g_ClosestDepth")->SetFloat(CUR_SCENE->g_ClosestDepth);
+
+	
 	buffer->Push_Data();
 	const auto& meshes = m_pModel->Get_Meshes();
 	for (auto& mesh : meshes)
@@ -165,7 +180,10 @@ void ModelRenderer::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 			m_pShader->DrawIndexedInstanced(techniqueIndex, PS_MAPOBJECT_INSTANCE_CULLNONE_WORLDNORMAL, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
 
 			break;
+		case ModelRenderer::PASS_NORMAL_CONTROL:
+			m_pShader->DrawIndexedInstanced(techniqueIndex, PS_MapObject_Instancing_NormalControl, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
 
+			break;
 		case ModelRenderer::PASS_DEFAULT:
 		{
 			if (m_bCullNone)

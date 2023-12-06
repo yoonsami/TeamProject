@@ -237,5 +237,8 @@ public:
 		_float g_fVignettePower = 2.f;
 	};
 	VignetteData g_VignetteData{};
+
+	_float g_DepthRange = 15.f;
+	_float g_ClosestDepth = 1.f;
 };
 
