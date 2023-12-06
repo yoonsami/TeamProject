@@ -158,6 +158,9 @@ void UIShop::Create_Shop()
             if (false == m_vecIsBuy[j])
                 continue;
 
+            if (2 == j)
+                continue;
+
             wstring strItemName = L"UI_Shop_Item_" + to_wstring(j);
             wstring strPrice = strItemName + L"_Price";
             if (true == pObj.expired())

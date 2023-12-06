@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "UIInteraction.h"
 
+#include "UIShop.h"
 #include "BaseUI.h"
 #include "UiMarkNpc.h"
 #include "FontRenderer.h"
@@ -26,6 +27,7 @@ HRESULT UIInteraction::Init()
     auto pScene = CUR_SCENE;
     m_pDialog_Controller = pScene->Get_UI(L"UI_Dialog_Controller");
     m_pGachaController = pScene->Get_UI(L"UI_Gacha_Controller");
+    m_pShopController = pScene->Get_UI(L"UI_Shop_Controller");
 
     return S_OK;
 }
@@ -97,17 +99,31 @@ void UIInteraction::Create_Interaction(NPCTYPE eType, shared_ptr<GameObject> pAc
             break;
         }
 
-        pObj = m_pDialog_Controller;
-        m_pInteraction_Bg.lock()->Get_Button()->AddOnClickedEvent([pObj, eType, this, eIndex]()
-            {
-                if (false == pObj.expired())
+        if (QUESTINDEX::MAX != eIndex)
+        {
+            pObj = m_pDialog_Controller;
+            m_pInteraction_Bg.lock()->Get_Button()->AddOnClickedEvent([pObj, eType, this, eIndex]()
                 {
-                    pObj.lock()->Get_Script<UiQuestController>()->Create_Dialog(eType, eIndex, m_pAccessObj.lock());
-                    this->Remove_Interaction();
-
-                }
-            });
-
+                    if (false == pObj.expired())
+                    {
+                        pObj.lock()->Get_Script<UiQuestController>()->Create_Dialog(eType, eIndex, m_pAccessObj.lock());
+                        this->Remove_Interaction();
+                    }
+                });
+        }
+        else if (NPCTYPE::POTION == eType)
+        {
+            pObj = m_pShopController;
+            m_pInteraction_Bg.lock()->Get_Button()->AddOnClickedEvent([pObj, this]()
+                {
+                    if (false == pObj.expired())
+                    {
+                        pObj.lock()->Get_Script<UIShop>()->Create_Shop();
+                        this->Remove_Interaction();
+                    }
+                });
+        }
+        
         //pObj = m_pGachaController;
         //m_pInteraction_Bg.lock()->Get_Button()->AddOnClickedEvent([pObj, this]()
         //    {
