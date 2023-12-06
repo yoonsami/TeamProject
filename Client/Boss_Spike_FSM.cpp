@@ -76,7 +76,6 @@ HRESULT Boss_Spike_FSM::Init()
         m_fDetectRange = 36.f;
         m_fRunSpeed = 6.f;
 
-
         if (!m_pTarget.expired())
             Get_Transform()->LookAt(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS));
 
@@ -87,6 +86,7 @@ HRESULT Boss_Spike_FSM::Init()
 
         m_vFirstPos = Get_Transform()->Get_State(Transform_State::POS);
 
+        m_fNormalAttack_AnimationSpeed = 1.f;
         
         m_bInitialize = true;
     }
@@ -557,7 +557,7 @@ void Boss_Spike_FSM::SQ_Appear_01_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"SQ_Appear_01", 0.1f, false, 1.5f);
+    animator->Set_NextTweenAnim(L"SQ_Appear_01", 0.1f, false, 1.f);
 
     animator->Set_AnimState(true);
 
@@ -1166,7 +1166,7 @@ void Boss_Spike_FSM::skill_1100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, 1.5f);
+    animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1231,7 +1231,7 @@ void Boss_Spike_FSM::skill_1200_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, 1.5f);
+    animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1289,7 +1289,7 @@ void Boss_Spike_FSM::skill_1300_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_1300", 0.15f, false, 1.5f);
+    animator->Set_NextTweenAnim(L"skill_1300", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1319,7 +1319,7 @@ void Boss_Spike_FSM::skill_1400_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_1400", 0.15f, false, 1.5f);
+    animator->Set_NextTweenAnim(L"skill_1400", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1466,7 +1466,7 @@ void Boss_Spike_FSM::skill_2100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_2100", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_2100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1524,7 +1524,7 @@ void Boss_Spike_FSM::skill_2200_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_2200", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_2200", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1594,7 +1594,7 @@ void Boss_Spike_FSM::skill_3100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_3100", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_3100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1662,7 +1662,7 @@ void Boss_Spike_FSM::skill_3200_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_3200", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_3200", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1785,7 +1785,7 @@ void Boss_Spike_FSM::skill_6100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_6100", 0.15f, false, 2.f);
+    animator->Set_NextTweenAnim(L"skill_6100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1839,7 +1839,7 @@ void Boss_Spike_FSM::skill_7100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_7100", 0.15f, false, 2.f);
+    animator->Set_NextTweenAnim(L"skill_7100", 0.15f, false, m_fNormalAttack_AnimationSpeed * 1.3f);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1883,7 +1883,7 @@ void Boss_Spike_FSM::skill_8100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_8100", 0.15f, false, 1.5f);
+    animator->Set_NextTweenAnim(L"skill_8100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1982,7 +1982,7 @@ void Boss_Spike_FSM::skill_100100()
         m_pOwner.lock()->Set_GroggyGauge(100.f);
 
         m_bGroggyPattern = false;
-        Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.5f);
+        Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);
 
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
         {

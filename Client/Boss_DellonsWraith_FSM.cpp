@@ -424,7 +424,7 @@ void Boss_DellonsWraith_FSM::FX_Mn_Dellons_skill_5100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"FX_Mn_Dellons_skill_5100", 0.15f, false, 1.5f);
+    animator->Set_NextTweenAnim(L"FX_Mn_Dellons_skill_5100", 0.15f, false, 1.f);
 
     if (!m_pTarget.expired())
         Get_Transform()->Set_WorldMat(m_pTarget.lock()->Get_Transform()->Get_WorldMatrix());
@@ -473,7 +473,7 @@ void Boss_DellonsWraith_FSM::FX_Mn_Dellons_skill_5200_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"FX_Mn_Dellons_skill_5200", 0.15f, false, 1.5f);
+    animator->Set_NextTweenAnim(L"FX_Mn_Dellons_skill_5200", 0.15f, false, 1.f);
 
     if (!m_pTarget.expired())
         Get_Transform()->Set_WorldMat(m_pTarget.lock()->Get_Transform()->Get_WorldMatrix());

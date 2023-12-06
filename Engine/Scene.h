@@ -64,7 +64,7 @@ public:
 	const wstring& Get_FinalRenderTarget() { return m_wstrFinalRenderTarget; }
 
 protected:
-	void Load_MapFile(const wstring& _mapFileName,shared_ptr<GameObject> pPlayer);
+	virtual void Load_MapFile(const wstring& _mapFileName,shared_ptr<GameObject> pPlayer);
 	void PickUI();
 
 protected:
@@ -237,5 +237,8 @@ public:
 		_float g_fVignettePower = 2.f;
 	};
 	VignetteData g_VignetteData{};
+
+	_float g_DepthRange = 15.f;
+	_float g_ClosestDepth = 1.f;
 };
 

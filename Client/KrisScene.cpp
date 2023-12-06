@@ -200,7 +200,10 @@ HRESULT KrisScene::Load_Scene()
 	Load_Monster(5, L"Bad_Alpaca_White", player);
 	Load_Monster(5, L"Bad_Alpaca_Brown", player);
 	Load_Monster(5, L"Bad_Alpaca_Black", player);
-	//Load_Monster(2, L"Wolf", player);
+	Load_Monster(2, L"Wolf", player);
+	Load_Monster(2, L"Silversword_Soldier", player);
+	Load_Monster(2, L"Succubus_Scythe", player);
+	Load_Monster(2, L"Undead_Priest", player);
 
 	////Load_Boss_Spike(player);				
 	Load_Boss_Dellons(player);				

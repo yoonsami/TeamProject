@@ -39,9 +39,10 @@ void ModelAnimator::Tick()
 		if (currentAnim)
 		{
 			_float timePerFrame = 1 / (currentAnim->frameRate * currentAnim->speed);
-			while (m_TweenDesc.curr.sumTime >= timePerFrame)
+			while (m_TweenDesc.curr.sumTime > timePerFrame)
 			{
 				m_TweenDesc.curr.sumTime -=timePerFrame;
+
 
 				if (!m_bFinished)
 				{

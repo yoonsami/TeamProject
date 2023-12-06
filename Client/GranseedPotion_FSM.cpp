@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "GranseedPotion_FSM.h"
 #include "ModelAnimator.h"
+#include "UIInteraction.h"
 
 GranseedPotion_FSM::GranseedPotion_FSM()
 {
@@ -36,11 +37,11 @@ void GranseedPotion_FSM::State_Tick()
 	{
 	case STATE::n_idle:
 		n_idle();
-		if (Can_Interact())
-		{
-			if(KEYTAP(KEY_TYPE::E))
-				InteractWithPlayer();
-		}
+        //if (Can_Interact())
+        //{
+        //    if (KEYTAP(KEY_TYPE::E))
+        //        InteractWithPlayer();
+        //}
 		break;
 
 		break;
@@ -72,6 +73,23 @@ void GranseedPotion_FSM::State_Init()
 
 void GranseedPotion_FSM::n_idle()
 {
+	if (Can_Interact())
+	{
+		{
+			auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
+			if (pObj && pObj->Get_Script<UIInteraction>()->Get_Is_Activate(m_pOwner.lock()))
+				InteractWithPlayer();
+			else if (pObj && !pObj->Get_Script<UIInteraction>()->Is_Created())
+				pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::POTION, m_pOwner.lock());
+		}
+
+	}
+	else
+	{
+		auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
+		if (pObj)
+			pObj->Get_Script<UIInteraction>()->Remove_Interaction(m_pOwner.lock());
+	}
 }
 
 void GranseedPotion_FSM::n_idle_Init()
@@ -84,7 +102,7 @@ void GranseedPotion_FSM::n_idle_Init()
 void GranseedPotion_FSM::talk()
 {
 	Look_DirToTarget(XM_PI * 0.5f);
-	if (KEYTAP(KEY_TYPE::E))
+	if (false == Can_Interact())
 		m_eCurState = STATE::n_idle;
 }
 

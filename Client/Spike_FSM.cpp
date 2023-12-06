@@ -1144,7 +1144,7 @@ void Spike_FSM::skill_1400_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_1400", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_1400", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
     {
@@ -1389,7 +1389,7 @@ void Spike_FSM::skill_200100_l()
     if (Init_CurFrame(0))
         Add_And_Set_Effect(L"Spike_200100L_floor");
 
-    m_fEffectCreateTimer[0] += fDT;
+  /*  m_fEffectCreateTimer[0] += fDT;
     m_fEffectCreateTimer[1] += fDT;
     if (m_fEffectCreateTimer[0] >= 0.4f)
     {
@@ -1400,7 +1400,7 @@ void Spike_FSM::skill_200100_l()
     {
         m_fEffectCreateTimer[1] = 0.f;
         Add_Effect(L"Spike_200100L_Wind2");
-    }
+    }*/
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -1440,7 +1440,7 @@ void Spike_FSM::skill_200100_l_Init()
 
     animator->Set_CurrentAnim(L"skill_200100_l", false, m_fSkillAttack_AnimationSpeed);
 
-    Add_And_Set_Effect(L"Spike_200100L_LoopWind");
+	Add_And_Set_Effect(L"Spike_200100L_LoopWind");
 
     m_bCanCombo = false;
 

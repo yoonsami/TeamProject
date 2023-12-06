@@ -197,7 +197,7 @@ float4 PS_MotionBlur(VS_OUT input) : SV_Target0
         
         BColor = SubMap1.Sample(PointSamplerMirror, input.uv + velocity.xy * (float) i);
         float depth = SubMap2.Sample(PointSamplerMirror, input.uv).r;
-        if (velocity.a < depth - 0.0001f)
+        if (velocity.a < depth + 0.04f)
         {
            iCnt++;
             output += BColor;

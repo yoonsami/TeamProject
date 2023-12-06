@@ -96,7 +96,7 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 
 		if (gameObject->Is_FrustumCulled())
 		{
-			if(frustum.Contain_Sphere(gameObject->Get_CullPos(), gameObject->Get_CullRadius()) == false)
+			if (frustum.Contain_Sphere(gameObject->Get_CullPos(), gameObject->Get_CullRadius()) == false)
 				continue;
 		}
 

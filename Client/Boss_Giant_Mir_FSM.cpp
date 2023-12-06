@@ -73,6 +73,8 @@ HRESULT Boss_Giant_Mir_FSM::Init()
 
         m_pCamera = CUR_SCENE->Get_MainCamera();
 
+        m_fNormalAttack_AnimationSpeed = 1.5f;
+
         m_fRunSpeed = 4.f;
         m_fKnockDownSpeed = 4.f;
 
@@ -334,7 +336,7 @@ void Boss_Giant_Mir_FSM::SQ_Spawn()
         if (Init_CurFrame(56))
         {
             if (!m_pOwner.expired())
-                m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(2.f);
+                m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(1.5f);
         }
 
         if (!m_pCamera.expired())
@@ -962,7 +964,7 @@ void Boss_Giant_Mir_FSM::skill_7100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_7100", 0.15f, false, 4.f);
+    animator->Set_NextTweenAnim(L"skill_7100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_tAttackCoolTime.fAccTime = 0.f;
     m_tBreathCoolTime.fAccTime = 0.f;
@@ -993,7 +995,7 @@ void Boss_Giant_Mir_FSM::skill_8100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_8100", 0.15f, false, 4.f);
+    animator->Set_NextTweenAnim(L"skill_8100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_tAttackCoolTime.fAccTime = 0.f;
     m_tBreathCoolTime.fAccTime = 0.f;
@@ -1013,7 +1015,7 @@ void Boss_Giant_Mir_FSM::skill_100000_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_100000", 0.15f, false, 4.f);
+    animator->Set_NextTweenAnim(L"skill_100000", 0.15f, false, 2.f);
 
     m_tAttackCoolTime.fAccTime = 0.f;
     m_tBreathCoolTime.fAccTime = 0.f;
@@ -1081,7 +1083,7 @@ void Boss_Giant_Mir_FSM::skill_200000_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_200000", 0.15f, false, 4.f);
+    animator->Set_NextTweenAnim(L"skill_200000", 0.15f, false, 2.f);
 
     m_tAttackCoolTime.fAccTime = 0.f;
     m_tBreathCoolTime.fAccTime = 0.f;
@@ -1337,7 +1339,7 @@ void Boss_Giant_Mir_FSM::Create_DragonBall()
 
 void Boss_Giant_Mir_FSM::Set_AttackPattern()
 {
-    
+    //m_eCurState = STATE::skill_8100;
     _uint iRan = rand() % 6;
 
     while (true)

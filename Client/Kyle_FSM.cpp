@@ -34,7 +34,7 @@ HRESULT Kyle_FSM::Init()
 		m_bInitialize = true;
 	}
 
-	m_fNormalAttack_AnimationSpeed = 1.5f;
+	m_fNormalAttack_AnimationSpeed = 1.2f;
 	m_fSkillAttack_AnimationSpeed = 1.0f;
 	m_fEvade_AnimationSpeed = 1.5f;
 
@@ -970,7 +970,7 @@ void Kyle_FSM::skill_1100_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, 2.f);
+	animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
 	if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
 		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();

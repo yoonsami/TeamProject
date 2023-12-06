@@ -385,6 +385,24 @@
     <Filter Include="02.Component\01.FSM\07.Friend_FSM">
       <UniqueIdentifier>{18d4e8a7-2626-44a6-a38e-d0a13ecb3c96}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\24.UiShop">
+      <UniqueIdentifier>{128cecf3-6023-457a-aaed-e5a5e5b1a401}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Scene\00.PlayScene\04.Field">
+      <UniqueIdentifier>{99a38b1a-eda8-4b71-8883-93afc5ae7515}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\05.Object\06.Delete">
+      <UniqueIdentifier>{1a4f70ac-4c43-46a2-8545-042166a43fee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\05.Object\06.Delete\00.DeleteWhenAnimFinish">
+      <UniqueIdentifier>{865f67c5-c749-49bf-b51a-3082b463cb40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\25.UiMessageNotHere">
+      <UniqueIdentifier>{943a32d2-dc6b-449e-ba79-ad8fa7259c46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\26.UiDialogController">
+      <UniqueIdentifier>{f68d6109-b445-4921-a3ba-10b7aff062e1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -770,6 +788,21 @@
     <ClInclude Include="Friend_FSM.h">
       <Filter>02.Component\01.FSM\07.Friend_FSM</Filter>
     </ClInclude>
+    <ClInclude Include="UIShop.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\24.UiShop</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldScene.h">
+      <Filter>01.Scene\00.PlayScene\04.Field</Filter>
+    </ClInclude>
+    <ClInclude Include="DeleteWhenAnimFinish.h">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\06.Delete\00.DeleteWhenAnimFinish</Filter>
+    </ClInclude>
+    <ClInclude Include="UiMessageNotHere.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessageNotHere</Filter>
+    </ClInclude>
+    <ClInclude Include="UiDialogController.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\26.UiDialogController</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1121,6 +1154,21 @@
     </ClCompile>
     <ClCompile Include="Friend_FSM.cpp">
       <Filter>02.Component\01.FSM\07.Friend_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="UIShop.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\24.UiShop</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldScene.cpp">
+      <Filter>01.Scene\00.PlayScene\04.Field</Filter>
+    </ClCompile>
+    <ClCompile Include="DeleteWhenAnimFinish.cpp">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\06.Delete\00.DeleteWhenAnimFinish</Filter>
+    </ClCompile>
+    <ClCompile Include="UiMessageNotHere.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessageNotHere</Filter>
+    </ClCompile>
+    <ClCompile Include="UiDialogController.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\26.UiDialogController</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
