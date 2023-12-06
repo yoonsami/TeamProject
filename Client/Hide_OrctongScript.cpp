@@ -48,22 +48,15 @@ void Hide_OrctongScript::Tick()
 			if (pObj && pObj->Get_Script<UiQuestController>())
 			{
 				pObj->Get_Script<UiQuestController>()->Change_Value();
-			}
-		}
-		{
-			auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
-			if (pObj && pObj->Get_Script<UIInteraction>())
-			{
-				auto accessObj = pObj->Get_Script<UIInteraction>()->Get_AccessObject();
 
-				accessObj->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) - _float4(0.f,0.4f,0.f,0.f));
+				auto accessObj = pObj->Get_Script<UiQuestController>()->Get_AccessObject();
+
+				accessObj->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) - _float4(0.f, 0.4f, 0.f, 0.f));
 				accessObj->Get_Animator()->Set_RenderState(true);
 				static_pointer_cast<GranseedChildren_FSM>(accessObj->Get_FSM())->Set_State(_int(GranseedChildren_FSM::STATE::Seek));
 
 				accessObj->Add_Component(make_shared<ObjectDissolveCreate>(1.f));
-
 			}
-
 		}
 			break;
 		default:

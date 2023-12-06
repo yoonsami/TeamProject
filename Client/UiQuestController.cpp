@@ -55,10 +55,12 @@ void UiQuestController::Tick()
     Move_Next();
 }
 
-void UiQuestController::Create_Dialog(NPCTYPE eType, QUESTINDEX eIndex)
+void UiQuestController::Create_Dialog(NPCTYPE eType, QUESTINDEX eIndex, shared_ptr<GameObject> obj)
 {
     if (true == m_bIsCreated)
         return;
+
+    m_pAccessObject = obj;
 
     m_bIsCreated = true;
     auto pScene = CUR_SCENE;

@@ -46,7 +46,7 @@ void UIInteraction::Tick()
         }
 }
 
-void UIInteraction::Create_Interaction(NPCTYPE eType, shared_ptr<GameObject> pObj)
+void UIInteraction::Create_Interaction(NPCTYPE eType, shared_ptr<GameObject> pAccessObj)
 {
     if (NPCTYPE::MAX == eType)
         return;
@@ -54,7 +54,7 @@ void UIInteraction::Create_Interaction(NPCTYPE eType, shared_ptr<GameObject> pOb
     if (true == m_bIsCreated)
         return;
 
-    m_pAccessObj = pObj;
+    m_pAccessObj = pAccessObj;
 
     m_bIsCreated = true;
     m_bIsActivate = false;
@@ -102,7 +102,7 @@ void UIInteraction::Create_Interaction(NPCTYPE eType, shared_ptr<GameObject> pOb
             {
                 if (false == pObj.expired())
                 {
-                    pObj.lock()->Get_Script<UiQuestController>()->Create_Dialog(eType, eIndex);
+                    pObj.lock()->Get_Script<UiQuestController>()->Create_Dialog(eType, eIndex, m_pAccessObj.lock());
                     this->Remove_Interaction();
 
                 }

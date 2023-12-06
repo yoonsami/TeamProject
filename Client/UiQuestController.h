@@ -10,7 +10,7 @@ public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
     virtual shared_ptr<MonoBehaviour> Copy_Script()override { return make_shared<UiQuestController>(); }
-    void Create_Dialog(NPCTYPE eType, QUESTINDEX eIndex);
+    void Create_Dialog(NPCTYPE eType, QUESTINDEX eIndex, shared_ptr<GameObject> obj);
     void Next_Dialog();
     void Change_Value();
 
@@ -18,6 +18,7 @@ public:
     CUR_QUEST Get_CurState(QUESTINDEX eIndex);
     _bool Get_QuestState(QUESTINDEX eIndex) { return m_ClearCheck[_int(eIndex)]; }
 
+    shared_ptr<GameObject> Get_AccessObject() { return m_pAccessObject.lock(); }
 
 private:
     void Clear_Quest();
@@ -41,6 +42,8 @@ private:
     weak_ptr<GameObject> m_pNpcDialog;
     weak_ptr<GameObject> m_pPlayerBg;
     weak_ptr<GameObject> m_pPlayerDialog;
+
+    weak_ptr<GameObject> m_pAccessObject;
 
     enum class NEXT_STATE { DOWN, UP };
     NEXT_STATE          m_eState            = { NEXT_STATE::DOWN };
