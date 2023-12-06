@@ -73,6 +73,8 @@ HRESULT Boss_Mir_FSM::Init()
 
         m_vSetPlayerPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 20.f;
 
+        m_fNormalAttack_AnimationSpeed = 1.5f;
+
         m_bInitialize = true;
     }
     {
@@ -585,7 +587,7 @@ void Boss_Mir_FSM::First_Meet_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"3D_ui_start", 0.1f, false, 1.5f);
+    animator->Set_NextTweenAnim(L"3D_ui_start", 0.1f, false, 1.f);
 
     m_bInvincible = true;
 
@@ -2661,6 +2663,8 @@ void Boss_Mir_FSM::Create_DragonBall()
 
 void Boss_Mir_FSM::Set_AttackPattern()
 {
+    //m_eCurState = STATE::SQ_SBRin_Roar;
+
     // TODO:  의진
     /*_uint iRan = rand() % 4;
     if(iRan == 0)
