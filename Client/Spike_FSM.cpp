@@ -1373,7 +1373,7 @@ void Spike_FSM::skill_200100_Init()
 
     animator->Set_NextTweenAnim(L"skill_200100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
-    //Add_Effect(L"Spike_200100");
+    Add_Effect(L"Spike_200100");
 
     m_bCanCombo = false;
 
@@ -1389,18 +1389,18 @@ void Spike_FSM::skill_200100_l()
     if (Init_CurFrame(0))
         Add_And_Set_Effect(L"Spike_200100L_floor");
 
-    m_fEffectCreateTimer[0] += fDT;
+  /*  m_fEffectCreateTimer[0] += fDT;
     m_fEffectCreateTimer[1] += fDT;
     if (m_fEffectCreateTimer[0] >= 0.4f)
     {
         m_fEffectCreateTimer[0] = 0.f;
-       // Add_Effect(L"Spike_200100L_Wind1");
+        Add_Effect(L"Spike_200100L_Wind1");
     }
     if (m_fEffectCreateTimer[1] >= 0.1f)
     {
         m_fEffectCreateTimer[1] = 0.f;
-      //  Add_Effect(L"Spike_200100L_Wind2");
-    }
+        Add_Effect(L"Spike_200100L_Wind2");
+    }*/
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -1440,7 +1440,7 @@ void Spike_FSM::skill_200100_l_Init()
 
     animator->Set_CurrentAnim(L"skill_200100_l", false, m_fSkillAttack_AnimationSpeed);
 
-	//Add_And_Set_Effect(L"Spike_200100L_LoopWind");
+	Add_And_Set_Effect(L"Spike_200100L_LoopWind");
 
     m_bCanCombo = false;
 

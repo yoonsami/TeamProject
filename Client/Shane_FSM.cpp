@@ -37,13 +37,12 @@ HRESULT Shane_FSM::Init()
 
         m_pCamera = CUR_SCENE->Get_MainCamera();
 
-        m_fNormalAttack_AnimationSpeed = 1.2f;
         m_fDetectRange = 5.f;
 
         m_bInitialize = true;
     }
 
-	m_fNormalAttack_AnimationSpeed = 1.2f;
+	m_fNormalAttack_AnimationSpeed = 1.0f;
 	m_fSkillAttack_AnimationSpeed = 1.0f;
 	m_fEvade_AnimationSpeed = 1.5f;
   
