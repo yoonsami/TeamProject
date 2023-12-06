@@ -1205,9 +1205,7 @@ void Boss_Spike_FSM::skill_1200()
         {
             material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
-    }
-    else if (m_iCurFrame == 73)
-    {
+
         m_bCounter = true;
         m_fGroggyStateAnimationSpeed = 1.5f;
     }
@@ -1263,9 +1261,7 @@ void Boss_Spike_FSM::skill_1300()
         {
             material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
-    }
-    else if (m_iCurFrame == 32)
-    {
+
         m_bCounter = true;
         m_fGroggyStateAnimationSpeed = 1.5f;
     }
@@ -1442,9 +1438,6 @@ void Boss_Spike_FSM::skill_2100()
         {
             material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
-    }
-    else if (m_iCurFrame == 6)
-    {
         m_bCounter = true;
         m_fGroggyStateAnimationSpeed = 1.5f;
     }
@@ -1499,9 +1492,6 @@ void Boss_Spike_FSM::skill_2200()
         {
             material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
-    }
-    else if (m_iCurFrame == 6)
-    {
         m_bCounter = true;
         m_fGroggyStateAnimationSpeed = 1.5f;
     }
@@ -1559,9 +1549,7 @@ void Boss_Spike_FSM::skill_3100()
         {
             material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
-    }
-    else if (m_iCurFrame == 44)
-    {
+
         m_bCounter = true;
         m_fGroggyStateAnimationSpeed = 1.5f;
     }
@@ -1633,9 +1621,7 @@ void Boss_Spike_FSM::skill_3200()
         {
             material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
-    }
-    else if (m_iCurFrame == 60)
-    {
+    
         m_bCounter = true;
     }
     else if (m_iCurFrame == 69)

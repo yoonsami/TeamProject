@@ -62,5 +62,6 @@ private:
     COOLTIMEINFO m_tPatternCoolTime = { 4.f, 0.f };
     COOLTIMEINFO m_tMeteorCoolTime = { 2.f, 0.f };
 
+    weak_ptr<GameObject> m_pRigidBody;
 };
 

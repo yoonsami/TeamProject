@@ -397,6 +397,11 @@ void Boss_Giant_Mir_FSM::SQ_Spawn()
                 pScript->Init();
             }
         }
+
+        for (size_t i = 0; i < m_vecDestroyObject.size(); i++)
+        {
+            EVENTMGR.Delete_Object(m_vecDestroyObject[i].lock());
+        }
     }
 }
 
@@ -1279,7 +1284,7 @@ void Boss_Giant_Mir_FSM::Create_Giant_Mir_Collider()
     m_pLfootCollider = LfootCollider;
 
     shared_ptr<GameObject> rigidBodyObj = make_shared<GameObject>();
-    rigidBodyObj->GetOrAddTransform()->Set_State(Transform_State::POS,{12.8122845f,5.01855755f,22.8058624f,1.f});
+    rigidBodyObj->GetOrAddTransform()->Set_State(Transform_State::POS,{10.7f,3.f,28.5f,1.f});
 	{
 		_float3 vObjPos = rigidBodyObj->Get_Transform()->Get_State(Transform_State::POS).xyz();
 		auto rigidBody = make_shared<RigidBody>();
@@ -1321,7 +1326,7 @@ void Boss_Giant_Mir_FSM::Create_DragonBall()
         ObjDragonBall->Set_ObjectGroup(OBJ_MONSTER);
         ObjDragonBall->Add_Component(make_shared<DragonBallMonster_FSM>());
         ObjDragonBall->Get_FSM()->Set_Target(m_pOwner.lock());
-
+        ObjDragonBall->Get_FSM()->Init();
         EVENTMGR.Create_Object(ObjDragonBall);
 
         //Add ObjectDissolveCreate
@@ -1428,6 +1433,8 @@ void Boss_Giant_Mir_FSM::Destroy_MapObject()
         DestroyBuilding->Add_Component(make_shared<DestroyBuilding_FSM>());
         DestroyBuilding->Get_FSM()->Init();
         EVENTMGR.Create_Object(DestroyBuilding);
+
+        m_vecDestroyObject.push_back(DestroyBuilding);
     }
 
     if (CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_MiddleHouse_02_AHJ-50"))
@@ -1451,6 +1458,8 @@ void Boss_Giant_Mir_FSM::Destroy_MapObject()
         DestroyBuilding->Add_Component(make_shared<DestroyBuilding_FSM>());
         DestroyBuilding->Get_FSM()->Init();
         EVENTMGR.Create_Object(DestroyBuilding);
+
+        m_vecDestroyObject.push_back(DestroyBuilding);
     }
 
     if (CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_MiddleHouse_01_AHJ-51"))
@@ -1474,6 +1483,8 @@ void Boss_Giant_Mir_FSM::Destroy_MapObject()
         DestroyBuilding->Add_Component(make_shared<DestroyBuilding_FSM>());
         DestroyBuilding->Get_FSM()->Init();
         EVENTMGR.Create_Object(DestroyBuilding);
+
+        m_vecDestroyObject.push_back(DestroyBuilding);
     }
 
     if (CUR_SCENE->Get_GameObject(L"F01_P_BackGCircle_02_KEK-52"))
@@ -1497,6 +1508,8 @@ void Boss_Giant_Mir_FSM::Destroy_MapObject()
         DestroyBuilding->Add_Component(make_shared<DestroyBuilding_FSM>());
         DestroyBuilding->Get_FSM()->Init();
         EVENTMGR.Create_Object(DestroyBuilding);
+
+        m_vecDestroyObject.push_back(DestroyBuilding);
     }
 
     if (CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_Circle_02_AHJ-53"))
@@ -1520,6 +1533,8 @@ void Boss_Giant_Mir_FSM::Destroy_MapObject()
         DestroyBuilding->Add_Component(make_shared<DestroyBuilding_FSM>());
         DestroyBuilding->Get_FSM()->Init();
         EVENTMGR.Create_Object(DestroyBuilding);
+
+        m_vecDestroyObject.push_back(DestroyBuilding);
     }
 
     if (CUR_SCENE->Get_GameObject(L"Mir_Mirdragon_P_Circle_01_AHJ-54"))
@@ -1543,6 +1558,8 @@ void Boss_Giant_Mir_FSM::Destroy_MapObject()
         DestroyBuilding->Add_Component(make_shared<DestroyBuilding_FSM>());
         DestroyBuilding->Get_FSM()->Init();
         EVENTMGR.Create_Object(DestroyBuilding);
+
+        m_vecDestroyObject.push_back(DestroyBuilding);
     }
 
     if (CUR_SCENE->Get_GameObject(L"Mir_R02_Dragon_001_01-55"))
@@ -1566,6 +1583,8 @@ void Boss_Giant_Mir_FSM::Destroy_MapObject()
         DestroyBuilding->Add_Component(make_shared<DestroyBuilding_FSM>());
         DestroyBuilding->Get_FSM()->Init();
         EVENTMGR.Create_Object(DestroyBuilding);
+
+        m_vecDestroyObject.push_back(DestroyBuilding);
     }
 
     if (CUR_SCENE->Get_GameObject(L"R02_Dragon_002_01-67"))
@@ -1589,6 +1608,8 @@ void Boss_Giant_Mir_FSM::Destroy_MapObject()
         DestroyBuilding->Add_Component(make_shared<DestroyBuilding_FSM>());
         DestroyBuilding->Get_FSM()->Init();
         EVENTMGR.Create_Object(DestroyBuilding);
+
+        m_vecDestroyObject.push_back(DestroyBuilding);
     }
 
 
