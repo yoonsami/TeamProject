@@ -64,7 +64,7 @@ public:
 	const wstring& Get_FinalRenderTarget() { return m_wstrFinalRenderTarget; }
 
 protected:
-	void Load_MapFile(const wstring& _mapFileName,shared_ptr<GameObject> pPlayer);
+	virtual void Load_MapFile(const wstring& _mapFileName,shared_ptr<GameObject> pPlayer);
 	void PickUI();
 
 protected:
