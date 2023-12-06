@@ -1646,13 +1646,19 @@ void Yeopo_FSM::skill_400100()
 {
     if (Init_CurFrame(20))
         Add_And_Set_Effect(L"Yeopo_400100_slash");
-    else if (Init_CurFrame(40))
+    else if (Init_CurFrame(38))
         Add_And_Set_Effect(L"Yeopo_400100_slash2");
     else if (Init_CurFrame(58))
         Add_And_Set_Effect(L"Yeopo_400100_slash3");
-    else if (Init_CurFrame(80))
+    else if (Init_CurFrame(78))
         Add_And_Set_Effect(L"Yeopo_400100_slash4");
     
+    _float4x4 mEffectMatrix = _float4x4::CreateTranslation(m_vCenterBonePos.xyz());
+    mEffectMatrix.m[2][0] = m_CenterBoneMatrix.m[2][0];
+    mEffectMatrix.m[2][1] = m_CenterBoneMatrix.m[2][1];
+    mEffectMatrix.m[2][2] = m_CenterBoneMatrix.m[2][2];
+    mEffectMatrix.m[2][3] = m_CenterBoneMatrix.m[2][3];
+
     Update_GroupEffectWorldPos(_float4x4::CreateTranslation(m_vCenterBonePos.xyz()));
 
     Calculate_CamBoneMatrix();
