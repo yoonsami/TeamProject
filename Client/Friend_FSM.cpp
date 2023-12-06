@@ -20,6 +20,11 @@ HRESULT Friend_FSM::Init()
 		animator->Set_Model(model);
 		Get_Owner()->Add_Component(animator);
 	}
+	_float3 vPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
+	m_fBottomHeight = vPos.y;
+
+	Get_Transform()->Set_State(Transform_State::POS, _float4(vPos, 1.f) + _float3::Up * 5.f);
+
     if(!GET_DATA(m_eType).WeaponTag.empty())
     {
         shared_ptr<GameObject> weapon = make_shared<GameObject>();
@@ -43,13 +48,20 @@ HRESULT Friend_FSM::Init()
     }
 
 
-    _float3 vPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
-    m_fBottomHeight = vPos.y;
-
-    Get_Transform()->Set_State(Transform_State::POS, _float4(vPos, 1.f) + _float3::Up * 5.f);
 
     m_eCurState = STATE::fall_loop;
-
+	{
+		shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+		auto animation = Get_Owner()->Get_Model()->Get_AnimationByName(L"fall_loop");
+		if (animation)
+			animator->Set_CurrentAnim(L"fall_loop", true, 1.f);
+		else
+		{
+			animation = Get_Owner()->Get_Model()->Get_AnimationByName(L"fall");
+			if (animation)
+				animator->Set_CurrentAnim(L"fall", true, 1.f);
+		}
+	}
 
     return S_OK;
 }
@@ -114,7 +126,7 @@ void Friend_FSM::Set_State(_uint iIndex)
 void Friend_FSM::fall_loop()
 {
     _float3 vPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
-    m_fStateAcc -= 20.f * fDT;
+    m_fStateAcc -= 9.8f * fDT;
     vPos += _float3(0.f, m_fStateAcc, 0.f) * fDT;
 
 
@@ -152,7 +164,7 @@ void Friend_FSM::fall_end_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_CurrentAnim(L"fall_end",  false, 1.f);
+	animator->Set_CurrentAnim(L"fall_end",  false, 10.f);
 	m_fStateAcc = 0.f;
 }
 
@@ -171,20 +183,26 @@ void Friend_FSM::ATTACK_Init()
     case HERO::PLAYER:
         break;
     case HERO::ACE3:
-        animator->Set_NextTweenAnim(L"skill_500100", 0.15f, false, 1.f);
+        animator->Set_NextTweenAnim(L"skill_500100", 0.15f, false, 1.5f);
         break;
     case HERO::KYLE:
-        animator->Set_NextTweenAnim(L"skill_500100", 0.15f, false, 1.f);
+        animator->Set_NextTweenAnim(L"skill_500100", 0.15f, false, 1.5f);
         break;
     case HERO::YEOPO:
-        animator->Set_NextTweenAnim(L"skill_501100", 0.15f, false, 1.f);
+        animator->Set_NextTweenAnim(L"skill_501100", 0.15f, false, 1.5f);
         break;
     case HERO::DELLONS:
-        animator->Set_NextTweenAnim(L"skill_400100", 0.15f, false, 1.f);
+        animator->Set_NextTweenAnim(L"skill_400100", 0.15f, false, 1.5f);
         break;
     case HERO::SPIKE:
-        animator->Set_NextTweenAnim(L"skill_300100", 0.15f, false, 1.f);
+        animator->Set_NextTweenAnim(L"skill_300100", 0.15f, false, 1.5f);
         break;
+	case HERO::YEONHEE:
+		animator->Set_NextTweenAnim(L"skill_501100", 0.15f, false, 1.5f);
+		break;
+	case HERO::SHANE:
+		animator->Set_NextTweenAnim(L"skill_502100", 0.15f, false, 1.5f);
+		break;
     case HERO::MAX:
         break;
     default:

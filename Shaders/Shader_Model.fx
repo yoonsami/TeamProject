@@ -241,11 +241,13 @@ MotionBlurOutput VS_NonAnimMotionBlur(VTXModel input)
     float3 viewNormal = normalize(mul(input.normal, (float3x3) BoneTransform[BoneIndex]));
     viewNormal = normalize(mul(viewNormal, (float3x3) W));
     viewNormal = normalize(mul(viewNormal, (float3x3) V));
+    
     float4 vOldPos = mul(float4(input.position, 1.f), BoneTransform[BoneIndex]);
     vOldPos = mul(vOldPos, preW);
     vOldPos = mul(vOldPos, g_preView);
+    vOldPos = mul(vOldPos, P);
     
-    float4 vNewPos = output.position;
+    float4 vNewPos = mul(output.position, P);
     
     float3 vDir = vNewPos.xyz - vOldPos.xyz;
     
@@ -254,17 +256,12 @@ MotionBlurOutput VS_NonAnimMotionBlur(VTXModel input)
         output.position = vOldPos;
     else
         output.position = vNewPos;
-    
-    output.position = mul(output.position, P);
-    
+        
     //[-2~2]
     float2 velocity = (vNewPos.xy / vNewPos.w) - (vOldPos.xy / vOldPos.w);
-    
-    //[-1~1]
-    velocity.xy *= 0.5f;
-    velocity.y *= -1.f;
-   // output.vDir.xy = (velocity + 2.f) * 0.25f;
-    output.vDir.xy = velocity;
+
+    output.vDir.xy = velocity * 0.5f;
+    output.vDir.y *= -1.f;
     output.vDir.z = output.position.z;
     output.vDir.w = output.position.w;
     
@@ -289,8 +286,9 @@ MotionBlurOutput VS_AnimMotionBlur(VTXModel input)
     float4 vOldPos = mul(float4(input.position, 1.f), preM);
     vOldPos = mul(vOldPos, preW);
     vOldPos = mul(vOldPos, g_preView);
+    vOldPos = mul(vOldPos, P);
     
-    float4 vNewPos = output.position;
+    float4 vNewPos = mul(output.position, P);
     
     float3 vDir = vNewPos.xyz - vOldPos.xyz;
     
@@ -299,18 +297,12 @@ MotionBlurOutput VS_AnimMotionBlur(VTXModel input)
         output.position = vOldPos;
     else
         output.position = vNewPos;
-    
-    output.position = mul(output.position, P);
-    vNewPos = mul(vNewPos, P);
-    vOldPos = mul(vOldPos, P);
-    
-   //[-2~2]
+        
+    //[-2~2]
     float2 velocity = (vNewPos.xy / vNewPos.w) - (vOldPos.xy / vOldPos.w);
-    
-   //[-1~1]
-    velocity.xy *= 0.5f;
-    velocity.y *= -1.f;
-    output.vDir.xy = velocity;
+
+    output.vDir.xy = velocity * 0.5f;
+    output.vDir.y *= -1.f;
     output.vDir.z = output.position.z;
     output.vDir.w = output.position.w;
     
@@ -619,7 +611,7 @@ float4 PS_MotionBlur(MotionBlurOutput input) : SV_Target
 {
     float4 output = (float4) 0.f;
     
-    output.xy = input.vDir.xy / input.vDir.w;
+    output.xy = input.vDir.xy;
     //output.xy = input.vDir.xy;
     output.z = 1.f;
     output.w = input.vDir.z / input.vDir.w;

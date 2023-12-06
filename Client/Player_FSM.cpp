@@ -49,7 +49,9 @@ HRESULT Player_FSM::Init()
     }
 
 
-   
+	m_fNormalAttack_AnimationSpeed = 1.5f;
+	m_fSkillAttack_AnimationSpeed = 1.0f;
+	m_fEvade_AnimationSpeed = 1.5f;
 
     return S_OK;
 }
@@ -70,7 +72,7 @@ void Player_FSM::Tick()
         obj->GetOrAddTransform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::RIGHT) * 3.f);
         obj->GetOrAddTransform()->LookAt(Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f);
 
-        obj->Add_Component(make_shared<Friend_FSM>(HERO::ACE3));
+        obj->Add_Component(make_shared<Friend_FSM>(HERO::SHANE));
 
         obj->Set_DrawShadow(true);
         obj->Set_VelocityMap(true);
