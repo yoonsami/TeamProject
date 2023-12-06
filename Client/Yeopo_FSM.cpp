@@ -1653,11 +1653,13 @@ void Yeopo_FSM::skill_400100()
     else if (Init_CurFrame(78))
         Add_And_Set_Effect(L"Yeopo_400100_slash4");
     
-    _float3 vTrans, vScale;
-    Quaternion q;
-    m_CenterBoneMatrix.Decompose(vScale, q, vTrans);
+    _float3 vLook = m_CenterBoneMatrix.Forward();
+    vLook.Normalize();
 
-    Update_GroupEffectWorldPos(_float4x4::CreateFromQuaternion(q) * _float4x4::CreateTranslation(vTrans));
+    _float3 vRight = _float3::Up.Cross(vLook);
+    vLook = vRight.Cross(_float3::Up);
+
+    Update_GroupEffectWorldPos(_float4x4{ _float4(vRight,0.f),_float4(0.f,1.f,0.f,0.f),_float4(vLook,0.f),m_vCenterBonePos });
 
     Calculate_CamBoneMatrix();
 
