@@ -69,7 +69,9 @@ HRESULT Boss_Dellons_FSM::Init()
 
         m_bInitialize = true;
     }
-
+	m_fNormalAttack_AnimationSpeed = 1.2f;
+	m_fSkillAttack_AnimationSpeed = 1.0f;
+	m_fEvade_AnimationSpeed = 1.5f;
 
     return S_OK;
 }
@@ -1175,7 +1177,7 @@ void Boss_Dellons_FSM::skill_1100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, 1.5f);
+    animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1204,7 +1206,7 @@ void Boss_Dellons_FSM::skill_1200_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, 1.5f);
+    animator->Set_NextTweenAnim(L"skill_1200", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1235,7 +1237,7 @@ void Boss_Dellons_FSM::skill_1300_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_1300", 0.15f, false, 1.5f);
+    animator->Set_NextTweenAnim(L"skill_1300", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1270,7 +1272,7 @@ void Boss_Dellons_FSM::skill_1400_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_1400", 0.15f, false, 1.5f);
+    animator->Set_NextTweenAnim(L"skill_1400", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1359,7 +1361,7 @@ void Boss_Dellons_FSM::skill_100100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_100100", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_100100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1405,7 +1407,7 @@ void Boss_Dellons_FSM::skill_100200_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_100200", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_100200", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1438,7 +1440,7 @@ void Boss_Dellons_FSM::skill_200100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_200100", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_200100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1484,7 +1486,7 @@ void Boss_Dellons_FSM::skill_200200_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_200200", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_200200", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1522,7 +1524,7 @@ void Boss_Dellons_FSM::skill_300100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_300100", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_300100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1634,7 +1636,7 @@ void Boss_Dellons_FSM::skill_501100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_501100", 0.15f, false, 1.f);
+    animator->Set_NextTweenAnim(L"skill_501100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
