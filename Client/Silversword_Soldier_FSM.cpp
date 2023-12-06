@@ -42,8 +42,8 @@ HRESULT Silversword_Soldier_FSM::Init()
         m_fKnockBackSpeed = 4.f;
         m_fKnockDownSpeed = 4.f;
 
-        m_fNormalAttack_AnimationSpeed = 2.f;
-        m_fSkillAttack_AnimationSpeed = 2.f;
+        m_fNormalAttack_AnimationSpeed = 1.3f;
+        m_fSkillAttack_AnimationSpeed = 1.3f;
         m_fDetectRange = 4.f;
 
 

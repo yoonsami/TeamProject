@@ -37,7 +37,7 @@ HRESULT Succubus_Scythe_FSM::Init()
 
         m_pCamera = CUR_SCENE->Get_MainCamera();
 
-
+        
 
         m_fRunSpeed = 4.f;
         m_fSprintSpeed = 5.5f;
