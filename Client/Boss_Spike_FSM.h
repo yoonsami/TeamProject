@@ -80,30 +80,6 @@ private:
 	virtual void Set_State(_uint iIndex) override;
 
 
-	//SQ_Appear_01,
-	//	SQ_Appear_02,
-	//	SQ_Appear_03,
-
-	//	b_idle,
-	//	b_run,
-
-	//	gaze_b,
-	//	gaze_f,
-	//	gaze_l,
-	//	gaze_r,
-	//	die,
-
-	//	hit, //normal_hit
-	//	hit_b,
-	//	hit_f,
-	//	hit_l,
-	//	hit_r,
-	//	groggy_start,
-	//	groggy_end,
-	//	groggy_loop,
-
-
-
 	void SQ_Appear_01();
 	void SQ_Appear_01_Init();
 	void SQ_Appear_02();
