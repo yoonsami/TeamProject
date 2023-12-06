@@ -18,6 +18,17 @@ HRESULT DragonBallMonster_FSM::Init()
 	if (!m_pOwner.expired())
 		m_pOwner.lock()->Set_MaxHp(200.f);
 
+	shared_ptr<GameObject> rigidBodyObj = make_shared<GameObject>();
+	rigidBodyObj->GetOrAddTransform()->Set_State(Transform_State::POS, { 0.f,0.f,0.f,1.f });
+	{
+		_float3 vObjPos = rigidBodyObj->Get_Transform()->Get_State(Transform_State::POS).xyz();
+		auto rigidBody = make_shared<RigidBody>();
+		rigidBodyObj->Add_Component(rigidBody);
+		rigidBody->Create_CapsuleRigidBody(vObjPos, 2.f, 2.f);
+	}
+	EVENTMGR.Create_Object(rigidBodyObj);
+	m_pRigidBody = rigidBodyObj;
+
 	return S_OK;
 }
 
@@ -182,8 +193,8 @@ void DragonBallMonster_FSM::Crash_Init()
 	}
 	{
 
-		if (Get_Owner()->Get_RigidBody())
-			Get_Owner()->Get_RigidBody()->RemoveRigidBody();
+		if (!m_pRigidBody.expired())
+			EVENTMGR.Delete_Object(m_pRigidBody.lock());
 	}
 
 	if (!m_pTarget.expired())

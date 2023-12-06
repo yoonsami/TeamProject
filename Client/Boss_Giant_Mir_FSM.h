@@ -143,7 +143,6 @@ private:
 	weak_ptr<GameObject> m_pFootRigidBody;
 
 
-
 	_float3 m_vHeadCamDir = _float3(0.f);
 	_float4 m_vHeadBonePos = _float4(0.f);
 	_float4 m_vHeadCamPos = _float4(0.f);
@@ -161,4 +160,7 @@ private:
 	_float4x4 TailBoneMatrix = XMMatrixIdentity();
 	_float4x4 StomachBoneMatrix = XMMatrixIdentity();
 	_float4x4 LfootBoneMatrix = XMMatrixIdentity();
+
+	vector<weak_ptr<GameObject>>	m_vecDestroyObject;
+
 };

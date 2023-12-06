@@ -160,7 +160,9 @@ void Boss_Mir_FSM::Tick()
         m_bCheckPhaseChange[1] = true;
         m_bPhaseChange[0] = true;
         m_bPhaseChange[1] = true;
-        
+        m_bSummonMeteor = false;
+        m_tMeteorCoolTime.fAccTime = 0.f;
+
         _uint iDragonBallIndex = 4;
 
         for (_uint i = 0; i < 3; i++)
@@ -196,6 +198,9 @@ void Boss_Mir_FSM::State_Tick()
     State_Init();
 
     m_iCurFrame = Get_CurFrame();
+
+    if (m_bSummonMeteor)
+        Create_Meteor();
 
     switch (m_eCurState)
     {
@@ -687,11 +692,7 @@ void Boss_Mir_FSM::sq_Intro2_Init()
 void Boss_Mir_FSM::b_idle()
 {
     m_tAttackCoolTime.fAccTime += fDT;
-    
-    if (m_eCurPhase == PHASE::PHASE1)
-        Create_Meteor();
-
-
+   
     if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
     {
         //Phase1 Assault and Return
@@ -769,6 +770,8 @@ void Boss_Mir_FSM::b_idle_Init()
 
     if (m_eCurPhase == PHASE::PHASE1)
     {
+        m_bSummonMeteor = true;
+
         if (!m_bPhaseOneEmissive)
         {
             for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
@@ -777,7 +780,7 @@ void Boss_Mir_FSM::b_idle_Init()
             }
 
             m_bPhaseOneEmissive = true;
-
+     
             //Add_BossHp UI
             if (!m_pOwner.expired())
             {
@@ -820,6 +823,9 @@ void Boss_Mir_FSM::turn_l_Init()
     animator->Set_NextTweenAnim(L"turn_l", 0.2f, false, 1.f);
     
     m_bTurnMotion = false;
+
+    if (m_eCurPhase == PHASE::PHASE1)
+        m_bSummonMeteor = true;
 }
 
 void Boss_Mir_FSM::turn_r()
@@ -846,6 +852,10 @@ void Boss_Mir_FSM::turn_r_Init()
     animator->Set_NextTweenAnim(L"turn_r", 0.2f, false, 1.f);
 
     m_bTurnMotion = false;
+
+    
+    if (m_eCurPhase == PHASE::PHASE1)
+        m_bSummonMeteor = true;
 }
 
 void Boss_Mir_FSM::die()
@@ -882,6 +892,9 @@ void Boss_Mir_FSM::groggy_start_Init()
     m_tAttackCoolTime.fAccTime = 0.f;
     m_tBreathCoolTime.fAccTime = 0.f;
     m_bCounter = false;
+    m_bSummonMeteor = false;
+    m_tMeteorCoolTime.fAccTime = 0.f;
+    m_iCurMeteorCnt = 0;
 
     if (m_eCurPhase == PHASE::PHASE1)
     {
@@ -889,7 +902,9 @@ void Boss_Mir_FSM::groggy_start_Init()
 
         //In Phase1 Crash3 -> Phase 2 Start
         if (m_iCrashCnt == 3)
+        {
             m_eCurPhase = PHASE::PHASE2;
+        }
 
         if (m_eCurPhase == PHASE::PHASE2)
         {
@@ -904,7 +919,7 @@ void Boss_Mir_FSM::groggy_start_Init()
             }
 
         }
-    }   
+    }
 }
 
 void Boss_Mir_FSM::groggy_loop()
@@ -1061,12 +1076,13 @@ void Boss_Mir_FSM::SQ_Flee_Init()
     }
 
     g_bCutScene = true;
+    m_bSummonMeteor = false;
+    m_tMeteorCoolTime.fAccTime = 0.f;
+    m_iCurMeteorCnt = 0;
 }
 
 void Boss_Mir_FSM::skill_Assault()
 {
-    Create_Meteor();
-
     if (m_iCurFrame <= 30)
     {
         if (!m_pTarget.expired())
@@ -1095,12 +1111,11 @@ void Boss_Mir_FSM::skill_Assault_Init()
     m_tAttackCoolTime.fAccTime = 0.f;
 
     m_iPhaseOne_TurnCnt = 0;
+    m_bSummonMeteor = true;
 }
 
 void Boss_Mir_FSM::skill_Return()
 {
-    Create_Meteor();
-
     if (Is_AnimFinished())
     {
         CalCulate_PlayerDir();
@@ -1138,6 +1153,8 @@ void Boss_Mir_FSM::skill_Return_Init()
     animator->Set_NextTweenAnim(L"skill_5100", 0.1f, false, m_fNormalAttack_AnimationSpeed);
 
     m_tAttackCoolTime.fAccTime = 0.f;
+
+    m_bSummonMeteor = true;
 }
 
 void Boss_Mir_FSM::skill_Restart_Phase1()
@@ -1239,6 +1256,10 @@ void Boss_Mir_FSM::skill_Restart_Phase1_Init()
     
     m_bInvincible = true;
     g_bCutScene = true;
+    
+    m_bSummonMeteor = false;
+    m_tMeteorCoolTime.fAccTime = 0.f;
+    m_iCurMeteorCnt = 0;
 }
 
 void Boss_Mir_FSM::skill_Restart_Phase1_Intro()
@@ -1490,9 +1511,7 @@ void Boss_Mir_FSM::skill_2100()
     if (Init_CurFrame(93))
         Add_Effect(L"Mir_2100_End");
 
-    if(Init_CurFrame(60))
-        m_eCurState = STATE::groggy_start;
-
+    
     if (m_iCurFrame == 55)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed / 4.f);
@@ -1501,9 +1520,7 @@ void Boss_Mir_FSM::skill_2100()
         {
             material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
-    }
-    else if (m_iCurFrame == 60)
-    {
+
         m_bCounter = true;
     }
     else if (m_iCurFrame == 68)
@@ -2186,9 +2203,7 @@ void Boss_Mir_FSM::skill_100100()
         {
             material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
-    }
-    else if (m_iCurFrame == 4)
-    {
+
         m_bCounter = true;
     }
     else if (m_iCurFrame == 9)
@@ -2316,9 +2331,7 @@ void Boss_Mir_FSM::skill_200100()
         {
             material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
-    }
-    else if (m_iCurFrame == 15)
-    {
+
         m_bCounter = true;
     }
     else if (m_iCurFrame == 20)
@@ -2574,8 +2587,17 @@ void Boss_Mir_FSM::Create_Meteor()
                 obj->Add_Component(script);
                 EVENTMGR.Create_Object(obj);
             }
-
+            m_iCurMeteorCnt++;
             m_tMeteorCoolTime.fAccTime = 0.f;
+        }
+    }
+
+    if (m_eCurPhase == PHASE::PHASE2)
+    {
+        if (m_iCurMeteorCnt >= m_iLimitMeteorCnt)
+        {
+            m_iCurMeteorCnt = 0;
+            m_bSummonMeteor = false;
         }
     }
 }
@@ -2643,8 +2665,8 @@ void Boss_Mir_FSM::Set_AttackPattern()
     /*_uint iRan = rand() % 4;
     if(iRan == 0)
         m_eCurState = STATE::skill_2100;*/
-
-   _uint iRan = rand() % 10;
+    
+    _uint iRan = rand() % 10;
     
     while (true)
     {
@@ -2658,16 +2680,37 @@ void Boss_Mir_FSM::Set_AttackPattern()
     {
         m_eCurState = STATE::SQ_SBRin_Roar;
         m_iPreAttack = 0;
+
+        if (rand() % 3 == 0)
+        {
+            m_bSummonMeteor = true;
+            m_iLimitMeteorCnt = rand() % 3 + 1;
+            m_iCurMeteorCnt = 0;
+        }
     }
     else if (iRan == 1)
     {
         m_eCurState = STATE::skill_1100;
         m_iPreAttack = 1;
+
+        if (rand() % 3 == 0)
+        {
+            m_bSummonMeteor = true;
+            m_iLimitMeteorCnt = rand() % 3 + 1;
+            m_iCurMeteorCnt = 0;
+        }
     }
     else if (iRan == 2)
     {
         m_eCurState = STATE::skill_2100;
         m_iPreAttack = 2;
+
+        if (rand() % 3 == 0)
+        {
+            m_bSummonMeteor = true;
+            m_iLimitMeteorCnt = rand() % 3 + 1;
+            m_iCurMeteorCnt = 0;
+        }
     }
     else if (iRan == 3)
     {
@@ -2678,31 +2721,73 @@ void Boss_Mir_FSM::Set_AttackPattern()
     {
         m_eCurState = STATE::skill_11100;
         m_iPreAttack = 4;
+
+        if (rand() % 3 == 0)
+        {
+            m_bSummonMeteor = true;
+            m_iLimitMeteorCnt = rand() % 3 + 1;
+            m_iCurMeteorCnt = 0;
+        }
     }
     else if (iRan == 5)
     {
         m_eCurState = STATE::skill_12100;
         m_iPreAttack = 5;
+
+        if (rand() % 3 == 0)
+        {
+            m_bSummonMeteor = true;
+            m_iLimitMeteorCnt = rand() % 3 + 1;
+            m_iCurMeteorCnt = 0;
+        }
     }
     else if (iRan == 6)
     {
         m_eCurState = STATE::skill_13100;
         m_iPreAttack = 6;
+
+        if (rand() % 3 == 0)
+        {
+            m_bSummonMeteor = true;
+            m_iLimitMeteorCnt = rand() % 3 + 1;
+            m_iCurMeteorCnt = 0;
+        }
     }
     else if (iRan == 7)
     {
         m_eCurState = STATE::skill_14100;
         m_iPreAttack = 7;
+
+        if (rand() % 3 == 0)
+        {
+            m_bSummonMeteor = true;
+            m_iLimitMeteorCnt = rand() % 3 + 1;
+            m_iCurMeteorCnt = 0;
+        }
     }
     else if (iRan == 8)
     {
         m_eCurState = STATE::skill_100000;
         m_iPreAttack = 8;
+
+        if (rand() % 3 == 0)
+        {
+            m_bSummonMeteor = true;
+            m_iLimitMeteorCnt = rand() % 3 + 1;
+            m_iCurMeteorCnt = 0;
+        }
     }
     else if (iRan == 9)
     {
         m_eCurState = STATE::skill_200000;
         m_iPreAttack = 9;
+
+        if (rand() % 3 == 0)
+        {
+            m_bSummonMeteor = true;
+            m_iLimitMeteorCnt = rand() % 3 + 1;
+            m_iCurMeteorCnt = 0;
+        }
     }
     
 }
@@ -2802,8 +2887,6 @@ void Boss_Mir_FSM::Load_Giant_Boss_Mir()
 
     ObjMonster->Add_Component(make_shared<Transform>());
 
-    //ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(0.242f, 11.7f, 57.5f, 1.f));
-    //ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(0.2f, 0.3f, 30.f, 1.f));
     ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
     {
         shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
@@ -2817,12 +2900,9 @@ void Boss_Mir_FSM::Load_Giant_Boss_Mir()
         ObjMonster->Add_Component(animator);
         ObjMonster->Add_Component(make_shared<Boss_Giant_Mir_FSM>());
         ObjMonster->Get_FSM()->Set_Target(m_pTarget.lock());
+        ObjMonster->Get_FSM()->Init();
     }
 
-    //ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 2.f, 4.f, 6.f })); //obbcollider
-    //ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
-    //ObjMonster->Get_Collider()->Set_Activate(true);
-    ObjMonster->Get_FSM()->Init();
     EVENTMGR.Create_Object(ObjMonster);
 }
 

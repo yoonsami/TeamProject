@@ -186,13 +186,14 @@ private:
 	_float m_fCamRatio = 0.f;
 	_float m_fStateTimer = 0.f;
 
-	COOLTIMEINFO m_tAttackCoolTime = { 2.f, 0.f };
+	COOLTIMEINFO m_tAttackCoolTime = { 3.f, 0.f };
 	COOLTIMEINFO m_tBreathCoolTime = { 0.15f, 0.f };
-	COOLTIMEINFO m_tMeteorCoolTime = { 1.f, 0.f };
+	COOLTIMEINFO m_tMeteorCoolTime = { 2.f, 0.f };
 	
 	_bool m_bIntroCam = false;
 	_bool m_bDetected = false;
 	_bool m_bTurnMotion = false;
+	_bool m_bSummonMeteor = false;
 
 	_bool m_bCounter = false;
 	_bool m_bPhaseOneEmissive = false;
@@ -208,6 +209,9 @@ private:
 	_uint m_iMouseBoneIndex = 0;
 	_uint m_iTailBoneIndex = 0;
 	_uint m_iTopBoneIndex = 0;
+
+	_uint m_iCurMeteorCnt = 0;
+	_uint m_iLimitMeteorCnt = 0;
 
 	weak_ptr<GameObject> m_pTailCollider;
 
