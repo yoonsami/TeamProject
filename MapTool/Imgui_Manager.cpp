@@ -480,22 +480,22 @@ void ImGui_Manager::Frame_SelcetObjectManager()
                 if (passType > ModelRenderer::INSTANCE_PASSTYPE::PASS_DEFAULT) passType = ModelRenderer::INSTANCE_PASSTYPE::PASS_DEFAULT;
                 CurObjectDesc.bCullNone = _char(passType);
                 m_pMapObjects[m_iObjects]->Get_ModelRenderer()->Set_PassType((ModelRenderer::INSTANCE_PASSTYPE)CurObjectDesc.bCullNone);
-                for (_int i = 0; i < m_pMapObjects.size(); ++i)
+				/* for (_int i = 0; i < m_pMapObjects.size(); ++i)
+				 {
+					 MapObjectScript::MAPOBJDESC& tempDesc = m_pMapObjects[i]->Get_Script<MapObjectScript>()->Get_DESC();
+					 if (CurObjectDesc.strName == tempDesc.strName)
+					 {
+						 tempDesc.bCullNone = CurObjectDesc.bCullNone;
+						 m_pMapObjects[i]->Get_ModelRenderer()->Set_PassType((ModelRenderer::INSTANCE_PASSTYPE)CurObjectDesc.bCullNone);
+					 }
+				 }*/
+                for (auto& obj : m_pMapObjects)
                 {
-                    MapObjectScript::MAPOBJDESC& tempDesc = m_pMapObjects[i]->Get_Script<MapObjectScript>()->Get_DESC();
-                    if (CurObjectDesc.strName == tempDesc.strName)
-                    {
-                        tempDesc.bCullNone = CurObjectDesc.bCullNone;
-                        m_pMapObjects[i]->Get_ModelRenderer()->Set_PassType((ModelRenderer::INSTANCE_PASSTYPE)CurObjectDesc.bCullNone);
-                        /*if (CurObjectDesc.bCullNone)
-                        {
-                            m_pMapObjects[i]->Get_ModelRenderer()->Set_PassType(ModelRenderer::PASS_MAPOBJECT_CULLNONE);
-                        }
-                        else
-                        {
-                            m_pMapObjects[i]->Get_ModelRenderer()->Set_PassType(ModelRenderer::PASS_MAPOBJECT);
-                        }*/
-                    }
+                    if(!obj->Get_Model())
+                        continue;
+
+                    if (obj->Get_Model()->Get_ModelTag() == m_pMapObjects[m_iObjects]->Get_Model()->Get_ModelTag())
+                        obj->Get_ModelRenderer()->Set_PassType((ModelRenderer::INSTANCE_PASSTYPE)CurObjectDesc.bCullNone);
                 }
             }
         }
