@@ -391,6 +391,12 @@
     <Filter Include="01.Scene\00.PlayScene\04.Field">
       <UniqueIdentifier>{99a38b1a-eda8-4b71-8883-93afc5ae7515}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\05.Object\06.Delete">
+      <UniqueIdentifier>{1a4f70ac-4c43-46a2-8545-042166a43fee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\05.Object\06.Delete\00.DeleteWhenAnimFinish">
+      <UniqueIdentifier>{865f67c5-c749-49bf-b51a-3082b463cb40}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -782,6 +788,9 @@
     <ClInclude Include="FieldScene.h">
       <Filter>01.Scene\00.PlayScene\04.Field</Filter>
     </ClInclude>
+    <ClInclude Include="DeleteWhenAnimFinish.h">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\06.Delete\00.DeleteWhenAnimFinish</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1139,6 +1148,9 @@
     </ClCompile>
     <ClCompile Include="FieldScene.cpp">
       <Filter>01.Scene\00.PlayScene\04.Field</Filter>
+    </ClCompile>
+    <ClCompile Include="DeleteWhenAnimFinish.cpp">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\06.Delete\00.DeleteWhenAnimFinish</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
