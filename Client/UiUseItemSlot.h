@@ -20,6 +20,8 @@ public:
 
     void Use_Item();
 
+    void Add_Potion(_uint iCount);
+
 private:
     void Create_Inven();
     void Check_Cooltime();

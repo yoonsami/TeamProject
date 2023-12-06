@@ -29,7 +29,7 @@ HRESULT UiUseItemSlot::Init()
             this->Click_Slot();
         });
 
-    m_iCount = 100;
+    m_iCount = 0;
 
     m_fMaxTime = 8.f;
 
@@ -149,6 +149,8 @@ void UiUseItemSlot::Use_Item()
         return;
 
     // 플레이어 체력 증가
+
+
     m_bIsCanUse = false;
     m_fCheckTime = 0.f;
 
@@ -162,4 +164,12 @@ void UiUseItemSlot::Use_Item()
     else
         m_pUseItem_Count.lock()->Get_FontRenderer()->Get_Text() = to_wstring(m_iCount);
 
+}
+
+void UiUseItemSlot::Add_Potion(_uint iCount)
+{
+    m_iCount += iCount;
+
+    if(true == m_bIsSet)
+        m_pUseItem_Count.lock()->Get_FontRenderer()->Get_Text() = to_wstring(m_iCount);
 }

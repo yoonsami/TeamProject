@@ -385,6 +385,9 @@
     <Filter Include="02.Component\01.FSM\07.Friend_FSM">
       <UniqueIdentifier>{18d4e8a7-2626-44a6-a38e-d0a13ecb3c96}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\24.UiShop">
+      <UniqueIdentifier>{128cecf3-6023-457a-aaed-e5a5e5b1a401}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -770,6 +773,9 @@
     <ClInclude Include="Friend_FSM.h">
       <Filter>02.Component\01.FSM\07.Friend_FSM</Filter>
     </ClInclude>
+    <ClInclude Include="UIShop.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\24.UiShop</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1121,6 +1127,9 @@
     </ClCompile>
     <ClCompile Include="Friend_FSM.cpp">
       <Filter>02.Component\01.FSM\07.Friend_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="UIShop.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\24.UiShop</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
