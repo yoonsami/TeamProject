@@ -725,7 +725,16 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
     }
     
     /* Rim Light */
-        // TODO 
+    if (bUseRimLight)
+    {
+        //RimLightIntensity
+        //vBaseColor_RimLight
+        
+        //float3 eyeDir = normalize(input.viewPosition - );
+        
+
+    }
+        
     
     /* Fade Out */
     if (bUseFadeOut)

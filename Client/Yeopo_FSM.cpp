@@ -1641,12 +1641,16 @@ void Yeopo_FSM::skill_400100()
 {
     if (Init_CurFrame(20))
         Add_And_Set_Effect(L"Yeopo_400100_slash");
+    else if(Init_CurFrame(24))
+        Add_Effect(L"Yeopo_400100_floor");
     else if (Init_CurFrame(38))
         Add_And_Set_Effect(L"Yeopo_400100_slash2");
     else if (Init_CurFrame(58))
         Add_And_Set_Effect(L"Yeopo_400100_slash3");
     else if (Init_CurFrame(78))
         Add_And_Set_Effect(L"Yeopo_400100_slash4");
+    else if (Init_CurFrame(123))
+        Add_Effect(L"Yeopo_400100_floor2");
     
     _float3 vLook = m_CenterBoneMatrix.Forward();
     vLook.Normalize();
