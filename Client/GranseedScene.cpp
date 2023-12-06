@@ -11,6 +11,7 @@
 #include "RigidBody.h"
 #include "FileUtils.h"
 #include "ModelMesh.h"
+#include "FieldScene.h"
 #include "CustomFont.h"
 #include "LoadingScene.h"
 #include "BaseCollider.h"
@@ -197,7 +198,7 @@ void GranseedScene::Final_Tick()
 			SCENE.Add_SubScene(make_shared<GachaScene>(sceneDesc));
 		SCENE.Exchange_Scene();*/
 
-		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<MirScene>());
+		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<FieldScene>());
 		scene->Set_StaticObjects(m_StaticObject);
 		PHYSX.Set_CharacterControllerNull();
 		SCENE.Change_Scene(scene);

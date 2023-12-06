@@ -388,6 +388,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\24.UiShop">
       <UniqueIdentifier>{128cecf3-6023-457a-aaed-e5a5e5b1a401}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Scene\00.PlayScene\04.Field">
+      <UniqueIdentifier>{99a38b1a-eda8-4b71-8883-93afc5ae7515}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -776,6 +779,9 @@
     <ClInclude Include="UIShop.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\24.UiShop</Filter>
     </ClInclude>
+    <ClInclude Include="FieldScene.h">
+      <Filter>01.Scene\00.PlayScene\04.Field</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1130,6 +1136,9 @@
     </ClCompile>
     <ClCompile Include="UIShop.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\24.UiShop</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldScene.cpp">
+      <Filter>01.Scene\00.PlayScene\04.Field</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

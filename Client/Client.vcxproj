@@ -205,6 +205,7 @@
     <ClInclude Include="Friend_FSM.h" />
     <ClInclude Include="Get_Gravity.h" />
     <ClInclude Include="Glow_WitcherSense.h" />
+    <ClInclude Include="FieldScene.h" />
     <ClInclude Include="GranseedChildren_FSM.h" />
     <ClInclude Include="GranseedGuard01_FSM.h" />
     <ClInclude Include="GranseedGuard02_FSM.h" />
@@ -329,6 +330,7 @@
     <ClCompile Include="Friend_FSM.cpp" />
     <ClCompile Include="Get_Gravity.cpp" />
     <ClCompile Include="Glow_WitcherSense.cpp" />
+    <ClCompile Include="FieldScene.cpp" />
     <ClCompile Include="GranseedChildren_FSM.cpp" />
     <ClCompile Include="GranseedGuard01_FSM.cpp" />
     <ClCompile Include="GranseedGuard02_FSM.cpp" />
