@@ -1443,6 +1443,15 @@ void Yeopo_FSM::skill_200100_Init()
 
 void Yeopo_FSM::skill_300100()
 {
+    if (Init_CurFrame(25))
+        Add_And_Set_Effect(L"Yeopo_300100_1");
+    else if (Init_CurFrame(38))
+        Add_And_Set_Effect(L"Yeopo_300100_2");
+    else if (Init_CurFrame(55))
+        Add_And_Set_Effect(L"Yeopo_300100_3");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_iCurFrame == 25)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (m_iCurFrame == 30)
@@ -1493,6 +1502,11 @@ void Yeopo_FSM::skill_300100_Init()
 
 void Yeopo_FSM::skill_300200()
 {
+    if (Init_CurFrame(5))
+        Add_And_Set_Effect(L"Yeopo_300200_1");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_iCurFrame == 9)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (m_iCurFrame == 12)
@@ -1537,6 +1551,11 @@ void Yeopo_FSM::skill_300200_Init()
 
 void Yeopo_FSM::skill_300300()
 {
+    if (Init_CurFrame(13))
+        Add_And_Set_Effect(L"Yeopo_300300_1");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_iCurFrame == 13)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (m_iCurFrame == 18)
@@ -1584,6 +1603,11 @@ void Yeopo_FSM::skill_300300_Init()
 
 void Yeopo_FSM::skill_300400()
 {
+    if (Init_CurFrame(10))
+        Add_And_Set_Effect(L"Yeopo_300400_1");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_iCurFrame == 31)
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
     else if (m_iCurFrame == 36)
@@ -1619,6 +1643,17 @@ void Yeopo_FSM::skill_300400_Init()
 
 void Yeopo_FSM::skill_400100()
 {
+    if (Init_CurFrame(20))
+        Add_And_Set_Effect(L"Yeopo_400100_slash");
+    else if (Init_CurFrame(40))
+        Add_And_Set_Effect(L"Yeopo_400100_slash2");
+    else if (Init_CurFrame(58))
+        Add_And_Set_Effect(L"Yeopo_400100_slash3");
+    else if (Init_CurFrame(80))
+        Add_And_Set_Effect(L"Yeopo_400100_slash4");
+    
+    Update_GroupEffectWorldPos(_float4x4::CreateTranslation(m_vCenterBonePos.xyz()));
+
     Calculate_CamBoneMatrix();
 
     if (m_iCurFrame < 84)
