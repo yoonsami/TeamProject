@@ -361,6 +361,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\23.UiUseItemSlot">
       <UniqueIdentifier>{e912456c-169a-43d6-8df8-a98e77bf473a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\24.UiShop">
+      <UniqueIdentifier>{128cecf3-6023-457a-aaed-e5a5e5b1a401}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -722,6 +725,9 @@
     <ClInclude Include="UiUseItemSlot.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\23.UiUseItemSlot</Filter>
     </ClInclude>
+    <ClInclude Include="UIShop.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\24.UiShop</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1049,6 +1055,9 @@
     <ClCompile Include="InventoryModelRotation.cpp" />
     <ClCompile Include="UiUseItemSlot.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\23.UiUseItemSlot</Filter>
+    </ClCompile>
+    <ClCompile Include="UIShop.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\24.UiShop</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

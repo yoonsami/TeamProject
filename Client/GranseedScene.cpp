@@ -65,6 +65,7 @@
 #include "UiBossDialog.h"
 #include "UiCostumeController.h"
 #include "UiUseItemSlot.h"
+#include "UIShop.h"
 
 #include <filesystem>
 #include "GachaScene.h"
@@ -131,9 +132,12 @@ void GranseedScene::Tick()
 
 	if (KEYTAP(KEY_TYPE::C))
 	{
-		auto pObj = Get_UI(L"UI_Costume_Controller");
+		auto pObj = Get_UI(L"UI_Shop_Controller");
 		if (pObj)
-			pObj->Get_Script<UiCostumeController>()->Create_Costume();
+			pObj->Get_Script<UIShop>()->Create_Shop();
+		//auto pObj = Get_UI(L"UI_Costume_Controller");
+		//if (pObj)
+		//	pObj->Get_Script<UiCostumeController>()->Create_Costume();
 		//auto pObj = Get_UI(L"UI_Interaction");
 		//if(pObj)
 		//	pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::QUEST);
@@ -143,9 +147,12 @@ void GranseedScene::Tick()
 	}
 	if (KEYTAP(KEY_TYPE::V))
 	{
-		auto pObj = Get_UI(L"UI_Costume_Controller");
+		auto pObj = Get_UI(L"UI_Shop_Controller");
 		if (pObj)
-			pObj->Get_Script<UiCostumeController>()->Remove_Costume();
+			pObj->Get_Script<UIShop>()->Remove_Shop();
+		//auto pObj = Get_UI(L"UI_Costume_Controller");
+		//if (pObj)
+		//	pObj->Get_Script<UiCostumeController>()->Remove_Costume();
 		//auto pObj = Get_UI(L"UI_Interaction");
 		//if (pObj)
 		//	pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::GACHA);
@@ -460,6 +467,15 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		if (false == pObj.expired())
 		{
 			auto pScript = make_shared<UiGachaController>();
+			pObj.lock()->Add_Component(pScript);
+		}
+	}
+	
+	{
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Shop_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UIShop>();
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
