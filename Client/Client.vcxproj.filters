@@ -397,11 +397,14 @@
     <Filter Include="02.Component\00.MonoBehaviour\05.Object\06.Delete\00.DeleteWhenAnimFinish">
       <UniqueIdentifier>{865f67c5-c749-49bf-b51a-3082b463cb40}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\05.Object\06.Delete\01.DeleteWhenTimePassed">
+      <UniqueIdentifier>{f5ba07f0-e99b-48a4-8ac1-ac52e341a982}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\25.UiMessageNotHere">
-      <UniqueIdentifier>{943a32d2-dc6b-449e-ba79-ad8fa7259c46}</UniqueIdentifier>
+      <UniqueIdentifier>{0d6d8730-3750-42a9-94b4-7c7b5678f134}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\26.UiDialogController">
-      <UniqueIdentifier>{f68d6109-b445-4921-a3ba-10b7aff062e1}</UniqueIdentifier>
+      <UniqueIdentifier>{9dc67e6a-38ec-42b9-9b39-7daa819fe26f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -797,6 +800,9 @@
     <ClInclude Include="DeleteWhenAnimFinish.h">
       <Filter>02.Component\00.MonoBehaviour\05.Object\06.Delete\00.DeleteWhenAnimFinish</Filter>
     </ClInclude>
+    <ClInclude Include="DeleteWhenTimePassed.h">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\06.Delete\01.DeleteWhenTimePassed</Filter>
+    </ClInclude>
     <ClInclude Include="UiMessageNotHere.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessageNotHere</Filter>
     </ClInclude>
@@ -1163,6 +1169,9 @@
     </ClCompile>
     <ClCompile Include="DeleteWhenAnimFinish.cpp">
       <Filter>02.Component\00.MonoBehaviour\05.Object\06.Delete\00.DeleteWhenAnimFinish</Filter>
+    </ClCompile>
+    <ClCompile Include="DeleteWhenTimePassed.cpp">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\06.Delete\01.DeleteWhenTimePassed</Filter>
     </ClCompile>
     <ClCompile Include="UiMessageNotHere.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessageNotHere</Filter>
