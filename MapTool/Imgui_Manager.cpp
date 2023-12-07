@@ -2121,6 +2121,7 @@ HRESULT ImGui_Manager::Save_TerrainData()
         file->Write<_float3>(TerrainVertices[i].vPosition);
         file->Write<_float2>(TerrainVertices[i].vTexCoord);
         file->Write<_float3>(TerrainVertices[i].vNormal);
+        file->Write<_float3>(TerrainVertices[i].vTangent);
     }
     // 인덱스의 개수 저장
     auto& TerrainIndices = TerrainGeometry->Get_Indices();
@@ -2155,6 +2156,7 @@ HRESULT ImGui_Manager::LoadAndCreateTerrain()
         file->Read<_float3>(loadedVertices[i].vPosition);
         file->Read<_float2>(loadedVertices[i].vTexCoord);
         file->Read<_float3>(loadedVertices[i].vNormal);
+        file->Read<_float3>(loadedVertices[i].vTangent);
     }
 
     // 인덱스의 개수와 정보 로드
