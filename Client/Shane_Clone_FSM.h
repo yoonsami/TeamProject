@@ -1,7 +1,7 @@
 #pragma once
-#include "FSM.h"
+#include "Client_FSM.h"
 class Shane_Clone_FSM :
-    public FSM
+    public Client_FSM
 {
 public:
     Shane_Clone_FSM(_uint iCloneIndex) : m_iCloneIndex(iCloneIndex) {}
@@ -28,8 +28,6 @@ public:
 protected:
     virtual void State_Tick() override;
     virtual void State_Init() override;
-    virtual void AttackCollider_On(const wstring& skillname, _float fAttackDamage) override {}
-    virtual void AttackCollider_Off() override {}
 
 private:
 	void Skill_Use();

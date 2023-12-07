@@ -199,6 +199,7 @@
     <ClInclude Include="AttackColliderInfoScript.h" />
     <ClInclude Include="Boss_Giant_Mir_FSM.h" />
     <ClInclude Include="Boss_Giant_Mir_Parts_FSM.h" />
+    <ClInclude Include="Client_FSM.h" />
     <ClInclude Include="Companion_Dellons_FSM.h" />
     <ClInclude Include="Companion_Shane_FSM.h" />
     <ClInclude Include="DeleteWhenAnimFinish.h" />
@@ -332,6 +333,7 @@
     <ClCompile Include="AttackColliderInfoScript.cpp" />
     <ClCompile Include="Boss_Giant_Mir_FSM.cpp" />
     <ClCompile Include="Boss_Giant_Mir_Parts_FSM.cpp" />
+    <ClCompile Include="Client_FSM.cpp" />
     <ClCompile Include="Companion_Dellons_FSM.cpp" />
     <ClCompile Include="Companion_Shane_FSM.cpp" />
     <ClCompile Include="DeleteWhenAnimFinish.cpp" />

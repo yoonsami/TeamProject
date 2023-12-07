@@ -1,7 +1,7 @@
 #pragma once
-#include "FSM.h"
+#include "Client_FSM.h"
 class Boss_Giant_Mir_Parts_FSM :
-    public FSM
+    public Client_FSM
 {
 public:
     enum class STATE
@@ -20,8 +20,6 @@ public:
 protected:
     virtual void State_Tick() override;
     virtual void State_Init() override;
-    virtual void AttackCollider_On(const wstring& skillname, _float fAttackDamage)override {}
-    virtual void AttackCollider_Off() override {}
 
 
 private:

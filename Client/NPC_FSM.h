@@ -1,7 +1,7 @@
 #pragma once
-#include "FSM.h"
+#include "Client_FSM.h"
 class NPC_FSM abstract:
-    public FSM
+    public Client_FSM
 {
 public: 
     enum NPC_FSM_TYPE
@@ -16,8 +16,6 @@ public:
 
 public:
     virtual void InteractWithPlayer() abstract;
-    virtual void AttackCollider_On(const wstring& skillname, _float fAttackDamage) override {}
-    virtual void AttackCollider_Off() override {}
     virtual _bool Can_Interact();
 
 

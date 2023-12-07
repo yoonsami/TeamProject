@@ -1,14 +1,12 @@
 #pragma once
-#include "FSM.h"
+#include "Client_FSM.h"
 #include "UIInteraction.h"
 
 class Companion_FSM abstract :
-    public FSM
+    public Client_FSM
 {
 
 public:
-    virtual void AttackCollider_On(const wstring& skillname, _float fAttackDamage) override {}
-    virtual void AttackCollider_Off() override {}
     virtual _bool Can_Interact();
 
 protected:

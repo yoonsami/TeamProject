@@ -1,5 +1,5 @@
 #pragma once
-#include "FSM.h"
+#include "Client_FSM.h"
 
 struct Gacha_FSM_Desc
 {
@@ -9,7 +9,7 @@ struct Gacha_FSM_Desc
 };
 
 class Gacha_FSM :
-    public FSM
+    public Client_FSM
 {
 	
 	enum class STATE
@@ -35,8 +35,6 @@ private:
 	virtual void Set_State(_uint iIndex) {};
 	virtual void Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget) {};
 
-	virtual void AttackCollider_On(const wstring& skillname, _float fAttackDamage) {};
-	virtual void AttackCollider_Off() {};
 private:
 	void SQ_SpecialHero();
 	void SQ_SpecialHero_Init();

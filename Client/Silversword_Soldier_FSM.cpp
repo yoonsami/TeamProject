@@ -346,26 +346,6 @@ void Silversword_Soldier_FSM::Get_Hit(const wstring& skillname, _float fDamage, 
     
 }
 
-void Silversword_Soldier_FSM::AttackCollider_On(const wstring& skillname, _float fAttackDamage)
-{
-    if (!m_pAttackCollider.expired())
-    {
-        m_pAttackCollider.lock()->Get_Collider()->Set_Activate(true);
-        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
-        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
-    }
-}
-
-void Silversword_Soldier_FSM::AttackCollider_Off()
-{
-    if (!m_pAttackCollider.expired())
-    {
-        m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
-        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
-        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(0.f);
-    }
-}
-
 void Silversword_Soldier_FSM::Set_State(_uint iIndex)
 {
 }
