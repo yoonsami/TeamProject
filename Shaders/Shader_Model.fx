@@ -664,17 +664,7 @@ float4 PS_FRAME(VertexOutput input) : SV_TARGET
     return color;
 }
 
-struct PBR_OUTPUT
-{
-    float4 position : SV_Target0;
-    float4 normal : SV_Target1;
-    float4 depth : SV_Target2;
-    float4 diffuseColor : SV_Target3;
-    float4 arm : SV_Target4;
-    float4 rimColor : SV_Target5;
-    float4 blur : SV_Target6;
-    float4 emissive : SV_Target7;
-};
+
 // PBR
 PBR_OUTPUT PS_PBR_Deferred(MeshOutput input)
 {

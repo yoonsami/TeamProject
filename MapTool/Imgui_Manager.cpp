@@ -1395,7 +1395,7 @@ void ImGui_Manager::Create_Terrain(shared_ptr<Terrain> _pTerrainMesh, _int _iTer
     //}
 
     // 메시렌더러
-    shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+    shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Terrain.fx"));
     renderer->Set_Mesh(_pTerrainMesh);
     renderer->Set_Pass(18); // 터레인패스
 

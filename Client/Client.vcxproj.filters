@@ -1290,5 +1290,8 @@
     <FxCompile Include="..\Shaders\Water.fx">
       <Filter>Shader</Filter>
     </FxCompile>
+    <FxCompile Include="..\Shaders\Shader_Terrain.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

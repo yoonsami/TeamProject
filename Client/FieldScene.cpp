@@ -353,7 +353,7 @@ void FieldScene::Load_Terrain()
 	TerrainObject->GetOrAddTransform();
 // 터레인생성
 	// 메시렌더러
-	shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+	shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Terrain.fx"));
 	renderer->Set_Mesh(loadedTerrain);
 	renderer->Set_Pass(18); // 터레인패스
 
