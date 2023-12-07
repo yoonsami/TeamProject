@@ -26,11 +26,11 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
     float4 specularColor;
     float4 emissiveColor;
     
-    if (bHasNormalMap)
-    {
-        ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
+    //if (bHasNormalMap)
+    //{
+    //    ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
         
-    }
+    //}
     float4 maskColor = TextureMap7.Sample(LinearSampler, float2(input.uv.x / g_vec2_0.x, input.uv.y / g_vec2_0.y));
     float4 diffuseColor = 1.f;
     
@@ -111,9 +111,7 @@ PBR_OUTPUT PS_Terrain_PBR(MeshOutput input)
     }
     else
         diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
-    
-    //ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
-    
+        
     // 브러시관련
     float3 vBrushPos = g_vec4_0.xyz;
     float fBrushRadius = g_float_0;
@@ -128,8 +126,8 @@ PBR_OUTPUT PS_Terrain_PBR(MeshOutput input)
     }
     color = diffuseColor + colBrushColor;
     
-    if (bHasNormalMap)
-        ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
+  //  if (bHasNormalMap)
+    //    ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
 
     
     
@@ -152,19 +150,19 @@ technique11 T0
     pass Terrain_Deferred
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Terrain()));
-        SetRasterizerState(RS_CullNone);
+        SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
         SetPixelShader(CompileShader(ps_5_0, PS_Deferred()));
-        SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetGeometryShader(NULL);
     }
     pass Terrain_Deferred_PBR
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Terrain()));
-        SetRasterizerState(RS_CullNone);
+        SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
         SetPixelShader(CompileShader(ps_5_0, PS_Terrain_PBR()));
-        SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetGeometryShader(NULL);
     }
 
