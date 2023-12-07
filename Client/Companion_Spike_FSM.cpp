@@ -607,6 +607,7 @@ void Companion_Spike_FSM::b_idle_Init()
 
     Get_Transform()->Set_Speed(m_fRunSpeed);
 
+
     m_tRunEndDelay.fAccTime = 0.f;
     m_tRunEndDelay.fCoolTime = 0.5f;
     m_tSprintCoolTime.fAccTime = 0.f;
