@@ -19,8 +19,6 @@ public:
 protected:
 	virtual void State_Tick() = 0;
 	virtual void State_Init() = 0;
-	virtual void AttackCollider_On(const wstring& skillname, _float fAttackDamage) = 0;
-	virtual void AttackCollider_Off() = 0;
 
 	void Calculate_CamBoneMatrix();
 

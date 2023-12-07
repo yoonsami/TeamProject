@@ -150,7 +150,6 @@ private:
 
 
 	void Battle_Start();
-	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage);
 	void Summon_Wraith();
 	void Set_WraithState(_uint iAnimindex);
 	void Calculate_SkillCamRight();

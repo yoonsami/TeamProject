@@ -939,7 +939,7 @@ void Yeonhee_FSM::skill_1100()
 			else
 				vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5 + _float3::Up * 5.f;
 		}
-		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
 	}
 
     _float3 vInputVector = Get_InputDirVector();
@@ -1005,7 +1005,7 @@ void Yeonhee_FSM::skill_1200()
 			else
 				vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5 + _float3::Up * 5.f;
 		}
-		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
 
     }
 
@@ -1077,7 +1077,7 @@ void Yeonhee_FSM::skill_1300()
 			else
 				vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5 + _float3::Up * 5.f;
 		}
-		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
 	}
 	
 	_float3 vInputVector = Get_InputDirVector();
@@ -1204,7 +1204,7 @@ void Yeonhee_FSM::skill_100100()
 			desc.fLimitDistance = 15.f;
 
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) + _float3::Up;
-			Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
+			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
         }
     }
 	
@@ -1291,7 +1291,7 @@ void Yeonhee_FSM::skill_200100()
 		else
 			vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5.f + _float3::Up;
 
-		Create_InstallationSkillCollider(vSkillPos, 3.f, desc);
+		Create_InstallationSkillCollider(Player_Skill, L"Player_InstallationSkillCollider", vSkillPos, 3.f, desc);
     }
 
 	_float3 vInputVector = Get_InputDirVector();
@@ -1349,7 +1349,7 @@ void Yeonhee_FSM::skill_300100()
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 30.f;
 
-		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_ATTACK, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, KNOCKBACK_ATTACK, 10.f);
 	}
 
 	_float3 vInputVector = Get_InputDirVector();
@@ -1397,7 +1397,7 @@ void Yeonhee_FSM::skill_400100()
 			desc.fLimitDistance = 15.f;
 
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) + _float3::Up;
-			Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
+			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
 
 		}
 	}
@@ -1498,7 +1498,7 @@ void Yeonhee_FSM::skill_501100()
 
 			_float4 vSkillPos = vTargetPos + _float4{ fOffSetX, 0.f, fOffSetZ, 0.f };
 
-			Create_InstallationSkillCollider(vSkillPos, 2.f, desc);
+			Create_InstallationSkillCollider(Player_Skill, L"Player_InstallationSkillCollider", vSkillPos, 2.f, desc);
 		}
 	}
 
@@ -1541,55 +1541,6 @@ void Yeonhee_FSM::skill_501100_Init()
     Calculate_CamBoneMatrix();
 
 
-}
-
-void Yeonhee_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
-{
-    shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
-
-    m_pSkillCollider = SkillCollider;
-
-    m_pSkillCollider.lock()->GetOrAddTransform();
-    m_pSkillCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, vPos);
-
-    auto pSphereCollider = make_shared<SphereCollider>(fSkillRange);
-    pSphereCollider->Set_CenterPos(_float3{ vPos.x,vPos.y, vPos.z });
-    m_pSkillCollider.lock()->Add_Component(pSphereCollider);
-
-    m_pSkillCollider.lock()->Get_Collider()->Set_CollisionGroup(Player_Skill);
-
-    m_pSkillCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
-    m_pSkillCollider.lock()->Get_Collider()->Set_Activate(true);
-    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
-    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
-    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
-    m_pSkillCollider.lock()->Set_Name(L"Player_SkillCollider");
-    m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
-    m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
-
-    EVENTMGR.Create_Object(m_pSkillCollider.lock());
-}
-
-void Yeonhee_FSM::Create_InstallationSkillCollider(const _float4& vPos, _float fSkillRange, INSTALLATIONSKILLDESC desc)
-{
-    shared_ptr<GameObject> InstallationSkillCollider = make_shared<GameObject>();
-
-    InstallationSkillCollider->GetOrAddTransform();
-    InstallationSkillCollider->Get_Transform()->Set_State(Transform_State::POS, vPos);
-
-    auto pSphereCollider = make_shared<SphereCollider>(fSkillRange);
-    pSphereCollider->Set_CenterPos(_float3{ vPos.x,vPos.y, vPos.z });
-    InstallationSkillCollider->Add_Component(pSphereCollider);
-    InstallationSkillCollider->Get_Collider()->Set_CollisionGroup(Player_Skill);
-
-    InstallationSkillCollider->Add_Component(make_shared<AttackColliderInfoScript>());
-    InstallationSkillCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
-    InstallationSkillCollider->Add_Component(make_shared<InstallationSkill_Script>(desc));
-    InstallationSkillCollider->Get_Script<InstallationSkill_Script>()->Init();
-    
-    InstallationSkillCollider->Set_Name(L"Player_InstallationSkillCollider");
-
-    EVENTMGR.Create_Object(InstallationSkillCollider);
 }
 
 void Yeonhee_FSM::Use_Skill()

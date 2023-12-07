@@ -200,27 +200,27 @@ void Boss_DellonsWraith_FSM::FX_DellonsWraith_skill_30010()
                 Get_Transform()->Get_State(Transform_State::LOOK) * 3.f +
                 _float3::Up;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_Wraith_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
 
             vSkillPos = vSkillPos + Get_Transform()->Get_State(Transform_State::LOOK) +
                 Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_Wraith_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
 
             vSkillPos = vSkillPos + Get_Transform()->Get_State(Transform_State::LOOK) +
                 Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_Wraith_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
 
             vSkillPos = vSkillPos - Get_Transform()->Get_State(Transform_State::LOOK) +
                 Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_Wraith_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
 
             vSkillPos = vSkillPos - Get_Transform()->Get_State(Transform_State::LOOK) +
                 Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_Wraith_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
         }
     }
 
@@ -457,29 +457,6 @@ void Boss_DellonsWraith_FSM::FX_Mn_Dellons_skill_5200_Init()
 
     if (!m_pTarget.expired())
         Get_Transform()->Set_WorldMat(m_pTarget.lock()->Get_Transform()->Get_WorldMatrix());
-}
-
-
-
-void Boss_DellonsWraith_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
-{
-    shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
-
-    SkillCollider->GetOrAddTransform();
-    SkillCollider->Get_Transform()->Set_State(Transform_State::POS, vPos);
-    SkillCollider->Add_Component(make_shared<SphereCollider>(fSkillRange));
-    SkillCollider->Get_Collider()->Set_CollisionGroup(Monster_Skill);
-
-    SkillCollider->Add_Component(make_shared<AttackColliderInfoScript>());
-    SkillCollider->Get_Collider()->Set_Activate(true);
-    SkillCollider->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
-    SkillCollider->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
-    SkillCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
-    SkillCollider->Set_Name(L"Boss_Dellons_Wraith_SkillCollider");
-    SkillCollider->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
-    SkillCollider->Get_Script<ForwardMovingSkillScript>()->Init();
-
-    EVENTMGR.Create_Object(SkillCollider);
 }
 
 void Boss_DellonsWraith_FSM::Remove_Wraith()

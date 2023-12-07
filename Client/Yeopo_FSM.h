@@ -160,7 +160,6 @@ private:
 	void SQ_RideHorse_End_Init();
 
 	void RidingCoolCheck();
-	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage);
 	void Create_Vehicle();
 	void Create_Chain(const wstring& wstrModelTag, const wstring& wstrAnimTag, _float fWaitTime, _float fAnimSpeed, _float3 vScale, _float3 vPosOffset);
 	void Set_VehicleState(_uint iAnimindex);

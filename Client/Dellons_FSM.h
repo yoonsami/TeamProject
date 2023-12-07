@@ -134,7 +134,6 @@ private:
 	void Use_Skill();
 	void Use_Dash();
 
-	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage);
 	void Summon_Wraith();
 	void Set_WraithState(_uint iAnimindex);
 

@@ -223,7 +223,7 @@ void DragonBallMonster_FSM::Summon_CrossFloor()
 	_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 						Get_Transform()->Get_State(Transform_State::LOOK) * 15.f;
 	
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider",vSkillPos, vSkillScale, desc);
 
 
 	desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK) * -1.f;
@@ -231,7 +231,7 @@ void DragonBallMonster_FSM::Summon_CrossFloor()
 	vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 		Get_Transform()->Get_State(Transform_State::LOOK) * -15.f;
 
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 
 
 	desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT) * -1.f;
@@ -239,14 +239,14 @@ void DragonBallMonster_FSM::Summon_CrossFloor()
 	vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 		Get_Transform()->Get_State(Transform_State::RIGHT) * -15.f;
 
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 
 	desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT);
 
 	vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 		Get_Transform()->Get_State(Transform_State::RIGHT) * 15.f;
 
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 
 }
 
@@ -274,7 +274,7 @@ void DragonBallMonster_FSM::Summon_X_Floor()
 						Get_Transform()->Get_State(Transform_State::LOOK) * 11.f +
 						Get_Transform()->Get_State(Transform_State::RIGHT) * -11.f;
 
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 
 
 	//Forward_Right
@@ -285,7 +285,7 @@ void DragonBallMonster_FSM::Summon_X_Floor()
 				Get_Transform()->Get_State(Transform_State::LOOK) * 11.f +
 				Get_Transform()->Get_State(Transform_State::RIGHT) * 11.f;
 
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 
 
 	//BackWard_Left
@@ -296,7 +296,7 @@ void DragonBallMonster_FSM::Summon_X_Floor()
 				Get_Transform()->Get_State(Transform_State::LOOK) * -11.f +
 				Get_Transform()->Get_State(Transform_State::RIGHT) * -11.f;
 		
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 
 	//BackWard_Right
 	desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK) * -1.f +
@@ -306,7 +306,7 @@ void DragonBallMonster_FSM::Summon_X_Floor()
 				Get_Transform()->Get_State(Transform_State::LOOK) * -11.f +
 				Get_Transform()->Get_State(Transform_State::RIGHT) * 11.f;
 
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 }
 
 void DragonBallMonster_FSM::Summon_Hash_Floor()
@@ -331,14 +331,14 @@ void DragonBallMonster_FSM::Summon_Hash_Floor()
 	_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 						Get_Transform()->Get_State(Transform_State::RIGHT) * -15.f;
 
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 
 
 	//Right
 	vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + 
 				Get_Transform()->Get_State(Transform_State::RIGHT) * 15.f;
 
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 
 
 	//Forward
@@ -347,13 +347,13 @@ void DragonBallMonster_FSM::Summon_Hash_Floor()
 	vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 		Get_Transform()->Get_State(Transform_State::LOOK) * 10.f;
 
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 
 	//BackWard
 	vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 		Get_Transform()->Get_State(Transform_State::LOOK) * -10.f;
 
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 }
 
 void DragonBallMonster_FSM::Summon_Web_Floor()
@@ -379,13 +379,13 @@ void DragonBallMonster_FSM::Summon_Web_Floor()
 						Get_Transform()->Get_State(Transform_State::LOOK) * 5.f +
 						Get_Transform()->Get_State(Transform_State::RIGHT) * -5.f;
 
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 
 	vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 				Get_Transform()->Get_State(Transform_State::LOOK) * -5.f +
 				Get_Transform()->Get_State(Transform_State::RIGHT) * 5.f;
 
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 
 
 	desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK) +
@@ -395,14 +395,14 @@ void DragonBallMonster_FSM::Summon_Web_Floor()
 				Get_Transform()->Get_State(Transform_State::LOOK) * 5.f +
 				Get_Transform()->Get_State(Transform_State::RIGHT) * 5.f;
 
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 
 	
 	vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 				Get_Transform()->Get_State(Transform_State::LOOK) * -5.f +
 				Get_Transform()->Get_State(Transform_State::RIGHT) * -5.f;
 
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 }
 
 void DragonBallMonster_FSM::Summon_HalfCircle_Floor()
@@ -434,7 +434,7 @@ void DragonBallMonster_FSM::Summon_HalfCircle_Floor()
 	_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 						Get_Transform()->Get_State(Transform_State::RIGHT) * 14.f * fPos;
 
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 }
 
 void DragonBallMonster_FSM::Summon_Star_Floor()
@@ -461,7 +461,7 @@ void DragonBallMonster_FSM::Summon_Star_Floor()
 		Get_Transform()->Get_State(Transform_State::LOOK) * 11.f +
 		Get_Transform()->Get_State(Transform_State::RIGHT) * -11.f;
 
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 
 	//Forward_Right
 	desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK) +
@@ -471,7 +471,7 @@ void DragonBallMonster_FSM::Summon_Star_Floor()
 		Get_Transform()->Get_State(Transform_State::LOOK) * 11.f +
 		Get_Transform()->Get_State(Transform_State::RIGHT) * 11.f;
 
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 
 
 	//BackWard_Left
@@ -482,7 +482,7 @@ void DragonBallMonster_FSM::Summon_Star_Floor()
 		Get_Transform()->Get_State(Transform_State::LOOK) * -11.f +
 		Get_Transform()->Get_State(Transform_State::RIGHT) * -11.f;
 
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 
 	//BackWard_Right
 	desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK) * -1.f +
@@ -492,35 +492,35 @@ void DragonBallMonster_FSM::Summon_Star_Floor()
 		Get_Transform()->Get_State(Transform_State::LOOK) * -11.f +
 		Get_Transform()->Get_State(Transform_State::RIGHT) * 11.f;
 
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 
 	//Forward
 	desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 	vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 		Get_Transform()->Get_State(Transform_State::LOOK) * 15.f;
 
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 
 	//Backward
 	desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK) * -1.f;
 	vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 		Get_Transform()->Get_State(Transform_State::LOOK) * -15.f;
 
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 
 	//Left
 	desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT) * -1.f;
 	vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 		Get_Transform()->Get_State(Transform_State::RIGHT) * -15.f;
 
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 
 	//Right
 	desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT);
 	vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 		Get_Transform()->Get_State(Transform_State::RIGHT) * 15.f;
 
-	Create_FloorSkillCollider(vSkillPos, vSkillScale, desc);
+	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 
 
 }
@@ -546,7 +546,7 @@ void DragonBallMonster_FSM::Create_Meteor()
 
 			_float4 vSkillPos = vMyPos + _float4{ fOffSetX, 10.f, fOffSetZ, 0.f };
 			
-			Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKDOWN_SKILL, 10.f);
+			Create_ForwardMovingSkillCollider(Monster_Skill, L"DragonBallMonster_SkillCollider", vSkillPos, 1.f, desc, KNOCKDOWN_SKILL, 10.f);
 		}
 
 		m_tMeteorCoolTime.fAccTime = 0.f;
@@ -622,51 +622,4 @@ void DragonBallMonster_FSM::Set_AttackPattern()
 		}
 	}
 
-}
-
-void DragonBallMonster_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
-{
-	shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
-
-	SkillCollider->GetOrAddTransform();
-	SkillCollider->Get_Transform()->Set_State(Transform_State::POS, vPos);
-
-	auto pSphereCollider = make_shared<SphereCollider>(fSkillRange);
-	pSphereCollider->Set_CenterPos(_float3{ vPos.x,vPos.y, vPos.z });
-
-	SkillCollider->Add_Component(pSphereCollider);
-	SkillCollider->Get_Collider()->Set_CollisionGroup(Monster_Skill);
-
-	SkillCollider->Add_Component(make_shared<AttackColliderInfoScript>());
-	SkillCollider->Get_Collider()->Set_Activate(true);
-	SkillCollider->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
-	SkillCollider->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
-	SkillCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
-	SkillCollider->Set_Name(L"DragonBallMonster_SkillCollider");
-	SkillCollider->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
-	SkillCollider->Get_Script<ForwardMovingSkillScript>()->Init();
-
-	EVENTMGR.Create_Object(SkillCollider);
-}
-
-void DragonBallMonster_FSM::Create_FloorSkillCollider(const _float4& vPos, _float3 vSkillScale, FLOORSKILLDESC desc)
-{
-	shared_ptr<GameObject> FloorSkillCollider = make_shared<GameObject>();
-
-	FloorSkillCollider->GetOrAddTransform();
-	FloorSkillCollider->Get_Transform()->Set_State(Transform_State::POS, vPos);
-	
-
-	auto pOBBCollider = make_shared<OBBBoxCollider>(vSkillScale);
-	FloorSkillCollider->Add_Component(pOBBCollider);
-	FloorSkillCollider->Get_Collider()->Set_CollisionGroup(Monster_Skill);
-
-	FloorSkillCollider->Add_Component(make_shared<AttackColliderInfoScript>());
-	FloorSkillCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
-	FloorSkillCollider->Add_Component(make_shared<FloorSkill_Script>(desc));
-	FloorSkillCollider->Get_Script<FloorSkill_Script>()->Init();
-
-	FloorSkillCollider->Set_Name(L"DragonBall_FloorSkillCollider");
-
-	EVENTMGR.Create_Object(FloorSkillCollider);
 }

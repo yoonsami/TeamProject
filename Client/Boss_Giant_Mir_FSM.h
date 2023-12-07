@@ -86,11 +86,6 @@ private:
 	void skill_200100();
 	void skill_200100_Init();
 
-
-
-	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage);
-	void Create_InstallationSkillCollider(const _float4& vPos, _float fSkillRange, INSTALLATIONSKILLDESC desc);
-	void Create_FloorSkillCollider(const _float4& vPos, _float3 vSkillScale, FLOORSKILLDESC desc);
 	void Create_Meteor();
 	void Create_Giant_Mir_Collider();
 	void Create_DragonBall();

@@ -132,8 +132,6 @@ private:
 	void skill_500100();
 	void skill_500100_Init();
 
-	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage);
-
 	void Use_Skill();
 	void Use_Dash();
 private:

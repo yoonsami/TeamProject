@@ -833,7 +833,9 @@
     <ClInclude Include="Shane_FSM.h">
       <Filter>02.Component\01.FSM\01.Hero_FSM\07.Shane_FSM</Filter>
     </ClInclude>
-    <ClInclude Include="Client_FSM.h" />
+    <ClInclude Include="Client_FSM.h">
+      <Filter>02.Component\01.FSM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1216,7 +1218,9 @@
     <ClCompile Include="Companion_Shane_FSM.cpp">
       <Filter>02.Component\01.FSM\08.Companion_FSM\02.Companion_Shane_FSM</Filter>
     </ClCompile>
-    <ClCompile Include="Client_FSM.cpp" />
+    <ClCompile Include="Client_FSM.cpp">
+      <Filter>02.Component\01.FSM</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">

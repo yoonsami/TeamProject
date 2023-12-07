@@ -154,7 +154,6 @@ private:
 
 	DIR CalCulate_PlayerDir();
 	void Add_Boss_Mir_Collider();
-	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage, const wstring& wstrGroupEffectTag = TEXT("None"));
 	void Create_CounterMotionTrail();
 	void Create_Meteor();
 	void Create_DragonBall();

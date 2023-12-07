@@ -44,8 +44,6 @@ private:
 
 
     void Set_AttackPattern();
-    void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage);
-    void Create_FloorSkillCollider(const _float4& vPos, _float3 vSkillScale, FLOORSKILLDESC desc);
     
 private:
     STATE m_eCurState = STATE::Idle;

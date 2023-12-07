@@ -1509,7 +1509,7 @@ void Companion_Spike_FSM::skill_200200()
             desc.fMoveSpeed = 0.f;
             desc.fLifeTime = 0.3f;
             desc.fLimitDistance = 0.f;
-            Create_ForwardMovingSkillCollider(Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f);
         }
     }
 
@@ -1562,7 +1562,7 @@ void Companion_Spike_FSM::skill_200300()
             desc.fMoveSpeed = 0.f;
             desc.fLifeTime = 0.3f;
             desc.fLimitDistance = 0.f;
-                Create_ForwardMovingSkillCollider(Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f);
+                Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f);
         }
     }
 
@@ -1616,7 +1616,7 @@ void Companion_Spike_FSM::skill_200400()
             desc.fMoveSpeed = 0.f;
             desc.fLifeTime = 0.3f;
             desc.fLimitDistance = 0.f;
-            Create_ForwardMovingSkillCollider(Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f);
         }
     }
 
@@ -1629,7 +1629,7 @@ void Companion_Spike_FSM::skill_200400()
         desc.fMoveSpeed = 0.f;
         desc.fLifeTime = 0.5f;
         desc.fLimitDistance = 0.f;
-        Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f);
     }
 
     if (Is_AnimFinished())
@@ -1667,7 +1667,7 @@ void Companion_Spike_FSM::skill_300100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Get_Transform()->Get_State(Transform_State::POS), 3.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", Get_Transform()->Get_State(Transform_State::POS), 3.f, desc, AIRBORNE_ATTACK, 10.f);
 
     }
 
@@ -1712,7 +1712,7 @@ void Companion_Spike_FSM::skill_400100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f);
     }
     else if (Init_CurFrame(77))
     {
@@ -1725,7 +1725,7 @@ void Companion_Spike_FSM::skill_400100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f);
     }
     else if (Init_CurFrame(110))
     {
@@ -1738,7 +1738,7 @@ void Companion_Spike_FSM::skill_400100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f);
     }
     else if (Init_CurFrame(177))
     {
@@ -1751,7 +1751,7 @@ void Companion_Spike_FSM::skill_400100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f);
     }
 
     if (Is_AnimFinished())
@@ -1795,7 +1795,7 @@ void Companion_Spike_FSM::skill_501100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK, 10.f);
     }
     
     if (m_iCurFrame == 18)
@@ -1821,34 +1821,6 @@ void Companion_Spike_FSM::skill_501100_Init()
     m_bSuperArmor = true;
     m_bSetAttack = false;
 }
-
-void Companion_Spike_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
-{
-    shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
-
-    m_pSkillCollider = SkillCollider;
-
-    m_pSkillCollider.lock()->GetOrAddTransform();
-    m_pSkillCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, vPos);
-
-    auto pSphereCollider = make_shared<SphereCollider>(fSkillRange);
-    pSphereCollider->Set_CenterPos(_float3{ vPos.x,vPos.y, vPos.z });
-    m_pSkillCollider.lock()->Add_Component(pSphereCollider);
-
-    m_pSkillCollider.lock()->Get_Collider()->Set_CollisionGroup(Companion_Skill);
-
-    m_pSkillCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
-    m_pSkillCollider.lock()->Get_Collider()->Set_Activate(true);
-    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
-    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
-    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
-    m_pSkillCollider.lock()->Set_Name(L"Companion_Spike_SkillCollider");
-    m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
-    m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
-
-    EVENTMGR.Create_Object(m_pSkillCollider.lock());
-}
-
 
 void Companion_Spike_FSM::Set_AttackSkill()
 {

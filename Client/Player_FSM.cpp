@@ -1183,7 +1183,7 @@ void Player_FSM::skill_100100()
 		desc.fLimitDistance = 25.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.f + _float3::Up;
-		Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider",vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
 	}
     
     if (!g_bIsCanMouseMove && !g_bCutScene)
@@ -1234,7 +1234,7 @@ void Player_FSM::skill_100200()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
-		Create_ForwardMovingSkillCollider(vSkillPos, 5.f, desc, KNOCKBACK_ATTACK, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 5.f, desc, KNOCKBACK_ATTACK, 10.f);
 
 	}
     else if (Init_CurFrame(26))
@@ -1429,7 +1429,7 @@ void Player_FSM::skill_200100()
 			desc.fLimitDistance = 0.f;
 
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
-			Create_ForwardMovingSkillCollider(vSkillPos, 5.f, desc, NORMAL_ATTACK, 10.f);
+			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 5.f, desc, NORMAL_ATTACK, 10.f);
 
 			Get_Owner()->Get_Animator()->Set_RenderState(false);
 			m_pWeapon.lock()->Get_ModelRenderer()->Set_RenderState(false);
@@ -1484,7 +1484,7 @@ void Player_FSM::skill_200200()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_SKILL, 10.f); 
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, KNOCKBACK_SKILL, 10.f);
     }
 
     if (Is_AnimFinished())
@@ -1523,7 +1523,7 @@ void Player_FSM::skill_300100()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
-		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_SKILL, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, KNOCKBACK_SKILL, 10.f);
 
     }
 
@@ -1601,7 +1601,7 @@ void Player_FSM::skill_300200()
             desc.fLimitDistance = 0.f;
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
-            Create_ForwardMovingSkillCollider(vSkillPos, 5.f, desc, NORMAL_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 5.f, desc, NORMAL_ATTACK, 10.f);
 
         }
     }
@@ -1618,7 +1618,7 @@ void Player_FSM::skill_300200()
             desc.fLimitDistance = 0.f;
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
-            Create_ForwardMovingSkillCollider(vSkillPos, 5.f, desc, NORMAL_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 5.f, desc, NORMAL_ATTACK, 10.f);
 
         }
     }
@@ -1631,7 +1631,7 @@ void Player_FSM::skill_300200()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
-		Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_SKILL, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, KNOCKBACK_SKILL, 10.f);
 
     }
 
@@ -1666,33 +1666,6 @@ void Player_FSM::skill_300200_Init()
     m_vCamStopPos = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS);    
 
     Calculate_CamBoneMatrix();
-}
-
-void Player_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
-{
-    shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
-
-    m_pSkillCollider = SkillCollider;
-
-    m_pSkillCollider.lock()->GetOrAddTransform();
-    m_pSkillCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, vPos);
-
-    auto pSphereCollider = make_shared<SphereCollider>(fSkillRange);
-    pSphereCollider->Set_CenterPos(_float3{ vPos.x,vPos.y, vPos.z });
-    m_pSkillCollider.lock()->Add_Component(pSphereCollider);
-
-    m_pSkillCollider.lock()->Get_Collider()->Set_CollisionGroup(Player_Skill);
-
-    m_pSkillCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
-    m_pSkillCollider.lock()->Get_Collider()->Set_Activate(true);
-    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
-    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
-    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
-    m_pSkillCollider.lock()->Set_Name(L"Player_SkillCollider");
-    m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
-    m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
-
-    EVENTMGR.Create_Object(m_pSkillCollider.lock());
 }
 
 void Player_FSM::Use_Skill()

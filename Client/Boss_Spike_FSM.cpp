@@ -1631,7 +1631,7 @@ void Boss_Spike_FSM::skill_3200()
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 3.f, desc, KNOCKBACK_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vSkillPos, 3.f, desc, KNOCKBACK_ATTACK, 10.f);
         }
     }
 
@@ -1753,7 +1753,7 @@ void Boss_Spike_FSM::skill_6100()
 
                 _float4 vSkillPos = vMyPos + _float4{ fOffSetX, 10.f, fOffSetZ, 0.f };
 
-                Create_ForwardMovingSkillCollider(vSkillPos, 1.5f, desc, AIRBORNE_ATTACK, 10.f);
+                Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vSkillPos, 1.5f, desc, AIRBORNE_ATTACK, 10.f);
             }
         }
     }
@@ -1808,7 +1808,7 @@ void Boss_Spike_FSM::skill_7100()
             desc.fLifeTime = 1.f;
             desc.fLimitDistance = 0.f;
             
-            Create_ForwardMovingSkillCollider(Get_Transform()->Get_State(Transform_State::POS), 5.f, desc, KNOCKDOWN_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", Get_Transform()->Get_State(Transform_State::POS), 5.f, desc, KNOCKDOWN_ATTACK, 10.f);
         }
     }
 
@@ -1846,13 +1846,13 @@ void Boss_Spike_FSM::skill_8100()
             desc.fLimitDistance = 20.f;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK) + Get_Transform()->Get_State(Transform_State::RIGHT) * -1.f;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK) + Get_Transform()->Get_State(Transform_State::RIGHT) * 1.f;
-            Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
         }
     }
 
@@ -2071,36 +2071,6 @@ void Boss_Spike_FSM::skill_201200_Init()
     m_bInvincible = true;
     m_bSuperArmor = false;
 }
-
-
-
-void Boss_Spike_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
-{
-    shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
-
-    m_pSkillCollider = SkillCollider;
-
-    m_pSkillCollider.lock()->GetOrAddTransform();
-    m_pSkillCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, vPos);
-
-    auto pSphereCollider = make_shared<SphereCollider>(fSkillRange);
-    pSphereCollider->Set_CenterPos(_float3{ vPos.x,vPos.y, vPos.z });
-    m_pSkillCollider.lock()->Add_Component(pSphereCollider);
-
-    m_pSkillCollider.lock()->Get_Collider()->Set_CollisionGroup(Monster_Skill);
-
-    m_pSkillCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
-    m_pSkillCollider.lock()->Get_Collider()->Set_Activate(true);
-    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
-    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
-    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
-    m_pSkillCollider.lock()->Set_Name(L"Boss_Spike_SkillCollider");
-    m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
-    m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
-
-    EVENTMGR.Create_Object(m_pSkillCollider.lock());
-}
-
 
 void Boss_Spike_FSM::Calculate_SkillCamRight()
 {

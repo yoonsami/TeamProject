@@ -65,9 +65,6 @@ private:
 	void FX_Mn_Dellons_skill_5200();
 	void FX_Mn_Dellons_skill_5200_Init();
 
-	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage);
-	
-
 private:
 	STATE m_eCurState = STATE::FX_DellonsWraith_skill_30010;
 	STATE m_ePreState = STATE::NONE;

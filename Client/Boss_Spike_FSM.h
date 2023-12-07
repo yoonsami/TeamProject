@@ -163,7 +163,6 @@ private:
 	void skill_201200();
 	void skill_201200_Init();
 
-	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage);
 	void Calculate_SkillCamRight();
 	void Calculate_LipBoneMatrix();
 	void Set_AttackSkill();

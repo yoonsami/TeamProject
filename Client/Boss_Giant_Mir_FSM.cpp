@@ -807,7 +807,7 @@ void Boss_Giant_Mir_FSM::skill_1100()
 
             _float4 vSkillPos = vBonePos;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 6.f, desc, KNOCKBACK_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 6.f, desc, KNOCKBACK_ATTACK, 10.f);
         }
     }
 
@@ -856,7 +856,7 @@ void Boss_Giant_Mir_FSM::skill_1200()
 
             _float4 vSkillPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float4{ 0.001f, 0.f,0.f,0.f };
 
-            Create_InstallationSkillCollider(vSkillPos, 3.f, desc);
+            Create_InstallationSkillCollider(Monster_Skill,L"Boss_Giant_Mir_InstallationSkillCollider",vSkillPos, 3.f, desc);
         }
     }
 
@@ -908,7 +908,7 @@ void Boss_Giant_Mir_FSM::skill_2100()
 
             _float4 vSkillPos = vBonePos;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 6.f, desc, NORMAL_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 6.f, desc, NORMAL_ATTACK, 10.f);
         }
     }
 
@@ -1031,7 +1031,7 @@ void Boss_Giant_Mir_FSM::skill_100100()
 
             _float4 vSkillPos = vBonePos;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 5.f, desc, KNOCKBACK_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 5.f, desc, KNOCKBACK_ATTACK, 10.f);
         }
     }
 
@@ -1098,7 +1098,7 @@ void Boss_Giant_Mir_FSM::skill_200100()
 
             _float4 vSkillPos = vBonePos;
 
-            Create_ForwardMovingSkillCollider(vSkillPos, 5.f, desc, KNOCKBACK_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 5.f, desc, KNOCKBACK_ATTACK, 10.f);
         }
     }
 
@@ -1114,75 +1114,6 @@ void Boss_Giant_Mir_FSM::skill_200100_Init()
 
     m_tAttackCoolTime.fAccTime = 0.f;
     m_tBreathCoolTime.fAccTime = 0.f;
-}
-
-void Boss_Giant_Mir_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
-{
-    shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
-
-    SkillCollider->GetOrAddTransform();
-    SkillCollider->Get_Transform()->Set_State(Transform_State::POS, vPos);
-
-    auto pSphereCollider = make_shared<SphereCollider>(fSkillRange);
-    pSphereCollider->Set_CenterPos(_float3{ vPos.x,vPos.y, vPos.z });
-    
-    SkillCollider->Add_Component(pSphereCollider);
-    SkillCollider->Get_Collider()->Set_CollisionGroup(Monster_Skill);
-
-    SkillCollider->Add_Component(make_shared<AttackColliderInfoScript>());
-    SkillCollider->Get_Collider()->Set_Activate(true);
-    SkillCollider->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
-    SkillCollider->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
-    SkillCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
-    SkillCollider->Set_Name(L"Boss_Mir_SkillCollider");
-    SkillCollider->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
-    SkillCollider->Get_Script<ForwardMovingSkillScript>()->Init();
-
-    EVENTMGR.Create_Object(SkillCollider);
-}
-
-void Boss_Giant_Mir_FSM::Create_InstallationSkillCollider(const _float4& vPos, _float fSkillRange, INSTALLATIONSKILLDESC desc)
-{
-    shared_ptr<GameObject> InstallationSkillCollider = make_shared<GameObject>();
-
-    InstallationSkillCollider->GetOrAddTransform();
-    InstallationSkillCollider->Get_Transform()->Set_State(Transform_State::POS, vPos);
-
-    auto pSphereCollider = make_shared<SphereCollider>(fSkillRange);
-    pSphereCollider->Set_CenterPos(_float3{ vPos.x,vPos.y, vPos.z });
-    InstallationSkillCollider->Add_Component(pSphereCollider);
-    InstallationSkillCollider->Get_Collider()->Set_CollisionGroup(Monster_Skill);
-
-    InstallationSkillCollider->Add_Component(make_shared<AttackColliderInfoScript>());
-    InstallationSkillCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
-    InstallationSkillCollider->Add_Component(make_shared<InstallationSkill_Script>(desc));
-    InstallationSkillCollider->Get_Script<InstallationSkill_Script>()->Init();
-
-    InstallationSkillCollider->Set_Name(L"Boss_Giant_Mir_InstallationSkillCollider");
-
-    EVENTMGR.Create_Object(InstallationSkillCollider);
-}
-
-void Boss_Giant_Mir_FSM::Create_FloorSkillCollider(const _float4& vPos, _float3 vSkillScale, FLOORSKILLDESC desc)
-{
-    shared_ptr<GameObject> FloorSkillCollider = make_shared<GameObject>();
-
-    FloorSkillCollider->GetOrAddTransform();
-    FloorSkillCollider->Get_Transform()->Set_State(Transform_State::POS, vPos);
-
-
-    auto pOBBCollider = make_shared<OBBBoxCollider>(vSkillScale);
-    FloorSkillCollider->Add_Component(pOBBCollider);
-    FloorSkillCollider->Get_Collider()->Set_CollisionGroup(Monster_Skill);
-
-    FloorSkillCollider->Add_Component(make_shared<AttackColliderInfoScript>());
-    FloorSkillCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
-    FloorSkillCollider->Add_Component(make_shared<FloorSkill_Script>(desc));
-    FloorSkillCollider->Get_Script<FloorSkill_Script>()->Init();
-
-    FloorSkillCollider->Set_Name(L"Boss_Giant_Mir_FloorSkillCollider");
-
-    EVENTMGR.Create_Object(FloorSkillCollider);
 }
 
 void Boss_Giant_Mir_FSM::Create_Meteor()
@@ -1208,7 +1139,7 @@ void Boss_Giant_Mir_FSM::Create_Meteor()
 
                 _float4 vSkillPos = vPlayerPos + _float4{ fOffSetX, 10.f, fOffSetZ, 0.f };
 
-                Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, KNOCKDOWN_SKILL, 10.f);
+                Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 1.f, desc, KNOCKDOWN_SKILL, 10.f);
             }
 
             m_tMeteorCoolTime.fAccTime = 0.f;

@@ -947,7 +947,7 @@ void Undead_Priest_FSM::skill_1100()
         desc.fLimitDistance = 20.f;
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-        Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Undead_Priest_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f);
     }
     
     Set_Gaze();
@@ -989,7 +989,7 @@ void Undead_Priest_FSM::skill_2100()
         if (!m_pTarget.expired())
             vSkillPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float3::Up * 5.f;
      
-        Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Undead_Priest_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f);
     }
 
     Set_Gaze();
@@ -1027,7 +1027,7 @@ void Undead_Priest_FSM::skill_3100()
         if (!m_pTarget.expired())
             vSkillPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float3::Up * 5.f;
 
-        Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Undead_Priest_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f);
     }
     
     Set_Gaze();
@@ -1143,51 +1143,3 @@ _float3 Undead_Priest_FSM::Calculate_TargetTurnVector()
         return m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz() - m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
 }
 
-void Undead_Priest_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
-{
-    shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
-
-    m_pSkillCollider = SkillCollider;
-
-    m_pSkillCollider.lock()->GetOrAddTransform();
-    m_pSkillCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, vPos);
-
-    auto pSphereCollider = make_shared<SphereCollider>(fSkillRange);
-    pSphereCollider->Set_CenterPos(_float3{ vPos.x,vPos.y, vPos.z });
-    m_pSkillCollider.lock()->Add_Component(pSphereCollider);
-
-    m_pSkillCollider.lock()->Get_Collider()->Set_CollisionGroup(Monster_Skill);
-
-    m_pSkillCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
-    m_pSkillCollider.lock()->Get_Collider()->Set_Activate(true);
-    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
-    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
-    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
-    m_pSkillCollider.lock()->Set_Name(L"Undead_Priest_SkillCollider");
-    m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
-    m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
-
-    EVENTMGR.Create_Object(m_pSkillCollider.lock());
-}
-
-void Undead_Priest_FSM::Create_InstallationSkillCollider(const _float4& vPos, _float fSkillRange, INSTALLATIONSKILLDESC desc)
-{
-    shared_ptr<GameObject> InstallationSkillCollider = make_shared<GameObject>();
-
-    InstallationSkillCollider->GetOrAddTransform();
-    InstallationSkillCollider->Get_Transform()->Set_State(Transform_State::POS, vPos);
-
-    auto pSphereCollider = make_shared<SphereCollider>(fSkillRange);
-    pSphereCollider->Set_CenterPos(_float3{ vPos.x,vPos.y, vPos.z });
-    InstallationSkillCollider->Add_Component(pSphereCollider);
-    InstallationSkillCollider->Get_Collider()->Set_CollisionGroup(Monster_Skill);
-
-    InstallationSkillCollider->Add_Component(make_shared<AttackColliderInfoScript>());
-    InstallationSkillCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
-    InstallationSkillCollider->Add_Component(make_shared<InstallationSkill_Script>(desc));
-    InstallationSkillCollider->Get_Script<InstallationSkill_Script>()->Init();
-
-    InstallationSkillCollider->Set_Name(L"Undead_Priest_InstallationSkillCollider");
-
-    EVENTMGR.Create_Object(InstallationSkillCollider);
-}

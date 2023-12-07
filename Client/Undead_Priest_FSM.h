@@ -110,9 +110,6 @@ private:
 	void Set_AttackSkill();
 
 	_float3 Calculate_TargetTurnVector();
-	void Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage);
-	void Create_InstallationSkillCollider(const _float4& vPos, _float fSkillRange, INSTALLATIONSKILLDESC desc);
-
 
 private:
 	STATE m_eCurState = STATE::b_idle;
