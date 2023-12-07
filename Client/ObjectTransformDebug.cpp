@@ -20,7 +20,7 @@ void ObjectTransformDebug::Tick()
 	
 	//fontRenderer->Get_Text() = L"X : " + to_wstring(vTargetPos.x) + L"/ Y : " + to_wstring(vTargetPos.y) + L"/ Z : " + to_wstring(vTargetPos.z);
 	
-	auto pPlayer = CUR_SCENE->Get_GameObject(L"Player");
+	auto pPlayer = GET_PLAYER;
 
 	if (!pPlayer)
 		return;

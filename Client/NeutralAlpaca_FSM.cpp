@@ -34,7 +34,7 @@ HRESULT NeutralAlpaca_FSM::Init()
         m_bInitialize = true;
     }
 
-    m_pTarget = CUR_SCENE->Get_GameObject(L"Player");
+    m_pTarget = GET_PLAYER;
 
     return S_OK;
 }

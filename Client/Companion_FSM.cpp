@@ -9,7 +9,7 @@ _bool Companion_FSM::Can_Interact()
 	if (_float3::Transform(pos, CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_ViewMat()).z < 0)
 		return false;
 
-	auto pPlayer = CUR_SCENE->Get_GameObject(L"Player");
+	auto pPlayer = GET_PLAYER;
 
 	if (pPlayer)
 	{
@@ -30,7 +30,7 @@ _bool Companion_FSM::Go_Follow()
 	/*if (_float3::Transform(pos, CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_ViewMat()).z < 0)
 		return false;*/
 
-	auto pPlayer = CUR_SCENE->Get_GameObject(L"Player");
+	auto pPlayer = GET_PLAYER;
 
 	if (pPlayer)
 	{

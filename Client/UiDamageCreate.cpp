@@ -15,7 +15,7 @@ HRESULT UiDamageCreate::Init()
     if (m_pOwner.expired())
         return E_FAIL;
 
-    m_pPlayer = CUR_SCENE->Get_GameObject(L"Player");
+    m_pPlayer = GET_PLAYER;
     m_pCamera = CUR_SCENE->Get_Camera(L"Default");
 
     if (true == m_bIsInit)

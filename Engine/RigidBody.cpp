@@ -29,9 +29,9 @@ void RigidBody::Late_Tick()
 	
 	_float3 vCenterPos = Get_Owner()->Get_CullPos();
 	_float fRadius = Get_Owner()->Get_CullRadius();
-	if(CUR_SCENE && CUR_SCENE->Get_GameObject(L"Player"))
+	if(CUR_SCENE && CUR_SCENE->Get_Player())
 	{
-		_float3 vPlayerPos = CUR_SCENE->Get_GameObject(L"Player")->Get_Transform()->Get_State(Transform_State::POS).xyz();
+		_float3 vPlayerPos = CUR_SCENE->Get_Player()->Get_Transform()->Get_State(Transform_State::POS).xyz();
 
 		if (fRadius == 0.f)
 			m_pRigidBody->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, false);

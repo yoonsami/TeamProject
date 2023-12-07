@@ -48,7 +48,8 @@ public:
 	shared_ptr<GameObject>			Get_UICamera();
 	shared_ptr<GameObject>			Get_MainCamera();
 	shared_ptr<GameObject>			Get_GameObject(const wstring& name);
-	
+	shared_ptr<GameObject>			Get_Player() { return m_pPlayer.lock(); }
+
 	_bool							Is_Static(shared_ptr<GameObject> obj);
 	void							Set_Name(const wstring& name)		{ m_strSceneName = name; }
 	void							Set_SceneState(SCENE_STATE state)	{ m_eSceneState = state; }
@@ -137,6 +138,7 @@ protected:
 	_uint m_iLevelIndex = 0;
 	_float4 m_vFrustumFarCorner[4];
 	_float4 m_vOffsets[14];
+	weak_ptr<GameObject> m_pPlayer;
 
 protected:
 	list<shared_ptr<GameObject>> m_StaticObject;

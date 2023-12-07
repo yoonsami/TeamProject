@@ -204,7 +204,7 @@ HRESULT MirScene::Load_Scene()
 	Load_Ui(player);
 	//Load_Water();
 
-	auto pPlayer = Get_GameObject(L"Player");
+	auto pPlayer = Get_Player();
 	if (nullptr != pPlayer)
 	{
 		for(_uint i = 1 ; i < IDX(HERO::MAX); ++i)

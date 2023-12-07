@@ -29,7 +29,7 @@ void GranseedChildren_FSM::Tick()
 
 void GranseedChildren_FSM::InteractWithPlayer()
 {
-	auto pPlayer = CUR_SCENE->Get_GameObject(L"Player");
+	auto pPlayer = GET_PLAYER;
 	m_vDirToTarget = (pPlayer->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
 	m_vDirToTarget.y = 0;
 	m_eCurState = STATE::talk_01;
@@ -354,7 +354,7 @@ void GranseedChildren_FSM::Hide_Init()
 {
 	m_fStateAcc = 0.f;
 
-	auto pPlayer = CUR_SCENE->Get_GameObject(L"Player");
+	auto pPlayer = GET_PLAYER;
 	for (_uint i = 0; i < 5; ++i)
 	{
 		auto object = CUR_SCENE->Get_GameObject(L"Hide_Orctong" + to_wstring(i));

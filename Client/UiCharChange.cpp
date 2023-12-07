@@ -176,7 +176,7 @@ void UiCharChange::Use_Skill_Help()
             if (HERO::MAX == eValue)
                 return;
 
-            GET_PLAYER;
+            auto pPlayer = GET_PLAYER;
             if (nullptr == pPlayer)
                 return;
 
@@ -207,7 +207,7 @@ void UiCharChange::Use_Skill_Help()
             if (HERO::MAX == eValue)
                 return;
 
-            GET_PLAYER;
+            auto pPlayer = GET_PLAYER;
             if (nullptr == pPlayer)
                 return;
 
@@ -238,7 +238,7 @@ void UiCharChange::Use_Skill_Help()
             if (HERO::MAX == eValue)
                 return;
 
-            GET_PLAYER;
+            auto pPlayer = GET_PLAYER;
             if (nullptr == pPlayer)
                 return;
 
@@ -323,7 +323,7 @@ void UiCharChange::Change_Hero()
                 m_pSkillHelp[2].lock()->Set_Render(true);
 
             m_bIsChange = true;
-            auto pScript = CUR_SCENE->Get_GameObject(L"Player")->Get_Script<HeroChangeScript>();
+            auto pScript = GET_PLAYER->Get_Script<HeroChangeScript>();
             pScript->Change_Hero(eValue);
         }
         else if (true == m_bIsChange)
@@ -332,7 +332,7 @@ void UiCharChange::Change_Hero()
                 m_pSkillHelp[0].lock()->Set_Render(true);
 
             m_bIsChange = false;
-            auto pScript = CUR_SCENE->Get_GameObject(L"Player")->Get_Script<HeroChangeScript>();
+            auto pScript = GET_PLAYER->Get_Script<HeroChangeScript>();
             pScript->Change_Player();
         }
 
@@ -354,7 +354,7 @@ void UiCharChange::Change_Hero()
                 m_pSkillHelp[2].lock()->Set_Render(true);
 
             m_bIsChange = true;
-            auto pScript = CUR_SCENE->Get_GameObject(L"Player")->Get_Script<HeroChangeScript>();
+            auto pScript = GET_PLAYER->Get_Script<HeroChangeScript>();
             pScript->Change_Hero(eValue);
         }
         else if (true == m_bIsChange)
@@ -363,7 +363,7 @@ void UiCharChange::Change_Hero()
                 m_pSkillHelp[1].lock()->Set_Render(true);
 
             m_bIsChange = false;
-            auto pScript = CUR_SCENE->Get_GameObject(L"Player")->Get_Script<HeroChangeScript>();
+            auto pScript = GET_PLAYER->Get_Script<HeroChangeScript>();
             pScript->Change_Player();
         }
     }
@@ -384,7 +384,7 @@ void UiCharChange::Change_Hero()
                 m_pSkillHelp[2].lock()->Set_Render(false);
 
             m_bIsChange = true;
-            auto pScript = CUR_SCENE->Get_GameObject(L"Player")->Get_Script<HeroChangeScript>();
+            auto pScript = GET_PLAYER->Get_Script<HeroChangeScript>();
             pScript->Change_Hero(eValue);
         }
         else if (true == m_bIsChange)
@@ -393,7 +393,7 @@ void UiCharChange::Change_Hero()
                 m_pSkillHelp[2].lock()->Set_Render(true);
 
             m_bIsChange = false;
-            auto pScript = CUR_SCENE->Get_GameObject(L"Player")->Get_Script<HeroChangeScript>();
+            auto pScript = GET_PLAYER->Get_Script<HeroChangeScript>();
             pScript->Change_Player();
         }
     }

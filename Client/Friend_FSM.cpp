@@ -85,6 +85,11 @@ HRESULT Friend_FSM::Init()
 void Friend_FSM::Tick()
 {
     State_Tick();
+	if (!m_pAttackCollider.expired())
+	{
+		//m_pAttack transform set forward
+		m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.5f + _float3::Up);
+	}
 }
 
 void Friend_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
@@ -265,7 +270,7 @@ void Friend_FSM::fall_end_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_CurrentAnim(L"fall_end",  false, 10.f);
+	animator->Set_CurrentAnim(L"fall_end",  false, 2.f);
 	m_fStateAcc = 0.f;
 }
 
@@ -418,7 +423,7 @@ void Friend_FSM::ATTACK()
 			Add_And_Set_Effect(L"Spike_300100");
 		if (Init_CurFrame(30))
 		{
-			//CAMERA_SHAKE(0.4f, 0.5f);
+			CAMERA_SHAKE(0.4f, 0.5f);
 			FORWARDMOVINGSKILLDESC desc;
 			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 			desc.fMoveSpeed = 0.f;
@@ -511,25 +516,25 @@ void Friend_FSM::ATTACK_Init()
     case HERO::PLAYER:
         break;
     case HERO::ACE3:
-        animator->Set_NextTweenAnim(L"skill_500100", 0.15f, false, 1.5f);
+        animator->Set_NextTweenAnim(L"skill_500100", 0.15f, false, 1.f);
         break;
     case HERO::KYLE:
-        animator->Set_NextTweenAnim(L"skill_500100", 0.15f, false, 1.5f);
+        animator->Set_NextTweenAnim(L"skill_500100", 0.15f, false, 1.f);
         break;
     case HERO::YEOPO:
-        animator->Set_NextTweenAnim(L"skill_501100", 0.15f, false, 1.5f);
+        animator->Set_NextTweenAnim(L"skill_501100", 0.15f, false, 1.f);
         break;
     case HERO::DELLONS:
-        animator->Set_NextTweenAnim(L"skill_400100", 0.15f, false, 1.5f);
+        animator->Set_NextTweenAnim(L"skill_400100", 0.15f, false, 1.f);
         break;
     case HERO::SPIKE:
-        animator->Set_NextTweenAnim(L"skill_300100", 0.15f, false, 1.5f);
+        animator->Set_NextTweenAnim(L"skill_300100", 0.15f, false, 1.f);
         break;
 	case HERO::YEONHEE:
-		animator->Set_NextTweenAnim(L"skill_501100", 0.15f, false, 1.5f);
+		animator->Set_NextTweenAnim(L"skill_501100", 0.15f, false, 1.f);
 		break;
 	case HERO::SHANE:
-		animator->Set_NextTweenAnim(L"skill_502100", 0.15f, false, 1.5f);
+		animator->Set_NextTweenAnim(L"skill_502100", 0.15f, false, 1.f);
 		break;
     case HERO::MAX:
         break;
@@ -564,5 +569,11 @@ void Friend_FSM::EXIT_Init()
         m_pWeapon.lock()->Add_Component(script);
 		script->Init();
     }
+
+	if(!m_pAttackCollider.expired())
+		EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+
+	if (!m_pDellonsWraith.expired())
+		EVENTMGR.Delete_Object(m_pDellonsWraith.lock());
    
 }

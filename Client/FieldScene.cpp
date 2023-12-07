@@ -326,6 +326,8 @@ void FieldScene::Load_Terrain()
 		file->Read<_float3>(loadedVertices[i].vPosition);
 		file->Read<_float2>(loadedVertices[i].vTexCoord);
 		file->Read<_float3>(loadedVertices[i].vNormal);
+		file->Read<_float3>(loadedVertices[i].vTangent);
+
 	}
 
 	// 인덱스의 개수와 정보 로드
