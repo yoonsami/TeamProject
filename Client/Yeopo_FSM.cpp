@@ -1385,6 +1385,9 @@ void Yeopo_FSM::skill_100300_Init()
 
 void Yeopo_FSM::skill_200100()
 {
+    if (Init_CurFrame(9))
+        Add_Effect(L"Yeopo_200100");
+
     if (Init_CurFrame(10))
 	{
 		FORWARDMOVINGSKILLDESC desc;
