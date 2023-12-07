@@ -131,7 +131,7 @@ PBR_OUT PBRShade(
     in float3 lightColor,
     in float shadowAmount
 )
-{
+{   
     float3 viewLightPos = mul(float4(lights[lightIndex].vPosition.xyz, 1.f), V).xyz;
     float3 pointToLight = normalize(viewLightPos - viewPosition);
     float3 cameraPosition = 0.f;
@@ -140,7 +140,7 @@ PBR_OUT PBRShade(
     
     float3 ambient = ambientMap * albedoMap * 0.2f;
     float3 color = 0.f;
-    float3 eyeDir = normalize(viewPosition - cameraPosition);
+     float3 eyeDir = normalize(viewPosition - cameraPosition);
     float3 halfVector = normalize(pointToLight + pointToCamera);
     
     float3 diffuse = CalculateLambertianBRDF(albedoMap);
