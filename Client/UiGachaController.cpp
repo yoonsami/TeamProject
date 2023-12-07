@@ -69,14 +69,14 @@ void UiGachaController::Tick()
         Start_All_Open();
 
     //test code
-    if (KEYTAP(KEY_TYPE::Q))
+    if (KEYTAP(KEY_TYPE::C))
     {
         Create_Gacha_Card();
     }
-    if (KEYTAP(KEY_TYPE::E))
-    {
-        Delete_All();
-    }
+    //if (KEYTAP(KEY_TYPE::E))
+    //{
+    //    Delete_All();
+    //}
 
     switch (m_eState)
     {

@@ -142,7 +142,6 @@ enum class LevelInfo
 
 enum class NPCTYPE
 {
-	TEST,
 	QUEST,
 	GACHA,
 	POTION,
