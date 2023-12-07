@@ -26,10 +26,19 @@ HRESULT DellonsWraith_FSM::Init()
             animator->Set_CurrentAnim(L"FX_DellonsWraith_skill_30010", true, 1.f);
             m_eCurState = STATE::FX_DellonsWraith_skill_30010;
         }
+
+        if (!m_pOwner.expired())
+            m_eOwnerType = (ObjectType)m_pOwner.lock()->Get_ObjectGroup();
+        
         shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
         attackCollider->GetOrAddTransform();
         attackCollider->Add_Component(make_shared<SphereCollider>(2.5f));
-        attackCollider->Get_Collider()->Set_CollisionGroup(Player_Attack);
+        
+        if (m_eOwnerType == OBJ_PLAYER)
+            attackCollider->Get_Collider()->Set_CollisionGroup(Player_Attack);
+        else if (m_eOwnerType == OBJ_COMPANION)
+            attackCollider->Get_Collider()->Set_CollisionGroup(Companion_Attack);
+
 
         m_pAttackCollider = attackCollider;
 
@@ -493,7 +502,12 @@ void DellonsWraith_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _
     SkillCollider->GetOrAddTransform();
     SkillCollider->Get_Transform()->Set_State(Transform_State::POS, vPos);
     SkillCollider->Add_Component(make_shared<SphereCollider>(fSkillRange));
-    SkillCollider->Get_Collider()->Set_CollisionGroup(Player_Skill);
+
+    if (m_eOwnerType == OBJ_PLAYER)
+        SkillCollider->Get_Collider()->Set_CollisionGroup(Player_Skill);
+    else if (m_eOwnerType == OBJ_COMPANION)
+        SkillCollider->Get_Collider()->Set_CollisionGroup(Companion_Skill);
+
 
     SkillCollider->Add_Component(make_shared<AttackColliderInfoScript>());
     SkillCollider->Get_Collider()->Set_Activate(true);

@@ -73,5 +73,7 @@ private:
 private:
 	STATE m_eCurState = STATE::FX_DellonsWraith_skill_30010;
 	STATE m_ePreState = STATE::NONE;
+	
+	ObjectType m_eOwnerType = OBJ_PLAYER;
 };
 

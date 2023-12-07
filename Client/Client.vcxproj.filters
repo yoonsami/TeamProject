@@ -412,6 +412,12 @@
     <Filter Include="02.Component\01.FSM\08.Companion_FSM\00.Companion_Spike">
       <UniqueIdentifier>{8fe64f9c-61b9-4358-bedd-95d993ee148b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\01.FSM\08.Companion_FSM\01.Companion_Dellons">
+      <UniqueIdentifier>{e1e8a37e-bcf2-4bd6-b1ae-ef1574ca1016}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\08.Companion_FSM\02.Companion_Shane_FSM">
+      <UniqueIdentifier>{cfaa2eb9-641c-42a3-a34e-e88d8b917dc3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -642,9 +648,6 @@
     <ClInclude Include="UiMonsterHp.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\11.UiMonsterHp</Filter>
     </ClInclude>
-    <ClInclude Include="Shane_FSM.h">
-      <Filter>02.Component\01.FSM\01.Hero_FSM\07.Shane_FSM</Filter>
-    </ClInclude>
     <ClInclude Include="Shane_Clone_FSM.h">
       <Filter>02.Component\01.FSM\03.Special_FSM\03.Shane_Clone_FSM</Filter>
     </ClInclude>
@@ -820,6 +823,15 @@
     </ClInclude>
     <ClInclude Include="Companion_Spike_FSM.h">
       <Filter>02.Component\01.FSM\08.Companion_FSM\00.Companion_Spike</Filter>
+    </ClInclude>
+    <ClInclude Include="Companion_Dellons_FSM.h">
+      <Filter>02.Component\01.FSM\08.Companion_FSM\01.Companion_Dellons</Filter>
+    </ClInclude>
+    <ClInclude Include="Companion_Shane_FSM.h">
+      <Filter>02.Component\01.FSM\08.Companion_FSM\02.Companion_Shane_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Shane_FSM.h">
+      <Filter>02.Component\01.FSM\01.Hero_FSM\07.Shane_FSM</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1196,6 +1208,12 @@
     </ClCompile>
     <ClCompile Include="Companion_FSM.cpp">
       <Filter>02.Component\01.FSM\08.Companion_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="Companion_Dellons_FSM.cpp">
+      <Filter>02.Component\01.FSM\08.Companion_FSM\01.Companion_Dellons</Filter>
+    </ClCompile>
+    <ClCompile Include="Companion_Shane_FSM.cpp">
+      <Filter>02.Component\01.FSM\08.Companion_FSM\02.Companion_Shane_FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
