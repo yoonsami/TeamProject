@@ -199,6 +199,10 @@
     <ClInclude Include="AttackColliderInfoScript.h" />
     <ClInclude Include="Boss_Giant_Mir_FSM.h" />
     <ClInclude Include="Boss_Giant_Mir_Parts_FSM.h" />
+    <ClInclude Include="DeleteWhenAnimFinish.h" />
+    <ClInclude Include="DeleteWhenTimePassed.h" />
+    <ClInclude Include="Companion_FSM.h" />
+    <ClInclude Include="Companion_Spike_FSM.h" />
     <ClInclude Include="DestroyBuilding_FSM.h" />
     <ClInclude Include="DragonBallMonster_FSM.h" />
     <ClInclude Include="DragonBall_FSM.h" />
@@ -228,7 +232,9 @@
     <ClInclude Include="UiBossDialog.h" />
     <ClInclude Include="UiCardDeckSwitch.h" />
     <ClInclude Include="UiCostumeController.h" />
+    <ClInclude Include="UiDialogController.h" />
     <ClInclude Include="UIInteraction.h" />
+    <ClInclude Include="UiMessageNotHere.h" />
     <ClInclude Include="UiQuestController.h" />
     <ClInclude Include="UiSettingController.h" />
     <ClInclude Include="UIShop.h" />
@@ -324,6 +330,10 @@
     <ClCompile Include="AttackColliderInfoScript.cpp" />
     <ClCompile Include="Boss_Giant_Mir_FSM.cpp" />
     <ClCompile Include="Boss_Giant_Mir_Parts_FSM.cpp" />
+    <ClCompile Include="DeleteWhenAnimFinish.cpp" />
+    <ClCompile Include="DeleteWhenTimePassed.cpp" />
+    <ClCompile Include="Companion_FSM.cpp" />
+    <ClCompile Include="Companion_Spike_FSM.cpp" />
     <ClCompile Include="DestroyBuilding_FSM.cpp" />
     <ClCompile Include="DragonBallMonster_FSM.cpp" />
     <ClCompile Include="DragonBall_FSM.cpp" />
@@ -353,7 +363,9 @@
     <ClCompile Include="UiBossDialog.cpp" />
     <ClCompile Include="UiCardDeckSwitch.cpp" />
     <ClCompile Include="UiCostumeController.cpp" />
+    <ClCompile Include="UiDialogController.cpp" />
     <ClCompile Include="UIInteraction.cpp" />
+    <ClCompile Include="UiMessageNotHere.cpp" />
     <ClCompile Include="UiQuestController.cpp" />
     <ClCompile Include="UiSettingController.cpp" />
     <ClCompile Include="UIShop.cpp" />
@@ -461,6 +473,7 @@
     <FxCompile Include="..\Shaders\Shader_Particle.fx" />
     <FxCompile Include="..\Shaders\Shader_Particle2.fx" />
     <FxCompile Include="..\Shaders\Shader_SSAO.fx" />
+    <FxCompile Include="..\Shaders\Shader_Terrain.fx" />
     <FxCompile Include="..\Shaders\Shader_Trail.fx" />
     <FxCompile Include="..\Shaders\Shadow.fx" />
     <FxCompile Include="..\Shaders\SkyBox.fx" />

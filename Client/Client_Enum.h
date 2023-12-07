@@ -82,6 +82,7 @@ enum ObjectType
 	OBJ_PLAYER,
 	OBJ_MONSTER,
 	OBJ_NPC,
+	OBJ_COMPANION,
 	OBJ_MAPOBJECT,
 	OBJ_END
 };
@@ -95,6 +96,10 @@ enum CollisionGroup
 	Monster_Body,
 	Monster_Attack,
 	Monster_Skill,
+
+	Companion_Body,
+	Companion_Attack,
+	Companion_Skill,
 
 	MAPObject,
 
@@ -142,6 +147,7 @@ enum class LevelInfo
 
 enum class NPCTYPE
 {
+	TEST,
 	QUEST,
 	GACHA,
 	POTION,
@@ -151,6 +157,7 @@ enum class NPCTYPE
 
 enum class QUESTINDEX
 {
+
 	TRY_GACHA,
 	KILL_ALPACA,
 	KILL_DELLONS,

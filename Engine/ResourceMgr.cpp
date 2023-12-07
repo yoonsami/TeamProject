@@ -708,6 +708,12 @@ void ResourceMgr::CreateDefaultShader()
 		shader->Set_ShaderType(SHADER_TYPE::DEFERRED);
 	}
 	{
+		wstring ShaderTag = L"Shader_Terrain.fx";
+		Load<Shader>(ShaderTag, ShaderTag);
+		auto shader = Get<Shader>(ShaderTag);
+		shader->Set_ShaderType(SHADER_TYPE::DEFERRED);
+	}
+	{
 		wstring ShaderTag = L"Shader_Effect.fx";
 		Load<Shader>(ShaderTag, ShaderTag);
 		auto shader = Get<Shader>(ShaderTag);

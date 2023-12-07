@@ -391,6 +391,27 @@
     <Filter Include="01.Scene\00.PlayScene\04.Field">
       <UniqueIdentifier>{99a38b1a-eda8-4b71-8883-93afc5ae7515}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\05.Object\06.Delete">
+      <UniqueIdentifier>{1a4f70ac-4c43-46a2-8545-042166a43fee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\05.Object\06.Delete\00.DeleteWhenAnimFinish">
+      <UniqueIdentifier>{865f67c5-c749-49bf-b51a-3082b463cb40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\05.Object\06.Delete\01.DeleteWhenTimePassed">
+      <UniqueIdentifier>{f5ba07f0-e99b-48a4-8ac1-ac52e341a982}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\25.UiMessageNotHere">
+      <UniqueIdentifier>{0d6d8730-3750-42a9-94b4-7c7b5678f134}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\26.UiDialogController">
+      <UniqueIdentifier>{9dc67e6a-38ec-42b9-9b39-7daa819fe26f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\08.Companion_FSM">
+      <UniqueIdentifier>{f15824bb-b01a-4f5f-8227-244193e3caa6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\08.Companion_FSM\00.Companion_Spike">
+      <UniqueIdentifier>{8fe64f9c-61b9-4358-bedd-95d993ee148b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -782,6 +803,24 @@
     <ClInclude Include="FieldScene.h">
       <Filter>01.Scene\00.PlayScene\04.Field</Filter>
     </ClInclude>
+    <ClInclude Include="DeleteWhenAnimFinish.h">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\06.Delete\00.DeleteWhenAnimFinish</Filter>
+    </ClInclude>
+    <ClInclude Include="DeleteWhenTimePassed.h">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\06.Delete\01.DeleteWhenTimePassed</Filter>
+    </ClInclude>
+    <ClInclude Include="UiMessageNotHere.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessageNotHere</Filter>
+    </ClInclude>
+    <ClInclude Include="UiDialogController.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\26.UiDialogController</Filter>
+    </ClInclude>
+    <ClInclude Include="Companion_FSM.h">
+      <Filter>02.Component\01.FSM\08.Companion_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Companion_Spike_FSM.h">
+      <Filter>02.Component\01.FSM\08.Companion_FSM\00.Companion_Spike</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1140,6 +1179,24 @@
     <ClCompile Include="FieldScene.cpp">
       <Filter>01.Scene\00.PlayScene\04.Field</Filter>
     </ClCompile>
+    <ClCompile Include="DeleteWhenAnimFinish.cpp">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\06.Delete\00.DeleteWhenAnimFinish</Filter>
+    </ClCompile>
+    <ClCompile Include="DeleteWhenTimePassed.cpp">
+      <Filter>02.Component\00.MonoBehaviour\05.Object\06.Delete\01.DeleteWhenTimePassed</Filter>
+    </ClCompile>
+    <ClCompile Include="UiMessageNotHere.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessageNotHere</Filter>
+    </ClCompile>
+    <ClCompile Include="UiDialogController.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\26.UiDialogController</Filter>
+    </ClCompile>
+    <ClCompile Include="Companion_Spike_FSM.cpp">
+      <Filter>02.Component\01.FSM\08.Companion_FSM\00.Companion_Spike</Filter>
+    </ClCompile>
+    <ClCompile Include="Companion_FSM.cpp">
+      <Filter>02.Component\01.FSM\08.Companion_FSM</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -1231,6 +1288,9 @@
       <Filter>Shader\Common</Filter>
     </FxCompile>
     <FxCompile Include="..\Shaders\Water.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\Shader_Terrain.fx">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>

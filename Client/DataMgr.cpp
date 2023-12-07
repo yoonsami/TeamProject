@@ -1060,6 +1060,35 @@ void DataMgr::Initialize()
 
 
     m_CardInven.resize(60);
+
+
+    m_NpcDialog.resize(IDX(NPCTYPE::MAX));
+    for (_uint i = 0; i < IDX(NPCTYPE::MAX); ++i)
+        m_NpcDialog[i].resize(3);
+
+    m_NpcDialog[IDX(NPCTYPE::TEST)][0].push_back(L"이건 테스트 0-0");
+    m_NpcDialog[IDX(NPCTYPE::TEST)][0].push_back(L"이건 테스트 0-1");
+    m_NpcDialog[IDX(NPCTYPE::TEST)][0].push_back(L"이건 테스트 0-2");
+
+    m_NpcDialog[IDX(NPCTYPE::TEST)][1].push_back(L"이건 테스트 1-0");
+    m_NpcDialog[IDX(NPCTYPE::TEST)][1].push_back(L"이건 테스트 1-1");
+    m_NpcDialog[IDX(NPCTYPE::TEST)][1].push_back(L"이건 테스트 1-2");
+
+    m_NpcDialog[IDX(NPCTYPE::TEST)][2].push_back(L"이건 테스트 2-0");
+    m_NpcDialog[IDX(NPCTYPE::TEST)][2].push_back(L"이건 테스트 2-1");
+    m_NpcDialog[IDX(NPCTYPE::TEST)][2].push_back(L"이건 테스트 2-2");
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 _uint DataMgr::Get_Dialog_Size(QUESTINDEX eIndex, CUR_QUEST eType)
@@ -1199,5 +1228,4 @@ void DataMgr::Sort_By_Star()
 {
     sort(m_CardInven.begin(), m_CardInven.end(), SortByStar);
 }
-
 
