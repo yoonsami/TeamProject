@@ -197,8 +197,8 @@ HRESULT KrisScene::Load_Scene()
 	Load_Camera(player);
 	Load_MapFile(L"KrisMap", player);
 
-	Load_Companion(L"Spike", player);
-	Load_Companion(L"Dellons", player);
+	//Load_Companion(L"Spike", player);
+	//Load_Companion(L"Dellons", player);
 	Load_Companion(L"Shane", player);
 
 	Load_Monster(5, L"Alpaca_White", player);
@@ -208,9 +208,9 @@ HRESULT KrisScene::Load_Scene()
 	Load_Monster(5, L"Bad_Alpaca_Brown", player);
 	Load_Monster(5, L"Bad_Alpaca_Black", player);
 	Load_Monster(2, L"Wolf", player);
-	Load_Monster(2, L"Silversword_Soldier", player);
-	Load_Monster(2, L"Succubus_Scythe", player);
-	Load_Monster(2, L"Undead_Priest", player);
+	Load_Monster(10, L"Silversword_Soldier", player);
+	//Load_Monster(2, L"Succubus_Scythe", player);
+	//Load_Monster(2, L"Undead_Priest", player);
 
 	////Load_Boss_Spike(player);				
 	Load_Boss_Dellons(player);				
@@ -278,7 +278,7 @@ shared_ptr<GameObject> KrisScene::Load_Player()
 			controller->Create_Controller();
 		}
 		ObjPlayer->Set_DrawShadow(true);
-		ObjPlayer->Set_ObjectGroup(OBJ_PLAYER);
+		ObjPlayer->Set_ObjectGroup(OBJ_TEAM);
 
 		Add_GameObject(ObjPlayer,true);
 
@@ -681,7 +681,7 @@ void KrisScene::Load_Companion(const wstring& strCompanionTag, shared_ptr<GameOb
 		ObjCompanion->Set_Name(CompanionName);
 		ObjCompanion->Set_VelocityMap(true);
 		ObjCompanion->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.8f, 0.5f })); //obbcollider
-		ObjCompanion->Get_Collider()->Set_CollisionGroup(Companion_Body);
+		ObjCompanion->Get_Collider()->Set_CollisionGroup(Player_Body);
 		ObjCompanion->Get_Collider()->Set_Activate(true);
 
 		{
@@ -695,7 +695,7 @@ void KrisScene::Load_Companion(const wstring& strCompanionTag, shared_ptr<GameOb
 			controller->Create_Controller();
 		}
 		ObjCompanion->Set_DrawShadow(true);
-		ObjCompanion->Set_ObjectGroup(OBJ_COMPANION);
+		ObjCompanion->Set_ObjectGroup(OBJ_TEAM);
 		Add_GameObject(ObjCompanion);
 
 

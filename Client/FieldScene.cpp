@@ -250,7 +250,7 @@ shared_ptr<GameObject> FieldScene::Load_Player()
 			controller->Create_Controller();
 		}
 		ObjPlayer->Set_DrawShadow(true);
-		ObjPlayer->Set_ObjectGroup(OBJ_PLAYER);
+		ObjPlayer->Set_ObjectGroup(OBJ_TEAM);
 
 		Add_GameObject(ObjPlayer,true);
 
@@ -326,6 +326,7 @@ void FieldScene::Load_Terrain()
 		file->Read<_float3>(loadedVertices[i].vPosition);
 		file->Read<_float2>(loadedVertices[i].vTexCoord);
 		file->Read<_float3>(loadedVertices[i].vNormal);
+		file->Read<_float3>(loadedVertices[i].vTangent);
 	}
 
 	// 인덱스의 개수와 정보 로드

@@ -129,7 +129,6 @@ private:
 	_float4 m_vPatrolFirstPos = { 0.f,0.f,0.f,1.f };
 
 	_bool m_bSetPattern = false;
-	_bool m_bDetected = false;
 	_bool m_bPatrolMove = false;
 
 	COOLTIMEINFO m_tAttackCoolTime = { 4.f, 0.f };

@@ -205,6 +205,41 @@ _bool FSM::Target_In_DetectRange()
 	return bFlag;
 }
 
+_bool FSM::TargetGroup_In_DetectRange(_uint eType)
+{
+	_bool bFlag = false;
+
+	auto& gameObjects = CUR_SCENE->Get_Objects();
+	shared_ptr<GameObject> target;
+	_float fMinDistSQ = FLT_MAX;
+	for (auto& gameObject : gameObjects)
+	{
+		if (gameObject->Get_ObjectGroup() != eType)
+			continue;
+
+		if (gameObject->Get_CurHp() <= 0.f)
+			continue;
+
+		_float3 vOwnerPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
+		_float3 vObjectPos = gameObject->Get_Transform()->Get_State(Transform_State::POS).xyz();
+		_float distSQ = (vOwnerPos - vObjectPos).LengthSquared();
+		
+		if (distSQ < m_fDetectRange * m_fDetectRange)
+		{
+			bFlag = true;
+		}
+
+		if (fMinDistSQ > distSQ)
+		{
+			//Target Setting
+			fMinDistSQ = distSQ;
+			m_pTarget = gameObject;
+		}
+	}
+
+	return bFlag;
+}
+
 _bool FSM::Target_In_GazeCheckRange()
 {
 	_bool bFlag = false;
@@ -282,6 +317,19 @@ void FSM::Set_DirToTargetOrInput(_uint eType)
 	}
 	else
 		m_vDirToTarget = Get_InputDirVector();
+}
+
+void FSM::Set_DirToTarget_Monster(_uint eType)
+{
+	m_pTarget.reset();
+
+	m_pTarget = Find_TargetInFrustum(eType, false);
+
+	if (!m_pTarget.expired())
+	{
+		m_vDirToTarget = (m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+		m_vDirToTarget.y = 0.f;
+	}
 }
 
 

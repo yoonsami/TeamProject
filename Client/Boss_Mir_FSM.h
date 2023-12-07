@@ -191,7 +191,6 @@ private:
 	COOLTIMEINFO m_tMeteorCoolTime = { 1.5f, 0.f };
 	
 	_bool m_bIntroCam = false;
-	_bool m_bDetected = false;
 	_bool m_bTurnMotion = false;
 	_bool m_bSummonMeteor = false;
 
