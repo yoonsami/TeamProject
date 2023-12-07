@@ -495,7 +495,11 @@ void ImGui_Manager::Frame_SelcetObjectManager()
                         continue;
 
                     if (obj->Get_Model()->Get_ModelTag() == m_pMapObjects[m_iObjects]->Get_Model()->Get_ModelTag())
+                    {
+                        MapObjectScript::MAPOBJDESC& tempDesc = obj->Get_Script<MapObjectScript>()->Get_DESC();
+                        tempDesc.bCullNone = CurObjectDesc.bCullNone;
                         obj->Get_ModelRenderer()->Set_PassType((ModelRenderer::INSTANCE_PASSTYPE)CurObjectDesc.bCullNone);
+                    }
                 }
             }
         }
