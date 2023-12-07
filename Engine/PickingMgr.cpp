@@ -288,7 +288,7 @@ shared_ptr<GameObject> PickingMgr::Pick_Mesh(_float2 screenPos, shared_ptr<Camer
 			auto& indices = mesh->Get_Geometry()->Get_Indices();
 
 			// 필요한 사이즈만 사용
-			for (_uint i = /*_uint(indices.size() * 0.2f)*/0; i < _uint(indices.size() /** 0.5f*/);)
+			for (_uint i = _uint(indices.size() * 0.1f)/*0*/; i < _uint(indices.size() * 0.5f);)
 			{
 				_float fDistance = 0.f;
 				_float3 vVtxPos[3] = {
