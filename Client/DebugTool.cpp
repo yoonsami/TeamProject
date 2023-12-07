@@ -322,6 +322,10 @@ void DebugTool::ModelOptionTab()
 			}
 		}
 
+		Separator();
+		DragFloat("X", &CUR_SCENE->g_rotX, 0.01f, 0.f, 360);
+		DragFloat("Y", &CUR_SCENE->g_rotY, 0.01f, 0.f, 360);
+		DragFloat("Z", &CUR_SCENE->g_rotZ, 0.01f, 0.f, 360);
 		EndTabItem();
 	}
 }

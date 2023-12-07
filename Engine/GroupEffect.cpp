@@ -332,7 +332,6 @@ void GroupEffect::Set_MemberEffectMaterials()
             shared_ptr<Material> material = make_shared<Material>();
 
             // Shader
-
 			shared_ptr<Shader> shader;
 			if (tDesc.bIsFDistortion)
 				shader = RESOURCES.Get<Shader>(L"Shader_Distortion.fx");
