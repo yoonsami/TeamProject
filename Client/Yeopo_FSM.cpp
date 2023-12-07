@@ -11,6 +11,8 @@
 #include "YeopoHorse_FSM.h"
 #include "CoolTimeCheckScript.h"
 #include "CharacterController.h"
+#include "DeleteWhenAnimFinish.h"
+#include "WeaponScript.h"
 
 Yeopo_FSM::Yeopo_FSM()
 {
@@ -1639,14 +1641,32 @@ void Yeopo_FSM::skill_300400_Init()
 
 void Yeopo_FSM::skill_400100()
 {
-    if (Init_CurFrame(20))
-        Add_And_Set_Effect(L"Yeopo_400100_slash");
+    // Effect 
+    if (Init_CurFrame(1))
+    {
+        Create_Chain(L"Wp_Yeopo_Skill", L"Wp_SQ_Yeopo_Skill_1", 0.f, 1.f, _float3(3.f, 3.f, 3.f), _float3(1.8f, 0.f, -7.f));
+        Create_Chain(L"Wp_Yeopo_Skill", L"Wp_SQ_Yeopo_Skill_2", 0.f, 1.f, _float3(3.f, 3.f, 3.f), _float3(2.5f, 0.f, -9.6f));
+        Create_Chain(L"Wp_Yeopo_Skill", L"Wp_SQ_Yeopo_Skill_3", 0.f, 1.f, _float3(3.f, 3.f, 3.f), _float3(0.f, 0.f, -9.6f));
+        Create_Chain(L"Wp_Yeopo_Skill", L"Wp_SQ_Yeopo_Skill_4", 0.f, 1.f, _float3(3.f, 3.f, 3.f), _float3(0.f, 0.f, -8.f));
+    }
+    else if (Init_CurFrame(20))
+        Add_And_Set_Effect(L"Yeopo_400100_slash");    
+    else if(Init_CurFrame(24))
+        Add_Effect(L"Yeopo_400100_floor");
+    //else if (Init_CurFrame(30))
+    //    Create_Chain(L"Wp_Yeopo_Skill", L"Wp_SQ_Yeopo_Skill_2", 1.f, 1.f, _float3(2.f, 2.f, 2.f));
     else if (Init_CurFrame(38))
         Add_And_Set_Effect(L"Yeopo_400100_slash2");
+    //else if (Init_CurFrame(50))
+    //    Create_Chain(L"Wp_Yeopo_Skill", L"Wp_SQ_Yeopo_Skill_3", 1.f, 1.f, _float3(2.f, 2.f, 2.f));
     else if (Init_CurFrame(58))
         Add_And_Set_Effect(L"Yeopo_400100_slash3");
+    //else if (Init_CurFrame(70))
+    //    Create_Chain(L"Wp_Yeopo_Skill", L"Wp_SQ_Yeopo_Skill_4", 1.f, 1.f, _float3(2.f, 2.f, 2.f));
     else if (Init_CurFrame(78))
         Add_And_Set_Effect(L"Yeopo_400100_slash4");
+    else if (Init_CurFrame(123))
+        Add_Effect(L"Yeopo_400100_floor2");
     
     _float3 vLook = m_CenterBoneMatrix.Forward();
     vLook.Normalize();
@@ -1735,6 +1755,9 @@ void Yeopo_FSM::skill_400100_Init()
 
 void Yeopo_FSM::skill_501100()
 {
+    if (Init_CurFrame(12))
+        Add_Effect(L"Yeopo_501100_cone");
+    
     if (m_iCurFrame == 12)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (m_iCurFrame == 16)
@@ -1975,6 +1998,33 @@ void Yeopo_FSM::Create_Vehicle()
     EVENTMGR.Create_Object(ObjVehicle);
 
     m_pVehicle = ObjVehicle;
+}
+
+void Yeopo_FSM::Create_Chain(const wstring& wstrModelTag, const wstring& wstrAnimTag, _float fWaitTime, _float fAnimSpeed, _float3 vScale, _float3 vPosOffset)
+{
+    shared_ptr<GameObject> obj = make_shared<GameObject>();
+    
+    obj->GetOrAddTransform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
+    // pos
+    _float4 vOwnerPos = Get_Transform()->Get_State(Transform_State::POS);
+    _float4 vOwnerLook = Get_Transform()->Get_State(Transform_State::LOOK).Normalize();
+    _float4 vOwnerUp = Get_Transform()->Get_State(Transform_State::UP).Normalize();
+    _float4 vOwnerRight = Get_Transform()->Get_State(Transform_State::RIGHT).Normalize();
+    _float4 vFinalPos = vOwnerPos + (vOwnerLook * vPosOffset.z + vOwnerUp * vPosOffset.y + vOwnerRight * vPosOffset.x);
+    obj->Get_Transform()->Set_State(Transform_State::POS, vFinalPos);
+    // scale
+    obj->Get_Transform()->Scaled(vScale);
+
+    {
+        shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(RESOURCES.Get<Shader>(L"Shader_Model.fx"));
+        shared_ptr<Model> model = RESOURCES.Get<Model>(wstrModelTag);
+        animator->Set_Model(model);
+        obj->Add_Component(animator);
+    }
+    auto script = make_shared<DeleteWhenAnimFinish>(wstrAnimTag, fWaitTime, false, fAnimSpeed);
+    obj->Add_Component(script);
+    script->Init();
+    EVENTMGR.Create_Object(obj);
 }
 
 void Yeopo_FSM::Set_VehicleState(_uint iAnimindex)

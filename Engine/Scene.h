@@ -242,5 +242,9 @@ public:
 
 	_float g_DepthRange = 15.f;
 	_float g_ClosestDepth = 1.f;
+
+	_float g_rotX = 0.f;
+	_float g_rotY = 0.f;
+	_float g_rotZ = 0.f;
 };
 
