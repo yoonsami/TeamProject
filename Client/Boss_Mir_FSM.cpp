@@ -2685,7 +2685,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
         m_eCurState = STATE::SQ_SBRin_Roar;
         m_iPreAttack = 0;
 
-        if (rand() % 3 == 0)
+        if (rand() % 2 == 0)
         {
             m_bSummonMeteor = true;
             m_iLimitMeteorCnt = rand() % 3 + 1;
@@ -2697,7 +2697,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
         m_eCurState = STATE::skill_1100;
         m_iPreAttack = 1;
 
-        if (rand() % 3 == 0)
+        if (rand() % 2 == 0)
         {
             m_bSummonMeteor = true;
             m_iLimitMeteorCnt = rand() % 3 + 1;
@@ -2709,7 +2709,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
         m_eCurState = STATE::skill_2100;
         m_iPreAttack = 2;
 
-        if (rand() % 3 == 0)
+        if (rand() % 2 == 0)
         {
             m_bSummonMeteor = true;
             m_iLimitMeteorCnt = rand() % 3 + 1;
@@ -2726,7 +2726,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
         m_eCurState = STATE::skill_11100;
         m_iPreAttack = 4;
 
-        if (rand() % 3 == 0)
+        if (rand() % 2 == 0)
         {
             m_bSummonMeteor = true;
             m_iLimitMeteorCnt = rand() % 3 + 1;
@@ -2738,7 +2738,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
         m_eCurState = STATE::skill_12100;
         m_iPreAttack = 5;
 
-        if (rand() % 3 == 0)
+        if (rand() % 2 == 0)
         {
             m_bSummonMeteor = true;
             m_iLimitMeteorCnt = rand() % 3 + 1;
@@ -2750,7 +2750,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
         m_eCurState = STATE::skill_13100;
         m_iPreAttack = 6;
 
-        if (rand() % 3 == 0)
+        if (rand() % 2 == 0)
         {
             m_bSummonMeteor = true;
             m_iLimitMeteorCnt = rand() % 3 + 1;
@@ -2762,7 +2762,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
         m_eCurState = STATE::skill_14100;
         m_iPreAttack = 7;
 
-        if (rand() % 3 == 0)
+        if (rand() % 2 == 0)
         {
             m_bSummonMeteor = true;
             m_iLimitMeteorCnt = rand() % 3 + 1;
@@ -2774,7 +2774,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
         m_eCurState = STATE::skill_100000;
         m_iPreAttack = 8;
 
-        if (rand() % 3 == 0)
+        if (rand() % 2 == 0)
         {
             m_bSummonMeteor = true;
             m_iLimitMeteorCnt = rand() % 3 + 1;
@@ -2786,7 +2786,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
         m_eCurState = STATE::skill_200000;
         m_iPreAttack = 9;
 
-        if (rand() % 3 == 0)
+        if (rand() % 2 == 0)
         {
             m_bSummonMeteor = true;
             m_iLimitMeteorCnt = rand() % 3 + 1;

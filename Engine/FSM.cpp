@@ -170,6 +170,25 @@ _bool FSM::Target_In_AttackRange(_float* pGap)
 	return bFlag;
 }
 
+_bool FSM::LookingTarget_In_AttackRange(_float* pGap)
+{
+	_bool bFlag = false;
+
+	if (m_pLookingTarget.expired())
+		return false;
+
+	_float fGap = (Get_Transform()->Get_State(Transform_State::POS).xyz() -
+		m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz()).Length();
+
+	if (pGap)
+		*pGap = fGap;
+
+	if (fGap <= m_fAttackRange)
+		bFlag = true;
+
+	return bFlag;
+}
+
 _bool FSM::Target_In_DetectRange()
 {
 	_bool bFlag = false;
@@ -265,13 +284,14 @@ void FSM::Set_DirToTargetOrInput(_uint eType)
 		m_vDirToTarget = Get_InputDirVector();
 }
 
+
 void FSM::Look_DirToTarget(_float fTurnSpeed)
 {
 	if (m_vDirToTarget != _float3(0.f))
 		Soft_Turn_ToInputDir(m_vDirToTarget, fTurnSpeed);
 }
 
-shared_ptr<GameObject> FSM::Find_TargetInFrustum(_uint eType)
+shared_ptr<GameObject> FSM::Find_TargetInFrustum(_uint eType, _bool bFrustumCheck)
 {
 	auto& gameObjects = CUR_SCENE->Get_Objects();
 	shared_ptr<GameObject> target;
@@ -290,10 +310,14 @@ shared_ptr<GameObject> FSM::Find_TargetInFrustum(_uint eType)
 		if(distSQ > m_fDetectRange * m_fDetectRange)
 			continue;
 		
-		_float3 viewPos = _float3::Transform(vObjectPos, CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_ViewMat());
-		
-		if(viewPos.z <0)
-			continue;
+		if (bFrustumCheck)
+		{
+			_float3 viewPos = _float3::Transform(vObjectPos, CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_ViewMat());
+			
+			if(viewPos.z <0)
+				continue;
+		}
+
 		if (fMinDistSQ > distSQ)
 		{
 			fMinDistSQ = distSQ;
