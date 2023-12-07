@@ -48,7 +48,7 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
     else
         diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
     
-    //ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
+    ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
     
     // 브러시관련
     float3 vBrushPos = g_vec4_0.xyz;
@@ -126,8 +126,8 @@ PBR_OUTPUT PS_Terrain_PBR(MeshOutput input)
     }
     color = diffuseColor + colBrushColor;
     
-  //  if (bHasNormalMap)
-    //    ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
+    if (bHasNormalMap)
+        ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
 
     
     

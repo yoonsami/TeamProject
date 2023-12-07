@@ -374,7 +374,7 @@ void FieldScene::Load_Terrain()
 		MSG_BOX("NoNormalTexture");
 		return;
 	}
-	material->Set_TextureMap(Grasstexture, TextureMapType::NORMAL);
+	material->Set_TextureMap(Normaltexture, TextureMapType::NORMAL);
 
 	// Mask텍스쳐
 	auto Masktexture = RESOURCES.Get<Texture>(L"TileMask");

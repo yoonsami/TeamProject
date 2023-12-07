@@ -832,6 +832,11 @@ void ImGui_Manager::Frame_Terrain()
     {
         LoadAndCreateTerrain();
     }
+	ImGui::SameLine();
+	if (ImGui::Button("CalNormalTangent##TerrainCalNormalTangent"))
+	{
+        Cal_NormalTangent();
+	}
 
     ImGui::End();
 }
@@ -1420,7 +1425,7 @@ void ImGui_Manager::Create_Terrain(shared_ptr<Terrain> _pTerrainMesh, _int _iTer
         MSG_BOX("NoNormalTexture");
         return;
     }
-    material->Set_TextureMap(Grasstexture, TextureMapType::NORMAL);
+    material->Set_TextureMap(Normaltexture, TextureMapType::NORMAL);
 
     // Mask텍스쳐
     auto Masktexture = RESOURCES.Get<Texture>(L"TileMask");
@@ -2183,6 +2188,44 @@ HRESULT ImGui_Manager::LoadAndCreateTerrain()
     Create_Terrain(loadedTerrain, sizeX, sizeY);
 
     return S_OK;
+}
+
+void ImGui_Manager::Cal_NormalTangent()
+{
+	auto terrain = CUR_SCENE->Get_GameObject(L"Terrain");
+
+	auto mesh = terrain->Get_MeshRenderer()->Get_Mesh();
+	auto& indices = mesh->Get_Geometry()->Get_Indices();
+	auto& vertices = mesh->Get_Geometry()->Get_Vertices();
+
+	for (_int i = 0; i < _int(indices.size());)
+	{
+		_int iIndex[3] = { indices[i++] ,indices[i++] ,indices[i++] };
+		_float3 vVtxPos[3] = {
+			  vertices[iIndex[0]].vPosition,
+			  vertices[iIndex[1]].vPosition,
+			  vertices[iIndex[2]].vPosition
+		};
+
+		_float3 vDir[3] = { vVtxPos[1] - vVtxPos[0] ,vVtxPos[2] - vVtxPos[1] ,vVtxPos[0] - vVtxPos[2] };
+
+		_float3 vNormal = vDir[0].Cross(vDir[1]);
+		vNormal.Normalize();
+        _float3 vTangent = vDir[0];
+        vTangent.Normalize();
+
+		vertices[iIndex[0]].vNormal = vNormal;
+		vertices[iIndex[1]].vNormal = vNormal;
+		vertices[iIndex[2]].vNormal = vNormal;
+
+        vertices[iIndex[0]].vTangent = vTangent;
+        vertices[iIndex[1]].vTangent = vTangent;
+        vertices[iIndex[2]].vTangent = vTangent;
+
+	}
+
+    mesh->Create_Buffer();
+
 }
 
 _float4 ImGui_Manager::Compute_CullingData(shared_ptr<GameObject>& _pGameObject)
