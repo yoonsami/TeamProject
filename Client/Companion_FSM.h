@@ -1,5 +1,7 @@
 #pragma once
 #include "FSM.h"
+#include "UIInteraction.h"
+
 class Companion_FSM abstract :
     public FSM
 {

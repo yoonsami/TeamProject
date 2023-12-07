@@ -48,6 +48,8 @@
 #include "Wolf_FSM.h"
 
 #include "Companion_Spike_FSM.h"
+#include "Companion_Dellons_FSM.h"
+#include "Companion_Shane_FSM.h"
 
 #include "UiGachaController.h"
 #include "Boss_Mir_FSM.h"
@@ -196,6 +198,8 @@ HRESULT KrisScene::Load_Scene()
 	Load_MapFile(L"KrisMap", player);
 
 	Load_Companion(L"Spike", player);
+	Load_Companion(L"Dellons", player);
+	Load_Companion(L"Shane", player);
 
 	Load_Monster(5, L"Alpaca_White", player);
 	Load_Monster(5, L"Alpaca_Brown", player);
@@ -645,7 +649,6 @@ void KrisScene::Load_Boss_Spike(shared_ptr<GameObject> pPlayer)
 
 void KrisScene::Load_Companion(const wstring& strCompanionTag, shared_ptr<GameObject> pPlayer)
 {
-
 	{
 		// Add. Companion
 		shared_ptr<GameObject> ObjCompanion = make_shared<GameObject>();
@@ -658,12 +661,20 @@ void KrisScene::Load_Companion(const wstring& strCompanionTag, shared_ptr<GameOb
 
 			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
 			{
-				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Spike");
+				shared_ptr<Model> model = RESOURCES.Get<Model>(strCompanionTag);
 				animator->Set_Model(model);
 			}
 
 			ObjCompanion->Add_Component(animator);
-			ObjCompanion->Add_Component(make_shared<Companion_Spike_FSM>());
+			
+			if (strCompanionTag == L"Spike")
+				ObjCompanion->Add_Component(make_shared<Companion_Spike_FSM>());
+			else if (strCompanionTag == L"Dellons")
+				ObjCompanion->Add_Component(make_shared<Companion_Dellons_FSM>());
+			else if (strCompanionTag == L"Shane")
+				ObjCompanion->Add_Component(make_shared<Companion_Shane_FSM>());
+
+
 			ObjCompanion->Get_FSM()->Set_Target(pPlayer);
 		}
 		wstring CompanionName = L"Companion_" + strCompanionTag;
@@ -688,7 +699,7 @@ void KrisScene::Load_Companion(const wstring& strCompanionTag, shared_ptr<GameOb
 		Add_GameObject(ObjCompanion);
 
 
-		//Add. Player's Weapon
+		//Add. Companion's Weapon
 		shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
 
 		ObjWeapon->Add_Component(make_shared<Transform>());
@@ -697,7 +708,8 @@ void KrisScene::Load_Companion(const wstring& strCompanionTag, shared_ptr<GameOb
 
 			shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
 			{
-				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Weapon_Spike");
+				wstring WeaponModelTag = L"Weapon_" + strCompanionTag;
+				shared_ptr<Model> model = RESOURCES.Get<Model>(WeaponModelTag);
 				renderer->Set_Model(model);
 			}
 
