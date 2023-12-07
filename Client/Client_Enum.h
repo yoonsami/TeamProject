@@ -151,6 +151,7 @@ enum class NPCTYPE
 	GACHA,
 	POTION,
 	HIDE_KID,
+	SPIKE,
 	MAX
 };
 
