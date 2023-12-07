@@ -141,9 +141,9 @@ void GranseedScene::Tick()
 
 	if (KEYTAP(KEY_TYPE::C))
 	{
-		//auto pObj = Get_UI(L"UI_Interaction");
+		//auto pObj = Get_UI(L"UI_Message_Controller");
 		//if (pObj)
-		//	pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::TEST, make_shared<GameObject>());
+		//	pObj->Get_Script<UiMessageNotHere>()->Create_Message();
 		//auto pObj = Get_UI(L"UI_Costume_Controller");
 		//if (pObj)
 		//	pObj->Get_Script<UiCostumeController>()->Create_Costume();

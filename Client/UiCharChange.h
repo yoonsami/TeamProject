@@ -19,6 +19,11 @@ private:
     void Change_Hero();
     _bool IsChangePossible(_uint iIndex);
 
+    void Check_Skill_Help();
+    void Change_Skill_Help_Param();
+    void Use_Skill_Help();
+    _bool IsSkillHelp_Available(_uint iIndex);
+
 private:
     typedef struct tagCharChangeDesc
     {
@@ -33,5 +38,8 @@ private:
 
     _uint                           m_iCurIndex = { 0 };
     _bool                           m_bIsChange = {};
+
+    vector<weak_ptr<GameObject>>    m_pSkillHelp;
+    vector<CHARCHANGEDESC>          m_SkillHelpDesc;
 };
 

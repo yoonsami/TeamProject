@@ -100,6 +100,8 @@ void UIInteraction::Create_Interaction(NPCTYPE eType, shared_ptr<GameObject> pAc
         case NPCTYPE::HIDE_KID:
             eIndex = QUESTINDEX::HIDE_AND_SEEK;
             break;
+        case NPCTYPE::POTION:
+            break;
         default:
             JustDialog = true;
             break;

@@ -129,7 +129,7 @@ void DataMgr::Initialize()
 			tagData.KeyDeckSelect = L"Big_Card_Ace3";
 			tagData.KeyHeroInfo = L"신극";
 			tagData.KeyHeroName = L"에이스";
-
+            tagData.SkillHelp = L"UI_Skill_Help_Ace";
 		}
 
 		// KYLE
@@ -188,7 +188,7 @@ void DataMgr::Initialize()
 			tagData.KeyDeckSelect = L"Big_Card_Kyle";
 			tagData.KeyHeroInfo = L"밤의추적자";
 			tagData.KeyHeroName = L"카일";
-
+            tagData.SkillHelp = L"UI_Skill_Help_Kyle";
 		}
 
 		// YEOPO
@@ -247,7 +247,7 @@ void DataMgr::Initialize()
 			tagData.KeyDeckSelect = L"Big_Card_Yeopo";
 			tagData.KeyHeroInfo = L"무신";
 			tagData.KeyHeroName = L"여포";
-
+            tagData.SkillHelp = L"UI_Skill_Help_Yeopo";
 		}
 
 		// DELLONS
@@ -306,7 +306,7 @@ void DataMgr::Initialize()
 			tagData.KeyDeckSelect = L"Big_Card_Dellons";
 			tagData.KeyHeroInfo = L"죽음의군주";
 			tagData.KeyHeroName = L"델론즈";
-
+            tagData.SkillHelp = L"UI_Skill_Help_Dellons";
 		}
 
 		// SPIKE
@@ -365,7 +365,7 @@ void DataMgr::Initialize()
 			tagData.KeyDeckSelect = L"Big_Card_Dellons";
 			tagData.KeyHeroInfo = L"혹한의폭군";
 			tagData.KeyHeroName = L"스파이크";
-
+            tagData.SkillHelp = L"UI_Skill_Help_Spike";
 		}
 
 		// SHANE
@@ -424,7 +424,7 @@ void DataMgr::Initialize()
 			tagData.KeyDeckSelect = L"Big_Card_Shane";
 			tagData.KeyHeroInfo = L"악마의화신";
 			tagData.KeyHeroName = L"세인";
-
+            tagData.SkillHelp = L"UI_Skill_Help_Shane";
 		}
 
 		// YEONHEE
@@ -483,7 +483,7 @@ void DataMgr::Initialize()
 			tagData.KeyDeckSelect = L"Big_Card_Yeonhee";
 			tagData.KeyHeroInfo = L"종말의인도자";
 			tagData.KeyHeroName = L"연희";
-
+            tagData.SkillHelp = L"UI_Skill_Help_Yeonhee";
 		}
 	}
 
@@ -1066,17 +1066,17 @@ void DataMgr::Initialize()
     for (_uint i = 0; i < IDX(NPCTYPE::MAX); ++i)
         m_NpcDialog[i].resize(3);
 
-    m_NpcDialog[IDX(NPCTYPE::TEST)][0].push_back(L"이건 테스트 0-0");
-    m_NpcDialog[IDX(NPCTYPE::TEST)][0].push_back(L"이건 테스트 0-1");
-    m_NpcDialog[IDX(NPCTYPE::TEST)][0].push_back(L"이건 테스트 0-2");
-
-    m_NpcDialog[IDX(NPCTYPE::TEST)][1].push_back(L"이건 테스트 1-0");
-    m_NpcDialog[IDX(NPCTYPE::TEST)][1].push_back(L"이건 테스트 1-1");
-    m_NpcDialog[IDX(NPCTYPE::TEST)][1].push_back(L"이건 테스트 1-2");
-
-    m_NpcDialog[IDX(NPCTYPE::TEST)][2].push_back(L"이건 테스트 2-0");
-    m_NpcDialog[IDX(NPCTYPE::TEST)][2].push_back(L"이건 테스트 2-1");
-    m_NpcDialog[IDX(NPCTYPE::TEST)][2].push_back(L"이건 테스트 2-2");
+    //m_NpcDialog[IDX(NPCTYPE::TEST)][0].push_back(L"이건 테스트 0-0");
+    //m_NpcDialog[IDX(NPCTYPE::TEST)][0].push_back(L"이건 테스트 0-1");
+    //m_NpcDialog[IDX(NPCTYPE::TEST)][0].push_back(L"이건 테스트 0-2");
+    //
+    //m_NpcDialog[IDX(NPCTYPE::TEST)][1].push_back(L"이건 테스트 1-0");
+    //m_NpcDialog[IDX(NPCTYPE::TEST)][1].push_back(L"이건 테스트 1-1");
+    //m_NpcDialog[IDX(NPCTYPE::TEST)][1].push_back(L"이건 테스트 1-2");
+    //
+    //m_NpcDialog[IDX(NPCTYPE::TEST)][2].push_back(L"이건 테스트 2-0");
+    //m_NpcDialog[IDX(NPCTYPE::TEST)][2].push_back(L"이건 테스트 2-1");
+    //m_NpcDialog[IDX(NPCTYPE::TEST)][2].push_back(L"이건 테스트 2-2");
 
 
 
