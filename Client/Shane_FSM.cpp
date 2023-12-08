@@ -886,11 +886,17 @@ void Shane_FSM::knockdown_end_Init()
 void Shane_FSM::skill_1100()
 {
     if (m_iCurFrame == 4)
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+	{
+		AttackCollider_On(NORMAL_ATTACK, 10.f);
+		Set_ColliderOption(DARK, L"Hit_Slash_RedBlack");
+	}
     else if (m_iCurFrame == 7)
         AttackCollider_Off();
     else if (m_iCurFrame == 10)
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+	{
+		AttackCollider_On(NORMAL_ATTACK, 10.f);
+		Set_ColliderOption(DARK, L"Hit_Slash_RedBlack");
+	}
     else if (m_iCurFrame == 13)
         AttackCollider_Off();
 

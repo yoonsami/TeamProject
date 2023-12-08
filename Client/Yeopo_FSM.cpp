@@ -1148,6 +1148,8 @@ void Yeopo_FSM::skill_1400()
     else if (m_iCurFrame == 36)
         AttackCollider_Off();
 
+    if (Init_CurFrame(26))
+        CAMERA_SHAKE(0.1f, 0.3f);
 
     Look_DirToTarget();
 
@@ -1269,6 +1271,7 @@ void Yeopo_FSM::skill_100200()
 		desc.fLimitDistance = 10.f;
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f, L"Hit_Slash_Red");
+        CAMERA_SHAKE(0.1f, 0.1f);
     }
     else if (Init_CurFrame(30))
     {
@@ -1287,6 +1290,9 @@ void Yeopo_FSM::skill_100200()
 
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f, L"Hit_Slash_Red");
     }
+
+    if(Init_CurFrame(45))
+        CAMERA_SHAKE(0.1f, 0.1f);
 
     Look_DirToTarget();
 
@@ -1338,6 +1344,7 @@ void Yeopo_FSM::skill_100300()
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK);
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.5f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Red");
+        CAMERA_SHAKE(0.2f, 0.2f);
     }
     
     Look_DirToTarget();
@@ -1384,6 +1391,7 @@ void Yeopo_FSM::skill_200100()
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK, 10.f, L"Hit_Slash_Red");
+        CAMERA_SHAKE(0.3f, 0.2f);
     }
     
 
@@ -1643,21 +1651,70 @@ void Yeopo_FSM::skill_400100()
         Create_Chain(L"Wp_Yeopo_Skill", L"Wp_SQ_Yeopo_Skill_4", 0.f, 1.f, _float3(3.f, 3.f, 3.f), _float3(0.f, 0.f, -8.f));
     }
     else if (Init_CurFrame(20))
+    {
+        CAMERA_SHAKE(0.2f, 0.2f);
         Add_And_Set_Effect(L"Yeopo_400100_slash");    
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 1.f;
+			desc.fLimitDistance = 0.f;
+
+            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.5f;
+			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Red");
+		}
+    }
     else if(Init_CurFrame(24))
         Add_Effect(L"Yeopo_400100_floor");
     //else if (Init_CurFrame(30))
     //    Create_Chain(L"Wp_Yeopo_Skill", L"Wp_SQ_Yeopo_Skill_2", 1.f, 1.f, _float3(2.f, 2.f, 2.f));
     else if (Init_CurFrame(38))
+    {
+        CAMERA_SHAKE(0.2f, 0.2f);
         Add_And_Set_Effect(L"Yeopo_400100_slash2");
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 1.f;
+			desc.fLimitDistance = 0.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.5f;
+			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Red");		}
+    }
     //else if (Init_CurFrame(50))
     //    Create_Chain(L"Wp_Yeopo_Skill", L"Wp_SQ_Yeopo_Skill_3", 1.f, 1.f, _float3(2.f, 2.f, 2.f));
     else if (Init_CurFrame(58))
+    {
+        CAMERA_SHAKE(0.2f, 0.2f);
         Add_And_Set_Effect(L"Yeopo_400100_slash3");
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 1.f;
+			desc.fLimitDistance = 0.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.5f;
+			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Red");		}
+    }
     //else if (Init_CurFrame(70))
     //    Create_Chain(L"Wp_Yeopo_Skill", L"Wp_SQ_Yeopo_Skill_4", 1.f, 1.f, _float3(2.f, 2.f, 2.f));
     else if (Init_CurFrame(78))
+    {
+        CAMERA_SHAKE(0.2f, 0.2f);
         Add_And_Set_Effect(L"Yeopo_400100_slash4");
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 1.f;
+			desc.fLimitDistance = 0.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.5f;
+			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Red");		}
+    }
     else if (Init_CurFrame(123))
         Add_Effect(L"Yeopo_400100_floor2");
     
@@ -1712,6 +1769,7 @@ void Yeopo_FSM::skill_400100()
 
         _float4 vSkillPos = m_vCenterBonePos;
         Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.5f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Red");
+        CAMERA_SHAKE(0.3f, 0.3f);
     }
 
     //Look_DirToTarget();
