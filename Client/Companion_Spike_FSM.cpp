@@ -1776,8 +1776,6 @@ void Companion_Spike_FSM::skill_501100()
     else if (m_iCurFrame == 23)
         AttackCollider_Off();
 
- 
-
     if (Is_AnimFinished())    
         m_eCurState = STATE::b_idle;
 }
