@@ -220,6 +220,14 @@ _bool FSM::TargetGroup_In_DetectRange(_uint eType)
 		if (gameObject->Get_CurHp() <= 0.f)
 			continue;
 
+		if (gameObject->Get_FSM())
+		{
+			if (gameObject->Get_FSM()->Get_EntryTeam() == false)
+				continue;
+		}
+
+
+
 		_float3 vOwnerPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 		_float3 vObjectPos = gameObject->Get_Transform()->Get_State(Transform_State::POS).xyz();
 		_float distSQ = (vOwnerPos - vObjectPos).LengthSquared();

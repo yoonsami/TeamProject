@@ -146,7 +146,7 @@ private:
 	void skill_501100_Init();
 
 	void Set_AttackSkill();
-
+	void StunSetting();
 
 private:
 	STATE m_eCurState = STATE::b_idle;

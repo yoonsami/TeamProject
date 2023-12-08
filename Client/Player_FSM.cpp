@@ -45,6 +45,8 @@ HRESULT Player_FSM::Init()
 	    m_fRunSpeed = 6.f;
 	    m_fSprintSpeed = 8.f;
 
+        m_bEntryTeam = true;
+
         m_bInitialize = true;  
     }
 
@@ -305,7 +307,8 @@ void Player_FSM::State_Init()
 void Player_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
     //Calculate Damage 
-    m_pOwner.lock()->Get_Hurt(fDamage);
+    //m_pOwner.lock()->Get_Hurt(fDamage);
+    m_pOwner.lock()->Get_Hurt(1.f);
 	
     _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 	_float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();

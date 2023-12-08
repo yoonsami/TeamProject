@@ -48,7 +48,7 @@ HRESULT Undead_Priest_FSM::Init()
         m_fNormalAttack_AnimationSpeed = 1.3f;
         m_fSkillAttack_AnimationSpeed = 1.3f;
 
-        m_fDetectRange = 5.f;
+        m_fDetectRange = 15.f;
 
 
         m_bInitialize = true;
@@ -72,6 +72,10 @@ void Undead_Priest_FSM::Tick()
 
 void Undead_Priest_FSM::State_Tick()
 {
+    Detect_Target();
+
+    Target_DeadCheck();
+
     State_Init();
 
     m_iCurFrame = Get_CurFrame();
@@ -250,6 +254,10 @@ void Undead_Priest_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared
 
     CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage);
 
+    //Target Change
+    if (pLookTarget != nullptr)
+        m_pTarget = pLookTarget;
+
     m_bDetected = true;
     m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.05f);
     _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
@@ -412,11 +420,6 @@ void Undead_Priest_FSM::n_run()
         m_eCurState = STATE::b_idle;
     }
 
-
-    if (Target_In_DetectRange())
-        m_bDetected = true;
-    
-
     if (m_bDetected)
     {
         Set_AttackSkill();
@@ -447,9 +450,6 @@ void Undead_Priest_FSM::wander()
 
         if (m_bPatrolMove)
             m_eCurState = STATE::n_run;
-
-        if (Target_In_DetectRange())
-            m_bDetected = true;
     }
     else
     {
@@ -1096,6 +1096,42 @@ void Undead_Priest_FSM::Set_AttackSkill()
     }
 
     m_bSetPattern = true;
+}
+
+void Undead_Priest_FSM::Detect_Target()
+{
+    if (!m_bDetected)
+    {
+        m_tDetectCoolTime.fAccTime += fDT;
+
+        if (m_tDetectCoolTime.fAccTime >= m_tDetectCoolTime.fCoolTime)
+        {
+            m_tDetectCoolTime.fAccTime = 0.f;
+
+            if (TargetGroup_In_DetectRange(OBJ_TEAM))
+                m_bDetected = true;
+        }
+    }
+}
+
+void Undead_Priest_FSM::Target_DeadCheck()
+{
+    if (m_bDetected)
+    {
+        if (!m_pTarget.expired())
+        {
+            if (m_pTarget.lock()->Get_CurHp() <= 0.f)
+            {
+                m_bDetected = false;
+                m_eCurState = STATE::b_idle;
+            }
+        }
+        else
+        {
+            m_bDetected = false;
+            m_eCurState = STATE::b_idle;
+        }
+    }
 }
 
 _float3 Undead_Priest_FSM::Calculate_TargetTurnVector()

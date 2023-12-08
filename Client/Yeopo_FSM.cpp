@@ -42,6 +42,8 @@ HRESULT Yeopo_FSM::Init()
 
         m_fDetectRange = 5.f;
 
+        m_bEntryTeam = true;
+
         m_bInitialize = true;
     }
 	m_fNormalAttack_AnimationSpeed = 1.2f;

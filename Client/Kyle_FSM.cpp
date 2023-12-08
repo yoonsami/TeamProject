@@ -30,7 +30,9 @@ HRESULT Kyle_FSM::Init()
 
 		m_fSkillAttack_AnimationSpeed =1.f;
 		m_fDetectRange = 5.f;
-	
+
+		m_bEntryTeam = true;
+
 		m_bInitialize = true;
 	}
 

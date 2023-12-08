@@ -183,10 +183,5 @@ private:
 
 	_uint m_iGroggy_Gauge = 0;
 	_uint m_iPreAttack = 100;
-	
-	_float3 m_vHeadCamDir = _float3(0.f);
-	_float4 m_vHeadBonePos = _float4(0.f);
-	_float4 m_vHeadCamPos = _float4(0.f);
-
 };
 

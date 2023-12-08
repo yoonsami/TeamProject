@@ -160,7 +160,6 @@ private:
 	void skill_201200();
 	void skill_201200_Init();
 
-	void Calculate_SkillCamRight();
 	void Calculate_LipBoneMatrix();
 	void Set_AttackSkill();
 	void Create_BossSpikeChair();

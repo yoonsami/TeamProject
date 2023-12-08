@@ -2034,22 +2034,6 @@ void Boss_Spike_FSM::skill_201200_Init()
     m_bSuperArmor = false;
 }
 
-void Boss_Spike_FSM::Calculate_SkillCamRight()
-{
-    _float4 vDir = _float4(0.f);
-    vDir = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS);
-    vDir.y = 0.f;
-    vDir.Normalize();
-
-    _float4 vCross = _float4(0.f);
-    vCross = XMVector3Cross(Get_Transform()->Get_State(Transform_State::LOOK), vDir);
-
-    if (XMVectorGetY(vCross) < 0.f) // LEFT 
-        m_vSkillCamRight = (Get_Transform()->Get_State(Transform_State::RIGHT) * -3.f);
-    else //RIGHT	
-        m_vSkillCamRight = (Get_Transform()->Get_State(Transform_State::RIGHT) * 3.f);
-}
-
 void Boss_Spike_FSM::Calculate_LipBoneMatrix()
 {
     m_LipBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iLipBoneIndex) *

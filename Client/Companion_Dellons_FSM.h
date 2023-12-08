@@ -140,7 +140,7 @@ private:
 	void Summon_Wraith();
 	void Set_WraithState(_uint iAnimindex);
 	void Set_AttackSkill();
-
+	void StunSetting();
 
 private:
 	STATE m_eCurState = STATE::b_idle;

@@ -39,7 +39,9 @@ HRESULT Spike_FSM::Init()
 
         m_pCamera = CUR_SCENE->Get_MainCamera();
         m_fDetectRange = 5.f;
-    
+
+        m_bEntryTeam = true;
+
         m_bInitialize = true;
     }
 
@@ -1253,6 +1255,9 @@ void Spike_FSM::skill_100300()
     }
     if(Init_CurFrame(32))
         CAMERA_SHAKE(0.2f, 0.2f);
+    
+    if (Init_CurFrame(37))
+        AttackCollider_Off();
 
     if (Is_AnimFinished())
     {

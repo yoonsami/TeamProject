@@ -44,6 +44,8 @@ HRESULT Yeonhee_FSM::Init()
 
         m_fDetectRange = 15.f;
 
+        m_bEntryTeam = true;
+
         m_bInitialize = true;
     }
 

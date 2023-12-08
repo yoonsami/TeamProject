@@ -42,7 +42,7 @@ HRESULT Wolf_FSM::Init()
 
         m_fNormalAttack_AnimationSpeed = 1.f;
         m_fSkillAttack_AnimationSpeed = 1.f;
-        m_fDetectRange = 10.f;
+        m_fDetectRange = 15.f;
 
 
         m_bInitialize = true;
@@ -66,6 +66,10 @@ void Wolf_FSM::Tick()
 
 void Wolf_FSM::State_Tick()
 {
+    Detect_Target();
+
+    Target_DeadCheck();
+
     State_Init();
 
     m_iCurFrame = Get_CurFrame();
@@ -238,6 +242,9 @@ void Wolf_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Game
 
     CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage);
 
+    //Target Change
+    if (pLookTarget != nullptr)
+        m_pTarget = pLookTarget;
 
     m_bDetected = true;
     m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.05f);
@@ -315,9 +322,6 @@ void Wolf_FSM::b_idle()
         {
             m_eCurState = STATE::n_run;
         }
-
-        if (Target_In_DetectRange())
-            m_bDetected = true;
     }
     else
     {
@@ -378,18 +382,6 @@ void Wolf_FSM::n_idle()
         {
             m_eCurState = STATE::n_run;
         }
-
-        if (CUR_SCENE->Get_Name() == L"KrisScene")
-        {
-            if (CUR_SCENE->Get_AttackCall())
-                m_bDetected = true;
-        }
-        else
-        {
-            if (Target_In_DetectRange())
-                m_bDetected = true;
-        }
-
     }
     else
     {
@@ -409,12 +401,6 @@ void Wolf_FSM::n_idle_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed);
 
     m_bSuperArmor = false;
-
-    if (CUR_SCENE->Get_Name() == L"KrisScene")
-    {
-        if (!CUR_SCENE->Get_AttackCall())
-            m_bInvincible = true;
-    }
 }
 
 
@@ -440,18 +426,6 @@ void Wolf_FSM::n_run()
         m_eCurState = STATE::n_idle;
     }
 
-    if (CUR_SCENE->Get_Name() == L"KrisScene")
-    {
-        if (CUR_SCENE->Get_AttackCall())
-            m_bDetected = true;
-    }
-    else
-    {
-        if (Target_In_DetectRange())
-            m_bDetected = true;
-    }
-
-
     if (m_bDetected)
     {
         m_eCurState = STATE::b_run;
@@ -470,9 +444,6 @@ void Wolf_FSM::n_run_Init()
     m_vTurnVector.Normalize();
 
     m_bSuperArmor = false;
-
-    if (CUR_SCENE->Get_Name() == L"KrisScene")
-        m_bInvincible = true;
 }
 
 void Wolf_FSM::die_01()
@@ -965,6 +936,42 @@ void Wolf_FSM::Dead_Setting()
             m_eCurState = STATE::die_01;
         else
             m_eCurState = STATE::die_02;
+    }
+}
+
+void Wolf_FSM::Detect_Target()
+{
+    if (!m_bDetected)
+    {
+        m_tDetectCoolTime.fAccTime += fDT;
+
+        if (m_tDetectCoolTime.fAccTime >= m_tDetectCoolTime.fCoolTime)
+        {
+            m_tDetectCoolTime.fAccTime = 0.f;
+
+            if (TargetGroup_In_DetectRange(OBJ_TEAM))
+                m_bDetected = true;
+        }
+    }
+}
+
+void Wolf_FSM::Target_DeadCheck()
+{
+    if (m_bDetected)
+    {
+        if (!m_pTarget.expired())
+        {
+            if (m_pTarget.lock()->Get_CurHp() <= 0.f)
+            {
+                m_bDetected = false;
+                m_eCurState = STATE::b_idle;
+            }
+        }
+        else
+        {
+            m_bDetected = false;
+            m_eCurState = STATE::b_idle;
+        }
     }
 }
 

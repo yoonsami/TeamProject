@@ -39,6 +39,8 @@ HRESULT Shane_FSM::Init()
 
         m_fDetectRange = 5.f;
 
+        m_bEntryTeam = true;
+
         m_bInitialize = true;
     }
 
