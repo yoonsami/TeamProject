@@ -237,7 +237,8 @@
     <ClInclude Include="UiCostumeController.h" />
     <ClInclude Include="UiDialogController.h" />
     <ClInclude Include="UIInteraction.h" />
-    <ClInclude Include="UiMessageNotHere.h" />
+    <ClInclude Include="UiMessageController.h" />
+    <ClInclude Include="UiMessageCreater.h" />
     <ClInclude Include="UiQuestController.h" />
     <ClInclude Include="UiSettingController.h" />
     <ClInclude Include="UIShop.h" />
@@ -371,7 +372,8 @@
     <ClCompile Include="UiCostumeController.cpp" />
     <ClCompile Include="UiDialogController.cpp" />
     <ClCompile Include="UIInteraction.cpp" />
-    <ClCompile Include="UiMessageNotHere.cpp" />
+    <ClCompile Include="UiMessageController.cpp" />
+    <ClCompile Include="UiMessageCreater.cpp" />
     <ClCompile Include="UiQuestController.cpp" />
     <ClCompile Include="UiSettingController.cpp" />
     <ClCompile Include="UIShop.cpp" />

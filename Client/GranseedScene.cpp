@@ -67,7 +67,7 @@
 #include "UiCostumeController.h"
 #include "UiUseItemSlot.h"
 #include "UIShop.h"
-#include "UiMessageNotHere.h"
+#include "UiMessageCreater.h"
 #include "UiDialogController.h"
 
 #include <filesystem>
@@ -139,11 +139,11 @@ void GranseedScene::Tick()
 {
 	__super::Tick();
 
-	if (KEYTAP(KEY_TYPE::C))
+	if (KEYTAP(KEY_TYPE::V))
 	{
-		//auto pObj = Get_UI(L"UI_Message_Controller");
-		//if (pObj)
-		//	pObj->Get_Script<UiMessageNotHere>()->Create_Message();
+		auto pObj = Get_UI(L"UI_Message_Controller");
+		if (pObj)
+			pObj->Get_Script<UiMessageCreater>()->Create_Message(Get_GameObject(L"GS_GachaMan"));
 		//auto pObj = Get_UI(L"UI_Costume_Controller");
 		//if (pObj)
 		//	pObj->Get_Script<UiCostumeController>()->Create_Costume();
@@ -707,7 +707,7 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Set_Instancing(false);
 		pObj->Set_Name(L"UI_Message_Controller");
 
-		auto pScript = make_shared<UiMessageNotHere>();
+		auto pScript = make_shared<UiMessageCreater>();
 		pObj->Add_Component(pScript);
 
 		Add_GameObject(pObj);
