@@ -892,7 +892,7 @@ void ResourceMgr::CreateDefaultMaterial()
 		shared_ptr<Material> material = make_shared<Material>();
 		material->Set_Shader(shader);
 		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"NormalTarget"));
-		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"G_DepthTarget"));
+		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"PositionTarget"));
 		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"SSAO_RandomVectorTexture"));
 		Add(L"SSAO", material);
 	}
