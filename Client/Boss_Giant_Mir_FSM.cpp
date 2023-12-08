@@ -681,7 +681,21 @@ void Boss_Giant_Mir_FSM::SQ_Leave()
     if (Is_AnimFinished())
     {
         g_bCutScene = false;
-        m_eCurState = STATE::b_idle;
+
+        if (!m_pOwner.expired())
+            EVENTMGR.Delete_Object(m_pOwner.lock());
+
+        if (!m_pTailCollider.expired())
+            EVENTMGR.Delete_Object(m_pTailCollider.lock());
+
+        if (!m_pStomachCollider.expired())
+            EVENTMGR.Delete_Object(m_pStomachCollider.lock());
+
+        if (!m_pLfootCollider.expired())
+            EVENTMGR.Delete_Object(m_pLfootCollider.lock());
+
+        if (!m_pFootRigidBody.expired())
+            EVENTMGR.Delete_Object(m_pFootRigidBody.lock());
     }
 }
 
