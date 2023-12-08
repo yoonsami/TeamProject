@@ -309,8 +309,6 @@ MotionBlurOutput VS_AnimMotionBlur(VTXModel input)
     return output;
 }
 
-
-
 // VS_Motion Trail
 MeshOutput VS_Anim_MotionTrail(VTXModel input)
 {
@@ -717,8 +715,6 @@ PBR_OUTPUT PS_PBR_Deferred(MeshOutput input)
 
     output.position = float4(input.viewPosition.xyz, 0.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
-    output.depth = input.position.z;
-    output.depth.w = input.viewPosition.z;
     output.arm = ARM_Map;
     output.diffuseColor = diffuseColor + float4(g_vec4_0.xyz, 0.f);
     output.emissive = emissiveColor;
@@ -778,8 +774,6 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(MeshInstancingOutput input)
     
     output.position = float4(input.viewPosition.xyz, 0.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
-    output.depth = input.position.z;
-    output.depth.w = input.viewPosition.z;
     output.arm = ARM_Map;
     output.diffuseColor = diffuseColor + float4(InstanceRenderParams[input.id].xyz, 0.f);;
     output.emissive = emissiveColor;
@@ -788,9 +782,9 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(MeshInstancingOutput input)
     return output;
 }
 
-PBR_OUTPUT PS_PBR_Deferred_MapObject(MeshOutput input)
+PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject(MeshOutput input)
 {
-    PBR_OUTPUT output = (PBR_OUTPUT) 0.f;
+    PBR_MAPOBJECT_OUTPUT output = (PBR_MAPOBJECT_OUTPUT) 0.f;
     float4 diffuseColor;
     float4 specularColor;
     float4 emissiveColor;
@@ -839,8 +833,7 @@ PBR_OUTPUT PS_PBR_Deferred_MapObject(MeshOutput input)
 
     output.position = float4(input.viewPosition.xyz, 0.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
-    output.depth = input.position.z;
-    output.depth.w = input.viewPosition.z;
+    output.positionSSD = float4(input.viewPosition.xyz, 1.f);
     output.arm = ARM_Map;
     output.diffuseColor = diffuseColor;
     output.emissive = emissiveColor;
@@ -849,9 +842,9 @@ PBR_OUTPUT PS_PBR_Deferred_MapObject(MeshOutput input)
     return output;
 }
 
-PBR_OUTPUT PS_PBR_Deferred_MapObject_Instancing(MeshInstancingOutput input)
+PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_Instancing(MeshInstancingOutput input)
 {
-    PBR_OUTPUT output = (PBR_OUTPUT) 0.f;
+    PBR_MAPOBJECT_OUTPUT output = (PBR_MAPOBJECT_OUTPUT) 0.f;
     float4 diffuseColor;
     float4 specularColor;
     float4 emissiveColor;
@@ -900,8 +893,7 @@ PBR_OUTPUT PS_PBR_Deferred_MapObject_Instancing(MeshInstancingOutput input)
     
     output.position = float4(input.viewPosition.xyz, 0.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
-    output.depth = input.position.z;
-    output.depth.w = input.viewPosition.z;
+    output.positionSSD = float4(input.viewPosition.xyz, 1.f);
     output.arm = ARM_Map;
     output.diffuseColor = diffuseColor;
     output.emissive = emissiveColor ;
@@ -977,8 +969,7 @@ PBR_OUTPUT PS_PBR_WATER(MeshOutput input)
 
     output.position = float4(input.viewPosition.xyz, 0.f);
     output.normal = float4(normal, 0.f);
-    output.depth = input.position.z;
-    output.depth.w = input.viewPosition.z;
+
     output.arm = ARM_Map;
     output.diffuseColor = diffuseColor;
     output.emissive = emissiveColor;
@@ -1100,8 +1091,7 @@ float4 PS_PBR_Forward(MeshOutput input) : SV_Target
 
     output.position = float4(input.viewPosition.xyz, 0.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
-    output.depth = input.position.z;
-    output.depth.w = input.viewPosition.z;
+
     output.arm = ARM_Map;
     output.diffuseColor = diffuseColor + float4(g_vec4_0.xyz, 0.f);
     output.emissive = emissiveColor;
@@ -1136,9 +1126,9 @@ float4 PS_PBR_Forward(MeshOutput input) : SV_Target
 float g_DepthRange = 15.f;
 float g_ClosestDepth = 1.f;
 
-PBR_OUTPUT PS_PBR_Deferred_MapObject_NormalControl(MeshOutput input)
+PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_NormalControl(MeshOutput input)
 {
-    PBR_OUTPUT output = (PBR_OUTPUT) 0.f;
+    PBR_MAPOBJECT_OUTPUT output = (PBR_MAPOBJECT_OUTPUT) 0.f;
     float4 diffuseColor;
     float4 specularColor;
     float4 emissiveColor;
@@ -1193,8 +1183,7 @@ PBR_OUTPUT PS_PBR_Deferred_MapObject_NormalControl(MeshOutput input)
 
     output.position = float4(input.viewPosition.xyz, 0.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
-    output.depth = input.position.z;
-    output.depth.w = input.viewPosition.z;
+    output.positionSSD = float4(input.viewPosition.xyz, 1.f);
     output.arm = ARM_Map;
     output.diffuseColor = diffuseColor;
     output.emissive = emissiveColor;
@@ -1203,9 +1192,9 @@ PBR_OUTPUT PS_PBR_Deferred_MapObject_NormalControl(MeshOutput input)
     return output;
 }
 
-PBR_OUTPUT PS_PBR_Deferred_MapObject_Instancing_NormalControl(MeshInstancingOutput input)
+PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_Instancing_NormalControl(MeshInstancingOutput input)
 {
-    PBR_OUTPUT output = (PBR_OUTPUT) 0.f;
+    PBR_MAPOBJECT_OUTPUT output = (PBR_MAPOBJECT_OUTPUT) 0.f;
     float4 diffuseColor;
     float4 specularColor;
     float4 emissiveColor;
@@ -1260,8 +1249,7 @@ PBR_OUTPUT PS_PBR_Deferred_MapObject_Instancing_NormalControl(MeshInstancingOutp
     
     output.position = float4(input.viewPosition.xyz, 0.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
-    output.depth = input.position.z;
-    output.depth.w = input.viewPosition.z;
+    output.positionSSD = float4(input.viewPosition.xyz, 1.f);
     output.arm = ARM_Map;
     output.diffuseColor = diffuseColor;
     output.emissive = emissiveColor;
