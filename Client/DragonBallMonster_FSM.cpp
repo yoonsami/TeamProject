@@ -134,7 +134,6 @@ void DragonBallMonster_FSM::Idle_Init()
 	m_bInvincible = false;
 }
 
-
 void DragonBallMonster_FSM::Crash()
 {
 	if (Is_AnimFinished())
@@ -171,7 +170,11 @@ void DragonBallMonster_FSM::Crash_Init()
 }
 
 void DragonBallMonster_FSM::Summon_CrossFloor()
-{
+{	
+	_float4x4 matWorldPos = Get_Transform()->Get_WorldMatrix();
+	matWorldPos._42 = 0.f;
+	Add_GroupEffectOwner(L"DragonBall_Cross", _float3(matWorldPos._41, 0.f, matWorldPos._43), true);
+
 	m_tPatternCoolTime.fAccTime = 0.f;
 
 	_float3 vSkillScale = _float3{ 3.f,1.f, 12.f };
@@ -221,6 +224,10 @@ void DragonBallMonster_FSM::Summon_CrossFloor()
 
 void DragonBallMonster_FSM::Summon_X_Floor()
 {
+	_float4x4 matWorldPos = Get_Transform()->Get_WorldMatrix();
+	matWorldPos._42 = 0.f;
+	Add_GroupEffectOwner(L"DragonBall_X", _float3(matWorldPos._41, 0.f, matWorldPos._43), true);
+
 	m_tPatternCoolTime.fAccTime = 0.f;
 
 	_float3 vSkillScale = _float3{ 3.f,1.f, 12.f };
@@ -232,11 +239,12 @@ void DragonBallMonster_FSM::Summon_X_Floor()
 	desc.fAttackStartGap = 2.5f;
 	
 	desc.fAttackTickTime = 0.3f;
+	desc.iLimitAttackCnt = 3;
+
 	desc.strAttackType = NORMAL_SKILL;
 	desc.strLastAttackType = NORMAL_SKILL;
 	desc.fAttackDamage = 5.f;
 	desc.fLastAttackDamage = 5.f;
-	desc.iLimitAttackCnt = 3;
 
 	//Forward_Left
 	_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
@@ -280,6 +288,10 @@ void DragonBallMonster_FSM::Summon_X_Floor()
 
 void DragonBallMonster_FSM::Summon_Hash_Floor()
 {
+	_float4x4 matWorldPos = Get_Transform()->Get_WorldMatrix();
+	matWorldPos._42 = 0.f;
+	Add_GroupEffectOwner(L"Dragonall_Hash", _float3(matWorldPos._41, 0.f, matWorldPos._43), true);
+
 	m_tPatternCoolTime.fAccTime = 0.f;
 
 	_float3 vSkillScale = _float3{ 4.f,1.f, 25.f };
@@ -327,6 +339,10 @@ void DragonBallMonster_FSM::Summon_Hash_Floor()
 
 void DragonBallMonster_FSM::Summon_Web_Floor()
 {
+	_float4x4 matWorldPos = Get_Transform()->Get_WorldMatrix();
+	matWorldPos._42 = 0.f;
+	Add_GroupEffectOwner(L"Dragonall_Web", _float3(matWorldPos._41, 0.f, matWorldPos._43), true);
+
 	m_tPatternCoolTime.fAccTime = 0.f;
 
 	_float3 vSkillScale = _float3{ 3.f,1.f, 27.f };
@@ -376,6 +392,10 @@ void DragonBallMonster_FSM::Summon_Web_Floor()
 
 void DragonBallMonster_FSM::Summon_HalfCircle_Floor()
 {
+	_float4x4 matWorldPos = Get_Transform()->Get_WorldMatrix();
+	matWorldPos._42 = 0.f;
+	Add_GroupEffectOwner(L"Dragonall_Half", _float3(matWorldPos._41, 0.f, matWorldPos._43), true);
+
 	m_tPatternCoolTime.fAccTime = 0.f;
 
 	_float3 vSkillScale = _float3{ 14.f,1.f, 30.f };
@@ -408,6 +428,10 @@ void DragonBallMonster_FSM::Summon_HalfCircle_Floor()
 
 void DragonBallMonster_FSM::Summon_Star_Floor()
 {
+	_float4x4 matWorldPos = Get_Transform()->Get_WorldMatrix();
+	matWorldPos._42 = 0.f;
+	Add_GroupEffectOwner(L"Dragonall_Star", _float3(matWorldPos._41, 0.f, matWorldPos._43), true);
+
 	m_tPatternCoolTime.fAccTime = 0.f;
 
 	_float3 vSkillScale = _float3{ 3.f,1.f, 12.f };
@@ -528,8 +552,6 @@ void DragonBallMonster_FSM::Create_Meteor()
 		m_bSummonMeteor = false;
 	}
 }
-
-
 
 void DragonBallMonster_FSM::Set_AttackPattern()
 {
