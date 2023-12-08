@@ -400,9 +400,6 @@
     <Filter Include="02.Component\00.MonoBehaviour\05.Object\06.Delete\01.DeleteWhenTimePassed">
       <UniqueIdentifier>{f5ba07f0-e99b-48a4-8ac1-ac52e341a982}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\25.UiMessageNotHere">
-      <UniqueIdentifier>{0d6d8730-3750-42a9-94b4-7c7b5678f134}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\26.UiDialogController">
       <UniqueIdentifier>{9dc67e6a-38ec-42b9-9b39-7daa819fe26f}</UniqueIdentifier>
     </Filter>
@@ -420,6 +417,15 @@
     </Filter>
     <Filter Include="02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\05.EntSoldier_FSM">
       <UniqueIdentifier>{96e8c404-8acf-4f9a-a1f9-2aafd167a6e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\25.UiMessage">
+      <UniqueIdentifier>{0d6d8730-3750-42a9-94b4-7c7b5678f134}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\25.UiMessage\01.UiMessageController">
+      <UniqueIdentifier>{c24575d8-4012-4898-9756-6645df9f6f88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\25.UiMessage\00.UiMessageCreater">
+      <UniqueIdentifier>{5e5e5c0f-8710-4534-8512-cb9b6343d926}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -815,9 +821,6 @@
     <ClInclude Include="DeleteWhenTimePassed.h">
       <Filter>02.Component\00.MonoBehaviour\05.Object\06.Delete\01.DeleteWhenTimePassed</Filter>
     </ClInclude>
-    <ClInclude Include="UiMessageNotHere.h">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessageNotHere</Filter>
-    </ClInclude>
     <ClInclude Include="UiDialogController.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\26.UiDialogController</Filter>
     </ClInclude>
@@ -841,6 +844,12 @@
     </ClInclude>
     <ClInclude Include="EntSoldier_FSM.h">
       <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\05.EntSoldier_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="UiMessageController.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessage\01.UiMessageController</Filter>
+    </ClInclude>
+    <ClInclude Include="UiMessageCreater.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessage\00.UiMessageCreater</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1206,9 +1215,6 @@
     <ClCompile Include="DeleteWhenTimePassed.cpp">
       <Filter>02.Component\00.MonoBehaviour\05.Object\06.Delete\01.DeleteWhenTimePassed</Filter>
     </ClCompile>
-    <ClCompile Include="UiMessageNotHere.cpp">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessageNotHere</Filter>
-    </ClCompile>
     <ClCompile Include="UiDialogController.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\26.UiDialogController</Filter>
     </ClCompile>
@@ -1229,6 +1235,12 @@
     </ClCompile>
     <ClCompile Include="EntSoldier_FSM.cpp">
       <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\05.EntSoldier_FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="UiMessageController.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessage\01.UiMessageController</Filter>
+    </ClCompile>
+    <ClCompile Include="UiMessageCreater.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessage\00.UiMessageCreater</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
