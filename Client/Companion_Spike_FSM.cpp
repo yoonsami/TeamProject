@@ -47,7 +47,7 @@ HRESULT Companion_Spike_FSM::Init()
 
         m_pWeapon = CUR_SCENE->Get_GameObject(L"Companion_Weapon_Spike");
 
-        m_fDetectRange = 10.f;
+        m_fDetectRange = 30.f;
 
         m_bInitialize = true;
     }
@@ -461,7 +461,7 @@ void Companion_Spike_FSM::talk_01()
 
     if (KEYTAP(KEY_TYPE::P)) //For. Debugging
     {
-        m_bIsFollow = true;
+        m_bEntryTeam = true;
         m_eCurState = STATE::b_idle;
     }
 }
@@ -1346,6 +1346,10 @@ void Companion_Spike_FSM::skill_100300()
         Add_GroupEffectOwner(L"Spike_100100_IceAttack", _float3(0, 0, 1), false);
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
     }
+
+    if (Init_CurFrame(37))
+        AttackCollider_Off();
+
     
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
@@ -1838,4 +1842,13 @@ void Companion_Spike_FSM::Set_AttackSkill()
         }
     }
 
+}
+
+void Companion_Spike_FSM::StunSetting()
+{
+    if (m_bIsDead)
+    {
+        m_bInvincible = true;
+        m_eCurState = STATE::stun;
+    }
 }

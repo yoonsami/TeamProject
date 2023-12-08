@@ -21,11 +21,7 @@ private:
 
 	void Load_Camera(shared_ptr<GameObject> pPlayer);
 	void Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_ptr<GameObject> pPlayer, _bool bCharacterController = true);
-	void Load_Boss_Mir(shared_ptr<GameObject> pPlayer);
 	void Load_Boss_Dellons(shared_ptr<GameObject> pPlayer);
-	void Load_Boss_Spike(shared_ptr<GameObject> pPlayer);
-
-	void Load_Companion(const wstring& strCompanionTag, shared_ptr<GameObject> pPlayer);
 
 	void Load_Ui(shared_ptr<GameObject> pPlayer);
 	void Load_Debug();

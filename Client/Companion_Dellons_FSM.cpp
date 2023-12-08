@@ -48,7 +48,7 @@ HRESULT Companion_Dellons_FSM::Init()
 
         m_pWeapon = CUR_SCENE->Get_GameObject(L"Companion_Weapon_Dellons");
 
-        m_fDetectRange = 10.f;
+        m_fDetectRange = 30.f;
 
         m_bInitialize = true;
     }
@@ -444,7 +444,7 @@ void Companion_Dellons_FSM::talk_01()
 
     if (KEYTAP(KEY_TYPE::P)) //For. Debugging
     {
-        m_bIsFollow = true;
+        m_bEntryTeam = true;
         m_eCurState = STATE::b_idle;
     }
 }
@@ -1582,5 +1582,14 @@ void Companion_Dellons_FSM::Set_AttackSkill()
             m_eCurSkillState = STATE::skill_501100;
             m_iPreAttack = 4;
         }
+    }
+}
+
+void Companion_Dellons_FSM::StunSetting()
+{
+    if (m_bIsDead)
+    {
+        m_bInvincible = true;
+        m_eCurState = STATE::stun;
     }
 }

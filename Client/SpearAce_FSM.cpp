@@ -40,6 +40,8 @@ HRESULT SpearAce_FSM::Init()
         m_pCamera = CUR_SCENE->Get_MainCamera();
         m_fDetectRange = 5.f;
     
+        m_bEntryTeam = true;
+
         m_bInitialize = true;
     }
 	m_fNormalAttack_AnimationSpeed = 1.5f;

@@ -98,6 +98,9 @@ private:
 	void CalCulate_PatrolTime();
 	void Set_Gaze();
 	void Dead_Setting();
+	void Detect_Target();
+	void Target_DeadCheck();
+
 	_float3 Calculate_TargetTurnVector();
 
 private:
@@ -113,6 +116,7 @@ private:
 
 	COOLTIMEINFO m_tAttackCoolTime = { 1.f, 0.f };
 	COOLTIMEINFO m_tPatrolMoveCool = { 4.f, 0.f };
+	COOLTIMEINFO m_tDetectCoolTime = { 1.f, 0.f };
 
 	_bool m_bPatrolMove = false;
 

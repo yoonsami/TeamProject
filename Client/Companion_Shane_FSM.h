@@ -143,7 +143,7 @@ private:
 	void Set_AttackSkill();
 
 	void Create_200100_Clone(_uint iCloneIndex);
-
+	void StunSetting();
 private:
 	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;

@@ -39,6 +39,8 @@ HRESULT Dellons_FSM::Init()
         m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
         m_fDetectRange = 5.f;
 
+        m_bEntryTeam = true;
+
         m_bInitialize = true;
     }
 	m_fNormalAttack_AnimationSpeed = 1.2f;

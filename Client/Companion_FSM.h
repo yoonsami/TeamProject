@@ -27,8 +27,6 @@ protected:
 
     _uint m_iPreAttack = 100;
 
-
-    _bool m_bIsFollow = false;
     _bool m_bCantalk = false;
     _bool m_bSprint = false;
     _bool m_bSetAttack = false;

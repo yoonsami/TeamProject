@@ -23,6 +23,7 @@ private:
 
 	void Load_Camera(shared_ptr<GameObject> pPlayer);
 	void Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_ptr<GameObject> pPlayer, _bool bCharacterController = true);
+	void Load_Companion(const wstring& strCompanionTag, shared_ptr<GameObject> pPlayer, _float4 vSpawnPos);
 
 	void Load_Ui(shared_ptr<GameObject> pPlayer);
 	void Load_Debug();

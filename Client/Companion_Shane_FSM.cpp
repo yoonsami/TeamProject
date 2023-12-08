@@ -47,7 +47,7 @@ HRESULT Companion_Shane_FSM::Init()
 
         m_pWeapon = CUR_SCENE->Get_GameObject(L"Companion_Weapon_Shane");
 
-        m_fDetectRange = 10.f;
+        m_fDetectRange = 30.f;
 
         m_bInitialize = true;
     }
@@ -407,7 +407,7 @@ void Companion_Shane_FSM::talk_01()
 
     if (KEYTAP(KEY_TYPE::P)) //For. Debugging
     {
-        m_bIsFollow = true;
+        m_bEntryTeam = true;
         m_eCurState = STATE::b_idle;
     }
 }
@@ -489,8 +489,9 @@ void Companion_Shane_FSM::b_idle()
         {
             m_tFollowCheckTime.fAccTime = 0.f;
         }
-
     }
+
+    StunSetting();
 }
 
 void Companion_Shane_FSM::b_idle_Init()
@@ -542,6 +543,8 @@ void Companion_Shane_FSM::b_run_start()
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_run;
+
+    StunSetting();
 }
 
 void Companion_Shane_FSM::b_run_start_Init()
@@ -632,6 +635,8 @@ void Companion_Shane_FSM::b_run()
             }
         }
     }
+
+    StunSetting();
 }
 
 void Companion_Shane_FSM::b_run_Init()
@@ -676,6 +681,8 @@ void Companion_Shane_FSM::b_run_end_r()
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
+
+    StunSetting();
 }
 
 void Companion_Shane_FSM::b_run_end_r_Init()
@@ -721,6 +728,8 @@ void Companion_Shane_FSM::b_run_end_l()
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
+
+    StunSetting();
 }
 
 void Companion_Shane_FSM::b_run_end_l_Init()
@@ -782,6 +791,8 @@ void Companion_Shane_FSM::b_sprint()
             }
         }
     }
+
+    StunSetting();
 }
 
 void Companion_Shane_FSM::b_sprint_Init()
@@ -818,14 +829,17 @@ void Companion_Shane_FSM::die_Init()
 void Companion_Shane_FSM::stun()
 {
     if (Is_AnimFinished())
+    {
+        m_pOwner.lock()->Set_Hp(m_pOwner.lock()->Get_MaxHp());
         m_eCurState = STATE::b_idle;
+    }
 }
 
 void Companion_Shane_FSM::stun_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"stun", 0.2f, false, 1.f);
+    animator->Set_NextTweenAnim(L"stun", 0.2f, false, 0.2f);
 
     AttackCollider_Off();
 
@@ -1074,6 +1088,8 @@ void Companion_Shane_FSM::skill_1100()
     
     if (m_iCurFrame >= 13)
         m_eCurState = STATE::skill_1200;
+
+    StunSetting();
 }
 
 void Companion_Shane_FSM::skill_1100_Init()
@@ -1103,6 +1119,8 @@ void Companion_Shane_FSM::skill_1200()
 
     if (m_iCurFrame < 25)
         m_eCurState = STATE::skill_1300;
+
+    StunSetting();
 }
 
 void Companion_Shane_FSM::skill_1200_Init()
@@ -1132,6 +1150,8 @@ void Companion_Shane_FSM::skill_1300()
 
     if (m_iCurFrame >= 30)
         m_eCurState = STATE::skill_1400;
+
+    StunSetting();
 }
 
 void Companion_Shane_FSM::skill_1300_Init()
@@ -1162,6 +1182,8 @@ void Companion_Shane_FSM::skill_1400()
 
     if (Get_FinalFrame() - m_iCurFrame < 9)
         m_eCurState = STATE::b_idle;
+
+    StunSetting();
 }
 
 void Companion_Shane_FSM::skill_1400_Init()
@@ -1248,6 +1270,8 @@ void Companion_Shane_FSM::skill_100100()
 
     if (m_iCurFrame >= 40)
         m_eCurState = STATE::skill_100200;
+
+    StunSetting();
 }
 
 void Companion_Shane_FSM::skill_100100_Init()
@@ -1282,6 +1306,8 @@ void Companion_Shane_FSM::skill_100200()
 
     if (Get_FinalFrame() - m_iCurFrame < 9)
         m_eCurState = STATE::b_idle;
+
+    StunSetting();
 }
 
 void Companion_Shane_FSM::skill_100200_Init()
@@ -1320,6 +1346,8 @@ void Companion_Shane_FSM::skill_200100()
 
     if (m_iCurFrame >= 42)
         m_eCurState = STATE::skill_200200;
+
+    StunSetting();
 }
 
 void Companion_Shane_FSM::skill_200100_Init()
@@ -1354,6 +1382,8 @@ void Companion_Shane_FSM::skill_200200()
 
     if (Get_FinalFrame() - m_iCurFrame < 9)
         m_eCurState = STATE::b_idle;
+
+    StunSetting();
 }
 
 void Companion_Shane_FSM::skill_200200_Init()
@@ -1390,6 +1420,7 @@ void Companion_Shane_FSM::skill_300100()
     if (Get_FinalFrame() - m_iCurFrame < 9)
         m_eCurState = STATE::b_idle;
     
+    StunSetting();
 }
 
 void Companion_Shane_FSM::skill_300100_Init()
@@ -1424,6 +1455,8 @@ void Companion_Shane_FSM::skill_500100()
 
     if (Get_FinalFrame() - m_iCurFrame < 9)
         m_eCurState = STATE::b_idle;
+
+    StunSetting();
 }
 
 void Companion_Shane_FSM::skill_500100_Init()
@@ -1470,6 +1503,8 @@ void Companion_Shane_FSM::skill_502100()
 
     if (Get_FinalFrame() - m_iCurFrame < 9)
         m_eCurState = STATE::b_idle;
+
+    StunSetting();
 }
 
 void Companion_Shane_FSM::skill_502100_Init()
@@ -1556,4 +1591,13 @@ void Companion_Shane_FSM::Create_200100_Clone(_uint iCloneIndex)
     obj->Get_FSM()->Set_Target(m_pOwner.lock());
     obj->Get_FSM()->Init();
     EVENTMGR.Create_Object(obj);
+}
+
+void Companion_Shane_FSM::StunSetting()
+{
+    if (m_bIsDead)
+    {
+        m_bInvincible = true;
+        m_eCurState = STATE::stun;
+    }
 }

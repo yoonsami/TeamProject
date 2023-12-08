@@ -44,7 +44,7 @@ HRESULT Silversword_Soldier_FSM::Init()
 
         m_fNormalAttack_AnimationSpeed = 1.3f;
         m_fSkillAttack_AnimationSpeed = 1.3f;
-        m_fDetectRange = 10.f;
+        m_fDetectRange = 15.f;
 
 
         m_bInitialize = true;
@@ -250,6 +250,9 @@ void Silversword_Soldier_FSM::Get_Hit(const wstring& skillname, _float fDamage, 
 
     CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage);
 
+    //Target Change
+    if (pLookTarget != nullptr)
+        m_pTarget = pLookTarget;
 
     m_bDetected = true;
 	m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.05f);
@@ -417,9 +420,6 @@ void Silversword_Soldier_FSM::n_run_Init()
     m_vTurnVector.Normalize();
 
     m_bSuperArmor = false;
-
-    if (CUR_SCENE->Get_Name() == L"KrisScene")
-        m_bInvincible = true;
 }
 
 void Silversword_Soldier_FSM::die_01()
@@ -1065,13 +1065,17 @@ void Silversword_Soldier_FSM::Target_DeadCheck()
             if (m_pTarget.lock()->Get_CurHp() <= 0.f)
             {
                 m_bDetected = false;
+                m_bPatrolMove = false;
                 m_eCurState = STATE::b_idle;
+                m_fPatrolDistanceCnt = 0.f;
             }
         }
         else
         {
             m_bDetected = false;
+            m_bPatrolMove = false;
             m_eCurState = STATE::b_idle;
+            m_fPatrolDistanceCnt = 0.f;
         }
     }
 

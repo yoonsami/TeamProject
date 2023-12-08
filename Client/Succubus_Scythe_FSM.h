@@ -110,6 +110,9 @@ private:
 	void Dead_Setting();
 	void Entry_Battle();
 	void Set_AttackSkill();
+	void Detect_Target();
+	void Target_DeadCheck();
+
 
 	_float3 Calculate_TargetTurnVector();
 
@@ -131,6 +134,7 @@ private:
 
 	COOLTIMEINFO m_tAttackCoolTime = { 4.f, 0.f };
 	COOLTIMEINFO m_tPatrolMoveCool = { 4.f,0.f };
+	COOLTIMEINFO m_tDetectCoolTime = { 1.f, 0.f };
 
 	_uint m_iPreAttack = 100;
 };

@@ -83,6 +83,8 @@ public:
 	_bool		Get_Invincible() { return m_bInvincible; }
 	void		Set_Invincible(_bool bFlag) { m_bInvincible = bFlag; }
 
+	_bool		Get_EntryTeam() { return m_bEntryTeam; }
+	
  protected:
 	weak_ptr<GameObject> m_pTarget;
 	weak_ptr<GameObject> m_pAttackCollider;
@@ -105,6 +107,7 @@ public:
 	_bool m_bCanCombo = false;
 	_bool m_bIsDead = false;
 	_bool m_bDetected = false;
+	_bool m_bEntryTeam = false;
 
 	_float3 m_vHitDir = _float3{ 0.f };
 	_float3 m_vDirToTarget = _float3(0.f);
