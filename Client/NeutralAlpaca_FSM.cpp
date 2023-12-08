@@ -34,7 +34,7 @@ HRESULT NeutralAlpaca_FSM::Init()
         m_bInitialize = true;
     }
 
-    m_pTarget = CUR_SCENE->Get_GameObject(L"Player");
+    m_pTarget = GET_PLAYER;
 
     return S_OK;
 }
@@ -329,26 +329,6 @@ void NeutralAlpaca_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared
         }
     }
 
-}
-
-void NeutralAlpaca_FSM::AttackCollider_On(const wstring& skillname, _float fAttackDamage)
-{
-    if (!m_pAttackCollider.expired())
-    {
-        m_pAttackCollider.lock()->Get_Collider()->Set_Activate(true);
-        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
-        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
-    }
-}
-
-void NeutralAlpaca_FSM::AttackCollider_Off()
-{
-    if (!m_pAttackCollider.expired())
-    {
-        m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
-        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
-        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(0.f);
-    }
 }
 
 void NeutralAlpaca_FSM::Set_State(_uint iIndex)

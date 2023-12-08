@@ -1,9 +1,9 @@
 #pragma once
-#include "FSM.h"
+#include "Client_FSM.h"
 #include "ForwardMovingSkillScript.h"
 
 class Boss_Mir_FSM :
-	public FSM
+	public Client_FSM
 {
 public:
 	enum class STATE
@@ -83,8 +83,6 @@ private:
 	virtual void OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) override;
-	virtual void AttackCollider_On(const wstring& skillname, _float fAttackDamage) override;
-	virtual void AttackCollider_Off() override;
 	virtual void Set_State(_uint iIndex) override;
 
 
@@ -188,7 +186,7 @@ private:
 
 	COOLTIMEINFO m_tAttackCoolTime = { 3.f, 0.f };
 	COOLTIMEINFO m_tBreathCoolTime = { 0.15f, 0.f };
-	COOLTIMEINFO m_tMeteorCoolTime = { 2.f, 0.f };
+	COOLTIMEINFO m_tMeteorCoolTime = { 1.5f, 0.f };
 	
 	_bool m_bIntroCam = false;
 	_bool m_bDetected = false;

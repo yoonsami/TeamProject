@@ -1,12 +1,12 @@
 #pragma once
-#include "FSM.h"
+#include "Client_FSM.h"
 #include "ForwardMovingSkillScript.h"
 
 #define PLAYER_SKILL1_DIST 10.f
 #define PLAYER_SKILL1_ANGLE (XM_PI / 3.f)
 
 class Player_FSM :
-	public FSM
+	public Client_FSM
 {
 
 public:
@@ -64,8 +64,6 @@ private:
 	virtual void OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) override;
-	virtual void AttackCollider_On(const wstring& skillname, _float fAttackDamage) override;
-	virtual void AttackCollider_Off() override;
 	virtual void Set_State(_uint iIndex) override;
 
 	void b_idle();

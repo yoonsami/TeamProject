@@ -20,7 +20,7 @@ HRESULT DeleteWhenAnimFinish::Init()
 	return S_OK;
 }
 
-void DeleteWhenAnimFinish::Tick()
+void DeleteWhenAnimFinish::Final_Tick()
 {
 	if(!m_bAnimFinished)
 	{

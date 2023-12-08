@@ -8,7 +8,7 @@ public:
 
 public:
     virtual HRESULT Init() override;
-    virtual void Tick() override;
+    virtual void Final_Tick() override;
     virtual shared_ptr<MonoBehaviour> Copy_Script() override { return make_shared<DeleteWhenAnimFinish>(m_strAnimName,m_fWaitTime,m_bAnimLoop,m_fAnimSpeed); }
 
     void Set_DissolveOption(_float fDissolveSpeed, shared_ptr<Texture> pTexture) { m_fDissolveSpeed = fDissolveSpeed; m_pDissolveTexture = pTexture; }

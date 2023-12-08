@@ -16,7 +16,7 @@ void Hide_OrctongScript::Tick()
 	if (m_pOwner.expired())
 		return;
 
-	auto pPlayer = CUR_SCENE->Get_GameObject(L"Player");
+	auto pPlayer = GET_PLAYER;
 	if (!pPlayer)
 		return;
 

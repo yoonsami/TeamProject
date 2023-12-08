@@ -495,7 +495,11 @@ void ImGui_Manager::Frame_SelcetObjectManager()
                         continue;
 
                     if (obj->Get_Model()->Get_ModelTag() == m_pMapObjects[m_iObjects]->Get_Model()->Get_ModelTag())
+                    {
+                        MapObjectScript::MAPOBJDESC& tempDesc = obj->Get_Script<MapObjectScript>()->Get_DESC();
+                        tempDesc.bCullNone = CurObjectDesc.bCullNone;
                         obj->Get_ModelRenderer()->Set_PassType((ModelRenderer::INSTANCE_PASSTYPE)CurObjectDesc.bCullNone);
+                    }
                 }
             }
         }
@@ -828,6 +832,11 @@ void ImGui_Manager::Frame_Terrain()
     {
         LoadAndCreateTerrain();
     }
+	ImGui::SameLine();
+	if (ImGui::Button("CalNormalTangent##TerrainCalNormalTangent"))
+	{
+        Cal_NormalTangent();
+	}
 
     ImGui::End();
 }
@@ -1395,7 +1404,7 @@ void ImGui_Manager::Create_Terrain(shared_ptr<Terrain> _pTerrainMesh, _int _iTer
     //}
 
     // 메시렌더러
-    shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+    shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Terrain.fx"));
     renderer->Set_Mesh(_pTerrainMesh);
     renderer->Set_Pass(18); // 터레인패스
 
@@ -1416,7 +1425,7 @@ void ImGui_Manager::Create_Terrain(shared_ptr<Terrain> _pTerrainMesh, _int _iTer
         MSG_BOX("NoNormalTexture");
         return;
     }
-    material->Set_TextureMap(Grasstexture, TextureMapType::NORMAL);
+    material->Set_TextureMap(Normaltexture, TextureMapType::NORMAL);
 
     // Mask텍스쳐
     auto Masktexture = RESOURCES.Get<Texture>(L"TileMask");
@@ -2117,6 +2126,7 @@ HRESULT ImGui_Manager::Save_TerrainData()
         file->Write<_float3>(TerrainVertices[i].vPosition);
         file->Write<_float2>(TerrainVertices[i].vTexCoord);
         file->Write<_float3>(TerrainVertices[i].vNormal);
+        file->Write<_float3>(TerrainVertices[i].vTangent);
     }
     // 인덱스의 개수 저장
     auto& TerrainIndices = TerrainGeometry->Get_Indices();
@@ -2151,6 +2161,7 @@ HRESULT ImGui_Manager::LoadAndCreateTerrain()
         file->Read<_float3>(loadedVertices[i].vPosition);
         file->Read<_float2>(loadedVertices[i].vTexCoord);
         file->Read<_float3>(loadedVertices[i].vNormal);
+        file->Read<_float3>(loadedVertices[i].vTangent);
     }
 
     // 인덱스의 개수와 정보 로드
@@ -2177,6 +2188,44 @@ HRESULT ImGui_Manager::LoadAndCreateTerrain()
     Create_Terrain(loadedTerrain, sizeX, sizeY);
 
     return S_OK;
+}
+
+void ImGui_Manager::Cal_NormalTangent()
+{
+	auto terrain = CUR_SCENE->Get_GameObject(L"Terrain");
+
+	auto mesh = terrain->Get_MeshRenderer()->Get_Mesh();
+	auto& indices = mesh->Get_Geometry()->Get_Indices();
+	auto& vertices = mesh->Get_Geometry()->Get_Vertices();
+
+	for (_int i = 0; i < _int(indices.size());)
+	{
+		_int iIndex[3] = { indices[i++] ,indices[i++] ,indices[i++] };
+		_float3 vVtxPos[3] = {
+			  vertices[iIndex[0]].vPosition,
+			  vertices[iIndex[1]].vPosition,
+			  vertices[iIndex[2]].vPosition
+		};
+
+		_float3 vDir[3] = { vVtxPos[1] - vVtxPos[0] ,vVtxPos[2] - vVtxPos[1] ,vVtxPos[0] - vVtxPos[2] };
+
+		_float3 vNormal = vDir[0].Cross(vDir[1]);
+		vNormal.Normalize();
+        _float3 vTangent = vDir[0];
+        vTangent.Normalize();
+
+		vertices[iIndex[0]].vNormal = vNormal;
+		vertices[iIndex[1]].vNormal = vNormal;
+		vertices[iIndex[2]].vNormal = vNormal;
+
+        vertices[iIndex[0]].vTangent = vTangent;
+        vertices[iIndex[1]].vTangent = vTangent;
+        vertices[iIndex[2]].vTangent = vTangent;
+
+	}
+
+    mesh->Create_Buffer();
+
 }
 
 _float4 ImGui_Manager::Compute_CullingData(shared_ptr<GameObject>& _pGameObject)

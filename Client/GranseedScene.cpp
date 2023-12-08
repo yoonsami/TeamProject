@@ -104,7 +104,7 @@ void GranseedScene::Init()
 {
 	__super::Init();
 
-	auto pPlayer = Get_GameObject(L"Player");
+	auto pPlayer = Get_Player();
 	if (nullptr != pPlayer)
 	{
 		for (_uint i = 1; i < IDX(HERO::MAX); ++i)
@@ -141,9 +141,9 @@ void GranseedScene::Tick()
 
 	if (KEYTAP(KEY_TYPE::C))
 	{
-		//auto pObj = Get_UI(L"UI_Interaction");
+		//auto pObj = Get_UI(L"UI_Message_Controller");
 		//if (pObj)
-		//	pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::TEST, make_shared<GameObject>());
+		//	pObj->Get_Script<UiMessageNotHere>()->Create_Message();
 		//auto pObj = Get_UI(L"UI_Costume_Controller");
 		//if (pObj)
 		//	pObj->Get_Script<UiCostumeController>()->Create_Costume();
@@ -196,11 +196,10 @@ void GranseedScene::Final_Tick()
 	
 	if (KEYPUSH(KEY_TYPE::TAB) && KEYPUSH(KEY_TYPE::F4))
 	{
-		/*GachaSceneDesc sceneDesc{ L"YeopoMap",HERO::YEOPO};
-			SCENE.Add_SubScene(make_shared<GachaScene>(sceneDesc));
-		SCENE.Exchange_Scene();*/
 
-		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<FieldScene>());
+
+		//shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<MirScene>());
+		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<MirScene>());
 		scene->Set_StaticObjects(m_StaticObject);
 		PHYSX.Set_CharacterControllerNull();
 		SCENE.Change_Scene(scene);
@@ -208,9 +207,7 @@ void GranseedScene::Final_Tick()
 	}
 	if (KEYPUSH(KEY_TYPE::TAB) && KEYPUSH(KEY_TYPE::F7))
 	{
-		/*GachaSceneDesc sceneDesc{ L"YeopoMap",HERO::YEOPO};
-			SCENE.Add_SubScene(make_shared<GachaScene>(sceneDesc));
-		SCENE.Exchange_Scene();*/
+
 
 		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<GranseedScene>());
 		scene->Set_StaticObjects(m_StaticObject);

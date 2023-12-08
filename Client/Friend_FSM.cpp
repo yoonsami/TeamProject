@@ -5,6 +5,10 @@
 #include "ModelRenderer.h"
 #include "WeaponScript.h"
 #include "Model.h"
+#include <SphereCollider.h>
+#include "AttackColliderInfoScript.h"
+#include "DellonsWraith_FSM.h"
+#include "MainCameraScript.h"
 
 Friend_FSM::Friend_FSM(HERO eType)
     : m_eType(eType)
@@ -47,7 +51,19 @@ HRESULT Friend_FSM::Init()
         Set_Weapon(weapon);
     }
 
+	shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
+	attackCollider->GetOrAddTransform();
+	attackCollider->Add_Component(make_shared<SphereCollider>(1.f));
+	attackCollider->Get_Collider()->Set_CollisionGroup(Player_Attack);
 
+	Set_AttackCollider(attackCollider);
+
+	EVENTMGR.Create_Object(attackCollider);
+	attackCollider->Get_Collider()->Set_Activate(false);
+
+	attackCollider->Add_Component(make_shared<AttackColliderInfoScript>());
+	attackCollider->Set_Name(L"Friend_AttackCollider");
+	attackCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(Get_Owner());
 
     m_eCurState = STATE::fall_loop;
 	{
@@ -69,6 +85,11 @@ HRESULT Friend_FSM::Init()
 void Friend_FSM::Tick()
 {
     State_Tick();
+	if (!m_pAttackCollider.expired())
+	{
+		//m_pAttack transform set forward
+		m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.5f + _float3::Up);
+	}
 }
 
 void Friend_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
@@ -78,7 +99,7 @@ void Friend_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
 void Friend_FSM::State_Tick()
 {
     State_Init();
-
+    m_iCurFrame = Get_CurFrame();
     switch (m_eCurState)
     {
     case Friend_FSM::STATE::fall_loop:
@@ -117,10 +138,95 @@ void Friend_FSM::State_Init()
         }
         m_ePreState = m_eCurState;
     }
+
+	if (m_iPreFrame != m_iCurFrame)
+		m_iPreFrame = m_iCurFrame;
 }
 
 void Friend_FSM::Set_State(_uint iIndex)
 {
+}
+
+void Friend_FSM::Create_ForwardMovingSkillCollider(const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
+{
+	shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
+
+	m_pSkillCollider = SkillCollider;
+
+	m_pSkillCollider.lock()->GetOrAddTransform();
+	m_pSkillCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, vPos);
+
+	auto pSphereCollider = make_shared<SphereCollider>(fSkillRange);
+	pSphereCollider->Set_CenterPos(_float3{ vPos.x,vPos.y, vPos.z });
+	m_pSkillCollider.lock()->Add_Component(pSphereCollider);
+
+	m_pSkillCollider.lock()->Get_Collider()->Set_CollisionGroup(Player_Skill);
+
+	m_pSkillCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
+	m_pSkillCollider.lock()->Get_Collider()->Set_Activate(true);
+	m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
+	m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
+	m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
+	m_pSkillCollider.lock()->Set_Name(L"Player_SkillCollider");
+	m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
+	m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
+
+	EVENTMGR.Create_Object(m_pSkillCollider.lock());
+}
+
+void Friend_FSM::Create_InstallationSkillCollider(const _float4& vPos, _float fSkillRange, INSTALLATIONSKILLDESC desc)
+{
+	shared_ptr<GameObject> InstallationSkillCollider = make_shared<GameObject>();
+
+	InstallationSkillCollider->GetOrAddTransform();
+	InstallationSkillCollider->Get_Transform()->Set_State(Transform_State::POS, vPos);
+
+	auto pSphereCollider = make_shared<SphereCollider>(fSkillRange);
+	pSphereCollider->Set_CenterPos(_float3{ vPos.x,vPos.y, vPos.z });
+	InstallationSkillCollider->Add_Component(pSphereCollider);
+	InstallationSkillCollider->Get_Collider()->Set_CollisionGroup(Player_Skill);
+
+	InstallationSkillCollider->Add_Component(make_shared<AttackColliderInfoScript>());
+	InstallationSkillCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
+	InstallationSkillCollider->Add_Component(make_shared<InstallationSkill_Script>(desc));
+	InstallationSkillCollider->Get_Script<InstallationSkill_Script>()->Init();
+
+	InstallationSkillCollider->Set_Name(L"InstallationSkillCollider");
+
+	EVENTMGR.Create_Object(InstallationSkillCollider);
+}
+
+void Friend_FSM::Summon_Wraith()
+{
+	shared_ptr<GameObject> ObjWraith = make_shared<GameObject>();
+
+	ObjWraith->Add_Component(make_shared<Transform>());
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+
+		shared_ptr<ModelAnimator> renderer = make_shared<ModelAnimator>(shader);
+		{
+			shared_ptr<Model> model = RESOURCES.Get<Model>(L"Dellons_Wraith");
+			renderer->Set_Model(model);
+		}
+
+		ObjWraith->Add_Component(renderer);
+
+	}
+	ObjWraith->Add_Component(make_shared<DellonsWraith_FSM>());
+	ObjWraith->Get_FSM()->Set_Target(m_pOwner.lock());
+	ObjWraith->Get_FSM()->Init();
+	ObjWraith->Set_Name(L"Wraith");
+
+	EVENTMGR.Create_Object(ObjWraith);
+
+	m_pDellonsWraith = ObjWraith;
+}
+
+void Friend_FSM::Set_WraithState(_uint iAnimindex)
+{
+	if (!m_pDellonsWraith.expired())
+		m_pDellonsWraith.lock()->Get_FSM()->Set_State(iAnimindex);
 }
 
 void Friend_FSM::fall_loop()
@@ -164,12 +270,239 @@ void Friend_FSM::fall_end_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_CurrentAnim(L"fall_end",  false, 10.f);
+	animator->Set_CurrentAnim(L"fall_end",  false, 2.f);
 	m_fStateAcc = 0.f;
 }
 
 void Friend_FSM::ATTACK()
 {
+	if (!m_pLookingTarget.expired())
+	{
+		Look_DirToTarget();
+	}
+
+    switch (m_eType)
+    {
+    case HERO::PLAYER:
+        break;
+    case HERO::ACE3:
+    {
+		
+		if (m_iCurFrame == 15)
+			AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+		else if (m_iCurFrame == 33)
+			AttackCollider_Off();
+    }
+        break;
+    case HERO::KYLE:
+    {
+
+		if (Init_CurFrame(11))
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 0.5f;
+			desc.fLimitDistance = 0.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+				Get_Transform()->Get_State(Transform_State::UP);
+			Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, NORMAL_ATTACK, 10.f);
+
+		}
+		else if (Init_CurFrame(31))
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 0.5f;
+			desc.fLimitDistance = 0.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+				Get_Transform()->Get_State(Transform_State::UP);
+			Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, NORMAL_ATTACK, 10.f);
+
+		}
+		else if (Init_CurFrame(47))
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 0.5f;
+			desc.fLimitDistance = 0.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+				Get_Transform()->Get_State(Transform_State::UP);
+			Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, NORMAL_ATTACK, 10.f);
+
+		}
+		else if (Init_CurFrame(87))
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 0.5f;
+			desc.fLimitDistance = 0.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+				Get_Transform()->Get_State(Transform_State::LOOK) * 5.f;
+			Create_ForwardMovingSkillCollider(vSkillPos, 4.f, desc, AIRBORNE_SKILL, 10.f);
+		}
+    }
+        break;
+    case HERO::YEOPO:
+    {
+		if (m_iCurFrame == 12)
+			AttackCollider_On(NORMAL_ATTACK, 10.f);
+		else if (m_iCurFrame == 16)
+			AttackCollider_Off();
+		else if (m_iCurFrame == 17)
+			AttackCollider_On(NORMAL_ATTACK, 10.f);
+		else if (m_iCurFrame == 19)
+			AttackCollider_Off();
+		else if (m_iCurFrame == 21)
+			AttackCollider_On(NORMAL_ATTACK, 10.f);
+		else if (m_iCurFrame == 23)
+			AttackCollider_Off();
+		else if (m_iCurFrame == 25)
+			AttackCollider_On(NORMAL_ATTACK, 10.f);
+		else if (m_iCurFrame == 28)
+			AttackCollider_Off();
+		else if (m_iCurFrame == 30)
+			AttackCollider_On(NORMAL_ATTACK, 10.f);
+		else if (m_iCurFrame == 35)
+			AttackCollider_Off();
+		else if (m_iCurFrame == 52)
+			AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
+		else if (m_iCurFrame == 55)
+			AttackCollider_Off();
+    }
+        break;
+    case HERO::DELLONS:
+	{
+		if (Init_CurFrame(20))
+		{
+			Summon_Wraith();
+			Set_WraithState((_uint)DellonsWraith_FSM::STATE::FX_Mn_Dellons_skill_5100);
+		}
+		else if (Init_CurFrame(33) ||
+			Init_CurFrame(40) ||
+			Init_CurFrame(47) ||
+			Init_CurFrame(60) ||
+			Init_CurFrame(67) ||
+			Init_CurFrame(72))
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 20.f;
+			desc.fLifeTime = 0.5f;
+			desc.fLimitDistance = 3.5f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
+			Create_ForwardMovingSkillCollider(vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f);
+
+		}
+		else if (Init_CurFrame(99))
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 20.f;
+			desc.fLifeTime = 1.f;
+			desc.fLimitDistance = 5.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * -0.5f + _float3::Up;
+			Create_ForwardMovingSkillCollider(vSkillPos, 2.f, desc, KNOCKDOWN_SKILL, 10.f);
+		}
+	}
+        break;
+    case HERO::SPIKE:
+	{
+		if (Init_CurFrame(1))
+			Add_And_Set_Effect(L"Spike_300100_Jump");
+		if (Init_CurFrame(30))
+			Add_And_Set_Effect(L"Spike_300100");
+		if (Init_CurFrame(30))
+		{
+			CAMERA_SHAKE(0.4f, 0.5f);
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 1.f;
+			desc.fLimitDistance = 0.f;
+
+			Create_ForwardMovingSkillCollider(Get_Transform()->Get_State(Transform_State::POS), 3.f, desc, AIRBORNE_ATTACK, 10.f);
+
+		}
+	}
+        break;
+    case HERO::YEONHEE:
+	{
+		if (Init_CurFrame(57))
+		{
+			_float4 vTargetPos;
+			if (!m_pLookingTarget.expired())
+				vTargetPos = m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS);
+			else
+				vTargetPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 10.f;
+
+			INSTALLATIONSKILLDESC desc;
+			desc.iLimitAttackCnt = 1;
+			desc.strAttackType = KNOCKDOWN_SKILL;
+			desc.strLastAttackType = KNOCKDOWN_SKILL;
+			desc.bFirstAttack = false;
+			desc.fAttackDamage = 5.f;
+			desc.fLastAttackDamage = 5.f;
+
+			_float fOffSetTime = 0.f;
+
+			for (_uint i = 0; i < 5; i++)
+			{
+				desc.fAttackTickTime = 1.f + fOffSetTime;
+
+				fOffSetTime += 0.3f;
+
+				_float fOffSetX = ((rand() * 2 / _float(RAND_MAX) - 1));
+				_float fOffSetZ = ((rand() * 2 / _float(RAND_MAX) - 1));
+
+				_float4 vSkillPos = vTargetPos + _float4{ fOffSetX, 0.f, fOffSetZ, 0.f };
+
+				Create_InstallationSkillCollider(vSkillPos, 2.f, desc);
+			}
+		}
+	}
+        break;
+    case HERO::SHANE:
+	{
+		if (Init_CurFrame(56))
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 0.5f;
+			desc.fLimitDistance = 0.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
+			Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, NORMAL_SKILL, 10.f);
+		}
+		else if (Init_CurFrame(63))
+		{
+			FORWARDMOVINGSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fMoveSpeed = 0.f;
+			desc.fLifeTime = 0.5f;
+			desc.fLimitDistance = 0.f;
+
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
+			Create_ForwardMovingSkillCollider(vSkillPos, 2.5f, desc, KNOCKBACK_SKILL, 10.f);
+		}
+	}
+        break;
+    case HERO::MAX:
+        break;
+    default:
+        break;
+    }
+
     if (Is_AnimFinished())
         m_eCurState = STATE::EXIT;
 }
@@ -183,33 +516,36 @@ void Friend_FSM::ATTACK_Init()
     case HERO::PLAYER:
         break;
     case HERO::ACE3:
-        animator->Set_NextTweenAnim(L"skill_500100", 0.15f, false, 1.5f);
+        animator->Set_NextTweenAnim(L"skill_500100", 0.15f, false, 1.f);
         break;
     case HERO::KYLE:
-        animator->Set_NextTweenAnim(L"skill_500100", 0.15f, false, 1.5f);
+        animator->Set_NextTweenAnim(L"skill_500100", 0.15f, false, 1.f);
         break;
     case HERO::YEOPO:
-        animator->Set_NextTweenAnim(L"skill_501100", 0.15f, false, 1.5f);
+        animator->Set_NextTweenAnim(L"skill_501100", 0.15f, false, 1.f);
         break;
     case HERO::DELLONS:
-        animator->Set_NextTweenAnim(L"skill_400100", 0.15f, false, 1.5f);
+        animator->Set_NextTweenAnim(L"skill_400100", 0.15f, false, 1.f);
         break;
     case HERO::SPIKE:
-        animator->Set_NextTweenAnim(L"skill_300100", 0.15f, false, 1.5f);
+        animator->Set_NextTweenAnim(L"skill_300100", 0.15f, false, 1.f);
         break;
 	case HERO::YEONHEE:
-		animator->Set_NextTweenAnim(L"skill_501100", 0.15f, false, 1.5f);
+		animator->Set_NextTweenAnim(L"skill_501100", 0.15f, false, 1.f);
 		break;
 	case HERO::SHANE:
-		animator->Set_NextTweenAnim(L"skill_502100", 0.15f, false, 1.5f);
+		animator->Set_NextTweenAnim(L"skill_502100", 0.15f, false, 1.f);
 		break;
     case HERO::MAX:
         break;
     default:
         break;
     }
-
-	
+    m_pLookingTarget = Find_TargetInFrustum(OBJ_MONSTER);
+    if (!m_pLookingTarget.expired())
+    {
+        m_vDirToTarget = (m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+    }
 }
 
 void Friend_FSM::EXIT()
@@ -233,5 +569,11 @@ void Friend_FSM::EXIT_Init()
         m_pWeapon.lock()->Add_Component(script);
 		script->Init();
     }
+
+	if(!m_pAttackCollider.expired())
+		EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+
+	if (!m_pDellonsWraith.expired())
+		EVENTMGR.Delete_Object(m_pDellonsWraith.lock());
    
 }

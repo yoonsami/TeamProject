@@ -104,7 +104,7 @@ void UiMarkNpc::Change_Set_On(_bool bValue)
 void UiMarkNpc::Check_Distance()
 {
     _float3 pos = Get_Transform()->Get_State(Transform_State::POS).xyz();
-    GET_PLAYER;
+    auto pPlayer = GET_PLAYER;
 
     if (pPlayer)
     {

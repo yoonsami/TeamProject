@@ -8,7 +8,7 @@ Smoke_Detect::Smoke_Detect()
 
 HRESULT Smoke_Detect::Init()
 {
-    m_pPlayer = CUR_SCENE->Get_GameObject(L"Player");
+    m_pPlayer = GET_PLAYER;
     return S_OK;
 }
 

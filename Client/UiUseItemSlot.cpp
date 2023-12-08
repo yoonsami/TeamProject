@@ -32,6 +32,7 @@ HRESULT UiUseItemSlot::Init()
     m_iCount = 0;
 
     m_fMaxTime = 8.f;
+    m_fCheckTime = m_fMaxTime + 1.f;
 
     return S_OK;
 }

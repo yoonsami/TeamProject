@@ -326,6 +326,8 @@ void FieldScene::Load_Terrain()
 		file->Read<_float3>(loadedVertices[i].vPosition);
 		file->Read<_float2>(loadedVertices[i].vTexCoord);
 		file->Read<_float3>(loadedVertices[i].vNormal);
+		file->Read<_float3>(loadedVertices[i].vTangent);
+
 	}
 
 	// 인덱스의 개수와 정보 로드
@@ -353,7 +355,7 @@ void FieldScene::Load_Terrain()
 	TerrainObject->GetOrAddTransform();
 // 터레인생성
 	// 메시렌더러
-	shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+	shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Terrain.fx"));
 	renderer->Set_Mesh(loadedTerrain);
 	renderer->Set_Pass(18); // 터레인패스
 
@@ -374,7 +376,7 @@ void FieldScene::Load_Terrain()
 		MSG_BOX("NoNormalTexture");
 		return;
 	}
-	material->Set_TextureMap(Grasstexture, TextureMapType::NORMAL);
+	material->Set_TextureMap(Normaltexture, TextureMapType::NORMAL);
 
 	// Mask텍스쳐
 	auto Masktexture = RESOURCES.Get<Texture>(L"TileMask");

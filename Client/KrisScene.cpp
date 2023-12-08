@@ -47,6 +47,9 @@
 #include "Alpaca_FSM.h"
 #include "Wolf_FSM.h"
 
+#include "Companion_Spike_FSM.h"
+#include "Companion_Dellons_FSM.h"
+#include "Companion_Shane_FSM.h"
 
 #include "UiGachaController.h"
 #include "Boss_Mir_FSM.h"
@@ -194,6 +197,10 @@ HRESULT KrisScene::Load_Scene()
 	Load_Camera(player);
 	Load_MapFile(L"KrisMap", player);
 
+	Load_Companion(L"Spike", player);
+	Load_Companion(L"Dellons", player);
+	Load_Companion(L"Shane", player);
+
 	Load_Monster(5, L"Alpaca_White", player);
 	Load_Monster(5, L"Alpaca_Brown", player);
 	Load_Monster(5, L"Alpaca_Black", player); 
@@ -207,7 +214,7 @@ HRESULT KrisScene::Load_Scene()
 
 	////Load_Boss_Spike(player);				
 	Load_Boss_Dellons(player);				
-
+	
 
 	Load_Ui(player);
 	Load_EventScript();
@@ -637,6 +644,90 @@ void KrisScene::Load_Boss_Spike(shared_ptr<GameObject> pPlayer)
 		ObjWeapon->Set_Name(L"Weapon_Boss_Spike");
 		ObjWeapon->Set_VelocityMap(true);
 		Add_GameObject(ObjWeapon);
+	}
+}
+
+void KrisScene::Load_Companion(const wstring& strCompanionTag, shared_ptr<GameObject> pPlayer)
+{
+	{
+		// Add. Companion
+		shared_ptr<GameObject> ObjCompanion = make_shared<GameObject>();
+
+		ObjCompanion->Add_Component(make_shared<Transform>());
+
+		ObjCompanion->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 4.f, 1.f));
+		{
+			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+
+			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+			{
+				shared_ptr<Model> model = RESOURCES.Get<Model>(strCompanionTag);
+				animator->Set_Model(model);
+			}
+
+			ObjCompanion->Add_Component(animator);
+			
+			if (strCompanionTag == L"Spike")
+				ObjCompanion->Add_Component(make_shared<Companion_Spike_FSM>());
+			else if (strCompanionTag == L"Dellons")
+				ObjCompanion->Add_Component(make_shared<Companion_Dellons_FSM>());
+			else if (strCompanionTag == L"Shane")
+				ObjCompanion->Add_Component(make_shared<Companion_Shane_FSM>());
+
+
+			ObjCompanion->Get_FSM()->Set_Target(pPlayer);
+		}
+		wstring CompanionName = L"Companion_" + strCompanionTag;
+		ObjCompanion->Set_Name(CompanionName);
+		ObjCompanion->Set_VelocityMap(true);
+		ObjCompanion->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.8f, 0.5f })); //obbcollider
+		ObjCompanion->Get_Collider()->Set_CollisionGroup(Companion_Body);
+		ObjCompanion->Get_Collider()->Set_Activate(true);
+
+		{
+			auto controller = make_shared<CharacterController>();
+			ObjCompanion->Add_Component(controller);
+			auto& desc = controller->Get_CapsuleControllerDesc();
+			desc.radius = 0.5f;
+			desc.height = 5.f;
+			_float3 vPos = ObjCompanion->Get_Transform()->Get_State(Transform_State::POS).xyz();
+			desc.position = { vPos.x, vPos.y, vPos.z };
+			controller->Create_Controller();
+		}
+		ObjCompanion->Set_DrawShadow(true);
+		ObjCompanion->Set_ObjectGroup(OBJ_COMPANION);
+		Add_GameObject(ObjCompanion);
+
+
+		//Add. Companion's Weapon
+		shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
+
+		ObjWeapon->Add_Component(make_shared<Transform>());
+		{
+			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+
+			shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+			{
+				wstring WeaponModelTag = L"Weapon_" + strCompanionTag;
+				shared_ptr<Model> model = RESOURCES.Get<Model>(WeaponModelTag);
+				renderer->Set_Model(model);
+			}
+
+			ObjWeapon->Add_Component(renderer);
+
+			WeaponScript::WEAPONDESC desc;
+			desc.strBoneName = L"Bip001-Prop1";
+			desc.matPivot = _float4x4::CreateRotationX(-XM_PI / 2.f) * _float4x4::CreateRotationZ(XM_PI);
+			desc.pWeaponOwner = ObjCompanion;
+
+			ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
+		}
+		ObjWeapon->Set_DrawShadow(true);
+		wstring CompanionWeaponName = L"Companion_Weapon_" + strCompanionTag;
+		ObjWeapon->Set_Name(CompanionWeaponName);
+		ObjWeapon->Set_VelocityMap(true);
+		Add_GameObject(ObjWeapon);
+
 	}
 }
 

@@ -28,7 +28,7 @@ protected:
 	_uint		Get_FinalFrame();
 	void		Reset_Frame();
 	_bool		Is_AnimFinished();
-	_float3		Get_InputDirVector(); // Å°º¸µå ÀÔ·Â¿¡ µû¶ó Ä«¸Þ¶ó ±âÁØ ¾Õ¹æÇâ : +x, ¿À¸¥ÂÊ ¹æÇâ : +yÀÎ Å©±â 1Â¥¸® º¤ÅÍ ¹ÝÈ¯
+	_float3		Get_InputDirVector(); // Å°ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·Â¿ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Õ¹ï¿½ï¿½ï¿½ : +x, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ : +yï¿½ï¿½ Å©ï¿½ï¿½ 1Â¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
 	void		Soft_Turn_ToInputDir(const _float3& vInputDir, _float turnSpeed);
 	_float3		Soft_Turn_ToTarget(const _float3& vTargetPos, _float turnSpeed);
 	_float3		Soft_Turn_ToTarget(const _float4& vTargetPos, _float turnSpeed);
@@ -36,17 +36,17 @@ protected:
 	_bool		Get_SuperArmor() { return m_bSuperArmor; }
 	void		Set_SuperArmor(_bool bFlag) { m_bSuperArmor = bFlag; }
 
-	_bool		Target_In_AttackRange(_float* pGap = nullptr);
-	_bool		Target_In_DetectRange();
-	_bool		Target_In_GazeCheckRange();
+	_bool Target_In_AttackRange(_float* pGap = nullptr);
+	_bool LookingTarget_In_AttackRange(_float* pGap = nullptr);
+	_bool Target_In_DetectRange();
+	_bool Target_In_GazeCheckRange();
 
-	_bool		CounterAttackCheck(_float fCheckDegree);
-	void		Set_DirToTarget();
-	void		Set_DirToTargetOrInput(_uint eType);
-	void		Look_DirToTarget(_float fTurnSpeed = XM_PI * 5.f);
-	shared_ptr<GameObject> Find_TargetInFrustum(_uint eType);
-
-	_bool		Init_CurFrame(const _uint curFrame);
+	_bool CounterAttackCheck(_float fCheckDegree);
+	void Set_DirToTarget();
+	void Set_DirToTargetOrInput(_uint eType);
+	void Look_DirToTarget(_float fTurnSpeed = XM_PI * 5.f);
+	shared_ptr<GameObject> Find_TargetInFrustum(_uint eType, _bool bFrustumCheck = true);
+	_bool Init_CurFrame(const _uint curFrame);
 
 	void		Add_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript = nullptr);
 	void		Add_And_Set_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript = nullptr);
