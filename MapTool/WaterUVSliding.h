@@ -14,8 +14,8 @@ public:
     virtual shared_ptr<MonoBehaviour> Copy_Script() { return nullptr; }
     
 private:
-    _float4 m_Color1 = { 1.f, 1.f, 1.f ,1.f };
-    _float4 m_Color2 = { 1.f, 1.f, 1.f ,1.f };
+    _float4 m_Color1 = { -36.f / 255.f, 124.f / 255.f, 1.f, 1.f };
+    _float4 m_Color2 = { -69.f / 255.f, 62.f / 255.f, 1.f, 1.f };
     _int m_int0 = { 0 };
     _int m_int1 = { 0 };
 };
