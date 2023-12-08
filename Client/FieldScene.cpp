@@ -47,6 +47,7 @@
 #include "Undead_Priest_FSM.h"
 #include "Alpaca_FSM.h"
 #include "Wolf_FSM.h"
+#include "EntSoldier_FSM.h"
 
 #include "Companion_Spike_FSM.h"
 #include "Companion_Dellons_FSM.h"
@@ -180,6 +181,7 @@ HRESULT FieldScene::Load_Scene()
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Wolf\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Succubus_Scythe\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Undead_Priest\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\EntSoldier\\", false);
 
 	auto player = Load_Player();
 	Load_Camera(player);
@@ -193,6 +195,7 @@ HRESULT FieldScene::Load_Scene()
 	Load_Monster(3, L"Silversword_Soldier", player);
 	Load_Monster(3, L"Succubus_Scythe", player);
 	Load_Monster(3, L"Undead_Priest", player);
+	Load_Monster(3, L"EntSoldier", player);
 
 	Load_Ui(player);
 	return S_OK;
@@ -531,6 +534,8 @@ void FieldScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_p
 					ObjMonster->Add_Component(make_shared<NeutralAlpaca_FSM>());
 				else if (strMonsterTag == L"Wolf")
 					ObjMonster->Add_Component(make_shared<Wolf_FSM>());
+				else if (strMonsterTag == L"EntSoldier")
+					ObjMonster->Add_Component(make_shared<EntSoldier_FSM>());
 
 				ObjMonster->Get_FSM()->Set_Target(pPlayer);
 			}
