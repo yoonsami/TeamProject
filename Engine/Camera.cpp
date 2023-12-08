@@ -126,7 +126,7 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 		if (gameObject->Get_ShaderType() == SHADER_TYPE::DISTORTION)
 			m_DistortionEffects.push_back(gameObject);
 		
-		if (m_bEffectToolMode_On && gameObject->Get_MeshEffect()->Get_Desc().bIsSSD)
+		if (m_bEffectToolMode_On && gameObject->Get_MeshEffect()&& gameObject->Get_MeshEffect()->Get_Desc().bIsSSD)
 			m_Decal.push_back(gameObject);
 		else if (!m_bEffectToolMode_On && gameObject->Get_GroupEffect())
 			m_Decal.push_back(gameObject);
