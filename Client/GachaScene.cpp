@@ -216,6 +216,29 @@ void GachaScene::Load_Camera()
 
 		Add_GameObject(camera);
 	}
+	{
+		shared_ptr<GameObject> camera = make_shared<GameObject>();
+
+		camera->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
+
+		CameraDesc desc;
+		desc.fFOV = XM_PI / 3.f;
+		desc.strName = L"UI_Cam";
+		desc.fSizeX = _float(g_iWinSizeX);
+		desc.fSizeY = _float(g_iWinSizeY);
+		desc.fNear = 0.1f;
+		desc.fFar = 1000.f;
+		shared_ptr<Camera> cameraComponent = make_shared<Camera>(desc);
+
+		camera->Add_Component(cameraComponent);
+
+		camera->Get_Camera()->Set_ProjType(ProjectionType::Orthographic);
+
+		camera->Get_Camera()->Set_CullingMaskAll();
+		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, false);
+
+		Add_GameObject(camera);
+	}
 }
 
 void GachaScene::Load_Ui()
