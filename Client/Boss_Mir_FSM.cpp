@@ -2560,10 +2560,10 @@ void Boss_Mir_FSM::Set_AttackPattern()
     //m_eCurState = STATE::SQ_SBRin_Roar;
 
     // TODO:  의진
-    /*_uint iRan = rand() % 4;
+    _uint iRan = rand() % 4;
     if(iRan == 0)
-        m_eCurState = STATE::skill_2100;*/
-    
+        m_eCurState = STATE::skill_200000;
+    /*
     _uint iRan = rand() % 10;
     
     while (true)
@@ -2687,7 +2687,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
             m_iCurMeteorCnt = 0;
         }
     }
-    
+    */
 }
 
 void Boss_Mir_FSM::Setting_DragonBall()

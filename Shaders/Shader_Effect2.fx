@@ -1,6 +1,9 @@
 #include "Render.fx"
 #include "Light.fx"
 
+Texture2D PositionTargetTex;
+float4x4 InvWorldTransformMatrix;
+
 struct EffectOut
 {
     float4 position : SV_POSITION;
@@ -78,6 +81,7 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     bool bUseRimLight = (bool) g_int_1;
     bool bUseSpriteAnim = (bool) g_int_2;
     bool bLightOn = (bool) g_int_3;
+    bool bUseSSD = (bool) g_mat_2._31;
     
     float fLifeTimeRatio = g_float_0;
     float fDissolveWeight = g_float_1;
@@ -101,29 +105,45 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     int iFilpOPtion_Op[3] = { g_mat_2._21, g_mat_2._22, g_mat_2._23 };
     
     /* Calc Texcoord */
+    float2 decalUV = input.uv;
+    if (bUseSSD)
+    {
+        float4 projPos = mul(float4(input.viewPosition, 1.f), P);
+        float2 vPixelPosInSS = projPos.xy / projPos.w;
+        vPixelPosInSS = (vPixelPosInSS * 0.5f) + 0.5f;
+        vPixelPosInSS.y = 1.f - vPixelPosInSS.y;
+        float3 fPixelViewPos = PositionTargetTex.Sample(LinearSamplerClamp, vPixelPosInSS).rgb;
+        float3 fPixelWorldPos = mul(float4(fPixelViewPos, 1.f), VInv);
+     
+        float3 decalLocalPos = mul(float4(fPixelWorldPos, 1.f), InvWorldTransformMatrix);
+        clip(0.5f - abs(decalLocalPos.xyz));
+        
+        decalUV = decalLocalPos.xz + 0.5f;
+    }
+    
     float fDistortionWeight = 0.f;
     if (bHasDistortionMap)
     {
-        float4 vDistortion = DistortionMap.Sample(LinearSampler, input.uv + g_vec2_3);
+        float4 vDistortion = DistortionMap.Sample(LinearSampler, decalUV + g_vec2_3);
         fDistortionWeight = vDistortion.r * 0.5f;
     }
 
     float2 vTexcoord_Op[3] =
     {
-        input.uv + float2(g_vec4_0.x, g_vec4_0.y) + fDistortionWeight,
-        input.uv + float2(g_vec4_0.z, g_vec4_0.w) + fDistortionWeight,
-        input.uv + float2(g_vec4_1.x, g_vec4_1.y) + fDistortionWeight
+        decalUV + float2(g_vec4_0.x, g_vec4_0.y) + fDistortionWeight,
+        decalUV + float2(g_vec4_0.z, g_vec4_0.w) + fDistortionWeight,
+        decalUV + float2(g_vec4_1.x, g_vec4_1.y) + fDistortionWeight
     };
     
-    float2 vTexcoord_Blend = input.uv + float2(g_vec4_1.z, g_vec4_1.w) + fDistortionWeight;
-    float2 vTexcoord_Overlay = input.uv + float2(g_vec4_2.x, g_vec4_2.y);
-    float2 vTexcoord_Dissolve = input.uv + float2(g_vec4_2.z, g_vec4_2.w);
+    float2 vTexcoord_Blend = decalUV + float2(g_vec4_1.z, g_vec4_1.w) + fDistortionWeight;
+    float2 vTexcoord_Overlay = decalUV + float2(g_vec4_2.x, g_vec4_2.y);
+    float2 vTexcoord_Dissolve = decalUV + float2(g_vec4_2.z, g_vec4_2.w);
     if (bUseSpriteAnim)
     {
         float2 vSpriteAnim_RangeX = float2(g_vec4_3.x, g_vec4_3.y);
         float2 vSpriteAnim_RangeY = float2(g_vec4_3.z, g_vec4_3.w);
-        vTexcoord_Op[0] = float2(vSpriteAnim_RangeX.x + ((vSpriteAnim_RangeX.y - vSpriteAnim_RangeX.x) * input.uv.x),
-                              vSpriteAnim_RangeY.x + ((vSpriteAnim_RangeY.y - vSpriteAnim_RangeY.x) * input.uv.y)) + fDistortionWeight;
+        vTexcoord_Op[0] = float2(vSpriteAnim_RangeX.x + ((vSpriteAnim_RangeX.y - vSpriteAnim_RangeX.x) * decalUV.x),
+                              vSpriteAnim_RangeY.x + ((vSpriteAnim_RangeY.y - vSpriteAnim_RangeY.x) * decalUV.y)) + fDistortionWeight;
     }
     
     // For. Flip option 
@@ -295,6 +315,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     bool bUseRimLight = (bool) g_int_1;
     bool bUseSpriteAnim = (bool) g_int_2;
     bool bLightOn = (bool) g_int_3;
+    bool bUseSSD = (bool) g_mat_2._31;
     
     float fLifeTimeRatio = g_float_0;
     float fDissolveWeight = g_float_1;
@@ -318,29 +339,46 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     int iFilpOPtion_Op[3] = { g_mat_2._21, g_mat_2._22, g_mat_2._23 };
     
     /* Calc Texcoord */
+    float2 decalUV = input.uv;
+    if (bUseSSD)
+    {
+        float4 projPos = mul(float4(input.viewPosition, 1.f), P);
+        float2 vPixelPosInSS = projPos.xy / projPos.w;
+        vPixelPosInSS = (vPixelPosInSS * 0.5f) + 0.5f;
+        vPixelPosInSS.y = 1.f - vPixelPosInSS.y;
+        float3 fPixelViewPos = PositionTargetTex.Sample(LinearSamplerClamp, vPixelPosInSS).rgb;
+        float3 fPixelWorldPos = mul(float4(fPixelViewPos, 1.f), VInv);
+     
+        float3 decalLocalPos = mul(float4(fPixelWorldPos, 1.f), InvWorldTransformMatrix);
+        clip(0.5f - abs(decalLocalPos.xyz));
+        
+        decalUV = decalLocalPos.xz + 0.5f;
+    }
+    
     float fDistortionWeight = 0.f;
     if (bHasDistortionMap)
     {
-        float4 vDistortion = DistortionMap.Sample(LinearSamplerClamp, input.uv + g_vec2_3);
+        float4 vDistortion = DistortionMap.Sample(LinearSamplerClamp, decalUV + g_vec2_3);
         fDistortionWeight = vDistortion.r * 0.5f;
     }
 
     float2 vTexcoord_Op[3] =
     {
-        input.uv + float2(g_vec4_0.x, g_vec4_0.y) + fDistortionWeight,
-        input.uv + float2(g_vec4_0.z, g_vec4_0.w) + fDistortionWeight,
-        input.uv + float2(g_vec4_1.x, g_vec4_1.y) + fDistortionWeight
+        decalUV + float2(g_vec4_0.x, g_vec4_0.y) + fDistortionWeight,
+        decalUV + float2(g_vec4_0.z, g_vec4_0.w) + fDistortionWeight,
+        decalUV + float2(g_vec4_1.x, g_vec4_1.y) + fDistortionWeight
     };
     
-    float2 vTexcoord_Blend = input.uv + float2(g_vec4_1.z, g_vec4_1.w) + fDistortionWeight;
-    float2 vTexcoord_Overlay = input.uv + float2(g_vec4_2.x, g_vec4_2.y);
-    float2 vTexcoord_Dissolve = input.uv + float2(g_vec4_2.z, g_vec4_2.w);
+    
+    float2 vTexcoord_Blend = decalUV + float2(g_vec4_1.z, g_vec4_1.w) + fDistortionWeight;
+    float2 vTexcoord_Overlay = decalUV + float2(g_vec4_2.x, g_vec4_2.y);
+    float2 vTexcoord_Dissolve = decalUV + float2(g_vec4_2.z, g_vec4_2.w);
     if (bUseSpriteAnim)
     {
         float2 vSpriteAnim_RangeX = float2(g_vec4_3.x, g_vec4_3.y);
         float2 vSpriteAnim_RangeY = float2(g_vec4_3.z, g_vec4_3.w);
-        vTexcoord_Op[0] = float2(vSpriteAnim_RangeX.x + ((vSpriteAnim_RangeX.y - vSpriteAnim_RangeX.x) * input.uv.x),
-                              vSpriteAnim_RangeY.x + ((vSpriteAnim_RangeY.y - vSpriteAnim_RangeY.x) * input.uv.y)) + fDistortionWeight;
+        vTexcoord_Op[0] = float2(vSpriteAnim_RangeX.x + ((vSpriteAnim_RangeX.y - vSpriteAnim_RangeX.x) * decalUV.x),
+                              vSpriteAnim_RangeY.x + ((vSpriteAnim_RangeY.y - vSpriteAnim_RangeY.x) * decalUV.y)) + fDistortionWeight;
     }
     
     // For. Flip option 
@@ -388,7 +426,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
             vSample_Op1 = TextureMap7.Sample(LinearSamplerClamp, vTexcoord_Op[0]);
             vSample_Op1.rgb = pow(vSample_Op1.rgb, GAMMA);
         }
-        
+      
         float luminance = dot(vSample_Op1.rgb, float3(0.299, 0.587, 0.114));
         vSample_Op1.rgb = lerp(vSample_Op1.rgb, vSample_Op1.rgb * vColorOptions_Op[0].x, saturate(luminance));
         vSample_Op1.a = saturate(vSample_Op1.a * vColorOptions_Op[0].y);
@@ -405,7 +443,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
             vSample_Op2 = TextureMap8.Sample(LinearSamplerClamp, vTexcoord_Op[1]);
             vSample_Op2.rgb = pow(vSample_Op2.rgb, GAMMA);
         }
-        
+      
         float luminance = dot(vSample_Op2.rgb, float3(0.299, 0.587, 0.114));
         vSample_Op2.rgb = lerp(vSample_Op2.rgb, vSample_Op2.rgb * vColorOptions_Op[1].x, saturate(luminance));
         vSample_Op2.a = saturate(vSample_Op2.a * vColorOptions_Op[1].y);
@@ -467,7 +505,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
         vFinalOverlayColor.r = (vOutColor.r <= 0.5) ? 2 * vOutColor.r * vSample_Overlay.r : 1 - 2 * (1 - vOutColor.r) * (1 - vSample_Overlay.r);
         vFinalOverlayColor.g = (vOutColor.g <= 0.5) ? 2 * vOutColor.g * vSample_Overlay.g : 1 - 2 * (1 - vOutColor.g) * (1 - vSample_Overlay.g);
         vFinalOverlayColor.b = (vOutColor.b <= 0.5) ? 2 * vOutColor.b * vSample_Overlay.b : 1 - 2 * (1 - vOutColor.b) * (1 - vSample_Overlay.b);
-        
+      
         vOutColor.rgb = lerp(vOutColor.rgb, vFinalOverlayColor.rgb, fOverlayIntensity);
     }
     
@@ -480,10 +518,10 @@ float4 PS_Clamp(EffectOut input) : SV_Target
         float diffuseRatio = 0.f;
         {
             float3 viewLightDir = 0.f;
-            
+          
             viewLightDir = normalize(mul(float4(lights[0].vDirection.xyz, 0.f), V).xyz);
             diffuseRatio = saturate(dot(-viewLightDir, normalize(input.viewNormal)));
-                    
+                  
         }
         float3 vLightingColor = vOutColor.rgb * diffuseRatio;
         vOutColor.rgb = lerp(vOutColor.rgb, vLightingColor, fLightIntensity);
@@ -530,6 +568,7 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
     bool bUseRimLight = (bool) g_effectData[id].g_int_1;
     bool bUseSpriteAnim = (bool) g_effectData[id].g_int_2;
     bool bLightOn = (bool) g_effectData[id].g_int_3;
+    bool bUseSSD = (bool) g_mat_2._31;
     
     float fLifeTimeRatio = g_effectData[id].g_float_0;
     float fDissolveWeight = g_effectData[id].g_float_1;
@@ -553,29 +592,45 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
     int iFilpOPtion_Op[3] = { g_effectData[id].g_mat_2._21, g_effectData[id].g_mat_2._22, g_effectData[id].g_mat_2._23 };
     
     /* Calc Texcoord */
+    float2 decalUV = input.uv;
+    if (bUseSSD)
+    {
+        float4 projPos = mul(float4(input.viewPosition, 1.f), P);
+        float2 vPixelPosInSS = projPos.xy / projPos.w;
+        vPixelPosInSS = (vPixelPosInSS * 0.5f) + 0.5f;
+        vPixelPosInSS.y = 1.f - vPixelPosInSS.y;
+        float3 fPixelViewPos = PositionTargetTex.Sample(LinearSamplerClamp, vPixelPosInSS).rgb;
+        float3 fPixelWorldPos = mul(float4(fPixelViewPos, 1.f), VInv);
+     
+        float3 decalLocalPos = mul(float4(fPixelWorldPos, 1.f), InvWorldTransformMatrix);
+        clip(0.5f - abs(decalLocalPos.xyz));
+        
+        decalUV = decalLocalPos.xz + 0.5f;
+    }
+    
     float fDistortionWeight = 0.f;
     if (bHasDistortionMap)
     {
-        float4 vDistortion = DistortionMap.Sample(LinearSampler, input.uv + g_effectData[id].g_vec2_3);
+        float4 vDistortion = DistortionMap.Sample(LinearSampler, decalUV + g_effectData[id].g_vec2_3);
         fDistortionWeight = vDistortion.r * 0.5f;
     }
 
     float2 vTexcoord_Op[3] =
     {
-        input.uv + float2(g_effectData[id].g_vec4_0.x, g_effectData[id].g_vec4_0.y) + fDistortionWeight,
-        input.uv + float2(g_effectData[id].g_vec4_0.z, g_effectData[id].g_vec4_0.w) + fDistortionWeight,
-        input.uv + float2(g_effectData[id].g_vec4_1.x, g_effectData[id].g_vec4_1.y) + fDistortionWeight
+        decalUV + float2(g_effectData[id].g_vec4_0.x, g_effectData[id].g_vec4_0.y) + fDistortionWeight,
+        decalUV + float2(g_effectData[id].g_vec4_0.z, g_effectData[id].g_vec4_0.w) + fDistortionWeight,
+        decalUV + float2(g_effectData[id].g_vec4_1.x, g_effectData[id].g_vec4_1.y) + fDistortionWeight
     };
     
-    float2 vTexcoord_Blend = input.uv + float2(g_effectData[id].g_vec4_1.z, g_effectData[id].g_vec4_1.w) + fDistortionWeight;
-    float2 vTexcoord_Overlay = input.uv + float2(g_effectData[id].g_vec4_2.x, g_effectData[id].g_vec4_2.y);
-    float2 vTexcoord_Dissolve = input.uv + float2(g_effectData[id].g_vec4_2.z, g_effectData[id].g_vec4_2.w);
+    float2 vTexcoord_Blend = decalUV + float2(g_effectData[id].g_vec4_1.z, g_effectData[id].g_vec4_1.w) + fDistortionWeight;
+    float2 vTexcoord_Overlay = decalUV + float2(g_effectData[id].g_vec4_2.x, g_effectData[id].g_vec4_2.y);
+    float2 vTexcoord_Dissolve = decalUV + float2(g_effectData[id].g_vec4_2.z, g_effectData[id].g_vec4_2.w);
     if (bUseSpriteAnim)
     {
         float2 vSpriteAnim_RangeX = float2(g_effectData[id].g_vec4_3.x, g_effectData[id].g_vec4_3.y);
         float2 vSpriteAnim_RangeY = float2(g_effectData[id].g_vec4_3.z, g_effectData[id].g_vec4_3.w);
-        vTexcoord_Op[0] = float2(vSpriteAnim_RangeX.x + ((vSpriteAnim_RangeX.y - vSpriteAnim_RangeX.x) * input.uv.x),
-                              vSpriteAnim_RangeY.x + ((vSpriteAnim_RangeY.y - vSpriteAnim_RangeY.x) * input.uv.y)) + fDistortionWeight;
+        vTexcoord_Op[0] = float2(vSpriteAnim_RangeX.x + ((vSpriteAnim_RangeX.y - vSpriteAnim_RangeX.x) * decalUV.x),
+                              vSpriteAnim_RangeY.x + ((vSpriteAnim_RangeY.y - vSpriteAnim_RangeY.x) * decalUV.y)) + fDistortionWeight;
     }
     
     // For. Flip option 
@@ -747,7 +802,7 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
 }
 
 float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
-{
+{   
     float4 vOutColor = float4(1.f, 1.f, 1.f, 1.f);
     int id = input.id;
     /* Get Shared Data */
@@ -755,6 +810,7 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
     bool bUseRimLight = (bool) g_effectData[id].g_int_1;
     bool bUseSpriteAnim = (bool) g_effectData[id].g_int_2;
     bool bLightOn = (bool) g_effectData[id].g_int_3;
+    bool bUseSSD = (bool)g_effectData[id].g_mat_2._31;
     
     float fLifeTimeRatio = g_effectData[id].g_float_0;
     float fDissolveWeight = g_effectData[id].g_float_1;
@@ -764,7 +820,7 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
     float2 vColorOptions_Op[3] = { g_effectData[id].g_vec2_0, g_effectData[id].g_vec2_1, g_effectData[id].g_vec2_2 };
     
     float fAlphaOffset_Blend = g_effectData[id].g_mat_2._24;
-    
+
     float4 vBaseColor1_Op1 = g_effectData[id].g_mat_0._11_12_13_14;
     float4 vBaseColor2_Op1 = g_effectData[id].g_mat_0._21_22_23_24;
     float4 vBaseColor1_Op2 = g_effectData[id].g_mat_0._31_32_33_34;
@@ -778,31 +834,48 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
     int iFilpOPtion_Op[3] = { g_effectData[id].g_mat_2._21, g_effectData[id].g_mat_2._22, g_effectData[id].g_mat_2._23 };
     
     /* Calc Texcoord */
+     /* Calc Decal Textcoord */
+    float2 decalUV = input.uv;
+    if (bUseSSD)
+    {
+        float4 projPos = mul(float4(input.viewPosition, 1.f), P);
+        float2 vPixelPosInSS = projPos.xy / projPos.w;
+        vPixelPosInSS = (vPixelPosInSS * 0.5f) + 0.5f;
+        vPixelPosInSS.y = 1.f - vPixelPosInSS.y;
+        float3 fPixelViewPos = PositionTargetTex.Sample(LinearSamplerClamp, vPixelPosInSS).rgb;
+        float3 fPixelWorldPos = mul(float4(fPixelViewPos, 1.f), VInv);
+     
+        float3 decalLocalPos = mul(float4(fPixelWorldPos, 1.f), InvWorldTransformMatrix);
+        clip(0.5f - abs(decalLocalPos.xyz));
+        
+        decalUV = decalLocalPos.xz + 0.5f;
+    }
+    
     float fDistortionWeight = 0.f;
     if (bHasDistortionMap)
     {
-        float4 vDistortion = DistortionMap.Sample(LinearSamplerClamp, input.uv + g_effectData[id].g_vec2_3);
+        float4 vDistortion = DistortionMap.Sample(LinearSamplerClamp, decalUV + g_effectData[id].g_vec2_3);
         fDistortionWeight = vDistortion.r * 0.5f;
     }
 
     float2 vTexcoord_Op[3] =
     {
-        input.uv + float2(g_effectData[id].g_vec4_0.x, g_effectData[id].g_vec4_0.y) + fDistortionWeight,
-        input.uv + float2(g_effectData[id].g_vec4_0.z, g_effectData[id].g_vec4_0.w) + fDistortionWeight,
-        input.uv + float2(g_effectData[id].g_vec4_1.x, g_effectData[id].g_vec4_1.y) + fDistortionWeight
+        decalUV + float2(g_effectData[id].g_vec4_0.x, g_effectData[id].g_vec4_0.y) + fDistortionWeight,
+        decalUV + float2(g_effectData[id].g_vec4_0.z, g_effectData[id].g_vec4_0.w) + fDistortionWeight,
+        decalUV + float2(g_effectData[id].g_vec4_1.x, g_effectData[id].g_vec4_1.y) + fDistortionWeight
     };
     
-    float2 vTexcoord_Blend = input.uv + float2(g_effectData[id].g_vec4_1.z, g_effectData[id].g_vec4_1.w) + fDistortionWeight;
-    float2 vTexcoord_Overlay = input.uv + float2(g_effectData[id].g_vec4_2.x, g_effectData[id].g_vec4_2.y);
-    float2 vTexcoord_Dissolve = input.uv + float2(g_effectData[id].g_vec4_2.z, g_effectData[id].g_vec4_2.w);
+    float2 vTexcoord_Blend = decalUV + float2(g_effectData[id].g_vec4_1.z, g_effectData[id].g_vec4_1.w) + fDistortionWeight;
+    float2 vTexcoord_Overlay = decalUV + float2(g_effectData[id].g_vec4_2.x, g_effectData[id].g_vec4_2.y);
+    float2 vTexcoord_Dissolve = decalUV + float2(g_effectData[id].g_vec4_2.z, g_effectData[id].g_vec4_2.w);
     if (bUseSpriteAnim)
     {
         float2 vSpriteAnim_RangeX = float2(g_effectData[id].g_vec4_3.x, g_effectData[id].g_vec4_3.y);
         float2 vSpriteAnim_RangeY = float2(g_effectData[id].g_vec4_3.z, g_effectData[id].g_vec4_3.w);
-        vTexcoord_Op[0] = float2(vSpriteAnim_RangeX.x + ((vSpriteAnim_RangeX.y - vSpriteAnim_RangeX.x) * input.uv.x),
-                              vSpriteAnim_RangeY.x + ((vSpriteAnim_RangeY.y - vSpriteAnim_RangeY.x) * input.uv.y)) + fDistortionWeight;
+        vTexcoord_Op[0] = float2(vSpriteAnim_RangeX.x + ((vSpriteAnim_RangeX.y - vSpriteAnim_RangeX.x) * decalUV.x),
+                              vSpriteAnim_RangeY.x + ((vSpriteAnim_RangeY.y - vSpriteAnim_RangeY.x) * decalUV.y)) + fDistortionWeight;
     }
-    
+       
     // For. Flip option 
     for (int i = 0; i < 3; i++)
     {
