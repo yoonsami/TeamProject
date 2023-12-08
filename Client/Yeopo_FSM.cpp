@@ -949,7 +949,10 @@ void Yeopo_FSM::skill_1100()
     Look_DirToTarget();
 
     if (m_iCurFrame == 9)
+    {
+        Set_ColliderOption(FIRE, L"Hit_Slash_Red");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 19)
         AttackCollider_Off();
 
@@ -999,7 +1002,10 @@ void Yeopo_FSM::skill_1200()
     Look_DirToTarget();
 
     if (m_iCurFrame == 10)
+    {
+        Set_ColliderOption(FIRE, L"Hit_Slash_Red");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 17)
         AttackCollider_Off();
 
@@ -1048,19 +1054,31 @@ void Yeopo_FSM::skill_1200_Init()
 void Yeopo_FSM::skill_1300()
 {
     if (m_iCurFrame == 8)
+    {
+        Set_ColliderOption(FIRE, L"Hit_Slash_Red");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 13)
         AttackCollider_Off();
     else if (m_iCurFrame == 16)
+    {
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+        Set_ColliderOption(FIRE, L"Hit_Slash_Red");
+    }
     else if (m_iCurFrame == 23)
         AttackCollider_Off();
     else if (m_iCurFrame == 28)
+    {
+        Set_ColliderOption(FIRE, L"Hit_Slash_Red");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 36)
         AttackCollider_Off();
     else if (m_iCurFrame == 41)
+    {
+        Set_ColliderOption(FIRE, L"Hit_Slash_Red");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 46)
         AttackCollider_Off();
 
@@ -1116,11 +1134,17 @@ void Yeopo_FSM::skill_1400()
     Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
     if (m_iCurFrame == 7)
+    {
+        Set_ColliderOption(FIRE, L"Hit_Slash_Red");
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 14)
         AttackCollider_Off();
     else if (m_iCurFrame == 19)
+    {
+        Set_ColliderOption(FIRE, L"Hit_Slash_Red");
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 36)
         AttackCollider_Off();
 
@@ -1243,9 +1267,8 @@ void Yeopo_FSM::skill_100200()
 		desc.fMoveSpeed = 35.f;
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 10.f;
-
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f, L"Hit_Slash_Red");
     }
     else if (Init_CurFrame(30))
     {
@@ -1262,7 +1285,7 @@ void Yeopo_FSM::skill_100200()
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 13.f;
 
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f, L"Hit_Slash_Red");
     }
 
     Look_DirToTarget();
@@ -1314,7 +1337,7 @@ void Yeopo_FSM::skill_100300()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK);
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.5f, desc, AIRBORNE_ATTACK, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.5f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Red");
     }
     
     Look_DirToTarget();
@@ -1360,7 +1383,7 @@ void Yeopo_FSM::skill_200100()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK, 10.f, L"Hit_Slash_Red");
     }
     
 
@@ -1397,15 +1420,24 @@ void Yeopo_FSM::skill_300100()
     Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
     if (m_iCurFrame == 25)
+    {
+        Set_ColliderOption(FIRE, L"Hit_Slash_Red");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 30)
         AttackCollider_Off();
     else if (m_iCurFrame == 40)
+    {
+        Set_ColliderOption(FIRE, L"Hit_Slash_Red");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 46)
         AttackCollider_Off();
     else if (m_iCurFrame == 55)
+    {
+        Set_ColliderOption(FIRE, L"Hit_Slash_Red");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 64)
         AttackCollider_Off();
 
@@ -1452,11 +1484,17 @@ void Yeopo_FSM::skill_300200()
     Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
     if (m_iCurFrame == 9)
+    {
+        Set_ColliderOption(FIRE, L"Hit_Slash_Red");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 12)
         AttackCollider_Off();
     else if (m_iCurFrame == 15)
+    {
+        Set_ColliderOption(FIRE, L"Hit_Slash_Red");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 20)
         AttackCollider_Off();
 
@@ -1501,11 +1539,17 @@ void Yeopo_FSM::skill_300300()
     Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
     if (m_iCurFrame == 13)
+    {
+        Set_ColliderOption(FIRE, L"Hit_Slash_Red");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 18)
         AttackCollider_Off();
     else if (m_iCurFrame == 21)
+    {
+        Set_ColliderOption(FIRE, L"Hit_Slash_Red");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 30)
         AttackCollider_Off();
 
@@ -1553,7 +1597,10 @@ void Yeopo_FSM::skill_300400()
     Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
     if (m_iCurFrame == 31)
+    {
+        Set_ColliderOption(FIRE, L"Hit_Slash_Red");
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 36)
         AttackCollider_Off();
     
@@ -1664,7 +1711,7 @@ void Yeopo_FSM::skill_400100()
         desc.fLimitDistance = 0.f;
 
         _float4 vSkillPos = m_vCenterBonePos;
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.5f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.5f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Red");
     }
 
     //Look_DirToTarget();
@@ -1705,27 +1752,45 @@ void Yeopo_FSM::skill_501100()
         Add_Effect(L"Yeopo_501100_cone");
     
     if (m_iCurFrame == 12)
+    {
+        Set_ColliderOption(FIRE, L"Hit_Slash_Red");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 16)
         AttackCollider_Off();
     else if (m_iCurFrame == 17)
+    {
+        Set_ColliderOption(FIRE, L"Hit_Slash_Red");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 19)
         AttackCollider_Off();
     else if (m_iCurFrame == 21)
+    {
+        Set_ColliderOption(FIRE, L"Hit_Slash_Red");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 23)
         AttackCollider_Off();
     else if (m_iCurFrame == 25)
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+	{
+		Set_ColliderOption(FIRE, L"Hit_Slash_Red");
+		AttackCollider_On(NORMAL_ATTACK, 10.f);
+	}
     else if (m_iCurFrame == 28)
         AttackCollider_Off();
     else if (m_iCurFrame == 30)
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+	{
+		Set_ColliderOption(FIRE, L"Hit_Slash_Red");
+		AttackCollider_On(NORMAL_ATTACK, 10.f);
+	}
     else if (m_iCurFrame == 35)
         AttackCollider_Off();
     else if (m_iCurFrame == 52)
+    {
+        Set_ColliderOption(FIRE, L"Hit_Slash_Red");
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 55)
         AttackCollider_Off();
     

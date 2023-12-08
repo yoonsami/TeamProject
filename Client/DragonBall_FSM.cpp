@@ -7,6 +7,8 @@
 #include "SphereCollider.h"
 #include "RigidBody.h"
 #include "Model.h"
+#include "AttackColliderInfoScript.h"
+#include <MathUtils.h>
 
 
 void DragonBall_FSM::Tick()

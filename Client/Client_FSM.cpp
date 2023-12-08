@@ -5,6 +5,7 @@
 
 #include <SphereCollider.h>
 #include <OBBBoxCollider.h>
+#include "MathUtils.h"
 
 void Client_FSM::OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap)
 {
@@ -18,9 +19,22 @@ void Client_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGa
 	if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
 		return;
 
+	if(!m_bIsDead)
+	{
+		wstring hitEffectTag = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_HitEffectTag();
+		if (!hitEffectTag.empty())
+		{
+			_float3 random = MathUtils::Get_RandomVector(_float3(0, 0, XM_PI / 6.f), _float3(0, 0, -XM_PI / 6.f));
+
+			Quaternion q = Quaternion::CreateFromYawPitchRoll(random.x, random.y, random.z);
+
+			Add_Effect(hitEffectTag, nullptr, _float4x4::CreateFromQuaternion(q));
+		}
+	}
 
 	if (!m_bInvincible)
 	{
+
 		wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
 		_float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
 
@@ -59,7 +73,9 @@ void Client_FSM::AttackCollider_Off()
 		m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
 		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
 		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(0.f);
+		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_HitEffectTag(L"");
 	}
+
 }
 
 void Client_FSM::Set_ColliderOption(ElementType eType, const wstring& strHitEffectTag)
@@ -72,7 +88,7 @@ void Client_FSM::Set_ColliderOption(ElementType eType, const wstring& strHitEffe
 
 }
 
-void Client_FSM::Create_ForwardMovingSkillCollider(CollisionGroup eGroup, const wstring& strColliderName, const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage)
+void Client_FSM::Create_ForwardMovingSkillCollider(CollisionGroup eGroup, const wstring& strColliderName, const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage, const wstring& hitEffectTag)
 {
 	shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
 
@@ -92,6 +108,7 @@ void Client_FSM::Create_ForwardMovingSkillCollider(CollisionGroup eGroup, const 
 	m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
 	m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
 	m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
+	m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_HitEffectTag(hitEffectTag);
 	m_pSkillCollider.lock()->Set_Name(strColliderName);
 	m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
 	m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();

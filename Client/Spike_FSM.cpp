@@ -898,10 +898,14 @@ void Spike_FSM::skill_1100()
     {
         CAMERA_SHAKE(0.1f, 0.1f)
         Add_And_Set_Effect(L"Spike_1100");
+        Set_ColliderOption(WATER, L"Hit_Slash_Blue");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     }
     else if (m_iCurFrame == 17)
+    {
+
         AttackCollider_Off();
+    }
 
     Look_DirToTarget();
 
@@ -946,10 +950,13 @@ void Spike_FSM::skill_1200()
 	{
 		CAMERA_SHAKE(0.1f, 0.1f)
         Add_And_Set_Effect(L"Spike_1200");
+        Set_ColliderOption(WATER, L"Hit_Slash_Blue");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     }
     else if (m_iCurFrame == 14)
+    {
         AttackCollider_Off();
+    }
 
     Look_DirToTarget();
 
@@ -1000,11 +1007,13 @@ void Spike_FSM::skill_1300()
 	{
 		CAMERA_SHAKE(0.1f, 0.1f)
         Add_And_Set_Effect(L"Spike_1300");
+        Set_ColliderOption(WATER, L"Hit_Slash_Blue");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     }
     else if (m_iCurFrame == 18)
+    {
         AttackCollider_Off();
-
+    }
     Look_DirToTarget();
 
     if (!g_bIsCanMouseMove && !g_bCutScene)
@@ -1058,11 +1067,14 @@ void Spike_FSM::skill_1400()
     {
         Add_GroupEffectOwner(L"Spike_1400_2", _float3(0.f, 0.f, 1.f), false);
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
+        Set_ColliderOption(WATER, L"Hit_Slash_Blue");
         
         //CAMERA_SHAKE(0.3f, 0.4f);
     }
-	else if (m_iCurFrame == 15)
+    else if (m_iCurFrame == 15)
+    {
 		AttackCollider_Off();
+    }
 
     if(Init_CurFrame(13))
         CAMERA_SHAKE(0.3f, 0.4f);
@@ -1102,6 +1114,7 @@ void Spike_FSM::skill_1400_Init()
 
     m_bInvincible = false;
     m_bSuperArmor = false;
+    Set_ColliderOption(WATER, L"");
 }
 
 void Spike_FSM::skill_91100()
@@ -1184,6 +1197,7 @@ void Spike_FSM::skill_100100()
             m_bAssaultColliderOn = true;
             m_fAssaultColliderTimer = 0.f;
             AttackCollider_On(NORMAL_ATTACK, 10.f);
+            Set_ColliderOption(WATER, L"Hit_Slash_Blue");
             CAMERA_SHAKE(0.1f, 0.02f);
         }
         else
@@ -1249,6 +1263,7 @@ void Spike_FSM::skill_100300()
     {
         Add_GroupEffectOwner(L"Spike_100100_IceAttack",_float3(0,0,1), false);
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+        Set_ColliderOption(WATER, L"Hit_Slash_Blue");
         CAMERA_SHAKE(0.2f, 0.2f);
     }
     if(Init_CurFrame(32))
@@ -1291,7 +1306,8 @@ void Spike_FSM::skill_100300_Init()
 void Spike_FSM::skill_200100()
 {
     if (Init_CurFrame(3))
-    {
+	{
+		Set_ColliderOption(WATER, L"Hit_Slash_Blue");
         Add_And_Set_Effect(L"Spike_200100L_1");
         CAMERA_SHAKE(0.2f, 0.3f)
     }
@@ -1427,7 +1443,7 @@ void Spike_FSM::skill_200200()
             desc.fLifeTime = 0.3f;
             desc.fLimitDistance = 0.f;
             CAMERA_SHAKE(0.1f, 0.2f)
-            Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f, L"Hit_Slash_Blue");
         }
     }
     
@@ -1498,7 +1514,7 @@ void Spike_FSM::skill_200300()
             desc.fLifeTime = 0.3f;
             desc.fLimitDistance = 0.f;
             CAMERA_SHAKE(0.1f, 0.2f)
-            Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f, L"Hit_Slash_Blue");
         }
     }
 
@@ -1579,7 +1595,7 @@ void Spike_FSM::skill_200400()
             desc.fLifeTime = 0.3f;
             desc.fLimitDistance = 0.f;
             CAMERA_SHAKE(0.1f, 0.2f)
-            Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f, L"Hit_Slash_Blue");
         }
     }
 
@@ -1593,7 +1609,7 @@ void Spike_FSM::skill_200400()
 		desc.fLifeTime = 0.5f;
 		desc.fLimitDistance = 0.f;
         CAMERA_SHAKE(0.2f, 0.5f)
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Blue");
     }
 
     if (Is_AnimFinished())
@@ -1671,7 +1687,7 @@ void Spike_FSM::skill_300100()
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 0.f;
 
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", Get_Transform()->Get_State(Transform_State::POS), 3.f, desc, AIRBORNE_ATTACK, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", Get_Transform()->Get_State(Transform_State::POS), 3.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Blue");
 
     }
 
@@ -1767,7 +1783,7 @@ void Spike_FSM::skill_400100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Blue");
     }
     else if (Init_CurFrame(77))
     {
@@ -1780,7 +1796,7 @@ void Spike_FSM::skill_400100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Blue");
     }
     else if (Init_CurFrame(110))
     {
@@ -1793,7 +1809,7 @@ void Spike_FSM::skill_400100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Blue");
     }
     else if (Init_CurFrame(177))
     {
@@ -1806,7 +1822,7 @@ void Spike_FSM::skill_400100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Blue");
     }
 
     if (Is_AnimFinished())
@@ -1856,15 +1872,15 @@ void Spike_FSM::skill_501100()
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 0.f;
 
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK, 10.f, L"Hit_Slash_Blue");
     }
     if (Init_CurFrame(36))
         CAMERA_SHAKE(0.2f, 0.4f)
 
     if (m_iCurFrame == 18)
     {
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
         Set_ColliderOption(WATER, L"Hit_Slash_Blue");
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     }
     else if (m_iCurFrame == 23)
         AttackCollider_Off();
