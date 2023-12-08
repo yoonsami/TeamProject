@@ -232,5 +232,9 @@ private:
 	const string					m_strTexturePath = "../Resources/Textures/Universal/";
 	const string					m_strNormalTexturePath = "../Resources/Textures/Universal/Normal/";
 	const ImGuiColorEditFlags		ColorEdit_flags = 0 | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_HDR;
+
+	/* for. decal */
+	_int					m_iCubeMeshIndex = { 0 };
+	const string			m_strSSDMesh = "Fxmesh_cube_01";
 };
 
