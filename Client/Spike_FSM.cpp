@@ -1739,7 +1739,7 @@ void Spike_FSM::skill_400100()
         CAMERA_SHAKE(0.4f, 0.5f);
     }
 	static _float fAngle = 0.f;
-	static _float3 vUp = _float3(0.f);
+	static _float3 vUp = _float3(0.f,1.f,0.f);
     if (m_iCurFrame == 17)
     {
         if (!m_pCamera.expired())

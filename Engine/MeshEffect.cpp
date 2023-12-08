@@ -129,7 +129,9 @@ void MeshEffect::Render()
     m_pShader->Push_LightData(CUR_SCENE->Get_LightParams());
 
     m_pShader->GetSRV("PositionTargetTex")->SetResource(RESOURCES.Get<Texture>(L"PositionForSSD")->Get_SRV().Get());
-    _float4x4 matInvWorldMat = Get_Transform()->Get_WorldMatrix().Invert();
+    m_pShader->GetSRV("originPositionTargetTex")->SetResource(RESOURCES.Get<Texture>(L"PositionTarget")->Get_SRV().Get());
+	m_pShader->GetSRV("NormalTargetTex")->SetResource(RESOURCES.Get<Texture>(L"NormalTarget")->Get_SRV().Get());
+	_float4x4 matInvWorldMat = Get_Transform()->Get_WorldMatrix().Invert();
     m_pShader->GetMatrix("InvWorldTransformMatrix")->SetMatrix((_float*)&matInvWorldMat);
 
     // For. Draw meshes 
@@ -170,6 +172,12 @@ void MeshEffect::Render_Instancing(shared_ptr<InstancingBuffer> buffer, shared_p
 		shared_ptr<ModelBone> bone = m_pModel->Get_BoneByIndex(i);
 		boneDesc->transform[i] = bone->transform * Utils::m_matPivot;
 	}
+
+	m_pShader->GetSRV("PositionTargetTex")->SetResource(RESOURCES.Get<Texture>(L"PositionForSSD")->Get_SRV().Get());
+	m_pShader->GetSRV("originPositionTargetTex")->SetResource(RESOURCES.Get<Texture>(L"PositionTarget")->Get_SRV().Get());
+	m_pShader->GetSRV("NormalTargetTex")->SetResource(RESOURCES.Get<Texture>(L"NormalTarget")->Get_SRV().Get());
+    _float4x4 matInvWorldMat = Get_Transform()->Get_WorldMatrix().Invert();
+	m_pShader->GetMatrix("InvWorldTransformMatrix")->SetMatrix((_float*)&matInvWorldMat);
 
 	m_pShader->Push_BoneData(*boneDesc);
 

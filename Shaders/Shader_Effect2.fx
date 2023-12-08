@@ -2,6 +2,8 @@
 #include "Light.fx"
 
 Texture2D PositionTargetTex;
+Texture2D originPositionTargetTex;
+Texture2D NormalTargetTex;
 float4x4 InvWorldTransformMatrix;
 
 struct EffectOut
@@ -106,6 +108,7 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     
     /* Calc Texcoord */
     float2 decalUV = input.uv;
+    float decalAlpha = 1.f;
     if (bUseSSD)
     {
         float4 projPos = mul(float4(input.viewPosition, 1.f), P);
@@ -114,11 +117,21 @@ float4 PS_Wrap(EffectOut input) : SV_Target
         vPixelPosInSS.y = 1.f - vPixelPosInSS.y;
         float3 fPixelViewPos = PositionTargetTex.Sample(LinearSamplerClamp, vPixelPosInSS).rgb;
         float3 fPixelWorldPos = mul(float4(fPixelViewPos, 1.f), VInv);
-     
+        float3 vPixelOriginViewPos = originPositionTargetTex.Sample(LinearSamplerClamp, vPixelPosInSS).rgb;
+        if (vPixelOriginViewPos.z < fPixelViewPos.z)
+            discard;
+        
         float3 decalLocalPos = mul(float4(fPixelWorldPos, 1.f), InvWorldTransformMatrix);
         clip(0.5f - abs(decalLocalPos.xyz));
         
+        
         decalUV = decalLocalPos.xz + 0.5f;
+        
+        float3 vSSDNormal = NormalTargetTex.Sample(LinearSamplerClamp, vPixelPosInSS).xyz;
+        float3 viewUp = mul(float3(0.f, 1.f, 0.f), (float3x3) V);
+        
+        decalAlpha = dot(normalize(vSSDNormal), viewUp);
+        
     }
     
     float fDistortionWeight = 0.f;
@@ -303,6 +316,8 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     if (vOutColor.a < 0.1f)
         discard;
     
+     vOutColor.a *= decalAlpha;
+    
     return vOutColor;
 }
 
@@ -340,6 +355,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     
     /* Calc Texcoord */
     float2 decalUV = input.uv;
+    float decalAlpha = 1.f;
     if (bUseSSD)
     {
         
@@ -350,7 +366,10 @@ float4 PS_Clamp(EffectOut input) : SV_Target
         vPixelPosInSS.y = 1.f - vPixelPosInSS.y;
         float3 fPixelViewPos = PositionTargetTex.Sample(LinearSamplerClamp, vPixelPosInSS).rgb;
         
+        float3 vPixelOriginViewPos = originPositionTargetTex.Sample(LinearSamplerClamp, vPixelPosInSS).rgb;
         
+        if (vPixelOriginViewPos.z < fPixelViewPos.z)
+            discard;
         
         
         float3 fPixelWorldPos = mul(float4(fPixelViewPos, 1.f), VInv);
@@ -359,7 +378,12 @@ float4 PS_Clamp(EffectOut input) : SV_Target
         clip(0.5f - abs(decalLocalPos.xyz));
         
         decalUV = decalLocalPos.xz + 0.5f;
+        float3 vSSDNormal = NormalTargetTex.Sample(LinearSamplerClamp, vPixelPosInSS).xyz;
         
+        float3 viewUp = mul(float3(0.f, 1.f, 0.f), (float3x3) V);
+        
+        decalAlpha = dot(normalize(vSSDNormal), viewUp);
+
     }
     
     float fDistortionWeight = 0.f;
@@ -546,6 +570,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     if (vOutColor.a < 0.1f)
         discard;
     
+    vOutColor.a *= decalAlpha;
     return vOutColor;
 }
 
@@ -575,7 +600,7 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
     bool bUseRimLight = (bool) g_effectData[id].g_int_1;
     bool bUseSpriteAnim = (bool) g_effectData[id].g_int_2;
     bool bLightOn = (bool) g_effectData[id].g_int_3;
-    bool bUseSSD = (bool) g_mat_2._31;
+    bool bUseSSD = (bool) g_effectData[id].g_mat_2._31;
     
     float fLifeTimeRatio = g_effectData[id].g_float_0;
     float fDissolveWeight = g_effectData[id].g_float_1;
@@ -600,19 +625,29 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
     
     /* Calc Texcoord */
     float2 decalUV = input.uv;
+    float decalAlpha = 1.f;
     if (bUseSSD)
     {
         float4 projPos = mul(float4(input.viewPosition, 1.f), P);
         float2 vPixelPosInSS = projPos.xy / projPos.w;
         vPixelPosInSS = (vPixelPosInSS * 0.5f) + 0.5f;
         vPixelPosInSS.y = 1.f - vPixelPosInSS.y;
-        float3 fPixelViewPos = PositionTargetTex.Sample(LinearSamplerClamp, vPixelPosInSS).rgb;
-        float3 fPixelWorldPos = mul(float4(fPixelViewPos, 1.f), VInv);
-     
-        float3 decalLocalPos = mul(float4(fPixelWorldPos, 1.f), InvWorldTransformMatrix);
+        float3 vPixelViewPos = PositionTargetTex.Sample(LinearSamplerClamp, vPixelPosInSS).rgb;
+        float3 vPixelWorldPos = mul(float4(vPixelViewPos, 1.f), VInv);
+        float3 vPixelOriginViewPos = originPositionTargetTex.Sample(LinearSamplerClamp, vPixelPosInSS).rgb;
+        
+        if(vPixelOriginViewPos.z < vPixelViewPos.z)
+            discard;
+                
+        float3 decalLocalPos = mul(float4(vPixelWorldPos, 1.f), InvWorldTransformMatrix);
         clip(0.5f - abs(decalLocalPos.xyz));
         
         decalUV = decalLocalPos.xz + 0.5f;
+        float3 vSSDNormal = NormalTargetTex.Sample(LinearSamplerClamp, vPixelPosInSS).xyz;
+        float3 viewUp = mul(float3(0.f, 1.f, 0.f), (float3x3) V);
+        
+        decalAlpha = dot(normalize(vSSDNormal), viewUp);
+
     }
     
     float fDistortionWeight = 0.f;
@@ -805,6 +840,8 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
     if (vOutColor.a < 0.1f)
         discard;
     
+    vOutColor.a *= decalAlpha;
+    
     return vOutColor;
 }
 
@@ -843,6 +880,7 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
     /* Calc Texcoord */
      /* Calc Decal Textcoord */
     float2 decalUV = input.uv;
+    float decalAlpha = 1.f;
     if (bUseSSD)
     {
         float4 projPos = mul(float4(input.viewPosition, 1.f), P);
@@ -851,11 +889,19 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
         vPixelPosInSS.y = 1.f - vPixelPosInSS.y;
         float3 fPixelViewPos = PositionTargetTex.Sample(LinearSamplerClamp, vPixelPosInSS).rgb;
         float3 fPixelWorldPos = mul(float4(fPixelViewPos, 1.f), VInv);
-     
+        float3 vPixelOriginViewPos = originPositionTargetTex.Sample(LinearSamplerClamp, vPixelPosInSS).rgb;
+        
+        if (vPixelOriginViewPos.z < fPixelViewPos.z)
+            discard;
         float3 decalLocalPos = mul(float4(fPixelWorldPos, 1.f), InvWorldTransformMatrix);
         clip(0.5f - abs(decalLocalPos.xyz));
         
         decalUV = decalLocalPos.xz + 0.5f;
+        float3 vSSDNormal = NormalTargetTex.Sample(LinearSamplerClamp, vPixelPosInSS).xyz;
+        float3 viewUp = mul(float3(0.f, 1.f, 0.f), (float3x3) V);
+        
+        decalAlpha = dot(normalize(vSSDNormal), viewUp);
+
     }
     
     float fDistortionWeight = 0.f;
@@ -1041,6 +1087,8 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
     if (vOutColor.a < 0.1f)
         discard;
     
+    vOutColor.a *= decalAlpha;
+    
     return vOutColor;
 }
 
@@ -1099,7 +1147,7 @@ technique11 T1_Instancing // 0
         SetVertexShader(CompileShader(vs_5_0, VS_Main_Instancing()));
         SetRasterizerState(RS_CullNone);
         SetDepthStencilState(DSS_Default, 0);
-        SetPixelShader(CompileShader(ps_5_0, PS_Wrap_Instancing()));
+        SetPixelShader(CompileShader(ps_5_0, PS_Clamp_Instancing()));
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
     }
 
@@ -1111,7 +1159,7 @@ technique11 T2_SSD // 2
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Main()));
         SetRasterizerState(RS_CullNone);
-        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetDepthStencilState(DSS_LESS_NO_WRITE, 0);
         SetPixelShader(CompileShader(ps_5_0, PS_Wrap()));
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
     }
@@ -1120,7 +1168,7 @@ technique11 T2_SSD // 2
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Main()));
         SetRasterizerState(RS_CullNone);
-        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetDepthStencilState(DSS_LESS_NO_WRITE, 0);
         SetPixelShader(CompileShader(ps_5_0, PS_Clamp()));
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
     }
@@ -1129,7 +1177,7 @@ technique11 T2_SSD // 2
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Main()));
         SetRasterizerState(RS_CullNone);
-        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetDepthStencilState(DSS_LESS_NO_WRITE, 0);
         SetPixelShader(CompileShader(ps_5_0, PS_Mirror()));
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
     }
@@ -1138,7 +1186,7 @@ technique11 T2_SSD // 2
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Main()));
         SetRasterizerState(RS_CullNone);
-        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetDepthStencilState(DSS_LESS_NO_WRITE, 0);
         SetPixelShader(CompileShader(ps_5_0, PS_Border()));
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
     }
@@ -1150,7 +1198,7 @@ technique11 T3_SSD_Instancing // 3
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Main_Instancing()));
         SetRasterizerState(RS_CullNone);
-        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetDepthStencilState(DSS_LESS_NO_WRITE, 0);
         SetPixelShader(CompileShader(ps_5_0, PS_Wrap_Instancing()));
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
     }
@@ -1159,8 +1207,8 @@ technique11 T3_SSD_Instancing // 3
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Main_Instancing()));
         SetRasterizerState(RS_CullNone);
-        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
-        SetPixelShader(CompileShader(ps_5_0, PS_Wrap_Instancing()));
+        SetDepthStencilState(DSS_LESS_NO_WRITE, 0);
+        SetPixelShader(CompileShader(ps_5_0, PS_Clamp_Instancing()));
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
     }
 
