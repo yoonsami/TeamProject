@@ -1685,6 +1685,9 @@ void Spike_FSM::skill_300100()
 
     if (Init_CurFrame(30))
 	{
+        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+                            Get_Transform()->Get_State(Transform_State::LOOK) * 2.f;
+
 		CAMERA_SHAKE(0.4f, 0.5f);
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1692,7 +1695,7 @@ void Spike_FSM::skill_300100()
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 0.f;
 
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", Get_Transform()->Get_State(Transform_State::POS), 3.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Blue");
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.5f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Blue");
 
     }
 
@@ -1729,8 +1732,10 @@ void Spike_FSM::skill_400100()
         Add_And_Set_Effect(L"Spike_400100_1");
         
     }
-    if(Init_CurFrame(52) || Init_CurFrame(77) || Init_CurFrame(97))
+    
+    if (Init_CurFrame(52) || Init_CurFrame(77) || Init_CurFrame(97))
         CAMERA_SHAKE(0.2f, 0.3f);
+
     if (Init_CurFrame(150))
     {
         FreeLoopMembers();
@@ -1738,6 +1743,7 @@ void Spike_FSM::skill_400100()
         Add_And_Set_Effect(L"Spike_400100_3");
         CAMERA_SHAKE(0.4f, 0.5f);
     }
+
 	static _float fAngle = 0.f;
 	static _float3 vUp = _float3(0.f,1.f,0.f);
     if (m_iCurFrame == 17)
@@ -1779,21 +1785,23 @@ void Spike_FSM::skill_400100()
 
     if (Init_CurFrame(52))
     {
-        _float4 vSkillPos = m_vSkillCamBonePos;
-        vSkillPos.y = 0.f;
-
+        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + 
+                            Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f +
+                            Get_Transform()->Get_State(Transform_State::LOOK) * -1.f;
+        
         FORWARDMOVINGSKILLDESC desc;
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
         desc.fMoveSpeed = 0.f;
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Blue");
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Blue");
     }
     else if (Init_CurFrame(77))
     {
-        _float4 vSkillPos = m_vSkillCamBonePos;
-        vSkillPos.y = 0.f;
+        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+                            Get_Transform()->Get_State(Transform_State::RIGHT) * -3.f +
+                            Get_Transform()->Get_State(Transform_State::LOOK);
 
         FORWARDMOVINGSKILLDESC desc;
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1801,12 +1809,13 @@ void Spike_FSM::skill_400100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Blue");
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Blue");
     }
-    else if (Init_CurFrame(110))
+    else if (Init_CurFrame(97))
     {
-        _float4 vSkillPos = m_vSkillCamBonePos;
-        vSkillPos.y = 0.f;
+        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+                            Get_Transform()->Get_State(Transform_State::RIGHT) * -1.f +
+                            Get_Transform()->Get_State(Transform_State::LOOK) * -4.f;
 
         FORWARDMOVINGSKILLDESC desc;
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1814,12 +1823,12 @@ void Spike_FSM::skill_400100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Blue");
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Blue");
     }
-    else if (Init_CurFrame(177))
+    else if (Init_CurFrame(150))
     {
-        _float4 vSkillPos = m_vSkillCamBonePos;
-        vSkillPos.y = 0.f;
+        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+                            Get_Transform()->Get_State(Transform_State::LOOK) * 2.f;
 
         FORWARDMOVINGSKILLDESC desc;
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);

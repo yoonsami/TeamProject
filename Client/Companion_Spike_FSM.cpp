@@ -1628,13 +1628,16 @@ void Companion_Spike_FSM::skill_300100()
 
     if (Init_CurFrame(30))
     {
+        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+                            Get_Transform()->Get_State(Transform_State::LOOK) * 2.f;
+
         FORWARDMOVINGSKILLDESC desc;
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
         desc.fMoveSpeed = 0.f;
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", Get_Transform()->Get_State(Transform_State::POS), 3.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 2.5f, desc, AIRBORNE_ATTACK, 10.f);
 
     }
 
@@ -1667,11 +1670,11 @@ void Companion_Spike_FSM::skill_400100()
         Add_And_Set_Effect(L"Spike_400100_3");
     }
 
-
     if (Init_CurFrame(52))
     {
-        _float4 vSkillPos = m_vSkillCamBonePos;
-        vSkillPos.y = 0.f;
+        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+                            Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f +
+                            Get_Transform()->Get_State(Transform_State::LOOK) * -1.f;
 
         FORWARDMOVINGSKILLDESC desc;
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1679,12 +1682,13 @@ void Companion_Spike_FSM::skill_400100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f);
     }
     else if (Init_CurFrame(77))
     {
-        _float4 vSkillPos = m_vSkillCamBonePos;
-        vSkillPos.y = 0.f;
+        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+                            Get_Transform()->Get_State(Transform_State::RIGHT) * -3.f +
+                            Get_Transform()->Get_State(Transform_State::LOOK);
 
         FORWARDMOVINGSKILLDESC desc;
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1692,12 +1696,14 @@ void Companion_Spike_FSM::skill_400100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f);
     }
-    else if (Init_CurFrame(110))
+    else if (Init_CurFrame(97))
     {
-        _float4 vSkillPos = m_vSkillCamBonePos;
-        vSkillPos.y = 0.f;
+        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+                            Get_Transform()->Get_State(Transform_State::RIGHT) * -1.f +
+                            Get_Transform()->Get_State(Transform_State::LOOK) * -4.f;
+
 
         FORWARDMOVINGSKILLDESC desc;
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1705,12 +1711,12 @@ void Companion_Spike_FSM::skill_400100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f);
     }
-    else if (Init_CurFrame(177))
+    else if (Init_CurFrame(150))
     {
-        _float4 vSkillPos = m_vSkillCamBonePos;
-        vSkillPos.y = 0.f;
+        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+                            Get_Transform()->Get_State(Transform_State::LOOK) * 2.f;
 
         FORWARDMOVINGSKILLDESC desc;
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1769,8 +1775,6 @@ void Companion_Spike_FSM::skill_501100()
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (m_iCurFrame == 23)
         AttackCollider_Off();
-
- 
 
     if (Is_AnimFinished())    
         m_eCurState = STATE::b_idle;
