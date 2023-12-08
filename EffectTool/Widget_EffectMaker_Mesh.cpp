@@ -81,6 +81,10 @@ void Widget_EffectMaker_Mesh::Set_Mesh_List()
 	for (auto iter : m_vecMeshes)
 	{
 		m_pszMeshes[iIndex] = m_vecMeshes[iIndex].c_str();
+
+		if (m_vecMeshes[iIndex] == m_strSSDMesh)
+			m_iCubeMeshIndex = iIndex;
+
 		iIndex++;
 	}
 }
@@ -343,7 +347,11 @@ void Widget_EffectMaker_Mesh::Option_Property()
 	ImGui::Checkbox("On Fade Out##Property", &m_bUseFadeOut);
 	ImGui::Checkbox("Color Changing On##Property", &m_bColorChangingOn);
 	ImGui::Checkbox("FDistortion##Property", &m_bIsFDistortion);
-	ImGui::Checkbox("Decal##Property", &m_bIsSSD);
+	if (ImGui::Checkbox("Decal##Property", &m_bIsSSD))
+	{
+		m_iMesh = m_iCubeMeshIndex;
+		m_strMesh = m_strSSDMesh;
+	}
 	ImGui::InputInt("Number of Mesh##Property", &m_iMeshCnt);
 
 	const char* pszItem_Sampler[] = { "Wrap", "Clamp", "Mirror", "Border"};
@@ -379,6 +387,11 @@ void Widget_EffectMaker_Mesh::Option_Mesh()
 			{
 				ImGui::SetItemDefaultFocus();
 			}
+		}
+		if (m_bIsSSD)
+		{
+			m_iMesh = m_iCubeMeshIndex;
+			m_strMesh = m_strSSDMesh;
 		}
 		ImGui::EndCombo();
 	}
