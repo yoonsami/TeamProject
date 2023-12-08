@@ -16,6 +16,7 @@ public:
 
 	virtual HRESULT Load_Scene() override;
 	virtual void Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPlayer) override;
+	void Load_Water();
 
 private:
 	shared_ptr<GameObject> Load_Player();

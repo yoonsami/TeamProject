@@ -1,6 +1,9 @@
 ﻿#include "pch.h"
 #include "FieldScene.h"
 
+
+#include "WaterUVSliding.h"
+
 #include "Utils.h"
 #include "Model.h"
 #include "Light.h"
@@ -205,11 +208,41 @@ void FieldScene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject
 {
 	// 오브젝트로드
 	__super::Load_MapFile(_mapFileName, pPlayer);
-
+	
+	// 
+	Load_Water();
 	// 터레인로드
 	Load_Terrain();
+	
 }
 
+void FieldScene::Load_Water()
+{
+
+
+	shared_ptr<GameObject> obj = make_shared<GameObject>();
+	obj->GetOrAddTransform()->Scaled(_float3(120.f));
+	obj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-450.f, -20.f, -450.f, 1.f));
+	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Water.fx");
+	shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(shader);
+	{
+		shared_ptr<Mesh> mesh = make_shared<Mesh>();
+		mesh->CreateGrid(40, 40);
+		renderer->Set_Mesh(mesh);
+	}
+	{
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterDiffuse", L"..\\Resources\\Textures\\MapObject\\Field\\T_Boom_000_a.tga"), TextureMapType::DIFFUSE);
+		material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterNormal", L"..\\Resources\\Textures\\MapObject\\Field\\T_chicken_meet_001.png"), TextureMapType::NORMAL);
+		material->Set_TextureMap(RESOURCES.GetOrAddTexture(L"WaterDistortion", L"..\\Resources\\Textures\\MapObject\\Field\\T_Perlin_Noise_M.tga"), TextureMapType::DISTORTION);
+
+		renderer->Set_Material(material);
+	}
+	obj->Set_Name(L"Water_Plane");
+	obj->Add_Component(renderer);
+	obj->Add_Component(make_shared<WaterUVSliding>());
+	Add_GameObject_Front(obj);
+}
 shared_ptr<GameObject> FieldScene::Load_Player()
 {
 	if (CUR_SCENE && typeid(*CUR_SCENE.get()) == typeid(LoadingScene))
@@ -378,7 +411,7 @@ void FieldScene::Load_Terrain()
 
 	// 디퓨즈텍스쳐
 	shared_ptr<Material> material = make_shared<Material>();
-	auto Grasstexture = RESOURCES.Get<Texture>(L"Wood_T_Tile_D_01_KEK");
+	auto Grasstexture = RESOURCES.Get<Texture>(L"TileGrass");
 	if (Grasstexture == nullptr)
 	{
 		MSG_BOX("NoDiffuseTexture");
@@ -387,7 +420,7 @@ void FieldScene::Load_Terrain()
 	material->Set_TextureMap(Grasstexture, TextureMapType::DIFFUSE);
 
 	// 노말텍스쳐
-	auto Normaltexture = RESOURCES.Get<Texture>(L"Wood_T_Tile_N_01_KEK");
+	auto Normaltexture = RESOURCES.Get<Texture>(L"ForestGrass_01_N_ASB");
 	if (Normaltexture == nullptr)
 	{
 		MSG_BOX("NoNormalTexture");
