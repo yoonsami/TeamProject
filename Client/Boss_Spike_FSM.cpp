@@ -339,44 +339,6 @@ void Boss_Spike_FSM::State_Init()
     }
 }
 
-void Boss_Spike_FSM::OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-}
-
-void Boss_Spike_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-    if (pCollider->Get_Owner() == nullptr)
-        return;
-
-    if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
-        return;
-
-    if (!m_bInvincible)
-    {
-        wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
-        _float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
-
-        
-        shared_ptr<GameObject> targetToLook = nullptr;
-        // skillName에 _Skill 포함이면
-        if (strSkillName.find(L"_Skill") != wstring::npos)
-        {
-            targetToLook = pCollider->Get_Owner(); // Collider owner를 넘겨준다
-        }
-        else // 아니면
-            targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner(); // Collider를 만든 객체를 넘겨준다
-
-        if (targetToLook == nullptr)
-            return;
-
-        Get_Hit(strSkillName, fAttackDamage, targetToLook);
-    }
-}
-
-void Boss_Spike_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-}
-
 void Boss_Spike_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
     m_pOwner.lock()->Get_Hurt(fDamage);

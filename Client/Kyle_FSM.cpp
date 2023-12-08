@@ -278,42 +278,6 @@ void Kyle_FSM::State_Init()
 	}
 }
 
-void Kyle_FSM::OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-}
-
-void Kyle_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-	if (pCollider->Get_Owner() == nullptr)
-		return;
-
-	if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
-		return;
-
-
-	if (!m_bInvincible)
-	{
-		wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
-		_float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
-		
-		shared_ptr<GameObject> targetToLook = nullptr;
-		// skillName _Skill
-		if (strSkillName.find(L"_Skill") != wstring::npos)
-			targetToLook = pCollider->Get_Owner(); // Collider owner
-		else //
-			targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner(); // Collider
-
-		if (targetToLook == nullptr)
-			return;
-
-		Get_Hit(strSkillName, fAttackDamage, targetToLook);
-	}
-}
-
-void Kyle_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-}
-
 void Kyle_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
 	//Calculate Damage 

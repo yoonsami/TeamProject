@@ -197,6 +197,9 @@ void Scene::Add_GameObject_Front(shared_ptr<GameObject> object, _bool staticFlag
 
 	if (staticFlag)
 		m_StaticObject.push_front(object);
+
+	if (object->Get_Name() == L"Player")
+		m_pPlayer = object;
 }
 
 void Scene::Remove_GameObject(shared_ptr<GameObject> object)

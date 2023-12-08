@@ -312,42 +312,6 @@ void Companion_Shane_FSM::State_Init()
     }
 }
 
-void Companion_Shane_FSM::OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-}
-
-void Companion_Shane_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-    if (pCollider->Get_Owner() == nullptr)
-        return;
-
-    if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
-        return;
-
-
-    if (!m_bInvincible)
-    {
-        wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
-        _float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
-
-        shared_ptr<GameObject> targetToLook = nullptr;
-        // skillName�� _Skill �����̸�
-        if (strSkillName.find(L"_Skill") != wstring::npos)
-            targetToLook = pCollider->Get_Owner(); // Collider owner�� �Ѱ��ش�
-        else // �ƴϸ�
-            targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner(); // Collider�� ���� ��ü�� �Ѱ��ش�
-
-        if (targetToLook == nullptr)
-            return;
-
-        Get_Hit(strSkillName, fAttackDamage, targetToLook);
-    }
-}
-
-void Companion_Shane_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-}
-
 void Companion_Shane_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
     //Calculate Damage 
@@ -1487,13 +1451,13 @@ void Companion_Shane_FSM::skill_502100()
         desc.fLifeTime = 0.5f;
         desc.fLimitDistance = 0.f;
 
-        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Shane_SkillCollider", vSkillPos, 2.5f, desc, NORMAL_SKILL, 10.f);
-    }
-    else if (Init_CurFrame(63))
-    {
-        FORWARDMOVINGSKILLDESC desc;
-        desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Shane_SkillCollider", vSkillPos, 2.5f, desc, NORMAL_SKILL, 10.f);
+	}
+	else if (Init_CurFrame(63))
+	{
+		FORWARDMOVINGSKILLDESC desc;
+		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
         desc.fMoveSpeed = 0.f;
         desc.fLifeTime = 0.5f;
         desc.fLimitDistance = 0.f;
@@ -1517,7 +1481,6 @@ void Companion_Shane_FSM::skill_502100_Init()
     m_bSetAttack = false;
     m_bInvincible = true;
     m_bSuperArmor = true;
-
 }
 
 void Companion_Shane_FSM::Set_AttackSkill()

@@ -61,9 +61,6 @@ public:
 private:
 	virtual void State_Tick() override; 
 	virtual void State_Init() override; 
-	virtual void OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap) override;
-	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) override;
-	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void Set_State(_uint iIndex) override;
 
 	void b_idle();

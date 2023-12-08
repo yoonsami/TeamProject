@@ -162,20 +162,6 @@ void DellonsWraith_FSM::State_Init()
     }
 }
 
-void DellonsWraith_FSM::OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-}
-
-
-void DellonsWraith_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-
-}
-
-void DellonsWraith_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-}
-
 void DellonsWraith_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
 

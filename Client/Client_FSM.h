@@ -9,6 +9,12 @@ class Client_FSM abstract :
     public FSM
 {
 
+public:
+	virtual void OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap) override;
+	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) override;
+	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) override;
+
+
 protected:
 	void AttackCollider_On(const wstring& skillname, _float fAttackDamage);
 	void AttackCollider_Off();
