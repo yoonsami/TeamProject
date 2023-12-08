@@ -181,8 +181,6 @@ void GroupEffect::Render()
     if (!m_bRenderOn)
         return;
 
-    Render_Decal();
-
     INSTANCING.Clear_Data();
     for (auto& pair : m_RenderGroup)
     {
@@ -223,6 +221,8 @@ void GroupEffect::Render()
 
 void GroupEffect::Render_Decal()
 {
+	if (!m_bRenderOn)
+		return;
 	INSTANCING.Clear_Data();
 	for (auto& pair : m_RenderGroup)
 	{

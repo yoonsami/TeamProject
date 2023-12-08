@@ -95,6 +95,7 @@ private:
     vector<shared_ptr<GameObject>> m_DistortionEffects;
     vector<shared_ptr<GameObject>> m_Trails;
     vector<shared_ptr<GameObject>> m_AfterUI;
+    vector<shared_ptr<GameObject>> m_Decal;
 
 private:
     _bool                           m_bEffectToolMode_On = { false };

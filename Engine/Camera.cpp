@@ -70,6 +70,8 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 	m_Trails.clear();
 	m_VelocityMapObj.clear();
 	m_AfterUI.clear();
+	m_Decal.clear();
+
 	for (auto& gameObject : gameObjects)
 	{
 		if (false == gameObject->Is_Render())
@@ -115,7 +117,7 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 			m_Forward.push_back(gameObject);
 		else if (gameObject->Get_ShaderType() == SHADER_TYPE::DEFERRED)
 			m_Deferred.push_back(gameObject);
-		else if (m_bEffectToolMode_On && gameObject->Get_MeshEffect() && !gameObject->Get_MeshEffect()->Get_Desc().bIsFDistortion)
+		else if (m_bEffectToolMode_On && gameObject->Get_MeshEffect() && !gameObject->Get_MeshEffect()->Get_Desc().bIsFDistortion && !gameObject->Get_MeshEffect()->Get_Desc().bIsSSD)
 			m_Forward.push_back(gameObject);
 		else if (!m_bEffectToolMode_On && gameObject->Get_GroupEffect())
 			m_Forward.push_back(gameObject);
@@ -124,6 +126,11 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 		if (gameObject->Get_ShaderType() == SHADER_TYPE::DISTORTION)
 			m_DistortionEffects.push_back(gameObject);
 		
+		if (m_bEffectToolMode_On && gameObject->Get_MeshEffect()->Get_Desc().bIsSSD)
+			m_Decal.push_back(gameObject);
+		else if (!m_bEffectToolMode_On && gameObject->Get_GroupEffect())
+			m_Decal.push_back(gameObject);
+
 		//if (gameObject->Get_ParticleSystem())
 		//	m_Particle.push_back(gameObject);
 		if (gameObject->Get_Particle())
@@ -307,7 +314,17 @@ void Camera::Render_Forward()
 			
 
 			return distanceASQ > distanceBSQ; });
-	
+
+	for (auto& obj : m_Decal)
+	{
+		if (!m_bEffectToolMode_On && obj->Get_GroupEffect())
+			obj->Get_GroupEffect()->Render_Decal();
+		else if (m_bEffectToolMode_On && obj->Get_MeshEffect() && obj->Get_MeshEffect()->Get_Desc().bIsSSD)
+			obj->Get_MeshEffect()->Render();
+
+
+	}
+
 	for(auto& obj : m_Forward)
 	{
 		if (obj->Get_MeshRenderer())
