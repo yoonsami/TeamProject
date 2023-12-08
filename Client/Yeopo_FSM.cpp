@@ -1644,6 +1644,8 @@ void Yeopo_FSM::skill_300400_Init()
 
 void Yeopo_FSM::skill_400100()
 {
+	_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.8f;
+
     // Effect 
     if (Init_CurFrame(1))
     {
@@ -1663,7 +1665,6 @@ void Yeopo_FSM::skill_400100()
 			desc.fLifeTime = 1.f;
 			desc.fLimitDistance = 0.f;
 
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.5f;
 			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Red");
 		}
     }
@@ -1682,7 +1683,6 @@ void Yeopo_FSM::skill_400100()
 			desc.fLifeTime = 1.f;
 			desc.fLimitDistance = 0.f;
 
-			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.5f;
 			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Red");		}
     }
     //else if (Init_CurFrame(50))
@@ -1698,7 +1698,6 @@ void Yeopo_FSM::skill_400100()
 			desc.fLifeTime = 1.f;
 			desc.fLimitDistance = 0.f;
 
-			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.5f;
 			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Red");		}
     }
     //else if (Init_CurFrame(70))
@@ -1714,7 +1713,6 @@ void Yeopo_FSM::skill_400100()
 			desc.fLifeTime = 1.f;
 			desc.fLimitDistance = 0.f;
 
-			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.5f;
 			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Red");		}
     }
     else if (Init_CurFrame(123))
@@ -1769,9 +1767,8 @@ void Yeopo_FSM::skill_400100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        _float4 vSkillPos = m_vCenterBonePos;
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.5f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Red");
-        CAMERA_SHAKE(0.3f, 0.3f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", m_vCenterBonePos, 2.5f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Red");
+        CAMERA_SHAKE(0.5f, 0.3f);
     }
 
     //Look_DirToTarget();
@@ -1815,6 +1812,7 @@ void Yeopo_FSM::skill_501100()
     {
         Set_ColliderOption(FIRE, L"Hit_Slash_Red");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+        CAMERA_SHAKE(0.03f, 0.1f);
     }
     else if (m_iCurFrame == 16)
         AttackCollider_Off();
@@ -1822,11 +1820,14 @@ void Yeopo_FSM::skill_501100()
     {
         Set_ColliderOption(FIRE, L"Hit_Slash_Red");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+		CAMERA_SHAKE(0.03f, 0.1f);
+
     }
     else if (m_iCurFrame == 19)
         AttackCollider_Off();
     else if (m_iCurFrame == 21)
     {
+		CAMERA_SHAKE(0.03f, 0.1f);
         Set_ColliderOption(FIRE, L"Hit_Slash_Red");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     }
@@ -1835,6 +1836,7 @@ void Yeopo_FSM::skill_501100()
     else if (m_iCurFrame == 25)
 	{
 		Set_ColliderOption(FIRE, L"Hit_Slash_Red");
+		CAMERA_SHAKE(0.03f, 0.1f);
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
 	}
     else if (m_iCurFrame == 28)
@@ -1842,6 +1844,7 @@ void Yeopo_FSM::skill_501100()
     else if (m_iCurFrame == 30)
 	{
 		Set_ColliderOption(FIRE, L"Hit_Slash_Red");
+		CAMERA_SHAKE(0.03f, 0.1f);
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
 	}
     else if (m_iCurFrame == 35)
@@ -1849,6 +1852,7 @@ void Yeopo_FSM::skill_501100()
     else if (m_iCurFrame == 52)
     {
         Set_ColliderOption(FIRE, L"Hit_Slash_Red");
+		CAMERA_SHAKE(0.1f, 0.1f);
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
     }
     else if (m_iCurFrame == 55)
