@@ -434,7 +434,7 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
     
     diffuseColor = diffuseColor;
     
-    output.position = float4(input.viewPosition.xyz, 0.f);
+    output.position = float4(input.viewPosition.xyz, 1.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
     output.depth = input.position.z;
     output.depth.w = input.viewPosition.z;
@@ -497,7 +497,7 @@ PS_OUT_Deferred PS_Deferred_Instancing(MeshInstancingOutput input)
 
     diffuseColor = diffuseColor;
     
-    output.position = float4(input.viewPosition.xyz, 0.f);
+    output.position = float4(input.viewPosition.xyz, 1.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
     output.depth = input.position.z;
     output.depth.w = input.viewPosition.z;
@@ -570,7 +570,7 @@ PS_OUT_Deferred PS_WATER(MeshOutput input)
     
 
 
-    output.position = float4(input.viewPosition.xyz, 0.f);
+    output.position = float4(input.viewPosition.xyz, 1.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
     output.depth = input.position.z;
     output.depth.w = input.viewPosition.z;
@@ -713,7 +713,7 @@ PBR_OUTPUT PS_PBR_Deferred(MeshOutput input)
     
 
 
-    output.position = float4(input.viewPosition.xyz, 0.f);
+    output.position = float4(input.viewPosition.xyz, 1.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
     output.arm = ARM_Map;
     output.diffuseColor = diffuseColor + float4(g_vec4_0.xyz, 0.f);
@@ -772,7 +772,7 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(MeshInstancingOutput input)
 
     
     
-    output.position = float4(input.viewPosition.xyz, 0.f);
+    output.position = float4(input.viewPosition.xyz, 1.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
     output.arm = ARM_Map;
     output.diffuseColor = diffuseColor + float4(InstanceRenderParams[input.id].xyz, 0.f);;
@@ -831,7 +831,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject(MeshOutput input)
     
 
 
-    output.position = float4(input.viewPosition.xyz, 0.f);
+    output.position = float4(input.viewPosition.xyz, 1.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
     output.positionSSD = float4(input.viewPosition.xyz, 1.f);
     output.arm = ARM_Map;
@@ -891,7 +891,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_Instancing(MeshInstancingOutput i
 
     
     
-    output.position = float4(input.viewPosition.xyz, 0.f);
+    output.position = float4(input.viewPosition.xyz, 1.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
     output.positionSSD = float4(input.viewPosition.xyz, 1.f);
     output.arm = ARM_Map;
@@ -967,7 +967,7 @@ PBR_OUTPUT PS_PBR_WATER(MeshOutput input)
     
 
 
-    output.position = float4(input.viewPosition.xyz, 0.f);
+    output.position = float4(input.viewPosition.xyz, 1.f);
     output.normal = float4(normal, 0.f);
 
     output.arm = ARM_Map;
@@ -1089,7 +1089,7 @@ float4 PS_PBR_Forward(MeshOutput input) : SV_Target
     else
         emissiveColor = 0.f;
 
-    output.position = float4(input.viewPosition.xyz, 0.f);
+    output.position = float4(input.viewPosition.xyz, 1.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
 
     output.arm = ARM_Map;
@@ -1181,7 +1181,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_NormalControl(MeshOutput input)
     
 
 
-    output.position = float4(input.viewPosition.xyz, 0.f);
+    output.position = float4(input.viewPosition.xyz, 1.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
     output.positionSSD = float4(input.viewPosition.xyz, 1.f);
     output.arm = ARM_Map;
@@ -1247,7 +1247,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_Instancing_NormalControl(MeshInst
 
     
     
-    output.position = float4(input.viewPosition.xyz, 0.f);
+    output.position = float4(input.viewPosition.xyz, 1.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
     output.positionSSD = float4(input.viewPosition.xyz, 1.f);
     output.arm = ARM_Map;

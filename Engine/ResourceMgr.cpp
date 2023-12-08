@@ -972,7 +972,7 @@ void ResourceMgr::CreateDefaultMaterial()
 		material->Set_Shader(shader);
 		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"VelocityMap"));
 		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"FinalTarget"));
-		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"G_DepthTarget"));
+		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"PositionTarget"));
 		Add(L"MotionBlurFinal", material);
 	}
 	{
@@ -1037,7 +1037,7 @@ void ResourceMgr::CreateDefaultMaterial()
 	{
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Final.fx");
 		shared_ptr<Material> material = make_shared<Material>();
-		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"G_DepthTarget"));
+		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"PositionTarget"));
 		material->Set_Shader(shader);
 		Add(L"DOFTarget", material);
 	}
@@ -1089,7 +1089,7 @@ void ResourceMgr::CreateDefaultMaterial()
 		material->Set_Shader(shader);
 		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"MotionBlurFinalTarget"));
 		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"DOFUPSCALE2"));
-		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"G_DepthTarget"));
+		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"PositionTarget"));
 		Add(L"DOFFinal", material);
 	}
 
@@ -1107,7 +1107,7 @@ void ResourceMgr::CreateDefaultMaterial()
 		shared_ptr<Material> material = make_shared<Material>();
 		material->Set_Shader(shader);
 		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"DistortionFinalTarget"));
-		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"G_DepthTarget"));
+		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"PositionTarget"));
 
 		Add(L"LensFlare", material);
 	}
@@ -1129,7 +1129,7 @@ void ResourceMgr::CreateDefaultMaterial()
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Final.fx");
 		shared_ptr<Material> material = make_shared<Material>();
 		material->Set_Shader(shader);
-		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"G_DepthTarget"));
+		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"PositionTarget"));
 		Add(L"FogFinal", material);
 	}
 	{

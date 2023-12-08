@@ -128,7 +128,7 @@ void MeshEffect::Render()
 
     m_pShader->Push_LightData(CUR_SCENE->Get_LightParams());
 
-    m_pShader->GetSRV("PositionTargetTex")->SetResource(RESOURCES.Get<Texture>(L"PositionTarget")->Get_SRV().Get());
+    m_pShader->GetSRV("PositionTargetTex")->SetResource(RESOURCES.Get<Texture>(L"PositionForSSD")->Get_SRV().Get());
     _float4x4 matInvWorldMat = Get_Transform()->Get_WorldMatrix().Invert();
     m_pShader->GetMatrix("InvWorldTransformMatrix")->SetMatrix((_float*)&matInvWorldMat);
 

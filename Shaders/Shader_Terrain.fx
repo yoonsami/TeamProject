@@ -90,9 +90,9 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
     return output;
 }
 
-PBR_OUTPUT PS_Terrain_PBR(MeshOutput input)
+PBR_MAPOBJECT_OUTPUT PS_Terrain_PBR(MeshOutput input)
 {
-    PBR_OUTPUT output = (PBR_OUTPUT) 0.f;
+    PBR_MAPOBJECT_OUTPUT output = (PBR_MAPOBJECT_OUTPUT) 0.f;
     float4 color;
     
     float4 maskColor = TextureMap7.Sample(LinearSampler, float2(input.uv.x / g_vec2_0.x, input.uv.y / g_vec2_0.y));
@@ -131,10 +131,9 @@ PBR_OUTPUT PS_Terrain_PBR(MeshOutput input)
 
     
     
-    output.position = float4(input.viewPosition.xyz, 0.f);
+    output.position = float4(input.viewPosition.xyz, 1.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
-    output.depth = input.position.z;
-    output.depth.w = input.viewPosition.z;
+    output.positionSSD = float4(input.viewPosition.xyz, 1.f);
     output.arm = float4(1.f, 0.8f, 0.0f, 1.f);
     output.diffuseColor = color;
     output.emissive = 0.f;
