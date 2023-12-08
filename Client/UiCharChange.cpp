@@ -47,8 +47,12 @@ HRESULT UiCharChange::Init()
     m_pSkillHelp[2] = pScene->Get_UI(L"UI_Char_Help_Skill2");
     for (_uint i = 0; i < 3; ++i)
         if (false == m_pSkillHelp[i].expired())
+        {
+            m_pSkillHelp[i].lock()->Set_Tick(false);
             m_pSkillHelp[i].lock()->Set_Render(false);
+        }
 
+    m_bIsChange.resize(3);
 
     m_SkillHelpDesc.resize(3);
     m_SkillHelpDesc[0].fCoolTime = 10.f;
@@ -128,6 +132,10 @@ void UiCharChange::Set_Hero(_uint iIndex)
 _bool UiCharChange::IsChangePossible(_uint iIndex)
 {
     if (m_pOwner.expired() || 2 < iIndex)
+        return false;
+
+    auto eValue = DATAMGR.Get_Cur_Set_Hero(iIndex);
+    if (HERO::MAX == eValue)
         return false;
 
     auto& Desc = m_vecDesc[iIndex];
@@ -309,11 +317,9 @@ void UiCharChange::Change_Hero()
 {
     if (KEYTAP(KEY_TYPE::F1))
     {
-        if (true == IsChangePossible(0) && false == m_bIsChange)
+        if (true == IsChangePossible(0) && false == m_bIsChange[0])
         {
             auto eValue = DATAMGR.Get_Cur_Set_Hero(0);
-            if (HERO::MAX == eValue)
-                return;
 
             if (false == m_pSkillHelp[0].expired())
                 m_pSkillHelp[0].lock()->Set_Render(false);
@@ -322,16 +328,18 @@ void UiCharChange::Change_Hero()
             if (false == m_pSkillHelp[2].expired() && HERO::MAX != DATAMGR.Get_Cur_Set_Hero(2))
                 m_pSkillHelp[2].lock()->Set_Render(true);
 
-            m_bIsChange = true;
+            m_bIsChange[0] = true;
+            m_bIsChange[1] = false;
+            m_bIsChange[2] = false;
             auto pScript = GET_PLAYER->Get_Script<HeroChangeScript>();
             pScript->Change_Hero(eValue);
         }
-        else if (true == m_bIsChange)
+        else if (true == m_bIsChange[0])
         {
             if (false == m_pSkillHelp[0].expired())
                 m_pSkillHelp[0].lock()->Set_Render(true);
 
-            m_bIsChange = false;
+            m_bIsChange[0] = false;
             auto pScript = GET_PLAYER->Get_Script<HeroChangeScript>();
             pScript->Change_Player();
         }
@@ -340,11 +348,9 @@ void UiCharChange::Change_Hero()
 
     if (KEYTAP(KEY_TYPE::F2))
     {
-        if (true == IsChangePossible(1) && false == m_bIsChange)
+        if (true == IsChangePossible(1) && false == m_bIsChange[1])
         {
             auto eValue = DATAMGR.Get_Cur_Set_Hero(1);
-            if (HERO::MAX == eValue)
-                return;
 
             if (false == m_pSkillHelp[0].expired() && HERO::MAX != DATAMGR.Get_Cur_Set_Hero(0))
                 m_pSkillHelp[0].lock()->Set_Render(true);
@@ -353,16 +359,18 @@ void UiCharChange::Change_Hero()
             if (false == m_pSkillHelp[2].expired() && HERO::MAX != DATAMGR.Get_Cur_Set_Hero(2))
                 m_pSkillHelp[2].lock()->Set_Render(true);
 
-            m_bIsChange = true;
+            m_bIsChange[0] = false;
+            m_bIsChange[1] = true;
+            m_bIsChange[2] = false;
             auto pScript = GET_PLAYER->Get_Script<HeroChangeScript>();
             pScript->Change_Hero(eValue);
         }
-        else if (true == m_bIsChange)
+        else if (true == m_bIsChange[1])
         {
             if (false == m_pSkillHelp[1].expired())
                 m_pSkillHelp[1].lock()->Set_Render(true);
 
-            m_bIsChange = false;
+            m_bIsChange[1] = false;
             auto pScript = GET_PLAYER->Get_Script<HeroChangeScript>();
             pScript->Change_Player();
         }
@@ -370,11 +378,9 @@ void UiCharChange::Change_Hero()
 
     if (KEYTAP(KEY_TYPE::F3))
     {
-        if (true == IsChangePossible(2) && false == m_bIsChange)
+        if (true == IsChangePossible(2) && false == m_bIsChange[2])
         {
             auto eValue = DATAMGR.Get_Cur_Set_Hero(2);
-            if (HERO::MAX == eValue)
-                return;
 
             if (false == m_pSkillHelp[0].expired() && HERO::MAX != DATAMGR.Get_Cur_Set_Hero(0))
                 m_pSkillHelp[0].lock()->Set_Render(true);
@@ -383,16 +389,18 @@ void UiCharChange::Change_Hero()
             if (false == m_pSkillHelp[2].expired())
                 m_pSkillHelp[2].lock()->Set_Render(false);
 
-            m_bIsChange = true;
+            m_bIsChange[0] = false;
+            m_bIsChange[1] = false;
+            m_bIsChange[2] = true;
             auto pScript = GET_PLAYER->Get_Script<HeroChangeScript>();
             pScript->Change_Hero(eValue);
         }
-        else if (true == m_bIsChange)
+        else if (true == m_bIsChange[2])
         {
             if (false == m_pSkillHelp[2].expired())
                 m_pSkillHelp[2].lock()->Set_Render(true);
 
-            m_bIsChange = false;
+            m_bIsChange[2] = false;
             auto pScript = GET_PLAYER->Get_Script<HeroChangeScript>();
             pScript->Change_Player();
         }
