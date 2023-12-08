@@ -326,6 +326,7 @@ void FieldScene::Load_Terrain()
 		file->Read<_float3>(loadedVertices[i].vPosition);
 		file->Read<_float2>(loadedVertices[i].vTexCoord);
 		file->Read<_float3>(loadedVertices[i].vNormal);
+		file->Read<_float3>(loadedVertices[i].vTangent);
 	}
 
 	// 인덱스의 개수와 정보 로드
@@ -359,7 +360,7 @@ void FieldScene::Load_Terrain()
 
 	// 디퓨즈텍스쳐
 	shared_ptr<Material> material = make_shared<Material>();
-	auto Grasstexture = RESOURCES.Get<Texture>(L"Wood_T_Tile_D_01_KEK");
+	auto Grasstexture = RESOURCES.Get<Texture>(L"TileGrass");
 	if (Grasstexture == nullptr)
 	{
 		MSG_BOX("NoDiffuseTexture");
@@ -368,7 +369,7 @@ void FieldScene::Load_Terrain()
 	material->Set_TextureMap(Grasstexture, TextureMapType::DIFFUSE);
 
 	// 노말텍스쳐
-	auto Normaltexture = RESOURCES.Get<Texture>(L"Wood_T_Tile_N_01_KEK");
+	auto Normaltexture = RESOURCES.Get<Texture>(L"ForestGrass_01_N_ASB");
 	if (Normaltexture == nullptr)
 	{
 		MSG_BOX("NoNormalTexture");
