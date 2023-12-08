@@ -342,17 +342,24 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     float2 decalUV = input.uv;
     if (bUseSSD)
     {
+        
+        
         float4 projPos = mul(float4(input.viewPosition, 1.f), P);
         float2 vPixelPosInSS = projPos.xy / projPos.w;
         vPixelPosInSS = (vPixelPosInSS * 0.5f) + 0.5f;
         vPixelPosInSS.y = 1.f - vPixelPosInSS.y;
         float3 fPixelViewPos = PositionTargetTex.Sample(LinearSamplerClamp, vPixelPosInSS).rgb;
+        
+        
+        
+        
         float3 fPixelWorldPos = mul(float4(fPixelViewPos, 1.f), VInv);
      
         float3 decalLocalPos = mul(float4(fPixelWorldPos, 1.f), InvWorldTransformMatrix);
         clip(0.5f - abs(decalLocalPos.xyz));
         
         decalUV = decalLocalPos.xz + 0.5f;
+        
     }
     
     float fDistortionWeight = 0.f;
@@ -1092,6 +1099,67 @@ technique11 T1_Instancing // 0
         SetVertexShader(CompileShader(vs_5_0, VS_Main_Instancing()));
         SetRasterizerState(RS_CullNone);
         SetDepthStencilState(DSS_Default, 0);
+        SetPixelShader(CompileShader(ps_5_0, PS_Wrap_Instancing()));
+        SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+    }
+
+};
+
+technique11 T2_SSD // 2
+{
+    pass pass_Wrap // 0
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Main()));
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetPixelShader(CompileShader(ps_5_0, PS_Wrap()));
+        SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+    }
+
+    pass pass_Clamp // 1
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Main()));
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetPixelShader(CompileShader(ps_5_0, PS_Clamp()));
+        SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+    }
+
+    pass pass_Mirror // 2
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Main()));
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetPixelShader(CompileShader(ps_5_0, PS_Mirror()));
+        SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+    }
+
+    pass pass_Border // 3
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Main()));
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetPixelShader(CompileShader(ps_5_0, PS_Border()));
+        SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+    }
+};
+  
+technique11 T3_SSD_Instancing // 3
+{
+    pass pass_Wrap_Instancing // 0
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Main_Instancing()));
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetPixelShader(CompileShader(ps_5_0, PS_Wrap_Instancing()));
+        SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+    }
+
+    pass pass_Clamp_Instancing // 1
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Main_Instancing()));
+        SetRasterizerState(RS_CullNone);
+        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
         SetPixelShader(CompileShader(ps_5_0, PS_Wrap_Instancing()));
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
     }

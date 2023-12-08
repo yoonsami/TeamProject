@@ -149,9 +149,9 @@ void MeshEffect::Render()
 
         // For. Setting Context Topology
         CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
+        _int techniqueIndex = m_tDesc.bIsSSD ? 2 : 0;
         // For. Draw call
-        m_pShader->DrawIndexed(0, m_tDesc.iSamplerType, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
+        m_pShader->DrawIndexed(techniqueIndex, m_tDesc.iSamplerType, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
     }
 }
 
@@ -199,8 +199,9 @@ void MeshEffect::Render_Instancing(shared_ptr<InstancingBuffer> buffer, shared_p
 		// For. Setting Context Topology
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+        _int techniqueIndex = m_tDesc.bIsSSD ? 3 : 1;
 		// For. Draw call
-		m_pShader->DrawIndexedInstanced(1, m_tDesc.iSamplerType, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
+		m_pShader->DrawIndexedInstanced(techniqueIndex, m_tDesc.iSamplerType, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
 	}
 }
 

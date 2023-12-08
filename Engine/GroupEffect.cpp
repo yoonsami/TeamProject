@@ -180,13 +180,9 @@ void GroupEffect::Render()
 {
     if (!m_bRenderOn)
         return;
-	/*
-    for (auto& iter : m_lMemberEffects)
-	{
-		if (!iter.expired())
-			iter.lock()->Get_MeshEffect()->Render();
-	}
-    */
+
+    Render_Decal();
+
     INSTANCING.Clear_Data();
     for (auto& pair : m_RenderGroup)
     {
@@ -194,6 +190,8 @@ void GroupEffect::Render()
         if(vec.size() == 0)
             continue;
         if(vec[0]->Get_MeshEffect()->Get_Desc().bIsFDistortion)
+            continue;
+        if(vec[0]->Get_MeshEffect()->Get_Desc().bIsSSD)
             continue;
 
 		if (vec.size() == 1)
@@ -223,6 +221,44 @@ void GroupEffect::Render()
     }
 }
 
+void GroupEffect::Render_Decal()
+{
+	INSTANCING.Clear_Data();
+	for (auto& pair : m_RenderGroup)
+	{
+		vector<shared_ptr<GameObject>>& vec = pair.second;
+		if (vec.size() == 0)
+			continue;
+
+		if (!vec[0]->Get_MeshEffect()->Get_Desc().bIsSSD)
+			continue;
+
+		if (vec.size() == 1)
+		{
+			vec.front()->Get_MeshEffect()->Render();
+		}
+		else
+		{
+			const InstanceID instanceId = pair.first;
+			vector<RenderParams> paramInfo;
+			paramInfo.reserve(m_RenderParamBuffer[pair.first.first]->Get_InputCount());
+			for (size_t i = 0; i < vec.size(); ++i)
+			{
+				shared_ptr<GameObject>& gameobject = vec[i];
+				InstancingData data{};
+				data.world = gameobject->Get_Transform()->Get_WorldMatrix();
+				paramInfo.push_back(gameobject->Get_MeshEffect()->Get_RenderParamDesc());
+				INSTANCING.Add_Data(instanceId, data);
+			}
+			if (m_RenderParamBuffer.size() > pair.first.first)
+				m_RenderParamBuffer[pair.first.first]->Copy_ToInput(paramInfo.data());
+
+			shared_ptr<InstancingBuffer>& buffer = INSTANCING.Get_Buffer(instanceId);
+			vec[0]->Get_MeshEffect()->Render_Instancing(buffer, m_RenderParamBuffer[pair.first.first]);
+		}
+	}
+}
+
 void GroupEffect::Render_Distortion()
 {
 	if (!m_bRenderOn)
@@ -234,8 +270,10 @@ void GroupEffect::Render_Distortion()
 		vector<shared_ptr<GameObject>>& vec = pair.second;
 		if (vec.size() == 0)
 			continue;
+
 		if (!vec[0]->Get_MeshEffect()->Get_Desc().bIsFDistortion)
 			continue;
+
 
 		if (vec.size() == 1)
 		{
