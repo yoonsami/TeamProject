@@ -39,12 +39,6 @@ void DestroyBuilding_FSM::Tick()
 	State_Tick();
 }
 
-void DestroyBuilding_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-	if (pCollider->Get_Owner() == nullptr)
-		return;
-}
-
 void DestroyBuilding_FSM::State_Tick()
 {
 	State_Init();

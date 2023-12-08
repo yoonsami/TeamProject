@@ -47,7 +47,7 @@ HRESULT Succubus_Scythe_FSM::Init()
         m_fNormalAttack_AnimationSpeed = 1.3f;
         m_fSkillAttack_AnimationSpeed = 1.3f;
 
-        m_fDetectRange = 6.f;
+        m_fDetectRange = 15.f;
 
 
         m_bInitialize = true;
@@ -71,6 +71,10 @@ void Succubus_Scythe_FSM::Tick()
 
 void Succubus_Scythe_FSM::State_Tick()
 {
+    Detect_Target();
+
+    Target_DeadCheck();
+
     State_Init();
 
     m_iCurFrame = Get_CurFrame();
@@ -246,42 +250,6 @@ void Succubus_Scythe_FSM::State_Init()
     }
 }
 
-void Succubus_Scythe_FSM::OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-}
-
-void Succubus_Scythe_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-    if (pCollider->Get_Owner() == nullptr)
-        return;
-
-    if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
-        return;
-
-
-    if (!m_bInvincible)
-    {
-        wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
-        _float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
-
-        shared_ptr<GameObject> targetToLook = nullptr;
-
-        if (strSkillName.find(L"_Skill") != wstring::npos)
-            targetToLook = pCollider->Get_Owner();
-        else
-            targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner();
-
-        if (targetToLook == nullptr)
-            return;
-
-        Get_Hit(strSkillName, fAttackDamage, targetToLook);
-    }
-}
-
-void Succubus_Scythe_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-}
-
 void Succubus_Scythe_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
     auto pScript = m_pOwner.lock()->Get_Script<UiMonsterHp>();
@@ -297,6 +265,9 @@ void Succubus_Scythe_FSM::Get_Hit(const wstring& skillname, _float fDamage, shar
 
     CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage);
 
+    //Target Change
+    if (pLookTarget != nullptr)
+        m_pTarget = pLookTarget;
 
     m_bDetected = true;
     m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.05f);
@@ -460,10 +431,6 @@ void Succubus_Scythe_FSM::n_run()
         m_eCurState = STATE::wander;
     }
 
-
-    if (Target_In_DetectRange())
-        m_bDetected = true;
-
     if (m_bDetected)
     {
         Set_AttackSkill();
@@ -494,11 +461,6 @@ void Succubus_Scythe_FSM::wander()
 
         if (m_bPatrolMove)
             m_eCurState = STATE::n_run;
-        
-       
-        if (Target_In_DetectRange())
-            m_bDetected = true;
-       
     }
     else
     {
@@ -1178,6 +1140,46 @@ void Succubus_Scythe_FSM::Set_AttackSkill()
     }
     
     m_bSetPattern = true;
+}
+
+void Succubus_Scythe_FSM::Detect_Target()
+{
+    if (!m_bDetected)
+    {
+        m_tDetectCoolTime.fAccTime += fDT;
+
+        if (m_tDetectCoolTime.fAccTime >= m_tDetectCoolTime.fCoolTime)
+        {
+            m_tDetectCoolTime.fAccTime = 0.f;
+
+            if (TargetGroup_In_DetectRange(OBJ_TEAM))
+                m_bDetected = true;
+        }
+    }
+}
+
+void Succubus_Scythe_FSM::Target_DeadCheck()
+{
+    if (m_bDetected)
+    {
+        if (!m_pTarget.expired())
+        {
+            if (m_pTarget.lock()->Get_CurHp() <= 0.f)
+            {
+                m_bDetected = false;
+                m_bPatrolMove = false;
+                m_eCurState = STATE::b_idle;
+                m_fPatrolDistanceCnt = 0.f;
+            }
+        }
+        else
+        {
+            m_bDetected = false;
+            m_bPatrolMove = false;
+            m_eCurState = STATE::b_idle;
+            m_fPatrolDistanceCnt = 0.f;
+        }
+    }
 }
 
 _float3 Succubus_Scythe_FSM::Calculate_TargetTurnVector()

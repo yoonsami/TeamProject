@@ -47,7 +47,11 @@
 #include "Undead_Priest_FSM.h"
 #include "Alpaca_FSM.h"
 #include "Wolf_FSM.h"
+#include "EntSoldier_FSM.h"
 
+#include "Companion_Spike_FSM.h"
+#include "Companion_Dellons_FSM.h"
+#include "Companion_Shane_FSM.h"
 
 #include "UiGachaController.h"
 #include "Boss_Mir_FSM.h"
@@ -72,6 +76,8 @@
 #include "UiBossDialog.h"
 #include "UIInteraction.h"
 #include "NeutralAlpaca_FSM.h"
+#include "MathUtils.h"
+
 namespace fs = std::filesystem;
 
 FieldScene::FieldScene()
@@ -175,10 +181,21 @@ HRESULT FieldScene::Load_Scene()
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Wolf\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Succubus_Scythe\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Undead_Priest\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\EntSoldier\\", false);
 
 	auto player = Load_Player();
 	Load_Camera(player);
 	Load_MapFile(L"FieldMap", player);
+
+	Load_Companion(L"Spike", player, _float4{ 118.471f, -1.26f, 59.8f, 1.f});
+	Load_Companion(L"Dellons", player, _float4{ 128.471f, -2.98f, 78.3f, 1.f });
+	Load_Companion(L"Shane", player, _float4{ 98.f, -0.6f, 73.76f, 1.f});
+
+	Load_Monster(3, L"Wolf", player);
+	Load_Monster(3, L"Silversword_Soldier", player);
+	Load_Monster(3, L"Succubus_Scythe", player);
+	Load_Monster(3, L"Undead_Priest", player);
+	Load_Monster(3, L"EntSoldier", player);
 
 	Load_Ui(player);
 	return S_OK;
@@ -250,7 +267,7 @@ shared_ptr<GameObject> FieldScene::Load_Player()
 			controller->Create_Controller();
 		}
 		ObjPlayer->Set_DrawShadow(true);
-		ObjPlayer->Set_ObjectGroup(OBJ_PLAYER);
+		ObjPlayer->Set_ObjectGroup(OBJ_TEAM);
 
 		Add_GameObject(ObjPlayer,true);
 
@@ -492,7 +509,8 @@ void FieldScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_p
 			else
 				fRan = 1.f;
 
-			ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(_float(rand() % 20) * fRan, 0.f, _float(rand() % 15) + 30.f, 1.f));
+			_float3 vSpawnPos = MathUtils::Get_RandomVector(_float3{ 165.f, -1.3f, 50.f }, _float3{ 235.f, -1.3f, 60.f });
+			ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4{ vSpawnPos.x, vSpawnPos.y, vSpawnPos.z, 1.f });
 			{
 				shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
@@ -516,6 +534,8 @@ void FieldScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_p
 					ObjMonster->Add_Component(make_shared<NeutralAlpaca_FSM>());
 				else if (strMonsterTag == L"Wolf")
 					ObjMonster->Add_Component(make_shared<Wolf_FSM>());
+				else if (strMonsterTag == L"EntSoldier")
+					ObjMonster->Add_Component(make_shared<EntSoldier_FSM>());
 
 				ObjMonster->Get_FSM()->Set_Target(pPlayer);
 			}
@@ -543,6 +563,90 @@ void FieldScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_p
 
 			Add_GameObject(ObjMonster);
 		}
+	}
+}
+
+void FieldScene::Load_Companion(const wstring& strCompanionTag, shared_ptr<GameObject> pPlayer, _float4 vSpawnPos)
+{
+	{
+		// Add. Companion
+		shared_ptr<GameObject> ObjCompanion = make_shared<GameObject>();
+
+		ObjCompanion->Add_Component(make_shared<Transform>());
+
+		ObjCompanion->Get_Transform()->Set_State(Transform_State::POS, vSpawnPos);
+		{
+			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+
+			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+			{
+				shared_ptr<Model> model = RESOURCES.Get<Model>(strCompanionTag);
+				animator->Set_Model(model);
+			}
+
+			ObjCompanion->Add_Component(animator);
+
+			if (strCompanionTag == L"Spike")
+				ObjCompanion->Add_Component(make_shared<Companion_Spike_FSM>());
+			else if (strCompanionTag == L"Dellons")
+				ObjCompanion->Add_Component(make_shared<Companion_Dellons_FSM>());
+			else if (strCompanionTag == L"Shane")
+				ObjCompanion->Add_Component(make_shared<Companion_Shane_FSM>());
+
+
+			ObjCompanion->Get_FSM()->Set_Target(pPlayer);
+		}
+		wstring CompanionName = L"Companion_" + strCompanionTag;
+		ObjCompanion->Set_Name(CompanionName);
+		ObjCompanion->Set_VelocityMap(true);
+		ObjCompanion->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.8f, 0.5f })); //obbcollider
+		ObjCompanion->Get_Collider()->Set_CollisionGroup(Player_Body);
+		ObjCompanion->Get_Collider()->Set_Activate(true);
+
+		{
+			auto controller = make_shared<CharacterController>();
+			ObjCompanion->Add_Component(controller);
+			auto& desc = controller->Get_CapsuleControllerDesc();
+			desc.radius = 0.5f;
+			desc.height = 5.f;
+			_float3 vPos = ObjCompanion->Get_Transform()->Get_State(Transform_State::POS).xyz();
+			desc.position = { vPos.x, vPos.y, vPos.z };
+			controller->Create_Controller();
+		}
+		ObjCompanion->Set_DrawShadow(true);
+		ObjCompanion->Set_ObjectGroup(OBJ_TEAM);
+		Add_GameObject(ObjCompanion);
+
+
+		//Add. Companion's Weapon
+		shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
+
+		ObjWeapon->Add_Component(make_shared<Transform>());
+		{
+			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+
+			shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
+			{
+				wstring WeaponModelTag = L"Weapon_" + strCompanionTag;
+				shared_ptr<Model> model = RESOURCES.Get<Model>(WeaponModelTag);
+				renderer->Set_Model(model);
+			}
+
+			ObjWeapon->Add_Component(renderer);
+
+			WeaponScript::WEAPONDESC desc;
+			desc.strBoneName = L"Bip001-Prop1";
+			desc.matPivot = _float4x4::CreateRotationX(-XM_PI / 2.f) * _float4x4::CreateRotationZ(XM_PI);
+			desc.pWeaponOwner = ObjCompanion;
+
+			ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
+		}
+		ObjWeapon->Set_DrawShadow(true);
+		wstring CompanionWeaponName = L"Companion_Weapon_" + strCompanionTag;
+		ObjWeapon->Set_Name(CompanionWeaponName);
+		ObjWeapon->Set_VelocityMap(true);
+		Add_GameObject(ObjWeapon);
+
 	}
 }
 

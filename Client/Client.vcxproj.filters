@@ -415,6 +415,9 @@
     <Filter Include="02.Component\01.FSM\08.Companion_FSM\02.Companion_Shane_FSM">
       <UniqueIdentifier>{cfaa2eb9-641c-42a3-a34e-e88d8b917dc3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\05.EntSoldier_FSM">
+      <UniqueIdentifier>{96e8c404-8acf-4f9a-a1f9-2aafd167a6e2}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\25.UiMessage">
       <UniqueIdentifier>{0d6d8730-3750-42a9-94b4-7c7b5678f134}</UniqueIdentifier>
     </Filter>
@@ -839,6 +842,9 @@
     <ClInclude Include="Client_FSM.h">
       <Filter>02.Component\01.FSM</Filter>
     </ClInclude>
+    <ClInclude Include="EntSoldier_FSM.h">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\05.EntSoldier_FSM</Filter>
+    </ClInclude>
     <ClInclude Include="UiMessageController.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessage\01.UiMessageController</Filter>
     </ClInclude>
@@ -1226,6 +1232,9 @@
     </ClCompile>
     <ClCompile Include="Client_FSM.cpp">
       <Filter>02.Component\01.FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="EntSoldier_FSM.cpp">
+      <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\05.EntSoldier_FSM</Filter>
     </ClCompile>
     <ClCompile Include="UiMessageController.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessage\01.UiMessageController</Filter>

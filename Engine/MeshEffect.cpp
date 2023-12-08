@@ -128,6 +128,10 @@ void MeshEffect::Render()
 
     m_pShader->Push_LightData(CUR_SCENE->Get_LightParams());
 
+    m_pShader->GetSRV("PositionTargetTex")->SetResource(RESOURCES.Get<Texture>(L"PositionTarget")->Get_SRV().Get());
+    _float4x4 matInvWorldMat = Get_Transform()->Get_WorldMatrix().Invert();
+    m_pShader->GetMatrix("InvWorldTransformMatrix")->SetMatrix((_float*)&matInvWorldMat);
+
     // For. Draw meshes 
     const auto& meshes = m_pModel->Get_Meshes();
     for (auto& mesh : meshes)
@@ -766,7 +770,7 @@ void MeshEffect::Init_RenderParams()
     vTemp4x4 = _float4x4(
         _float4((_float)m_tDesc.bIsUseTextureColor_Op1, (_float)m_tDesc.bIsUseTextureColor_Op2, (_float)m_tDesc.bIsUseTextureColor_Op3, 0.f),
         _float4((_float)m_tDesc.iFlipOption_Op1, (_float)m_tDesc.iFlipOption_Op2, (_float)m_tDesc.iFlipOption_Op3, m_tDesc.fAlphaOffset_Blend),
-        _float4(0.f, 0.f, 0.f, 0.f),
+        _float4((_float)m_tDesc.bIsSSD, 0.f, 0.f, 0.f),
         _float4(0.f, 0.f, 0.f, 0.f)
     );
     m_RenderParams.SetMatrix(2, vTemp4x4);

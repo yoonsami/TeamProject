@@ -20,6 +20,7 @@ public:
         _bool       bIsFollowingGroup_OnlyTranslate = { false };
         _bool       bIsFollowingGroup_LooKSameDir = { false };
         _bool       bIsFDistortion = { false };
+        _bool       bIsSSD = { false };
 
         // Mesh 
         string      strVfxMesh = {""};

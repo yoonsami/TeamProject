@@ -126,6 +126,7 @@ void MeshEffectData::Load(const wstring& path)
     m_tDesc.bIsFollowingGroup_LooKSameDir = (_int)mTemp._13;
     m_tDesc.fLightIntensity = mTemp._41;
     m_tDesc.bIsFDistortion = mTemp._42;
+    m_tDesc.bIsSSD = mTemp._43;
 
     m_tTransformDesc.iScaleSpeedType = (_int)mTemp._14;
     m_tTransformDesc.vCurvePoint_Scale[0] = _float2(mTemp._21, mTemp._22);

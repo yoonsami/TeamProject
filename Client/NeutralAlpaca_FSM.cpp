@@ -8,6 +8,7 @@
 #include "ObjectDissolve.h"
 #include "UiMonsterHp.h"
 #include "CharacterController.h"
+#include <MathUtils.h>
 
 HRESULT NeutralAlpaca_FSM::Init()
 {
@@ -220,9 +221,20 @@ void NeutralAlpaca_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _fl
     if (pCollider->Get_Owner() == nullptr)
         return;
 
+	
 
     if (pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
 	{
+		wstring hitEffectTag = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_HitEffectTag();
+		if (!hitEffectTag.empty())
+		{
+			_float3 random = MathUtils::Get_RandomVector(_float3(0, 0, XM_PI / 6.f), _float3(0, 0, -XM_PI / 6.f));
+
+			Quaternion q = Quaternion::CreateFromYawPitchRoll(random.x, random.y, random.z);
+
+			Add_Effect(hitEffectTag, nullptr, _float4x4::CreateFromQuaternion(q));
+		}
+         
 		if (!m_bInvincible)
 		{
 			wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();

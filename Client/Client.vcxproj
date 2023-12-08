@@ -209,6 +209,7 @@
     <ClInclude Include="DestroyBuilding_FSM.h" />
     <ClInclude Include="DragonBallMonster_FSM.h" />
     <ClInclude Include="DragonBall_FSM.h" />
+    <ClInclude Include="EntSoldier_FSM.h" />
     <ClInclude Include="Friend_FSM.h" />
     <ClInclude Include="Get_Gravity.h" />
     <ClInclude Include="Glow_WitcherSense.h" />
@@ -344,6 +345,7 @@
     <ClCompile Include="DestroyBuilding_FSM.cpp" />
     <ClCompile Include="DragonBallMonster_FSM.cpp" />
     <ClCompile Include="DragonBall_FSM.cpp" />
+    <ClCompile Include="EntSoldier_FSM.cpp" />
     <ClCompile Include="Friend_FSM.cpp" />
     <ClCompile Include="Get_Gravity.cpp" />
     <ClCompile Include="Glow_WitcherSense.cpp" />

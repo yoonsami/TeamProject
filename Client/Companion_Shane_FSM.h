@@ -61,9 +61,6 @@ public:
 private:
 	virtual void State_Tick() override; // 상태를 항상 업데이트해줌
 	virtual void State_Init() override; // 상태가 바뀔 때 한번 초기화 해줌
-	virtual void OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap) override;
-	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) override;
-	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void Set_State(_uint iIndex) override;
 
 	void talk_01();
@@ -146,7 +143,7 @@ private:
 	void Set_AttackSkill();
 
 	void Create_200100_Clone(_uint iCloneIndex);
-
+	void StunSetting();
 private:
 	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;

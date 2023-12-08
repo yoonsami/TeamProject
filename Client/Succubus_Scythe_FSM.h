@@ -45,9 +45,6 @@ public:
 private:
 	virtual void State_Tick() override; // 상태를 항상 업데이트해줌
 	virtual void State_Init() override; // 상태가 바뀔 때 한번 초기화 해줌
-	virtual void OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap) override;
-	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) override;
-	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void Set_State(_uint iIndex) override;
 
 	void b_idle();
@@ -113,6 +110,9 @@ private:
 	void Dead_Setting();
 	void Entry_Battle();
 	void Set_AttackSkill();
+	void Detect_Target();
+	void Target_DeadCheck();
+
 
 	_float3 Calculate_TargetTurnVector();
 
@@ -130,11 +130,11 @@ private:
 	_float4 m_vPatrolFirstPos = { 0.f,0.f,0.f,1.f };
 
 	_bool m_bSetPattern = false;
-	_bool m_bDetected = false;
 	_bool m_bPatrolMove = false;
 
 	COOLTIMEINFO m_tAttackCoolTime = { 4.f, 0.f };
 	COOLTIMEINFO m_tPatrolMoveCool = { 4.f,0.f };
+	COOLTIMEINFO m_tDetectCoolTime = { 1.f, 0.f };
 
 	_uint m_iPreAttack = 100;
 };

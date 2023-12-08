@@ -199,7 +199,8 @@ void GranseedScene::Final_Tick()
 
 
 		//shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<MirScene>());
-		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<MirScene>());
+		//shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<MirScene>());
+		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<FieldScene>());
 		scene->Set_StaticObjects(m_StaticObject);
 		PHYSX.Set_CharacterControllerNull();
 		SCENE.Change_Scene(scene);
@@ -321,7 +322,7 @@ shared_ptr<GameObject> GranseedScene::Load_Player()
 			controller->Create_Controller();
 		}
 		ObjPlayer->Set_DrawShadow(true);
-		ObjPlayer->Set_ObjectGroup(OBJ_PLAYER);
+		ObjPlayer->Set_ObjectGroup(OBJ_TEAM);
 
 		Add_GameObject(ObjPlayer,true);
 

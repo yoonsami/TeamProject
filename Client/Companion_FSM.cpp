@@ -64,7 +64,7 @@ void Companion_FSM::Set_DirToTarget_Companion(_uint eType)
 
 void Companion_FSM::Detect_Target()
 {
-	if (m_bIsFollow)
+	if (m_bEntryTeam)
 	{
 		m_tDetectCoolTime.fAccTime += fDT;
 

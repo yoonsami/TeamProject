@@ -353,7 +353,7 @@ void ModelAnimator::Render_Shadow()
 {
 	if (!m_pModel)
 		return;
-	system_clock::time_point start_time = system_clock::now();
+
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 
 	{
@@ -413,9 +413,6 @@ void ModelAnimator::Render_Shadow()
 			m_pShader->DrawIndexed(0, PS_ANIM_SHADOW, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
 		}
 	}
-	system_clock::time_point end_time = system_clock::now();
-
-	nanoseconds nano = end_time - start_time;
 
 	if (KEYTAP(KEY_TYPE::F6))
 		int a = 0;

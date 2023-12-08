@@ -9,7 +9,7 @@ public:
 	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) = 0;
 	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) = 0;
 	virtual void Set_State(_uint iIndex) = 0;
-	virtual void Get_Hit(const wstring& skillname, _float fDamage ,shared_ptr<GameObject> pLookTarget) = 0;
+	virtual void Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget) = 0;
 	shared_ptr<GameObject> Get_AttackCollider() { return m_pAttackCollider.lock(); }
 	void Set_AttackCollider(shared_ptr<GameObject> attackCollider) { m_pAttackCollider = attackCollider; }
 	void FreeLoopMembers();
@@ -37,16 +37,18 @@ protected:
 	_bool Target_In_AttackRange(_float* pGap = nullptr);
 	_bool LookingTarget_In_AttackRange(_float* pGap = nullptr);
 	_bool Target_In_DetectRange();
+	_bool TargetGroup_In_DetectRange(_uint eType);
 	_bool Target_In_GazeCheckRange();
 
 	_bool CounterAttackCheck(_float fCheckDegree);
 	void Set_DirToTarget();
 	void Set_DirToTargetOrInput(_uint eType);
+	void Set_DirToTarget_Monster(_uint eType);
 	void Look_DirToTarget(_float fTurnSpeed = XM_PI * 5.f);
 	shared_ptr<GameObject> Find_TargetInFrustum(_uint eType, _bool bFrustumCheck = true);
 	_bool Init_CurFrame(const _uint curFrame);
 
-	void		Add_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript = nullptr);
+	void		Add_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript = nullptr, const _float4x4& matPivot = _float4x4::Identity);
 	void		Add_And_Set_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript = nullptr);
 	void		Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset, _bool usePosAs, shared_ptr<MonoBehaviour> pScript = nullptr);
 	void		KillAllEffect();
@@ -81,6 +83,8 @@ public:
 	_bool		Get_Invincible() { return m_bInvincible; }
 	void		Set_Invincible(_bool bFlag) { m_bInvincible = bFlag; }
 
+	_bool		Get_EntryTeam() { return m_bEntryTeam; }
+	
  protected:
 	weak_ptr<GameObject> m_pTarget;
 	weak_ptr<GameObject> m_pAttackCollider;
@@ -102,6 +106,8 @@ public:
 	_bool m_bSuperArmor = false;
 	_bool m_bCanCombo = false;
 	_bool m_bIsDead = false;
+	_bool m_bDetected = false;
+	_bool m_bEntryTeam = false;
 
 	_float3 m_vHitDir = _float3{ 0.f };
 	_float3 m_vDirToTarget = _float3(0.f);

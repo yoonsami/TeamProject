@@ -39,6 +39,8 @@ HRESULT Dellons_FSM::Init()
         m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
         m_fDetectRange = 5.f;
 
+        m_bEntryTeam = true;
+
         m_bInitialize = true;
     }
 	m_fNormalAttack_AnimationSpeed = 1.2f;
@@ -277,44 +279,6 @@ void Dellons_FSM::State_Init()
         }
         m_ePreState = m_eCurState;
     }
-}
-
-void Dellons_FSM::OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-}
-
-void Dellons_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-    if (pCollider->Get_Owner() == nullptr)
-        return;
-
-    if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
-        return;
-
-
-    if (!m_bInvincible)
-    {
-        wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
-        _float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
-        
-        shared_ptr<GameObject> targetToLook = nullptr;
-		// skillName에 _Skill 포함이면
-        if (strSkillName.find(L"_Skill") != wstring::npos)
-        {
-			targetToLook = pCollider->Get_Owner(); // Collider owner를 넘겨준다
-        }
-		else // 아니면
-			targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner(); // Collider를 만든 객체를 넘겨준다
-        
-        if (targetToLook == nullptr)
-            return;
-
-		Get_Hit(strSkillName, fAttackDamage, targetToLook);
-    }
-}
-
-void Dellons_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
 }
 
 void Dellons_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
@@ -920,7 +884,11 @@ void Dellons_FSM::knockdown_end_Init()
 void Dellons_FSM::skill_1100()
 {
     if (m_iCurFrame == 9)
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+	{
+		Set_ColliderOption(DARK, L"Hit_Slash_Dark");
+		AttackCollider_On(NORMAL_ATTACK, 10.f);
+
+    }
     else if (m_iCurFrame == 19)
         AttackCollider_Off();
 
@@ -966,7 +934,10 @@ void Dellons_FSM::skill_1100_Init()
 void Dellons_FSM::skill_1200()
 {
     if (m_iCurFrame == 8)
+    {
+        Set_ColliderOption(DARK, L"Hit_Slash_Dark");
         AttackCollider_On(NORMAL_ATTACK,10.f);
+    }
     else if (m_iCurFrame == 18)
         AttackCollider_Off();
 
@@ -1017,7 +988,10 @@ void Dellons_FSM::skill_1200_Init()
 void Dellons_FSM::skill_1300()
 {
     if (m_iCurFrame == 8)
+    {
+        Set_ColliderOption(DARK, L"Hit_Slash_Dark");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 33)
         AttackCollider_Off();
 
@@ -1068,11 +1042,17 @@ void Dellons_FSM::skill_1300_Init()
 void Dellons_FSM::skill_1400()
 {
     if (m_iCurFrame == 8)
+    {
+        Set_ColliderOption(DARK, L"Hit_Slash_Dark");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 14)
         AttackCollider_Off();
     else if (m_iCurFrame == 16)
+    {
+        Set_ColliderOption(DARK, L"Hit_Slash_Dark");
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 24)
         AttackCollider_Off();
 
@@ -1189,7 +1169,7 @@ void Dellons_FSM::skill_100100()
 			Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
 			_float3::Up;
 
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 5.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 5.f, L"Hit_Slash_Dark");
     }
     
 
@@ -1241,7 +1221,7 @@ void Dellons_FSM::skill_100200()
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
 			_float3::Up;
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.5f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.5f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Dark");
     }
 
     Look_DirToTarget();
@@ -1276,7 +1256,10 @@ void Dellons_FSM::skill_100200_Init()
 void Dellons_FSM::skill_200100()
 {
     if (m_iCurFrame == 7)
+    {
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+        Set_ColliderOption(DARK, L"Hit_Slash_Dark");
+    }
     else if (m_iCurFrame == 12)
         AttackCollider_Off();
 
@@ -1326,7 +1309,7 @@ void Dellons_FSM::skill_200200()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f + _float3::Up;
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_SKILL, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_SKILL, 10.f, L"Hit_Slash_Dark");
     }
 
     Look_DirToTarget();
@@ -1455,7 +1438,7 @@ void Dellons_FSM::skill_400100()
 		desc.fLimitDistance = 3.5f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f, L"Hit_Slash_Dark");
 
     }
     else if (Init_CurFrame(99))
@@ -1467,7 +1450,7 @@ void Dellons_FSM::skill_400100()
         desc.fLimitDistance = 5.f;
     
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * -0.5f + _float3::Up;
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.f, desc, KNOCKDOWN_SKILL, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.f, desc, KNOCKDOWN_SKILL, 10.f, L"Hit_Slash_Dark");
     }
 
 

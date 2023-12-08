@@ -40,6 +40,8 @@ HRESULT SpearAce_FSM::Init()
         m_pCamera = CUR_SCENE->Get_MainCamera();
         m_fDetectRange = 5.f;
     
+        m_bEntryTeam = true;
+
         m_bInitialize = true;
     }
 	m_fNormalAttack_AnimationSpeed = 1.5f;
@@ -264,42 +266,6 @@ void SpearAce_FSM::State_Init()
         }
         m_ePreState = m_eCurState;
     }
-}
-
-void SpearAce_FSM::OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-}
-
-void SpearAce_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-    if (pCollider->Get_Owner() == nullptr)
-        return;
-
-	if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
-		return;
-
-
-    if (!m_bInvincible)
-    {
-        wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
-        _float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
-		
-        shared_ptr<GameObject> targetToLook = nullptr;
-		// skillName에 _Skill 포함이면
-		if (strSkillName.find(L"_Skill") != wstring::npos)
-			targetToLook = pCollider->Get_Owner(); // Collider owner를 넘겨준다
-		else // 아니면
-			targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner(); // Collider를 만든 객체를 넘겨준다
-
-        if (targetToLook == nullptr)
-            return;
-
-		Get_Hit(strSkillName, fAttackDamage, targetToLook);
-    }
-}
-
-void SpearAce_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
 }
 
 void SpearAce_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
@@ -902,6 +868,7 @@ void SpearAce_FSM::skill_1100()
 
     if (m_iCurFrame == 9)
     {
+        Set_ColliderOption(WATER, L"Hit_Slash_Blue");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
 
     }
@@ -947,7 +914,10 @@ void SpearAce_FSM::skill_1200()
     Look_DirToTarget();
 
     if (m_iCurFrame == 1)
+    {
+        Set_ColliderOption(WATER, L"Hit_Slash_Blue");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 33)
         AttackCollider_Off();
     
@@ -996,7 +966,10 @@ void SpearAce_FSM::skill_1300()
     Look_DirToTarget();
 
     if (m_iCurFrame == 4)
+    {
+        Set_ColliderOption(WATER, L"Hit_Slash_Blue");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 28)
         AttackCollider_Off();
 
@@ -1111,11 +1084,14 @@ void SpearAce_FSM::skill_100100()
         desc.fLimitDistance = 6.f;
         
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f, L"Hit_Slash_Blue");
     }
 
     if (m_iCurFrame == 28)
+    {
+        Set_ColliderOption(WATER, L"Hit_Slash_Blue");
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 58)
         AttackCollider_Off();
 
@@ -1153,11 +1129,17 @@ void SpearAce_FSM::skill_200100()
     if (m_iCurFrame == 21)
         AttackCollider_Off();
     else if (m_iCurFrame == 25)
+    {
+        Set_ColliderOption(WATER, L"Hit_Slash_Blue");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 35)
         AttackCollider_Off();
     else if (m_iCurFrame == 38)
+    {
+        Set_ColliderOption(WATER, L"Hit_Slash_Blue");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 61)
         AttackCollider_Off();
 
@@ -1207,7 +1189,7 @@ void SpearAce_FSM::skill_200200()
 		desc.fLimitDistance = 12.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_SKILL, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_SKILL, 10.f, L"Hit_Slash_Blue");
     }
     
     if (Is_AnimFinished())
@@ -1318,7 +1300,7 @@ void SpearAce_FSM::skill_300100()
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 9.f;
 
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f, L"Hit_Slash_Blue");
 
     }
     else if (Init_CurFrame(84))
@@ -1337,7 +1319,7 @@ void SpearAce_FSM::skill_300100()
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 9.f;
 
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f, L"Hit_Slash_Blue");
 
     }
     else if (Init_CurFrame(89))
@@ -1356,7 +1338,7 @@ void SpearAce_FSM::skill_300100()
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 9.f;
 
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f, L"Hit_Slash_Blue");
 
     }
     else if (Init_CurFrame(94))
@@ -1374,7 +1356,7 @@ void SpearAce_FSM::skill_300100()
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 9.f;
 
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f, L"Hit_Slash_Blue");
 
     }
     else if (Init_CurFrame(99))
@@ -1393,7 +1375,7 @@ void SpearAce_FSM::skill_300100()
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 9.f;
 
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f, L"Hit_Slash_Blue");
 
     }
     else if (Init_CurFrame(110))
@@ -1406,7 +1388,7 @@ void SpearAce_FSM::skill_300100()
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 0.f;
 
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.5f, desc, AIRBORNE_ATTACK, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.5f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Blue");
 
     }
 
@@ -1438,7 +1420,7 @@ void SpearAce_FSM::skill_300100_Init()
                         Get_Transform()->Get_State(Transform_State::LOOK) +
                         _float3::Up;
 
-    Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.5f, desc, NORMAL_SKILL, 10.f);
+    Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.5f, desc, NORMAL_SKILL, 10.f, L"Hit_Slash_Blue");
 
     AttackCollider_Off();
     Create_300100Clone();
@@ -1461,7 +1443,7 @@ void SpearAce_FSM::skill_502100()
 		desc.fLimitDistance = 3.5f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f, L"Hit_Slash_Blue");
 
     }
 
@@ -1474,6 +1456,7 @@ void SpearAce_FSM::skill_502100()
     {
         m_bInvincible = false;
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+        Set_ColliderOption(WATER, L"Hit_Slash_Blue");
     }
     else if (m_iCurFrame == 62)
         AttackCollider_Off();
@@ -1509,7 +1492,10 @@ void SpearAce_FSM::skill_500100()
     Look_DirToTarget();
 
     if (m_iCurFrame == 15)
+    {
+        Set_ColliderOption(WATER, L"Hit_Slash_Blue");
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 33)
         AttackCollider_Off();
 

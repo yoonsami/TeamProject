@@ -46,6 +46,7 @@
 #include "Undead_Priest_FSM.h"
 #include "Alpaca_FSM.h"
 #include "Wolf_FSM.h"
+#include "EntSoldier_FSM.h"
 
 #include "Companion_Spike_FSM.h"
 #include "Companion_Dellons_FSM.h"
@@ -192,14 +193,11 @@ HRESULT KrisScene::Load_Scene()
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Wolf\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Succubus_Scythe\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Undead_Priest\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\EntSoldier\\", false);
 
 	auto player = Load_Player();
 	Load_Camera(player);
 	Load_MapFile(L"KrisMap", player);
-
-	Load_Companion(L"Spike", player);
-	Load_Companion(L"Dellons", player);
-	Load_Companion(L"Shane", player);
 
 	Load_Monster(5, L"Alpaca_White", player);
 	Load_Monster(5, L"Alpaca_Brown", player);
@@ -207,15 +205,9 @@ HRESULT KrisScene::Load_Scene()
 	Load_Monster(5, L"Bad_Alpaca_White", player);
 	Load_Monster(5, L"Bad_Alpaca_Brown", player);
 	Load_Monster(5, L"Bad_Alpaca_Black", player);
-	Load_Monster(2, L"Wolf", player);
-	Load_Monster(2, L"Silversword_Soldier", player);
-	Load_Monster(2, L"Succubus_Scythe", player);
-	Load_Monster(2, L"Undead_Priest", player);
 
-	////Load_Boss_Spike(player);				
 	Load_Boss_Dellons(player);				
 	
-
 	Load_Ui(player);
 	Load_EventScript();
 	return S_OK;
@@ -278,7 +270,7 @@ shared_ptr<GameObject> KrisScene::Load_Player()
 			controller->Create_Controller();
 		}
 		ObjPlayer->Set_DrawShadow(true);
-		ObjPlayer->Set_ObjectGroup(OBJ_PLAYER);
+		ObjPlayer->Set_ObjectGroup(OBJ_TEAM);
 
 		Add_GameObject(ObjPlayer,true);
 
@@ -420,6 +412,8 @@ void KrisScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_pt
 					ObjMonster->Add_Component(make_shared<NeutralAlpaca_FSM>());
 				else if (strMonsterTag == L"Wolf")
 					ObjMonster->Add_Component(make_shared<Wolf_FSM>());
+				else if (strMonsterTag == L"EntSoldier")
+					ObjMonster->Add_Component(make_shared<EntSoldier_FSM>());
 
 				ObjMonster->Get_FSM()->Set_Target(pPlayer);
 			}
@@ -448,56 +442,6 @@ void KrisScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_pt
 			Add_GameObject(ObjMonster);
 		}
 	}
-}
-
-void KrisScene::Load_Boss_Mir(shared_ptr<GameObject> pPlayer)
-{
-	// Add. Monster
-	shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
-
-	ObjMonster->Add_Component(make_shared<Transform>());
-
-	ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
-	{
-		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-
-		shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
-		{
-			shared_ptr<Model> model = RESOURCES.Get<Model>(L"Boss_Mir");
-			animator->Set_Model(model);
-		}
-
-		ObjMonster->Add_Component(animator);
-		ObjMonster->Add_Component(make_shared<Boss_Mir_FSM>());
-		ObjMonster->Get_FSM()->Set_Target(pPlayer);
-	}
-	ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 2.f, 4.f, 6.f })); //obbcollider
-	ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
-	ObjMonster->Get_Collider()->Set_Activate(true);
-
-	ObjMonster->Add_Component(make_shared<CounterMotionTrailScript>());
-
-	wstring strMonsterName = (L"Boss_Mir");
-	ObjMonster->Set_Name(strMonsterName);
-	{
-		auto controller = make_shared<CharacterController>();
-		ObjMonster->Add_Component(controller);
-
-		auto& desc = controller->Get_CapsuleControllerDesc();
-		desc.radius = 4.5f;
-		desc.height = 5.f;
-		desc.climbingMode = PxCapsuleClimbingMode::eCONSTRAINED;
-
-		_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz() +
-			ObjMonster->Get_Transform()->Get_State(Transform_State::LOOK);
-		desc.position = { vPos.x, vPos.y, vPos.z };
-		controller->Create_Controller();
-		controller->Get_Actor()->setStepOffset(0.1f);
-
-	}
-	ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
-	ObjMonster->Set_VelocityMap(true);
-	Add_GameObject(ObjMonster);
 }
 
 void KrisScene::Load_Boss_Dellons(shared_ptr<GameObject> pPlayer)
@@ -567,164 +511,6 @@ void KrisScene::Load_Boss_Dellons(shared_ptr<GameObject> pPlayer)
 		}
 		ObjWeapon->Set_DrawShadow(true);
 		ObjWeapon->Set_Name(L"Weapon_Boss_Dellons");
-		ObjWeapon->Set_VelocityMap(true);
-		Add_GameObject(ObjWeapon);
-
-	}
-}
-
-void KrisScene::Load_Boss_Spike(shared_ptr<GameObject> pPlayer)
-{
-	{
-		// Add. Boss_Dellons
-		shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
-
-		ObjMonster->Add_Component(make_shared<Transform>());
-
-		ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 55.f, 1.f));
-		{
-			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-
-			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
-			{
-				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Boss_Spike");
-				animator->Set_Model(model);
-			}
-
-			ObjMonster->Add_Component(animator);
-			ObjMonster->Add_Component(make_shared<Boss_Spike_FSM>());
-			ObjMonster->Get_FSM()->Set_Target(pPlayer);
-		}
-		ObjMonster->Set_Name(L"Boss_Spike");
-		ObjMonster->Set_VelocityMap(true);
-		ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.8f, 0.5f })); //obbcollider
-		ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
-		ObjMonster->Get_Collider()->Set_Activate(true);
-
-		ObjMonster->Add_Component(make_shared<CounterMotionTrailScript>());
-
-		{
-			auto controller = make_shared<CharacterController>();
-			ObjMonster->Add_Component(controller);
-			auto& desc = controller->Get_CapsuleControllerDesc();
-			desc.radius = 0.5f;
-			desc.height = 5.f;
-			_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz();
-			desc.position = { vPos.x, vPos.y, vPos.z };
-			controller->Create_Controller();
-		}
-		ObjMonster->Set_DrawShadow(true);
-		ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
-		Add_GameObject(ObjMonster);
-
-
-		//Add. Player's Weapon
-		shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
-
-		ObjWeapon->Add_Component(make_shared<Transform>());
-		{
-			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-
-			shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
-			{
-				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Weapon_Spike");
-				renderer->Set_Model(model);
-			}
-
-			ObjWeapon->Add_Component(renderer);
-
-			WeaponScript::WEAPONDESC desc;
-			desc.strBoneName = L"Bip001-Prop1";
-			desc.matPivot = _float4x4::CreateRotationX(-XM_PI / 2.f) * _float4x4::CreateRotationZ(XM_PI);
-			desc.pWeaponOwner = ObjMonster;
-
-			ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
-		}
-		ObjWeapon->Set_DrawShadow(true);
-		ObjWeapon->Set_Name(L"Weapon_Boss_Spike");
-		ObjWeapon->Set_VelocityMap(true);
-		Add_GameObject(ObjWeapon);
-	}
-}
-
-void KrisScene::Load_Companion(const wstring& strCompanionTag, shared_ptr<GameObject> pPlayer)
-{
-	{
-		// Add. Companion
-		shared_ptr<GameObject> ObjCompanion = make_shared<GameObject>();
-
-		ObjCompanion->Add_Component(make_shared<Transform>());
-
-		ObjCompanion->Get_Transform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 4.f, 1.f));
-		{
-			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-
-			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
-			{
-				shared_ptr<Model> model = RESOURCES.Get<Model>(strCompanionTag);
-				animator->Set_Model(model);
-			}
-
-			ObjCompanion->Add_Component(animator);
-			
-			if (strCompanionTag == L"Spike")
-				ObjCompanion->Add_Component(make_shared<Companion_Spike_FSM>());
-			else if (strCompanionTag == L"Dellons")
-				ObjCompanion->Add_Component(make_shared<Companion_Dellons_FSM>());
-			else if (strCompanionTag == L"Shane")
-				ObjCompanion->Add_Component(make_shared<Companion_Shane_FSM>());
-
-
-			ObjCompanion->Get_FSM()->Set_Target(pPlayer);
-		}
-		wstring CompanionName = L"Companion_" + strCompanionTag;
-		ObjCompanion->Set_Name(CompanionName);
-		ObjCompanion->Set_VelocityMap(true);
-		ObjCompanion->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.8f, 0.5f })); //obbcollider
-		ObjCompanion->Get_Collider()->Set_CollisionGroup(Companion_Body);
-		ObjCompanion->Get_Collider()->Set_Activate(true);
-
-		{
-			auto controller = make_shared<CharacterController>();
-			ObjCompanion->Add_Component(controller);
-			auto& desc = controller->Get_CapsuleControllerDesc();
-			desc.radius = 0.5f;
-			desc.height = 5.f;
-			_float3 vPos = ObjCompanion->Get_Transform()->Get_State(Transform_State::POS).xyz();
-			desc.position = { vPos.x, vPos.y, vPos.z };
-			controller->Create_Controller();
-		}
-		ObjCompanion->Set_DrawShadow(true);
-		ObjCompanion->Set_ObjectGroup(OBJ_COMPANION);
-		Add_GameObject(ObjCompanion);
-
-
-		//Add. Companion's Weapon
-		shared_ptr<GameObject> ObjWeapon = make_shared<GameObject>();
-
-		ObjWeapon->Add_Component(make_shared<Transform>());
-		{
-			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-
-			shared_ptr<ModelRenderer> renderer = make_shared<ModelRenderer>(shader);
-			{
-				wstring WeaponModelTag = L"Weapon_" + strCompanionTag;
-				shared_ptr<Model> model = RESOURCES.Get<Model>(WeaponModelTag);
-				renderer->Set_Model(model);
-			}
-
-			ObjWeapon->Add_Component(renderer);
-
-			WeaponScript::WEAPONDESC desc;
-			desc.strBoneName = L"Bip001-Prop1";
-			desc.matPivot = _float4x4::CreateRotationX(-XM_PI / 2.f) * _float4x4::CreateRotationZ(XM_PI);
-			desc.pWeaponOwner = ObjCompanion;
-
-			ObjWeapon->Add_Component(make_shared<WeaponScript>(desc));
-		}
-		ObjWeapon->Set_DrawShadow(true);
-		wstring CompanionWeaponName = L"Companion_Weapon_" + strCompanionTag;
-		ObjWeapon->Set_Name(CompanionWeaponName);
 		ObjWeapon->Set_VelocityMap(true);
 		Add_GameObject(ObjWeapon);
 

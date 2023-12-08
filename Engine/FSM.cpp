@@ -205,6 +205,49 @@ _bool FSM::Target_In_DetectRange()
 	return bFlag;
 }
 
+_bool FSM::TargetGroup_In_DetectRange(_uint eType)
+{
+	_bool bFlag = false;
+
+	auto& gameObjects = CUR_SCENE->Get_Objects();
+	shared_ptr<GameObject> target;
+	_float fMinDistSQ = FLT_MAX;
+	for (auto& gameObject : gameObjects)
+	{
+		if (gameObject->Get_ObjectGroup() != eType)
+			continue;
+
+		if (gameObject->Get_CurHp() <= 0.f)
+			continue;
+
+		if (gameObject->Get_FSM())
+		{
+			if (gameObject->Get_FSM()->Get_EntryTeam() == false)
+				continue;
+		}
+
+
+
+		_float3 vOwnerPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
+		_float3 vObjectPos = gameObject->Get_Transform()->Get_State(Transform_State::POS).xyz();
+		_float distSQ = (vOwnerPos - vObjectPos).LengthSquared();
+		
+		if (distSQ < m_fDetectRange * m_fDetectRange)
+		{
+			bFlag = true;
+		}
+
+		if (fMinDistSQ > distSQ)
+		{
+			//Target Setting
+			fMinDistSQ = distSQ;
+			m_pTarget = gameObject;
+		}
+	}
+
+	return bFlag;
+}
+
 _bool FSM::Target_In_GazeCheckRange()
 {
 	_bool bFlag = false;
@@ -284,6 +327,19 @@ void FSM::Set_DirToTargetOrInput(_uint eType)
 		m_vDirToTarget = Get_InputDirVector();
 }
 
+void FSM::Set_DirToTarget_Monster(_uint eType)
+{
+	m_pTarget.reset();
+
+	m_pTarget = Find_TargetInFrustum(eType, false);
+
+	if (!m_pTarget.expired())
+	{
+		m_vDirToTarget = (m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+		m_vDirToTarget.y = 0.f;
+	}
+}
+
 
 void FSM::Look_DirToTarget(_float fTurnSpeed)
 {
@@ -339,7 +395,7 @@ _bool FSM::Init_CurFrame(const _uint curFrame)
 	return false;
 }
 
-void FSM::Add_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript)
+void FSM::Add_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript, const _float4x4& matPivot)
 {
 	shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();
 
@@ -347,7 +403,7 @@ void FSM::Add_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScri
 	pGroupEffectObj->GetOrAddTransform();
 	//pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS));
 	//pGroupEffectObj->Get_Transform()->Set_Quaternion(Get_Transform()->Get_Rotation());
-	pGroupEffectObj->Get_Transform()->Set_WorldMat(m_pOwner.lock()->Get_Transform()->Get_WorldMatrix());
+	pGroupEffectObj->Get_Transform()->Set_WorldMat(matPivot * m_pOwner.lock()->Get_Transform()->Get_WorldMatrix());
 
 	// For. GroupEffectData 
 	wstring wstrFileName = strSkilltag + L".dat";

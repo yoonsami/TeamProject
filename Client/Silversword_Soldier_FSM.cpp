@@ -44,7 +44,7 @@ HRESULT Silversword_Soldier_FSM::Init()
 
         m_fNormalAttack_AnimationSpeed = 1.3f;
         m_fSkillAttack_AnimationSpeed = 1.3f;
-        m_fDetectRange = 4.f;
+        m_fDetectRange = 15.f;
 
 
         m_bInitialize = true;
@@ -68,6 +68,10 @@ void Silversword_Soldier_FSM::Tick()
 
 void Silversword_Soldier_FSM::State_Tick()
 {
+    Detect_Target();
+ 
+    Target_DeadCheck();
+
     State_Init();
 
     m_iCurFrame = Get_CurFrame();
@@ -231,42 +235,6 @@ void Silversword_Soldier_FSM::State_Init()
     }
 }
 
-void Silversword_Soldier_FSM::OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-}
-
-void Silversword_Soldier_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-    if (pCollider->Get_Owner() == nullptr)
-        return;
-
-    if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
-        return;
-
-
-    if (!m_bInvincible)
-    {
-        wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
-        _float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
-        
-        shared_ptr<GameObject> targetToLook = nullptr;
-
-        if (strSkillName.find(L"_Skill") != wstring::npos)
-            targetToLook = pCollider->Get_Owner(); 
-        else 
-            targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner();
-
-        if (targetToLook == nullptr)
-            return;
-
-        Get_Hit(strSkillName, fAttackDamage, targetToLook);
-    }
-}
-
-void Silversword_Soldier_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-}
-
 void Silversword_Soldier_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
     auto pScript = m_pOwner.lock()->Get_Script<UiMonsterHp>();
@@ -282,6 +250,9 @@ void Silversword_Soldier_FSM::Get_Hit(const wstring& skillname, _float fDamage, 
 
     CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage);
 
+    //Target Change
+    if (pLookTarget != nullptr)
+        m_pTarget = pLookTarget;
 
     m_bDetected = true;
 	m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.05f);
@@ -360,9 +331,6 @@ void Silversword_Soldier_FSM::b_idle()
         {
             m_eCurState = STATE::n_run;
         }
-
-        if (Target_In_DetectRange())
-            m_bDetected = true;
     }
     else
     {
@@ -435,16 +403,9 @@ void Silversword_Soldier_FSM::n_run()
         m_bPatrolMove = false;
         m_eCurState = STATE::b_idle;
     }
-
     
-    if (Target_In_DetectRange())
-        m_bDetected = true;
-    
-
     if (m_bDetected)
-    {
         m_eCurState = STATE::b_run;
-    }
 }
 
 void Silversword_Soldier_FSM::n_run_Init()
@@ -459,9 +420,6 @@ void Silversword_Soldier_FSM::n_run_Init()
     m_vTurnVector.Normalize();
 
     m_bSuperArmor = false;
-
-    if (CUR_SCENE->Get_Name() == L"KrisScene")
-        m_bInvincible = true;
 }
 
 void Silversword_Soldier_FSM::die_01()
@@ -526,7 +484,6 @@ void Silversword_Soldier_FSM::gaze_b()
         else
             m_eCurState = STATE::b_run;
     }
-
 }
 
 void Silversword_Soldier_FSM::gaze_b_Init()
@@ -1081,4 +1038,45 @@ void Silversword_Soldier_FSM::Execute_AttackSkill()
         m_eCurState = STATE::skill_3100;
         m_iPreAttack = 2;
     }
+}
+
+void Silversword_Soldier_FSM::Detect_Target()
+{
+    if (!m_bDetected)
+    {
+        m_tDetectCoolTime.fAccTime += fDT;
+
+        if (m_tDetectCoolTime.fAccTime >= m_tDetectCoolTime.fCoolTime)
+        {
+            m_tDetectCoolTime.fAccTime = 0.f;
+
+            if (TargetGroup_In_DetectRange(OBJ_TEAM))
+                m_bDetected = true;
+        }
+    }
+}
+
+void Silversword_Soldier_FSM::Target_DeadCheck()
+{
+    if (m_bDetected)
+    {
+        if (!m_pTarget.expired())
+        {
+            if (m_pTarget.lock()->Get_CurHp() <= 0.f)
+            {
+                m_bDetected = false;
+                m_bPatrolMove = false;
+                m_eCurState = STATE::b_idle;
+                m_fPatrolDistanceCnt = 0.f;
+            }
+        }
+        else
+        {
+            m_bDetected = false;
+            m_bPatrolMove = false;
+            m_eCurState = STATE::b_idle;
+            m_fPatrolDistanceCnt = 0.f;
+        }
+    }
+
 }

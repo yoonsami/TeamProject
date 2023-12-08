@@ -403,45 +403,6 @@ void Boss_Mir_FSM::State_Init()
     }
 }
 
-void Boss_Mir_FSM::OnCollision(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-}
-
-void Boss_Mir_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-    if (pCollider->Get_Owner() == nullptr)
-        return;
-
-    if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
-        return;
-
-    if (pCollider->Get_CollisionGroup() == Player_Attack || pCollider->Get_CollisionGroup() == Player_Skill)
-    {   
-
-        if (!m_bInvincible)
-        {
-            wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
-            _float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
-
-            shared_ptr<GameObject> targetToLook = nullptr;
-	    	// skillName
-	    	if (strSkillName.find(L"_Skill") != wstring::npos)
-	    		targetToLook = pCollider->Get_Owner(); // Collider owner
-	    	else // 
-	    		targetToLook = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner(); // Collider
-
-            if (targetToLook == nullptr)
-                return;
-
-	    	Get_Hit(strSkillName, fAttackDamage, targetToLook);
-        }
-    }
-}
-
-void Boss_Mir_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap)
-{
-}
-
 void Boss_Mir_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
     //Calculate Damage 
@@ -2599,10 +2560,10 @@ void Boss_Mir_FSM::Set_AttackPattern()
     //m_eCurState = STATE::SQ_SBRin_Roar;
 
     // TODO:  의진
-    /*_uint iRan = rand() % 4;
+    _uint iRan = rand() % 4;
     if(iRan == 0)
-        m_eCurState = STATE::skill_2100;*/
-    
+        m_eCurState = STATE::skill_200000;
+    /*
     _uint iRan = rand() % 10;
     
     while (true)
@@ -2726,7 +2687,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
             m_iCurMeteorCnt = 0;
         }
     }
-    
+    */
 }
 
 void Boss_Mir_FSM::Setting_DragonBall()

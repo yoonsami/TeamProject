@@ -3,6 +3,7 @@
 #include "SphereCollider.h"
 #include "AttackColliderInfoScript.h"
 #include "UiDamageCreate.h"
+#include "MathUtils.h"
 
 void Boss_Giant_Mir_Parts_FSM::Tick()
 {
@@ -16,6 +17,15 @@ void Boss_Giant_Mir_Parts_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollid
 
 	if (!pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>())
 		return;
+	wstring hitEffectTag = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_HitEffectTag();
+	if (!hitEffectTag.empty())
+	{
+		_float3 random = MathUtils::Get_RandomVector(_float3(0, 0, XM_PI / 6.f), _float3(0, 0, -XM_PI / 6.f));
+
+		Quaternion q = Quaternion::CreateFromYawPitchRoll(random.x, random.y, random.z);
+
+		Add_Effect(hitEffectTag, nullptr, _float4x4::CreateFromQuaternion(q));
+	}
 
 	if (pCollider->Get_CollisionGroup() == Player_Attack || pCollider->Get_CollisionGroup() == Player_Skill)
 	{

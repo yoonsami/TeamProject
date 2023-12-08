@@ -121,7 +121,6 @@ private:
 	COOLTIMEINFO m_tAttackCoolTime = { 1.f, 0.f };
 	COOLTIMEINFO m_tPatrolMoveCool = { 4.f, 0.f };
 
-	_bool m_bDetected = false;
 	_bool m_bPatrolMove = false;
 
 	_uint m_iPreAttack = 100;
