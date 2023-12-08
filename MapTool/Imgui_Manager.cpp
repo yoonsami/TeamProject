@@ -810,7 +810,11 @@ void ImGui_Manager::Frame_Terrain()
     {
         Create_Terrain();
     }
-    //ImGui::ListBox("Tile Texture List", &m_iCurrentTile, VectorOfStringGetter, &m_TileNames, int(m_TileNames.size()));
+    // 선택한 텍스쳐로 터레인의 노말 바꾸기 - 임시코드
+    if(ImGui::ListBox("Tile Texture List", &m_iCurrentTile, VectorOfStringGetter, &m_TileNames, int(m_TileNames.size())))
+    {
+        CUR_SCENE->Get_GameObject(L"Terrain")->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(Utils::ToWString(m_TileNames[m_iCurrentTile])), TextureMapType::DIFFUSE);
+    }
 
     ImGui::DragFloat("BrushRadius", &m_fTerrainBrushRadius, 0.1f);
     ImGui::DragFloat("TilePressForce", &m_fTilePressForce, 0.001f);
@@ -1410,7 +1414,7 @@ void ImGui_Manager::Create_Terrain(shared_ptr<Terrain> _pTerrainMesh, _int _iTer
 
     // 디퓨즈텍스쳐
     shared_ptr<Material> material = make_shared<Material>();
-    auto Grasstexture = RESOURCES.Get<Texture>(L"Wood_T_Tile_D_01_KEK");
+    auto Grasstexture = RESOURCES.Get<Texture>(L"TileGrass4");
     if (Grasstexture == nullptr)
     {
         MSG_BOX("NoDiffuseTexture");
@@ -1419,7 +1423,7 @@ void ImGui_Manager::Create_Terrain(shared_ptr<Terrain> _pTerrainMesh, _int _iTer
     material->Set_TextureMap(Grasstexture, TextureMapType::DIFFUSE);
 
     // 노말텍스쳐
-    auto Normaltexture = RESOURCES.Get<Texture>(L"Wood_T_Tile_N_01_KEK");
+    auto Normaltexture = RESOURCES.Get<Texture>(L"ForestGrass_01_N_ASB");
     if (Normaltexture == nullptr)
     {
         MSG_BOX("NoNormalTexture");

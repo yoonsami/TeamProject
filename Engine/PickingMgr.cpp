@@ -90,6 +90,7 @@ shared_ptr<GameObject> PickingMgr::Pick_Mesh(_float2 screenPos, shared_ptr<Camer
 	_uint tmp = 0;
 	for (auto& gameObject : gameObjects)
 	{
+
 		_float distance = 0.f;
 
 		if (camera->IsCulled(gameObject->Get_LayerIndex()))
@@ -178,8 +179,17 @@ shared_ptr<GameObject> PickingMgr::Pick_Mesh(_float2 screenPos, shared_ptr<Camer
 	_float minDist = FLT_MAX;
 	shared_ptr<GameObject> picked = nullptr;
 	_uint tmp = 0;
+
+	// 피킹렉방지 - 특정 오브젝트 이후로만 검색하기
+	_float minObjectIndex = gameObjects.size() * 0.9f;
+	_int CurrentObjIndex = 0;
 	for (auto& gameObject : gameObjects)
 	{
+		// 피킹렉방지 - 특정 오브젝트 이후로만 검색하기
+		++CurrentObjIndex;
+		if (CurrentObjIndex <= minObjectIndex)
+			continue;
+
 		_float distance = 0.f;
 
 		if (camera->IsCulled(gameObject->Get_LayerIndex()))
@@ -288,7 +298,7 @@ shared_ptr<GameObject> PickingMgr::Pick_Mesh(_float2 screenPos, shared_ptr<Camer
 			auto& indices = mesh->Get_Geometry()->Get_Indices();
 
 			// 필요한 사이즈만 사용
-			for (_uint i = _uint(indices.size() * 0.1f)/*0*/; i < _uint(indices.size() * 0.5f);)
+			for (_uint i = _uint(indices.size() * 0.3f)/*0*/; i < _uint(indices.size() * 0.7f);)
 			{
 				_float fDistance = 0.f;
 				_float3 vVtxPos[3] = {
