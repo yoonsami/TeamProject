@@ -34,7 +34,7 @@ HRESULT Companion_Spike_FSM::Init()
         shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
         attackCollider->GetOrAddTransform();
         attackCollider->Add_Component(make_shared<SphereCollider>(1.5f));
-        attackCollider->Get_Collider()->Set_CollisionGroup(Companion_Attack);
+        attackCollider->Get_Collider()->Set_CollisionGroup(Player_Attack);
 
         m_pAttackCollider = attackCollider;
 

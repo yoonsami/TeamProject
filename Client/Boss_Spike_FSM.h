@@ -195,7 +195,6 @@ private:
 
 
 	_bool m_bChaseSkill = false;
-	_bool m_bDetected = false;
 	_bool m_bCounter = false;
 	_bool m_bSetPattern = false;
 	_bool m_bGroggyPattern = false;

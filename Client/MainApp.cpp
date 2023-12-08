@@ -46,15 +46,9 @@ HRESULT MainApp::Init()
 	COLLISION.Check_Group(_int(CollisionGroup::Player_Attack), _int(CollisionGroup::Monster_Body));
 	COLLISION.Check_Group(_int(CollisionGroup::Player_Skill), _int(CollisionGroup::Monster_Body));
 
-	COLLISION.Check_Group(_int(CollisionGroup::Companion_Attack), _int(CollisionGroup::Monster_Body));
-	COLLISION.Check_Group(_int(CollisionGroup::Companion_Skill), _int(CollisionGroup::Monster_Body));
-	
 	COLLISION.Check_Group(_int(CollisionGroup::Monster_Attack), _int(CollisionGroup::Player_Body));
 	COLLISION.Check_Group(_int(CollisionGroup::Monster_Skill), _int(CollisionGroup::Player_Body));
-	
-	COLLISION.Check_Group(_int(CollisionGroup::Monster_Attack), _int(CollisionGroup::Companion_Body));
-	COLLISION.Check_Group(_int(CollisionGroup::Monster_Skill), _int(CollisionGroup::Companion_Body));
-	
+		
 	COLLISION.Check_Group(_int(CollisionGroup::Monster_Attack), _int(CollisionGroup::MAPObject));
 	COLLISION.Check_Group(_int(CollisionGroup::Monster_Body), _int(CollisionGroup::MAPObject));
 

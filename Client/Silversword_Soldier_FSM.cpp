@@ -44,7 +44,7 @@ HRESULT Silversword_Soldier_FSM::Init()
 
         m_fNormalAttack_AnimationSpeed = 1.3f;
         m_fSkillAttack_AnimationSpeed = 1.3f;
-        m_fDetectRange = 4.f;
+        m_fDetectRange = 10.f;
 
 
         m_bInitialize = true;
@@ -68,6 +68,10 @@ void Silversword_Soldier_FSM::Tick()
 
 void Silversword_Soldier_FSM::State_Tick()
 {
+    Detect_Target();
+ 
+    Target_DeadCheck();
+
     State_Init();
 
     m_iCurFrame = Get_CurFrame();
@@ -324,9 +328,6 @@ void Silversword_Soldier_FSM::b_idle()
         {
             m_eCurState = STATE::n_run;
         }
-
-        if (Target_In_DetectRange())
-            m_bDetected = true;
     }
     else
     {
@@ -399,16 +400,9 @@ void Silversword_Soldier_FSM::n_run()
         m_bPatrolMove = false;
         m_eCurState = STATE::b_idle;
     }
-
     
-    if (Target_In_DetectRange())
-        m_bDetected = true;
-    
-
     if (m_bDetected)
-    {
         m_eCurState = STATE::b_run;
-    }
 }
 
 void Silversword_Soldier_FSM::n_run_Init()
@@ -490,7 +484,6 @@ void Silversword_Soldier_FSM::gaze_b()
         else
             m_eCurState = STATE::b_run;
     }
-
 }
 
 void Silversword_Soldier_FSM::gaze_b_Init()
@@ -1045,4 +1038,41 @@ void Silversword_Soldier_FSM::Execute_AttackSkill()
         m_eCurState = STATE::skill_3100;
         m_iPreAttack = 2;
     }
+}
+
+void Silversword_Soldier_FSM::Detect_Target()
+{
+    if (!m_bDetected)
+    {
+        m_tDetectCoolTime.fAccTime += fDT;
+
+        if (m_tDetectCoolTime.fAccTime >= m_tDetectCoolTime.fCoolTime)
+        {
+            m_tDetectCoolTime.fAccTime = 0.f;
+
+            if (TargetGroup_In_DetectRange(OBJ_TEAM))
+                m_bDetected = true;
+        }
+    }
+}
+
+void Silversword_Soldier_FSM::Target_DeadCheck()
+{
+    if (m_bDetected)
+    {
+        if (!m_pTarget.expired())
+        {
+            if (m_pTarget.lock()->Get_CurHp() <= 0.f)
+            {
+                m_bDetected = false;
+                m_eCurState = STATE::b_idle;
+            }
+        }
+        else
+        {
+            m_bDetected = false;
+            m_eCurState = STATE::b_idle;
+        }
+    }
+
 }

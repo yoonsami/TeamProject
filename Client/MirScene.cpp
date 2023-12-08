@@ -274,7 +274,7 @@ shared_ptr<GameObject> MirScene::Load_Player()
 			controller->Create_Controller();
 		}
 		ObjPlayer->Set_DrawShadow(true);
-		ObjPlayer->Set_ObjectGroup(OBJ_PLAYER);
+		ObjPlayer->Set_ObjectGroup(OBJ_TEAM);
 
 		Add_GameObject(ObjPlayer,true);
 

@@ -114,7 +114,7 @@ shared_ptr<GameObject> GachaScene::Load_Player()
 
 	ObjPlayer->Set_DrawShadow(true);
 	ObjPlayer->Set_VelocityMap(true);
-	ObjPlayer->Set_ObjectGroup(OBJ_PLAYER);
+	ObjPlayer->Set_ObjectGroup(OBJ_TEAM);
 	Add_GameObject(ObjPlayer);
 	Gacha_FSM_Desc desc;
 	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");

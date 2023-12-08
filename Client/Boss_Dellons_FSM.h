@@ -174,7 +174,6 @@ private:
 	COOLTIMEINFO m_tWraithSummonCoolTime = { 2.f, 0.f };
 
 	_bool m_bSprint = false;
-	_bool m_bDetected = false;
 	_bool m_bBattleStart = false;
 	_bool m_bCounter = false;
 	_bool m_bSetPattern = false;

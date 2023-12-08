@@ -14,9 +14,9 @@ protected:
     
     void Set_DirToTarget_Companion(_uint eType);
     void Detect_Target();
+
 protected:
     _float m_fTurnSpeed = XM_PI * 5.f;
-
     _float3 m_vEvadeVector = _float3(0.f);
 
     COOLTIMEINFO m_tAttackCoolTime = { 1.f, 0.f };
@@ -30,7 +30,6 @@ protected:
 
     _bool m_bIsFollow = false;
     _bool m_bCantalk = false;
-    _bool m_bDetected = false;
     _bool m_bSprint = false;
     _bool m_bSetAttack = false;
     _bool m_bEvade = false;

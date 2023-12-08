@@ -34,7 +34,7 @@ HRESULT Companion_Shane_FSM::Init()
         shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
         attackCollider->GetOrAddTransform();
         attackCollider->Add_Component(make_shared<SphereCollider>(1.f));
-        attackCollider->Get_Collider()->Set_CollisionGroup(Companion_Attack);
+        attackCollider->Get_Collider()->Set_CollisionGroup(Player_Attack);
 
         m_pAttackCollider = attackCollider;
 
@@ -64,6 +64,8 @@ HRESULT Companion_Shane_FSM::Init()
 
 void Companion_Shane_FSM::Tick()
 {
+    DeadCheck();
+
     State_Tick();
 
     if (!m_pAttackCollider.expired())

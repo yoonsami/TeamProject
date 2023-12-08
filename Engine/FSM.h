@@ -37,11 +37,13 @@ protected:
 	_bool Target_In_AttackRange(_float* pGap = nullptr);
 	_bool LookingTarget_In_AttackRange(_float* pGap = nullptr);
 	_bool Target_In_DetectRange();
+	_bool TargetGroup_In_DetectRange(_uint eType);
 	_bool Target_In_GazeCheckRange();
 
 	_bool CounterAttackCheck(_float fCheckDegree);
 	void Set_DirToTarget();
 	void Set_DirToTargetOrInput(_uint eType);
+	void Set_DirToTarget_Monster(_uint eType);
 	void Look_DirToTarget(_float fTurnSpeed = XM_PI * 5.f);
 	shared_ptr<GameObject> Find_TargetInFrustum(_uint eType, _bool bFrustumCheck = true);
 	_bool Init_CurFrame(const _uint curFrame);
@@ -102,6 +104,7 @@ public:
 	_bool m_bSuperArmor = false;
 	_bool m_bCanCombo = false;
 	_bool m_bIsDead = false;
+	_bool m_bDetected = false;
 
 	_float3 m_vHitDir = _float3{ 0.f };
 	_float3 m_vDirToTarget = _float3(0.f);
