@@ -64,6 +64,8 @@ HRESULT Companion_Shane_FSM::Init()
 
 void Companion_Shane_FSM::Tick()
 {
+    DeadCheck();
+
     State_Tick();
 
     if (!m_pAttackCollider.expired())
