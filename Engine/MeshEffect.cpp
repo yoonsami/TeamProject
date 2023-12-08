@@ -640,7 +640,6 @@ void MeshEffect::Translate()
 void MeshEffect::Scaling()
 {
     _float3 vScale = Get_Transform()->Get_Scale();
-    _float vPrevScaleY = vScale.y;
     if (m_bToolMode_On)
     {
         // lerp 
@@ -648,7 +647,7 @@ void MeshEffect::Scaling()
         {
             vScale = XMVectorLerp(m_vStartScale, m_vEndScale, m_fLifeTimeRatio);
             if (m_tDesc.bIsSSD)
-                vScale.y = vPrevScaleY;
+                vScale.y = m_vStartScale.y;
 
             if (vScale.x < 0) vScale.x = 0.f;
             if (vScale.y < 0) vScale.y = 0.f;
@@ -661,7 +660,7 @@ void MeshEffect::Scaling()
             _float fScaleSpeed = Calc_Spline(m_tTransform_Desc.iScaleSpeedType, m_SplineInput_ScaleSpeed);
             vScale = Get_Transform()->Get_Scale() + _float3(fScaleSpeed * fDT);
             if (m_tDesc.bIsSSD)
-                vScale.y = vPrevScaleY;
+                vScale.y = m_vStartScale.y;
         }
 
         Get_Transform()->Scaled(vScale);
@@ -673,7 +672,7 @@ void MeshEffect::Scaling()
         {
             m_vLocalScale = _float3::Lerp(m_vStartScale, m_vEndScale, m_fLifeTimeRatio);
             if (m_tDesc.bIsSSD)
-                m_vLocalScale.y = vPrevScaleY;
+                m_vLocalScale.y = m_vStartScale.y;
             if (m_vLocalScale.x < 0) m_vLocalScale.x = 0.f;
             if (m_vLocalScale.y < 0) m_vLocalScale.y = 0.f;
             if (m_vLocalScale.z < 0) m_vLocalScale.z = 0.f;
@@ -684,7 +683,7 @@ void MeshEffect::Scaling()
             _float fScaleSpeed = Calc_Spline(m_tTransform_Desc.iScaleSpeedType, m_SplineInput_ScaleSpeed);
             m_vLocalScale = Get_Transform()->Get_Scale() + _float3(fScaleSpeed * fDT);
             if (m_tDesc.bIsSSD)
-                m_vLocalScale.y = vPrevScaleY;
+                m_vLocalScale.y = m_vStartScale.y;
         }
     }
 }
