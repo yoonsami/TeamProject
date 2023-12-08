@@ -232,11 +232,12 @@ void DragonBallMonster_FSM::Summon_X_Floor()
 	desc.fAttackStartGap = 2.5f;
 	
 	desc.fAttackTickTime = 0.3f;
+	desc.iLimitAttackCnt = 3;
+
 	desc.strAttackType = NORMAL_SKILL;
 	desc.strLastAttackType = NORMAL_SKILL;
 	desc.fAttackDamage = 5.f;
 	desc.fLastAttackDamage = 5.f;
-	desc.iLimitAttackCnt = 3;
 
 	//Forward_Left
 	_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
