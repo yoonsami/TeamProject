@@ -94,7 +94,7 @@ HRESULT GachaScene::Load_Scene()
 	auto player = Load_Player();
 	Load_Camera();
 	Load_MapFile(m_Desc.strMapFileName, player);
-
+	Load_Ui();
 
 	return S_OK;
 }
@@ -215,6 +215,29 @@ void GachaScene::Load_Camera()
 		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, true);
 
 		Add_GameObject(camera);
+	}
+}
+
+void GachaScene::Load_Ui()
+{
+	list<shared_ptr<GameObject>> tmp;
+	Load_UIFile(L"..\\Resources\\UIData\\UI_GachaScene.dat", tmp);
+
+	auto& pData = GET_DATA(m_Desc.eHeroType);
+	{
+		auto pObj = Get_UI(L"UI_GachaScene_Mark");
+		if (pObj)
+			pObj->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(pData.KeyAttack), TextureMapType::DIFFUSE);
+	}
+	{
+		auto pObj = Get_UI(L"UI_GachaScene_Info");
+		if (pObj)
+			pObj->Get_FontRenderer()->Get_Text() = pData.KeyHeroInfo;
+	}
+	{
+		auto pObj = Get_UI(L"UI_GachaScene_Name");
+		if (pObj)
+			pObj->Get_FontRenderer()->Get_Text() = pData.KeyHeroName;
 	}
 }
 
