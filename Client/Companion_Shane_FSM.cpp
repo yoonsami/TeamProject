@@ -79,6 +79,8 @@ void Companion_Shane_FSM::State_Tick()
 {
     Detect_Target();
 
+    Calculate_EvadeCool();
+
     State_Init();
 
     m_iCurFrame = Get_CurFrame();
@@ -316,8 +318,25 @@ void Companion_Shane_FSM::State_Init()
 
 void Companion_Shane_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
-    //Calculate Damage 
-    m_pOwner.lock()->Get_Hurt(fDamage);
+    if (!m_bSuperArmor)
+    {
+        if (m_bCanEvade)
+        {
+            if (rand() % 4 == 0)
+                m_bEvade = true;
+        }
+        else
+            m_bEvade = false;
+    }
+    else
+        m_bEvade = false;
+
+
+    if (!m_bEvade)
+    {
+        //Calculate Damage 
+        m_pOwner.lock()->Get_Hurt(fDamage);
+    }
 
     _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
     _float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
@@ -332,32 +351,46 @@ void Companion_Shane_FSM::Get_Hit(const wstring& skillname, _float fDamage, shar
     {
         if (!m_bSuperArmor)
         {
-            if (m_eCurState == STATE::hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_loop)
-                m_eCurState = STATE::knock_end_hit;
+            if (!m_bEvade)
+            {
+                if (m_eCurState == STATE::hit)
+                    Reset_Frame();
+                else if (m_eCurState == STATE::knock_end_hit)
+                    Reset_Frame();
+                else if (m_eCurState == STATE::knock_end_loop)
+                    m_eCurState = STATE::knock_end_hit;
+                else
+                    m_eCurState = STATE::hit;
+            }
             else
-                m_eCurState = STATE::hit;
-
-            CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.1f);
-
-
+            {
+                if (rand() % 3 == 0)
+                    m_eCurState = STATE::skill_93100;
+                else
+                    m_eCurState = STATE::skill_91100;
+            }
         }
     }
     else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
     {
         if (!m_bSuperArmor)
         {
-            if (m_eCurState == STATE::knock_end_hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_loop)
-                m_eCurState = STATE::knock_end_hit;
+            if (!m_bEvade)
+            {
+                if (m_eCurState == STATE::knock_end_hit)
+                    Reset_Frame();
+                else if (m_eCurState == STATE::knock_end_loop)
+                    m_eCurState = STATE::knock_end_hit;
+                else
+                    m_eCurState = STATE::knock_start;
+            }
             else
-                m_eCurState = STATE::knock_start;
-
-            CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.2f);
+            {
+                if (rand() % 3 == 0)
+                    m_eCurState = STATE::skill_93100;
+                else
+                    m_eCurState = STATE::skill_91100;
+            }
 
         }
     }
@@ -365,35 +398,46 @@ void Companion_Shane_FSM::Get_Hit(const wstring& skillname, _float fDamage, shar
     {
         if (!m_bSuperArmor)
         {
-            if (m_eCurState == STATE::knock_end_hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_loop)
-                m_eCurState = STATE::knock_end_hit;
+            if (!m_bEvade)
+            {
+                if (m_eCurState == STATE::knock_end_hit)
+                    Reset_Frame();
+                else if (m_eCurState == STATE::knock_end_loop)
+                    m_eCurState = STATE::knock_end_hit;
+                else
+                    m_eCurState = STATE::knockdown_start;
+            }
             else
-                m_eCurState = STATE::knockdown_start;
-
-            CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.3f);
-
+            {
+                if (rand() % 3 == 0)
+                    m_eCurState = STATE::skill_93100;
+                else
+                    m_eCurState = STATE::skill_91100;
+            }
         }
     }
     else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
     {
         if (!m_bSuperArmor)
         {
-            if (m_eCurState == STATE::knock_end_hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_loop)
-                m_eCurState = STATE::knock_end_hit;
+            if (!m_bEvade)
+            {
+                if (m_eCurState == STATE::knock_end_hit)
+                    Reset_Frame();
+                else if (m_eCurState == STATE::knock_end_loop)
+                    m_eCurState = STATE::knock_end_hit;
+                else
+                    m_eCurState = STATE::airborne_start;
+            }
             else
-                m_eCurState = STATE::airborne_start;
-
-            CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.3f);
-
+            {
+                if (rand() % 3 == 0)
+                    m_eCurState = STATE::skill_93100;
+                else
+                    m_eCurState = STATE::skill_91100;
+            }
         }
     }
-    else
-        CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.03f);
-
 }
 
 void Companion_Shane_FSM::Set_State(_uint iIndex)
@@ -845,6 +889,8 @@ void Companion_Shane_FSM::stun_Init()
 
     m_bInvincible = true;
     m_bSuperArmor = true;
+
+    FreeLoopMembers();
 }
 
 void Companion_Shane_FSM::airborne_start()
@@ -1204,7 +1250,10 @@ void Companion_Shane_FSM::skill_91100()
         Soft_Turn_ToInputDir(m_vEvadeVector, m_fTurnSpeed);
 
     if (Is_AnimFinished())
+    {
+        m_bCanEvade = false;
         m_eCurState = STATE::b_idle;
+    }
 }
 
 void Companion_Shane_FSM::skill_91100_Init()
@@ -1225,7 +1274,10 @@ void Companion_Shane_FSM::skill_91100_Init()
 void Companion_Shane_FSM::skill_93100()
 {
     if (Is_AnimFinished())
+    {
+        m_bCanEvade = false;
         m_eCurState = STATE::b_idle;
+    }
 }
 
 void Companion_Shane_FSM::skill_93100_Init()

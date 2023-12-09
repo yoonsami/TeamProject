@@ -63,7 +63,7 @@ HRESULT Companion_Dellons_FSM::Init()
 
 void Companion_Dellons_FSM::Tick()
 {
-    Detect_Target();
+    DeadCheck();
 
     State_Tick();
 
@@ -77,6 +77,8 @@ void Companion_Dellons_FSM::Tick()
 void Companion_Dellons_FSM::State_Tick()
 {
     Detect_Target();
+
+    Calculate_EvadeCool();
 
     State_Init();
 
@@ -319,8 +321,13 @@ void Companion_Dellons_FSM::Get_Hit(const wstring& skillname, _float fDamage, sh
 {
     if (!m_bSuperArmor)
     {
-        if (rand() % 4 == 0)
-            m_bEvade = true;
+        if (m_bCanEvade)
+        {
+            if (rand() % 4 == 0)
+                m_bEvade = true;
+        }
+        else
+            m_bEvade = false;
     }
     else
         m_bEvade = false;
@@ -526,8 +533,9 @@ void Companion_Dellons_FSM::b_idle()
         {
             m_tFollowCheckTime.fAccTime = 0.f;
         }
-
     }
+
+    StunSetting();
 }
 
 void Companion_Dellons_FSM::b_idle_Init()
@@ -581,6 +589,8 @@ void Companion_Dellons_FSM::b_run_start()
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_run;
+
+    StunSetting();
 }
 
 void Companion_Dellons_FSM::b_run_start_Init()
@@ -671,6 +681,8 @@ void Companion_Dellons_FSM::b_run()
             }
         }
     }
+
+    StunSetting();
 }
 
 void Companion_Dellons_FSM::b_run_Init()
@@ -715,6 +727,8 @@ void Companion_Dellons_FSM::b_run_end_r()
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
+
+    StunSetting();
 }
 
 void Companion_Dellons_FSM::b_run_end_r_Init()
@@ -760,6 +774,8 @@ void Companion_Dellons_FSM::b_run_end_l()
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
+
+    StunSetting();
 }
 
 void Companion_Dellons_FSM::b_run_end_l_Init()
@@ -821,6 +837,8 @@ void Companion_Dellons_FSM::b_sprint()
             }
         }
     }
+
+    StunSetting();
 }
 
 void Companion_Dellons_FSM::b_sprint_Init()
@@ -857,19 +875,24 @@ void Companion_Dellons_FSM::die_Init()
 void Companion_Dellons_FSM::stun()
 {
     if (Is_AnimFinished())
+    {
+        m_pOwner.lock()->Set_Hp(m_pOwner.lock()->Get_MaxHp());
         m_eCurState = STATE::b_idle;
+    }
 }
 
 void Companion_Dellons_FSM::stun_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"stun", 0.2f, false, 1.f);
+    animator->Set_NextTweenAnim(L"stun", 0.2f, false, 0.2f);
 
     AttackCollider_Off();
 
     m_bInvincible = true;
     m_bSuperArmor = true;
+
+    FreeLoopMembers();
 }
 
 void Companion_Dellons_FSM::airborne_start()
@@ -1109,6 +1132,8 @@ void Companion_Dellons_FSM::skill_1100()
 
     if (m_iCurFrame >= 24)
         m_eCurState = STATE::skill_1200;
+
+    StunSetting();
 }
 
 void Companion_Dellons_FSM::skill_1100_Init()
@@ -1135,6 +1160,8 @@ void Companion_Dellons_FSM::skill_1200()
 
     if (m_iCurFrame >= 20)
         m_eCurState = STATE::skill_1300;
+
+    StunSetting();
 }
 
 void Companion_Dellons_FSM::skill_1200_Init()
@@ -1162,6 +1189,8 @@ void Companion_Dellons_FSM::skill_1300()
 
     if (m_iCurFrame >= 18)
         m_eCurState = STATE::skill_1400;
+
+    StunSetting();
 }
 
 void Companion_Dellons_FSM::skill_1300_Init()
@@ -1190,9 +1219,10 @@ void Companion_Dellons_FSM::skill_1400()
     else if (m_iCurFrame == 24)
         AttackCollider_Off();
 
-
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;    
+
+    StunSetting();
 }
 
 void Companion_Dellons_FSM::skill_1400_Init()
@@ -1214,7 +1244,10 @@ void Companion_Dellons_FSM::skill_91100()
 
 
     if (Is_AnimFinished())
+    {
+        m_bCanEvade = false;
         m_eCurState = STATE::b_idle;
+    }
 }
 
 void Companion_Dellons_FSM::skill_91100_Init()
@@ -1235,7 +1268,10 @@ void Companion_Dellons_FSM::skill_91100_Init()
 void Companion_Dellons_FSM::skill_93100()
 {
     if (Is_AnimFinished())
+    {
+        m_bCanEvade = false;
         m_eCurState = STATE::b_idle;
+    }
 }
 
 void Companion_Dellons_FSM::skill_93100_Init()
@@ -1272,6 +1308,8 @@ void Companion_Dellons_FSM::skill_100100()
 
     if (m_iCurFrame >= 26)
         m_eCurState = STATE::skill_100200;
+
+    StunSetting();
 }
 
 void Companion_Dellons_FSM::skill_100100_Init()
@@ -1306,9 +1344,10 @@ void Companion_Dellons_FSM::skill_100200()
         Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Dellons_SkillCollider", vSkillPos, 1.5f, desc, AIRBORNE_ATTACK, 10.f);
     }
 
-  
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
+
+    StunSetting();
 }
 
 void Companion_Dellons_FSM::skill_100200_Init()
@@ -1337,6 +1376,7 @@ void Companion_Dellons_FSM::skill_200100()
     if (m_iCurFrame >= 20)
         m_eCurState = STATE::skill_200200;
 
+    StunSetting();
 }
 
 void Companion_Dellons_FSM::skill_200100_Init()
@@ -1367,9 +1407,10 @@ void Companion_Dellons_FSM::skill_200200()
         Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Dellons_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_SKILL, 10.f);
     }
 
-
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
+
+    StunSetting();
 }
 
 void Companion_Dellons_FSM::skill_200200_Init()
@@ -1482,6 +1523,8 @@ void Companion_Dellons_FSM::skill_501100()
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
+
+    StunSetting();
 }
 
 void Companion_Dellons_FSM::skill_501100_Init()
