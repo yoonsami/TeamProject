@@ -75,3 +75,17 @@ void Companion_FSM::Detect_Target()
 		}
 	}
 }
+
+void Companion_FSM::Calculate_EvadeCool()
+{
+	if (!m_bCanEvade)
+	{
+		m_tEvadeCoolTime.fAccTime += fDT;
+		
+		if (m_tEvadeCoolTime.fAccTime >= m_tEvadeCoolTime.fCoolTime)
+		{
+			m_tEvadeCoolTime.fAccTime = 0.f;
+			m_bCanEvade = true;
+		}
+	}
+}

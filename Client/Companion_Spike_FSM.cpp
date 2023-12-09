@@ -63,6 +63,8 @@ HRESULT Companion_Spike_FSM::Init()
 
 void Companion_Spike_FSM::Tick()
 {
+    DeadCheck();
+
     State_Tick();
 
     if (!m_pAttackCollider.expired())
@@ -77,6 +79,8 @@ void Companion_Spike_FSM::State_Tick()
 {
     Detect_Target();
     
+    Calculate_EvadeCool();
+
     State_Init();
 
     m_iCurFrame = Get_CurFrame();
@@ -336,11 +340,17 @@ void Companion_Spike_FSM::Get_Hit(const wstring& skillname, _float fDamage, shar
 {
     if (!m_bSuperArmor)
     {
-        if (rand() % 4 == 0)
-            m_bEvade = true;
+        if (m_bCanEvade)
+        {
+            if (rand() % 4 == 0)
+                m_bEvade = true;
+        }
+        else
+            m_bEvade = false;
     }
     else
         m_bEvade = false;
+
 
     if (!m_bEvade)
     {
@@ -543,8 +553,9 @@ void Companion_Spike_FSM::b_idle()
         {
             m_tFollowCheckTime.fAccTime = 0.f;
         }
-
     }
+
+    StunSetting();
 }
 
 void Companion_Spike_FSM::b_idle_Init()
@@ -600,6 +611,8 @@ void Companion_Spike_FSM::b_run_start()
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_run;
+
+    StunSetting();
 }
 
 void Companion_Spike_FSM::b_run_start_Init()
@@ -690,6 +703,8 @@ void Companion_Spike_FSM::b_run()
             }
         }
     }
+
+    StunSetting();
 }
 
 void Companion_Spike_FSM::b_run_Init()
@@ -734,6 +749,8 @@ void Companion_Spike_FSM::b_run_end_r()
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
+
+    StunSetting();
 }
 
 void Companion_Spike_FSM::b_run_end_r_Init()
@@ -779,6 +796,8 @@ void Companion_Spike_FSM::b_run_end_l()
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
+
+    StunSetting();
 }
 
 void Companion_Spike_FSM::b_run_end_l_Init()
@@ -840,6 +859,8 @@ void Companion_Spike_FSM::b_sprint()
             }
         }
     }
+
+    StunSetting();
 }
 
 void Companion_Spike_FSM::b_sprint_Init()
@@ -875,20 +896,29 @@ void Companion_Spike_FSM::die_Init()
 
 void Companion_Spike_FSM::stun()
 {
+    /*if (m_iCurFrame / Get_FinalFrame() >= 0.9f)
+        m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(1.f);
+    */
+
     if (Is_AnimFinished())
+    {
+        m_pOwner.lock()->Set_Hp(m_pOwner.lock()->Get_MaxHp());
         m_eCurState = STATE::b_idle;
+    }
 }
 
 void Companion_Spike_FSM::stun_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"stun", 0.2f, false, 1.f);
+    animator->Set_NextTweenAnim(L"stun", 0.2f, false, 0.2f);
 
     AttackCollider_Off();
 
     m_bInvincible = true;
     m_bSuperArmor = true;
+
+    FreeLoopMembers();
 }
 
 void Companion_Spike_FSM::airborne_start()
@@ -1131,6 +1161,8 @@ void Companion_Spike_FSM::skill_1100()
 
     if (m_iCurFrame >= 24)
         m_eCurState = STATE::skill_1200;
+
+    StunSetting();
 }
 
 void Companion_Spike_FSM::skill_1100_Init()
@@ -1156,6 +1188,8 @@ void Companion_Spike_FSM::skill_1200()
 
     if (m_iCurFrame >= 33)
         m_eCurState = STATE::skill_1300;
+
+    StunSetting();
 }
 
 void Companion_Spike_FSM::skill_1200_Init()
@@ -1185,6 +1219,8 @@ void Companion_Spike_FSM::skill_1300()
 
     if (m_iCurFrame >= 35)
         m_eCurState = STATE::skill_1400;
+
+    StunSetting();
 }
 
 void Companion_Spike_FSM::skill_1300_Init()
@@ -1216,6 +1252,8 @@ void Companion_Spike_FSM::skill_1400()
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
+
+    StunSetting();
 }
 
 void Companion_Spike_FSM::skill_1400_Init()
@@ -1236,7 +1274,10 @@ void Companion_Spike_FSM::skill_91100()
         Soft_Turn_ToInputDir(m_vEvadeVector, m_fTurnSpeed);
 
     if (Is_AnimFinished())
+    {
+        m_bCanEvade = false;
         m_eCurState = STATE::b_idle;
+    }
 }
 
 void Companion_Spike_FSM::skill_91100_Init()
@@ -1257,7 +1298,10 @@ void Companion_Spike_FSM::skill_91100_Init()
 void Companion_Spike_FSM::skill_93100()
 {
     if (Is_AnimFinished())
+    {
+        m_bCanEvade = false;
         m_eCurState = STATE::b_idle;
+    }
 }
 
 void Companion_Spike_FSM::skill_93100_Init()
@@ -1317,6 +1361,8 @@ void Companion_Spike_FSM::skill_100100()
     {
         m_eCurState = STATE::skill_100300;
     }
+
+    StunSetting();
 }
 
 void Companion_Spike_FSM::skill_100100_Init()
@@ -1353,6 +1399,8 @@ void Companion_Spike_FSM::skill_100300()
     
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
+
+    StunSetting();
 }
 
 void Companion_Spike_FSM::skill_100300_Init()
@@ -1380,6 +1428,8 @@ void Companion_Spike_FSM::skill_200100()
 
     if (Is_AnimFinished())
         m_eCurState = STATE::skill_200100_l;
+
+    StunSetting();
 }
 
 void Companion_Spike_FSM::skill_200100_Init()
@@ -1428,6 +1478,8 @@ void Companion_Spike_FSM::skill_200100_l()
 
         FreeLoopMembers();
     }
+
+    StunSetting();
 }
 
 void Companion_Spike_FSM::skill_200100_l_Init()
@@ -1483,6 +1535,7 @@ void Companion_Spike_FSM::skill_200200()
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 
+    StunSetting();
 }
 
 void Companion_Spike_FSM::skill_200200_Init()
@@ -1535,6 +1588,8 @@ void Companion_Spike_FSM::skill_200300()
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
+
+    StunSetting();
 }
 
 void Companion_Spike_FSM::skill_200300_Init()
@@ -1603,6 +1658,8 @@ void Companion_Spike_FSM::skill_200400()
     {
         m_eCurState = STATE::b_idle;
     }
+
+    StunSetting();
 }
 
 void Companion_Spike_FSM::skill_200400_Init()
@@ -1778,6 +1835,8 @@ void Companion_Spike_FSM::skill_501100()
 
     if (Is_AnimFinished())    
         m_eCurState = STATE::b_idle;
+
+    StunSetting();
 }
 
 void Companion_Spike_FSM::skill_501100_Init()
