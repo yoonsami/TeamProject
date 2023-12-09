@@ -3,6 +3,7 @@
 
 #include "Scene.h"
 #include "Particle.h"
+#include "TerrainRenderer.h"
 #include "MeshEffect.h"
 #include "MeshRenderer.h"
 #include "GroupEffect.h"
@@ -85,6 +86,7 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 			&& gameObject->Get_TrailRenderer() == nullptr
 			&& gameObject->Get_MotionTrailRenderer() == nullptr
 			&& gameObject->Get_FontRenderer() == nullptr
+			&& gameObject->Get_TerrainRenderer() == nullptr
 			&& ((m_bEffectToolMode_On && gameObject->Get_MeshEffect() == nullptr) ||
 			    (!m_bEffectToolMode_On && gameObject->Get_GroupEffect() == nullptr))
 			)
@@ -107,6 +109,8 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 		
 		if (gameObject->Get_ShaderType() == SHADER_TYPE::SKYBOX)
 			m_Sky.push_back(gameObject);
+		else if (gameObject->Get_TerrainRenderer())
+			m_Terrain = gameObject;
 		else if (gameObject->Get_ShaderType() == SHADER_TYPE::WATER)
 			m_Water.push_back(gameObject);
 		else if (gameObject->Get_TrailRenderer())
@@ -353,8 +357,12 @@ void Camera::Render_Forward()
 
 void Camera::Render_Deferred()
 {
+
 	S_View = m_matView;
 	S_Proj = m_matProj;
+	if(m_Terrain)
+		m_Terrain->Get_TerrainRenderer()->Render();
+
 	INSTANCING.Render(m_Deferred);
 }
 

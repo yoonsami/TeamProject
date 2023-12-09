@@ -247,6 +247,7 @@
     <ClInclude Include="StructuredBuffer.h" />
     <ClInclude Include="Technique.h" />
     <ClInclude Include="Terrain.h" />
+    <ClInclude Include="TerrainRenderer.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureBuffer.h" />
     <ClInclude Include="TimeMgr.h" />
@@ -339,6 +340,7 @@
     <ClCompile Include="StructuredBuffer.cpp" />
     <ClCompile Include="Technique.cpp" />
     <ClCompile Include="Terrain.cpp" />
+    <ClCompile Include="TerrainRenderer.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureBuffer.cpp" />
     <ClCompile Include="TimeMgr.cpp" />

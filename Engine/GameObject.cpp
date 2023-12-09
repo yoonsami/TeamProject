@@ -18,6 +18,7 @@
 #include "ModelRenderer.h"
 #include "ModelAnimator.h"
 #include "ParticleSystem.h"
+#include "TerrainRenderer.h"
 #include "GroupEffectOwner.h"
 #include "DistortionRenderer.h"
 #include "CharacterController.h"
@@ -266,6 +267,11 @@ shared_ptr<RigidBody> GameObject::Get_RigidBody()
 shared_ptr<ParticleSystem> GameObject::Get_ParticleSystem()
 {
 	return static_pointer_cast<ParticleSystem>(Get_FixedComponent(COMPONENT_TYPE::ParticleSystem));
+}
+
+shared_ptr<TerrainRenderer> GameObject::Get_TerrainRenderer()
+{
+	return static_pointer_cast<TerrainRenderer>(Get_FixedComponent(COMPONENT_TYPE::TerrainRenderer));
 }
 
 shared_ptr<Particle> GameObject::Get_Particle()

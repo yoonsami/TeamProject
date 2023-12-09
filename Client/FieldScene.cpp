@@ -32,7 +32,7 @@
 #include "UiGachaCardMove.h"
 #include "Debug_CreateMotionTrail.h"
 #include "CounterMotionTrailScript.h"
-
+#include "TerrainRenderer.h"
 #include "UiHpBarController.h"
 #include "MapObjectScript.h"
 #include "Terrain.h"
@@ -350,15 +350,12 @@ void FieldScene::Load_Terrain()
 		if (entry.is_directory())
 			continue;
 
-		if (entry.path().extension().wstring() != L".tga" && entry.path().extension().wstring() != L".TGA")
-			continue;
-
 		string fileName = entry.path().filename().string();
 		Utils::DetachExt(fileName);
 
 		// 타일의 텍스쳐이름을 리소스에 로드
 		wstring TileTexture = L"..\\Resources\\Textures\\MapObject\\TerrainTile\\";
-		TileTexture += Utils::ToWString(fileName) + L".tga";
+		TileTexture += Utils::ToWString(fileName) + L".dds";
 		RESOURCES.Load<Texture>(Utils::ToWString(fileName), TileTexture);
 	}
 
@@ -405,9 +402,11 @@ void FieldScene::Load_Terrain()
 	TerrainObject->GetOrAddTransform();
 // 터레인생성
 	// 메시렌더러
-	shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Terrain.fx"));
-	renderer->Set_Mesh(loadedTerrain);
-	renderer->Set_Pass(18); // 터레인패스
+	//shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Terrain.fx"));
+	//renderer->Set_Mesh(loadedTerrain);
+	//renderer->Set_Pass(18); // 터레인패스
+	shared_ptr<TerrainRenderer> renderer = make_shared<TerrainRenderer>(RESOURCES.Get<Shader>(L"Shader_Terrain.fx"));
+	renderer->CreateGrid(loadedSizeX, loadedSizeY);
 
 	// 디퓨즈텍스쳐
 	shared_ptr<Material> material = make_shared<Material>();
@@ -446,6 +445,16 @@ void FieldScene::Load_Terrain()
 	}
 	material->Set_TextureMap(Roadtexture, TextureMapType::TEXTURE8);
 
+	{
+		auto HeightMap = RESOURCES.Get<Texture>(L"height");
+		if (HeightMap == nullptr)
+		{
+			MSG_BOX("NoSubTexture");
+			return;
+		}
+		material->Set_TextureMap(HeightMap, TextureMapType::TEXTURE9);
+	}
+
 	renderer->Set_Material(material);
 
 	// 메시를 통해 메시콜라이더 생성
@@ -460,8 +469,6 @@ void FieldScene::Load_Terrain()
 
 	TerrainObject->Add_Component(renderer);
 
-	// 터레인의 가로세로 정보 셰이더에 떤져주기
-	TerrainObject->Get_MeshRenderer()->SetVec2(0, _float2{ (_float)loadedSizeX, (_float)loadedSizeY });
 }
 
 void FieldScene::Load_Camera(shared_ptr<GameObject> pPlayer)
