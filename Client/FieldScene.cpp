@@ -445,7 +445,7 @@ void FieldScene::Load_Terrain()
 	}
 	material->Set_TextureMap(Roadtexture, TextureMapType::TEXTURE8);
 
-	{
+	/*{
 		auto HeightMap = RESOURCES.Get<Texture>(L"height");
 		if (HeightMap == nullptr)
 		{
@@ -453,7 +453,7 @@ void FieldScene::Load_Terrain()
 			return;
 		}
 		material->Set_TextureMap(HeightMap, TextureMapType::TEXTURE9);
-	}
+	}*/
 
 	renderer->Set_Material(material);
 
