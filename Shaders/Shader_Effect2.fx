@@ -313,7 +313,7 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     if (bUseFadeOut)
         vOutColor.a *= (1.f - fLifeTimeRatio);
     
-    if (vOutColor.a < 0.1f)
+    if (vOutColor.a < 0.07f)
         discard;
     
      vOutColor.a *= decalAlpha;
@@ -567,7 +567,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     if (bUseFadeOut)
         vOutColor.a *= (1.f - fLifeTimeRatio);
     
-    if (vOutColor.a < 0.1f)
+    if (vOutColor.a < 0.07f)
         discard;
     
     vOutColor.a *= decalAlpha;
@@ -837,7 +837,7 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
     if (bUseFadeOut)
         vOutColor.a *= (1.f - fLifeTimeRatio);
     
-    if (vOutColor.a < 0.1f)
+    if (vOutColor.a < 0.07f)
         discard;
     
     vOutColor.a *= decalAlpha;
@@ -1084,7 +1084,7 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
     if (bUseFadeOut)
         vOutColor.a *= (1.f - fLifeTimeRatio);
     
-    if (vOutColor.a < 0.1f)
+    if (vOutColor.a < 0.07f)
         discard;
     
     vOutColor.a *= decalAlpha;

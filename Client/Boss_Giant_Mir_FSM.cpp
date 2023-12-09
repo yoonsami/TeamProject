@@ -1014,6 +1014,24 @@ void Boss_Giant_Mir_FSM::skill_100000_Init()
 
 void Boss_Giant_Mir_FSM::skill_100100()
 {
+    if (Init_CurFrame(24))
+        Add_And_Set_Effect(L"GiantMir_2100");
+
+    _float4x4 MouseBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iMouseBoneIndex)
+        * _float4x4::CreateRotationX(XMConvertToRadians(-90.f))
+        * _float4x4::CreateScale(0.01f)
+        * _float4x4::CreateRotationY(XM_PI)
+        * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+    _float4 vBonePos = _float4{ MouseBoneMatrix.Translation().x, MouseBoneMatrix.Translation().y, MouseBoneMatrix.Translation().z , 1.f };
+    _float4 vDir = Get_Transform()->Get_State(Transform_State::LOOK);
+    vDir.Normalize();
+    vBonePos += vDir * 1.f;
+    _float3 vLook = _float3(vDir);
+    _float3 vRight = vLook.Cross(_float3::Up);
+    _float4x4 matFinal = _float4x4(_float4(vRight, 0.f), _float4(0.f, 1.f, 0.f, 0.f), _float4(vLook, 0.f), vBonePos);
+
+    Update_GroupEffectWorldPos(matFinal);
+
     if (Init_CurFrame(179))
         Set_RigidBodyActivate(true);
 
@@ -1082,6 +1100,24 @@ void Boss_Giant_Mir_FSM::skill_200000_Init()
 
 void Boss_Giant_Mir_FSM::skill_200100()
 {
+    if (Init_CurFrame(47))
+        Add_And_Set_Effect(L"GiantMir_2100");
+
+    _float4x4 MouseBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iMouseBoneIndex)
+        * _float4x4::CreateRotationX(XMConvertToRadians(-90.f))
+        * _float4x4::CreateScale(0.01f)
+        * _float4x4::CreateRotationY(XM_PI)
+        * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+    _float4 vBonePos = _float4{ MouseBoneMatrix.Translation().x, MouseBoneMatrix.Translation().y, MouseBoneMatrix.Translation().z , 1.f };
+    _float4 vDir = Get_Transform()->Get_State(Transform_State::LOOK);
+    vDir.Normalize();
+    vBonePos += vDir * 1.f;
+    _float3 vLook = _float3(vDir);
+    _float3 vRight = vLook.Cross(_float3::Up);
+    _float4x4 matFinal = _float4x4(_float4(vRight, 0.f), _float4(0.f, 1.f, 0.f, 0.f), _float4(vLook, 0.f), vBonePos);
+
+    Update_GroupEffectWorldPos(matFinal);
+
     if (Init_CurFrame(201))
         Set_RigidBodyActivate(true);
 
@@ -1263,7 +1299,7 @@ void Boss_Giant_Mir_FSM::Create_DragonBall()
 
 void Boss_Giant_Mir_FSM::Set_AttackPattern()
 {
-    m_eCurState = STATE::skill_8100;
+    m_eCurState = STATE::skill_1200;
 
     /*
     _uint iRan = rand() % 6;
