@@ -19,6 +19,9 @@ public:
     void Click_Buy_Yes();
     void Click_Buy_No();
 
+    void Move_Left();
+    void Move_Right();
+
 private:
     void Create_Buy_Ui();
     void Remove_Buy_Ui();

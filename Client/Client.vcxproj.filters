@@ -427,6 +427,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\25.UiMessage\00.UiMessageCreater">
       <UniqueIdentifier>{5e5e5c0f-8710-4534-8512-cb9b6343d926}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\24.UiShop\00.UiShop">
+      <UniqueIdentifier>{22045f60-8548-45f3-a0ac-2a159f3e5bb2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -809,9 +812,6 @@
     <ClInclude Include="Friend_FSM.h">
       <Filter>02.Component\01.FSM\07.Friend_FSM</Filter>
     </ClInclude>
-    <ClInclude Include="UIShop.h">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\24.UiShop</Filter>
-    </ClInclude>
     <ClInclude Include="FieldScene.h">
       <Filter>01.Scene\00.PlayScene\04.Field</Filter>
     </ClInclude>
@@ -850,6 +850,9 @@
     </ClInclude>
     <ClInclude Include="UiMessageCreater.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessage\00.UiMessageCreater</Filter>
+    </ClInclude>
+    <ClInclude Include="UIShop.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\24.UiShop\00.UiShop</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1203,9 +1206,6 @@
     <ClCompile Include="Friend_FSM.cpp">
       <Filter>02.Component\01.FSM\07.Friend_FSM</Filter>
     </ClCompile>
-    <ClCompile Include="UIShop.cpp">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\24.UiShop</Filter>
-    </ClCompile>
     <ClCompile Include="FieldScene.cpp">
       <Filter>01.Scene\00.PlayScene\04.Field</Filter>
     </ClCompile>
@@ -1241,6 +1241,9 @@
     </ClCompile>
     <ClCompile Include="UiMessageCreater.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessage\00.UiMessageCreater</Filter>
+    </ClCompile>
+    <ClCompile Include="UIShop.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\24.UiShop\00.UiShop</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
