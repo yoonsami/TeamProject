@@ -373,7 +373,7 @@ void Widget_EffectMaker_Mesh::Option_Mesh()
 {
 	ImGui::SeparatorText("Vfx Mesh");
 
-	if (ImGui::BeginCombo("VfxMesh", m_pszMeshes[m_iMesh], 0))
+	if (ImGui::BeginCombo("VfxMesh", m_pszMeshes[m_iMesh], ImGuiComboFlags_HeightLargest))
 	{
 		for (_uint n = 0; n < m_iNumMeshes; n++)
 		{
@@ -922,6 +922,17 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 		case 10: // Move to Target Pos 
 			ImGui::InputFloat3("Target Position##Movement", m_fEndPositionOffset_Min);
 			memcpy(m_fEndPositionOffset_Max, m_fEndPositionOffset_Min, sizeof(m_fEndPositionOffset_Min));
+
+			ImGui::Text("Speed");
+			ImGui::RadioButton("Curve##MoveSpeed", &m_iSpeedType, 0);
+			ImGui::SameLine();
+			ImGui::RadioButton("Linear##MoveSpeed", &m_iSpeedType, 1);
+
+			m_vCurvePoint_Force[0].x = 0.f;
+			ImGui::InputFloat2("Point1 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[0]);
+			ImGui::InputFloat2("Point2 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[1]);
+			ImGui::InputFloat2("Point3 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[2]);
+			ImGui::InputFloat2("Point4 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[3]);
 			break;
 		}
 

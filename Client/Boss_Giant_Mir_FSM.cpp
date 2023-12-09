@@ -1299,7 +1299,7 @@ void Boss_Giant_Mir_FSM::Create_DragonBall()
 
 void Boss_Giant_Mir_FSM::Set_AttackPattern()
 {
-    m_eCurState = STATE::skill_1200;
+    m_eCurState = STATE::skill_2100;
 
     /*
     _uint iRan = rand() % 6;

@@ -302,7 +302,7 @@ void Widget_GroupEffectMaker::Widget_GetTag()
 void Widget_GroupEffectMaker::Widget_AddMeshEffect()
 {
 	// Mesh Effect ComboBox
-	if (ImGui::BeginCombo("Mesh Effect##GroupEffect", m_pszMeshEffects[m_iMeshEffect], 0))
+	if (ImGui::BeginCombo("Mesh Effect##GroupEffect", m_pszMeshEffects[m_iMeshEffect], ImGuiComboFlags_HeightLargest))
 	{
 		for (_uint n = 0; n < m_iNumMeshEffects; n++)
 		{
@@ -375,7 +375,7 @@ void Widget_GroupEffectMaker::Option_GroupList()
 		2. Create GroupEffect GameObject with selected group tag */
 
 	ImGui::Text("Group List");
-	if(ImGui::BeginCombo("##GroupEffectList", m_pszGroups[m_iGroup], 0))
+	if(ImGui::BeginCombo("##GroupEffectList", m_pszGroups[m_iGroup], ImGuiComboFlags_HeightLargest))
 	{
 		for (_uint n = 0; n < m_iNumGroups; n++)
 		{
