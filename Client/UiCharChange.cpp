@@ -200,7 +200,7 @@ void UiCharChange::Use_Skill_Help()
             shared_ptr<GameObject> obj = make_shared<GameObject>();
             auto pTransform = pPlayer->GetOrAddTransform();
             obj->GetOrAddTransform()->Set_State(Transform_State::POS, pTransform->Get_State(Transform_State::POS) + pTransform->Get_State(Transform_State::RIGHT) * 3.f);
-            obj->GetOrAddTransform()->LookAt(pTransform->Get_State(Transform_State::POS) + pTransform->Get_State(Transform_State::LOOK) * 3.f);
+            obj->GetOrAddTransform()->LookAt(pTransform->Get_State(Transform_State::POS) + pTransform->Get_State(Transform_State::LOOK) * 2.f);
 
             obj->Add_Component(make_shared<Friend_FSM>(eValue));
 
@@ -230,8 +230,8 @@ void UiCharChange::Use_Skill_Help()
 
             shared_ptr<GameObject> obj = make_shared<GameObject>();
             auto pTransform = pPlayer->GetOrAddTransform();
-            obj->GetOrAddTransform()->Set_State(Transform_State::POS, pTransform->Get_State(Transform_State::POS) + pTransform->Get_State(Transform_State::RIGHT) * 3.f);
-            obj->GetOrAddTransform()->LookAt(pTransform->Get_State(Transform_State::POS) + pTransform->Get_State(Transform_State::LOOK) * 3.f);
+            obj->GetOrAddTransform()->Set_State(Transform_State::POS, pTransform->Get_State(Transform_State::POS) + pTransform->Get_State(Transform_State::RIGHT) * -3.f);
+            obj->GetOrAddTransform()->LookAt(pTransform->Get_State(Transform_State::POS) + pTransform->Get_State(Transform_State::LOOK) * 2.f);
 
             obj->Add_Component(make_shared<Friend_FSM>(eValue));
 
@@ -262,7 +262,7 @@ void UiCharChange::Use_Skill_Help()
             shared_ptr<GameObject> obj = make_shared<GameObject>();
             auto pTransform = pPlayer->GetOrAddTransform();
             obj->GetOrAddTransform()->Set_State(Transform_State::POS, pTransform->Get_State(Transform_State::POS) + pTransform->Get_State(Transform_State::RIGHT) * 3.f);
-            obj->GetOrAddTransform()->LookAt(pTransform->Get_State(Transform_State::POS) + pTransform->Get_State(Transform_State::LOOK) * 3.f);
+            obj->GetOrAddTransform()->LookAt(pTransform->Get_State(Transform_State::POS) + pTransform->Get_State(Transform_State::LOOK) * 2.f);
 
             obj->Add_Component(make_shared<Friend_FSM>(eValue));
 

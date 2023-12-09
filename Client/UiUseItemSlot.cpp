@@ -42,7 +42,7 @@ void UiUseItemSlot::Tick()
 	if (m_pOwner.expired())
 		return;
 
-    if (KEYTAP(KEY_TYPE::R))
+    if (KEYTAP(KEY_TYPE::F))
         Use_Item();
 
     if (false == m_bIsCanUse)
