@@ -55,6 +55,9 @@ void UiDialogController::Create_Dialog(NPCTYPE eType, shared_ptr<GameObject> obj
     if (true == m_bIsCreated)
         return;
 
+    if(0 == DATAMGR.Get_NpcDialog_Count(m_eNpcType))
+        return;
+
     m_pAccessObject = obj;
 
     m_bIsCreated = true;

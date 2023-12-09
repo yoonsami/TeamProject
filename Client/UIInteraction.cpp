@@ -106,7 +106,7 @@ void UIInteraction::Create_Interaction(NPCTYPE eType, shared_ptr<GameObject> pAc
             JustDialog = true;
             break;
         }
-
+         
         if (true == JustDialog)
         {
             pObj = m_pNpcDialogController;
@@ -146,6 +146,7 @@ void UIInteraction::Create_Interaction(NPCTYPE eType, shared_ptr<GameObject> pAc
                 });
         }
         
+        // gacha open
         //pObj = m_pGachaController;
         //m_pInteraction_Bg.lock()->Get_Button()->AddOnClickedEvent([pObj, this]()
         //    {
