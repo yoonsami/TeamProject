@@ -47,7 +47,8 @@ void UIShop::Create_Shop()
     auto pScene = CUR_SCENE;
     
     // bg랑 item으로 분리. 따로 저장하면 이동은 아이템에서 로드한 객체 벡터로 적용시 편함
-    //
+    // 
+
     pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Shop.dat", m_addedObj);
 
     _uint iSize = IDX(m_addedObj.size());
