@@ -115,6 +115,7 @@ void UiCharChange::Set_Hero(_uint iIndex)
             m_pSkillHelp[iIndex].lock()->Set_Tick(false);
             m_pSkillHelp[iIndex].lock()->Set_Render(false);
         }
+        GET_PLAYER->Get_Script<HeroChangeScript>()->Change_Player();
     }
     else
     {
@@ -130,6 +131,7 @@ void UiCharChange::Set_Hero(_uint iIndex)
             m_pSkillHelp[iIndex].lock()->Set_Tick(true);
             m_pSkillHelp[iIndex].lock()->Set_Render(true);
         }
+        Change_Skill_Help();
     }
 }
 
@@ -295,6 +297,25 @@ _bool UiCharChange::IsSkillHelp_Available(_uint iIndex)
     return false;
 }
 
+void UiCharChange::Change_Skill_Help()
+{
+    if (-1 == m_iCurIndex)
+        return;
+
+    if (true == m_bIsChange[m_iCurIndex])
+    {
+        if (false == m_pSkillHelp[m_iCurIndex].expired() && HERO::MAX != DATAMGR.Get_Cur_Set_Hero(m_iCurIndex))
+        {
+            m_pSkillHelp[m_iCurIndex].lock()->Set_Tick(true);
+            m_pSkillHelp[m_iCurIndex].lock()->Set_Render(true);
+        }
+
+        m_bIsChange[m_iCurIndex] = false;
+        m_iCurIndex = -1;
+        GET_PLAYER->Get_Script<HeroChangeScript>()->Change_Player();
+    }
+}
+
 void UiCharChange::Check_Change_Cool()
 {
     _uint iSize = IDX(m_vecDesc.size());
@@ -341,6 +362,7 @@ void UiCharChange::Change_Hero()
                 m_pSkillHelp[2].lock()->Set_Render(true);
             }
 
+            m_iCurIndex = 0;
             m_bIsChange[0] = true;
             m_bIsChange[1] = false;
             m_bIsChange[2] = false;
@@ -355,6 +377,7 @@ void UiCharChange::Change_Hero()
                 m_pSkillHelp[0].lock()->Set_Render(true);
             }
 
+            m_iCurIndex = -1;
             m_bIsChange[0] = false;
             auto pScript = GET_PLAYER->Get_Script<HeroChangeScript>();
             pScript->Change_Player();
@@ -384,6 +407,7 @@ void UiCharChange::Change_Hero()
                 m_pSkillHelp[2].lock()->Set_Render(true);
             }
 
+            m_iCurIndex = 1;
             m_bIsChange[0] = false;
             m_bIsChange[1] = true;
             m_bIsChange[2] = false;
@@ -398,6 +422,7 @@ void UiCharChange::Change_Hero()
                 m_pSkillHelp[1].lock()->Set_Render(true);
             }
 
+            m_iCurIndex = -1;
             m_bIsChange[1] = false;
             auto pScript = GET_PLAYER->Get_Script<HeroChangeScript>();
             pScript->Change_Player();
@@ -426,6 +451,7 @@ void UiCharChange::Change_Hero()
                 m_pSkillHelp[2].lock()->Set_Render(false);
             }
 
+            m_iCurIndex = 2;
             m_bIsChange[0] = false;
             m_bIsChange[1] = false;
             m_bIsChange[2] = true;
@@ -440,6 +466,7 @@ void UiCharChange::Change_Hero()
                 m_pSkillHelp[2].lock()->Set_Render(true);
             }
 
+            m_iCurIndex = -1;
             m_bIsChange[2] = false;
             auto pScript = GET_PLAYER->Get_Script<HeroChangeScript>();
             pScript->Change_Player();

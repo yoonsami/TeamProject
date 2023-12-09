@@ -41,7 +41,7 @@ public:
     void                Remove_Card_Inven(_uint iIndex);
 
     HERO                Get_Cur_Set_Hero(_uint iIndex);
-    void                Set_Cur_Hero(_uint iIndex, _uint iCardIndex);
+    _bool               Set_Cur_Hero(_uint iIndex, _uint iCardIndex);
     void                Remove_Cur_Hero(_uint iIndex);
 
     void                Sort_By_Star();

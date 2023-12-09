@@ -698,9 +698,9 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 
 
 
-	// ※※※※※※※※※※※※※※※
-	// add only GranseedScene
-	// ※※※※※※※※※※※※※※※
+	// ※※※※※※※※※※※※※※※	※※※※※※※※※※※※※※※	※※※※※※※※※※※※※※※
+	// add only GranseedScene	add only GranseedScene	add only GranseedScene
+	// ※※※※※※※※※※※※※※※	※※※※※※※※※※※※※※※	※※※※※※※※※※※※※※※
 
 	{
 		auto pObj = make_shared<GameObject>();
@@ -714,9 +714,9 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		Add_GameObject(pObj);
 	}
 
-	// ※※※※※※※※※※※※※※※
-	// add only GranseedScene
-	// ※※※※※※※※※※※※※※※
+	// ※※※※※※※※※※※※※※※	※※※※※※※※※※※※※※※	※※※※※※※※※※※※※※※
+	// add only GranseedScene	add only GranseedScene	add only GranseedScene
+	// ※※※※※※※※※※※※※※※	※※※※※※※※※※※※※※※	※※※※※※※※※※※※※※※
 
 
 
