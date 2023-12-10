@@ -403,7 +403,7 @@ void DragonBallMonster_FSM::Summon_HalfCircle_Floor()
 
 	m_tPatternCoolTime.fAccTime = 0.f;
 
-	_float3 vSkillScale = _float3{ 14.f,1.f, 30.f };
+	_float3 vSkillScale = _float3{ 14.f, 1.f, 30.f };
 
 	FLOORSKILLDESC desc;
 	desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -566,9 +566,9 @@ void DragonBallMonster_FSM::Create_FloorSkillEffect()
 		pScript->Set_CoolTime(0.05f);
 		pScript->Set_SkillTag(L"DragonBall_floorattack");
 		pScript->Set_UseOwnerPosOnly(true);
-		_float4x4 matOffset = _float4x4::CreateScale(1.5f) 
-			*  _float4x4::CreateFromQuaternion(Quaternion(0.f, 0.f, 0.f, 1.f)) 
-			* _float4x4::CreateTranslation(_float3(0.f, -1.5f, 0.f));
+		_float4x4 matOffset = _float4x4::CreateScale(2.f) 
+			* _float4x4::CreateFromQuaternion(Quaternion(0.f, 0.f, 0.f, 1.f)) 
+			* _float4x4::CreateTranslation(_float3(0.f, -2.6f, 0.f));
 		pScript->Set_OffsetMatrix(matOffset);
 
 		switch (m_iPreAttack)
