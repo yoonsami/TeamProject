@@ -34,6 +34,51 @@ void UIShop::Tick()
 	if (m_pOwner.expired())
 		return;
 
+    if (false == m_bIsCreated)
+        return;
+
+    if (KEYPUSH(KEY_TYPE::Q))
+    {
+        if (700 >= m_ItemObj[IDX(m_ItemObj.size()) - 1].lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x)
+        {
+
+        }
+        else
+        {
+            for (_uint i = 0; i < IDX(m_ItemObj.size()); ++i)
+            {
+                auto& pObj = m_ItemObj[i];
+                if (false == pObj.expired())
+                {
+                    _float4 fPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+                    fPos.x -= 3.f;
+                    pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, fPos);
+                }
+            }
+        }
+    }
+
+    if (KEYPUSH(KEY_TYPE::E))
+    {
+        if (-700 <= m_ItemObj[0].lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x)
+        {
+
+        }
+        else
+        {
+            for (_uint i = 0; i < IDX(m_ItemObj.size()); ++i)
+            {
+                auto& pObj = m_ItemObj[i];
+                if (false == pObj.expired())
+                {
+                    _float4 fPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+                    fPos.x += 3.f;
+                    pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, fPos);
+                }
+            }
+        }
+    }
+
 }
 
 void UIShop::Create_Shop()
@@ -49,7 +94,7 @@ void UIShop::Create_Shop()
     // bg랑 item으로 분리. 따로 저장하면 이동은 아이템에서 로드한 객체 벡터로 적용시 편함
     // 
 
-    pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Shop.dat", m_addedObj);
+    pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Shop_Bg.dat", m_addedObj);
 
     _uint iSize = IDX(m_addedObj.size());
     for (_uint i = 0; i < iSize; ++i)
@@ -66,119 +111,156 @@ void UIShop::Create_Shop()
                     this->Remove_Shop();
                 });
         }
-        else if (L"UI_Shop_Item_0" == strName)
-        {
-            pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-                {
-                    this->Click_Item(0);
-                });
-        }
-        else if (L"UI_Shop_Item_1" == strName)
-        {
-            pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-                {
-                    this->Click_Item(1);
-                });
-        }
-        else if (L"UI_Shop_Item_2" == strName)
-        {
-            pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-                {
-                    this->Click_Item(2);
-                });
-        }
-        else if (L"UI_Shop_Item_3" == strName)
-        {
-            pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-                {
-                    this->Click_Item(3);
-                });
-        }
-        else if (L"UI_Shop_Item_4" == strName)
-        {
-            pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-                {
-                    this->Click_Item(4);
-                });
-        }
-        else if (L"UI_Shop_Item_5" == strName)
-        {
-            pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-                {
-                    this->Click_Item(5);
-                });
-        }
-        else if (L"UI_Shop_Item_6" == strName)
-        {
-            pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-                {
-                    this->Click_Item(6);
-                });
-        }
-        else if (L"UI_Shop_Item_7" == strName)
-        {
-            pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-                {
-                    this->Click_Item(7);
-                });
-        }
-        else if (L"UI_Shop_Item_8" == strName)
-        {
-            pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-                {
-                    this->Click_Item(8);
-                });
-        }
-        else if (L"UI_Shop_Item_9" == strName)
-        {
-            pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-                {
-                    this->Click_Item(9);
-                });
-        }
-        else if (L"UI_Shop_Item_10" == strName)
-        {
-            pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-                {
-                    this->Click_Item(10);
-                });
-        }
-        else if (L"UI_Shop_Item_11" == strName)
-        {
-            pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-                {
-                    this->Click_Item(11);
-                });
-        }
         else if (L"UI_Shop_Money_Value" == strName)
         {
             m_pMoneyValue = pObj;
             m_pMoneyValue.lock()->Get_FontRenderer()->Get_Text() = to_wstring(m_iMoney);
         }
 
-        for (_uint j = 0; j < 12; ++j)
-        {
-            if (false == m_vecIsBuy[j])
-                continue;
+        //else if (L"UI_Shop_Item_0" == strName)
+        //{
+        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
+        //        {
+        //            this->Click_Item(0);
+        //        });
+        //}
+        //else if (L"UI_Shop_Item_1" == strName)
+        //{
+        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
+        //        {
+        //            this->Click_Item(1);
+        //        });
+        //}
+        //else if (L"UI_Shop_Item_2" == strName)
+        //{
+        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
+        //        {
+        //            this->Click_Item(2);
+        //        });
+        //}
+        //else if (L"UI_Shop_Item_3" == strName)
+        //{
+        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
+        //        {
+        //            this->Click_Item(3);
+        //        });
+        //}
+        //else if (L"UI_Shop_Item_4" == strName)
+        //{
+        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
+        //        {
+        //            this->Click_Item(4);
+        //        });
+        //}
+        //else if (L"UI_Shop_Item_5" == strName)
+        //{
+        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
+        //        {
+        //            this->Click_Item(5);
+        //        });
+        //}
+        //else if (L"UI_Shop_Item_6" == strName)
+        //{
+        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
+        //        {
+        //            this->Click_Item(6);
+        //        });
+        //}
+        //else if (L"UI_Shop_Item_7" == strName)
+        //{
+        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
+        //        {
+        //            this->Click_Item(7);
+        //        });
+        //}
+        //else if (L"UI_Shop_Item_8" == strName)
+        //{
+        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
+        //        {
+        //            this->Click_Item(8);
+        //        });
+        //}
+        //else if (L"UI_Shop_Item_9" == strName)
+        //{
+        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
+        //        {
+        //            this->Click_Item(9);
+        //        });
+        //}
+        //else if (L"UI_Shop_Item_10" == strName)
+        //{
+        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
+        //        {
+        //            this->Click_Item(10);
+        //        });
+        //}
+        //else if (L"UI_Shop_Item_11" == strName)
+        //{
+        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
+        //        {
+        //            this->Click_Item(11);
+        //        });
+        //}
+        
 
-            if (2 == j)
-                continue;
-
-            wstring strItemName = L"UI_Shop_Item_" + to_wstring(j);
-            wstring strPrice = strItemName + L"_Price";
-            if (true == pObj.expired())
-                continue;
-
-            if (strItemName == pObj.lock()->Get_Name())
-            {
-                pObj.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = 0.f;
-            }
-            else if (strPrice == pObj.lock()->Get_Name())
-            {
-                pObj.lock()->Get_FontRenderer()->Get_Text() = L"구매 완료";
-            }
-        }
+        //for (_uint j = 0; j < 12; ++j)
+        //{
+        //    if (false == m_vecIsBuy[j])
+        //        continue;
+        //
+        //    if (2 == j)
+        //        continue;
+        //
+        //    wstring strItemName = L"UI_Shop_Item_" + to_wstring(j);
+        //    wstring strPrice = strItemName + L"_Price";
+        //    if (true == pObj.expired())
+        //        continue;
+        //
+        //    if (strItemName == pObj.lock()->Get_Name())
+        //    {
+        //        pObj.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = 0.f;
+        //    }
+        //    else if (strPrice == pObj.lock()->Get_Name())
+        //    {
+        //        pObj.lock()->Get_FontRenderer()->Get_Text() = L"구매 완료";
+        //    }
+        //}
     }
+
+    pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Shop_Test.dat", m_ItemObj);
+
+    iSize = IDX(m_ItemObj.size());
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        auto& pObj = m_ItemObj[i];
+        if (true == pObj.expired())
+            continue;
+
+        if (i < iSize / 2)
+        {
+
+            pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-700.f + 280.f * i, 180.f, 4.8f, 1.f));
+        }
+        else
+        {
+            pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-700.f + 280.f * (i - iSize / 2), -160.f, 4.8f, 1.f));
+        }
+
+        wstring strName = pObj.lock()->Get_Name();
+        //if (L"UI_Shop_Exit" == strName)
+        //{
+        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
+        //        {
+        //            this->Remove_Shop();
+        //        });
+        //}
+        //else if (L"UI_Shop_Money_Value" == strName)
+        //{
+        //    m_pMoneyValue = pObj;
+        //    m_pMoneyValue.lock()->Get_FontRenderer()->Get_Text() = to_wstring(m_iMoney);
+        //}
+    }
+
 }
 
 void UIShop::Remove_Shop()
@@ -201,8 +283,18 @@ void UIShop::Remove_Shop()
             pObj.reset();
         }
     }
-
     m_addedObj.clear();
+
+    for (_uint i = 0; i < IDX(m_ItemObj.size()); ++i)
+    {
+        auto& pObj = m_ItemObj[i];
+        if (false == pObj.expired())
+        {
+            pEventMgr.Delete_Object(pObj.lock());
+            pObj.reset();
+        }
+    }
+    m_ItemObj.clear();
 
     Remove_Buy_Ui();
 }

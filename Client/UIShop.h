@@ -29,6 +29,8 @@ private:
 
 private:
     vector<weak_ptr<GameObject>> m_addedObj;
+    vector<weak_ptr<GameObject>> m_ItemObj;
+
     vector<weak_ptr<GameObject>> m_addedBuyUi;
 
     weak_ptr<GameObject> m_pMoneyValue;
