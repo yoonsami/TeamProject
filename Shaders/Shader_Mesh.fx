@@ -18,23 +18,6 @@ UIOutput VS_UI(VTXMesh input)
     return output;
 }
 
-MeshOutput VS_Terrain(VTXMesh input)
-{
-    MeshOutput output;
-    
-    output.position = mul(float4(input.position, 1.f), W);
-    output.worldPosition = output.position.xyz;
-    
-    output.viewNormal = mul(input.normal, (float3x3) W);
-    output.viewNormal = normalize(mul(output.viewNormal, (float3x3) V));
-    output.viewTangent = mul(input.tangent, (float3x3) W);
-    output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
-    
-    output.position = mul(output.position, VP);
-    output.uv = input.uv;
-    return output;
-}
-
 VS_OUT VS_Default(VTXMesh input)
 {
     VS_OUT output;
@@ -69,6 +52,19 @@ VS_OUT VS_3D_To_2D(VTXMesh input)
     return output;
 }
 
+MeshOutput VS_Grass(VTXMesh input)
+{
+    MeshOutput output;
+    output.position = float4(input.position, 1.f);
+    output.uv = input.uv;
+    output.worldPosition = mul(float4(input.position, 1.f), W).xyz;
+    output.viewPosition = mul(float4(output.worldPosition, 1.f), V).xyz;
+    output.viewNormal = mul(float4(input.normal, 0.f), V).xyz;
+    output.viewTangent = mul(float4(input.tangent, 0.f), V).xyz;
+    
+    return output;
+}
+
 VS_OUT VS_ViewPort(VTXMesh input)
 {    
     VS_OUT output;
@@ -98,6 +94,7 @@ struct GS_OUTPUT
     float3 viewTangent : TANGENT;
     float3 viewPos : POSITION1;
 };
+
 //g_int_0 spriteCountX
 //g_int_1 spriteCountY
 //g_vec2_0 curtime,lifetime
@@ -109,6 +106,16 @@ struct GS_OUTPUT
 
 //g_vec4_0 - TerrainBrushPos
 //g_float_0 - TerrainBrushRadius
+
+struct GS_GRASS_OUTPUT
+{
+    float4 position : SV_POSITION;
+    float3 worldPosition : POSITION1;
+    float3 viewPosition : POSITION2;
+    float2 uv : TEXCOORD;
+    float3 viewNormal : NORMAL;
+    float3 viewTangent : TANGENT;
+};
 
 [maxvertexcount(6)]
 void GS_Main(point VS_OUT input[1], inout TriangleStream<GS_OUTPUT> outputStream)
@@ -164,6 +171,100 @@ void GS_Main(point VS_OUT input[1], inout TriangleStream<GS_OUTPUT> outputStream
     outputStream.RestartStrip();
 }
 
+// 회전행렬 생성
+float4x4 RotateMatrix(float angle, float3 axis)
+{
+    float s = sin(angle);
+    float c = cos(angle);
+    float oneMinusC = 1.0 - c;
+
+    float3 sq = axis * axis;
+    float3x3 rotationMatrix = float3x3(
+        sq.x * oneMinusC + c,
+        sq.x * oneMinusC + axis.y * axis.x * oneMinusC + axis.z * s,
+        axis.x * axis.z * oneMinusC - axis.y * s,
+
+        axis.x * axis.y * oneMinusC - axis.z * s,
+        sq.y * oneMinusC + c,
+        sq.y * oneMinusC + axis.z * axis.y * oneMinusC + axis.x * s,
+
+        axis.x * axis.z * oneMinusC + axis.y * s,
+        axis.y * axis.z * oneMinusC - axis.x * s,
+        sq.z * oneMinusC + c
+    );
+    
+    return float4x4(
+        float4(rotationMatrix[0], 0),
+        float4(rotationMatrix[1], 0),
+        float4(rotationMatrix[2], 0),
+        float4(0, 0, 0, 1)
+    );
+}
+
+[maxvertexcount(12)]
+void GS_Grass(point MeshOutput input[1], inout TriangleStream<GS_GRASS_OUTPUT> outputStream)
+{
+    const uint vertexCount = 4;
+    const uint billboardCount = 3;
+    GS_GRASS_OUTPUT output[vertexCount * billboardCount] =
+    {
+        (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f,
+        (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f,
+        (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f
+    };
+    
+    float3 trans, mscale;
+    float4 q;
+    for (uint j = 0; j < billboardCount; j++)
+    {
+        float4x4 matRotateByBillboard = RotateMatrix(radians(60.0 * j), float3(0.f, 1.f, 0.f));
+        float4x4 RotateWByBillboard = mul(W, matRotateByBillboard);
+        decompose(RotateWByBillboard, trans, q, mscale);
+        MeshOutput vtx = input[0];
+        //float2 scale = mscale.xy * 0.5f;
+        
+        output[j * 4 + 0].position = vtx.position - RotateWByBillboard[0] * 0.5f + RotateWByBillboard[1] * 0.5f;
+        output[j * 4 + 1].position = vtx.position + RotateWByBillboard[0] * 0.5f + RotateWByBillboard[1] * 0.5f;
+        output[j * 4 + 2].position = vtx.position + RotateWByBillboard[0] * 0.5f - RotateWByBillboard[1] * 0.5f;
+        output[j * 4 + 3].position = vtx.position - RotateWByBillboard[0] * 0.5f - RotateWByBillboard[1] * 0.5f;
+        
+        output[j * 4 + 0].uv = float2(0.f, 0.f);
+        output[j * 4 + 1].uv = float2(1.f, 0.f);
+        output[j * 4 + 2].uv = float2(1.f, 1.f);
+        output[j * 4 + 3].uv = float2(0.f, 1.f);
+    
+        output[j * 4 + 0].viewPosition = mul(output[j * 4 + 0].position, W);
+        output[j * 4 + 1].viewPosition = mul(output[j * 4 + 1].position, W);
+        output[j * 4 + 2].viewPosition = mul(output[j * 4 + 2].position, W);
+        output[j * 4 + 3].viewPosition = mul(output[j * 4 + 3].position, W);
+
+    // proj q
+        output[j * 4 + 0].position = mul(float4(output[j * 4 + 0].viewPosition, 1.f), P);
+        output[j * 4 + 1].position = mul(float4(output[j * 4 + 1].viewPosition, 1.f), P);
+        output[j * 4 + 2].position = mul(float4(output[j * 4 + 2].viewPosition, 1.f), P);
+        output[j * 4 + 3].position = mul(float4(output[j * 4 + 3].viewPosition, 1.f), P);
+        
+        output[j * 4 + 0].viewNormal = float3(0.f, 0.f, -1.f);
+        output[j * 4 + 1].viewNormal = float3(0.f, 0.f, -1.f);
+        output[j * 4 + 2].viewNormal = float3(0.f, 0.f, -1.f);
+        output[j * 4 + 3].viewNormal = float3(0.f, 0.f, -1.f);
+        
+        output[j * 4 + 0].viewTangent = float3(1.f, 0.f, 0.f);
+        output[j * 4 + 1].viewTangent = float3(1.f, 0.f, 0.f);
+        output[j * 4 + 2].viewTangent = float3(1.f, 0.f, 0.f);
+        output[j * 4 + 3].viewTangent = float3(1.f, 0.f, 0.f);
+
+        outputStream.Append(output[j * 4 + 0]);
+        outputStream.Append(output[j * 4 + 1]);
+        outputStream.Append(output[j * 4 + 2]);
+        outputStream.RestartStrip();
+
+        outputStream.Append(output[j * 4 + 0]);
+        outputStream.Append(output[j * 4 + 2]);
+        outputStream.Append(output[j * 4 + 3]);
+        outputStream.RestartStrip();
+    }
+}
 
 [maxvertexcount(6)]
 void GS_Sprite(point VS_OUT input[1], inout TriangleStream<GS_OUTPUT> outputStream)
@@ -723,42 +824,9 @@ float4 PS_Test2(GS_OUTPUT input) : SV_TARGET
 
     return color;
 }
-float4 PS_Terrain(MeshOutput input) : SV_TARGET
+float4 PS_Terrain(GS_GRASS_OUTPUT input) : SV_TARGET
 {   
-    float4 color;
-    
-    float4 maskColor = TextureMap7.Sample(LinearSampler, float2(input.uv.x / g_vec2_0.x, input.uv.y / g_vec2_0.y));
-    float4 diffuseColor = 1.f;
-    
-    // 길이 있으면 길색깔잡초색깔 비율맞춤
-    if (maskColor.g > 0)
-    {
-        float4 RoadColor = TextureMap8.Sample(LinearSampler, input.uv);
-        float4 tempDiffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
-        
-        RoadColor = mul(RoadColor, maskColor.g);
-        tempDiffuseColor = mul(tempDiffuseColor, 1 - maskColor.g);
-        
-        diffuseColor = RoadColor + tempDiffuseColor;
-    }
-    else
-        diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
-    
-    //ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
-    
-    // 브러시관련
-    float3 vBrushPos = g_vec4_0.xyz;
-    float fBrushRadius = g_float_0;
-    float4 colBrushColor = float4(0.f, 0.f, 0.f, 0.f);
-    
-    vBrushPos.y = input.worldPosition.y; // 높이는 같다고 가정.
-    
-    // 브러시포지션과 거리가 브러시Radius이하라면 색깔을 흰색으로 함.
-    if (length((input.worldPosition) - vBrushPos) <= fBrushRadius)
-    {
-        colBrushColor = float4(0.2f, 0.2f, 0.2, 0.f);
-    }
-    color = diffuseColor + colBrushColor;
+    float4 color = DiffuseMap.Sample(LinearSampler, input.uv);
     
     return color;
 }
@@ -948,14 +1016,15 @@ technique11 T0
 
     }
 //18
-    pass Terrain
+// 지오메트리셰이더를 활용해서 만든 풀
+    pass GeometryWeed
     {
-        SetVertexShader(CompileShader(vs_5_0, VS_Terrain()));
+        SetVertexShader(CompileShader(vs_5_0, VS_Grass()));
         SetRasterizerState(RS_CullNone);
         SetDepthStencilState(DSS_Default, 0);
         SetPixelShader(CompileShader(ps_5_0, PS_Terrain()));
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-        SetGeometryShader(NULL);
+        SetGeometryShader(CompileShader(gs_5_0, GS_Grass()));
     }
 //19
     pass UIModel

@@ -751,6 +751,11 @@ void ImGui_Manager::Frame_Wall()
         Delete_GroundMesh();
     }
 
+    if (ImGui::Button("GeometryTest"))
+    {
+        GeometryTest();
+    }
+
     ImGui::End();
 }
 
@@ -1020,6 +1025,38 @@ void ImGui_Manager::LookAtSampleObject()
         // 카메라 원래대로 돌아가기
         CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_WorldMat(m_matPreCamera);
     }
+}
+
+void ImGui_Manager::GeometryTest()
+{
+    // 벽정보를 기반으로 벽메시 생성
+    shared_ptr<Mesh> WeedMesh = make_shared<Mesh>();
+    WeedMesh->CreateGrid(5,5);
+
+    // 메시를 기반으로 벽오브젝트 생성
+    shared_ptr<GameObject> WeedObj = make_shared<GameObject>();
+    WeedObj->Set_Name(L"WeedObj");
+    WeedObj->GetOrAddTransform();
+
+    // 메시렌더러
+    shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+    renderer->Set_Mesh(WeedMesh);
+    renderer->Set_Pass(18);
+
+    shared_ptr<Material> material = make_shared<Material>();
+    auto Weedtexture = RESOURCES.GetOrAddTexture(L"Weed", L"..\\Resources\\Textures\\MapObject\\TerrainTile\\pngegg.png");
+    material->Set_TextureMap(Weedtexture, TextureMapType::DIFFUSE);
+    renderer->Set_Material(material);
+    
+    // 메시를 통해 메시콜라이더 생성
+    shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(*WeedMesh.get());
+    WeedObj->Add_Component(pCollider);
+    pCollider->Set_Activate(true);
+
+    WeedObj->Add_Component(renderer);
+
+    EVENTMGR.Create_Object(WeedObj);
+    //Create_MaskTexture();
 }
 
 HRESULT ImGui_Manager::Load_SkyBoxTexture()
@@ -1369,43 +1406,43 @@ void ImGui_Manager::Create_Terrain(shared_ptr<Terrain> _pTerrainMesh, _int _iTer
     TerrainObject->Set_Name(L"Terrain");
     TerrainObject->GetOrAddTransform();
 
-    //// 하이트맵 계산해서 메시에 적용하기
-    //// TGA(HeightMap)텍스쳐를 가져와서 RGB값 모두 저장.
-    //{
-    //    // TGA 파일 경로 설정
-    //    const wchar_t* filePath = L"..\\Resources\\Textures\\MapObject\\TerrainTile\\Texture2D_90.tga";
-    //    // TGA 파일 로드
-    //    TexMetadata metadata;
-    //    ScratchImage image;
-    //    LoadFromTGAFile(filePath, &metadata, image);
+    // 하이트맵 계산해서 메시에 적용하기
+    // TGA(HeightMap)텍스쳐를 가져와서 RGB값 모두 저장.
+    {
+        // TGA 파일 경로 설정
+        const wchar_t* filePath = L"..\\Resources\\Textures\\MapObject\\TerrainTile\\HeightMap.tga";
+        // TGA 파일 로드
+        TexMetadata metadata;
+        ScratchImage image;
+        LoadFromTGAFile(filePath, &metadata, image);
 
-    //    // 픽셀 데이터 얻기
-    //    const auto* img = image.GetImage(0, 0, 0); // 첫 이미지 데이터 가져오기
-    //    // 픽셀 데이터에 접근하여 출력
-    //    const uint8_t* pixels = static_cast<const uint8_t*>(img->pixels);
-    //    size_t pixelSize = metadata.format == DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM ? 4 : 3; // RGBA 또는 RGB 픽셀 크기
-    //    size_t rowPitch = img->rowPitch;
+        // 픽셀 데이터 얻기
+        const auto* img = image.GetImage(0, 0, 0); // 첫 이미지 데이터 가져오기
+        // 픽셀 데이터에 접근하여 출력
+        const uint8_t* pixels = static_cast<const uint8_t*>(img->pixels);
+        size_t pixelSize = metadata.format == DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM ? 4 : 3; // RGBA 또는 RGB 픽셀 크기
+        size_t rowPitch = img->rowPitch;
 
-    //    // 모든픽셀의 색을 저장할 벡터
-    //    vector<_float4> pixelColors;
-    //    for (size_t i = 0; i < img->height ; ++i) {
-    //        for (size_t j = 0; j < img->width; ++j) {
-    //            size_t pixelIndex = i * rowPitch + j * pixelSize;
-    //            _float4 pixelColor = _float4{ static_cast<_float>(pixels[pixelIndex + 0]) , static_cast<_float>(pixels[pixelIndex + 1]), static_cast<_float>(pixels[pixelIndex + 2]), static_cast<_float>(pixels[pixelIndex + 3]) };
-    //            pixelColors.push_back(pixelColor);
-    //        }
-    //    }
+        // 모든픽셀의 색을 저장할 벡터
+        vector<_float4> pixelColors;
+        for (size_t i = 0; i < img->height ; ++i) {
+            for (size_t j = 0; j < img->width; ++j) {
+                size_t pixelIndex = i * rowPitch + j * pixelSize;
+                _float4 pixelColor = _float4{ static_cast<_float>(pixels[pixelIndex + 0]) , static_cast<_float>(pixels[pixelIndex + 1]), static_cast<_float>(pixels[pixelIndex + 2]), static_cast<_float>(pixels[pixelIndex + 3]) };
+                pixelColors.push_back(pixelColor);
+            }
+        }
 
-    //    // 정점들의 w
-    //    auto& vertices = _pTerrainMesh->Get_Geometry()->Get_Vertices();
-    //    auto tempVertices = vertices;
-    //    for (size_t i = 0; i < vertices.size(); ++i)
-    //    {
-    //        tempVertices[i].vPosition.y = pixelColors[i].z * 0.04;
-    //    }
-    //    _pTerrainMesh->Get_Geometry()->Set_Vertices(tempVertices);
-    //    _pTerrainMesh->Create_Buffer();
-    //}
+        // 정점들의 w
+        auto& vertices = _pTerrainMesh->Get_Geometry()->Get_Vertices();
+        auto tempVertices = vertices;
+        for (size_t i = 0; i < vertices.size(); ++i)
+        {
+            tempVertices[i].vPosition.y = pixelColors[i].z * 0.04;
+        }
+        _pTerrainMesh->Get_Geometry()->Set_Vertices(tempVertices);
+        _pTerrainMesh->Create_Buffer();
+    }
 
     // 메시렌더러
     shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Terrain.fx"));
@@ -1476,8 +1513,8 @@ void ImGui_Manager::Create_MaskTexture()
     D3D11_TEXTURE2D_DESC TextureDesc;
     ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
 
-    TextureDesc.Width = 512;
-    TextureDesc.Height = 512;
+    TextureDesc.Width = 256;
+    TextureDesc.Height = 256;
     TextureDesc.MipLevels = 1;
     TextureDesc.ArraySize = 1;
     TextureDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
@@ -1514,16 +1551,18 @@ void ImGui_Manager::Create_MaskTexture()
     if (FAILED(DEVICE->CreateTexture2D(&TextureDesc, &SubResourceData, &pTexture2D)))
         return;
 
+    auto& terrainVertices = CUR_SCENE->Get_GameObject(L"Terrain")->Get_MeshRenderer()->Get_Mesh()->Get_Geometry()->Get_Vertices();
+   
     for (_uint i = 0; i < TextureDesc.Height; ++i)
     {
         for (_uint j = 0; j < TextureDesc.Width; j++)
         {
             _uint iIndex = i * TextureDesc.Width + j;
 
-            if (j < 256)
-                pPixel[iIndex] = D3DCOLOR_ARGB(255, 0, 0, 255);
-            else
-                pPixel[iIndex] = D3DCOLOR_ARGB(255, 255, 255, 255);
+            _float terrainHeight = terrainVertices[(TextureDesc.Width - i - 1) * TextureDesc.Width + j].vPosition.y + 50.f;
+            terrainHeight *= 255.f;
+            terrainHeight *= 0.01f;
+            pPixel[iIndex] = D3DCOLOR_ARGB((_uint)terrainHeight, (_uint)terrainHeight, (_uint)terrainHeight, (_uint)terrainHeight);
         }
     }
 
@@ -1538,7 +1577,7 @@ void ImGui_Manager::Create_MaskTexture()
     ScratchImage scratchImage;
     CaptureTexture(DEVICE.Get(), CONTEXT.Get(), pTexture2D, scratchImage);
 
-    wstring wstrName = L"..\\Resources\\Textures\\MapObject\\TerrainTile\\TileMask.tga";
+    wstring wstrName = L"..\\Resources\\Textures\\MapObject\\TerrainTile\\HeightMap.tga";
     SaveToTGAFile(*scratchImage.GetImage(0, 0, 0), wstrName.data());
 }
 

@@ -49,6 +49,8 @@ private:
 	void Picking_Object();
 	// 샘플오브젝트로 시야이동
 	void LookAtSampleObject();
+	// 지오메트리로 잡초생성
+	void GeometryTest();
 
 	// 스카이박스목록 불러오기
 	HRESULT Load_SkyBoxTexture();
@@ -169,7 +171,7 @@ private:
 	// 콜라이더목록
 	const char* m_szColliderTypes[4] = { "Sphere","AABB", "OBB", "Mesh" };
 	// 설치된 오브젝트리스트가 바뀌었을때 높이를 찾아가도록 변경, true면 틱에서 1회변경후 false로 다시바꿈
-	_bool m_bObjectListResetHeight = { false };
+	_bool m_bObjectListResetHeight = { false }; 
 
 // 기즈모관련
 	GizmoOp m_eGizmoOp = { GizmoTR };
