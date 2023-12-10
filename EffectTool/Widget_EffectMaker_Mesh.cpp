@@ -36,7 +36,7 @@ void Widget_EffectMaker_Mesh::Tick()
 	ImGui::Begin("Finished Effect");
 	ImGui_FinishedEffect();
 	ImGui::End();
-
+	 
 	if (m_bSaveMsgBox_On)
 	{
 		ImGui::SetNextWindowPos(ImVec2(g_iWinSizeX/2.f - 30.f, g_iWinSizeY / 2.f - 10.f));
@@ -216,12 +216,9 @@ void Widget_EffectMaker_Mesh::ImGui_EffectMaker()
 void Widget_EffectMaker_Mesh::ImGui_FinishedEffect()
 {
 	ImGui::SeparatorText("Effect List");
-	ImGui::ListBox("##FinishedEffect", &m_iFinishedObject, m_pszFinishedEffects, m_iNumFinishedEffects, 10);
-	ImGui::Spacing();
-
 	if (ImGui::Button("Load"))
 		Load();
-	ImGui::SameLine();
+	ImGui::ListBox("##FinishedEffect", &m_iFinishedObject, m_pszFinishedEffects, m_iNumFinishedEffects, 20);
 }
 
 void Widget_EffectMaker_Mesh::ImGui_SaveMsgBox()

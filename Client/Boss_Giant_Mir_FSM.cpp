@@ -822,12 +822,13 @@ void Boss_Giant_Mir_FSM::skill_1100_Init()
 
 void Boss_Giant_Mir_FSM::skill_1200()
 {
+    if (Init_CurFrame(182))
+        Add_GroupEffectOwner(L"GiantMir_1200_floor", _float3(20.f, -2.f, -5.f), false);
+
     if (Init_CurFrame(131))
         Set_RigidBodyActivate(false);
     else if (Init_CurFrame(182))
         Set_RigidBodyActivate(true);
-
-
 
     if (Init_CurFrame(191))
         TailAttackCollider_On(KNOCKBACK_ATTACK, 10.f);
@@ -1260,6 +1261,8 @@ void Boss_Giant_Mir_FSM::Create_Giant_Mir_Collider()
 
 void Boss_Giant_Mir_FSM::Create_DragonBall()
 {
+    Add_GroupEffectOwner(L"GiantMir_7100", _float3(0.f, -3.f, 0.f), false);
+    
     _uint iDragonBallIndex = 4;
 
     shared_ptr<GameObject> ObjDragonBall = make_shared<GameObject>();
@@ -1299,9 +1302,6 @@ void Boss_Giant_Mir_FSM::Create_DragonBall()
 
 void Boss_Giant_Mir_FSM::Set_AttackPattern()
 {
-    m_eCurState = STATE::skill_2100;
-
-    /*
     _uint iRan = rand() % 6;
 
     while (true)
@@ -1347,7 +1347,6 @@ void Boss_Giant_Mir_FSM::Set_AttackPattern()
         m_eCurState = STATE::skill_7100;
 
     m_tAttackCoolTime.fCoolTime = _float(rand() % 2) + 1.5f;
-    */
 }
 
 void Boss_Giant_Mir_FSM::Setting_DragonBall()

@@ -153,5 +153,4 @@ private:
 	_float4x4 LfootBoneMatrix = XMMatrixIdentity();
 
 	vector<weak_ptr<GameObject>>	m_vecDestroyObject;
-
 };
