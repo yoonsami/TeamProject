@@ -110,7 +110,6 @@ struct GS_OUTPUT
 struct GS_GRASS_OUTPUT
 {
     float4 position : SV_POSITION;
-    float3 worldPosition : POSITION1;
     float3 viewPosition : POSITION2;
     float2 uv : TEXCOORD;
     float3 viewNormal : NORMAL;
@@ -213,31 +212,32 @@ void GS_Grass(point MeshOutput input[1], inout TriangleStream<GS_GRASS_OUTPUT> o
         (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f
     };
     
-    float3 trans, mscale;
-    float4 q;
     for (uint j = 0; j < billboardCount; j++)
     {
         float4x4 matRotateByBillboard = RotateMatrix(radians(60.f * j), float3(0.f, 1.f, 0.f));
         float4x4 RotateWByBillboard = mul(matRotateByBillboard, W);
-        RotateWByBillboard[3].xyz += RotateWByBillboard[2].xyz * 10.f;
-        decompose(RotateWByBillboard, trans, q, mscale);
+        //RotateWByBillboard[3].xyz += RotateWByBillboard[2].xyz * 10.f;
         MeshOutput vtx = input[0];
         //float2 scale = mscale.xy * 0.5f;
         
-        output[j * 4 + 0].position = vtx.position - RotateWByBillboard[0] * 0.5f + RotateWByBillboard[1] * 0.5f;
-        output[j * 4 + 1].position = vtx.position + RotateWByBillboard[0] * 0.5f + RotateWByBillboard[1] * 0.5f;
-        output[j * 4 + 2].position = vtx.position + RotateWByBillboard[0] * 0.5f - RotateWByBillboard[1] * 0.5f;
-        output[j * 4 + 3].position = vtx.position - RotateWByBillboard[0] * 0.5f - RotateWByBillboard[1] * 0.5f;
+        
+        
+        output[j * 4 + 0].position = float4(vtx.position.xyz + matRotateByBillboard[2].xyz - matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f, 1.f);
+        output[j * 4 + 1].position = float4(vtx.position.xyz + matRotateByBillboard[2].xyz + matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f, 1.f);
+        output[j * 4 + 2].position = float4(vtx.position.xyz + matRotateByBillboard[2].xyz + matRotateByBillboard[0].xyz * 0.5f - matRotateByBillboard[1].xyz * 0.5f, 1.f);
+        output[j * 4 + 3].position = float4(vtx.position.xyz + matRotateByBillboard[2].xyz - matRotateByBillboard[0].xyz * 0.5f - matRotateByBillboard[1].xyz * 0.5f, 1.f);
+        
+        
         
         output[j * 4 + 0].uv = float2(0.f, 0.f);
         output[j * 4 + 1].uv = float2(1.f, 0.f);
         output[j * 4 + 2].uv = float2(1.f, 1.f);
         output[j * 4 + 3].uv = float2(0.f, 1.f);
     
-        output[j * 4 + 0].viewPosition = mul(output[j * 4 + 0].position, V);
-        output[j * 4 + 1].viewPosition = mul(output[j * 4 + 1].position, V);
-        output[j * 4 + 2].viewPosition = mul(output[j * 4 + 2].position, V);
-        output[j * 4 + 3].viewPosition = mul(output[j * 4 + 3].position, V);
+        output[j * 4 + 0].viewPosition = mul(output[j * 4 + 0].position, mul(W,V));
+        output[j * 4 + 1].viewPosition = mul(output[j * 4 + 1].position, mul(W,V));
+        output[j * 4 + 2].viewPosition = mul(output[j * 4 + 2].position, mul(W,V));
+        output[j * 4 + 3].viewPosition = mul(output[j * 4 + 3].position, mul(W, V));
 
     // proj q
         output[j * 4 + 0].position = mul(float4(output[j * 4 + 0].viewPosition, 1.f), P);
@@ -245,15 +245,15 @@ void GS_Grass(point MeshOutput input[1], inout TriangleStream<GS_GRASS_OUTPUT> o
         output[j * 4 + 2].position = mul(float4(output[j * 4 + 2].viewPosition, 1.f), P);
         output[j * 4 + 3].position = mul(float4(output[j * 4 + 3].viewPosition, 1.f), P);
         
-        output[j * 4 + 0].viewNormal = float3(0.f, 0.f, -1.f);
-        output[j * 4 + 1].viewNormal = float3(0.f, 0.f, -1.f);
-        output[j * 4 + 2].viewNormal = float3(0.f, 0.f, -1.f);
-        output[j * 4 + 3].viewNormal = float3(0.f, 0.f, -1.f);
+        output[j * 4 + 0].viewNormal = mul(RotateWByBillboard[2], V).xyz;
+        output[j * 4 + 1].viewNormal = mul(RotateWByBillboard[2], V).xyz;
+        output[j * 4 + 2].viewNormal = mul(RotateWByBillboard[2], V).xyz;
+        output[j * 4 + 3].viewNormal = mul(RotateWByBillboard[2], V).xyz;
         
-        output[j * 4 + 0].viewTangent = float3(1.f, 0.f, 0.f);
-        output[j * 4 + 1].viewTangent = float3(1.f, 0.f, 0.f);
-        output[j * 4 + 2].viewTangent = float3(1.f, 0.f, 0.f);
-        output[j * 4 + 3].viewTangent = float3(1.f, 0.f, 0.f);
+        output[j * 4 + 0].viewTangent = mul(RotateWByBillboard[0], V).xyz;
+        output[j * 4 + 1].viewTangent = mul(RotateWByBillboard[0], V).xyz;
+        output[j * 4 + 2].viewTangent = mul(RotateWByBillboard[0], V).xyz;
+        output[j * 4 + 3].viewTangent = mul(RotateWByBillboard[0], V).xyz;
 
         outputStream.Append(output[j * 4 + 0]);
         outputStream.Append(output[j * 4 + 1]);

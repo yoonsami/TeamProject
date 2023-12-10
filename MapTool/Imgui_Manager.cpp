@@ -754,7 +754,7 @@ void ImGui_Manager::Frame_Wall()
 
     if (ImGui::Button("GeometryTest"))
     {
-        Create_MaskTexture();
+        GeometryTest();
     }
 
     ImGui::End();
@@ -1032,8 +1032,7 @@ void ImGui_Manager::LookAtSampleObject()
 void ImGui_Manager::GeometryTest()
 {
     // 벽정보를 기반으로 벽메시 생성
-    shared_ptr<Mesh> WeedMesh = make_shared<Mesh>();
-    WeedMesh->CreateGrid(5,5);
+    shared_ptr<Mesh> WeedMesh = RESOURCES.Get<Mesh>(L"Point");
 
     // 메시를 기반으로 벽오브젝트 생성
     shared_ptr<GameObject> WeedObj = make_shared<GameObject>();
@@ -1050,11 +1049,6 @@ void ImGui_Manager::GeometryTest()
     material->Set_TextureMap(Weedtexture, TextureMapType::DIFFUSE);
     renderer->Set_Material(material);
     
-    // 메시를 통해 메시콜라이더 생성
-    shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(*WeedMesh.get());
-    WeedObj->Add_Component(pCollider);
-    pCollider->Set_Activate(true);
-
     WeedObj->Add_Component(renderer);
 
     EVENTMGR.Create_Object(WeedObj);
