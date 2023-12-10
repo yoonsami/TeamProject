@@ -1008,7 +1008,11 @@ void Boss_Spike_FSM::SQ_Die_Init()
         g_bCutScene = true;
     }
 
-    
+    if (!m_pOwner.expired())
+    {
+        if (m_pOwner.lock()->Get_Script<UIBossHpBar>())
+            m_pOwner.lock()->Get_Script<UIBossHpBar>()->Remove_HpBar();
+    }
 }
 
 void Boss_Spike_FSM::hit()

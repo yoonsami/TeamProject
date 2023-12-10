@@ -145,7 +145,6 @@ void Client_FSM::Create_FloorSkillCollider(CollisionGroup eGroup, const wstring&
 	FloorSkillCollider->GetOrAddTransform();
 	FloorSkillCollider->Get_Transform()->Set_State(Transform_State::POS, vPos);
 
-
 	auto pOBBCollider = make_shared<OBBBoxCollider>(vSkillScale);
 	FloorSkillCollider->Add_Component(pOBBCollider);
 	FloorSkillCollider->Get_Collider()->Set_CollisionGroup(eGroup);

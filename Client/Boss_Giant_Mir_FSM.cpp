@@ -545,7 +545,12 @@ void Boss_Giant_Mir_FSM::SQ_Leave_Groggy_Start_Init()
         
         if (m_pTarget.lock()->Get_FSM()->Get_Weapon())
             m_pTarget.lock()->Get_FSM()->Get_Weapon()->Get_ModelRenderer()->Set_RenderState(false);
+    }
 
+    if (!m_pOwner.expired())
+    {
+        if (m_pOwner.lock()->Get_Script<UIBossHpBar>())
+            m_pOwner.lock()->Get_Script<UIBossHpBar>()->Remove_HpBar();
     }
 }
 
