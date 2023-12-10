@@ -201,7 +201,7 @@ float4x4 RotateMatrix(float angle, float3 axis)
     );
 }
 
-[maxvertexcount(12)]
+[maxvertexcount(18)]
 void GS_Grass(point MeshOutput input[1], inout TriangleStream<GS_GRASS_OUTPUT> outputStream)
 {
     const uint vertexCount = 4;
@@ -217,8 +217,9 @@ void GS_Grass(point MeshOutput input[1], inout TriangleStream<GS_GRASS_OUTPUT> o
     float4 q;
     for (uint j = 0; j < billboardCount; j++)
     {
-        float4x4 matRotateByBillboard = RotateMatrix(radians(60.0 * j), float3(0.f, 1.f, 0.f));
-        float4x4 RotateWByBillboard = mul(W, matRotateByBillboard);
+        float4x4 matRotateByBillboard = RotateMatrix(radians(60.f * j), float3(0.f, 1.f, 0.f));
+        float4x4 RotateWByBillboard = mul(matRotateByBillboard, W);
+        RotateWByBillboard[3].xyz += RotateWByBillboard[2].xyz * 10.f;
         decompose(RotateWByBillboard, trans, q, mscale);
         MeshOutput vtx = input[0];
         //float2 scale = mscale.xy * 0.5f;
@@ -233,10 +234,10 @@ void GS_Grass(point MeshOutput input[1], inout TriangleStream<GS_GRASS_OUTPUT> o
         output[j * 4 + 2].uv = float2(1.f, 1.f);
         output[j * 4 + 3].uv = float2(0.f, 1.f);
     
-        output[j * 4 + 0].viewPosition = mul(output[j * 4 + 0].position, W);
-        output[j * 4 + 1].viewPosition = mul(output[j * 4 + 1].position, W);
-        output[j * 4 + 2].viewPosition = mul(output[j * 4 + 2].position, W);
-        output[j * 4 + 3].viewPosition = mul(output[j * 4 + 3].position, W);
+        output[j * 4 + 0].viewPosition = mul(output[j * 4 + 0].position, V);
+        output[j * 4 + 1].viewPosition = mul(output[j * 4 + 1].position, V);
+        output[j * 4 + 2].viewPosition = mul(output[j * 4 + 2].position, V);
+        output[j * 4 + 3].viewPosition = mul(output[j * 4 + 3].position, V);
 
     // proj q
         output[j * 4 + 0].position = mul(float4(output[j * 4 + 0].viewPosition, 1.f), P);
