@@ -180,12 +180,12 @@ float4x4 RotateMatrix(float angle, float3 axis)
     float3 sq = axis * axis;
     float3x3 rotationMatrix = float3x3(
         sq.x * oneMinusC + c,
-        sq.x * oneMinusC + axis.y * axis.x * oneMinusC + axis.z * s,
+        axis.x * axis.y * oneMinusC + axis.z * s,
         axis.x * axis.z * oneMinusC - axis.y * s,
 
         axis.x * axis.y * oneMinusC - axis.z * s,
         sq.y * oneMinusC + c,
-        sq.y * oneMinusC + axis.z * axis.y * oneMinusC + axis.x * s,
+        axis.y * axis.z * oneMinusC + axis.x * s,
 
         axis.x * axis.z * oneMinusC + axis.y * s,
         axis.y * axis.z * oneMinusC - axis.x * s,
@@ -214,20 +214,14 @@ void GS_Grass(point MeshOutput input[1], inout TriangleStream<GS_GRASS_OUTPUT> o
     
     for (uint j = 0; j < billboardCount; j++)
     {
-        float4x4 matRotateByBillboard = RotateMatrix(radians(60.f * j), float3(0.f, 1.f, 0.f));
+        float4x4 matRotateByBillboard = RotateMatrix(radians(120.f * j), float3(0.f, 1.f, 0.f));
         float4x4 RotateWByBillboard = mul(matRotateByBillboard, W);
-        //RotateWByBillboard[3].xyz += RotateWByBillboard[2].xyz * 10.f;
         MeshOutput vtx = input[0];
-        //float2 scale = mscale.xy * 0.5f;
         
-        
-        
-        output[j * 4 + 0].position = float4(vtx.position.xyz + matRotateByBillboard[2].xyz - matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f, 1.f);
-        output[j * 4 + 1].position = float4(vtx.position.xyz + matRotateByBillboard[2].xyz + matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f, 1.f);
-        output[j * 4 + 2].position = float4(vtx.position.xyz + matRotateByBillboard[2].xyz + matRotateByBillboard[0].xyz * 0.5f - matRotateByBillboard[1].xyz * 0.5f, 1.f);
-        output[j * 4 + 3].position = float4(vtx.position.xyz + matRotateByBillboard[2].xyz - matRotateByBillboard[0].xyz * 0.5f - matRotateByBillboard[1].xyz * 0.5f, 1.f);
-        
-        
+        output[j * 4 + 0].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ - matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f/*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f/*높이*/, 1.f);
+        output[j * 4 + 1].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ + matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f/*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f/*높이*/, 1.f);
+        output[j * 4 + 2].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ + matRotateByBillboard[0].xyz * 0.5f - matRotateByBillboard[1].xyz * 0.5f/*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f/*높이*/, 1.f);
+        output[j * 4 + 3].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ - matRotateByBillboard[0].xyz * 0.5f - matRotateByBillboard[1].xyz * 0.5f/*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f/*높이*/, 1.f);
         
         output[j * 4 + 0].uv = float2(0.f, 0.f);
         output[j * 4 + 1].uv = float2(1.f, 0.f);
