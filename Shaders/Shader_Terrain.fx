@@ -67,6 +67,7 @@ struct HS_OUT
 // g_int_1      : TileZ
 // g_float_1    : Max Tessellation Level
 // g_vec2_1     : Min/Max Tessellation Distance
+// g_vec2_2
 
 //Constant HS
 PatchTess ConstantHS(InputPatch<VS_OUT, 3> input, int patchID : SV_PrimitiveID)
@@ -132,18 +133,18 @@ MeshOutput DS_Main(const OutputPatch<HS_OUT, 3> input, float3 location : SV_Doma
     TextureMap9.GetDimensions(mapWidth, mapHeight);
     
     float2 fullUV = float2(uv.x / (float) tileCountX, uv.y / (float) tileCountZ);
-    float height = TextureMap9.SampleLevel(PointSampler, float2(uv.x / tileCountX, uv.y / tileCountZ), 0).x;
+    float height = TextureMap9.SampleLevel(LinearSampler, fullUV, 0).x;
 
     // 높이맵 높이 적용
-    localPos.y = height;
+    localPos.y = height * 30.f - 15.f;
 
     float2 deltaUV = float2(1.f / mapWidth, 1.f / mapHeight);
     float2 deltaPos = float2(tileCountX * deltaUV.x, tileCountZ * deltaUV.y);
 
-    float upHeight = TextureMap9.SampleLevel(PointSampler, float2(fullUV.x, fullUV.y - deltaUV.y), 0).x;
-    float downHeight = TextureMap9.SampleLevel(PointSampler, float2(fullUV.x, fullUV.y + deltaUV.y), 0).x;
-    float rightHeight = TextureMap9.SampleLevel(PointSampler, float2(fullUV.x + deltaUV.x, fullUV.y), 0).x;
-    float leftHeight = TextureMap9.SampleLevel(PointSampler, float2(fullUV.x - deltaUV.x, fullUV.y), 0).x;
+    float upHeight = TextureMap9.SampleLevel(LinearSampler, float2(fullUV.x, fullUV.y - deltaUV.y), 0).x * 30.f - 15.f;
+    float downHeight = TextureMap9.SampleLevel(LinearSampler, float2(fullUV.x, fullUV.y + deltaUV.y), 0).x * 30.f - 15.f;
+    float rightHeight = TextureMap9.SampleLevel(LinearSampler, float2(fullUV.x + deltaUV.x, fullUV.y), 0).x * 30.f - 15.f;
+    float leftHeight = TextureMap9.SampleLevel(LinearSampler, float2(fullUV.x - deltaUV.x, fullUV.y), 0).x * 30.f - 15.f;
 
     float3 localTangent = float3(localPos.x + deltaPos.x, rightHeight, localPos.z) - float3(localPos.x - deltaPos.x, leftHeight, localPos.z);
     float3 localBinormal = float3(localPos.x, upHeight, localPos.z + deltaPos.y) - float3(localPos.x, downHeight, localPos.z - deltaPos.y);
@@ -364,9 +365,9 @@ technique11 T0
         SetVertexShader(CompileShader(vs_5_0, VS_Terrain()));
         SetHullShader(CompileShader(hs_5_0, HS_Main()));
         SetDomainShader(CompileShader(ds_5_0, DS_Main()));
-        SetRasterizerState(FillModeWireFrame);
+        SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
-        SetPixelShader(CompileShader(ps_5_0, PS_Deferred()));
+        SetPixelShader(CompileShader(ps_5_0, PS_Deferred())); 
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetGeometryShader(NULL);
     }
@@ -375,7 +376,7 @@ technique11 T0
         SetVertexShader(CompileShader(vs_5_0, VS_Terrain()));
         SetHullShader(CompileShader(hs_5_0, HS_Main()));
         SetDomainShader(CompileShader(ds_5_0, DS_Main()));
-        SetRasterizerState(FillModeWireFrame);
+        SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
         SetPixelShader(CompileShader(ps_5_0, PS_Terrain_PBR()));
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);

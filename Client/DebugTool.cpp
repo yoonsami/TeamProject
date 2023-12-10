@@ -329,6 +329,7 @@ void DebugTool::ModelOptionTab()
 		
 		Separator();
 		DragFloat2("MinMaxTessellation Dist", (_float*)&GAMEINSTANCE.m_vMinMaxTessellationDistance, 1.f, 0.01f, 1000.f);
+		DragFloat2("test", (_float*)&GAMEINSTANCE.m_vTest, 1.f, 0.01f, 1000.f);
 
 		EndTabItem();
 	}

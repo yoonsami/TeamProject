@@ -24,12 +24,11 @@ void TerrainRenderer::CreateGrid(_uint x, _uint z)
 {
 	if(!m_pMesh)
 		m_pMesh = make_shared<Mesh>();
-	m_pMesh->CreateGrid(x, z);
+	m_pMesh->CreateGrid(x * 0.25f, z * 0.25);
 
-	m_RenderParams.intParams[0] = x;
-	m_RenderParams.intParams[1] = z;
+	m_RenderParams.intParams[0] = x * 0.25;
+	m_RenderParams.intParams[1] = z * 0.25;
 
-	m_RenderParams.vec2Params[1] = GAMEINSTANCE.m_vMinMaxTessellationDistance;
 }
 
 void TerrainRenderer::Set_Material(shared_ptr<Material> material)
@@ -43,7 +42,7 @@ void TerrainRenderer::Render()
 	if (!m_pMaterial || !m_pMesh || !m_pShader)
 		return;
 	m_RenderParams.vec2Params[1] = GAMEINSTANCE.m_vMinMaxTessellationDistance;
-
+	m_RenderParams.vec2Params[2] = GAMEINSTANCE.m_vTest;
 	m_pMaterial->Tick();
 	m_pMaterial->Push_TextureMapData();
 
@@ -57,7 +56,7 @@ void TerrainRenderer::Render()
 
 	//	m_pShader->GetScalar("g_BarPercent")->SetFloat(m_fLoadingPercent);
 	auto& world = Get_Transform()->Get_WorldMatrix();
-	m_pShader->Push_TransformData(TransformDesc{ world });
+	m_pShader->Push_TransformData(TransformDesc{_float4x4::CreateScale(_float3(4.f,1.f,4.f)) * world });
 
 	m_pMesh->Get_VertexBuffer()->Push_Data();
 	m_pMesh->Get_IndexBuffer()->Push_Data();

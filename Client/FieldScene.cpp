@@ -356,7 +356,12 @@ void FieldScene::Load_Terrain()
 		// 타일의 텍스쳐이름을 리소스에 로드
 		wstring TileTexture = L"..\\Resources\\Textures\\MapObject\\TerrainTile\\";
 		TileTexture += Utils::ToWString(fileName) + L".dds";
-		RESOURCES.Load<Texture>(Utils::ToWString(fileName), TileTexture);
+		auto texture = RESOURCES.Load<Texture>(Utils::ToWString(fileName), TileTexture);
+		if (!texture)
+		{
+			Utils::ChangeExt(TileTexture, L".tga");
+			texture = RESOURCES.Load<Texture>(Utils::ToWString(fileName), TileTexture);
+		}
 	}
 
 	shared_ptr<Terrain> loadedTerrain = make_shared<Terrain>();
@@ -446,7 +451,7 @@ void FieldScene::Load_Terrain()
 	material->Set_TextureMap(Roadtexture, TextureMapType::TEXTURE8);
 
 	{
-		auto HeightMap = RESOURCES.Get<Texture>(L"height");
+		auto HeightMap = RESOURCES.GetOrAddTexture(L"HeightMap1",L"..\\Resources\\Textures\\MapObject\\TerrainTile\\height.png");
 		if (HeightMap == nullptr)
 		{
 			MSG_BOX("NoSubTexture");

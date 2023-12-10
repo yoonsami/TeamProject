@@ -23,5 +23,6 @@ private:
 
 public:
 	_float2 m_vMinMaxTessellationDistance = _float2(0.f);
+	_float2 m_vTest = _float2(0.f);
 };
 
