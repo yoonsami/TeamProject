@@ -20,6 +20,7 @@
 #include "FloorSkill_Script.h"
 #include "OBBBoxCollider.h"
 #include "ModelRenderer.h"
+#include "TimerScript.h"
 
 HRESULT Boss_Giant_Mir_FSM::Init()
 {
@@ -828,7 +829,9 @@ void Boss_Giant_Mir_FSM::skill_1100_Init()
 void Boss_Giant_Mir_FSM::skill_1200()
 {
     if (Init_CurFrame(182))
+    {
         Add_GroupEffectOwner(L"GiantMir_1200_floor", _float3(20.f, -2.f, -5.f), false);
+    }
 
     if (Init_CurFrame(131))
         Set_RigidBodyActivate(false);

@@ -14,6 +14,9 @@ public:
 	void Set_AttackCollider(shared_ptr<GameObject> attackCollider) { m_pAttackCollider = attackCollider; }
 	void FreeLoopMembers();
 
+	void		Add_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript = nullptr, const _float4x4& matPivot = _float4x4::Identity);
+	void		Add_And_Set_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript = nullptr);
+	void		Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset, _bool usePosAs, shared_ptr<MonoBehaviour> pScript = nullptr);
 
 
 protected:
@@ -48,9 +51,6 @@ protected:
 	shared_ptr<GameObject> Find_TargetInFrustum(_uint eType, _bool bFrustumCheck = true);
 	_bool Init_CurFrame(const _uint curFrame);
 
-	void		Add_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript = nullptr, const _float4x4& matPivot = _float4x4::Identity);
-	void		Add_And_Set_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript = nullptr);
-	void		Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset, _bool usePosAs, shared_ptr<MonoBehaviour> pScript = nullptr);
 	void		KillAllEffect();
 	void		Update_GroupEffectWorldPos(const _float4x4& mWorldMatrix);
 

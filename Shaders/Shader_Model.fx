@@ -456,7 +456,7 @@ PS_OUT_Deferred PS_Deferred_Instancing(MeshInstancingOutput input)
     if (bHasDissolveMap != 0)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
-        if (dissolve < InstanceRenderParams[input.id].x)
+        if (dissolve < InstanceRenderParams[input.id].w)
             discard;
     }
     
@@ -679,6 +679,13 @@ PBR_OUTPUT PS_PBR_Deferred(MeshOutput input)
             discard;
     }
     
+    if(bHasTexturemap8)
+    {
+        if ((10.f - g_float_0) + W._42 < input.worldPosition.y)
+            discard;
+        
+    }
+    
     ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
     
     if(bHasTexturemap7)
@@ -777,7 +784,7 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(MeshInstancingOutput input)
     output.arm = ARM_Map;
     output.diffuseColor = diffuseColor + float4(InstanceRenderParams[input.id].xyz, 0.f);;
     output.emissive = emissiveColor;
-    output.rimColor = Material.emissive + g_vec4_1;
+    output.rimColor = Material.emissive;
     output.blur = 0;
     return output;
 }
@@ -897,7 +904,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_Instancing(MeshInstancingOutput i
     output.arm = ARM_Map;
     output.diffuseColor = diffuseColor;
     output.emissive = emissiveColor ;
-    output.rimColor = Material.emissive + g_vec4_1;
+    output.rimColor = Material.emissive;
     output.blur = 0;
     return output;
 }
@@ -1253,7 +1260,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_Instancing_NormalControl(MeshInst
     output.arm = ARM_Map;
     output.diffuseColor = diffuseColor;
     output.emissive = emissiveColor;
-    output.rimColor = Material.emissive + g_vec4_1;
+    output.rimColor = Material.emissive;
     output.blur = 0;
     return output;
 }
