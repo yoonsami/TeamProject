@@ -340,7 +340,6 @@ void FSM::Set_DirToTarget_Monster(_uint eType)
 	}
 }
 
-
 void FSM::Look_DirToTarget(_float fTurnSpeed)
 {
 	if (m_vDirToTarget != _float3(0.f))
@@ -401,8 +400,6 @@ void FSM::Add_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScri
 
 	// For. Transform 
 	pGroupEffectObj->GetOrAddTransform();
-	//pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS));
-	//pGroupEffectObj->Get_Transform()->Set_Quaternion(Get_Transform()->Get_Rotation());
 	pGroupEffectObj->Get_Transform()->Set_WorldMat(matPivot * m_pOwner.lock()->Get_Transform()->Get_WorldMatrix());
 
 	// For. GroupEffectData 

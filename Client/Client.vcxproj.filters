@@ -427,6 +427,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\25.UiMessage\00.UiMessageCreater">
       <UniqueIdentifier>{5e5e5c0f-8710-4534-8512-cb9b6343d926}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\07.EffectScript\CreateEffect_Script">
+      <UniqueIdentifier>{0b35d8fe-151b-4394-b9c3-fba19e7a2117}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -851,6 +854,9 @@
     <ClInclude Include="UiMessageCreater.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessage\00.UiMessageCreater</Filter>
     </ClInclude>
+    <ClInclude Include="CreateEffect_Script.h">
+      <Filter>02.Component\00.MonoBehaviour\07.EffectScript\CreateEffect_Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1241,6 +1247,9 @@
     </ClCompile>
     <ClCompile Include="UiMessageCreater.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessage\00.UiMessageCreater</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateEffect_Script.cpp">
+      <Filter>02.Component\00.MonoBehaviour\07.EffectScript\CreateEffect_Script</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
