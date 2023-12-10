@@ -1040,9 +1040,8 @@ void ImGui_Manager::GeometryTest()
     WeedObj->GetOrAddTransform();
 
     // 메시렌더러
-    shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+    shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Grass.fx"));
     renderer->Set_Mesh(WeedMesh);
-    renderer->Set_Pass(18);
 
     shared_ptr<Material> material = make_shared<Material>();
     auto Weedtexture = RESOURCES.GetOrAddTexture(L"Weed", L"..\\Resources\\Textures\\MapObject\\TerrainTile\\pngegg.png");

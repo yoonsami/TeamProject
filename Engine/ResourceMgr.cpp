@@ -689,6 +689,12 @@ void ResourceMgr::CreateDefaultShader()
 		shader->Set_ShaderType(SHADER_TYPE::WATER);
 	}
 	{
+		wstring ShaderTag = L"Shader_Grass.fx";
+		Load<Shader>(ShaderTag, ShaderTag);
+		auto shader = Get<Shader>(ShaderTag);
+		shader->Set_ShaderType(SHADER_TYPE::DEFERRED);
+	}
+	{
 		wstring ShaderTag = L"Shader_Effect2.fx";
 		Load<Shader>(ShaderTag, ShaderTag);
 		auto shader = Get<Shader>(ShaderTag);
