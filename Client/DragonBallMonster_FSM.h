@@ -37,7 +37,7 @@ private:
     void Summon_Star_Floor(); 
 
     void Create_Meteor();
-
+    void Create_FloorSkillEffect();
 
 
     void Set_AttackPattern();
@@ -54,6 +54,9 @@ private:
 
     COOLTIMEINFO m_tPatternCoolTime = { 4.f, 0.f };
     COOLTIMEINFO m_tMeteorCoolTime = { 2.f, 0.f };
+
+    _float  m_fTimer_CreateFloorSkillEffect = { 0.f };
+    _bool   m_bIsCreateFloorSkillEffectDone = { false };
 
     weak_ptr<GameObject> m_pRigidBody;
 };

@@ -12,6 +12,7 @@
 #include "UiMonsterHp.h"
 #include "ObjectDissolve.h"
 #include "OBBBoxCollider.h"
+#include "CreateEffect_Script.h"
 
 HRESULT DragonBallMonster_FSM::Init()
 {
@@ -60,12 +61,16 @@ void DragonBallMonster_FSM::Get_Hit(const wstring& skillname, _float fDamage, sh
 
 void DragonBallMonster_FSM::State_Tick()
 {
+	m_fTimer_CreateFloorSkillEffect += fDT;
+
 	State_Init();
 
 	m_iCurFrame = Get_CurFrame();
 
 	if (m_bSummonMeteor)
 		Create_Meteor();
+
+	Create_FloorSkillEffect();
 
 	Recovery_Color();
 
@@ -553,9 +558,53 @@ void DragonBallMonster_FSM::Create_Meteor()
 	}
 }
 
+void DragonBallMonster_FSM::Create_FloorSkillEffect()
+{
+	if (m_fTimer_CreateFloorSkillEffect > 2.5f && !m_bIsCreateFloorSkillEffectDone)
+	{
+		shared_ptr<CreateEffect_Script> pScript = make_shared<CreateEffect_Script>();
+		pScript->Set_CoolTime(0.05f);
+		pScript->Set_SkillTag(L"DragonBall_floorattack");
+		pScript->Set_UseOwnerPosOnly(true);
+		_float4x4 matOffset = _float4x4::CreateScale(1.5f) 
+			*  _float4x4::CreateFromQuaternion(Quaternion(0.f, 0.f, 0.f, 1.f)) 
+			* _float4x4::CreateTranslation(_float3(0.f, -1.5f, 0.f));
+		pScript->Set_OffsetMatrix(matOffset);
+
+		switch (m_iPreAttack)
+		{
+		case 0: // Cross
+			Add_Effect(L"DragonBall_CrossBall", pScript);
+			break;
+		case 1:	// X
+			Add_Effect(L"DragonBall_XBall", pScript);
+			break;
+		case 2:	// Hash
+			// Add_Effect(L"DragonBall_HashBall", pScript);
+			break;
+		case 3: // Web
+			// Add_Effect(L"DragonBall_WebBall", pScript);
+			break;
+		case 4: // Half
+			// Add_Effect(L"DragonBall_HalfBall", pScript);
+			break;
+		case 5: // Star
+			// Add_Effect(L"DragonBall_StarBall", pScript);
+			break;
+		default:
+			break;
+		}
+
+		m_bIsCreateFloorSkillEffectDone = true;
+	}
+}
+
 void DragonBallMonster_FSM::Set_AttackPattern()
 {
 	_uint iRan = rand() % 6;
+
+	m_fTimer_CreateFloorSkillEffect = 0.f;
+	m_bIsCreateFloorSkillEffectDone = false;
 
 	while (true)
 	{

@@ -430,6 +430,9 @@
     <Filter Include="01.Scene\00.PlayScene\00.Granseed\04.Field">
       <UniqueIdentifier>{99a38b1a-eda8-4b71-8883-93afc5ae7515}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\07.EffectScript\CreateEffect_Script">
+      <UniqueIdentifier>{0b35d8fe-151b-4394-b9c3-fba19e7a2117}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -855,6 +858,9 @@
       <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessage\00.UiMessageCreater</Filter>
     </ClInclude>
     <ClInclude Include="EffectGoUp.h" />
+    <ClInclude Include="CreateEffect_Script.h">
+      <Filter>02.Component\00.MonoBehaviour\07.EffectScript\CreateEffect_Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1247,6 +1253,9 @@
       <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessage\00.UiMessageCreater</Filter>
     </ClCompile>
     <ClCompile Include="EffectGoUp.cpp" />
+    <ClCompile Include="CreateEffect_Script.cpp">
+      <Filter>02.Component\00.MonoBehaviour\07.EffectScript\CreateEffect_Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
