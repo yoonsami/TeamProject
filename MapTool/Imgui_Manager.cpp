@@ -33,6 +33,7 @@
 #include "PointLightScript.h"
 #include "ModelAnimation.h"
 #include "WaterUVSliding.h"
+#include "TerrainRenderer.h"
 
 using namespace ImGui;
 
@@ -775,6 +776,7 @@ void ImGui_Manager::Frame_ShaderOption()
 
 				DragFloat("g_DepthRange", &CUR_SCENE->g_DepthRange, 1.f, 0.1f,1000.f);
 				DragFloat("g_ClosestDepth", &CUR_SCENE->g_ClosestDepth, 1.f, 0.1f, 200.f);
+				DragFloat2("MinMaxTessellation Dist", (_float*)&GAMEINSTANCE.m_vMinMaxTessellationDistance, 1.f, 0.01f, 1000.f);
 
 				EndTabItem();
 			}
@@ -1445,9 +1447,12 @@ void ImGui_Manager::Create_Terrain(shared_ptr<Terrain> _pTerrainMesh, _int _iTer
     }
 
     // 메시렌더러
-    shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Terrain.fx"));
-    renderer->Set_Mesh(_pTerrainMesh);
-    renderer->Set_Pass(18); // 터레인패스
+    //shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Terrain.fx"));
+    //renderer->Set_Mesh(_pTerrainMesh);
+    //renderer->Set_Pass(18); // 터레인패스
+
+	shared_ptr<TerrainRenderer> renderer = make_shared<TerrainRenderer>(RESOURCES.Get<Shader>(L"Shader_Terrain.fx"));
+	renderer->CreateGrid(_iTerrainSizeX, _iTerrainSizeY);
 
     // 디퓨즈텍스쳐
     shared_ptr<Material> material = make_shared<Material>();
@@ -1486,6 +1491,16 @@ void ImGui_Manager::Create_Terrain(shared_ptr<Terrain> _pTerrainMesh, _int _iTer
     }
     material->Set_TextureMap(Roadtexture, TextureMapType::TEXTURE8);
 
+	{
+		auto HeightMap = RESOURCES.GetOrAddTexture(L"HeightMap1", L"..\\Resources\\Textures\\MapObject\\TerrainTile\\height.png");
+		if (HeightMap == nullptr)
+		{
+			MSG_BOX("NoSubTexture");
+			return;
+		}
+		material->Set_TextureMap(HeightMap, TextureMapType::TEXTURE9);
+	}
+
     renderer->Set_Material(material);
 
     // 메시를 통해 메시콜라이더 생성
@@ -1503,7 +1518,7 @@ void ImGui_Manager::Create_Terrain(shared_ptr<Terrain> _pTerrainMesh, _int _iTer
 
     m_pTerrain = TerrainObject;
     // 터레인의 가로세로 정보 셰이더에 떤져주기
-    m_pTerrain->Get_MeshRenderer()->SetVec2(0, _float2{ (_float)_iTerrainSizeX, (_float)_iTerrainSizeY });
+    //m_pTerrain->Get_MeshRenderer()->SetVec2(0, _float2{ (_float)_iTerrainSizeX, (_float)_iTerrainSizeY });
 }
 
 void ImGui_Manager::Create_MaskTexture()
