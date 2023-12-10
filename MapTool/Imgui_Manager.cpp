@@ -1032,25 +1032,44 @@ void ImGui_Manager::LookAtSampleObject()
 void ImGui_Manager::GeometryTest()
 {
     // 벽정보를 기반으로 벽메시 생성
-    shared_ptr<Mesh> WeedMesh = RESOURCES.Get<Mesh>(L"Point");
+	{
+		shared_ptr<Mesh> WeedMesh = RESOURCES.Get<Mesh>(L"Point");
 
-    // 메시를 기반으로 벽오브젝트 생성
-    shared_ptr<GameObject> WeedObj = make_shared<GameObject>();
-    WeedObj->Set_Name(L"WeedObj");
-    WeedObj->GetOrAddTransform();
+		// 메시를 기반으로 벽오브젝트 생성
+		shared_ptr<GameObject> WeedObj = make_shared<GameObject>();
+		WeedObj->Set_Name(L"WeedObj");
+		WeedObj->GetOrAddTransform();
 
-    // 메시렌더러
-    shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Grass.fx"));
-    renderer->Set_Mesh(WeedMesh);
+		// 메시렌더러
+		shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Grass.fx"));
+		renderer->Set_Mesh(WeedMesh);
 
-    shared_ptr<Material> material = make_shared<Material>();
-    auto Weedtexture = RESOURCES.GetOrAddTexture(L"Weed", L"..\\Resources\\Textures\\MapObject\\TerrainTile\\pngegg.png");
-    material->Set_TextureMap(Weedtexture, TextureMapType::DIFFUSE);
-    renderer->Set_Material(material);
-    
-    WeedObj->Add_Component(renderer);
+        shared_ptr<Material> material = RESOURCES.Get<Material>(L"Grass1");
+        renderer->Set_Material(material);
 
-    EVENTMGR.Create_Object(WeedObj);
+		WeedObj->Add_Component(renderer);
+
+		EVENTMGR.Create_Object(WeedObj);
+	}
+	{
+		shared_ptr<Mesh> WeedMesh = RESOURCES.Get<Mesh>(L"Point");
+
+		// 메시를 기반으로 벽오브젝트 생성
+		shared_ptr<GameObject> WeedObj = make_shared<GameObject>();
+		WeedObj->Set_Name(L"WeedObj");
+		WeedObj->GetOrAddTransform()->Set_State(Transform_State::POS,_float4(0.f,0.f,2.f,1.f));
+
+		// 메시렌더러
+		shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Grass.fx"));
+		renderer->Set_Mesh(WeedMesh);
+
+		shared_ptr<Material> material = RESOURCES.Get<Material>(L"Grass1");
+		renderer->Set_Material(material);
+
+		WeedObj->Add_Component(renderer);
+
+		EVENTMGR.Create_Object(WeedObj);
+	}
     //Create_MaskTexture();
 }
 
