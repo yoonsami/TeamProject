@@ -313,7 +313,7 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     if (bUseFadeOut)
         vOutColor.a *= (1.f - fLifeTimeRatio);
     
-    if (vOutColor.a < 0.1f)
+    if (vOutColor.a < 0.07f)
         discard;
     
      vOutColor.a *= decalAlpha;
@@ -514,10 +514,6 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     /* Gamma collection */
     if (bUseTexColor_Op[0] || bUseTexColor_Op[1] || bUseTexColor_Op[2])
         vOutColor.rgb = pow(vOutColor.rgb, 1.f / GAMMA);
-
-    /* Blend */
-    if (bHasTexturemap10)
-        vOutColor.a *= vSample_Blend.r;
     
     /* DissolveMap */
     if (bHasDissolveMap)
@@ -567,7 +563,11 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     if (bUseFadeOut)
         vOutColor.a *= (1.f - fLifeTimeRatio);
     
-    if (vOutColor.a < 0.1f)
+        /* Blend */
+    if (bHasTexturemap10)
+        vOutColor.a *= vSample_Blend.r;
+    
+    if (vOutColor.a < 0.07f)
         discard;
     
     vOutColor.a *= decalAlpha;
@@ -796,9 +796,9 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
         vOutColor.rgb = lerp(vOutColor.rgb, vLightingColor, fLightIntensity);
     }
     
-    /* Blend */
-    if (bHasTexturemap10)
-        vOutColor.a *= vSample_Blend.r;
+    ///* Blend */
+    //if (bHasTexturemap10)
+    //    vOutColor.a *= vSample_Blend.r;
     
     /* DissolveMap */
     if (bHasDissolveMap)
@@ -837,7 +837,11 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
     if (bUseFadeOut)
         vOutColor.a *= (1.f - fLifeTimeRatio);
     
-    if (vOutColor.a < 0.1f)
+        /* Blend */
+    if (bHasTexturemap10)
+        vOutColor.a *= vSample_Blend.r;
+    
+    if (vOutColor.a < 0.07f)
         discard;
     
     vOutColor.a *= decalAlpha;
@@ -1032,9 +1036,9 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
     if (bUseTexColor_Op[0] || bUseTexColor_Op[1] || bUseTexColor_Op[2])
         vOutColor.rgb = pow(vOutColor.rgb, 1.f / GAMMA);
 
-    /* Blend */
-    if (bHasTexturemap10)
-        vOutColor.a *= vSample_Blend.r;
+    ///* Blend */
+    //if (bHasTexturemap10)
+    //    vOutColor.a *= vSample_Blend.r;
     
     /* DissolveMap */
     if (bHasDissolveMap)
@@ -1084,7 +1088,11 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
     if (bUseFadeOut)
         vOutColor.a *= (1.f - fLifeTimeRatio);
     
-    if (vOutColor.a < 0.1f)
+        /* Blend */
+    if (bHasTexturemap10)
+        vOutColor.a *= vSample_Blend.r;
+    
+    if (vOutColor.a < 0.07f)
         discard;
     
     vOutColor.a *= decalAlpha;

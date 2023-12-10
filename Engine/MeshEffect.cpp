@@ -323,7 +323,7 @@ void MeshEffect::InitialTransform(_float4x4 mParentWorldMatrix, const _float3& v
     // For. Setting End Informations
     m_vStartPos += _float3(Get_Transform()->Get_State(Transform_State::POS));
     
-    if( 1 != m_iTranslateOption && 2 != m_iTranslateOption)
+    if( 1 != m_iTranslateOption && 2 != m_iTranslateOption && 10 != m_iTranslateOption)
         m_vEndPos += m_vStartPos;
 
     m_vStartScale *= vInitScale_inGroup;
@@ -625,6 +625,8 @@ void MeshEffect::Translate()
     }
     case 10: // Move to target position 
     {
+        Get_Transform()->Set_Speed(Calc_Spline(m_tTransform_Desc.iSpeedType, m_SplineInput_Force));
+
         if (m_bToolMode_On)
             Get_Transform()->Set_State(Transform_State::POS, _float4(_float3::Lerp(m_vStartPos, m_vEndPos, m_fLifeTimeRatio), 1.f));
         else
