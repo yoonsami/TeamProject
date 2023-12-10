@@ -580,8 +580,36 @@ void DragonBallMonster_FSM::Create_FloorSkillEffect()
 			Add_Effect(L"DragonBall_XBall", pScript);
 			break;
 		case 2:	// Hash
-			//Add_Effect(L"DragonBall_HashBall", pScript);
+		{
+			_float3 vRight = { 1.f, 0.f, 0.f };
+			_float3 vUp = { 0.f, 1.f, 0.f };
+			_float3 vLook = {0.f, 0.f, 1.f};
+			_float4 vPos = { 0.f, 0.f, 12.f, 1.f };
+			_float4x4 matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_HashAttack", nullptr, matPivot, true);
+			
+			vLook = _float3(0.f, 0.f, 1.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			vPos = { 0.f, 0.f, -12.f, 1.f };
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_HashAttack", nullptr, matPivot, true);
+			
+			vLook = _float3(1.f, 0.f, 0.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			vPos = { 12.f, 0.f, 0.f, 1.f };
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_HashAttack", nullptr, matPivot, true);
+			
+			vLook = _float3(-1.f, 0.f, 0.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			vPos = { -12.f, 0.f, 0.f, 1.f };
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_HashAttack", nullptr, matPivot, true);
 			break;
+		}
 		case 3: // Web
 			// Add_Effect(L"DragonBall_WebBall", pScript);
 			break;
@@ -650,9 +678,9 @@ void DragonBallMonster_FSM::Create_FloorSkillEffect()
 
 void DragonBallMonster_FSM::Set_AttackPattern()
 {
-	Summon_Star_Floor();
+	Summon_Hash_Floor();
 	m_tPatternCoolTime.fCoolTime = 4.f;
-	m_iPreAttack = 5;
+	m_iPreAttack = 2;
 
 	_uint iRan = rand() % 6;
 
