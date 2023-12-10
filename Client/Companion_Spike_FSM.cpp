@@ -896,10 +896,6 @@ void Companion_Spike_FSM::die_Init()
 
 void Companion_Spike_FSM::stun()
 {
-    /*if (m_iCurFrame / Get_FinalFrame() >= 0.9f)
-        m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(1.f);
-    */
-
     if (Is_AnimFinished())
     {
         m_pOwner.lock()->Set_Hp(m_pOwner.lock()->Get_MaxHp());
