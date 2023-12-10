@@ -394,13 +394,16 @@ _bool FSM::Init_CurFrame(const _uint curFrame)
 	return false;
 }
 
-void FSM::Add_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript, const _float4x4& matPivot)
+void FSM::Add_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript, const _float4x4& matPivot, _bool bUseAsItis)
 {
 	shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();
 
 	// For. Transform 
 	pGroupEffectObj->GetOrAddTransform();
-	pGroupEffectObj->Get_Transform()->Set_WorldMat(matPivot * m_pOwner.lock()->Get_Transform()->Get_WorldMatrix());
+	if(bUseAsItis)
+		pGroupEffectObj->Get_Transform()->Set_WorldMat(matPivot);
+	else
+		pGroupEffectObj->Get_Transform()->Set_WorldMat(matPivot * m_pOwner.lock()->Get_Transform()->Get_WorldMatrix());
 
 	// For. GroupEffectData 
 	wstring wstrFileName = strSkilltag + L".dat";

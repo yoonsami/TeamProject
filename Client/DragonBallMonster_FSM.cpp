@@ -566,9 +566,9 @@ void DragonBallMonster_FSM::Create_FloorSkillEffect()
 		pScript->Set_CoolTime(0.05f);
 		pScript->Set_SkillTag(L"DragonBall_floorattack");
 		pScript->Set_UseOwnerPosOnly(true);
-		_float4x4 matOffset = _float4x4::CreateScale(2.f) 
+		_float4x4 matOffset = _float4x4::CreateScale(1.9f) 
 			* _float4x4::CreateFromQuaternion(Quaternion(0.f, 0.f, 0.f, 1.f)) 
-			* _float4x4::CreateTranslation(_float3(0.f, -2.6f, 0.f));
+			* _float4x4::CreateTranslation(_float3(0.f, -2.2f, 0.f));
 		pScript->Set_OffsetMatrix(matOffset);
 
 		switch (m_iPreAttack)
@@ -580,7 +580,7 @@ void DragonBallMonster_FSM::Create_FloorSkillEffect()
 			Add_Effect(L"DragonBall_XBall", pScript);
 			break;
 		case 2:	// Hash
-			// Add_Effect(L"DragonBall_HashBall", pScript);
+			//Add_Effect(L"DragonBall_HashBall", pScript);
 			break;
 		case 3: // Web
 			// Add_Effect(L"DragonBall_WebBall", pScript);
@@ -589,8 +589,57 @@ void DragonBallMonster_FSM::Create_FloorSkillEffect()
 			// Add_Effect(L"DragonBall_HalfBall", pScript);
 			break;
 		case 5: // Star
-			// Add_Effect(L"DragonBall_StarBall", pScript);
+		{
+			// 0 degree
+			_float3 vRight, vLook;
+			_float3 vUp = { 0.f, 1.f, 0.f };
+			_float4 vPos = { 0.f, 0.f, 0.f, 1.f };
+			_float4x4 matPivot = _float4x4::Identity;
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+			// 45 degree
+			vLook = _float3(1.f, 0.f, 1.f); 
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+			// 90 degree
+			vLook = _float3(1.f, 0.f, 0.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+			// 135 degree
+			vLook = _float3(1.f, 0.f, -1.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+			// 180 degree
+			vLook = _float3(0.f, 0.f, -1.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+			// 225 degree
+			vLook = _float3(-1.f, 0.f, -1.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+			// 270 degree
+			vLook = _float3(-1.f, 0.f, 0.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+			// 315 degree
+			vLook = _float3(-1.f, 0.f, 1.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
 			break;
+		}
 		default:
 			break;
 		}
@@ -601,11 +650,15 @@ void DragonBallMonster_FSM::Create_FloorSkillEffect()
 
 void DragonBallMonster_FSM::Set_AttackPattern()
 {
+	Summon_Star_Floor();
+	m_tPatternCoolTime.fCoolTime = 4.f;
+	m_iPreAttack = 5;
+
 	_uint iRan = rand() % 6;
 
 	m_fTimer_CreateFloorSkillEffect = 0.f;
 	m_bIsCreateFloorSkillEffectDone = false;
-
+	/*
 	while (true)
 	{
 		if (iRan == m_iPreAttack)
@@ -661,5 +714,5 @@ void DragonBallMonster_FSM::Set_AttackPattern()
 			m_bSummonMeteor = true;
 		}
 	}
-
+	*/
 }

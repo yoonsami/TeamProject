@@ -1269,7 +1269,7 @@ void Boss_Giant_Mir_FSM::Create_Giant_Mir_Collider()
 
 void Boss_Giant_Mir_FSM::Create_DragonBall()
 {
-    Add_GroupEffectOwner(L"GiantMir_7100", _float3(0.f, -3.f, 0.f), false);
+    Add_GroupEffectOwner(L"GiantMir_7100", _float3(0.f, -2.3f, 0.5f), false);
     
     _uint iDragonBallIndex = 4;
 
