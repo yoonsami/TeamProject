@@ -476,6 +476,7 @@
     <FxCompile Include="..\Shaders\Shader_Effect2.fx" />
     <FxCompile Include="..\Shaders\Shader_Final.fx" />
     <FxCompile Include="..\Shaders\Shader_FXAA.fx" />
+    <FxCompile Include="..\Shaders\Shader_Grass.fx" />
     <FxCompile Include="..\Shaders\Shader_LensFlare.fx" />
     <FxCompile Include="..\Shaders\Shader_Mesh.fx" />
     <FxCompile Include="..\Shaders\Shader_Model.fx" />
