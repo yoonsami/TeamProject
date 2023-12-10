@@ -465,11 +465,8 @@ void FSM::Add_And_Set_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviou
 		pGroupEffectObj->Get_GroupEffect()->Set_Script(pScript);
 
 	// For. Add Effect GameObject to current scene
-	for (auto& iter : m_vGroupEffect)
-	{
-		if(!iter.expired())
-			EVENTMGR.Create_Object(iter.lock());
-	}
+	EVENTMGR.Create_Object(pGroupEffectObj);
+
 }
 
 void FSM::Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset, _bool usePosAs, shared_ptr<MonoBehaviour> pScript)

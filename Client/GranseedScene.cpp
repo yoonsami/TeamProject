@@ -105,13 +105,7 @@ void GranseedScene::Init()
 	__super::Init();
 
 	auto pPlayer = Get_Player();
-	if (nullptr != pPlayer)
-	{
-		for (_uint i = 1; i < IDX(HERO::MAX); ++i)
-			pPlayer->Get_Script<HeroChangeScript>()->Change_Hero(static_cast<HERO>(i));
 
-		pPlayer->Get_Script<HeroChangeScript>()->Change_Hero(HERO::PLAYER);
-	}
 
 	for(_int i =0; i< _int(HERO::MAX); ++i)
 	{
@@ -306,6 +300,7 @@ shared_ptr<GameObject> GranseedScene::Load_Player()
 		}
 		ObjPlayer->Set_Name(L"Player");
 		ObjPlayer->Set_VelocityMap(true);
+		ObjPlayer->Set_Instancing(false);
 		ObjPlayer->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.8f, 0.5f })); //obbcollider
 		ObjPlayer->Get_Collider()->Set_CollisionGroup(Player_Body);
 		ObjPlayer->Get_Collider()->Set_Activate(true);
@@ -350,6 +345,7 @@ shared_ptr<GameObject> GranseedScene::Load_Player()
 		ObjWeapon->Set_DrawShadow(true);
 		ObjWeapon->Set_Name(L"Weapon_Player");
 		ObjWeapon->Set_VelocityMap(true);
+		ObjWeapon->Set_Instancing(false);
 		Add_GameObject(ObjWeapon,true);
 		ObjPlayer->Get_FSM()->Set_Weapon(ObjWeapon);
 		shared_ptr<MonoBehaviour> script = make_shared<HeroChangeScript>();
@@ -868,21 +864,21 @@ void GranseedScene::Load_HideAndSeek(shared_ptr<GameObject> pPlayer)
 	}
 
 	{
-		_float x2 = -0.437f, y2 = -0.02f, z2 = 11.372f;
-		_float x1 = -14.628f, y1 = -0.02f, z1 = -1.933f;
+		_float x2 = -0.437f, y2 = 0.3f, z2 = 11.372f;
+		_float x1 = -14.628f, y1 = 0.3f, z1 = -1.933f;
 	
 		_float3 coefficients = MathUtils::calculateQuadraticCoefficients(x1, y1, z1, x2, y2, z2);
 
 		vector<_float3>quadraticCurvePoints;
 
-		for (_float x = x1; x <= x2; x += (x2 - x1) / 20.f) {
+		for (_float x = x1; x <= x2; x += (x2 - x1) / 10.f) {
 			_float z = MathUtils::evaluateQuadraticEquation(x, coefficients);
-			
+			_float3 vRandomOffset = MathUtils::Get_RandomVector(_float3(0.f, 0.3f, 0.f), _float3(0.f, -0.3f, 0.f));
 			_float4 vPos = _float4({ x, y1, z }, 1.f);
 			shared_ptr<GameObject> obj = make_shared<GameObject>();
-			obj->GetOrAddTransform()->Set_State(Transform_State::POS, vPos);
+			obj->GetOrAddTransform()->Set_State(Transform_State::POS, vPos + vRandomOffset);
 
-			_int skillIndex = 1;
+			_int skillIndex = rand() % 3;
 		
 
 			wstring strSkilltag = L"Witcher_Sense" + to_wstring(skillIndex);
