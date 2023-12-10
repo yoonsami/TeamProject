@@ -29,12 +29,16 @@ HRESULT DragonBallMonster_FSM::Init()
 	EVENTMGR.Create_Object(rigidBodyObj);
 	m_pRigidBody = rigidBodyObj;
 
+	m_iCenterBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy001");
+
 	return S_OK;
 }
 
 void DragonBallMonster_FSM::Tick()
 {
 	DeadCheck();
+
+	Update_UI_Pos();
 
 	State_Tick();
 }
@@ -44,7 +48,7 @@ void DragonBallMonster_FSM::Get_Hit(const wstring& skillname, _float fDamage, sh
 	auto pScript = m_pOwner.lock()->Get_Script<UiMonsterHp>();
 	if (nullptr == pScript)
 	{
-		pScript = make_shared<UiMonsterHp>();
+		pScript = make_shared<UiMonsterHp>(true);
 		m_pOwner.lock()->Add_Component(pScript);
 		pScript->Init();
 	}
@@ -160,7 +164,6 @@ void DragonBallMonster_FSM::Crash_Init()
 		Get_Transform()->Set_State(Transform_State::POS, _float4(ray.position.x, 0.f, ray.position.z, 1.f));
 	}
 	{
-
 		if (!m_pRigidBody.expired())
 			EVENTMGR.Delete_Object(m_pRigidBody.lock());
 	}
@@ -550,6 +553,22 @@ void DragonBallMonster_FSM::Create_Meteor()
 	{
 		m_iCurMeteorCnt = 0;
 		m_bSummonMeteor = false;
+	}
+}
+
+void DragonBallMonster_FSM::Update_UI_Pos()
+{
+	if (m_eCurState == STATE::Idle)
+	{
+		if (m_pOwner.lock()->Get_Script<UiMonsterHp>())
+		{
+			m_CenterBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iCenterBoneIndex) *
+				_float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+			m_vCenterBonePos = _float4{ m_CenterBoneMatrix.Translation().x, m_CenterBoneMatrix.Translation().y, m_CenterBoneMatrix.Translation().z , 1.f };
+
+			m_pOwner.lock()->Get_Script<UiMonsterHp>()->Change_Pos(m_vCenterBonePos);
+		}
 	}
 }
 

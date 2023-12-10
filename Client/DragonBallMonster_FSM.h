@@ -37,9 +37,8 @@ private:
     void Summon_Star_Floor(); 
 
     void Create_Meteor();
-
-
-
+    
+    void Update_UI_Pos();
     void Set_AttackPattern();
     
 private:
