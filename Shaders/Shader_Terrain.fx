@@ -134,17 +134,17 @@ MeshOutput DS_Main(const OutputPatch<HS_OUT, 3> input, float3 location : SV_Doma
     
     float2 fullUV = float2(uv.x / (float) tileCountX, uv.y / (float) tileCountZ);
     float height = TextureMap9.SampleLevel(LinearSampler, fullUV, 0).x;
-
+    localPos.y = height * 100.f - 50.f;
     // 높이맵 높이 적용
-    localPos.y = height * 30.f - 15.f;
 
     float2 deltaUV = float2(1.f / mapWidth, 1.f / mapHeight);
     float2 deltaPos = float2(tileCountX * deltaUV.x, tileCountZ * deltaUV.y);
 
-    float upHeight = TextureMap9.SampleLevel(LinearSampler, float2(fullUV.x, fullUV.y - deltaUV.y), 0).x * 30.f - 15.f;
-    float downHeight = TextureMap9.SampleLevel(LinearSampler, float2(fullUV.x, fullUV.y + deltaUV.y), 0).x * 30.f - 15.f;
-    float rightHeight = TextureMap9.SampleLevel(LinearSampler, float2(fullUV.x + deltaUV.x, fullUV.y), 0).x * 30.f - 15.f;
-    float leftHeight = TextureMap9.SampleLevel(LinearSampler, float2(fullUV.x - deltaUV.x, fullUV.y), 0).x * 30.f - 15.f;
+    float upHeight = TextureMap9.SampleLevel(LinearSampler, float2(fullUV.x, fullUV.y - deltaUV.y), 0).x * 100.f - 50.f;
+    float downHeight = TextureMap9.SampleLevel(LinearSampler, float2(fullUV.x, fullUV.y + deltaUV.y), 0).x * 100.f - 50.f;
+    float rightHeight = TextureMap9.SampleLevel(LinearSampler, float2(fullUV.x + deltaUV.x, fullUV.y), 0).x * 100.f - 50.f;
+    float leftHeight = TextureMap9.SampleLevel(LinearSampler, float2(fullUV.x - deltaUV.x, fullUV.y), 0).x * 100.f - 50.f;
+    //localPos.y = (upHeight + downHeight + rightHeight + leftHeight) / 4.f;
 
     float3 localTangent = float3(localPos.x + deltaPos.x, rightHeight, localPos.z) - float3(localPos.x - deltaPos.x, leftHeight, localPos.z);
     float3 localBinormal = float3(localPos.x, upHeight, localPos.z + deltaPos.y) - float3(localPos.x, downHeight, localPos.z - deltaPos.y);

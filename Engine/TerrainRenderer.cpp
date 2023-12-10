@@ -24,10 +24,10 @@ void TerrainRenderer::CreateGrid(_uint x, _uint z)
 {
 	if(!m_pMesh)
 		m_pMesh = make_shared<Mesh>();
-	m_pMesh->CreateGrid(x * 2, z * 2);
+	m_pMesh->CreateGrid(x, z );
 
-	m_RenderParams.intParams[0] = x * 2;
-	m_RenderParams.intParams[1] = z * 2;
+	m_RenderParams.intParams[0] = x;
+	m_RenderParams.intParams[1] = z;
 
 }
 
@@ -56,7 +56,7 @@ void TerrainRenderer::Render()
 
 	//	m_pShader->GetScalar("g_BarPercent")->SetFloat(m_fLoadingPercent);
 	auto& world = Get_Transform()->Get_WorldMatrix();
-	m_pShader->Push_TransformData(TransformDesc{_float4x4::CreateScale(_float3(0.5f,1.f,0.5f)) * world });
+	m_pShader->Push_TransformData(TransformDesc{world });
 
 	m_pMesh->Get_VertexBuffer()->Push_Data();
 	m_pMesh->Get_IndexBuffer()->Push_Data();
