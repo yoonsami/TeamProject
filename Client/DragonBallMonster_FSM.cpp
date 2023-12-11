@@ -611,31 +611,8 @@ void DragonBallMonster_FSM::Create_FloorSkillEffect()
 			break;
 		}
 		case 3: // Web
-		{	// 45
-			_float3 vRight = { 1.f, 0.f, 0.f };
-			_float3 vUp = { 0.f, 1.f, 0.f };
-			_float3 vLook = { 0.f, 0.f, 0.f };
-			_float4 vPos = { 0.f, 0.f, 0.f, 1.f };
-			_float4x4 matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
-			Add_Effect(L"DragonBall_HashAttack", nullptr, matPivot, true);
-			// 135
-			vLook = _float3(1.f, 0.f, 0.f);
-			vLook.Normalize();
-			vRight = vLook.Cross(vUp);
-			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
-			Add_Effect(L"DragonBall_HashAttack", nullptr, matPivot, true);
-			// 225
-			vLook = _float3(0.f, 0.f, -1.f);
-			vLook.Normalize();
-			vRight = vLook.Cross(vUp);
-			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
-			Add_Effect(L"DragonBall_HashAttack", nullptr, matPivot, true);
-			// 315
-			vLook = _float3(-1.f, 0.f, 0.f);
-			vLook.Normalize();
-			vRight = vLook.Cross(vUp);			
-			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
-			Add_Effect(L"DragonBall_HashAttack", nullptr, matPivot, true);
+		{
+			Add_Effect(L"DragonBall_WebAttack", nullptr, _float4x4::Identity, true);
 			break;
 		}
 		case 4: // Half
