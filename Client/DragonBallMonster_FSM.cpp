@@ -599,7 +599,7 @@ void DragonBallMonster_FSM::Create_FloorSkillEffect()
 			_float3 vUp = { 0.f, 1.f, 0.f };
 			_float4 vPos = { 0.f, 0.f, 0.f, 1.f };
 			_float4x4 matPivot = _float4x4::Identity;
-
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
 			// 90 degree
 			vLook = _float3(1.f, 0.f, 0.f);
 			vLook.Normalize();
