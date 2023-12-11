@@ -263,6 +263,8 @@ void UIShop::Create_Shop()
         }
         else
             pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-700.f + 280.f * (i - iSize / 2), -160.f, 4.8f, 1.f));
+    
+        pObj.lock()->Get_Button()->Get_Desc().ptCenter.x = static_cast<LONG>(-700.f + 280.f * i + g_iWinSizeX / 2);
     }
 
     pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Shop_Item_Name.dat", m_ItemName);
@@ -291,9 +293,9 @@ void UIShop::Create_Shop()
         if (true == pObj.expired())
             continue;
 
-        pObj.lock()->Get_FontRenderer()->Get_Text() = m_vecPrice[i];
+        pObj.lock()->Get_FontRenderer()->Get_Text() = to_wstring(m_vecPrice[i]);
         _float4 vecPos = m_ItemObj[i].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-        vecPos.x += static_cast<_float>(m_vecName[i].length()) / 2.f * -15.f;
+        vecPos.x += static_cast<_float>(to_wstring(m_vecPrice[i]).length()) / 2.f * -15.f;
         vecPos.y -= 95.f;
         vecPos.z = 4.7f;
         pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
@@ -503,6 +505,8 @@ void UIShop::Check_Scroll()
             pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-700.f + 280.f * i + fPosX, 180.f, 4.8f, 1.f));
         else
             pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-700.f + 280.f * (i - iSize / 2) + fPosX, -160.f, 4.8f, 1.f));
+    
+        pObj.lock()->Get_Button()->Get_Desc().ptCenter.x = static_cast<LONG>(-700.f + 280.f * i + fPosX + g_iWinSizeX / 2);
     }
 
     for (_uint i = 0; i < iSize; ++i)
@@ -525,7 +529,7 @@ void UIShop::Check_Scroll()
             continue;
 
         _float4 vecPos = m_ItemObj[i].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-        vecPos.x += static_cast<_float>(m_vecName[i].length()) / 2.f * -15.f;
+        vecPos.x += static_cast<_float>(to_wstring(m_vecPrice[i]).length()) / 2.f * -15.f;
         vecPos.y -= 95.f;
         vecPos.z = 4.7f;
         pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
