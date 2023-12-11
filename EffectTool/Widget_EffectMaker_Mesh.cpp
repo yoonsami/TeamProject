@@ -1012,12 +1012,10 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 			if (ImGui::Button("Right##Turn"))
 			{
 				// Make World Matrix 
-				_float4x4 mWorld = _float4x4::CreateScale(_float3(m_fInitScale_Min[0], m_fInitScale_Min[1], m_fInitScale_Min[2]))
-					* _float4x4::CreateRotationX(m_fInitRotation_Min[0]) 
+				_float4x4 mWorld = _float4x4::CreateRotationX(m_fInitRotation_Min[0])
 					* _float4x4::CreateRotationY(m_fInitRotation_Min[1])
-					* _float4x4::CreateRotationZ(m_fInitRotation_Min[2])
-					* _float4x4::CreateTranslation(_float3(m_fPosOffsetInTool[0], m_fPosOffsetInTool[1], m_fPosOffsetInTool[2]));
-				
+					* _float4x4::CreateRotationZ(m_fInitRotation_Min[2]);
+
 				// Get Right vector 
 				_float3 vRight = mWorld.Right();
 				vRight.Normalize();
@@ -1027,11 +1025,9 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 			if (ImGui::Button("Up##Turn"))
 			{
 				// Make World Matrix 
-				_float4x4 mWorld = _float4x4::CreateScale(_float3(m_fInitScale_Min[0], m_fInitScale_Min[1], m_fInitScale_Min[2]))
-					* _float4x4::CreateRotationX(m_fInitRotation_Min[0])
+				_float4x4 mWorld = _float4x4::CreateRotationX(m_fInitRotation_Min[0])
 					* _float4x4::CreateRotationY(m_fInitRotation_Min[1])
-					* _float4x4::CreateRotationZ(m_fInitRotation_Min[2])
-					* _float4x4::CreateTranslation(_float3(m_fPosOffsetInTool[0], m_fPosOffsetInTool[1], m_fPosOffsetInTool[2]));
+					* _float4x4::CreateRotationZ(m_fInitRotation_Min[2]);
 
 				// Get Up vector 
 				_float3 vUp = mWorld.Up();
@@ -1042,11 +1038,9 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 			if (ImGui::Button("Look##Turn"))
 			{
 				// Make World Matrix 
-				_float4x4 mWorld = _float4x4::CreateScale(_float3(m_fInitScale_Min[0], m_fInitScale_Min[1], m_fInitScale_Min[2]))
-					* _float4x4::CreateRotationX(m_fInitRotation_Min[0])
+				_float4x4 mWorld = _float4x4::CreateRotationX(m_fInitRotation_Min[0])
 					* _float4x4::CreateRotationY(m_fInitRotation_Min[1])
-					* _float4x4::CreateRotationZ(m_fInitRotation_Min[2])
-					* _float4x4::CreateTranslation(_float3(m_fPosOffsetInTool[0], m_fPosOffsetInTool[1], m_fPosOffsetInTool[2]));
+					* _float4x4::CreateRotationZ(m_fInitRotation_Min[2]);
 
 				// Get Look vector 
 				_float3 vLook = mWorld.Backward();
