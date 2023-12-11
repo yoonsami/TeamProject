@@ -36,7 +36,7 @@ HRESULT UiDamageCreate::Init()
     return S_OK;
 }
 
-void UiDamageCreate::Create_Damage_Font(weak_ptr<GameObject> pObj, _float fDamage)
+void UiDamageCreate::Create_Damage_Font(weak_ptr<GameObject> pObj, _float fDamage, HERO eHero)
 {
     if (true == m_pOwner.expired() ||
         true == m_pPlayer.expired() ||
@@ -55,7 +55,7 @@ void UiDamageCreate::Create_Damage_Font(weak_ptr<GameObject> pObj, _float fDamag
     pFont->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 0.f, 1.f));
    
     pFont->Add_Component(make_shared<FontRenderer>(to_wstring(IDX(fDamage))));
-    HERO eHero = m_pPlayer.lock()->Get_Script<CoolTimeCheckScript>()->Get_Cur_Hero();
+    //HERO eHero = m_pPlayer.lock()->Get_Script<CoolTimeCheckScript>()->Get_Cur_Hero();
 
     pFont->Get_FontRenderer()->Set_Font(RESOURCES.Get<CustomFont>(L"136ex"), m_Color[GET_DATA(eHero).Element], m_fSize);
 
