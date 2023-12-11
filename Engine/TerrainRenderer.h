@@ -12,6 +12,8 @@ public:
 
 	void CreateGrid(_uint x, _uint z);
 
+	shared_ptr<Material> Get_Material() { return m_pMaterial; }
+
 	void Set_Material(shared_ptr<Material> material);
 	void Set_Mesh(shared_ptr<Mesh> mesh) { m_pMesh = mesh; }
 

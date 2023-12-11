@@ -103,20 +103,25 @@ void GS_Grass(point MeshOutput input[1], inout TriangleStream<GS_GRASS_OUTPUT> o
     };
     MeshOutput vtx = input[0];
     
+    // 바람의 방향,세기(이동량),현재가중치(0~1),속도(0~1도달속도)
+    float3 vWind = g_vec4_0.xyz;
+    float fWindPowerMagicNumber = 0.05f;
+    float fWindWeight = g_vec4_0.w;
+    
     for (uint j = 0; j < billboardCount; j++)
     {
         float4x4 matRotateByBillboard = RotateMatrix(radians(120.f * j), float3(0.f, 1.f, 0.f));
         float4x4 RotateWByBillboard = mul(matRotateByBillboard, W);
         
-        output[j * 4 + 0].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ - matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f /*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f /*높이*/, 1.f);
-        output[j * 4 + 1].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ + matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f /*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f /*높이*/, 1.f);
+        output[j * 4 + 0].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ - matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f /*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f /*높이*/ + mul(mul(vWind, fWindPowerMagicNumber), fWindWeight) /*바람정보를 위쪽 버텍스에 반영*/, 1.f);
+        output[j * 4 + 1].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ + matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f /*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f /*높이*/ + mul(mul(vWind, fWindPowerMagicNumber), fWindWeight) /*바람정보를 위쪽 버텍스에 반영*/, 1.f);
         output[j * 4 + 2].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ + matRotateByBillboard[0].xyz * 0.5f - matRotateByBillboard[1].xyz * 0.5f /*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f /*높이*/, 1.f);
         output[j * 4 + 3].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ - matRotateByBillboard[0].xyz * 0.5f - matRotateByBillboard[1].xyz * 0.5f /*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f /*높이*/, 1.f);
         
-        output[j * 4 + 0].uv = float2(0.f, 0.f);
-        output[j * 4 + 1].uv = float2(1.f, 0.f);
-        output[j * 4 + 2].uv = float2(1.f, 1.f);
-        output[j * 4 + 3].uv = float2(0.f, 1.f);
+        output[j * 4 + 0].uv = float2(0.f, 0.001f);
+        output[j * 4 + 1].uv = float2(1.f, 0.001f);
+        output[j * 4 + 2].uv = float2(1.f, 0.999f);
+        output[j * 4 + 3].uv = float2(0.f, 0.999f);
     
         output[j * 4 + 0].viewPosition = mul(output[j * 4 + 0].position, mul(W, V));
         output[j * 4 + 1].viewPosition = mul(output[j * 4 + 1].position, mul(W, V));
@@ -165,20 +170,26 @@ void GS_Grass_Instancing(point InstancingOuput input[1], inout TriangleStream<GS
     };
     
     InstancingOuput vtx = input[0];
+    
+    // 바람의 방향,세기(이동량),현재가중치(0~1),속도(0~1도달속도)
+    float3 vWind = InstanceRenderParams[vtx.id].xyz;
+    float fWindPowerMagicNumber = 0.05f;
+    float fWindWeight = InstanceRenderParams[vtx.id].w;
+    
     for (uint j = 0; j < billboardCount; j++)
     {
         float4x4 matRotateByBillboard = RotateMatrix(radians(120.f * j), float3(0.f, 1.f, 0.f));
         float4x4 RotateWByBillboard = mul(matRotateByBillboard, vtx.matWorld);
         
-        output[j * 4 + 0].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ - matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f /*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f /*높이*/, 1.f);
-        output[j * 4 + 1].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ + matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f /*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f /*높이*/, 1.f);
+        output[j * 4 + 0].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ - matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f /*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f /*높이*/ + mul(mul(vWind, fWindPowerMagicNumber), fWindWeight) /*바람정보를 위쪽 버텍스에 반영*/, 1.f);
+        output[j * 4 + 1].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ + matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f /*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f /*높이*/ + mul(mul(vWind, fWindPowerMagicNumber), fWindWeight) /*바람정보를 위쪽 버텍스에 반영*/, 1.f);
         output[j * 4 + 2].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ + matRotateByBillboard[0].xyz * 0.5f - matRotateByBillboard[1].xyz * 0.5f /*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f /*높이*/, 1.f);
         output[j * 4 + 3].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ - matRotateByBillboard[0].xyz * 0.5f - matRotateByBillboard[1].xyz * 0.5f /*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f /*높이*/, 1.f);
         
-        output[j * 4 + 0].uv = float2(0.f, 0.f);
-        output[j * 4 + 1].uv = float2(1.f, 0.f);
-        output[j * 4 + 2].uv = float2(1.f, 1.f);
-        output[j * 4 + 3].uv = float2(0.f, 1.f);
+        output[j * 4 + 0].uv = float2(0.f, 0.001f);
+        output[j * 4 + 1].uv = float2(1.f, 0.001f);
+        output[j * 4 + 2].uv = float2(1.f, 0.999f);
+        output[j * 4 + 3].uv = float2(0.f, 0.999f);
     
         output[j * 4 + 0].viewPosition = mul(output[j * 4 + 0].position, mul(vtx.matWorld, V));
         output[j * 4 + 1].viewPosition = mul(output[j * 4 + 1].position, mul(vtx.matWorld, V));
@@ -244,7 +255,7 @@ PS_OUT_Deferred PS_Deferred(GS_GRASS_OUTPUT input)
 
     if (bHasDiffuseMap)
     {
-        diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
+        diffuseColor = DiffuseMap.Sample(LinearSamplerMirror, input.uv);
         diffuseColor.rgb = pow(abs(diffuseColor.rgb), GAMMA);
     }
     else
@@ -274,7 +285,7 @@ PS_OUT_Deferred PS_Deferred(GS_GRASS_OUTPUT input)
     output.depth.w = input.viewPosition.z;
     output.diffuseColor = diffuseColor;
     output.specularColor = specularColor;
-    output.emissiveColor = emissiveColor + g_vec4_1;
+    output.emissiveColor = emissiveColor;
     return output;
 }
 
@@ -302,7 +313,7 @@ PS_OUT_Deferred PS_Deferred_Instancing(GS_GRASS_INSTANCING_OUTPUT input)
 
     if (bHasDiffuseMap)
     {
-        diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
+        diffuseColor = DiffuseMap.Sample(LinearSamplerMirror, input.uv);
         diffuseColor.rgb = pow(abs(diffuseColor.rgb), GAMMA);
     }
     else
@@ -369,7 +380,7 @@ PBR_OUTPUT PS_PBR_Deferred(GS_GRASS_OUTPUT input)
 
     if (bHasDiffuseMap)
     {
-        diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
+        diffuseColor = DiffuseMap.Sample(LinearSamplerMirror, input.uv);
         diffuseColor.rgb = pow(abs(diffuseColor.rgb), GAMMA);
     }
     else
@@ -393,9 +404,9 @@ PBR_OUTPUT PS_PBR_Deferred(GS_GRASS_OUTPUT input)
     output.position = float4(input.viewPosition.xyz, 1.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
     output.arm = ARM_Map;
-    output.diffuseColor = diffuseColor + float4(g_vec4_0.xyz, 0.f);
+    output.diffuseColor = diffuseColor;
     output.emissive = emissiveColor;
-    output.rimColor = Material.emissive + g_vec4_1;
+    output.rimColor = Material.emissive;
     output.blur = 0;
     return output;
 }
@@ -428,7 +439,7 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(GS_GRASS_INSTANCING_OUTPUT input)
 
     if (bHasDiffuseMap)
     {
-        diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
+        diffuseColor = DiffuseMap.Sample(LinearSamplerMirror, input.uv);
         diffuseColor.rgb = pow(abs(diffuseColor.rgb), GAMMA);
     }
     else
@@ -452,9 +463,9 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(GS_GRASS_INSTANCING_OUTPUT input)
     output.position = float4(input.viewPosition.xyz, 1.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
     output.arm = ARM_Map;
-    output.diffuseColor = diffuseColor + float4(InstanceRenderParams[input.id].xyz, 0.f);;
+    output.diffuseColor = diffuseColor;
     output.emissive = emissiveColor;
-    output.rimColor = Material.emissive + g_vec4_1;
+    output.rimColor = Material.emissive;
     output.blur = 0;
     return output;
 }
@@ -471,7 +482,6 @@ technique11 NonInstancing
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetGeometryShader(CompileShader(gs_5_0, GS_Grass()));
     }
-//19
     pass GeometryWeed_PBR
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Grass()));
@@ -494,7 +504,6 @@ technique11 Instancing
         SetBlendState(AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetGeometryShader(CompileShader(gs_5_0, GS_Grass_Instancing()));
     }
-//19
     pass GeometryWeed_PBR
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Grass_Instancing()));

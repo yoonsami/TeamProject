@@ -199,6 +199,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="WaterUVSliding.h" />
+    <ClInclude Include="WeedScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Libraries\Include\IMGUI\ImCurveEdit.cpp" />
@@ -232,6 +233,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="WaterUVSliding.cpp" />
+    <ClCompile Include="WeedScript.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MapTool.rc" />
