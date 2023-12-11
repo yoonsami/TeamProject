@@ -415,12 +415,13 @@ shared_ptr<GameObject> FSM::Find_Target_Companion(_uint eType)
 
 		_float3 vOwnerPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 		_float3 vObjectPos = gameObject->Get_Transform()->Get_State(Transform_State::POS).xyz();
+
 		_float distSQ = (vOwnerPos - vObjectPos).LengthSquared();
-		
 		if (distSQ <= m_fDetectRange * m_fDetectRange)
 		{
 			_float3 vRayDir = vObjectPos - vOwnerPos;
 			vRayDir.y = 0.f;
+			_float length = vRayDir.Length();
 			vRayDir.Normalize();
 
 			Ray ray;
@@ -430,7 +431,7 @@ shared_ptr<GameObject> FSM::Find_Target_Companion(_uint eType)
 			physx::PxQueryFilterData filterData;
 			filterData.flags = physx::PxQueryFlag::eSTATIC;
 
-			if (PHYSX.Get_PxScene()->raycast({ ray.position.x,ray.position.y,ray.position.z }, { ray.direction.x,ray.direction.y,ray.direction.z }, m_fDetectRange, hit, PxHitFlags(physx::PxHitFlag::eDEFAULT), filterData))
+			if (PHYSX.Get_PxScene()->raycast({ ray.position.x,ray.position.y,ray.position.z }, { ray.direction.x,ray.direction.y,ray.direction.z }, length, hit, PxHitFlags(physx::PxHitFlag::eDEFAULT), filterData))
 			{
 				//Collision Wall
 				continue;
