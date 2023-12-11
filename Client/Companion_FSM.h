@@ -1,6 +1,7 @@
 #pragma once
 #include "Client_FSM.h"
 #include "UIInteraction.h"
+#include "UiDialogController.h"
 
 class Companion_FSM abstract :
     public Client_FSM

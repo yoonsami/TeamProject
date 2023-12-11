@@ -546,6 +546,9 @@ void DataMgr::Initialize()
         m_NpcName[1] = L"가챠맨";
         m_NpcName[2] = L"상점걸";
         m_NpcName[3] = L"꼬맹이";
+        m_NpcName[4] = L"스파이크";
+        m_NpcName[5] = L"델론즈";
+        m_NpcName[6] = L"세인";
     }
 
 
@@ -1063,12 +1066,17 @@ void DataMgr::Initialize()
 
 
     m_NpcDialog.resize(IDX(NPCTYPE::MAX));
-    for (_uint i = 0; i < IDX(NPCTYPE::MAX); ++i)
-        m_NpcDialog[i].resize(3);
+    
+    //for (_uint i = 0; i < IDX(NPCTYPE::MAX); ++i)
+    //    m_NpcDialog[i].resize(3);
 
-    m_NpcDialog[IDX(NPCTYPE::SPIKE)][0].push_back(L"이건 테스트 0-0");
-    m_NpcDialog[IDX(NPCTYPE::SPIKE)][0].push_back(L"이건 테스트 0-1");
-    m_NpcDialog[IDX(NPCTYPE::SPIKE)][0].push_back(L"이건 테스트 0-2");
+    m_NpcDialog[IDX(NPCTYPE::SPIKE)].resize(1);
+    m_NpcDialog[IDX(NPCTYPE::DELLONS)].resize(1);
+    m_NpcDialog[IDX(NPCTYPE::SHANE)].resize(1);
+
+    m_NpcDialog[IDX(NPCTYPE::SPIKE)][0].push_back(L"안녕 나는 스파이크야.");
+    m_NpcDialog[IDX(NPCTYPE::SPIKE)][0].push_back(L"눈썰매장을 찾고 있는데 혹시 나에게 길을 안내해주지 않겠어?");
+    m_NpcDialog[IDX(NPCTYPE::SPIKE)][0].push_back(L"뭐? 싫다고?! 그래도 같이 따라갈거야. 얼른 안내해. 어쩌라고. 뭐.");
     
     //m_NpcDialog[IDX(NPCTYPE::SPIKE)][1].push_back(L"이건 테스트 1-0");
     //m_NpcDialog[IDX(NPCTYPE::SPIKE)][1].push_back(L"이건 테스트 1-1");
@@ -1078,14 +1086,13 @@ void DataMgr::Initialize()
     //m_NpcDialog[IDX(NPCTYPE::SPIKE)][2].push_back(L"이건 테스트 2-1");
     //m_NpcDialog[IDX(NPCTYPE::SPIKE)][2].push_back(L"이건 테스트 2-2");
 
-
-
-
-
-
-
-
-
+    m_NpcDialog[IDX(NPCTYPE::DELLONS)][0].push_back(L"크크크킄 나는 어둠의 다크 델론즈.");
+    m_NpcDialog[IDX(NPCTYPE::DELLONS)][0].push_back(L"너 좀 약해보이는군 이 앞은 약해빠진 너에게는 많이 위험하지.");
+    m_NpcDialog[IDX(NPCTYPE::DELLONS)][0].push_back(L"그러므로 이 몸께서 친히 널 도와주도록 하겠다");
+    
+    m_NpcDialog[IDX(NPCTYPE::SHANE)][0].push_back(L"안녕 나는 올해로 19세인 세인이야. 혹시 함께 할 동료를 찾고 있어?");
+    m_NpcDialog[IDX(NPCTYPE::SHANE)][0].push_back(L"바로 알겠다고? 너 얼빠구나.");
+    m_NpcDialog[IDX(NPCTYPE::SHANE)][0].push_back(L"알겠어 특별히 같이 가주지.");
 
 
 
