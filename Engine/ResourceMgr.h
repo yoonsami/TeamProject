@@ -54,6 +54,7 @@ public:
 	void						CreateDefaultShader();
 	
 	void						CreateModel(const wstring& path, _bool isStatic = true);
+	void						Load_Sound(const wstring& path, _bool isStatic = true);
 
 	void						CreateDefaultMaterial();
 	void						CreateDefaultFont();

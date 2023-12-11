@@ -873,6 +873,30 @@ void ResourceMgr::CreateModel(const wstring& path, _bool flag)
 	}
 }
 
+void ResourceMgr::Load_Sound(const wstring& path, _bool isStatic)
+{
+	{
+		wstring assetPath = path;
+
+		for (auto& entry : fs::recursive_directory_iterator(assetPath))
+		{
+			if (entry.is_directory())
+				continue;
+
+			wstring key = entry.path().filename().wstring();
+			Utils::DetachExt(key);
+
+			if (Get<CustomSound>(key))
+				continue;
+
+			shared_ptr<CustomSound> sound = make_shared<CustomSound>();
+			sound->Load(entry.path().wstring());
+
+			Add(key, sound, isStatic);
+		}
+	}
+}
+
 void ResourceMgr::CreateDefaultMaterial()
 {
 	{

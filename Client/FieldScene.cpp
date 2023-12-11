@@ -451,7 +451,7 @@ void FieldScene::Load_Terrain()
 	material->Set_TextureMap(Roadtexture, TextureMapType::TEXTURE8);
 
 	{
-		auto HeightMap = RESOURCES.GetOrAddTexture(L"HeightMap1",L"..\\Resources\\Textures\\MapObject\\TerrainTile\\HeightMap.png");
+		auto HeightMap = RESOURCES.ReloadOrAddTexture(L"HeightMap",L"..\\Resources\\Textures\\MapObject\\TerrainTile\\HeightMap.png");
 		if (HeightMap == nullptr)
 		{
 			MSG_BOX("NoSubTexture");

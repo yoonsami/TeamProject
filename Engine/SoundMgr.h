@@ -20,7 +20,7 @@ public:
 public:
 	HRESULT Initialize();
 	void Tick();
-	void Play_Sound(const wstring& strSoundTag, CHANNELID eID, float fVolume, _uint iLevelIndex, const _float3& vPos = _float3(0.f), const _float2& vMinMaxDist = _float2(0.f));
+	void Play_Sound(const wstring& strSoundTag, CHANNELID eID, float fVolume, const _float3& vPos = _float3(0.f), _float vMiDist = 0.f);
 	void Pause_Sound(CHANNELID eID);
 	void Resume_Sound(CHANNELID eID);
 	void StopSound(CHANNELID eID);
