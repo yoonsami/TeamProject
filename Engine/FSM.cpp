@@ -420,10 +420,11 @@ shared_ptr<GameObject> FSM::Find_Target_Companion(_uint eType)
 		if (distSQ <= m_fDetectRange * m_fDetectRange)
 		{
 			_float3 vRayDir = vObjectPos - vOwnerPos;
+			vRayDir.y = 0.f;
 			vRayDir.Normalize();
 
 			Ray ray;
-			ray.position = vOwnerPos;
+			ray.position = vOwnerPos + _float3::Up;
 			ray.direction = vRayDir;
 			physx::PxRaycastBuffer hit{};
 			physx::PxQueryFilterData filterData;
