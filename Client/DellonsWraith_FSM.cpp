@@ -39,7 +39,7 @@ HRESULT DellonsWraith_FSM::Init()
         m_pAttackCollider.lock()->Get_Collider()->Set_CollisionGroup(Player_Attack);
 
         m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
-        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(Get_Owner());
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pTarget.lock());
 
         m_pAttackCollider.lock()->Set_Name(L"Wraith_AttackCollider");
 
@@ -158,6 +158,34 @@ void DellonsWraith_FSM::State_Init()
 void DellonsWraith_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
 {
 
+}
+
+void DellonsWraith_FSM::Create_ForwardMovingSkillCollider(CollisionGroup eGroup, const wstring& strColliderName, const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage, const wstring& hitEffectTag)
+{
+    shared_ptr<GameObject> SkillCollider = make_shared<GameObject>();
+
+    m_pSkillCollider = SkillCollider;
+
+    m_pSkillCollider.lock()->GetOrAddTransform();
+    m_pSkillCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, vPos);
+
+    auto pSphereCollider = make_shared<SphereCollider>(fSkillRange);
+    pSphereCollider->Set_CenterPos(_float3{ vPos.x,vPos.y, vPos.z });
+    m_pSkillCollider.lock()->Add_Component(pSphereCollider);
+
+    m_pSkillCollider.lock()->Get_Collider()->Set_CollisionGroup(eGroup);
+
+    m_pSkillCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
+    m_pSkillCollider.lock()->Get_Collider()->Set_Activate(true);
+    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
+    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
+    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pTarget.lock());
+    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_HitEffectTag(hitEffectTag);
+    m_pSkillCollider.lock()->Set_Name(strColliderName);
+    m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
+    m_pSkillCollider.lock()->Get_Script<ForwardMovingSkillScript>()->Init();
+
+    EVENTMGR.Create_Object(m_pSkillCollider.lock());
 }
 
 void DellonsWraith_FSM::Set_State(_uint iIndex)
@@ -357,7 +385,7 @@ void DellonsWraith_FSM::FX_SQ_Dellons_QuestEnd_2_Init()
 void DellonsWraith_FSM::FX_Mn_Dellons_skill_500200()
 {
     if (m_iCurFrame == 19)
-        AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
+        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
 
     if (Is_AnimFinished())
     {

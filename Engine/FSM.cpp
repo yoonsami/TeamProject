@@ -226,15 +226,31 @@ _bool FSM::TargetGroup_In_DetectRange(_uint eType)
 				continue;
 		}
 
-
-
 		_float3 vOwnerPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 		_float3 vObjectPos = gameObject->Get_Transform()->Get_State(Transform_State::POS).xyz();
 		_float distSQ = (vOwnerPos - vObjectPos).LengthSquared();
 		
 		if (distSQ < m_fDetectRange * m_fDetectRange)
 		{
+			_float3 vRayDir = vObjectPos - vOwnerPos;
+			vRayDir.Normalize();
+
+			Ray ray;
+			ray.position = vOwnerPos;
+			ray.direction = vRayDir;
+			physx::PxRaycastBuffer hit{};
+			physx::PxQueryFilterData filterData;
+			filterData.flags = physx::PxQueryFlag::eSTATIC;
+
+			if (PHYSX.Get_PxScene()->raycast({ ray.position.x,ray.position.y,ray.position.z }, { ray.direction.x,ray.direction.y,ray.direction.z }, m_fDetectRange, hit, PxHitFlags(physx::PxHitFlag::eDEFAULT), filterData))
+			{
+				//Collision Wall
+				continue;
+			};
+
 			bFlag = true;
+
+
 		}
 
 		if (fMinDistSQ > distSQ)
@@ -379,6 +395,57 @@ shared_ptr<GameObject> FSM::Find_TargetInFrustum(_uint eType, _bool bFrustumChec
 			target = gameObject;
 		}
 		
+	}
+
+	return target;
+}
+
+shared_ptr<GameObject> FSM::Find_Target_Companion(_uint eType)
+{
+	auto& gameObjects = CUR_SCENE->Get_Objects();
+	shared_ptr<GameObject> target;
+	_float fMinDistSQ = FLT_MAX;
+	for (auto& gameObject : gameObjects)
+	{
+		if (gameObject->Get_ObjectGroup() != eType)
+			continue;
+
+		if (gameObject->Get_CurHp() <= 0.f)
+			continue;
+
+		_float3 vOwnerPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
+		_float3 vObjectPos = gameObject->Get_Transform()->Get_State(Transform_State::POS).xyz();
+		_float distSQ = (vOwnerPos - vObjectPos).LengthSquared();
+		
+		if (distSQ <= m_fDetectRange * m_fDetectRange)
+		{
+			_float3 vRayDir = vObjectPos - vOwnerPos;
+			vRayDir.Normalize();
+
+			Ray ray;
+			ray.position = vOwnerPos;
+			ray.direction = vRayDir;
+			physx::PxRaycastBuffer hit{};
+			physx::PxQueryFilterData filterData;
+			filterData.flags = physx::PxQueryFlag::eSTATIC;
+
+			if (PHYSX.Get_PxScene()->raycast({ ray.position.x,ray.position.y,ray.position.z }, { ray.direction.x,ray.direction.y,ray.direction.z }, m_fDetectRange, hit, PxHitFlags(physx::PxHitFlag::eDEFAULT), filterData))
+			{
+				//Collision Wall
+				continue;
+			};
+		}
+		else 
+		{
+			continue;
+		}
+
+		if (fMinDistSQ > distSQ)
+		{
+			//Target Setting
+			fMinDistSQ = distSQ;
+			target = gameObject;
+		}
 	}
 
 	return target;
