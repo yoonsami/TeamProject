@@ -594,11 +594,68 @@ void DragonBallMonster_FSM::Create_FloorSkillEffect()
 		switch (m_iPreAttack)
 		{
 		case 0: // Cross
-			Add_Effect(L"DragonBall_CrossBall", pScript);
+		{
+			_float3 vRight, vLook;
+			_float3 vUp = { 0.f, 1.f, 0.f };
+			_float4 vPos = { 0.f, 0.f, 0.f, 1.f };
+			_float4x4 matPivot = _float4x4::Identity;
+
+			// 90 degree
+			vLook = _float3(1.f, 0.f, 0.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+			// 180 degree
+			vLook = _float3(0.f, 0.f, -1.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+			// 270 degree
+			vLook = _float3(-1.f, 0.f, 0.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
 			break;
+		}
 		case 1:	// X
-			Add_Effect(L"DragonBall_XBall", pScript);
+		{
+			_float3 vRight, vLook;
+			_float3 vUp = { 0.f, 1.f, 0.f };
+			_float4 vPos = { 0.f, 0.f, 0.f, 1.f };
+			_float4x4 matPivot = _float4x4::Identity;
+
+			// 45 degree
+			vLook = _float3(1.f, 0.f, 1.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+
+			// 135 degree
+			vLook = _float3(1.f, 0.f, -1.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+
+			// 225 degree
+			vLook = _float3(-1.f, 0.f, -1.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+
+			// 315 degree
+			vLook = _float3(-1.f, 0.f, 1.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
 			break;
+		}
 		case 2:	// Hash
 		{
 			_float3 vRight = { 1.f, 0.f, 0.f };
