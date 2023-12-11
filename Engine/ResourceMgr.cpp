@@ -1160,13 +1160,16 @@ void ResourceMgr::CreateDefaultMaterial()
 		Add(L"Sampler", material);
 	}
 
+	for(int i=0; i<8; ++i)
 	{
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Grass.fx");
 		shared_ptr<Material> material = make_shared<Material>();
 		material->Set_Shader(shader);
-		auto Weedtexture = RESOURCES.GetOrAddTexture(L"Weed", L"..\\Resources\\Textures\\MapObject\\TerrainTile\\pngegg.png");
+		wstring WeedTextureName = L"Weed" + to_wstring(i);
+		wstring WeedTexturePath = L"..\\Resources\\Textures\\MapObject\\TerrainTile\\Weed" + to_wstring(i) + L".png";
+		auto Weedtexture = RESOURCES.GetOrAddTexture(WeedTextureName, WeedTexturePath);
 		material->Set_TextureMap(Weedtexture, TextureMapType::DIFFUSE);
-		Add(L"Grass1", material);
+		Add(WeedTextureName, material);
 	}
 }
 
