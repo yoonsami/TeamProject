@@ -13,6 +13,7 @@
 #include "ObjectDissolve.h"
 #include "OBBBoxCollider.h"
 #include "CreateEffect_Script.h"
+#include "DragonBallLightning_Script.h"
 
 HRESULT DragonBallMonster_FSM::Init()
 {
@@ -576,6 +577,7 @@ void DragonBallMonster_FSM::Update_UI_Pos()
 		}
 	}
 }
+
 void DragonBallMonster_FSM::Create_FloorSkillEffect()
 {
 	if (m_fTimer_CreateFloorSkillEffect > 2.5f && !m_bIsCreateFloorSkillEffectDone)
@@ -634,8 +636,14 @@ void DragonBallMonster_FSM::Create_FloorSkillEffect()
 			break;
 		}
 		case 4: // Half
-			// Add_Effect(L"DragonBall_HalfBall", pScript);
+		{
+			shared_ptr<GameObject> pEffectOwnerObj = make_shared<GameObject>();
+			shared_ptr<DragonBallLightning_Script> pEffectScript = make_shared<DragonBallLightning_Script>();
+			pEffectOwnerObj->Add_Component(pEffectScript);
+			pEffectOwnerObj->Get_Script<DragonBallLightning_Script>()->Set_Direction(DragonBallLightning_Script::LEFT);
+			EVENTMGR.Create_Object(pEffectOwnerObj);
 			break;
+		}
 		case 5: // Star
 		{
 			// 0 degree
@@ -698,9 +706,9 @@ void DragonBallMonster_FSM::Create_FloorSkillEffect()
 
 void DragonBallMonster_FSM::Set_AttackPattern()
 {
-	Summon_Web_Floor();
+	Summon_HalfCircle_Floor();
 	m_tPatternCoolTime.fCoolTime = 4.f;
-	m_iPreAttack = 3;
+	m_iPreAttack = 4;
 
 	_uint iRan = rand() % 6;
 
