@@ -49,6 +49,7 @@ protected:
 	void Set_DirToTarget_Monster(_uint eType);
 	void Look_DirToTarget(_float fTurnSpeed = XM_PI * 5.f);
 	shared_ptr<GameObject> Find_TargetInFrustum(_uint eType, _bool bFrustumCheck = true);
+	shared_ptr<GameObject> Find_Target_Companion(_uint eType);
 	_bool Init_CurFrame(const _uint curFrame);
 
 	void		KillAllEffect();

@@ -48,7 +48,7 @@ HRESULT Companion_Dellons_FSM::Init()
 
         m_pWeapon = CUR_SCENE->Get_GameObject(L"Companion_Weapon_Dellons");
 
-        m_fDetectRange = 30.f;
+        m_fDetectRange = 25.f;
 
         m_bInitialize = true;
     }

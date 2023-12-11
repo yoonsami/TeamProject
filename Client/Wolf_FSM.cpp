@@ -244,7 +244,18 @@ void Wolf_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Game
 
     //Target Change
     if (pLookTarget != nullptr)
-        m_pTarget = pLookTarget;
+    {
+        //Skill => SkillCollider Owner
+        if (skillname.find(L"_Skill") != wstring::npos)
+            m_pTarget = pLookTarget->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner();// Collider owner를 넘겨준다
+        else
+        {
+            if (pLookTarget->Get_Name() == L"Wraith_AttackCollider")
+                m_pTarget = pLookTarget->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner();// Collider owner를 넘겨준다
+            else
+                m_pTarget = pLookTarget;
+        }
+    }
 
     m_bDetected = true;
     m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.05f);
