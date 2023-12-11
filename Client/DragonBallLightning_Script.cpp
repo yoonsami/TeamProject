@@ -33,15 +33,15 @@ void DragonBallLightning_Script::Tick()
 		{
 			// Set Position 
 			_float3 vPos = { 0.f, 0.f, 0.f };
-			_float fRandRadius = rand() % 30 + 1;
+			_float fRandRadius = _float(rand() % 30) + 1.f;
 			_float fRandAngle = 0.f;
 			if (RIGHT == m_eDirection)
-				fRandAngle = rand() % 180 + 270;
+				fRandAngle = _float(rand() % 180) + 270.f;
 			else if (LEFT == m_eDirection)
-				fRandAngle = rand() % 180 + 90;
+				fRandAngle = _float(rand() % 180) + 90.f;
 			fRandAngle *= (XM_PI / 180.f);
-			vPos.x = fRandRadius * cos(fRandAngle);
-			vPos.z = fRandRadius * sin(fRandAngle);
+			vPos.x = fRandRadius * cosf(fRandAngle);
+			vPos.z = fRandRadius * sinf(fRandAngle);
 
 			Add_Effect(L"DragonBall_Lightning", _float4x4::CreateTranslation(vPos));
 		}

@@ -763,15 +763,15 @@ void DragonBallMonster_FSM::Create_FloorSkillEffect()
 
 void DragonBallMonster_FSM::Set_AttackPattern()
 {
-	Summon_HalfCircle_Floor();
+	/*Summon_HalfCircle_Floor();
 	m_tPatternCoolTime.fCoolTime = 4.f;
-	m_iPreAttack = 4;
+	m_iPreAttack = 4;*/
 
 	_uint iRan = rand() % 6;
 
 	m_fTimer_CreateFloorSkillEffect = 0.f;
 	m_bIsCreateFloorSkillEffectDone = false;
-	/*
+	
 	while (true)
 	{
 		if (iRan == m_iPreAttack)
@@ -779,7 +779,7 @@ void DragonBallMonster_FSM::Set_AttackPattern()
 		else
 			break;
 	}
-	
+
 	if (iRan == 0)
 	{
 		Summon_CrossFloor();
@@ -820,12 +820,12 @@ void DragonBallMonster_FSM::Set_AttackPattern()
 	if (!m_bSummonMeteor)
 	{
 		_uint iRan = rand() % 3;
-		
+
 		if (iRan == 0)
 		{
 			m_iLimitMeteorCnt = rand() % 3 + 1;
 			m_bSummonMeteor = true;
 		}
 	}
-	*/
+	
 }
