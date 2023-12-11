@@ -193,12 +193,20 @@ HRESULT FieldScene::Load_Scene()
 	Load_Companion(L"Spike", player, _float4{ 118.471f, -1.26f, 59.8f, 1.f});
 	Load_Companion(L"Dellons", player, _float4{ 128.471f, -2.98f, 78.3f, 1.f });
 	Load_Companion(L"Shane", player, _float4{ 98.f, -0.6f, 73.76f, 1.f});
-
+	
+#ifdef _DEBUG
 	Load_Monster(3, L"Wolf", player);
 	Load_Monster(3, L"Silversword_Soldier", player);
 	Load_Monster(3, L"Succubus_Scythe", player);
 	Load_Monster(3, L"Undead_Priest", player);
 	Load_Monster(3, L"EntSoldier", player);
+#else
+	Load_Monster(40, L"Wolf", player);
+	Load_Monster(40, L"Silversword_Soldier", player);
+	Load_Monster(40, L"Succubus_Scythe", player);
+	Load_Monster(40, L"Undead_Priest", player);
+	Load_Monster(40, L"EntSoldier", player);
+#endif
 
 	Load_Ui(player);
 	return S_OK;
@@ -547,12 +555,6 @@ void FieldScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_p
 			shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
 
 			ObjMonster->Add_Component(make_shared<Transform>());
-
-			_float fRan = 0;
-			if (rand() % 2 == 0)
-				fRan = -1.f;
-			else
-				fRan = 1.f;
 
 			_float3 vSpawnPos = MathUtils::Get_RandomVector(_float3{ 165.f, -1.3f, 50.f }, _float3{ 235.f, -1.3f, 60.f });
 			ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4{ vSpawnPos.x, vSpawnPos.y, vSpawnPos.z, 1.f });
