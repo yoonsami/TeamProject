@@ -40,6 +40,8 @@ private:
     void Create_FloorSkillEffect();
 
 
+    
+    void Update_UI_Pos();
     void Set_AttackPattern();
     
 private:

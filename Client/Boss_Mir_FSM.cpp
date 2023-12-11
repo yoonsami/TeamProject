@@ -2557,8 +2557,7 @@ void Boss_Mir_FSM::Create_DragonBall()
 
 void Boss_Mir_FSM::Set_AttackPattern()
 {
-    //m_eCurState = STATE::SQ_SBRin_Roar;
-
+    
     _uint iRan = rand() % 10;
     
     while (true)

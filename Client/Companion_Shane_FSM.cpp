@@ -449,11 +449,13 @@ void Companion_Shane_FSM::talk_01()
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
 
-    if (KEYTAP(KEY_TYPE::P)) //For. Debugging
+    auto pObj = CUR_SCENE->Get_UI(L"UI_NpcDialog_Controller");
+    if (pObj && pObj->Get_Script<UiDialogController>()->Get_Dialog_End() == false)
     {
         m_bEntryTeam = true;
         m_eCurState = STATE::b_idle;
     }
+
 }
 
 void Companion_Shane_FSM::talk_01_Init()
@@ -468,14 +470,17 @@ void Companion_Shane_FSM::n_idle()
 {
     if (Can_Interact())
     {
-        if (KEYTAP(KEY_TYPE::P)) //For. Debugging
-        {
+        auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
+        if (pObj && pObj->Get_Script<UIInteraction>()->Get_Is_Activate(m_pOwner.lock()))
             m_eCurState = STATE::talk_01;
-        }
+        else if (pObj && !pObj->Get_Script<UIInteraction>()->Is_Created())
+            pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::SHANE, m_pOwner.lock());
     }
     else
     {
-
+        auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
+        if (pObj)
+            pObj->Get_Script<UIInteraction>()->Remove_Interaction(m_pOwner.lock());
     }
 }
 

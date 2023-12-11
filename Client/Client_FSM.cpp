@@ -78,6 +78,23 @@ void Client_FSM::AttackCollider_Off()
 
 }
 
+void Client_FSM::Set_On_Ground()
+{
+	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
+	Ray ray;
+	ray.position = vMyPos;
+	ray.direction = _float3{ 0.f,-1.f,0.f };
+	physx::PxRaycastBuffer hit{};
+	physx::PxQueryFilterData filterData;
+	filterData.flags = physx::PxQueryFlag::eSTATIC;
+
+	if (PHYSX.Get_PxScene()->raycast({ ray.position.x,ray.position.y,ray.position.z }, { ray.direction.x,ray.direction.y,ray.direction.z }, 1.f, hit, PxHitFlags(physx::PxHitFlag::eDEFAULT), filterData))
+	{
+		_float3 vHitPoint = { hit.getAnyHit(0).position.x, hit.getAnyHit(0).position.y, hit.getAnyHit(0).position.z };
+		Get_Transform()->Set_State(Transform_State::POS, _float4{ vMyPos.x, vHitPoint.y, vMyPos.z, 1.f });
+	};
+}
+
 void Client_FSM::Set_ColliderOption(ElementType eType, const wstring& strHitEffectTag)
 {
 	if (!m_pAttackCollider.expired())
