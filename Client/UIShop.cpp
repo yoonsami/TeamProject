@@ -37,47 +37,50 @@ void UIShop::Tick()
     if (false == m_bIsCreated)
         return;
 
-    if (KEYPUSH(KEY_TYPE::Q))
-    {
-        if (700 >= m_ItemObj[IDX(m_ItemObj.size()) - 1].lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x)
-        {
+    Check_Scroll();
 
-        }
-        else
-        {
-            for (_uint i = 0; i < IDX(m_ItemObj.size()); ++i)
-            {
-                auto& pObj = m_ItemObj[i];
-                if (false == pObj.expired())
-                {
-                    _float4 fPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-                    fPos.x -= 3.f;
-                    pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, fPos);
-                }
-            }
-        }
-    }
 
-    if (KEYPUSH(KEY_TYPE::E))
-    {
-        if (-700 <= m_ItemObj[0].lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x)
-        {
-
-        }
-        else
-        {
-            for (_uint i = 0; i < IDX(m_ItemObj.size()); ++i)
-            {
-                auto& pObj = m_ItemObj[i];
-                if (false == pObj.expired())
-                {
-                    _float4 fPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-                    fPos.x += 3.f;
-                    pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, fPos);
-                }
-            }
-        }
-    }
+    //if (KEYPUSH(KEY_TYPE::Q))
+    //{
+    //    if (700 >= m_ItemObj[IDX(m_ItemObj.size()) - 1].lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x)
+    //    {
+    //
+    //    }
+    //    else
+    //    {
+    //        for (_uint i = 0; i < IDX(m_ItemObj.size()); ++i)
+    //        {
+    //            auto& pObj = m_ItemObj[i];
+    //            if (false == pObj.expired())
+    //            {
+    //                _float4 fPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    //                fPos.x -= 3.f;
+    //                pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, fPos);
+    //            }
+    //        }
+    //    }
+    //}
+    //
+    //if (KEYPUSH(KEY_TYPE::E))
+    //{
+    //    if (-700 <= m_ItemObj[0].lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x)
+    //    {
+    //
+    //    }
+    //    else
+    //    {
+    //        for (_uint i = 0; i < IDX(m_ItemObj.size()); ++i)
+    //        {
+    //            auto& pObj = m_ItemObj[i];
+    //            if (false == pObj.expired())
+    //            {
+    //                _float4 fPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    //                fPos.x += 3.f;
+    //                pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, fPos);
+    //            }
+    //        }
+    //    }
+    //}
 
 }
 
@@ -116,7 +119,23 @@ void UIShop::Create_Shop()
             m_pMoneyValue = pObj;
             m_pMoneyValue.lock()->Get_FontRenderer()->Get_Text() = to_wstring(m_iMoney);
         }
-
+        else if (L"UI_Shop_Scroll_Button" == strName)
+        {
+            m_pScroll = pObj;
+            pObj.lock()->Get_Button()->Set_Type(false);
+            pObj.lock()->Get_Button()->AddOnClickedEvent([this, pObj]()
+                {
+                    POINT ptMouse = INPUT.GetMousePosToPoint();
+                    _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+                    vecPos.x = static_cast<_float>(ptMouse.x - g_iWinSizeX / 2.f);
+                    if (250.f > vecPos.x)
+                        vecPos.x = 250.f;
+                    if (850.f < vecPos.x)
+                        vecPos.x = 850.f;
+                    pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+                });
+        }
+        
         //else if (L"UI_Shop_Item_0" == strName)
         //{
         //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
@@ -238,6 +257,8 @@ void UIShop::Create_Shop()
 
         if (i < iSize / 2)
         {
+            if (i == iSize / 2 - 1)
+                m_fMaxPosX = -700.f + 280.f * i;
 
             pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-700.f + 280.f * i, 180.f, 4.8f, 1.f));
         }
@@ -420,4 +441,28 @@ void UIShop::Remove_Buy_Ui()
     }
 
     m_addedBuyUi.clear();
+}
+
+void UIShop::Check_Scroll()
+{
+    if (true == m_pScroll.expired())
+        return;
+
+    _float fPosX = m_pScroll.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
+
+    fPosX -= 250.f;
+    fPosX *= -6.06666f;
+
+    _uint iSize = IDX(m_ItemObj.size());
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        auto& pObj = m_ItemObj[i];
+        if (true == pObj.expired())
+            continue;
+
+        if (i < iSize / 2)
+            pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-700.f + 280.f * i + fPosX, 180.f, 4.8f, 1.f));
+        else
+            pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-700.f + 280.f * (i - iSize / 2) + fPosX, -160.f, 4.8f, 1.f));
+    }
 }
