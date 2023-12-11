@@ -42,6 +42,7 @@ public:
 	shared_ptr<Texture>			GetOrAddTexture(const wstring& key, const wstring& path);
 	shared_ptr<GroupEffectData> GetOrAddGroupEffectData(const wstring& key, const wstring& path);
 
+	shared_ptr<Texture>			ReloadOrAddTexture(const wstring& key, const wstring& path);
 	shared_ptr<GroupEffectData> ReloadOrAddGroupEffectData(const wstring& key, const wstring& path);
 	shared_ptr<MeshEffectData>	ReloadOrAddMeshEffectData(const wstring& key, const wstring& path);
 	shared_ptr<Parts>			Get_Part(const wstring& key, PARTS_INFO type);

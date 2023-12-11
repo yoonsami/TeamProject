@@ -124,6 +124,43 @@ shared_ptr<GroupEffectData> ResourceMgr::GetOrAddGroupEffectData(const wstring& 
 	return groupEffectData;
 }
 
+shared_ptr<Texture> ResourceMgr::ReloadOrAddTexture(const wstring& key, const wstring& path)
+{
+	auto texture = Get<Texture>(key);
+	if (key == L"")
+		return nullptr;
+	if (fs::exists(fs::path(path)) == false)
+		return nullptr;
+
+	texture = Load<Texture>(key, path);
+
+	if (texture == nullptr)
+	{
+		texture = make_shared<Texture>();
+		texture->Load(path);
+
+		wstring name = key;
+		Utils::DetachExt(name);
+		texture->Set_Name(name);
+		Add(name, texture);
+	}
+	else
+	{
+		Delete<Texture>(key);
+
+		auto newTexture = make_shared<Texture>();
+		newTexture->Load(path);
+
+		wstring name = key;
+		Utils::DetachExt(name);
+		newTexture->Set_Name(name);
+		Add(name, newTexture);
+		return newTexture;
+	}
+
+	return texture;
+}
+
 shared_ptr<GroupEffectData> ResourceMgr::ReloadOrAddGroupEffectData(const wstring& key, const wstring& path)
 {
 	wstring name = key;
@@ -1168,6 +1205,9 @@ void ResourceMgr::CreateDefaultMaterial()
 		material->Set_TextureMap(Weedtexture, TextureMapType::DIFFUSE);
 		Add(L"Grass1", material);
 	}
+	auto Weedtexture = RESOURCES.ReloadOrAddTexture(L"Weed", L"..\\Resources\\Textures\\MapObject\\TerrainTile\\pngegg.png");
+
+	int a = 0;
 }
 
 void ResourceMgr::CreateDefaultFont()

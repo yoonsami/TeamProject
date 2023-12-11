@@ -68,7 +68,7 @@ void CharacterController::Tick()
 		if (!m_bJump)
 		{
 
-			auto result = m_pController->move({ 0.f ,-30.f  ,0.f }, 0.0f, fDT, PxControllerFilters());
+			auto result = m_pController->move({ 0.f ,-30.f * fDT  ,0.f }, 0.0f, fDT, PxControllerFilters());
 
 			auto controllerPos = m_pController->getFootPosition();
 			Get_Transform()->Set_State(Transform_State::POS, _float4(_float(controllerPos.x), _float(controllerPos.y), _float(controllerPos.z), 1.f));

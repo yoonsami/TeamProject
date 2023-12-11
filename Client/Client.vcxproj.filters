@@ -857,9 +857,11 @@
     <ClInclude Include="UiMessageCreater.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessage\00.UiMessageCreater</Filter>
     </ClInclude>
-    <ClInclude Include="EffectGoUp.h" />
     <ClInclude Include="CreateEffect_Script.h">
       <Filter>02.Component\00.MonoBehaviour\07.EffectScript\CreateEffect_Script</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectGoUp.h">
+      <Filter>02.Component\00.MonoBehaviour\07.EffectScript\03.EffectGoUp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1252,9 +1254,11 @@
     <ClCompile Include="UiMessageCreater.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessage\00.UiMessageCreater</Filter>
     </ClCompile>
-    <ClCompile Include="EffectGoUp.cpp" />
     <ClCompile Include="CreateEffect_Script.cpp">
       <Filter>02.Component\00.MonoBehaviour\07.EffectScript\CreateEffect_Script</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectGoUp.cpp">
+      <Filter>02.Component\00.MonoBehaviour\07.EffectScript\03.EffectGoUp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
