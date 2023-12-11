@@ -134,115 +134,6 @@ void UIShop::Create_Shop()
                     pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
                 });
         }
-
-        //else if (L"UI_Shop_Item_0" == strName)
-        //{
-        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-        //        {
-        //            this->Click_Item(0);
-        //        });
-        //}
-        //else if (L"UI_Shop_Item_1" == strName)
-        //{
-        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-        //        {
-        //            this->Click_Item(1);
-        //        });
-        //}
-        //else if (L"UI_Shop_Item_2" == strName)
-        //{
-        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-        //        {
-        //            this->Click_Item(2);
-        //        });
-        //}
-        //else if (L"UI_Shop_Item_3" == strName)
-        //{
-        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-        //        {
-        //            this->Click_Item(3);
-        //        });
-        //}
-        //else if (L"UI_Shop_Item_4" == strName)
-        //{
-        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-        //        {
-        //            this->Click_Item(4);
-        //        });
-        //}
-        //else if (L"UI_Shop_Item_5" == strName)
-        //{
-        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-        //        {
-        //            this->Click_Item(5);
-        //        });
-        //}
-        //else if (L"UI_Shop_Item_6" == strName)
-        //{
-        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-        //        {
-        //            this->Click_Item(6);
-        //        });
-        //}
-        //else if (L"UI_Shop_Item_7" == strName)
-        //{
-        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-        //        {
-        //            this->Click_Item(7);
-        //        });
-        //}
-        //else if (L"UI_Shop_Item_8" == strName)
-        //{
-        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-        //        {
-        //            this->Click_Item(8);
-        //        });
-        //}
-        //else if (L"UI_Shop_Item_9" == strName)
-        //{
-        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-        //        {
-        //            this->Click_Item(9);
-        //        });
-        //}
-        //else if (L"UI_Shop_Item_10" == strName)
-        //{
-        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-        //        {
-        //            this->Click_Item(10);
-        //        });
-        //}
-        //else if (L"UI_Shop_Item_11" == strName)
-        //{
-        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-        //        {
-        //            this->Click_Item(11);
-        //        });
-        //}
-
-
-        //for (_uint j = 0; j < 12; ++j)
-        //{
-        //    if (false == m_vecIsBuy[j])
-        //        continue;
-        //
-        //    if (2 == j)
-        //        continue;
-        //
-        //    wstring strItemName = L"UI_Shop_Item_" + to_wstring(j);
-        //    wstring strPrice = strItemName + L"_Price";
-        //    if (true == pObj.expired())
-        //        continue;
-        //
-        //    if (strItemName == pObj.lock()->Get_Name())
-        //    {
-        //        pObj.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = 0.f;
-        //    }
-        //    else if (strPrice == pObj.lock()->Get_Name())
-        //    {
-        //        pObj.lock()->Get_FontRenderer()->Get_Text() = L"구매 완료";
-        //    }
-        //}
     }
 
     pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Shop_Test.dat", m_ItemObj);
@@ -265,6 +156,31 @@ void UIShop::Create_Shop()
             pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-700.f + 280.f * (i - iSize / 2), -160.f, 4.8f, 1.f));
     
         pObj.lock()->Get_Button()->Get_Desc().ptCenter.x = static_cast<LONG>(-700.f + 280.f * i + g_iWinSizeX / 2);
+
+
+        pObj.lock()->Get_Button()->AddOnClickedEvent([this, i]()
+            {
+                this->Click_Item(i);
+            });
+
+        
+
+        for (_uint j = 0; j < iSize; ++j)
+        {
+            if (false == m_vecIsBuy[j])
+                continue;
+        
+            if (1 == j)
+                continue;
+        
+            wstring strItemName = L"UI_Shop_Item_" + to_wstring(j);
+            if (true == pObj.expired())
+                continue;
+        
+            if (strItemName == pObj.lock()->Get_Name())
+                pObj.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = 0.f;
+        }
+
     }
 
     pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Shop_Item_Name.dat", m_ItemName);
@@ -299,6 +215,22 @@ void UIShop::Create_Shop()
         vecPos.y -= 95.f;
         vecPos.z = 4.7f;
         pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+
+        for (_uint j = 0; j < iSize; ++j)
+        {
+            if (false == m_vecIsBuy[j])
+                continue;
+
+            if (1 == j)
+                continue;
+
+            wstring strPrice = L"UI_Shop_Item_Price_" + to_wstring(j);
+            if (true == pObj.expired())
+                continue;
+
+            if (strPrice == pObj.lock()->Get_Name())
+                pObj.lock()->Get_FontRenderer()->Get_Text() = L"구매 완료";
+        }
     }
 
 }
@@ -399,23 +331,27 @@ void UIShop::Click_Buy_Yes()
         return;
 
     wstring strName = L"UI_Shop_Item_" + to_wstring(m_iInteractionItemIndex);
-    wstring strPrice = strName + L"_Price";
+    wstring strPrice = L"UI_Shop_Item_Price_" + to_wstring(m_iInteractionItemIndex);
 
-    _uint iSize = IDX(m_addedObj.size());
+    _uint iSize = IDX(m_ItemObj.size());
     for (_uint i = 0; i < iSize; ++i)
     {
-        auto& pObj = m_addedObj[i];
+        auto& pObj = m_ItemObj[i];
         if (true == pObj.expired())
             continue;
 
         if (strName == pObj.lock()->Get_Name())
-        {
             pObj.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = 0.f;
-        }
-        else if (strPrice == pObj.lock()->Get_Name())
-        {
+    }
+    
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        auto& pObj = m_ItemPrice[i];
+        if (true == pObj.expired())
+            continue;
+
+        if (strPrice == pObj.lock()->Get_Name())
             pObj.lock()->Get_FontRenderer()->Get_Text() = L"구매 완료";
-        }
     }
 
 }
@@ -502,11 +438,17 @@ void UIShop::Check_Scroll()
             continue;
 
         if (i < iSize / 2)
+        {
             pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-700.f + 280.f * i + fPosX, 180.f, 4.8f, 1.f));
+            pObj.lock()->Get_Button()->Get_Desc().ptCenter.x = static_cast<LONG>(-700.f + 280.f * i + fPosX + g_iWinSizeX / 2);
+        }
         else
+        {
             pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-700.f + 280.f * (i - iSize / 2) + fPosX, -160.f, 4.8f, 1.f));
+            pObj.lock()->Get_Button()->Get_Desc().ptCenter.x = static_cast<LONG>(-700.f + 280.f * (i - iSize / 2) + fPosX + g_iWinSizeX / 2);
+        }
     
-        pObj.lock()->Get_Button()->Get_Desc().ptCenter.x = static_cast<LONG>(-700.f + 280.f * i + fPosX + g_iWinSizeX / 2);
+        
     }
 
     for (_uint i = 0; i < iSize; ++i)
