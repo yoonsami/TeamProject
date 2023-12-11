@@ -889,6 +889,7 @@ void Shane_FSM::skill_1100()
 {
     if (m_iCurFrame == 4)
 	{
+        Add_And_Set_Effect(L"Shane_1100");
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
 		Set_ColliderOption(DARK, L"Hit_Slash_RedBlack");
 	}
@@ -944,6 +945,7 @@ void Shane_FSM::skill_1200()
 {
     if (m_iCurFrame == 12)
     {
+        Add_And_Set_Effect(L"Shane_1200_1");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
         Set_ColliderOption(DARK, L"Hit_Slash_RedBlack");
     }
@@ -1004,6 +1006,7 @@ void Shane_FSM::skill_1300()
 {
     if (m_iCurFrame == 11)
 	{
+        Add_And_Set_Effect(L"Shane_1300");
 		Set_ColliderOption(DARK, L"Hit_Slash_RedBlack");
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
 	}
@@ -1064,6 +1067,7 @@ void Shane_FSM::skill_1400()
 {
     if (m_iCurFrame == 4)
 	{
+        Add_And_Set_Effect(L"Shane_1400");
 		Set_ColliderOption(DARK, L"Hit_Slash_RedBlack");
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
 	}
