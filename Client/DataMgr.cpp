@@ -1066,6 +1066,7 @@ void DataMgr::Initialize()
     for (_uint i = 0; i < IDX(NPCTYPE::MAX); ++i)
         m_NpcDialog[i].resize(3);
 
+    m_NpcDialog[IDX(NPCTYPE::SPIKE)].resize(1);
     m_NpcDialog[IDX(NPCTYPE::SPIKE)][0].push_back(L"이건 테스트 0-0");
     m_NpcDialog[IDX(NPCTYPE::SPIKE)][0].push_back(L"이건 테스트 0-1");
     m_NpcDialog[IDX(NPCTYPE::SPIKE)][0].push_back(L"이건 테스트 0-2");

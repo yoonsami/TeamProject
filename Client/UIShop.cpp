@@ -21,8 +21,49 @@ HRESULT UIShop::Init()
 
     m_iMoney = 1000000;
 
-    m_vecIsBuy.resize(12);
-    m_vecPrice.resize(12);
+    _uint iIndex = 0;
+    m_vecName.resize(38);
+    m_vecName[iIndex++] = L"복주머니";
+    m_vecName[iIndex++] = L"체력 포션 10개묶음";
+    m_vecName[iIndex++] = L"장비 경험치 스크롤";
+    m_vecName[iIndex++] = L"영웅 경험치 카드";
+    m_vecName[iIndex++] = L"계승자의 기록";
+    m_vecName[iIndex++] = L"방어구 2성 랜덤상자";
+    m_vecName[iIndex++] = L"방어구 3성 랜덤상자";
+    m_vecName[iIndex++] = L"방어구 4성 랜덤상자";
+    m_vecName[iIndex++] = L"방어구 5성 랜덤상자";
+    m_vecName[iIndex++] = L"방어구 6성 랜덤상자";
+    m_vecName[iIndex++] = L"무기 2성 랜덤상자";
+    m_vecName[iIndex++] = L"무기 3성 랜덤상자";
+    m_vecName[iIndex++] = L"무기 4성 랜덤상자";
+    m_vecName[iIndex++] = L"무기 5성 랜덤상자";
+    m_vecName[iIndex++] = L"무기 6성 랜덤상자";
+    m_vecName[iIndex++] = L"월하 미인 세트";
+    m_vecName[iIndex++] = L"쓰리테일 바캉스 세트";
+    m_vecName[iIndex++] = L"해군장교 제복 세트";
+    m_vecName[iIndex++] = L"보조무기 2성 랜덤상자";
+    m_vecName[iIndex++] = L"보조무기 3성 랜덤상자";
+    m_vecName[iIndex++] = L"보조무기 4성 랜덤상자";
+    m_vecName[iIndex++] = L"보조무기 5성 랜덤상자";
+    m_vecName[iIndex++] = L"보조무기 6성 랜덤상자";
+    m_vecName[iIndex++] = L"반지 2성 랜덤상자";
+    m_vecName[iIndex++] = L"반지 3성 랜덤상자";
+    m_vecName[iIndex++] = L"반지 4성 랜덤상자";
+    m_vecName[iIndex++] = L"반지 5성 랜덤상자";
+    m_vecName[iIndex++] = L"반지 6성 랜덤상자";
+    m_vecName[iIndex++] = L"목걸이 2성 랜덤상자";
+    m_vecName[iIndex++] = L"목걸이 3성 랜덤상자";
+    m_vecName[iIndex++] = L"목걸이 4성 랜덤상자";
+    m_vecName[iIndex++] = L"목걸이 5성 랜덤상자";
+    m_vecName[iIndex++] = L"목걸이 6성 랜덤상자";
+    m_vecName[iIndex++] = L"투구 6성 랜덤상자";
+    m_vecName[iIndex++] = L"갑옷 6성 랜덤상자";
+    m_vecName[iIndex++] = L"망토 6성 랜덤상자";
+    m_vecName[iIndex++] = L"장갑 6성 랜덤상자";
+    m_vecName[iIndex++] = L"신발 6성 랜덤상자";
+
+    m_vecIsBuy.resize(38);
+    m_vecPrice.resize(38);
     for (_uint i = 0; i < IDX(m_vecPrice.size()); ++i)
         m_vecPrice[i] = 200000;
 
@@ -31,56 +72,14 @@ HRESULT UIShop::Init()
 
 void UIShop::Tick()
 {
-	if (m_pOwner.expired())
-		return;
+    if (m_pOwner.expired())
+        return;
 
     if (false == m_bIsCreated)
         return;
 
     Check_Scroll();
 
-
-    //if (KEYPUSH(KEY_TYPE::Q))
-    //{
-    //    if (700 >= m_ItemObj[IDX(m_ItemObj.size()) - 1].lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x)
-    //    {
-    //
-    //    }
-    //    else
-    //    {
-    //        for (_uint i = 0; i < IDX(m_ItemObj.size()); ++i)
-    //        {
-    //            auto& pObj = m_ItemObj[i];
-    //            if (false == pObj.expired())
-    //            {
-    //                _float4 fPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-    //                fPos.x -= 3.f;
-    //                pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, fPos);
-    //            }
-    //        }
-    //    }
-    //}
-    //
-    //if (KEYPUSH(KEY_TYPE::E))
-    //{
-    //    if (-700 <= m_ItemObj[0].lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x)
-    //    {
-    //
-    //    }
-    //    else
-    //    {
-    //        for (_uint i = 0; i < IDX(m_ItemObj.size()); ++i)
-    //        {
-    //            auto& pObj = m_ItemObj[i];
-    //            if (false == pObj.expired())
-    //            {
-    //                _float4 fPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-    //                fPos.x += 3.f;
-    //                pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, fPos);
-    //            }
-    //        }
-    //    }
-    //}
 
 }
 
@@ -93,7 +92,7 @@ void UIShop::Create_Shop()
 
     m_bIsCreated = true;
     auto pScene = CUR_SCENE;
-    
+
     // bg랑 item으로 분리. 따로 저장하면 이동은 아이템에서 로드한 객체 벡터로 적용시 편함
     // 
 
@@ -135,7 +134,7 @@ void UIShop::Create_Shop()
                     pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
                 });
         }
-        
+
         //else if (L"UI_Shop_Item_0" == strName)
         //{
         //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
@@ -220,7 +219,7 @@ void UIShop::Create_Shop()
         //            this->Click_Item(11);
         //        });
         //}
-        
+
 
         //for (_uint j = 0; j < 12; ++j)
         //{
@@ -263,23 +262,41 @@ void UIShop::Create_Shop()
             pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-700.f + 280.f * i, 180.f, 4.8f, 1.f));
         }
         else
-        {
             pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-700.f + 280.f * (i - iSize / 2), -160.f, 4.8f, 1.f));
-        }
+    }
 
-        wstring strName = pObj.lock()->Get_Name();
-        //if (L"UI_Shop_Exit" == strName)
-        //{
-        //    pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
-        //        {
-        //            this->Remove_Shop();
-        //        });
-        //}
-        //else if (L"UI_Shop_Money_Value" == strName)
-        //{
-        //    m_pMoneyValue = pObj;
-        //    m_pMoneyValue.lock()->Get_FontRenderer()->Get_Text() = to_wstring(m_iMoney);
-        //}
+    pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Shop_Item_Name.dat", m_ItemName);
+
+    iSize = IDX(m_ItemName.size());
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        auto& pObj = m_ItemName[i];
+        if (true == pObj.expired())
+            continue;
+
+        pObj.lock()->Get_FontRenderer()->Get_Text() = m_vecName[i];
+        _float4 vecPos = m_ItemObj[i].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+        vecPos.x += static_cast<_float>(m_vecName[i].length()) / 2.f * -25.f;
+        vecPos.y += 155.f;
+        vecPos.z = 4.7f;
+        pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+    }
+
+    pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Shop_Item_Price.dat", m_ItemPrice);
+
+    iSize = IDX(m_ItemPrice.size());
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        auto& pObj = m_ItemPrice[i];
+        if (true == pObj.expired())
+            continue;
+
+        pObj.lock()->Get_FontRenderer()->Get_Text() = m_vecPrice[i];
+        _float4 vecPos = m_ItemObj[i].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+        vecPos.x += static_cast<_float>(m_vecName[i].length()) / 2.f * -15.f;
+        vecPos.y -= 95.f;
+        vecPos.z = 4.7f;
+        pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
     }
 
 }
@@ -317,22 +334,44 @@ void UIShop::Remove_Shop()
     }
     m_ItemObj.clear();
 
+    for (_uint i = 0; i < IDX(m_ItemName.size()); ++i)
+    {
+        auto& pObj = m_ItemName[i];
+        if (false == pObj.expired())
+        {
+            pEventMgr.Delete_Object(pObj.lock());
+            pObj.reset();
+        }
+    }
+    m_ItemName.clear();
+
+    for (_uint i = 0; i < IDX(m_ItemPrice.size()); ++i)
+    {
+        auto& pObj = m_ItemPrice[i];
+        if (false == pObj.expired())
+        {
+            pEventMgr.Delete_Object(pObj.lock());
+            pObj.reset();
+        }
+    }
+    m_ItemPrice.clear();
+
     Remove_Buy_Ui();
 }
 
 void UIShop::Click_Item(_uint iIndex)
 {
-    if (12 <= iIndex || true == m_bIsCreatedBuyUi)
+    if (IDX(m_vecIsBuy.size()) <= iIndex || true == m_bIsCreatedBuyUi)
         return;
 
-    if (2 != iIndex && true == m_vecIsBuy[iIndex])
+    if (1 != iIndex && true == m_vecIsBuy[iIndex])
         return;
 
     if (m_iMoney < m_vecPrice[iIndex])
         return;
 
     m_iInteractionItemIndex = iIndex;
-    
+
     Create_Buy_Ui();
 }
 
@@ -465,4 +504,34 @@ void UIShop::Check_Scroll()
         else
             pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-700.f + 280.f * (i - iSize / 2) + fPosX, -160.f, 4.8f, 1.f));
     }
+
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        auto& pObj = m_ItemName[i];
+        if (true == pObj.expired())
+            continue;
+
+        _float4 vecPos = m_ItemObj[i].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+        vecPos.x += static_cast<_float>(m_vecName[i].length()) / 2.f * -20.f;
+        vecPos.y += 155.f;
+        vecPos.z = 4.7f;
+        pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+    }
+
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        auto& pObj = m_ItemPrice[i];
+        if (true == pObj.expired())
+            continue;
+
+        _float4 vecPos = m_ItemObj[i].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+        vecPos.x += static_cast<_float>(m_vecName[i].length()) / 2.f * -15.f;
+        vecPos.y -= 95.f;
+        vecPos.z = 4.7f;
+        pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+    }
+
+
+
+
 }

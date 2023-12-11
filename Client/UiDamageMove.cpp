@@ -66,7 +66,7 @@ void UiDamageMove::Change_Pos()
 {
     //m_vecPos.x += fDT * 200.f;
     //m_vecPos.y += 100.f;
-    m_vecPos.y = 100.f * m_fCheckTime * m_fRatio;
+    //m_vecPos.y = 100.f * m_fCheckTime * m_fRatio;
     m_pOwner.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, m_vecPos);
 }
 
@@ -95,6 +95,7 @@ void UiDamageMove::Change_Pos_2D()
     _float4x4 projPos = m_pCamera.lock()->Get_Camera()->Get_ProjMat();
 
     m_vecPos = m_pTarget.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    m_vecPos.y += 2.f;
 
     m_vecPos = XMVector3TransformCoord(m_vecPos, viewPos);
     m_vecPos = XMVector3TransformCoord(m_vecPos, projPos);
@@ -105,6 +106,6 @@ void UiDamageMove::Change_Pos_2D()
     m_vecPos.x -= g_iWinSizeX * 0.5f;
     m_vecPos.y = (m_vecPos.y * -1.f) + g_iWinSizeY * 0.5f;
     
-    m_vecPos.x -= 150.f;
-    m_vecPos.y += 300.f;
+    //m_vecPos.x -= 150.f;
+    //m_vecPos.y += 300.f;
 }
