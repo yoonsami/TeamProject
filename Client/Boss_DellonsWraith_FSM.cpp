@@ -154,7 +154,7 @@ void Boss_DellonsWraith_FSM::State_Init()
     }
 }
 
-void Boss_DellonsWraith_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
+void Boss_DellonsWraith_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
 
 }

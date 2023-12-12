@@ -128,8 +128,10 @@ void MeshEffect::Render()
 
     m_pShader->Push_LightData(CUR_SCENE->Get_LightParams());
 
-    m_pShader->GetSRV("PositionTargetTex")->SetResource(RESOURCES.Get<Texture>(L"PositionTarget")->Get_SRV().Get());
-    _float4x4 matInvWorldMat = Get_Transform()->Get_WorldMatrix().Invert();
+    m_pShader->GetSRV("PositionTargetTex")->SetResource(RESOURCES.Get<Texture>(L"PositionForSSD")->Get_SRV().Get());
+    m_pShader->GetSRV("originPositionTargetTex")->SetResource(RESOURCES.Get<Texture>(L"PositionTarget")->Get_SRV().Get());
+	m_pShader->GetSRV("NormalTargetTex")->SetResource(RESOURCES.Get<Texture>(L"NormalTarget")->Get_SRV().Get());
+	_float4x4 matInvWorldMat = Get_Transform()->Get_WorldMatrix().Invert();
     m_pShader->GetMatrix("InvWorldTransformMatrix")->SetMatrix((_float*)&matInvWorldMat);
 
     // For. Draw meshes 
@@ -149,9 +151,9 @@ void MeshEffect::Render()
 
         // For. Setting Context Topology
         CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
+        _int techniqueIndex = m_tDesc.bIsSSD ? 2 : 0;
         // For. Draw call
-        m_pShader->DrawIndexed(0, m_tDesc.iSamplerType, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
+        m_pShader->DrawIndexed(techniqueIndex, m_tDesc.iSamplerType, mesh->indexBuffer->Get_IndicesNum(), 0, 0);
     }
 }
 
@@ -170,6 +172,12 @@ void MeshEffect::Render_Instancing(shared_ptr<InstancingBuffer> buffer, shared_p
 		shared_ptr<ModelBone> bone = m_pModel->Get_BoneByIndex(i);
 		boneDesc->transform[i] = bone->transform * Utils::m_matPivot;
 	}
+
+	m_pShader->GetSRV("PositionTargetTex")->SetResource(RESOURCES.Get<Texture>(L"PositionForSSD")->Get_SRV().Get());
+	m_pShader->GetSRV("originPositionTargetTex")->SetResource(RESOURCES.Get<Texture>(L"PositionTarget")->Get_SRV().Get());
+	m_pShader->GetSRV("NormalTargetTex")->SetResource(RESOURCES.Get<Texture>(L"NormalTarget")->Get_SRV().Get());
+    _float4x4 matInvWorldMat = Get_Transform()->Get_WorldMatrix().Invert();
+	m_pShader->GetMatrix("InvWorldTransformMatrix")->SetMatrix((_float*)&matInvWorldMat);
 
 	m_pShader->Push_BoneData(*boneDesc);
 
@@ -199,8 +207,9 @@ void MeshEffect::Render_Instancing(shared_ptr<InstancingBuffer> buffer, shared_p
 		// For. Setting Context Topology
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+        _int techniqueIndex = m_tDesc.bIsSSD ? 3 : 1;
 		// For. Draw call
-		m_pShader->DrawIndexedInstanced(1, m_tDesc.iSamplerType, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
+		m_pShader->DrawIndexedInstanced(techniqueIndex, m_tDesc.iSamplerType, mesh->indexBuffer->Get_IndicesNum(), buffer->Get_Count());
 	}
 }
 
@@ -314,7 +323,7 @@ void MeshEffect::InitialTransform(_float4x4 mParentWorldMatrix, const _float3& v
     // For. Setting End Informations
     m_vStartPos += _float3(Get_Transform()->Get_State(Transform_State::POS));
     
-    if( 1 != m_iTranslateOption && 2 != m_iTranslateOption)
+    if( 1 != m_iTranslateOption && 2 != m_iTranslateOption && 10 != m_iTranslateOption)
         m_vEndPos += m_vStartPos;
 
     m_vStartScale *= vInitScale_inGroup;
@@ -616,6 +625,8 @@ void MeshEffect::Translate()
     }
     case 10: // Move to target position 
     {
+        Get_Transform()->Set_Speed(Calc_Spline(m_tTransform_Desc.iSpeedType, m_SplineInput_Force));
+
         if (m_bToolMode_On)
             Get_Transform()->Set_State(Transform_State::POS, _float4(_float3::Lerp(m_vStartPos, m_vEndPos, m_fLifeTimeRatio), 1.f));
         else
@@ -632,15 +643,17 @@ void MeshEffect::Scaling()
 {
     _float3 vScale = Get_Transform()->Get_Scale();
     if (m_bToolMode_On)
-	{
+    {
         // lerp 
         if (2 == m_tTransform_Desc.iScaleSpeedType)
         {
-		    vScale = XMVectorLerp(m_vStartScale, m_vEndScale, m_fLifeTimeRatio);
+            vScale = XMVectorLerp(m_vStartScale, m_vEndScale, m_fLifeTimeRatio);
+            if (m_tDesc.bIsSSD)
+                vScale.y = m_vStartScale.y;
 
-		    if (vScale.x < 0) vScale.x = 0.f;
-		    if (vScale.y < 0) vScale.y = 0.f;
-		    if (vScale.z < 0) vScale.z = 0.f;
+            if (vScale.x < 0) vScale.x = 0.f;
+            if (vScale.y < 0) vScale.y = 0.f;
+            if (vScale.z < 0) vScale.z = 0.f;
 
         }
         // scaling by scale speed
@@ -648,16 +661,20 @@ void MeshEffect::Scaling()
         {
             _float fScaleSpeed = Calc_Spline(m_tTransform_Desc.iScaleSpeedType, m_SplineInput_ScaleSpeed);
             vScale = Get_Transform()->Get_Scale() + _float3(fScaleSpeed * fDT);
+            if (m_tDesc.bIsSSD)
+                vScale.y = m_vStartScale.y;
         }
 
-		Get_Transform()->Scaled(vScale);
-	}
+        Get_Transform()->Scaled(vScale);
+    }
     else
     {
         // lerp 
         if (2 == m_tTransform_Desc.iScaleSpeedType)
         {
             m_vLocalScale = _float3::Lerp(m_vStartScale, m_vEndScale, m_fLifeTimeRatio);
+            if (m_tDesc.bIsSSD)
+                m_vLocalScale.y = m_vStartScale.y;
             if (m_vLocalScale.x < 0) m_vLocalScale.x = 0.f;
             if (m_vLocalScale.y < 0) m_vLocalScale.y = 0.f;
             if (m_vLocalScale.z < 0) m_vLocalScale.z = 0.f;
@@ -667,6 +684,8 @@ void MeshEffect::Scaling()
         {
             _float fScaleSpeed = Calc_Spline(m_tTransform_Desc.iScaleSpeedType, m_SplineInput_ScaleSpeed);
             m_vLocalScale = Get_Transform()->Get_Scale() + _float3(fScaleSpeed * fDT);
+            if (m_tDesc.bIsSSD)
+                m_vLocalScale.y = m_vStartScale.y;
         }
     }
 }

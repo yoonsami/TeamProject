@@ -352,9 +352,6 @@
     <Filter Include="02.Component\01.FSM\03.Special_FSM\06.DragonBallMonster_FSM">
       <UniqueIdentifier>{6ab2dadf-e0df-42e1-8328-a2e28bc35cc5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\07.EffectScript\02. Mir_100100_FireScript">
-      <UniqueIdentifier>{41e6a3e9-0881-4260-b242-45a42a945f09}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\05.Object\03.InventoryModelRotation">
       <UniqueIdentifier>{bf44e733-45da-47de-af96-703b3e9e737c}</UniqueIdentifier>
     </Filter>
@@ -387,9 +384,6 @@
     </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\24.UiShop">
       <UniqueIdentifier>{128cecf3-6023-457a-aaed-e5a5e5b1a401}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Scene\00.PlayScene\04.Field">
-      <UniqueIdentifier>{99a38b1a-eda8-4b71-8883-93afc5ae7515}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\05.Object\06.Delete">
       <UniqueIdentifier>{1a4f70ac-4c43-46a2-8545-042166a43fee}</UniqueIdentifier>
@@ -426,6 +420,15 @@
     </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\25.UiMessage\00.UiMessageCreater">
       <UniqueIdentifier>{5e5e5c0f-8710-4534-8512-cb9b6343d926}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Scene\00.PlayScene\00.Granseed\04.Field">
+      <UniqueIdentifier>{99a38b1a-eda8-4b71-8883-93afc5ae7515}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\07.EffectScript\CreateEffect_Script">
+      <UniqueIdentifier>{0b35d8fe-151b-4394-b9c3-fba19e7a2117}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\07.EffectScript\DragonBallLightning_Script">
+      <UniqueIdentifier>{0536ee28-6362-4340-a042-335d39e15f42}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\24.UiShop\00.UiShop">
       <UniqueIdentifier>{22045f60-8548-45f3-a0ac-2a159f3e5bb2}</UniqueIdentifier>
@@ -781,9 +784,6 @@
     <ClInclude Include="DragonBallMonster_FSM.h">
       <Filter>02.Component\01.FSM\03.Special_FSM\06.DragonBallMonster_FSM</Filter>
     </ClInclude>
-    <ClInclude Include="Mir_100100_FireScript.h">
-      <Filter>02.Component\00.MonoBehaviour\07.EffectScript\02. Mir_100100_FireScript</Filter>
-    </ClInclude>
     <ClInclude Include="FloorSkill_Script.h">
       <Filter>02.Component\00.MonoBehaviour\04.SkillScript\02.FloorSkill_Script</Filter>
     </ClInclude>
@@ -813,7 +813,7 @@
       <Filter>02.Component\01.FSM\07.Friend_FSM</Filter>
     </ClInclude>
     <ClInclude Include="FieldScene.h">
-      <Filter>01.Scene\00.PlayScene\04.Field</Filter>
+      <Filter>01.Scene\00.PlayScene\00.Granseed\04.Field</Filter>
     </ClInclude>
     <ClInclude Include="DeleteWhenAnimFinish.h">
       <Filter>02.Component\00.MonoBehaviour\05.Object\06.Delete\00.DeleteWhenAnimFinish</Filter>
@@ -850,6 +850,13 @@
     </ClInclude>
     <ClInclude Include="UiMessageCreater.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessage\00.UiMessageCreater</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectGoUp.h" />
+    <ClInclude Include="CreateEffect_Script.h">
+      <Filter>02.Component\00.MonoBehaviour\07.EffectScript\CreateEffect_Script</Filter>
+    </ClInclude>
+    <ClInclude Include="DragonBallLightning_Script.h">
+      <Filter>02.Component\00.MonoBehaviour\07.EffectScript\DragonBallLightning_Script</Filter>
     </ClInclude>
     <ClInclude Include="UIShop.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\24.UiShop\00.UiShop</Filter>
@@ -1175,9 +1182,6 @@
     <ClCompile Include="DragonBallMonster_FSM.cpp">
       <Filter>02.Component\01.FSM\03.Special_FSM\06.DragonBallMonster_FSM</Filter>
     </ClCompile>
-    <ClCompile Include="Mir_100100_FireScript.cpp">
-      <Filter>02.Component\00.MonoBehaviour\07.EffectScript\02. Mir_100100_FireScript</Filter>
-    </ClCompile>
     <ClCompile Include="FloorSkill_Script.cpp">
       <Filter>02.Component\00.MonoBehaviour\04.SkillScript\02.FloorSkill_Script</Filter>
     </ClCompile>
@@ -1207,7 +1211,7 @@
       <Filter>02.Component\01.FSM\07.Friend_FSM</Filter>
     </ClCompile>
     <ClCompile Include="FieldScene.cpp">
-      <Filter>01.Scene\00.PlayScene\04.Field</Filter>
+      <Filter>01.Scene\00.PlayScene\00.Granseed\04.Field</Filter>
     </ClCompile>
     <ClCompile Include="DeleteWhenAnimFinish.cpp">
       <Filter>02.Component\00.MonoBehaviour\05.Object\06.Delete\00.DeleteWhenAnimFinish</Filter>
@@ -1241,6 +1245,13 @@
     </ClCompile>
     <ClCompile Include="UiMessageCreater.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessage\00.UiMessageCreater</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectGoUp.cpp" />
+    <ClCompile Include="CreateEffect_Script.cpp">
+      <Filter>02.Component\00.MonoBehaviour\07.EffectScript\CreateEffect_Script</Filter>
+    </ClCompile>
+    <ClCompile Include="DragonBallLightning_Script.cpp">
+      <Filter>02.Component\00.MonoBehaviour\07.EffectScript\DragonBallLightning_Script</Filter>
     </ClCompile>
     <ClCompile Include="UIShop.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\24.UiShop\00.UiShop</Filter>
@@ -1339,6 +1350,9 @@
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="..\Shaders\Shader_Terrain.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\Shader_Grass.fx">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>

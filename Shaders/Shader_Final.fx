@@ -151,7 +151,7 @@ float4 PS_ExtractDOF(VS_OUT input) : SV_Target
 
 float4 PS_DOF(VS_OUT input) : SV_Target
 {
-    float depth = SubMap2.Sample(PointSampler, input.uv).w;
+    float viewZ = SubMap2.Sample(PointSampler, input.uv).z;
     
     float3 originalColor = SubMap0.Sample(PointSampler, input.uv).rgb;
     float3 blurColor = SubMap1.Sample(PointSampler, input.uv).rgb;
@@ -163,7 +163,7 @@ float4 PS_DOF(VS_OUT input) : SV_Target
     //else
     //    outColor = originalColor;
     
-    float blendFactor = saturate(1.f / g_DOFRange * abs(g_FocusDepth - depth));
+    float blendFactor = saturate(1.f / g_DOFRange * abs(g_FocusDepth - viewZ));
  
     outColor = lerp(originalColor, blurColor, blendFactor);
     
@@ -198,7 +198,7 @@ cbuffer FogBuffer
 float4 PS_Fog(VS_OUT input) : SV_Target
 {
     float4 color = SubMap0.Sample(LinearSampler, input.uv);
-    float viewZ = SubMap1.Sample(LinearSampler, input.uv).w;
+    float viewZ = SubMap1.Sample(LinearSampler, input.uv).z;
     float fogFactor = 1.f;
     
     if(fogMode == 0)//Linear

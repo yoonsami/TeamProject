@@ -32,7 +32,7 @@
 #include "UiGachaCardMove.h"
 #include "Debug_CreateMotionTrail.h"
 #include "CounterMotionTrailScript.h"
-
+#include "TerrainRenderer.h"
 #include "UiHpBarController.h"
 #include "MapObjectScript.h"
 #include "Terrain.h"
@@ -158,6 +158,19 @@ void FieldScene::Final_Tick()
 		SCENE.Change_Scene(scene);
 		g_bCutScene = false;
 	}
+
+	if (KEYPUSH(KEY_TYPE::TAB) && KEYPUSH(KEY_TYPE::F7))
+	{
+		/*GachaSceneDesc sceneDesc{ L"YeopoMap",HERO::YEOPO};
+			SCENE.Add_SubScene(make_shared<GachaScene>(sceneDesc));
+		SCENE.Exchange_Scene();*/
+
+		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<FieldScene>());
+		scene->Set_StaticObjects(m_StaticObject);
+		PHYSX.Set_CharacterControllerNull();
+		SCENE.Change_Scene(scene);
+		g_bCutScene = false;
+	}
 }
 
 HRESULT FieldScene::Load_Scene()
@@ -193,12 +206,20 @@ HRESULT FieldScene::Load_Scene()
 	Load_Companion(L"Spike", player, _float4{ 118.471f, -1.26f, 59.8f, 1.f});
 	Load_Companion(L"Dellons", player, _float4{ 128.471f, -2.98f, 78.3f, 1.f });
 	Load_Companion(L"Shane", player, _float4{ 98.f, -0.6f, 73.76f, 1.f});
-
+	
+#ifdef _DEBUG
 	Load_Monster(3, L"Wolf", player);
 	Load_Monster(3, L"Silversword_Soldier", player);
 	Load_Monster(3, L"Succubus_Scythe", player);
 	Load_Monster(3, L"Undead_Priest", player);
 	Load_Monster(3, L"EntSoldier", player);
+#else
+	Load_Monster(20, L"Wolf", player);
+	Load_Monster(20, L"Silversword_Soldier", player);
+	Load_Monster(20, L"Succubus_Scythe", player);
+	Load_Monster(20, L"Undead_Priest", player);
+	Load_Monster(20, L"EntSoldier", player);
+#endif
 
 	Load_Ui(player);
 	return S_OK;
@@ -350,16 +371,18 @@ void FieldScene::Load_Terrain()
 		if (entry.is_directory())
 			continue;
 
-		if (entry.path().extension().wstring() != L".tga" && entry.path().extension().wstring() != L".TGA")
-			continue;
-
 		string fileName = entry.path().filename().string();
 		Utils::DetachExt(fileName);
 
 		// 타일의 텍스쳐이름을 리소스에 로드
 		wstring TileTexture = L"..\\Resources\\Textures\\MapObject\\TerrainTile\\";
-		TileTexture += Utils::ToWString(fileName) + L".tga";
-		RESOURCES.Load<Texture>(Utils::ToWString(fileName), TileTexture);
+		TileTexture += Utils::ToWString(fileName) + L".dds";
+		auto texture = RESOURCES.Load<Texture>(Utils::ToWString(fileName), TileTexture);
+		if (!texture)
+		{
+			Utils::ChangeExt(TileTexture, L".tga");
+			texture = RESOURCES.Load<Texture>(Utils::ToWString(fileName), TileTexture);
+		}
 	}
 
 	shared_ptr<Terrain> loadedTerrain = make_shared<Terrain>();
@@ -405,9 +428,11 @@ void FieldScene::Load_Terrain()
 	TerrainObject->GetOrAddTransform();
 // 터레인생성
 	// 메시렌더러
-	shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Terrain.fx"));
-	renderer->Set_Mesh(loadedTerrain);
-	renderer->Set_Pass(18); // 터레인패스
+	//shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Terrain.fx"));
+	//renderer->Set_Mesh(loadedTerrain);
+	//renderer->Set_Pass(18); // 터레인패스
+	shared_ptr<TerrainRenderer> renderer = make_shared<TerrainRenderer>(RESOURCES.Get<Shader>(L"Shader_Terrain.fx"));
+	renderer->CreateGrid(loadedSizeX, loadedSizeY);
 
 	// 디퓨즈텍스쳐
 	shared_ptr<Material> material = make_shared<Material>();
@@ -446,6 +471,16 @@ void FieldScene::Load_Terrain()
 	}
 	material->Set_TextureMap(Roadtexture, TextureMapType::TEXTURE8);
 
+	{
+		auto HeightMap = RESOURCES.ReloadOrAddTexture(L"HeightMap",L"..\\Resources\\Textures\\MapObject\\TerrainTile\\HeightMap.png");
+		if (HeightMap == nullptr)
+		{
+			MSG_BOX("NoSubTexture");
+			return;
+		}
+		material->Set_TextureMap(HeightMap, TextureMapType::TEXTURE9);
+	}
+
 	renderer->Set_Material(material);
 
 	// 메시를 통해 메시콜라이더 생성
@@ -460,8 +495,6 @@ void FieldScene::Load_Terrain()
 
 	TerrainObject->Add_Component(renderer);
 
-	// 터레인의 가로세로 정보 셰이더에 떤져주기
-	TerrainObject->Get_MeshRenderer()->SetVec2(0, _float2{ (_float)loadedSizeX, (_float)loadedSizeY });
 }
 
 void FieldScene::Load_Camera(shared_ptr<GameObject> pPlayer)
@@ -535,12 +568,6 @@ void FieldScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_p
 			shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
 
 			ObjMonster->Add_Component(make_shared<Transform>());
-
-			_float fRan = 0;
-			if (rand() % 2 == 0)
-				fRan = -1.f;
-			else
-				fRan = 1.f;
 
 			_float3 vSpawnPos = MathUtils::Get_RandomVector(_float3{ 165.f, -1.3f, 50.f }, _float3{ 235.f, -1.3f, 60.f });
 			ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4{ vSpawnPos.x, vSpawnPos.y, vSpawnPos.z, 1.f });

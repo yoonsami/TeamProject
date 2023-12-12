@@ -47,7 +47,8 @@ HRESULT Shane_FSM::Init()
 	m_fNormalAttack_AnimationSpeed = 1.0f;
 	m_fSkillAttack_AnimationSpeed = 1.0f;
 	m_fEvade_AnimationSpeed = 1.5f;
-  
+	if (!m_pAttackCollider.expired())
+		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(GET_DATA(HERO::SHANE).Element);
     return S_OK;
 }
 
@@ -282,7 +283,7 @@ void Shane_FSM::State_Init()
     }
 }
 
-void Shane_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
+void Shane_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
 	//Calculate Damage 
 	m_pOwner.lock()->Get_Hurt(fDamage);
@@ -889,6 +890,7 @@ void Shane_FSM::skill_1100()
 {
     if (m_iCurFrame == 4)
 	{
+        Add_And_Set_Effect(L"Shane_1100");
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
 		Set_ColliderOption(DARK, L"Hit_Slash_RedBlack");
 	}
@@ -944,6 +946,7 @@ void Shane_FSM::skill_1200()
 {
     if (m_iCurFrame == 12)
     {
+        Add_And_Set_Effect(L"Shane_1200_1");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
         Set_ColliderOption(DARK, L"Hit_Slash_RedBlack");
     }
@@ -1004,6 +1007,7 @@ void Shane_FSM::skill_1300()
 {
     if (m_iCurFrame == 11)
 	{
+        Add_And_Set_Effect(L"Shane_1300");
 		Set_ColliderOption(DARK, L"Hit_Slash_RedBlack");
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
 	}
@@ -1064,6 +1068,7 @@ void Shane_FSM::skill_1400()
 {
     if (m_iCurFrame == 4)
 	{
+        Add_And_Set_Effect(L"Shane_1400");
 		Set_ColliderOption(DARK, L"Hit_Slash_RedBlack");
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
 	}

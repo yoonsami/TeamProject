@@ -21,6 +21,8 @@
 #include "Spike_FSM.h"
 #include "Shane_FSM.h"
 #include "Yeonhee_FSM.h"
+#include "EffectGoUp.h"
+#include "GroupEffect.h"
 
 HeroChangeScript::HeroChangeScript()
 {
@@ -50,38 +52,50 @@ void HeroChangeScript::Tick()
     if (m_pOwner.expired())
         return;
 
-    //if (KEYTAP(KEY_TYPE::F1))
-    //{
-    //    Change_Hero(HERO::ACE3);
-    //}
-    //else if (KEYTAP(KEY_TYPE::F2))
-    //{
-    //    Change_Hero(HERO::KYLE);
-    //}
-    //else if (KEYTAP(KEY_TYPE::F3))
-    //{
-    //    Change_Hero(HERO::YEOPO);
-    //}
-    //else if (KEYTAP(KEY_TYPE::F4))
-    //{
-    //    Change_Hero(HERO::DELLONS);
-    //}
-    //else if (KEYTAP(KEY_TYPE::F5))
-    //{
-    //    Change_Hero(HERO::SPIKE);
-    //}
-	//else if (KEYTAP(KEY_TYPE::F6))
-	//{
-    //    Change_Hero(HERO::SHANE);
-	//}
-	//else if (KEYTAP(KEY_TYPE::F7))
-	//{
-    //    Change_Hero(HERO::YEONHEE);
-	//}
-    //else if (KEYTAP(KEY_TYPE::R))
-	//{
-    //    //Change_Hero(HERO::PLAYER);
-	//}
+    Get_Owner()->Get_Animator()->Get_RenderParamDesc().floatParams[0] -= 3.f * fDT;
+    if (Get_Owner()->Get_Animator()->Get_RenderParamDesc().floatParams[0] < 0.f) Get_Owner()->Get_Animator()->Get_RenderParamDesc().floatParams[0] = 0.f;
+
+    _float4& param = Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1];
+    param -= _float4(fDT);
+    if (param.x < 0) param.x = 0.f;
+	if (param.y < 0) param.y = 0.f;
+	if (param.z < 0) param.z = 0.f;
+	if (param.w < 0) param.w = 0.f;
+
+
+
+   /* if (KEYTAP(KEY_TYPE::F1))
+    {
+        Change_Hero(HERO::ACE3);
+    }
+    else if (KEYTAP(KEY_TYPE::F2))
+    {
+        Change_Hero(HERO::KYLE);
+    }
+    else if (KEYTAP(KEY_TYPE::F3))
+    {
+        Change_Hero(HERO::YEOPO);
+    }
+    else if (KEYTAP(KEY_TYPE::F4))
+    {
+        Change_Hero(HERO::DELLONS);
+    }
+    else if (KEYTAP(KEY_TYPE::F5))
+    {
+        Change_Hero(HERO::SPIKE);
+    }
+	else if (KEYTAP(KEY_TYPE::F6))
+	{
+        Change_Hero(HERO::SHANE);
+	}
+	else if (KEYTAP(KEY_TYPE::F7))
+	{
+        Change_Hero(HERO::YEONHEE);
+	}
+    else if (KEYTAP(KEY_TYPE::R))
+	{
+        //Change_Hero(HERO::PLAYER);
+	}*/
 }
 
 void HeroChangeScript::Change_Hero(HERO eHero)
@@ -100,7 +114,6 @@ void HeroChangeScript::Change_Player()
 void HeroChangeScript::Change_Character_Weapon(const wstring& weaponname, shared_ptr<GameObject> weapon)
 {
     //Add. Player's Weapon
-  
     {
        
         shared_ptr<ModelRenderer> renderer = weapon->Get_ModelRenderer();;
@@ -115,12 +128,24 @@ void HeroChangeScript::Change_Character_Weapon(const wstring& weaponname, shared
         script->Set_ModelChanged();
     weapon->Set_Name(weaponname);
     weapon->Get_ModelRenderer()->Set_RenderState(true);
+    weapon->Get_ModelRenderer()->Get_RenderParamDesc().floatParams[0] = 10.f;
+	_float4& param = weapon->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[1] ;
+    param = Color(1.f);
+	for (auto& material : weapon->Get_Model()->Get_Materials())
+	{
+		material->Set_TextureMap(material->Get_TextureMap(TextureMapType::DIFFUSE), TextureMapType::TEXTURE8);
+	}
 }
 
 void HeroChangeScript::Change_To_Input(HERO eHero)
 {
     if (m_pOwner.expired() || HERO::MAX == eHero)
         return;
+
+	for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
+	{
+		material->Get_MaterialDesc().emissive = Color(0.f);
+	}
 
     //m_pOwner.lock()->Get_FSM()->Reset_Weapon();
     m_pOwner.lock()->Get_FSM()->Reset_Vehicle();
@@ -194,8 +219,10 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
 
     if(weapon && weapon->Get_ModelRenderer())
 	{
-		if (0 != tagData.WeaponTag.length())
+        if (0 != tagData.WeaponTag.length())
+        {
 			Change_Character_Weapon(tagData.WeaponTag, weapon);
+        }
 		else
             weapon->Get_ModelRenderer()->Set_RenderState(false);
 	}
@@ -204,5 +231,76 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
 
 	 if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
 	     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Cur_Hero(eHero);
+
+     for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
+     {
+         material->Set_TextureMap(material->Get_TextureMap(TextureMapType::DIFFUSE), TextureMapType::TEXTURE8);
+     }
+     
+     Get_Owner()->Get_Animator()->Get_RenderParamDesc().floatParams[0] = 10.f;
+	 _float4& param = Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1];
+	 param = Color(1.f);
+
+    
+   {
+         wstring strSkilltag = L"HeroChange";
+		 shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();
+
+		 // For. Transform 
+		 pGroupEffectObj->GetOrAddTransform();
+		 pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS));
+		 pGroupEffectObj->Get_Transform()->Set_Quaternion(Get_Transform()->Get_Rotation());
+		 pGroupEffectObj->Set_Name(strSkilltag);
+		 // For. GroupEffectData 
+		 wstring wstrFileName = strSkilltag + L".dat";
+		 wstring wtsrFilePath = TEXT("..\\Resources\\EffectData\\GroupEffectData\\") + wstrFileName;
+		 shared_ptr<GroupEffectData> pGroupEffectData = RESOURCES.GetOrAddGroupEffectData(strSkilltag, wtsrFilePath);
+
+		 if (pGroupEffectData == nullptr)
+			 return;
+
+		 // For. GroupEffect component 
+		 shared_ptr<GroupEffect> pGroupEffect = make_shared<GroupEffect>();
+		 pGroupEffectObj->Add_Component(pGroupEffect);
+		 pGroupEffectObj->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
+		 pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
+		 pGroupEffectObj->Get_GroupEffect()->Set_InitWorldMatrix(Get_Transform()->Get_WorldMatrix());
+		 pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectMaterials();
+		 pGroupEffectObj->Set_Name(strSkilltag);
+		 pGroupEffectObj->Init();
+         pGroupEffectObj->Add_Component(make_shared<EffectGoUp>(0.f, Get_Owner()));
+
+         EVENTMGR.Create_Object(pGroupEffectObj);
+     }
+	 {
+		 wstring strSkilltag = L"HeroChange2";
+		 shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();
+
+		 // For. Transform 
+		 pGroupEffectObj->GetOrAddTransform();
+		 pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS));
+		 pGroupEffectObj->Get_Transform()->Set_Quaternion(Get_Transform()->Get_Rotation());
+		 pGroupEffectObj->Set_Name(strSkilltag);
+		 // For. GroupEffectData 
+		 wstring wstrFileName = strSkilltag + L".dat";
+		 wstring wtsrFilePath = TEXT("..\\Resources\\EffectData\\GroupEffectData\\") + wstrFileName;
+		 shared_ptr<GroupEffectData> pGroupEffectData = RESOURCES.GetOrAddGroupEffectData(strSkilltag, wtsrFilePath);
+
+		 if (pGroupEffectData == nullptr)
+			 return;
+
+		 // For. GroupEffect component 
+		 shared_ptr<GroupEffect> pGroupEffect = make_shared<GroupEffect>();
+		 pGroupEffectObj->Add_Component(pGroupEffect);
+		 pGroupEffectObj->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
+		 pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
+		 pGroupEffectObj->Get_GroupEffect()->Set_InitWorldMatrix(Get_Transform()->Get_WorldMatrix());
+		 pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectMaterials();
+		 pGroupEffectObj->Set_Name(strSkilltag);
+		 pGroupEffectObj->Init();
+		 pGroupEffectObj->Add_Component(make_shared<EffectGoUp>(3.f, Get_Owner()));
+
+		 EVENTMGR.Create_Object(pGroupEffectObj);
+	 }
 }
 

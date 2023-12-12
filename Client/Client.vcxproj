@@ -207,8 +207,11 @@
     <ClInclude Include="Companion_FSM.h" />
     <ClInclude Include="Companion_Spike_FSM.h" />
     <ClInclude Include="DestroyBuilding_FSM.h" />
+    <ClInclude Include="DragonBallLightning_Script.h" />
     <ClInclude Include="DragonBallMonster_FSM.h" />
+    <ClInclude Include="CreateEffect_Script.h" />
     <ClInclude Include="DragonBall_FSM.h" />
+    <ClInclude Include="EffectGoUp.h" />
     <ClInclude Include="EntSoldier_FSM.h" />
     <ClInclude Include="Friend_FSM.h" />
     <ClInclude Include="Get_Gravity.h" />
@@ -222,7 +225,6 @@
     <ClInclude Include="Hide_OrctongScript.h" />
     <ClInclude Include="InventoryModelRotation.h" />
     <ClInclude Include="MirScene.h" />
-    <ClInclude Include="Mir_100100_FireScript.h" />
     <ClInclude Include="Mir_13100_Fireball.h" />
     <ClInclude Include="NeutralAlpaca_FSM.h" />
     <ClInclude Include="NPC_FSM.h" />
@@ -343,8 +345,11 @@
     <ClCompile Include="Companion_FSM.cpp" />
     <ClCompile Include="Companion_Spike_FSM.cpp" />
     <ClCompile Include="DestroyBuilding_FSM.cpp" />
+    <ClCompile Include="DragonBallLightning_Script.cpp" />
     <ClCompile Include="DragonBallMonster_FSM.cpp" />
+    <ClCompile Include="CreateEffect_Script.cpp" />
     <ClCompile Include="DragonBall_FSM.cpp" />
+    <ClCompile Include="EffectGoUp.cpp" />
     <ClCompile Include="EntSoldier_FSM.cpp" />
     <ClCompile Include="Friend_FSM.cpp" />
     <ClCompile Include="Get_Gravity.cpp" />
@@ -358,7 +363,6 @@
     <ClCompile Include="Hide_OrctongScript.cpp" />
     <ClCompile Include="InventoryModelRotation.cpp" />
     <ClCompile Include="MirScene.cpp" />
-    <ClCompile Include="Mir_100100_FireScript.cpp" />
     <ClCompile Include="Mir_13100_Fireball.cpp" />
     <ClCompile Include="NeutralAlpaca_FSM.cpp" />
     <ClCompile Include="NPC_FSM.cpp" />
@@ -476,6 +480,7 @@
     <FxCompile Include="..\Shaders\Shader_Effect2.fx" />
     <FxCompile Include="..\Shaders\Shader_Final.fx" />
     <FxCompile Include="..\Shaders\Shader_FXAA.fx" />
+    <FxCompile Include="..\Shaders\Shader_Grass.fx" />
     <FxCompile Include="..\Shaders\Shader_LensFlare.fx" />
     <FxCompile Include="..\Shaders\Shader_Mesh.fx" />
     <FxCompile Include="..\Shaders\Shader_Model.fx" />

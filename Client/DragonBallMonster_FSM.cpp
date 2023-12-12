@@ -12,6 +12,8 @@
 #include "UiMonsterHp.h"
 #include "ObjectDissolve.h"
 #include "OBBBoxCollider.h"
+#include "CreateEffect_Script.h"
+#include "DragonBallLightning_Script.h"
 
 HRESULT DragonBallMonster_FSM::Init()
 {
@@ -29,6 +31,8 @@ HRESULT DragonBallMonster_FSM::Init()
 	EVENTMGR.Create_Object(rigidBodyObj);
 	m_pRigidBody = rigidBodyObj;
 
+	m_iCenterBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy001");
+
 	return S_OK;
 }
 
@@ -36,15 +40,17 @@ void DragonBallMonster_FSM::Tick()
 {
 	DeadCheck();
 
+	Update_UI_Pos();
+
 	State_Tick();
 }
 
-void DragonBallMonster_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
+void DragonBallMonster_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
 	auto pScript = m_pOwner.lock()->Get_Script<UiMonsterHp>();
 	if (nullptr == pScript)
 	{
-		pScript = make_shared<UiMonsterHp>();
+		pScript = make_shared<UiMonsterHp>(true);
 		m_pOwner.lock()->Add_Component(pScript);
 		pScript->Init();
 	}
@@ -54,18 +60,23 @@ void DragonBallMonster_FSM::Get_Hit(const wstring& skillname, _float fDamage, sh
 	//Calculate Damage 
 	m_pOwner.lock()->Get_Hurt(fDamage);
 
-	CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage);
+
+	CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage, ElementType(iElementType));
 
 }
 
 void DragonBallMonster_FSM::State_Tick()
 {
+	m_fTimer_CreateFloorSkillEffect += fDT;
+
 	State_Init();
 
 	m_iCurFrame = Get_CurFrame();
 
 	if (m_bSummonMeteor)
 		Create_Meteor();
+
+	Create_FloorSkillEffect();
 
 	Recovery_Color();
 
@@ -134,7 +145,6 @@ void DragonBallMonster_FSM::Idle_Init()
 	m_bInvincible = false;
 }
 
-
 void DragonBallMonster_FSM::Crash()
 {
 	if (Is_AnimFinished())
@@ -161,7 +171,6 @@ void DragonBallMonster_FSM::Crash_Init()
 		Get_Transform()->Set_State(Transform_State::POS, _float4(ray.position.x, 0.f, ray.position.z, 1.f));
 	}
 	{
-
 		if (!m_pRigidBody.expired())
 			EVENTMGR.Delete_Object(m_pRigidBody.lock());
 	}
@@ -171,7 +180,11 @@ void DragonBallMonster_FSM::Crash_Init()
 }
 
 void DragonBallMonster_FSM::Summon_CrossFloor()
-{
+{	
+	_float4x4 matWorldPos = Get_Transform()->Get_WorldMatrix();
+	matWorldPos._42 = 0.f;
+	Add_GroupEffectOwner(L"DragonBall_Cross", _float3(matWorldPos._41, 0.f, matWorldPos._43), true);
+
 	m_tPatternCoolTime.fAccTime = 0.f;
 
 	_float3 vSkillScale = _float3{ 3.f,1.f, 12.f };
@@ -221,6 +234,10 @@ void DragonBallMonster_FSM::Summon_CrossFloor()
 
 void DragonBallMonster_FSM::Summon_X_Floor()
 {
+	_float4x4 matWorldPos = Get_Transform()->Get_WorldMatrix();
+	matWorldPos._42 = 0.f;
+	Add_GroupEffectOwner(L"DragonBall_X", _float3(matWorldPos._41, 0.f, matWorldPos._43), true);
+
 	m_tPatternCoolTime.fAccTime = 0.f;
 
 	_float3 vSkillScale = _float3{ 3.f,1.f, 12.f };
@@ -232,11 +249,12 @@ void DragonBallMonster_FSM::Summon_X_Floor()
 	desc.fAttackStartGap = 2.5f;
 	
 	desc.fAttackTickTime = 0.3f;
+	desc.iLimitAttackCnt = 3;
+
 	desc.strAttackType = NORMAL_SKILL;
 	desc.strLastAttackType = NORMAL_SKILL;
 	desc.fAttackDamage = 5.f;
 	desc.fLastAttackDamage = 5.f;
-	desc.iLimitAttackCnt = 3;
 
 	//Forward_Left
 	_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
@@ -280,6 +298,10 @@ void DragonBallMonster_FSM::Summon_X_Floor()
 
 void DragonBallMonster_FSM::Summon_Hash_Floor()
 {
+	_float4x4 matWorldPos = Get_Transform()->Get_WorldMatrix();
+	matWorldPos._42 = 0.f;
+	Add_GroupEffectOwner(L"Dragonall_Hash", _float3(matWorldPos._41, 0.f, matWorldPos._43), true);
+
 	m_tPatternCoolTime.fAccTime = 0.f;
 
 	_float3 vSkillScale = _float3{ 4.f,1.f, 25.f };
@@ -327,6 +349,10 @@ void DragonBallMonster_FSM::Summon_Hash_Floor()
 
 void DragonBallMonster_FSM::Summon_Web_Floor()
 {
+	_float4x4 matWorldPos = Get_Transform()->Get_WorldMatrix();
+	matWorldPos._42 = 0.f;
+	Add_GroupEffectOwner(L"Dragonall_Web", _float3(matWorldPos._41, 0.f, matWorldPos._43), true);
+
 	m_tPatternCoolTime.fAccTime = 0.f;
 
 	_float3 vSkillScale = _float3{ 3.f,1.f, 27.f };
@@ -376,9 +402,13 @@ void DragonBallMonster_FSM::Summon_Web_Floor()
 
 void DragonBallMonster_FSM::Summon_HalfCircle_Floor()
 {
+	_float4x4 matWorldPos = Get_Transform()->Get_WorldMatrix();
+	matWorldPos._42 = 0.f;
+	Add_GroupEffectOwner(L"Dragonall_Half", _float3(matWorldPos._41, 0.f, matWorldPos._43), true);
+
 	m_tPatternCoolTime.fAccTime = 0.f;
 
-	_float3 vSkillScale = _float3{ 14.f,1.f, 30.f };
+	_float3 vSkillScale = _float3{ 14.f, 1.f, 30.f };
 
 	FLOORSKILLDESC desc;
 	desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -408,6 +438,10 @@ void DragonBallMonster_FSM::Summon_HalfCircle_Floor()
 
 void DragonBallMonster_FSM::Summon_Star_Floor()
 {
+	_float4x4 matWorldPos = Get_Transform()->Get_WorldMatrix();
+	matWorldPos._42 = 0.f;
+	Add_GroupEffectOwner(L"Dragonall_Star", _float3(matWorldPos._41, 0.f, matWorldPos._43), true);
+
 	m_tPatternCoolTime.fAccTime = 0.f;
 
 	_float3 vSkillScale = _float3{ 3.f,1.f, 12.f };
@@ -529,12 +563,216 @@ void DragonBallMonster_FSM::Create_Meteor()
 	}
 }
 
+void DragonBallMonster_FSM::Update_UI_Pos()
+{
+	if (m_eCurState == STATE::Idle)
+	{
+		if (m_pOwner.lock()->Get_Script<UiMonsterHp>())
+		{
+			m_CenterBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iCenterBoneIndex) *
+				_float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
 
+			m_vCenterBonePos = _float4{ m_CenterBoneMatrix.Translation().x, m_CenterBoneMatrix.Translation().y, m_CenterBoneMatrix.Translation().z , 1.f };
+
+			m_pOwner.lock()->Get_Script<UiMonsterHp>()->Change_Pos(m_vCenterBonePos);
+		}
+	}
+}
+
+void DragonBallMonster_FSM::Create_FloorSkillEffect()
+{
+	if (m_fTimer_CreateFloorSkillEffect > 2.5f && !m_bIsCreateFloorSkillEffectDone)
+	{
+		shared_ptr<CreateEffect_Script> pScript = make_shared<CreateEffect_Script>();
+		pScript->Set_CoolTime(0.05f);
+		pScript->Set_SkillTag(L"DragonBall_floorattack");
+		pScript->Set_UseOwnerPosOnly(true);
+		_float4x4 matOffset = _float4x4::CreateScale(1.9f) 
+			* _float4x4::CreateFromQuaternion(Quaternion(0.f, 0.f, 0.f, 1.f)) 
+			* _float4x4::CreateTranslation(_float3(0.f, -2.2f, 0.f));
+		pScript->Set_OffsetMatrix(matOffset);
+
+		switch (m_iPreAttack)
+		{
+		case 0: // Cross
+		{
+			_float3 vRight, vLook;
+			_float3 vUp = { 0.f, 1.f, 0.f };
+			_float4 vPos = { 0.f, 0.f, 0.f, 1.f };
+			_float4x4 matPivot = _float4x4::Identity;
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+			// 90 degree
+			vLook = _float3(1.f, 0.f, 0.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+			// 180 degree
+			vLook = _float3(0.f, 0.f, -1.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+			// 270 degree
+			vLook = _float3(-1.f, 0.f, 0.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+			break;
+		}
+		case 1:	// X
+		{
+			_float3 vRight, vLook;
+			_float3 vUp = { 0.f, 1.f, 0.f };
+			_float4 vPos = { 0.f, 0.f, 0.f, 1.f };
+			_float4x4 matPivot = _float4x4::Identity;
+
+			// 45 degree
+			vLook = _float3(1.f, 0.f, 1.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+
+			// 135 degree
+			vLook = _float3(1.f, 0.f, -1.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+
+			// 225 degree
+			vLook = _float3(-1.f, 0.f, -1.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+
+			// 315 degree
+			vLook = _float3(-1.f, 0.f, 1.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+			break;
+		}
+		case 2:	// Hash
+		{
+			_float3 vRight = { 1.f, 0.f, 0.f };
+			_float3 vUp = { 0.f, 1.f, 0.f };
+			_float3 vLook = {0.f, 0.f, 1.f};
+			_float4 vPos = { 0.f, 0.f, 12.f, 1.f };
+			_float4x4 matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_HashAttack", nullptr, matPivot, true);
+			
+			vLook = _float3(0.f, 0.f, 1.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			vPos = { 0.f, 0.f, -12.f, 1.f };
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_HashAttack", nullptr, matPivot, true);
+			
+			vLook = _float3(1.f, 0.f, 0.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			vPos = { 12.f, 0.f, 0.f, 1.f };
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_HashAttack", nullptr, matPivot, true);
+			
+			vLook = _float3(-1.f, 0.f, 0.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			vPos = { -12.f, 0.f, 0.f, 1.f };
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_HashAttack", nullptr, matPivot, true);
+			break;
+		}
+		case 3: // Web
+		{
+			Add_Effect(L"DragonBall_WebAttack", nullptr, _float4x4::Identity, true);
+			break;
+		}
+		case 4: // Half
+		{
+			shared_ptr<GameObject> pEffectOwnerObj = make_shared<GameObject>();
+			shared_ptr<DragonBallLightning_Script> pEffectScript = make_shared<DragonBallLightning_Script>();
+			pEffectOwnerObj->Add_Component(pEffectScript);
+			pEffectOwnerObj->Get_Script<DragonBallLightning_Script>()->Set_Direction(DragonBallLightning_Script::LEFT);
+			EVENTMGR.Create_Object(pEffectOwnerObj);
+			break;
+		}
+		case 5: // Star
+		{
+			// 0 degree
+			_float3 vRight, vLook;
+			_float3 vUp = { 0.f, 1.f, 0.f };
+			_float4 vPos = { 0.f, 0.f, 0.f, 1.f };
+			_float4x4 matPivot = _float4x4::Identity;
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+			// 45 degree
+			vLook = _float3(1.f, 0.f, 1.f); 
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+			// 90 degree
+			vLook = _float3(1.f, 0.f, 0.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+			// 135 degree
+			vLook = _float3(1.f, 0.f, -1.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+			// 180 degree
+			vLook = _float3(0.f, 0.f, -1.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+			// 225 degree
+			vLook = _float3(-1.f, 0.f, -1.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+			// 270 degree
+			vLook = _float3(-1.f, 0.f, 0.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+			// 315 degree
+			vLook = _float3(-1.f, 0.f, 1.f);
+			vLook.Normalize();
+			vRight = vLook.Cross(vUp);
+			matPivot = _float4x4(_float4(vRight, 0.f), _float4(vUp, 0.f), _float4(vLook, 0.f), vPos);
+			Add_Effect(L"DragonBall_StarRock", nullptr, matPivot, true);
+			break;
+		}
+		default:
+			break;
+		}
+
+		m_bIsCreateFloorSkillEffectDone = true;
+	}
+}
 
 void DragonBallMonster_FSM::Set_AttackPattern()
 {
+	/*Summon_HalfCircle_Floor();
+	m_tPatternCoolTime.fCoolTime = 4.f;
+	m_iPreAttack = 4;*/
+
 	_uint iRan = rand() % 6;
 
+	m_fTimer_CreateFloorSkillEffect = 0.f;
+	m_bIsCreateFloorSkillEffectDone = false;
+	
 	while (true)
 	{
 		if (iRan == m_iPreAttack)
@@ -542,7 +780,7 @@ void DragonBallMonster_FSM::Set_AttackPattern()
 		else
 			break;
 	}
-	
+
 	if (iRan == 0)
 	{
 		Summon_CrossFloor();
@@ -583,12 +821,12 @@ void DragonBallMonster_FSM::Set_AttackPattern()
 	if (!m_bSummonMeteor)
 	{
 		_uint iRan = rand() % 3;
-		
+
 		if (iRan == 0)
 		{
 			m_iLimitMeteorCnt = rand() % 3 + 1;
 			m_bSummonMeteor = true;
 		}
 	}
-
+	
 }

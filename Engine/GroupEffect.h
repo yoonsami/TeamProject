@@ -16,6 +16,7 @@ public:
 	virtual void        Final_Tick() override;
 
 	void				Render();
+	void				Render_Decal();
 	void				Render_Distortion();
 
 	void				Save(const wstring& path);

@@ -148,6 +148,8 @@ enum class NPCTYPE
 	POTION,
 	HIDE_KID,
 	SPIKE,
+	DELLONS,
+	SHANE,
 	MAX
 };
 

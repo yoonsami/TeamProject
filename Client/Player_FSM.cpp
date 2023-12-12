@@ -55,6 +55,9 @@ HRESULT Player_FSM::Init()
 	m_fSkillAttack_AnimationSpeed = 1.0f;
 	m_fEvade_AnimationSpeed = 1.5f;
 
+    if (!m_pAttackCollider.expired())
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(GET_DATA(HERO::PLAYER).Element);
+
     return S_OK;
 }
 
@@ -304,7 +307,7 @@ void Player_FSM::State_Init()
     }
 }
 
-void Player_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
+void Player_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
     //Calculate Damage 
     //m_pOwner.lock()->Get_Hurt(fDamage);
@@ -1241,7 +1244,7 @@ void Player_FSM::skill_100200()
             vLook.Normalize();
 
             if (vDir.Dot(vLook) > cosf(PLAYER_SKILL1_ANGLE * 0.5f))
-                obj->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, 10.f,Get_Owner());
+                obj->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, 10.f,Get_Owner(),ElementType::DARK);
         }
     }
 
@@ -1340,7 +1343,7 @@ void Player_FSM::skill_100300()
 			vLook.Normalize();
 
 			if (vDir.Dot(vLook) > cosf(PLAYER_SKILL1_ANGLE * 0.5f))
-                obj->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, 10.f ,Get_Owner());
+                obj->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, 10.f ,Get_Owner(),ElementType::DARK);
 		}
 	}
 

@@ -48,7 +48,7 @@ void Companion_FSM::Set_DirToTarget_Companion(_uint eType)
 {
 	m_pLookingTarget.reset();
 
-	m_pLookingTarget = Find_TargetInFrustum(eType, false);
+	m_pLookingTarget = Find_Target_Companion(eType);
 
 	if (!m_pLookingTarget.expired())
 	{
@@ -72,6 +72,20 @@ void Companion_FSM::Detect_Target()
 		{
 			m_tDetectCoolTime.fAccTime = 0.f;
 			Set_DirToTarget_Companion(OBJ_MONSTER);
+		}		
+	}
+}
+	
+void Companion_FSM::Calculate_EvadeCool()
+{
+	if (!m_bCanEvade)
+	{
+		m_tEvadeCoolTime.fAccTime += fDT;
+		
+		if (m_tEvadeCoolTime.fAccTime >= m_tEvadeCoolTime.fCoolTime)
+		{
+			m_tEvadeCoolTime.fAccTime = 0.f;
+			m_bCanEvade = true;
 		}
 	}
 }

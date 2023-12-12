@@ -45,14 +45,26 @@ void MeshRenderer::Render_Instancing(shared_ptr<InstancingBuffer>& buffer, share
 //	m_pShader->GetScalar("g_BarPercent")->SetFloat(m_fLoadingPercent);
 	buffer->Push_Data();
 
+	if (m_pShader->Get_ShaderType() == SHADER_TYPE::FORWARD)
+	{
 
-	if (m_pMesh->Get_Name() == L"Point")
-		CONTEXT->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
-	else
-		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		if (m_pMesh->Get_Name() == L"Point")
+			CONTEXT->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
+		else
+			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	m_pShader->DrawIndexedInstanced(0, m_iPass + 1, m_pMesh->Get_IndexBuffer()->Get_IndicesNum(), buffer->Get_Count());
+		m_pShader->DrawIndexedInstanced(0, m_iPass + 1, m_pMesh->Get_IndexBuffer()->Get_IndicesNum(), buffer->Get_Count());
+	}
+	else if (m_pShader->Get_ShaderType() == SHADER_TYPE::DEFERRED)
+	{
+		if (m_pMesh->Get_Name() == L"Point")
+			CONTEXT->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
+		else
+			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+		int passIndex = CUR_SCENE->g_bPBR_On ? 1 : 0;
+		m_pShader->DrawIndexedInstanced(1, passIndex, m_pMesh->Get_IndexBuffer()->Get_IndicesNum(), buffer->Get_Count());
+	}
 }
 
 void MeshRenderer::Render()
@@ -90,7 +102,10 @@ void MeshRenderer::Render()
 	}
 	else if (m_pShader->Get_ShaderType() == SHADER_TYPE::DEFERRED)
 	{
-		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		if (m_pMesh->Get_Name() == L"Point")
+			CONTEXT->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
+		else
+			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		int passIndex = CUR_SCENE->g_bPBR_On ? 1 : 0;
 		m_pShader->DrawIndexed(0, passIndex, m_pMesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);

@@ -83,7 +83,7 @@ void SoundMgr::Tick()
 
 }
 
-void SoundMgr::Play_Sound(const wstring& strSoundTag, CHANNELID eID, float fVolume, _uint iLevelIndex, const _float3& vPos, const _float2& vMinMaxDist)
+void SoundMgr::Play_Sound(const wstring& strSoundTag, CHANNELID eID, float fVolume, const _float3& vPos, _float vMin)
 {
 	if (eID < 0 || eID >= MAXCHANNEL)
 		return;
@@ -116,7 +116,7 @@ void SoundMgr::Play_Sound(const wstring& strSoundTag, CHANNELID eID, float fVolu
 
 			m_pSystem->playSound(sound->Get_Sound(), 0, false, &m_pChannelArr[i]);
 			m_pChannelArr[i]->setVolume(fVolume);
-			m_pChannelArr[i]->set3DMinMaxDistance(vMinMaxDist.x, vMinMaxDist.y);
+			m_pChannelArr[i]->set3DMinMaxDistance(vMin, 1000.F);
 			m_pChannelArr[i]->set3DAttributes(&position, &vel);
 			break;
 		}

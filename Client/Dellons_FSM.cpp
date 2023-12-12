@@ -46,6 +46,9 @@ HRESULT Dellons_FSM::Init()
 	m_fNormalAttack_AnimationSpeed = 1.2f;
 	m_fSkillAttack_AnimationSpeed = 1.0f;
 	m_fEvade_AnimationSpeed = 1.5f;
+
+	if (!m_pAttackCollider.expired())
+		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(GET_DATA(HERO::DELLONS).Element);
     return S_OK;
 }
 
@@ -281,7 +284,7 @@ void Dellons_FSM::State_Init()
     }
 }
 
-void Dellons_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
+void Dellons_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
 	//Calculate Damage 
 	m_pOwner.lock()->Get_Hurt(fDamage);

@@ -9,11 +9,14 @@ public:
 	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) = 0;
 	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) = 0;
 	virtual void Set_State(_uint iIndex) = 0;
-	virtual void Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget) = 0;
+	virtual void Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget,_uint iElementType) = 0;
 	shared_ptr<GameObject> Get_AttackCollider() { return m_pAttackCollider.lock(); }
 	void Set_AttackCollider(shared_ptr<GameObject> attackCollider) { m_pAttackCollider = attackCollider; }
 	void FreeLoopMembers();
 
+	void		Add_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript = nullptr, const _float4x4& matPivot = _float4x4::Identity, _bool bUseAsItis = false);
+	void		Add_And_Set_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript = nullptr);
+	void		Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset, _bool usePosAs, shared_ptr<MonoBehaviour> pScript = nullptr);
 
 
 protected:
@@ -46,11 +49,9 @@ protected:
 	void Set_DirToTarget_Monster(_uint eType);
 	void Look_DirToTarget(_float fTurnSpeed = XM_PI * 5.f);
 	shared_ptr<GameObject> Find_TargetInFrustum(_uint eType, _bool bFrustumCheck = true);
+	shared_ptr<GameObject> Find_Target_Companion(_uint eType);
 	_bool Init_CurFrame(const _uint curFrame);
 
-	void		Add_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript = nullptr, const _float4x4& matPivot = _float4x4::Identity);
-	void		Add_And_Set_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript = nullptr);
-	void		Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset, _bool usePosAs, shared_ptr<MonoBehaviour> pScript = nullptr);
 	void		KillAllEffect();
 	void		Update_GroupEffectWorldPos(const _float4x4& mWorldMatrix);
 

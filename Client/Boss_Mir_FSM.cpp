@@ -403,12 +403,13 @@ void Boss_Mir_FSM::State_Init()
     }
 }
 
-void Boss_Mir_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
+void Boss_Mir_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
     //Calculate Damage 
     m_pOwner.lock()->Get_Hurt(fDamage);
 
-    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage);
+
+	CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage, ElementType(iElementType));
 
 	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 	_float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
@@ -2557,13 +2558,7 @@ void Boss_Mir_FSM::Create_DragonBall()
 
 void Boss_Mir_FSM::Set_AttackPattern()
 {
-    //m_eCurState = STATE::SQ_SBRin_Roar;
-
-    // TODO:  의진
-    _uint iRan = rand() % 4;
-    if(iRan == 0)
-        m_eCurState = STATE::skill_200000;
-    /*
+    
     _uint iRan = rand() % 10;
     
     while (true)
@@ -2687,7 +2682,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
             m_iCurMeteorCnt = 0;
         }
     }
-    */
+
 }
 
 void Boss_Mir_FSM::Setting_DragonBall()

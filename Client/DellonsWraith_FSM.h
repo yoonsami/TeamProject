@@ -30,8 +30,8 @@ public:
 public:
 	virtual HRESULT Init() override;
 	virtual void Tick() override;
-	virtual void Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget) override;
-
+	virtual void Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType) override;
+	void Create_ForwardMovingSkillCollider(CollisionGroup eGroup, const wstring& strColliderName, const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage, const wstring& hitEffectTag = L"");
 
 private:
 	virtual void State_Tick() override; // 상태를 항상 업데이트해줌
@@ -61,6 +61,8 @@ private:
 	void FX_Mn_Dellons_skill_6100_Init();
 	void FX_Mn_Dellons_skill_5200();
 	void FX_Mn_Dellons_skill_5200_Init();
+
+
 
 private:
 	STATE m_eCurState = STATE::FX_DellonsWraith_skill_30010;

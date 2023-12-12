@@ -46,7 +46,7 @@ public:
 
     void                Sort_By_Star();
 
-    _uint               Get_NpcDialog_Count(NPCTYPE eType)                  { return IDX(m_NpcDialog[IDX(eType)].size()); }
+    _uint               Get_NpcDialog_Count(NPCTYPE eType);
     _uint               Get_Dialog_Size(NPCTYPE eType, _uint iDialogIndex)  { return IDX(m_NpcDialog[IDX(eType)][iDialogIndex].size()); }
     const wstring&      Get_Dialog(NPCTYPE eType, _uint iDialogIndex, _uint iIndex) { return m_NpcDialog[IDX(eType)][iDialogIndex][iIndex]; }
 

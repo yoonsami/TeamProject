@@ -124,6 +124,43 @@ shared_ptr<GroupEffectData> ResourceMgr::GetOrAddGroupEffectData(const wstring& 
 	return groupEffectData;
 }
 
+shared_ptr<Texture> ResourceMgr::ReloadOrAddTexture(const wstring& key, const wstring& path)
+{
+	auto texture = Get<Texture>(key);
+	if (key == L"")
+		return nullptr;
+	if (fs::exists(fs::path(path)) == false)
+		return nullptr;
+
+	texture = Load<Texture>(key, path);
+
+	if (texture == nullptr)
+	{
+		texture = make_shared<Texture>();
+		texture->Load(path);
+
+		wstring name = key;
+		Utils::DetachExt(name);
+		texture->Set_Name(name);
+		Add(name, texture);
+	}
+	else
+	{
+		Delete<Texture>(key);
+
+		auto newTexture = make_shared<Texture>();
+		newTexture->Load(path);
+
+		wstring name = key;
+		Utils::DetachExt(name);
+		newTexture->Set_Name(name);
+		Add(name, newTexture);
+		return newTexture;
+	}
+
+	return texture;
+}
+
 shared_ptr<GroupEffectData> ResourceMgr::ReloadOrAddGroupEffectData(const wstring& key, const wstring& path)
 {
 	wstring name = key;
@@ -689,6 +726,12 @@ void ResourceMgr::CreateDefaultShader()
 		shader->Set_ShaderType(SHADER_TYPE::WATER);
 	}
 	{
+		wstring ShaderTag = L"Shader_Grass.fx";
+		Load<Shader>(ShaderTag, ShaderTag);
+		auto shader = Get<Shader>(ShaderTag);
+		shader->Set_ShaderType(SHADER_TYPE::DEFERRED);
+	}
+	{
 		wstring ShaderTag = L"Shader_Effect2.fx";
 		Load<Shader>(ShaderTag, ShaderTag);
 		auto shader = Get<Shader>(ShaderTag);
@@ -830,6 +873,30 @@ void ResourceMgr::CreateModel(const wstring& path, _bool flag)
 	}
 }
 
+void ResourceMgr::Load_Sound(const wstring& path, _bool isStatic)
+{
+	{
+		wstring assetPath = path;
+
+		for (auto& entry : fs::recursive_directory_iterator(assetPath))
+		{
+			if (entry.is_directory())
+				continue;
+
+			wstring key = entry.path().filename().wstring();
+			Utils::DetachExt(key);
+
+			if (Get<CustomSound>(key))
+				continue;
+
+			shared_ptr<CustomSound> sound = make_shared<CustomSound>();
+			sound->Load(entry.path().wstring());
+
+			Add(key, sound, isStatic);
+		}
+	}
+}
+
 void ResourceMgr::CreateDefaultMaterial()
 {
 	{
@@ -892,7 +959,7 @@ void ResourceMgr::CreateDefaultMaterial()
 		shared_ptr<Material> material = make_shared<Material>();
 		material->Set_Shader(shader);
 		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"NormalTarget"));
-		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"G_DepthTarget"));
+		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"PositionTarget"));
 		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"SSAO_RandomVectorTexture"));
 		Add(L"SSAO", material);
 	}
@@ -972,7 +1039,7 @@ void ResourceMgr::CreateDefaultMaterial()
 		material->Set_Shader(shader);
 		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"VelocityMap"));
 		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"FinalTarget"));
-		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"G_DepthTarget"));
+		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"PositionTarget"));
 		Add(L"MotionBlurFinal", material);
 	}
 	{
@@ -1037,7 +1104,7 @@ void ResourceMgr::CreateDefaultMaterial()
 	{
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Final.fx");
 		shared_ptr<Material> material = make_shared<Material>();
-		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"G_DepthTarget"));
+		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"PositionTarget"));
 		material->Set_Shader(shader);
 		Add(L"DOFTarget", material);
 	}
@@ -1089,7 +1156,7 @@ void ResourceMgr::CreateDefaultMaterial()
 		material->Set_Shader(shader);
 		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"MotionBlurFinalTarget"));
 		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"DOFUPSCALE2"));
-		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"G_DepthTarget"));
+		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"PositionTarget"));
 		Add(L"DOFFinal", material);
 	}
 
@@ -1107,7 +1174,7 @@ void ResourceMgr::CreateDefaultMaterial()
 		shared_ptr<Material> material = make_shared<Material>();
 		material->Set_Shader(shader);
 		material->Set_SubMap(0, RESOURCES.Get<Texture>(L"DistortionFinalTarget"));
-		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"G_DepthTarget"));
+		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"PositionTarget"));
 
 		Add(L"LensFlare", material);
 	}
@@ -1129,7 +1196,7 @@ void ResourceMgr::CreateDefaultMaterial()
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Final.fx");
 		shared_ptr<Material> material = make_shared<Material>();
 		material->Set_Shader(shader);
-		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"G_DepthTarget"));
+		material->Set_SubMap(1, RESOURCES.Get<Texture>(L"PositionTarget"));
 		Add(L"FogFinal", material);
 	}
 	{
@@ -1153,6 +1220,21 @@ void ResourceMgr::CreateDefaultMaterial()
 		material->Set_Shader(shader);
 		Add(L"Sampler", material);
 	}
+
+	for(int i=0; i<8; ++i)
+	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Grass.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_Shader(shader);
+		wstring WeedTextureName = L"Weed" + to_wstring(i);
+		wstring WeedTexturePath = L"..\\Resources\\Textures\\MapObject\\TerrainTile\\Weed" + to_wstring(i) + L".png";
+		auto Weedtexture = RESOURCES.GetOrAddTexture(WeedTextureName, WeedTexturePath);
+		material->Set_TextureMap(Weedtexture, TextureMapType::DIFFUSE);
+		Add(WeedTextureName, material);
+	}
+	auto Weedtexture = RESOURCES.ReloadOrAddTexture(L"Weed", L"..\\Resources\\Textures\\MapObject\\TerrainTile\\pngegg.png");
+
+	int a = 0;
 }
 
 void ResourceMgr::CreateDefaultFont()

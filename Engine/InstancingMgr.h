@@ -25,6 +25,7 @@ private:
 	void Render_Animator(vector<shared_ptr<GameObject>>& gameObjects);
 	void Render_Collider(vector<shared_ptr<GameObject>>& gameObjects);
 
+
 	//RenderShadow
 	void Render_ModelRenderer_Shadow(vector<shared_ptr<GameObject>>& gameObjects);
 	void Render_Animator_Shadow(vector<shared_ptr<GameObject>>& gameObjects);

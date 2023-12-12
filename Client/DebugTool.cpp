@@ -326,6 +326,11 @@ void DebugTool::ModelOptionTab()
 		DragFloat("X", &CUR_SCENE->g_rotX, 0.01f, 0.f, 360);
 		DragFloat("Y", &CUR_SCENE->g_rotY, 0.01f, 0.f, 360);
 		DragFloat("Z", &CUR_SCENE->g_rotZ, 0.01f, 0.f, 360);
+		
+		Separator();
+		DragFloat2("MinMaxTessellation Dist", (_float*)&GAMEINSTANCE.m_vMinMaxTessellationDistance, 1.f, 0.01f, 1000.f);
+		DragFloat2("test", (_float*)&GAMEINSTANCE.m_vTest, 1.f, 0.01f, 1000.f);
+
 		EndTabItem();
 	}
 }

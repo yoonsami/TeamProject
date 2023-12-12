@@ -80,7 +80,9 @@ void GranseedScene::Render_SampleMapObject()
 
 HRESULT GranseedScene::Load_Scene()
 {
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\");
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Skybox\\");
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Field\\");
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\Spear_Ace\\");
 	Load_DemoModel();
 	shared_ptr<GameObject> sky = make_shared<GameObject>();
 	sky->GetOrAddTransform();

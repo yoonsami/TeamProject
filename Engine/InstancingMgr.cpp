@@ -80,7 +80,7 @@ void InstancingMgr::Render_MeshRenderer(vector<shared_ptr<GameObject>>& gameObje
 				InstancingData data;
 				data.world = gameobject->Get_Transform()->Get_WorldMatrix();
 
-				materialDesc->params[i] = gameobject->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[0];
+				materialDesc->params[i] = gameobject->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0];
 				Add_Data(instanceId, data);
 			}
 

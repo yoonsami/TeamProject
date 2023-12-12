@@ -178,7 +178,7 @@ float4 PS_MotionBlur(VS_OUT input) : SV_Target0
     float4 output = (float4) 0.f;
     
     int NumBlurSample = g_BlurCount;
-    float4 velocity = SubMap0.Sample(PointSamplerMirror, input.uv);
+    float4 velocity = SubMap0.Sample(LinearSamplerMirror, input.uv);
             
     velocity.xy /= (float) NumBlurSample;
     velocity.xy *= g_MotionBlurPower;
@@ -195,8 +195,11 @@ float4 PS_MotionBlur(VS_OUT input) : SV_Target0
     for (int i = iCnt; i < NumBlurSample; ++i)
     {
         
-        BColor = SubMap1.Sample(PointSamplerMirror, input.uv + velocity.xy * (float) i);
-        float depth = SubMap2.Sample(PointSamplerMirror, input.uv).r;
+        BColor = SubMap1.Sample(LinearSamplerMirror, input.uv + velocity.xy * (float) i);
+       
+        float4 vProjPos = mul(float4(SubMap2.Sample(LinearSamplerMirror, input.uv).rgb, 1.f), P);
+        
+        float depth = SubMap2.Sample(LinearSamplerMirror, input.uv).z / SubMap2.Sample(PointSamplerMirror, input.uv).w;
         if (velocity.a < depth + 0.04f)
         {
            iCnt++;

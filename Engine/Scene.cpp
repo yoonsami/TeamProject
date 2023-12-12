@@ -116,12 +116,6 @@ void Scene::Render()
 
 
 	Render_Fog();
-
-
-
-
-
-
 	Render_Forward();
 
 	Render_BloomMap();
@@ -1189,6 +1183,8 @@ void Scene::Render_MotionBlurFinal()
 	if (!g_MotionBlurData.g_bMotionBlurOn) return;
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::MOTIONBLURFINAL)->OMSetRenderTargets();
 
+
+
 	auto material = RESOURCES.Get<Material>(L"MotionBlurFinal");
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 	material->Set_SubMap(1, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
@@ -1196,6 +1192,9 @@ void Scene::Render_MotionBlurFinal()
 	material->Get_Shader()->GetScalar("g_MotionBlurPower")->SetFloat(g_MotionBlurData.g_MotionBlurPower);
 
 	material->Push_SubMapData();
+
+	auto camera = Get_MainCamera()->Get_Camera();
+	material->Get_Shader()->Push_GlobalData(camera->Get_ViewMat(), camera->Get_ProjMat());
 
 	mesh->Get_VertexBuffer()->Push_Data();
 	mesh->Get_IndexBuffer()->Push_Data();
@@ -1520,6 +1519,8 @@ void Scene::Render_LensFlare()
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
 	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
 
+	auto camera = Get_MainCamera()->Get_Camera();
+	material->Get_Shader()->Push_GlobalData(camera->Get_ViewMat(), camera->Get_ProjMat());
 
 
 	material->Get_Shader()->GetVector("g_LightPos")->SetFloatVector((_float*)&proj);
@@ -1582,6 +1583,8 @@ void Scene::Render_LensFlare()
 		//	material->Get_Shader()->GetScalar("UpScalePower")->SetFloat(m_fUpScalePower);
 		material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
 		material->Push_SubMapData();
+		auto camera = Get_MainCamera()->Get_Camera();
+		material->Get_Shader()->Push_GlobalData(camera->Get_ViewMat(), camera->Get_ProjMat());
 
 		mesh->Get_VertexBuffer()->Push_Data();
 		mesh->Get_IndexBuffer()->Push_Data();

@@ -37,7 +37,7 @@ void Client_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGa
 
 		wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
 		_float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
-
+		ElementType eType = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackElementType();
 		shared_ptr<GameObject> targetToLook = nullptr;
 		// skillName에 _Skill 포함이면
 		if (strSkillName.find(L"_Skill") != wstring::npos)
@@ -48,7 +48,7 @@ void Client_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGa
 		if (targetToLook == nullptr)
 			return;
 
-		Get_Hit(strSkillName, fAttackDamage, targetToLook);
+		Get_Hit(strSkillName, fAttackDamage, targetToLook, eType);
 	}
 }
 
@@ -76,6 +76,23 @@ void Client_FSM::AttackCollider_Off()
 		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_HitEffectTag(L"");
 	}
 
+}
+
+void Client_FSM::Set_On_Ground()
+{
+	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
+	Ray ray;
+	ray.position = vMyPos;
+	ray.direction = _float3{ 0.f,-1.f,0.f };
+	physx::PxRaycastBuffer hit{};
+	physx::PxQueryFilterData filterData;
+	filterData.flags = physx::PxQueryFlag::eSTATIC;
+
+	if (PHYSX.Get_PxScene()->raycast({ ray.position.x,ray.position.y,ray.position.z }, { ray.direction.x,ray.direction.y,ray.direction.z }, 1.f, hit, PxHitFlags(physx::PxHitFlag::eDEFAULT), filterData))
+	{
+		_float3 vHitPoint = { hit.getAnyHit(0).position.x, hit.getAnyHit(0).position.y, hit.getAnyHit(0).position.z };
+		Get_Transform()->Set_State(Transform_State::POS, _float4{ vMyPos.x, vHitPoint.y, vMyPos.z, 1.f });
+	};
 }
 
 void Client_FSM::Set_ColliderOption(ElementType eType, const wstring& strHitEffectTag)
@@ -144,7 +161,6 @@ void Client_FSM::Create_FloorSkillCollider(CollisionGroup eGroup, const wstring&
 
 	FloorSkillCollider->GetOrAddTransform();
 	FloorSkillCollider->Get_Transform()->Set_State(Transform_State::POS, vPos);
-
 
 	auto pOBBCollider = make_shared<OBBBoxCollider>(vSkillScale);
 	FloorSkillCollider->Add_Component(pOBBCollider);

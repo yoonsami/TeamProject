@@ -238,7 +238,7 @@ void EntSoldier_FSM::State_Init()
     }
 }
 
-void EntSoldier_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
+void EntSoldier_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
     auto pScript = m_pOwner.lock()->Get_Script<UiMonsterHp>();
     if (nullptr == pScript)
@@ -251,11 +251,23 @@ void EntSoldier_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_pt
     //Calculate Damage 
     m_pOwner.lock()->Get_Hurt(fDamage);
 
-    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage);
+	CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage, (ElementType)iElementType);
 
     //Target Change
     if (pLookTarget != nullptr)
-        m_pTarget = pLookTarget;
+	{
+
+        //Skill => SkillCollider Owner
+        if (skillname.find(L"_Skill") != wstring::npos)
+            m_pTarget = pLookTarget->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner();// Collider owner를 넘겨준다
+        else
+        {
+            if (pLookTarget->Get_Name() == L"Wraith_AttackCollider")
+                m_pTarget = pLookTarget->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner();// Collider owner를 넘겨준다
+            else
+                m_pTarget = pLookTarget;
+        }
+    }
 
     m_bDetected = true;
     m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.05f);
@@ -448,7 +460,10 @@ void EntSoldier_FSM::wander()
         CalCulate_PatrolTime();
 
         if (m_bPatrolMove)
-            m_eCurState = STATE::n_run;
+        {
+            if (m_iCurFrame >= 65)
+                m_eCurState = STATE::n_run;
+        }
     }
     else
     {
@@ -460,7 +475,7 @@ void EntSoldier_FSM::wander_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"b_idle", 0.2f, true, 1.f);
+    animator->Set_NextTweenAnim(L"SQ_Look_Cha", 0.4f, true, 1.f);
 
     m_vTurnVector = _float3{ (rand() * 2 / _float(RAND_MAX) - 1), 0.f, (rand() * 2 / _float(RAND_MAX) - 1) };
     m_vTurnVector.Normalize();
@@ -936,8 +951,16 @@ void EntSoldier_FSM::skill_2100()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     if (m_iCurFrame == 14)
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 3.f);
     else if (m_iCurFrame == 19)
+        AttackCollider_Off();
+    else if (m_iCurFrame == 22)
+        AttackCollider_On(NORMAL_ATTACK, 3.f);
+    else if (m_iCurFrame == 29)
+        AttackCollider_Off();
+    else if (m_iCurFrame == 39)
+        AttackCollider_On(NORMAL_ATTACK, 3.f);
+    else if (m_iCurFrame == 46)
         AttackCollider_Off();
 
     Set_Gaze();
