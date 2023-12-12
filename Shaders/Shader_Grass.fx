@@ -181,7 +181,7 @@ void GS_Grass_Instancing(point InstancingOuput input[1], inout TriangleStream<GS
     
     for (uint j = 0; j < billboardCount; j++)
     {
-        float4x4 matRotateByBillboard = RotateMatrix(radians(120.f * j), W[1].xyz /*월드의UP으로회전*/);
+        float4x4 matRotateByBillboard = RotateMatrix(radians(120.f * j), vtx.matWorld[1].xyz /*월드의UP으로회전*/);
         float4x4 RotateWByBillboard = mul(matRotateByBillboard, vtx.matWorld);
         
         output[j * 4 + 0].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ - matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f /*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f /*높이*/ + mul(mul(vWind, fWindPowerMagicNumber), fWindWeight) /*바람정보를 위쪽 버텍스에 반영*/, 1.f);
