@@ -41,12 +41,12 @@ public:
     void                Remove_Card_Inven(_uint iIndex);
 
     HERO                Get_Cur_Set_Hero(_uint iIndex);
-    void                Set_Cur_Hero(_uint iIndex, _uint iCardIndex);
+    _bool               Set_Cur_Hero(_uint iIndex, _uint iCardIndex);
     void                Remove_Cur_Hero(_uint iIndex);
 
     void                Sort_By_Star();
 
-    _uint               Get_NpcDialog_Count(NPCTYPE eType)                  { return IDX(m_NpcDialog[IDX(eType)].size()); }
+    _uint               Get_NpcDialog_Count(NPCTYPE eType);
     _uint               Get_Dialog_Size(NPCTYPE eType, _uint iDialogIndex)  { return IDX(m_NpcDialog[IDX(eType)][iDialogIndex].size()); }
     const wstring&      Get_Dialog(NPCTYPE eType, _uint iDialogIndex, _uint iIndex) { return m_NpcDialog[IDX(eType)][iDialogIndex][iIndex]; }
 

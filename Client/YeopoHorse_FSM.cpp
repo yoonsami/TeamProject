@@ -140,7 +140,7 @@ void YeopoHorse_FSM::State_Init()
     }
 }
 
-void YeopoHorse_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
+void YeopoHorse_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
     
 }

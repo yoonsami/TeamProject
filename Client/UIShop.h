@@ -23,10 +23,16 @@ private:
     void Create_Buy_Ui();
     void Remove_Buy_Ui();
 
+    void Check_Scroll();
 
 private:
-    vector<weak_ptr<GameObject>> m_addedObj;
-    vector<weak_ptr<GameObject>> m_addedBuyUi;
+    vector<weak_ptr<GameObject>>    m_addedObj;
+    vector<weak_ptr<GameObject>>    m_ItemObj;
+    vector<weak_ptr<GameObject>>    m_ItemName;
+    vector<weak_ptr<GameObject>>    m_ItemPrice;
+    vector<weak_ptr<GameObject>>    m_addedBuyUi;
+
+    weak_ptr<GameObject>            m_pScroll;
 
     weak_ptr<GameObject> m_pMoneyValue;
 
@@ -37,7 +43,9 @@ private:
 
     vector<_bool>   m_vecIsBuy;
     vector<_uint>   m_vecPrice;
+    vector<wstring> m_vecName;
 
     _uint           m_iMoney = {};
+    _float          m_fMaxPosX = {};
 };
 

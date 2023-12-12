@@ -111,7 +111,11 @@ void UiCharChange::Set_Hero(_uint iIndex)
         m_vecDesc[iIndex].bIsSet = false;
 
         if (false == m_pSkillHelp[iIndex].expired())
+        {
+            m_pSkillHelp[iIndex].lock()->Set_Tick(false);
             m_pSkillHelp[iIndex].lock()->Set_Render(false);
+        }
+        GET_PLAYER->Get_Script<HeroChangeScript>()->Change_Player();
     }
     else
     {
@@ -124,8 +128,10 @@ void UiCharChange::Set_Hero(_uint iIndex)
         if (false == m_pSkillHelp[iIndex].expired())
         {
             m_pSkillHelp[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap((pResource.Get<Texture>(GET_DATA(eHero).SkillHelp)), TextureMapType::DIFFUSE);
+            m_pSkillHelp[iIndex].lock()->Set_Tick(true);
             m_pSkillHelp[iIndex].lock()->Set_Render(true);
         }
+        Change_Skill_Help();
     }
 }
 
@@ -194,7 +200,7 @@ void UiCharChange::Use_Skill_Help()
             shared_ptr<GameObject> obj = make_shared<GameObject>();
             auto pTransform = pPlayer->GetOrAddTransform();
             obj->GetOrAddTransform()->Set_State(Transform_State::POS, pTransform->Get_State(Transform_State::POS) + pTransform->Get_State(Transform_State::RIGHT) * 3.f);
-            obj->GetOrAddTransform()->LookAt(pTransform->Get_State(Transform_State::POS) + pTransform->Get_State(Transform_State::LOOK) * 3.f);
+            obj->GetOrAddTransform()->LookAt(pTransform->Get_State(Transform_State::POS) + pTransform->Get_State(Transform_State::LOOK) * 2.f);
 
             obj->Add_Component(make_shared<Friend_FSM>(eValue));
 
@@ -224,8 +230,8 @@ void UiCharChange::Use_Skill_Help()
 
             shared_ptr<GameObject> obj = make_shared<GameObject>();
             auto pTransform = pPlayer->GetOrAddTransform();
-            obj->GetOrAddTransform()->Set_State(Transform_State::POS, pTransform->Get_State(Transform_State::POS) + pTransform->Get_State(Transform_State::RIGHT) * 3.f);
-            obj->GetOrAddTransform()->LookAt(pTransform->Get_State(Transform_State::POS) + pTransform->Get_State(Transform_State::LOOK) * 3.f);
+            obj->GetOrAddTransform()->Set_State(Transform_State::POS, pTransform->Get_State(Transform_State::POS) + pTransform->Get_State(Transform_State::RIGHT) * -3.f);
+            obj->GetOrAddTransform()->LookAt(pTransform->Get_State(Transform_State::POS) + pTransform->Get_State(Transform_State::LOOK) * 2.f);
 
             obj->Add_Component(make_shared<Friend_FSM>(eValue));
 
@@ -256,7 +262,7 @@ void UiCharChange::Use_Skill_Help()
             shared_ptr<GameObject> obj = make_shared<GameObject>();
             auto pTransform = pPlayer->GetOrAddTransform();
             obj->GetOrAddTransform()->Set_State(Transform_State::POS, pTransform->Get_State(Transform_State::POS) + pTransform->Get_State(Transform_State::RIGHT) * 3.f);
-            obj->GetOrAddTransform()->LookAt(pTransform->Get_State(Transform_State::POS) + pTransform->Get_State(Transform_State::LOOK) * 3.f);
+            obj->GetOrAddTransform()->LookAt(pTransform->Get_State(Transform_State::POS) + pTransform->Get_State(Transform_State::LOOK) * 2.f);
 
             obj->Add_Component(make_shared<Friend_FSM>(eValue));
 
@@ -291,6 +297,25 @@ _bool UiCharChange::IsSkillHelp_Available(_uint iIndex)
     return false;
 }
 
+void UiCharChange::Change_Skill_Help()
+{
+    if (-1 == m_iCurIndex)
+        return;
+
+    if (true == m_bIsChange[m_iCurIndex])
+    {
+        if (false == m_pSkillHelp[m_iCurIndex].expired() && HERO::MAX != DATAMGR.Get_Cur_Set_Hero(m_iCurIndex))
+        {
+            m_pSkillHelp[m_iCurIndex].lock()->Set_Tick(true);
+            m_pSkillHelp[m_iCurIndex].lock()->Set_Render(true);
+        }
+
+        m_bIsChange[m_iCurIndex] = false;
+        m_iCurIndex = -1;
+        GET_PLAYER->Get_Script<HeroChangeScript>()->Change_Player();
+    }
+}
+
 void UiCharChange::Check_Change_Cool()
 {
     _uint iSize = IDX(m_vecDesc.size());
@@ -322,12 +347,22 @@ void UiCharChange::Change_Hero()
             auto eValue = DATAMGR.Get_Cur_Set_Hero(0);
 
             if (false == m_pSkillHelp[0].expired())
+            {
+                m_pSkillHelp[0].lock()->Set_Tick(false);
                 m_pSkillHelp[0].lock()->Set_Render(false);
+            }
             if (false == m_pSkillHelp[1].expired() && HERO::MAX != DATAMGR.Get_Cur_Set_Hero(1))
+            {
+                m_pSkillHelp[1].lock()->Set_Tick(true);
                 m_pSkillHelp[1].lock()->Set_Render(true);
+            }
             if (false == m_pSkillHelp[2].expired() && HERO::MAX != DATAMGR.Get_Cur_Set_Hero(2))
+            {
+                m_pSkillHelp[2].lock()->Set_Tick(true);
                 m_pSkillHelp[2].lock()->Set_Render(true);
+            }
 
+            m_iCurIndex = 0;
             m_bIsChange[0] = true;
             m_bIsChange[1] = false;
             m_bIsChange[2] = false;
@@ -337,8 +372,12 @@ void UiCharChange::Change_Hero()
         else if (true == m_bIsChange[0])
         {
             if (false == m_pSkillHelp[0].expired())
+            {
+                m_pSkillHelp[0].lock()->Set_Tick(true);
                 m_pSkillHelp[0].lock()->Set_Render(true);
+            }
 
+            m_iCurIndex = -1;
             m_bIsChange[0] = false;
             auto pScript = GET_PLAYER->Get_Script<HeroChangeScript>();
             pScript->Change_Player();
@@ -353,12 +392,22 @@ void UiCharChange::Change_Hero()
             auto eValue = DATAMGR.Get_Cur_Set_Hero(1);
 
             if (false == m_pSkillHelp[0].expired() && HERO::MAX != DATAMGR.Get_Cur_Set_Hero(0))
+            {
+                m_pSkillHelp[0].lock()->Set_Tick(true);
                 m_pSkillHelp[0].lock()->Set_Render(true);
+            }
             if (false == m_pSkillHelp[1].expired())
+            {
+                m_pSkillHelp[1].lock()->Set_Tick(false);
                 m_pSkillHelp[1].lock()->Set_Render(false);
+            }
             if (false == m_pSkillHelp[2].expired() && HERO::MAX != DATAMGR.Get_Cur_Set_Hero(2))
+            {
+                m_pSkillHelp[2].lock()->Set_Tick(true);
                 m_pSkillHelp[2].lock()->Set_Render(true);
+            }
 
+            m_iCurIndex = 1;
             m_bIsChange[0] = false;
             m_bIsChange[1] = true;
             m_bIsChange[2] = false;
@@ -368,8 +417,12 @@ void UiCharChange::Change_Hero()
         else if (true == m_bIsChange[1])
         {
             if (false == m_pSkillHelp[1].expired())
+            {
+                m_pSkillHelp[1].lock()->Set_Tick(true);
                 m_pSkillHelp[1].lock()->Set_Render(true);
+            }
 
+            m_iCurIndex = -1;
             m_bIsChange[1] = false;
             auto pScript = GET_PLAYER->Get_Script<HeroChangeScript>();
             pScript->Change_Player();
@@ -383,12 +436,22 @@ void UiCharChange::Change_Hero()
             auto eValue = DATAMGR.Get_Cur_Set_Hero(2);
 
             if (false == m_pSkillHelp[0].expired() && HERO::MAX != DATAMGR.Get_Cur_Set_Hero(0))
+            {
+                m_pSkillHelp[0].lock()->Set_Tick(true);
                 m_pSkillHelp[0].lock()->Set_Render(true);
+            }
             if (false == m_pSkillHelp[1].expired() && HERO::MAX != DATAMGR.Get_Cur_Set_Hero(1))
+            {
+                m_pSkillHelp[1].lock()->Set_Tick(true);
                 m_pSkillHelp[1].lock()->Set_Render(true);
+            }
             if (false == m_pSkillHelp[2].expired())
+            {
+                m_pSkillHelp[2].lock()->Set_Tick(false);
                 m_pSkillHelp[2].lock()->Set_Render(false);
+            }
 
+            m_iCurIndex = 2;
             m_bIsChange[0] = false;
             m_bIsChange[1] = false;
             m_bIsChange[2] = true;
@@ -398,8 +461,12 @@ void UiCharChange::Change_Hero()
         else if (true == m_bIsChange[2])
         {
             if (false == m_pSkillHelp[2].expired())
+            {
+                m_pSkillHelp[2].lock()->Set_Tick(true);
                 m_pSkillHelp[2].lock()->Set_Render(true);
+            }
 
+            m_iCurIndex = -1;
             m_bIsChange[2] = false;
             auto pScript = GET_PLAYER->Get_Script<HeroChangeScript>();
             pScript->Change_Player();

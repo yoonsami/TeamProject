@@ -133,11 +133,11 @@ void GranseedScene::Tick()
 {
 	__super::Tick();
 
-	if (KEYTAP(KEY_TYPE::V))
+	if (KEYTAP(KEY_TYPE::C))
 	{
-		auto pObj = Get_UI(L"UI_Message_Controller");
-		if (pObj)
-			pObj->Get_Script<UiMessageCreater>()->Create_Message(Get_GameObject(L"GS_GachaMan"));
+		//auto pObj = Get_UI(L"UI_Message_Controller");
+		//if (pObj)
+		//	pObj->Get_Script<UiMessageCreater>()->Create_Message(Get_GameObject(L"GS_GachaMan"));
 		//auto pObj = Get_UI(L"UI_Costume_Controller");
 		//if (pObj)
 		//	pObj->Get_Script<UiCostumeController>()->Create_Costume();
@@ -150,9 +150,9 @@ void GranseedScene::Tick()
 	}
 	if (KEYTAP(KEY_TYPE::V))
 	{
-		//auto pObj = Get_UI(L"UI_Shop_Controller");
-		//if (pObj)
-		//	pObj->Get_Script<UIShop>()->Remove_Shop();
+		auto pObj = Get_UI(L"UI_Shop_Controller");
+		if (pObj)
+			pObj->Get_Script<UIShop>()->Create_Shop();
 		//auto pObj = Get_UI(L"UI_Costume_Controller");
 		//if (pObj)
 		//	pObj->Get_Script<UiCostumeController>()->Remove_Costume();
@@ -693,9 +693,9 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 
 
 
-	// ※※※※※※※※※※※※※※※
-	// add only GranseedScene
-	// ※※※※※※※※※※※※※※※
+	// ※※※※※※※※※※※※※※※	※※※※※※※※※※※※※※※	※※※※※※※※※※※※※※※
+	// add only GranseedScene	add only GranseedScene	add only GranseedScene
+	// ※※※※※※※※※※※※※※※	※※※※※※※※※※※※※※※	※※※※※※※※※※※※※※※
 
 	{
 		auto pObj = make_shared<GameObject>();
@@ -709,9 +709,9 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		Add_GameObject(pObj);
 	}
 
-	// ※※※※※※※※※※※※※※※
-	// add only GranseedScene
-	// ※※※※※※※※※※※※※※※
+	// ※※※※※※※※※※※※※※※	※※※※※※※※※※※※※※※	※※※※※※※※※※※※※※※
+	// add only GranseedScene	add only GranseedScene	add only GranseedScene
+	// ※※※※※※※※※※※※※※※	※※※※※※※※※※※※※※※	※※※※※※※※※※※※※※※
 
 
 

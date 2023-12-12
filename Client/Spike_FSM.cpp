@@ -300,7 +300,7 @@ void Spike_FSM::State_Init()
     }
 }
 
-void Spike_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
+void Spike_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
 	//Calculate Damage 
 	m_pOwner.lock()->Get_Hurt(fDamage);

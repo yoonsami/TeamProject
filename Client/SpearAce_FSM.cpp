@@ -268,7 +268,7 @@ void SpearAce_FSM::State_Init()
     }
 }
 
-void SpearAce_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
+void SpearAce_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
 	m_pOwner.lock()->Get_Hurt(fDamage);
 

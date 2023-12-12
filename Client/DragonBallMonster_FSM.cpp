@@ -45,7 +45,7 @@ void DragonBallMonster_FSM::Tick()
 	State_Tick();
 }
 
-void DragonBallMonster_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
+void DragonBallMonster_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
 	auto pScript = m_pOwner.lock()->Get_Script<UiMonsterHp>();
 	if (nullptr == pScript)
@@ -60,7 +60,8 @@ void DragonBallMonster_FSM::Get_Hit(const wstring& skillname, _float fDamage, sh
 	//Calculate Damage 
 	m_pOwner.lock()->Get_Hurt(fDamage);
 
-	CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage);
+
+	CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage, ElementType(iElementType));
 
 }
 

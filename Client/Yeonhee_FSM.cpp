@@ -280,7 +280,7 @@ void Yeonhee_FSM::State_Init()
     }
 }
 
-void Yeonhee_FSM::Get_Hit(const wstring& skillname, _float fDamage,  shared_ptr<GameObject> pLookTarget)
+void Yeonhee_FSM::Get_Hit(const wstring& skillname, _float fDamage,  shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
 	//Calculate Damage 
 	m_pOwner.lock()->Get_Hurt(fDamage);

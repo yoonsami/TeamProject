@@ -1210,12 +1210,21 @@ HERO DataMgr::Get_Cur_Set_Hero(_uint iIndex)
     return m_CardInven[m_CurSetHero[iIndex]].second.Hero;
 }
 
-void DataMgr::Set_Cur_Hero(_uint iIndex, _uint iCardIndex)
+_bool DataMgr::Set_Cur_Hero(_uint iIndex, _uint iCardIndex)
 {
-    if (IDX(m_CardInven.size()) <= iCardIndex)
-        return;
+    _uint iSize = IDX(m_CardInven.size());
+    if (iSize <= iCardIndex)
+        return false;
+
+    for (_uint i = 0; i < 3; ++i)
+    {
+        if (iIndex != i)
+            if (m_CurSetHero[i] == iCardIndex)
+                return false;
+    }
 
     m_CurSetHero[iIndex] = iCardIndex;
+    return true;
 }
 
 void DataMgr::Remove_Cur_Hero(_uint iIndex)
@@ -1234,5 +1243,11 @@ _bool SortByStar(const pair<_bool, HERODATA>& a, const pair<_bool, HERODATA>& b)
 void DataMgr::Sort_By_Star()
 {
     sort(m_CardInven.begin(), m_CardInven.end(), SortByStar);
+}
+
+_uint DataMgr::Get_NpcDialog_Count(NPCTYPE eType)
+{
+    int a = 0;
+     return IDX(m_NpcDialog[IDX(eType)].size()); 
 }
 

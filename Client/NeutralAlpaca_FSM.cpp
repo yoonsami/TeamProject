@@ -239,7 +239,7 @@ void NeutralAlpaca_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _fl
 		{
 			wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
 			_float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
-
+            ElementType eType = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackElementType();
 			shared_ptr<GameObject> targetToLook = nullptr;
 
 			if (strSkillName.find(L"_Skill") != wstring::npos)
@@ -250,7 +250,7 @@ void NeutralAlpaca_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _fl
 			if (targetToLook == nullptr)
 				return;
 
-			Get_Hit(strSkillName, fAttackDamage, targetToLook);
+			Get_Hit(strSkillName, fAttackDamage, targetToLook,eType);
 		}
 	}
 
@@ -266,9 +266,9 @@ void NeutralAlpaca_FSM::OnCollisionExit(shared_ptr<BaseCollider> pCollider, _flo
 {
 }
 
-void NeutralAlpaca_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
+void NeutralAlpaca_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
-    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage);
+	CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage, ElementType(iElementType));
 
     m_pOwner.lock()->Get_Hurt(fDamage);
 

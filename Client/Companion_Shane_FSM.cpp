@@ -316,7 +316,7 @@ void Companion_Shane_FSM::State_Init()
     }
 }
 
-void Companion_Shane_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
+void Companion_Shane_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
     if (!m_bSuperArmor)
     {

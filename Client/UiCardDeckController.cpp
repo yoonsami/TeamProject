@@ -7,6 +7,7 @@
 #include "FontRenderer.h"
 #include "UiCharChange.h"
 #include "UiCardDeckSwitch.h"
+#include "HeroChangeScript.h"
 
 _bool g_bIsCanRotation = true;
 
@@ -41,17 +42,17 @@ HRESULT UiCardDeckController::Init()
     m_vecCardDeckObj[3] = pScene->Get_UI(L"UI_Card_Deck0");
     m_vecCardDeckObj[4] = pScene->Get_UI(L"UI_Card_Deck1");
     m_vecCardDeckObj[5] = pScene->Get_UI(L"UI_Card_Deck2");
-    m_vecCardDeckObj[6] = pScene->Get_UI(L"UI_Card_Deck_Line0");
-    m_vecCardDeckObj[7] = pScene->Get_UI(L"UI_Card_Deck_Line1");
-    m_vecCardDeckObj[8] = pScene->Get_UI(L"UI_Card_Deck_Line2");
-    m_vecCardDeckObj[9] = pScene->Get_UI(L"UI_Card_Deck_X0");
-    m_vecCardDeckObj[10] = pScene->Get_UI(L"UI_Card_Deck_X1");
-    m_vecCardDeckObj[11] = pScene->Get_UI(L"UI_Card_Deck_X2");
+    //m_vecCardDeckObj[6] = pScene->Get_UI(L"UI_Card_Deck_Line0");
+    //m_vecCardDeckObj[7] = pScene->Get_UI(L"UI_Card_Deck_Line1");
+    //m_vecCardDeckObj[8] = pScene->Get_UI(L"UI_Card_Deck_Line2");
+    m_vecCardDeckObj[6] = pScene->Get_UI(L"UI_Card_Deck_X0");
+    m_vecCardDeckObj[7] = pScene->Get_UI(L"UI_Card_Deck_X1");
+    m_vecCardDeckObj[8] = pScene->Get_UI(L"UI_Card_Deck_X2");
     //m_vecCardDeckObj[12] = pScene->Get_UI(L"UI_Card_Deck_Element0");
     //m_vecCardDeckObj[13] = pScene->Get_UI(L"UI_Card_Deck_Element1");
     //m_vecCardDeckObj[14] = pScene->Get_UI(L"UI_Card_Deck_Element2");
-    m_vecCardDeckObj[12] = pScene->Get_UI(L"UI_Card_Deck_Exit");
-    m_vecCardDeckObj[13] = pScene->Get_UI(L"UI_Card_Deck_Font");
+    m_vecCardDeckObj[9] = pScene->Get_UI(L"UI_Card_Deck_Exit");
+    m_vecCardDeckObj[10] = pScene->Get_UI(L"UI_Card_Deck_Font");
 
     m_vecInvenObj.resize(32);
     m_vecInvenObj[0] = pScene->Get_UI(L"UI_Card_Deck_Inven0");
@@ -187,7 +188,7 @@ HRESULT UiCardDeckController::Init()
             });
     }
 
-    for (_uint i = 9; i < 12; ++i)
+    for (_uint i = 6; i < 9; ++i)
     {
         auto& pObj = m_vecCardDeckObj[i];
         if (true == pObj.expired())
@@ -292,20 +293,26 @@ void UiCardDeckController::Click_Deck_Select(wstring strObjName)
         {
             if (m_vecCardDeckObj[i].lock()->Get_Name() == strObjName)
             {
+                // 정보창에서 장착 누른 후 카드 클릭 시 -> 카드 바꿔주고 데이터 셋해야함
+                _uint iIndex = i - 3;
+                if (false == DATAMGR.Set_Cur_Hero(iIndex, m_iSetIndex))
+                {
+                    Remove_Select_Mark();
+                    return;
+                }
+
+                wstring strKey = DATAMGR.Get_Card_Inven(m_iSetIndex).KeyDeckSelect;
+                m_vecCardDeckObj[i].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(strKey), TextureMapType::DIFFUSE);
+
                 // 장착 성공 창 띄우기
                 Create_Switch_Complete(true);
 
-                // 정보창에서 장착 누른 후 카드 클릭 시 -> 카드 바꿔주고 데이터 셋해야함
-                _uint iIndex = i - 3;
-                DATAMGR.Set_Cur_Hero(iIndex, m_iSetIndex);
-                wstring strKey = DATAMGR.Get_Card_Inven(m_iSetIndex).KeyDeckSelect;
-                m_vecCardDeckObj[i].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(strKey), TextureMapType::DIFFUSE);
-                
+                //GET_PLAYER->Get_Script<HeroChangeScript>()->Change_Player();
                 if (false == m_pCharChange.expired())
                     m_pCharChange.lock()->Get_Script<UiCharChange>()->Set_Hero(iIndex);
 
                 // 9X , 12Ele
-                iIndex = i + 6;
+                iIndex = i + 3;
                 if (true == m_vecCardDeckObj[iIndex].expired())
                     return;
                 m_vecCardDeckObj[iIndex].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
@@ -350,7 +357,7 @@ void UiCardDeckController::Click_Deck_X(wstring strObjName)
     if (false == m_bIsRender)
         return;
 
-    for (_uint i = 9; i < 12; ++i)
+    for (_uint i = 6; i < 9; ++i)
     {
         if (m_vecCardDeckObj[i].lock()->Get_Name() == strObjName)
         {
@@ -360,7 +367,7 @@ void UiCardDeckController::Click_Deck_X(wstring strObjName)
             //pObj.lock()->Set_Tick(false);
             //pObj.lock()->Set_Render(false);
 
-            _uint iIndex = i - 6;
+            _uint iIndex = i - 3;
             if (true == m_vecCardDeckObj[iIndex].expired())
                 continue;
             m_vecCardDeckObj[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"Card_Deck_Bg_None"), TextureMapType::DIFFUSE);
@@ -376,12 +383,13 @@ void UiCardDeckController::Click_Deck_X(wstring strObjName)
             Create_Switch_Complete(false);
 
             // 데이터에서 빼야함
-            iIndex = i - 9;
+            iIndex = i - 6;
             DATAMGR.Remove_Cur_Hero(iIndex);
+            //GET_PLAYER->Get_Script<HeroChangeScript>()->Change_Player();
             if (false == m_pCharChange.expired())
                 m_pCharChange.lock()->Get_Script<UiCharChange>()->Set_Hero(iIndex);
 
-            Remove_Font(i - 9);
+            Remove_Font(i - 6);
         }
     }
 }
@@ -475,8 +483,8 @@ void UiCardDeckController::Create_Switch_Complete(_bool bValue)
             bIsFont = true;
 
         auto pScript = make_shared<UiCardDeckSwitch>(bIsFont);
-        pScene->Init();
         pObj.lock()->Add_Component(pScript);
+        pScript->Init();
     }
 }
 

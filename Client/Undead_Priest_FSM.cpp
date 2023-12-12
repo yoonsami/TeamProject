@@ -239,7 +239,7 @@ void Undead_Priest_FSM::State_Init()
     }
 }
 
-void Undead_Priest_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
+void Undead_Priest_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
     auto pScript = m_pOwner.lock()->Get_Script<UiMonsterHp>();
     if (nullptr == pScript)
@@ -252,11 +252,13 @@ void Undead_Priest_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared
     //Calculate Damage 
     m_pOwner.lock()->Get_Hurt(fDamage);
 
-    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage);
 
+	CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage, ElementType(iElementType));
     //Target Change
     if (pLookTarget != nullptr)
-    {
+	{
+
+
         //Skill => SkillCollider Owner
         if (skillname.find(L"_Skill") != wstring::npos)
             m_pTarget = pLookTarget->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner();// Collider owner를 넘겨준다

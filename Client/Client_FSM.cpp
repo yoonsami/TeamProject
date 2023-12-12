@@ -37,7 +37,7 @@ void Client_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGa
 
 		wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
 		_float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
-
+		ElementType eType = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackElementType();
 		shared_ptr<GameObject> targetToLook = nullptr;
 		// skillName에 _Skill 포함이면
 		if (strSkillName.find(L"_Skill") != wstring::npos)
@@ -48,7 +48,7 @@ void Client_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGa
 		if (targetToLook == nullptr)
 			return;
 
-		Get_Hit(strSkillName, fAttackDamage, targetToLook);
+		Get_Hit(strSkillName, fAttackDamage, targetToLook, eType);
 	}
 }
 

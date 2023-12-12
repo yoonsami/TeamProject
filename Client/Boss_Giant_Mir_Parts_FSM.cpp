@@ -35,7 +35,7 @@ void Boss_Giant_Mir_Parts_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollid
 			{
 				wstring strSkillName = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_SkillName();
 				_float fAttackDamage = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackDamage();
-
+				ElementType eType = pCollider->Get_Owner()->Get_Script<AttackColliderInfoScript>()->Get_AttackElementType();
 				shared_ptr<GameObject> targetToLook = nullptr;
 				// skillName
 				if (strSkillName.find(L"_Skill") != wstring::npos)
@@ -46,19 +46,19 @@ void Boss_Giant_Mir_Parts_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollid
 				if (targetToLook == nullptr)
 					return;
 
-				Get_Hit(strSkillName, fAttackDamage, targetToLook);
+				Get_Hit(strSkillName, fAttackDamage, targetToLook,eType);
 			}
 		}
 	}
 }
 
-void Boss_Giant_Mir_Parts_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
+void Boss_Giant_Mir_Parts_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
 	//Calculate Damage to Giant_Mir
 	if (!m_pTarget.expired())
 		m_pTarget.lock()->Get_Hurt(fDamage);
 
-	CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage);
+	CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage, ElementType(iElementType));
 
 	if (skillname == NORMAL_ATTACK || skillname == NORMAL_SKILL)
 	{

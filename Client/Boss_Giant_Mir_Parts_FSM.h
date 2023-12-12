@@ -15,7 +15,7 @@ public:
 	virtual void OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGap) override;
 	virtual void OnCollisionExit(shared_ptr<BaseCollider> pCollider, _float fGap) override {}
     virtual void Set_State(_uint iIndex) override { m_eCurState = static_cast<STATE>(iIndex); }
-    virtual void Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget) override;
+    virtual void Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType) override;
 
 protected:
     virtual void State_Tick() override;

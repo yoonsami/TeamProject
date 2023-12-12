@@ -339,10 +339,11 @@ void Boss_Spike_FSM::State_Init()
     }
 }
 
-void Boss_Spike_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
+void Boss_Spike_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
     m_pOwner.lock()->Get_Hurt(fDamage);
-    CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage);
+
+	CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage, ElementType(iElementType));
 
 
     _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
@@ -1528,7 +1529,7 @@ void Boss_Spike_FSM::skill_3100()
 
             if (vDir.Dot(vLook) > cosf(XM_PI / 3.f))
             {
-                m_pTarget.lock()->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, 30.f, Get_Owner());
+                m_pTarget.lock()->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, 30.f, Get_Owner(),ElementType::WATER);
             }
         }
     }
@@ -1965,7 +1966,7 @@ void Boss_Spike_FSM::skill_100100()
 
             if (vDir.Dot(vLook) > cosf(XM_PI))
             {
-                m_pTarget.lock()->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, 50.f, Get_Owner());
+                m_pTarget.lock()->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, 50.f, Get_Owner(),ElementType::WATER);
             }
         }
     }

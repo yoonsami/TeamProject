@@ -30,7 +30,7 @@ private:
 	virtual void State_Init() override; // 상태가 바뀔 때 한번 초기화 해줌
 
 	virtual void Set_State(_uint iIndex) {};
-	virtual void Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget) {};
+	virtual void Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType) override{};
 
 private:
 	void SQ_SpecialHero();

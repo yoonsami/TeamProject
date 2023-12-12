@@ -282,7 +282,7 @@ void Shane_FSM::State_Init()
     }
 }
 
-void Shane_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget)
+void Shane_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
 	//Calculate Damage 
 	m_pOwner.lock()->Get_Hurt(fDamage);
