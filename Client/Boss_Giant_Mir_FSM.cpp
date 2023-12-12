@@ -864,7 +864,7 @@ void Boss_Giant_Mir_FSM::skill_1200()
             _float4 vEffectPos = vSkillPos + _float4{ 0.f,0.f, -7.f,0.f };
             Add_Effect(L"Mir_11100", nullptr, _float4x4::CreateTranslation(vEffectPos.xyz()), true);
 
-            Create_InstallationSkillCollider(Monster_Skill,L"Boss_Giant_Mir_InstallationSkillCollider",vSkillPos, 6.f, desc);
+            Create_InstallationSkillCollider(Monster_Skill,L"Boss_Giant_Mir_InstallationSkillCollider",vSkillPos, 5.5f, desc);
         }
     }
 
@@ -1322,7 +1322,7 @@ void Boss_Giant_Mir_FSM::Create_DragonBall()
 
 void Boss_Giant_Mir_FSM::Set_AttackPattern()
 {
-  /*  _uint iRan = rand() % 6;
+    _uint iRan = rand() % 6;
 
     while (true)
     {
@@ -1361,7 +1361,7 @@ void Boss_Giant_Mir_FSM::Set_AttackPattern()
     {
         m_eCurState = STATE::skill_200000;
         m_iPreAttack = 5;
-    }*/
+    }
 
     if (!m_bDragonBall)
         m_eCurState = STATE::skill_7100;
