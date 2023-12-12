@@ -387,3 +387,30 @@ technique11 T0
     }
 
 };
+
+technique11 T1_Debug
+{
+    pass Terrain_Deferred
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Terrain()));
+        SetHullShader(CompileShader(hs_5_0, HS_Main()));
+        SetDomainShader(CompileShader(ds_5_0, DS_Main()));
+        SetRasterizerState(FillModeWireFrame);
+        SetDepthStencilState(DSS_Default, 0);
+        SetPixelShader(CompileShader(ps_5_0, PS_Deferred()));
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetGeometryShader(NULL);
+    }
+    pass Terrain_Deferred_PBR
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Terrain()));
+        SetHullShader(CompileShader(hs_5_0, HS_Main()));
+        SetDomainShader(CompileShader(ds_5_0, DS_Main()));
+        SetRasterizerState(FillModeWireFrame);
+        SetDepthStencilState(DSS_Default, 0);
+        SetPixelShader(CompileShader(ps_5_0, PS_Terrain_PBR()));
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetGeometryShader(NULL);
+    }
+
+};

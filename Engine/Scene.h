@@ -144,9 +144,10 @@ protected:
 	list<shared_ptr<GameObject>> m_StaticObject;
 
 	wstring m_wstrFinalRenderTarget = L"";
-	_bool m_bRenderDebug = false;
+
 
 public:
+	_bool m_bRenderDebug = false;
 	_float g_fBrightness = 0.f;
 	_float g_fContrast = 1.f;
 	_float g_Saturation = 1.f;

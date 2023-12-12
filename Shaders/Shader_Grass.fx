@@ -522,3 +522,4 @@ technique11 Instancing
         SetGeometryShader(CompileShader(gs_5_0, GS_Grass_Instancing()));
     }
 };
+
