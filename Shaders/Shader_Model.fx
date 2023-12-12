@@ -106,7 +106,7 @@ MeshInstancingOutput VS_NonAnimInstancing(VTXModelInstancing input)
     output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
     
     output.id = input.instanceID;
-    
+    output.renderParam = input.renderParam;
     return output;
 }
 
@@ -120,7 +120,7 @@ MeshInstancingOutput VS_MapObject_Instancing(VTXModelInstancing input, uniform b
     output.viewPosition = mul(float4(output.worldPosition, 1.f), V).xyz;
 
     output.position = mul(output.position, VP);
-    output.uv = input.uv * InstanceRenderParams[input.instanceID].x;
+    output.uv = input.uv * input.renderParam.x;
 
     if(isWorldNormal)
     {
@@ -141,7 +141,7 @@ MeshInstancingOutput VS_MapObject_Instancing(VTXModelInstancing input, uniform b
         
     }
     output.id = input.instanceID;
-    
+    output.renderParam = input.renderParam;
     return output;
 }
 
@@ -166,7 +166,7 @@ MeshInstancingOutput VS_AnimInstancing(VTXModelInstancing input)
     output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
     
     output.id = input.instanceID;
-    
+    output.renderParam = input.renderParam;
     return output;
 }
 
@@ -211,6 +211,7 @@ ShadowInstanceOutput VS_Shadow_NonAnim_Instancing(VTXModelInstancing input)
     output.clipPos = output.pos;
     output.uv = input.uv;
     output.id = input.instanceID;
+    output.renderParam = input.renderParam;
     return output;
 }
 
@@ -228,6 +229,7 @@ ShadowInstanceOutput VS_Shadow_Anim_Instancing(VTXModelInstancing input)
     output.clipPos = output.pos;
     output.uv = input.uv;
     output.id = input.instanceID;
+    output.renderParam = input.renderParam;
     return output;
 }
 // VS_MotionBlur
@@ -355,7 +357,7 @@ MeshInstancingOutput VS_Anim_MotionTrail_Instancing(VTXModelInstancing input)
     output.viewTangent = normalize(mul(output.viewTangent, (float3x3) V));
     
     output.id = input.instanceID;
-    
+    output.renderParam = input.renderParam;
     return output;
 }
 
@@ -456,7 +458,7 @@ PS_OUT_Deferred PS_Deferred_Instancing(MeshInstancingOutput input)
     if (bHasDissolveMap != 0)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
-        if (dissolve < InstanceRenderParams[input.id].w)
+        if (dissolve < input.renderParam.w)
             discard;
     }
     
@@ -598,7 +600,7 @@ float4 PS_ShadowInstancing(ShadowInstanceOutput input) : SV_Target
     if (bHasDissolveMap != 0)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
-        if (dissolve < InstanceRenderParams[input.id].w)
+        if (dissolve < input.renderParam.w)
             discard;
     }
     return float4(input.clipPos.z / input.clipPos.w, 0.f, 0.f, 0.f);
@@ -641,7 +643,7 @@ float4 PS_MotionTrail_Instancing(MeshInstancingOutput input) : SV_Target
 {
     float4 output = (float4) 0.f;
     float4 diffuseColor;
-    float4 emissiveColor = InstanceRenderParams[input.id];
+    float4 emissiveColor = input.renderParam;
     if (bHasNormalMap)
         ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
 
@@ -741,7 +743,7 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(MeshInstancingOutput input)
     if (bHasDissolveMap != 0)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).w;
-        if (dissolve < InstanceRenderParams[input.id].w)
+        if (dissolve < input.renderParam.w)
             discard;
     }
     
@@ -782,7 +784,7 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(MeshInstancingOutput input)
     output.position = float4(input.viewPosition.xyz, 1.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
     output.arm = ARM_Map;
-    output.diffuseColor = diffuseColor + float4(InstanceRenderParams[input.id].xyz, 0.f);;
+    output.diffuseColor = diffuseColor + float4(input.renderParam.xyz, 0.f);;
     output.emissive = emissiveColor;
     output.rimColor = Material.emissive;
     output.blur = 0;
@@ -860,7 +862,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_Instancing(MeshInstancingOutput i
     if (bHasDissolveMap != 0)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).w;
-        if (dissolve < InstanceRenderParams[input.id].w)
+        if (dissolve < input.renderParam.w)
             discard;
     }
     
@@ -1210,7 +1212,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_Instancing_NormalControl(MeshInst
     if (bHasDissolveMap != 0)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).w;
-        if (dissolve < InstanceRenderParams[input.id].w)
+        if (dissolve < input.renderParam.w)
             discard;
     }
     

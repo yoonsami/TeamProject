@@ -83,6 +83,7 @@ UIInstancingOutput VS_Instancing(VTXMeshInstancing input)
     output.position = mul(output.position, VP);
     output.uv = input.uv;
     output.id = input.instanceID;
+    output.renderParam = input.renderParam;
     return output;
 }
 
@@ -228,10 +229,10 @@ void GS_Grass(point MeshOutput input[1], inout TriangleStream<GS_GRASS_OUTPUT> o
         output[j * 4 + 2].uv = float2(1.f, 1.f);
         output[j * 4 + 3].uv = float2(0.f, 1.f);
     
-        output[j * 4 + 0].viewPosition = mul(output[j * 4 + 0].position, mul(W,V));
-        output[j * 4 + 1].viewPosition = mul(output[j * 4 + 1].position, mul(W,V));
-        output[j * 4 + 2].viewPosition = mul(output[j * 4 + 2].position, mul(W,V));
-        output[j * 4 + 3].viewPosition = mul(output[j * 4 + 3].position, mul(W, V));
+        output[j * 4 + 0].viewPosition = mul(output[j * 4 + 0].position, mul(W,V)).xyz;
+        output[j * 4 + 1].viewPosition = mul(output[j * 4 + 1].position, mul(W,V)).xyz;
+        output[j * 4 + 2].viewPosition = mul(output[j * 4 + 2].position, mul(W, V)).xyz;
+        output[j * 4 + 3].viewPosition = mul(output[j * 4 + 3].position, mul(W, V)).xyz;
 
     // proj q
         output[j * 4 + 0].position = mul(float4(output[j * 4 + 0].viewPosition, 1.f), P);
@@ -561,7 +562,7 @@ float4 PS_UI7(UIOutput input) : SV_TARGET
 float4 PS_UIInstancing(UIInstancingOutput input) : SV_TARGET
 {
 
-    float4 diffuseColor = InstanceRenderParams[input.id];
+    float4 diffuseColor = input.renderParam;
     if (bHasDiffuseMap)
     {
         diffuseColor = pow(abs(DiffuseMap.Sample(LinearSamplerMirror, input.uv)), GAMMA) * g_vec4_0;

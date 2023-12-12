@@ -220,10 +220,10 @@ void GS_Grass_Instancing(point InstancingOuput input[1], inout TriangleStream<GS
         output[j * 4 + 2].id = vtx.id;
         output[j * 4 + 3].id = vtx.id;
         
-        output[j * 4 + 0]
-        output[j * 4 + 1]
-        output[j * 4 + 2]
-        output[j * 4 + 3]
+        output[j * 4 + 0].renderParam = vtx.renderParam;
+        output[j * 4 + 1].renderParam = vtx.renderParam;
+        output[j * 4 + 2].renderParam = vtx.renderParam;
+        output[j * 4 + 3].renderParam = vtx.renderParam;
         
         outputStream.Append(output[j * 4 + 0]);
         outputStream.Append(output[j * 4 + 1]);
@@ -309,7 +309,7 @@ PS_OUT_Deferred PS_Deferred_Instancing(GS_GRASS_INSTANCING_OUTPUT input)
     if (bHasDissolveMap != 0)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
-        if (dissolve < InstanceRenderParams[input.id].x)
+        if (dissolve < input.renderParam.x)
             discard;
     }
     
@@ -430,7 +430,7 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(GS_GRASS_INSTANCING_OUTPUT input)
     if (bHasDissolveMap != 0)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).w;
-        if (dissolve < InstanceRenderParams[input.id].w)
+        if (dissolve < input.renderParam.w)
             discard;
     }
     
