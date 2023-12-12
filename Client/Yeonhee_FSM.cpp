@@ -42,6 +42,8 @@ HRESULT Yeonhee_FSM::Init()
 
         m_pCamera = CUR_SCENE->Get_MainCamera();
 
+        m_eElementType = GET_DATA(HERO::YEONHEE).Element;
+
         m_fDetectRange = 15.f;
 
         m_bEntryTeam = true;
@@ -53,7 +55,7 @@ HRESULT Yeonhee_FSM::Init()
 	m_fSkillAttack_AnimationSpeed = 1.0f;
 	m_fEvade_AnimationSpeed = 1.5f;
 	if (!m_pAttackCollider.expired())
-		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(GET_DATA(HERO::YEONHEE).Element);
+		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(m_eElementType);
     return S_OK;
 }
 

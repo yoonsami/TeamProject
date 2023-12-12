@@ -39,6 +39,8 @@ HRESULT Dellons_FSM::Init()
         m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
         m_fDetectRange = 5.f;
 
+        m_eElementType = GET_DATA(HERO::DELLONS).Element;
+
         m_bEntryTeam = true;
 
         m_bInitialize = true;
@@ -48,7 +50,7 @@ HRESULT Dellons_FSM::Init()
 	m_fEvade_AnimationSpeed = 1.5f;
 
 	if (!m_pAttackCollider.expired())
-		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(GET_DATA(HERO::DELLONS).Element);
+		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(m_eElementType);
     return S_OK;
 }
 

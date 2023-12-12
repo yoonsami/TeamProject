@@ -23,5 +23,9 @@ protected:
 	void Set_ColliderOption(ElementType eType, const wstring& strHitEffectTag);
 	void Create_InstallationSkillCollider(CollisionGroup eGroup, const wstring& strColliderName, const _float4& vPos, _float fSkillRange, INSTALLATIONSKILLDESC desc);
 	void Create_FloorSkillCollider(CollisionGroup eGroup, const wstring& strColliderName, const _float4& vPos, _float3 vSkillScale, FLOORSKILLDESC desc);
+
+
+protected:
+	ElementType m_eElementType = ElementEnd;
 };
 
