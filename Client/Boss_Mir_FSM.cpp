@@ -164,6 +164,7 @@ void Boss_Mir_FSM::Tick()
         m_bPhaseChange[1] = true;
         m_bSummonMeteor = false;
         m_tMeteorCoolTime.fAccTime = 0.f;
+        m_tAttackCoolTime.fCoolTime = 1.5f;
 
         _uint iDragonBallIndex = 4;
 
@@ -193,6 +194,44 @@ void Boss_Mir_FSM::Tick()
         m_pOwner.lock()->Set_Hp(0.f);
     }
 
+
+    if (KEYTAP(KEY_TYPE::O))
+    {
+        m_bCheckPhaseChange[0] = true;
+        m_bCheckPhaseChange[1] = true;
+        m_bPhaseChange[0] = true;
+        m_bPhaseChange[1] = true;
+        m_bSummonMeteor = false;
+        m_tMeteorCoolTime.fAccTime = 0.f;
+        m_tAttackCoolTime.fCoolTime = 1.5f;
+
+
+        _uint iDragonBallIndex = 4;
+
+        for (_uint i = 0; i < 3; i++)
+        {
+            wstring DragonBallName = L"Anim_P_R02_DecoBall_00_Idle-1"; // TODO 14,15,16
+            DragonBallName += to_wstring(iDragonBallIndex);
+
+            if (CUR_SCENE->Get_GameObject(DragonBallName))
+            {
+                EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(DragonBallName));
+            }
+
+            iDragonBallIndex++;
+        }
+
+        if (m_bPhaseOneEmissive)
+        {
+            for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
+                material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
+
+            m_bPhaseOneEmissive = false;
+            m_iCrashCnt = 0;
+            m_bInvincible = false;
+        }
+        m_eCurPhase = PHASE::PHASE2;
+    }
 }
 
 void Boss_Mir_FSM::State_Tick()
@@ -610,6 +649,7 @@ void Boss_Mir_FSM::sq_Intro2()
     if (Is_AnimFinished())
     {
         g_bCutScene = false;
+        m_tAttackCoolTime.fCoolTime = 3.f;
         m_eCurState = STATE::b_idle;
 
         if (!m_pCamera.expired())
@@ -857,6 +897,7 @@ void Boss_Mir_FSM::groggy_start_Init()
                 for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
                     material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
 
+                m_tAttackCoolTime.fCoolTime = 1.5f;
                 m_bPhaseOneEmissive = false;
                 m_iCrashCnt = 0;
                 m_bInvincible = false;
@@ -1033,11 +1074,11 @@ void Boss_Mir_FSM::skill_Assault()
             Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 2.f);
     }
 
-    if (Init_CurFrame(75))
+    if (m_iCurFrame == 75)
     {
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
     }
-    else if (Init_CurFrame(92))
+    else if (m_iCurFrame == 92)
     {
         AttackCollider_Off();
     }
@@ -1258,8 +1299,10 @@ void Boss_Mir_FSM::skill_Restart_Phase1_Intro()
     if (Is_AnimFinished())
     {
         g_bCutScene = false;
+        m_tAttackCoolTime.fCoolTime = 3.f;
         m_eCurState = STATE::b_idle;
         m_eCurPhase = PHASE::PHASE1;
+
     }
 }
 
@@ -1694,10 +1737,18 @@ void Boss_Mir_FSM::skill_9100()
                     _float fOffSetX = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
                     _float fOffSetZ = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
 
-                    _float4 vSkillPos = vPlayerPos + _float4{ fOffSetX, 10.f, fOffSetZ, 0.f };
+                    _float4 vSkillPos = vPlayerPos + _float4{ fOffSetX, 13.5f, fOffSetZ, 0.f };
 
+                    Add_GroupEffectOwner(L"Mir_Meteor_Meteor", _float3(vSkillPos.x, vPlayerPos.y, vSkillPos.z), true);
+                    Add_GroupEffectOwner(L"Mir_Meteor_Floor", _float3(vSkillPos.x, vPlayerPos.y, vSkillPos.z), true);
                     Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 1.f, desc, AIRBORNE_ATTACK, 10.f);
                 }
+
+                shared_ptr<GameObject> obj = make_shared<GameObject>();
+                auto script = make_shared<TimerScript>(1.35f);
+                script->Set_Function([]() {CAMERA_SHAKE(0.2f, 0.3f); });
+                obj->Add_Component(script);
+                EVENTMGR.Create_Object(obj);
             }
         }
     }
@@ -1756,9 +1807,10 @@ void Boss_Mir_FSM::skill_11100()
             desc.fLifeTime = 0.5f;
             desc.fLimitDistance = 10.f;
 
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
+            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + 
+                                Get_Transform()->Get_State(Transform_State::LOOK) * 7.f;
 
-            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 8.f, desc, KNOCKDOWN_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 6.f, desc, KNOCKDOWN_ATTACK, 10.f);
         }
     }
 
@@ -1821,17 +1873,66 @@ void Boss_Mir_FSM::skill_12100()
     {
         for (_uint i = 0; i < 10; i++)
         {
-            if (Init_CurFrame(28 + i*2))
+            if (Init_CurFrame(28 + i * 2))
             {
                 Add_GroupEffectOwner(L"Mir_Lightning", _float3(0.f, 0.f, i * 3.f), false); // z+
                 Add_GroupEffectOwner(L"Mir_Lightning", _float3(0.f, 0.f, i * -3.f), false); // z-
                 Add_GroupEffectOwner(L"Mir_Lightning", _float3(i * 3.f, 0.f, 0.f), false); // x+
                 Add_GroupEffectOwner(L"Mir_Lightning", _float3(i * -3.f, 0.f, 0.f), false); // x-
+
+                _float4 vOwnerLook = m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::LOOK);
+                vOwnerLook.Normalize();
+                _float4 vOwnerRight = m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::RIGHT);
+                vOwnerRight.Normalize();
+                _float4 vOwnerUp = m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::UP);
+                vOwnerUp.Normalize();
+                _float4 vOwnerPos = m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS);
+
+
+                INSTALLATIONSKILLDESC desc;
+                desc.fAttackTickTime = 2.f;
+                desc.iLimitAttackCnt = 1;
+                desc.strAttackType = NORMAL_SKILL;
+                desc.strLastAttackType = NORMAL_SKILL;
+                desc.fAttackDamage = 5.f;
+                desc.fLastAttackDamage = 5.f;
+                desc.bFirstAttack = false;
+
+
+                _float4 vOffSet = _float4 {0.f, 0.f, i * 3.f, 1.f};
+                _float4 vSkillPos = vOwnerPos + 
+                                    vOwnerRight * vOffSet.x +
+                                    vOwnerUp * vOffSet.y +
+                                    vOwnerLook * vOffSet.z;
+                Create_InstallationSkillCollider(Monster_Skill, L"Player_InstallationSkillCollider", vSkillPos, 2.f, desc);
+
+                vOffSet = _float4 {0.f, 0.f, i * -3.f, 1.f};
+                vSkillPos = vOwnerPos +
+                            vOwnerRight * vOffSet.x +
+                            vOwnerUp * vOffSet.y +
+                            vOwnerLook * vOffSet.z;
+                Create_InstallationSkillCollider(Monster_Skill, L"Player_InstallationSkillCollider", vSkillPos, 2.f, desc);
+                
+
+                vOffSet = _float4 {i * 3.f, 0.f, 0.f, 1.f};
+                vSkillPos = vOwnerPos +
+                            vOwnerRight * vOffSet.x +
+                            vOwnerUp * vOffSet.y +
+                            vOwnerLook * vOffSet.z;
+                Create_InstallationSkillCollider(Monster_Skill, L"Player_InstallationSkillCollider", vSkillPos, 2.f, desc);
+
+
+                vOffSet = _float4 {i * -3.f, 0.f,0.f, 1.f};
+                vSkillPos = vOwnerPos +
+                            vOwnerRight * vOffSet.x +
+                            vOwnerUp * vOffSet.y +
+                            vOwnerLook * vOffSet.z;
+                Create_InstallationSkillCollider(Monster_Skill, L"Player_InstallationSkillCollider", vSkillPos, 2.f, desc);
             }
         }
     }
 
-    if (m_iCurFrame == 28 ||
+   /* if (m_iCurFrame == 28 ||
         m_iCurFrame == 38 ||
         m_iCurFrame == 48 ||
         m_iCurFrame == 58)
@@ -1862,7 +1963,7 @@ void Boss_Mir_FSM::skill_12100()
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT) * 1.f;
             Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, strAttackType, 10.f);
         }
-    }
+    }*/
 
     if (Is_AnimFinished())
     {
@@ -1922,7 +2023,8 @@ void Boss_Mir_FSM::skill_13100()
         if (m_iPreFrame != m_iCurFrame)
         {
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-                _float3::Up;
+                                Get_Transform()->Get_State(Transform_State::LOOK) * 7.f +
+                                _float3::Up;
 
             FORWARDMOVINGSKILLDESC desc;
             desc.fMoveSpeed = 20.f;
@@ -2002,7 +2104,7 @@ void Boss_Mir_FSM::skill_14100()
     {
         if (m_iPreFrame != m_iCurFrame)
         {
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
+            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + _float3::Up;
 
             FORWARDMOVINGSKILLDESC desc;
             desc.fMoveSpeed = 20.f;
@@ -2030,7 +2132,7 @@ void Boss_Mir_FSM::skill_14100()
     {
         if (m_iPreFrame != m_iCurFrame)
         {
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
+            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + _float3::Up;
 
             FORWARDMOVINGSKILLDESC desc;
             desc.fMoveSpeed = 20.f;
@@ -2038,21 +2140,20 @@ void Boss_Mir_FSM::skill_14100()
             desc.fLimitDistance = 20.f;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 
-            wstring strAttackType = NORMAL_ATTACK;
-
-            if (m_iCurFrame == 58)
-                strAttackType = KNOCKBACK_ATTACK;
-
-            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, strAttackType, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK) * -1.f;
-            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, strAttackType, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT) * -1.f;
-            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, strAttackType, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
 
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT) * 1.f;
-            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, strAttackType, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
+        
+            // For. Effect 
+            shared_ptr<Mir_13100_Fireball> pScript = make_shared<Mir_13100_Fireball>();
+            Add_Effect(L"Mir_14100", pScript);
         }
     }
 
@@ -2557,8 +2658,7 @@ void Boss_Mir_FSM::Create_DragonBall()
 }
 
 void Boss_Mir_FSM::Set_AttackPattern()
-{
-    
+{ 
     _uint iRan = rand() % 10;
     
     while (true)

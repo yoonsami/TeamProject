@@ -63,7 +63,9 @@ void TerrainRenderer::Render()
 
 
 	CONTEXT->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
-
-	m_pShader->DrawIndexed(0, 1, m_pMesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	
+	int passIndex = CUR_SCENE->g_bPBR_On ? 1 : 0;
+	int techniqueIndex = CUR_SCENE->m_bRenderDebug ? 1 : 0;
+	m_pShader->DrawIndexed(techniqueIndex, passIndex, m_pMesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
 }

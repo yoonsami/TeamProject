@@ -88,7 +88,7 @@ protected:
 	void Render_Forward();
 
 	void Render_BloomMap();
-	void Render_BloomMapScaling();
+	void Render_BloomMapScaling(_uint downSamplingCount);
 	void Render_BloomFinal();
 	void Render_DOFMap();
 	void Render_DOFMapScaling(_uint blurCount);
@@ -144,9 +144,10 @@ protected:
 	list<shared_ptr<GameObject>> m_StaticObject;
 
 	wstring m_wstrFinalRenderTarget = L"";
-	_bool m_bRenderDebug = false;
+
 
 public:
+	_bool m_bRenderDebug = false;
 	_float g_fBrightness = 0.f;
 	_float g_fContrast = 1.f;
 	_float g_Saturation = 1.f;
@@ -194,6 +195,7 @@ public:
 	{
 		_bool g_BloomOn = false;
 		_float g_BloomMin = 0.99f;
+		_uint samplingCount = 1;
 	};
 	BloomData g_BloomData{};
 
