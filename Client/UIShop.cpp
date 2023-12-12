@@ -313,12 +313,14 @@ void UIShop::Click_Buy_Yes()
 {
     Remove_Buy_Ui();
 
-    // 2번이면 포션 증가
-    // 9~11 : 코스튬 on -> UI_Costume_Controller -> Change_Costume_Have
-    if (2 == m_iInteractionItemIndex)
+    // 1번이면 포션 증가
+    // 15~17 : 코스튬 on -> UI_Costume_Controller -> Change_Costume_Have
+    if (1 == m_iInteractionItemIndex)
         CUR_SCENE->Get_UI(L"UI_UseItem_Slot_Controller")->Get_Script<UiUseItemSlot>()->Add_Potion(10);
-    else if (9 <= m_iInteractionItemIndex)
-        CUR_SCENE->Get_UI(L"UI_Costume_Controller")->Get_Script<UiCostumeController>()->Change_Costume_Have(m_iInteractionItemIndex - 6);
+    else if (15 == m_iInteractionItemIndex ||
+        16 == m_iInteractionItemIndex ||
+        17 == m_iInteractionItemIndex)
+        CUR_SCENE->Get_UI(L"UI_Costume_Controller")->Get_Script<UiCostumeController>()->Change_Costume_Have(m_iInteractionItemIndex - 12);
 
     m_vecIsBuy[m_iInteractionItemIndex] = true;
 
@@ -326,8 +328,8 @@ void UIShop::Click_Buy_Yes()
 
     m_pMoneyValue.lock()->Get_FontRenderer()->Get_Text() = to_wstring(m_iMoney);
 
-    // 2번 제외하곤 다 0으로 줄이고 텍스트 바꾸기
-    if (2 == m_iInteractionItemIndex)
+    // 1번 제외하곤 다 0으로 줄이고 텍스트 바꾸기
+    if (1 == m_iInteractionItemIndex)
         return;
 
     wstring strName = L"UI_Shop_Item_" + to_wstring(m_iInteractionItemIndex);
@@ -343,7 +345,7 @@ void UIShop::Click_Buy_Yes()
         if (strName == pObj.lock()->Get_Name())
             pObj.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = 0.f;
     }
-    
+
     for (_uint i = 0; i < iSize; ++i)
     {
         auto& pObj = m_ItemPrice[i];

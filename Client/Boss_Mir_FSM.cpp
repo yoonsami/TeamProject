@@ -164,6 +164,7 @@ void Boss_Mir_FSM::Tick()
         m_bPhaseChange[1] = true;
         m_bSummonMeteor = false;
         m_tMeteorCoolTime.fAccTime = 0.f;
+        m_tAttackCoolTime.fCoolTime = 1.5f;
 
         _uint iDragonBallIndex = 4;
 
@@ -202,6 +203,8 @@ void Boss_Mir_FSM::Tick()
         m_bPhaseChange[1] = true;
         m_bSummonMeteor = false;
         m_tMeteorCoolTime.fAccTime = 0.f;
+        m_tAttackCoolTime.fCoolTime = 1.5f;
+
 
         _uint iDragonBallIndex = 4;
 
