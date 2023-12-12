@@ -1221,20 +1221,17 @@ void ResourceMgr::CreateDefaultMaterial()
 		Add(L"Sampler", material);
 	}
 
-	for(int i=0; i<8; ++i)
+	for(int i=0; i<20; ++i)
 	{
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Grass.fx");
 		shared_ptr<Material> material = make_shared<Material>();
 		material->Set_Shader(shader);
 		wstring WeedTextureName = L"Weed" + to_wstring(i);
-		wstring WeedTexturePath = L"..\\Resources\\Textures\\MapObject\\TerrainTile\\Weed" + to_wstring(i) + L".png";
+		wstring WeedTexturePath = L"..\\Resources\\Textures\\MapObject\\TerrainTile\\Weed" + to_wstring(/*i*/0) + L".png";
 		auto Weedtexture = RESOURCES.GetOrAddTexture(WeedTextureName, WeedTexturePath);
 		material->Set_TextureMap(Weedtexture, TextureMapType::DIFFUSE);
 		Add(WeedTextureName, material);
 	}
-	auto Weedtexture = RESOURCES.ReloadOrAddTexture(L"Weed", L"..\\Resources\\Textures\\MapObject\\TerrainTile\\pngegg.png");
-
-	int a = 0;
 }
 
 void ResourceMgr::CreateDefaultFont()

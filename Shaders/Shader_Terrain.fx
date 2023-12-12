@@ -65,9 +65,12 @@ struct HS_OUT
 // [Terrain Shader]
 // g_int_0      : TileX
 // g_int_1      : TileZ
+// g_float_0    : BrushRadius
 // g_float_1    : Max Tessellation Level
 // g_vec2_1     : Min/Max Tessellation Distance
 // g_vec2_2
+// g_vec4_0     : BrushPos
+// g_vec4_1     : TerrainColor
 
 //Constant HS
 PatchTess ConstantHS(InputPatch<VS_OUT, 3> input, int patchID : SV_PrimitiveID)
@@ -227,7 +230,7 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
     output.normal = float4(input.viewNormal.xyz, 0.f);
     output.depth = input.position.z;
     output.depth.w = input.viewPosition.z;
-    output.diffuseColor = diffuseColor;
+    output.diffuseColor = diffuseColor + g_vec4_1;
     output.specularColor = specularColor;
     output.emissiveColor = emissiveColor;
     return output;
@@ -349,7 +352,7 @@ PBR_MAPOBJECT_OUTPUT PS_Terrain_PBR(MeshOutput input)
     output.normal = float4(input.viewNormal.xyz, 0.f);
     output.positionSSD = float4(input.viewPosition.xyz, 1.f);
     output.arm = float4(1.f, 0.8f, 0.0f, 1.f);
-    output.diffuseColor = color;
+    output.diffuseColor = color + g_vec4_1;
     output.emissive = 0.f;
     output.rimColor = Material.emissive;
     output.blur = 0;

@@ -13,6 +13,9 @@ public:
     void Set_WindWeight(_float _fWindWeight) { m_fWindWeight = _fWindWeight; }
     void Set_WindSpeed(_float _fWindSpeed) { m_fWindSpeed = _fWindSpeed; }
     virtual shared_ptr<MonoBehaviour> Copy_Script() { return nullptr; }
+    void Set_WeedIndex(_int _iWeedIndex) { m_iWeedIndex = _iWeedIndex; }
+
+    _int Get_WeedIndex() { return m_iWeedIndex; }
     
 private:
     // 바람방향
@@ -24,5 +27,7 @@ private:
     _float m_fWindWeightPM = { 1.f };
     // 바람의 속도
     _float m_fWindSpeed = { Utils::Random_In_Range(0.9f, 1.1f) };
+    // 풀의 모델번호
+    _int m_iWeedIndex = 0;
 };
 

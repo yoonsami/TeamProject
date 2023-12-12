@@ -253,7 +253,6 @@ shared_ptr<GameObject> PickingMgr::Pick_Mesh(_float2 screenPos, shared_ptr<Camer
 	return picked;
 }
 
-// 특정 오브젝트만 피킹
 shared_ptr<GameObject> PickingMgr::Pick_Mesh(_float2 screenPos, shared_ptr<Camera> camera, shared_ptr<GameObject> gameObject, OUT _float3& outPos)
 {
 	_float width = GRAPHICS.Get_ViewPort().Get_Width();
@@ -292,13 +291,14 @@ shared_ptr<GameObject> PickingMgr::Pick_Mesh(_float2 screenPos, shared_ptr<Camer
 
 		const _float4x4& matWorld = gameObject->Get_Transform()->Get_WorldMatrix();
 		{
-			auto mesh = gameObject->Get_MeshRenderer()->Get_Mesh();
+			//auto mesh = gameObject->Get_MeshRenderer()->Get_Mesh();
+			auto mesh = gameObject->Get_Collider()->Get_Meshes().front();
 
 			auto& vertices = mesh->Get_Geometry()->Get_Vertices();
 			auto& indices = mesh->Get_Geometry()->Get_Indices();
 
 			// 필요한 사이즈만 사용
-			for (_uint i = /*_uint(indices.size() * 0.3f)*/0; i < _uint(indices.size() /** 0.7f*/);)
+			for (_uint i = /*_uint(indices.size() * 0.3f)*/0; i < _uint(indices.size() * 0.5f);)
 			{
 				_float fDistance = 0.f;
 				_float3 vVtxPos[3] = {
