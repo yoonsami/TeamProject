@@ -45,6 +45,8 @@ HRESULT Player_FSM::Init()
 	    m_fRunSpeed = 6.f;
 	    m_fSprintSpeed = 8.f;
 
+        m_eElementType = GET_DATA(HERO::PLAYER).Element;
+
         m_bEntryTeam = true;
 
         m_bInitialize = true;  
@@ -56,7 +58,7 @@ HRESULT Player_FSM::Init()
 	m_fEvade_AnimationSpeed = 1.5f;
 
     if (!m_pAttackCollider.expired())
-        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(GET_DATA(HERO::PLAYER).Element);
+        m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(m_eElementType);
 
     return S_OK;
 }

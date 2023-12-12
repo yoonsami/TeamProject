@@ -44,8 +44,11 @@ HRESULT DellonsWraith_FSM::Init()
         m_pAttackCollider.lock()->Set_Name(L"Wraith_AttackCollider");
 
         m_iSkillBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-R-Hand");
-		if (!m_pAttackCollider.expired())
-			m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(GET_DATA(HERO::DELLONS).Element);
+		
+        m_eElementType = GET_DATA(HERO::DELLONS).Element;
+        
+        if (!m_pAttackCollider.expired())
+			m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(m_eElementType);
 
 
         m_bInitialize = true;
@@ -181,6 +184,7 @@ void DellonsWraith_FSM::Create_ForwardMovingSkillCollider(CollisionGroup eGroup,
     m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
     m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
     m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pTarget.lock());
+    m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(m_eElementType);
     m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_HitEffectTag(hitEffectTag);
     m_pSkillCollider.lock()->Set_Name(strColliderName);
     m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));

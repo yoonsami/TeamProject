@@ -57,8 +57,11 @@ HRESULT Companion_Spike_FSM::Init()
     m_fNormalAttack_AnimationSpeed = 1.5f;
     m_fSkillAttack_AnimationSpeed = 1.0f;
     m_fEvade_AnimationSpeed = 1.5f;
+
+    m_eElementType = GET_DATA(HERO::SPIKE).Element;
+
 	if (!m_pAttackCollider.expired())
-		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(GET_DATA(HERO::SPIKE).Element);
+		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(m_eElementType);
     return S_OK;
 }
 

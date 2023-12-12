@@ -249,7 +249,7 @@ void Silversword_Soldier_FSM::Get_Hit(const wstring& skillname, _float fDamage, 
     m_pOwner.lock()->Get_Hurt(fDamage);
 
    
-		CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage, ElementType(iElementType));
+	CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage, ElementType(iElementType));
     //Target Change
     if (pLookTarget != nullptr)
 	{
