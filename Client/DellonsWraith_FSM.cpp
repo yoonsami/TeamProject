@@ -44,7 +44,8 @@ HRESULT DellonsWraith_FSM::Init()
         m_pAttackCollider.lock()->Set_Name(L"Wraith_AttackCollider");
 
         m_iSkillBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-R-Hand");
-
+		if (!m_pAttackCollider.expired())
+			m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(GET_DATA(HERO::DELLONS).Element);
 
 
         m_bInitialize = true;

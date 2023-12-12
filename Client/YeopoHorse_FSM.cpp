@@ -46,7 +46,8 @@ HRESULT YeopoHorse_FSM::Init()
         m_iSkillBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-Head");
         m_pOwner.lock()->Set_DrawShadow(true);
 
-
+		if (!m_pAttackCollider.expired())
+			m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(GET_DATA(HERO::YEOPO).Element);
 
         m_bInitialize = true;
     }

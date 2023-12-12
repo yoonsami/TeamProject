@@ -78,7 +78,8 @@ HRESULT Friend_FSM::Init()
 				animator->Set_CurrentAnim(L"fall", true, 1.f);
 		}
 	}
-
+	if (!m_pAttackCollider.expired())
+		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(GET_DATA(m_eType).Element);
     return S_OK;
 }
 
