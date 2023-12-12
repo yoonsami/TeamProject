@@ -1311,7 +1311,7 @@ void Companion_Dellons_FSM::skill_100100()
             Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
             _float3::Up;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Dellons_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 5.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Dellons_SkillCollider", vSkillPos, 1.5f, desc, NORMAL_ATTACK, 5.f);
     }
 
     if (m_iCurFrame >= 26)

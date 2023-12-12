@@ -1289,7 +1289,7 @@ void Boss_Dellons_FSM::skill_100100()
                 Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
                 _float3::Up;
 
-            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_SkillCollider", vSkillPos, 1.5f, desc, NORMAL_ATTACK, 10.f);
         }
     }
 
