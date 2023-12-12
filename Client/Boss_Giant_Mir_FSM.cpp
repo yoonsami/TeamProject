@@ -1071,7 +1071,7 @@ void Boss_Giant_Mir_FSM::skill_100100()
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
             desc.fMoveSpeed = 30.f;
             desc.fLifeTime = 1.f;
-            desc.fLimitDistance = 22.f;
+            desc.fLimitDistance = 18.f;
 
             _float4 vSkillPos = vBonePos;
 
@@ -1156,7 +1156,7 @@ void Boss_Giant_Mir_FSM::skill_200100()
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
             desc.fMoveSpeed = 30.f;
             desc.fLifeTime = 1.f;
-            desc.fLimitDistance = 22.f;
+            desc.fLimitDistance = 18.f;
 
             _float4 vSkillPos = vBonePos;
 
