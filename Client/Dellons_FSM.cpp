@@ -171,9 +171,7 @@ void Dellons_FSM::State_Tick()
     case STATE::skill_501100:
         skill_501100();
         break;
-    }
-
-    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+    }    
 
     if (m_iPreFrame != m_iCurFrame)
         m_iPreFrame = m_iCurFrame;
@@ -888,6 +886,11 @@ void Dellons_FSM::knockdown_end_Init()
 
 void Dellons_FSM::skill_1100()
 {
+    if (Init_CurFrame(9))
+        Add_And_Set_Effect(L"Dellons_1100");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_iCurFrame == 9)
 	{
 		Set_ColliderOption(DARK, L"Hit_Slash_Dark");
@@ -938,6 +941,11 @@ void Dellons_FSM::skill_1100_Init()
 
 void Dellons_FSM::skill_1200()
 {
+    if (Init_CurFrame(8))
+        Add_And_Set_Effect(L"Dellons_1200");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_iCurFrame == 8)
     {
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
@@ -992,6 +1000,11 @@ void Dellons_FSM::skill_1200_Init()
 
 void Dellons_FSM::skill_1300()
 {
+    if (Init_CurFrame(9))
+        Add_And_Set_Effect(L"Dellons_1300");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_iCurFrame == 8)
     {
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
@@ -1046,6 +1059,13 @@ void Dellons_FSM::skill_1300_Init()
 
 void Dellons_FSM::skill_1400()
 {
+    if (Init_CurFrame(8))
+        Add_And_Set_Effect(L"Dellons_1400");
+    if (Init_CurFrame(14))
+        Add_And_Set_Effect(L"Dellons_1400_1");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_iCurFrame == 8)
     {
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");

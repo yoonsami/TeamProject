@@ -50,6 +50,7 @@ private:
 	void				Create_MeshEffect(_int iIndex);
 	void				Create_Particle(_int iIndex);
 	void				OrganizeMemberEffectList();
+
 private:
 	/* Data */
 	wstring										m_wstrTag;

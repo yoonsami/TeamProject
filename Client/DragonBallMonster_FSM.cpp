@@ -402,9 +402,22 @@ void DragonBallMonster_FSM::Summon_Web_Floor()
 
 void DragonBallMonster_FSM::Summon_HalfCircle_Floor()
 {
-	_float4x4 matWorldPos = Get_Transform()->Get_WorldMatrix();
-	matWorldPos._42 = 0.f;
-	Add_GroupEffectOwner(L"Dragonall_Half", _float3(matWorldPos._41, 0.f, matWorldPos._43), true);
+	_uint iRan = rand() % 2;
+	m_eHalfCircleDirection = (HalfCircleDirection)iRan;
+	_float fPos = 0.f;
+	if (LEFT == m_eHalfCircleDirection)
+		fPos = -1.f;
+	else if(RIGHT == m_eHalfCircleDirection)
+		fPos = 1.f;
+
+	_float3 vEffectPos = Get_Transform()->Get_WorldMatrix().Translation();
+	vEffectPos.y = 0.f;
+	_float4x4 matEffectWorldMatrix = _float4x4::CreateTranslation(vEffectPos);
+	if (m_eHalfCircleDirection == RIGHT)
+		Add_Effect(L"DragonBall_Half2", nullptr, matEffectWorldMatrix, true);
+	else if(m_eHalfCircleDirection == LEFT)
+		Add_Effect(L"Dragonall_Half", nullptr, matEffectWorldMatrix, true);
+
 
 	m_tPatternCoolTime.fAccTime = 0.f;
 
@@ -421,14 +434,6 @@ void DragonBallMonster_FSM::Summon_HalfCircle_Floor()
 	desc.fAttackDamage = 5.f;
 	desc.fLastAttackDamage = 5.f;
 	desc.iLimitAttackCnt = 3;
-
-	_uint iRan = rand() % 2;
-	_float fPos = 0.f;
-
-	if (iRan == 0)
-		fPos = 1.f;
-	else
-		fPos = -1.f;
 
 	_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 						Get_Transform()->Get_State(Transform_State::RIGHT) * 14.f * fPos;
@@ -698,7 +703,7 @@ void DragonBallMonster_FSM::Create_FloorSkillEffect()
 			shared_ptr<GameObject> pEffectOwnerObj = make_shared<GameObject>();
 			shared_ptr<DragonBallLightning_Script> pEffectScript = make_shared<DragonBallLightning_Script>();
 			pEffectOwnerObj->Add_Component(pEffectScript);
-			pEffectOwnerObj->Get_Script<DragonBallLightning_Script>()->Set_Direction(DragonBallLightning_Script::LEFT);
+			pEffectOwnerObj->Get_Script<DragonBallLightning_Script>()->Set_Direction(DragonBallLightning_Script::DIR((_int)m_eHalfCircleDirection));
 			EVENTMGR.Create_Object(pEffectOwnerObj);
 			break;
 		}
@@ -764,15 +769,15 @@ void DragonBallMonster_FSM::Create_FloorSkillEffect()
 
 void DragonBallMonster_FSM::Set_AttackPattern()
 {
-	/*Summon_HalfCircle_Floor();
+	Summon_HalfCircle_Floor();
 	m_tPatternCoolTime.fCoolTime = 4.f;
-	m_iPreAttack = 4;*/
+	m_iPreAttack = 4;
 
 	_uint iRan = rand() % 6;
 
 	m_fTimer_CreateFloorSkillEffect = 0.f;
 	m_bIsCreateFloorSkillEffectDone = false;
-	
+	/*
 	while (true)
 	{
 		if (iRan == m_iPreAttack)
@@ -828,5 +833,5 @@ void DragonBallMonster_FSM::Set_AttackPattern()
 			m_bSummonMeteor = true;
 		}
 	}
-	
+	*/
 }

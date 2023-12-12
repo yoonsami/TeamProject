@@ -443,8 +443,8 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
         // For. Transform 
         EffectObj->GetOrAddTransform();
        
-        Quaternion qRotation = Quaternion::CreateFromYawPitchRoll(iter.vPivot_Rotation.y, iter.vPivot_Rotation.x, iter.vPivot_Rotation.z);
-        qRotation.Normalize();
+        //Quaternion qRotation = Quaternion::CreateFromYawPitchRoll(iter.vPivot_Rotation.y, iter.vPivot_Rotation.x, iter.vPivot_Rotation.z);
+        //qRotation.Normalize();
 
         // For. Shader 
         shared_ptr<Shader> shader;

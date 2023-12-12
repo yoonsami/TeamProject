@@ -13,6 +13,8 @@ public:
         Crash,
         NONE
     };
+
+    enum HalfCircleDirection{LEFT, RIGHT};
 public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
@@ -61,5 +63,7 @@ private:
     _bool   m_bIsCreateFloorSkillEffectDone = { false };
 
     weak_ptr<GameObject> m_pRigidBody;
+
+    HalfCircleDirection m_eHalfCircleDirection = { LEFT };
 };
 
