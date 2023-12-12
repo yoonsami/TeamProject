@@ -98,6 +98,75 @@ void ImguiMgr::Key_Input()
    if (KEYTAP(KEY_TYPE::F4))
       m_bRender_Font_Ui = !m_bRender_Font_Ui;
 
+   if (KEYTAP(KEY_TYPE::F5))
+   {
+      if (0 == m_strSelectObjName.length())
+      {
+         return;
+      }
+
+      wstring strName = m_strSelectObjName;
+      for (auto iter = m_GameobjectName.begin();
+         iter != m_GameobjectName.end();
+         )
+      {
+         if (*iter == m_strSelectObjName)
+         {
+            iter = m_GameobjectName.erase(iter);
+            break;
+         }
+         else
+         {
+            ++iter;
+         }
+      }
+
+      auto pGameobject = CUR_SCENE->Get_GameObject(strName);
+      if (nullptr == pGameobject)
+      {
+         return;
+      }
+
+      EVENTMGR.Delete_Object(pGameobject);
+
+      m_strSelectObjName = L"";
+    }
+
+   if (KEYTAP(KEY_TYPE::F6))
+   {
+      for (_uint i = 0; i < 100; ++i)
+      {
+         auto UiObject = make_shared<GameObject>();
+         UiObject->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 0.f, 8.7f, 1));
+         UiObject->GetOrAddTransform()->Scaled(_float3(90.f, 90.f, 1.f));
+         shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+
+         auto mesh = RESOURCES.Get<Mesh>(L"Point");
+         renderer->Set_Mesh(mesh);
+
+         auto material = make_shared<Material>();
+         renderer->Get_RenderParamDesc().SetVec4(0, _float4(1));
+         renderer->Set_Material(material);
+         renderer->Set_Pass(MeshRenderer::PASS_INFO::Default_UI);
+         UiObject->Add_Component(renderer);
+
+         wstring strName = L"UI_Card_Deck_Inven" + to_wstring(i);
+         UiObject->Set_Name(strName);
+         m_GameobjectName.push_back(strName);
+
+         UiObject->Set_LayerIndex(Layer_UI);
+         UiObject->Set_Instancing(false);
+
+         POINT ptPos1 = {960, 540};
+         POINT ptPos2 = {915, 540};
+         
+         shared_ptr<BaseUI> pBaseUi = make_shared<BaseUI>();
+         pBaseUi->Create(BaseUI::PICK_TYPE::CIRCLE, ptPos1, ptPos2);
+         UiObject->Add_Component(pBaseUi);
+
+         EVENTMGR.Create_Object(UiObject, false);
+      }
+   }
 
 }
 
@@ -1215,7 +1284,7 @@ void ImguiMgr::Save_Ui_Desc()
 
             // is static
             _bool bIsStatic = CUR_SCENE->Is_Static(pGameobject);
-            file->Write<_bool>(bIsStatic);
+            file->Write<_bool>(false);
          }
       }
    }

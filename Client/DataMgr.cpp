@@ -70,7 +70,7 @@ void DataMgr::Initialize()
 			tagData.KeyDeckSelect = L"";
 			tagData.KeyHeroInfo = L"";
 			tagData.KeyHeroName = L"";
-
+            tagData.KeyDeckMiniAddBg = L"";
 		}
 
 		// ACE3
@@ -130,6 +130,7 @@ void DataMgr::Initialize()
 			tagData.KeyHeroInfo = L"신극";
 			tagData.KeyHeroName = L"에이스";
             tagData.SkillHelp = L"UI_Skill_Help_Ace";
+            tagData.KeyDeckMiniAddBg = L"Card_Deck_Add_Bg_Ace3";
 		}
 
 		// KYLE
@@ -189,6 +190,7 @@ void DataMgr::Initialize()
 			tagData.KeyHeroInfo = L"밤의추적자";
 			tagData.KeyHeroName = L"카일";
             tagData.SkillHelp = L"UI_Skill_Help_Kyle";
+            tagData.KeyDeckMiniAddBg = L"Card_Deck_Add_Bg_Kyle";
 		}
 
 		// YEOPO
@@ -248,6 +250,7 @@ void DataMgr::Initialize()
 			tagData.KeyHeroInfo = L"무신";
 			tagData.KeyHeroName = L"여포";
             tagData.SkillHelp = L"UI_Skill_Help_Yeopo";
+            tagData.KeyDeckMiniAddBg = L"Card_Deck_Add_Bg_Yeopo";
 		}
 
 		// DELLONS
@@ -307,6 +310,7 @@ void DataMgr::Initialize()
 			tagData.KeyHeroInfo = L"죽음의군주";
 			tagData.KeyHeroName = L"델론즈";
             tagData.SkillHelp = L"UI_Skill_Help_Dellons";
+            tagData.KeyDeckMiniAddBg = L"Card_Deck_Add_Bg_Dellons";
 		}
 
 		// SPIKE
@@ -366,6 +370,7 @@ void DataMgr::Initialize()
 			tagData.KeyHeroInfo = L"혹한의폭군";
 			tagData.KeyHeroName = L"스파이크";
             tagData.SkillHelp = L"UI_Skill_Help_Spike";
+            tagData.KeyDeckMiniAddBg = L"Card_Deck_Add_Bg_Spike";
 		}
 
 		// SHANE
@@ -425,6 +430,7 @@ void DataMgr::Initialize()
 			tagData.KeyHeroInfo = L"악마의화신";
 			tagData.KeyHeroName = L"세인";
             tagData.SkillHelp = L"UI_Skill_Help_Shane";
+            tagData.KeyDeckMiniAddBg = L"Card_Deck_Add_Bg_Shane";
 		}
 
 		// YEONHEE
@@ -484,6 +490,7 @@ void DataMgr::Initialize()
 			tagData.KeyHeroInfo = L"종말의인도자";
 			tagData.KeyHeroName = L"연희";
             tagData.SkillHelp = L"UI_Skill_Help_Yeonhee";
+            tagData.KeyDeckMiniAddBg = L"Card_Deck_Add_Bg_Yeonhee";
 		}
 	}
 
@@ -688,8 +695,7 @@ void DataMgr::Initialize()
         wstring strIndex = to_wstring(i);
         tagData.KeyDeckMini     = L"Card_Deck_Dummy" + strIndex;
         tagData.KeyDeckSelect   = L"Bick_Card_Dummy" + strIndex;
-
-        
+        tagData.KeyDeckMiniAddBg = L"Card_Deck_Add_Bg_Dummy" + strIndex;
     }
 
     {
@@ -1062,7 +1068,7 @@ void DataMgr::Initialize()
     }
 
 
-    m_CardInven.resize(60);
+    m_CardInven.resize(100);
 
 
     m_NpcDialog.resize(IDX(NPCTYPE::MAX));

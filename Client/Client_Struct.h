@@ -68,7 +68,7 @@ typedef struct tagHeroData
 	wstring			KeyHeroInfo;
 	wstring			KeyHeroName;
 	wstring			SkillHelp;
-
+	wstring			KeyDeckMiniAddBg;
 }HERODATA;
 
 typedef struct tagBossData
