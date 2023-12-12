@@ -737,7 +737,7 @@ void Boss_Giant_Mir_FSM::b_idle_Init()
     
     m_tAttackCoolTime.fAccTime = 0.f;
     m_tBreathCoolTime.fAccTime = 0.f;
-    m_tBreathCoolTime.fAccTime = 0.3f;
+
     if (m_ePreState == STATE::groggy_end)
         Set_Invincible(true);
     
