@@ -191,6 +191,9 @@ inline ResourceType ResourceMgr::Get_ResourceType()
 	if (is_same_v<T, GroupEffectData>)
 		return ResourceType::GroupEffectData;
 
+	if (is_same_v<T, CustomSound>)
+		return ResourceType::Sound;
+
 	assert(false);
 	return ResourceType::None;
 }
