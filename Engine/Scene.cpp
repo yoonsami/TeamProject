@@ -119,7 +119,7 @@ void Scene::Render()
 	Render_Forward();
 
 	Render_BloomMap();
-	Render_BloomMapScaling();
+	Render_BloomMapScaling(g_BloomData.samplingCount);
 
 	Render_BloomFinal();
 
@@ -1251,36 +1251,42 @@ void Scene::Render_BloomMap()
 	material->Get_Shader()->DrawIndexed(0, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 }
 
-void Scene::Render_BloomMapScaling()
+void Scene::Render_BloomMapScaling(_uint downSamplingCount)
 {
 	if (!g_BloomData.g_BloomOn)
 		return;
 
-	for (_uchar i = 0; i < 3; ++i)
+	wstring downSamplingTarget = L"BloomTarget";
+
+	for (_uint i = 0; i < downSamplingCount; ++i)
 	{
 		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLOOMDOWNSCALE0) + i);
 		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
-		auto material = RESOURCES.Get<Material>(L"BloomDownScale" + to_wstring(i));
+
+		auto material = RESOURCES.Get<Material>(L"Sampler");
 		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
-		//material->Get_Shader()->GetScalar("GaussianWeight")->SetFloatArray(a, 0, 25);
-		//material->Get_Shader()->GetScalar("DownScalePower")->SetFloat(m_fDownScalePower);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(downSamplingTarget));
+
 		material->Push_SubMapData();
 
 		mesh->Get_VertexBuffer()->Push_Data();
+
 		mesh->Get_IndexBuffer()->Push_Data();
 
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+
+		downSamplingTarget = L"BLOOMDOWNSCALE" + to_wstring(i);
 	}
 
-	for (_uchar i = 0; i < 3; ++i)
+	for (_int i = downSamplingCount - 1; i >= 0; --i)
 	{
 		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLOOMUPSCALE0) + i);
 		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
-		auto material = RESOURCES.Get<Material>(L"BloomUpScale" + to_wstring(i));
+		auto material = RESOURCES.Get<Material>(L"Sampler");
 		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
-		//	material->Get_Shader()->GetScalar("UpScalePower")->SetFloat(m_fUpScalePower);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(downSamplingTarget));
 
 		material->Push_SubMapData();
 
@@ -1288,13 +1294,55 @@ void Scene::Render_BloomMapScaling()
 		mesh->Get_IndexBuffer()->Push_Data();
 
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		
-		if(i != 2)
+
+		if(i != 0)
 			material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 		else
 			material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
+		downSamplingTarget = L"BLOOMUPSCALE" + to_wstring(i);
 	}
+	auto material = RESOURCES.Get<Material>(L"BloomFinal");
+	material->Set_SubMap(1, RESOURCES.Get<Texture>(downSamplingTarget));
+
+
+	//for (_uchar i = 0; i < 3; ++i)
+	//{
+	//	RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLOOMDOWNSCALE0) + i);
+	//	GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
+	//	auto material = RESOURCES.Get<Material>(L"BloomDownScale" + to_wstring(i));
+	//	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+	//	material->Push_SubMapData();
+
+	//	mesh->Get_VertexBuffer()->Push_Data();
+	//	mesh->Get_IndexBuffer()->Push_Data();
+
+	//	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	//	material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	//}
+
+	//for (_uchar i = 0; i < 3; ++i)
+	//{
+	//	RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLOOMUPSCALE0) + i);
+	//	GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
+	//	auto material = RESOURCES.Get<Material>(L"BloomUpScale" + to_wstring(i));
+	//	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+	//	//	material->Get_Shader()->GetScalar("UpScalePower")->SetFloat(m_fUpScalePower);
+
+	//	material->Push_SubMapData();
+
+	//	mesh->Get_VertexBuffer()->Push_Data();
+	//	mesh->Get_IndexBuffer()->Push_Data();
+
+	//	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//	
+	//	if(i != 2)
+	//		material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	//	else
+	//		material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+
+	//}
 
 }
 

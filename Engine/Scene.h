@@ -88,7 +88,7 @@ protected:
 	void Render_Forward();
 
 	void Render_BloomMap();
-	void Render_BloomMapScaling();
+	void Render_BloomMapScaling(_uint downSamplingCount);
 	void Render_BloomFinal();
 	void Render_DOFMap();
 	void Render_DOFMapScaling(_uint blurCount);
@@ -195,6 +195,7 @@ public:
 	{
 		_bool g_BloomOn = false;
 		_float g_BloomMin = 0.99f;
+		_uint samplingCount = 1;
 	};
 	BloomData g_BloomData{};
 
