@@ -280,7 +280,7 @@ void ModelAnimator::Render()
 
 }
 
-void ModelAnimator::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer, shared_ptr<InstanceTweenDesc> desc, shared_ptr<InstanceRenderParamDesc> renderParamDesc)
+void ModelAnimator::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer, shared_ptr<InstanceTweenDesc> desc)
 {
 	if (!m_pModel)
 		return;
@@ -290,7 +290,7 @@ void ModelAnimator::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer
 	}
 
 	m_pShader->Push_InstanceTweenData(*desc);
-	m_pShader->Push_InstanceRenderParamData(*renderParamDesc);
+
 	m_pShader->GetSRV("TransformMap")->SetResource(m_pModel->Get_TransformSRV().Get());
 
 	auto& animAddonDesc = m_pModel->Get_AnimAddonDesc();
@@ -418,7 +418,7 @@ void ModelAnimator::Render_Shadow()
 		int a = 0;
 }
 
-void ModelAnimator::Render_Shadow_Instancing(shared_ptr<InstancingBuffer>& buffer, shared_ptr<InstanceTweenDesc> desc, shared_ptr<InstanceRenderParamDesc> renderParamDesc)
+void ModelAnimator::Render_Shadow_Instancing(shared_ptr<InstancingBuffer>& buffer, shared_ptr<InstanceTweenDesc> desc)
 {
 	if (!m_pModel)
 		return;
@@ -428,7 +428,7 @@ void ModelAnimator::Render_Shadow_Instancing(shared_ptr<InstancingBuffer>& buffe
 	}
 
 	m_pShader->Push_InstanceTweenData(*desc);
-	m_pShader->Push_InstanceRenderParamData(*renderParamDesc);
+
 
 	m_pShader->GetSRV("TransformMap")->SetResource(m_pModel->Get_TransformSRV().Get());
 

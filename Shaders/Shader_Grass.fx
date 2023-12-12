@@ -24,6 +24,7 @@ struct InstancingOuput
     float3 viewTangent : TANGENT;
     uint id : SV_InstanceID;
     float4x4 matWorld : POSITION3;
+    float4 renderParam : POSITION7;
 };
 
 InstancingOuput VS_Grass_Instancing(VTXMeshInstancing input)
@@ -38,6 +39,7 @@ InstancingOuput VS_Grass_Instancing(VTXMeshInstancing input)
     
     output.matWorld = input.world;
     output.id = input.instanceID;
+    output.renderParam = input.renderParam;
     return output;
     
 }
@@ -59,6 +61,7 @@ struct GS_GRASS_INSTANCING_OUTPUT
     float3 viewNormal : NORMAL;
     float3 viewTangent : TANGENT;
     uint id : SV_InstanceID;
+    float4 renderParam : POSITION3;
 };
 
 float4x4 RotateMatrix(float angle, float3 axis)
@@ -172,9 +175,9 @@ void GS_Grass_Instancing(point InstancingOuput input[1], inout TriangleStream<GS
     InstancingOuput vtx = input[0];
     
     // 바람의 방향,세기(이동량),현재가중치(0~1),속도(0~1도달속도)
-    float3 vWind = InstanceRenderParams[vtx.id].xyz;
+    float3 vWind = vtx.renderParam.xyz;
     float fWindPowerMagicNumber = 0.05f;
-    float fWindWeight = InstanceRenderParams[vtx.id].w;
+    float fWindWeight = vtx.renderParam.w;
     
     for (uint j = 0; j < billboardCount; j++)
     {
@@ -216,6 +219,11 @@ void GS_Grass_Instancing(point InstancingOuput input[1], inout TriangleStream<GS
         output[j * 4 + 1].id = vtx.id;
         output[j * 4 + 2].id = vtx.id;
         output[j * 4 + 3].id = vtx.id;
+        
+        output[j * 4 + 0]
+        output[j * 4 + 1]
+        output[j * 4 + 2]
+        output[j * 4 + 3]
         
         outputStream.Append(output[j * 4 + 0]);
         outputStream.Append(output[j * 4 + 1]);

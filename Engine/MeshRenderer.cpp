@@ -25,7 +25,7 @@ void MeshRenderer::Set_Material(shared_ptr<Material> material)
 	m_pMaterial->Set_Shader(m_pShader);
 }
 
-void MeshRenderer::Render_Instancing(shared_ptr<InstancingBuffer>& buffer, shared_ptr<InstanceRenderParamDesc> renderParamDesc)
+void MeshRenderer::Render_Instancing(shared_ptr<InstancingBuffer>& buffer)
 {
 	if (!m_pMaterial || !m_pMesh || !m_pShader)
 		return;
@@ -34,8 +34,6 @@ void MeshRenderer::Render_Instancing(shared_ptr<InstancingBuffer>& buffer, share
 	m_pMaterial->Push_TextureMapData();
 
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
-
-	m_pShader->Push_InstanceRenderParamData(*renderParamDesc);
 
 	auto& LightParam = CUR_SCENE->Get_LightParams();
 	m_pShader->Push_LightData(LightParam);

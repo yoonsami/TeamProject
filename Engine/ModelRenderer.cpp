@@ -112,14 +112,13 @@ void ModelRenderer::Render()
 	}
 }
 
-void ModelRenderer::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer, shared_ptr<InstanceRenderParamDesc> renderParamDesc)
+void ModelRenderer::Render_Instancing(shared_ptr<class InstancingBuffer>& buffer)
 {
 	if (m_pModel == nullptr)
 		return;
 
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
 
-	m_pShader->Push_InstanceRenderParamData(*renderParamDesc);
 	// Bones
 	auto preView = CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_preWorldMatrix().Invert();
 	m_pShader->GetMatrix("g_preView")->SetMatrix((_float*)&preView);
@@ -292,14 +291,12 @@ void ModelRenderer::Render_Shadow()
 	}
 }
 
-void ModelRenderer::Render_Shadow_Instancing(shared_ptr<InstancingBuffer>& buffer, shared_ptr<InstanceRenderParamDesc> renderParamDesc)
+void ModelRenderer::Render_Shadow_Instancing(shared_ptr<InstancingBuffer>& buffer)
 {
 	if (m_pModel == nullptr)
 		return;
 
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
-
-	m_pShader->Push_InstanceRenderParamData(*renderParamDesc);
 	// Bones
 	shared_ptr<BoneDesc> boneDesc = make_shared<BoneDesc>();
 
@@ -388,13 +385,13 @@ void ModelRenderer::Render_MotionBlur()
 	}
 }
 
-void ModelRenderer::Render_MotionBlur_Instancing(shared_ptr<InstancingBuffer>& buffer, shared_ptr<InstanceRenderParamDesc> renderParamDesc)
+void ModelRenderer::Render_MotionBlur_Instancing(shared_ptr<InstancingBuffer>& buffer)
 {
 	if (m_pModel == nullptr)
 		return;
 
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
-	m_pShader->Push_InstanceRenderParamData(*renderParamDesc);
+
 	// Bones
 	auto preView = CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_preWorldMatrix().Invert();
 	m_pShader->GetMatrix("g_preView")->SetMatrix((_float*)&preView);

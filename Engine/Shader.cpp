@@ -451,21 +451,6 @@ void Shader::Push_InstanceTweenData(const InstanceTweenDesc& desc)
 	m_pInstanceTweenEffectBuffer->SetConstantBuffer(m_pInstanceTweenBuffer->Get_ComPtr().Get());
 }
 
-void Shader::Push_InstanceRenderParamData(const InstanceRenderParamDesc& desc)
-{
-	if (!m_pInstanceRenderParamEffectBuffer)
-	{
-		m_pInstanceRenderParamBuffer = make_shared<ConstantBuffer>();
-		m_pInstanceRenderParamBuffer->Create<InstanceRenderParamDesc>();
-		m_pInstanceRenderParamEffectBuffer = GetConstantBuffer("InstanceRenderParamBuffer");
-	}
-	m_InstanceRenderParamDesc = desc;
-
-	m_pInstanceRenderParamBuffer->CopyData(m_InstanceRenderParamDesc);
-
-	m_pInstanceRenderParamEffectBuffer->SetConstantBuffer(m_pInstanceRenderParamBuffer->Get_ComPtr().Get());
-}
-
 void Shader::Push_AnimAddonData(const AnimAddonDesc& desc)
 {
 	if (!m_pBoneIndexEffectBuffer)
