@@ -844,6 +844,12 @@ void ResourceMgr::CreateDefaultShader()
 	}
 }
 
+void ResourceMgr::Release_Sound()
+{
+	m_Resources[0][_uint(ResourceType::Sound)].clear();
+	m_Resources[1][_uint(ResourceType::Sound)].clear();
+}
+
 void ResourceMgr::CreateModel(const wstring& path, _bool flag)
 {
 	{

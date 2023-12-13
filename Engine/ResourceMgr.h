@@ -39,6 +39,7 @@ public:
 	template<typename T>
 	ResourceType Get_ResourceType();
 
+	void						Release_Sound();
 	shared_ptr<Texture>			GetOrAddTexture(const wstring& key, const wstring& path);
 	shared_ptr<GroupEffectData> GetOrAddGroupEffectData(const wstring& key, const wstring& path);
 
