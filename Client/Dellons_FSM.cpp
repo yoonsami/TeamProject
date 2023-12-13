@@ -1185,6 +1185,8 @@ void Dellons_FSM::skill_100100()
     if (Init_CurFrame(10))
         Add_And_Set_Effect(L"Dellons_100100");
 
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (Init_CurFrame(12))
     {
 		FORWARDMOVINGSKILLDESC desc;
@@ -1243,6 +1245,8 @@ void Dellons_FSM::skill_100200()
     if (Init_CurFrame(18))
         Add_And_Set_Effect(L"Dellons_100200");
 
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (Init_CurFrame(15))
     {
 		FORWARDMOVINGSKILLDESC desc;
@@ -1288,6 +1292,11 @@ void Dellons_FSM::skill_100200_Init()
 
 void Dellons_FSM::skill_200100()
 {
+    if (Init_CurFrame(5))
+        Add_And_Set_Effect(L"Dellons_200100");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_iCurFrame == 7)
     {
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
@@ -1333,6 +1342,11 @@ void Dellons_FSM::skill_200100_Init()
 
 void Dellons_FSM::skill_200200()
 {
+    if (Init_CurFrame(5))
+        Add_And_Set_Effect(L"Dellons_200200");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (Init_CurFrame(7))
     {
 		FORWARDMOVINGSKILLDESC desc;
