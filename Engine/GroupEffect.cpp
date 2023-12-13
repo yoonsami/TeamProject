@@ -24,34 +24,60 @@ GroupEffect::~GroupEffect()
 
 HRESULT GroupEffect::Init()
 {
-    m_RenderParamBuffer.resize(m_vMemberEffectData.size());
+    //m_RenderParamBuffer.resize(m_vMemberEffectData.size());
     m_vCreateCoolTime.resize(m_vMemberEffectData.size());
     fill(m_vCreateCoolTime.begin(), m_vCreateCoolTime.end(), 0.f);
 
+	map<wstring, vector<shared_ptr<MeshEffectData>>> renderingGroup;
+
+
     for (_uint i = 0; i < static_cast<_uint>(m_vMemberEffectData.size()); ++i)
     {
-
 		wstring wstrMeshEffectDataKey = m_vMemberEffectData[i].wstrEffectTag;
 		Utils::DetachExt(wstrMeshEffectDataKey);
 		shared_ptr<MeshEffectData> meshEffectData = RESOURCES.Get<MeshEffectData>(wstrMeshEffectDataKey);
         if (meshEffectData->Get_Desc().bIsFDistortion)
             m_bDistortionGroup = true;
 
-        if(meshEffectData->Get_Desc().iMeshCnt ==1 && meshEffectData->Get_Desc().fCreateInterval == 0)
-            continue;
+        renderingGroup[Utils::ToWString(meshEffectData->Get_Desc().strTag)].push_back(meshEffectData);
 
-        if(meshEffectData->Get_Desc().fCreateInterval == 0)
-            m_RenderParamBuffer[i] = make_shared<StructuredBuffer>(nullptr, static_cast<_uint>(sizeof RenderParams), meshEffectData->Get_Desc().iMeshCnt);
-        else
-        {
-			_int count =_int( meshEffectData->Get_Desc().fDuration / meshEffectData->Get_Desc().fCreateInterval * meshEffectData->Get_Desc().iMeshCnt);
+		/* if(meshEffectData->Get_Desc().iMeshCnt ==1 && meshEffectData->Get_Desc().fCreateInterval == 0)
+			 continue;
 
-			m_RenderParamBuffer[i] = make_shared<StructuredBuffer>(nullptr, static_cast<_uint>(sizeof RenderParams), count);
-        }
-        
-        
+		 if(meshEffectData->Get_Desc().fCreateInterval == 0)
+			 m_RenderParamBuffer[i] = make_shared<StructuredBuffer>(nullptr, static_cast<_uint>(sizeof RenderParams), meshEffectData->Get_Desc().iMeshCnt);
+		 else
+		 {
+			 _int count =_int( meshEffectData->Get_Desc().fDuration / meshEffectData->Get_Desc().fCreateInterval * meshEffectData->Get_Desc().iMeshCnt);
+
+			 m_RenderParamBuffer[i] = make_shared<StructuredBuffer>(nullptr, static_cast<_uint>(sizeof RenderParams), count);
+		 }*/
+         
     }
 
+    for (auto& pair : renderingGroup)
+    {
+        if(pair.second.empty())
+            continue;
+
+        auto meshEffectData = pair.second.front();
+
+		if (pair.second.size() == 1 && meshEffectData->Get_Desc().iMeshCnt == 1 && meshEffectData->Get_Desc().fCreateInterval == 0)
+			continue;
+
+        _uint iEffectDataCount = _uint(pair.second.size());
+
+        if (meshEffectData->Get_Desc().fCreateInterval == 0.f)
+        {
+            m_RenderParamBuffer[pair.first] = make_shared<StructuredBuffer>(nullptr, static_cast<_uint>(sizeof RenderParams), meshEffectData->Get_Desc().iMeshCnt * iEffectDataCount);
+        }
+        else
+        {
+            _int count = _int(meshEffectData->Get_Desc().fDuration / meshEffectData->Get_Desc().fCreateInterval * meshEffectData->Get_Desc().iMeshCnt * iEffectDataCount);
+            m_RenderParamBuffer[pair.first] = make_shared<StructuredBuffer>(nullptr, static_cast<_uint>(sizeof RenderParams), count);
+        }
+
+    }
 
 
     return S_OK;
@@ -170,7 +196,7 @@ void GroupEffect::Final_Tick()
         if (!meshEffect.expired())
         {
 			meshEffect.lock()->Get_MeshEffect()->MeshEffect_Final_Tick();
-            const InstanceID instanceID = meshEffect.lock()->Get_MeshEffect()->Get_InstanceID();
+            const wstring instanceID = Utils::ToWString(meshEffect.lock()->Get_MeshEffect()->Get_Desc().strTag);
             m_RenderGroup[instanceID].push_back(meshEffect.lock());
         }
 	}
@@ -198,10 +224,10 @@ void GroupEffect::Render()
 		}
 		else
 		{
-            const InstanceID instanceId = pair.first;
+            const InstanceID instanceId = make_pair(_ulong(pair.first.c_str()), _ulong(pair.first.c_str()));
             vector<RenderParams> paramInfo;
-            if (m_RenderParamBuffer.size() > pair.first.first)
-                paramInfo.reserve(m_RenderParamBuffer[pair.first.first]->Get_InputCount());
+            paramInfo.reserve(m_RenderParamBuffer[pair.first]->Get_InputCount());
+
 			for (size_t i = 0; i < vec.size(); ++i)
 			{
 				shared_ptr<GameObject>& gameobject = vec[i];
@@ -210,11 +236,10 @@ void GroupEffect::Render()
 				paramInfo.push_back( gameobject->Get_MeshEffect()->Get_RenderParamDesc());
                 INSTANCING.Add_Data(instanceId, data);
 			}
-            if (m_RenderParamBuffer.size() > pair.first.first)
-            m_RenderParamBuffer[pair.first.first]->Copy_ToInput(paramInfo.data());
+            m_RenderParamBuffer[pair.first]->Copy_ToInput(paramInfo.data());
 
             shared_ptr<InstancingBuffer>& buffer = INSTANCING.Get_Buffer(instanceId);
-			vec[0]->Get_MeshEffect()->Render_Instancing(buffer, m_RenderParamBuffer[pair.first.first]);
+			vec[0]->Get_MeshEffect()->Render_Instancing(buffer, m_RenderParamBuffer[pair.first]);
 		}
     }
 }
@@ -239,9 +264,10 @@ void GroupEffect::Render_Decal()
 		}
 		else
 		{
-			const InstanceID instanceId = pair.first;
+			const InstanceID instanceId = make_pair(_ulong(pair.first.c_str()), _ulong(pair.first.c_str()));
 			vector<RenderParams> paramInfo;
-			paramInfo.reserve(m_RenderParamBuffer[pair.first.first]->Get_InputCount());
+			paramInfo.reserve(m_RenderParamBuffer[pair.first]->Get_InputCount());
+
 			for (size_t i = 0; i < vec.size(); ++i)
 			{
 				shared_ptr<GameObject>& gameobject = vec[i];
@@ -250,11 +276,10 @@ void GroupEffect::Render_Decal()
 				paramInfo.push_back(gameobject->Get_MeshEffect()->Get_RenderParamDesc());
 				INSTANCING.Add_Data(instanceId, data);
 			}
-			if (m_RenderParamBuffer.size() > pair.first.first)
-				m_RenderParamBuffer[pair.first.first]->Copy_ToInput(paramInfo.data());
+			m_RenderParamBuffer[pair.first]->Copy_ToInput(paramInfo.data());
 
 			shared_ptr<InstancingBuffer>& buffer = INSTANCING.Get_Buffer(instanceId);
-			vec[0]->Get_MeshEffect()->Render_Instancing(buffer, m_RenderParamBuffer[pair.first.first]);
+			vec[0]->Get_MeshEffect()->Render_Instancing(buffer, m_RenderParamBuffer[pair.first]);
 		}
 	}
 }
@@ -281,9 +306,10 @@ void GroupEffect::Render_Distortion()
 		}
 		else
 		{
-			const InstanceID instanceId = pair.first;
+			const InstanceID instanceId = make_pair(_ulong(pair.first.c_str()), _ulong(pair.first.c_str()));
 			vector<RenderParams> paramInfo;
-			paramInfo.reserve(m_RenderParamBuffer[pair.first.first]->Get_InputCount());
+			paramInfo.reserve(m_RenderParamBuffer[pair.first]->Get_InputCount());
+
 			for (size_t i = 0; i < vec.size(); ++i)
 			{
 				shared_ptr<GameObject>& gameobject = vec[i];
@@ -292,11 +318,10 @@ void GroupEffect::Render_Distortion()
 				paramInfo.push_back(gameobject->Get_MeshEffect()->Get_RenderParamDesc());
 				INSTANCING.Add_Data(instanceId, data);
 			}
-            if(m_RenderParamBuffer.size() > pair.first.first)
-			m_RenderParamBuffer[pair.first.first]->Copy_ToInput(paramInfo.data());
+			m_RenderParamBuffer[pair.first]->Copy_ToInput(paramInfo.data());
 
 			shared_ptr<InstancingBuffer>& buffer = INSTANCING.Get_Buffer(instanceId);
-			vec[0]->Get_MeshEffect()->Render_Instancing(buffer, m_RenderParamBuffer[pair.first.first]);
+			vec[0]->Get_MeshEffect()->Render_Instancing(buffer, m_RenderParamBuffer[pair.first]);
 		}
 	}
 

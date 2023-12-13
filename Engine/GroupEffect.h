@@ -69,10 +69,9 @@ private:
 	list <weak_ptr<GameObject>>					m_lMemberEffects;
 
 
-	map<InstanceID, vector<shared_ptr<GameObject>>>	m_RenderGroup;
-	vector<shared_ptr<StructuredBuffer>>			m_RenderParamBuffer;
+	map<wstring, vector<shared_ptr<GameObject>>>	m_RenderGroup;
+	map<wstring, shared_ptr<StructuredBuffer>>		m_RenderParamBuffer;
 
 
 	shared_ptr<MonoBehaviour>					m_pScript;
-
 };
