@@ -53,13 +53,15 @@ HRESULT Companion_Dellons_FSM::Init()
         m_bInitialize = true;
     }
 
+    m_eElementType = GET_DATA(HERO::DELLONS).Element;
+
     m_tRunEndDelay.fCoolTime = 0.5f;
 
     m_fNormalAttack_AnimationSpeed = 1.2f;
     m_fSkillAttack_AnimationSpeed = 1.0f;
     m_fEvade_AnimationSpeed = 1.5f;
 	if (!m_pAttackCollider.expired())
-		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(GET_DATA(HERO::DELLONS).Element);
+		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(m_eElementType);
     return S_OK;
 }
 
@@ -1309,7 +1311,7 @@ void Companion_Dellons_FSM::skill_100100()
             Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
             _float3::Up;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Dellons_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 5.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Dellons_SkillCollider", vSkillPos, 1.5f, desc, NORMAL_ATTACK, 5.f);
     }
 
     if (m_iCurFrame >= 26)

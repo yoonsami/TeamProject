@@ -538,24 +538,25 @@ void DataMgr::Initialize()
 
     {
         m_KeyElement.resize(ElementType::ElementEnd);
-        m_KeyElement[0] = L"Element_Dark";
-        m_KeyElement[1] = L"Element_Earth";
-        m_KeyElement[2] = L"Element_Fire";
-        m_KeyElement[3] = L"Element_Light";
-        m_KeyElement[4] = L"Element_Water";
-        m_KeyElement[5] = L"Element_Wind";
+        m_KeyElement[IDX(ElementType::DARK)] = L"Element_Dark";
+        m_KeyElement[IDX(ElementType::EARTH)] = L"Element_Earth";
+        m_KeyElement[IDX(ElementType::FIRE)] = L"Element_Fire";
+        m_KeyElement[IDX(ElementType::LIGHT)] = L"Element_Light";
+        m_KeyElement[IDX(ElementType::WATER)] = L"Element_Water";
+        m_KeyElement[IDX(ElementType::WIND)] = L"Element_Wind";
     }
 
 
     {
         m_NpcName.resize(IDX(NPCTYPE::MAX));
-        m_NpcName[0] = L"아리엘";
-        m_NpcName[1] = L"가챠맨";
-        m_NpcName[2] = L"상점걸";
-        m_NpcName[3] = L"꼬맹이";
-        m_NpcName[4] = L"스파이크";
-        m_NpcName[5] = L"델론즈";
-        m_NpcName[6] = L"세인";
+        m_NpcName[IDX(NPCTYPE::QUEST)] = L"아리엘";
+        m_NpcName[IDX(NPCTYPE::GACHA)] = L"가챠맨";
+        m_NpcName[IDX(NPCTYPE::POTION)] = L"상점걸";
+        m_NpcName[IDX(NPCTYPE::HIDE_KID)] = L"꼬맹이";
+        m_NpcName[IDX(NPCTYPE::SPIKE)] = L"스파이크";
+        m_NpcName[IDX(NPCTYPE::DELLONS)] = L"델론즈";
+        m_NpcName[IDX(NPCTYPE::SHANE)] = L"세인";
+        m_NpcName[IDX(NPCTYPE::PORTAL)] = L"포탈 사용";
     }
 
 

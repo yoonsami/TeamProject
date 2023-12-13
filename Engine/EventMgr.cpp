@@ -28,6 +28,12 @@ void EventMgr::Delete_Object(shared_ptr<GameObject> obj)
 	Add_Event(evn);
 }
 
+void EventMgr::Change_Scene(shared_ptr<Scene> obj)
+{
+	tEvent evn{ EVENT_TYPE::SCENE_CHANGE,reinterpret_pointer_cast<GameObject>(obj),(DWORD_PTR)0};
+	Add_Event(evn);
+}
+
 void EventMgr::Excute(const tEvent& event)
 {
 	switch (event.eEvent)
@@ -38,8 +44,12 @@ void EventMgr::Excute(const tEvent& event)
 
 	case EVENT_TYPE::DELETE_OBJECT:
 		m_ObjToDelete.push_back(event.lParam);
+		break;
 	
-	break;
+	case EVENT_TYPE::SCENE_CHANGE:
+		SCENE.Change_Scene(reinterpret_pointer_cast<Scene>(event.lParam));
+		break;
+	
 	default:
 		break;
 	}

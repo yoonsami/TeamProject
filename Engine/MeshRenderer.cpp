@@ -25,7 +25,7 @@ void MeshRenderer::Set_Material(shared_ptr<Material> material)
 	m_pMaterial->Set_Shader(m_pShader);
 }
 
-void MeshRenderer::Render_Instancing(shared_ptr<InstancingBuffer>& buffer, shared_ptr<InstanceRenderParamDesc> renderParamDesc)
+void MeshRenderer::Render_Instancing(shared_ptr<InstancingBuffer>& buffer)
 {
 	if (!m_pMaterial || !m_pMesh || !m_pShader)
 		return;
@@ -34,8 +34,6 @@ void MeshRenderer::Render_Instancing(shared_ptr<InstancingBuffer>& buffer, share
 	m_pMaterial->Push_TextureMapData();
 
 	m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
-
-	m_pShader->Push_InstanceRenderParamData(*renderParamDesc);
 
 	auto& LightParam = CUR_SCENE->Get_LightParams();
 	m_pShader->Push_LightData(LightParam);
@@ -63,7 +61,7 @@ void MeshRenderer::Render_Instancing(shared_ptr<InstancingBuffer>& buffer, share
 			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		int passIndex = CUR_SCENE->g_bPBR_On ? 1 : 0;
-		m_pShader->DrawIndexedInstanced(1, passIndex, m_pMesh->Get_IndexBuffer()->Get_IndicesNum(), buffer->Get_Count());
+		m_pShader->DrawIndexedInstanced(1, passIndex + m_iPass, m_pMesh->Get_IndexBuffer()->Get_IndicesNum(), buffer->Get_Count());
 	}
 }
 
@@ -108,7 +106,7 @@ void MeshRenderer::Render()
 			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		int passIndex = CUR_SCENE->g_bPBR_On ? 1 : 0;
-		m_pShader->DrawIndexed(0, passIndex, m_pMesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+		m_pShader->DrawIndexed(0, passIndex + m_iPass, m_pMesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 	}
 
 

@@ -5,6 +5,7 @@
 
 SoundMgr::~SoundMgr()
 {
+	RESOURCES.Release_Sound();
 	m_pSystem->release();
 	m_pSystem->close();
 }

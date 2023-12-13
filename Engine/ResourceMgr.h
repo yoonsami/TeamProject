@@ -39,6 +39,7 @@ public:
 	template<typename T>
 	ResourceType Get_ResourceType();
 
+	void						Release_Sound();
 	shared_ptr<Texture>			GetOrAddTexture(const wstring& key, const wstring& path);
 	shared_ptr<GroupEffectData> GetOrAddGroupEffectData(const wstring& key, const wstring& path);
 
@@ -190,6 +191,9 @@ inline ResourceType ResourceMgr::Get_ResourceType()
 
 	if (is_same_v<T, GroupEffectData>)
 		return ResourceType::GroupEffectData;
+
+	if (is_same_v<T, CustomSound>)
+		return ResourceType::Sound;
 
 	assert(false);
 	return ResourceType::None;

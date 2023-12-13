@@ -125,6 +125,7 @@ void Client_FSM::Create_ForwardMovingSkillCollider(CollisionGroup eGroup, const 
 	m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(SkillType);
 	m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
 	m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
+	m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(m_eElementType);
 	m_pSkillCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_HitEffectTag(hitEffectTag);
 	m_pSkillCollider.lock()->Set_Name(strColliderName);
 	m_pSkillCollider.lock()->Add_Component(make_shared<ForwardMovingSkillScript>(desc));
@@ -147,6 +148,7 @@ void Client_FSM::Create_InstallationSkillCollider(CollisionGroup eGroup, const w
 
 	InstallationSkillCollider->Add_Component(make_shared<AttackColliderInfoScript>());
 	InstallationSkillCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
+	InstallationSkillCollider->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(m_eElementType);
 	InstallationSkillCollider->Add_Component(make_shared<InstallationSkill_Script>(desc));
 	InstallationSkillCollider->Get_Script<InstallationSkill_Script>()->Init();
 
@@ -168,6 +170,7 @@ void Client_FSM::Create_FloorSkillCollider(CollisionGroup eGroup, const wstring&
 
 	FloorSkillCollider->Add_Component(make_shared<AttackColliderInfoScript>());
 	FloorSkillCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
+	FloorSkillCollider->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(m_eElementType);
 	FloorSkillCollider->Add_Component(make_shared<FloorSkill_Script>(desc));
 	FloorSkillCollider->Get_Script<FloorSkill_Script>()->Init();
 

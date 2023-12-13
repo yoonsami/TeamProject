@@ -111,6 +111,11 @@ void DebugTool::RenderOptionTab()
 			Checkbox("Bloom On", &CUR_SCENE->g_BloomData.g_BloomOn);
 			_float& g_fBloomMin = CUR_SCENE->g_BloomData.g_BloomMin;
 			DragFloat("Bloom Min Value", &g_fBloomMin, 0.001f, 0.01f, 1.f);
+			static _int iBloomSampleCount =0;
+			InputInt("Bloom Sampling Count", &iBloomSampleCount, 1);
+			if (iBloomSampleCount > 3) iBloomSampleCount = 3;
+			if (iBloomSampleCount < 1) iBloomSampleCount = 1;
+			CUR_SCENE->g_BloomData.samplingCount = iBloomSampleCount;
 		}
 		if (CollapsingHeader("ToneMapping"))
 		{

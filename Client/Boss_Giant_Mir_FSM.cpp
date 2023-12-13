@@ -781,7 +781,7 @@ void Boss_Giant_Mir_FSM::skill_1100()
 
     m_tBreathCoolTime.fAccTime += fDT;
 
-    if (m_iCurFrame >= 126 && m_iCurFrame <= 163)
+    if (m_iCurFrame >= 126 && m_iCurFrame <= 153)
     {
         if (m_tBreathCoolTime.fAccTime >= m_tBreathCoolTime.fCoolTime)
         {
@@ -801,9 +801,9 @@ void Boss_Giant_Mir_FSM::skill_1100()
 
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = vDir;
-            desc.fMoveSpeed = 20.f;
-            desc.fLifeTime = 1.5f;
-            desc.fLimitDistance = 50.f;
+            desc.fMoveSpeed = 30.f;
+            desc.fLifeTime = 1.f;
+            desc.fLimitDistance = 22.f;
 
             _float4 vSkillPos = vBonePos;
 
@@ -845,10 +845,11 @@ void Boss_Giant_Mir_FSM::skill_1200()
         TailAttackCollider_Off();
     else if (Init_CurFrame(244))
     {
+    
         if (!m_pTarget.expired())
         {
             INSTALLATIONSKILLDESC desc;
-            desc.fAttackTickTime = 3.f; //JANGPAN TIME  
+            desc.fAttackTickTime = 1.5f; //JANGPAN TIME  
 
             desc.iLimitAttackCnt = 1;
             desc.strAttackType = KNOCKDOWN_SKILL;
@@ -858,8 +859,12 @@ void Boss_Giant_Mir_FSM::skill_1200()
             desc.fLastAttackDamage = 5.f;
 
             _float4 vSkillPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float4{ 0.001f, 0.f,0.f,0.f };
+            
+            // Effect OffSet Bojung 
+            _float4 vEffectPos = vSkillPos + _float4{ 0.f,0.f, -7.f,0.f };
+            Add_Effect(L"Mir_11100", nullptr, _float4x4::CreateTranslation(vEffectPos.xyz()), true);
 
-            Create_InstallationSkillCollider(Monster_Skill,L"Boss_Giant_Mir_InstallationSkillCollider",vSkillPos, 3.f, desc);
+            Create_InstallationSkillCollider(Monster_Skill,L"Boss_Giant_Mir_InstallationSkillCollider",vSkillPos, 5.5f, desc);
         }
     }
 
@@ -907,7 +912,7 @@ void Boss_Giant_Mir_FSM::skill_2100()
 
 
 
-    if (m_iCurFrame >= 184 && m_iCurFrame <= 260)
+    if (m_iCurFrame >= 184 && m_iCurFrame <= 210)
     {
         if (m_tBreathCoolTime.fAccTime >= m_tBreathCoolTime.fCoolTime)
         {
@@ -923,9 +928,9 @@ void Boss_Giant_Mir_FSM::skill_2100()
 
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 20.f;
+            desc.fMoveSpeed = 30.f;
             desc.fLifeTime = 1.f;
-            desc.fLimitDistance = 10.f;
+            desc.fLimitDistance = 25.f;
 
             _float4 vSkillPos = vBonePos;
 
@@ -1064,9 +1069,9 @@ void Boss_Giant_Mir_FSM::skill_100100()
 
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 20.f;
-            desc.fLifeTime = 2.f;
-            desc.fLimitDistance = 50.f;
+            desc.fMoveSpeed = 30.f;
+            desc.fLifeTime = 1.f;
+            desc.fLimitDistance = 18.f;
 
             _float4 vSkillPos = vBonePos;
 
@@ -1149,9 +1154,9 @@ void Boss_Giant_Mir_FSM::skill_200100()
 
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 20.f;
-            desc.fLifeTime = 2.f;
-            desc.fLimitDistance = 50.f;
+            desc.fMoveSpeed = 30.f;
+            desc.fLifeTime = 1.f;
+            desc.fLimitDistance = 18.f;
 
             _float4 vSkillPos = vBonePos;
 
@@ -1186,7 +1191,7 @@ void Boss_Giant_Mir_FSM::Create_Meteor()
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = _float3{ 0.f,-1.f,0.f };
             desc.fMoveSpeed = 10.f;
-            desc.fLifeTime = 1.f;
+            desc.fLifeTime = 1.5f;
             desc.fLimitDistance = 20.f;
 
             for (_uint i = 0; i < 6; i++)
@@ -1200,6 +1205,12 @@ void Boss_Giant_Mir_FSM::Create_Meteor()
                 Add_GroupEffectOwner(L"Mir_Meteor_Floor", _float3(vSkillPos.x, vPlayerPos.y, vSkillPos.z), true);
                 Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 1.f, desc, KNOCKDOWN_SKILL, 10.f);
             }
+
+            shared_ptr<GameObject> obj = make_shared<GameObject>();
+            auto script = make_shared<TimerScript>(1.35f);
+            script->Set_Function([]() {CAMERA_SHAKE(0.2f, 0.3f); });
+            obj->Add_Component(script);
+            EVENTMGR.Create_Object(obj);
 
             m_tMeteorCoolTime.fAccTime = 0.f;
             m_iCurMeteorCnt++;

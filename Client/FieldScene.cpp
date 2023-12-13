@@ -380,11 +380,11 @@ void FieldScene::Load_Terrain()
 		// 타일의 텍스쳐이름을 리소스에 로드
 		wstring TileTexture = L"..\\Resources\\Textures\\MapObject\\TerrainTile\\";
 		TileTexture += Utils::ToWString(fileName) + L".dds";
-		auto texture = RESOURCES.Load<Texture>(Utils::ToWString(fileName), TileTexture);
+		auto texture = RESOURCES.GetOrAddTexture(Utils::ToWString(fileName), TileTexture);
 		if (!texture)
 		{
 			Utils::ChangeExt(TileTexture, L".tga");
-			texture = RESOURCES.Load<Texture>(Utils::ToWString(fileName), TileTexture);
+			texture = RESOURCES.GetOrAddTexture(Utils::ToWString(fileName), TileTexture);
 		}
 	}
 
@@ -494,9 +494,9 @@ void FieldScene::Load_Terrain()
 	auto rigidBody = make_shared<RigidBody>();
 	rigidBody->Create_RigidBody(pCollider, TerrainObject->GetOrAddTransform()->Get_WorldMatrix());
 	TerrainObject->Add_Component(rigidBody);
-	Add_GameObject(TerrainObject);
-
 	TerrainObject->Add_Component(renderer);
+
+	Add_GameObject(TerrainObject);
 
 }
 

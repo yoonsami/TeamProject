@@ -40,6 +40,8 @@ HRESULT SpearAce_FSM::Init()
         m_pCamera = CUR_SCENE->Get_MainCamera();
         m_fDetectRange = 5.f;
     
+        m_eElementType = GET_DATA(HERO::ACE3).Element;
+
         m_bEntryTeam = true;
 
         m_bInitialize = true;
@@ -49,7 +51,7 @@ HRESULT SpearAce_FSM::Init()
 	m_fEvade_AnimationSpeed = 1.5f;
 
 	if (!m_pAttackCollider.expired())
-		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(GET_DATA(HERO::ACE3).Element);
+		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(m_eElementType);
     return S_OK;
 }
 

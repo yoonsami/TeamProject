@@ -24,6 +24,7 @@ struct InstancingOuput
     float3 viewTangent : TANGENT;
     uint id : SV_InstanceID;
     float4x4 matWorld : POSITION3;
+    float4 renderParam : POSITION7;
 };
 
 InstancingOuput VS_Grass_Instancing(VTXMeshInstancing input)
@@ -38,6 +39,7 @@ InstancingOuput VS_Grass_Instancing(VTXMeshInstancing input)
     
     output.matWorld = input.world;
     output.id = input.instanceID;
+    output.renderParam = input.renderParam;
     return output;
     
 }
@@ -59,27 +61,40 @@ struct GS_GRASS_INSTANCING_OUTPUT
     float3 viewNormal : NORMAL;
     float3 viewTangent : TANGENT;
     uint id : SV_InstanceID;
+    float4 renderParam : POSITION3;
 };
 
 float4x4 RotateMatrix(float angle, float3 axis)
 {
+    axis = normalize(axis);
     float s = sin(angle);
     float c = cos(angle);
     float oneMinusC = 1.0 - c;
 
-    float3 sq = axis * axis;
+    //float3 sq = axis * axis;
     float3x3 rotationMatrix = float3x3(
-        sq.x * oneMinusC + c,
-        axis.x * axis.y * oneMinusC + axis.z * s,
-        axis.x * axis.z * oneMinusC - axis.y * s,
+        //axis.x * oneMinusC + c,
+        //axis.x * axis.y * oneMinusC + axis.z * s,
+        //axis.x * axis.z * oneMinusC - axis.y * s,
 
-        axis.x * axis.y * oneMinusC - axis.z * s,
-        sq.y * oneMinusC + c,
-        axis.y * axis.z * oneMinusC + axis.x * s,
+        //axis.x * axis.y * oneMinusC - axis.z * s,
+        //axis.y * oneMinusC + c,
+        //axis.y * axis.z * oneMinusC + axis.x * s,
 
-        axis.x * axis.z * oneMinusC + axis.y * s,
-        axis.y * axis.z * oneMinusC - axis.x * s,
-        sq.z * oneMinusC + c
+        //axis.x * axis.z * oneMinusC - axis.y * s,
+        //axis.y * axis.z * oneMinusC + axis.x * s,
+        //axis.z * axis.z * oneMinusC + c
+        c + (1 - c) * axis.x * axis.x,
+        (1 - c) * axis.x * axis.y - s * axis.z,
+        (1 - c) * axis.x * axis.z + s * axis.y,
+        
+        (1 - c) * axis.y * axis.x + s * axis.z,
+        c + (1 - c) * axis.y * axis.y,
+        (1 - c) * axis.y * axis.z - s * axis.x,
+        
+        (1 - c) * axis.z * axis.x - s * axis.y,
+        (1 - c) * axis.z * axis.y + s * axis.x,
+        c + (1 - c) * axis.z * axis.z
     );
     
     return float4x4(
@@ -95,96 +110,94 @@ void GS_Grass(point MeshOutput input[1], inout TriangleStream<GS_GRASS_OUTPUT> o
 {
     const uint vertexCount = 4;
     const uint billboardCount = 3;
-    GS_GRASS_OUTPUT output[vertexCount * billboardCount] =
+    GS_GRASS_OUTPUT output[vertexCount * billboardCount];
+    for (uint i = 0; i < vertexCount * billboardCount; ++i)
     {
-        (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f,
-        (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f,
-        (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f
-    };
-    MeshOutput vtx = input[0];
+        output[i] = (GS_GRASS_OUTPUT) 0.f;
+    }
+        MeshOutput vtx = input[0];
     
-    // ¹Ù¶÷ÀÇ ¹æÇâ,¼¼±â(ÀÌµ¿·®),ÇöÀç°¡ÁßÄ¡(0~1),¼Óµµ(0~1µµ´Þ¼Óµµ)
-    float3 vWind = g_vec4_0.xyz;
-    float fWindPowerMagicNumber = 0.05f;
-    float fWindWeight = g_vec4_0.w;
+    // ï¿½Ù¶ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½(ï¿½Ìµï¿½ï¿½ï¿½),ï¿½ï¿½ï¿½ç°¡ï¿½ï¿½Ä¡(0~1),ï¿½Óµï¿½(0~1ï¿½ï¿½ï¿½Þ¼Óµï¿½)
+        float3 vWind = g_vec4_0.xyz;
+        float fWindPowerMagicNumber = 0.05f;
+        float fWindWeight = g_vec4_0.w;
     
-    for (uint j = 0; j < billboardCount; j++)
-    {
-        float4x4 matRotateByBillboard = RotateMatrix(radians(120.f * j), float3(0.f, 1.f, 0.f));
-        float4x4 RotateWByBillboard = mul(matRotateByBillboard, W);
+        for (uint j = 0; j < billboardCount; j++)
+        {
+        /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ï¿½ï¿½*/
+            float4x4 matRotateByBillboard = RotateMatrix(radians(120.f * j /*0*/), float3(0.f, 1.f, 0.f));
+            float4x4 RotateWByBillboard = mul(matRotateByBillboard, W);
         
-        output[j * 4 + 0].position = float4(vtx.position.xyz/*Æ÷Áö¼Ç*/ + matRotateByBillboard[2].xyz * 0.1f /*»ï°¢Æí´ë*/ - matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f /*»ç°¢ÇüÀ»À§ÇÑÁ¡À§Ä¡*/ + matRotateByBillboard[1].xyz * 0.5f /*³ôÀÌ*/ + mul(mul(vWind, fWindPowerMagicNumber), fWindWeight) /*¹Ù¶÷Á¤º¸¸¦ À§ÂÊ ¹öÅØ½º¿¡ ¹Ý¿µ*/, 1.f);
-        output[j * 4 + 1].position = float4(vtx.position.xyz/*Æ÷Áö¼Ç*/ + matRotateByBillboard[2].xyz * 0.1f /*»ï°¢Æí´ë*/ + matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f /*»ç°¢ÇüÀ»À§ÇÑÁ¡À§Ä¡*/ + matRotateByBillboard[1].xyz * 0.5f /*³ôÀÌ*/ + mul(mul(vWind, fWindPowerMagicNumber), fWindWeight) /*¹Ù¶÷Á¤º¸¸¦ À§ÂÊ ¹öÅØ½º¿¡ ¹Ý¿µ*/, 1.f);
-        output[j * 4 + 2].position = float4(vtx.position.xyz/*Æ÷Áö¼Ç*/ + matRotateByBillboard[2].xyz * 0.1f /*»ï°¢Æí´ë*/ + matRotateByBillboard[0].xyz * 0.5f - matRotateByBillboard[1].xyz * 0.5f /*»ç°¢ÇüÀ»À§ÇÑÁ¡À§Ä¡*/ + matRotateByBillboard[1].xyz * 0.5f /*³ôÀÌ*/, 1.f);
-        output[j * 4 + 3].position = float4(vtx.position.xyz/*Æ÷Áö¼Ç*/ + matRotateByBillboard[2].xyz * 0.1f /*»ï°¢Æí´ë*/ - matRotateByBillboard[0].xyz * 0.5f - matRotateByBillboard[1].xyz * 0.5f /*»ç°¢ÇüÀ»À§ÇÑÁ¡À§Ä¡*/ + matRotateByBillboard[1].xyz * 0.5f /*³ôÀÌ*/, 1.f);
+            output[j * 4 + 0].position = float4(vtx.position.xyz/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/ + matRotateByBillboard[2].xyz * 0.1f /*ï¿½ï°¢ï¿½ï¿½ï¿½*/ - matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f /*ï¿½ç°¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¡*/ + matRotateByBillboard[1].xyz * 0.5f /*ï¿½ï¿½ï¿½ï¿½*/ + mul(mul(vWind, fWindPowerMagicNumber), fWindWeight) /*ï¿½Ù¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø½ï¿½ï¿½ï¿½ ï¿½Ý¿ï¿½*/, 1.f);
+            output[j * 4 + 1].position = float4(vtx.position.xyz/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/ + matRotateByBillboard[2].xyz * 0.1f /*ï¿½ï°¢ï¿½ï¿½ï¿½*/ + matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f /*ï¿½ç°¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¡*/ + matRotateByBillboard[1].xyz * 0.5f /*ï¿½ï¿½ï¿½ï¿½*/ + mul(mul(vWind, fWindPowerMagicNumber), fWindWeight) /*ï¿½Ù¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø½ï¿½ï¿½ï¿½ ï¿½Ý¿ï¿½*/, 1.f);
+            output[j * 4 + 2].position = float4(vtx.position.xyz/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/ + matRotateByBillboard[2].xyz * 0.1f /*ï¿½ï°¢ï¿½ï¿½ï¿½*/ + matRotateByBillboard[0].xyz * 0.5f - matRotateByBillboard[1].xyz * 0.5f /*ï¿½ç°¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¡*/ + matRotateByBillboard[1].xyz * 0.5f /*ï¿½ï¿½ï¿½ï¿½*/, 1.f);
+            output[j * 4 + 3].position = float4(vtx.position.xyz/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/ + matRotateByBillboard[2].xyz * 0.1f /*ï¿½ï°¢ï¿½ï¿½ï¿½*/ - matRotateByBillboard[0].xyz * 0.5f - matRotateByBillboard[1].xyz * 0.5f /*ï¿½ç°¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¡*/ + matRotateByBillboard[1].xyz * 0.5f /*ï¿½ï¿½ï¿½ï¿½*/, 1.f);
         
-        output[j * 4 + 0].uv = float2(0.f, 0.001f);
-        output[j * 4 + 1].uv = float2(1.f, 0.001f);
-        output[j * 4 + 2].uv = float2(1.f, 0.999f);
-        output[j * 4 + 3].uv = float2(0.f, 0.999f);
+            output[j * 4 + 0].uv = float2(0.f, 0.001f);
+            output[j * 4 + 1].uv = float2(1.f, 0.001f);
+            output[j * 4 + 2].uv = float2(1.f, 0.999f);
+            output[j * 4 + 3].uv = float2(0.f, 0.999f);
     
-        output[j * 4 + 0].viewPosition = mul(output[j * 4 + 0].position, mul(W, V));
-        output[j * 4 + 1].viewPosition = mul(output[j * 4 + 1].position, mul(W, V));
-        output[j * 4 + 2].viewPosition = mul(output[j * 4 + 2].position, mul(W, V));
-        output[j * 4 + 3].viewPosition = mul(output[j * 4 + 3].position, mul(W, V));
+            output[j * 4 + 0].viewPosition = mul(output[j * 4 + 0].position, mul(W, V));
+            output[j * 4 + 1].viewPosition = mul(output[j * 4 + 1].position, mul(W, V));
+            output[j * 4 + 2].viewPosition = mul(output[j * 4 + 2].position, mul(W, V));
+            output[j * 4 + 3].viewPosition = mul(output[j * 4 + 3].position, mul(W, V));
 
     // proj q
-        output[j * 4 + 0].position = mul(float4(output[j * 4 + 0].viewPosition, 1.f), P);
-        output[j * 4 + 1].position = mul(float4(output[j * 4 + 1].viewPosition, 1.f), P);
-        output[j * 4 + 2].position = mul(float4(output[j * 4 + 2].viewPosition, 1.f), P);
-        output[j * 4 + 3].position = mul(float4(output[j * 4 + 3].viewPosition, 1.f), P);
+            output[j * 4 + 0].position = mul(float4(output[j * 4 + 0].viewPosition, 1.f), P);
+            output[j * 4 + 1].position = mul(float4(output[j * 4 + 1].viewPosition, 1.f), P);
+            output[j * 4 + 2].position = mul(float4(output[j * 4 + 2].viewPosition, 1.f), P);
+            output[j * 4 + 3].position = mul(float4(output[j * 4 + 3].viewPosition, 1.f), P);
         
-        output[j * 4 + 0].viewNormal = mul(RotateWByBillboard[2], V).xyz;
-        output[j * 4 + 1].viewNormal = mul(RotateWByBillboard[2], V).xyz;
-        output[j * 4 + 2].viewNormal = mul(RotateWByBillboard[2], V).xyz;
-        output[j * 4 + 3].viewNormal = mul(RotateWByBillboard[2], V).xyz;
+            output[j * 4 + 0].viewNormal = mul(RotateWByBillboard[2], V).xyz;
+            output[j * 4 + 1].viewNormal = mul(RotateWByBillboard[2], V).xyz;
+            output[j * 4 + 2].viewNormal = mul(RotateWByBillboard[2], V).xyz;
+            output[j * 4 + 3].viewNormal = mul(RotateWByBillboard[2], V).xyz;
         
-        output[j * 4 + 0].viewTangent = mul(RotateWByBillboard[0], V).xyz;
-        output[j * 4 + 1].viewTangent = mul(RotateWByBillboard[0], V).xyz;
-        output[j * 4 + 2].viewTangent = mul(RotateWByBillboard[0], V).xyz;
-        output[j * 4 + 3].viewTangent = mul(RotateWByBillboard[0], V).xyz;
+            output[j * 4 + 0].viewTangent = mul(RotateWByBillboard[0], V).xyz;
+            output[j * 4 + 1].viewTangent = mul(RotateWByBillboard[0], V).xyz;
+            output[j * 4 + 2].viewTangent = mul(RotateWByBillboard[0], V).xyz;
+            output[j * 4 + 3].viewTangent = mul(RotateWByBillboard[0], V).xyz;
 
-        outputStream.Append(output[j * 4 + 0]);
-        outputStream.Append(output[j * 4 + 1]);
-        outputStream.Append(output[j * 4 + 2]);
-        outputStream.RestartStrip();
+            outputStream.Append(output[j * 4 + 0]);
+            outputStream.Append(output[j * 4 + 1]);
+            outputStream.Append(output[j * 4 + 2]);
+            outputStream.RestartStrip();
 
-        outputStream.Append(output[j * 4 + 0]);
-        outputStream.Append(output[j * 4 + 2]);
-        outputStream.Append(output[j * 4 + 3]);
-        outputStream.RestartStrip();
+            outputStream.Append(output[j * 4 + 0]);
+            outputStream.Append(output[j * 4 + 2]);
+            outputStream.Append(output[j * 4 + 3]);
+            outputStream.RestartStrip();
+        }
+
     }
-
-}
 
 [maxvertexcount(18)]
 void GS_Grass_Instancing(point InstancingOuput input[1], inout TriangleStream<GS_GRASS_INSTANCING_OUTPUT> outputStream)
 {
     const uint vertexCount = 4;
     const uint billboardCount = 3;
-    GS_GRASS_INSTANCING_OUTPUT output[vertexCount * billboardCount] =
+    GS_GRASS_INSTANCING_OUTPUT output[vertexCount * billboardCount];
+    for (uint i = 0; i < vertexCount * billboardCount; ++i)
     {
-        (GS_GRASS_INSTANCING_OUTPUT) 0.f, (GS_GRASS_INSTANCING_OUTPUT) 0.f, (GS_GRASS_INSTANCING_OUTPUT) 0.f, (GS_GRASS_INSTANCING_OUTPUT) 0.f,
-        (GS_GRASS_INSTANCING_OUTPUT) 0.f, (GS_GRASS_INSTANCING_OUTPUT) 0.f, (GS_GRASS_INSTANCING_OUTPUT) 0.f, (GS_GRASS_INSTANCING_OUTPUT) 0.f,
-        (GS_GRASS_INSTANCING_OUTPUT) 0.f, (GS_GRASS_INSTANCING_OUTPUT) 0.f, (GS_GRASS_INSTANCING_OUTPUT) 0.f, (GS_GRASS_INSTANCING_OUTPUT) 0.f
-    };
-    
+        output[i] = (GS_GRASS_INSTANCING_OUTPUT) 0.f;
+    }
     InstancingOuput vtx = input[0];
     
-    // ¹Ù¶÷ÀÇ ¹æÇâ,¼¼±â(ÀÌµ¿·®),ÇöÀç°¡ÁßÄ¡(0~1),¼Óµµ(0~1µµ´Þ¼Óµµ)
-    float3 vWind = InstanceRenderParams[vtx.id].xyz;
+    // ï¿½Ù¶ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½(ï¿½Ìµï¿½ï¿½ï¿½),ï¿½ï¿½ï¿½ç°¡ï¿½ï¿½Ä¡(0~1),ï¿½Óµï¿½(0~1ï¿½ï¿½ï¿½Þ¼Óµï¿½)
+    float3 vWind = vtx.renderParam.xyz;
     float fWindPowerMagicNumber = 0.05f;
-    float fWindWeight = InstanceRenderParams[vtx.id].w;
+    float fWindWeight = vtx.renderParam.w;
     
     for (uint j = 0; j < billboardCount; j++)
     {
-        float4x4 matRotateByBillboard = RotateMatrix(radians(120.f * j), float3(0.f, 1.f, 0.f));
+        float4x4 matRotateByBillboard = RotateMatrix(radians(120.f * j), float3(0.f, 1.f, 0.f) /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 0/1/0ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½*/);
         float4x4 RotateWByBillboard = mul(matRotateByBillboard, vtx.matWorld);
         
-        output[j * 4 + 0].position = float4(vtx.position.xyz/*Æ÷Áö¼Ç*/ + matRotateByBillboard[2].xyz * 0.1f /*»ï°¢Æí´ë*/ - matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f /*»ç°¢ÇüÀ»À§ÇÑÁ¡À§Ä¡*/ + matRotateByBillboard[1].xyz * 0.5f /*³ôÀÌ*/ + mul(mul(vWind, fWindPowerMagicNumber), fWindWeight) /*¹Ù¶÷Á¤º¸¸¦ À§ÂÊ ¹öÅØ½º¿¡ ¹Ý¿µ*/, 1.f);
-        output[j * 4 + 1].position = float4(vtx.position.xyz/*Æ÷Áö¼Ç*/ + matRotateByBillboard[2].xyz * 0.1f /*»ï°¢Æí´ë*/ + matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f /*»ç°¢ÇüÀ»À§ÇÑÁ¡À§Ä¡*/ + matRotateByBillboard[1].xyz * 0.5f /*³ôÀÌ*/ + mul(mul(vWind, fWindPowerMagicNumber), fWindWeight) /*¹Ù¶÷Á¤º¸¸¦ À§ÂÊ ¹öÅØ½º¿¡ ¹Ý¿µ*/, 1.f);
-        output[j * 4 + 2].position = float4(vtx.position.xyz/*Æ÷Áö¼Ç*/ + matRotateByBillboard[2].xyz * 0.1f /*»ï°¢Æí´ë*/ + matRotateByBillboard[0].xyz * 0.5f - matRotateByBillboard[1].xyz * 0.5f /*»ç°¢ÇüÀ»À§ÇÑÁ¡À§Ä¡*/ + matRotateByBillboard[1].xyz * 0.5f /*³ôÀÌ*/, 1.f);
-        output[j * 4 + 3].position = float4(vtx.position.xyz/*Æ÷Áö¼Ç*/ + matRotateByBillboard[2].xyz * 0.1f /*»ï°¢Æí´ë*/ - matRotateByBillboard[0].xyz * 0.5f - matRotateByBillboard[1].xyz * 0.5f /*»ç°¢ÇüÀ»À§ÇÑÁ¡À§Ä¡*/ + matRotateByBillboard[1].xyz * 0.5f /*³ôÀÌ*/, 1.f);
+        output[j * 4 + 0].position = float4(vtx.position.xyz/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/ + matRotateByBillboard[2].xyz * 0.1f /*ï¿½ï°¢ï¿½ï¿½ï¿½*/ - matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f /*ï¿½ç°¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¡*/ + matRotateByBillboard[1].xyz * 0.5f /*ï¿½ï¿½ï¿½ï¿½*/ + mul(mul(vWind, fWindPowerMagicNumber), fWindWeight) /*ï¿½Ù¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø½ï¿½ï¿½ï¿½ ï¿½Ý¿ï¿½*/, 1.f);
+        output[j * 4 + 1].position = float4(vtx.position.xyz/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/ + matRotateByBillboard[2].xyz * 0.1f /*ï¿½ï°¢ï¿½ï¿½ï¿½*/ + matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f /*ï¿½ç°¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¡*/ + matRotateByBillboard[1].xyz * 0.5f /*ï¿½ï¿½ï¿½ï¿½*/ + mul(mul(vWind, fWindPowerMagicNumber), fWindWeight) /*ï¿½Ù¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø½ï¿½ï¿½ï¿½ ï¿½Ý¿ï¿½*/, 1.f);
+        output[j * 4 + 2].position = float4(vtx.position.xyz/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/ + matRotateByBillboard[2].xyz * 0.1f /*ï¿½ï°¢ï¿½ï¿½ï¿½*/ + matRotateByBillboard[0].xyz * 0.5f - matRotateByBillboard[1].xyz * 0.5f /*ï¿½ç°¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¡*/ + matRotateByBillboard[1].xyz * 0.5f /*ï¿½ï¿½ï¿½ï¿½*/, 1.f);
+        output[j * 4 + 3].position = float4(vtx.position.xyz/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/ + matRotateByBillboard[2].xyz * 0.1f /*ï¿½ï°¢ï¿½ï¿½ï¿½*/ - matRotateByBillboard[0].xyz * 0.5f - matRotateByBillboard[1].xyz * 0.5f /*ï¿½ç°¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¡*/ + matRotateByBillboard[1].xyz * 0.5f /*ï¿½ï¿½ï¿½ï¿½*/, 1.f);
         
         output[j * 4 + 0].uv = float2(0.f, 0.001f);
         output[j * 4 + 1].uv = float2(1.f, 0.001f);
@@ -216,6 +229,11 @@ void GS_Grass_Instancing(point InstancingOuput input[1], inout TriangleStream<GS
         output[j * 4 + 1].id = vtx.id;
         output[j * 4 + 2].id = vtx.id;
         output[j * 4 + 3].id = vtx.id;
+        
+        output[j * 4 + 0].renderParam = vtx.renderParam;
+        output[j * 4 + 1].renderParam = vtx.renderParam;
+        output[j * 4 + 2].renderParam = vtx.renderParam;
+        output[j * 4 + 3].renderParam = vtx.renderParam;
         
         outputStream.Append(output[j * 4 + 0]);
         outputStream.Append(output[j * 4 + 1]);
@@ -301,7 +319,7 @@ PS_OUT_Deferred PS_Deferred_Instancing(GS_GRASS_INSTANCING_OUTPUT input)
     if (bHasDissolveMap != 0)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
-        if (dissolve < InstanceRenderParams[input.id].x)
+        if (dissolve < input.renderParam.x)
             discard;
     }
     
@@ -422,7 +440,7 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(GS_GRASS_INSTANCING_OUTPUT input)
     if (bHasDissolveMap != 0)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).w;
-        if (dissolve < InstanceRenderParams[input.id].w)
+        if (dissolve < input.renderParam.w)
             discard;
     }
     
@@ -514,3 +532,4 @@ technique11 Instancing
         SetGeometryShader(CompileShader(gs_5_0, GS_Grass_Instancing()));
     }
 };
+

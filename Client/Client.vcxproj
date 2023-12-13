@@ -230,6 +230,7 @@
     <ClInclude Include="NPC_FSM.h" />
     <ClInclude Include="ObjectDissolve.h" />
     <ClInclude Include="ObjectDissolveCreate.h" />
+    <ClInclude Include="PortalScript.h" />
     <ClInclude Include="Smoke_Detect.h" />
     <ClInclude Include="Smoke_WitcherSense.h" />
     <ClInclude Include="SpikeScene.h" />
@@ -368,6 +369,7 @@
     <ClCompile Include="NPC_FSM.cpp" />
     <ClCompile Include="ObjectDissolve.cpp" />
     <ClCompile Include="ObjectDissolveCreate.cpp" />
+    <ClCompile Include="PortalScript.cpp" />
     <ClCompile Include="Smoke_Detect.cpp" />
     <ClCompile Include="Smoke_WitcherSense.cpp" />
     <ClCompile Include="SpikeScene.cpp" />

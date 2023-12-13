@@ -84,7 +84,6 @@ public:
 	void Push_KeyframeData(const KeyFrameDesc& desc);
 	void Push_TweenData(const preTweenDesc& desc);
 	void Push_InstanceTweenData(const InstanceTweenDesc& desc);
-	void Push_InstanceRenderParamData(const InstanceRenderParamDesc& desc);
 	void Push_AnimAddonData(const AnimAddonDesc& desc);
 	void Push_EffectData(const EffectDesc& desc);
 	void Push_ParticleData(const ParticleDesc& desc);
@@ -125,10 +124,6 @@ private:
 	InstanceTweenDesc m_InstanceTweenDesc;
 	shared_ptr<ConstantBuffer> m_pInstanceTweenBuffer;
 	ComPtr<ID3DX11EffectConstantBuffer> m_pInstanceTweenEffectBuffer;
-
-	InstanceRenderParamDesc m_InstanceRenderParamDesc;
-	shared_ptr<ConstantBuffer> m_pInstanceRenderParamBuffer;
-	ComPtr<ID3DX11EffectConstantBuffer> m_pInstanceRenderParamEffectBuffer;
 
 	AnimAddonDesc m_BoneIndexDesc;
 	shared_ptr<ConstantBuffer> m_pBoneIndexBuffer;

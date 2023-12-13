@@ -45,6 +45,7 @@ public:
 public:
     _float Get_UVWeight() { return m_MapObjDesc.fUVWeight; }
     MAPOBJDESC& Get_DESC() { return m_MapObjDesc; }
+    _float4x4& Get_DummyData() { return m_MapObjDesc.matDummyData; }
 
 public:
     virtual HRESULT Init() override;
@@ -53,4 +54,3 @@ public:
 private:
     MAPOBJDESC m_MapObjDesc;
 };
-

@@ -10,6 +10,7 @@
 #include "RigidBody.h"
 #include "MathUtils.h"
 #include "FileUtils.h"
+#include "WeedScript.h"
 #include "FontRenderer.h"
 #include "MeshCollider.h"
 #include "MeshRenderer.h"
@@ -119,7 +120,7 @@ void Scene::Render()
 	Render_Forward();
 
 	Render_BloomMap();
-	Render_BloomMapScaling();
+	Render_BloomMapScaling(g_BloomData.samplingCount);
 
 	Render_BloomFinal();
 
@@ -899,6 +900,59 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 	file->Read<_bool>(g_bPBR_On);
 	file->Read<_float>(g_lightAttenuation);
 	file->Read<_float>(g_ambientRatio);
+
+	_float4 DummyData;
+	file->Read<_float4>(DummyData);
+
+#pragma region CreateGrass
+	if (DummyData.x >= 1.f)
+	{
+		_int WeedLength = file->Read<_int>();
+
+		for (_int i = 0; i < WeedLength; ++i)
+		{
+			wstring strWeedName = Utils::ToWString(file->Read<string>());
+			_float4x4 matWeedWorldMat = file->Read<_float4x4>();
+			_int iWeedIndex = file->Read<_int>();
+			_float4 CullData = _float4{ file->Read<_float3>(), file->Read<_float>() };
+
+			shared_ptr<Mesh> WeedMesh = RESOURCES.Get<Mesh>(L"Point");
+
+			// 풀 오브젝트 생성
+			shared_ptr<GameObject> WeedObj = make_shared<GameObject>();
+			WeedObj->Set_Name(strWeedName);
+			WeedObj->GetOrAddTransform();
+
+			WeedObj->GetOrAddTransform()->Set_WorldMat(matWeedWorldMat);
+
+			// 메시렌더러
+			shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Grass.fx"));
+			renderer->Set_Mesh(WeedMesh);
+
+			shared_ptr<Material> material = RESOURCES.Get<Material>(strWeedName);
+			if (material == nullptr)
+			{
+				MSG_BOX("Fail : CreateWeed");
+				return;
+			}
+			renderer->Set_Material(material);
+
+			WeedObj->Add_Component(renderer);
+
+			shared_ptr<WeedScript> WeedSc = make_shared<WeedScript>();
+			// 모델번호 인덱스 저장
+			WeedSc->Set_WeedIndex(iWeedIndex);
+			WeedObj->Add_Component(WeedSc);
+
+			// 컬링정보
+			WeedObj->Set_CullPos(_float3{ CullData });
+			WeedObj->Set_CullRadius(CullData.w);
+			WeedObj->Set_FrustumCulled(true);
+
+			Add_GameObject(WeedObj);
+		}
+	}
+#pragma endregion
 }
 
 void Scene::PickUI()
@@ -1251,36 +1305,42 @@ void Scene::Render_BloomMap()
 	material->Get_Shader()->DrawIndexed(0, 0, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 }
 
-void Scene::Render_BloomMapScaling()
+void Scene::Render_BloomMapScaling(_uint downSamplingCount)
 {
 	if (!g_BloomData.g_BloomOn)
 		return;
 
-	for (_uchar i = 0; i < 3; ++i)
+	wstring downSamplingTarget = L"BloomTarget";
+
+	for (_uint i = 0; i < downSamplingCount; ++i)
 	{
 		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLOOMDOWNSCALE0) + i);
 		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
-		auto material = RESOURCES.Get<Material>(L"BloomDownScale" + to_wstring(i));
+
+		auto material = RESOURCES.Get<Material>(L"Sampler");
 		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
-		//material->Get_Shader()->GetScalar("GaussianWeight")->SetFloatArray(a, 0, 25);
-		//material->Get_Shader()->GetScalar("DownScalePower")->SetFloat(m_fDownScalePower);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(downSamplingTarget));
+
 		material->Push_SubMapData();
 
 		mesh->Get_VertexBuffer()->Push_Data();
+
 		mesh->Get_IndexBuffer()->Push_Data();
 
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+
+		downSamplingTarget = L"BLOOMDOWNSCALE" + to_wstring(i);
 	}
 
-	for (_uchar i = 0; i < 3; ++i)
+	for (_int i = downSamplingCount - 1; i >= 0; --i)
 	{
 		RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLOOMUPSCALE0) + i);
 		GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
-		auto material = RESOURCES.Get<Material>(L"BloomUpScale" + to_wstring(i));
+		auto material = RESOURCES.Get<Material>(L"Sampler");
 		auto mesh = RESOURCES.Get<Mesh>(L"Quad");
-		//	material->Get_Shader()->GetScalar("UpScalePower")->SetFloat(m_fUpScalePower);
+		material->Set_SubMap(0, RESOURCES.Get<Texture>(downSamplingTarget));
 
 		material->Push_SubMapData();
 
@@ -1288,13 +1348,55 @@ void Scene::Render_BloomMapScaling()
 		mesh->Get_IndexBuffer()->Push_Data();
 
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		
-		if(i != 2)
+
+		if(i != 0)
 			material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 		else
 			material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
+		downSamplingTarget = L"BLOOMUPSCALE" + to_wstring(i);
 	}
+	auto material = RESOURCES.Get<Material>(L"BloomFinal");
+	material->Set_SubMap(1, RESOURCES.Get<Texture>(downSamplingTarget));
+
+
+	//for (_uchar i = 0; i < 3; ++i)
+	//{
+	//	RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLOOMDOWNSCALE0) + i);
+	//	GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
+	//	auto material = RESOURCES.Get<Material>(L"BloomDownScale" + to_wstring(i));
+	//	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+	//	material->Push_SubMapData();
+
+	//	mesh->Get_VertexBuffer()->Push_Data();
+	//	mesh->Get_IndexBuffer()->Push_Data();
+
+	//	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	//	material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	//}
+
+	//for (_uchar i = 0; i < 3; ++i)
+	//{
+	//	RENDER_TARGET_GROUP_TYPE eType = static_cast<RENDER_TARGET_GROUP_TYPE>(static_cast<_uchar>(RENDER_TARGET_GROUP_TYPE::BLOOMUPSCALE0) + i);
+	//	GRAPHICS.Get_RTGroup(eType)->OMSetRenderTargets();
+	//	auto material = RESOURCES.Get<Material>(L"BloomUpScale" + to_wstring(i));
+	//	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+	//	//	material->Get_Shader()->GetScalar("UpScalePower")->SetFloat(m_fUpScalePower);
+
+	//	material->Push_SubMapData();
+
+	//	mesh->Get_VertexBuffer()->Push_Data();
+	//	mesh->Get_IndexBuffer()->Push_Data();
+
+	//	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//	
+	//	if(i != 2)
+	//		material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	//	else
+	//		material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+
+	//}
 
 }
 

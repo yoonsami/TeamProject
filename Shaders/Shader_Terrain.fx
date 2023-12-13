@@ -65,9 +65,12 @@ struct HS_OUT
 // [Terrain Shader]
 // g_int_0      : TileX
 // g_int_1      : TileZ
+// g_float_0    : BrushRadius
 // g_float_1    : Max Tessellation Level
 // g_vec2_1     : Min/Max Tessellation Distance
 // g_vec2_2
+// g_vec4_0     : BrushPos
+// g_vec4_1     : TerrainColor
 
 //Constant HS
 PatchTess ConstantHS(InputPatch<VS_OUT, 3> input, int patchID : SV_PrimitiveID)
@@ -227,7 +230,8 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
     output.normal = float4(input.viewNormal.xyz, 0.f);
     output.depth = input.position.z;
     output.depth.w = input.viewPosition.z;
-    output.diffuseColor = diffuseColor;
+    float fColor = 14.f / 255.f;
+    output.diffuseColor = diffuseColor + float4(-fColor, -fColor, -fColor, 0.f);
     output.specularColor = specularColor;
     output.emissiveColor = emissiveColor;
     return output;
@@ -349,7 +353,8 @@ PBR_MAPOBJECT_OUTPUT PS_Terrain_PBR(MeshOutput input)
     output.normal = float4(input.viewNormal.xyz, 0.f);
     output.positionSSD = float4(input.viewPosition.xyz, 1.f);
     output.arm = float4(1.f, 0.8f, 0.0f, 1.f);
-    output.diffuseColor = color;
+    float fColor = 14.f / 255.f;
+    output.diffuseColor = color + float4(-fColor, -fColor, -fColor, 0.f);
     output.emissive = 0.f;
     output.rimColor = Material.emissive;
     output.blur = 0;
@@ -377,6 +382,33 @@ technique11 T0
         SetHullShader(CompileShader(hs_5_0, HS_Main()));
         SetDomainShader(CompileShader(ds_5_0, DS_Main()));
         SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetPixelShader(CompileShader(ps_5_0, PS_Terrain_PBR()));
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetGeometryShader(NULL);
+    }
+
+};
+
+technique11 T1_Debug
+{
+    pass Terrain_Deferred
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Terrain()));
+        SetHullShader(CompileShader(hs_5_0, HS_Main()));
+        SetDomainShader(CompileShader(ds_5_0, DS_Main()));
+        SetRasterizerState(FillModeWireFrame);
+        SetDepthStencilState(DSS_Default, 0);
+        SetPixelShader(CompileShader(ps_5_0, PS_Deferred()));
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetGeometryShader(NULL);
+    }
+    pass Terrain_Deferred_PBR
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Terrain()));
+        SetHullShader(CompileShader(hs_5_0, HS_Main()));
+        SetDomainShader(CompileShader(ds_5_0, DS_Main()));
+        SetRasterizerState(FillModeWireFrame);
         SetDepthStencilState(DSS_Default, 0);
         SetPixelShader(CompileShader(ps_5_0, PS_Terrain_PBR()));
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);

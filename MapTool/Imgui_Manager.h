@@ -83,7 +83,7 @@ private: // 맵오브젝트관련
 	HRESULT Load_MapObject();
 	// 맵에있는 설치된 오브젝트 이름을 모은 텍스트 파일 저장
 	HRESULT Save_ModelNames();
-
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
 private: //베이스 오브젝트
 	// 설치 가능한 오브젝트 목록
 	vector<const char*> m_strObjectBaseNameList;
@@ -115,7 +115,6 @@ private: //베이스 오브젝트
 	_int m_iObjects = { 0 };
 	// 현재 설치된 오브젝트들을 가지는 셰어드포인터
 	vector<shared_ptr<GameObject>> m_pMapObjects;
-	_float3 m_PickingPos = { 0.f, 0.f, 0.f };
 	// 세이브파일이름
 	char m_szSaveFileName[MAX_PATH] = "";
 	// 콜라이더목록
@@ -203,29 +202,35 @@ private: // 지형, 잔디
 	// 터레인 관련프레임
 	void Frame_Terrain();
 	// 현재 설치된 풀
-	void Frame_Weed();
+	void Frame_InstalledWeed();
 	// 풀 관리
 	void Frame_WeedManager();
 	// 현재 갖고있는 타일정보로 터레인새로생성
 	void Create_Terrain();
 	// 터레인정보(메시)를 기반으로 터레인오브젝트 생성
 	void Create_Terrain(shared_ptr<class Terrain> _pTerrainMesh, _int _iTerrainSizeX, _int _iTerrainSizeY);
-	// 마스크텍스쳐 생성저장
-	void Create_MaskTexture();
+	// 현재 터레인의 콜라이더 메시 정보로 HeightMap 생성저장 + 지형의 머테리얼 리로드
+	void Create_HeightMap();
 	// 범위에 들어가는 정점들의 높이를 fInitHeight로 변경
 	void Set_TerrainHeight();
 	// 지형버텍스의 노말과 탄젠트 다시계산
 	void Cal_NormalTangent();
 	// 지형피킹한곳에서 브러시범위만큼 풀을 빼곡하게 까는 함수
 	void Create_WeedRegion();
+	// 지형피킹한곳에서 브러시범위안의 풀을 제거
+	void Delete_WeedRegion();
 	// 포지션을 입력하면 xz위치에 해당하는 높이와 메시노말방향으로 풀심기
 	void Create_Weed(_float3 _CreatePos);
+	// 풀의 월드행렬을 입력하면 그걸 기반으로 풀을 만듦.
+	HRESULT Create_Weed(wstring _strWeedName, _float4x4 _matWorld, _int _iWeedIndex, _float4 _CullData);
 
-// 지형세이브로드
+// 세이브로드
 	// 지형정보 저장.
 	HRESULT Save_TerrainData();
 	// 지형정보 가져와서 멤버변수 메시렌더러에 넣고 터레인 다시생성하기
 	HRESULT LoadAndCreateTerrain();
+	// 파일핸들을 넘겨주면 풀의 정보를 Write
+	void Save_Weeds(weak_ptr<class FileUtils> _file);
 
 // 바다
 	// 물색깔
@@ -243,36 +248,57 @@ private: // 지형, 잔디
 	// 터레인브러시크기
 	_float m_fTerrainBrushRadius = { 0.f };
 	_float3 m_vTerrainBrushPosition = _float3{ 0.f, 0.f, 0.f };
-	// 터레인만 피킹함.
-	_bool m_bTerrainPickingMode = { false };
 	vector<string> m_TileNames;
 	_int m_iCurrentTile = { 0 };
 	_float m_fTilePressForce = { 0.01f };
 	// 범위안에 들어오는 녀석들의 높이를 해당숫자로 초기화 
 	_float m_fTerrainSetHeight = { 0.f };
+	Color m_TerrainColor = Color{ 0.f, 0.f, 0.f, 1.f };
 
 // 잔디
 	// 잔디 이름 모음
 	vector<string> m_strWeedCatalogue;
 	// 현재 잔디 번호
 	_int m_iCurrentWeedIndex = { 0 };
+	// 한번에 깔 잔디개수
+	_int m_iWeedCreateCount = { 0 };
+	//// 현재깔려있는풀 이름모음
+	//vector<string> m_strInstalledWeeds;
+	//_int m_iInstalledWeedIndex = { 0 };
+	// 현재깔려있는풀 오브젝트ptr
+	vector<shared_ptr<GameObject>> m_pInstalledWeeds;
+	vector<_uint> m_CountSameWeed;
+
+#pragma endregion
+
+#pragma region 피킹
+	// 피킹옵션
+	void Frame_PickingManager();
+	// 실제 피킹 내용
+	void Picking_Object();
+
+	// 피킹포지션
+	_float3 m_PickingPos = { 0.f, 0.f, 0.f };
+	// 오브젝트 피킹상태.
+	_bool m_bMapObjectPickingMode = { true };
+	// 터레인 피킹상태.
+	_bool m_bTerrainPickingMode = { false };
 #pragma endregion
 
 #pragma region 기타
 private: // 기타
 	// 쉐이더옵션관리
 	void Frame_ShaderOption();
-	// 피킹옵션
-	void Frame_PickingManager();
-	// 실제 피킹 내용
-	void Picking_Object();
+	// 기타 기능테스트를 위한 프레임
+	void Frame_Magic();
 	// 윤성이형의 셰이더옵션변경탭
 	void RenderOptionTab();
 	// 모든 쉐이더 옵션 초기화
 	void ClearAllShaderOptions();
 
-	// 오브젝트 피킹가능상태
-	_bool m_bMapObjectPickingMode = { true };
+	// 맵마다 가지고 있을 더미데이터 ( float[0] = 풀정보 )
+	_float4 m_vecDummyData = _float4{ 0.f, 0.f, 0.f, 0.f };
+
 #pragma endregion
 
 #pragma region NPC

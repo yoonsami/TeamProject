@@ -56,15 +56,15 @@ public:
 	void Set_Pass(_uint pass) { m_iPass = pass; }
 
 	void Render();
-	void Render_Instancing(shared_ptr<class InstancingBuffer>& buffer, shared_ptr<InstanceRenderParamDesc> renderParamDesc);
+	void Render_Instancing(shared_ptr<class InstancingBuffer>& buffer);
 	
 	void Render_Skybox();
 	
 	void Render_Shadow();
-	void Render_Shadow_Instancing(shared_ptr<InstancingBuffer>& buffer, shared_ptr<InstanceRenderParamDesc> renderParamDesc);
+	void Render_Shadow_Instancing(shared_ptr<InstancingBuffer>& buffer);
 	
 	void Render_MotionBlur();
-	void Render_MotionBlur_Instancing(shared_ptr<InstancingBuffer>& buffer, shared_ptr<InstanceRenderParamDesc> renderParamDesc);
+	void Render_MotionBlur_Instancing(shared_ptr<InstancingBuffer>& buffer);
 	void Render_Forward();
 	void Set_Outline() { m_bHasOutline = true; }
 	InstanceID Get_InstanceID();

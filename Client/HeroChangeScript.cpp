@@ -64,7 +64,7 @@ void HeroChangeScript::Tick()
 
 
 
-   /* if (KEYTAP(KEY_TYPE::F1))
+    if (KEYTAP(KEY_TYPE::F1))
     {
         Change_Hero(HERO::ACE3);
     }
@@ -95,7 +95,7 @@ void HeroChangeScript::Tick()
     else if (KEYTAP(KEY_TYPE::R))
 	{
         //Change_Hero(HERO::PLAYER);
-	}*/
+	}
 }
 
 void HeroChangeScript::Change_Hero(HERO eHero)

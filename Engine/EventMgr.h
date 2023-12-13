@@ -16,6 +16,8 @@ public:
 	void Create_Object(shared_ptr<GameObject> obj, _bool isStatic = false);
 	void Delete_Object(shared_ptr<GameObject>obj);
 
+	void Change_Scene(shared_ptr<Scene> obj);
+
 public:
 
 private:

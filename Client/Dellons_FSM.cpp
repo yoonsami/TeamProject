@@ -39,6 +39,8 @@ HRESULT Dellons_FSM::Init()
         m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
         m_fDetectRange = 5.f;
 
+        m_eElementType = GET_DATA(HERO::DELLONS).Element;
+
         m_bEntryTeam = true;
 
         m_bInitialize = true;
@@ -48,7 +50,7 @@ HRESULT Dellons_FSM::Init()
 	m_fEvade_AnimationSpeed = 1.5f;
 
 	if (!m_pAttackCollider.expired())
-		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(GET_DATA(HERO::DELLONS).Element);
+		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(m_eElementType);
     return S_OK;
 }
 
@@ -169,9 +171,7 @@ void Dellons_FSM::State_Tick()
     case STATE::skill_501100:
         skill_501100();
         break;
-    }
-
-    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+    }    
 
     if (m_iPreFrame != m_iCurFrame)
         m_iPreFrame = m_iCurFrame;
@@ -886,6 +886,11 @@ void Dellons_FSM::knockdown_end_Init()
 
 void Dellons_FSM::skill_1100()
 {
+    if (Init_CurFrame(9))
+        Add_And_Set_Effect(L"Dellons_1100");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_iCurFrame == 9)
 	{
 		Set_ColliderOption(DARK, L"Hit_Slash_Dark");
@@ -936,6 +941,11 @@ void Dellons_FSM::skill_1100_Init()
 
 void Dellons_FSM::skill_1200()
 {
+    if (Init_CurFrame(8))
+        Add_And_Set_Effect(L"Dellons_1200");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_iCurFrame == 8)
     {
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
@@ -990,6 +1000,11 @@ void Dellons_FSM::skill_1200_Init()
 
 void Dellons_FSM::skill_1300()
 {
+    if (Init_CurFrame(9))
+        Add_And_Set_Effect(L"Dellons_1300");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_iCurFrame == 8)
     {
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
@@ -1044,6 +1059,13 @@ void Dellons_FSM::skill_1300_Init()
 
 void Dellons_FSM::skill_1400()
 {
+    if (Init_CurFrame(8))
+        Add_And_Set_Effect(L"Dellons_1400");
+    if (Init_CurFrame(14))
+        Add_And_Set_Effect(L"Dellons_1400_1");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_iCurFrame == 8)
     {
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
@@ -1160,6 +1182,11 @@ void Dellons_FSM::skill_93100_Init()
 
 void Dellons_FSM::skill_100100()
 {
+    if (Init_CurFrame(10))
+        Add_And_Set_Effect(L"Dellons_100100");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (Init_CurFrame(12))
     {
 		FORWARDMOVINGSKILLDESC desc;
@@ -1172,7 +1199,7 @@ void Dellons_FSM::skill_100100()
 			Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
 			_float3::Up;
 
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 5.f, L"Hit_Slash_Dark");
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.5f, desc, NORMAL_ATTACK, 5.f, L"Hit_Slash_Dark");
     }
     
 
@@ -1213,6 +1240,13 @@ void Dellons_FSM::skill_100100_Init()
 
 void Dellons_FSM::skill_100200()
 {
+    if (Init_CurFrame(0))
+        Add_And_Set_Effect(L"Dellons_100200_Start");
+    if (Init_CurFrame(18))
+        Add_And_Set_Effect(L"Dellons_100200");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (Init_CurFrame(15))
     {
 		FORWARDMOVINGSKILLDESC desc;
@@ -1258,6 +1292,11 @@ void Dellons_FSM::skill_100200_Init()
 
 void Dellons_FSM::skill_200100()
 {
+    if (Init_CurFrame(5))
+        Add_And_Set_Effect(L"Dellons_200100");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_iCurFrame == 7)
     {
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
@@ -1303,6 +1342,11 @@ void Dellons_FSM::skill_200100_Init()
 
 void Dellons_FSM::skill_200200()
 {
+    if (Init_CurFrame(5))
+        Add_And_Set_Effect(L"Dellons_200200");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (Init_CurFrame(7))
     {
 		FORWARDMOVINGSKILLDESC desc;

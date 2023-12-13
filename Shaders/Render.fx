@@ -16,6 +16,7 @@ struct VTXMeshInstancing
     float3 tangent : TANGENT;
     uint instanceID : SV_INSTANCEID;
     row_major float4x4 world : INST;
+    float4 renderParam : INSTT;
 };
 
 // ModelRenderer, Animator
@@ -31,6 +32,7 @@ struct VTXModelInstancing
     int filtered : TEXCOORD2;
     uint instanceID : SV_INSTANCEID;
     row_major float4x4 world : INST;
+    float4 renderParam : INSTT;
 };
 
 struct RenderParam
@@ -123,11 +125,6 @@ bool g_SSAO_On;
 cbuffer InstanceTweenBuffer
 {
     TweenFrameDesc InstanceTweenFrames[MAX_MODEL_INSTANCE];
-};
-
-cbuffer InstanceRenderParamBuffer
-{
-    float4 InstanceRenderParams[MAX_MODEL_INSTANCE];
 };
 
 cbuffer BoneBuffer

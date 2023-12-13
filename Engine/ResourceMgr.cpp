@@ -844,6 +844,12 @@ void ResourceMgr::CreateDefaultShader()
 	}
 }
 
+void ResourceMgr::Release_Sound()
+{
+	m_Resources[0][_uint(ResourceType::Sound)].clear();
+	m_Resources[1][_uint(ResourceType::Sound)].clear();
+}
+
 void ResourceMgr::CreateModel(const wstring& path, _bool flag)
 {
 	{
@@ -1232,9 +1238,6 @@ void ResourceMgr::CreateDefaultMaterial()
 		material->Set_TextureMap(Weedtexture, TextureMapType::DIFFUSE);
 		Add(WeedTextureName, material);
 	}
-	auto Weedtexture = RESOURCES.ReloadOrAddTexture(L"Weed", L"..\\Resources\\Textures\\MapObject\\TerrainTile\\pngegg.png");
-
-	int a = 0;
 }
 
 void ResourceMgr::CreateDefaultFont()

@@ -34,7 +34,7 @@ public:
 	shared_ptr<Shader> Get_Shader()			{ return m_pShader; }
 
 public:
-	void Render_Instancing(shared_ptr<InstancingBuffer>& buffer, shared_ptr<InstanceRenderParamDesc> renderParamDesc);
+	void Render_Instancing(shared_ptr<InstancingBuffer>& buffer);
 	void Render();
 
 	void Render_Water();
