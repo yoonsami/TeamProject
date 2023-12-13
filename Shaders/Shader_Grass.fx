@@ -66,23 +66,35 @@ struct GS_GRASS_INSTANCING_OUTPUT
 
 float4x4 RotateMatrix(float angle, float3 axis)
 {
+    axis = normalize(axis);
     float s = sin(angle);
     float c = cos(angle);
     float oneMinusC = 1.0 - c;
 
-    float3 sq = axis * axis;
+    //float3 sq = axis * axis;
     float3x3 rotationMatrix = float3x3(
-        sq.x * oneMinusC + c,
-        axis.x * axis.y * oneMinusC + axis.z * s,
-        axis.x * axis.z * oneMinusC - axis.y * s,
+        //axis.x * oneMinusC + c,
+        //axis.x * axis.y * oneMinusC + axis.z * s,
+        //axis.x * axis.z * oneMinusC - axis.y * s,
 
-        axis.x * axis.y * oneMinusC - axis.z * s,
-        sq.y * oneMinusC + c,
-        axis.y * axis.z * oneMinusC + axis.x * s,
+        //axis.x * axis.y * oneMinusC - axis.z * s,
+        //axis.y * oneMinusC + c,
+        //axis.y * axis.z * oneMinusC + axis.x * s,
 
-        axis.x * axis.z * oneMinusC + axis.y * s,
-        axis.y * axis.z * oneMinusC - axis.x * s,
-        sq.z * oneMinusC + c
+        //axis.x * axis.z * oneMinusC - axis.y * s,
+        //axis.y * axis.z * oneMinusC + axis.x * s,
+        //axis.z * axis.z * oneMinusC + c
+        c + (1 - c) * axis.x * axis.x,
+        (1 - c) * axis.x * axis.y - s * axis.z,
+        (1 - c) * axis.x * axis.z + s * axis.y,
+        
+        (1 - c) * axis.y * axis.x + s * axis.z,
+        c + (1 - c) * axis.y * axis.y,
+        (1 - c) * axis.y * axis.z - s * axis.x,
+        
+        (1 - c) * axis.z * axis.x - s * axis.y,
+        (1 - c) * axis.z * axis.y + s * axis.x,
+        c + (1 - c) * axis.z * axis.z
     );
     
     return float4x4(
@@ -98,80 +110,78 @@ void GS_Grass(point MeshOutput input[1], inout TriangleStream<GS_GRASS_OUTPUT> o
 {
     const uint vertexCount = 4;
     const uint billboardCount = 3;
-    GS_GRASS_OUTPUT output[vertexCount * billboardCount] =
+    GS_GRASS_OUTPUT output[vertexCount * billboardCount];
+    for (uint i = 0; i < vertexCount * billboardCount; ++i)
     {
-        (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f,
-        (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f,
-        (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f, (GS_GRASS_OUTPUT) 0.f
-    };
-    MeshOutput vtx = input[0];
+        output[i] = (GS_GRASS_OUTPUT) 0.f;
+    }
+        MeshOutput vtx = input[0];
     
     // 바람의 방향,세기(이동량),현재가중치(0~1),속도(0~1도달속도)
-    float3 vWind = g_vec4_0.xyz;
-    float fWindPowerMagicNumber = 0.05f;
-    float fWindWeight = g_vec4_0.w;
+        float3 vWind = g_vec4_0.xyz;
+        float fWindPowerMagicNumber = 0.05f;
+        float fWindWeight = g_vec4_0.w;
     
-    for (uint j = 0; j < billboardCount; j++)
-    {
-        float4x4 matRotateByBillboard = RotateMatrix(radians(120.f * j), W[1].xyz /*월드의UP으로회전*/);
-        float4x4 RotateWByBillboard = mul(matRotateByBillboard, W);
+        for (uint j = 0; j < billboardCount; j++)
+        {
+        /*로컬행렬이다잉*/
+            float4x4 matRotateByBillboard = RotateMatrix(radians(120.f * j /*0*/), float3(0.f, 1.f, 0.f));
+            float4x4 RotateWByBillboard = mul(matRotateByBillboard, W);
         
-        output[j * 4 + 0].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ - matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f /*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f /*높이*/ + mul(mul(vWind, fWindPowerMagicNumber), fWindWeight) /*바람정보를 위쪽 버텍스에 반영*/, 1.f);
-        output[j * 4 + 1].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ + matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f /*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f /*높이*/ + mul(mul(vWind, fWindPowerMagicNumber), fWindWeight) /*바람정보를 위쪽 버텍스에 반영*/, 1.f);
-        output[j * 4 + 2].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ + matRotateByBillboard[0].xyz * 0.5f - matRotateByBillboard[1].xyz * 0.5f /*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f /*높이*/, 1.f);
-        output[j * 4 + 3].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ - matRotateByBillboard[0].xyz * 0.5f - matRotateByBillboard[1].xyz * 0.5f /*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f /*높이*/, 1.f);
+            output[j * 4 + 0].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ - matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f /*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f /*높이*/ + mul(mul(vWind, fWindPowerMagicNumber), fWindWeight) /*바람정보를 위쪽 버텍스에 반영*/, 1.f);
+            output[j * 4 + 1].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ + matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f /*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f /*높이*/ + mul(mul(vWind, fWindPowerMagicNumber), fWindWeight) /*바람정보를 위쪽 버텍스에 반영*/, 1.f);
+            output[j * 4 + 2].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ + matRotateByBillboard[0].xyz * 0.5f - matRotateByBillboard[1].xyz * 0.5f /*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f /*높이*/, 1.f);
+            output[j * 4 + 3].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ - matRotateByBillboard[0].xyz * 0.5f - matRotateByBillboard[1].xyz * 0.5f /*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f /*높이*/, 1.f);
         
-        output[j * 4 + 0].uv = float2(0.f, 0.001f);
-        output[j * 4 + 1].uv = float2(1.f, 0.001f);
-        output[j * 4 + 2].uv = float2(1.f, 0.999f);
-        output[j * 4 + 3].uv = float2(0.f, 0.999f);
+            output[j * 4 + 0].uv = float2(0.f, 0.001f);
+            output[j * 4 + 1].uv = float2(1.f, 0.001f);
+            output[j * 4 + 2].uv = float2(1.f, 0.999f);
+            output[j * 4 + 3].uv = float2(0.f, 0.999f);
     
-        output[j * 4 + 0].viewPosition = mul(output[j * 4 + 0].position, mul(W, V));
-        output[j * 4 + 1].viewPosition = mul(output[j * 4 + 1].position, mul(W, V));
-        output[j * 4 + 2].viewPosition = mul(output[j * 4 + 2].position, mul(W, V));
-        output[j * 4 + 3].viewPosition = mul(output[j * 4 + 3].position, mul(W, V));
+            output[j * 4 + 0].viewPosition = mul(output[j * 4 + 0].position, mul(W, V));
+            output[j * 4 + 1].viewPosition = mul(output[j * 4 + 1].position, mul(W, V));
+            output[j * 4 + 2].viewPosition = mul(output[j * 4 + 2].position, mul(W, V));
+            output[j * 4 + 3].viewPosition = mul(output[j * 4 + 3].position, mul(W, V));
 
     // proj q
-        output[j * 4 + 0].position = mul(float4(output[j * 4 + 0].viewPosition, 1.f), P);
-        output[j * 4 + 1].position = mul(float4(output[j * 4 + 1].viewPosition, 1.f), P);
-        output[j * 4 + 2].position = mul(float4(output[j * 4 + 2].viewPosition, 1.f), P);
-        output[j * 4 + 3].position = mul(float4(output[j * 4 + 3].viewPosition, 1.f), P);
+            output[j * 4 + 0].position = mul(float4(output[j * 4 + 0].viewPosition, 1.f), P);
+            output[j * 4 + 1].position = mul(float4(output[j * 4 + 1].viewPosition, 1.f), P);
+            output[j * 4 + 2].position = mul(float4(output[j * 4 + 2].viewPosition, 1.f), P);
+            output[j * 4 + 3].position = mul(float4(output[j * 4 + 3].viewPosition, 1.f), P);
         
-        output[j * 4 + 0].viewNormal = mul(RotateWByBillboard[2], V).xyz;
-        output[j * 4 + 1].viewNormal = mul(RotateWByBillboard[2], V).xyz;
-        output[j * 4 + 2].viewNormal = mul(RotateWByBillboard[2], V).xyz;
-        output[j * 4 + 3].viewNormal = mul(RotateWByBillboard[2], V).xyz;
+            output[j * 4 + 0].viewNormal = mul(RotateWByBillboard[2], V).xyz;
+            output[j * 4 + 1].viewNormal = mul(RotateWByBillboard[2], V).xyz;
+            output[j * 4 + 2].viewNormal = mul(RotateWByBillboard[2], V).xyz;
+            output[j * 4 + 3].viewNormal = mul(RotateWByBillboard[2], V).xyz;
         
-        output[j * 4 + 0].viewTangent = mul(RotateWByBillboard[0], V).xyz;
-        output[j * 4 + 1].viewTangent = mul(RotateWByBillboard[0], V).xyz;
-        output[j * 4 + 2].viewTangent = mul(RotateWByBillboard[0], V).xyz;
-        output[j * 4 + 3].viewTangent = mul(RotateWByBillboard[0], V).xyz;
+            output[j * 4 + 0].viewTangent = mul(RotateWByBillboard[0], V).xyz;
+            output[j * 4 + 1].viewTangent = mul(RotateWByBillboard[0], V).xyz;
+            output[j * 4 + 2].viewTangent = mul(RotateWByBillboard[0], V).xyz;
+            output[j * 4 + 3].viewTangent = mul(RotateWByBillboard[0], V).xyz;
 
-        outputStream.Append(output[j * 4 + 0]);
-        outputStream.Append(output[j * 4 + 1]);
-        outputStream.Append(output[j * 4 + 2]);
-        outputStream.RestartStrip();
+            outputStream.Append(output[j * 4 + 0]);
+            outputStream.Append(output[j * 4 + 1]);
+            outputStream.Append(output[j * 4 + 2]);
+            outputStream.RestartStrip();
 
-        outputStream.Append(output[j * 4 + 0]);
-        outputStream.Append(output[j * 4 + 2]);
-        outputStream.Append(output[j * 4 + 3]);
-        outputStream.RestartStrip();
+            outputStream.Append(output[j * 4 + 0]);
+            outputStream.Append(output[j * 4 + 2]);
+            outputStream.Append(output[j * 4 + 3]);
+            outputStream.RestartStrip();
+        }
+
     }
-
-}
 
 [maxvertexcount(18)]
 void GS_Grass_Instancing(point InstancingOuput input[1], inout TriangleStream<GS_GRASS_INSTANCING_OUTPUT> outputStream)
 {
     const uint vertexCount = 4;
     const uint billboardCount = 3;
-    GS_GRASS_INSTANCING_OUTPUT output[vertexCount * billboardCount] =
+    GS_GRASS_INSTANCING_OUTPUT output[vertexCount * billboardCount];
+    for (uint i = 0; i < vertexCount * billboardCount; ++i)
     {
-        (GS_GRASS_INSTANCING_OUTPUT) 0.f, (GS_GRASS_INSTANCING_OUTPUT) 0.f, (GS_GRASS_INSTANCING_OUTPUT) 0.f, (GS_GRASS_INSTANCING_OUTPUT) 0.f,
-        (GS_GRASS_INSTANCING_OUTPUT) 0.f, (GS_GRASS_INSTANCING_OUTPUT) 0.f, (GS_GRASS_INSTANCING_OUTPUT) 0.f, (GS_GRASS_INSTANCING_OUTPUT) 0.f,
-        (GS_GRASS_INSTANCING_OUTPUT) 0.f, (GS_GRASS_INSTANCING_OUTPUT) 0.f, (GS_GRASS_INSTANCING_OUTPUT) 0.f, (GS_GRASS_INSTANCING_OUTPUT) 0.f
-    };
-    
+        output[i] = (GS_GRASS_INSTANCING_OUTPUT) 0.f;
+    }
     InstancingOuput vtx = input[0];
     
     // 바람의 방향,세기(이동량),현재가중치(0~1),속도(0~1도달속도)
@@ -181,7 +191,7 @@ void GS_Grass_Instancing(point InstancingOuput input[1], inout TriangleStream<GS
     
     for (uint j = 0; j < billboardCount; j++)
     {
-        float4x4 matRotateByBillboard = RotateMatrix(radians(120.f * j), W[1].xyz /*월드의UP으로회전*/);
+        float4x4 matRotateByBillboard = RotateMatrix(radians(120.f * j), float3(0.f, 1.f, 0.f) /*로컬행렬 0/1/0으로 회전*/);
         float4x4 RotateWByBillboard = mul(matRotateByBillboard, vtx.matWorld);
         
         output[j * 4 + 0].position = float4(vtx.position.xyz/*포지션*/ + matRotateByBillboard[2].xyz * 0.1f /*삼각편대*/ - matRotateByBillboard[0].xyz * 0.5f + matRotateByBillboard[1].xyz * 0.5f /*사각형을위한점위치*/ + matRotateByBillboard[1].xyz * 0.5f /*높이*/ + mul(mul(vWind, fWindPowerMagicNumber), fWindWeight) /*바람정보를 위쪽 버텍스에 반영*/, 1.f);

@@ -794,20 +794,28 @@ void ImGui_Manager::Frame_Magic()
 {
     ImGui::Begin("Frame_Magic");
 
-    // 모든 Weed맵오브젝트 삭제
     if (ImGui::Button("MagicButton"))
     {
-        m_iObjects = 0;
-        for (; m_iObjects < m_pMapObjects.size();)
+    //// 모든 Weed맵오브젝트 삭제
+    //    m_iObjects = 0;
+    //    for (; m_iObjects < m_pMapObjects.size();)
+    //    {
+    //        wstring ObjName = m_pMapObjects[m_iObjects]->Get_Name();
+    //        if (ObjName.find(L"Weed") != std::string::npos)
+    //        {
+    //            Delete_MapObject();
+    //        }
+    //        if (m_iObjects >= m_pMapObjects.size() - 1)
+    //            break;
+    //        ++m_iObjects;
+    //    }
+    // 설치되어있는 모든 풀의 CullData계산
+        for (auto& Weed : m_pInstalledWeeds)
         {
-            wstring ObjName = m_pMapObjects[m_iObjects]->Get_Name();
-            if (ObjName.find(L"Weed") != std::string::npos)
-            {
-                Delete_MapObject();
-            }
-            if (m_iObjects >= m_pMapObjects.size() - 1)
-                break;
-            ++m_iObjects;
+            _float4 CullData = Compute_CullingData(Weed);
+            Weed->Set_CullPos(_float3{ CullData });
+            Weed->Set_CullRadius(_float{ CullData.w });
+            Weed->Set_FrustumCulled(true);
         }
     }
 
@@ -2226,7 +2234,8 @@ HRESULT ImGui_Manager::Load_MapObject()
             wstring strWeedName = Utils::ToWString(file->Read<string>());
             _float4x4 matWeedWorldMat = file->Read<_float4x4>();
             _int iWeedIndex = file->Read<_int>();
-            Create_Weed(strWeedName, matWeedWorldMat, iWeedIndex);
+            _float4 CullData = _float4{ file->Read<_float3>(), file->Read<_float>() };
+            Create_Weed(strWeedName, matWeedWorldMat, iWeedIndex, CullData);
         }
     }
 
@@ -2369,6 +2378,9 @@ void ImGui_Manager::Save_Weeds(weak_ptr<FileUtils> _file)
         _file.lock()->Write<string>(Utils::ToString(WeedObj->Get_Name()));
         _file.lock()->Write<_float4x4>(WeedObj->Get_Transform()->Get_WorldMatrix());
         _file.lock()->Write<_int>(WeedObj->Get_Script<WeedScript>()->Get_WeedIndex());
+        // 컬링정보 저장
+        _file.lock()->Write<_float3>(WeedObj->Get_CullPos());
+        _file.lock()->Write<_float>(WeedObj->Get_CullRadius());
     }
 }
 
@@ -2436,7 +2448,7 @@ void ImGui_Manager::Delete_WeedRegion()
         if ((WeedPos - _float4{ m_PickingPos, 1.f }).Length() <= m_fTerrainBrushRadius)
         {
             EVENTMGR.Delete_Object(InstalledWeed);
-            InstalledWeed->Get_Script<WeedScript>()->Get_WeedIndex();
+            --m_CountSameWeed[InstalledWeed->Get_Script<WeedScript>()->Get_WeedIndex()];
         }
     }
     m_iCurrentWeedIndex = 0;
@@ -2531,13 +2543,19 @@ void ImGui_Manager::Create_Weed(_float3 _CreatePos)
     ++m_CountSameWeed[m_iCurrentWeedIndex];
     WeedObj->Add_Component(WeedSc);
 
+    // 컬링관련정보
+    _float4 CullData = Compute_CullingData(WeedObj);
+    WeedObj->Set_CullPos(_float3{CullData});
+    WeedObj->Set_CullRadius(CullData.w);
+    WeedObj->Set_FrustumCulled(true);
+
     EVENTMGR.Create_Object(WeedObj);
 
     //m_strInstalledWeeds.push_back(Utils::ToString(WeedName));
     m_pInstalledWeeds.push_back(WeedObj);
 }
 
-HRESULT ImGui_Manager::Create_Weed(wstring _strWeedName, _float4x4 _matWorld, _int _iWeedIndex)
+HRESULT ImGui_Manager::Create_Weed(wstring _strWeedName, _float4x4 _matWorld, _int _iWeedIndex, _float4 _CullData)
 {
     shared_ptr<Mesh> WeedMesh = RESOURCES.Get<Mesh>(L"Point");
 
@@ -2569,6 +2587,11 @@ HRESULT ImGui_Manager::Create_Weed(wstring _strWeedName, _float4x4 _matWorld, _i
     ++m_CountSameWeed[_iWeedIndex];
     WeedObj->Add_Component(WeedSc);
 
+    // 컬링정보
+    WeedObj->Set_CullPos(_float3{ _CullData });
+    WeedObj->Set_CullRadius( _CullData.w );
+    WeedObj->Set_FrustumCulled(true);
+
     EVENTMGR.Create_Object(WeedObj);
 
     //m_strInstalledWeeds.push_back(Utils::ToString(_strWeedName));
@@ -2584,44 +2607,56 @@ _float4 ImGui_Manager::Compute_CullingData(shared_ptr<GameObject>& _pGameObject)
     _float3 vMaxPos = _float3(-FLT_MAX);
     _float3 vMinPos = _float3(FLT_MAX);
 
-    shared_ptr<BoneDesc> boneDesc = make_shared<BoneDesc>();
-    const _uint boneCount = _pGameObject->Get_Model()->Get_BoneCount();
+    _float3 vCullPos = _float3{ 0.f, 0.f, 0.f };
+    _float vCullRadius = 0.f;
 
-    for (_uint i = 0; i < boneCount; ++i)
+    if(_pGameObject->Get_Model() != nullptr)
     {
-        shared_ptr<ModelBone> bone = _pGameObject->Get_Model()->Get_BoneByIndex(i);
-        boneDesc->transform[i] = (bone->transform) * Utils::m_matPivot;
-    }
+        shared_ptr<BoneDesc> boneDesc = make_shared<BoneDesc>();
+        const _uint boneCount = _pGameObject->Get_Model()->Get_BoneCount();
 
-    const vector<shared_ptr<ModelMesh>>& Meshs = _pGameObject->Get_Model()->Get_Meshes();
-    for (auto& pMesh : Meshs)
-    {
-        _uint boneIndex = pMesh->boneIndex;
-        const vector<ModelVertexType>& vertices = pMesh->geometry->Get_Vertices();
-        for (auto& VtxData : vertices)
+        for (_uint i = 0; i < boneCount; ++i)
         {
-            // 월드행렬반영
-            _float3 vPos = _float3::Transform(VtxData.vPosition, boneDesc->transform[boneIndex] * _pGameObject->Get_Transform()->Get_WorldMatrix());
+            shared_ptr<ModelBone> bone = _pGameObject->Get_Model()->Get_BoneByIndex(i);
+            boneDesc->transform[i] = (bone->transform) * Utils::m_matPivot;
+        }
 
-            vMaxPos.x = max(vPos.x, vMaxPos.x);
-            vMaxPos.y = max(vPos.y, vMaxPos.y);
-            vMaxPos.z = max(vPos.z, vMaxPos.z);
-            vMinPos.x = min(vPos.x, vMinPos.x);
-            vMinPos.y = min(vPos.y, vMinPos.y);
-            vMinPos.z = min(vPos.z, vMinPos.z);
+        const vector<shared_ptr<ModelMesh>>& Meshs = _pGameObject->Get_Model()->Get_Meshes();
+        for (auto& pMesh : Meshs)
+        {
+            _uint boneIndex = pMesh->boneIndex;
+            const vector<ModelVertexType>& vertices = pMesh->geometry->Get_Vertices();
+            for (auto& VtxData : vertices)
+            {
+                // 월드행렬반영
+                _float3 vPos = _float3::Transform(VtxData.vPosition, boneDesc->transform[boneIndex] * _pGameObject->Get_Transform()->Get_WorldMatrix());
+
+                vMaxPos.x = max(vPos.x, vMaxPos.x);
+                vMaxPos.y = max(vPos.y, vMaxPos.y);
+                vMaxPos.z = max(vPos.z, vMaxPos.z);
+                vMinPos.x = min(vPos.x, vMinPos.x);
+                vMinPos.y = min(vPos.y, vMinPos.y);
+                vMinPos.z = min(vPos.z, vMinPos.z);
+            }
+        }
+
+        // Min과 Max를 더한 후 2로 나누기
+        vCullPos = vMaxPos + vMinPos * 0.5f;
+        _float3 tempVector = vCullPos - vMinPos;
+        vCullRadius = tempVector.Length();
+
+        if (_pGameObject->Get_Script<MapObjectScript>() != nullptr)
+        {
+            _pGameObject->Get_Script<MapObjectScript>()->Get_DESC().CullPos = vCullPos;
+            _pGameObject->Get_Script<MapObjectScript>()->Get_DESC().CullRadius = vCullRadius;
         }
     }
-
-    // Min과 Max를 더한 후 2로 나누기
-    _float3 vCullPos = vMaxPos + vMinPos;
-    vCullPos *= 0.5f;
-    _float3 tempVector = vCullPos - vMinPos;
-    _float vCullRadius = tempVector.Length();
-
-    if(_pGameObject->Get_Script<MapObjectScript>() != nullptr)
+    else if (_pGameObject->Get_Script<WeedScript>() != nullptr)
     {
-        _pGameObject->Get_Script<MapObjectScript>()->Get_DESC().CullPos = vCullPos;
-        _pGameObject->Get_Script<MapObjectScript>()->Get_DESC().CullRadius = vCullRadius;
+        _float4x4 matObjectWorld = _pGameObject->Get_Transform()->Get_WorldMatrix();
+        vCullPos = _float3{ matObjectWorld.Translation()};
+        // 풀의 좌상단점까지의 길이를 Radius로 사용
+        vCullRadius = ((matObjectWorld.Translation()/*포지션*/ + matObjectWorld.Forward() * 0.1f /*삼각편대*/ - matObjectWorld.Right() * 0.5f + matObjectWorld.Up() * 0.5f /*사각형을위한점위치*/ + matObjectWorld.Up() * 0.5f /*높이*/) - matObjectWorld.Translation()).Length();
     }
 
     return XMVectorSetW(vCullPos, vCullRadius);
@@ -3244,7 +3279,7 @@ void ImGui_Manager::Load_Water()
 
 void ImGui_Manager::Load_WeedNames()
 {
-    for (size_t i = 0; i < 20; i++)
+    for (size_t i = 0; i < 8; i++)
     {
         string WeedName = "Weed" + to_string(i);
         m_strWeedCatalogue.push_back(WeedName);

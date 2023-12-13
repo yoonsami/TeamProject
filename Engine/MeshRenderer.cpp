@@ -61,7 +61,7 @@ void MeshRenderer::Render_Instancing(shared_ptr<InstancingBuffer>& buffer)
 			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		int passIndex = CUR_SCENE->g_bPBR_On ? 1 : 0;
-		m_pShader->DrawIndexedInstanced(1, passIndex, m_pMesh->Get_IndexBuffer()->Get_IndicesNum(), buffer->Get_Count());
+		m_pShader->DrawIndexedInstanced(1, passIndex + m_iPass, m_pMesh->Get_IndexBuffer()->Get_IndicesNum(), buffer->Get_Count());
 	}
 }
 
@@ -106,7 +106,7 @@ void MeshRenderer::Render()
 			CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		int passIndex = CUR_SCENE->g_bPBR_On ? 1 : 0;
-		m_pShader->DrawIndexed(0, passIndex, m_pMesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+		m_pShader->DrawIndexed(0, passIndex + m_iPass, m_pMesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 	}
 
 

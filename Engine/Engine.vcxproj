@@ -258,6 +258,7 @@
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexData.h" />
     <ClInclude Include="Viewport.h" />
+    <ClInclude Include="WeedScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AABBBoxCollider.cpp" />
@@ -350,6 +351,7 @@
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexData.cpp" />
     <ClCompile Include="Viewport.cpp" />
+    <ClCompile Include="WeedScript.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl" />
