@@ -157,6 +157,11 @@ public:
 	_float m_fMaxHoldingSkillTime = 0.f;
 	_float m_fTimePerFrame = 0.f;
 
+	//For. SoundVolume
+	_float m_fVoiceVolume = 0.5f;
+	_float m_fSwingVolume = 0.5f;
+	
+
 	//For Effect.Create
 	_float m_fEffectCreateTimer[4] = { 0.f, 0.f, 0.f, 0.f };
 

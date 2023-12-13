@@ -230,6 +230,11 @@ HRESULT GranseedScene::Load_Scene()
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Kyle\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Yeopo\\", false);
 
+	//Sound
+	RESOURCES.Load_Sound(L"..\\Resources\\Sound\\Common\\", true);
+
+
+
 	auto pPlayer = Load_Player();
 	Load_Camera(pPlayer);
 	Load_MapFile(L"GranseedMap", pPlayer);
