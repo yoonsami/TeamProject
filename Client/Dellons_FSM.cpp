@@ -1182,6 +1182,9 @@ void Dellons_FSM::skill_93100_Init()
 
 void Dellons_FSM::skill_100100()
 {
+    if (Init_CurFrame(10))
+        Add_And_Set_Effect(L"Dellons_100100");
+
     if (Init_CurFrame(12))
     {
 		FORWARDMOVINGSKILLDESC desc;
@@ -1235,6 +1238,11 @@ void Dellons_FSM::skill_100100_Init()
 
 void Dellons_FSM::skill_100200()
 {
+    if (Init_CurFrame(0))
+        Add_And_Set_Effect(L"Dellons_100200_Start");
+    if (Init_CurFrame(18))
+        Add_And_Set_Effect(L"Dellons_100200");
+
     if (Init_CurFrame(15))
     {
 		FORWARDMOVINGSKILLDESC desc;
