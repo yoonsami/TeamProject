@@ -64,7 +64,8 @@ private:
     _float      m_fSpeed                = {};
 
     // 
-    _bool       m_bIsCreated             = {};
     weak_ptr<GameObject> m_pScroll;
+    _bool       m_bIsCreated            = {};
+    _float      m_fMaxPosY              = {};
 };
 
