@@ -23,6 +23,9 @@ public:
     void Change_PBR();
     void Change_FPS();
 
+    void Create_Setting_Ui();
+    void Remove_Setting_Ui();
+
 private:
     _bool Check_Expire();
     void Change_All_Value();
@@ -37,9 +40,6 @@ private:
     void Change_Value_SSAO_Start();
     void Change_Value_SSAO_End();
     void Change_Value_MotionBlur();
-    //void Change_Value_PBR_Attenuation();
-    //void Change_Value_PBR_Ratio();
-    //void Change_Value_PBR_ShadowBius();
 
     void Change_FPS_Font();
     
@@ -57,9 +57,6 @@ private:
     weak_ptr<GameObject>    m_pSSAO_Start;
     weak_ptr<GameObject>    m_pSSAO_End;
     weak_ptr<GameObject>    m_pMotionBlur;
-    //weak_ptr<GameObject>    m_pPBR_Attenuation;
-    //weak_ptr<GameObject>    m_pPBR_Ratio;
-    //weak_ptr<GameObject>    m_pPBR_ShadowBius;
 
     weak_ptr<GameObject>    m_pCheck_Bloom;
     weak_ptr<GameObject>    m_pCheck_SSAO;
@@ -74,20 +71,6 @@ private:
 
     weak_ptr<Texture>       m_pTextureCheck;
     weak_ptr<Texture>       m_pTextureNoCheck;
-
-    //_float                  m_fBrightness       = {};
-    //_float                  m_fContrast         = {};
-    //_float                  m_fSaturation       = {};
-    //_float                  m_fBloom            = {};
-    //_uint                   m_fToneMapping      = {};
-    //_float                  m_fToneMappingMax   = {};
-    //_float                  m_fSSAO_Radius      = {};
-    //_float                  m_fSSAO_Start       = {};
-    //_float                  m_fSSAO_End         = {};
-    //_uint                   m_fMotionBlur       = {};
-    //_float                  m_fPBR_Attenuation  = {};
-    //_float                  m_fPBR_Ratio        = {};
-    //_float                  m_fPBR_ShadowBius   = {};
 
     _bool                   m_bBloom            = {};
     _bool                   m_bSSAO             = {};
@@ -108,11 +91,10 @@ private:
     pair<_float, _float>    m_SSAOStart         = {};
     pair<_float, _float>    m_SSAOEnd           = {};
     pair<_uint, _uint>      m_MotionBlurCount   = {};
-    //pair<_float, _float>    m_PBRAttenuation    = {};
-    //pair<_float, _float>    m_PBRRatio          = {};
-    //pair<_float, _float>    m_PBRShadowBius     = {};
-
 
     _float                  m_fMinPos           = {};
+
+    _bool                   m_bIsCreated        = {};
+    vector<weak_ptr<GameObject>> m_addedObj;
 };
 
