@@ -1437,6 +1437,10 @@ void Player_FSM::skill_200100()
         m_fSkillCreateTimer += fDT;
         if (m_fSkillCreateTimer >= 0.3f)
         {
+            wstring strSoundTag = L"swing_sword_5_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 4 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+
             m_fSkillCreateTimer = 0.f;
 			FORWARDMOVINGSKILLDESC desc;
 			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1476,6 +1480,8 @@ void Player_FSM::skill_200100_Init()
 
     AttackCollider_Off();
 
+    SOUND.Play_Sound(L"skill_p_m_001", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+
     m_bInvincible = true;
     m_bSuperArmor = true;
 }
@@ -1489,9 +1495,17 @@ void Player_FSM::skill_200200()
 		shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
         animator->Set_RenderState(true);
         m_pWeapon.lock()->Get_ModelRenderer()->Set_RenderState(true);
-     }
+    }
 
-    if (Init_CurFrame(22))
+    if (Init_CurFrame(12))
+    {
+        SOUND.Play_Sound(L"vo_player_m_att_long_04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    }
+    else if (Init_CurFrame(19))
+    {
+        SOUND.Play_Sound(L"swing_sword_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    }
+    else if (Init_CurFrame(22))
     {
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1522,6 +1536,7 @@ void Player_FSM::skill_200200_Init()
 
     AttackCollider_Off();
 
+   
     m_bCanCombo = false;
     m_bInvincible = true;
     m_bSuperArmor = true;
@@ -1530,9 +1545,12 @@ void Player_FSM::skill_200200_Init()
 void Player_FSM::skill_300100()
 {
     Look_DirToTarget();
+
     if (Init_CurFrame(14))
     {
-		FORWARDMOVINGSKILLDESC desc;
+        SOUND.Play_Sound(L"swing_short_sword_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        
+        FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.fMoveSpeed = 0.f;
 		desc.fLifeTime = 1.f;
@@ -1543,11 +1561,8 @@ void Player_FSM::skill_300100()
 
     }
 
-    if (!g_bIsCanMouseMove && !g_bCutScene)
-    {
-	    if (Check_Combo(44, KEY_TYPE::KEY_3))
-            m_eCurState = STATE::skill_300200;
-    }
+    if (m_iCurFrame >= 44)
+        m_eCurState = STATE::skill_300200;
 
   
     if (Is_AnimFinished())
@@ -1568,7 +1583,9 @@ void Player_FSM::skill_300100_Init()
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
-    
+
+    SOUND.Play_Sound(L"skill_p_m_003", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+
     m_bCanCombo = false;
     m_bInvincible = true;
     m_bSuperArmor = true;
@@ -1577,6 +1594,33 @@ void Player_FSM::skill_300100_Init()
 void Player_FSM::skill_300200()
 {
     Look_DirToTarget();
+
+    wstring strSoundTag = L"swing_short_sword_0";
+    strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+
+    if (Init_CurFrame(7))
+        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    else if (Init_CurFrame(24))
+        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    else if (Init_CurFrame(35))
+        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    else if (Init_CurFrame(45))
+        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    else if (Init_CurFrame(56))
+        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    else if (Init_CurFrame(60))
+        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    else if (Init_CurFrame(63))
+        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    else if (Init_CurFrame(66))
+        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    else if (Init_CurFrame(69))
+        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    else if (Init_CurFrame(91))
+        SOUND.Play_Sound(L"vo_player_m_att_long_04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    else if (Init_CurFrame(93))
+        SOUND.Play_Sound(L"swing_sword_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+
 
     if (m_iCurFrame < 91)
     {
@@ -1607,6 +1651,7 @@ void Player_FSM::skill_300200()
     if (m_iCurFrame >= 5 && m_iCurFrame < 57)
     {
         m_fSkillCreateTimer += fDT;
+
         if (m_fSkillCreateTimer >= 0.3f)
         {
             m_fSkillCreateTimer = 0.f;
@@ -1624,6 +1669,7 @@ void Player_FSM::skill_300200()
     else if (m_iCurFrame >= 57 && m_iCurFrame < 75)
     {
         m_fSkillCreateTimer += fDT;
+
         if (m_fSkillCreateTimer >= 0.1f)
         {
             m_fSkillCreateTimer = 0.f;
