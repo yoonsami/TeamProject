@@ -713,7 +713,7 @@ void UiCardDeckController::Check_Scroll()
     fPosY -= 450.f; // 0 ~ -900 값
     
     // -340이 최대값이 되야함
-    _float fRatio = fabs(m_fMaxPosY + 770.f);
+    _float fRatio = m_fMaxPosY + 340.f;
     fRatio /= 900.f;
 
     fPosY *= fRatio;
@@ -724,7 +724,7 @@ void UiCardDeckController::Check_Scroll()
             continue;
 
         _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-        vecPos.y = 430.f - static_cast<_float>(i / 4) * 110.f - fPosY;
+        vecPos.y = 430.f - static_cast<_float>(i / 4) * 110.f + fPosY;
         pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
 
         pObj.lock()->Get_Button()->Get_Desc().ptCenter.x = static_cast<LONG>(vecPos.x + g_iWinSizeX / 2);
