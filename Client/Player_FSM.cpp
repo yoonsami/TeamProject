@@ -57,8 +57,9 @@ HRESULT Player_FSM::Init()
 	m_fSkillAttack_AnimationSpeed = 1.0f;
 	m_fEvade_AnimationSpeed = 1.5f;
     
-    m_fVoiceVolume = 0.4f;
-    m_fSwingVolume = 0.3f;
+    m_fVoiceVolume = 0.8f;
+    m_fSwingVolume = 0.7f;
+    m_fFootStepVolume = 0.7f;
 
 
     if (!m_pAttackCollider.expired())
@@ -434,6 +435,12 @@ void Player_FSM::b_idle_Init()
 
 void Player_FSM::b_run_start()
 {
+    if (Init_CurFrame(8))
+        SOUND.Play_Sound(L"footstep_marble_02", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    else if (Init_CurFrame(18))
+        SOUND.Play_Sound(L"footstep_marble_01", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+
+
     Get_Transform()->Go_Straight();
 
     _float3 vInputVector = Get_InputDirVector();
@@ -479,6 +486,11 @@ void Player_FSM::b_run_start_Init()
 
 void Player_FSM::b_run()
 {
+    if (Init_CurFrame(10))
+        SOUND.Play_Sound(L"footstep_marble_02", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    else if (Init_CurFrame(20))
+        SOUND.Play_Sound(L"footstep_marble_01", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+
     Get_Transform()->Go_Straight();
 
     _float3 vInputVector = Get_InputDirVector();
@@ -537,6 +549,12 @@ void Player_FSM::b_run_Init()
 
 void Player_FSM::b_run_end_r()
 {
+    if (Init_CurFrame(6))
+        SOUND.Play_Sound(L"footstep_marble_01", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    else if (Init_CurFrame(11))
+        SOUND.Play_Sound(L"footstep_marble_02", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+
+
     _float3 vInputVector = Get_InputDirVector();
 
     if (vInputVector != _float3(0.f))
@@ -572,6 +590,11 @@ void Player_FSM::b_run_end_r_Init()
 
 void Player_FSM::b_run_end_l()
 {
+    if (Init_CurFrame(9))
+        SOUND.Play_Sound(L"footstep_marble_02", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    else if (Init_CurFrame(11))
+        SOUND.Play_Sound(L"footstep_marble_01", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+
     _float3 vInputVector = Get_InputDirVector();
 
     if (vInputVector != _float3(0.f))
@@ -607,6 +630,11 @@ void Player_FSM::b_run_end_l_Init()
 
 void Player_FSM::b_sprint()
 {
+    if (Init_CurFrame(6))
+        SOUND.Play_Sound(L"footstep_marble_02", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    else if (Init_CurFrame(13))
+        SOUND.Play_Sound(L"footstep_marble_01", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+
     Get_Transform()->Go_Straight();
 
     _float3 vInputVector = Get_InputDirVector();
@@ -656,6 +684,8 @@ void Player_FSM::b_sprint_Init()
     animator->Set_NextTweenAnim(L"b_sprint", 0.2f, true, 1.f);
 
     Get_Transform()->Set_Speed(m_fSprintSpeed);
+
+    //SOUND.Play_Sound(L"footstep_marble_01", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
 
     AttackCollider_Off();
 
