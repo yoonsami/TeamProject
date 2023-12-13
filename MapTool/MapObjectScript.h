@@ -54,4 +54,3 @@ public:
 private:
     MAPOBJDESC m_MapObjDesc;
 };
-

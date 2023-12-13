@@ -222,7 +222,7 @@ private: // 지형, 잔디
 	// 포지션을 입력하면 xz위치에 해당하는 높이와 메시노말방향으로 풀심기
 	void Create_Weed(_float3 _CreatePos);
 	// 풀의 월드행렬을 입력하면 그걸 기반으로 풀을 만듦.
-	HRESULT Create_Weed(wstring _strWeedName, _float4x4 _matWorld, _int _iWeedIndex);
+	HRESULT Create_Weed(wstring _strWeedName, _float4x4 _matWorld, _int _iWeedIndex, _float4 _CullData);
 
 // 세이브로드
 	// 지형정보 저장.

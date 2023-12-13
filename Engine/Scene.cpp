@@ -10,6 +10,7 @@
 #include "RigidBody.h"
 #include "MathUtils.h"
 #include "FileUtils.h"
+#include "WeedScript.h"
 #include "FontRenderer.h"
 #include "MeshCollider.h"
 #include "MeshRenderer.h"
@@ -899,6 +900,59 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 	file->Read<_bool>(g_bPBR_On);
 	file->Read<_float>(g_lightAttenuation);
 	file->Read<_float>(g_ambientRatio);
+
+	_float4 DummyData;
+	file->Read<_float4>(DummyData);
+
+#pragma region CreateGrass
+	if (DummyData.x >= 1.f)
+	{
+		_int WeedLength = file->Read<_int>();
+
+		for (_int i = 0; i < WeedLength; ++i)
+		{
+			wstring strWeedName = Utils::ToWString(file->Read<string>());
+			_float4x4 matWeedWorldMat = file->Read<_float4x4>();
+			_int iWeedIndex = file->Read<_int>();
+			_float4 CullData = _float4{ file->Read<_float3>(), file->Read<_float>() };
+
+			shared_ptr<Mesh> WeedMesh = RESOURCES.Get<Mesh>(L"Point");
+
+			// 풀 오브젝트 생성
+			shared_ptr<GameObject> WeedObj = make_shared<GameObject>();
+			WeedObj->Set_Name(strWeedName);
+			WeedObj->GetOrAddTransform();
+
+			WeedObj->GetOrAddTransform()->Set_WorldMat(matWeedWorldMat);
+
+			// 메시렌더러
+			shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Grass.fx"));
+			renderer->Set_Mesh(WeedMesh);
+
+			shared_ptr<Material> material = RESOURCES.Get<Material>(strWeedName);
+			if (material == nullptr)
+			{
+				MSG_BOX("Fail : CreateWeed");
+				return;
+			}
+			renderer->Set_Material(material);
+
+			WeedObj->Add_Component(renderer);
+
+			shared_ptr<WeedScript> WeedSc = make_shared<WeedScript>();
+			// 모델번호 인덱스 저장
+			WeedSc->Set_WeedIndex(iWeedIndex);
+			WeedObj->Add_Component(WeedSc);
+
+			// 컬링정보
+			WeedObj->Set_CullPos(_float3{ CullData });
+			WeedObj->Set_CullRadius(CullData.w);
+			WeedObj->Set_FrustumCulled(true);
+
+			Add_GameObject(WeedObj);
+		}
+	}
+#pragma endregion
 }
 
 void Scene::PickUI()

@@ -235,6 +235,9 @@
     <Filter Include="04.Component\01.Renderer\03.TerrainRenderer">
       <UniqueIdentifier>{1401b384-815f-44e2-9733-efa669691635}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06.Map\02. WeedScript">
+      <UniqueIdentifier>{e7822280-773d-4c9e-bc52-529109fd6317}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -476,6 +479,9 @@
     </ClCompile>
     <ClCompile Include="TerrainRenderer.cpp">
       <Filter>04.Component\01.Renderer\03.TerrainRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="WeedScript.cpp">
+      <Filter>06.Map\02. WeedScript</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -733,6 +739,9 @@
     </ClInclude>
     <ClInclude Include="TerrainRenderer.h">
       <Filter>04.Component\01.Renderer\03.TerrainRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="WeedScript.h">
+      <Filter>06.Map\02. WeedScript</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
