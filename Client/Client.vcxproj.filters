@@ -421,9 +421,6 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\25.UiMessage\00.UiMessageCreater">
       <UniqueIdentifier>{5e5e5c0f-8710-4534-8512-cb9b6343d926}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Scene\00.PlayScene\00.Granseed\04.Field">
-      <UniqueIdentifier>{99a38b1a-eda8-4b71-8883-93afc5ae7515}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\07.EffectScript\CreateEffect_Script">
       <UniqueIdentifier>{0b35d8fe-151b-4394-b9c3-fba19e7a2117}</UniqueIdentifier>
     </Filter>
@@ -432,6 +429,9 @@
     </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\24.UiShop\00.UiShop">
       <UniqueIdentifier>{22045f60-8548-45f3-a0ac-2a159f3e5bb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Scene\00.PlayScene\04.Field">
+      <UniqueIdentifier>{99a38b1a-eda8-4b71-8883-93afc5ae7515}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -813,7 +813,7 @@
       <Filter>02.Component\01.FSM\07.Friend_FSM</Filter>
     </ClInclude>
     <ClInclude Include="FieldScene.h">
-      <Filter>01.Scene\00.PlayScene\00.Granseed\04.Field</Filter>
+      <Filter>01.Scene\00.PlayScene\04.Field</Filter>
     </ClInclude>
     <ClInclude Include="DeleteWhenAnimFinish.h">
       <Filter>02.Component\00.MonoBehaviour\05.Object\06.Delete\00.DeleteWhenAnimFinish</Filter>
@@ -1211,7 +1211,7 @@
       <Filter>02.Component\01.FSM\07.Friend_FSM</Filter>
     </ClCompile>
     <ClCompile Include="FieldScene.cpp">
-      <Filter>01.Scene\00.PlayScene\00.Granseed\04.Field</Filter>
+      <Filter>01.Scene\00.PlayScene\04.Field</Filter>
     </ClCompile>
     <ClCompile Include="DeleteWhenAnimFinish.cpp">
       <Filter>02.Component\00.MonoBehaviour\05.Object\06.Delete\00.DeleteWhenAnimFinish</Filter>

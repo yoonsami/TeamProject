@@ -76,6 +76,8 @@
 #include "UIInteraction.h"
 #include "WaterUVSliding.h"
 #include "UiCostumeController.h"
+#include "UiDialogController.h"
+#include "UIShop.h"
 namespace fs = std::filesystem;
 
 MirScene::MirScene()
@@ -506,7 +508,6 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main.dat", tmp);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main_Button.dat", tmp);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Char_Change.dat", tmp);
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck.dat", tmp, false, false);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", tmp, false, false);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Cur_Quest.dat", tmp, false, false);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Setting.dat", tmp, false, false);
@@ -521,10 +522,28 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	}
 
 	{
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_NpcDialog_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiDialogController>();
+			pObj.lock()->Add_Component(pScript);
+		}
+	}
+
+	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Gacha_Controller");
 		if (false == pObj.expired())
 		{
 			auto pScript = make_shared<UiGachaController>();
+			pObj.lock()->Add_Component(pScript);
+		}
+	}
+
+	{
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Shop_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UIShop>();
 			pObj.lock()->Add_Component(pScript);
 		}
 	}
@@ -638,17 +657,6 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	}
 
 	{
-		weak_ptr<GameObject> pObj = Get_UI(L"UI_Card_Deck_Exit");
-		if (false == pObj.expired())
-		{
-			pObj.lock()->Get_Button()->AddOnClickedEvent([]()
-				{
-					CUR_SCENE->Get_GameObject(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Set_Render(false);
-				});
-		}
-	}
-
-	{
 		weak_ptr<GameObject> pObj = Get_UI(L"UI_Char_Change");
 		if (false == pObj.expired())
 		{
@@ -674,7 +682,7 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		{
 			pObj->Get_Button()->AddOnClickedEvent([]()
 				{
-					CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Set_Render(true);
+					CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Create_Card_Deck();
 				});
 		}
 	}
