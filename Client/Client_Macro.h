@@ -20,7 +20,8 @@
 #define KNOCKDOWN_SKILL_COUNTER         L"KnockDown_Skill_Counter"
 #define AIRBORNE_SKILL                  L"Airborne_Skill"
 #define AIRBORNE_SKILL_COUNTER          L"Airborne_Skill_Counter"
-                                        
+
+#define STUN_HIT                        L"Stun_Attack"
 #define IDX(VALUE)                      static_cast<unsigned int>(VALUE)
 
 #define DATAMGR                         GET_SINGLE(DataMgr)

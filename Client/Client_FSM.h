@@ -27,5 +27,6 @@ protected:
 
 protected:
 	ElementType m_eElementType = ElementEnd;
+	_float m_fStTimer = 0.f;
 };
 

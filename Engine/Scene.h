@@ -248,5 +248,7 @@ public:
 	_float g_rotX = 0.f;
 	_float g_rotY = 0.f;
 	_float g_rotZ = 0.f;
+
+	_int g_sceneFlag = 0;
 };
 

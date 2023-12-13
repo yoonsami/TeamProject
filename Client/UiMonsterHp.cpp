@@ -9,6 +9,18 @@ UiMonsterHp::UiMonsterHp(_bool bIsPosChange)
 {
 }
 
+UiMonsterHp::~UiMonsterHp()
+{
+    if(!m_pFrontHp.expired())
+	    EVENTMGR.Delete_Object(m_pFrontHp.lock());
+    if (!m_pBackHp.expired())
+	    EVENTMGR.Delete_Object(m_pBackHp.lock());
+    if (!m_pBgHp.expired())
+	    EVENTMGR.Delete_Object(m_pBgHp.lock());
+}
+
+
+
 HRESULT UiMonsterHp::Init()
 {
     if (m_pOwner.expired())

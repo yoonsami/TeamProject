@@ -5,7 +5,7 @@ class UiMonsterHp : public MonoBehaviour
 {
 public:
     UiMonsterHp(_bool bIsPosChange = false);
-
+    ~UiMonsterHp();
 
 public:
     virtual HRESULT Init() override;

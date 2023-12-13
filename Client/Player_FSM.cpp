@@ -14,6 +14,7 @@
 #include "CharacterController.h"
 #include "Friend_FSM.h"
 #include "WeaponScript.h"
+#include "NeutralAlpaca_FSM.h"
 
 Player_FSM::Player_FSM()
 {
@@ -198,6 +199,9 @@ void Player_FSM::State_Tick()
 	case STATE::skill_300200:
 		skill_300200();
 		break;
+    case STATE::stun:
+        stun();
+        break;
     }
 
     Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
@@ -308,6 +312,9 @@ void Player_FSM::State_Init()
 		case STATE::skill_300200:
 			skill_300200_Init();
 			break;
+		case STATE::stun:
+			stun_Init();
+			break;
         }
         m_ePreState = m_eCurState;
     }
@@ -390,6 +397,11 @@ void Player_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
 			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.3f);
 
         }
+    }
+    else if (skillname == STUN_HIT)
+    {
+        CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.3f);
+        m_eCurState = STATE::stun;
     }
     else
 		CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.03f);
@@ -1729,6 +1741,31 @@ void Player_FSM::skill_300200_Init()
     m_vCamStopPos = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS);    
 
     Calculate_CamBoneMatrix();
+}
+
+void Player_FSM::stun()
+{
+    m_fStTimer += fDT;
+    if (m_fStTimer >= 3.f)
+    {
+		m_eCurState = STATE::b_idle;
+        NeutralAlpaca_FSM::m_bAngry = false;
+    }
+	
+
+}
+
+void Player_FSM::stun_Init()
+{
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_NextTweenAnim(L"stun", 0.2f, true, 1.f);
+
+	AttackCollider_Off();
+    m_fStTimer = 0.f;
+    m_bCanCombo = false;
+	m_bInvincible = true;
+	m_bSuperArmor = true;
 }
 
 void Player_FSM::Use_Skill()
