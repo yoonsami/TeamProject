@@ -82,6 +82,8 @@ HRESULT GranseedScene::Load_Scene()
 {
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Skybox\\");
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Field\\");
+
+
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\Spear_Ace\\");
 	//RESOURCES.CreateModel(L"..\\Resources\\Models\\");
 	Load_DemoModel();

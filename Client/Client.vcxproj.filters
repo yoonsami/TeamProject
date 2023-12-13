@@ -433,6 +433,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\24.UiShop\00.UiShop">
       <UniqueIdentifier>{22045f60-8548-45f3-a0ac-2a159f3e5bb2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\09.FieldScript\PortalScript">
+      <UniqueIdentifier>{d7707880-d463-41f7-8873-193a83109b1a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -861,6 +864,7 @@
     <ClInclude Include="UIShop.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\24.UiShop\00.UiShop</Filter>
     </ClInclude>
+    <ClInclude Include="PortalScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1256,6 +1260,7 @@
     <ClCompile Include="UIShop.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\24.UiShop\00.UiShop</Filter>
     </ClCompile>
+    <ClCompile Include="PortalScript.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">

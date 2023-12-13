@@ -77,6 +77,15 @@ enum LEVEL
 	LEVEL_END
 };
 
+enum class SCENE_TYPE
+{
+	GRANSEED,
+	FIELD,
+	MIR,
+	KRIS,
+	SPIKE,
+};
+
 enum ObjectType
 {
 	OBJ_NONE,
@@ -150,6 +159,7 @@ enum class NPCTYPE
 	SPIKE,
 	DELLONS,
 	SHANE,
+	PORTAL,
 	MAX
 };
 

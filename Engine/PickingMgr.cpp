@@ -186,10 +186,6 @@ shared_ptr<GameObject> PickingMgr::Pick_Mesh(_float2 screenPos, shared_ptr<Camer
 	for (auto& gameObject : gameObjects)
 	{
 		// 피킹렉방지 - 특정 오브젝트 이후로만 검색하기
-		++CurrentObjIndex;
-		if (CurrentObjIndex <= minObjectIndex)
-			continue;
-
 		_float distance = 0.f;
 
 		if (camera->IsCulled(gameObject->Get_LayerIndex()))
@@ -255,6 +251,8 @@ shared_ptr<GameObject> PickingMgr::Pick_Mesh(_float2 screenPos, shared_ptr<Camer
 
 shared_ptr<GameObject> PickingMgr::Pick_Mesh(_float2 screenPos, shared_ptr<Camera> camera, shared_ptr<GameObject> gameObject, OUT _float3& outPos)
 {
+	if (!gameObject)
+		return nullptr;
 	_float width = GRAPHICS.Get_ViewPort().Get_Width();
 	_float height = GRAPHICS.Get_ViewPort().Get_Height();
 
@@ -277,6 +275,8 @@ shared_ptr<GameObject> PickingMgr::Pick_Mesh(_float2 screenPos, shared_ptr<Camer
 
 	_float minDist = FLT_MAX;
 	shared_ptr<GameObject> picked = nullptr;
+
+
 	{
 		_float distance = 0.f;
 

@@ -89,6 +89,7 @@
 #include "GroupEffect.h"
 #include "Smoke_WitcherSense.h"
 #include "Smoke_Detect.h"
+#include "PortalScript.h"
 namespace fs = std::filesystem;
 
 GranseedScene::GranseedScene()
@@ -220,6 +221,7 @@ HRESULT GranseedScene::Load_Scene()
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\VfxMesh\\", true);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\SkyBox\\", true);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Weapon\\", true);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\MovePortal\\", true);
 
 	//Map
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Granseed\\", false);
@@ -235,6 +237,9 @@ HRESULT GranseedScene::Load_Scene()
 	Load_Ui(pPlayer);
 	Load_NPC(L"GranseedMap");
 	Load_HideAndSeek(pPlayer);
+
+	Load_Portal();
+
 	Load_Debug();
 	return S_OK;
 }
@@ -908,4 +913,29 @@ void GranseedScene::Load_HideAndSeek(shared_ptr<GameObject> pPlayer)
 
 	}
 
+}
+
+void GranseedScene::Load_Portal()
+{
+	_float4 vPortalPos = _float4(-10.7f, -4.7f, 67.f, 1.f);
+
+	shared_ptr<GameObject> portal = make_shared<GameObject>();
+	portal->GetOrAddTransform()->Set_State(Transform_State::POS, vPortalPos);
+	portal->GetOrAddTransform()->Scaled(_float3(2.f));
+
+
+	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+	shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+	animator->Set_Model(RESOURCES.Get<Model>(L"MovePortal"));
+	portal->Add_Component(animator);
+	animator->Set_CurrentAnim(L"idle",true,1.f );
+	auto mesh = make_shared<MeshCollider>(L"MovePortal");
+	
+	auto rigidBody = make_shared<RigidBody>();
+	rigidBody->Create_RigidBody(mesh, portal->Get_Transform()->Get_WorldMatrix());
+	portal->Add_Component(rigidBody);
+	
+	portal->Add_Component(make_shared<PortalScript>(SCENE_TYPE::FIELD));
+
+	Add_GameObject(portal);
 }
