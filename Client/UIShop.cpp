@@ -23,44 +23,44 @@ HRESULT UIShop::Init()
 
     _uint iIndex = 0;
     m_vecName.resize(38);
-    m_vecName[iIndex++] = L"º¹ÁÖ¸Ó´Ï";
-    m_vecName[iIndex++] = L"Ã¼·Â Æ÷¼Ç 10°³¹­À½";
-    m_vecName[iIndex++] = L"Àåºñ °æÇèÄ¡ ½ºÅ©·Ñ";
-    m_vecName[iIndex++] = L"¿µ¿õ °æÇèÄ¡ Ä«µå";
-    m_vecName[iIndex++] = L"°è½ÂÀÚÀÇ ±â·Ï";
-    m_vecName[iIndex++] = L"¹æ¾î±¸ 2¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"¹æ¾î±¸ 3¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"¹æ¾î±¸ 4¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"¹æ¾î±¸ 5¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"¹æ¾î±¸ 6¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"¹«±â 2¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"¹«±â 3¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"¹«±â 4¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"¹«±â 5¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"¹«±â 6¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"¿ùÇÏ ¹ÌÀÎ ¼¼Æ®";
-    m_vecName[iIndex++] = L"¾²¸®Å×ÀÏ ¹ÙÄ²½º ¼¼Æ®";
-    m_vecName[iIndex++] = L"ÇØ±ºÀå±³ Á¦º¹ ¼¼Æ®";
-    m_vecName[iIndex++] = L"º¸Á¶¹«±â 2¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"º¸Á¶¹«±â 3¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"º¸Á¶¹«±â 4¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"º¸Á¶¹«±â 5¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"º¸Á¶¹«±â 6¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"¹ÝÁö 2¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"¹ÝÁö 3¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"¹ÝÁö 4¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"¹ÝÁö 5¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"¹ÝÁö 6¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"¸ñ°ÉÀÌ 2¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"¸ñ°ÉÀÌ 3¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"¸ñ°ÉÀÌ 4¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"¸ñ°ÉÀÌ 5¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"¸ñ°ÉÀÌ 6¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"Åõ±¸ 6¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"°©¿Ê 6¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"¸ÁÅä 6¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"Àå°© 6¼º ·£´ý»óÀÚ";
-    m_vecName[iIndex++] = L"½Å¹ß 6¼º ·£´ý»óÀÚ";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½Ö¸Ó´ï¿½";
+    m_vecName[iIndex++] = L"Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 10ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½Å©ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ Ä«ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½î±¸ 2ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½î±¸ 3ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½î±¸ 4ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½î±¸ 5ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½î±¸ 6ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ 2ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ 3ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ 4ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ 5ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ 6ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä²ï¿½ï¿½ ï¿½ï¿½Æ®";
+    m_vecName[iIndex++] = L"ï¿½Ø±ï¿½ï¿½å±³ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 2ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 3ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 4ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 5ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 6ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ 2ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ 3ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ 4ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ 5ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ 6ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ï¿½ 2ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ï¿½ 3ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ï¿½ 4ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ï¿½ 5ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ï¿½ 6ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ 6ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ 6ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½ï¿½ï¿½ï¿½ 6ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½å°© 6ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+    m_vecName[iIndex++] = L"ï¿½Å¹ï¿½ 6ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
 
     m_vecIsBuy.resize(38);
     m_vecPrice.resize(38);
@@ -93,7 +93,7 @@ void UIShop::Create_Shop()
     m_bIsCreated = true;
     auto pScene = CUR_SCENE;
 
-    // bg¶û itemÀ¸·Î ºÐ¸®. µû·Î ÀúÀåÇÏ¸é ÀÌµ¿Àº ¾ÆÀÌÅÛ¿¡¼­ ·ÎµåÇÑ °´Ã¼ º¤ÅÍ·Î Àû¿ë½Ã ÆíÇÔ
+    // bgï¿½ï¿½ itemï¿½ï¿½ï¿½ï¿½ ï¿½Ð¸ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½Í·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     // 
 
     pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Shop_Bg.dat", m_addedObj);
@@ -229,7 +229,7 @@ void UIShop::Create_Shop()
                 continue;
 
             if (strPrice == pObj.lock()->Get_Name())
-                pObj.lock()->Get_FontRenderer()->Get_Text() = L"±¸¸Å ¿Ï·á";
+                pObj.lock()->Get_FontRenderer()->Get_Text() = L"ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½";
         }
     }
 
@@ -313,13 +313,13 @@ void UIShop::Click_Buy_Yes()
 {
     Remove_Buy_Ui();
 
-    // 1¹øÀÌ¸é Æ÷¼Ç Áõ°¡
-    // 15~17 : ÄÚ½ºÆ¬ on -> UI_Costume_Controller -> Change_Costume_Have
+    // 1ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    // 15~17 : ï¿½Ú½ï¿½Æ¬ on -> UI_Costume_Controller -> Change_Costume_Have
     if (1 == m_iInteractionItemIndex)
         CUR_SCENE->Get_UI(L"UI_UseItem_Slot_Controller")->Get_Script<UiUseItemSlot>()->Add_Potion(10);
     else if (15 == m_iInteractionItemIndex ||
-        16 == m_iInteractionItemIndex ||
-        17 == m_iInteractionItemIndex)
+             16 == m_iInteractionItemIndex ||
+             17 == m_iInteractionItemIndex)
         CUR_SCENE->Get_UI(L"UI_Costume_Controller")->Get_Script<UiCostumeController>()->Change_Costume_Have(m_iInteractionItemIndex - 12);
 
     m_vecIsBuy[m_iInteractionItemIndex] = true;
@@ -328,7 +328,7 @@ void UIShop::Click_Buy_Yes()
 
     m_pMoneyValue.lock()->Get_FontRenderer()->Get_Text() = to_wstring(m_iMoney);
 
-    // 1¹ø Á¦¿ÜÇÏ°ï ´Ù 0À¸·Î ÁÙÀÌ°í ÅØ½ºÆ® ¹Ù²Ù±â
+    // 1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½Ø½ï¿½Æ® ï¿½Ù²Ù±ï¿½
     if (1 == m_iInteractionItemIndex)
         return;
 
@@ -353,7 +353,7 @@ void UIShop::Click_Buy_Yes()
             continue;
 
         if (strPrice == pObj.lock()->Get_Name())
-            pObj.lock()->Get_FontRenderer()->Get_Text() = L"±¸¸Å ¿Ï·á";
+            pObj.lock()->Get_FontRenderer()->Get_Text() = L"ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½";
     }
 
 }

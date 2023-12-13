@@ -35,295 +35,97 @@ HRESULT UiCardDeckController::Init()
 
     m_pCharChange = pScene->Get_UI(L"UI_Char_Change");
 
-    m_vecCardDeckObj.resize(14);
-    m_vecCardDeckObj[0] = pScene->Get_UI(L"UI_Card_Deck_Total_Bg0");
-    m_vecCardDeckObj[1] = pScene->Get_UI(L"UI_Card_Deck_Total_Bg1");
-    m_vecCardDeckObj[2] = pScene->Get_UI(L"UI_Card_Deck_Inven_Bg");
-    m_vecCardDeckObj[3] = pScene->Get_UI(L"UI_Card_Deck0");
-    m_vecCardDeckObj[4] = pScene->Get_UI(L"UI_Card_Deck1");
-    m_vecCardDeckObj[5] = pScene->Get_UI(L"UI_Card_Deck2");
-    //m_vecCardDeckObj[6] = pScene->Get_UI(L"UI_Card_Deck_Line0");
-    //m_vecCardDeckObj[7] = pScene->Get_UI(L"UI_Card_Deck_Line1");
-    //m_vecCardDeckObj[8] = pScene->Get_UI(L"UI_Card_Deck_Line2");
-    m_vecCardDeckObj[6] = pScene->Get_UI(L"UI_Card_Deck_X0");
-    m_vecCardDeckObj[7] = pScene->Get_UI(L"UI_Card_Deck_X1");
-    m_vecCardDeckObj[8] = pScene->Get_UI(L"UI_Card_Deck_X2");
-    //m_vecCardDeckObj[12] = pScene->Get_UI(L"UI_Card_Deck_Element0");
-    //m_vecCardDeckObj[13] = pScene->Get_UI(L"UI_Card_Deck_Element1");
-    //m_vecCardDeckObj[14] = pScene->Get_UI(L"UI_Card_Deck_Element2");
-    m_vecCardDeckObj[9] = pScene->Get_UI(L"UI_Card_Deck_Exit");
-    m_vecCardDeckObj[10] = pScene->Get_UI(L"UI_Card_Deck_Font");
-
-    m_vecInvenObj.resize(32);
-    m_vecInvenObj[0] = pScene->Get_UI(L"UI_Card_Deck_Inven0");
-    m_vecInvenObj[1] = pScene->Get_UI(L"UI_Card_Deck_Inven1");
-    m_vecInvenObj[2] = pScene->Get_UI(L"UI_Card_Deck_Inven2");
-    m_vecInvenObj[3] = pScene->Get_UI(L"UI_Card_Deck_Inven3");
-    m_vecInvenObj[4] = pScene->Get_UI(L"UI_Card_Deck_Inven4");
-    m_vecInvenObj[5] = pScene->Get_UI(L"UI_Card_Deck_Inven5");
-    m_vecInvenObj[6] = pScene->Get_UI(L"UI_Card_Deck_Inven6");
-    m_vecInvenObj[7] = pScene->Get_UI(L"UI_Card_Deck_Inven7");
-    m_vecInvenObj[8] = pScene->Get_UI(L"UI_Card_Deck_Inven8");
-    m_vecInvenObj[9] = pScene->Get_UI(L"UI_Card_Deck_Inven9");
-    m_vecInvenObj[10] = pScene->Get_UI(L"UI_Card_Deck_Inven10");
-    m_vecInvenObj[11] = pScene->Get_UI(L"UI_Card_Deck_Inven11");
-    m_vecInvenObj[12] = pScene->Get_UI(L"UI_Card_Deck_Inven12");
-    m_vecInvenObj[13] = pScene->Get_UI(L"UI_Card_Deck_Inven13");
-    m_vecInvenObj[14] = pScene->Get_UI(L"UI_Card_Deck_Inven14");
-    m_vecInvenObj[15] = pScene->Get_UI(L"UI_Card_Deck_Inven15");
-    m_vecInvenObj[16] = pScene->Get_UI(L"UI_Card_Deck_Inven16");
-    m_vecInvenObj[17] = pScene->Get_UI(L"UI_Card_Deck_Inven17");
-    m_vecInvenObj[18] = pScene->Get_UI(L"UI_Card_Deck_Inven18");
-    m_vecInvenObj[19] = pScene->Get_UI(L"UI_Card_Deck_Inven19");
-    m_vecInvenObj[20] = pScene->Get_UI(L"UI_Card_Deck_Inven20");
-    m_vecInvenObj[21] = pScene->Get_UI(L"UI_Card_Deck_Inven21");
-    m_vecInvenObj[22] = pScene->Get_UI(L"UI_Card_Deck_Inven22");
-    m_vecInvenObj[23] = pScene->Get_UI(L"UI_Card_Deck_Inven23");
-    m_vecInvenObj[24] = pScene->Get_UI(L"UI_Card_Deck_Inven24");
-    m_vecInvenObj[25] = pScene->Get_UI(L"UI_Card_Deck_Inven25");
-    m_vecInvenObj[26] = pScene->Get_UI(L"UI_Card_Deck_Inven26");
-    m_vecInvenObj[27] = pScene->Get_UI(L"UI_Card_Deck_Inven27");
-    m_vecInvenObj[28] = pScene->Get_UI(L"UI_Card_Deck_Inven28");
-    m_vecInvenObj[29] = pScene->Get_UI(L"UI_Card_Deck_Inven29");
-    m_vecInvenObj[30] = pScene->Get_UI(L"UI_Card_Deck_Inven30");
-    m_vecInvenObj[31] = pScene->Get_UI(L"UI_Card_Deck_Inven31");
-
-    m_vecCardDeckBg.resize(32);
-    m_vecCardDeckBg[0] = pScene->Get_UI(L"UI_Card_Deck_InvenBg0");
-    m_vecCardDeckBg[1] = pScene->Get_UI(L"UI_Card_Deck_InvenBg1");
-    m_vecCardDeckBg[2] = pScene->Get_UI(L"UI_Card_Deck_InvenBg2");
-    m_vecCardDeckBg[3] = pScene->Get_UI(L"UI_Card_Deck_InvenBg3");
-    m_vecCardDeckBg[4] = pScene->Get_UI(L"UI_Card_Deck_InvenBg4");
-    m_vecCardDeckBg[5] = pScene->Get_UI(L"UI_Card_Deck_InvenBg5");
-    m_vecCardDeckBg[6] = pScene->Get_UI(L"UI_Card_Deck_InvenBg6");
-    m_vecCardDeckBg[7] = pScene->Get_UI(L"UI_Card_Deck_InvenBg7");
-    m_vecCardDeckBg[8] = pScene->Get_UI(L"UI_Card_Deck_InvenBg8");
-    m_vecCardDeckBg[9] = pScene->Get_UI(L"UI_Card_Deck_InvenBg9");
-    m_vecCardDeckBg[10] = pScene->Get_UI(L"UI_Card_Deck_InvenBg10");
-    m_vecCardDeckBg[11] = pScene->Get_UI(L"UI_Card_Deck_InvenBg11");
-    m_vecCardDeckBg[12] = pScene->Get_UI(L"UI_Card_Deck_InvenBg12");
-    m_vecCardDeckBg[13] = pScene->Get_UI(L"UI_Card_Deck_InvenBg13");
-    m_vecCardDeckBg[14] = pScene->Get_UI(L"UI_Card_Deck_InvenBg14");
-    m_vecCardDeckBg[15] = pScene->Get_UI(L"UI_Card_Deck_InvenBg15");
-    m_vecCardDeckBg[16] = pScene->Get_UI(L"UI_Card_Deck_InvenBg16");
-    m_vecCardDeckBg[17] = pScene->Get_UI(L"UI_Card_Deck_InvenBg17");
-    m_vecCardDeckBg[18] = pScene->Get_UI(L"UI_Card_Deck_InvenBg18");
-    m_vecCardDeckBg[19] = pScene->Get_UI(L"UI_Card_Deck_InvenBg19");
-    m_vecCardDeckBg[20] = pScene->Get_UI(L"UI_Card_Deck_InvenBg20");
-    m_vecCardDeckBg[21] = pScene->Get_UI(L"UI_Card_Deck_InvenBg21");
-    m_vecCardDeckBg[22] = pScene->Get_UI(L"UI_Card_Deck_InvenBg22");
-    m_vecCardDeckBg[23] = pScene->Get_UI(L"UI_Card_Deck_InvenBg23");
-    m_vecCardDeckBg[24] = pScene->Get_UI(L"UI_Card_Deck_InvenBg24");
-    m_vecCardDeckBg[25] = pScene->Get_UI(L"UI_Card_Deck_InvenBg25");
-    m_vecCardDeckBg[26] = pScene->Get_UI(L"UI_Card_Deck_InvenBg26");
-    m_vecCardDeckBg[27] = pScene->Get_UI(L"UI_Card_Deck_InvenBg27");
-    m_vecCardDeckBg[28] = pScene->Get_UI(L"UI_Card_Deck_InvenBg28");
-    m_vecCardDeckBg[29] = pScene->Get_UI(L"UI_Card_Deck_InvenBg29");
-    m_vecCardDeckBg[30] = pScene->Get_UI(L"UI_Card_Deck_InvenBg30");
-    m_vecCardDeckBg[31] = pScene->Get_UI(L"UI_Card_Deck_InvenBg31");
-
-    m_vecCardDeckElement.resize(32);
-    m_vecCardDeckElement[0] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element0");
-    m_vecCardDeckElement[1] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element1");
-    m_vecCardDeckElement[2] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element2");
-    m_vecCardDeckElement[3] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element3");
-    m_vecCardDeckElement[4] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element4");
-    m_vecCardDeckElement[5] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element5");
-    m_vecCardDeckElement[6] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element6");
-    m_vecCardDeckElement[7] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element7");
-    m_vecCardDeckElement[8] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element8");
-    m_vecCardDeckElement[9] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element9");
-    m_vecCardDeckElement[10] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element10");
-    m_vecCardDeckElement[11] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element11");
-    m_vecCardDeckElement[12] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element12");
-    m_vecCardDeckElement[13] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element13");
-    m_vecCardDeckElement[14] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element14");
-    m_vecCardDeckElement[15] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element15");
-    m_vecCardDeckElement[16] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element16");
-    m_vecCardDeckElement[17] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element17");
-    m_vecCardDeckElement[18] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element18");
-    m_vecCardDeckElement[19] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element19");
-    m_vecCardDeckElement[20] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element20");
-    m_vecCardDeckElement[21] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element21");
-    m_vecCardDeckElement[22] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element22");
-    m_vecCardDeckElement[23] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element23");
-    m_vecCardDeckElement[24] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element24");
-    m_vecCardDeckElement[25] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element25");
-    m_vecCardDeckElement[26] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element26");
-    m_vecCardDeckElement[27] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element27");
-    m_vecCardDeckElement[28] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element28");
-    m_vecCardDeckElement[29] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element29");
-    m_vecCardDeckElement[30] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element30");
-    m_vecCardDeckElement[31] = pScene->Get_UI(L"UI_Card_Deck_Inven_Element31");
-
-    m_vecFont.resize(6);
-    m_vecFont[0] = pScene->Get_UI(L"UI_Card_Deck0_Hero_Info");
-    m_vecFont[1] = pScene->Get_UI(L"UI_Card_Deck0_Hero");
-    m_vecFont[2] = pScene->Get_UI(L"UI_Card_Deck1_Hero_Info");
-    m_vecFont[3] = pScene->Get_UI(L"UI_Card_Deck1_Hero");
-    m_vecFont[4] = pScene->Get_UI(L"UI_Card_Deck2_Hero_Info");
-    m_vecFont[5] = pScene->Get_UI(L"UI_Card_Deck2_Hero");
-
-    for (_uint i = 0; i < IDX(m_vecInvenObj.size()); ++i)
-    {
-        auto& pObj = m_vecInvenObj[i];
-        if (true == pObj.expired())
-            continue;
-
-        pObj.lock()->Get_Button()->AddOnClickedEvent([pObj, this]()
-            {
-                this->Click_Deck_Inven(pObj.lock()->Get_Name());
-            });
-    }
-
-    for (_uint i = 3; i < 6; ++i)
-    {
-        auto& pObj = m_vecCardDeckObj[i];
-        if (true == pObj.expired())
-            continue;
-
-        pObj.lock()->Get_Button()->AddOnClickedEvent([pObj, this]()
-            {
-                this->Click_Deck_Select(pObj.lock()->Get_Name());
-            });
-    }
-
-    for (_uint i = 6; i < 9; ++i)
-    {
-        auto& pObj = m_vecCardDeckObj[i];
-        if (true == pObj.expired())
-            continue;
-
-        pObj.lock()->Get_Button()->AddOnClickedEvent([pObj, this]()
-            {
-                this->Click_Deck_X(pObj.lock()->Get_Name());
-            });
-    }
+    //for (_uint i = 0; i < IDX(m_vecInvenObj.size()); ++i)
+    //{
+    //    auto& pObj = m_vecInvenObj[i];
+    //    if (true == pObj.expired())
+    //        continue;
+    //
+    //    pObj.lock()->Get_Button()->AddOnClickedEvent([pObj, this]()
+    //        {
+    //            this->Click_Deck_Inven(pObj.lock()->Get_Name());
+    //        });
+    //}
+    //
+    //for (_uint i = 3; i < 6; ++i)
+    //{
+    //    auto& pObj = m_vecCardDeckObj[i];
+    //    if (true == pObj.expired())
+    //        continue;
+    //
+    //    pObj.lock()->Get_Button()->AddOnClickedEvent([pObj, this]()
+    //        {
+    //            this->Click_Deck_Select(pObj.lock()->Get_Name());
+    //        });
+    //}
+    //
+    //for (_uint i = 6; i < 9; ++i)
+    //{
+    //    auto& pObj = m_vecCardDeckObj[i];
+    //    if (true == pObj.expired())
+    //        continue;
+    //
+    //    pObj.lock()->Get_Button()->AddOnClickedEvent([pObj, this]()
+    //        {
+    //            this->Click_Deck_X(pObj.lock()->Get_Name());
+    //        });
+    //}
 
     return S_OK;
 }
 
 void UiCardDeckController::Tick()
 {
-    if (true == m_pOwner.expired())
+    if (true == m_pOwner.expired() ||
+        false == m_bIsCreated)
         return;
 
     Move_Select_Mark();
+    Check_Scroll();
 }
 
-void UiCardDeckController::Set_Render(_bool bValue)
+void UiCardDeckController::Click_Deck_Select(wstring strObjName, _uint iIndex)
 {
-    m_bIsRender = bValue;
-    if (true == m_bIsRender)
-        g_bIsCanRotation = false;
-    else
-        g_bIsCanRotation = true;
+    if (false == m_bIsCreated || false == m_bIsClickSet)
+        return;
 
-    auto pScene = CUR_SCENE;
-
-    _uint iSize = IDX(m_vecCardDeckObj.size());
-    for (_uint i = 0; i < iSize; ++i)
+    m_bIsClickSet = false;
+    for (_uint i = 0; i < IDX(m_vecCardDeckObj.size()); ++i)
     {
         auto& pObj = m_vecCardDeckObj[i];
         if (false == pObj.expired())
         {
-            pObj.lock()->Set_Tick(bValue);
-            pObj.lock()->Set_Render(bValue);
-        }
-    }
-
-    _uint iUseSize = DATAMGR.Get_Card_Inven_Use_Size();
-    iSize = IDX(m_vecInvenObj.size());
-    if (iSize < iUseSize)
-        iUseSize = iSize;
-    for (_uint i = 0; i < iUseSize; ++i)
-    {
-        auto& pObj = m_vecInvenObj[i];
-        if (false == pObj.expired())
-        {
-            pObj.lock()->Set_Tick(bValue);
-            pObj.lock()->Set_Render(bValue);
-        }
-    }
-
-    for (_uint i = 0; i < iUseSize; ++i)
-    {
-        auto& pObj = m_vecCardDeckBg[i];
-        if (false == pObj.expired())
-        {
-            pObj.lock()->Set_Tick(bValue);
-            pObj.lock()->Set_Render(bValue);
-        }
-    }
-
-    for (_uint i = 0; i < iUseSize; ++i)
-    {
-        auto& pObj = m_vecCardDeckElement[i];
-        if (false == pObj.expired())
-        {
-            pObj.lock()->Set_Tick(bValue);
-            pObj.lock()->Set_Render(bValue);
-        }
-    }
-
-    iSize = IDX(m_vecFont.size());
-    for (_uint i = 0; i < iSize; ++i)
-    {
-        auto& pObj = m_vecFont[i];
-        if (false == pObj.expired())
-        {
-            pObj.lock()->Set_Tick(bValue);
-            pObj.lock()->Set_Render(bValue);
-        }
-    }
-
-    if (true == bValue)
-        Set_Card();
-}
-
-void UiCardDeckController::Click_Deck_Select(wstring strObjName)
-{
-    if (false == m_bIsRender || false == m_bIsClickSet)
-        return;
-
-    m_bIsClickSet = false;
-    for (_uint i = 3; i < 6; ++i)
-    {
-        if (false == m_vecCardDeckObj[i].expired())
-        {
-            if (m_vecCardDeckObj[i].lock()->Get_Name() == strObjName)
+            if (pObj.lock()->Get_Name() == strObjName)
             {
-                // 정보창에서 장착 누른 후 카드 클릭 시 -> 카드 바꿔주고 데이터 셋해야함
-                _uint iIndex = i - 3;
                 if (false == DATAMGR.Set_Cur_Hero(iIndex, m_iSetIndex))
                 {
                     Remove_Select_Mark();
                     return;
                 }
-
+                
                 wstring strKey = DATAMGR.Get_Card_Inven(m_iSetIndex).KeyDeckSelect;
-                m_vecCardDeckObj[i].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(strKey), TextureMapType::DIFFUSE);
+                pObj.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(strKey), TextureMapType::DIFFUSE);
 
                 // 장착 성공 창 띄우기
                 Create_Switch_Complete(true);
 
-                //GET_PLAYER->Get_Script<HeroChangeScript>()->Change_Player();
                 if (false == m_pCharChange.expired())
                     m_pCharChange.lock()->Get_Script<UiCharChange>()->Set_Hero(iIndex);
 
-                // 9X , 12Ele
-                iIndex = i + 3;
-                if (true == m_vecCardDeckObj[iIndex].expired())
-                    return;
-                m_vecCardDeckObj[iIndex].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+                wstring strName = L"UI_Card_Deck_X" + to_wstring(iIndex);
+                for (_uint i = 0; i < IDX(m_vecCardDeckObj.size()); ++i)
+                {
+                    auto& pObj = m_vecCardDeckObj[i];
+                    if (true == pObj.expired())
+                        continue;
 
-                //iIndex = i + 9;
-                //if (true == m_vecCardDeckObj[iIndex].expired())
-                //    return;
-                //m_vecCardDeckObj[iIndex].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
-                //m_vecCardDeckObj[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(DATAMGR.Get_Card_Inven_Element_Line(m_iSetIndex)), TextureMapType::DIFFUSE);
-            
-                Set_Font(i - 3);
+                    if (strName == pObj.lock()->Get_Name())
+                    {
+                        pObj.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+                    }
+                }
+
+                Set_Font(iIndex);
 
                 Remove_Select_Mark();
             }
@@ -331,65 +133,43 @@ void UiCardDeckController::Click_Deck_Select(wstring strObjName)
     }
 }
 
-void UiCardDeckController::Click_Deck_Inven(wstring strInvenName)
+void UiCardDeckController::Click_Deck_Inven(_uint iIndex)
 {
-    if (false == m_bIsRender)
+    if (false == m_bIsCreated)
         return;
 
-    _uint iSize = IDX(m_vecInvenObj.size());
-    for (_uint i = 0; i < iSize; ++i)
-    {
-        if (true == m_vecInvenObj[i].expired())
-            continue;
-
-        if (m_vecInvenObj[i].lock()->Get_Name() == strInvenName)
-        {
-            // 클릭 한 인벤토리 인덱스의 해당하는 데이터 가져와서 정보창 켜기
-            Create_Info(i);
-
-            return;
-        }
-    }
+    // 클릭 한 인벤토리 인덱스의 해당하는 데이터 가져와서 정보창 켜기
+    Create_Info(iIndex);
 }
 
-void UiCardDeckController::Click_Deck_X(wstring strObjName)
+void UiCardDeckController::Click_Deck_X(wstring strObjName, _uint iIndex)
 {
-    if (false == m_bIsRender)
+    if (false == m_bIsCreated)
         return;
 
-    for (_uint i = 6; i < 9; ++i)
+    for (_uint i = 0; i < IDX(m_vecCardDeckObj.size()); ++i)
     {
-        if (m_vecCardDeckObj[i].lock()->Get_Name() == strObjName)
+        auto& pObj = m_vecCardDeckObj[i];
+        if (pObj.lock()->Get_Name() == strObjName)
         {
-            if (true == m_vecCardDeckObj[i].expired())
+            if (true == pObj.expired())
                 continue;
-            m_vecCardDeckObj[i].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
-            //pObj.lock()->Set_Tick(false);
-            //pObj.lock()->Set_Render(false);
 
-            _uint iIndex = i - 3;
+            pObj.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
+
             if (true == m_vecCardDeckObj[iIndex].expired())
                 continue;
             m_vecCardDeckObj[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"Card_Deck_Bg_None"), TextureMapType::DIFFUSE);
-
-            //iIndex = i + 3;
-            //if (true == m_vecCardDeckObj[iIndex].expired())
-            //    continue;
-            //m_vecCardDeckObj[iIndex].lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 0.f;
-            //pObj.lock()->Set_Tick(false);
-            //pObj.lock()->Set_Render(false);
 
             // 장착 해제 창 띄우기
             Create_Switch_Complete(false);
 
             // 데이터에서 빼야함
-            iIndex = i - 6;
             DATAMGR.Remove_Cur_Hero(iIndex);
-            //GET_PLAYER->Get_Script<HeroChangeScript>()->Change_Player();
             if (false == m_pCharChange.expired())
                 m_pCharChange.lock()->Get_Script<UiCharChange>()->Set_Hero(iIndex);
 
-            Remove_Font(i - 6);
+            Remove_Font(iIndex);
         }
     }
 }
@@ -425,35 +205,236 @@ void UiCardDeckController::Remove_Info()
     m_vecAddedObj.clear();
 }
 
+void UiCardDeckController::Create_Card_Deck()
+{
+    if (true == m_bIsCreated)
+        return;
+
+    g_bIsCanRotation = false;
+
+    m_bIsCreated = true;
+    auto pScene = CUR_SCENE;
+
+    pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck_Bg.dat", m_vecCardDeckObj);
+
+    auto& pDataMgr = DATAMGR;
+
+    _bool bIsSet0 = false;
+    if (HERO::MAX != pDataMgr.Get_Cur_Set_Hero(0))
+        bIsSet0 = true;
+
+    _bool bIsSet1 = false;
+    if (HERO::MAX != pDataMgr.Get_Cur_Set_Hero(1))
+        bIsSet1 = true;
+
+    _bool bIsSet2 = false;
+    if (HERO::MAX != pDataMgr.Get_Cur_Set_Hero(2))
+        bIsSet2 = true;
+
+    _uint iSize = IDX(m_vecCardDeckObj.size());
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        auto& pObj = m_vecCardDeckObj[i];
+        if (true == pObj.expired())
+            continue;
+
+        wstring strName = pObj.lock()->Get_Name();
+        if (L"UI_Card_Deck_Total_Bg0" == strName)
+        {
+            pObj.lock()->Get_Button()->AddOnClickedEvent([this]()
+                {
+                    this->Remove_Card_Deck();
+                });
+        }
+        else if (L"UI_Card_Deck_Scroll_Button" == strName)
+        {
+            m_pScroll = pObj;
+            pObj.lock()->Get_Button()->Set_Type(false);
+            pObj.lock()->Get_Button()->AddOnClickedEvent([this, pObj]()
+                {
+                    POINT ptMouse = INPUT.GetMousePosToPoint();
+                    _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+                    vecPos.y = static_cast<_float>(ptMouse.y * -1.f + g_iWinSizeY / 2.f);
+                    if (-450.f > vecPos.y)
+                        vecPos.y = -450.f;
+                    if (450.f < vecPos.y)
+                        vecPos.y = 450.f;
+                    pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+                });
+        }
+        else if (L"UI_Card_Deck_X0" == strName)
+        {
+            if(true == bIsSet0)
+                pObj.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+
+            pObj.lock()->Get_Button()->AddOnClickedEvent([this, strName]()
+                {
+                    this->Click_Deck_X(strName, 0);
+                });
+        }
+        else if (L"UI_Card_Deck_X1" == strName)
+        {
+            if (true == bIsSet1)
+                pObj.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+
+            pObj.lock()->Get_Button()->AddOnClickedEvent([this, strName]()
+                {
+                    this->Click_Deck_X(strName, 1);
+                });
+        }
+        else if (L"UI_Card_Deck_X2" == strName)
+        {
+            if (true == bIsSet2)
+                pObj.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = 1.f;
+
+            pObj.lock()->Get_Button()->AddOnClickedEvent([this, strName]()
+                {
+                    this->Click_Deck_X(strName, 2);
+                });
+        }
+        else if (L"UI_Card_Deck0" == strName)
+        {
+            if (true == bIsSet0)
+                pObj.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(pDataMgr.Get_Data(pDataMgr.Get_Cur_Set_Hero(0)).KeyDeckSelect), TextureMapType::DIFFUSE);
+
+            pObj.lock()->Get_Button()->AddOnClickedEvent([this, strName]()
+                {
+                    this->Click_Deck_Select(strName, 0);
+                });
+        }
+        else if (L"UI_Card_Deck1" == strName)
+        {
+            if (true == bIsSet1)
+                pObj.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(pDataMgr.Get_Data(pDataMgr.Get_Cur_Set_Hero(1)).KeyDeckSelect), TextureMapType::DIFFUSE);
+
+            pObj.lock()->Get_Button()->AddOnClickedEvent([this, strName]()
+                {
+                    this->Click_Deck_Select(strName, 1);
+                });
+        }
+        else if (L"UI_Card_Deck2" == strName)
+        {
+            if (true == bIsSet2)
+                pObj.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(pDataMgr.Get_Data(pDataMgr.Get_Cur_Set_Hero(2)).KeyDeckSelect), TextureMapType::DIFFUSE);
+
+            pObj.lock()->Get_Button()->AddOnClickedEvent([this, strName]()
+                {
+                    this->Click_Deck_Select(strName, 2);
+                });
+        }
+    }
+
+    if (true == bIsSet0)
+    {
+        if(-1 != pDataMgr.Get_Cur_Set_Hero_Index(0))
+        {
+            m_iSetIndex = pDataMgr.Get_Cur_Set_Hero_Index(0);
+            Set_Font(0);
+        }
+    }
+
+    if (true == bIsSet1)
+        if (-1 != pDataMgr.Get_Cur_Set_Hero_Index(1))
+        {
+            m_iSetIndex = pDataMgr.Get_Cur_Set_Hero_Index(1);
+            Set_Font(1);
+        }
+
+    if (true == bIsSet2)
+        if (-1 != pDataMgr.Get_Cur_Set_Hero_Index(2))
+        {
+            m_iSetIndex = pDataMgr.Get_Cur_Set_Hero_Index(2);
+            Set_Font(2);
+        }
+
+    _uint iUseSize = pDataMgr.Get_Card_Inven_Use_Size();
+    pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Card_Deck_Inven.dat", m_vecInvenObj);
+
+    iSize = IDX(m_vecInvenObj.size());
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        auto& pObj = m_vecInvenObj[i];
+        if (true == pObj.expired())
+            continue;
+
+        if (i < iUseSize)
+        {
+
+            pObj.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(pDataMgr.Get_Card_Inven(i).KeyDeckMiniAddBg), TextureMapType::DIFFUSE);
+
+            _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+            vecPos.x = 490.f + static_cast<_float>(i % 4) * 105.f;
+            vecPos.y = 430.f - static_cast<_float>(i / 4) * 110.f;
+            m_fMaxPosY = vecPos.y;
+            pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+
+            pObj.lock()->Get_Button()->Get_Desc().ptCenter.x = static_cast<LONG>(vecPos.x + g_iWinSizeX / 2);
+            pObj.lock()->Get_Button()->Get_Desc().ptCenter.y = static_cast<LONG>(vecPos.y * -1.f + g_iWinSizeY / 2);
+
+            pObj.lock()->Get_Button()->AddOnClickedEvent([this, i]()
+                {
+                    this->Click_Deck_Inven(i);
+                });
+        }
+        else
+        {
+            pObj.lock()->Set_Tick(false);
+            pObj.lock()->Set_Render(false);
+        }
+    }
+}
+
+void UiCardDeckController::Remove_Card_Deck()
+{
+    if (false == m_bIsCreated)
+        return;
+
+    g_bIsCanRotation = true;
+
+    m_bIsCreated = false;
+
+    auto& pEventMgr = EVENTMGR;
+
+    for (_uint i = 0; i < IDX(m_vecCardDeckObj.size()); ++i)
+    {
+        auto& pObj = m_vecCardDeckObj[i];
+        if (false == pObj.expired())
+        {
+            pEventMgr.Delete_Object(pObj.lock());
+            pObj.reset();
+        }
+    }
+    m_vecCardDeckObj.clear();
+
+    
+    for (_uint i = 0; i < IDX(m_vecInvenObj.size()); ++i)
+    {
+        auto& pObj = m_vecInvenObj[i];
+        if (false == pObj.expired())
+        {
+            pEventMgr.Delete_Object(pObj.lock());
+            pObj.reset();
+        }
+    }
+    m_vecInvenObj.clear();
+
+
+
+}
+
 void UiCardDeckController::Set_Card()
 {
     auto& pDataMgr = DATAMGR;
     _uint iUseSize = pDataMgr.Get_Card_Inven_Use_Size();
-    _uint iSize = IDX(m_vecInvenObj.size());
-    if (iSize < iUseSize)
-        iUseSize = iSize;
-
-    if (m_iPreSize != iUseSize)
-        m_iPreSize = iUseSize;
-    else
-        return;
-
     for (_uint i = 0; i < iUseSize; ++i)
     {
         if (i < iUseSize)
         {
-            if (true == m_vecInvenObj[i].expired() || 
-                true == m_vecCardDeckElement[i].expired() || 
-                true == m_vecCardDeckBg[i].expired())
+            if (true == m_vecInvenObj[i].expired())
                 continue;
 
             auto& Data = pDataMgr.Get_Card_Inven(i);
             m_vecInvenObj[i].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(Data.KeyDeckMini), TextureMapType::DIFFUSE);
-            m_vecCardDeckElement[i].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(pDataMgr.Get_Card_Inven_Element(i)), TextureMapType::DIFFUSE);
-
-            wstring strTextureKey = L"Card_Deck_Inven_Bg" + to_wstring(Data.Star);
-              m_vecCardDeckBg[i].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(strTextureKey), TextureMapType::DIFFUSE);
-
         }
     }
 }
@@ -580,56 +561,76 @@ void UiCardDeckController::Set_Font(_uint iIndex)
 {
     Remove_Font(iIndex);
 
-    _uint Index = iIndex * 2;
     auto& tagData = DATAMGR.Get_Card_Inven(m_iSetIndex);
+    wstring strHero = L"UI_Card_Deck" + to_wstring(iIndex) + L"_Hero";
+    wstring strInfo = L"UI_Card_Deck" + to_wstring(iIndex) + L"_Hero_Info";
+    for (_uint i = 0; i < IDX(m_vecCardDeckObj.size()); ++i)
+    {
+        auto& pObj = m_vecCardDeckObj[i];
+        if (true == pObj.expired())
+            continue;
 
-    if (true == m_vecFont[Index].expired())
-        return;
-    m_vecFont[Index].lock()->Get_FontRenderer()->Get_Text() = tagData.KeyHeroInfo;
-    _float fLength = static_cast<_float>(tagData.KeyHeroInfo.length());
-    _float4 vecPos = m_vecFont[Index].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-    vecPos.x += fLength / 2.f * -27.f;
-    m_vecFont[Index].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
-
-    if (true == m_vecFont[Index + 1].expired())
-        return;
-    m_vecFont[Index + 1].lock()->Get_FontRenderer()->Get_Text() = tagData.KeyHeroName;
-    fLength = static_cast<_float>(tagData.KeyHeroName.length());
-    vecPos = m_vecFont[Index + 1].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-    vecPos.x += fLength / 2.f * -27.f;
-    m_vecFont[Index + 1].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+        if (strHero == pObj.lock()->Get_Name())
+        {
+            pObj.lock()->Get_FontRenderer()->Get_Text() = tagData.KeyHeroName;
+            _float fLength = static_cast<_float>(tagData.KeyHeroName.length());
+            _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+            vecPos.x += fLength / 2.f * -27.f;
+            pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+        }
+        else if (strInfo == pObj.lock()->Get_Name())
+        {
+            pObj.lock()->Get_FontRenderer()->Get_Text() = tagData.KeyHeroInfo;
+            _float fLength = static_cast<_float>(tagData.KeyHeroInfo.length());
+            _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+            vecPos.x += fLength / 2.f * -27.f;
+            pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+        }
+    }
+    
 }
 
 void UiCardDeckController::Remove_Font(_uint iIndex)
 {
-    _uint Index = iIndex * 2;
-    if (true == m_vecFont[Index].expired())
-        return;
-    m_vecFont[Index].lock()->Get_FontRenderer()->Get_Text() = L"";
+    auto& tagData = DATAMGR.Get_Card_Inven(m_iSetIndex);
+    wstring strHero = L"UI_Card_Deck" + to_wstring(iIndex) + L"_Hero";
+    wstring strInfo = L"UI_Card_Deck" + to_wstring(iIndex) + L"_Hero_Info";
 
-    if (true == m_vecFont[Index + 1].expired())
-        return;
-    m_vecFont[Index + 1].lock()->Get_FontRenderer()->Get_Text() = L"";
-    
-    _float4 vecPos1 = m_vecFont[Index].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-    _float4 vecPos2 = m_vecFont[Index + 1].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-    switch (Index)
+    _float fPosX = 0.f;
+    switch (iIndex)
     {
     case 0:
-        vecPos1.x = -480;
-        vecPos2.x = -480;
+        fPosX = -480;
+        break;
+    case 1:
+        fPosX = -140;
         break;
     case 2:
-        vecPos1.x = -140;
-        vecPos2.x = -140;
-        break;
-    case 4:
-        vecPos1.x = 200;
-        vecPos2.x = 200;
+        fPosX = 200;
         break;
     }
-    m_vecFont[Index].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos1);
-    m_vecFont[Index + 1].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos2);
+
+    for (_uint i = 0; i < IDX(m_vecCardDeckObj.size()); ++i)
+    {
+        auto& pObj = m_vecCardDeckObj[i];
+        if (true == pObj.expired())
+            continue;
+
+        if (strHero == pObj.lock()->Get_Name())
+        {
+            _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+            vecPos.x = fPosX;
+            pObj.lock()->Get_FontRenderer()->Get_Text() = L"";
+            pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+        }
+        else if (strInfo == pObj.lock()->Get_Name())
+        {
+            _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+            vecPos.x = fPosX;
+            pObj.lock()->Get_FontRenderer()->Get_Text() = L"";
+            pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+        }
+    }
 }
 
 void UiCardDeckController::Create_Select_Mark()
@@ -672,7 +673,7 @@ void UiCardDeckController::Move_Select_Mark()
         return;
 
     m_fCheckTime += fDT;
-    if(m_fMaxTime < m_fCheckTime)
+    if (m_fMaxTime < m_fCheckTime)
     {
         m_fCheckTime = 0.f;
         m_bIsMoveDown = !m_bIsMoveDown;
@@ -685,7 +686,7 @@ void UiCardDeckController::Move_Select_Mark()
 
     _float4 vecPos = m_vecSelectMark[0].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
     _float fY = {};
-    if(true == m_bIsMoveDown)
+    if (true == m_bIsMoveDown)
         fY = vecPos.y - fDT * m_fSpeed;
     else
         fY = vecPos.y + fDT * m_fSpeed;
@@ -700,4 +701,34 @@ void UiCardDeckController::Move_Select_Mark()
     vecPos = m_vecSelectMark[2].lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
     vecPos.y = fY;
     m_vecSelectMark[2].lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+}
+
+void UiCardDeckController::Check_Scroll()
+{
+    _uint iUseSize = DATAMGR.Get_Card_Inven_Use_Size();
+    if (32 > iUseSize)
+        return;
+
+    _float fPosY = m_pScroll.lock()->GetOrAddTransform()->Get_State(Transform_State::POS).y;
+    fPosY -= 450.f; // 0 ~ -900 값
+    
+    // -340이 최대값이 되야함
+    _float fRatio = m_fMaxPosY + 340.f;
+    fRatio /= 900.f;
+
+    fPosY *= fRatio;
+    for (_uint i = 0; i < iUseSize; ++i)
+    {
+        auto& pObj = m_vecInvenObj[i];
+        if (true == pObj.expired())
+            continue;
+
+        _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+        vecPos.y = 430.f - static_cast<_float>(i / 4) * 110.f + fPosY;
+        pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+
+        pObj.lock()->Get_Button()->Get_Desc().ptCenter.x = static_cast<LONG>(vecPos.x + g_iWinSizeX / 2);
+        pObj.lock()->Get_Button()->Get_Desc().ptCenter.y = static_cast<LONG>(vecPos.y * -1.f + g_iWinSizeY / 2);
+    }
+
 }

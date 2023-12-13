@@ -41,6 +41,7 @@ public:
     void                Remove_Card_Inven(_uint iIndex);
 
     HERO                Get_Cur_Set_Hero(_uint iIndex);
+    _uint               Get_Cur_Set_Hero_Index(_uint iIndex)                { return m_CurSetHero[iIndex]; }
     _bool               Set_Cur_Hero(_uint iIndex, _uint iCardIndex);
     void                Remove_Cur_Hero(_uint iIndex);
 

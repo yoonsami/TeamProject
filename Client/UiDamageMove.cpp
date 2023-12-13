@@ -49,7 +49,7 @@ void UiDamageMove::Tick()
 void UiDamageMove::Check_Render_State()
 {
     _float3 cullPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
-    _float cullRadius = 1.5f;
+    _float cullRadius = 1.f;
     Frustum frustum = m_pCamera.lock()->Get_Camera()->Get_Frustum();
 
     m_bIsRender = false;
