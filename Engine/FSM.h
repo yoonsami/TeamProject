@@ -158,8 +158,10 @@ public:
 	_float m_fTimePerFrame = 0.f;
 
 	//For. SoundVolume
-	_float m_fVoiceVolume = 0.5f;
-	_float m_fSwingVolume = 0.5f;
+	_float m_fFootStepVolume = 1.f;
+	_float m_fVoiceVolume = 1.f;
+	_float m_fSwingVolume = 1.f;
+	_float m_fEffectVolume = 1.f;
 	
 
 	//For Effect.Create

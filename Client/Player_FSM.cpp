@@ -58,8 +58,9 @@ HRESULT Player_FSM::Init()
 	m_fSkillAttack_AnimationSpeed = 1.0f;
 	m_fEvade_AnimationSpeed = 1.5f;
     
-    m_fVoiceVolume = 0.4f;
-    m_fSwingVolume = 0.3f;
+    m_fVoiceVolume = 0.8f;
+    m_fSwingVolume = 0.7f;
+    m_fFootStepVolume = 0.7f;
 
 
     if (!m_pAttackCollider.expired())
@@ -348,9 +349,11 @@ void Player_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
             else
                 m_eCurState = STATE::hit;
 
-            CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.1f);
-           
+            wstring strSoundTag = L"vo_man_att_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
 
+            CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.1f);
         }
     }
     else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
@@ -363,6 +366,10 @@ void Player_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::knock_start;
+
+            wstring strSoundTag = L"vo_man_att_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
 
 			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.2f);
 
@@ -379,8 +386,11 @@ void Player_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
             else
                 m_eCurState = STATE::knockdown_start;
 
-			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.3f);
+            wstring strSoundTag = L"vo_man_att_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
 
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.3f);
         }
     }
     else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
@@ -394,8 +404,11 @@ void Player_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
             else
                 m_eCurState = STATE::airborne_start;
 
-			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.3f);
+            wstring strSoundTag = L"vo_man_att_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
 
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.3f);
         }
     }
     else if (skillname == STUN_HIT)
@@ -446,6 +459,12 @@ void Player_FSM::b_idle_Init()
 
 void Player_FSM::b_run_start()
 {
+    if (Init_CurFrame(8))
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    else if (Init_CurFrame(18))
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+
+
     Get_Transform()->Go_Straight();
 
     _float3 vInputVector = Get_InputDirVector();
@@ -491,6 +510,11 @@ void Player_FSM::b_run_start_Init()
 
 void Player_FSM::b_run()
 {
+    if (Init_CurFrame(10))
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    else if (Init_CurFrame(20))
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+
     Get_Transform()->Go_Straight();
 
     _float3 vInputVector = Get_InputDirVector();
@@ -549,6 +573,11 @@ void Player_FSM::b_run_Init()
 
 void Player_FSM::b_run_end_r()
 {
+    if (Init_CurFrame(6))
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    else if (Init_CurFrame(11))
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+
     _float3 vInputVector = Get_InputDirVector();
 
     if (vInputVector != _float3(0.f))
@@ -584,6 +613,11 @@ void Player_FSM::b_run_end_r_Init()
 
 void Player_FSM::b_run_end_l()
 {
+    if (Init_CurFrame(9))
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    else if (Init_CurFrame(11))
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+
     _float3 vInputVector = Get_InputDirVector();
 
     if (vInputVector != _float3(0.f))
@@ -619,6 +653,11 @@ void Player_FSM::b_run_end_l_Init()
 
 void Player_FSM::b_sprint()
 {
+    if (Init_CurFrame(6))
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    else if (Init_CurFrame(13))
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+
     Get_Transform()->Go_Straight();
 
     _float3 vInputVector = Get_InputDirVector();
@@ -710,7 +749,7 @@ void Player_FSM::airborne_start_Init()
     m_bInvincible = false;
     m_bSuperArmor = true;
 
-    Get_CharacterController()->Add_Velocity(6.f);
+    Get_CharacterController()->Add_Velocity(6.f);    
 }
 
 void Player_FSM::airborne_end()
@@ -1155,6 +1194,8 @@ void Player_FSM::skill_91100_Init()
     m_vDirToTarget = Get_InputDirVector();
     m_bInvincible = true;
     m_bSuperArmor = false;
+
+    SOUND.Play_Sound(L"vo_man_select_1", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
 }
 
 void Player_FSM::skill_93100()
@@ -1175,6 +1216,8 @@ void Player_FSM::skill_93100_Init()
 
     m_bInvincible = true;
     m_bSuperArmor = false;
+
+    SOUND.Play_Sound(L"vo_man_select_1", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
 }
 
 void Player_FSM::skill_100100()
@@ -1574,8 +1617,13 @@ void Player_FSM::skill_300100()
 
     }
 
-    if (m_iCurFrame >= 44)
-        m_eCurState = STATE::skill_300200;
+    if (!g_bIsCanMouseMove && !g_bCutScene)
+    {
+        if (Check_Combo(44, KEY_TYPE::KEY_3))
+            m_eCurState = STATE::skill_300200;
+
+        Use_Dash();
+    }
 
   
     if (Is_AnimFinished())
