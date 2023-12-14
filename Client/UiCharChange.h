@@ -36,7 +36,7 @@ private:
 
     vector<CHARCHANGEDESC>          m_vecDesc;
     vector<weak_ptr<GameObject>>    m_pObj;
-    vector<weak_ptr<GameObject>>    m_pElement;
+    //vector<weak_ptr<GameObject>>    m_pElement;
 
     _int                            m_iCurIndex = { 0 };
     vector<_bool>                   m_bIsChange = {};

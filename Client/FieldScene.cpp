@@ -723,7 +723,6 @@ void FieldScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Char_Change.dat", tmp);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Target_LockOn.dat", tmp, false, false);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Cur_Quest.dat", tmp, false, false);
-	Load_UIFile(L"..\\Resources\\UIData\\UI_Setting.dat", tmp, false, false);
 
 	{
 		weak_ptr<GameObject> pObj = Get_UI(L"Main_UI_Controller");
@@ -884,7 +883,7 @@ void FieldScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		{
 			pObj->Get_Button()->AddOnClickedEvent([]()
 				{
-					CUR_SCENE->Get_UI(L"UI_Setting_Controller")->Get_Script<UiSettingController>()->Set_Render(true);
+					CUR_SCENE->Get_UI(L"UI_Setting_Controller")->Get_Script<UiSettingController>()->Create_Setting_Ui();
 				});
 		}
 	}

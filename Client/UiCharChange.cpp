@@ -36,10 +36,10 @@ HRESULT UiCharChange::Init()
     m_pObj[1] = pScene->Get_UI(L"UI_Char_Change1");
     m_pObj[2] = pScene->Get_UI(L"UI_Char_Change2");
 
-    m_pElement.resize(3);
-    m_pElement[0] = pScene->Get_UI(L"UI_Char_Change_Element0");
-    m_pElement[1] = pScene->Get_UI(L"UI_Char_Change_Element1");
-    m_pElement[2] = pScene->Get_UI(L"UI_Char_Change_Element2");
+    //m_pElement.resize(3);
+    //m_pElement[0] = pScene->Get_UI(L"UI_Char_Change_Element0");
+    //m_pElement[1] = pScene->Get_UI(L"UI_Char_Change_Element1");
+    //m_pElement[2] = pScene->Get_UI(L"UI_Char_Change_Element2");
 
     m_pSkillHelp.resize(3);
     m_pSkillHelp[0] = pScene->Get_UI(L"UI_Char_Help_Skill0");
@@ -76,10 +76,10 @@ void UiCharChange::Tick()
         if (true == m_pObj[i].expired())
             return;
 
-    iSize = IDX(m_pElement.size());
-    for (_uint i = 0; i < iSize; ++i)
-        if (true == m_pElement[i].expired())
-            return;
+    //iSize = IDX(m_pElement.size());
+    //for (_uint i = 0; i < iSize; ++i)
+    //    if (true == m_pElement[i].expired())
+    //        return;
 
     Check_Change_Cool();
     Set_Param_Value();
@@ -95,7 +95,7 @@ void UiCharChange::Set_Hero(_uint iIndex)
     if (m_pOwner.expired() || 2 < iIndex)
         return;
 
-    if (true == m_pObj[iIndex].expired() || true == m_pElement[iIndex].expired())
+    if (true == m_pObj[iIndex].expired()/* || true == m_pElement[iIndex].expired()*/)
         return;
 
     // UI의 Index 위치에 업데이트할 영웅 사진 껴주기
@@ -106,8 +106,8 @@ void UiCharChange::Set_Hero(_uint iIndex)
     if (HERO::MAX == eHero)
     {
         m_pObj[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pResource.Get<Texture>(L"Card_None"), TextureMapType::DIFFUSE);
-        m_pElement[iIndex].lock()->Set_Tick(false);
-        m_pElement[iIndex].lock()->Set_Render(false);
+        //m_pElement[iIndex].lock()->Set_Tick(false);
+        //m_pElement[iIndex].lock()->Set_Render(false);
         m_vecDesc[iIndex].bIsSet = false;
 
         if (false == m_pSkillHelp[iIndex].expired())
@@ -120,9 +120,9 @@ void UiCharChange::Set_Hero(_uint iIndex)
     else
     {
         m_pObj[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap((pResource.Get<Texture>(GET_DATA(eHero).KeyChangeCard)), TextureMapType::DIFFUSE);
-        m_pElement[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pResource.Get<Texture>(GET_ELEMENT(eHero)), TextureMapType::DIFFUSE);
-        m_pElement[iIndex].lock()->Set_Tick(true);
-        m_pElement[iIndex].lock()->Set_Render(true);
+        //m_pElement[iIndex].lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pResource.Get<Texture>(GET_ELEMENT(eHero)), TextureMapType::DIFFUSE);
+        //m_pElement[iIndex].lock()->Set_Tick(true);
+        //m_pElement[iIndex].lock()->Set_Render(true);
         m_vecDesc[iIndex].bIsSet = true;
 
         if (false == m_pSkillHelp[iIndex].expired())
