@@ -1390,6 +1390,9 @@ void Dellons_FSM::skill_200200_Init()
 
 void Dellons_FSM::skill_300100()
 {
+    if (Init_CurFrame(9))
+        Add_Effect(L"Dellons_300100");
+
     Look_DirToTarget();
     if (m_iCurFrame >= 10)
     {
