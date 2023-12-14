@@ -928,7 +928,7 @@ void GranseedScene::Load_Portal()
 	rigidBody->Create_RigidBody(mesh, portal->Get_Transform()->Get_WorldMatrix());
 	portal->Add_Component(rigidBody);
 	
-	portal->Add_Component(make_shared<PortalScript>(SCENE_TYPE::FIELD));
+	portal->Add_Component(make_shared<PortalScript>(SCENE_TYPE::FIELD,_float3(0.f)));
 
 	Add_GameObject(portal);
 }

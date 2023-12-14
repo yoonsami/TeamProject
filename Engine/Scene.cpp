@@ -851,10 +851,17 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 
 	shared_ptr<GameObject> PlayerPtr = pPlayer;
 	// 플레이어가 있고 스폰지점과룩앳지점이 다를때만 변경
-	if (PlayerPtr != nullptr && PlayerCreatePos != PlayerLookAtPos)
+	if (m_vStartingPos == _float3(0.f))
 	{
-		PlayerPtr->Get_Transform()->Set_State(Transform_State::POS, PlayerCreatePos);
-		PlayerPtr->Get_Transform()->LookAt(PlayerLookAtPos);
+		if (PlayerPtr != nullptr && PlayerCreatePos != PlayerLookAtPos)
+		{
+			PlayerPtr->Get_Transform()->Set_State(Transform_State::POS, PlayerCreatePos);
+			PlayerPtr->Get_Transform()->LookAt(PlayerLookAtPos);
+		}
+	}
+	else
+	{
+		PlayerPtr->Get_Transform()->Set_State(Transform_State::POS, _float4(m_vStartingPos,1.f));
 	}
 
 	// 셰이더옵션 로드

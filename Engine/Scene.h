@@ -53,6 +53,7 @@ public:
 	_bool							Is_Static(shared_ptr<GameObject> obj);
 	void							Set_Name(const wstring& name)		{ m_strSceneName = name; }
 	void							Set_SceneState(SCENE_STATE state)	{ m_eSceneState = state; }
+	void							Set_StartingPos(const _float3& vPoint) { m_vStartingPos = vPoint; }
 
 	void Swap_Object(const wstring& leftObjName, const wstring& rightObjName);
 	void Render_ToneMapping();
@@ -118,6 +119,7 @@ private:
 	void SSAO_MakeFrustumFarCorners();
 
 protected:
+	_float3 m_vStartingPos = _float3(0.f);
 	_float m_fLoadPercent = 0.f;
 	wstring m_strSceneName = L"";
 	list<shared_ptr<GameObject>> m_GameObjects;

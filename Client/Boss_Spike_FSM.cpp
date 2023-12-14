@@ -16,6 +16,11 @@
 #include "UIBossHpBar.h"
 #include "ObjectDissolve.h"
 #include "CharacterController.h"
+#include "PortalScript.h"
+#include "RigidBody.h"
+#include "ObjectDissolveCreate.h"
+#include "MeshCollider.h"
+
 
 Boss_Spike_FSM::Boss_Spike_FSM()
 {
@@ -949,6 +954,32 @@ void Boss_Spike_FSM::SQ_Die()
 
     Calculate_CamBoneMatrix();
 
+    if (Init_CurFrame(Get_FinalFrame() - 1))
+    {
+		{
+			_float4 vPortalPos = _float4(0.f, -2.5f, 31.f, 1.f);
+
+			shared_ptr<GameObject> portal = make_shared<GameObject>();
+			portal->GetOrAddTransform()->Set_State(Transform_State::POS, vPortalPos);
+			portal->GetOrAddTransform()->Scaled(_float3(2.f));
+
+
+			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+			animator->Set_Model(RESOURCES.Get<Model>(L"MovePortal"));
+			portal->Add_Component(animator);
+			animator->Set_CurrentAnim(L"idle", true, 1.f);
+			auto mesh = make_shared<MeshCollider>(L"MovePortal");
+
+			auto rigidBody = make_shared<RigidBody>();
+			rigidBody->Create_RigidBody(mesh, portal->Get_Transform()->Get_WorldMatrix());
+			portal->Add_Component(rigidBody);
+
+			portal->Add_Component(make_shared<PortalScript>(SCENE_TYPE::FIELD, _float3(37.f, -12.473f, 163.7f)));
+			portal->Add_Component(make_shared<ObjectDissolveCreate>(1.f));
+			EVENTMGR.Create_Object(portal);
+		}
+    }
 
     if (Is_AnimFinished())
     {
@@ -965,6 +996,8 @@ void Boss_Spike_FSM::SQ_Die()
             m_pWeapon.lock()->Add_Component(script);
             script->Init();
         }
+
+       
     }
 }
 

@@ -21,6 +21,8 @@
 #include "OBBBoxCollider.h"
 #include "ModelRenderer.h"
 #include "TimerScript.h"
+#include "PortalScript.h"
+#include "MeshCollider.h"
 
 HRESULT Boss_Giant_Mir_FSM::Init()
 {
@@ -703,6 +705,30 @@ void Boss_Giant_Mir_FSM::SQ_Leave()
 
         if (!m_pFootRigidBody.expired())
             EVENTMGR.Delete_Object(m_pFootRigidBody.lock());
+
+		{
+			_float4 vPortalPos = _float4(0.f, 0.f, 0.f, 1.f);
+
+			shared_ptr<GameObject> portal = make_shared<GameObject>();
+			portal->GetOrAddTransform()->Set_State(Transform_State::POS, vPortalPos);
+			portal->GetOrAddTransform()->Scaled(_float3(2.f));
+
+
+			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+			animator->Set_Model(RESOURCES.Get<Model>(L"MovePortal"));
+			portal->Add_Component(animator);
+			animator->Set_CurrentAnim(L"idle", true, 1.f);
+			auto mesh = make_shared<MeshCollider>(L"MovePortal");
+
+			auto rigidBody = make_shared<RigidBody>();
+			rigidBody->Create_RigidBody(mesh, portal->Get_Transform()->Get_WorldMatrix());
+			portal->Add_Component(rigidBody);
+
+			portal->Add_Component(make_shared<PortalScript>(SCENE_TYPE::FIELD, _float3(160.f,15.84f,120.f)));
+			portal->Add_Component(make_shared<ObjectDissolveCreate>(1.f));
+			EVENTMGR.Create_Object(portal);
+		}
     }
 }
 

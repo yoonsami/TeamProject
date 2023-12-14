@@ -11,8 +11,9 @@
 #include "EffectGoUp.h"
 #include "MainCameraScript.h"
 
-PortalScript::PortalScript(SCENE_TYPE eDest)
+PortalScript::PortalScript(SCENE_TYPE eDest, const _float3& vPos)
 	: m_eDest(eDest)
+	, m_vStartingPos(vPos)
 {
 }
 
@@ -112,57 +113,66 @@ void PortalScript::Tick()
 			m_fAcc = 0.f;
 			m_bClicked = false;
 			CUR_SCENE->g_fBrightness = 0.f;
-			EVENTMGR.Delete_Object(m_pEffectObj.lock());
-			/*switch (m_eDest)
+			switch (m_eDest)
 			{
 			case SCENE_TYPE::GRANSEED:
 			{
-				shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<GranseedScene>());
+				auto nextScene = make_shared<GranseedScene>();
+				shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(nextScene);
 				scene->Set_StaticObjects(CUR_SCENE->Get_StaticObjects());
 				PHYSX.Set_CharacterControllerNull();
+				nextScene->Set_StartingPos(m_vStartingPos);
 				EVENTMGR.Change_Scene(scene);
 				g_bCutScene = false;
 			}
 				break;
 			case SCENE_TYPE::FIELD:
 			{
-				shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<FieldScene>());
+				auto nextScene = make_shared<FieldScene>();
+				shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(nextScene);
 				scene->Set_StaticObjects(CUR_SCENE->Get_StaticObjects());
 				PHYSX.Set_CharacterControllerNull();
+				nextScene->Set_StartingPos(m_vStartingPos);
 				EVENTMGR.Change_Scene(scene);
 				g_bCutScene = false;
 			}
 				break;
 			case SCENE_TYPE::MIR:
 			{
-				shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<MirScene>());
+				auto nextScene = make_shared<MirScene>();
+				shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(nextScene);
 				scene->Set_StaticObjects(CUR_SCENE->Get_StaticObjects());
 				PHYSX.Set_CharacterControllerNull();
+				nextScene->Set_StartingPos(m_vStartingPos);
 				EVENTMGR.Change_Scene(scene);
 				g_bCutScene = false;
 			}
 				break;
 			case SCENE_TYPE::KRIS:
 			{
-				shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<KrisScene>());
+				auto nextScene = make_shared<KrisScene>();
+				shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(nextScene);
 				scene->Set_StaticObjects(CUR_SCENE->Get_StaticObjects());
 				PHYSX.Set_CharacterControllerNull();
+				nextScene->Set_StartingPos(m_vStartingPos);
 				EVENTMGR.Change_Scene(scene);
 				g_bCutScene = false;
 			}
 				break;
 			case SCENE_TYPE::SPIKE:
 			{
-				shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<SpikeScene>());
+				auto nextScene = make_shared<SpikeScene>();
+				shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(nextScene);
 				scene->Set_StaticObjects(CUR_SCENE->Get_StaticObjects());
 				PHYSX.Set_CharacterControllerNull();
+				nextScene->Set_StartingPos(m_vStartingPos);
 				EVENTMGR.Change_Scene(scene);
 				g_bCutScene = false;
 			}
 				break;
 			default:
 				break;
-			}*/
+			}
 
 
 		}

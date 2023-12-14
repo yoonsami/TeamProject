@@ -82,11 +82,11 @@ HRESULT GranseedScene::Load_Scene()
 {
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Skybox\\");
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Field\\");
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Mir\\");
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Kris\\");
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Spike\\");
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Yeopo\\");
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Kyle\\");
+	//RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Mir\\");
+	//RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Kris\\");
+	//RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Spike\\");
+	//RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Yeopo\\");
+	//RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Kyle\\");
 
 
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\Spear_Ace\\");
