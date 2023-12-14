@@ -162,6 +162,9 @@ public:
 	_float m_fVoiceVolume = 1.f;
 	_float m_fSwingVolume = 1.f;
 	_float m_fEffectVolume = 1.f;
+
+	//For. SoundDistance
+	_float m_fMySoundDistance = 100.f;
 	
 
 	//For Effect.Create

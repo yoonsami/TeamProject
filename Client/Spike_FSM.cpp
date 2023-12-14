@@ -54,9 +54,13 @@ HRESULT Spike_FSM::Init()
     m_fVoiceVolume = 0.8f;
     m_fSwingVolume = 0.7f;
     m_fFootStepVolume = 0.7f;
+    m_fEffectVolume = 0.7f;
+
+    m_fMySoundDistance = 100.f;
 
 	if (!m_pAttackCollider.expired())
 		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(m_eElementType);
+    
     return S_OK;
 }
 
@@ -336,9 +340,9 @@ void Spike_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Gam
 			else
 				m_eCurState = STATE::hit;
 
-            wstring strSoundTag = L"vo_man_att_hit_0";
-            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
-            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+            wstring strSoundTag = L"vo_spike_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 4 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.1f);
 		}
@@ -354,9 +358,9 @@ void Spike_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Gam
 			else
 				m_eCurState = STATE::knock_start;
 
-            wstring strSoundTag = L"vo_man_att_hit_0";
-            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
-            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+            wstring strSoundTag = L"vo_spike_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 4 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.2f);
 		}
@@ -372,9 +376,9 @@ void Spike_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Gam
 			else
 				m_eCurState = STATE::knockdown_start;
 
-            wstring strSoundTag = L"vo_man_att_hit_0";
-            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
-            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+            wstring strSoundTag = L"vo_spike_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 4 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.3f);
 		}
@@ -390,9 +394,9 @@ void Spike_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Gam
 			else
 				m_eCurState = STATE::airborne_start;
 
-            wstring strSoundTag = L"vo_man_att_hit_0";
-            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
-            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+            wstring strSoundTag = L"vo_spike_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 4 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.3f);
 		}
@@ -445,9 +449,9 @@ void Spike_FSM::b_idle_Init()
 void Spike_FSM::b_run_start()
 {
     if (Init_CurFrame(8))
-        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(18))
-        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 
     Get_Transform()->Go_Straight();
@@ -494,9 +498,9 @@ void Spike_FSM::b_run_start_Init()
 void Spike_FSM::b_run()
 {
     if (Init_CurFrame(10))
-        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(20))
-        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     Get_Transform()->Go_Straight();
 
@@ -558,9 +562,9 @@ void Spike_FSM::b_run_Init()
 void Spike_FSM::b_run_end_r()
 {
     if (Init_CurFrame(6))
-        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(11))
-        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -594,9 +598,9 @@ void Spike_FSM::b_run_end_r_Init()
 void Spike_FSM::b_run_end_l()
 {
     if (Init_CurFrame(9))
-        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(11))
-        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -631,9 +635,9 @@ void Spike_FSM::b_run_end_l_Init()
 void Spike_FSM::b_sprint()
 {
     if (Init_CurFrame(6))
-        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(13))
-        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     Get_Transform()->Go_Straight();
 
@@ -944,7 +948,7 @@ void Spike_FSM::skill_1100()
 {
     if (Init_CurFrame(11))
     {
-        SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         CAMERA_SHAKE(0.1f, 0.1f)
         Add_And_Set_Effect(L"Spike_1100");
         Set_ColliderOption(WATER, L"Hit_Slash_Blue");
@@ -990,7 +994,7 @@ void Spike_FSM::skill_1100_Init()
     Set_DirToTargetOrInput(OBJ_MONSTER);
     AttackCollider_Off();
 
-    SOUND.Play_Sound(L"vo_spike_att_05", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    SOUND.Play_Sound(L"vo_spike_att_05", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_bInvincible = false;
     m_bSuperArmor = false;
@@ -1049,8 +1053,8 @@ void Spike_FSM::skill_1200_Init()
 
     AttackCollider_Off();
 
-    SOUND.Play_Sound(L"swing_axe_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
-    SOUND.Play_Sound(L"vo_spike_att_06", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    SOUND.Play_Sound(L"swing_axe_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"vo_spike_att_06", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_bInvincible = false;
     m_bSuperArmor = false;
@@ -1060,7 +1064,7 @@ void Spike_FSM::skill_1300()
 {
     if (Init_CurFrame(10))
     {
-        SOUND.Play_Sound(L"swing_axe_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"swing_axe_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     }
     else if (Init_CurFrame(15))
 	{
@@ -1112,7 +1116,7 @@ void Spike_FSM::skill_1300_Init()
 
     AttackCollider_Off();
     
-    SOUND.Play_Sound(L"vo_spike_att_07", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    SOUND.Play_Sound(L"vo_spike_att_07", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_bInvincible = false;
     m_bSuperArmor = false;
@@ -1122,7 +1126,7 @@ void Spike_FSM::skill_1400()
 {
     if (Init_CurFrame(4))
     {
-        SOUND.Play_Sound(L"swing_axe_04", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"swing_axe_04", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     }
     else if (Init_CurFrame(7))
     {
@@ -1130,7 +1134,7 @@ void Spike_FSM::skill_1400()
     }
     else if (Init_CurFrame(11))
     {
-        SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         Add_GroupEffectOwner(L"Spike_1400_2", _float3(0.f, 0.f, 1.f), false);
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
@@ -1179,7 +1183,7 @@ void Spike_FSM::skill_1400_Init()
 
     AttackCollider_Off();
 
-    SOUND.Play_Sound(L"vo_spike_att_08", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    SOUND.Play_Sound(L"vo_spike_att_08", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_bInvincible = false;
     m_bSuperArmor = false;
@@ -1269,8 +1273,8 @@ void Spike_FSM::skill_100100()
         {
             wstring strSoundTag = L"magic_ice_stress_0";
             strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
-            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
-            SOUND.Play_Sound(L"magic_wind_att_03", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+            SOUND.Play_Sound(L"magic_wind_att_03", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
             m_bAssaultColliderOn = true;
             m_fAssaultColliderTimer = 0.f;
@@ -1334,7 +1338,7 @@ void Spike_FSM::skill_100100_Init()
 
     m_fAssaultColliderTimer = 0.2f;
 
-    SOUND.Play_Sound(L"skill_spike_002", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    SOUND.Play_Sound(L"skill_spike_002", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 }
 
@@ -1342,8 +1346,8 @@ void Spike_FSM::skill_100300()
 {
     if (Init_CurFrame(20))
     {
-        SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
-        SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         Add_GroupEffectOwner(L"Spike_100100_IceAttack",_float3(0,0,1), false);
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
         Set_ColliderOption(WATER, L"Hit_Slash_Blue");
@@ -1351,8 +1355,8 @@ void Spike_FSM::skill_100300()
     }
     else if (Init_CurFrame(32))
     {
-        SOUND.Play_Sound(L"swing_axe_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
-        SOUND.Play_Sound(L"magic_ice_impact_n_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"swing_axe_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_ice_impact_n_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         CAMERA_SHAKE(0.2f, 0.2f);
     }
     
@@ -1427,7 +1431,7 @@ void Spike_FSM::skill_200100_Init()
 
     AttackCollider_Off();
 
-    SOUND.Play_Sound(L"skill_spike_003", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    SOUND.Play_Sound(L"skill_spike_003", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_bInvincible = false;
     m_bSuperArmor = true;
@@ -1441,11 +1445,11 @@ void Spike_FSM::skill_200100_l()
 
 
     if (Init_CurFrame(11))
-        SOUND.Play_Sound(L"magic_wind_att_02", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"magic_wind_att_02", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(22))
-        SOUND.Play_Sound(L"magic_wind_att_02", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"magic_wind_att_02", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(33))
-        SOUND.Play_Sound(L"magic_wind_att_02", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"magic_wind_att_02", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -1523,7 +1527,7 @@ void Spike_FSM::skill_200200()
 
         if (m_tWheelWindCoolTime.fAccTime >= m_tWheelWindCoolTime.fCoolTime)
         {
-            SOUND.Play_Sound(L"magic_ice_shot_00", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+            SOUND.Play_Sound(L"magic_ice_shot_00", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
             m_tWheelWindCoolTime.fAccTime = 0.f;
 
@@ -1570,8 +1574,8 @@ void Spike_FSM::skill_200200_Init()
 
     AttackCollider_Off();
 
-    SOUND.Play_Sound(L"vo_spike_att_gain_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
-    SOUND.Play_Sound(L"magic_ice_shot_00", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    SOUND.Play_Sound(L"vo_spike_att_gain_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"magic_ice_shot_00", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_bInvincible = false;
     m_bSuperArmor = true;
@@ -1600,7 +1604,7 @@ void Spike_FSM::skill_200300()
 
         if (m_tWheelWindCoolTime.fAccTime >= m_tWheelWindCoolTime.fCoolTime)
         {
-            SOUND.Play_Sound(L"magic_ice_shot_00", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+            SOUND.Play_Sound(L"magic_ice_shot_00", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
             m_tWheelWindCoolTime.fAccTime = 0.f;
 
@@ -1647,8 +1651,8 @@ void Spike_FSM::skill_200300_Init()
 
     AttackCollider_Off();
 
-    SOUND.Play_Sound(L"vo_spike_att_gain_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
-    SOUND.Play_Sound(L"magic_ice_shot_00", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    SOUND.Play_Sound(L"vo_spike_att_gain_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"magic_ice_shot_00", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_bInvincible = false;
     m_bSuperArmor = true;
@@ -1666,7 +1670,7 @@ void Spike_FSM::skill_200400()
         Add_And_Set_Effect(L"Spike_200400_Slash");
     if (Init_CurFrame(62))
     {
-        SOUND.Play_Sound(L"magic_ice_long_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"magic_ice_long_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         Add_GroupEffectOwner(L"Spike_200400_Crack", _float3(0.f, 0.f, 2.5f), false);
     }
@@ -1692,7 +1696,7 @@ void Spike_FSM::skill_200400()
         if (m_tWheelWindCoolTime.fAccTime >= m_tWheelWindCoolTime.fCoolTime)
         {
             if (m_iCurFrame < 40)
-                SOUND.Play_Sound(L"magic_ice_shot_00", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+                SOUND.Play_Sound(L"magic_ice_shot_00", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
             m_tWheelWindCoolTime.fAccTime = 0.f;
 
@@ -1746,8 +1750,8 @@ void Spike_FSM::skill_200400_Init()
 
     AttackCollider_Off();
 
-    SOUND.Play_Sound(L"vo_spike_att_gain_04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
-    SOUND.Play_Sound(L"magic_ice_shot_00", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    SOUND.Play_Sound(L"vo_spike_att_gain_04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"magic_ice_shot_00", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_bInvincible = false;
     m_bSuperArmor = true;
@@ -1761,7 +1765,7 @@ void Spike_FSM::skill_300100()
         Add_And_Set_Effect(L"Spike_300100_Jump");
     else if (Init_CurFrame(30))
     {
-        SOUND.Play_Sound(L"magic_ice_long_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"magic_ice_long_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         Add_And_Set_Effect(L"Spike_300100");
     }
 
@@ -1830,7 +1834,7 @@ void Spike_FSM::skill_300100_Init()
 
     AttackCollider_Off();
 
-    SOUND.Play_Sound(L"skill_spike_010", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    SOUND.Play_Sound(L"skill_spike_010", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_bInvincible = true;
     m_bSuperArmor = false;
@@ -1896,7 +1900,7 @@ void Spike_FSM::skill_400100()
 
     if (Init_CurFrame(52))
     {
-        SOUND.Play_Sound(L"magic_ice_long_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"magic_ice_long_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + 
                             Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f +
@@ -1912,7 +1916,7 @@ void Spike_FSM::skill_400100()
     }
     else if (Init_CurFrame(77))
     {
-        SOUND.Play_Sound(L"magic_ice_long_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"magic_ice_long_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
                             Get_Transform()->Get_State(Transform_State::RIGHT) * -3.f +
@@ -1928,7 +1932,7 @@ void Spike_FSM::skill_400100()
     }
     else if (Init_CurFrame(97))
     {
-        SOUND.Play_Sound(L"magic_ice_long_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"magic_ice_long_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
                             Get_Transform()->Get_State(Transform_State::RIGHT) * -1.f +
@@ -1944,8 +1948,8 @@ void Spike_FSM::skill_400100()
     }
     else if (Init_CurFrame(150))
     {
-        SOUND.Play_Sound(L"vo_spike_att_10", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
-        SOUND.Play_Sound(L"magic_ice_long_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"vo_spike_att_10", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_ice_long_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
                             Get_Transform()->Get_State(Transform_State::LOOK) * 2.f;
@@ -1978,7 +1982,7 @@ void Spike_FSM::skill_400100_Init()
 
     AttackCollider_Off();
 
-    SOUND.Play_Sound(L"skill_spike_012", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    SOUND.Play_Sound(L"skill_spike_012", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 
     m_bInvincible = true;
@@ -1991,7 +1995,7 @@ void Spike_FSM::skill_501100()
 {
     if (Init_CurFrame(20))
     {
-        SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         Add_And_Set_Effect(L"Spike_500100_1");
         Add_GroupEffectOwner(L"Spike_500100_Floor", _float3(0.f, 0.f, 0.5f), false);
@@ -2002,7 +2006,7 @@ void Spike_FSM::skill_501100()
     
     if (Init_CurFrame(34))
     {
-        SOUND.Play_Sound(L"swing_axe_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"swing_axe_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
    
         Add_GroupEffectOwner(L"Spike_500100_Floor2", _float3(0.f, 0.f, 2.f), false);
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f;
@@ -2018,7 +2022,7 @@ void Spike_FSM::skill_501100()
     
     if (Init_CurFrame(36))
     {
-        SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         CAMERA_SHAKE(0.2f, 0.4f)
     }
 
@@ -2054,7 +2058,7 @@ void Spike_FSM::skill_501100_Init()
 
     AttackCollider_Off();
 
-    SOUND.Play_Sound(L"skill_spike_008", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    SOUND.Play_Sound(L"skill_spike_008", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_bInvincible = false;
     m_bSuperArmor = true;
