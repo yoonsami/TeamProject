@@ -55,9 +55,6 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.WaterUVSlide">
       <UniqueIdentifier>{6c13c1d1-a6f8-4967-808f-89630c85d88a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\02.Weed">
-      <UniqueIdentifier>{5b1d53e9-99e2-477f-940f-694ce762fc01}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -156,9 +153,6 @@
     <ClInclude Include="WaterUVSliding.h">
       <Filter>02.Component\00.MonoBehaviour\01.WaterUVSlide</Filter>
     </ClInclude>
-    <ClInclude Include="WeedScript.h">
-      <Filter>02.Component\00.MonoBehaviour\02.Weed</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -238,9 +232,6 @@
     </ClCompile>
     <ClCompile Include="WaterUVSliding.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.WaterUVSlide</Filter>
-    </ClCompile>
-    <ClCompile Include="WeedScript.cpp">
-      <Filter>02.Component\00.MonoBehaviour\02.Weed</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
