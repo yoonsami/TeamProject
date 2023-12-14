@@ -12,8 +12,6 @@ public:
     virtual void Tick() override;
 	virtual shared_ptr<MonoBehaviour> Copy_Script()override { return make_shared<UiSettingController>(); }
 
-    //void Set_Render(_bool bValue);
-    
     void Change_Bloom();
     void Change_SSAO();
     void Change_MotionBlur();
@@ -44,29 +42,6 @@ private:
     void Change_FPS_Font();
     
 private:
-    //_bool                   m_bIsRender         = {};
-     
-    //weak_ptr<GameObject>    m_pBg;
-    //weak_ptr<GameObject>    m_pBrightness;
-    //weak_ptr<GameObject>    m_pContrast;
-    //weak_ptr<GameObject>    m_pSaturation;
-    //weak_ptr<GameObject>    m_pBloom;
-    //weak_ptr<GameObject>    m_pToneMapping;
-    //weak_ptr<GameObject>    m_pToneMappingMax;
-    //weak_ptr<GameObject>    m_pSSAO_Radius;
-    //weak_ptr<GameObject>    m_pSSAO_Start;
-    //weak_ptr<GameObject>    m_pSSAO_End;
-    //weak_ptr<GameObject>    m_pMotionBlur;
-    //
-    //weak_ptr<GameObject>    m_pCheck_Bloom;
-    //weak_ptr<GameObject>    m_pCheck_SSAO;
-    //weak_ptr<GameObject>    m_pCheck_MotionBlur;
-    //weak_ptr<GameObject>    m_pCheck_LensFlare;
-    //weak_ptr<GameObject>    m_pCheck_Outline;
-    //weak_ptr<GameObject>    m_pCheck_FXAA;
-    //weak_ptr<GameObject>    m_pCheck_PBR;
-    //weak_ptr<GameObject>    m_pCheck_FPS;
-
     weak_ptr<GameObject>    m_pFPS_Font;
 
     weak_ptr<Texture>       m_pTextureCheck;

@@ -1284,7 +1284,7 @@ void ImguiMgr::Save_Ui_Desc()
 
             // is static
             _bool bIsStatic = CUR_SCENE->Is_Static(pGameobject);
-            file->Write<_bool>(false);
+            file->Write<_bool>(true);
          }
       }
    }
