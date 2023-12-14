@@ -136,9 +136,9 @@ void GranseedScene::Tick()
 
 	if (KEYTAP(KEY_TYPE::C))
 	{
-		//auto pObj = Get_UI(L"UI_Message_Controller");
-		//if (pObj)
-		//	pObj->Get_Script<UiMessageCreater>()->Create_Message(Get_GameObject(L"GS_GachaMan"));
+		auto pObj = Get_UI(L"UI_Message_Controller");
+		if (pObj)
+			pObj->Get_Script<UiMessageCreater>()->Create_Message(Get_GameObject(L"GS_GachaMan"));
 		//auto pObj = Get_UI(L"UI_Costume_Controller");
 		//if (pObj)
 		//	pObj->Get_Script<UiCostumeController>()->Create_Costume();
@@ -151,9 +151,12 @@ void GranseedScene::Tick()
 	}
 	if (KEYTAP(KEY_TYPE::V))
 	{
-		auto pObj = Get_UI(L"UI_Shop_Controller");
+		auto pObj = Get_UI(L"UI_Message_Controller");
 		if (pObj)
-			pObj->Get_Script<UIShop>()->Create_Shop();
+			pObj->Get_Script<UiMessageCreater>()->Create_Message();
+		//auto pObj = Get_UI(L"UI_Shop_Controller");
+		//if (pObj)
+		//	pObj->Get_Script<UIShop>()->Create_Shop();
 		//auto pObj = Get_UI(L"UI_Costume_Controller");
 		//if (pObj)
 		//	pObj->Get_Script<UiCostumeController>()->Remove_Costume();

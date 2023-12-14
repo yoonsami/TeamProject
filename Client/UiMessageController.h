@@ -4,7 +4,7 @@
 class UiMessageController : public MonoBehaviour
 {
 public:
-    UiMessageController(shared_ptr<GameObject> pTarget, _bool bIsBg);
+    UiMessageController(shared_ptr<GameObject> pTarget, _bool bIsBg, _uint iType = 0);
 
 public:
     virtual HRESULT Init() override;
@@ -30,6 +30,9 @@ private:
     _float  m_fMaxDecreaseTime  = {};
     _float  m_fCheckTime        = {};
     _float  m_fDecreaseRatio    = {};
+    _uint   m_iType             = {};
 
+    _float  m_fValuePosX        = {};
+    _float  m_fValuePosY        = {};
 };
 

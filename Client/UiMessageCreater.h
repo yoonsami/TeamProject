@@ -13,9 +13,9 @@ public:
     void Create_Message(shared_ptr<GameObject> pTarget = nullptr);
 
 private:
-  
+    void Check_Distance(shared_ptr<GameObject> pTarget);
 
 private:
-  
+    _uint m_iType   = {};
 };
 
