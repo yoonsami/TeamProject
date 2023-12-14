@@ -30,6 +30,8 @@ public:
 		skill_1100, //SKILL 1
 		skill_2100, //SKILL 2
 		skill_3100, //SKILL 3
+		attack_run,
+
 		NONE
 	};
 
@@ -53,6 +55,9 @@ private:
 	void b_run_Init();
 	void n_run();
 	void n_run_Init();
+
+	void attack_run();
+	void attack_run_Init();
 
 	void die_01();
 	void die_01_Init();
@@ -124,5 +129,11 @@ private:
 	_bool m_bPatrolMove = false;
 
 	_uint m_iPreAttack = 100;
+
+	_bool m_bCanHitCounter = false;
+	_bool m_bRealEducated = false;
+public:
+	static _bool m_bAngry;
+
 };
 

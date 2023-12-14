@@ -10,6 +10,11 @@
 #include "Model.h"
 #include "CharacterController.h"
 
+Alpaca_FSM::~Alpaca_FSM()
+{
+    CUR_SCENE->g_sceneFlag++;
+}
+
 HRESULT Alpaca_FSM::Init()
 {
     if (!m_bInitialize)

@@ -9,6 +9,9 @@
 #include "UiMonsterHp.h"
 #include "CharacterController.h"
 #include <MathUtils.h>
+#include "Model.h"
+#include "MotionTrailDisappear.h"
+#include "MotionTrailRenderer.h"
 
 HRESULT NeutralAlpaca_FSM::Init()
 {
@@ -34,6 +37,19 @@ HRESULT NeutralAlpaca_FSM::Init()
 
         m_bInitialize = true;
     }
+	shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
+	attackCollider->GetOrAddTransform();
+	attackCollider->Add_Component(make_shared<SphereCollider>(1.f));
+	attackCollider->Get_Collider()->Set_CollisionGroup(Monster_Attack);
+
+	m_pAttackCollider = attackCollider;
+
+	EVENTMGR.Create_Object(m_pAttackCollider.lock());
+	m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
+
+	m_pAttackCollider.lock()->Add_Component(make_shared<AttackColliderInfoScript>());
+	m_pAttackCollider.lock()->Set_Name(L"Alpaca_AttackCollider");
+	m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
 
     m_pTarget = GET_PLAYER;
 
@@ -45,6 +61,12 @@ void NeutralAlpaca_FSM::Tick()
     DeadCheck();
 
     State_Tick();
+
+	if (!m_pAttackCollider.expired())
+	{
+		//m_pAttack transform set forward
+		m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up);
+	}
 }
 
 void NeutralAlpaca_FSM::State_Tick()
@@ -123,6 +145,9 @@ void NeutralAlpaca_FSM::State_Tick()
         break;
     case STATE::skill_3100:
         skill_3100();
+        break;
+    case STATE::attack_run:
+        attack_run();
         break;
     }
 
@@ -207,6 +232,9 @@ void NeutralAlpaca_FSM::State_Init()
         case STATE::skill_3100:
             skill_3100_Init();
             break;
+		case STATE::attack_run:
+			attack_run_Init();
+			break;
         }
         m_ePreState = m_eCurState;
     }
@@ -259,6 +287,7 @@ void NeutralAlpaca_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _fl
 		auto script = make_shared<ObjectDissolve>(1.f);
 		Get_Owner()->Add_Component(script);
 		script->Init();
+        m_bIsDead = true;
     }
 }
 
@@ -289,58 +318,77 @@ void NeutralAlpaca_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared
     m_vHitDir.y = 0.f;
     m_vHitDir.Normalize();
 	Set_HitColor();
+    if(!m_bCanHitCounter)
+	{
+		if (skillname == NORMAL_ATTACK || skillname == NORMAL_SKILL)
+		{
+			if (!m_bSuperArmor)
+			{
+				if (m_eCurState == STATE::hit)
+					Reset_Frame();
+				else if (m_eCurState == STATE::knock_end_hit)
+					Reset_Frame();
+				else if (m_eCurState == STATE::knock_end_loop)
+					m_eCurState = STATE::knock_end_hit;
+				else
+					m_eCurState = STATE::hit;
+			}
+		}
+		else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
+		{
+			if (!m_bSuperArmor)
+			{
+				if (m_eCurState == STATE::knock_end_hit)
+					Reset_Frame();
+				else if (m_eCurState == STATE::knock_end_loop)
+					m_eCurState = STATE::knock_end_hit;
+				else
+					m_eCurState = STATE::knock_start;
+			}
+		}
+		else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
+		{
+			if (!m_bSuperArmor)
+			{
+				if (m_eCurState == STATE::knock_end_hit)
+					Reset_Frame();
+				else if (m_eCurState == STATE::knock_end_loop)
+					m_eCurState = STATE::knock_end_hit;
+				else
+					m_eCurState = STATE::knockdown_start;
+			}
+		}
+		else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
+		{
+			if (!m_bSuperArmor)
+			{
+				if (m_eCurState == STATE::knock_end_hit)
+					Reset_Frame();
+				else if (m_eCurState == STATE::knock_end_loop)
+					m_eCurState = STATE::knock_end_hit;
+				else
+					m_eCurState = STATE::airborne_start;
+			}
+		}
+	}
+    else
+    {
+        m_bAngry = false;
+		Get_Owner()->Set_Instancing(true);
+		Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1] = Color(0.f);
+		m_bCanHitCounter = false;
 
-    if (skillname == NORMAL_ATTACK || skillname == NORMAL_SKILL)
-    {
-        if (!m_bSuperArmor)
-        {
-            if (m_eCurState == STATE::hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_loop)
-                m_eCurState = STATE::knock_end_hit;
-            else
-                m_eCurState = STATE::hit;
-        }
-    }
-    else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
-    {
-        if (!m_bSuperArmor)
-        {
-            if (m_eCurState == STATE::knock_end_hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_loop)
-                m_eCurState = STATE::knock_end_hit;
-            else
-                m_eCurState = STATE::knock_start;
-        }
-    }
-    else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
-    {
-        if (!m_bSuperArmor)
-        {
-            if (m_eCurState == STATE::knock_end_hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_loop)
-                m_eCurState = STATE::knock_end_hit;
-            else
-                m_eCurState = STATE::knockdown_start;
-        }
-    }
-    else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
-    {
-        if (!m_bSuperArmor)
-        {
-            if (m_eCurState == STATE::knock_end_hit)
-                Reset_Frame();
-            else if (m_eCurState == STATE::knock_end_loop)
-                m_eCurState = STATE::knock_end_hit;
-            else
-                m_eCurState = STATE::airborne_start;
-        }
-    }
+		shared_ptr<GameObject> motionTrail = make_shared<GameObject>();
+		motionTrail->GetOrAddTransform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
+		motionTrail->Add_Component(make_shared<MotionTrailRenderer>(RESOURCES.Get<Shader>(L"Shader_Model.fx"), Get_Owner()->Get_Animator()->Get_TweenDesc(), Get_Owner()->Get_Animator()->Get_Model()));
+		motionTrail->Add_Component(make_shared<MotionTrailDisappear>(2.f, Color(0.2f, 0.2f, 2.f, 1.f)));
+		motionTrail->Get_Script<MotionTrailDisappear>()->Init();
+		EVENTMGR.Create_Object(motionTrail);
+        m_bRealEducated = true;
 
+        m_eCurState = STATE::knockdown_start;
+    }
 }
 
 void NeutralAlpaca_FSM::Set_State(_uint iIndex)
@@ -405,6 +453,17 @@ void NeutralAlpaca_FSM::b_run()
 
 	if (!m_bDetected)
 		m_eCurState = STATE::b_idle;
+
+    if(!m_bAngry && CUR_SCENE->g_sceneFlag >= 16 && !m_bRealEducated)
+	{
+		_float randFloat = MathUtils::Get_RandomFloat(0.f, 100.f);
+		if (randFloat < 0.5f)
+		{
+            m_pTarget = CUR_SCENE->Get_Player();
+            Set_Gaze();
+			m_bAngry = true;
+		}
+	}
 }
 
 void NeutralAlpaca_FSM::b_run_Init()
@@ -462,6 +521,29 @@ void NeutralAlpaca_FSM::n_run_Init()
     m_vTurnVector.Normalize();
 
     m_bSuperArmor = false;
+}
+
+void NeutralAlpaca_FSM::attack_run()
+{
+	if (!m_pTarget.expired())
+		Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
+
+	Get_Transform()->Go_Straight();
+
+	if (Target_In_AttackRange())
+		Execute_AttackSkill();
+}
+
+void NeutralAlpaca_FSM::attack_run_Init()
+{
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_NextTweenAnim(L"b_run", 0.2f, true, 1.f);
+
+	Get_Transform()->Set_Speed(m_fRunSpeed);
+
+	m_bSuperArmor = false;
+	m_bInvincible = false;
 }
 
 void NeutralAlpaca_FSM::die_01()
@@ -526,7 +608,7 @@ void NeutralAlpaca_FSM::gaze_b()
     if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
     {
 
-            m_eCurState = STATE::b_run;
+         m_eCurState = STATE::attack_run;
     }
 }
 
@@ -537,7 +619,7 @@ void NeutralAlpaca_FSM::gaze_b_Init()
     animator->Set_NextTweenAnim(L"gaze_b", 0.2f, true, 1.f);
 
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
-
+    m_tAttackCoolTime.fAccTime = 0.f;
     m_bSuperArmor = false;
 }
 
@@ -557,7 +639,7 @@ void NeutralAlpaca_FSM::gaze_f()
     if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
     {
 
-            m_eCurState = STATE::b_run;
+            m_eCurState = STATE::attack_run;
     }
 }
 
@@ -570,6 +652,7 @@ void NeutralAlpaca_FSM::gaze_f_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
 
     m_bSuperArmor = false;
+    m_tAttackCoolTime.fAccTime = 0.f;
 }
 
 void NeutralAlpaca_FSM::gaze_l()
@@ -588,7 +671,7 @@ void NeutralAlpaca_FSM::gaze_l()
     if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
     {
 
-            m_eCurState = STATE::b_run;
+            m_eCurState = STATE::attack_run;
     }
 }
 
@@ -599,7 +682,7 @@ void NeutralAlpaca_FSM::gaze_l_Init()
     animator->Set_NextTweenAnim(L"gaze_l", 0.2f, true, 1.f);
 
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
-
+    m_tAttackCoolTime.fAccTime = 0.f;
     m_bSuperArmor = false;
 }
 
@@ -620,7 +703,7 @@ void NeutralAlpaca_FSM::gaze_r()
     if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
     {
 
-            m_eCurState = STATE::b_run;
+            m_eCurState = STATE::attack_run;
     }
 }
 
@@ -631,7 +714,7 @@ void NeutralAlpaca_FSM::gaze_r_Init()
     animator->Set_NextTweenAnim(L"gaze_r", 0.2f, true, 1.f);
 
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
-
+    m_tAttackCoolTime.fAccTime = 0.f;
     m_bSuperArmor = false;
 }
 
@@ -891,12 +974,36 @@ void NeutralAlpaca_FSM::skill_1100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
+    if (m_iCurFrame <= 15)
+    {
+        m_fStTimer += fDT;
+        Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f / (1.f + m_fStTimer));
+        Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1] = Color(0.05f, 0.2f, 1.f, 1.f);
+        Get_Owner()->Set_Instancing(false);
+
+        m_bCanHitCounter = true;
+    }
+    else if(m_iCurFrame > 15)
+		Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);
+
+
     if (m_iCurFrame == 26)
-        AttackCollider_On(NONE_HIT, 2.f);
+	{
+        Get_Owner()->Set_Instancing(true);
+		Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1] = Color(0.f);
+
+        m_bCanHitCounter = false;
+        AttackCollider_On(STUN_HIT, 0.f);
+    }
     else if (m_iCurFrame == 30)
         AttackCollider_Off();
 
-    Set_Gaze();   
+    if (Is_AnimFinished())
+    {
+        m_eCurState = STATE::b_idle;
+        m_bAngry = false;
+    }
 }
 
 void NeutralAlpaca_FSM::skill_1100_Init()
@@ -909,7 +1016,9 @@ void NeutralAlpaca_FSM::skill_1100_Init()
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
-    m_bSuperArmor = false;
+    m_bSuperArmor = true;
+    m_bInvincible = true;
+    m_fStTimer = 0.f;
 }
 
 void NeutralAlpaca_FSM::skill_2100()
@@ -917,13 +1026,35 @@ void NeutralAlpaca_FSM::skill_2100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
+	if (m_iCurFrame <= 15)
+	{
+		m_fStTimer += fDT;
+		Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f / (1.f +m_fStTimer));
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1] = Color(0.05f, 0.2f, 1.f, 1.f);
+		Get_Owner()->Set_Instancing(false);
+
+		m_bCanHitCounter = true;
+	}
+	else if (m_iCurFrame > 15)
+		Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);
+
     //NORMAL ATTACK
     if (m_iCurFrame == 29)
-        AttackCollider_On(NONE_HIT, 2.f);
+    {
+		Get_Owner()->Set_Instancing(true);
+		Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1] = Color(0.f);
+		m_bCanHitCounter = false;
+        AttackCollider_On(STUN_HIT, 0.f);
+    }
     else if (m_iCurFrame == 38)
         AttackCollider_Off();
     
-    Set_Gaze();
+	if (Is_AnimFinished())
+	{
+		m_eCurState = STATE::b_idle;
+		m_bAngry = false;
+	}
 }
 
 void NeutralAlpaca_FSM::skill_2100_Init()
@@ -944,12 +1075,35 @@ void NeutralAlpaca_FSM::skill_3100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
+	if (m_iCurFrame <= 15)
+	{
+		m_fStTimer += fDT;
+		Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f / (1.f + m_fStTimer));
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1] = Color(0.05f, 0.2f, 1.f, 1.f);
+		Get_Owner()->Set_Instancing(false);
+
+		m_bCanHitCounter = true;
+	}
+	else if (m_iCurFrame > 15)
+		Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);
+
+
     if (m_iCurFrame == 33)
-        AttackCollider_On(NONE_HIT, 2.f);
+    {
+		Get_Owner()->Set_Instancing(true);
+		Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1] = Color(0.f);
+		m_bCanHitCounter = false;
+        AttackCollider_On(STUN_HIT, 0.f);
+    }
     else if (m_iCurFrame == 34)
         AttackCollider_Off();
 
-    Set_Gaze();
+	if (Is_AnimFinished())
+	{
+		m_eCurState = STATE::b_idle;
+		m_bAngry = false;
+	}
 }
 
 void NeutralAlpaca_FSM::skill_3100_Init()
@@ -1011,8 +1165,7 @@ void NeutralAlpaca_FSM::Execute_AttackSkill()
 
 void NeutralAlpaca_FSM::Set_Gaze()
 {
-    if (Is_AnimFinished())
-    {
+
         _uint iRan = 0;
 
         if (Target_In_AttackRange())
@@ -1028,7 +1181,7 @@ void NeutralAlpaca_FSM::Set_Gaze()
             m_eCurState = STATE::gaze_r;
         else if (iRan == 3)
             m_eCurState = STATE::gaze_f;
-    }
+    
 }
 
 void NeutralAlpaca_FSM::Dead_Setting()
@@ -1059,3 +1212,5 @@ _float3 NeutralAlpaca_FSM::Calculate_TargetTurnVector()
     else
         return m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz() - m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
 }
+
+_bool NeutralAlpaca_FSM::m_bAngry = false;

@@ -26,6 +26,7 @@ struct EffectOutInstancing
     float3 viewNormal : NORMAL;
     float3 viewTangent : TANGENT;
     uint id : SV_InstanceID;
+    float4x4 matInvWorld : POSITION3;
 };
 
 EffectOut VS_Main(VTXModel input)
@@ -68,7 +69,7 @@ EffectOutInstancing VS_Main_Instancing(VTXModelInstancing input)
     output.viewTangent = mul(input.tangent, (float3x3) BoneTransform[BoneIndex]);
     output.viewTangent = mul(output.viewTangent, (float3x3) input.world);
     output.viewTangent = mul(output.viewTangent, (float3x3) V);
-    
+    output.matInvWorld = inverse(input.world);
     output.id = input.instanceID;
     
     return output;
@@ -639,7 +640,7 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
         if(vPixelOriginViewPos.z < vPixelViewPos.z)
             discard;
                 
-        float3 decalLocalPos = mul(float4(vPixelWorldPos, 1.f), InvWorldTransformMatrix);
+        float3 decalLocalPos = mul(float4(vPixelWorldPos, 1.f), input.matInvWorld);
         clip(0.5f - abs(decalLocalPos.xyz));
         
         decalUV = decalLocalPos.xz + 0.5f;
@@ -897,7 +898,7 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
         
         if (vPixelOriginViewPos.z < fPixelViewPos.z)
             discard;
-        float3 decalLocalPos = mul(float4(fPixelWorldPos, 1.f), InvWorldTransformMatrix);
+        float3 decalLocalPos = mul(float4(fPixelWorldPos, 1.f), input.matInvWorld);
         clip(0.5f - abs(decalLocalPos.xyz));
         
         decalUV = decalLocalPos.xz + 0.5f;

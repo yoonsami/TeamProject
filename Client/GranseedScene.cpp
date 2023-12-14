@@ -858,6 +858,7 @@ void GranseedScene::Load_HideAndSeek(shared_ptr<GameObject> pPlayer)
 		}
 	}
 
+	_int iSmokeCount = 20;
 	{
 		_float x2 = -0.437f, y2 = 0.3f, z2 = 11.372f;
 		_float x1 = -14.628f, y1 = 0.3f, z1 = -1.933f;
@@ -865,14 +866,14 @@ void GranseedScene::Load_HideAndSeek(shared_ptr<GameObject> pPlayer)
 		_float3 coefficients = MathUtils::calculateQuadraticCoefficients(x1, y1, z1, x2, y2, z2);
 
 		vector<_float3>quadraticCurvePoints;
-
-		for (_float x = x1; x <= x2; x += (x2 - x1) / 10.f) {
+		for (_float x = x1; x <= x2; x += (x2 - x1) / _float(iSmokeCount)) {
+			_float randomScale = MathUtils::Get_RandomFloat(1.f, 1.5f);
 			_float z = MathUtils::evaluateQuadraticEquation(x, coefficients);
 			_float3 vRandomOffset = MathUtils::Get_RandomVector(_float3(0.f, 0.3f, 0.f), _float3(0.f, -0.3f, 0.f));
 			_float4 vPos = _float4({ x, y1, z }, 1.f);
 			shared_ptr<GameObject> obj = make_shared<GameObject>();
 			obj->GetOrAddTransform()->Set_State(Transform_State::POS, vPos + vRandomOffset);
-
+			obj->GetOrAddTransform()->Scaled(_float3(randomScale));
 			_int skillIndex = rand() % 3;
 		
 

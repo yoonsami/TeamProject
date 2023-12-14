@@ -630,9 +630,6 @@
     <ClInclude Include="UiHpBarController.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\02.UiHpBarController</Filter>
     </ClInclude>
-    <ClInclude Include="Boss_DellonsWraith_FSM.h">
-      <Filter>02.Component\01.FSM\03.Special_FSM\01.Monster_Special_FSM\00.Boss_DellonsWraith_FSM</Filter>
-    </ClInclude>
     <ClInclude Include="Spike_FSM.h">
       <Filter>02.Component\00.MonoBehaviour\01.FSM\01.Hero_FSM\05.Spike_FSM</Filter>
     </ClInclude>
@@ -851,7 +848,6 @@
     <ClInclude Include="UiMessageCreater.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessage\00.UiMessageCreater</Filter>
     </ClInclude>
-    <ClInclude Include="EffectGoUp.h" />
     <ClInclude Include="CreateEffect_Script.h">
       <Filter>02.Component\00.MonoBehaviour\07.EffectScript\CreateEffect_Script</Filter>
     </ClInclude>
@@ -861,9 +857,15 @@
     <ClInclude Include="UIShop.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\24.UiShop\00.UiShop</Filter>
     </ClInclude>
-    <ClInclude Include="PortalScript.h" />
     <ClInclude Include="Boss_DellonsWraith_FSM.h">
       <Filter>02.Component\00.MonoBehaviour\01.FSM\03.Special_FSM\01.Monster_Special_FSM\00.Boss_DellonsWraith_FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Boss_DellonsWraith_FSM.h" />
+    <ClInclude Include="PortalScript.h">
+      <Filter>02.Component\00.MonoBehaviour\09.FieldScript\PortalScript</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectGoUp.h">
+      <Filter>02.Component\00.MonoBehaviour\07.EffectScript\CreateEffect_Script</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1250,7 +1252,6 @@
     <ClCompile Include="UiMessageCreater.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\25.UiMessage\00.UiMessageCreater</Filter>
     </ClCompile>
-    <ClCompile Include="EffectGoUp.cpp" />
     <ClCompile Include="CreateEffect_Script.cpp">
       <Filter>02.Component\00.MonoBehaviour\07.EffectScript\CreateEffect_Script</Filter>
     </ClCompile>
@@ -1260,7 +1261,12 @@
     <ClCompile Include="UIShop.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\24.UiShop\00.UiShop</Filter>
     </ClCompile>
-    <ClCompile Include="PortalScript.cpp" />
+    <ClCompile Include="PortalScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\09.FieldScript\PortalScript</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectGoUp.cpp">
+      <Filter>02.Component\00.MonoBehaviour\07.EffectScript\CreateEffect_Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">

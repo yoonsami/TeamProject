@@ -23,6 +23,7 @@ Boss_Dellons_FSM::Boss_Dellons_FSM()
 
 Boss_Dellons_FSM::~Boss_Dellons_FSM()
 {
+    CUR_SCENE->g_sceneFlag++;
 }
 
 HRESULT Boss_Dellons_FSM::Init()

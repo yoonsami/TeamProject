@@ -46,6 +46,7 @@ public:
 		
 		skill_300100, // Skill 3-1 Bubble 2
 		skill_300200, // Skill 3-2
+		stun,
 		NONE
 	};
 public:
@@ -134,6 +135,9 @@ private:
 	void skill_300100_Init();
 	void skill_300200();
 	void skill_300200_Init();
+
+	void stun();
+	void stun_Init();
 
 private:
 	void Use_Skill();
