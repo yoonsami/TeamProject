@@ -232,6 +232,7 @@ HRESULT GranseedScene::Load_Scene()
 
 	//Sound
 	RESOURCES.Load_Sound(L"..\\Resources\\Sound\\Common\\", true);
+	RESOURCES.Load_Sound(L"..\\Resources\\Sound\\GranseedScene\\", false);
 
 
 

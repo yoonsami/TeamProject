@@ -161,6 +161,7 @@ public:
 	_float m_fFootStepVolume = 1.f;
 	_float m_fVoiceVolume = 1.f;
 	_float m_fSwingVolume = 1.f;
+	_float m_fEffectVolume = 1.f;
 	
 
 	//For Effect.Create

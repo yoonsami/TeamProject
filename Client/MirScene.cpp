@@ -200,7 +200,7 @@ HRESULT MirScene::Load_Scene()
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Boss_Mir\\", false);
 	
 	//Sound
-	RESOURCES.Load_Sound(L"..\\Resources\\Sound\\Mir\\", false);
+	RESOURCES.Load_Sound(L"..\\Resources\\Sound\\MirScene\\", false);
 
 	auto player = Load_Player();
 	Load_Camera(player);
