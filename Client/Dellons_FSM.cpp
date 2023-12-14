@@ -1446,6 +1446,9 @@ void Dellons_FSM::skill_300100_Init()
 
 void Dellons_FSM::skill_400100()
 {
+    
+        
+
     if (m_iCurFrame >= 13)
     {
         if (!m_pCamera.expired())
