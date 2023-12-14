@@ -1221,6 +1221,8 @@ void ImGui_Manager::Load_TerrainTile()
         // 리스트에도 추가
         m_TileNames.push_back(fileName);
     }
+    wstring Path = L"..\\Resources\\Textures\\MapObject\\TerrainTile\\TileMask.png";
+    RESOURCES.Load<Texture>(L"TileMask", Path);
 }
 
 HRESULT ImGui_Manager::Create_SelectObject()
@@ -1597,7 +1599,7 @@ void ImGui_Manager::Create_Terrain(shared_ptr<Terrain> _pTerrainMesh, _int _iTer
 void ImGui_Manager::Create_HeightMap()
 {
     // 지형수정때풀자
-    return;
+    //return;
 
     ID3D11Texture2D* pTexture2D = { nullptr };
 
@@ -1996,11 +1998,10 @@ HRESULT ImGui_Manager::Load_MapObject()
     // 기존의 풀 모두삭제
     for (auto& Weed : m_pInstalledWeeds)
         EVENTMGR.Delete_Object(Weed);
+    m_pInstalledWeeds.clear();
     // 같은 풀 종류별 개수 초기화
     m_CountSameWeed.clear();
     m_CountSameWeed.resize(m_strWeedCatalogue.size());
-    //m_strInstalledWeeds.clear();
-    //m_iInstalledWeedIndex = 0;
 
     // 세이브 파일 이름으로 로드하기
     string strFileName = m_MapNames[curMapIndex];
@@ -2440,16 +2441,27 @@ void ImGui_Manager::Create_WeedRegion()
 
 void ImGui_Manager::Delete_WeedRegion()
 {
-    for (auto& InstalledWeed : m_pInstalledWeeds)
+    _int iIndexForDebug = -1;
+    auto WeedIter = m_pInstalledWeeds.begin();
+    while (1)
     {
+        if (WeedIter == m_pInstalledWeeds.end())
+            break;
+
+        ++iIndexForDebug;
         // 높이는 제외하고 거리비교
-        _float4 WeedPos = InstalledWeed->Get_Transform()->Get_State(Transform_State::POS);
+        _float3 WeedPos = _float3{ WeedIter->get()->Get_Transform()->Get_State(Transform_State::POS) };
         WeedPos.y = m_PickingPos.y;
-        if ((WeedPos - _float4{ m_PickingPos, 1.f }).Length() <= m_fTerrainBrushRadius)
+        // 브러시범위안에 들어오면 삭제
+        if ((WeedPos - m_PickingPos).Length() <= m_fTerrainBrushRadius)
         {
-            EVENTMGR.Delete_Object(InstalledWeed);
-            --m_CountSameWeed[InstalledWeed->Get_Script<WeedScript>()->Get_WeedIndex()];
+            EVENTMGR.Delete_Object(*WeedIter);
+            --m_CountSameWeed[WeedIter->get()->Get_Script<WeedScript>()->Get_WeedIndex()];
+            WeedIter = m_pInstalledWeeds.erase(WeedIter);
+            continue;
         }
+        else
+            ++WeedIter;
     }
     m_iCurrentWeedIndex = 0;
 }
@@ -2641,7 +2653,7 @@ _float4 ImGui_Manager::Compute_CullingData(shared_ptr<GameObject>& _pGameObject)
         }
 
         // Min과 Max를 더한 후 2로 나누기
-        vCullPos = vMaxPos + vMinPos * 0.5f;
+        vCullPos = (vMaxPos + vMinPos) * 0.5f;
         _float3 tempVector = vCullPos - vMinPos;
         vCullRadius = tempVector.Length();
 
