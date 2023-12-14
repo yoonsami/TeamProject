@@ -83,6 +83,7 @@
 #include "UIShop.h"
 #include "UiUseItemSlot.h"
 #include "UiCostumeController.h"
+#include "PortalScript.h"
 
 namespace fs = std::filesystem;
 
@@ -225,6 +226,7 @@ HRESULT FieldScene::Load_Scene()
 #endif
 
 	Load_Ui(player);
+	Load_Portal();
 	return S_OK;
 }
 
@@ -956,5 +958,111 @@ void FieldScene::Load_Debug()
 		debugText->Add_Component(make_shared<ObjectTransformDebug>());
 		debugText->Get_Script<ObjectTransformDebug>()->Set_Target(Get_GameObject(L"Boss_Spike"));
 		Add_GameObject(debugText);
+	}
+}
+
+void FieldScene::Load_Portal()
+{
+	// To KrisScene
+	{
+		_float4 vPortalPos = _float4(20.f, -5.f, 42.26f, 1.f);
+
+		shared_ptr<GameObject> portal = make_shared<GameObject>();
+		portal->GetOrAddTransform()->Set_State(Transform_State::POS, vPortalPos);
+		portal->GetOrAddTransform()->Scaled(_float3(2.f));
+
+
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+		shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+		animator->Set_Model(RESOURCES.Get<Model>(L"MovePortal"));
+		portal->Add_Component(animator);
+		animator->Set_CurrentAnim(L"idle", true, 1.f);
+		auto mesh = make_shared<MeshCollider>(L"MovePortal");
+
+		auto rigidBody = make_shared<RigidBody>();
+		rigidBody->Create_RigidBody(mesh, portal->Get_Transform()->Get_WorldMatrix());
+		portal->Add_Component(rigidBody);
+
+		portal->Add_Component(make_shared<PortalScript>(SCENE_TYPE::KRIS, _float3(0.f)));
+
+
+		portal->Set_Name(L"Portal");
+		Add_GameObject(portal);
+	}
+	// To SpikeScene
+	{
+		_float4 vPortalPos = _float4(37.f, -12.473f, 163.7f, 1.f);
+
+		shared_ptr<GameObject> portal = make_shared<GameObject>();
+		portal->GetOrAddTransform()->Set_State(Transform_State::POS, vPortalPos);
+		portal->GetOrAddTransform()->Scaled(_float3(2.f));
+
+
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+		shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+		animator->Set_Model(RESOURCES.Get<Model>(L"MovePortal"));
+		portal->Add_Component(animator);
+		animator->Set_CurrentAnim(L"idle", true, 1.f);
+		auto mesh = make_shared<MeshCollider>(L"MovePortal");
+
+		auto rigidBody = make_shared<RigidBody>();
+		rigidBody->Create_RigidBody(mesh, portal->Get_Transform()->Get_WorldMatrix());
+		portal->Add_Component(rigidBody);
+
+		portal->Add_Component(make_shared<PortalScript>(SCENE_TYPE::SPIKE, _float3(0.f)));
+
+
+		portal->Set_Name(L"Portal");
+		Add_GameObject(portal);
+	}
+	// To MirScene
+	{
+		_float4 vPortalPos = _float4(160.f, 15.84f, 120.f, 1.f);
+
+		shared_ptr<GameObject> portal = make_shared<GameObject>();
+		portal->GetOrAddTransform()->Set_State(Transform_State::POS, vPortalPos);
+		portal->GetOrAddTransform()->Scaled(_float3(2.f));
+
+
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+		shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+		animator->Set_Model(RESOURCES.Get<Model>(L"MovePortal"));
+		portal->Add_Component(animator);
+		animator->Set_CurrentAnim(L"idle", true, 1.f);
+		auto mesh = make_shared<MeshCollider>(L"MovePortal");
+
+		auto rigidBody = make_shared<RigidBody>();
+		rigidBody->Create_RigidBody(mesh, portal->Get_Transform()->Get_WorldMatrix());
+		portal->Add_Component(rigidBody);
+
+		portal->Add_Component(make_shared<PortalScript>(SCENE_TYPE::MIR, _float3(0.f)));
+
+		portal->Set_Name(L"Portal");
+		Add_GameObject(portal);
+	}
+	// To GranseedScene
+	{
+		_float4 vPortalPos = _float4(121.f, 0.f, 6.943f, 1.f);
+
+		shared_ptr<GameObject> portal = make_shared<GameObject>();
+		portal->GetOrAddTransform()->Set_State(Transform_State::POS, vPortalPos);
+		portal->GetOrAddTransform()->Scaled(_float3(2.f));
+
+
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+		shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+		animator->Set_Model(RESOURCES.Get<Model>(L"MovePortal"));
+		portal->Add_Component(animator);
+		animator->Set_CurrentAnim(L"idle", true, 1.f);
+		auto mesh = make_shared<MeshCollider>(L"MovePortal");
+
+		auto rigidBody = make_shared<RigidBody>();
+		rigidBody->Create_RigidBody(mesh, portal->Get_Transform()->Get_WorldMatrix());
+		portal->Add_Component(rigidBody);
+
+		portal->Add_Component(make_shared<PortalScript>(SCENE_TYPE::GRANSEED, _float3(-10.7f, -4.7f, 67.f)));
+
+		portal->Set_Name(L"Portal");
+		Add_GameObject(portal);
 	}
 }

@@ -60,7 +60,7 @@ HRESULT Player_FSM::Init()
     
     m_fVoiceVolume = 0.8f;
     m_fSwingVolume = 0.7f;
-    m_fFootStepVolume = 0.7f;
+    m_fFootStepVolume = 0.2f;
 
 
     if (!m_pAttackCollider.expired())

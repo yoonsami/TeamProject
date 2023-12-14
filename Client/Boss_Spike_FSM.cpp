@@ -976,7 +976,9 @@ void Boss_Spike_FSM::SQ_Die()
 			portal->Add_Component(rigidBody);
 
 			portal->Add_Component(make_shared<PortalScript>(SCENE_TYPE::FIELD, _float3(37.f, -12.473f, 163.7f)));
-			portal->Add_Component(make_shared<ObjectDissolveCreate>(1.f));
+            auto script = make_shared<ObjectDissolveCreate>(1.f);
+            portal->Add_Component(script);
+            script->Init();
 			EVENTMGR.Create_Object(portal);
 		}
     }

@@ -78,6 +78,8 @@
 #include "NeutralAlpaca_FSM.h"
 #include "UiCostumeController.h"
 #include "UIShop.h"
+#include "PortalScript.h"
+#include "ObjectDissolveCreate.h"
 namespace fs = std::filesystem;
 
 KrisScene::KrisScene()
@@ -167,6 +169,53 @@ void KrisScene::Final_Tick()
 		SCENE.Change_Scene(scene);
 		g_bCutScene = false;
 	}
+
+	_int monsterCount = 0;
+	_bool bPortalCreated = false;
+	auto& gameObjects = Get_Objects();
+	for (auto& gameObject : gameObjects)
+	{
+		if (gameObject->Get_Name() == L"Portal")
+			bPortalCreated = true;
+
+		if(gameObject->Get_ObjectGroup() != OBJ_MONSTER)
+			continue;
+
+		monsterCount++;
+
+	}
+
+	if (!bPortalCreated && monsterCount == 0)
+	{
+		{
+			_float4 vPortalPos = _float4(0.f, 0.f, 30.f, 1.f);
+
+			shared_ptr<GameObject> portal = make_shared<GameObject>();
+			portal->GetOrAddTransform()->Set_State(Transform_State::POS, vPortalPos);
+			portal->GetOrAddTransform()->Scaled(_float3(2.f));
+
+
+			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+			animator->Set_Model(RESOURCES.Get<Model>(L"MovePortal"));
+			portal->Add_Component(animator);
+			animator->Set_CurrentAnim(L"idle", true, 1.f);
+			auto mesh = make_shared<MeshCollider>(L"MovePortal");
+
+			auto rigidBody = make_shared<RigidBody>();
+			rigidBody->Create_RigidBody(mesh, portal->Get_Transform()->Get_WorldMatrix());
+			portal->Add_Component(rigidBody);
+
+			portal->Add_Component(make_shared<PortalScript>(SCENE_TYPE::FIELD, _float3(20.f, -5.f, 42.26f)));
+			auto script = make_shared<ObjectDissolveCreate>(1.f);
+			portal->Add_Component(script);
+			script->Init();
+
+			portal->Set_Name(L"Portal");
+			EVENTMGR.Create_Object(portal);
+		}
+	}
+
 }
 
 HRESULT KrisScene::Load_Scene()
