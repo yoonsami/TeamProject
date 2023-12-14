@@ -33,9 +33,10 @@ HRESULT UiMessageController::Init()
         else if (2 == m_iType)
             m_pOwner.lock()->GetOrAddTransform()->Scaled(_float3(200.f, 40.f, 1.f));
     }
-    // 이 아래에서 npc별 대화 DataMgr에서 가져와 삽입하기
     else
     {
+        // 이 아래에서 npc별 대화 DataMgr에서 가져와 삽입하기
+
         wstring strTemp = m_pOwner.lock()->Get_FontRenderer()->Get_Text();
         _uint iLength = IDX(strTemp.length());
 
