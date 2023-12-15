@@ -44,7 +44,7 @@ private: // 초기화관련
 	// 물 생성
 	void Load_Water();
 	// 풀이름 초기화
-	void Load_WeedNames();
+	void Init_WeedSetting();
 #pragma endregion
 
 #pragma region 맵오브젝트관련
