@@ -4,12 +4,12 @@
 class UiMessageController : public MonoBehaviour
 {
 public:
-    UiMessageController(shared_ptr<GameObject> pTarget, _bool bIsBg, _uint iType = 0);
+    UiMessageController(wstring strMessage, shared_ptr<GameObject> pTarget, _bool bIsBg, _uint iType = 0);
 
 public:
     virtual HRESULT Init() override;
     virtual void Tick() override;
-	virtual shared_ptr<MonoBehaviour> Copy_Script() { return make_shared<UiMessageController>(nullptr, true); }
+	virtual shared_ptr<MonoBehaviour> Copy_Script() { return make_shared<UiMessageController>(L"", nullptr, true); }
 
 private:
     void Check_Distance();
@@ -17,6 +17,8 @@ private:
     void IDLE();
     void DECREASE();
     void REMOVE();
+
+    void Check_In_Camera();
 
 private:
     weak_ptr<GameObject>    m_pCamera;
@@ -34,5 +36,6 @@ private:
 
     _float  m_fValuePosX        = {};
     _float  m_fValuePosY        = {};
+    wstring m_strMessage;
 };
 

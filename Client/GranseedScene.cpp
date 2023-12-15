@@ -138,7 +138,7 @@ void GranseedScene::Tick()
 	{
 		auto pObj = Get_UI(L"UI_Message_Controller");
 		if (pObj)
-			pObj->Get_Script<UiMessageCreater>()->Create_Message(Get_GameObject(L"GS_GachaMan"));
+			pObj->Get_Script<UiMessageCreater>()->Create_Message(L"테스트", Get_GameObject(L"GS_GachaMan"));
 		//auto pObj = Get_UI(L"UI_Costume_Controller");
 		//if (pObj)
 		//	pObj->Get_Script<UiCostumeController>()->Create_Costume();
@@ -153,7 +153,7 @@ void GranseedScene::Tick()
 	{
 		auto pObj = Get_UI(L"UI_Message_Controller");
 		if (pObj)
-			pObj->Get_Script<UiMessageCreater>()->Create_Message();
+			pObj->Get_Script<UiMessageCreater>()->Create_Message(L"");
 		//auto pObj = Get_UI(L"UI_Shop_Controller");
 		//if (pObj)
 		//	pObj->Get_Script<UIShop>()->Create_Shop();

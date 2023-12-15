@@ -10,7 +10,7 @@ public:
     virtual HRESULT Init() override;
 	virtual shared_ptr<MonoBehaviour> Copy_Script() { return make_shared<UiMessageCreater>(); }
 
-    void Create_Message(shared_ptr<GameObject> pTarget = nullptr);
+    void Create_Message(wstring strMessage, shared_ptr<GameObject> pTarget = nullptr);
 
 private:
     void Check_Distance(shared_ptr<GameObject> pTarget);

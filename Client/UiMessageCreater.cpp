@@ -22,7 +22,7 @@ HRESULT UiMessageCreater::Init()
     return S_OK;
 }
 
-void UiMessageCreater::Create_Message(shared_ptr<GameObject> pTarget)
+void UiMessageCreater::Create_Message(wstring strMessage, shared_ptr<GameObject> pTarget)
 {
     m_iType = 0;
 
@@ -43,13 +43,13 @@ void UiMessageCreater::Create_Message(shared_ptr<GameObject> pTarget)
         wstring strName = pObj.lock()->Get_Name();
         if (L"UI_Message_NotHere_Bg" == strName)
         {
-            auto pScript = make_shared<UiMessageController>(pTarget, true, m_iType);
+            auto pScript = make_shared<UiMessageController>(strMessage, pTarget, true, m_iType);
             pObj.lock()->Add_Component(pScript);
             pScript->Init();
         }
         else if (L"UI_Message_NotHere_Font" == strName)
         {
-            auto pScript = make_shared<UiMessageController>(pTarget, false, m_iType);
+            auto pScript = make_shared<UiMessageController>(strMessage, pTarget, false, m_iType);
             pObj.lock()->Add_Component(pScript);
             pScript->Init();
         }

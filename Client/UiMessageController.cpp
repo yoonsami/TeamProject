@@ -5,10 +5,11 @@
 #include "FontRenderer.h"
 #include "MeshRenderer.h"
 
-UiMessageController::UiMessageController(shared_ptr<GameObject> pTarget, _bool bIsBg, _uint iType)
+UiMessageController::UiMessageController(wstring strMessage, shared_ptr<GameObject> pTarget, _bool bIsBg, _uint iType)
     : m_pTarget(pTarget)
     , m_bIsBg(bIsBg)
     , m_iType(iType)
+    , m_strMessage(strMessage)
 {
 }
 
@@ -36,6 +37,8 @@ HRESULT UiMessageController::Init()
     else
     {
         // 이 아래에서 npc별 대화 DataMgr에서 가져와 삽입하기
+        if (0 != m_strMessage.length())
+            m_pOwner.lock()->Get_FontRenderer()->Get_Text() = m_strMessage;
 
         wstring strTemp = m_pOwner.lock()->Get_FontRenderer()->Get_Text();
         _uint iLength = IDX(strTemp.length());
@@ -85,6 +88,7 @@ void UiMessageController::Tick()
     {
         Check_Distance();
         Change_Pos();
+        Check_In_Camera();
     }
     
     switch (m_eState)
@@ -184,4 +188,16 @@ void UiMessageController::REMOVE()
     //m_eState = MESSAGE_STATE::NONE;
 
     EVENTMGR.Delete_Object(m_pOwner.lock());
+}
+
+void UiMessageController::Check_In_Camera()
+{
+    _float3 cullPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
+    _float cullRadius = 1.f;
+    Frustum frustum = m_pCamera.lock()->Get_Camera()->Get_Frustum();
+
+    if (frustum.Contain_Sphere(cullPos, cullRadius))
+        m_pOwner.lock()->Set_Render(true);
+    else
+        m_pOwner.lock()->Set_Render(false);
 }
