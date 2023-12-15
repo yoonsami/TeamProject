@@ -65,7 +65,7 @@ void Hide_OrctongScript::Tick()
 		{
 			auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
 			if (pObj)
-				pObj->Get_Script<UiMessageCreater>()->Create_Message();
+				pObj->Get_Script<UiMessageCreater>()->Create_Message(L"");
 		}
 			break;
 		}

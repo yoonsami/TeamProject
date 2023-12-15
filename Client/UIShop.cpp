@@ -88,6 +88,9 @@ void UIShop::Create_Shop()
 	if (true == m_bIsCreated)
 		return;
 
+	if (false == g_bIsCanRotation)
+		return;
+
 	g_bIsCanRotation = false;
 
 	m_bIsCreated = true;
@@ -402,8 +405,6 @@ void UIShop::Remove_Buy_Ui()
 {
 	if (false == m_bIsCreatedBuyUi)
 		return;
-
-	g_bIsCanRotation = true;
 
 	m_bIsCreatedBuyUi = false;
 
