@@ -65,9 +65,9 @@ void UiMessageCreater::Check_Distance(shared_ptr<GameObject> pTarget)
     {
         _float lengthSQ = (pPlayer->Get_Transform()->Get_State(Transform_State::POS).xyz() - pos).LengthSquared();
 
-        if (lengthSQ > 12.f * 12.f)
+        if (lengthSQ > 15.f * 15.f)
             m_iType = 2;
-        else if (lengthSQ > 6.f * 6.f)
+        else if (lengthSQ > 9.f * 9.f)
             m_iType = 1;
     }
 }

@@ -135,7 +135,7 @@ void UiMessageController::Change_Pos()
     _float4x4 projPos = m_pCamera.lock()->Get_Camera()->Get_ProjMat();
 
     _float4 vecPos = m_pTarget.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-    vecPos.y += 2.f;
+    vecPos.y += 3.f;
 
     vecPos = XMVector3TransformCoord(vecPos, viewPos);
     vecPos = XMVector3TransformCoord(vecPos, projPos);
