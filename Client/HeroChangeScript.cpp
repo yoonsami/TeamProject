@@ -92,10 +92,10 @@ void HeroChangeScript::Tick()
 	{
         Change_Hero(HERO::YEONHEE);
 	}
-    else if (KEYTAP(KEY_TYPE::R))
-	{
-        //Change_Hero(HERO::PLAYER);
-	}
+    //else if (KEYTAP(KEY_TYPE::R))
+	//{
+    //    //Change_Hero(HERO::PLAYER);
+	//}
 }
 
 void HeroChangeScript::Change_Hero(HERO eHero)

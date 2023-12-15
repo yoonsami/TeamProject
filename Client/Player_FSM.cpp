@@ -58,9 +58,12 @@ HRESULT Player_FSM::Init()
 	m_fSkillAttack_AnimationSpeed = 1.0f;
 	m_fEvade_AnimationSpeed = 1.5f;
     
-    m_fVoiceVolume = 0.8f;
-    m_fSwingVolume = 0.7f;
+    m_fVoiceVolume = 0.3f;
+    m_fSwingVolume = 0.3f;
     m_fFootStepVolume = 0.2f;
+    m_fEffectVolume = 0.2f;
+
+    m_fMySoundDistance = 100.f;
 
 
     if (!m_pAttackCollider.expired())
@@ -351,7 +354,7 @@ void Player_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
 
             wstring strSoundTag = L"vo_man_att_hit_0";
             strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
-            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
             CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.1f);
         }
@@ -369,7 +372,7 @@ void Player_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
 
             wstring strSoundTag = L"vo_man_att_hit_0";
             strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
-            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.2f);
 
@@ -388,7 +391,7 @@ void Player_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
 
             wstring strSoundTag = L"vo_man_att_hit_0";
             strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
-            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.3f);
         }
@@ -406,7 +409,7 @@ void Player_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
 
             wstring strSoundTag = L"vo_man_att_hit_0";
             strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
-            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.3f);
         }
@@ -460,9 +463,9 @@ void Player_FSM::b_idle_Init()
 void Player_FSM::b_run_start()
 {
     if (Init_CurFrame(8))
-        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(18))
-        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 
     Get_Transform()->Go_Straight();
@@ -511,9 +514,9 @@ void Player_FSM::b_run_start_Init()
 void Player_FSM::b_run()
 {
     if (Init_CurFrame(10))
-        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(20))
-        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     Get_Transform()->Go_Straight();
 
@@ -574,9 +577,9 @@ void Player_FSM::b_run_Init()
 void Player_FSM::b_run_end_r()
 {
     if (Init_CurFrame(6))
-        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(11))
-        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -614,9 +617,9 @@ void Player_FSM::b_run_end_r_Init()
 void Player_FSM::b_run_end_l()
 {
     if (Init_CurFrame(9))
-        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(11))
-        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -654,9 +657,9 @@ void Player_FSM::b_run_end_l_Init()
 void Player_FSM::b_sprint()
 {
     if (Init_CurFrame(6))
-        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(13))
-        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     Get_Transform()->Go_Straight();
 
@@ -959,7 +962,7 @@ void Player_FSM::skill_1100()
 {
     if (Init_CurFrame(9))
     {
-        SOUND.Play_Sound(L"swing_short_sword_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"swing_short_sword_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         Add_Effect(L"Teo_1100");
         AttackCollider_On(NORMAL_ATTACK, _float(rand() % 10 + 1));
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
@@ -1000,7 +1003,7 @@ void Player_FSM::skill_1100_Init()
 
     AttackCollider_Off();
 
-    SOUND.Play_Sound(L"vo_player_m_att_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    SOUND.Play_Sound(L"vo_player_m_att_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_bCanCombo = false;
     m_bInvincible = false;
@@ -1011,7 +1014,7 @@ void Player_FSM::skill_1200()
 {
     if (Init_CurFrame(4))
     {
-        SOUND.Play_Sound(L"swing_short_sword_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"swing_short_sword_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 		Add_Effect(L"Teo_1200");
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
         AttackCollider_On(NORMAL_ATTACK, _float(rand() % 10 + 1));
@@ -1053,7 +1056,7 @@ void Player_FSM::skill_1200_Init()
 
     AttackCollider_Off();
 
-    SOUND.Play_Sound(L"vo_player_m_att_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    SOUND.Play_Sound(L"vo_player_m_att_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 
     m_bCanCombo = false;
@@ -1068,7 +1071,7 @@ void Player_FSM::skill_1300()
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
         AttackCollider_On(NORMAL_ATTACK, _float(rand() % 10 + 1));
 
-        SOUND.Play_Sound(L"swing_short_sword_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"swing_short_sword_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         Add_Effect(L"Teo_1300");
     }
     else if (Init_CurFrame(14))
@@ -1113,7 +1116,7 @@ void Player_FSM::skill_1300_Init()
 
     AttackCollider_Off();
 
-    SOUND.Play_Sound(L"vo_player_m_att_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    SOUND.Play_Sound(L"vo_player_m_att_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_bInvincible = false;
     m_bSuperArmor = false;
@@ -1127,7 +1130,7 @@ void Player_FSM::skill_1400()
 
         AttackCollider_On(NORMAL_ATTACK, _float(rand() % 10 + 1));
 
-        SOUND.Play_Sound(L"swing_short_sword_04", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"swing_short_sword_04", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     }
     else if (Init_CurFrame(20))
         AttackCollider_Off();
@@ -1167,7 +1170,7 @@ void Player_FSM::skill_1400_Init()
 
 	AttackCollider_Off();
 
-    SOUND.Play_Sound(L"vo_player_m_att_04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    SOUND.Play_Sound(L"vo_player_m_att_04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 	m_bInvincible = false;
 	m_bSuperArmor = false;
@@ -1195,7 +1198,7 @@ void Player_FSM::skill_91100_Init()
     m_bInvincible = true;
     m_bSuperArmor = false;
 
-    SOUND.Play_Sound(L"vo_man_select_1", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    SOUND.Play_Sound(L"vo_man_select_1", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 void Player_FSM::skill_93100()
@@ -1217,7 +1220,7 @@ void Player_FSM::skill_93100_Init()
     m_bInvincible = true;
     m_bSuperArmor = false;
 
-    SOUND.Play_Sound(L"vo_man_select_1", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    SOUND.Play_Sound(L"vo_man_select_1", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 void Player_FSM::skill_100100()
@@ -1226,7 +1229,7 @@ void Player_FSM::skill_100100()
 
     if(Init_CurFrame(38))
 	{
-        SOUND.Play_Sound(L"swing_short_sword_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"swing_short_sword_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1267,7 +1270,7 @@ void Player_FSM::skill_100100_Init()
 
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
-    SOUND.Play_Sound(L"skill_p_m_005", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    SOUND.Play_Sound(L"skill_p_m_005", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     AttackCollider_Off();
 
@@ -1281,7 +1284,7 @@ void Player_FSM::skill_100200()
 
 	if (Init_CurFrame(8))
 	{
-        SOUND.Play_Sound(L"swing_short_sword_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"swing_short_sword_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
  
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1295,7 +1298,7 @@ void Player_FSM::skill_100200()
 	}
     else if (Init_CurFrame(26))
     {
-        SOUND.Play_Sound(L"swing_short_sword_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"swing_short_sword_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         vector<shared_ptr<GameObject>> targetMonster;
         for (auto& obj : CUR_SCENE->Get_Objects())
@@ -1369,8 +1372,8 @@ void Player_FSM::skill_100300()
         if (Init_CurFrame(10))
         {
 
-            SOUND.Play_Sound(L"vo_man_att_short_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
-            SOUND.Play_Sound(L"swing_short_sword_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+            SOUND.Play_Sound(L"vo_man_att_short_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+            SOUND.Play_Sound(L"swing_short_sword_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
 
         if (m_iCurFrame == 10)
@@ -1390,8 +1393,8 @@ void Player_FSM::skill_100300()
     {
         if (Init_CurFrame(24))
         {
-            SOUND.Play_Sound(L"vo_man_att_long_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
-            SOUND.Play_Sound(L"swing_short_sword_04", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+            SOUND.Play_Sound(L"vo_man_att_long_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+            SOUND.Play_Sound(L"swing_short_sword_04", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
 
         if (!m_pCamera.expired())
@@ -1494,7 +1497,7 @@ void Player_FSM::skill_200100()
         {
             wstring strSoundTag = L"swing_sword_5_0";
             strSoundTag = strSoundTag + to_wstring(rand() % 4 + 1);
-            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
             m_fSkillCreateTimer = 0.f;
 			FORWARDMOVINGSKILLDESC desc;
@@ -1536,7 +1539,7 @@ void Player_FSM::skill_200100_Init()
 
     AttackCollider_Off();
 
-    SOUND.Play_Sound(L"skill_p_m_001", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    SOUND.Play_Sound(L"skill_p_m_001", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_bInvincible = true;
     m_bSuperArmor = true;
@@ -1555,11 +1558,11 @@ void Player_FSM::skill_200200()
 
     if (Init_CurFrame(12))
     {
-        SOUND.Play_Sound(L"vo_player_m_att_long_04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"vo_player_m_att_long_04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     }
     else if (Init_CurFrame(19))
     {
-        SOUND.Play_Sound(L"swing_sword_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"swing_sword_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     }
     else if (Init_CurFrame(22))
     {
@@ -1604,7 +1607,7 @@ void Player_FSM::skill_300100()
 
     if (Init_CurFrame(14))
     {
-        SOUND.Play_Sound(L"swing_short_sword_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"swing_short_sword_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         
         FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1645,7 +1648,7 @@ void Player_FSM::skill_300100_Init()
 
     AttackCollider_Off();
 
-    SOUND.Play_Sound(L"skill_p_m_003", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    SOUND.Play_Sound(L"skill_p_m_003", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_bCanCombo = false;
     m_bInvincible = true;
@@ -1660,27 +1663,27 @@ void Player_FSM::skill_300200()
     strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
 
     if (Init_CurFrame(7))
-        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(24))
-        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(35))
-        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(45))
-        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(56))
-        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(60))
-        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(63))
-        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(66))
-        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(69))
-        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(91))
-        SOUND.Play_Sound(L"vo_player_m_att_long_04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"vo_player_m_att_long_04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(93))
-        SOUND.Play_Sound(L"swing_sword_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"swing_sword_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 
     if (m_iCurFrame < 91)
