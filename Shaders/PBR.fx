@@ -161,7 +161,13 @@ PBR_OUT PBRShade(
     float3 pointToCamera = normalize(cameraPosition - viewPosition);
     float3 viewLightDir = 0.f;
     
-    float3 ambient = ambientMap * albedoMap * 0.2f;
+    float rRatio = albedoMap.r / (albedoMap.r + albedoMap.g + albedoMap.b);
+    float gRatio = albedoMap.g / (albedoMap.r + albedoMap.g + albedoMap.b);
+    float bRatio = albedoMap.b / (albedoMap.r + albedoMap.g + albedoMap.b);
+    
+    
+    
+    float3 ambient = ambientMap  * albedoMap;
     float3 color = 0.f;
      float3 eyeDir = normalize(viewPosition - cameraPosition);
     float3 halfVector = normalize(pointToLight + pointToCamera);
