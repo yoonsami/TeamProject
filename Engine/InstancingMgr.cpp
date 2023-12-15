@@ -10,6 +10,7 @@
 #include "ParticleSystem.h"
 #include "StructuredBuffer.h"
 #include "WeedGroup.h"
+#include "Camera.h"
 
 void InstancingMgr::Render(vector<shared_ptr<GameObject>>& gameObjects)
 {
@@ -42,6 +43,11 @@ void InstancingMgr::Render_Weeds(vector<shared_ptr<GameObject>>& groups)
 	for (auto& gameObject : gameObjects)
 	{
 		if (gameObject->Get_MeshRenderer() == nullptr)
+			continue;
+
+		auto frustum = CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_Frustum();
+
+		if (frustum.Contain_Sphere(gameObject->Get_CullPos(), gameObject->Get_CullRadius()) == false)
 			continue;
 
 		if (gameObject->Get_Instancing())
