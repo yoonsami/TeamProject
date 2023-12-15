@@ -16,7 +16,7 @@ public:
 public:
     virtual void Tick() override;
     virtual vector<shared_ptr<GameObject>>& Get_Weeds() { return m_Weeds; }
-    const _float4& Get_RenderParams() { return _float4(m_Wind.x, m_Wind.y, m_Wind.z, m_fWindWeight); }
+    _float4 Get_RenderParams() { return _float4(m_Wind.x, m_Wind.y, m_Wind.z, m_fWindWeight); }
 
 private:
     vector<shared_ptr<GameObject>> m_Weeds;
