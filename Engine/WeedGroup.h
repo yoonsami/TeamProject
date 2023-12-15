@@ -13,7 +13,7 @@ public:
 
 public:
     virtual void Tick() override;
-
+    virtual vector<shared_ptr<GameObject>>& Get_Weeds() { return m_Weeds; }
 private:
     vector<shared_ptr<GameObject>> m_Weeds;
 };

@@ -9,6 +9,7 @@
 #include "ModelAnimator.h"
 #include "ParticleSystem.h"
 #include "StructuredBuffer.h"
+#include "WeedGroup.h"
 
 void InstancingMgr::Render(vector<shared_ptr<GameObject>>& gameObjects)
 {
@@ -21,6 +22,67 @@ void InstancingMgr::Render(vector<shared_ptr<GameObject>>& gameObjects)
 	Render_Animator(gameObjects);
 
 	//Render_Effect(gameObjects);
+
+}
+
+void InstancingMgr::Render_Weeds(vector<shared_ptr<GameObject>>& groups)
+{
+	vector<shared_ptr<GameObject>> gameObjects;
+
+	for (auto& group : groups)
+	{
+		auto& groupWeeds = group->Get_WeedGroup()->Get_Weeds();
+		gameObjects.insert(gameObjects.end(), groupWeeds.begin(), groupWeeds.end());
+
+	}
+
+	map<InstanceID, vector<shared_ptr<GameObject>>> cache;
+	vector<shared_ptr<GameObject>> nonInstancing;
+
+	for (auto& gameObject : gameObjects)
+	{
+		if (gameObject->Get_MeshRenderer() == nullptr)
+			continue;
+
+		if (gameObject->Get_Instancing())
+		{
+			const InstanceID instanceID = gameObject->Get_MeshRenderer()->Get_InstanceID();
+			cache[instanceID].push_back(gameObject);
+		}
+		else
+			nonInstancing.push_back(gameObject);
+	}
+
+	for (auto& pair : cache)
+	{
+		// sorting
+		vector<shared_ptr<GameObject>>& vec = pair.second;
+
+		if (vec.size() == 1)
+		{
+			vec.front()->Get_MeshRenderer()->Render();
+		}
+		else
+		{
+			const InstanceID instanceId = pair.first;
+
+			for (size_t i = 0; i < vec.size(); ++i)
+			{
+				shared_ptr<GameObject>& gameobject = vec[i];
+				InstancingData data;
+				data.world = gameobject->Get_Transform()->Get_WorldMatrix();
+				data.renderParam = gameobject->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0];
+				Add_Data(instanceId, data);
+			}
+
+			shared_ptr<InstancingBuffer>& buffer = m_Buffers[instanceId];
+			vec[0]->Get_MeshRenderer()->Render_Instancing(buffer);
+		}
+	}
+	for (auto& gameObject : nonInstancing)
+	{
+		gameObject->Get_MeshRenderer()->Render();
+	}
 
 }
 
