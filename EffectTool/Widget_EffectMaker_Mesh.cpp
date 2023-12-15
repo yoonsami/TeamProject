@@ -342,6 +342,11 @@ void Widget_EffectMaker_Mesh::Option_Property()
 	}
 
 	ImGui::Checkbox("On Fade Out##Property", &m_bUseFadeOut);
+	if (ImGui::InputFloat("Fade Out Start Time", &m_fFadeOutStartTime))
+	{
+		if (m_fFadeOutStartTime > m_fDuration)
+			m_fFadeOutStartTime = m_fDuration;
+	}
 	ImGui::Checkbox("Color Changing On##Property", &m_bColorChangingOn);
 	ImGui::Checkbox("FDistortion##Property", &m_bIsFDistortion);
 	if (ImGui::Checkbox("Decal##Property", &m_bIsSSD))
@@ -1117,6 +1122,7 @@ void Widget_EffectMaker_Mesh::Create()
 				m_bLightOn,
 				m_fLightIntensity,
 				m_bUseFadeOut,
+					m_fFadeOutStartTime,
 				m_iMeshCnt,
 				m_fCreateInterval,
 				_float2(m_fParticleDuration),
@@ -1337,7 +1343,7 @@ void Widget_EffectMaker_Mesh::Save()
 			(_float)m_bIsLoop, (_float)m_bIsFollowGroup_OnlyTranslate, (_float)m_bIsFollowGroup_LookSameDir, (_float)m_iScaleSpeedType,
 			m_vCurvePoint_Scale[0].x, m_vCurvePoint_Scale[0].y, m_vCurvePoint_Scale[1].x, m_vCurvePoint_Scale[1].y,
 			m_vCurvePoint_Scale[2].x, m_vCurvePoint_Scale[2].y, m_vCurvePoint_Scale[3].x, m_vCurvePoint_Scale[3].y,
-			m_fLightIntensity, (_float)m_bIsFDistortion, (_float)m_bIsSSD, 0.f
+			m_fLightIntensity, (_float)m_bIsFDistortion, (_float)m_bIsSSD, m_fFadeOutStartTime
 		));
 
 
@@ -1512,6 +1518,7 @@ void Widget_EffectMaker_Mesh::Load()
 	m_fLightIntensity = mTemp._41;
 	m_bIsFDistortion = _bool(mTemp._42);
 	m_bIsSSD = _bool(mTemp._43);
+	m_fFadeOutStartTime = mTemp._44;
 
 	m_iScaleSpeedType = (_int)mTemp._14;
 	m_vCurvePoint_Scale[0] = _float2(mTemp._21, mTemp._22);
