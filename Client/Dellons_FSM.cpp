@@ -1121,6 +1121,14 @@ void Dellons_FSM::skill_1400_Init()
 
 void Dellons_FSM::skill_91100()
 {
+    if (Init_CurFrame(0))
+        Add_Effect(L"Dellons_91100");
+    if (Init_CurFrame(17))
+        Add_And_Set_Effect(L"Dellons_91100_End");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
+
     _float3 vInputVector = Get_InputDirVector();
 
     Look_DirToTarget();
@@ -1392,6 +1400,10 @@ void Dellons_FSM::skill_300100()
 {
     if (Init_CurFrame(9))
         Add_Effect(L"Dellons_300100");
+    if (Init_CurFrame(24))
+        Add_Effect(L"Dellons_300100_Wraith");
+    if (Init_CurFrame(57))
+        Add_Effect(L"Dellons_300100_Wraith2");
 
     Look_DirToTarget();
     if (m_iCurFrame >= 10)
@@ -1558,6 +1570,8 @@ void Dellons_FSM::skill_400100_Init()
 
 void Dellons_FSM::skill_501100()
 {
+    //if(Init_CurFrame())
+
     if (Init_CurFrame(4))
     {
 		Summon_Wraith();
