@@ -96,6 +96,7 @@ private:
     vector<shared_ptr<GameObject>> m_Trails;
     vector<shared_ptr<GameObject>> m_AfterUI;
     vector<shared_ptr<GameObject>> m_Decal;
+    vector<shared_ptr<GameObject>> m_GroupWeed;
     shared_ptr<GameObject> m_Terrain;
 private:
     _bool                           m_bEffectToolMode_On = { false };

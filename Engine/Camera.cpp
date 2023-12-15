@@ -72,6 +72,7 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 	m_VelocityMapObj.clear();
 	m_AfterUI.clear();
 	m_Decal.clear();
+	m_GroupWeed.clear();
 
 	for (auto& gameObject : gameObjects)
 	{

@@ -10,6 +10,7 @@
 #include "ModelAnimator.h"
 #include "GranseedChildren_FSM.h"
 #include "ObjectDissolveCreate.h"
+#include "UiMessageCreater.h"
 
 void Hide_OrctongScript::Tick()
 {
@@ -61,6 +62,11 @@ void Hide_OrctongScript::Tick()
 			break;
 		default:
 			// Create Horse Balloon
+		{
+			auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
+			if (pObj)
+				pObj->Get_Script<UiMessageCreater>()->Create_Message();
+		}
 			break;
 		}
 
