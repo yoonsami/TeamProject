@@ -71,7 +71,7 @@ void InstancingMgr::Render_Weeds(vector<shared_ptr<GameObject>>& groups)
 				shared_ptr<GameObject>& gameobject = vec[i];
 				InstancingData data;
 				data.world = gameobject->Get_Transform()->Get_WorldMatrix();
-				data.renderParam = gameobject->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0];
+				data.renderParam = groups.front()->Get_WeedGroup()->Get_RenderParams();
 				Add_Data(instanceId, data);
 			}
 

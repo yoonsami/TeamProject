@@ -7,6 +7,7 @@
 #include "Camera.h"
 #include "BaseUI.h"
 #include "Material.h"
+#include "WeedGroup.h"
 #include "RigidBody.h"
 #include "MathUtils.h"
 #include "FileUtils.h"
@@ -914,6 +915,34 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 #pragma region CreateGrass
 	if (DummyData.x >= 1.f)
 	{
+		_int Width = 16;
+		_int Height = 16;
+
+		// 풀그룹 생성
+		for (_int j = 0; j < Height; ++j)
+		{
+			for (_int i = 0; i < Width; ++i)
+			{
+				shared_ptr<GameObject> WeedGroupObj = make_shared<GameObject>();
+				wstring WGName = L"WeedGroup" + to_wstring(i + j * Width);
+				WeedGroupObj->Set_Name(WGName);
+				shared_ptr<WeedGroup> tmpWeedGroup = make_shared<WeedGroup>();
+				WeedGroupObj->Add_Component(tmpWeedGroup);
+
+				// 각 칸의 가운데 위치
+				_float3 CenterPos = { (_float)(Width / 2 + Width * i), 0.f, (_float)(Height / 2 + j * Height) };
+				// 왼아래점
+				_float3 LDPos = _float3{ (_float)(Width * i), 0.f, (_float)(Height * j) };
+
+				WeedGroupObj->Set_CullPos(CenterPos);
+				WeedGroupObj->Set_CullRadius((CenterPos - LDPos).Length());
+				WeedGroupObj->Set_FrustumCulled(true);
+
+				Add_GameObject(WeedGroupObj);
+				m_WeedGroups.push_back(WeedGroupObj);
+			}
+		}
+
 		_int WeedLength = file->Read<_int>();
 
 		for (_int i = 0; i < WeedLength; ++i)
@@ -951,12 +980,16 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 			WeedSc->Set_WeedIndex(iWeedIndex);
 			WeedObj->Add_Component(WeedSc);
 
-			// 컬링정보
-			WeedObj->Set_CullPos(_float3{ CullData });
-			WeedObj->Set_CullRadius(CullData.w);
-			WeedObj->Set_FrustumCulled(true);
-
-			Add_GameObject(WeedObj);
+			_float3 CreatePos = _float3{ WeedObj->Get_Transform()->Get_State(Transform_State::POS) };
+			// 해당하는 풀을 그룹에 넣기.
+			_int WeedIndex = (_int)CreatePos.x / 16 + (_int)CreatePos.z / 16 * 16;
+			if (m_WeedGroups[WeedIndex].expired())
+			{
+				MSG_BOX("NoWeedGroups");
+				return;
+			}
+			m_WeedGroups[WeedIndex].lock()->Get_WeedGroup()->Push_Weed(WeedObj);
+			//Add_GameObject(WeedObj);
 		}
 	}
 #pragma endregion
