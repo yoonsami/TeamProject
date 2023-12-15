@@ -495,7 +495,6 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 {
 	list<shared_ptr<GameObject>>& tmp = static_pointer_cast<LoadingScene>(CUR_SCENE)->Get_StaticObjectsFromLoader();
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Controller.dat", tmp, false);
-
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main.dat", tmp);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Main_Button.dat", tmp);
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Char_Change.dat", tmp);
@@ -620,29 +619,29 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	}
 
 	{
-		auto pObj = Get_UI(L"UI_Combo_Effect");
-		if (nullptr != pObj)
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Combo_Effect");
+		if (false == pObj.expired())
 		{
 			auto pScript = make_shared<UiComboEffect>();
-			pObj->Add_Component(pScript);
+			pObj.lock()->Add_Component(pScript);
 		}
 	}
 
 	{
-		auto pObj = Get_UI(L"UI_Skill_Use_Gauge");
-		if (nullptr != pObj)
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Skill_Use_Gauge");
+		if (false == pObj.expired())
 		{
 			auto pScript = make_shared<UiSkillGauge>();
-			pObj->Add_Component(pScript);
+			pObj.lock()->Add_Component(pScript);
 		}
 	}
 
 	{
-		auto pObj = Get_UI(L"UI_Costume_Controller");
-		if (nullptr != pObj)
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Costume_Controller");
+		if (false == pObj.expired())
 		{
 			auto pScript = make_shared<UiCostumeController>();
-			pObj->Add_Component(pScript);
+			pObj.lock()->Add_Component(pScript);
 		}
 	}
 
@@ -656,10 +655,10 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	}
 
 	{
-		auto pObj = Get_UI(L"UI_Main_Button0");
-		if (nullptr != pObj)
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Main_Button0");
+		if (false == pObj.expired())
 		{
-			pObj->Get_Button()->AddOnClickedEvent([]()
+			pObj.lock()->Get_Button()->AddOnClickedEvent([]()
 				{
 					CUR_SCENE->Get_UI(L"UI_Setting_Controller")->Get_Script<UiSettingController>()->Create_Setting_Ui();
 				});
@@ -667,10 +666,10 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	}
 
 	{
-		auto pObj = Get_UI(L"UI_Main_Button1");
-		if (nullptr != pObj)
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Main_Button1");
+		if (false == pObj.expired())
 		{
-			pObj->Get_Button()->AddOnClickedEvent([]()
+			pObj.lock()->Get_Button()->AddOnClickedEvent([]()
 				{
 					CUR_SCENE->Get_UI(L"UI_Card_Deck_Controller")->Get_Script<UiCardDeckController>()->Create_Card_Deck();
 				});
@@ -678,10 +677,10 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	}
 
 	{
-		auto pObj = Get_UI(L"UI_Main_Button2");
-		if (nullptr != pObj)
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Main_Button2");
+		if (false == pObj.expired())
 		{
-			pObj->Get_Button()->AddOnClickedEvent([]()
+			pObj.lock()->Get_Button()->AddOnClickedEvent([]()
 				{
 					CUR_SCENE->Get_UI(L"UI_Costume_Controller")->Get_Script<UiCostumeController>()->Create_Costume();
 				});
@@ -696,9 +695,9 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 
 			wstring strName = L"UI_Skill" + to_wstring(i) + L"_Effect";
 			auto pScript = make_shared<UiSkillButtonEffect>();
-			auto pObj = Get_UI(strName);
-			if (nullptr != pObj)
-				pObj->Add_Component(pScript);
+			weak_ptr<GameObject> pObj = Get_UI(strName);
+			if (false == pObj.expired())
+				pObj.lock()->Add_Component(pScript);
 		}
 	}
 
@@ -708,9 +707,9 @@ void MirScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			auto pScript = make_shared<UiCoolEndEffect>();
 			wstring strTemp = L"UI_Cool_End";
 			strTemp += to_wstring(i);
-			auto pObj = Get_UI(strTemp);
-			if (nullptr != pObj)
-				pObj->Add_Component(pScript);
+			weak_ptr<GameObject> pObj = Get_UI(strTemp);
+			if (false == pObj.expired())
+				pObj.lock()->Add_Component(pScript);
 		}
 	}
 
