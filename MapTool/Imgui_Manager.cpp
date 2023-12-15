@@ -36,6 +36,7 @@
 #include "TerrainRenderer.h"
 
 #include "WeedScript.h"
+#include "WeedGroup.h"
 using namespace ImGui;
 
 ImGuizmo::OPERATION m_eGuizmoType = { ImGuizmo::TRANSLATE };
@@ -76,7 +77,7 @@ void ImGui_Manager::ImGui_SetUp()
     Load_MapObjectBase();
     Load_TerrainTile();
     Load_Water();
-    Load_WeedNames();
+    Init_WeedSetting();
 
     Create_SampleObjects();
 }
@@ -2518,10 +2519,6 @@ void ImGui_Manager::Create_Weed(_float3 _CreatePos)
     // 풀의 생성위치.
     FinalCreatePos = TargetPos + _float3{ 0.f, -1.f, 0.f } * fDistance;
 
-    // 해당하는 풀 그룹에 넣기.
-    _float WeedIndex = FinalCreatePos.x / 16 + FinalCreatePos.y / 16;
-    
-
     shared_ptr<Mesh> WeedMesh = RESOURCES.Get<Mesh>(L"Point");
 
     // 풀 오브젝트 생성
@@ -2565,7 +2562,15 @@ void ImGui_Manager::Create_Weed(_float3 _CreatePos)
     WeedObj->Set_CullRadius(CullData.w);
     WeedObj->Set_FrustumCulled(true);
 
-    EVENTMGR.Create_Object(WeedObj);
+    // 해당하는 풀을 그룹에 넣기.
+    _float WeedIndex = (_int)FinalCreatePos.x / 16 + (_int)FinalCreatePos.z / 16 * 16;
+    if (m_WeedGroups[WeedIndex].expired())
+    {
+        MSG_BOX("NoWeedGroups");
+        return;
+    }
+    m_WeedGroups[WeedIndex].lock()->Get_WeedGroup()->Push_Weed(WeedObj);
+    //EVENTMGR.Create_Object(WeedObj);
 
     //m_strInstalledWeeds.push_back(Utils::ToString(WeedName));
     m_pInstalledWeeds.push_back(WeedObj);
@@ -3293,7 +3298,7 @@ void ImGui_Manager::Load_Water()
     CUR_SCENE->Add_GameObject_Front(obj);
 }
 
-void ImGui_Manager::Load_WeedNames()
+void ImGui_Manager::Init_WeedSetting()
 {
     for (size_t i = 0; i < 8; i++)
     {
@@ -3309,6 +3314,9 @@ void ImGui_Manager::Load_WeedNames()
         shared_ptr<GameObject> WeedGroupObj = make_shared<GameObject>();
         wstring WGName = L"WeedGroup" + to_wstring(i);
         WeedGroupObj->Set_Name(WGName);
+        shared_ptr<WeedGroup> tmpWeedGroup = make_shared<WeedGroup>();
+        WeedGroupObj->Add_Component(tmpWeedGroup);
+
         EVENTMGR.Create_Object(WeedGroupObj);
         m_WeedGroups.push_back(WeedGroupObj);
     }

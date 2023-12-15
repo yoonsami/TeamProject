@@ -11,6 +11,8 @@ public:
 public:
     virtual HRESULT Init() override;
 
+    void Push_Weed(shared_ptr<GameObject> _pWeed) { m_Weeds.push_back(_pWeed); }
+
 public:
     virtual void Tick() override;
 
