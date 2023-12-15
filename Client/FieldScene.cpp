@@ -205,7 +205,7 @@ HRESULT FieldScene::Load_Scene()
 
 	auto player = Load_Player();
 	Load_Camera(player);
-	Load_MapFile(L"FieldMap", player);
+	Load_MapFile(L"FieldMap48", player);
 
 	Load_Companion(L"Spike", player, _float4{ 118.471f, -1.26f, 59.8f, 1.f});
 	Load_Companion(L"Dellons", player, _float4{ 128.471f, -2.98f, 78.3f, 1.f });
@@ -386,6 +386,11 @@ void FieldScene::Load_Terrain()
 		if (!texture)
 		{
 			Utils::ChangeExt(TileTexture, L".tga");
+			texture = RESOURCES.GetOrAddTexture(Utils::ToWString(fileName), TileTexture);
+		}
+		if (!texture)
+		{
+			Utils::ChangeExt(TileTexture, L".png");
 			texture = RESOURCES.GetOrAddTexture(Utils::ToWString(fileName), TileTexture);
 		}
 	}
