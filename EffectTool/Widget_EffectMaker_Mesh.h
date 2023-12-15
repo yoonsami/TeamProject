@@ -120,6 +120,7 @@ private:
 	_bool					m_bLightOn = { false };
 	_float					m_fLightIntensity = { 1.f };
 	_bool					m_bUseFadeOut = { true };
+	_float					m_fFadeOutStartTime = { 0.f };
 	_int					m_iSamplerType = { 1 };
 	_bool					m_bIsLoop = { false };
 	_bool					m_bIsFollowGroup_OnlyTranslate = { false };

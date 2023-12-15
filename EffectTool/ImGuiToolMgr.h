@@ -40,8 +40,8 @@ private:
 
 	/* ImGui Variables */
 	_bool					m_bIsParticleMaker_Instancing_On = { false };
-	_bool					m_bIsEffectMaker_Mesh_On = { false };
-	_bool					m_bIsGroupEffectMaker_On = { false };
+	_bool					m_bIsEffectMaker_Mesh_On = { true };
+	_bool					m_bIsGroupEffectMaker_On = { true };
 
 	/* Widgets */
 	shared_ptr<Widget_ParticleMaker_Instancing>	m_pWidget_ParticleMaker_Instancing = { nullptr };

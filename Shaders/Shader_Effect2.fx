@@ -81,6 +81,7 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     
     /* Get Shared Data */
     bool bUseFadeOut = (bool) g_int_0;
+    float fFadeOutRadio = g_float_3;
     bool bUseRimLight = (bool) g_int_1;
     bool bUseSpriteAnim = (bool) g_int_2;
     bool bLightOn = (bool) g_int_3;
@@ -89,7 +90,7 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     float fLifeTimeRatio = g_float_0;
     float fDissolveWeight = g_float_1;
     float fRimLightIntensity = g_float_2;
-    float fLightIntensity = g_float_3;
+    float fLightIntensity = g_mat_2._32;
     
     float2 vColorOptions_Op[3] = { g_vec2_0, g_vec2_1, g_vec2_2 };
     
@@ -312,7 +313,7 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     
     /* Fade Out */
     if (bUseFadeOut)
-        vOutColor.a *= (1.f - fLifeTimeRatio);
+        vOutColor.a *= fFadeOutRadio;
     
     if (vOutColor.a < 0.07f)
         discard;
@@ -328,6 +329,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     
     /* Get Shared Data */
     bool bUseFadeOut = (bool) g_int_0;
+    float fFadeOutRadio = g_float_3;
     bool bUseRimLight = (bool) g_int_1;
     bool bUseSpriteAnim = (bool) g_int_2;
     bool bLightOn = (bool) g_int_3;
@@ -335,8 +337,8 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     
     float fLifeTimeRatio = g_float_0;
     float fDissolveWeight = g_float_1;
-    float fRimLightIntensity = g_float_2;
-    float fLightIntensity = g_float_3;
+    float fRimLightIntensity = g_float_2;    
+    float fLightIntensity = g_mat_2._32;
     
     float2 vColorOptions_Op[3] = { g_vec2_0, g_vec2_1, g_vec2_2 };
     
@@ -358,9 +360,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     float2 decalUV = input.uv;
     float decalAlpha = 1.f;
     if (bUseSSD)
-    {
-        
-        
+    { 
         float4 projPos = mul(float4(input.viewPosition, 1.f), P);
         float2 vPixelPosInSS = projPos.xy / projPos.w;
         vPixelPosInSS = (vPixelPosInSS * 0.5f) + 0.5f;
@@ -562,7 +562,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     
     /* Fade Out */
     if (bUseFadeOut)
-        vOutColor.a *= (1.f - fLifeTimeRatio);
+        vOutColor.a *= fFadeOutRadio;
     
         /* Blend */
     if (bHasTexturemap10)
@@ -598,6 +598,7 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
     int id = input.id;
     /* Get Shared Data */
     bool bUseFadeOut = (bool) g_effectData[id].g_int_0;
+    float fFadeOutRatio = g_effectData[id].g_float_3;
     bool bUseRimLight = (bool) g_effectData[id].g_int_1;
     bool bUseSpriteAnim = (bool) g_effectData[id].g_int_2;
     bool bLightOn = (bool) g_effectData[id].g_int_3;
@@ -606,7 +607,7 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
     float fLifeTimeRatio = g_effectData[id].g_float_0;
     float fDissolveWeight = g_effectData[id].g_float_1;
     float fRimLightIntensity = g_effectData[id].g_float_2;
-    float fLightIntensity = g_effectData[id].g_float_3;
+    float fLightIntensity = g_effectData[id].g_mat_2._32;   
     
     float2 vColorOptions_Op[3] = { g_effectData[id].g_vec2_0, g_effectData[id].g_vec2_1, g_effectData[id].g_vec2_2 };
     
@@ -836,7 +837,7 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
     
     /* Fade Out */
     if (bUseFadeOut)
-        vOutColor.a *= (1.f - fLifeTimeRatio);
+        vOutColor.a *= fFadeOutRatio;
     
         /* Blend */
     if (bHasTexturemap10)
@@ -856,6 +857,7 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
     int id = input.id;
     /* Get Shared Data */
     bool bUseFadeOut = (bool) g_effectData[id].g_int_0;
+    float fFadeOutRatio = g_effectData[id].g_float_3;
     bool bUseRimLight = (bool) g_effectData[id].g_int_1;
     bool bUseSpriteAnim = (bool) g_effectData[id].g_int_2;
     bool bLightOn = (bool) g_effectData[id].g_int_3;
@@ -864,7 +866,7 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
     float fLifeTimeRatio = g_effectData[id].g_float_0;
     float fDissolveWeight = g_effectData[id].g_float_1;
     float fRimLightIntensity = g_effectData[id].g_float_2;
-    float fLightIntensity = g_effectData[id].g_float_3;
+    float fLightIntensity = g_effectData[id].g_mat_2._32;
     
     float2 vColorOptions_Op[3] = { g_effectData[id].g_vec2_0, g_effectData[id].g_vec2_1, g_effectData[id].g_vec2_2 };
     
@@ -1087,7 +1089,7 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
     
     /* Fade Out */
     if (bUseFadeOut)
-        vOutColor.a *= (1.f - fLifeTimeRatio);
+        vOutColor.a *= fFadeOutRatio;
     
         /* Blend */
     if (bHasTexturemap10)

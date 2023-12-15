@@ -1121,6 +1121,14 @@ void Dellons_FSM::skill_1400_Init()
 
 void Dellons_FSM::skill_91100()
 {
+    if (Init_CurFrame(0))
+        Add_Effect(L"Dellons_91100");
+    if (Init_CurFrame(17))
+        Add_And_Set_Effect(L"Dellons_91100_End");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
+
     _float3 vInputVector = Get_InputDirVector();
 
     Look_DirToTarget();
@@ -1390,6 +1398,13 @@ void Dellons_FSM::skill_200200_Init()
 
 void Dellons_FSM::skill_300100()
 {
+    if (Init_CurFrame(9))
+        Add_Effect(L"Dellons_300100");
+    if (Init_CurFrame(24))
+        Add_Effect(L"Dellons_300100_Wraith");
+    if (Init_CurFrame(57))
+        Add_Effect(L"Dellons_300100_Wraith2");
+
     Look_DirToTarget();
     if (m_iCurFrame >= 10)
     {
@@ -1446,13 +1461,36 @@ void Dellons_FSM::skill_300100_Init()
 
 void Dellons_FSM::skill_400100()
 {
+    if (Init_CurFrame(17))
+        Add_And_Set_Effect(L"Dellons_400100_charging");
+    else if (Init_CurFrame(31))
+        Add_And_Set_Effect(L"Dellons_400100");
+    else if (Init_CurFrame(39))
+        Add_And_Set_Effect(L"Dellons_400100_2");
+    else if (Init_CurFrame(50))
+        Add_And_Set_Effect(L"Dellons_400100_3");
+    else if (Init_CurFrame(58))
+        Add_And_Set_Effect(L"Dellons_400100_9");
+    else if (Init_CurFrame(63))
+        Add_And_Set_Effect(L"Dellons_400100_4");
+    else if (Init_CurFrame(73))
+        Add_And_Set_Effect(L"Dellons_400100_5");
+    else if (Init_CurFrame(80))
+        Add_And_Set_Effect(L"Dellons_400100_6");
+    else if (Init_CurFrame(98))
+        Add_And_Set_Effect(L"Dellons_400100_7");
+    else if (Init_CurFrame(99))
+        Add_And_Set_Effect(L"Dellons_400100_8");
+        
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_iCurFrame >= 13)
     {
         if (!m_pCamera.expired())
         {
             _float4 vDestinationPos = (Get_Transform()->Get_State(Transform_State::POS)) +
                 m_vSkillCamRight +
-                (Get_Transform()->Get_State(Transform_State::LOOK) * -3.f)
+                (Get_Transform()->Get_State(Transform_State::LOOK) * -3.f) // -3.f
                 + _float3::Up * 6.f;
             _float4 vDir = vDestinationPos - m_vSkillCamBonePos;
 
@@ -1527,11 +1565,13 @@ void Dellons_FSM::skill_400100_Init()
     m_bInvincible = true;
     m_bSuperArmor = true;
 
-    Cal_SkillCamDirection(3.f);
+    Cal_SkillCamDirection(3.f); // 3.f
 }
 
 void Dellons_FSM::skill_501100()
 {
+    //if(Init_CurFrame())
+
     if (Init_CurFrame(4))
     {
 		Summon_Wraith();
