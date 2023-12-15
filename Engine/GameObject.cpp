@@ -7,6 +7,7 @@
 #include "BaseUI.h"
 #include "Particle.h"
 #include "Transform.h"
+#include "WeedGroup.h"
 #include "RigidBody.h"
 #include "MeshEffect.h"
 #include "GroupEffect.h"
@@ -277,6 +278,11 @@ shared_ptr<TerrainRenderer> GameObject::Get_TerrainRenderer()
 shared_ptr<Particle> GameObject::Get_Particle()
 {
 	return static_pointer_cast<Particle>(Get_FixedComponent(COMPONENT_TYPE::Particle));
+}
+
+shared_ptr<WeedGroup> GameObject::Get_WeedGroup()
+{
+	return static_pointer_cast<WeedGroup>(Get_FixedComponent(COMPONENT_TYPE::WeedGroup));
 }
 
 shared_ptr<MeshEffect> GameObject::Get_MeshEffect()

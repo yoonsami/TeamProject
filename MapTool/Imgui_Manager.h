@@ -268,6 +268,7 @@ private: // 지형, 잔디
 	// 현재깔려있는풀 오브젝트ptr
 	vector<shared_ptr<GameObject>> m_pInstalledWeeds;
 	vector<_uint> m_CountSameWeed;
+	vector<weak_ptr<GameObject>> m_WeedGroups;
 
 #pragma endregion
 

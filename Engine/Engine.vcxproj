@@ -258,6 +258,7 @@
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexData.h" />
     <ClInclude Include="Viewport.h" />
+    <ClInclude Include="WeedGroup.h" />
     <ClInclude Include="WeedScript.h" />
   </ItemGroup>
   <ItemGroup>
@@ -351,6 +352,7 @@
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexData.cpp" />
     <ClCompile Include="Viewport.cpp" />
+    <ClCompile Include="WeedGroup.cpp" />
     <ClCompile Include="WeedScript.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -2518,6 +2518,10 @@ void ImGui_Manager::Create_Weed(_float3 _CreatePos)
     // 풀의 생성위치.
     FinalCreatePos = TargetPos + _float3{ 0.f, -1.f, 0.f } * fDistance;
 
+    // 해당하는 풀 그룹에 넣기.
+    _float WeedIndex = FinalCreatePos.x / 16 + FinalCreatePos.y / 16;
+    
+
     shared_ptr<Mesh> WeedMesh = RESOURCES.Get<Mesh>(L"Point");
 
     // 풀 오브젝트 생성
@@ -3298,4 +3302,14 @@ void ImGui_Manager::Load_WeedNames()
     }
     // 같은 풀 종류별 개수 초기화
     m_CountSameWeed.resize(m_strWeedCatalogue.size());
+
+    // 풀그룹 생성
+    for (_int i = 0; i < 256/* 16*16 */; ++i)
+    {
+        shared_ptr<GameObject> WeedGroupObj = make_shared<GameObject>();
+        wstring WGName = L"WeedGroup" + to_wstring(i);
+        WeedGroupObj->Set_Name(WGName);
+        EVENTMGR.Create_Object(WeedGroupObj);
+        m_WeedGroups.push_back(WeedGroupObj);
+    }
 }
