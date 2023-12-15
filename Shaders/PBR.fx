@@ -189,6 +189,9 @@ PBR_OUT PBRShade(
        //DIRECTIONAL_LIGHT
     if (lights[lightIndex].lightType == 0)
     {
+        float3 hsv = RGBtoHSV(diffuse);
+        float3 rgb = HSVtoRGB(hsv);
+        
         viewLightDir = normalize(mul(float4(lights[lightIndex].vDirection.xyz, 0.f), V).xyz);
         diffuse = saturate(diffuse * shadowAmount);
         specular = saturate(specular * shadowAmount);
