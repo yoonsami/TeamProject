@@ -365,6 +365,15 @@ void Camera::Render_Deferred()
 		m_Terrain->Get_TerrainRenderer()->Render();
 
 	INSTANCING.Render(m_Deferred);
+
+	vector<shared_ptr<GameObject>> weeds;
+	weeds.reserve(10000);
+	for (auto& groupWeed : m_GroupWeed)
+	{
+
+
+
+	}
 }
 
 void Camera::Render_Shadow()

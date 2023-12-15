@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Smoke_Detect.h"
 #include "UiQuestController.h"
+#include "UiMessageCreater.h"
 
 Smoke_Detect::Smoke_Detect()
 {
@@ -30,7 +31,11 @@ void Smoke_Detect::Tick()
 	_float lengthSQ = (vPlayerPos - vOwenrPos).LengthSquared();
 	if (lengthSQ < 3.f * 3.f)
 	{
-		//Create Horse Balloon
+		{
+			auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
+			if (pObj)
+				pObj->Get_Script<UiMessageCreater>()->Create_Message(L"냄새를 따라가보자");
+		}
 
 		EVENTMGR.Delete_Object(Get_Owner());
 	}

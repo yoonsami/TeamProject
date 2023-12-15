@@ -2,6 +2,7 @@
 #include "GranseedGuard01_FSM.h"
 #include "ModelAnimator.h"
 #include <MathUtils.h>
+#include "UiMessageCreater.h"
 
 GranseedGuard01_FSM::GranseedGuard01_FSM()
 {
@@ -13,7 +14,6 @@ GranseedGuard01_FSM::~GranseedGuard01_FSM()
 
 HRESULT GranseedGuard01_FSM::Init()
 {
-    m_eCurState = STATE::n_idle;
     return S_OK;
 }
 
@@ -112,8 +112,13 @@ void GranseedGuard01_FSM::run_Init()
 void GranseedGuard01_FSM::talk()
 {
 	Look_DirToTarget(XM_PI * 0.5f);
-	if (KEYTAP(KEY_TYPE::E))
+	m_fStateAcc += fDT;
+
+	if (m_fStateAcc >= 1.f)
+	{
+		m_fStateAcc = 0.f;
 		m_eCurState = STATE::n_idle;
+	}
 }
 
 void GranseedGuard01_FSM::talk_Init()
@@ -121,7 +126,13 @@ void GranseedGuard01_FSM::talk_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"talk", 0.15f, true, 1.f);
+	m_fStateAcc = 0.f;
 
+	{
+		auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
+		if (pObj)
+			pObj->Get_Script<UiMessageCreater>()->Create_Message(L"피에스타 때리고 싶다",Get_Owner());
+	}
 }
 
 void GranseedGuard01_FSM::walk()
