@@ -3,9 +3,13 @@
 
 #include "Camera.h"
 #include "FontRenderer.h"
+#include "MeshRenderer.h"
 
-UiDamageMove::UiDamageMove(weak_ptr<GameObject> pObj)
+UiDamageMove::UiDamageMove(weak_ptr<GameObject> pObj, _uint iIndex, _float2 vecRandAdd, shared_ptr<GameObject> pFirstNum)
     : m_pTarget(pObj)
+    , m_iIndex(iIndex)
+    , m_vecRandAddPos(vecRandAdd)
+    , m_pFirstNum(pFirstNum)
 {
 }
 
@@ -15,13 +19,15 @@ HRESULT UiDamageMove::Init()
         return E_FAIL;
 
     m_pCamera = CUR_SCENE->Get_Camera(L"Default");
-    
-    //m_fOriginSize = m_pOwner.lock()->Get_FontRenderer()->Get_Size();
-    //m_fMinSize = 1.f;
-    //m_fChangeScale = m_fOriginSize - m_fMinSize;
 
-    m_fMaxTime = 0.5f;
+    m_fMaxTime = 1.f;
     m_fRatio = 1.f / m_fMaxTime;
+
+    m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = 100.f;
+    m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[1] = static_cast<_float>(m_iIndex);
+    m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec2Params[0] = m_vecRandAddPos;
+
+    
 
     return S_OK;
 }
@@ -40,10 +46,8 @@ void UiDamageMove::Tick()
     if (false == m_bIsRender)
         return;
 
-    Change_Pos_2D();
-    Change_Pos();
-    //Change_Size();
     Change_Alpha();
+    Change_Pos();
 }
 
 void UiDamageMove::Check_Render_State()
@@ -64,48 +68,30 @@ void UiDamageMove::Check_Render_State()
 
 void UiDamageMove::Change_Pos()
 {
-    //m_vecPos.x += fDT * 200.f;
-    //m_vecPos.y += 100.f;
-    //m_vecPos.y = 100.f * m_fCheckTime * m_fRatio;
-    m_pOwner.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, m_vecPos);
-}
+    m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[2] = m_fCheckTime * 50.f;
 
-void UiDamageMove::Change_Size()
-{
-    _float fSize = m_fOriginSize - (m_fChangeScale * m_fCheckTime * m_fRatio);
-    m_pOwner.lock()->Get_FontRenderer()->Get_Size() = fSize;
-}
+    _float4 vecPos = m_pTarget.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+    vecPos.y += 1.f;
+    m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[1] = vecPos;
 
-void UiDamageMove::Change_Alpha()
-{
-    Color vColor = m_pOwner.lock()->Get_FontRenderer()->Get_Color();
-    vColor.w = 1.f - m_fCheckTime * m_fRatio;
-    m_pOwner.lock()->Get_FontRenderer()->Get_Color() = vColor;
+    _float4x4 matView = m_pCamera.lock()->Get_Camera()->Get_ViewMat();
+    _float4x4 matProj = m_pCamera.lock()->Get_Camera()->Get_ProjMat();
+
+    m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().matParams[0] = matView;
+    m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().matParams[1] = matProj;
 }
 
 void UiDamageMove::Check_Remove()
 {
-    if (m_fMaxTime < m_fCheckTime && false == m_pOwner.expired())
+    if (m_fMaxTime < m_fCheckTime && false == m_pOwner.expired() && 0 == m_iIndex)
+        EVENTMGR.Delete_Object(m_pOwner.lock());
+
+    else if(0 != m_iIndex && false == m_pOwner.expired() && true == m_pFirstNum.expired())
         EVENTMGR.Delete_Object(m_pOwner.lock());
 }
 
-void UiDamageMove::Change_Pos_2D()
+void UiDamageMove::Change_Alpha()
 {
-    _float4x4 viewPos = m_pCamera.lock()->Get_Camera()->Get_ViewMat();
-    _float4x4 projPos = m_pCamera.lock()->Get_Camera()->Get_ProjMat();
-
-    m_vecPos = m_pTarget.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
-    m_vecPos.y += 2.f;
-
-    m_vecPos = XMVector3TransformCoord(m_vecPos, viewPos);
-    m_vecPos = XMVector3TransformCoord(m_vecPos, projPos);
-
-    m_vecPos.x = (m_vecPos.x + 1.f) * 0.5f * g_iWinSizeX;
-    m_vecPos.y = ((m_vecPos.y * -1.f) + 1.f) * 0.5f * g_iWinSizeY;
-    
-    m_vecPos.x -= g_iWinSizeX * 0.5f;
-    m_vecPos.y = (m_vecPos.y * -1.f) + g_iWinSizeY * 0.5f;
-    
-    //m_vecPos.x -= 150.f;
-    //m_vecPos.y += 300.f;
+    _float fAlpha = 1.f - m_fCheckTime * m_fRatio;
+    m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = fAlpha;
 }

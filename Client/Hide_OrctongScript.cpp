@@ -65,14 +65,14 @@ void Hide_OrctongScript::Tick()
 			{
 				auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
 				if (pObj)
-					pObj->Get_Script<UiMessageCreater>()->Create_Message(L"¿©±â´Â ¾Æ´Ñ °Í °°´Ù");
+					pObj->Get_Script<UiMessageCreater>()->Create_Message(L"ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
 			}
 			break;
 			case 2:
 			{
 				auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
 				if (pObj)
-					pObj->Get_Script<UiMessageCreater>()->Create_Message(L"¿©±âµµ ¾Æ´Ñ °Í °°´Ù");
+					pObj->Get_Script<UiMessageCreater>()->Create_Message(L"ï¿½ï¿½ï¿½âµµ ï¿½Æ´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
 			}
 			break;
 
@@ -80,7 +80,7 @@ void Hide_OrctongScript::Tick()
 			{
 				auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
 				if (pObj)
-					pObj->Get_Script<UiMessageCreater>()->Create_Message(L"´Ù¸¥ °÷À» Ã£¾Æº¸ÀÚ");
+					pObj->Get_Script<UiMessageCreater>()->Create_Message(L"ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½Æºï¿½ï¿½ï¿½");
 			}
 			break;
 			}
