@@ -45,7 +45,7 @@ void InstancingMgr::Render_Weeds(vector<shared_ptr<GameObject>>& groups)
 		if (gameObject->Get_MeshRenderer() == nullptr)
 			continue;
 
-		auto frustum = CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_Frustum();
+		//auto frustum = CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_Frustum();
 
 		/*	if (frustum.Contain_Sphere(gameObject->Get_CullPos(), gameObject->Get_CullRadius()) == false)
 				continue;*/
