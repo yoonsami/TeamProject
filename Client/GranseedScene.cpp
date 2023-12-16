@@ -192,6 +192,15 @@ void GranseedScene::Final_Tick()
 	__super::Final_Tick();
 	PHYSX.Tick();
 	
+	if (KEYPUSH(KEY_TYPE::TAB) && KEYPUSH(KEY_TYPE::F4))
+	{
+		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<MirScene>());
+		PHYSX.Set_CharacterControllerNull();
+
+		scene->Set_StaticObjects(m_StaticObject);
+		SCENE.Change_Scene(scene);
+		g_bCutScene = false;
+	}
 	
 	if (KEYPUSH(KEY_TYPE::TAB) && KEYPUSH(KEY_TYPE::F7))
 	{

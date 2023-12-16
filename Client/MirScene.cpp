@@ -116,7 +116,9 @@ void MirScene::Init()
 
 void MirScene::Tick()
 {
-	SOUND.Play_Sound(L"bgm_bossmir_loop", CHANNELID::SOUND_BGM, 0.1f);
+	if (m_bPlayBGM)
+		SOUND.Play_Sound(L"bgm_bossmir_loop", CHANNELID::SOUND_BGM, 0.1f);
+	
 	__super::Tick();
 
 	//{
@@ -192,10 +194,8 @@ HRESULT MirScene::Load_Scene()
 	Load_Camera(player);
 	Load_MapFile(L"MirMap", player);
 	Load_Boss_Mir(player);
-	//Load_Boss_Giant_Mir(player);
 
 	Load_Ui(player);
-	//Load_Water();
 
 	auto pPlayer = Get_Player();
 	if (nullptr != pPlayer)

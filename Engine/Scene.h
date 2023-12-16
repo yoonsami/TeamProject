@@ -31,6 +31,10 @@ public:
 
 	void Set_AttackCall(_bool bFlag) { m_bAttackCall = bFlag; }
 	_bool Get_AttackCall() { return m_bAttackCall; }
+
+	void Set_PlayBGM(_bool bFlag) { m_bPlayBGM = bFlag; }
+	_bool Get_PlayBGM() { return m_bPlayBGM; }
+
 protected:
 	virtual void Add_GameObject(shared_ptr<GameObject> object, _bool staticFlag = false);
 	virtual void Remove_GameObject(shared_ptr<GameObject> object);
@@ -136,6 +140,7 @@ protected:
 
 	_bool m_bSceneFinished = false;
 	_bool m_bAttackCall = false;
+	_bool m_bPlayBGM = false;
 
 	_uint m_iLevelIndex = 0;
 	_float4 m_vFrustumFarCorner[4];
@@ -153,6 +158,7 @@ protected:
 
 public:
 	_bool m_bRenderDebug = false;
+
 	_float g_fBrightness = 0.f;
 	_float g_fContrast = 1.f;
 	_float g_Saturation = 1.f;

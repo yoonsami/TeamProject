@@ -179,6 +179,9 @@ private:
 	_float m_fIntroCamDistance = 0.f;
 	_float m_fCamRatio = 0.f;
 	_float m_fStateTimer = 0.f;
+	_float m_fMeteorVolume = 0.3f;
+	_float m_fLightningVolume = 0.3f;
+
 
 	COOLTIMEINFO m_tAttackCoolTime = { 3.f, 0.f };
 	COOLTIMEINFO m_tBreathCoolTime = { 0.15f, 0.f };
