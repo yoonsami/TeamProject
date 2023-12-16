@@ -349,15 +349,9 @@ void Widget_EffectMaker_Mesh::Option_Property()
 		if (ImGui::InputFloat("Fade Out Start Time", &m_fFadeOutStartTime))
 		{
 			if (m_fFadeOutStartTime >= 1.f)
-			{
 				m_bUseFadeOut = false;
-				m_fFadeOutStartTime = 0.f;
-			}
 		}
 	}
-	else
-		m_fFadeOutStartTime = 0.f;
-
 	ImGui::Checkbox("Color Changing On##Property", &m_bColorChangingOn);
 	ImGui::Checkbox("FDistortion##Property", &m_bIsFDistortion);
 	if (ImGui::Checkbox("Decal##Property", &m_bIsSSD))
@@ -453,9 +447,6 @@ void Widget_EffectMaker_Mesh::Option_TextureOp(_int iIndex)
 	ImGui::SeparatorText(strSeparatorTag.c_str());
 
 	// For. On/Off Texture Option
-	if (m_TexOption[iIndex].Texture.second == "None")
-		m_TexOption[iIndex].bIsOption_On = false;
-
 	ImGui::Checkbox(strIsOn.c_str(), &m_TexOption[iIndex].bIsOption_On);
 
 	if (!m_TexOption[iIndex].bIsOption_On)
