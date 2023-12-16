@@ -950,7 +950,7 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 			wstring strWeedName = Utils::ToWString(file->Read<string>());
 			_float4x4 matWeedWorldMat = file->Read<_float4x4>();
 			_int iWeedIndex = file->Read<_int>();
-			_float4 CullData = _float4{ file->Read<_float3>(), file->Read<_float>() };
+			//_float4 CullData = _float4{ file->Read<_float3>(), file->Read<_float>() };
 
 			shared_ptr<Mesh> WeedMesh = RESOURCES.Get<Mesh>(L"Point");
 
