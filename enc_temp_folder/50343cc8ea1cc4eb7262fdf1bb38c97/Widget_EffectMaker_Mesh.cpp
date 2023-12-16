@@ -344,13 +344,10 @@ void Widget_EffectMaker_Mesh::Option_Property()
 	}
 
 	ImGui::Checkbox("On Fade Out##Property", &m_bUseFadeOut);
-	if (m_bUseFadeOut)
+	if (ImGui::InputFloat("Fade Out Start Time", &m_fFadeOutStartTime))
 	{
-		if (ImGui::InputFloat("Fade Out Start Time", &m_fFadeOutStartTime))
-		{
-			if (m_fFadeOutStartTime >= 1.f)
-				m_bUseFadeOut = false;
-		}
+		if (m_fFadeOutStartTime > m_fDuration)
+			m_fFadeOutStartTime = m_fDuration;
 	}
 	ImGui::Checkbox("Color Changing On##Property", &m_bColorChangingOn);
 	ImGui::Checkbox("FDistortion##Property", &m_bIsFDistortion);
