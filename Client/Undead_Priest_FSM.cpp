@@ -921,7 +921,7 @@ void Undead_Priest_FSM::skill_1100()
     {
         FORWARDMOVINGSKILLDESC desc;
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-        desc.fMoveSpeed = 20.f;
+        desc.fMoveSpeed = 10.f;
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 10.f;
 
