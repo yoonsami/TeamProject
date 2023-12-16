@@ -952,7 +952,10 @@ void Undead_Priest_FSM::skill_2100()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     if (Init_CurFrame(30))
+    {
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+        Add_And_Set_Effect(L"UndeadPriest_2100");
+    }
     else if (Init_CurFrame(34))
         AttackCollider_Off();
     else if (Init_CurFrame(66))
