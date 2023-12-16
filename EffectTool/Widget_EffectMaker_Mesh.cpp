@@ -452,10 +452,6 @@ void Widget_EffectMaker_Mesh::Option_TextureOp(_int iIndex)
 
 	ImGui::SeparatorText(strSeparatorTag.c_str());
 
-	// For. On/Off Texture Option
-	if (m_TexOption[iIndex].Texture.second == "None")
-		m_TexOption[iIndex].bIsOption_On = false;
-
 	ImGui::Checkbox(strIsOn.c_str(), &m_TexOption[iIndex].bIsOption_On);
 
 	if (!m_TexOption[iIndex].bIsOption_On)
@@ -1463,6 +1459,10 @@ void Widget_EffectMaker_Mesh::Load()
 		m_TexOption[i].fContrast = file->Read<_float>();
 		m_TexOption[i].fAlphaOffset = file->Read<_float>();
 		m_TexOption[i].bUseSolidColor = Equal(m_TexOption[i].vColorBase1, m_TexOption[i].vColorBase2) && Equal(m_TexOption[i].vColorDest1, m_TexOption[i].vColorDest2);	
+	
+		// For. On/Off Texture Option
+		if (m_TexOption[i].Texture.second == "None")
+			m_TexOption[i].bIsOption_On = false;
 	}
 
 	/* Blend */
@@ -1603,7 +1603,7 @@ void Widget_EffectMaker_Mesh::Load()
 	memcpy(m_fRandomAxis_Max, &vTemp_vec3, sizeof(m_fRandomAxis_Max));
 	for (_int i = 0; i < 2; i++)
 		m_bBillbordAxes[i] = file->Read<_bool>();
-	
+
 	// For. Create Effect GameObjects
 	Create();
 }

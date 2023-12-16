@@ -20,7 +20,7 @@ public:
 	void				Render_Distortion();
 
 	void				Save(const wstring& path);
-	void				DeleteMember(const wstring& wstrTag);
+	void				DeleteMember(_int iIndex);
 
 	void				FreeLoopMember();
 	void				Kill_All();
