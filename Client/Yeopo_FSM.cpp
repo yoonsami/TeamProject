@@ -52,12 +52,13 @@ HRESULT Yeopo_FSM::Init()
 	m_fSkillAttack_AnimationSpeed = 1.0f;
 	m_fEvade_AnimationSpeed = 1.5f;
 
-    m_fVoiceVolume = 0.8f;
-    m_fSwingVolume = 0.7f;
-    m_fFootStepVolume = 0.7f;
-    m_fEffectVolume = 0.7f;
+    m_fVoiceVolume = 0.3f;
+    m_fSwingVolume = 0.3f;
+    m_fFootStepVolume = 0.2f;
+    m_fEffectVolume = 0.2f;
 
     m_fMySoundDistance = 100.f;
+
 
 	if (!m_pAttackCollider.expired())
 		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(m_eElementType);
@@ -480,7 +481,7 @@ void Yeopo_FSM::b_run_start()
 {
     if (Init_CurFrame(8))
         SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-    else if (Init_CurFrame(18))
+    else if (Init_CurFrame(16))
         SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     RidingCoolCheck();
@@ -530,7 +531,7 @@ void Yeopo_FSM::b_run_start_Init()
 
 void Yeopo_FSM::b_run()
 {
-    if (Init_CurFrame(10))
+    if (Init_CurFrame(8))
         SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(18))
         SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
