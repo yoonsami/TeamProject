@@ -32,6 +32,9 @@ void InstancingMgr::Render_Weeds(vector<shared_ptr<GameObject>>& groups)
 
 	for (auto& group : groups)
 	{
+		if(_float3::Transform(group->Get_CullPos(), Camera::Get_View()).LengthSquared() > 100.f * 100.f)
+			continue;
+
 		auto& groupWeeds = group->Get_WeedGroup()->Get_Weeds();
 		gameObjects.insert(gameObjects.end(), groupWeeds.begin(), groupWeeds.end());
 
