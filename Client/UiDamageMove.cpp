@@ -5,9 +5,10 @@
 #include "FontRenderer.h"
 #include "MeshRenderer.h"
 
-UiDamageMove::UiDamageMove(weak_ptr<GameObject> pObj, _uint iIndex, shared_ptr<GameObject> pFirstNum)
+UiDamageMove::UiDamageMove(weak_ptr<GameObject> pObj, _uint iIndex, _float2 vecRandAdd, shared_ptr<GameObject> pFirstNum)
     : m_pTarget(pObj)
     , m_iIndex(iIndex)
+    , m_vecRandAddPos(vecRandAdd)
     , m_pFirstNum(pFirstNum)
 {
 }
@@ -24,8 +25,9 @@ HRESULT UiDamageMove::Init()
 
     m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[0] = 100.f;
     m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[1] = static_cast<_float>(m_iIndex);
+    m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec2Params[0] = m_vecRandAddPos;
 
-
+    
 
     return S_OK;
 }
@@ -44,6 +46,7 @@ void UiDamageMove::Tick()
     if (false == m_bIsRender)
         return;
 
+    Change_Alpha();
     Change_Pos();
 }
 
@@ -65,6 +68,8 @@ void UiDamageMove::Check_Render_State()
 
 void UiDamageMove::Change_Pos()
 {
+    m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().floatParams[2] = m_fCheckTime * 50.f;
+
     _float4 vecPos = m_pTarget.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
     vecPos.y += 1.f;
     m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[1] = vecPos;
@@ -73,8 +78,7 @@ void UiDamageMove::Change_Pos()
     _float4x4 matProj = m_pCamera.lock()->Get_Camera()->Get_ProjMat();
 
     m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().matParams[0] = matView;
-
-    m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().matParams[0] = matView;
+    m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().matParams[1] = matProj;
 }
 
 void UiDamageMove::Check_Remove()
@@ -84,4 +88,10 @@ void UiDamageMove::Check_Remove()
 
     else if(0 != m_iIndex && false == m_pOwner.expired() && true == m_pFirstNum.expired())
         EVENTMGR.Delete_Object(m_pOwner.lock());
+}
+
+void UiDamageMove::Change_Alpha()
+{
+    _float fAlpha = 1.f - m_fCheckTime * m_fRatio;
+    m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = fAlpha;
 }

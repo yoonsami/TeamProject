@@ -6,6 +6,7 @@
 #include "MeshRenderer.h"
 #include "UiDamageMove.h"
 #include "CoolTimeCheckScript.h"
+#include "Utils.h"
 
 UiDamageCreate::UiDamageCreate()
 {
@@ -16,13 +17,13 @@ HRESULT UiDamageCreate::Init()
     if (m_pOwner.expired())
         return E_FAIL;
 
+    m_pPlayer = GET_PLAYER;
+    m_pCamera = CUR_SCENE->Get_Camera(L"Default");
+
     if (true == m_bIsInit)
         return S_OK;
 
     m_bIsInit = true;
-
-    m_pPlayer = GET_PLAYER;
-    m_pCamera = CUR_SCENE->Get_Camera(L"Default");
 
     return S_OK;
 }
@@ -78,6 +79,8 @@ void UiDamageCreate::Create_Damage_Font(weak_ptr<GameObject> pTarget, _float fDa
     vector<weak_ptr<GameObject>> addedObj;
     pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Damage.dat", addedObj, iMaxSize);
 
+    _float2 vecRandAdd = { Utils::Random_In_Range(-80.f, 80.f), Utils::Random_In_Range(-80.f, 80.f) };
+
     shared_ptr<GameObject> pFirstNum;
     for (_uint i = 0; i < iMaxSize; ++i)
     {
@@ -93,12 +96,12 @@ void UiDamageCreate::Create_Damage_Font(weak_ptr<GameObject> pTarget, _float fDa
         {
             pFirstNum = pObj.lock();
             pObj.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(strTemp), TextureMapType::DIFFUSE);
-            pObj.lock()->Add_Component(make_shared<UiDamageMove>(pTarget, i));
+            pObj.lock()->Add_Component(make_shared<UiDamageMove>(pTarget, i, vecRandAdd));
         }
         else
         {
             pObj.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(strTemp), TextureMapType::DIFFUSE);
-            pObj.lock()->Add_Component(make_shared<UiDamageMove>(pTarget, i, pFirstNum));
+            pObj.lock()->Add_Component(make_shared<UiDamageMove>(pTarget, i, vecRandAdd, pFirstNum));
         }
 
         pObj.lock()->Init();

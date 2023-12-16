@@ -67,7 +67,10 @@ VS_OUT VS_3D_To_2D_Damage(VTXMesh input)
     screenPos.x -= 1920 * 0.5f;
     screenPos.y = (screenPos.y * -1.f) + 1080 * 0.5f;
 
-    screenPos.x -= g_float_1 * 10.f;
+    screenPos += g_vec2_0;
+    
+    screenPos.x -= g_float_1 * 15.f;
+    screenPos.y += g_float_2;
     
     output.viewPos = mul(float4(screenPos.x, screenPos.y, W._43, 1.f), V);
     output.uv = input.uv;
