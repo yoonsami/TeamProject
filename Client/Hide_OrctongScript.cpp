@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Hide_OrctongScript.h"
 #include "Camera.h"
 #include <MathUtils.h>
@@ -65,14 +65,14 @@ void Hide_OrctongScript::Tick()
 			{
 				auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
 				if (pObj)
-					pObj->Get_Script<UiMessageCreater>()->Create_Message(L"����� �ƴ� �� ����");
+					pObj->Get_Script<UiMessageCreater>()->Create_Message(L"이 곳은 아닌 것 같다");
 			}
 			break;
 			case 2:
 			{
 				auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
 				if (pObj)
-					pObj->Get_Script<UiMessageCreater>()->Create_Message(L"���⵵ �ƴ� �� ����");
+					pObj->Get_Script<UiMessageCreater>()->Create_Message(L"다른 곳을 찾아보자");
 			}
 			break;
 
@@ -80,7 +80,7 @@ void Hide_OrctongScript::Tick()
 			{
 				auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
 				if (pObj)
-					pObj->Get_Script<UiMessageCreater>()->Create_Message(L"�ٸ� ���� ã�ƺ���");
+					pObj->Get_Script<UiMessageCreater>()->Create_Message(L"여기는 아닌 것 같다");
 			}
 			break;
 			}
