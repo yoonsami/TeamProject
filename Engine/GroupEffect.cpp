@@ -351,16 +351,17 @@ void GroupEffect::Save(const wstring& path)
     }
 }
 
-void GroupEffect::DeleteMember(const wstring& wstrTag)
+void GroupEffect::DeleteMember(_int iIndex)
 {
-    _int iIndex = 0;
+    m_vMemberEffectData.erase(m_vMemberEffectData.begin() + iIndex);
 
-    for (auto& iter : m_vMemberEffectData)
-    {
-        if (iter.wstrEffectTag == wstrTag)
-            m_vMemberEffectData.erase(m_vMemberEffectData.begin() + iIndex);
-        iIndex++;
-    }
+    //_int iIndex = 0;
+    //for (auto& iter : m_vMemberEffectData)
+    //{
+    //    if (iter.wstrEffectTag == wstrTag)
+    //        m_vMemberEffectData.erase(m_vMemberEffectData.begin() + iIndex);
+    //    iIndex++;
+    //}
 }
 
 void GroupEffect::FreeLoopMember()
