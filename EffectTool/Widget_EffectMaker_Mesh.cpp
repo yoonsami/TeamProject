@@ -851,7 +851,8 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 		const char* pszItem_TranslateOption[] = { "No change", "Move to direction", "Move to random direction", // 2
 			"Go Straight", "Go Back", "Go Lift", "Go Right", "Go Up", "Go Down",	// 8
 			"Fountain", // 9
-			" Move to Target Position" // 10
+			"Move to Target Position", // 10
+			"Wandering"
 		};
 		if (ImGui::BeginCombo("Translate option##Movement", pszItem_TranslateOption[m_iTranslateOption], 0))
 		{
@@ -934,6 +935,22 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 		case 10: // Move to Target Pos 
 			ImGui::InputFloat3("Target Position##Movement", m_fEndPositionOffset_Min);
 			memcpy(m_fEndPositionOffset_Max, m_fEndPositionOffset_Min, sizeof(m_fEndPositionOffset_Min));
+
+			ImGui::Text("Speed");
+			ImGui::RadioButton("Curve##MoveSpeed", &m_iSpeedType, 0);
+			ImGui::SameLine();
+			ImGui::RadioButton("Linear##MoveSpeed", &m_iSpeedType, 1);
+
+			m_vCurvePoint_Force[0].x = 0.f;
+			ImGui::InputFloat2("Point1 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[0]);
+			ImGui::InputFloat2("Point2 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[1]);
+			ImGui::InputFloat2("Point3 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[2]);
+			ImGui::InputFloat2("Point4 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[3]);
+			break;
+		case 11:
+			m_fTranslateSpeed = 0;
+			ImGui::InputFloat3("Direction range (min)##Movement", m_fEndPositionOffset_Min);
+			ImGui::InputFloat3("Direction range (max)##Movement", m_fEndPositionOffset_Max);
 
 			ImGui::Text("Speed");
 			ImGui::RadioButton("Curve##MoveSpeed", &m_iSpeedType, 0);
