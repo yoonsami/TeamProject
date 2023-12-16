@@ -211,6 +211,9 @@ void UiSettingController::Create_Setting_Ui()
     if (true == m_bIsCreated)
         return;
 
+    if (false == g_bIsCanRotation)
+        return;
+
     g_bIsCanRotation = false;
     m_bIsCreated = true;
 

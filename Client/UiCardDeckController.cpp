@@ -210,6 +210,9 @@ void UiCardDeckController::Create_Card_Deck()
     if (true == m_bIsCreated)
         return;
 
+    if (false == g_bIsCanRotation)
+        return;
+
     g_bIsCanRotation = false;
 
     m_bIsCreated = true;

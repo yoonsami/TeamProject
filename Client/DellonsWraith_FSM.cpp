@@ -54,6 +54,10 @@ HRESULT DellonsWraith_FSM::Init()
         m_bInitialize = true;
     }
 
+    m_fSwingVolume = 0.3f;
+    m_fEffectVolume = 0.2f;
+    m_fMySoundDistance = 10.f;
+
     return S_OK;
 }
 
@@ -200,49 +204,52 @@ void DellonsWraith_FSM::Set_State(_uint iIndex)
 
 void DellonsWraith_FSM::FX_DellonsWraith_skill_30010()
 {
-    if (m_iCurFrame == 42)
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (m_iCurFrame == 50)
-        AttackCollider_Off();
-    else if (m_iCurFrame == 54)
+    if (Init_CurFrame(42))
     {
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 0.5f;
-            desc.fLimitDistance = 0.f;
+        SOUND.Play_Sound(L"swing_axe_02_gigan", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-            
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-                Get_Transform()->Get_State(Transform_State::RIGHT) * -4.f +
-                Get_Transform()->Get_State(Transform_State::LOOK) * 3.f +
-                _float3::Up;
-
-            Create_ForwardMovingSkillCollider(Player_Skill, L"Wraith_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
-           
-            vSkillPos = vSkillPos + Get_Transform()->Get_State(Transform_State::LOOK) +
-                                    Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
-
-            Create_ForwardMovingSkillCollider(Player_Skill, L"Wraith_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
-            
-            vSkillPos = vSkillPos + Get_Transform()->Get_State(Transform_State::LOOK) +
-                                    Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
-
-            Create_ForwardMovingSkillCollider(Player_Skill, L"Wraith_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
-
-            vSkillPos = vSkillPos - Get_Transform()->Get_State(Transform_State::LOOK) +
-                                    Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
-
-            Create_ForwardMovingSkillCollider(Player_Skill, L"Wraith_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
-
-            vSkillPos = vSkillPos - Get_Transform()->Get_State(Transform_State::LOOK) +
-                                    Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
-
-            Create_ForwardMovingSkillCollider(Player_Skill, L"Wraith_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
-        }
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     }
+    else if (Init_CurFrame(50))
+        AttackCollider_Off();
+    else if (Init_CurFrame(54))
+    {
+        FORWARDMOVINGSKILLDESC desc;
+        desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+        desc.fMoveSpeed = 0.f;
+        desc.fLifeTime = 0.5f;
+        desc.fLimitDistance = 0.f;
+
+        
+        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+            Get_Transform()->Get_State(Transform_State::RIGHT) * -4.f +
+            Get_Transform()->Get_State(Transform_State::LOOK) * 3.f +
+            _float3::Up;
+
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Wraith_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
+        
+        vSkillPos = vSkillPos + Get_Transform()->Get_State(Transform_State::LOOK) +
+                                Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
+
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Wraith_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
+        
+        vSkillPos = vSkillPos + Get_Transform()->Get_State(Transform_State::LOOK) +
+                                Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
+
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Wraith_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
+
+        vSkillPos = vSkillPos - Get_Transform()->Get_State(Transform_State::LOOK) +
+                                Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
+
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Wraith_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
+
+        vSkillPos = vSkillPos - Get_Transform()->Get_State(Transform_State::LOOK) +
+                                Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
+
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Wraith_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);   
+    }
+    else if (Init_CurFrame(65))
+        SOUND.Play_Sound(L"hit_explosive", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     if (Is_AnimFinished())
     {
@@ -259,6 +266,8 @@ void DellonsWraith_FSM::FX_DellonsWraith_skill_30010_Init()
 
     if (!m_pTarget.expired())
         Get_Transform()->Set_WorldMat(m_pTarget.lock()->Get_Transform()->Get_WorldMatrix());
+
+    SOUND.Play_Sound(L"skill_dark_slash", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 void DellonsWraith_FSM::FX_DellonsWraith_skill_400100()
@@ -416,14 +425,9 @@ void DellonsWraith_FSM::FX_Mn_Dellons_skill_5100()
         EVENTMGR.Delete_Object(m_pAttackCollider.lock());
         EVENTMGR.Delete_Object(m_pOwner.lock());
     }
+
+
     
-    //if (m_iCurFrame == 80)
-    //    AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
-    //else if (m_iCurFrame == 94)
-    //{
-    //    CUR_SCENE->Remove_GameObject(m_pAttackCollider.lock());
-    //    CUR_SCENE->Remove_GameObject(m_pOwner.lock());
-    //}
 }
 
 void DellonsWraith_FSM::FX_Mn_Dellons_skill_5100_Init()
@@ -434,6 +438,8 @@ void DellonsWraith_FSM::FX_Mn_Dellons_skill_5100_Init()
 
     if (!m_pTarget.expired())
         Get_Transform()->Set_WorldMat(m_pTarget.lock()->Get_Transform()->Get_WorldMatrix());
+
+    SOUND.Play_Sound(L"Hit_Scythe_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 

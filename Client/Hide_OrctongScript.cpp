@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Hide_OrctongScript.h"
 #include "Camera.h"
 #include <MathUtils.h>
@@ -65,14 +65,14 @@ void Hide_OrctongScript::Tick()
 			{
 				auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
 				if (pObj)
-					pObj->Get_Script<UiMessageCreater>()->Create_Message(L"¿©±â´Â ¾Æ´Ñ °Í °°´Ù");
+					pObj->Get_Script<UiMessageCreater>()->Create_Message(L"ì´ ê³³ì€ ì•„ë‹Œ ê²ƒ ê°™ë‹¤");
 			}
 			break;
 			case 2:
 			{
 				auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
 				if (pObj)
-					pObj->Get_Script<UiMessageCreater>()->Create_Message(L"¿©±âµµ ¾Æ´Ñ °Í °°´Ù");
+					pObj->Get_Script<UiMessageCreater>()->Create_Message(L"ë‹¤ë¥¸ ê³³ì„ ì°¾ì•„ë³´ìž");
 			}
 			break;
 
@@ -80,7 +80,7 @@ void Hide_OrctongScript::Tick()
 			{
 				auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
 				if (pObj)
-					pObj->Get_Script<UiMessageCreater>()->Create_Message(L"´Ù¸¥ °÷À» Ã£¾Æº¸ÀÚ");
+					pObj->Get_Script<UiMessageCreater>()->Create_Message(L"ì—¬ê¸°ëŠ” ì•„ë‹Œ ê²ƒ ê°™ë‹¤");
 			}
 			break;
 			}

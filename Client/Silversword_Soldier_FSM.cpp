@@ -857,6 +857,8 @@ void Silversword_Soldier_FSM::skill_1100()
         if (!m_pTarget.expired())
             Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
     }
+    else if (Init_CurFrame(22))
+        Add_And_Set_Effect(L"Silversword_Soldier_1100");
     else if (m_iCurFrame == 22)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (m_iCurFrame == 26)
@@ -903,6 +905,8 @@ void Silversword_Soldier_FSM::skill_2100()
             Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
     }
     //NORMAL ATTACK
+	else if (Init_CurFrame(27))
+		Add_And_Set_Effect(L"Silversword_Soldier_2100");
     else if (m_iCurFrame == 17)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (m_iCurFrame == 20)
@@ -951,6 +955,8 @@ void Silversword_Soldier_FSM::skill_3100()
         if (!m_pTarget.expired())
             Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
     }
+	else if (Init_CurFrame(28))
+		Add_And_Set_Effect(L"Silversword_Soldier_3100");
     else if (m_iCurFrame == 28)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (m_iCurFrame == 34)

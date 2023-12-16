@@ -9,6 +9,31 @@ float3 fresnelSchlick(float cosTheta, float3 F0)
     return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
+float3 fresnelSchlick(float3 F0, float cosTheta)
+{
+    return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
+}
+
+float ndfGGX(float cosLh, float roughness)
+{
+    float alpha = roughness * roughness;
+    float alphaSq = alpha * alpha;
+
+    float denom = (cosLh * cosLh) * (alphaSq - 1.0) + 1.0;
+    return alphaSq / (PI * denom * denom);
+}
+
+float gaSchlickG1(float cosTheta, float k)
+{
+    return cosTheta / (cosTheta * (1.0 - k) + k);
+}
+
+float gaSchlickGGX(float cosLi, float cosLo, float roughness)
+{
+    float r = roughness + 1.0;
+    float k = (r * r) / 8.0; // Epic suggests using this roughness remapping for analytic lights.
+    return gaSchlickG1(cosLi, k) * gaSchlickG1(cosLo, k);
+}
 float3 FresnelSchlickRoughness(float cosTheta, float3 F0, float roughness)
 {
     return F0 + (max(float3(1.0 - roughness, 1.0 - roughness, 1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
@@ -189,9 +214,12 @@ PBR_OUT PBRShade(
        //DIRECTIONAL_LIGHT
     if (lights[lightIndex].lightType == 0)
     {
+        float3 hsv = RGBtoHSV(diffuse);
+        float3 rgb = HSVtoRGB(hsv);
+        
         viewLightDir = normalize(mul(float4(lights[lightIndex].vDirection.xyz, 0.f), V).xyz);
-        diffuse = saturate(diffuse * shadowAmount);
-        specular = saturate(specular * shadowAmount);
+        diffuse = (diffuse * shadowAmount);
+        specular = (specular * shadowAmount);
     }
     //POINT_LIGHT
     else if (lights[lightIndex].lightType == 1)
