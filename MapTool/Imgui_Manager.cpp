@@ -2392,7 +2392,7 @@ void ImGui_Manager::Save_Weeds(weak_ptr<FileUtils> _file)
             // 이름과 월드매트릭스, 풀모델인덱스를 세이브
             _file.lock()->Write<string>(Utils::ToString(Weed->Get_Name()));
             _file.lock()->Write<_float4x4>(Weed->Get_Transform()->Get_WorldMatrix());
-            _file.lock()->Write<_int>(Weed->Get_Script<WeedScript>()->Get_WeedIndex());
+            _file.lock()->Write<_int>(Weed->Get_Script<WeedScript>()->Get_WeedTypeIndex());
             _file.lock()->Write<_float4>(_float4{ Weed->Get_CullPos(), Weed->Get_CullRadius() });
         }
     }
@@ -2474,7 +2474,7 @@ void ImGui_Manager::Delete_WeedRegion()
             {
                 //EVENTMGR.Delete_Object(*WeedIter);
 
-                --m_CountSameWeed[WeedIter->get()->Get_Script<WeedScript>()->Get_WeedIndex()];
+                --m_CountSameWeed[WeedIter->get()->Get_Script<WeedScript>()->Get_WeedTypeIndex()];
                 WeedIter = Weeds.erase(WeedIter);
                 continue;
             }
@@ -2570,7 +2570,7 @@ void ImGui_Manager::Create_Weed(_float3 _CreatePos)
 
     shared_ptr<WeedScript> WeedSc = make_shared<WeedScript>();
     // 모델번호 인덱스 저장
-    WeedSc->Set_WeedIndex(m_iCurrentWeedIndex);
+    WeedSc->Set_WeedTypeIndex(m_iCurrentWeedIndex);
     // 같은종류 중복풀떼기 개수변경
     ++m_CountSameWeed[m_iCurrentWeedIndex];
     WeedObj->Add_Component(WeedSc);
@@ -2582,13 +2582,14 @@ void ImGui_Manager::Create_Weed(_float3 _CreatePos)
     WeedObj->Set_FrustumCulled(true);
 
     // 해당하는 풀을 그룹에 넣기.
-    _int WeedIndex = (_int)FinalCreatePos.x / 16 + (_int)FinalCreatePos.z / 16 * 16;
-    if (m_WeedGroups[WeedIndex].expired())
+    _int iWeedGroupIndex = (_int)FinalCreatePos.x / 16 + (_int)FinalCreatePos.z / 16 * 16;
+    if (m_WeedGroups[iWeedGroupIndex].expired())
     {
         MSG_BOX("NoWeedGroups");
         return;
     }
-    m_WeedGroups[WeedIndex].lock()->Get_WeedGroup()->Push_Weed(WeedObj);
+    m_WeedGroups[iWeedGroupIndex].lock()->Get_WeedGroup()->Push_Weed(WeedObj);
+    WeedObj->Get_Script<WeedScript>()->Set_WeedGroupIndex(iWeedGroupIndex);
 }
 
 HRESULT ImGui_Manager::Create_Weed(wstring _strWeedName, _float4x4 _matWorld, _int _iWeedIndex, _float4 _CullData)
@@ -2616,7 +2617,7 @@ HRESULT ImGui_Manager::Create_Weed(wstring _strWeedName, _float4x4 _matWorld, _i
 
     shared_ptr<WeedScript> WeedSc = make_shared<WeedScript>();
     // 모델번호 인덱스 저장
-    WeedSc->Set_WeedIndex(_iWeedIndex);
+    WeedSc->Set_WeedTypeIndex(_iWeedIndex);
     // 같은종류 중복풀떼기 개수변경
     ++m_CountSameWeed[_iWeedIndex];
     WeedObj->Add_Component(WeedSc);
@@ -2628,13 +2629,14 @@ HRESULT ImGui_Manager::Create_Weed(wstring _strWeedName, _float4x4 _matWorld, _i
 
     _float3 CreatePos = _float3{ WeedObj->Get_Transform()->Get_State(Transform_State::POS) };
     // 해당하는 풀을 그룹에 넣기.
-    _int WeedIndex = (_int)CreatePos.x / 16 + (_int)CreatePos.z / 16 * 16;
-    if (m_WeedGroups[WeedIndex].expired())
+    _int iWeedGroupIndex = (_int)CreatePos.x / 16 + (_int)CreatePos.z / 16 * 16;
+    if (m_WeedGroups[iWeedGroupIndex].expired())
     {
         MSG_BOX("NoWeedGroups");
         return E_FAIL;
     }
-    m_WeedGroups[WeedIndex].lock()->Get_WeedGroup()->Push_Weed(WeedObj);
+    m_WeedGroups[iWeedGroupIndex].lock()->Get_WeedGroup()->Push_Weed(WeedObj);
+    WeedObj->Get_Script<WeedScript>()->Set_WeedGroupIndex(iWeedGroupIndex);
 
     return S_OK;
 }

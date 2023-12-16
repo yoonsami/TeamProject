@@ -15,8 +15,12 @@ public:
 
 public:
     virtual void Tick() override;
+   
+    void Set_GroupIndex(_int _iGroupIndex) { m_iGroupIndex = _iGroupIndex; }
+
     virtual vector<shared_ptr<GameObject>>& Get_Weeds() { return m_Weeds; }
     _float4 Get_RenderParams() { return _float4(m_Wind.x, m_Wind.y, m_Wind.z, m_fWindWeight); }
+    _int Get_GroupIndex() { return m_iGroupIndex; }
 
 private:
     vector<shared_ptr<GameObject>> m_Weeds;
@@ -31,6 +35,8 @@ private:
     _float m_fWindSpeed = { Utils::Random_In_Range(0.9f, 1.1f) };
     // 풀의 모델번호
     _int m_iWeedIndex = 0;
+    _int m_iGroupIndex = 0;
+
 };
 
 
