@@ -95,3 +95,8 @@ void UiDamageMove::Change_Alpha()
     _float fAlpha = 1.f - m_fCheckTime * m_fRatio;
     m_pOwner.lock()->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0].w = fAlpha;
 }
+
+void UiDamageMove::Change_Faram()
+{
+
+}

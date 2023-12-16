@@ -20,6 +20,8 @@ private:
 
     void Change_Alpha();
 
+    void Change_Faram();
+
 private:
     weak_ptr<GameObject>    m_pCamera;
     weak_ptr<GameObject>    m_pTarget;
