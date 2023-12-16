@@ -1034,7 +1034,7 @@ void Succubus_Scythe_FSM::skill_1400()
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
         desc.fMoveSpeed = 20.f;
         desc.fLifeTime = 0.5f;
-        desc.fLimitDistance = 12.f;
+        desc.fLimitDistance = 10.f;
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
         Create_ForwardMovingSkillCollider(Monster_Skill, L"Succubus_Scythe_SkillCollider", vSkillPos, 1.5f, desc, NORMAL_SKILL, 10.f);
