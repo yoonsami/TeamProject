@@ -49,8 +49,17 @@ HRESULT Shane_FSM::Init()
 	m_fNormalAttack_AnimationSpeed = 1.0f;
 	m_fSkillAttack_AnimationSpeed = 1.0f;
 	m_fEvade_AnimationSpeed = 1.5f;
+
+    m_fVoiceVolume = 0.3f;
+    m_fSwingVolume = 0.3f;
+    m_fFootStepVolume = 0.2f;
+    m_fEffectVolume = 0.2f;
+
+    m_fMySoundDistance = 100.f;
+
 	if (!m_pAttackCollider.expired())
 		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(m_eElementType);
+
     return S_OK;
 }
 
@@ -312,9 +321,11 @@ void Shane_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Gam
 			else
 				m_eCurState = STATE::hit;
 
+            wstring strSoundTag = L"v0_shane_g_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.1f);
-
-
 		}
 	}
 	else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
@@ -328,8 +339,11 @@ void Shane_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Gam
 			else
 				m_eCurState = STATE::knock_start;
 
-			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.2f);
+            wstring strSoundTag = L"v0_shane_g_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.2f);
 		}
 	}
 	else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
@@ -343,8 +357,11 @@ void Shane_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Gam
 			else
 				m_eCurState = STATE::knockdown_start;
 
-			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.3f);
+            wstring strSoundTag = L"v0_shane_g_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.3f);
 		}
 	}
 	else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
@@ -358,8 +375,11 @@ void Shane_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Gam
 			else
 				m_eCurState = STATE::airborne_start;
 
-			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.3f);
+            wstring strSoundTag = L"v0_shane_g_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.3f);
 		}
 	}
 	else
@@ -405,6 +425,11 @@ void Shane_FSM::b_idle_Init()
 
 void Shane_FSM::b_run_start()
 {
+    if (Init_CurFrame(7))
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(20))
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     Get_Transform()->Go_Straight();
 
     _float3 vInputVector = Get_InputDirVector();
@@ -450,6 +475,11 @@ void Shane_FSM::b_run_start_Init()
 
 void Shane_FSM::b_run()
 {
+    if (Init_CurFrame(10))
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(20))
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     Get_Transform()->Go_Straight();
 
     _float3 vInputVector = Get_InputDirVector();
@@ -508,6 +538,11 @@ void Shane_FSM::b_run_Init()
 
 void Shane_FSM::b_run_end_r()
 {
+    if (Init_CurFrame(3))
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(8))
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     _float3 vInputVector = Get_InputDirVector();
 
     if (vInputVector != _float3(0.f))
@@ -542,6 +577,11 @@ void Shane_FSM::b_run_end_r_Init()
 
 void Shane_FSM::b_run_end_l()
 {
+    if (Init_CurFrame(3))
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(7))
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     _float3 vInputVector = Get_InputDirVector();
 
     if (vInputVector != _float3(0.f))
@@ -576,6 +616,12 @@ void Shane_FSM::b_run_end_l_Init()
 
 void Shane_FSM::b_sprint()
 {
+    if (Init_CurFrame(7))
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(14))
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+
     Get_Transform()->Go_Straight();
 
     _float3 vInputVector = Get_InputDirVector();
@@ -890,20 +936,24 @@ void Shane_FSM::knockdown_end_Init()
 
 void Shane_FSM::skill_1100()
 {
-    if (m_iCurFrame == 4)
+    if (Init_CurFrame(4))
 	{
+        SOUND.Play_Sound(L"swing_short_sword_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         Add_And_Set_Effect(L"Shane_1100");
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
 		Set_ColliderOption(DARK, L"Hit_Slash_RedBlack");
 	}
-    else if (m_iCurFrame == 7)
+    else if (Init_CurFrame(7))
         AttackCollider_Off();
-    else if (m_iCurFrame == 10)
+    else if (Init_CurFrame(10))
 	{
+        SOUND.Play_Sound(L"swing_short_sword_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
 		Set_ColliderOption(DARK, L"Hit_Slash_RedBlack");
 	}
-    else if (m_iCurFrame == 13)
+    else if (Init_CurFrame(13))
         AttackCollider_Off();
 
     Look_DirToTarget();
@@ -937,6 +987,7 @@ void Shane_FSM::skill_1100_Init()
 	if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
+    SOUND.Play_Sound(L"shane_att_vo_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
@@ -946,20 +997,24 @@ void Shane_FSM::skill_1100_Init()
 
 void Shane_FSM::skill_1200()
 {
-    if (m_iCurFrame == 12)
+    if (Init_CurFrame(12))
     {
+        SOUND.Play_Sound(L"swing_short_sword_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         Add_And_Set_Effect(L"Shane_1200_1");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
         Set_ColliderOption(DARK, L"Hit_Slash_RedBlack");
     }
-    else if (m_iCurFrame == 15)
+    else if (Init_CurFrame(15))
         AttackCollider_Off();
-    else if (m_iCurFrame == 18)
+    else if (Init_CurFrame(18))
     {
+        SOUND.Play_Sound(L"swing_short_sword_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         Set_ColliderOption(DARK, L"Hit_Slash_RedBlack");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     }
-    else if (m_iCurFrame == 22)
+    else if (Init_CurFrame(22))
         AttackCollider_Off();
 
 
@@ -998,6 +1053,8 @@ void Shane_FSM::skill_1200_Init()
 
     m_bCanCombo = false;
 
+    SOUND.Play_Sound(L"shane_att_vo_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     Set_DirToTargetOrInput(OBJ_MONSTER);
     AttackCollider_Off();
 
@@ -1007,20 +1064,24 @@ void Shane_FSM::skill_1200_Init()
 
 void Shane_FSM::skill_1300()
 {
-    if (m_iCurFrame == 11)
+    if (Init_CurFrame(11))
 	{
+        SOUND.Play_Sound(L"swing_short_sword_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         Add_And_Set_Effect(L"Shane_1300");
 		Set_ColliderOption(DARK, L"Hit_Slash_RedBlack");
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
 	}
-    else if (m_iCurFrame == 14)
+    else if (Init_CurFrame(14))
         AttackCollider_Off();
-    else if (m_iCurFrame == 24)
+    else if (Init_CurFrame(24))
 	{
+        SOUND.Play_Sound(L"swing_short_sword_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		Set_ColliderOption(DARK, L"Hit_Slash_RedBlack");
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
 	}
-    else if (m_iCurFrame == 28)
+    else if (Init_CurFrame(28))
         AttackCollider_Off();
 
     Look_DirToTarget();
@@ -1060,6 +1121,8 @@ void Shane_FSM::skill_1300_Init()
 
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
+    SOUND.Play_Sound(L"shane_att_vo_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     AttackCollider_Off();
 
     m_bInvincible = false;
@@ -1068,20 +1131,26 @@ void Shane_FSM::skill_1300_Init()
 
 void Shane_FSM::skill_1400()
 {
-    if (m_iCurFrame == 4)
+    if (Init_CurFrame(4))
 	{
+        SOUND.Play_Sound(L"swing_short_sword_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         Add_And_Set_Effect(L"Shane_1400");
 		Set_ColliderOption(DARK, L"Hit_Slash_RedBlack");
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
 	}
-    else if (m_iCurFrame == 7)
+    else if (Init_CurFrame(7))
         AttackCollider_Off();
-    else if (m_iCurFrame == 22)
+    else if (Init_CurFrame(20))
+        SOUND.Play_Sound(L"shane_att_vo_06", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(22))
 	{
+        SOUND.Play_Sound(L"swing_short_sword_04_st", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		Set_ColliderOption(DARK, L"Hit_Slash_RedBlack");
 		AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
 	}
-    else if (m_iCurFrame == 27)
+    else if (Init_CurFrame(27))
         AttackCollider_Off();
 
     Look_DirToTarget();
@@ -1115,6 +1184,8 @@ void Shane_FSM::skill_1400_Init()
 	}
 
     m_bCanCombo = false;
+
+    SOUND.Play_Sound(L"shane_att_vo_05", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
@@ -1199,7 +1270,12 @@ void Shane_FSM::skill_100100()
         Get_Owner()->Get_Animator()->Set_RenderState(true);
         m_pWeapon.lock()->Get_ModelRenderer()->Set_RenderState(true);
     }
-    if (Init_CurFrame(20))
+
+    if (Init_CurFrame(11))
+    {
+        SOUND.Play_Sound(L"swing_short_sword_04", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
+    else if (Init_CurFrame(20))
     {
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1240,6 +1316,8 @@ void Shane_FSM::skill_100100_Init()
 
     AttackCollider_Off();
 
+    SOUND.Play_Sound(L"v0_shane_sk_07", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_bInvincible = false;
     m_bSuperArmor = true;
 }
@@ -1248,6 +1326,8 @@ void Shane_FSM::skill_100200()
 {
     if (Init_CurFrame(5))
     {
+        SOUND.Play_Sound(L"swing_short_sword_04", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.fMoveSpeed = 0.f;
