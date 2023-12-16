@@ -44,7 +44,7 @@ private: // 초기화관련
 	// 물 생성
 	void Load_Water();
 	// 풀이름 초기화
-	void Load_WeedNames();
+	void Init_WeedSetting();
 #pragma endregion
 
 #pragma region 맵오브젝트관련
@@ -70,9 +70,11 @@ private: // 맵오브젝트관련
 	shared_ptr<GameObject> Create_MapObject(MapObjectScript::MapObjectDesc _CreateDesc);
 	// 맵오브젝트 제거
 	HRESULT Delete_MapObject();
-	// 맵오브젝트 옵션
-		// 맵오브젝트를 받아와서 컬링포지션과 길이를 계산하여 반영, 컬링포지션과 길이를 float4로 반환
+// 맵오브젝트 옵션
+	// 맵오브젝트를 받아와서 컬링포지션과 길이를 계산하여 반영, 컬링포지션과 길이를 float4로 반환
 	_float4 Compute_CullingData(shared_ptr<GameObject>& _pGameObject);
+	// 맵오브젝트를 받아와서 컬링포지션과 길이를 계산하여 반영, 컬링포지션과 길이를 float4로 반환
+	_float4 Compute_CullingData(weak_ptr<GameObject>& _pGameObject);
 	// 맵오브젝트들의 그림자, 블러, 컬링계산
 	void Bake(shared_ptr<GameObject>& _pGameObject);
 	void BakeAll();
@@ -222,7 +224,7 @@ private: // 지형, 잔디
 	// 포지션을 입력하면 xz위치에 해당하는 높이와 메시노말방향으로 풀심기
 	void Create_Weed(_float3 _CreatePos);
 	// 풀의 월드행렬을 입력하면 그걸 기반으로 풀을 만듦.
-	HRESULT Create_Weed(wstring _strWeedName, _float4x4 _matWorld, _int _iWeedIndex, _float4 _CullData);
+	HRESULT Create_Weed(wstring _strWeedName, _float4x4 _matWorld, _int _iWeedIndex);
 
 // 세이브로드
 	// 지형정보 저장.
@@ -262,12 +264,9 @@ private: // 지형, 잔디
 	_int m_iCurrentWeedIndex = { 0 };
 	// 한번에 깔 잔디개수
 	_int m_iWeedCreateCount = { 0 };
-	//// 현재깔려있는풀 이름모음
-	//vector<string> m_strInstalledWeeds;
-	//_int m_iInstalledWeedIndex = { 0 };
-	// 현재깔려있는풀 오브젝트ptr
-	vector<shared_ptr<GameObject>> m_pInstalledWeeds;
 	vector<_uint> m_CountSameWeed;
+	vector<weak_ptr<GameObject>> m_WeedGroups;
+	_float3 m_CreateWeedScale = { 1.f, 1.f, 1.f };
 
 #pragma endregion
 

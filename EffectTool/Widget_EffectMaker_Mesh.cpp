@@ -237,6 +237,8 @@ void Widget_EffectMaker_Mesh::ImGui_SaveMsgBox()
 
 void Widget_EffectMaker_Mesh::ImGui_TextureList()
 {
+	ImGui::Text(m_pszUniversalTextures[*m_iTexture_TextureList]);
+
 	{
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
 		ImGui::BeginChild("##Child1_TextureList", ImVec2(390, 480), false, window_flags);
@@ -342,6 +344,20 @@ void Widget_EffectMaker_Mesh::Option_Property()
 	}
 
 	ImGui::Checkbox("On Fade Out##Property", &m_bUseFadeOut);
+	if (m_bUseFadeOut)
+	{
+		if (ImGui::InputFloat("Fade Out Start Time", &m_fFadeOutStartTime))
+		{
+			if (m_fFadeOutStartTime >= 1.f)
+			{
+				m_bUseFadeOut = false;
+				m_fFadeOutStartTime = 0.f;
+			}
+		}
+	}
+	else
+		m_fFadeOutStartTime = 0.f;
+
 	ImGui::Checkbox("Color Changing On##Property", &m_bColorChangingOn);
 	ImGui::Checkbox("FDistortion##Property", &m_bIsFDistortion);
 	if (ImGui::Checkbox("Decal##Property", &m_bIsSSD))
@@ -436,7 +452,6 @@ void Widget_EffectMaker_Mesh::Option_TextureOp(_int iIndex)
 
 	ImGui::SeparatorText(strSeparatorTag.c_str());
 
-	// For. On/Off Texture Option
 	ImGui::Checkbox(strIsOn.c_str(), &m_TexOption[iIndex].bIsOption_On);
 
 	if (!m_TexOption[iIndex].bIsOption_On)
@@ -1117,6 +1132,7 @@ void Widget_EffectMaker_Mesh::Create()
 				m_bLightOn,
 				m_fLightIntensity,
 				m_bUseFadeOut,
+					m_fFadeOutStartTime,
 				m_iMeshCnt,
 				m_fCreateInterval,
 				_float2(m_fParticleDuration),
@@ -1337,7 +1353,7 @@ void Widget_EffectMaker_Mesh::Save()
 			(_float)m_bIsLoop, (_float)m_bIsFollowGroup_OnlyTranslate, (_float)m_bIsFollowGroup_LookSameDir, (_float)m_iScaleSpeedType,
 			m_vCurvePoint_Scale[0].x, m_vCurvePoint_Scale[0].y, m_vCurvePoint_Scale[1].x, m_vCurvePoint_Scale[1].y,
 			m_vCurvePoint_Scale[2].x, m_vCurvePoint_Scale[2].y, m_vCurvePoint_Scale[3].x, m_vCurvePoint_Scale[3].y,
-			m_fLightIntensity, (_float)m_bIsFDistortion, (_float)m_bIsSSD, 0.f
+			m_fLightIntensity, (_float)m_bIsFDistortion, (_float)m_bIsSSD, m_fFadeOutStartTime
 		));
 
 
@@ -1443,6 +1459,10 @@ void Widget_EffectMaker_Mesh::Load()
 		m_TexOption[i].fContrast = file->Read<_float>();
 		m_TexOption[i].fAlphaOffset = file->Read<_float>();
 		m_TexOption[i].bUseSolidColor = Equal(m_TexOption[i].vColorBase1, m_TexOption[i].vColorBase2) && Equal(m_TexOption[i].vColorDest1, m_TexOption[i].vColorDest2);	
+	
+		// For. On/Off Texture Option
+		if (m_TexOption[i].Texture.second == "None")
+			m_TexOption[i].bIsOption_On = false;
 	}
 
 	/* Blend */
@@ -1512,6 +1532,7 @@ void Widget_EffectMaker_Mesh::Load()
 	m_fLightIntensity = mTemp._41;
 	m_bIsFDistortion = _bool(mTemp._42);
 	m_bIsSSD = _bool(mTemp._43);
+	m_fFadeOutStartTime = mTemp._44;
 
 	m_iScaleSpeedType = (_int)mTemp._14;
 	m_vCurvePoint_Scale[0] = _float2(mTemp._21, mTemp._22);
@@ -1582,7 +1603,7 @@ void Widget_EffectMaker_Mesh::Load()
 	memcpy(m_fRandomAxis_Max, &vTemp_vec3, sizeof(m_fRandomAxis_Max));
 	for (_int i = 0; i < 2; i++)
 		m_bBillbordAxes[i] = file->Read<_bool>();
-	
+
 	// For. Create Effect GameObjects
 	Create();
 }
@@ -1641,7 +1662,6 @@ void Widget_EffectMaker_Mesh::SubWidget_TextureCombo(_int* iSelected, string* st
 
 void Widget_EffectMaker_Mesh::SubWidget_TextureList()
 {
-	ImGui::Text("Texture List");
 	{
 		ImGui::BeginChild(m_pszWidgetKey_TextureList, ImVec2(ImGui::GetContentRegionAvail().x, 500), false);
 

@@ -36,6 +36,7 @@
 #include "TerrainRenderer.h"
 
 #include "WeedScript.h"
+#include "WeedGroup.h"
 using namespace ImGui;
 
 ImGuizmo::OPERATION m_eGuizmoType = { ImGuizmo::TRANSLATE };
@@ -76,7 +77,7 @@ void ImGui_Manager::ImGui_SetUp()
     Load_MapObjectBase();
     Load_TerrainTile();
     Load_Water();
-    Load_WeedNames();
+    Init_WeedSetting();
 
     Create_SampleObjects();
 }
@@ -809,14 +810,6 @@ void ImGui_Manager::Frame_Magic()
     //            break;
     //        ++m_iObjects;
     //    }
-    // 설치되어있는 모든 풀의 CullData계산
-        for (auto& Weed : m_pInstalledWeeds)
-        {
-            _float4 CullData = Compute_CullingData(Weed);
-            Weed->Set_CullPos(_float3{ CullData });
-            Weed->Set_CullRadius(_float{ CullData.w });
-            Weed->Set_FrustumCulled(true);
-        }
     }
 
     // 맵 더미데이터 관리
@@ -917,10 +910,11 @@ void ImGui_Manager::Frame_WeedManager()
         Create_WeedRegion();
     }
     ImGui::SameLine();
-    if (Button("DeleteWeed"))
+    if (KEYTAP(KEY_TYPE::V) || Button("DeleteWeed"))
     {
         Delete_WeedRegion();
     }
+    ImGui::DragFloat3("WeedScale", (_float*)&m_CreateWeedScale, 0.05f);
     ImGui::DragInt("WeedCreateCount", &m_iWeedCreateCount, 1.f);
 
     ImGui::End();
@@ -1996,9 +1990,11 @@ HRESULT ImGui_Manager::Load_MapObject()
     m_strObjectNamePtr.clear();
     m_iObjects = 0;
     // 기존의 풀 모두삭제
-    for (auto& Weed : m_pInstalledWeeds)
-        EVENTMGR.Delete_Object(Weed);
-    m_pInstalledWeeds.clear();
+    for (auto& WeedGroup : m_WeedGroups)
+    {
+        WeedGroup.lock()->Get_WeedGroup()->Get_Weeds().clear();
+    }
+    
     // 같은 풀 종류별 개수 초기화
     m_CountSameWeed.clear();
     m_CountSameWeed.resize(m_strWeedCatalogue.size());
@@ -2235,8 +2231,7 @@ HRESULT ImGui_Manager::Load_MapObject()
             wstring strWeedName = Utils::ToWString(file->Read<string>());
             _float4x4 matWeedWorldMat = file->Read<_float4x4>();
             _int iWeedIndex = file->Read<_int>();
-            _float4 CullData = _float4{ file->Read<_float3>(), file->Read<_float>() };
-            Create_Weed(strWeedName, matWeedWorldMat, iWeedIndex, CullData);
+            Create_Weed(strWeedName, matWeedWorldMat, iWeedIndex);
         }
     }
 
@@ -2372,16 +2367,19 @@ void ImGui_Manager::Save_Weeds(weak_ptr<FileUtils> _file)
         return;
     }
     // 풀 개수 저장
-    _file.lock()->Write<_int>((_int)m_pInstalledWeeds.size());
-    for (auto& WeedObj : m_pInstalledWeeds)
+    _int iNumWeeds = 0;
+    for (auto& WeedGroup : m_WeedGroups)
+        iNumWeeds += (_int)WeedGroup.lock()->Get_WeedGroup()->Get_Weeds().size();
+    _file.lock()->Write<_int>(iNumWeeds);
+    for (auto& WeedGroup : m_WeedGroups)
     {
-        // 이름과 월드매트릭스, 풀모델인덱스를 세이브
-        _file.lock()->Write<string>(Utils::ToString(WeedObj->Get_Name()));
-        _file.lock()->Write<_float4x4>(WeedObj->Get_Transform()->Get_WorldMatrix());
-        _file.lock()->Write<_int>(WeedObj->Get_Script<WeedScript>()->Get_WeedIndex());
-        // 컬링정보 저장
-        _file.lock()->Write<_float3>(WeedObj->Get_CullPos());
-        _file.lock()->Write<_float>(WeedObj->Get_CullRadius());
+        for (auto& Weed : WeedGroup.lock()->Get_WeedGroup()->Get_Weeds())
+        {
+            // 이름과 월드매트릭스, 풀모델인덱스를 세이브
+            _file.lock()->Write<string>(Utils::ToString(Weed->Get_Name()));
+            _file.lock()->Write<_float4x4>(Weed->Get_Transform()->Get_WorldMatrix());
+            _file.lock()->Write<_int>(Weed->Get_Script<WeedScript>()->Get_WeedIndex());
+        }
     }
 }
 
@@ -2441,29 +2439,36 @@ void ImGui_Manager::Create_WeedRegion()
 
 void ImGui_Manager::Delete_WeedRegion()
 {
-    _int iIndexForDebug = -1;
-    auto WeedIter = m_pInstalledWeeds.begin();
-    while (1)
+        _int iWeedGroupIndex = 0;
+    for(auto& WeedGroup : m_WeedGroups)
     {
-        if (WeedIter == m_pInstalledWeeds.end())
-            break;
-
-        ++iIndexForDebug;
-        // 높이는 제외하고 거리비교
-        _float3 WeedPos = _float3{ WeedIter->get()->Get_Transform()->Get_State(Transform_State::POS) };
-        WeedPos.y = m_PickingPos.y;
-        // 브러시범위안에 들어오면 삭제
-        if ((WeedPos - m_PickingPos).Length() <= m_fTerrainBrushRadius)
+        auto& Weeds = WeedGroup.lock()->Get_WeedGroup()->Get_Weeds();
+        auto WeedIter = Weeds.begin();
+        _int iWeedIndex = -1;
+        while (1)
         {
-            EVENTMGR.Delete_Object(*WeedIter);
-            --m_CountSameWeed[WeedIter->get()->Get_Script<WeedScript>()->Get_WeedIndex()];
-            WeedIter = m_pInstalledWeeds.erase(WeedIter);
-            continue;
+            if (WeedIter == Weeds.end())
+                break;
+
+            ++iWeedIndex;
+            // 높이는 제외하고 거리비교
+            _float3 WeedPos = _float3{ WeedIter->get()->Get_Transform()->Get_State(Transform_State::POS) };
+            WeedPos.y = m_PickingPos.y;
+            // 브러시범위안에 들어오면 삭제
+            if ((WeedPos - m_PickingPos).Length() <= m_fTerrainBrushRadius)
+            {
+                //EVENTMGR.Delete_Object(*WeedIter);
+
+                --m_CountSameWeed[WeedIter->get()->Get_Script<WeedScript>()->Get_WeedIndex()];
+                WeedIter = Weeds.erase(WeedIter);
+                continue;
+            }
+            else
+                ++WeedIter;
         }
-        else
-            ++WeedIter;
+        ++iWeedGroupIndex;
+        iWeedIndex = -1;
     }
-    m_iCurrentWeedIndex = 0;
 }
 
 void ImGui_Manager::Create_Weed(_float3 _CreatePos)
@@ -2535,7 +2540,8 @@ void ImGui_Manager::Create_Weed(_float3 _CreatePos)
     
     // 랜덤스케일
     _float fRandomScale = Utils::Random_In_Range(0.95f, 1.05f);
-    WorldMatrix->Scaled(_float3{ fRandomScale, fRandomScale, fRandomScale });
+
+    WorldMatrix->Scaled(m_CreateWeedScale * fRandomScale);
     // 랜덤회전
     _float angle = Utils::Random_In_Range(0.f, 120.f);
     WorldMatrix->Rotation(static_cast<_float3>(WorldMatrix->Get_State(Transform_State::UP)), XMConvertToRadians(angle));
@@ -2555,28 +2561,24 @@ void ImGui_Manager::Create_Weed(_float3 _CreatePos)
     ++m_CountSameWeed[m_iCurrentWeedIndex];
     WeedObj->Add_Component(WeedSc);
 
-    // 컬링관련정보
-    _float4 CullData = Compute_CullingData(WeedObj);
-    WeedObj->Set_CullPos(_float3{CullData});
-    WeedObj->Set_CullRadius(CullData.w);
-    WeedObj->Set_FrustumCulled(true);
-
-    EVENTMGR.Create_Object(WeedObj);
-
-    //m_strInstalledWeeds.push_back(Utils::ToString(WeedName));
-    m_pInstalledWeeds.push_back(WeedObj);
+    // 해당하는 풀을 그룹에 넣기.
+    _int WeedIndex = (_int)FinalCreatePos.x / 16 + (_int)FinalCreatePos.z / 16 * 16;
+    if (m_WeedGroups[WeedIndex].expired())
+    {
+        MSG_BOX("NoWeedGroups");
+        return;
+    }
+    m_WeedGroups[WeedIndex].lock()->Get_WeedGroup()->Push_Weed(WeedObj);
 }
 
-HRESULT ImGui_Manager::Create_Weed(wstring _strWeedName, _float4x4 _matWorld, _int _iWeedIndex, _float4 _CullData)
+HRESULT ImGui_Manager::Create_Weed(wstring _strWeedName, _float4x4 _matWorld, _int _iWeedIndex)
 {
     shared_ptr<Mesh> WeedMesh = RESOURCES.Get<Mesh>(L"Point");
 
     // 풀 오브젝트 생성
     shared_ptr<GameObject> WeedObj = make_shared<GameObject>();
     WeedObj->Set_Name(_strWeedName);
-    WeedObj->GetOrAddTransform();
-
-    WeedObj->GetOrAddTransform() ->Set_WorldMat(_matWorld);
+    WeedObj->GetOrAddTransform()->Set_WorldMat(_matWorld);
 
     // 메시렌더러
     shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Grass.fx"));
@@ -2599,15 +2601,15 @@ HRESULT ImGui_Manager::Create_Weed(wstring _strWeedName, _float4x4 _matWorld, _i
     ++m_CountSameWeed[_iWeedIndex];
     WeedObj->Add_Component(WeedSc);
 
-    // 컬링정보
-    WeedObj->Set_CullPos(_float3{ _CullData });
-    WeedObj->Set_CullRadius( _CullData.w );
-    WeedObj->Set_FrustumCulled(true);
-
-    EVENTMGR.Create_Object(WeedObj);
-
-    //m_strInstalledWeeds.push_back(Utils::ToString(_strWeedName));
-    m_pInstalledWeeds.push_back(WeedObj);
+    _float3 CreatePos = _float3{ WeedObj->Get_Transform()->Get_State(Transform_State::POS) };
+    // 해당하는 풀을 그룹에 넣기.
+    _int WeedIndex = (_int)CreatePos.x / 16 + (_int)CreatePos.z / 16 * 16;
+    if (m_WeedGroups[WeedIndex].expired())
+    {
+        MSG_BOX("NoWeedGroups");
+        return E_FAIL;
+    }
+    m_WeedGroups[WeedIndex].lock()->Get_WeedGroup()->Push_Weed(WeedObj);
 
     return S_OK;
 }
@@ -3289,7 +3291,7 @@ void ImGui_Manager::Load_Water()
     CUR_SCENE->Add_GameObject_Front(obj);
 }
 
-void ImGui_Manager::Load_WeedNames()
+void ImGui_Manager::Init_WeedSetting()
 {
     for (size_t i = 0; i < 8; i++)
     {
@@ -3298,4 +3300,32 @@ void ImGui_Manager::Load_WeedNames()
     }
     // 같은 풀 종류별 개수 초기화
     m_CountSameWeed.resize(m_strWeedCatalogue.size());
+
+    _int Width = 16;
+    _int Height = 16;
+
+    // 풀그룹 생성
+    for(_int j = 0; j< Height; ++j)
+    {
+        for (_int i = 0; i < Width; ++i)
+        {
+            shared_ptr<GameObject> WeedGroupObj = make_shared<GameObject>();
+            wstring WGName = L"WeedGroup" + to_wstring(i + j * Width);
+            WeedGroupObj->Set_Name(WGName);
+            shared_ptr<WeedGroup> tmpWeedGroup = make_shared<WeedGroup>();
+            WeedGroupObj->Add_Component(tmpWeedGroup);
+
+            // 각 칸의 가운데 위치
+            _float3 CenterPos = { (_float)(Width / 2 + Width * i), 0.f, (_float)(Height / 2 + j * Height) };
+            // 왼아래점
+            _float3 LDPos = _float3{ (_float)(Width * i), 0.f, (_float)(Height * j) };
+
+            WeedGroupObj->Set_CullPos(CenterPos);
+            WeedGroupObj->Set_CullRadius((CenterPos - LDPos).Length());
+            WeedGroupObj->Set_FrustumCulled(true);
+
+            EVENTMGR.Create_Object(WeedGroupObj);
+            m_WeedGroups.push_back(WeedGroupObj);
+        }
+    }
 }

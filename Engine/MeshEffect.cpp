@@ -71,6 +71,8 @@ void MeshEffect::MeshEffect_Final_Tick()
     m_fCurrAge += fDT;
     m_fLifeTimeRatio = m_fCurrAge / m_fDuration;
     m_fTimeAcc_SpriteAnimation += fDT;
+    if (m_tDesc.bUseFadeOut && m_fCurrAge > m_fFadeOutStartTime)
+        m_fFadeOutRatio = 1.f - ((m_fCurrAge - m_fFadeOutStartTime) / (m_fDuration - m_fFadeOutStartTime));
 
     // Calc Curr Dissolve weight 
     if ("None" != m_tDesc.strDissolveTexture)
@@ -229,6 +231,7 @@ void MeshEffect::Update_RenderParams()
 void MeshEffect::Update_Desc()
 {
     m_fDuration = MathUtils::Get_RandomFloat(m_tDesc.vParticleDuration.x, m_tDesc.vParticleDuration.y);
+    m_fFadeOutStartTime = m_fDuration * m_tDesc.fFadeOutStartRatio;
 
     Init_RenderParams();
 
@@ -747,7 +750,7 @@ void MeshEffect::Init_RenderParams()
     m_RenderParams.SetFloat(0, m_fCurrAge / m_fDuration);
     m_RenderParams.SetFloat(1, m_fCurrDissolveWeight);
     m_RenderParams.SetFloat(2, m_fCurrRimLightIntensity);
-    m_RenderParams.SetFloat(3, m_tDesc.fLightIntensity);
+    m_RenderParams.SetFloat(3, m_fFadeOutRatio);
 
     /* Float2 */
     vTemp2 = _float2(m_tDesc.fContrast_Op1, m_tDesc.fAlphaOffset_Op1);
@@ -784,10 +787,11 @@ void MeshEffect::Init_RenderParams()
         m_tDesc.vBaseColor_RimLight
     );
     m_RenderParams.SetMatrix(1, vTemp4x4);
+
     vTemp4x4 = _float4x4(
         _float4((_float)m_tDesc.bIsUseTextureColor_Op1, (_float)m_tDesc.bIsUseTextureColor_Op2, (_float)m_tDesc.bIsUseTextureColor_Op3, 0.f),
         _float4((_float)m_tDesc.iFlipOption_Op1, (_float)m_tDesc.iFlipOption_Op2, (_float)m_tDesc.iFlipOption_Op3, m_tDesc.fAlphaOffset_Blend),
-        _float4((_float)m_tDesc.bIsSSD, 0.f, 0.f, 0.f),
+        _float4((_float)m_tDesc.bIsSSD, m_tDesc.fLightIntensity, 0.f, 0.f),
         _float4(0.f, 0.f, 0.f, 0.f)
     );
     m_RenderParams.SetMatrix(2, vTemp4x4);
@@ -860,6 +864,7 @@ void MeshEffect::Bind_RenderParams_ToShader()
     m_RenderParams.SetFloat(0, m_fLifeTimeRatio);    
     m_RenderParams.SetFloat(1, m_fCurrDissolveWeight);
     m_RenderParams.SetFloat(2, m_fCurrRimLightIntensity);
+    m_RenderParams.SetFloat(3, m_fFadeOutRatio);
 
     Bind_UpdatedColor_ToShader();
     Bind_UpdatedTexUVOffset_ToShader();

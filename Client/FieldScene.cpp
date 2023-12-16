@@ -388,6 +388,11 @@ void FieldScene::Load_Terrain()
 			Utils::ChangeExt(TileTexture, L".tga");
 			texture = RESOURCES.GetOrAddTexture(Utils::ToWString(fileName), TileTexture);
 		}
+		if (!texture)
+		{
+			Utils::ChangeExt(TileTexture, L".png");
+			texture = RESOURCES.GetOrAddTexture(Utils::ToWString(fileName), TileTexture);
+		}
 	}
 
 	shared_ptr<Terrain> loadedTerrain = make_shared<Terrain>();

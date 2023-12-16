@@ -923,6 +923,8 @@ void EntSoldier_FSM::skill_1100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
+    if (Init_CurFrame(14))
+        Add_And_Set_Effect(L"EntSoldier_1100_slash");
     if (m_iCurFrame == 14)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (m_iCurFrame == 17)
@@ -949,6 +951,9 @@ void EntSoldier_FSM::skill_2100()
 {
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
+
+	if (Init_CurFrame(14))
+		Add_And_Set_Effect(L"EntSoldier_2100");
 
     if (m_iCurFrame == 14)
         AttackCollider_On(NORMAL_ATTACK, 3.f);

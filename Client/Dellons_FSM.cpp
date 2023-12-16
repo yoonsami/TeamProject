@@ -49,6 +49,14 @@ HRESULT Dellons_FSM::Init()
 	m_fSkillAttack_AnimationSpeed = 1.0f;
 	m_fEvade_AnimationSpeed = 1.5f;
 
+    m_fVoiceVolume = 0.3f;
+    m_fSwingVolume = 0.3f;
+    m_fFootStepVolume = 0.2f;
+    m_fEffectVolume = 0.2f;
+
+    m_fMySoundDistance = 100.f;
+
+
 	if (!m_pAttackCollider.expired())
 		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(m_eElementType);
     return S_OK;
@@ -311,9 +319,11 @@ void Dellons_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<G
 			else
 				m_eCurState = STATE::hit;
 
+            wstring strSoundTag = L"Dellons_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 5 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.1f);
-
-
 		}
 	}
 	else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
@@ -327,8 +337,11 @@ void Dellons_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<G
 			else
 				m_eCurState = STATE::knock_start;
 
-			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.2f);
+            wstring strSoundTag = L"Dellons_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 5 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.2f);
 		}
 	}
 	else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
@@ -342,8 +355,11 @@ void Dellons_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<G
 			else
 				m_eCurState = STATE::knockdown_start;
 
-			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.3f);
+            wstring strSoundTag = L"Dellons_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 5 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.3f);
 		}
 	}
 	else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
@@ -357,8 +373,11 @@ void Dellons_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<G
 			else
 				m_eCurState = STATE::airborne_start;
 
-			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.3f);
+            wstring strSoundTag = L"Dellons_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 5 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.3f);
 		}
 	}
 	else
@@ -406,6 +425,11 @@ void Dellons_FSM::b_idle_Init()
 
 void Dellons_FSM::b_run_start()
 {
+    if (Init_CurFrame(8))
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(18))
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     Get_Transform()->Go_Straight();
 
     _float3 vInputVector = Get_InputDirVector();
@@ -451,6 +475,11 @@ void Dellons_FSM::b_run_start_Init()
 
 void Dellons_FSM::b_run()
 {
+    if (Init_CurFrame(9))
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(18))
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     Get_Transform()->Go_Straight();
 
     _float3 vInputVector = Get_InputDirVector();
@@ -510,6 +539,11 @@ void Dellons_FSM::b_run_Init()
 
 void Dellons_FSM::b_run_end_r()
 {
+    if (Init_CurFrame(6))
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(11))
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     _float3 vInputVector = Get_InputDirVector();
 
     if (vInputVector != _float3(0.f))
@@ -545,6 +579,11 @@ void Dellons_FSM::b_run_end_r_Init()
 
 void Dellons_FSM::b_run_end_l()
 {
+    if (Init_CurFrame(9))
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(11))
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     _float3 vInputVector = Get_InputDirVector();
 
     if (vInputVector != _float3(0.f))
@@ -579,6 +618,11 @@ void Dellons_FSM::b_run_end_l_Init()
 
 void Dellons_FSM::b_sprint()
 {
+    if (Init_CurFrame(6))
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(13))
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     Get_Transform()->Go_Straight();
 
     _float3 vInputVector = Get_InputDirVector();
@@ -891,13 +935,15 @@ void Dellons_FSM::skill_1100()
 
     Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
-    if (m_iCurFrame == 9)
+    if (Init_CurFrame(9))
 	{
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		Set_ColliderOption(DARK, L"Hit_Slash_Dark");
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
 
     }
-    else if (m_iCurFrame == 19)
+    else if (Init_CurFrame(19))
         AttackCollider_Off();
 
 
@@ -931,6 +977,8 @@ void Dellons_FSM::skill_1100_Init()
     if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
 
+    SOUND.Play_Sound(L"Dellons_att_s_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_bCanCombo = false;
 
     Set_DirToTargetOrInput(OBJ_MONSTER);
@@ -946,12 +994,14 @@ void Dellons_FSM::skill_1200()
 
     Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
-    if (m_iCurFrame == 8)
+    if (Init_CurFrame(8))
     {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
         AttackCollider_On(NORMAL_ATTACK,10.f);
     }
-    else if (m_iCurFrame == 18)
+    else if (Init_CurFrame(18))
         AttackCollider_Off();
 
     Look_DirToTarget();
@@ -992,6 +1042,8 @@ void Dellons_FSM::skill_1200_Init()
 
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
+    SOUND.Play_Sound(L"Dellons_att_s_04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     AttackCollider_Off();
 
     m_bInvincible = false;
@@ -1005,12 +1057,14 @@ void Dellons_FSM::skill_1300()
 
     Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
-    if (m_iCurFrame == 8)
+    if (Init_CurFrame(8))
     {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     }
-    else if (m_iCurFrame == 33)
+    else if (Init_CurFrame(33))
         AttackCollider_Off();
 
     Look_DirToTarget();
@@ -1053,6 +1107,8 @@ void Dellons_FSM::skill_1300_Init()
 
     AttackCollider_Off();
 
+    SOUND.Play_Sound(L"Dellons_att_s_05", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_bInvincible = false;
     m_bSuperArmor = false;
 }
@@ -1066,19 +1122,23 @@ void Dellons_FSM::skill_1400()
 
     Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
-    if (m_iCurFrame == 8)
+    if (Init_CurFrame(8))
     {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     }
-    else if (m_iCurFrame == 14)
+    else if (Init_CurFrame(14))
         AttackCollider_Off();
-    else if (m_iCurFrame == 16)
+    else if (Init_CurFrame(16))
     {
+        SOUND.Play_Sound(L"swing_hammer_hk", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
     }
-    else if (m_iCurFrame == 24)
+    else if (Init_CurFrame(24))
         AttackCollider_Off();
 
 
@@ -1115,12 +1175,22 @@ void Dellons_FSM::skill_1400_Init()
 
     AttackCollider_Off();
 
+    SOUND.Play_Sound(L"Dellons_att_l_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_bInvincible = false;
     m_bSuperArmor = false;
 }
 
 void Dellons_FSM::skill_91100()
 {
+    if (Init_CurFrame(0))
+        Add_Effect(L"Dellons_91100");
+    if (Init_CurFrame(17))
+        Add_And_Set_Effect(L"Dellons_91100_End");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
+
     _float3 vInputVector = Get_InputDirVector();
 
     Look_DirToTarget();
@@ -1147,6 +1217,8 @@ void Dellons_FSM::skill_91100_Init()
     m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
+
+    SOUND.Play_Sound(L"Dellons_att_s_06", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_bInvincible = true;
     m_bSuperArmor = false;
@@ -1176,6 +1248,8 @@ void Dellons_FSM::skill_93100_Init()
 
     AttackCollider_Off();
 
+    SOUND.Play_Sound(L"Dellons_att_s_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_bInvincible = true;
     m_bSuperArmor = false;
 }
@@ -1183,7 +1257,11 @@ void Dellons_FSM::skill_93100_Init()
 void Dellons_FSM::skill_100100()
 {
     if (Init_CurFrame(10))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         Add_And_Set_Effect(L"Dellons_100100");
+    }
 
     Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
@@ -1234,6 +1312,8 @@ void Dellons_FSM::skill_100100_Init()
 
     AttackCollider_Off();
 
+    SOUND.Play_Sound(L"Skill_05_A_Dellons_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_bInvincible = false;
     m_bSuperArmor = true;
 }
@@ -1249,6 +1329,8 @@ void Dellons_FSM::skill_100200()
 
     if (Init_CurFrame(15))
     {
+        SOUND.Play_Sound(L"hit_ground_00", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.fMoveSpeed = 0.f;
@@ -1297,12 +1379,14 @@ void Dellons_FSM::skill_200100()
 
     Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
-    if (m_iCurFrame == 7)
+    if (Init_CurFrame(7))
     {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
     }
-    else if (m_iCurFrame == 12)
+    else if (Init_CurFrame(12))
         AttackCollider_Off();
 
     Look_DirToTarget();
@@ -1336,6 +1420,8 @@ void Dellons_FSM::skill_200100_Init()
 
     AttackCollider_Off();
 
+    SOUND.Play_Sound(L"Skill_08_A_Dellons_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_bInvincible = false;
     m_bSuperArmor = true;
 }
@@ -1349,6 +1435,8 @@ void Dellons_FSM::skill_200200()
 
     if (Init_CurFrame(7))
     {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.fMoveSpeed = 0.f;
@@ -1390,6 +1478,13 @@ void Dellons_FSM::skill_200200_Init()
 
 void Dellons_FSM::skill_300100()
 {
+    if (Init_CurFrame(9))
+        Add_Effect(L"Dellons_300100");
+    if (Init_CurFrame(24))
+        Add_Effect(L"Dellons_300100_Wraith");
+    if (Init_CurFrame(57))
+        Add_Effect(L"Dellons_300100_Wraith2");
+
     Look_DirToTarget();
     if (m_iCurFrame >= 10)
     {
@@ -1437,6 +1532,8 @@ void Dellons_FSM::skill_300100_Init()
 
     AttackCollider_Off();
 
+    SOUND.Play_Sound(L"Skill_07_A_Dellons", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_bInvincible = true;
     m_bSuperArmor = true;
 
@@ -1446,13 +1543,72 @@ void Dellons_FSM::skill_300100_Init()
 
 void Dellons_FSM::skill_400100()
 {
+    if (Init_CurFrame(17))
+        Add_And_Set_Effect(L"Dellons_400100_charging");
+    else if (Init_CurFrame(31))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        Add_And_Set_Effect(L"Dellons_400100");
+    }
+    else if (Init_CurFrame(39))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        Add_And_Set_Effect(L"Dellons_400100_2");
+    }
+    else if (Init_CurFrame(50))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        Add_And_Set_Effect(L"Dellons_400100_3");
+    }
+    else if (Init_CurFrame(58))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        Add_And_Set_Effect(L"Dellons_400100_9");
+    }
+    else if (Init_CurFrame(63))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        Add_And_Set_Effect(L"Dellons_400100_4");
+    }
+    else if (Init_CurFrame(73))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        Add_And_Set_Effect(L"Dellons_400100_5");
+    }
+    else if (Init_CurFrame(80))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        Add_And_Set_Effect(L"Dellons_400100_6");
+    }
+    else if (Init_CurFrame(98))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        Add_And_Set_Effect(L"Dellons_400100_7");
+    }
+    else if (Init_CurFrame(99))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        Add_And_Set_Effect(L"Dellons_400100_8");
+    }
+        
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_iCurFrame >= 13)
     {
         if (!m_pCamera.expired())
         {
             _float4 vDestinationPos = (Get_Transform()->Get_State(Transform_State::POS)) +
                 m_vSkillCamRight +
-                (Get_Transform()->Get_State(Transform_State::LOOK) * -3.f)
+                (Get_Transform()->Get_State(Transform_State::LOOK) * -3.f) // -3.f
                 + _float3::Up * 6.f;
             _float4 vDir = vDestinationPos - m_vSkillCamBonePos;
 
@@ -1490,6 +1646,9 @@ void Dellons_FSM::skill_400100()
     }
     else if (Init_CurFrame(99))
     {
+        SOUND.Play_Sound(L"swing_axe_02_gigan", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"Dellons_att_s_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         FORWARDMOVINGSKILLDESC desc;
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
         desc.fMoveSpeed = 20.f;
@@ -1524,16 +1683,20 @@ void Dellons_FSM::skill_400100_Init()
 
     AttackCollider_Off();
 
+    SOUND.Play_Sound(L"Skill_06_A_Dellons_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_bInvincible = true;
     m_bSuperArmor = true;
 
-    Cal_SkillCamDirection(3.f);
+    Cal_SkillCamDirection(3.f); // 3.f
 }
 
 void Dellons_FSM::skill_501100()
 {
     if (Init_CurFrame(4))
     {
+        SOUND.Play_Sound(L"swing_axe_02_gigan", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		Summon_Wraith();
 		Set_WraithState((_uint)DellonsWraith_FSM::STATE::FX_Mn_Dellons_skill_500200);
     }
@@ -1559,6 +1722,8 @@ void Dellons_FSM::skill_501100_Init()
     m_bCanCombo = false;
 
     Set_DirToTargetOrInput(OBJ_MONSTER);
+
+    SOUND.Play_Sound(L"Skill_04_A_Dellons_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     AttackCollider_Off();
 

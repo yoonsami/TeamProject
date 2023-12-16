@@ -8,9 +8,11 @@ class InstancingMgr
 
 public:
 	void Render(vector<shared_ptr<GameObject>>& gameObjects);
+	void Render_Weeds(vector<shared_ptr<GameObject>>& gameObjects);
 
 	void Render_Shadow(vector<shared_ptr<GameObject>>& gameObjects);
 	void Render_MeshEffect(list <weak_ptr<GameObject>>& gameObjects);
+	
 	void Clear_Data();
 	void Add_Data(InstanceID instanceId, InstancingData& data);
 
@@ -25,6 +27,7 @@ private:
 	void Render_Animator(vector<shared_ptr<GameObject>>& gameObjects);
 	void Render_Collider(vector<shared_ptr<GameObject>>& gameObjects);
 
+	
 
 	//RenderShadow
 	void Render_ModelRenderer_Shadow(vector<shared_ptr<GameObject>>& gameObjects);

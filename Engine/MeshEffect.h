@@ -83,6 +83,10 @@ private:
     _bool                           m_bIsPlayFinished = { false };
     _bool                           m_bIsLocked = { false };
 
+    /* Fade Out */
+    _float                          m_fFadeOutStartTime = { 0.f };
+    _float                          m_fFadeOutRatio = { 1.f };
+
     /* Tex UV offset */
     _float2                         m_vCurrTexUVOffset_Op1 = { 0.f, 0.f };
     _float2                         m_vCurrTexUVOffset_Op2 = { 0.f, 0.f };
@@ -135,5 +139,4 @@ private:
 
     /* Render Priority */
     _int                            m_iRenderPriority = { 0 };
-
 };

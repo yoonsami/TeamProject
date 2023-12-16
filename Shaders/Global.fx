@@ -795,16 +795,58 @@ float Rand(float2 co)
     return 0.5 + (frac(sin(dot(co.xy, float2(12.9898, 78.233))) * 43758.5453)) * 0.5;
 }
 
-//float noise(in float3 x)
-//{
-//    float3 p = floor(x);
-//    float3 f = fract(x);
-//    f = f * f * (3.0 - 2.0 * f);
-    
-//    vec2 uv = (p.xy + vec2(37.0, 17.0) * p.z) + f.xy;
-//    vec2 rg = textureLod(iChannel0, (uv + 0.5) / 256.0, 0.).yx;
+float3 RGBtoHSV(float3 rgb)
+{
+    float minComponent = min(min(rgb.r, rgb.g), rgb.b);
+    float maxComponent = max(max(rgb.r, rgb.g), rgb.b);
 
-//    return -1.0 + 2.0 * mix(rg.x, rg.y, f.z);
-//}
+    float delta = maxComponent - minComponent;
+
+    float hue = 0;
+    float saturation = (maxComponent > 0) ? (delta / maxComponent) : 0;
+    float value = maxComponent;
+
+    if (delta > 0)
+    {
+        if (maxComponent == rgb.r)
+            hue = (rgb.g - rgb.b) / delta + ((rgb.g < rgb.b) ? 6 : 0);
+        else if (maxComponent == rgb.g)
+            hue = (rgb.b - rgb.r) / delta + 2;
+        else if (maxComponent == rgb.b)
+            hue = (rgb.r - rgb.g) / delta + 4;
+        
+        hue /= 6;
+    }
+
+    return float3(hue, saturation, value);
+}
+
+float3 HSVtoRGB(float3 hsv)
+{
+    float hue = hsv.r;
+    float saturation = hsv.g;
+    float value = hsv.b;
+
+    float c = value * saturation;
+    float x = c * (1 - abs(frac(hue * 6) * 2 - 1));
+    float m = value - c;
+
+    float3 rgb = 0;
+
+    if (hue < 1 / 6.0)
+        rgb = float3(c, x, 0);
+    else if (hue < 2 / 6.0)
+        rgb = float3(x, c, 0);
+    else if (hue < 3 / 6.0)
+        rgb = float3(0, c, x);
+    else if (hue < 4 / 6.0)
+        rgb = float3(0, x, c);
+    else if (hue < 5 / 6.0)
+        rgb = float3(x, 0, c);
+    else
+        rgb = float3(c, 0, x);
+
+    return rgb + m;
+}
 
 #endif

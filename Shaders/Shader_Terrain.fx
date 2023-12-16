@@ -136,17 +136,17 @@ MeshOutput DS_Main(const OutputPatch<HS_OUT, 3> input, float3 location : SV_Doma
     TextureMap9.GetDimensions(mapWidth, mapHeight);
     
     float2 fullUV = float2(uv.x / (float) tileCountX, uv.y / (float) tileCountZ);
-    float height = TextureMap9.SampleLevel(LinearSampler, fullUV, 0).x;
+    float height = TextureMap9.SampleLevel(LinearSamplerClamp, fullUV, 0).x;
     localPos.y = height * 100.f - 50.f;
     // 높이맵 높이 적용
 
     float2 deltaUV = float2(1.f / mapWidth, 1.f / mapHeight);
     float2 deltaPos = float2(tileCountX * deltaUV.x, tileCountZ * deltaUV.y);
 
-    float upHeight = TextureMap9.SampleLevel(LinearSampler, float2(fullUV.x, fullUV.y - deltaUV.y), 0).x * 100.f - 50.f;
-    float downHeight = TextureMap9.SampleLevel(LinearSampler, float2(fullUV.x, fullUV.y + deltaUV.y), 0).x * 100.f - 50.f;
-    float rightHeight = TextureMap9.SampleLevel(LinearSampler, float2(fullUV.x + deltaUV.x, fullUV.y), 0).x * 100.f - 50.f;
-    float leftHeight = TextureMap9.SampleLevel(LinearSampler, float2(fullUV.x - deltaUV.x, fullUV.y), 0).x * 100.f - 50.f;
+    float upHeight = TextureMap9.SampleLevel(LinearSamplerClamp, float2(fullUV.x, fullUV.y - deltaUV.y), 0).x * 100.f - 50.f;
+    float downHeight = TextureMap9.SampleLevel(LinearSamplerClamp, float2(fullUV.x, fullUV.y + deltaUV.y), 0).x * 100.f - 50.f;
+    float rightHeight = TextureMap9.SampleLevel(LinearSamplerClamp, float2(fullUV.x + deltaUV.x, fullUV.y), 0).x * 100.f - 50.f;
+    float leftHeight = TextureMap9.SampleLevel(LinearSamplerClamp, float2(fullUV.x - deltaUV.x, fullUV.y), 0).x * 100.f - 50.f;
     //localPos.y = (upHeight + downHeight + rightHeight + leftHeight) / 4.f;
 
     float3 localTangent = float3(localPos.x + deltaPos.x, rightHeight, localPos.z) - float3(localPos.x - deltaPos.x, leftHeight, localPos.z);
@@ -230,7 +230,7 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
     output.normal = float4(input.viewNormal.xyz, 0.f);
     output.depth = input.position.z;
     output.depth.w = input.viewPosition.z;
-    float fColor = 14.f / 255.f;
+    float fColor = 18.f / 255.f;
     output.diffuseColor = diffuseColor + float4(-fColor, -fColor, -fColor, 0.f);
     output.specularColor = specularColor;
     output.emissiveColor = emissiveColor;
@@ -353,8 +353,8 @@ PBR_MAPOBJECT_OUTPUT PS_Terrain_PBR(MeshOutput input)
     output.normal = float4(input.viewNormal.xyz, 0.f);
     output.positionSSD = float4(input.viewPosition.xyz, 1.f);
     output.arm = float4(1.f, 0.8f, 0.0f, 1.f);
-    float fColor = 14.f / 255.f;
-    output.diffuseColor = color + float4(-fColor, -fColor, -fColor, 0.f);
+    float fColor = 18.f / 255.f;
+    output.diffuseColor = color + + float4(-fColor, -fColor, -fColor, 0.f);
     output.emissive = 0.f;
     output.rimColor = Material.emissive;
     output.blur = 0;

@@ -13,6 +13,7 @@
 #include "TrailRenderer.h"
 #include "DistortionRenderer.h"
 #include "MotionTrailRenderer.h"
+#include "WeedGroup.h"
 
 Camera::Camera(CameraDesc desc)
 	:Component(COMPONENT_TYPE::Camera)
@@ -88,6 +89,7 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 			&& gameObject->Get_MotionTrailRenderer() == nullptr
 			&& gameObject->Get_FontRenderer() == nullptr
 			&& gameObject->Get_TerrainRenderer() == nullptr
+			&& gameObject->Get_WeedGroup() == nullptr
 			&& ((m_bEffectToolMode_On && gameObject->Get_MeshEffect() == nullptr) ||
 			    (!m_bEffectToolMode_On && gameObject->Get_GroupEffect() == nullptr))
 			)
@@ -135,6 +137,9 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 			m_Decal.push_back(gameObject);
 		else if (!m_bEffectToolMode_On && gameObject->Get_GroupEffect())
 			m_Decal.push_back(gameObject);
+
+		if (gameObject->Get_WeedGroup())
+			m_GroupWeed.push_back(gameObject);
 
 		//if (gameObject->Get_ParticleSystem())
 		//	m_Particle.push_back(gameObject);
@@ -365,6 +370,8 @@ void Camera::Render_Deferred()
 		m_Terrain->Get_TerrainRenderer()->Render();
 
 	INSTANCING.Render(m_Deferred);
+
+	INSTANCING.Render_Weeds(m_GroupWeed);
 }
 
 void Camera::Render_Shadow()

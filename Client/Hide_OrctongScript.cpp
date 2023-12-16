@@ -30,48 +30,64 @@ void Hide_OrctongScript::Tick()
 		return;
 
 
-	if (!KEYPUSH(KEY_TYPE::E))
-		return;
-
-	auto camera = CUR_SCENE->Get_MainCamera()->Get_Camera();
-	
-	if (camera->Get_Frustum().Contain_Sphere(Get_Owner()->Get_CullPos(), Get_Owner()->Get_CullRadius()))
+	if (KEYTAP(KEY_TYPE::E))
 	{
-		auto script = make_shared<ObjectDissolve>(0.3f);
-		Get_Owner()->Add_Component(script);
-		script->Init();
 
-		switch (m_iOrctongIndex)
+
+		auto camera = CUR_SCENE->Get_MainCamera()->Get_Camera();
+
+		if (camera->Get_Frustum().Contain_Sphere(Get_Owner()->Get_CullPos(), Get_Owner()->Get_CullRadius()))
 		{
-		case 0:
-		{
-			auto pObj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
-			if (pObj && pObj->Get_Script<UiQuestController>())
+			auto script = make_shared<ObjectDissolve>(0.3f);
+			Get_Owner()->Add_Component(script);
+			script->Init();
+
+			switch (m_iOrctongIndex)
 			{
-				pObj->Get_Script<UiQuestController>()->Change_Value();
+			case 0:
+			{
+				auto pObj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
+				if (pObj && pObj->Get_Script<UiQuestController>())
+				{
+					pObj->Get_Script<UiQuestController>()->Change_Value();
 
-				auto accessObj = pObj->Get_Script<UiQuestController>()->Get_AccessObject();
+					auto accessObj = pObj->Get_Script<UiQuestController>()->Get_AccessObject();
 
-				accessObj->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) - _float4(0.f, 0.4f, 0.f, 0.f));
-				accessObj->Get_Animator()->Set_RenderState(true);
-				static_pointer_cast<GranseedChildren_FSM>(accessObj->Get_FSM())->Set_State(_int(GranseedChildren_FSM::STATE::Seek));
+					accessObj->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) - _float4(0.f, 0.4f, 0.f, 0.f));
+					accessObj->Get_Animator()->Set_RenderState(true);
+					static_pointer_cast<GranseedChildren_FSM>(accessObj->Get_FSM())->Set_State(_int(GranseedChildren_FSM::STATE::Seek));
 
-				accessObj->Add_Component(make_shared<ObjectDissolveCreate>(1.f));
+					accessObj->Add_Component(make_shared<ObjectDissolveCreate>(1.f));
+				}
 			}
-		}
 			break;
-		default:
-			// Create Horse Balloon
-		{
-			auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
-			if (pObj)
-				pObj->Get_Script<UiMessageCreater>()->Create_Message(L"");
-		}
+			case 1:
+			{
+				auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
+				if (pObj)
+					pObj->Get_Script<UiMessageCreater>()->Create_Message(L"����� �ƴ� �� ����");
+			}
 			break;
+			case 2:
+			{
+				auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
+				if (pObj)
+					pObj->Get_Script<UiMessageCreater>()->Create_Message(L"���⵵ �ƴ� �� ����");
+			}
+			break;
+
+			default:
+			{
+				auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
+				if (pObj)
+					pObj->Get_Script<UiMessageCreater>()->Create_Message(L"�ٸ� ���� ã�ƺ���");
+			}
+			break;
+			}
+
 		}
+
 
 	}
-	
-	
 
 }

@@ -8,6 +8,7 @@ class Light;
 class BaseUI;
 class Camera;
 class Physics;
+class WeedGroup;
 class RigidBody;
 class Transform;
 class Billboard;
@@ -107,6 +108,7 @@ public:
 	shared_ptr<Camera> Get_Camera();
 	//shared_ptr<Physics> Get_Physics();
 	shared_ptr<Particle> Get_Particle();
+	shared_ptr<WeedGroup> Get_WeedGroup();
 	shared_ptr<RigidBody> Get_RigidBody();
 	shared_ptr<Transform> Get_Transform();
 	shared_ptr<MeshEffect> Get_MeshEffect();

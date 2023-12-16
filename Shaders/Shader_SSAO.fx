@@ -103,11 +103,11 @@ float OcclusionFunction(float distZ)
     float occlusion = 0.0f;
     if (distZ > gSurfaceEpsilon)
     {
-        float fadeLength = gOcclusionFadeEnd - gOcclusionFadeStart;
+        float fadeLength = 0.56f - 0.06f;
 
 		// Linearly decrease occlusion from 1 to 0 as distZ goes 
 		// from gOcclusionFadeStart to gOcclusionFadeEnd.	
-        occlusion = saturate((gOcclusionFadeEnd - distZ) / fadeLength);
+        occlusion = saturate((0.56f - distZ) / fadeLength);
     }
 
     return occlusion;
@@ -132,7 +132,7 @@ float4 PS_SSAO(VS_OUT pin, uniform int gSampleCount) : SV_Target
 
         float flip = sign(dot(offset, n));
 
-        float3 q = p + flip * gOcclusionRadius * offset;
+        float3 q = p + flip * 0.05f * offset;
 
         float4 projQ = mul(float4(q, 1.0f), gViewToTexSpace);
         projQ /= projQ.w;

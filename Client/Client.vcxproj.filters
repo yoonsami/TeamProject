@@ -857,15 +857,15 @@
     <ClInclude Include="UIShop.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\24.UiShop\00.UiShop</Filter>
     </ClInclude>
-    <ClInclude Include="Boss_DellonsWraith_FSM.h">
-      <Filter>02.Component\01.FSM\03.Special_FSM\01.Monster_Special_FSM\00.Boss_DellonsWraith_FSM</Filter>
-    </ClInclude>
     <ClInclude Include="Boss_DellonsWraith_FSM.h" />
     <ClInclude Include="PortalScript.h">
       <Filter>02.Component\00.MonoBehaviour\09.FieldScript\PortalScript</Filter>
     </ClInclude>
     <ClInclude Include="EffectGoUp.h">
       <Filter>02.Component\00.MonoBehaviour\07.EffectScript\CreateEffect_Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Boss_DellonsWraith_FSM.h">
+      <Filter>02.Component\01.FSM\03.Special_FSM\01.Monster_Special_FSM\00.Boss_DellonsWraith_FSM</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

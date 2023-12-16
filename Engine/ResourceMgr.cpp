@@ -1404,6 +1404,7 @@ void ResourceMgr::CreateMeshEffectData()
 		tDesc.fLightIntensity = mTemp._41;
 		tDesc.bIsFDistortion = mTemp._42;
 		tDesc.bIsSSD = mTemp._43;
+		tDesc.fFadeOutStartRatio = mTemp._44;
 		tTransformDesc.iScaleSpeedType = _int(mTemp._14);
 		tTransformDesc.vCurvePoint_Scale[0] = _float2(mTemp._21, mTemp._22);
 		tTransformDesc.vCurvePoint_Scale[1] = _float2(mTemp._23, mTemp._24);

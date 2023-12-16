@@ -914,13 +914,16 @@ void Undead_Priest_FSM::skill_1100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
+    if (Init_CurFrame(11))
+        Add_And_Set_Effect(L"Undead_Priest_1100");
+
     if (Init_CurFrame(40))
     {
         FORWARDMOVINGSKILLDESC desc;
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
         desc.fMoveSpeed = 20.f;
         desc.fLifeTime = 1.f;
-        desc.fLimitDistance = 20.f;
+        desc.fLimitDistance = 10.f;
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
         Create_ForwardMovingSkillCollider(Monster_Skill, L"Undead_Priest_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f);
@@ -949,7 +952,10 @@ void Undead_Priest_FSM::skill_2100()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     if (Init_CurFrame(30))
+    {
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+        Add_And_Set_Effect(L"UndeadPriest_2100");
+    }
     else if (Init_CurFrame(34))
         AttackCollider_Off();
     else if (Init_CurFrame(66))
@@ -989,6 +995,9 @@ void Undead_Priest_FSM::skill_3100()
 {
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
+    
+    if (Init_CurFrame(20))
+        Add_And_Set_Effect(L"UndeadPriest_3100");
 
     if (Init_CurFrame(73))
     {
@@ -1002,6 +1011,8 @@ void Undead_Priest_FSM::skill_3100()
 
         if (!m_pTarget.expired())
             vSkillPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float3::Up * 5.f;
+
+        Add_Effect(L"UndeadPriest_3100_Lightning", nullptr, _float4x4::CreateTranslation(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz()),true);
 
         Create_ForwardMovingSkillCollider(Monster_Skill, L"Undead_Priest_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f);
     }

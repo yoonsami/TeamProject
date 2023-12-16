@@ -143,6 +143,9 @@ protected:
 	_float4 m_vOffsets[14];
 	weak_ptr<GameObject> m_pPlayer;
 
+	// WeedGroup
+	vector<weak_ptr<GameObject>> m_WeedGroups;
+
 protected:
 	list<shared_ptr<GameObject>> m_StaticObject;
 
