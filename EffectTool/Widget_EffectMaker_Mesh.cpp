@@ -237,6 +237,8 @@ void Widget_EffectMaker_Mesh::ImGui_SaveMsgBox()
 
 void Widget_EffectMaker_Mesh::ImGui_TextureList()
 {
+	ImGui::Text(m_pszUniversalTextures[*m_iTexture_TextureList]);
+
 	{
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
 		ImGui::BeginChild("##Child1_TextureList", ImVec2(390, 480), false, window_flags);
@@ -1648,7 +1650,7 @@ void Widget_EffectMaker_Mesh::SubWidget_TextureCombo(_int* iSelected, string* st
 
 void Widget_EffectMaker_Mesh::SubWidget_TextureList()
 {
-	ImGui::Text("Texture List");
+	//ImGui::Text("Texture List");
 	{
 		ImGui::BeginChild(m_pszWidgetKey_TextureList, ImVec2(ImGui::GetContentRegionAvail().x, 500), false);
 
