@@ -33,6 +33,27 @@ VS_OUT VS_3D_To_2D(VTXMesh input)
 {
     VS_OUT output;
     
+    float3 viewPos = mul(float4(g_vec4_1.xyz, 1.f), g_mat_0).xyz;
+    float4 projPos = mul(float4(viewPos, 1.f), g_mat_1);
+
+    projPos.xy /= projPos.w;
+
+    float2 screenPos;
+    screenPos.x = (projPos.x + 1.f) * 0.5f * 1920.f;
+    screenPos.y = ((projPos.y * -1.f) + 1.f) * 0.5f * 1080.f;
+
+    screenPos.x -= 1920 * 0.5f;
+    screenPos.y = (screenPos.y * -1.f) + 1080 * 0.5f;
+
+    output.viewPos = mul(float4(screenPos.x, screenPos.y, W._43, 1.f), V);
+    output.uv = input.uv;
+
+    return output;
+}
+
+VS_OUT VS_3D_To_2D_Damage(VTXMesh input)
+{
+    VS_OUT output;
     
     float3 viewPos = mul(float4(g_vec4_1.xyz, 1.f), g_mat_0).xyz;
     float4 projPos = mul(float4(viewPos, 1.f), g_mat_1);
@@ -46,6 +67,8 @@ VS_OUT VS_3D_To_2D(VTXMesh input)
     screenPos.x -= 1920 * 0.5f;
     screenPos.y = (screenPos.y * -1.f) + 1080 * 0.5f;
 
+    screenPos.x -= g_float_1 * 10.f;
+    
     output.viewPos = mul(float4(screenPos.x, screenPos.y, W._43, 1.f), V);
     output.uv = input.uv;
 
@@ -470,7 +493,7 @@ float4 PS_UI4(UIOutput input) : SV_TARGET
     }
 
     if (input.uv.x >= g_float_0 / 100.f)
-        diffuseColor = float4(0.3f, 0.3f, 0.3f, 1.f);
+        discard;
 
     return diffuseColor;
 }
@@ -883,7 +906,7 @@ technique11 T0
 //4
     pass UI_SLIDE_RIGHT
     {
-        SetVertexShader(CompileShader(vs_5_0, VS_Default()));
+        SetVertexShader(CompileShader(vs_5_0, VS_3D_To_2D_Damage()));
         SetRasterizerState(RS_CullNone);
         SetDepthStencilState(DSS_Default, 0);
         SetPixelShader(CompileShader(ps_5_0, PS_UI4()));
