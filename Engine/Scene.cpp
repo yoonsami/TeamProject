@@ -1009,16 +1009,19 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 			for (_int i = 0; i < Width; ++i)
 			{
 				shared_ptr<GameObject> WeedGroupObj = make_shared<GameObject>();
-				wstring WGName = L"WeedGroup" + to_wstring(i + j * Width);
+				_int GroupIndex = i + j * Width;
+				wstring WGName = L"WeedGroup" + to_wstring(GroupIndex);
 				WeedGroupObj->Set_Name(WGName);
 				shared_ptr<WeedGroup> tmpWeedGroup = make_shared<WeedGroup>();
 				WeedGroupObj->Add_Component(tmpWeedGroup);
+				tmpWeedGroup->Set_GroupIndex(GroupIndex);
 
 				// 각 칸의 가운데 위치
 				_float3 CenterPos = { (_float)(Width / 2 + Width * i), 0.f, (_float)(Height / 2 + j * Height) };
 				// 왼아래점
 				_float3 LDPos = _float3{ (_float)(Width * i), 0.f, (_float)(Height * j) };
 
+				// 그룹컬링
 				WeedGroupObj->Set_CullPos(CenterPos);
 				WeedGroupObj->Set_CullRadius((CenterPos - LDPos).Length());
 				WeedGroupObj->Set_FrustumCulled(true);
@@ -1060,7 +1063,7 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 
 			shared_ptr<WeedScript> WeedSc = make_shared<WeedScript>();
 			// 모델번호 인덱스 저장
-			WeedSc->Set_WeedIndex(iWeedIndex);
+			WeedSc->Set_WeedTypeIndex(iWeedIndex);
 			WeedObj->Add_Component(WeedSc);
 
 			// 컬링
@@ -1070,13 +1073,14 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 
 			_float3 CreatePos = _float3{ WeedObj->Get_Transform()->Get_State(Transform_State::POS) };
 			// 해당하는 풀을 그룹에 넣기.
-			_int WeedIndex = (_int)CreatePos.x / 16 + (_int)CreatePos.z / 16 * 16;
-			if (m_WeedGroups[WeedIndex].expired())
+			_int iWeedGroupIndex = (_int)CreatePos.x / 16 + (_int)CreatePos.z / 16 * 16;
+			if (m_WeedGroups[iWeedGroupIndex].expired())
 			{
 				MSG_BOX("NoWeedGroups");
 				return;
 			}
-			m_WeedGroups[WeedIndex].lock()->Get_WeedGroup()->Push_Weed(WeedObj);
+			m_WeedGroups[iWeedGroupIndex].lock()->Get_WeedGroup()->Push_Weed(WeedObj);
+			WeedObj->Get_Script<WeedScript>()->Set_WeedGroupIndex(iWeedGroupIndex);
 			//Add_GameObject(WeedObj);
 		}
 	}
