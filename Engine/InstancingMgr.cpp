@@ -56,7 +56,7 @@ void InstancingMgr::Render_Weeds(vector<shared_ptr<GameObject>>& groups)
 			continue;
 
 
-		if (_float3::Transform(gameObject->Get_CullPos(), Camera::Get_View()).LengthSquared() > 50.f * 50.f)
+		if (_float3::Transform(gameObject->Get_CullPos(), Camera::Get_View()).LengthSquared() > 60.f * 60.f)
 			continue;
 
 		if (gameObject->Get_Instancing())

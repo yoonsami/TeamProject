@@ -1,6 +1,24 @@
 #include "Render.fx"
 #include "Light.fx"
 #include "PBR.fx"
+
+
+float ComputeResult(float3 position)
+{
+    float threshold = 50.0;
+    float maxLength = 60.0;
+
+    float lengthValue = length(position);
+
+    // 1이 되도록 하는 조건
+    float result = smoothstep(threshold, maxLength, lengthValue);
+
+    // 40보다 작을 때 0으로 만드는 조건
+    result = result * step(threshold, lengthValue);
+
+    return result;
+}
+
 MeshOutput VS_Grass(VTXMesh input)
 {
     MeshOutput output;
@@ -258,7 +276,9 @@ PS_OUT_Deferred PS_Deferred(GS_GRASS_OUTPUT input)
     float2 distortedUV = input.uv;
     
     if (bHasDissolveMap != 0)
-    {
+    {       
+        
+        
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
         if (dissolve < g_vec4_0.w)
             discard;
@@ -380,8 +400,11 @@ PBR_OUTPUT PS_PBR_Deferred(GS_GRASS_OUTPUT input)
 
     if (bHasDissolveMap)
     {
-        float dissolve = DissolveMap.Sample(LinearSampler, input.uv).w;
-        if (dissolve < g_vec4_0.w)
+
+        float dissolveFactor = ComputeResult(input.viewPosition);
+        
+        float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
+        if (dissolve < dissolveFactor)
             discard;
     }
     
@@ -439,8 +462,9 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(GS_GRASS_INSTANCING_OUTPUT input)
 
     if (bHasDissolveMap != 0)
     {
-        float dissolve = DissolveMap.Sample(LinearSampler, input.uv).w;
-        if (dissolve < input.renderParam.w)
+        float dissolveFactor = ComputeResult(input.viewPosition);
+        float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
+        if (dissolve < dissolveFactor)
             discard;
     }
     
