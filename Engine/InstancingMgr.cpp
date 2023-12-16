@@ -53,7 +53,7 @@ void InstancingMgr::Render_Weeds(vector<shared_ptr<GameObject>>& groups)
 		if (frustum.Contain_Sphere(gameObject->Get_CullPos(), gameObject->Get_CullRadius()) == false)
 			continue;
 
-		if (_float3::Transform(gameObject->Get_CullPos(), Camera::Get_View()).LengthSquared() > 30.f * 30.f)
+		if (_float3::Transform(gameObject->Get_CullPos(), Camera::Get_View()).LengthSquared() > 50.f * 50.f)
 			continue;
 
 		if (gameObject->Get_Instancing())
