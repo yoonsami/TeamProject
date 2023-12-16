@@ -932,8 +932,14 @@ void Succubus_Scythe_FSM::skill_1100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
+    if (Init_CurFrame(14))
+        Add_And_Set_Effect(L"Succubus_1100_slash");
+
     if (m_iCurFrame == 14)
+    {
+
         AttackCollider_On(NORMAL_ATTACK, 10.f);
+    }
     else if (m_iCurFrame == 25)
         AttackCollider_Off();
 
@@ -958,6 +964,9 @@ void Succubus_Scythe_FSM::skill_1200()
 {
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
+
+    if(Init_CurFrame(21))
+        Add_And_Set_Effect(L"Succubus_1200_slash");
 
     if (m_iCurFrame == 21)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
@@ -986,6 +995,9 @@ void Succubus_Scythe_FSM::skill_1300()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
+	if (Init_CurFrame(29))
+		Add_And_Set_Effect(L"Succubus_1300_slash");
+
     if (m_iCurFrame == 29)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (m_iCurFrame == 31)
@@ -1012,6 +1024,9 @@ void Succubus_Scythe_FSM::skill_1400()
 {
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
+
+	if (Init_CurFrame(51))
+		Add_And_Set_Effect(L"Succubus_1400");
 
     if (Init_CurFrame(51))
     {
