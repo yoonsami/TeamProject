@@ -797,19 +797,32 @@ void ImGui_Manager::Frame_Magic()
 
     if (ImGui::Button("MagicButton"))
     {
-    //// 모든 Weed맵오브젝트 삭제
-    //    m_iObjects = 0;
-    //    for (; m_iObjects < m_pMapObjects.size();)
-    //    {
-    //        wstring ObjName = m_pMapObjects[m_iObjects]->Get_Name();
-    //        if (ObjName.find(L"Weed") != std::string::npos)
-    //        {
-    //            Delete_MapObject();
-    //        }
-    //        if (m_iObjects >= m_pMapObjects.size() - 1)
-    //            break;
-    //        ++m_iObjects;
-    //    }
+        //// 모든 Weed맵오브젝트 삭제
+        //    m_iObjects = 0;
+        //    for (; m_iObjects < m_pMapObjects.size();)
+        //    {
+        //        wstring ObjName = m_pMapObjects[m_iObjects]->Get_Name();
+        //        if (ObjName.find(L"Weed") != std::string::npos)
+        //        {
+        //            Delete_MapObject();
+        //        }
+        //        if (m_iObjects >= m_pMapObjects.size() - 1)
+        //            break;
+        //        ++m_iObjects;
+        //    }
+
+            // 풀들의 컬링포즈,래디어스 계산하고 프러스텀컬링 true 켜기
+
+        for (auto& WeedGroup : m_WeedGroups)
+        {
+            for (auto& Weed : WeedGroup.lock()->Get_WeedGroup()->Get_Weeds())
+            {
+                _float4 CullData = Compute_CullingData(Weed);
+                Weed->Set_CullPos(_float3{ CullData });
+                Weed->Set_CullRadius(CullData.w);
+                Weed->Set_FrustumCulled(true);
+            }
+        }
     }
 
     // 맵 더미데이터 관리
@@ -2231,7 +2244,8 @@ HRESULT ImGui_Manager::Load_MapObject()
             wstring strWeedName = Utils::ToWString(file->Read<string>());
             _float4x4 matWeedWorldMat = file->Read<_float4x4>();
             _int iWeedIndex = file->Read<_int>();
-            Create_Weed(strWeedName, matWeedWorldMat, iWeedIndex);
+            _float4 CullData = file->Read<_float4>();
+            Create_Weed(strWeedName, matWeedWorldMat, iWeedIndex, CullData);
         }
     }
 
@@ -2379,6 +2393,7 @@ void ImGui_Manager::Save_Weeds(weak_ptr<FileUtils> _file)
             _file.lock()->Write<string>(Utils::ToString(Weed->Get_Name()));
             _file.lock()->Write<_float4x4>(Weed->Get_Transform()->Get_WorldMatrix());
             _file.lock()->Write<_int>(Weed->Get_Script<WeedScript>()->Get_WeedIndex());
+            _file.lock()->Write<_float4>(_float4{ Weed->Get_CullPos(), Weed->Get_CullRadius() });
         }
     }
 }
@@ -2484,7 +2499,6 @@ void ImGui_Manager::Create_Weed(_float3 _CreatePos)
     TargetPos.y = 100.f;
 
     auto& TerrainColliderMesh = CUR_SCENE->Get_GameObject(L"Terrain")->Get_Collider()->Get_Meshes().front();
-    //auto TerrainColliderMesh = CUR_SCENE->Get_GameObject(L"Terrain")->Get_MeshRenderer()->Get_Mesh();
     auto& Vertices = TerrainColliderMesh->Get_Geometry()->Get_Vertices();
     auto& Indices = TerrainColliderMesh->Get_Geometry()->Get_Indices();
 
@@ -2561,6 +2575,12 @@ void ImGui_Manager::Create_Weed(_float3 _CreatePos)
     ++m_CountSameWeed[m_iCurrentWeedIndex];
     WeedObj->Add_Component(WeedSc);
 
+    // 컬링
+    _float4 CullData = Compute_CullingData(WeedObj);
+    WeedObj->Set_CullPos(_float3{ CullData });
+    WeedObj->Set_CullRadius(CullData.w);
+    WeedObj->Set_FrustumCulled(true);
+
     // 해당하는 풀을 그룹에 넣기.
     _int WeedIndex = (_int)FinalCreatePos.x / 16 + (_int)FinalCreatePos.z / 16 * 16;
     if (m_WeedGroups[WeedIndex].expired())
@@ -2571,7 +2591,7 @@ void ImGui_Manager::Create_Weed(_float3 _CreatePos)
     m_WeedGroups[WeedIndex].lock()->Get_WeedGroup()->Push_Weed(WeedObj);
 }
 
-HRESULT ImGui_Manager::Create_Weed(wstring _strWeedName, _float4x4 _matWorld, _int _iWeedIndex)
+HRESULT ImGui_Manager::Create_Weed(wstring _strWeedName, _float4x4 _matWorld, _int _iWeedIndex, _float4 _CullData)
 {
     shared_ptr<Mesh> WeedMesh = RESOURCES.Get<Mesh>(L"Point");
 
@@ -2600,6 +2620,11 @@ HRESULT ImGui_Manager::Create_Weed(wstring _strWeedName, _float4x4 _matWorld, _i
     // 같은종류 중복풀떼기 개수변경
     ++m_CountSameWeed[_iWeedIndex];
     WeedObj->Add_Component(WeedSc);
+
+    // 컬링
+    WeedObj->Set_CullPos(_float3{ _CullData });
+    WeedObj->Set_CullRadius(_CullData.w);
+    WeedObj->Set_FrustumCulled(true);
 
     _float3 CreatePos = _float3{ WeedObj->Get_Transform()->Get_State(Transform_State::POS) };
     // 해당하는 풀을 그룹에 넣기.
@@ -2669,7 +2694,7 @@ _float4 ImGui_Manager::Compute_CullingData(shared_ptr<GameObject>& _pGameObject)
     {
         _float4x4 matObjectWorld = _pGameObject->Get_Transform()->Get_WorldMatrix();
         vCullPos = _float3{ matObjectWorld.Translation()};
-        // 풀의 좌상단점까지의 길이를 Radius로 사용
+        // 풀의 원점->좌상단의 길이를 Radius로 사용
         vCullRadius = ((matObjectWorld.Translation()/*포지션*/ + matObjectWorld.Forward() * 0.1f /*삼각편대*/ - matObjectWorld.Right() * 0.5f + matObjectWorld.Up() * 0.5f /*사각형을위한점위치*/ + matObjectWorld.Up() * 0.5f /*높이*/) - matObjectWorld.Translation()).Length();
     }
 

@@ -1035,15 +1035,13 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 			wstring strWeedName = Utils::ToWString(file->Read<string>());
 			_float4x4 matWeedWorldMat = file->Read<_float4x4>();
 			_int iWeedIndex = file->Read<_int>();
-			//_float4 CullData = _float4{ file->Read<_float3>(), file->Read<_float>() };
+			_float4 CullData = file->Read<_float4>();
 
 			shared_ptr<Mesh> WeedMesh = RESOURCES.Get<Mesh>(L"Point");
 
 			// 풀 오브젝트 생성
 			shared_ptr<GameObject> WeedObj = make_shared<GameObject>();
 			WeedObj->Set_Name(strWeedName);
-			WeedObj->GetOrAddTransform();
-
 			WeedObj->GetOrAddTransform()->Set_WorldMat(matWeedWorldMat);
 
 			// 메시렌더러
@@ -1064,6 +1062,11 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 			// 모델번호 인덱스 저장
 			WeedSc->Set_WeedIndex(iWeedIndex);
 			WeedObj->Add_Component(WeedSc);
+
+			// 컬링
+			WeedObj->Set_CullPos(_float3{ CullData });
+			WeedObj->Set_CullRadius(CullData.w);
+			WeedObj->Set_FrustumCulled(true);
 
 			_float3 CreatePos = _float3{ WeedObj->Get_Transform()->Get_State(Transform_State::POS) };
 			// 해당하는 풀을 그룹에 넣기.
