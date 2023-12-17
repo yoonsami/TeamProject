@@ -124,7 +124,7 @@ HRESULT Boss_Mir_FSM::Init()
         m_fLightningVolume = 0.3f;
 
 
-        m_fMySoundDistance = 100.f;
+        m_fMySoundDistance = 30.f;
 
 	}
 
@@ -538,8 +538,6 @@ void Boss_Mir_FSM::First_Meet()
             SOUND.Play_Sound(L"dragon_raksha_vox_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
             SOUND.Play_Sound(L"dragon_raksha_action_17", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
-        else if (Init_CurFrame(51))
-            SOUND.Play_Sound(L"dragon_raksha_action_17", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         else if (Init_CurFrame(80))
         {
             SOUND.Play_Sound(L"dragon_raksha_vox_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
@@ -548,10 +546,6 @@ void Boss_Mir_FSM::First_Meet()
         else if (Init_CurFrame(130))
         {
             SOUND.Play_Sound(L"VO_Dragon_Huff_2", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-            SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-        }
-        else if (Init_CurFrame(154))
-        {
             SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
         else if (Init_CurFrame(190))
@@ -837,8 +831,8 @@ void Boss_Mir_FSM::turn_l()
 {
     if (Init_CurFrame(29))
         SOUND.Play_Sound(L"dragon_raksha_foot_03_2", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-    else if (Init_CurFrame(34))
-        SOUND.Play_Sound(L"dragon_raksha_foot_16_2", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    //else if (Init_CurFrame(34))
+    //    SOUND.Play_Sound(L"dragon_raksha_foot_16_2", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 
     if (m_iCurFrame > 9 && m_iCurFrame < 28)
@@ -872,8 +866,8 @@ void Boss_Mir_FSM::turn_r()
 {
     if (Init_CurFrame(28))
         SOUND.Play_Sound(L"dragon_raksha_foot_03_2", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-    else if (Init_CurFrame(36))
-        SOUND.Play_Sound(L"dragon_raksha_foot_16_2", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    //else if (Init_CurFrame(36))
+    //    SOUND.Play_Sound(L"dragon_raksha_foot_16_2", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     if (m_iCurFrame > 9 && m_iCurFrame < 28)
     {
@@ -1186,8 +1180,6 @@ void Boss_Mir_FSM::skill_Return()
     else if (Init_CurFrame(110))
         SOUND.Play_Sound(L"magic_wind_whoosh_power_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(130))
-        SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-    else if (Init_CurFrame(148))
         SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 
@@ -1866,7 +1858,7 @@ void Boss_Mir_FSM::skill_9100()
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = _float3{ 0.f,-1.f,0.f };
             desc.fMoveSpeed = 10.f;
-            desc.fLifeTime = 1.f;
+            desc.fLifeTime = 1.5f;
             desc.fLimitDistance = 20.f;
 
             for (_uint i = 0; i < 4; i++)
@@ -2016,8 +2008,8 @@ void Boss_Mir_FSM::skill_11100_Init()
 
 void Boss_Mir_FSM::skill_12100()
 {
-    if (Init_CurFrame(18))
-        SOUND.Play_Sound(L"Thunder", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+ /*   if (Init_CurFrame(18))
+        SOUND.Play_Sound(L"Thunder", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);*/
 
     // For. Effect 
     if (m_iCurFrame >= 18 && m_iCurFrame <= 48)
@@ -2434,9 +2426,7 @@ void Boss_Mir_FSM::skill_100100()
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed);
     else if (Init_CurFrame(140))
         SOUND.Play_Sound(L"dragon_raksha_foot_03_2", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-    else if (Init_CurFrame(145))
-        SOUND.Play_Sound(L"dragon_raksha_foot_16_2", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-
+ 
 
 
     if (Is_AnimFinished())
@@ -2538,8 +2528,6 @@ void Boss_Mir_FSM::skill_200100()
             material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
         }
     }
-    else if (Init_CurFrame(126))
-        SOUND.Play_Sound(L"dragon_raksha_foot_03_2", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(135))
         SOUND.Play_Sound(L"dragon_raksha_foot_16_2", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
