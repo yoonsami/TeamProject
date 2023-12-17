@@ -1173,7 +1173,7 @@ void Boss_Spike_FSM::skill_1200()
 	if (Init_CurFrame(96))
 		Add_And_Set_Effect(L"Boss_Spike_1400");
 	else if (Init_CurFrame(100))
-		Add_GroupEffectOwner(L"Spike_1400_2", _float3(0.f, 0.f, 1.3f), false);
+		Add_GroupEffectOwner(L"Spike_1400_2", _float3(0.f, 0.f, 1.f), false);
 
     if (m_iCurFrame == 9)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
@@ -1310,7 +1310,7 @@ void Boss_Spike_FSM::skill_1400()
 	if (Init_CurFrame(15))
 		Add_And_Set_Effect(L"Boss_Spike_1400");
 	else if (Init_CurFrame(18))
-		Add_GroupEffectOwner(L"Spike_1400_2", _float3(0.f, 0.f, 1.3f), false);
+		Add_GroupEffectOwner(L"Spike_1400_2", _float3(0.f, 0.f, 1.f), false);
 
 
     if (m_iCurFrame == 17)
@@ -1442,7 +1442,11 @@ void Boss_Spike_FSM::skill_2100()
 		Add_And_Set_Effect(L"Boss_Spike_1400");
 
     }
+	if (Init_CurFrame(52))
+	{
+		Add_GroupEffectOwner(L"Spike_1400_2", _float3(0.f, 0.f, 1.f), false);
 
+	}
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
@@ -1501,7 +1505,7 @@ void Boss_Spike_FSM::skill_2200()
 	{
 		Add_And_Set_Effect(L"Boss_Spike_2100");
 	}
-    if (Init_CurFrame(60))
+    if (Init_CurFrame(62))
     {
 		Add_GroupEffectOwner(L"Spike_100100_IceAttack", _float3(0, 0, 1), false);
     }
@@ -1564,6 +1568,16 @@ void Boss_Spike_FSM::skill_2200_Init()
 
 void Boss_Spike_FSM::skill_3100()
 {
+    if (Init_CurFrame(0))
+    {
+        Add_And_Set_Effect(L"Boss_Spike_3100_Charge");
+    }
+	if (Init_CurFrame(66))
+	{
+		Add_And_Set_Effect(L"Boss_Spike_3100_Slash");
+		Add_And_Set_Effect(L"Spike_500100_Floor2");
+	}
+
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
@@ -1634,6 +1648,15 @@ void Boss_Spike_FSM::skill_3100_Init()
 
 void Boss_Spike_FSM::skill_3200()
 {
+	if (Init_CurFrame(19))
+	{
+		Add_And_Set_Effect(L"Boss_Spike_3200_Charge");
+	}
+	else if (Init_CurFrame(70))
+	{
+		Add_And_Set_Effect(L"Boss_Spike_3200_Slash");
+        Add_And_Set_Effect(L"Spike_500100_Floor2");
+	}
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
@@ -1651,7 +1674,7 @@ void Boss_Spike_FSM::skill_3200()
     }
     else if (m_iCurFrame == 69)
     {
-        m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(1.f);
+        m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(1.3f);
         m_bCounter = false;
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
         {

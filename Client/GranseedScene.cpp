@@ -90,6 +90,7 @@
 #include "Smoke_WitcherSense.h"
 #include "Smoke_Detect.h"
 #include "PortalScript.h"
+#include "SpikeScene.h"
 namespace fs = std::filesystem;
 
 GranseedScene::GranseedScene()
@@ -194,7 +195,7 @@ void GranseedScene::Final_Tick()
 	
 	if (KEYPUSH(KEY_TYPE::TAB) && KEYPUSH(KEY_TYPE::F4))
 	{
-		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<MirScene>());
+		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<SpikeScene>());
 		PHYSX.Set_CharacterControllerNull();
 
 		scene->Set_StaticObjects(m_StaticObject);
