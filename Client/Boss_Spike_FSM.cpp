@@ -91,7 +91,7 @@ HRESULT Boss_Spike_FSM::Init()
 
         m_vFirstPos = Get_Transform()->Get_State(Transform_State::POS);
 
-        m_fNormalAttack_AnimationSpeed = 1.f;
+        m_fNormalAttack_AnimationSpeed = 1.3f;
         
         m_bInitialize = true;
     }
@@ -1128,6 +1128,10 @@ void Boss_Spike_FSM::skill_1100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
+    if(Init_CurFrame(7))
+		Add_And_Set_Effect(L"Boss_Spike_1100");
+
+
     if (m_iCurFrame == 9)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     else if (m_iCurFrame == 19)
@@ -1163,6 +1167,13 @@ void Boss_Spike_FSM::skill_1200()
 {
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
+	
+    if (Init_CurFrame(7))
+		Add_And_Set_Effect(L"Boss_Spike_1200");
+	if (Init_CurFrame(96))
+		Add_And_Set_Effect(L"Boss_Spike_1400");
+	else if (Init_CurFrame(100))
+		Add_GroupEffectOwner(L"Spike_1400_2", _float3(0.f, 0.f, 1.3f), false);
 
     if (m_iCurFrame == 9)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
@@ -1206,6 +1217,7 @@ void Boss_Spike_FSM::skill_1200()
         AttackCollider_Off();
 
 
+
     Set_Gaze();
 }
 
@@ -1230,6 +1242,13 @@ void Boss_Spike_FSM::skill_1300()
 {
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
+
+
+	if (Init_CurFrame(9))
+		Add_And_Set_Effect(L"Boss_Spike_1300");
+    else if(Init_CurFrame(40))
+		Add_And_Set_Effect(L"Boss_Spike_1300_2");
+
 
     if (m_iCurFrame == 10)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
@@ -1288,6 +1307,11 @@ void Boss_Spike_FSM::skill_1400()
 {
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
+	if (Init_CurFrame(15))
+		Add_And_Set_Effect(L"Boss_Spike_1400");
+	else if (Init_CurFrame(18))
+		Add_GroupEffectOwner(L"Spike_1400_2", _float3(0.f, 0.f, 1.3f), false);
+
 
     if (m_iCurFrame == 17)
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
@@ -1409,6 +1433,16 @@ void Boss_Spike_FSM::skill_9400_Init()
 
 void Boss_Spike_FSM::skill_2100()
 {
+    if (Init_CurFrame(17))
+    {
+        Add_And_Set_Effect(L"Boss_Spike_2100");
+    }
+    if (Init_CurFrame(48))
+    {
+		Add_And_Set_Effect(L"Boss_Spike_1400");
+
+    }
+
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
@@ -1463,6 +1497,15 @@ void Boss_Spike_FSM::skill_2100_Init()
 
 void Boss_Spike_FSM::skill_2200()
 {
+	if (Init_CurFrame(17))
+	{
+		Add_And_Set_Effect(L"Boss_Spike_2100");
+	}
+    if (Init_CurFrame(60))
+    {
+		Add_GroupEffectOwner(L"Spike_100100_IceAttack", _float3(0, 0, 1), false);
+    }
+
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
@@ -1660,6 +1703,10 @@ void Boss_Spike_FSM::skill_3200_Init()
 
 void Boss_Spike_FSM::skill_6100()
 {
+
+    if (Init_CurFrame(28))
+        Add_And_Set_Effect(L"Boss_Spike_6100_1");
+
     if (m_iCurFrame < 33)
     {
         if (!m_pCamera.expired())
@@ -1744,7 +1791,7 @@ void Boss_Spike_FSM::skill_6100()
 
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = _float3{ 0.f,-1.f,0.f };
-            desc.fMoveSpeed = 10.f;
+            desc.fMoveSpeed = 30.f;
             desc.fLifeTime = 1.f;
             desc.fLimitDistance = 20.f;
 
@@ -1754,7 +1801,9 @@ void Boss_Spike_FSM::skill_6100()
                 _float fOffSetZ = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
 
                 _float4 vSkillPos = vMyPos + _float4{ fOffSetX, 10.f, fOffSetZ, 0.f };
-
+                _float4 vEffectPos = vMyPos + _float4{ fOffSetX, 0.f, fOffSetZ, 0.f };
+               
+                Add_GroupEffectOwner(L"Boss_Spike_6100_IceDrop", vEffectPos.xyz(), true);
                 Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vSkillPos, 1.5f, desc, AIRBORNE_ATTACK, 10.f);
             }
         }
@@ -1767,7 +1816,7 @@ void Boss_Spike_FSM::skill_6100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_6100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+    animator->Set_NextTweenAnim(L"skill_6100", 0.15f, false, 1.f);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 

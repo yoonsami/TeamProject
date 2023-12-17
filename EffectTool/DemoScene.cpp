@@ -63,18 +63,18 @@ HRESULT GranseedScene::Load_Scene()
 	PHYSX.Init();
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Parts\\Player\\", true);
 	RESOURCES.LoadParts();
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\");
+	//RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\");
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\VfxMesh\\");
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\SkyBox\\");
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Weapon\\");
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Granseed\\");
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Spike\\");
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\");
 
 	RESOURCES.LoadParts();
 	Load_DemoModel();
 	Load_Camera();
 
-	Load_MapFile(L"GranseedMap", nullptr);
+	Load_MapFile(L"SpikeMap", nullptr);
 	return S_OK;
 }
 
