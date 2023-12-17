@@ -1841,8 +1841,6 @@ void Boss_Mir_FSM::skill_9100()
         SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(130))
         SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-    else if (Init_CurFrame(142))
-        SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(210))
         SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
