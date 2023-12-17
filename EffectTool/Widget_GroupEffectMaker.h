@@ -41,8 +41,13 @@ private:
 	void	Create();
 	void	Delete();	// Delete GroupEffect GameObject in m_pCurrentGroup
 	void	Save(const string& wstrNewGroupTag = ".");
+	_bool	SearchOnList(const string& strTag, const vector<string>& vTargetList, _int* pOut_TargetIndex, string* pOut_TargetTag);
 
 private:
+	/* Search filter */
+	char					m_szGroupEffectFilter[MAX_PATH] = "-";
+	char					m_szMemberEffectFilter[MAX_PATH] = "-";
+	
 	/* Group List */
 	_uint					m_iNumGroups = { 0 };
 	vector<string>			m_vecGroups;
