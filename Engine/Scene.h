@@ -128,6 +128,7 @@ protected:
 	wstring m_strSceneName = L"";
 	list<shared_ptr<GameObject>> m_GameObjects;
 	wstring m_strSceneDataPath = L"../Resources/Scene/";
+
 	//Cache
 	vector<shared_ptr<GameObject>> m_Cameras;
 	//Cache

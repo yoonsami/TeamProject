@@ -533,8 +533,6 @@ void Boss_Mir_FSM::First_Meet()
     //THIS CAMERA MOVING IS MASTERPIECE -> NEVER DON'T TOUCH
     if (m_bDetected)
     {
-        CUR_SCENE->Set_PlayBGM(false);
-
         if (Init_CurFrame(20))
         {
             SOUND.Play_Sound(L"dragon_raksha_vox_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
@@ -837,6 +835,12 @@ void Boss_Mir_FSM::b_idle_Init()
 
 void Boss_Mir_FSM::turn_l()
 {
+    if (Init_CurFrame(29))
+        SOUND.Play_Sound(L"dragon_raksha_foot_03_2", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(34))
+        SOUND.Play_Sound(L"dragon_raksha_foot_16_2", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+
     if (m_iCurFrame > 9 && m_iCurFrame < 28)
     {
         if (!m_pTarget.expired())
@@ -866,6 +870,11 @@ void Boss_Mir_FSM::turn_l_Init()
 
 void Boss_Mir_FSM::turn_r()
 {
+    if (Init_CurFrame(28))
+        SOUND.Play_Sound(L"dragon_raksha_foot_03_2", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(36))
+        SOUND.Play_Sound(L"dragon_raksha_foot_16_2", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     if (m_iCurFrame > 9 && m_iCurFrame < 28)
     {
         if (!m_pTarget.expired())
@@ -910,6 +919,9 @@ void Boss_Mir_FSM::die_Init()
 
 void Boss_Mir_FSM::groggy_start()
 {
+    if (Init_CurFrame(30))
+        SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     if (Is_AnimFinished())
         m_eCurState = STATE::groggy_loop;
 }
@@ -924,6 +936,8 @@ void Boss_Mir_FSM::groggy_start_Init()
 
     AttackCollider_Off();
     TailAttackCollider_Off();
+
+    SOUND.Play_Sound(L"dragon_voice_03_damage", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_tAttackCoolTime.fAccTime = 0.f;
     m_tBreathCoolTime.fAccTime = 0.f;
@@ -1013,6 +1027,9 @@ void Boss_Mir_FSM::groggy_end_Init()
 
 void Boss_Mir_FSM::SQ_Flee()
 {
+    if (Init_CurFrame(93))
+        SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     Calculate_PhaseChangeHeadCam();
 
     if (m_iCurFrame < 80)
@@ -1095,6 +1112,8 @@ void Boss_Mir_FSM::SQ_Flee_Init()
 		                    m_FirstWorldMat.Backward() * 15.f +
 		                    m_FirstWorldMat.Right() * -5.f +
 		                    m_FirstWorldMat.Up() * 12.f, 1.f);
+
+    SOUND.Play_Sound(L"dragon_raksha_vox_04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 	if (!m_pCamera.expired())
 	{
@@ -1216,6 +1235,13 @@ void Boss_Mir_FSM::skill_Return_Init()
 
 void Boss_Mir_FSM::skill_Restart_Phase1()
 {
+    if (Init_CurFrame(43))
+        SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(130))
+        SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(210))
+        SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     Calculate_PhaseChangeHeadCam();
 
     if (m_iCurFrame < 10)
@@ -1303,6 +1329,8 @@ void Boss_Mir_FSM::skill_Restart_Phase1_Init()
 
     m_bInvincible = true;
 
+    SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     Calculate_PhaseChangeHeadCam();
 
     if (m_bCheckPhaseChange[0])
@@ -1321,6 +1349,9 @@ void Boss_Mir_FSM::skill_Restart_Phase1_Init()
 
 void Boss_Mir_FSM::skill_Restart_Phase1_Intro()
 {
+    if (Init_CurFrame(28))
+        SOUND.Play_Sound(L"VO_Dragon_Roar_1", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     Calculate_IntroHeadCam();
 
     if (!m_pCamera.expired())
@@ -1371,7 +1402,7 @@ void Boss_Mir_FSM::skill_Restart_Phase1_Intro()
     if (Is_AnimFinished())
     {
         g_bCutScene = false;
-        m_tAttackCoolTime.fCoolTime = 3.f;
+        m_tAttackCoolTime.fCoolTime = 2.5f;
         m_eCurState = STATE::b_idle;
         m_eCurPhase = PHASE::PHASE1;
 
@@ -1814,15 +1845,13 @@ void Boss_Mir_FSM::skill_5100_Init()
 
 void Boss_Mir_FSM::skill_9100()
 {
-    if (Init_CurFrame(30))
-        SOUND.Play_Sound(L"magic_wind_whoosh_power_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-    else if (Init_CurFrame(43))
+    if (Init_CurFrame(43))
         SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(130))
         SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(142))
         SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-    else if (Init_CurFrame(214))
+    else if (Init_CurFrame(210))
         SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 
@@ -2792,9 +2821,7 @@ void Boss_Mir_FSM::Create_DragonBall()
 
 void Boss_Mir_FSM::Set_AttackPattern()
 { 
-    m_eCurState = STATE::skill_100000;
-
-    /*_uint iRan = rand() % 10;
+    _uint iRan = rand() % 10;
     
     while (true)
     {
@@ -2916,7 +2943,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
             m_iLimitMeteorCnt = rand() % 3 + 1;
             m_iCurMeteorCnt = 0;
         }
-    }*/
+    }
 
 }
 

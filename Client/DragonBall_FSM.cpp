@@ -100,6 +100,7 @@ void DragonBall_FSM::Crash_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 	animator->Set_Model(model);
 
+	SOUND.Play_Sound(L"hit_ice_break_02_st", CHANNELID::SOUND_EFFECT, 0.3f, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 	animator->Set_CurrentAnim(L"P_R02_DecoBall_01_Fire", false, 1.f);
 
