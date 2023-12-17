@@ -99,7 +99,6 @@ void Widget_Model_Controller::Model_Controller()
 
 void Widget_Model_Controller::Show_ModelList()
 {
-
 	SeparatorText("Model List");
 	Combo("##Model List", &m_iCurrentModelIndex, VectorOfStringGetter, &m_ModelNames, int(m_ModelNames.size()), 50);
 }

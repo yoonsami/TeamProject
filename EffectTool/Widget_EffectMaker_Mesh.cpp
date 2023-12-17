@@ -247,7 +247,7 @@ void Widget_EffectMaker_Mesh::ImGui_SaveMsgBox()
 
 void Widget_EffectMaker_Mesh::ImGui_TextureList()
 {
-	//ImGui::Text(m_pszUniversalTextures[*m_iTexture_TextureList]);
+	ImGui::Text(m_pszUniversalTextures[*m_iTexture_TextureList]);
 
 	{
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
