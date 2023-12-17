@@ -101,6 +101,9 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 		if (IsCulled(gameObject->Get_LayerIndex()))
 			continue;
 
+		if (gameObject->Get_WeedGroup())
+			m_GroupWeed.push_back(gameObject);
+
 		if (gameObject->Is_FrustumCulled())
 		{
 			if (frustum.Contain_Sphere(gameObject->Get_CullPos(), gameObject->Get_CullRadius()) == false)
@@ -138,8 +141,7 @@ void Camera::Sort_GameObject(shared_ptr<Scene> scene)
 		else if (!m_bEffectToolMode_On && gameObject->Get_GroupEffect())
 			m_Decal.push_back(gameObject);
 
-		if (gameObject->Get_WeedGroup())
-			m_GroupWeed.push_back(gameObject);
+
 
 		//if (gameObject->Get_ParticleSystem())
 		//	m_Particle.push_back(gameObject);

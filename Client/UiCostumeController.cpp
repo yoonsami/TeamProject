@@ -98,6 +98,9 @@ void UiCostumeController::Create_Costume()
     if (true == m_bIsCreated)
         return;
 
+    if (false == g_bIsCanRotation)
+        return;
+
     g_bIsCanRotation = false;
 
     m_TempSet = m_OriginSet;

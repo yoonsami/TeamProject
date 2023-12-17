@@ -70,9 +70,11 @@ private: // 맵오브젝트관련
 	shared_ptr<GameObject> Create_MapObject(MapObjectScript::MapObjectDesc _CreateDesc);
 	// 맵오브젝트 제거
 	HRESULT Delete_MapObject();
-	// 맵오브젝트 옵션
-		// 맵오브젝트를 받아와서 컬링포지션과 길이를 계산하여 반영, 컬링포지션과 길이를 float4로 반환
+// 맵오브젝트 옵션
+	// 맵오브젝트를 받아와서 컬링포지션과 길이를 계산하여 반영, 컬링포지션과 길이를 float4로 반환
 	_float4 Compute_CullingData(shared_ptr<GameObject>& _pGameObject);
+	// 맵오브젝트를 받아와서 컬링포지션과 길이를 계산하여 반영, 컬링포지션과 길이를 float4로 반환
+	_float4 Compute_CullingData(weak_ptr<GameObject>& _pGameObject);
 	// 맵오브젝트들의 그림자, 블러, 컬링계산
 	void Bake(shared_ptr<GameObject>& _pGameObject);
 	void BakeAll();
@@ -262,13 +264,9 @@ private: // 지형, 잔디
 	_int m_iCurrentWeedIndex = { 0 };
 	// 한번에 깔 잔디개수
 	_int m_iWeedCreateCount = { 0 };
-	//// 현재깔려있는풀 이름모음
-	//vector<string> m_strInstalledWeeds;
-	//_int m_iInstalledWeedIndex = { 0 };
-	// 현재깔려있는풀 오브젝트ptr
-	vector<shared_ptr<GameObject>> m_pInstalledWeeds;
 	vector<_uint> m_CountSameWeed;
 	vector<weak_ptr<GameObject>> m_WeedGroups;
+	_float3 m_CreateWeedScale = { 1.f, 1.f, 1.f };
 
 #pragma endregion
 

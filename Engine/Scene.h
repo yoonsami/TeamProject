@@ -64,8 +64,9 @@ public:
 	void Render_BackBuffer();
 	
 	
-	void Load_UIFile(const wstring& path, const list<shared_ptr<GameObject>>& staticObjects, _bool bRender = true, _bool bTick = true);
-	void Load_UIFile(const wstring& path, vector<weak_ptr<GameObject>>& addedObjects);
+	void Load_UIFile(const wstring& strDataFilePath, const list<shared_ptr<GameObject>>& staticObjects, _bool bRender = true, _bool bTick = true);
+	void Load_UIFile(const wstring& strDataFilePath, vector<weak_ptr<GameObject>>& addedObjects);
+	void Load_UIFile(const wstring& strDataFilePath, vector<weak_ptr<GameObject>>& addedObjects, _uint iMaxSize);
 
 	const wstring& Get_FinalRenderTarget() { return m_wstrFinalRenderTarget; }
 

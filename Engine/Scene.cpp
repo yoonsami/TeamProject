@@ -497,6 +497,91 @@ void Scene::Load_UIFile(const wstring& strDataFilePath, vector<weak_ptr<GameObje
 	}
 }
 
+void Scene::Load_UIFile(const wstring& strDataFilePath, vector<weak_ptr<GameObject>>& addedObjects, _uint iMaxSize)
+{
+	shared_ptr<FileUtils> file = make_shared<FileUtils>();
+	file->Open(strDataFilePath, FileMode::Read);
+
+	_uint iSize = file->Read<_uint>();
+
+	if (iMaxSize < iSize)
+		iSize = iMaxSize;
+
+	addedObjects.resize(iSize);
+	for (_uint i = 0; i < iSize; ++i)
+	{
+		auto UiObject = make_shared<GameObject>();
+
+		wstring strObjectName = Utils::ToWString(file->Read<string>());
+		UiObject->Set_Name(strObjectName);
+
+		shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+		auto mesh = RESOURCES.Get<Mesh>(L"Point");
+		renderer->Set_Mesh(mesh);
+
+		auto material = make_shared<Material>();
+		for (_uint i = 0; i < MAX_TEXTURE_MAP_COUONT; ++i)
+		{
+			_bool bIsUseTexture = file->Read<_bool>();
+
+			if (true == bIsUseTexture)
+				material->Set_TextureMap(RESOURCES.Get<Texture>(Utils::ToWString(file->Read<string>())), static_cast<TextureMapType>(i));
+		}
+
+		for (_uint i = 0; i < MAX_SUB_SRV_COUNT; ++i)
+		{
+			_bool bIsUseSubmap = file->Read<_bool>();
+
+			if (true == bIsUseSubmap)
+				material->Set_SubMap(i, RESOURCES.Get<Texture>(Utils::ToWString(file->Read<string>())));
+		}
+		renderer->Set_Material(material);
+
+		_float4x4 matWorld = file->Read<_float4x4>();
+		UiObject->GetOrAddTransform()->Set_WorldMat(matWorld);
+
+		_uint iPass = file->Read<_uint>();
+		renderer->Set_Pass(iPass);
+
+		RenderParams tagParam = file->Read<RenderParams>();
+		renderer->Get_RenderParamDesc() = tagParam;
+		UiObject->Add_Component(renderer);
+
+		_bool bIsUseBaseUi = file->Read<_bool>();
+		if (true == bIsUseBaseUi)
+		{
+			auto BaseUi = make_shared<BaseUI>();
+			BaseUI::BASEUIDESC tagBaseDesc = file->Read<BaseUI::BASEUIDESC>();
+			BaseUi->Get_Desc() = tagBaseDesc;
+			UiObject->Add_Component(BaseUi);
+		}
+
+		_bool bIsUseFont = file->Read<_bool>();
+		if (true == bIsUseFont)
+		{
+			wstring wstrText = Utils::ToWstringUtf8(file->Read<string>());
+			auto pFontRenderer = make_shared<FontRenderer>(wstrText);
+
+			wstring strFont = Utils::ToWString(file->Read<string>());
+			Color vecColor = file->Read<Color>();
+			_float fSize = file->Read<_float>();
+			pFontRenderer->Set_Font(RESOURCES.Get<CustomFont>(strFont), vecColor, fSize);
+
+			UiObject->Add_Component(pFontRenderer);
+		}
+
+		UiObject->Set_LayerIndex(Layer_UI);
+		UiObject->Set_Instancing(false);
+		UiObject->Set_Render(true);
+
+		_bool bIsStatic = file->Read<_bool>();
+
+
+		Add_GameObject(UiObject, bIsStatic);
+		addedObjects[i] = UiObject;
+	}
+}
+
 void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPlayer)
 {
 	// 세이브 파일 이름으로 로드하기
@@ -924,16 +1009,19 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 			for (_int i = 0; i < Width; ++i)
 			{
 				shared_ptr<GameObject> WeedGroupObj = make_shared<GameObject>();
-				wstring WGName = L"WeedGroup" + to_wstring(i + j * Width);
+				_int GroupIndex = i + j * Width;
+				wstring WGName = L"WeedGroup" + to_wstring(GroupIndex);
 				WeedGroupObj->Set_Name(WGName);
 				shared_ptr<WeedGroup> tmpWeedGroup = make_shared<WeedGroup>();
 				WeedGroupObj->Add_Component(tmpWeedGroup);
+				tmpWeedGroup->Set_GroupIndex(GroupIndex);
 
 				// 각 칸의 가운데 위치
 				_float3 CenterPos = { (_float)(Width / 2 + Width * i), 0.f, (_float)(Height / 2 + j * Height) };
 				// 왼아래점
 				_float3 LDPos = _float3{ (_float)(Width * i), 0.f, (_float)(Height * j) };
 
+				// 그룹컬링
 				WeedGroupObj->Set_CullPos(CenterPos);
 				WeedGroupObj->Set_CullRadius((CenterPos - LDPos).Length());
 				WeedGroupObj->Set_FrustumCulled(true);
@@ -950,15 +1038,13 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 			wstring strWeedName = Utils::ToWString(file->Read<string>());
 			_float4x4 matWeedWorldMat = file->Read<_float4x4>();
 			_int iWeedIndex = file->Read<_int>();
-			_float4 CullData = _float4{ file->Read<_float3>(), file->Read<_float>() };
+			_float4 CullData = file->Read<_float4>();
 
 			shared_ptr<Mesh> WeedMesh = RESOURCES.Get<Mesh>(L"Point");
 
 			// 풀 오브젝트 생성
 			shared_ptr<GameObject> WeedObj = make_shared<GameObject>();
 			WeedObj->Set_Name(strWeedName);
-			WeedObj->GetOrAddTransform();
-
 			WeedObj->GetOrAddTransform()->Set_WorldMat(matWeedWorldMat);
 
 			// 메시렌더러
@@ -977,18 +1063,24 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 
 			shared_ptr<WeedScript> WeedSc = make_shared<WeedScript>();
 			// 모델번호 인덱스 저장
-			WeedSc->Set_WeedIndex(iWeedIndex);
+			WeedSc->Set_WeedTypeIndex(iWeedIndex);
 			WeedObj->Add_Component(WeedSc);
+
+			// 컬링
+			WeedObj->Set_CullPos(_float3{ CullData });
+			WeedObj->Set_CullRadius(CullData.w);
+			WeedObj->Set_FrustumCulled(true);
 
 			_float3 CreatePos = _float3{ WeedObj->Get_Transform()->Get_State(Transform_State::POS) };
 			// 해당하는 풀을 그룹에 넣기.
-			_int WeedIndex = (_int)CreatePos.x / 16 + (_int)CreatePos.z / 16 * 16;
-			if (m_WeedGroups[WeedIndex].expired())
+			_int iWeedGroupIndex = (_int)CreatePos.x / 16 + (_int)CreatePos.z / 16 * 16;
+			if (m_WeedGroups[iWeedGroupIndex].expired())
 			{
 				MSG_BOX("NoWeedGroups");
 				return;
 			}
-			m_WeedGroups[WeedIndex].lock()->Get_WeedGroup()->Push_Weed(WeedObj);
+			m_WeedGroups[iWeedGroupIndex].lock()->Get_WeedGroup()->Push_Weed(WeedObj);
+			WeedObj->Get_Script<WeedScript>()->Set_WeedGroupIndex(iWeedGroupIndex);
 			//Add_GameObject(WeedObj);
 		}
 	}

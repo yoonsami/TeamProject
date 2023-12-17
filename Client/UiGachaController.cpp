@@ -69,10 +69,10 @@ void UiGachaController::Tick()
         Start_All_Open();
 
     //test code
-    //if (KEYTAP(KEY_TYPE::C))
-    //{
-    //    Create_Gacha_Card();
-    //}
+    if (KEYTAP(KEY_TYPE::C))
+    {
+        Create_Gacha_Card();
+    }
     //if (KEYTAP(KEY_TYPE::E))
     //{
     //    Delete_All();
@@ -100,7 +100,11 @@ void UiGachaController::Create_Gacha_Card()
     if (true == m_bIsCreate)
         return;
 
+    if (false == g_bIsCanRotation)
+        return;
+
     g_bIsCanRotation = false;
+
     m_bIsCreate = true;
     auto pScene = CUR_SCENE;
     pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Gacha.dat", list<shared_ptr<GameObject>>());

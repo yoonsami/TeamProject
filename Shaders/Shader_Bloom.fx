@@ -32,7 +32,7 @@ float4 PS_ExtractBloom(VS_OUT input) : SV_Target0
     float4 output = (float4) 0.f;
     float3 color = SubMap0.Sample(LinearSampler, input.uv).rgb;
     float brightness = luminance(color);
-    if (brightness > g_BloomMin)
+    if (brightness > 1.f)
         output = float4(color.rgb, 1.f);
     
     return output;
