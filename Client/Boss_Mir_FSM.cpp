@@ -2006,9 +2006,6 @@ void Boss_Mir_FSM::skill_11100_Init()
 
 void Boss_Mir_FSM::skill_12100()
 {
- /*   if (Init_CurFrame(18))
-        SOUND.Play_Sound(L"Thunder", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);*/
-
     // For. Effect 
     if (m_iCurFrame >= 18 && m_iCurFrame <= 48)
     {
@@ -2688,6 +2685,9 @@ void Boss_Mir_FSM::Create_CounterMotionTrail()
 	{
 		material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
 	}
+
+    SOUND.Play_Sound(L"CounterHit", CHANNELID::SOUND_EFFECT, 0.4f, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_pOwner.lock()->Get_Script<CounterMotionTrailScript>()->Init();
 }
 

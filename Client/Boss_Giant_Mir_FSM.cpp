@@ -90,6 +90,15 @@ HRESULT Boss_Giant_Mir_FSM::Init()
         m_bInitialize = true;
     }
 
+
+    m_fVoiceVolume = 0.3f;
+    m_fSwingVolume = 0.3f;
+    m_fEffectVolume = 0.3f;
+    m_fMeteorVolume = 0.3f;
+
+
+    m_fMySoundDistance = 30.f;
+
     return S_OK;
 }
 
@@ -308,11 +317,24 @@ void Boss_Giant_Mir_FSM::SQ_Spawn()
     {
         if (Init_CurFrame(70))
         {
+            SOUND.Play_Sound(L"dragon_raksha_vox_14", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+            
             if (!m_pCamera.expired())
                 m_vCamStopPos = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS);
         }
+        else if (Init_CurFrame(82))
+        {
+            SOUND.Play_Sound(L"dragon_raksha_action_17", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        }
+        else if (Init_CurFrame(120))
+        {
+            SOUND.Play_Sound(L"dragon_raksha_vox_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+            SOUND.Play_Sound(L"dragon_raksha_action_17", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        }
         else if (Init_CurFrame(235))
         {
+            SOUND.Play_Sound(L"VO_Dragon_Roar_1", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+            SOUND.Play_Sound(L"DestroyBuildingSound", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
             Destroy_MapObject();
         }
 
@@ -1234,11 +1256,21 @@ void Boss_Giant_Mir_FSM::Create_Meteor()
                 Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 1.f, desc, KNOCKDOWN_SKILL, 10.f);
             }
 
-            shared_ptr<GameObject> obj = make_shared<GameObject>();
-            auto script = make_shared<TimerScript>(1.35f);
-            script->Set_Function([]() {CAMERA_SHAKE(0.2f, 0.3f); });
-            obj->Add_Component(script);
-            EVENTMGR.Create_Object(obj);
+            {
+                shared_ptr<GameObject> obj = make_shared<GameObject>();
+                auto script = make_shared<TimerScript>(1.35f);
+                script->Set_Function([]() {CAMERA_SHAKE(0.2f, 0.3f); });
+                obj->Add_Component(script);
+                EVENTMGR.Create_Object(obj);
+            }
+
+            {
+                shared_ptr<GameObject> obj = make_shared<GameObject>();
+                auto script = make_shared<TimerScript>(1.35f);
+                script->Set_Function([&]() { SOUND.Play_Sound(L"burst_stone_03", CHANNELID::SOUND_EFFECT, m_fMeteorVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+                obj->Add_Component(script);
+                EVENTMGR.Create_Object(obj);
+            }
 
             m_tMeteorCoolTime.fAccTime = 0.f;
             m_iCurMeteorCnt++;
