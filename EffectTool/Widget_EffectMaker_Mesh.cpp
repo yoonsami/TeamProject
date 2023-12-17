@@ -218,6 +218,16 @@ void Widget_EffectMaker_Mesh::ImGui_FinishedEffect()
 	ImGui::SeparatorText("Effect List");
 	if (ImGui::Button("Load"))
 		Load();
+	
+	ImGui::InputText("##FinishedEffectFilter", m_szFinishedEffectFilter, MAX_PATH);
+	ImGui::SameLine();
+	if (ImGui::Button("Search##FinishedEffectFilter"))
+	{
+		string strTag = m_szFinishedEffectFilter;
+		if (SearchOnList(strTag, m_vecFinishedEffects, &m_iFinishedObject, &m_strFinishedObject))
+			Load();
+	}
+	
 	ImGui::ListBox("##FinishedEffect", &m_iFinishedObject, m_pszFinishedEffects, m_iNumFinishedEffects, 20);
 }
 
@@ -237,7 +247,7 @@ void Widget_EffectMaker_Mesh::ImGui_SaveMsgBox()
 
 void Widget_EffectMaker_Mesh::ImGui_TextureList()
 {
-	ImGui::Text(m_pszUniversalTextures[*m_iTexture_TextureList]);
+	//ImGui::Text(m_pszUniversalTextures[*m_iTexture_TextureList]);
 
 	{
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
@@ -385,6 +395,14 @@ void Widget_EffectMaker_Mesh::Option_Property()
 void Widget_EffectMaker_Mesh::Option_Mesh()
 {
 	ImGui::SeparatorText("Vfx Mesh");
+
+	ImGui::InputText("##MeshFilter", m_szMeshFilter, MAX_PATH);
+	ImGui::SameLine();
+	if(ImGui::Button("Search##MeshFilter"))
+	{
+		string strTag = m_szMeshFilter;
+		SearchOnList(strTag, m_vecMeshes, &m_iMesh, &m_strMesh);
+	}
 
 	if (ImGui::BeginCombo("VfxMesh", m_pszMeshes[m_iMesh], ImGuiComboFlags_HeightLargest))
 	{
@@ -1646,6 +1664,23 @@ void Widget_EffectMaker_Mesh::Show_Guizmo()
 			memcpy(m_fInitRotation_Max, m_fInitRotation_Min, sizeof(m_fInitRotation_Min));
 		}
 	}
+}
+
+_bool Widget_EffectMaker_Mesh::SearchOnList(const string& strTag, const vector<string>& vTargetList, _int* pOut_TargetIndex, string* pOut_TargetTag)
+{
+	_bool bFind = false;
+	_int iIndex = 0;
+	for (auto& iter : vTargetList)
+	{
+		if (iter == strTag)
+		{
+			*pOut_TargetIndex = (_uint)iIndex;
+			*pOut_TargetTag = iter;
+			bFind = true;
+		}
+		iIndex++;
+	}
+	return bFind;
 }
 
 void Widget_EffectMaker_Mesh::SubWidget_TextureCombo(_int* iSelected, string* strSelected, string strFilePath, const char* pszWidgetKey)
