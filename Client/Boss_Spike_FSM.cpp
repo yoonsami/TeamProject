@@ -1084,7 +1084,7 @@ void Boss_Spike_FSM::groggy_start_Init()
     animator->Set_NextTweenAnim(L"groggy_start", 0.1f, false, m_fGroggyStateAnimationSpeed);
 
     AttackCollider_Off();
-
+    FreeLoopMembers();
     m_bInvincible = false;
     m_bSuperArmor = false;
 
@@ -1575,7 +1575,7 @@ void Boss_Spike_FSM::skill_3100()
 	if (Init_CurFrame(66))
 	{
 		Add_And_Set_Effect(L"Boss_Spike_3100_Slash");
-		Add_And_Set_Effect(L"Spike_500100_Floor2");
+        Add_GroupEffectOwner(L"Spike_500100_Floor2", _float3(0.f, 0.f, 2.f), false);
 	}
 
     if (m_vTurnVector != _float3(0.f))
@@ -1655,7 +1655,6 @@ void Boss_Spike_FSM::skill_3200()
 	else if (Init_CurFrame(70))
 	{
 		Add_And_Set_Effect(L"Boss_Spike_3200_Slash");
-        Add_And_Set_Effect(L"Spike_500100_Floor2");
 	}
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
@@ -1872,6 +1871,12 @@ void Boss_Spike_FSM::skill_6100_Init()
 
 void Boss_Spike_FSM::skill_7100()
 {
+	if (Init_CurFrame(44))
+		Add_And_Set_Effect(L"Boss_Spike_7100_Charge");
+
+	if (Init_CurFrame(136))
+		Add_And_Set_Effect(L"Boss_Spike_7100_Crack");
+
     if (m_iCurFrame == 137)
     {
         if (m_iPreFrame != m_iCurFrame)
@@ -1908,6 +1913,12 @@ void Boss_Spike_FSM::skill_7100_Init()
 
 void Boss_Spike_FSM::skill_8100()
 {
+	if (Init_CurFrame(15))
+		Add_And_Set_Effect(L"Boss_Spike_3100_Charge");
+	if (Init_CurFrame(65))
+		Add_And_Set_Effect(L"Spike_300100_Jump");
+	if (Init_CurFrame(88))
+		Add_And_Set_Effect(L"Spike_300100");
     if (m_iCurFrame == 88)
     {
         if (m_iPreFrame != m_iCurFrame)
@@ -1952,6 +1963,8 @@ void Boss_Spike_FSM::skill_8100_Init()
 
 void Boss_Spike_FSM::skill_100000()
 {
+	if (Init_CurFrame(17))
+		Add_And_Set_Effect(L"Boss_Spike_100000_Charge");
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
@@ -1995,7 +2008,10 @@ void Boss_Spike_FSM::skill_100000()
     Calculate_CamBoneMatrix();
 
     if (Is_AnimFinished())
+    {
+        FreeLoopMembers();
         m_eCurState = STATE::skill_100100;
+    }
 }
 
 void Boss_Spike_FSM::skill_100000_Init()
@@ -2031,6 +2047,13 @@ void Boss_Spike_FSM::skill_100000_Init()
 
 void Boss_Spike_FSM::skill_100100()
 {
+	if (Init_CurFrame(14))
+		Add_And_Set_Effect(L"Boss_Spike_100100");
+    if (Init_CurFrame(40))
+    Add_And_Set_Effect(L"Spike_300100_Jump");
+	if (Init_CurFrame(83))
+		Add_And_Set_Effect(L"Spike_400100_3");
+
     if (m_iCurFrame == 4)
     {
         m_pOwner.lock()->Set_GroggyGauge(100.f);
