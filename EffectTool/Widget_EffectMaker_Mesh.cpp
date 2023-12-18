@@ -247,7 +247,7 @@ void Widget_EffectMaker_Mesh::ImGui_SaveMsgBox()
 
 void Widget_EffectMaker_Mesh::ImGui_TextureList()
 {
-	//ImGui::Text(m_pszUniversalTextures[*m_iTexture_TextureList]);
+	ImGui::Text(m_pszUniversalTextures[*m_iTexture_TextureList]);
 
 	{
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar;
@@ -341,11 +341,11 @@ void Widget_EffectMaker_Mesh::Option_Property()
 			m_pCurrMeshEffect.lock()->Get_MeshEffect()->Set_Loop(m_bIsLoop);
 	}
 
-	if (ImGui::Checkbox("Is Follow Group (Only Translate)", &m_bIsFollowGroup_OnlyTranslate))
-	{
-		if (m_bIsFollowGroup_OnlyTranslate)
-			m_bIsFollowGroup_LookSameDir = false;
-	}
+	//if (ImGui::Checkbox("Is Follow Group (Only Translate)", &m_bIsFollowGroup_OnlyTranslate))
+	//{
+	//	if (m_bIsFollowGroup_OnlyTranslate)
+	//		m_bIsFollowGroup_LookSameDir = false;
+	//}
 	
 	if (ImGui::Checkbox("Is Follow Group (Look same direction)", &m_bIsFollowGroup_LookSameDir))
 	{
@@ -1108,7 +1108,7 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 			break;
 		case 3:
 			ImGui::Checkbox("Lock XZ", &m_bBillbordAxes[0]); ImGui::SameLine();
-			ImGui::Checkbox("Lock Y", &m_bBillbordAxes[1]);
+			//ImGui::Checkbox("Lock Y", &m_bBillbordAxes[1]);
 			break;
 		}
 		ImGui::TreePop();
