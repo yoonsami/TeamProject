@@ -26,6 +26,8 @@ HRESULT UiMonsterHp::Init()
     if (m_pOwner.expired())
         return E_FAIL;
 
+    m_bIsRender = false;
+
     auto pScene = CUR_SCENE;
     vector<weak_ptr<GameObject>> addedObj;
     pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_MonsterHp.dat", addedObj);
@@ -33,16 +35,26 @@ HRESULT UiMonsterHp::Init()
     _uint iSize = IDX(addedObj.size());
     for (_uint i = 0; i < iSize; ++i)
     {
-        if (true == addedObj[i].expired())
+        auto& pObj = addedObj[i];
+        if (true == pObj.expired())
             continue;
 
-        wstring strName = addedObj[i].lock()->Get_Name();
+        wstring strName = pObj.lock()->Get_Name();
         if (L"UI_MonsterHp0" == strName)
-            m_pFrontHp = addedObj[i];
+        {
+            pObj.lock()->Set_Render(false);
+            m_pFrontHp = pObj;
+        }
         else if(L"UI_MonsterHp1" == strName)
-            m_pBackHp = addedObj[i];
+        {
+            pObj.lock()->Set_Render(false);
+            m_pBackHp = pObj;
+        }
         else if(L"UI_MonsterHp2" == strName)
-            m_pBgHp = addedObj[i];
+        {
+            pObj.lock()->Set_Render(false);
+            m_pBgHp = pObj;
+        }
     }
 
     m_pCamera = pScene->Get_Camera(L"Default");
