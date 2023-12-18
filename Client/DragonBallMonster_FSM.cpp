@@ -35,6 +35,8 @@ HRESULT DragonBallMonster_FSM::Init()
 
 	m_iCenterBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy001");
 
+	m_fMySoundDistance = 100.f;
+
 	return S_OK;
 }
 
@@ -177,6 +179,9 @@ void DragonBallMonster_FSM::Crash_Init()
 			EVENTMGR.Delete_Object(m_pRigidBody.lock());
 	}
 
+	SOUND.Play_Sound(L"hit_ice_break_02_st", CHANNELID::SOUND_EFFECT, 0.3f, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+
 	if (!m_pTarget.expired())
 		m_pTarget.lock()->Get_FSM()->Set_State((_uint)Boss_Giant_Mir_FSM::STATE::groggy_start);
 }
@@ -232,6 +237,12 @@ void DragonBallMonster_FSM::Summon_CrossFloor()
 
 	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 
+
+	shared_ptr<GameObject> obj = make_shared<GameObject>();
+	auto script = make_shared<TimerScript>(2.5f);
+	script->Set_Function([&]() { SOUND.Play_Sound(L"burst_stone_04", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+	obj->Add_Component(script);
+	EVENTMGR.Create_Object(obj);
 }
 
 void DragonBallMonster_FSM::Summon_X_Floor()
@@ -296,6 +307,12 @@ void DragonBallMonster_FSM::Summon_X_Floor()
 				Get_Transform()->Get_State(Transform_State::RIGHT) * 11.f;
 
 	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
+
+	shared_ptr<GameObject> obj = make_shared<GameObject>();
+	auto script = make_shared<TimerScript>(2.5f);
+	script->Set_Function([&]() { SOUND.Play_Sound(L"burst_stone_04", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+	obj->Add_Component(script);
+	EVENTMGR.Create_Object(obj);
 }
 
 void DragonBallMonster_FSM::Summon_Hash_Floor()
@@ -311,7 +328,7 @@ void DragonBallMonster_FSM::Summon_Hash_Floor()
 	FLOORSKILLDESC desc;
 	desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 
-	desc.fAttackStartGap = 2.5f;
+	desc.fAttackStartGap = 3.2f;
 
 	desc.fAttackTickTime = 0.3f;
 	desc.strAttackType = NORMAL_SKILL;
@@ -347,6 +364,12 @@ void DragonBallMonster_FSM::Summon_Hash_Floor()
 		Get_Transform()->Get_State(Transform_State::LOOK) * -12.f;
 
 	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
+
+	shared_ptr<GameObject> obj = make_shared<GameObject>();
+	auto script = make_shared<TimerScript>(3.f);
+	script->Set_Function([&]() { SOUND.Play_Sound(L"magic_dragon_Breath_fire_00", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+	obj->Add_Component(script);
+	EVENTMGR.Create_Object(obj);
 }
 
 void DragonBallMonster_FSM::Summon_Web_Floor()
@@ -363,7 +386,7 @@ void DragonBallMonster_FSM::Summon_Web_Floor()
 	desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK) + 
 					 Get_Transform()->Get_State(Transform_State::RIGHT);
 
-	desc.fAttackStartGap = 2.5f;
+	desc.fAttackStartGap = 3.2f;
 
 	desc.fAttackTickTime = 0.3f;
 	desc.strAttackType = NORMAL_SKILL;
@@ -400,6 +423,12 @@ void DragonBallMonster_FSM::Summon_Web_Floor()
 				Get_Transform()->Get_State(Transform_State::RIGHT) * -8.5f;
 
 	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
+
+	shared_ptr<GameObject> obj = make_shared<GameObject>();
+	auto script = make_shared<TimerScript>(3.f);
+	script->Set_Function([&]() { SOUND.Play_Sound(L"magic_dragon_Breath_fire_00", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+	obj->Add_Component(script);
+	EVENTMGR.Create_Object(obj);
 }
 
 void DragonBallMonster_FSM::Summon_HalfCircle_Floor()
@@ -441,6 +470,13 @@ void DragonBallMonster_FSM::Summon_HalfCircle_Floor()
 						Get_Transform()->Get_State(Transform_State::RIGHT) * 14.f * fPos;
 
 	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
+
+
+	shared_ptr<GameObject> obj = make_shared<GameObject>();
+	auto script = make_shared<TimerScript>(2.5f);
+	script->Set_Function([&]() { SOUND.Play_Sound(L"Thunder", CHANNELID::SOUND_EFFECT, m_fLightningVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+	obj->Add_Component(script);
+	EVENTMGR.Create_Object(obj);
 }
 
 void DragonBallMonster_FSM::Summon_Star_Floor()
@@ -533,6 +569,11 @@ void DragonBallMonster_FSM::Summon_Star_Floor()
 	Create_FloorSkillCollider(Monster_Skill, L"DragonBall_FloorSkillCollider", vSkillPos, vSkillScale, desc);
 
 
+	shared_ptr<GameObject> obj = make_shared<GameObject>();
+	auto script = make_shared<TimerScript>(2.5f);
+	script->Set_Function([&]() { SOUND.Play_Sound(L"burst_stone_04", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+	obj->Add_Component(script);
+	EVENTMGR.Create_Object(obj);
 }
 
 void DragonBallMonster_FSM::Create_Meteor()
@@ -564,11 +605,22 @@ void DragonBallMonster_FSM::Create_Meteor()
 			Create_ForwardMovingSkillCollider(Monster_Skill, L"DragonBallMonster_SkillCollider", vSkillPos, 1.f, desc, KNOCKDOWN_SKILL, 10.f);
 		}
 
-		shared_ptr<GameObject> obj = make_shared<GameObject>();
-		auto script = make_shared<TimerScript>(1.35f);
-		script->Set_Function([]() {CAMERA_SHAKE(0.2f, 0.3f); });
-		obj->Add_Component(script);
-		EVENTMGR.Create_Object(obj);
+		{
+			shared_ptr<GameObject> obj = make_shared<GameObject>();
+			auto script = make_shared<TimerScript>(1.35f);
+			script->Set_Function([]() {CAMERA_SHAKE(0.2f, 0.3f); });
+			obj->Add_Component(script);
+			EVENTMGR.Create_Object(obj);
+		}
+
+		{
+			shared_ptr<GameObject> obj = make_shared<GameObject>();
+			auto script = make_shared<TimerScript>(1.35f);
+			script->Set_Function([&]() { SOUND.Play_Sound(L"burst_stone_03", CHANNELID::SOUND_EFFECT, m_fMeteorVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+			obj->Add_Component(script);
+			EVENTMGR.Create_Object(obj);
+		}
+
 
 		m_tMeteorCoolTime.fAccTime = 0.f;
 		m_iCurMeteorCnt++;	
@@ -786,7 +838,8 @@ void DragonBallMonster_FSM::Set_AttackPattern()
 
 	m_fTimer_CreateFloorSkillEffect = 0.f;
 	m_bIsCreateFloorSkillEffectDone = false;
-	
+
+
 	while (true)
 	{
 		if (iRan == m_iPreAttack)
@@ -810,13 +863,13 @@ void DragonBallMonster_FSM::Set_AttackPattern()
 	else if (iRan == 2)
 	{
 		Summon_Hash_Floor();
-		m_tPatternCoolTime.fCoolTime = 4.f;
+		m_tPatternCoolTime.fCoolTime = 5.f;
 		m_iPreAttack = 2;
 	}
 	else if (iRan == 3)
 	{
 		Summon_Web_Floor();
-		m_tPatternCoolTime.fCoolTime = 4.f;
+		m_tPatternCoolTime.fCoolTime = 5.f;
 		m_iPreAttack = 3;
 	}
 	else if (iRan == 4)

@@ -29,7 +29,6 @@ public:
 		skill_Restart_Phase1_Intro,  
 
 		// ============ Phase2 ===========
-		SQ_SBRin_Roar,
 		skill_1100, //SKILL 1
 		skill_2100, //SKILL 2 ASSAULT
 		skill_3100, //SKILL 3 Tail_Attack - TO RIGHT
@@ -118,8 +117,6 @@ private:
 	void skill_Restart_Phase1_Intro();
 	void skill_Restart_Phase1_Intro_Init();
 
-	void SQ_SBRin_Roar();
-	void SQ_SBRin_Roar_Init();
 	void skill_1100();
 	void skill_1100_Init();
 	void skill_2100();

@@ -302,9 +302,6 @@ void Boss_Mir_FSM::State_Tick()
     case STATE::skill_Restart_Phase1_Intro:
         skill_Restart_Phase1_Intro();
         break;
-    case STATE::SQ_SBRin_Roar:
-        SQ_SBRin_Roar();
-        break;
     case STATE::skill_1100:
         skill_1100();
         break;
@@ -403,9 +400,6 @@ void Boss_Mir_FSM::State_Init()
             break;
         case STATE::skill_Restart_Phase1_Intro:
             skill_Restart_Phase1_Intro_Init();
-            break;
-        case STATE::SQ_SBRin_Roar:
-            SQ_SBRin_Roar_Init();
             break;
         case STATE::skill_1100:
             skill_1100_Init();
@@ -1411,93 +1405,6 @@ void Boss_Mir_FSM::skill_Restart_Phase1_Intro_Init()
 
     Calculate_IntroHeadCam();
     m_fStateTimer = 0.f;
-}
-
-void Boss_Mir_FSM::SQ_SBRin_Roar()
-{
-    if (Init_CurFrame(24) ||
-        Init_CurFrame(34) ||
-        Init_CurFrame(44) ||
-        Init_CurFrame(54) ||
-        Init_CurFrame(64) ||
-        Init_CurFrame(74))
-    {
-        SOUND.Play_Sound(L"VO_Dragon_BreathFireLoop", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-
-        MouseBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iMouseBoneIndex) *
-            _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
-
-        _float4 vBonePos = _float4{ MouseBoneMatrix.Translation().x, MouseBoneMatrix.Translation().y, MouseBoneMatrix.Translation().z , 1.f };
-
-        vBonePos = vBonePos + Get_Transform()->Get_State(Transform_State::LOOK);
-
-        FORWARDMOVINGSKILLDESC desc;
-        desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-        desc.fMoveSpeed = 20.f;
-        desc.fLifeTime = 0.5f;
-        desc.fLimitDistance = 10.f;
-
-        _float4 vSkillPos = vBonePos;
-
-        if (m_iCurFrame != 74)
-            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 3.f, desc, NORMAL_ATTACK, 10.f);
-        else
-            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 3.f, desc, KNOCKBACK_ATTACK, 10.f);   
-    }
-
-    if (Is_AnimFinished())
-    {
-        _uint iRan = rand() % 2;
-
-        CalCulate_PlayerDir();
-
-        if (!m_bTurnMotion)
-            m_eCurState = STATE::b_idle;
-        else
-        {
-            if (m_eAttackDir == DIR::FORWARD_LEFT)
-            {
-                m_eCurState = STATE::turn_l;
-            }
-            else if (m_eAttackDir == DIR::BACKWARD_LEFT)
-            {
-                if (iRan == 0)
-                    m_eCurState = STATE::skill_4100;
-                else
-                {
-                    m_eCurState = STATE::turn_l;
-                    m_fTurnSpeed = XM_PI * 0.7f;
-                }
-            }
-            else if (m_eAttackDir == DIR::FORWARD_RIGHT)
-            {
-                m_eCurState = STATE::turn_r;
-            }
-            else if (m_eAttackDir == DIR::BACKWARD_RIGHT)
-            {
-                if (iRan == 0)
-                    m_eCurState = STATE::skill_3100;
-                else
-                {
-                    m_eCurState = STATE::turn_l;
-                    m_fTurnSpeed = XM_PI * 0.7f;
-                }
-            }
-        }
-    }
-}
-
-void Boss_Mir_FSM::SQ_SBRin_Roar_Init()
-{
-    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
-
-    animator->Set_NextTweenAnim(L"SQ_SBRin_Roar", 0.1f, false, 1.f);
-
-    m_tAttackCoolTime.fAccTime = 0.f;
-
-    SOUND.Play_Sound(L"dragon_raksha_vox_14", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-
-    m_bTurnMotion = false;
 }
 
 void Boss_Mir_FSM::skill_1100()
@@ -2807,19 +2714,19 @@ void Boss_Mir_FSM::Create_DragonBall()
 
 void Boss_Mir_FSM::Set_AttackPattern()
 { 
-    _uint iRan = rand() % 10;
+    _uint iRan = rand() % 9;
     
     while (true)
     {
         if (iRan == m_iPreAttack)
-            iRan = rand() % 10;
+            iRan = rand() % 9;
         else
             break;
     }
 
     if (iRan == 0)
     {
-        m_eCurState = STATE::SQ_SBRin_Roar;
+        m_eCurState = STATE::skill_1100;
         m_iPreAttack = 0;
 
         if (rand() % 2 == 0)
@@ -2831,7 +2738,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
     }
     else if (iRan == 1)
     {
-        m_eCurState = STATE::skill_1100;
+        m_eCurState = STATE::skill_2100;
         m_iPreAttack = 1;
 
         if (rand() % 2 == 0)
@@ -2843,8 +2750,13 @@ void Boss_Mir_FSM::Set_AttackPattern()
     }
     else if (iRan == 2)
     {
-        m_eCurState = STATE::skill_2100;
+        m_eCurState = STATE::skill_9100;
         m_iPreAttack = 2;
+    }
+    else if (iRan == 3)
+    {
+        m_eCurState = STATE::skill_11100;
+        m_iPreAttack = 3;
 
         if (rand() % 2 == 0)
         {
@@ -2853,14 +2765,9 @@ void Boss_Mir_FSM::Set_AttackPattern()
             m_iCurMeteorCnt = 0;
         }
     }
-    else if (iRan == 3)
-    {
-        m_eCurState = STATE::skill_9100;
-        m_iPreAttack = 3;
-    }
     else if (iRan == 4)
     {
-        m_eCurState = STATE::skill_11100;
+        m_eCurState = STATE::skill_12100;
         m_iPreAttack = 4;
 
         if (rand() % 2 == 0)
@@ -2872,7 +2779,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
     }
     else if (iRan == 5)
     {
-        m_eCurState = STATE::skill_12100;
+        m_eCurState = STATE::skill_13100;
         m_iPreAttack = 5;
 
         if (rand() % 2 == 0)
@@ -2884,7 +2791,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
     }
     else if (iRan == 6)
     {
-        m_eCurState = STATE::skill_13100;
+        m_eCurState = STATE::skill_14100;
         m_iPreAttack = 6;
 
         if (rand() % 2 == 0)
@@ -2896,7 +2803,7 @@ void Boss_Mir_FSM::Set_AttackPattern()
     }
     else if (iRan == 7)
     {
-        m_eCurState = STATE::skill_14100;
+        m_eCurState = STATE::skill_100000;
         m_iPreAttack = 7;
 
         if (rand() % 2 == 0)
@@ -2908,20 +2815,8 @@ void Boss_Mir_FSM::Set_AttackPattern()
     }
     else if (iRan == 8)
     {
-        m_eCurState = STATE::skill_100000;
-        m_iPreAttack = 8;
-
-        if (rand() % 2 == 0)
-        {
-            m_bSummonMeteor = true;
-            m_iLimitMeteorCnt = rand() % 3 + 1;
-            m_iCurMeteorCnt = 0;
-        }
-    }
-    else if (iRan == 9)
-    {
         m_eCurState = STATE::skill_200000;
-        m_iPreAttack = 9;
+        m_iPreAttack = 8;
 
         if (rand() % 2 == 0)
         {
