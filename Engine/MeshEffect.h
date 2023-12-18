@@ -121,6 +121,9 @@ private:
     _float                          m_SplineInput_Force[8];
     _float                          m_fCurrYspeed = { 0.f };
 
+    _float                          m_fChangeDirCoolTime = { 0.f };
+    _float                          m_fTimeAcc_ChangeDirCoolTime = { 0.f };
+
     _float3                         m_vEndScale;
     _float                          m_SplineInput_ScaleSpeed[8];
 

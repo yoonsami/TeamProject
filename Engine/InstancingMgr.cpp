@@ -11,6 +11,7 @@
 #include "StructuredBuffer.h"
 #include "WeedGroup.h"
 #include "Camera.h"
+#include "WeedScript.h"
 
 void InstancingMgr::Render(vector<shared_ptr<GameObject>>& gameObjects)
 {
@@ -32,6 +33,12 @@ void InstancingMgr::Render_Weeds(vector<shared_ptr<GameObject>>& groups)
 
 	for (auto& group : groups)
 	{
+		auto& frustum = CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_Frustum();
+
+		if (frustum.Contain_Sphere(group->Get_CullPos(), group->Get_CullRadius()) == false)
+			continue;
+
+		
 		if(_float3::Transform(group->Get_CullPos(), Camera::Get_View()).LengthSquared() > 100.f * 100.f)
 			continue;
 
@@ -48,12 +55,8 @@ void InstancingMgr::Render_Weeds(vector<shared_ptr<GameObject>>& groups)
 		if (gameObject->Get_MeshRenderer() == nullptr)
 			continue;
 
-		auto frustum = CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_Frustum();
 
-		if (frustum.Contain_Sphere(gameObject->Get_CullPos(), gameObject->Get_CullRadius()) == false)
-			continue;
-
-		if (_float3::Transform(gameObject->Get_CullPos(), Camera::Get_View()).LengthSquared() > 50.f * 50.f)
+		if (_float3::Transform(gameObject->Get_CullPos(), Camera::Get_View()).LengthSquared() > 60.f * 60.f)
 			continue;
 
 		if (gameObject->Get_Instancing())
@@ -80,10 +83,14 @@ void InstancingMgr::Render_Weeds(vector<shared_ptr<GameObject>>& groups)
 
 			for (size_t i = 0; i < vec.size(); ++i)
 			{
+
 				shared_ptr<GameObject>& gameobject = vec[i];
+				_uint index = 0;
+				if(gameobject->Get_Script<WeedScript>())
+					index = gameobject->Get_Script<WeedScript>()->Get_WeedGroupIndex();
 				InstancingData data;
 				data.world = gameobject->Get_Transform()->Get_WorldMatrix();
-				data.renderParam = groups.front()->Get_WeedGroup()->Get_RenderParams();
+				data.renderParam = groups[index]->Get_WeedGroup()->Get_RenderParams();
 				Add_Data(instanceId, data);
 			}
 

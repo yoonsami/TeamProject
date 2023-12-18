@@ -301,6 +301,14 @@ void Widget_GroupEffectMaker::Widget_GetTag()
 
 void Widget_GroupEffectMaker::Widget_AddMeshEffect()
 {
+	ImGui::InputText("##MeshEffectFilter", m_szMemberEffectFilter, MAX_PATH);
+	ImGui::SameLine();
+	if (ImGui::Button("Search##MeshEffectFilter"))
+	{
+		string strTag = m_szMemberEffectFilter;
+		SearchOnList(strTag, m_vecMeshEffects, &m_iMeshEffect, &m_strMeshEffect);
+	}
+
 	// Mesh Effect ComboBox
 	if (ImGui::BeginCombo("Mesh Effect##GroupEffect", m_pszMeshEffects[m_iMeshEffect], ImGuiComboFlags_HeightLargest))
 	{
@@ -375,6 +383,25 @@ void Widget_GroupEffectMaker::Option_GroupList()
 		2. Create GroupEffect GameObject with selected group tag */
 
 	ImGui::Text("Group List");
+
+	ImGui::InputText("##GroupEffectFilter", m_szGroupEffectFilter, MAX_PATH);
+	ImGui::SameLine();
+	if (ImGui::Button("Search##GroupEffectFilter"))
+	{
+		string strTag = m_szGroupEffectFilter;
+		if (SearchOnList(strTag, m_vecGroups, &m_iGroup, &m_strGroup))
+		{
+			// 1. Erase all Effect in current group 
+			Delete();
+
+			// 2. Add GroupEffect to Current Scene  
+			Create();
+
+			// 3. Update MemberEffect list
+			Set_MemberEffectList();
+		}
+	}
+
 	if(ImGui::BeginCombo("##GroupEffectList", m_pszGroups[m_iGroup], ImGuiComboFlags_HeightLargest))
 	{
 		for (_uint n = 0; n < m_iNumGroups; n++)
@@ -646,4 +673,22 @@ void Widget_GroupEffectMaker::Save(const string& wstrNewGroupTag)
 	// Delete prev group effect and create new group effect which has updated info 
 	Delete();
 	Create();
+}
+
+_bool Widget_GroupEffectMaker::SearchOnList(const string& strTag, const vector<string>& vTargetList, _int* pOut_TargetIndex, string* pOut_TargetTag)
+{
+	_bool bFind = false;
+	_int iIndex = 0;
+	for (auto& iter : vTargetList)
+	{
+		if (iter == strTag)
+		{
+			*pOut_TargetIndex = (_uint)iIndex;
+			*pOut_TargetTag = iter;
+			bFind = true;
+		}
+		iIndex++;
+	}
+
+	return bFind;
 }

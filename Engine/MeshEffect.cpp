@@ -69,6 +69,7 @@ void MeshEffect::MeshEffect_Final_Tick()
 
     // For. Update Time information 
     m_fCurrAge += fDT;
+    m_fTimeAcc_ChangeDirCoolTime += fDT;
     m_fLifeTimeRatio = m_fCurrAge / m_fDuration;
     m_fTimeAcc_SpriteAnimation += fDT;
     if (m_tDesc.bUseFadeOut && m_fCurrAge > m_fFadeOutStartTime)
@@ -383,6 +384,10 @@ void MeshEffect::Set_TransformDesc(void* pArg)
         MathUtils::Get_RandomFloat(pDesc->vRandomAxis_Min.z, pDesc->vRandomAxis_Max.z)
     );
 
+    // wander cool time 
+    if (11 == m_iTranslateOption)
+        m_fChangeDirCoolTime = (_float(rand() % 9 + 1) * 0.1f) * m_fDuration;
+
     // For. Init Spline input
     for (int i = 0; i < 4; ++i) {
         // Translate Force 
@@ -635,8 +640,41 @@ void MeshEffect::Translate()
             m_vLocalPos = _float3::Lerp(m_vStartPos, m_vEndPos, m_fLifeTimeRatio);
         }
         break;
-
     }
+    case 11:
+        // change dir
+        if (m_fTimeAcc_ChangeDirCoolTime > m_fChangeDirCoolTime)
+        {
+            m_vEndPos = _float3(
+                MathUtils::Get_RandomFloat(m_tTransform_Desc.vEndPosOffset_Min.x, m_tTransform_Desc.vEndPosOffset_Max.x),
+                MathUtils::Get_RandomFloat(m_tTransform_Desc.vEndPosOffset_Min.y, m_tTransform_Desc.vEndPosOffset_Max.y),
+                MathUtils::Get_RandomFloat(m_tTransform_Desc.vEndPosOffset_Min.z, m_tTransform_Desc.vEndPosOffset_Max.z)
+            );
+            m_fTimeAcc_ChangeDirCoolTime = 0.f;
+        }
+
+        // move
+        _float fSpeed = Calc_Spline(m_tTransform_Desc.iSpeedType, m_SplineInput_Force);
+        if (m_bToolMode_On)
+        {
+            _float4 vCurrPos = Get_Transform()->Get_State(Transform_State::POS);
+
+            _float3 vDir = m_vEndPos;
+            vDir.Normalize();
+
+            vCurrPos += _float4(vDir * fSpeed * fDT, 0.f);
+
+            Get_Transform()->Set_State(Transform_State::POS, vCurrPos);
+        }
+        else
+        {
+            _float3 vDir = m_vEndPos;
+            vDir.Normalize();
+
+            m_vLocalPos += vDir * fSpeed * fDT;
+        }
+
+        break;
     }
 }
 

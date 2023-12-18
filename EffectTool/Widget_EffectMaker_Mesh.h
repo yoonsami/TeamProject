@@ -78,6 +78,7 @@ private:
 	void					Save();
 	void					Load();
 	void					Show_Guizmo();
+	_bool					SearchOnList(const string& strTag, const vector<string>& vTargetList, _int* pOut_TargetIndex, string* pOut_TargetTag);
 
 	/* Utils */
 	ImVec2					CatMull_Rom(_float2* pPoints, _float t);
@@ -128,6 +129,10 @@ private:
 	_bool					m_bIsFDistortion = { false };
 	_bool					m_bIsSSD = { false };
 
+	/* Search filter */
+	char					m_szMeshFilter[MAX_PATH] = "-";
+	char					m_szFinishedEffectFilter[MAX_PATH] = "-";
+
 	/* Mesh Count */
 	_int					m_iMeshCnt = { 1 };
 	_float					m_fCreateInterval = { 0.5f };
@@ -138,7 +143,7 @@ private:
 	_uint					m_iNumMeshes = { 0 };
 	vector<string>			m_vecMeshes;
 	const char**			m_pszMeshes = { nullptr };
-	_uint					m_iMesh = { 0 };
+	_int					m_iMesh = { 0 };
 	string					m_strMesh = { "None" };
 
 	/* Texture list */

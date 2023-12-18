@@ -101,7 +101,7 @@ void Widget_Model_Controller::Show_ModelList()
 {
 
 	SeparatorText("Model List");
-	Combo("##Model List", &m_iCurrentModelIndex, VectorOfStringGetter, &m_ModelNames, int(m_ModelNames.size()));
+	Combo("##Model List", &m_iCurrentModelIndex, VectorOfStringGetter, &m_ModelNames, int(m_ModelNames.size()), 50);
 }
 
 void Widget_Model_Controller::Apply_Model()
@@ -194,7 +194,7 @@ void Widget_Model_Controller::Apply_Model()
 				EVENTMGR.Create_Object(ObjWeapon);
 			}
 		}
-		else if (model->Get_ModelTag() == (L"Spike"))
+		else if (model->Get_ModelTag() == (L"Spike") || model->Get_ModelTag() == (L"Boss_Spike"))
 		{
 			weaponName = L"Weapon_Spike";
 			{
