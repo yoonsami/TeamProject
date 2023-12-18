@@ -154,11 +154,7 @@ private:
 	void skill_100100();
 	void skill_100100_Init();
 
-	//For. CutScene
-	void skill_201100();
-	void skill_201100_Init();
-	void skill_201200();
-	void skill_201200_Init();
+
 
 	void Calculate_LipBoneMatrix();
 	void Set_AttackSkill();
