@@ -74,7 +74,7 @@ void ImGui_Manager::ImGui_SetUp()
     ImGuizmo::SetRect(0.f, 0.f, g_iWinSizeX, g_iWinSizeY);
 
     Load_SkyBoxTexture();
-    Load_MapObjectBase();
+    Load_MapObjectBase(L"Field");
     Load_TerrainTile();
     Load_Water();
     Init_WeedSetting();
@@ -510,7 +510,13 @@ void ImGui_Manager::Frame_SelcetObjectManager()
                 }
             }
         }
+        Text("DummyData");
+        MapObjectScript::MAPOBJDESC& SelectObjDesc = m_pMapObjects[m_iObjects]->Get_Script<MapObjectScript>()->Get_DESC();
+        //_float4& vecDummy0 = SelectObjDesc.matDummyData[0];
+        //ImGui::DragFloat4("vecDummy0", SelectObjDesc.matDummyData[, 0.1f,)
     }
+    
+
     // 세이브로드
     ImGui::SeparatorText("Save&Load");
     ImGui::Text("SaveFileName");
@@ -667,7 +673,7 @@ void ImGui_Manager::Frame_Light()
         m_pPointLightObjects[m_iPointLightIndex]->Get_Transform()->Set_State(Transform_State::POS, PointLightPosition);
 
         // 선택한 점광원의 변화효과 설정
-        if(m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>() != nullptr)
+        if (m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>() != nullptr)
         {
             _bool bEffectUse = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Get_bUseEffect();
             if (ImGui::Checkbox("##CurrentPointLightEffectUse", &bEffectUse))
@@ -719,7 +725,7 @@ void ImGui_Manager::Frame_Light()
     }
 
     ImGui::SeparatorText("##LightFrame");
-    
+
     ImGui::End();
 }
 
@@ -730,7 +736,9 @@ void ImGui_Manager::Frame_Wall()
     ImGui::Text("Wall");
     if (ImGui::Checkbox("WallPickingMode", &m_bWallPickingMod))
     {
-        m_bGroundPickingMod = !m_bWallPickingMod;
+        m_bWallPickingMod = true;
+        m_bGroundPickingMod = false;
+        m_bGround4PointsPickingMod = false;
     }
     if (ImGui::Button("CreateWall"))
     {
@@ -744,11 +752,20 @@ void ImGui_Manager::Frame_Wall()
     {
         Delete_WallMesh();
     }
+    if (ImGui::Button("AddWallData"))
+    {
+        m_AddWallData.push_back(m_WallRectPosLDRU);
+        Clear_WallMesh();
+    }
+    ImGui::Separator();
+
     // 바닥피킹관련
     ImGui::Text("Ground");
     if (ImGui::Checkbox("GroundPickingMode", &m_bGroundPickingMod))
     {
-        m_bWallPickingMod = !m_bGroundPickingMod;
+        m_bWallPickingMod = false;
+        m_bGroundPickingMod = true;
+        m_bGround4PointsPickingMod = false;
     }
     if (ImGui::Button("CreateGround"))
     {
@@ -757,6 +774,18 @@ void ImGui_Manager::Frame_Wall()
     if (ImGui::Button("DeleteGround"))
     {
         Delete_GroundMesh();
+    }
+
+    ImGui::Separator();
+    if (ImGui::Checkbox("Ground4Points", &m_bGround4PointsPickingMod))
+    {
+        m_bWallPickingMod = false;
+        m_bGroundPickingMod = false;
+        m_bGround4PointsPickingMod = true;
+    }
+    if (ImGui::Button("CreateGround4Points"))
+    {
+        Create_Ground4Mesh();
     }
 
     ImGui::End();
@@ -812,17 +841,37 @@ void ImGui_Manager::Frame_Magic()
         //    }
 
             // 풀들의 컬링포즈,래디어스 계산하고 프러스텀컬링 true 켜기
-
-        for (auto& WeedGroup : m_WeedGroups)
+        //for (auto& WeedGroup : m_WeedGroups)
+        //{
+        //    for (auto& Weed : WeedGroup.lock()->Get_WeedGroup()->Get_Weeds())
+        //    {
+        //        _float4 CullData = Compute_CullingData(Weed);
+        //        Weed->Set_CullPos(_float3{ CullData });
+        //        Weed->Set_CullRadius(CullData.w);
+        //        Weed->Set_FrustumCulled(true);
+        //    }
+        //}
+        //// 풀들의 스케일이 0.7보다 랜덤돌리기 줄이기
+        //for (auto& WeedGroup : m_WeedGroups)
+        //{
+        //    for (auto& Weed : WeedGroup.lock()->Get_WeedGroup()->Get_Weeds())
+        //    {
+        //        _float3 scale = Weed->Get_Transform()->Get_Scale();
+        //        if(scale.y >= 0.7f)
+        //        {
+        //            // 랜덤스케일
+        //            _float fRandomScale = Utils::Random_In_Range(0.6f, 1.4f);
+        //            Weed->Get_Transform()->Scaled(m_CreateWeedScale * fRandomScale);
+        //        }
+        //    }
+        //}
+        // 5번 벽 제거
+        auto iter = m_WallRectPosLDRU.begin();
+        for (_int i = 0; i < 5; ++i)
         {
-            for (auto& Weed : WeedGroup.lock()->Get_WeedGroup()->Get_Weeds())
-            {
-                _float4 CullData = Compute_CullingData(Weed);
-                Weed->Set_CullPos(_float3{ CullData });
-                Weed->Set_CullRadius(CullData.w);
-                Weed->Set_FrustumCulled(true);
-            }
+            ++iter;
         }
+        iter = m_WallRectPosLDRU.erase(iter);
     }
 
     // 맵 더미데이터 관리
@@ -1064,7 +1113,7 @@ void ImGui_Manager::Picking_Object()
             {
                 shared_ptr<GameObject> PickObject = PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), /*CUR_SCENE->Get_Objects()*/m_pTerrain, m_WallPickingPos[1]);
                 // 사각형 하나 추가
-                m_WallRectPosLDRU.push_back(pair<_float3, _float3>(m_WallPickingPos[0], _float3{ m_WallPickingPos[1].x, m_fWallHeight, m_WallPickingPos[1].z }));
+                m_WallRectPosLDRU.push_back(pair<_float3, _float3>(m_WallPickingPos[0], _float3{ m_WallPickingPos[1].x, m_WallPickingPos[1].y + m_fWallHeight, m_WallPickingPos[1].z }));
                 // 좌하단 점을 우하단 점으로 변경
                 m_WallPickingPos[0] = m_WallPickingPos[1];
             }
@@ -1075,13 +1124,41 @@ void ImGui_Manager::Picking_Object()
             if (m_bFirstGroundPick)
             {
                 m_bFirstGroundPick = !m_bFirstGroundPick;
-                PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), CUR_SCENE->Get_Objects(), m_GroundPickingPos[0]);
+                PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), m_pMapObjects, m_GroundPickingPos[0]);
             }
             else
             {
                 m_bFirstGroundPick = !m_bFirstGroundPick;
-                PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), CUR_SCENE->Get_Objects(), m_GroundPickingPos[1]); // 사각형 하나 추가
+                PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), m_pMapObjects, m_GroundPickingPos[1]); // 사각형 하나 추가
                 m_GroundRectPosLURD.push_back(pair<_float3, _float3>(m_GroundPickingPos[0], m_GroundPickingPos[1]));
+            }
+        }
+        else if (m_bGround4PointsPickingMod)
+        {
+            _float3 PickingPos;
+            PickingMgr::GetInstance().Pick_Mesh(ScreenPos, CUR_SCENE->Get_Camera(L"Default")->Get_Camera(), m_pMapObjects, PickingPos);
+
+            switch (m_iIndexToGround4Points)
+            {
+            case 0:
+                get<0>(m_Ground4Points) = PickingPos;
+                ++m_iIndexToGround4Points;
+                break;
+            case 1:
+                get<1>(m_Ground4Points) = PickingPos;
+                ++m_iIndexToGround4Points;
+                break;
+            case 2:
+                get<2>(m_Ground4Points) = PickingPos;
+                ++m_iIndexToGround4Points;
+                break;
+            case 3:
+                get<3>(m_Ground4Points) = PickingPos;
+                m_Ground4PointsVector.push_back(m_Ground4Points);
+                m_iIndexToGround4Points = 0;
+                break;
+            default:
+                break;
             }
         }
     }
@@ -1166,10 +1243,11 @@ HRESULT ImGui_Manager::Load_SkyBoxTexture()
     return S_OK;
 }
 
-HRESULT ImGui_Manager::Load_MapObjectBase()
+HRESULT ImGui_Manager::Load_MapObjectBase(wstring _strFolderName)
 {
     wstring path = L"..\\Resources\\Models\\MapObject\\";
-    wstring folderName = L"";
+    if (_strFolderName != L"")
+        path += _strFolderName + L"\\";
     for (auto& entry : fs::recursive_directory_iterator(path))
     {
         // 맵오브젝트 폴더내부의 폴더이름들을 순회하며 베이스오브젝트 리스트를 만듦.
@@ -1215,16 +1293,36 @@ void ImGui_Manager::Load_TerrainTile()
         if (entry.is_directory())
             continue;
 
-        if (entry.path().extension().wstring() != L".tga" && entry.path().extension().wstring() != L".TGA")
-            continue;
+        //if (entry.path().extension().wstring() != L".tga" && entry.path().extension().wstring() != L".TGA")
+            //continue;
 
         string fileName = entry.path().filename().string();
         Utils::DetachExt(fileName);
 
         // 타일의 텍스쳐이름을 리소스에 로드
-        wstring TileTexture = L"..\\Resources\\Textures\\MapObject\\TerrainTile\\";
-        TileTexture += Utils::ToWString(fileName) + L".tga";
-        RESOURCES.Load<Texture>(Utils::ToWString(fileName), TileTexture);
+        wstring TileTexturePath = L"..\\Resources\\Textures\\MapObject\\TerrainTile\\";
+        TileTexturePath += Utils::ToWString(fileName) + L".dds";
+        auto texture = RESOURCES.GetOrAddTexture(Utils::ToWString(fileName), TileTexturePath);
+        if (texture == nullptr)
+        {
+            TileTexturePath = L"..\\Resources\\Textures\\MapObject\\TerrainTile\\";
+            TileTexturePath += Utils::ToWString(fileName) + L".tga";
+            texture = RESOURCES.GetOrAddTexture(Utils::ToWString(fileName), TileTexturePath);
+        }
+        if (texture == nullptr)
+        {
+            TileTexturePath = L"..\\Resources\\Textures\\MapObject\\TerrainTile\\";
+            TileTexturePath += Utils::ToWString(fileName) + L".png";
+            texture = RESOURCES.GetOrAddTexture(Utils::ToWString(fileName), TileTexturePath);
+        }
+        if (texture == nullptr)
+        {
+            TileTexturePath = L"..\\Resources\\Textures\\MapObject\\TerrainTile\\";
+            TileTexturePath += Utils::ToWString(fileName) + L".jpg";
+            texture = RESOURCES.GetOrAddTexture(Utils::ToWString(fileName), TileTexturePath);
+        }
+        if (texture == nullptr)
+            continue;
         // 리스트에도 추가
         m_TileNames.push_back(fileName);
     }
@@ -1408,9 +1506,6 @@ void ImGui_Manager::Create_WallMesh()
     shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(*WallMesh.get());
     WallObject->Add_Component(pCollider);
     pCollider->Set_Activate(true);
-    //auto rigidBody = make_shared<RigidBody>();
-    //rigidBody->Create_RigidBody(pCollider, WallObject->GetOrAddTransform()->Get_WorldMatrix());
-    //WallObject->Add_Component(rigidBody);
 
     shared_ptr<GameObject> PreWall = CUR_SCENE->Get_GameObject(L"Wall");
     if (PreWall != nullptr)
@@ -1445,6 +1540,33 @@ void ImGui_Manager::Create_GroundMesh()
     EVENTMGR.Create_Object(GroundObject);
 }
 
+void ImGui_Manager::Create_Ground4Mesh()
+{
+    // 정보를 기반으로 바닥메시 생성
+    shared_ptr<Mesh> Ground4Mesh = make_shared<Mesh>();
+    Ground4Mesh->CreateGround4Points(m_Ground4PointsVector);
+
+    // 메시를 기반으로 바닥오브젝트 생성
+    shared_ptr<GameObject> GroundObject = make_shared<GameObject>();
+    GroundObject->Set_Name(L"Ground4P");
+    GroundObject->GetOrAddTransform();
+
+    // 메시렌더러
+    shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+    renderer->Set_Mesh(Ground4Mesh);
+
+    // 메시를 통해 메시콜라이더 생성
+    shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(*Ground4Mesh.get());
+    GroundObject->Add_Component(pCollider);
+    pCollider->Set_Activate(true);
+
+    // 바닥 콜라이더 중복체크
+    shared_ptr<GameObject> PGround = CUR_SCENE->Get_GameObject(L"Ground4P");
+    if (PGround != nullptr)
+        EVENTMGR.Delete_Object(PGround);
+    EVENTMGR.Create_Object(GroundObject);
+}
+
 void ImGui_Manager::Clear_WallMesh()
 {
     m_WallRectPosLDRU.clear();
@@ -1459,6 +1581,32 @@ void ImGui_Manager::Delete_WallMesh()
 void ImGui_Manager::Delete_GroundMesh()
 {
     m_GroundRectPosLURD.pop_back();
+}
+
+void ImGui_Manager::Save_AddWallData(weak_ptr<class FileUtils> _file)
+{
+    // 추가 벽 데이터 정보 저장
+    _file.lock()->Write<_int>((_int)m_AddWallData.size());
+
+    for (_int i = 0; i < m_AddWallData.size(); ++i)
+    {
+        _file.lock()->Write<_int>((_int)m_AddWallData[i].size());
+        for (_int j = 0; j < m_AddWallData[i].size(); ++j)
+        {
+            _file.lock()->Write<pair<_float3, _float3>>(m_AddWallData[i][j]);
+        }
+    }
+}
+
+void ImGui_Manager::Save_AddGroundData(weak_ptr<class FileUtils> _file)
+{
+    // 추가 바닥 데이터 정보 저장
+    _file.lock()->Write<_int>((_int)m_Ground4PointsVector.size());
+
+    for (_int i = 0; i < m_Ground4PointsVector.size(); ++i)
+    {
+        _file.lock()->Write<tuple<_float3, _float3, _float3, _float3>>(m_Ground4PointsVector[i]);
+    }
 }
 
 void ImGui_Manager::SetPlayerPosByCameraPos()
@@ -1488,51 +1636,6 @@ void ImGui_Manager::Create_Terrain(shared_ptr<Terrain> _pTerrainMesh, _int _iTer
     TerrainObject->Set_Name(L"Terrain");
     TerrainObject->GetOrAddTransform();
 
-    // 하이트맵 계산해서 메시에 적용하기
-    // TGA(HeightMap)텍스쳐를 가져와서 RGB값 모두 저장.
-    //{
-    //    // TGA 파일 경로 설정
-    //    const wchar_t* filePath = L"..\\Resources\\Textures\\MapObject\\TerrainTile\\HeightMap.tga";
-    //    // TGA 파일 로드
-    //    TexMetadata metadata;
-    //    ScratchImage image;
-    //    LoadFromTGAFile(filePath, &metadata, image);
-
-    //    // 픽셀 데이터 얻기
-    //    const auto* img = image.GetImage(0, 0, 0); // 첫 이미지 데이터 가져오기
-    //    // 픽셀 데이터에 접근하여 출력
-    //    const uint8_t* pixels = static_cast<const uint8_t*>(img->pixels);
-    //    size_t pixelSize = metadata.format == DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM ? 4 : 3; // RGBA 또는 RGB 픽셀 크기
-    //    size_t rowPitch = img->rowPitch;
-
-    //    // 모든픽셀의 색을 저장할 벡터
-    //    vector<_float4> pixelColors;
-    //    for (size_t i = 0; i < img->height ; ++i) {
-    //        for (size_t j = 0; j < img->width; ++j) {
-    //            size_t pixelIndex = i * rowPitch + j * pixelSize;
-    //            _float4 pixelColor = _float4{ static_cast<_float>(pixels[pixelIndex + 0]) , static_cast<_float>(pixels[pixelIndex + 1]), static_cast<_float>(pixels[pixelIndex + 2]), static_cast<_float>(pixels[pixelIndex + 3]) };
-    //            pixelColors.push_back(pixelColor);
-    //        }
-    //    }
-
-    //    // 정점들의 w
-    //    auto& vertices = _pTerrainMesh->Get_Geometry()->Get_Vertices();
-    //    auto tempVertices = vertices;
-    //    for (size_t i = 0; i < vertices.size(); ++i)
-    //    {
-    //        tempVertices[i].vPosition.y = pixelColors[i].z * 0.04;
-    //    }
-    //    _pTerrainMesh->Get_Geometry()->Set_Vertices(tempVertices);
-    //    _pTerrainMesh->Create_Buffer();
-    //}
-
-    // 메시렌더러
-    //shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Terrain.fx"));
-    //renderer->Set_Mesh(_pTerrainMesh);
-    ////renderer->Set_Pass(18); // 터레인패스
-    //renderer->SetInt(0, _iTerrainSizeX);
-    //renderer->SetInt(1, _iTerrainSizeY);
-
 	shared_ptr<TerrainRenderer> renderer = make_shared<TerrainRenderer>(RESOURCES.Get<Shader>(L"Shader_Terrain.fx"));
 	renderer->CreateGrid(_iTerrainSizeX, _iTerrainSizeY);
 
@@ -1547,7 +1650,7 @@ void ImGui_Manager::Create_Terrain(shared_ptr<Terrain> _pTerrainMesh, _int _iTer
     material->Set_TextureMap(Grasstexture, TextureMapType::DIFFUSE);
 
     // 노말텍스쳐
-    auto Normaltexture = RESOURCES.Get<Texture>(L"ForestGrass_01_N_ASB");
+    auto Normaltexture = RESOURCES.Get<Texture>(L"TileNormal");
     if (Normaltexture == nullptr)
     {
         MSG_BOX("NoNormalTexture");
@@ -1574,7 +1677,7 @@ void ImGui_Manager::Create_Terrain(shared_ptr<Terrain> _pTerrainMesh, _int _iTer
     material->Set_TextureMap(Roadtexture, TextureMapType::TEXTURE8);
 
 	{
-		auto HeightMap = RESOURCES.GetOrAddTexture(L"HeightMap1", L"..\\Resources\\Textures\\MapObject\\TerrainTile\\HeightMap.png");
+		auto HeightMap = RESOURCES.GetOrAddTexture(L"HeightMap", L"..\\Resources\\Textures\\MapObject\\TerrainTile\\HeightMap.png");
 		if (HeightMap == nullptr)
 		{
 			MSG_BOX("NoHeightTexture");
@@ -1606,7 +1709,7 @@ void ImGui_Manager::Create_Terrain(shared_ptr<Terrain> _pTerrainMesh, _int _iTer
 void ImGui_Manager::Create_HeightMap()
 {
     // 지형수정때풀자
-    //return;
+    return;
 
     ID3D11Texture2D* pTexture2D = { nullptr };
 
@@ -1980,6 +2083,13 @@ HRESULT ImGui_Manager::Save_MapObject()
     if (m_vecDummyData.x >= 1.f)
         Save_Weeds(file);
 
+    if (m_vecDummyData.y >= 1.f)
+        Save_AddWallData(file);
+
+    if (m_vecDummyData.y >= 2.f)
+        Save_AddGroundData(file);
+
+
     return S_OK;
 }
 
@@ -2232,9 +2342,9 @@ HRESULT ImGui_Manager::Load_MapObject()
     file->Read<_float>(CUR_SCENE->g_lightAttenuation);
     file->Read<_float>(CUR_SCENE->g_ambientRatio);
 
-    // float4.x >= 1.f 풀로드
     file->Read<_float4>(m_vecDummyData);
-    
+
+    // float4.x >= 1.f 풀로드
     if (m_vecDummyData.x >= 1.f)
     {
         _int WeedLength = file->Read<_int>();
@@ -2247,6 +2357,67 @@ HRESULT ImGui_Manager::Load_MapObject()
             _float4 CullData = file->Read<_float4>();
             Create_Weed(strWeedName, matWeedWorldMat, iWeedIndex, CullData);
         }
+        // 모든 풀 추가했으면 그룹의 컬링계산
+        for (auto& Weed : m_WeedGroups)
+        {
+            Weed.lock()->Get_WeedGroup()->Compute_CullPosHeight();
+        }
+    }
+
+    // float4.y >= 1.f 추가벽 로드
+    if (m_vecDummyData.y >= 1.f)
+    {
+        // 추가벽초기화
+        m_AddWallData.clear();
+        _int WallSetSize = 0;
+        file->Read<_int>(WallSetSize);
+        m_AddWallData.resize(WallSetSize);
+
+        for (_int i = 0; i < WallSetSize; ++i)
+        {
+            _int WallCount = 0;
+            file->Read<_int>(WallCount);
+            m_AddWallData[i].resize(WallCount);
+            for (_int j = 0; j < WallCount; ++j)
+            {
+                m_AddWallData[i][j] = file->Read<pair<_float3, _float3>>();
+            }
+
+            //CreateWall
+            // 벽정보를 기반으로 벽메시 생성
+            shared_ptr<Mesh> WallMesh = make_shared<Mesh>();
+            WallMesh->Create3DRect(m_AddWallData[i]);
+
+            // 메시를 기반으로 벽오브젝트 생성
+            shared_ptr<GameObject> WallObject = make_shared<GameObject>();
+            WallObject->Set_Name(L"Wall" + to_wstring(i));
+            WallObject->GetOrAddTransform();
+
+            // 메시렌더러
+            shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+            renderer->Set_Mesh(WallMesh);
+
+            // 메시를 통해 메시콜라이더 생성
+            shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(*WallMesh.get());
+            WallObject->Add_Component(pCollider);
+            pCollider->Set_Activate(true);
+
+            EVENTMGR.Create_Object(WallObject);
+        };
+    }
+
+    // float4.y >= 2.f 추가바닥 로드
+    if (m_vecDummyData.y >= 2.f)
+    {
+        _int GroundCount = 0;
+        file->Read<_int>(GroundCount);
+        m_Ground4PointsVector.resize(GroundCount);
+
+        for (_int i = 0; i < GroundCount; ++i)
+        {
+            m_Ground4PointsVector.push_back(file->Read<tuple<_float3, _float3, _float3, _float3>>());
+        }
+        Create_Ground4Mesh();
     }
 
     return S_OK;

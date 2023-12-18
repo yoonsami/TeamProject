@@ -21,6 +21,7 @@ public:
 	static void Create3DRect(shared_ptr<Geometry<VTXTEXNORTANDATA>> _geometry, vector<pair<_float3, _float3>> _LDURPairVector);
 	// 점페어(좌상단 우하단) 벡터를 통해 사각형모음메시(바닥)를 만듦 
 	static void CreateGround(shared_ptr<Geometry<VTXTEXNORTANDATA>> _geometry, vector<pair<_float3,_float3>> _LURDPointsVector);
+	static void CreateGround4Points(shared_ptr<Geometry<VTXTEXNORTANDATA>> _geometry, vector<tuple<_float3, _float3, _float3, _float3>> _4PointsVector);
 	static void CreateQuad(shared_ptr<Geometry<VTXTEXNORTANDATA>> geometry);
 	static void CreateCube(shared_ptr<Geometry<VTXTEXNORTANDATA>> geometry);
 	static void CreateSphere(shared_ptr<Geometry<VTXTEXNORTANDATA>> geometry);

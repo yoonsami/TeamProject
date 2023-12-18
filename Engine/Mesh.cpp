@@ -25,6 +25,12 @@ void Mesh::CreateGround(vector<pair<_float3, _float3>> _LURDPairVector)
 	Create_Buffer();
 }
 
+void Mesh::CreateGround4Points(vector<tuple<_float3, _float3, _float3, _float3>> _4PointsVector)
+{
+	GeometryHelper::CreateGround4Points(m_pGeometry, _4PointsVector);
+	Create_Buffer();
+}
+
 void Mesh::CreateQuad()
 {
 	

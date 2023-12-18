@@ -727,10 +727,10 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 	if (iNumGround > 0)
 	{
 		GroundRectPosLURD.resize(iNumGround);
-		// 벽정보 읽어오기
+		// 바닥정보 읽어오기
 		for (_int i = 0; i < iNumGround; ++i)
 			file->Read<pair<_float3, _float3>>(GroundRectPosLURD[i]);
-		// 벽정보를 기반으로 벽메시 생성
+		// 바닥정보를 기반으로 벽메시 생성
 		shared_ptr<Mesh> GroundMesh = make_shared<Mesh>();
 		GroundMesh->CreateGround(GroundRectPosLURD);
 		// 메시를 기반으로 벽오브젝트 생성
@@ -1081,8 +1081,97 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 			}
 			m_WeedGroups[iWeedGroupIndex].lock()->Get_WeedGroup()->Push_Weed(WeedObj);
 			WeedObj->Get_Script<WeedScript>()->Set_WeedGroupIndex(iWeedGroupIndex);
-			//Add_GameObject(WeedObj);
+			// 모든 풀 추가했으면 그룹의 컬링계산
+			for (auto& Weed : m_WeedGroups)
+			{
+				Weed.lock()->Get_WeedGroup()->Compute_CullPosHeight();
+			}
 		}
+	}
+#pragma endregion
+#pragma region AddWall
+	if (DummyData.y >= 1.f)
+	{
+		// float4.y >= 1.f 추가벽 로드
+			_int WallSetSize = 0;
+			file->Read<_int>(WallSetSize);
+			for (_int i = 0; i < WallSetSize; ++i)
+			{
+				vector<pair<_float3, _float3>> WallRectPosLDRU;
+				WallRectPosLDRU.clear();
+
+				_int WallCount = 0;
+				file->Read<_int>(WallCount);
+				WallRectPosLDRU.resize(WallCount);
+				for (_int j = 0; j < WallCount; ++j)
+				{
+					WallRectPosLDRU[j] = file->Read<pair<_float3, _float3>>();
+				}
+
+				// 벽정보를 기반으로 벽메시 생성
+				shared_ptr<Mesh> WallMesh = make_shared<Mesh>();
+				WallMesh->Create3DRect(WallRectPosLDRU);
+
+				// 메시를 기반으로 벽오브젝트 생성
+				shared_ptr<GameObject> WallObject = make_shared<GameObject>();
+				WallObject->Set_Name(L"Wall" + to_wstring(i));
+				WallObject->GetOrAddTransform();
+
+				// 메시렌더러
+				shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+				renderer->Set_Mesh(WallMesh);
+
+				// 메시를 통해 메시콜라이더 생성
+				shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(*WallMesh.get());
+				WallObject->Add_Component(pCollider);
+				pCollider->Set_Activate(true);
+				// 리지드바디 생성
+				auto rigidBody = make_shared<RigidBody>();
+				rigidBody->Create_RigidBody(pCollider, WallObject->GetOrAddTransform()->Get_WorldMatrix());
+				WallObject->Add_Component(rigidBody);
+
+				Add_GameObject(WallObject);
+			};
+	}
+#pragma endregion
+#pragma region AddGround
+
+	if (DummyData.y >= 2.f)
+	{
+		_int GroundCount = 0;
+		file->Read<_int>(GroundCount);
+		vector<tuple<_float3, _float3, _float3, _float3>> Ground4PointsVector;
+		Ground4PointsVector.resize(GroundCount);
+
+		for (_int i = 0; i < GroundCount; ++i)
+		{
+			Ground4PointsVector.push_back(file->Read<tuple<_float3, _float3, _float3, _float3>>());
+		}
+		// 정보를 기반으로 바닥메시 생성
+		shared_ptr<Mesh> Ground4Mesh = make_shared<Mesh>();
+		Ground4Mesh->CreateGround4Points(Ground4PointsVector);
+
+		// 메시를 기반으로 바닥오브젝트 생성
+		shared_ptr<GameObject> GroundObject = make_shared<GameObject>();
+		GroundObject->Set_Name(L"Ground4P");
+		GroundObject->GetOrAddTransform();
+
+		// 메시렌더러
+		shared_ptr<MeshRenderer> renderer = make_shared<MeshRenderer>(RESOURCES.Get<Shader>(L"Shader_Mesh.fx"));
+		renderer->Set_Mesh(Ground4Mesh);
+
+		// 메시를 통해 메시콜라이더 생성
+		shared_ptr<MeshCollider> pCollider = make_shared<MeshCollider>(*Ground4Mesh.get());
+		GroundObject->Add_Component(pCollider);
+		pCollider->Set_Activate(true);
+		// 리지드바디 생성
+		auto rigidBody = make_shared<RigidBody>();
+		rigidBody->Create_RigidBody(pCollider, GroundObject->GetOrAddTransform()->Get_WorldMatrix());
+		GroundObject->Add_Component(rigidBody);
+
+		// 바닥 콜라이더 중복체크
+		shared_ptr<GameObject> PGround = CUR_SCENE->Get_GameObject(L"Ground4P");
+		Add_GameObject(GroundObject);
 	}
 #pragma endregion
 }

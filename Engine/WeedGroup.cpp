@@ -42,6 +42,32 @@ void WeedGroup::Tick()
 	}
 }
 
+void WeedGroup::Compute_CullPosHeight()
+{
+	// 최대최소계산
+	for (auto& Weed : m_Weeds)
+	{
+		_float fHeight = Weed->Get_Transform()->Get_State(Transform_State::POS).y;
+		
+		Compute_MinMaxHeight(fHeight);
+	}
+	_float3 CullPos = m_pOwner.lock()->Get_CullPos();
+	CullPos.y = (m_fHeightMax + m_fHeightMin) * 0.5f;
+	m_pOwner.lock()->Set_CullPos(CullPos);
+	_float AddRadius = fabs(m_fHeightMax) > fabs(m_fHeightMax) ? fabs(m_fHeightMax) : fabs(m_fHeightMin);
+	_float CullRadius = m_pOwner.lock()->Get_CullRadius();
+	CullRadius += AddRadius;
+	m_pOwner.lock()->Set_CullRadius(CullRadius);
+}
+
+void WeedGroup::Compute_MinMaxHeight(_float _fHeight)
+{
+	if (m_fHeightMax > _fHeight)
+		m_fHeightMax = _fHeight;
+	if (m_fHeightMin < _fHeight)
+		m_fHeightMin = _fHeight;
+}
+
 
 
 
