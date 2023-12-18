@@ -74,6 +74,7 @@
 #include <filesystem>
 #include "GachaScene.h"
 #include "MirScene.h"
+#include "SpikeScene.h"
 #include "UiSettingController.h"
 #include "UiQuestController.h"
 #include "UiBossDialog.h"
