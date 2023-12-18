@@ -69,7 +69,7 @@ private:
 	list <weak_ptr<GameObject>>					m_lMemberEffects;
 
 
-	map<wstring, vector<shared_ptr<GameObject>>>	m_RenderGroup;
+	vector<pair<wstring, vector<shared_ptr<GameObject>>>>	m_RenderGroup;
 	map<wstring, shared_ptr<StructuredBuffer>>		m_RenderParamBuffer;
 
 

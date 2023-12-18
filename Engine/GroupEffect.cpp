@@ -41,6 +41,17 @@ HRESULT GroupEffect::Init()
 
         renderingGroup[Utils::ToWString(meshEffectData->Get_Desc().strTag)].push_back(meshEffectData);
 
+        _bool bAlreadyCreated = false;
+        for (auto& pair : m_RenderGroup)
+        {
+            if (pair.first == Utils::ToWString(meshEffectData->Get_Desc().strTag))
+                bAlreadyCreated = true;
+        }
+        if (bAlreadyCreated == false)
+        {
+            m_RenderGroup.push_back(make_pair(Utils::ToWString(meshEffectData->Get_Desc().strTag), vector<shared_ptr<GameObject>>()));
+        }
+
 		/* if(meshEffectData->Get_Desc().iMeshCnt ==1 && meshEffectData->Get_Desc().fCreateInterval == 0)
 			 continue;
 
@@ -196,8 +207,15 @@ void GroupEffect::Final_Tick()
         if (!meshEffect.expired())
         {
 			meshEffect.lock()->Get_MeshEffect()->MeshEffect_Final_Tick();
-            const wstring instanceID = Utils::ToWString(meshEffect.lock()->Get_MeshEffect()->Get_Desc().strTag);
-            m_RenderGroup[instanceID].push_back(meshEffect.lock());
+
+            for (auto& renderGroup : m_RenderGroup)
+            {
+                if (renderGroup.first == Utils::ToWString(meshEffect.lock()->Get_MeshEffect()->Get_Desc().strTag))
+                    renderGroup.second.push_back(meshEffect.lock());
+            }
+
+            //const wstring instanceID = Utils::ToWString(meshEffect.lock()->Get_MeshEffect()->Get_Desc().strTag);
+            //m_RenderGroup[instanceID].push_back(meshEffect.lock());
         }
 	}
 }
