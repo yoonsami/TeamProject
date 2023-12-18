@@ -1814,20 +1814,19 @@ void Boss_Spike_FSM::skill_6100()
 
             FORWARDMOVINGSKILLDESC desc;
             desc.vSkillDir = _float3{ 0.f,-1.f,0.f };
-            desc.fMoveSpeed = 30.f;
+            desc.fMoveSpeed = 0.f;
             desc.fLifeTime = 1.f;
-            desc.fLimitDistance = 20.f;
+            desc.fLimitDistance = 0.f;
 
             for (_uint i = 0; i < 6; i++)
             {
                 _float fOffSetX = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
                 _float fOffSetZ = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
 
-                _float4 vSkillPos = vMyPos + _float4{ fOffSetX, 10.f, fOffSetZ, 0.f };
                 _float4 vEffectPos = vMyPos + _float4{ fOffSetX, 0.f, fOffSetZ, 0.f };
                
                 Add_GroupEffectOwner(L"Boss_Spike_6100_Ice", vEffectPos.xyz(), true);
-                Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vSkillPos, 1.5f, desc, AIRBORNE_ATTACK, 10.f);
+                Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vEffectPos, 1.5f, desc, AIRBORNE_ATTACK, 10.f);
             }
         }
     }
