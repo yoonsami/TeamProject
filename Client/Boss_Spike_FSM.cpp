@@ -20,6 +20,8 @@
 #include "RigidBody.h"
 #include "ObjectDissolveCreate.h"
 #include "MeshCollider.h"
+#include "GroupEffect.h"
+#include "EffectGoUp.h"
 
 
 Boss_Spike_FSM::Boss_Spike_FSM()
@@ -524,6 +526,9 @@ void Boss_Spike_FSM::SQ_Appear_01_Init()
 
 void Boss_Spike_FSM::SQ_Appear_02()
 {
+    if (Init_CurFrame(5))
+        Add_Effect(L"Boss_Spike_Init_Ice",nullptr,_float4x4::Identity,true);
+
     m_vPlayerBodyPos += Get_Transform()->Get_State(Transform_State::LOOK) * fDT * m_fRunSpeed * 4.f;
     Get_Transform()->Set_State(Transform_State::POS, m_vPlayerBodyPos);
 
@@ -956,6 +961,48 @@ void Boss_Spike_FSM::SQ_Die()
 
     if (Init_CurFrame(Get_FinalFrame() - 1))
     {
+		//for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
+		//{
+		//	material->Set_TextureMap(material->Get_TextureMap(TextureMapType::DIFFUSE), TextureMapType::TEXTURE8);
+		//}
+		//for (auto& material : m_pWeapon.lock()->Get_Model()->Get_Materials())
+		//{
+		//	material->Set_TextureMap(material->Get_TextureMap(TextureMapType::DIFFUSE), TextureMapType::TEXTURE8);
+		//}
+  //      Get_Owner()->Get_Animator()->Get_RenderParamDesc().floatParams[0] = 7.f;
+  //      m_pWeapon.lock()->Get_ModelRenderer()->Get_RenderParamDesc().floatParams[0] = 7.f;
+  //      
+  //      {
+		//	wstring strSkilltag = L"Boss_Spike_Bye";
+		//	shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();
+
+		//	// For. Transform 
+		//	pGroupEffectObj->GetOrAddTransform();
+		//	pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS));
+		//	pGroupEffectObj->Get_Transform()->Set_Quaternion(Get_Transform()->Get_Rotation());
+		//	pGroupEffectObj->Set_Name(strSkilltag);
+		//	// For. GroupEffectData 
+		//	wstring wstrFileName = strSkilltag + L".dat";
+		//	wstring wtsrFilePath = TEXT("..\\Resources\\EffectData\\GroupEffectData\\") + wstrFileName;
+		//	shared_ptr<GroupEffectData> pGroupEffectData = RESOURCES.GetOrAddGroupEffectData(strSkilltag, wtsrFilePath);
+
+		//	if (pGroupEffectData == nullptr)
+		//		return;
+
+		//	// For. GroupEffect component 
+		//	shared_ptr<GroupEffect> pGroupEffect = make_shared<GroupEffect>();
+		//	pGroupEffectObj->Add_Component(pGroupEffect);
+		//	pGroupEffectObj->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
+		//	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
+		//	pGroupEffectObj->Get_GroupEffect()->Set_InitWorldMatrix(Get_Transform()->Get_WorldMatrix());
+		//	pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectMaterials();
+		//	pGroupEffectObj->Set_Name(strSkilltag);
+		//	pGroupEffectObj->Init();
+		//	pGroupEffectObj->Add_Component(make_shared<EffectGoUp>(-1.f, Get_Owner()));
+
+		//	EVENTMGR.Create_Object(pGroupEffectObj);
+		//}
+
 		{
 			_float4 vPortalPos = _float4(0.f, -2.5f, 31.f, 1.f);
 
@@ -985,6 +1032,10 @@ void Boss_Spike_FSM::SQ_Die()
 
     if (Is_AnimFinished())
     {
+		//Get_Owner()->Get_Animator()->Get_RenderParamDesc().floatParams[0] += 3.f * fDT;
+		//m_pWeapon.lock()->Get_ModelRenderer()->Get_RenderParamDesc().floatParams[0] += 15.f * fDT;
+  //      Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1] += Color(10.f * fDT);
+  //      m_pWeapon.lock()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[1] += Color(10.f * fDT);
         auto script = make_shared<ObjectDissolve>(1.f);
         Get_Owner()->Add_Component(script);
         script->Init();

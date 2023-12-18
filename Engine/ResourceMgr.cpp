@@ -1237,7 +1237,7 @@ void ResourceMgr::CreateDefaultMaterial()
 		auto Weedtexture = RESOURCES.GetOrAddTexture(WeedTextureName, WeedTexturePath);
 		material->Set_TextureMap(Weedtexture, TextureMapType::DIFFUSE);
 		auto dissolveTexture = RESOURCES.GetOrAddTexture(L"T_Perlin_Noise_M.DDS", L"..\\Resources\\Textures\\Universal\\T_Perlin_Noise_M.DDS");
-		material->Set_TextureMap(dissolveTexture, TextureMapType::DISSOLVE);
+ 		material->Set_TextureMap(dissolveTexture, TextureMapType::DISSOLVE);
 		Add(WeedTextureName, material);
 	}
 }
