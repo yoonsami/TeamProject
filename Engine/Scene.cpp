@@ -21,6 +21,7 @@
 #include "SphereCollider.h"
 #include "AABBBoxCollider.h"
 #include "PointLightScript.h"
+#include "GroupEffectOwner.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -780,7 +781,9 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 		// CullMode
 		_char bCullNone = 0;
 		// Dummy
-		_float4x4 matDummyData = _float4x4::Identity;
+		_float4x4 matDummyData = _float4x4{0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f ,0.f};
+		// EffectName
+		string strEffectName = "";
 
 		wstring strObjectName = Utils::ToWString(file->Read<string>());
 		strName = Utils::ToString(strObjectName);
@@ -818,6 +821,9 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 		file->Read<_float>(CullRadius);
 		file->Read<_char>(bCullNone);
 		file->Read<_float4x4>(matDummyData);
+
+		if (matDummyData.m[0][3] >= 1.f)
+			strEffectName = file->Read<string>();
 
 // 오브젝트 생성
 		shared_ptr<GameObject> CreateObject = make_shared<GameObject>();
@@ -920,8 +926,28 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 				break;
 			}
 		}
-		
+		if (matDummyData.m[0][3] >= 1.f)
+		{
+			// 이펙트 스크립트 사용
+			_float3 vPosOffset = _float3{ 0.f, 0.f, 0.f };
+			// For. Transform 
+			_float4 vOwnerLook = CreateObject->Get_Transform()->Get_State(Transform_State::LOOK);
+			vOwnerLook.Normalize();
+			_float4 vOwnerRight = CreateObject->Get_Transform()->Get_State(Transform_State::RIGHT);
+			vOwnerRight.Normalize();
+			_float4 vOwnerUp = CreateObject->Get_Transform()->Get_State(Transform_State::UP);
+			vOwnerUp.Normalize();
+			_float4 vOwnerPos = CreateObject->Get_Transform()->Get_State(Transform_State::POS)
+				+ vOwnerRight * vPosOffset.x
+				+ vOwnerUp * vPosOffset.y
+				+ vOwnerLook * vPosOffset.z;
+			//CreateObject->Get_Transform()->Set_State(Transform_State::POS, vOwnerPos);
 
+			// For. GroupEffect component 
+			shared_ptr<GroupEffectOwner> pGroupEffect = make_shared<GroupEffectOwner>();
+			CreateObject->Add_Component(pGroupEffect);
+			CreateObject->Get_GroupEffectOwner()->Set_GroupEffectTag(Utils::ToWString(strEffectName));
+		}
 		Add_GameObject(CreateObject);
 	}
 

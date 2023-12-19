@@ -35,7 +35,13 @@ public:
     // CullDirection
         _char bCullNone = 0;
     // DummyData
-        _float4x4 matDummyData = _float4x4::Identity;
+        _float4x4 matDummyData =
+            _float4x4{ 0.f, 0.f, 0.f, 0.f,
+			           0.f, 0.f, 0.f, 0.f,
+			           0.f, 0.f, 0.f, 0.f,
+			           0.f, 0.f, 0.f, 0.f };
+    //(Dummy[0].x >= 1.f) : EffectName
+        string strEffectName = "";
     }MAPOBJDESC;
 
 public:
@@ -46,6 +52,7 @@ public:
     _float Get_UVWeight() { return m_MapObjDesc.fUVWeight; }
     MAPOBJDESC& Get_DESC() { return m_MapObjDesc; }
     _float4x4& Get_DummyData() { return m_MapObjDesc.matDummyData; }
+    string& Get_EffectName() { return m_MapObjDesc.strEffectName; }
 
 public:
     virtual HRESULT Init() override;

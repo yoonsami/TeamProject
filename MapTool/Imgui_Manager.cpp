@@ -477,7 +477,7 @@ void ImGui_Manager::Frame_SelcetObjectManager()
             }
         }
         // 애니메이션여부체크
-        if(m_pMapObjects[m_iObjects]->Get_ModelRenderer() != nullptr)
+        if (m_pMapObjects[m_iObjects]->Get_ModelRenderer() != nullptr)
         {
             // CullNone여부 판단
             _int passType = _int(CurObjectDesc.bCullNone);
@@ -487,18 +487,18 @@ void ImGui_Manager::Frame_SelcetObjectManager()
                 if (passType > ModelRenderer::INSTANCE_PASSTYPE::PASS_DEFAULT) passType = ModelRenderer::INSTANCE_PASSTYPE::PASS_DEFAULT;
                 CurObjectDesc.bCullNone = _char(passType);
                 m_pMapObjects[m_iObjects]->Get_ModelRenderer()->Set_PassType((ModelRenderer::INSTANCE_PASSTYPE)CurObjectDesc.bCullNone);
-				/* for (_int i = 0; i < m_pMapObjects.size(); ++i)
-				 {
-					 MapObjectScript::MAPOBJDESC& tempDesc = m_pMapObjects[i]->Get_Script<MapObjectScript>()->Get_DESC();
-					 if (CurObjectDesc.strName == tempDesc.strName)
-					 {
-						 tempDesc.bCullNone = CurObjectDesc.bCullNone;
-						 m_pMapObjects[i]->Get_ModelRenderer()->Set_PassType((ModelRenderer::INSTANCE_PASSTYPE)CurObjectDesc.bCullNone);
-					 }
-				 }*/
+                /* for (_int i = 0; i < m_pMapObjects.size(); ++i)
+                 {
+                     MapObjectScript::MAPOBJDESC& tempDesc = m_pMapObjects[i]->Get_Script<MapObjectScript>()->Get_DESC();
+                     if (CurObjectDesc.strName == tempDesc.strName)
+                     {
+                         tempDesc.bCullNone = CurObjectDesc.bCullNone;
+                         m_pMapObjects[i]->Get_ModelRenderer()->Set_PassType((ModelRenderer::INSTANCE_PASSTYPE)CurObjectDesc.bCullNone);
+                     }
+                 }*/
                 for (auto& obj : m_pMapObjects)
                 {
-                    if(!obj->Get_Model())
+                    if (!obj->Get_Model())
                         continue;
 
                     if (obj->Get_Model()->Get_ModelTag() == m_pMapObjects[m_iObjects]->Get_Model()->Get_ModelTag())
@@ -511,12 +511,20 @@ void ImGui_Manager::Frame_SelcetObjectManager()
             }
         }
         Text("DummyData");
-        MapObjectScript::MAPOBJDESC& SelectObjDesc = m_pMapObjects[m_iObjects]->Get_Script<MapObjectScript>()->Get_DESC();
-        //_float4& vecDummy0 = SelectObjDesc.matDummyData[0];
-        //ImGui::DragFloat4("vecDummy0", SelectObjDesc.matDummyData[, 0.1f,)
+        _float4x4& matDummy = m_pMapObjects[m_iObjects]->Get_Script<MapObjectScript>()->Get_DummyData();
+        ImGui::DragFloat4("vecDummy0", matDummy.m[0], 0.1f, 0.f);
+        if (matDummy.m[0][3] >= 1.f)
+        {
+            string& strEffectName = m_pMapObjects[m_iObjects]->Get_Script<MapObjectScript>()->Get_EffectName();
+            //ImGui::InputText("EffectName", strEffectName.data(), strEffectName.size());
+            char tempEffectName[MAX_PATH];
+            strcpy_s(tempEffectName, strEffectName.c_str());
+            ImGui::InputText("EffectName", tempEffectName, sizeof(tempEffectName));
+            strEffectName = tempEffectName;
+            Text(strEffectName.data());
+        }
     }
     
-
     // 세이브로드
     ImGui::SeparatorText("Save&Load");
     ImGui::Text("SaveFileName");
@@ -866,12 +874,17 @@ void ImGui_Manager::Frame_Magic()
         //    }
         //}
         // 5번 벽 제거
-        auto iter = m_WallRectPosLDRU.begin();
-        for (_int i = 0; i < 5; ++i)
+        //auto iter = m_WallRectPosLDRU.begin();
+        //for (_int i = 0; i < 5; ++i)
+        //{
+        //    ++iter;
+        //}
+        // 모든 맵오브젝트의 더미데이터 초기화
+        for (auto& MapObj : m_pMapObjects)
         {
-            ++iter;
+            auto& Dummy = MapObj->Get_Script<MapObjectScript>()->Get_DummyData();
+            Dummy = _float4x4{ 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f ,0.f, 0.f };
         }
-        iter = m_WallRectPosLDRU.erase(iter);
     }
 
     // 맵 더미데이터 관리
@@ -1435,6 +1448,11 @@ shared_ptr<GameObject> ImGui_Manager::Create_MapObject(MapObjectScript::MapObjec
     }
     // 그림자, 블러, 컬링정보계산
     Bake(CreateObject);
+
+    if(MapObjSc->Get_DummyData().m[0][3] >= 1.f)
+    {
+
+    }
 
     EVENTMGR.Create_Object(CreateObject);
 
@@ -2024,6 +2042,11 @@ HRESULT ImGui_Manager::Save_MapObject()
         file->Write<_char>(MapDesc.bCullNone);
 
         file->Write<_float4x4>(MapDesc.matDummyData);
+
+        if (MapDesc.matDummyData.m[0][3] >= 1.f)
+        {
+            file->Write<string>(MapDesc.strEffectName);
+        }
     }
 
     // 플레이어의 시작위치 저장.
@@ -2271,6 +2294,11 @@ HRESULT ImGui_Manager::Load_MapObject()
         file->Read<_float>(MapDesc.CullRadius);
         file->Read<_char>(MapDesc.bCullNone);
         file->Read<_float4x4>(MapDesc.matDummyData);
+
+        if (MapDesc.matDummyData.m[0][3] >= 1.f)
+        {
+            MapDesc.strEffectName = file->Read<string>();
+        }
         
         shared_ptr<GameObject> CreateObject = Create_MapObject(MapDesc);
         
