@@ -220,6 +220,19 @@ float4 PS_RenderFinal(VS_OUT input) : SV_Target
 
 float3 GetLutColor(float3 colorIn, sampler2D LutSampler)
 {
+    uint width, height, numMips;
+    SubMap0.GetDimensions(0, width, height, numMips);
+    
+    float2 LutSize = float2(1.f / width, 1.f / height);
+    float4 LutUV;
+    colorIn = saturate(colorIn) * 15.f;
+    LutUV.r = floor(colorIn.b);
+    LutUV.xy = (colorIn.rg + 0.5f) * LutSize;
+    LutUV.x += LutUV.w * LutSize.y;
+    LutUV.z += LutUV.x * LutSize.y;
+ 
+   // return lerp(tex2Dlod(LutSampler, LutUV.xyzz).rgb, tex2Dlod(LutSampler, LutUV.zyzz).rgb,);
+    
     
     return 0.f;
     
