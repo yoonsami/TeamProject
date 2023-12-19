@@ -172,7 +172,7 @@ void Boss_DellonsWraith_FSM::FX_DellonsWraith_skill_30010()
 {
     if (Init_CurFrame(42))
     {
-        SOUND.Play_Sound(L"swing_axe_02_gigan", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"swing_axe_02_gigan", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     }
@@ -215,7 +215,7 @@ void Boss_DellonsWraith_FSM::FX_DellonsWraith_skill_30010()
         Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_Wraith_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);
     }
     else if (Init_CurFrame(65))
-        SOUND.Play_Sound(L"hit_explosive", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"hit_explosive", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 
     if (Is_AnimFinished())
@@ -234,7 +234,7 @@ void Boss_DellonsWraith_FSM::FX_DellonsWraith_skill_30010_Init()
     if (!m_pTarget.expired())
         Get_Transform()->Set_WorldMat(m_pTarget.lock()->Get_Transform()->Get_WorldMatrix());
 
-    SOUND.Play_Sound(L"skill_dark_slash", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"skill_dark_slash", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 void Boss_DellonsWraith_FSM::FX_DellonsWraith_skill_400100()

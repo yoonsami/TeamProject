@@ -46,6 +46,8 @@
 #include "Undead_Priest_FSM.h"
 #include "Alpaca_FSM.h"
 #include "Wolf_FSM.h"
+#include "NeutralAlpaca_FSM.h"
+#include "EntSoldier_FSM.h"
 
 
 #include "UiGachaController.h"
@@ -113,6 +115,9 @@ void SpikeScene::Init()
 
 void SpikeScene::Tick()
 {
+	//if (m_bPlayBGM)
+		SOUND.Play_Sound(L"bgm_SpikeScene", CHANNELID::SOUND_BGM, 0.5f * g_fBgmRatio);
+
 	__super::Tick();
 
 	//{
@@ -180,6 +185,17 @@ HRESULT SpikeScene::Load_Scene()
 	//Monster
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Boss_Spike\\", false);
 	
+	//Test
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Silversword_Soldier\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_White\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_Brown\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_Black\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Wolf\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Succubus_Scythe\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Undead_Priest\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\EntSoldier\\", false);
+	//
+
 	//Sound
 	RESOURCES.Load_Sound(L"..\\Resources\\Sound\\SpikeScene\\", false);
 
@@ -187,7 +203,10 @@ HRESULT SpikeScene::Load_Scene()
 	auto player = Load_Player();
 	Load_Camera(player);
 	Load_MapFile(L"SpikeMap", player);
-	Load_Boss_Spike(player);
+	
+	//Load_Boss_Spike(player);
+	
+	Load_Monster(1, L"Silversword_Soldier", player);
 
 	Load_Ui(player);
 
@@ -421,6 +440,78 @@ void SpikeScene::Load_Boss_Spike(shared_ptr<GameObject> pPlayer)
 		ObjWeapon->Set_Name(L"Weapon_Boss_Spike");
 		ObjWeapon->Set_VelocityMap(true);
 		Add_GameObject(ObjWeapon);
+	}
+}
+
+void SpikeScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_ptr<GameObject> pPlayer, _bool bCharacterController)
+{
+	{
+		for (_uint i = 0; i < iCnt; i++)
+		{
+			// Add. Monster
+			shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
+
+			ObjMonster->Add_Component(make_shared<Transform>());
+
+			_float fRan = 0;
+			if (rand() % 2 == 0)
+				fRan = -1.f;
+			else
+				fRan = 1.f;
+
+			ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(_float(rand() % 15) * fRan, 0.f, _float(rand() % 15) + 30.f, 1.f));
+			{
+				shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+
+				shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+				{
+					shared_ptr<Model> model = RESOURCES.Get<Model>(strMonsterTag);
+					animator->Set_Model(model);
+				}
+
+				ObjMonster->Add_Component(animator);
+
+				if (strMonsterTag == L"Silversword_Soldier")
+					ObjMonster->Add_Component(make_shared<Silversword_Soldier_FSM>());
+				else if (strMonsterTag == L"Succubus_Scythe")
+					ObjMonster->Add_Component(make_shared<Succubus_Scythe_FSM>());
+				else if (strMonsterTag == L"Undead_Priest")
+					ObjMonster->Add_Component(make_shared<Undead_Priest_FSM>());
+				else if (strMonsterTag.find(L"Bad_Alpaca") != wstring::npos)
+					ObjMonster->Add_Component(make_shared<Alpaca_FSM>());
+				else if (strMonsterTag.find(L"Alpaca") != wstring::npos)
+					ObjMonster->Add_Component(make_shared<NeutralAlpaca_FSM>());
+				else if (strMonsterTag == L"Wolf")
+					ObjMonster->Add_Component(make_shared<Wolf_FSM>());
+				else if (strMonsterTag == L"EntSoldier")
+					ObjMonster->Add_Component(make_shared<EntSoldier_FSM>());
+
+				ObjMonster->Get_FSM()->Set_Target(pPlayer);
+			}
+			ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.7f, 0.5f })); //obbcollider
+			ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
+			ObjMonster->Get_Collider()->Set_Activate(true);
+
+			wstring strMonsterName = strMonsterTag + to_wstring(i);
+			ObjMonster->Set_Name(strMonsterName);
+			{
+				//Alpaca and Wolf don't use character controller
+				if (bCharacterController)
+				{
+					auto controller = make_shared<CharacterController>();
+					ObjMonster->Add_Component(controller);
+					auto& desc = controller->Get_CapsuleControllerDesc();
+					desc.radius = 0.5f;
+					desc.height = 5.f;
+					_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz();
+					desc.position = { vPos.x, vPos.y, vPos.z };
+					controller->Create_Controller();
+				}
+			}
+			ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
+
+			Add_GameObject(ObjMonster);
+		}
 	}
 }
 

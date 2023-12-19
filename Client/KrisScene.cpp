@@ -117,7 +117,7 @@ void KrisScene::Init()
 
 void KrisScene::Tick()
 {
-	SOUND.Play_Sound(L"bgm_KrisScene", CHANNELID::SOUND_BGM, 0.5f);
+	SOUND.Play_Sound(L"bgm_KrisScene", CHANNELID::SOUND_BGM, 0.5f * g_fBgmRatio);
 
 	__super::Tick();
 }
@@ -255,15 +255,15 @@ HRESULT KrisScene::Load_Scene()
 	Load_Camera(player);
 	Load_MapFile(L"KrisMap", player);
 
-	Load_Monster(2, L"Alpaca_White", player);
-	Load_Monster(2, L"Alpaca_Brown", player);
-	Load_Monster(2, L"Alpaca_Black", player); 
+	Load_Monster(1, L"Alpaca_White", player);
+	Load_Monster(1, L"Alpaca_Brown", player);
+	Load_Monster(1, L"Alpaca_Black", player); 
 	Load_Monster(5, L"Bad_Alpaca_White", player);
 	Load_Monster(5, L"Bad_Alpaca_Brown", player);
 	Load_Monster(5, L"Bad_Alpaca_Black", player);
 
 	Load_Boss_Dellons(player);				
-	
+
 	Load_Ui(player);
 	Load_EventScript();
 	return S_OK;
