@@ -1227,7 +1227,7 @@ void Player_FSM::skill_100100()
 {
     if (Init_CurFrame(7))
         Add_Effect(L"Teo_100100");
-    else if (Init_CurFrame(34))
+    else if (Init_CurFrame(36))
         Add_Effect(L"Teo_100100_slash");
 
     Look_DirToTarget();
