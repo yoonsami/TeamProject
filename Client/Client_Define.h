@@ -19,3 +19,9 @@ extern _bool    g_bIsCanMouseMove;
 extern _bool    g_bIsCanRotation;
 extern _bool	g_bCutScene;
 extern _bool	g_bWitcherSenseOn;
+
+extern _float   g_fBgmRatio;
+extern _float   g_fEnvironmentRatio;
+extern _float   g_fCharacterVoiceRatio;
+extern _float   g_fharacterEffectRatio;
+extern _float   g_fMonsterEffectRatio;
