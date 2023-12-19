@@ -204,9 +204,9 @@ HRESULT SpikeScene::Load_Scene()
 	Load_Camera(player);
 	Load_MapFile(L"SpikeMap", player);
 	
-	//Load_Boss_Spike(player);
+	Load_Boss_Spike(player);
 	
-	Load_Monster(1, L"Silversword_Soldier", player);
+	//Load_Monster(1, L"Silversword_Soldier", player);
 
 	Load_Ui(player);
 
