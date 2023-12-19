@@ -74,6 +74,8 @@ void MeshEffect::MeshEffect_Final_Tick()
     m_fTimeAcc_SpriteAnimation += fDT;
     if (m_tDesc.bUseFadeOut && m_fCurrAge > m_fFadeOutStartTime)
         m_fFadeOutRatio = 1.f - ((m_fCurrAge - m_fFadeOutStartTime) / (m_fDuration - m_fFadeOutStartTime));
+    else 
+        m_fFadeOutRatio = 1.f;
 
     // Calc Curr Dissolve weight 
     if ("None" != m_tDesc.strDissolveTexture)

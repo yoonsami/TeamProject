@@ -1171,7 +1171,7 @@ void Widget_EffectMaker_Mesh::Create()
 				m_bLightOn,
 				m_fLightIntensity,
 				m_bUseFadeOut,
-					m_fFadeOutStartTime,
+				m_fFadeOutStartTime,
 				m_iMeshCnt,
 				m_fCreateInterval,
 				_float2(m_fParticleDuration),
