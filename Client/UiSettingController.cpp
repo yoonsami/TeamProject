@@ -5,11 +5,11 @@
 #include "MeshRenderer.h"
 #include "FontRenderer.h"
 
-_uint    g_fBgmRatio                = 1.f;
-_uint    g_fEnvironmentRatio        = 1.f;
-_uint    g_fCharacterVoiceRatio     = 1.f;
-_uint    g_fCharacterEffectRatio    = 1.f;
-_uint    g_fMonsterEffectRatio      = 1.f;
+_float    g_fBgmRatio                = 1.f;
+_float    g_fEnvironmentRatio        = 1.f;
+_float    g_fCharacterVoiceRatio     = 1.f;
+_float    g_fCharacterEffectRatio    = 1.f;
+_float    g_fMonsterEffectRatio      = 1.f;
 
 UiSettingController::UiSettingController()
 {
