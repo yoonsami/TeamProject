@@ -22,6 +22,8 @@ public:
     void Change_FPS();
 
     void Create_Setting_Ui();
+    void Create_Sound_Ui();
+
     void Remove_Setting_Ui();
 
 private:
@@ -40,6 +42,15 @@ private:
     void Change_Value_MotionBlur();
 
     void Change_FPS_Font();
+
+    void Change_All_Sound();
+
+    void Change_Value_Bgm();
+    void Change_Value_Environment();
+    void Change_Value_CharacterVoice();
+    void Change_Value_CharacterEffect();
+    void Change_Value_MonsterVoice();
+    void Change_Value_MonsterEffect();
     
 private:
     weak_ptr<GameObject>    m_pFPS_Font;
@@ -91,5 +102,18 @@ private:
     _uint   m_iStarSSAO_Start                   = {};
     _uint   m_iStarSSAO_End                     = {};
     _uint   m_iStarMotionBlur                   = {};
+
+    enum class SETTING_STATE { SET_GRAPHIC, SET_SOUND, MAX };
+    SETTING_STATE   m_eType = { SETTING_STATE::MAX };
+    _float  m_fTotalSoundValue                  = {};
+    _float  m_fMinSoundValue                    = {};
+    _float  m_fMaxSoundValue                    = {};
+
+    _uint   m_iStarBgm                          = {};
+    _uint   m_iStarEnvironment                  = {};
+    _uint   m_iStarCharacterVoice               = {};
+    _uint   m_iStarCharacterEffect              = {};
+    _uint   m_iStarMonsterVoice                 = {};
+    _uint   m_iStarMonsterEffect                = {};
 };
 
