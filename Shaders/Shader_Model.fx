@@ -728,7 +728,7 @@ PBR_OUTPUT PS_PBR_Deferred(MeshOutput input)
     output.diffuseColor = diffuseColor + float4(g_vec4_0.xyz, 0.f);
     output.emissive = emissiveColor;
     output.rimColor = Material.emissive + g_vec4_1;
-    output.blur = 0;
+    //output.blur = 0;
     return output;
 }
 
@@ -787,7 +787,7 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(MeshInstancingOutput input)
     output.diffuseColor = diffuseColor + float4(input.renderParam.xyz, 0.f);;
     output.emissive = emissiveColor;
     output.rimColor = Material.emissive;
-    output.blur = 0;
+    //output.blur = 0;
     return output;
 }
 
@@ -847,7 +847,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject(MeshOutput input)
     output.diffuseColor = diffuseColor;
     output.emissive = emissiveColor;
     output.rimColor = Material.emissive + g_vec4_1;
-    output.blur = 0;
+    //output.blur = 0;
     return output;
 }
 
@@ -907,7 +907,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_Instancing(MeshInstancingOutput i
     output.diffuseColor = diffuseColor;
     output.emissive = emissiveColor ;
     output.rimColor = Material.emissive;
-    output.blur = 0;
+    //output.blur = 0;
     return output;
 }
 
@@ -983,7 +983,7 @@ PBR_OUTPUT PS_PBR_WATER(MeshOutput input)
     output.diffuseColor = diffuseColor;
     output.emissive = emissiveColor;
     output.rimColor = Material.emissive;
-    output.blur = 0;
+   // output.blur = 0;
     return output; 
 }
 
@@ -1105,7 +1105,7 @@ float4 PS_PBR_Forward(MeshOutput input) : SV_Target
     output.diffuseColor = diffuseColor + float4(g_vec4_0.xyz, 0.f);
     output.emissive = emissiveColor;
     output.rimColor = Material.emissive;
-    output.blur = 0;
+   // output.blur = 0;
 
     float3 ambient = ARM_Map.rrr;
     
@@ -1197,7 +1197,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_NormalControl(MeshOutput input)
     output.diffuseColor = diffuseColor;
     output.emissive = emissiveColor;
     output.rimColor = Material.emissive + g_vec4_1;
-    output.blur = 0;
+   // output.blur = 0;
     return output;
 }
 
@@ -1263,7 +1263,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_Instancing_NormalControl(MeshInst
     output.diffuseColor = diffuseColor;
     output.emissive = emissiveColor;
     output.rimColor = Material.emissive;
-    output.blur = 0;
+   // output.blur = 0;
     return output;
 }
 
