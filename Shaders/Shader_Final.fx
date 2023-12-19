@@ -218,6 +218,14 @@ float4 PS_RenderFinal(VS_OUT input) : SV_Target
     return SubMap0.Sample(LinearSampler, input.uv);
 }
 
+float3 GetLutColor(float3 colorIn, sampler2D LutSampler)
+{
+    
+    return 0.f;
+    
+}
+
+
 technique11 T0
 {
     Pass brightcontrast
