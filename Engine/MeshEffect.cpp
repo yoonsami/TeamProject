@@ -261,6 +261,10 @@ void MeshEffect::Update_Desc()
         // Dissolve 
         m_SplineInput_Dissolve[i * 2 + 0] = m_tDesc.vCurvePoint_Dissolve[i].x;
         m_SplineInput_Dissolve[i * 2 + 1] = m_tDesc.vCurvePoint_Dissolve[i].y;
+
+        // RimLight 
+        m_SplineInput_RimLight[i * 2 + 0] = m_tDesc.vCurvePoint_RimLight[i].x;
+        m_SplineInput_RimLight[i * 2 + 1] = m_tDesc.vCurvePoint_RimLight[i].y;
     }
 
     // For. Model Components
