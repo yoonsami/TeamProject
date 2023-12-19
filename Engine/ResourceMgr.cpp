@@ -1520,6 +1520,10 @@ void ResourceMgr::CreateGroupEffectData()
 	}
 }
 
+void ResourceMgr::CreateLUTTextures()
+{
+}
+
 void ResourceMgr::Delete_NonStaticResources( )
 {
 	array<KeyResouceMap, RESOURCE_TYPE_COUNT>& resources = m_Resources[1];

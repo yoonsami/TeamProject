@@ -170,7 +170,7 @@ void DebugTool::RenderOptionTab()
 			DragFloat("Fog Density", &g_fogDensity, 0.001f, 0.001f, 1.f);
 			InputInt("Fog Mod", &g_fogMode);
 			if (g_fogMode < 0) g_fogMode = 0;
-			if (g_fogMode > 2) g_fogMode = 2;
+			if (g_fogMode > 3) g_fogMode = 3;
 			static bool alpha_preview = true;
 			static bool alpha_half_preview = false;
 			static bool drag_and_drop = true;

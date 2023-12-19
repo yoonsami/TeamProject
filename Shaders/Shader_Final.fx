@@ -219,7 +219,7 @@ float4 PS_Fog(VS_OUT input) : SV_Target
     else if(fogMode == 3)
     {
         float depthThreshold = fogEnd;
-        color = lerp(color, color + fogColor, saturate((viewZ - depthThreshold) * 10.f));
+        color = lerp(color, fogColor, saturate((viewZ - depthThreshold) * 10.f) / 2.f );
         
     }
     

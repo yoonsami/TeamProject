@@ -64,6 +64,8 @@ public:
 	void						CreateMeshEffectData();
 	void						CreateGroupEffectData();
 
+	void						CreateLUTTextures();
+
 	void						Delete_NonStaticResources();
 
 	shared_ptr<Texture> CreateTexture(const wstring& name, DXGI_FORMAT format, _uint width, _uint height, _uint BindFlags, _float4 clearColor);
