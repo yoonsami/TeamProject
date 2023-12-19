@@ -230,6 +230,15 @@ void DebugTool::RenderOptionTab()
 			DragFloat2("g_vCenterPos", (_float*)&g_vCenterPos, 0.01f, -0.5f,0.5f);
 			DragFloat("g_fNormalRadius", &g_fNormalRadius, 0.01f, 0.01f,1.f);
 		}
+		if (CollapsingHeader("LUT Option"))
+		{
+			_bool& g_bLUTOn = CUR_SCENE->g_LUTData.g_LUTOn;
+			_int& g_LUTIndex = CUR_SCENE->g_LUTData.g_LUTIndex;
+
+			InputInt("g_bLUTOn", &g_LUTIndex);
+			if (g_LUTIndex > 55) g_LUTIndex = 55;
+			if (g_LUTIndex < 0) g_LUTIndex = 0;
+		}
 		if (CollapsingHeader("Other Option"))
 		{
 			SeparatorText("Outline");

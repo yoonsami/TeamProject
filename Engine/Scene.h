@@ -269,7 +269,7 @@ public:
 	struct LUTData
 	{
 		_bool g_LUTOn = false;
-		_uint g_LUTIndex = 0;
+		_int g_LUTIndex = 0;
 
 	};
 

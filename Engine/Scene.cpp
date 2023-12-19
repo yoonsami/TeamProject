@@ -141,6 +141,8 @@ void Scene::Render()
 	Render_Debug();
 	Render_ToneMapping();
 
+	Render_LUT();
+
 	Render_UI();
 
 }
@@ -2065,7 +2067,7 @@ void Scene::Render_LUT()
 	if (!g_LUTData.g_LUTOn)
 		return;
 
-	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::VIGNETTE)->OMSetRenderTargets();
+	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::LUT)->OMSetRenderTargets();
 
 	auto material = RESOURCES.Get<Material>(L"LUT");
 	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
