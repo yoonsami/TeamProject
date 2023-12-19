@@ -241,6 +241,9 @@
     <Filter Include="06.Map\03. WeedGroup">
       <UniqueIdentifier>{e82205e2-5fc8-44ba-a4fa-5e64b1590996}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06.Map\04. MapObjectLoopEffect">
+      <UniqueIdentifier>{0e76804e-ce56-4823-9f9c-5e40e1c8d81c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -488,6 +491,9 @@
     </ClCompile>
     <ClCompile Include="WeedGroup.cpp">
       <Filter>06.Map\03. WeedGroup</Filter>
+    </ClCompile>
+    <ClCompile Include="MapObjectLoopEffectScript.cpp">
+      <Filter>06.Map\04. MapObjectLoopEffect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -751,6 +757,9 @@
     </ClInclude>
     <ClInclude Include="WeedGroup.h">
       <Filter>06.Map\03. WeedGroup</Filter>
+    </ClInclude>
+    <ClInclude Include="MapObjectLoopEffectScript.h">
+      <Filter>06.Map\04. MapObjectLoopEffect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

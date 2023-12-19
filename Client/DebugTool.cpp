@@ -170,7 +170,7 @@ void DebugTool::RenderOptionTab()
 			DragFloat("Fog Density", &g_fogDensity, 0.001f, 0.001f, 1.f);
 			InputInt("Fog Mod", &g_fogMode);
 			if (g_fogMode < 0) g_fogMode = 0;
-			if (g_fogMode > 2) g_fogMode = 2;
+			if (g_fogMode > 3) g_fogMode = 3;
 			static bool alpha_preview = true;
 			static bool alpha_half_preview = false;
 			static bool drag_and_drop = true;
@@ -229,6 +229,15 @@ void DebugTool::RenderOptionTab()
 			InputInt("g_iSamples", &g_iSamples);
 			DragFloat2("g_vCenterPos", (_float*)&g_vCenterPos, 0.01f, -0.5f,0.5f);
 			DragFloat("g_fNormalRadius", &g_fNormalRadius, 0.01f, 0.01f,1.f);
+		}
+		if (CollapsingHeader("LUT Option"))
+		{
+			_bool& g_bLUTOn = CUR_SCENE->g_LUTData.g_LUTOn;
+			_int& g_LUTIndex = CUR_SCENE->g_LUTData.g_LUTIndex;
+
+			InputInt("g_bLUTOn", &g_LUTIndex);
+			if (g_LUTIndex > 55) g_LUTIndex = 55;
+			if (g_LUTIndex < 0) g_LUTIndex = 0;
 		}
 		if (CollapsingHeader("Other Option"))
 		{

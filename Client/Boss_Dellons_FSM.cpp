@@ -23,7 +23,7 @@ Boss_Dellons_FSM::Boss_Dellons_FSM()
 
 Boss_Dellons_FSM::~Boss_Dellons_FSM()
 {
-    CUR_SCENE->g_sceneFlag++;
+        
 }
 
 HRESULT Boss_Dellons_FSM::Init()
@@ -73,6 +73,13 @@ HRESULT Boss_Dellons_FSM::Init()
 	m_fNormalAttack_AnimationSpeed = 1.2f;
 	m_fSkillAttack_AnimationSpeed = 1.0f;
 	m_fEvade_AnimationSpeed = 1.5f;
+
+    m_fVoiceVolume = 0.5f;
+    m_fSwingVolume = 0.4f;
+    m_fFootStepVolume = 0.4f;
+    m_fEffectVolume = 0.4f;
+
+    m_fMySoundDistance = 15.f;
 
     return S_OK;
 }
@@ -201,8 +208,6 @@ void Boss_Dellons_FSM::State_Tick()
         skill_501100();
         break;
     }
-
-    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
     if (m_iPreFrame != m_iCurFrame)
         m_iPreFrame = m_iCurFrame;
@@ -480,6 +485,8 @@ void Boss_Dellons_FSM::talk_01()
             CUR_SCENE->Set_AttackCall(true);
             m_eCurState = STATE::b_idle;
             g_bCutScene = false;
+
+            SOUND.Play_Sound(L"Skill_08_A_Dellons_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
 }
@@ -563,6 +570,11 @@ void Boss_Dellons_FSM::b_idle_Init()
 
 void Boss_Dellons_FSM::b_run_start()
 {
+    if (Init_CurFrame(8))
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(18))
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
 
@@ -596,6 +608,11 @@ void Boss_Dellons_FSM::b_run_start_Init()
 
 void Boss_Dellons_FSM::b_run()
 {
+    if (Init_CurFrame(9))
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(18))
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
 
@@ -678,6 +695,11 @@ void Boss_Dellons_FSM::b_run_end_l_Init()
 
 void Boss_Dellons_FSM::b_sprint()
 {
+    if (Init_CurFrame(6))
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(13))
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
 
@@ -739,6 +761,8 @@ void Boss_Dellons_FSM::die_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"die", 0.2f, false, 1.f);
+
+    CUR_SCENE->g_sceneFlag++;
 
     m_bInvincible = true;
     m_bSuperArmor = true;
@@ -1104,13 +1128,25 @@ void Boss_Dellons_FSM::stun_Init()
 
 void Boss_Dellons_FSM::skill_1100()
 {
+    if (Init_CurFrame(9))
+        Add_And_Set_Effect(L"Dellons_1100");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (m_iCurFrame == 9)
+    if (Init_CurFrame(9))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (m_iCurFrame == 19)
+    }
+    else if (Init_CurFrame(19))
+    {
         AttackCollider_Off();
+    }
+
 
     if (m_iCurFrame == 25)
         m_eCurState = STATE::skill_1200;
@@ -1121,6 +1157,8 @@ void Boss_Dellons_FSM::skill_1100_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+
+    SOUND.Play_Sound(L"Dellons_att_s_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1133,13 +1171,24 @@ void Boss_Dellons_FSM::skill_1100_Init()
 
 void Boss_Dellons_FSM::skill_1200()
 {
+    if (Init_CurFrame(8))
+        Add_And_Set_Effect(L"Dellons_1200");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (m_iCurFrame == 8)
+    if (Init_CurFrame(8))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (m_iCurFrame == 18)
+    }
+    else if (Init_CurFrame(18))
+    {
         AttackCollider_Off();
+    }
   
     if (m_iCurFrame == 21)
         m_eCurState = STATE::skill_1300;
@@ -1156,6 +1205,8 @@ void Boss_Dellons_FSM::skill_1200_Init()
     m_tAttackCoolTime.fAccTime = 0.f;
     m_bSetPattern = false;
 
+    SOUND.Play_Sound(L"Dellons_att_s_04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     AttackCollider_Off();
 
     m_bInvincible = false;
@@ -1164,13 +1215,24 @@ void Boss_Dellons_FSM::skill_1200_Init()
 
 void Boss_Dellons_FSM::skill_1300()
 {
+    if (Init_CurFrame(9))
+        Add_And_Set_Effect(L"Dellons_1300");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (m_iCurFrame == 8)
+    if (Init_CurFrame(8))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (m_iCurFrame == 33)
+    }
+    else if (Init_CurFrame(33))
+    {
         AttackCollider_Off();
+    }
 
     if (m_iCurFrame == 19)
         m_eCurState = STATE::skill_1400;
@@ -1181,6 +1243,8 @@ void Boss_Dellons_FSM::skill_1300_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_1300", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+
+    SOUND.Play_Sound(L"Dellons_att_s_05", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1195,16 +1259,32 @@ void Boss_Dellons_FSM::skill_1300_Init()
 
 void Boss_Dellons_FSM::skill_1400()
 {
+    if (Init_CurFrame(8))
+        Add_And_Set_Effect(L"Dellons_1400");
+    if (Init_CurFrame(14))
+        Add_And_Set_Effect(L"Dellons_1400_1");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
+
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (m_iCurFrame == 8)
+    if (Init_CurFrame(8))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (m_iCurFrame == 14)
+    }
+    else if (Init_CurFrame(14))
         AttackCollider_Off();
-    else if (m_iCurFrame == 16)
+    else if (Init_CurFrame(16))
+    {
+        SOUND.Play_Sound(L"swing_hammer_hk", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (m_iCurFrame == 24)
+    }
+    else if (Init_CurFrame(24))
         AttackCollider_Off();
 
     if (Is_AnimFinished())
@@ -1224,12 +1304,22 @@ void Boss_Dellons_FSM::skill_1400_Init()
 
     AttackCollider_Off();
 
+    SOUND.Play_Sound(L"Dellons_att_l_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_bInvincible = false;
     m_bSuperArmor = false;
 }
 
 void Boss_Dellons_FSM::skill_91100()
 {
+    if (Init_CurFrame(0))
+        Add_Effect(L"Dellons_91100");
+    if (Init_CurFrame(17))
+        Add_And_Set_Effect(L"Dellons_91100_End");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
+
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
@@ -1245,6 +1335,8 @@ void Boss_Dellons_FSM::skill_91100_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_91100", 0.15f, false, m_fEvade_AnimationSpeed);
+
+    SOUND.Play_Sound(L"Dellons_att_s_06", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     AttackCollider_Off();
     
@@ -1265,6 +1357,8 @@ void Boss_Dellons_FSM::skill_93100_Init()
 
     animator->Set_NextTweenAnim(L"skill_93100", 0.15f, false, m_fEvade_AnimationSpeed);
 
+    SOUND.Play_Sound(L"Dellons_att_s_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     AttackCollider_Off();
 
     m_bInvincible = true;
@@ -1273,25 +1367,31 @@ void Boss_Dellons_FSM::skill_93100_Init()
 
 void Boss_Dellons_FSM::skill_100100()
 {
+    if (Init_CurFrame(10))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        Add_And_Set_Effect(L"Dellons_100100");
+    }
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (m_iCurFrame == 12)
+    if (Init_CurFrame(12))
     {
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 0.5f;
-            desc.fLimitDistance = 0.f;
+        FORWARDMOVINGSKILLDESC desc;
+        desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+        desc.fMoveSpeed = 0.f;
+        desc.fLifeTime = 0.5f;
+        desc.fLimitDistance = 0.f;
 
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-                Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
-                _float3::Up;
+        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+            Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
+            _float3::Up;
 
-            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_SkillCollider", vSkillPos, 1.5f, desc, NORMAL_ATTACK, 10.f);
-        }
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Monster_SkillCollider", vSkillPos, 1.5f, desc, NORMAL_ATTACK, 5.f, L"Hit_Slash_Dark");
     }
 
     if (m_iCurFrame == 27)
@@ -1311,6 +1411,8 @@ void Boss_Dellons_FSM::skill_100100_Init()
     m_tAttackCoolTime.fAccTime = 0.f;
     m_bSetPattern = false;
 
+    SOUND.Play_Sound(L"Skill_05_A_Dellons_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     AttackCollider_Off();
 
     m_bInvincible = false;
@@ -1319,25 +1421,30 @@ void Boss_Dellons_FSM::skill_100100_Init()
 
 void Boss_Dellons_FSM::skill_100200()
 {
+    if (Init_CurFrame(0))
+        Add_And_Set_Effect(L"Dellons_100200_Start");
+    if (Init_CurFrame(18))
+        Add_And_Set_Effect(L"Dellons_100200");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (m_iCurFrame == 15)
+    if (Init_CurFrame(15))
     {
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 0.5f;
-            desc.fLimitDistance = 0.f;
+        SOUND.Play_Sound(L"hit_ground_00", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-                Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
-                _float3::Up;
+        FORWARDMOVINGSKILLDESC desc;
+        desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+        desc.fMoveSpeed = 0.f;
+        desc.fLifeTime = 0.5f;
+        desc.fLimitDistance = 0.f;
 
-            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_SkillCollider", vSkillPos, 1.5f, desc, AIRBORNE_ATTACK, 10.f);
-        }
+        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+            Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
+            _float3::Up;
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Monster_SkillCollider", vSkillPos, 1.5f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Dark");
     }
  
     if (Is_AnimFinished())
@@ -1365,13 +1472,23 @@ void Boss_Dellons_FSM::skill_100200_Init()
 
 void Boss_Dellons_FSM::skill_200100()
 {
+    if (Init_CurFrame(5))
+        Add_And_Set_Effect(L"Dellons_200100");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (m_iCurFrame == 7)
+    if (Init_CurFrame(7))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (m_iCurFrame == 12)
+    }
+    else if (Init_CurFrame(12))
         AttackCollider_Off();
+
 
     if (m_iCurFrame == 21)
         m_eCurState = STATE::skill_200200;
@@ -1390,6 +1507,8 @@ void Boss_Dellons_FSM::skill_200100_Init()
     m_tAttackCoolTime.fAccTime = 0.f;
     m_bSetPattern = false;
 
+    SOUND.Play_Sound(L"Skill_08_A_Dellons_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     AttackCollider_Off();
 
     m_bInvincible = false;
@@ -1398,22 +1517,26 @@ void Boss_Dellons_FSM::skill_200100_Init()
 
 void Boss_Dellons_FSM::skill_200200()
 {
+    if (Init_CurFrame(5))
+        Add_And_Set_Effect(L"Dellons_200200");
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (m_iCurFrame == 7)
+    if (Init_CurFrame(7))
     {
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            FORWARDMOVINGSKILLDESC desc;
-            desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-            desc.fMoveSpeed = 0.f;
-            desc.fLifeTime = 1.f;
-            desc.fLimitDistance = 0.f;
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-            _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f + _float3::Up;
-            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_SKILL, 10.f);
-        }
+        FORWARDMOVINGSKILLDESC desc;
+        desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+        desc.fMoveSpeed = 0.f;
+        desc.fLifeTime = 1.f;
+        desc.fLimitDistance = 0.f;
+
+        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f + _float3::Up;
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Monster_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_SKILL, 10.f, L"Hit_Slash_Dark");
     }
 
     if (Is_AnimFinished())
@@ -1444,6 +1567,13 @@ void Boss_Dellons_FSM::skill_200200_Init()
 
 void Boss_Dellons_FSM::skill_300100()
 {
+    if (Init_CurFrame(9))
+        Add_Effect(L"Dellons_300100");
+    if (Init_CurFrame(24))
+        Add_Effect(L"Dellons_300100_Wraith");
+    if (Init_CurFrame(57))
+        Add_Effect(L"Dellons_300100_Wraith2");
+
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
@@ -1469,6 +1599,8 @@ void Boss_Dellons_FSM::skill_300100_Init()
 
     animator->Set_NextTweenAnim(L"skill_300100", 0.15f, false, m_fSkillAttack_AnimationSpeed);
 
+    SOUND.Play_Sound(L"Skill_07_A_Dellons", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_vTurnVector = Calculate_TargetTurnVector();
 
     m_tAttackCoolTime.fAccTime = 0.f;
@@ -1484,6 +1616,65 @@ void Boss_Dellons_FSM::skill_300100_Init()
 
 void Boss_Dellons_FSM::skill_400100()
 {
+    if (Init_CurFrame(17))
+        Add_And_Set_Effect(L"Dellons_400100_charging");
+    else if (Init_CurFrame(31))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        Add_And_Set_Effect(L"Dellons_400100");
+    }
+    else if (Init_CurFrame(39))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        Add_And_Set_Effect(L"Dellons_400100_2");
+    }
+    else if (Init_CurFrame(50))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        Add_And_Set_Effect(L"Dellons_400100_3");
+    }
+    else if (Init_CurFrame(58))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        Add_And_Set_Effect(L"Dellons_400100_9");
+    }
+    else if (Init_CurFrame(63))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        Add_And_Set_Effect(L"Dellons_400100_4");
+    }
+    else if (Init_CurFrame(73))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        Add_And_Set_Effect(L"Dellons_400100_5");
+    }
+    else if (Init_CurFrame(80))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        Add_And_Set_Effect(L"Dellons_400100_6");
+    }
+    else if (Init_CurFrame(98))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        Add_And_Set_Effect(L"Dellons_400100_7");
+    }
+    else if (Init_CurFrame(99))
+    {
+        SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        Add_And_Set_Effect(L"Dellons_400100_8");
+    }
+
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
@@ -1517,6 +1708,9 @@ void Boss_Dellons_FSM::skill_400100()
     }
     else if (Init_CurFrame(99))
     {
+        SOUND.Play_Sound(L"swing_axe_02_gigan", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"Dellons_att_s_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         FORWARDMOVINGSKILLDESC desc;
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
         desc.fMoveSpeed = 20.f;
@@ -1527,7 +1721,7 @@ void Boss_Dellons_FSM::skill_400100()
         Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_SkillCollider", vSkillPos, 2.f, desc, KNOCKDOWN_SKILL, 10.f);
     }
 
-    if (m_iCurFrame == 120)
+    if (m_iCurFrame >= 110)
         m_eCurState = STATE::b_idle;
     
     Dead_Setting();
@@ -1544,6 +1738,8 @@ void Boss_Dellons_FSM::skill_400100_Init()
     m_tAttackCoolTime.fAccTime = 0.f;
     m_bSetPattern = false;
 
+    SOUND.Play_Sound(L"Skill_06_A_Dellons_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     AttackCollider_Off();
 
     m_bInvincible = false;
@@ -1558,15 +1754,15 @@ void Boss_Dellons_FSM::skill_501100()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
 
-    if (m_iCurFrame == 4)
+    if (Init_CurFrame(4))
     {
         //Summon Wraith
-        if (m_iPreFrame != m_iCurFrame)
-        {
-            Summon_Wraith();
+ 
+        SOUND.Play_Sound(L"swing_axe_02_gigan", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-            Set_WraithState((_uint)Boss_DellonsWraith_FSM::STATE::FX_Mn_Dellons_skill_500200);
-        }
+        Summon_Wraith();
+
+        Set_WraithState((_uint)Boss_DellonsWraith_FSM::STATE::FX_Mn_Dellons_skill_500200);
     }
 
     if (Is_AnimFinished())
@@ -1585,6 +1781,8 @@ void Boss_Dellons_FSM::skill_501100_Init()
 
     m_tAttackCoolTime.fAccTime = 0.f;
     m_bSetPattern = false;
+
+    SOUND.Play_Sound(L"Skill_04_A_Dellons_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     AttackCollider_Off();
 
@@ -1606,6 +1804,9 @@ void Boss_Dellons_FSM::Battle_Start()
 
 void Boss_Dellons_FSM::Summon_Wraith()
 {
+    if (!m_pDellonsWraith.expired())
+        EVENTMGR.Delete_Object(m_pDellonsWraith.lock());
+
     //Add. Player's Wraith
     shared_ptr<GameObject> ObjWraith = make_shared<GameObject>();
 

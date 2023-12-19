@@ -230,8 +230,8 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
     output.normal = float4(input.viewNormal.xyz, 0.f);
     output.depth = input.position.z;
     output.depth.w = input.viewPosition.z;
-    float fColor = 18.f / 255.f;
-    output.diffuseColor = diffuseColor + float4(-fColor, -fColor, -fColor, 0.f);
+    float4 fColor = float4(-0.039215f /*-10*/, -0.011764f /*-3*/, -0.066667f /*-17*/, 0.f);
+    output.diffuseColor = diffuseColor + fColor;
     output.specularColor = specularColor;
     output.emissiveColor = emissiveColor;
     return output;
@@ -353,11 +353,11 @@ PBR_MAPOBJECT_OUTPUT PS_Terrain_PBR(MeshOutput input)
     output.normal = float4(input.viewNormal.xyz, 0.f);
     output.positionSSD = float4(input.viewPosition.xyz, 1.f);
     output.arm = float4(1.f, 0.8f, 0.0f, 1.f);
-    float fColor = 18.f / 255.f;
-    output.diffuseColor = color + + float4(-fColor, -fColor, -fColor, 0.f);
+    float4 fColor = float4(-0.039215f/*-10*/, -0.011764f/*-3*/, -0.066667f/*-17*/, 0.f);
+    output.diffuseColor = color + fColor;
     output.emissive = 0.f;
     output.rimColor = Material.emissive;
-    output.blur = 0;
+    //output.blur = 0;
     return output;
 
 }

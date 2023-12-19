@@ -62,6 +62,10 @@ private:
     _float  m_fTimer_CreateFloorSkillEffect = { 0.f };
     _bool   m_bIsCreateFloorSkillEffectDone = { false };
 
+    _float m_fMeteorVolume = 0.3f;
+    _float m_fLightningVolume = 0.3f;
+    
+
     weak_ptr<GameObject> m_pRigidBody;
 
     HalfCircleDirection m_eHalfCircleDirection = { LEFT };

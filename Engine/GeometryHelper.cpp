@@ -519,6 +519,41 @@ void GeometryHelper::CreateGrid(shared_ptr<Geometry<VTXTEXNORDATA>> geometry, _u
 	geometry->Set_Indices(idx);
 }
 
+void GeometryHelper::CreateGround4Points(shared_ptr<Geometry<VTXTEXNORTANDATA>> _geometry, vector<tuple<_float3, _float3, _float3, _float3>> _4PointsVector)
+{
+	vector<VTXTEXNORTANDATA> vtx;
+	vtx.resize(_4PointsVector.size() * 4);
+
+	for (size_t i = 0; i < _4PointsVector.size(); ++i)
+	{
+		_float3 FirstPos = get<0>(_4PointsVector[i]);
+		_float3 SecondPos = get<1>(_4PointsVector[i]);
+		_float3 ThirdPos = get<2>(_4PointsVector[i]);
+		_float3 FourthPos = get<3>(_4PointsVector[i]);
+
+		vtx[i * 4].vPosition = FirstPos;
+		vtx[i * 4 + 1].vPosition = SecondPos;
+		vtx[i * 4 + 2].vPosition = ThirdPos;
+		vtx[i * 4 + 3].vPosition = FourthPos;
+	}
+
+	_geometry->Set_Vertices(vtx);
+
+	vector<_uint> idx;
+	idx.resize(_4PointsVector.size() * 6.f);
+
+	for (_uint i = 0; i < (_uint)_4PointsVector.size(); ++i)
+	{
+		idx[i * 6] = i * 4;
+		idx[i * 6 + 1] = i * 4 + 1;
+		idx[i * 6 + 2] = i * 4 + 2;
+		idx[i * 6 + 3] = i * 4;
+		idx[i * 6 + 4] = i * 4 + 2;
+		idx[i * 6 + 5] = i * 4 + 3;
+	}
+	_geometry->Set_Indices(idx);
+}
+
 void GeometryHelper::CreateQuad(shared_ptr<Geometry<VTXTEXNORTANDATA>> geometry)
 {
 	vector<VTXTEXNORTANDATA> vtx;

@@ -38,7 +38,7 @@ private: // 초기화관련
 	// 스카이박스목록 불러오기
 	HRESULT Load_SkyBoxTexture();
 	// 맵오브젝트베이스 목록 불러오기
-	HRESULT Load_MapObjectBase();
+	HRESULT Load_MapObjectBase(wstring _strFolderName);
 	// 타일목록 및 텍스쳐로드
 	void Load_TerrainTile();
 	// 물 생성
@@ -73,8 +73,6 @@ private: // 맵오브젝트관련
 // 맵오브젝트 옵션
 	// 맵오브젝트를 받아와서 컬링포지션과 길이를 계산하여 반영, 컬링포지션과 길이를 float4로 반환
 	_float4 Compute_CullingData(shared_ptr<GameObject>& _pGameObject);
-	// 맵오브젝트를 받아와서 컬링포지션과 길이를 계산하여 반영, 컬링포지션과 길이를 float4로 반환
-	_float4 Compute_CullingData(weak_ptr<GameObject>& _pGameObject);
 	// 맵오브젝트들의 그림자, 블러, 컬링계산
 	void Bake(shared_ptr<GameObject>& _pGameObject);
 	void BakeAll();
@@ -151,12 +149,19 @@ private: // 광원, 벽정보
 	void Create_WallMesh();
 	// 바닥 메시 생성 후 멤버변수에 적용
 	void Create_GroundMesh();
+	// 바닥 메시 생성 후 멤버변수에 적용
+	void Create_Ground4Mesh();
 	// 벽메시 정보배열 초기화
 	void Clear_WallMesh();
 	// 최근에 피킹한벽 삭제
 	void Delete_WallMesh();
 	// 최근에 피킹한바닥 삭제
 	void Delete_GroundMesh();
+
+	// 추가데이터 저장
+	void Save_AddWallData(weak_ptr<class FileUtils> _file);
+	void Save_AddGroundData(weak_ptr<class FileUtils> _file);
+
 private: // 변수
 // 플레이어 위치
 	_float4 m_PlayerCreatePosition = { 0.f, 0.f, 0.f, 1.f };
@@ -189,12 +194,18 @@ private: // 변수
 	_float m_fWallHeight = { 10.f };
 	// 좌하단 우상단 페어(사각형)를 가진 벽을 만들기 위한 벡터
 	vector<pair<_float3, _float3>> m_WallRectPosLDRU;
+	// Add_Wall
+	vector<vector<pair<_float3, _float3>>> m_AddWallData;
 // 바닥을위한피킹정보
 	_bool m_bGroundPickingMod = { false };
+	_bool m_bGround4PointsPickingMod = { false };
 	_float3 m_GroundPickingPos[2] = { _float3{0.f, 0.f, 0.f}, _float3{0.f, 0.f, 0.f} };
+	tuple<_float3, _float3, _float3, _float3> m_Ground4Points = { _float3{0.f, 0.f, 0.f}, _float3{0.f, 0.f, 0.f},_float3{0.f, 0.f, 0.f}, _float3{0.f, 0.f, 0.f} };
 	_bool m_bFirstGroundPick = { true };
+	_int m_iIndexToGround4Points = 0;
 	// 좌상단 우하단 페어(사각형)를 가진 바닥을 만들기 위한 벡터
 	vector<pair<_float3, _float3>> m_GroundRectPosLURD;
+	vector<tuple<_float3, _float3, _float3, _float3>> m_Ground4PointsVector;
 #pragma endregion
 
 #pragma region 바다,지형,잔디

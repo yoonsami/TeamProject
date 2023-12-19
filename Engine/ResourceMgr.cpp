@@ -73,6 +73,7 @@ void ResourceMgr::Initialize()
 	CreateMeshEffectData();
 	CreateParticleData();
 	CreateGroupEffectData();
+	CreateLUTTextures();
 }
 
 
@@ -1213,6 +1214,15 @@ void ResourceMgr::CreateDefaultMaterial()
 		Add(L"BackBufferRenderFinal", material);
 	}
 	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Final.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"PositionTarget"));
+
+		material->Set_Shader(shader);
+
+		Add(L"LUT", material);
+	}
+	{
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
 		shared_ptr<Material> material = make_shared<Material>();
 		material->Set_Shader(shader);
@@ -1237,7 +1247,7 @@ void ResourceMgr::CreateDefaultMaterial()
 		auto Weedtexture = RESOURCES.GetOrAddTexture(WeedTextureName, WeedTexturePath);
 		material->Set_TextureMap(Weedtexture, TextureMapType::DIFFUSE);
 		auto dissolveTexture = RESOURCES.GetOrAddTexture(L"T_Perlin_Noise_M.DDS", L"..\\Resources\\Textures\\Universal\\T_Perlin_Noise_M.DDS");
-		material->Set_TextureMap(dissolveTexture, TextureMapType::DISSOLVE);
+ 		material->Set_TextureMap(dissolveTexture, TextureMapType::DISSOLVE);
 		Add(WeedTextureName, material);
 	}
 }
@@ -1508,6 +1518,23 @@ void ResourceMgr::CreateGroupEffectData()
 		groupEffectData->Set_MemberEffectData(vMemberEffect);
 
 		Add(wstrTag, groupEffectData);
+	}
+}
+
+void ResourceMgr::CreateLUTTextures()
+{
+	wstring assetPath = L"..\\Resources\\Textures\\LUT\\";
+	fs::create_directories(fs::path(assetPath));
+	for (auto& entry : fs::recursive_directory_iterator(assetPath))
+	{
+		if (entry.is_directory())
+			continue;
+
+		if (entry.path().extension().wstring() != L".dds" && entry.path().extension().wstring() != L".DDS")
+			continue;
+		wstring strTag = entry.path().filename().wstring();
+		Utils::DetachExt(strTag);
+		GetOrAddTexture(strTag, entry.path().wstring());
 	}
 }
 
