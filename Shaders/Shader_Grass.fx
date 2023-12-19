@@ -91,17 +91,6 @@ float4x4 RotateMatrix(float angle, float3 axis)
 
     //float3 sq = axis * axis;
     float3x3 rotationMatrix = float3x3(
-        //axis.x * oneMinusC + c,
-        //axis.x * axis.y * oneMinusC + axis.z * s,
-        //axis.x * axis.z * oneMinusC - axis.y * s,
-
-        //axis.x * axis.y * oneMinusC - axis.z * s,
-        //axis.y * oneMinusC + c,
-        //axis.y * axis.z * oneMinusC + axis.x * s,
-
-        //axis.x * axis.z * oneMinusC - axis.y * s,
-        //axis.y * axis.z * oneMinusC + axis.x * s,
-        //axis.z * axis.z * oneMinusC + c
         c + (1 - c) * axis.x * axis.x,
         (1 - c) * axis.x * axis.y - s * axis.z,
         (1 - c) * axis.x * axis.z + s * axis.y,

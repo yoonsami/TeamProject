@@ -394,6 +394,11 @@ void FieldScene::Load_Terrain()
 			Utils::ChangeExt(TileTexture, L".png");
 			texture = RESOURCES.GetOrAddTexture(Utils::ToWString(fileName), TileTexture);
 		}
+		if (!texture)
+		{
+			Utils::ChangeExt(TileTexture, L".jpg");
+			texture = RESOURCES.GetOrAddTexture(Utils::ToWString(fileName), TileTexture);
+		}
 	}
 
 	shared_ptr<Terrain> loadedTerrain = make_shared<Terrain>();
@@ -456,7 +461,7 @@ void FieldScene::Load_Terrain()
 	material->Set_TextureMap(Grasstexture, TextureMapType::DIFFUSE);
 
 	// 노말텍스쳐
-	auto Normaltexture = RESOURCES.Get<Texture>(L"ForestGrass_01_N_ASB");
+	auto Normaltexture = RESOURCES.Get<Texture>(L"TileNormal");
 	if (Normaltexture == nullptr)
 	{
 		MSG_BOX("NoNormalTexture");
