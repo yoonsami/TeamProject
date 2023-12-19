@@ -1550,6 +1550,9 @@ void Companion_Dellons_FSM::skill_501100_Init()
 
 void Companion_Dellons_FSM::Summon_Wraith()
 {
+    if (!m_pDellonsWraith.expired())
+        EVENTMGR.Delete_Object(m_pDellonsWraith.lock());
+
     //Add. Player's Wraith
     shared_ptr<GameObject> ObjWraith = make_shared<GameObject>();
 

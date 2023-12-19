@@ -52,10 +52,10 @@ HRESULT Yeopo_FSM::Init()
 	m_fSkillAttack_AnimationSpeed = 1.0f;
 	m_fEvade_AnimationSpeed = 1.5f;
 
-    m_fVoiceVolume = 0.3f;
-    m_fSwingVolume = 0.3f;
-    m_fFootStepVolume = 0.2f;
-    m_fEffectVolume = 0.2f;
+    m_fVoiceVolume = 0.5f;
+    m_fSwingVolume = 0.5f;
+    m_fFootStepVolume = 0.4f;
+    m_fEffectVolume = 0.4f;
 
     m_fMySoundDistance = 100.f;
 

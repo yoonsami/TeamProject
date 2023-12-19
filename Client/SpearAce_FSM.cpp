@@ -50,6 +50,13 @@ HRESULT SpearAce_FSM::Init()
 	m_fSkillAttack_AnimationSpeed = 1.0f;
 	m_fEvade_AnimationSpeed = 1.5f;
 
+    m_fVoiceVolume = 0.5f;
+    m_fSwingVolume = 0.5f;
+    m_fFootStepVolume = 0.4f;
+    m_fEffectVolume = 0.4f;
+
+    m_fMySoundDistance = 100.f;
+
 	if (!m_pAttackCollider.expired())
 		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(m_eElementType);
     return S_OK;
