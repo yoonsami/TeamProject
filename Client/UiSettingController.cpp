@@ -709,7 +709,7 @@ void UiSettingController::Create_Sound_Ui()
         {
             m_iStarEnvironment = i;
 
-            _float  fRatio = fabs((g_fBgmRatio - m_fMinSoundValue) / m_fTotalSoundValue);
+            _float  fRatio = fabs((g_fEnvironmentRatio - m_fMinSoundValue) / m_fTotalSoundValue);
             _float  fValue = -660 + 300.f * fRatio;
             _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
             vecPos.x = fValue;
@@ -733,7 +733,7 @@ void UiSettingController::Create_Sound_Ui()
         {
             m_iStarCharacterVoice = i;
 
-            _float  fRatio = fabs((g_fBgmRatio - m_fMinSoundValue) / m_fTotalSoundValue);
+            _float  fRatio = fabs((g_fCharacterVoiceRatio - m_fMinSoundValue) / m_fTotalSoundValue);
             _float  fValue = -660 + 300.f * fRatio;
             _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
             vecPos.x = fValue;
@@ -757,7 +757,7 @@ void UiSettingController::Create_Sound_Ui()
         {
             m_iStarCharacterEffect = i;
 
-            _float  fRatio = fabs((g_fBgmRatio - m_fMinSoundValue) / m_fTotalSoundValue);
+            _float  fRatio = fabs((g_fCharacterEffectRatio - m_fMinSoundValue) / m_fTotalSoundValue);
             _float  fValue = -660 + 300.f * fRatio;
             _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
             vecPos.x = fValue;
@@ -781,7 +781,7 @@ void UiSettingController::Create_Sound_Ui()
         {
             m_iStarMonsterVoice = i;
 
-            _float  fRatio = fabs((g_fBgmRatio - m_fMinSoundValue) / m_fTotalSoundValue);
+            _float  fRatio = fabs((g_fMonsterVoiceRatio - m_fMinSoundValue) / m_fTotalSoundValue);
             _float  fValue = -660 + 300.f * fRatio;
             _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
             vecPos.x = fValue;
@@ -805,7 +805,7 @@ void UiSettingController::Create_Sound_Ui()
         {
             m_iStarMonsterEffect = i;
 
-            _float  fRatio = fabs((g_fBgmRatio - m_fMinSoundValue) / m_fTotalSoundValue);
+            _float  fRatio = fabs((g_fMonsterEffectRatio - m_fMinSoundValue) / m_fTotalSoundValue);
             _float  fValue = -660 + 300.f * fRatio;
             _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
             vecPos.x = fValue;
