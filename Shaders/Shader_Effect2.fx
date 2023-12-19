@@ -316,7 +316,7 @@ float4 PS_Wrap(EffectOut input) : SV_Target
 
         float4 vTransparentColor = float4(0.f, 0.f, 0.f, 0.f);
         if (all(vBaseColor_RimLight == vTransparentColor))
-            vOutColor.a = (1.f - vRimIntensity.r);
+            vOutColor.a *= (1.f - vRimIntensity.r);
         else
             vOutColor += (vBaseColor_RimLight * vRimIntensity.r);
     }
@@ -573,7 +573,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
 
         float4 vTransparentColor = float4(0.f, 0.f, 0.f, 0.f);
         if (all(vBaseColor_RimLight == vTransparentColor))
-            vOutColor.a = (1.f - vRimIntensity.r);
+            vOutColor.a *= (1.f - vRimIntensity.r);
         else
             vOutColor += (vBaseColor_RimLight * vRimIntensity.r);
     }
@@ -846,7 +846,7 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
 
         float4 vTransparentColor = float4(0.f, 0.f, 0.f, 0.f);
         if (all(vBaseColor_RimLight == vTransparentColor))
-            vOutColor.a = (1.f - vRimIntensity.r);
+            vOutColor.a *= (1.f - vRimIntensity.r);
         else
             vOutColor += (vBaseColor_RimLight * vRimIntensity.r);
     }
@@ -1104,7 +1104,7 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
 
         float4 vTransparentColor = float4(0.f, 0.f, 0.f, 0.f);
         if (all(vBaseColor_RimLight == vTransparentColor))
-            vOutColor.a = (1.f - vRimIntensity.r);
+            vOutColor.a *= (1.f - vRimIntensity.r);
         else
             vOutColor += (vBaseColor_RimLight * vRimIntensity.r);
     }
