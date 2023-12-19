@@ -202,13 +202,28 @@ float4 PS_Fog(VS_OUT input) : SV_Target
     float fogFactor = 1.f;
     
     if(fogMode == 0)//Linear
+    {
         fogFactor = saturate((fogEnd - viewZ) / (fogEnd - fogStart));
+        color = fogFactor * color + (1.f - fogFactor) * fogColor;
+    }
     else if(fogMode == 1)
+    {
         fogFactor = 1.f / (pow(2.71828, viewZ * fogDensity));
+        color = fogFactor * color + (1.f - fogFactor) * fogColor;
+    }
     else if(fogMode == 2)
+    {
         fogFactor = 1.f / (pow(2.71828, viewZ * fogDensity * viewZ * fogDensity));
+        color = fogFactor * color + (1.f - fogFactor) * fogColor;
+    }
+    else if(fogMode == 3)
+    {
+        float depthThreshold = fogEnd;
+        color = lerp(color, color + fogColor, saturate((viewZ - depthThreshold) * 10.f));
+        
+    }
     
-    color = fogFactor * color + (1.f - fogFactor) * fogColor;
+   
     
     return float4(color.rgb, 1.f);
 }
@@ -223,20 +238,23 @@ sampler2D g_LUTSam = sampler_state
     texture = SubMap1;
 };
 
-float3 GetLutColor(float3 colorIn, sampler2D LutSampler)
+float3 GetLutColor(float3 colorIn)
 {
     uint width, height, numMips;
-    SubMap0.GetDimensions(0, width, height, numMips);
+    SubMap1.GetDimensions(0, width, height, numMips);
     
     float2 LutSize = float2(1.f / width, 1.f / height);
-    float4 LutUV;
+    float4 LutUV = 0.f;
     colorIn = saturate(colorIn) * 15.f;
     LutUV.r = floor(colorIn.b);
     LutUV.xy = (colorIn.rg + 0.5f) * LutSize;
     LutUV.x += LutUV.w * LutSize.y;
     LutUV.z += LutUV.x * LutSize.y;
  
-    return lerp(tex2Dlod(LutSampler, LutUV.xyzz).rgb, tex2Dlod(LutSampler, LutUV.zyzz).rgb,colorIn.b - LutUV.w);    
+    float3 color1 = SubMap1.Sample(LinearSampler,LutUV.xy).rgb;
+    float3 color2 = SubMap1.Sample(LinearSampler,LutUV.zy).rgb;
+    
+    return lerp(color1, color2, colorIn.b - LutUV.w);
 }
 
 float g_FilterDepth;
@@ -247,7 +265,7 @@ float4 PS_LUT(VS_OUT input) : SV_Target
     float3 originalColor = SubMap0.Sample(PointSampler, input.uv).rgb;
     outColor = originalColor;
 
-    outColor =  GetLutColor(outColor, g_LUTSam);
+    outColor =  GetLutColor(outColor);
      
     return float4(outColor, 1.f);
 }
