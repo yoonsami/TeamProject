@@ -2060,6 +2060,30 @@ void Scene::Render_UI()
 	}
 }
 
+void Scene::Render_LUT()
+{
+	if (!g_LUTData.g_LUTOn)
+		return;
+
+	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::VIGNETTE)->OMSetRenderTargets();
+
+	auto material = RESOURCES.Get<Material>(L"LUT");
+	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
+	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
+	material->Set_SubMap(1, RESOURCES.Get<Texture>(L"TX_FX_PPC_LUT_" + to_wstring(g_LUTData.g_LUTIndex)));
+
+
+	material->Push_SubMapData();
+	mesh->Get_VertexBuffer()->Push_Data();
+	mesh->Get_IndexBuffer()->Push_Data();
+
+	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+
+	material->Get_Shader()->DrawIndexed(1, 4, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+	m_wstrFinalRenderTarget = L"LUTTarget";
+}
+
 void Scene::Render_AfterUI()
 {
 	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::AFTER_UI)->OMSetRenderTargets();

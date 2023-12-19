@@ -1213,6 +1213,15 @@ void ResourceMgr::CreateDefaultMaterial()
 		Add(L"BackBufferRenderFinal", material);
 	}
 	{
+		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Final.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->Set_SubMap(2, RESOURCES.Get<Texture>(L"PositionTarget"));
+
+		material->Set_Shader(shader);
+
+		Add(L"LUT", material);
+	}
+	{
 		shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Blur.fx");
 		shared_ptr<Material> material = make_shared<Material>();
 		material->Set_Shader(shader);

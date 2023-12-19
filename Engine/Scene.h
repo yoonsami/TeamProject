@@ -115,6 +115,8 @@ protected:
 
 	void Render_UI();
 
+	void Render_LUT();
+
 	void Render_AfterUI();
 
 	void Render_FXAA();
@@ -263,5 +265,14 @@ public:
 	_float g_rotZ = 0.f;
 
 	_int g_sceneFlag = 0;
+
+	struct LUTData
+	{
+		_bool g_LUTOn = false;
+		_uint g_LUTIndex = 0;
+
+	};
+
+	LUTData g_LUTData{};
 };
 
