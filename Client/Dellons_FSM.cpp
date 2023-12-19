@@ -49,16 +49,16 @@ HRESULT Dellons_FSM::Init()
 	m_fSkillAttack_AnimationSpeed = 1.0f;
 	m_fEvade_AnimationSpeed = 1.5f;
 
-    m_fVoiceVolume = 0.3f;
-    m_fSwingVolume = 0.3f;
-    m_fFootStepVolume = 0.2f;
-    m_fEffectVolume = 0.2f;
+    m_fVoiceVolume = 0.5f;
+    m_fSwingVolume = 0.5f;
+    m_fFootStepVolume = 0.4f;
+    m_fEffectVolume = 0.4f;
 
     m_fMySoundDistance = 100.f;
 
-
 	if (!m_pAttackCollider.expired())
 		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(m_eElementType);
+   
     return S_OK;
 }
 
@@ -1767,6 +1767,9 @@ void Dellons_FSM::Use_Dash()
 
 void Dellons_FSM::Summon_Wraith()
 {
+    if (!m_pDellonsWraith.expired())
+        EVENTMGR.Delete_Object(m_pDellonsWraith.lock());
+
     //Add. Player's Wraith
     shared_ptr<GameObject> ObjWraith = make_shared<GameObject>();
 

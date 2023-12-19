@@ -180,6 +180,9 @@ HRESULT SpikeScene::Load_Scene()
 	//Monster
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Boss_Spike\\", false);
 	
+	//Sound
+	RESOURCES.Load_Sound(L"..\\Resources\\Sound\\SpikeScene\\", false);
+
 
 	auto player = Load_Player();
 	Load_Camera(player);

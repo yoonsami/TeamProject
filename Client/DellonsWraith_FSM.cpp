@@ -54,9 +54,9 @@ HRESULT DellonsWraith_FSM::Init()
         m_bInitialize = true;
     }
 
-    m_fSwingVolume = 0.3f;
-    m_fEffectVolume = 0.2f;
-    m_fMySoundDistance = 10.f;
+    m_fSwingVolume = 0.5f;
+    m_fEffectVolume = 0.5f;
+    m_fMySoundDistance = 15.f;
 
     return S_OK;
 }
@@ -425,9 +425,6 @@ void DellonsWraith_FSM::FX_Mn_Dellons_skill_5100()
         EVENTMGR.Delete_Object(m_pAttackCollider.lock());
         EVENTMGR.Delete_Object(m_pOwner.lock());
     }
-
-
-    
 }
 
 void DellonsWraith_FSM::FX_Mn_Dellons_skill_5100_Init()

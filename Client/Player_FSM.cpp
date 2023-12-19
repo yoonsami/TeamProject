@@ -58,10 +58,10 @@ HRESULT Player_FSM::Init()
 	m_fSkillAttack_AnimationSpeed = 1.0f;
 	m_fEvade_AnimationSpeed = 1.5f;
     
-    m_fVoiceVolume = 0.3f;
-    m_fSwingVolume = 0.3f;
-    m_fFootStepVolume = 0.2f;
-    m_fEffectVolume = 0.2f;
+    m_fVoiceVolume = 0.5f;
+    m_fSwingVolume = 0.5f;
+    m_fFootStepVolume = 0.4f;
+    m_fEffectVolume = 0.4f;
 
     m_fMySoundDistance = 100.f;
 
@@ -416,6 +416,10 @@ void Player_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
     }
     else if (skillname == STUN_HIT)
     {
+        wstring strSoundTag = L"vo_man_att_hit_0";
+        strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.3f);
         m_eCurState = STATE::stun;
     }
@@ -1014,8 +1018,8 @@ void Player_FSM::skill_1200()
 {
     if (Init_CurFrame(4))
     {
-        SOUND.Play_Sound(L"swing_short_sword_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 		Add_Effect(L"Teo_1200");
+        SOUND.Play_Sound(L"swing_short_sword_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
         AttackCollider_On(NORMAL_ATTACK, _float(rand() % 10 + 1));
     }
@@ -1130,7 +1134,7 @@ void Player_FSM::skill_1400()
 
         AttackCollider_On(NORMAL_ATTACK, _float(rand() % 10 + 1));
 
-        SOUND.Play_Sound(L"swing_short_sword_04", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"swing_short_sword_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     }
     else if (Init_CurFrame(20))
         AttackCollider_Off();

@@ -204,6 +204,10 @@ HRESULT FieldScene::Load_Scene()
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Undead_Priest\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\EntSoldier\\", false);
 
+	//Sound
+	RESOURCES.Load_Sound(L"..\\Resources\\Sound\\FieldScene\\", false);
+
+
 	auto player = Load_Player();
 	Load_Camera(player);
 	Load_MapFile(L"FieldMap", player);
