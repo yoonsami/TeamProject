@@ -141,8 +141,6 @@ void Scene::Render()
 	Render_Debug();
 	Render_ToneMapping();
 
-	Render_LUT();
-
 	Render_UI();
 
 }
@@ -1582,7 +1580,7 @@ void Scene::Render_BloomMapScaling(_uint downSamplingCount)
 
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		if(i != 0)
+		if (i != 0)
 			material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 		else
 			material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
@@ -1671,6 +1669,7 @@ void Scene::Render_DOFMap()
 	material->Push_SubMapData();
 	material->Get_Shader()->GetScalar("g_FocusDepth")->SetFloat(g_DOFData.g_FocusDepth);
 	material->Get_Shader()->GetScalar("g_DOFRange")->SetFloat(g_DOFData.g_DOFRange);
+	material->Get_Shader()->GetVector("g_DOFColor")->SetFloatVector((_float*)& g_DOFData.g_DOFColor);
 	mesh->Get_VertexBuffer()->Push_Data();
 	mesh->Get_IndexBuffer()->Push_Data();
 
@@ -1684,7 +1683,7 @@ void Scene::Render_DOFMapScaling(_uint blurCount)
 	if (!g_DOFData.g_bDOF_On)
 		return;
 
-	wstring rtTexture = m_wstrFinalRenderTarget;
+	wstring rtTexture = L"DOFTarget";
 
 	for (_uint i = 0; i < blurCount; ++i)
 	{
@@ -2060,30 +2059,6 @@ void Scene::Render_UI()
 
 		uiCamera->Render_Forward();
 	}
-}
-
-void Scene::Render_LUT()
-{
-	if (!g_LUTData.g_LUTOn)
-		return;
-
-	GRAPHICS.Get_RTGroup(RENDER_TARGET_GROUP_TYPE::LUT)->OMSetRenderTargets();
-
-	auto material = RESOURCES.Get<Material>(L"LUT");
-	auto mesh = RESOURCES.Get<Mesh>(L"Quad");
-	material->Set_SubMap(0, RESOURCES.Get<Texture>(m_wstrFinalRenderTarget));
-	material->Set_SubMap(1, RESOURCES.Get<Texture>(L"TX_FX_PPC_LUT_" + to_wstring(g_LUTData.g_LUTIndex)));
-
-
-	material->Push_SubMapData();
-	mesh->Get_VertexBuffer()->Push_Data();
-	mesh->Get_IndexBuffer()->Push_Data();
-
-	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-
-	material->Get_Shader()->DrawIndexed(1, 4, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
-	m_wstrFinalRenderTarget = L"LUTTarget";
 }
 
 void Scene::Render_AfterUI()

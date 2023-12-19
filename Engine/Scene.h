@@ -115,8 +115,6 @@ protected:
 
 	void Render_UI();
 
-	void Render_LUT();
-
 	void Render_AfterUI();
 
 	void Render_FXAA();
@@ -232,6 +230,7 @@ public:
 		_bool g_bDOF_On = false;
 		_float g_FocusDepth = 7.f;
 		_float g_DOFRange = 100.f;
+		Color g_DOFColor = Color(1.f);
 	};
 	DOFData g_DOFData{};
 

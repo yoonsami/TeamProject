@@ -100,8 +100,8 @@ void DebugTool::RenderOptionTab()
 
 
 
-			DragFloat("Brightness", &g_fBrightness, 0.01f, 0.f, 5.f);
-			DragFloat("Contrast", &g_fContrast, 0.01f, 0.01f, 5.f);
+			DragFloat("Brightness", &g_fBrightness, 0.01f, -5.f, 5.f);
+			DragFloat("Contrast", &g_fContrast, 0.01f, -5.f, 5.f);
 			DragFloat("Saturation", &g_Saturation, 0.01f, 0.01f, 5.f);
 
 
@@ -196,6 +196,18 @@ void DebugTool::RenderOptionTab()
 			_float& g_DOFRange = CUR_SCENE->g_DOFData.g_DOFRange;
 			DragFloat("Focus Depth", &g_FocusDepth, 1.f, 0.1f, 1000.f);
 			DragFloat("g_DOFRange", &g_DOFRange, 0.1f, 0.0001f, 1000.f);
+			Color& gColorFog = CUR_SCENE->g_DOFData.g_DOFColor;
+
+			static bool alpha_preview = true;
+			static bool alpha_half_preview = false;
+			static bool drag_and_drop = true;
+			static bool options_menu = true;
+			static bool hdr = true;
+
+			ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
+			ImGui::ColorEdit4("g_DOFColor", (float*)&gColorFog, ImGuiColorEditFlags_DisplayHSV | misc_flags);
+
+		
 		}
 		if (CollapsingHeader("Light Option"))
 		{
@@ -206,6 +218,9 @@ void DebugTool::RenderOptionTab()
 			if (CUR_SCENE->Get_Light())
 			{
 				Color& g_lightDiffuse = CUR_SCENE->Get_Light()->Get_Light()->Get_LightInfo().color.diffuse;
+				Color& g_lightAmbient = CUR_SCENE->Get_Light()->Get_Light()->Get_LightInfo().color.ambient;
+				Color& g_lightSpecular = CUR_SCENE->Get_Light()->Get_Light()->Get_LightInfo().color.specular;
+				Color& g_lightEmissive = CUR_SCENE->Get_Light()->Get_Light()->Get_LightInfo().color.emissive;
 				static bool alpha_preview = true;
 				static bool alpha_half_preview = false;
 				static bool drag_and_drop = true;
@@ -213,7 +228,10 @@ void DebugTool::RenderOptionTab()
 				static bool hdr = true;
 
 				ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
-				ColorEdit4("color", (_float*)&g_lightDiffuse);
+				ColorEdit4("g_lightDiffuse", (_float*)&g_lightDiffuse, ImGuiColorEditFlags_DisplayHSV | misc_flags);
+				ColorEdit4("g_lightAmbient", (_float*)&g_lightAmbient, ImGuiColorEditFlags_DisplayHSV | misc_flags);
+				ColorEdit4("g_lightSpecular", (_float*)&g_lightSpecular, ImGuiColorEditFlags_DisplayHSV | misc_flags);
+				ColorEdit4("g_lightEmissive", (_float*)&g_lightEmissive, ImGuiColorEditFlags_DisplayHSV | misc_flags);
 
 			}
 		}
@@ -234,8 +252,9 @@ void DebugTool::RenderOptionTab()
 		{
 			_bool& g_bLUTOn = CUR_SCENE->g_LUTData.g_LUTOn;
 			_int& g_LUTIndex = CUR_SCENE->g_LUTData.g_LUTIndex;
+			Checkbox("g_bLUTOn", &g_bLUTOn);
 
-			InputInt("g_bLUTOn", &g_LUTIndex);
+			InputInt("g_LUTIndex", &g_LUTIndex);
 			if (g_LUTIndex > 55) g_LUTIndex = 55;
 			if (g_LUTIndex < 0) g_LUTIndex = 0;
 		}

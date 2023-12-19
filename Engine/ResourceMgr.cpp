@@ -73,7 +73,7 @@ void ResourceMgr::Initialize()
 	CreateMeshEffectData();
 	CreateParticleData();
 	CreateGroupEffectData();
-	CreateLUTTextures();
+
 }
 
 
@@ -1518,23 +1518,6 @@ void ResourceMgr::CreateGroupEffectData()
 		groupEffectData->Set_MemberEffectData(vMemberEffect);
 
 		Add(wstrTag, groupEffectData);
-	}
-}
-
-void ResourceMgr::CreateLUTTextures()
-{
-	wstring assetPath = L"..\\Resources\\Textures\\LUT\\";
-	fs::create_directories(fs::path(assetPath));
-	for (auto& entry : fs::recursive_directory_iterator(assetPath))
-	{
-		if (entry.is_directory())
-			continue;
-
-		if (entry.path().extension().wstring() != L".dds" && entry.path().extension().wstring() != L".DDS")
-			continue;
-		wstring strTag = entry.path().filename().wstring();
-		Utils::DetachExt(strTag);
-		GetOrAddTexture(strTag, entry.path().wstring());
 	}
 }
 
