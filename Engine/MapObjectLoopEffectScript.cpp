@@ -14,7 +14,7 @@ void MapObjectLoopEffectScript::Tick()
 	{
 		m_fLoopDelta = 0.f;
 		// 이펙트 생성 및 재생
-        Add_GroupEffectOwner(m_wstrEffectGroup, _float3{ 0.f, 3.f, 0.f }, false, nullptr);
+        Add_GroupEffectOwner(m_wstrEffectGroup, _float3{ 0.f, 0.f, 0.f }, false, nullptr);
 	}
 }
 

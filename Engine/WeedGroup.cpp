@@ -62,9 +62,9 @@ void WeedGroup::Compute_CullPosHeight()
 
 void WeedGroup::Compute_MinMaxHeight(_float _fHeight)
 {
-	if (m_fHeightMax > _fHeight)
+	if (m_fHeightMax < _fHeight)
 		m_fHeightMax = _fHeight;
-	if (m_fHeightMin < _fHeight)
+	if (m_fHeightMin > _fHeight)
 		m_fHeightMin = _fHeight;
 }
 
