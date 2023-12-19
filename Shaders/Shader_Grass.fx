@@ -437,7 +437,7 @@ PBR_OUTPUT PS_PBR_Deferred(GS_GRASS_OUTPUT input)
     output.diffuseColor = diffuseColor;
     output.emissive = emissiveColor;
     output.rimColor = Material.emissive;
-    output.blur = 0;
+    //output.blur = 0;
     return output;
 }
 
@@ -497,7 +497,7 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(GS_GRASS_INSTANCING_OUTPUT input)
     output.diffuseColor = diffuseColor;
     output.emissive = emissiveColor;
     output.rimColor = Material.emissive;
-    output.blur = 0;
+    //output.blur = 0;
     return output;
 }
 

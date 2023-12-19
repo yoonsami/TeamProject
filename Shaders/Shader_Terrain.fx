@@ -357,7 +357,7 @@ PBR_MAPOBJECT_OUTPUT PS_Terrain_PBR(MeshOutput input)
     output.diffuseColor = color + fColor;
     output.emissive = 0.f;
     output.rimColor = Material.emissive;
-    output.blur = 0;
+    //output.blur = 0;
     return output;
 
 }

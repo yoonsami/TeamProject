@@ -44,6 +44,8 @@ public:
     InstanceID              Get_InstanceID();
     const RenderParams&     Get_RenderParamDesc() { return m_RenderParams; }
     _float3&                Get_LocalPos() { return m_vLocalPos; }
+    _bool                   Is_Finished() { return m_bRenderEnd; }
+
 
     void                    Translate();
     void                    Scaling();
@@ -142,4 +144,6 @@ private:
 
     /* Render Priority */
     _int                            m_iRenderPriority = { 0 };
+
+    _bool                           m_bRenderEnd = false;
 };
