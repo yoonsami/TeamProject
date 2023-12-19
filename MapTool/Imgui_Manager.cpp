@@ -34,6 +34,7 @@
 #include "ModelAnimation.h"
 #include "WaterUVSliding.h"
 #include "TerrainRenderer.h"
+#include "MapObjectLoopEffectScript.h"
 
 #include "WeedScript.h"
 #include "WeedGroup.h"
@@ -1397,7 +1398,7 @@ shared_ptr<GameObject> ImGui_Manager::Create_MapObject(MapObjectScript::MapObjec
 
         renderer->Set_PassType((ModelRenderer::INSTANCE_PASSTYPE)CreateDesc.bCullNone);
 
-         renderer->SetVec4(0, _float4(CreateDesc.fUVWeight));
+        renderer->SetVec4(0, _float4(CreateDesc.fUVWeight));
     }
 
     if (CreateDesc.bTransform)
@@ -1451,7 +1452,8 @@ shared_ptr<GameObject> ImGui_Manager::Create_MapObject(MapObjectScript::MapObjec
 
     if(MapObjSc->Get_DummyData().m[0][3] >= 1.f)
     {
-
+        shared_ptr<MapObjectLoopEffectScript> EffectScript = make_shared<MapObjectLoopEffectScript>(MapObjSc->Get_DummyData().m[0][3], Utils::ToWString(MapObjSc->Get_EffectName()));
+        CreateObject->Add_Component(EffectScript);
     }
 
     EVENTMGR.Create_Object(CreateObject);
