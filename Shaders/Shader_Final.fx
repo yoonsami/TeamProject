@@ -218,6 +218,11 @@ float4 PS_RenderFinal(VS_OUT input) : SV_Target
     return SubMap0.Sample(LinearSampler, input.uv);
 }
 
+sampler2D g_LUTSam = sampler_state
+{
+    texture = SubMap1;
+};
+
 float3 GetLutColor(float3 colorIn, sampler2D LutSampler)
 {
     uint width, height, numMips;
@@ -231,11 +236,20 @@ float3 GetLutColor(float3 colorIn, sampler2D LutSampler)
     LutUV.x += LutUV.w * LutSize.y;
     LutUV.z += LutUV.x * LutSize.y;
  
-   // return lerp(tex2Dlod(LutSampler, LutUV.xyzz).rgb, tex2Dlod(LutSampler, LutUV.zyzz).rgb,);
-    
-    
-    return 0.f;
-    
+    return lerp(tex2Dlod(LutSampler, LutUV.xyzz).rgb, tex2Dlod(LutSampler, LutUV.zyzz).rgb,colorIn.b - LutUV.w);    
+}
+
+float g_FilterDepth;
+float4 PS_LUT(VS_OUT input) : SV_Target
+{
+    float viewZ = SubMap2.Sample(PointSampler, input.uv).z;
+    float3 outColor;
+    float3 originalColor = SubMap0.Sample(PointSampler, input.uv).rgb;
+    outColor = originalColor;
+
+    outColor =  GetLutColor(outColor, g_LUTSam);
+     
+    return float4(outColor, 1.f);
 }
 
 
@@ -316,6 +330,15 @@ technique11 T1_AfterEffect
         SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
         SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
         SetPixelShader(CompileShader(ps_5_0, PS_Vignette()));
+    }
+    Pass pass_LUT
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Final()));
+        SetGeometryShader(NULL);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_NO_DEPTH_TEST_NO_WRITE, 0);
+        SetBlendState(BlendOff, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+        SetPixelShader(CompileShader(ps_5_0, PS_LUT()));
     }
 };
 
