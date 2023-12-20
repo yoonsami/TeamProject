@@ -392,6 +392,8 @@ void UiCardDeckController::Remove_Card_Deck()
     if (false == m_bIsCreated)
         return;
 
+    Remove_Select_Mark();
+
     g_bIsCanRotation = true;
 
     m_bIsCreated = false;
