@@ -119,7 +119,7 @@ void Feni_FSM::SQ_afraid_01_Init()
 
 void Feni_FSM::SQ_afraid_02()
 {
-	if (SWITCHMGR.Get_SwitchState(SWITCH_TYPE::FENI_WOLF_ALL_DEAD))
+	if (SWITCHMGR.Get_Score(SCORE_TYPE::FENI_QUEST) >= 5)
 	{
 		if (Get_FinalFrame() - Get_CurFrame() < 5)
 			m_eCurState = STATE::SQ_afraid_03;
