@@ -1135,7 +1135,7 @@ void Player_FSM::skill_1400()
     {
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
 
-        AttackCollider_On(NORMAL_ATTACK, _float(rand() % 10 + 1));
+        AttackCollider_On(KNOCKBACK_ATTACK, _float(rand() % 10 + 1));
 
         SOUND.Play_Sound(L"swing_short_sword_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     }

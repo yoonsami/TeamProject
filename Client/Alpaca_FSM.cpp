@@ -285,7 +285,7 @@ void Alpaca_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
             else
                 m_eCurState = STATE::hit;
 
-            SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+            SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
     else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
@@ -299,7 +299,7 @@ void Alpaca_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
             else
                 m_eCurState = STATE::knock_start;
 
-            SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+            SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
     else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
@@ -313,7 +313,7 @@ void Alpaca_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
             else
                 m_eCurState = STATE::knockdown_start;
 
-            SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+            SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
     else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
@@ -327,7 +327,7 @@ void Alpaca_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
             else
                 m_eCurState = STATE::airborne_start;
 
-            SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+            SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
 
@@ -340,7 +340,7 @@ void Alpaca_FSM::Set_State(_uint iIndex)
 void Alpaca_FSM::b_idle()
 {
     //if (Init_CurFrame(40))
-    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     if (!m_bDetected)
     {
@@ -386,6 +386,8 @@ void Alpaca_FSM::b_idle_Init()
 
     m_bSuperArmor = false;
 
+    AttackCollider_Off();
+
     if (CUR_SCENE->Get_Name() == L"KrisScene")
     {
         if (!CUR_SCENE->Get_AttackCall())
@@ -396,7 +398,7 @@ void Alpaca_FSM::b_idle_Init()
 void Alpaca_FSM::b_run()
 {
     //if (Init_CurFrame(8))
-    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
@@ -422,7 +424,7 @@ void Alpaca_FSM::b_run_Init()
 void Alpaca_FSM::n_run()
 {
     //if (Init_CurFrame(16))
-    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, XM_PI * 5.f);
@@ -498,7 +500,7 @@ void Alpaca_FSM::die_01_Init()
 
     animator->Set_NextTweenAnim(L"die_01", 0.2f, false, 1.f);
     
-    SOUND.Play_Sound(L"vo_alpaca_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"vo_alpaca_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     CUR_SCENE->g_sceneFlag++;
 
@@ -525,7 +527,7 @@ void Alpaca_FSM::die_02_Init()
 
     animator->Set_NextTweenAnim(L"die_02", 0.2f, false, 1.f);
 
-    SOUND.Play_Sound(L"vo_alpaca_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"vo_alpaca_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     CUR_SCENE->g_sceneFlag++;
 
@@ -536,7 +538,7 @@ void Alpaca_FSM::die_02_Init()
 void Alpaca_FSM::gaze_b()
 {
     //if (Init_CurFrame(16))
-    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
@@ -563,12 +565,14 @@ void Alpaca_FSM::gaze_b_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
 
     m_bSuperArmor = false;
+
+    AttackCollider_Off();
 }
 
 void Alpaca_FSM::gaze_f()
 {
     //if (Init_CurFrame(16))
-    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
@@ -595,12 +599,14 @@ void Alpaca_FSM::gaze_f_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
 
     m_bSuperArmor = false;
+
+    AttackCollider_Off();
 }
 
 void Alpaca_FSM::gaze_l()
 {
     //if (Init_CurFrame(16))
-    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
@@ -627,12 +633,14 @@ void Alpaca_FSM::gaze_l_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
 
     m_bSuperArmor = false;
+
+    AttackCollider_Off();
 }
 
 void Alpaca_FSM::gaze_r()
 {
     //if (Init_CurFrame(16))
-    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
@@ -659,6 +667,8 @@ void Alpaca_FSM::gaze_r_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
 
     m_bSuperArmor = false;
+
+    AttackCollider_Off();
 }
 
 void Alpaca_FSM::airborne_start()
@@ -690,6 +700,8 @@ void Alpaca_FSM::airborne_end()
             m_eCurState = STATE::airborne_up;
         else
         {
+            SOUND.Play_Sound(L"vo_alpaca_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
             CUR_SCENE->g_sceneFlag++;
 
             m_bInvincible = true;
@@ -798,6 +810,8 @@ void Alpaca_FSM::knock_end_loop()
 
     if (m_bIsDead)
     {
+        SOUND.Play_Sound(L"vo_alpaca_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         m_bInvincible = true;
 
         Get_Owner()->Get_Animator()->Set_AnimState(true);
@@ -891,6 +905,8 @@ void Alpaca_FSM::knockdown_end()
             m_eCurState = STATE::knock_up;
         else
         {
+            SOUND.Play_Sound(L"vo_alpaca_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
             CUR_SCENE->g_sceneFlag++;
 
             m_bInvincible = true;
@@ -937,7 +953,7 @@ void Alpaca_FSM::skill_1100_Init()
 
     animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, 1.f);
 
-    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_tAttackCoolTime.fAccTime = 0.f;
 
@@ -966,7 +982,7 @@ void Alpaca_FSM::skill_2100_Init()
 
     animator->Set_NextTweenAnim(L"skill_2100", 0.15f, false, 1.f);
 
-    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_tAttackCoolTime.fAccTime = 0.f;
 
@@ -994,7 +1010,7 @@ void Alpaca_FSM::skill_3100_Init()
 
     animator->Set_NextTweenAnim(L"skill_3100", 0.15f, false, 1.f);
 
-    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_tAttackCoolTime.fAccTime = 0.f;
 

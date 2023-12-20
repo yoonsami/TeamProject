@@ -49,6 +49,9 @@ HRESULT Succubus_Scythe_FSM::Init()
 
         m_fDetectRange = 15.f;
 
+        m_fMySoundDistance = 7.f;
+        m_fVoiceVolume = 0.4f;
+        m_fEffectVolume = 0.6f;
 
         m_bInitialize = true;
     }
@@ -303,6 +306,10 @@ void Succubus_Scythe_FSM::Get_Hit(const wstring& skillname, _float fDamage, shar
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::hit;
+
+            wstring strSoundTag = L"vo_succubus_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
     else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
@@ -315,6 +322,10 @@ void Succubus_Scythe_FSM::Get_Hit(const wstring& skillname, _float fDamage, shar
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::knock_start;
+
+            wstring strSoundTag = L"vo_succubus_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
     else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
@@ -327,6 +338,10 @@ void Succubus_Scythe_FSM::Get_Hit(const wstring& skillname, _float fDamage, shar
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::knockdown_start;
+
+            wstring strSoundTag = L"vo_succubus_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
     else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
@@ -339,6 +354,10 @@ void Succubus_Scythe_FSM::Get_Hit(const wstring& skillname, _float fDamage, shar
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::airborne_start;
+
+            wstring strSoundTag = L"vo_succubus_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
 
@@ -395,6 +414,8 @@ void Succubus_Scythe_FSM::b_idle_Init()
 
     m_bSuperArmor = false;
     m_bInvincible = false;
+
+    AttackCollider_Off();
 }
 
 void Succubus_Scythe_FSM::b_run()
@@ -514,6 +535,8 @@ void Succubus_Scythe_FSM::die_01_Init()
 
     m_bSuperArmor = false;
     m_bInvincible = true;
+
+    SOUND.Play_Sound(L"vo_succubus_die_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 void Succubus_Scythe_FSM::die_02()
@@ -537,6 +560,8 @@ void Succubus_Scythe_FSM::die_02_Init()
 
     m_bSuperArmor = false;
     m_bInvincible = true;
+
+    SOUND.Play_Sound(L"vo_succubus_die_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 
@@ -572,6 +597,8 @@ void Succubus_Scythe_FSM::gaze_b_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
 
     m_bSuperArmor = false;
+
+    AttackCollider_Off();
 }
 
 void Succubus_Scythe_FSM::gaze_f()
@@ -606,6 +633,8 @@ void Succubus_Scythe_FSM::gaze_f_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
 
     m_bSuperArmor = false;
+
+    AttackCollider_Off();
 }
 
 void Succubus_Scythe_FSM::gaze_l()
@@ -640,6 +669,8 @@ void Succubus_Scythe_FSM::gaze_l_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
 
     m_bSuperArmor = false;
+
+    AttackCollider_Off();
 }
 
 void Succubus_Scythe_FSM::gaze_r()
@@ -674,6 +705,8 @@ void Succubus_Scythe_FSM::gaze_r_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
 
     m_bSuperArmor = false;
+
+    AttackCollider_Off();
 }
 
 void Succubus_Scythe_FSM::airborne_start()
@@ -705,6 +738,10 @@ void Succubus_Scythe_FSM::airborne_end()
             m_eCurState = STATE::airborne_up;
         else
         {
+            wstring strSoundTag = L"vo_succubus_die_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 2 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
             m_bInvincible = true;
 
             Get_Owner()->Get_Animator()->Set_AnimState(true);
@@ -810,6 +847,10 @@ void Succubus_Scythe_FSM::knock_end_loop()
 
     if (m_bIsDead)
     {
+        wstring strSoundTag = L"vo_succubus_die_0";
+        strSoundTag = strSoundTag + to_wstring(rand() % 2 + 1);
+        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         m_bInvincible = true;
 
         Get_Owner()->Get_Animator()->Set_AnimState(true);
@@ -902,6 +943,10 @@ void Succubus_Scythe_FSM::knockdown_end()
             m_eCurState = STATE::knock_up;
         else
         {
+            wstring strSoundTag = L"vo_succubus_die_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 2 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
             m_bInvincible = true;
 
             Get_Owner()->Get_Animator()->Set_AnimState(true);
@@ -933,16 +978,15 @@ void Succubus_Scythe_FSM::skill_1100()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     if (Init_CurFrame(14))
-        Add_And_Set_Effect(L"Succubus_1100_slash");
-
-    if (m_iCurFrame == 14)
     {
-
+        SOUND.Play_Sound(L"vo_succubus_att_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"swing_sword_common_04", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        Add_And_Set_Effect(L"Succubus_1100_slash");
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     }
-    else if (m_iCurFrame == 25)
+    else if (Init_CurFrame(25))
         AttackCollider_Off();
-
+    
     Set_Gaze();
 }
 
@@ -965,12 +1009,15 @@ void Succubus_Scythe_FSM::skill_1200()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if(Init_CurFrame(21))
+    if (Init_CurFrame(10))
+        SOUND.Play_Sound(L"vo_succubus_att_long_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(21))
+    {
+        SOUND.Play_Sound(L"swing_sword_common_04", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         Add_And_Set_Effect(L"Succubus_1200_slash");
-
-    if (m_iCurFrame == 21)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (m_iCurFrame == 23)
+    }
+    else if (Init_CurFrame(23))
         AttackCollider_Off();
 
     Set_Gaze();
@@ -995,12 +1042,15 @@ void Succubus_Scythe_FSM::skill_1300()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-	if (Init_CurFrame(29))
+    if (Init_CurFrame(10))
+        SOUND.Play_Sound(L"vo_succubus_att_long_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(29))
+    {    
 		Add_And_Set_Effect(L"Succubus_1300_slash");
-
-    if (m_iCurFrame == 29)
+        SOUND.Play_Sound(L"swing_sword_common_04", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (m_iCurFrame == 31)
+    }
+    else if (Init_CurFrame(31))
         AttackCollider_Off();
 
     Set_Gaze();
@@ -1025,19 +1075,22 @@ void Succubus_Scythe_FSM::skill_1400()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-	if (Init_CurFrame(51))
-		Add_And_Set_Effect(L"Succubus_1400");
-
+	if (Init_CurFrame(30))
+        SOUND.Play_Sound(L"vo_succubus_att_long_04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     if (Init_CurFrame(51))
     {
+        SOUND.Play_Sound(L"whoosh_magic", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		Add_And_Set_Effect(L"Succubus_1400");
+
         FORWARDMOVINGSKILLDESC desc;
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
         desc.fMoveSpeed = 20.f;
         desc.fLifeTime = 0.5f;
-        desc.fLimitDistance = 10.f;
+        desc.fLimitDistance = 3.f;
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Succubus_Scythe_SkillCollider", vSkillPos, 1.5f, desc, NORMAL_SKILL, 10.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Succubus_Scythe_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
     }
 
     Set_Gaze();
@@ -1131,7 +1184,11 @@ void Succubus_Scythe_FSM::Entry_Battle()
 
 void Succubus_Scythe_FSM::Set_AttackSkill()
 {
-    _uint iRan = rand() % 4;
+    m_fAttackRange = 5.f;
+    m_ePatternState = STATE::skill_1400;
+    m_iPreAttack = 3;
+
+    /*_uint iRan = rand() % 4;
 
     while (true)
     {
@@ -1165,7 +1222,7 @@ void Succubus_Scythe_FSM::Set_AttackSkill()
         m_ePatternState = STATE::skill_1400;
         m_iPreAttack = 3;
     }
-    
+    */
     m_bSetPattern = true;
 }
 

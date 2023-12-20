@@ -1486,7 +1486,8 @@ void Dellons_FSM::skill_300100()
         Add_Effect(L"Dellons_300100_Wraith2");
 
     Look_DirToTarget();
-    if (m_iCurFrame >= 10)
+
+    if (m_iCurFrame >= 9)
     {
         if (!m_pCamera.expired())
         {
@@ -1506,7 +1507,7 @@ void Dellons_FSM::skill_300100()
 
     Calculate_CamBoneMatrix();
 
-    if (Init_CurFrame(10))
+    if (Init_CurFrame(9))
     {
 		Summon_Wraith();
 		Set_WraithState((_uint)DellonsWraith_FSM::STATE::FX_DellonsWraith_skill_30010);
