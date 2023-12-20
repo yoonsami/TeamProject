@@ -194,3 +194,11 @@ enum class CUR_QUEST
 	OTHER, 
 	MAX 
 };
+
+enum class SWITCH_TYPE
+{
+	CREATE_WOLF_AFTER_DELLONS,
+
+
+	MAX,
+};

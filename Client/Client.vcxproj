@@ -235,6 +235,7 @@
     <ClInclude Include="Smoke_WitcherSense.h" />
     <ClInclude Include="SpikeScene.h" />
     <ClInclude Include="FloorSkill_Script.h" />
+    <ClInclude Include="SwitchMgr.h" />
     <ClInclude Include="TimerScript.h" />
     <ClInclude Include="UiBossDialog.h" />
     <ClInclude Include="UiCardDeckSwitch.h" />
@@ -374,6 +375,7 @@
     <ClCompile Include="Smoke_WitcherSense.cpp" />
     <ClCompile Include="SpikeScene.cpp" />
     <ClCompile Include="FloorSkill_Script.cpp" />
+    <ClCompile Include="SwitchMgr.cpp" />
     <ClCompile Include="TimerScript.cpp" />
     <ClCompile Include="UiBossDialog.cpp" />
     <ClCompile Include="UiCardDeckSwitch.cpp" />
