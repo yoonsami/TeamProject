@@ -75,9 +75,9 @@ void ImGui_Manager::ImGui_SetUp()
     ImGuizmo::SetRect(0.f, 0.f, g_iWinSizeX, g_iWinSizeY);
 
     Load_SkyBoxTexture();
-    Load_MapObjectBase(L"Yeonhee");
-    //Load_TerrainTile();
-    //Load_Water();
+    Load_MapObjectBase(L"Field");
+    Load_TerrainTile();
+    Load_Water();
     Init_WeedSetting();
 
     Create_SampleObjects();

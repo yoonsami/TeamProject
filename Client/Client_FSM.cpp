@@ -48,7 +48,7 @@ void Client_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _float fGa
 		if (targetToLook == nullptr)
 			return;
 
-		Get_Hit(strSkillName, fAttackDamage, targetToLook, eType);
+   		Get_Hit(strSkillName, fAttackDamage, targetToLook, eType);
 	}
 }
 

@@ -39,7 +39,7 @@ void InstancingMgr::Render_Weeds(vector<shared_ptr<GameObject>>& groups)
 			continue;
 
 		
-		if(_float3::Transform(group->Get_CullPos(), Camera::Get_View()).LengthSquared() > 100.f * 100.f)
+		if(_float3::Transform(group->Get_CullPos(), Camera::Get_View()).LengthSquared() > 80.f * 80.f)
 			continue;
 
 		auto& groupWeeds = group->Get_WeedGroup()->Get_Weeds();

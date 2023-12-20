@@ -213,6 +213,7 @@
     <ClInclude Include="DragonBall_FSM.h" />
     <ClInclude Include="EffectGoUp.h" />
     <ClInclude Include="EntSoldier_FSM.h" />
+    <ClInclude Include="FieldScript.h" />
     <ClInclude Include="Friend_FSM.h" />
     <ClInclude Include="Get_Gravity.h" />
     <ClInclude Include="Glow_WitcherSense.h" />
@@ -353,6 +354,7 @@
     <ClCompile Include="DragonBall_FSM.cpp" />
     <ClCompile Include="EffectGoUp.cpp" />
     <ClCompile Include="EntSoldier_FSM.cpp" />
+    <ClCompile Include="FieldScript.cpp" />
     <ClCompile Include="Friend_FSM.cpp" />
     <ClCompile Include="Get_Gravity.cpp" />
     <ClCompile Include="Glow_WitcherSense.cpp" />

@@ -31,4 +31,5 @@ private:
 
 	void Load_Portal();
 
+	void Load_Script(shared_ptr<GameObject> pPlayer);
 };
