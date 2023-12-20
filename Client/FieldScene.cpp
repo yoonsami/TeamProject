@@ -212,6 +212,7 @@ HRESULT FieldScene::Load_Scene()
 	//Sound
 	RESOURCES.Load_Sound(L"..\\Resources\\Sound\\FieldScene\\", false);
 
+	SWITCHMGR.Set_SwitchState(SWITCH_TYPE::CREATE_WOLF_AFTER_DELLONS, true);
 
 	auto player = Load_Player();
 	Load_Camera(player);
@@ -245,7 +246,6 @@ HRESULT FieldScene::Load_Scene()
 	
 	g_fBrightness = 0.12f;
 	g_fContrast = 1.35f;
-	SWITCHMGR.Set_SwitchState(SWITCH_TYPE::CREATE_WOLF_AFTER_DELLONS, true);
 	return S_OK;
 }
 
