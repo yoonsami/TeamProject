@@ -708,6 +708,10 @@ void MeshEffect::Scaling()
             vScale = Get_Transform()->Get_Scale() + _float3(fScaleSpeed * fDT);
             if (m_tDesc.bIsSSD)
                 vScale.y = m_vStartScale.y;
+
+            if (vScale.x < 0) vScale.x = 0.f;
+            if (vScale.y < 0) vScale.y = 0.f;
+            if (vScale.z < 0) vScale.z = 0.f;
         }
 
         Get_Transform()->Scaled(vScale);
@@ -731,6 +735,9 @@ void MeshEffect::Scaling()
             m_vLocalScale = Get_Transform()->Get_Scale() + _float3(fScaleSpeed * fDT);
             if (m_tDesc.bIsSSD)
                 m_vLocalScale.y = m_vStartScale.y;
+            if (m_vLocalScale.x < 0) m_vLocalScale.x = 0.f;
+            if (m_vLocalScale.y < 0) m_vLocalScale.y = 0.f;
+            if (m_vLocalScale.z < 0) m_vLocalScale.z = 0.f;
         }
     }
 }

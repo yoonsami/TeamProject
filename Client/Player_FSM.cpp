@@ -1479,7 +1479,7 @@ void Player_FSM::skill_100300_Init()
 
 void Player_FSM::skill_200100()
 {
-    if (Init_CurFrame(15))
+    if (Init_CurFrame(30))
         Add_Effect(L"Teo_200100");
 
     if (m_iCurFrame >= 15)
@@ -1557,7 +1557,7 @@ void Player_FSM::skill_200100_Init()
 
 void Player_FSM::skill_200200()
 {
-    if (Init_CurFrame(5))
+    if (Init_CurFrame(20))
         Add_Effect(L"Teo_200200");
 
     Look_DirToTarget();
