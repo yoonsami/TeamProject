@@ -81,7 +81,7 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     
     /* Get Shared Data */
     bool bUseFadeOut = (bool) g_int_0;
-    float fFadeOutRadio = g_float_3;
+    float fFadeOutIntensity = g_float_3;
     bool bUseRimLight = (bool) g_int_1;
     bool bUseSpriteAnim = (bool) g_int_2;
     bool bLightOn = (bool) g_int_3;
@@ -323,7 +323,7 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     
     /* Fade Out */
     if (bUseFadeOut)
-        vOutColor.a *= fFadeOutRadio;
+        vOutColor.a *= fFadeOutIntensity;
     
     if (vOutColor.a < 0.07f)
         discard;
@@ -339,7 +339,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     
     /* Get Shared Data */
     bool bUseFadeOut = (bool) g_int_0;
-    float fFadeOutRadio = g_float_3;
+    float fFadeOutIntensity = g_float_3;
     bool bUseRimLight = (bool) g_int_1;
     bool bUseSpriteAnim = (bool) g_int_2;
     bool bLightOn = (bool) g_int_3;
@@ -581,7 +581,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     
     /* Fade Out */
     if (bUseFadeOut)
-        vOutColor.a *= fFadeOutRadio;
+        vOutColor.a *= fFadeOutIntensity;
     
         /* Blend */
     if (bHasTexturemap10)
