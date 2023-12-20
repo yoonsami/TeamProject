@@ -210,9 +210,6 @@ void Player_FSM::State_Tick()
         stun();
         break;
     }
-
-    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
-
     if (m_iPreFrame != m_iCurFrame)
         m_iPreFrame = m_iCurFrame;
 }
@@ -967,10 +964,12 @@ void Player_FSM::knockdown_end_Init()
 
 void Player_FSM::skill_1100()
 {
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (Init_CurFrame(9))
     {
         SOUND.Play_Sound(L"swing_short_sword_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-        Add_Effect(L"Teo_1100");
+        Add_And_Set_Effect(L"Teo_1100");
         AttackCollider_On(NORMAL_ATTACK, _float(rand() % 10 + 1));
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
     }
@@ -1019,10 +1018,12 @@ void Player_FSM::skill_1100_Init()
 
 void Player_FSM::skill_1200()
 {
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (Init_CurFrame(4))
     {
-		Add_Effect(L"Teo_1200");
         SOUND.Play_Sound(L"swing_short_sword_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        Add_And_Set_Effect(L"Teo_1200");
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
         AttackCollider_On(NORMAL_ATTACK, _float(rand() % 10 + 1));
     }
@@ -1073,13 +1074,15 @@ void Player_FSM::skill_1200_Init()
 
 void Player_FSM::skill_1300()
 {
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (Init_CurFrame(12))
     {
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
         AttackCollider_On(NORMAL_ATTACK, _float(rand() % 10 + 1));
 
         SOUND.Play_Sound(L"swing_short_sword_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-        Add_Effect(L"Teo_1300");
+        Add_And_Set_Effect(L"Teo_1300");
     }
     else if (Init_CurFrame(14))
         AttackCollider_Off();
@@ -1131,6 +1134,8 @@ void Player_FSM::skill_1300_Init()
 
 void Player_FSM::skill_1400()
 {
+    Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (Init_CurFrame(16))
     {
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
@@ -1138,6 +1143,7 @@ void Player_FSM::skill_1400()
         AttackCollider_On(KNOCKBACK_ATTACK, _float(rand() % 10 + 1));
 
         SOUND.Play_Sound(L"swing_short_sword_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        Add_And_Set_Effect(L"Teo_1400");
     }
     else if (Init_CurFrame(20))
         AttackCollider_Off();
@@ -1380,6 +1386,11 @@ void Player_FSM::skill_100200_Init()
 
 void Player_FSM::skill_100300()
 {
+    if (Init_CurFrame(5))
+        Add_Effect(L"Teo_100300_Jump");
+    else if (Init_CurFrame(30))
+        Add_Effect(L"Teo_100300");
+
     Look_DirToTarget();
 
     if (m_iCurFrame >= 10 && m_iCurFrame <= 23)

@@ -295,9 +295,9 @@ shared_ptr<GameObject> GranseedScene::Load_Player()
 			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
 			{
 				shared_ptr<Model> model = RESOURCES.Get<Model>(L"Player");
-				model->AddParts(L"Am_Ct_Hat_022", PARTS_INFO::Hair);
+				model->AddParts(L"Am_Ct_Hat_036", PARTS_INFO::Hair);
 				model->AddParts(L"Am_Head_001", PARTS_INFO::Head);
-				model->AddParts(L"Am_Ct_Uniform_022", PARTS_INFO::Uniform);
+				model->AddParts(L"Am_Ct_Uniform_036", PARTS_INFO::Uniform);
 				animator->Set_Model(model);
 				
 			}

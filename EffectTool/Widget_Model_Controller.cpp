@@ -121,9 +121,9 @@ void Widget_Model_Controller::Apply_Model()
 		shared_ptr<Model> model = RESOURCES.Get<Model>(Utils::ToWString(m_ModelNames[m_iCurrentModelIndex]));
 		if (Utils::ToWString(m_ModelNames[m_iCurrentModelIndex]) == L"Player")
 		{
-			model->AddParts(L"Am_Ct_Hat_022", PARTS_INFO::Hair);
+			model->AddParts(L"Am_Ct_Hat_039", PARTS_INFO::Hair);
 			model->AddParts(L"Am_Head_001", PARTS_INFO::Head);
-			model->AddParts(L"Am_Ct_Uniform_022", PARTS_INFO::Uniform);
+			model->AddParts(L"Am_Ct_Uniform_039", PARTS_INFO::Uniform);
 		}
 		
 		m_pControlObject.lock()->Get_Animator()->Set_Model(model);
