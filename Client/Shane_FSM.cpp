@@ -1707,6 +1707,7 @@ void Shane_FSM::Use_Dash()
             m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
 
             _float3 vInputVector = Get_InputDirVector();
+
             if (vInputVector != _float3(0.f))
                 m_eCurState = STATE::skill_91100;
             else

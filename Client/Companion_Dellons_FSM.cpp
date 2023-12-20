@@ -1435,11 +1435,11 @@ void Companion_Dellons_FSM::skill_200200_Init()
 
 void Companion_Dellons_FSM::skill_300100()
 {
-    if (m_iCurFrame < 10)
+    if (m_iCurFrame < 9)
         Look_DirToTarget();
    
     
-    if (Init_CurFrame(10))
+    if (Init_CurFrame(9))
     {
         Summon_Wraith();
         Set_WraithState((_uint)DellonsWraith_FSM::STATE::FX_DellonsWraith_skill_30010);

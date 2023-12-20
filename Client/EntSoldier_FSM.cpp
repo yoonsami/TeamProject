@@ -49,6 +49,10 @@ HRESULT EntSoldier_FSM::Init()
 
         m_fDetectRange = 15.f;
 
+        m_fMySoundDistance = 7.f;
+        m_fVoiceVolume = 0.5f;
+        m_fEffectVolume = 0.4f;
+
 
         m_bInitialize = true;
     }
@@ -291,6 +295,10 @@ void EntSoldier_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_pt
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::hit;
+
+            wstring strSoundTag = L"vo_big_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
     else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
@@ -303,6 +311,10 @@ void EntSoldier_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_pt
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::knock_start;
+
+            wstring strSoundTag = L"vo_big_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
     else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
@@ -315,6 +327,10 @@ void EntSoldier_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_pt
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::knockdown_start;
+
+            wstring strSoundTag = L"vo_big_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
     else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
@@ -327,6 +343,10 @@ void EntSoldier_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_pt
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::airborne_start;
+
+            wstring strSoundTag = L"vo_big_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
 
@@ -383,6 +403,8 @@ void EntSoldier_FSM::b_idle_Init()
 
     m_bSuperArmor = false;
     m_bInvincible = false;
+
+    AttackCollider_Off();
 }
 
 void EntSoldier_FSM::b_run()
@@ -457,6 +479,11 @@ void EntSoldier_FSM::wander()
 {
     if (!m_bDetected)
     {
+        if (Init_CurFrame(5))
+            SOUND.Play_Sound(L"vo_big_att_04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        else if (Init_CurFrame(30))
+            SOUND.Play_Sound(L"vo_big_att_05", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         CalCulate_PatrolTime();
 
         if (m_bPatrolMove)
@@ -503,6 +530,8 @@ void EntSoldier_FSM::die_01_Init()
 
     animator->Set_NextTweenAnim(L"die_01", 0.2f, false, 1.f);
 
+    SOUND.Play_Sound(L"vo_big_die_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_bSuperArmor = false;
     m_bInvincible = true;
 }
@@ -525,6 +554,8 @@ void EntSoldier_FSM::die_02_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"die_02", 0.2f, false, 1.f);
+
+    SOUND.Play_Sound(L"vo_big_die_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_bSuperArmor = false;
     m_bInvincible = true;
@@ -563,6 +594,8 @@ void EntSoldier_FSM::gaze_b_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
 
     m_bSuperArmor = false;
+
+    AttackCollider_Off();
 }
 
 void EntSoldier_FSM::gaze_f()
@@ -597,6 +630,8 @@ void EntSoldier_FSM::gaze_f_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
 
     m_bSuperArmor = false;
+
+    AttackCollider_Off();
 }
 
 void EntSoldier_FSM::gaze_l()
@@ -631,6 +666,8 @@ void EntSoldier_FSM::gaze_l_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
 
     m_bSuperArmor = false;
+
+    AttackCollider_Off();
 }
 
 void EntSoldier_FSM::gaze_r()
@@ -665,6 +702,8 @@ void EntSoldier_FSM::gaze_r_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
 
     m_bSuperArmor = false;
+
+    AttackCollider_Off();
 }
 
 void EntSoldier_FSM::airborne_start()
@@ -696,6 +735,10 @@ void EntSoldier_FSM::airborne_end()
             m_eCurState = STATE::airborne_up;
         else
         {
+            wstring strSoundTag = L"vo_big_die_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 2 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
             m_bInvincible = true;
 
             Get_Owner()->Get_Animator()->Set_AnimState(true);
@@ -801,6 +844,10 @@ void EntSoldier_FSM::knock_end_loop()
 
     if (m_bIsDead)
     {
+        wstring strSoundTag = L"vo_big_die_0";
+        strSoundTag = strSoundTag + to_wstring(rand() % 2 + 1);
+        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         m_bInvincible = true;
 
         Get_Owner()->Get_Animator()->Set_AnimState(true);
@@ -893,6 +940,10 @@ void EntSoldier_FSM::knockdown_end()
             m_eCurState = STATE::knock_up;
         else
         {
+            wstring strSoundTag = L"vo_big_die_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 2 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
             m_bInvincible = true;
 
             Get_Owner()->Get_Animator()->Set_AnimState(true);
@@ -923,11 +974,15 @@ void EntSoldier_FSM::skill_1100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Init_CurFrame(14))
+    if (Init_CurFrame(12))
+        SOUND.Play_Sound(L"vo_big_att_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(14))
+    {
+        SOUND.Play_Sound(L"swing_spear_05", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         Add_And_Set_Effect(L"EntSoldier_1100_slash");
-    if (m_iCurFrame == 14)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (m_iCurFrame == 17)
+    }
+    else if (Init_CurFrame(17))
         AttackCollider_Off();
 
     Set_Gaze();
@@ -952,20 +1007,33 @@ void EntSoldier_FSM::skill_2100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-	if (Init_CurFrame(14))
-		Add_And_Set_Effect(L"EntSoldier_2100");
 
-    if (m_iCurFrame == 14)
+    
+    if (Init_CurFrame(14))
+    {
+        SOUND.Play_Sound(L"swing_spear_05", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		Add_And_Set_Effect(L"EntSoldier_2100");
         AttackCollider_On(NORMAL_ATTACK, 3.f);
-    else if (m_iCurFrame == 19)
+    }
+    else if (Init_CurFrame(19))
+    {
+        SOUND.Play_Sound(L"vo_big_att_05", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         AttackCollider_Off();
-    else if (m_iCurFrame == 22)
+    }
+    else if (Init_CurFrame(22))
+    {
+        SOUND.Play_Sound(L"swing_spear_05", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         AttackCollider_On(NORMAL_ATTACK, 3.f);
-    else if (m_iCurFrame == 29)
+    }
+    else if (Init_CurFrame(29))
         AttackCollider_Off();
-    else if (m_iCurFrame == 39)
+    else if (Init_CurFrame(39))
+    {
+        SOUND.Play_Sound(L"swing_spear_05", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         AttackCollider_On(NORMAL_ATTACK, 3.f);
-    else if (m_iCurFrame == 46)
+    }
+    else if (Init_CurFrame(46))
         AttackCollider_Off();
 
     Set_Gaze();
@@ -1065,7 +1133,7 @@ void EntSoldier_FSM::Set_AttackSkill()
     while (true)
     {
         if (iRan == m_iPreAttack)
-            iRan = rand() % 3;
+            iRan = rand() % 2;
         else
             break;
     }
