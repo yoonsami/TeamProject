@@ -24,6 +24,7 @@
 #define STUN_HIT                        L"Stun_Attack"
 #define IDX(VALUE)                      static_cast<unsigned int>(VALUE)
 
+#define SWITCHMGR                       GET_SINGLE(SwitchMgr)
 #define DATAMGR                         GET_SINGLE(DataMgr)
 #define GET_DATA(VALUE)                 DATAMGR.Get_Data(VALUE)
 #define GET_ELEMENT(VALUE)              DATAMGR.Get_Element(VALUE)

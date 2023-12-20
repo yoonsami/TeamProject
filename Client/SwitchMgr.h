@@ -11,8 +11,8 @@ class SwitchMgr
 
 public:
 	_bool Get_SwitchState(SWITCH_TYPE eType) { return m_Switches[(_int)(eType)]; }
-
+	void Set_SwitchState(SWITCH_TYPE eType, _bool bSwitch) { m_Switches[(_int)(eType)] = bSwitch; }
 private:
-	array<_bool, MAX_SWITCH_COUNT> m_Switches;
+	array<_bool, MAX_SWITCH_COUNT> m_Switches{false};
 };
 

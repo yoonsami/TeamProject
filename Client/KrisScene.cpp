@@ -161,10 +161,6 @@ void KrisScene::Final_Tick()
 	}
 	if (KEYPUSH(KEY_TYPE::TAB) && KEYPUSH(KEY_TYPE::F7))
 	{
-		/*GachaSceneDesc sceneDesc{ L"YeopoMap",HERO::YEOPO};
-			SCENE.Add_SubScene(make_shared<GachaScene>(sceneDesc));
-		SCENE.Exchange_Scene();*/
-
 		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<KrisScene>());
 		scene->Set_StaticObjects(m_StaticObject);
 		PHYSX.Set_CharacterControllerNull();
@@ -172,7 +168,7 @@ void KrisScene::Final_Tick()
 		g_bCutScene = false;
 	}
 
-	/*_int monsterCount = 0;
+	_int monsterCount = 0;
 	_bool bPortalCreated = false;
 	auto& gameObjects = Get_Objects();
 	for (auto& gameObject : gameObjects)
@@ -216,7 +212,10 @@ void KrisScene::Final_Tick()
 			portal->Set_Name(L"Portal");
 			EVENTMGR.Create_Object(portal);
 		}
-	}*/
+		bPortalCreated = true;
+
+		SWITCHMGR.Set_SwitchState(SWITCH_TYPE::CREATE_WOLF_AFTER_DELLONS, true);
+	}
 
 }
 
