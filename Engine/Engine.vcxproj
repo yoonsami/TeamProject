@@ -212,6 +212,7 @@
     <ClInclude Include="InstancingMgr.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="LightHelper.h" />
+    <ClInclude Include="MapObjectLoopEffectScript.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MathUtils.h" />
     <ClInclude Include="Mesh.h" />
@@ -298,6 +299,7 @@
     <ClCompile Include="InstancingMgr.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="LightHelper.cpp" />
+    <ClCompile Include="MapObjectLoopEffectScript.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="MathUtils.cpp" />
     <ClCompile Include="Mesh.cpp" />

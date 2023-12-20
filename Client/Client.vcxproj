@@ -213,6 +213,7 @@
     <ClInclude Include="DragonBall_FSM.h" />
     <ClInclude Include="EffectGoUp.h" />
     <ClInclude Include="EntSoldier_FSM.h" />
+    <ClInclude Include="FieldScript.h" />
     <ClInclude Include="Friend_FSM.h" />
     <ClInclude Include="Get_Gravity.h" />
     <ClInclude Include="Glow_WitcherSense.h" />
@@ -235,6 +236,7 @@
     <ClInclude Include="Smoke_WitcherSense.h" />
     <ClInclude Include="SpikeScene.h" />
     <ClInclude Include="FloorSkill_Script.h" />
+    <ClInclude Include="SwitchMgr.h" />
     <ClInclude Include="TimerScript.h" />
     <ClInclude Include="UiBossDialog.h" />
     <ClInclude Include="UiCardDeckSwitch.h" />
@@ -352,6 +354,7 @@
     <ClCompile Include="DragonBall_FSM.cpp" />
     <ClCompile Include="EffectGoUp.cpp" />
     <ClCompile Include="EntSoldier_FSM.cpp" />
+    <ClCompile Include="FieldScript.cpp" />
     <ClCompile Include="Friend_FSM.cpp" />
     <ClCompile Include="Get_Gravity.cpp" />
     <ClCompile Include="Glow_WitcherSense.cpp" />
@@ -374,6 +377,7 @@
     <ClCompile Include="Smoke_WitcherSense.cpp" />
     <ClCompile Include="SpikeScene.cpp" />
     <ClCompile Include="FloorSkill_Script.cpp" />
+    <ClCompile Include="SwitchMgr.cpp" />
     <ClCompile Include="TimerScript.cpp" />
     <ClCompile Include="UiBossDialog.cpp" />
     <ClCompile Include="UiCardDeckSwitch.cpp" />

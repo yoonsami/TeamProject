@@ -140,21 +140,24 @@ float4 PS_Aberration(VS_OUT input) : SV_Target
 
 float g_FocusDepth;
 float g_DOFRange;
+float4 g_DOFColor;
 
 float4 PS_ExtractDOF(VS_OUT input) : SV_Target
 {
-    float3 originalColor = SubMap0.Sample(PointSampler, input.uv).rgb;
+    float3 originalColor = SubMap0.Sample(LinearSampler, input.uv).rgb;
 
+    originalColor *= g_DOFColor.rgb;
+    
     return float4(originalColor, 1.f);
     
 }
 
 float4 PS_DOF(VS_OUT input) : SV_Target
 {
-    float viewZ = SubMap2.Sample(PointSampler, input.uv).z;
+    float viewZ = SubMap2.Sample(LinearSampler, input.uv).z;
     
-    float3 originalColor = SubMap0.Sample(PointSampler, input.uv).rgb;
-    float3 blurColor = SubMap1.Sample(PointSampler, input.uv).rgb;
+    float3 originalColor = SubMap0.Sample(LinearSampler, input.uv).rgb;
+    float3 blurColor = SubMap1.Sample(LinearSampler, input.uv).rgb;
     
     float3 outColor = 0.f;
     
@@ -202,13 +205,28 @@ float4 PS_Fog(VS_OUT input) : SV_Target
     float fogFactor = 1.f;
     
     if(fogMode == 0)//Linear
+    {
         fogFactor = saturate((fogEnd - viewZ) / (fogEnd - fogStart));
+        color = fogFactor * color + (1.f - fogFactor) * fogColor;
+    }
     else if(fogMode == 1)
+    {
         fogFactor = 1.f / (pow(2.71828, viewZ * fogDensity));
+        color = fogFactor * color + (1.f - fogFactor) * fogColor;
+    }
     else if(fogMode == 2)
+    {
         fogFactor = 1.f / (pow(2.71828, viewZ * fogDensity * viewZ * fogDensity));
+        color = fogFactor * color + (1.f - fogFactor) * fogColor;
+    }
+    else if(fogMode == 3)
+    {
+        float depthThreshold = fogEnd;
+        color = lerp(color, fogColor, saturate((viewZ - depthThreshold) * 10.f) / 2.f );
+        
+    }
     
-    color = fogFactor * color + (1.f - fogFactor) * fogColor;
+   
     
     return float4(color.rgb, 1.f);
 }
@@ -217,27 +235,6 @@ float4 PS_RenderFinal(VS_OUT input) : SV_Target
 {
     return SubMap0.Sample(LinearSampler, input.uv);
 }
-
-float3 GetLutColor(float3 colorIn, sampler2D LutSampler)
-{
-    uint width, height, numMips;
-    SubMap0.GetDimensions(0, width, height, numMips);
-    
-    float2 LutSize = float2(1.f / width, 1.f / height);
-    float4 LutUV;
-    colorIn = saturate(colorIn) * 15.f;
-    LutUV.r = floor(colorIn.b);
-    LutUV.xy = (colorIn.rg + 0.5f) * LutSize;
-    LutUV.x += LutUV.w * LutSize.y;
-    LutUV.z += LutUV.x * LutSize.y;
- 
-   // return lerp(tex2Dlod(LutSampler, LutUV.xyzz).rgb, tex2Dlod(LutSampler, LutUV.zyzz).rgb,);
-    
-    
-    return 0.f;
-    
-}
-
 
 technique11 T0
 {

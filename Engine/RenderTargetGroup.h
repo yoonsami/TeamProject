@@ -55,6 +55,7 @@ enum class RENDER_TARGET_GROUP_TYPE : _uchar
 	FOG,
 
 	TONEMAPPING,
+	LUT,
 
 	SUBSCENEFINAL,
 

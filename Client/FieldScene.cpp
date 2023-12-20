@@ -85,6 +85,7 @@
 #include "UiUseItemSlot.h"
 #include "UiCostumeController.h"
 #include "PortalScript.h"
+#include "FieldScript.h"
 
 namespace fs = std::filesystem;
 
@@ -204,6 +205,10 @@ HRESULT FieldScene::Load_Scene()
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Undead_Priest\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\EntSoldier\\", false);
 
+	//Sound
+	RESOURCES.Load_Sound(L"..\\Resources\\Sound\\FieldScene\\", false);
+
+
 	auto player = Load_Player();
 	Load_Camera(player);
 	Load_MapFile(L"FieldMap", player);
@@ -228,6 +233,15 @@ HRESULT FieldScene::Load_Scene()
 
 	Load_Ui(player);
 	Load_Portal();
+	Load_Script(player);
+	Get_Light()->Get_Light()->Get_LightInfo().color.diffuse = Color(80.f / 255.f);
+	Get_Light()->Get_Light()->Get_LightInfo().color.ambient = Color(150.f / 255.f);
+	Get_Light()->Get_Light()->Get_LightInfo().color.specular = Color(150.f / 255.f);
+	Get_Light()->Get_Light()->Get_LightInfo().color.emissive = Color(10.f);
+	
+	g_fBrightness = 0.12f;
+	g_fContrast = 1.35f;
+	
 	return S_OK;
 }
 
@@ -1075,4 +1089,13 @@ void FieldScene::Load_Portal()
 		portal->Set_Name(L"Portal");
 		Add_GameObject(portal);
 	}
+}
+
+void FieldScene::Load_Script(shared_ptr<GameObject> pPlayer)
+{
+	shared_ptr<GameObject> obj = make_shared<GameObject>();
+	obj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(118.237f, 0.527f, 39.308f, 1.f));
+	obj->Add_Component(make_shared<FieldScript>(pPlayer, 5.f));
+	
+	Add_GameObject(obj);
 }

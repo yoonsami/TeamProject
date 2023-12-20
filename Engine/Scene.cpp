@@ -24,6 +24,7 @@
 #include "GroupEffectOwner.h"
 
 #include <filesystem>
+#include "MapObjectLoopEffectScript.h"
 namespace fs = std::filesystem;
 
 Scene::Scene()
@@ -928,25 +929,8 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 		}
 		if (matDummyData.m[0][3] >= 1.f)
 		{
-			// 이펙트 스크립트 사용
-			_float3 vPosOffset = _float3{ 0.f, 0.f, 0.f };
-			// For. Transform 
-			_float4 vOwnerLook = CreateObject->Get_Transform()->Get_State(Transform_State::LOOK);
-			vOwnerLook.Normalize();
-			_float4 vOwnerRight = CreateObject->Get_Transform()->Get_State(Transform_State::RIGHT);
-			vOwnerRight.Normalize();
-			_float4 vOwnerUp = CreateObject->Get_Transform()->Get_State(Transform_State::UP);
-			vOwnerUp.Normalize();
-			_float4 vOwnerPos = CreateObject->Get_Transform()->Get_State(Transform_State::POS)
-				+ vOwnerRight * vPosOffset.x
-				+ vOwnerUp * vPosOffset.y
-				+ vOwnerLook * vPosOffset.z;
-			//CreateObject->Get_Transform()->Set_State(Transform_State::POS, vOwnerPos);
-
-			// For. GroupEffect component 
-			shared_ptr<GroupEffectOwner> pGroupEffect = make_shared<GroupEffectOwner>();
-			CreateObject->Add_Component(pGroupEffect);
-			CreateObject->Get_GroupEffectOwner()->Set_GroupEffectTag(Utils::ToWString(strEffectName));
+			shared_ptr<MapObjectLoopEffectScript> EffectScript = make_shared<MapObjectLoopEffectScript>(matDummyData.m[0][3], Utils::ToWString(strEffectName));
+			CreateObject->Add_Component(EffectScript);
 		}
 		Add_GameObject(CreateObject);
 	}
@@ -1107,11 +1091,11 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 			}
 			m_WeedGroups[iWeedGroupIndex].lock()->Get_WeedGroup()->Push_Weed(WeedObj);
 			WeedObj->Get_Script<WeedScript>()->Set_WeedGroupIndex(iWeedGroupIndex);
-			// 모든 풀 추가했으면 그룹의 컬링계산
-			for (auto& Weed : m_WeedGroups)
-			{
-				Weed.lock()->Get_WeedGroup()->Compute_CullPosHeight();
-			}
+		}
+		// 모든 풀 추가했으면 그룹의 컬링계산
+		for (auto& Weed : m_WeedGroups)
+		{
+			Weed.lock()->Get_WeedGroup()->Compute_CullPosHeight();
 		}
 	}
 #pragma endregion
@@ -1596,7 +1580,7 @@ void Scene::Render_BloomMapScaling(_uint downSamplingCount)
 
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		if(i != 0)
+		if (i != 0)
 			material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 		else
 			material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
@@ -1685,6 +1669,7 @@ void Scene::Render_DOFMap()
 	material->Push_SubMapData();
 	material->Get_Shader()->GetScalar("g_FocusDepth")->SetFloat(g_DOFData.g_FocusDepth);
 	material->Get_Shader()->GetScalar("g_DOFRange")->SetFloat(g_DOFData.g_DOFRange);
+	material->Get_Shader()->GetVector("g_DOFColor")->SetFloatVector((_float*)& g_DOFData.g_DOFColor);
 	mesh->Get_VertexBuffer()->Push_Data();
 	mesh->Get_IndexBuffer()->Push_Data();
 
@@ -1698,7 +1683,7 @@ void Scene::Render_DOFMapScaling(_uint blurCount)
 	if (!g_DOFData.g_bDOF_On)
 		return;
 
-	wstring rtTexture = m_wstrFinalRenderTarget;
+	wstring rtTexture = L"DOFTarget";
 
 	for (_uint i = 0; i < blurCount; ++i)
 	{

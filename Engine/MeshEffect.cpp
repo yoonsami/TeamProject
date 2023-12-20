@@ -100,6 +100,7 @@ void MeshEffect::MeshEffect_Final_Tick()
     {
         if (!m_tDesc.bIsLoop)
         {
+            m_bRenderEnd = true;
             EVENTMGR.Delete_Object(Get_Owner());
             return; 
         }

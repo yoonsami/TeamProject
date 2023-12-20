@@ -117,7 +117,7 @@ void MirScene::Init()
 void MirScene::Tick()
 {
 	if (m_bPlayBGM)
-		SOUND.Play_Sound(L"bgm_bossmir_loop", CHANNELID::SOUND_BGM, 0.1f);
+		SOUND.Play_Sound(L"bgm_bossmir_loop", CHANNELID::SOUND_BGM, 0.5f * g_fBgmRatio);
 	
 	__super::Tick();
 
@@ -206,7 +206,10 @@ HRESULT MirScene::Load_Scene()
 		pPlayer->Get_Script<HeroChangeScript>()->Change_Hero(HERO::PLAYER);
 	}
 
-
+	g_DOFData.g_bDOF_On = true;
+	g_DOFData.g_DOFRange = 120.f;
+	g_DOFData.g_FocusDepth = 0.f;
+	g_DOFData.g_DOFColor = Color(144.f/255.f, 144.f / 255.f, 144.f / 255.f, 1.f);
 	return S_OK;
 }
 

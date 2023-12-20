@@ -117,6 +117,8 @@ void KrisScene::Init()
 
 void KrisScene::Tick()
 {
+	SOUND.Play_Sound(L"bgm_KrisScene", CHANNELID::SOUND_BGM, 0.5f * g_fBgmRatio);
+
 	__super::Tick();
 }
 
@@ -159,10 +161,6 @@ void KrisScene::Final_Tick()
 	}
 	if (KEYPUSH(KEY_TYPE::TAB) && KEYPUSH(KEY_TYPE::F7))
 	{
-		/*GachaSceneDesc sceneDesc{ L"YeopoMap",HERO::YEOPO};
-			SCENE.Add_SubScene(make_shared<GachaScene>(sceneDesc));
-		SCENE.Exchange_Scene();*/
-
 		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<KrisScene>());
 		scene->Set_StaticObjects(m_StaticObject);
 		PHYSX.Set_CharacterControllerNull();
@@ -214,6 +212,9 @@ void KrisScene::Final_Tick()
 			portal->Set_Name(L"Portal");
 			EVENTMGR.Create_Object(portal);
 		}
+		bPortalCreated = true;
+
+		SWITCHMGR.Set_SwitchState(SWITCH_TYPE::CREATE_WOLF_AFTER_DELLONS, true);
 	}
 
 }
@@ -245,21 +246,31 @@ HRESULT KrisScene::Load_Scene()
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Undead_Priest\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\EntSoldier\\", false);
 
+	//Sound
+	RESOURCES.Load_Sound(L"..\\Resources\\Sound\\KrisScene\\", false);
+
+
 	auto player = Load_Player();
 	Load_Camera(player);
 	Load_MapFile(L"KrisMap", player);
 
-	Load_Monster(5, L"Alpaca_White", player);
-	Load_Monster(5, L"Alpaca_Brown", player);
-	Load_Monster(5, L"Alpaca_Black", player); 
+	Load_Monster(1, L"Alpaca_White", player);
+	Load_Monster(1, L"Alpaca_Brown", player);
+	Load_Monster(1, L"Alpaca_Black", player); 
 	Load_Monster(5, L"Bad_Alpaca_White", player);
 	Load_Monster(5, L"Bad_Alpaca_Brown", player);
 	Load_Monster(5, L"Bad_Alpaca_Black", player);
 
 	Load_Boss_Dellons(player);				
-	
+
 	Load_Ui(player);
 	Load_EventScript();
+
+	Get_Light()->Get_Light()->Get_LightInfo().color.ambient = Color(150.f / 255.f);
+	Get_Light()->Get_Light()->Get_LightInfo().color.specular = Color(150.f / 255.f);
+	Get_Light()->Get_Light()->Get_LightInfo().color.emissive = Color(10.f);
+
+
 	return S_OK;
 }
 
@@ -438,7 +449,7 @@ void KrisScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_pt
 			else
 				fRan = 1.f;
 
-			ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(_float(rand() % 20) * fRan, 0.f, _float(rand() % 15) + 30.f, 1.f));
+			ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4(_float(rand() % 15) * fRan, 0.f, _float(rand() % 15) + 30.f, 1.f));
 			{
 				shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 

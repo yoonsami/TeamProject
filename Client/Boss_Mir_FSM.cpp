@@ -120,9 +120,6 @@ HRESULT Boss_Mir_FSM::Init()
         m_fSwingVolume = 0.3f;
         m_fFootStepVolume = 0.4f;
         m_fEffectVolume = 0.3f;
-        m_fMeteorVolume = 0.3f;
-        m_fLightningVolume = 0.3f;
-
 
         m_fMySoundDistance = 30.f;
 
@@ -529,23 +526,23 @@ void Boss_Mir_FSM::First_Meet()
     {
         if (Init_CurFrame(20))
         {
-            SOUND.Play_Sound(L"dragon_raksha_vox_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-            SOUND.Play_Sound(L"dragon_raksha_action_17", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+            SOUND.Play_Sound(L"dragon_raksha_vox_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+            SOUND.Play_Sound(L"dragon_raksha_action_17", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
         else if (Init_CurFrame(80))
         {
-            SOUND.Play_Sound(L"dragon_raksha_vox_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-            SOUND.Play_Sound(L"dragon_raksha_action_17", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+            SOUND.Play_Sound(L"dragon_raksha_vox_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+            SOUND.Play_Sound(L"dragon_raksha_action_17", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
         else if (Init_CurFrame(130))
         {
-            SOUND.Play_Sound(L"VO_Dragon_Huff_2", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-            SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+            SOUND.Play_Sound(L"VO_Dragon_Huff_2", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+            SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
         else if (Init_CurFrame(190))
         {
             Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.5f);
-            SOUND.Play_Sound(L"dragon_raksha_vox_16", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+            SOUND.Play_Sound(L"dragon_raksha_vox_16", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
 
         m_pOwner.lock()->Get_Animator()->Set_AnimState(false);
@@ -630,7 +627,7 @@ void Boss_Mir_FSM::sq_Intro2()
     Calculate_IntroHeadCam();
  
     if (Init_CurFrame(28))
-        SOUND.Play_Sound(L"VO_Dragon_Roar_1", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"VO_Dragon_Roar_1", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 
     if (m_iCurFrame > 5)
@@ -824,9 +821,9 @@ void Boss_Mir_FSM::b_idle_Init()
 void Boss_Mir_FSM::turn_l()
 {
     if (Init_CurFrame(29))
-        SOUND.Play_Sound(L"dragon_raksha_foot_03_2", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"dragon_raksha_foot_03_2", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     //else if (Init_CurFrame(34))
-    //    SOUND.Play_Sound(L"dragon_raksha_foot_16_2", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    //    SOUND.Play_Sound(L"dragon_raksha_foot_16_2", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 
     if (m_iCurFrame > 9 && m_iCurFrame < 28)
@@ -859,9 +856,9 @@ void Boss_Mir_FSM::turn_l_Init()
 void Boss_Mir_FSM::turn_r()
 {
     if (Init_CurFrame(28))
-        SOUND.Play_Sound(L"dragon_raksha_foot_03_2", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"dragon_raksha_foot_03_2", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     //else if (Init_CurFrame(36))
-    //    SOUND.Play_Sound(L"dragon_raksha_foot_16_2", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    //    SOUND.Play_Sound(L"dragon_raksha_foot_16_2", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     if (m_iCurFrame > 9 && m_iCurFrame < 28)
     {
@@ -908,7 +905,7 @@ void Boss_Mir_FSM::die_Init()
 void Boss_Mir_FSM::groggy_start()
 {
     if (Init_CurFrame(30))
-        SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     if (Is_AnimFinished())
         m_eCurState = STATE::groggy_loop;
@@ -925,7 +922,7 @@ void Boss_Mir_FSM::groggy_start_Init()
     AttackCollider_Off();
     TailAttackCollider_Off();
 
-    SOUND.Play_Sound(L"dragon_voice_03_damage", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"dragon_voice_03_damage", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_tAttackCoolTime.fAccTime = 0.f;
     m_tBreathCoolTime.fAccTime = 0.f;
@@ -1016,7 +1013,7 @@ void Boss_Mir_FSM::groggy_end_Init()
 void Boss_Mir_FSM::SQ_Flee()
 {
     if (Init_CurFrame(93))
-        SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     Calculate_PhaseChangeHeadCam();
 
@@ -1101,7 +1098,7 @@ void Boss_Mir_FSM::SQ_Flee_Init()
 		                    m_FirstWorldMat.Right() * -5.f +
 		                    m_FirstWorldMat.Up() * 12.f, 1.f);
 
-    SOUND.Play_Sound(L"dragon_raksha_vox_04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"dragon_raksha_vox_04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 	if (!m_pCamera.expired())
 	{
@@ -1134,7 +1131,7 @@ void Boss_Mir_FSM::skill_Assault()
     }
 
     if (Init_CurFrame(75))
-        SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 
     if (m_iCurFrame == 75)
@@ -1161,20 +1158,20 @@ void Boss_Mir_FSM::skill_Assault_Init()
     m_iPhaseOne_TurnCnt = 0;
     m_bSummonMeteor = true;
 
-    SOUND.Play_Sound(L"VO_Dragon_Att_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"VO_Dragon_Att_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 }
 
 void Boss_Mir_FSM::skill_Return()
 {
     if (Init_CurFrame(50))
-        SOUND.Play_Sound(L"magic_wind_whoosh_power_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_wind_whoosh_power_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(85))
-        SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(110))
-        SOUND.Play_Sound(L"magic_wind_whoosh_power_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_wind_whoosh_power_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(130))
-        SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 
 
@@ -1222,11 +1219,11 @@ void Boss_Mir_FSM::skill_Return_Init()
 void Boss_Mir_FSM::skill_Restart_Phase1()
 {
     if (Init_CurFrame(43))
-        SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(130))
-        SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(210))
-        SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     Calculate_PhaseChangeHeadCam();
 
@@ -1315,7 +1312,7 @@ void Boss_Mir_FSM::skill_Restart_Phase1_Init()
 
     m_bInvincible = true;
 
-    SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     Calculate_PhaseChangeHeadCam();
 
@@ -1336,7 +1333,7 @@ void Boss_Mir_FSM::skill_Restart_Phase1_Init()
 void Boss_Mir_FSM::skill_Restart_Phase1_Intro()
 {
     if (Init_CurFrame(28))
-        SOUND.Play_Sound(L"VO_Dragon_Roar_1", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"VO_Dragon_Roar_1", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     Calculate_IntroHeadCam();
 
@@ -1417,7 +1414,7 @@ void Boss_Mir_FSM::skill_1100()
         Init_CurFrame(66) ||
         Init_CurFrame(76))
     {
-        SOUND.Play_Sound(L"VO_Dragon_BreathFireLoop", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"VO_Dragon_BreathFireLoop", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         MouseBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iMouseBoneIndex) *
             _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
@@ -1491,7 +1488,7 @@ void Boss_Mir_FSM::skill_1100_Init()
 
     m_tAttackCoolTime.fAccTime = 0.f;
 
-    SOUND.Play_Sound(L"dragon_raksha_vox_13", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"dragon_raksha_vox_13", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 void Boss_Mir_FSM::skill_2100()
@@ -1499,7 +1496,7 @@ void Boss_Mir_FSM::skill_2100()
     if (Init_CurFrame(55))
         Add_And_Set_Effect(L"Mir_2100");
     else if (Init_CurFrame(70))
-        SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(93))
         Add_Effect(L"Mir_2100_End");
 
@@ -1578,7 +1575,7 @@ void Boss_Mir_FSM::skill_2100_Init()
 
     m_bCounter = false;
 
-    SOUND.Play_Sound(L"dragon_raksha_vox_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"dragon_raksha_vox_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 }
 
@@ -1586,7 +1583,7 @@ void Boss_Mir_FSM::skill_3100()
 {
     if (Init_CurFrame(80))
     {
-        SOUND.Play_Sound(L"magic_wind_whoosh_power_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_wind_whoosh_power_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         Add_Effect(L"Mir_3100");
     }
@@ -1640,7 +1637,7 @@ void Boss_Mir_FSM::skill_4100()
 {
     if (Init_CurFrame(86))
     {
-        SOUND.Play_Sound(L"magic_wind_whoosh_power_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_wind_whoosh_power_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         Add_Effect(L"Mir_3100");
     }
@@ -1692,15 +1689,15 @@ void Boss_Mir_FSM::skill_4100_Init()
 void Boss_Mir_FSM::skill_5100()
 {
     if (Init_CurFrame(50))
-        SOUND.Play_Sound(L"magic_wind_whoosh_power_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_wind_whoosh_power_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(85))
-        SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(110))
-        SOUND.Play_Sound(L"magic_wind_whoosh_power_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_wind_whoosh_power_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(130))
-        SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(148))
-        SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 
     if (Is_AnimFinished())
@@ -1745,11 +1742,11 @@ void Boss_Mir_FSM::skill_5100_Init()
 void Boss_Mir_FSM::skill_9100()
 {
     if (Init_CurFrame(43))
-        SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(130))
-        SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_wind_whoosh_power_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(210))
-        SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"dragon_raksha_action_14", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 
     if (Init_CurFrame(66) ||
@@ -1788,7 +1785,7 @@ void Boss_Mir_FSM::skill_9100()
             {
                 shared_ptr<GameObject> obj = make_shared<GameObject>();
                 auto script = make_shared<TimerScript>(1.35f);
-                script->Set_Function([&]() { SOUND.Play_Sound(L"burst_stone_03", CHANNELID::SOUND_EFFECT, m_fMeteorVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+                script->Set_Function([&]() { SOUND.Play_Sound(L"burst_stone_03", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
                 obj->Add_Component(script);
                 EVENTMGR.Create_Object(obj);
             }
@@ -1833,7 +1830,7 @@ void Boss_Mir_FSM::skill_9100_Init()
 
     m_tAttackCoolTime.fAccTime = 0.f;
 
-    SOUND.Play_Sound(L"VO_Dragon_Att_03", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"VO_Dragon_Att_03", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 void Boss_Mir_FSM::skill_11100()
@@ -1908,7 +1905,7 @@ void Boss_Mir_FSM::skill_11100_Init()
 
     m_tAttackCoolTime.fAccTime = 0.f;
 
-    SOUND.Play_Sound(L"dragon_raksha_vox_18", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"dragon_raksha_vox_18", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 void Boss_Mir_FSM::skill_12100()
@@ -1977,7 +1974,7 @@ void Boss_Mir_FSM::skill_12100()
                 {
                     shared_ptr<GameObject> obj = make_shared<GameObject>();
                     auto script = make_shared<TimerScript>(2.f);
-                    script->Set_Function([&]() { SOUND.Play_Sound(L"Lightning", CHANNELID::SOUND_EFFECT, m_fLightningVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+                    script->Set_Function([&]() { SOUND.Play_Sound(L"Lightning", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
                     obj->Add_Component(script);
                     EVENTMGR.Create_Object(obj);
                 }
@@ -2035,7 +2032,7 @@ void Boss_Mir_FSM::skill_12100_Init()
 
     m_tAttackCoolTime.fAccTime = 0.f;
 
-    SOUND.Play_Sound(L"VO_Dragon_Roar_1", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"VO_Dragon_Roar_1", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 void Boss_Mir_FSM::skill_13100()
@@ -2065,7 +2062,7 @@ void Boss_Mir_FSM::skill_13100()
         shared_ptr<Mir_13100_Fireball> pScript = make_shared<Mir_13100_Fireball>();
         Add_Effect(L"Mir_13100", pScript);
 
-        SOUND.Play_Sound(L"magic_Fireball_Launch5_st", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_Fireball_Launch5_st", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     }
 
     if (Is_AnimFinished())
@@ -2118,14 +2115,14 @@ void Boss_Mir_FSM::skill_13100_Init()
 
     m_tAttackCoolTime.fAccTime = 0.f;
 
-    SOUND.Play_Sound(L"dragon_raksha_vox_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"dragon_raksha_vox_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 void Boss_Mir_FSM::skill_14100()
 {
     if (Init_CurFrame(25))
     {
-        SOUND.Play_Sound(L"magic_Fireball_Launch5_st", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_Fireball_Launch5_st", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + _float3::Up;
 
@@ -2153,7 +2150,7 @@ void Boss_Mir_FSM::skill_14100()
     }
     else if (Init_CurFrame(80))
     {
-        SOUND.Play_Sound(L"magic_Fireball_Launch5_st", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_Fireball_Launch5_st", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + _float3::Up;
 
@@ -2229,7 +2226,7 @@ void Boss_Mir_FSM::skill_14100_Init()
 
     m_tAttackCoolTime.fAccTime = 0.f;
 
-    SOUND.Play_Sound(L"dragon_raksha_vox_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"dragon_raksha_vox_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 void Boss_Mir_FSM::skill_100000()
@@ -2241,7 +2238,7 @@ void Boss_Mir_FSM::skill_100000()
     }
 
     if (Init_CurFrame(90))
-        SOUND.Play_Sound(L"dragon_raksha_vox_18", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"dragon_raksha_vox_18", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 
     if (Is_AnimFinished())
@@ -2256,7 +2253,7 @@ void Boss_Mir_FSM::skill_100000_Init()
 
     m_tAttackCoolTime.fAccTime = 0.f;
 
-    SOUND.Play_Sound(L"dragon_raksha_vox_09", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"dragon_raksha_vox_09", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 void Boss_Mir_FSM::skill_100100()
@@ -2301,7 +2298,7 @@ void Boss_Mir_FSM::skill_100100()
              Init_CurFrame(84) )
     {
         if (m_iCurFrame < 69)
-            SOUND.Play_Sound(L"VO_Dragon_BreathFireLoop", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+            SOUND.Play_Sound(L"VO_Dragon_BreathFireLoop", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         MouseBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iMouseBoneIndex) *
             _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
@@ -2327,7 +2324,7 @@ void Boss_Mir_FSM::skill_100100()
     else if (Init_CurFrame(100))
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed);
     else if (Init_CurFrame(140))
-        SOUND.Play_Sound(L"dragon_raksha_foot_03_2", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"dragon_raksha_foot_03_2", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
  
 
 
@@ -2393,7 +2390,7 @@ void Boss_Mir_FSM::skill_200000_Init()
 
     m_tAttackCoolTime.fAccTime = 0.f;
 
-    SOUND.Play_Sound(L"Dragon roar", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"Dragon roar", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 void Boss_Mir_FSM::skill_200100()
@@ -2401,15 +2398,15 @@ void Boss_Mir_FSM::skill_200100()
     if (Init_CurFrame(25))
     {
         Add_GroupEffectOwner(L"Mir_200100", _float3(0.f, 0.f, 2.f), false);
-        SOUND.Play_Sound(L"VO_Dragon_Att_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-        SOUND.Play_Sound(L"Dragon fire", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"VO_Dragon_Att_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"Dragon fire", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     }
     
     m_tBreathCoolTime.fAccTime += fDT;
 
     if (Init_CurFrame(10))
     {
-        SOUND.Play_Sound(L"VO_Dragon_Att_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"VO_Dragon_Att_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed / 4.f);
 
@@ -2431,7 +2428,7 @@ void Boss_Mir_FSM::skill_200100()
         }
     }
     else if (Init_CurFrame(135))
-        SOUND.Play_Sound(L"dragon_raksha_foot_16_2", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"dragon_raksha_foot_16_2", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 
     
@@ -2636,7 +2633,7 @@ void Boss_Mir_FSM::Create_Meteor()
             {
                 shared_ptr<GameObject> obj = make_shared<GameObject>();
                 auto script = make_shared<TimerScript>(1.35f);
-                script->Set_Function([&]() { SOUND.Play_Sound(L"burst_stone_03", CHANNELID::SOUND_EFFECT, m_fMeteorVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+                script->Set_Function([&]() { SOUND.Play_Sound(L"burst_stone_03", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
                 obj->Add_Component(script);
                 EVENTMGR.Create_Object(obj);
             }

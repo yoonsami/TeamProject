@@ -208,11 +208,13 @@ void GroupEffect::Final_Tick()
         {
 			meshEffect.lock()->Get_MeshEffect()->MeshEffect_Final_Tick();
 
-            for (auto& renderGroup : m_RenderGroup)
-            {
-                if (renderGroup.first == Utils::ToWString(meshEffect.lock()->Get_MeshEffect()->Get_Desc().strTag))
-                    renderGroup.second.push_back(meshEffect.lock());
-            }
+            if(!meshEffect.lock()->Get_MeshEffect()->Is_Finished())
+				for (auto& renderGroup : m_RenderGroup)
+				{
+					if (renderGroup.first == Utils::ToWString(meshEffect.lock()->Get_MeshEffect()->Get_Desc().strTag))
+						renderGroup.second.push_back(meshEffect.lock());
+				}
+           
 
             //const wstring instanceID = Utils::ToWString(meshEffect.lock()->Get_MeshEffect()->Get_Desc().strTag);
             //m_RenderGroup[instanceID].push_back(meshEffect.lock());

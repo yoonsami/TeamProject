@@ -230,6 +230,7 @@ public:
 		_bool g_bDOF_On = false;
 		_float g_FocusDepth = 7.f;
 		_float g_DOFRange = 100.f;
+		Color g_DOFColor = Color(1.f);
 	};
 	DOFData g_DOFData{};
 
@@ -263,5 +264,14 @@ public:
 	_float g_rotZ = 0.f;
 
 	_int g_sceneFlag = 0;
+
+	struct LUTData
+	{
+		_bool g_LUTOn = false;
+		_int g_LUTIndex = 0;
+
+	};
+
+	LUTData g_LUTData{};
 };
 

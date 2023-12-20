@@ -37,6 +37,10 @@ HRESULT NeutralAlpaca_FSM::Init()
 
         m_bInitialize = true;
     }
+
+    m_fMySoundDistance = 4.f;
+    m_fVoiceVolume = 0.5f;
+
 	shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
 	attackCollider->GetOrAddTransform();
 	attackCollider->Add_Component(make_shared<SphereCollider>(1.f));
@@ -52,6 +56,11 @@ HRESULT NeutralAlpaca_FSM::Init()
 	m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
 
     m_pTarget = GET_PLAYER;
+
+    _float3 vRandomLook = MathUtils::Get_RandomVector(_float3{ -1.f,0.f,-1.f }, _float3{ 1.f,0.f,1.f });
+    vRandomLook.Normalize();
+
+    Get_Transform()->Set_LookDir(vRandomLook);
 
     return S_OK;
 }
@@ -284,7 +293,10 @@ void NeutralAlpaca_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _fl
 
     if (pCollider->Get_Owner()->Get_Name() == L"Alpaca_Exit")
     {
-		auto script = make_shared<ObjectDissolve>(1.f);
+        if (!m_pAttackCollider.expired())
+            EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+	
+        auto script = make_shared<ObjectDissolve>(1.f);
 		Get_Owner()->Add_Component(script);
 		script->Init();
         m_bIsDead = true;
@@ -332,6 +344,8 @@ void NeutralAlpaca_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared
 					m_eCurState = STATE::knock_end_hit;
 				else
 					m_eCurState = STATE::hit;
+
+                SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 			}
 		}
 		else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
@@ -344,6 +358,8 @@ void NeutralAlpaca_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared
 					m_eCurState = STATE::knock_end_hit;
 				else
 					m_eCurState = STATE::knock_start;
+
+                SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 			}
 		}
 		else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
@@ -356,6 +372,8 @@ void NeutralAlpaca_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared
 					m_eCurState = STATE::knock_end_hit;
 				else
 					m_eCurState = STATE::knockdown_start;
+
+                SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 			}
 		}
 		else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
@@ -368,6 +386,8 @@ void NeutralAlpaca_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared
 					m_eCurState = STATE::knock_end_hit;
 				else
 					m_eCurState = STATE::airborne_start;
+
+                SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 			}
 		}
 	}
@@ -397,6 +417,10 @@ void NeutralAlpaca_FSM::Set_State(_uint iIndex)
 
 void NeutralAlpaca_FSM::b_idle()
 {
+    //if (Init_CurFrame(40))
+    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+
     if (!m_bDetected)
 	{
 		CalCulate_PatrolTime();
@@ -431,6 +455,12 @@ void NeutralAlpaca_FSM::b_idle_Init()
 
 void NeutralAlpaca_FSM::b_run()
 {
+    if (Init_CurFrame(8))
+    {
+        if (rand() % 3 == 0)
+            SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
+
     _float3 vTargetPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
     _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 
@@ -480,6 +510,10 @@ void NeutralAlpaca_FSM::b_run_Init()
 
 void NeutralAlpaca_FSM::n_run()
 {
+    //if (Init_CurFrame(16))
+    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, XM_PI * 5.f);
 
@@ -525,6 +559,9 @@ void NeutralAlpaca_FSM::n_run_Init()
 
 void NeutralAlpaca_FSM::attack_run()
 {
+    if (Init_CurFrame(8))
+        SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 	if (!m_pTarget.expired())
 		Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
 
@@ -565,6 +602,8 @@ void NeutralAlpaca_FSM::die_01_Init()
 
     animator->Set_NextTweenAnim(L"die_01", 0.2f, false, 1.f);
     
+    SOUND.Play_Sound(L"vo_alpaca_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_bSuperArmor = false;
     m_bInvincible = true;
 }
@@ -588,12 +627,17 @@ void NeutralAlpaca_FSM::die_02_Init()
 
     animator->Set_NextTweenAnim(L"die_02", 0.2f, false, 1.f);
 
+    SOUND.Play_Sound(L"vo_alpaca_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_bSuperArmor = false;
     m_bInvincible = true;
 }
 
 void NeutralAlpaca_FSM::gaze_b()
 {
+    //if (Init_CurFrame(16))
+    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 	_float3 vTargetPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
 	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 
@@ -625,6 +669,9 @@ void NeutralAlpaca_FSM::gaze_b_Init()
 
 void NeutralAlpaca_FSM::gaze_f()
 {
+    //if (Init_CurFrame(16))
+    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 	_float3 vTargetPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
 	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 
@@ -657,6 +704,9 @@ void NeutralAlpaca_FSM::gaze_f_Init()
 
 void NeutralAlpaca_FSM::gaze_l()
 {
+    //if (Init_CurFrame(16))
+    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 	_float3 vTargetPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
 	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 
@@ -688,6 +738,9 @@ void NeutralAlpaca_FSM::gaze_l_Init()
 
 void NeutralAlpaca_FSM::gaze_r()
 {
+    //if (Init_CurFrame(16))
+    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 	_float3 vTargetPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
 	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 
@@ -1008,6 +1061,8 @@ void NeutralAlpaca_FSM::skill_1100()
 
 void NeutralAlpaca_FSM::skill_1100_Init()
 {
+    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, 1.f);
@@ -1059,6 +1114,8 @@ void NeutralAlpaca_FSM::skill_2100()
 
 void NeutralAlpaca_FSM::skill_2100_Init()
 {
+    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_2100", 0.15f, false, 1.f);
@@ -1108,6 +1165,8 @@ void NeutralAlpaca_FSM::skill_3100()
 
 void NeutralAlpaca_FSM::skill_3100_Init()
 {
+    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_3100", 0.15f, false, 1.f);

@@ -436,6 +436,12 @@
     <Filter Include="02.Component\00.MonoBehaviour\MapObject">
       <UniqueIdentifier>{eaa2751e-548a-4450-b36d-db18a2643371}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97.Data\SwitchMgr">
+      <UniqueIdentifier>{f0d7d22b-ec7e-4115-bcbd-5ce272a6f207}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\09.FieldScript\01.Field">
+      <UniqueIdentifier>{b896fd09-2135-4bfe-8889-080a0ecd7675}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -867,6 +873,8 @@
     <ClInclude Include="Boss_DellonsWraith_FSM.h">
       <Filter>02.Component\01.FSM\03.Special_FSM\01.Monster_Special_FSM\00.Boss_DellonsWraith_FSM</Filter>
     </ClInclude>
+    <ClInclude Include="SwitchMgr.h" />
+    <ClInclude Include="FieldScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1267,6 +1275,8 @@
     <ClCompile Include="EffectGoUp.cpp">
       <Filter>02.Component\00.MonoBehaviour\07.EffectScript\CreateEffect_Script</Filter>
     </ClCompile>
+    <ClCompile Include="SwitchMgr.cpp" />
+    <ClCompile Include="FieldScript.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">

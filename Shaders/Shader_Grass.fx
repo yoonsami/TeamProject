@@ -264,12 +264,13 @@ PS_OUT_Deferred PS_Deferred(GS_GRASS_OUTPUT input)
     
     float2 distortedUV = input.uv;
     
-    if (bHasDissolveMap != 0)
-    {       
-        
+    if (bHasDissolveMap)
+    {
+
+        float dissolveFactor = ComputeResult(input.viewPosition);
         
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
-        if (dissolve < g_vec4_0.w)
+        if (dissolve < dissolveFactor)
             discard;
     }
     
@@ -325,10 +326,13 @@ PS_OUT_Deferred PS_Deferred_Instancing(GS_GRASS_INSTANCING_OUTPUT input)
     
     float2 distortedUV = input.uv;
     
-    if (bHasDissolveMap != 0)
+    if (bHasDissolveMap)
     {
+
+        float dissolveFactor = ComputeResult(input.viewPosition);
+        
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
-        if (dissolve < input.renderParam.x)
+        if (dissolve < dissolveFactor)
             discard;
     }
     
@@ -437,7 +441,7 @@ PBR_OUTPUT PS_PBR_Deferred(GS_GRASS_OUTPUT input)
     output.diffuseColor = diffuseColor;
     output.emissive = emissiveColor;
     output.rimColor = Material.emissive;
-    output.blur = 0;
+    //output.blur = 0;
     return output;
 }
 
@@ -497,7 +501,7 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(GS_GRASS_INSTANCING_OUTPUT input)
     output.diffuseColor = diffuseColor;
     output.emissive = emissiveColor;
     output.rimColor = Material.emissive;
-    output.blur = 0;
+    //output.blur = 0;
     return output;
 }
 

@@ -54,9 +54,9 @@ HRESULT DellonsWraith_FSM::Init()
         m_bInitialize = true;
     }
 
-    m_fSwingVolume = 0.3f;
-    m_fEffectVolume = 0.2f;
-    m_fMySoundDistance = 10.f;
+    m_fSwingVolume = 0.5f;
+    m_fEffectVolume= 0.5f;
+    m_fMySoundDistance = 15.f;
 
     return S_OK;
 }
@@ -206,7 +206,7 @@ void DellonsWraith_FSM::FX_DellonsWraith_skill_30010()
 {
     if (Init_CurFrame(42))
     {
-        SOUND.Play_Sound(L"swing_axe_02_gigan", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"swing_axe_02_gigan", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         AttackCollider_On(NORMAL_ATTACK, 10.f);
     }
@@ -249,7 +249,7 @@ void DellonsWraith_FSM::FX_DellonsWraith_skill_30010()
         Create_ForwardMovingSkillCollider(Player_Skill, L"Wraith_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 10.f);   
     }
     else if (Init_CurFrame(65))
-        SOUND.Play_Sound(L"hit_explosive", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"hit_explosive", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     if (Is_AnimFinished())
     {
@@ -267,7 +267,7 @@ void DellonsWraith_FSM::FX_DellonsWraith_skill_30010_Init()
     if (!m_pTarget.expired())
         Get_Transform()->Set_WorldMat(m_pTarget.lock()->Get_Transform()->Get_WorldMatrix());
 
-    SOUND.Play_Sound(L"skill_dark_slash", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"skill_dark_slash", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 void DellonsWraith_FSM::FX_DellonsWraith_skill_400100()
@@ -425,9 +425,6 @@ void DellonsWraith_FSM::FX_Mn_Dellons_skill_5100()
         EVENTMGR.Delete_Object(m_pAttackCollider.lock());
         EVENTMGR.Delete_Object(m_pOwner.lock());
     }
-
-
-    
 }
 
 void DellonsWraith_FSM::FX_Mn_Dellons_skill_5100_Init()

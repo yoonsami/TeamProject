@@ -35,6 +35,8 @@ HRESULT DragonBallMonster_FSM::Init()
 
 	m_iCenterBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy001");
 
+	m_fEffectVolume = 0.3f;
+
 	m_fMySoundDistance = 100.f;
 
 	return S_OK;
@@ -240,7 +242,7 @@ void DragonBallMonster_FSM::Summon_CrossFloor()
 
 	shared_ptr<GameObject> obj = make_shared<GameObject>();
 	auto script = make_shared<TimerScript>(2.5f);
-	script->Set_Function([&]() { SOUND.Play_Sound(L"burst_stone_04", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+	script->Set_Function([&]() { SOUND.Play_Sound(L"burst_stone_04", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
 	obj->Add_Component(script);
 	EVENTMGR.Create_Object(obj);
 }
@@ -310,7 +312,7 @@ void DragonBallMonster_FSM::Summon_X_Floor()
 
 	shared_ptr<GameObject> obj = make_shared<GameObject>();
 	auto script = make_shared<TimerScript>(2.5f);
-	script->Set_Function([&]() { SOUND.Play_Sound(L"burst_stone_04", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+	script->Set_Function([&]() { SOUND.Play_Sound(L"burst_stone_04", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
 	obj->Add_Component(script);
 	EVENTMGR.Create_Object(obj);
 }
@@ -367,7 +369,7 @@ void DragonBallMonster_FSM::Summon_Hash_Floor()
 
 	shared_ptr<GameObject> obj = make_shared<GameObject>();
 	auto script = make_shared<TimerScript>(3.f);
-	script->Set_Function([&]() { SOUND.Play_Sound(L"magic_dragon_Breath_fire_00", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+	script->Set_Function([&]() { SOUND.Play_Sound(L"magic_dragon_Breath_fire_00", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
 	obj->Add_Component(script);
 	EVENTMGR.Create_Object(obj);
 }
@@ -426,7 +428,7 @@ void DragonBallMonster_FSM::Summon_Web_Floor()
 
 	shared_ptr<GameObject> obj = make_shared<GameObject>();
 	auto script = make_shared<TimerScript>(3.f);
-	script->Set_Function([&]() { SOUND.Play_Sound(L"magic_dragon_Breath_fire_00", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+	script->Set_Function([&]() { SOUND.Play_Sound(L"magic_dragon_Breath_fire_00", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
 	obj->Add_Component(script);
 	EVENTMGR.Create_Object(obj);
 }
@@ -474,7 +476,7 @@ void DragonBallMonster_FSM::Summon_HalfCircle_Floor()
 
 	shared_ptr<GameObject> obj = make_shared<GameObject>();
 	auto script = make_shared<TimerScript>(2.5f);
-	script->Set_Function([&]() { SOUND.Play_Sound(L"Thunder", CHANNELID::SOUND_EFFECT, m_fLightningVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+	script->Set_Function([&]() { SOUND.Play_Sound(L"Thunder", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
 	obj->Add_Component(script);
 	EVENTMGR.Create_Object(obj);
 }
@@ -571,7 +573,7 @@ void DragonBallMonster_FSM::Summon_Star_Floor()
 
 	shared_ptr<GameObject> obj = make_shared<GameObject>();
 	auto script = make_shared<TimerScript>(2.5f);
-	script->Set_Function([&]() { SOUND.Play_Sound(L"burst_stone_04", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+	script->Set_Function([&]() { SOUND.Play_Sound(L"burst_stone_04", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
 	obj->Add_Component(script);
 	EVENTMGR.Create_Object(obj);
 }
@@ -616,7 +618,7 @@ void DragonBallMonster_FSM::Create_Meteor()
 		{
 			shared_ptr<GameObject> obj = make_shared<GameObject>();
 			auto script = make_shared<TimerScript>(1.35f);
-			script->Set_Function([&]() { SOUND.Play_Sound(L"burst_stone_03", CHANNELID::SOUND_EFFECT, m_fMeteorVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+			script->Set_Function([&]() { SOUND.Play_Sound(L"burst_stone_03", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
 			obj->Add_Component(script);
 			EVENTMGR.Create_Object(obj);
 		}

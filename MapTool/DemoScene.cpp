@@ -87,9 +87,10 @@ HRESULT GranseedScene::Load_Scene()
 	//RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Spike\\");
 	//RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Yeopo\\");
 	//RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Kyle\\");
-
+	//RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Yeonhee\\");
 
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\Spear_Ace\\");
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\Yeonhee\\");
 	//RESOURCES.CreateModel(L"..\\Resources\\Models\\");
 	Load_DemoModel();
 	shared_ptr<GameObject> sky = make_shared<GameObject>();

@@ -23,6 +23,7 @@
 #include "Client_Define.h"
 
 #include "DataMgr.h"
+#include "SwitchMgr.h"
 
 #define _DEBUGTOOL
 
