@@ -201,6 +201,7 @@ HRESULT FieldScene::Load_Scene()
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_Black\\", false);
 
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Wolf\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\NPC\\Feni\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Succubus_Scythe\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Undead_Priest\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\EntSoldier\\", false);
@@ -241,7 +242,7 @@ HRESULT FieldScene::Load_Scene()
 	
 	g_fBrightness = 0.12f;
 	g_fContrast = 1.35f;
-	
+	SWITCHMGR.Set_SwitchState(SWITCH_TYPE::CREATE_WOLF_AFTER_DELLONS, true);
 	return S_OK;
 }
 
@@ -1094,7 +1095,9 @@ void FieldScene::Load_Portal()
 void FieldScene::Load_Script(shared_ptr<GameObject> pPlayer)
 {
 	shared_ptr<GameObject> obj = make_shared<GameObject>();
-	obj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(118.237f, 0.527f, 39.308f, 1.f));
+	obj->GetOrAddTransform();
+	if(SWITCHMGR.Get_SwitchState(SWITCH_TYPE::CREATE_WOLF_AFTER_DELLONS))
+		obj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(118.237f, 0.527f, 39.308f, 1.f));
 	obj->Add_Component(make_shared<FieldScript>(pPlayer, 5.f));
 	
 	Add_GameObject(obj);

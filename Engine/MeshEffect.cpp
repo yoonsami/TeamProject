@@ -227,6 +227,7 @@ void MeshEffect::Update_RenderParams()
 	m_RenderParams.SetFloat(0, m_fLifeTimeRatio);
 	m_RenderParams.SetFloat(1, m_fCurrDissolveWeight);
 	m_RenderParams.SetFloat(2, m_fCurrRimLightIntensity);
+	m_RenderParams.SetFloat(3, m_fFadeOutRatio);
 
 	Bind_UpdatedColor_ToShader();
 	Bind_UpdatedTexUVOffset_ToShader();

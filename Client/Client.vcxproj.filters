@@ -878,6 +878,8 @@
     </ClInclude>
     <ClInclude Include="SwitchMgr.h" />
     <ClInclude Include="FieldScript.h" />
+    <ClInclude Include="Feni_FSM.h" />
+    <ClInclude Include="Add_Score.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1280,6 +1282,8 @@
     </ClCompile>
     <ClCompile Include="SwitchMgr.cpp" />
     <ClCompile Include="FieldScript.cpp" />
+    <ClCompile Include="Feni_FSM.cpp" />
+    <ClCompile Include="Add_Score.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
