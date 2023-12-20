@@ -124,6 +124,9 @@ void FieldScene::Init()
 
 void FieldScene::Tick()
 {
+	SOUND.Play_Sound(L"BGM_FieldScene", CHANNELID::SOUND_BGM, 0.5f * g_fBgmRatio);
+	SOUND.Play_Sound(L"Bird", CHANNELID::SOUND_GLOBAL, 0.5f * g_fEnvironmentRatio);
+
 	__super::Tick();
 }
 
