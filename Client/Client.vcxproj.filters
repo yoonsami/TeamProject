@@ -442,6 +442,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\09.FieldScript\01.Field">
       <UniqueIdentifier>{b896fd09-2135-4bfe-8889-080a0ecd7675}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\01.FSM\05.NPC_FSM\01.Field">
+      <UniqueIdentifier>{1700f20e-b01a-4ecc-93e7-fbafcf3128e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
