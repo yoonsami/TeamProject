@@ -57,6 +57,11 @@ HRESULT NeutralAlpaca_FSM::Init()
 
     m_pTarget = GET_PLAYER;
 
+    _float3 vRandomLook = MathUtils::Get_RandomVector(_float3{ -1.f,0.f,-1.f }, _float3{ 1.f,0.f,1.f });
+    vRandomLook.Normalize();
+
+    Get_Transform()->Set_LookDir(vRandomLook);
+
     return S_OK;
 }
 
@@ -451,7 +456,10 @@ void NeutralAlpaca_FSM::b_idle_Init()
 void NeutralAlpaca_FSM::b_run()
 {
     if (Init_CurFrame(8))
-        SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    {
+        if (rand() % 3 == 0)
+            SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
 
     _float3 vTargetPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
     _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();

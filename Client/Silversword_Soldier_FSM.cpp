@@ -46,6 +46,9 @@ HRESULT Silversword_Soldier_FSM::Init()
         m_fSkillAttack_AnimationSpeed = 1.3f;
         m_fDetectRange = 15.f;
 
+        m_fMySoundDistance = 4.f;
+        m_fVoiceVolume = 0.5f;
+        m_fEffectVolume = 0.4f;
 
         m_bInitialize = true;
     }
@@ -291,6 +294,10 @@ void Silversword_Soldier_FSM::Get_Hit(const wstring& skillname, _float fDamage, 
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::hit;
+
+            wstring strSoundTag = L"vo_s_monster_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
     else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
@@ -303,6 +310,10 @@ void Silversword_Soldier_FSM::Get_Hit(const wstring& skillname, _float fDamage, 
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::knock_start;
+
+            wstring strSoundTag = L"vo_s_monster_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
     else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
@@ -315,6 +326,10 @@ void Silversword_Soldier_FSM::Get_Hit(const wstring& skillname, _float fDamage, 
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::knockdown_start;
+
+            wstring strSoundTag = L"vo_s_monster_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
     else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
@@ -327,6 +342,10 @@ void Silversword_Soldier_FSM::Get_Hit(const wstring& skillname, _float fDamage, 
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::airborne_start;
+
+            wstring strSoundTag = L"vo_s_monster_hit_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume* g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
     
@@ -371,6 +390,8 @@ void Silversword_Soldier_FSM::b_idle_Init()
 
     m_bSuperArmor = false;
     m_bInvincible = false;
+
+    AttackCollider_Off();
 }
 
 void Silversword_Soldier_FSM::b_run()
@@ -458,6 +479,8 @@ void Silversword_Soldier_FSM::die_01_Init()
 
     m_bSuperArmor = false;
     m_bInvincible = true;
+
+    SOUND.Play_Sound(L"vo_s_monster_die_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 void Silversword_Soldier_FSM::die_02()
@@ -481,6 +504,8 @@ void Silversword_Soldier_FSM::die_02_Init()
 
     m_bSuperArmor = false;
     m_bInvincible = true;
+
+    SOUND.Play_Sound(L"vo_s_monster_die_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 void Silversword_Soldier_FSM::gaze_b()
@@ -510,6 +535,8 @@ void Silversword_Soldier_FSM::gaze_b_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
 
     m_bSuperArmor = false;
+
+    AttackCollider_Off();
 }
 
 void Silversword_Soldier_FSM::gaze_f()
@@ -539,6 +566,8 @@ void Silversword_Soldier_FSM::gaze_f_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
 
     m_bSuperArmor = false;
+
+    AttackCollider_Off();
 }
 
 void Silversword_Soldier_FSM::gaze_l()
@@ -568,6 +597,8 @@ void Silversword_Soldier_FSM::gaze_l_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
 
     m_bSuperArmor = false;
+
+    AttackCollider_Off();
 }
 
 void Silversword_Soldier_FSM::gaze_r()
@@ -598,6 +629,8 @@ void Silversword_Soldier_FSM::gaze_r_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
 
     m_bSuperArmor = false;
+
+    AttackCollider_Off();
 }
 
 void Silversword_Soldier_FSM::airborne_start()
@@ -857,11 +890,13 @@ void Silversword_Soldier_FSM::skill_1100()
         if (!m_pTarget.expired())
             Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
     }
-    else if (Init_CurFrame(22))
+
+    if (Init_CurFrame(22))
+    {
         Add_And_Set_Effect(L"Silversword_Soldier_1100");
-    else if (m_iCurFrame == 22)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (m_iCurFrame == 26)
+    }
+    else if (Init_CurFrame(26))
         AttackCollider_Off();
 
     if (Is_AnimFinished())
@@ -895,6 +930,8 @@ void Silversword_Soldier_FSM::skill_1100_Init()
     m_tAttackCoolTime.fAccTime = 0.f;
 
     m_bSuperArmor = false;
+
+    SOUND.Play_Sound(L"vo_s_monster_att_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 void Silversword_Soldier_FSM::skill_2100()
@@ -904,16 +941,18 @@ void Silversword_Soldier_FSM::skill_2100()
         if (!m_pTarget.expired())
             Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
     }
+    
     //NORMAL ATTACK
-	else if (Init_CurFrame(27))
+    if (Init_CurFrame(17))
+    {
 		Add_And_Set_Effect(L"Silversword_Soldier_2100");
-    else if (m_iCurFrame == 17)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (m_iCurFrame == 20)
+    }
+    else if (Init_CurFrame(20))
         AttackCollider_Off();
-    else if (m_iCurFrame == 33)
+    else if (Init_CurFrame(33))
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (m_iCurFrame == 38)
+    else if (Init_CurFrame(38))
         AttackCollider_Off();
 
     if (Is_AnimFinished())
@@ -946,6 +985,8 @@ void Silversword_Soldier_FSM::skill_2100_Init()
     m_tAttackCoolTime.fAccTime = 0.f;
 
     m_bSuperArmor = false;
+
+    SOUND.Play_Sound(L"vo_s_monster_att_07", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 void Silversword_Soldier_FSM::skill_3100()
@@ -1002,6 +1043,8 @@ void Silversword_Soldier_FSM::skill_3100_Init()
     m_tAttackCoolTime.fAccTime = 0.f;
 
     m_bSuperArmor = false;
+
+    SOUND.Play_Sound(L"vo_s_monster_att_07", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 void Silversword_Soldier_FSM::Dead_Setting()

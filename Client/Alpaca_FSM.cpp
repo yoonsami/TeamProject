@@ -9,6 +9,7 @@
 #include "UiMonsterHp.h"
 #include "Model.h"
 #include "CharacterController.h"
+#include "MathUtils.h"
 
 Alpaca_FSM::~Alpaca_FSM()
 {
@@ -59,6 +60,11 @@ HRESULT Alpaca_FSM::Init()
         m_bInitialize = true;
     }
 
+    _float3 vRandomLook = MathUtils::Get_RandomVector(_float3{ -1.f,0.f,-1.f }, _float3{ 1.f,0.f,1.f });
+    vRandomLook.Normalize();
+    
+    Get_Transform()->Set_LookDir(vRandomLook);
+    
 
     return S_OK;
 }
@@ -684,6 +690,8 @@ void Alpaca_FSM::airborne_end()
             m_eCurState = STATE::airborne_up;
         else
         {
+            CUR_SCENE->g_sceneFlag++;
+
             m_bInvincible = true;
 
             Get_Owner()->Get_Animator()->Set_AnimState(true);
@@ -798,6 +806,8 @@ void Alpaca_FSM::knock_end_loop()
         Get_Owner()->Add_Component(script);
         script->Init();
 
+        CUR_SCENE->g_sceneFlag++;
+
         if (!m_pAttackCollider.expired())
             EVENTMGR.Delete_Object(m_pAttackCollider.lock());
     }
@@ -881,6 +891,8 @@ void Alpaca_FSM::knockdown_end()
             m_eCurState = STATE::knock_up;
         else
         {
+            CUR_SCENE->g_sceneFlag++;
+
             m_bInvincible = true;
 
             Get_Owner()->Get_Animator()->Set_AnimState(true);

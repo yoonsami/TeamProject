@@ -50,6 +50,9 @@ HRESULT Undead_Priest_FSM::Init()
 
         m_fDetectRange = 15.f;
 
+        m_fMySoundDistance = 3.f;
+        m_fVoiceVolume = 0.5f;
+        m_fEffectVolume = 0.4f;
 
         m_bInitialize = true;
     }
@@ -257,8 +260,6 @@ void Undead_Priest_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared
     //Target Change
     if (pLookTarget != nullptr)
 	{
-
-
         //Skill => SkillCollider Owner
         if (skillname.find(L"_Skill") != wstring::npos)
             m_pTarget = pLookTarget->Get_Script<AttackColliderInfoScript>()->Get_ColliderOwner();// Collider owner를 넘겨준다
@@ -293,6 +294,8 @@ void Undead_Priest_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::hit;
+
+            SOUND.Play_Sound(L"vo_ghost_hit_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
     else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
@@ -305,6 +308,8 @@ void Undead_Priest_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::knock_start;
+
+            SOUND.Play_Sound(L"vo_ghost_hit_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
     else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
@@ -317,6 +322,8 @@ void Undead_Priest_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::knockdown_start;
+
+            SOUND.Play_Sound(L"vo_ghost_hit_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
     else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
@@ -329,6 +336,8 @@ void Undead_Priest_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared
                 m_eCurState = STATE::knock_end_hit;
             else
                 m_eCurState = STATE::airborne_start;
+
+            SOUND.Play_Sound(L"vo_ghost_hit_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
 
@@ -380,6 +389,8 @@ void Undead_Priest_FSM::b_idle_Init()
 
     Get_Transform()->Set_Speed(m_fRunSpeed);
 
+    AttackCollider_Off();
+    
     m_tPatrolMoveCool.fAccTime = 0.f;
     m_vTurnVector = _float3(0.f);
 
@@ -502,6 +513,8 @@ void Undead_Priest_FSM::die_01_Init()
 
     animator->Set_NextTweenAnim(L"die_01", 0.2f, false, 1.f);
 
+    SOUND.Play_Sound(L"vo_m_monster_die_09", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_bSuperArmor = false;
     m_bInvincible = true;
 }
@@ -524,6 +537,8 @@ void Undead_Priest_FSM::die_02_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"die_02", 0.2f, false, 1.f);
+
+    SOUND.Play_Sound(L"vo_m_monster_die_09", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_bSuperArmor = false;
     m_bInvincible = true;
@@ -568,6 +583,8 @@ void Undead_Priest_FSM::gaze_b_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
 
     m_bSuperArmor = false;
+
+    AttackCollider_Off();
 }
 
 void Undead_Priest_FSM::gaze_bl()
@@ -612,6 +629,8 @@ void Undead_Priest_FSM::gaze_bl_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
 
     m_bSuperArmor = false;
+
+    AttackCollider_Off();
 }
 
 void Undead_Priest_FSM::gaze_br()
@@ -656,6 +675,8 @@ void Undead_Priest_FSM::gaze_br_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed / 2.f);
 
     m_bSuperArmor = false;
+
+    AttackCollider_Off();
 }
 
 void Undead_Priest_FSM::airborne_start()
@@ -915,18 +936,23 @@ void Undead_Priest_FSM::skill_1100()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     if (Init_CurFrame(11))
+    {
+        SOUND.Play_Sound(L"magic_dark_k_02", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         Add_And_Set_Effect(L"Undead_Priest_1100");
+    }
 
     if (Init_CurFrame(40))
     {
+
         FORWARDMOVINGSKILLDESC desc;
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
         desc.fMoveSpeed = 10.f;
-        desc.fLifeTime = 1.f;
-        desc.fLimitDistance = 10.f;
+        desc.fLifeTime = 3.f;
+        desc.fLimitDistance = 30.f;
 
-        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Undead_Priest_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f);
+        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) + _float3::Up;
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Undead_Priest_SkillCollider", vSkillPos, 0.3f, desc, NORMAL_ATTACK, 10.f);
     }
     
     Set_Gaze();
@@ -940,6 +966,8 @@ void Undead_Priest_FSM::skill_1100_Init()
 
     m_tAttackCoolTime.fAccTime = 0.f;
 
+    SOUND.Play_Sound(L"vo_ghost_att_04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_vTurnVector = Calculate_TargetTurnVector();
 
     m_bSuperArmor = false;
@@ -951,26 +979,29 @@ void Undead_Priest_FSM::skill_2100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (Init_CurFrame(30))
+    if (Init_CurFrame(20))
+        SOUND.Play_Sound(L"vo_ghost_att_05", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(30))
     {
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
         Add_And_Set_Effect(L"UndeadPriest_2100");
+        SOUND.Play_Sound(L"swing_short_sword_03", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        AttackCollider_On(NORMAL_ATTACK, 10.f);
     }
     else if (Init_CurFrame(34))
         AttackCollider_Off();
     else if (Init_CurFrame(66))
     {
+        SOUND.Play_Sound(L"dark_magic_impact_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+
         FORWARDMOVINGSKILLDESC desc;
         desc.vSkillDir = -Get_Transform()->Get_State(Transform_State::UP);
         desc.fMoveSpeed = 15.f;
         desc.fLifeTime = 0.2f;
         desc.fLimitDistance = 3.f;
 
-        _float4 vSkillPos = _float4(0.f);
-
-        if (!m_pTarget.expired())
-            vSkillPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float3::Up * 5.f;
-     
+        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + (_float3::Up * 5.f);
         Create_ForwardMovingSkillCollider(Monster_Skill, L"Undead_Priest_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f);
     }
 
@@ -982,6 +1013,7 @@ void Undead_Priest_FSM::skill_2100_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_2100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
+
 
     m_tAttackCoolTime.fAccTime = 0.f;
 
@@ -1001,6 +1033,8 @@ void Undead_Priest_FSM::skill_3100()
 
     if (Init_CurFrame(73))
     {
+        SOUND.Play_Sound(L"dark_magic_impact_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         FORWARDMOVINGSKILLDESC desc;
         desc.vSkillDir = -Get_Transform()->Get_State(Transform_State::UP);
         desc.fMoveSpeed = 15.f;
@@ -1027,6 +1061,8 @@ void Undead_Priest_FSM::skill_3100_Init()
     animator->Set_NextTweenAnim(L"skill_3100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_tAttackCoolTime.fAccTime = 0.f;
+
+    SOUND.Play_Sound(L"vo_ghost_att_04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1095,8 +1131,6 @@ void Undead_Priest_FSM::Entry_Battle()
 void Undead_Priest_FSM::Set_AttackSkill()
 {
     _uint iRan = rand() % 2;
-
-
 
     while (true)
     {
