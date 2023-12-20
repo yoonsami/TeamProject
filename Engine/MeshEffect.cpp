@@ -72,6 +72,7 @@ void MeshEffect::MeshEffect_Final_Tick()
     m_fTimeAcc_ChangeDirCoolTime += fDT;
     m_fLifeTimeRatio = m_fCurrAge / m_fDuration;
     m_fTimeAcc_SpriteAnimation += fDT;
+
     if (m_tDesc.bUseFadeOut && m_fCurrAge > m_fFadeOutStartTime)
         m_fFadeOutRatio = 1.f - ((m_fCurrAge - m_fFadeOutStartTime) / (m_fDuration - m_fFadeOutStartTime));
     else 
@@ -227,6 +228,7 @@ void MeshEffect::Update_RenderParams()
 	m_RenderParams.SetFloat(0, m_fLifeTimeRatio);
 	m_RenderParams.SetFloat(1, m_fCurrDissolveWeight);
 	m_RenderParams.SetFloat(2, m_fCurrRimLightIntensity);
+    m_RenderParams.SetFloat(3, m_fFadeOutRatio);
 
 	Bind_UpdatedColor_ToShader();
 	Bind_UpdatedTexUVOffset_ToShader();
