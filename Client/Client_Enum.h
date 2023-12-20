@@ -198,7 +198,15 @@ enum class CUR_QUEST
 enum class SWITCH_TYPE
 {
 	CREATE_WOLF_AFTER_DELLONS,
+	FENI_WOLF_ALL_DEAD,
 
+	MAX,
+};
+
+enum class SCORE_TYPE
+{
+	KRIS_SCENE,
+	FENI_QUEST,
 
 	MAX,
 };

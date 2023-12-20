@@ -133,6 +133,9 @@ void GranseedScene::Init()
 
 void GranseedScene::Tick()
 {
+	SOUND.Play_Sound(L"BGM_GranseedScene", CHANNELID::SOUND_BGM, 0.5f * g_fBgmRatio);
+	SOUND.Play_Sound(L"Ambience", CHANNELID::SOUND_GLOBAL, 0.5f * g_fEnvironmentRatio * 0.2f/*MagicNum*/);
+
 	__super::Tick();
 
 	if (KEYTAP(KEY_TYPE::C))

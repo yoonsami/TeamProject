@@ -195,6 +195,7 @@
     <ClInclude Include="..\Libraries\Include\IMGUI\imstb_truetype.h" />
     <ClInclude Include="..\Libraries\Include\IMGUI\ImZoomSlider.h" />
     <ClInclude Include="..\Shaders\Fxaa3_11.h" />
+    <ClInclude Include="Add_Score.h" />
     <ClInclude Include="Alpaca_FSM.h" />
     <ClInclude Include="AttackColliderInfoScript.h" />
     <ClInclude Include="Boss_Giant_Mir_FSM.h" />
@@ -213,6 +214,7 @@
     <ClInclude Include="DragonBall_FSM.h" />
     <ClInclude Include="EffectGoUp.h" />
     <ClInclude Include="EntSoldier_FSM.h" />
+    <ClInclude Include="Feni_FSM.h" />
     <ClInclude Include="FieldScript.h" />
     <ClInclude Include="Friend_FSM.h" />
     <ClInclude Include="Get_Gravity.h" />
@@ -336,6 +338,7 @@
     <ClCompile Include="..\Libraries\Include\IMGUI\imgui_tables.cpp" />
     <ClCompile Include="..\Libraries\Include\IMGUI\imgui_widgets.cpp" />
     <ClCompile Include="..\Libraries\Include\IMGUI\ImSequencer.cpp" />
+    <ClCompile Include="Add_Score.cpp" />
     <ClCompile Include="Alpaca_FSM.cpp" />
     <ClCompile Include="AttackColliderInfoScript.cpp" />
     <ClCompile Include="Boss_Giant_Mir_FSM.cpp" />
@@ -354,6 +357,7 @@
     <ClCompile Include="DragonBall_FSM.cpp" />
     <ClCompile Include="EffectGoUp.cpp" />
     <ClCompile Include="EntSoldier_FSM.cpp" />
+    <ClCompile Include="Feni_FSM.cpp" />
     <ClCompile Include="FieldScript.cpp" />
     <ClCompile Include="Friend_FSM.cpp" />
     <ClCompile Include="Get_Gravity.cpp" />

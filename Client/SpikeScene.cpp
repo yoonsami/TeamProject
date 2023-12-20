@@ -207,6 +207,10 @@ HRESULT SpikeScene::Load_Scene()
 	Load_Boss_Spike(player);
 	
 	//Load_Monster(1, L"Silversword_Soldier", player);
+	//Load_Monster(1, L"Succubus_Scythe", player);
+	//Load_Monster(1, L"Undead_Priest", player);
+	//Load_Monster(1, L"Wolf", player);
+	//Load_Monster(1, L"EntSoldier", player);
 
 	Load_Ui(player);
 

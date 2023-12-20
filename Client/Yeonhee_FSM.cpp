@@ -1486,6 +1486,8 @@ void Yeonhee_FSM::skill_501100()
         m_eCurState = STATE::b_idle;
 
         m_pOwner.lock()->Set_TimeSlowed(true);
+
+        Add_Effect(L"Yeonhee_500");
     }
 
 }
@@ -1495,6 +1497,8 @@ void Yeonhee_FSM::skill_501100_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"skill_501100", 0.15f, false, m_fSkillAttack_AnimationSpeed);//m_fSkillAttack_AnimationSpeed);
+
+    //Add_Effect(L"Yeonhee_500_Start");
 
     m_bCanCombo = false;
 

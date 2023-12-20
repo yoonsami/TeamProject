@@ -2,7 +2,10 @@
 #include "Light.fx"
 float g_BarPercent;
 
-
+Texture2D PositionTargetTex;
+Texture2D originPositionTargetTex;
+Texture2D NormalTargetTex;
+float4x4 InvWorldTransformMatrix;
 
 struct EffectOut
 {

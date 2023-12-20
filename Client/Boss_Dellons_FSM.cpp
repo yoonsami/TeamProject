@@ -1606,7 +1606,7 @@ void Boss_Dellons_FSM::skill_300100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (m_iCurFrame == 10)
+    if (m_iCurFrame == 9)
     {
         if (m_iPreFrame != m_iCurFrame)
         {

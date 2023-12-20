@@ -44,6 +44,9 @@ HRESULT Wolf_FSM::Init()
         m_fSkillAttack_AnimationSpeed = 1.f;
         m_fDetectRange = 15.f;
 
+        m_fMySoundDistance = 6.f;
+        m_fVoiceVolume = 0.4f;
+        m_fEffectVolume = 0.6f;
 
         m_bInitialize = true;
     }
@@ -359,6 +362,8 @@ void Wolf_FSM::b_idle_Init()
     m_vTurnVector = _float3(0.f);
 
     m_bSuperArmor = false;
+
+    AttackCollider_Off();
 }
 
 
@@ -478,6 +483,8 @@ void Wolf_FSM::die_01_Init()
 
     animator->Set_NextTweenAnim(L"die_01", 0.2f, false, 1.f);
 
+    SOUND.Play_Sound(L"dog_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_bSuperArmor = false;
     m_bInvincible = true;
 }
@@ -501,12 +508,24 @@ void Wolf_FSM::die_02_Init()
 
     animator->Set_NextTweenAnim(L"die_02", 0.2f, false, 1.f);
 
+    SOUND.Play_Sound(L"dog_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_bSuperArmor = false;
     m_bInvincible = true;
 }
 
 void Wolf_FSM::gaze_b()
 {
+    if (Init_CurFrame(16))
+    {
+        if (rand() % 5 == 0)
+        {
+            wstring strSoundTag = L"vo_10142_wolf_shout0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        }
+    }
+
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
 
@@ -533,10 +552,22 @@ void Wolf_FSM::gaze_b_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed * 0.4f);
 
     m_bSuperArmor = false;
+
+    AttackCollider_Off();
 }
 
 void Wolf_FSM::gaze_f()
 {
+    if (Init_CurFrame(16))
+    {
+        if (rand() % 5 == 0)
+        {
+            wstring strSoundTag = L"vo_10142_wolf_shout0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        }
+    }
+
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
 
@@ -563,10 +594,22 @@ void Wolf_FSM::gaze_f_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed * 0.4f);
 
     m_bSuperArmor = false;
+
+    AttackCollider_Off();
 }
 
 void Wolf_FSM::gaze_l()
 {
+    if (Init_CurFrame(16))
+    {
+        if (rand() % 5 == 0)
+        {
+            wstring strSoundTag = L"vo_10142_wolf_shout0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        }
+    }
+
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
 
@@ -592,10 +635,22 @@ void Wolf_FSM::gaze_l_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed * 0.4f);
 
     m_bSuperArmor = false;
+
+    AttackCollider_Off();
 }
 
 void Wolf_FSM::gaze_r()
 {
+    if (Init_CurFrame(16))
+    {
+        if (rand() % 5 == 0)
+        {
+            wstring strSoundTag = L"vo_10142_wolf_shout0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        }
+    }
+
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
 
@@ -621,6 +676,8 @@ void Wolf_FSM::gaze_r_Init()
     Get_Transform()->Set_Speed(m_fRunSpeed * 0.4f);
 
     m_bSuperArmor = false;
+
+    AttackCollider_Off();
 }
 
 void Wolf_FSM::airborne_start()
@@ -652,6 +709,8 @@ void Wolf_FSM::airborne_end()
             m_eCurState = STATE::airborne_up;
         else
         {
+            SOUND.Play_Sound(L"dog_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
             m_bInvincible = true;
 
             Get_Owner()->Get_Animator()->Set_AnimState(true);
@@ -757,6 +816,8 @@ void Wolf_FSM::knock_end_loop()
 
     if (m_bIsDead)
     {
+        SOUND.Play_Sound(L"dog_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         m_bInvincible = true;
 
         Get_Owner()->Get_Animator()->Set_AnimState(true);
@@ -848,6 +909,8 @@ void Wolf_FSM::knockdown_end()
             m_eCurState = STATE::knock_up;
         else
         {
+            SOUND.Play_Sound(L"dog_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
             m_bInvincible = true;
 
             Get_Owner()->Get_Animator()->Set_AnimState(true);
@@ -878,9 +941,13 @@ void Wolf_FSM::skill_1100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (m_iCurFrame == 10)
+    
+    if (Init_CurFrame(10))
+    {
+        SOUND.Play_Sound(L"vo_10142_wolf_shout04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         AttackCollider_On(NONE_HIT, 2.f);
-    else if (m_iCurFrame == 18)
+    }
+    else if (Init_CurFrame(18))
         AttackCollider_Off();
 
     Set_Gaze();

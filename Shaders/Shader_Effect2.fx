@@ -358,7 +358,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     float4 vBaseColor2_Op1 = g_mat_0._21_22_23_24;
     float4 vBaseColor1_Op2 = g_mat_0._31_32_33_34;
     float4 vBaseColor2_Op2 = g_mat_0._41_42_43_44;
-    float4 vBaseColor1_Op3 = g_mat_1._11_12_13_14;
+    float4 vBaseColor1_Op3 = g_mat_1._11_12_13_14; 
     float4 vBaseColor2_Op3 = g_mat_1._21_22_23_24;
     float4 vBaseColor_Overlay = g_mat_1._31_32_33_34;
     float4 vBaseColor_RimLight = g_mat_1._41_42_43_44;
