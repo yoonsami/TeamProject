@@ -74,6 +74,8 @@ void MeshEffect::MeshEffect_Final_Tick()
     m_fTimeAcc_SpriteAnimation += fDT;
     if (m_tDesc.bUseFadeOut && m_fCurrAge > m_fFadeOutStartTime)
         m_fFadeOutRatio = 1.f - ((m_fCurrAge - m_fFadeOutStartTime) / (m_fDuration - m_fFadeOutStartTime));
+    else 
+        m_fFadeOutRatio = 1.f;
 
     // Calc Curr Dissolve weight 
     if ("None" != m_tDesc.strDissolveTexture)
@@ -262,6 +264,10 @@ void MeshEffect::Update_Desc()
         // Dissolve 
         m_SplineInput_Dissolve[i * 2 + 0] = m_tDesc.vCurvePoint_Dissolve[i].x;
         m_SplineInput_Dissolve[i * 2 + 1] = m_tDesc.vCurvePoint_Dissolve[i].y;
+
+        // RimLight 
+        m_SplineInput_RimLight[i * 2 + 0] = m_tDesc.vCurvePoint_RimLight[i].x;
+        m_SplineInput_RimLight[i * 2 + 1] = m_tDesc.vCurvePoint_RimLight[i].y;
     }
 
     // For. Model Components
@@ -703,6 +709,10 @@ void MeshEffect::Scaling()
             vScale = Get_Transform()->Get_Scale() + _float3(fScaleSpeed * fDT);
             if (m_tDesc.bIsSSD)
                 vScale.y = m_vStartScale.y;
+
+            if (vScale.x < 0) vScale.x = 0.f;
+            if (vScale.y < 0) vScale.y = 0.f;
+            if (vScale.z < 0) vScale.z = 0.f;
         }
 
         Get_Transform()->Scaled(vScale);
@@ -726,6 +736,9 @@ void MeshEffect::Scaling()
             m_vLocalScale = Get_Transform()->Get_Scale() + _float3(fScaleSpeed * fDT);
             if (m_tDesc.bIsSSD)
                 m_vLocalScale.y = m_vStartScale.y;
+            if (m_vLocalScale.x < 0) m_vLocalScale.x = 0.f;
+            if (m_vLocalScale.y < 0) m_vLocalScale.y = 0.f;
+            if (m_vLocalScale.z < 0) m_vLocalScale.z = 0.f;
         }
     }
 }

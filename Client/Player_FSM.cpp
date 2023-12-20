@@ -1232,6 +1232,11 @@ void Player_FSM::skill_93100_Init()
 
 void Player_FSM::skill_100100()
 {
+    if (Init_CurFrame(7))
+        Add_Effect(L"Teo_100100");
+    else if (Init_CurFrame(36))
+        Add_Effect(L"Teo_100100_slash");
+
     Look_DirToTarget();
 
     if(Init_CurFrame(38))
@@ -1287,6 +1292,9 @@ void Player_FSM::skill_100100_Init()
 
 void Player_FSM::skill_100200()
 {
+    if (Init_CurFrame(8))
+        Add_Effect(L"Teo_100200_slash1");
+
     Look_DirToTarget();
 
 	if (Init_CurFrame(8))
@@ -1478,6 +1486,9 @@ void Player_FSM::skill_100300_Init()
 
 void Player_FSM::skill_200100()
 {
+    if (Init_CurFrame(30))
+        Add_Effect(L"Teo_200100");
+
     if (m_iCurFrame >= 15)
     {
         if (m_iCurFrame == 15)
@@ -1533,7 +1544,6 @@ void Player_FSM::skill_200100()
 
 }
 
-
 void Player_FSM::skill_200100_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
@@ -1554,6 +1564,9 @@ void Player_FSM::skill_200100_Init()
 
 void Player_FSM::skill_200200()
 {
+    if (Init_CurFrame(20))
+        Add_Effect(L"Teo_200200");
+
     Look_DirToTarget();
 
     if (m_iCurFrame >= 5)

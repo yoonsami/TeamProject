@@ -92,7 +92,7 @@ public:
         _bool       bIsRimLightOn = { false };
         Color       vBaseColor_RimLight = { 0.f, 0.f, 0.f, 0.f };
         Color       vDestColor_RimLight = { 0.f, 0.f, 0.f, 0.f };
-        _float2		vCurvePoint_RimLight[4] = { { 0.f, 0.f },{ 0.f, 0.f } ,{ 0.f, 0.f } ,{ 0.f, 0.f } };
+        _float2		vCurvePoint_RimLight[4] = { { 0.f, 0.f },{ 0.f, 0.f } ,{ 0.f, 0.f } ,{ 0.f, 0.f } };    // use curve
 
         // Normal 
         string      strNormalTexture = { " " };

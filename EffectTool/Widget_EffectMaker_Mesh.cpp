@@ -586,9 +586,13 @@ void Widget_EffectMaker_Mesh::Option_RimLight()
 	if (m_bColorChangingOn)
 		ImGui::ColorEdit4("Dest Color##RimLight", (float*)&m_vRimLightColor_Dest, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
 
-	if (ImGui::TreeNode("RimLight weight##RimLight"))
+	if (ImGui::TreeNode("RimLight Intensity(linear)##RimLight"))
 	{
-		SubWidget_Curve1(m_vCurvePoint_RimLight, "RimLight");
+		//SubWidget_Curve1(m_vCurvePoint_RimLight, "RimLight");
+		ImGui::InputFloat2("Point1 (time, speed)##RimLight", (_float*)&m_vCurvePoint_RimLight[0]);
+		ImGui::InputFloat2("Point2 (time, speed)##RimLight", (_float*)&m_vCurvePoint_RimLight[1]);
+		ImGui::InputFloat2("Point3 (time, speed)##RimLight", (_float*)&m_vCurvePoint_RimLight[2]);
+		ImGui::InputFloat2("Point4 (time, speed)##RimLight", (_float*)&m_vCurvePoint_RimLight[3]);
 		ImGui::TreePop();
 	}
 }
@@ -1167,7 +1171,7 @@ void Widget_EffectMaker_Mesh::Create()
 				m_bLightOn,
 				m_fLightIntensity,
 				m_bUseFadeOut,
-					m_fFadeOutStartTime,
+				m_fFadeOutStartTime,
 				m_iMeshCnt,
 				m_fCreateInterval,
 				_float2(m_fParticleDuration),

@@ -309,7 +309,17 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     }
     
     /* Rim Light */
-        // TODO 
+    if (bUseRimLight)
+    {
+        float3 eyeDir = normalize(input.viewPosition - float3(0.f, 0.f, 0.f));
+        float3 vRimIntensity = pow(smoothstep(0.f, 1.f, 1.f - saturate(dot(-eyeDir, input.viewNormal))), fRimLightIntensity);
+
+        float4 vTransparentColor = float4(0.f, 0.f, 0.f, 0.f);
+        if (all(vBaseColor_RimLight == vTransparentColor))
+            vOutColor.a *= (1.f - vRimIntensity.r);
+        else
+            vOutColor += (vBaseColor_RimLight * vRimIntensity.r);
+    }
     
     /* Fade Out */
     if (bUseFadeOut)
@@ -553,12 +563,21 @@ float4 PS_Clamp(EffectOut input) : SV_Target
         }
         float3 vLightingColor = vOutColor.rgb * diffuseRatio;
         vOutColor.rgb = lerp(vOutColor.rgb, vLightingColor, fLightIntensity);
-        //vOutColor.rgb = (vOutColor.rgb * diffuseRatio) + fLightIntensity;
-
     }
     
     /* Rim Light */
-        // TODO 
+    if (bUseRimLight)
+    {
+        float3 eyeDir = normalize(input.viewPosition - float3(0.f, 0.f, 0.f));
+        float3 vRimIntensity = pow(smoothstep(0.f, 1.f, 1.f - saturate(dot(-eyeDir, input.viewNormal))), fRimLightIntensity);
+
+        float4 vTransparentColor = float4(0.f, 0.f, 0.f, 0.f);
+        if (all(vBaseColor_RimLight == vTransparentColor))
+            vOutColor.a *= (1.f - vRimIntensity.r);
+        else
+            vOutColor += (vBaseColor_RimLight * vRimIntensity.r);
+    }
+    
     
     /* Fade Out */
     if (bUseFadeOut)
@@ -798,10 +817,6 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
         vOutColor.rgb = lerp(vOutColor.rgb, vLightingColor, fLightIntensity);
     }
     
-    ///* Blend */
-    //if (bHasTexturemap10)
-    //    vOutColor.a *= vSample_Blend.r;
-    
     /* DissolveMap */
     if (bHasDissolveMap)
     {
@@ -823,17 +838,18 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
         vOutColor.rgb = lerp(vOutColor.rgb, vFinalOverlayColor.rgb, fOverlayIntensity);
     }
     
-    /* Rim Light */
+     /* Rim Light */
     if (bUseRimLight)
     {
-        //RimLightIntensity
-        //vBaseColor_RimLight
-        
-        //float3 eyeDir = normalize(input.viewPosition - );
-        
+        float3 eyeDir = normalize(input.viewPosition - float3(0.f, 0.f, 0.f));
+        float3 vRimIntensity = pow(smoothstep(0.f, 1.f, 1.f - saturate(dot(-eyeDir, input.viewNormal))), fRimLightIntensity);
 
+        float4 vTransparentColor = float4(0.f, 0.f, 0.f, 0.f);
+        if (all(vBaseColor_RimLight == vTransparentColor))
+            vOutColor.a *= (1.f - vRimIntensity.r);
+        else
+            vOutColor += (vBaseColor_RimLight * vRimIntensity.r);
     }
-        
     
     /* Fade Out */
     if (bUseFadeOut)
@@ -1039,10 +1055,6 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
     if (bUseTexColor_Op[0] || bUseTexColor_Op[1] || bUseTexColor_Op[2])
         vOutColor.rgb = pow(vOutColor.rgb, 1.f / GAMMA);
 
-    ///* Blend */
-    //if (bHasTexturemap10)
-    //    vOutColor.a *= vSample_Blend.r;
-    
     /* DissolveMap */
     if (bHasDissolveMap)
     {
@@ -1085,7 +1097,17 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
     }
     
     /* Rim Light */
-        // TODO 
+    if (bUseRimLight)
+    {
+        float3 eyeDir = normalize(input.viewPosition - float3(0.f, 0.f, 0.f));
+        float3 vRimIntensity = pow(smoothstep(0.f, 1.f, 1.f - saturate(dot(-eyeDir, input.viewNormal))), fRimLightIntensity);
+
+        float4 vTransparentColor = float4(0.f, 0.f, 0.f, 0.f);
+        if (all(vBaseColor_RimLight == vTransparentColor))
+            vOutColor.a *= (1.f - vRimIntensity.r);
+        else
+            vOutColor += (vBaseColor_RimLight * vRimIntensity.r);
+    }
     
     /* Fade Out */
     if (bUseFadeOut)
