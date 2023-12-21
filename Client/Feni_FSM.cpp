@@ -1,6 +1,10 @@
 #include "pch.h"
 #include "Feni_FSM.h"
 #include "ModelAnimator.h"
+#include "Camera.h"
+#include "UIInteraction.h"
+#include "UiDialogController.h"
+#include "ObjectDissolve.h"
 
 HRESULT Feni_FSM::Init()
 {
@@ -171,6 +175,20 @@ void Feni_FSM::SQ_afraid_idle_Init()
 
 void Feni_FSM::b_idle()
 {
+	if (Can_Interact())
+	{
+		auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
+		if (pObj && pObj->Get_Script<UIInteraction>()->Get_Is_Activate(m_pOwner.lock()))
+			m_eCurState = STATE::talk02;
+		else if (pObj && !pObj->Get_Script<UIInteraction>()->Is_Created())
+			pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::FENI, m_pOwner.lock());
+	}
+	else
+	{
+		auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
+		if (pObj)
+			pObj->Get_Script<UIInteraction>()->Remove_Interaction(m_pOwner.lock());
+	}
 }
 
 void Feni_FSM::b_idle_Init()
@@ -182,6 +200,24 @@ void Feni_FSM::b_idle_Init()
 
 void Feni_FSM::b_run()
 {
+	_float3 vDir = m_vGoalPos - Get_Transform()->Get_State(Transform_State::POS).xyz();
+	vDir.y = 0;
+
+	if (vDir.LengthSquared() < 3.f * 3.f)
+		m_vGoalPos = _float3(120.5f, 0.f, 4.3f);
+
+	vDir.Normalize();
+	Soft_Turn_ToInputDir(vDir, XM_PI * 3.f);
+
+	Get_Transform()->Go_Straight();
+
+	if ((_float3(121.f, 0.f, 6.943f) - Get_Transform()->Get_State(Transform_State::POS).xyz()).LengthSquared() < 2.f * 2.f)
+	{
+		auto script = make_shared<ObjectDissolve>(1.f);
+		Get_Owner()->Add_Component(script);
+		script->Init();
+	}
+
 }
 
 void Feni_FSM::b_run_Init()
@@ -189,6 +225,7 @@ void Feni_FSM::b_run_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"b_run", 0.1f, true, 1.f);
+	Get_Transform()->Set_Speed(5.f);
 }
 
 void Feni_FSM::n_idle()
@@ -199,7 +236,7 @@ void Feni_FSM::n_idle_Init()
 {
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-	animator->Set_NextTweenAnim(L"n_idle_Init", 0.1f, true, 1.f);
+	animator->Set_NextTweenAnim(L"n_idle", 0.1f, true, 1.f);
 }
 
 void Feni_FSM::n_run()
@@ -249,6 +286,15 @@ void Feni_FSM::talk_03_Init()
 
 void Feni_FSM::talk02()
 {
+	if (!m_pTarget.expired())
+		Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
+
+	auto pObj = CUR_SCENE->Get_UI(L"UI_NpcDialog_Controller");
+	if (pObj && pObj->Get_Script<UiDialogController>()->Get_Dialog_End() == false)
+	{
+		m_vGoalPos = _float3(121.858f, 0.9f, 34.174f);
+		m_eCurState = STATE::b_run;
+	}
 }
 
 void Feni_FSM::talk02_Init()
@@ -256,4 +302,26 @@ void Feni_FSM::talk02_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"talk02", 0.1f, true, 1.f);
+}
+
+_bool Feni_FSM::Can_Interact()
+{
+
+	_float3 pos = Get_Transform()->Get_State(Transform_State::POS).xyz();
+
+	if (_float3::Transform(pos, CUR_SCENE->Get_MainCamera()->Get_Camera()->Get_ViewMat()).z < 0)
+		return false;
+
+	auto pPlayer = GET_PLAYER;
+	if (pPlayer)
+	{
+		m_pTarget = pPlayer;
+		_float lengthSQ = (pPlayer->Get_Transform()->Get_State(Transform_State::POS).xyz() - pos).LengthSquared();
+
+		if (lengthSQ < 3.f * 3.f)
+			return true;
+	}
+
+
+	return false;
 }

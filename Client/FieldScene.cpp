@@ -45,12 +45,7 @@
 #include "UiSkillButtonEffect.h"
 #include "CharacterController.h"
 #include "ObjectTransformDebug.h"
-#include "Silversword_Soldier_FSM.h"
-#include "Succubus_Scythe_FSM.h"
-#include "Undead_Priest_FSM.h"
-#include "Alpaca_FSM.h"
-#include "Wolf_FSM.h"
-#include "EntSoldier_FSM.h"
+
 
 #include "Companion_Spike_FSM.h"
 #include "Companion_Dellons_FSM.h"
@@ -69,7 +64,7 @@
 #include "UIBossHpBar.h"
 #include "UiComboEffect.h"
 #include "UiSkillGauge.h"
-
+#include "EntSoldier_FSM.h"
 
 #include <filesystem>
 #include "GachaScene.h"
@@ -86,6 +81,8 @@
 #include "UiCostumeController.h"
 #include "PortalScript.h"
 #include "FieldScript.h"
+#include "Add_Score.h"
+#include "UiMessageCreater.h"
 
 namespace fs = std::filesystem;
 
@@ -205,6 +202,7 @@ HRESULT FieldScene::Load_Scene()
 
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Wolf\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\NPC\\Feni\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\NPC\\FisherMan\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Succubus_Scythe\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Undead_Priest\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\EntSoldier\\", false);
@@ -212,29 +210,17 @@ HRESULT FieldScene::Load_Scene()
 	//Sound
 	RESOURCES.Load_Sound(L"..\\Resources\\Sound\\FieldScene\\", false);
 
-	SWITCHMGR.Set_SwitchState(SWITCH_TYPE::CREATE_WOLF_AFTER_DELLONS, true);
-
 	auto player = Load_Player();
 	Load_Camera(player);
 	Load_MapFile(L"FieldMap", player);
 
-	Load_Companion(L"Spike", player, _float4{ 118.471f, -1.26f, 59.8f, 1.f});
-	Load_Companion(L"Dellons", player, _float4{ 128.471f, -2.98f, 78.3f, 1.f });
-	Load_Companion(L"Shane", player, _float4{ 98.f, -0.6f, 73.76f, 1.f});
 	
-#ifdef _DEBUG
-	Load_Monster(3, L"Wolf", player);
-	Load_Monster(3, L"Silversword_Soldier", player);
-	Load_Monster(3, L"Succubus_Scythe", player);
-	Load_Monster(3, L"Undead_Priest", player);
-	Load_Monster(3, L"EntSoldier", player);
-#else
-	Load_Monster(20, L"Wolf", player);
-	Load_Monster(20, L"Silversword_Soldier", player);
-	Load_Monster(20, L"Succubus_Scythe", player);
-	Load_Monster(20, L"Undead_Priest", player);
-	Load_Monster(20, L"EntSoldier", player);
-#endif
+	//Load_Companion(L"Shane", player, _float4{ 98.f, -0.6f, 73.76f, 1.f});
+	if(SWITCHMGR.Get_SwitchState(SWITCH_TYPE::CREATE_COMBAT5_AFTER_SPIKE))
+	{
+		Load_Companion(L"Spike", player, _float4{ 142.f, 0.f, 75.0f, 1.f });
+		Load_Companion(L"Dellons", player, _float4{ 148.f, 0.f, 78.f, 1.f });
+	}
 
 	Load_Ui(player);
 	Load_Portal();
@@ -251,20 +237,16 @@ HRESULT FieldScene::Load_Scene()
 
 void FieldScene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPlayer)
 {
-	// 오브젝트로드
 	__super::Load_MapFile(_mapFileName, pPlayer);
 	
-	// 
 	Load_Water();
-	// 터레인로드
+
 	Load_Terrain();
 	
 }
 
 void FieldScene::Load_Water()
 {
-
-
 	shared_ptr<GameObject> obj = make_shared<GameObject>();
 	obj->GetOrAddTransform()->Scaled(_float3(120.f));
 	obj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-450.f, -20.f, -450.f, 1.f));
@@ -595,69 +577,69 @@ void FieldScene::Load_Camera(shared_ptr<GameObject> pPlayer)
 
 void FieldScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_ptr<GameObject> pPlayer, _bool bCharacterController)
 {
-	{
-		for (_uint i = 0; i < iCnt; i++)
-		{
-			// Add. Monster
-			shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
+	//{
+	//	for (_uint i = 0; i < iCnt; i++)
+	//	{
+	//		// Add. Monster
+	//		shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
 
-			ObjMonster->Add_Component(make_shared<Transform>());
+	//		ObjMonster->Add_Component(make_shared<Transform>());
 
-			_float3 vSpawnPos = MathUtils::Get_RandomVector(_float3{ 165.f, -1.3f, 50.f }, _float3{ 235.f, -1.3f, 60.f });
-			ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4{ vSpawnPos.x, vSpawnPos.y, vSpawnPos.z, 1.f });
-			{
-				shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+	//		_float3 vSpawnPos = MathUtils::Get_RandomVector(_float3{ 165.f, -1.3f, 50.f }, _float3{ 235.f, -1.3f, 60.f });
+	//		ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4{ vSpawnPos.x, vSpawnPos.y, vSpawnPos.z, 1.f });
+	//		{
+	//			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 
-				shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
-				{
-					shared_ptr<Model> model = RESOURCES.Get<Model>(strMonsterTag);
-					animator->Set_Model(model);
-				}
+	//			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+	//			{
+	//				shared_ptr<Model> model = RESOURCES.Get<Model>(strMonsterTag);
+	//				animator->Set_Model(model);
+	//			}
 
-				ObjMonster->Add_Component(animator);
+	//			ObjMonster->Add_Component(animator);
 
-				if (strMonsterTag == L"Silversword_Soldier")
-					ObjMonster->Add_Component(make_shared<Silversword_Soldier_FSM>());
-				else if (strMonsterTag == L"Succubus_Scythe")
-					ObjMonster->Add_Component(make_shared<Succubus_Scythe_FSM>());
-				else if (strMonsterTag == L"Undead_Priest")
-					ObjMonster->Add_Component(make_shared<Undead_Priest_FSM>());
-				else if (strMonsterTag.find(L"Bad_Alpaca") != wstring::npos)
-					ObjMonster->Add_Component(make_shared<Alpaca_FSM>());
-				else if (strMonsterTag.find(L"Alpaca") != wstring::npos)
-					ObjMonster->Add_Component(make_shared<NeutralAlpaca_FSM>());
-				else if (strMonsterTag == L"Wolf")
-					ObjMonster->Add_Component(make_shared<Wolf_FSM>());
-				else if (strMonsterTag == L"EntSoldier")
-					ObjMonster->Add_Component(make_shared<EntSoldier_FSM>());
+	//			if (strMonsterTag == L"Silversword_Soldier")
+	//				ObjMonster->Add_Component(make_shared<Silversword_Soldier_FSM>());
+	//			else if (strMonsterTag == L"Succubus_Scythe")
+	//				ObjMonster->Add_Component(make_shared<Succubus_Scythe_FSM>());
+	//			else if (strMonsterTag == L"Undead_Priest")
+	//				ObjMonster->Add_Component(make_shared<Undead_Priest_FSM>());
+	//			else if (strMonsterTag.find(L"Bad_Alpaca") != wstring::npos)
+	//				ObjMonster->Add_Component(make_shared<Alpaca_FSM>());
+	//			else if (strMonsterTag.find(L"Alpaca") != wstring::npos)
+	//				ObjMonster->Add_Component(make_shared<NeutralAlpaca_FSM>());
+	//			else if (strMonsterTag == L"Wolf")
+	//				ObjMonster->Add_Component(make_shared<Wolf_FSM>());
+	//			else if (strMonsterTag == L"EntSoldier")
+	//				ObjMonster->Add_Component(make_shared<EntSoldier_FSM>());
 
-				ObjMonster->Get_FSM()->Set_Target(pPlayer);
-			}
-			ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.7f, 0.5f })); //obbcollider
-			ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
-			ObjMonster->Get_Collider()->Set_Activate(true);
+	//			ObjMonster->Get_FSM()->Set_Target(pPlayer);
+	//		}
+	//		ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.7f, 0.5f })); //obbcollider
+	//		ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
+	//		ObjMonster->Get_Collider()->Set_Activate(true);
 
-			wstring strMonsterName = strMonsterTag + to_wstring(i);
-			ObjMonster->Set_Name(strMonsterName);
-			{
-				//Alpaca and Wolf don't use character controller
-				if (bCharacterController)
-				{
-					auto controller = make_shared<CharacterController>();
-					ObjMonster->Add_Component(controller);
-					auto& desc = controller->Get_CapsuleControllerDesc();
-					desc.radius = 0.5f;
-					desc.height = 5.f;
-					_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz();
-					desc.position = { vPos.x, vPos.y, vPos.z };
-					controller->Create_Controller();
-				}
-			}
-			ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
+	//		wstring strMonsterName = strMonsterTag + to_wstring(i);
+	//		ObjMonster->Set_Name(strMonsterName);
+	//		{
+	//			//Alpaca and Wolf don't use character controller
+	//			if (bCharacterController)
+	//			{
+	//				auto controller = make_shared<CharacterController>();
+	//				ObjMonster->Add_Component(controller);
+	//				auto& desc = controller->Get_CapsuleControllerDesc();
+	//				desc.radius = 0.5f;
+	//				desc.height = 5.f;
+	//				_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz();
+	//				desc.position = { vPos.x, vPos.y, vPos.z };
+	//				controller->Create_Controller();
+	//			}
+	//		}
+	//		ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
 
-			Add_GameObject(ObjMonster);
-		}
-	}
+	//		Add_GameObject(ObjMonster);
+	//	}
+	//}
 }
 
 void FieldScene::Load_Companion(const wstring& strCompanionTag, shared_ptr<GameObject> pPlayer, _float4 vSpawnPos)
@@ -973,6 +955,18 @@ void FieldScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 			pObj->Add_Component(pScript);
 		}
 	}
+
+	{
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_LayerIndex(Layer_UI);
+		pObj->Set_Instancing(false);
+		pObj->Set_Name(L"UI_Message_Controller");
+
+		auto pScript = make_shared<UiMessageCreater>();
+		pObj->Add_Component(pScript);
+
+		Add_GameObject(pObj);
+	}
 }
 
 void FieldScene::Load_Debug()
@@ -1097,11 +1091,154 @@ void FieldScene::Load_Portal()
 
 void FieldScene::Load_Script(shared_ptr<GameObject> pPlayer)
 {
-	shared_ptr<GameObject> obj = make_shared<GameObject>();
-	obj->GetOrAddTransform();
-	if(SWITCHMGR.Get_SwitchState(SWITCH_TYPE::CREATE_WOLF_AFTER_DELLONS))
+	if (SWITCHMGR.Get_SwitchState(SWITCH_TYPE::CREATE_WOLF_AFTER_DELLONS))
+	{
+		shared_ptr<GameObject> obj = make_shared<GameObject>();
+		obj->GetOrAddTransform();
 		obj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(118.237f, 0.527f, 39.308f, 1.f));
-	obj->Add_Component(make_shared<FieldScript>(pPlayer, 5.f));
-	
-	Add_GameObject(obj);
+		obj->Add_Component(make_shared<FieldScript>(pPlayer, 5.f));
+
+		Add_GameObject(obj);
+	}
+	if (SWITCHMGR.Get_SwitchState(SWITCH_TYPE::CREATE_COMBAT4_AFTER_SPIKE))
+	{
+		shared_ptr<GameObject> obj = make_shared<GameObject>();
+		obj->GetOrAddTransform();
+		obj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(118.237f, 0.527f, 39.308f, 1.f));
+		obj->Add_Component(make_shared<FieldScript>(pPlayer, 5.f));
+
+		Add_GameObject(obj);
+	}
+	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+	if (SWITCHMGR.Get_SwitchState(SWITCH_TYPE::CREATE_COMBAT4_AFTER_SPIKE))
+	{
+		_float3 vSpawnPos = _float3(105.f, -10.5f, 118.f) + MathUtils::Get_RandomVector(_float3{ -3.f, 0.f, -3.f }, _float3{ 3.f, 0.f, 3.f });
+		for(int i=0; i<3; ++i)
+		{
+			shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
+
+			ObjMonster->Add_Component(make_shared<Transform>());
+
+			ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4{ vSpawnPos, 1.f });
+			{
+				shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+				{
+					shared_ptr<Model> model = RESOURCES.Get<Model>(L"EntSoldier");
+					animator->Set_Model(model);
+				}
+
+				ObjMonster->Add_Component(animator);
+				ObjMonster->Add_Component(make_shared<EntSoldier_FSM>());
+				ObjMonster->Get_FSM()->Set_Target(pPlayer);
+			}
+			ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.7f, 0.5f })); //obbcollider
+			ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
+			ObjMonster->Get_Collider()->Set_Activate(true);
+
+			wstring strMonsterName = L"EntSoldier" + to_wstring(i);
+			ObjMonster->Set_Name(strMonsterName);
+			{
+				//Alpaca and Wolf don't use character controller
+				
+					auto controller = make_shared<CharacterController>();
+					ObjMonster->Add_Component(controller);
+					auto& desc = controller->Get_CapsuleControllerDesc();
+					desc.radius = 0.5f;
+					desc.height = 5.f;
+					_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz();
+					desc.position = { vPos.x, vPos.y, vPos.z };
+					controller->Create_Controller();
+				
+			}
+			ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
+			ObjMonster->Add_Component(make_shared<Add_Score>(SCORE_TYPE::TENT_RESCUE));
+			Add_GameObject(ObjMonster);
+		}
+
+		vSpawnPos = _float3(77.2f, -10.5f, 114.f) + MathUtils::Get_RandomVector(_float3{ -3.f, 0.f, -3.f }, _float3{ 3.f, 0.f, 3.f });
+		for (int i = 0; i < 3; ++i)
+		{
+			shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
+
+			ObjMonster->Add_Component(make_shared<Transform>());
+
+			ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4{ vSpawnPos, 1.f });
+			{
+				shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+				{
+					shared_ptr<Model> model = RESOURCES.Get<Model>(L"EntSoldier");
+					animator->Set_Model(model);
+				}
+
+				ObjMonster->Add_Component(animator);
+				ObjMonster->Add_Component(make_shared<EntSoldier_FSM>());
+				ObjMonster->Get_FSM()->Set_Target(pPlayer);
+			}
+			ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.7f, 0.5f })); //obbcollider
+			ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
+			ObjMonster->Get_Collider()->Set_Activate(true);
+
+			wstring strMonsterName = L"EntSoldier" + to_wstring(i);
+			ObjMonster->Set_Name(strMonsterName);
+			{
+				//Alpaca and Wolf don't use character controller
+
+				auto controller = make_shared<CharacterController>();
+				ObjMonster->Add_Component(controller);
+				auto& desc = controller->Get_CapsuleControllerDesc();
+				desc.radius = 0.5f;
+				desc.height = 5.f;
+				_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz();
+				desc.position = { vPos.x, vPos.y, vPos.z };
+				controller->Create_Controller();
+
+			}
+			ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
+			ObjMonster->Add_Component(make_shared<Add_Score>(SCORE_TYPE::TENT_RESCUE));
+			Add_GameObject(ObjMonster);
+		}
+
+		vSpawnPos = _float3(112.5f, -10.5f, 128.f) + MathUtils::Get_RandomVector(_float3{ -3.f, 0.f, -3.f }, _float3{ 3.f, 0.f, 3.f });
+		for (int i = 0; i < 5; ++i)
+		{
+			shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
+
+			ObjMonster->Add_Component(make_shared<Transform>());
+
+			ObjMonster->Get_Transform()->Set_State(Transform_State::POS, _float4{ vSpawnPos, 1.f });
+			{
+				shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+				{
+					shared_ptr<Model> model = RESOURCES.Get<Model>(L"EntSoldier");
+					animator->Set_Model(model);
+				}
+
+				ObjMonster->Add_Component(animator);
+				ObjMonster->Add_Component(make_shared<EntSoldier_FSM>());
+				ObjMonster->Get_FSM()->Set_Target(pPlayer);
+			}
+			ObjMonster->Add_Component(make_shared<OBBBoxCollider>(_float3{ 0.5f, 0.7f, 0.5f })); //obbcollider
+			ObjMonster->Get_Collider()->Set_CollisionGroup(Monster_Body);
+			ObjMonster->Get_Collider()->Set_Activate(true);
+
+			wstring strMonsterName = L"EntSoldier" + to_wstring(i);
+			ObjMonster->Set_Name(strMonsterName);
+			{
+				//Alpaca and Wolf don't use character controller
+
+				auto controller = make_shared<CharacterController>();
+				ObjMonster->Add_Component(controller);
+				auto& desc = controller->Get_CapsuleControllerDesc();
+				desc.radius = 0.5f;
+				desc.height = 5.f;
+				_float3 vPos = ObjMonster->Get_Transform()->Get_State(Transform_State::POS).xyz();
+				desc.position = { vPos.x, vPos.y, vPos.z };
+				controller->Create_Controller();
+
+			}
+			ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
+			ObjMonster->Add_Component(make_shared<Add_Score>(SCORE_TYPE::TENT_RESCUE));
+			Add_GameObject(ObjMonster);
+		}
+	}
 }

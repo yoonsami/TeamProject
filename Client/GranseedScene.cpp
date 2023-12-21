@@ -910,7 +910,6 @@ void GranseedScene::Load_HideAndSeek(shared_ptr<GameObject> pPlayer)
 
 			Add_GameObject(obj);
 		}
-
 	}
 
 	{

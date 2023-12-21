@@ -216,6 +216,7 @@
     <ClInclude Include="EntSoldier_FSM.h" />
     <ClInclude Include="Feni_FSM.h" />
     <ClInclude Include="FieldScript.h" />
+    <ClInclude Include="FisherMan_FSM.h" />
     <ClInclude Include="Friend_FSM.h" />
     <ClInclude Include="Get_Gravity.h" />
     <ClInclude Include="Glow_WitcherSense.h" />
@@ -359,6 +360,7 @@
     <ClCompile Include="EntSoldier_FSM.cpp" />
     <ClCompile Include="Feni_FSM.cpp" />
     <ClCompile Include="FieldScript.cpp" />
+    <ClCompile Include="FisherMan_FSM.cpp" />
     <ClCompile Include="Friend_FSM.cpp" />
     <ClCompile Include="Get_Gravity.cpp" />
     <ClCompile Include="Glow_WitcherSense.cpp" />

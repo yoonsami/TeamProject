@@ -484,6 +484,7 @@ void Companion_Spike_FSM::talk_01()
     if (pObj && pObj->Get_Script<UiDialogController>()->Get_Dialog_End() == false)
     {
         m_bEntryTeam = true;
+        SWITCHMGR.Set_SwitchState(SWITCH_TYPE::SPIKE_DIALOG, true);
         m_eCurState = STATE::b_idle;
     }
 }
