@@ -149,7 +149,7 @@ struct PBR_MAPOBJECT_OUTPUT
 struct PBR_OUT
 {
     float4 outColor : SV_Target0;
-    float4 emissiveColor : SV_Target3;
+    float4 rimColor : SV_Target3;
 };
 
 int lightIndex;
@@ -251,7 +251,7 @@ PBR_OUT PBRShade(
     PBR_OUT output = (PBR_OUT) 0.f;
     output.outColor = float4(color, 1.f);
     
-    output.emissiveColor = 1.f //* saturate(dot(viewNormal, -viewLightDir))
+    output.rimColor = 1.f //* saturate(dot(viewNormal, -viewLightDir))
      * pow(smoothstep(0.f, 1.f, 1.f - saturate(dot(-eyeDir, viewNormal))), 2) * attenuation;
     
     return output;
