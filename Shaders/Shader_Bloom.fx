@@ -45,16 +45,16 @@ float4 PS_Bloom(VS_OUT input) : SV_Target
     float4 vBloomColor = SubMap1.Sample(LinearSampler, input.uv);
     float4 vBloomOrigin = SubMap2.Sample(LinearSampler, input.uv);
     
-    float4 vBloom = pow(pow(abs(vBloomColor), 2.2f) + pow(abs(vBloomOrigin), 2.2f), 1 / 2.2f);
+    float4 vBloom = vBloomColor +vBloomOrigin;
     
     output = vHDRColor;
     
-    output = pow(abs(output), 2.2f);
-    vBloom = pow(abs(vBloom), 2.2f);
+
+    vBloom =vBloomColor;
     
-    output += vBloom;
+    output.xyz += vBloom.xyz;
     
-    return pow(abs(output), 1 / 2.2f);
+    return output;
 }
 
 technique11 t0

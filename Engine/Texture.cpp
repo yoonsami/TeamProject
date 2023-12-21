@@ -32,7 +32,7 @@ void Texture::Load(const wstring& path)
 	}
 	else // png, jpg, jpeg, bmp
 	{
-		::LoadFromWICFile(path.c_str(),WIC_FLAGS_FORCE_RGB, &md, m_Img);
+		::LoadFromWICFile(path.c_str(), WIC_FLAGS_FORCE_SRGB, &md, m_Img);
 		::CreateWICTextureFromFile(DEVICE.Get(), m_strFilePath.c_str(), nullptr, &m_pShaderResourceView);
 	}
 

@@ -69,6 +69,7 @@ HRESULT Graphics::Ready_DeviceAndSwapChain(HWND hWnd, GRAPHICDESC::WINMODE eWinm
 	SwapChainDesc.Windowed = eWinmode;
 	SwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
+
 	_uint iFlag = 0;
 
 #ifdef _DEBUG

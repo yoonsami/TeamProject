@@ -261,9 +261,7 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     vOutColor = lerp(vOutColor, vSample_Op2, vSample_Op2.a);
     vOutColor = lerp(vOutColor, vSample_Op3, vSample_Op3.a);
     
-    /* Gamma collection */
-    if (bUseTexColor_Op[0] || bUseTexColor_Op[1] || bUseTexColor_Op[2])
-        vOutColor.rgb = pow(vOutColor.rgb, 1.f / GAMMA);
+
 
     /* Normal Mapping */
     if(bHasNormalMap)
@@ -529,9 +527,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     vOutColor = lerp(vOutColor, vSample_Op2, vSample_Op2.a);
     vOutColor = lerp(vOutColor, vSample_Op3, vSample_Op3.a);
     
-    /* Gamma collection */
-    if (bUseTexColor_Op[0] || bUseTexColor_Op[1] || bUseTexColor_Op[2])
-        vOutColor.rgb = pow(vOutColor.rgb, 1.f / GAMMA);
+
     
     /* DissolveMap */
     if (bHasDissolveMap)
@@ -808,9 +804,7 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
     vOutColor = lerp(vOutColor, vSample_Op2, vSample_Op2.a);
     vOutColor = lerp(vOutColor, vSample_Op3, vSample_Op3.a);
     
-    /* Gamma collection */
-    if (bUseTexColor_Op[0] || bUseTexColor_Op[1] || bUseTexColor_Op[2])
-        vOutColor.rgb = pow(vOutColor.rgb, 1.f / GAMMA);
+
     
     if (bHasNormalMap)
         ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, vTexcoord_Op[0]);
@@ -1070,9 +1064,7 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
     vOutColor = lerp(vOutColor, vSample_Op2, vSample_Op2.a);
     vOutColor = lerp(vOutColor, vSample_Op3, vSample_Op3.a);
     
-    /* Gamma collection */
-    if (bUseTexColor_Op[0] || bUseTexColor_Op[1] || bUseTexColor_Op[2])
-        vOutColor.rgb = pow(vOutColor.rgb, 1.f / GAMMA);
+
 
     /* DissolveMap */
     if (bHasDissolveMap)
