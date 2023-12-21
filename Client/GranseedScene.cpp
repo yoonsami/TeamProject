@@ -237,6 +237,7 @@ HRESULT GranseedScene::Load_Scene()
 	// Gacha
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Kyle\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Yeopo\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Yeonhee\\", false);
 
 	//Sound
 	RESOURCES.Load_Sound(L"..\\Resources\\Sound\\Common\\", true);

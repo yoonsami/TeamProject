@@ -118,34 +118,30 @@ shared_ptr<GameObject> GachaScene::Load_Player()
 	Add_GameObject(ObjPlayer);
 	Gacha_FSM_Desc desc;
 	shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-	shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+	desc.strWeaponName =GET_DATA(m_Desc.eHeroType).WeaponTag;
 
-	
+	shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+	shared_ptr<Model> model = RESOURCES.Get<Model>(GET_DATA(m_Desc.eHeroType).ModelTag);
+	{
+		animator->Set_Model(model);
+
+		ObjPlayer->Add_Component(animator);
+	}
+
 	switch (m_Desc.eHeroType)
 	{
 	case HERO::KYLE:
-		modelName = L"Kyle";
 		{
-			shared_ptr<Model> model = RESOURCES.Get<Model>(modelName);
-			animator->Set_Model(model);
 			model->Get_MaterialByName(L"mi_Wp_Kyle_Chain")->Get_MaterialDesc().emissive = Color(214.f/255.f,55.f/255.f, 0.0f, 1.f);
 			model->Get_MaterialByName(L"mi_Wp_Kyle")->Get_MaterialDesc().emissive = Color(214.f / 255.f, 55.f / 255.f, 0.0f, 1.f);
-			ObjPlayer->Add_Component(animator);
 		}
-		desc.strWeaponName = L"";
+		
 		desc.strAnimTag = L"SQ_SpecialHero_Kyle";
 		desc.iAnimStopFrame = 134;
 
 		break;
 	case HERO::YEOPO:
-		modelName = L"Yeopo";
-		{
-			shared_ptr<Model> model = RESOURCES.Get<Model>(modelName);
-			animator->Set_Model(model);
 
-			ObjPlayer->Add_Component(animator);
-		}
-		desc.strWeaponName = L"Weapon_Yeopo";
 		desc.strAnimTag = L"SQ_SpecialHero_Yeopo";
 		desc.iAnimStopFrame = 134;
 		{
@@ -172,13 +168,19 @@ shared_ptr<GameObject> GachaScene::Load_Player()
 			Add_GameObject(ObjVehicle);
 		}
 		break;
+	case HERO::YEONHEE:
+
+	desc.strAnimTag = L"SQ_SpecialHero_Yeonhee_Origin_01";
+	desc.iAnimStopFrame = 180;
+
+	break;
 	case HERO::MAX:
 		break;
 	default:
 		break;
 	}
 
-	ObjPlayer->Set_Name(modelName);
+	ObjPlayer->Set_Name(GET_DATA(m_Desc.eHeroType).ModelTag);
 	ObjPlayer->Add_Component(make_shared<Gacha_FSM>(desc));
 
 	

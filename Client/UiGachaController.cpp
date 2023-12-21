@@ -322,6 +322,8 @@ void UiGachaController::Effect_Change()
     case HERO::SPIKE:
         break;
     case HERO::YEONHEE:
+		sceneDesc = { L"YeonheeMap", HERO::YEONHEE };
+		bIsIt = true;
         break;
     case HERO::SHANE:
         break;
@@ -368,6 +370,7 @@ void UiGachaController::Start_Effect(_float4 vPos, HERO eHero)
     {
     case HERO::KYLE:
     case HERO::YEOPO:
+    case HERO::YEONHEE:
         bIsit = true;
     }
 
