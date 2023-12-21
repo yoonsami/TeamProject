@@ -262,7 +262,7 @@ HRESULT GranseedScene::Load_Scene()
 	Get_Light()->Get_Light()->Get_LightInfo().color.diffuse = Color(130.f / 255.f);
 	Get_Light()->Get_Light()->Get_LightInfo().color.ambient = Color(150.f / 255.f);
 	Get_Light()->Get_Light()->Get_LightInfo().color.specular = Color(150.f / 255.f);
-	Get_Light()->Get_Light()->Get_LightInfo().color.emissive = Color(10.f);
+	Get_Light()->Get_Light()->Get_LightInfo().color.emissive = Color(1.f);
 	g_fBrightness = 0.07f;
 	g_fContrast = 1.18f;
 	return S_OK;

@@ -37,9 +37,6 @@ public:
 		skill_1400, 
 
 		skill_9100, //Evade
-		skill_9200, //Evade
-		skill_9300, //Evade
-		skill_9400, //Evade
 		
 		skill_2100, 
 		skill_2200, 
@@ -52,9 +49,6 @@ public:
 
 		skill_100000, 
 		skill_100100, 
-		skill_201100,  //CUTSCENE (DOWN)
-		skill_201200,  //CUTSCENE (UP)
-
 
 		NONE
 	};
@@ -125,13 +119,6 @@ private:
 	//Evade Motion
 	void skill_9100();
 	void skill_9100_Init();
-	void skill_9200();
-	void skill_9200_Init();
-	void skill_9300();
-	void skill_9300_Init();
-	void skill_9400();
-	void skill_9400_Init();
-	
 
 	void skill_2100();
 	void skill_2100_Init();
@@ -178,6 +165,7 @@ private:
 
 	_float m_fDieCamDistance = 0.f;
 	_float m_fCamRatio = 0.f;
+	_float m_fRunWindSoundTimer = 0.f;
 
 	_float m_fGroggyStateAnimationSpeed = 1.f;
 	_float m_fGroggyPatternAnimationSpeed = 0.15f;

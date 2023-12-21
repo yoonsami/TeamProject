@@ -95,6 +95,12 @@ HRESULT Boss_Spike_FSM::Init()
 
         m_fNormalAttack_AnimationSpeed = 1.3f;
         
+        m_fMySoundDistance = 10.f;
+        m_fVoiceVolume = 0.6f;
+        m_fFootStepVolume = 0.3f;
+        m_fEffectVolume = 0.4f;
+        m_fSwingVolume = 0.4f;
+
         m_bInitialize = true;
     }
 
@@ -182,15 +188,6 @@ void Boss_Spike_FSM::State_Tick()
         break;
     case STATE::skill_9100:
         skill_9100();
-        break;
-    case STATE::skill_9200:
-        skill_9200();
-        break;
-    case STATE::skill_9300:
-        skill_9300();
-        break;
-    case STATE::skill_9400:
-        skill_9400();
         break;
     case STATE::skill_2100:
         skill_2100();
@@ -292,15 +289,6 @@ void Boss_Spike_FSM::State_Init()
             break;
         case STATE::skill_9100:
             skill_9100_Init();
-            break;
-        case STATE::skill_9200:
-            skill_9200_Init();
-            break;
-        case STATE::skill_9300:
-            skill_9300_Init();
-            break;
-        case STATE::skill_9400:
-            skill_9400_Init();
             break;
         case STATE::skill_2100:
             skill_2100_Init();
@@ -460,8 +448,16 @@ void Boss_Spike_FSM::SQ_Appear_01()
     if (Target_In_DetectRange())
         Get_Owner()->Get_Animator()->Set_AnimState(false);
 
+    if (Init_CurFrame(40))
+        SOUND.Play_Sound(L"skill_spike_009", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    else if (Init_CurFrame(107))
+        SOUND.Play_Sound(L"magic_wind_att_04", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+
+
     if (m_iCurFrame >= 10 && m_iCurFrame <= 75)
     {
+        CUR_SCENE->Set_PlayBGM(true);
+
         g_bCutScene = true;
 
         if (!m_pCamera.expired())
@@ -479,7 +475,7 @@ void Boss_Spike_FSM::SQ_Appear_01()
         }
 
         if (m_iCurFrame == 75)
-            Get_Owner()->Get_Animator()->Set_AnimationSpeed(4.f);
+            Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.5f);
     }
 
     Calculate_CamBoneMatrix();
@@ -515,7 +511,12 @@ void Boss_Spike_FSM::SQ_Appear_01_Init()
 void Boss_Spike_FSM::SQ_Appear_02()
 {
     if (Init_CurFrame(5))
+    {
         Add_Effect(L"Boss_Spike_Init_Ice",nullptr,_float4x4::Identity,true);
+
+        SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+        SOUND.Play_Sound(L"magic_ice_impact_n_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    }
 
     m_vPlayerBodyPos += Get_Transform()->Get_State(Transform_State::LOOK) * fDT * m_fRunSpeed * 4.f;
     Get_Transform()->Set_State(Transform_State::POS, m_vPlayerBodyPos);
@@ -563,7 +564,6 @@ void Boss_Spike_FSM::SQ_Appear_02_Init()
 
     animator->Set_NextTweenAnim(L"SQ_Appear_02", 0.1f, false, 1.f);
 
-    //EVENTMGR.Delete_Object(CUR_SCENE->Get_GameObject(L"Boss_Spike_Chair"));
 
     Calculate_CamBoneMatrix();
 
@@ -582,6 +582,13 @@ void Boss_Spike_FSM::SQ_Appear_02_Init()
 
 void Boss_Spike_FSM::SQ_Appear_03()
 {
+    if (Init_CurFrame(7))
+        SOUND.Play_Sound(L"hit_explosive_bomb_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    else if (Init_CurFrame(53))
+        SOUND.Play_Sound(L"skill_spike_002", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+    else if (Init_CurFrame(78))
+        SOUND.Play_Sound(L"magic_ice_shot_00", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+
     if (!m_pCamera.expired())
     {
         _float4 vDir = m_vCamStopPos - m_vCenterBonePos;
@@ -624,6 +631,9 @@ void Boss_Spike_FSM::SQ_Appear_03_Init()
 
 void Boss_Spike_FSM::Spawn()
 {
+    if (Init_CurFrame(30))
+        SOUND.Play_Sound(L"skill_spike_007", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 }
@@ -693,6 +703,12 @@ void Boss_Spike_FSM::b_idle_Init()
 
 void Boss_Spike_FSM::b_run()
 {
+    if (Init_CurFrame(10))
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(20))
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+  
+
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
 
@@ -722,6 +738,7 @@ void Boss_Spike_FSM::b_run()
 
 void Boss_Spike_FSM::b_run_Init()
 {
+
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"b_run", 0.2f, true, 1.f);
@@ -736,6 +753,12 @@ void Boss_Spike_FSM::b_run_Init()
 
 void Boss_Spike_FSM::gaze_b()
 {
+    if (Init_CurFrame(16))
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(32))
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
 
@@ -771,10 +794,19 @@ void Boss_Spike_FSM::gaze_b_Init()
     m_bSuperArmor = false;
 
     m_tChaseCoolTime.fAccTime = 0.f;
+    m_fRunWindSoundTimer = 0.f;
+
+
+    AttackCollider_Off();
 }
 
 void Boss_Spike_FSM::gaze_f()
 {
+    if (Init_CurFrame(2))
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(18))
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
 
@@ -810,10 +842,19 @@ void Boss_Spike_FSM::gaze_f_Init()
     m_bSuperArmor = false;
 
     m_tChaseCoolTime.fAccTime = 0.f;
+    m_fRunWindSoundTimer = 0.f;
+
+    AttackCollider_Off();
 }
 
 void Boss_Spike_FSM::gaze_l()
 {
+    if (Init_CurFrame(2))
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(18))
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
 
@@ -849,10 +890,18 @@ void Boss_Spike_FSM::gaze_l_Init()
     m_bSuperArmor = false;
 
     m_tChaseCoolTime.fAccTime = 0.f;
+    m_fRunWindSoundTimer = 0.f;
+
+    AttackCollider_Off();
 }
 
 void Boss_Spike_FSM::gaze_r()
 {
+    if (Init_CurFrame(2))
+        SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(18))
+        SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     if (!m_pTarget.expired())
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
 
@@ -888,6 +937,9 @@ void Boss_Spike_FSM::gaze_r_Init()
     m_bSuperArmor = false;
 
     m_tChaseCoolTime.fAccTime = 0.f;
+    m_fRunWindSoundTimer = 0.f;
+
+    AttackCollider_Off();
 }
 
 
@@ -1125,11 +1177,14 @@ void Boss_Spike_FSM::groggy_start_Init()
 
     animator->Set_NextTweenAnim(L"groggy_start", 0.1f, false, m_fGroggyStateAnimationSpeed);
 
+    SOUND.Play_Sound(L"vo_spike_hit_04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     AttackCollider_Off();
     FreeLoopMembers();
     m_bInvincible = false;
     m_bSuperArmor = false;
 
+    m_fRunWindSoundTimer = 0.f;
     m_tChaseCoolTime.fAccTime = 0.f;
     m_tSkillCoolTime.fAccTime = 0.f;
     m_bCounter = false;
@@ -1146,6 +1201,8 @@ void Boss_Spike_FSM::groggy_loop_Init()
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"groggy_loop", 0.1f, false, 3.f);
+
+    SOUND.Play_Sound(L"vo_spike_groggy_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 void Boss_Spike_FSM::groggy_end()
@@ -1170,21 +1227,34 @@ void Boss_Spike_FSM::skill_1100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if(Init_CurFrame(7))
+    if (Init_CurFrame(7))
+    {
 		Add_And_Set_Effect(L"Boss_Spike_1100");
 
+        SOUND.Play_Sound(L"vo_spike_att_05", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-    if (m_iCurFrame == 9)
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (m_iCurFrame == 19)
+    }
+    else if (Init_CurFrame(19))
         AttackCollider_Off();
-    else if (m_iCurFrame == 29)
+    else if (Init_CurFrame(29))
+    {
+        SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (m_iCurFrame == 38)
+    }
+    else if (Init_CurFrame(38))
         AttackCollider_Off();
-    else if (m_iCurFrame == 53)
+    else if (Init_CurFrame(40))
+        SOUND.Play_Sound(L"vo_spike_att_07", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(53))
+    {
+        SOUND.Play_Sound(L"swing_axe_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (m_iCurFrame == 60)
+    }
+    else if (Init_CurFrame(60))
         AttackCollider_Off();
 
     Set_Gaze();
@@ -1217,19 +1287,34 @@ void Boss_Spike_FSM::skill_1200()
 	else if (Init_CurFrame(100))
 		Add_GroupEffectOwner(L"Spike_1400_2", _float3(0.f, 0.f, 1.f), false);
 
-    if (m_iCurFrame == 9)
+    if (Init_CurFrame(7))
+    {
+        SOUND.Play_Sound(L"vo_spike_att_05", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (m_iCurFrame == 19)
+    }
+    else if (Init_CurFrame(19))
         AttackCollider_Off();
-    else if (m_iCurFrame == 29)
+    else if (Init_CurFrame(29))
+    {
+        SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (m_iCurFrame == 38)
+    }
+    else if (Init_CurFrame(38))
         AttackCollider_Off();
-    else if (m_iCurFrame == 53)
+    else if (Init_CurFrame(40))
+        SOUND.Play_Sound(L"vo_spike_att_07", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(53))
+    {
+        SOUND.Play_Sound(L"swing_axe_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (m_iCurFrame == 60)
+    }
+    else if (Init_CurFrame(60))
         AttackCollider_Off();
-    else if (m_iCurFrame == 70)
+    else if (Init_CurFrame(70))
     {
         //Aim Target
         m_vTurnVector = Calculate_TargetTurnVector();
@@ -1242,10 +1327,12 @@ void Boss_Spike_FSM::skill_1200()
         }
 
         m_bCounter = true;
-        m_fGroggyStateAnimationSpeed = 1.5f;
+        m_fGroggyStateAnimationSpeed = 1.3f;
     }
-    else if (m_iCurFrame == 80)
+    else if (Init_CurFrame(80))
     {
+        SOUND.Play_Sound(L"vo_spike_att_08", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(1.5f);
         m_bCounter = false;
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
@@ -1253,12 +1340,16 @@ void Boss_Spike_FSM::skill_1200()
             material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
         }
     }
-    else if (m_iCurFrame == 100)
+    else if (Init_CurFrame(96))
+        SOUND.Play_Sound(L"swing_axe_04", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(100))
+    {
+        SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
-    else if (m_iCurFrame == 105)
+    }
+    else if (Init_CurFrame(105))
         AttackCollider_Off();
-
-
 
     Set_Gaze();
 }
@@ -1292,11 +1383,16 @@ void Boss_Spike_FSM::skill_1300()
 		Add_And_Set_Effect(L"Boss_Spike_1300_2");
 
 
-    if (m_iCurFrame == 10)
+    if (Init_CurFrame(9))
+    {
+        SOUND.Play_Sound(L"vo_spike_att_05", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         AttackCollider_On(NORMAL_ATTACK, 10.f);
-    else if (m_iCurFrame == 15)
+    }
+    else if (Init_CurFrame(15))
         AttackCollider_Off();
-    else if (m_iCurFrame == 25)
+    else if (Init_CurFrame(25))
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(0.5f);
 
@@ -1306,10 +1402,12 @@ void Boss_Spike_FSM::skill_1300()
         }
 
         m_bCounter = true;
-        m_fGroggyStateAnimationSpeed = 1.5f;
+        m_fGroggyStateAnimationSpeed = 1.3f;
     }
-    else if (m_iCurFrame == 39)
+    else if (Init_CurFrame(39))
     {
+        SOUND.Play_Sound(L"vo_spike_att_07", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(1.5f);
         m_bCounter = false;
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
@@ -1317,9 +1415,13 @@ void Boss_Spike_FSM::skill_1300()
             material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
         }
     }
-    else if (m_iCurFrame == 41)
+    else if (Init_CurFrame(41))
+    {
+        SOUND.Play_Sound(L"swing_axe_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (m_iCurFrame == 45)
+    }
+    else if (Init_CurFrame(45))
         AttackCollider_Off();
 
     
@@ -1349,15 +1451,26 @@ void Boss_Spike_FSM::skill_1400()
 {
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
-	if (Init_CurFrame(15))
+
+    if (Init_CurFrame(15))
+    {
 		Add_And_Set_Effect(L"Boss_Spike_1400");
-	else if (Init_CurFrame(18))
+
+        SOUND.Play_Sound(L"vo_spike_att_08", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        SOUND.Play_Sound(L"swing_axe_04", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
+    else if (Init_CurFrame(18))
+    {
+        SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		Add_GroupEffectOwner(L"Spike_1400_2", _float3(0.f, 0.f, 1.f), false);
+    }
 
 
-    if (m_iCurFrame == 17)
+    if (Init_CurFrame(17))
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (m_iCurFrame == 25)
+    else if (Init_CurFrame(25))
         AttackCollider_Off();
     
     Set_Gaze();
@@ -1370,6 +1483,8 @@ void Boss_Spike_FSM::skill_1400_Init()
     animator->Set_NextTweenAnim(L"skill_1400", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
     m_vTurnVector = Calculate_TargetTurnVector();
+
+
 
     m_tAttackCoolTime.fAccTime = 0.f;
     m_bSetPattern = false;
@@ -1397,76 +1512,9 @@ void Boss_Spike_FSM::skill_9100_Init()
 
     AttackCollider_Off();
 
+    SOUND.Play_Sound(L"vo_spike_att_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_tChaseCoolTime.fAccTime = 0.f;
-
-    m_bInvincible = true;
-    m_bSuperArmor = false;
-}
-
-void Boss_Spike_FSM::skill_9200()
-{
-    if (Is_AnimFinished())
-        m_eCurState = STATE::b_run;
-}
-
-void Boss_Spike_FSM::skill_9200_Init()
-{
-    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
-
-    animator->Set_NextTweenAnim(L"skill_9200", 0.15f, false, 1.5f);
-
-    m_vTurnVector = Calculate_TargetTurnVector();
-
-    m_tAttackCoolTime.fAccTime = 0.f;
-    m_bSetPattern = false;
-
-    AttackCollider_Off();
-
-    m_bInvincible = true;
-    m_bSuperArmor = false;
-}
-
-void Boss_Spike_FSM::skill_9300()
-{
-    if (Is_AnimFinished())
-        m_eCurState = STATE::b_run;
-}
-
-void Boss_Spike_FSM::skill_9300_Init()
-{
-    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
-
-    animator->Set_NextTweenAnim(L"skill_9300", 0.15f, false, 1.5f);
-
-    m_vTurnVector = Calculate_TargetTurnVector();
-
-    m_tAttackCoolTime.fAccTime = 0.f;
-    m_bSetPattern = false;
-
-    AttackCollider_Off();
-
-    m_bInvincible = true;
-    m_bSuperArmor = false;
-}
-
-void Boss_Spike_FSM::skill_9400()
-{
-    if (Is_AnimFinished())
-        m_eCurState = STATE::b_run;
-}
-
-void Boss_Spike_FSM::skill_9400_Init()
-{
-    shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
-
-    animator->Set_NextTweenAnim(L"skill_9400", 0.15f, false, 1.5f);
-
-    m_vTurnVector = Calculate_TargetTurnVector();
-
-    m_tAttackCoolTime.fAccTime = 0.f;
-    m_bSetPattern = false;
-
-    AttackCollider_Off();
 
     m_bInvincible = true;
     m_bSuperArmor = false;
@@ -1482,7 +1530,6 @@ void Boss_Spike_FSM::skill_2100()
     if (Init_CurFrame(48))
     {
 		Add_And_Set_Effect(L"Boss_Spike_1400");
-
     }
 	if (Init_CurFrame(52))
 	{
@@ -1492,7 +1539,7 @@ void Boss_Spike_FSM::skill_2100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (m_iCurFrame == 4)
+    if (Init_CurFrame(4))
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(0.3f);
 
@@ -1501,10 +1548,12 @@ void Boss_Spike_FSM::skill_2100()
             material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
         m_bCounter = true;
-        m_fGroggyStateAnimationSpeed = 1.5f;
+        m_fGroggyStateAnimationSpeed = 1.3f;
     }
-    else if (m_iCurFrame == 15)
+    else if (Init_CurFrame(15))
     {
+        SOUND.Play_Sound(L"skill_spike_011", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(1.f);
         m_bCounter = false;
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
@@ -1512,14 +1561,37 @@ void Boss_Spike_FSM::skill_2100()
             material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
         }
     }
-    else if (m_iCurFrame == 16)
+    else if (Init_CurFrame(16))
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (m_iCurFrame == 34)
+    else if (Init_CurFrame(34))
         AttackCollider_Off();
-    else if (m_iCurFrame == 52)
+    else if (Init_CurFrame(48))
+    {
+        SOUND.Play_Sound(L"swing_axe_04", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
+    else if (Init_CurFrame(52))
+    {
+        SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
-    else if (m_iCurFrame == 56)
+    }
+    else if (Init_CurFrame(56))
         AttackCollider_Off();
+
+    if (m_iCurFrame >= 16 && m_iCurFrame <= 34)
+    {
+        m_fRunWindSoundTimer += fDT;
+
+        if (m_fRunWindSoundTimer >= 0.1f)
+        {
+            m_fRunWindSoundTimer = 0.f;
+
+            wstring strSoundTag = L"magic_ice_stress_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+            SOUND.Play_Sound(L"magic_wind_att_03", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        }
+    }
 
     Set_Gaze();
 }
@@ -1555,7 +1627,7 @@ void Boss_Spike_FSM::skill_2200()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (m_iCurFrame == 4)
+    if (Init_CurFrame(4))
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(0.3f);
 
@@ -1564,10 +1636,12 @@ void Boss_Spike_FSM::skill_2200()
             material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
         }
         m_bCounter = true;
-        m_fGroggyStateAnimationSpeed = 1.5f;
+        m_fGroggyStateAnimationSpeed = 1.3f;
     }
-    else if (m_iCurFrame == 15)
+    else if (Init_CurFrame(15))
     {
+        SOUND.Play_Sound(L"skill_spike_011", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(1.f);
         m_bCounter = false;
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
@@ -1575,18 +1649,43 @@ void Boss_Spike_FSM::skill_2200()
             material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
         }
     }
-    else if (m_iCurFrame == 16)
+    else if (Init_CurFrame(16))
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
-    else if (m_iCurFrame == 46)
+    else if (Init_CurFrame(46))
         AttackCollider_Off();
-    else if (m_iCurFrame == 62)
+    else if (Init_CurFrame(62))
+    {
+        SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
-    else if (m_iCurFrame == 68)
+    }
+    else if (Init_CurFrame(68))
         AttackCollider_Off();
-    else if (m_iCurFrame == 73)
+    else if (Init_CurFrame(73))
+    {
+        SOUND.Play_Sound(L"swing_axe_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_ice_impact_n_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
-    else if (m_iCurFrame == 82)
+    }
+    else if (Init_CurFrame(82))
         AttackCollider_Off();
+
+    if (m_iCurFrame >= 16 && m_iCurFrame <= 46)
+    {
+        m_fRunWindSoundTimer += fDT;
+
+        if (m_fRunWindSoundTimer >= 0.1f)
+        {
+            m_fRunWindSoundTimer = 0.f;
+
+            wstring strSoundTag = L"magic_ice_stress_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+            SOUND.Play_Sound(L"magic_wind_att_03", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        }
+    }
 
     Set_Gaze();
 }
@@ -1616,6 +1715,11 @@ void Boss_Spike_FSM::skill_3100()
     }
 	if (Init_CurFrame(66))
 	{
+        SOUND.Play_Sound(L"swing_axe_04", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_ice_impact_n_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		Add_And_Set_Effect(L"Boss_Spike_3100_Slash");
         Add_GroupEffectOwner(L"Spike_500100_Floor2", _float3(0.f, 0.f, 2.f), false);
 	}
@@ -1623,7 +1727,11 @@ void Boss_Spike_FSM::skill_3100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
-    if (m_iCurFrame == 42)
+    if (Init_CurFrame(15))
+    {
+        SOUND.Play_Sound(L"vo_spike_att_11", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
+    else if (Init_CurFrame(42))
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(0.3f);
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
@@ -1632,10 +1740,12 @@ void Boss_Spike_FSM::skill_3100()
         }
 
         m_bCounter = true;
-        m_fGroggyStateAnimationSpeed = 1.5f;
+        m_fGroggyStateAnimationSpeed = 1.3f;
     }
-    else if (m_iCurFrame == 51)
+    else if (Init_CurFrame(51))
     {
+        SOUND.Play_Sound(L"vo_spike_att_12", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(1.f);
         m_bCounter = false;
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
@@ -1694,17 +1804,31 @@ void Boss_Spike_FSM::skill_3200()
 	if (Init_CurFrame(19))
 	{
 		Add_And_Set_Effect(L"Boss_Spike_3200_Charge");
-	}
+	
+        SOUND.Play_Sound(L"vo_spike_att_gain_04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
 	else if (Init_CurFrame(70))
 	{
 		Add_And_Set_Effect(L"Boss_Spike_3200_Slash");
+
+        SOUND.Play_Sound(L"swing_axe_04", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_ice_impact_n_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 	}
+    else if (Init_CurFrame(133))
+    {
+        SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        SOUND.Play_Sound(L"magic_ice_shot_00", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
+
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     m_tSkillCoolTime.fAccTime += fDT;
 
-    if (m_iCurFrame == 55)
+    if (Init_CurFrame(55))
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(0.3f);
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
@@ -1714,8 +1838,10 @@ void Boss_Spike_FSM::skill_3200()
     
         m_bCounter = true;
     }
-    else if (m_iCurFrame == 69)
+    else if (Init_CurFrame(69))
     {
+        SOUND.Play_Sound(L"vo_spike_att_12", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(1.3f);
         m_bCounter = false;
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
@@ -1916,11 +2042,17 @@ void Boss_Spike_FSM::skill_6100_Init()
 
 void Boss_Spike_FSM::skill_7100()
 {
-	if (Init_CurFrame(44))
+    if (Init_CurFrame(44))
+    {
+        SOUND.Play_Sound(L"skill_spike_006", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		Add_And_Set_Effect(L"Boss_Spike_7100_Charge");
+    }
 
     if (Init_CurFrame(136))
     {
+        SOUND.Play_Sound(L"magic_ice_long_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		Add_And_Set_Effect(L"Boss_Spike_7100_Crack");
         
         FORWARDMOVINGSKILLDESC desc;
@@ -1955,13 +2087,21 @@ void Boss_Spike_FSM::skill_7100_Init()
 
 void Boss_Spike_FSM::skill_8100()
 {
-	if (Init_CurFrame(15))
+    if (Init_CurFrame(15))
+    {
+        SOUND.Play_Sound(L"skill_spike_008", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		Add_And_Set_Effect(L"Boss_Spike_3100_Charge");
-	else if (Init_CurFrame(65))
+    }
+    else if (Init_CurFrame(65))
+    {
 		Add_And_Set_Effect(L"Spike_300100_Jump");
+    }
     else if (Init_CurFrame(88))
     {
 		Add_And_Set_Effect(L"Spike_300100");
+
+        SOUND.Play_Sound(L"magic_ice_long_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
                             Get_Transform()->Get_State(Transform_State::LOOK) * 2.f;
@@ -2000,9 +2140,42 @@ void Boss_Spike_FSM::skill_100000()
 {
 	if (Init_CurFrame(17))
 		Add_And_Set_Effect(L"Boss_Spike_100000_Charge");
+	else if (Init_CurFrame(37))
+        SOUND.Play_Sound(L"vo_spike_att_gain_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
+    if (Init_CurFrame(35) ||
+        Init_CurFrame(45) ||
+        Init_CurFrame(55) ||
+        Init_CurFrame(65) ||
+        Init_CurFrame(75))
+    {
+        _float4 vMyPos = Get_Transform()->Get_State(Transform_State::POS);
+
+        INSTALLATIONSKILLDESC desc;
+        desc.fAttackTickTime = 1.35f;
+        desc.iLimitAttackCnt = 1;
+        desc.strAttackType = KNOCKDOWN_SKILL;
+        desc.strLastAttackType = KNOCKDOWN_SKILL;
+        desc.fAttackDamage = 5.f;
+        desc.fLastAttackDamage = 5.f;
+        desc.bFirstAttack = false;
+
+        for (_uint i = 0; i < 6; i++)
+        {
+            _float fOffSetX = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
+            _float fOffSetZ = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
+
+            _float4 vSkillPos = vMyPos + _float4{ fOffSetX, 13.5f, fOffSetZ, 0.f };
+            _float4 vEffectPos = vMyPos + _float4{ fOffSetX, 0.f, fOffSetZ, 0.f };
+
+            Add_GroupEffectOwner(L"Boss_Spike_6100_Ice", vEffectPos.xyz(), true);
+
+            Create_InstallationSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vEffectPos, 1.3f, desc);
+        }
+    }
 
     if (m_iCurFrame <= 30)
     {
@@ -2065,6 +2238,8 @@ void Boss_Spike_FSM::skill_100000_Init()
     m_bInvincible = true;
     m_bSuperArmor = false;
 
+    SOUND.Play_Sound(L"skill_spike_012", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     if (!m_pTarget.expired())
         Get_Transform()->LookAt(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS));
 
@@ -2082,12 +2257,34 @@ void Boss_Spike_FSM::skill_100000_Init()
 
 void Boss_Spike_FSM::skill_100100()
 {
-	if (Init_CurFrame(14))
+    if (Init_CurFrame(14))
+    {
+        SOUND.Play_Sound(L"skill_spike_003", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        
+        SOUND.Play_Sound(L"swing_axe_04", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		Add_And_Set_Effect(L"Boss_Spike_100100");
-    if (Init_CurFrame(40))
-    Add_And_Set_Effect(L"Spike_300100_Jump");
-	if (Init_CurFrame(83))
+
+        FORWARDMOVINGSKILLDESC desc;
+        desc.fMoveSpeed = 0.f;
+        desc.fLifeTime = 0.3f;
+        desc.fLimitDistance = 0.f;
+        desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+
+        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + _float3::Up;
+
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vSkillPos, 3.f, desc, NORMAL_ATTACK, 10.f);
+    }
+    else if (Init_CurFrame(40))
+        Add_And_Set_Effect(L"Spike_300100_Jump");
+    else if (Init_CurFrame(79))
+        SOUND.Play_Sound(L"vo_spike_att_12", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(83))
+    {
+        SOUND.Play_Sound(L"magic_ice_long_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		Add_And_Set_Effect(L"Spike_400100_3");
+    }
 
     if (m_iCurFrame == 4)
     {
@@ -2135,7 +2332,7 @@ void Boss_Spike_FSM::skill_100100()
             }
         }
     }
-
+    
     Set_Gaze();
 }
 

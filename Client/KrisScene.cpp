@@ -268,7 +268,7 @@ HRESULT KrisScene::Load_Scene()
 
 	Get_Light()->Get_Light()->Get_LightInfo().color.ambient = Color(150.f / 255.f);
 	Get_Light()->Get_Light()->Get_LightInfo().color.specular = Color(150.f / 255.f);
-	Get_Light()->Get_Light()->Get_LightInfo().color.emissive = Color(10.f);
+	Get_Light()->Get_Light()->Get_LightInfo().color.emissive = Color(1.f);
 
 
 	return S_OK;

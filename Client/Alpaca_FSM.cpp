@@ -700,8 +700,6 @@ void Alpaca_FSM::airborne_end()
             m_eCurState = STATE::airborne_up;
         else
         {
-            SOUND.Play_Sound(L"vo_alpaca_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-
             CUR_SCENE->g_sceneFlag++;
 
             m_bInvincible = true;
@@ -713,7 +711,11 @@ void Alpaca_FSM::airborne_end()
             script->Init();
 
             if (!m_pAttackCollider.expired())
+            {
+                SOUND.Play_Sound(L"vo_alpaca_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
                 EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+            }
         }
     }
 }
@@ -810,8 +812,6 @@ void Alpaca_FSM::knock_end_loop()
 
     if (m_bIsDead)
     {
-        SOUND.Play_Sound(L"vo_alpaca_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-
         m_bInvincible = true;
 
         Get_Owner()->Get_Animator()->Set_AnimState(true);
@@ -823,7 +823,11 @@ void Alpaca_FSM::knock_end_loop()
         CUR_SCENE->g_sceneFlag++;
 
         if (!m_pAttackCollider.expired())
+        {
+            SOUND.Play_Sound(L"vo_alpaca_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
             EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        }
     }
 }
 
@@ -905,8 +909,6 @@ void Alpaca_FSM::knockdown_end()
             m_eCurState = STATE::knock_up;
         else
         {
-            SOUND.Play_Sound(L"vo_alpaca_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-
             CUR_SCENE->g_sceneFlag++;
 
             m_bInvincible = true;
@@ -918,7 +920,11 @@ void Alpaca_FSM::knockdown_end()
             script->Init();
 
             if (!m_pAttackCollider.expired())
+            {
+                SOUND.Play_Sound(L"vo_alpaca_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
                 EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+            }
         }
     }
 }
