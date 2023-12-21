@@ -45,7 +45,7 @@ HRESULT Wolf_FSM::Init()
         m_fDetectRange = 15.f;
 
         m_fMySoundDistance = 6.f;
-        m_fVoiceVolume = 0.4f;
+        m_fVoiceVolume = 0.5f;
         m_fEffectVolume = 0.6f;
 
         m_bInitialize = true;
@@ -285,7 +285,7 @@ void Wolf_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Game
             else
                 m_eCurState = STATE::hit;
 
-            SOUND.Play_Sound(L"wolf_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+            SOUND.Play_Sound(L"wolf_hit", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
     else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
@@ -299,7 +299,7 @@ void Wolf_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Game
             else
                 m_eCurState = STATE::knock_start;
 
-            SOUND.Play_Sound(L"wolf_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+            SOUND.Play_Sound(L"wolf_hit", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
     else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
@@ -313,7 +313,7 @@ void Wolf_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Game
             else
                 m_eCurState = STATE::knockdown_start;
 
-            SOUND.Play_Sound(L"wolf_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+            SOUND.Play_Sound(L"wolf_hit", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
     else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
@@ -327,7 +327,7 @@ void Wolf_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Game
             else
                 m_eCurState = STATE::airborne_start;
 
-            SOUND.Play_Sound(L"wolf_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+            SOUND.Play_Sound(L"wolf_hit", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         }
     }
 }
@@ -717,8 +717,6 @@ void Wolf_FSM::airborne_end()
             m_eCurState = STATE::airborne_up;
         else
         {
-            SOUND.Play_Sound(L"wolf_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-
             m_bInvincible = true;
 
             Get_Owner()->Get_Animator()->Set_AnimState(true);
@@ -728,7 +726,11 @@ void Wolf_FSM::airborne_end()
             script->Init();
 
             if (!m_pAttackCollider.expired())
+            {
+                SOUND.Play_Sound(L"wolf_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
                 EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+            }
         }
     }
 }
@@ -824,8 +826,6 @@ void Wolf_FSM::knock_end_loop()
 
     if (m_bIsDead)
     {
-        SOUND.Play_Sound(L"wolf_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-
         m_bInvincible = true;
 
         Get_Owner()->Get_Animator()->Set_AnimState(true);
@@ -835,7 +835,11 @@ void Wolf_FSM::knock_end_loop()
         script->Init();
 
         if (!m_pAttackCollider.expired())
+        {
+            SOUND.Play_Sound(L"wolf_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
             EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        }
     }
 }
 
@@ -917,7 +921,6 @@ void Wolf_FSM::knockdown_end()
             m_eCurState = STATE::knock_up;
         else
         {
-            SOUND.Play_Sound(L"wolf_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
             m_bInvincible = true;
 
@@ -928,7 +931,10 @@ void Wolf_FSM::knockdown_end()
             script->Init();
 
             if (!m_pAttackCollider.expired())
+            {
+                SOUND.Play_Sound(L"wolf_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
                 EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+            }
         }
     }
 }

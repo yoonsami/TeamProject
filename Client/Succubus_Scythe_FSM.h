@@ -132,7 +132,7 @@ private:
 	_bool m_bSetPattern = false;
 	_bool m_bPatrolMove = false;
 
-	COOLTIMEINFO m_tAttackCoolTime = { 4.f, 0.f };
+	COOLTIMEINFO m_tAttackCoolTime = { 2.5f, 0.f };
 	COOLTIMEINFO m_tPatrolMoveCool = { 4.f,0.f };
 	COOLTIMEINFO m_tDetectCoolTime = { 1.f, 0.f };
 

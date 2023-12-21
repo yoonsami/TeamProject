@@ -662,10 +662,6 @@ void Silversword_Soldier_FSM::airborne_end()
             m_eCurState = STATE::airborne_up;
         else
         {
-            wstring strSoundTag = L"vo_s_monster_die_0";
-            strSoundTag = strSoundTag + to_wstring(rand() % 2 + 1);
-            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-
             m_bInvincible = true;
 
             Get_Owner()->Get_Animator()->Set_AnimState(true);
@@ -675,7 +671,13 @@ void Silversword_Soldier_FSM::airborne_end()
             script->Init();
 
             if (!m_pAttackCollider.expired())
+            {
+                wstring strSoundTag = L"vo_s_monster_die_0";
+                strSoundTag = strSoundTag + to_wstring(rand() % 2 + 1);
+                SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
                 EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+            }
         }
     }
 }
@@ -771,10 +773,6 @@ void Silversword_Soldier_FSM::knock_end_loop()
 
     if (m_bIsDead)
     {
-        wstring strSoundTag = L"vo_s_monster_die_0";
-        strSoundTag = strSoundTag + to_wstring(rand() % 2 + 1);
-        SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-
         m_bInvincible = true;
 
         Get_Owner()->Get_Animator()->Set_AnimState(true);
@@ -784,7 +782,13 @@ void Silversword_Soldier_FSM::knock_end_loop()
         script->Init();
 
         if (!m_pAttackCollider.expired())
+        {
+            wstring strSoundTag = L"vo_s_monster_die_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 2 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
             EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        }
     }
 }
 
@@ -866,10 +870,6 @@ void Silversword_Soldier_FSM::knockdown_end()
             m_eCurState = STATE::knock_up;
         else
         {
-            wstring strSoundTag = L"vo_s_monster_die_0";
-            strSoundTag = strSoundTag + to_wstring(rand() % 2 + 1);
-            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-
             m_bInvincible = true;
 
             Get_Owner()->Get_Animator()->Set_AnimState(true);
@@ -879,7 +879,13 @@ void Silversword_Soldier_FSM::knockdown_end()
             script->Init();
 
             if (!m_pAttackCollider.expired())
+            {
+                wstring strSoundTag = L"vo_s_monster_die_0";
+                strSoundTag = strSoundTag + to_wstring(rand() % 2 + 1);
+                SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
                 EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+            }
         }
     }
 }

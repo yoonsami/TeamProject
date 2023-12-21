@@ -115,7 +115,7 @@ void SpikeScene::Init()
 
 void SpikeScene::Tick()
 {
-	//if (m_bPlayBGM)
+	if (m_bPlayBGM)
 		SOUND.Play_Sound(L"bgm_SpikeScene", CHANNELID::SOUND_BGM, 0.5f * g_fBgmRatio);
 
 	__super::Tick();
@@ -204,14 +204,8 @@ HRESULT SpikeScene::Load_Scene()
 	Load_Camera(player);
 	Load_MapFile(L"SpikeMap", player);
 	
-	//Load_Boss_Spike(player);
+	Load_Boss_Spike(player);
 	
-	//Load_Monster(1, L"Silversword_Soldier", player);
-	//Load_Monster(1, L"Succubus_Scythe", player);
-	//Load_Monster(1, L"Undead_Priest", player);
-	//Load_Monster(1, L"Wolf", player);
-	//Load_Monster(1, L"EntSoldier", player);
-
 	Load_Ui(player);
 
 	return S_OK;
