@@ -7,6 +7,7 @@
 
 _float    g_fBgmRatio               = 1.f;
 _float    g_fEnvironmentRatio       = 1.f;
+_float    g_fSystemSoundRatio       = 1.f;
 _float    g_fCharacterVoiceRatio    = 1.f;
 _float    g_fCharacterEffectRatio   = 1.f;
 _float    g_fMonsterVoiceRatio      = 1.f;
@@ -92,6 +93,8 @@ void UiSettingController::Tick()
 void UiSettingController::Change_Bloom()
 {
     m_bBloom = !m_bBloom;
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     if (true == Check_Expire())
         return;
@@ -109,6 +112,8 @@ void UiSettingController::Change_Bloom()
 void UiSettingController::Change_SSAO()
 {
     m_bSSAO = !m_bSSAO;
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     if (true == Check_Expire())
         return;
@@ -126,6 +131,8 @@ void UiSettingController::Change_SSAO()
 void UiSettingController::Change_MotionBlur()
 {
     m_bMotionBlur = !m_bMotionBlur;
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     if (true == Check_Expire())
         return;
@@ -143,6 +150,8 @@ void UiSettingController::Change_MotionBlur()
 void UiSettingController::Change_LensFlare()
 {
     m_bLensFlare = !m_bLensFlare;
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     if (true == Check_Expire())
         return;
@@ -160,6 +169,8 @@ void UiSettingController::Change_LensFlare()
 void UiSettingController::Change_Outline()
 {
     m_bOutline = !m_bOutline;
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     if (true == Check_Expire())
         return;
@@ -177,6 +188,8 @@ void UiSettingController::Change_Outline()
 void UiSettingController::Change_FXAA()
 {
     m_bFXAA = !m_bFXAA;
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     if (true == Check_Expire())
         return;
@@ -194,6 +207,8 @@ void UiSettingController::Change_FXAA()
 void UiSettingController::Change_PBR()
 {
     m_bPBR = !m_bPBR;
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     if (true == Check_Expire())
         return;
@@ -211,6 +226,8 @@ void UiSettingController::Change_PBR()
 void UiSettingController::Change_FPS()
 {
     m_bFPS = !m_bFPS;
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     if (true == Check_Expire())
         return;
@@ -238,6 +255,9 @@ void UiSettingController::Create_Setting_Ui()
 
     if (false == g_bIsCanRotation)
         return;
+
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     m_eType = SETTING_STATE::SET_GRAPHIC;
 
@@ -638,6 +658,9 @@ void UiSettingController::Remove_Setting_Ui()
     if (false == m_bIsCreated)
         return;
 
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
+
     m_eType = SETTING_STATE::MAX;
 
     g_bIsCanRotation = true;
@@ -659,6 +682,9 @@ void UiSettingController::Remove_Setting_Ui()
 void UiSettingController::Create_Sound_Ui()
 {
     m_bIsCreated = true;
+
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     m_eType = SETTING_STATE::SET_SOUND;
 

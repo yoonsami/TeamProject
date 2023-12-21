@@ -35,6 +35,8 @@ private:
 
     _bool   m_bIsCreate     = { false };
     _bool   m_bIsStartOpen  = { false };
+    // 전체오픈을 컷씬 전과후에 한번씩 총 두번 실행하기 때문에 그 차이를 알려줄 flag
+    _bool   m_bAllCardOpenOnce = { false };
     _uint   m_iSize         = {};
     _uint   m_iIndex        = {};
     _float  m_fCheckTime    = {};

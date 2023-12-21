@@ -22,6 +22,7 @@ extern _bool	g_bWitcherSenseOn;
 
 extern _float   g_fBgmRatio;
 extern _float   g_fEnvironmentRatio;
+extern _float   g_fSystemSoundRatio;
 extern _float   g_fCharacterVoiceRatio;
 extern _float   g_fCharacterEffectRatio;
 extern _float   g_fMonsterVoiceRatio;
