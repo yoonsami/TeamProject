@@ -11,7 +11,7 @@ public:
     virtual void Tick() override;
 	virtual shared_ptr<MonoBehaviour> Copy_Script() { return make_shared<UiGachaCardMove>(m_iIndex,m_bIsUnique); }
 
-    void Card_Open();
+    void Card_Open(_bool _bOpen1Card = false /*한장오픈여부 == 오픈사운드재생여부*/);
     void Add_Data();
 
 private:

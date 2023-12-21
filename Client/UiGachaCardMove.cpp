@@ -172,12 +172,15 @@ void UiGachaCardMove::Tick()
 	}
 }
 
-void UiGachaCardMove::Card_Open()
+void UiGachaCardMove::Card_Open(_bool _bOpen1Card)
 {
 	if (STATE::END != m_eState)
 	{
 		m_eState = STATE::OPEN;
 		m_fCheckTime = 0.f;
+		if (_bOpen1Card)
+			//1CardOpen
+			SOUND.Play_Sound(L"ui_Ani_Intro_1Card", CHANNELID::SOUND_EFFECT, g_fSystemSoundRatio);
 	}
 }
 

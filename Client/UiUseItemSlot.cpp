@@ -59,6 +59,9 @@ void UiUseItemSlot::Create_Inven()
     if (true == m_bIsCreated)
         return;
 
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
+
     m_bIsCreated = true;
     auto pScene = CUR_SCENE;
     pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_UseItem_Inven.dat", m_addedObj);
@@ -123,6 +126,9 @@ void UiUseItemSlot::Remove_Inven()
     if (false == m_bIsCreated)
         return;
 
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
+
     m_bIsCreated = false;
 
     auto& pEventMgr = EVENTMGR;
@@ -151,6 +157,9 @@ void UiUseItemSlot::Use_Item()
 
     // 플레이어 체력 증가
 
+
+    //Use_Potion_Sound
+    SOUND.Play_Sound(L"ui_use_potion", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     m_bIsCanUse = false;
     m_fCheckTime = 0.f;
