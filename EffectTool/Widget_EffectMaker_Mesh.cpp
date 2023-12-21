@@ -218,6 +218,9 @@ void Widget_EffectMaker_Mesh::ImGui_FinishedEffect()
 	ImGui::SeparatorText("Effect List");
 	if (ImGui::Button("Load"))
 		Load();
+
+	if (ImGui::Button("Update Save MeshEffect files"))
+		SaveAdditionalData();
 	
 	ImGui::InputText("##FinishedEffectFilter", m_szFinishedEffectFilter, MAX_PATH);
 	ImGui::SameLine();
@@ -1459,6 +1462,11 @@ void Widget_EffectMaker_Mesh::Save()
 		file->Write<_float3>(_float3(m_fRandomAxis_Max));
 		for (_uint i = 0; i < 2; i++)
 			file->Write<_bool>(m_bBillbordAxes[i]);
+
+		/* Additional */
+		file->Write<_float2>(_float2(0.f, 0.f));
+		file->Write<_float3>(_float3(0.f, 0.f, 0.f));
+		file->Write<_float4x4>(_float4x4::Identity);
 	}	
 	
 	RESOURCES.ReloadOrAddMeshEffectData(Utils::ToWString(strFileName), Utils::ToWString(strFilePath));
@@ -1715,6 +1723,23 @@ _bool Widget_EffectMaker_Mesh::SearchOnList(const string& strTag, const vector<s
 		iIndex++;
 	}
 	return bFind;
+}
+
+void Widget_EffectMaker_Mesh::SaveAdditionalData()
+{
+	_int iIndex = 0;
+	for (auto& iter : m_vecFinishedEffects)
+	{
+		ImGui::ListBox("##FinishedEffect", &m_iFinishedObject, m_pszFinishedEffects, m_iNumFinishedEffects, 20);
+
+		// Load 
+		m_iFinishedObject = iIndex;
+		Load();
+
+		// Save
+		Save();
+		iIndex++;
+	}
 }
 
 void Widget_EffectMaker_Mesh::SubWidget_TextureCombo(_int* iSelected, string* strSelected, string strFilePath, const char* pszWidgetKey)

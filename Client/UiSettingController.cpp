@@ -12,7 +12,6 @@ _float    g_fCharacterVoiceRatio    = 1.f;
 _float    g_fCharacterEffectRatio   = 1.f;
 _float    g_fMonsterVoiceRatio      = 1.f;
 _float    g_fMonsterEffectRatio     = 1.f;
-_float    g_fSystemSoundRatio       = 1.f;
 
 UiSettingController::UiSettingController()
 {
@@ -51,8 +50,6 @@ HRESULT UiSettingController::Init()
     m_pTextureCheck = RESOURCES.Get<Texture>(L"UI_Setting_Check");
     m_pTextureNoCheck = RESOURCES.Get<Texture>(L"UI_Setting_No_Check");
 
-
-
     auto pScene = CUR_SCENE;
 
     vector<weak_ptr<GameObject>> addedObj;
@@ -61,7 +58,6 @@ HRESULT UiSettingController::Init()
     m_pFPS_Font.lock()->Set_Tick(false);
     m_pFPS_Font.lock()->Set_Render(false);
 
-    
     return S_OK;
 }
 
@@ -87,8 +83,6 @@ void UiSettingController::Tick()
     case SETTING_STATE::MAX:
         return;
     }
-
-    
 }
 
 void UiSettingController::Change_Bloom()

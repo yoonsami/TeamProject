@@ -167,4 +167,11 @@ void MeshEffectData::Load(const wstring& path)
     m_tTransformDesc.vRandomAxis_Max = file->Read<_float3>();
     for (_int i = 0; i < 2; i++)
         m_tTransformDesc.bBillbordAxes[i] = file->Read<_bool>();
+
+    ///* Translate(Round movenent) */
+    //m_tTransformDesc.vRoundRadius = file->Read<_float2>();
+    //m_tTransformDesc.vRoundAxis = file->Read<_float3>();
+    //
+    ///* additional.. */
+    //_float4x4 additional = file->Read<_float4x4>();
 }

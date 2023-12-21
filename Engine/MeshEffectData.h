@@ -130,6 +130,8 @@ public:
         _float3     vEndPosOffset_Max = { 0.f, 0.f, 0.f };
         _int        iSpeedType = { 0 };
         _float2     vCurvePoint_Force[4] = { { 0.f, 0.f },{ 0.f, 0.f } ,{ 0.f, 0.f } ,{ 0.f, 0.f } };
+        //_float2     vRoundRadius = { 1.f, 1.f };
+        //_float3     vRoundAxis = { 0.f, 1.f, 0.f };
 
         // Scaling 
         _int        iScalingOption = { 0 };
