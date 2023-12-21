@@ -31,7 +31,7 @@ HRESULT UiUseItemSlot::Init()
             this->Click_Slot();
         });
 
-    m_iCount = 0;
+    m_iCount = 10;
 
     m_fMaxTime = 8.f;
     m_fCheckTime = m_fMaxTime + 1.f;
@@ -116,7 +116,10 @@ void UiUseItemSlot::Click_Inven(_uint iIndex)
     m_bIsSet = true;
     m_pUseItem_Slot.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_UseItem_Slot_Potion"), TextureMapType::DIFFUSE);
     if(0 < m_iCount)
+    {
         m_pUseItem_Count.lock()->Get_FontRenderer()->Get_Text() = to_wstring(m_iCount);
+        Remove_Inven();
+    }
 
 }
 
