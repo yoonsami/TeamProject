@@ -1560,7 +1560,7 @@ void Scene::Render_BloomMapScaling(_uint downSamplingCount)
 
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		material->Get_Shader()->DrawIndexed(0, 4, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+		material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
 		downSamplingTarget = L"BLOOMDOWNSCALE" + to_wstring(i);
 	}
