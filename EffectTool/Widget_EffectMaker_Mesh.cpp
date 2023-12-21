@@ -581,10 +581,16 @@ void Widget_EffectMaker_Mesh::Option_RimLight()
 	if (!m_bRimLight_On)
 		return;
 
-	// For. Color 
-	ImGui::ColorEdit4("Color##RimLight", (float*)&m_vRimLightColor_Base, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+	// For. Color                  
+	if (ImGui::ColorEdit4("Color##RimLight", (float*)&m_vRimLightColor_Base, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags))
+		m_vRimLightColor_Base.w = 1.f;
 	if (m_bColorChangingOn)
-		ImGui::ColorEdit4("Dest Color##RimLight", (float*)&m_vRimLightColor_Dest, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags);
+	{
+		if(ImGui::ColorEdit4("Dest Color##RimLight", (float*)&m_vRimLightColor_Dest, ImGuiColorEditFlags_DisplayHSV | ColorEdit_flags))
+			m_vRimLightColor_Base.w = 1.f;
+	}
+
+	ImGui::InputFloat("Contrast##RimLight", &m_fRimLightContrast);
 
 	if (ImGui::TreeNode("RimLight Intensity(linear)##RimLight"))
 	{
@@ -1164,6 +1170,10 @@ void Widget_EffectMaker_Mesh::Create()
 			m_vOverlayColor_Dest = m_vOverlayColor_Base;
 		}
 
+		// 자리가 없어서 여기 껴넣음. 어차피 rimlightcolor는 알파 쓰지 않음. 
+		ImVec4 vCreateRimLightColor_Base = m_vRimLightColor_Base;
+		vCreateRimLightColor_Base.w = m_fRimLightContrast;
+			
 		MeshEffectData::DESC tMeshEffectDesc
 		{
 				m_szTag,
@@ -1243,7 +1253,7 @@ void Widget_EffectMaker_Mesh::Create()
 
 				// Rim Light 
 				m_bRimLight_On,
-				ImVec4toColor(m_vRimLightColor_Base),
+				ImVec4toColor(vCreateRimLightColor_Base),
 				ImVec4toColor(m_vRimLightColor_Dest),
 				{ m_vCurvePoint_RimLight[0],m_vCurvePoint_RimLight[1], m_vCurvePoint_RimLight[2], m_vCurvePoint_RimLight[3] },
 
@@ -1367,7 +1377,9 @@ void Widget_EffectMaker_Mesh::Save()
 
 		/* Rim Light */
 		file->Write<_bool>(m_bRimLight_On);
-		file->Write<_float4>(ImVec4toColor(m_vRimLightColor_Base));
+		ImVec4 vSaveRimLightColor_Base = m_vRimLightColor_Base;
+		vSaveRimLightColor_Base.w = m_fRimLightContrast;
+		file->Write<_float4>(ImVec4toColor(vSaveRimLightColor_Base));
 		file->Write<_float4>(ImVec4toColor(m_vRimLightColor_Dest));
 		for (_uint i = 0; i < 4; i++)
 			file->Write<_float2>(m_vCurvePoint_RimLight[i]);
@@ -1531,6 +1543,8 @@ void Widget_EffectMaker_Mesh::Load()
 	/* Rim Light */
 	m_bRimLight_On = file->Read<_bool>();
 	m_vRimLightColor_Base = ColorToImVec4(file->Read<_float4>());
+	m_fRimLightContrast = m_vRimLightColor_Base.w;
+	m_vRimLightColor_Base.w = 1.f;
 	m_vRimLightColor_Dest = ColorToImVec4(file->Read<_float4>());
 	for (_int i = 0; i < 4; i++)
 		m_vCurvePoint_RimLight[i] = file->Read<_float2>();

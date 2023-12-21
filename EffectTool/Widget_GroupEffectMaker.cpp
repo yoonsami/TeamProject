@@ -505,7 +505,7 @@ void Widget_GroupEffectMaker::Option_MemberEffectList()
 				}
 				ImGui::SameLine();
 			}
-			if (iIndex < _int(m_iNumMeshEffects - 1))
+			if (iIndex < _int(m_iNumMeshEffects - 2))
 			{
 				if (ImGui::Button(strDownButton.c_str()))
 				{
