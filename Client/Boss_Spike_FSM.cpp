@@ -2370,9 +2370,8 @@ void Boss_Spike_FSM::Calculate_LipBoneMatrix()
 
 void Boss_Spike_FSM::Set_AttackSkill()
 {
-    m_ePatternState = STATE::skill_6100;
-
-    /*if (m_tGroggyPatternTimer.fAccTime < m_tGroggyPatternTimer.fCoolTime)
+    
+    if (m_tGroggyPatternTimer.fAccTime < m_tGroggyPatternTimer.fCoolTime)
     {
         _uint iRan = rand() % 7;
 
@@ -2447,7 +2446,7 @@ void Boss_Spike_FSM::Set_AttackSkill()
         m_tGroggyPatternTimer.fAccTime = 0.f;
         m_fAttackRange = 10.f;
         m_ePatternState = STATE::skill_100000;
-    }*/
+    }
 
     m_bSetPattern = true;
 }
