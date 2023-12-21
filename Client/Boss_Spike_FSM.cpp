@@ -22,6 +22,7 @@
 #include "MeshCollider.h"
 #include "GroupEffect.h"
 #include "EffectGoUp.h"
+#include "TimerScript.h"
 
 
 Boss_Spike_FSM::Boss_Spike_FSM()
@@ -1889,7 +1890,6 @@ void Boss_Spike_FSM::skill_3200_Init()
 
 void Boss_Spike_FSM::skill_6100()
 {
-
     if (Init_CurFrame(28))
         Add_And_Set_Effect(L"Boss_Spike_6100_1");
 
@@ -1963,39 +1963,36 @@ void Boss_Spike_FSM::skill_6100()
     
 
     //160~380
-    if (m_iCurFrame == 160 ||
-        m_iCurFrame == 200 ||
-        m_iCurFrame == 240 ||
-        m_iCurFrame == 280 ||
-        m_iCurFrame == 320 ||
-        m_iCurFrame == 360 ||
-        m_iCurFrame == 380)
+    if (Init_CurFrame(160) || 
+        Init_CurFrame(200) ||
+        Init_CurFrame(240) ||
+        Init_CurFrame(280) ||
+        Init_CurFrame(320) ||
+        Init_CurFrame(360) ||
+        Init_CurFrame(380))
     {
-        if (m_iPreFrame != m_iCurFrame)
+        _float4 vMyPos = Get_Transform()->Get_State(Transform_State::POS);
+
+        INSTALLATIONSKILLDESC desc;
+        desc.fAttackTickTime = 1.35f;
+        desc.iLimitAttackCnt = 1;
+        desc.strAttackType = KNOCKDOWN_SKILL;
+        desc.strLastAttackType = KNOCKDOWN_SKILL;
+        desc.fAttackDamage = 5.f;
+        desc.fLastAttackDamage = 5.f;
+        desc.bFirstAttack = false;
+
+        for (_uint i = 0; i < 6; i++)
         {
-            _float4 vMyPos = Get_Transform()->Get_State(Transform_State::POS);
+            _float fOffSetX = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
+            _float fOffSetZ = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
 
-            INSTALLATIONSKILLDESC desc;
-            desc.fAttackTickTime = 1.35f;
-            desc.iLimitAttackCnt = 1;
-            desc.strAttackType = KNOCKDOWN_SKILL;
-            desc.strLastAttackType = KNOCKDOWN_SKILL;
-            desc.fAttackDamage = 5.f;
-            desc.fLastAttackDamage = 5.f;
-            desc.bFirstAttack = false;
-
-            for (_uint i = 0; i < 6; i++)
-            {
-                _float fOffSetX = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
-                _float fOffSetZ = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
-
-				_float4 vSkillPos = vMyPos + _float4{ fOffSetX, 13.5f, fOffSetZ, 0.f };
-                _float4 vEffectPos = vMyPos + _float4{ fOffSetX, 0.f, fOffSetZ, 0.f };
-               
-                Add_GroupEffectOwner(L"Boss_Spike_6100_Ice", vEffectPos.xyz(), true);
+		    _float4 vSkillPos = vMyPos + _float4{ fOffSetX, 13.5f, fOffSetZ, 0.f };
+            _float4 vEffectPos = vMyPos + _float4{ fOffSetX, 0.f, fOffSetZ, 0.f };
+           
+            Add_GroupEffectOwner(L"Boss_Spike_6100_Ice", vEffectPos.xyz(), true);
         
-                Create_InstallationSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vEffectPos, 1.3f, desc);
-            }
+            Create_InstallationSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vEffectPos, 1.3f, desc);
         }
     }
 
@@ -2144,10 +2141,9 @@ void Boss_Spike_FSM::skill_100000()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     if (Init_CurFrame(35) ||
-        Init_CurFrame(45) ||
-        Init_CurFrame(55) ||
+        Init_CurFrame(50) ||
         Init_CurFrame(65) ||
-        Init_CurFrame(75))
+        Init_CurFrame(80))
     {
         _float4 vMyPos = Get_Transform()->Get_State(Transform_State::POS);
 
@@ -2171,6 +2167,14 @@ void Boss_Spike_FSM::skill_100000()
             Add_GroupEffectOwner(L"Boss_Spike_6100_Ice", vEffectPos.xyz(), true);
 
             Create_InstallationSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vEffectPos, 1.3f, desc);
+        }
+
+        {
+            shared_ptr<GameObject> obj = make_shared<GameObject>();
+            auto script = make_shared<TimerScript>(1.35f);
+            script->Set_Function([&]() { SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+            obj->Add_Component(script);
+            EVENTMGR.Create_Object(obj);
         }
     }
 
@@ -2363,7 +2367,9 @@ void Boss_Spike_FSM::Calculate_LipBoneMatrix()
 
 void Boss_Spike_FSM::Set_AttackSkill()
 {
-    if (m_tGroggyPatternTimer.fAccTime < m_tGroggyPatternTimer.fCoolTime)
+    m_ePatternState = STATE::skill_6100;
+
+    /*if (m_tGroggyPatternTimer.fAccTime < m_tGroggyPatternTimer.fCoolTime)
     {
         _uint iRan = rand() % 7;
 
@@ -2438,7 +2444,7 @@ void Boss_Spike_FSM::Set_AttackSkill()
         m_tGroggyPatternTimer.fAccTime = 0.f;
         m_fAttackRange = 10.f;
         m_ePatternState = STATE::skill_100000;
-    }
+    }*/
 
     m_bSetPattern = true;
 }
