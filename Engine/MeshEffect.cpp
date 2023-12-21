@@ -311,7 +311,6 @@ void MeshEffect::InitialTransform(_float4x4 mParentWorldMatrix, const _float3& v
     
     matLocal.Decompose(m_vLocalScale, m_qRotation, m_vLocalPos);
 
-
     // Billbord 
     if (m_tTransform_Desc.iTurnOption == 3)
     {
@@ -353,19 +352,36 @@ void MeshEffect::Set_TransformDesc(void* pArg)
     MeshEffectData::Transform_Desc* pDesc = (MeshEffectData::Transform_Desc*)pArg;
     m_tTransform_Desc = *pDesc;
 
-    // For. Initial Transform 
-    m_vStartPos = _float3(
-        MathUtils::Get_RandomFloat(pDesc->vPosRange.x / 2.f * (-1.f), pDesc->vPosRange.x / 2.f),
-        MathUtils::Get_RandomFloat(pDesc->vPosRange.y / 2.f * (-1.f), pDesc->vPosRange.y / 2.f),
-        MathUtils::Get_RandomFloat(pDesc->vPosRange.z / 2.f * (-1.f), pDesc->vPosRange.z / 2.f)
+    m_fCurrRoundAngle = MathUtils::Get_RandomFloat(m_tTransform_Desc.vInitRoundAngle.x, m_tTransform_Desc.vInitRoundAngle.y);
+    m_vRoundAxis = _float3(
+        MathUtils::Get_RandomFloat(m_tTransform_Desc.vRoundAxis_Min.x, m_tTransform_Desc.vRoundAxis_Max.x),
+        MathUtils::Get_RandomFloat(m_tTransform_Desc.vRoundAxis_Min.y, m_tTransform_Desc.vRoundAxis_Max.y),
+        MathUtils::Get_RandomFloat(m_tTransform_Desc.vRoundAxis_Min.z, m_tTransform_Desc.vRoundAxis_Max.z)
     );
 
+    // For. Initial Translate 
+    if (12 == m_tTransform_Desc.iTranslateOption) 
+    {
+        // Round
+
+    }
+    else
+    {
+        m_vStartPos = _float3(
+            MathUtils::Get_RandomFloat(pDesc->vPosRange.x / 2.f * (-1.f), pDesc->vPosRange.x / 2.f),
+            MathUtils::Get_RandomFloat(pDesc->vPosRange.y / 2.f * (-1.f), pDesc->vPosRange.y / 2.f),
+            MathUtils::Get_RandomFloat(pDesc->vPosRange.z / 2.f * (-1.f), pDesc->vPosRange.z / 2.f)
+        );
+    }
+
+    // For. Initial Scale    
     m_vStartScale = _float3(
         MathUtils::Get_RandomFloat(pDesc->vInitScale_Min.x, pDesc->vInitScale_Max.x),
         MathUtils::Get_RandomFloat(pDesc->vInitScale_Min.y, pDesc->vInitScale_Max.y),
         MathUtils::Get_RandomFloat(pDesc->vInitScale_Min.z, pDesc->vInitScale_Max.z)
     );
 
+    // For. Initial Rotation 
     m_vStartRotation = _float3(
         MathUtils::Get_RandomFloat(pDesc->vInitRotation_Min.x, pDesc->vInitRotation_Max.x),
         MathUtils::Get_RandomFloat(pDesc->vInitRotation_Min.y, pDesc->vInitRotation_Max.y),
@@ -688,7 +704,25 @@ void MeshEffect::Translate()
     }
     case 12: // Round 
     {
+        // Get current Speed
+        _float fSpeed = Calc_Spline(m_tTransform_Desc.iSpeedType, m_SplineInput_Force);
 
+        // Get current radius
+        _float2 vTemp_vec2 = XMVectorLerp(_float2(m_tTransform_Desc.vRoundRadius.x, 0.f), _float2(m_tTransform_Desc.vRoundRadius.x, 0.f), m_fLifeTimeRatio);
+        _float fRadius = vTemp_vec2.x;
+        
+        // Update current angle        
+            // TODO 
+            
+        // Move 
+        if (m_bToolMode_On)
+        {
+            // TODO 
+        }
+        else
+        {
+            // TODO 
+        }
         break;
     }
     }

@@ -1456,10 +1456,18 @@ void ResourceMgr::CreateMeshEffectData()
 		for (_int i = 0; i < 2; i++)
 			tTransformDesc.bBillbordAxes[i] = file->Read<_bool>();
 
-		/* Additional */
-		_float2 float2Add = file->Read<_float2>();
-		_float3 float3Add = file->Read<_float3>();
-		_float4x4 float4x4Add = file->Read<_float4x4>();
+		/* Translate(Round movenent) */
+		tTransformDesc.vRoundRadius = file->Read<_float2>();
+		tTransformDesc.vInitRoundAngle = file->Read<_float2>();
+		tTransformDesc.vRoundAxis_Min = file->Read<_float3>();
+		tTransformDesc.vRoundAxis_Max = file->Read<_float3>();
+
+		/* additional.. */
+		_float3 vAdditional1 = file->Read<_float3>();
+		_float4 vAdditional2 = file->Read<_float4>();
+		_float4 vAdditional3 = file->Read<_float4>();
+		
+		// Read End 
 
 		shared_ptr<MeshEffectData> meshEffectData = make_shared<MeshEffectData>();
 		meshEffectData->Set_Desc(tDesc);

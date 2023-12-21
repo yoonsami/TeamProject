@@ -168,10 +168,14 @@ void MeshEffectData::Load(const wstring& path)
     for (_int i = 0; i < 2; i++)
         m_tTransformDesc.bBillbordAxes[i] = file->Read<_bool>();
 
-    ///* Translate(Round movenent) */
-    //m_tTransformDesc.vRoundRadius = file->Read<_float2>();
-    //m_tTransformDesc.vRoundAxis = file->Read<_float3>();
-    //
-    ///* additional.. */
-    //_float4x4 additional = file->Read<_float4x4>();
+    /* Translate(Round movenent) */
+    m_tTransformDesc.vRoundRadius = file->Read<_float2>();
+    m_tTransformDesc.vInitRoundAngle = file->Read<_float2>();
+    m_tTransformDesc.vRoundAxis_Min = file->Read<_float3>();
+    m_tTransformDesc.vRoundAxis_Max = file->Read<_float3>();
+    
+    /* additional.. */
+    _float3 vAdditional1 = file->Read<_float3>();
+    _float4 vAdditional2 = file->Read<_float4>();
+    _float4 vAdditional3 = file->Read<_float4>();
 }
