@@ -495,6 +495,7 @@ PBR_OUT PS_PBR_DirLight(VS_OUT input)
     metalic,
     viewNormal,
     viewPos,
+    lights[lightIndex].color.ambient.xyz,
     lights[lightIndex].color.diffuse.xyz,
    shadowFactor
     );
@@ -533,6 +534,7 @@ PBR_OUT PS_PBR_PointLight(VS_OUT input)
     metalic,
     viewNormal,
     viewPos,
+    lights[lightIndex].color.ambient.xyz,
     lights[lightIndex].color.diffuse.xyz,
     1.f
     );
@@ -573,6 +575,7 @@ PBR_OUT PS_PBR_SpotLight(VS_OUT input)
     metalic,
     viewNormal,
     viewPos,
+    lights[lightIndex].color.ambient.xyz,
     lights[lightIndex].color.diffuse.xyz,
     1.f
     );

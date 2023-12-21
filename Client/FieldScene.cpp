@@ -242,7 +242,6 @@ void FieldScene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject
 	Load_Water();
 
 	Load_Terrain();
-	
 }
 
 void FieldScene::Load_Water()

@@ -44,6 +44,9 @@ void Gacha_FSM::State_Tick()
 	case Gacha_FSM::STATE::SQ_SpecialHero:
 		SQ_SpecialHero();
 		break;
+	case Gacha_FSM::STATE::SQ_SpecialHero2:
+		SQ_SpecialHero2();
+		break;
 	case Gacha_FSM::STATE::NONE:
 		break;
 
@@ -60,6 +63,9 @@ void Gacha_FSM::State_Init()
 		case Gacha_FSM::STATE::SQ_SpecialHero:
 			SQ_SpecialHero_Init();
 			break;
+		case Gacha_FSM::STATE::SQ_SpecialHero2:
+			SQ_SpecialHero2_Init();
+			break;
 		case Gacha_FSM::STATE::NONE:
 			break;
 		default:
@@ -71,14 +77,39 @@ void Gacha_FSM::State_Init()
 
 void Gacha_FSM::SQ_SpecialHero()
 {
-	CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_vSkillCamBonePos);
-	CUR_SCENE->Get_MainCamera()->Get_Transform()->LookAt(m_vCenterBonePos - Get_Transform()->Get_State(Transform_State::RIGHT) * 0.5f + _float3::Up * 0.5f );
-	if (Get_CurFrame() > m_Desc.iAnimStopFrame)
-	{
-		m_fAnimSpeed = 0.1f;
-		shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-		animator->Set_AnimationSpeed(m_fAnimSpeed);
+	if (m_Desc.strAnimTag != L"SQ_SpecialHero_Yeonhee_Origin_01")
+	{
+		CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_vSkillCamBonePos);
+		CUR_SCENE->Get_MainCamera()->Get_Transform()->LookAt(m_vCenterBonePos - Get_Transform()->Get_State(Transform_State::RIGHT) * 0.5f + _float3::Up * 0.5f);
+
+		if (Get_CurFrame() > m_Desc.iAnimStopFrame)
+		{
+			m_fAnimSpeed = 0.1f;
+			shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+			animator->Set_AnimationSpeed(m_fAnimSpeed);
+		}
+
+	}
+	else
+	{
+		if (Get_CurFrame() < 90)
+		{
+			CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5.f );
+			CUR_SCENE->Get_MainCamera()->Get_Transform()->LookAt(m_vCenterBonePos - Get_Transform()->Get_State(Transform_State::RIGHT) * 0.5f + _float3::Up * 0.5f);
+
+		}
+		else
+		{
+			CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_vSkillCamBonePos);
+			CUR_SCENE->Get_MainCamera()->Get_Transform()->LookAt(m_vCenterBonePos/* - Get_Transform()->Get_State(Transform_State::RIGHT) * 0.5f + _float3::Up * 0.5f*/);
+
+		}
+
+
+		if (Is_AnimFinished())
+			m_eCurState = STATE::SQ_SpecialHero2;
 	}
 }
 
@@ -117,4 +148,26 @@ void Gacha_FSM::SQ_SpecialHero_Init()
 		ObjWeapon->Set_Name(m_Desc.strWeaponName);
 		EVENTMGR.Create_Object(ObjWeapon);
 	}
+}
+
+void Gacha_FSM::SQ_SpecialHero2()
+{
+	CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_vSkillCamBonePos);
+	CUR_SCENE->Get_MainCamera()->Get_Transform()->LookAt(m_vCenterBonePos - Get_Transform()->Get_State(Transform_State::RIGHT) * 0.5f + _float3::Up * 0.5f);
+	if (Get_CurFrame() > m_Desc.iAnimStopFrame)
+	{
+		m_fAnimSpeed = 0.1f;
+		shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+		animator->Set_AnimationSpeed(m_fAnimSpeed);
+	}
+}
+
+void Gacha_FSM::SQ_SpecialHero2_Init()
+{
+	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
+
+	animator->Set_CurrentAnim(L"SQ_SpecialHero_Yeonhee_Origin_02", false, 1.f);
+	m_fAnimSpeed = 1.f;
+	m_fAcc = 0.f;
 }

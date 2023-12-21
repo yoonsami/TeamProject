@@ -1116,6 +1116,7 @@ float4 PS_PBR_Forward(MeshOutput input) : SV_Target
     ARM_Map.z,
     input.viewNormal.xyz,
     input.viewPosition.xyz,
+    lights[0].color.ambient.xyz,
     lights[0].color.diffuse.xyz,
     1.f);
     
