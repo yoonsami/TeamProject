@@ -12,7 +12,6 @@ _float    g_fCharacterVoiceRatio    = 1.f;
 _float    g_fCharacterEffectRatio   = 1.f;
 _float    g_fMonsterVoiceRatio      = 1.f;
 _float    g_fMonsterEffectRatio     = 1.f;
-_float    g_fSystemSoundRatio       = 1.f;
 
 UiSettingController::UiSettingController()
 {
