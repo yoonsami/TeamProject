@@ -96,13 +96,17 @@ void Gacha_FSM::SQ_SpecialHero()
 	{
 		if (Get_CurFrame() < 90)
 		{
-			CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5.f );
-			CUR_SCENE->Get_MainCamera()->Get_Transform()->LookAt(m_vCenterBonePos - Get_Transform()->Get_State(Transform_State::RIGHT) * 0.5f + _float3::Up * 0.5f);
+			_float3 vDir = m_vSkillCamBonePos.xyz() - m_vCenterBonePos.xyz();
+			vDir.Normalize();
+			CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_vCenterBonePos + vDir * 5.f);
+			CUR_SCENE->Get_MainCamera()->Get_Transform()->LookAt(m_vCenterBonePos/* - Get_Transform()->Get_State(Transform_State::RIGHT) * 0.5f + _float3::Up * 0.5f*/);
 
 		}
 		else
 		{
-			CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_vSkillCamBonePos);
+			_float3 vDir = m_vSkillCamBonePos.xyz() - m_vCenterBonePos.xyz();
+			vDir.Normalize();
+			CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_vCenterBonePos + vDir * 5.f);
 			CUR_SCENE->Get_MainCamera()->Get_Transform()->LookAt(m_vCenterBonePos/* - Get_Transform()->Get_State(Transform_State::RIGHT) * 0.5f + _float3::Up * 0.5f*/);
 
 		}
@@ -152,10 +156,15 @@ void Gacha_FSM::SQ_SpecialHero_Init()
 
 void Gacha_FSM::SQ_SpecialHero2()
 {
-	CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_vSkillCamBonePos);
-	CUR_SCENE->Get_MainCamera()->Get_Transform()->LookAt(m_vCenterBonePos - Get_Transform()->Get_State(Transform_State::RIGHT) * 0.5f + _float3::Up * 0.5f);
+	_float3 vDir = m_vSkillCamBonePos.xyz() - m_vCenterBonePos.xyz();
+	vDir.Normalize();
+	CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_vCenterBonePos + vDir * m_fDist);
+	CUR_SCENE->Get_MainCamera()->Get_Transform()->LookAt(m_vCenterBonePos/* - Get_Transform()->Get_State(Transform_State::RIGHT) * 0.5f + _float3::Up * 0.5f*/);
 	if (Get_CurFrame() > m_Desc.iAnimStopFrame)
 	{
+		m_fDist -= fDT;
+		if (m_fDist <= 3.f)
+			m_fDist = 3.f;
 		m_fAnimSpeed = 0.1f;
 		shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
@@ -170,4 +179,5 @@ void Gacha_FSM::SQ_SpecialHero2_Init()
 	animator->Set_CurrentAnim(L"SQ_SpecialHero_Yeonhee_Origin_02", false, 1.f);
 	m_fAnimSpeed = 1.f;
 	m_fAcc = 0.f;
+	m_fDist = 5.f;
 }

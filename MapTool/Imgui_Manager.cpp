@@ -618,13 +618,13 @@ void ImGui_Manager::Frame_Light()
     }
     LightInfo& DirectionalLightInfo = CUR_SCENE->Get_Light()->Get_Light()->Get_LightInfo();
     Color& Ambient = DirectionalLightInfo.color.ambient;
-    ImGui::ColorEdit4("Ambient##DirLight", (_float*)&Ambient);
+    ImGui::ColorEdit4("Ambient##DirLight", (_float*)&Ambient, ImGuiColorEditFlags_HDR);
     Color& Diffuse = DirectionalLightInfo.color.diffuse;
     ImGui::ColorEdit4("Diffuse##DirLight", (_float*)&Diffuse,ImGuiColorEditFlags_HDR);
     Color& Specular = DirectionalLightInfo.color.specular;
-    ImGui::ColorEdit4("Specular##DirLight", (_float*)&Specular);
+    ImGui::ColorEdit4("Specular##DirLight", (_float*)&Specular, ImGuiColorEditFlags_HDR);
     Color& Emissive = DirectionalLightInfo.color.emissive;
-    ImGui::ColorEdit4("Emissive##DirLight", (_float*)&Emissive);
+    ImGui::ColorEdit4("Emissive##DirLight", (_float*)&Emissive, ImGuiColorEditFlags_HDR);
 
     m_DirectionalLightPos = Pos;
     //m_DirectionalLightLookDir = LookDir;
@@ -671,10 +671,10 @@ void ImGui_Manager::Frame_Light()
         _float4 PtLightPos = m_pPointLightObjects[m_iPointLightIndex]->Get_Transform()->Get_State(Transform_State::POS);
         ImGui::DragFloat3("Pos##CurrentPtLt", (_float*)&PtLightPos, 0.1f);
         m_pPointLightObjects[m_iPointLightIndex]->Get_Transform()->Set_State(Transform_State::POS, PtLightPos);
-        ImGui::ColorEdit4("Ambient##CurrentPtLt", (_float*)&CurPtLightInfo.color.ambient);
-        ImGui::ColorEdit4("Diffuse##CurrentPtLt", (_float*)&CurPtLightInfo.color.diffuse);
-        ImGui::ColorEdit4("Specular##CurrentPtLt", (_float*)&CurPtLightInfo.color.specular);
-        ImGui::ColorEdit4("Emissive##CurrentPtLt", (_float*)&CurPtLightInfo.color.emissive);
+        ImGui::ColorEdit4("Ambient##CurrentPtLt", (_float*)&CurPtLightInfo.color.ambient, ImGuiColorEditFlags_HDR);
+        ImGui::ColorEdit4("Diffuse##CurrentPtLt", (_float*)&CurPtLightInfo.color.diffuse, ImGuiColorEditFlags_HDR);
+        ImGui::ColorEdit4("Specular##CurrentPtLt", (_float*)&CurPtLightInfo.color.specular, ImGuiColorEditFlags_HDR);
+        ImGui::ColorEdit4("Emissive##CurrentPtLt", (_float*)&CurPtLightInfo.color.emissive, ImGuiColorEditFlags_HDR);
         ImGui::DragFloat("Range##CurrentPtLt", &CurPtLightInfo.range, 0.1f);
 
         _float4 PointLightPosition = m_pPointLightObjects[m_iPointLightIndex]->Get_Transform()->Get_State(Transform_State::POS);

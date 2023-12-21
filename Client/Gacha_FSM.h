@@ -47,5 +47,6 @@ private:
 	Gacha_FSM_Desc m_Desc{};
 	_float m_fAnimSpeed = 1.f;
 	_float m_fAcc = 0.f;
+	_float m_fDist = 5.f;
 };
 
