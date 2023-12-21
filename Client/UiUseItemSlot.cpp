@@ -114,6 +114,8 @@ void UiUseItemSlot::Click_Inven(_uint iIndex)
     if (0 == m_iCount)
         return;
 
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_EFFECT, g_fSystemSoundRatio);
     m_bIsSet = true;
     m_pUseItem_Slot.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_UseItem_Slot_Potion"), TextureMapType::DIFFUSE);
     if(0 < m_iCount)
