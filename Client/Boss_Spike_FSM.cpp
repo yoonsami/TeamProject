@@ -1015,6 +1015,9 @@ void Boss_Spike_FSM::SQ_Die()
             portal->Add_Component(script);
             script->Init();
 			EVENTMGR.Create_Object(portal);
+
+            SWITCHMGR.Set_SwitchState(SWITCH_TYPE::CREATE_COMBAT4_AFTER_SPIKE, true);
+            SWITCHMGR.Set_SwitchState(SWITCH_TYPE::CREATE_COMBAT5_AFTER_SPIKE, true);
 		}
     }
 

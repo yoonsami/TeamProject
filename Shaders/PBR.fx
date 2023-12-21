@@ -149,7 +149,7 @@ struct PBR_MAPOBJECT_OUTPUT
 struct PBR_OUT
 {
     float4 outColor : SV_Target0;
-    float4 emissiveColor : SV_Target3;
+    float4 rimColor : SV_Target3;
 };
 
 int lightIndex;
@@ -174,7 +174,8 @@ PBR_OUT PBRShade(
     in float metallicMap,
     in float3 viewNormal,
     in float3 viewPosition,
-    in float3 lightColor,
+    in float3 ambientColor,
+    in float3 diffuseColor,
     in float shadowAmount
 )
 {   
@@ -190,7 +191,7 @@ PBR_OUT PBRShade(
     
     
     
-    float3 ambient = ambientMap  * albedoMap;
+    float3 ambient = ambientMap * albedoMap * ambientColor;
     float3 color = 0.f;
      float3 eyeDir = normalize(viewPosition - cameraPosition);
     float3 halfVector = normalize(pointToLight + pointToCamera);
@@ -244,13 +245,13 @@ PBR_OUT PBRShade(
             attenuation = 0.f;
 
     }
-    color += (kD * diffuse + specular) * lightColor * 10.f * attenuation * NdotL;
+    color += (kD * diffuse + specular) * diffuseColor * 10.f * attenuation * NdotL;
     color += ambient * attenuation;
 
     PBR_OUT output = (PBR_OUT) 0.f;
     output.outColor = float4(color, 1.f);
     
-    output.emissiveColor = 1.f //* saturate(dot(viewNormal, -viewLightDir))
+    output.rimColor = 1.f //* saturate(dot(viewNormal, -viewLightDir))
      * pow(smoothstep(0.f, 1.f, 1.f - saturate(dot(-eyeDir, viewNormal))), 2) * attenuation;
     
     return output;

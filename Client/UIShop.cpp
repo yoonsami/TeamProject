@@ -91,6 +91,9 @@ void UIShop::Create_Shop()
 	if (false == g_bIsCanRotation)
 		return;
 
+	//TouchSound
+	SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
+
 	g_bIsCanRotation = false;
 
 	m_bIsCreated = true;
@@ -243,6 +246,9 @@ void UIShop::Remove_Shop()
 	if (false == m_bIsCreated)
 		return;
 
+	//TouchSound
+	SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
+
 	g_bIsCanRotation = true;
 
 	m_bIsCreated = false;
@@ -371,6 +377,9 @@ void UIShop::Create_Buy_Ui()
 	if (true == m_bIsCreatedBuyUi)
 		return;
 
+	//TouchSound
+	SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
+
 	m_bIsCreatedBuyUi = true;
 	auto pScene = CUR_SCENE;
 
@@ -405,6 +414,9 @@ void UIShop::Remove_Buy_Ui()
 {
 	if (false == m_bIsCreatedBuyUi)
 		return;
+
+	//TouchSound
+	SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
 	m_bIsCreatedBuyUi = false;
 

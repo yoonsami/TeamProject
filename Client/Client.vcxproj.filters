@@ -445,6 +445,9 @@
     <Filter Include="02.Component\01.FSM\05.NPC_FSM\01.Field">
       <UniqueIdentifier>{1700f20e-b01a-4ecc-93e7-fbafcf3128e6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\27.UiTutorialController">
+      <UniqueIdentifier>{c5deb4ec-8b12-41af-97eb-8d13e81a2bea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -876,10 +879,28 @@
     <ClInclude Include="Boss_DellonsWraith_FSM.h">
       <Filter>02.Component\01.FSM\03.Special_FSM\01.Monster_Special_FSM\00.Boss_DellonsWraith_FSM</Filter>
     </ClInclude>
+    <ClInclude Include="FisherMan_FSM.h">
+      <Filter>02.Component\01.FSM\05.NPC_FSM\01.Field</Filter>
+    </ClInclude>
+    <ClInclude Include="Feni_FSM.h">
+      <Filter>02.Component\01.FSM\05.NPC_FSM\01.Field</Filter>
+    </ClInclude>
+    <ClInclude Include="SwitchMgr.h">
+      <Filter>97.Data\SwitchMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldScript.h">
+      <Filter>02.Component\00.MonoBehaviour\09.FieldScript\01.Field</Filter>
+    </ClInclude>
+    <ClInclude Include="Add_Score.h">
+      <Filter>02.Component\00.MonoBehaviour\05.Object</Filter>
+    </ClInclude>
     <ClInclude Include="SwitchMgr.h" />
     <ClInclude Include="FieldScript.h" />
     <ClInclude Include="Feni_FSM.h" />
     <ClInclude Include="Add_Score.h" />
+    <ClInclude Include="UiTutorialController.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\27.UiTutorialController</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1280,10 +1301,28 @@
     <ClCompile Include="EffectGoUp.cpp">
       <Filter>02.Component\00.MonoBehaviour\07.EffectScript\CreateEffect_Script</Filter>
     </ClCompile>
+    <ClCompile Include="FisherMan_FSM.cpp">
+      <Filter>02.Component\01.FSM\05.NPC_FSM\01.Field</Filter>
+    </ClCompile>
+    <ClCompile Include="Feni_FSM.cpp">
+      <Filter>02.Component\01.FSM\05.NPC_FSM\01.Field</Filter>
+    </ClCompile>
+    <ClCompile Include="SwitchMgr.cpp">
+      <Filter>97.Data\SwitchMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\09.FieldScript\01.Field</Filter>
+    </ClCompile>
+    <ClCompile Include="Add_Score.cpp">
+      <Filter>02.Component\00.MonoBehaviour\05.Object</Filter>
+    </ClCompile>
     <ClCompile Include="SwitchMgr.cpp" />
     <ClCompile Include="FieldScript.cpp" />
     <ClCompile Include="Feni_FSM.cpp" />
     <ClCompile Include="Add_Score.cpp" />
+    <ClCompile Include="UiTutorialController.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\27.UiTutorialController</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">

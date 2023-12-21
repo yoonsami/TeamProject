@@ -40,5 +40,7 @@ private:
     _bool   m_bIsCreated    = {};
 
     _uint   m_iCount        = {};
+
+    weak_ptr<GameObject>    m_pPlayer;
 };
 

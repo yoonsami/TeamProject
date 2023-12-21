@@ -216,6 +216,7 @@
     <ClInclude Include="EntSoldier_FSM.h" />
     <ClInclude Include="Feni_FSM.h" />
     <ClInclude Include="FieldScript.h" />
+    <ClInclude Include="FisherMan_FSM.h" />
     <ClInclude Include="Friend_FSM.h" />
     <ClInclude Include="Get_Gravity.h" />
     <ClInclude Include="Glow_WitcherSense.h" />
@@ -250,6 +251,7 @@
     <ClInclude Include="UiQuestController.h" />
     <ClInclude Include="UiSettingController.h" />
     <ClInclude Include="UIShop.h" />
+    <ClInclude Include="UiTutorialController.h" />
     <ClInclude Include="UiUseItemSlot.h" />
     <ClInclude Include="WaterUVSliding.h" />
     <ClInclude Include="WitcherSense.h" />
@@ -359,6 +361,7 @@
     <ClCompile Include="EntSoldier_FSM.cpp" />
     <ClCompile Include="Feni_FSM.cpp" />
     <ClCompile Include="FieldScript.cpp" />
+    <ClCompile Include="FisherMan_FSM.cpp" />
     <ClCompile Include="Friend_FSM.cpp" />
     <ClCompile Include="Get_Gravity.cpp" />
     <ClCompile Include="Glow_WitcherSense.cpp" />
@@ -393,6 +396,7 @@
     <ClCompile Include="UiQuestController.cpp" />
     <ClCompile Include="UiSettingController.cpp" />
     <ClCompile Include="UIShop.cpp" />
+    <ClCompile Include="UiTutorialController.cpp" />
     <ClCompile Include="UiUseItemSlot.cpp" />
     <ClCompile Include="WaterUVSliding.cpp" />
     <ClCompile Include="WitcherSense.cpp" />

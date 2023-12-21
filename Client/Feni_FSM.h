@@ -56,11 +56,13 @@ private:
 
 	virtual void Set_State(_uint iIndex) override {}
 	virtual void Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType) override {}
+	_bool Can_Interact();
 
 private:
 	STATE m_eCurState = STATE::SQ_afraid_idle;
 	STATE m_ePreState = STATE::SQ_afraid_01;
 
 	_float m_fStateTimer = 0.f;
+	_float3 m_vGoalPos=_float3(0.f);
 };
 

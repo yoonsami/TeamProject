@@ -69,6 +69,7 @@
 #include "UIShop.h"
 #include "UiMessageCreater.h"
 #include "UiDialogController.h"
+#include "UiTutorialController.h"
 
 #include <filesystem>
 #include "GachaScene.h"
@@ -140,9 +141,7 @@ void GranseedScene::Tick()
 
 	if (KEYTAP(KEY_TYPE::C))
 	{
-		auto pObj = Get_UI(L"UI_Message_Controller");
-		if (pObj)
-			pObj->Get_Script<UiMessageCreater>()->Create_Message(L"테스트", Get_GameObject(L"GS_GachaMan"));
+		
 		//auto pObj = Get_UI(L"UI_Costume_Controller");
 		//if (pObj)
 		//	pObj->Get_Script<UiCostumeController>()->Create_Costume();
@@ -155,9 +154,12 @@ void GranseedScene::Tick()
 	}
 	if (KEYTAP(KEY_TYPE::V))
 	{
-		auto pObj = Get_UI(L"UI_Message_Controller");
+		auto pObj = Get_UI(L"UI_TutorialController");
 		if (pObj)
-			pObj->Get_Script<UiMessageCreater>()->Create_Message(L"");
+			pObj->Get_Script<UiTutorialController>()->Start_Tutorial();
+		//auto pObj = Get_UI(L"UI_Message_Controller");
+		//if (pObj)
+		//	pObj->Get_Script<UiMessageCreater>()->Create_Message(L"");
 		//auto pObj = Get_UI(L"UI_Shop_Controller");
 		//if (pObj)
 		//	pObj->Get_Script<UIShop>()->Create_Shop();
@@ -237,6 +239,7 @@ HRESULT GranseedScene::Load_Scene()
 	// Gacha
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Kyle\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Yeopo\\", false);
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Yeonhee\\", false);
 
 	//Sound
 	RESOURCES.Load_Sound(L"..\\Resources\\Sound\\Common\\", true);
@@ -718,6 +721,18 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 
 		Add_GameObject(pObj);
 	}
+	
+	{
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_LayerIndex(Layer_UI);
+		pObj->Set_Instancing(false);
+		pObj->Set_Name(L"UI_TutorialController");
+
+		auto pScript = make_shared<UiTutorialController>();
+		pObj->Add_Component(pScript);
+
+		Add_GameObject(pObj);
+	}
 
 	// ※※※※※※※※※※※※※※※	※※※※※※※※※※※※※※※	※※※※※※※※※※※※※※※
 	// add only GranseedScene	add only GranseedScene	add only GranseedScene
@@ -910,7 +925,6 @@ void GranseedScene::Load_HideAndSeek(shared_ptr<GameObject> pPlayer)
 
 			Add_GameObject(obj);
 		}
-
 	}
 
 	{

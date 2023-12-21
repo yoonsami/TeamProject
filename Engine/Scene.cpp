@@ -623,9 +623,9 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 	DirectionalLightObject->Get_Light()->Set_Ambient(DirLightColor.ambient);
 	DirectionalLightObject->Get_Light()->Set_Diffuse(DirLightColor.diffuse);
 	DirectionalLightObject->Get_Light()->Set_Specular(DirLightColor.specular);
-	DirectionalLightObject->Get_Light()->Set_Emissive(_float4(1.f));
+	DirectionalLightObject->Get_Light()->Set_Emissive(DirLightColor.emissive);
 	Add_GameObject(DirectionalLightObject);
-	// 점광원정보 가져오고 불러오기
+	// 점광원정보 가져오고 불러오기 
 	_int iNumPointLight = file->Read<_int>();
 	for (_int i = 0; i < iNumPointLight; ++i)
 	{
@@ -1580,10 +1580,8 @@ void Scene::Render_BloomMapScaling(_uint downSamplingCount)
 
 		CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		if (i != 0)
-			material->Get_Shader()->DrawIndexed(0, 2, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
-		else
-			material->Get_Shader()->DrawIndexed(0, 1, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
+
+		material->Get_Shader()->DrawIndexed(0, 5, mesh->Get_IndexBuffer()->Get_IndicesNum(), 0, 0);
 
 		downSamplingTarget = L"BLOOMUPSCALE" + to_wstring(i);
 	}

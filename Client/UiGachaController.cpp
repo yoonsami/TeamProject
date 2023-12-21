@@ -103,6 +103,10 @@ void UiGachaController::Create_Gacha_Card()
     if (false == g_bIsCanRotation)
         return;
 
+    m_bAllCardOpenOnce = false;
+    //GachaStart
+    SOUND.Play_Sound(L"UI_NoticeQuestStart_gla", CHANNELID::SOUND_EFFECT, g_fSystemSoundRatio);
+
     g_bIsCanRotation = false;
 
     m_bIsCreate = true;
@@ -131,7 +135,7 @@ void UiGachaController::Create_Gacha_Card()
 
         pObj.lock()->Get_Button()->AddOnClickedEvent([pObj]()
             {
-                pObj.lock()->Get_Script<UiGachaCardMove>()->Card_Open();
+                pObj.lock()->Get_Script<UiGachaCardMove>()->Card_Open(true);
             });
     }
 
@@ -244,6 +248,13 @@ void UiGachaController::Start_All_Open()
     if (m_iIndex == m_iSize)
         return;
 
+    if(!m_bAllCardOpenOnce)
+    {
+        m_bAllCardOpenOnce = true;
+        //10CardOpen
+        SOUND.Play_Sound(L"ui_Ani_Intro_10Cards", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
+    }
+
     m_fCheckTime += fDT;
     if (m_fMaxTime < m_fCheckTime)
     {
@@ -311,6 +322,8 @@ void UiGachaController::Effect_Change()
     case HERO::SPIKE:
         break;
     case HERO::YEONHEE:
+		sceneDesc = { L"YeonheeMap", HERO::YEONHEE };
+		bIsIt = true;
         break;
     case HERO::SHANE:
         break;
@@ -344,6 +357,9 @@ void UiGachaController::Delete_All()
     Delete_Gacha_Bg();
     Delete_Gacha_Button();
     Delete_Gacha_Effect();
+
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_EFFECT, g_fSystemSoundRatio);
 }
 
 void UiGachaController::Start_Effect(_float4 vPos, HERO eHero)
@@ -354,6 +370,7 @@ void UiGachaController::Start_Effect(_float4 vPos, HERO eHero)
     {
     case HERO::KYLE:
     case HERO::YEOPO:
+    case HERO::YEONHEE:
         bIsit = true;
     }
 
