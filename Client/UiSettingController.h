@@ -51,6 +51,7 @@ private:
     void Change_Value_CharacterEffect();
     void Change_Value_MonsterVoice();
     void Change_Value_MonsterEffect();
+    void Change_Value_SystemSound();
     
 private:
     weak_ptr<GameObject>    m_pFPS_Font;
@@ -115,5 +116,6 @@ private:
     _uint   m_iStarCharacterEffect              = {};
     _uint   m_iStarMonsterVoice                 = {};
     _uint   m_iStarMonsterEffect                = {};
+    _uint   m_iStarSystemSound                  = {};
 };
 

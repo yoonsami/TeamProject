@@ -11,6 +11,7 @@ _float    g_fCharacterVoiceRatio    = 1.f;
 _float    g_fCharacterEffectRatio   = 1.f;
 _float    g_fMonsterVoiceRatio      = 1.f;
 _float    g_fMonsterEffectRatio     = 1.f;
+_float    g_fSystemSoundRatio       = 1.f;
 
 UiSettingController::UiSettingController()
 {
@@ -824,6 +825,30 @@ void UiSettingController::Create_Sound_Ui()
                     pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
                 });
         }
+        
+        else if (L"UI_Setting_Star_System" == strName)
+        {
+            m_iStarSystemSound = i;
+
+            _float  fRatio = fabs((g_fSystemSoundRatio - m_fMinSoundValue) / m_fTotalSoundValue);
+            _float  fValue = -660 + 300.f * fRatio;
+            _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+            vecPos.x = fValue;
+            pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+
+            pObj.lock()->Get_Button()->Set_Type(false);
+            pObj.lock()->Get_Button()->AddOnClickedEvent([pObj]()
+                {
+                    POINT ptMouse = INPUT.GetMousePosToPoint();
+                    _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+                    vecPos.x = static_cast<_float>(ptMouse.x - g_iWinSizeX / 2.f);
+                    if (-660.f > vecPos.x)
+                        vecPos.x = -660.f;
+                    if (-360.f < vecPos.x)
+                        vecPos.x = -360.f;
+                    pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+                });
+        }
 
         else if (L"UI_Setting_Change_Button" == strName)
         {
@@ -1023,6 +1048,7 @@ void UiSettingController::Change_All_Sound()
     Change_Value_CharacterEffect();
     Change_Value_MonsterVoice();
     Change_Value_MonsterEffect();
+    Change_Value_SystemSound();
 }
 
 void UiSettingController::Change_Value_Bgm()
@@ -1107,4 +1133,18 @@ void UiSettingController::Change_Value_MonsterEffect()
     fTotal += m_fMinSoundValue;
 
     g_fMonsterEffectRatio = fTotal;
+}
+
+void UiSettingController::Change_Value_SystemSound()
+{
+    _float fX = m_addedObj[m_iStarSystemSound].lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
+    fX -= m_fMinPos;
+
+    _float fRatio = fX / 300.f;
+    _float fTotal = m_fTotalSoundValue;
+    fTotal *= fRatio;
+
+    fTotal += m_fMinSoundValue;
+
+    g_fSystemSoundRatio = fTotal;
 }
