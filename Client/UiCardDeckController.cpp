@@ -106,6 +106,9 @@ void UiCardDeckController::Click_Deck_Select(wstring strObjName, _uint iIndex)
                 wstring strKey = DATAMGR.Get_Card_Inven(m_iSetIndex).KeyDeckSelect;
                 pObj.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(strKey), TextureMapType::DIFFUSE);
 
+                //TouchSound
+                SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
+
                 // ÀåÂø ¼º°ø Ã¢ ¶ç¿ì±â
                 Create_Switch_Complete(true);
 
@@ -146,6 +149,9 @@ void UiCardDeckController::Click_Deck_X(wstring strObjName, _uint iIndex)
 {
     if (false == m_bIsCreated)
         return;
+
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     for (_uint i = 0; i < IDX(m_vecCardDeckObj.size()); ++i)
     {
@@ -188,6 +194,9 @@ void UiCardDeckController::Remove_Info()
     if (false == m_bIsInfoCreate)
         return;
 
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
+
     m_bIsInfoCreate = false;
 
     auto& pEventMgr = EVENTMGR;
@@ -212,6 +221,9 @@ void UiCardDeckController::Create_Card_Deck()
 
     if (false == g_bIsCanRotation)
         return;
+
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     g_bIsCanRotation = false;
 
@@ -392,6 +404,9 @@ void UiCardDeckController::Remove_Card_Deck()
     if (false == m_bIsCreated)
         return;
 
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
+
     Remove_Select_Mark();
 
     g_bIsCanRotation = true;
@@ -478,6 +493,9 @@ void UiCardDeckController::Create_Info(_uint iIndex)
 {
     if (true == m_bIsInfoCreate)
         return;
+
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     auto& pData = DATAMGR;
     auto& tagData = pData.Get_Card_Inven(iIndex);

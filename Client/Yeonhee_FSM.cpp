@@ -906,17 +906,19 @@ void Yeonhee_FSM::skill_1100()
 
 		// Find Monster
 		_float4 vSkillPos;
-		if (!m_pTarget.expired())
-		{
-			vSkillPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float3::Up * 5.f;
-		}
+        if (!m_pTarget.expired())
+        {
+            vSkillPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float3::Up * 5.f;
+            Add_GroupEffectOwner(L"YeonHee_1100", _float3(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS)), true);
+        }
 		else
 		{
 			if (!m_pLookingTarget.expired())
 				vSkillPos = m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float3::Up * 5.f;
 			else
 				vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5 + _float3::Up * 5.f;
-		}
+            Add_GroupEffectOwner(L"YeonHee_1100", _float3(Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5), true);
+        }
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
 	}
 
@@ -956,7 +958,6 @@ void Yeonhee_FSM::skill_1100_Init()
     m_bSuperArmor = false;
 }
 	
-
 void Yeonhee_FSM::skill_1200()
 {
     Set_DirToTargetOrInput(OBJ_MONSTER);
@@ -975,6 +976,7 @@ void Yeonhee_FSM::skill_1200()
 		if (!m_pTarget.expired())
 		{
 			vSkillPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float3::Up * 5.f;
+            Add_GroupEffectOwner(L"YeonHee_1100", _float3(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS)), true);
 		}
 		else
 		{
@@ -982,9 +984,9 @@ void Yeonhee_FSM::skill_1200()
 				vSkillPos = m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float3::Up * 5.f;
 			else
 				vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5 + _float3::Up * 5.f;
+            Add_GroupEffectOwner(L"YeonHee_1100", _float3(Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5), true);
 		}
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
-
     }
 
 	_float3 vInputVector = Get_InputDirVector();
@@ -1047,6 +1049,7 @@ void Yeonhee_FSM::skill_1300()
 		if (!m_pTarget.expired())
 		{
 			vSkillPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float3::Up * 5.f;
+            Add_GroupEffectOwner(L"YeonHee_1100", _float3(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS)), true);
 		}
 		else
 		{
@@ -1054,6 +1057,7 @@ void Yeonhee_FSM::skill_1300()
 				vSkillPos = m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float3::Up * 5.f;
 			else
 				vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5 + _float3::Up * 5.f;
+            Add_GroupEffectOwner(L"YeonHee_1100", _float3(Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5), true);
 		}
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
 	}

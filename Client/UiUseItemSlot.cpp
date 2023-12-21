@@ -14,6 +14,8 @@ HRESULT UiUseItemSlot::Init()
     if (m_pOwner.expired())
         return E_FAIL;
 
+    m_pPlayer = GET_PLAYER;
+
     if (true == m_bIsInit)
         return S_OK;
 
@@ -29,7 +31,7 @@ HRESULT UiUseItemSlot::Init()
             this->Click_Slot();
         });
 
-    m_iCount = 0;
+    m_iCount = 10;
 
     m_fMaxTime = 8.f;
     m_fCheckTime = m_fMaxTime + 1.f;
@@ -58,6 +60,9 @@ void UiUseItemSlot::Create_Inven()
 {
     if (true == m_bIsCreated)
         return;
+
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     m_bIsCreated = true;
     auto pScene = CUR_SCENE;
@@ -111,10 +116,15 @@ void UiUseItemSlot::Click_Inven(_uint iIndex)
     if (0 == m_iCount)
         return;
 
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_EFFECT, g_fSystemSoundRatio);
     m_bIsSet = true;
     m_pUseItem_Slot.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_UseItem_Slot_Potion"), TextureMapType::DIFFUSE);
     if(0 < m_iCount)
+    {
         m_pUseItem_Count.lock()->Get_FontRenderer()->Get_Text() = to_wstring(m_iCount);
+        Remove_Inven();
+    }
 
 }
 
@@ -122,6 +132,9 @@ void UiUseItemSlot::Remove_Inven()
 {
     if (false == m_bIsCreated)
         return;
+
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     m_bIsCreated = false;
 
@@ -150,7 +163,22 @@ void UiUseItemSlot::Use_Item()
         return;
 
     // 플레이어 체력 증가
+    if (false == m_pPlayer.expired())
+    {
+        _float fMaxHp = m_pPlayer.lock()->Get_MaxHp();
+        _float fCurHp = m_pPlayer.lock()->Get_CurHp();
 
+        fMaxHp *= 0.2f;
+
+        fCurHp += fMaxHp;
+        if (fCurHp < fMaxHp)
+            fCurHp = fMaxHp;
+
+        m_pPlayer.lock()->Set_Hp(fCurHp);
+    }
+
+    //Use_Potion_Sound
+    SOUND.Play_Sound(L"ui_use_potion", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     m_bIsCanUse = false;
     m_fCheckTime = 0.f;

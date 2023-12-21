@@ -101,6 +101,9 @@ void UiCostumeController::Create_Costume()
     if (false == g_bIsCanRotation)
         return;
 
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
+
     g_bIsCanRotation = false;
 
     m_TempSet = m_OriginSet;
@@ -312,6 +315,9 @@ void UiCostumeController::Remove_Costume()
     if (false == m_bIsCreated)
         return;
 
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
+
     m_bIsCreated = false;
     g_bIsCanRotation = true;
 
@@ -348,6 +354,9 @@ void UiCostumeController::Change_Costume_Type(COSTUME_TYPE eType)
 {
     if (m_eType == eType)
         return;
+
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     m_eType = eType;
 
@@ -580,6 +589,9 @@ void UiCostumeController::Change_Costume()
     if (m_OriginSet == m_TempSet)
         return;
 
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
+
     m_OriginSet = m_TempSet;
     auto model = RESOURCES.Get<Model>(L"Player");
     if (!model)
@@ -618,6 +630,9 @@ void UiCostumeController::Select_Inven(_uint iIndex)
 {
     if (false == m_bIsHave[iIndex])
         return;
+
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     weak_ptr<GameObject> pSelect;
     weak_ptr<GameObject> pInven;

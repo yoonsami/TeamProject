@@ -1116,6 +1116,7 @@ float4 PS_PBR_Forward(MeshOutput input) : SV_Target
     ARM_Map.z,
     input.viewNormal.xyz,
     input.viewPosition.xyz,
+    lights[0].color.ambient.xyz,
     lights[0].color.diffuse.xyz,
     1.f);
     
@@ -1123,7 +1124,7 @@ float4 PS_PBR_Forward(MeshOutput input) : SV_Target
     
     float4 rimColor = output.rimColor;
    
-    float4 rimLightColor = lightingOut.emissiveColor;
+    float4 rimLightColor = lightingOut.rimColor;
     
     rimColor *= rimLightColor;
     float luminance = dot(rimColor.rgb, float3(0.299, 0.587, 0.114));

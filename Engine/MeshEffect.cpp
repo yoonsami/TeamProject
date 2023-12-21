@@ -238,6 +238,7 @@ void MeshEffect::Update_Desc()
 {
     m_fDuration = MathUtils::Get_RandomFloat(m_tDesc.vParticleDuration.x, m_tDesc.vParticleDuration.y);
     m_fFadeOutStartTime = m_fDuration * m_tDesc.fFadeOutStartRatio;
+    m_fRimLightContrast = m_tDesc.vBaseColor_RimLight.w;
 
     Init_RenderParams();
 
@@ -845,7 +846,7 @@ void MeshEffect::Init_RenderParams()
     vTemp4x4 = _float4x4(
         _float4((_float)m_tDesc.bIsUseTextureColor_Op1, (_float)m_tDesc.bIsUseTextureColor_Op2, (_float)m_tDesc.bIsUseTextureColor_Op3, 0.f),
         _float4((_float)m_tDesc.iFlipOption_Op1, (_float)m_tDesc.iFlipOption_Op2, (_float)m_tDesc.iFlipOption_Op3, m_tDesc.fAlphaOffset_Blend),
-        _float4((_float)m_tDesc.bIsSSD, m_tDesc.fLightIntensity, 0.f, 0.f),
+        _float4((_float)m_tDesc.bIsSSD, m_tDesc.fLightIntensity, m_fRimLightContrast, 0.f),
         _float4(0.f, 0.f, 0.f, 0.f)
     );
     m_RenderParams.SetMatrix(2, vTemp4x4);

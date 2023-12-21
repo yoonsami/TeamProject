@@ -31,11 +31,13 @@ void PortalScript::Tick()
 		vDir.y = 0.f;
 		if (vDir.LengthSquared() < 1.f * 1.f)
 		{
-			// UI 출력
+			// UI 출력 
 			auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
 			if (pObj && pObj->Get_Script<UIInteraction>()->Get_Is_Activate(m_pOwner.lock()))
 			{
 				m_bClicked = true;
+				// 사운드재생
+				SOUND.Play_Sound(L"SQ_TeleportOut_Rune_01", CHANNELID::SOUND_EFFECT, g_fEnvironmentRatio, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz(), 10.f/*MagicNumber*/);
 				{
 					wstring strSkilltag = L"Portal_Effect";
 					shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();

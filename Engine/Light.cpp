@@ -113,11 +113,11 @@ void Light::Set_LightType(LIGHT_TYPE type)
 
 		break;
 	case LIGHT_TYPE::POINT_LIGHT:
-		m_pVolumeMesh = RESOURCES.Get<Mesh>(L"Sphere");
+		m_pVolumeMesh = RESOURCES.Get<Mesh>(L"Quad");
 		m_pLightMaterial = RESOURCES.Get<Material>(L"LightMaterial");
 		break;
 	case LIGHT_TYPE::SPOT_LIGHT:
-		m_pVolumeMesh = RESOURCES.Get<Mesh>(L"Sphere");
+		m_pVolumeMesh = RESOURCES.Get<Mesh>(L"Quad");
 		m_pLightMaterial = RESOURCES.Get<Material>(L"LightMaterial");
 		break;
 	default:

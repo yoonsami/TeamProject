@@ -15,6 +15,7 @@ class Gacha_FSM :
 	enum class STATE
 	{
 		SQ_SpecialHero,
+		SQ_SpecialHero2,
 		NONE,
 	};
 public:
@@ -35,6 +36,8 @@ private:
 private:
 	void SQ_SpecialHero();
 	void SQ_SpecialHero_Init();
+	void SQ_SpecialHero2();
+	void SQ_SpecialHero2_Init();
 
 private:
 	STATE m_eCurState = STATE::SQ_SpecialHero;
@@ -44,5 +47,6 @@ private:
 	Gacha_FSM_Desc m_Desc{};
 	_float m_fAnimSpeed = 1.f;
 	_float m_fAcc = 0.f;
+	_float m_fDist = 5.f;
 };
 

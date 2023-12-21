@@ -7,6 +7,7 @@
 
 _float    g_fBgmRatio               = 1.f;
 _float    g_fEnvironmentRatio       = 1.f;
+_float    g_fSystemSoundRatio       = 1.f;
 _float    g_fCharacterVoiceRatio    = 1.f;
 _float    g_fCharacterEffectRatio   = 1.f;
 _float    g_fMonsterVoiceRatio      = 1.f;
@@ -92,6 +93,8 @@ void UiSettingController::Tick()
 void UiSettingController::Change_Bloom()
 {
     m_bBloom = !m_bBloom;
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     if (true == Check_Expire())
         return;
@@ -109,6 +112,8 @@ void UiSettingController::Change_Bloom()
 void UiSettingController::Change_SSAO()
 {
     m_bSSAO = !m_bSSAO;
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     if (true == Check_Expire())
         return;
@@ -126,6 +131,8 @@ void UiSettingController::Change_SSAO()
 void UiSettingController::Change_MotionBlur()
 {
     m_bMotionBlur = !m_bMotionBlur;
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     if (true == Check_Expire())
         return;
@@ -143,6 +150,8 @@ void UiSettingController::Change_MotionBlur()
 void UiSettingController::Change_LensFlare()
 {
     m_bLensFlare = !m_bLensFlare;
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     if (true == Check_Expire())
         return;
@@ -160,6 +169,8 @@ void UiSettingController::Change_LensFlare()
 void UiSettingController::Change_Outline()
 {
     m_bOutline = !m_bOutline;
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     if (true == Check_Expire())
         return;
@@ -177,6 +188,8 @@ void UiSettingController::Change_Outline()
 void UiSettingController::Change_FXAA()
 {
     m_bFXAA = !m_bFXAA;
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     if (true == Check_Expire())
         return;
@@ -194,6 +207,8 @@ void UiSettingController::Change_FXAA()
 void UiSettingController::Change_PBR()
 {
     m_bPBR = !m_bPBR;
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     if (true == Check_Expire())
         return;
@@ -211,6 +226,8 @@ void UiSettingController::Change_PBR()
 void UiSettingController::Change_FPS()
 {
     m_bFPS = !m_bFPS;
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     if (true == Check_Expire())
         return;
@@ -238,6 +255,9 @@ void UiSettingController::Create_Setting_Ui()
 
     if (false == g_bIsCanRotation)
         return;
+
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     m_eType = SETTING_STATE::SET_GRAPHIC;
 
@@ -638,6 +658,9 @@ void UiSettingController::Remove_Setting_Ui()
     if (false == m_bIsCreated)
         return;
 
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
+
     m_eType = SETTING_STATE::MAX;
 
     g_bIsCanRotation = true;
@@ -659,6 +682,9 @@ void UiSettingController::Remove_Setting_Ui()
 void UiSettingController::Create_Sound_Ui()
 {
     m_bIsCreated = true;
+
+    //TouchSound
+    SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
     m_eType = SETTING_STATE::SET_SOUND;
 
@@ -806,6 +832,30 @@ void UiSettingController::Create_Sound_Ui()
             m_iStarMonsterEffect = i;
 
             _float  fRatio = fabs((g_fMonsterEffectRatio - m_fMinSoundValue) / m_fTotalSoundValue);
+            _float  fValue = -660 + 300.f * fRatio;
+            _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+            vecPos.x = fValue;
+            pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+
+            pObj.lock()->Get_Button()->Set_Type(false);
+            pObj.lock()->Get_Button()->AddOnClickedEvent([pObj]()
+                {
+                    POINT ptMouse = INPUT.GetMousePosToPoint();
+                    _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+                    vecPos.x = static_cast<_float>(ptMouse.x - g_iWinSizeX / 2.f);
+                    if (-660.f > vecPos.x)
+                        vecPos.x = -660.f;
+                    if (-360.f < vecPos.x)
+                        vecPos.x = -360.f;
+                    pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
+                });
+        }
+        
+        else if (L"UI_Setting_Star_System" == strName)
+        {
+            m_iStarSystemSound = i;
+
+            _float  fRatio = fabs((g_fSystemSoundRatio - m_fMinSoundValue) / m_fTotalSoundValue);
             _float  fValue = -660 + 300.f * fRatio;
             _float4 vecPos = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
             vecPos.x = fValue;
@@ -1023,12 +1073,16 @@ void UiSettingController::Change_All_Sound()
     Change_Value_CharacterEffect();
     Change_Value_MonsterVoice();
     Change_Value_MonsterEffect();
+    Change_Value_SystemSound();
 }
 
 void UiSettingController::Change_Value_Bgm()
 {
     _float fX = m_addedObj[m_iStarBgm].lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
     fX -= m_fMinPos;
+
+    if (3.f > fX)
+        fX = 0.f;
 
     _float fRatio = fX / 300.f;
     _float fTotal = m_fTotalSoundValue;
@@ -1044,6 +1098,9 @@ void UiSettingController::Change_Value_Environment()
     _float fX = m_addedObj[m_iStarEnvironment].lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
     fX -= m_fMinPos;
 
+    if (3.f > fX)
+        fX = 0.f;
+
     _float fRatio = fX / 300.f;
     _float fTotal = m_fTotalSoundValue;
     fTotal *= fRatio;
@@ -1057,6 +1114,9 @@ void UiSettingController::Change_Value_CharacterVoice()
 {
     _float fX = m_addedObj[m_iStarCharacterVoice].lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
     fX -= m_fMinPos;
+
+    if (3.f > fX)
+        fX = 0.f;
 
     _float fRatio = fX / 300.f;
     _float fTotal = m_fTotalSoundValue;
@@ -1072,6 +1132,9 @@ void UiSettingController::Change_Value_CharacterEffect()
     _float fX = m_addedObj[m_iStarCharacterEffect].lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
     fX -= m_fMinPos;
 
+    if (3.f > fX)
+        fX = 0.f;
+
     _float fRatio = fX / 300.f;
     _float fTotal = m_fTotalSoundValue;
     fTotal *= fRatio;
@@ -1085,6 +1148,9 @@ void UiSettingController::Change_Value_MonsterVoice()
 {
     _float fX = m_addedObj[m_iStarMonsterVoice].lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
     fX -= m_fMinPos;
+
+    if (3.f > fX)
+        fX = 0.f;
 
     _float fRatio = fX / 300.f;
     _float fTotal = m_fTotalSoundValue;
@@ -1100,6 +1166,9 @@ void UiSettingController::Change_Value_MonsterEffect()
     _float fX = m_addedObj[m_iStarMonsterEffect].lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
     fX -= m_fMinPos;
 
+    if (3.f > fX)
+        fX = 0.f;
+
     _float fRatio = fX / 300.f;
     _float fTotal = m_fTotalSoundValue;
     fTotal *= fRatio;
@@ -1107,4 +1176,21 @@ void UiSettingController::Change_Value_MonsterEffect()
     fTotal += m_fMinSoundValue;
 
     g_fMonsterEffectRatio = fTotal;
+}
+
+void UiSettingController::Change_Value_SystemSound()
+{
+    _float fX = m_addedObj[m_iStarSystemSound].lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
+    fX -= m_fMinPos;
+
+    if (3.f > fX)
+        fX = 0.f;
+
+    _float fRatio = fX / 300.f;
+    _float fTotal = m_fTotalSoundValue;
+    fTotal *= fRatio;
+
+    fTotal += m_fMinSoundValue;
+
+    g_fSystemSoundRatio = fTotal;
 }

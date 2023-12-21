@@ -557,6 +557,8 @@ void DataMgr::Initialize()
         m_NpcName[IDX(NPCTYPE::DELLONS)] = L"델론즈";
         m_NpcName[IDX(NPCTYPE::SHANE)] = L"세인";
         m_NpcName[IDX(NPCTYPE::PORTAL)] = L"포탈 사용";
+        m_NpcName[IDX(NPCTYPE::FENI)] = L"페니";
+        m_NpcName[IDX(NPCTYPE::FISHERMAN)] = L"어부";
     }
 
 
@@ -1080,6 +1082,8 @@ void DataMgr::Initialize()
     m_NpcDialog[IDX(NPCTYPE::SPIKE)].resize(1);
     m_NpcDialog[IDX(NPCTYPE::DELLONS)].resize(1);
     m_NpcDialog[IDX(NPCTYPE::SHANE)].resize(1);
+    m_NpcDialog[IDX(NPCTYPE::FENI)].resize(1);
+    m_NpcDialog[IDX(NPCTYPE::FISHERMAN)].resize(2);
 
     m_NpcDialog[IDX(NPCTYPE::SPIKE)][0].push_back(L"안녕 나는 스파이크야.");
     m_NpcDialog[IDX(NPCTYPE::SPIKE)][0].push_back(L"눈썰매장을 찾고 있는데 혹시 나에게 길을 안내해주지 않겠어?");
@@ -1100,6 +1104,16 @@ void DataMgr::Initialize()
     m_NpcDialog[IDX(NPCTYPE::SHANE)][0].push_back(L"안녕 나는 올해로 19세인 세인이야. 혹시 함께 할 동료를 찾고 있어?");
     m_NpcDialog[IDX(NPCTYPE::SHANE)][0].push_back(L"바로 알겠다고? 너 얼빠구나.");
     m_NpcDialog[IDX(NPCTYPE::SHANE)][0].push_back(L"알겠어 특별히 같이 가주지.");
+
+	m_NpcDialog[IDX(NPCTYPE::FENI)][0].push_back(L"구해주셔서 감사해요. 하마터면 죽을 뻔 했어요");
+	m_NpcDialog[IDX(NPCTYPE::FENI)][0].push_back(L"저는 페니라고 해요. 전 이만 마을로 가봐야겠어요!");
+	m_NpcDialog[IDX(NPCTYPE::FENI)][0].push_back(L"구해주신 보답으로 돈을 조금 드릴게요.");
+
+	m_NpcDialog[IDX(NPCTYPE::FISHERMAN)][0].push_back(L"우리 아지트를 구해줘서 고맙네!");
+	m_NpcDialog[IDX(NPCTYPE::FISHERMAN)][0].push_back(L"우리가 보기엔 우락부락하지만 싸움을 못해.");
+
+	m_NpcDialog[IDX(NPCTYPE::FISHERMAN)][1].push_back(L"이제 다시 고기를 잡을 수 있겠군!");
+	m_NpcDialog[IDX(NPCTYPE::FISHERMAN)][1].push_back(L"고맙네.");
 
 
 
