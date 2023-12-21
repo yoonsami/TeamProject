@@ -883,6 +883,9 @@
     <ClInclude Include="FieldScript.h" />
     <ClInclude Include="Feni_FSM.h" />
     <ClInclude Include="Add_Score.h" />
+    <ClInclude Include="UiTutorialController.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\27.UiTutorialController</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1287,6 +1290,9 @@
     <ClCompile Include="FieldScript.cpp" />
     <ClCompile Include="Feni_FSM.cpp" />
     <ClCompile Include="Add_Score.cpp" />
+    <ClCompile Include="UiTutorialController.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\27.UiTutorialController</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">

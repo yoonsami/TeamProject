@@ -14,6 +14,8 @@ HRESULT UiUseItemSlot::Init()
     if (m_pOwner.expired())
         return E_FAIL;
 
+    m_pPlayer = GET_PLAYER;
+
     if (true == m_bIsInit)
         return S_OK;
 
@@ -150,7 +152,19 @@ void UiUseItemSlot::Use_Item()
         return;
 
     // 플레이어 체력 증가
+    if (false == m_pPlayer.expired())
+    {
+        _float fMaxHp = m_pPlayer.lock()->Get_MaxHp();
+        _float fCurHp = m_pPlayer.lock()->Get_CurHp();
 
+        fMaxHp *= 0.2f;
+
+        fCurHp += fMaxHp;
+        if (fCurHp < fMaxHp)
+            fCurHp = fMaxHp;
+
+        m_pPlayer.lock()->Set_Hp(fCurHp);
+    }
 
     m_bIsCanUse = false;
     m_fCheckTime = 0.f;

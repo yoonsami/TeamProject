@@ -1054,7 +1054,10 @@ void UiSettingController::Change_All_Sound()
 void UiSettingController::Change_Value_Bgm()
 {
     _float fX = m_addedObj[m_iStarBgm].lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
-    fX -= m_fMinPos -1.f;
+    fX -= m_fMinPos;
+
+    if (3.f > fX)
+        fX = 0.f;
 
     _float fRatio = fX / 300.f;
     _float fTotal = m_fTotalSoundValue;
@@ -1070,6 +1073,9 @@ void UiSettingController::Change_Value_Environment()
     _float fX = m_addedObj[m_iStarEnvironment].lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
     fX -= m_fMinPos;
 
+    if (3.f > fX)
+        fX = 0.f;
+
     _float fRatio = fX / 300.f;
     _float fTotal = m_fTotalSoundValue;
     fTotal *= fRatio;
@@ -1082,7 +1088,10 @@ void UiSettingController::Change_Value_Environment()
 void UiSettingController::Change_Value_CharacterVoice()
 {
     _float fX = m_addedObj[m_iStarCharacterVoice].lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
-    fX -= m_fMinPos - 1.f;
+    fX -= m_fMinPos;
+
+    if (3.f > fX)
+        fX = 0.f;
 
     _float fRatio = fX / 300.f;
     _float fTotal = m_fTotalSoundValue;
@@ -1096,7 +1105,10 @@ void UiSettingController::Change_Value_CharacterVoice()
 void UiSettingController::Change_Value_CharacterEffect()
 {
     _float fX = m_addedObj[m_iStarCharacterEffect].lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
-    fX -= m_fMinPos - 1.f;
+    fX -= m_fMinPos;
+
+    if (3.f > fX)
+        fX = 0.f;
 
     _float fRatio = fX / 300.f;
     _float fTotal = m_fTotalSoundValue;
@@ -1110,7 +1122,10 @@ void UiSettingController::Change_Value_CharacterEffect()
 void UiSettingController::Change_Value_MonsterVoice()
 {
     _float fX = m_addedObj[m_iStarMonsterVoice].lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
-    fX -= m_fMinPos - 1.f;
+    fX -= m_fMinPos;
+
+    if (3.f > fX)
+        fX = 0.f;
 
     _float fRatio = fX / 300.f;
     _float fTotal = m_fTotalSoundValue;
@@ -1124,7 +1139,10 @@ void UiSettingController::Change_Value_MonsterVoice()
 void UiSettingController::Change_Value_MonsterEffect()
 {
     _float fX = m_addedObj[m_iStarMonsterEffect].lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
-    fX -= m_fMinPos - 1.f;
+    fX -= m_fMinPos;
+
+    if (3.f > fX)
+        fX = 0.f;
 
     _float fRatio = fX / 300.f;
     _float fTotal = m_fTotalSoundValue;
@@ -1138,7 +1156,10 @@ void UiSettingController::Change_Value_MonsterEffect()
 void UiSettingController::Change_Value_SystemSound()
 {
     _float fX = m_addedObj[m_iStarSystemSound].lock()->GetOrAddTransform()->Get_State(Transform_State::POS).x;
-    fX -= m_fMinPos - 1.f;
+    fX -= m_fMinPos;
+
+    if (3.f > fX)
+        fX = 0.f;
 
     _float fRatio = fX / 300.f;
     _float fTotal = m_fTotalSoundValue;
