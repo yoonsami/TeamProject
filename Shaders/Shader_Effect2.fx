@@ -86,6 +86,7 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     bool bUseSpriteAnim = (bool) g_int_2;
     bool bLightOn = (bool) g_int_3;
     bool bUseSSD = (bool) g_mat_2._31;
+    float fRimLightContrast = g_mat_2._33;
     
     float fLifeTimeRatio = g_float_0;
     float fDissolveWeight = g_float_1;
@@ -313,12 +314,17 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     {
         float3 eyeDir = normalize(input.viewPosition - float3(0.f, 0.f, 0.f));
         float3 vRimIntensity = pow(smoothstep(0.f, 1.f, 1.f - saturate(dot(-eyeDir, input.viewNormal))), fRimLightIntensity);
-
+        vRimIntensity = saturate(vRimIntensity);
         float4 vTransparentColor = float4(0.f, 0.f, 0.f, 0.f);
         if (all(vBaseColor_RimLight == vTransparentColor))
             vOutColor.a *= (1.f - vRimIntensity.r);
         else
-            vOutColor += (vBaseColor_RimLight * vRimIntensity.r);
+        {
+            float luminance = dot(vBaseColor_RimLight.rgb, float3(0.299, 0.587, 0.114));
+            vBaseColor_RimLight.rgb = lerp(vBaseColor_RimLight.rgb, vBaseColor_RimLight.rgb * fRimLightContrast, saturate(luminance));
+            vOutColor.rgb += (vBaseColor_RimLight.rgb * vRimIntensity.r);
+            //vOutColor.a = saturate(vOutColor.a);
+        }
     }
     
     /* Fade Out */
@@ -349,6 +355,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     float fDissolveWeight = g_float_1;
     float fRimLightIntensity = g_float_2;    
     float fLightIntensity = g_mat_2._32;
+    float fRimLightContrast = g_mat_2._33;
     
     float2 vColorOptions_Op[3] = { g_vec2_0, g_vec2_1, g_vec2_2 };
     
@@ -570,12 +577,17 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     {
         float3 eyeDir = normalize(input.viewPosition - float3(0.f, 0.f, 0.f));
         float3 vRimIntensity = pow(smoothstep(0.f, 1.f, 1.f - saturate(dot(-eyeDir, input.viewNormal))), fRimLightIntensity);
-
+        vRimIntensity = saturate(vRimIntensity);
         float4 vTransparentColor = float4(0.f, 0.f, 0.f, 0.f);
         if (all(vBaseColor_RimLight == vTransparentColor))
             vOutColor.a *= (1.f - vRimIntensity.r);
         else
-            vOutColor += (vBaseColor_RimLight * vRimIntensity.r);
+        {
+            float luminance = dot(vBaseColor_RimLight.rgb, float3(0.299, 0.587, 0.114));
+            vBaseColor_RimLight.rgb = lerp(vBaseColor_RimLight.rgb, vBaseColor_RimLight.rgb * fRimLightContrast, saturate(luminance));
+            vOutColor.rgb += (vBaseColor_RimLight.rgb * vRimIntensity.r);
+            //vOutColor.a = saturate(vOutColor.a);
+        }
     }
     
     
@@ -627,6 +639,7 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
     float fDissolveWeight = g_effectData[id].g_float_1;
     float fRimLightIntensity = g_effectData[id].g_float_2;
     float fLightIntensity = g_effectData[id].g_mat_2._32;   
+    float fRimLightContrast = g_effectData[id].g_mat_2._33;
     
     float2 vColorOptions_Op[3] = { g_effectData[id].g_vec2_0, g_effectData[id].g_vec2_1, g_effectData[id].g_vec2_2 };
     
@@ -838,17 +851,22 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
         vOutColor.rgb = lerp(vOutColor.rgb, vFinalOverlayColor.rgb, fOverlayIntensity);
     }
     
-     /* Rim Light */
+    /* Rim Light */
     if (bUseRimLight)
     {
         float3 eyeDir = normalize(input.viewPosition - float3(0.f, 0.f, 0.f));
         float3 vRimIntensity = pow(smoothstep(0.f, 1.f, 1.f - saturate(dot(-eyeDir, input.viewNormal))), fRimLightIntensity);
-
+        vRimIntensity = saturate(vRimIntensity);
         float4 vTransparentColor = float4(0.f, 0.f, 0.f, 0.f);
         if (all(vBaseColor_RimLight == vTransparentColor))
             vOutColor.a *= (1.f - vRimIntensity.r);
         else
-            vOutColor += (vBaseColor_RimLight * vRimIntensity.r);
+        {
+            float luminance = dot(vBaseColor_RimLight.rgb, float3(0.299, 0.587, 0.114));
+            vBaseColor_RimLight.rgb = lerp(vBaseColor_RimLight.rgb, vBaseColor_RimLight.rgb * fRimLightContrast, saturate(luminance));
+            vOutColor.rgb += (vBaseColor_RimLight.rgb * vRimIntensity.r);
+            //vOutColor.a = saturate(vOutColor.a);
+        }
     }
     
     /* Fade Out */
@@ -883,6 +901,7 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
     float fDissolveWeight = g_effectData[id].g_float_1;
     float fRimLightIntensity = g_effectData[id].g_float_2;
     float fLightIntensity = g_effectData[id].g_mat_2._32;
+    float fRimLightContrast = g_effectData[id].g_mat_2._33;
     
     float2 vColorOptions_Op[3] = { g_effectData[id].g_vec2_0, g_effectData[id].g_vec2_1, g_effectData[id].g_vec2_2 };
     
@@ -1101,13 +1120,19 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
     {
         float3 eyeDir = normalize(input.viewPosition - float3(0.f, 0.f, 0.f));
         float3 vRimIntensity = pow(smoothstep(0.f, 1.f, 1.f - saturate(dot(-eyeDir, input.viewNormal))), fRimLightIntensity);
-
+        vRimIntensity = saturate(vRimIntensity);
         float4 vTransparentColor = float4(0.f, 0.f, 0.f, 0.f);
         if (all(vBaseColor_RimLight == vTransparentColor))
             vOutColor.a *= (1.f - vRimIntensity.r);
         else
-            vOutColor += (vBaseColor_RimLight * vRimIntensity.r);
+        {
+            float luminance = dot(vBaseColor_RimLight.rgb, float3(0.299, 0.587, 0.114));
+            vBaseColor_RimLight.rgb = lerp(vBaseColor_RimLight.rgb, vBaseColor_RimLight.rgb * fRimLightContrast, saturate(luminance));
+            vOutColor.rgb += (vBaseColor_RimLight.rgb * vRimIntensity.r);
+            //vOutColor.a = saturate(vOutColor.a);
+        }
     }
+    
     
     /* Fade Out */
     if (bUseFadeOut)

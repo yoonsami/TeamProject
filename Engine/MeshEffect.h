@@ -84,6 +84,7 @@ private:
     _float                          m_fTimeAcc_SpriteAnimation = { 0.f };
     _bool                           m_bIsPlayFinished = { false };
     _bool                           m_bIsLocked = { false };
+    float                           m_fRimLightContrast = { 1.f };
 
     /* Fade Out */
     _float                          m_fFadeOutStartTime = { 0.f };
