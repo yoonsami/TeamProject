@@ -1456,6 +1456,11 @@ void ResourceMgr::CreateMeshEffectData()
 		for (_int i = 0; i < 2; i++)
 			tTransformDesc.bBillbordAxes[i] = file->Read<_bool>();
 
+		/* Additional */
+		_float2 float2Add = file->Read<_float2>();
+		_float3 float3Add = file->Read<_float3>();
+		_float4x4 float4x4Add = file->Read<_float4x4>();
+
 		shared_ptr<MeshEffectData> meshEffectData = make_shared<MeshEffectData>();
 		meshEffectData->Set_Desc(tDesc);
 		meshEffectData->Set_TransformDesc(tTransformDesc);
