@@ -104,7 +104,7 @@ void UiGachaController::Create_Gacha_Card()
         return;
 
     m_bAllCardOpenOnce = false;
-    //TouchSound
+    //GachaStart
     SOUND.Play_Sound(L"UI_NoticeQuestStart_gla", CHANNELID::SOUND_EFFECT, g_fSystemSoundRatio);
 
     g_bIsCanRotation = false;
