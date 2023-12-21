@@ -46,7 +46,6 @@ public:
     _float3&                Get_LocalPos() { return m_vLocalPos; }
     _bool                   Is_Finished() { return m_bRenderEnd; }
 
-
     void                    Translate();
     void                    Scaling();
     void                    Turn();
@@ -123,6 +122,7 @@ private:
     _float3                         m_vEndPos;
     _float                          m_SplineInput_Force[8];
     _float                          m_fCurrYspeed = { 0.f };
+    _float                          m_fCurrRoundAngle = { 0.f };
 
     _float                          m_fChangeDirCoolTime = { 0.f };
     _float                          m_fTimeAcc_ChangeDirCoolTime = { 0.f };

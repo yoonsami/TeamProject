@@ -652,6 +652,7 @@ void MeshEffect::Translate()
         break;
     }
     case 11:
+    {
         // change dir
         if (m_fTimeAcc_ChangeDirCoolTime > m_fChangeDirCoolTime)
         {
@@ -683,8 +684,13 @@ void MeshEffect::Translate()
 
             m_vLocalPos += vDir * fSpeed * fDT;
         }
+        break;
+    }
+    case 12: // Round 
+    {
 
         break;
+    }
     }
 }
 
