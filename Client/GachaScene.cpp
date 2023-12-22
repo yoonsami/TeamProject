@@ -296,8 +296,13 @@ void GachaScene::Play_BGM()
 		SOUND.StopAll();
 	}
 
-	if (m_Desc.eHeroType == HERO::KYLE)
-		SOUND.Play_Sound(L"SQ_SpecialHero_Kyle", CHANNELID::SOUND_BGM, 0.5f * g_fBgmRatio);
-	else if (m_Desc.eHeroType == HERO::YEOPO)
-		SOUND.Play_Sound(L"SQ_SpecialHero_Yeopo", CHANNELID::SOUND_BGM, 0.5f * g_fBgmRatio);
+	if (!m_bPlayGachaSceneBGM)
+	{
+		if (m_Desc.eHeroType == HERO::KYLE)
+			SOUND.Play_Sound(L"SQ_SpecialHero_Kyle", CHANNELID::SOUND_BGM, 0.5f * g_fBgmRatio);
+		else if (m_Desc.eHeroType == HERO::YEOPO)
+			SOUND.Play_Sound(L"SQ_SpecialHero_Yeopo", CHANNELID::SOUND_BGM, 0.5f * g_fBgmRatio);
+
+		m_bPlayGachaSceneBGM = true;
+	}
 }
