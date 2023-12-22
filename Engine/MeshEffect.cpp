@@ -302,10 +302,6 @@ void MeshEffect::InitialTransform(_float4x4 mParentWorldMatrix, const _float3& v
 		                  * _float4x4::CreateRotationZ(m_vStartRotation.z)
                           * _float4x4::CreateTranslation(m_vStartPos);
     
-		if (m_tDesc.iMeshCnt > 1)
-			int a = 0;
-
-
     // move to parent space 
     Get_Transform()->Set_WorldMat(matLocal * m_mInGroupWorldMatrix * mParentWorldMatrix);
     
@@ -354,6 +350,8 @@ void MeshEffect::Set_TransformDesc(void* pArg)
 
     m_fCurrRoundAngle = MathUtils::Get_RandomFloat(m_tTransform_Desc.vInitRoundAngle.x, m_tTransform_Desc.vInitRoundAngle.y);
     m_fCurrRoundAngle *= (XM_PI / 180.f);
+
+    // Set random axi
     m_vRoundAxis_Up = _float3(
         MathUtils::Get_RandomFloat(m_tTransform_Desc.vRoundAxis_Min.x, m_tTransform_Desc.vRoundAxis_Max.x),
         MathUtils::Get_RandomFloat(m_tTransform_Desc.vRoundAxis_Min.y, m_tTransform_Desc.vRoundAxis_Max.y),
@@ -377,18 +375,7 @@ void MeshEffect::Set_TransformDesc(void* pArg)
         MathUtils::Get_RandomFloat(pDesc->vPosRange.y / 2.f * (-1.f), pDesc->vPosRange.y / 2.f),
         MathUtils::Get_RandomFloat(pDesc->vPosRange.z / 2.f * (-1.f), pDesc->vPosRange.z / 2.f)
     );
-    if (12 == m_tTransform_Desc.iTranslateOption) 
-    {
-        // Round
-        _float2 vPosOnCircle = { // x,z
-            cos(m_fCurrRoundAngle) * m_tTransform_Desc.vRoundRadius.x,
-            sin(m_fCurrRoundAngle) * m_tTransform_Desc.vRoundRadius.x
-        };
-
-        m_vStartPos += ((m_vRoundAxis_Right * vPosOnCircle.x)
-                      + (m_vRoundAxis_Look * vPosOnCircle.y));
-    }
-
+   
     // For. Initial Scale    
     m_vStartScale = _float3(
         MathUtils::Get_RandomFloat(pDesc->vInitScale_Min.x, pDesc->vInitScale_Max.x),
@@ -725,12 +712,10 @@ void MeshEffect::Translate()
         // Get current radius
         _float2 vTemp_vec2 = XMVectorLerp(_float2(m_tTransform_Desc.vRoundRadius.x, 0.f), _float2(m_tTransform_Desc.vRoundRadius.y, 0.f), m_fLifeTimeRatio);
         _float fRadius = vTemp_vec2.x;
-        
+
         // Update current angle        
         m_fCurrRoundAngle += (fSpeed * (XM_PI / 180.f));
-        if (m_fCurrRoundAngle >= XM_PI)
-            m_fCurrRoundAngle -= XM_PI; 
-            
+
         // Move 
         if (m_bToolMode_On)
         {

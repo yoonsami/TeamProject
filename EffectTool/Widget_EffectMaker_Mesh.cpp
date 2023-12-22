@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Widget_EffectMaker_Mesh.h"
 
+#include "MathUtils.h"
+
 /* Components */
 #include "MeshEffect.h"
 #include "Texture.h"
@@ -1004,10 +1006,11 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 
 			// Axis
 			ImGui::Text("Setting Axis Option##Movement");
-			ImGui::RadioButton("Static##Movement_SettingAxisOption", &m_iInitRoundAngleOption, 0);
+			ImGui::RadioButton("Static##Movement_SettingAxisOption", &m_RoundAxisOption, 0);
 			ImGui::SameLine();
-			ImGui::RadioButton("Random in range##Movement_SettingAxisOption", &m_iInitRoundAngleOption, 1);
-			if (0 == m_iInitRoundAngleOption)
+			ImGui::RadioButton("Random in range(All different)##Movement_SettingAxisOption", &m_RoundAxisOption, 1);
+			ImGui::RadioButton("Random in range(All Same)##Movement_SettingAxisOption", &m_RoundAxisOption, 2);
+			if (0 == m_RoundAxisOption)
 			{
 				ImGui::InputFloat3("Axis range(min)##Movement_SettingAxisOption", m_fRoundAxis_Min);
 				memcpy(m_fRoundAxis_Max, m_fRoundAxis_Min, sizeof(m_fRoundAxis_Min));
@@ -1177,6 +1180,22 @@ void Widget_EffectMaker_Mesh::Create()
 			EVENTMGR.Delete_Object(iter);
 	}
 
+	// translation round axis (if option is random in range + all same)
+	_float fFinalRoundAxis_Min[3] = { 0.f, 0.f, 0.f };
+	_float fFinalRoundAxis_Max[3] = { 0.f, 0.f, 0.f };
+	if (2 == m_RoundAxisOption) // round axis is random in range but all same
+	{
+		fFinalRoundAxis_Min[0] = MathUtils::Get_RandomFloat(m_fRoundAxis_Min[0], m_fRoundAxis_Max[0]);
+		fFinalRoundAxis_Min[1] = MathUtils::Get_RandomFloat(m_fRoundAxis_Min[1], m_fRoundAxis_Max[1]);
+		fFinalRoundAxis_Min[2] = MathUtils::Get_RandomFloat(m_fRoundAxis_Min[2], m_fRoundAxis_Max[2]);
+		memcpy(fFinalRoundAxis_Max, fFinalRoundAxis_Min, sizeof(fFinalRoundAxis_Min));
+	}
+	else
+	{
+		memcpy(fFinalRoundAxis_Min, m_fRoundAxis_Min, sizeof(m_fRoundAxis_Min));
+		memcpy(fFinalRoundAxis_Max, m_fRoundAxis_Max, sizeof(m_fRoundAxis_Max));
+	}
+
 	for (_int n = 0; n < m_iMeshCnt; n++)
 	{
 		CUR_SCENE->Get_Camera(L"Default")->Get_Camera()->Set_EffectToolOn(true);
@@ -1332,8 +1351,9 @@ void Widget_EffectMaker_Mesh::Create()
 				{ m_vCurvePoint_Force[0], m_vCurvePoint_Force[1], m_vCurvePoint_Force[2], m_vCurvePoint_Force[3] },
 				_float2(m_fRoundRadius),
 				_float2(m_fInitRoundAngle),
-				_float3(m_fRoundAxis_Min),
-				_float3(m_fRoundAxis_Max),
+				m_RoundAxisOption,
+				_float3(fFinalRoundAxis_Min),
+				_float3(fFinalRoundAxis_Max),
 
 				m_iScalingOption,
 				_float3(m_fEndScaleOffset),
@@ -1492,9 +1512,10 @@ void Widget_EffectMaker_Mesh::Save()
 		file->Write<_float2>(_float2(m_fInitRoundAngle));
 		file->Write<_float3>(_float3(m_fRoundAxis_Min));
 		file->Write<_float3>(_float3(m_fRoundAxis_Max));
+		file->Write<_float>(_float(m_RoundAxisOption));
 
 		/* Additional */
-		file->Write<_float3>(_float3(0.f, 0.f, 0.f));
+		file->Write<_float2>(_float2(0.f, 0.f));
 		file->Write<_float4>(_float4(0.f, 0.f, 0.f, 0.f));
 		file->Write<_float4>(_float4(0.f, 0.f, 0.f, 0.f));		
 	}	
@@ -1720,9 +1741,10 @@ void Widget_EffectMaker_Mesh::Load()
 	memcpy(m_fRoundAxis_Min, &vTemp_vec3, sizeof(m_fRoundAxis_Min));
 	vTemp_vec3 = file->Read<_float3>();
 	memcpy(m_fRoundAxis_Max, &vTemp_vec3, sizeof(m_fRoundAxis_Max));
+	m_RoundAxisOption = (_int)file->Read<_float>();
 
 	/* Additional */
-	_float3 fAdditional1 = file->Read<_float3>();
+	_float2 fAdditional1 = file->Read<_float2>();
 	_float4 fAdditional2 = file->Read<_float4>();
 	_float4 fAdditional3 = file->Read<_float4>();
 

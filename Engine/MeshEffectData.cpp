@@ -173,9 +173,10 @@ void MeshEffectData::Load(const wstring& path)
     m_tTransformDesc.vInitRoundAngle = file->Read<_float2>();
     m_tTransformDesc.vRoundAxis_Min = file->Read<_float3>();
     m_tTransformDesc.vRoundAxis_Max = file->Read<_float3>();
+    m_tTransformDesc.iRoundAxisOption = (_int)file->Read<_float>();
     
     /* additional.. */
-    _float3 vAdditional1 = file->Read<_float3>();
+    _float2 vAdditional1 = file->Read<_float2>();
     _float4 vAdditional2 = file->Read<_float4>();
     _float4 vAdditional3 = file->Read<_float4>();
 }

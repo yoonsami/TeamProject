@@ -225,10 +225,10 @@ private:
 	_float2					m_vCurvePoint_Force[4] = { _float2(0.f, 0.f),_float2(0.3f, 0.5f), _float2(0.7f, 0.5f), _float2(1.f, 1.f) };	
 	
 	_float					m_fRoundRadius[2] = {1.f, 1.f};
+	_float					m_fInitRoundAngle[2] = { 0.f, 0.f };
+	_int					m_RoundAxisOption = { 0 };
 	_float					m_fRoundAxis_Min[3] = { 0.f, 1.f, 0.f };
 	_float					m_fRoundAxis_Max[3] = { 0.f, 1.f, 0.f };
-	_int					m_iInitRoundAngleOption = { 0 };
-	_float					m_fInitRoundAngle[2] = { 0.f, 0.f };
 
 	_int					m_iScalingOption = { 0 };				// no change, change to endscale
 	_float					m_fEndScaleOffset[3] = { 0.f, 0.f, 0.f };
