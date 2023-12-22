@@ -1009,8 +1009,8 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 			ImGui::RadioButton("Random in range##Movement_SettingAxisOption", &m_iInitRoundAngleOption, 1);
 			if (0 == m_iInitRoundAngleOption)
 			{
-				if (ImGui::InputFloat3("Axis range(min)##Movement_SettingAxisOption", m_fRoundAxis_Min))
-					memcpy(m_fRoundAxis_Min, m_fRoundAxis_Max, sizeof(m_fRoundAxis_Min));
+				ImGui::InputFloat3("Axis range(min)##Movement_SettingAxisOption", m_fRoundAxis_Min);
+				memcpy(m_fRoundAxis_Max, m_fRoundAxis_Min, sizeof(m_fRoundAxis_Min));
 			}
 			else
 			{

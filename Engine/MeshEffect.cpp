@@ -359,6 +359,12 @@ void MeshEffect::Set_TransformDesc(void* pArg)
         MathUtils::Get_RandomFloat(m_tTransform_Desc.vRoundAxis_Min.y, m_tTransform_Desc.vRoundAxis_Max.y),
         MathUtils::Get_RandomFloat(m_tTransform_Desc.vRoundAxis_Min.z, m_tTransform_Desc.vRoundAxis_Max.z)
     );
+    if (m_vRoundAxis_Up.y == 0.f && m_vRoundAxis_Up.z == 0.f)
+        m_vRoundAxis_Look = _float3(0.f, 1.f, 0.f) * m_vRoundAxis_Up.x;
+    else if (m_vRoundAxis_Up.x == 0.f && m_vRoundAxis_Up.z == 0.f)
+        m_vRoundAxis_Look = _float3(0.f, 0.f, 1.f) * m_vRoundAxis_Up.y;
+    else if (m_vRoundAxis_Up.x == 0.f && m_vRoundAxis_Up.y == 0.f)
+        m_vRoundAxis_Look = _float3(1.f, 0.f, 0.f) * m_vRoundAxis_Up.z;    
     m_vRoundAxis_Up.Normalize();
     m_vRoundAxis_Right = XMVector3Cross(m_vRoundAxis_Up, m_vRoundAxis_Look);
     m_vRoundAxis_Right.Normalize();
@@ -729,10 +735,11 @@ void MeshEffect::Translate()
         if (m_bToolMode_On)
         {
             // TODO 
+
         }
         else
         {
-            // TODO 
+            
         }
         break;
     }
@@ -799,10 +806,9 @@ void MeshEffect::Scaling()
 
 void MeshEffect::Turn()
 {
-    // Billbord 
     if (m_tTransform_Desc.iTurnOption == 3)
     {
-        //
+        // Billbord 
         BillBoard();
     }
     else
