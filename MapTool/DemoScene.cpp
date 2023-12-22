@@ -80,19 +80,17 @@ void GranseedScene::Render_SampleMapObject()
 
 HRESULT GranseedScene::Load_Scene()
 {
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Skybox\\");
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Field\\");
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Mir\\");
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Kris\\");
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Spike\\");
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Yeopo\\");
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Kyle\\");
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Yeonhee\\");
+	wstring MapObjPath = L"..\\Resources\\Models\\MapObject\\";
+	wstring MapFolderName = L"Yeonhee\\";
+	m_wstrMapName = MapFolderName;
+	RESOURCES.CreateModel(MapObjPath + m_wstrMapName);
+	RESOURCES.CreateModel(MapObjPath + L"Skybox\\");
 
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\Spear_Ace\\");
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\Yeonhee\\");
-	//RESOURCES.CreateModel(L"..\\Resources\\Models\\");
+
 	Load_DemoModel();
+
 	shared_ptr<GameObject> sky = make_shared<GameObject>();
 	sky->GetOrAddTransform();
 	sky->Add_Component(make_shared<ModelRenderer>(RESOURCES.Get<Shader>(L"SkyBox.fx")));
@@ -142,15 +140,15 @@ void GranseedScene::Load_DemoModel()
 void GranseedScene::Load_Camera()
 {
 	{
-		//Ä«¸Þ¶ó·Î »ç¿ëÇÒ GameObject »ý¼º
+		//Ä«ï¿½Þ¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ GameObject ï¿½ï¿½ï¿½ï¿½
 		shared_ptr<GameObject> camera = make_shared<GameObject>();
 
-		// Transform Component Ãß°¡
+		// Transform Component ï¿½ß°ï¿½
 		camera->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, 3.f, -3.f, 1.f));
 
 		camera->GetOrAddTransform()->Set_Speed(5.f);
 
-		// Ä«¸Þ¶ó Component »ý¼º 
+		// Ä«ï¿½Þ¶ï¿½ Component ï¿½ï¿½ï¿½ï¿½ 
 		CameraDesc desc;
 		desc.fFOV = XM_PI / 3.f;
 		desc.strName = L"Default";
@@ -164,25 +162,25 @@ void GranseedScene::Load_Camera()
 
 
 		camera->Get_Camera()->Set_ProjType(ProjectionType::Perspective);
-		//Layer_UI¿¡ ÀÖ´Â ¿ÀºêÁ§Æ®¸¦ ÄÃ¸µÇÏ°Ú´Ù.
+		//Layer_UIï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ã¸ï¿½ï¿½Ï°Ú´ï¿½.
 		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_UI, true);
 
-		// MonoBehaviour(Component Áß °íÁ¤ÀÌ ¾Æ´Ñ°Íµé) Ãß°¡
-		// ÀÏºÎ·¯ ±â´É ³ª´²³ùÀ½
+		// MonoBehaviour(Component ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ñ°Íµï¿½) ï¿½ß°ï¿½
+		// ï¿½ÏºÎ·ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		camera->Add_Component(make_shared<DemoCameraScript1>());
 		camera->Add_Component(make_shared<DemoCameraScript2>());
 
 		Add_GameObject(camera);
 	}
-	// »ùÇÃ¿ÀºêÁ§Æ®Ä«¸Þ¶ó
+	// ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½Þ¶ï¿½
 	{
-		//Ä«¸Þ¶ó·Î »ç¿ëÇÒ GameObject »ý¼º
+		//Ä«ï¿½Þ¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ GameObject ï¿½ï¿½ï¿½ï¿½
 		shared_ptr<GameObject> camera = make_shared<GameObject>();
 
-		// Transform Component Ãß°¡
+		// Transform Component ï¿½ß°ï¿½
 		camera->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(0.f, -100.f + 3.f, -3.f, 1.f));
 
-		// Ä«¸Þ¶ó Component »ý¼º 
+		// Ä«ï¿½Þ¶ï¿½ Component ï¿½ï¿½ï¿½ï¿½ 
 		CameraDesc desc;
 		desc.fFOV = XM_PI / 3.f;
 		desc.strName = L"SampleCamera";
@@ -194,7 +192,7 @@ void GranseedScene::Load_Camera()
 		camera->Add_Component(cameraComponent);
 
 		camera->Get_Camera()->Set_ProjType(ProjectionType::Perspective);
-		//½ºÄ«ÀÌ¹Ú½º ÄÃ¸µ.
+		//ï¿½ï¿½Ä«ï¿½Ì¹Ú½ï¿½ ï¿½Ã¸ï¿½.
 		camera->Get_Camera()->Set_CullingMaskLayerOnOff(Layer_Skybox, true);
 
 		Add_GameObject(camera);
@@ -207,7 +205,7 @@ void GranseedScene::Load_Light()
 	lightObj->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(-10.f, 25.f, -10.f, 1.f));
 	lightObj->GetOrAddTransform()->Set_LookDir(_float3(2.f,-4.f,3.f));
 	{
-		// LightComponent »ý¼º ÈÄ ¼¼ÆÃ
+		// LightComponent ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		shared_ptr<Light> lightCom = make_shared<Light>();
 		//lightCom->Set_Diffuse(Color(1.f));
 		//lightCom->Set_Ambient(Color(0.8f));
