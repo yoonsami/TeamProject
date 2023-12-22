@@ -359,13 +359,13 @@ void MeshEffect::Set_TransformDesc(void* pArg)
         MathUtils::Get_RandomFloat(m_tTransform_Desc.vRoundAxis_Min.y, m_tTransform_Desc.vRoundAxis_Max.y),
         MathUtils::Get_RandomFloat(m_tTransform_Desc.vRoundAxis_Min.z, m_tTransform_Desc.vRoundAxis_Max.z)
     );
+    m_vRoundAxis_Up.Normalize();
     if (m_vRoundAxis_Up.y == 0.f && m_vRoundAxis_Up.z == 0.f)
         m_vRoundAxis_Look = _float3(0.f, 1.f, 0.f) * m_vRoundAxis_Up.x;
     else if (m_vRoundAxis_Up.x == 0.f && m_vRoundAxis_Up.z == 0.f)
         m_vRoundAxis_Look = _float3(0.f, 0.f, 1.f) * m_vRoundAxis_Up.y;
     else if (m_vRoundAxis_Up.x == 0.f && m_vRoundAxis_Up.y == 0.f)
         m_vRoundAxis_Look = _float3(1.f, 0.f, 0.f) * m_vRoundAxis_Up.z;    
-    m_vRoundAxis_Up.Normalize();
     m_vRoundAxis_Right = XMVector3Cross(m_vRoundAxis_Up, m_vRoundAxis_Look);
     m_vRoundAxis_Right.Normalize();
     m_vRoundAxis_Look = XMVector3Cross(m_vRoundAxis_Up, m_vRoundAxis_Right);
@@ -723,11 +723,13 @@ void MeshEffect::Translate()
         _float fSpeed = Calc_Spline(m_tTransform_Desc.iSpeedType, m_SplineInput_Force);
 
         // Get current radius
-        _float2 vTemp_vec2 = XMVectorLerp(_float2(m_tTransform_Desc.vRoundRadius.x, 0.f), _float2(m_tTransform_Desc.vRoundRadius.x, 0.f), m_fLifeTimeRatio);
+        _float2 vTemp_vec2 = XMVectorLerp(_float2(m_tTransform_Desc.vRoundRadius.x, 0.f), _float2(m_tTransform_Desc.vRoundRadius.y, 0.f), m_fLifeTimeRatio);
         _float fRadius = vTemp_vec2.x;
         
         // Update current angle        
         m_fCurrRoundAngle += (fSpeed * (XM_PI / 180.f));
+        if (m_fCurrRoundAngle >= XM_PI)
+            m_fCurrRoundAngle -= XM_PI; 
             
         // Move 
         if (m_bToolMode_On)
@@ -736,9 +738,8 @@ void MeshEffect::Translate()
                 cos(m_fCurrRoundAngle) * fRadius,
                 sin(m_fCurrRoundAngle) * fRadius
             };
-
-            _float3 vCurrPos = m_vStartPos + ((m_vRoundAxis_Right * vPosOnCircle.x)
-                                            + (m_vRoundAxis_Look * vPosOnCircle.y));
+            
+            _float3 vCurrPos = m_vStartPos + (m_vRoundAxis_Right * vPosOnCircle.x) + (m_vRoundAxis_Look * vPosOnCircle.y);
             Get_Transform()->Set_State(Transform_State::POS, _float4(vCurrPos, 1.f));
         }
         else
@@ -748,8 +749,7 @@ void MeshEffect::Translate()
                sin(m_fCurrRoundAngle) * fRadius
             };
 
-            m_vLocalPos = m_vStartPos + ((m_vRoundAxis_Right * vPosOnCircle.x)
-                + (m_vRoundAxis_Look * vPosOnCircle.y));
+            m_vLocalPos = m_vStartPos + (m_vRoundAxis_Right * vPosOnCircle.x) + (m_vRoundAxis_Look * vPosOnCircle.y);
         }
         break;
     }
