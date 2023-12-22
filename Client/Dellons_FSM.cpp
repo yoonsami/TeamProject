@@ -1185,7 +1185,7 @@ void Dellons_FSM::skill_91100()
 {
     if (Init_CurFrame(0))
         Add_Effect(L"Dellons_91100");
-    if (Init_CurFrame(17))
+    else if (Init_CurFrame(17))
         Add_And_Set_Effect(L"Dellons_91100_End");
 
     Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
@@ -1444,7 +1444,7 @@ void Dellons_FSM::skill_200200()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f + _float3::Up;
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_SKILL, 10.f, L"Hit_Slash_Dark");
+        Create_ForwardMovingSkillCollider(Player_Attack, L"Player_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_SKILL, 10.f, L"Hit_Slash_Dark");
     }
 
     Look_DirToTarget();

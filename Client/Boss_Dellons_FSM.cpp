@@ -844,7 +844,11 @@ void Boss_Dellons_FSM::airborne_end()
             script->Init();
 
             if (!m_pAttackCollider.expired())
+            {
+                SOUND.Play_Sound(L"Dellons_die_06", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
                 EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+            }
 
             if (!m_pWeapon.expired())
             {
@@ -981,7 +985,11 @@ void Boss_Dellons_FSM::knock_end_loop()
         script->Init();
 
         if (!m_pAttackCollider.expired())
+        {
+            SOUND.Play_Sound(L"Dellons_die_06", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
             EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+        }
 
         if (!m_pWeapon.expired())
         {
@@ -1103,7 +1111,11 @@ void Boss_Dellons_FSM::knockdown_end()
             script->Init();
 
             if (!m_pAttackCollider.expired())
+            {
+                SOUND.Play_Sound(L"Dellons_die_06", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
                 EVENTMGR.Delete_Object(m_pAttackCollider.lock());
+            }
 
             if (!m_pWeapon.expired())
             {
@@ -1343,7 +1355,7 @@ void Boss_Dellons_FSM::skill_91100()
 {
     if (Init_CurFrame(0))
         Add_Effect(L"Dellons_91100");
-    if (Init_CurFrame(17))
+    else if (Init_CurFrame(17))
         Add_And_Set_Effect(L"Dellons_91100_End");
 
     Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
@@ -1398,6 +1410,8 @@ void Boss_Dellons_FSM::skill_100100()
 {
     if (Init_CurFrame(10))
     {
+        SOUND.Play_Sound(L"Skill_05_A_Dellons_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         Add_And_Set_Effect(L"Dellons_100100");
@@ -1440,7 +1454,6 @@ void Boss_Dellons_FSM::skill_100100_Init()
     m_tAttackCoolTime.fAccTime = 0.f;
     m_bSetPattern = false;
 
-    SOUND.Play_Sound(L"Skill_05_A_Dellons_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     AttackCollider_Off();
 
@@ -1511,6 +1524,8 @@ void Boss_Dellons_FSM::skill_200100()
 
     if (Init_CurFrame(7))
     {
+        SOUND.Play_Sound(L"Skill_08_A_Dellons_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
@@ -1536,12 +1551,11 @@ void Boss_Dellons_FSM::skill_200100_Init()
     m_tAttackCoolTime.fAccTime = 0.f;
     m_bSetPattern = false;
 
-    SOUND.Play_Sound(L"Skill_08_A_Dellons_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     AttackCollider_Off();
 
     m_bInvincible = false;
-    m_bSuperArmor = false;
+    m_bSuperArmor = true;
 }
 
 void Boss_Dellons_FSM::skill_200200()
@@ -1565,7 +1579,7 @@ void Boss_Dellons_FSM::skill_200200()
         desc.fLimitDistance = 0.f;
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f + _float3::Up;
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Monster_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_SKILL, 10.f, L"Hit_Slash_Dark");
+        Create_ForwardMovingSkillCollider(Monster_Attack, L"Monster_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_SKILL, 10.f, L"Hit_Slash_Dark");
     }
 
     if (Is_AnimFinished())
@@ -1591,7 +1605,7 @@ void Boss_Dellons_FSM::skill_200200_Init()
     AttackCollider_Off();
 
     m_bInvincible = false;
-    m_bSuperArmor = false;
+    m_bSuperArmor = true;
 }
 
 void Boss_Dellons_FSM::skill_300100()
