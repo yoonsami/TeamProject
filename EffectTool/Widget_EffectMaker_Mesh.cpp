@@ -218,6 +218,9 @@ void Widget_EffectMaker_Mesh::ImGui_FinishedEffect()
 	ImGui::SeparatorText("Effect List");
 	if (ImGui::Button("Load"))
 		Load();
+
+	if (ImGui::Button("Update Save MeshEffect files"))
+		SaveAdditionalData();
 	
 	ImGui::InputText("##FinishedEffectFilter", m_szFinishedEffectFilter, MAX_PATH);
 	ImGui::SameLine();
@@ -993,9 +996,29 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 			ImGui::InputFloat2("Point4 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[3]);
 			break;
 		case 12:
-			ImGui::InputFloat2("Radius(Start, End)##Movement", m_fEndPositionOffset_Min);
-			ImGui::InputFloat3("Axis##MovementRound", m_fRoundAxis);
+			// radius 
+			ImGui::InputFloat2("Radius(Start, End)##Movement", m_fRoundRadius);
 
+			// Start angle 
+			ImGui::InputFloat2("Start Degree(min, max)##Movement", m_fInitRoundAngle);
+
+			// Axis
+			ImGui::Text("Setting Axis Option##Movement");
+			ImGui::RadioButton("Static##Movement_SettingAxisOption", &m_iInitRoundAngleOption, 0);
+			ImGui::SameLine();
+			ImGui::RadioButton("Random in range##Movement_SettingAxisOption", &m_iInitRoundAngleOption, 1);
+			if (0 == m_iInitRoundAngleOption)
+			{
+				if (ImGui::InputFloat3("Axis range(min)##Movement_SettingAxisOption", m_fRoundAxis_Min))
+					memcpy(m_fRoundAxis_Min, m_fRoundAxis_Max, sizeof(m_fRoundAxis_Min));
+			}
+			else
+			{
+				ImGui::InputFloat3("Axis range(min)##Movement_SettingAxisOption", m_fRoundAxis_Min);
+				ImGui::InputFloat3("Axis range(max)##Movement_SettingAxisOption", m_fRoundAxis_Max);
+			}
+
+			// Speed 
 			ImGui::Text("Speed");
 			ImGui::RadioButton("Curve##MoveSpeed", &m_iSpeedType, 0);
 			ImGui::SameLine();
@@ -1307,6 +1330,10 @@ void Widget_EffectMaker_Mesh::Create()
 				_float3(m_fEndPositionOffset_Max),
 				m_iSpeedType,
 				{ m_vCurvePoint_Force[0], m_vCurvePoint_Force[1], m_vCurvePoint_Force[2], m_vCurvePoint_Force[3] },
+				_float2(m_fRoundRadius),
+				_float2(m_fInitRoundAngle),
+				_float3(m_fRoundAxis_Min),
+				_float3(m_fRoundAxis_Max),
 
 				m_iScalingOption,
 				_float3(m_fEndScaleOffset),
@@ -1459,6 +1486,17 @@ void Widget_EffectMaker_Mesh::Save()
 		file->Write<_float3>(_float3(m_fRandomAxis_Max));
 		for (_uint i = 0; i < 2; i++)
 			file->Write<_bool>(m_bBillbordAxes[i]);
+
+		/* Additional */
+		file->Write<_float2>(_float2(m_fRoundRadius));
+		file->Write<_float2>(_float2(m_fInitRoundAngle));
+		file->Write<_float3>(_float3(m_fRoundAxis_Min));
+		file->Write<_float3>(_float3(m_fRoundAxis_Max));
+
+		/* Additional */
+		file->Write<_float3>(_float3(0.f, 0.f, 0.f));
+		file->Write<_float4>(_float4(0.f, 0.f, 0.f, 0.f));
+		file->Write<_float4>(_float4(0.f, 0.f, 0.f, 0.f));		
 	}	
 	
 	RESOURCES.ReloadOrAddMeshEffectData(Utils::ToWString(strFileName), Utils::ToWString(strFilePath));
@@ -1673,6 +1711,21 @@ void Widget_EffectMaker_Mesh::Load()
 	for (_int i = 0; i < 2; i++)
 		m_bBillbordAxes[i] = file->Read<_bool>();
 
+	/* Translate (round) */
+	vTemp_vec2 = file->Read<_float2>();
+	memcpy(m_fRoundRadius, &vTemp_vec2, sizeof(m_fRoundRadius));
+	vTemp_vec2 = file->Read<_float2>();
+	memcpy(m_fInitRoundAngle, &vTemp_vec2, sizeof(m_fInitRoundAngle));
+	vTemp_vec3 = file->Read<_float3>();
+	memcpy(m_fRoundAxis_Min, &vTemp_vec3, sizeof(m_fRoundAxis_Min));
+	vTemp_vec3 = file->Read<_float3>();
+	memcpy(m_fRoundAxis_Max, &vTemp_vec3, sizeof(m_fRoundAxis_Max));
+
+	/* Additional */
+	_float3 fAdditional1 = file->Read<_float3>();
+	_float4 fAdditional2 = file->Read<_float4>();
+	_float4 fAdditional3 = file->Read<_float4>();
+
 	// For. Create Effect GameObjects
 	Create();
 }
@@ -1715,6 +1768,23 @@ _bool Widget_EffectMaker_Mesh::SearchOnList(const string& strTag, const vector<s
 		iIndex++;
 	}
 	return bFind;
+}
+
+void Widget_EffectMaker_Mesh::SaveAdditionalData()
+{
+	_int iIndex = 0;
+	for (auto& iter : m_vecFinishedEffects)
+	{
+		ImGui::ListBox("##FinishedEffect", &m_iFinishedObject, m_pszFinishedEffects, m_iNumFinishedEffects, 20);
+
+		// Load 
+		m_iFinishedObject = iIndex;
+		Load();
+
+		// Save
+		Save();
+		iIndex++;
+	}
 }
 
 void Widget_EffectMaker_Mesh::SubWidget_TextureCombo(_int* iSelected, string* strSelected, string strFilePath, const char* pszWidgetKey)
