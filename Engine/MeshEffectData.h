@@ -132,6 +132,7 @@ public:
         _float2     vCurvePoint_Force[4] = { { 0.f, 0.f },{ 0.f, 0.f } ,{ 0.f, 0.f } ,{ 0.f, 0.f } };
         _float2     vRoundRadius = { 1.f, 1.f };
         _float2     vInitRoundAngle = { 0.f, 0.f };
+        _int        iRoundAxisOption = { 0 };
         _float3     vRoundAxis_Min = { 0.f, 1.f, 0.f };
         _float3     vRoundAxis_Max = { 0.f, 1.f, 0.f };
 

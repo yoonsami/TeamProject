@@ -39,7 +39,8 @@ HRESULT Yeonhee_FSM::Init()
         m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
         
         m_iHeadBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-Head");
-
+        m_iLFingerBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-L-Finger12");
+        m_iRFingerBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-R-Finger12");
         m_pCamera = CUR_SCENE->Get_MainCamera();
 
         m_eElementType = GET_DATA(HERO::YEONHEE).Element;
@@ -70,6 +71,7 @@ HRESULT Yeonhee_FSM::Init()
 
 void Yeonhee_FSM::Tick()
 {
+    Cal_FingerBoneMatrix();
     State_Tick();
 
     if (!m_pAttackCollider.expired())
@@ -1560,4 +1562,17 @@ void Yeonhee_FSM::Use_Dash()
                 m_eCurState = STATE::skill_93100;
         }
     }
+}
+
+void Yeonhee_FSM::Cal_FingerBoneMatrix()
+{
+	_float4x4 mLFinger = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iLFingerBoneIndex) *
+        _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+    m_vLFingerPos = _float4(mLFinger.Translation(),1.f);
+
+	_float4x4 mRFinger = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iRFingerBoneIndex) *
+		_float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+	m_vRFingerPos = _float4(mRFinger.Translation(), 1.f);
 }

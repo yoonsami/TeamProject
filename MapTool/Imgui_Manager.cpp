@@ -1404,6 +1404,9 @@ shared_ptr<GameObject> ImGui_Manager::Create_MapObject(MapObjectScript::MapObjec
         renderer->Set_PassType((ModelRenderer::INSTANCE_PASSTYPE)CreateDesc.bCullNone);
 
         _float4 AddDiffuseUVweight = _float4(_float3{ CreateDesc.AddDiffuseColor }, CreateDesc.fUVWeight);
+        
+        if (CreateDesc.fUVWeight >= 2.f)
+            int a = 0;
         renderer->SetVec4(0, AddDiffuseUVweight);
     }
 
