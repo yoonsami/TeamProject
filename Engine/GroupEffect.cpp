@@ -2,6 +2,7 @@
 #include "GroupEffect.h"
 
 #include "Utils.h"
+#include "MathUtils.h"
 #include "FileUtils.h"
 #include "MeshEffect.h"
 #include "MeshEffectData.h"
@@ -24,10 +25,11 @@ GroupEffect::~GroupEffect()
 
 HRESULT GroupEffect::Init()
 {
-    //m_RenderParamBuffer.resize(m_vMemberEffectData.size());
+    // For. Cool Time of each Member effects
     m_vCreateCoolTime.resize(m_vMemberEffectData.size());
     fill(m_vCreateCoolTime.begin(), m_vCreateCoolTime.end(), 0.f);
 
+    // For. RenderingGroup
 	map<wstring, vector<shared_ptr<MeshEffectData>>> renderingGroup;
 
 
@@ -90,6 +92,28 @@ HRESULT GroupEffect::Init()
 
     }
 
+    // For. Round Axis
+    _int iIndex = 0;
+    for (auto& iter : m_vMemberEffectData)
+    {
+        wstring wstrMeshEffectDataKey = iter.wstrEffectTag;
+        Utils::DetachExt(wstrMeshEffectDataKey);
+        shared_ptr<MeshEffectData> meshEffectData = RESOURCES.Get<MeshEffectData>(wstrMeshEffectDataKey);
+        MeshEffectData::Transform_Desc tTransform_Desc = meshEffectData->Get_TransformDesc();
+
+        if (2 == tTransform_Desc.iRoundAxisOption)
+        {
+            pair<_int, _float3> RoundAxis;
+            RoundAxis.first = iIndex;
+            RoundAxis.second = _float3(
+                MathUtils::Get_RandomFloat(tTransform_Desc.vRoundAxis_Min.x, tTransform_Desc.vRoundAxis_Max.x),
+                MathUtils::Get_RandomFloat(tTransform_Desc.vRoundAxis_Min.y, tTransform_Desc.vRoundAxis_Max.y),
+                MathUtils::Get_RandomFloat(tTransform_Desc.vRoundAxis_Min.z, tTransform_Desc.vRoundAxis_Max.z)
+            );
+            m_RoundAxis.push_back(RoundAxis);
+        }
+        iIndex++;
+    }
 
     return S_OK;
 }
@@ -479,6 +503,19 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
     MeshEffectData::DESC tDesc = meshEffectData->Get_Desc();
     MeshEffectData::Transform_Desc tTransform_Desc = meshEffectData->Get_TransformDesc();
 
+    // Check round axis
+    if (2 == tTransform_Desc.iRoundAxisOption)
+    {
+        for (auto& iter : m_RoundAxis)
+        {
+            if (iter.first == iIndex)
+            {
+                tTransform_Desc.vRoundAxis_Min = iter.second;
+                tTransform_Desc.vRoundAxis_Max = iter.second;
+            }
+        }
+    }
+
     for (_int i = 0; i < tDesc.iMeshCnt; i++)
     {
         shared_ptr<GameObject> EffectObj = make_shared<GameObject>(); 
@@ -488,9 +525,6 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
 
         // For. Transform 
         EffectObj->GetOrAddTransform();
-       
-        //Quaternion qRotation = Quaternion::CreateFromYawPitchRoll(iter.vPivot_Rotation.y, iter.vPivot_Rotation.x, iter.vPivot_Rotation.z);
-        //qRotation.Normalize();
 
         // For. Shader 
         shared_ptr<Shader> shader;

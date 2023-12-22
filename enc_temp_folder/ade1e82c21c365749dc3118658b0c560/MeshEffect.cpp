@@ -106,7 +106,6 @@ void MeshEffect::MeshEffect_Final_Tick()
             return; 
         }
     }
-
 }
 
 void MeshEffect::Render()
@@ -1020,18 +1019,21 @@ _float MeshEffect::Calc_Spline(_int iType, _float* vSplineInput)
 
 void MeshEffect::BillBoard()
 {
-    _float3 vCurrDir = Get_Transform()->Get_State(Transform_State::LOOK).xyz();
-    vCurrDir.Normalize();
+	if (m_tTransform_Desc.iTurnOption == 3)
+	{
+		_float3 vCurrDir = Get_Transform()->Get_State(Transform_State::LOOK).xyz();
+		vCurrDir.Normalize();
 
-    _float3 vTargetDir = (CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
-    vTargetDir.Normalize();
+		_float3 vTargetDir = (CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_State(Transform_State::POS) - Get_Transform()->Get_State(Transform_State::POS)).xyz();
+		vTargetDir.Normalize();
 
-    if (m_tTransform_Desc.bBillbordAxes[0])
-    {
-        vTargetDir.y = 0.f;
-    }
+		if (m_tTransform_Desc.bBillbordAxes[0])
+		{
+            vTargetDir.y = 0.f;
+		}
 
-    Get_Transform()->Set_LookDir(vTargetDir);
+		Get_Transform()->Set_LookDir(vTargetDir);
+	}
 }
 
 _float4x4 MeshEffect::Get_LocalMatrix()

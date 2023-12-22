@@ -106,7 +106,6 @@ void MeshEffect::MeshEffect_Final_Tick()
             return; 
         }
     }
-
 }
 
 void MeshEffect::Render()
@@ -724,7 +723,7 @@ void MeshEffect::Translate()
                 sin(m_fCurrRoundAngle) * fRadius
             };
             
-            _float3 vCurrPos = m_vStartPos + (m_vRoundAxis_Right * vPosOnCircle.x) + (m_vRoundAxis_Look * vPosOnCircle.y);
+            _float3 vCurrPos = (m_vRoundAxis_Right * vPosOnCircle.x) + (m_vRoundAxis_Look * vPosOnCircle.y);
             Get_Transform()->Set_State(Transform_State::POS, _float4(vCurrPos, 1.f));
         }
         else
@@ -734,7 +733,7 @@ void MeshEffect::Translate()
                sin(m_fCurrRoundAngle) * fRadius
             };
 
-            m_vLocalPos = m_vStartPos + (m_vRoundAxis_Right * vPosOnCircle.x) + (m_vRoundAxis_Look * vPosOnCircle.y);
+            m_vLocalPos = (m_vRoundAxis_Right * vPosOnCircle.x) + (m_vRoundAxis_Look * vPosOnCircle.y);
         }
         break;
     }
