@@ -278,6 +278,7 @@ HRESULT GranseedScene::Load_Scene()
 	Get_Light()->Get_Light()->Get_LightInfo().color.emissive = Color(10.f);
 	g_fBrightness = 0.07f;
 	g_fContrast = 1.18f;
+
 	Add_Load_Index();	// 10
 
 	return S_OK;

@@ -40,9 +40,10 @@ HRESULT LoadingBarScript::Init()
         }
 
     }
-
+    m_bIsEndActivated = false;
     m_bIsLoadEnd = false;
     m_fMaxTime = 1.f;
+    m_fMaxAddTime = 0.1f;
 
     return S_OK;
 }
@@ -52,8 +53,10 @@ void LoadingBarScript::Tick()
 	if (m_pOwner.expired())
 		return;
 
-    if(false == m_bIsLoadEnd)
+    if (false == m_bIsEndActivated)
         Change_Text();
+    else if(true == m_bIsEndActivated)
+        Check_Time();
 }
 
 void LoadingBarScript::Change_Text()
@@ -63,14 +66,16 @@ void LoadingBarScript::Change_Text()
             return;
 
     m_iTargetNum = m_iCurLoadIndex * 10;
-    if (100 < m_iTargetNum)
+    if (100 <= m_iTargetNum && 100 <= m_iCurNum)
     {
         m_iTargetNum = 100;
-        m_bIsLoadEnd = true;
+        m_bIsEndActivated = true;
     }
 
-    if (m_iCurNum < m_iTargetNum)
+    m_fAddValueTime += fDT;
+    if (m_fMaxAddTime < m_fAddValueTime && m_iCurNum < m_iTargetNum)
     {
+        m_fAddValueTime = 0.f;
         ++m_iCurNum;
     }
 
@@ -98,4 +103,11 @@ void LoadingBarScript::Change_Text()
     else if (2 == m_iTextDotCount)
         m_addedObj[m_iTextIndex].lock()->Get_FontRenderer()->Get_Text() = L"리소스 로딩 중입니다...";
 
+}
+
+void LoadingBarScript::Check_Time()
+{
+    m_fCheckEndTime += fDT;
+    if (m_fMaxTime < m_fCheckEndTime)
+        m_bIsLoadEnd = true;
 }
