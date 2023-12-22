@@ -90,9 +90,12 @@ float3 CalculateLambertianBRDF(in float3 albedo)
 float NormalDistributionGGXTR(float3 n, float3 h, float a)
 {
     float a2 = a * a;
-    float NdotH = saturate(dot(n, h));
+    float NdotH = max(saturate(dot(n, h)),0.0);
     float NdotH2 = NdotH * NdotH;
 
+    if (NdotH == 1.f && a == 0.f)
+        return 0.f;
+    
     float nom = a2;
     float denom = (NdotH2 * (a2 - 1.0f) + 1.0f);
     denom = PI * denom * denom;
@@ -245,7 +248,7 @@ PBR_OUT PBRShade(
             attenuation = 0.f;
 
     }
-    color += (kD * diffuse + specular) * diffuseColor * 10.f * attenuation * NdotL;
+    color += (kD * diffuse + specular) * diffuseColor * attenuation * NdotL;
     color += ambient * attenuation;
 
     PBR_OUT output = (PBR_OUT) 0.f;

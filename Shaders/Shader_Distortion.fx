@@ -157,7 +157,6 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     if (bHasTexturemap7)
     {
         vSample_Op1 = TextureMap7.Sample(LinearSampler, vTexcoord_Op[0]);
-        vSample_Op1.rgb = pow(vSample_Op1.rgb, GAMMA);
     }
     
     if (bHasTexturemap10)
@@ -169,11 +168,7 @@ float4 PS_Wrap(EffectOut input) : SV_Target
     
     /* Mix four option textures */
     vOutColor = vSample_Op1;
-    
-    /* Gamma collection */
-    if (bUseTexColor_Op[0] || bUseTexColor_Op[1] || bUseTexColor_Op[2])
-        vOutColor.rgb = pow(vOutColor.rgb, 1.f / GAMMA);
-    
+        
     /* Blend */
     if (bHasTexturemap10)
         vOutColor.a *= vSample_Blend.r;
@@ -283,7 +278,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     if (bHasTexturemap7)
     {
         vSample_Op1 = TextureMap7.Sample(LinearSamplerClamp, vTexcoord_Op[0]);
-        vSample_Op1.rgb = pow(vSample_Op1.rgb, GAMMA);
+
     }
     
     if (bHasTexturemap10)
@@ -297,9 +292,7 @@ float4 PS_Clamp(EffectOut input) : SV_Target
     vOutColor = vSample_Op1;
 
     
-    /* Gamma collection */
-    if (bUseTexColor_Op[0] || bUseTexColor_Op[1] || bUseTexColor_Op[2])
-        vOutColor.rgb = pow(vOutColor.rgb, 1.f / GAMMA);
+
     
     /* Blend */
     if (bHasTexturemap10)
@@ -425,7 +418,7 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
     if (bHasTexturemap7)
     {
         vSample_Op1 = TextureMap7.Sample(LinearSampler, vTexcoord_Op[0]);
-        vSample_Op1.rgb = pow(vSample_Op1.rgb, GAMMA);
+
     }
     
     if (bHasTexturemap10)
@@ -438,9 +431,7 @@ float4 PS_Wrap_Instancing(EffectOutInstancing input) : SV_Target
     /* Mix four option textures */
     vOutColor = vSample_Op1;
     
-    /* Gamma collection */
-    if (bUseTexColor_Op[0] || bUseTexColor_Op[1] || bUseTexColor_Op[2])
-        vOutColor.rgb = pow(vOutColor.rgb, 1.f / GAMMA);
+
     
     /* Blend */
     if (bHasTexturemap10)
@@ -551,7 +542,7 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
     if (bHasTexturemap7)
     {
         vSample_Op1 = TextureMap7.Sample(LinearSamplerClamp, vTexcoord_Op[0]);
-        vSample_Op1.rgb = pow(vSample_Op1.rgb, GAMMA);
+
 
         float luminance = dot(vSample_Op1.rgb, float3(0.299, 0.587, 0.114));
         vSample_Op1.rgb = lerp(vSample_Op1.rgb, vSample_Op1.rgb * vColorOptions_Op[0].x, saturate(luminance));
@@ -570,9 +561,7 @@ float4 PS_Clamp_Instancing(EffectOutInstancing input) : SV_Target
     vOutColor = lerp(vOutColor, vSample_Op2, vSample_Op2.a);
     vOutColor = lerp(vOutColor, vSample_Op3, vSample_Op3.a);
     
-    /* Gamma collection */
-    if (bUseTexColor_Op[0] || bUseTexColor_Op[1] || bUseTexColor_Op[2])
-        vOutColor.rgb = pow(vOutColor.rgb, 1.f / GAMMA);
+
     
     /* Blend */
     if (bHasTexturemap10)

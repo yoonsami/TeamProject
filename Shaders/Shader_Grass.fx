@@ -284,7 +284,7 @@ PS_OUT_Deferred PS_Deferred(GS_GRASS_OUTPUT input)
     if (bHasDiffuseMap)
     {
         diffuseColor = DiffuseMap.Sample(LinearSamplerMirror, input.uv);
-        diffuseColor.rgb = pow(abs(diffuseColor.rgb), GAMMA);
+        To_LinearSpace(diffuseColor);
     }
     else
         diffuseColor = Material.diffuse;
@@ -292,7 +292,7 @@ PS_OUT_Deferred PS_Deferred(GS_GRASS_OUTPUT input)
     if (bHasSpecularMap)
     {
         specularColor = SpecularMap.Sample(LinearSampler, input.uv);
-        specularColor.rgb = pow(abs(specularColor.rgb), GAMMA);
+        To_LinearSpace(specularColor);
     }
     else
         specularColor = Material.specular;
@@ -300,12 +300,10 @@ PS_OUT_Deferred PS_Deferred(GS_GRASS_OUTPUT input)
     if (bHasEmissiveMap)
     {
         emissiveColor = EmissiveMap.Sample(LinearSampler, input.uv);
-        emissiveColor.rgb = pow(abs(emissiveColor.rgb), GAMMA);
+        To_LinearSpace(emissiveColor);
     }
     else
         emissiveColor = Material.emissive;
-    
-    diffuseColor = diffuseColor;
     
     output.position = float4(input.viewPosition.xyz, 1.f);
     output.normal = float4(input.viewNormal.xyz, 0.f);
@@ -345,7 +343,7 @@ PS_OUT_Deferred PS_Deferred_Instancing(GS_GRASS_INSTANCING_OUTPUT input)
     if (bHasDiffuseMap)
     {
         diffuseColor = DiffuseMap.Sample(LinearSamplerMirror, input.uv);
-        diffuseColor.rgb = pow(abs(diffuseColor.rgb), GAMMA);
+        To_LinearSpace(diffuseColor);
     }
     else
         diffuseColor = Material.diffuse;
@@ -358,7 +356,7 @@ PS_OUT_Deferred PS_Deferred_Instancing(GS_GRASS_INSTANCING_OUTPUT input)
     if (bHasSpecularMap)
     {
         specularColor = SpecularMap.Sample(LinearSampler, input.uv);
-        specularColor.rgb = pow(abs(specularColor.rgb), GAMMA);
+        To_LinearSpace(specularColor);
     }
     else
         specularColor = Material.specular;
@@ -366,7 +364,7 @@ PS_OUT_Deferred PS_Deferred_Instancing(GS_GRASS_INSTANCING_OUTPUT input)
     if (bHasEmissiveMap)
     {
         emissiveColor = EmissiveMap.Sample(LinearSampler, input.uv);
-        emissiveColor.rgb = pow(abs(emissiveColor.rgb), GAMMA);
+        To_LinearSpace(emissiveColor);
     }
     else
         emissiveColor = Material.emissive;
@@ -406,7 +404,6 @@ PBR_OUTPUT PS_PBR_Deferred(GS_GRASS_OUTPUT input)
     if (bHasTexturemap7)
     {
         ARM_Map = TextureMap7.Sample(LinearSampler, input.uv);
-        ARM_Map = pow(abs(ARM_Map), GAMMA);
     }
 
     if (bHasNormalMap)
@@ -415,7 +412,7 @@ PBR_OUTPUT PS_PBR_Deferred(GS_GRASS_OUTPUT input)
     if (bHasDiffuseMap)
     {
         diffuseColor = DiffuseMap.Sample(LinearSamplerMirror, input.uv);
-        diffuseColor.rgb = pow(abs(diffuseColor.rgb), GAMMA);
+        To_LinearSpace(diffuseColor);
     }
     else
         diffuseColor = Material.diffuse;
@@ -428,7 +425,7 @@ PBR_OUTPUT PS_PBR_Deferred(GS_GRASS_OUTPUT input)
     if (bHasEmissiveMap)
     {
         emissiveColor = EmissiveMap.Sample(LinearSampler, input.uv);
-        emissiveColor.rgb = pow(abs(emissiveColor.rgb), GAMMA);
+        To_LinearSpace(emissiveColor);
     }
     else
         emissiveColor = 0.f;
@@ -466,7 +463,6 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(GS_GRASS_INSTANCING_OUTPUT input)
     if (bHasTexturemap7)
     {
         ARM_Map = TextureMap7.Sample(LinearSampler, input.uv);
-        ARM_Map = pow(abs(ARM_Map), GAMMA);
     }
 
     if (bHasNormalMap)
@@ -475,7 +471,7 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(GS_GRASS_INSTANCING_OUTPUT input)
     if (bHasDiffuseMap)
     {
         diffuseColor = DiffuseMap.Sample(LinearSamplerMirror, input.uv);
-        diffuseColor.rgb = pow(abs(diffuseColor.rgb), GAMMA);
+        To_LinearSpace(diffuseColor);
     }
     else
         diffuseColor = Material.diffuse;
@@ -488,7 +484,7 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(GS_GRASS_INSTANCING_OUTPUT input)
     if (bHasEmissiveMap)
     {
         emissiveColor = EmissiveMap.Sample(LinearSampler, input.uv);
-        emissiveColor.rgb = pow(abs(emissiveColor.rgb), GAMMA);
+        To_LinearSpace(emissiveColor);
     }
     else
         emissiveColor = 0.f;

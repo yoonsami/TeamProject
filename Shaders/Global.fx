@@ -849,4 +849,16 @@ float3 HSVtoRGB(float3 hsv)
     return rgb + m;
 }
 
+void To_LinearSpace(inout float4 color)
+{
+    color.rgb = pow(abs(color.rgb), GAMMA);
+
+}
+
+void To_GammaSpace(inout float4 color)
+{
+    color.rgb = pow(abs(color.rgb), 1.f/GAMMA);
+
+}
+
 #endif

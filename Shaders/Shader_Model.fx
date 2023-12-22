@@ -559,7 +559,7 @@ PS_OUT_Deferred PS_WATER(MeshOutput input)
     if (bHasTexturemap7)
     {
         ARM_Map = TextureMap7.Sample(LinearSampler, input.uv);
-        ARM_Map = pow(abs(ARM_Map), GAMMA);
+
     }
 
     if (bHasEmissiveMap)
@@ -693,7 +693,7 @@ PBR_OUTPUT PS_PBR_Deferred(MeshOutput input)
     if(bHasTexturemap7)
     {
         ARM_Map = TextureMap7.Sample(LinearSampler, input.uv);
-        ARM_Map = pow(abs(ARM_Map), GAMMA);
+
     }
 
     if (bHasNormalMap)
@@ -752,7 +752,7 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(MeshInstancingOutput input)
     if (bHasTexturemap7)
     {
         ARM_Map = TextureMap7.Sample(LinearSampler, input.uv);
-        ARM_Map = pow(abs(ARM_Map), GAMMA);
+
     }
 
     if (bHasNormalMap)
@@ -811,7 +811,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject(MeshOutput input)
     if (bHasTexturemap7)
     {
         ARM_Map = TextureMap7.Sample(LinearSampler, input.uv);
-        ARM_Map = pow(abs(ARM_Map), GAMMA);
+
     }
 
     if (bHasNormalMap)
@@ -871,7 +871,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_Instancing(MeshInstancingOutput i
     if (bHasTexturemap7)
     {
         ARM_Map = TextureMap7.Sample(LinearSampler, input.uv);
-        ARM_Map = pow(abs(ARM_Map), GAMMA);
+
     }
 
     if (bHasNormalMap)
@@ -963,7 +963,7 @@ PBR_OUTPUT PS_PBR_WATER(MeshOutput input)
     if (bHasTexturemap7)
     {
         ARM_Map = TextureMap7.Sample(LinearSampler, input.uv);
-        ARM_Map = pow(abs(ARM_Map), GAMMA);
+
     }
 
     if (bHasEmissiveMap)
@@ -1071,7 +1071,7 @@ float4 PS_PBR_Forward(MeshOutput input) : SV_Target
     if (bHasTexturemap7)
     {
         ARM_Map = TextureMap7.Sample(LinearSampler, input.uv);
-        ARM_Map = pow(abs(ARM_Map), GAMMA);
+
     }
 
     if (bHasNormalMap)
@@ -1156,7 +1156,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_NormalControl(MeshOutput input)
     if (bHasTexturemap7)
     {
         ARM_Map = TextureMap7.Sample(LinearSampler, input.uv);
-        ARM_Map = pow(abs(ARM_Map), GAMMA);
+
     }
 
     float3 mappingNormal = input.viewNormal;
@@ -1222,7 +1222,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_Instancing_NormalControl(MeshInst
     if (bHasTexturemap7)
     {
         ARM_Map = TextureMap7.Sample(LinearSampler, input.uv);
-        ARM_Map = pow(abs(ARM_Map), GAMMA);
+
     }
 
     float3 mappingNormal = input.viewNormal;
