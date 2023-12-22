@@ -183,16 +183,22 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
     // 길이 있으면 길색깔잡초색깔 비율맞춤
     if (maskColor.g > 0)
     {
-        float4 RoadColor = TextureMap8.Sample(LinearSampler, input.uv);
-        float4 tempDiffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
-        
+        float4 RoadColor = TextureMap8.Sample(LinearSampler, input.uv * 61.f / 255.f);
+        To_LinearSpace(RoadColor);
+        float4 tempDiffuseColor = DiffuseMap.Sample(LinearSampler, input.uv * 61.f / 255.f);
+        To_LinearSpace(tempDiffuseColor);
+        tempDiffuseColor *= g_vec4_0;
         RoadColor = mul(RoadColor, maskColor.g);
         tempDiffuseColor = mul(tempDiffuseColor, 1 - maskColor.g);
         
         diffuseColor = RoadColor + tempDiffuseColor;
     }
     else
-        diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
+    {
+        diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv * 61.f / 255.f);
+        To_LinearSpace(diffuseColor);
+        diffuseColor *= g_vec4_0;
+    }
     
     ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
     
@@ -230,8 +236,7 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
     output.normal = float4(input.viewNormal.xyz, 0.f);
     output.depth = input.position.z;
     output.depth.w = input.viewPosition.z;
-    float4 fColor = float4(-0.039215f /*-10*/, -0.011764f /*-3*/, -0.066667f /*-17*/, 0.f);
-    output.diffuseColor = diffuseColor + fColor;
+    output.diffuseColor = diffuseColor;
     output.specularColor = specularColor;
     output.emissiveColor = emissiveColor;
     return output;
@@ -319,16 +324,22 @@ PBR_MAPOBJECT_OUTPUT PS_Terrain_PBR(MeshOutput input)
     // 길이 있으면 길색깔잡초색깔 비율맞춤
     if (maskColor.g > 0)
     {
-        float4 RoadColor = TextureMap8.Sample(LinearSampler, input.uv);
-        float4 tempDiffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
-        
+        float4 RoadColor = TextureMap8.Sample(LinearSampler, input.uv * 61.f/255.f);
+        To_LinearSpace(RoadColor);
+        float4 tempDiffuseColor = DiffuseMap.Sample(LinearSampler, input.uv * 61.f / 255.f);
+        To_LinearSpace(tempDiffuseColor);
+        tempDiffuseColor *= g_vec4_0;
         RoadColor = mul(RoadColor, maskColor.g);
         tempDiffuseColor = mul(tempDiffuseColor, 1 - maskColor.g);
         
         diffuseColor = RoadColor + tempDiffuseColor;
     }
     else
-        diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
+    {
+        diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv * 61.f / 255.f);
+        To_LinearSpace(diffuseColor);
+        diffuseColor *= g_vec4_0;
+    }
         
     // 브러시관련
     float3 vBrushPos = g_vec4_0.xyz;
@@ -353,8 +364,7 @@ PBR_MAPOBJECT_OUTPUT PS_Terrain_PBR(MeshOutput input)
     output.normal = float4(input.viewNormal.xyz, 0.f);
     output.positionSSD = float4(input.viewPosition.xyz, 1.f);
     output.arm = float4(1.f, 0.8f, 0.0f, 1.f);
-    float4 fColor = float4(-0.039215f/*-10*/, -0.011764f/*-3*/, -0.066667f/*-17*/, 0.f);
-    output.diffuseColor = color + fColor;
+    output.diffuseColor = color;
     output.emissive = 0.f;
     output.rimColor = Material.emissive;
     //output.blur = 0;

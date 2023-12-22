@@ -41,9 +41,9 @@ float4 PS_ExtractBloom(VS_OUT input) : SV_Target0
 float4 PS_Bloom(VS_OUT input) : SV_Target
 {
     float4 output = (float4) 0.f;
-    float4 vHDRColor = SubMap0.Sample(LinearSampler,input.uv);
-    float4 vBloomColor = SubMap1.Sample(LinearSampler, input.uv);
-    float4 vBloomOrigin = SubMap2.Sample(LinearSampler, input.uv);
+    float4 vHDRColor = SubMap0.Sample(LinearSamplerMirror, input.uv);
+    float4 vBloomColor = SubMap1.Sample(LinearSamplerMirror, input.uv);
+    float4 vBloomOrigin = SubMap2.Sample(LinearSamplerMirror, input.uv);
     
     float4 vBloom = vBloomColor +vBloomOrigin;
     

@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "DemoScene.h"
 #include "ModelAnimator.h"
 #include "ModelRenderer.h"
@@ -81,7 +81,7 @@ void GranseedScene::Render_SampleMapObject()
 HRESULT GranseedScene::Load_Scene()
 {
 	wstring MapObjPath = L"..\\Resources\\Models\\MapObject\\";
-	wstring MapFolderName = L"Yeonhee\\";
+	wstring MapFolderName = L"";
 	m_wstrMapName = MapFolderName;
 	RESOURCES.CreateModel(MapObjPath + m_wstrMapName);
 	RESOURCES.CreateModel(MapObjPath + L"Skybox\\");

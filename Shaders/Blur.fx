@@ -233,22 +233,22 @@ float4 PS_testDOWN(VS_OUT input) : SV_Target0
     float tu = 1.f / m_TexW;
     float tv = 1.f / m_TexH;
 
-    float3 a = SubMap0.Sample(LinearSampler, input.uv + float2(-2.f * tu, 2.f * tv)).rgb;
-    float3 b = SubMap0.Sample(LinearSampler, input.uv + float2(0.f, 2 * tv)).rgb;
-    float3 c = SubMap0.Sample(LinearSampler, input.uv + float2(2.f * tu, 2.f * tv)).rgb;
+    float3 a = SubMap0.Sample(LinearSamplerMirror, input.uv + float2(-2.f * tu, 2.f * tv)).rgb;
+    float3 b = SubMap0.Sample(LinearSamplerMirror, input.uv + float2(0.f, 2 * tv)).rgb;
+    float3 c = SubMap0.Sample(LinearSamplerMirror, input.uv + float2(2.f * tu, 2.f * tv)).rgb;
     
-    float3 d = SubMap0.Sample(LinearSampler, input.uv + float2(-2.f * tu, 0.f)).rgb;
-    float3 e = SubMap0.Sample(LinearSampler, input.uv + float2(0.f, 0.f)).rgb;
-    float3 f = SubMap0.Sample(LinearSampler, input.uv + float2(2.f * tu, 0.f)).rgb;
+    float3 d = SubMap0.Sample(LinearSamplerMirror, input.uv + float2(-2.f * tu, 0.f)).rgb;
+    float3 e = SubMap0.Sample(LinearSamplerMirror, input.uv + float2(0.f, 0.f)).rgb;
+    float3 f = SubMap0.Sample(LinearSamplerMirror, input.uv + float2(2.f * tu, 0.f)).rgb;
     
-    float3 g = SubMap0.Sample(LinearSampler, input.uv + float2(-2.f * tu, -2.f * tv)).rgb;
-    float3 h = SubMap0.Sample(LinearSampler, input.uv + float2(0.f, -2.f * tv)).rgb;
-    float3 i = SubMap0.Sample(LinearSampler, input.uv + float2(2.f * tu, -2.f * tv)).rgb;
+    float3 g = SubMap0.Sample(LinearSamplerMirror, input.uv + float2(-2.f * tu, -2.f * tv)).rgb;
+    float3 h = SubMap0.Sample(LinearSamplerMirror, input.uv + float2(0.f, -2.f * tv)).rgb;
+    float3 i = SubMap0.Sample(LinearSamplerMirror, input.uv + float2(2.f * tu, -2.f * tv)).rgb;
 
-    float3 j = SubMap0.Sample(LinearSampler, input.uv + float2(-tu, +tv)).rgb;
-    float3 k = SubMap0.Sample(LinearSampler, input.uv + float2(+tu, +tv)).rgb;
-    float3 l = SubMap0.Sample(LinearSampler, input.uv + float2(-tu, -tv)).rgb;
-    float3 m = SubMap0.Sample(LinearSampler, input.uv + float2(+tu, -tv)).rgb;
+    float3 j = SubMap0.Sample(LinearSamplerMirror, input.uv + float2(-tu, +tv)).rgb;
+    float3 k = SubMap0.Sample(LinearSamplerMirror, input.uv + float2(+tu, +tv)).rgb;
+    float3 l = SubMap0.Sample(LinearSamplerMirror, input.uv + float2(-tu, -tv)).rgb;
+    float3 m = SubMap0.Sample(LinearSamplerMirror, input.uv + float2(+tu, -tv)).rgb;
     
     float3 vDownSample = e * 0.125;
     vDownSample += (a + c + g + i) * 0.03125;
@@ -273,17 +273,17 @@ float4 PS_testUP(VS_OUT input) : SV_Target0
     float tu = 1.f / m_TexW;
     float tv = 1.f / m_TexH;
 
-    float3 a = SubMap0.Sample(LinearSampler, clamp(float2(input.uv.x - tu, input.uv.y + tv), 0, 1)).rgb;
-    float3 b = SubMap0.Sample(LinearSampler, clamp(float2(input.uv.x, input.uv.y + tv), 0, 1)).rgb;
-    float3 c = SubMap0.Sample(LinearSampler, clamp(float2(input.uv.x + tu, input.uv.y + tv), 0, 1)).rgb;
+    float3 a = SubMap0.Sample(LinearSamplerMirror, clamp(float2(input.uv.x - tu, input.uv.y + tv), 0, 1)).rgb;
+    float3 b = SubMap0.Sample(LinearSamplerMirror, clamp(float2(input.uv.x, input.uv.y + tv), 0, 1)).rgb;
+    float3 c = SubMap0.Sample(LinearSamplerMirror, clamp(float2(input.uv.x + tu, input.uv.y + tv), 0, 1)).rgb;
     
-    float3 d = SubMap0.Sample(LinearSampler, clamp(float2(input.uv.x - tu, input.uv.y), 0, 1)).rgb;
-    float3 e = SubMap0.Sample(LinearSampler, clamp(float2(input.uv.x, input.uv.y), 0, 1)).rgb;
-    float3 f = SubMap0.Sample(LinearSampler, clamp(float2(input.uv.x + tu, input.uv.y), 0, 1)).rgb;
+    float3 d = SubMap0.Sample(LinearSamplerMirror, clamp(float2(input.uv.x - tu, input.uv.y), 0, 1)).rgb;
+    float3 e = SubMap0.Sample(LinearSamplerMirror, clamp(float2(input.uv.x, input.uv.y), 0, 1)).rgb;
+    float3 f = SubMap0.Sample(LinearSamplerMirror, clamp(float2(input.uv.x + tu, input.uv.y), 0, 1)).rgb;
     
-    float3 g = SubMap0.Sample(LinearSampler, clamp(float2(input.uv.x - tu, input.uv.y - tv), 0, 1)).rgb;
-    float3 h = SubMap0.Sample(LinearSampler, clamp(float2(input.uv.x, input.uv.y - tv), 0, 1)).rgb;
-    float3 i = SubMap0.Sample(LinearSampler, clamp(float2(input.uv.x + tu, input.uv.y - tv), 0, 1)).rgb;
+    float3 g = SubMap0.Sample(LinearSamplerMirror, clamp(float2(input.uv.x - tu, input.uv.y - tv), 0, 1)).rgb;
+    float3 h = SubMap0.Sample(LinearSamplerMirror, clamp(float2(input.uv.x, input.uv.y - tv), 0, 1)).rgb;
+    float3 i = SubMap0.Sample(LinearSamplerMirror, clamp(float2(input.uv.x + tu, input.uv.y - tv), 0, 1)).rgb;
     
     float3 vUpSample = e * 4.f;
     vUpSample += (b + d + f + h) * 2.f;

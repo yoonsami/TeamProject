@@ -206,10 +206,6 @@ HRESULT MirScene::Load_Scene()
 		pPlayer->Get_Script<HeroChangeScript>()->Change_Hero(HERO::PLAYER);
 	}
 
-	g_DOFData.g_bDOF_On = true;
-	g_DOFData.g_DOFRange = 120.f;
-	g_DOFData.g_FocusDepth = 0.f;
-	g_DOFData.g_DOFColor = Color(144.f/255.f, 144.f / 255.f, 144.f / 255.f, 1.f);
 	return S_OK;
 }
 
