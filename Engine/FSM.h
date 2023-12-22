@@ -172,7 +172,7 @@ public:
 
 	//MotionCoolTime
 	COOLTIMEINFO m_tRunEndDelay = { 0.2f,0.f };
-	COOLTIMEINFO m_tKnockDownEndCoolTime = { 1.5f, 0.f };
+	COOLTIMEINFO m_tKnockDownEndCoolTime = { 2.f, 0.f };
 
 	_float m_fColorRecoverySpeed = 3.f;
 };
