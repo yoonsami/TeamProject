@@ -120,7 +120,7 @@ MeshInstancingOutput VS_MapObject_Instancing(VTXModelInstancing input, uniform b
     output.viewPosition = mul(float4(output.worldPosition, 1.f), V).xyz;
 
     output.position = mul(output.position, VP);
-    output.uv = input.uv * g_vec4_0.w;
+    output.uv = input.uv * input.renderParam.w;
 
     if(isWorldNormal)
     {
