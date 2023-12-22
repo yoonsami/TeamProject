@@ -969,9 +969,12 @@ void ImGui_Manager::Frame_InstalledWeed()
     static bool hdr = true;
     ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
     ImGui::ColorEdit4("TerrainColor", (_float*)&m_TerrainColor, ImGuiColorEditFlags_DisplayHSV | misc_flags);
-    auto TerrainObj = CUR_SCENE->Get_GameObject(L"Terrain");
-        if(TerrainObj != nullptr)
-            TerrainObj->Get_TerrainRenderer()->SetVec4(1, m_TerrainColor);
+
+    
+    
+    /* auto TerrainObj = CUR_SCENE->Get_GameObject(L"Terrain");
+		 if(TerrainObj != nullptr)
+			 TerrainObj->Get_TerrainRenderer()->SetVec4(1, m_TerrainColor);*/
 	//ListBox("##InstalledWeed", &m_iInstalledWeedIndex, VectorOfStringGetter, &m_strInstalledWeeds, int(m_strInstalledWeeds.size()));
 	ImGui::End();
 }
@@ -1400,7 +1403,11 @@ shared_ptr<GameObject> ImGui_Manager::Create_MapObject(MapObjectScript::MapObjec
 
         renderer->Set_PassType((ModelRenderer::INSTANCE_PASSTYPE)CreateDesc.bCullNone);
 
-        renderer->SetVec4(0, _float4(CreateDesc.fUVWeight));
+        _float4 AddDiffuseUVweight = _float4(_float3{ CreateDesc.AddDiffuseColor }, CreateDesc.fUVWeight);
+        
+        if (CreateDesc.fUVWeight >= 2.f)
+            int a = 0;
+        renderer->SetVec4(0, AddDiffuseUVweight);
     }
 
     if (CreateDesc.bTransform)

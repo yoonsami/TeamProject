@@ -285,6 +285,7 @@ PS_OUT_Deferred PS_Deferred(GS_GRASS_OUTPUT input)
     {
         diffuseColor = DiffuseMap.Sample(LinearSamplerMirror, input.uv);
         To_LinearSpace(diffuseColor);
+        diffuseColor *= Material.diffuse;
     }
     else
         diffuseColor = Material.diffuse;
@@ -344,6 +345,7 @@ PS_OUT_Deferred PS_Deferred_Instancing(GS_GRASS_INSTANCING_OUTPUT input)
     {
         diffuseColor = DiffuseMap.Sample(LinearSamplerMirror, input.uv);
         To_LinearSpace(diffuseColor);
+        diffuseColor *= Material.diffuse;
     }
     else
         diffuseColor = Material.diffuse;
@@ -413,6 +415,7 @@ PBR_OUTPUT PS_PBR_Deferred(GS_GRASS_OUTPUT input)
     {
         diffuseColor = DiffuseMap.Sample(LinearSamplerMirror, input.uv);
         To_LinearSpace(diffuseColor);
+        diffuseColor *= Material.diffuse;
     }
     else
         diffuseColor = Material.diffuse;
@@ -472,6 +475,8 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(GS_GRASS_INSTANCING_OUTPUT input)
     {
         diffuseColor = DiffuseMap.Sample(LinearSamplerMirror, input.uv);
         To_LinearSpace(diffuseColor);
+        diffuseColor *= Material.diffuse;
+
     }
     else
         diffuseColor = Material.diffuse;

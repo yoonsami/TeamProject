@@ -187,7 +187,7 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
         To_LinearSpace(RoadColor);
         float4 tempDiffuseColor = DiffuseMap.Sample(LinearSampler, input.uv * 61.f / 255.f);
         To_LinearSpace(tempDiffuseColor);
-        tempDiffuseColor *= g_vec4_0;
+        tempDiffuseColor *= float4(2507.f/255.f,1618.f/255.f,570.f/255.f,1.f);
         RoadColor = mul(RoadColor, maskColor.g);
         tempDiffuseColor = mul(tempDiffuseColor, 1 - maskColor.g);
         
@@ -197,7 +197,7 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
     {
         diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv * 61.f / 255.f);
         To_LinearSpace(diffuseColor);
-        diffuseColor *= g_vec4_0;
+        diffuseColor *= float4(2507.f / 255.f, 1618.f / 255.f, 570.f / 255.f, 1.f);
     }
     
     ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv);
@@ -328,7 +328,7 @@ PBR_MAPOBJECT_OUTPUT PS_Terrain_PBR(MeshOutput input)
         To_LinearSpace(RoadColor);
         float4 tempDiffuseColor = DiffuseMap.Sample(LinearSampler, input.uv * 61.f / 255.f);
         To_LinearSpace(tempDiffuseColor);
-        tempDiffuseColor *= g_vec4_0;
+        tempDiffuseColor *= float4(2507.f / 255.f, 1618.f / 255.f, 570.f / 255.f, 1.f);
         RoadColor = mul(RoadColor, maskColor.g);
         tempDiffuseColor = mul(tempDiffuseColor, 1 - maskColor.g);
         
@@ -338,7 +338,7 @@ PBR_MAPOBJECT_OUTPUT PS_Terrain_PBR(MeshOutput input)
     {
         diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv * 61.f / 255.f);
         To_LinearSpace(diffuseColor);
-        diffuseColor *= g_vec4_0;
+        diffuseColor *= float4(2507.f / 255.f, 1618.f / 255.f, 570.f / 255.f, 1.f);
     }
         
     // 브러시관련
