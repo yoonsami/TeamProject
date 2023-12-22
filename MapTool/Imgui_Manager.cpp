@@ -1403,7 +1403,8 @@ shared_ptr<GameObject> ImGui_Manager::Create_MapObject(MapObjectScript::MapObjec
 
         renderer->Set_PassType((ModelRenderer::INSTANCE_PASSTYPE)CreateDesc.bCullNone);
 
-        renderer->SetVec4(0, _float4(CreateDesc.fUVWeight));
+        _float4 AddDiffuseUVweight = _float4(_float3{ CreateDesc.AddDiffuseColor }, CreateDesc.fUVWeight);
+        renderer->SetVec4(0, AddDiffuseUVweight);
     }
 
     if (CreateDesc.bTransform)

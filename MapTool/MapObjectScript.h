@@ -43,7 +43,7 @@ public:
     //(Dummy[0].w >= 1.f) : EffectName
         string strEffectName = "";
     //(Dummy[0].z >= 1.f) : AddDiffuseColor
-        
+        Color AddDiffuseColor = {0.f, 0.f, 0.f, 0.f};
     }MAPOBJDESC;
 
 public:
