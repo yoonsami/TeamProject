@@ -43,7 +43,7 @@ HRESULT LoadingBarScript::Init()
     m_bIsEndActivated = false;
     m_bIsLoadEnd = false;
     m_fMaxTime = 1.f;
-    m_fMaxAddTime = 0.1f;
+    m_fMaxAddTime = 0.05f;
 
     return S_OK;
 }
@@ -108,6 +108,6 @@ void LoadingBarScript::Change_Text()
 void LoadingBarScript::Check_Time()
 {
     m_fCheckEndTime += fDT;
-    if (m_fMaxTime < m_fCheckEndTime)
+    if (m_fMaxTime / 2.f < m_fCheckEndTime)
         m_bIsLoadEnd = true;
 }
