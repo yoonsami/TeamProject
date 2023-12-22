@@ -32,5 +32,5 @@ private:
 
 private:
 	GachaSceneDesc m_Desc{};
-
+	_bool m_bStopBGM = false;
 };

@@ -289,6 +289,13 @@ void GachaScene::Load_Light()
 
 void GachaScene::Play_BGM()
 {
+	if (!m_bStopBGM)
+	{
+		//Stop GranseedScene BGM
+		m_bStopBGM = true;
+		SOUND.StopAll();
+	}
+
 	if (m_Desc.eHeroType == HERO::KYLE)
 		SOUND.Play_Sound(L"SQ_SpecialHero_Kyle", CHANNELID::SOUND_BGM, 0.5f * g_fBgmRatio);
 	else if (m_Desc.eHeroType == HERO::YEOPO)
