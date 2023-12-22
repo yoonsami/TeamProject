@@ -997,10 +997,10 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 			break;
 		case 12:
 			// radius 
-			ImGui::InputFloat2("Radius(Start, End)##Movement", m_fEndPositionOffset_Min);
+			ImGui::InputFloat2("Radius(Start, End)##Movement", m_fRoundRadius);
 
 			// Start angle 
-			ImGui::InputFloat2("Start Angle(min, max)##Movement", m_fInitRoundAngle);
+			ImGui::InputFloat2("Start Degree(min, max)##Movement", m_fInitRoundAngle);
 
 			// Axis
 			ImGui::Text("Setting Axis Option##Movement");

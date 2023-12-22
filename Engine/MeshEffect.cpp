@@ -353,25 +353,34 @@ void MeshEffect::Set_TransformDesc(void* pArg)
     m_tTransform_Desc = *pDesc;
 
     m_fCurrRoundAngle = MathUtils::Get_RandomFloat(m_tTransform_Desc.vInitRoundAngle.x, m_tTransform_Desc.vInitRoundAngle.y);
-    m_vRoundAxis = _float3(
+    m_fCurrRoundAngle *= (XM_PI / 180.f);
+    m_vRoundAxis_Up = _float3(
         MathUtils::Get_RandomFloat(m_tTransform_Desc.vRoundAxis_Min.x, m_tTransform_Desc.vRoundAxis_Max.x),
         MathUtils::Get_RandomFloat(m_tTransform_Desc.vRoundAxis_Min.y, m_tTransform_Desc.vRoundAxis_Max.y),
         MathUtils::Get_RandomFloat(m_tTransform_Desc.vRoundAxis_Min.z, m_tTransform_Desc.vRoundAxis_Max.z)
     );
+    m_vRoundAxis_Up.Normalize();
+    m_vRoundAxis_Right = XMVector3Cross(m_vRoundAxis_Up, m_vRoundAxis_Look);
+    m_vRoundAxis_Right.Normalize();
+    m_vRoundAxis_Look = XMVector3Cross(m_vRoundAxis_Up, m_vRoundAxis_Right);
+    m_vRoundAxis_Look.Normalize();
 
     // For. Initial Translate 
+    m_vStartPos = _float3(
+        MathUtils::Get_RandomFloat(pDesc->vPosRange.x / 2.f * (-1.f), pDesc->vPosRange.x / 2.f),
+        MathUtils::Get_RandomFloat(pDesc->vPosRange.y / 2.f * (-1.f), pDesc->vPosRange.y / 2.f),
+        MathUtils::Get_RandomFloat(pDesc->vPosRange.z / 2.f * (-1.f), pDesc->vPosRange.z / 2.f)
+    );
     if (12 == m_tTransform_Desc.iTranslateOption) 
     {
         // Round
+        _float2 vPosOnCircle = { // x,z
+            cos(m_fCurrRoundAngle) * m_tTransform_Desc.vRoundRadius.x,
+            sin(m_fCurrRoundAngle) * m_tTransform_Desc.vRoundRadius.x
+        };
 
-    }
-    else
-    {
-        m_vStartPos = _float3(
-            MathUtils::Get_RandomFloat(pDesc->vPosRange.x / 2.f * (-1.f), pDesc->vPosRange.x / 2.f),
-            MathUtils::Get_RandomFloat(pDesc->vPosRange.y / 2.f * (-1.f), pDesc->vPosRange.y / 2.f),
-            MathUtils::Get_RandomFloat(pDesc->vPosRange.z / 2.f * (-1.f), pDesc->vPosRange.z / 2.f)
-        );
+        m_vStartPos += ((m_vRoundAxis_Right * vPosOnCircle.x)
+                      + (m_vRoundAxis_Look * vPosOnCircle.y));
     }
 
     // For. Initial Scale    
@@ -704,6 +713,8 @@ void MeshEffect::Translate()
     }
     case 12: // Round 
     {
+        _float4 sat =  Get_Transform()->Get_State(Transform_State::POS);
+
         // Get current Speed
         _float fSpeed = Calc_Spline(m_tTransform_Desc.iSpeedType, m_SplineInput_Force);
 

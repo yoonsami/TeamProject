@@ -84,10 +84,6 @@ private:
     _bool                           m_bIsPlayFinished = { false };
     _bool                           m_bIsLocked = { false };
     float                           m_fRimLightContrast = { 1.f };
-    
-    /* Translate (Round)*/
-    _float                          m_fCurrRoundAngle = { 0.f };
-    _float3                         m_vRoundAxis = { 0.f, 1.f, 0.f };
 
     /* Fade Out */
     _float                          m_fFadeOutStartTime = { 0.f };
@@ -127,6 +123,9 @@ private:
     _float                          m_SplineInput_Force[8];
     _float                          m_fCurrYspeed = { 0.f };
 
+    _float3                         m_vRoundAxis_Right = { 1.f, 0.f, 0.f };
+    _float3                         m_vRoundAxis_Up = { 0.f, 1.f, 0.f };
+    _float3                         m_vRoundAxis_Look = { 0.f, 0.f, 1.f };
     _float                          m_fCurrRoundAngle = { 0.f };
 
     _float                          m_fChangeDirCoolTime = { 0.f };
