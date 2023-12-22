@@ -1248,6 +1248,8 @@ void ResourceMgr::CreateDefaultMaterial()
 		material->Set_TextureMap(Weedtexture, TextureMapType::DIFFUSE);
 		auto dissolveTexture = RESOURCES.GetOrAddTexture(L"T_Perlin_Noise_M.tga", L"..\\Resources\\Textures\\Universal\\T_Perlin_Noise_M.tga");
  		material->Set_TextureMap(dissolveTexture, TextureMapType::DISSOLVE);
+		material->Get_MaterialDesc().diffuse = Color(634.f/255.f,370.f/255.f,439.f/255.f,1.f);
+		
 		Add(WeedTextureName, material);
 	}
 }

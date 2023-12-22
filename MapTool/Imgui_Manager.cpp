@@ -969,9 +969,12 @@ void ImGui_Manager::Frame_InstalledWeed()
     static bool hdr = true;
     ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
     ImGui::ColorEdit4("TerrainColor", (_float*)&m_TerrainColor, ImGuiColorEditFlags_DisplayHSV | misc_flags);
-    auto TerrainObj = CUR_SCENE->Get_GameObject(L"Terrain");
-        if(TerrainObj != nullptr)
-            TerrainObj->Get_TerrainRenderer()->SetVec4(1, m_TerrainColor);
+
+    
+    
+    /* auto TerrainObj = CUR_SCENE->Get_GameObject(L"Terrain");
+		 if(TerrainObj != nullptr)
+			 TerrainObj->Get_TerrainRenderer()->SetVec4(1, m_TerrainColor);*/
 	//ListBox("##InstalledWeed", &m_iInstalledWeedIndex, VectorOfStringGetter, &m_strInstalledWeeds, int(m_strInstalledWeeds.size()));
 	ImGui::End();
 }
