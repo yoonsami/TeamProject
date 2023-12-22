@@ -719,8 +719,6 @@ void MeshEffect::Translate()
     }
     case 12: // Round 
     {
-        _float4 sat =  Get_Transform()->Get_State(Transform_State::POS);
-
         // Get current Speed
         _float fSpeed = Calc_Spline(m_tTransform_Desc.iSpeedType, m_SplineInput_Force);
 
@@ -729,17 +727,29 @@ void MeshEffect::Translate()
         _float fRadius = vTemp_vec2.x;
         
         // Update current angle        
-            // TODO 
+        m_fCurrRoundAngle += (fSpeed * (XM_PI / 180.f));
             
         // Move 
         if (m_bToolMode_On)
         {
-            // TODO 
+            _float2 vPosOnCircle = { // x,z
+                cos(m_fCurrRoundAngle) * fRadius,
+                sin(m_fCurrRoundAngle) * fRadius
+            };
 
+            _float3 vCurrPos = m_vStartPos + ((m_vRoundAxis_Right * vPosOnCircle.x)
+                                            + (m_vRoundAxis_Look * vPosOnCircle.y));
+            Get_Transform()->Set_State(Transform_State::POS, _float4(vCurrPos, 1.f));
         }
         else
         {
-            
+            _float2 vPosOnCircle = { // x,z
+               cos(m_fCurrRoundAngle) * fRadius,
+               sin(m_fCurrRoundAngle) * fRadius
+            };
+
+            m_vLocalPos = m_vStartPos + ((m_vRoundAxis_Right * vPosOnCircle.x)
+                + (m_vRoundAxis_Look * vPosOnCircle.y));
         }
         break;
     }

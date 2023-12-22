@@ -1025,10 +1025,10 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 			ImGui::RadioButton("Linear##MoveSpeed", &m_iSpeedType, 1);
 
 			m_vCurvePoint_Force[0].x = 0.f;
-			ImGui::InputFloat2("Point1 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[0]);
-			ImGui::InputFloat2("Point2 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[1]);
-			ImGui::InputFloat2("Point3 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[2]);
-			ImGui::InputFloat2("Point4 (time, speed)##Speed", (_float*)&m_vCurvePoint_Force[3]);
+			ImGui::InputFloat2("Point1 (time, degree)##Speed", (_float*)&m_vCurvePoint_Force[0]);
+			ImGui::InputFloat2("Point2 (time, degree)##Speed", (_float*)&m_vCurvePoint_Force[1]);
+			ImGui::InputFloat2("Point3 (time, degree)##Speed", (_float*)&m_vCurvePoint_Force[2]);
+			ImGui::InputFloat2("Point4 (time, degree)##Speed", (_float*)&m_vCurvePoint_Force[3]);
 			break;
 		}
 
