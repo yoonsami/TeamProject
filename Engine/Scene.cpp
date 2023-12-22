@@ -785,6 +785,8 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 		_float4x4 matDummyData = _float4x4{0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f ,0.f};
 		// EffectName
 		string strEffectName = "";
+		// AddDiffuseColor
+		Color AddDiffuseColor = { 0.f, 0.f, 0.f, 0.f };
 
 		wstring strObjectName = Utils::ToWString(file->Read<string>());
 		strName = Utils::ToString(strObjectName);
@@ -826,6 +828,9 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 		if (matDummyData.m[0][3] >= 1.f)
 			strEffectName = file->Read<string>();
 
+		if (matDummyData.m[0][2] >= 1.f)
+			AddDiffuseColor = file->Read<Color>();
+
 // 오브젝트 생성
 		shared_ptr<GameObject> CreateObject = make_shared<GameObject>();
 		CreateObject->Set_Name(strObjectName);
@@ -861,10 +866,9 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 			CreateObject->Add_Component(renderer);
 			renderer->Set_Model(model);
 			// 컬방향
-
-				renderer->Set_PassType((ModelRenderer::INSTANCE_PASSTYPE)bCullNone);
-
-			renderer->SetVec4(0, _float4(fUVWeight,0,0,0));
+			renderer->Set_PassType((ModelRenderer::INSTANCE_PASSTYPE)bCullNone);
+			// 디퓨즈색, UV가중치
+			renderer->SetVec4(0, _float4(_float3{ AddDiffuseColor }, fUVWeight));
 			CreateObject->Set_FrustumCulled(true);
 		}
 
