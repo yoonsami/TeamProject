@@ -1143,7 +1143,7 @@ void Spike_FSM::skill_1400()
         
         //CAMERA_SHAKE(0.3f, 0.4f);
     }
-    else if (m_iCurFrame == 15)
+    else if (Init_CurFrame(15))
     {
 		AttackCollider_Off();
     }
@@ -1365,8 +1365,7 @@ void Spike_FSM::skill_100300()
         SOUND.Play_Sound(L"magic_ice_impact_n_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         CAMERA_SHAKE(0.2f, 0.2f);
     }
-    
-    if (Init_CurFrame(37))
+    else if (Init_CurFrame(37))
         AttackCollider_Off();
 
     if (Is_AnimFinished())
@@ -1448,7 +1447,6 @@ void Spike_FSM::skill_200100_l()
     CAMERA_SHAKE(0.1f, 0.02f)
     if (Init_CurFrame(0))
         Add_And_Set_Effect(L"Spike_200100L_floor");
-
 
     if (Init_CurFrame(11))
         SOUND.Play_Sound(L"magic_wind_att_02", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);

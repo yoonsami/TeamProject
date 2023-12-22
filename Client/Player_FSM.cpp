@@ -1538,7 +1538,7 @@ void Player_FSM::skill_200100()
 			desc.fLimitDistance = 0.f;
 
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
-			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.5f, desc, NORMAL_ATTACK, 10.f, L"Hit_Slash_Dark");
+			Create_ForwardMovingSkillCollider(Player_Attack, L"Player_SkillCollider", vSkillPos, 2.5f, desc, NORMAL_ATTACK, 10.f, L"Hit_Slash_Dark");
 
 			Get_Owner()->Get_Animator()->Set_RenderState(false);
 			m_pWeapon.lock()->Get_ModelRenderer()->Set_RenderState(false);
@@ -1608,7 +1608,7 @@ void Player_FSM::skill_200200()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_SKILL, 10.f, L"Hit_Slash_Dark");
+		Create_ForwardMovingSkillCollider(Player_Attack, L"Player_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_SKILL, 10.f, L"Hit_Slash_Dark");
     }
 
     if (Is_AnimFinished())

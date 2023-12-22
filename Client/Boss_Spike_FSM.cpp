@@ -1172,6 +1172,9 @@ void Boss_Spike_FSM::hit_Init()
 
 void Boss_Spike_FSM::groggy_start()
 {
+    if (Init_CurFrame(44))
+        SOUND.Play_Sound(L"vo_spike_groggy_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     if (Is_AnimFinished())
         m_eCurState = STATE::groggy_loop;
 }
@@ -1207,7 +1210,6 @@ void Boss_Spike_FSM::groggy_loop_Init()
 
     animator->Set_NextTweenAnim(L"groggy_loop", 0.1f, false, 3.f);
 
-    SOUND.Play_Sound(L"vo_spike_groggy_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 void Boss_Spike_FSM::groggy_end()
