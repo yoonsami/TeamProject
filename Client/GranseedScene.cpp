@@ -224,6 +224,8 @@ HRESULT GranseedScene::Load_Scene()
 {
 	RESOURCES.Delete_NonStaticResources();
 	PHYSX.Init();
+	
+
 
 	//Static
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\", true);

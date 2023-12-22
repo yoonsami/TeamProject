@@ -66,7 +66,7 @@ void LoadingScene::Late_Tick()
 void LoadingScene::Final_Tick()
 {
     __super::Final_Tick();
-	
+
     //if (KEYTAP(KEY_TYPE::LBUTTON))
 	{
 		if (!m_pLoader->m_bLoadFinished)
@@ -76,6 +76,8 @@ void LoadingScene::Final_Tick()
 		SCENE.Change_Scene(m_pNextScene);
        
 	}
+
+   
 }
 
 void LoadingScene::Set_StaticObjects(const list<shared_ptr<GameObject>>& objs)

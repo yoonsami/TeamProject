@@ -109,118 +109,127 @@ void FieldScript::Tick()
 	{
 		SWITCHMGR.Set_SwitchState(SWITCH_TYPE::CREATE_COMBAT4_AFTER_SPIKE, false);
 		SWITCHMGR.Set_SwitchState(SWITCH_TYPE::AFTER_COMBAT4_PEOPLE_COMBACK, true);
-		{
-			auto camera = CUR_SCENE->Get_MainCamera();
-			auto script = camera->Get_Script<MainCameraScript>();
-			script->Fix_Camera(5.f, _float3(0.f), 5.f);
-			_float3 vLookPos = _float3(89.512f, -12.5f, 120.25f);
-			_float3 vDir = _float3(88.580f, 1.656f, 134.472f) - vLookPos;
-			_float fDist = vDir.Length();
-			vDir.Normalize();
-			script->Set_FixedDir(vDir);
-			script->Set_FixedDist(fDist);
-			script->Set_FixedLookTarget(vLookPos);
-
-			auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
-			if (pObj)
-				pObj->Get_Script<UiMessageCreater>()->Create_Message(L"사람들이 돌아온다");
-		}
-
-		{
-			_float3 vPos = { 112.f,-10.5f,116.f };
-			_float3 npcLook = { -1.f,0.f,0.f };
-
-			shared_ptr<GameObject> npc = make_shared<GameObject>();
-			npc->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(vPos, 1.f));
-			npc->GetOrAddTransform()->Set_LookDir(npcLook);
-
-			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
-			{
-				shared_ptr<Model> model = RESOURCES.Get<Model>(L"FisherMan1");
-				animator->Set_Model(model);
-			}
-			npc->Add_Component(animator);
-			npc->Add_Component(make_shared<FisherMan_FSM>(_float3(67.f, -12.5f, 113.5f)));
-			npc->Get_FSM()->Set_Target(m_pPlayer.lock());
-			npc->Get_FSM()->Init();
-
-			{
-				auto controller = make_shared<CharacterController>();
-				npc->Add_Component(controller);
-				auto& desc = controller->Get_CapsuleControllerDesc();
-				desc.radius = 0.5f;
-				desc.height = 5.f;
-				desc.position = { vPos.x, vPos.y, vPos.z };
-				controller->Create_Controller();
-				npc->Set_ObjectGroup(OBJ_MONSTER);
-			}
-
-			EVENTMGR.Create_Object(npc);
-		}
-		{
-			_float3 vPos = { 102.f,-10.5f,126.f };
-			_float3 npcLook = { 1.f,0.f,-1.f };
-
-			shared_ptr<GameObject> npc = make_shared<GameObject>();
-			npc->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(vPos, 1.f));
-			npc->GetOrAddTransform()->Set_LookDir(npcLook);
-
-			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
-			{
-				shared_ptr<Model> model = RESOURCES.Get<Model>(L"FisherMan2");
-				animator->Set_Model(model);
-			}
-			npc->Add_Component(animator);
-			npc->Add_Component(make_shared<FisherMan_FSM>(_float3(95.f,-12.5f,123.f)));
-			npc->Get_FSM()->Set_Target(m_pPlayer.lock());
-			npc->Get_FSM()->Init();
-
-			{
-				auto controller = make_shared<CharacterController>();
-				npc->Add_Component(controller);
-				auto& desc = controller->Get_CapsuleControllerDesc();
-				desc.radius = 0.5f;
-				desc.height = 5.f;
-				desc.position = { vPos.x, vPos.y, vPos.z };
-				controller->Create_Controller();
-				npc->Set_ObjectGroup(OBJ_MONSTER);
-			}
-
-			EVENTMGR.Create_Object(npc);
-		}
-		{
-			_float3 vPos = { 112.f,-10.5f,121.f };
-			_float3 npcLook = { 1.f,0.f,-1.f };
-
-			shared_ptr<GameObject> npc = make_shared<GameObject>();
-			npc->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(vPos, 1.f));
-			npc->GetOrAddTransform()->Set_LookDir(npcLook);
-
-			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
-			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
-			{
-				shared_ptr<Model> model = RESOURCES.Get<Model>(L"FisherMan1");
-				animator->Set_Model(model);
-			}
-			npc->Add_Component(animator);
-			npc->Add_Component(make_shared<FisherMan_FSM>(_float3(104.f,-12.5f,114.f)));
-			npc->Get_FSM()->Set_Target(m_pPlayer.lock());
-			npc->Get_FSM()->Init();
 		
+	}
+	if (SWITCHMGR.Get_SwitchState(SWITCH_TYPE::AFTER_COMBAT4_PEOPLE_COMBACK))
+	{
+		m_fAcc += fDT;
+		if (m_fAcc >= 2.f)
+		{
+			SWITCHMGR.Set_SwitchState(SWITCH_TYPE::AFTER_COMBAT4_PEOPLE_COMBACK, false);
 			{
-				auto controller = make_shared<CharacterController>();
-				npc->Add_Component(controller);
-				auto& desc = controller->Get_CapsuleControllerDesc();
-				desc.radius = 0.5f;
-				desc.height = 5.f;
-				desc.position = { vPos.x, vPos.y, vPos.z };
-				controller->Create_Controller();
-				npc->Set_ObjectGroup(OBJ_MONSTER);
+				auto camera = CUR_SCENE->Get_MainCamera();
+				auto script = camera->Get_Script<MainCameraScript>();
+				script->Fix_Camera(5.f, _float3(0.f), 5.f);
+				_float3 vLookPos = _float3(89.512f, -12.5f, 120.25f);
+				_float3 vDir = _float3(88.580f, 1.656f, 134.472f) - vLookPos;
+				_float fDist = vDir.Length();
+				vDir.Normalize();
+				script->Set_FixedDir(vDir);
+				script->Set_FixedDist(fDist);
+				script->Set_FixedLookTarget(vLookPos);
+
+				auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
+				if (pObj)
+					pObj->Get_Script<UiMessageCreater>()->Create_Message(L"사람들이 돌아온다");
 			}
 
-			EVENTMGR.Create_Object(npc);
+			{
+				_float3 vPos = { 112.f,-10.5f,116.f };
+				_float3 npcLook = { -1.f,0.f,0.f };
+
+				shared_ptr<GameObject> npc = make_shared<GameObject>();
+				npc->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(vPos, 1.f));
+				npc->GetOrAddTransform()->Set_LookDir(npcLook);
+
+				shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+				shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+				{
+					shared_ptr<Model> model = RESOURCES.Get<Model>(L"FisherMan1");
+					animator->Set_Model(model);
+				}
+				npc->Add_Component(animator);
+				npc->Add_Component(make_shared<FisherMan_FSM>(_float3(67.f, -12.5f, 113.5f)));
+				npc->Get_FSM()->Set_Target(m_pPlayer.lock());
+				npc->Get_FSM()->Init();
+
+				{
+					auto controller = make_shared<CharacterController>();
+					npc->Add_Component(controller);
+					auto& desc = controller->Get_CapsuleControllerDesc();
+					desc.radius = 0.5f;
+					desc.height = 5.f;
+					desc.position = { vPos.x, vPos.y, vPos.z };
+					controller->Create_Controller();
+					npc->Set_ObjectGroup(OBJ_MONSTER);
+				}
+
+				EVENTMGR.Create_Object(npc);
+			}
+			{
+				_float3 vPos = { 102.f,-10.5f,126.f };
+				_float3 npcLook = { 1.f,0.f,-1.f };
+
+				shared_ptr<GameObject> npc = make_shared<GameObject>();
+				npc->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(vPos, 1.f));
+				npc->GetOrAddTransform()->Set_LookDir(npcLook);
+
+				shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+				shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+				{
+					shared_ptr<Model> model = RESOURCES.Get<Model>(L"FisherMan2");
+					animator->Set_Model(model);
+				}
+				npc->Add_Component(animator);
+				npc->Add_Component(make_shared<FisherMan_FSM>(_float3(95.f, -12.5f, 123.f)));
+				npc->Get_FSM()->Set_Target(m_pPlayer.lock());
+				npc->Get_FSM()->Init();
+
+				{
+					auto controller = make_shared<CharacterController>();
+					npc->Add_Component(controller);
+					auto& desc = controller->Get_CapsuleControllerDesc();
+					desc.radius = 0.5f;
+					desc.height = 5.f;
+					desc.position = { vPos.x, vPos.y, vPos.z };
+					controller->Create_Controller();
+					npc->Set_ObjectGroup(OBJ_MONSTER);
+				}
+
+				EVENTMGR.Create_Object(npc);
+			}
+			{
+				_float3 vPos = { 112.f,-10.5f,121.f };
+				_float3 npcLook = { 1.f,0.f,-1.f };
+
+				shared_ptr<GameObject> npc = make_shared<GameObject>();
+				npc->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(vPos, 1.f));
+				npc->GetOrAddTransform()->Set_LookDir(npcLook);
+
+				shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
+				shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);
+				{
+					shared_ptr<Model> model = RESOURCES.Get<Model>(L"FisherMan1");
+					animator->Set_Model(model);
+				}
+				npc->Add_Component(animator);
+				npc->Add_Component(make_shared<FisherMan_FSM>(_float3(104.f, -12.5f, 114.f)));
+				npc->Get_FSM()->Set_Target(m_pPlayer.lock());
+				npc->Get_FSM()->Init();
+
+				{
+					auto controller = make_shared<CharacterController>();
+					npc->Add_Component(controller);
+					auto& desc = controller->Get_CapsuleControllerDesc();
+					desc.radius = 0.5f;
+					desc.height = 5.f;
+					desc.position = { vPos.x, vPos.y, vPos.z };
+					controller->Create_Controller();
+					npc->Set_ObjectGroup(OBJ_MONSTER);
+				}
+
+				EVENTMGR.Create_Object(npc);
+			}
 		}
 	}
 
