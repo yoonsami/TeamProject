@@ -8,6 +8,8 @@ public:
 	~GranseedScene();
 
 public:
+	wstring Get_MapName() { return m_wstrMapName; }
+
 	virtual void Init() override;
 	virtual void Tick() override;
 	virtual void Late_Tick() override;
@@ -23,5 +25,7 @@ private:
 	void Load_DemoModel();
 	void Load_Camera();
 	void Load_Light();
+
+	wstring m_wstrMapName = L"";
 };
 

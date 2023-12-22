@@ -40,8 +40,10 @@ public:
 			           0.f, 0.f, 0.f, 0.f,
 			           0.f, 0.f, 0.f, 0.f,
 			           0.f, 0.f, 0.f, 0.f };
-    //(Dummy[0].x >= 1.f) : EffectName
+    //(Dummy[0].w >= 1.f) : EffectName
         string strEffectName = "";
+    //(Dummy[0].z >= 1.f) : AddDiffuseColor
+        
     }MAPOBJDESC;
 
 public:

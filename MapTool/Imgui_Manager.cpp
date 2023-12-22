@@ -38,6 +38,7 @@
 
 #include "WeedScript.h"
 #include "WeedGroup.h"
+#include "DemoScene.h"
 using namespace ImGui;
 
 ImGuizmo::OPERATION m_eGuizmoType = { ImGuizmo::TRANSLATE };
@@ -75,7 +76,7 @@ void ImGui_Manager::ImGui_SetUp()
     ImGuizmo::SetRect(0.f, 0.f, g_iWinSizeX, g_iWinSizeY);
 
     Load_SkyBoxTexture();
-    Load_MapObjectBase(L"Field");
+    Load_MapObjectBase(dynamic_pointer_cast<GranseedScene>(CUR_SCENE)->Get_MapName());
     Load_TerrainTile();
     Load_Water();
     Init_WeedSetting();
@@ -624,7 +625,7 @@ void ImGui_Manager::Frame_Light()
     Color& Specular = DirectionalLightInfo.color.specular;
     ImGui::ColorEdit4("Specular##DirLight", (_float*)&Specular);
     Color& Emissive = DirectionalLightInfo.color.emissive;
-    ImGui::ColorEdit4("Emissive##DirLight", (_float*)&Emissive);
+    ImGui::ColorEdit4("Emissive##DirLight", (_float*)&Emissive, ImGuiColorEditFlags_HDR);
 
     m_DirectionalLightPos = Pos;
     //m_DirectionalLightLookDir = LookDir;
@@ -1260,8 +1261,9 @@ HRESULT ImGui_Manager::Load_SkyBoxTexture()
 HRESULT ImGui_Manager::Load_MapObjectBase(wstring _strFolderName)
 {
     wstring path = L"..\\Resources\\Models\\MapObject\\";
-    if (_strFolderName != L"")
-        path += _strFolderName + L"\\";
+
+    path += _strFolderName;
+    
     for (auto& entry : fs::recursive_directory_iterator(path))
     {
         // 맵오브젝트 폴더내부의 폴더이름들을 순회하며 베이스오브젝트 리스트를 만듦.
