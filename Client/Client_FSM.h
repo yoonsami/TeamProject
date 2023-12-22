@@ -22,6 +22,7 @@ protected:
 	void Set_On_Ground();
 	void Set_ColliderOption(ElementType eType, const wstring& strHitEffectTag);
 	void Create_InstallationSkillCollider(CollisionGroup eGroup, const wstring& strColliderName, const _float4& vPos, _float fSkillRange, INSTALLATIONSKILLDESC desc);
+	void Create_FloorSkillCollider_Sphere(CollisionGroup eGroup, const wstring& strColliderName, const _float4& vPos, _float fSkillRange, FLOORSKILLDESC desc);
 	void Create_FloorSkillCollider(CollisionGroup eGroup, const wstring& strColliderName, const _float4& vPos, _float3 vSkillScale, FLOORSKILLDESC desc);
 
 

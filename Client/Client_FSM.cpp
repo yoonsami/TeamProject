@@ -157,6 +157,29 @@ void Client_FSM::Create_InstallationSkillCollider(CollisionGroup eGroup, const w
 	EVENTMGR.Create_Object(InstallationSkillCollider);
 }
 
+void Client_FSM::Create_FloorSkillCollider_Sphere(CollisionGroup eGroup, const wstring& strColliderName, const _float4& vPos, _float fSkillRange, FLOORSKILLDESC desc)
+{
+	shared_ptr<GameObject> FloorSkillCollider = make_shared<GameObject>();
+
+	FloorSkillCollider->GetOrAddTransform();
+	FloorSkillCollider->Get_Transform()->Set_State(Transform_State::POS, vPos);
+
+	auto pSphereCollider = make_shared<SphereCollider>(fSkillRange);
+	pSphereCollider->Set_CenterPos(_float3{ vPos.x,vPos.y, vPos.z });
+	FloorSkillCollider->Add_Component(pSphereCollider);
+	FloorSkillCollider->Get_Collider()->Set_CollisionGroup(eGroup);
+
+	FloorSkillCollider->Add_Component(make_shared<AttackColliderInfoScript>());
+	FloorSkillCollider->Get_Script<AttackColliderInfoScript>()->Set_ColliderOwner(m_pOwner.lock());
+	FloorSkillCollider->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(m_eElementType);
+	FloorSkillCollider->Add_Component(make_shared<FloorSkill_Script>(desc));
+	FloorSkillCollider->Get_Script<FloorSkill_Script>()->Init();
+
+	FloorSkillCollider->Set_Name(strColliderName);
+
+	EVENTMGR.Create_Object(FloorSkillCollider);
+}
+
 void Client_FSM::Create_FloorSkillCollider(CollisionGroup eGroup, const wstring& strColliderName, const _float4& vPos, _float3 vSkillScale, FLOORSKILLDESC desc)
 {
 	shared_ptr<GameObject> FloorSkillCollider = make_shared<GameObject>();

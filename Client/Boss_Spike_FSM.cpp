@@ -1102,7 +1102,7 @@ void Boss_Spike_FSM::SQ_Die_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"SQ_Die", 0.2f, false, 1.f);
+    animator->Set_NextTweenAnim(L"SQ_Die", 0.2f, false, 1.05f);
 
     m_bInvincible = true;
 
@@ -1113,6 +1113,10 @@ void Boss_Spike_FSM::SQ_Die_Init()
         Get_CharacterController()->Get_Actor()->setFootPosition({ m_DieCamWorld.Translation().x,  m_DieCamWorld.Translation().y, m_DieCamWorld.Translation().z });
         Get_Transform()->Set_LookDir(m_DieCamWorld.Backward());
     }
+    CUR_SCENE->Set_PlayBGM(false);
+    
+    SOUND.StopAll();
+    SOUND.Play_Sound(L"SQ_Dun_Spike01_LevelOutro", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
 
 
     if (!m_pTarget.expired())
@@ -1757,27 +1761,20 @@ void Boss_Spike_FSM::skill_3100()
     
     if (Init_CurFrame(66))
     {
-        if (!m_pTarget.expired())
-        {
-            _float3 vPlayerPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
-            _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
+        FORWARDMOVINGSKILLDESC desc;
+        desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+        desc.fMoveSpeed = 0.f;
+        desc.fLifeTime = 3.f;
+        desc.fLimitDistance = 0.f;
 
-            _float3 vDir = vPlayerPos - vMyPos;
-            vDir.y = 0.f;
+        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f;
 
-            if (vDir.LengthSquared() > 10.f * 10.f)
-                return;
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
 
-            vDir.Normalize();
+        vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
+            Get_Transform()->Get_State(Transform_State::LOOK) * 6.5f;
 
-            _float3 vLook = Get_Transform()->Get_State(Transform_State::LOOK).xyz();
-            vLook.Normalize();
-
-            if (vDir.Dot(vLook) > cosf(XM_PI / 12.f))
-            {
-                m_pTarget.lock()->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, 30.f, Get_Owner(),ElementType::WATER);
-            }
-        }
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vSkillPos, 2.5f, desc, KNOCKBACK_ATTACK, 10.f);
     }
 
     Set_Gaze();
@@ -1894,7 +1891,10 @@ void Boss_Spike_FSM::skill_3200_Init()
 void Boss_Spike_FSM::skill_6100()
 {
     if (Init_CurFrame(28))
+    {
         Add_And_Set_Effect(L"Boss_Spike_6100_1");
+        SOUND.Play_Sound(L"skill_spike_004", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
 
     if (m_iCurFrame < 33)
     {
@@ -1959,43 +1959,61 @@ void Boss_Spike_FSM::skill_6100()
         g_bCutScene = false;
     }
 
+
+
     Calculate_CamBoneMatrix();
 
-    if (m_iCurFrame == 145)
+    if (Init_CurFrame(133))
+        SOUND.Play_Sound(L"vo_spike_att_12", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(145))
         Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);
     
 
     //160~380
     if (Init_CurFrame(160) || 
+        Init_CurFrame(180) ||
         Init_CurFrame(200) ||
+        Init_CurFrame(220) ||
         Init_CurFrame(240) ||
+        Init_CurFrame(260) ||
         Init_CurFrame(280) ||
+        Init_CurFrame(300) ||
         Init_CurFrame(320) ||
+        Init_CurFrame(340) ||
         Init_CurFrame(360) ||
         Init_CurFrame(380))
     {
         _float4 vMyPos = Get_Transform()->Get_State(Transform_State::POS);
+        _float4 vPlayerPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS);
 
-        INSTALLATIONSKILLDESC desc;
-        desc.fAttackTickTime = 1.35f;
-        desc.iLimitAttackCnt = 1;
-        desc.strAttackType = KNOCKDOWN_SKILL;
-        desc.strLastAttackType = KNOCKDOWN_SKILL;
+        FLOORSKILLDESC desc;
+        desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+        desc.fAttackStartGap = 1.35f;
+        desc.fAttackTickTime = 0.5f;
+        desc.strAttackType = KNOCKBACK_SKILL;
+        desc.strLastAttackType = KNOCKBACK_SKILL;
         desc.fAttackDamage = 5.f;
         desc.fLastAttackDamage = 5.f;
-        desc.bFirstAttack = false;
+        desc.iLimitAttackCnt = 4;
 
-        for (_uint i = 0; i < 6; i++)
+        for (_uint i = 0; i < 8; i++)
         {
             _float fOffSetX = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
             _float fOffSetZ = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
 
-		    _float4 vSkillPos = vMyPos + _float4{ fOffSetX, 13.5f, fOffSetZ, 0.f };
-            _float4 vEffectPos = vMyPos + _float4{ fOffSetX, 0.f, fOffSetZ, 0.f };
-           
+            _float4 vEffectPos = vPlayerPos + _float4{ fOffSetX, 0.f, fOffSetZ, 0.f };
+
             Add_GroupEffectOwner(L"Boss_Spike_6100_Ice", vEffectPos.xyz(), true);
-        
-            Create_InstallationSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vEffectPos, 1.3f, desc);
+
+            Create_FloorSkillCollider_Sphere(Monster_Skill, L"Boss_Spike_SkillCollider", vEffectPos, 1.3f, desc);
+        }
+
+        {
+            shared_ptr<GameObject> obj = make_shared<GameObject>();
+            auto script = make_shared<TimerScript>(1.35f);
+            script->Set_Function([&]() { SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f); });
+            obj->Add_Component(script);
+            EVENTMGR.Create_Object(obj);
         }
     }
 
@@ -2017,6 +2035,7 @@ void Boss_Spike_FSM::skill_6100_Init()
 
     m_bInvincible = true;
     m_bSuperArmor = false;
+
 
     Calculate_CamBoneMatrix();
 
@@ -2055,10 +2074,10 @@ void Boss_Spike_FSM::skill_7100()
         FORWARDMOVINGSKILLDESC desc;
         desc.vSkillDir = _float3(0.f);
         desc.fMoveSpeed = 0.f;
-        desc.fLifeTime = 1.f;
+        desc.fLifeTime = 2.5f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", Get_Transform()->Get_State(Transform_State::POS), 5.5f, desc, KNOCKDOWN_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", Get_Transform()->Get_State(Transform_State::POS), 5.f, desc, KNOCKDOWN_ATTACK, 10.f);
     }
 
 
@@ -2150,32 +2169,32 @@ void Boss_Spike_FSM::skill_100000()
     {
         _float4 vMyPos = Get_Transform()->Get_State(Transform_State::POS);
 
-        INSTALLATIONSKILLDESC desc;
-        desc.fAttackTickTime = 1.35f;
-        desc.iLimitAttackCnt = 1;
-        desc.strAttackType = KNOCKDOWN_SKILL;
-        desc.strLastAttackType = KNOCKDOWN_SKILL;
+        FLOORSKILLDESC desc;
+        desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+        desc.fAttackStartGap = 1.35f;
+        desc.fAttackTickTime = 0.5f;
+        desc.strAttackType = KNOCKBACK_SKILL;
+        desc.strLastAttackType = KNOCKBACK_SKILL;
         desc.fAttackDamage = 5.f;
         desc.fLastAttackDamage = 5.f;
-        desc.bFirstAttack = false;
+        desc.iLimitAttackCnt = 4;
 
-        for (_uint i = 0; i < 6; i++)
+        for (_uint i = 0; i < 8; i++)
         {
             _float fOffSetX = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
             _float fOffSetZ = ((rand() * 2 / _float(RAND_MAX) - 1) * (rand() % 10 + 3));
 
-            _float4 vSkillPos = vMyPos + _float4{ fOffSetX, 13.5f, fOffSetZ, 0.f };
             _float4 vEffectPos = vMyPos + _float4{ fOffSetX, 0.f, fOffSetZ, 0.f };
 
             Add_GroupEffectOwner(L"Boss_Spike_6100_Ice", vEffectPos.xyz(), true);
 
-            Create_InstallationSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vEffectPos, 1.3f, desc);
+            Create_FloorSkillCollider_Sphere(Monster_Skill, L"Boss_Spike_SkillCollider", vEffectPos, 1.3f, desc);
         }
 
         {
             shared_ptr<GameObject> obj = make_shared<GameObject>();
             auto script = make_shared<TimerScript>(1.35f);
-            script->Set_Function([&]() { SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+            script->Set_Function([&]() { SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f); });
             obj->Add_Component(script);
             EVENTMGR.Create_Object(obj);
         }
@@ -2370,7 +2389,6 @@ void Boss_Spike_FSM::Calculate_LipBoneMatrix()
 
 void Boss_Spike_FSM::Set_AttackSkill()
 {
-    
     if (m_tGroggyPatternTimer.fAccTime < m_tGroggyPatternTimer.fCoolTime)
     {
         _uint iRan = rand() % 7;
