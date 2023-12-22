@@ -228,6 +228,7 @@
     <ClInclude Include="GranseedTraveler_FSM.h" />
     <ClInclude Include="Hide_OrctongScript.h" />
     <ClInclude Include="InventoryModelRotation.h" />
+    <ClInclude Include="LoadingBarScript.h" />
     <ClInclude Include="MirScene.h" />
     <ClInclude Include="Mir_13100_Fireball.h" />
     <ClInclude Include="NeutralAlpaca_FSM.h" />
@@ -373,6 +374,7 @@
     <ClCompile Include="GranseedTraveler_FSM.cpp" />
     <ClCompile Include="Hide_OrctongScript.cpp" />
     <ClCompile Include="InventoryModelRotation.cpp" />
+    <ClCompile Include="LoadingBarScript.cpp" />
     <ClCompile Include="MirScene.cpp" />
     <ClCompile Include="Mir_13100_Fireball.cpp" />
     <ClCompile Include="NeutralAlpaca_FSM.cpp" />

@@ -12,6 +12,7 @@
 #include "MeshRenderer.h"
 #include "FontRenderer.h"
 #include "UiLoadingScript.h"
+#include "LoadingBarScript.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -66,8 +67,11 @@ void LoadingScene::Late_Tick()
 void LoadingScene::Final_Tick()
 {
     __super::Final_Tick();
+
+    if (false == m_pLoadingController.expired())
+        m_pLoadingController.lock()->Get_Script<LoadingBarScript>()->Set_Cur_Load_Index(m_pNextScene->Get_LoadIndex());
 	
-    //if (KEYTAP(KEY_TYPE::LBUTTON))
+    if (KEYTAP(KEY_TYPE::LBUTTON))
 	{
 		if (!m_pLoader->m_bLoadFinished)
 			return;
@@ -96,10 +100,25 @@ shared_ptr<GameObject> LoadingScene::Get_StaticObjectFromLoader(const wstring& s
 void LoadingScene::Load_Ui()
 {
     Load_UIFile(L"..\\Resources\\UIData\\UI_Loading.dat", list<shared_ptr<GameObject>>());
+    Load_UIFile(L"..\\Resources\\UIData\\UI_Loading_Bar_Controller.dat", list<shared_ptr<GameObject>>());
 
-    auto pGameobject = Get_GameObject(L"UI_Loading_Even");
-    pGameobject->Add_Component(make_shared<UiLoadingScript>(true));
+    {
+        weak_ptr<GameObject> pObj = Get_GameObject(L"UI_Loading_Even");
+        if(false == pObj.expired())
+            pObj.lock()->Add_Component(make_shared<UiLoadingScript>(true));
+    }
 
-    pGameobject = Get_GameObject(L"UI_Loading_Odd");
-    pGameobject->Add_Component(make_shared<UiLoadingScript>(false));
+    {
+        weak_ptr<GameObject> pObj = Get_GameObject(L"UI_Loading_Odd");
+        if (false == pObj.expired())
+            pObj.lock()->Add_Component(make_shared<UiLoadingScript>(false));
+    }
+
+    {
+        // UI_Loading_Bar_Controller
+        m_pLoadingController = Get_GameObject(L"UI_Loading_Bar_Controller");
+        if (false == m_pLoadingController.expired())
+            m_pLoadingController.lock()->Add_Component(make_shared<LoadingBarScript>());
+    }
+
 }
