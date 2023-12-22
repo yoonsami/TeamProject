@@ -29,5 +29,9 @@ private:
 
     _uint   m_iTargetNum        = {};
     _uint   m_iCurNum           = {};
+
+    _float  m_fCheckTime        = {};
+    _float  m_fMaxTime          = {};
+    _uint   m_iTextDotCount     = {};
 };
 

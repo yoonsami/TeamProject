@@ -71,7 +71,7 @@ void LoadingScene::Final_Tick()
     if (false == m_pLoadingController.expired())
         m_pLoadingController.lock()->Get_Script<LoadingBarScript>()->Set_Cur_Load_Index(m_pNextScene->Get_LoadIndex());
 	
-    if (KEYTAP(KEY_TYPE::LBUTTON))
+    //if (KEYTAP(KEY_TYPE::LBUTTON))
 	{
 		if (!m_pLoader->m_bLoadFinished)
 			return;

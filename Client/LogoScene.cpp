@@ -71,11 +71,14 @@ void LogoScene::Final_Tick()
 HRESULT LogoScene::Load_Scene()
 {
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Parts\\Player\\", true);
+	Set_Load_Index(3);
+
 	RESOURCES.LoadParts();
+	Set_Load_Index(6);
+
 	Load_Camera();
-
 	Load_Ui();
-
+	Set_Load_Index(10);
 
 	return S_OK;
 }

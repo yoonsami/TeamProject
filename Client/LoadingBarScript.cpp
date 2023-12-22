@@ -42,6 +42,7 @@ HRESULT LoadingBarScript::Init()
     }
 
     m_bIsLoadEnd = false;
+    m_fMaxTime = 1.f;
 
     return S_OK;
 }
@@ -79,4 +80,22 @@ void LoadingBarScript::Change_Text()
 
     wstring strTemp = to_wstring(m_iCurNum) + L" %";
     m_addedObj[m_iNumIndex].lock()->Get_FontRenderer()->Get_Text() = strTemp;
+
+    m_fCheckTime += fDT;
+    if (m_fMaxTime < m_fCheckTime)
+    {
+        m_fCheckTime = 0.f;
+
+        m_iTextDotCount++;
+        if (3 == m_iTextDotCount)
+            m_iTextDotCount = 0;
+    }
+
+    if (0 == m_iTextDotCount)
+        m_addedObj[m_iTextIndex].lock()->Get_FontRenderer()->Get_Text() = L"리소스 로딩 중입니다.";
+    else if (1 == m_iTextDotCount)
+        m_addedObj[m_iTextIndex].lock()->Get_FontRenderer()->Get_Text() = L"리소스 로딩 중입니다..";
+    else if (2 == m_iTextDotCount)
+        m_addedObj[m_iTextIndex].lock()->Get_FontRenderer()->Get_Text() = L"리소스 로딩 중입니다...";
+
 }

@@ -174,26 +174,38 @@ HRESULT MirScene::Load_Scene()
 {
 	RESOURCES.Delete_NonStaticResources();
 	PHYSX.Init();
+	Add_Load_Index();	// 1
 
 	//Static
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\", true);
+	Add_Load_Index();	// 2
+
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\VfxMesh\\", true);
+	Add_Load_Index();	// 3
+
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\SkyBox\\", true);
+	Add_Load_Index();	// 4
+
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Weapon\\", true);
+	Add_Load_Index();	// 5
 
 	//Map
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Mir\\", false);
+	Add_Load_Index();	// 6
 
 	//Monster
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Boss_Mir\\", false);
-	
+	Add_Load_Index();	// 7
+
 	//Sound
 	RESOURCES.Load_Sound(L"..\\Resources\\Sound\\MirScene\\", false);
+	Add_Load_Index();	// 8
 
 	auto player = Load_Player();
 	Load_Camera(player);
 	Load_MapFile(L"MirMap", player);
 	Load_Boss_Mir(player);
+	Add_Load_Index();	// 9
 
 	Load_Ui(player);
 
@@ -210,6 +222,8 @@ HRESULT MirScene::Load_Scene()
 	g_DOFData.g_DOFRange = 120.f;
 	g_DOFData.g_FocusDepth = 0.f;
 	g_DOFData.g_DOFColor = Color(144.f/255.f, 144.f / 255.f, 144.f / 255.f, 1.f);
+
+	Add_Load_Index();	// 10
 	return S_OK;
 }
 
