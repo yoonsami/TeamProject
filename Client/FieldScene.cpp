@@ -183,15 +183,20 @@ HRESULT FieldScene::Load_Scene()
 {
 	RESOURCES.Delete_NonStaticResources();
 	PHYSX.Init();
+	Add_Load_Index();	// 1
 
 	//Static
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\", true);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\VfxMesh\\", true);
+	Add_Load_Index();	// 2
+
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\SkyBox\\", true);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Weapon\\", true);
+	Add_Load_Index();	// 3
 
 	//Map
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Field\\", false);
+	Add_Load_Index();	// 4
 
 	//Monster
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Boss_Spike\\", false);
@@ -199,6 +204,7 @@ HRESULT FieldScene::Load_Scene()
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_White\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_Brown\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_Black\\", false);
+	Add_Load_Index();	// 5
 
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Wolf\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\NPC\\Feni\\", false);
@@ -206,14 +212,16 @@ HRESULT FieldScene::Load_Scene()
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Succubus_Scythe\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Undead_Priest\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\EntSoldier\\", false);
+	Add_Load_Index();	// 6
 
 	//Sound
 	RESOURCES.Load_Sound(L"..\\Resources\\Sound\\FieldScene\\", false);
+	Add_Load_Index();	// 7
 
 	auto player = Load_Player();
 	Load_Camera(player);
 	Load_MapFile(L"FieldMap", player);
-
+	Add_Load_Index();	// 8
 	
 	//Load_Companion(L"Shane", player, _float4{ 98.f, -0.6f, 73.76f, 1.f});
 	if(SWITCHMGR.Get_SwitchState(SWITCH_TYPE::CREATE_COMBAT5_AFTER_SPIKE))
@@ -221,10 +229,13 @@ HRESULT FieldScene::Load_Scene()
 		Load_Companion(L"Spike", player, _float4{ 142.f, 0.f, 75.0f, 1.f });
 		Load_Companion(L"Dellons", player, _float4{ 148.f, 0.f, 78.f, 1.f });
 	}
+	Add_Load_Index();	// 9
 
 	Load_Ui(player);
 	Load_Portal();
 	Load_Script(player);
+
+	Add_Load_Index();	// 10
 	return S_OK;
 }
 

@@ -230,24 +230,37 @@ HRESULT GranseedScene::Load_Scene()
 
 	//Static
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\", true);
+	Add_Load_Index();	// 1
 
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\VfxMesh\\", true);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\SkyBox\\", true);
+	Add_Load_Index();	// 2
+
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Weapon\\", true);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\MovePortal\\", true);
+	Add_Load_Index();	// 3
 
 	//Map
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Granseed\\", false);
+	Add_Load_Index();	// 4
+
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Npc\\Granseed\\", false);
+	Add_Load_Index();	// 5
+
 	// Gacha
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Kyle\\", false);
+	Add_Load_Index();	// 6
+
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Yeopo\\", false);
+	Add_Load_Index();	// 7
+
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Yeonhee\\", false);
+	Add_Load_Index();	// 8
 
 	//Sound
 	RESOURCES.Load_Sound(L"..\\Resources\\Sound\\Common\\", true);
 	RESOURCES.Load_Sound(L"..\\Resources\\Sound\\GranseedScene\\", false);
-
+	Add_Load_Index();	// 9
 
 
 	auto pPlayer = Load_Player();
@@ -261,6 +274,8 @@ HRESULT GranseedScene::Load_Scene()
 	Load_Portal();
 
 	Load_Debug();
+
+	Add_Load_Index();	// 10
 
 	return S_OK;
 }
