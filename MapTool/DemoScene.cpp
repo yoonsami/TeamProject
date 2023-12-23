@@ -90,7 +90,7 @@ HRESULT GranseedScene::Load_Scene()
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\NPC\\Granseed\\");
 
 	//RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\Spear_Ace\\");
-	//RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\Yeonhee\\");
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\Yeonhee\\");
 
 	//Load_DemoModel();
 
