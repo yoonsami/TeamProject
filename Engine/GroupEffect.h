@@ -68,6 +68,8 @@ private:
 
 	list <weak_ptr<GameObject>>					m_lMemberEffects;
 
+	vector < pair < _int, _float3>>				m_RoundAxis;	/* (index of member effect, round axis )if member mesheffect's round axis option is "random in range(all same)", all particle have to share same axis. 
+																   It determined in this "GroupEffect" class. */
 
 	vector<pair<wstring, vector<shared_ptr<GameObject>>>>	m_RenderGroup;
 	map<wstring, shared_ptr<StructuredBuffer>>		m_RenderParamBuffer;
