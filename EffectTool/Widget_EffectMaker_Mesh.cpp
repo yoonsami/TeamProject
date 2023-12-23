@@ -221,8 +221,9 @@ void Widget_EffectMaker_Mesh::ImGui_FinishedEffect()
 	if (ImGui::Button("Load"))
 		Load();
 
-	if (ImGui::Button("Update Save MeshEffect files"))
-		SaveAdditionalData();
+	/* If you need to save additional data */
+	//if (ImGui::Button("Update Save MeshEffect files"))
+	//	SaveAdditionalData();
 	
 	ImGui::InputText("##FinishedEffectFilter", m_szFinishedEffectFilter, MAX_PATH);
 	ImGui::SameLine();
@@ -1807,9 +1808,12 @@ void Widget_EffectMaker_Mesh::Show_Guizmo()
 
 void Widget_EffectMaker_Mesh::SwapTexOption(_int iSrcIndex, _int iDestIndex)
 {
+	// texture option 
 	Texture_Option temp = m_TexOption[iSrcIndex];
 	m_TexOption[iSrcIndex] = m_TexOption[iDestIndex];
 	m_TexOption[iDestIndex] = temp;
+
+
 }
 
 _bool Widget_EffectMaker_Mesh::SearchOnList(const string& strTag, const vector<string>& vTargetList, _int* pOut_TargetIndex, string* pOut_TargetTag)
