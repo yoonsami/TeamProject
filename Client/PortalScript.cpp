@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "PortalScript.h"
 #include "UIInteraction.h"
 #include "LoadingScene.h"
@@ -11,6 +11,7 @@
 #include "EffectGoUp.h"
 #include "MainCameraScript.h"
 #include "MainUiController.h"
+#include "UiQuestController.h"
 
 PortalScript::PortalScript(SCENE_TYPE eDest, const _float3& vPos)
 	: m_eDest(eDest)

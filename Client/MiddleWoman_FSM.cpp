@@ -87,7 +87,11 @@ void MiddleWoman_FSM::talk()
 	if (obj && !obj->Get_Script<UiQuestController>()->Get_Dialog_End())
 	{
 		if (obj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::KILL_DELLONS) == CUR_QUEST::PROGRESS)
-		m_eCurState = STATE::n_idle;
+			m_eCurState = STATE::n_idle;
+		else if (obj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::KILL_DELLONS) == CUR_QUEST::CLEAR)
+			m_eCurState = STATE::n_idle;
+		else if (obj->Get_Script<UiQuestController>()->Get_QuestState(QUESTINDEX::KILL_DELLONS))
+			m_eCurState = STATE::n_idle;
 	}
 }
 

@@ -69,9 +69,9 @@ void FieldScript::Tick()
 
 				EVENTMGR.Create_Object(ObjMonster);
 			}
-
 			{
 				_float3 vPos = _float3(87.5f, 10.f, 31.f);
+				SOUND.Play_Sound(L"EDa_ChangChunVillager02_I05_1", SOUND_EFFECT, 0.5f, vPos,15.f);
 				shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
 				ObjMonster->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(vPos, 1.f));
 
