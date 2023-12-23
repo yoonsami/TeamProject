@@ -113,24 +113,21 @@ HRESULT UiGachaCardMove::Init()
 
 	if (true == m_bIsUnique)
 	{
-		switch (iHeroIndex++)
-		{
-		case 0:
-			m_eHero = HERO::KYLE;
-			break;
-		case 1:
+		++iHeroIndex;
+		if (0 == iHeroIndex % 2)
 			m_eHero = HERO::YEOPO;
-			break;
-		case 2:
-			m_eHero = HERO::YEONHEE;
-			break;
-		case 3:
-			m_eHero = HERO::SHANE;
-			break;
-		default:
+		else if (1 == iHeroIndex % 2)
 			m_eHero = HERO::KYLE;
-			break;
-		}
+
+		//switch (iHeroIndex++)
+		//{
+		//case 0:
+		//	m_eHero = HERO::KYLE;
+		//	break;
+		//case 1:
+		//	m_eHero = HERO::YEOPO;
+		//	break;
+		//}
 		
 		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Gacha_Card_Back0"), TextureMapType::DIFFUSE);
 
