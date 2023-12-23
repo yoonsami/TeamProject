@@ -82,7 +82,7 @@ HRESULT GranseedScene::Load_Scene()
 {
 	wstring MapObjPath = L"..\\Resources\\Models\\MapObject\\";
 	// 맵폴더이름
-	wstring MapFolderName = L"Granseed\\";
+	wstring MapFolderName = L"Yeonhee\\";
 	m_wstrMapName = MapFolderName;
 	RESOURCES.CreateModel(MapObjPath + m_wstrMapName);
 	RESOURCES.CreateModel(MapObjPath + L"Skybox\\");
