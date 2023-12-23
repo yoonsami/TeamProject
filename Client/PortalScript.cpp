@@ -10,7 +10,7 @@
 #include "GroupEffect.h"
 #include "EffectGoUp.h"
 #include "MainCameraScript.h"
-#include "UiQuestController.h"
+#include "MainUiController.h"
 
 PortalScript::PortalScript(SCENE_TYPE eDest, const _float3& vPos)
 	: m_eDest(eDest)
@@ -32,12 +32,16 @@ void PortalScript::Tick()
 		vDir.y = 0.f;
 		if (vDir.LengthSquared() < 1.f * 1.f)
 		{
-			// UI Ãâ·Â 
+			// UI ï¿½ï¿½ï¿½ 
 			auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
 			if (pObj && pObj->Get_Script<UIInteraction>()->Get_Is_Activate(m_pOwner.lock()))
 			{
+				auto pController = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+				if (pController)
+					pController->Get_Script<MainUiController>()->Set_MainUI_Render(false);
+
 				m_bClicked = true;
-				// »ç¿îµåÀç»ý
+				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				SOUND.Play_Sound(L"SQ_TeleportOut_Rune_01", CHANNELID::SOUND_EFFECT, g_fEnvironmentRatio, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz(), 10.f/*MagicNumber*/);
 				{
 					wstring strSkilltag = L"Portal_Effect";

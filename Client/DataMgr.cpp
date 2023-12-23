@@ -1067,7 +1067,7 @@ void DataMgr::Initialize()
 
 
     m_CardInven.resize(100);
-
+    Set_Card_Inven(HERO::YEONHEE);
 
     m_NpcDialog.resize(IDX(NPCTYPE::MAX));
     
