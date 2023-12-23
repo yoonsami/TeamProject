@@ -107,6 +107,7 @@ MeshInstancingOutput VS_NonAnimInstancing(VTXModelInstancing input)
     
     output.id = input.instanceID;
     output.renderParam = input.renderParam;
+    output.renderParam2 = input.renderParam2;
     return output;
 }
 
@@ -142,6 +143,7 @@ MeshInstancingOutput VS_MapObject_Instancing(VTXModelInstancing input, uniform b
     }
     output.id = input.instanceID;
     output.renderParam = input.renderParam;
+    output.renderParam2 = input.renderParam2;
     return output;
 }
 
@@ -167,6 +169,7 @@ MeshInstancingOutput VS_AnimInstancing(VTXModelInstancing input)
     
     output.id = input.instanceID;
     output.renderParam = input.renderParam;
+    output.renderParam2 = input.renderParam2;
     return output;
 }
 
@@ -212,6 +215,7 @@ ShadowInstanceOutput VS_Shadow_NonAnim_Instancing(VTXModelInstancing input)
     output.uv = input.uv;
     output.id = input.instanceID;
     output.renderParam = input.renderParam;
+    output.renderParam2 = input.renderParam2;
     return output;
 }
 
@@ -230,6 +234,7 @@ ShadowInstanceOutput VS_Shadow_Anim_Instancing(VTXModelInstancing input)
     output.uv = input.uv;
     output.id = input.instanceID;
     output.renderParam = input.renderParam;
+    output.renderParam2 = input.renderParam2;
     return output;
 }
 // VS_MotionBlur
@@ -394,7 +399,7 @@ PS_OUT_Deferred PS_Deferred(MeshOutput input)
     if (bHasDissolveMap != 0)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
-        if (dissolve < g_vec4_0.w)
+        if (dissolve < g_vec4_1.w)
             discard;
     }
     
@@ -458,7 +463,7 @@ PS_OUT_Deferred PS_Deferred_Instancing(MeshInstancingOutput input)
     if (bHasDissolveMap != 0)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
-        if (dissolve < input.renderParam.w)
+        if (dissolve < input.renderParam2.w)
             discard;
     }
     
@@ -541,7 +546,7 @@ PS_OUT_Deferred PS_WATER(MeshOutput input)
     if (bHasDiffuseMap)
     {
         vSample_Op1.a = DiffuseMap.Sample(LinearSampler, input.uv + g_vec2_1 /*uvsliding*/ + fDistortionWeight).r;
-        vSample_Op1.rgb = lerp(vBaseColor2_Op1, vBaseColor1_Op1, vSample_Op1.a);
+        vSample_Op1.rgb = lerp(vBaseColor2_Op1, vBaseColor1_Op1, vSample_Op1.a).rgb;
 
         float luminance = dot(vSample_Op1.rgb, float3(0.299, 0.587, 0.114));
         vSample_Op1.rgb = lerp(vSample_Op1.rgb, vSample_Op1.rgb * 1.5f, saturate(luminance));
@@ -588,9 +593,17 @@ float4 PS_Shadow(ShadowOutput input) : SV_Target
     if (bHasDissolveMap != 0)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
-        if (dissolve < g_vec4_0.w)
+        if (dissolve < g_vec4_1.w)
             discard;
     }
+    if (bHasTexturemap8)
+    {
+        if ((10.f - g_float_0) + W._42 < input.worldPos.y)
+            discard;
+        
+    }
+    
+    
   //  return float4(input.clipPos.z, input.clipPos.w, 0.f, 0.f);
     return float4(input.clipPos.z / input.clipPos.w, 0.f, 0.f, 0.f);
 }
@@ -600,9 +613,12 @@ float4 PS_ShadowInstancing(ShadowInstanceOutput input) : SV_Target
     if (bHasDissolveMap != 0)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
-        if (dissolve < input.renderParam.w)
+        if (dissolve < input.renderParam2.w)
             discard;
     }
+    
+    
+    
     return float4(input.clipPos.z / input.clipPos.w, 0.f, 0.f, 0.f);
 }
 
@@ -677,7 +693,7 @@ PBR_OUTPUT PS_PBR_Deferred(MeshOutput input)
     if (bHasDissolveMap)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).w;
-        if (dissolve < g_vec4_0.w)
+        if (dissolve < g_vec4_1.w)
             discard;
     }
     
@@ -727,7 +743,7 @@ PBR_OUTPUT PS_PBR_Deferred(MeshOutput input)
     output.arm = ARM_Map;
     output.diffuseColor = diffuseColor + float4(g_vec4_0.xyz, 0.f);
     output.emissive = emissiveColor;
-    output.rimColor = Material.emissive + g_vec4_1;
+    output.rimColor = Material.emissive + float4(g_vec4_1.rgb, 0.f);
     //output.blur = 0;
     return output;
 }
@@ -743,7 +759,7 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(MeshInstancingOutput input)
     if (bHasDissolveMap != 0)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).w;
-        if (dissolve < input.renderParam.w)
+        if (dissolve < input.renderParam2.w)
             discard;
     }
     
@@ -802,7 +818,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject(MeshOutput input)
     if (bHasDissolveMap)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).w;
-        if (dissolve < g_vec4_0.w)
+        if (dissolve < g_vec4_1.w)
             discard;
     }
     
@@ -847,7 +863,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject(MeshOutput input)
     output.arm = ARM_Map;
     output.diffuseColor = diffuseColor;
     output.emissive = emissiveColor;
-    output.rimColor = Material.emissive + g_vec4_1;
+    output.rimColor = Material.emissive + float4(g_vec4_1.rgb, 0.f);
     //output.blur = 0;
     return output;
 }
@@ -863,7 +879,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_Instancing(MeshInstancingOutput i
     if (bHasDissolveMap != 0)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).w;
-        if (dissolve < input.renderParam.w)
+        if (dissolve < input.renderParam2.w)
             discard;
     }
     
@@ -1000,7 +1016,7 @@ float4 PS_Forward(MeshOutput input) : SV_Target
     if (bHasDissolveMap != 0)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).r;
-        if (dissolve < g_vec4_0.w)
+        if (dissolve < g_vec4_1.w)
             discard;
     }
     
@@ -1064,7 +1080,7 @@ float4 PS_PBR_Forward(MeshOutput input) : SV_Target
     if (bHasDissolveMap)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).w;
-        if (dissolve < g_vec4_0.w)
+        if (dissolve < g_vec4_1.w)
             discard;
     }
     
@@ -1149,7 +1165,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_NormalControl(MeshOutput input)
     if (bHasDissolveMap)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).w;
-        if (dissolve < g_vec4_0.w)
+        if (dissolve < g_vec4_1.w)
             discard;
     }
     
@@ -1200,7 +1216,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_NormalControl(MeshOutput input)
     output.arm = ARM_Map;
     output.diffuseColor = diffuseColor;
     output.emissive = emissiveColor;
-    output.rimColor = Material.emissive + g_vec4_1;
+    output.rimColor = Material.emissive + float4(g_vec4_1.rgb, 0.f);
    // output.blur = 0;
     return output;
 }
@@ -1216,7 +1232,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_Instancing_NormalControl(MeshInst
     if (bHasDissolveMap != 0)
     {
         float dissolve = DissolveMap.Sample(LinearSampler, input.uv).w;
-        if (dissolve < input.renderParam.w)
+        if (dissolve < input.renderParam2.w)
             discard;
     }
     

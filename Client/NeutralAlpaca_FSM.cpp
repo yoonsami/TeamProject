@@ -405,7 +405,9 @@ void NeutralAlpaca_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared
         m_bAngry = false;
 		Get_Owner()->Set_Instancing(true);
 		Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);
-		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1] = Color(0.f);
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].x = 0.f;
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].y = 0.f;
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].z = 0.f;
 		m_bCanHitCounter = false;
 
 		shared_ptr<GameObject> motionTrail = make_shared<GameObject>();
@@ -1067,7 +1069,9 @@ void NeutralAlpaca_FSM::skill_1100()
     {
         m_fStTimer += fDT;
         Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f / (1.f + m_fStTimer));
-        Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1] = Color(0.05f, 0.2f, 1.f, 1.f);
+        Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].x =0.05f;
+        Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].y =0.2f;
+        Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].z = 1.f;
         Get_Owner()->Set_Instancing(false);
 
         m_bCanHitCounter = true;
@@ -1080,7 +1084,9 @@ void NeutralAlpaca_FSM::skill_1100()
 	{
         Get_Owner()->Set_Instancing(true);
 		Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);
-		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1] = Color(0.f);
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].x = 0.0f;
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].y = 0.0f;
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].z = 0.0f;
 
         m_bCanHitCounter = false;
         AttackCollider_On(STUN_HIT, 0.f);
@@ -1121,7 +1127,9 @@ void NeutralAlpaca_FSM::skill_2100()
 	{
 		m_fStTimer += fDT;
 		Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f / (1.f +m_fStTimer));
-		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1] = Color(0.05f, 0.2f, 1.f, 1.f);
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].x = 0.05f;
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].y = 0.2f;
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].z = 1.f;
 		Get_Owner()->Set_Instancing(false);
 
 		m_bCanHitCounter = true;
@@ -1134,7 +1142,9 @@ void NeutralAlpaca_FSM::skill_2100()
     {
 		Get_Owner()->Set_Instancing(true);
 		Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);
-		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1] = Color(0.f);
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].x = 0.f;
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].y = 0.f;
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].z = 0.f;
 		m_bCanHitCounter = false;
         AttackCollider_On(STUN_HIT, 0.f);
     }
@@ -1172,7 +1182,9 @@ void NeutralAlpaca_FSM::skill_3100()
 	{
 		m_fStTimer += fDT;
 		Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f / (1.f + m_fStTimer));
-		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1] = Color(0.05f, 0.2f, 1.f, 1.f);
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].x = 0.05f;
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].y = 0.2f;
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].z = 1.f;
 		Get_Owner()->Set_Instancing(false);
 
 		m_bCanHitCounter = true;
@@ -1185,7 +1197,9 @@ void NeutralAlpaca_FSM::skill_3100()
     {
 		Get_Owner()->Set_Instancing(true);
 		Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);
-		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1] = Color(0.f);
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].x = 0.f;
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].y = 0.f;
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].z = 0.f;
 		m_bCanHitCounter = false;
         AttackCollider_On(STUN_HIT, 0.f);
     }

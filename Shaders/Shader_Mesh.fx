@@ -110,6 +110,7 @@ UIInstancingOutput VS_Instancing(VTXMeshInstancing input)
     output.uv = input.uv;
     output.id = input.instanceID;
     output.renderParam = input.renderParam;
+    output.renderParam2 = input.renderParam2;
     return output;
 }
 

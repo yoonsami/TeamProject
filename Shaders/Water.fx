@@ -63,7 +63,7 @@ float4 PS(MeshOutput input) : SV_TARGET
     if (bHasDiffuseMap)
     {
         vSample_Op1.a = DiffuseMap.Sample(LinearSampler, input.uv + g_vec2_1 /*uvsliding*/ + fDistortionWeight).r;
-        vSample_Op1.rgb = lerp(vBaseColor2_Op1, vBaseColor1_Op1, vSample_Op1.a);
+        vSample_Op1.rgb = lerp(vBaseColor2_Op1, vBaseColor1_Op1, vSample_Op1.a).rgb;
 
         float luminance = dot(vSample_Op1.rgb, float3(0.299, 0.587, 0.114));
         vSample_Op1.rgb = lerp(vSample_Op1.rgb, vSample_Op1.rgb * 1.5f, saturate(luminance));

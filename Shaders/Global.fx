@@ -85,6 +85,7 @@ struct UIInstancingOutput
     float2 uv : TEXCOORD;
     uint id : ID;
     float4 renderParam : POSITION1;
+    float4 renderParam2 : POSITION2;
 };
 
 struct VertexOutput
@@ -118,6 +119,7 @@ struct MeshInstancingOutput
     float3 viewTangent : TANGENT;
     uint id : SV_InstanceID;
     float4 renderParam : POSITION3;
+    float4 renderParam2 : POSITION4;
 };
 
 struct PS_OUT
@@ -153,6 +155,7 @@ struct ShadowInstanceOutput
     float2 uv : TEXCOORD;
     uint id : SV_InstanceID;
     float4 renderParam : POSITION3;
+    float4 renderParam2 : POSITION4;
 };
 
 //////////////////

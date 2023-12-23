@@ -17,6 +17,7 @@ struct VTXMeshInstancing
     uint instanceID : SV_INSTANCEID;
     row_major float4x4 world : INST;
     float4 renderParam : INSTT;
+    float4 renderParam2 : INSTTt;
 };
 
 // ModelRenderer, Animator
@@ -33,6 +34,7 @@ struct VTXModelInstancing
     uint instanceID : SV_INSTANCEID;
     row_major float4x4 world : INST;
     float4 renderParam : INSTT;
+    float4 renderParam2 : INSTTt;
 };
 
 struct RenderParam

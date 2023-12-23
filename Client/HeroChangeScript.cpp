@@ -56,11 +56,13 @@ void HeroChangeScript::Tick()
     if (Get_Owner()->Get_Animator()->Get_RenderParamDesc().floatParams[0] < 0.f) Get_Owner()->Get_Animator()->Get_RenderParamDesc().floatParams[0] = 0.f;
 
     _float4& param = Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1];
-    param -= _float4(fDT);
+    param.x -= (fDT);
+    param.y -= (fDT);
+    param.z -= (fDT);
     if (param.x < 0) param.x = 0.f;
 	if (param.y < 0) param.y = 0.f;
 	if (param.z < 0) param.z = 0.f;
-	if (param.w < 0) param.w = 0.f;
+
 
 
 
@@ -130,7 +132,9 @@ void HeroChangeScript::Change_Character_Weapon(const wstring& weaponname, shared
     weapon->Get_ModelRenderer()->Set_RenderState(true);
     weapon->Get_ModelRenderer()->Get_RenderParamDesc().floatParams[0] = 10.f;
 	_float4& param = weapon->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[1] ;
-    param = Color(1.f);
+	param.x = (1.f);
+	param.y = (1.f);
+	param.z = (1.f);
 	for (auto& material : weapon->Get_Model()->Get_Materials())
 	{
 		material->Set_TextureMap(material->Get_TextureMap(TextureMapType::DIFFUSE), TextureMapType::TEXTURE8);
@@ -239,7 +243,9 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
      
      Get_Owner()->Get_Animator()->Get_RenderParamDesc().floatParams[0] = 10.f;
 	 _float4& param = Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1];
-	 param = Color(1.f);
+	 param.x = (1.f);
+	 param.y = (1.f);
+	 param.z = (1.f);
 
     
    {

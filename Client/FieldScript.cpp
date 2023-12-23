@@ -163,7 +163,7 @@ void FieldScript::Tick()
 					controller->Create_Controller();
 					npc->Set_ObjectGroup(OBJ_MONSTER);
 				}
-
+				npc->Set_DrawShadow(true);
 				EVENTMGR.Create_Object(npc);
 			}
 			{
@@ -195,7 +195,7 @@ void FieldScript::Tick()
 					controller->Create_Controller();
 					npc->Set_ObjectGroup(OBJ_MONSTER);
 				}
-
+				npc->Set_DrawShadow(true);
 				EVENTMGR.Create_Object(npc);
 			}
 			{
@@ -227,7 +227,7 @@ void FieldScript::Tick()
 					controller->Create_Controller();
 					npc->Set_ObjectGroup(OBJ_MONSTER);
 				}
-
+				npc->Set_DrawShadow(true);
 				EVENTMGR.Create_Object(npc);
 			}
 		}
@@ -298,6 +298,7 @@ void FieldScript::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_
 		}
 		ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
 		ObjMonster->Get_FSM()->Init();
+		ObjMonster->Set_DrawShadow(true);
 		EVENTMGR.Create_Object(ObjMonster);
 	}
 }

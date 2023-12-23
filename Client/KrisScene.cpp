@@ -496,7 +496,7 @@ void KrisScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_pt
 				}
 			}
 			ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
-
+			ObjMonster->Set_DrawShadow(true);
 			Add_GameObject(ObjMonster);
 		}
 	}

@@ -243,7 +243,7 @@ void GS_Default(point VS_OUTPUT input[1], inout TriangleStream<GS_OUTPUT> output
     // For. proj space
     for (int i = 0; i < 4; ++i)
     {
-        output[i].viewPos = mul(output[i].position, V);
+        output[i].viewPos = mul(output[i].position, V).xyz;
         output[i].position = mul(output[i].position, VP);
     }
     
@@ -298,7 +298,7 @@ void GS_Billbord(point VS_OUTPUT input[1], inout TriangleStream<GS_OUTPUT> outpu
     // For. proj space
     for (int i = 0; i < 4; ++i)
     {
-        output[i].viewPos = mul(output[i].position, V);
+        output[i].viewPos = mul(output[i].position, V).xyz;
         output[i].position = mul(output[i].position, VP);
     }
     

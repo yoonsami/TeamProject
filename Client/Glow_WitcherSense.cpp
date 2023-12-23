@@ -18,12 +18,20 @@ void Glow_WitcherSense::Tick()
 	if ((vPlayerPos - vOwenrPos).LengthSquared() < 15.f * 15.f && g_bWitcherSenseOn)
 	{
 		if(Get_Owner()->Get_ModelRenderer())
-			Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[1] = Color(1.2f, 0.f, 0.f, 0.f);
+		{
+			Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[1].x = 1.2f;
+			Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[1].y = 0.f;
+			Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[1].z = 0.f;
+		}
 
 	}
 	else
 	{
 		if (Get_Owner()->Get_ModelRenderer())
-			Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[1] = Color(0.f, 0.f, 0.f, 0.f);
+		{
+			Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[1].x = 0.f;
+			Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[1].y = 0.f;
+			Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[1].z = 0.f;
+		}
 	}
 }
