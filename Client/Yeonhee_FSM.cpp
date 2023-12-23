@@ -321,9 +321,11 @@ void Yeonhee_FSM::Get_Hit(const wstring& skillname, _float fDamage,  shared_ptr<
 			else
 				m_eCurState = STATE::hit;
 
+            wstring strSoundTag = L"yeonhee_damage_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 4 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.1f);
-
-
 		}
 	}
 	else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
@@ -337,8 +339,11 @@ void Yeonhee_FSM::Get_Hit(const wstring& skillname, _float fDamage,  shared_ptr<
 			else
 				m_eCurState = STATE::knock_start;
 
-			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.2f);
+            wstring strSoundTag = L"yeonhee_damage_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 4 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.2f);
 		}
 	}
 	else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
@@ -352,8 +357,11 @@ void Yeonhee_FSM::Get_Hit(const wstring& skillname, _float fDamage,  shared_ptr<
 			else
 				m_eCurState = STATE::knockdown_start;
 
-			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.3f);
+            wstring strSoundTag = L"yeonhee_damage_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 4 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.3f);
 		}
 	}
 	else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
@@ -367,8 +375,11 @@ void Yeonhee_FSM::Get_Hit(const wstring& skillname, _float fDamage,  shared_ptr<
 			else
 				m_eCurState = STATE::airborne_start;
 
-			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.3f);
+            wstring strSoundTag = L"yeonhee_damage_0";
+            strSoundTag = strSoundTag + to_wstring(rand() % 4 + 1);
+            SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.3f);
 		}
 	}
 	else
@@ -382,6 +393,9 @@ void Yeonhee_FSM::Set_State(_uint iIndex)
 
 void Yeonhee_FSM::b_idle()
 {
+    if (Init_CurFrame(250))
+        SOUND.Play_Sound(L"yeonhee_idle_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    
     if (!g_bIsCanMouseMove && !g_bCutScene)
     {
 	    if (KEYPUSH(KEY_TYPE::W) || KEYPUSH(KEY_TYPE::S) ||
@@ -414,6 +428,10 @@ void Yeonhee_FSM::b_idle_Init()
 
 void Yeonhee_FSM::b_run_start()
 {
+    if (Init_CurFrame(17))
+        SOUND.Play_Sound(L"walk_air", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+
     Get_Transform()->Go_Straight();
 
     _float3 vInputVector = Get_InputDirVector();
@@ -431,7 +449,6 @@ void Yeonhee_FSM::b_run_start()
             m_eCurState = STATE::b_run;
 
         Soft_Turn_ToInputDir(vInputVector, XM_PI * 5.f);
-
 
         if (!g_bIsCanMouseMove && !g_bCutScene)
         {
@@ -460,6 +477,12 @@ void Yeonhee_FSM::b_run_start_Init()
 
 void Yeonhee_FSM::b_run()
 {
+    if (Init_CurFrame(8))
+        SOUND.Play_Sound(L"walk_air", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(19))
+        SOUND.Play_Sound(L"walk_air", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+
     Get_Transform()->Go_Straight();
 
     _float3 vInputVector = Get_InputDirVector();
@@ -587,6 +610,12 @@ void Yeonhee_FSM::b_run_end_l_Init()
 
 void Yeonhee_FSM::b_sprint()
 {
+    if (Init_CurFrame(7))
+        SOUND.Play_Sound(L"walk_air", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    else if (Init_CurFrame(14))
+        SOUND.Play_Sound(L"walk_air", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+
     Get_Transform()->Go_Straight();
 
     _float3 vInputVector = Get_InputDirVector();
@@ -951,6 +980,8 @@ void Yeonhee_FSM::skill_1100_Init()
 
     animator->Set_NextTweenAnim(L"skill_1100", 0.15f, false, m_fNormalAttack_AnimationSpeed);
 
+    SOUND.Play_Sound(L"yeonhee_att_vo_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_bCanCombo = false;
 
     if (m_pOwner.lock()->Get_Script<CoolTimeCheckScript>())
@@ -1024,6 +1055,8 @@ void Yeonhee_FSM::skill_1200_Init()
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
     }
 
+    SOUND.Play_Sound(L"yeonhee_att_vo_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_bCanCombo = false;
 
     AttackCollider_Off();
@@ -1090,6 +1123,8 @@ void Yeonhee_FSM::skill_1300_Init()
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Start_Attack_Button_Effect();
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
     }
+    
+    SOUND.Play_Sound(L"yeonhee_att_vo_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_bCanCombo = false;
 
@@ -1123,6 +1158,8 @@ void Yeonhee_FSM::skill_91100_Init()
 
     CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Render(false);
 
+    SOUND.Play_Sound(L"yeonhee_att_vo_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_bCanCombo = false;
 
     m_vDirToTarget = Get_InputDirVector();
@@ -1154,6 +1191,8 @@ void Yeonhee_FSM::skill_93100_Init()
 
     CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Render(false);
 
+    SOUND.Play_Sound(L"yeonhee_att_vo_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_bCanCombo = false;
     
     AttackCollider_Off();
@@ -1165,6 +1204,9 @@ void Yeonhee_FSM::skill_93100_Init()
 void Yeonhee_FSM::skill_100100()
 {
     Look_DirToTarget();
+
+    if (Init_CurFrame(75))
+        SOUND.Play_Sound(L"yeonhee_idle_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     if (m_iCurFrame > 20)
     {
@@ -1216,6 +1258,8 @@ void Yeonhee_FSM::skill_100100_Init()
 
     AttackCollider_Off();
 
+    SOUND.Play_Sound(L"yeonhee_att_vo_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
     m_bInvincible = false;
     m_bSuperArmor = true;
     m_fKeyPushTimer = 0.f;
@@ -1245,7 +1289,6 @@ void Yeonhee_FSM::skill_100100_e_Init()
 
     CUR_SCENE->Get_UI(L"UI_Skill_Use_Gauge")->Get_Script<UiSkillGauge>()->Change_Render(false);
 
-
 	AttackCollider_Off();
 
 	m_bInvincible = false;
@@ -1260,6 +1303,8 @@ void Yeonhee_FSM::skill_200100()
 
     if (Init_CurFrame(24))
     {
+        SOUND.Play_Sound(L"Skill_12_A_Yeonhee_use", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		INSTALLATIONSKILLDESC desc;
 		desc.fAttackTickTime = 0.5f;
 		desc.iLimitAttackCnt = 10;
@@ -1318,6 +1363,8 @@ void Yeonhee_FSM::skill_300100()
 
 	if (Init_CurFrame(24))
 	{
+        SOUND.Play_Sound(L"yeonhee_skill_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		FORWARDMOVINGSKILLDESC desc;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::UP) * 10.f - Get_Transform()->Get_State(Transform_State::LOOK) * 2.f;
@@ -1368,6 +1415,9 @@ void Yeonhee_FSM::skill_400100()
 
     Look_DirToTarget();
 
+    if (Init_CurFrame(26))
+        SOUND.Play_Sound(L"Skill_04_A_Yeonhee_use", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 	if (m_iCurFrame > 22 && m_iCurFrame < 72)
 	{
 		m_fKeyPushTimer += fDT;
@@ -1417,8 +1467,6 @@ void Yeonhee_FSM::skill_501100()
 	Look_DirToTarget();
 
     TIME.Set_TimeSlow(0.1f, 0.1f);
-
- 
 
     if (m_iCurFrame < 97)
     {
@@ -1509,6 +1557,8 @@ void Yeonhee_FSM::skill_501100_Init()
     m_bCanCombo = false;
 
     Set_DirToTargetOrInput(OBJ_MONSTER);
+
+    SOUND.Play_Sound(L"yeonhee_ult_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     AttackCollider_Off();
 

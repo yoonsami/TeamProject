@@ -1973,15 +1973,12 @@ void Boss_Spike_FSM::skill_6100()
 
     //160~380
     if (Init_CurFrame(160) || 
-        Init_CurFrame(180) ||
-        Init_CurFrame(200) ||
+        Init_CurFrame(190) ||
         Init_CurFrame(220) ||
-        Init_CurFrame(240) ||
-        Init_CurFrame(260) ||
+        Init_CurFrame(250) ||
         Init_CurFrame(280) ||
-        Init_CurFrame(300) ||
-        Init_CurFrame(320) ||
-        Init_CurFrame(340) ||
+        Init_CurFrame(310) ||
+        Init_CurFrame(330) ||
         Init_CurFrame(360) ||
         Init_CurFrame(380))
     {
@@ -1991,12 +1988,12 @@ void Boss_Spike_FSM::skill_6100()
         FLOORSKILLDESC desc;
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
         desc.fAttackStartGap = 1.35f;
-        desc.fAttackTickTime = 0.5f;
+        desc.fAttackTickTime = 1.f;
         desc.strAttackType = KNOCKBACK_SKILL;
         desc.strLastAttackType = KNOCKBACK_SKILL;
         desc.fAttackDamage = 5.f;
         desc.fLastAttackDamage = 5.f;
-        desc.iLimitAttackCnt = 4;
+        desc.iLimitAttackCnt = 2;
 
         for (_uint i = 0; i < 8; i++)
         {
@@ -2174,12 +2171,12 @@ void Boss_Spike_FSM::skill_100000()
         FLOORSKILLDESC desc;
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
         desc.fAttackStartGap = 1.35f;
-        desc.fAttackTickTime = 0.5f;
+        desc.fAttackTickTime = 1.f;
         desc.strAttackType = KNOCKBACK_SKILL;
         desc.strLastAttackType = KNOCKBACK_SKILL;
         desc.fAttackDamage = 5.f;
         desc.fLastAttackDamage = 5.f;
-        desc.iLimitAttackCnt = 4;
+        desc.iLimitAttackCnt = 2;
 
         for (_uint i = 0; i < 8; i++)
         {
