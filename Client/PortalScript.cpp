@@ -10,6 +10,7 @@
 #include "GroupEffect.h"
 #include "EffectGoUp.h"
 #include "MainCameraScript.h"
+#include "MainUiController.h"
 
 PortalScript::PortalScript(SCENE_TYPE eDest, const _float3& vPos)
 	: m_eDest(eDest)
@@ -35,6 +36,10 @@ void PortalScript::Tick()
 			auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
 			if (pObj && pObj->Get_Script<UIInteraction>()->Get_Is_Activate(m_pOwner.lock()))
 			{
+				auto pController = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+				if (pController)
+					pController->Get_Script<MainUiController>()->Set_MainUI_Render(false);
+
 				m_bClicked = true;
 				// 사운드재생
 				SOUND.Play_Sound(L"SQ_TeleportOut_Rune_01", CHANNELID::SOUND_EFFECT, g_fEnvironmentRatio, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz(), 10.f/*MagicNumber*/);

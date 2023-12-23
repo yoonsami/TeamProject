@@ -89,6 +89,7 @@ void UiDamageCreate::Create_Damage_Font(weak_ptr<GameObject> pTarget, _float fDa
 
         auto& pObj = addedObj[i];
 
+        pObj.lock()->Set_Render(false);
         _uint iOneDigit = iDamage % 10;
         wstring strTemp = strKey + to_wstring(iOneDigit);
         iDamage /= 10;

@@ -112,6 +112,9 @@ void KrisScene::Init()
 
 	}
 
+	auto pObj = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+	if (pObj)
+		pObj->Get_Script<MainUiController>()->Set_MainUI_Render(true);
 
 }
 

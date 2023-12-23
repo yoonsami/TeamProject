@@ -5,6 +5,7 @@
 #include "BaseUI.h"
 #include "UiMarkNpc.h"
 #include "FontRenderer.h"
+#include "MeshRenderer.h"
 #include "UiGachaController.h"
 #include "UiQuestController.h"
 #include "UiDialogController.h"
@@ -95,12 +96,18 @@ void UIInteraction::Create_Interaction(NPCTYPE eType, shared_ptr<GameObject> pAc
             eIndex = QUESTINDEX::KILL_DELLONS;
             break;
         case NPCTYPE::GACHA:
+            m_pInteraction_Bg.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Interaction_Gacha"), TextureMapType::DIFFUSE);
             eIndex = QUESTINDEX::TRY_GACHA;
             break;
         case NPCTYPE::HIDE_KID:
             eIndex = QUESTINDEX::HIDE_AND_SEEK;
             break;
         case NPCTYPE::POTION:
+            m_pInteraction_Bg.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Interaction_Shop"), TextureMapType::DIFFUSE);
+            break;
+        case NPCTYPE::PORTAL:
+            m_pInteraction_Bg.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Interaction_Portal"), TextureMapType::DIFFUSE);
+            JustDialog = true;
             break;
         default:
             JustDialog = true;
