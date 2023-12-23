@@ -102,6 +102,9 @@ void UIInteraction::Create_Interaction(NPCTYPE eType, shared_ptr<GameObject> pAc
             break;
         case NPCTYPE::POTION:
             break;
+		case NPCTYPE::GUARD:
+			eIndex = QUESTINDEX::KILL_SPIKE;
+			break;
         default:
             JustDialog = true;
             break;

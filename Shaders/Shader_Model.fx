@@ -8,6 +8,8 @@ struct MotionBlurOutput
 {
     float4 position : SV_Position;
     float4 vDir : Position1;
+    float3 worldPosition : POSITION2;
+    float2 uv : TEXCOORD;
 };
 
 
@@ -244,6 +246,8 @@ MotionBlurOutput VS_NonAnimMotionBlur(VTXModel input)
     
     output.position = mul(float4(input.position, 1.f), BoneTransform[BoneIndex]);
     output.position = mul(output.position, W);
+    output.worldPosition = output.position.xyz;
+    output.uv = input.uv;
     output.position = mul(output.position, V);
     float3 viewNormal = normalize(mul(input.normal, (float3x3) BoneTransform[BoneIndex]));
     viewNormal = normalize(mul(viewNormal, (float3x3) W));
@@ -284,6 +288,8 @@ MotionBlurOutput VS_AnimMotionBlur(VTXModel input)
     
     output.position = mul(float4(input.position, 1.f), m);
     output.position = mul(output.position, W);
+    output.worldPosition = output.position.xyz;
+    output.uv = input.uv;
     output.position = mul(output.position, V);
     
     float3 viewNormal = normalize(mul(input.normal, (float3x3) m));
@@ -625,7 +631,22 @@ float4 PS_ShadowInstancing(ShadowInstanceOutput input) : SV_Target
 // PS_MotionBlur
 float4 PS_MotionBlur(MotionBlurOutput input) : SV_Target
 {
+    
     float4 output = (float4) 0.f;
+    
+    if (bHasDissolveMap)
+    {
+        float dissolve = DissolveMap.Sample(LinearSampler, input.uv).w;
+        if (dissolve < g_vec4_1.w)
+            discard;
+    }
+    
+    if (bHasTexturemap8)
+    {
+        if ((10.f - g_float_0) + W._42 < input.worldPosition.y)
+            discard;
+        
+    }
     
     output.xy = input.vDir.xy;
     //output.xy = input.vDir.xy;

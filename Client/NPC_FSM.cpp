@@ -13,8 +13,9 @@ _bool NPC_FSM::Can_Interact()
 
 	if (pPlayer)
 	{
+		m_pTarget = pPlayer;
 		_float lengthSQ = (pPlayer->Get_Transform()->Get_State(Transform_State::POS).xyz() - pos).LengthSquared();
-		
+
 		if (lengthSQ < 3.f * 3.f)
 			return true;
 	}

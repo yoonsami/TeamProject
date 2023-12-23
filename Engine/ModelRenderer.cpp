@@ -264,7 +264,7 @@ void ModelRenderer::Render_Shadow()
 		boneDesc->transform[i] = bone->transform * Utils::m_matPivot;
 	}
 	m_pShader->Push_BoneData(*boneDesc);
-
+	m_pShader->Push_RenderParamData(m_RenderParams);
 	// Transform
 	auto& world = Get_Transform()->Get_WorldMatrix();
 	auto& preWorld = Get_Transform()->Get_preWorldMatrix();

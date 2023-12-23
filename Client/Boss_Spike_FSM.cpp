@@ -23,6 +23,7 @@
 #include "GroupEffect.h"
 #include "EffectGoUp.h"
 #include "TimerScript.h"
+#include "UiQuestController.h"
 
 
 Boss_Spike_FSM::Boss_Spike_FSM()
@@ -1148,6 +1149,10 @@ void Boss_Spike_FSM::SQ_Die_Init()
         if (m_pOwner.lock()->Get_Script<UIBossHpBar>())
             m_pOwner.lock()->Get_Script<UIBossHpBar>()->Remove_HpBar();
     }
+
+	auto pObj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
+	if (pObj && pObj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::KILL_SPIKE) == CUR_QUEST::PROGRESS)
+		pObj->Get_Script<UiQuestController>()->Change_Value();
 }
 
 void Boss_Spike_FSM::hit()

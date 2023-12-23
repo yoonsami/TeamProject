@@ -3,6 +3,8 @@
 #include "ModelAnimator.h"
 #include <MathUtils.h>
 #include "UiMessageCreater.h"
+#include "UIInteraction.h"
+#include "UiQuestController.h"
 
 GranseedGuard01_FSM::GranseedGuard01_FSM()
 {
@@ -77,9 +79,20 @@ void GranseedGuard01_FSM::n_idle()
 		m_fStateAcc = 0.f;
 		m_eCurState = STATE::walk;
 	}
+	
 	if (Can_Interact())
 	{
-		InteractWithPlayer();
+		auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
+		if (pObj && pObj->Get_Script<UIInteraction>()->Get_Is_Activate(m_pOwner.lock()))
+			m_eCurState = STATE::talk;
+		else if (pObj && !pObj->Get_Script<UIInteraction>()->Is_Created())
+			pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::GUARD, m_pOwner.lock());
+	}
+	else
+	{
+		auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
+		if (pObj)
+			pObj->Get_Script<UIInteraction>()->Remove_Interaction(m_pOwner.lock());
 	}
 }
 
@@ -111,13 +124,14 @@ void GranseedGuard01_FSM::run_Init()
 
 void GranseedGuard01_FSM::talk()
 {
-	Look_DirToTarget(XM_PI * 0.5f);
-	m_fStateAcc += fDT;
+	if (!m_pTarget.expired())
+		Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
 
-	if (m_fStateAcc >= 1.f)
+	auto obj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
+	if (obj && !obj->Get_Script<UiQuestController>()->Get_Dialog_End())
 	{
-		m_fStateAcc = 0.f;
-		m_eCurState = STATE::n_idle;
+		if (obj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::KILL_SPIKE) == CUR_QUEST::PROGRESS)
+			m_eCurState = STATE::n_idle;
 	}
 }
 
@@ -128,11 +142,6 @@ void GranseedGuard01_FSM::talk_Init()
 	animator->Set_NextTweenAnim(L"talk", 0.15f, true, 1.f);
 	m_fStateAcc = 0.f;
 
-	{
-		auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
-		if (pObj)
-			pObj->Get_Script<UiMessageCreater>()->Create_Message(L"피에스타 때리고 싶다",Get_Owner());
-	}
 }
 
 void GranseedGuard01_FSM::walk()
@@ -185,7 +194,17 @@ void GranseedGuard01_FSM::walk()
 	}
 	if (Can_Interact())
 	{
-		InteractWithPlayer();
+		auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
+		if (pObj && pObj->Get_Script<UIInteraction>()->Get_Is_Activate(m_pOwner.lock()))
+			m_eCurState = STATE::talk;
+		else if (pObj && !pObj->Get_Script<UIInteraction>()->Is_Created())
+			pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::GUARD, m_pOwner.lock());
+	}
+	else
+	{
+		auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
+		if (pObj)
+			pObj->Get_Script<UIInteraction>()->Remove_Interaction(m_pOwner.lock());
 	}
 }
 
