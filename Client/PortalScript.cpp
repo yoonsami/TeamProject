@@ -10,6 +10,7 @@
 #include "GroupEffect.h"
 #include "EffectGoUp.h"
 #include "MainCameraScript.h"
+#include "UiQuestController.h"
 
 PortalScript::PortalScript(SCENE_TYPE eDest, const _float3& vPos)
 	: m_eDest(eDest)
@@ -130,6 +131,16 @@ void PortalScript::Tick()
 				break;
 			case SCENE_TYPE::FIELD:
 			{
+				if(SWITCHMGR.Get_SwitchState(SWITCH_TYPE::CREATE_COMBAT4_AFTER_SPIKE))
+				{
+					auto pObj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
+					if (pObj && pObj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::KILL_SPIKE) == CUR_QUEST::CLEAR)
+					{
+						pObj->Get_Script<UiQuestController>()->Set_ClearQuest();
+					}
+				}
+
+
 				auto nextScene = make_shared<FieldScene>();
 				shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(nextScene);
 				scene->Set_StaticObjects(CUR_SCENE->Get_StaticObjects());

@@ -13,6 +13,7 @@ public:
     void Create_Dialog(NPCTYPE eType, QUESTINDEX eIndex, shared_ptr<GameObject> obj);
     void Next_Dialog();
     void Change_Value();
+    void Set_ClearQuest();
 
     _bool Get_Dialog_End() { return m_bIsCreated; }
     CUR_QUEST Get_CurState(QUESTINDEX eIndex);
