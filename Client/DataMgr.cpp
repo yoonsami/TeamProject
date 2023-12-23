@@ -617,30 +617,30 @@ void DataMgr::Initialize()
     
     {
         _uint iIndex = IDX(QUESTINDEX::KILL_DELLONS);
-        m_DialogAccept[iIndex].push_back(L"계승자님 저희 마을에 있던 알파카가 사라졌어요 \n 도와주실 수 있을까요?");
-        m_DialogAccept[iIndex].push_back(L"알파카를 훔쳐간 도둑을 처단해주세요");
+        m_DialogAccept[iIndex].push_back(L"계승자님 저희 마을에 있던 알파카가 사라졌어요 \n도와주실 수 있을까요?");
+        m_DialogAccept[iIndex].push_back(L"알파카를 훔쳐간 도둑을 처단하고 \n알파카를 다시 데려와주세요.");
 
         m_DialogNoClear[iIndex].push_back(L"아직인가요?");
 
         m_DialogClear[iIndex].push_back(L"어라? 알파카는 어디있죠?");
 
         m_Quest[iIndex].IsClear = false;
-        m_Quest[iIndex].Type = QUESTTYPE::BOSS;
+        m_Quest[iIndex].Type = QUESTTYPE::HUNT;
         m_Quest[iIndex].CurCount = 0;
-        m_Quest[iIndex].MaxCount = 0;
+        m_Quest[iIndex].MaxCount = 3;
         m_Quest[iIndex].Name = L"도둑 잡기";
-        m_Quest[iIndex].Info = L"알파카를 훔쳐간 델론즈를 잡아라";
+        m_Quest[iIndex].Info = L"알파카를 다시 데려오자";
         m_Quest[iIndex].Clear = L"마을에 돌아가 보고하자";
     }
 
 	{
 		_uint iIndex = IDX(QUESTINDEX::HIDE_AND_SEEK);
-		m_DialogAccept[iIndex].push_back(L"날 찾아봐라 애송이");
-		m_DialogAccept[iIndex].push_back(L"찾으면 가챠 1회권을 주지");
+		m_DialogAccept[iIndex].push_back(L"아저씨, 숨바꼭질 잘해요?");
+		m_DialogAccept[iIndex].push_back(L"저를 찾으면 가챠 10회권을 드릴게요");
 
 		m_DialogNoClear[iIndex].push_back(L"아직인가요?");
 
-		m_DialogClear[iIndex].push_back(L"대단하군!");
+		m_DialogClear[iIndex].push_back(L"대단하네요!");
 
 		m_Quest[iIndex].IsClear = false;
 		m_Quest[iIndex].Type = QUESTTYPE::ACT;
@@ -648,16 +648,16 @@ void DataMgr::Initialize()
 		m_Quest[iIndex].MaxCount = 0;
 		m_Quest[iIndex].Name = L"술래 잡기";
 		m_Quest[iIndex].Info = L"마을에 숨은 꼬마를 찾자.";
-		m_Quest[iIndex].Clear = L"꼬마를 찾아가 보고하자";
+		m_Quest[iIndex].Clear = L"꼬마에게 보고하자";
 	}
 
     m_BossDialog.resize(IDX(BOSS::MAX));
     {
         auto& Dialog = m_BossDialog[IDX(BOSS::DELLONS)];
         
-        Dialog.push_back(L"크큭 내안의 어둠이 날뛴다 !!");
         Dialog.push_back(L"나는 어둠의 다크 델론즈");
-        Dialog.push_back(L"자 덤벼라 애송아");
+        Dialog.push_back(L"알파카를 찾으러 왔나? \n어쩌지, 세 마리 빼고는 이미 나의 부하가 되었다.");
+        Dialog.push_back(L"남은 알파카라도 데려가려면 날 이겨봐라.");
     }
 
 

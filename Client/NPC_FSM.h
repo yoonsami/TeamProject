@@ -11,6 +11,7 @@ public:
         GUARD2,
         TRAVELER,
         CHILDREN,
+        MIDDLEWOMAN,
     };
 public:
 

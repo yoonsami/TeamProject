@@ -92,6 +92,7 @@
 #include "Smoke_Detect.h"
 #include "PortalScript.h"
 #include "SpikeScene.h"
+#include "MiddleWoman_FSM.h"
 namespace fs = std::filesystem;
 
 GranseedScene::GranseedScene()
@@ -834,6 +835,13 @@ void GranseedScene::Load_NPC(const wstring& dataFileName)
 				auto fsm = make_shared<GranseedChildren_FSM>();
 				fsm->Set_MinMovePos(vMinPos);
 				fsm->Set_MaxMovePos(vMaxPos);
+				obj->Add_Component(fsm);
+			}
+			break;
+			case NPC_FSM::MIDDLEWOMAN:
+			{
+				auto fsm = make_shared<MiddleWoman_FSM>();
+
 				obj->Add_Component(fsm);
 			}
 			break;

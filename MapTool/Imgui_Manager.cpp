@@ -3299,6 +3299,7 @@ void ImGui_Manager::Show_ModelInfo()
         fsmList.push_back("GUARD2_FSM");
         fsmList.push_back("TRAVELER_FSM");
         fsmList.push_back("CHILDREN_FSM");
+        fsmList.push_back("MIDDLEWOMAN_FSM");
 
         static _int tmp =0;
         RadioButton("minMoveArrayPos",&tmp,0);

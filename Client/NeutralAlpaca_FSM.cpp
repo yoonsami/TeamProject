@@ -12,6 +12,11 @@
 #include "Model.h"
 #include "MotionTrailDisappear.h"
 #include "MotionTrailRenderer.h"
+#include "UiQuestController.h"
+
+NeutralAlpaca_FSM::~NeutralAlpaca_FSM()
+{
+}
 
 HRESULT NeutralAlpaca_FSM::Init()
 {
@@ -300,6 +305,10 @@ void NeutralAlpaca_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _fl
 		Get_Owner()->Add_Component(script);
 		script->Init();
         m_bIsDead = true;
+		auto pObj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
+		if (pObj && pObj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::KILL_DELLONS) == CUR_QUEST::PROGRESS)
+			pObj->Get_Script<UiQuestController>()->Change_Value();
+
     }
 }
 
@@ -590,6 +599,9 @@ void NeutralAlpaca_FSM::die_01()
         auto script = make_shared<ObjectDissolve>(1.f);
         Get_Owner()->Add_Component(script);
         script->Init();
+		auto pObj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
+		if (pObj && pObj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::KILL_DELLONS) == CUR_QUEST::PROGRESS)
+			pObj->Get_Script<UiQuestController>()->Change_Value();
 
         if (!m_pAttackCollider.expired())
             EVENTMGR.Delete_Object(m_pAttackCollider.lock());
@@ -615,6 +627,9 @@ void NeutralAlpaca_FSM::die_02()
         auto script = make_shared<ObjectDissolve>(1.f);
         Get_Owner()->Add_Component(script);
         script->Init();
+		auto pObj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
+		if (pObj && pObj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::KILL_DELLONS) == CUR_QUEST::PROGRESS)
+			pObj->Get_Script<UiQuestController>()->Change_Value();
 
         if (!m_pAttackCollider.expired())
             EVENTMGR.Delete_Object(m_pAttackCollider.lock());
@@ -807,6 +822,9 @@ void NeutralAlpaca_FSM::airborne_end()
             auto script = make_shared<ObjectDissolve>(1.f);
             Get_Owner()->Add_Component(script);
             script->Init();
+			auto pObj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
+			if (pObj && pObj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::KILL_DELLONS) == CUR_QUEST::PROGRESS)
+				pObj->Get_Script<UiQuestController>()->Change_Value();
 
             if (!m_pAttackCollider.expired())
             {
@@ -917,6 +935,9 @@ void NeutralAlpaca_FSM::knock_end_loop()
         auto script = make_shared<ObjectDissolve>(1.f);
         Get_Owner()->Add_Component(script);
         script->Init();
+		auto pObj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
+		if (pObj && pObj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::KILL_DELLONS) == CUR_QUEST::PROGRESS)
+			pObj->Get_Script<UiQuestController>()->Change_Value();
 
         if (!m_pAttackCollider.expired())
         {
@@ -1012,6 +1033,9 @@ void NeutralAlpaca_FSM::knockdown_end()
             auto script = make_shared<ObjectDissolve>(1.f);
             Get_Owner()->Add_Component(script);
             script->Init();
+			auto pObj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
+			if (pObj && pObj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::KILL_DELLONS) == CUR_QUEST::PROGRESS)
+				pObj->Get_Script<UiQuestController>()->Change_Value();
 
             if (!m_pAttackCollider.expired())
             {
