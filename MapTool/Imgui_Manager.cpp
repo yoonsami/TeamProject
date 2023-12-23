@@ -513,17 +513,28 @@ void ImGui_Manager::Frame_SelcetObjectManager()
             }
         }
         Text("DummyData");
-        _float4x4& matDummy = m_pMapObjects[m_iObjects]->Get_Script<MapObjectScript>()->Get_DummyData();
+        
+        shared_ptr<MapObjectScript> currentMapObjScript = m_pMapObjects[m_iObjects]->Get_Script<MapObjectScript>();
+        _float4x4& matDummy = currentMapObjScript->Get_DummyData();
         ImGui::DragFloat4("vecDummy0", matDummy.m[0], 0.1f, 0.f);
         if (matDummy.m[0][3] >= 1.f)
         {
-            string& strEffectName = m_pMapObjects[m_iObjects]->Get_Script<MapObjectScript>()->Get_EffectName();
-            //ImGui::InputText("EffectName", strEffectName.data(), strEffectName.size());
+            ImGui::Text("EffectName##Text");
+            string& strEffectName = currentMapObjScript->Get_EffectName();
             char tempEffectName[MAX_PATH];
             strcpy_s(tempEffectName, strEffectName.c_str());
             ImGui::InputText("EffectName", tempEffectName, sizeof(tempEffectName));
             strEffectName = tempEffectName;
             Text(strEffectName.data());
+        }
+        if (matDummy.m[0][2] >= 1.f)
+        {
+            ImGui::Text("AddDiffuseColor##Text");
+            Color& AddDiffuseColor = currentMapObjScript->Get_AddDiffuseColor();
+            ImGui::ColorEdit4("AddDiffuseColor##ObjectDummyData", (_float*)& AddDiffuseColor, ImGuiColorEditFlags_HDR);
+
+            _float4 AddDiffuseUVweight = _float4(_float3{ currentMapObjScript->Get_AddDiffuseColor()}, currentMapObjScript->Get_UVWeight());
+            m_pMapObjects[m_iObjects]->Get_ModelRenderer()->SetVec4(0, AddDiffuseUVweight);
         }
     }
     
@@ -1405,8 +1416,6 @@ shared_ptr<GameObject> ImGui_Manager::Create_MapObject(MapObjectScript::MapObjec
 
         _float4 AddDiffuseUVweight = _float4(_float3{ CreateDesc.AddDiffuseColor }, CreateDesc.fUVWeight);
         
-        if (CreateDesc.fUVWeight >= 2.f)
-            int a = 0;
         renderer->SetVec4(0, AddDiffuseUVweight);
     }
 
@@ -2058,6 +2067,10 @@ HRESULT ImGui_Manager::Save_MapObject()
         {
             file->Write<string>(MapDesc.strEffectName);
         }
+        if (MapDesc.matDummyData.m[0][2] >= 1.f)
+        {
+            file->Write<Color>(MapDesc.AddDiffuseColor);
+        }
     }
 
     // 플레이어의 시작위치 저장.
@@ -2309,6 +2322,10 @@ HRESULT ImGui_Manager::Load_MapObject()
         if (MapDesc.matDummyData.m[0][3] >= 1.f)
         {
             MapDesc.strEffectName = file->Read<string>();
+        }
+        if (MapDesc.matDummyData.m[0][2] >= 1.f)
+        {
+            MapDesc.AddDiffuseColor = file->Read<Color>();
         }
         
         shared_ptr<GameObject> CreateObject = Create_MapObject(MapDesc);

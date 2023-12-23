@@ -836,8 +836,8 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject(MeshOutput input)
     if (bHasDiffuseMap)
     {
         diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
-        diffuseColor += float4(g_vec4_0.xyz, 0.f);
         diffuseColor.rgb = pow(abs(diffuseColor.rgb), GAMMA);
+        diffuseColor += float4(g_vec4_0.xyz, 0.f);
     }
     else
         diffuseColor = Material.diffuse;
@@ -897,8 +897,8 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_Instancing(MeshInstancingOutput i
     if (bHasDiffuseMap)
     {
         diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
-        diffuseColor += float4(g_vec4_0.xyz, 0.f);
         diffuseColor.rgb = pow(abs(diffuseColor.rgb), GAMMA);
+        diffuseColor += float4(input.renderParam.xyz, 0.f);
     }
     else
         diffuseColor = Material.diffuse;
@@ -1189,8 +1189,8 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_NormalControl(MeshOutput input)
     if (bHasDiffuseMap)
     {
         diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
-        diffuseColor += float4(g_vec4_0.xyz, 0.f);
         diffuseColor.rgb = pow(abs(diffuseColor.rgb), GAMMA);
+        diffuseColor += float4(g_vec4_0.xyz, 0.f);
     }
     else
         diffuseColor = Material.diffuse;
@@ -1256,8 +1256,8 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_Instancing_NormalControl(MeshInst
     if (bHasDiffuseMap)
     {
         diffuseColor = DiffuseMap.Sample(LinearSampler, input.uv);
-        diffuseColor += float4(g_vec4_0.xyz, 0.f);
         diffuseColor.rgb = pow(abs(diffuseColor.rgb), GAMMA);
+        diffuseColor += float4(input.renderParam.xyz, 0.f);
     }
     else
         diffuseColor = Material.diffuse;
