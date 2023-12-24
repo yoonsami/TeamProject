@@ -13,6 +13,7 @@
 #include "ModelRenderer.h"
 #include "UiSkillGauge.h"
 #include "CharacterController.h"
+#include "MeteorRadialBlur.h"
 
 
 Yeonhee_FSM::Yeonhee_FSM()
@@ -1360,8 +1361,11 @@ void Yeonhee_FSM::skill_200100_Init()
 void Yeonhee_FSM::skill_300100()
 {
     if (Init_CurFrame(25))
+    {
         Add_Effect(L"YeonHee_300100_Install");
-    if (m_iCurFrame >= 10 && m_iCurFrame <= 85)
+
+    }
+    if (m_iCurFrame >= 10)
     {
         if (!m_pCamera.expired())
         {
@@ -1401,7 +1405,13 @@ void Yeonhee_FSM::skill_300100()
 		desc.fLimitDistance = 30.f;
 
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, KNOCKBACK_ATTACK, 10.f);
-	}
+		{
+			shared_ptr<GameObject> blurTimer = make_shared<GameObject>();
+            blurTimer->GetOrAddTransform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f);
+            blurTimer->Add_Component(make_shared<MeteorRadialBlur>(2.5f, 1.f, 1.5f));
+            EVENTMGR.Create_Object(blurTimer);
+		}
+    }
 
 	_float3 vInputVector = Get_InputDirVector();
 	Get_Transform()->Go_Dir(vInputVector * m_fRunSpeed * 0.3f * fDT);
