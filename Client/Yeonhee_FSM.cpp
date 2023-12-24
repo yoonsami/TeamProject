@@ -188,10 +188,11 @@ void Yeonhee_FSM::State_Tick()
         break;
     }
 
-    for (auto& iter : m_vGroupEffect)
+    m_fWeaponParticleCoolTime += fDT;
+    if (m_fWeaponParticleCoolTime > 0.06f)
     {
-        if (!iter.expired())
-            iter.lock()->Get_Transform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
+        Add_GroupEffectOwner(L"YeonHee_FollowParticle1", _float3(m_vWeaponPos), true, nullptr, false);
+        m_fWeaponParticleCoolTime = 0.f;
     }
 
     if (m_iPreFrame != m_iCurFrame)
@@ -928,7 +929,7 @@ void Yeonhee_FSM::knockdown_end_Init()
 
 void Yeonhee_FSM::skill_1100()
 {
-    Update_GroupEffectWorldPos(_float4x4::CreateTranslation(_float3(m_vRFingerPos)));
+    Update_GroupEffectWorldPos(_float4x4::CreateTranslation(_float3(m_vLFingerPos)));
 
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
@@ -1002,7 +1003,7 @@ void Yeonhee_FSM::skill_1100_Init()
 	
 void Yeonhee_FSM::skill_1200()
 {
-    Update_GroupEffectWorldPos(_float4x4::CreateTranslation(_float3(m_vLFingerPos)));
+    Update_GroupEffectWorldPos(_float4x4::CreateTranslation(_float3(m_vRFingerPos)));
 
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
@@ -1156,6 +1157,9 @@ void Yeonhee_FSM::skill_91100()
 
     Look_DirToTarget();
 
+    if(Init_CurFrame(6) || Init_CurFrame(16))
+        Add_Effect(L"YeonHee_Warp");
+
     if (m_iCurFrame == 7)
         Get_Owner()->Get_Animator()->Set_RenderState(false);
     else if (m_iCurFrame == 16)
@@ -1189,6 +1193,9 @@ void Yeonhee_FSM::skill_93100()
 {
     _float3 vInputVector = Get_InputDirVector();
     
+    if (Init_CurFrame(7) || Init_CurFrame(16))
+        Add_Effect(L"YeonHee_Warp");
+
     if (m_iCurFrame == 8)
         Get_Owner()->Get_Animator()->Set_RenderState(false);
     else if (m_iCurFrame == 16)
