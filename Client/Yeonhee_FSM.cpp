@@ -37,7 +37,9 @@ HRESULT Yeonhee_FSM::Init()
         m_iDummy_CP_BoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_CP");
         m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
         m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
-        
+        m_iCenterBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Center");
+
+
         m_iHeadBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-Head");
         m_iLFingerBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-L-Finger12");
         m_iRFingerBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-R-Finger12");
@@ -1357,9 +1359,27 @@ void Yeonhee_FSM::skill_200100_Init()
 
 void Yeonhee_FSM::skill_300100()
 {
+    if (m_iCurFrame >= 10 && m_iCurFrame <= 85)
+    {
+        if (!m_pCamera.expired())
+        {
+            _float4 vDestinationPos = (Get_Transform()->Get_State(Transform_State::POS)) + (Get_Transform()->Get_State(Transform_State::LOOK) * -6.f) + _float3::Up * 4.f;
+            _float4 vDir = vDestinationPos - (Get_Transform()->Get_State(Transform_State::POS));
+            vDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(2.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.5f, vDir.xyz(), 15.f);
+        }
+    }
+
+    Calculate_CamBoneMatrix();
+
     Set_DirToTarget();
 
     Look_DirToTarget();
+
+
 
 	if (Init_CurFrame(24))
 	{
@@ -1407,6 +1427,8 @@ void Yeonhee_FSM::skill_300100_Init()
     m_bSuperArmor = true;
 
     Set_DirToTargetOrInput(OBJ_MONSTER);
+
+    Calculate_CamBoneMatrix();
 }
 
 void Yeonhee_FSM::skill_400100()
