@@ -31,9 +31,6 @@
     <Filter Include="99.Header\98.Default">
       <UniqueIdentifier>{1416d258-c22e-43be-a507-5d8b90f21cef}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.WeaponScript">
-      <UniqueIdentifier>{b9bdbe99-4328-44ff-a881-4aa947da18c2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\97.DebugScript">
       <UniqueIdentifier>{308378ec-739c-4087-8d4f-fdec1ef5243b}</UniqueIdentifier>
     </Filter>
@@ -454,8 +451,8 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\00.UiLoading\01.LoadingBar">
       <UniqueIdentifier>{0a1c18a7-4ab7-49a3-87c8-861fad25902a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\10.FriendSummonScript">
-      <UniqueIdentifier>{f407c41b-86f2-4e43-aae0-5152cfb2afc8}</UniqueIdentifier>
+    <Filter Include="02.Component\00.MonoBehaviour\01.WeaponScript">
+      <UniqueIdentifier>{b9bdbe99-4328-44ff-a881-4aa947da18c2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
