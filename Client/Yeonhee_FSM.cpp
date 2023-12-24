@@ -1312,6 +1312,9 @@ void Yeonhee_FSM::skill_200100_Init()
 
 void Yeonhee_FSM::skill_300100()
 {
+    if (Init_CurFrame(25))
+        Add_Effect(L"YeonHee_300100_Install");
+
     Set_DirToTarget();
 
     Look_DirToTarget();
