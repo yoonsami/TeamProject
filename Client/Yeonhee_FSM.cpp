@@ -1412,9 +1412,6 @@ void Yeonhee_FSM::skill_300100()
 		}
     }
 
-	_float3 vInputVector = Get_InputDirVector();
-	Get_Transform()->Go_Dir(vInputVector * m_fRunSpeed * 0.3f * fDT);
-
     if (Is_AnimFinished())
     {
         m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Set_Skill_End();
