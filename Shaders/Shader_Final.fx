@@ -239,6 +239,10 @@ float4 PS_RenderFinal(VS_OUT input) : SV_Target
     return SubMap0.Sample(LinearSampler, input.uv);
 }
 
+float g_TimeAcc;
+float2 g_vCenterPos;
+
+
 technique11 T0
 {
     Pass brightcontrast
