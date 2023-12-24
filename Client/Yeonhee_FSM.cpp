@@ -1379,8 +1379,6 @@ void Yeonhee_FSM::skill_300100()
 
     Look_DirToTarget();
 
-
-
 	if (Init_CurFrame(24))
 	{
         SOUND.Play_Sound(L"yeonhee_skill_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);

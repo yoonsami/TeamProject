@@ -229,6 +229,7 @@
     <ClInclude Include="GranseedTraveler_FSM.h" />
     <ClInclude Include="Hide_OrctongScript.h" />
     <ClInclude Include="InventoryModelRotation.h" />
+    <ClInclude Include="MeteorRadialBlur.h" />
     <ClInclude Include="MiddleWoman_FSM.h" />
     <ClInclude Include="LoadingBarScript.h" />
     <ClInclude Include="MirScene.h" />
@@ -377,6 +378,7 @@
     <ClCompile Include="GranseedTraveler_FSM.cpp" />
     <ClCompile Include="Hide_OrctongScript.cpp" />
     <ClCompile Include="InventoryModelRotation.cpp" />
+    <ClCompile Include="MeteorRadialBlur.cpp" />
     <ClCompile Include="MiddleWoman_FSM.cpp" />
     <ClCompile Include="LoadingBarScript.cpp" />
     <ClCompile Include="MirScene.cpp" />
