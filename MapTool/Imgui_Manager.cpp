@@ -2513,7 +2513,7 @@ HRESULT ImGui_Manager::Load_MapObject()
         m_Ground4PointsVector.clear();
         _int GroundCount = 0;
         file->Read<_int>(GroundCount);
-        m_Ground4PointsVector.resize(GroundCount);
+        m_Ground4PointsVector.reserve(GroundCount);
 
         for (_int i = 0; i < GroundCount; ++i)
         {
