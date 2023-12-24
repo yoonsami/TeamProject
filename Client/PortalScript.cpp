@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "PortalScript.h"
 #include "UIInteraction.h"
 #include "LoadingScene.h"
@@ -10,6 +10,8 @@
 #include "GroupEffect.h"
 #include "EffectGoUp.h"
 #include "MainCameraScript.h"
+#include "MainUiController.h"
+#include "UiQuestController.h"
 
 PortalScript::PortalScript(SCENE_TYPE eDest, const _float3& vPos)
 	: m_eDest(eDest)
@@ -31,12 +33,16 @@ void PortalScript::Tick()
 		vDir.y = 0.f;
 		if (vDir.LengthSquared() < 1.f * 1.f)
 		{
-			// UI Ãâ·Â 
+			// UI ï¿½ï¿½ï¿½ 
 			auto pObj = CUR_SCENE->Get_UI(L"UI_Interaction");
 			if (pObj && pObj->Get_Script<UIInteraction>()->Get_Is_Activate(m_pOwner.lock()))
 			{
+				auto pController = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+				if (pController)
+					pController->Get_Script<MainUiController>()->Set_MainUI_Render(false);
+
 				m_bClicked = true;
-				// »ç¿îµåÀç»ý
+				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				SOUND.Play_Sound(L"SQ_TeleportOut_Rune_01", CHANNELID::SOUND_EFFECT, g_fEnvironmentRatio, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz(), 10.f/*MagicNumber*/);
 				{
 					wstring strSkilltag = L"Portal_Effect";
@@ -130,6 +136,16 @@ void PortalScript::Tick()
 				break;
 			case SCENE_TYPE::FIELD:
 			{
+				if(SWITCHMGR.Get_SwitchState(SWITCH_TYPE::CREATE_COMBAT4_AFTER_SPIKE))
+				{
+					auto pObj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
+					if (pObj && pObj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::KILL_SPIKE) == CUR_QUEST::CLEAR)
+					{
+						pObj->Get_Script<UiQuestController>()->Set_ClearQuest();
+					}
+				}
+
+
 				auto nextScene = make_shared<FieldScene>();
 				shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(nextScene);
 				scene->Set_StaticObjects(CUR_SCENE->Get_StaticObjects());

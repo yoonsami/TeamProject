@@ -106,7 +106,6 @@ void MeshEffect::MeshEffect_Final_Tick()
             return; 
         }
     }
-
 }
 
 void MeshEffect::Render()
@@ -734,7 +733,7 @@ void MeshEffect::Translate()
                sin(m_fCurrRoundAngle) * fRadius
             };
 
-            m_vLocalPos = m_vStartPos + (m_vRoundAxis_Right * vPosOnCircle.x) + (m_vRoundAxis_Look * vPosOnCircle.y);
+            m_vLocalPos = (m_vRoundAxis_Right * vPosOnCircle.x) + (m_vRoundAxis_Look * vPosOnCircle.y);
         }
         break;
     }
@@ -1032,8 +1031,6 @@ void MeshEffect::BillBoard()
 		{
             vTargetDir.y = 0.f;
 		}
-		if (m_tTransform_Desc.bBillbordAxes[1])
-			vTargetDir.y = 0.f;
 
 		Get_Transform()->Set_LookDir(vTargetDir);
 	}

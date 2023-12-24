@@ -78,6 +78,7 @@ private:
 	void					Save();
 	void					Load();
 	void					Show_Guizmo();
+	void					SwapTexOption(_int iSrcIndex, _int iDestIndex);
 	_bool					SearchOnList(const string& strTag, const vector<string>& vTargetList, _int* pOut_TargetIndex, string* pOut_TargetTag);
 	void					SaveAdditionalData();	/* If it is necessary to store additional values in the existing mesheeffect data, 
 													the existing mesheeffect data file is saved again to match the new format through the function.*/
@@ -212,6 +213,8 @@ private:
 	_float					m_fInitScale_Min[3] = { 1.f, 1.f, 1.f };		
 	_float					m_fInitScale_Max[3] = { 1.f, 1.f, 1.f };		
 
+	_int					m_iInitRounAngleOption = { 0 };
+	_float					m_fInitRoundAngle[2] = { 0.f, 0.f };
 	_int					m_iInitRotationOption = { 0 };				// static, random in range 
 	_float					m_fInitRotation_Min[3] = { -1.f, -1.f, -1.f };
 	_float					m_fInitRotation_Max[3] = { 1.f, 1.f, 1.f };
@@ -225,8 +228,7 @@ private:
 	_float2					m_vCurvePoint_Force[4] = { _float2(0.f, 0.f),_float2(0.3f, 0.5f), _float2(0.7f, 0.5f), _float2(1.f, 1.f) };	
 	
 	_float					m_fRoundRadius[2] = {1.f, 1.f};
-	_float					m_fInitRoundAngle[2] = { 0.f, 0.f };
-	_int					m_RoundAxisOption = { 0 };
+	_int					m_iRoundAxisOption = { 0 };
 	_float					m_fRoundAxis_Min[3] = { 0.f, 1.f, 0.f };
 	_float					m_fRoundAxis_Max[3] = { 0.f, 1.f, 0.f };
 

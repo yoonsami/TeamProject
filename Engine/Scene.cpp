@@ -25,6 +25,7 @@
 
 #include <filesystem>
 #include "MapObjectLoopEffectScript.h"
+#include "MapObjectLoopRotate.h"
 namespace fs = std::filesystem;
 
 Scene::Scene()
@@ -139,7 +140,8 @@ void Scene::Render()
 
 	Render_Vignette();
 	Render_Debug();
-	Render_ToneMapping();
+	
+	//Render_ToneMapping();
 
 	Render_UI();
 
@@ -787,6 +789,8 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 		string strEffectName = "";
 		// AddDiffuseColor
 		Color AddDiffuseColor = { 0.f, 0.f, 0.f, 0.f };
+		// RotateData
+		_float4 vecRotateData = { 0.f, 0.f, 1.f, 1.f };
 
 		wstring strObjectName = Utils::ToWString(file->Read<string>());
 		strName = Utils::ToString(strObjectName);
@@ -830,6 +834,9 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 
 		if (matDummyData.m[0][2] >= 1.f)
 			AddDiffuseColor = file->Read<Color>();
+
+		if (matDummyData.m[0][1] >= 1.f)
+			vecRotateData = file->Read<_float4>();
 
 // 오브젝트 생성
 		shared_ptr<GameObject> CreateObject = make_shared<GameObject>();
@@ -936,6 +943,12 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 			shared_ptr<MapObjectLoopEffectScript> EffectScript = make_shared<MapObjectLoopEffectScript>(matDummyData.m[0][3], Utils::ToWString(strEffectName));
 			CreateObject->Add_Component(EffectScript);
 		}
+		if (matDummyData.m[0][1] >= 1.f)
+		{
+			shared_ptr<MapObjectLoopRotate> RotateScript = make_shared<MapObjectLoopRotate>(vecRotateData);
+			CreateObject->Add_Component(RotateScript);
+		}
+
 		Add_GameObject(CreateObject);
 	}
 

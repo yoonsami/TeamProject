@@ -322,8 +322,6 @@ void UiGachaController::Effect_Change()
     case HERO::SPIKE:
         break;
     case HERO::YEONHEE:
-		sceneDesc = { L"YeonheeMap", HERO::YEONHEE };
-		bIsIt = true;
         break;
     case HERO::SHANE:
         break;

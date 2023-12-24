@@ -477,7 +477,7 @@ PBR_OUT PS_PBR_DirLight(VS_OUT input)
     float3 diffuseColor = SubMap4.Sample(LinearSampler, input.uv).xyz;
     
     float3 ambientColor = SubMap5.Sample(LinearSampler, input.uv).xxx;
-    float roughness = SubMap5.Sample(LinearSampler, input.uv).y;
+    float roughness =SubMap5.Sample(LinearSampler, input.uv).y;
     float metalic = SubMap5.Sample(LinearSampler, input.uv).z;
     if (g_SSAO_On)
         ambientColor = SubMap3.Sample(LinearSampler, input.uv).x;

@@ -213,6 +213,7 @@
     <ClInclude Include="Light.h" />
     <ClInclude Include="LightHelper.h" />
     <ClInclude Include="MapObjectLoopEffectScript.h" />
+    <ClInclude Include="MapObjectLoopRotate.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MathUtils.h" />
     <ClInclude Include="Mesh.h" />
@@ -300,6 +301,7 @@
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="LightHelper.cpp" />
     <ClCompile Include="MapObjectLoopEffectScript.cpp" />
+    <ClCompile Include="MapObjectLoopRotate.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="MathUtils.cpp" />
     <ClCompile Include="Mesh.cpp" />

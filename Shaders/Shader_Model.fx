@@ -8,6 +8,8 @@ struct MotionBlurOutput
 {
     float4 position : SV_Position;
     float4 vDir : Position1;
+    float3 worldPosition : POSITION2;
+    float2 uv : TEXCOORD;
 };
 
 
@@ -244,6 +246,8 @@ MotionBlurOutput VS_NonAnimMotionBlur(VTXModel input)
     
     output.position = mul(float4(input.position, 1.f), BoneTransform[BoneIndex]);
     output.position = mul(output.position, W);
+    output.worldPosition = output.position.xyz;
+    output.uv = input.uv;
     output.position = mul(output.position, V);
     float3 viewNormal = normalize(mul(input.normal, (float3x3) BoneTransform[BoneIndex]));
     viewNormal = normalize(mul(viewNormal, (float3x3) W));
@@ -284,6 +288,8 @@ MotionBlurOutput VS_AnimMotionBlur(VTXModel input)
     
     output.position = mul(float4(input.position, 1.f), m);
     output.position = mul(output.position, W);
+    output.worldPosition = output.position.xyz;
+    output.uv = input.uv;
     output.position = mul(output.position, V);
     
     float3 viewNormal = normalize(mul(input.normal, (float3x3) m));
@@ -559,7 +565,7 @@ PS_OUT_Deferred PS_WATER(MeshOutput input)
     if (bHasNormalMap)
         ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv + g_vec2_1 /*uvsliding*/ + fDistortionWeight);
     
-    ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
+    ARM_Map = float4(1.f, 0.4f, 0.0f, 1.f);
     
     if (bHasTexturemap7)
     {
@@ -625,7 +631,22 @@ float4 PS_ShadowInstancing(ShadowInstanceOutput input) : SV_Target
 // PS_MotionBlur
 float4 PS_MotionBlur(MotionBlurOutput input) : SV_Target
 {
+    
     float4 output = (float4) 0.f;
+    
+    if (bHasDissolveMap)
+    {
+        float dissolve = DissolveMap.Sample(LinearSampler, input.uv).w;
+        if (dissolve < g_vec4_1.w)
+            discard;
+    }
+    
+    if (bHasTexturemap8)
+    {
+        if ((10.f - g_float_0) + W._42 < input.worldPosition.y)
+            discard;
+        
+    }
     
     output.xy = input.vDir.xy;
     //output.xy = input.vDir.xy;
@@ -704,7 +725,7 @@ PBR_OUTPUT PS_PBR_Deferred(MeshOutput input)
         
     }
     
-    ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
+    ARM_Map = float4(1.f, 0.4f, 0.0f, 1.f);
     
     if(bHasTexturemap7)
     {
@@ -763,7 +784,7 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(MeshInstancingOutput input)
             discard;
     }
     
-    ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
+    ARM_Map = float4(1.f, 0.4f, 0.0f, 1.f);
     
     if (bHasTexturemap7)
     {
@@ -822,7 +843,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject(MeshOutput input)
             discard;
     }
     
-    ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
+    ARM_Map = float4(1.f, 0.4f, 0.0f, 1.f);
     
     if (bHasTexturemap7)
     {
@@ -883,7 +904,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_Instancing(MeshInstancingOutput i
             discard;
     }
     
-    ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
+    ARM_Map = float4(1.f, 0.4f, 0.0f, 1.f);
     
     if (bHasTexturemap7)
     {
@@ -976,7 +997,7 @@ PBR_OUTPUT PS_PBR_WATER(MeshOutput input)
     normal *= float3(0.5, 0.5, 1.);
     
     
-    ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
+    ARM_Map = float4(1.f, 0.4f, 0.0f, 1.f);
     
     if (bHasTexturemap7)
     {
@@ -1084,7 +1105,7 @@ float4 PS_PBR_Forward(MeshOutput input) : SV_Target
             discard;
     }
     
-    ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
+    ARM_Map = float4(1.f, 0.4f, 0.0f, 1.f);
     
     if (bHasTexturemap7)
     {
@@ -1169,7 +1190,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_NormalControl(MeshOutput input)
             discard;
     }
     
-    ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
+    ARM_Map = float4(1.f, 0.4f, 0.0f, 1.f);
     
     if (bHasTexturemap7)
     {
@@ -1236,7 +1257,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_Instancing_NormalControl(MeshInst
             discard;
     }
     
-    ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
+    ARM_Map = float4(1.f, 0.4f, 0.0f, 1.f);
     
     if (bHasTexturemap7)
     {

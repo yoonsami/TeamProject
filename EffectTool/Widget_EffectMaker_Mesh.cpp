@@ -221,8 +221,9 @@ void Widget_EffectMaker_Mesh::ImGui_FinishedEffect()
 	if (ImGui::Button("Load"))
 		Load();
 
-	if (ImGui::Button("Update Save MeshEffect files"))
-		SaveAdditionalData();
+	/* If you need to save additional data */
+	//if (ImGui::Button("Update Save MeshEffect files"))
+	//	SaveAdditionalData();
 	
 	ImGui::InputText("##FinishedEffectFilter", m_szFinishedEffectFilter, MAX_PATH);
 	ImGui::SameLine();
@@ -472,6 +473,9 @@ void Widget_EffectMaker_Mesh::Option_TextureOp(_int iIndex)
 	string strRadioButton3 = "Flip both##" + strIndex;
 	string strRadioButton4 = "Turn 90(cw)##" + strIndex;
 	string strRadioButton5 = "Turn 90(ccw)##" + strIndex;
+	string strSwapOptionButton0 = "Swap(with Option 0)##" + strIndex;
+	string strSwapOptionButton1 = "Swap(with Option 1)##" + strIndex;
+	string strSwapOptionButton2 = "Swap(with Option 2)##" + strIndex;
 
 	ImGui::SeparatorText(strSeparatorTag.c_str());
 
@@ -483,6 +487,26 @@ void Widget_EffectMaker_Mesh::Option_TextureOp(_int iIndex)
 		m_TexOption[iIndex].Texture.second = "None";
 		return;
 	}
+
+	if (0 != iIndex)
+	{
+		if (ImGui::Button(strSwapOptionButton0.c_str()))
+			SwapTexOption(iIndex, 0);
+		ImGui::SameLine();
+	}
+	if (1 != iIndex)
+	{
+		if (ImGui::Button(strSwapOptionButton1.c_str()))
+			SwapTexOption(iIndex, 1);
+		ImGui::SameLine();
+	}
+	if (2 != iIndex)
+	{
+		if (ImGui::Button(strSwapOptionButton2.c_str()))
+			SwapTexOption(iIndex, 2);
+		ImGui::SameLine();
+	}
+	ImGui::Text(" ");
 
 	// For. Texture 
 	{
@@ -1002,15 +1026,19 @@ void Widget_EffectMaker_Mesh::Option_Movement()
 			ImGui::InputFloat2("Radius(Start, End)##Movement", m_fRoundRadius);
 
 			// Start angle 
+			//ImGui::Text("Init angle interval option");
+			//ImGui::RadioButton("Random Interval##Movement_SettingAngleOption", &m_iInitRounAngleOption, 0);
+			//ImGui::SameLine();
+			//ImGui::RadioButton("Regular Interval##Movement_SettingAngleOption", &m_iInitRounAngleOption, 1);
 			ImGui::InputFloat2("Start Degree(min, max)##Movement", m_fInitRoundAngle);
 
 			// Axis
 			ImGui::Text("Setting Axis Option##Movement");
-			ImGui::RadioButton("Static##Movement_SettingAxisOption", &m_RoundAxisOption, 0);
+			ImGui::RadioButton("Static##Movement_SettingAxisOption", &m_iRoundAxisOption, 0);
 			ImGui::SameLine();
-			ImGui::RadioButton("Random in range(All different)##Movement_SettingAxisOption", &m_RoundAxisOption, 1);
-			ImGui::RadioButton("Random in range(All Same)##Movement_SettingAxisOption", &m_RoundAxisOption, 2);
-			if (0 == m_RoundAxisOption)
+			ImGui::RadioButton("Random in range(All different)##Movement_SettingAxisOption", &m_iRoundAxisOption, 1);
+			ImGui::RadioButton("Random in range(All Same)##Movement_SettingAxisOption", &m_iRoundAxisOption, 2);
+			if (0 == m_iRoundAxisOption)
 			{
 				ImGui::InputFloat3("Axis range(min)##Movement_SettingAxisOption", m_fRoundAxis_Min);
 				memcpy(m_fRoundAxis_Max, m_fRoundAxis_Min, sizeof(m_fRoundAxis_Min));
@@ -1183,7 +1211,7 @@ void Widget_EffectMaker_Mesh::Create()
 	// translation round axis (if option is random in range + all same)
 	_float fFinalRoundAxis_Min[3] = { 0.f, 0.f, 0.f };
 	_float fFinalRoundAxis_Max[3] = { 0.f, 0.f, 0.f };
-	if (2 == m_RoundAxisOption) // round axis is random in range but all same
+	if (2 == m_iRoundAxisOption) // round axis is random in range but all same
 	{
 		fFinalRoundAxis_Min[0] = MathUtils::Get_RandomFloat(m_fRoundAxis_Min[0], m_fRoundAxis_Max[0]);
 		fFinalRoundAxis_Min[1] = MathUtils::Get_RandomFloat(m_fRoundAxis_Min[1], m_fRoundAxis_Max[1]);
@@ -1350,8 +1378,9 @@ void Widget_EffectMaker_Mesh::Create()
 				m_iSpeedType,
 				{ m_vCurvePoint_Force[0], m_vCurvePoint_Force[1], m_vCurvePoint_Force[2], m_vCurvePoint_Force[3] },
 				_float2(m_fRoundRadius),
+				m_iInitRotationOption,
 				_float2(m_fInitRoundAngle),
-				m_RoundAxisOption,
+				m_iRoundAxisOption,
 				_float3(fFinalRoundAxis_Min),
 				_float3(fFinalRoundAxis_Max),
 
@@ -1512,10 +1541,11 @@ void Widget_EffectMaker_Mesh::Save()
 		file->Write<_float2>(_float2(m_fInitRoundAngle));
 		file->Write<_float3>(_float3(m_fRoundAxis_Min));
 		file->Write<_float3>(_float3(m_fRoundAxis_Max));
-		file->Write<_float>(_float(m_RoundAxisOption));
+		file->Write<_float>(_float(m_iRoundAxisOption));
+		file->Write<_float>(_float(m_iInitRotationOption));
 
 		/* Additional */
-		file->Write<_float2>(_float2(0.f, 0.f));
+		file->Write<_float>(0.f);
 		file->Write<_float4>(_float4(0.f, 0.f, 0.f, 0.f));
 		file->Write<_float4>(_float4(0.f, 0.f, 0.f, 0.f));		
 	}	
@@ -1741,10 +1771,11 @@ void Widget_EffectMaker_Mesh::Load()
 	memcpy(m_fRoundAxis_Min, &vTemp_vec3, sizeof(m_fRoundAxis_Min));
 	vTemp_vec3 = file->Read<_float3>();
 	memcpy(m_fRoundAxis_Max, &vTemp_vec3, sizeof(m_fRoundAxis_Max));
-	m_RoundAxisOption = (_int)file->Read<_float>();
+	m_iRoundAxisOption = (_int)file->Read<_float>();
+	m_iInitRounAngleOption = (_int)file->Read<_float>();
 
 	/* Additional */
-	_float2 fAdditional1 = file->Read<_float2>();
+	_float fAdditional1 = file->Read<_float>();
 	_float4 fAdditional2 = file->Read<_float4>();
 	_float4 fAdditional3 = file->Read<_float4>();
 
@@ -1773,6 +1804,16 @@ void Widget_EffectMaker_Mesh::Show_Guizmo()
 			memcpy(m_fInitRotation_Max, m_fInitRotation_Min, sizeof(m_fInitRotation_Min));
 		}
 	}
+}
+
+void Widget_EffectMaker_Mesh::SwapTexOption(_int iSrcIndex, _int iDestIndex)
+{
+	// texture option 
+	Texture_Option temp = m_TexOption[iSrcIndex];
+	m_TexOption[iSrcIndex] = m_TexOption[iDestIndex];
+	m_TexOption[iDestIndex] = temp;
+
+
 }
 
 _bool Widget_EffectMaker_Mesh::SearchOnList(const string& strTag, const vector<string>& vTargetList, _int* pOut_TargetIndex, string* pOut_TargetTag)

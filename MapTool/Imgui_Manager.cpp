@@ -35,6 +35,7 @@
 #include "WaterUVSliding.h"
 #include "TerrainRenderer.h"
 #include "MapObjectLoopEffectScript.h"
+#include "MapObjectLoopRotate.h"
 
 #include "WeedScript.h"
 #include "WeedGroup.h"
@@ -75,10 +76,10 @@ void ImGui_Manager::ImGui_SetUp()
     ImGuizmo::Enable(true);
     ImGuizmo::SetRect(0.f, 0.f, g_iWinSizeX, g_iWinSizeY);
 
-    Load_SkyBoxTexture();
+    Load_SkyBoxTexture(); 
     Load_MapObjectBase(dynamic_pointer_cast<GranseedScene>(CUR_SCENE)->Get_MapName());
     Load_TerrainTile();
-    Load_Water();
+    //Load_Water();
     Init_WeedSetting();
 
     Create_SampleObjects();
@@ -516,7 +517,7 @@ void ImGui_Manager::Frame_SelcetObjectManager()
         
         shared_ptr<MapObjectScript> currentMapObjScript = m_pMapObjects[m_iObjects]->Get_Script<MapObjectScript>();
         _float4x4& matDummy = currentMapObjScript->Get_DummyData();
-        ImGui::DragFloat4("vecDummy0", matDummy.m[0], 0.1f, 0.f);
+        ImGui::DragFloat4("NoData / RotateData / AddColor / EffectName", matDummy.m[0], 0.1f, 0.f);
         if (matDummy.m[0][3] >= 1.f)
         {
             ImGui::Text("EffectName##Text");
@@ -535,6 +536,35 @@ void ImGui_Manager::Frame_SelcetObjectManager()
 
             _float4 AddDiffuseUVweight = _float4(_float3{ currentMapObjScript->Get_AddDiffuseColor()}, currentMapObjScript->Get_UVWeight());
             m_pMapObjects[m_iObjects]->Get_ModelRenderer()->SetVec4(0, AddDiffuseUVweight);
+        }
+        if (matDummy.m[0][1] >= 1.f)
+        {
+            ImGui::Text("RotateData##Text");
+            _float4& RotateData = currentMapObjScript->Get_RotateData();
+            ImGui::DragFloat4("RotateAxis/RotateSpeed", (_float*)&RotateData, 0.1f);
+
+            if (ImGui::Button("R##SetRotateRight", ImVec2(20.f, 20.f)))
+               RotateData = _float3{ m_pMapObjects[m_iObjects]->Get_Transform()->Get_State(Transform_State::RIGHT) };
+            ImGui::SameLine();
+            if (ImGui::Button("U##SetRotateUp", ImVec2(20.f, 20.f)))
+               RotateData = _float3{ m_pMapObjects[m_iObjects]->Get_Transform()->Get_State(Transform_State::UP) };
+            ImGui::SameLine();
+            if (ImGui::Button("L##SetRotateLook", ImVec2(20.f, 20.f)))
+                RotateData = _float3{ m_pMapObjects[m_iObjects]->Get_Transform()->Get_State(Transform_State::LOOK) };
+
+            if (ImGui::Button("CreateRotate##ObjectDummyData"))
+            {
+                if (m_pMapObjects[m_iObjects]->Get_Script<MapObjectLoopRotate>() == nullptr)
+                {
+                    shared_ptr<MapObjectLoopRotate> RotateScript = make_shared<MapObjectLoopRotate>(RotateData);
+                    m_pMapObjects[m_iObjects]->Add_Component(RotateScript);
+                }
+                else
+                {
+                    auto MapObjLoopRotateScript = m_pMapObjects[m_iObjects]->Get_Script<MapObjectLoopRotate>();
+                    MapObjLoopRotateScript->Set_RotateData(RotateData);
+                }
+            }
         }
     }
     
@@ -892,12 +922,14 @@ void ImGui_Manager::Frame_Magic()
         //{
         //    ++iter;
         //}
-        // 모든 맵오브젝트의 더미데이터 초기화
-        for (auto& MapObj : m_pMapObjects)
-        {
-            auto& Dummy = MapObj->Get_Script<MapObjectScript>()->Get_DummyData();
-            Dummy = _float4x4{ 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f ,0.f, 0.f };
-        }
+        //// 모든 맵오브젝트의 더미데이터 초기화
+        //for (auto& MapObj : m_pMapObjects)
+        //{
+        //    auto& Dummy = MapObj->Get_Script<MapObjectScript>()->Get_DummyData();
+        //    Dummy = _float4x4{ 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f ,0.f, 0.f };
+        //}
+        // 추가바닥초기화
+        m_Ground4PointsVector.clear();
     }
 
     // 맵 더미데이터 관리
@@ -1472,6 +1504,11 @@ shared_ptr<GameObject> ImGui_Manager::Create_MapObject(MapObjectScript::MapObjec
     {
         shared_ptr<MapObjectLoopEffectScript> EffectScript = make_shared<MapObjectLoopEffectScript>(MapObjSc->Get_DummyData().m[0][3], Utils::ToWString(MapObjSc->Get_EffectName()));
         CreateObject->Add_Component(EffectScript);
+    }
+    if (MapObjSc->Get_DummyData().m[0][1] >= 1.f)
+    {
+        shared_ptr<MapObjectLoopRotate> RotateScript = make_shared<MapObjectLoopRotate>(MapObjSc->Get_RotateData());
+        CreateObject->Add_Component(RotateScript);
     }
 
     EVENTMGR.Create_Object(CreateObject);
@@ -2071,6 +2108,10 @@ HRESULT ImGui_Manager::Save_MapObject()
         {
             file->Write<Color>(MapDesc.AddDiffuseColor);
         }
+        if (MapDesc.matDummyData.m[0][1] >= 1.f)
+        {
+            file->Write<_float4>(MapDesc.RotateData);
+        }
     }
 
     // 플레이어의 시작위치 저장.
@@ -2135,7 +2176,6 @@ HRESULT ImGui_Manager::Save_MapObject()
 
     if (m_vecDummyData.y >= 2.f)
         Save_AddGroundData(file);
-
 
     return S_OK;
 }
@@ -2327,6 +2367,10 @@ HRESULT ImGui_Manager::Load_MapObject()
         {
             MapDesc.AddDiffuseColor = file->Read<Color>();
         }
+        if (MapDesc.matDummyData.m[0][1] >= 1.f)
+        {
+            MapDesc.RotateData = file->Read<_float4>();
+        }
         
         shared_ptr<GameObject> CreateObject = Create_MapObject(MapDesc);
         
@@ -2465,9 +2509,11 @@ HRESULT ImGui_Manager::Load_MapObject()
     // float4.y >= 2.f 추가바닥 로드
     if (m_vecDummyData.y >= 2.f)
     {
+        // 추가바닥초기화
+        m_Ground4PointsVector.clear();
         _int GroundCount = 0;
         file->Read<_int>(GroundCount);
-        m_Ground4PointsVector.resize(GroundCount);
+        m_Ground4PointsVector.reserve(GroundCount);
 
         for (_int i = 0; i < GroundCount; ++i)
         {

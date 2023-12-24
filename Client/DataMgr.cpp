@@ -559,6 +559,7 @@ void DataMgr::Initialize()
         m_NpcName[IDX(NPCTYPE::PORTAL)] = L"포탈 사용";
         m_NpcName[IDX(NPCTYPE::FENI)] = L"페니";
         m_NpcName[IDX(NPCTYPE::FISHERMAN)] = L"어부";
+        m_NpcName[IDX(NPCTYPE::GUARD)] = L"경비병";
     }
 
 
@@ -592,26 +593,20 @@ void DataMgr::Initialize()
 
     
     {
-        _uint iIndex = IDX(QUESTINDEX::KILL_ALPACA);
-        m_DialogAccept[iIndex].push_back(L"사냥퀘0");
-        m_DialogAccept[iIndex].push_back(L"사냥퀘1");
-        m_DialogAccept[iIndex].push_back(L"사냥퀘2");
-        m_DialogAccept[iIndex].push_back(L"사냥퀘3");
+        _uint iIndex = IDX(QUESTINDEX::KILL_SPIKE);
+        m_DialogAccept[iIndex].push_back(L"마을 밖에 눈이 잔뜩 내린 곳에 가 보았나?");
+        m_DialogAccept[iIndex].push_back(L"그 곳에 스파이크란 녀석이 나타나서 싸움을 잘 하는 사람을 \n기다리고 있다더군.");
+        m_DialogAccept[iIndex].push_back(L"자신있다면 눈이 잔뜩 내린 그 곳에 가보게.");
 
-        m_DialogNoClear[iIndex].push_back(L"깨고오세요");
-        m_DialogNoClear[iIndex].push_back(L"깨고와라");
-
-        m_DialogClear[iIndex].push_back(L"깨고왔구나");
-        m_DialogClear[iIndex].push_back(L"테스트");
-        m_DialogClear[iIndex].push_back(L"끝");
+        m_DialogNoClear[iIndex].push_back(L"아직 안 갔나?");
 
         m_Quest[iIndex].IsClear = false;
-        m_Quest[iIndex].Type = QUESTTYPE::HUNT;
+        m_Quest[iIndex].Type = QUESTTYPE::BOSS;
         m_Quest[iIndex].CurCount = 0;
-        m_Quest[iIndex].MaxCount = 10;
-        m_Quest[iIndex].Name = L"kill alpha-car";
-        m_Quest[iIndex].Info = L"알파카 학살자";
-        m_Quest[iIndex].Clear = L"알파카 컷";
+        m_Quest[iIndex].MaxCount = 0;
+        m_Quest[iIndex].Name = L"골목대장 스파이크";
+        m_Quest[iIndex].Info = L"눈 내린 곳으로 가 스파이크와 승부를 내자";
+        m_Quest[iIndex].Clear = L"이 골목의 대장은 바로 나!";
     }
 
     
@@ -622,7 +617,7 @@ void DataMgr::Initialize()
 
         m_DialogNoClear[iIndex].push_back(L"아직인가요?");
 
-        m_DialogClear[iIndex].push_back(L"어라? 알파카는 어디있죠?");
+        m_DialogClear[iIndex].push_back(L"알파카가 왜 세마리만 돌아왔나요?");
 
         m_Quest[iIndex].IsClear = false;
         m_Quest[iIndex].Type = QUESTTYPE::HUNT;
@@ -1072,7 +1067,7 @@ void DataMgr::Initialize()
 
 
     m_CardInven.resize(100);
-
+    Set_Card_Inven(HERO::YEONHEE);
 
     m_NpcDialog.resize(IDX(NPCTYPE::MAX));
     

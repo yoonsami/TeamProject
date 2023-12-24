@@ -13,6 +13,7 @@
 #include "Silversword_Soldier_FSM.h"
 #include "Succubus_Scythe_FSM.h"
 #include "Undead_Priest_FSM.h"
+#include "Combat5_LightControl.h"
 
 FieldScript::FieldScript(shared_ptr<GameObject> pPlayer, _float fDetectRange)
 	: m_pPlayer(pPlayer)
@@ -69,9 +70,9 @@ void FieldScript::Tick()
 
 				EVENTMGR.Create_Object(ObjMonster);
 			}
-
 			{
 				_float3 vPos = _float3(87.5f, 10.f, 31.f);
+				SOUND.Play_Sound(L"EDa_ChangChunVillager02_I05_1", SOUND_EFFECT, 0.5f, vPos,15.f);
 				shared_ptr<GameObject> ObjMonster = make_shared<GameObject>();
 				ObjMonster->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(vPos, 1.f));
 
@@ -237,12 +238,18 @@ void FieldScript::Tick()
 	{
 		SWITCHMGR.Set_SwitchState(SWITCH_TYPE::DELLONS_DIALOG, false);
 		SWITCHMGR.Set_SwitchState(SWITCH_TYPE::SPIKE_DIALOG, false);
+		SWITCHMGR.Set_SwitchState(SWITCH_TYPE::CREATE_COMBAT5_AFTER_SPIKE, false);
+		SWITCHMGR.Set_SwitchState(SWITCH_TYPE::COMBAT5_CREATED, true);
 
 		Load_Monster(20, L"Silversword_Soldier", m_pPlayer.lock());
 		Load_Monster(20, L"Succubus_Scythe", m_pPlayer.lock());
 		Load_Monster(20, L"Undead_Priest", m_pPlayer.lock());
 
+		shared_ptr<GameObject> lightController = make_shared<GameObject>();
+		lightController->GetOrAddTransform()->Set_State(Transform_State::POS, _float4(155.f,-1.3f,60.f,1.f));
+		lightController->Add_Component(make_shared<Combat5_LightControl>(m_pPlayer.lock()));
 
+		EVENTMGR.Create_Object(lightController);
 	}
 }
 
