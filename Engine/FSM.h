@@ -14,9 +14,9 @@ public:
 	void Set_AttackCollider(shared_ptr<GameObject> attackCollider) { m_pAttackCollider = attackCollider; }
 	void FreeLoopMembers();
 
-	void		Add_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript = nullptr, const _float4x4& matPivot = _float4x4::Identity, _bool bUseAsItis = false);
-	void		Add_And_Set_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript = nullptr);
-	void		Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset, _bool usePosAs, shared_ptr<MonoBehaviour> pScript = nullptr);
+	void		Add_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript = nullptr, const _float4x4& matPivot = _float4x4::Identity, _bool bUseAsItis = false, _bool bTimeSlowed = true);
+	void		Add_And_Set_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript = nullptr, _bool bTimeSlowed = true);
+	void		Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset, _bool usePosAs, shared_ptr<MonoBehaviour> pScript = nullptr, _bool bTimeSlowed = true);
 
 
 protected:

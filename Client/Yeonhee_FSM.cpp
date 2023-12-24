@@ -1496,7 +1496,7 @@ void Yeonhee_FSM::skill_400100_Init()
 void Yeonhee_FSM::skill_501100()
 {
     if (Init_CurFrame(60))
-        Add_GroupEffectOwner(L"YeonHee_501100_Install", _float3(0.f, 0.f, 5.f), false);
+        Add_GroupEffectOwner(L"YeonHee_501100_Install", _float3(0.f, 0.f, 5.f), false,nullptr,false);
 
 	Look_DirToTarget();
 

@@ -30,7 +30,7 @@ void GroupEffectOwner::Tick()
 void GroupEffectOwner::PlayEffect()
 {
 	shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();
-
+	pGroupEffectObj->Set_TimeSlowed(Get_Owner()->Is_TimeSlowed());
 	// For. Transform 
 	pGroupEffectObj->GetOrAddTransform();
 	pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS));
