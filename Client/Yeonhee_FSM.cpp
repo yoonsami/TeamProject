@@ -1208,6 +1208,9 @@ void Yeonhee_FSM::skill_93100_Init()
 
 void Yeonhee_FSM::skill_100100()
 {
+    if (Init_CurFrame(10))
+        Add_Effect(L"YeonHee_501100_Aura");
+
     Look_DirToTarget();
 
     if (Init_CurFrame(75))
@@ -1497,7 +1500,9 @@ void Yeonhee_FSM::skill_400100_Init()
 
 void Yeonhee_FSM::skill_501100()
 {
-    if (Init_CurFrame(60))
+    if (Init_CurFrame(1))
+        Add_GroupEffectOwner(L"YeonHee_501100_Aura", _float3(0.f, 0.f, 0.f), false, nullptr, false);
+    else if (Init_CurFrame(60))
         Add_GroupEffectOwner(L"YeonHee_501100_Install", _float3(0.f, 0.f, 5.f), false,nullptr,false);
 
 	Look_DirToTarget();
@@ -1576,8 +1581,6 @@ void Yeonhee_FSM::skill_501100()
         m_eCurState = STATE::b_idle;
 
         m_pOwner.lock()->Set_TimeSlowed(true);
-
-        Add_Effect(L"Yeonhee_500");
     }
 
 }
