@@ -44,6 +44,8 @@ public:
         string strEffectName = "";
     //(Dummy[0].z >= 1.f) : AddDiffuseColor
         Color AddDiffuseColor = {0.f, 0.f, 0.f, 0.f};
+    //(Dummy[0].y >= 1.f) : RotateAxis + Speed
+        _float4 RotateData = { 0.f, 0.f, 1.f, 1.f };
     }MAPOBJDESC;
 
 public:
@@ -56,6 +58,7 @@ public:
     _float4x4& Get_DummyData() { return m_MapObjDesc.matDummyData; }
     string& Get_EffectName() { return m_MapObjDesc.strEffectName; }
     Color& Get_AddDiffuseColor() { return m_MapObjDesc.AddDiffuseColor; }
+    _float4& Get_RotateData() { return m_MapObjDesc.RotateData; }
 
 public:
     virtual HRESULT Init() override;

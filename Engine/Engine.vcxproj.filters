@@ -244,6 +244,9 @@
     <Filter Include="06.Map\04. MapObjectLoopEffect">
       <UniqueIdentifier>{0e76804e-ce56-4823-9f9c-5e40e1c8d81c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06.Map\05. MapObjectLoopRotate">
+      <UniqueIdentifier>{06a9e48a-a301-43ac-aca8-a74f6de408dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -494,6 +497,9 @@
     </ClCompile>
     <ClCompile Include="MapObjectLoopEffectScript.cpp">
       <Filter>06.Map\04. MapObjectLoopEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="MapObjectLoopRotate.cpp">
+      <Filter>06.Map\05. MapObjectLoopRotate</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -760,6 +766,9 @@
     </ClInclude>
     <ClInclude Include="MapObjectLoopEffectScript.h">
       <Filter>06.Map\04. MapObjectLoopEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="MapObjectLoopRotate.h">
+      <Filter>06.Map\05. MapObjectLoopRotate</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
