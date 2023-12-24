@@ -922,12 +922,14 @@ void ImGui_Manager::Frame_Magic()
         //{
         //    ++iter;
         //}
-        // 모든 맵오브젝트의 더미데이터 초기화
-        for (auto& MapObj : m_pMapObjects)
-        {
-            auto& Dummy = MapObj->Get_Script<MapObjectScript>()->Get_DummyData();
-            Dummy = _float4x4{ 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f ,0.f, 0.f };
-        }
+        //// 모든 맵오브젝트의 더미데이터 초기화
+        //for (auto& MapObj : m_pMapObjects)
+        //{
+        //    auto& Dummy = MapObj->Get_Script<MapObjectScript>()->Get_DummyData();
+        //    Dummy = _float4x4{ 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f ,0.f, 0.f };
+        //}
+        // 추가바닥초기화
+        m_Ground4PointsVector.clear();
     }
 
     // 맵 더미데이터 관리
@@ -2507,6 +2509,8 @@ HRESULT ImGui_Manager::Load_MapObject()
     // float4.y >= 2.f 추가바닥 로드
     if (m_vecDummyData.y >= 2.f)
     {
+        // 추가바닥초기화
+        m_Ground4PointsVector.clear();
         _int GroundCount = 0;
         file->Read<_int>(GroundCount);
         m_Ground4PointsVector.resize(GroundCount);
