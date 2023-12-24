@@ -82,22 +82,6 @@ void Player_FSM::Tick()
 		m_pAttackCollider.lock()->Get_Transform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.5f + _float3::Up);
     }
 
-    if (KEYTAP(KEY_TYPE::DOWN))
-    {
-        shared_ptr<GameObject> obj = make_shared<GameObject>();
-        obj->GetOrAddTransform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::RIGHT) * 3.f);
-        obj->GetOrAddTransform()->LookAt(Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f);
-
-        obj->Add_Component(make_shared<Friend_FSM>(HERO::SHANE));
-
-        obj->Set_DrawShadow(true);
-        obj->Set_VelocityMap(true);
-        obj->Set_Name(L"Friend");
-        obj->Get_FSM()->Init();
-
-        EVENTMGR.Create_Object(obj);
-    }
-
     if (KEYTAP(KEY_TYPE::P))
         m_pOwner.lock()->Set_Hp(100.f);
 }
@@ -1824,7 +1808,7 @@ void Player_FSM::skill_300200_Init()
 	m_bInvincible = true;
 	m_bSuperArmor = true;
 
-    m_vCamStopPos = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS);    
+    m_vCamStopPos = (Get_Transform()->Get_State(Transform_State::POS)) + (Get_Transform()->Get_State(Transform_State::LOOK) * -8.f) + _float3::Up * 6.f;
 
     Calculate_CamBoneMatrix();
 }
