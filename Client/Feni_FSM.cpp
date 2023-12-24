@@ -5,6 +5,7 @@
 #include "UIInteraction.h"
 #include "UiDialogController.h"
 #include "ObjectDissolve.h"
+#include "UiMessageCreater.h"
 
 HRESULT Feni_FSM::Init()
 {
@@ -139,6 +140,12 @@ void Feni_FSM::SQ_afraid_02_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"SQ_afraid_02", 0.1f, false, 1.f);
+
+	{
+		auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
+		if (pObj)
+			pObj->Get_Script<UiMessageCreater>()->Create_Message(L"살려주세요!", Get_Owner());
+	}
 }
 
 void Feni_FSM::SQ_afraid_03()

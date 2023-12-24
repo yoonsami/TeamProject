@@ -365,7 +365,7 @@ void ModelAnimator::Render_Shadow()
 
 		m_pShader->Push_AnimAddonData(desc);
 	}
-
+	m_pShader->Push_RenderParamData(m_RenderParams);
 	auto& world = Get_Transform()->Get_WorldMatrix();
 	auto& preWorld = Get_Transform()->Get_preWorldMatrix();
 	m_pShader->Push_TransformData(TransformDesc{ world,preWorld });

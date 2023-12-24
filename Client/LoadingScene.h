@@ -27,5 +27,7 @@ private:
     shared_ptr<Loader> m_pLoader = nullptr;
 
 	list<shared_ptr<GameObject>> m_staticObjects;
+
+    weak_ptr<GameObject>    m_pLoadingController;
 };
 

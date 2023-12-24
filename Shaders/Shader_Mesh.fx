@@ -110,6 +110,7 @@ UIInstancingOutput VS_Instancing(VTXMeshInstancing input)
     output.uv = input.uv;
     output.id = input.instanceID;
     output.renderParam = input.renderParam;
+    output.renderParam2 = input.renderParam2;
     return output;
 }
 
@@ -488,7 +489,7 @@ float4 PS_UI3(UIOutput input) : SV_TARGET
     newUV.x = input.uv.x - frac(g_float_1);
     newUV.y = input.uv.y;
 
-    float falpha;
+    float falpha = 1.f;
     if(bHasTexturemap7)
         falpha = TextureMap7.Sample(LinearSampler, newUV).a + 0.3f;
     

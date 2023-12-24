@@ -28,8 +28,10 @@ private:
 	void Load_Camera();
 	void Load_Ui();
 	void Load_Light();
+	void Play_BGM();
 
 private:
 	GachaSceneDesc m_Desc{};
-
+	_bool m_bStopBGM = false;
+	_bool m_bPlayGachaSceneBGM = false;
 };

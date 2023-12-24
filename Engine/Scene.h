@@ -40,6 +40,7 @@ protected:
 	virtual void Remove_GameObject(shared_ptr<GameObject> object);
 
 public:
+	_uint							Get_LoadIndex()		{ return m_iLoadIndex; }
 	wstring							Get_Name()			{ return m_strSceneName; }
 	shared_ptr<GameObject>			Get_Light()			{ return m_Lights.empty() ? nullptr : *m_Lights.begin(); }
 	list<shared_ptr<GameObject>>&	Get_Objects()		{ return m_GameObjects; }
@@ -54,10 +55,14 @@ public:
 	shared_ptr<GameObject>			Get_GameObject(const wstring& name);
 	shared_ptr<GameObject>			Get_Player() { return m_pPlayer.lock(); }
 
+	void							Add_Load_Index()	{ ++m_iLoadIndex; }
+
 	_bool							Is_Static(shared_ptr<GameObject> obj);
-	void							Set_Name(const wstring& name)		{ m_strSceneName = name; }
-	void							Set_SceneState(SCENE_STATE state)	{ m_eSceneState = state; }
-	void							Set_StartingPos(const _float3& vPoint) { m_vStartingPos = vPoint; }
+
+	void							Set_Load_Index(_uint iValue)			{ m_iLoadIndex += iValue; }
+	void							Set_Name(const wstring& name)			{ m_strSceneName = name; }
+	void							Set_SceneState(SCENE_STATE state)		{ m_eSceneState = state; }
+	void							Set_StartingPos(const _float3& vPoint)	{ m_vStartingPos = vPoint; }
 
 	void Swap_Object(const wstring& leftObjName, const wstring& rightObjName);
 	void Render_ToneMapping();
@@ -124,6 +129,8 @@ private:
 	void SSAO_MakeFrustumFarCorners();
 
 protected:
+
+	_uint	m_iLoadIndex = { 0 };
 	_float3 m_vStartingPos = _float3(0.f);
 	_float m_fLoadPercent = 0.f;
 	wstring m_strSceneName = L"";

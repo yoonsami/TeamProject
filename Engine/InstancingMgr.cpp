@@ -91,6 +91,7 @@ void InstancingMgr::Render_Weeds(vector<shared_ptr<GameObject>>& groups)
 				InstancingData data;
 				data.world = gameobject->Get_Transform()->Get_WorldMatrix();
 				data.renderParam = groups[index]->Get_WeedGroup()->Get_RenderParams();
+				data.renderParam2 = groups[index]->Get_WeedGroup()->Get_RenderParams();
 				Add_Data(instanceId, data);
 			}
 
@@ -160,6 +161,7 @@ void InstancingMgr::Render_MeshRenderer(vector<shared_ptr<GameObject>>& gameObje
 				InstancingData data;
 				data.world = gameobject->Get_Transform()->Get_WorldMatrix();
 				data.renderParam = gameobject->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[0];
+				data.renderParam2 = gameobject->Get_MeshRenderer()->Get_RenderParamDesc().vec4Params[1];
 				Add_Data(instanceId, data);
 			}
 
@@ -210,6 +212,7 @@ void InstancingMgr::Render_ModelRenderer(vector<shared_ptr<GameObject>>& gameObj
 				InstancingData data{};
 				data.world = gameobject->Get_Transform()->Get_WorldMatrix();
 				data.renderParam = gameobject->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[0];
+				data.renderParam2 = gameobject->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[1];
 				Add_Data(instanceId, data);
 			}
 			
@@ -262,6 +265,7 @@ void InstancingMgr::Render_Animator(vector<shared_ptr<GameObject>>& gameObjects)
 				InstancingData data;
 				data.world = gameobject->Get_Transform()->Get_WorldMatrix();
 				data.renderParam = gameobject->Get_Animator()->Get_RenderParamDesc().vec4Params[0];
+				data.renderParam2 = gameobject->Get_Animator()->Get_RenderParamDesc().vec4Params[1];
 				Add_Data(instanceId, data);
 
 				tweenDesc->tweens[i] = gameobject->Get_Animator()->Get_TweenDesc();
@@ -337,6 +341,7 @@ void InstancingMgr::Render_ModelRenderer_Shadow(vector<shared_ptr<GameObject>>& 
 				InstancingData data;
 				data.world = gameobject->Get_Transform()->Get_WorldMatrix();
 				data.renderParam = gameobject->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[0];
+				data.renderParam2 = gameobject->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[1];
 				Add_Data(instanceId, data);
 			}
 
@@ -390,6 +395,7 @@ void InstancingMgr::Render_Animator_Shadow(vector<shared_ptr<GameObject>>& gameO
 				InstancingData data;
 				data.world = gameobject->Get_Transform()->Get_WorldMatrix();
 				data.renderParam = gameobject->Get_Animator()->Get_RenderParamDesc().vec4Params[0];
+				data.renderParam2 = gameobject->Get_Animator()->Get_RenderParamDesc().vec4Params[1];
 				Add_Data(instanceId, data);
 
 				tweenDesc->tweens[i] = gameobject->Get_Animator()->Get_TweenDesc();

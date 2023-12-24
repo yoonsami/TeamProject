@@ -46,11 +46,13 @@ void WeaponScript::Late_Tick()
 		Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().floatParams[0] -= 3.f * fDT;
 		if(Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().floatParams[0]<0)Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().floatParams[0] =0.f;
 		_float4& param = Get_Owner()->Get_ModelRenderer()->Get_RenderParamDesc().vec4Params[1];
-		param -= _float4(fDT);
+		param.x -=(fDT);
+		param.y -=(fDT);
+		param.z -=(fDT);
 		if (param.x < 0) param.x = 0.f;
 		if (param.y < 0) param.y = 0.f;
 		if (param.z < 0) param.z = 0.f;
-		if (param.w < 0) param.w = 0.f;
+
 	}
 
 	_uint index = m_pWeaponOwner.lock()->Get_Model()->Get_BoneIndexByName(m_strBoneName);

@@ -110,7 +110,9 @@ void MirScene::Init()
 
 	}
 
-	
+	auto pObj = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+	if (pObj)
+		pObj->Get_Script<MainUiController>()->Set_MainUI_Render(true);
 
 }
 
@@ -174,26 +176,38 @@ HRESULT MirScene::Load_Scene()
 {
 	RESOURCES.Delete_NonStaticResources();
 	PHYSX.Init();
+	Add_Load_Index();	// 1
 
 	//Static
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\", true);
+	Add_Load_Index();	// 2
+
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\VfxMesh\\", true);
+	Add_Load_Index();	// 3
+
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\SkyBox\\", true);
+	Add_Load_Index();	// 4
+
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Weapon\\", true);
+	Add_Load_Index();	// 5
 
 	//Map
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Mir\\", false);
+	Add_Load_Index();	// 6
 
 	//Monster
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Boss_Mir\\", false);
-	
+	Add_Load_Index();	// 7
+
 	//Sound
 	RESOURCES.Load_Sound(L"..\\Resources\\Sound\\MirScene\\", false);
+	Add_Load_Index();	// 8
 
 	auto player = Load_Player();
 	Load_Camera(player);
 	Load_MapFile(L"MirMap", player);
 	Load_Boss_Mir(player);
+	Add_Load_Index();	// 9
 
 	Load_Ui(player);
 
@@ -206,6 +220,7 @@ HRESULT MirScene::Load_Scene()
 		pPlayer->Get_Script<HeroChangeScript>()->Change_Hero(HERO::PLAYER);
 	}
 
+	Add_Load_Index();	// 10
 	return S_OK;
 }
 

@@ -153,7 +153,7 @@ MeshOutput DS_Main(const OutputPatch<HS_OUT, 3> input, float3 location : SV_Doma
     float3 localBinormal = float3(localPos.x, upHeight, localPos.z + deltaPos.y) - float3(localPos.x, downHeight, localPos.z - deltaPos.y);
 
     output.position = mul(float4(localPos, 1.f),W);
-    output.worldPosition = output.position;
+    output.worldPosition = output.position.xyz;
     output.viewPosition = mul(float4(output.worldPosition, 1.f),V).xyz;
     output.position = mul(float4(output.viewPosition, 1.f), P);
 

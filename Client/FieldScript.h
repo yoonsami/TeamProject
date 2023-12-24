@@ -17,5 +17,6 @@ private:
 private:
     weak_ptr<GameObject> m_pPlayer;
     _float m_fDetectRange = 0.f;
+    _float m_fAcc = 0.f;
 };
 

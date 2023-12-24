@@ -448,6 +448,12 @@
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\27.UiTutorialController">
       <UniqueIdentifier>{c5deb4ec-8b12-41af-97eb-8d13e81a2bea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\00.UiLoading\00.LoadingImage">
+      <UniqueIdentifier>{41117f25-8086-428a-bde3-edbd3d2d0e57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.Ui\00.UiLoading\01.LoadingBar">
+      <UniqueIdentifier>{0a1c18a7-4ab7-49a3-87c8-861fad25902a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -569,9 +575,6 @@
     </ClInclude>
     <ClInclude Include="..\Shaders\Fxaa3_11.h">
       <Filter>Shader\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="UiLoadingScript.h">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\00.UiLoading</Filter>
     </ClInclude>
     <ClInclude Include="CoolTimeCheckScript.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\01.CoolTimeCheck</Filter>
@@ -882,24 +885,33 @@
     <ClInclude Include="FisherMan_FSM.h">
       <Filter>02.Component\01.FSM\05.NPC_FSM\01.Field</Filter>
     </ClInclude>
-    <ClInclude Include="Feni_FSM.h">
-      <Filter>02.Component\01.FSM\05.NPC_FSM\01.Field</Filter>
-    </ClInclude>
-    <ClInclude Include="SwitchMgr.h">
-      <Filter>97.Data\SwitchMgr</Filter>
-    </ClInclude>
-    <ClInclude Include="FieldScript.h">
-      <Filter>02.Component\00.MonoBehaviour\09.FieldScript\01.Field</Filter>
-    </ClInclude>
-    <ClInclude Include="Add_Score.h">
-      <Filter>02.Component\00.MonoBehaviour\05.Object</Filter>
-    </ClInclude>
     <ClInclude Include="SwitchMgr.h" />
     <ClInclude Include="FieldScript.h" />
     <ClInclude Include="Feni_FSM.h" />
     <ClInclude Include="Add_Score.h" />
     <ClInclude Include="UiTutorialController.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\27.UiTutorialController</Filter>
+    </ClInclude>
+    <ClInclude Include="Feni_FSM.h">
+      <Filter>02.Component\01.FSM\05.NPC_FSM\01.Field</Filter>
+    </ClInclude>
+    <ClInclude Include="Add_Score.h">
+      <Filter>02.Component\00.MonoBehaviour\09.FieldScript</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldScript.h">
+      <Filter>02.Component\00.MonoBehaviour\09.FieldScript\01.Field</Filter>
+    </ClInclude>
+    <ClInclude Include="SwitchMgr.h">
+      <Filter>97.Data\SwitchMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="MiddleWoman_FSM.h">
+      <Filter>02.Component\01.FSM\05.NPC_FSM\00.Granseed</Filter>
+    </ClInclude>
+    <ClInclude Include="UiLoadingScript.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\00.UiLoading\00.LoadingImage</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadingBarScript.h">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\00.UiLoading\01.LoadingBar</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1001,9 +1013,6 @@
     </ClCompile>
     <ClCompile Include="LogoScene.cpp">
       <Filter>01.Scene\01.LogoScene</Filter>
-    </ClCompile>
-    <ClCompile Include="UiLoadingScript.cpp">
-      <Filter>02.Component\00.MonoBehaviour\01.Ui\00.UiLoading</Filter>
     </ClCompile>
     <ClCompile Include="CoolTimeCheckScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\01.CoolTimeCheck</Filter>
@@ -1304,24 +1313,33 @@
     <ClCompile Include="FisherMan_FSM.cpp">
       <Filter>02.Component\01.FSM\05.NPC_FSM\01.Field</Filter>
     </ClCompile>
-    <ClCompile Include="Feni_FSM.cpp">
-      <Filter>02.Component\01.FSM\05.NPC_FSM\01.Field</Filter>
-    </ClCompile>
-    <ClCompile Include="SwitchMgr.cpp">
-      <Filter>97.Data\SwitchMgr</Filter>
-    </ClCompile>
-    <ClCompile Include="FieldScript.cpp">
-      <Filter>02.Component\00.MonoBehaviour\09.FieldScript\01.Field</Filter>
-    </ClCompile>
-    <ClCompile Include="Add_Score.cpp">
-      <Filter>02.Component\00.MonoBehaviour\05.Object</Filter>
-    </ClCompile>
     <ClCompile Include="SwitchMgr.cpp" />
     <ClCompile Include="FieldScript.cpp" />
     <ClCompile Include="Feni_FSM.cpp" />
     <ClCompile Include="Add_Score.cpp" />
     <ClCompile Include="UiTutorialController.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\27.UiTutorialController</Filter>
+    </ClCompile>
+    <ClCompile Include="Feni_FSM.cpp">
+      <Filter>02.Component\01.FSM\05.NPC_FSM\01.Field</Filter>
+    </ClCompile>
+    <ClCompile Include="Add_Score.cpp">
+      <Filter>02.Component\00.MonoBehaviour\09.FieldScript</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\09.FieldScript\01.Field</Filter>
+    </ClCompile>
+    <ClCompile Include="SwitchMgr.cpp">
+      <Filter>97.Data\SwitchMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="MiddleWoman_FSM.cpp">
+      <Filter>02.Component\01.FSM\05.NPC_FSM\00.Granseed</Filter>
+    </ClCompile>
+    <ClCompile Include="UiLoadingScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\00.UiLoading\00.LoadingImage</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadingBarScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\01.Ui\00.UiLoading\01.LoadingBar</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

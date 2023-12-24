@@ -55,6 +55,7 @@ public:
     MAPOBJDESC& Get_DESC() { return m_MapObjDesc; }
     _float4x4& Get_DummyData() { return m_MapObjDesc.matDummyData; }
     string& Get_EffectName() { return m_MapObjDesc.strEffectName; }
+    Color& Get_AddDiffuseColor() { return m_MapObjDesc.AddDiffuseColor; }
 
 public:
     virtual HRESULT Init() override;

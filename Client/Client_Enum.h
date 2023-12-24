@@ -162,6 +162,7 @@ enum class NPCTYPE
 	PORTAL,
 	FENI,
 	FISHERMAN,
+	GUARD,
 	MAX
 };
 

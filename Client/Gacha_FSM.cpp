@@ -32,6 +32,9 @@ HRESULT Gacha_FSM::Init()
 
 void Gacha_FSM::Tick()
 {
+	if (KEYTAP(KEY_TYPE::A))
+		m_eCurState = STATE::SQ_SpecialHero;
+
 	State_Tick();
 }
 
@@ -94,21 +97,23 @@ void Gacha_FSM::SQ_SpecialHero()
 	}
 	else
 	{
-		if (Get_CurFrame() < 90)
+		//if (Get_CurFrame() < 90)
 		{
 			_float3 vDir = m_vSkillCamBonePos.xyz() - m_vCenterBonePos.xyz();
 			vDir.Normalize();
-			CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_vCenterBonePos + vDir * 5.f);
+			CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_vCenterBonePos + vDir);
 			CUR_SCENE->Get_MainCamera()->Get_Transform()->LookAt(m_vCenterBonePos/* - Get_Transform()->Get_State(Transform_State::RIGHT) * 0.5f + _float3::Up * 0.5f*/);
 
 		}
-		else
+		//else
 		{
-			_float3 vDir = m_vSkillCamBonePos.xyz() - m_vCenterBonePos.xyz();
-			vDir.Normalize();
-			CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_vCenterBonePos + vDir * 5.f);
-			CUR_SCENE->Get_MainCamera()->Get_Transform()->LookAt(m_vCenterBonePos/* - Get_Transform()->Get_State(Transform_State::RIGHT) * 0.5f + _float3::Up * 0.5f*/);
+		//	_float3 vDir = m_vSkillCamBonePos.xyz() - m_vCenterBonePos.xyz();
+		//	vDir.Normalize();
+		//	CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_vCenterBonePos + vDir * 5.f);
+		//	CUR_SCENE->Get_MainCamera()->Get_Transform()->LookAt(m_vCenterBonePos/* - Get_Transform()->Get_State(Transform_State::RIGHT) * 0.5f + _float3::Up * 0.5f*/);
 
+		//CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_vSkillCamBonePos);
+		//CUR_SCENE->Get_MainCamera()->Get_Transform()->LookAt(m_vCenterBonePos);
 		}
 
 
@@ -158,7 +163,7 @@ void Gacha_FSM::SQ_SpecialHero2()
 {
 	_float3 vDir = m_vSkillCamBonePos.xyz() - m_vCenterBonePos.xyz();
 	vDir.Normalize();
-	CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_vCenterBonePos + vDir * m_fDist);
+	CUR_SCENE->Get_MainCamera()->Get_Transform()->Set_State(Transform_State::POS, m_vCenterBonePos + vDir);
 	CUR_SCENE->Get_MainCamera()->Get_Transform()->LookAt(m_vCenterBonePos/* - Get_Transform()->Get_State(Transform_State::RIGHT) * 0.5f + _float3::Up * 0.5f*/);
 	if (Get_CurFrame() > m_Desc.iAnimStopFrame)
 	{

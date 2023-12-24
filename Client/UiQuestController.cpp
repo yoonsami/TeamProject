@@ -293,6 +293,13 @@ void UiQuestController::Change_Value()
 
 }
 
+void UiQuestController::Set_ClearQuest()
+{
+	m_eCurType = CUR_QUEST::NONE;
+	Set_Render(false);
+	Clear_Quest();
+}
+
 CUR_QUEST UiQuestController::Get_CurState(QUESTINDEX eIndex)
 {
     if (m_eIndex != eIndex)

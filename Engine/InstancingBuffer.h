@@ -6,6 +6,7 @@ struct InstancingData
 {
 	_float4x4 world =_float4x4::Identity;
 	_float4 renderParam = _float4(0.f);
+	_float4 renderParam2 = _float4(0.f);
 };
 
 #define MAX_MESH_INSTANCE 500

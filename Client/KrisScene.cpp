@@ -112,6 +112,9 @@ void KrisScene::Init()
 
 	}
 
+	auto pObj = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+	if (pObj)
+		pObj->Get_Script<MainUiController>()->Set_MainUI_Render(true);
 
 }
 
@@ -223,16 +226,23 @@ HRESULT KrisScene::Load_Scene()
 {
 	RESOURCES.Delete_NonStaticResources();
 	PHYSX.Init();
+	Add_Load_Index();	// 1
 
 	//Static
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\", true);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\VfxMesh\\", true);
+	Add_Load_Index();	// 2
+
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\SkyBox\\", true);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Weapon\\", true);
+	Add_Load_Index();	// 3
 
 	//Map
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Kris\\", false);
+	Add_Load_Index();	// 4
+
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Spike\\", false);
+	Add_Load_Index();	// 5
 
 	//Monster
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Boss_Spike\\", false);
@@ -240,19 +250,22 @@ HRESULT KrisScene::Load_Scene()
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_White\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_Brown\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Alpaca_Black\\", false);
+	Add_Load_Index();	// 6
 
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Wolf\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Succubus_Scythe\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\Undead_Priest\\", false);
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\EntSoldier\\", false);
+	Add_Load_Index();	// 7
 
 	//Sound
 	RESOURCES.Load_Sound(L"..\\Resources\\Sound\\KrisScene\\", false);
-
+	Add_Load_Index();	// 8
 
 	auto player = Load_Player();
 	Load_Camera(player);
 	Load_MapFile(L"KrisMap", player);
+	Add_Load_Index();	// 9
 
 	Load_Monster(1, L"Alpaca_White", player);
 	Load_Monster(1, L"Alpaca_Brown", player);
@@ -267,6 +280,7 @@ HRESULT KrisScene::Load_Scene()
 	Load_EventScript();
 
 
+	Add_Load_Index();	// 10
 
 	return S_OK;
 }
@@ -496,7 +510,7 @@ void KrisScene::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_pt
 				}
 			}
 			ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
-
+			ObjMonster->Set_DrawShadow(true);
 			Add_GameObject(ObjMonster);
 		}
 	}

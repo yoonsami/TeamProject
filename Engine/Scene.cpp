@@ -139,7 +139,8 @@ void Scene::Render()
 
 	Render_Vignette();
 	Render_Debug();
-	Render_ToneMapping();
+	
+	//Render_ToneMapping();
 
 	Render_UI();
 

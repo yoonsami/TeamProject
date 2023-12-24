@@ -12,6 +12,11 @@
 #include "Model.h"
 #include "MotionTrailDisappear.h"
 #include "MotionTrailRenderer.h"
+#include "UiQuestController.h"
+
+NeutralAlpaca_FSM::~NeutralAlpaca_FSM()
+{
+}
 
 HRESULT NeutralAlpaca_FSM::Init()
 {
@@ -300,6 +305,10 @@ void NeutralAlpaca_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollider, _fl
 		Get_Owner()->Add_Component(script);
 		script->Init();
         m_bIsDead = true;
+		auto pObj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
+		if (pObj && pObj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::KILL_DELLONS) == CUR_QUEST::PROGRESS)
+			pObj->Get_Script<UiQuestController>()->Change_Value();
+
     }
 }
 
@@ -396,7 +405,9 @@ void NeutralAlpaca_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared
         m_bAngry = false;
 		Get_Owner()->Set_Instancing(true);
 		Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);
-		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1] = Color(0.f);
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].x = 0.f;
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].y = 0.f;
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].z = 0.f;
 		m_bCanHitCounter = false;
 
 		shared_ptr<GameObject> motionTrail = make_shared<GameObject>();
@@ -590,6 +601,9 @@ void NeutralAlpaca_FSM::die_01()
         auto script = make_shared<ObjectDissolve>(1.f);
         Get_Owner()->Add_Component(script);
         script->Init();
+		auto pObj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
+		if (pObj && pObj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::KILL_DELLONS) == CUR_QUEST::PROGRESS)
+			pObj->Get_Script<UiQuestController>()->Change_Value();
 
         if (!m_pAttackCollider.expired())
             EVENTMGR.Delete_Object(m_pAttackCollider.lock());
@@ -615,6 +629,9 @@ void NeutralAlpaca_FSM::die_02()
         auto script = make_shared<ObjectDissolve>(1.f);
         Get_Owner()->Add_Component(script);
         script->Init();
+		auto pObj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
+		if (pObj && pObj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::KILL_DELLONS) == CUR_QUEST::PROGRESS)
+			pObj->Get_Script<UiQuestController>()->Change_Value();
 
         if (!m_pAttackCollider.expired())
             EVENTMGR.Delete_Object(m_pAttackCollider.lock());
@@ -807,6 +824,9 @@ void NeutralAlpaca_FSM::airborne_end()
             auto script = make_shared<ObjectDissolve>(1.f);
             Get_Owner()->Add_Component(script);
             script->Init();
+			auto pObj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
+			if (pObj && pObj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::KILL_DELLONS) == CUR_QUEST::PROGRESS)
+				pObj->Get_Script<UiQuestController>()->Change_Value();
 
             if (!m_pAttackCollider.expired())
             {
@@ -917,6 +937,9 @@ void NeutralAlpaca_FSM::knock_end_loop()
         auto script = make_shared<ObjectDissolve>(1.f);
         Get_Owner()->Add_Component(script);
         script->Init();
+		auto pObj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
+		if (pObj && pObj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::KILL_DELLONS) == CUR_QUEST::PROGRESS)
+			pObj->Get_Script<UiQuestController>()->Change_Value();
 
         if (!m_pAttackCollider.expired())
         {
@@ -1012,6 +1035,9 @@ void NeutralAlpaca_FSM::knockdown_end()
             auto script = make_shared<ObjectDissolve>(1.f);
             Get_Owner()->Add_Component(script);
             script->Init();
+			auto pObj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
+			if (pObj && pObj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::KILL_DELLONS) == CUR_QUEST::PROGRESS)
+				pObj->Get_Script<UiQuestController>()->Change_Value();
 
             if (!m_pAttackCollider.expired())
             {
@@ -1043,7 +1069,9 @@ void NeutralAlpaca_FSM::skill_1100()
     {
         m_fStTimer += fDT;
         Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f / (1.f + m_fStTimer));
-        Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1] = Color(0.05f, 0.2f, 1.f, 1.f);
+        Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].x =0.05f;
+        Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].y =0.2f;
+        Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].z = 1.f;
         Get_Owner()->Set_Instancing(false);
 
         m_bCanHitCounter = true;
@@ -1056,7 +1084,9 @@ void NeutralAlpaca_FSM::skill_1100()
 	{
         Get_Owner()->Set_Instancing(true);
 		Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);
-		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1] = Color(0.f);
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].x = 0.0f;
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].y = 0.0f;
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].z = 0.0f;
 
         m_bCanHitCounter = false;
         AttackCollider_On(STUN_HIT, 0.f);
@@ -1097,7 +1127,9 @@ void NeutralAlpaca_FSM::skill_2100()
 	{
 		m_fStTimer += fDT;
 		Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f / (1.f +m_fStTimer));
-		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1] = Color(0.05f, 0.2f, 1.f, 1.f);
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].x = 0.05f;
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].y = 0.2f;
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].z = 1.f;
 		Get_Owner()->Set_Instancing(false);
 
 		m_bCanHitCounter = true;
@@ -1110,7 +1142,9 @@ void NeutralAlpaca_FSM::skill_2100()
     {
 		Get_Owner()->Set_Instancing(true);
 		Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);
-		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1] = Color(0.f);
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].x = 0.f;
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].y = 0.f;
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].z = 0.f;
 		m_bCanHitCounter = false;
         AttackCollider_On(STUN_HIT, 0.f);
     }
@@ -1148,7 +1182,9 @@ void NeutralAlpaca_FSM::skill_3100()
 	{
 		m_fStTimer += fDT;
 		Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f / (1.f + m_fStTimer));
-		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1] = Color(0.05f, 0.2f, 1.f, 1.f);
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].x = 0.05f;
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].y = 0.2f;
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].z = 1.f;
 		Get_Owner()->Set_Instancing(false);
 
 		m_bCanHitCounter = true;
@@ -1161,7 +1197,9 @@ void NeutralAlpaca_FSM::skill_3100()
     {
 		Get_Owner()->Set_Instancing(true);
 		Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);
-		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1] = Color(0.f);
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].x = 0.f;
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].y = 0.f;
+		Get_Owner()->Get_Animator()->Get_RenderParamDesc().vec4Params[1].z = 0.f;
 		m_bCanHitCounter = false;
         AttackCollider_On(STUN_HIT, 0.f);
     }

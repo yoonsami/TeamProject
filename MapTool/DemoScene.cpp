@@ -82,15 +82,17 @@ HRESULT GranseedScene::Load_Scene()
 {
 	wstring MapObjPath = L"..\\Resources\\Models\\MapObject\\";
 	// 맵폴더이름
-	wstring MapFolderName = L"Granseed\\";
+	wstring MapFolderName = L"Yeonhee\\";
 	m_wstrMapName = MapFolderName;
 	RESOURCES.CreateModel(MapObjPath + m_wstrMapName);
 	RESOURCES.CreateModel(MapObjPath + L"Skybox\\");
 
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\Spear_Ace\\");
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\NPC\\Granseed\\");
+
+	//RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\Spear_Ace\\");
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Hero\\Yeonhee\\");
 
-	Load_DemoModel();
+	//Load_DemoModel();
 
 	shared_ptr<GameObject> sky = make_shared<GameObject>();
 	sky->GetOrAddTransform();

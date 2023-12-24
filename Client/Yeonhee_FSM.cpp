@@ -903,8 +903,8 @@ void Yeonhee_FSM::skill_1100()
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = -Get_Transform()->Get_State(Transform_State::UP);
 		desc.fMoveSpeed = 15.f;
-		desc.fLifeTime = 0.2f;
-		desc.fLimitDistance = 3.f;
+		desc.fLifeTime = 0.5f;
+		desc.fLimitDistance = 5.f;
 
 		// Find Monster
 		_float4 vSkillPos;
@@ -971,8 +971,8 @@ void Yeonhee_FSM::skill_1200()
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = -Get_Transform()->Get_State(Transform_State::UP);
 		desc.fMoveSpeed = 15.f;
-		desc.fLifeTime = 0.2f;
-		desc.fLimitDistance = 3.f;
+		desc.fLifeTime = 0.5f;
+		desc.fLimitDistance = 5.f;
 
 		_float4 vSkillPos;
 		if (!m_pTarget.expired())
@@ -1043,8 +1043,8 @@ void Yeonhee_FSM::skill_1300()
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = -Get_Transform()->Get_State(Transform_State::UP);
 		desc.fMoveSpeed = 15.f;
-		desc.fLifeTime = 0.2f;
-		desc.fLimitDistance = 3.f;
+		desc.fLifeTime = 0.5f;
+		desc.fLimitDistance = 5.f;
 
 		// Find Monster
 		_float4 vSkillPos;
