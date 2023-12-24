@@ -1957,7 +1957,7 @@ void Boss_Spike_FSM::skill_6100()
         desc.strLastAttackType = KNOCKBACK_SKILL;
         desc.fAttackDamage = 5.f;
         desc.fLastAttackDamage = 5.f;
-        desc.iLimitAttackCnt = 2;
+        desc.iLimitAttackCnt = 3;
 
         for (_uint i = 0; i < 8; i++)
         {
@@ -2140,7 +2140,7 @@ void Boss_Spike_FSM::skill_100000()
         desc.strLastAttackType = KNOCKBACK_SKILL;
         desc.fAttackDamage = 5.f;
         desc.fLastAttackDamage = 5.f;
-        desc.iLimitAttackCnt = 2;
+        desc.iLimitAttackCnt = 3;
 
         for (_uint i = 0; i < 8; i++)
         {
@@ -2511,6 +2511,8 @@ void Boss_Spike_FSM::Create_CounterMotionTrail()
     }
 
     m_pOwner.lock()->Get_Script<CounterMotionTrailScript>()->Init();
+
+    SOUND.Play_Sound(L"CounterHit", CHANNELID::SOUND_EFFECT, 0.4f, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 
