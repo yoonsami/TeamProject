@@ -45,6 +45,7 @@ HRESULT NeutralAlpaca_FSM::Init()
 
     m_fMySoundDistance = 4.f;
     m_fVoiceVolume = 0.5f;
+    m_fEffectVolume = 0.4f;
 
 	shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
 	attackCollider->GetOrAddTransform();
@@ -417,6 +418,8 @@ void NeutralAlpaca_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared
 		motionTrail->Get_Script<MotionTrailDisappear>()->Init();
 		EVENTMGR.Create_Object(motionTrail);
         m_bRealEducated = true;
+
+        SOUND.Play_Sound(L"CounterHit", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         m_eCurState = STATE::knockdown_start;
     }
