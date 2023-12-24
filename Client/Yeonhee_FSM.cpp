@@ -1364,8 +1364,7 @@ void Yeonhee_FSM::skill_300100()
     {
         Add_Effect(L"YeonHee_300100_Install");
 
-    }
-    if (m_iCurFrame >= 10)
+    if (m_iCurFrame >= 10 && m_iCurFrame <= 85)
     {
         if (!m_pCamera.expired())
         {
