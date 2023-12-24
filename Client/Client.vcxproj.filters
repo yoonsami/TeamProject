@@ -913,6 +913,7 @@
     <ClInclude Include="LoadingBarScript.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\00.UiLoading\01.LoadingBar</Filter>
     </ClInclude>
+    <ClInclude Include="Combat5_LightControl.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1341,6 +1342,7 @@
     <ClCompile Include="LoadingBarScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\00.UiLoading\01.LoadingBar</Filter>
     </ClCompile>
+    <ClCompile Include="Combat5_LightControl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
