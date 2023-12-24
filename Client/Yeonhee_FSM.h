@@ -153,8 +153,10 @@ private:
 	void Cal_FingerBoneMatrix();
 	_uint m_iLFingerBoneIndex = 0;
 	_uint m_iRFingerBoneIndex = 0;
+	_uint m_iWeaponBoneIndex = 0;
 
 	_float4 m_vLFingerPos = _float4(0.f);
 	_float4 m_vRFingerPos = _float4(0.f);
+	_float4 m_vWeaponPos = _float4(0.f);
 };
 
