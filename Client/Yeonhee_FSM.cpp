@@ -928,6 +928,8 @@ void Yeonhee_FSM::knockdown_end_Init()
 
 void Yeonhee_FSM::skill_1100()
 {
+    Update_GroupEffectWorldPos(_float4x4::CreateTranslation(_float3(m_vRFingerPos)));
+
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
     Look_DirToTarget();
@@ -955,6 +957,8 @@ void Yeonhee_FSM::skill_1100()
 				vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5 + _float3::Up * 5.f;
             Add_GroupEffectOwner(L"YeonHee_1100", _float3(Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5), true);
         }
+        Add_And_Set_Effect(L"YeonHee_1100_Hand");
+
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
 	}
 
@@ -998,6 +1002,8 @@ void Yeonhee_FSM::skill_1100_Init()
 	
 void Yeonhee_FSM::skill_1200()
 {
+    Update_GroupEffectWorldPos(_float4x4::CreateTranslation(_float3(m_vLFingerPos)));
+
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
 	Look_DirToTarget();
@@ -1024,6 +1030,7 @@ void Yeonhee_FSM::skill_1200()
 				vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5 + _float3::Up * 5.f;
             Add_GroupEffectOwner(L"YeonHee_1100", _float3(Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5), true);
 		}
+        Add_And_Set_Effect(L"YeonHee_1100_Hand");
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
     }
 
@@ -1072,6 +1079,8 @@ void Yeonhee_FSM::skill_1200_Init()
 
 void Yeonhee_FSM::skill_1300()
 {
+    Update_GroupEffectWorldPos(_float4x4::CreateTranslation(_float3(m_vRFingerPos)));
+
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
     Look_DirToTarget();
@@ -1099,6 +1108,7 @@ void Yeonhee_FSM::skill_1300()
 				vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5 + _float3::Up * 5.f;
             Add_GroupEffectOwner(L"YeonHee_1100", _float3(Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5), true);
 		}
+        Add_And_Set_Effect(L"YeonHee_1100_Hand");
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
 	}
 	
@@ -1209,7 +1219,9 @@ void Yeonhee_FSM::skill_93100_Init()
 void Yeonhee_FSM::skill_100100()
 {
     if (Init_CurFrame(10))
-        Add_Effect(L"YeonHee_501100_Aura");
+        Add_Effect(L"YeonHee_100100_Charging");
+    if (Init_CurFrame(17))
+        Add_Effect(L"YeonHee_100100");
 
     Look_DirToTarget();
 
@@ -1239,6 +1251,7 @@ void Yeonhee_FSM::skill_100100()
 
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) + _float3::Up;
 			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
+            Add_Effect(L"YeonHee_100100_Bullet");
         }
     }
 	
@@ -1305,6 +1318,11 @@ void Yeonhee_FSM::skill_100100_e_Init()
 
 void Yeonhee_FSM::skill_200100()
 {
+    if (Init_CurFrame(25))
+        Add_GroupEffectOwner(L"YeonHee_200100_PlayerAura", _float3(0.f, 0.f, 0.f), false, nullptr, false);
+    else if (Init_CurFrame(35))
+        Add_GroupEffectOwner(L"YeonHee_200100_Install", _float3(0.f, -0.4f, 6.f), false, nullptr, false);
+
     Set_DirToTarget();
 
     Look_DirToTarget();
@@ -1447,6 +1465,11 @@ void Yeonhee_FSM::skill_300100_Init()
 
 void Yeonhee_FSM::skill_400100()
 {
+    if (Init_CurFrame(20))
+        Add_GroupEffectOwner(L"YeonHee_400100_Charging", _float3(0.f, 0.f, 0.f), false, nullptr, false);
+    else if (Init_CurFrame(30))
+        Add_GroupEffectOwner(L"YeonHee_400100", _float3(0.f, -0.1f, -0.3f), false, nullptr, false);
+
     Set_DirToTarget();
 
     Look_DirToTarget();
@@ -1500,9 +1523,9 @@ void Yeonhee_FSM::skill_400100_Init()
 
 void Yeonhee_FSM::skill_501100()
 {
-    if (Init_CurFrame(1))
+    if (Init_CurFrame(12))
         Add_GroupEffectOwner(L"YeonHee_501100_Aura", _float3(0.f, 0.f, 0.f), false, nullptr, false);
-    else if (Init_CurFrame(60))
+    else if (Init_CurFrame(100))
         Add_GroupEffectOwner(L"YeonHee_501100_Install", _float3(0.f, 0.f, 5.f), false,nullptr,false);
 
 	Look_DirToTarget();
