@@ -458,6 +458,23 @@ void DebugTool::CameraOptionTab()
 			}
 		}
 	}
+	{
+		if (BeginTabItem("Cheat"))
+		{
+			_bool killDellons = SWITCHMGR.Get_SwitchState(SWITCH_TYPE::CREATE_WOLF_AFTER_DELLONS);
+			Checkbox("kill dellons", &killDellons);
+			SWITCHMGR.Set_SwitchState(SWITCH_TYPE::CREATE_WOLF_AFTER_DELLONS, killDellons);
+
+			_bool killSpike = SWITCHMGR.Get_SwitchState(SWITCH_TYPE::CREATE_COMBAT4_AFTER_SPIKE);
+			Checkbox("kill spike", &killSpike);
+			SWITCHMGR.Set_SwitchState(SWITCH_TYPE::CREATE_COMBAT4_AFTER_SPIKE, killSpike);
+			SWITCHMGR.Set_SwitchState(SWITCH_TYPE::CREATE_COMBAT5_AFTER_SPIKE, killSpike);
+
+			EndTabItem();
+		}
+
+
+	}
 }
 
 #endif
