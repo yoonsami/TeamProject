@@ -16,6 +16,8 @@
 #include "WeaponScript.h"
 #include "NeutralAlpaca_FSM.h"
 
+#include "UiTutorialController.h"
+
 Player_FSM::Player_FSM()
 {
 }
@@ -405,6 +407,8 @@ void Player_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
         SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.3f);
+        
+       
         m_eCurState = STATE::stun;
     }
     else
@@ -1815,7 +1819,31 @@ void Player_FSM::skill_300200_Init()
 
 void Player_FSM::stun()
 {
+    
+
     m_fStTimer += fDT;
+
+    if (m_fStTimer >= 1.f)
+    {
+		if (!SWITCHMGR.Get_SwitchState(SWITCH_TYPE::FIRST_STUN_ALPHACA))
+		{
+			SWITCHMGR.Set_SwitchState(SWITCH_TYPE::FIRST_STUN_ALPHACA, true);
+			{
+				auto pObj = make_shared<GameObject>();
+				pObj->Set_LayerIndex(Layer_UI);
+				pObj->Set_Instancing(false);
+				pObj->Set_Name(L"UI_TutorialController");
+
+				auto pScript = make_shared<UiTutorialController>(true);
+				pObj->Add_Component(pScript);
+				pScript->Init();
+
+				EVENTMGR.Create_Object(pObj);
+
+			}
+		}
+    }
+
     if (m_fStTimer >= 3.f)
     {
 		m_eCurState = STATE::b_idle;

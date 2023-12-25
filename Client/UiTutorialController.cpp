@@ -42,6 +42,7 @@ HRESULT UiTutorialController::Init()
         Start_Tutorial();
 
         // Ω√∞£ ∏ÿ√ﬂ±‚
+        TIME.Set_TimeSlow(999.f, 0.0001f);
 
     }
 
@@ -102,7 +103,7 @@ void UiTutorialController::Finish_Tutorial()
     if (true == m_bIsOnlyCounterTutorial)
     {
         // Ω√∞£ ∏ÿ√„ «ÿ¡¶
-
+        TIME.Set_TimeSlow(0.f, 1.f);
     }
 
     m_bIsStart = false;
