@@ -143,6 +143,8 @@ private:
 	void Use_Skill();
 	void Use_Dash();
 
+	void Cal_FootBoneMatrix();
+
 private:
 	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;
@@ -152,8 +154,6 @@ private:
 
 	_uint m_iLFootBoneIndex = 0;
 	_uint m_iRFootBoneIndex = 0;
-
-	void Cal_FootBoneMatrix();
 
 	_float4 m_vLFootPos = _float4(0.f);
 	_float4 m_vRFootPos = _float4(0.f);

@@ -202,6 +202,8 @@ void Player_FSM::State_Tick()
     }
     if (m_iPreFrame != m_iCurFrame)
         m_iPreFrame = m_iCurFrame;
+
+    m_f300TrailEffectCreateTimer += fDT;
 }
 
 void Player_FSM::State_Init()
@@ -1635,7 +1637,7 @@ void Player_FSM::skill_300100()
     else if (Init_CurFrame(20))
         Add_And_Set_Effect(L"Teo_300100_Boost");
     else if (Init_CurFrame(30))
-        Add_GroupEffectOwner(L"Teo_300100_pase2", _float3(0.f, 0.f, 1.f), false, nullptr, true);
+        Add_GroupEffectOwner(L"Teo_300100_pase1", _float3(0.f, 0.f, 1.f), false, nullptr, true);
 
     Look_DirToTarget();
 
@@ -1691,11 +1693,12 @@ void Player_FSM::skill_300100_Init()
 
 void Player_FSM::skill_300200()
 {
-    if (m_f300TrailEffectCreateTimer > 0.03f)
-    {
-        //Add_Effect(L"Teo_300200_Trail", _float(m_));
-        m_f300TrailEffectCreateTimer = 0.f;
-    }
+    if(Init_CurFrame(6) || Init_CurFrame(22) || Init_CurFrame(35) || Init_CurFrame(45) || Init_CurFrame(54) || Init_CurFrame(60) || Init_CurFrame(63) || Init_CurFrame(66) || Init_CurFrame(70))
+        Add_GroupEffectOwner(L"Teo_300200_Aura", _float3(m_CenterBoneMatrix.Translation()), true, nullptr, false);
+    else if (Init_CurFrame(75))
+        Add_GroupEffectOwner(L"Teo_300200_Slash", _float3(m_CenterBoneMatrix.Translation()), true, nullptr, false);
+    else if (Init_CurFrame(93))
+        Add_GroupEffectOwner(L"Teo_300100_pase2", _float3(0.f, 0.f, 1.f), false, nullptr, true);
 
     Look_DirToTarget();
 
