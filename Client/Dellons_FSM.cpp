@@ -1697,6 +1697,7 @@ void Dellons_FSM::skill_501100()
     if (Init_CurFrame(4))
     {
         SOUND.Play_Sound(L"swing_axe_02_gigan", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        Add_Effect(L"Dellons_501100");
 
 		Summon_Wraith();
 		Set_WraithState((_uint)DellonsWraith_FSM::STATE::FX_Mn_Dellons_skill_500200);
