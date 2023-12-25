@@ -40,6 +40,9 @@ HRESULT UiTutorialController::Init()
     {
         m_pImage.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pResource.Get<Texture>(L"UI_Tutorial_R_23"), TextureMapType::DIFFUSE);
         Start_Tutorial();
+
+        // Ω√∞£ ∏ÿ√ﬂ±‚
+
     }
 
 
@@ -96,6 +99,12 @@ void UiTutorialController::Change_Texture()
 
 void UiTutorialController::Finish_Tutorial()
 {
+    if (true == m_bIsOnlyCounterTutorial)
+    {
+        // Ω√∞£ ∏ÿ√„ «ÿ¡¶
+
+    }
+
     m_bIsStart = false;
 
     EVENTMGR.Delete_Object(m_pImage.lock());
