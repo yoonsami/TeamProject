@@ -1683,6 +1683,12 @@ void Player_FSM::skill_300100_Init()
 
 void Player_FSM::skill_300200()
 {
+    if (m_f300TrailEffectCreateTimer > 0.03f)
+    {
+        //Add_Effect(L"Teo_300200_Trail", _float(m_));
+        m_f300TrailEffectCreateTimer = 0.f;
+    }
+
     Look_DirToTarget();
 
     wstring strSoundTag = L"swing_short_sword_0";

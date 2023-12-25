@@ -146,6 +146,8 @@ private:
 private:
 	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;
+
+	_float m_f300TrailEffectCreateTimer = 0.f;
 	_float m_fSkillCreateTimer = 0.f;
 };
 
