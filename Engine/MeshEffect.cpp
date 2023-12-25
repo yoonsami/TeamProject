@@ -850,7 +850,7 @@ void MeshEffect::Run_SpriteAnimation()
         m_UVTexRangeY.x = (_float)iIndexY / (_float)m_tDesc.iNumSprite_Row;
         m_UVTexRangeY.y = ((_float)iIndexY + 1) / (_float)m_tDesc.iNumSprite_Row;
 
-        m_fTimeAcc_SpriteAnimation = 0.f;
+        m_fTimeAcc_SpriteAnimation -= m_tDesc.fAnimSpeed;
     }
 }
 

@@ -49,6 +49,10 @@ HRESULT Kyle_FSM::Init()
 
 	m_fMySoundDistance = 100.f;
 
+	m_WeaponMaterial[0] = Get_Owner()->Get_Model()->Get_MaterialByName(L"mi_Wp_Kyle_Chain");
+	m_WeaponMaterial[1] = Get_Owner()->Get_Model()->Get_MaterialByName(L"mi_Wp_Kyle");
+
+
 	if (!m_pAttackCollider.expired())
 		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(m_eElementType);
 	
@@ -1179,6 +1183,12 @@ void Kyle_FSM::skill_100100()
 {
 	Look_DirToTarget();
 
+	if (m_iCurFrame >= 5 && m_iCurFrame < 32)
+		Set_WeaponLight(true);
+	else
+		Set_WeaponLight(false);
+
+
 	if (m_iCurFrame >= 17)
 	{
 		if (m_iCurFrame == 17)
@@ -1197,6 +1207,7 @@ void Kyle_FSM::skill_100100()
 
 	if (Init_CurFrame(5))
 	{
+		Set_WeaponLight(true);
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.fMoveSpeed = 0.f;
@@ -1246,6 +1257,11 @@ void Kyle_FSM::skill_100200()
 {
 	Look_DirToTarget();
 	
+	if (m_iCurFrame >= 1 && m_iCurFrame < 25)
+		Set_WeaponLight(true);
+	else
+		Set_WeaponLight(false);
+
 	if (m_iCurFrame >= 4)
 	{
 		if (!m_pCamera.expired())
@@ -1309,6 +1325,10 @@ void Kyle_FSM::skill_100200_Init()
 void Kyle_FSM::skill_200100()
 {
 	Look_DirToTarget();
+	if (m_iCurFrame >= 1 && m_iCurFrame < 15)
+		Set_WeaponLight(true);
+	else
+		Set_WeaponLight(false);
 
 	if (m_iCurFrame == 11)
 	{
@@ -1353,6 +1373,10 @@ void Kyle_FSM::skill_200100_Init()
 
 void Kyle_FSM::skill_200200()
 {
+	if (m_iCurFrame >= 1 && m_iCurFrame < 29)
+		Set_WeaponLight(true);
+	else
+		Set_WeaponLight(false);
 	if (m_iCurFrame == 13)
 	{
 		Set_ColliderOption(FIRE, L"Hit_Slash_Orange");
@@ -1409,6 +1433,10 @@ void Kyle_FSM::skill_200200_Init()
 
 void Kyle_FSM::skill_200300()
 {
+	if (m_iCurFrame >= 1 && m_iCurFrame < 62)
+		Set_WeaponLight(true);
+	else
+		Set_WeaponLight(false);
 	if (Init_CurFrame(9))
 	{
 		FORWARDMOVINGSKILLDESC desc;
@@ -1453,7 +1481,10 @@ void Kyle_FSM::skill_200300_Init()
 void Kyle_FSM::skill_300100()
 {
 	Look_DirToTarget();
-
+	if (m_iCurFrame >= 5 && m_iCurFrame < 49)
+		Set_WeaponLight(true);
+	else
+		Set_WeaponLight(false);
 	if (m_iCurFrame == 2)
 	{
 		Set_ColliderOption(FIRE, L"Hit_Slash_Orange");
@@ -1533,6 +1564,10 @@ void Kyle_FSM::skill_300100_Init()
 
 void Kyle_FSM::skill_502100()
 {
+	if (m_iCurFrame >= 21 && m_iCurFrame < 143)
+		Set_WeaponLight(true);
+	else
+		Set_WeaponLight(false);
 	if (m_iCurFrame == 17)
 	{
 		if (!m_pCamera.expired())
@@ -1641,6 +1676,10 @@ void Kyle_FSM::skill_502100_Init()
 
 void Kyle_FSM::skill_500100()
 {
+	if (m_iCurFrame >= 1 && m_iCurFrame < 106)
+		Set_WeaponLight(true);
+	else
+		Set_WeaponLight(false);
 	if (m_iCurFrame >= 1)
 	{
 		if (!m_pCamera.expired())
@@ -1785,6 +1824,48 @@ void Kyle_FSM::Use_Dash()
 				m_eCurState = STATE::skill_91100;
 			else
 				m_eCurState = STATE::skill_93100;
+		}
+	}
+}
+
+void Kyle_FSM::AttackCollider_On(const wstring& skillname, _float fAttackDamage)
+{
+	if (!m_pAttackCollider.expired())
+	{
+		m_pAttackCollider.lock()->Get_Collider()->Set_Activate(true);
+		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(skillname);
+		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(fAttackDamage);
+	}
+	Set_WeaponLight(true);
+}
+
+void Kyle_FSM::AttackCollider_Off()
+{
+	if (!m_pAttackCollider.expired())
+	{
+		m_pAttackCollider.lock()->Get_Collider()->Set_Activate(false);
+		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_SkillName(L"");
+		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackDamage(0.f);
+		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_HitEffectTag(L"");
+	}
+	Set_WeaponLight(false);
+}
+
+void Kyle_FSM::Set_WeaponLight(_bool bOn)
+{
+
+	if(bOn)
+	{
+		for (auto& material : m_WeaponMaterial)
+		{
+			material->Get_MaterialDesc().emissive = Color(214.f / 255.f, 55.f / 255.f, 0.0f, 1.f);
+		}
+	}
+	else
+	{
+		for (auto& material : m_WeaponMaterial)
+		{
+			material->Get_MaterialDesc().emissive = Color(_float3(0.f), 1.f);
 		}
 	}
 }
