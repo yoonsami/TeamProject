@@ -460,6 +460,9 @@ void Boss_Mir_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<
 	m_vHitDir.y = 0.f;
 	m_vHitDir.Normalize();
 
+
+	_float3 vLook = -CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_State(Transform_State::LOOK).xyz();
+
     if (skillname == NORMAL_ATTACK || skillname == NORMAL_SKILL)
     {
         if (m_bCounter)
@@ -467,6 +470,7 @@ void Boss_Mir_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<
             if (CounterAttackCheck(90.f))
             {
                 Create_CounterMotionTrail();
+				Add_GroupEffectOwner(L"Counter_Hit", _float3(m_pAttackCollider.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz() + _float3::Up), true);
                 m_eCurState = STATE::groggy_start;
             }
         }
@@ -478,6 +482,7 @@ void Boss_Mir_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<
             if (CounterAttackCheck(90.f))
             {
                 Create_CounterMotionTrail();
+				Add_GroupEffectOwner(L"Counter_Hit", _float3(m_pAttackCollider.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz() + _float3::Up), true);
                 m_eCurState = STATE::groggy_start;
             }
         }
@@ -489,6 +494,7 @@ void Boss_Mir_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<
 			if (CounterAttackCheck(90.f))
 			{
 				Create_CounterMotionTrail();
+				Add_GroupEffectOwner(L"Counter_Hit", _float3(m_pAttackCollider.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz() + _float3::Up), true);
 				m_eCurState = STATE::groggy_start;
 			}
         }
@@ -500,6 +506,7 @@ void Boss_Mir_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<
 			if (CounterAttackCheck(90.f))
 			{
 				Create_CounterMotionTrail();
+				Add_GroupEffectOwner(L"Counter_Hit", _float3(m_pAttackCollider.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz() + _float3::Up), true);
 				m_eCurState = STATE::groggy_start;
 			}
         }
@@ -1501,6 +1508,9 @@ void Boss_Mir_FSM::skill_2100()
         Add_Effect(L"Mir_2100_End");
 
     
+    if (Init_CurFrame(50))
+        Add_Effect(L"Counter_Big");
+
     if (m_iCurFrame == 55)
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(m_fNormalAttack_AnimationSpeed / 4.f);
@@ -2240,7 +2250,6 @@ void Boss_Mir_FSM::skill_100000()
     if (Init_CurFrame(90))
         SOUND.Play_Sound(L"dragon_raksha_vox_18", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-
     if (Is_AnimFinished())
         m_eCurState = STATE::skill_100100;
 }
@@ -2266,6 +2275,8 @@ void Boss_Mir_FSM::skill_100100()
         if (Init_CurFrame(i))
             Add_GroupEffectOwner(L"Mir_100100", _float3(MouseBoneMatrix.Translation().x, MouseBoneMatrix.Translation().y, MouseBoneMatrix.Translation().z), true);
     }
+	if (Init_CurFrame(1))
+		Add_Effect(L"Counter_Big");
 
     if (Init_CurFrame(1))
     {
@@ -2403,7 +2414,8 @@ void Boss_Mir_FSM::skill_200100()
     }
     
     m_tBreathCoolTime.fAccTime += fDT;
-
+	if (Init_CurFrame(5))
+		Add_Effect(L"Counter_Big");
     if (Init_CurFrame(10))
     {
         SOUND.Play_Sound(L"VO_Dragon_Att_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);

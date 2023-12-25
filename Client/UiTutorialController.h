@@ -4,7 +4,7 @@
 class UiTutorialController : public MonoBehaviour
 {
 public:
-    UiTutorialController();
+    UiTutorialController(_bool bValue = false);
 
 
 public:
@@ -28,5 +28,7 @@ private:
     _uint                           m_iIndex    = {};
 
     _bool                           m_bIsEnd    = {};
+
+    _bool                           m_bIsOnlyCounterTutorial = {};
 };
 
