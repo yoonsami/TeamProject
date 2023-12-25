@@ -742,7 +742,7 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		pObj->Set_Instancing(false);
 		pObj->Set_Name(L"UI_TutorialController");
 
-		auto pScript = make_shared<UiTutorialController>();
+		auto pScript = make_shared<UiTutorialController>(false);
 		pObj->Add_Component(pScript);
 
 		Add_GameObject(pObj);

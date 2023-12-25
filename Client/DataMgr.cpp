@@ -550,8 +550,8 @@ void DataMgr::Initialize()
     {
         m_NpcName.resize(IDX(NPCTYPE::MAX));
         m_NpcName[IDX(NPCTYPE::QUEST)] = L"아리엘";
-        m_NpcName[IDX(NPCTYPE::GACHA)] = L"가챠맨";
-        m_NpcName[IDX(NPCTYPE::POTION)] = L"상점걸";
+        m_NpcName[IDX(NPCTYPE::GACHA)] = L"카드 뽑기";
+        m_NpcName[IDX(NPCTYPE::POTION)] = L"상점";
         m_NpcName[IDX(NPCTYPE::HIDE_KID)] = L"꼬맹이";
         m_NpcName[IDX(NPCTYPE::SPIKE)] = L"스파이크";
         m_NpcName[IDX(NPCTYPE::DELLONS)] = L"델론즈";

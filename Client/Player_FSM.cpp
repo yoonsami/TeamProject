@@ -16,6 +16,8 @@
 #include "WeaponScript.h"
 #include "NeutralAlpaca_FSM.h"
 
+#include "UiTutorialController.h"
+
 Player_FSM::Player_FSM()
 {
 }
@@ -39,6 +41,9 @@ HRESULT Player_FSM::Init()
         m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
         m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
         m_iSkillBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"B_nose");
+        m_iLFootBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-L-Toe0");
+        m_iRFootBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-R-Toe0");
+
 
         m_pCamera = CUR_SCENE->Get_MainCamera();
 
@@ -74,6 +79,7 @@ HRESULT Player_FSM::Init()
 
 void Player_FSM::Tick()
 {
+    Cal_FootBoneMatrix();
     State_Tick();
 
     if (!m_pAttackCollider.expired())
@@ -405,6 +411,8 @@ void Player_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
         SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.3f);
+        
+       
         m_eCurState = STATE::stun;
     }
     else
@@ -1828,7 +1836,31 @@ void Player_FSM::skill_300200_Init()
 
 void Player_FSM::stun()
 {
+    
+
     m_fStTimer += fDT;
+
+    if (m_fStTimer >= 1.f)
+    {
+		if (!SWITCHMGR.Get_SwitchState(SWITCH_TYPE::FIRST_STUN_ALPHACA))
+		{
+			SWITCHMGR.Set_SwitchState(SWITCH_TYPE::FIRST_STUN_ALPHACA, true);
+			{
+				auto pObj = make_shared<GameObject>();
+				pObj->Set_LayerIndex(Layer_UI);
+				pObj->Set_Instancing(false);
+				pObj->Set_Name(L"UI_TutorialController");
+
+				auto pScript = make_shared<UiTutorialController>(true);
+				pObj->Add_Component(pScript);
+				pScript->Init();
+
+				EVENTMGR.Create_Object(pObj);
+
+			}
+		}
+    }
+
     if (m_fStTimer >= 3.f)
     {
 		m_eCurState = STATE::b_idle;
@@ -1887,4 +1919,18 @@ void Player_FSM::Use_Dash()
 	    	}
 	    }
     }
+}
+
+void Player_FSM::Cal_FootBoneMatrix()
+{
+	_float4x4 mLFoot = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iLFootBoneIndex) *
+		_float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+    m_vLFootPos = _float4(mLFoot.Translation(), 1.f);
+
+	_float4x4 mRFoot = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iRFootBoneIndex) *
+		_float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+	m_vRFootPos = _float4(mRFoot.Translation(), 1.f);
+
 }

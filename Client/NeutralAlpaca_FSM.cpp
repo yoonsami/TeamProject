@@ -403,6 +403,8 @@ void NeutralAlpaca_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared
 	}
     else
     {
+		Add_GroupEffectOwner(L"Counter_Hit", _float3::Up * 0.5f, false);
+
         m_bAngry = false;
 		Get_Owner()->Set_Instancing(true);
 		Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);
@@ -1046,6 +1048,9 @@ void NeutralAlpaca_FSM::skill_1100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
+	if (Init_CurFrame(0))
+		Add_Effect(L"Counter_Small");
+
     if (m_iCurFrame <= 15)
     {
         m_fStTimer += fDT;
@@ -1103,7 +1108,8 @@ void NeutralAlpaca_FSM::skill_2100()
 {
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
-
+	if (Init_CurFrame(0))
+		Add_Effect(L"Counter_Small");
 	if (m_iCurFrame <= 15)
 	{
 		m_fStTimer += fDT;
@@ -1158,6 +1164,9 @@ void NeutralAlpaca_FSM::skill_3100()
 {
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
+
+	if (Init_CurFrame(0))
+		Add_Effect(L"Counter_Small");
 
 	if (m_iCurFrame <= 15)
 	{

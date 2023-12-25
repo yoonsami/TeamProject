@@ -14,6 +14,7 @@
 #include "UiSkillGauge.h"
 #include "CharacterController.h"
 #include "MeteorRadialBlur.h"
+#include "TimerScript.h"
 
 
 Yeonhee_FSM::Yeonhee_FSM()
@@ -63,7 +64,7 @@ HRESULT Yeonhee_FSM::Init()
 
     m_fVoiceVolume = 0.5f;
     m_fSwingVolume = 0.5f;
-    m_fFootStepVolume = 0.4f;
+    m_fFootStepVolume = 0.5f;
     m_fEffectVolume = 0.4f;
 
     m_fMySoundDistance = 100.f;
@@ -937,11 +938,13 @@ void Yeonhee_FSM::skill_1100()
 
     if (Init_CurFrame(12))
 	{
+        SOUND.Play_Sound(L"hit_magical_09", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = -Get_Transform()->Get_State(Transform_State::UP);
 		desc.fMoveSpeed = 15.f;
 		desc.fLifeTime = 0.5f;
-		desc.fLimitDistance = 5.f;
+		desc.fLimitDistance = 5.5f;
 
 		// Find Monster
 		_float4 vSkillPos;
@@ -1011,11 +1014,13 @@ void Yeonhee_FSM::skill_1200()
 
     if(Init_CurFrame(17))
     {
+        SOUND.Play_Sound(L"hit_magical_09", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = -Get_Transform()->Get_State(Transform_State::UP);
 		desc.fMoveSpeed = 15.f;
 		desc.fLifeTime = 0.5f;
-		desc.fLimitDistance = 5.f;
+		desc.fLimitDistance = 5.5f;
 
 		_float4 vSkillPos;
 		if (!m_pTarget.expired())
@@ -1088,11 +1093,13 @@ void Yeonhee_FSM::skill_1300()
 
 	if (Init_CurFrame(20))
 	{
+        SOUND.Play_Sound(L"hit_magical_09", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = -Get_Transform()->Get_State(Transform_State::UP);
 		desc.fMoveSpeed = 15.f;
 		desc.fLifeTime = 0.5f;
-		desc.fLimitDistance = 5.f;
+		desc.fLimitDistance = 5.5f;
 
 		// Find Monster
 		_float4 vSkillPos;
@@ -1157,6 +1164,11 @@ void Yeonhee_FSM::skill_91100()
 
     Look_DirToTarget();
 
+    if (Init_CurFrame(6))
+    {
+        SOUND.Play_Sound(L"hit_magical_11", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
+
     if(Init_CurFrame(6) || Init_CurFrame(16))
         Add_Effect(L"YeonHee_Warp");
 
@@ -1193,6 +1205,9 @@ void Yeonhee_FSM::skill_93100()
 {
     _float3 vInputVector = Get_InputDirVector();
     
+    if (Init_CurFrame(7))
+        SOUND.Play_Sound(L"hit_magical_11", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    
     if (Init_CurFrame(7) || Init_CurFrame(16))
         Add_Effect(L"YeonHee_Warp");
 
@@ -1226,7 +1241,12 @@ void Yeonhee_FSM::skill_93100_Init()
 void Yeonhee_FSM::skill_100100()
 {
     if (Init_CurFrame(10))
+    {
+        SOUND.Play_Sound(L"yeonhee_skill_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_essence_13", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         Add_Effect(L"YeonHee_100100_Charging");
+    }
     if (Init_CurFrame(17))
         Add_Effect(L"YeonHee_100100");
 
@@ -1247,17 +1267,20 @@ void Yeonhee_FSM::skill_100100()
         }
 
         m_fKeyPushTimer += fDT;
+
         if (m_fKeyPushTimer >= 0.3f)
         {
+            SOUND.Play_Sound(L"hit_magical_06", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
             m_fKeyPushTimer = 0.f;
 			FORWARDMOVINGSKILLDESC desc;
 			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-			desc.fMoveSpeed = 15.f;
-			desc.fLifeTime = 0.2f;
-			desc.fLimitDistance = 15.f;
+			desc.fMoveSpeed = 6.f;
+			desc.fLifeTime = 1.f;
+			desc.fLimitDistance = 6.f;
 
-			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) + _float3::Up;
-			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
+			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + _float3::Up;
+			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 0.3f, desc, NORMAL_ATTACK, 10.f);
             Add_Effect(L"YeonHee_100100_Bullet");
         }
     }
@@ -1285,8 +1308,6 @@ void Yeonhee_FSM::skill_100100_Init()
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
     AttackCollider_Off();
-
-    SOUND.Play_Sound(L"yeonhee_att_vo_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_bInvincible = false;
     m_bSuperArmor = true;
@@ -1328,33 +1349,65 @@ void Yeonhee_FSM::skill_200100()
     if (Init_CurFrame(25))
         Add_GroupEffectOwner(L"YeonHee_200100_PlayerAura", _float3(0.f, 0.f, 0.f), false, nullptr, false);
     else if (Init_CurFrame(35))
-        Add_GroupEffectOwner(L"YeonHee_200100_Install", _float3(0.f, -0.4f, 6.f), false, nullptr, false);
+    {
+        SOUND.Play_Sound(L"magic_yeonhee_ball_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
 
     Set_DirToTarget();
 
     Look_DirToTarget();
 
-    if (Init_CurFrame(24))
+    if (Init_CurFrame(25))
     {
         SOUND.Play_Sound(L"Skill_12_A_Yeonhee_use", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-
-		INSTALLATIONSKILLDESC desc;
-		desc.fAttackTickTime = 0.5f;
-		desc.iLimitAttackCnt = 10;
-		desc.strAttackType = NORMAL_SKILL;
-		desc.strLastAttackType = KNOCKDOWN_SKILL;
-		desc.fAttackDamage = 5.f;
-		desc.fLastAttackDamage = 12.f;
-
-		_float4 vSkillPos;
-		if (!m_pLookingTarget.expired())
-			vSkillPos = m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float3::Up;
-
-		else
-			vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5.f + _float3::Up;
-
-		Create_InstallationSkillCollider(Player_Skill, L"Player_InstallationSkillCollider", vSkillPos, 3.f, desc);
     }
+    else if (Init_CurFrame(35))
+    {
+        INSTALLATIONSKILLDESC desc;
+        desc.fAttackTickTime = 0.5f;
+        desc.iLimitAttackCnt = 7;
+        desc.strAttackType = NORMAL_SKILL;
+        desc.strLastAttackType = KNOCKDOWN_SKILL;
+        desc.fAttackDamage = 5.f;
+        desc.fLastAttackDamage = 12.f;
+        desc.bFirstAttack = false;
+
+        _float4 vSkillPos;
+        if (!m_pLookingTarget.expired())
+            vSkillPos = m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float3::Up;
+
+        else
+            vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 6.f + _float3::Up;
+
+        Create_InstallationSkillCollider(Player_Skill, L"Player_InstallationSkillCollider", vSkillPos, 3.f, desc);
+
+        _float3 vEffectPos;
+        vEffectPos = vSkillPos.xyz() + _float3(0.f, -1.4f, 0.f);
+
+        Add_GroupEffectOwner(L"YeonHee_200100_Install", vEffectPos, true, nullptr, false);
+
+        for (_uint i = 0; i < 7; i++)
+        {
+            if (i == 6)
+            {
+                shared_ptr<GameObject> obj = make_shared<GameObject>();
+                auto script = make_shared<TimerScript>(0.5f + (0.5f * _float(i)));
+                script->Set_Function([&]() { SOUND.Play_Sound(L"magic_essence_09", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+                obj->Add_Component(script);
+                EVENTMGR.Create_Object(obj);
+            }
+            else
+            {
+                shared_ptr<GameObject> obj = make_shared<GameObject>();
+                auto script = make_shared<TimerScript>(0.5f + (0.5f * _float(i)));
+                script->Set_Function([&]() { SOUND.Play_Sound(L"magic_essence_08", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+                obj->Add_Component(script);
+                EVENTMGR.Create_Object(obj);
+            }
+        }
+        
+    }
+    
 
 	_float3 vInputVector = Get_InputDirVector();
 	vInputVector.Normalize();
@@ -1414,32 +1467,15 @@ void Yeonhee_FSM::skill_300100()
 
     Look_DirToTarget();
 
-	if (Init_CurFrame(24))
+	if (Init_CurFrame(25))
 	{
         SOUND.Play_Sound(L"yeonhee_skill_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"magic_Fireball_Launch5_st", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-		FORWARDMOVINGSKILLDESC desc;
-
-		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::UP) * 10.f - Get_Transform()->Get_State(Transform_State::LOOK) * 2.f;
-
-		_float4 vTargetPos;
-		if (!m_pLookingTarget.expired())
-			vTargetPos = m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS);
-		else
-			vTargetPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 10.f;
-
-		desc.vSkillDir = vTargetPos - vSkillPos;
-		desc.fMoveSpeed = 30.f;
-		desc.fLifeTime = 1.f;
-		desc.fLimitDistance = 30.f;
-
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, KNOCKBACK_ATTACK, 10.f);
-		{
-			shared_ptr<GameObject> blurTimer = make_shared<GameObject>();
-            blurTimer->GetOrAddTransform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f);
-            blurTimer->Add_Component(make_shared<MeteorRadialBlur>(2.5f, 1.f, 1.5f));
-            EVENTMGR.Create_Object(blurTimer);
-		}
+		shared_ptr<GameObject> blurTimer = make_shared<GameObject>();
+        blurTimer->GetOrAddTransform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f);
+        blurTimer->Add_Component(make_shared<MeteorRadialBlur>(2.5f, 1.f, 1.5f));
+        EVENTMGR.Create_Object(blurTimer);
     }
 
     if (Is_AnimFinished())
@@ -1484,18 +1520,21 @@ void Yeonhee_FSM::skill_400100()
 	if (m_iCurFrame > 22 && m_iCurFrame < 72)
 	{
 		m_fKeyPushTimer += fDT;
-		if (m_fKeyPushTimer >= 0.3f)
+		
+        if (m_fKeyPushTimer >= 0.3f)
 		{
-			m_fKeyPushTimer = 0.f;
-			FORWARDMOVINGSKILLDESC desc;
+            SOUND.Play_Sound(L"magic_essence_10", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	
+            m_fKeyPushTimer = 0.f;
+			
+            FORWARDMOVINGSKILLDESC desc;
 			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-			desc.fMoveSpeed = 15.f;
-			desc.fLifeTime = 0.2f;
-			desc.fLimitDistance = 15.f;
+			desc.fMoveSpeed = 10.f;
+			desc.fLifeTime = 1.f;
+			desc.fLimitDistance = 10.f;
 
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) + _float3::Up;
-			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
-
+			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 0.5f, desc, KNOCKBACK_ATTACK, 10.f);
 		}
 	}
 
@@ -1529,8 +1568,6 @@ void Yeonhee_FSM::skill_501100()
 {
     if (Init_CurFrame(12))
         Add_GroupEffectOwner(L"YeonHee_501100_Aura", _float3(0.f, 0.f, 0.f), false, nullptr, false);
-    //else if (Init_CurFrame(100))
-    //    Add_GroupEffectOwner(L"YeonHee_501100_Install", _float3(0.f, 0.f, 5.f), false,nullptr,false);
 
 	Look_DirToTarget();
 
@@ -1545,7 +1582,7 @@ void Yeonhee_FSM::skill_501100()
 
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vHeadBonePos.xyz());
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, m_vHeadCamDir * -1.f, 6.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.3f, m_vHeadCamDir * -1.f, 6.f);
         }
     }
     else
@@ -1569,38 +1606,39 @@ void Yeonhee_FSM::skill_501100()
     HeadBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iHeadBoneIndex) *
         _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
 
-    if (Init_CurFrame(57))
+    if (Init_CurFrame(100))
     {
 		_float4 vTargetPos;
-		if (!m_pLookingTarget.expired())
+		
+        if (!m_pLookingTarget.expired())
 			vTargetPos = m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS);
 		else
-			vTargetPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 10.f;
+			vTargetPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5.f;
 
-		INSTALLATIONSKILLDESC desc;
-		desc.iLimitAttackCnt = 1;
-		desc.strAttackType = KNOCKDOWN_SKILL;
-		desc.strLastAttackType = KNOCKDOWN_SKILL;
-		desc.bFirstAttack = false;
+        FLOORSKILLDESC desc;
+        desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+        desc.fAttackStartGap = 0.15f;
+        desc.fAttackTickTime = 0.2f;
+        desc.strAttackType = KNOCKBACK_SKILL;
+        desc.strLastAttackType = KNOCKBACK_SKILL;
         desc.fAttackDamage = 5.f;
         desc.fLastAttackDamage = 5.f;
+        desc.iLimitAttackCnt = 5;
 
-		_float fOffSetTime = 0.f;
+        _float4 vSkillPos = vTargetPos;
 
-		for (_uint i = 0; i < 5; i++)
-		{
-			desc.fAttackTickTime = 1.f + fOffSetTime;
+        Create_FloorSkillCollider_Sphere(Player_Skill, L"Player_InstallationSkillCollider", vSkillPos, 3.5f, desc);
+        
+        Add_GroupEffectOwner(L"YeonHee_501100_Install", vSkillPos.xyz(), true, nullptr, false);
 
-			fOffSetTime += 0.3f;
-
-			_float fOffSetX = ((rand() * 2 / _float(RAND_MAX) - 1));
-			_float fOffSetZ = ((rand() * 2 / _float(RAND_MAX) - 1));
-
-			_float4 vSkillPos = vTargetPos + _float4{ fOffSetX, 0.f, fOffSetZ, 0.f };
-
-			Create_InstallationSkillCollider(Player_Skill, L"Player_InstallationSkillCollider", vSkillPos, 2.f, desc);
-            Add_GroupEffectOwner(L"YeonHee_501100_Install", _float3(vSkillPos), true, nullptr, false);
-		}
+        for (_uint i = 0; i < 5; i++)
+        {
+            shared_ptr<GameObject> obj = make_shared<GameObject>();
+            auto script = make_shared<TimerScript>(0.15f + (0.2f * _float(i)));
+            script->Set_Function([&]() { SOUND.Play_Sound(L"magic_essence_09", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+            obj->Add_Component(script);
+            EVENTMGR.Create_Object(obj);
+        }
 	}
 
     if (Is_AnimFinished())

@@ -16,8 +16,8 @@ public:
 	virtual void Create_ForwardMovingSkillCollider(CollisionGroup eGroup, const wstring& strColliderName, const _float4& vPos, _float fSkillRange, FORWARDMOVINGSKILLDESC desc, const wstring& SkillType, _float fAttackDamage, const wstring& hitEffectTag = L"");
 
 protected:
-	void AttackCollider_On(const wstring& skillname, _float fAttackDamage);
-	void AttackCollider_Off();
+	virtual void AttackCollider_On(const wstring& skillname, _float fAttackDamage);
+	virtual void AttackCollider_Off();
 
 	void Set_On_Ground();
 	void Set_ColliderOption(ElementType eType, const wstring& strHitEffectTag);

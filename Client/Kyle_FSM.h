@@ -134,5 +134,11 @@ private:
 private:
 	STATE m_eCurState = STATE::b_idle;
 	STATE m_ePreState = STATE::NONE;
+	virtual void AttackCollider_On(const wstring& skillname, _float fAttackDamage);
+	virtual void AttackCollider_Off();
+	void Set_WeaponLight(_bool bOn);
+	
+	array<shared_ptr<Material>, 2> m_WeaponMaterial;
+
 };
 
