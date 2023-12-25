@@ -41,6 +41,9 @@ HRESULT Player_FSM::Init()
         m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
         m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
         m_iSkillBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"B_nose");
+        m_iLFootBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-L-Toe0");
+        m_iRFootBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-R-Toe0");
+
 
         m_pCamera = CUR_SCENE->Get_MainCamera();
 
@@ -76,6 +79,7 @@ HRESULT Player_FSM::Init()
 
 void Player_FSM::Tick()
 {
+    Cal_FootBoneMatrix();
     State_Tick();
 
     if (!m_pAttackCollider.expired())
@@ -1902,4 +1906,18 @@ void Player_FSM::Use_Dash()
 	    	}
 	    }
     }
+}
+
+void Player_FSM::Cal_FootBoneMatrix()
+{
+	_float4x4 mLFoot = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iLFootBoneIndex) *
+		_float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+    m_vLFootPos = _float4(mLFoot.Translation(), 1.f);
+
+	_float4x4 mRFoot = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iRFootBoneIndex) *
+		_float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+	m_vRFootPos = _float4(mRFoot.Translation(), 1.f);
+
 }
