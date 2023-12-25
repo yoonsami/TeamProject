@@ -402,6 +402,9 @@ float4 PS_UI(UIOutput input) : SV_TARGET
     if (bHasDiffuseMap)
     {
         diffuseColor = DiffuseMap.Sample(LinearSamplerMirror, input.uv);
+        if (0.1f > diffuseColor.w)
+            discard;
+        
         To_LinearSpace(diffuseColor);
         diffuseColor *= g_vec4_0;
         
@@ -478,7 +481,10 @@ float4 PS_UI3(UIOutput input) : SV_TARGET
     if (bHasDiffuseMap)
     {
         diffuseColor = DiffuseMap.Sample(LinearSamplerMirror, input.uv);
-        To_LinearSpace(diffuseColor);
+        if (0.1f > diffuseColor.w)
+            discard;
+        
+            To_LinearSpace(diffuseColor);
         diffuseColor *= g_vec4_0;
     }
 

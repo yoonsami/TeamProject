@@ -3,7 +3,8 @@
 
 #include "MeshRenderer.h"
 
-UiTutorialController::UiTutorialController()
+UiTutorialController::UiTutorialController(_bool bValue)
+    : m_bIsOnlyCounterTutorial(bValue)
 {
 }
 
@@ -32,9 +33,19 @@ HRESULT UiTutorialController::Init()
     pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Tutorial.dat", addedObj);
 
     m_pImage = addedObj[0];
-
-
     m_pImage.lock()->Set_Render(false);
+
+
+    if (true == m_bIsOnlyCounterTutorial)
+    {
+        m_pImage.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pResource.Get<Texture>(L"UI_Tutorial_R_23"), TextureMapType::DIFFUSE);
+        Start_Tutorial();
+
+        // Ω√∞£ ∏ÿ√ﬂ±‚
+
+    }
+
+
 
     return S_OK;
 }
@@ -44,8 +55,10 @@ void UiTutorialController::Tick()
 	if (m_pOwner.expired())
 		return;
 
-    if (true == m_bIsStart)
+    if (true == m_bIsStart && false == m_bIsOnlyCounterTutorial)
         Change_Texture();
+    else if (true == m_bIsOnlyCounterTutorial && KEYTAP(KEY_TYPE::LBUTTON))
+        Finish_Tutorial();
 }
 
 void UiTutorialController::Start_Tutorial()
@@ -86,6 +99,12 @@ void UiTutorialController::Change_Texture()
 
 void UiTutorialController::Finish_Tutorial()
 {
+    if (true == m_bIsOnlyCounterTutorial)
+    {
+        // Ω√∞£ ∏ÿ√„ «ÿ¡¶
+
+    }
+
     m_bIsStart = false;
 
     EVENTMGR.Delete_Object(m_pImage.lock());
