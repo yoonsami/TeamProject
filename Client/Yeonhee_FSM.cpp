@@ -1385,6 +1385,8 @@ void Yeonhee_FSM::skill_200100()
         vEffectPos = vSkillPos.xyz() + _float3(0.f, -1.4f, 0.f);
 
         Add_GroupEffectOwner(L"YeonHee_200100_Install", vEffectPos, true, nullptr, false);
+        
+        m_vSkillSoundPos = vEffectPos;
 
         for (_uint i = 0; i < 7; i++)
         {
@@ -1392,7 +1394,7 @@ void Yeonhee_FSM::skill_200100()
             {
                 shared_ptr<GameObject> obj = make_shared<GameObject>();
                 auto script = make_shared<TimerScript>(0.5f + (0.5f * _float(i)));
-                script->Set_Function([&]() { SOUND.Play_Sound(L"magic_essence_09", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+                script->Set_Function([&]() { SOUND.Play_Sound(L"magic_essence_09", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, m_vSkillSoundPos, 8.f); });
                 obj->Add_Component(script);
                 EVENTMGR.Create_Object(obj);
             }
@@ -1400,7 +1402,7 @@ void Yeonhee_FSM::skill_200100()
             {
                 shared_ptr<GameObject> obj = make_shared<GameObject>();
                 auto script = make_shared<TimerScript>(0.5f + (0.5f * _float(i)));
-                script->Set_Function([&]() { SOUND.Play_Sound(L"magic_essence_08", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+                script->Set_Function([&]() { SOUND.Play_Sound(L"magic_essence_08", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, m_vSkillSoundPos, 8.f); });
                 obj->Add_Component(script);
                 EVENTMGR.Create_Object(obj);
             }
@@ -1634,7 +1636,7 @@ void Yeonhee_FSM::skill_501100()
         for (_uint i = 0; i < 5; i++)
         {
             shared_ptr<GameObject> obj = make_shared<GameObject>();
-            auto script = make_shared<TimerScript>(0.15f + (0.2f * _float(i)));
+            auto script = make_shared<TimerScript>(0.2f * _float(i));
             script->Set_Function([&]() { SOUND.Play_Sound(L"magic_essence_09", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
             obj->Add_Component(script);
             EVENTMGR.Create_Object(obj);

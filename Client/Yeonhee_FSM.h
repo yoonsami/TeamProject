@@ -158,6 +158,7 @@ private:
 	_float4 m_vLFingerPos = _float4(0.f);
 	_float4 m_vRFingerPos = _float4(0.f);
 	_float4 m_vWeaponPos = _float4(0.f);
+	_float3 m_vSkillSoundPos = _float3(0.f);
 
 	_float m_fWeaponParticleCoolTime = { 0.f };
 };
