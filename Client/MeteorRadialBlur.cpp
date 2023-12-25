@@ -44,7 +44,7 @@ void MeteorRadialBlur::Tick()
 
 	}
 
-	if (m_fAcc >= m_fExploseTime)
+	if (m_fAcc >= m_fExploseTime - 0.3f)
 	{
 		if (!m_bMeteorAttack)
 		{
