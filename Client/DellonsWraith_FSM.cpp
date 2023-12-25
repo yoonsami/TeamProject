@@ -118,6 +118,13 @@ void DellonsWraith_FSM::State_Tick()
 
     Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
+    m_fWraithFollowEffectCoolTime += fDT;
+    if (m_fWraithFollowEffectCoolTime > 0.1f)
+    {
+        Add_And_Set_Effect(L"DellonsWraith_501100_follow");
+        m_fWraithFollowEffectCoolTime = 0.f;
+    }
+
     if (m_iPreFrame != m_iCurFrame)
         m_iPreFrame = m_iCurFrame;
 }
@@ -371,7 +378,6 @@ void DellonsWraith_FSM::FX_DellonsWraith01_Special_01_Init()
         Get_Transform()->Set_WorldMat(m_pTarget.lock()->Get_Transform()->Get_WorldMatrix());
 }
 
-
 void DellonsWraith_FSM::FX_SQ_Dellons_QuestEnd_2()
 {
     if (m_iCurFrame == 85)
@@ -398,6 +404,9 @@ void DellonsWraith_FSM::FX_SQ_Dellons_QuestEnd_2_Init()
 
 void DellonsWraith_FSM::FX_Mn_Dellons_skill_500200()
 {
+    if(Init_CurFrame(22))
+        Add_And_Set_Effect(L"DellonsWraith_501100_slash");
+
     if (m_iCurFrame == 19)
         AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
 
@@ -438,7 +447,6 @@ void DellonsWraith_FSM::FX_Mn_Dellons_skill_5100_Init()
 
     SOUND.Play_Sound(L"Hit_Scythe_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
-
 
 void DellonsWraith_FSM::FX_Mn_Dellons_skill_6100()
 {
