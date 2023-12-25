@@ -171,7 +171,7 @@ void UiUseItemSlot::Use_Item()
         fMaxHp *= 0.2f;
 
         fCurHp += fMaxHp;
-        if (fCurHp < fMaxHp)
+        if (fCurHp >= fMaxHp)
             fCurHp = fMaxHp;
 
         m_pPlayer.lock()->Set_Hp(fCurHp);
