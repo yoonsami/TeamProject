@@ -33,11 +33,16 @@ HRESULT UiTutorialController::Init()
     pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Tutorial.dat", addedObj);
 
     m_pImage = addedObj[0];
-    if (true == m_bIsOnlyCounterTutorial)
-        m_pImage.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pResource.Get<Texture>(L"UI_Tutorial_R_23"), TextureMapType::DIFFUSE);
-
-
     m_pImage.lock()->Set_Render(false);
+
+
+    if (true == m_bIsOnlyCounterTutorial)
+    {
+        m_pImage.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(pResource.Get<Texture>(L"UI_Tutorial_R_23"), TextureMapType::DIFFUSE);
+        Start_Tutorial();
+    }
+
+
 
     return S_OK;
 }
