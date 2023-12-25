@@ -1606,6 +1606,18 @@ void Yeonhee_FSM::skill_501100()
     HeadBoneMatrix = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iHeadBoneIndex) *
         _float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
 
+    if (Init_CurFrame(99))
+    {
+		for (_uint i = 0; i < 5; i++)
+		{
+			shared_ptr<GameObject> obj = make_shared<GameObject>();
+			auto script = make_shared<TimerScript>((0.2f * _float(i)));
+			script->Set_Function([&]() { SOUND.Play_Sound(L"magic_essence_09", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+			obj->Add_Component(script);
+			EVENTMGR.Create_Object(obj);
+		}
+    }
+
     if (Init_CurFrame(100))
     {
 		_float4 vTargetPos;
@@ -1631,14 +1643,7 @@ void Yeonhee_FSM::skill_501100()
         
         Add_GroupEffectOwner(L"YeonHee_501100_Install", vSkillPos.xyz(), true, nullptr, false);
 
-        for (_uint i = 0; i < 5; i++)
-        {
-            shared_ptr<GameObject> obj = make_shared<GameObject>();
-            auto script = make_shared<TimerScript>(0.15f + (0.2f * _float(i)));
-            script->Set_Function([&]() { SOUND.Play_Sound(L"magic_essence_09", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
-            obj->Add_Component(script);
-            EVENTMGR.Create_Object(obj);
-        }
+       
 	}
 
     if (Is_AnimFinished())
