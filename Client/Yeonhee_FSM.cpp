@@ -1529,8 +1529,8 @@ void Yeonhee_FSM::skill_501100()
 {
     if (Init_CurFrame(12))
         Add_GroupEffectOwner(L"YeonHee_501100_Aura", _float3(0.f, 0.f, 0.f), false, nullptr, false);
-    else if (Init_CurFrame(100))
-        Add_GroupEffectOwner(L"YeonHee_501100_Install", _float3(0.f, 0.f, 5.f), false,nullptr,false);
+    //else if (Init_CurFrame(100))
+    //    Add_GroupEffectOwner(L"YeonHee_501100_Install", _float3(0.f, 0.f, 5.f), false,nullptr,false);
 
 	Look_DirToTarget();
 
@@ -1599,6 +1599,7 @@ void Yeonhee_FSM::skill_501100()
 			_float4 vSkillPos = vTargetPos + _float4{ fOffSetX, 0.f, fOffSetZ, 0.f };
 
 			Create_InstallationSkillCollider(Player_Skill, L"Player_InstallationSkillCollider", vSkillPos, 2.f, desc);
+            Add_GroupEffectOwner(L"YeonHee_501100_Install", _float3(vSkillPos), true, nullptr, false);
 		}
 	}
 
