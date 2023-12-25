@@ -7,6 +7,15 @@ MapObjectLoopEffectScript::MapObjectLoopEffectScript(_float _fLoopDuration, wstr
 {
 }
 
+HRESULT MapObjectLoopEffectScript::Init()
+{
+    m_fLoopDelta = 0.f;
+    // 이펙트 생성 및 재생
+    Add_GroupEffectOwner(m_wstrEffectGroup, _float3{ 0.f, 0.f, 0.f }, false, nullptr);
+    
+    return S_OK;
+}
+
 void MapObjectLoopEffectScript::Tick()
 {
 	m_fLoopDelta += fDT;

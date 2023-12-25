@@ -10,6 +10,10 @@ public:
     virtual ~MapObjectLoopEffectScript() = default;
 
 public:
+    void Set_LoopEffectData(_float _fLoopDuration, wstring _wstrEffectGroup) { m_fLoopDelta = _fLoopDuration, m_wstrEffectGroup = _wstrEffectGroup; }
+
+public:
+    virtual HRESULT Init() override;
     virtual void Tick() override;
     virtual shared_ptr<MonoBehaviour> Copy_Script() { return nullptr; }
 

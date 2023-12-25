@@ -526,7 +526,20 @@ void ImGui_Manager::Frame_SelcetObjectManager()
             strcpy_s(tempEffectName, strEffectName.c_str());
             ImGui::InputText("EffectName", tempEffectName, sizeof(tempEffectName));
             strEffectName = tempEffectName;
-            Text(strEffectName.data());
+
+            if (ImGui::Button("CreateLoopEffect##ObjectDummyData"))
+            {
+                if (m_pMapObjects[m_iObjects]->Get_Script<MapObjectLoopEffectScript>() == nullptr)
+                {
+                    shared_ptr<MapObjectLoopEffectScript> LoopEffectScript = make_shared<MapObjectLoopEffectScript>( currentMapObjScript->Get_DummyData().m[0][3], Utils::ToWString(strEffectName));
+                    m_pMapObjects[m_iObjects]->Add_Component(LoopEffectScript);
+                }
+                else
+                {
+                    auto LoopEffectScript = m_pMapObjects[m_iObjects]->Get_Script<MapObjectLoopEffectScript>();
+                    LoopEffectScript->Set_LoopEffectData(currentMapObjScript->Get_DummyData().m[0][3], Utils::ToWString(currentMapObjScript->Get_EffectName()));
+                }
+            }
         }
         if (matDummy.m[0][2] >= 1.f)
         {
