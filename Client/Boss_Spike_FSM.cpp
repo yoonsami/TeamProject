@@ -2512,7 +2512,7 @@ void Boss_Spike_FSM::Create_CounterMotionTrail()
 
     m_pOwner.lock()->Get_Script<CounterMotionTrailScript>()->Init();
 
-    SOUND.Play_Sound(L"CounterHit", CHANNELID::SOUND_EFFECT, 0.4f, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"CounterHit", CHANNELID::SOUND_EFFECT, 0.4f * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 
