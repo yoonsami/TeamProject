@@ -1046,6 +1046,9 @@ void NeutralAlpaca_FSM::skill_1100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
+	if (Init_CurFrame(0))
+		Add_Effect(L"Counter_Small");
+
     if (m_iCurFrame <= 15)
     {
         m_fStTimer += fDT;
@@ -1103,7 +1106,8 @@ void NeutralAlpaca_FSM::skill_2100()
 {
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
-
+	if (Init_CurFrame(0))
+		Add_Effect(L"Counter_Small");
 	if (m_iCurFrame <= 15)
 	{
 		m_fStTimer += fDT;
@@ -1158,6 +1162,9 @@ void NeutralAlpaca_FSM::skill_3100()
 {
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
+
+	if (Init_CurFrame(0))
+		Add_Effect(L"Counter_Small");
 
 	if (m_iCurFrame <= 15)
 	{
