@@ -565,7 +565,7 @@ PS_OUT_Deferred PS_WATER(MeshOutput input)
     if (bHasNormalMap)
         ComputeNormalMapping_ViewSpace(input.viewNormal, input.viewTangent, input.uv + g_vec2_1 /*uvsliding*/ + fDistortionWeight);
     
-    ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
+    ARM_Map = float4(1.f, 0.4f, 0.0f, 1.f);
     
     if (bHasTexturemap7)
     {
@@ -725,7 +725,7 @@ PBR_OUTPUT PS_PBR_Deferred(MeshOutput input)
         
     }
     
-    ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
+    ARM_Map = float4(1.f, 0.4f, 0.0f, 1.f);
     
     if(bHasTexturemap7)
     {
@@ -784,7 +784,7 @@ PBR_OUTPUT PS_PBR_Deferred_Instancing(MeshInstancingOutput input)
             discard;
     }
     
-    ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
+    ARM_Map = float4(1.f, 0.4f, 0.0f, 1.f);
     
     if (bHasTexturemap7)
     {
@@ -843,7 +843,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject(MeshOutput input)
             discard;
     }
     
-    ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
+    ARM_Map = float4(1.f, 0.4f, 0.0f, 1.f);
     
     if (bHasTexturemap7)
     {
@@ -904,7 +904,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_Instancing(MeshInstancingOutput i
             discard;
     }
     
-    ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
+    ARM_Map = float4(1.f, 0.4f, 0.0f, 1.f);
     
     if (bHasTexturemap7)
     {
@@ -997,7 +997,7 @@ PBR_OUTPUT PS_PBR_WATER(MeshOutput input)
     normal *= float3(0.5, 0.5, 1.);
     
     
-    ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
+    ARM_Map = float4(1.f, 0.4f, 0.0f, 1.f);
     
     if (bHasTexturemap7)
     {
@@ -1105,7 +1105,7 @@ float4 PS_PBR_Forward(MeshOutput input) : SV_Target
             discard;
     }
     
-    ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
+    ARM_Map = float4(1.f, 0.4f, 0.0f, 1.f);
     
     if (bHasTexturemap7)
     {
@@ -1190,7 +1190,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_NormalControl(MeshOutput input)
             discard;
     }
     
-    ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
+    ARM_Map = float4(1.f, 0.4f, 0.0f, 1.f);
     
     if (bHasTexturemap7)
     {
@@ -1257,7 +1257,7 @@ PBR_MAPOBJECT_OUTPUT PS_PBR_Deferred_MapObject_Instancing_NormalControl(MeshInst
             discard;
     }
     
-    ARM_Map = float4(1.f, 0.8f, 0.0f, 1.f);
+    ARM_Map = float4(1.f, 0.4f, 0.0f, 1.f);
     
     if (bHasTexturemap7)
     {

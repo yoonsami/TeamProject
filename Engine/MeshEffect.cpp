@@ -67,11 +67,15 @@ void MeshEffect::MeshEffect_Final_Tick()
         m_fTimeAcc_SpriteAnimation = 0.f;
     }
 
+    _float deltaTime = fDT;
+    if (!Get_Owner()->Is_TimeSlowed())
+        deltaTime = fABT;
+
     // For. Update Time information 
-    m_fCurrAge += fDT;
-    m_fTimeAcc_ChangeDirCoolTime += fDT;
+    m_fCurrAge += deltaTime;
+    m_fTimeAcc_ChangeDirCoolTime += deltaTime;
     m_fLifeTimeRatio = m_fCurrAge / m_fDuration;
-    m_fTimeAcc_SpriteAnimation += fDT;
+    m_fTimeAcc_SpriteAnimation += deltaTime;
 
     if (m_tDesc.bUseFadeOut && m_fCurrAge > m_fFadeOutStartTime)
         m_fFadeOutRatio = 1.f - ((m_fCurrAge - m_fFadeOutStartTime) / (m_fDuration - m_fFadeOutStartTime));
@@ -502,6 +506,9 @@ void MeshEffect::Set_Material()
 
 void MeshEffect::Translate()
 {
+	_float deltaTime = fDT;
+	if (!Get_Owner()->Is_TimeSlowed())
+		deltaTime = fABT;
     switch (m_iTranslateOption)
     {
     case 0:
@@ -517,7 +524,7 @@ void MeshEffect::Translate()
             _float3 vDir = m_vEndPos;
             vDir.Normalize();
 
-            vCurrPos += _float4(vDir * fSpeed * fDT, 0.f);
+            vCurrPos += _float4(vDir * fSpeed * deltaTime, 0.f);
 
             Get_Transform()->Set_State(Transform_State::POS, vCurrPos);
         }
@@ -526,7 +533,7 @@ void MeshEffect::Translate()
             _float3 vDir = m_vEndPos;
             vDir.Normalize();
 
-            m_vLocalPos += vDir * fSpeed * fDT;
+            m_vLocalPos += vDir * fSpeed * deltaTime;
         }
 
         break;
@@ -543,7 +550,7 @@ void MeshEffect::Translate()
         {
             _float3 vDir = Get_LocalMatrix().Backward();
             vDir.Normalize();
-            m_vLocalPos += vDir * Get_Transform()->Get_Speed() * fDT;
+            m_vLocalPos += vDir * Get_Transform()->Get_Speed() * deltaTime;
         }
         break;
     }
@@ -559,7 +566,7 @@ void MeshEffect::Translate()
         {
             _float3 vDir = Get_LocalMatrix().Backward();
             vDir.Normalize();
-            m_vLocalPos -= vDir * Get_Transform()->Get_Speed() * fDT;
+            m_vLocalPos -= vDir * Get_Transform()->Get_Speed() * deltaTime;
         }
         break;
     }
@@ -575,7 +582,7 @@ void MeshEffect::Translate()
         {
             _float3 vDir = Get_LocalMatrix().Right();
             vDir.Normalize();
-            m_vLocalPos -= vDir * Get_Transform()->Get_Speed() * fDT;
+            m_vLocalPos -= vDir * Get_Transform()->Get_Speed() * deltaTime;
         }
         break;
     }
@@ -591,7 +598,7 @@ void MeshEffect::Translate()
         {
             _float3 vDir = Get_LocalMatrix().Right();
             vDir.Normalize();
-            m_vLocalPos += vDir * Get_Transform()->Get_Speed() * fDT;
+            m_vLocalPos += vDir * Get_Transform()->Get_Speed() * deltaTime;
         }
         break;
     }
@@ -607,7 +614,7 @@ void MeshEffect::Translate()
         {
             _float3 vDir = Get_LocalMatrix().Up();
             vDir.Normalize();
-            m_vLocalPos += vDir * Get_Transform()->Get_Speed() * fDT;
+            m_vLocalPos += vDir * Get_Transform()->Get_Speed() * deltaTime;
 
         }
         break;
@@ -624,7 +631,7 @@ void MeshEffect::Translate()
         {
             _float3 vDir = Get_LocalMatrix().Up();
             vDir.Normalize();
-            m_vLocalPos -= vDir * Get_Transform()->Get_Speed() * fDT;
+            m_vLocalPos -= vDir * Get_Transform()->Get_Speed() * deltaTime;
 
         }
         break;
@@ -638,9 +645,9 @@ void MeshEffect::Translate()
             vDir.Normalize();
             vDir.y = 0.f;
 
-            vPos += vDir * (m_tTransform_Desc.vCurvePoint_Force[0].x * fDT);
-            m_fCurrYspeed += 10.0f * fDT;
-            vPos.y -= m_fCurrYspeed * fDT;
+            vPos += vDir * (m_tTransform_Desc.vCurvePoint_Force[0].x * deltaTime);
+            m_fCurrYspeed += 10.0f * deltaTime;
+            vPos.y -= m_fCurrYspeed * deltaTime;
 
             Get_Transform()->Set_State(Transform_State::POS, vPos);
         }
@@ -649,9 +656,9 @@ void MeshEffect::Translate()
             _float3 vDir = Get_LocalMatrix().Backward();
             vDir.Normalize();
 
-            m_vLocalPos += vDir * (m_tTransform_Desc.vCurvePoint_Force[0].x * fDT);
-            m_fCurrYspeed += 9.8f * fDT;
-            m_vLocalPos.y -= m_fCurrYspeed * fDT;
+            m_vLocalPos += vDir * (m_tTransform_Desc.vCurvePoint_Force[0].x * deltaTime);
+            m_fCurrYspeed += 9.8f * deltaTime;
+            m_vLocalPos.y -= m_fCurrYspeed * deltaTime;
         }
 
         break;
@@ -690,7 +697,7 @@ void MeshEffect::Translate()
             _float3 vDir = m_vEndPos;
             vDir.Normalize();
 
-            vCurrPos += _float4(vDir * fSpeed * fDT, 0.f);
+            vCurrPos += _float4(vDir * fSpeed * deltaTime, 0.f);
 
             Get_Transform()->Set_State(Transform_State::POS, vCurrPos);
         }
@@ -699,7 +706,7 @@ void MeshEffect::Translate()
             _float3 vDir = m_vEndPos;
             vDir.Normalize();
 
-            m_vLocalPos += vDir * fSpeed * fDT;
+            m_vLocalPos += vDir * fSpeed * deltaTime;
         }
         break;
     }
@@ -742,6 +749,10 @@ void MeshEffect::Translate()
 
 void MeshEffect::Scaling()
 {
+	_float deltaTime = fDT;
+	if (!Get_Owner()->Is_TimeSlowed())
+		deltaTime = fABT;
+
     _float3 vScale = Get_Transform()->Get_Scale();
     if (m_bToolMode_On)
     {
@@ -761,7 +772,7 @@ void MeshEffect::Scaling()
         else
         {
             _float fScaleSpeed = Calc_Spline(m_tTransform_Desc.iScaleSpeedType, m_SplineInput_ScaleSpeed);
-            vScale = Get_Transform()->Get_Scale() + _float3(fScaleSpeed * fDT);
+            vScale = Get_Transform()->Get_Scale() + _float3(fScaleSpeed * deltaTime);
             if (m_tDesc.bIsSSD)
                 vScale.y = m_vStartScale.y;
 
@@ -788,7 +799,7 @@ void MeshEffect::Scaling()
         else
         {
             _float fScaleSpeed = Calc_Spline(m_tTransform_Desc.iScaleSpeedType, m_SplineInput_ScaleSpeed);
-            m_vLocalScale = Get_Transform()->Get_Scale() + _float3(fScaleSpeed * fDT);
+            m_vLocalScale = Get_Transform()->Get_Scale() + _float3(fScaleSpeed * deltaTime);
             if (m_tDesc.bIsSSD)
                 m_vLocalScale.y = m_vStartScale.y;
             if (m_vLocalScale.x < 0) m_vLocalScale.x = 0.f;
@@ -800,6 +811,9 @@ void MeshEffect::Scaling()
 
 void MeshEffect::Turn()
 {
+	_float deltaTime = fDT;
+	if (!Get_Owner()->Is_TimeSlowed())
+		deltaTime = fABT;
     if (m_tTransform_Desc.iTurnOption == 3)
     {
         // Billbord 
@@ -814,7 +828,7 @@ void MeshEffect::Turn()
             Get_Transform()->Turn(m_vRandomAxis, m_fTurnSpeed);
         else
         {
-            m_qRotation = Quaternion::CreateFromRotationMatrix(_float4x4::CreateFromQuaternion(m_qRotation)* _float4x4::CreateFromAxisAngle(m_vRandomAxis, m_fTurnSpeed * fDT));
+            m_qRotation = Quaternion::CreateFromRotationMatrix(_float4x4::CreateFromQuaternion(m_qRotation)* _float4x4::CreateFromAxisAngle(m_vRandomAxis, m_fTurnSpeed * deltaTime));
         }
     }
 }
@@ -933,6 +947,10 @@ void MeshEffect::Bind_UpdatedColor_ToShader()
 
 void MeshEffect::Bind_UpdatedTexUVOffset_ToShader()
 {
+	_float deltaTime = fDT;
+	if (!Get_Owner()->Is_TimeSlowed())
+		deltaTime = fABT;
+
     _float2 vTemp2;
     _float4 vTemp4;
 
@@ -941,14 +959,14 @@ void MeshEffect::Bind_UpdatedTexUVOffset_ToShader()
         Run_SpriteAnimation();
     else
     {
-        m_vCurrTexUVOffset_Op1 += m_tDesc.vUVSpeed_Op1 * fDT;
-        m_vCurrTexUVOffset_Op2 += m_tDesc.vUVSpeed_Op2 * fDT;
-        m_vCurrTexUVOffset_Op3 += m_tDesc.vUVSpeed_Op3 * fDT;
-        m_vCurrTexUVOffset_Blend += m_tDesc.vUVSpeed_Blend * fDT;
+        m_vCurrTexUVOffset_Op1 += m_tDesc.vUVSpeed_Op1 * deltaTime;
+        m_vCurrTexUVOffset_Op2 += m_tDesc.vUVSpeed_Op2 * deltaTime;
+        m_vCurrTexUVOffset_Op3 += m_tDesc.vUVSpeed_Op3 * deltaTime;
+        m_vCurrTexUVOffset_Blend += m_tDesc.vUVSpeed_Blend * deltaTime;
     }
-    m_vCurrTexUVOffset_Overlay += m_tDesc.vUVSpeed_Overlay * fDT;
-    m_vCurrTexUVOffset_Dissolve += m_tDesc.vUVSpeed_Dissolve * fDT;
-    m_vCurrTexUVOffset_Distortion += m_tDesc.vUVSpeed_Distortion * fDT;
+    m_vCurrTexUVOffset_Overlay += m_tDesc.vUVSpeed_Overlay * deltaTime;
+    m_vCurrTexUVOffset_Dissolve += m_tDesc.vUVSpeed_Dissolve * deltaTime;
+    m_vCurrTexUVOffset_Distortion += m_tDesc.vUVSpeed_Distortion * deltaTime;
 
     vTemp2 = _float2(m_vCurrTexUVOffset_Distortion.x, m_vCurrTexUVOffset_Distortion.y);
     m_RenderParams.SetVec2(3, vTemp2);

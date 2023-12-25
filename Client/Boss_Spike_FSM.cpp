@@ -1286,7 +1286,9 @@ void Boss_Spike_FSM::skill_1200()
     else if (Init_CurFrame(60))
         AttackCollider_Off();
     else if (Init_CurFrame(70))
-    {
+	{
+
+		Add_Effect(L"Counter_Small");
         //Aim Target
         m_vTurnVector = Calculate_TargetTurnVector();
 
@@ -1366,7 +1368,7 @@ void Boss_Spike_FSM::skill_1300()
     else if (Init_CurFrame(25))
     {
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(0.5f);
-
+        Add_Effect(L"Counter_Small");
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
         {
             material->Get_MaterialDesc().emissive = Color(0.05f, 0.2f, 1.f, 1.f);
@@ -1511,7 +1513,8 @@ void Boss_Spike_FSM::skill_2100()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     if (Init_CurFrame(4))
-    {
+	{
+		Add_Effect(L"Counter_Small");
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(0.3f);
 
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
@@ -1599,7 +1602,8 @@ void Boss_Spike_FSM::skill_2200()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     if (Init_CurFrame(4))
-    {
+	{
+		Add_Effect(L"Counter_Small");
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(0.3f);
 
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
@@ -1703,7 +1707,8 @@ void Boss_Spike_FSM::skill_3100()
         SOUND.Play_Sound(L"vo_spike_att_11", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     }
     else if (Init_CurFrame(42))
-    {
+	{
+		Add_Effect(L"Counter_Small");
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(0.3f);
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
         {
@@ -1793,7 +1798,8 @@ void Boss_Spike_FSM::skill_3200()
     m_tSkillCoolTime.fAccTime += fDT;
 
     if (Init_CurFrame(55))
-    {
+	{
+		Add_Effect(L"Counter_Small");
         m_pOwner.lock()->Get_Animator()->Set_AnimationSpeed(0.3f);
         for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
         {
@@ -1957,7 +1963,7 @@ void Boss_Spike_FSM::skill_6100()
         desc.strLastAttackType = KNOCKBACK_SKILL;
         desc.fAttackDamage = 5.f;
         desc.fLastAttackDamage = 5.f;
-        desc.iLimitAttackCnt = 2;
+        desc.iLimitAttackCnt = 3;
 
         for (_uint i = 0; i < 8; i++)
         {
@@ -2140,7 +2146,7 @@ void Boss_Spike_FSM::skill_100000()
         desc.strLastAttackType = KNOCKBACK_SKILL;
         desc.fAttackDamage = 5.f;
         desc.fLastAttackDamage = 5.f;
-        desc.iLimitAttackCnt = 2;
+        desc.iLimitAttackCnt = 3;
 
         for (_uint i = 0; i < 8; i++)
         {
@@ -2511,6 +2517,8 @@ void Boss_Spike_FSM::Create_CounterMotionTrail()
     }
 
     m_pOwner.lock()->Get_Script<CounterMotionTrailScript>()->Init();
+
+    SOUND.Play_Sound(L"CounterHit", CHANNELID::SOUND_EFFECT, 0.4f, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 

@@ -13,6 +13,7 @@
 #include "ModelRenderer.h"
 #include "UiSkillGauge.h"
 #include "CharacterController.h"
+#include "MeteorRadialBlur.h"
 
 
 Yeonhee_FSM::Yeonhee_FSM()
@@ -37,10 +38,14 @@ HRESULT Yeonhee_FSM::Init()
         m_iDummy_CP_BoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_CP");
         m_iCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Cam");
         m_iSkillCamBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_SkillCam");
-        
+        m_iCenterBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy_Center");
+
+
         m_iHeadBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-Head");
         m_iLFingerBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-L-Finger12");
         m_iRFingerBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-R-Finger12");
+        m_iWeaponBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Bip001-Prop1");
+        
         m_pCamera = CUR_SCENE->Get_MainCamera();
 
         m_eElementType = GET_DATA(HERO::YEONHEE).Element;
@@ -183,10 +188,11 @@ void Yeonhee_FSM::State_Tick()
         break;
     }
 
-    for (auto& iter : m_vGroupEffect)
+    m_fWeaponParticleCoolTime += fDT;
+    if (m_fWeaponParticleCoolTime > 0.06f)
     {
-        if (!iter.expired())
-            iter.lock()->Get_Transform()->Set_WorldMat(Get_Transform()->Get_WorldMatrix());
+        Add_GroupEffectOwner(L"YeonHee_FollowParticle1", _float3(m_vWeaponPos), true, nullptr, false);
+        m_fWeaponParticleCoolTime = 0.f;
     }
 
     if (m_iPreFrame != m_iCurFrame)
@@ -923,6 +929,8 @@ void Yeonhee_FSM::knockdown_end_Init()
 
 void Yeonhee_FSM::skill_1100()
 {
+    Update_GroupEffectWorldPos(_float4x4::CreateTranslation(_float3(m_vLFingerPos)));
+
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
     Look_DirToTarget();
@@ -950,6 +958,8 @@ void Yeonhee_FSM::skill_1100()
 				vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5 + _float3::Up * 5.f;
             Add_GroupEffectOwner(L"YeonHee_1100", _float3(Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5), true);
         }
+        Add_And_Set_Effect(L"YeonHee_1100_Hand");
+
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
 	}
 
@@ -993,6 +1003,8 @@ void Yeonhee_FSM::skill_1100_Init()
 	
 void Yeonhee_FSM::skill_1200()
 {
+    Update_GroupEffectWorldPos(_float4x4::CreateTranslation(_float3(m_vRFingerPos)));
+
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
 	Look_DirToTarget();
@@ -1019,6 +1031,7 @@ void Yeonhee_FSM::skill_1200()
 				vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5 + _float3::Up * 5.f;
             Add_GroupEffectOwner(L"YeonHee_1100", _float3(Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5), true);
 		}
+        Add_And_Set_Effect(L"YeonHee_1100_Hand");
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
     }
 
@@ -1067,6 +1080,8 @@ void Yeonhee_FSM::skill_1200_Init()
 
 void Yeonhee_FSM::skill_1300()
 {
+    Update_GroupEffectWorldPos(_float4x4::CreateTranslation(_float3(m_vRFingerPos)));
+
     Set_DirToTargetOrInput(OBJ_MONSTER);
 
     Look_DirToTarget();
@@ -1094,6 +1109,7 @@ void Yeonhee_FSM::skill_1300()
 				vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5 + _float3::Up * 5.f;
             Add_GroupEffectOwner(L"YeonHee_1100", _float3(Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5), true);
 		}
+        Add_And_Set_Effect(L"YeonHee_1100_Hand");
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
 	}
 	
@@ -1141,6 +1157,9 @@ void Yeonhee_FSM::skill_91100()
 
     Look_DirToTarget();
 
+    if(Init_CurFrame(6) || Init_CurFrame(16))
+        Add_Effect(L"YeonHee_Warp");
+
     if (m_iCurFrame == 7)
         Get_Owner()->Get_Animator()->Set_RenderState(false);
     else if (m_iCurFrame == 16)
@@ -1174,6 +1193,9 @@ void Yeonhee_FSM::skill_93100()
 {
     _float3 vInputVector = Get_InputDirVector();
     
+    if (Init_CurFrame(7) || Init_CurFrame(16))
+        Add_Effect(L"YeonHee_Warp");
+
     if (m_iCurFrame == 8)
         Get_Owner()->Get_Animator()->Set_RenderState(false);
     else if (m_iCurFrame == 16)
@@ -1203,6 +1225,11 @@ void Yeonhee_FSM::skill_93100_Init()
 
 void Yeonhee_FSM::skill_100100()
 {
+    if (Init_CurFrame(10))
+        Add_Effect(L"YeonHee_100100_Charging");
+    if (Init_CurFrame(17))
+        Add_Effect(L"YeonHee_100100");
+
     Look_DirToTarget();
 
     if (Init_CurFrame(75))
@@ -1231,6 +1258,7 @@ void Yeonhee_FSM::skill_100100()
 
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) + _float3::Up;
 			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
+            Add_Effect(L"YeonHee_100100_Bullet");
         }
     }
 	
@@ -1297,6 +1325,11 @@ void Yeonhee_FSM::skill_100100_e_Init()
 
 void Yeonhee_FSM::skill_200100()
 {
+    if (Init_CurFrame(25))
+        Add_GroupEffectOwner(L"YeonHee_200100_PlayerAura", _float3(0.f, 0.f, 0.f), false, nullptr, false);
+    else if (Init_CurFrame(35))
+        Add_GroupEffectOwner(L"YeonHee_200100_Install", _float3(0.f, -0.4f, 6.f), false, nullptr, false);
+
     Set_DirToTarget();
 
     Look_DirToTarget();
@@ -1357,6 +1390,26 @@ void Yeonhee_FSM::skill_200100_Init()
 
 void Yeonhee_FSM::skill_300100()
 {
+    if (Init_CurFrame(25))
+    {
+        Add_Effect(L"YeonHee_300100_Install");
+    }
+    if (m_iCurFrame >= 10)
+    {
+        if (!m_pCamera.expired())
+        {
+            _float4 vDestinationPos = (Get_Transform()->Get_State(Transform_State::POS)) + (Get_Transform()->Get_State(Transform_State::LOOK) * -6.f) + _float3::Up * 4.f;
+            _float4 vDir = vDestinationPos - (Get_Transform()->Get_State(Transform_State::POS));
+            vDir.Normalize();
+
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(2.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCenterBonePos.xyz());
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(0.5f, vDir.xyz(), 15.f);
+        }
+    }
+
+    Calculate_CamBoneMatrix();
+
     Set_DirToTarget();
 
     Look_DirToTarget();
@@ -1381,10 +1434,13 @@ void Yeonhee_FSM::skill_300100()
 		desc.fLimitDistance = 30.f;
 
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, KNOCKBACK_ATTACK, 10.f);
-	}
-
-	_float3 vInputVector = Get_InputDirVector();
-	Get_Transform()->Go_Dir(vInputVector * m_fRunSpeed * 0.3f * fDT);
+		{
+			shared_ptr<GameObject> blurTimer = make_shared<GameObject>();
+            blurTimer->GetOrAddTransform()->Set_State(Transform_State::POS, Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f);
+            blurTimer->Add_Component(make_shared<MeteorRadialBlur>(2.5f, 1.f, 1.5f));
+            EVENTMGR.Create_Object(blurTimer);
+		}
+    }
 
     if (Is_AnimFinished())
     {
@@ -1407,10 +1463,17 @@ void Yeonhee_FSM::skill_300100_Init()
     m_bSuperArmor = true;
 
     Set_DirToTargetOrInput(OBJ_MONSTER);
+
+    Calculate_CamBoneMatrix();
 }
 
 void Yeonhee_FSM::skill_400100()
 {
+    if (Init_CurFrame(20))
+        Add_GroupEffectOwner(L"YeonHee_400100_Charging", _float3(0.f, 0.f, 0.f), false, nullptr, false);
+    else if (Init_CurFrame(30))
+        Add_GroupEffectOwner(L"YeonHee_400100", _float3(0.f, -0.1f, -0.3f), false, nullptr, false);
+
     Set_DirToTarget();
 
     Look_DirToTarget();
@@ -1464,6 +1527,11 @@ void Yeonhee_FSM::skill_400100_Init()
 
 void Yeonhee_FSM::skill_501100()
 {
+    if (Init_CurFrame(12))
+        Add_GroupEffectOwner(L"YeonHee_501100_Aura", _float3(0.f, 0.f, 0.f), false, nullptr, false);
+    else if (Init_CurFrame(100))
+        Add_GroupEffectOwner(L"YeonHee_501100_Install", _float3(0.f, 0.f, 5.f), false,nullptr,false);
+
 	Look_DirToTarget();
 
     TIME.Set_TimeSlow(0.1f, 0.1f);
@@ -1477,7 +1545,7 @@ void Yeonhee_FSM::skill_501100()
 
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FollowSpeed(1.f);
             m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vHeadBonePos.xyz());
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, m_vHeadCamDir * -1.f, 3.f);
+            m_pCamera.lock()->Get_Script<MainCameraScript>()->Fix_Camera(1.f, m_vHeadCamDir * -1.f, 6.f);
         }
     }
     else
@@ -1540,8 +1608,6 @@ void Yeonhee_FSM::skill_501100()
         m_eCurState = STATE::b_idle;
 
         m_pOwner.lock()->Set_TimeSlowed(true);
-
-        Add_Effect(L"Yeonhee_500");
     }
 
 }
@@ -1625,4 +1691,9 @@ void Yeonhee_FSM::Cal_FingerBoneMatrix()
 		_float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
 
 	m_vRFingerPos = _float4(mRFinger.Translation(), 1.f);
+
+	_float4x4 mWeapon = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iWeaponBoneIndex) *
+		_float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+    m_vWeaponPos = _float4(mWeapon.Translation(), 1.f);
 }

@@ -463,10 +463,10 @@ _bool FSM::Init_CurFrame(const _uint curFrame)
 	return false;
 }
 
-void FSM::Add_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript, const _float4x4& matPivot, _bool bUseAsItis)
+void FSM::Add_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript, const _float4x4& matPivot, _bool bUseAsItis, _bool bTimeSlowed)
 {
 	shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();
-
+	pGroupEffectObj->Set_TimeSlowed(bTimeSlowed);
 	// For. Transform 
 	pGroupEffectObj->GetOrAddTransform();
 	if(bUseAsItis)
@@ -501,10 +501,10 @@ void FSM::Add_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScri
 	EVENTMGR.Create_Object(pGroupEffectObj);
 }
 
-void FSM::Add_And_Set_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript)
+void FSM::Add_And_Set_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviour> pScript, _bool bTimeSlowed)
 {
 	shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();
-
+	pGroupEffectObj->Set_TimeSlowed(bTimeSlowed);
 	// For. Transform 
 	pGroupEffectObj->GetOrAddTransform();
 	pGroupEffectObj->Get_Transform()->Set_State(Transform_State::POS, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS));
@@ -538,10 +538,10 @@ void FSM::Add_And_Set_Effect(const wstring& strSkilltag, shared_ptr<MonoBehaviou
 
 }
 
-void FSM::Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset, _bool usePosAs, shared_ptr<MonoBehaviour> pScript)
+void FSM::Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset, _bool usePosAs, shared_ptr<MonoBehaviour> pScript, _bool bTimeSlowed)
 {
 	shared_ptr<GameObject> pGroupEffectOwnerObj = make_shared<GameObject>();
-
+	pGroupEffectOwnerObj->Set_TimeSlowed(bTimeSlowed);
 	// For. Transform 
 	pGroupEffectOwnerObj->GetOrAddTransform();
 	if(!usePosAs)

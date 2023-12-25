@@ -45,7 +45,7 @@ HRESULT NeutralAlpaca_FSM::Init()
 
     m_fMySoundDistance = 4.f;
     m_fVoiceVolume = 0.5f;
-    m_fEffectVolume = 0.4f;
+    m_fEffectVolume = 0.5f;
 
 	shared_ptr<GameObject> attackCollider = make_shared<GameObject>();
 	attackCollider->GetOrAddTransform();
@@ -419,7 +419,7 @@ void NeutralAlpaca_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared
 		EVENTMGR.Create_Object(motionTrail);
         m_bRealEducated = true;
 
-        SOUND.Play_Sound(L"CounterHit", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"CounterHit", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         m_eCurState = STATE::knockdown_start;
     }
@@ -431,10 +431,6 @@ void NeutralAlpaca_FSM::Set_State(_uint iIndex)
 
 void NeutralAlpaca_FSM::b_idle()
 {
-    //if (Init_CurFrame(40))
-    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-
-
     if (!m_bDetected)
 	{
 		CalCulate_PatrolTime();
@@ -655,16 +651,12 @@ void NeutralAlpaca_FSM::die_02_Init()
 
 void NeutralAlpaca_FSM::gaze_b()
 {
-    //if (Init_CurFrame(16))
-    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-
 	_float3 vTargetPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
 	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 
-	vTargetPos = 2.f * vMyPos - vTargetPos;
-
 	if (!m_pTarget.expired())
 		Soft_Turn_ToTarget(vTargetPos, XM_PI * 5.f);
+
     m_tAttackCoolTime.fAccTime += fDT;
 
     Get_Transform()->Go_Backward();
@@ -689,16 +681,12 @@ void NeutralAlpaca_FSM::gaze_b_Init()
 
 void NeutralAlpaca_FSM::gaze_f()
 {
-    //if (Init_CurFrame(16))
-    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-
 	_float3 vTargetPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
 	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 
-	vTargetPos = 2.f * vMyPos - vTargetPos;
-
 	if (!m_pTarget.expired())
 		Soft_Turn_ToTarget(vTargetPos, XM_PI * 5.f);
+
     m_tAttackCoolTime.fAccTime += fDT;
 
     Get_Transform()->Go_Straight();
@@ -724,16 +712,12 @@ void NeutralAlpaca_FSM::gaze_f_Init()
 
 void NeutralAlpaca_FSM::gaze_l()
 {
-    //if (Init_CurFrame(16))
-    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-
 	_float3 vTargetPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
 	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 
-	vTargetPos = 2.f * vMyPos - vTargetPos;
-
 	if (!m_pTarget.expired())
 		Soft_Turn_ToTarget(vTargetPos, XM_PI * 5.f);
+    
     m_tAttackCoolTime.fAccTime += fDT;
 
     Get_Transform()->Go_Left();
@@ -758,13 +742,8 @@ void NeutralAlpaca_FSM::gaze_l_Init()
 
 void NeutralAlpaca_FSM::gaze_r()
 {
-    //if (Init_CurFrame(16))
-    //    SOUND.Play_Sound(L"vo_alpaca_att", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-
 	_float3 vTargetPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
 	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
-
-	vTargetPos = 2.f * vMyPos - vTargetPos;
 
 	if (!m_pTarget.expired())
 		Soft_Turn_ToTarget(vTargetPos, XM_PI * 5.f);
@@ -775,8 +754,7 @@ void NeutralAlpaca_FSM::gaze_r()
 
     if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
     {
-
-            m_eCurState = STATE::attack_run;
+        m_eCurState = STATE::attack_run;
     }
 }
 
@@ -1068,6 +1046,9 @@ void NeutralAlpaca_FSM::skill_1100()
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
+	if (Init_CurFrame(0))
+		Add_Effect(L"Counter_Small");
+
     if (m_iCurFrame <= 15)
     {
         m_fStTimer += fDT;
@@ -1125,7 +1106,8 @@ void NeutralAlpaca_FSM::skill_2100()
 {
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
-
+	if (Init_CurFrame(0))
+		Add_Effect(L"Counter_Small");
 	if (m_iCurFrame <= 15)
 	{
 		m_fStTimer += fDT;
@@ -1180,6 +1162,9 @@ void NeutralAlpaca_FSM::skill_3100()
 {
     if (m_vTurnVector != _float3(0.f))
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
+
+	if (Init_CurFrame(0))
+		Add_Effect(L"Counter_Small");
 
 	if (m_iCurFrame <= 15)
 	{

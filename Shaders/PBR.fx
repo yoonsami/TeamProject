@@ -125,7 +125,7 @@ float3 CalculateCookTorranceBRDF(
     float denominator = 4.0 * saturate(dot(normal, pointToCamera)) * saturate(dot(normal, pointToLight)) + 0.0001f;
     float3 specular = numerator / denominator;
                 
-    return specular;
+    return saturate(specular);
 }
 
 struct PBR_OUTPUT
@@ -208,9 +208,9 @@ PBR_OUT PBRShade(
     float3 kS = F; 
     float3 kD = float3(1.f, 1.f, 1.f) - kS; 
     kD = kD * float3(1.f - metallicMap, 1.f - metallicMap, 1.f - metallicMap);
-    
+
     float3 specular = CalculateCookTorranceBRDF(viewNormal, pointToCamera, halfVector, pointToLight, roughnessMap, F);
-   
+
     float NdotL = max(dot(viewNormal, pointToLight), 0.0);
     float attenuation = 1.f;
        //DIRECTIONAL_LIGHT

@@ -31,9 +31,6 @@
     <Filter Include="99.Header\98.Default">
       <UniqueIdentifier>{1416d258-c22e-43be-a507-5d8b90f21cef}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\01.WeaponScript">
-      <UniqueIdentifier>{b9bdbe99-4328-44ff-a881-4aa947da18c2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\97.DebugScript">
       <UniqueIdentifier>{308378ec-739c-4087-8d4f-fdec1ef5243b}</UniqueIdentifier>
     </Filter>
@@ -453,6 +450,12 @@
     </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\01.Ui\00.UiLoading\01.LoadingBar">
       <UniqueIdentifier>{0a1c18a7-4ab7-49a3-87c8-861fad25902a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\00.Effect\01.MeteorRadialBlur">
+      <UniqueIdentifier>{80785ec1-30e8-43cf-9e0e-72253f1850ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\01.WeaponScript">
+      <UniqueIdentifier>{b9bdbe99-4328-44ff-a881-4aa947da18c2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -913,6 +916,8 @@
     <ClInclude Include="LoadingBarScript.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\00.UiLoading\01.LoadingBar</Filter>
     </ClInclude>
+    <ClInclude Include="Combat5_LightControl.h" />
+    <ClInclude Include="MeteorRadialBlur.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1341,6 +1346,8 @@
     <ClCompile Include="LoadingBarScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\00.UiLoading\01.LoadingBar</Filter>
     </ClCompile>
+    <ClCompile Include="Combat5_LightControl.cpp" />
+    <ClCompile Include="MeteorRadialBlur.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">

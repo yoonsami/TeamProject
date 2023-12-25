@@ -201,6 +201,7 @@
     <ClInclude Include="Boss_Giant_Mir_FSM.h" />
     <ClInclude Include="Boss_Giant_Mir_Parts_FSM.h" />
     <ClInclude Include="Client_FSM.h" />
+    <ClInclude Include="Combat5_LightControl.h" />
     <ClInclude Include="Companion_Dellons_FSM.h" />
     <ClInclude Include="Companion_Shane_FSM.h" />
     <ClInclude Include="DeleteWhenAnimFinish.h" />
@@ -228,6 +229,7 @@
     <ClInclude Include="GranseedTraveler_FSM.h" />
     <ClInclude Include="Hide_OrctongScript.h" />
     <ClInclude Include="InventoryModelRotation.h" />
+    <ClInclude Include="MeteorRadialBlur.h" />
     <ClInclude Include="MiddleWoman_FSM.h" />
     <ClInclude Include="LoadingBarScript.h" />
     <ClInclude Include="MirScene.h" />
@@ -348,6 +350,7 @@
     <ClCompile Include="Boss_Giant_Mir_FSM.cpp" />
     <ClCompile Include="Boss_Giant_Mir_Parts_FSM.cpp" />
     <ClCompile Include="Client_FSM.cpp" />
+    <ClCompile Include="Combat5_LightControl.cpp" />
     <ClCompile Include="Companion_Dellons_FSM.cpp" />
     <ClCompile Include="Companion_Shane_FSM.cpp" />
     <ClCompile Include="DeleteWhenAnimFinish.cpp" />
@@ -375,6 +378,7 @@
     <ClCompile Include="GranseedTraveler_FSM.cpp" />
     <ClCompile Include="Hide_OrctongScript.cpp" />
     <ClCompile Include="InventoryModelRotation.cpp" />
+    <ClCompile Include="MeteorRadialBlur.cpp" />
     <ClCompile Include="MiddleWoman_FSM.cpp" />
     <ClCompile Include="LoadingBarScript.cpp" />
     <ClCompile Include="MirScene.cpp" />

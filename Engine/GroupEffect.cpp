@@ -169,12 +169,16 @@ void GroupEffect::Tick()
 
 void GroupEffect::Final_Tick()
 {
+	_float deltaTime = fDT;
+	if (!Get_Owner()->Is_TimeSlowed())
+		deltaTime = fABT;
+
     if (!m_bTickOn)
         return;
 
-    m_fCurrAge += fDT;
+    m_fCurrAge += deltaTime;
     for (auto iter = m_vCreateCoolTime.begin(); iter != m_vCreateCoolTime.end(); iter++)
-        *iter += fDT;
+        *iter += deltaTime;
 
     _bool bIsAllActive = true;
 
@@ -522,7 +526,7 @@ void GroupEffect::Create_MeshEffect(_int iIndex)
         string strTag = tDesc.strTag;
         strTag = strTag + to_string(iIndex) + "_" + to_string(i) + "_";
         EffectObj->Set_Name(Utils::ToWString(strTag));
-
+        EffectObj->Set_TimeSlowed(Get_Owner()->Is_TimeSlowed());
         // For. Transform 
         EffectObj->GetOrAddTransform();
 
