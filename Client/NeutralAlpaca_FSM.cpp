@@ -403,6 +403,8 @@ void NeutralAlpaca_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared
 	}
     else
     {
+		Add_GroupEffectOwner(L"Counter_Hit", _float3::Up * 0.5f, false);
+
         m_bAngry = false;
 		Get_Owner()->Set_Instancing(true);
 		Get_Owner()->Get_Animator()->Set_AnimationSpeed(1.f);

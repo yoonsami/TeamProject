@@ -460,6 +460,9 @@ void Boss_Mir_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<
 	m_vHitDir.y = 0.f;
 	m_vHitDir.Normalize();
 
+
+	_float3 vLook = -CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_State(Transform_State::LOOK).xyz();
+
     if (skillname == NORMAL_ATTACK || skillname == NORMAL_SKILL)
     {
         if (m_bCounter)
@@ -467,6 +470,7 @@ void Boss_Mir_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<
             if (CounterAttackCheck(90.f))
             {
                 Create_CounterMotionTrail();
+				Add_GroupEffectOwner(L"Counter_Hit", _float3(m_pAttackCollider.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz() + _float3::Up), true);
                 m_eCurState = STATE::groggy_start;
             }
         }
@@ -478,6 +482,7 @@ void Boss_Mir_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<
             if (CounterAttackCheck(90.f))
             {
                 Create_CounterMotionTrail();
+				Add_GroupEffectOwner(L"Counter_Hit", _float3(m_pAttackCollider.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz() + _float3::Up), true);
                 m_eCurState = STATE::groggy_start;
             }
         }
@@ -489,6 +494,7 @@ void Boss_Mir_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<
 			if (CounterAttackCheck(90.f))
 			{
 				Create_CounterMotionTrail();
+				Add_GroupEffectOwner(L"Counter_Hit", _float3(m_pAttackCollider.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz() + _float3::Up), true);
 				m_eCurState = STATE::groggy_start;
 			}
         }
@@ -500,6 +506,7 @@ void Boss_Mir_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<
 			if (CounterAttackCheck(90.f))
 			{
 				Create_CounterMotionTrail();
+				Add_GroupEffectOwner(L"Counter_Hit", _float3(m_pAttackCollider.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz() + _float3::Up), true);
 				m_eCurState = STATE::groggy_start;
 			}
         }

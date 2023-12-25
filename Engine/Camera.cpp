@@ -289,13 +289,7 @@ void Camera::Render_Forward()
 			obj->Get_MeshRenderer()->Render_Water();
 	}
 
-	for (auto& trail : m_Trails)
-	{
-		if (trail->Get_TrailRenderer())
-			trail->Get_TrailRenderer()->Render();
-		else if (trail->Get_MotionTrailRenderer())
-			trail->Get_MotionTrailRenderer()->Render();
-	}
+	
 
 	sort(m_Forward.begin(), m_Forward.end(), [this](shared_ptr<GameObject>& a, shared_ptr<GameObject>& b)
 		{
@@ -355,6 +349,14 @@ void Camera::Render_Forward()
 		// Font
 		if (obj->Get_FontRenderer())
 			obj->Get_FontRenderer()->Render();
+	}
+
+	for (auto& trail : m_Trails)
+	{
+		if (trail->Get_TrailRenderer())
+			trail->Get_TrailRenderer()->Render();
+		else if (trail->Get_MotionTrailRenderer())
+			trail->Get_MotionTrailRenderer()->Render();
 	}
 
 	for (auto& particle : m_Particle)

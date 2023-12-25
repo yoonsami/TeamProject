@@ -1160,6 +1160,8 @@ void Boss_Spike_FSM::groggy_start_Init()
     m_tChaseCoolTime.fAccTime = 0.f;
     m_tSkillCoolTime.fAccTime = 0.f;
     m_bCounter = false;
+	Add_GroupEffectOwner(L"Counter_Hit", _float3::Up * 1.5f , false);
+
 }
 
 void Boss_Spike_FSM::groggy_loop()
