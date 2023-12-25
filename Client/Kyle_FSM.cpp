@@ -1066,7 +1066,10 @@ void Kyle_FSM::skill_1300_Init()
 void Kyle_FSM::skill_1400()
 {
 	Look_DirToTarget();
-
+	if (m_iCurFrame >= 7 && m_iCurFrame < 50)
+		Set_WeaponLight(true);
+	else
+		Set_WeaponLight(false);
 	if (Init_CurFrame(11))
 	{
 		FORWARDMOVINGSKILLDESC desc;
