@@ -1394,7 +1394,7 @@ void Yeonhee_FSM::skill_200100()
             {
                 shared_ptr<GameObject> obj = make_shared<GameObject>();
                 auto script = make_shared<TimerScript>(0.5f + (0.5f * _float(i)));
-                script->Set_Function([&]() { SOUND.Play_Sound(L"magic_essence_09", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, m_vSkillSoundPos, 8.f); });
+                script->Set_Function([&]() { SOUND.Play_Sound(L"magic_essence_09", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, m_vSkillSoundPos, 15.f); });
                 obj->Add_Component(script);
                 EVENTMGR.Create_Object(obj);
             }
@@ -1402,7 +1402,7 @@ void Yeonhee_FSM::skill_200100()
             {
                 shared_ptr<GameObject> obj = make_shared<GameObject>();
                 auto script = make_shared<TimerScript>(0.5f + (0.5f * _float(i)));
-                script->Set_Function([&]() { SOUND.Play_Sound(L"magic_essence_08", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, m_vSkillSoundPos, 8.f); });
+                script->Set_Function([&]() { SOUND.Play_Sound(L"magic_essence_08", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, m_vSkillSoundPos, 15.f); });
                 obj->Add_Component(script);
                 EVENTMGR.Create_Object(obj);
             }
