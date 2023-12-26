@@ -8,7 +8,7 @@ TimerScript::TimerScript(_float fTime)
 
 void TimerScript::Tick()
 {
-	m_fAcc += fDT;
+	m_fAcc += fABT;
 	if (m_fAcc >= m_fTime)
 	{
 		if (m_Func)

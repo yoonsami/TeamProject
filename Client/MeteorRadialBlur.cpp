@@ -2,6 +2,7 @@
 #include "MeteorRadialBlur.h"
 #include "Camera.h"
 #include "Light.h"
+#include "FSM.h"
 
 MeteorRadialBlur::MeteorRadialBlur(_float fExploseTime, _float fBiggerSpeed, _float fMaintainTime)
 	: m_fExploseTime(fExploseTime), m_fBiggerSpeed(fBiggerSpeed), m_fEndTime(fMaintainTime + fExploseTime)
@@ -12,8 +13,8 @@ MeteorRadialBlur::MeteorRadialBlur(_float fExploseTime, _float fBiggerSpeed, _fl
 		m_vOriginAmbientColor = lightColor.ambient;
 		m_vOriginDiffuseColor = lightColor.diffuse;
 
-		m_vTargetAmbientColor		 = m_vOriginAmbientColor * 0.1f;
-		m_vTargetDiffuseColor		 = m_vOriginDiffuseColor * 0.1f;
+		m_vTargetAmbientColor = m_vOriginAmbientColor * 0.1f;
+		m_vTargetDiffuseColor = m_vOriginDiffuseColor * 0.1f;
 	}
 }
 
@@ -43,14 +44,55 @@ void MeteorRadialBlur::Tick()
 
 	}
 
+	if (m_fAcc >= m_fExploseTime - 0.3f)
+	{
+		if (!m_bMeteorAttack)
+		{
+			m_bMeteorAttack = true;
+
+			vector<shared_ptr<GameObject>> targetMonster;
+
+			for (auto& obj : CUR_SCENE->Get_Objects())
+			{
+				if (obj->Get_ObjectGroup() != OBJ_MONSTER)
+					continue;
+
+				if (!obj->Get_FSM())
+					continue;
+
+				obj->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, 99999.f, Get_Owner(), ElementType::LIGHT);
+			}
+
+			SOUND.Play_Sound(L"magic_explosion_n_08", CHANNELID::SOUND_EFFECT, 1.f * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
+		
+			m_fCurBgmRatio = g_fBgmRatio;
+			m_fCurEnvironmentRatio = g_fEnvironmentRatio;
+			m_fCurCharacterVoiceRatio = g_fCharacterVoiceRatio;
+			m_fCurCharacterEffectRatio = g_fCharacterEffectRatio;
+			m_fCurMonsterVoiceRatio = g_fMonsterVoiceRatio;
+			m_fCurMonsterEffectRatio = g_fMonsterEffectRatio;
+			m_fCurSystemSoundRatio = g_fSystemSoundRatio;
+		}
+	}
+
 	if (m_fAcc >= m_fExploseTime && m_fAcc <= m_fEndTime)
 	{
 		CUR_SCENE->g_RadialBlurData.g_bRadialBlurOn = true;
 		CUR_SCENE->g_RadialBlurData.g_fNormalRadius = 0.f;
 		CUR_SCENE->g_RadialBlurData.g_fRadialBlurStrength += 1.f / (m_fEndTime - m_fExploseTime) * fDT;
-		
-
 	
+		g_fBgmRatio = SoundVolumeLerp(m_fCurBgmRatio, 0.f, m_fSoundRatio);
+		g_fEnvironmentRatio = SoundVolumeLerp(m_fCurEnvironmentRatio, 0.f, m_fSoundRatio);
+		g_fCharacterVoiceRatio = SoundVolumeLerp(m_fCurCharacterVoiceRatio, 0.f, m_fSoundRatio);
+		g_fCharacterEffectRatio = SoundVolumeLerp(m_fCurCharacterEffectRatio, 0.f, m_fSoundRatio);
+		g_fMonsterVoiceRatio = SoundVolumeLerp(m_fCurMonsterVoiceRatio, 0.f, m_fSoundRatio);
+		g_fMonsterEffectRatio = SoundVolumeLerp(m_fCurMonsterEffectRatio, 0.f, m_fSoundRatio);
+		g_fSystemSoundRatio = SoundVolumeLerp(m_fCurSystemSoundRatio, 0.f, m_fSoundRatio);
+	
+		m_fSoundRatio += fDT;
+
+		if (m_fSoundRatio >= 1.f)
+			m_fSoundRatio = 1.f;
 	}
 	else if (m_fAcc > m_fEndTime)
 	{
@@ -70,5 +112,28 @@ void MeteorRadialBlur::Tick()
 			EVENTMGR.Delete_Object(Get_Owner());
 		}
 
+		if (!m_bSoundRecovery)
+		{
+			m_bSoundRecovery = true;
+			m_fSoundRatio = 0.f;
+		}
+
+		g_fBgmRatio = SoundVolumeLerp(0.f, m_fCurBgmRatio, m_fSoundRatio);
+		g_fEnvironmentRatio = SoundVolumeLerp(0.f, m_fCurEnvironmentRatio, m_fSoundRatio);
+		g_fCharacterVoiceRatio = SoundVolumeLerp(0.f, m_fCurCharacterVoiceRatio, m_fSoundRatio);
+		g_fCharacterEffectRatio = SoundVolumeLerp(0.f, m_fCurCharacterEffectRatio, m_fSoundRatio);
+		g_fMonsterVoiceRatio = SoundVolumeLerp(0.f, m_fCurMonsterVoiceRatio, m_fSoundRatio);
+		g_fMonsterEffectRatio = SoundVolumeLerp(0.f, m_fCurMonsterEffectRatio, m_fSoundRatio);
+		g_fSystemSoundRatio = SoundVolumeLerp(0.f, m_fCurSystemSoundRatio, m_fSoundRatio);
+
+		m_fSoundRatio += fDT;
+
+		if (m_fSoundRatio >= 1.f)
+			m_fSoundRatio = 1.f;
 	}
+}
+
+_float MeteorRadialBlur::SoundVolumeLerp(_float fStart, _float fEnd, _float fRatio)
+{
+	return fStart * (1.f - fRatio) + fEnd * fRatio;
 }

@@ -1630,6 +1630,13 @@ void Player_FSM::skill_200200_Init()
 
 void Player_FSM::skill_300100()
 {
+    if (Init_CurFrame(14))
+        Add_Effect(L"Teo_300100_slash");
+    else if (Init_CurFrame(20))
+        Add_And_Set_Effect(L"Teo_300100_Boost");
+    else if (Init_CurFrame(30))
+        Add_GroupEffectOwner(L"Teo_300100_pase2", _float3(0.f, 0.f, 1.f), false, nullptr, true);
+
     Look_DirToTarget();
 
     if (Init_CurFrame(14))

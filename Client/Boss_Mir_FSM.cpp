@@ -689,7 +689,7 @@ void Boss_Mir_FSM::sq_Intro2()
     if (Is_AnimFinished())
     {
         g_bCutScene = false;
-        m_tAttackCoolTime.fCoolTime = 3.f;
+        m_tAttackCoolTime.fCoolTime = 2.5f;
         m_eCurState = STATE::b_idle;
         CUR_SCENE->Set_PlayBGM(true);
 
@@ -2602,7 +2602,7 @@ void Boss_Mir_FSM::Create_CounterMotionTrail()
 		material->Get_MaterialDesc().emissive = Color(0.f, 0.f, 0.f, 1.f);
 	}
 
-    SOUND.Play_Sound(L"CounterHit", CHANNELID::SOUND_EFFECT, 0.4f, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    SOUND.Play_Sound(L"CounterHit", CHANNELID::SOUND_EFFECT, 0.4f * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_pOwner.lock()->Get_Script<CounterMotionTrailScript>()->Init();
 }
