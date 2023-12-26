@@ -4,14 +4,32 @@
 #include "MeshRenderer.h"
 #include "FontRenderer.h"
 
+_uint LoadingBarScript::iStringIndex = 0;
+
 LoadingBarScript::LoadingBarScript()
 {
+}
+
+LoadingBarScript::~LoadingBarScript()
+{
+    ++iStringIndex;
+    if (IDX(m_vecString.size()) <= iStringIndex)
+        iStringIndex = 0;
 }
 
 HRESULT LoadingBarScript::Init()
 {
     if (m_pOwner.expired())
         return E_FAIL;
+
+    m_vecString.push_back(pair(-440.f,  L"알고 계신가요? 계속 맞고 있을 때 변신을 하면 반격이 가능합니다"));
+    m_vecString.push_back(pair(-120.f , L"코딩하다 조는 중"));
+    m_vecString.push_back(pair(-100.f , L"맵 찍다 조는 중"));
+    m_vecString.push_back(pair(-100.f , L"UI 찍다 조는 중"));
+    m_vecString.push_back(pair(-120.f , L"이펙트 찍다 조는 중"));
+    m_vecString.push_back(pair(-140.f , L"FSM 한땀한땀 깎는 중"));
+    m_vecString.push_back(pair(-320.f , L"알고 계신가요? 정쌤의 주먹은 생각보다 찰지다는 걸"));
+
 
     auto pScene = CUR_SCENE;
     pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Loading_Bar.dat", m_addedObj);
@@ -31,6 +49,11 @@ HRESULT LoadingBarScript::Init()
 
         else if (L"UI_Loading_Text" == strName)
         {
+            _float4 vecTemp = pObj.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+            vecTemp.x = m_vecString[iStringIndex].first;
+            pObj.lock()->Get_FontRenderer()->Get_Text() = m_vecString[iStringIndex].second;
+            pObj.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecTemp);
+
             m_iTextIndex = i;
         }
 
@@ -42,7 +65,7 @@ HRESULT LoadingBarScript::Init()
     }
     m_bIsEndActivated = false;
     m_bIsLoadEnd = false;
-    m_fMaxTime = 1.f;
+    m_fMaxTime = 0.8f;
     m_fMaxAddTime = 0.05f;
 
     return S_OK;
@@ -97,11 +120,11 @@ void LoadingBarScript::Change_Text()
     }
 
     if (0 == m_iTextDotCount)
-        m_addedObj[m_iTextIndex].lock()->Get_FontRenderer()->Get_Text() = L"리소스 로딩 중입니다.";
+        m_addedObj[m_iTextIndex].lock()->Get_FontRenderer()->Get_Text() = m_vecString[iStringIndex].second + L".";
     else if (1 == m_iTextDotCount)
-        m_addedObj[m_iTextIndex].lock()->Get_FontRenderer()->Get_Text() = L"리소스 로딩 중입니다..";
+        m_addedObj[m_iTextIndex].lock()->Get_FontRenderer()->Get_Text() = m_vecString[iStringIndex].second + L"..";
     else if (2 == m_iTextDotCount)
-        m_addedObj[m_iTextIndex].lock()->Get_FontRenderer()->Get_Text() = L"리소스 로딩 중입니다...";
+        m_addedObj[m_iTextIndex].lock()->Get_FontRenderer()->Get_Text() = m_vecString[iStringIndex].second + L"...";
 
 }
 

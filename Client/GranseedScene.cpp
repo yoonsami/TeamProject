@@ -144,7 +144,9 @@ void GranseedScene::Tick()
 
 	if (KEYTAP(KEY_TYPE::C))
 	{
-		
+		//auto pObj = Get_UI(L"UI_Message_Controller");
+		//if (pObj)
+		//	pObj->Get_Script<UiMessageCreater>()->Create_Message(L"델론즈 획득 !");
 		//auto pObj = Get_UI(L"UI_Costume_Controller");
 		//if (pObj)
 		//	pObj->Get_Script<UiCostumeController>()->Create_Costume();
