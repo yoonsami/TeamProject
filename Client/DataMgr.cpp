@@ -650,27 +650,27 @@ void DataMgr::Initialize()
 
 	{
 		_uint iIndex = IDX(QUESTINDEX::KILL_MIR);
-		m_DialogAccept[iIndex].push_back(L"미르");
-		m_DialogAccept[iIndex].push_back(L"미르");
-		m_DialogAccept[iIndex].push_back(L"미르");
+		m_DialogAccept[iIndex].push_back(L"이만하면 여긴 정리된 것 같아.");
+		m_DialogAccept[iIndex].push_back(L"그나저나 이 앞에 용이 살고 있는 것을 알고 있나?");
+		m_DialogAccept[iIndex].push_back(L"나는 이미 한번 졌지만, 너라면 이길 수 있을 것 같군.");
 
-		m_DialogNoClear[iIndex].push_back(L"미르");
+		m_DialogNoClear[iIndex].push_back(L"용이 무섭나?");
 
 		m_Quest[iIndex].IsClear = false;
 		m_Quest[iIndex].Type = QUESTTYPE::BOSS;
 		m_Quest[iIndex].CurCount = 0;
 		m_Quest[iIndex].MaxCount = 0;
-		m_Quest[iIndex].Name = L"미르";
-		m_Quest[iIndex].Info = L"미르";
-		m_Quest[iIndex].Clear = L"미르";
+		m_Quest[iIndex].Name = L"드래곤 슬레이어";
+		m_Quest[iIndex].Info = L"용을 처치하고 최강이 되자.";
+		m_Quest[iIndex].Clear = L"이 지역의 대장은 바로 나!";
 	}
 
     m_BossDialog.resize(IDX(BOSS::MAX));
     {
         auto& Dialog = m_BossDialog[IDX(BOSS::DELLONS)];
         
-        Dialog.push_back(L"나는 어둠의 다크 델론즈");
-        Dialog.push_back(L"알파카를 찾으러 왔나? \n어쩌지, 세 마리 빼고는 이미 나의 부하가 되었다.");
+        Dialog.push_back(L"나는 어둠의 다크 델론즈.\n알파카의 왕이 되는게 꿈이지.");
+        Dialog.push_back(L"계승자여, 알파카를 찾으러 왔나? \n어쩌지, 세 마리 빼고는 이미 나의 부하가 되었다.");
         Dialog.push_back(L"남은 알파카라도 데려가려면 날 이겨봐라.");
     }
 
@@ -1100,9 +1100,9 @@ void DataMgr::Initialize()
     m_NpcDialog[IDX(NPCTYPE::FENI)].resize(1);
     m_NpcDialog[IDX(NPCTYPE::FISHERMAN)].resize(2);
 
-    m_NpcDialog[IDX(NPCTYPE::SPIKE)][0].push_back(L"안녕 나는 스파이크야.");
-    m_NpcDialog[IDX(NPCTYPE::SPIKE)][0].push_back(L"눈썰매장을 찾고 있는데 혹시 나에게 길을 안내해주지 않겠어?");
-    m_NpcDialog[IDX(NPCTYPE::SPIKE)][0].push_back(L"뭐? 싫다고?! 그래도 같이 따라갈거야. 얼른 안내해. 어쩌라고. 뭐.");
+    m_NpcDialog[IDX(NPCTYPE::SPIKE)][0].push_back(L"골목대장! 다시 만났군.");
+    m_NpcDialog[IDX(NPCTYPE::SPIKE)][0].push_back(L"이 앞의 요새에 몬스터가 득실거려.");
+    m_NpcDialog[IDX(NPCTYPE::SPIKE)][0].push_back(L"내가 도와줄테니 함께 싹 정리해버리자고.");
     
     //m_NpcDialog[IDX(NPCTYPE::SPIKE)][1].push_back(L"이건 테스트 1-0");
     //m_NpcDialog[IDX(NPCTYPE::SPIKE)][1].push_back(L"이건 테스트 1-1");
@@ -1112,13 +1112,13 @@ void DataMgr::Initialize()
     //m_NpcDialog[IDX(NPCTYPE::SPIKE)][2].push_back(L"이건 테스트 2-1");
     //m_NpcDialog[IDX(NPCTYPE::SPIKE)][2].push_back(L"이건 테스트 2-2");
 
-    m_NpcDialog[IDX(NPCTYPE::DELLONS)][0].push_back(L"크크크킄 나는 어둠의 다크 델론즈.");
-    m_NpcDialog[IDX(NPCTYPE::DELLONS)][0].push_back(L"너 좀 약해보이는군 이 앞은 약해빠진 너에게는 많이 위험하지.");
-    m_NpcDialog[IDX(NPCTYPE::DELLONS)][0].push_back(L"그러므로 이 몸께서 친히 널 도와주도록 하겠다");
+    m_NpcDialog[IDX(NPCTYPE::DELLONS)][0].push_back(L"다시 만났군, 계승자.");
+    m_NpcDialog[IDX(NPCTYPE::DELLONS)][0].push_back(L"요새의 몬스터들이\n내가 알파카의 왕이 되는걸 방해하고 있어.");
+    m_NpcDialog[IDX(NPCTYPE::DELLONS)][0].push_back(L"알파카의 왕이 될 이 몸이 도와줄테니, 함께 정리하지.");
     
-	m_NpcDialog[IDX(NPCTYPE::DELLONS_AFTER_COMBAT5)][0].push_back(L"Dell Test");
-	m_NpcDialog[IDX(NPCTYPE::DELLONS_AFTER_COMBAT5)][0].push_back(L"Dell Test");
-	m_NpcDialog[IDX(NPCTYPE::DELLONS_AFTER_COMBAT5)][0].push_back(L"Dell Test");
+	m_NpcDialog[IDX(NPCTYPE::DELLONS_AFTER_COMBAT5)][0].push_back(L"하하, 난 이제 알파카의 왕이 될 수 있어.");
+	m_NpcDialog[IDX(NPCTYPE::DELLONS_AFTER_COMBAT5)][0].push_back(L"알파카를 훔치진 않을테니 걱정말라고.");
+
 
 
     m_NpcDialog[IDX(NPCTYPE::SHANE)][0].push_back(L"안녕 나는 올해로 19세인 세인이야. 혹시 함께 할 동료를 찾고 있어?");

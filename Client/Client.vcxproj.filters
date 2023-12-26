@@ -573,9 +573,6 @@
     <ClInclude Include="..\Libraries\Include\IMGUI\ImZoomSlider.h">
       <Filter>98.Debug\IMGUI</Filter>
     </ClInclude>
-    <ClInclude Include="LogoScene.h">
-      <Filter>01.Scene\01.LogoScene</Filter>
-    </ClInclude>
     <ClInclude Include="..\Shaders\Fxaa3_11.h">
       <Filter>Shader\Common</Filter>
     </ClInclude>
@@ -918,6 +915,9 @@
     </ClInclude>
     <ClInclude Include="Combat5_LightControl.h" />
     <ClInclude Include="MeteorRadialBlur.h" />
+    <ClInclude Include="LogoScene.h">
+      <Filter>01.Scene\01.LogoScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
