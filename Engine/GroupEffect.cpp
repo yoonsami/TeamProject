@@ -7,6 +7,7 @@
 #include "MeshEffect.h"
 #include "MeshEffectData.h"
 #include "StructuredBuffer.h"
+#include "Camera.h"
 
 bool Compare_RenderPriority(weak_ptr<GameObject> pSrc, weak_ptr<GameObject> pDest)
 {
@@ -77,6 +78,9 @@ HRESULT GroupEffect::Init()
 
 		if (pair.second.size() == 1 && meshEffectData->Get_Desc().iMeshCnt == 1 && meshEffectData->Get_Desc().fCreateInterval == 0)
 			continue;
+
+        if(meshEffectData->Get_Desc().bOffInstancing)
+            continue;
 
         _uint iEffectDataCount = _uint(pair.second.size());
 
@@ -266,12 +270,24 @@ void GroupEffect::Render()
 			continue;
 		if (vec[0]->Get_MeshEffect()->Get_Desc().bIsSSD)
 			continue;
-        if (vec.size() == 1 ||/*TODO Sorting老 版快*/ vec.front()->Get_MeshEffect()->Get_Desc().bIsFDistortion)
+        if (vec.size() == 1 ||/*TODO Sorting老 版快*/ vec.front()->Get_MeshEffect()->Get_Desc().bOffInstancing)
         {
-
+            sortingEffects.insert(sortingEffects.end(), vec.begin(), vec.end());
         }
 
     }
+
+    sort(sortingEffects.begin(), sortingEffects.end(), [this](shared_ptr<GameObject>& a, shared_ptr<GameObject>& b)
+        {
+			_float3 vPosA = a->Get_Transform()->Get_State(Transform_State::POS).xyz();
+			_float3 vPosB = b->Get_Transform()->Get_State(Transform_State::POS).xyz();
+			_float viewDepthA = _float3::Transform(vPosA, Camera::Get_View()).z;
+			_float viewDepthB = _float3::Transform(vPosB, Camera::Get_View()).z;
+			if (vPosA == vPosB)
+				return false;
+			else
+				return viewDepthA > viewDepthB;
+        });
 
     INSTANCING.Clear_Data();
 
@@ -289,10 +305,8 @@ void GroupEffect::Render()
 
 
 
-		if (vec.size() == 1 ||/*TODO Sorting老 版快*/ vec.front()->Get_MeshEffect()->Get_Desc().bIsFDistortion)
-		{
-			vec.front()->Get_MeshEffect()->Render();
-		}
+		if (vec.size() == 1 ||/*TODO Sorting老 版快*/ vec.front()->Get_MeshEffect()->Get_Desc().bOffInstancing)
+		    continue;
 		else
 		{
             const InstanceID instanceId = make_pair(_ulong(pair.first.c_str()), _ulong(pair.first.c_str()));
@@ -313,12 +327,50 @@ void GroupEffect::Render()
 			vec[0]->Get_MeshEffect()->Render_Instancing(buffer, m_RenderParamBuffer[pair.first]);
 		}
     }
+
+    for (auto& effect : sortingEffects)
+    {
+        effect->Get_MeshEffect()->Render();
+    }
 }
 
 void GroupEffect::Render_Decal()
 {
 	if (!m_bRenderOn)
 		return;
+
+	vector<shared_ptr<GameObject>> sortingEffects;
+	sortingEffects.reserve(100);
+
+	for (auto& pair : m_RenderGroup)
+	{
+		vector<shared_ptr<GameObject>>& vec = pair.second;
+
+		if (vec.size() == 0)
+			continue;
+
+		if (!vec[0]->Get_MeshEffect()->Get_Desc().bIsSSD)
+			continue;
+
+		if (vec.size() == 1 ||/*TODO Sorting老 版快*/ vec.front()->Get_MeshEffect()->Get_Desc().bOffInstancing)
+		{
+			sortingEffects.insert(sortingEffects.end(), vec.begin(), vec.end());
+		}
+
+	}
+
+	sort(sortingEffects.begin(), sortingEffects.end(), [this](shared_ptr<GameObject>& a, shared_ptr<GameObject>& b)
+		{
+			_float3 vPosA = a->Get_Transform()->Get_State(Transform_State::POS).xyz();
+			_float3 vPosB = b->Get_Transform()->Get_State(Transform_State::POS).xyz();
+			_float viewDepthA = _float3::Transform(vPosA, Camera::Get_View()).z;
+			_float viewDepthB = _float3::Transform(vPosB, Camera::Get_View()).z;
+			if (vPosA == vPosB)
+				return false;
+			else
+				return viewDepthA > viewDepthB;
+		});
+
 	INSTANCING.Clear_Data();
 	for (auto& pair : m_RenderGroup)
 	{
@@ -329,10 +381,8 @@ void GroupEffect::Render_Decal()
 		if (!vec[0]->Get_MeshEffect()->Get_Desc().bIsSSD)
 			continue;
 
-		if (vec.size() == 1)
-		{
-			vec.front()->Get_MeshEffect()->Render();
-		}
+		if (vec.size() == 1 ||/*TODO Sorting老 版快*/ vec.front()->Get_MeshEffect()->Get_Desc().bOffInstancing)
+			continue;
 		else
 		{
 			const InstanceID instanceId = make_pair(_ulong(pair.first.c_str()), _ulong(pair.first.c_str()));
@@ -353,10 +403,46 @@ void GroupEffect::Render_Decal()
 			vec[0]->Get_MeshEffect()->Render_Instancing(buffer, m_RenderParamBuffer[pair.first]);
 		}
 	}
+
+	for (auto& effect : sortingEffects)
+	{
+		effect->Get_MeshEffect()->Render();
+	}
 }
 
 void GroupEffect::Render_Distortion()
 {
+	vector<shared_ptr<GameObject>> sortingEffects;
+	sortingEffects.reserve(100);
+
+	for (auto& pair : m_RenderGroup)
+	{
+		vector<shared_ptr<GameObject>>& vec = pair.second;
+
+		if (vec.size() == 0)
+			continue;
+
+		if (!vec[0]->Get_MeshEffect()->Get_Desc().bIsFDistortion)
+			continue;
+
+		if (vec.size() == 1 ||/*TODO Sorting老 版快*/ vec.front()->Get_MeshEffect()->Get_Desc().bOffInstancing)
+		{
+			sortingEffects.insert(sortingEffects.end(), vec.begin(), vec.end());
+		}
+
+	}
+
+	sort(sortingEffects.begin(), sortingEffects.end(), [this](shared_ptr<GameObject>& a, shared_ptr<GameObject>& b)
+		{
+			_float3 vPosA = a->Get_Transform()->Get_State(Transform_State::POS).xyz();
+			_float3 vPosB = b->Get_Transform()->Get_State(Transform_State::POS).xyz();
+			_float viewDepthA = _float3::Transform(vPosA, Camera::Get_View()).z;
+			_float viewDepthB = _float3::Transform(vPosB, Camera::Get_View()).z;
+			if (vPosA == vPosB)
+				return false;
+			else
+				return viewDepthA > viewDepthB;
+		});
 	if (!m_bRenderOn)
 		return;
 
@@ -371,10 +457,8 @@ void GroupEffect::Render_Distortion()
 			continue;
 
 
-		if (vec.size() == 1)
-		{
-			vec.front()->Get_MeshEffect()->Render();
-		}
+		if (vec.size() == 1 ||/*TODO Sorting老 版快*/ vec.front()->Get_MeshEffect()->Get_Desc().bOffInstancing)
+			continue;
 		else
 		{
 			const InstanceID instanceId = make_pair(_ulong(pair.first.c_str()), _ulong(pair.first.c_str()));
@@ -395,7 +479,10 @@ void GroupEffect::Render_Distortion()
 			vec[0]->Get_MeshEffect()->Render_Instancing(buffer, m_RenderParamBuffer[pair.first]);
 		}
 	}
-
+	for (auto& effect : sortingEffects)
+	{
+		effect->Get_MeshEffect()->Render();
+	}
 }
 
 void GroupEffect::Save(const wstring& path)
