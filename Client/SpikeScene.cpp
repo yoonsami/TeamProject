@@ -79,6 +79,7 @@
 #include "UiCostumeController.h"
 #include "UiDialogController.h"
 #include "UIShop.h"
+#include "UiMessageCreater.h"
 namespace fs = std::filesystem;
 
 SpikeScene::SpikeScene()
@@ -756,6 +757,18 @@ void SpikeScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		if (nullptr != pObj) {
 			pObj->Add_Component(pScript);
 		}
+	}
+
+	{
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_LayerIndex(Layer_UI);
+		pObj->Set_Instancing(false);
+		pObj->Set_Name(L"UI_Message_Controller");
+
+		auto pScript = make_shared<UiMessageCreater>();
+		pObj->Add_Component(pScript);
+
+		Add_GameObject(pObj);
 	}
 }
 
