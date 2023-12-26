@@ -24,6 +24,7 @@
 #include "EffectGoUp.h"
 #include "TimerScript.h"
 #include "UiQuestController.h"
+#include "UiMessageCreater.h"
 
 
 Boss_Spike_FSM::Boss_Spike_FSM()
@@ -1036,6 +1037,13 @@ void Boss_Spike_FSM::SQ_Die()
             SWITCHMGR.Set_SwitchState(SWITCH_TYPE::CREATE_COMBAT4_AFTER_SPIKE, true);
             SWITCHMGR.Set_SwitchState(SWITCH_TYPE::CREATE_COMBAT5_AFTER_SPIKE, true);
 		}
+
+		auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
+		if (pObj)
+			pObj->Get_Script<UiMessageCreater>()->Create_Message(L"½ºÆÄÀÌÅ© È¹µæ !");
+
+
+		DATAMGR.Set_Card_Inven(HERO::SPIKE);
     }
 
     if (Is_AnimFinished())

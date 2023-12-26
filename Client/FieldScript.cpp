@@ -121,10 +121,10 @@ void FieldScript::Tick()
 			{
 				auto camera = CUR_SCENE->Get_MainCamera();
 				auto script = camera->Get_Script<MainCameraScript>();
-				script->Fix_Camera(5.f, _float3(0.f), 5.f);
-				_float3 vLookPos = _float3(89.512f, -12.5f, 120.25f);
-				_float3 vDir = _float3(88.580f, 3.656f, 134.472f) - vLookPos;
+				_float3 vLookPos = _float3(103.f, -12.5f, 120.f);
+				_float3 vDir = _float3(125.f, -3.f, 120.f) - vLookPos;
 				_float fDist = vDir.Length();
+				script->Fix_Camera(5.f, _float3(0.f), fDist);
 				vDir.Normalize();
 				script->Set_FixedDir(vDir);
 				script->Set_FixedDist(fDist);

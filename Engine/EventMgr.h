@@ -29,5 +29,6 @@ private:
 	vector<tEvent> m_vecEvent;
 	vector<pair<shared_ptr<GameObject>,_bool>> m_ObjToAdd;
 	vector<shared_ptr<GameObject>> m_ObjToDelete;
+	shared_ptr<Scene> m_pSceneToChange;
 };
 

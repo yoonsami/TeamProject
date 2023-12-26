@@ -216,7 +216,12 @@ void KrisScene::Final_Tick()
 			EVENTMGR.Create_Object(portal);
 		}
 		bPortalCreated = true;
+		auto pObj = Get_UI(L"UI_Message_Controller");
+		if (pObj)
+			pObj->Get_Script<UiMessageCreater>()->Create_Message(L"델론즈 획득 !");
 
+
+		DATAMGR.Set_Card_Inven(HERO::DELLONS);
 		SWITCHMGR.Set_SwitchState(SWITCH_TYPE::CREATE_WOLF_AFTER_DELLONS, true);
 	}
 
