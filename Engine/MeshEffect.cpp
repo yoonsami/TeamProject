@@ -292,6 +292,9 @@ void MeshEffect::Update_Desc()
 
 void MeshEffect::InitialTransform(_float4x4 mParentWorldMatrix, const _float3& vInitPos_inGroup, const _float3& vInitScale_inGroup, const _float3& vInitRotation_inGroup)                    
 {
+    if (!CUR_SCENE)
+        return;
+
     m_mInitGroupMatrix = mParentWorldMatrix;
     m_mInGroupWorldMatrix = _float4x4::CreateScale(vInitScale_inGroup)
                           * _float4x4::CreateRotationX(vInitRotation_inGroup.x)

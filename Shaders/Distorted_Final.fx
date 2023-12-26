@@ -32,11 +32,11 @@ float4 PS_Final(VS_OUT input) : SV_Target0
 {
    // float4 output = SubMap0.Sample(LinearSampler, input.uv);
     float4 output = (float4) 0.f;
-    float4 submap1 = SubMap1.Sample(LinearSampler, input.uv);
+    float4 submap1 = SubMap1.Sample(LinearSamplerMirror, input.uv);
 
     float2 newUV = input.uv + submap1.x;
     
-    output = SubMap0.Sample(LinearSampler, newUV);
+    output = SubMap0.Sample(LinearSamplerMirror, newUV);
     
    // output = pow(output, 2.2);
     

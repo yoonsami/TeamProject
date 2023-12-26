@@ -34,7 +34,6 @@
 #include "CounterMotionTrailScript.h"
 #include "TerrainRenderer.h"
 #include "UiHpBarController.h"
-#include "MapObjectScript.h"
 #include "Terrain.h"
 #include "UiCoolEndEffect.h"
 #include "MainCameraScript.h"
