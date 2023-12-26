@@ -24,7 +24,6 @@
 #include "ModelRenderer.h"
 #include "OBBBoxCollider.h"
 #include "SphereCollider.h"
-#include "MapObjectScript.h"
 #include "AABBBoxCollider.h"
 #include "MainCameraScript.h"
 #include "HeroChangeScript.h"

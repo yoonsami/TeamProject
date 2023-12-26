@@ -25,6 +25,10 @@ void MapObjectLoopEffectScript::Tick()
 		// 이펙트 생성 및 재생
         Add_GroupEffectOwner(m_wstrEffectGroup, _float3{ 0.f, 0.f, 0.f }, false, nullptr);
 	}
+    if (!m_pGroupEffect.expired() && m_bChaseCamera)
+    {
+        m_pGroupEffect.lock()->Get_Transform()->Set_State(Transform_State::POS, CUR_SCENE->Get_MainCamera()->Get_Transform()->Get_State(Transform_State::POS));
+    }
 }
 
 void MapObjectLoopEffectScript::Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset, _bool usePosAs, shared_ptr<MonoBehaviour> pScript)
@@ -60,4 +64,6 @@ void MapObjectLoopEffectScript::Add_GroupEffectOwner(const wstring& strSkilltag,
 
     // For. Add Effect GameObject to current scene
     EVENTMGR.Create_Object(pGroupEffectOwnerObj);
+
+    m_pGroupEffect = pGroupEffectOwnerObj;
 }

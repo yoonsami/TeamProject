@@ -686,8 +686,12 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 			file->Read<_float>(SP);
 			pPLE->Set_Speed(SP);
 			// 랜덤으로 델타타임과 PM세팅
-			pPLE->Set_DeltaTime(Utils::Random_In_Range(0.f, 1.f));
-			pPLE->Set_DeltaPM(rand() % 2 > 0 ? 1.f : -1.f);
+			string strEffectName = file->Read<string>();
+			pPLE->Set_EffectName(strEffectName);
+			_float DeltaStart;
+			file->Read<_float>(DeltaStart);
+			pPLE->Set_DeltaStart(DeltaStart);
+			pPLE->Set_DeltaPM(-1.f);
 		}
 	}
 
@@ -791,6 +795,8 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 		Color AddDiffuseColor = { 0.f, 0.f, 0.f, 0.f };
 		// RotateData
 		_float4 vecRotateData = { 0.f, 0.f, 1.f, 1.f };
+		// bEffectChaseCamera
+		_bool bEffectChaseCamera = false;
 
 		wstring strObjectName = Utils::ToWString(file->Read<string>());
 		strName = Utils::ToString(strObjectName);
@@ -837,6 +843,9 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 
 		if (matDummyData.m[0][1] >= 1.f)
 			vecRotateData = file->Read<_float4>();
+
+		if (matDummyData.m[1][0] >= 1.f)
+			bEffectChaseCamera = file->Read<_bool>();
 
 // 오브젝트 생성
 		shared_ptr<GameObject> CreateObject = make_shared<GameObject>();
@@ -947,6 +956,10 @@ void Scene::Load_MapFile(const wstring& _mapFileName, shared_ptr<GameObject> pPl
 		{
 			shared_ptr<MapObjectLoopRotate> RotateScript = make_shared<MapObjectLoopRotate>(vecRotateData);
 			CreateObject->Add_Component(RotateScript);
+		}
+		if (matDummyData.m[1][0] >= 1.f)
+		{
+			CreateObject->Get_Script<MapObjectLoopEffectScript>()->Set_ChaseCamera(bEffectChaseCamera);
 		}
 
 		Add_GameObject(CreateObject);
