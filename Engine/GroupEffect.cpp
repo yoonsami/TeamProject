@@ -254,8 +254,30 @@ void GroupEffect::Render()
 {
     if (!m_bRenderOn)
         return;
+    vector<shared_ptr<GameObject>> sortingEffects;
+    sortingEffects.reserve(100);
+
+    for (auto& pair : m_RenderGroup)
+    {
+        vector<shared_ptr<GameObject>>& vec = pair.second;
+
+		if (vec.size() == 0)
+			continue;
+		if (vec[0]->Get_MeshEffect()->Get_Desc().bIsFDistortion)
+			continue;
+		if (vec[0]->Get_MeshEffect()->Get_Desc().bIsSSD)
+			continue;
+        if (vec.size() == 1 ||/*TODO Sorting老 版快*/ vec.front()->Get_MeshEffect()->Get_Desc().bIsFDistortion)
+        {
+
+        }
+
+    }
 
     INSTANCING.Clear_Data();
+
+
+
     for (auto& pair : m_RenderGroup)
     {
         vector<shared_ptr<GameObject>>& vec = pair.second;
@@ -266,7 +288,9 @@ void GroupEffect::Render()
         if(vec[0]->Get_MeshEffect()->Get_Desc().bIsSSD)
             continue;
 
-		if (vec.size() == 1)
+
+
+		if (vec.size() == 1 ||/*TODO Sorting老 版快*/ vec.front()->Get_MeshEffect()->Get_Desc().bIsFDistortion)
 		{
 			vec.front()->Get_MeshEffect()->Render();
 		}
