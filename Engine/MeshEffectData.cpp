@@ -122,7 +122,7 @@ void MeshEffectData::Load(const wstring& path)
     /* ETC */
     _float4x4 mTemp = file->Read<_float4x4>();
     m_tDesc.bIsLoop = (_int)mTemp._11;
-    m_tDesc.bIsFollowingGroup_OnlyTranslate = (_int)mTemp._12;
+    m_tDesc.bOffInstancing = (_int)mTemp._12;
     m_tDesc.bIsFollowingGroup_LooKSameDir = (_int)mTemp._13;
     m_tDesc.fLightIntensity = mTemp._41;
     m_tDesc.bIsFDistortion = mTemp._42;

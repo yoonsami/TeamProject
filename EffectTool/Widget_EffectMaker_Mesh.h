@@ -126,10 +126,10 @@ private:
 	_float					m_fFadeOutStartTime = { 0.f };
 	_int					m_iSamplerType = { 1 };
 	_bool					m_bIsLoop = { false };
-	_bool					m_bIsFollowGroup_OnlyTranslate = { false };
 	_bool					m_bIsFollowGroup_LookSameDir = { false };
 	_bool					m_bIsFDistortion = { false };
 	_bool					m_bIsSSD = { false };
+	_bool					m_bOffInstancing = { false };
 
 	/* Search filter */
 	char					m_szMeshFilter[MAX_PATH] = "-";
