@@ -347,18 +347,10 @@ void Widget_EffectMaker_Mesh::Option_Property()
 			m_pCurrMeshEffect.lock()->Get_MeshEffect()->Set_Loop(m_bIsLoop);
 	}
 
-	//if (ImGui::Checkbox("Is Follow Group (Only Translate)", &m_bIsFollowGroup_OnlyTranslate))
-	//{
-	//	if (m_bIsFollowGroup_OnlyTranslate)
-	//		m_bIsFollowGroup_LookSameDir = false;
-	//}
-	
-	if (ImGui::Checkbox("Is Follow Group (Look same direction)", &m_bIsFollowGroup_LookSameDir))
-	{
-		if (m_bIsFollowGroup_LookSameDir)
-			m_bIsFollowGroup_OnlyTranslate = false;
-	}
+	ImGui::Checkbox("Off Instancing", &m_bOffInstancing);
 
+	ImGui::Checkbox("Is Follow Group", &m_bIsFollowGroup_LookSameDir);
+	
 	ImGui::Checkbox("On Fade Out##Property", &m_bUseFadeOut);
 	if (m_bUseFadeOut)
 	{
@@ -1273,7 +1265,7 @@ void Widget_EffectMaker_Mesh::Create()
 				_float2(m_fParticleDuration),
 				m_iSamplerType,
 				m_bIsLoop,
-				m_bIsFollowGroup_OnlyTranslate,
+				m_bOffInstancing,
 				m_bIsFollowGroup_LookSameDir,
 				m_bIsFDistortion,
 				m_bIsSSD,
@@ -1493,7 +1485,7 @@ void Widget_EffectMaker_Mesh::Save()
 
 		/* ETC */
 		file->Write<_float4x4>(_float4x4(
-			(_float)m_bIsLoop, (_float)m_bIsFollowGroup_OnlyTranslate, (_float)m_bIsFollowGroup_LookSameDir, (_float)m_iScaleSpeedType,
+			(_float)m_bIsLoop, (_float)m_bOffInstancing, (_float)m_bIsFollowGroup_LookSameDir, (_float)m_iScaleSpeedType,
 			m_vCurvePoint_Scale[0].x, m_vCurvePoint_Scale[0].y, m_vCurvePoint_Scale[1].x, m_vCurvePoint_Scale[1].y,
 			m_vCurvePoint_Scale[2].x, m_vCurvePoint_Scale[2].y, m_vCurvePoint_Scale[3].x, m_vCurvePoint_Scale[3].y,
 			m_fLightIntensity, (_float)m_bIsFDistortion, (_float)m_bIsSSD, m_fFadeOutStartTime
@@ -1685,7 +1677,7 @@ void Widget_EffectMaker_Mesh::Load()
 	/* ETC */
 	_float4x4 mTemp = file->Read<_float4x4>();
 	m_bIsLoop = (_int)mTemp._11;
-	m_bIsFollowGroup_OnlyTranslate = (_int)mTemp._12;
+	m_bOffInstancing = (_int)mTemp._12;
 	m_bIsFollowGroup_LookSameDir = (_int)mTemp._13;
 	m_fLightIntensity = mTemp._41;
 	m_bIsFDistortion = _bool(mTemp._42);

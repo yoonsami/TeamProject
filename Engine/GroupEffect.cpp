@@ -210,8 +210,7 @@ void GroupEffect::Final_Tick()
     {
         if (!iter.expired())
         {
-			if (iter.lock()->Get_MeshEffect()->Get_IsFollowGroup_OnlyTranslate() ||
-				iter.lock()->Get_MeshEffect()->Get_IsFollowGroup_LooKSameDir())
+			if (iter.lock()->Get_MeshEffect()->Get_IsFollowGroup_LooKSameDir())
 			{
                 _float4x4 matSetting = iter.lock()->Get_MeshEffect()->Get_LocalMatrix() * iter.lock()->Get_MeshEffect()->Get_InGroupMatrix() * Get_Transform()->Get_WorldMatrix();
                 iter.lock()->Get_Transform()->Set_WorldMat(matSetting);
