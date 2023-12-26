@@ -10,6 +10,11 @@ public:
     virtual ~MapObjectLoopEffectScript() = default;
 
 public:
+    void Set_LoopEffectData(_float _fLoopDuration, wstring _wstrEffectGroup) { m_fLoopDelta = _fLoopDuration, m_wstrEffectGroup = _wstrEffectGroup; }
+    void Set_ChaseCamera(_bool _bChaseCamera) { m_bChaseCamera = _bChaseCamera; }
+
+public:
+    virtual HRESULT Init() override;
     virtual void Tick() override;
     virtual shared_ptr<MonoBehaviour> Copy_Script() { return nullptr; }
 
@@ -20,4 +25,6 @@ private:
     _float m_fLoopDuration = 0.f;
     _float m_fLoopDelta = 0.f;
     wstring m_wstrEffectGroup;
+    weak_ptr<GameObject> m_pGroupEffect;
+    _bool m_bChaseCamera = { false };
 };

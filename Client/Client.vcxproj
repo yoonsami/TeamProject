@@ -295,7 +295,6 @@
     <ClInclude Include="MainUiController.h" />
     <ClInclude Include="MotionTrailDisappear.h" />
     <ClInclude Include="ObjectTransformDebug.h" />
-    <ClInclude Include="MapObjectScript.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Player_FSM.h" />
     <ClInclude Include="Shane_Clone_FSM.h" />
@@ -440,7 +439,6 @@
     <ClCompile Include="MainUiController.cpp" />
     <ClCompile Include="MotionTrailDisappear.cpp" />
     <ClCompile Include="ObjectTransformDebug.cpp" />
-    <ClCompile Include="MapObjectScript.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
