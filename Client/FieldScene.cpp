@@ -962,15 +962,12 @@ void FieldScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	}
 
 	{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_LayerIndex(Layer_UI);
-		pObj->Set_Instancing(false);
-		pObj->Set_Name(L"UI_Message_Controller");
-
-		auto pScript = make_shared<UiMessageCreater>();
-		pObj->Add_Component(pScript);
-
-		Add_GameObject(pObj);
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Message_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiMessageCreater>();
+			pObj.lock()->Add_Component(pScript);
+		}
 	}
 }
 
