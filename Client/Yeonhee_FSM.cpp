@@ -963,9 +963,11 @@ void Yeonhee_FSM::skill_1100()
         }
         Add_And_Set_Effect(L"YeonHee_1100_Hand");
 
+        
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
 	}
-
+    if(Init_CurFrame(15))
+        CAMERA_SHAKE(0.1f, 0.1f)
     _float3 vInputVector = Get_InputDirVector();
     Get_Transform()->Go_Dir(vInputVector* m_fRunSpeed * 0.3f * fDT);
 
@@ -1036,10 +1038,12 @@ void Yeonhee_FSM::skill_1200()
 				vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5 + _float3::Up * 5.f;
             Add_GroupEffectOwner(L"YeonHee_1100", _float3(Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5), true);
 		}
+
         Add_And_Set_Effect(L"YeonHee_1100_Hand");
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
     }
-
+	if (Init_CurFrame(22))
+		CAMERA_SHAKE(0.1f, 0.1f)
 	_float3 vInputVector = Get_InputDirVector();
 	Get_Transform()->Go_Dir(vInputVector * m_fRunSpeed * 0.3f * fDT);
 
@@ -1116,10 +1120,12 @@ void Yeonhee_FSM::skill_1300()
 				vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5 + _float3::Up * 5.f;
             Add_GroupEffectOwner(L"YeonHee_1100", _float3(Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5), true);
 		}
+
         Add_And_Set_Effect(L"YeonHee_1100_Hand");
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
 	}
-	
+	if (Init_CurFrame(25))
+		CAMERA_SHAKE(0.1f, 0.1f)
 	_float3 vInputVector = Get_InputDirVector();
 	Get_Transform()->Go_Dir(vInputVector * m_fRunSpeed * 0.3f * fDT);
 
@@ -1281,6 +1287,7 @@ void Yeonhee_FSM::skill_100100()
 
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + _float3::Up;
 			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 0.3f, desc, NORMAL_ATTACK, 10.f);
+            CAMERA_SHAKE(0.1f, 0.1f)
             Add_Effect(L"YeonHee_100100_Bullet");
         }
     }
@@ -1394,7 +1401,7 @@ void Yeonhee_FSM::skill_200100()
             {
                 shared_ptr<GameObject> obj = make_shared<GameObject>();
                 auto script = make_shared<TimerScript>(0.5f + (0.5f * _float(i)));
-                script->Set_Function([&]() { SOUND.Play_Sound(L"magic_essence_09", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, m_vSkillSoundPos, 15.f); });
+                script->Set_Function([&]() { SOUND.Play_Sound(L"magic_essence_09", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, m_vSkillSoundPos, 15.f);  });
                 obj->Add_Component(script);
                 EVENTMGR.Create_Object(obj);
             }
@@ -1405,6 +1412,13 @@ void Yeonhee_FSM::skill_200100()
                 script->Set_Function([&]() { SOUND.Play_Sound(L"magic_essence_08", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, m_vSkillSoundPos, 15.f); });
                 obj->Add_Component(script);
                 EVENTMGR.Create_Object(obj);
+            }
+            {
+				shared_ptr<GameObject> obj = make_shared<GameObject>();
+				auto script = make_shared<TimerScript>(0.5f + (0.5f * _float(i)));
+				script->Set_Function([&]() { CAMERA_SHAKE(0.1f,0.1f); });
+				obj->Add_Component(script);
+				EVENTMGR.Create_Object(obj);
             }
         }
         
@@ -1525,6 +1539,7 @@ void Yeonhee_FSM::skill_400100()
 		
         if (m_fKeyPushTimer >= 0.3f)
 		{
+			CAMERA_SHAKE(0.1f, 0.1f);
             SOUND.Play_Sound(L"magic_essence_10", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 	
             m_fKeyPushTimer = 0.f;
@@ -1615,6 +1630,14 @@ void Yeonhee_FSM::skill_501100()
 			shared_ptr<GameObject> obj = make_shared<GameObject>();
 			auto script = make_shared<TimerScript>((0.2f * _float(i)));
 			script->Set_Function([&]() { SOUND.Play_Sound(L"magic_essence_09", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+			obj->Add_Component(script);
+			EVENTMGR.Create_Object(obj);
+		}
+		for (_uint i = 0; i < 5; i++)
+		{
+			shared_ptr<GameObject> obj = make_shared<GameObject>();
+			auto script = make_shared<TimerScript>((0.2f * _float(i)));
+			script->Set_Function([&]() {CAMERA_SHAKE(0.1f,0.1f); });
 			obj->Add_Component(script);
 			EVENTMGR.Create_Object(obj);
 		}

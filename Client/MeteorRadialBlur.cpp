@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "Light.h"
 #include "FSM.h"
+#include "MainCameraScript.h"
 
 MeteorRadialBlur::MeteorRadialBlur(_float fExploseTime, _float fBiggerSpeed, _float fMaintainTime)
 	: m_fExploseTime(fExploseTime), m_fBiggerSpeed(fBiggerSpeed), m_fEndTime(fMaintainTime + fExploseTime)
@@ -49,7 +50,7 @@ void MeteorRadialBlur::Tick()
 		if (!m_bMeteorAttack)
 		{
 			m_bMeteorAttack = true;
-
+			CAMERA_SHAKE(2.f, 0.3f)
 			vector<shared_ptr<GameObject>> targetMonster;
 
 			for (auto& obj : CUR_SCENE->Get_Objects())
