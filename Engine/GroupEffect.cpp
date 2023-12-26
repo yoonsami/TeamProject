@@ -270,7 +270,7 @@ void GroupEffect::Render()
 			continue;
 		if (vec[0]->Get_MeshEffect()->Get_Desc().bIsSSD)
 			continue;
-        if (vec.size() == 1 ||/*TODO Sorting老 版快*/ vec.front()->Get_MeshEffect()->Get_Desc().bOffInstancing)
+        if (vec.front()->Get_MeshEffect()->Get_Desc().bOffInstancing)
         {
             sortingEffects.insert(sortingEffects.end(), vec.begin(), vec.end());
         }
@@ -305,8 +305,10 @@ void GroupEffect::Render()
 
 
 
-		if (vec.size() == 1 ||/*TODO Sorting老 版快*/ vec.front()->Get_MeshEffect()->Get_Desc().bOffInstancing)
+		if (vec.front()->Get_MeshEffect()->Get_Desc().bOffInstancing)
 		    continue;
+        else if(vec.size() == 1)
+            vec[0]->Get_MeshEffect()->Render();
 		else
 		{
             const InstanceID instanceId = make_pair(_ulong(pair.first.c_str()), _ulong(pair.first.c_str()));
@@ -352,7 +354,7 @@ void GroupEffect::Render_Decal()
 		if (!vec[0]->Get_MeshEffect()->Get_Desc().bIsSSD)
 			continue;
 
-		if (vec.size() == 1 ||/*TODO Sorting老 版快*/ vec.front()->Get_MeshEffect()->Get_Desc().bOffInstancing)
+		if ( vec.front()->Get_MeshEffect()->Get_Desc().bOffInstancing)
 		{
 			sortingEffects.insert(sortingEffects.end(), vec.begin(), vec.end());
 		}
@@ -381,8 +383,10 @@ void GroupEffect::Render_Decal()
 		if (!vec[0]->Get_MeshEffect()->Get_Desc().bIsSSD)
 			continue;
 
-		if (vec.size() == 1 ||/*TODO Sorting老 版快*/ vec.front()->Get_MeshEffect()->Get_Desc().bOffInstancing)
+		if (vec.front()->Get_MeshEffect()->Get_Desc().bOffInstancing)
 			continue;
+		else if (vec.size() == 1)
+			vec[0]->Get_MeshEffect()->Render();
 		else
 		{
 			const InstanceID instanceId = make_pair(_ulong(pair.first.c_str()), _ulong(pair.first.c_str()));
@@ -425,7 +429,7 @@ void GroupEffect::Render_Distortion()
 		if (!vec[0]->Get_MeshEffect()->Get_Desc().bIsFDistortion)
 			continue;
 
-		if (vec.size() == 1 ||/*TODO Sorting老 版快*/ vec.front()->Get_MeshEffect()->Get_Desc().bOffInstancing)
+		if (vec.front()->Get_MeshEffect()->Get_Desc().bOffInstancing)
 		{
 			sortingEffects.insert(sortingEffects.end(), vec.begin(), vec.end());
 		}
@@ -457,8 +461,10 @@ void GroupEffect::Render_Distortion()
 			continue;
 
 
-		if (vec.size() == 1 ||/*TODO Sorting老 版快*/ vec.front()->Get_MeshEffect()->Get_Desc().bOffInstancing)
+		if (vec.front()->Get_MeshEffect()->Get_Desc().bOffInstancing)
 			continue;
+		else if (vec.size() == 1)
+			vec[0]->Get_MeshEffect()->Render();
 		else
 		{
 			const InstanceID instanceId = make_pair(_ulong(pair.first.c_str()), _ulong(pair.first.c_str()));
