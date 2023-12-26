@@ -45,17 +45,22 @@ HRESULT UiMessageController::Init()
 
         _uint iSpace = 0;
         for (_uint i = 0; i < iLength; ++i)
-            if (L' ' == strTemp.at(i))
+            if (L' ' == strTemp.at(i) || L'!' == strTemp.at(i) || L'.' == strTemp.at(i))
                 ++iSpace;
 
         iLength -= iSpace;
-        _float fRealLength = static_cast<_float>(iLength) / 2.f + static_cast<_float>(iSpace) / 4.f;
+        _float fRealLength = static_cast<_float>(iLength) / 2.f + static_cast<_float>(iSpace) / 5.f;
 
         if (0 == m_iType)
         {
             m_fValuePosX = fRealLength * -26.f;
             m_fValuePosY = 15.f;
             m_pOwner.lock()->Get_FontRenderer()->Get_Size() = 0.65f;
+
+            _float4 vecPos = m_pOwner.lock()->GetOrAddTransform()->Get_State(Transform_State::POS);
+            vecPos.x += m_fValuePosX;
+            vecPos.y += m_fValuePosY;
+            m_pOwner.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, vecPos);
         }
         else if (1 == m_iType)
         {
