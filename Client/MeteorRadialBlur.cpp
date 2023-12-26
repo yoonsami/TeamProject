@@ -41,7 +41,7 @@ void MeteorRadialBlur::Tick()
 
 		curAmbientColor = _float4::Lerp(m_vOriginAmbientColor, targetAmbientColor, m_fAcc / (m_fExploseTime - fTimeOffset));
 		curDiffuseColor = _float4::Lerp(m_vOriginDiffuseColor, targetDiffuseColor, m_fAcc / (m_fExploseTime - fTimeOffset));
-
+		SWITCHMGR.Set_SwitchState(SWITCH_TYPE::YEONHEE_300100_LIGHT_OFF, true);
 	}
 
 	if (m_fAcc >= m_fExploseTime - 0.3f)
@@ -107,7 +107,7 @@ void MeteorRadialBlur::Tick()
 			
 			curAmbientColor = m_vOriginAmbientColor;
 			curDiffuseColor = m_vOriginDiffuseColor;
-
+			SWITCHMGR.Set_SwitchState(SWITCH_TYPE::YEONHEE_300100_LIGHT_OFF, false);
 			
 			EVENTMGR.Delete_Object(Get_Owner());
 		}

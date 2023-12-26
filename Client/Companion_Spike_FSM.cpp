@@ -500,12 +500,25 @@ void Companion_Spike_FSM::talk_01()
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
 
     auto pObj = CUR_SCENE->Get_UI(L"UI_NpcDialog_Controller");
-    if (pObj && pObj->Get_Script<UiDialogController>()->Get_Dialog_End() == false)
-    {
-        m_bEntryTeam = true;
-        SWITCHMGR.Set_SwitchState(SWITCH_TYPE::SPIKE_DIALOG, true);
-        m_eCurState = STATE::b_idle;
-    }
+	if (!SWITCHMGR.Get_SwitchState(SWITCH_TYPE::COMBAT5_END))
+
+	{
+		if (pObj && pObj->Get_Script<UiDialogController>()->Get_Dialog_End() == false)
+		{
+			m_bEntryTeam = true;
+
+			m_eCurState = STATE::b_idle;
+
+			SWITCHMGR.Set_SwitchState(SWITCH_TYPE::SPIKE_DIALOG, true);
+		}
+	}
+	else
+	{
+		if (pObj && pObj->Get_Script<UiDialogController>()->Get_Dialog_End() == false)
+		{
+			m_eCurState = STATE::b_idle;
+		}
+	}
 }
 
 void Companion_Spike_FSM::talk_01_Init()
@@ -524,7 +537,13 @@ void Companion_Spike_FSM::n_idle()
         if (pObj && pObj->Get_Script<UIInteraction>()->Get_Is_Activate(m_pOwner.lock()))
             m_eCurState = STATE::talk_01;
         else if (pObj && !pObj->Get_Script<UIInteraction>()->Is_Created())
-            pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::SPIKE, m_pOwner.lock());
+        {
+            if(!SWITCHMGR.Get_SwitchState(SWITCH_TYPE::COMBAT5_END))
+                pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::SPIKE, m_pOwner.lock());
+            else
+				pObj->Get_Script<UIInteraction>()->Create_Interaction(NPCTYPE::SPIKE_AFTER_COMBAT5, m_pOwner.lock());
+
+        }
     }
     else
     {
@@ -590,6 +609,9 @@ void Companion_Spike_FSM::b_idle()
         }
     }
 
+    if (SWITCHMGR.Get_SwitchState(SWITCH_TYPE::COMBAT5_END))
+        m_eCurState = STATE::n_idle;
+
     StunSetting();
 }
 
@@ -653,6 +675,8 @@ void Companion_Spike_FSM::b_run_start()
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_run;
+
+
 
     StunSetting();
 }
@@ -750,7 +774,8 @@ void Companion_Spike_FSM::b_run()
             }
         }
     }
-
+	if (SWITCHMGR.Get_SwitchState(SWITCH_TYPE::COMBAT5_END))
+		m_eCurState = STATE::n_idle;
     StunSetting();
 }
 

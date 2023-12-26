@@ -554,7 +554,9 @@ void DataMgr::Initialize()
         m_NpcName[IDX(NPCTYPE::POTION)] = L"상점";
         m_NpcName[IDX(NPCTYPE::HIDE_KID)] = L"꼬맹이";
         m_NpcName[IDX(NPCTYPE::SPIKE)] = L"스파이크";
+        m_NpcName[IDX(NPCTYPE::SPIKE_AFTER_COMBAT5)] = L"스파이크";
         m_NpcName[IDX(NPCTYPE::DELLONS)] = L"델론즈";
+        m_NpcName[IDX(NPCTYPE::DELLONS_AFTER_COMBAT5)] = L"델론즈";
         m_NpcName[IDX(NPCTYPE::SHANE)] = L"세인";
         m_NpcName[IDX(NPCTYPE::PORTAL)] = L"포탈 사용";
         m_NpcName[IDX(NPCTYPE::FENI)] = L"페니";
@@ -644,6 +646,23 @@ void DataMgr::Initialize()
 		m_Quest[iIndex].Name = L"술래 잡기";
 		m_Quest[iIndex].Info = L"마을에 숨은 꼬마를 찾자.";
 		m_Quest[iIndex].Clear = L"꼬마에게 보고하자";
+	}
+
+	{
+		_uint iIndex = IDX(QUESTINDEX::KILL_MIR);
+		m_DialogAccept[iIndex].push_back(L"미르");
+		m_DialogAccept[iIndex].push_back(L"미르");
+		m_DialogAccept[iIndex].push_back(L"미르");
+
+		m_DialogNoClear[iIndex].push_back(L"미르");
+
+		m_Quest[iIndex].IsClear = false;
+		m_Quest[iIndex].Type = QUESTTYPE::BOSS;
+		m_Quest[iIndex].CurCount = 0;
+		m_Quest[iIndex].MaxCount = 0;
+		m_Quest[iIndex].Name = L"미르";
+		m_Quest[iIndex].Info = L"미르";
+		m_Quest[iIndex].Clear = L"미르";
 	}
 
     m_BossDialog.resize(IDX(BOSS::MAX));
@@ -1076,6 +1095,7 @@ void DataMgr::Initialize()
 
     m_NpcDialog[IDX(NPCTYPE::SPIKE)].resize(1);
     m_NpcDialog[IDX(NPCTYPE::DELLONS)].resize(1);
+    m_NpcDialog[IDX(NPCTYPE::DELLONS_AFTER_COMBAT5)].resize(1);
     m_NpcDialog[IDX(NPCTYPE::SHANE)].resize(1);
     m_NpcDialog[IDX(NPCTYPE::FENI)].resize(1);
     m_NpcDialog[IDX(NPCTYPE::FISHERMAN)].resize(2);
@@ -1096,6 +1116,11 @@ void DataMgr::Initialize()
     m_NpcDialog[IDX(NPCTYPE::DELLONS)][0].push_back(L"너 좀 약해보이는군 이 앞은 약해빠진 너에게는 많이 위험하지.");
     m_NpcDialog[IDX(NPCTYPE::DELLONS)][0].push_back(L"그러므로 이 몸께서 친히 널 도와주도록 하겠다");
     
+	m_NpcDialog[IDX(NPCTYPE::DELLONS_AFTER_COMBAT5)][0].push_back(L"Dell Test");
+	m_NpcDialog[IDX(NPCTYPE::DELLONS_AFTER_COMBAT5)][0].push_back(L"Dell Test");
+	m_NpcDialog[IDX(NPCTYPE::DELLONS_AFTER_COMBAT5)][0].push_back(L"Dell Test");
+
+
     m_NpcDialog[IDX(NPCTYPE::SHANE)][0].push_back(L"안녕 나는 올해로 19세인 세인이야. 혹시 함께 할 동료를 찾고 있어?");
     m_NpcDialog[IDX(NPCTYPE::SHANE)][0].push_back(L"바로 알겠다고? 너 얼빠구나.");
     m_NpcDialog[IDX(NPCTYPE::SHANE)][0].push_back(L"알겠어 특별히 같이 가주지.");
