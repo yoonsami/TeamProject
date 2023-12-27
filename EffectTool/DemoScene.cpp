@@ -67,14 +67,15 @@ HRESULT GranseedScene::Load_Scene()
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\VfxMesh\\");
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\SkyBox\\");
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Weapon\\");
-	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Mir\\");
+	RESOURCES.CreateModel(L"..\\Resources\\Models\\MapObject\\Granseed\\");
 	RESOURCES.CreateModel(L"..\\Resources\\Models\\Character\\Monster\\");
 
 	RESOURCES.LoadParts();
 	Load_DemoModel();
 	Load_Camera();
 
-	Load_MapFile(L"MirMap", nullptr);
+	//Load_MapFile(L"MirMap", nullptr);
+	Load_MapFile(L"GranseedMap", nullptr);
 
 	return S_OK;
 }
