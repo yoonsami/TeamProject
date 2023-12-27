@@ -35,7 +35,7 @@ HRESULT DragonBallMonster_FSM::Init()
 
 	m_iCenterBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy001");
 
-	m_fEffectVolume = 0.3f;
+	m_fEffectVolume = 1.f;
 
 	m_fMySoundDistance = 100.f;
 
@@ -181,7 +181,7 @@ void DragonBallMonster_FSM::Crash_Init()
 			EVENTMGR.Delete_Object(m_pRigidBody.lock());
 	}
 
-	SOUND.Play_Sound(L"hit_ice_break_02_st", CHANNELID::SOUND_EFFECT, 0.3f, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	SOUND.Play_Sound(L"RockFalling", CHANNELID::SOUND_EFFECT, 0.3f, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 
 	if (!m_pTarget.expired())

@@ -365,8 +365,14 @@ void Boss_DellonsWraith_FSM::FX_SQ_Dellons_QuestEnd_2_Init()
 
 void Boss_DellonsWraith_FSM::FX_Mn_Dellons_skill_500200()
 {
-    if (m_iCurFrame == 19)
+    if (Init_CurFrame(19))
+    {
+        SOUND.Play_Sound(L"swing_axe_02_gigan", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
+    }
+    else if (Init_CurFrame(22))
+        Add_And_Set_Effect(L"DellonsWraith_501100_slash");
 
     if (Is_AnimFinished())
     {

@@ -1650,7 +1650,11 @@ void Companion_Dellons_FSM::skill_300100_Init()
 void Companion_Dellons_FSM::skill_400100()
 {
     if (Init_CurFrame(17))
+    {
+        SOUND.Play_Sound(L"dark_magic_swing_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         Add_And_Set_Effect(L"Dellons_400100_charging");
+    }
     else if (Init_CurFrame(31))
     {
         SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
@@ -1774,7 +1778,9 @@ void Companion_Dellons_FSM::skill_501100()
 
     if (Init_CurFrame(4))
     {
-        SOUND.Play_Sound(L"swing_axe_02_gigan", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"dark_magic_swing_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        Add_Effect(L"Dellons_501100");
 
         Summon_Wraith();
         Set_WraithState((_uint)DellonsWraith_FSM::STATE::FX_Mn_Dellons_skill_500200);
