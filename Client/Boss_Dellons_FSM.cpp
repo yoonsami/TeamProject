@@ -1667,7 +1667,11 @@ void Boss_Dellons_FSM::skill_300100_Init()
 void Boss_Dellons_FSM::skill_400100()
 {
     if (Init_CurFrame(17))
+    {
+        SOUND.Play_Sound(L"dark_magic_swing_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         Add_And_Set_Effect(L"Dellons_400100_charging");
+    }
     else if (Init_CurFrame(31))
     {
         SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
@@ -1807,8 +1811,9 @@ void Boss_Dellons_FSM::skill_501100()
     if (Init_CurFrame(4))
     {
         //Summon Wraith
- 
-        SOUND.Play_Sound(L"swing_axe_02_gigan", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"dark_magic_swing_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+        Add_Effect(L"Dellons_501100");
 
         Summon_Wraith();
 
@@ -1907,7 +1912,7 @@ void Boss_Dellons_FSM::Calculate_SkillCamRight()
 
 void Boss_Dellons_FSM::Set_AttackSkill_Phase1()
 {
-    _uint iRan = rand() % 6;
+   _uint iRan = rand() % 6;
 
     while (true)
     {

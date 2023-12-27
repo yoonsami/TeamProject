@@ -323,9 +323,11 @@ void Kyle_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Game
 			else
 				m_eCurState = STATE::hit;
 
+			wstring strSoundTag = L"vo_kyle_hit_0";
+			strSoundTag = strSoundTag + to_wstring(rand() % 4 + 1);
+			SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.1f);
-
-
 		}
 	}
 	else if (skillname == KNOCKBACK_ATTACK || skillname == KNOCKBACK_SKILL)
@@ -339,8 +341,11 @@ void Kyle_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Game
 			else
 				m_eCurState = STATE::knock_start;
 
-			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.2f);
+			wstring strSoundTag = L"vo_kyle_hit_0";
+			strSoundTag = strSoundTag + to_wstring(rand() % 4 + 1);
+			SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.2f);
 		}
 	}
 	else if (skillname == KNOCKDOWN_ATTACK || skillname == KNOCKDOWN_SKILL)
@@ -354,8 +359,11 @@ void Kyle_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Game
 			else
 				m_eCurState = STATE::knockdown_start;
 
-			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.3f);
+			wstring strSoundTag = L"vo_kyle_hit_0";
+			strSoundTag = strSoundTag + to_wstring(rand() % 4 + 1);
+			SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.3f);
 		}
 	}
 	else if (skillname == AIRBORNE_ATTACK || skillname == AIRBORNE_SKILL)
@@ -369,8 +377,11 @@ void Kyle_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Game
 			else
 				m_eCurState = STATE::airborne_start;
 
-			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.3f);
+			wstring strSoundTag = L"vo_kyle_hit_0";
+			strSoundTag = strSoundTag + to_wstring(rand() % 4 + 1);
+			SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
+			CUR_SCENE->Get_MainCamera()->Get_Script<MainCameraScript>()->ShakeCamera(0.05f, 0.3f);
 		}
 	}
 	else
@@ -416,6 +427,12 @@ void Kyle_FSM::b_idle_Init()
 
 void Kyle_FSM::b_run_start()
 {
+	if (Init_CurFrame(10))
+		SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	else if (Init_CurFrame(20))
+		SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+
 	Get_Transform()->Go_Straight();
 
 	_float3 vInputVector = Get_InputDirVector();
@@ -461,6 +478,11 @@ void Kyle_FSM::b_run_start_Init()
 
 void Kyle_FSM::b_run()
 {
+	if (Init_CurFrame(10))
+		SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	else if (Init_CurFrame(20))
+		SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 	Get_Transform()->Go_Straight();
 
 	_float3 vInputVector = Get_InputDirVector();
@@ -520,6 +542,11 @@ void Kyle_FSM::b_run_Init()
 
 void Kyle_FSM::b_run_end_r()
 {
+	if (Init_CurFrame(3))
+		SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	else if (Init_CurFrame(6))
+		SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 	_float3 vInputVector = Get_InputDirVector();
 
 	if (vInputVector != _float3(0.f))
@@ -554,6 +581,11 @@ void Kyle_FSM::b_run_end_r_Init()
 
 void Kyle_FSM::b_run_end_l()
 {
+	if (Init_CurFrame(4))
+		SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	else if (Init_CurFrame(7))
+		SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 	_float3 vInputVector = Get_InputDirVector();
 
 	if (vInputVector != _float3(0.f))
@@ -588,6 +620,11 @@ void Kyle_FSM::b_run_end_l_Init()
 
 void Kyle_FSM::b_sprint()
 {
+	if (Init_CurFrame(7))
+		SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	else if (Init_CurFrame(14))
+		SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 	Get_Transform()->Go_Straight();
 
 	_float3 vInputVector = Get_InputDirVector();
@@ -902,12 +939,16 @@ void Kyle_FSM::skill_1100()
 
 	Look_DirToTarget();
 
-	if (m_iCurFrame == 9)
+	if (Init_CurFrame(9))
 	{
+		SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"swing_chain_0", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		Set_ColliderOption(WATER, L"Hit_Slash_Orange");
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
 	}
-	else if (m_iCurFrame == 19)
+	else if (Init_CurFrame(19))
 		AttackCollider_Off();
 
 	if (!g_bIsCanMouseMove && !g_bCutScene)
@@ -940,6 +981,9 @@ void Kyle_FSM::skill_1100_Init()
 
 	m_bCanCombo = false;
 
+	SOUND.Play_Sound(L"vo_kyle_att_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+
 	Set_DirToTargetOrInput(OBJ_MONSTER);
 
 	m_bInvincible = false;
@@ -955,12 +999,16 @@ void Kyle_FSM::skill_1200()
 
 	Look_DirToTarget();
 
-	if (m_iCurFrame == 9)
+	if (Init_CurFrame(9))
 	{
+		SOUND.Play_Sound(L"swing_axe_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"swing_chain_1", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		Set_ColliderOption(WATER, L"Hit_Slash_Orange");
 		AttackCollider_On(NORMAL_ATTACK ,15.f);
 	}
-	else if (m_iCurFrame == 20)
+	else if (Init_CurFrame(20))
 		AttackCollider_Off();
 
 	if (!g_bIsCanMouseMove && !g_bCutScene)
@@ -994,6 +1042,9 @@ void Kyle_FSM::skill_1200_Init()
 		m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(DEFAULT);
 	}
 
+	SOUND.Play_Sound(L"vo_kyle_att_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+
 	m_bCanCombo = false;
 
 	Set_DirToTargetOrInput(OBJ_MONSTER);
@@ -1013,12 +1064,16 @@ void Kyle_FSM::skill_1300()
 
 	Look_DirToTarget();
 
-	if (m_iCurFrame == 8)
+	if (Init_CurFrame(8))
 	{
+		SOUND.Play_Sound(L"swing_axe_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"swing_chain_2", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		Set_ColliderOption(WATER, L"Hit_Slash_Orange");
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
 	}
-	else if (m_iCurFrame == 18)
+	else if (Init_CurFrame(18))
 		AttackCollider_Off();
 
 	if (!g_bIsCanMouseMove && !g_bCutScene)
@@ -1057,6 +1112,8 @@ void Kyle_FSM::skill_1300_Init()
 
 	Set_DirToTargetOrInput(OBJ_MONSTER);
 
+	SOUND.Play_Sound(L"vo_kyle_att_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 	AttackCollider_Off();
 
 	m_bInvincible = false;
@@ -1070,7 +1127,14 @@ void Kyle_FSM::skill_1400()
 		Set_WeaponLight(true);
 	else
 		Set_WeaponLight(false);
-	if (Init_CurFrame(11))
+
+	if (Init_CurFrame(10))
+	{
+		SOUND.Play_Sound(L"swing_axe_04", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"swing_chain_0", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	}
+	else if (Init_CurFrame(11))
 	{
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -1080,6 +1144,7 @@ void Kyle_FSM::skill_1400()
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::LOOK) * 3.f;
+	
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.3f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Orange");
 	}
 
@@ -1117,6 +1182,8 @@ void Kyle_FSM::skill_1400_Init()
 
 	AttackCollider_Off();
 
+	SOUND.Play_Sound(L"vo_kyle_att_08", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 	m_bInvincible = false;
 	m_bSuperArmor = false;
 }
@@ -1142,6 +1209,8 @@ void Kyle_FSM::skill_91100_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"skill_91100", 0.15f, false, m_fEvade_AnimationSpeed);
+
+	SOUND.Play_Sound(L"7129_shout_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 	m_bCanCombo = false;
 
@@ -1174,6 +1243,8 @@ void Kyle_FSM::skill_93100_Init()
 
 	animator->Set_NextTweenAnim(L"skill_93100", 0.15f, false, m_fEvade_AnimationSpeed);
 
+	SOUND.Play_Sound(L"7129_shout_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 	m_bCanCombo = false;
 
 	AttackCollider_Off();
@@ -1190,6 +1261,21 @@ void Kyle_FSM::skill_100100()
 		Set_WeaponLight(true);
 	else
 		Set_WeaponLight(false);
+
+	if (Init_CurFrame(9))
+	{
+		SOUND.Play_Sound(L"vo_kyle_att_long_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"swing_chain_0", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	}
+	else if (Init_CurFrame(19))
+	{
+		SOUND.Play_Sound(L"swing_axe_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"swing_chain_1", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	}
 
 
 	if (m_iCurFrame >= 17)
@@ -1265,6 +1351,20 @@ void Kyle_FSM::skill_100200()
 	else
 		Set_WeaponLight(false);
 
+	if (Init_CurFrame(4))
+		SOUND.Play_Sound(L"swing_chain_2", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	else if (Init_CurFrame(12))
+	{
+		SOUND.Play_Sound(L"swing_axe_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"hit_explosive_bomb_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	}
+	else if (Init_CurFrame(26))
+	{
+		SOUND.Play_Sound(L"swing_chain_0", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	}
+
+
 	if (m_iCurFrame >= 4)
 	{
 		if (!m_pCamera.expired())
@@ -1280,6 +1380,8 @@ void Kyle_FSM::skill_100200()
 
 	if (Init_CurFrame(12))
 	{
+		SOUND.Play_Sound(L"vo_kyle_sk_06", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.fMoveSpeed = 0.f;
@@ -1333,12 +1435,18 @@ void Kyle_FSM::skill_200100()
 	else
 		Set_WeaponLight(false);
 
-	if (m_iCurFrame == 11)
+	if (Init_CurFrame(11))
 	{
+		SOUND.Play_Sound(L"vo_kyle_att_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"swing_chain_0", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		Set_ColliderOption(FIRE, L"Hit_Slash_Orange");
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
 	}
-	else if (m_iCurFrame == 23)
+	else if (Init_CurFrame(23))
 		AttackCollider_Off();
 	
 	if (!g_bIsCanMouseMove && !g_bCutScene)
@@ -1380,23 +1488,34 @@ void Kyle_FSM::skill_200200()
 		Set_WeaponLight(true);
 	else
 		Set_WeaponLight(false);
-	if (m_iCurFrame == 13)
+	
+	if (Init_CurFrame(13))
 	{
+		SOUND.Play_Sound(L"swing_axe_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"swing_chain_1", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		Set_ColliderOption(FIRE, L"Hit_Slash_Orange");
 
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
 	}
-	else if (m_iCurFrame == 18)
+	else if (Init_CurFrame(18))
 	{
 		Set_ColliderOption(FIRE, L"Hit_Slash_Orange");
 		AttackCollider_Off();
 	}
-	else if (m_iCurFrame == 21)
+	else if (Init_CurFrame(21))
 	{
+		SOUND.Play_Sound(L"vo_kyle_att_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"swing_axe_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"swing_chain_2", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		Set_ColliderOption(FIRE, L"Hit_Slash_Orange");
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
 	}
-	else if (m_iCurFrame == 28)
+	else if (Init_CurFrame(28))
 		AttackCollider_Off();
 
 	Look_DirToTarget();
@@ -1440,8 +1559,19 @@ void Kyle_FSM::skill_200300()
 		Set_WeaponLight(true);
 	else
 		Set_WeaponLight(false);
-	if (Init_CurFrame(9))
+	
+	if (Init_CurFrame(8))
 	{
+		SOUND.Play_Sound(L"vo_kyle_sk_09", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"swing_axe_04", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"swing_chain_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	}
+	else if (Init_CurFrame(9))
+	{
+		SOUND.Play_Sound(L"hit_explosive_bomb_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.fMoveSpeed = 0.f;
@@ -1451,6 +1581,9 @@ void Kyle_FSM::skill_200300()
 			Get_Transform()->Get_State(Transform_State::LOOK) * 5.5f;
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Orange");
 	}
+	else if (Init_CurFrame(32))
+		SOUND.Play_Sound(L"swing_chain_0", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 	
 	Look_DirToTarget();
 
@@ -1484,17 +1617,43 @@ void Kyle_FSM::skill_200300_Init()
 void Kyle_FSM::skill_300100()
 {
 	Look_DirToTarget();
+	
 	if (m_iCurFrame >= 5 && m_iCurFrame < 49)
 		Set_WeaponLight(true);
 	else
 		Set_WeaponLight(false);
-	if (m_iCurFrame == 2)
+
+	if (Init_CurFrame(2))
 	{
 		Set_ColliderOption(FIRE, L"Hit_Slash_Orange");
 		AttackCollider_On(NORMAL_ATTACK, 10.f);
 	}
-	else if (m_iCurFrame == 5)
+	else if (Init_CurFrame(5))
 		AttackCollider_Off();
+	else if (Init_CurFrame(9))
+	{
+		SOUND.Play_Sound(L"vo_kyle_sk_11", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"swing_chain_1", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	}
+	else if (Init_CurFrame(27))
+	{
+		SOUND.Play_Sound(L"swing_axe_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"swing_chain_2", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	}
+	else if (Init_CurFrame(35))
+	{
+		SOUND.Play_Sound(L"swing_axe_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"swing_chain_1", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	}
+	else if (Init_CurFrame(38))
+		SOUND.Play_Sound(L"swing_chain_0", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+	
 
 	if (Init_CurFrame(10))
 	{
@@ -1511,6 +1670,8 @@ void Kyle_FSM::skill_300100()
 	}
 	else if (Init_CurFrame(28))
 	{
+		SOUND.Play_Sound(L"hit_explosive_bomb_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.fMoveSpeed = 0.f;
@@ -1525,6 +1686,8 @@ void Kyle_FSM::skill_300100()
 	}
 	else if (Init_CurFrame(36))
 	{
+		SOUND.Play_Sound(L"hit_explosive_bomb_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.fMoveSpeed = 0.f;
@@ -1571,6 +1734,7 @@ void Kyle_FSM::skill_502100()
 		Set_WeaponLight(true);
 	else
 		Set_WeaponLight(false);
+
 	if (m_iCurFrame == 17)
 	{
 		if (!m_pCamera.expired())
@@ -1603,11 +1767,20 @@ void Kyle_FSM::skill_502100()
 		m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(m_vCamStopPos.xyz());
 	}
 	
-
 	Calculate_CamBoneMatrix();
+
+	if (Init_CurFrame(10))
+		SOUND.Play_Sound(L"vo_kyle_sk_15", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	else if (Init_CurFrame(30))
+		SOUND.Play_Sound(L"swing_chain_0", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 
 	if (Init_CurFrame(55))
 	{
+		SOUND.Play_Sound(L"swing_chain_1", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"hit_explosive_bomb_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.fMoveSpeed = 0.f;
@@ -1622,6 +1795,10 @@ void Kyle_FSM::skill_502100()
 	}
 	else if (Init_CurFrame(78))
 	{
+		SOUND.Play_Sound(L"swing_chain_1", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"hit_explosive_bomb_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.fMoveSpeed = 0.f;
@@ -1635,6 +1812,8 @@ void Kyle_FSM::skill_502100()
 	}
 	else if (Init_CurFrame(106))
 	{
+		SOUND.Play_Sound(L"hit_explosive_bomb_02", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::LOOK) * 5.f +
 			Get_Transform()->Get_State(Transform_State::UP);
@@ -1649,6 +1828,10 @@ void Kyle_FSM::skill_502100()
 		desc.fLimitDistance = 4.f;
 
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.f, desc, NORMAL_SKILL, 10.f, L"Hit_Slash_Orange");
+	}
+	else if (Init_CurFrame(108))
+	{
+		SOUND.Play_Sound(L"swing_chain_0", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 	}
 
 	Look_DirToTarget();
@@ -1705,6 +1888,12 @@ void Kyle_FSM::skill_500100()
 
 	if (Init_CurFrame(11))
 	{
+		SOUND.Play_Sound(L"vo_kyle_sk_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"swing_chain_0", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.fMoveSpeed = 0.f;
@@ -1718,6 +1907,10 @@ void Kyle_FSM::skill_500100()
 	}
 	else if (Init_CurFrame(31))
 	{
+		SOUND.Play_Sound(L"swing_axe_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"swing_chain_1", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.fMoveSpeed = 0.f;
@@ -1731,19 +1924,31 @@ void Kyle_FSM::skill_500100()
 	}
 	else if (Init_CurFrame(47))
 	{
+		SOUND.Play_Sound(L"swing_axe_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"swing_chain_2", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.fMoveSpeed = 0.f;
 		desc.fLifeTime = 0.5f;
-		desc.fLimitDistance = 0.f;
+		desc.fLimitDistance = 0.f;	
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::UP);
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, NORMAL_ATTACK, 10.f, L"Hit_Slash_Orange");
+	}
+	else if (Init_CurFrame(85))
+	{
+		SOUND.Play_Sound(L"swing_axe_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+		SOUND.Play_Sound(L"swing_chain_2", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 	}
 	else if (Init_CurFrame(87))
 	{
+		SOUND.Play_Sound(L"hit_explosive_bomb_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.fMoveSpeed = 0.f;
@@ -1753,8 +1958,11 @@ void Kyle_FSM::skill_500100()
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::LOOK) * 5.f;
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, AIRBORNE_SKILL, 10.f, L"Hit_Slash_Orange");
-
 	}
+	else if (Init_CurFrame(98))
+		SOUND.Play_Sound(L"swing_chain_0", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+	
 
 	if (m_iCurFrame > 11)
 		m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedLookTarget(Get_Transform()->Get_State(Transform_State::POS).xyz());
