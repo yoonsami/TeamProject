@@ -408,8 +408,6 @@ void Boss_DellonsWraith_FSM::FX_Mn_Dellons_skill_5100_Init()
 
     if (!m_pTarget.expired())
         Get_Transform()->Set_WorldMat(m_pTarget.lock()->Get_Transform()->Get_WorldMatrix());
-
-    SOUND.Play_Sound(L"Hit_Scythe_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 
