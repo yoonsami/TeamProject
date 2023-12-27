@@ -923,7 +923,7 @@ void GranseedScene::Load_HideAndSeek(shared_ptr<GameObject> pPlayer)
 		
 
 			wstring strSkilltag = L"Witcher_Sense" + to_wstring(skillIndex);
-			Set_Name(strSkilltag);
+			obj->Set_Name(strSkilltag);
 
 			wstring wstrFileName = strSkilltag + L".dat";
 			wstring wtsrFilePath = TEXT("..\\Resources\\EffectData\\GroupEffectData\\") + wstrFileName;

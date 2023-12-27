@@ -674,9 +674,15 @@ void Companion_Dellons_FSM::b_run_start_Init()
 void Companion_Dellons_FSM::b_run()
 {
     if (Init_CurFrame(9))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
     else if (Init_CurFrame(18))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
 
     if (!m_pLookingTarget.expired())
     {
@@ -772,9 +778,15 @@ void Companion_Dellons_FSM::b_run_Init()
 void Companion_Dellons_FSM::b_run_end_r()
 {
     if (Init_CurFrame(6))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
     else if (Init_CurFrame(11))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
 
     if (!m_pLookingTarget.expired())
     {
@@ -824,9 +836,15 @@ void Companion_Dellons_FSM::b_run_end_r_Init()
 void Companion_Dellons_FSM::b_run_end_l()
 {
     if (Init_CurFrame(9))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
     else if (Init_CurFrame(11))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
 
     if (!m_pLookingTarget.expired())
     {
@@ -876,9 +894,15 @@ void Companion_Dellons_FSM::b_run_end_l_Init()
 void Companion_Dellons_FSM::b_sprint()
 {
     if (Init_CurFrame(6))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
     else if (Init_CurFrame(13))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
 
     if (!m_pLookingTarget.expired())
     {

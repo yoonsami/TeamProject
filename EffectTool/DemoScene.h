@@ -21,5 +21,6 @@ private:
 	void			Load_DemoModel();
 	void			Load_Camera();
 	void			Load_Light();
+	void			Load_Terrain();
 };
 
