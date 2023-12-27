@@ -101,6 +101,14 @@ void LoadingBarScript::Change_Text()
         m_fAddValueTime = 0.f;
         ++m_iCurNum;
     }
+    else if (m_fMaxAddTime * 10.f < m_fAddValueTime)
+    {
+        m_fAddValueTime = 0.f;
+        ++m_iCurNum;
+    }
+
+    if (100 <= m_iCurNum)
+        m_iCurNum = 100;
 
     _float fTemp = static_cast<_float>(m_iCurNum);
     fTemp /= 100.f;

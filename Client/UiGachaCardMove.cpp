@@ -321,6 +321,7 @@ void UiGachaCardMove::End()
 {
 	//m_eState = STATE::NONE;
 	m_pOwner.lock()->GetOrAddTransform()->Scaled(m_fOriginScale);
+	m_pOwner.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, m_vecArrivalPos);
 
 	if (0 != m_strTextureTag.length())
 		m_pOwner.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(m_strTextureTag), TextureMapType::DIFFUSE);
