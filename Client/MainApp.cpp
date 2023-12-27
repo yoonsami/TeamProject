@@ -90,7 +90,7 @@ HRESULT MainApp::Open_Scene()
 
 void MainApp::Load_Ui()
 {
-	wstring assetPath = L"..\\Resources\\Textures\\UITexture\\Loading\\";
+	wstring assetPath = L"..\\Resources\\Textures\\UITexture\\";
 
 	for (auto& entry : fs::recursive_directory_iterator(assetPath))
 	{

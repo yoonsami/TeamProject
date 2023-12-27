@@ -32,7 +32,6 @@
 #include "CounterMotionTrailScript.h"
 #include "GroupEffectData.h"
 #include "UiHpBarController.h"
-#include "MapObjectScript.h"
 #include "UiCoolEndEffect.h"
 #include "MainCameraScript.h"
 #include "HeroChangeScript.h"
@@ -144,7 +143,9 @@ void GranseedScene::Tick()
 
 	if (KEYTAP(KEY_TYPE::C))
 	{
-		
+		auto pObj = Get_UI(L"UI_Message_Controller");
+		if (pObj)
+			pObj->Get_Script<UiMessageCreater>()->Create_Message(L"여긴 없는 듯 하다.!");
 		//auto pObj = Get_UI(L"UI_Costume_Controller");
 		//if (pObj)
 		//	pObj->Get_Script<UiCostumeController>()->Create_Costume();
@@ -203,7 +204,7 @@ void GranseedScene::Final_Tick()
 	
 	if (KEYPUSH(KEY_TYPE::TAB) && KEYPUSH(KEY_TYPE::F4))
 	{
-		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<KrisScene>());
+		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<MirScene>());
 		PHYSX.Set_CharacterControllerNull();
 
 		scene->Set_StaticObjects(m_StaticObject);
@@ -711,7 +712,12 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		}
 	}
 
-
+	weak_ptr<GameObject> pObj = Get_UI(L"UI_Message_Controller");
+	if (false == pObj.expired())
+	{
+		auto pScript = make_shared<UiMessageCreater>();
+		pObj.lock()->Add_Component(pScript);
+	}
 
 
 
@@ -723,18 +729,6 @@ void GranseedScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 	// ※※※※※※※※※※※※※※※	※※※※※※※※※※※※※※※	※※※※※※※※※※※※※※※
 	// add only GranseedScene	add only GranseedScene	add only GranseedScene
 	// ※※※※※※※※※※※※※※※	※※※※※※※※※※※※※※※	※※※※※※※※※※※※※※※
-
-	{
-		auto pObj = make_shared<GameObject>();
-		pObj->Set_LayerIndex(Layer_UI);
-		pObj->Set_Instancing(false);
-		pObj->Set_Name(L"UI_Message_Controller");
-
-		auto pScript = make_shared<UiMessageCreater>();
-		pObj->Add_Component(pScript);
-
-		Add_GameObject(pObj);
-	}
 	
 	{
 		auto pObj = make_shared<GameObject>();

@@ -5,6 +5,7 @@ class LoadingBarScript : public MonoBehaviour
 {
 public:
     LoadingBarScript();
+    ~LoadingBarScript();
 
 public:
     virtual HRESULT Init() override;
@@ -19,6 +20,7 @@ private:
     void Check_Time();
 
 private:
+    static _uint    iStringIndex;
     _bool   m_bIsLoadEnd        = {};
     _bool   m_bIsEndActivated   = {};
     _float  m_fCheckEndTime     = {};
@@ -40,5 +42,7 @@ private:
 
     _float  m_fAddValueTime     = {};
     _float  m_fMaxAddTime       = {};
+
+    vector<pair<_float, wstring>> m_vecString;
 };
 

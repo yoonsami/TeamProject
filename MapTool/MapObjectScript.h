@@ -46,6 +46,8 @@ public:
         Color AddDiffuseColor = {0.f, 0.f, 0.f, 0.f};
     //(Dummy[0].y >= 1.f) : RotateAxis + Speed
         _float4 RotateData = { 0.f, 0.f, 1.f, 1.f };
+    //(Dummy[1].x >= 1.f) : EffectsChaseCamera
+        _bool bEffectChaseCamera = { false };
     }MAPOBJDESC;
 
 public:
@@ -59,6 +61,7 @@ public:
     string& Get_EffectName() { return m_MapObjDesc.strEffectName; }
     Color& Get_AddDiffuseColor() { return m_MapObjDesc.AddDiffuseColor; }
     _float4& Get_RotateData() { return m_MapObjDesc.RotateData; }
+    _bool& Get_EffectChaseCamera() { return m_MapObjDesc.bEffectChaseCamera; }
 
 public:
     virtual HRESULT Init() override;

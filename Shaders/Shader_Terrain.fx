@@ -77,8 +77,8 @@ PatchTess ConstantHS(InputPatch<VS_OUT, 3> input, int patchID : SV_PrimitiveID)
 {
     PatchTess output = (PatchTess) 0.f;
     
-    float minDistance = g_vec2_1.x;
-    float maxDistance = g_vec2_1.y;
+    float minDistance = 11.f;
+    float maxDistance = 25.f;
 
     float3 edge0Pos = (input[1].pos + input[2].pos) / 2.f;
     float3 edge1Pos = (input[2].pos + input[0].pos) / 2.f;

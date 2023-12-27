@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "Light.h"
 #include "FSM.h"
+#include "MainCameraScript.h"
 
 MeteorRadialBlur::MeteorRadialBlur(_float fExploseTime, _float fBiggerSpeed, _float fMaintainTime)
 	: m_fExploseTime(fExploseTime), m_fBiggerSpeed(fBiggerSpeed), m_fEndTime(fMaintainTime + fExploseTime)
@@ -41,7 +42,7 @@ void MeteorRadialBlur::Tick()
 
 		curAmbientColor = _float4::Lerp(m_vOriginAmbientColor, targetAmbientColor, m_fAcc / (m_fExploseTime - fTimeOffset));
 		curDiffuseColor = _float4::Lerp(m_vOriginDiffuseColor, targetDiffuseColor, m_fAcc / (m_fExploseTime - fTimeOffset));
-
+		SWITCHMGR.Set_SwitchState(SWITCH_TYPE::YEONHEE_300100_LIGHT_OFF, true);
 	}
 
 	if (m_fAcc >= m_fExploseTime - 0.3f)
@@ -49,7 +50,7 @@ void MeteorRadialBlur::Tick()
 		if (!m_bMeteorAttack)
 		{
 			m_bMeteorAttack = true;
-
+			CAMERA_SHAKE(2.f, 0.3f)
 			vector<shared_ptr<GameObject>> targetMonster;
 
 			for (auto& obj : CUR_SCENE->Get_Objects())
@@ -107,7 +108,7 @@ void MeteorRadialBlur::Tick()
 			
 			curAmbientColor = m_vOriginAmbientColor;
 			curDiffuseColor = m_vOriginDiffuseColor;
-
+			SWITCHMGR.Set_SwitchState(SWITCH_TYPE::YEONHEE_300100_LIGHT_OFF, false);
 			
 			EVENTMGR.Delete_Object(Get_Owner());
 		}

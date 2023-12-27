@@ -23,6 +23,7 @@
 #include "TimerScript.h"
 #include "PortalScript.h"
 #include "MeshCollider.h"
+#include "UiQuestController.h"
 
 HRESULT Boss_Giant_Mir_FSM::Init()
 {
@@ -756,6 +757,11 @@ void Boss_Giant_Mir_FSM::SQ_Leave()
         if (!m_pFootRigidBody.expired())
             EVENTMGR.Delete_Object(m_pFootRigidBody.lock());
 
+		auto pObj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
+		if (pObj && pObj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::KILL_SPIKE) == CUR_QUEST::PROGRESS)
+			pObj->Get_Script<UiQuestController>()->Change_Value();
+
+
 		{
 			_float4 vPortalPos = _float4(0.f, 0.f, 0.f, 1.f);
 
@@ -1422,7 +1428,7 @@ void Boss_Giant_Mir_FSM::Create_Giant_Mir_Collider()
 
 void Boss_Giant_Mir_FSM::Create_DragonBall()
 {
-    Add_GroupEffectOwner(L"GiantMir_7100", _float3(0.f, -2.3f, 0.5f), false);
+    Add_GroupEffectOwner(L"GiantMir_7100", _float3(0.f, 0.f,0.f), true);
     
     SOUND.Play_Sound(L"magic_Fireball_Launch3", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, _float3(0.f, 1.5f, 0.f), m_fMySoundDistance);
 
@@ -1458,7 +1464,7 @@ void Boss_Giant_Mir_FSM::Create_DragonBall()
         EVENTMGR.Create_Object(ObjDragonBall);
 
         //Add ObjectDissolveCreate
-        ObjDragonBall->Add_Component(make_shared<ObjectDissolveCreate>(1.f));
+        ObjDragonBall->Add_Component(make_shared<ObjectDissolveCreate>(0.5f));
         ObjDragonBall->Get_Script<ObjectDissolveCreate>()->Init();
     }
 }

@@ -24,7 +24,6 @@
 #include "ModelRenderer.h"
 #include "OBBBoxCollider.h"
 #include "SphereCollider.h"
-#include "MapObjectScript.h"
 #include "AABBBoxCollider.h"
 #include "MainCameraScript.h"
 #include "HeroChangeScript.h"
@@ -113,7 +112,7 @@ void LogoScene::Load_Camera()
 
 void LogoScene::Load_Ui()
 {
-	wstring assetPath = L"..\\Resources\\Textures\\UITexture\\";
+	/*wstring assetPath = L"..\\Resources\\Textures\\UITexture\\";
 
 	for (auto& entry : fs::recursive_directory_iterator(assetPath))
 	{
@@ -127,7 +126,7 @@ void LogoScene::Load_Ui()
 		wstring fileName = entry.path().filename().wstring();
 		Utils::DetachExt(fileName);
 		RESOURCES.Load<Texture>(fileName, filePath);
-	}
+	}*/
 	list<shared_ptr<GameObject>>& tmp = static_pointer_cast<LoadingScene>(CUR_SCENE)->Get_StaticObjects();
 
 	Load_UIFile(L"..\\Resources\\UIData\\UI_Logo.dat", tmp);

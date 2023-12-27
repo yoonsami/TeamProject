@@ -43,7 +43,7 @@ void PortalScript::Tick()
 
 				m_bClicked = true;
 				// �������
-				SOUND.Play_Sound(L"SQ_TeleportOut_Rune_01", CHANNELID::SOUND_EFFECT, g_fEnvironmentRatio, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz(), 10.f/*MagicNumber*/);
+				SOUND.Play_Sound(L"SQ_TeleportOut_Rune_01", CHANNELID::SOUND_EFFECT, g_fEnvironmentRatio * 0.6f/*MagicNumber*/, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz(), 10.f/*MagicNumber*/);
 				{
 					wstring strSkilltag = L"Portal_Effect";
 					shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();

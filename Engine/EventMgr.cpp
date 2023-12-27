@@ -14,6 +14,10 @@ void EventMgr::Tick()
 	for (auto& obj : m_ObjToDelete)
 		CUR_SCENE->Remove_GameObject(obj);
 	m_ObjToDelete.clear();
+
+	if(m_pSceneToChange)
+	SCENE.Change_Scene(m_pSceneToChange);
+	m_pSceneToChange.reset();
 }
 
 void EventMgr::Create_Object(shared_ptr<GameObject> obj, _bool isStatic)
@@ -47,7 +51,7 @@ void EventMgr::Excute(const tEvent& event)
 		break;
 	
 	case EVENT_TYPE::SCENE_CHANGE:
-		SCENE.Change_Scene(reinterpret_pointer_cast<Scene>(event.lParam));
+		m_pSceneToChange = reinterpret_pointer_cast<Scene>(event.lParam);
 		break;
 	
 	default:

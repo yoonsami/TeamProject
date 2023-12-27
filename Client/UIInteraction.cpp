@@ -112,6 +112,9 @@ void UIInteraction::Create_Interaction(NPCTYPE eType, shared_ptr<GameObject> pAc
 		case NPCTYPE::GUARD:
 			eIndex = QUESTINDEX::KILL_SPIKE;
 			break;
+		case NPCTYPE::SPIKE_AFTER_COMBAT5:
+			eIndex = QUESTINDEX::KILL_MIR;
+			break;
         default:
             JustDialog = true;
             break;

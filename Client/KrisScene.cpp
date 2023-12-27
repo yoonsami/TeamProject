@@ -31,7 +31,6 @@
 #include "CounterMotionTrailScript.h"
 
 #include "UiHpBarController.h"
-#include "MapObjectScript.h"
 #include "UiCoolEndEffect.h"
 #include "MainCameraScript.h"
 #include "HeroChangeScript.h"
@@ -80,6 +79,7 @@
 #include "UIShop.h"
 #include "PortalScript.h"
 #include "ObjectDissolveCreate.h"
+#include "UiMessageCreater.h"
 namespace fs = std::filesystem;
 
 KrisScene::KrisScene()
@@ -216,7 +216,12 @@ void KrisScene::Final_Tick()
 			EVENTMGR.Create_Object(portal);
 		}
 		bPortalCreated = true;
+		auto pObj = Get_UI(L"UI_Message_Controller");
+		if (pObj)
+			pObj->Get_Script<UiMessageCreater>()->Create_Message(L"델론즈 획득 !");
 
+
+		DATAMGR.Set_Card_Inven(HERO::DELLONS);
 		SWITCHMGR.Set_SwitchState(SWITCH_TYPE::CREATE_WOLF_AFTER_DELLONS, true);
 	}
 
@@ -817,6 +822,18 @@ void KrisScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		if (nullptr != pObj) {
 			pObj->Add_Component(pScript);
 		}
+	}
+
+	{
+		auto pObj = make_shared<GameObject>();
+		pObj->Set_LayerIndex(Layer_UI);
+		pObj->Set_Instancing(false);
+		pObj->Set_Name(L"UI_Message_Controller");
+
+		auto pScript = make_shared<UiMessageCreater>();
+		pObj->Add_Component(pScript);
+
+		Add_GameObject(pObj);
 	}
 }
 

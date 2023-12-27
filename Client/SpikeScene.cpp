@@ -31,7 +31,6 @@
 #include "CounterMotionTrailScript.h"
 
 #include "UiHpBarController.h"
-#include "MapObjectScript.h"
 #include "UiCoolEndEffect.h"
 #include "MainCameraScript.h"
 #include "HeroChangeScript.h"
@@ -79,6 +78,7 @@
 #include "UiCostumeController.h"
 #include "UiDialogController.h"
 #include "UIShop.h"
+#include "UiMessageCreater.h"
 namespace fs = std::filesystem;
 
 SpikeScene::SpikeScene()
@@ -755,6 +755,15 @@ void SpikeScene::Load_Ui(shared_ptr<GameObject> pPlayer)
 		auto& pObj = pPlayer;
 		if (nullptr != pObj) {
 			pObj->Add_Component(pScript);
+		}
+	}
+
+	{
+		weak_ptr<GameObject> pObj = Get_UI(L"UI_Message_Controller");
+		if (false == pObj.expired())
+		{
+			auto pScript = make_shared<UiMessageCreater>();
+			pObj.lock()->Add_Component(pScript);
 		}
 	}
 }

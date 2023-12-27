@@ -517,7 +517,10 @@ void ImGui_Manager::Frame_SelcetObjectManager()
         
         shared_ptr<MapObjectScript> currentMapObjScript = m_pMapObjects[m_iObjects]->Get_Script<MapObjectScript>();
         _float4x4& matDummy = currentMapObjScript->Get_DummyData();
-        ImGui::DragFloat4("NoData / RotateData / AddColor / EffectName", matDummy.m[0], 0.1f, 0.f);
+        ImGui::Text("NoData / RotateData / AddColor / EffectName");
+        ImGui::DragFloat4("Dummy0##DummyData", matDummy.m[0], 0.1f, 0.f);
+        ImGui::Text("RotateData / NoData / ");
+        ImGui::DragFloat4("Dummy1##DummyData", matDummy.m[1], 0.1f, 0.f);
         if (matDummy.m[0][3] >= 1.f)
         {
             ImGui::Text("EffectName##Text");
@@ -526,7 +529,20 @@ void ImGui_Manager::Frame_SelcetObjectManager()
             strcpy_s(tempEffectName, strEffectName.c_str());
             ImGui::InputText("EffectName", tempEffectName, sizeof(tempEffectName));
             strEffectName = tempEffectName;
-            Text(strEffectName.data());
+
+            //if (ImGui::Button("CreateLoopEffect##ObjectDummyData"))
+            //{
+            //    if (m_pMapObjects[m_iObjects]->Get_Script<MapObjectLoopEffectScript>() == nullptr)
+            //    {
+            //        shared_ptr<MapObjectLoopEffectScript> LoopEffectScript = make_shared<MapObjectLoopEffectScript>( currentMapObjScript->Get_DummyData().m[0][3], Utils::ToWString(strEffectName));
+            //        m_pMapObjects[m_iObjects]->Add_Component(LoopEffectScript);
+            //    }
+            //    else
+            //    {
+            //        auto LoopEffectScript = m_pMapObjects[m_iObjects]->Get_Script<MapObjectLoopEffectScript>();
+            //        LoopEffectScript->Set_LoopEffectData(currentMapObjScript->Get_DummyData().m[0][3], Utils::ToWString(currentMapObjScript->Get_EffectName()));
+            //    }
+            //}
         }
         if (matDummy.m[0][2] >= 1.f)
         {
@@ -565,6 +581,12 @@ void ImGui_Manager::Frame_SelcetObjectManager()
                     MapObjLoopRotateScript->Set_RotateData(RotateData);
                 }
             }
+        }
+        if (matDummy.m[1][0] >= 1.f)
+        {
+            // 이펙트의 카메라 추적여부
+            _bool& bEffectChaseCamera = currentMapObjScript->Get_EffectChaseCamera();
+            ImGui::Checkbox("bEffectChaseCamera", &bEffectChaseCamera);
         }
     }
     
@@ -726,6 +748,19 @@ void ImGui_Manager::Frame_Light()
         // 선택한 점광원의 변화효과 설정
         if (m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>() != nullptr)
         {
+            auto PLscript = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>();
+
+            // 이펙트이름
+            ImGui::Text("EffectName##PointLightEffectName");
+            string& strEffectName = PLscript->Get_EffectName();
+            char tempEffectName[MAX_PATH];
+            strcpy_s(tempEffectName, strEffectName.c_str());
+            ImGui::InputText("EffectName", tempEffectName, sizeof(tempEffectName));
+            strEffectName = tempEffectName;
+
+            _float& fDeltaStart = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Get_DeltaStart();
+            ImGui::DragFloat("StartDelta##PointLightDesc", &fDeltaStart, 0.1f, 0.f, 1.f);
+
             _bool bEffectUse = m_pPointLightObjects[m_iPointLightIndex]->Get_Script<PointLightScript>()->Get_bUseEffect();
             if (ImGui::Checkbox("##CurrentPointLightEffectUse", &bEffectUse))
                 // 사용여부 체크박스 반영하여 다시 넣기
@@ -928,8 +963,17 @@ void ImGui_Manager::Frame_Magic()
         //    auto& Dummy = MapObj->Get_Script<MapObjectScript>()->Get_DummyData();
         //    Dummy = _float4x4{ 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f ,0.f, 0.f };
         //}
-        // 추가바닥초기화
-        m_Ground4PointsVector.clear();
+        //// 추가바닥초기화
+        //m_Ground4PointsVector.clear();
+        // 맵오브젝트 스킬이름 비상시생성으로 변경
+        for (auto& pMapObj : m_pMapObjects)
+        {
+            auto& DummyData = pMapObj->Get_Script<MapObjectScript>()->Get_DummyData();
+            if (DummyData.m[0][3] >= 1.f)
+            {
+                DummyData.m[0][3] = 0.f;
+            }
+        }
     }
 
     // 맵 더미데이터 관리
@@ -2003,6 +2047,8 @@ HRESULT ImGui_Manager::Save_MapObject()
                 file->Write<_float>(pPTLTEffect.lock()->Get_StartRange());
                 file->Write<_float>(pPTLTEffect.lock()->Get_TargetRange());
                 file->Write<_float>(pPTLTEffect.lock()->Get_Speed());
+                file->Write<string>(pPTLTEffect.lock()->Get_EffectName());
+                file->Write<_float>(pPTLTEffect.lock()->Get_DeltaStart());
             }
         }
     }
@@ -2111,6 +2157,10 @@ HRESULT ImGui_Manager::Save_MapObject()
         if (MapDesc.matDummyData.m[0][1] >= 1.f)
         {
             file->Write<_float4>(MapDesc.RotateData);
+        }
+        if (MapDesc.matDummyData.m[1][0] >= 1.f)
+        {
+            file->Write<_bool>(MapDesc.bEffectChaseCamera);
         }
     }
 
@@ -2289,9 +2339,12 @@ HRESULT ImGui_Manager::Load_MapObject()
             pPLE->Set_TargetRange(tempFloat);
             file->Read<_float>(tempFloat);
             pPLE->Set_Speed(tempFloat);
+            pPLE->Set_DeltaPM(-1.f);
+            pPLE->Set_EffectName(file->Read<string>());
             // 랜덤으로 델타타임과 PM세팅
-            pPLE->Set_DeltaTime(Utils::Random_In_Range(0.f, 1.f));
-            pPLE->Set_DeltaPM(rand() % 2 > 0 ? 1.f : -1.f);
+            file->Read<_float>(tempFloat);
+            //pPLE->Set_DeltaStart(0.f);
+            pPLE->Set_DeltaStart(tempFloat);
         }
     }
 
@@ -2370,6 +2423,10 @@ HRESULT ImGui_Manager::Load_MapObject()
         if (MapDesc.matDummyData.m[0][1] >= 1.f)
         {
             MapDesc.RotateData = file->Read<_float4>();
+        }
+        if (MapDesc.matDummyData.m[1][0] >= 1.f)
+        {
+            MapDesc.bEffectChaseCamera = file->Read<_bool>();
         }
         
         shared_ptr<GameObject> CreateObject = Create_MapObject(MapDesc);

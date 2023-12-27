@@ -121,14 +121,15 @@ void FieldScript::Tick()
 			{
 				auto camera = CUR_SCENE->Get_MainCamera();
 				auto script = camera->Get_Script<MainCameraScript>();
-				script->Fix_Camera(5.f, _float3(0.f), 5.f);
-				_float3 vLookPos = _float3(89.512f, -12.5f, 120.25f);
-				_float3 vDir = _float3(88.580f, 1.656f, 134.472f) - vLookPos;
+				_float3 vLookPos = _float3(103.f, -12.5f, 120.f);
+				_float3 vDir = _float3(125.f, -3.f, 120.f) - vLookPos;
 				_float fDist = vDir.Length();
+				script->Fix_Camera(5.f, _float3(0.f), fDist);
 				vDir.Normalize();
 				script->Set_FixedDir(vDir);
 				script->Set_FixedDist(fDist);
 				script->Set_FixedLookTarget(vLookPos);
+				camera->Get_Transform()->Set_State(Transform_State::POS, _float4(vLookPos + vDir * fDist, 1.f));
 
 				auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
 				if (pObj)
@@ -306,6 +307,8 @@ void FieldScript::Load_Monster(_uint iCnt, const wstring& strMonsterTag, shared_
 		ObjMonster->Set_ObjectGroup(OBJ_MONSTER);
 		ObjMonster->Get_FSM()->Init();
 		ObjMonster->Set_DrawShadow(true);
+		ObjMonster->Add_Component(make_shared<Add_Score>(SCORE_TYPE::COMBAT_5));
+		SWITCHMGR.Add_Score(SCORE_TYPE::COMBAT_5_MONSTER_COUNT);
 		EVENTMGR.Create_Object(ObjMonster);
 	}
 }

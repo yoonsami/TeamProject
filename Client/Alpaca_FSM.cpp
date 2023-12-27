@@ -57,6 +57,13 @@ HRESULT Alpaca_FSM::Init()
         m_fMySoundDistance = 4.f;
         m_fVoiceVolume = 0.5f;
 
+        // HP Atk Init
+        if (!m_pOwner.expired())
+        {
+            m_pOwner.lock()->Set_MaxHp(1250);
+            m_pOwner.lock()->Set_Atk(10.f);
+        }
+
         m_bInitialize = true;
     }
 
@@ -946,7 +953,7 @@ void Alpaca_FSM::skill_1100()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     if (m_iCurFrame == 26)
-        AttackCollider_On(NONE_HIT, 2.f);
+        AttackCollider_On(NONE_HIT, m_pOwner.lock()->Get_Atk());
     else if (m_iCurFrame == 30)
         AttackCollider_Off();
 
@@ -975,7 +982,7 @@ void Alpaca_FSM::skill_2100()
 
     //NORMAL ATTACK
     if (m_iCurFrame == 29)
-        AttackCollider_On(NONE_HIT, 2.f);
+        AttackCollider_On(NONE_HIT, m_pOwner.lock()->Get_Atk());
     else if (m_iCurFrame == 38)
         AttackCollider_Off();
     
@@ -1003,7 +1010,7 @@ void Alpaca_FSM::skill_3100()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     if (m_iCurFrame == 33)
-        AttackCollider_On(NONE_HIT, 2.f);
+        AttackCollider_On(NONE_HIT, m_pOwner.lock()->Get_Atk());
     else if (m_iCurFrame == 34)
         AttackCollider_Off();
 

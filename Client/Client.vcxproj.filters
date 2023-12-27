@@ -430,9 +430,6 @@
     <Filter Include="02.Component\01.FSM\08.Companion_FSM\02.Companion_Shane_FSM">
       <UniqueIdentifier>{cfaa2eb9-641c-42a3-a34e-e88d8b917dc3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\00.MonoBehaviour\MapObject">
-      <UniqueIdentifier>{eaa2751e-548a-4450-b36d-db18a2643371}</UniqueIdentifier>
-    </Filter>
     <Filter Include="97.Data\SwitchMgr">
       <UniqueIdentifier>{f0d7d22b-ec7e-4115-bcbd-5ce272a6f207}</UniqueIdentifier>
     </Filter>
@@ -513,9 +510,6 @@
     <ClInclude Include="DebugTool.h">
       <Filter>98.Debug</Filter>
     </ClInclude>
-    <ClInclude Include="MapObjectScript.h">
-      <Filter>02.Component\00.MonoBehaviour\MapObject</Filter>
-    </ClInclude>
     <ClInclude Include="Silversword_Soldier_FSM.h">
       <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\00.Silversword_Soldier_FSM</Filter>
     </ClInclude>
@@ -572,9 +566,6 @@
     </ClInclude>
     <ClInclude Include="..\Libraries\Include\IMGUI\ImZoomSlider.h">
       <Filter>98.Debug\IMGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="LogoScene.h">
-      <Filter>01.Scene\01.LogoScene</Filter>
     </ClInclude>
     <ClInclude Include="..\Shaders\Fxaa3_11.h">
       <Filter>Shader\Common</Filter>
@@ -918,6 +909,9 @@
     </ClInclude>
     <ClInclude Include="Combat5_LightControl.h" />
     <ClInclude Include="MeteorRadialBlur.h" />
+    <ClInclude Include="LogoScene.h">
+      <Filter>01.Scene\01.LogoScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -967,9 +961,6 @@
     </ClCompile>
     <ClCompile Include="DebugTool.cpp">
       <Filter>98.Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="MapObjectScript.cpp">
-      <Filter>02.Component\00.MonoBehaviour\MapObject</Filter>
     </ClCompile>
     <ClCompile Include="Silversword_Soldier_FSM.cpp">
       <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\00.Silversword_Soldier_FSM</Filter>

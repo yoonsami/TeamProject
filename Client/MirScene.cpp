@@ -31,7 +31,6 @@
 #include "CounterMotionTrailScript.h"
 
 #include "UiHpBarController.h"
-#include "MapObjectScript.h"
 #include "UiCoolEndEffect.h"
 #include "MainCameraScript.h"
 #include "HeroChangeScript.h"

@@ -68,6 +68,13 @@ HRESULT Boss_Dellons_FSM::Init()
         if (!m_pOwner.expired())
             m_pOwner.lock()->Add_Component(make_shared<UiBossDialog>());
 
+        // HP Atk Init
+        if (!m_pOwner.expired())
+        {
+            m_pOwner.lock()->Set_MaxHp(1000.f);
+            m_pOwner.lock()->Set_Atk(500.f);
+        }
+
         m_bInitialize = true;
     }
 	m_fNormalAttack_AnimationSpeed = 1.2f;

@@ -27,6 +27,8 @@ public:
     _float Get_StartRange() { return m_fStartRange; }
     _float Get_TargetRange() { return m_fEndRange; }
     _float Get_Speed() { return m_fEffectSpeed; }
+    string& Get_EffectName() { return m_strEffectName; }
+    _float& Get_DeltaStart() { return m_fDeltaStart; }
 
 public:
     void Set_bUseEffect(_bool _bUseEffect) { m_bUseEffect = _bUseEffect; }
@@ -37,9 +39,14 @@ public:
     void Set_StartRange(_float _fRange) { m_fStartRange = _fRange; }
     void Set_TargetRange(_float _fRange) { m_fEndRange = _fRange; }
     void Set_Speed(_float _fEffectSpeed) { m_fEffectSpeed = _fEffectSpeed; }
-    void Set_DeltaTime(_float _fDeltaTime) { m_fDeltaTime = _fDeltaTime; }
+    void Set_DeltaStart(_float _fDeltaTime) { m_fDeltaStart = _fDeltaTime; m_fDeltaTime = m_fDeltaStart; }
     void Set_DeltaPM(_float _fDeltaPM) { m_fDeltaPM = _fDeltaPM; }
+    void Set_EffectName(string _strEffectName) { m_strEffectName = _strEffectName; }
     virtual shared_ptr<MonoBehaviour> Copy_Script() { return make_shared<PointLightScript>(); }
+
+public:
+    void Add_GroupEffectOwner(const wstring& strSkilltag, _float3 vPosOffset, _bool usePosAs, shared_ptr<MonoBehaviour> pScript);
+
 private:
     _bool m_bUseEffect = { false };
     _float4 m_AmbientStartColor = { 1.f, 1.f, 1.f, 1.f };
@@ -49,7 +56,10 @@ private:
     _float m_fStartRange = { 0.f };
     _float m_fEndRange = { 0.f };
     _float m_fEffectSpeed = { 1.f };
-
+    // 추가그룹이펙트이름
+    string m_strEffectName = "";
+    _float m_fDeltaStart = { 0.f };
+    
     _float m_fDeltaTime = { 0.f };
     // 델타의 증가량의 부호 Plus 1 or Minus 1
     _float m_fDeltaPM = { 1.f };
