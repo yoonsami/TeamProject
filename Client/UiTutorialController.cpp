@@ -67,7 +67,7 @@ void UiTutorialController::Start_Tutorial()
     m_bIsStart = true;
     m_pImage.lock()->Set_Render(true);
 
-    g_bIsCanRotation = false;
+    //g_bIsCanRotation = false;
 }
 
 void UiTutorialController::Change_Texture()
@@ -107,7 +107,7 @@ void UiTutorialController::Finish_Tutorial()
         // ½Ã°£ ¸ØÃã ÇØÁ¦
         TIME.Set_TimeSlow(0.f, 1.f);
     }
-    g_bIsCanRotation = true;
+    //g_bIsCanRotation = true;
     m_bIsStart = false;
 
     EVENTMGR.Delete_Object(m_pImage.lock());
@@ -116,7 +116,7 @@ void UiTutorialController::Finish_Tutorial()
 
 void UiTutorialController::End_Tutorial()
 {
-    g_bIsCanRotation = true;
+    //g_bIsCanRotation = true;
     m_bIsStart = false;
     m_pImage.lock()->Set_Render(false);
 
