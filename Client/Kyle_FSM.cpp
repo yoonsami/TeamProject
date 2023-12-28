@@ -180,7 +180,11 @@ void Kyle_FSM::State_Tick()
 		break;
 	}
 	
-	Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+	if (m_fWeaponEffectTimer > 0.1f)
+	{
+		//Add_GroupEffectOwner(L"Kyle_500100_WeaponFollow1", Cal_WeaponBonePos());
+		m_fWeaponEffectTimer = 0.f;
+	}
 
 	if (m_iPreFrame != m_iCurFrame)
 		m_iPreFrame = m_iCurFrame;
@@ -1791,8 +1795,8 @@ void Kyle_FSM::skill_502100()
 		Add_GroupEffectOwner(L"Kyle_502100_Install2", _float3(0.f, 0.f, 2.f), false, nullptr, false);
 	else if (Init_CurFrame(108))
 		Add_Effect(L"Kyle_502100_Install1");
-	//else if (Init_CurFrame(109))
-	//	Add_GroupEffectOwner(L"Kyle_502100_Wind", _float3(0.f, 0.5f, -3.8f), false, nullptr, false);
+	else if (Init_CurFrame(109))
+		Add_GroupEffectOwner(L"Kyle_502100_Wind", _float3(0.f, 0.5f, -3.8f), false, nullptr, false);
 
 	if (m_iCurFrame >= 21 && m_iCurFrame < 143)
 		Set_WeaponLight(true);
