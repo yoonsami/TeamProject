@@ -566,6 +566,7 @@ void DataMgr::Initialize()
             tagData.Skill10DamageMul = 3.f;
             tagData.Skill11DamageMul = 2.f;
             tagData.Skill12DamageMul = 0.3f; // GroggyPattern
+            tagData.Skill13DamageMul = 5.f; // Groggy Fail Pattern
         }
         // ENT_SOLDIER
         {
@@ -1311,8 +1312,26 @@ _float DataMgr::Get_Skill_Damage(MONSTER eMonster, _uint iSkillIndex)
         return fDamage * pData.Skill4DamageMul;
     case 5:
         return fDamage * pData.Skill5DamageMul;
-    default:
-        return 0.f;
+    case 6:
+        return fDamage * pData.Skill6DamageMul;
+    case 7:
+        return fDamage * pData.Skill7DamageMul;
+    case 8:
+        return fDamage * pData.Skill8DamageMul;
+    case 9:
+        return fDamage * pData.Skill9DamageMul;
+    case 10:
+        return fDamage * pData.Skill10DamageMul;
+    case 11:
+        return fDamage * pData.Skill11DamageMul;
+    case 12:
+        return fDamage * pData.Skill12DamageMul;
+    case 13:
+        return fDamage * pData.Skill13DamageMul;
+    case 14:
+        return fDamage * pData.Skill14DamageMul;
+    case 15:
+        return fDamage * pData.Skill15DamageMul;
     }
 }
 

@@ -1368,7 +1368,7 @@ void Dellons_FSM::skill_100200()
 
     if (Init_CurFrame(15))
     {
-        SOUND.Play_Sound(L"hit_ground_00", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"hit_explosive_bomb_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
