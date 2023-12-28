@@ -144,6 +144,20 @@ void MeshEffect::Render()
 		m_RenderParams.SetFloat(2, m_fCurrRimLightIntensity);
 		m_RenderParams.SetFloat(3, m_fFadeOutRatio);
 	    Bind_UpdatedColor_ToShader();
+
+		_float2 vTemp2;
+		_float4 vTemp4;
+
+		vTemp2 = _float2(m_vCurrTexUVOffset_Distortion.x, m_vCurrTexUVOffset_Distortion.y);
+		m_RenderParams.SetVec2(3, vTemp2);
+		vTemp4 = _float4(m_vCurrTexUVOffset_Op1.x, m_vCurrTexUVOffset_Op1.y, m_vCurrTexUVOffset_Op2.x, m_vCurrTexUVOffset_Op2.y);
+		m_RenderParams.SetVec4(0, vTemp4);
+		vTemp4 = _float4(m_vCurrTexUVOffset_Op3.x, m_vCurrTexUVOffset_Op3.y, m_vCurrTexUVOffset_Blend.x, m_vCurrTexUVOffset_Blend.y);
+		m_RenderParams.SetVec4(1, vTemp4);
+		vTemp4 = _float4(m_vCurrTexUVOffset_Overlay.x, m_vCurrTexUVOffset_Overlay.y, m_vCurrTexUVOffset_Dissolve.x, m_vCurrTexUVOffset_Dissolve.y);
+		m_RenderParams.SetVec4(2, vTemp4);
+		vTemp4 = _float4(m_UVTexRangeX.x, m_UVTexRangeX.y, m_UVTexRangeY.x, m_UVTexRangeY.y);
+		m_RenderParams.SetVec4(3, vTemp4);
 	}
 
 
