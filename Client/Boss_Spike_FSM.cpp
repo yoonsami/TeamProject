@@ -333,9 +333,14 @@ void Boss_Spike_FSM::State_Init()
 
 void Boss_Spike_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
-    m_pOwner.lock()->Get_Hurt(fDamage);
+    // Random 20 Percent
+    _float fHitDamage = Utils::Random_In_Range(fDamage * 0.8f, fDamage * 1.2f);
+    if (iElementType == ElementType::FIRE)
+        fHitDamage *= 1.2f; // 속성추뎀
 
-	CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage, ElementType(iElementType));
+    m_pOwner.lock()->Get_Hurt(fHitDamage);
+
+	CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fHitDamage, ElementType(iElementType));
 
 
     _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();

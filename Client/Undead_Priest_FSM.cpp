@@ -244,6 +244,11 @@ void Undead_Priest_FSM::State_Init()
 
 void Undead_Priest_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
+    // Random 20 Percent
+    _float fHitDamage = Utils::Random_In_Range(fDamage * 0.8f, fDamage * 1.2f);
+    if (iElementType == ElementType::LIGHT)
+        fHitDamage *= 1.2f; // 속성추뎀
+
     auto pScript = m_pOwner.lock()->Get_Script<UiMonsterHp>();
     if (nullptr == pScript)
     {
@@ -253,10 +258,10 @@ void Undead_Priest_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared
     }
 
     //Calculate Damage 
-    m_pOwner.lock()->Get_Hurt(fDamage);
+    m_pOwner.lock()->Get_Hurt(fHitDamage);
 
 
-	CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage, ElementType(iElementType));
+	CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fHitDamage, ElementType(iElementType));
     //Target Change
     if (pLookTarget != nullptr)
 	{

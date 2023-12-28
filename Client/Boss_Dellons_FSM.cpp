@@ -336,6 +336,8 @@ void Boss_Dellons_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_
 {
     // Random 20 Percent
     _float fHitDamage = Utils::Random_In_Range(fDamage * 0.8f, fDamage * 1.2f);
+    if (iElementType == ElementType::LIGHT)
+        fHitDamage *= 1.2f; // 속성추뎀
 
     if (!m_bSuperArmor)
     {
