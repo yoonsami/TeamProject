@@ -68,11 +68,10 @@ HRESULT Boss_Dellons_FSM::Init()
         if (!m_pOwner.expired())
             m_pOwner.lock()->Add_Component(make_shared<UiBossDialog>());
 
-        // HP Atk Init
+        // HP Init
         if (!m_pOwner.expired())
         {
-            m_pOwner.lock()->Set_MaxHp(1000.f);
-            m_pOwner.lock()->Set_Atk(500.f);
+            m_pOwner.lock()->Set_MaxHp(DATAMGR.Get_MonsterData(MONSTER::DELLONS).MaxHp);
         }
 
         m_bInitialize = true;
@@ -1188,7 +1187,8 @@ void Boss_Dellons_FSM::skill_1100()
     {
         SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_MonsterData(MONSTER::DELLONS).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::DELLONS).AttackDamageMul * 0.2f);
     }
     else if (Init_CurFrame(19))
     {
@@ -1231,7 +1231,8 @@ void Boss_Dellons_FSM::skill_1200()
     {
         SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_MonsterData(MONSTER::DELLONS).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::DELLONS).AttackDamageMul * 0.2f);
     }
     else if (Init_CurFrame(18))
     {
@@ -1275,7 +1276,8 @@ void Boss_Dellons_FSM::skill_1300()
     {
         SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_MonsterData(MONSTER::DELLONS).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::DELLONS).AttackDamageMul * 0.2f);
     }
     else if (Init_CurFrame(33))
     {
@@ -1322,7 +1324,8 @@ void Boss_Dellons_FSM::skill_1400()
     {
         SOUND.Play_Sound(L"swing_hammer_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_MonsterData(MONSTER::DELLONS).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::DELLONS).AttackDamageMul * 0.2f);
     }
     else if (Init_CurFrame(14))
         AttackCollider_Off();
@@ -1330,7 +1333,8 @@ void Boss_Dellons_FSM::skill_1400()
     {
         SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+        AttackCollider_On(KNOCKBACK_ATTACK, 
+            DATAMGR.Get_MonsterData(MONSTER::DELLONS).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::DELLONS).AttackDamageMul * 0.2f);
     }
     else if (Init_CurFrame(24))
         AttackCollider_Off();
@@ -1441,7 +1445,9 @@ void Boss_Dellons_FSM::skill_100100()
             Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
             _float3::Up;
 
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Monster_SkillCollider", vSkillPos, 1.5f, desc, NORMAL_ATTACK, 5.f, L"Hit_Slash_Dark");
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Monster_SkillCollider", vSkillPos, 1.5f, desc, NORMAL_ATTACK, 
+            DATAMGR.Get_MonsterData(MONSTER::DELLONS).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::DELLONS).Skill1DamageMul * 0.5f
+            , L"Hit_Slash_Dark");
     }
 
     if (m_iCurFrame == 27)
@@ -1493,7 +1499,9 @@ void Boss_Dellons_FSM::skill_100200()
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
             Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
             _float3::Up;
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Monster_SkillCollider", vSkillPos, 1.5f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Dark");
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Monster_SkillCollider", vSkillPos, 1.5f, desc, AIRBORNE_ATTACK, 
+            DATAMGR.Get_MonsterData(MONSTER::DELLONS).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::DELLONS).Skill1DamageMul * 0.5f
+            , L"Hit_Slash_Dark");
     }
  
     if (Is_AnimFinished())
@@ -1535,7 +1543,8 @@ void Boss_Dellons_FSM::skill_200100()
 
         SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+        AttackCollider_On(KNOCKBACK_ATTACK, 
+            DATAMGR.Get_MonsterData(MONSTER::DELLONS).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::DELLONS).Skill2DamageMul * 0.5f);
     }
     else if (Init_CurFrame(12))
         AttackCollider_Off();
@@ -1586,7 +1595,9 @@ void Boss_Dellons_FSM::skill_200200()
         desc.fLimitDistance = 0.f;
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f + _float3::Up;
-        Create_ForwardMovingSkillCollider(Monster_Attack, L"Monster_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_SKILL, 10.f, L"Hit_Slash_Dark");
+        Create_ForwardMovingSkillCollider(Monster_Attack, L"Monster_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_SKILL, 
+            DATAMGR.Get_MonsterData(MONSTER::DELLONS).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::DELLONS).Skill2DamageMul * 0.5f
+            , L"Hit_Slash_Dark");
     }
 
     if (Is_AnimFinished())
@@ -1753,7 +1764,8 @@ void Boss_Dellons_FSM::skill_400100()
             desc.fLimitDistance = 3.5f;
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK, 
+                DATAMGR.Get_MonsterData(MONSTER::DELLONS).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::DELLONS).Skill4DamageMul * 0.1f);
         }
     }
     else if (Init_CurFrame(99))
@@ -1768,7 +1780,8 @@ void Boss_Dellons_FSM::skill_400100()
         desc.fLimitDistance = 5.f;
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * -0.5f + _float3::Up;
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_SkillCollider", vSkillPos, 2.f, desc, KNOCKDOWN_SKILL, 10.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_SkillCollider", vSkillPos, 2.f, desc, KNOCKDOWN_SKILL, 
+            DATAMGR.Get_MonsterData(MONSTER::DELLONS).AttackDamage* DATAMGR.Get_MonsterData(MONSTER::DELLONS).Skill4DamageMul * 0.2f);
     }
 
     if (m_iCurFrame >= 110)

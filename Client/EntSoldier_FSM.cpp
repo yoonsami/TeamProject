@@ -53,6 +53,11 @@ HRESULT EntSoldier_FSM::Init()
         m_fVoiceVolume = 0.5f;
         m_fEffectVolume = 0.4f;
 
+        // HP Init
+        if (!m_pOwner.expired())
+        {
+            m_pOwner.lock()->Set_MaxHp(DATAMGR.Get_MonsterData(MONSTER::ENT_SOLDIER).MaxHp);
+        }
 
         m_bInitialize = true;
     }
@@ -986,7 +991,8 @@ void EntSoldier_FSM::skill_1100()
     {
         SOUND.Play_Sound(L"swing_spear_05", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         Add_And_Set_Effect(L"EntSoldier_1100_slash");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_MonsterData(MONSTER::ENT_SOLDIER).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::ENT_SOLDIER).Skill1DamageMul);
     }
     else if (Init_CurFrame(17))
         AttackCollider_Off();
@@ -1020,7 +1026,8 @@ void EntSoldier_FSM::skill_2100()
         SOUND.Play_Sound(L"swing_spear_05", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 		Add_And_Set_Effect(L"EntSoldier_2100");
-        AttackCollider_On(NORMAL_ATTACK, 3.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_MonsterData(MONSTER::ENT_SOLDIER).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::ENT_SOLDIER).Skill2DamageMul * 0.3f);
     }
     else if (Init_CurFrame(19))
     {
@@ -1030,14 +1037,16 @@ void EntSoldier_FSM::skill_2100()
     else if (Init_CurFrame(22))
     {
         SOUND.Play_Sound(L"swing_spear_05", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-        AttackCollider_On(NORMAL_ATTACK, 3.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_MonsterData(MONSTER::ENT_SOLDIER).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::ENT_SOLDIER).Skill2DamageMul * 0.3f);
     }
     else if (Init_CurFrame(29))
         AttackCollider_Off();
     else if (Init_CurFrame(39))
     {
         SOUND.Play_Sound(L"swing_spear_05", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-        AttackCollider_On(NORMAL_ATTACK, 3.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_MonsterData(MONSTER::ENT_SOLDIER).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::ENT_SOLDIER).Skill2DamageMul * 0.4f);
     }
     else if (Init_CurFrame(46))
         AttackCollider_Off();

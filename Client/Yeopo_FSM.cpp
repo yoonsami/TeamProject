@@ -1006,7 +1006,8 @@ void Yeopo_FSM::skill_1100()
     if (Init_CurFrame(9))
     {
         Set_ColliderOption(FIRE, L"Hit_Slash_Red");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).AttackDamageMul * 0.2f);
     }
     else if (Init_CurFrame(19))
         AttackCollider_Off();
@@ -1063,7 +1064,8 @@ void Yeopo_FSM::skill_1200()
         SOUND.Play_Sound(L"swing_spear_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         Set_ColliderOption(FIRE, L"Hit_Slash_Red");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).AttackDamageMul * 0.2f);
     }
     else if (Init_CurFrame(17))
         AttackCollider_Off();
@@ -1201,14 +1203,16 @@ void Yeopo_FSM::skill_1400()
         SOUND.Play_Sound(L"swing_spear_05_st", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         Set_ColliderOption(FIRE, L"Hit_Slash_Red");
-        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+        AttackCollider_On(KNOCKBACK_ATTACK, 
+            DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).AttackDamageMul * 0.2f);
     }
     else if (Init_CurFrame(14))
         AttackCollider_Off();
     else if (Init_CurFrame(19))
     {
         Set_ColliderOption(FIRE, L"Hit_Slash_Red");
-        AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
+        AttackCollider_On(KNOCKDOWN_ATTACK, 
+            DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).AttackDamageMul * 0.4f);
     }
     else if (Init_CurFrame(36))
         AttackCollider_Off();
@@ -1345,7 +1349,9 @@ void Yeopo_FSM::skill_100200()
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 10.f;
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f, L"Hit_Slash_Red");
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 
+            DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).Skill1DamageMul * 0.25f
+            , L"Hit_Slash_Red");
         CAMERA_SHAKE(0.1f, 0.1f);
     }
     else if (Init_CurFrame(30))
@@ -1365,7 +1371,9 @@ void Yeopo_FSM::skill_100200()
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 13.f;
 
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f, L"Hit_Slash_Red");
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 
+            DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).Skill1DamageMul * 0.25f
+            , L"Hit_Slash_Red");
     }
 
     if(Init_CurFrame(45))
@@ -1427,7 +1435,9 @@ void Yeopo_FSM::skill_100300()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK);
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.5f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Red");
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.5f, desc, AIRBORNE_ATTACK, 
+            DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).Skill1DamageMul * 0.5f
+            , L"Hit_Slash_Red");
         CAMERA_SHAKE(0.2f, 0.2f);
     }
     
@@ -1478,7 +1488,8 @@ void Yeopo_FSM::skill_200100()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK, 10.f, L"Hit_Slash_Red");
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK, 
+            DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).Skill2DamageMul, L"Hit_Slash_Red");
         CAMERA_SHAKE(0.3f, 0.2f);
     }
     
@@ -1523,7 +1534,8 @@ void Yeopo_FSM::skill_300100()
         SOUND.Play_Sound(L"swing_spear_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         Set_ColliderOption(FIRE, L"Hit_Slash_Red");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).Skill3DamageMul * 0.1f);
     }
     else if (Init_CurFrame(30))
         AttackCollider_Off();
@@ -1531,7 +1543,8 @@ void Yeopo_FSM::skill_300100()
     {
         SOUND.Play_Sound(L"swing_spear_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         Set_ColliderOption(FIRE, L"Hit_Slash_Red");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).Skill3DamageMul * 0.1f);
     }
     else if (Init_CurFrame(46))
         AttackCollider_Off();
@@ -1539,7 +1552,8 @@ void Yeopo_FSM::skill_300100()
     {
         SOUND.Play_Sound(L"swing_spear_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         Set_ColliderOption(FIRE, L"Hit_Slash_Red");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).Skill3DamageMul * 0.1f);
     }
     else if (Init_CurFrame(64))
         AttackCollider_Off();
@@ -1593,7 +1607,8 @@ void Yeopo_FSM::skill_300200()
         SOUND.Play_Sound(L"swing_spear_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         Set_ColliderOption(FIRE, L"Hit_Slash_Red");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).Skill3DamageMul * 0.1f);
     }
     else if (Init_CurFrame(12))
         AttackCollider_Off();
@@ -1602,7 +1617,8 @@ void Yeopo_FSM::skill_300200()
         SOUND.Play_Sound(L"swing_spear_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         Set_ColliderOption(FIRE, L"Hit_Slash_Red");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).Skill3DamageMul * 0.1f);
     }
     else if (Init_CurFrame(20))
         AttackCollider_Off();
@@ -1654,7 +1670,8 @@ void Yeopo_FSM::skill_300300()
         SOUND.Play_Sound(L"swing_spear_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         Set_ColliderOption(FIRE, L"Hit_Slash_Red");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).Skill3DamageMul * 0.1f);
     }
     else if (Init_CurFrame(18))
         AttackCollider_Off();
@@ -1663,7 +1680,8 @@ void Yeopo_FSM::skill_300300()
         SOUND.Play_Sound(L"swing_spear_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         Set_ColliderOption(FIRE, L"Hit_Slash_Red");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).Skill3DamageMul * 0.1f);
     }
     else if (Init_CurFrame(30))
         AttackCollider_Off();
@@ -1718,7 +1736,8 @@ void Yeopo_FSM::skill_300400()
     {
         SOUND.Play_Sound(L"swing_spear_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         Set_ColliderOption(FIRE, L"Hit_Slash_Red");
-        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+        AttackCollider_On(KNOCKBACK_ATTACK, 
+            DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).Skill3DamageMul * 0.15f);
     }
     else if (Init_CurFrame(11))
     {
@@ -1729,7 +1748,8 @@ void Yeopo_FSM::skill_300400()
         SOUND.Play_Sound(L"swing_spear_05", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         SOUND.Play_Sound(L"vo_yeopo_tensionup_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         Set_ColliderOption(FIRE, L"Hit_Slash_Red");
-        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+        AttackCollider_On(KNOCKBACK_ATTACK, 
+            DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).Skill3DamageMul * 0.15f);
     }
     else if (Init_CurFrame(36))
         AttackCollider_Off();
@@ -1787,7 +1807,9 @@ void Yeopo_FSM::skill_400100()
 			desc.fLifeTime = 1.f;
 			desc.fLimitDistance = 0.f;
 
-			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Red");
+			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, AIRBORNE_ATTACK, 
+                DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).Skill4DamageMul * 0.15f
+                , L"Hit_Slash_Red");
 		}
     }
     else if(Init_CurFrame(24))
@@ -1805,7 +1827,9 @@ void Yeopo_FSM::skill_400100()
 			desc.fLifeTime = 1.f;
 			desc.fLimitDistance = 0.f;
 
-			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Red");		}
+			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, AIRBORNE_ATTACK, 
+                DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).Skill4DamageMul * 0.15f
+                , L"Hit_Slash_Red");		}
     }
     else if (Init_CurFrame(58))
     {
@@ -1822,7 +1846,9 @@ void Yeopo_FSM::skill_400100()
 			desc.fLifeTime = 1.f;
 			desc.fLimitDistance = 0.f;
 
-			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Red");		}
+			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, AIRBORNE_ATTACK, 
+                DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).Skill4DamageMul * 0.15f
+                , L"Hit_Slash_Red");		}
     }
     else if (Init_CurFrame(78))
     {
@@ -1837,7 +1863,9 @@ void Yeopo_FSM::skill_400100()
 			desc.fLifeTime = 1.f;
 			desc.fLimitDistance = 0.f;
 
-			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Red");		}
+			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, AIRBORNE_ATTACK, 
+                DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).Skill4DamageMul * 0.15f
+                , L"Hit_Slash_Red");		}
     }
     else if (Init_CurFrame(123))
         Add_Effect(L"Yeopo_400100_floor2");
@@ -1893,7 +1921,9 @@ void Yeopo_FSM::skill_400100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", m_vCenterBonePos, 2.5f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Red");
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", m_vCenterBonePos, 2.5f, desc, AIRBORNE_ATTACK, 
+            DATAMGR.Get_Data(HERO::YEOPO).AttackDamage* DATAMGR.Get_Data(HERO::YEOPO).Skill4DamageMul * 0.4f
+            , L"Hit_Slash_Red");
         CAMERA_SHAKE(0.5f, 0.3f);
     }
 
@@ -1941,7 +1971,8 @@ void Yeopo_FSM::skill_501100()
         SOUND.Play_Sound(L"swing_spear_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         Set_ColliderOption(FIRE, L"Hit_Slash_Red");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).Skill5DamageMul * 0.13f);
         CAMERA_SHAKE(0.03f, 0.1f);
     }
     else if (Init_CurFrame(16))
@@ -1951,7 +1982,8 @@ void Yeopo_FSM::skill_501100()
         SOUND.Play_Sound(L"swing_spear_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         Set_ColliderOption(FIRE, L"Hit_Slash_Red");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).Skill5DamageMul * 0.13f);
 		CAMERA_SHAKE(0.03f, 0.1f);
 
     }
@@ -1963,7 +1995,8 @@ void Yeopo_FSM::skill_501100()
 
 		CAMERA_SHAKE(0.03f, 0.1f);
         Set_ColliderOption(FIRE, L"Hit_Slash_Red");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).Skill5DamageMul * 0.13f);
     }
     else if (Init_CurFrame(23))
         AttackCollider_Off();
@@ -1973,7 +2006,8 @@ void Yeopo_FSM::skill_501100()
 
 		Set_ColliderOption(FIRE, L"Hit_Slash_Red");
 		CAMERA_SHAKE(0.03f, 0.1f);
-		AttackCollider_On(NORMAL_ATTACK, 10.f);
+		AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).Skill5DamageMul * 0.13f);
 	}
     else if (Init_CurFrame(28))
         AttackCollider_Off();
@@ -1983,7 +2017,8 @@ void Yeopo_FSM::skill_501100()
 
 		Set_ColliderOption(FIRE, L"Hit_Slash_Red");
 		CAMERA_SHAKE(0.03f, 0.1f);
-		AttackCollider_On(NORMAL_ATTACK, 10.f);
+		AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).Skill5DamageMul * 0.13f);
 	}
     else if (Init_CurFrame(35))
         AttackCollider_Off();
@@ -1993,7 +2028,8 @@ void Yeopo_FSM::skill_501100()
 
         Set_ColliderOption(FIRE, L"Hit_Slash_Red");
 		CAMERA_SHAKE(0.1f, 0.1f);
-        AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
+        AttackCollider_On(KNOCKDOWN_ATTACK, 
+            DATAMGR.Get_Data(HERO::YEOPO).AttackDamage * DATAMGR.Get_Data(HERO::YEOPO).Skill5DamageMul * 0.35f);
     }
     else if (Init_CurFrame(55))
         AttackCollider_Off();

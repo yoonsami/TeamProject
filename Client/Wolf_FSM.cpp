@@ -48,6 +48,12 @@ HRESULT Wolf_FSM::Init()
         m_fVoiceVolume = 0.5f;
         m_fEffectVolume = 0.6f;
 
+        // HP Init
+        if (!m_pOwner.expired())
+        {
+            m_pOwner.lock()->Set_MaxHp(DATAMGR.Get_MonsterData(MONSTER::WOLF).MaxHp);
+        }
+
         m_bInitialize = true;
     }
 
@@ -959,7 +965,8 @@ void Wolf_FSM::skill_1100()
     if (Init_CurFrame(10))
     {
         SOUND.Play_Sound(L"vo_10142_wolf_shout04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-        AttackCollider_On(NONE_HIT, 2.f);
+        AttackCollider_On(NONE_HIT, 
+            DATAMGR.Get_MonsterData(MONSTER::WOLF).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::WOLF).AttackDamageMul);
     }
     else if (Init_CurFrame(18))
         AttackCollider_Off();

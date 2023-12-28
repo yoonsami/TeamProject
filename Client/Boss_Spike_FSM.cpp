@@ -104,6 +104,12 @@ HRESULT Boss_Spike_FSM::Init()
         m_fEffectVolume = 0.4f;
         m_fSwingVolume = 0.4f;
 
+        // HP Init
+        if (!m_pOwner.expired())
+        {
+            m_pOwner.lock()->Set_MaxHp(DATAMGR.Get_MonsterData(MONSTER::SPIKE).MaxHp);
+        }
+
         m_bInitialize = true;
     }
 

@@ -59,6 +59,21 @@ enum class DUMMY_HERO
 	MAX
 };
 
+enum class MONSTER
+{
+	ALPACA,
+	DELLONS,
+	WOLF,
+	SPIKE,
+	ENT_SOLDIER,
+	SUCCUBUS,
+	UNDEAD_PRISTE,
+	SILVERSWORD_SOLDIER,
+	MIR,
+	GIANT_MIR,
+	MAX
+};
+
 enum class BOSS
 {
 	MIR,

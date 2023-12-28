@@ -82,7 +82,6 @@ public:
 	_bool Has_VelocityMap()					{ return m_bHasVelocityMap; }
 	_bool Is_FrustumCulled()				{ return m_bFrustumCull; }
 	void Set_Hp(_float fHP)					{ m_fHP = fHP; }
-	void Set_Atk(_float _fAtk)				{ m_fAtk = _fAtk; }
 	void Set_Tick(_bool bValue)				{ m_bIsTick = bValue; }
 	void Set_Blur(_bool flag)				{ m_bIsBlur = flag; }
 	void Set_Name(const wstring& name)		{ m_strName = name; }
@@ -157,12 +156,6 @@ public:
 			return false;
 	}
 
-	// Get Random Atk
-	_float Get_Atk()
-	{
-		return Utils::Random_In_Range(m_fAtk * 0.8f, m_fAtk * 1.2f);
-	}
-
 	template<typename T>
 	shared_ptr<T> Get_Script();
 
@@ -186,8 +179,6 @@ private:
 
 	_float		m_fHP				= 100.f;
 	_float		m_fMaxHP			= 100.f;
-
-	_float		m_fAtk				= 10.f;
 
 	_float		m_fGroggy_Gauge		= 100.f;
 	_float		m_fMaxGroggy_Gauge	= 100.f;
