@@ -972,7 +972,7 @@ void Undead_Priest_FSM::skill_1100()
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) + _float3::Up;
         Create_ForwardMovingSkillCollider(Monster_Skill, L"Undead_Priest_SkillCollider", vSkillPos, 0.3f, desc, NORMAL_ATTACK, 
-            DATAMGR.Get_MonsterData(MONSTER::UNDEAD_PRISTE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::UNDEAD_PRISTE).Skill1DamageMul);
+            GET_DAMAGE(MONSTER::UNDEAD_PRISTE, 1));
     }
     
     Set_Gaze();

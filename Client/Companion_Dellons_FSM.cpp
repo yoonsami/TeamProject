@@ -1255,7 +1255,7 @@ void Companion_Dellons_FSM::skill_1100()
         SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         AttackCollider_On(NORMAL_ATTACK, 
-            DATAMGR.Get_Data(HERO::DELLONS).AttackDamage * DATAMGR.Get_Data(HERO::DELLONS).AttackDamageMul * 0.2f);
+            GET_DAMAGE(HERO::DELLONS, 0) * 0.2f);
     }
     else if (Init_CurFrame(19))
         AttackCollider_Off();
@@ -1293,7 +1293,7 @@ void Companion_Dellons_FSM::skill_1200()
     if (Init_CurFrame(8))
     {
         AttackCollider_On(NORMAL_ATTACK, 
-            DATAMGR.Get_Data(HERO::DELLONS).AttackDamage * DATAMGR.Get_Data(HERO::DELLONS).AttackDamageMul * 0.2f);
+            GET_DAMAGE(HERO::DELLONS, 0) * 0.2f);
         SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     }
     else if (Init_CurFrame(18))
@@ -1334,7 +1334,7 @@ void Companion_Dellons_FSM::skill_1300()
         SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         AttackCollider_On(NORMAL_ATTACK, 
-            DATAMGR.Get_Data(HERO::DELLONS).AttackDamage * DATAMGR.Get_Data(HERO::DELLONS).AttackDamageMul * 0.2f);
+            GET_DAMAGE(HERO::DELLONS, 0) * 0.2f);
     }
     else if (Init_CurFrame(33))
         AttackCollider_Off();
@@ -1376,7 +1376,7 @@ void Companion_Dellons_FSM::skill_1400()
         SOUND.Play_Sound(L"swing_hammer_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         AttackCollider_On(NORMAL_ATTACK, 
-            DATAMGR.Get_Data(HERO::DELLONS).AttackDamage * DATAMGR.Get_Data(HERO::DELLONS).AttackDamageMul * 0.2f);
+            GET_DAMAGE(HERO::DELLONS, 0) * 0.2f);
     }
     else if (Init_CurFrame(14))
         AttackCollider_Off();
@@ -1385,7 +1385,7 @@ void Companion_Dellons_FSM::skill_1400()
         SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         AttackCollider_On(KNOCKBACK_ATTACK, 
-            DATAMGR.Get_Data(HERO::DELLONS).AttackDamage * DATAMGR.Get_Data(HERO::DELLONS).AttackDamageMul * 0.2f);
+            GET_DAMAGE(HERO::DELLONS, 0) * 0.2f);
     }
     else if (Init_CurFrame(24))
         AttackCollider_Off();
@@ -1497,7 +1497,7 @@ void Companion_Dellons_FSM::skill_100100()
             _float3::Up;
 
         Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Dellons_SkillCollider", vSkillPos, 1.5f, desc, NORMAL_ATTACK, 
-            DATAMGR.Get_Data(HERO::DELLONS).AttackDamage * DATAMGR.Get_Data(HERO::DELLONS).Skill1DamageMul * 0.5f);
+            GET_DAMAGE(HERO::DELLONS, 1) * 0.5f);
     }
 
     if (m_iCurFrame >= 26)
@@ -1547,7 +1547,7 @@ void Companion_Dellons_FSM::skill_100200()
             Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
             _float3::Up;
         Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Dellons_SkillCollider", vSkillPos, 1.5f, desc, AIRBORNE_ATTACK, 
-            DATAMGR.Get_Data(HERO::DELLONS).AttackDamage * DATAMGR.Get_Data(HERO::DELLONS).Skill1DamageMul * 0.5f);
+            GET_DAMAGE(HERO::DELLONS, 1) * 0.5f);
     }
 
     if (Is_AnimFinished())
@@ -1583,7 +1583,7 @@ void Companion_Dellons_FSM::skill_200100()
         SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         AttackCollider_On(KNOCKBACK_ATTACK, 
-            DATAMGR.Get_Data(HERO::DELLONS).AttackDamage * DATAMGR.Get_Data(HERO::DELLONS).Skill2DamageMul * 0.5f);
+            GET_DAMAGE(HERO::DELLONS, 2) * 0.5f);
     }
     else if (Init_CurFrame(12))
         AttackCollider_Off();
@@ -1630,7 +1630,7 @@ void Companion_Dellons_FSM::skill_200200()
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f + _float3::Up;
         Create_ForwardMovingSkillCollider(Player_Attack, L"Companion_Dellons_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_SKILL, 
-            DATAMGR.Get_Data(HERO::DELLONS).AttackDamage * DATAMGR.Get_Data(HERO::DELLONS).Skill2DamageMul * 0.5f);
+            GET_DAMAGE(HERO::DELLONS, 2) * 0.5f);
     }
 
     if (Is_AnimFinished())
@@ -1777,7 +1777,7 @@ void Companion_Dellons_FSM::skill_400100()
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
         Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Dellons_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK, 
-            DATAMGR.Get_Data(HERO::DELLONS).AttackDamage * DATAMGR.Get_Data(HERO::DELLONS).Skill4DamageMul * 0.1f);
+            GET_DAMAGE(HERO::DELLONS, 4) * 0.1f);
 
     }
     else if (Init_CurFrame(99))
@@ -1793,7 +1793,7 @@ void Companion_Dellons_FSM::skill_400100()
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * -0.5f + _float3::Up;
         Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Dellons_SkillCollider", vSkillPos, 2.f, desc, KNOCKDOWN_SKILL, 
-            DATAMGR.Get_Data(HERO::DELLONS).AttackDamage* DATAMGR.Get_Data(HERO::DELLONS).Skill4DamageMul * 0.2f, L"Hit_Slash_Dark");
+            GET_DAMAGE(HERO::DELLONS,4) * 0.2f, L"Hit_Slash_Dark");
     }
 
     if (m_iCurFrame >= 110)

@@ -953,8 +953,8 @@ void Alpaca_FSM::skill_1100()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     if (m_iCurFrame == 26)
-        AttackCollider_On(NONE_HIT, 
-            DATAMGR.Get_MonsterData(MONSTER::ALPACA).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::ALPACA).Skill1DamageMul);
+        AttackCollider_On(NONE_HIT, GET_DAMAGE(MONSTER::ALPACA, 1));
+            
     else if (m_iCurFrame == 30)
         AttackCollider_Off();
 
@@ -983,8 +983,8 @@ void Alpaca_FSM::skill_2100()
 
     //NORMAL ATTACK
     if (m_iCurFrame == 29)
-        AttackCollider_On(NONE_HIT, 
-            DATAMGR.Get_MonsterData(MONSTER::ALPACA).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::ALPACA).Skill2DamageMul);
+        AttackCollider_On(NONE_HIT, GET_DAMAGE(MONSTER::ALPACA, 2));
+           
     else if (m_iCurFrame == 38)
         AttackCollider_Off();
     
@@ -1012,8 +1012,8 @@ void Alpaca_FSM::skill_3100()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     if (m_iCurFrame == 33)
-        AttackCollider_On(NONE_HIT, 
-            DATAMGR.Get_MonsterData(MONSTER::ALPACA).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::ALPACA).Skill3DamageMul);
+        AttackCollider_On(NONE_HIT, GET_DAMAGE(MONSTER::ALPACA, 3));
+          
     else if (m_iCurFrame == 34)
         AttackCollider_Off();
 
