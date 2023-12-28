@@ -1132,6 +1132,9 @@ void Kyle_FSM::skill_1300_Init()
 
 void Kyle_FSM::skill_1400()
 {
+	if (Init_CurFrame(11))
+		Add_Effect(L"Kyle_1400");
+
 	Look_DirToTarget();
 	if (m_iCurFrame >= 7 && m_iCurFrame < 50)
 		Set_WeaponLight(true);
@@ -1443,6 +1446,15 @@ void Kyle_FSM::skill_100200_Init()
 
 void Kyle_FSM::skill_200100()
 {
+	if (Init_CurFrame(10))
+		Add_And_Set_Effect(L"Kyle_200100_Slash");
+	else if (Init_CurFrame(12))
+		Add_And_Set_Effect(L"Kyle_200_Boost");
+	else if (Init_CurFrame(19))
+		Add_GroupEffectOwner(L"Kyle_200100_Install", _float3(0.f, 0.f, 3.5f), false, nullptr, false);
+
+	Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
 	Look_DirToTarget();
 	if (m_iCurFrame >= 1 && m_iCurFrame < 15)
 		Set_WeaponLight(true);
@@ -1499,6 +1511,15 @@ void Kyle_FSM::skill_200100_Init()
 
 void Kyle_FSM::skill_200200()
 {
+	if (Init_CurFrame(10))
+		Add_And_Set_Effect(L"Kyle_200200_Slash");
+	else if (Init_CurFrame(12))
+		Add_And_Set_Effect(L"Kyle_200_Boost");
+	else if (Init_CurFrame(19))
+		Add_GroupEffectOwner(L"Kyle_200200_Install", _float3(0.f, 0.f, 3.5f), false, nullptr, false);
+
+	Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
 	if (m_iCurFrame >= 1 && m_iCurFrame < 29)
 		Set_WeaponLight(true);
 	else
@@ -1572,6 +1593,9 @@ void Kyle_FSM::skill_200200_Init()
 
 void Kyle_FSM::skill_200300()
 {
+	if (Init_CurFrame(9))
+		Add_GroupEffectOwner(L"Kyle_200300_Install", _float3(0.f, 0.f, 2.f), false, nullptr, false);
+
 	if (m_iCurFrame >= 1 && m_iCurFrame < 62)
 		Set_WeaponLight(true);
 	else
@@ -1635,6 +1659,17 @@ void Kyle_FSM::skill_200300_Init()
 
 void Kyle_FSM::skill_300100()
 {
+    if (Init_CurFrame(5))
+		Add_And_Set_Effect(L"Klye_1300");
+	if (Init_CurFrame(6))
+		Add_Effect(L"Kyle_300100_Boost ");
+	else if (Init_CurFrame(10))
+		Add_GroupEffectOwner(L"Kyle_300100_Install1", _float3(0.f, 0.f, -0.5f), false, nullptr, false);
+	else if (Init_CurFrame(28))
+		Add_GroupEffectOwner(L"Kyle_300100_Install2", _float3(0.f, 0.f, 3.5f), false, nullptr, false);
+
+	Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
 	Look_DirToTarget();
 	
 	if (m_iCurFrame >= 5 && m_iCurFrame < 49)
@@ -1756,6 +1791,13 @@ void Kyle_FSM::skill_300100_Init()
 
 void Kyle_FSM::skill_502100()
 {
+	if (Init_CurFrame(50))
+		Add_GroupEffectOwner(L"Kyle_502100_Install2", _float3(0.f, 0.f, 2.f), false, nullptr, false);
+	else if (Init_CurFrame(108))
+		Add_Effect(L"Kyle_502100_Install1");
+	//else if (Init_CurFrame(109))
+	//	Add_GroupEffectOwner(L"Kyle_502100_Wind", _float3(0.f, 0.5f, -3.8f), false, nullptr, false);
+
 	if (m_iCurFrame >= 21 && m_iCurFrame < 143)
 		Set_WeaponLight(true);
 	else
@@ -1894,6 +1936,15 @@ void Kyle_FSM::skill_502100_Init()
 
 void Kyle_FSM::skill_500100()
 {
+	if (Init_CurFrame(10))
+		Add_And_Set_Effect(L"Kyle_500100_Swing");
+	else if (Init_CurFrame(83))
+		Add_Effect(L"Kyle_500100_Slash");
+	else if (Init_CurFrame(94))
+		Add_GroupEffectOwner(L"Kyle_500100_Install", _float3(0.f, 0.f, 3.f), false, nullptr, false);
+
+	Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
 	if (m_iCurFrame >= 1 && m_iCurFrame < 106)
 		Set_WeaponLight(true);
 	else
