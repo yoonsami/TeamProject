@@ -948,7 +948,7 @@ void Kyle_FSM::skill_1100()
 
 		SOUND.Play_Sound(L"swing_chain_0", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-		Set_ColliderOption(WATER, L"Hit_Slash_Orange");
+		Set_ColliderOption(FIRE, L"Hit_Slash_Orange");
 		AttackCollider_On(NORMAL_ATTACK, 
 			GET_DAMAGE(HERO::KYLE, 0) * 0.25f);
 	}
@@ -1009,7 +1009,7 @@ void Kyle_FSM::skill_1200()
 
 		SOUND.Play_Sound(L"swing_chain_1", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-		Set_ColliderOption(WATER, L"Hit_Slash_Orange");
+		Set_ColliderOption(FIRE, L"Hit_Slash_Orange");
 		AttackCollider_On(NORMAL_ATTACK ,
 			GET_DAMAGE(HERO::KYLE, 0) * 0.25f);
 	}
@@ -1075,7 +1075,7 @@ void Kyle_FSM::skill_1300()
 
 		SOUND.Play_Sound(L"swing_chain_2", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-		Set_ColliderOption(WATER, L"Hit_Slash_Orange");
+		Set_ColliderOption(FIRE, L"Hit_Slash_Orange");
 		AttackCollider_On(NORMAL_ATTACK, 
 			GET_DAMAGE(HERO::KYLE, 0) * 0.25f);
 	}
