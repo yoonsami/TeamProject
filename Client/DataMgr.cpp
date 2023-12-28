@@ -550,15 +550,22 @@ void DataMgr::Initialize()
             auto& tagData = m_MonsterData[IDX(MONSTER::SPIKE)];
 
             tagData.AttackDamage = 100.f;
-            tagData.MaxHp = 22000.f;
+            tagData.MaxHp = 25000.f;
             tagData.CurHp = tagData.MaxHp;
 
             tagData.AttackDamageMul = 1.f;
             tagData.Skill1DamageMul = 1.f;
             tagData.Skill2DamageMul = 1.f;
             tagData.Skill3DamageMul = 1.f;
-            tagData.Skill4DamageMul = 1.f;
-            tagData.Skill5DamageMul = 1.f;
+            tagData.Skill4DamageMul = 0.7f;
+            tagData.Skill5DamageMul = 1.2f;
+            tagData.Skill6DamageMul = 1.2f;
+            tagData.Skill7DamageMul = 2.f;
+            tagData.Skill8DamageMul = 2.f;
+            tagData.Skill9DamageMul = 0.4f; // Ulti
+            tagData.Skill10DamageMul = 3.f;
+            tagData.Skill11DamageMul = 2.f;
+            tagData.Skill12DamageMul = 0.3f; // GroggyPattern
         }
         // ENT_SOLDIER
         {
