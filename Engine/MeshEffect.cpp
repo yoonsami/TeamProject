@@ -134,20 +134,16 @@ void MeshEffect::Render()
     m_pShader->Push_TransformData(TransformDesc{ world });
 
     m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
-
-	if (!m_bIsLocked)
-	{
-
-
+   
+    if (!m_bIsLocked)
+    {
 		m_RenderParams.SetFloat(0, m_fLifeTimeRatio);
 		m_RenderParams.SetFloat(1, m_fCurrDissolveWeight);
 		m_RenderParams.SetFloat(2, m_fCurrRimLightIntensity);
 		m_RenderParams.SetFloat(3, m_fFadeOutRatio);
-	    Bind_UpdatedColor_ToShader();
-
-		_float2 vTemp2;
-		_float4 vTemp4;
-
+        _float2 vTemp2;
+        _float4 vTemp4;
+		Bind_UpdatedColor_ToShader();
 		vTemp2 = _float2(m_vCurrTexUVOffset_Distortion.x, m_vCurrTexUVOffset_Distortion.y);
 		m_RenderParams.SetVec2(3, vTemp2);
 		vTemp4 = _float4(m_vCurrTexUVOffset_Op1.x, m_vCurrTexUVOffset_Op1.y, m_vCurrTexUVOffset_Op2.x, m_vCurrTexUVOffset_Op2.y);
@@ -158,8 +154,11 @@ void MeshEffect::Render()
 		m_RenderParams.SetVec4(2, vTemp4);
 		vTemp4 = _float4(m_UVTexRangeX.x, m_UVTexRangeX.y, m_UVTexRangeY.x, m_UVTexRangeY.y);
 		m_RenderParams.SetVec4(3, vTemp4);
-	}
 
+		// For. Bind Data 
+		m_pShader->Push_RenderParamData(m_RenderParams);
+
+    }
 
     m_pShader->Push_LightData(CUR_SCENE->Get_LightParams());
 
