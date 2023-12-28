@@ -36,6 +36,10 @@ HRESULT Kyle_FSM::Init()
 		m_bEntryTeam = true;
 
 		m_bInitialize = true;
+
+		m_iLWeaponBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Chain_Bone016");
+		m_iRWeaponBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Chain_Bone08");
+
 	}
 
 	m_fNormalAttack_AnimationSpeed = 1.2f;
@@ -952,9 +956,9 @@ void Kyle_FSM::skill_1100()
 
 		SOUND.Play_Sound(L"swing_chain_0", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-		Set_ColliderOption(WATER, L"Hit_Slash_Orange");
+		Set_ColliderOption(FIRE, L"Hit_Slash_Orange");
 		AttackCollider_On(NORMAL_ATTACK, 
-			DATAMGR.Get_Data(HERO::KYLE).AttackDamage * DATAMGR.Get_Data(HERO::KYLE).AttackDamageMul * 0.25f);
+			GET_DAMAGE(HERO::KYLE, 0) * 0.25f);
 	}
 	else if (Init_CurFrame(19))
 		AttackCollider_Off();
@@ -1013,9 +1017,9 @@ void Kyle_FSM::skill_1200()
 
 		SOUND.Play_Sound(L"swing_chain_1", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-		Set_ColliderOption(WATER, L"Hit_Slash_Orange");
+		Set_ColliderOption(FIRE, L"Hit_Slash_Orange");
 		AttackCollider_On(NORMAL_ATTACK ,
-			DATAMGR.Get_Data(HERO::KYLE).AttackDamage * DATAMGR.Get_Data(HERO::KYLE).AttackDamageMul * 0.25f);
+			GET_DAMAGE(HERO::KYLE, 0) * 0.25f);
 	}
 	else if (Init_CurFrame(20))
 		AttackCollider_Off();
@@ -1079,9 +1083,9 @@ void Kyle_FSM::skill_1300()
 
 		SOUND.Play_Sound(L"swing_chain_2", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-		Set_ColliderOption(WATER, L"Hit_Slash_Orange");
+		Set_ColliderOption(FIRE, L"Hit_Slash_Orange");
 		AttackCollider_On(NORMAL_ATTACK, 
-			DATAMGR.Get_Data(HERO::KYLE).AttackDamage * DATAMGR.Get_Data(HERO::KYLE).AttackDamageMul * 0.25f);
+			GET_DAMAGE(HERO::KYLE, 0) * 0.25f);
 	}
 	else if (Init_CurFrame(18))
 		AttackCollider_Off();
@@ -1158,7 +1162,7 @@ void Kyle_FSM::skill_1400()
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::LOOK) * 3.f;
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.3f, desc, AIRBORNE_ATTACK, 
-			DATAMGR.Get_Data(HERO::KYLE).AttackDamage * DATAMGR.Get_Data(HERO::KYLE).AttackDamageMul * 0.25f
+			GET_DAMAGE(HERO::KYLE, 0) * 0.25f
 			, L"Hit_Slash_Orange");
 	}
 
@@ -1320,7 +1324,7 @@ void Kyle_FSM::skill_100100()
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::UP);
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.f, desc, NORMAL_ATTACK, 
-			DATAMGR.Get_Data(HERO::KYLE).AttackDamage * DATAMGR.Get_Data(HERO::KYLE).Skill1DamageMul * 0.5f, L"Hit_Slash_Orange");
+			GET_DAMAGE(HERO::KYLE, 1) * 0.5f, L"Hit_Slash_Orange");
 	}
 
 	if (!g_bIsCanMouseMove && !g_bCutScene)
@@ -1406,7 +1410,7 @@ void Kyle_FSM::skill_100200()
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
 
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.f, desc, AIRBORNE_ATTACK, 
-			DATAMGR.Get_Data(HERO::KYLE).AttackDamage * DATAMGR.Get_Data(HERO::KYLE).Skill1DamageMul * 0.5f
+			GET_DAMAGE(HERO::KYLE, 1) * 0.5f
 			, L"Hit_Slash_Orange");
 	}
 
@@ -1471,7 +1475,7 @@ void Kyle_FSM::skill_200100()
 
 		Set_ColliderOption(FIRE, L"Hit_Slash_Orange");
 		AttackCollider_On(NORMAL_ATTACK, 
-			DATAMGR.Get_Data(HERO::KYLE).AttackDamage * DATAMGR.Get_Data(HERO::KYLE).Skill2DamageMul * 0.2f);
+			GET_DAMAGE(HERO::KYLE, 2) * 0.2f);
 	}
 	else if (Init_CurFrame(23))
 		AttackCollider_Off();
@@ -1534,7 +1538,7 @@ void Kyle_FSM::skill_200200()
 		Set_ColliderOption(FIRE, L"Hit_Slash_Orange");
 
 		AttackCollider_On(NORMAL_ATTACK, 
-			DATAMGR.Get_Data(HERO::KYLE).AttackDamage * DATAMGR.Get_Data(HERO::KYLE).Skill2DamageMul * 0.2f);
+			GET_DAMAGE(HERO::KYLE, 2) * 0.2f);
 	}
 	else if (Init_CurFrame(18))
 	{
@@ -1551,7 +1555,7 @@ void Kyle_FSM::skill_200200()
 
 		Set_ColliderOption(FIRE, L"Hit_Slash_Orange");
 		AttackCollider_On(NORMAL_ATTACK, 
-			DATAMGR.Get_Data(HERO::KYLE).AttackDamage * DATAMGR.Get_Data(HERO::KYLE).Skill2DamageMul * 0.2f);
+			GET_DAMAGE(HERO::KYLE, 2) * 0.2f);
 	}
 	else if (Init_CurFrame(28))
 		AttackCollider_Off();
@@ -1621,7 +1625,7 @@ void Kyle_FSM::skill_200300()
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::LOOK) * 5.5f;
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 
-			DATAMGR.Get_Data(HERO::KYLE).AttackDamage * DATAMGR.Get_Data(HERO::KYLE).Skill2DamageMul * 0.4f
+			GET_DAMAGE(HERO::KYLE, 2) * 0.4f
 			, L"Hit_Slash_Orange");
 	}
 	else if (Init_CurFrame(32))
@@ -1681,7 +1685,7 @@ void Kyle_FSM::skill_300100()
 	{
 		Set_ColliderOption(FIRE, L"Hit_Slash_Orange");
 		AttackCollider_On(NORMAL_ATTACK, 
-			DATAMGR.Get_Data(HERO::KYLE).AttackDamage * DATAMGR.Get_Data(HERO::KYLE).Skill3DamageMul * 0.2f);
+			GET_DAMAGE(HERO::KYLE, 3) * 0.2f);
 	}
 	else if (Init_CurFrame(5))
 		AttackCollider_Off();
@@ -1722,7 +1726,7 @@ void Kyle_FSM::skill_300100()
 			Get_Transform()->Get_State(Transform_State::UP);
 
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.5f, desc, NORMAL_ATTACK, 
-			DATAMGR.Get_Data(HERO::KYLE).AttackDamage * DATAMGR.Get_Data(HERO::KYLE).Skill3DamageMul * 0.2f
+			GET_DAMAGE(HERO::KYLE, 3) * 0.2f
 			, L"Hit_Slash_Orange");
 	}
 	else if (Init_CurFrame(28))
@@ -1739,7 +1743,7 @@ void Kyle_FSM::skill_300100()
 			Get_Transform()->Get_State(Transform_State::LOOK) * 4.f;
 
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, NORMAL_ATTACK, 
-			DATAMGR.Get_Data(HERO::KYLE).AttackDamage * DATAMGR.Get_Data(HERO::KYLE).Skill3DamageMul * 0.3f
+			GET_DAMAGE(HERO::KYLE, 3) * 0.3f
 			, L"Hit_Slash_Orange");
 
 	}
@@ -1757,7 +1761,7 @@ void Kyle_FSM::skill_300100()
 			Get_Transform()->Get_State(Transform_State::LOOK) * 4.f;
 
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, AIRBORNE_ATTACK, 
-			DATAMGR.Get_Data(HERO::KYLE).AttackDamage * DATAMGR.Get_Data(HERO::KYLE).Skill3DamageMul * 0.3f
+			GET_DAMAGE(HERO::KYLE, 3) * 0.3f
 			, L"Hit_Slash_Orange");
 
 	}
@@ -1859,7 +1863,7 @@ void Kyle_FSM::skill_502100()
 			Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
 			Get_Transform()->Get_State(Transform_State::UP);
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK, 
-			DATAMGR.Get_Data(HERO::KYLE).AttackDamage * DATAMGR.Get_Data(HERO::KYLE).Skill4DamageMul * 0.2f
+			GET_DAMAGE(HERO::KYLE, 4) * 0.2f
 			, L"Hit_Slash_Orange");
 
 	}
@@ -1879,7 +1883,7 @@ void Kyle_FSM::skill_502100()
 			Get_Transform()->Get_State(Transform_State::LOOK) * 5.f +
 			Get_Transform()->Get_State(Transform_State::UP);
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.f, desc, NORMAL_ATTACK, 
-			DATAMGR.Get_Data(HERO::KYLE).AttackDamage * DATAMGR.Get_Data(HERO::KYLE).Skill4DamageMul * 0.4f
+			GET_DAMAGE(HERO::KYLE, 4) * 0.4f
 			, L"Hit_Slash_Orange");
 	}
 	else if (Init_CurFrame(106))
@@ -1900,7 +1904,7 @@ void Kyle_FSM::skill_502100()
 		desc.fLimitDistance = 4.f;
 
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.f, desc, NORMAL_SKILL, 
-			DATAMGR.Get_Data(HERO::KYLE).AttackDamage * DATAMGR.Get_Data(HERO::KYLE).Skill4DamageMul * 0.4f
+			GET_DAMAGE(HERO::KYLE, 4) * 0.4f
 			, L"Hit_Slash_Orange");
 	}
 	else if (Init_CurFrame(108))
@@ -1986,7 +1990,7 @@ void Kyle_FSM::skill_500100()
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::UP);
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, NORMAL_ATTACK, 
-			DATAMGR.Get_Data(HERO::KYLE).AttackDamage * DATAMGR.Get_Data(HERO::KYLE).Skill5DamageMul * 0.22f
+			GET_DAMAGE(HERO::KYLE, 5) * 0.22f
 			, L"Hit_Slash_Orange");
 
 	}
@@ -2005,7 +2009,7 @@ void Kyle_FSM::skill_500100()
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::UP);
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, NORMAL_ATTACK, 
-			DATAMGR.Get_Data(HERO::KYLE).AttackDamage * DATAMGR.Get_Data(HERO::KYLE).Skill5DamageMul * 0.22f
+			GET_DAMAGE(HERO::KYLE, 5) * 0.22f
 			, L"Hit_Slash_Orange");
 
 	}
@@ -2024,7 +2028,7 @@ void Kyle_FSM::skill_500100()
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::UP);
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, NORMAL_ATTACK, 
-			DATAMGR.Get_Data(HERO::KYLE).AttackDamage * DATAMGR.Get_Data(HERO::KYLE).Skill5DamageMul * 0.22f
+			GET_DAMAGE(HERO::KYLE, 5) * 0.22f
 			, L"Hit_Slash_Orange");
 	}
 	else if (Init_CurFrame(85))
@@ -2047,7 +2051,7 @@ void Kyle_FSM::skill_500100()
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::LOOK) * 5.f;
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, AIRBORNE_SKILL, 
-			DATAMGR.Get_Data(HERO::KYLE).AttackDamage * DATAMGR.Get_Data(HERO::KYLE).Skill5DamageMul * 0.34f
+			GET_DAMAGE(HERO::KYLE, 5) * 0.34f
 			, L"Hit_Slash_Orange");
 
 	}
@@ -2171,4 +2175,18 @@ void Kyle_FSM::Set_WeaponLight(_bool bOn)
 			material->Get_MaterialDesc().emissive = Color(_float3(0.f), 1.f);
 		}
 	}
+}
+
+void Kyle_FSM::Cal_WeaponBonePos()
+{
+	_float4x4 mLFinger = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iLWeaponBoneIndex) *
+		_float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+	m_vLWeaponPos = _float4(mLFinger.Translation(), 1.f);
+
+	_float4x4 mRFinger = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iRWeaponBoneIndex) *
+		_float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+	m_vRWeaponPos = _float4(mRFinger.Translation(), 1.f);
+
 }

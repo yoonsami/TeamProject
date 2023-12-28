@@ -17,6 +17,7 @@ public:
     _bool Is_Fixed() { return m_fFixedTime > 0.f; }
     _bool Is_Shaking() { return m_fShakeTime > 0.f; }
     void Fix_Camera(_float fTime, _float3 vDir, _float vDist);
+
     void Set_SmoothReturn() { m_bSmoothReturn  = true;}
     void ShakeCamera(_float fTime, _float fPower);
     void Set_FixedLookTarget(const _float3& vPos);
@@ -31,6 +32,7 @@ public:
     const _float3& Get_FixedPos() { return m_vFixedPos; }
     void Set_State(_bool flag) { m_bOn = flag; if (!m_bOn) m_fFixedTime = 0.f; }
     void Set_Offset(const _float3& offset) { m_vOffset = offset; }
+    void Set_ShakingPower(const _float offset) { m_fShakePower = offset; }
     _float Get_ShakingPower() { if (m_fShakeTime > 0) return m_fShakePower; else return 0.f; }
     _float& Get_MaxDist() { return m_fMaxDistance; }
 

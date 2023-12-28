@@ -562,10 +562,11 @@ void DataMgr::Initialize()
             tagData.Skill6DamageMul = 1.2f;
             tagData.Skill7DamageMul = 2.f;
             tagData.Skill8DamageMul = 2.f;
-            tagData.Skill9DamageMul = 0.4f; // Ulti
+            tagData.Skill9DamageMul = 0.15f; // Ulti
             tagData.Skill10DamageMul = 3.f;
             tagData.Skill11DamageMul = 2.f;
             tagData.Skill12DamageMul = 0.3f; // GroggyPattern
+            tagData.Skill13DamageMul = 5.f; // Groggy Fail Pattern
         }
         // ENT_SOLDIER
         {
@@ -1265,6 +1266,9 @@ void DataMgr::Initialize()
 
 _float DataMgr::Get_Skill_Damage(HERO eHero, _uint iSkillIndex)
 {
+    if (5 < iSkillIndex)
+        return 0.f;
+
     auto& pData = m_HeroData[IDX(eHero)];
     _float fDamage = pData.AttackDamage;
 
@@ -1283,6 +1287,8 @@ _float DataMgr::Get_Skill_Damage(HERO eHero, _uint iSkillIndex)
         return fDamage * pData.Skill4DamageMul;
     case 5:
         return fDamage * pData.Skill5DamageMul;
+    default:
+        return 0.f;
     }
 }
 
@@ -1306,6 +1312,28 @@ _float DataMgr::Get_Skill_Damage(MONSTER eMonster, _uint iSkillIndex)
         return fDamage * pData.Skill4DamageMul;
     case 5:
         return fDamage * pData.Skill5DamageMul;
+    case 6:
+        return fDamage * pData.Skill6DamageMul;
+    case 7:
+        return fDamage * pData.Skill7DamageMul;
+    case 8:
+        return fDamage * pData.Skill8DamageMul;
+    case 9:
+        return fDamage * pData.Skill9DamageMul;
+    case 10:
+        return fDamage * pData.Skill10DamageMul;
+    case 11:
+        return fDamage * pData.Skill11DamageMul;
+    case 12:
+        return fDamage * pData.Skill12DamageMul;
+    case 13:
+        return fDamage * pData.Skill13DamageMul;
+    case 14:
+        return fDamage * pData.Skill14DamageMul;
+    case 15:
+        return fDamage * pData.Skill15DamageMul;
+    default:
+        return 0.f;
     }
 }
 

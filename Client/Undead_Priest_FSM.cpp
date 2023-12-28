@@ -54,6 +54,12 @@ HRESULT Undead_Priest_FSM::Init()
         m_fVoiceVolume = 0.5f;
         m_fEffectVolume = 0.4f;
 
+        // HP Init
+        if (!m_pOwner.expired())
+        {
+            m_pOwner.lock()->Set_MaxHp(DATAMGR.Get_MonsterData(MONSTER::UNDEAD_PRISTE).MaxHp);
+        }
+
         m_bInitialize = true;
     }
 
@@ -972,7 +978,7 @@ void Undead_Priest_FSM::skill_1100()
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) + _float3::Up;
         Create_ForwardMovingSkillCollider(Monster_Skill, L"Undead_Priest_SkillCollider", vSkillPos, 0.3f, desc, NORMAL_ATTACK, 
-            DATAMGR.Get_MonsterData(MONSTER::UNDEAD_PRISTE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::UNDEAD_PRISTE).Skill1DamageMul);
+            GET_DAMAGE(MONSTER::UNDEAD_PRISTE, 1));
     }
     
     Set_Gaze();
