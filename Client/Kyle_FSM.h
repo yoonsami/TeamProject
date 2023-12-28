@@ -139,6 +139,11 @@ private:
 	void Set_WeaponLight(_bool bOn);
 	
 	array<shared_ptr<Material>, 2> m_WeaponMaterial;
+	_uint m_iLWeaponBoneIndex = 0;
+	_uint m_iRWeaponBoneIndex = 0;
 
+	void Cal_WeaponBonePos();
+	_float4 m_vLWeaponPos = _float4(0.f);
+	_float4 m_vRWeaponPos = _float4(0.f);
 };
 

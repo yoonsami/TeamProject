@@ -36,6 +36,10 @@ HRESULT Kyle_FSM::Init()
 		m_bEntryTeam = true;
 
 		m_bInitialize = true;
+
+		m_iLWeaponBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Chain_Bone016");
+		m_iRWeaponBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Chain_Bone08");
+
 	}
 
 	m_fNormalAttack_AnimationSpeed = 1.2f;
@@ -2116,4 +2120,18 @@ void Kyle_FSM::Set_WeaponLight(_bool bOn)
 			material->Get_MaterialDesc().emissive = Color(_float3(0.f), 1.f);
 		}
 	}
+}
+
+void Kyle_FSM::Cal_WeaponBonePos()
+{
+	_float4x4 mLFinger = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iLWeaponBoneIndex) *
+		_float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+	m_vLWeaponPos = _float4(mLFinger.Translation(), 1.f);
+
+	_float4x4 mRFinger = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iRWeaponBoneIndex) *
+		_float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+	m_vRWeaponPos = _float4(mRFinger.Translation(), 1.f);
+
 }
