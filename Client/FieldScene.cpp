@@ -119,11 +119,22 @@ void FieldScene::Init()
 	if (pObj)
 		pObj->Get_Script<MainUiController>()->Set_MainUI_Render(true);
 
+	SOUND.Play_Sound(L"BGM_FieldScene", CHANNELID::SOUND_BGM, 0.5f * g_fBgmRatio);
 }
 
 void FieldScene::Tick()
 {
-	SOUND.Play_Sound(L"BGM_FieldScene", CHANNELID::SOUND_BGM, 0.5f * g_fBgmRatio);
+	if(SWITCHMGR.Get_SwitchState(SWITCH_TYPE::IN_COMBAT5) || SWITCHMGR.Get_SwitchState(SWITCH_TYPE::OUT_COMBAT5))
+	{
+		_float volume = SOUND.Get_Volume(SOUND_BGM);
+		SOUND.Play_Sound(L"BGM_FieldScene", CHANNELID::SOUND_BGM, volume * g_fBgmRatio);
+	}
+	else
+	{
+
+		SOUND.Play_Sound(L"BGM_FieldScene", CHANNELID::SOUND_BGM, 0.5f* g_fBgmRatio);
+
+	}
 	SOUND.Play_Sound(L"Bird", CHANNELID::SOUND_GLOBAL, 0.5f * g_fEnvironmentRatio);
 
 	__super::Tick();

@@ -4,6 +4,7 @@
 enum CHANNELID
 {
 	SOUND_BGM,
+	SOUND_BGM2,
 	SOUND_GLOBAL,
 	SOUND_UI,
 	SOUND_EFFECT,
@@ -25,6 +26,8 @@ public:
 	void Resume_Sound(CHANNELID eID);
 	void StopSound(CHANNELID eID);
 	void StopAll();
+	_float Get_Volume(CHANNELID eID);
+	void Set_Volume(CHANNELID eID,_float fVolume);
 	FMOD::Channel* Get_Channel();
 
 	FMOD::System* Get_System() { return m_pSystem; }

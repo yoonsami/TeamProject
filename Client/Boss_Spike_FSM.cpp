@@ -670,6 +670,7 @@ void Boss_Spike_FSM::Spawn_Init()
     g_bCutScene = false;
 }
 
+
 void Boss_Spike_FSM::b_idle()
 {
     if (!m_pTarget.expired())

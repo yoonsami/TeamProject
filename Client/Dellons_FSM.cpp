@@ -426,9 +426,15 @@ void Dellons_FSM::b_idle_Init()
 void Dellons_FSM::b_run_start()
 {
     if (Init_CurFrame(8))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
     else if (Init_CurFrame(18))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
 
     Get_Transform()->Go_Straight();
 
@@ -476,9 +482,15 @@ void Dellons_FSM::b_run_start_Init()
 void Dellons_FSM::b_run()
 {
     if (Init_CurFrame(9))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
     else if (Init_CurFrame(18))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
 
     Get_Transform()->Go_Straight();
 
@@ -540,9 +552,15 @@ void Dellons_FSM::b_run_Init()
 void Dellons_FSM::b_run_end_r()
 {
     if (Init_CurFrame(6))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
     else if (Init_CurFrame(11))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -580,9 +598,15 @@ void Dellons_FSM::b_run_end_r_Init()
 void Dellons_FSM::b_run_end_l()
 {
     if (Init_CurFrame(9))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
     else if (Init_CurFrame(11))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
 
     _float3 vInputVector = Get_InputDirVector();
 
@@ -619,9 +643,15 @@ void Dellons_FSM::b_run_end_l_Init()
 void Dellons_FSM::b_sprint()
 {
     if (Init_CurFrame(6))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
     else if (Init_CurFrame(13))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
 
     Get_Transform()->Go_Straight();
 
@@ -1367,7 +1397,7 @@ void Dellons_FSM::skill_100200_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"skill_100200", 0.15f, false, m_fSkillAttack_AnimationSpeed);
+    animator->Set_CurrentAnim(L"skill_100200", false, m_fSkillAttack_AnimationSpeed);
     m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->Next_Combo(SKILL1);
 
     m_bCanCombo = false;
@@ -1556,7 +1586,11 @@ void Dellons_FSM::skill_300100_Init()
 void Dellons_FSM::skill_400100()
 {
     if (Init_CurFrame(17))
+    {
+        SOUND.Play_Sound(L"dark_magic_swing_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         Add_And_Set_Effect(L"Dellons_400100_charging");
+    }
     else if (Init_CurFrame(31))
     {
         SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
@@ -1710,7 +1744,8 @@ void Dellons_FSM::skill_501100()
 {
     if (Init_CurFrame(4))
     {
-        SOUND.Play_Sound(L"swing_axe_02_gigan", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+        SOUND.Play_Sound(L"dark_magic_swing_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
         Add_Effect(L"Dellons_501100");
 
 		Summon_Wraith();

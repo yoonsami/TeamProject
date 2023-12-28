@@ -201,3 +201,10 @@ void Client_FSM::Create_FloorSkillCollider(CollisionGroup eGroup, const wstring&
 
 	EVENTMGR.Create_Object(FloorSkillCollider);
 }
+
+void Client_FSM::Create_Foot_Dust()
+{
+	wstring sceneName = CUR_SCENE->Get_Name();
+
+	Add_And_Set_Effect(L"Foot_Dust_" + sceneName);
+}

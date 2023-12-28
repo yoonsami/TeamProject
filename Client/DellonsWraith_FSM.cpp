@@ -411,12 +411,16 @@ void DellonsWraith_FSM::FX_SQ_Dellons_QuestEnd_2_Init()
 
 void DellonsWraith_FSM::FX_Mn_Dellons_skill_500200()
 {
-    if(Init_CurFrame(22))
-        Add_And_Set_Effect(L"DellonsWraith_501100_slash");
+    if (Init_CurFrame(19))
+    {
+        SOUND.Play_Sound(L"swing_axe_02_gigan", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-    if (m_iCurFrame == 19)
-        AttackCollider_On(KNOCKBACK_ATTACK, 
+        AttackCollider_On(KNOCKBACK_ATTACK,
             DATAMGR.Get_Data(HERO::DELLONS).AttackDamage * DATAMGR.Get_Data(HERO::DELLONS).Skill5DamageMul);
+    }
+    else if(Init_CurFrame(22))
+        Add_And_Set_Effect(L"DellonsWraith_501100_slash");
+        
 
     if (Is_AnimFinished())
     {
@@ -452,8 +456,6 @@ void DellonsWraith_FSM::FX_Mn_Dellons_skill_5100_Init()
 
     if (!m_pTarget.expired())
         Get_Transform()->Set_WorldMat(m_pTarget.lock()->Get_Transform()->Get_WorldMatrix());
-
-    SOUND.Play_Sound(L"Hit_Scythe_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 void DellonsWraith_FSM::FX_Mn_Dellons_skill_6100()
