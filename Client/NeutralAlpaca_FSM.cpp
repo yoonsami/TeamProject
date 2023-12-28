@@ -40,6 +40,12 @@ HRESULT NeutralAlpaca_FSM::Init()
         m_fSkillAttack_AnimationSpeed = 1.f;
         m_fDetectRange = 6.f;
 
+        // HP Init
+        if (!m_pOwner.expired())
+        {
+            m_pOwner.lock()->Set_MaxHp(DATAMGR.Get_MonsterData(MONSTER::ALPACA).MaxHp);
+        }
+
         m_bInitialize = true;
     }
 

@@ -54,6 +54,12 @@ HRESULT Undead_Priest_FSM::Init()
         m_fVoiceVolume = 0.5f;
         m_fEffectVolume = 0.4f;
 
+        // HP Init
+        if (!m_pOwner.expired())
+        {
+            m_pOwner.lock()->Set_MaxHp(DATAMGR.Get_MonsterData(MONSTER::UNDEAD_PRISTE).MaxHp);
+        }
+
         m_bInitialize = true;
     }
 

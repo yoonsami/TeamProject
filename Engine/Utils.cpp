@@ -190,7 +190,8 @@ void Utils::Spline(const float* key, int num, int dim, float t, float* v)
 
 	// find key
 	int k = 0; 
-	while (key[k * size] <= t) k++;
+	while (key[k * size] < t) k++;
+	if (k == 0) k++;
 
 	// interpolant
 	const float h = (t - key[(k - 1) * size]) / (key[k * size] - key[(k - 1) * size]);

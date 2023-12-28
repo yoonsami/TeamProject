@@ -86,6 +86,16 @@ typedef struct tagMonsterData
 	_float			Skill3DamageMul = 1.f;
 	_float			Skill4DamageMul = 1.f;
 	_float			Skill5DamageMul = 1.f;
+	_float			Skill6DamageMul = 1.f;
+	_float			Skill7DamageMul = 1.f;
+	_float			Skill8DamageMul = 1.f;
+	_float			Skill9DamageMul = 1.f;
+	_float			Skill10DamageMul = 1.f;
+	_float			Skill11DamageMul = 1.f;
+	_float			Skill12DamageMul = 1.f;
+	_float			Skill13DamageMul = 1.f;
+	_float			Skill14DamageMul = 1.f;
+	_float			Skill15DamageMul = 1.f;
 }MONSTERDATA;
 
 typedef struct tagBossData
