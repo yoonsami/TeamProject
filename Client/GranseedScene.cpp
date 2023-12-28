@@ -204,7 +204,7 @@ void GranseedScene::Final_Tick()
 	
 	if (KEYPUSH(KEY_TYPE::TAB) && KEYPUSH(KEY_TYPE::F4))
 	{
-		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<MirScene>());
+		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<KrisScene>());
 		PHYSX.Set_CharacterControllerNull();
 
 		scene->Set_StaticObjects(m_StaticObject);
