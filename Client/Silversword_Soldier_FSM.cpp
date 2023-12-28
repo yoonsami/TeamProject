@@ -50,6 +50,12 @@ HRESULT Silversword_Soldier_FSM::Init()
         m_fVoiceVolume = 0.4f;
         m_fEffectVolume = 0.6f;
 
+        // HP Init
+        if (!m_pOwner.expired())
+        {
+            m_pOwner.lock()->Set_MaxHp(DATAMGR.Get_MonsterData(MONSTER::SILVERSWORD_SOLDIER).MaxHp);
+        }
+
         m_bInitialize = true;
     }
 
@@ -923,8 +929,8 @@ void Silversword_Soldier_FSM::skill_1100()
         SOUND.Play_Sound(L"swing_sword_04_st", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         Add_And_Set_Effect(L"Silversword_Soldier_1100");
-        AttackCollider_On(NORMAL_ATTACK, 
-            DATAMGR.Get_MonsterData(MONSTER::SILVERSWORD_SOLDIER).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SILVERSWORD_SOLDIER).Skill1DamageMul);
+        AttackCollider_On(NORMAL_ATTACK, GET_DAMAGE(MONSTER::SILVERSWORD_SOLDIER, 1));
+            
     }
     else if (Init_CurFrame(26))
         AttackCollider_Off();
@@ -978,8 +984,7 @@ void Silversword_Soldier_FSM::skill_2100()
         SOUND.Play_Sound(L"swing_sword_04_st", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 		Add_And_Set_Effect(L"Silversword_Soldier_2100");
-        AttackCollider_On(NORMAL_ATTACK, 
-            DATAMGR.Get_MonsterData(MONSTER::SILVERSWORD_SOLDIER).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SILVERSWORD_SOLDIER).Skill2DamageMul * 0.5f);
+        AttackCollider_On(NORMAL_ATTACK, GET_DAMAGE(MONSTER::SILVERSWORD_SOLDIER, 2) * 0.5f);
     }
     else if (Init_CurFrame(20))
         AttackCollider_Off();
@@ -987,8 +992,8 @@ void Silversword_Soldier_FSM::skill_2100()
     {
         SOUND.Play_Sound(L"swing_sword_04_st", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        AttackCollider_On(NORMAL_ATTACK, 
-            DATAMGR.Get_MonsterData(MONSTER::SILVERSWORD_SOLDIER).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SILVERSWORD_SOLDIER).Skill2DamageMul * 0.5f);
+        AttackCollider_On(NORMAL_ATTACK, GET_DAMAGE(MONSTER::SILVERSWORD_SOLDIER, 2) * 0.5f);
+            
     }
     else if (Init_CurFrame(38))
         AttackCollider_Off();
@@ -1041,7 +1046,7 @@ void Silversword_Soldier_FSM::skill_3100()
 
 		Add_And_Set_Effect(L"Silversword_Soldier_3100");
         AttackCollider_On(NORMAL_ATTACK, 
-            DATAMGR.Get_MonsterData(MONSTER::SILVERSWORD_SOLDIER).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SILVERSWORD_SOLDIER).Skill3DamageMul * 0.5f);
+            GET_DAMAGE(MONSTER::SILVERSWORD_SOLDIER, 3) * 0.5f);
     }
     else if (Init_CurFrame(34))
         AttackCollider_Off();
@@ -1050,7 +1055,7 @@ void Silversword_Soldier_FSM::skill_3100()
         SOUND.Play_Sound(L"swing_sword_04_st", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         AttackCollider_On(KNOCKBACK_ATTACK, 
-            DATAMGR.Get_MonsterData(MONSTER::SILVERSWORD_SOLDIER).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SILVERSWORD_SOLDIER).Skill3DamageMul * 0.5f);
+            GET_DAMAGE(MONSTER::SILVERSWORD_SOLDIER, 3) * 0.5f);
     }
     else if (Init_CurFrame(67))
         AttackCollider_Off();

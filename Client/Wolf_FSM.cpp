@@ -968,8 +968,8 @@ void Wolf_FSM::skill_1100()
     if (Init_CurFrame(10))
     {
         SOUND.Play_Sound(L"vo_10142_wolf_shout04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-        AttackCollider_On(NONE_HIT, 
-            DATAMGR.Get_MonsterData(MONSTER::WOLF).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::WOLF).AttackDamageMul);
+        AttackCollider_On(NONE_HIT, GET_DAMAGE(MONSTER::WOLF, 0));
+            
     }
     else if (Init_CurFrame(18))
         AttackCollider_Off();

@@ -1265,6 +1265,9 @@ void DataMgr::Initialize()
 
 _float DataMgr::Get_Skill_Damage(HERO eHero, _uint iSkillIndex)
 {
+    if (5 < iSkillIndex)
+        return 0.f;
+
     auto& pData = m_HeroData[IDX(eHero)];
     _float fDamage = pData.AttackDamage;
 
@@ -1283,6 +1286,8 @@ _float DataMgr::Get_Skill_Damage(HERO eHero, _uint iSkillIndex)
         return fDamage * pData.Skill4DamageMul;
     case 5:
         return fDamage * pData.Skill5DamageMul;
+    default:
+        return 0.f;
     }
 }
 
@@ -1306,6 +1311,8 @@ _float DataMgr::Get_Skill_Damage(MONSTER eMonster, _uint iSkillIndex)
         return fDamage * pData.Skill4DamageMul;
     case 5:
         return fDamage * pData.Skill5DamageMul;
+    default:
+        return 0.f;
     }
 }
 

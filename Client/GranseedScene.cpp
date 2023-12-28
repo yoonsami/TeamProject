@@ -394,7 +394,7 @@ shared_ptr<GameObject> GranseedScene::Load_Player()
 		ObjPlayer->Add_Component(script);
 
 		// HP Init
-		ObjWeapon->Set_MaxHp(DATAMGR.Get_Data(HERO::PLAYER).MaxHp);
+		ObjPlayer->Set_MaxHp(DATAMGR.Get_Data(HERO::PLAYER).MaxHp);
 
 		return ObjPlayer;
 	}

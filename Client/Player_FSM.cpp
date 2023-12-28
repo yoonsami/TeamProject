@@ -995,7 +995,7 @@ void Player_FSM::skill_1100()
     {
         SOUND.Play_Sound(L"swing_short_sword_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         Add_And_Set_Effect(L"Teo_1100");
-        AttackCollider_On(NORMAL_ATTACK, DATAMGR.Get_Data(HERO::PLAYER).AttackDamage * DATAMGR.Get_Data(HERO::PLAYER).AttackDamageMul * 0.2f);
+        AttackCollider_On(NORMAL_ATTACK, GET_DAMAGE(HERO::PLAYER, 0) * 0.2f);
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
     }
     else if (Init_CurFrame(13))
@@ -1050,7 +1050,7 @@ void Player_FSM::skill_1200()
         SOUND.Play_Sound(L"swing_short_sword_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         Add_And_Set_Effect(L"Teo_1200");
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
-        AttackCollider_On(NORMAL_ATTACK, DATAMGR.Get_Data(HERO::PLAYER).AttackDamage * DATAMGR.Get_Data(HERO::PLAYER).AttackDamageMul *0.2f);
+        AttackCollider_On(NORMAL_ATTACK, GET_DAMAGE(HERO::PLAYER, 0) * 0.2f);
     }
     else if (Init_CurFrame(9))
         AttackCollider_Off();
@@ -1104,7 +1104,7 @@ void Player_FSM::skill_1300()
     if (Init_CurFrame(12))
     {
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
-        AttackCollider_On(NORMAL_ATTACK, DATAMGR.Get_Data(HERO::PLAYER).AttackDamage * DATAMGR.Get_Data(HERO::PLAYER).AttackDamageMul *0.2f);
+        AttackCollider_On(NORMAL_ATTACK, GET_DAMAGE(HERO::PLAYER, 0) * 0.2f);
 
         SOUND.Play_Sound(L"swing_short_sword_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         Add_And_Set_Effect(L"Teo_1300");
@@ -1165,7 +1165,7 @@ void Player_FSM::skill_1400()
     {
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
 
-        AttackCollider_On(KNOCKBACK_ATTACK, DATAMGR.Get_Data(HERO::PLAYER).AttackDamage * DATAMGR.Get_Data(HERO::PLAYER).AttackDamageMul *0.4f);
+        AttackCollider_On(KNOCKBACK_ATTACK, GET_DAMAGE(HERO::PLAYER, 0) * 0.4f);
 
         SOUND.Play_Sound(L"swing_short_sword_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         Add_And_Set_Effect(L"Teo_1400");
@@ -1281,7 +1281,7 @@ void Player_FSM::skill_100100()
 		desc.fLimitDistance = 2.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 1.f + _float3::Up;
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider",vSkillPos, 1.f, desc, NORMAL_SKILL, DATAMGR.Get_Data(HERO::PLAYER).AttackDamage * DATAMGR.Get_Data(HERO::PLAYER).Skill1DamageMul *0.1f, L"Hit_Slash_Dark");
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider",vSkillPos, 1.f, desc, NORMAL_SKILL, GET_DAMAGE(HERO::PLAYER, 1) * 0.1f, L"Hit_Slash_Dark");
 	}
     
     if (!g_bIsCanMouseMove && !g_bCutScene)
@@ -1330,7 +1330,7 @@ void Player_FSM::skill_100200()
         Add_Effect(L"Teo_100200_slash1");
         SOUND.Play_Sound(L"swing_short_sword_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        AttackCollider_On(NORMAL_ATTACK, DATAMGR.Get_Data(HERO::PLAYER).AttackDamage * DATAMGR.Get_Data(HERO::PLAYER).Skill1DamageMul *0.1f);
+        AttackCollider_On(NORMAL_ATTACK, GET_DAMAGE(HERO::PLAYER, 1) * 0.1f);
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
     }
     else if (Init_CurFrame(12))
@@ -1363,7 +1363,7 @@ void Player_FSM::skill_100200()
             vLook.Normalize();
 
             if (vDir.Dot(vLook) > cosf(XM_PI / 3.f))
-                obj->Get_FSM()->Get_Hit(NORMAL_ATTACK, DATAMGR.Get_Data(HERO::PLAYER).AttackDamage * DATAMGR.Get_Data(HERO::PLAYER).Skill1DamageMul *0.3f, Get_Owner(), ElementType::DARK);
+                obj->Get_FSM()->Get_Hit(NORMAL_ATTACK, GET_DAMAGE(HERO::PLAYER, 1) * 0.3f, Get_Owner(), ElementType::DARK);
         }
     }
 
@@ -1457,7 +1457,7 @@ void Player_FSM::skill_100300()
 
     if (Init_CurFrame(10))
     {
-        AttackCollider_On(NORMAL_ATTACK, DATAMGR.Get_Data(HERO::PLAYER).AttackDamage * DATAMGR.Get_Data(HERO::PLAYER).Skill1DamageMul *0.1f);
+        AttackCollider_On(NORMAL_ATTACK, GET_DAMAGE(HERO::PLAYER, 1) *0.1f);
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
     }
     else if (Init_CurFrame(12))
@@ -1489,7 +1489,7 @@ void Player_FSM::skill_100300()
 			vLook.Normalize();
 
 			if (vDir.Dot(vLook) > cosf(XM_PI / 2.f))
-                obj->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, DATAMGR.Get_Data(HERO::PLAYER).AttackDamage * DATAMGR.Get_Data(HERO::PLAYER).Skill1DamageMul *0.4f, Get_Owner(), ElementType::DARK);
+                obj->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, GET_DAMAGE(HERO::PLAYER, 1) *0.4f, Get_Owner(), ElementType::DARK);
 		}
 	}
 
@@ -1567,7 +1567,7 @@ void Player_FSM::skill_200100()
 			desc.fLimitDistance = 0.f;
 
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
-			Create_ForwardMovingSkillCollider(Player_Attack, L"Player_SkillCollider", vSkillPos, 2.5f, desc, NORMAL_ATTACK, DATAMGR.Get_Data(HERO::PLAYER).AttackDamage * DATAMGR.Get_Data(HERO::PLAYER).Skill2DamageMul *0.08f, L"Hit_Slash_Dark");
+			Create_ForwardMovingSkillCollider(Player_Attack, L"Player_SkillCollider", vSkillPos, 2.5f, desc, NORMAL_ATTACK, GET_DAMAGE(HERO::PLAYER, 2) * 0.08f, L"Hit_Slash_Dark");
 
 			Get_Owner()->Get_Animator()->Set_RenderState(false);
 			m_pWeapon.lock()->Get_ModelRenderer()->Set_RenderState(false);
@@ -1637,7 +1637,7 @@ void Player_FSM::skill_200200()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
-		Create_ForwardMovingSkillCollider(Player_Attack, L"Player_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_SKILL, DATAMGR.Get_Data(HERO::PLAYER).AttackDamage * DATAMGR.Get_Data(HERO::PLAYER).Skill2DamageMul * 0.2f, L"Hit_Slash_Dark");
+		Create_ForwardMovingSkillCollider(Player_Attack, L"Player_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_SKILL, GET_DAMAGE(HERO::PLAYER, 2) * 0.2f, L"Hit_Slash_Dark");
     }
 
     if (Is_AnimFinished())
@@ -1687,7 +1687,7 @@ void Player_FSM::skill_300100()
 		desc.fLimitDistance = 2.f;
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) + _float3::Up;
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK, DATAMGR.Get_Data(HERO::PLAYER).AttackDamage * DATAMGR.Get_Data(HERO::PLAYER).Skill3DamageMul * 0.04f, L"Hit_Slash_Dark");
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK, GET_DAMAGE(HERO::PLAYER, 3) * 0.04f, L"Hit_Slash_Dark");
     }
     else if (Init_CurFrame(27))
     {
@@ -1700,7 +1700,7 @@ void Player_FSM::skill_300100()
         desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK);
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_SKILL, DATAMGR.Get_Data(HERO::PLAYER).AttackDamage *DATAMGR.Get_Data(HERO::PLAYER).Skill3DamageMul *0.04f, L"Hit_Slash_Dark");
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_SKILL, GET_DAMAGE(HERO::PLAYER, 3) *0.04f, L"Hit_Slash_Dark");
 
     }
 
@@ -1820,7 +1820,7 @@ void Player_FSM::skill_300200()
             desc.fLimitDistance = 0.f;
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
-            Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 5.f, desc, NORMAL_ATTACK, DATAMGR.Get_Data(HERO::PLAYER).AttackDamage * DATAMGR.Get_Data(HERO::PLAYER).Skill3DamageMul * 0.09f, L"Hit_Slash_Dark");
+            Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 5.f, desc, NORMAL_ATTACK, GET_DAMAGE(HERO::PLAYER, 3) * 0.09f, L"Hit_Slash_Dark");
 
         }
     }
@@ -1838,7 +1838,7 @@ void Player_FSM::skill_300200()
             desc.fLimitDistance = 0.f;
 
             _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS);
-            Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 5.f, desc, NORMAL_ATTACK, DATAMGR.Get_Data(HERO::PLAYER).AttackDamage * DATAMGR.Get_Data(HERO::PLAYER).Skill3DamageMul * 0.09f, L"Hit_Slash_Dark");
+            Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 5.f, desc, NORMAL_ATTACK, GET_DAMAGE(HERO::PLAYER, 3) * 0.09f, L"Hit_Slash_Dark");
 
         }
     }
@@ -1853,7 +1853,7 @@ void Player_FSM::skill_300200()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f;
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.5f, desc, KNOCKBACK_SKILL, DATAMGR.Get_Data(HERO::PLAYER).AttackDamage * DATAMGR.Get_Data(HERO::PLAYER).Skill3DamageMul * 0.15f, L"Hit_Slash_Dark");
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.5f, desc, KNOCKBACK_SKILL, GET_DAMAGE(HERO::PLAYER, 3) * 0.15f, L"Hit_Slash_Dark");
 
     }
 
