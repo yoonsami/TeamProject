@@ -1791,8 +1791,8 @@ void Kyle_FSM::skill_502100()
 		Add_GroupEffectOwner(L"Kyle_502100_Install2", _float3(0.f, 0.f, 2.f), false, nullptr, false);
 	else if (Init_CurFrame(108))
 		Add_Effect(L"Kyle_502100_Install1");
-	else if (Init_CurFrame(109))
-		Add_GroupEffectOwner(L"Kyle_502100_Wind", _float3(0.f, 0.5f, -3.8f), false, nullptr, false);
+	//else if (Init_CurFrame(109))
+	//	Add_GroupEffectOwner(L"Kyle_502100_Wind", _float3(0.f, 0.5f, -3.8f), false, nullptr, false);
 
 	if (m_iCurFrame >= 21 && m_iCurFrame < 143)
 		Set_WeaponLight(true);
