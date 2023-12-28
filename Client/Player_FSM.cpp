@@ -1689,8 +1689,8 @@ void Player_FSM::skill_300100()
 		desc.fLifeTime = 0.5f;
 		desc.fLimitDistance = 2.f;
 
-		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) + _float3::Up;
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK, m_pOwner.lock()->Get_Atk()*0.4f, L"Hit_Slash_Dark");
+        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) + _float3::Up;
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK, DATAMGR.Get_Data(HERO::PLAYER).AttackDamage * DATAMGR.Get_Data(HERO::PLAYER).Skill3DamageMul * 0.04f, L"Hit_Slash_Dark");
     }
     else if (Init_CurFrame(27))
     {
