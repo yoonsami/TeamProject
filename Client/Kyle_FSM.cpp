@@ -184,12 +184,6 @@ void Kyle_FSM::State_Tick()
 		break;
 	}
 	
-	if (m_fWeaponEffectTimer > 0.1f)
-	{
-		//Add_GroupEffectOwner(L"Kyle_500100_WeaponFollow1", Cal_WeaponBonePos());
-		m_fWeaponEffectTimer = 0.f;
-	}
-
 	if (m_iPreFrame != m_iCurFrame)
 		m_iPreFrame = m_iCurFrame;
 }
@@ -1663,6 +1657,15 @@ void Kyle_FSM::skill_200300_Init()
 
 void Kyle_FSM::skill_300100()
 {
+	Cal_WeaponBonePos();
+	m_fWeaponEffectTimer += fDT;
+	if (m_fWeaponEffectTimer > 0.04f)
+	{
+		Add_GroupEffectOwner(L"Kyle_500100_WeaponFollow1", _float3(m_vLWeaponPos), true, nullptr, false);
+		Add_GroupEffectOwner(L"Kyle_500100_WeaponFollow1", _float3(m_vRWeaponPos), true, nullptr, false);
+		m_fWeaponEffectTimer = 0.f;
+	}
+
     if (Init_CurFrame(5))
 		Add_And_Set_Effect(L"Klye_1300");
 	if (Init_CurFrame(6))
@@ -1795,6 +1798,15 @@ void Kyle_FSM::skill_300100_Init()
 
 void Kyle_FSM::skill_502100()
 {
+	Cal_WeaponBonePos();
+	m_fWeaponEffectTimer += fDT;
+	if (m_fWeaponEffectTimer > 0.04f)
+	{
+		Add_GroupEffectOwner(L"Kyle_500100_WeaponFollow1", _float3(m_vLWeaponPos), true, nullptr, false);
+		Add_GroupEffectOwner(L"Kyle_500100_WeaponFollow1", _float3(m_vRWeaponPos), true, nullptr, false);
+		m_fWeaponEffectTimer = 0.f;
+	}
+
 	if (Init_CurFrame(50))
 		Add_GroupEffectOwner(L"Kyle_502100_Install2", _float3(0.f, 0.f, 2.f), false, nullptr, false);
 	else if (Init_CurFrame(108))
@@ -1940,6 +1952,16 @@ void Kyle_FSM::skill_502100_Init()
 
 void Kyle_FSM::skill_500100()
 {
+	Cal_WeaponBonePos();
+	m_fWeaponEffectTimer += fDT;
+	if (m_fWeaponEffectTimer > 0.04f)
+	{
+		Add_GroupEffectOwner(L"Kyle_500100_WeaponFollow1", _float3(m_vLWeaponPos), true, nullptr, false);
+		Add_GroupEffectOwner(L"Kyle_500100_WeaponFollow1", _float3(m_vRWeaponPos), true, nullptr, false);
+		m_fWeaponEffectTimer = 0.f;
+	}
+
+
 	if (Init_CurFrame(10))
 		Add_And_Set_Effect(L"Kyle_500100_Swing");
 	else if (Init_CurFrame(83))
