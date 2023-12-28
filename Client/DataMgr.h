@@ -11,6 +11,8 @@ public:
     wstring             Get_Element(HERO eHero)                             { return m_KeyElement[m_HeroData[IDX(eHero)].Element] + L"0"; }
     wstring             Get_Element_Line(HERO eHero)                        { return m_KeyElement[m_HeroData[IDX(eHero)].Element] + L"1"; }
 
+    const MONSTERDATA&      Get_MonsterData(MONSTER _eMonster)              { return m_MonsterData[IDX(_eMonster)]; }
+    
     const BOSSDATA&     Get_Data(BOSS eBoss)                                { return m_BossData[IDX(eBoss)]; }
     wstring             Get_Element(BOSS eBoss)                             { return m_KeyElement[m_BossData[IDX(eBoss)].Element] + L"0"; }
     wstring             Get_Element_Line(BOSS eBoss)                        { return m_KeyElement[m_BossData[IDX(eBoss)].Element] + L"1"; }
@@ -54,6 +56,7 @@ public:
 
 private:
     vector<HERODATA>                m_HeroData;
+    vector<MONSTERDATA>             m_MonsterData;
     vector<wstring>                 m_KeyElement;
     vector<BOSSDATA>                m_BossData;
     vector<wstring>                 m_NpcName;

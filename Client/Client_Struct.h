@@ -46,6 +46,8 @@ typedef struct tagHeroData
 	_float			Skill4Cool			= 0.f;
 	_float			Skill5Cool			= 0.f;
 
+	// Normal Attack DamageMull
+	_float			AttackDamageMul		= 1.f;
 	_float			Skill1DamageMul		= 1.f;
 	_float			Skill2DamageMul		= 1.f;
 	_float			Skill3DamageMul		= 1.f;
@@ -70,6 +72,21 @@ typedef struct tagHeroData
 	wstring			SkillHelp;
 	wstring			KeyDeckMiniAddBg;
 }HERODATA;
+
+typedef struct tagMonsterData
+{
+	_float			AttackDamage = 1.f;
+	_float			MaxHp = 10.f;
+	_float			CurHp = 10.f;
+
+	// Normal Attack DamageMull
+	_float			AttackDamageMul = 1.f;
+	_float			Skill1DamageMul = 1.f;
+	_float			Skill2DamageMul = 1.f;
+	_float			Skill3DamageMul = 1.f;
+	_float			Skill4DamageMul = 1.f;
+	_float			Skill5DamageMul = 1.f;
+}MONSTERDATA;
 
 typedef struct tagBossData
 {

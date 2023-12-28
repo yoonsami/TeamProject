@@ -953,7 +953,8 @@ void Spike_FSM::skill_1100()
         CAMERA_SHAKE(0.1f, 0.1f)
         Add_And_Set_Effect(L"Spike_1100");
         Set_ColliderOption(WATER, L"Hit_Slash_Blue");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_Data(HERO::SPIKE).AttackDamage * DATAMGR.Get_Data(HERO::SPIKE).AttackDamageMul * 0.15f);
     }
     else if (m_iCurFrame == 17)
     {
@@ -1008,7 +1009,8 @@ void Spike_FSM::skill_1200()
 		CAMERA_SHAKE(0.1f, 0.1f)
         Add_And_Set_Effect(L"Spike_1200");
         Set_ColliderOption(WATER, L"Hit_Slash_Blue");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_Data(HERO::SPIKE).AttackDamage * DATAMGR.Get_Data(HERO::SPIKE).AttackDamageMul * 0.15f);
     }
     else if (m_iCurFrame == 14)
     {
@@ -1072,7 +1074,8 @@ void Spike_FSM::skill_1300()
 		CAMERA_SHAKE(0.1f, 0.1f)
         Add_And_Set_Effect(L"Spike_1300");
         Set_ColliderOption(WATER, L"Hit_Slash_Blue");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_Data(HERO::SPIKE).AttackDamage * DATAMGR.Get_Data(HERO::SPIKE).AttackDamageMul * 0.3f);
     }
     else if (m_iCurFrame == 18)
     {
@@ -1138,7 +1141,8 @@ void Spike_FSM::skill_1400()
         SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         Add_GroupEffectOwner(L"Spike_1400_2", _float3(0.f, 0.f, 1.f), false);
-        AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
+        AttackCollider_On(KNOCKDOWN_ATTACK, 
+            DATAMGR.Get_Data(HERO::SPIKE).AttackDamage * DATAMGR.Get_Data(HERO::SPIKE).AttackDamageMul * 0.4f);
         Set_ColliderOption(WATER, L"Hit_Slash_Blue");
         
         //CAMERA_SHAKE(0.3f, 0.4f);
@@ -1284,7 +1288,8 @@ void Spike_FSM::skill_100100()
 
             m_bAssaultColliderOn = true;
             m_fAssaultColliderTimer = 0.f;
-            AttackCollider_On(NORMAL_ATTACK, 10.f);
+            AttackCollider_On(NORMAL_ATTACK, 
+                DATAMGR.Get_Data(HERO::SPIKE).AttackDamage * DATAMGR.Get_Data(HERO::SPIKE).Skill1DamageMul * 0.08f);
             Set_ColliderOption(WATER, L"Hit_Slash_Blue");
             CAMERA_SHAKE(0.1f, 0.02f);
         }
@@ -1355,7 +1360,8 @@ void Spike_FSM::skill_100300()
         SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         Add_GroupEffectOwner(L"Spike_100100_IceAttack",_float3(0,0,1), false);
-        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+        AttackCollider_On(KNOCKBACK_ATTACK, 
+            DATAMGR.Get_Data(HERO::SPIKE).AttackDamage * DATAMGR.Get_Data(HERO::SPIKE).Skill1DamageMul * 0.36f);
         Set_ColliderOption(WATER, L"Hit_Slash_Blue");
         CAMERA_SHAKE(0.2f, 0.2f);
     }
@@ -1541,7 +1547,9 @@ void Spike_FSM::skill_200200()
             desc.fLifeTime = 0.3f;
             desc.fLimitDistance = 0.f;
             CAMERA_SHAKE(0.1f, 0.2f)
-            Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f, L"Hit_Slash_Blue");
+            Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 
+                DATAMGR.Get_Data(HERO::SPIKE).AttackDamage * DATAMGR.Get_Data(HERO::SPIKE).Skill2DamageMul * 0.33f * 0.25f
+                , L"Hit_Slash_Blue");
         }
     }
     
@@ -1618,7 +1626,9 @@ void Spike_FSM::skill_200300()
             desc.fLifeTime = 0.3f;
             desc.fLimitDistance = 0.f;
             CAMERA_SHAKE(0.1f, 0.2f)
-            Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f, L"Hit_Slash_Blue");
+            Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 
+                DATAMGR.Get_Data(HERO::SPIKE).AttackDamage * DATAMGR.Get_Data(HERO::SPIKE).Skill2DamageMul * 0.166f * 0.5f
+                , L"Hit_Slash_Blue");
         }
     }
 
@@ -1710,7 +1720,8 @@ void Spike_FSM::skill_200400()
             desc.fLifeTime = 0.3f;
             desc.fLimitDistance = 0.f;
             CAMERA_SHAKE(0.1f, 0.2f)
-            Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f, L"Hit_Slash_Blue");
+            Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 
+                DATAMGR.Get_Data(HERO::SPIKE).AttackDamage * DATAMGR.Get_Data(HERO::SPIKE).Skill2DamageMul * 0.11f, L"Hit_Slash_Blue");
         }
     }
 
@@ -1724,7 +1735,9 @@ void Spike_FSM::skill_200400()
 		desc.fLifeTime = 0.5f;
 		desc.fLimitDistance = 0.f;
         CAMERA_SHAKE(0.2f, 0.5f)
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Blue");
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 
+            DATAMGR.Get_Data(HERO::SPIKE).AttackDamage * DATAMGR.Get_Data(HERO::SPIKE).Skill2DamageMul * 0.34f
+            , L"Hit_Slash_Blue");
     }
 
     if (Is_AnimFinished())
@@ -1812,7 +1825,9 @@ void Spike_FSM::skill_300100()
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 0.f;
 
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.5f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Blue");
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.5f, desc, AIRBORNE_ATTACK, 
+            DATAMGR.Get_Data(HERO::SPIKE).AttackDamage * DATAMGR.Get_Data(HERO::SPIKE).Skill3DamageMul
+            , L"Hit_Slash_Blue");
 
     }
 
@@ -1916,7 +1931,9 @@ void Spike_FSM::skill_400100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Blue");
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 
+            DATAMGR.Get_Data(HERO::SPIKE).AttackDamage * DATAMGR.Get_Data(HERO::SPIKE).Skill4DamageMul * 0.2f
+            , L"Hit_Slash_Blue");
     }
     else if (Init_CurFrame(77))
     {
@@ -1932,7 +1949,9 @@ void Spike_FSM::skill_400100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Blue");
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 
+            DATAMGR.Get_Data(HERO::SPIKE).AttackDamage * DATAMGR.Get_Data(HERO::SPIKE).Skill4DamageMul * 0.2f
+            , L"Hit_Slash_Blue");
     }
     else if (Init_CurFrame(97))
     {
@@ -1948,7 +1967,9 @@ void Spike_FSM::skill_400100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Blue");
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 
+            DATAMGR.Get_Data(HERO::SPIKE).AttackDamage * DATAMGR.Get_Data(HERO::SPIKE).Skill4DamageMul * 0.2f
+            , L"Hit_Slash_Blue");
     }
     else if (Init_CurFrame(150))
     {
@@ -1964,7 +1985,9 @@ void Spike_FSM::skill_400100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Blue");
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 
+            DATAMGR.Get_Data(HERO::SPIKE).AttackDamage* DATAMGR.Get_Data(HERO::SPIKE).Skill4DamageMul * 0.4f
+            , L"Hit_Slash_Blue");
     }
 
     if (Is_AnimFinished())
@@ -2021,7 +2044,9 @@ void Spike_FSM::skill_501100()
 		desc.fLifeTime = 1.f;
 		desc.fLimitDistance = 0.f;
 
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK, 10.f, L"Hit_Slash_Blue");
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK, 
+            DATAMGR.Get_Data(HERO::SPIKE).AttackDamage * DATAMGR.Get_Data(HERO::SPIKE).Skill5DamageMul * 0.5f
+            , L"Hit_Slash_Blue");
     }
     
     if (Init_CurFrame(36))
@@ -2033,7 +2058,8 @@ void Spike_FSM::skill_501100()
     if (m_iCurFrame == 18)
     {
         Set_ColliderOption(WATER, L"Hit_Slash_Blue");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_Data(HERO::SPIKE).AttackDamage * DATAMGR.Get_Data(HERO::SPIKE).Skill5DamageMul * 0.5f);
     }
     else if (m_iCurFrame == 23)
         AttackCollider_Off();

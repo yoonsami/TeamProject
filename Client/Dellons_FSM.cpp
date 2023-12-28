@@ -58,7 +58,7 @@ HRESULT Dellons_FSM::Init()
 
 	if (!m_pAttackCollider.expired())
 		m_pAttackCollider.lock()->Get_Script<AttackColliderInfoScript>()->Set_AttackElementType(m_eElementType);
-   
+
     return S_OK;
 }
 
@@ -940,8 +940,8 @@ void Dellons_FSM::skill_1100()
         SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 		Set_ColliderOption(DARK, L"Hit_Slash_Dark");
-		AttackCollider_On(NORMAL_ATTACK, 10.f);
-
+		AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_Data(HERO::DELLONS).AttackDamage * DATAMGR.Get_Data(HERO::DELLONS).AttackDamageMul * 0.2f);
     }
     else if (Init_CurFrame(19))
         AttackCollider_Off();
@@ -999,7 +999,8 @@ void Dellons_FSM::skill_1200()
         SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
-        AttackCollider_On(NORMAL_ATTACK,10.f);
+        AttackCollider_On(NORMAL_ATTACK,
+            DATAMGR.Get_Data(HERO::DELLONS).AttackDamage * DATAMGR.Get_Data(HERO::DELLONS).AttackDamageMul * 0.2f);
     }
     else if (Init_CurFrame(18))
         AttackCollider_Off();
@@ -1062,7 +1063,8 @@ void Dellons_FSM::skill_1300()
         SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_Data(HERO::DELLONS).AttackDamage * DATAMGR.Get_Data(HERO::DELLONS).AttackDamageMul * 0.2f);
     }
     else if (Init_CurFrame(33))
         AttackCollider_Off();
@@ -1127,7 +1129,8 @@ void Dellons_FSM::skill_1400()
         SOUND.Play_Sound(L"swing_hammer_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            DATAMGR.Get_Data(HERO::DELLONS).AttackDamage * DATAMGR.Get_Data(HERO::DELLONS).AttackDamageMul * 0.2f);
     }
     else if (Init_CurFrame(14))
         AttackCollider_Off();
@@ -1136,7 +1139,8 @@ void Dellons_FSM::skill_1400()
         SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
-        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+        AttackCollider_On(KNOCKBACK_ATTACK, 
+            DATAMGR.Get_Data(HERO::DELLONS).AttackDamage * DATAMGR.Get_Data(HERO::DELLONS).AttackDamageMul * 0.2f);
     }
     else if (Init_CurFrame(24))
         AttackCollider_Off();
@@ -1277,7 +1281,9 @@ void Dellons_FSM::skill_100100()
 			Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
 			_float3::Up;
 
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.5f, desc, NORMAL_ATTACK, 5.f, L"Hit_Slash_Dark");
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.5f, desc, NORMAL_ATTACK, 
+            DATAMGR.Get_Data(HERO::DELLONS).AttackDamage * DATAMGR.Get_Data(HERO::DELLONS).Skill1DamageMul * 0.5f
+            , L"Hit_Slash_Dark");
     }
     
 
@@ -1340,7 +1346,9 @@ void Dellons_FSM::skill_100200()
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::LOOK) * 2.f +
 			_float3::Up;
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.5f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Dark");
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.5f, desc, AIRBORNE_ATTACK, 
+            DATAMGR.Get_Data(HERO::DELLONS).AttackDamage * DATAMGR.Get_Data(HERO::DELLONS).Skill1DamageMul*0.5f
+            , L"Hit_Slash_Dark");
     }
 
     Look_DirToTarget();
@@ -1383,7 +1391,8 @@ void Dellons_FSM::skill_200100()
     {
         SOUND.Play_Sound(L"swing_hammer_03", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+        AttackCollider_On(KNOCKBACK_ATTACK, 
+            DATAMGR.Get_Data(HERO::DELLONS).AttackDamage * DATAMGR.Get_Data(HERO::DELLONS).Skill2DamageMul * 0.5f);
         Set_ColliderOption(DARK, L"Hit_Slash_Dark");
     }
     else if (Init_CurFrame(12))
@@ -1444,7 +1453,9 @@ void Dellons_FSM::skill_200200()
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f + _float3::Up;
-        Create_ForwardMovingSkillCollider(Player_Attack, L"Player_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_SKILL, 10.f, L"Hit_Slash_Dark");
+        Create_ForwardMovingSkillCollider(Player_Attack, L"Player_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_SKILL, 
+            DATAMGR.Get_Data(HERO::DELLONS).AttackDamage * DATAMGR.Get_Data(HERO::DELLONS).Skill2DamageMul*0.5f
+            , L"Hit_Slash_Dark");
     }
 
     Look_DirToTarget();
@@ -1642,7 +1653,9 @@ void Dellons_FSM::skill_400100()
 		desc.fLimitDistance = 3.5f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f, L"Hit_Slash_Dark");
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK, 
+            DATAMGR.Get_Data(HERO::DELLONS).AttackDamage * DATAMGR.Get_Data(HERO::DELLONS).Skill4DamageMul * 0.1f
+            , L"Hit_Slash_Dark");
 
     }
     else if (Init_CurFrame(99))
@@ -1657,7 +1670,8 @@ void Dellons_FSM::skill_400100()
         desc.fLimitDistance = 5.f;
     
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * -0.5f + _float3::Up;
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.f, desc, KNOCKDOWN_SKILL, 10.f, L"Hit_Slash_Dark");
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.f, desc, KNOCKDOWN_SKILL, 
+            DATAMGR.Get_Data(HERO::DELLONS).AttackDamage* DATAMGR.Get_Data(HERO::DELLONS).Skill4DamageMul * 0.2f, L"Hit_Slash_Dark");
     }
 
 

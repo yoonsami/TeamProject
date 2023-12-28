@@ -53,6 +53,13 @@ HRESULT Succubus_Scythe_FSM::Init()
         m_fVoiceVolume = 0.4f;
         m_fEffectVolume = 0.6f;
 
+
+        // HP Init
+        if (!m_pOwner.expired())
+        {
+            m_pOwner.lock()->Set_MaxHp(DATAMGR.Get_MonsterData(MONSTER::SUCCUBUS).MaxHp);
+        }
+
         m_bInitialize = true;
     }
 
