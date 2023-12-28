@@ -580,7 +580,9 @@ void DataMgr::Initialize()
             tagData.CurHp = tagData.MaxHp;
 
             tagData.Skill1DamageMul = 1.f;
-            tagData.Skill2DamageMul = 2.f;
+            tagData.Skill2DamageMul = 0.8f;
+            tagData.Skill3DamageMul = 1.f;
+            tagData.Skill4DamageMul = 1.2f;
         }
         // UNDEAD_PRIST
         {
@@ -590,8 +592,9 @@ void DataMgr::Initialize()
             tagData.MaxHp = 5000.f;
             tagData.CurHp = tagData.MaxHp;
 
-            tagData.Skill1DamageMul = 1.f;
-            tagData.Skill2DamageMul = 2.f;
+            tagData.Skill1DamageMul = 0.6f;
+            tagData.Skill2DamageMul = 0.8f;
+            tagData.Skill3DamageMul = 1.f;
         }
     }
 

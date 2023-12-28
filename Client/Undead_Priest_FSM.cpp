@@ -966,7 +966,8 @@ void Undead_Priest_FSM::skill_1100()
         desc.fLimitDistance = 30.f;
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) + _float3::Up;
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Undead_Priest_SkillCollider", vSkillPos, 0.3f, desc, NORMAL_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Undead_Priest_SkillCollider", vSkillPos, 0.3f, desc, NORMAL_ATTACK, 
+            DATAMGR.Get_MonsterData(MONSTER::UNDEAD_PRISTE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::UNDEAD_PRISTE).Skill1DamageMul);
     }
     
     Set_Gaze();
@@ -1015,7 +1016,8 @@ void Undead_Priest_FSM::skill_2100()
         desc.fLimitDistance = 3.f;
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + (_float3::Up * 5.f);
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Undead_Priest_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Undead_Priest_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK, 
+            DATAMGR.Get_MonsterData(MONSTER::UNDEAD_PRISTE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::UNDEAD_PRISTE).Skill2DamageMul);
     }
 
     Set_Gaze();
@@ -1063,7 +1065,8 @@ void Undead_Priest_FSM::skill_3100()
 
         Add_Effect(L"UndeadPriest_3100_Lightning", nullptr, _float4x4::CreateTranslation(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz()),true);
 
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Undead_Priest_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Undead_Priest_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK, 
+            DATAMGR.Get_MonsterData(MONSTER::UNDEAD_PRISTE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::UNDEAD_PRISTE).Skill3DamageMul);
     }
     
     Set_Gaze();

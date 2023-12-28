@@ -995,7 +995,8 @@ void Succubus_Scythe_FSM::skill_1100()
         SOUND.Play_Sound(L"vo_succubus_att_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         SOUND.Play_Sound(L"swing_sword_common_04", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         Add_And_Set_Effect(L"Succubus_1100_slash");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK,
+            DATAMGR.Get_MonsterData(MONSTER::SUCCUBUS).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SUCCUBUS).Skill1DamageMul);
     }
     else if (Init_CurFrame(25))
         AttackCollider_Off();
@@ -1028,7 +1029,8 @@ void Succubus_Scythe_FSM::skill_1200()
     {
         SOUND.Play_Sound(L"swing_sword_common_04", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         Add_And_Set_Effect(L"Succubus_1200_slash");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK,
+            DATAMGR.Get_MonsterData(MONSTER::SUCCUBUS).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SUCCUBUS).Skill2DamageMul);
     }
     else if (Init_CurFrame(23))
         AttackCollider_Off();
@@ -1061,7 +1063,8 @@ void Succubus_Scythe_FSM::skill_1300()
     {    
 		Add_And_Set_Effect(L"Succubus_1300_slash");
         SOUND.Play_Sound(L"swing_sword_common_04", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK,
+            DATAMGR.Get_MonsterData(MONSTER::SUCCUBUS).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SUCCUBUS).Skill3DamageMul);
     }
     else if (Init_CurFrame(31))
         AttackCollider_Off();
@@ -1103,7 +1106,8 @@ void Succubus_Scythe_FSM::skill_1400()
         desc.fLimitDistance = 3.f;
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Succubus_Scythe_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Succubus_Scythe_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 
+            DATAMGR.Get_MonsterData(MONSTER::ALPACA).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::ALPACA).Skill4DamageMul);
     }
 
     Set_Gaze();
