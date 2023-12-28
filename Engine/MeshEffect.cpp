@@ -134,7 +134,18 @@ void MeshEffect::Render()
     m_pShader->Push_TransformData(TransformDesc{ world });
 
     m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
-    Bind_RenderParams_ToShader();
+
+	if (!m_bIsLocked)
+	{
+
+
+		m_RenderParams.SetFloat(0, m_fLifeTimeRatio);
+		m_RenderParams.SetFloat(1, m_fCurrDissolveWeight);
+		m_RenderParams.SetFloat(2, m_fCurrRimLightIntensity);
+		m_RenderParams.SetFloat(3, m_fFadeOutRatio);
+	    Bind_UpdatedColor_ToShader();
+	}
+
 
     m_pShader->Push_LightData(CUR_SCENE->Get_LightParams());
 
