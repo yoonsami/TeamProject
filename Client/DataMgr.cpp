@@ -593,6 +593,18 @@ void DataMgr::Initialize()
             tagData.Skill1DamageMul = 1.f;
             tagData.Skill2DamageMul = 2.f;
         }
+        // SILVERSWORD_SOLDIER
+        {
+            auto& tagData = m_MonsterData[IDX(MONSTER::SILVERSWORD_SOLDIER)];
+
+            tagData.AttackDamage = 12.f;
+            tagData.MaxHp = 5000.f;
+            tagData.CurHp = tagData.MaxHp;
+
+            tagData.Skill1DamageMul = 1.f;
+            tagData.Skill2DamageMul = 1.f;
+            tagData.Skill3DamageMul = 1.f;
+        }
     }
 
     m_BossData.resize(IDX(BOSS::MAX));

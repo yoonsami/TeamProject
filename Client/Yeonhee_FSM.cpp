@@ -303,8 +303,11 @@ void Yeonhee_FSM::State_Init()
 
 void Yeonhee_FSM::Get_Hit(const wstring& skillname, _float fDamage,  shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
+    // Random -20 Percent
+    _float fHitDamage = Utils::Random_In_Range(fDamage * 0.8f, fDamage);
+
 	//Calculate Damage 
-	m_pOwner.lock()->Get_Hurt(fDamage);
+	m_pOwner.lock()->Get_Hurt(fHitDamage);
 
 	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 	_float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
