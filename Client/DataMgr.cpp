@@ -562,7 +562,7 @@ void DataMgr::Initialize()
             tagData.Skill6DamageMul = 1.2f;
             tagData.Skill7DamageMul = 2.f;
             tagData.Skill8DamageMul = 2.f;
-            tagData.Skill9DamageMul = 0.4f; // Ulti
+            tagData.Skill9DamageMul = 0.15f; // Ulti
             tagData.Skill10DamageMul = 3.f;
             tagData.Skill11DamageMul = 2.f;
             tagData.Skill12DamageMul = 0.3f; // GroggyPattern

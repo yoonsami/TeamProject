@@ -1581,7 +1581,7 @@ void Boss_Spike_FSM::skill_2100()
         if (m_fRunWindSoundTimer >= 0.1f)
         {
             m_fRunWindSoundTimer = 0.f;
-
+            Add_Effect(L"Spike_100100_IceFlower");
             wstring strSoundTag = L"magic_ice_stress_0";
             strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
             SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
@@ -1676,7 +1676,7 @@ void Boss_Spike_FSM::skill_2200()
         if (m_fRunWindSoundTimer >= 0.1f)
         {
             m_fRunWindSoundTimer = 0.f;
-
+            Add_Effect(L"Spike_100100_IceFlower");
             wstring strSoundTag = L"magic_ice_stress_0";
             strSoundTag = strSoundTag + to_wstring(rand() % 3 + 1);
             SOUND.Play_Sound(strSoundTag, CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
@@ -2220,10 +2220,11 @@ void Boss_Spike_FSM::skill_100000()
     {
         g_bCutScene = false;
 
-        if (!m_pCamera.expired())
-        {
-            m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.07f);
-        }
+		if (!m_pCamera.expired())
+		{
+			m_pCamera.lock()->Get_Script<MainCameraScript>()->ShakeCamera(0.1f, 0.07f);
+			m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_ShakingPower(0.07f);
+		}
     }
 
 
