@@ -58,12 +58,6 @@ HRESULT Player_FSM::Init()
         m_bInitialize = true;  
     }
 
-    // HP Atk Init
-    if (!m_pOwner.expired())
-    {
-        m_pOwner.lock()->Set_MaxHp(DATAMGR.Get_Data(HERO::PLAYER).MaxHp);
-    }
-
 	m_fNormalAttack_AnimationSpeed = 1.5f;
 	m_fSkillAttack_AnimationSpeed = 1.0f;
 	m_fEvade_AnimationSpeed = 1.5f;
