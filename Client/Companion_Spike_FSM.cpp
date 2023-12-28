@@ -50,6 +50,12 @@ HRESULT Companion_Spike_FSM::Init()
         m_fDetectRange = 25.f;
 
         m_bInitialize = true;
+
+        // HP Init
+        if (!m_pOwner.expired())
+        {
+            m_pOwner.lock()->Set_MaxHp(DATAMGR.Get_Data(HERO::PLAYER).MaxHp);
+        }
     }
     
     m_tRunEndDelay.fCoolTime = 0.5f;

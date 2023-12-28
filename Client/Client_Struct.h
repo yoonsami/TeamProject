@@ -93,7 +93,6 @@ typedef struct tagBossData
 	ElementType		Element				= ElementType::ElementEnd;
 	_bool			IsUseGroggy			= false;
 	wstring			Name;
-
 }BOSSDATA;
 
 typedef struct tagQuestData

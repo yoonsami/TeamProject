@@ -26,6 +26,8 @@
 
 #define SWITCHMGR                       GET_SINGLE(SwitchMgr)
 #define DATAMGR                         GET_SINGLE(DataMgr)
+
+#define GET_DAMAGE(eVALUE, SKILLINDEX)  DATAMGR.Get_Skill_Damage(eVALUE, SKILLINDEX)
 #define GET_DATA(VALUE)                 DATAMGR.Get_Data(VALUE)
 #define GET_ELEMENT(VALUE)              DATAMGR.Get_Element(VALUE)
 #define GET_ELEMENT_LINE(VALUE)         DATAMGR.Get_Element_Line(VALUE)

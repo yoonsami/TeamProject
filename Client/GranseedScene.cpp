@@ -392,6 +392,10 @@ shared_ptr<GameObject> GranseedScene::Load_Player()
 		ObjPlayer->Get_FSM()->Set_Weapon(ObjWeapon);
 		shared_ptr<MonoBehaviour> script = make_shared<HeroChangeScript>();
 		ObjPlayer->Add_Component(script);
+
+		// HP Init
+		ObjWeapon->Set_MaxHp(DATAMGR.Get_Data(HERO::PLAYER).MaxHp);
+
 		return ObjPlayer;
 	}
 	return nullptr;

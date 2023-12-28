@@ -1256,6 +1256,52 @@ void DataMgr::Initialize()
 
 }
 
+_float DataMgr::Get_Skill_Damage(HERO eHero, _uint iSkillIndex)
+{
+    auto& pData = m_HeroData[IDX(eHero)];
+    _float fDamage = pData.AttackDamage;
+
+    // if iSKillIndex == 0 -> Default Attack
+    switch (iSkillIndex)
+    {
+    case 0:
+        return fDamage * pData.AttackDamageMul;
+    case 1:
+        return fDamage * pData.Skill1DamageMul;
+    case 2:
+        return fDamage * pData.Skill2DamageMul;
+    case 3:
+        return fDamage * pData.Skill3DamageMul;
+    case 4:
+        return fDamage * pData.Skill4DamageMul;
+    case 5:
+        return fDamage * pData.Skill5DamageMul;
+    }
+}
+
+_float DataMgr::Get_Skill_Damage(MONSTER eMonster, _uint iSkillIndex)
+{
+    auto& pData = m_MonsterData[IDX(eMonster)];
+    _float fDamage = pData.AttackDamage;
+    
+    // if iSKillIndex == 0 -> Default Attack
+    switch (iSkillIndex)
+    {
+    case 0:
+        return fDamage * pData.AttackDamageMul;
+    case 1:
+        return fDamage * pData.Skill1DamageMul;
+    case 2:
+        return fDamage * pData.Skill2DamageMul;
+    case 3:
+        return fDamage * pData.Skill3DamageMul;
+    case 4:
+        return fDamage * pData.Skill4DamageMul;
+    case 5:
+        return fDamage * pData.Skill5DamageMul;
+    }
+}
+
 _uint DataMgr::Get_Dialog_Size(QUESTINDEX eIndex, CUR_QUEST eType)
 {
     if (QUESTINDEX::MAX == eIndex)

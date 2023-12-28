@@ -50,6 +50,12 @@ HRESULT Companion_Dellons_FSM::Init()
 
         m_fDetectRange = 25.f;
 
+        // HP Init
+        if (!m_pOwner.expired())
+        {
+            m_pOwner.lock()->Set_MaxHp(DATAMGR.Get_Data(HERO::PLAYER).MaxHp);
+        }
+
         m_bInitialize = true;
     }
 
