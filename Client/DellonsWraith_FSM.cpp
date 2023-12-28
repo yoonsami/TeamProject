@@ -119,7 +119,7 @@ void DellonsWraith_FSM::State_Tick()
     Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
     m_fWraithFollowEffectCoolTime += fDT;
-    if (m_fWraithFollowEffectCoolTime > 0.1f)
+    if (m_fWraithFollowEffectCoolTime > 0.4f)
     {
         Add_And_Set_Effect(L"DellonsWraith_501100_follow");
         m_fWraithFollowEffectCoolTime = 0.f;
