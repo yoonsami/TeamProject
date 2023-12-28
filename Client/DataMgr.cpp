@@ -1332,6 +1332,8 @@ _float DataMgr::Get_Skill_Damage(MONSTER eMonster, _uint iSkillIndex)
         return fDamage * pData.Skill14DamageMul;
     case 15:
         return fDamage * pData.Skill15DamageMul;
+    default:
+        return 0.f;
     }
 }
 
