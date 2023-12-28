@@ -910,12 +910,14 @@
     <ClInclude Include="LoadingBarScript.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\00.UiLoading\01.LoadingBar</Filter>
     </ClInclude>
-    <ClInclude Include="Combat5_LightControl.h" />
     <ClInclude Include="LogoScene.h">
       <Filter>01.Scene\01.LogoScene</Filter>
     </ClInclude>
     <ClInclude Include="MeteorRadialBlur.h">
       <Filter>02.Component\00.MonoBehaviour\10.MeteorRadialBlur</Filter>
+    </ClInclude>
+    <ClInclude Include="Combat5_LightControl.h">
+      <Filter>02.Component\00.MonoBehaviour\09.FieldScript\01.Field</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1342,9 +1344,11 @@
     <ClCompile Include="LoadingBarScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\00.UiLoading\01.LoadingBar</Filter>
     </ClCompile>
-    <ClCompile Include="Combat5_LightControl.cpp" />
     <ClCompile Include="MeteorRadialBlur.cpp">
       <Filter>02.Component\00.MonoBehaviour\10.MeteorRadialBlur</Filter>
+    </ClCompile>
+    <ClCompile Include="Combat5_LightControl.cpp">
+      <Filter>02.Component\00.MonoBehaviour\09.FieldScript\01.Field</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
