@@ -1751,7 +1751,8 @@ void Spike_FSM::skill_200400()
             desc.fLimitDistance = 0.f;
             CAMERA_SHAKE(0.1f, 0.2f)
             Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 
-                DATAMGR.Get_Data(HERO::SPIKE).AttackDamage * DATAMGR.Get_Data(HERO::SPIKE).Skill2DamageMul * 0.11f, L"Hit_Slash_Blue");
+                DATAMGR.Get_Data(HERO::SPIKE).AttackDamage * DATAMGR.Get_Data(HERO::SPIKE).Skill2DamageMul * 0.11f
+                , L"Hit_Slash_Blue");
         }
     }
 
