@@ -968,7 +968,7 @@ void Yeonhee_FSM::skill_1100()
 
         
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 
-            DATAMGR.Get_Data(HERO::YEONHEE).AttackDamage * DATAMGR.Get_Data(HERO::YEONHEE).AttackDamageMul * 0.3f);
+            GET_DAMAGE(HERO::YEONHEE, 0) * 0.3f);
 	}
     if(Init_CurFrame(15))
         CAMERA_SHAKE(0.1f, 0.1f)
@@ -1045,7 +1045,7 @@ void Yeonhee_FSM::skill_1200()
 
         Add_And_Set_Effect(L"YeonHee_1100_Hand");
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 
-            DATAMGR.Get_Data(HERO::YEONHEE).AttackDamage * DATAMGR.Get_Data(HERO::YEONHEE).AttackDamageMul * 0.3f);
+            GET_DAMAGE(HERO::YEONHEE, 0) * 0.3f);
     }
 	if (Init_CurFrame(22))
 		CAMERA_SHAKE(0.1f, 0.1f)
@@ -1128,7 +1128,7 @@ void Yeonhee_FSM::skill_1300()
 
         Add_And_Set_Effect(L"YeonHee_1100_Hand");
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 
-            DATAMGR.Get_Data(HERO::YEONHEE).AttackDamage * DATAMGR.Get_Data(HERO::YEONHEE).AttackDamageMul * 0.4f);
+           GET_DAMAGE(HERO::YEONHEE, 0) * 0.4f);
 	}
 	if (Init_CurFrame(25))
 		CAMERA_SHAKE(0.1f, 0.1f)
@@ -1293,7 +1293,7 @@ void Yeonhee_FSM::skill_100100()
 
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + _float3::Up;
 			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 0.3f, desc, NORMAL_ATTACK, 
-                DATAMGR.Get_Data(HERO::YEONHEE).AttackDamage * DATAMGR.Get_Data(HERO::YEONHEE).Skill1DamageMul * 0.125f);
+                GET_DAMAGE(HERO::YEONHEE, 1) * 0.125f);
             CAMERA_SHAKE(0.1f, 0.1f)
             Add_Effect(L"YeonHee_100100_Bullet");
         }
@@ -1382,8 +1382,8 @@ void Yeonhee_FSM::skill_200100()
         desc.iLimitAttackCnt = 7;
         desc.strAttackType = NORMAL_SKILL;
         desc.strLastAttackType = KNOCKDOWN_SKILL;
-        desc.fAttackDamage = DATAMGR.Get_Data(HERO::YEONHEE).AttackDamage * DATAMGR.Get_Data(HERO::YEONHEE).Skill2DamageMul * 0.13f;
-        desc.fLastAttackDamage = DATAMGR.Get_Data(HERO::YEONHEE).AttackDamage * DATAMGR.Get_Data(HERO::YEONHEE).Skill2DamageMul * 0.22f;
+        desc.fAttackDamage = GET_DAMAGE(HERO::YEONHEE, 2) * 0.13f;
+        desc.fLastAttackDamage = GET_DAMAGE(HERO::YEONHEE, 2) * 0.22f;
         desc.bFirstAttack = false;
 
         _float4 vSkillPos;
@@ -1559,7 +1559,7 @@ void Yeonhee_FSM::skill_400100()
 
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) + _float3::Up;
 			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 0.5f, desc, KNOCKBACK_ATTACK, 
-                DATAMGR.Get_Data(HERO::YEONHEE).AttackDamage * DATAMGR.Get_Data(HERO::YEONHEE).Skill4DamageMul * 0.2f);
+                GET_DAMAGE(HERO::YEONHEE, 4) * 0.2f);
 		}
 	}
 
@@ -1666,8 +1666,8 @@ void Yeonhee_FSM::skill_501100()
         desc.fAttackTickTime = 0.2f;
         desc.strAttackType = KNOCKBACK_SKILL;
         desc.strLastAttackType = KNOCKBACK_SKILL;
-        desc.fAttackDamage = DATAMGR.Get_Data(HERO::YEONHEE).AttackDamage * DATAMGR.Get_Data(HERO::YEONHEE).Skill5DamageMul * 0.2f;
-        desc.fLastAttackDamage = DATAMGR.Get_Data(HERO::YEONHEE).AttackDamage * DATAMGR.Get_Data(HERO::YEONHEE).Skill2DamageMul * 0.2f;
+        desc.fAttackDamage = GET_DAMAGE(HERO::YEONHEE, 5) * 0.2f;
+        desc.fLastAttackDamage = GET_DAMAGE(HERO::YEONHEE, 2) * 0.2f;
         desc.iLimitAttackCnt = 5;
 
         _float4 vSkillPos = vTargetPos;

@@ -1229,7 +1229,7 @@ void Boss_Spike_FSM::skill_1100()
         SOUND.Play_Sound(L"vo_spike_att_05", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        AttackCollider_On(NORMAL_ATTACK, DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill1DamageMul * 0.3f);
+        AttackCollider_On(NORMAL_ATTACK, GET_DAMAGE(MONSTER::SPIKE, 1) * 0.3f);
     }
     else if (Init_CurFrame(19))
         AttackCollider_Off();
@@ -1237,7 +1237,7 @@ void Boss_Spike_FSM::skill_1100()
     {
         SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        AttackCollider_On(NORMAL_ATTACK, DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill1DamageMul * 0.3f);
+        AttackCollider_On(NORMAL_ATTACK, GET_DAMAGE(MONSTER::SPIKE, 1) * 0.3f);
     }
     else if (Init_CurFrame(38))
         AttackCollider_Off();
@@ -1247,7 +1247,7 @@ void Boss_Spike_FSM::skill_1100()
     {
         SOUND.Play_Sound(L"swing_axe_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        AttackCollider_On(NORMAL_ATTACK, DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill1DamageMul * 0.4f);
+        AttackCollider_On(NORMAL_ATTACK, GET_DAMAGE(MONSTER::SPIKE, 1) * 0.4f);
     }
     else if (Init_CurFrame(60))
         AttackCollider_Off();
@@ -1287,7 +1287,7 @@ void Boss_Spike_FSM::skill_1200()
         SOUND.Play_Sound(L"vo_spike_att_05", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        AttackCollider_On(NORMAL_ATTACK, DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill2DamageMul * 0.2f);
+        AttackCollider_On(NORMAL_ATTACK, GET_DAMAGE(MONSTER::SPIKE, 2) * 0.2f);
     }
     else if (Init_CurFrame(19))
         AttackCollider_Off();
@@ -1295,7 +1295,7 @@ void Boss_Spike_FSM::skill_1200()
     {
         SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        AttackCollider_On(NORMAL_ATTACK, DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill2DamageMul * 0.2f);
+        AttackCollider_On(NORMAL_ATTACK, GET_DAMAGE(MONSTER::SPIKE, 2) * 0.2f);
     }
     else if (Init_CurFrame(38))
         AttackCollider_Off();
@@ -1305,7 +1305,7 @@ void Boss_Spike_FSM::skill_1200()
     {
         SOUND.Play_Sound(L"swing_axe_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        AttackCollider_On(NORMAL_ATTACK, DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill2DamageMul * 0.2f);
+        AttackCollider_On(NORMAL_ATTACK, GET_DAMAGE(MONSTER::SPIKE, 2) * 0.2f);
     }
     else if (Init_CurFrame(60))
         AttackCollider_Off();
@@ -1343,7 +1343,7 @@ void Boss_Spike_FSM::skill_1200()
     {
         SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        AttackCollider_On(NORMAL_ATTACK, DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill2DamageMul * 0.4f);
+        AttackCollider_On(NORMAL_ATTACK, GET_DAMAGE(MONSTER::SPIKE, 2) * 0.4f);
     }
     else if (Init_CurFrame(105))
         AttackCollider_Off();
@@ -1385,7 +1385,7 @@ void Boss_Spike_FSM::skill_1300()
         SOUND.Play_Sound(L"vo_spike_att_05", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        AttackCollider_On(NORMAL_ATTACK, DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill3DamageMul * 0.4f);
+        AttackCollider_On(NORMAL_ATTACK, GET_DAMAGE(MONSTER::SPIKE, 3) * 0.4f);
     }
     else if (Init_CurFrame(15))
         AttackCollider_Off();
@@ -1416,7 +1416,7 @@ void Boss_Spike_FSM::skill_1300()
     {
         SOUND.Play_Sound(L"swing_axe_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        AttackCollider_On(KNOCKBACK_ATTACK, DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill3DamageMul * 0.6f);
+        AttackCollider_On(KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::SPIKE, 3) * 0.6f);
     }
     else if (Init_CurFrame(45))
         AttackCollider_Off();
@@ -1466,7 +1466,7 @@ void Boss_Spike_FSM::skill_1400()
 
 
     if (Init_CurFrame(17))
-        AttackCollider_On(KNOCKBACK_ATTACK, DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill4DamageMul * 1.f);
+        AttackCollider_On(KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::SPIKE, 4) * 1.f);
     else if (Init_CurFrame(25))
         AttackCollider_Off();
     
@@ -1560,7 +1560,7 @@ void Boss_Spike_FSM::skill_2100()
         }
     }
     else if (Init_CurFrame(16))
-        AttackCollider_On(KNOCKBACK_ATTACK, DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill5DamageMul * 0.4f);
+        AttackCollider_On(KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::SPIKE, 5) * 0.4f);
     else if (Init_CurFrame(34))
         AttackCollider_Off();
     else if (Init_CurFrame(48))
@@ -1571,7 +1571,7 @@ void Boss_Spike_FSM::skill_2100()
     {
         SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        AttackCollider_On(KNOCKDOWN_ATTACK, DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill5DamageMul * 0.6f);
+        AttackCollider_On(KNOCKDOWN_ATTACK, GET_DAMAGE(MONSTER::SPIKE, 5) * 0.6f);
     }
     else if (Init_CurFrame(56))
         AttackCollider_Off();
@@ -1649,7 +1649,7 @@ void Boss_Spike_FSM::skill_2200()
         }
     }
     else if (Init_CurFrame(16))
-        AttackCollider_On(KNOCKBACK_ATTACK, DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill6DamageMul * 0.3f);
+        AttackCollider_On(KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::SPIKE, 6) * 0.3f);
     else if (Init_CurFrame(46))
         AttackCollider_Off();
     else if (Init_CurFrame(62))
@@ -1657,7 +1657,7 @@ void Boss_Spike_FSM::skill_2200()
         SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        AttackCollider_On(KNOCKDOWN_ATTACK, DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill6DamageMul * 0.4f);
+        AttackCollider_On(KNOCKDOWN_ATTACK, GET_DAMAGE(MONSTER::SPIKE, 6) * 0.4f);
     }
     else if (Init_CurFrame(68))
         AttackCollider_Off();
@@ -1666,7 +1666,7 @@ void Boss_Spike_FSM::skill_2200()
         SOUND.Play_Sound(L"swing_axe_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         SOUND.Play_Sound(L"magic_ice_impact_n_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        AttackCollider_On(KNOCKDOWN_ATTACK, DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill6DamageMul * 0.4f);
+        AttackCollider_On(KNOCKDOWN_ATTACK, GET_DAMAGE(MONSTER::SPIKE, 6) * 0.4f);
     }
     else if (Init_CurFrame(82))
         AttackCollider_Off();
@@ -1764,12 +1764,12 @@ void Boss_Spike_FSM::skill_3100()
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f;
 
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill7DamageMul * 1.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::SPIKE, 7) * 1.f);
 
         vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
             Get_Transform()->Get_State(Transform_State::LOOK) * 6.5f;
 
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vSkillPos, 2.5f, desc, KNOCKBACK_ATTACK, DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill7DamageMul * 1.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vSkillPos, 2.5f, desc, KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::SPIKE, 7) * 1.f);
     }
 
     Set_Gaze();
@@ -1854,13 +1854,13 @@ void Boss_Spike_FSM::skill_3200()
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 4.f;
 
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vSkillPos, 2.5f, desc, KNOCKBACK_ATTACK, DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill8DamageMul * 1.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vSkillPos, 2.5f, desc, KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::SPIKE, 8) * 1.f);
     
         vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + 
                     Get_Transform()->Get_State(Transform_State::RIGHT) * -1.f + 
                     Get_Transform()->Get_State(Transform_State::LOOK) * 7.f;
 
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vSkillPos, 2.5f, desc, KNOCKBACK_ATTACK, DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill8DamageMul * 1.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vSkillPos, 2.5f, desc, KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::SPIKE, 8) * 1.f);
     }
 
     Set_Gaze();
@@ -1985,8 +1985,8 @@ void Boss_Spike_FSM::skill_6100()
         desc.fAttackTickTime = 1.f;
         desc.strAttackType = KNOCKBACK_SKILL;
         desc.strLastAttackType = KNOCKBACK_SKILL;
-        desc.fAttackDamage = DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill9DamageMul * 1.f;
-        desc.fLastAttackDamage = DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill9DamageMul * 1.f;
+        desc.fAttackDamage = GET_DAMAGE(MONSTER::SPIKE, 9) * 1.f;
+        desc.fLastAttackDamage = GET_DAMAGE(MONSTER::SPIKE, 9) * 1.f;
         desc.iLimitAttackCnt = 3;
 
         for (_uint i = 0; i < 8; i++)
@@ -2070,7 +2070,7 @@ void Boss_Spike_FSM::skill_7100()
         desc.fLifeTime = 2.5f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", Get_Transform()->Get_State(Transform_State::POS), 5.f, desc, KNOCKDOWN_ATTACK, DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill10DamageMul * 1.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", Get_Transform()->Get_State(Transform_State::POS), 5.f, desc, KNOCKDOWN_ATTACK, GET_DAMAGE(MONSTER::SPIKE, 10) * 1.f);
     }
 
 
@@ -2121,7 +2121,7 @@ void Boss_Spike_FSM::skill_8100()
         desc.fLimitDistance = 0.f;
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vSkillPos, 3.5f, desc, KNOCKBACK_ATTACK, DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill11DamageMul * 1.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vSkillPos, 3.5f, desc, KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::SPIKE, 11) * 1.f);
     }
 
 
@@ -2168,8 +2168,8 @@ void Boss_Spike_FSM::skill_100000()
         desc.fAttackTickTime = 1.f;
         desc.strAttackType = KNOCKBACK_SKILL;
         desc.strLastAttackType = KNOCKBACK_SKILL;
-        desc.fAttackDamage = DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill12DamageMul * 1.f;
-        desc.fLastAttackDamage = DATAMGR.Get_MonsterData(MONSTER::SPIKE).AttackDamage * DATAMGR.Get_MonsterData(MONSTER::SPIKE).Skill12DamageMul * 1.f;
+        desc.fAttackDamage = GET_DAMAGE(MONSTER::SPIKE, 12) * 1.f;
+        desc.fLastAttackDamage = GET_DAMAGE(MONSTER::SPIKE, 12) * 1.f;
         desc.iLimitAttackCnt = 3;
 
         for (_uint i = 0; i < 8; i++)
@@ -2289,7 +2289,7 @@ void Boss_Spike_FSM::skill_100100()
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + _float3::Up;
 
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vSkillPos, 3.f, desc, NORMAL_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Spike_SkillCollider", vSkillPos, 3.f, desc, NORMAL_ATTACK, GET_DAMAGE(MONSTER::SPIKE, 13) * 0.2f);
     }
     else if (Init_CurFrame(40))
         Add_And_Set_Effect(L"Spike_300100_Jump");
@@ -2344,7 +2344,7 @@ void Boss_Spike_FSM::skill_100100()
 
             if (vDir.Dot(vLook) > cosf(XM_PI))
             {
-                m_pTarget.lock()->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, 50.f, Get_Owner(),ElementType::WATER);
+                m_pTarget.lock()->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, GET_DAMAGE(MONSTER::SPIKE, 13) * 0.8f, Get_Owner(),ElementType::WATER);
             }
         }
     }

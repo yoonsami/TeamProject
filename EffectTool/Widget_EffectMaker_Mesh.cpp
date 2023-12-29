@@ -225,23 +225,6 @@ void Widget_EffectMaker_Mesh::ImGui_FinishedEffect()
 	//if (ImGui::Button("Update Save MeshEffect files"))
 	//	SaveAdditionalData();
 
-	if (ImGui::Button("f**k"))
-	{
-		_int iIndex = 0;
-		for (auto& iter : m_vecFinishedEffects)
-		{
-			ImGui::ListBox("##FinishedEffect", &m_iFinishedObject, m_pszFinishedEffects, m_iNumFinishedEffects, 20);
-
-			// Load 
-			m_iFinishedObject = iIndex;
-			Load();
-
-			// Save
-			Save();
-			iIndex++;
-		}
-	}
-	
 	ImGui::InputText("##FinishedEffectFilter", m_szFinishedEffectFilter, MAX_PATH);
 	ImGui::SameLine();
 	if (ImGui::Button("Search##FinishedEffectFilter"))
@@ -1628,11 +1611,6 @@ void Widget_EffectMaker_Mesh::Load()
 		// For. On/Off Texture Option
 		if (m_TexOption[i].Texture.second == "None")
 			m_TexOption[i].bIsOption_On = false;
-
-		// F**k
-		m_TexOption[i].fUVSpeed_Op[0] *= 2.f;
-		m_TexOption[i].fUVSpeed_Op[1] *= 2.f;
-
 	}
 
 	/* Blend */
@@ -1647,9 +1625,6 @@ void Widget_EffectMaker_Mesh::Load()
 	vTemp_vec2 = file->Read<_float2>();
 	memcpy(m_fUVSpeed_Blend, &vTemp_vec2, sizeof(m_fUVSpeed_Blend));
 	m_fAlphaOffset_Blend = file->Read<_float>();
-	// F**k
-	m_fUVSpeed_Blend[0] *= 2.f;
-	m_fUVSpeed_Blend[1] *= 2.f;
 
 	/* Overlay */
 	m_bOverlay_On = file->Read<_bool>();
@@ -1661,9 +1636,6 @@ void Widget_EffectMaker_Mesh::Load()
 	vTemp_vec2 = file->Read<_float2>();
 	memcpy(m_fUVSpeed_Overlay, &vTemp_vec2, sizeof(m_fUVSpeed_Overlay));
 	m_OverlayTexture.first = GetIndex_FromTexList(m_OverlayTexture.second);
-	// F**k
-	m_fUVSpeed_Overlay[0] *= 2.f;
-	m_fUVSpeed_Overlay[1] *= 2.f;
 
 	/* Rim Light */
 	m_bRimLight_On = file->Read<_bool>();
@@ -1686,9 +1658,6 @@ void Widget_EffectMaker_Mesh::Load()
 	memcpy(m_fTiling_Dissolve, &vTemp_vec2, sizeof(m_fTiling_Dissolve));
 	vTemp_vec2 = file->Read<_float2>();
 	memcpy(m_fUVSpeed_Dissolve, &vTemp_vec2, sizeof(m_fUVSpeed_Dissolve));
-	// F**k
-	m_fUVSpeed_Dissolve[0] *= 2.f;
-	m_fUVSpeed_Dissolve[1] *= 2.f;
 	m_DissolveTexture.first = GetIndex_FromTexList(m_DissolveTexture.second);
 	if (0 == m_DissolveTexture.first) m_bDissolve_On = false;
 	else m_bDissolve_On = true;
@@ -1701,9 +1670,6 @@ void Widget_EffectMaker_Mesh::Load()
 	memcpy(m_fTiling_Distortion, &vTemp_vec2, sizeof(m_fTiling_Dissolve));
 	vTemp_vec2 = file->Read<_float2>();
 	memcpy(m_fUVSpeed_Distortion, &vTemp_vec2, sizeof(m_fUVSpeed_Distortion));
-	// F**k
-	m_fUVSpeed_Distortion[0] *= 2.f;
-	m_fUVSpeed_Distortion[1] *= 2.f;
 	m_DistortionTexture.first = GetIndex_FromTexList(m_DistortionTexture.second);
 	if (0 == m_DistortionTexture.first) m_bDistortion_On = false;
 	else m_bDistortion_On = true;
