@@ -322,6 +322,9 @@ void UIShop::Click_Buy_Yes()
 {
 	Remove_Buy_Ui();
 
+	// BuySound
+	SOUND.Play_Sound(L"ui_weapontransform_open", CHANNELID::SOUND_EFFECT, g_fSystemSoundRatio, CUR_SCENE->Get_GameObject(L"Player")->Get_Transform()->Get_State(Transform_State::POS).xyz(), 10.f/*MagicNumber*/);
+
 	// 1번이면 포션 증가
 	// 15~17 : 코스튬 on -> UI_Costume_Controller -> Change_Costume_Have
 	if (1 == m_iInteractionItemIndex)
@@ -370,6 +373,9 @@ void UIShop::Click_Buy_Yes()
 void UIShop::Click_Buy_No()
 {
 	Remove_Buy_Ui();
+
+	//TouchSound
+	SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 }
 
 void UIShop::Create_Buy_Ui()
@@ -414,9 +420,6 @@ void UIShop::Remove_Buy_Ui()
 {
 	if (false == m_bIsCreatedBuyUi)
 		return;
-
-	//TouchSound
-	SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
 	m_bIsCreatedBuyUi = false;
 

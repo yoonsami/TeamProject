@@ -146,6 +146,9 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
     if (m_pOwner.expired() || HERO::MAX == eHero)
         return;
 
+    //CharacterChangeSound
+    SOUND.Play_Sound(L"ui_questplot_complete", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
+
 	for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
 	{
 		material->Get_MaterialDesc().emissive = Color(0.f);

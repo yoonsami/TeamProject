@@ -97,7 +97,7 @@ HRESULT GranseedScene::Load_Scene()
 	sky->Add_Component(make_shared<ModelRenderer>(RESOURCES.Get<Shader>(L"SkyBox.fx")));
 	sky->Get_ModelRenderer()->Set_Model(RESOURCES.Get<Model>(L"SkyBox"));
 	sky->Set_Name(L"SkyBase");
-	sky->Add_Component(make_shared<WaterUVSliding>());
+	//sky->Add_Component(make_shared<WaterUVSliding>());
 	Add_GameObject(sky);
 
 	Load_Light();
