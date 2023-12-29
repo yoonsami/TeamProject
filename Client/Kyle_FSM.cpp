@@ -650,12 +650,7 @@ void Kyle_FSM::b_run_end_l_Init()
 
 void Kyle_FSM::b_sprint()
 {
-	m_fRunEffectTimer += fDT;
-	if (m_fRunEffectTimer > 0.2f)
-	{
-		Add_Effect(L"Sprint_Wind");
-		m_fRunEffectTimer = 0.f;
-	}
+	Create_Sprint_Wind();
 
 	if (Init_CurFrame(7))
 	{
@@ -721,7 +716,7 @@ void Kyle_FSM::b_sprint_Init()
 	Get_Transform()->Set_Speed(m_fSprintSpeed);
 
 	AttackCollider_Off();
-
+	m_fStTimer = 0.f;
 	m_bInvincible = false;
 	m_bSuperArmor = false;
 }

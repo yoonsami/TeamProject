@@ -690,13 +690,7 @@ void Player_FSM::b_sprint()
         SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     }
 
-    m_fStTimer += fDT;
-    if (m_fStTimer >= 0.4f)
-    {
-        Add_And_Set_Effect(L"Sprint_Wind");
-
-        m_fStTimer = 0.f;
-    }
+    Create_Sprint_Wind();
 
     Get_Transform()->Go_Straight();
 

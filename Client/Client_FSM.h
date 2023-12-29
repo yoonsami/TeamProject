@@ -24,8 +24,10 @@ protected:
 	void Create_InstallationSkillCollider(CollisionGroup eGroup, const wstring& strColliderName, const _float4& vPos, _float fSkillRange, INSTALLATIONSKILLDESC desc);
 	void Create_FloorSkillCollider_Sphere(CollisionGroup eGroup, const wstring& strColliderName, const _float4& vPos, _float fSkillRange, FLOORSKILLDESC desc);
 	void Create_FloorSkillCollider(CollisionGroup eGroup, const wstring& strColliderName, const _float4& vPos, _float3 vSkillScale, FLOORSKILLDESC desc);
+	
+	//Effect
 	void Create_Foot_Dust();
-
+	void Create_Sprint_Wind();
 protected:
 	ElementType m_eElementType = ElementEnd;
 	_float m_fStTimer = 0.f;
