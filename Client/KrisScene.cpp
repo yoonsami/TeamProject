@@ -220,7 +220,9 @@ void KrisScene::Final_Tick()
 		if (pObj)
 			pObj->Get_Script<UiMessageCreater>()->Create_Message(L"델론즈 획득 !");
 
-
+		//GetCharacterSound
+		SOUND.Play_Sound(L"UI_toastnotice", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
+		
 		DATAMGR.Set_Card_Inven(HERO::DELLONS);
 		SWITCHMGR.Set_SwitchState(SWITCH_TYPE::CREATE_WOLF_AFTER_DELLONS, true);
 	}

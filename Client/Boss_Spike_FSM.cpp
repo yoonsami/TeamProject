@@ -1054,6 +1054,8 @@ void Boss_Spike_FSM::SQ_Die()
 		if (pObj)
 			pObj->Get_Script<UiMessageCreater>()->Create_Message(L"Ω∫∆ƒ¿Ã≈© »πµÊ !");
 
+        //GetCharacterSound
+        SOUND.Play_Sound(L"UI_toastnotice", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
 		DATAMGR.Set_Card_Inven(HERO::SPIKE);
     }
