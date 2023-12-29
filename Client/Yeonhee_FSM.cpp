@@ -679,7 +679,6 @@ void Yeonhee_FSM::b_sprint_Init()
     Get_Transform()->Set_Speed(m_fSprintSpeed);
 
     AttackCollider_Off();
-	Add_Effect(L"All_DashStart");
 	m_fStTimer = 0.f;
     m_bInvincible = false;
     m_bSuperArmor = false;
