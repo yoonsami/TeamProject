@@ -222,6 +222,8 @@ void UiCardDeckController::Create_Card_Deck()
     if (false == g_bIsCanRotation)
         return;
 
+    DATAMGR.Sort_By_Star();
+
     //TouchSound
     SOUND.Play_Sound(L"ui_touch", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
 
