@@ -132,7 +132,7 @@ private:
 	weak_ptr<GameObject> m_pStomachCollider;
 	weak_ptr<GameObject> m_pLfootCollider;
 	weak_ptr<GameObject> m_pFootRigidBody;
-
+	
 	_float3 m_vTailFloorSoundPos = _float3(0.f);
 	_float3 m_vHeadCamDir = _float3(0.f);
 	_float4 m_vHeadBonePos = _float4(0.f);

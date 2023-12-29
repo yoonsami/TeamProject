@@ -24,6 +24,7 @@
 #include "PortalScript.h"
 #include "MeshCollider.h"
 #include "UiQuestController.h"
+#include "MainUiController.h"
 
 HRESULT Boss_Giant_Mir_FSM::Init()
 {
@@ -96,8 +97,14 @@ HRESULT Boss_Giant_Mir_FSM::Init()
     m_fSwingVolume = 0.3f;
     m_fEffectVolume = 0.3f;
     
-
     m_fMySoundDistance = 100.f;
+    
+    // HP Init
+    if (!m_pOwner.expired())
+    {
+        m_pOwner.lock()->Set_MaxHp(DATAMGR.Get_MonsterData(MONSTER::GIANT_MIR).MaxHp);
+    }
+
 
     return S_OK;
 }
@@ -361,6 +368,11 @@ void Boss_Giant_Mir_FSM::SQ_Spawn()
         g_bCutScene = false;
         m_eCurState = STATE::b_idle;
 
+        auto pController = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+
+        if (pController)
+            pController->Get_Script<MainUiController>()->Set_MainUI_Render(true);
+
         //Add_BossHp UI
         if (!m_pOwner.expired())
         {
@@ -575,6 +587,11 @@ void Boss_Giant_Mir_FSM::SQ_Leave_Groggy_Start_Init()
     m_fCamRatio = 0.f;
 
     g_bCutScene = true;
+
+    auto pController = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+
+    if (pController)
+        pController->Get_Script<MainUiController>()->Set_MainUI_Render(false);
     
     m_bSummonMeteor = false;
 
@@ -736,6 +753,11 @@ void Boss_Giant_Mir_FSM::SQ_Leave()
                 m_pCamera.lock()->Get_Transform()->Set_State(Transform_State::POS, vCamPos);
                 m_pCamera.lock()->Get_Transform()->LookAt(m_vSetPlayerPos);
                 g_bCutScene = false;
+
+                auto pController = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+
+                if (pController)
+                    pController->Get_Script<MainUiController>()->Set_MainUI_Render(true);
             }
         }
     }
@@ -903,7 +925,7 @@ void Boss_Giant_Mir_FSM::skill_1100()
 
             _float4 vSkillPos = vBonePos;
 
-            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 6.f, desc, KNOCKBACK_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 6.f, desc, KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::GIANT_MIR, 1) * 0.2f);
         }
     }
 
@@ -943,7 +965,7 @@ void Boss_Giant_Mir_FSM::skill_1200()
     {
         SOUND.Play_Sound(L"burst_stone_04", CHANNELID::SOUND_EFFECT, 0.3f, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        TailAttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+        TailAttackCollider_On(KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::GIANT_MIR, 2) * 1.f);
     }
     else if (Init_CurFrame(194))
         TailAttackCollider_Off();
@@ -958,8 +980,8 @@ void Boss_Giant_Mir_FSM::skill_1200()
             desc.strAttackType = KNOCKDOWN_SKILL;
             desc.strLastAttackType = KNOCKDOWN_SKILL;
             desc.bFirstAttack = false;
-            desc.fAttackDamage = 5.f;
-            desc.fLastAttackDamage = 5.f;
+            desc.fAttackDamage = GET_DAMAGE(MONSTER::GIANT_MIR, 3) * 1.f;
+            desc.fLastAttackDamage = GET_DAMAGE(MONSTER::GIANT_MIR, 3) * 1.f;
 
             _float4 vSkillPos = m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS) + _float4{ 0.001f, 0.f,0.f,0.f };
             m_vTailFloorSoundPos = vSkillPos.xyz();
@@ -1052,7 +1074,7 @@ void Boss_Giant_Mir_FSM::skill_2100()
 
             _float4 vSkillPos = vBonePos;
 
-            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 6.f, desc, NORMAL_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 6.f, desc, NORMAL_ATTACK, GET_DAMAGE(MONSTER::GIANT_MIR, 4) * 0.2f);
         }
     }
 
@@ -1208,7 +1230,7 @@ void Boss_Giant_Mir_FSM::skill_100100()
 
             _float4 vSkillPos = vBonePos;
 
-            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 5.f, desc, KNOCKBACK_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 5.f, desc, KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::GIANT_MIR, 5) * 0.125f);
         }
     }
 
@@ -1302,7 +1324,7 @@ void Boss_Giant_Mir_FSM::skill_200100()
 
             _float4 vSkillPos = vBonePos;
 
-            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 5.f, desc, KNOCKBACK_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 5.f, desc, KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::GIANT_MIR, 6) * 0.125f);
         }
     }
 
@@ -1345,7 +1367,7 @@ void Boss_Giant_Mir_FSM::Create_Meteor()
 
                 Add_GroupEffectOwner(L"Mir_Meteor_Meteor", _float3(vSkillPos.x, vPlayerPos.y, vSkillPos.z), true);
                 Add_GroupEffectOwner(L"Mir_Meteor_Floor", _float3(vSkillPos.x, vPlayerPos.y, vSkillPos.z), true);
-                Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 1.f, desc, KNOCKDOWN_SKILL, 10.f);
+                Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 1.f, desc, KNOCKDOWN_SKILL, GET_DAMAGE(MONSTER::GIANT_MIR, 0) * 1.f);
             }
 
             {
