@@ -1297,7 +1297,10 @@ void Yeopo_FSM::skill_1400_Init()
 
 void Yeopo_FSM::skill_91100()
 {
+	if (Init_CurFrame(0))
+		Create_FrontDash();
     _float3 vInputVector = Get_InputDirVector();
+	Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
     Look_DirToTarget();
 
@@ -1323,7 +1326,7 @@ void Yeopo_FSM::skill_91100_Init()
     m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
-    Create_FrontDash();
+
     SOUND.Play_Sound(L"vo_yeopo_att_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_bInvincible = true;
@@ -1332,7 +1335,10 @@ void Yeopo_FSM::skill_91100_Init()
 
 void Yeopo_FSM::skill_93100()
 {
+	if (Init_CurFrame(4))
+		Create_BackDash();
     _float3 vInputVector = Get_InputDirVector();
+	Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
@@ -1353,7 +1359,7 @@ void Yeopo_FSM::skill_93100_Init()
     m_bCanCombo = false;
 
     AttackCollider_Off();
-    Create_BackDash();
+
     SOUND.Play_Sound(L"vo_yeopo_att_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_bInvincible = true;
