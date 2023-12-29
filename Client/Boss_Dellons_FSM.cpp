@@ -15,6 +15,7 @@
 #include "ObjectDissolve.h"
 #include "CharacterController.h"
 #include "UiBossDialog.h"
+#include "MainUiController.h"
 
 
 Boss_Dellons_FSM::Boss_Dellons_FSM()
@@ -517,6 +518,12 @@ void Boss_Dellons_FSM::talk_01()
             m_eCurState = STATE::b_idle;
             g_bCutScene = false;
 
+            auto pController = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+
+            if (pController)
+                pController->Get_Script<MainUiController>()->Set_MainUI_Render(true);
+
+
             SOUND.Play_Sound(L"Skill_10_A_Dellons_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), 30.f);
         }
     }
@@ -534,6 +541,11 @@ void Boss_Dellons_FSM::talk_01_Init()
     m_bSuperArmor = false;
 
     g_bCutScene = true;
+
+    auto pController = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+
+    if (pController)
+        pController->Get_Script<MainUiController>()->Set_MainUI_Render(false);
 
     if (m_pOwner.lock()->Get_Script<UiBossDialog>())
         m_pOwner.lock()->Get_Script<UiBossDialog>()->Create_Dialog(BOSS::DELLONS);

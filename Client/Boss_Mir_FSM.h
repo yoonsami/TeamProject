@@ -37,8 +37,8 @@ public:
 		skill_9100, //SKILL 6 Fly_To_The_Sky And FallBack
 		skill_11100, //SKILL 7 FootAttack 
 		skill_12100, //SKILL 8 ThunderAttack
-		skill_13100, //SKILL 9 Breath to Forward
-		skill_14100, //SKILL 10 Breath to Ground Twice
+		skill_13100, //SKILL 9 3 Fireball to Forward 
+		skill_14100, //SKILL 10 Fireball to 4 Direction Twice
 		
 		skill_100000, //SKILL 11  Ready to PowerBreath
 		skill_100100, //SKILL 11 - 1-  Shoot PowerBreath (Short)- end

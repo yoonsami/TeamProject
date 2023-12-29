@@ -25,7 +25,7 @@
 #include "TimerScript.h"
 #include "UiQuestController.h"
 #include "UiMessageCreater.h"
-
+#include "MainUiController.h"
 
 Boss_Spike_FSM::Boss_Spike_FSM()
 {
@@ -468,6 +468,14 @@ void Boss_Spike_FSM::SQ_Appear_01()
         SOUND.Play_Sound(L"magic_wind_att_04", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
 
 
+    if (Init_CurFrame(10))
+    {
+        auto pController = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+
+        if (pController)
+            pController->Get_Script<MainUiController>()->Set_MainUI_Render(false);
+    }
+
     if (m_iCurFrame >= 10 && m_iCurFrame <= 75)
     {
         CUR_SCENE->Set_PlayBGM(true);
@@ -671,6 +679,14 @@ void Boss_Spike_FSM::Spawn_Init()
     }
 
     m_DieCamWorld = Get_Transform()->Get_WorldMatrix();
+
+    if (!m_pCamera.expired())
+        m_pCamera.lock()->Get_Script<MainCameraScript>()->Set_FixedTime(0.f);
+    
+    auto pController = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+
+    if (pController)
+        pController->Get_Script<MainUiController>()->Set_MainUI_Render(true);
 
     g_bCutScene = false;
 }
@@ -1062,6 +1078,13 @@ void Boss_Spike_FSM::SQ_Die()
 
     if (Is_AnimFinished())
     {
+        g_bCutScene = false;
+
+        auto pController = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+
+        if (pController)
+            pController->Get_Script<MainUiController>()->Set_MainUI_Render(true);
+
         auto script = make_shared<ObjectDissolve>(3.f);
         Get_Owner()->Add_Component(script);
         script->Init();
@@ -1125,6 +1148,12 @@ void Boss_Spike_FSM::SQ_Die_Init()
         g_bCutScene = true;
     }
 
+
+    auto pController = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+
+    if (pController)
+        pController->Get_Script<MainUiController>()->Set_MainUI_Render(false);
+    
     if (!m_pOwner.expired())
     {
         if (m_pOwner.lock()->Get_Script<UIBossHpBar>())
@@ -1955,6 +1984,13 @@ void Boss_Spike_FSM::skill_6100()
         g_bCutScene = false;
     }
 
+    if (Init_CurFrame(145))
+    {
+        auto pController = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+
+        if (pController)
+            pController->Get_Script<MainUiController>()->Set_MainUI_Render(true);
+    }
 
 
     Calculate_CamBoneMatrix();
@@ -2041,12 +2077,16 @@ void Boss_Spike_FSM::skill_6100_Init()
             Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 3.f + _float4{ 0.f,2.f,0.f,0.f });
         
         m_vCamStopPos = m_pCamera.lock()->Get_Transform()->Get_State(Transform_State::POS);
-        //m_pCamera.lock()->Get_Transform()->Set_State(Transform_State::POS, m_vSkillCamBonePos);    
     }
     
     m_bLastPattern = true;
 
     g_bCutScene = true;
+
+    auto pController = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+
+    if (pController)
+        pController->Get_Script<MainUiController>()->Set_MainUI_Render(false);
 }
 
 void Boss_Spike_FSM::skill_7100()
@@ -2229,6 +2269,13 @@ void Boss_Spike_FSM::skill_100000()
 		}
     }
 
+    if (Init_CurFrame(31))
+    {
+        auto pController = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+
+        if (pController)
+            pController->Get_Script<MainUiController>()->Set_MainUI_Render(true);
+    }
 
     Calculate_CamBoneMatrix();
 
@@ -2269,6 +2316,11 @@ void Boss_Spike_FSM::skill_100000_Init()
 
         g_bCutScene = true;
     }
+
+    auto pController = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+
+    if (pController)
+        pController->Get_Script<MainUiController>()->Set_MainUI_Render(false);
 
 }
 
