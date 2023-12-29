@@ -674,7 +674,7 @@ void Spike_FSM::b_sprint()
     }
 
     Get_Transform()->Go_Straight();
-
+    Create_Sprint_Wind();
     _float3 vInputVector = Get_InputDirVector();
 
     if (vInputVector == _float3(0.f))
@@ -717,6 +717,8 @@ void Spike_FSM::b_sprint()
 
 void Spike_FSM::b_sprint_Init()
 {
+    Add_GroupEffectOwner(L"All_DashStart", _float3(0.f, 0.f, 2.f), false, nullptr, false);
+
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"b_sprint", 0.2f, true, 1.f);
@@ -724,7 +726,8 @@ void Spike_FSM::b_sprint_Init()
     Get_Transform()->Set_Speed(m_fSprintSpeed);
 
     AttackCollider_Off();
-
+	
+	m_fStTimer = 0.f;
     m_bInvincible = false;
     m_bSuperArmor = false;
 }
@@ -2157,7 +2160,7 @@ void Spike_FSM::Use_Skill()
 {
     if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
         m_eCurState = STATE::skill_100100;
-    else if (KEYTAP(KEY_TYPE::KEY_2))
+    else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
         m_eCurState = STATE::skill_200100;
     else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
         m_eCurState = STATE::skill_300100;

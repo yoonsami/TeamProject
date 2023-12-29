@@ -717,7 +717,7 @@ void Yeopo_FSM::b_sprint()
     }
 
     RidingCoolCheck();
-
+    Create_Sprint_Wind();
     Get_Transform()->Go_Straight();
 
     _float3 vInputVector = Get_InputDirVector();
@@ -762,6 +762,8 @@ void Yeopo_FSM::b_sprint()
 
 void Yeopo_FSM::b_sprint_Init()
 {
+    Add_GroupEffectOwner(L"All_DashStart", _float3(0.f, 0.f, 2.f), false, nullptr, false);
+
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"b_sprint", 0.2f, true, 1.f);
@@ -769,7 +771,8 @@ void Yeopo_FSM::b_sprint_Init()
     Get_Transform()->Set_Speed(m_fSprintSpeed);
 
     AttackCollider_Off();
-
+    
+    m_fStTimer = 0.f;
     m_bInvincible = false;
     m_bSuperArmor = false;
 }

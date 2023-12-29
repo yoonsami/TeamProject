@@ -208,3 +208,14 @@ void Client_FSM::Create_Foot_Dust()
 
 	Add_And_Set_Effect(L"Foot_Dust_" + sceneName);
 }
+
+void Client_FSM::Create_Sprint_Wind()
+{
+	m_fStTimer += fDT;
+	if (m_fStTimer >= 0.2f)
+	{
+		Add_And_Set_Effect(L"Sprint_Wind");
+
+		m_fStTimer = 0.f;
+	}
+}
