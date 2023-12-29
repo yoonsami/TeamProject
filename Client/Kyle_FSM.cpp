@@ -1494,7 +1494,7 @@ void Kyle_FSM::skill_200100()
 		Add_And_Set_Effect(L"Kyle_200100_Slash");
 	else if (Init_CurFrame(12))
 		Add_And_Set_Effect(L"Kyle_200_Boost");
-	else if (Init_CurFrame(19))
+	else if (Init_CurFrame(15))
 		Add_GroupEffectOwner(L"Kyle_200100_Install", _float3(0.f, 0.f, 3.5f), false, nullptr, false);
 
 	Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
@@ -1559,6 +1559,8 @@ void Kyle_FSM::skill_200200()
 		Add_And_Set_Effect(L"Kyle_200200_Slash");
 	else if (Init_CurFrame(12))
 		Add_And_Set_Effect(L"Kyle_200_Boost");
+	else if (Init_CurFrame(15))
+		Add_GroupEffectOwner(L"Kyle_200100_Install", _float3(0.f, 0.f, 3.5f), false, nullptr, false);
 	else if (Init_CurFrame(19))
 		Add_GroupEffectOwner(L"Kyle_200200_Install", _float3(0.f, 0.f, 3.5f), false, nullptr, false);
 
