@@ -690,6 +690,14 @@ void Player_FSM::b_sprint()
         SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     }
 
+    m_fStTimer += fDT;
+    if (m_fStTimer >= 0.4f)
+    {
+        Add_And_Set_Effect(L"Sprint_Wind");
+
+        m_fStTimer = 0.f;
+    }
+
     Get_Transform()->Go_Straight();
 
     _float3 vInputVector = Get_InputDirVector();
@@ -730,6 +738,8 @@ void Player_FSM::b_sprint()
 
         Use_Skill();
     }
+	Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
 }
 
 void Player_FSM::b_sprint_Init()
@@ -741,7 +751,7 @@ void Player_FSM::b_sprint_Init()
     Get_Transform()->Set_Speed(m_fSprintSpeed);
 
     AttackCollider_Off();
-
+    m_fStTimer = 0.f;
     m_bInvincible = false;
     m_bSuperArmor = false;
 }
