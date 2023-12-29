@@ -1160,12 +1160,12 @@ void Kyle_FSM::skill_1400()
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.fMoveSpeed = 0.f;
-		desc.fLifeTime = 1.5f;
+		desc.fLifeTime = 0.5f;
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-			Get_Transform()->Get_State(Transform_State::LOOK) * 3.f;
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.3f, desc, AIRBORNE_ATTACK, 
+			Get_Transform()->Get_State(Transform_State::LOOK) * 4.f;
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.5f, desc, KNOCKBACK_ATTACK, 
 			GET_DAMAGE(HERO::KYLE, 0) * 0.25f
 			, L"Hit_Slash_Orange");
 	}
@@ -1632,11 +1632,11 @@ void Kyle_FSM::skill_200300()
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.fMoveSpeed = 0.f;
-		desc.fLifeTime = 1.5f;
+		desc.fLifeTime = 0.5f;
 		desc.fLimitDistance = 0.f;
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-			Get_Transform()->Get_State(Transform_State::LOOK) * 5.5f;
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 
+			Get_Transform()->Get_State(Transform_State::LOOK) * 3.f;
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.5f, desc, KNOCKBACK_ATTACK, 
 			GET_DAMAGE(HERO::KYLE, 2) * 0.4f
 			, L"Hit_Slash_Orange");
 	}
@@ -1763,7 +1763,7 @@ void Kyle_FSM::skill_300100()
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 			Get_Transform()->Get_State(Transform_State::LOOK) * 4.f;
 
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, NORMAL_ATTACK, 
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 
 			GET_DAMAGE(HERO::KYLE, 3) * 0.3f
 			, L"Hit_Slash_Orange");
 
@@ -1775,13 +1775,13 @@ void Kyle_FSM::skill_300100()
 		FORWARDMOVINGSKILLDESC desc;
 		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 		desc.fMoveSpeed = 0.f;
-		desc.fLifeTime = 1.f;
+		desc.fLifeTime = 0.5f;
 		desc.fLimitDistance = 0.f;
 
 		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-			Get_Transform()->Get_State(Transform_State::LOOK) * 4.f;
+			Get_Transform()->Get_State(Transform_State::LOOK) * 3.f;
 
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, AIRBORNE_ATTACK, 
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 
 			GET_DAMAGE(HERO::KYLE, 3) * 0.3f
 			, L"Hit_Slash_Orange");
 
@@ -2144,15 +2144,15 @@ void Kyle_FSM::skill_500100_Init()
 
 void Kyle_FSM::Use_Skill()
 {
-	if (KEYTAP(KEY_TYPE::KEY_1) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
+	if (KEYTAP(KEY_TYPE::KEY_1)) // && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL1))
 		m_eCurState = STATE::skill_100100;
-	else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
+	else if (KEYTAP(KEY_TYPE::KEY_2))// && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
 		m_eCurState = STATE::skill_200100;
-	else if (KEYTAP(KEY_TYPE::KEY_3) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
+	else if (KEYTAP(KEY_TYPE::KEY_3)) //&& m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
 		m_eCurState = STATE::skill_300100;
-	else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
+	else if (KEYTAP(KEY_TYPE::KEY_4)) //&& m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
 		m_eCurState = STATE::skill_502100;
-	else if (KEYTAP(KEY_TYPE::KEY_5) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
+	else if (KEYTAP(KEY_TYPE::KEY_5))// && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL5))
 		m_eCurState = STATE::skill_500100;
 	else 
 		Use_Dash();
