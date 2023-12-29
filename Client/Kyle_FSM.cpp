@@ -433,9 +433,15 @@ void Kyle_FSM::b_idle_Init()
 void Kyle_FSM::b_run_start()
 {
 	if (Init_CurFrame(10))
+	{
+		Create_Foot_Dust();
 		SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	}
 	else if (Init_CurFrame(20))
+	{
+		Create_Foot_Dust();
 		SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	}
 
 	Get_Transform()->Go_Straight();
 
@@ -483,9 +489,15 @@ void Kyle_FSM::b_run_start_Init()
 void Kyle_FSM::b_run()
 {
 	if (Init_CurFrame(10))
+	{
+		Create_Foot_Dust();
 		SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	}
 	else if (Init_CurFrame(20))
+	{
+		Create_Foot_Dust();
 		SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	}
 
 	Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
@@ -549,9 +561,15 @@ void Kyle_FSM::b_run_Init()
 void Kyle_FSM::b_run_end_r()
 {
 	if (Init_CurFrame(3))
+	{
+		Create_Foot_Dust();
 		SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	}
 	else if (Init_CurFrame(6))
+	{
+		Create_Foot_Dust();
 		SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	}
 
 	_float3 vInputVector = Get_InputDirVector();
 
@@ -588,9 +606,15 @@ void Kyle_FSM::b_run_end_r_Init()
 void Kyle_FSM::b_run_end_l()
 {
 	if (Init_CurFrame(4))
+	{
+		Create_Foot_Dust();
 		SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	}
 	else if (Init_CurFrame(7))
+	{
+		Create_Foot_Dust();
 		SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	}
 
 	_float3 vInputVector = Get_InputDirVector();
 
@@ -627,16 +651,22 @@ void Kyle_FSM::b_run_end_l_Init()
 void Kyle_FSM::b_sprint()
 {
 	m_fRunEffectTimer += fDT;
-	if (m_fRunEffectTimer > 0.04f)
+	if (m_fRunEffectTimer > 0.2f)
 	{
-		//Add_Effect(L"All_Dash");
+		Add_Effect(L"Sprint_Wind");
 		m_fRunEffectTimer = 0.f;
 	}
 
 	if (Init_CurFrame(7))
+	{
+		Create_Foot_Dust();
 		SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	}
 	else if (Init_CurFrame(14))
+	{
+		Create_Foot_Dust();
 		SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	}
 
 	Get_Transform()->Go_Straight();
 
@@ -682,8 +712,8 @@ void Kyle_FSM::b_sprint()
 
 void Kyle_FSM::b_sprint_Init()
 {
-	Add_GroupEffectOwner(L"All_DashStart", _float3(0.f, 0.f, 1.f), false, nullptr, false);
-
+	Add_Effect(L"All_DashStart");
+		
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"b_sprint", 0.1f, true, 1.f);
