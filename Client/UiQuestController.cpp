@@ -166,6 +166,8 @@ void UiQuestController::Create_Dialog(NPCTYPE eType, QUESTINDEX eIndex, shared_p
 void UiQuestController::Clear_Quest()
 {
     m_ClearCheck[IDX(m_eIndex)] = true;
+    if (m_eIndex == QUESTINDEX::HIDE_AND_SEEK || m_eIndex == QUESTINDEX::KILL_ALPACA)
+        g_iGachaCount++;
     m_tagCurQuestData = QUESTDATA{};
 }
 
@@ -230,7 +232,11 @@ void UiQuestController::Next_Dialog()
         {
             m_eCurType = CUR_QUEST::NONE;
             Set_Render(false);
+
+
             Clear_Quest();
+
+          
         }
         
         m_iCurIndex = 0;
