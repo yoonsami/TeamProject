@@ -209,6 +209,20 @@ void Client_FSM::Create_Foot_Dust()
 	Add_And_Set_Effect(L"Foot_Dust_" + sceneName);
 }
 
+void Client_FSM::Create_FrontDash()
+{
+	wstring sceneName = CUR_SCENE->Get_Name();
+
+	Add_And_Set_Effect(L"Player_900100_" + sceneName);
+}
+
+void Client_FSM::Create_BackDash()
+{
+	wstring sceneName = CUR_SCENE->Get_Name();
+
+	Add_And_Set_Effect(L"Player_93100_" + sceneName);
+}
+
 void Client_FSM::Create_Sprint_Wind()
 {
 	m_fStTimer += fDT;

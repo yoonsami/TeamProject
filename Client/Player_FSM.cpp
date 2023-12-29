@@ -1242,6 +1242,7 @@ void Player_FSM::skill_91100_Init()
     m_bInvincible = true;
     m_bSuperArmor = false;
 
+    Create_FrontDash();
     SOUND.Play_Sound(L"vo_man_select_1", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
@@ -1263,7 +1264,7 @@ void Player_FSM::skill_93100_Init()
 
     m_bInvincible = true;
     m_bSuperArmor = false;
-
+    Create_BackDash();
     SOUND.Play_Sound(L"vo_man_select_1", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 

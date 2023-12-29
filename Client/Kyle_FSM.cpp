@@ -1263,7 +1263,7 @@ void Kyle_FSM::skill_91100_Init()
 
 	m_vDirToTarget = _float3(0.f);
 	m_vDirToTarget = Get_InputDirVector();
-
+	Create_FrontDash();
 	AttackCollider_Off();
 
 	m_bInvincible = true;
@@ -1293,7 +1293,7 @@ void Kyle_FSM::skill_93100_Init()
 	SOUND.Play_Sound(L"7129_shout_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 	m_bCanCombo = false;
-
+	Create_BackDash();
 	AttackCollider_Off();
 
 	m_bInvincible = true;

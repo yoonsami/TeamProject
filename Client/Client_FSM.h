@@ -27,6 +27,8 @@ protected:
 	
 	//Effect
 	void Create_Foot_Dust();
+	void Create_FrontDash();
+	void Create_BackDash();
 	void Create_Sprint_Wind();
 protected:
 	ElementType m_eElementType = ElementEnd;

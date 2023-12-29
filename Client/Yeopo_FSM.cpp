@@ -1323,7 +1323,7 @@ void Yeopo_FSM::skill_91100_Init()
     m_vDirToTarget = Get_InputDirVector();
 
     AttackCollider_Off();
-
+    Create_FrontDash();
     SOUND.Play_Sound(L"vo_yeopo_att_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_bInvincible = true;
@@ -1353,7 +1353,7 @@ void Yeopo_FSM::skill_93100_Init()
     m_bCanCombo = false;
 
     AttackCollider_Off();
-
+    Create_BackDash();
     SOUND.Play_Sound(L"vo_yeopo_att_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     m_bInvincible = true;
