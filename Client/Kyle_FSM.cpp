@@ -707,7 +707,7 @@ void Kyle_FSM::b_sprint()
 
 void Kyle_FSM::b_sprint_Init()
 {
-	Add_Effect(L"All_DashStart");
+	Add_GroupEffectOwner(L"All_DashStart", _float3(0.f, 0.f, 2.f), false, nullptr, false);
 		
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 

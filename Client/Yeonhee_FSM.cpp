@@ -670,6 +670,8 @@ void Yeonhee_FSM::b_sprint()
 
 void Yeonhee_FSM::b_sprint_Init()
 {
+    Add_GroupEffectOwner(L"All_DashStart", _float3(0.f, 0.f, 2.f), false, nullptr, false);
+
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"b_sprint", 0.2f, true, 1.f);
