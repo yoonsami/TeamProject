@@ -1712,10 +1712,10 @@ void Kyle_FSM::skill_300100()
 
 		SOUND.Play_Sound(L"swing_chain_1", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 	}
-	else if (Init_CurFrame(38))
-		SOUND.Play_Sound(L"swing_chain_0", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-
-	
+	else if (Init_CurFrame(36))
+	{
+		SOUND.Play_Sound(L"swing_chain_2", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	}
 
 	if (Init_CurFrame(10))
 	{
@@ -1729,7 +1729,7 @@ void Kyle_FSM::skill_300100()
 			Get_Transform()->Get_State(Transform_State::UP);
 
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.5f, desc, NORMAL_ATTACK, 
-			GET_DAMAGE(HERO::KYLE, 3) * 0.2f
+			GET_DAMAGE(HERO::KYLE, 3) * 0.3f
 			, L"Hit_Slash_Orange");
 	}
 	else if (Init_CurFrame(28))
@@ -1746,25 +1746,7 @@ void Kyle_FSM::skill_300100()
 			Get_Transform()->Get_State(Transform_State::LOOK) * 4.f;
 
 		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 
-			GET_DAMAGE(HERO::KYLE, 3) * 0.3f
-			, L"Hit_Slash_Orange");
-
-	}
-	else if (Init_CurFrame(36))
-	{
-		SOUND.Play_Sound(L"hit_explosive_bomb_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-
-		FORWARDMOVINGSKILLDESC desc;
-		desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
-		desc.fMoveSpeed = 0.f;
-		desc.fLifeTime = 0.5f;
-		desc.fLimitDistance = 0.f;
-
-		_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-			Get_Transform()->Get_State(Transform_State::LOOK) * 3.f;
-
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 
-			GET_DAMAGE(HERO::KYLE, 3) * 0.3f
+			GET_DAMAGE(HERO::KYLE, 3) * 0.5f
 			, L"Hit_Slash_Orange");
 
 	}
