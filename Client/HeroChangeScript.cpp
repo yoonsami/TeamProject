@@ -146,8 +146,8 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
     if (m_pOwner.expired() || HERO::MAX == eHero)
         return;
 
-    //CharacterChangeSound
-    SOUND.Play_Sound(L"ui_questplot_complete", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
+    // CharacterChangeSound
+    SOUND.Play_Sound(L"ui_questplot_complete", CHANNELID::SOUND_EFFECT, g_fCharacterEffectRatio, CUR_SCENE->Get_GameObject(L"Player")->Get_Transform()->Get_State(Transform_State::POS).xyz(), 10.f/*MagicNumber*/);
 
 	for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
 	{
