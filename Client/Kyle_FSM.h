@@ -143,6 +143,8 @@ private:
 	_uint m_iRWeaponBoneIndex = 0;
 
 	_float m_fWeaponEffectTimer = {0.f};
+	_float m_fRunEffectTimer = { 0.f };
+
 	void Cal_WeaponBonePos();
 	_float4 m_vLWeaponPos = _float4(0.f);
 	_float4 m_vRWeaponPos = _float4(0.f);

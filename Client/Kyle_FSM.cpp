@@ -437,7 +437,6 @@ void Kyle_FSM::b_run_start()
 	else if (Init_CurFrame(20))
 		SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-
 	Get_Transform()->Go_Straight();
 
 	_float3 vInputVector = Get_InputDirVector();
@@ -487,6 +486,8 @@ void Kyle_FSM::b_run()
 		SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 	else if (Init_CurFrame(20))
 		SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+	Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
 	Get_Transform()->Go_Straight();
 
@@ -625,6 +626,13 @@ void Kyle_FSM::b_run_end_l_Init()
 
 void Kyle_FSM::b_sprint()
 {
+	m_fRunEffectTimer += fDT;
+	if (m_fRunEffectTimer > 0.04f)
+	{
+		//Add_Effect(L"All_Dash");
+		m_fRunEffectTimer = 0.f;
+	}
+
 	if (Init_CurFrame(7))
 		SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 	else if (Init_CurFrame(14))
@@ -674,6 +682,8 @@ void Kyle_FSM::b_sprint()
 
 void Kyle_FSM::b_sprint_Init()
 {
+	Add_GroupEffectOwner(L"All_DashStart", _float3(0.f, 0.f, 1.f), false, nullptr, false);
+
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
 	animator->Set_NextTweenAnim(L"b_sprint", 0.1f, true, 1.f);
@@ -1267,6 +1277,9 @@ void Kyle_FSM::skill_93100_Init()
 
 void Kyle_FSM::skill_100100()
 {
+	if (Init_CurFrame(10))
+		Add_Effect(L"Kyle_100100_Slash");
+
 	Look_DirToTarget();
 
 	if (m_iCurFrame >= 5 && m_iCurFrame < 32)
@@ -1357,6 +1370,9 @@ void Kyle_FSM::skill_100100_Init()
 
 void Kyle_FSM::skill_100200()
 {
+	if (Init_CurFrame(12))
+		Add_GroupEffectOwner(L"Kyle_100100_Install", _float3(0.f, 0.f, 1.f), false, nullptr, false);
+
 	Look_DirToTarget();
 	
 	if (m_iCurFrame >= 1 && m_iCurFrame < 25)
