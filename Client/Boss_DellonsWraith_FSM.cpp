@@ -174,7 +174,7 @@ void Boss_DellonsWraith_FSM::FX_DellonsWraith_skill_30010()
     {
         SOUND.Play_Sound(L"swing_axe_02_gigan", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        AttackCollider_On(NORMAL_ATTACK, 
+        AttackCollider_On(KNOCKBACK_ATTACK, 
             GET_DAMAGE(MONSTER::DELLONS, 3) * 0.4f);
     }
     else if (Init_CurFrame(50))
@@ -190,34 +190,34 @@ void Boss_DellonsWraith_FSM::FX_DellonsWraith_skill_30010()
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
             Get_Transform()->Get_State(Transform_State::RIGHT) * -4.f +
-            Get_Transform()->Get_State(Transform_State::LOOK) * 3.f +
+            Get_Transform()->Get_State(Transform_State::LOOK) * 2.5f +
             _float3::Up;
 
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_Wraith_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_Wraith_SkillCollider", vSkillPos, 2.3f, desc, KNOCKBACK_ATTACK, 
+            GET_DAMAGE(MONSTER::DELLONS, 3) * 0.6f);
+
+        vSkillPos = vSkillPos + Get_Transform()->Get_State(Transform_State::LOOK) +
+            Get_Transform()->Get_State(Transform_State::RIGHT) * 2.3f;
+
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_Wraith_SkillCollider", vSkillPos, 2.3f, desc, KNOCKBACK_ATTACK, 
             GET_DAMAGE(MONSTER::DELLONS, 3) * 0.6f);
 
         vSkillPos = vSkillPos + Get_Transform()->Get_State(Transform_State::LOOK) +
             Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
 
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_Wraith_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 
-            GET_DAMAGE(MONSTER::DELLONS, 3) * 0.6f);
-
-        vSkillPos = vSkillPos + Get_Transform()->Get_State(Transform_State::LOOK) +
-            Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
-
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_Wraith_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_Wraith_SkillCollider", vSkillPos, 2.3f, desc, KNOCKBACK_ATTACK, 
             GET_DAMAGE(MONSTER::DELLONS, 3) * 0.6f);
 
         vSkillPos = vSkillPos - Get_Transform()->Get_State(Transform_State::LOOK) +
             Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
 
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_Wraith_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_Wraith_SkillCollider", vSkillPos, 2.3f, desc, KNOCKBACK_ATTACK, 
             GET_DAMAGE(MONSTER::DELLONS, 3) * 0.6f);
 
         vSkillPos = vSkillPos - Get_Transform()->Get_State(Transform_State::LOOK) +
             Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f;
 
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_Wraith_SkillCollider", vSkillPos, 1.5f, desc, KNOCKBACK_ATTACK, 
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Dellons_Wraith_SkillCollider", vSkillPos, 2.3f, desc, KNOCKBACK_ATTACK, 
             GET_DAMAGE(MONSTER::DELLONS, 3) * 0.6f);
     }
     else if (Init_CurFrame(65))

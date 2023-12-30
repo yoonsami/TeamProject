@@ -9,6 +9,7 @@
 #include "AttackColliderInfoScript.h"
 #include "DellonsWraith_FSM.h"
 #include "MainCameraScript.h"
+#include "TimerScript.h"
 
 Friend_FSM::Friend_FSM(HERO eType)
     : m_eType(eType)
@@ -260,6 +261,12 @@ void Friend_FSM::ATTACK()
 
 		if (Init_CurFrame(11))
 		{
+			SOUND.Play_Sound(L"vo_kyle_sk_02", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+			SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+			SOUND.Play_Sound(L"swing_chain_0", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 			FORWARDMOVINGSKILLDESC desc;
 			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 			desc.fMoveSpeed = 0.f;
@@ -268,11 +275,17 @@ void Friend_FSM::ATTACK()
 
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 				Get_Transform()->Get_State(Transform_State::UP);
-			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, NORMAL_ATTACK, 10.f);
+			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.5f, desc, NORMAL_ATTACK,
+				GET_DAMAGE(HERO::KYLE, 5) * 0.22f
+				, L"Hit_Slash_Orange");
 
 		}
 		else if (Init_CurFrame(31))
 		{
+			SOUND.Play_Sound(L"swing_axe_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+			SOUND.Play_Sound(L"swing_chain_1", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 			FORWARDMOVINGSKILLDESC desc;
 			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 			desc.fMoveSpeed = 0.f;
@@ -281,11 +294,16 @@ void Friend_FSM::ATTACK()
 
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 				Get_Transform()->Get_State(Transform_State::UP);
-			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, NORMAL_ATTACK, 10.f);
-
+			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.5f, desc, NORMAL_ATTACK,
+				GET_DAMAGE(HERO::KYLE, 5) * 0.22f
+				, L"Hit_Slash_Orange");
 		}
 		else if (Init_CurFrame(47))
 		{
+			SOUND.Play_Sound(L"swing_axe_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+			SOUND.Play_Sound(L"swing_chain_2", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 			FORWARDMOVINGSKILLDESC desc;
 			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 			desc.fMoveSpeed = 0.f;
@@ -294,11 +312,20 @@ void Friend_FSM::ATTACK()
 
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
 				Get_Transform()->Get_State(Transform_State::UP);
-			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, NORMAL_ATTACK, 10.f);
-
+			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.5f, desc, NORMAL_ATTACK,
+				GET_DAMAGE(HERO::KYLE, 5) * 0.22f
+				, L"Hit_Slash_Orange");
 		}
-		else if (Init_CurFrame(87))
+		else if (Init_CurFrame(85))
 		{
+			SOUND.Play_Sound(L"swing_axe_02", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
+			SOUND.Play_Sound(L"swing_chain_2", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+		}
+		else if (Init_CurFrame(94))
+		{
+			SOUND.Play_Sound(L"hit_explosive_bomb_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+
 			FORWARDMOVINGSKILLDESC desc;
 			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 			desc.fMoveSpeed = 0.f;
@@ -306,9 +333,13 @@ void Friend_FSM::ATTACK()
 			desc.fLimitDistance = 0.f;
 
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-				Get_Transform()->Get_State(Transform_State::LOOK) * 5.f;
-			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, AIRBORNE_SKILL, 10.f);
+				Get_Transform()->Get_State(Transform_State::LOOK) * 3.f;
+			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 4.f, desc, AIRBORNE_SKILL,
+				GET_DAMAGE(HERO::KYLE, 5) * 0.34f
+				, L"Hit_Slash_Orange");
 		}
+		else if (Init_CurFrame(98))
+			SOUND.Play_Sound(L"swing_chain_0", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     }
         break;
     case HERO::YEOPO:
@@ -504,37 +535,53 @@ void Friend_FSM::ATTACK()
         break;
     case HERO::YEONHEE:
 	{
-		if (Init_CurFrame(57))
+		if (Init_CurFrame(12))
+			Add_GroupEffectOwner(L"YeonHee_501100_Aura", _float3(0.f, 0.f, 0.f), false, nullptr, false);
+
+		if (Init_CurFrame(99))
+		{
+			for (_uint i = 0; i < 5; i++)
+			{
+				shared_ptr<GameObject> obj = make_shared<GameObject>();
+				auto script = make_shared<TimerScript>((0.2f * _float(i)));
+				script->Set_Function([&]() { SOUND.Play_Sound(L"magic_essence_09", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+				obj->Add_Component(script);
+				EVENTMGR.Create_Object(obj);
+			}
+			for (_uint i = 0; i < 5; i++)
+			{
+				shared_ptr<GameObject> obj = make_shared<GameObject>();
+				auto script = make_shared<TimerScript>((0.2f * _float(i)));
+				script->Set_Function([&]() {CAMERA_SHAKE(0.1f, 0.1f); });
+				obj->Add_Component(script);
+				EVENTMGR.Create_Object(obj);
+			}
+		}
+
+		if (Init_CurFrame(100))
 		{
 			_float4 vTargetPos;
+
 			if (!m_pLookingTarget.expired())
 				vTargetPos = m_pLookingTarget.lock()->Get_Transform()->Get_State(Transform_State::POS);
 			else
-				vTargetPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 10.f;
+				vTargetPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 5.f;
 
-			INSTALLATIONSKILLDESC desc;
-			desc.iLimitAttackCnt = 1;
-			desc.strAttackType = KNOCKDOWN_SKILL;
-			desc.strLastAttackType = KNOCKDOWN_SKILL;
-			desc.bFirstAttack = false;
-			desc.fAttackDamage = 5.f;
-			desc.fLastAttackDamage = 5.f;
+			FLOORSKILLDESC desc;
+			desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
+			desc.fAttackStartGap = 0.15f;
+			desc.fAttackTickTime = 0.2f;
+			desc.strAttackType = KNOCKBACK_SKILL;
+			desc.strLastAttackType = KNOCKBACK_SKILL;
+			desc.fAttackDamage = GET_DAMAGE(HERO::YEONHEE, 5) * 0.2f;
+			desc.fLastAttackDamage = GET_DAMAGE(HERO::YEONHEE, 2) * 0.2f;
+			desc.iLimitAttackCnt = 5;
 
-			_float fOffSetTime = 0.f;
+			_float4 vSkillPos = vTargetPos;
 
-			for (_uint i = 0; i < 5; i++)
-			{
-				desc.fAttackTickTime = 1.f + fOffSetTime;
+			Create_FloorSkillCollider_Sphere(Player_Skill, L"Player_InstallationSkillCollider", vSkillPos, 3.5f, desc);
 
-				fOffSetTime += 0.3f;
-
-				_float fOffSetX = ((rand() * 2 / _float(RAND_MAX) - 1));
-				_float fOffSetZ = ((rand() * 2 / _float(RAND_MAX) - 1));
-
-				_float4 vSkillPos = vTargetPos + _float4{ fOffSetX, 0.f, fOffSetZ, 0.f };
-
-				Create_InstallationSkillCollider(Player_Skill, L"InstallationSkillCollider", vSkillPos, 2.f, desc);
-			}
+			Add_GroupEffectOwner(L"YeonHee_501100_Install", vSkillPos.xyz(), true, nullptr, false);
 		}
 	}
         break;
