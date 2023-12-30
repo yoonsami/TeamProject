@@ -92,6 +92,7 @@
 #include "PortalScript.h"
 #include "SpikeScene.h"
 #include "MiddleWoman_FSM.h"
+#include "HIntEffectScript.h"
 namespace fs = std::filesystem;
 
 GranseedScene::GranseedScene()
@@ -906,7 +907,7 @@ void GranseedScene::Load_HideAndSeek(shared_ptr<GameObject> pPlayer)
 			Add_GameObject(orctong);
 		}
 	}
-
+	/*
 	_int iSmokeCount = 20;
 	{
 		_float x2 = -0.437f, y2 = 0.3f, z2 = 11.372f;
@@ -944,6 +945,14 @@ void GranseedScene::Load_HideAndSeek(shared_ptr<GameObject> pPlayer)
 
 			Add_GameObject(obj);
 		}
+	}
+	*/
+
+	{
+		shared_ptr<GameObject> pHintEffect = make_shared<GameObject>();
+		pHintEffect->GetOrAddTransform();
+		pHintEffect->Add_Component(make_shared<HIntEffectScript>());
+		Add_GameObject(pHintEffect);
 	}
 
 	{
