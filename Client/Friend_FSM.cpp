@@ -379,7 +379,8 @@ void Friend_FSM::ATTACK()
 			SOUND.Play_Sound(L"swing_spear_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 			Set_ColliderOption(FIRE, L"Hit_Slash_Red");
-			AttackCollider_On(NORMAL_ATTACK, 10.f);
+			AttackCollider_On(NORMAL_ATTACK,
+				GET_DAMAGE(HERO::YEOPO, 5) * 0.13f);
 			CAMERA_SHAKE(0.03f, 0.1f);
 		}
 		else if (Init_CurFrame(16))
@@ -389,7 +390,8 @@ void Friend_FSM::ATTACK()
 			SOUND.Play_Sound(L"swing_spear_03", CHANNELID::SOUND_EFFECT, m_fSwingVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 			Set_ColliderOption(FIRE, L"Hit_Slash_Red");
-			AttackCollider_On(NORMAL_ATTACK, 10.f);
+			AttackCollider_On(NORMAL_ATTACK,
+				GET_DAMAGE(HERO::YEOPO, 5) * 0.13f);
 			CAMERA_SHAKE(0.03f, 0.1f);
 
 		}
@@ -401,7 +403,8 @@ void Friend_FSM::ATTACK()
 
 			CAMERA_SHAKE(0.03f, 0.1f);
 			Set_ColliderOption(FIRE, L"Hit_Slash_Red");
-			AttackCollider_On(NORMAL_ATTACK, 10.f);
+			AttackCollider_On(NORMAL_ATTACK,
+				GET_DAMAGE(HERO::YEOPO, 5) * 0.13f);
 		}
 		else if (Init_CurFrame(23))
 			AttackCollider_Off();
@@ -411,7 +414,8 @@ void Friend_FSM::ATTACK()
 
 			Set_ColliderOption(FIRE, L"Hit_Slash_Red");
 			CAMERA_SHAKE(0.03f, 0.1f);
-			AttackCollider_On(NORMAL_ATTACK, 10.f);
+			AttackCollider_On(NORMAL_ATTACK,
+				GET_DAMAGE(HERO::YEOPO, 5) * 0.13f);
 		}
 		else if (Init_CurFrame(28))
 			AttackCollider_Off();
@@ -421,7 +425,8 @@ void Friend_FSM::ATTACK()
 
 			Set_ColliderOption(FIRE, L"Hit_Slash_Red");
 			CAMERA_SHAKE(0.03f, 0.1f);
-			AttackCollider_On(NORMAL_ATTACK, 10.f);
+			AttackCollider_On(NORMAL_ATTACK,
+				GET_DAMAGE(HERO::YEOPO, 5) * 0.13f);
 		}
 		else if (Init_CurFrame(35))
 			AttackCollider_Off();
@@ -431,7 +436,8 @@ void Friend_FSM::ATTACK()
 
 			Set_ColliderOption(FIRE, L"Hit_Slash_Red");
 			CAMERA_SHAKE(0.1f, 0.1f);
-			AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
+			AttackCollider_On(KNOCKDOWN_ATTACK,
+				GET_DAMAGE(HERO::YEOPO, 5) * 0.35f);
 		}
 		else if (Init_CurFrame(55))
 			AttackCollider_Off();
@@ -515,8 +521,9 @@ void Friend_FSM::ATTACK()
 			desc.fLimitDistance = 3.5f;
 
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK, 10.f, L"Hit_Slash_Dark");
-
+			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, NORMAL_ATTACK,
+				GET_DAMAGE(HERO::DELLONS, 4) * 0.1f
+				, L"Hit_Slash_Dark");
 		}
 		else if (Init_CurFrame(99))
 		{
@@ -530,7 +537,8 @@ void Friend_FSM::ATTACK()
 			desc.fLimitDistance = 5.f;
 
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * -0.5f + _float3::Up;
-			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.f, desc, KNOCKDOWN_SKILL, 10.f, L"Hit_Slash_Dark");
+			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.f, desc, KNOCKDOWN_SKILL,
+				GET_DAMAGE(HERO::DELLONS, 4) * 0.2f, L"Hit_Slash_Dark");
 		}
 	}
         break;
@@ -554,9 +562,10 @@ void Friend_FSM::ATTACK()
 			desc.fMoveSpeed = 0.f;
 			desc.fLifeTime = 1.f;
 			desc.fLimitDistance = 0.f;
-
-			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.5f, desc, AIRBORNE_ATTACK, 10.f, L"Hit_Slash_Blue");
-
+			
+			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 2.5f, desc, AIRBORNE_ATTACK,
+				GET_DAMAGE(HERO::SPIKE, 3)
+				, L"Hit_Slash_Blue");
 		}
 	}
         break;
