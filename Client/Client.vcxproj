@@ -177,23 +177,6 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\Libraries\Include\IMGUI\dirent\dirent.h" />
-    <ClInclude Include="..\Libraries\Include\IMGUI\imconfig.h" />
-    <ClInclude Include="..\Libraries\Include\IMGUI\ImCurveEdit.h" />
-    <ClInclude Include="..\Libraries\Include\IMGUI\ImGradient.h" />
-    <ClInclude Include="..\Libraries\Include\IMGUI\imgui.h" />
-    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuiFileDialog.h" />
-    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuiFileDialogConfig.h" />
-    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuizmo.h" />
-    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_impl_dx11.h" />
-    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_impl_win32.h" />
-    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_internal.h" />
-    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_stdlib.h" />
-    <ClInclude Include="..\Libraries\Include\IMGUI\ImSequencer.h" />
-    <ClInclude Include="..\Libraries\Include\IMGUI\imstb_rectpack.h" />
-    <ClInclude Include="..\Libraries\Include\IMGUI\imstb_textedit.h" />
-    <ClInclude Include="..\Libraries\Include\IMGUI\imstb_truetype.h" />
-    <ClInclude Include="..\Libraries\Include\IMGUI\ImZoomSlider.h" />
     <ClInclude Include="..\Shaders\Fxaa3_11.h" />
     <ClInclude Include="Add_Score.h" />
     <ClInclude Include="Alpaca_FSM.h" />
@@ -274,7 +257,6 @@
     <ClInclude Include="CoolTimeCheckScript.h" />
     <ClInclude Include="CounterMotionTrailScript.h" />
     <ClInclude Include="DataMgr.h" />
-    <ClInclude Include="DebugTool.h" />
     <ClInclude Include="Debug_CreateMotionTrail.h" />
     <ClInclude Include="Dellons_FSM.h" />
     <ClInclude Include="DellonsWraith_FSM.h" />
@@ -332,19 +314,6 @@
     <ClInclude Include="Yeopo_FSM.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Libraries\Include\IMGUI\ImCurveEdit.cpp" />
-    <ClCompile Include="..\Libraries\Include\IMGUI\ImGradient.cpp" />
-    <ClCompile Include="..\Libraries\Include\IMGUI\imgui.cpp" />
-    <ClCompile Include="..\Libraries\Include\IMGUI\ImGuiFileDialog.cpp" />
-    <ClCompile Include="..\Libraries\Include\IMGUI\ImGuizmo.cpp" />
-    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_demo.cpp" />
-    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_draw.cpp" />
-    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_impl_dx11.cpp" />
-    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_impl_win32.cpp" />
-    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_stdlib.cpp" />
-    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_tables.cpp" />
-    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_widgets.cpp" />
-    <ClCompile Include="..\Libraries\Include\IMGUI\ImSequencer.cpp" />
     <ClCompile Include="Add_Score.cpp" />
     <ClCompile Include="Alpaca_FSM.cpp" />
     <ClCompile Include="AttackColliderInfoScript.cpp" />
@@ -420,7 +389,6 @@
     <ClCompile Include="CoolTimeCheckScript.cpp" />
     <ClCompile Include="CounterMotionTrailScript.cpp" />
     <ClCompile Include="DataMgr.cpp" />
-    <ClCompile Include="DebugTool.cpp" />
     <ClCompile Include="Debug_CreateMotionTrail.cpp" />
     <ClCompile Include="Dellons_FSM.cpp" />
     <ClCompile Include="DellonsWraith_FSM.cpp" />

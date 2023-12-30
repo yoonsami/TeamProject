@@ -513,65 +513,11 @@
     <ClInclude Include="MotionTrailDisappear.h">
       <Filter>02.Component\00.MonoBehaviour\00.Effect</Filter>
     </ClInclude>
-    <ClInclude Include="DebugTool.h">
-      <Filter>98.Debug</Filter>
-    </ClInclude>
     <ClInclude Include="Silversword_Soldier_FSM.h">
       <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\00.Silversword_Soldier_FSM</Filter>
     </ClInclude>
     <ClInclude Include="AttackColliderInfoScript.h">
       <Filter>02.Component\00.MonoBehaviour\03.ColliderInfoScript\AttackCollider</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libraries\Include\IMGUI\dirent\dirent.h">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libraries\Include\IMGUI\imconfig.h">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libraries\Include\IMGUI\ImCurveEdit.h">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libraries\Include\IMGUI\ImGradient.h">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libraries\Include\IMGUI\imgui.h">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_impl_dx11.h">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_impl_win32.h">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_internal.h">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libraries\Include\IMGUI\imgui_stdlib.h">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuiFileDialog.h">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuiFileDialogConfig.h">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libraries\Include\IMGUI\ImGuizmo.h">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libraries\Include\IMGUI\ImSequencer.h">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libraries\Include\IMGUI\imstb_rectpack.h">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libraries\Include\IMGUI\imstb_textedit.h">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libraries\Include\IMGUI\imstb_truetype.h">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libraries\Include\IMGUI\ImZoomSlider.h">
-      <Filter>98.Debug\IMGUI</Filter>
     </ClInclude>
     <ClInclude Include="..\Shaders\Fxaa3_11.h">
       <Filter>Shader\Common</Filter>
@@ -975,53 +921,11 @@
     <ClCompile Include="MotionTrailDisappear.cpp">
       <Filter>02.Component\00.MonoBehaviour\00.Effect</Filter>
     </ClCompile>
-    <ClCompile Include="DebugTool.cpp">
-      <Filter>98.Debug</Filter>
-    </ClCompile>
     <ClCompile Include="Silversword_Soldier_FSM.cpp">
       <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\00.Silversword_Soldier_FSM</Filter>
     </ClCompile>
     <ClCompile Include="AttackColliderInfoScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\03.ColliderInfoScript\AttackCollider</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Libraries\Include\IMGUI\ImCurveEdit.cpp">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Libraries\Include\IMGUI\ImGradient.cpp">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Libraries\Include\IMGUI\imgui.cpp">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_demo.cpp">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_draw.cpp">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_impl_dx11.cpp">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_impl_win32.cpp">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_stdlib.cpp">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_tables.cpp">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Libraries\Include\IMGUI\imgui_widgets.cpp">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Libraries\Include\IMGUI\ImGuiFileDialog.cpp">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Libraries\Include\IMGUI\ImGuizmo.cpp">
-      <Filter>98.Debug\IMGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Libraries\Include\IMGUI\ImSequencer.cpp">
-      <Filter>98.Debug\IMGUI</Filter>
     </ClCompile>
     <ClCompile Include="LogoScene.cpp">
       <Filter>01.Scene\01.LogoScene</Filter>
