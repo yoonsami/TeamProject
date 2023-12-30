@@ -25,7 +25,7 @@
 #include "DataMgr.h"
 #include "SwitchMgr.h"
 
-#define _DEBUGTOOL
+//#define _DEBUGTOO
 
 #ifdef _DEBUGTOOL
 

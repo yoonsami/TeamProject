@@ -59,7 +59,7 @@ void MainApp::Tick()
 {
 	GAMEINSTANCE.Tick_Engine();
 #ifdef _DEBUGTOOL
-	DEBUGTOOL.Tick();
+ 	DEBUGTOOL.Tick();
 #endif // _DEBUGTOOL
 
 }
