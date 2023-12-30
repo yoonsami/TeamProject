@@ -36,8 +36,11 @@ HRESULT DragonBallMonster_FSM::Init()
 	m_iCenterBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Dummy001");
 
 	m_fEffectVolume = 1.f;
-
 	m_fMySoundDistance = 100.f;
+
+	// HP Init
+	if (!m_pOwner.expired())	
+		m_pOwner.lock()->Set_MaxHp(DATAMGR.Get_MonsterData(MONSTER::DRAGONBALL_MONSTER).MaxHp);
 
 	return S_OK;
 }
@@ -66,6 +69,14 @@ void DragonBallMonster_FSM::Get_Hit(const wstring& skillname, _float fDamage, sh
 	//Calculate Damage 
 	m_pOwner.lock()->Get_Hurt(fDamage);
 
+	//Calculate Damage to Giant_Mir
+	if (!m_pTarget.expired())
+	{
+		if (m_pTarget.lock()->Get_CurHp() - fDamage <= 0.f)
+			m_pTarget.lock()->Set_Hp(1.f);
+		else
+			m_pTarget.lock()->Get_Hurt(fDamage);
+	}
 
 	CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage, ElementType(iElementType));
 
@@ -206,8 +217,8 @@ void DragonBallMonster_FSM::Summon_CrossFloor()
 	desc.fAttackTickTime = 0.3f;
 	desc.strAttackType = NORMAL_SKILL;
 	desc.strLastAttackType = NORMAL_SKILL;
-	desc.fAttackDamage = 5.f;
-	desc.fLastAttackDamage = 5.f;
+	desc.fAttackDamage = GET_DAMAGE(MONSTER::DRAGONBALL_MONSTER, 1) * 0.33f;
+	desc.fLastAttackDamage = GET_DAMAGE(MONSTER::DRAGONBALL_MONSTER, 1) * 0.33f;
 	desc.iLimitAttackCnt = 3;
 	
 
@@ -268,8 +279,8 @@ void DragonBallMonster_FSM::Summon_X_Floor()
 
 	desc.strAttackType = NORMAL_SKILL;
 	desc.strLastAttackType = NORMAL_SKILL;
-	desc.fAttackDamage = 5.f;
-	desc.fLastAttackDamage = 5.f;
+	desc.fAttackDamage = GET_DAMAGE(MONSTER::DRAGONBALL_MONSTER, 2) * 0.33f;
+	desc.fLastAttackDamage = GET_DAMAGE(MONSTER::DRAGONBALL_MONSTER, 2) * 0.33f;
 
 	//Forward_Left
 	_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
@@ -335,8 +346,8 @@ void DragonBallMonster_FSM::Summon_Hash_Floor()
 	desc.fAttackTickTime = 0.3f;
 	desc.strAttackType = NORMAL_SKILL;
 	desc.strLastAttackType = NORMAL_SKILL;
-	desc.fAttackDamage = 5.f;
-	desc.fLastAttackDamage = 5.f;
+	desc.fAttackDamage = GET_DAMAGE(MONSTER::DRAGONBALL_MONSTER, 3) * 0.33f;
+	desc.fLastAttackDamage = GET_DAMAGE(MONSTER::DRAGONBALL_MONSTER, 3) * 0.33f;
 	desc.iLimitAttackCnt = 3;
 
 	//Left
@@ -393,8 +404,8 @@ void DragonBallMonster_FSM::Summon_Web_Floor()
 	desc.fAttackTickTime = 0.3f;
 	desc.strAttackType = NORMAL_SKILL;
 	desc.strLastAttackType = NORMAL_SKILL;
-	desc.fAttackDamage = 5.f;
-	desc.fLastAttackDamage = 5.f;
+	desc.fAttackDamage = GET_DAMAGE(MONSTER::DRAGONBALL_MONSTER, 4) * 0.33f;
+	desc.fLastAttackDamage = GET_DAMAGE(MONSTER::DRAGONBALL_MONSTER, 4) * 0.33f;
 	desc.iLimitAttackCnt = 3;
 
 	_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
@@ -464,8 +475,8 @@ void DragonBallMonster_FSM::Summon_HalfCircle_Floor()
 	desc.fAttackTickTime = 0.3f;
 	desc.strAttackType = NORMAL_SKILL;
 	desc.strLastAttackType = NORMAL_SKILL;
-	desc.fAttackDamage = 5.f;
-	desc.fLastAttackDamage = 5.f;
+	desc.fAttackDamage = GET_DAMAGE(MONSTER::DRAGONBALL_MONSTER, 5) * 0.33f;
+	desc.fLastAttackDamage = GET_DAMAGE(MONSTER::DRAGONBALL_MONSTER, 5) * 0.33f;
 	desc.iLimitAttackCnt = 3;
 
 	_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
@@ -500,8 +511,8 @@ void DragonBallMonster_FSM::Summon_Star_Floor()
 	desc.fAttackTickTime = 0.3f;
 	desc.strAttackType = NORMAL_SKILL;
 	desc.strLastAttackType = NORMAL_SKILL;
-	desc.fAttackDamage = 5.f;
-	desc.fLastAttackDamage = 5.f;
+	desc.fAttackDamage = GET_DAMAGE(MONSTER::DRAGONBALL_MONSTER, 6) * 0.33f;
+	desc.fLastAttackDamage = GET_DAMAGE(MONSTER::DRAGONBALL_MONSTER, 6) * 0.33f;
 	desc.iLimitAttackCnt = 3;
 
 	//Forward_Left
@@ -604,7 +615,7 @@ void DragonBallMonster_FSM::Create_Meteor()
 			
 			Add_GroupEffectOwner(L"Mir_Meteor_Meteor", _float3(vSkillPos.x, vPlayerPos.y, vSkillPos.z), true);
 			Add_GroupEffectOwner(L"Mir_Meteor_Floor", _float3(vSkillPos.x, vPlayerPos.y, vSkillPos.z), true);
-			Create_ForwardMovingSkillCollider(Monster_Skill, L"DragonBallMonster_SkillCollider", vSkillPos, 1.f, desc, KNOCKDOWN_SKILL, 10.f);
+			Create_ForwardMovingSkillCollider(Monster_Skill, L"DragonBallMonster_SkillCollider", vSkillPos, 1.f, desc, KNOCKDOWN_SKILL, GET_DAMAGE(MONSTER::DRAGONBALL_MONSTER, 0) * 1.f);
 		}
 
 		{
@@ -618,7 +629,7 @@ void DragonBallMonster_FSM::Create_Meteor()
 		{
 			shared_ptr<GameObject> obj = make_shared<GameObject>();
 			auto script = make_shared<TimerScript>(1.35f);
-			script->Set_Function([&]() { SOUND.Play_Sound(L"burst_stone_03", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance); });
+			script->Set_Function([&]() { SOUND.Play_Sound(L"burst_stone_03", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio * g_fMonsterEffectRatio, _float3(0.f), m_fMySoundDistance); });
 			obj->Add_Component(script);
 			EVENTMGR.Create_Object(obj);
 		}

@@ -20,6 +20,7 @@
 #include "GroupEffect.h"
 #include "TimerScript.h"
 #include "RigidBody.h"
+#include "MainUiController.h"
 
 /* Effect Script */
 #include "Mir_13100_Fireball.h"
@@ -123,6 +124,11 @@ HRESULT Boss_Mir_FSM::Init()
 
         m_fMySoundDistance = 30.f;
 
+        // HP Init
+        if (!m_pOwner.expired())
+        {
+            m_pOwner.lock()->Set_MaxHp(DATAMGR.Get_MonsterData(MONSTER::MIR).MaxHp);
+        }
 	}
 
     return S_OK;
@@ -536,6 +542,8 @@ void Boss_Mir_FSM::First_Meet()
     //THIS CAMERA MOVING IS MASTERPIECE -> NEVER DON'T TOUCH
     if (m_bDetected)
     {
+        CUR_SCENE->Set_PlayBGM(true);
+
         if (Init_CurFrame(20))
         {
             SOUND.Play_Sound(L"dragon_raksha_vox_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
@@ -560,6 +568,14 @@ void Boss_Mir_FSM::First_Meet()
         m_pOwner.lock()->Get_Animator()->Set_AnimState(false);
         
         g_bCutScene = true;
+
+        if (Init_CurFrame(1))
+        {
+            auto pController = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+
+            if (pController)
+                pController->Get_Script<MainUiController>()->Set_MainUI_Render(false);
+        }
 
         if (m_iCurFrame >= 1 && m_iCurFrame < 90)
         {
@@ -696,7 +712,11 @@ void Boss_Mir_FSM::sq_Intro2()
         g_bCutScene = false;
         m_tAttackCoolTime.fCoolTime = 2.5f;
         m_eCurState = STATE::b_idle;
-        CUR_SCENE->Set_PlayBGM(true);
+
+        auto pController = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+
+        if (pController)
+            pController->Get_Script<MainUiController>()->Set_MainUI_Render(true);        
 
         if (!m_pCamera.expired())
         {
@@ -1128,6 +1148,11 @@ void Boss_Mir_FSM::SQ_Flee_Init()
             m_pOwner.lock()->Get_Script<UIBossHpBar>()->Remove_HpBar();
     }
 
+    auto pController = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+
+    if (pController)
+        pController->Get_Script<MainUiController>()->Set_MainUI_Render(false);
+
     g_bCutScene = true;
     m_bSummonMeteor = false;
     m_tMeteorCoolTime.fAccTime = 0.f;
@@ -1336,6 +1361,11 @@ void Boss_Mir_FSM::skill_Restart_Phase1_Init()
     
     m_bInvincible = true;
     g_bCutScene = true;
+
+    auto pController = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+
+    if (pController)
+        pController->Get_Script<MainUiController>()->Set_MainUI_Render(false);
     
     m_bSummonMeteor = false;
     m_tMeteorCoolTime.fAccTime = 0.f;
@@ -1397,6 +1427,12 @@ void Boss_Mir_FSM::skill_Restart_Phase1_Intro()
     if (Is_AnimFinished())
     {
         g_bCutScene = false;
+     
+        auto pController = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+
+        if (pController)
+            pController->Get_Script<MainUiController>()->Set_MainUI_Render(true);
+
         m_tAttackCoolTime.fCoolTime = 2.5f;
         m_eCurState = STATE::b_idle;
         m_eCurPhase = PHASE::PHASE1;
@@ -1444,9 +1480,9 @@ void Boss_Mir_FSM::skill_1100()
         _float4 vSkillPos = vBonePos;
         
         if (m_iCurFrame != 76)
-            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 3.f, desc, NORMAL_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 3.f, desc, NORMAL_ATTACK, GET_DAMAGE(MONSTER::MIR, 1) * 0.25f);
         else
-            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 3.f, desc, KNOCKBACK_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 3.f, desc, KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::MIR, 1) * 0.25f);
     }
 
     if (Is_AnimFinished())
@@ -1537,7 +1573,7 @@ void Boss_Mir_FSM::skill_2100()
 		}
     }
     else if (m_iCurFrame == 70)
-        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+        AttackCollider_On(KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::MIR, 2) * 1.f);
     else if (m_iCurFrame == 93)
         AttackCollider_Off();
 
@@ -1604,7 +1640,7 @@ void Boss_Mir_FSM::skill_3100()
     }
 
     if (m_iCurFrame == 80)
-        TailAttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+        TailAttackCollider_On(KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::MIR, 3) * 1.f);
     else if (m_iCurFrame == 98)
         TailAttackCollider_Off();
 
@@ -1658,7 +1694,7 @@ void Boss_Mir_FSM::skill_4100()
     }
 
     if (m_iCurFrame == 86)
-        TailAttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+        TailAttackCollider_On(KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::MIR, 3) * 1.f);
     else if (m_iCurFrame == 108)
         TailAttackCollider_Off();
 
@@ -1787,7 +1823,7 @@ void Boss_Mir_FSM::skill_9100()
 
                 Add_GroupEffectOwner(L"Mir_Meteor_Meteor", _float3(vSkillPos.x, vPlayerPos.y, vSkillPos.z), true);
                 Add_GroupEffectOwner(L"Mir_Meteor_Floor", _float3(vSkillPos.x, vPlayerPos.y, vSkillPos.z), true);
-                Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 1.f, desc, AIRBORNE_ATTACK, 10.f);
+                Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 1.f, desc, AIRBORNE_ATTACK, GET_DAMAGE(MONSTER::MIR, 0) * 1.f);
             }
 
             {
@@ -1866,7 +1902,7 @@ void Boss_Mir_FSM::skill_11100()
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + 
                             Get_Transform()->Get_State(Transform_State::LOOK) * 7.f;
 
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 6.f, desc, KNOCKDOWN_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 6.f, desc, KNOCKDOWN_ATTACK, GET_DAMAGE(MONSTER::MIR, 4) * 1.f);
     }
 
 
@@ -1951,8 +1987,8 @@ void Boss_Mir_FSM::skill_12100()
                 desc.iLimitAttackCnt = 1;
                 desc.strAttackType = NORMAL_SKILL;
                 desc.strLastAttackType = NORMAL_SKILL;
-                desc.fAttackDamage = 5.f;
-                desc.fLastAttackDamage = 5.f;
+                desc.fAttackDamage = GET_DAMAGE(MONSTER::MIR, 5) * 1.f;
+                desc.fLastAttackDamage = GET_DAMAGE(MONSTER::MIR, 5) * 1.f;
                 desc.bFirstAttack = false;
 
 
@@ -2068,7 +2104,7 @@ void Boss_Mir_FSM::skill_13100()
         // For. Collider 
         for (_uint i = 0; i < 3; i++)
         {
-            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::MIR, 6) * 1.f);
 
             desc.vSkillDir = desc.vSkillDir + Get_Transform()->Get_State(Transform_State::RIGHT);
         }
@@ -2147,16 +2183,16 @@ void Boss_Mir_FSM::skill_14100()
         desc.fLimitDistance = 20.f;
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::MIR, 6) * 1.f);
 
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK) * -1.f;
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::MIR, 6) * 1.f);
 
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT) * -1.f;
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::MIR, 6) * 1.f);
 
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT) * 1.f;
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::MIR, 6) * 1.f);
 
         // For. Effect 
         shared_ptr<Mir_13100_Fireball> pScript = make_shared<Mir_13100_Fireball>();
@@ -2175,16 +2211,16 @@ void Boss_Mir_FSM::skill_14100()
         desc.fLimitDistance = 20.f;
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
 
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::MIR, 6) * 1.f);
 
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK) * -1.f;
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::MIR, 6) * 1.f);
 
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT) * -1.f;
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::MIR, 6) * 1.f);
 
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::RIGHT) * 1.f;
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 2.f, desc, KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::MIR, 6) * 1.f);
         
         // For. Effect 
         shared_ptr<Mir_13100_Fireball> pScript = make_shared<Mir_13100_Fireball>();
@@ -2332,9 +2368,9 @@ void Boss_Mir_FSM::skill_100100()
         _float4 vSkillPos = vBonePos;
 
         if (m_iCurFrame != 84)
-            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 3.f, desc, NORMAL_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 3.f, desc, NORMAL_ATTACK, GET_DAMAGE(MONSTER::MIR, 7) * 0.125f);
         else
-            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK, GET_DAMAGE(MONSTER::MIR, 7) * 0.125f);
         
     }
     else if (Init_CurFrame(100))
@@ -2470,7 +2506,7 @@ void Boss_Mir_FSM::skill_200100()
         
             _float4 vSkillPos = vBonePos;
         
-            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 3.f, desc, KNOCKBACK_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 3.f, desc, KNOCKBACK_ATTACK, GET_DAMAGE(MONSTER::MIR, 8) * 0.125f);
         }
     }
     
@@ -2638,7 +2674,7 @@ void Boss_Mir_FSM::Create_Meteor()
            
                 Add_GroupEffectOwner(L"Mir_Meteor_Meteor", _float3(vSkillPos.x, vPlayerPos.y, vSkillPos.z),true);
                 Add_GroupEffectOwner(L"Mir_Meteor_Floor", _float3(vSkillPos.x, vPlayerPos.y, vSkillPos.z), true);
-                Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 1.f, desc, KNOCKDOWN_SKILL, 10.f);
+                Create_ForwardMovingSkillCollider(Monster_Skill, L"Boss_Mir_SkillCollider", vSkillPos, 1.f, desc, KNOCKDOWN_SKILL, GET_DAMAGE(MONSTER::MIR, 0) * 1.f);
             }
             {
                 shared_ptr<GameObject> obj = make_shared<GameObject>();

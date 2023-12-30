@@ -71,6 +71,7 @@ enum class MONSTER
 	SILVERSWORD_SOLDIER,
 	MIR,
 	GIANT_MIR,
+	DRAGONBALL_MONSTER,
 	MAX
 };
 
@@ -99,6 +100,7 @@ enum class SCENE_TYPE
 	MIR,
 	KRIS,
 	SPIKE,
+	ENDING,
 };
 
 enum ObjectType
@@ -235,6 +237,8 @@ enum class SWITCH_TYPE
 	FIRST_STUN_ALPHACA,
 
 	YEONHEE_300100_LIGHT_OFF,
+
+	KILL_MIR,
 
 	MAX,
 };

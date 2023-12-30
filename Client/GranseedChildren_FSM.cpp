@@ -334,13 +334,13 @@ void GranseedChildren_FSM::Hide()
 {
 	m_fStateAcc += fDT;
 	if(m_fStateAcc < 1.f)
-		CUR_SCENE->g_VignetteData.g_fVignettePower += 15.f * fDT;
+		CUR_SCENE->g_VignetteData.g_fVignettePower += 30.f * fDT;
 
 	else if(m_fStateAcc >= 1.f && m_fStateAcc < 1.5f)
 		Get_Owner()->Get_Animator()->Set_RenderState(false);
 	else if (m_fStateAcc >= 1.5f && m_fStateAcc < 2.5f)
 	{
-		CUR_SCENE->g_VignetteData.g_fVignettePower -= 15.f * fDT;
+		CUR_SCENE->g_VignetteData.g_fVignettePower -= 30.f * fDT;
 	}
 	else if (m_fStateAcc >= 2.5f)
 	{
@@ -400,7 +400,7 @@ void GranseedChildren_FSM::Reset()
 {
 	m_fStateAcc += fDT;
 	if (m_fStateAcc < 1.f)
-		CUR_SCENE->g_VignetteData.g_fVignettePower += 15.f * fDT;
+		CUR_SCENE->g_VignetteData.g_fVignettePower += 30.f * fDT;
 
 	else if (m_fStateAcc >= 1.f && m_fStateAcc < 1.5f)
 	{
@@ -408,7 +408,7 @@ void GranseedChildren_FSM::Reset()
 	}
 	else if (m_fStateAcc >= 1.5f && m_fStateAcc < 2.5f)
 	{
-		CUR_SCENE->g_VignetteData.g_fVignettePower -= 15.f * fDT;
+		CUR_SCENE->g_VignetteData.g_fVignettePower -= 30.f * fDT;
 	}
 	else if (m_fStateAcc >= 2.5f)
 	{

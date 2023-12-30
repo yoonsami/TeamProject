@@ -376,7 +376,7 @@ void DataMgr::Initialize()
 			tagData.KeySkill5 = L"Skill_Spike6";
 			tagData.KeyChangeCard = L"Card_Spike";
 			tagData.KeyDeckMini = L"Card_Deck_Spike";
-			tagData.KeyDeckSelect = L"Big_Card_Dellons";
+			tagData.KeyDeckSelect = L"Big_Card_Spike";
 			tagData.KeyHeroInfo = L"혹한의폭군";
 			tagData.KeyHeroName = L"스파이크";
             tagData.SkillHelp = L"UI_Skill_Help_Spike";
@@ -616,6 +616,59 @@ void DataMgr::Initialize()
             tagData.Skill2DamageMul = 1.f;
             tagData.Skill3DamageMul = 1.f;
         }
+
+        // MIR
+        {
+            auto& tagData = m_MonsterData[IDX(MONSTER::MIR)];
+
+            tagData.AttackDamage = 200.f;
+            tagData.MaxHp = 80000.f;
+            tagData.CurHp = tagData.MaxHp;
+
+            tagData.AttackDamageMul = 0.5f; // Meteor
+            tagData.Skill1DamageMul = 1.f;  // Breath 4 Tick
+            tagData.Skill2DamageMul = 0.8f; // Assault
+            tagData.Skill3DamageMul = 0.8f; // TailAttack
+            tagData.Skill4DamageMul = 1.5f; // FootAttack
+            tagData.Skill5DamageMul = 0.7f; // ThunderAttack
+            tagData.Skill6DamageMul = 0.8f; // Fireball
+            tagData.Skill7DamageMul = 2.f;  // PowerBreath 1
+            tagData.Skill8DamageMul = 1.f;  // PowerBreath 2
+        }
+
+        //GIANT MIR
+        {
+            auto& tagData = m_MonsterData[IDX(MONSTER::GIANT_MIR)];
+
+            tagData.AttackDamage = 200.f;
+            tagData.MaxHp = 100000.f;
+            tagData.CurHp = tagData.MaxHp;
+
+            tagData.AttackDamageMul = 0.5f; // Meteor
+            tagData.Skill1DamageMul = 1.f;  // Breath to Left
+            tagData.Skill2DamageMul = 1.f; // TailAttack
+            tagData.Skill3DamageMul = 1.2f; // TailAttack_Rock
+            tagData.Skill4DamageMul = 1.f; // Breath to Forward
+            tagData.Skill5DamageMul = 1.f; // 100100 Breath 
+            tagData.Skill6DamageMul = 1.f;// 200100 Breath 
+        }
+
+        //DRAGONBALL MONSTER
+        {
+            auto& tagData = m_MonsterData[IDX(MONSTER::DRAGONBALL_MONSTER)];
+
+            tagData.AttackDamage = 150.f;
+            tagData.MaxHp = 10000.f;
+            tagData.CurHp = tagData.MaxHp;
+
+            tagData.AttackDamageMul = 1.f; // Meteor
+            tagData.Skill1DamageMul = 1.f;  // CrossFloor
+            tagData.Skill2DamageMul = 1.f;  // X_Floor  
+            tagData.Skill3DamageMul = 1.2f; // Hash_Floor
+            tagData.Skill4DamageMul = 1.2f; // Web_Floor
+            tagData.Skill5DamageMul = 1.4f; // Half_Floor
+            tagData.Skill6DamageMul = 1.f;// Star_Floor
+        }
     }
 
     m_BossData.resize(IDX(BOSS::MAX));
@@ -672,7 +725,7 @@ void DataMgr::Initialize()
     {
         m_NpcName.resize(IDX(NPCTYPE::MAX));
         m_NpcName[IDX(NPCTYPE::QUEST)] = L"아리엘";
-        m_NpcName[IDX(NPCTYPE::GACHA)] = L"카드 뽑기";
+        m_NpcName[IDX(NPCTYPE::GACHA)] = L"남은 뽑기 횟수 ";
         m_NpcName[IDX(NPCTYPE::POTION)] = L"상점";
         m_NpcName[IDX(NPCTYPE::HIDE_KID)] = L"꼬맹이";
         m_NpcName[IDX(NPCTYPE::SPIKE)] = L"스파이크";

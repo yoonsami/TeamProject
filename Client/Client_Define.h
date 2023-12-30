@@ -27,3 +27,5 @@ extern _float       g_fCharacterEffectRatio;
 extern _float       g_fMonsterVoiceRatio;
 extern _float       g_fMonsterEffectRatio;
 extern _float       g_fSystemSoundRatio;
+
+extern _int         g_iGachaCount;

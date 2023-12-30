@@ -72,8 +72,10 @@ void LoadingScene::Final_Tick()
         m_pLoadingController.lock()->Get_Script<LoadingBarScript>()->Set_Cur_Load_Index(m_pNextScene->Get_LoadIndex());
 	
     //if (KEYTAP(KEY_TYPE::LBUTTON))
-    if (m_pLoadingController.lock()->Get_Script<LoadingBarScript>()->Is_Load_End())
+    if (false == m_pLoadingController.expired())
 	{
+        if (false == m_pLoadingController.lock()->Get_Script<LoadingBarScript>()->Is_Load_End())
+            return;
 		if (!m_pLoader->m_bLoadFinished)
 			return;
 		for (auto iter = m_staticObjects.rbegin(); iter != m_staticObjects.rend(); ++iter)
@@ -81,7 +83,14 @@ void LoadingScene::Final_Tick()
 		SCENE.Change_Scene(m_pNextScene);
        
 	}
-
+    else
+    {
+        if (!m_pLoader->m_bLoadFinished)
+            return;
+        for (auto iter = m_staticObjects.rbegin(); iter != m_staticObjects.rend(); ++iter)
+            m_pNextScene->Add_GameObject_Front(*iter, true);
+        SCENE.Change_Scene(m_pNextScene);
+    }
    
 }
 
@@ -102,26 +111,32 @@ shared_ptr<GameObject> LoadingScene::Get_StaticObjectFromLoader(const wstring& s
 
 void LoadingScene::Load_Ui()
 {
-    Load_UIFile(L"..\\Resources\\UIData\\UI_Loading.dat", list<shared_ptr<GameObject>>());
-    Load_UIFile(L"..\\Resources\\UIData\\UI_Loading_Bar_Controller.dat", list<shared_ptr<GameObject>>());
-
+    if(SWITCHMGR.Get_SwitchState(SWITCH_TYPE::KILL_MIR))
+	{
+		Load_UIFile(L"..\\Resources\\UIData\\UI_WhiteScreen.dat", list<shared_ptr<GameObject>>());
+	}
+    else
     {
-        weak_ptr<GameObject> pObj = Get_GameObject(L"UI_Loading_Even");
-        if(false == pObj.expired())
-            pObj.lock()->Add_Component(make_shared<UiLoadingScript>(true));
+        Load_UIFile(L"..\\Resources\\UIData\\UI_Loading.dat", list<shared_ptr<GameObject>>());
+        Load_UIFile(L"..\\Resources\\UIData\\UI_Loading_Bar_Controller.dat", list<shared_ptr<GameObject>>());
+    
+        {
+            weak_ptr<GameObject> pObj = Get_GameObject(L"UI_Loading_Even");
+            if (false == pObj.expired())
+                pObj.lock()->Add_Component(make_shared<UiLoadingScript>(true));
+        }
+    
+        {
+            weak_ptr<GameObject> pObj = Get_GameObject(L"UI_Loading_Odd");
+            if (false == pObj.expired())
+                pObj.lock()->Add_Component(make_shared<UiLoadingScript>(false));
+        }
+    
+        {
+            // UI_Loading_Bar_Controller
+            m_pLoadingController = Get_GameObject(L"UI_Loading_Bar_Controller");
+            if (false == m_pLoadingController.expired())
+                m_pLoadingController.lock()->Add_Component(make_shared<LoadingBarScript>());
+        }
     }
-
-    {
-        weak_ptr<GameObject> pObj = Get_GameObject(L"UI_Loading_Odd");
-        if (false == pObj.expired())
-            pObj.lock()->Add_Component(make_shared<UiLoadingScript>(false));
-    }
-
-    {
-        // UI_Loading_Bar_Controller
-        m_pLoadingController = Get_GameObject(L"UI_Loading_Bar_Controller");
-        if (false == m_pLoadingController.expired())
-            m_pLoadingController.lock()->Add_Component(make_shared<LoadingBarScript>());
-    }
-
 }

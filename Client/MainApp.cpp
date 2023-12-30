@@ -77,7 +77,7 @@ HRESULT MainApp::Render()
 
 	return S_OK;
 }
-
+	
 HRESULT MainApp::Open_Scene()
 {
 	shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<LogoScene>());

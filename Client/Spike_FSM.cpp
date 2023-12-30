@@ -1233,6 +1233,8 @@ void Spike_FSM::skill_1400_Init()
 
 void Spike_FSM::skill_91100()
 {
+	if (Init_CurFrame(2))
+		Create_FrontDash();
     _float3 vInputVector = Get_InputDirVector();
 
     Look_DirToTarget();
@@ -1253,7 +1255,7 @@ void Spike_FSM::skill_91100_Init()
 
     m_vDirToTarget = _float3(0.f);
     m_vDirToTarget = Get_InputDirVector();
-    Create_FrontDash();
+
     AttackCollider_Off();
 
     SOUND.Play_Sound(L"vo_spike_att_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
@@ -1267,6 +1269,8 @@ void Spike_FSM::skill_91100_Init()
 
 void Spike_FSM::skill_93100()
 {
+	if (Init_CurFrame(2))
+		Create_BackDash();
     _float3 vInputVector = Get_InputDirVector();
 
     if (Is_AnimFinished())
@@ -1286,7 +1290,7 @@ void Spike_FSM::skill_93100_Init()
     m_bCanCombo = false;
 
     AttackCollider_Off();
-    Create_BackDash();
+
     m_fChargeEffectSoundTimer = 0.f;
 
     m_bInvincible = true;

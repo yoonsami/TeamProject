@@ -1222,11 +1222,16 @@ void Player_FSM::skill_1400_Init()
 
 void Player_FSM::skill_91100()
 {
+    if(Init_CurFrame(2))
+        Create_FrontDash();
+
 	if (m_vDirToTarget != _float3(0.f))
 		Soft_Turn_ToInputDir(m_vDirToTarget, XM_PI * 5.f);
+	Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
+
 }
 
 void Player_FSM::skill_91100_Init()
@@ -1242,12 +1247,16 @@ void Player_FSM::skill_91100_Init()
     m_bInvincible = true;
     m_bSuperArmor = false;
 
-    Create_FrontDash();
     SOUND.Play_Sound(L"vo_man_select_1", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 
 void Player_FSM::skill_93100()
 {
+    if(Init_CurFrame(1))
+        Create_BackDash();
+
+	Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
     if (Is_AnimFinished())
         m_eCurState = STATE::b_idle;
 }
@@ -1264,7 +1273,7 @@ void Player_FSM::skill_93100_Init()
 
     m_bInvincible = true;
     m_bSuperArmor = false;
-    Create_BackDash();
+   
     SOUND.Play_Sound(L"vo_man_select_1", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 }
 

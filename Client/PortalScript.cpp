@@ -120,7 +120,6 @@ void PortalScript::Tick()
 		{
 			m_fAcc = 0.f;
 			m_bClicked = false;
-			CUR_SCENE->g_fBrightness = 0.f;
 			switch (m_eDest)
 			{
 			case SCENE_TYPE::GRANSEED:
@@ -188,6 +187,11 @@ void PortalScript::Tick()
 				g_bCutScene = false;
 			}
 				break;
+			case SCENE_TYPE::ENDING:
+			{
+				
+			}
+			break;
 			default:
 				break;
 			}

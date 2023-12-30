@@ -66,34 +66,34 @@ void HeroChangeScript::Tick()
 
 
 
-    if (KEYTAP(KEY_TYPE::F1))
-    {
-        Change_Hero(HERO::ACE3);
-    }
-    else if (KEYTAP(KEY_TYPE::F2))
-    {
-        Change_Hero(HERO::KYLE);
-    }
-    else if (KEYTAP(KEY_TYPE::F3))
-    {
-        Change_Hero(HERO::YEOPO);
-    }
-    else if (KEYTAP(KEY_TYPE::F4))
-    {
-        Change_Hero(HERO::DELLONS);
-    }
-    else if (KEYTAP(KEY_TYPE::F5))
-    {
-        Change_Hero(HERO::SPIKE);
-    }
-	else if (KEYTAP(KEY_TYPE::F6))
-	{
-        Change_Hero(HERO::SHANE);
-	}
-	else if (KEYTAP(KEY_TYPE::F7))
-	{
-        Change_Hero(HERO::YEONHEE);
-	}
+    //if (KEYTAP(KEY_TYPE::F1))
+    //{
+    //    Change_Hero(HERO::ACE3);
+    //}
+    //else if (KEYTAP(KEY_TYPE::F2))
+    //{
+    //    Change_Hero(HERO::KYLE);
+    //}
+    //else if (KEYTAP(KEY_TYPE::F3))
+    //{
+    //    Change_Hero(HERO::YEOPO);
+    //}
+    //else if (KEYTAP(KEY_TYPE::F4))
+    //{
+    //    Change_Hero(HERO::DELLONS);
+    //}
+    //else if (KEYTAP(KEY_TYPE::F5))
+    //{
+    //    Change_Hero(HERO::SPIKE);
+    //}
+	//else if (KEYTAP(KEY_TYPE::F6))
+	//{
+    //    Change_Hero(HERO::SHANE);
+	//}
+	//else if (KEYTAP(KEY_TYPE::F7))
+	//{
+    //    Change_Hero(HERO::YEONHEE);
+	//}
     //else if (KEYTAP(KEY_TYPE::R))
 	//{
     //    //Change_Hero(HERO::PLAYER);
@@ -146,8 +146,8 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
     if (m_pOwner.expired() || HERO::MAX == eHero)
         return;
 
-    //CharacterChangeSound
-    SOUND.Play_Sound(L"ui_questplot_complete", CHANNELID::SOUND_UI, g_fSystemSoundRatio);
+    // CharacterChangeSound
+    SOUND.Play_Sound(L"ui_questplot_complete", CHANNELID::SOUND_EFFECT, g_fCharacterEffectRatio, CUR_SCENE->Get_GameObject(L"Player")->Get_Transform()->Get_State(Transform_State::POS).xyz(), 10.f/*MagicNumber*/);
 
 	for (auto& material : Get_Owner()->Get_Model()->Get_Materials())
 	{
@@ -219,7 +219,7 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
     case HERO::MAX:
         break;
     }
-
+    m_eCurHeroType = eHero;
 	m_pOwner.lock()->Get_FSM()->Set_AttackCollider(attackCollider);
     m_pOwner.lock()->Get_FSM()->Set_Weapon(weapon);
     //Add. Player's Weapon

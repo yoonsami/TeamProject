@@ -59,6 +59,8 @@ void Boss_Giant_Mir_Parts_FSM::Get_Hit(const wstring& skillname, _float fDamage,
 	if (iElementType == ElementType::WATER)
 		fHitDamage *= 1.2f; // 속성추뎀
 
+	fHitDamage *= 2.f;
+
 	//Calculate Damage to Giant_Mir
 	if (!m_pTarget.expired())
 		m_pTarget.lock()->Get_Hurt(fHitDamage);

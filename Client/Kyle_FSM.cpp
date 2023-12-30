@@ -1237,9 +1237,12 @@ void Kyle_FSM::skill_1400_Init()
 
 void Kyle_FSM::skill_91100()
 {
+	if (Init_CurFrame(2))
+		Create_FrontDash();
 	Look_DirToTarget();
 
 	_float3 vInputVector = Get_InputDirVector();
+	Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
 	if (Is_AnimFinished())
 		m_eCurState = STATE::b_idle;
@@ -1263,7 +1266,7 @@ void Kyle_FSM::skill_91100_Init()
 
 	m_vDirToTarget = _float3(0.f);
 	m_vDirToTarget = Get_InputDirVector();
-	Create_FrontDash();
+
 	AttackCollider_Off();
 
 	m_bInvincible = true;
@@ -1272,7 +1275,10 @@ void Kyle_FSM::skill_91100_Init()
 
 void Kyle_FSM::skill_93100()
 {
+	if (Init_CurFrame(4))
+		Create_BackDash();
 	_float3 vInputVector = Get_InputDirVector();
+	Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
 
 	if (Is_AnimFinished())
 		m_eCurState = STATE::b_idle;
@@ -1293,7 +1299,7 @@ void Kyle_FSM::skill_93100_Init()
 	SOUND.Play_Sound(L"7129_shout_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fCharacterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 	m_bCanCombo = false;
-	Create_BackDash();
+
 	AttackCollider_Off();
 
 	m_bInvincible = true;

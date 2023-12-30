@@ -5,6 +5,7 @@
 #include "MeshRenderer.h"
 #include "FontRenderer.h"
 #include "MainUiController.h"
+#include "UiMessageCreater.h"
 
 UiQuestController::UiQuestController()
 {
@@ -166,6 +167,12 @@ void UiQuestController::Create_Dialog(NPCTYPE eType, QUESTINDEX eIndex, shared_p
 void UiQuestController::Clear_Quest()
 {
     m_ClearCheck[IDX(m_eIndex)] = true;
+
+   // QuestClear
+    SOUND.Play_Sound(L"ui_AllOpen_Skip", CHANNELID::SOUND_EFFECT, g_fSystemSoundRatio, CUR_SCENE->Get_GameObject(L"Player")->Get_Transform()->Get_State(Transform_State::POS).xyz(), 10.f/*MagicNumber*/);
+
+    if (m_eIndex == QUESTINDEX::HIDE_AND_SEEK || m_eIndex == QUESTINDEX::KILL_ALPACA)
+        g_iGachaCount++;
     m_tagCurQuestData = QUESTDATA{};
 }
 
@@ -230,7 +237,11 @@ void UiQuestController::Next_Dialog()
         {
             m_eCurType = CUR_QUEST::NONE;
             Set_Render(false);
+
+
             Clear_Quest();
+
+          
         }
         
         m_iCurIndex = 0;
@@ -368,6 +379,9 @@ void UiQuestController::Set_Cur_Quest()
     
     m_pUiCurQuestName.lock()->Get_FontRenderer()->Get_Text() = m_tagCurQuestData.Name;
     m_pUiCurQuestInfo.lock()->Get_FontRenderer()->Get_Text() = m_tagCurQuestData.Info;
+
+   // QuestAccept
+    SOUND.Play_Sound(L"UI_LobbyMessage", CHANNELID::SOUND_EFFECT, g_fSystemSoundRatio, CUR_SCENE->Get_GameObject(L"Player")->Get_Transform()->Get_State(Transform_State::POS).xyz(), 10.f/*MagicNumber*/);
 
     //마리수 띄워야 할경우 판단하기
     if (QUESTTYPE::COLLECT == m_tagCurQuestData.Type || QUESTTYPE::HUNT == m_tagCurQuestData.Type)
