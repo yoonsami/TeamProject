@@ -294,12 +294,16 @@ void SpearAce_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<
             m_pOwner.lock()->Get_Hurt(fHitDamage);
     }
 
-	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
-	_float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
 
-	m_vHitDir = vOppositePos - vMyPos;
-	m_vHitDir.y = 0.f;
-	m_vHitDir.Normalize();
+    if (m_eCurState != STATE::hit)
+    {
+        _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
+        _float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
+
+        m_vHitDir = vOppositePos - vMyPos;
+        m_vHitDir.y = 0.f;
+        m_vHitDir.Normalize();
+    }
 
 	Set_HitColor();
 

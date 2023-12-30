@@ -63,7 +63,6 @@ void HeroChangeScript::Tick()
 	if (param.y < 0) param.y = 0.f;
 	if (param.z < 0) param.z = 0.f;
 
-
     //if (KEYTAP(KEY_TYPE::F1))
     //{
     //    Change_Hero(HERO::ACE3);
