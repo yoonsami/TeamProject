@@ -1986,7 +1986,7 @@ void Spike_FSM::skill_400100()
     if (Init_CurFrame(52))
     {
         SOUND.Play_Sound(L"magic_ice_long_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-
+        
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + 
                             Get_Transform()->Get_State(Transform_State::RIGHT) * 2.f +
                             Get_Transform()->Get_State(Transform_State::LOOK) * -1.f;
@@ -1998,7 +1998,7 @@ void Spike_FSM::skill_400100()
         desc.fLimitDistance = 0.f;
 
         Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 
-            GET_DAMAGE(HERO::SPIKE, 4) * 0.2f
+           GET_DAMAGE(HERO::SPIKE, 4) * 0.2f
             , L"Hit_Slash_Blue");
     }
     else if (Init_CurFrame(77))
@@ -2016,16 +2016,14 @@ void Spike_FSM::skill_400100()
         desc.fLimitDistance = 0.f;
 
         Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 
-            GET_DAMAGE(HERO::SPIKE, 4) * 0.2f
+           GET_DAMAGE(HERO::SPIKE, 4) * 0.2f
             , L"Hit_Slash_Blue");
     }
     else if (Init_CurFrame(97))
     {
         SOUND.Play_Sound(L"magic_ice_long_01", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) +
-                            Get_Transform()->Get_State(Transform_State::RIGHT) * -1.f +
-                            Get_Transform()->Get_State(Transform_State::LOOK) * -4.f;
+        _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * -1.f;
 
         FORWARDMOVINGSKILLDESC desc;
         desc.vSkillDir = Get_Transform()->Get_State(Transform_State::LOOK);
@@ -2033,7 +2031,7 @@ void Spike_FSM::skill_400100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 5.f, desc, AIRBORNE_ATTACK, 
             GET_DAMAGE(HERO::SPIKE, 4) * 0.2f
             , L"Hit_Slash_Blue");
     }
