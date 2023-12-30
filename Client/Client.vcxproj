@@ -257,7 +257,6 @@
     <ClInclude Include="CoolTimeCheckScript.h" />
     <ClInclude Include="CounterMotionTrailScript.h" />
     <ClInclude Include="DataMgr.h" />
-    <ClInclude Include="DebugTool.h" />
     <ClInclude Include="Debug_CreateMotionTrail.h" />
     <ClInclude Include="Dellons_FSM.h" />
     <ClInclude Include="DellonsWraith_FSM.h" />
@@ -390,7 +389,6 @@
     <ClCompile Include="CoolTimeCheckScript.cpp" />
     <ClCompile Include="CounterMotionTrailScript.cpp" />
     <ClCompile Include="DataMgr.cpp" />
-    <ClCompile Include="DebugTool.cpp" />
     <ClCompile Include="Debug_CreateMotionTrail.cpp" />
     <ClCompile Include="Dellons_FSM.cpp" />
     <ClCompile Include="DellonsWraith_FSM.cpp" />

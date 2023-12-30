@@ -513,9 +513,6 @@
     <ClInclude Include="MotionTrailDisappear.h">
       <Filter>02.Component\00.MonoBehaviour\00.Effect</Filter>
     </ClInclude>
-    <ClInclude Include="DebugTool.h">
-      <Filter>98.Debug</Filter>
-    </ClInclude>
     <ClInclude Include="Silversword_Soldier_FSM.h">
       <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\00.Silversword_Soldier_FSM</Filter>
     </ClInclude>
@@ -923,9 +920,6 @@
     </ClCompile>
     <ClCompile Include="MotionTrailDisappear.cpp">
       <Filter>02.Component\00.MonoBehaviour\00.Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugTool.cpp">
-      <Filter>98.Debug</Filter>
     </ClCompile>
     <ClCompile Include="Silversword_Soldier_FSM.cpp">
       <Filter>02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\00.Silversword_Soldier_FSM</Filter>
