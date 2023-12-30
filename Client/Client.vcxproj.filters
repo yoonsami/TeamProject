@@ -928,7 +928,6 @@
     <ClInclude Include="CreateGroupEffectScript.h">
       <Filter>02.Component\00.MonoBehaviour\00.Effect\02.HIntEffectScript</Filter>
     </ClInclude>
-    <ClInclude Include="CheckDistanceScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1364,9 +1363,6 @@
       <Filter>02.Component\00.MonoBehaviour\00.Effect\02.HIntEffectScript</Filter>
     </ClCompile>
     <ClCompile Include="CreateGroupEffectScript.cpp">
-      <Filter>02.Component\00.MonoBehaviour\00.Effect\02.HIntEffectScript</Filter>
-    </ClCompile>
-    <ClCompile Include="CheckDistanceScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\00.Effect\02.HIntEffectScript</Filter>
     </ClCompile>
   </ItemGroup>
