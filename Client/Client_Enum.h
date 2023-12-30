@@ -237,6 +237,8 @@ enum class SWITCH_TYPE
 
 	YEONHEE_300100_LIGHT_OFF,
 
+	KILL_MIR,
+
 	MAX,
 };
 

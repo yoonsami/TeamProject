@@ -17,10 +17,13 @@ public:
     void Change_Hero(HERO eHero);
     void Change_Player();
 	virtual shared_ptr<MonoBehaviour> Copy_Script()override { return make_shared<HeroChangeScript>(); }
-
+    HERO Get_HeroType() { return m_eCurHeroType; }
 private:
     void Change_Character_Weapon(const wstring& weaponname,shared_ptr<GameObject> weapon);
     void Change_To_Input(HERO eHero);
+
+private:
+    HERO m_eCurHeroType = HERO::PLAYER;
 
 };
 

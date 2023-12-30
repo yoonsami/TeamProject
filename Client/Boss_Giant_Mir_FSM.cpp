@@ -25,6 +25,7 @@
 #include "MeshCollider.h"
 #include "UiQuestController.h"
 #include "MainUiController.h"
+#include "HeroChangeScript.h"
 
 HRESULT Boss_Giant_Mir_FSM::Init()
 {
@@ -743,7 +744,11 @@ void Boss_Giant_Mir_FSM::SQ_Leave()
                     m_pTarget.lock()->Get_Animator()->Set_RenderState(true);
 
                     if (m_pTarget.lock()->Get_FSM()->Get_Weapon())
+                    {
+                        auto script = m_pTarget.lock()->Get_Script<HeroChangeScript>();
+                        if(script && script->Get_HeroType() != HERO::YEONHEE && script->Get_HeroType() != HERO::KYLE)
                         m_pTarget.lock()->Get_FSM()->Get_Weapon()->Get_ModelRenderer()->Set_RenderState(true);
+                    }
                 }
                 
                 _float4 vCamPos = m_vSetPlayerPos +
@@ -788,14 +793,13 @@ void Boss_Giant_Mir_FSM::SQ_Leave()
 		if (pObj && pObj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::KILL_SPIKE) == CUR_QUEST::PROGRESS)
 			pObj->Get_Script<UiQuestController>()->Change_Value();
 
-
+        SWITCHMGR.Set_SwitchState(SWITCH_TYPE::KILL_MIR, true);
 		{
 			_float4 vPortalPos = _float4(0.f, 0.f, 0.f, 1.f);
 
 			shared_ptr<GameObject> portal = make_shared<GameObject>();
 			portal->GetOrAddTransform()->Set_State(Transform_State::POS, vPortalPos);
 			portal->GetOrAddTransform()->Scaled(_float3(2.f));
-
 
 			shared_ptr<Shader> shader = RESOURCES.Get<Shader>(L"Shader_Model.fx");
 			shared_ptr<ModelAnimator> animator = make_shared<ModelAnimator>(shader);

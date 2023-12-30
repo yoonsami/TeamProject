@@ -219,7 +219,7 @@ void HeroChangeScript::Change_To_Input(HERO eHero)
     case HERO::MAX:
         break;
     }
-
+    m_eCurHeroType = eHero;
 	m_pOwner.lock()->Get_FSM()->Set_AttackCollider(attackCollider);
     m_pOwner.lock()->Get_FSM()->Set_Weapon(weapon);
     //Add. Player's Weapon

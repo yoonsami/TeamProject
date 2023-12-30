@@ -61,7 +61,7 @@ void MeteorRadialBlur::Tick()
 				if (!obj->Get_FSM())
 					continue;
 
-				obj->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, 99999999.f, Get_Owner(), ElementType::LIGHT);
+				obj->Get_FSM()->Get_Hit(KNOCKDOWN_ATTACK, 10000000.f, Get_Owner(), ElementType::LIGHT);
 			}
 
 			SOUND.Play_Sound(L"magic_explosion_n_08", CHANNELID::SOUND_EFFECT, 1.f * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), 100.f);
