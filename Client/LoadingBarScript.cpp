@@ -28,7 +28,7 @@ HRESULT LoadingBarScript::Init()
     m_vecString.push_back(pair(-100.f , L"UI 찍다 조는 중"));
     m_vecString.push_back(pair(-120.f , L"이펙트 찍다 조는 중"));
     m_vecString.push_back(pair(-140.f , L"FSM 한땀한땀 깎는 중"));
-    m_vecString.push_back(pair(-320.f , L"알고 계신가요? 정쌤의 주먹은 생각보다 찰지다는 걸"));
+    //m_vecString.push_back(pair(-320.f , L"알고 계신가요? 정쌤의 주먹은 생각보다 찰지다는 걸"));
 
 
     auto pScene = CUR_SCENE;
