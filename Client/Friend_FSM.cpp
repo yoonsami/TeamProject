@@ -88,7 +88,15 @@ HRESULT Friend_FSM::Init()
 	m_fFootStepVolume = 0.2f;
 	m_fEffectVolume = 0.2f;
 
-	m_fMySoundDistance = 10.F;
+	m_fMySoundDistance = 10.f;
+
+	if (m_eType == HERO::KYLE)
+	{
+		m_iLWeaponBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Chain_Bone016");
+		m_iRWeaponBoneIndex = m_pOwner.lock()->Get_Model()->Get_BoneIndexByName(L"Chain_Bone08");
+	}
+
+
 	
 	return S_OK;
 }
@@ -258,6 +266,25 @@ void Friend_FSM::ATTACK()
         break;
     case HERO::KYLE:
     {
+		_float4x4 mLFinger = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iLWeaponBoneIndex) *
+			_float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+		m_vLWeaponPos = _float4(mLFinger.Translation(), 1.f);
+
+		_float4x4 mRFinger = m_pOwner.lock()->Get_Animator()->Get_CurAnimTransform(m_iRWeaponBoneIndex) *
+			_float4x4::CreateRotationX(XMConvertToRadians(-90.f)) * _float4x4::CreateScale(0.01f) * _float4x4::CreateRotationY(XM_PI) * m_pOwner.lock()->GetOrAddTransform()->Get_WorldMatrix();
+
+		m_vRWeaponPos = _float4(mRFinger.Translation(), 1.f);
+
+		if (Init_CurFrame(10))
+			Add_And_Set_Effect(L"Kyle_500100_Swing");
+		else if (Init_CurFrame(83))
+			Add_Effect(L"Kyle_500100_Slash");
+		else if (Init_CurFrame(94))
+			Add_GroupEffectOwner(L"Kyle_500100_Install", _float3(0.f, 0.f, 3.f), false, nullptr, false);
+
+		Update_GroupEffectWorldPos(Get_Owner()->Get_Transform()->Get_WorldMatrix());
+
 
 		if (Init_CurFrame(11))
 		{
