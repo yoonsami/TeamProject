@@ -54,6 +54,8 @@ void LogoScene::Init()
 
 void LogoScene::Tick()
 {
+	SOUND.Play_Sound(L"SR_101_T_D_O", CHANNELID::SOUND_BGM, 0.5f * g_fBgmRatio);
+
 	__super::Tick();
 }
 
@@ -74,6 +76,10 @@ HRESULT LogoScene::Load_Scene()
 
 	RESOURCES.LoadParts();
 	Set_Load_Index(6);
+
+	//Sound
+	RESOURCES.Load_Sound(L"..\\Resources\\Sound\\LogoScene\\", false);
+	Set_Load_Index(8);
 
 	Load_Camera();
 	Load_Ui();
