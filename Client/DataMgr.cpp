@@ -376,7 +376,7 @@ void DataMgr::Initialize()
 			tagData.KeySkill5 = L"Skill_Spike6";
 			tagData.KeyChangeCard = L"Card_Spike";
 			tagData.KeyDeckMini = L"Card_Deck_Spike";
-			tagData.KeyDeckSelect = L"Big_Card_Dellons";
+			tagData.KeyDeckSelect = L"Big_Card_Spike";
 			tagData.KeyHeroInfo = L"혹한의폭군";
 			tagData.KeyHeroName = L"스파이크";
             tagData.SkillHelp = L"UI_Skill_Help_Spike";

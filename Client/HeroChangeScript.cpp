@@ -66,34 +66,34 @@ void HeroChangeScript::Tick()
 
 
 
-    if (KEYTAP(KEY_TYPE::F1))
-    {
-        Change_Hero(HERO::ACE3);
-    }
-    else if (KEYTAP(KEY_TYPE::F2))
-    {
-        Change_Hero(HERO::KYLE);
-    }
-    else if (KEYTAP(KEY_TYPE::F3))
-    {
-        Change_Hero(HERO::YEOPO);
-    }
-    else if (KEYTAP(KEY_TYPE::F4))
-    {
-        Change_Hero(HERO::DELLONS);
-    }
-    else if (KEYTAP(KEY_TYPE::F5))
-    {
-        Change_Hero(HERO::SPIKE);
-    }
-	else if (KEYTAP(KEY_TYPE::F6))
-	{
-        Change_Hero(HERO::SHANE);
-	}
-	else if (KEYTAP(KEY_TYPE::F7))
-	{
-        Change_Hero(HERO::YEONHEE);
-	}
+    //if (KEYTAP(KEY_TYPE::F1))
+    //{
+    //    Change_Hero(HERO::ACE3);
+    //}
+    //else if (KEYTAP(KEY_TYPE::F2))
+    //{
+    //    Change_Hero(HERO::KYLE);
+    //}
+    //else if (KEYTAP(KEY_TYPE::F3))
+    //{
+    //    Change_Hero(HERO::YEOPO);
+    //}
+    //else if (KEYTAP(KEY_TYPE::F4))
+    //{
+    //    Change_Hero(HERO::DELLONS);
+    //}
+    //else if (KEYTAP(KEY_TYPE::F5))
+    //{
+    //    Change_Hero(HERO::SPIKE);
+    //}
+	//else if (KEYTAP(KEY_TYPE::F6))
+	//{
+    //    Change_Hero(HERO::SHANE);
+	//}
+	//else if (KEYTAP(KEY_TYPE::F7))
+	//{
+    //    Change_Hero(HERO::YEONHEE);
+	//}
     //else if (KEYTAP(KEY_TYPE::R))
 	//{
     //    //Change_Hero(HERO::PLAYER);
