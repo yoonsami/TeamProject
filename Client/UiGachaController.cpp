@@ -7,7 +7,7 @@
 #include "UiGachaEffectController.h"
 #include "UiQuestController.h"
 
-_int    g_iGachaCount = 1;
+_int    g_iGachaCount = 3;
 
 UiGachaController::UiGachaController()
 {

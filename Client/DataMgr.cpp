@@ -475,7 +475,7 @@ void DataMgr::Initialize()
 
 			tagData.Skill1Cool = 7.f;
 			tagData.Skill2Cool = 22.f;
-			tagData.Skill3Cool = 99.f;
+			tagData.Skill3Cool = 90.f;
 			tagData.Skill4Cool = 16.f;
 			tagData.Skill5Cool = 25.f;
 
@@ -622,7 +622,7 @@ void DataMgr::Initialize()
             auto& tagData = m_MonsterData[IDX(MONSTER::MIR)];
 
             tagData.AttackDamage = 200.f;
-            tagData.MaxHp = 80000.f;
+            tagData.MaxHp = 50000.f;
             tagData.CurHp = tagData.MaxHp;
 
             tagData.AttackDamageMul = 0.5f; // Meteor
@@ -641,7 +641,7 @@ void DataMgr::Initialize()
             auto& tagData = m_MonsterData[IDX(MONSTER::GIANT_MIR)];
 
             tagData.AttackDamage = 200.f;
-            tagData.MaxHp = 100000.f;
+            tagData.MaxHp = 80000.f;
             tagData.CurHp = tagData.MaxHp;
 
             tagData.AttackDamageMul = 0.5f; // Meteor
