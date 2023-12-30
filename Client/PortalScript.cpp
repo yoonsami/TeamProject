@@ -41,6 +41,15 @@ void PortalScript::Tick()
 				if (pController)
 					pController->Get_Script<MainUiController>()->Set_MainUI_Render(false);
 
+				if (SWITCHMGR.Get_SwitchState(SWITCH_TYPE::CREATE_COMBAT4_AFTER_SPIKE))
+				{
+					auto pObj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
+					if (pObj && pObj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::KILL_SPIKE) == CUR_QUEST::CLEAR)
+					{
+						pObj->Get_Script<UiQuestController>()->Set_ClearQuest();
+					}
+				}
+
 				m_bClicked = true;
 				// �������
 				SOUND.Play_Sound(L"SQ_TeleportOut_Rune_01", CHANNELID::SOUND_EFFECT, g_fEnvironmentRatio * 0.6f/*MagicNumber*/, m_pOwner.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz(), 10.f/*MagicNumber*/);
@@ -135,14 +144,7 @@ void PortalScript::Tick()
 				break;
 			case SCENE_TYPE::FIELD:
 			{
-				if(SWITCHMGR.Get_SwitchState(SWITCH_TYPE::CREATE_COMBAT4_AFTER_SPIKE))
-				{
-					auto pObj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
-					if (pObj && pObj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::KILL_SPIKE) == CUR_QUEST::CLEAR)
-					{
-						pObj->Get_Script<UiQuestController>()->Set_ClearQuest();
-					}
-				}
+
 
 
 				auto nextScene = make_shared<FieldScene>();

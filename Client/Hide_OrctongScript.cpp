@@ -32,8 +32,6 @@ void Hide_OrctongScript::Tick()
 
 	if (KEYTAP(KEY_TYPE::E))
 	{
-
-
 		auto camera = CUR_SCENE->Get_MainCamera()->Get_Camera();
 
 		if (camera->Get_Frustum().Contain_Sphere(Get_Owner()->Get_CullPos(), Get_Owner()->Get_CullRadius()))

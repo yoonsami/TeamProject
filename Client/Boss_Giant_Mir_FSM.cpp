@@ -790,7 +790,7 @@ void Boss_Giant_Mir_FSM::SQ_Leave()
             EVENTMGR.Delete_Object(m_pFootRigidBody.lock());
 
 		auto pObj = CUR_SCENE->Get_UI(L"UI_Dialog_Controller");
-		if (pObj && pObj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::KILL_SPIKE) == CUR_QUEST::PROGRESS)
+		if (pObj && pObj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::KILL_MIR) == CUR_QUEST::PROGRESS)
 			pObj->Get_Script<UiQuestController>()->Change_Value();
 
         SWITCHMGR.Set_SwitchState(SWITCH_TYPE::KILL_MIR, true);

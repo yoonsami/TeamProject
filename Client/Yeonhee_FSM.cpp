@@ -1732,7 +1732,7 @@ void Yeonhee_FSM::Use_Skill()
         m_eCurState = STATE::skill_100100;
     else if (KEYTAP(KEY_TYPE::KEY_2) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL2))
         m_eCurState = STATE::skill_200100;
-    else if (KEYTAP(KEY_TYPE::KEY_3)/* && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3)*/)
+    else if (KEYTAP(KEY_TYPE::KEY_3)&& m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL3))
         m_eCurState = STATE::skill_300100;
     else if (KEYTAP(KEY_TYPE::KEY_4) && m_pOwner.lock()->Get_Script<CoolTimeCheckScript>()->IsAvailable(SKILL4))
         m_eCurState = STATE::skill_400100;
