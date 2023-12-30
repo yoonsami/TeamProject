@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CreateGroupEffectScript.h"
 #include "GroupEffect.h"
+#include "Smoke_WitcherSense.h"
 
 HRESULT CreateGroupEffectScript::Init()
 {
@@ -41,7 +42,7 @@ void CreateGroupEffectScript::Tick()
 			pGroupEffectObj->Set_Name(m_wstrEffectTag);
 			pGroupEffectObj->Init();
 			//TODO
-
+			pGroupEffectObj->Add_Component(make_shared<Smoke_WitcherSense>(CUR_SCENE->Get_Player()));
 
 			// For. Add Effect GameObject to current scene
 			EVENTMGR.Create_Object(pGroupEffectObj);
