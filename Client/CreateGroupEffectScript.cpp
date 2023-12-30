@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "CreateGroupEffectScript.h"
-#include "GroupEffectOwner.h"
+#include "GroupEffect.h"
 
 HRESULT CreateGroupEffectScript::Init()
 {
@@ -17,20 +17,34 @@ void CreateGroupEffectScript::Tick()
 		// create effect 
 		if (m_fHintEffectTimer > 7.f)
 		{
-			shared_ptr<GameObject> pGroupEffectOwnerObj = make_shared<GameObject>();
-			pGroupEffectOwnerObj->Set_TimeSlowed(false);
-			// For. Transform 
-			pGroupEffectOwnerObj->GetOrAddTransform();
-		
-			// For. GroupEffect component 
-			shared_ptr<GroupEffectOwner> pGroupEffect = make_shared<GroupEffectOwner>();
-			pGroupEffectOwnerObj->Add_Component(pGroupEffect);
-			pGroupEffectOwnerObj->Get_GroupEffectOwner()->Set_GroupEffectTag(m_wstrEffectTag);
+			shared_ptr<GameObject> pGroupEffectObj = make_shared<GameObject>();
+			pGroupEffectObj->Set_TimeSlowed(false);
 			
-			// TODO : add script 
+			// For. Transform 
+			pGroupEffectObj->GetOrAddTransform();
+			
+			// For. GroupEffectData 
+			wstring wstrFileName = m_wstrEffectTag + L".dat";
+			wstring wtsrFilePath = TEXT("..\\Resources\\EffectData\\GroupEffectData\\") + wstrFileName;
+			shared_ptr<GroupEffectData> pGroupEffectData = RESOURCES.GetOrAddGroupEffectData(m_wstrEffectTag, wtsrFilePath);
+
+			if (pGroupEffectData == nullptr)
+				return;
+
+			// For. GroupEffect component 
+			shared_ptr<GroupEffect> pGroupEffect = make_shared<GroupEffect>();
+			pGroupEffectObj->Add_Component(pGroupEffect);
+			pGroupEffectObj->Get_GroupEffect()->Set_Tag(pGroupEffectData->Get_GroupEffectDataTag());
+			pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectData(pGroupEffectData->Get_MemberEffectData());
+			pGroupEffectObj->Get_GroupEffect()->Set_InitWorldMatrix(pGroupEffectObj->Get_Transform()->Get_WorldMatrix());
+			pGroupEffectObj->Get_GroupEffect()->Set_MemberEffectMaterials();
+			pGroupEffectObj->Set_Name(m_wstrEffectTag);
+			pGroupEffectObj->Init();
+			//TODO
+
 
 			// For. Add Effect GameObject to current scene
-			EVENTMGR.Create_Object(pGroupEffectOwnerObj);
+			EVENTMGR.Create_Object(pGroupEffectObj);
 			m_fHintEffectTimer = 0.f;
 		}
 	}
