@@ -200,10 +200,12 @@
     <ClInclude Include="AttackColliderInfoScript.h" />
     <ClInclude Include="Boss_Giant_Mir_FSM.h" />
     <ClInclude Include="Boss_Giant_Mir_Parts_FSM.h" />
+    <ClInclude Include="CheckDistanceScript.h" />
     <ClInclude Include="Client_FSM.h" />
     <ClInclude Include="Combat5_LightControl.h" />
     <ClInclude Include="Companion_Dellons_FSM.h" />
     <ClInclude Include="Companion_Shane_FSM.h" />
+    <ClInclude Include="CreateGroupEffectScript.h" />
     <ClInclude Include="DeleteWhenAnimFinish.h" />
     <ClInclude Include="DeleteWhenTimePassed.h" />
     <ClInclude Include="Companion_FSM.h" />
@@ -228,6 +230,7 @@
     <ClInclude Include="GranseedPotion_FSM.h" />
     <ClInclude Include="GranseedTraveler_FSM.h" />
     <ClInclude Include="Hide_OrctongScript.h" />
+    <ClInclude Include="HIntEffectScript.h" />
     <ClInclude Include="InventoryModelRotation.h" />
     <ClInclude Include="MeteorRadialBlur.h" />
     <ClInclude Include="MiddleWoman_FSM.h" />
@@ -348,10 +351,12 @@
     <ClCompile Include="AttackColliderInfoScript.cpp" />
     <ClCompile Include="Boss_Giant_Mir_FSM.cpp" />
     <ClCompile Include="Boss_Giant_Mir_Parts_FSM.cpp" />
+    <ClCompile Include="CheckDistanceScript.cpp" />
     <ClCompile Include="Client_FSM.cpp" />
     <ClCompile Include="Combat5_LightControl.cpp" />
     <ClCompile Include="Companion_Dellons_FSM.cpp" />
     <ClCompile Include="Companion_Shane_FSM.cpp" />
+    <ClCompile Include="CreateGroupEffectScript.cpp" />
     <ClCompile Include="DeleteWhenAnimFinish.cpp" />
     <ClCompile Include="DeleteWhenTimePassed.cpp" />
     <ClCompile Include="Companion_FSM.cpp" />
@@ -376,6 +381,7 @@
     <ClCompile Include="GranseedPotion_FSM.cpp" />
     <ClCompile Include="GranseedTraveler_FSM.cpp" />
     <ClCompile Include="Hide_OrctongScript.cpp" />
+    <ClCompile Include="HIntEffectScript.cpp" />
     <ClCompile Include="InventoryModelRotation.cpp" />
     <ClCompile Include="MeteorRadialBlur.cpp" />
     <ClCompile Include="MiddleWoman_FSM.cpp" />

@@ -457,6 +457,9 @@
     <Filter Include="02.Component\00.MonoBehaviour\10.MeteorRadialBlur">
       <UniqueIdentifier>{d4eee82f-4078-4abb-987f-acf1acb6c9d9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\00.Effect\02.HIntEffectScript">
+      <UniqueIdentifier>{4b39b019-e671-425a-a9b6-f3c13a3779a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -919,6 +922,13 @@
     <ClInclude Include="Combat5_LightControl.h">
       <Filter>02.Component\00.MonoBehaviour\09.FieldScript\01.Field</Filter>
     </ClInclude>
+    <ClInclude Include="HIntEffectScript.h">
+      <Filter>02.Component\00.MonoBehaviour\00.Effect\02.HIntEffectScript</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateGroupEffectScript.h">
+      <Filter>02.Component\00.MonoBehaviour\00.Effect\02.HIntEffectScript</Filter>
+    </ClInclude>
+    <ClInclude Include="CheckDistanceScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1349,6 +1359,15 @@
     </ClCompile>
     <ClCompile Include="Combat5_LightControl.cpp">
       <Filter>02.Component\00.MonoBehaviour\09.FieldScript\01.Field</Filter>
+    </ClCompile>
+    <ClCompile Include="HIntEffectScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\00.Effect\02.HIntEffectScript</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateGroupEffectScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\00.Effect\02.HIntEffectScript</Filter>
+    </ClCompile>
+    <ClCompile Include="CheckDistanceScript.cpp">
+      <Filter>02.Component\00.MonoBehaviour\00.Effect\02.HIntEffectScript</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
