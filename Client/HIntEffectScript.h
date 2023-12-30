@@ -8,7 +8,7 @@ public:
     virtual shared_ptr<MonoBehaviour> Copy_Script() { return make_shared<HIntEffectScript>(); }
 
 private:
-    _float  m_fHintEffectTimer[21];
-    _bool   m_bIsActivated[21];
+    _float  m_fHintEffectTimer[21] = {0.f};
+    _bool   m_bIsActivated[21] = {false};
 };
 

@@ -200,7 +200,6 @@
     <ClInclude Include="AttackColliderInfoScript.h" />
     <ClInclude Include="Boss_Giant_Mir_FSM.h" />
     <ClInclude Include="Boss_Giant_Mir_Parts_FSM.h" />
-    <ClInclude Include="CheckDistanceScript.h" />
     <ClInclude Include="Client_FSM.h" />
     <ClInclude Include="Combat5_LightControl.h" />
     <ClInclude Include="Companion_Dellons_FSM.h" />
@@ -351,7 +350,6 @@
     <ClCompile Include="AttackColliderInfoScript.cpp" />
     <ClCompile Include="Boss_Giant_Mir_FSM.cpp" />
     <ClCompile Include="Boss_Giant_Mir_Parts_FSM.cpp" />
-    <ClCompile Include="CheckDistanceScript.cpp" />
     <ClCompile Include="Client_FSM.cpp" />
     <ClCompile Include="Combat5_LightControl.cpp" />
     <ClCompile Include="Companion_Dellons_FSM.cpp" />

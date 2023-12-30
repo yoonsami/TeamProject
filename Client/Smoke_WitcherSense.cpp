@@ -18,27 +18,22 @@ void Smoke_WitcherSense::Tick()
 		if (obj && !(obj->Get_Script<UiQuestController>()->Get_CurState(QUESTINDEX::HIDE_AND_SEEK) == CUR_QUEST::PROGRESS))
 		{
 			if (Get_Owner()->Get_GroupEffect())
+			{
+
 				Get_Owner()->Get_GroupEffect()->Set_TickRenderState(false, false);
+			}
 
-			return;
 		}
-	}
+		else
+		{
+			if (Get_Owner()->Get_GroupEffect())
+			{
 
-	_float3 vPlayerPos = m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
-	_float3 vOwenrPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
+				Get_Owner()->Get_GroupEffect()->Set_TickRenderState(g_bWitcherSenseOn, g_bWitcherSenseOn);
+			}
 
-	_float lengthSQ = (vPlayerPos - vOwenrPos).LengthSquared();
-	if (lengthSQ < 10.f * 10.f && g_bWitcherSenseOn && !m_bAlreadyMeet)
-	{
-		if (Get_Owner()->Get_GroupEffect())
-			Get_Owner()->Get_GroupEffect()->Set_TickRenderState(true,true);
-	}
-	else
-	{
-		if (Get_Owner()->Get_GroupEffect())
-			Get_Owner()->Get_GroupEffect()->Set_TickRenderState(false, false);
-	}
+		}
 
-	if (lengthSQ < 1.f * 1.f)
-		m_bAlreadyMeet = true;
+
+	}
 }

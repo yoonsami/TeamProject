@@ -1,13 +1,11 @@
 #include "pch.h"
 #include "HIntEffectScript.h"
 #include "CreateGroupEffectScript.h"
+#include "Smoke_WitcherSense.h"
 
 HRESULT HIntEffectScript::Init()
 {
     // Reset 
-    memset(m_fHintEffectTimer, 0.f, sizeof(m_fHintEffectTimer));
-    memset(m_bIsActivated, false, sizeof(m_bIsActivated));
-
     return S_OK;
 }
 
@@ -42,7 +40,7 @@ void HIntEffectScript::Tick()
 			shared_ptr<CreateGroupEffectScript> pCreateGroupEffect = make_shared<CreateGroupEffectScript>();
 			pGroupEffectOwnerObj->Add_Component(pCreateGroupEffect);
 			pGroupEffectOwnerObj->Get_Script<CreateGroupEffectScript>()->Set_EffectTag(wstrTargetTag);
-			
+
 			// For. Add Effect GameObject to current scene
 			EVENTMGR.Create_Object(pGroupEffectOwnerObj);
 
