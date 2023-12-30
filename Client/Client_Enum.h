@@ -100,6 +100,7 @@ enum class SCENE_TYPE
 	MIR,
 	KRIS,
 	SPIKE,
+	ENDING,
 };
 
 enum ObjectType

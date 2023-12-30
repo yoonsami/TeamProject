@@ -812,7 +812,7 @@ void Boss_Giant_Mir_FSM::SQ_Leave()
 			rigidBody->Create_RigidBody(mesh, portal->Get_Transform()->Get_WorldMatrix());
 			portal->Add_Component(rigidBody);
 
-			portal->Add_Component(make_shared<PortalScript>(SCENE_TYPE::FIELD, _float3(160.f,15.84f,120.f)));
+			portal->Add_Component(make_shared<PortalScript>(SCENE_TYPE::ENDING, _float3(160.f,15.84f,120.f)));
 			auto script = make_shared<ObjectDissolveCreate>(1.f);
 			portal->Add_Component(script);
 			script->Init();

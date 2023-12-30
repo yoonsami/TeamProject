@@ -111,10 +111,11 @@ shared_ptr<GameObject> LoadingScene::Get_StaticObjectFromLoader(const wstring& s
 
 void LoadingScene::Load_Ui()
 {
-    //{
-    //    Load_UIFile(L"..\\Resources\\UIData\\UI_WhiteScreen.dat", list<shared_ptr<GameObject>>());
-    //}
-
+    if(SWITCHMGR.Get_SwitchState(SWITCH_TYPE::KILL_MIR))
+	{
+		Load_UIFile(L"..\\Resources\\UIData\\UI_WhiteScreen.dat", list<shared_ptr<GameObject>>());
+	}
+    else
     {
         Load_UIFile(L"..\\Resources\\UIData\\UI_Loading.dat", list<shared_ptr<GameObject>>());
         Load_UIFile(L"..\\Resources\\UIData\\UI_Loading_Bar_Controller.dat", list<shared_ptr<GameObject>>());
