@@ -59,7 +59,7 @@ public:
 
 	_bool							Is_Static(shared_ptr<GameObject> obj);
 
-	void							Set_Load_Index(_uint iValue)			{ m_iLoadIndex += iValue; }
+    void							Set_Load_Index(_uint iValue)			{ m_iLoadIndex += iValue; if (10 <= m_iLoadIndex) { m_iLevelIndex = 10; } }
 	void							Set_Name(const wstring& name)			{ m_strSceneName = name; }
 	void							Set_SceneState(SCENE_STATE state)		{ m_eSceneState = state; }
 	void							Set_StartingPos(const _float3& vPoint)	{ m_vStartingPos = vPoint; }
