@@ -320,7 +320,13 @@ void Player_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Ga
     _float fHitDamage = Utils::Random_In_Range(fDamage * 0.8f, fDamage);
 
     //Calculate Damage 
-    m_pOwner.lock()->Get_Hurt(fHitDamage);
+    if (!m_pOwner.expired())
+    {
+        if (m_pOwner.lock()->Get_CurHp() - fHitDamage <= 0.f)
+            m_pOwner.lock()->Set_Hp(1.f);
+        else
+            m_pOwner.lock()->Get_Hurt(fHitDamage);
+    }
 	
     _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 	_float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
@@ -839,7 +845,8 @@ void Player_FSM::hit_Init()
     AttackCollider_Off();
 
     m_bInvincible = false;
-    m_bSuperArmor = false;
+    //m_bSuperArmor = false;
+    m_bSuperArmor = true;
 }
 
 void Player_FSM::knock_start()
@@ -902,7 +909,8 @@ void Player_FSM::knock_end_loop_Init()
     animator->Set_NextTweenAnim(L"knock_end_loop", 0.2f, false, 1.f);
 
     m_bInvincible = false;
-    m_bSuperArmor = false;
+    //m_bSuperArmor = false;
+    m_bSuperArmor = true;
 }
 
 void Player_FSM::knock_end_hit()
@@ -925,7 +933,8 @@ void Player_FSM::knock_end_hit_Init()
     animator->Set_NextTweenAnim(L"knock_end_hit", 0.2f, false, 1.f);
 
     m_bInvincible = false;
-    m_bSuperArmor = false;
+    //m_bSuperArmor = false;
+    m_bSuperArmor = true;
 }
 
 void Player_FSM::knock_up()
