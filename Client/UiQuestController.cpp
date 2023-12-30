@@ -168,10 +168,7 @@ void UiQuestController::Clear_Quest()
 {
     m_ClearCheck[IDX(m_eIndex)] = true;
 
-    auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
-    if (pObj)
-        pObj->Get_Script<UiMessageCreater>()->Create_Message(L"퀘스트 완료!");
-    // QuestClear
+   // QuestClear
     SOUND.Play_Sound(L"ui_AllOpen_Skip", CHANNELID::SOUND_EFFECT, g_fSystemSoundRatio, CUR_SCENE->Get_GameObject(L"Player")->Get_Transform()->Get_State(Transform_State::POS).xyz(), 10.f/*MagicNumber*/);
 
     if (m_eIndex == QUESTINDEX::HIDE_AND_SEEK || m_eIndex == QUESTINDEX::KILL_ALPACA)
@@ -383,10 +380,7 @@ void UiQuestController::Set_Cur_Quest()
     m_pUiCurQuestName.lock()->Get_FontRenderer()->Get_Text() = m_tagCurQuestData.Name;
     m_pUiCurQuestInfo.lock()->Get_FontRenderer()->Get_Text() = m_tagCurQuestData.Info;
 
-    auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
-    if (pObj)
-        pObj->Get_Script<UiMessageCreater>()->Create_Message(L"퀘스트 수락!");
-    // QuestAccept
+   // QuestAccept
     SOUND.Play_Sound(L"UI_LobbyMessage", CHANNELID::SOUND_EFFECT, g_fSystemSoundRatio, CUR_SCENE->Get_GameObject(L"Player")->Get_Transform()->Get_State(Transform_State::POS).xyz(), 10.f/*MagicNumber*/);
 
     //마리수 띄워야 할경우 판단하기
