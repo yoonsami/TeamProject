@@ -30,7 +30,7 @@ void Hide_OrctongScript::Tick()
 		return;
 
 
-	if (KEYTAP(KEY_TYPE::E))
+	if (KEYTAP(KEY_TYPE::TAB))
 	{
 
 
