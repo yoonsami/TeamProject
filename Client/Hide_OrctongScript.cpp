@@ -30,7 +30,7 @@ void Hide_OrctongScript::Tick()
 		return;
 
 
-	if (KEYTAP(KEY_TYPE::E))
+	if (KEYTAP(KEY_TYPE::TAB))
 	{
 		auto camera = CUR_SCENE->Get_MainCamera()->Get_Camera();
 

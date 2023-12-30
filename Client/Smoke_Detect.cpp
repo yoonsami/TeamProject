@@ -34,7 +34,7 @@ void Smoke_Detect::Tick()
 		{
 			auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
 			if (pObj)
-				pObj->Get_Script<UiMessageCreater>()->Create_Message(L"냄새를 따라가보자");
+				pObj->Get_Script<UiMessageCreater>()->Create_Message(L"발자국을 따라가보자");
 		}
 
 		EVENTMGR.Delete_Object(Get_Owner());
