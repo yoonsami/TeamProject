@@ -224,7 +224,7 @@ void Widget_EffectMaker_Mesh::ImGui_FinishedEffect()
 	/* If you need to save additional data */
 	//if (ImGui::Button("Update Save MeshEffect files"))
 	//	SaveAdditionalData();
-	
+
 	ImGui::InputText("##FinishedEffectFilter", m_szFinishedEffectFilter, MAX_PATH);
 	ImGui::SameLine();
 	if (ImGui::Button("Search##FinishedEffectFilter"))

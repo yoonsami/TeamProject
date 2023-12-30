@@ -53,6 +53,11 @@ HRESULT EntSoldier_FSM::Init()
         m_fVoiceVolume = 0.5f;
         m_fEffectVolume = 0.4f;
 
+        // HP Init
+        if (!m_pOwner.expired())
+        {
+            m_pOwner.lock()->Set_MaxHp(DATAMGR.Get_MonsterData(MONSTER::ENT_SOLDIER).MaxHp);
+        }
 
         m_bInitialize = true;
     }
@@ -244,6 +249,9 @@ void EntSoldier_FSM::State_Init()
 
 void EntSoldier_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
+    // Random 20 Percent
+    _float fHitDamage = Utils::Random_In_Range(fDamage * 0.8f, fDamage * 1.2f);
+
     auto pScript = m_pOwner.lock()->Get_Script<UiMonsterHp>();
     if (nullptr == pScript)
     {
@@ -253,9 +261,9 @@ void EntSoldier_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_pt
     }
 
     //Calculate Damage 
-    m_pOwner.lock()->Get_Hurt(fDamage);
+    m_pOwner.lock()->Get_Hurt(fHitDamage);
 
-	CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage, (ElementType)iElementType);
+	CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fHitDamage, (ElementType)iElementType);
 
     //Target Change
     if (pLookTarget != nullptr)
@@ -986,7 +994,7 @@ void EntSoldier_FSM::skill_1100()
     {
         SOUND.Play_Sound(L"swing_spear_05", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         Add_And_Set_Effect(L"EntSoldier_1100_slash");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, GET_DAMAGE(MONSTER::ENT_SOLDIER, 1));
     }
     else if (Init_CurFrame(17))
         AttackCollider_Off();
@@ -1020,7 +1028,8 @@ void EntSoldier_FSM::skill_2100()
         SOUND.Play_Sound(L"swing_spear_05", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 		Add_And_Set_Effect(L"EntSoldier_2100");
-        AttackCollider_On(NORMAL_ATTACK, 3.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            GET_DAMAGE(MONSTER::ENT_SOLDIER, 2) * 0.3f);
     }
     else if (Init_CurFrame(19))
     {
@@ -1030,14 +1039,16 @@ void EntSoldier_FSM::skill_2100()
     else if (Init_CurFrame(22))
     {
         SOUND.Play_Sound(L"swing_spear_05", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-        AttackCollider_On(NORMAL_ATTACK, 3.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            GET_DAMAGE(MONSTER::ENT_SOLDIER, 2) * 0.3f);
     }
     else if (Init_CurFrame(29))
         AttackCollider_Off();
     else if (Init_CurFrame(39))
     {
         SOUND.Play_Sound(L"swing_spear_05", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-        AttackCollider_On(NORMAL_ATTACK, 3.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            GET_DAMAGE(MONSTER::ENT_SOLDIER, 2) * 0.4f);
     }
     else if (Init_CurFrame(46))
         AttackCollider_Off();

@@ -48,6 +48,12 @@ HRESULT Wolf_FSM::Init()
         m_fVoiceVolume = 0.5f;
         m_fEffectVolume = 0.6f;
 
+        // HP Init
+        if (!m_pOwner.expired())
+        {
+            m_pOwner.lock()->Set_MaxHp(DATAMGR.Get_MonsterData(MONSTER::WOLF).MaxHp);
+        }
+
         m_bInitialize = true;
     }
 
@@ -232,6 +238,9 @@ void Wolf_FSM::State_Init()
 
 void Wolf_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
+    // Random 20 Percent
+    _float fHitDamage = Utils::Random_In_Range(fDamage * 0.8f, fDamage * 1.2f);
+
     auto pScript = m_pOwner.lock()->Get_Script<UiMonsterHp>();
     if (nullptr == pScript)
     {
@@ -241,9 +250,9 @@ void Wolf_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<Game
     }
 
     //Calculate Damage 
-    m_pOwner.lock()->Get_Hurt(fDamage);
+    m_pOwner.lock()->Get_Hurt(fHitDamage);
 
-		CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage, ElementType(iElementType));
+		CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fHitDamage, ElementType(iElementType));
 
     //Target Change
     if (pLookTarget != nullptr)
@@ -959,7 +968,8 @@ void Wolf_FSM::skill_1100()
     if (Init_CurFrame(10))
     {
         SOUND.Play_Sound(L"vo_10142_wolf_shout04", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-        AttackCollider_On(NONE_HIT, 2.f);
+        AttackCollider_On(NONE_HIT, GET_DAMAGE(MONSTER::WOLF, 0));
+            
     }
     else if (Init_CurFrame(18))
         AttackCollider_Off();

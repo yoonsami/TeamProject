@@ -204,7 +204,7 @@ void GranseedScene::Final_Tick()
 	
 	if (KEYPUSH(KEY_TYPE::TAB) && KEYPUSH(KEY_TYPE::F4))
 	{
-		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<MirScene>());
+		shared_ptr<LoadingScene> scene = make_shared<LoadingScene>(make_shared<SpikeScene>());
 		PHYSX.Set_CharacterControllerNull();
 
 		scene->Set_StaticObjects(m_StaticObject);
@@ -392,6 +392,10 @@ shared_ptr<GameObject> GranseedScene::Load_Player()
 		ObjPlayer->Get_FSM()->Set_Weapon(ObjWeapon);
 		shared_ptr<MonoBehaviour> script = make_shared<HeroChangeScript>();
 		ObjPlayer->Add_Component(script);
+
+		// HP Init
+		ObjPlayer->Set_MaxHp(DATAMGR.Get_Data(HERO::PLAYER).MaxHp);
+
 		return ObjPlayer;
 	}
 	return nullptr;
@@ -923,7 +927,7 @@ void GranseedScene::Load_HideAndSeek(shared_ptr<GameObject> pPlayer)
 		
 
 			wstring strSkilltag = L"Witcher_Sense" + to_wstring(skillIndex);
-			Set_Name(strSkilltag);
+			obj->Set_Name(strSkilltag);
 
 			wstring wstrFileName = strSkilltag + L".dat";
 			wstring wtsrFilePath = TEXT("..\\Resources\\EffectData\\GroupEffectData\\") + wstrFileName;

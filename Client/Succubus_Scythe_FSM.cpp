@@ -53,6 +53,13 @@ HRESULT Succubus_Scythe_FSM::Init()
         m_fVoiceVolume = 0.4f;
         m_fEffectVolume = 0.6f;
 
+
+        // HP Init
+        if (!m_pOwner.expired())
+        {
+            m_pOwner.lock()->Set_MaxHp(DATAMGR.Get_MonsterData(MONSTER::SUCCUBUS).MaxHp);
+        }
+
         m_bInitialize = true;
     }
 
@@ -255,6 +262,11 @@ void Succubus_Scythe_FSM::State_Init()
 
 void Succubus_Scythe_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
+    // Random 20 Percent
+    _float fHitDamage = Utils::Random_In_Range(fDamage * 0.8f, fDamage * 1.2f);
+    if (iElementType == ElementType::LIGHT)
+        fHitDamage *= 1.2f; // 속성추뎀
+
     auto pScript = m_pOwner.lock()->Get_Script<UiMonsterHp>();
     if (nullptr == pScript)
     {
@@ -264,9 +276,9 @@ void Succubus_Scythe_FSM::Get_Hit(const wstring& skillname, _float fDamage, shar
     }
 
     //Calculate Damage 
-    m_pOwner.lock()->Get_Hurt(fDamage);
+    m_pOwner.lock()->Get_Hurt(fHitDamage);
 
-		CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage, ElementType(iElementType));
+		CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fHitDamage, ElementType(iElementType));
 
     //Target Change
     if (pLookTarget != nullptr)
@@ -988,7 +1000,7 @@ void Succubus_Scythe_FSM::skill_1100()
         SOUND.Play_Sound(L"vo_succubus_att_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         SOUND.Play_Sound(L"swing_sword_common_04", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         Add_And_Set_Effect(L"Succubus_1100_slash");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, GET_DAMAGE(MONSTER::SUCCUBUS, 1));
     }
     else if (Init_CurFrame(25))
         AttackCollider_Off();
@@ -1021,7 +1033,8 @@ void Succubus_Scythe_FSM::skill_1200()
     {
         SOUND.Play_Sound(L"swing_sword_common_04", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         Add_And_Set_Effect(L"Succubus_1200_slash");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, GET_DAMAGE(MONSTER::SUCCUBUS, 2));
+        
     }
     else if (Init_CurFrame(23))
         AttackCollider_Off();
@@ -1054,7 +1067,8 @@ void Succubus_Scythe_FSM::skill_1300()
     {    
 		Add_And_Set_Effect(L"Succubus_1300_slash");
         SOUND.Play_Sound(L"swing_sword_common_04", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, GET_DAMAGE(MONSTER::SUCCUBUS, 3));
+            
     }
     else if (Init_CurFrame(31))
         AttackCollider_Off();
@@ -1096,7 +1110,8 @@ void Succubus_Scythe_FSM::skill_1400()
         desc.fLimitDistance = 3.f;
 
         _float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) * 2.f + _float3::Up;
-        Create_ForwardMovingSkillCollider(Monster_Skill, L"Succubus_Scythe_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, 10.f);
+        Create_ForwardMovingSkillCollider(Monster_Skill, L"Succubus_Scythe_SkillCollider", vSkillPos, 1.f, desc, NORMAL_SKILL, GET_DAMAGE(MONSTER::SUCCUBUS, 4));
+          
     }
 
     Set_Gaze();

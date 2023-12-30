@@ -7,6 +7,8 @@
 #include "UiGachaEffectController.h"
 #include "UiQuestController.h"
 
+_int    g_iGachaCount = 1;
+
 UiGachaController::UiGachaController()
 {
 }
@@ -69,13 +71,13 @@ void UiGachaController::Tick()
         Start_All_Open();
 
     //test code
-    if (KEYTAP(KEY_TYPE::C))
-    {
-        Create_Gacha_Card();
-    }
+    //if (KEYTAP(KEY_TYPE::C))
+    //{
+    //    Create_Gacha_Card();
+    //}
     //if (KEYTAP(KEY_TYPE::E))
     //{
-    //    Delete_All();
+    //    g_iGachaCount++;
     //}
 
     switch (m_eState)
@@ -102,6 +104,11 @@ void UiGachaController::Create_Gacha_Card()
 
     if (false == g_bIsCanRotation)
         return;
+
+    --g_iGachaCount;
+    if (0 >= g_iGachaCount)
+        g_iGachaCount = 0;
+    //DATAMGR.Sort_By_Star();
 
     m_bAllCardOpenOnce = false;
     //GachaStart
@@ -195,7 +202,7 @@ void UiGachaController::Delete_Gacha_Card()
         EVENTMGR.Delete_Object(pObj.lock());
     }
 
-    DATAMGR.Sort_By_Star();
+    //DATAMGR.Sort_By_Star();
 }
 
 void UiGachaController::Delete_Gacha_Bg()

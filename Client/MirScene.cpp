@@ -118,7 +118,7 @@ void MirScene::Init()
 void MirScene::Tick()
 {
 	if (m_bPlayBGM)
-		SOUND.Play_Sound(L"bgm_bossmir_loop", CHANNELID::SOUND_BGM, 0.5f * g_fBgmRatio);
+		SOUND.Play_Sound(L"bgm_bossmir_loop", CHANNELID::SOUND_BGM, 0.3f * g_fBgmRatio);
 	
 	__super::Tick();
 

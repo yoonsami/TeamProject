@@ -137,8 +137,16 @@ private:
 	virtual void AttackCollider_On(const wstring& skillname, _float fAttackDamage);
 	virtual void AttackCollider_Off();
 	void Set_WeaponLight(_bool bOn);
-	
-	array<shared_ptr<Material>, 2> m_WeaponMaterial;
 
+	array<shared_ptr<Material>, 2> m_WeaponMaterial;
+	_uint m_iLWeaponBoneIndex = 0;
+	_uint m_iRWeaponBoneIndex = 0;
+
+	_float m_fWeaponEffectTimer = {0.f};
+	_float m_fRunEffectTimer = { 0.f };
+
+	void Cal_WeaponBonePos();
+	_float4 m_vLWeaponPos = _float4(0.f);
+	_float4 m_vRWeaponPos = _float4(0.f);
 };
 

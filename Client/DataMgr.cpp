@@ -35,8 +35,8 @@ void DataMgr::Initialize()
 			tagData.Skill4Info = SkillInfo::NONE;
 			tagData.Skill5Info = SkillInfo::NONE;
 
-			tagData.AttackDamage = 1.f;
-			tagData.MaxHp = 10.f;
+			tagData.AttackDamage = 500.f;
+			tagData.MaxHp = 1000.f;
 			tagData.CurHp = 10.f;
 			tagData.PreHp = 10.f;
 			tagData.Deffence = 1.f;
@@ -44,14 +44,16 @@ void DataMgr::Initialize()
 			tagData.CriPercent = 0.f;
 			tagData.CriDamageMul = 1.f;
 
-			tagData.Skill1Cool = 2.f;
-			tagData.Skill2Cool = 2.f;
-			tagData.Skill3Cool = 2.f;
+			tagData.Skill1Cool = 8.f;
+			tagData.Skill2Cool = 12.f;
+			tagData.Skill3Cool = 15.f;
 			tagData.Skill4Cool = -1.f;
 			tagData.Skill5Cool = -1.f;
-			tagData.Skill1DamageMul = 1.f;
-			tagData.Skill2DamageMul = 1.f;
-			tagData.Skill3DamageMul = 1.f;
+
+            tagData.AttackDamageMul = 0.6f;
+			tagData.Skill1DamageMul = 2.f;
+			tagData.Skill2DamageMul = 2.5f;
+			tagData.Skill3DamageMul = 3.f;
 			tagData.Skill4DamageMul = 1.f;
 			tagData.Skill5DamageMul = 1.f;
 
@@ -154,7 +156,7 @@ void DataMgr::Initialize()
 			tagData.Skill4Info = SkillInfo::NONE;
 			tagData.Skill5Info = SkillInfo::NONE;
 
-			tagData.AttackDamage = 1.f;
+			tagData.AttackDamage = 1000.f;
 			tagData.MaxHp = 10.f;
 			tagData.CurHp = 10.f;
 			tagData.PreHp = 10.f;
@@ -163,16 +165,18 @@ void DataMgr::Initialize()
 			tagData.CriPercent = 0.f;
 			tagData.CriDamageMul = 1.f;
 
-			tagData.Skill1Cool = 2.f;
-			tagData.Skill2Cool = 2.f;
-			tagData.Skill3Cool = 2.f;
-			tagData.Skill4Cool = 2.f;
-			tagData.Skill5Cool = 2.f;
-			tagData.Skill1DamageMul = 1.f;
-			tagData.Skill2DamageMul = 1.f;
-			tagData.Skill3DamageMul = 1.f;
-			tagData.Skill4DamageMul = 1.f;
-			tagData.Skill5DamageMul = 1.f;
+			tagData.Skill1Cool = 6.f;
+			tagData.Skill2Cool = 7.f;
+			tagData.Skill3Cool = 8.f;
+			tagData.Skill4Cool = 9.f;
+			tagData.Skill5Cool = 10.f;
+
+            tagData.AttackDamageMul = 0.8f;
+			tagData.Skill1DamageMul = 2.f;
+			tagData.Skill2DamageMul = 2.4f;
+			tagData.Skill3DamageMul = 2.4f;
+			tagData.Skill4DamageMul = 2.8f;
+			tagData.Skill5DamageMul = 2.8f;
 
 			tagData.KeyWeapon = L"중거리";
 			tagData.ModelTag = L"Kyle";
@@ -214,7 +218,7 @@ void DataMgr::Initialize()
 			tagData.Skill4Info = SkillInfo::NONE;
 			tagData.Skill5Info = SkillInfo::NONE;
 
-			tagData.AttackDamage = 1.f;
+			tagData.AttackDamage = 1000.f;
 			tagData.MaxHp = 10.f;
 			tagData.CurHp = 10.f;
 			tagData.PreHp = 10.f;
@@ -223,16 +227,18 @@ void DataMgr::Initialize()
 			tagData.CriPercent = 0.f;
 			tagData.CriDamageMul = 1.f;
 
-			tagData.Skill1Cool = 2.f;
-			tagData.Skill2Cool = 2.f;
-			tagData.Skill3Cool = 2.f;
-			tagData.Skill4Cool = 2.f;
-			tagData.Skill5Cool = 2.f;
-			tagData.Skill1DamageMul = 1.f;
-			tagData.Skill2DamageMul = 1.f;
-			tagData.Skill3DamageMul = 1.f;
-			tagData.Skill4DamageMul = 1.f;
-			tagData.Skill5DamageMul = 1.f;
+			tagData.Skill1Cool = 8.f;
+			tagData.Skill2Cool = 16.f;
+			tagData.Skill3Cool = 15.f;
+			tagData.Skill4Cool = 25.f;
+			tagData.Skill5Cool = 10.f;
+
+            tagData.AttackDamageMul = 0.8f;
+			tagData.Skill1DamageMul = 2.4f;
+			tagData.Skill2DamageMul = 2.5f;
+			tagData.Skill3DamageMul = 3.f;
+			tagData.Skill4DamageMul = 4.f;
+			tagData.Skill5DamageMul = 2.8f;
 
 			tagData.KeyWeapon = L"근거리";
 			tagData.ModelTag = L"Yeopo";
@@ -274,7 +280,7 @@ void DataMgr::Initialize()
 			tagData.Skill4Info = SkillInfo::NONE;
 			tagData.Skill5Info = SkillInfo::NONE;
 
-			tagData.AttackDamage = 1.f;
+			tagData.AttackDamage = 800.f;
 			tagData.MaxHp = 10.f;
 			tagData.CurHp = 10.f;
 			tagData.PreHp = 10.f;
@@ -283,16 +289,18 @@ void DataMgr::Initialize()
 			tagData.CriPercent = 0.f;
 			tagData.CriDamageMul = 1.f;
 
-			tagData.Skill1Cool = 2.f;
-			tagData.Skill2Cool = 2.f;
-			tagData.Skill3Cool = 2.f;
-			tagData.Skill4Cool = 2.f;
-			tagData.Skill5Cool = 2.f;
-			tagData.Skill1DamageMul = 1.f;
-			tagData.Skill2DamageMul = 1.f;
-			tagData.Skill3DamageMul = 1.f;
-			tagData.Skill4DamageMul = 1.f;
-			tagData.Skill5DamageMul = 1.f;
+			tagData.Skill1Cool = 8.f;
+			tagData.Skill2Cool = 9.f;
+			tagData.Skill3Cool = 19.f;
+			tagData.Skill4Cool = 21.f;
+			tagData.Skill5Cool = 16.f;
+
+            tagData.AttackDamageMul = 0.6f;
+			tagData.Skill1DamageMul = 1.6f;
+			tagData.Skill2DamageMul = 1.8f;
+			tagData.Skill3DamageMul = 3.f;
+			tagData.Skill4DamageMul = 3.f;
+			tagData.Skill5DamageMul = 2.4f;
 
 			tagData.KeyWeapon = L"근거리";
 			tagData.ModelTag = L"Dellons";
@@ -334,7 +342,7 @@ void DataMgr::Initialize()
 			tagData.Skill4Info = SkillInfo::NONE;
 			tagData.Skill5Info = SkillInfo::NONE;
 
-			tagData.AttackDamage = 1.f;
+			tagData.AttackDamage = 1100.f;
 			tagData.MaxHp = 10.f;
 			tagData.CurHp = 10.f;
 			tagData.PreHp = 10.f;
@@ -343,16 +351,18 @@ void DataMgr::Initialize()
 			tagData.CriPercent = 0.f;
 			tagData.CriDamageMul = 1.f;
 
-			tagData.Skill1Cool = 2.f;
-			tagData.Skill2Cool = 2.f;
-			tagData.Skill3Cool = 2.f;
-			tagData.Skill4Cool = 2.f;
-			tagData.Skill5Cool = 2.f;
-			tagData.Skill1DamageMul = 1.f;
-			tagData.Skill2DamageMul = 1.f;
-			tagData.Skill3DamageMul = 1.f;
-			tagData.Skill4DamageMul = 1.f;
-			tagData.Skill5DamageMul = 1.f;
+			tagData.Skill1Cool = 8.f;
+			tagData.Skill2Cool = 18.f;
+			tagData.Skill3Cool = 16.f;
+			tagData.Skill4Cool = 25.f;
+			tagData.Skill5Cool = 12.f;
+
+            tagData.AttackDamageMul = 0.8f;
+			tagData.Skill1DamageMul = 2.4f;
+			tagData.Skill2DamageMul = 4.f;
+			tagData.Skill3DamageMul = 2.f;
+			tagData.Skill4DamageMul = 5.f;
+			tagData.Skill5DamageMul = 2.8f;
 
 			tagData.KeyWeapon = L"근거리";
 			tagData.ModelTag = L"Spike";
@@ -366,7 +376,7 @@ void DataMgr::Initialize()
 			tagData.KeySkill5 = L"Skill_Spike6";
 			tagData.KeyChangeCard = L"Card_Spike";
 			tagData.KeyDeckMini = L"Card_Deck_Spike";
-			tagData.KeyDeckSelect = L"Big_Card_Dellons";
+			tagData.KeyDeckSelect = L"Big_Card_Spike";
 			tagData.KeyHeroInfo = L"혹한의폭군";
 			tagData.KeyHeroName = L"스파이크";
             tagData.SkillHelp = L"UI_Skill_Help_Spike";
@@ -454,7 +464,7 @@ void DataMgr::Initialize()
 			tagData.Skill4Info = SkillInfo::NONE;
 			tagData.Skill5Info = SkillInfo::NONE;
 
-			tagData.AttackDamage = 1.f;
+			tagData.AttackDamage = 700.f;
 			tagData.MaxHp = 10.f;
 			tagData.CurHp = 10.f;
 			tagData.PreHp = 10.f;
@@ -463,16 +473,18 @@ void DataMgr::Initialize()
 			tagData.CriPercent = 0.f;
 			tagData.CriDamageMul = 1.f;
 
-			tagData.Skill1Cool = 2.f;
-			tagData.Skill2Cool = 2.f;
-			tagData.Skill3Cool = 2.f;
-			tagData.Skill4Cool = 2.f;
-			tagData.Skill5Cool = 2.f;
-			tagData.Skill1DamageMul = 1.f;
-			tagData.Skill2DamageMul = 1.f;
-			tagData.Skill3DamageMul = 1.f;
-			tagData.Skill4DamageMul = 1.f;
-			tagData.Skill5DamageMul = 1.f;
+			tagData.Skill1Cool = 7.f;
+			tagData.Skill2Cool = 22.f;
+			tagData.Skill3Cool = 99.f;
+			tagData.Skill4Cool = 16.f;
+			tagData.Skill5Cool = 25.f;
+
+            tagData.AttackDamageMul = 0.6f;
+			tagData.Skill1DamageMul = 2.4f;
+			tagData.Skill2DamageMul = 2.5f;
+			tagData.Skill3DamageMul = 10000.f;
+			tagData.Skill4DamageMul = 3.f;
+			tagData.Skill5DamageMul = 4.f;
 
 			tagData.KeyWeapon = L"원거리";
 			tagData.ModelTag = L"Yeonhee";
@@ -494,6 +506,117 @@ void DataMgr::Initialize()
 		}
 	}
 
+    m_MonsterData.resize(IDX(MONSTER::MAX));
+    {
+        // ALPACA
+        {
+            auto& tagData = m_MonsterData[IDX(MONSTER::ALPACA)];
+
+            tagData.AttackDamage = 10.f;
+            tagData.MaxHp = 2500.f;
+            tagData.CurHp = tagData.MaxHp;
+            
+			tagData.Skill1DamageMul = 1.f;
+			tagData.Skill2DamageMul = 1.f;
+			tagData.Skill3DamageMul = 1.f;
+		}
+        // DELLONS
+        {
+            auto& tagData = m_MonsterData[IDX(MONSTER::DELLONS)];
+
+            tagData.AttackDamage = 100.f;
+            tagData.MaxHp = 9000.f;
+            tagData.CurHp = tagData.MaxHp;
+
+            tagData.AttackDamageMul = 0.4f;
+            tagData.Skill1DamageMul = 0.6f;
+            tagData.Skill2DamageMul = 0.6f;
+            tagData.Skill3DamageMul = 0.8f;
+            tagData.Skill4DamageMul = 1.2f;
+            tagData.Skill5DamageMul = 0.9f;
+        }
+        // WOLF
+        {
+            auto& tagData = m_MonsterData[IDX(MONSTER::WOLF)];
+
+            tagData.AttackDamage = 10.f;
+            tagData.MaxHp = 4000.f;
+            tagData.CurHp = tagData.MaxHp;
+
+            tagData.AttackDamageMul = 1.f;
+        }
+        // SPIKE
+        {
+            auto& tagData = m_MonsterData[IDX(MONSTER::SPIKE)];
+
+            tagData.AttackDamage = 100.f;
+            tagData.MaxHp = 25000.f;
+            tagData.CurHp = tagData.MaxHp;
+
+            tagData.AttackDamageMul = 1.f;
+            tagData.Skill1DamageMul = 1.f;
+            tagData.Skill2DamageMul = 1.f;
+            tagData.Skill3DamageMul = 1.f;
+            tagData.Skill4DamageMul = 0.7f;
+            tagData.Skill5DamageMul = 1.2f;
+            tagData.Skill6DamageMul = 1.2f;
+            tagData.Skill7DamageMul = 2.f;
+            tagData.Skill8DamageMul = 2.f;
+            tagData.Skill9DamageMul = 0.15f; // Ulti
+            tagData.Skill10DamageMul = 3.f;
+            tagData.Skill11DamageMul = 2.f;
+            tagData.Skill12DamageMul = 0.3f; // GroggyPattern
+            tagData.Skill13DamageMul = 5.f; // Groggy Fail Pattern
+        }
+        // ENT_SOLDIER
+        {
+            auto& tagData = m_MonsterData[IDX(MONSTER::ENT_SOLDIER)];
+
+            tagData.AttackDamage = 12.f;
+            tagData.MaxHp = 5000.f;
+            tagData.CurHp = tagData.MaxHp;
+
+            tagData.Skill1DamageMul = 1.f;
+            tagData.Skill2DamageMul = 2.f;
+        }
+        // SUCCUBUS
+        {
+            auto& tagData = m_MonsterData[IDX(MONSTER::SUCCUBUS)];
+
+            tagData.AttackDamage = 12.f;
+            tagData.MaxHp = 5000.f;
+            tagData.CurHp = tagData.MaxHp;
+
+            tagData.Skill1DamageMul = 1.f;
+            tagData.Skill2DamageMul = 0.8f;
+            tagData.Skill3DamageMul = 1.f;
+            tagData.Skill4DamageMul = 1.2f;
+        }
+        // UNDEAD_PRIST
+        {
+            auto& tagData = m_MonsterData[IDX(MONSTER::UNDEAD_PRISTE)];
+
+            tagData.AttackDamage = 12.f;
+            tagData.MaxHp = 5000.f;
+            tagData.CurHp = tagData.MaxHp;
+
+            tagData.Skill1DamageMul = 0.6f;
+            tagData.Skill2DamageMul = 0.8f;
+            tagData.Skill3DamageMul = 1.f;
+        }
+        // SILVERSWORD_SOLDIER
+        {
+            auto& tagData = m_MonsterData[IDX(MONSTER::SILVERSWORD_SOLDIER)];
+
+            tagData.AttackDamage = 12.f;
+            tagData.MaxHp = 5000.f;
+            tagData.CurHp = tagData.MaxHp;
+
+            tagData.Skill1DamageMul = 1.f;
+            tagData.Skill2DamageMul = 1.f;
+            tagData.Skill3DamageMul = 1.f;
+        }
+    }
 
     m_BossData.resize(IDX(BOSS::MAX));
 	{
@@ -535,7 +658,6 @@ void DataMgr::Initialize()
 		}
 	}
 
-
     {
         m_KeyElement.resize(ElementType::ElementEnd);
         m_KeyElement[IDX(ElementType::DARK)] = L"Element_Dark";
@@ -550,7 +672,7 @@ void DataMgr::Initialize()
     {
         m_NpcName.resize(IDX(NPCTYPE::MAX));
         m_NpcName[IDX(NPCTYPE::QUEST)] = L"아리엘";
-        m_NpcName[IDX(NPCTYPE::GACHA)] = L"카드 뽑기";
+        m_NpcName[IDX(NPCTYPE::GACHA)] = L"남은 뽑기 횟수 ";
         m_NpcName[IDX(NPCTYPE::POTION)] = L"상점";
         m_NpcName[IDX(NPCTYPE::HIDE_KID)] = L"꼬맹이";
         m_NpcName[IDX(NPCTYPE::SPIKE)] = L"스파이크";
@@ -1140,6 +1262,79 @@ void DataMgr::Initialize()
 
 
 
+}
+
+_float DataMgr::Get_Skill_Damage(HERO eHero, _uint iSkillIndex)
+{
+    if (5 < iSkillIndex)
+        return 0.f;
+
+    auto& pData = m_HeroData[IDX(eHero)];
+    _float fDamage = pData.AttackDamage;
+
+    // if iSKillIndex == 0 -> Default Attack
+    switch (iSkillIndex)
+    {
+    case 0:
+        return fDamage * pData.AttackDamageMul;
+    case 1:
+        return fDamage * pData.Skill1DamageMul;
+    case 2:
+        return fDamage * pData.Skill2DamageMul;
+    case 3:
+        return fDamage * pData.Skill3DamageMul;
+    case 4:
+        return fDamage * pData.Skill4DamageMul;
+    case 5:
+        return fDamage * pData.Skill5DamageMul;
+    default:
+        return 0.f;
+    }
+}
+
+_float DataMgr::Get_Skill_Damage(MONSTER eMonster, _uint iSkillIndex)
+{
+    auto& pData = m_MonsterData[IDX(eMonster)];
+    _float fDamage = pData.AttackDamage;
+    
+    // if iSKillIndex == 0 -> Default Attack
+    switch (iSkillIndex)
+    {
+    case 0:
+        return fDamage * pData.AttackDamageMul;
+    case 1:
+        return fDamage * pData.Skill1DamageMul;
+    case 2:
+        return fDamage * pData.Skill2DamageMul;
+    case 3:
+        return fDamage * pData.Skill3DamageMul;
+    case 4:
+        return fDamage * pData.Skill4DamageMul;
+    case 5:
+        return fDamage * pData.Skill5DamageMul;
+    case 6:
+        return fDamage * pData.Skill6DamageMul;
+    case 7:
+        return fDamage * pData.Skill7DamageMul;
+    case 8:
+        return fDamage * pData.Skill8DamageMul;
+    case 9:
+        return fDamage * pData.Skill9DamageMul;
+    case 10:
+        return fDamage * pData.Skill10DamageMul;
+    case 11:
+        return fDamage * pData.Skill11DamageMul;
+    case 12:
+        return fDamage * pData.Skill12DamageMul;
+    case 13:
+        return fDamage * pData.Skill13DamageMul;
+    case 14:
+        return fDamage * pData.Skill14DamageMul;
+    case 15:
+        return fDamage * pData.Skill15DamageMul;
+    default:
+        return 0.f;
+    }
 }
 
 _uint DataMgr::Get_Dialog_Size(QUESTINDEX eIndex, CUR_QUEST eType)

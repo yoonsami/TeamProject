@@ -303,8 +303,11 @@ void Yeonhee_FSM::State_Init()
 
 void Yeonhee_FSM::Get_Hit(const wstring& skillname, _float fDamage,  shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
+    // Random -20 Percent
+    _float fHitDamage = Utils::Random_In_Range(fDamage * 0.8f, fDamage);
+
 	//Calculate Damage 
-	m_pOwner.lock()->Get_Hurt(fDamage);
+	m_pOwner.lock()->Get_Hurt(fHitDamage);
 
 	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 	_float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
@@ -624,7 +627,7 @@ void Yeonhee_FSM::b_sprint()
 
 
     Get_Transform()->Go_Straight();
-
+    Create_Sprint_Wind();
     _float3 vInputVector = Get_InputDirVector();
 
     if (vInputVector == _float3(0.f))
@@ -667,6 +670,8 @@ void Yeonhee_FSM::b_sprint()
 
 void Yeonhee_FSM::b_sprint_Init()
 {
+    Add_GroupEffectOwner(L"All_DashStart", _float3(0.f, 0.f, 2.f), false, nullptr, false);
+
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
     animator->Set_NextTweenAnim(L"b_sprint", 0.2f, true, 1.f);
@@ -674,7 +679,7 @@ void Yeonhee_FSM::b_sprint_Init()
     Get_Transform()->Set_Speed(m_fSprintSpeed);
 
     AttackCollider_Off();
-
+	m_fStTimer = 0.f;
     m_bInvincible = false;
     m_bSuperArmor = false;
 }
@@ -964,7 +969,8 @@ void Yeonhee_FSM::skill_1100()
         Add_And_Set_Effect(L"YeonHee_1100_Hand");
 
         
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 
+            GET_DAMAGE(HERO::YEONHEE, 0) * 0.3f);
 	}
     if(Init_CurFrame(15))
         CAMERA_SHAKE(0.1f, 0.1f)
@@ -1040,7 +1046,8 @@ void Yeonhee_FSM::skill_1200()
 		}
 
         Add_And_Set_Effect(L"YeonHee_1100_Hand");
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 
+            GET_DAMAGE(HERO::YEONHEE, 0) * 0.3f);
     }
 	if (Init_CurFrame(22))
 		CAMERA_SHAKE(0.1f, 0.1f)
@@ -1122,7 +1129,8 @@ void Yeonhee_FSM::skill_1300()
 		}
 
         Add_And_Set_Effect(L"YeonHee_1100_Hand");
-		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 10.f);
+		Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 1.f, desc, KNOCKBACK_ATTACK, 
+           GET_DAMAGE(HERO::YEONHEE, 0) * 0.4f);
 	}
 	if (Init_CurFrame(25))
 		CAMERA_SHAKE(0.1f, 0.1f)
@@ -1286,7 +1294,8 @@ void Yeonhee_FSM::skill_100100()
 			desc.fLimitDistance = 6.f;
 
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + _float3::Up;
-			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 0.3f, desc, NORMAL_ATTACK, 10.f);
+			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 0.3f, desc, NORMAL_ATTACK, 
+                GET_DAMAGE(HERO::YEONHEE, 1) * 0.125f);
             CAMERA_SHAKE(0.1f, 0.1f)
             Add_Effect(L"YeonHee_100100_Bullet");
         }
@@ -1375,8 +1384,8 @@ void Yeonhee_FSM::skill_200100()
         desc.iLimitAttackCnt = 7;
         desc.strAttackType = NORMAL_SKILL;
         desc.strLastAttackType = KNOCKDOWN_SKILL;
-        desc.fAttackDamage = 5.f;
-        desc.fLastAttackDamage = 12.f;
+        desc.fAttackDamage = GET_DAMAGE(HERO::YEONHEE, 2) * 0.13f;
+        desc.fLastAttackDamage = GET_DAMAGE(HERO::YEONHEE, 2) * 0.22f;
         desc.bFirstAttack = false;
 
         _float4 vSkillPos;
@@ -1551,7 +1560,8 @@ void Yeonhee_FSM::skill_400100()
 			desc.fLimitDistance = 10.f;
 
 			_float4 vSkillPos = Get_Transform()->Get_State(Transform_State::POS) + Get_Transform()->Get_State(Transform_State::LOOK) + _float3::Up;
-			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 0.5f, desc, KNOCKBACK_ATTACK, 10.f);
+			Create_ForwardMovingSkillCollider(Player_Skill, L"Player_SkillCollider", vSkillPos, 0.5f, desc, KNOCKBACK_ATTACK, 
+                GET_DAMAGE(HERO::YEONHEE, 4) * 0.2f);
 		}
 	}
 
@@ -1658,8 +1668,8 @@ void Yeonhee_FSM::skill_501100()
         desc.fAttackTickTime = 0.2f;
         desc.strAttackType = KNOCKBACK_SKILL;
         desc.strLastAttackType = KNOCKBACK_SKILL;
-        desc.fAttackDamage = 5.f;
-        desc.fLastAttackDamage = 5.f;
+        desc.fAttackDamage = GET_DAMAGE(HERO::YEONHEE, 5) * 0.2f;
+        desc.fLastAttackDamage = GET_DAMAGE(HERO::YEONHEE, 2) * 0.2f;
         desc.iLimitAttackCnt = 5;
 
         _float4 vSkillPos = vTargetPos;

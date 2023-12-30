@@ -57,6 +57,12 @@ HRESULT Alpaca_FSM::Init()
         m_fMySoundDistance = 4.f;
         m_fVoiceVolume = 0.5f;
 
+        // HP Init
+        if (!m_pOwner.expired())
+        {
+            m_pOwner.lock()->Set_MaxHp(DATAMGR.Get_MonsterData(MONSTER::ALPACA).MaxHp);
+        }
+
         m_bInitialize = true;
     }
 
@@ -249,10 +255,11 @@ void Alpaca_FSM::State_Init()
 
 void Alpaca_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
+    // Random 20 Percent
+    _float fHitDamage = Utils::Random_In_Range(fDamage * 0.8f, fDamage * 1.2f);
 
-	CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage, ElementType(iElementType));
-
-    m_pOwner.lock()->Get_Hurt(fDamage);
+	CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fHitDamage, ElementType(iElementType));
+    m_pOwner.lock()->Get_Hurt(fHitDamage);
 
     auto pScript = m_pOwner.lock()->Get_Script<UiMonsterHp>();
     if (nullptr == pScript)
@@ -946,7 +953,8 @@ void Alpaca_FSM::skill_1100()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     if (m_iCurFrame == 26)
-        AttackCollider_On(NONE_HIT, 2.f);
+        AttackCollider_On(NONE_HIT, GET_DAMAGE(MONSTER::ALPACA, 1));
+            
     else if (m_iCurFrame == 30)
         AttackCollider_Off();
 
@@ -975,7 +983,8 @@ void Alpaca_FSM::skill_2100()
 
     //NORMAL ATTACK
     if (m_iCurFrame == 29)
-        AttackCollider_On(NONE_HIT, 2.f);
+        AttackCollider_On(NONE_HIT, GET_DAMAGE(MONSTER::ALPACA, 2));
+           
     else if (m_iCurFrame == 38)
         AttackCollider_Off();
     
@@ -1003,7 +1012,8 @@ void Alpaca_FSM::skill_3100()
         Soft_Turn_ToInputDir(m_vTurnVector, m_fTurnSpeed);
 
     if (m_iCurFrame == 33)
-        AttackCollider_On(NONE_HIT, 2.f);
+        AttackCollider_On(NONE_HIT, GET_DAMAGE(MONSTER::ALPACA, 3));
+          
     else if (m_iCurFrame == 34)
         AttackCollider_Off();
 

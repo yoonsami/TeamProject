@@ -134,7 +134,8 @@ void MeshEffect::Render()
     m_pShader->Push_TransformData(TransformDesc{ world });
 
     m_pShader->Push_GlobalData(Camera::Get_View(), Camera::Get_Proj());
-    Bind_RenderParams_ToShader();
+   
+	m_pShader->Push_RenderParamData(m_RenderParams);
 
     m_pShader->Push_LightData(CUR_SCENE->Get_LightParams());
 

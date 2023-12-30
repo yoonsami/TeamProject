@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "MonoBehaviour.h"
+#include "Utils.h"
 
 class FSM;
 class Model;

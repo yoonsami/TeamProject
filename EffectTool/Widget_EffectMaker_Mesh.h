@@ -82,6 +82,7 @@ private:
 	_bool					SearchOnList(const string& strTag, const vector<string>& vTargetList, _int* pOut_TargetIndex, string* pOut_TargetTag);
 	void					SaveAdditionalData();	/* If it is necessary to store additional values in the existing mesheeffect data, 
 													the existing mesheeffect data file is saved again to match the new format through the function.*/
+													
 	/* Utils */
 	ImVec2					CatMull_Rom(_float2* pPoints, _float t);
 	Color					ImVec4toColor(ImVec4 imvec);

@@ -86,7 +86,7 @@ void DragonBall_FSM::Idle_Init()
 
 	animator->Set_CurrentAnim(L"anim_R02_DecoBall_00_Anim", true, 1.f);
 
-	m_fEffectVolume = 0.3f;
+	m_fEffectVolume = 1.f;
 }
 
 void DragonBall_FSM::Crash()
@@ -102,7 +102,7 @@ void DragonBall_FSM::Crash_Init()
 	shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 	animator->Set_Model(model);
 
-	SOUND.Play_Sound(L"hit_ice_break_02_st", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+	SOUND.Play_Sound(L"RockFalling", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fMonsterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
 	animator->Set_CurrentAnim(L"P_R02_DecoBall_01_Fire", false, 1.f);
 

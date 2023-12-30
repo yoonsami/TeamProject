@@ -54,11 +54,16 @@ void Boss_Giant_Mir_Parts_FSM::OnCollisionEnter(shared_ptr<BaseCollider> pCollid
 
 void Boss_Giant_Mir_Parts_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
+	// Random 20 Percent
+	_float fHitDamage = Utils::Random_In_Range(fDamage * 0.8f, fDamage * 1.2f);
+	if (iElementType == ElementType::WATER)
+		fHitDamage *= 1.2f; // 속성추뎀
+
 	//Calculate Damage to Giant_Mir
 	if (!m_pTarget.expired())
-		m_pTarget.lock()->Get_Hurt(fDamage);
+		m_pTarget.lock()->Get_Hurt(fHitDamage);
 
-	CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fDamage, ElementType(iElementType));
+	CUR_SCENE->Get_UI(L"UI_Damage_Controller")->Get_Script<UiDamageCreate>()->Create_Damage_Font(Get_Owner(), fHitDamage, ElementType(iElementType));
 
 	if (skillname == NORMAL_ATTACK || skillname == NORMAL_SKILL)
 	{

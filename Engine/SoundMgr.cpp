@@ -153,6 +153,18 @@ void SoundMgr::StopAll()
 		StopSound(CHANNELID(i));
 }
 
+_float SoundMgr::Get_Volume(CHANNELID eID)
+{
+	_float volume = 0.f;
+	m_pChannelArr[eID]->getVolume(&volume);
+	return volume;
+}
+
+void SoundMgr::Set_Volume(CHANNELID eID, _float fVolume)
+{
+	m_pChannelArr[eID]->setVolume(fVolume);
+}
+
 FMOD::Channel* SoundMgr::Get_Channel()
 {
 	for (_uint i = (_uint)SOUND_EFFECT; i < (_uint)MAXCHANNEL; ++i)

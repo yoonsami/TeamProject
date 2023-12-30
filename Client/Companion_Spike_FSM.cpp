@@ -50,6 +50,12 @@ HRESULT Companion_Spike_FSM::Init()
         m_fDetectRange = 25.f;
 
         m_bInitialize = true;
+
+        // HP Init
+        if (!m_pOwner.expired())
+        {
+            m_pOwner.lock()->Set_MaxHp(DATAMGR.Get_Data(HERO::PLAYER).MaxHp);
+        }
     }
     
     m_tRunEndDelay.fCoolTime = 0.5f;
@@ -349,6 +355,9 @@ void Companion_Spike_FSM::State_Init()
 
 void Companion_Spike_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
+    // Random 20 Percent
+    _float fHitDamage = Utils::Random_In_Range(fDamage * 0.8f, fDamage * 1.2f);
+
     if (!m_bSuperArmor)
     {
         if (m_bCanEvade)
@@ -366,7 +375,7 @@ void Companion_Spike_FSM::Get_Hit(const wstring& skillname, _float fDamage, shar
     if (!m_bEvade)
     {
         //Calculate Damage 
-        m_pOwner.lock()->Get_Hurt(fDamage);
+        m_pOwner.lock()->Get_Hurt(fHitDamage);
     }
 
     _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
@@ -641,9 +650,15 @@ void Companion_Spike_FSM::b_idle_Init()
 void Companion_Spike_FSM::b_run_start()
 {
     if (Init_CurFrame(8))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
     else if (Init_CurFrame(16))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
 
 
 
@@ -698,9 +713,15 @@ void Companion_Spike_FSM::b_run_start_Init()
 void Companion_Spike_FSM::b_run()
 {
     if (Init_CurFrame(10))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
     else if (Init_CurFrame(20))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
 
     if (!m_pLookingTarget.expired())
     {
@@ -796,9 +817,15 @@ void Companion_Spike_FSM::b_run_Init()
 void Companion_Spike_FSM::b_run_end_r()
 {
     if (Init_CurFrame(6))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
     else if (Init_CurFrame(11))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
 
     if (!m_pLookingTarget.expired())
     {
@@ -848,9 +875,15 @@ void Companion_Spike_FSM::b_run_end_r_Init()
 void Companion_Spike_FSM::b_run_end_l()
 {
     if (Init_CurFrame(9))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
     else if (Init_CurFrame(11))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
 
     if (!m_pLookingTarget.expired())
     {
@@ -900,9 +933,15 @@ void Companion_Spike_FSM::b_run_end_l_Init()
 void Companion_Spike_FSM::b_sprint()
 {
     if (Init_CurFrame(7))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Right", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
     else if (Init_CurFrame(14))
+    {
+        Create_Foot_Dust();
         SOUND.Play_Sound(L"footstep_Left", CHANNELID::SOUND_EFFECT, m_fFootStepVolume * g_fEnvironmentRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
+    }
 
     if (!m_pLookingTarget.expired())
     {
@@ -1241,7 +1280,8 @@ void Companion_Spike_FSM::skill_1100()
         SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         Add_And_Set_Effect(L"Spike_1100");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            GET_DAMAGE(HERO::SPIKE, 0) * 0.15f);
     }
     else if (Init_CurFrame(17))
         AttackCollider_Off();
@@ -1270,7 +1310,8 @@ void Companion_Spike_FSM::skill_1200()
     if (Init_CurFrame(0))
     {
         Add_And_Set_Effect(L"Spike_1200");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            GET_DAMAGE(HERO::SPIKE, 0) * 0.15f);
     }
     else if (m_iCurFrame == 14)
         AttackCollider_Off();
@@ -1308,7 +1349,8 @@ void Companion_Spike_FSM::skill_1300()
     else if (Init_CurFrame(15))
     {
         Add_And_Set_Effect(L"Spike_1300");
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            GET_DAMAGE(HERO::SPIKE, 0) * 0.3f);
     }
     else if (Init_CurFrame(18))
         AttackCollider_Off();
@@ -1348,7 +1390,8 @@ void Companion_Spike_FSM::skill_1400()
         SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
         Add_GroupEffectOwner(L"Spike_1400_2", _float3(0.f, 0.f, 1.f), false);
-        AttackCollider_On(KNOCKDOWN_ATTACK, 10.f);
+        AttackCollider_On(KNOCKDOWN_ATTACK, 
+            GET_DAMAGE(HERO::SPIKE, 0) * 0.4f);
 
     }
     else if (Init_CurFrame(15))
@@ -1457,7 +1500,8 @@ void Companion_Spike_FSM::skill_100100()
 
             m_bAssaultColliderOn = true;
             m_fAssaultColliderTimer = 0.f;
-            AttackCollider_On(NORMAL_ATTACK, 10.f);
+            AttackCollider_On(NORMAL_ATTACK, 
+                GET_DAMAGE(HERO::SPIKE, 1) * 0.08f);
         }
         else
         {
@@ -1510,7 +1554,8 @@ void Companion_Spike_FSM::skill_100300()
         SOUND.Play_Sound(L"swing_axe_01", CHANNELID::SOUND_EFFECT, m_fSwingVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
         SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-        AttackCollider_On(KNOCKBACK_ATTACK, 10.f);
+        AttackCollider_On(KNOCKBACK_ATTACK, 
+            GET_DAMAGE(HERO::SPIKE, 1) * 0.36f);
     }
     else if (Init_CurFrame(32))
     {
@@ -1656,7 +1701,8 @@ void Companion_Spike_FSM::skill_200200()
             desc.fMoveSpeed = 0.f;
             desc.fLifeTime = 0.3f;
             desc.fLimitDistance = 0.f;
-            Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 
+                GET_DAMAGE(HERO::SPIKE, 2) * 0.33f * 0.25f);
         }
     }
 
@@ -1715,7 +1761,8 @@ void Companion_Spike_FSM::skill_200300()
             desc.fMoveSpeed = 0.f;
             desc.fLifeTime = 0.3f;
             desc.fLimitDistance = 0.f;
-                Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f);
+                Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 
+                    GET_DAMAGE(HERO::SPIKE, 2) * 0.166f * 0.5f);
         }
     }
 
@@ -1781,7 +1828,8 @@ void Companion_Spike_FSM::skill_200400()
             desc.fMoveSpeed = 0.f;
             desc.fLifeTime = 0.3f;
             desc.fLimitDistance = 0.f;
-            Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 10.f);
+            Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", Get_Transform()->Get_State(Transform_State::POS) + _float3::Up, m_fWheelWindRange, desc, NORMAL_ATTACK, 
+                GET_DAMAGE(HERO::SPIKE, 2) * 0.11f);
         }
     }
 
@@ -1794,7 +1842,8 @@ void Companion_Spike_FSM::skill_200400()
         desc.fMoveSpeed = 0.f;
         desc.fLifeTime = 0.5f;
         desc.fLimitDistance = 0.f;
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 
+            GET_DAMAGE(HERO::SPIKE, 2) * 0.34f);
     }
 
     if (Is_AnimFinished())
@@ -1844,7 +1893,8 @@ void Companion_Spike_FSM::skill_300100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 2.5f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 2.5f, desc, AIRBORNE_ATTACK, 
+            GET_DAMAGE(HERO::SPIKE, 3));
 
     }
 
@@ -1893,7 +1943,8 @@ void Companion_Spike_FSM::skill_400100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 
+            GET_DAMAGE(HERO::SPIKE, 4) * 0.2f);
     }
     else if (Init_CurFrame(77))
     {
@@ -1909,7 +1960,8 @@ void Companion_Spike_FSM::skill_400100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 
+            GET_DAMAGE(HERO::SPIKE, 4) * 0.2f);
     }
     else if (Init_CurFrame(97))
     {
@@ -1926,7 +1978,8 @@ void Companion_Spike_FSM::skill_400100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 
+            GET_DAMAGE(HERO::SPIKE, 4) * 0.2f);
     }
     else if (Init_CurFrame(150))
     {
@@ -1942,7 +1995,8 @@ void Companion_Spike_FSM::skill_400100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 3.f, desc, AIRBORNE_ATTACK, 
+            GET_DAMAGE(HERO::SPIKE, 4) * 0.4f);
     }
 
     if (Is_AnimFinished())
@@ -1992,14 +2046,16 @@ void Companion_Spike_FSM::skill_501100()
         desc.fLifeTime = 1.f;
         desc.fLimitDistance = 0.f;
 
-        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK, 10.f);
+        Create_ForwardMovingSkillCollider(Player_Skill, L"Companion_Spike_SkillCollider", vSkillPos, 3.f, desc, KNOCKDOWN_ATTACK, 
+            GET_DAMAGE(HERO::SPIKE, 5) * 0.5f);
     }
     else if (Init_CurFrame(36))
         SOUND.Play_Sound(L"magic_ice_short", CHANNELID::SOUND_EFFECT, m_fEffectVolume * g_fCharacterEffectRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
     
     if (Init_CurFrame(18))
-        AttackCollider_On(NORMAL_ATTACK, 10.f);
+        AttackCollider_On(NORMAL_ATTACK, 
+            GET_DAMAGE(HERO::SPIKE, 5) * 0.5f);
     else if (Init_CurFrame(23))
         AttackCollider_Off();
 

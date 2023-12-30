@@ -337,24 +337,6 @@
     <Filter Include="02.Component\01.FSM\02.Monster_FSM\00.Normal_Monster\05.EntSoldier_FSM">
       <UniqueIdentifier>{96e8c404-8acf-4f9a-a1f9-2aafd167a6e2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster">
-      <UniqueIdentifier>{2bf45222-d7ce-4f76-8939-f4f265bdf103}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\01.Boss_Mir_FSM">
-      <UniqueIdentifier>{d4e80f64-1b0a-46b9-805f-e088a44bd55f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\02.Boss_Dellons_FSM">
-      <UniqueIdentifier>{f2eabd1a-e71d-4a00-b020-f9c66162fef8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\03.Boss_Spike_FSM">
-      <UniqueIdentifier>{98ec5a53-91dd-4a0a-8674-9b5c049fbefd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\04.Boss_Giant_Mir_FSM">
-      <UniqueIdentifier>{222bdfb6-ec6a-4014-935c-b6ae4a1d194a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\04.Boss_Giant_Mir_FSM\00.Boss_Giant_Mir_Parts_FSM">
-      <UniqueIdentifier>{d36909e6-df0e-4cc8-9af0-dc8edc9f77c1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Component\01.FSM\03.Special_FSM">
       <UniqueIdentifier>{07de820b-d706-4b0a-a69a-dbc77ce8061d}</UniqueIdentifier>
     </Filter>
@@ -453,6 +435,27 @@
     </Filter>
     <Filter Include="02.Component\00.MonoBehaviour\01.WeaponScript">
       <UniqueIdentifier>{b9bdbe99-4328-44ff-a881-4aa947da18c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster">
+      <UniqueIdentifier>{2bf45222-d7ce-4f76-8939-f4f265bdf103}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\01.Boss_Mir_FSM">
+      <UniqueIdentifier>{d4e80f64-1b0a-46b9-805f-e088a44bd55f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\02.Boss_Dellons_FSM">
+      <UniqueIdentifier>{f2eabd1a-e71d-4a00-b020-f9c66162fef8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\03.Boss_Spike_FSM">
+      <UniqueIdentifier>{98ec5a53-91dd-4a0a-8674-9b5c049fbefd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\04.Boss_Giant_Mir_FSM">
+      <UniqueIdentifier>{222bdfb6-ec6a-4014-935c-b6ae4a1d194a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\01.FSM\02.Monster_FSM\01.Boss_Monster\04.Boss_Giant_Mir_FSM\00.Boss_Giant_Mir_Parts_FSM">
+      <UniqueIdentifier>{d36909e6-df0e-4cc8-9af0-dc8edc9f77c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Component\00.MonoBehaviour\10.MeteorRadialBlur">
+      <UniqueIdentifier>{d4eee82f-4078-4abb-987f-acf1acb6c9d9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -907,10 +910,14 @@
     <ClInclude Include="LoadingBarScript.h">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\00.UiLoading\01.LoadingBar</Filter>
     </ClInclude>
-    <ClInclude Include="Combat5_LightControl.h" />
-    <ClInclude Include="MeteorRadialBlur.h" />
     <ClInclude Include="LogoScene.h">
       <Filter>01.Scene\01.LogoScene</Filter>
+    </ClInclude>
+    <ClInclude Include="MeteorRadialBlur.h">
+      <Filter>02.Component\00.MonoBehaviour\10.MeteorRadialBlur</Filter>
+    </ClInclude>
+    <ClInclude Include="Combat5_LightControl.h">
+      <Filter>02.Component\00.MonoBehaviour\09.FieldScript\01.Field</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1337,8 +1344,12 @@
     <ClCompile Include="LoadingBarScript.cpp">
       <Filter>02.Component\00.MonoBehaviour\01.Ui\00.UiLoading\01.LoadingBar</Filter>
     </ClCompile>
-    <ClCompile Include="Combat5_LightControl.cpp" />
-    <ClCompile Include="MeteorRadialBlur.cpp" />
+    <ClCompile Include="MeteorRadialBlur.cpp">
+      <Filter>02.Component\00.MonoBehaviour\10.MeteorRadialBlur</Filter>
+    </ClCompile>
+    <ClCompile Include="Combat5_LightControl.cpp">
+      <Filter>02.Component\00.MonoBehaviour\09.FieldScript\01.Field</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">

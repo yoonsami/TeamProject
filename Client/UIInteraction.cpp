@@ -6,6 +6,7 @@
 #include "UiMarkNpc.h"
 #include "FontRenderer.h"
 #include "MeshRenderer.h"
+#include "UiMessageCreater.h"
 #include "UiGachaController.h"
 #include "UiQuestController.h"
 #include "UiDialogController.h"
@@ -81,7 +82,17 @@ void UIInteraction::Create_Interaction(NPCTYPE eType, shared_ptr<GameObject> pAc
         {
             m_pInteraction_Font = addedObj[i];
             if(false == m_pInteraction_Font.expired())
-                m_pInteraction_Font.lock()->Get_FontRenderer()->Get_Text() = GET_NPC_NAME(eType);
+            {
+                if (NPCTYPE::GACHA == eType)
+                {
+                    wstring strTemp = GET_NPC_NAME(eType) + to_wstring(g_iGachaCount);
+                    m_pInteraction_Font.lock()->Get_FontRenderer()->Get_Text() = strTemp;
+                }
+                else
+                {
+                    m_pInteraction_Font.lock()->Get_FontRenderer()->Get_Text() = GET_NPC_NAME(eType);
+                }
+            }
         }
     }
 
@@ -97,7 +108,7 @@ void UIInteraction::Create_Interaction(NPCTYPE eType, shared_ptr<GameObject> pAc
             break;
         case NPCTYPE::GACHA:
             m_pInteraction_Bg.lock()->Get_MeshRenderer()->Get_Material()->Set_TextureMap(RESOURCES.Get<Texture>(L"UI_Interaction_Gacha"), TextureMapType::DIFFUSE);
-            eIndex = QUESTINDEX::TRY_GACHA;
+            //eIndex = QUESTINDEX::TRY_GACHA;
             break;
         case NPCTYPE::HIDE_KID:
             eIndex = QUESTINDEX::HIDE_AND_SEEK;
@@ -159,16 +170,35 @@ void UIInteraction::Create_Interaction(NPCTYPE eType, shared_ptr<GameObject> pAc
                 });
         }
         
-        // gacha open
-        //pObj = m_pGachaController;
-        //m_pInteraction_Bg.lock()->Get_Button()->AddOnClickedEvent([pObj, this]()
-        //    {
-        //        if (false == pObj.expired())
-        //        {
-        //            pObj.lock()->Get_Script<UiGachaController>()->Create_Gacha_Card();
-        //            this->Remove_Interaction();
-        //        }
-        //    });
+        else if(NPCTYPE::GACHA == eType)
+        {
+            if (0 >= g_iGachaCount)
+            {
+                pObj = m_pGachaController;
+                m_pInteraction_Bg.lock()->Get_Button()->AddOnClickedEvent([pObj, this, pAccessObj]()
+                    {
+                        if (false == pObj.expired())
+                        {
+                            auto pObj = CUR_SCENE->Get_UI(L"UI_Message_Controller");
+                            if (pObj)
+                                pObj->Get_Script<UiMessageCreater>()->Create_Message(L"»Ì±â±Çµµ ¾ø´Â ³ðÀÌ!", pAccessObj);
+                            this->Remove_Interaction();
+                        }
+                    });
+            }
+            else
+            {
+                pObj = m_pGachaController;
+                m_pInteraction_Bg.lock()->Get_Button()->AddOnClickedEvent([pObj, this]()
+                    {
+                        if (false == pObj.expired())
+                        {
+                            pObj.lock()->Get_Script<UiGachaController>()->Create_Gacha_Card();
+                            this->Remove_Interaction();
+                        }
+                    });
+            }
+        }
     }
 
 }
