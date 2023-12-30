@@ -49,6 +49,12 @@ private:
 	_float	m_fBottomHeight = 0.f;
 	HERO	m_eType = HERO::MAX;
 	_float	m_fStateAcc = 0.f;
+	_float	m_fWeaponEffectTimer = 0.f;
+	_uint m_iLWeaponBoneIndex = 0;
+	_uint m_iRWeaponBoneIndex = 0;
+	_float4 m_vLWeaponPos = _float4(0.f);
+	_float4 m_vRWeaponPos = _float4(0.f);
 	weak_ptr<GameObject> m_pDellonsWraith;
+	
 };
 

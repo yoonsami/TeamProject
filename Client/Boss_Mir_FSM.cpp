@@ -173,10 +173,8 @@ void Boss_Mir_FSM::Tick()
     //For. Debugging
     if (KEYTAP(KEY_TYPE::P))
     {
-        m_bCheckPhaseChange[0] = true;
-        m_bCheckPhaseChange[1] = true;
-        m_bPhaseChange[0] = true;
-        m_bPhaseChange[1] = true;
+        m_bCheckPhaseChange = true;
+        m_bPhaseChange = true;
         m_bSummonMeteor = false;
         m_tMeteorCoolTime.fAccTime = 0.f;
         m_tAttackCoolTime.fCoolTime = 1.5f;
@@ -212,10 +210,8 @@ void Boss_Mir_FSM::Tick()
 
     if (KEYTAP(KEY_TYPE::O))
     {
-        m_bCheckPhaseChange[0] = true;
-        m_bCheckPhaseChange[1] = true;
-        m_bPhaseChange[0] = true;
-        m_bPhaseChange[1] = true;
+        m_bCheckPhaseChange = true;
+        m_bPhaseChange = true;
         m_bSummonMeteor = false;
         m_tMeteorCoolTime.fAccTime = 0.f;
         m_tAttackCoolTime.fCoolTime = 1.5f;
@@ -792,7 +788,7 @@ void Boss_Mir_FSM::b_idle()
 
     if (m_eCurPhase == PHASE::PHASE2)
     {
-        if ((m_bCheckPhaseChange[0] && !m_bPhaseChange[0]) || (m_bCheckPhaseChange[1] && !m_bPhaseChange[1]))
+        if (m_bCheckPhaseChange && !m_bPhaseChange)
         {
             m_iPreAttack = 100;
             m_eCurState = STATE::skill_Restart_Phase1;
@@ -1353,11 +1349,8 @@ void Boss_Mir_FSM::skill_Restart_Phase1_Init()
 
     Calculate_PhaseChangeHeadCam();
 
-    if (m_bCheckPhaseChange[0])
-        m_bPhaseChange[0] = true;
-    
-    if (m_bCheckPhaseChange[1])
-        m_bPhaseChange[1] = true;
+    if (m_bCheckPhaseChange)
+        m_bPhaseChange = true;
     
     m_bInvincible = true;
     g_bCutScene = true;
@@ -2931,15 +2924,10 @@ void Boss_Mir_FSM::Calculate_PhaseChangeHeadCam()
 
 void Boss_Mir_FSM::Check_PhaseChange()
 {
-    if (m_pOwner.lock()->Get_HpRatio() >= 0.33f && m_pOwner.lock()->Get_HpRatio() <= 0.66f)
+    if (m_pOwner.lock()->Get_HpRatio() <= 0.5f)
     {
-        if (!m_bCheckPhaseChange[0])
-            m_bCheckPhaseChange[0] = true;
-    }
-    else if (m_pOwner.lock()->Get_HpRatio() <= 0.33f)
-    {
-        if (!m_bCheckPhaseChange[1])
-            m_bCheckPhaseChange[1] = true;
+        if (!m_bCheckPhaseChange)
+            m_bCheckPhaseChange = true;
     }
 }
 

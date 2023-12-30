@@ -187,8 +187,8 @@ private:
 
 	_bool m_bCounter = false;
 	_bool m_bPhaseOneEmissive = false;
-	_bool m_bCheckPhaseChange[2] = {false,false};
-	_bool m_bPhaseChange[2] = { false,false };
+	_bool m_bCheckPhaseChange = false;
+	_bool m_bPhaseChange = false;
 
 	
 	_uint m_iPreAttack = 100;
