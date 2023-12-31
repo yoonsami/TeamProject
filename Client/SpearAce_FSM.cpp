@@ -282,14 +282,28 @@ void SpearAce_FSM::State_Init()
 
 void SpearAce_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_ptr<GameObject> pLookTarget, _uint iElementType)
 {
-	m_pOwner.lock()->Get_Hurt(fDamage);
+    // Random -20 Percent
+    _float fHitDamage = Utils::Random_In_Range(fDamage * 0.8f, fDamage);
 
-	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
-	_float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
+    //Calculate Damage 
+    if (!m_pOwner.expired())
+    {
+        if (m_pOwner.lock()->Get_CurHp() - fHitDamage <= 0.f)
+            m_pOwner.lock()->Set_Hp(1.f);
+        else
+            m_pOwner.lock()->Get_Hurt(fHitDamage);
+    }
 
-	m_vHitDir = vOppositePos - vMyPos;
-	m_vHitDir.y = 0.f;
-	m_vHitDir.Normalize();
+
+    if (m_eCurState != STATE::hit)
+    {
+        _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
+        _float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
+
+        m_vHitDir = vOppositePos - vMyPos;
+        m_vHitDir.y = 0.f;
+        m_vHitDir.Normalize();
+    }
 
 	Set_HitColor();
 
@@ -718,7 +732,7 @@ void SpearAce_FSM::hit_Init()
     AttackCollider_Off();
 
     m_bInvincible = false;
-    m_bSuperArmor = false;
+    m_bSuperArmor = true;
 }
 
 void SpearAce_FSM::knock_start()
@@ -783,7 +797,7 @@ void SpearAce_FSM::knock_end_loop_Init()
     animator->Set_NextTweenAnim(L"knock_end_loop", 0.2f, false, 1.f);
 
     m_bInvincible = false;
-    m_bSuperArmor = false;
+    m_bSuperArmor = true;
 }
 
 void SpearAce_FSM::knock_end_hit()
@@ -806,7 +820,7 @@ void SpearAce_FSM::knock_end_hit_Init()
     animator->Set_NextTweenAnim(L"knock_end_hit", 0.2f, false, 1.f);
 
     m_bInvincible = false;
-    m_bSuperArmor = false;
+    m_bSuperArmor = true;
 }
 
 void SpearAce_FSM::knock_up()

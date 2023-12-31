@@ -174,14 +174,14 @@ private:
 	COOLTIMEINFO m_tAttackCoolTime = { 1.f, 0.f };
 	COOLTIMEINFO m_tChaseCoolTime = { 2.f, 0.f };
 	COOLTIMEINFO m_tSkillCoolTime = { 0.2f, 0.f };
-	COOLTIMEINFO m_tGroggyPatternTimer = { 20.f, 0.f };
-
+	COOLTIMEINFO m_tGroggyPatternTimer = { 15.f, 0.f };
 
 	_bool m_bChaseSkill = false;
 	_bool m_bCounter = false;
 	_bool m_bSetPattern = false;
 	_bool m_bGroggyPattern = false;
 	_bool m_bLastPattern = false;
+	_bool m_bDoGroggyPattern = false;
 
 
 	_uint m_iPreAttack = 100;

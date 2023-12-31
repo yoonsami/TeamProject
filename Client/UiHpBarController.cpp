@@ -50,9 +50,6 @@ void UiHpBarController::Tick()
     Change_Hp_Ratio();
 
     Change_Hp_Slow();
-
-    if (KEYTAP(KEY_TYPE::F5))
-        m_pOwner.lock()->Get_Hurt(10.f);
 }
 
 void UiHpBarController::Change_Param()

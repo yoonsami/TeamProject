@@ -378,12 +378,15 @@ void Companion_Spike_FSM::Get_Hit(const wstring& skillname, _float fDamage, shar
         m_pOwner.lock()->Get_Hurt(fHitDamage);
     }
 
-    _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
-    _float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
+    if (m_eCurState != STATE::hit)
+    {
+        _float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
+        _float3 vOppositePos = pLookTarget->Get_Transform()->Get_State(Transform_State::POS).xyz();
 
-    m_vHitDir = vOppositePos - vMyPos;
-    m_vHitDir.y = 0.f;
-    m_vHitDir.Normalize();
+        m_vHitDir = vOppositePos - vMyPos;
+        m_vHitDir.y = 0.f;
+        m_vHitDir.Normalize();
+    }
 
     Set_HitColor();
 
@@ -1116,7 +1119,7 @@ void Companion_Spike_FSM::hit_Init()
     AttackCollider_Off();
 
     m_bInvincible = false;
-    m_bSuperArmor = false;
+    m_bSuperArmor = true;
 }
 
 void Companion_Spike_FSM::knock_start()
@@ -1179,7 +1182,7 @@ void Companion_Spike_FSM::knock_end_loop_Init()
     animator->Set_NextTweenAnim(L"knock_end_loop", 0.2f, false, 1.f);
 
     m_bInvincible = false;
-    m_bSuperArmor = false;
+    m_bSuperArmor = true;
 }
 
 void Companion_Spike_FSM::knock_end_hit()
@@ -1202,7 +1205,7 @@ void Companion_Spike_FSM::knock_end_hit_Init()
     animator->Set_NextTweenAnim(L"knock_end_hit", 0.2f, false, 1.f);
 
     m_bInvincible = false;
-    m_bSuperArmor = false;
+    m_bSuperArmor = true;
 }
 
 void Companion_Spike_FSM::knock_up()

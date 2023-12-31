@@ -698,8 +698,10 @@ void Boss_Spike_FSM::b_idle()
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), m_fTurnSpeed);
 
     m_tAttackCoolTime.fAccTime += fDT;
-    m_tGroggyPatternTimer.fAccTime += fDT;
-
+    
+    if (!m_bDoGroggyPattern)
+        m_tGroggyPatternTimer.fAccTime += fDT;
+    
     if (!m_bSetPattern)
     {
         if (m_tAttackCoolTime.fAccTime >= m_tAttackCoolTime.fCoolTime)
@@ -746,7 +748,9 @@ void Boss_Spike_FSM::b_run()
     Get_Transform()->Go_Straight();
 
     m_tChaseCoolTime.fAccTime += fDT;
-    m_tGroggyPatternTimer.fAccTime += fDT * 0.5f;
+
+    if (!m_bDoGroggyPattern)
+        m_tGroggyPatternTimer.fAccTime += fDT * 0.5f;
 
     if (Target_In_AttackRange())
     {
@@ -794,7 +798,9 @@ void Boss_Spike_FSM::gaze_b()
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
 
     m_tAttackCoolTime.fAccTime += fDT;
-    m_tGroggyPatternTimer.fAccTime += fDT;
+
+    if (!m_bDoGroggyPattern)
+        m_tGroggyPatternTimer.fAccTime += fDT;
 
     Get_Transform()->Go_Backward();
 
@@ -842,7 +848,9 @@ void Boss_Spike_FSM::gaze_f()
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
 
     m_tAttackCoolTime.fAccTime += fDT;
-    m_tGroggyPatternTimer.fAccTime += fDT;
+
+    if (!m_bDoGroggyPattern)
+        m_tGroggyPatternTimer.fAccTime += fDT;
 
     Get_Transform()->Go_Straight();
 
@@ -890,7 +898,9 @@ void Boss_Spike_FSM::gaze_l()
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
 
     m_tAttackCoolTime.fAccTime += fDT;
-    m_tGroggyPatternTimer.fAccTime += fDT;
+
+    if (!m_bDoGroggyPattern)
+        m_tGroggyPatternTimer.fAccTime += fDT;
 
     Get_Transform()->Go_Left();
 
@@ -937,7 +947,9 @@ void Boss_Spike_FSM::gaze_r()
         Soft_Turn_ToTarget(m_pTarget.lock()->Get_Transform()->Get_State(Transform_State::POS), XM_PI * 5.f);
 
     m_tAttackCoolTime.fAccTime += fDT;
-    m_tGroggyPatternTimer.fAccTime += fDT;
+
+    if (!m_bDoGroggyPattern)
+        m_tGroggyPatternTimer.fAccTime += fDT;
 
     Get_Transform()->Go_Right();
 
@@ -2301,6 +2313,7 @@ void Boss_Spike_FSM::skill_100000_Init()
 
     m_bInvincible = true;
     m_bSuperArmor = false;
+    m_bDoGroggyPattern = true;
 
     SOUND.Play_Sound(L"skill_spike_012", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 

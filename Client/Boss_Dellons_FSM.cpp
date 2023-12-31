@@ -342,7 +342,7 @@ void Boss_Dellons_FSM::Get_Hit(const wstring& skillname, _float fDamage, shared_
 
     if (!m_bSuperArmor)
     {
-        if (rand() % 4 == 0)
+        if (rand() % 10 == 0)
             m_bEvade = true;
     }
     else
