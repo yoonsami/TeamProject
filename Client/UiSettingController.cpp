@@ -4,6 +4,7 @@
 #include "BaseUI.h"
 #include "MeshRenderer.h"
 #include "FontRenderer.h"
+#include "UiQuestController.h"
 
 _float    g_fBgmRatio               = 1.f;
 _float    g_fEnvironmentRatio       = 1.f;
@@ -260,6 +261,11 @@ void UiSettingController::Create_Setting_Ui()
     m_bIsCreated = true;
 
     auto pScene = CUR_SCENE;
+    auto pController = pScene->Get_GameObject(L"UI_Dialog_Controller");
+    if(pController)
+        pController->Get_Script<UiQuestController>()->Set_Render(false);
+
+
     pScene->Load_UIFile(L"..\\Resources\\UIData\\UI_Setting.dat", m_addedObj);
 
     _float fBrightness          = pScene->g_fBrightness;
@@ -672,6 +678,11 @@ void UiSettingController::Remove_Setting_Ui()
         }
     }
     m_addedObj.clear();
+
+
+    auto pController = CUR_SCENE->Get_GameObject(L"UI_Dialog_Controller");
+    if (pController)
+        pController->Get_Script<UiQuestController>()->Set_Render(false);
 }
 
 void UiSettingController::Create_Sound_Ui()

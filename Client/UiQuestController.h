@@ -20,6 +20,7 @@ public:
     _bool Get_QuestState(QUESTINDEX eIndex) { return m_ClearCheck[_int(eIndex)]; }
 
     shared_ptr<GameObject> Get_AccessObject() { return m_pAccessObject.lock(); }
+    void Set_Render(_bool _bValue);
 
 private:
     void Clear_Quest();
@@ -28,7 +29,6 @@ private:
     void Next_Down();
     void Next_Up();
     void Set_Cur_Quest();
-    void Set_Render(_bool _bValue);
 
 private:
     weak_ptr<GameObject> m_pUiTotalController;
