@@ -238,6 +238,8 @@ void UiGachaCardMove::Idle()
 {
 	// ½¦ÀÌ´õ ÄÚµå
 	m_fCheckTime = 0.f;
+	m_pOwner.lock()->GetOrAddTransform()->Scaled(m_fOriginScale);
+	m_pOwner.lock()->GetOrAddTransform()->Set_State(Transform_State::POS, m_vecArrivalPos);
 }
 	
 void UiGachaCardMove::Open()
