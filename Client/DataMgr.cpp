@@ -475,7 +475,7 @@ void DataMgr::Initialize()
 
 			tagData.Skill1Cool = 7.f;
 			tagData.Skill2Cool = 22.f;
-			tagData.Skill3Cool = 99.f;
+			tagData.Skill3Cool = 90.f;
 			tagData.Skill4Cool = 16.f;
 			tagData.Skill5Cool = 25.f;
 
@@ -513,7 +513,7 @@ void DataMgr::Initialize()
             auto& tagData = m_MonsterData[IDX(MONSTER::ALPACA)];
 
             tagData.AttackDamage = 10.f;
-            tagData.MaxHp = 2500.f;
+            tagData.MaxHp = 2000.f;
             tagData.CurHp = tagData.MaxHp;
             
 			tagData.Skill1DamageMul = 1.f;
@@ -525,7 +525,7 @@ void DataMgr::Initialize()
             auto& tagData = m_MonsterData[IDX(MONSTER::DELLONS)];
 
             tagData.AttackDamage = 100.f;
-            tagData.MaxHp = 9000.f;
+            tagData.MaxHp = 8500.f;
             tagData.CurHp = tagData.MaxHp;
 
             tagData.AttackDamageMul = 0.4f;
@@ -540,7 +540,7 @@ void DataMgr::Initialize()
             auto& tagData = m_MonsterData[IDX(MONSTER::WOLF)];
 
             tagData.AttackDamage = 10.f;
-            tagData.MaxHp = 4000.f;
+            tagData.MaxHp = 3500.f;
             tagData.CurHp = tagData.MaxHp;
 
             tagData.AttackDamageMul = 1.f;
@@ -550,7 +550,7 @@ void DataMgr::Initialize()
             auto& tagData = m_MonsterData[IDX(MONSTER::SPIKE)];
 
             tagData.AttackDamage = 100.f;
-            tagData.MaxHp = 25000.f;
+            tagData.MaxHp = 35000.f;
             tagData.CurHp = tagData.MaxHp;
 
             tagData.AttackDamageMul = 1.f;
@@ -573,7 +573,7 @@ void DataMgr::Initialize()
             auto& tagData = m_MonsterData[IDX(MONSTER::ENT_SOLDIER)];
 
             tagData.AttackDamage = 12.f;
-            tagData.MaxHp = 5000.f;
+            tagData.MaxHp = 4500.f;
             tagData.CurHp = tagData.MaxHp;
 
             tagData.Skill1DamageMul = 1.f;
@@ -584,7 +584,7 @@ void DataMgr::Initialize()
             auto& tagData = m_MonsterData[IDX(MONSTER::SUCCUBUS)];
 
             tagData.AttackDamage = 12.f;
-            tagData.MaxHp = 5000.f;
+            tagData.MaxHp = 3000.f;
             tagData.CurHp = tagData.MaxHp;
 
             tagData.Skill1DamageMul = 1.f;
@@ -597,7 +597,7 @@ void DataMgr::Initialize()
             auto& tagData = m_MonsterData[IDX(MONSTER::UNDEAD_PRISTE)];
 
             tagData.AttackDamage = 12.f;
-            tagData.MaxHp = 5000.f;
+            tagData.MaxHp = 3000.f;
             tagData.CurHp = tagData.MaxHp;
 
             tagData.Skill1DamageMul = 0.6f;
@@ -609,7 +609,7 @@ void DataMgr::Initialize()
             auto& tagData = m_MonsterData[IDX(MONSTER::SILVERSWORD_SOLDIER)];
 
             tagData.AttackDamage = 12.f;
-            tagData.MaxHp = 5000.f;
+            tagData.MaxHp = 4500.f;
             tagData.CurHp = tagData.MaxHp;
 
             tagData.Skill1DamageMul = 1.f;
@@ -622,7 +622,7 @@ void DataMgr::Initialize()
             auto& tagData = m_MonsterData[IDX(MONSTER::MIR)];
 
             tagData.AttackDamage = 200.f;
-            tagData.MaxHp = 80000.f;
+            tagData.MaxHp = 50000.f;
             tagData.CurHp = tagData.MaxHp;
 
             tagData.AttackDamageMul = 0.5f; // Meteor
@@ -641,7 +641,7 @@ void DataMgr::Initialize()
             auto& tagData = m_MonsterData[IDX(MONSTER::GIANT_MIR)];
 
             tagData.AttackDamage = 200.f;
-            tagData.MaxHp = 100000.f;
+            tagData.MaxHp = 80000.f;
             tagData.CurHp = tagData.MaxHp;
 
             tagData.AttackDamageMul = 0.5f; // Meteor
