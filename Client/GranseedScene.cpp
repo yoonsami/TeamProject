@@ -281,9 +281,6 @@ HRESULT GranseedScene::Load_Scene()
 
 	Add_Load_Index();	// 10
 
-	SWITCHMGR.Set_SwitchState(SWITCH_TYPE::CREATE_COMBAT5_AFTER_SPIKE, true);
-	SWITCHMGR.Set_SwitchState(SWITCH_TYPE::CREATE_COMBAT4_AFTER_SPIKE, true);
-
 	return S_OK;
 }
 
