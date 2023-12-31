@@ -682,7 +682,7 @@ void UiSettingController::Remove_Setting_Ui()
 
     auto pController = CUR_SCENE->Get_GameObject(L"UI_Dialog_Controller");
     if (pController)
-        pController->Get_Script<UiQuestController>()->Set_Render(false);
+        pController->Get_Script<UiQuestController>()->Set_Render(true);
 }
 
 void UiSettingController::Create_Sound_Ui()

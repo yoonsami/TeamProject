@@ -38,6 +38,7 @@ HRESULT UiQuestController::Init()
     m_ClearCheck.resize(iSize);
 
     m_eCurType = CUR_QUEST::NONE;
+    m_eIndex = QUESTINDEX::MAX;
 
     return S_OK;
 }
@@ -309,6 +310,7 @@ void UiQuestController::Set_ClearQuest()
 	m_eCurType = CUR_QUEST::NONE;
 	Set_Render(false);
 	Clear_Quest();
+    m_eIndex = QUESTINDEX::MAX;
 }
 
 CUR_QUEST UiQuestController::Get_CurState(QUESTINDEX eIndex)
@@ -397,6 +399,9 @@ void UiQuestController::Set_Render(_bool _bValue)
     if (true == m_pUiCurQuest.expired() ||
         true == m_pUiCurQuestName.expired() ||
         true == m_pUiCurQuestInfo.expired())
+        return;
+
+    if (QUESTINDEX::MAX == m_eIndex)
         return;
 
     m_pUiCurQuest.lock()->Set_Tick(_bValue);
