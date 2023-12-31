@@ -24,7 +24,7 @@ Boss_Dellons_FSM::Boss_Dellons_FSM()
 
 Boss_Dellons_FSM::~Boss_Dellons_FSM()
 {
-        
+    SWITCHMGR.Add_Score(SCORE_TYPE::KRIS_SCENE);
 }
 
 HRESULT Boss_Dellons_FSM::Init()
@@ -803,9 +803,8 @@ void Boss_Dellons_FSM::die_Init()
 {
     shared_ptr<ModelAnimator> animator = Get_Owner()->Get_Animator();
 
-    animator->Set_NextTweenAnim(L"die", 0.2f, false, 1.f);
+	animator->Set_NextTweenAnim(L"die", 0.2f, false, 1.f);
 
-    CUR_SCENE->g_sceneFlag++;
 
     m_bInvincible = true;
     m_bSuperArmor = true;
@@ -856,8 +855,7 @@ void Boss_Dellons_FSM::airborne_end()
             m_eCurState = STATE::airborne_up;
         else
         {
-            CUR_SCENE->g_sceneFlag++;
-
+         
             m_bInvincible = true;
 
             Get_Owner()->Get_Animator()->Set_AnimState(true);
@@ -997,7 +995,6 @@ void Boss_Dellons_FSM::knock_end_loop()
 
     if (m_bIsDead)
     {
-        CUR_SCENE->g_sceneFlag++;
 
         m_bInvincible = true;
 
@@ -1123,8 +1120,7 @@ void Boss_Dellons_FSM::knockdown_end()
             m_eCurState = STATE::knock_up;
         else
         {
-            CUR_SCENE->g_sceneFlag++;
-
+       
             m_bInvincible = true;
 
             Get_Owner()->Get_Animator()->Set_AnimState(true);

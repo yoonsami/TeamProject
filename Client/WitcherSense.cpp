@@ -5,6 +5,8 @@ _bool g_bWitcherSenseOn = false;
 
 void WitcherSense::Tick()
 {
+	if (CUR_SCENE->Get_Name() != L"GranseedScene")
+		return;
 	auto& saturation = CUR_SCENE->g_Saturation;
 
 	if (KEYTAP(KEY_TYPE::Z))

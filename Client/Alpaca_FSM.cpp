@@ -13,7 +13,7 @@
 
 Alpaca_FSM::~Alpaca_FSM()
 {
-    
+    SWITCHMGR.Add_Score(SCORE_TYPE::KRIS_SCENE);
 }
 
 HRESULT Alpaca_FSM::Init()
@@ -509,7 +509,6 @@ void Alpaca_FSM::die_01_Init()
     
     SOUND.Play_Sound(L"vo_alpaca_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-    CUR_SCENE->g_sceneFlag++;
 
     m_bSuperArmor = false;
     m_bInvincible = true;
@@ -536,7 +535,6 @@ void Alpaca_FSM::die_02_Init()
 
     SOUND.Play_Sound(L"vo_alpaca_die", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
 
-    CUR_SCENE->g_sceneFlag++;
 
     m_bSuperArmor = false;
     m_bInvincible = true;
@@ -707,7 +705,7 @@ void Alpaca_FSM::airborne_end()
             m_eCurState = STATE::airborne_up;
         else
         {
-            CUR_SCENE->g_sceneFlag++;
+
 
             m_bInvincible = true;
 
@@ -827,7 +825,6 @@ void Alpaca_FSM::knock_end_loop()
         Get_Owner()->Add_Component(script);
         script->Init();
 
-        CUR_SCENE->g_sceneFlag++;
 
         if (!m_pAttackCollider.expired())
         {
@@ -916,7 +913,6 @@ void Alpaca_FSM::knockdown_end()
             m_eCurState = STATE::knock_up;
         else
         {
-            CUR_SCENE->g_sceneFlag++;
 
             m_bInvincible = true;
 

@@ -4,6 +4,10 @@
 
 void Combat5_LightControl::Tick()
 {
+	if (SWITCHMGR.Get_SwitchState(SWITCH_TYPE::IN_COMBAT5))
+	{
+		SOUND.Play_Sound(L"BGM_FieldBattle1", CHANNELID::SOUND_BGM2, 0.5f * g_fBgmRatio);
+	}
 	_float3 vPlayerPos = m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
 	_float3 vMyPos = Get_Transform()->Get_State(Transform_State::POS).xyz();
 	
@@ -38,11 +42,11 @@ void Combat5_LightControl::Tick()
 	}
 	else if ((vPlayerPos - vMyPos).LengthSquared() < 5.f * 5.f)
 	{
-		SOUND.Play_Sound(L"BGM_FieldBattle1", CHANNELID::SOUND_BGM2, 0.5f * g_fBgmRatio);
-		SWITCHMGR.Set_SwitchState(SWITCH_TYPE::IN_COMBAT5, true);
-		SWITCHMGR.Set_SwitchState(SWITCH_TYPE::OUT_COMBAT5, false);
+		
 		if (vPlayerPos.z < 60.f)
 		{
+			SWITCHMGR.Set_SwitchState(SWITCH_TYPE::IN_COMBAT5, true);
+			SWITCHMGR.Set_SwitchState(SWITCH_TYPE::OUT_COMBAT5, false);
 			Color targetAmbientColor = Color(119.f, 30.f, 30.f, 255.f) / 255.f;
 			Color targetDiffuseColor = Color(2355.f, 508.f, 508.f, 255.f) / 255.f;
 

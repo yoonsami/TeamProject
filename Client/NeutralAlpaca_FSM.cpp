@@ -502,7 +502,7 @@ void NeutralAlpaca_FSM::b_run()
 	if (!m_bDetected)
 		m_eCurState = STATE::b_idle;
 
-    if(!m_bAngry && CUR_SCENE->g_sceneFlag >= 16 && !m_bRealEducated)
+    if(!m_bAngry && (SWITCHMGR.Get_Score(SCORE_TYPE::KRIS_SCENE) >= 16) && !m_bRealEducated)
 	{
 		_float randFloat = MathUtils::Get_RandomFloat(0.f, 100.f);
 		if (randFloat < 0.5f)
