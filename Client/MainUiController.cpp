@@ -92,6 +92,7 @@ HRESULT MainUiController::Init()
     m_vecUi.push_back(pScene->Get_UI(L"UI_Char_Help_Skill1"));
     m_vecUi.push_back(pScene->Get_UI(L"UI_Char_Help_Skill2"));
     m_vecUi.push_back(pScene->Get_UI(L"UI_UseItem_Slot"));
+    m_vecUi.push_back(pScene->Get_UI(L"UI_UseItem_Count"));
 
     return S_OK;
 }
