@@ -6,6 +6,7 @@ void Combat5_LightControl::Tick()
 {
 	if (SWITCHMGR.Get_SwitchState(SWITCH_TYPE::IN_COMBAT5))
 	{
+		if(SWITCHMGR.Get_Score(SCORE_TYPE::COMBAT_5) < SWITCHMGR.Get_Score(SCORE_TYPE::COMBAT_5_MONSTER_COUNT))
 		SOUND.Play_Sound(L"BGM_FieldBattle1", CHANNELID::SOUND_BGM2, 0.5f * g_fBgmRatio);
 	}
 	_float3 vPlayerPos = m_pPlayer.lock()->Get_Transform()->Get_State(Transform_State::POS).xyz();
