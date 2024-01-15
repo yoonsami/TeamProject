@@ -680,6 +680,8 @@ void Boss_Giant_Mir_FSM::SQ_Leave()
 {
     Calculate_LeaveHeadCam();
 
+
+
     if (Init_CurFrame(30))
         SOUND.Play_Sound(L"dragon_raksha_vox_01", CHANNELID::SOUND_EFFECT, m_fVoiceVolume * g_fMonsterVoiceRatio, Get_Transform()->Get_State(Transform_State::POS).xyz(), m_fMySoundDistance);
     else if (Init_CurFrame(50))
@@ -1867,6 +1869,9 @@ void Boss_Giant_Mir_FSM::DeadSetting()
 {
     if (m_bIsDead)
     {
+        auto pObj = CUR_SCENE->Get_UI(L"Main_UI_Controller");
+        if (pObj)
+            pObj->Get_Script<MainUiController>()->Final_Render_Off();
         Set_Invincible(true);
         m_eCurState = STATE::SQ_Leave_Groggy_Start;
     }

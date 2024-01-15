@@ -99,6 +99,16 @@ HRESULT MainUiController::Init()
 
 void MainUiController::Set_MainUI_Render(_bool bValue)
 {
+    if (false == bValue)
+    {
+        _uint iSize = IDX(m_vecUi.size());
+        for (_uint i = 0; i < iSize; ++i)
+            if (false == m_vecUi[i].expired())
+                m_vecUi[i].lock()->Set_Render(false);
+
+        return;
+    }
+
     _uint iSize = IDX(m_vecUi.size());
     for (_uint i = 0; i < iSize; ++i)
     {
@@ -111,4 +121,12 @@ void MainUiController::Set_MainUI_Render(_bool bValue)
             m_vecUi[i].lock()->Set_Render(bTemp);
         }
     }
+}
+
+void MainUiController::Final_Render_Off()
+{
+    _uint iSize = IDX(m_vecUi.size());
+    for (_uint i = 0; i < iSize; ++i)
+        if (false == m_vecUi[i].expired())
+            m_vecUi[i].lock()->Set_Render(false);
 }

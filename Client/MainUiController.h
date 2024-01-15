@@ -11,6 +11,7 @@ public:
 	virtual shared_ptr<MonoBehaviour> Copy_Script() { return make_shared<MainUiController>(); }
 
     void Set_MainUI_Render(_bool bValue);
+    void Final_Render_Off();
 
 private:
     vector<weak_ptr<GameObject>> m_vecUi;
